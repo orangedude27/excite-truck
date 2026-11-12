@@ -6774,16 +6774,17 @@ void BTA_HhClose(s16 arg0) {
 }
 
 extern char lbl_803156D0[];
-void BTA_HhOpen(const u8 *arg0, s8 arg1, s8 arg2) {
-    u8 *buf = GKI_getbuf(0x10);
-    if (buf != 0) {
-        memset(buf, 0, 0x10);
-        *(u16 *)buf = 0x1700;
-        *(u16 *)(buf + 6) = 0xFF;
-        buf[0xE] = arg2;
-        buf[0xF] = arg1;
-        fn_80070FA4(buf + 8, arg0);
-        fn_80071450(buf);
+/* Open HID host connection to a device: build and send BTA_HH_API_OPEN_EVT, or log if no buffer. */
+void BTA_HhOpen(const u8 *dev_bda, s8 proto_mode, s8 sec_mask) {
+    u8 *p_buf = GKI_getbuf(0x10);
+    if (p_buf != 0) {
+        memset(p_buf, 0, 0x10);
+        *(u16 *)p_buf = 0x1700;
+        *(u16 *)(p_buf + 6) = 0xFF;
+        p_buf[0xE] = sec_mask;
+        p_buf[0xF] = proto_mode;
+        fn_80070FA4(p_buf + 8, dev_bda);
+        fn_80071450(p_buf);
     } else if (lbl_8055DC80 >= 1) {
         fn_8007093C(0x500, lbl_803156D0);
     }
