@@ -1193,7 +1193,7 @@ s32 fn_80169D64(s32 arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma cplusplus on
 extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     int sp8 = -1;
@@ -1245,14 +1245,13 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
             u8 *e2 = base2 + last2 * 0x20;
             (*(s32 *)(e2 + 0x18))++;
         } else {
-            if (arg2->entryCount == 0) {
+            s32 __c = arg2->entryCount;
+            if (__c == 0) {
                 goto mkEntry;
-            }
-            {
-                s32 last = arg2->entryCount - 1;
-                u8 *base = (u8 *)arg2->entries;
-                u8 *e = base + last * 0x20;
-                if (*(e + 0x1C) == 0) {
+            } else {
+                s32 __last = __c - 1;
+                volatile u8 *__e = (u8 *)arg2->entries + __last * 0x20 + 0x1C;
+                if (*__e == 0) {
                     goto incEntry;
                 }
             }
