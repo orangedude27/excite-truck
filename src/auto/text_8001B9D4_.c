@@ -246,10 +246,12 @@ void fn_8001BD54(Unk8001BBBC *arg0, void *arg1) {
 }
 #pragma scheduling invalid_target
 u32 fn_8001BD6C(void *arg0, void *arg1) {
-    volatile register void *p1 = arg1;
-    volatile register void *p0 = arg0;
-    u32 r = fn_8001D2E4(*(u32 *)((s8 *)p0 + 0x18), *(u32 *)((s8 *)p0 + 0xC), *(u32 *)((s8 *)p1 + 0x18), *(u32 *)((s8 *)p1 + 0xC));
-    return (r & 0x80000000) >> 31;
+    u32 a0 = *(u32 *)((u8 *)arg0 + 0x18);
+    u32 a0c = *(u32 *)((u8 *)arg0 + 0xC);
+    u32 a18 = *(u32 *)((u8 *)arg1 + 0x18);
+    u32 a1c = *(u32 *)((u8 *)arg1 + 0xC);
+    u32 r = fn_8001D2E4(a0, a0c, a18, a1c);
+    return (r >> 31);
 }
 #pragma scheduling on
 extern void *fn_800167CC(s32);
@@ -258,23 +260,24 @@ extern void *fn_80016BC8(void *, s32);
 #pragma small_data off
 #pragma pop
 void fn_8001BDA8(void *arg0) {
-    u8 *base = (u8 *)arg0;
-    s32 index;
-    void *result;
-    void *temp;
-    if (base[0x20] != 0) {
-        if (*(void **)(base + 0x18) != &lbl_80358628) {
-            index = *(s32 *)(base + 0xC);
-            *(s32 *)((u8 *)*(void **)(base + 0x18) + index * 0xC + 8) = *(s32 *)(base + 0x1C);
-            index = *(s32 *)(base + 0xC);
-            *(u8 *)((u8 *)*(void **)(base + 0x18) + index * 0xC + 0x10) = 1;
-            result = fn_800167CC(0);
-            temp = fn_80016BC8(result, 0);
-            *(s32 *)((u8 *)*(void **)(base + 0x18) + *(s32 *)(base + 0xC) * 0xC + 0xC) = fn_8001D220(*(u32 *)result, *(u32 *)((u8 *)temp + 4), *(u8 *)((u8 *)temp + 8));
+    /* Finalizes a pending entry update for this object, storing computed data in its owner table and clearing the dirty flag. */
+    u8 *self = (u8 *)arg0;
+    s32 entryIndex;
+    void *source;
+    void *info;
+    if (self[0x20] != 0) {
+        if (*(void **)(self + 0x18) != &lbl_80358628) {
+            entryIndex = *(s32 *)(self + 0xC);
+            *(s32 *)((u8 *)*(void **)(self + 0x18) + entryIndex * 0xC + 8) = *(s32 *)(self + 0x1C);
+            entryIndex = *(s32 *)(self + 0xC);
+            *(u8 *)((u8 *)*(void **)(self + 0x18) + entryIndex * 0xC + 0x10) = 1;
+            source = fn_800167CC(0);
+            info = fn_80016BC8(source, 0);
+            *(s32 *)((u8 *)*(void **)(self + 0x18) + *(s32 *)(self + 0xC) * 0xC + 0xC) = fn_8001D220(*(u32 *)source, *(u32 *)((u8 *)info + 4), *(u8 *)((u8 *)info + 8));
             fn_8001D298(*(s32 *)arg0);
         }
     }
-    base[0x20] = 0;
+    self[0x20] = 0;
 }
 #pragma scheduling invalid_target
 #pragma scheduling on
@@ -416,8 +419,6 @@ s32 fn_8001C200(const char *arg0, const char *arg1) {
     return result;
 }
 #pragma dont_inline on
-#pragma scheduling invalid_target
-#pragma scheduling on
 s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
     u32 key = *(u32 *)arg0;
     s32 result = 0;
@@ -426,7 +427,6 @@ s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
     }
     return result;
 }
-#pragma scheduling reset
 #pragma dont_inline reset
 s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
     s32 offset = 0;
