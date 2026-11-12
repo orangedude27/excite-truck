@@ -954,19 +954,26 @@ s32 fn_8001CE74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 #pragma push
 #pragma processor 750
-s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
-    void *ptr = (void *)fn_8001285C(arg1);
-    s32 count = *(s32 *)((u8 *)arg0 + 0x6C);
+/* Where a new entry belongs in a contest record's ranking list: walks the list
+ * and returns how many entries come before one holding key and score, which is
+ * its entryCount when the entry does not make the list at all.  The list runs
+ * from the highest key down and entries of one key from the best score down; a
+ * score is smaller-is-better on "excite" contests, which rank a finish time,
+ * and larger-is-better on every other contest type. */
+s32 fn_8001CED4(void *arg0, s32 contestIdx, s32 key, f32 score) {
+    struct ContestEntry *contest = (struct ContestEntry *)fn_8001285C(contestIdx);
+    s32 count = ((struct StatRecord *)arg0)->entryCount;
     s32 i;
     for (i = 0; i < count; arg0 = (u8 *)arg0 + 0x14, i++) {
-        s32 key;
-        if (*(s32 *)((u8 *)arg0 + 8) == 0) break;
-        key = *(s32 *)((u8 *)arg0 + 0xC);
-        if (key < arg2) break;
-        if (arg2 == key) {
-            if (*(u32 *)((u8 *)ptr + 8) == 0x00180302) {
-                if (*(f32 *)((u8 *)arg0 + 0x14) > arg3) break;
-            } else if (*(f32 *)((u8 *)arg0 + 0x14) < arg3) break;
+        struct StatEntry *entry = (struct StatEntry *)((u8 *)arg0 + 8);
+        s32 entryKey;
+        if (entry->name == 0) break;
+        entryKey = entry->key;
+        if (entryKey < key) break;
+        if (key == entryKey) {
+            if (contest->type == CONTEST_TYPE_EXCITE) {
+                if (entry->score > score) break;
+            } else if (entry->score < score) break;
         }
     }
     return i;
