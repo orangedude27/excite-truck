@@ -1279,21 +1279,29 @@ done:
 
 void fn_80294530(void *arg0, int arg1, int arg2, int arg3) {
     char name[0x20];
-    int i;
+    int count;
     *(s32 *)((u8 *)arg0 + 0x28) = 0;
-    for (i = 0; i < 8; i++) {
-        fn_801345D8(name, 0x20, lbl_80349250, arg1, i + 1);
-        if (fn_8012C33C(name) != 0) {
-            if (arg3 != 0 && *(s8 *)arg3 != 0) fn_80292CD8(name, arg2, (u8 *)arg3);
-            i = *(s32 *)((u8 *)arg0 + 0x28);
-            *(s32 *)((u8 *)arg0 + i * 4 + 8) = fn_802C6FC0(name, arg2, 0);
-            i = *(s32 *)((u8 *)arg0 + 0x28);
-            i++;
-            *(s32 *)((u8 *)arg0 + 0x28) = i;
-        }
+    goto check;
+loop:
+    ((void (*)(void *, int, const char *, ...))fn_801345D8)(name, 0x20, lbl_80349250, arg1, *(s32 *)((u8 *)arg0 + 0x28) + 1);
+    if (fn_8012C33C(name) == 0)
+        goto padding;
+    if (arg3 != 0 && *(s8 *)arg3 != 0)
+        fn_80292CD8(name, arg2, (u8 *)arg3);
+    *(s32 *)((u8 *)arg0 + *(s32 *)((u8 *)arg0 + 0x28) * 4 + 8) = fn_802C6FC0(name, arg2, 0);
+    count = *(s32 *)((u8 *)arg0 + 0x28);
+    count++;
+    *(s32 *)((u8 *)arg0 + 0x28) = count;
+check:
+    if (*(s32 *)((u8 *)arg0 + 0x28) < 8)
+        goto loop;
+padding:
+    {
+        s32 *arr = (s32 *)arg0;
+        count = *(s32 *)((u8 *)arg0 + 0x28);
+        for (; count < 8; count++)
+            arr[count + 2] = -1;
     }
-    i = *(s32 *)((u8 *)arg0 + 0x28);
-    for (; i < 8; i++) *(s32 *)((u8 *)arg0 + i * 4 + 8) = -1;
 }
 
 #pragma push
