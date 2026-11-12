@@ -288,24 +288,25 @@ extern s32 fn_80017F40(void);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 s32 fn_80017F6C(s32 arg0) {
-    s32 temp, max, i;
-    void *obj;
+    /* Return the max value: forced cap, global max, or max entry field across arg0's list. */
+    s32 value, best, index;
+    void *list;
     if ((s32)lbl_8055D560 != 0) {
-        temp = fn_800167F4();
-        max = (s32)lbl_8055D560;
-        if (temp > max) max = temp;
-        return max;
+        value = fn_800167F4();
+        best = (s32)lbl_8055D560;
+        if (value > best) best = value;
+        return best;
     }
     if (fn_80017F40() == 0) return fn_800167F4();
-    max = 0;
-    obj = fn_80012820(arg0);
-    i = 0;
-    while (i < *(s32*)((char*)obj + 0x70)) {
-        temp = *(s32*)((char*)fn_80012870(arg0, i) + 0x10);
-        if (temp > max) max = temp;
-        i++;
+    best = 0;
+    list = fn_80012820(arg0);
+    index = 0;
+    while (index < *(s32*)((char*)list + 0x70)) {
+        value = *(s32*)((char*)fn_80012870(arg0, index) + 0x10);
+        if (value > best) best = value;
+        index++;
     }
-    return max;
+    return best;
 }
 #pragma dont_inline off
 #pragma scheduling on
