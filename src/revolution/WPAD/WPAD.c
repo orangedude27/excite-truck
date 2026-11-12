@@ -3644,30 +3644,30 @@ void fn_8005FCCC(u8 devHandle, u8 open) {
     }
 }
 
-// fn_8006022C: disconnect controller and clear saved device information
+// Disconnect a WPAD channel and clear its saved Bluetooth device information.
 void fn_8006022C(s32 chan)
 {
     s32 status;
-    WPADCB* p;
-    BOOL enabled;
+    WPADCB* cb;
+    BOOL intrEnabled;
 
     memset(lbl_80393058 + (chan + 10) * 0x46 + 1, 0, 0x46);
     lbl_8055DC11 = TRUE;
-    p = lbl_8038F4F0[chan];
-    enabled = OSDisableInterrupts();
-    status = *(s32*)((u8*)p + 0x7FC);
-    OSRestoreInterrupts(enabled);
+    cb = lbl_8038F4F0[chan];
+    intrEnabled = OSDisableInterrupts();
+    status = *(s32*)((u8*)cb + 0x7FC);
+    OSRestoreInterrupts(intrEnabled);
     if (status == WPAD_ERR_NO_CONTROLLER) {
         return;
     }
-    enabled = OSDisableInterrupts();
-    if (((u8*)p)[0x8C6]) {
-        OSRestoreInterrupts(enabled);
+    intrEnabled = OSDisableInterrupts();
+    if (((u8*)cb)[0x8C6]) {
+        OSRestoreInterrupts(intrEnabled);
         return;
     }
-    ((u8*)p)[0x8C6] = TRUE;
-    OSRestoreInterrupts(enabled);
-    BTA_HhClose(((u8*)p)[0x803]);
+    ((u8*)cb)[0x8C6] = TRUE;
+    OSRestoreInterrupts(intrEnabled);
+    BTA_HhClose(((u8*)cb)[0x803]);
 }
 
 // fn_800604E8: set data format
