@@ -728,25 +728,26 @@ finish:
     return obj;
 }
 #pragma pop
-void fn_802D8FB4(void *arg0) {
-    if (*(unsigned int *)((char *)arg0 + 0xF0) != 0 &&
-        (unsigned int)(lbl_8055FD2C - *(unsigned int *)((char *)arg0 + 0xEC)) >= 0xFFFFFF00U) {
+void fn_802D8FB4(void *texObj) {
+    /* Release a texture object: flush pending work, free owned sub-objects, unlink, and clear global references. */
+    if (*(unsigned int *)((char *)texObj + 0xF0) != 0 &&
+        (unsigned int)(lbl_8055FD2C - *(unsigned int *)((char *)texObj + 0xEC)) >= 0xFFFFFF00U) {
         fn_802CFEEC();
     }
-    if (*(unsigned int *)((char *)arg0 + 0x70) != 0) {
-        fn_80128670((void *)*(unsigned int *)((char *)arg0 + 0x70));
+    if (*(unsigned int *)((char *)texObj + 0x70) != 0) {
+        fn_80128670((void *)*(unsigned int *)((char *)texObj + 0x70));
     }
-    if (*(unsigned int *)((char *)arg0 + 0xC4) != 0) {
-        fn_80128670((void *)*(unsigned int *)((char *)arg0 + 0xC4));
+    if (*(unsigned int *)((char *)texObj + 0xC4) != 0) {
+        fn_80128670((void *)*(unsigned int *)((char *)texObj + 0xC4));
     }
-    fn_802D768C(arg0);
-    if (lbl_8055FE18 == arg0) {
+    fn_802D768C(texObj);
+    if (lbl_8055FE18 == texObj) {
         lbl_8055FE18 = 0;
     }
-    if (lbl_8055FE1C == arg0) {
+    if (lbl_8055FE1C == texObj) {
         lbl_8055FE1C = 0;
     }
-    if (lbl_8055FE20 == arg0) {
+    if (lbl_8055FE20 == texObj) {
         lbl_8055FE20 = 0;
     }
 }
