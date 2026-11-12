@@ -11122,17 +11122,18 @@ extern "C" s32 fn_800B8048(s32 arg0) {
 extern "C" s32 NANDGetType(char *);
 extern "C" s32 NANDOpen(void *, void *, s32);
 extern "C" s32 fn_800B814C(void *);
-extern "C" s32 fn_800B808C(s32 arg0, void *arg1, s32 arg2) {
+extern "C" s32 fn_800B808C(s32 arg0, void *fileState, s32 retryMode) {
+    /* Open or prepare a NAND-backed file state: check NAND path/type, open if needed, optionally force retry, and store arg0 on success. */
     s32 result = NANDGetType((char *)&lbl_80405D18);
     if (result != 0)
         return result;
 
-    if (*(s32 *)((u8 *)arg1 + 0xE4) & 4)
+    if (*(s32 *)((u8 *)fileState + 0xE4) & 4)
         result = 0;
     else
-        result = NANDOpen((u8 *)arg1 + 4, (u8 *)arg1 + 0x58, 3);
+        result = NANDOpen((u8 *)fileState + 4, (u8 *)fileState + 0x58, 3);
 
-    if (arg2 != 0)
+    if (retryMode != 0)
         result = -0xC;
 
     if (result == 0)
@@ -11148,14 +11149,14 @@ extern "C" s32 fn_800B808C(s32 arg0, void *arg1, s32 arg2) {
     }
 
 retry:
-    result = fn_800B814C(arg1);
+    result = fn_800B814C(fileState);
     if (result != 0)
         goto done;
-    *(s32 *)arg1 = arg0;
+    *(s32 *)fileState = arg0;
     goto done;
 
 success:
-    *(s32 *)arg1 = arg0;
+    *(s32 *)fileState = arg0;
     result = 0;
 done:
     return result;
