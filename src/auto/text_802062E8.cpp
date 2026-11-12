@@ -433,28 +433,25 @@ struct Sound3D {
 };
 
 extern "C" void fn_80206A5C(void* arg0) {
-    unsigned char* p = (unsigned char*)arg0;
-    class Dispatch {
-    public:
-        virtual void pad0(); virtual void pad1(); virtual void pad2(); virtual void pad3();
-        virtual void pad4(); virtual void pad5(); virtual void pad6(); virtual void pad7();
-        virtual void pad8(); virtual void pad9(); virtual void pad10(); virtual void pad11();
-        virtual void pad12(); virtual void pad13(); virtual void pad14();
-        virtual void f17(float); virtual void f18(float); virtual void f19(float);
-    };
-    if (p[0x34]) {
-        p[0x34] = 0;
-        ((Dispatch*)*(void**)(p + 0xC))->f17(*(float*)((char*)arg0 + 0x28));
+    /* Sound3D::flushMixValues -- vtable slot +0x10, the one every sound class
+     * of this unit shares: hand each queued mix value whose dirty flag is set
+     * to the VoiceSnd being played and clear the flag.  These three are the
+     * mix values voicesnd.c calls unused2c/30/34: this build's sound library
+     * ignores them, so storing them is all the send amounts to. */
+    Sound3D* self = (Sound3D*)arg0;
+    if (self->unused2cDirty) {
+        self->unused2cDirty = 0;
+        self->sound->setUnused2c(((Sound3D*)arg0)->unused2c);
     }
-    if (p[0x35]) {
-        void* obj = *(void**)(p + 0xC);
-        p[0x35] = 0;
-        ((Dispatch*)obj)->f18(*(float*)(p + 0x2C));
+    if (self->unused30Dirty) {
+        VoiceSnd* sound = self->sound;
+        self->unused30Dirty = 0;
+        sound->setUnused30(self->unused30);
     }
-    if (p[0x36]) {
-        void* obj = *(void**)(p + 0xC);
-        p[0x36] = 0;
-        ((Dispatch*)obj)->f19(*(float*)(p + 0x30));
+    if (self->unused34Dirty) {
+        VoiceSnd* sound = self->sound;
+        self->unused34Dirty = 0;
+        sound->setUnused34(self->unused34);
     }
 }
 
