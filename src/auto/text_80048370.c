@@ -385,6 +385,7 @@ void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
 #pragma pop
 
 void* AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead*, MEMiExpHeapMBlock*, void*, u32, u16);
+/* Allocate a block from the tail of an expanded heap, choosing the best-fit free block. */
 void* AllocFromTail_(MEMiHeapHead* heap, u32 size, s32 align) {
     BOOL isFastAlloc;
     MEMiExpHeapMBlock* it;
