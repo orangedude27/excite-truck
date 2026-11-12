@@ -3097,6 +3097,54 @@ valid_buffer:
 }
 
 void GKI_send_msg(u8 task_id, u8 mbox, void *msg) {
+    BUFFER_HDR_T *p_hdr;
+    char *p_err_str = lbl_80314110;
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
+    u16 size;
+    u32 *magic;
+    u8 damaged;
+
+    if (task_id >= 8 || mbox >= 4 || p_cb->OSRdyTbl[task_id] == 0) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFB, p_err_str + 0x68);
+        GKI_freebuf(msg);
+        return;
+    }
+    p_hdr = (BUFFER_HDR_T *)((u8 *)msg - 8);
+    if (((u32)p_hdr & 1) != 0) {
+        size = 0;
+    } else {
+        u8 pool_id = p_hdr->q_id;
+        if (pool_id < 9)
+            size = *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (pool_id << 4));
+        else
+            size = 0;
+    }
+    magic = (u32 *)((u8 *)msg + size);
+    if (((u32)magic & 1) != 0)
+        damaged = 1;
+    else if (*magic == 0xDDBADDBA)
+        damaged = 0;
+    else
+        damaged = 1;
+    if (damaged != 0) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFF, p_err_str + 0x80);
+        return;
+    }
+    if (p_hdr->status != BUF_STATUS_UNLINKED) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFA, p_err_str + 0x98);
+        return;
+    }
+    fn_8006EBAC();
+    if (p_cb->OSTaskQFirst[task_id][mbox])
+        p_cb->OSTaskQLast[task_id][mbox]->p_next = p_hdr;
+    else
+        p_cb->OSTaskQFirst[task_id][mbox] = p_hdr;
+    p_cb->OSTaskQLast[task_id][mbox] = p_hdr;
+    p_hdr->p_next = NULL;
+    p_hdr->status = BUF_STATUS_QUEUED;
+    p_hdr->task_id = task_id;
+    fn_8006EB88();
+    GKI_send_event(task_id, (u16)(1 << mbox));
 }
 
 void *GKI_read_mbox(UINT8 mbox) {
@@ -14976,17 +15024,11 @@ BOOLEAN btsnd_hcic_reset(UINT8 local_controller_id) {
 
 BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_type, UINT8 *p_cond, UINT8 cond_len) {
     BT_HDR *p = (BT_HDR *)p_buf;
-    UINT8 *raw = (UINT8 *)p;
+    UINT8 *raw = (UINT8 *)p_buf;
     UINT8 *src = p_cond;
     UINT8 *dst;
-    UINT8 *tail_src;
-    UINT8 value;
     s32 len = cond_len;
-    s32 index;
-    s32 tail;
-    u32 count;
-    s32 safe;
-
+    register int ijk;
     p->offset = 0;
     raw[8] = 5;
     raw[9] = 0xC;
@@ -14997,46 +15039,29 @@ BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_typ
         raw[0xC] = cond_type;
         dst = raw + 0xD;
         if (cond_type == 1) {
-            dst[0] = src[2]; len = (UINT8)(len - 6); src += 6;
-            dst[1] = p_cond[1]; dst[2] = p_cond[0]; dst[3] = p_cond[5];
-            dst[4] = p_cond[4]; dst[5] = p_cond[3]; dst += 6;
+            dst[0] = src[2];
+            len = (UINT8)(len - 6);
+            src += 6;
+            dst[1] = p_cond[1];
+            dst[2] = p_cond[0];
+            dst[3] = p_cond[5];
+            dst[4] = p_cond[4];
+            dst[5] = p_cond[3];
+            dst += 6;
         } else if (cond_type == 2) {
-            dst[0] = src[5]; len = (UINT8)(len - 6); src += 6;
-            dst[1] = p_cond[4]; dst[2] = p_cond[3]; dst[3] = p_cond[2];
-            dst[4] = p_cond[1]; dst[5] = p_cond[0]; dst += 6;
+            dst[0] = src[5];
+            len = (UINT8)(len - 6);
+            src += 6;
+            dst[1] = p_cond[4];
+            dst[2] = p_cond[3];
+            dst[3] = p_cond[2];
+            dst[4] = p_cond[1];
+            dst[5] = p_cond[0];
+            dst += 6;
         }
         if (len != 0) {
-            index = 0;
-            if (len > 0) {
-                if (len > 8) {
-                    tail = len - 8;
-                    safe = 0;
-                    if (len >= 0 && len <= 0x7FFFFFFE) safe = 1;
-                    if (safe != 0) {
-                        count = (u32)(tail + 7) >> 3;
-                        if (tail > 0) {
-                            do {
-                                dst[0] = src[index];
-                                tail_src = src + index;
-                                index += 8;
-                                dst[1] = tail_src[1]; dst[2] = tail_src[2];
-                                dst[3] = tail_src[3]; dst[4] = tail_src[4];
-                                dst[5] = tail_src[5]; dst[6] = tail_src[6];
-                                dst[7] = tail_src[7];
-                                dst += 8;
-                            } while (--count != 0);
-                        }
-                    }
-                }
-                tail_src = src + index;
-                tail = len - index;
-                if (index < len) {
-                    do {
-                        value = *tail_src++;
-                        *dst++ = value;
-                        tail--;
-                    } while (tail != 0);
-                }
+            for (ijk = 0; ijk < len; ijk++) {
+                dst[ijk] = src[ijk];
             }
         }
     } else {
@@ -15044,7 +15069,7 @@ BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_typ
         raw[0xA] = 1;
         raw[0xB] = filt_type;
     }
-    btu_hcif_send_cmd(p);
+    btu_hcif_send_cmd(p_buf);
 }
 
 BOOLEAN btsnd_hcic_write_pin_type(UINT8 type) {
