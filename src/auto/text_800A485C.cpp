@@ -3190,26 +3190,29 @@ extern "C" s32 fn_800A9A4C(void *arg0, s32 arg1, s32 arg2) {
 #pragma dont_inline on
 #pragma push
 #pragma opt_common_subs off
-extern "C" void *fn_800A9B0C(void *arg0) {
-    void *vol;
-    s32 temp_r3;
+// Ensure the file handle's volume is ready, then resolve/refresh the file state.
+// Holds the volume lock (vol + 0x1F90) across the operation, stores the result
+// as the last VF error (lbl_803D2140[16] and vol + 0x1F80), and returns it.
+extern "C" void *fn_800A9B0C(void *fileArg) {
+    void *volume;
+    s32 result;
 
-    vol = *(void **)((u8 *)arg0 + 8);
-    fn_800B77C0((u8 *)vol + 0x1F90);
-    temp_r3 = fn_800B5E14(vol);
-    if (temp_r3 != 0) {
-        fn_800B783C((u8 *)vol + 0x1F90);
-        lbl_803D2140[16] = temp_r3;
-        *(s32 *)((u8 *)vol + 0x1F80) = temp_r3;
-        return (void *)temp_r3;
+    volume = *(void **)((u8 *)fileArg + 8);
+    fn_800B77C0((u8 *)volume + 0x1F90);
+    result = fn_800B5E14(volume);
+    if (result != 0) {
+        fn_800B783C((u8 *)volume + 0x1F90);
+        lbl_803D2140[16] = result;
+        *(s32 *)((u8 *)volume + 0x1F80) = result;
+        return (void *)result;
     }
-    temp_r3 = fn_800A95B4(arg0);
-    if (temp_r3 != 0) {
-        lbl_803D2140[16] = temp_r3;
-        *(s32 *)((u8 *)vol + 0x1F80) = temp_r3;
+    result = fn_800A95B4(fileArg);
+    if (result != 0) {
+        lbl_803D2140[16] = result;
+        *(s32 *)((u8 *)volume + 0x1F80) = result;
     }
-    fn_800B783C((u8 *)vol + 0x1F90);
-    return (void *)temp_r3;
+    fn_800B783C((u8 *)volume + 0x1F90);
+    return (void *)result;
 }
 #pragma pop
 #pragma dont_inline reset
