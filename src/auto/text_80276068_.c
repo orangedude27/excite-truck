@@ -483,25 +483,27 @@ extern char lbl_803473B8[], lbl_803473C4[];
 #pragma push
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" int fn_80277754(void *arg0) {
+extern "C" int fn_80277754(void *camera) {
     class NameGetter {
     public:
         virtual char *getName();
     };
     char *name;
-    name = ((NameGetter *)arg0)->getName();
+
+    /* Match known camera names and register the camera entry. */
+    name = ((NameGetter *)camera)->getName();
     if (stricmp(name, &lbl_8055C650) == 0) {
-        fn_80276ACC(arg0, *(int *)&lbl_8055C638);
+        fn_80276ACC(camera, *(int *)&lbl_8055C638);
         goto done;
     }
-    name = ((NameGetter *)arg0)->getName();
+    name = ((NameGetter *)camera)->getName();
     if (stricmp(name, &lbl_8055C644) == 0) {
-        fn_80276ACC(arg0, (int)&lbl_8055C644);
+        fn_80276ACC(camera, (int)&lbl_8055C644);
         goto done;
     }
-    name = ((NameGetter *)arg0)->getName();
+    name = ((NameGetter *)camera)->getName();
     if (stricmp(name, lbl_803473B8) == 0) {
-        fn_80276ACC(arg0, (int)lbl_803473C4);
+        fn_80276ACC(camera, (int)lbl_803473C4);
         goto done;
     }
     return 0;
@@ -557,7 +559,7 @@ void fn_80277828(void) {
         entry->pos[1] = lbl_80564048;
         entry->pos[2] = lbl_80564048;
         entry->unk_34 = lbl_80564070;
-        entry->name[0] = 0;
+        ((volatile char *)entry->name)[0] = 0;
         lbl_8055F5A0 = i + 1;
         lbl_8055F598 = (int)entry;
         entry->unk_00 = 1;
