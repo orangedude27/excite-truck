@@ -599,6 +599,7 @@ extern "C" void fn_80157560(VObj *arg0) {
     }
     fn_80131818(b0);
 }
+#pragma pop
 
 extern "C" s32 fn_801577F0(Unk801577F0* arg0) {
     return lbl_8032E540[arg0->GetType()];
