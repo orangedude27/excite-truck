@@ -426,7 +426,7 @@ extern "C" s32 IOS_Ioctlv(s32, s32, s32, s32, void *);
 extern "C" s32 IOS_IoctlvAsync(s32, s32, s32, s32, void *, void *, void *);
 extern "C" void *lbl_8055DD74;
 extern "C" void *lbl_8055DD80;
-extern "C" void fn_800BAA8C(void);
+extern "C" s32 fn_800BAA8C(s32, void *);
 
   namespace homebutton {
   namespace gui {
