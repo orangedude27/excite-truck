@@ -182,12 +182,11 @@ void *FindContainHeap_(MEMList *list, u32 addr) {
 }
 
 void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16 opt) {
-    MEMList *list;
-    MEMiHeapHead *outer;
     MEMiHeapHead *child;
+    MEMiHeapHead *outer;
     MEMiHeapHead *block;
-    MEMiHeapHead *result;
-
+    MEMiHeapHead *res;
+    MEMList *list;
     heap->magic = magic;
     heap->start = start;
     heap->end = end;
@@ -201,9 +200,8 @@ void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16
     }
     OSInitMutex(&heap->mutex);
     OSLockMutex((OSMutex *)lbl_8037D818);
-    list = (MEMList *)lbl_8037D808;
-    result = 0;
     outer = 0;
+    list = (MEMList *)lbl_8037D808;
     while ((outer = (MEMiHeapHead *)MEMGetNextListObject(list, outer)) != 0) {
         if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
             child = 0;
@@ -212,24 +210,30 @@ void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16
                     block = 0;
                     while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
                         if ((u32)block->start <= (u32)heap && (u32)heap < (u32)block->end) {
-                            result = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
-                            if (result == 0)
-                                result = block;
-                            break;
+                            res = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
+                            if (res == 0)
+                                res = block;
+                            goto found_inner;
                         }
                     }
-                    if (result == 0)
-                        result = child;
-                    break;
+                    res = 0;
+                found_inner:
+                    if (res == 0)
+                        res = child;
+                    goto found_middle;
                 }
             }
-            if (result == 0)
-                result = outer;
-            break;
+            res = 0;
+        found_middle:
+            if (res == 0)
+                res = outer;
+            goto found_outer;
         }
     }
-    if (result != 0)
-        list = &result->list;
+    res = 0;
+found_outer:
+    if (res != 0)
+        list = &res->list;
     MEMAppendListObject(list, heap);
     OSUnlockMutex((OSMutex *)lbl_8037D818);
 }
@@ -297,16 +301,14 @@ static inline MEMiExpHeapMBlock *InsertAfterMBlock_(MEMiExpHeapMBlockList *list,
 }
 
 void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 direction) {
-    MEMiExpHeapMBlock *prev = blk->prev;
     MEMiExpHeapMBlock *usedStart;
     u8 *after = (u8 *)mem + size;
     MEMiExpHeapMBlock *newBlk = (MEMiExpHeapMBlock *)((u8 *)mem - sizeof(MEMiExpHeapMBlock));
-    u16 settings = blk->settings;
-    u8 *start = (u8 *)blk - ((settings >> 8) & 0x7F);
+    MEMiExpHeapMBlock *prev = blk->prev;
+    u8 *start = (u8 *)blk - blk->align;
     MEMiExpHeapMBlock *next = blk->next;
     u8 *end = (u8 *)blk + blk->size + sizeof(MEMiExpHeapMBlock);
     MEMiExpHeapMBlock *fb;
-
     usedStart = newBlk;
     if (prev != 0) {
         prev->next = next;
@@ -318,7 +320,6 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
     } else {
         exp->freeMBlocks.tail = prev;
     }
-
     if ((u32)newBlk - (u32)start < 0x14) {
         usedStart = (MEMiExpHeapMBlock *)start;
     } else {
@@ -329,7 +330,6 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
         fb->next = 0;
         prev = InsertAfterMBlock_(&exp->freeMBlocks, prev, fb);
     }
-
     if ((u32)end - (u32)after < 0x14) {
         after = end;
     } else {
@@ -340,11 +340,9 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
         fb->next = 0;
         prev = InsertAfterMBlock_(&exp->freeMBlocks, prev, fb);
     }
-
     if (((MEMiHeapHead *)exp)[-1].attribute & 1) {
         memset(usedStart, 0, after - (u8 *)usedStart);
     }
-
     newBlk->state = 0x5544;
     newBlk->size = after - (u8 *)mem;
     newBlk->prev = 0;
@@ -691,16 +689,20 @@ void* MEMAllocFromFrmHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
 }
 #pragma pop
 
+// Frees memory from a frame heap back to its head and/or tail, as chosen by
+// flags (MEM_FRM_HEAP_FREE_TO_HEAD / MEM_FRM_HEAP_FREE_TO_TAIL). Freeing to the
+// head resets the allocation cursor and drops all recorded states; freeing to
+// the tail rewinds it and pushes every state's tail back to the end of the heap.
 void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
     MEMiFrmHeapHead *frm = (MEMiFrmHeapHead *)(heap + 1);
     LockHeap(heap);
     if (flags & MEM_FRM_HEAP_FREE_TO_HEAD) {
         frm->head = heap->start;
-        frm->states = 0;
+        frm->states = NULL;
     }
     if (flags & MEM_FRM_HEAP_FREE_TO_TAIL) {
         MEMiFrmHeapState *state = frm->states;
-        while (state != 0) {
+        while (state != NULL) {
             state->tail = heap->end;
             state = state->next;
         }
@@ -1002,8 +1004,8 @@ void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     register f32 one = lbl_80560C48;
     m[0][3] = x;
     m[1][3] = y;
-    *(double *)&m[0][1] = (double)zero;
-    *(double *)&m[2][0] = (double)zero;
+    *(double *)&m[0][1] = zero;
+    *(double *)&m[2][0] = zero;
     m[1][0] = zero;
     m[1][1] = one;
     m[1][2] = zero;
@@ -1037,18 +1039,20 @@ void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 
 
 #pragma paired on
 #pragma paired_single on
-void PSMTXIdentity(Mtx m) {
-    register f32 zero = lbl_80560C4C;
-    register f32 one = lbl_80560C48;
-    *(double *)&m[0][0] = (double)(one * 1.0f + zero);
-    m[0][2] = zero;
-    m[0][3] = zero;
-    m[1][0] = zero;
-    m[1][1] = one;
-    m[1][2] = zero;
-    m[1][3] = zero;
-    m[2][0] = zero;
-    m[2][1] = zero;
-    m[2][2] = one;
-    m[2][3] = zero;
+void PSMTXIdentity(float m[3][4]) {
+    m[0][0] = 1.0f;
+    m[0][1] = 0.0f;
+    m[0][2] = 0.0f;
+    m[0][3] = 0.0f;
+    m[1][0] = 0.0f;
+    m[1][1] = 1.0f;
+    m[1][2] = 0.0f;
+    m[1][3] = 0.0f;
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = 1.0f;
+    m[2][3] = 0.0f;
 }
+
+void PSMTXCopy(const Mtx src, Mtx dst) { int i, j; for (i=0;i<3;i++) for (j=0;j<4;j++) dst[i][j]=src[i][j]; }
+
