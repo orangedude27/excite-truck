@@ -46,12 +46,12 @@ void fn_8017B164(void *arg0) {
     fn_8017B198(arg0);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8017B198(void *arg0) {
     struct Block { unsigned int value[9]; };
+    float zero;
     int old;
     void *node;
-    float zero;
 
     zero = lbl_80561BA8;
     *(int *)((char *)arg0 + 0x1E4) = 0;
@@ -97,7 +97,6 @@ void fn_8017B198(void *arg0) {
         node = *(void **)node;
     }
 }
-#pragma scheduling on
 extern float lbl_80561BA8, lbl_80561BAC, lbl_80561BB0, lbl_80561BB4;
 void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
     union MatrixData {
@@ -205,6 +204,7 @@ void fn_8017B4AC(float * __restrict arg0, float * __restrict arg1) {
 
 #pragma scheduling invalid_target
 void fn_8017B4E0(void *arg0, float *arg1, float *arg2, float arg3) {
+    float *state = (float *)arg0;
     float delta[3];
     float output[3];
     float temp_f1;
@@ -215,32 +215,32 @@ void fn_8017B4E0(void *arg0, float *arg1, float *arg2, float arg3) {
     float temp_f6;
     float temp_f7;
     temp_f6 = arg1[0] * arg3;
-    temp_f2 = arg1[2] * arg3;
-    temp_f7 = *(float *)((char *)arg0 + 0x1A0) + arg3;
-    temp_f5 = *(float *)((char *)arg0 + 0x188) + temp_f6;
-    temp_f4 = *(float *)((char *)arg0 + 0x18C) + (arg1[1] * arg3);
-    temp_f3 = *(float *)((char *)arg0 + 0x190) + temp_f2;
-    *(float *)((char *)arg0 + 0x1A0) = temp_f7;
-    *(float *)((char *)arg0 + 0x188) = temp_f5;
+    temp_f7 = state[0x1A0 / 4] + arg3;
+    temp_f5 = state[0x188 / 4] + temp_f6;
+    temp_f4 = state[0x18C / 4] + (arg1[1] * arg3);
+    temp_f3 = state[0x190 / 4] + (arg1[2] * arg3);
+    state[0x1A0 / 4] = temp_f7;
+    state[0x188 / 4] = temp_f5;
     temp_f2 = arg2[1];
-    *(float *)((char *)arg0 + 0x18C) = temp_f4;
+    state[0x18C / 4] = temp_f4;
     temp_f1 = arg2[2];
-    *(float *)((char *)arg0 + 0x190) = temp_f3;
-    delta[0] = arg2[0] - *(float *)((char *)arg0 + 0x60);
-    delta[1] = temp_f2 - *(float *)((char *)arg0 + 0x64);
-    delta[2] = temp_f1 - *(float *)((char *)arg0 + 0x68);
+    state[0x190 / 4] = temp_f3;
+    delta[0] = arg2[0] - state[0x60 / 4];
+    delta[1] = temp_f2 - state[0x64 / 4];
+    delta[2] = temp_f1 - state[0x68 / 4];
     PSVECCrossProduct(delta, arg1, output, temp_f1, temp_f2);
-    *(float *)((char *)arg0 + 0x194) += output[0] * arg3;
-    *(float *)((char *)arg0 + 0x198) += output[1] * arg3;
-    *(float *)((char *)arg0 + 0x19C) += output[2] * arg3;
+    state[0x194 / 4] += output[0] * arg3;
+    state[0x198 / 4] += output[1] * arg3;
+    state[0x19C / 4] += output[2] * arg3;
 }
 #pragma scheduling on
 extern void fn_8017B4E0(void *, float *, float *, float);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int arg5, float *arg6, int arg7, float arg8) {
     int count;
     int index;
     void *entry;
+    int count2;
     if (*(int *)((char *)arg0 + 0x1E4) < 16) {
         if (lbl_8055E488 < lbl_8055E48C) {
             index = lbl_8055E488;
@@ -267,14 +267,13 @@ void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int a
             }
             *(int *)((char *)entry + 0x20) = arg5;
             *(int *)((char *)entry + 0x24) = arg7;
-            count = *(int *)((char *)arg0 + 0x1E4);
-            *(void **)((char *)arg0 + 0x1A4 + count * 4) = entry;
-            *(int *)((char *)arg0 + 0x1E4) = count + 1;
+            count2 = *(int *)((char *)arg0 + 0x1E4);
+            *(void **)((char *)arg0 + 0x1A4 + count2 * 4) = entry;
+            *(int *)((char *)arg0 + 0x1E4) = count2 + 1;
         }
     }
     fn_8017B4E0(arg0, arg3, arg4, arg8);
 }
-#pragma scheduling on
 extern float lbl_80561BA8;
 #pragma scheduling off
 void fn_8017B6A8(void *arg0) {
@@ -309,16 +308,12 @@ extern void PSVECCrossProduct(const float *, const float *, float *);
 #pragma scheduling on
 void fn_8017B778(void *arg0, float *arg1, float *arg2) {
     float vector[3];
-    register float temp_f1;
-    register float temp_f2;
-    float delta0;
-    temp_f1 = arg2[0];
-    temp_f2 = arg2[1];
-    delta0 = temp_f1 - *(float *)((char *)arg0 + 0x60);
-    temp_f1 = arg2[2];
-    vector[0] = delta0;
-    vector[1] = temp_f2 - *(float *)((char *)arg0 + 0x64);
-    vector[2] = temp_f1 - *(float *)((char *)arg0 + 0x68);
+    float t0 = arg2[0];
+    float t1 = arg2[1];
+    float t2 = arg2[2];
+    vector[0] = t0 - *(float *)((char *)arg0 + 0x60);
+    vector[1] = t1 - *(float *)((char *)arg0 + 0x64);
+    vector[2] = t2 - *(float *)((char *)arg0 + 0x68);
     PSVECCrossProduct((const float *)((char *)arg0 + 0x178), vector, arg1);
     arg1[0] += *(float *)((char *)arg0 + 0x16c);
     arg1[1] += *(float *)((char *)arg0 + 0x170);
@@ -1018,10 +1013,13 @@ void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
 typedef unsigned int u32;
 typedef float f32;
 extern void fn_8017A580(u32, u32, u32, u32, u32, u32);
-void fn_8017CFFC(void* arg0, u32* arg1, f32* arg2, f32* arg3, u32 arg_sp0) {
-    volatile u32 *src = (volatile u32 *)arg1;
-    f32 *vec1 = arg2;
-    f32 *vec2 = arg3;
+/* Copy a 3x4 transform matrix (12 words) into the object at +0x3C, rebuild its
+ * derived state via fn_8017A580, then copy two 3-float vectors into +0x118 and
+ * +0x124. The final argument is unused. */
+void fn_8017CFFC(void *obj, u32 *matrix, f32 *vecA, f32 *vecB, u32 unused) {
+    volatile u32 *src = (volatile u32 *)matrix;
+    f32 *v1 = vecA;
+    f32 *v2 = vecB;
     u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     f32 f0, f1, f2, f3, f4, f5;
 
@@ -1038,34 +1036,34 @@ void fn_8017CFFC(void* arg0, u32* arg1, f32* arg2, f32* arg3, u32 arg_sp0) {
     t10 = src[10];
     t11 = src[11];
 
-    *(u32*)((char*)arg0 + 0x3C) = t0;
-    *(u32*)((char*)arg0 + 0x40) = t1;
-    *(u32*)((char*)arg0 + 0x44) = t2;
-    *(u32*)((char*)arg0 + 0x48) = t3;
-    *(u32*)((char*)arg0 + 0x4C) = t4;
-    *(u32*)((char*)arg0 + 0x50) = t5;
-    *(u32*)((char*)arg0 + 0x54) = t6;
-    *(u32*)((char*)arg0 + 0x58) = t7;
-    *(u32*)((char*)arg0 + 0x5C) = t8;
-    *(u32*)((char*)arg0 + 0x60) = t9;
-    *(u32*)((char*)arg0 + 0x64) = t10;
-    *(u32*)((char*)arg0 + 0x68) = t11;
+    *(u32*)((char*)obj + 0x3C) = t0;
+    *(u32*)((char*)obj + 0x40) = t1;
+    *(u32*)((char*)obj + 0x44) = t2;
+    *(u32*)((char*)obj + 0x48) = t3;
+    *(u32*)((char*)obj + 0x4C) = t4;
+    *(u32*)((char*)obj + 0x50) = t5;
+    *(u32*)((char*)obj + 0x54) = t6;
+    *(u32*)((char*)obj + 0x58) = t7;
+    *(u32*)((char*)obj + 0x5C) = t8;
+    *(u32*)((char*)obj + 0x60) = t9;
+    *(u32*)((char*)obj + 0x64) = t10;
+    *(u32*)((char*)obj + 0x68) = t11;
 
-    ((void (*)(void *))fn_8017A580)(arg0);
+    ((void (*)(void *))fn_8017A580)(obj);
 
-    f5 = vec1[0];
-    f4 = vec1[1];
-    f3 = vec1[2];
-    f2 = vec2[0];
-    f1 = vec2[1];
-    f0 = vec2[2];
+    f5 = v1[0];
+    f4 = v1[1];
+    f3 = v1[2];
+    f2 = v2[0];
+    f1 = v2[1];
+    f0 = v2[2];
 
-    *(f32*)((char*)arg0 + 0x118) = f5;
-    *(f32*)((char*)arg0 + 0x11C) = f4;
-    *(f32*)((char*)arg0 + 0x120) = f3;
-    *(f32*)((char*)arg0 + 0x124) = f2;
-    *(f32*)((char*)arg0 + 0x128) = f1;
-    *(f32*)((char*)arg0 + 0x12C) = f0;
+    *(f32*)((char*)obj + 0x118) = f5;
+    *(f32*)((char*)obj + 0x11C) = f4;
+    *(f32*)((char*)obj + 0x120) = f3;
+    *(f32*)((char*)obj + 0x124) = f2;
+    *(f32*)((char*)obj + 0x128) = f1;
+    *(f32*)((char*)obj + 0x12C) = f0;
 }
 
 extern unsigned int fn_801B60F4(void *, float);
@@ -1093,34 +1091,70 @@ check:
 
 extern void fn_8017A028(void);
 extern float lbl_80561BDC;
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3, int *arg4, float farg0) {
     float first[3];
     float second[3];
-    float deltaZ;
-    float deltaY;
-    float deltaX;
     float scale;
-    volatile float *output = (volatile float *)((char *)arg0 + 0x118);
+    float dz;
+    float dy;
+    float sz;
+    float dx;
+    float sy;
+    float out2;
+    float sx;
+    float out1;
+    float out0;
+    float dx2;
+    float dy2;
+    float dz2;
+    float dxs;
+    float dys;
+    float sx2;
+    float sx1;
+    float sx0;
+    float fx2;
+    float fx1;
+    float fx0;
     *(int *)((char *)arg0 + 0x1E4) = 0;
     fn_8017A028();
     fn_8017D140((unsigned char *)first, arg1 + 0x14, 0xC);
     fn_8017D140((unsigned char *)second, arg2 + 0x14, 0xC);
-    deltaZ = second[2] - first[2];
-    deltaY = second[1] - first[1];
-    deltaX = second[0] - first[0];
-    output[2] = first[2] + farg0 * deltaZ;
-    output[1] = first[1] + farg0 * deltaY;
-    output[0] = first[0] + farg0 * deltaX;
-    *(volatile float *)((char *)arg0 + 0x16C) = deltaX;
-    *(volatile float *)((char *)arg0 + 0x170) = deltaY;
+    fx0 = first[0];
+    fx1 = first[1];
+    fx2 = first[2];
+    sx0 = second[0];
+    sx1 = second[1];
+    sx2 = second[2];
+    dz = sx2 - fx2;
+    dy = sx1 - fx1;
+    sz = farg0 * dz;
+    dx = sx0 - fx0;
     scale = lbl_80561BDC;
-    *(volatile float *)((char *)arg0 + 0x170) = deltaY * scale;
-    *(volatile float *)((char *)arg0 + 0x16C) = deltaX * scale;
-    *(volatile float *)((char *)arg0 + 0x174) = deltaZ * scale;
+    sy = farg0 * dy;
+    out2 = fx2 + sz;
+    sx = farg0 * dx;
+    out1 = fx1 + sy;
+    *(float *)((char *)arg0 + 0x120) = out2;
+    out0 = fx0 + sx;
+    *(float *)((char *)arg0 + 0x11C) = out1;
+    *(float *)((char *)arg0 + 0x118) = out0;
+    dx2 = second[0] - first[0];
+    *(float *)((char *)arg0 + 0x16C) = dx2;
+    dxs = dx2 * scale;
+    dy2 = second[1] - first[1];
+    *(float *)((char *)arg0 + 0x170) = dy2;
+    dys = dy2 * scale;
+    dz2 = second[2] - first[2];
+    *(float *)((char *)arg0 + 0x170) = dys;
+    *(float *)((char *)arg0 + 0x16C) = dxs;
+    *(float *)((char *)arg0 + 0x174) = dz2 * scale;
     *arg4 = 0x20;
     *arg3 = 0x20;
 }
+#pragma pop
 extern void fn_8017A804(void);
 int fn_8017D274(void *arg0, void *arg1) {
     fn_8017A804();
