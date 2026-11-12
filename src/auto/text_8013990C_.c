@@ -225,24 +225,25 @@ void *fn_80139D4C(void) {
     return object;
 }
 #pragma scheduling on
-void fn_80139E18(void *arg0) {
-    int i;
+/* Destroy this container: free each stored item, release its owned handle, clear its fields, and free itself. */
+void fn_80139E18(void *self) {
+    int index;
     int offset;
-    int value;
+    int handle;
     int base;
-    if (arg0 == 0)
+    if (self == 0)
         return;
-    base = (int)arg0;
-    i = 0;
+    base = (int)self;
+    index = 0;
     offset = 0;
-    while (i < *(int *)((char *)base + 8)) {
+    while (index < *(int *)((char *)base + 8)) {
         fn_80128658(*(int *)(*(int *)((char *)base + 4) + offset));
         offset += 4;
-        i++;
+        index++;
     }
-    value = *(int *)base;
+    handle = *(int *)base;
     *(int *)((char *)base + 8) = 0;
-    if (value != 0)
+    if (handle != 0)
         fn_80131818();
     *(int *)base = 0;
     if (base + 4 != 0) {
