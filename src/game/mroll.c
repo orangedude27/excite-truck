@@ -52,31 +52,31 @@ typedef struct MRollPlayerSlot {
 } MRollPlayerSlot;
 
 #pragma scheduling invalid_target
-/* Looks up the nth active player-info slot and returns its id/fields; aborts on bad index. */
-void fn_8023FE60(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    register s32 *cursor = (s32 *)lbl_80498828;
-    register s32 found = 0;
-    register s32 index = 0;
-    for (; index < 2; cursor += 4, index++) {
+/* Looks up the nth active player-info slot and returns its id and stored fields; aborts on a bad index. */
+void fn_8023FE60(s32 playerIndex, s32 *outField2, s32 *outField3, s32 *outId) {
+    register s32 *cursor = (s32 *)lbl_80498828; /* g_MRollPlayerSlots */
+    register s32 activeCount = 0;
+    register s32 slotIndex = 0;
+    for (; slotIndex < 2; cursor += 4, slotIndex++) {
         if (cursor[0] < 0) continue;
-        if (found == arg0) {
-            if (arg1 != 0) {
+        if (activeCount == playerIndex) {
+            if (outField2 != 0) {
                 register s32 *table = (s32 *)lbl_80498828;
-                table += index * 4;
-                *arg1 = table[2];
+                table += slotIndex * 4;
+                *outField2 = table[2];
             }
-            if (arg2 != 0) {
+            if (outField3 != 0) {
                 register s32 *table = (s32 *)lbl_80498828;
-                table += index * 4;
-                *arg2 = table[3];
+                table += slotIndex * 4;
+                *outField3 = table[3];
             }
-            if (arg3 != 0)
-                *arg3 = *(s32 *)((char *)lbl_80498828 + index * 16);
+            if (outId != 0)
+                *outId = *(s32 *)((char *)lbl_80498828 + slotIndex * 16);
             return;
         }
-        found++;
+        activeCount++;
     }
-    fn_802E317C(lbl_803422C0, arg0, found);
+    fn_802E317C(lbl_803422C0, playerIndex, activeCount); /* bad index abort */
 }
 
 s32 fn_8023FF1C(s32 arg0) {
