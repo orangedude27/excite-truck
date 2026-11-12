@@ -586,6 +586,20 @@ outer_check:
 }
 extern char lbl_8033BE50[];
 extern char lbl_8033BE70[];
+
+/* One sound class in the manager's list table: nine of these at +0x14, one per
+ * SndClass, all pointing into the single array at +0x0C whose size is +0x10
+ * (fn_80208408 inserts into them and shifts the later ones, fn_80208620 removes). */
+typedef struct SndClassList {
+    SoundMgrObj *items;     /* the class's objects, in the shared array */
+    signed long count;
+} SndClassList;
+
+/* fn_802E317C (abend.c) reports through the format and then ends the program. */
+#define SNDMGR_INVALID_SOUNDCLASS_FMT lbl_8033BE50   /* "%s/%d: Invalid soundclass! (%s)" */
+#define SNDMGR_FILE                   lbl_8033BE70   /* "soundmgr.cpp" */
+#define SNDMGR_LINE_INVALID_SOUNDCLASS 0x265         /* its line in soundmgr.cpp */
+
 #pragma cplusplus reset
 #pragma push
 #pragma use_lmw_stmw off
