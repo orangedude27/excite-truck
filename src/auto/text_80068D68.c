@@ -17927,6 +17927,7 @@ initial_done:
     }
 }
 
+/* Handles an incoming HCI connection request: accept/reject and create or update the L2CAP link control block. */
 void l2c_link_hci_conn_req(u8 *bd_addr)
 {
     void *p_buf;
@@ -23084,13 +23085,12 @@ u8 arg2;
 #pragma pop
 extern char lbl_80319EB0[];
 void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
-    u8 *existing;
-    int i;
-    int j;
+    void *existing;
+    long i;
+    long j;
     u8 *mcb_base;
-    u8 *channel;
+    register u8 *channel;
     u8 *peer_addr;
-
     for (i = 0; i < 1; i++) {
         peer_addr = lbl_803C4828 + i * 0x78 + 0x3FE;
         if (lbl_803C4828[i * 0x78 + 0x408] != 0 &&
@@ -23101,7 +23101,6 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
             return existing;
         }
     }
-
     for (i = 0, j = lbl_803C4828[0x65] + 1; i < 1; i++, j++) {
         if (j >= 1) j = 0;
         mcb_base = lbl_803C4828 + j * 0x78;
@@ -24946,24 +24945,19 @@ void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     UINT8 opcode;
     UINT16 trans_num;
     UINT16 param_len;
-
     p = (UINT8 *)p_msg + p_msg->offset + 8;
     p_end = p + p_msg->len;
     btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)p_ccb + 8), 5, 0x1E);
-
-    opcode = p[0];
-    trans_num = ((UINT16)p[1] << 8) + p[2];
-    param_len = ((UINT16)p[3] << 8) + p[4];
-    p++;
+    opcode = *p++;
+    trans_num = ((UINT16)p[0] << 8) + p[1];
+    param_len = ((UINT16)p[2] << 8) + p[3];
     if (p + param_len + 4 > p_end) {
         sdpu_build_n_send_error(p_ccb, trans_num, 4, NULL);
         return;
     }
-
     switch (opcode) {
     case 2:
-        ((void (*)(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *))process_service_search)(
-            p_ccb, trans_num, param_len, p + 4, p_end);
+        ((void (*)(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *))process_service_search)(p_ccb, trans_num, param_len, p + 4, p_end);
         break;
     case 4:
         process_service_attr_req(p_ccb, trans_num, param_len, p + 4, p_end);
