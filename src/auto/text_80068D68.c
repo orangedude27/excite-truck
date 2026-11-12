@@ -10486,6 +10486,7 @@ typedef struct {
 #define SCO_ST_LISTENING    1 /* waiting for an (e)SCO connection */
 #define SCO_ST_W4_CONN_RSP  2 /* an (e)SCO request is waiting for the application */
 #define SCO_ST_CONNECTING   3
+#define SCO_ST_PEND_UNPARK  6 /* an (e)SCO connect waits for the parked link to come back */
 
 #define BTM_SCO_DB          0x1854 /* btm_cb.sco_cb.sco_db[] */
 #define BTM_SCO_DB_LINKS    3      /* BTM_MAX_SCO_LINKS as this build counts it */
