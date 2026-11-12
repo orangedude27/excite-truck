@@ -21,6 +21,35 @@ extern void fn_80015A20(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern float fn_8023659C(void);
 
+extern void *lbl_80498E08[];
+extern s32 lbl_8055F33C;
+extern s32 fn_8012D838(s32);
+extern void fn_8012D8A8(s32);
+extern int __cntlzw(unsigned int);
+extern void fn_802E317C(const char *, ...);
+extern void *memmove(void *, const void *, unsigned long);
+extern char lbl_803449D4[];
+
+static inline void removeDeadEntry(void) {
+    void **cursor = lbl_80498E08;
+    s32 index = 0;
+    void **slot;
+    for (; index < lbl_8055F33C; cursor++, index++) {
+        if ((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*cursor + 0x20))) >> 5) {
+            slot = &lbl_80498E08[index];
+            cursor = (void **)*slot;
+            if (cursor != 0) {
+                fn_8012D8A8(*(s32 *)((u8 *)cursor + 0x20));
+                ((s32 (*)(void *))fn_80128668)(cursor);
+            }
+            lbl_8055F33C--;
+            memmove(slot, slot + 1, (lbl_8055F33C - index) * 4);
+            return;
+        }
+    }
+    fn_802E317C(lbl_803449D4);
+}
+
 static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
     float outX;
     float outY;
@@ -833,44 +862,42 @@ void fn_80255200(void *arg0, s32 arg1) {
     extern void *fn_8012CAA0(s32, void *);
     extern void fn_80255A84(void *);
     float three, one, two, zero;
-    s32 minusOne, zeroInt;
-    u8 *p;
-    char *strings = lbl_803447C0;
+    u8 *p = (u8 *)arg0;
+    char *strings;
     void *obj;
     s32 n;
 
     zero = lbl_80563A04; one = lbl_80563A14; two = lbl_80563A58; three = lbl_80563A5C;
-    minusOne = -1; zeroInt = 0;
-    *(u8 *)((u8 *)arg0 + 0x118) = zeroInt;
-    *(float *)((u8 *)arg0 + 0x11C) = zero;
-    *(u8 *)((u8 *)arg0 + 0xDD) = zeroInt;
-    *(u8 *)((u8 *)arg0 + 0xDC) = zeroInt;
-    *(u8 *)((u8 *)arg0 + 0x30) = zeroInt;
-    *(float *)((u8 *)arg0 + 0x98) = two;
-    *(float *)((u8 *)arg0 + 0xA8) = one;
-    *(float *)((u8 *)arg0 + 0xAC) = zero;
-    *(float *)((u8 *)arg0 + 0xB0) = zero;
-    *(float *)((u8 *)arg0 + 0xB4) = zero;
-    *(float *)((u8 *)arg0 + 0xB8) = one;
-    *(float *)((u8 *)arg0 + 0xBC) = zero;
-    *(float *)((u8 *)arg0 + 0xC0) = zero;
-    *(float *)((u8 *)arg0 + 0xC4) = zero;
-    *(float *)((u8 *)arg0 + 0xC8) = one;
-    *(float *)((u8 *)arg0 + 0xCC) = zero;
-    *(float *)((u8 *)arg0 + 0xD0) = zero;
-    *(float *)((u8 *)arg0 + 0xD4) = zero;
-    *(s32 *)((u8 *)arg0 + 0xD8) = minusOne;
-    *(float *)((u8 *)arg0 + 0xEC) = three;
-    *(float *)((u8 *)arg0 + 0xF0) = zero;
-    *(float *)((u8 *)arg0 + 0xF4) = zero;
-    *(float *)((u8 *)arg0 + 0xF8) = zero;
-    *(u8 *)((u8 *)arg0 + 0x10) = zeroInt;
-    *(u8 *)((u8 *)arg0 + 0x38) = zeroInt;
-    *(u8 *)((u8 *)arg0 + 0x58) = zeroInt;
-    *(u8 *)((u8 *)arg0 + 0x78) = zeroInt;
-    *(unsigned int *)((u8 *)arg0 + 0xC) = 0xFF000000;
-    if (arg1) fn_8025539C(arg0, arg1);
-    p = (u8 *)arg0;
+    strings = lbl_803447C0;
+    *(u8 *)(p + 0x118) = 0;
+    *(float *)(p + 0x11C) = zero;
+    *(u8 *)(p + 0xDD) = 0;
+    *(u8 *)(p + 0xDC) = 0;
+    *(u8 *)(p + 0x30) = 0;
+    *(float *)(p + 0x98) = two;
+    *(float *)(p + 0xA8) = one;
+    *(float *)(p + 0xAC) = zero;
+    *(float *)(p + 0xB0) = zero;
+    *(float *)(p + 0xB4) = zero;
+    *(float *)(p + 0xB8) = one;
+    *(float *)(p + 0xBC) = zero;
+    *(float *)(p + 0xC0) = zero;
+    *(float *)(p + 0xC4) = zero;
+    *(float *)(p + 0xC8) = one;
+    *(float *)(p + 0xCC) = zero;
+    *(float *)(p + 0xD0) = zero;
+    *(float *)(p + 0xD4) = zero;
+    *(s32 *)(p + 0xD8) = -1;
+    *(float *)(p + 0xEC) = three;
+    *(float *)(p + 0xF0) = zero;
+    *(float *)(p + 0xF4) = zero;
+    *(float *)(p + 0xF8) = zero;
+    *(u8 *)(p + 0x10) = 0;
+    *(u8 *)(p + 0x38) = 0;
+    *(u8 *)(p + 0x58) = 0;
+    *(u8 *)(p + 0x78) = 0;
+    *(unsigned int *)(p + 0xC) = 0xFF000000;
+    if (arg1 != 0) fn_8025539C(arg0, arg1);
     *(void **)(p + 0xE8) = fn_802CAC28(strings + 0x100, 0);
     obj = fn_801284F8(0x28, strings + 0x110);
     if (obj) *(void **)((u8 *)obj + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
@@ -880,7 +907,7 @@ void fn_80255200(void *arg0, s32 arg1) {
     n = lbl_8055F33C; lbl_80498E08[n] = obj; lbl_8055F33C = n + 1;
     obj = fn_801284F8(0x698, &lbl_8055C190);
     if (obj) *(void **)(p + 8) = ((void *(*)(void))fn_8025343C)();
-    fn_80255A84(p);
+    fn_80255A84(arg0);
 }
 
 #pragma cplusplus on
