@@ -383,6 +383,55 @@ skip:
 #undef CB
 }
 
+/* The sound a Sound3D plays: voicesnd.c's VoiceSnd (its vtable is
+ * lbl_8033C3F4, the one the mixer's createSound hands back).  Only the slots
+ * this unit calls through are declared; the mix-value setters at +0x30..+0x4C
+ * and the effect flags at +0x50 just store into the sound, and
+ * fn_8020B368/fn_8020B5EC push them into the voice when it starts. */
+class VoiceSnd {
+public:
+    virtual void destroy();               /* +0x08 */
+    virtual void dispose();               /* +0x0C */
+    virtual int hasSound();               /* +0x10 */
+    virtual void loadSound();             /* +0x14 */
+    virtual void play();                  /* +0x18 */
+    virtual void playLooping();           /* +0x1C */
+    virtual void releaseVoices();         /* +0x20 */
+    virtual int state();                  /* +0x24 1 playing, 2 muted, 3 stopped */
+    virtual void mute();                  /* +0x28 */
+    virtual void unmute();                /* +0x2C */
+    virtual void setRate(float);          /* +0x30 sound+0x24 */
+    virtual void setVolume(float);        /* +0x34 sound+0x1C */
+    virtual int slot38();                 /* +0x38 always 0 */
+    virtual void setPan(float);           /* +0x3C sound+0x20 */
+    virtual void setSurroundPan(float);   /* +0x40 sound+0x28 */
+    virtual void setUnused2c(float);      /* +0x44 sound+0x2C */
+    virtual void setUnused30(float);      /* +0x48 sound+0x30 */
+    virtual void setUnused34(float);      /* +0x4C sound+0x34 */
+};
+
+/* One of the game's 3D sounds -- "Sound3D" is the name its pool allocation
+ * uses (lbl_8033BD3C), with "SoundDash" (lbl_8033BD4C) beside it.  The base
+ * vtable is lbl_8033BDC0: +0x08 destructor, +0x0C update, +0x10 the mix-value
+ * flush below (shared by every derived class), +0x14 the per-frame work.
+ * Mix values are queued here with a dirty flag each (the setters set both);
+ * the update virtuals push the flagged ones to the VoiceSnd and clear them. */
+struct Sound3D {
+    void *vtable;                /* at 0x00 */
+    float rate;                  /* at 0x04 -> VoiceSnd::setRate, flag at 0x4E */
+    float volume;                /* at 0x08 -> VoiceSnd::setVolume, flag at 0x4D */
+    VoiceSnd *sound;             /* at 0x0C the sound played, 0 when none */
+    int slot10;                  /* at 0x10 -100 until the sound is placed */
+    int auxFlags;                /* at 0x14 -> VoiceSnd slot +0x50, flag 0x4F */
+    char pad18[0x28 - 0x18];
+    float unused2c;              /* at 0x28 -> VoiceSnd::setUnused2c */
+    float unused30;              /* at 0x2C -> VoiceSnd::setUnused30 */
+    float unused34;              /* at 0x30 -> VoiceSnd::setUnused34 */
+    unsigned char unused2cDirty; /* at 0x34 */
+    unsigned char unused30Dirty; /* at 0x35 */
+    unsigned char unused34Dirty; /* at 0x36 */
+};
+
 extern "C" void fn_80206A5C(void* arg0) {
     unsigned char* p = (unsigned char*)arg0;
     class Dispatch {
