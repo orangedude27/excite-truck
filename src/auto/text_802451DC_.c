@@ -695,26 +695,27 @@ extern int fn_801298E8(void *, int);
 extern int fn_80214FD8(const char *, const char *);
 extern char lbl_80343210[];
 extern char lbl_80343224[];
+/* Warn the user if any connected controller is wireless (current slot or any slot when none selected). */
 void fn_8024683C(void) {
-    unsigned char data[0xD0];
-    int found;
-    int i;
-    int result;
+    unsigned char status[0xD0];
+    int isWireless;
+    int chan;
+    int currentChan;
 
-    result = fn_80129AF4();
-    found = 0;
-    if (result == -1) {
-        i = 0;
+    currentChan = fn_80129AF4();
+    isWireless = 0;
+    if (currentChan == -1) {
+        chan = 0;
         do {
-            if (fn_801298E8(data + 0x64, i) != 0 && (*(unsigned int *)(data + 0xB4) & 1) != 0) {
-                found = 1;
+            if (fn_801298E8(status + 0x64, chan) != 0 && (*(unsigned int *)(status + 0xB4) & 1) != 0) {
+                isWireless = 1;
             }
-            i++;
-        } while (i < 4);
-    } else if (fn_801298E8(data, result) != 0 && (*(unsigned int *)(data + 0x50) & 1) != 0) {
-        found = 1;
+            chan++;
+        } while (chan < 4);
+    } else if (fn_801298E8(status, currentChan) != 0 && (*(unsigned int *)(status + 0x50) & 1) != 0) {
+        isWireless = 1;
     }
-    if (found != 0) {
+    if (isWireless != 0) {
         fn_80214FD8(lbl_80343210, lbl_80343224);
     }
 }
