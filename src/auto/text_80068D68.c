@@ -4241,14 +4241,11 @@ void uusb_issue_intr_read(void) {
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 
-void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
+void uusb_WriteCtrlDataCB(s32 arg0, BT_HDR *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
-    register char *report;
-    register s32 status;
-    u16 offset;
-    status = arg0;
-    report = lbl_803142C8;
+    register s32 status = arg0;
+    register char *report = lbl_803142C8;
     if (lbl_803BD1E0.at_0x28 != 0)
         OSReport(report + 0x460, status);
     if (status < 0 && lbl_803BD1E0.at_0x28 != 0)
@@ -4263,8 +4260,7 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
         register u8 *control = (u8 *)&lbl_803BD1E0;
         if (control[0x48] < 5 && *(u16 *)(control + 0x44) != 0) {
             arg1 = GKI_dequeue((BUFFER_Q *)(control + 0x3C));
-            offset = *(u16 *)((u8 *)arg1 + 4);
-            if (IUSB_WriteCtrlMsgAsync(lbl_803BD1E0.fd, 0x20, 0, 0, 0, *(u16 *)((u8 *)arg1 + 2), (u8 *)arg1 + offset + 8, (void *)uusb_WriteCtrlDataCB, arg1) < 0) {
+            if (IUSB_WriteCtrlMsgAsync(lbl_803BD1E0.fd, 0x20, 0, 0, 0, arg1->len, (u8 *)arg1 + arg1->offset + 8, (void *)uusb_WriteCtrlDataCB, (void *)arg1) < 0) {
                 if (control[0x28] != 0)
                     OSReport(report + 0x4D0);
                 GKI_enqueue_head((BUFFER_Q *)(control + 0x3C), arg1);
@@ -4277,22 +4273,20 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     }
 }
 
-void uusb_WriteBulkDataCB(s32 arg0, void *arg1) {
+void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
-    register s32 status;
-    register char *report;
+    register int status = arg0;
+    register const char *report = lbl_803142C8;
     u16 offset;
-    status = arg0;
-    report = lbl_803142C8;
     if (lbl_803BD1E0.at_0x28 != 0) {
-        OSReport(report + 0x518, status);
+        OSReport((char *)report + 0x518, status);
     }
     if (status < 0 && lbl_803BD1E0.at_0x28 != 0) {
-        OSReport(report + 0x550, status);
+        OSReport((char *)report + 0x550, status);
     }
     if (arg1 != 0) {
-        GKI_freebuf(arg1);
+        GKI_freebuf((void *)arg1);
         fn_8006EBAC();
         ((u8 *)&lbl_803BD1E0)[0x38] = ((u8 *)&lbl_803BD1E0)[0x38] - 1;
         fn_8006EB88();
@@ -4300,16 +4294,16 @@ void uusb_WriteBulkDataCB(s32 arg0, void *arg1) {
     {
         register u8 *control = (u8 *)&lbl_803BD1E0;
         if (control[0x38] < 5 && *(u16 *)(control + 0x34) != 0) {
-            arg1 = GKI_dequeue((BUFFER_Q *)(control + 0x2C));
+            arg1 = (s32)GKI_dequeue((BUFFER_Q *)(control + 0x2C));
             offset = *(u16 *)((u8 *)arg1 + 4);
             if (IUSB_WriteBlkMsgAsync(lbl_803BD1E0.fd, control[0x10],
                                       *(u16 *)((u8 *)arg1 + 2),
                                       (u8 *)arg1 + offset + 8,
-                                      (void (*)(void))uusb_WriteBulkDataCB, arg1) < 0) {
+                                      (void (*)(void))uusb_WriteBulkDataCB, (void *)arg1) < 0) {
                 if (control[0x28] != 0) {
-                    OSReport(report + 0x588);
+                    OSReport((char *)report + 0x588);
                 }
-                GKI_enqueue_head((BUFFER_Q *)(control + 0x2C), arg1);
+                GKI_enqueue_head((BUFFER_Q *)((u8 *)&lbl_803BD1E0 + 0x2C), (void *)arg1);
                 return;
             }
             fn_8006EBAC();
@@ -4646,6 +4640,7 @@ void fn_80070854(void) {
 }
 
 void LogMsg(UINT32 trace_set_mask, const char *fmt_str, ...) {
+    // Formats a variadic trace message into the shared log buffer and reports it.
     va_list list;
     va_start(list, fmt_str);
     vsprintf(lbl_803BF240, fmt_str, list);
@@ -20668,11 +20663,11 @@ void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
 
 extern char lbl_80319570[];
 void port_select_mtu(void *arg0) {
-    register char *messages = lbl_80319570;
-    register u8 *port = (u8 *)arg0;
-    register u16 packet_size;
-    register u16 mtu = *(u16 *)(port + 0x12);
-
+    char *messages = lbl_80319570;
+    u8 *port = (u8 *)arg0;
+    u16 packet_size;
+    u32 mtu;
+    mtu = *(u16 *)(port + 0x12);
     if (mtu == 0) {
         packet_size = btm_get_max_packet_size(port + 6);
         if (packet_size == 0) {
@@ -20680,10 +20675,10 @@ void port_select_mtu(void *arg0) {
                 fn_8007093C(0x90001, messages);
             *(u16 *)(port + 0x12) = 0x7F;
         } else if (packet_size <= 0x69F) {
-            u32 selected_mtu = ((0x69F / packet_size) * packet_size) - 0xA;
-            *(u16 *)(port + 0x12) = selected_mtu;
+            mtu = ((0x69F / packet_size) * packet_size) - 0xA;
+            *(u16 *)(port + 0x12) = mtu;
             if (lbl_803C4828[0x414] >= 5)
-                fn_80070954(0x90004, messages + 0x20, selected_mtu);
+                fn_80070954(0x90004, messages + 0x20, mtu);
         } else {
             *(u16 *)(port + 0x12) = 0x695;
             if (lbl_803C4828[0x414] >= 5)
@@ -20692,7 +20687,6 @@ void port_select_mtu(void *arg0) {
     } else if (lbl_803C4828[0x414] >= 5) {
         ((void (*)(u32, void *))fn_80070954)(0x90004, messages + 0x90);
     }
-
     *(u16 *)(port + 0x9C) = 0x1F40 / *(u16 *)(port + 0x12);
     *(u16 *)(port + 0x9E) = 0x1388 / *(u16 *)(port + 0x12);
     *(u16 *)(port + 0xA0) = 0x2EE0 / *(u16 *)(port + 0x12);
