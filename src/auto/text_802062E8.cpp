@@ -560,27 +560,29 @@ extern char lbl_8033BDA8;
 __declspec(section ".rodata") extern char lbl_8033BDA8;
 #pragma scheduling invalid_target
 extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    ObjIface80207218 *obj;
+    /* Initialize sound object: set vtable/default fields, acquire sound handle, and cache its value. */
+    ObjIface80207218 *soundHandle;
     float value;
-    float value2;
+    float defaultRadius;
     void *vtable;
+
     fn_802065F8();
     value = *(volatile float *)&lbl_805631FC;
     vtable = &lbl_8033BDA8;
-    value2 = *(volatile float *)&lbl_80563220;
+    defaultRadius = *(volatile float *)&lbl_80563220;
     *(volatile void **)arg0 = vtable;
     *(float *)((char *)arg0 + 0x68) = value;
-    *(float *)((char *)arg0 + 0x6C) = value2;
+    *(float *)((char *)arg0 + 0x6C) = defaultRadius;
     *(char *)((char *)arg0 + 0x64) = 1;
     *(int *)((char *)arg0 + 0x70) = arg3;
     *(int *)((char *)arg0 + 0x74) = arg4;
-    obj = (ObjIface80207218 *)fn_80208998(lbl_8055ED80, arg1, arg2, value);
-    *(ObjIface80207218 **)((char *)arg0 + 0xC) = obj;
-    if (obj != 0)
+    soundHandle = (ObjIface80207218 *)fn_80208998(lbl_8055ED80, arg1, arg2, value);
+    *(ObjIface80207218 **)((char *)arg0 + 0xC) = soundHandle;
+    if (soundHandle != 0)
         fn_802085EC(lbl_8055ED80, arg0);
-    obj = *(ObjIface80207218 **)((char *)arg0 + 0xC);
-    if (obj != 0)
-        value = obj->get();
+    soundHandle = *(ObjIface80207218 **)((char *)arg0 + 0xC);
+    if (soundHandle != 0)
+        value = soundHandle->get();
     else
         value = lbl_805631FC;
     *(float *)((char *)arg0 + 0x24) = value;
