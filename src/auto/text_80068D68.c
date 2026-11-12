@@ -8837,7 +8837,8 @@ tBTM_STATUS BTM_ReadStoredLinkKey(BD_ADDR bdAddr, tBTM_CMPL_CB *completionCb) {
 
 extern char lbl_803162BC[];
 tBTM_STATUS BTM_WriteStoredLinkKey(UINT8 num_keys, BD_ADDR *bd_addr, LINK_KEY *link_key, tBTM_CMPL_CB *p_cb) {
-    void *buffer;
+    /* Write up to 11 stored link keys to the controller (HCI Write_Stored_Link_Key). */
+    void *cmdBuf;
 
     if (*(u32 *)(lbl_803C0F78 + 0x570) != 0)
         return BTM_BUSY;
@@ -8848,11 +8849,11 @@ tBTM_STATUS BTM_WriteStoredLinkKey(UINT8 num_keys, BD_ADDR *bd_addr, LINK_KEY *l
     if (num_keys > 0xB)
         num_keys = 0xB;
 
-    buffer = GKI_getpoolbuf(2);
-    if (buffer != NULL) {
+    cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf != NULL) {
         *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570) = p_cb;
         ((void (*)(void *, UINT8, BD_ADDR *, LINK_KEY *))btsnd_hcic_write_stored_key)(
-            buffer, num_keys, bd_addr, link_key
+            cmdBuf, num_keys, bd_addr, link_key
         );
         return BTM_SUCCESS;
     }
