@@ -993,7 +993,7 @@ extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
 extern "C" char lbl_8032F184[];
 extern "C" f32 lbl_80561774;
 extern "C" f32 lbl_80561770;
-extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2) {
+extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2, void* arg3) {
     u8* p = (u8*)self + 0x14;
     *(void**)((u8*)self + 8) = p;
     *(void**)self = &lbl_8032F2BC;
