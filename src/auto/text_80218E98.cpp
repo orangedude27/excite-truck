@@ -2758,12 +2758,9 @@ extern "C" void *fn_8021CEEC(void *object, s32 arg1, s32 arg2, s32 arg3, s32 arg
 #pragma scheduling invalid_target
 extern "C" void fn_8021CF9C(void *arg0) {
     f32 value = (f32)*(s32 *)*(void **)((u8 *)arg0 + 0x25C);
-    f32 scaled = value * *(f32 *)((u8 *)arg0 + 0x254);
-    f32 total = *(f32 *)((u8 *)arg0 + 0x258) + scaled;
-    s32 converted = (s32)(lbl_805634C4 + total);
-    char *dst = (char *)arg0 + 0x264;
-    sprintf(dst, *(const char **)((u8 *)arg0 + 0x260), converted);
-    fn_80130568(dst);
+    volatile char *buf = (char *)arg0 + 0x264;
+    sprintf((char *)buf, *(const char **)((u8 *)arg0 + 0x260), (s32)(*(f32 *)((u8 *)arg0 + 0x258) + value * *(f32 *)((u8 *)arg0 + 0x254) + lbl_805634C4));
+    fn_80130568((char *)arg0 + 0x264);
     fn_80219718(arg0);
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
