@@ -912,7 +912,7 @@ extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3) {
 #pragma small_data on
 extern "C" f32 lbl_8056176C;
 #pragma small_data off
-extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
     extern f32 lbl_80561770;
     struct Tail {
         u8 pad244[0x244];
