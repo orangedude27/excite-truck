@@ -12,8 +12,11 @@ extern double fn_8002EFB0(float, float);
 extern float lbl_805612B8;
 extern float lbl_805612BC;
 extern float lbl_805612C0;
-extern float lbl_80558DC4;
+extern float lbl_80558DC4[];
+#define lbl_80558DC4 lbl_80558DC4[0]
 
+#pragma push
+#pragma processor 750
 void fn_8012F57C(float *out, float *a, float *b, float t) {
     float qb[4];
     float qa[4];
@@ -64,3 +67,4 @@ void fn_8012F57C(float *out, float *a, float *b, float t) {
         out[3] = out[3] * s;
     }
 }
+#pragma pop
