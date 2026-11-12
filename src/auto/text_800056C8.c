@@ -1059,10 +1059,10 @@ extern void fn_8000F884(void);
 extern void fn_80011F64(void);
 extern s32 fn_80137C74(void);
 extern s32 fn_802090D4(void *);
-extern void fn_801331C4(s32, void *, s32 *);
+extern void fn_801331C4(s32 kind, void *name, f32 *value); /* the saved float setting `name`, or *value as its default */
 extern void fn_80005464(void);
 extern void fn_8001DB54(void);
-extern s32 lbl_8055892C;
+extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 1.0 as the default */
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
