@@ -950,15 +950,16 @@ extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_8013DE7C(TObj60 *arg0, const char *arg1) {
+/* Count how many elements in the container have the given name (compared via fn_8013CB44). */
+extern "C" s32 fn_8013DE7C(TObj60 *container, const char *name) {
     s32 count = 0;
-    s32 i = 0;
+    s32 index = 0;
 
-    while (arg0->v60(i) != 0) {
-        if (fn_8013CB44(arg1, (TObj10 *)arg0->v60(i))) {
+    while (container->v60(index) != 0) {
+        if (fn_8013CB44(name, (TObj10 *)container->v60(index))) {
             count++;
         }
-        i++;
+        index++;
     }
     return count;
 }
