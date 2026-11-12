@@ -304,6 +304,7 @@ static s32 SCReloadConfFileAsync(u8* buf, u32 size, SCAsyncCallback callback) {
                                 OpenCallbackFromReload, (NANDCommandBlock*)&Control.commandBlock);
 }
 
+/* NAND open callback during config reload: on success, mark the file open and start reading it. */
 static void OpenCallbackFromReload(s32 result, NANDCommandBlock* block) {
 #pragma unused(block)
 
