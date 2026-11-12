@@ -251,28 +251,29 @@ extern int fn_8005EE7C(void);
 extern char lbl_8034D908[];
 extern int lbl_8034D8E8;
 extern int lbl_80507268[], lbl_80507258[], lbl_8056000C;
-#pragma push
 #pragma scheduling invalid_target
 void fn_802E7D0C(void) {
-    int *callbacks;
-    int index;
-    int secondIndex;
-    int entryIndex;
-    int *entries;
+    int *samplingCallbacks;
+    int controllerIndex;
+    int shutdownIndex;
+    int freeIndex;
+    int *handles;
 
-    callbacks = lbl_80507268;
-    index = 0;
+    /* Reset WPAD controllers and sampling callbacks, wait for shutdown, then
+       free any pending controller handles. */
+    samplingCallbacks = lbl_80507268;
+    controllerIndex = 0;
     do {
-        WPADSetSamplingCallback(index, *callbacks);
-        index++;
-        callbacks++;
-    } while (index < 4);
+        WPADSetSamplingCallback(controllerIndex, *samplingCallbacks);
+        controllerIndex++;
+        samplingCallbacks++;
+    } while (controllerIndex < 4);
 
-    secondIndex = 0;
+    shutdownIndex = 0;
     do {
-        fn_8006022C(secondIndex);
-        secondIndex++;
-    } while (secondIndex < 4);
+        fn_8006022C(shutdownIndex);
+        shutdownIndex++;
+    } while (shutdownIndex < 4);
 
     fn_8005ED8C();
     fn_802E30C8((const char *)lbl_8034D908);
@@ -280,16 +281,15 @@ void fn_802E7D0C(void) {
     }
     fn_802E30C8((const char *)&lbl_8034D8E8);
 
-    entries = lbl_80507258;
-    entryIndex = 0;
-    while (entryIndex < lbl_8056000C) {
-        ((int (*)(int))fn_80128658)(*entries);
-        entries++;
-        entryIndex++;
+    handles = lbl_80507258;
+    freeIndex = 0;
+    while (freeIndex < lbl_8056000C) {
+        ((int (*)(int))fn_80128658)(*handles);
+        handles++;
+        freeIndex++;
     }
     lbl_8056000C = 0;
 }
-#pragma pop
 extern double fn_8002EFB0(float, float);
 extern float fn_802E78A4(float);
 extern float lbl_80565160, lbl_8056517C, lbl_80565180, lbl_80565184, lbl_80565188;
