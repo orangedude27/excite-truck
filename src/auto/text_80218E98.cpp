@@ -8061,22 +8061,24 @@ extern "C" void fn_80228DAC(void *arg0) {
 extern "C" void fn_80228DC0(void) { }
 
 extern "C" void fn_80228DC4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    s32 sp8;
-    s32 height;
-    s32 midpoint;
-    u32 rounded;
+    /* Draw an image in two clipped pieces split horizontally at the midpoint of arg4,
+     * saving/restoring the draw rectangle around each piece. */
+    s32 savedRect;
+    s32 imageHeight;
+    s32 midX;
+    u32 halfRounded;
 
     fn_802C3034(arg0);
-    fn_80218E98((void *)arg0, &sp8);
+    fn_80218E98((void *)arg0, &savedRect);
     fn_802C51C0(arg1);
-    height = fn_802C5220(arg1);
-    rounded = (u32)arg4 >> 31;
-    rounded += (u32)arg4;
-    midpoint = arg2 + ((s32)rounded >> 1);
-    fn_80218EE0((void *)arg0, arg2, arg3, midpoint, arg3 + height);
-    fn_80218EBC((void *)arg0, &sp8);
-    fn_80218EE0((void *)arg0, midpoint, arg3, arg2 + arg4, arg3 + height);
-    fn_80218EBC((void *)arg0, &sp8);
+    imageHeight = fn_802C5220(arg1);
+    halfRounded = (u32)arg4 >> 31;
+    halfRounded += (u32)arg4;
+    midX = arg2 + ((s32)halfRounded >> 1);
+    fn_80218EE0((void *)arg0, arg2, arg3, midX, arg3 + imageHeight);
+    fn_80218EBC((void *)arg0, &savedRect);
+    fn_80218EE0((void *)arg0, midX, arg3, arg2 + arg4, arg3 + imageHeight);
+    fn_80218EBC((void *)arg0, &savedRect);
 }
 
 extern "C" void fn_80218E98(void *, void *);
