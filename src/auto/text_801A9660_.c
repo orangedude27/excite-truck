@@ -1942,9 +1942,10 @@ extern "C" void fn_801AD888(void *arg0) {
 #pragma cplusplus off
 
 void fn_801AD8C8(void *arg0, unsigned int *arg1, float *arg2, float *arg3) {
+    /* Copy a 12-word matrix and two 3-float vectors into the object, then update its state. */
     volatile unsigned int *src = (volatile unsigned int *)arg1;
-    float *vec1 = arg2;
-    float *vec2 = arg3;
+    float *vecA = arg2;
+    float *vecB = arg3;
     unsigned int t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     float f0, f1, f2, f3, f4, f5;
     t0 = src[0];
@@ -1972,12 +1973,12 @@ void fn_801AD8C8(void *arg0, unsigned int *arg1, float *arg2, float *arg3) {
     *(unsigned int *)((char *)arg0 + 0x64) = t10;
     *(unsigned int *)((char *)arg0 + 0x68) = t11;
     ((void (*)(void *))fn_8017A580)(arg0);
-    f5 = vec1[0];
-    f4 = vec1[1];
-    f3 = vec1[2];
-    f2 = vec2[0];
-    f1 = vec2[1];
-    f0 = vec2[2];
+    f5 = vecA[0];
+    f4 = vecA[1];
+    f3 = vecA[2];
+    f2 = vecB[0];
+    f1 = vecB[1];
+    f0 = vecB[2];
     *(float *)((char *)arg0 + 0x118) = f5;
     *(float *)((char *)arg0 + 0x11C) = f4;
     *(float *)((char *)arg0 + 0x120) = f3;
