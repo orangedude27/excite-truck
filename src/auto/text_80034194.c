@@ -2879,6 +2879,8 @@ s32 DVDCancel(void *block) {
     s32 enabled;
     s32 state;
     u32 command;
+    /* Synchronously cancel a DVD command block, waiting for the drive/driver to
+     * reach a terminal or safely cancelable state. */
     if (((s32 (*)(void *, void *))fn_80039424)(block, (void *)fn_80039838) == 0)
         return -1;
     enabled = OSDisableInterrupts();
