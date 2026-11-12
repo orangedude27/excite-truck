@@ -423,10 +423,13 @@ void fn_800182A0(s32* arg0, s32* arg1) {
 
 #pragma push
 #pragma dont_inline on
-void fn_80018318(void* arg0, s32 arg1) {
-    s32 sp50[18];
-    s32 sp8[18];
-    s32 temp;
+void fn_80018318(void* outList, s32 contextId) {
+    /* Build a 0x48-byte output list: load car class data, collect the base
+       entries, append a clamped extra selection, merge both lists, apply ID
+       patches for the given context, then unload the data. */
+    s32 baseList[18];
+    s32 selectedList[18];
+    s32 extraCount;
     extern void fn_8013C804(void);
     extern void fn_80017944(s32*);
     extern s32 fn_80017F6C(s32);
@@ -435,14 +438,14 @@ void fn_80018318(void* arg0, s32 arg1) {
     extern void fn_800180FC(void*, s32);
     extern void fn_8013C8B8(void);
     fn_8013C804();
-    fn_80017944(sp50);
-    temp = fn_80017F6C(arg1) - sp50[0];
-    fn_80017DD4(sp8, temp & ~(temp >> 31), sp50);
-    memset(arg0, 0, 0x48);
-    fn_800182A0(arg0, sp8);
-    fn_800182A0(arg0, sp50);
-    fn_80018030(arg0, arg1);
-    fn_800180FC(arg0, arg1);
+    fn_80017944(baseList);
+    extraCount = fn_80017F6C(contextId) - baseList[0];
+    fn_80017DD4(selectedList, extraCount & ~(extraCount >> 31), baseList);
+    memset(outList, 0, 0x48);
+    fn_800182A0(outList, selectedList);
+    fn_800182A0(outList, baseList);
+    fn_80018030(outList, contextId);
+    fn_800180FC(outList, contextId);
     fn_8013C8B8();
 }
 #pragma push
