@@ -22490,13 +22490,21 @@ void RFCOMM_ControlReq(void *mcb, u8 dlci, void *ctrl) {
     }
 }
 
-void RFCOMM_FlowReq(void *mcb, u8 dlci, u8 state) {
-    u8 *port = port_find_mcb_dlci_port(mcb, dlci);
-    if ((port[2] != 2) || (port[0x68] != 4)) return;
-    port[0x5e] = state == 0;
-    port[0x69] |= 8;
-    rfc_send_msc(mcb, dlci, 1, port + 0x5a);
-    rfc_port_timer_start(port, 0x3c);
+/* RFCOMM flow control request (rfc_port_if.c): the port layer tells us that its
+ * ability to receive data changed.  We mirror that in our own modem status
+ * (fc = "no more room") and report it to the peer with an MSC command, then wait
+ * RFC_T2_TIMEOUT for the peer's answer. */
+void RFCOMM_FlowReq(struct tRFC_MCB *p_mcb, UINT8 dlci, UINT8 enable) {
+    tPORT_VIEW *p_port = (tPORT_VIEW *)port_find_mcb_dlci_port(p_mcb, dlci);
+
+    if ((p_port->state != PORT_STATE_OPENED) || (p_port->rfc_state != RFC_STATE_OPENED))
+        return;
+
+    p_port->local_ctrl.fc = !enable;
+    p_port->expected_rsp |= RFC_RSP_MSC;
+
+    rfc_send_msc(p_mcb, dlci, TRUE, &p_port->local_ctrl);
+    rfc_port_timer_start(p_port, RFC_T2_TIMEOUT);
 }
 
 void RFCOMM_LineStatusReq(void *arg0, u8 arg1, u8 arg2) {
