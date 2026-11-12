@@ -114,6 +114,44 @@ extern "C" char lbl_8032EBF8[];
 extern "C" char lbl_8032EE68[];
 extern "C" f32 lbl_8056175C;
 extern "C" void* memset(void*, s32, u32);
+class Item8015E338 {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual f32 v3(void*);
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual void v20();
+    virtual void v21();
+    virtual void v22();
+    virtual void v23();
+    virtual void v24();
+    virtual void v25();
+    virtual void v26();
+    virtual void v27();
+    virtual void v28();
+    virtual void v29();
+    virtual void v30();
+    virtual void v31();
+    virtual void v32();
+    virtual void v33();
+    virtual s32 v34();
+};
 
 class Fn80159C34Obj {
 public:
@@ -751,6 +789,7 @@ extern "C" void *fn_80157DA0(void *self, void *arg1, void *arg2) {
     extern float lbl_80561760;
     unsigned char *p;
     int *q;
+    void *vt = &lbl_8032EF08;
     *(void **)((char *)self + 8) = (char *)self + 0x14;
     *(void **)self = &lbl_8032F2BC;
     *(int *)((char *)self + 0x10) = 10;
@@ -767,7 +806,7 @@ extern "C" void *fn_80157DA0(void *self, void *arg1, void *arg2) {
     *(float *)((char *)self + 0x250) = lbl_80561760;
     *(int *)((char *)self + 0x268) = 0;
     *(int *)((char *)self + 0x248) = 0;
-    *(void **)self = &lbl_8032EF08;
+    *(void **)self = vt;
     *(int *)((char *)self + 0x270) = 0;
     *(int *)((char *)self + 0x274) = 0;
     q = (int *)((char *)self + 0x280);
@@ -3708,14 +3747,17 @@ extern "C" s32 fn_801B2F2C(s32);
 extern "C" s32 fn_801B8570(s32);
 extern "C" s32 fn_80161BB8(void);
 extern "C" s32 fn_80161C4C(void);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
 extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
     f32 sum = lbl_80561754;
     s32 off = 0;
     s32 i = 0;
-    void* p;
     void* q;
+    void* p;
     if (*(u8*)((u8*)arg0 + 0x54) != 0 && fn_801B2F2C(*(s32*)((u8*)arg1 + 0x1EC)) == 0 && fn_801B8570(*(s32*)((u8*)arg1 + 0x1EC)) != 0 && fn_80161BB8() == 0 && fn_80161C4C() != 0) {
-        for (i = 0, off = 0; i < *(s32*)((u8*)arg0 + 8); i++, off += 4) {
+        for (i = 0, off = 0; i < *(s32*)((u8*)arg0 + 8); off += 4, i++) {
             if ((f32)__fabs((f64)*(f32*)((u8*)arg1 + 0x2690)) <= lbl_80558DC4[0] ||
                 ((s32 (*)(void*))((*(u32**)(*(void**)(*(s32*)((u8*)arg0 + 4) + off)))[36]))(*(void**)(*(s32*)((u8*)arg0 + 4) + off)) != 0) {
                 void* item2 = *(void**)(*(s32*)((u8*)arg0 + 4) + off);
@@ -3746,7 +3788,7 @@ extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
     *(s32*)((u8*)p + 8) = 1;
     return sum;
 }
-
+#pragma pop
 extern "C" void fn_8015E4C4(Unk801577F0V* arg0, s8 arg1) {
     arg0->m54 = arg1;
 }
