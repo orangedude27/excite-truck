@@ -1159,17 +1159,18 @@ int fn_801F394C(int arg0, int arg1) {
 }
 
 void fn_801F398C(void *unused, int arg1) {
+    /* Byte-swap four 4-byte words at offset 0x2C of the given object. */
     extern int *fn_801F1CE8(int);
-    unsigned char *p = (unsigned char *)fn_801F1CE8(arg1);
-    unsigned char t;
-    t = p[0]; p[0] = p[3]; p[3] = t;
-    t = p[1]; p[1] = p[2]; p[2] = t;
-    t = p[4]; p[4] = p[7]; p[7] = t;
-    t = p[5]; p[5] = p[6]; p[6] = t;
-    t = p[8]; p[8] = p[11]; p[11] = t;
-    t = p[9]; p[9] = p[10]; p[10] = t;
-    t = p[12]; p[12] = p[15]; p[15] = t;
-    t = p[13]; p[13] = p[14]; p[14] = t;
+    unsigned char *data = (unsigned char *)fn_801F1CE8(arg1);
+    unsigned char tmp;
+    tmp = data[0]; data[0] = data[3]; data[3] = tmp;
+    tmp = data[1]; data[1] = data[2]; data[2] = tmp;
+    tmp = data[4]; data[4] = data[7]; data[7] = tmp;
+    tmp = data[5]; data[5] = data[6]; data[6] = tmp;
+    tmp = data[8]; data[8] = data[11]; data[11] = tmp;
+    tmp = data[9]; data[9] = data[10]; data[10] = tmp;
+    tmp = data[12]; data[12] = data[15]; data[15] = tmp;
+    tmp = data[13]; data[13] = data[14]; data[14] = tmp;
 }
 
 void fn_801F3A30(void *arg0, int arg1) {
