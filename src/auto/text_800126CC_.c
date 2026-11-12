@@ -259,7 +259,7 @@ extern float lbl_8056035C;
 extern char lbl_80558B04[];
 extern char lbl_80558B0C[];
 extern char lbl_80558B14[];
-extern char lbl_80558B1C[];
+extern char lbl_80558B1C[4];
 extern char lbl_80558B24[];
 extern char lbl_80558B30[];
 extern char lbl_80558B38[];
@@ -477,8 +477,6 @@ extern void fn_80012B50();
 #pragma cplusplus on
 extern "C" void fn_8001335C(int a0, int arg1) {
     struct Dummy {
-        virtual void *_00();
-        virtual void *_04();
         virtual char *name();
         virtual void *child(int);
         virtual void *_10();
