@@ -782,7 +782,8 @@ static inline u32 appendPathPart(char *path, u32 loc, u32 maxlen, const char *na
     }
 }
 static inline const char *entryName(s32 entry) {
-    return (const char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
+    u32 off = *(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF;
+    return (const char *)FstStringStart_8055D83C + off;
 }
 static inline u32 entryParent(s32 entry) {
     return *(u32 *)(FstStart_8055D840 + 4 + entry * 12);
