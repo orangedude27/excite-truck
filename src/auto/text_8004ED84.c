@@ -666,6 +666,19 @@ extern unsigned short lbl_803049F0[];
 extern unsigned short lbl_80304B70[];
 extern int *lbl_8055DA50;
 extern int *lbl_8055DA54;
+
+/* How a string is encoded: the SDK's OSFontEncode from revolution/OS/OSFont.h,
+ * spelled out here because this file keeps its own OSFontHeader and
+ * OSGetFontTexel declaration and can't include that header. */
+enum OSFontEncode {
+    OS_FONT_ENCODE_ANSI,  /* one byte per character */
+    OS_FONT_ENCODE_SJIS,  /* lead byte 0x81-0x9F or 0xE0-0xFC, then a trail byte */
+    OS_FONT_ENCODE_2,
+    OS_FONT_ENCODE_UTF8,
+    OS_FONT_ENCODE_UTF16,
+    OS_FONT_ENCODE_UTF32
+};
+
 char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     int *widths;
     unsigned char *next;
@@ -865,27 +878,29 @@ int ExpandFontSheet(void *font0, void *src0, void *dst0) {
 
 extern int ExpandFontSheet(void *, void *, void *);
 int OSInitFont(void *arg0) {
-    register unsigned short mode = lbl_80558F58;
-    int dispatch, result, aligned, finalSize, console;
+    register unsigned short mode;
+    int dispatch, result, finalSize, console;
     void *font, *source, *base, *expandBase;
 
-    if (mode == 0xFFFF) goto initialize;
-    goto initialized;
-initialize:
-    console = *(volatile int *)0x800000CC;
-    if (console == 0) goto read_mode;
-    if (console < 0) goto zero_mode;
-    goto zero_mode;
-read_mode:
-    mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
-    lbl_80558F58 = mode;
-    goto parse_mode;
-zero_mode:
-    mode = 0;
-    lbl_80558F58 = mode;
-parse_mode:
-    lbl_8055DA48 = (void *)ParseStringS;
-initialized:
+    if (lbl_80558F58 != 0xFFFF) {
+        mode = lbl_80558F58;
+    } else {
+        console = *(volatile int *)0x800000CC;
+        if (console == 0) goto read_mode;
+        else {
+            if (console < 0) goto zero_mode;
+            else goto zero_mode;
+        }
+    read_mode:
+        mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+        lbl_80558F58 = mode;
+        goto parse_mode;
+    zero_mode:
+        mode = 0;
+        lbl_80558F58 = mode;
+    parse_mode:
+        lbl_8055DA48 = (void *)ParseStringS;
+    }
     dispatch = (int)mode;
     switch (dispatch) {
     case 0: goto mode0;
