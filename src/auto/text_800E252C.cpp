@@ -2842,14 +2842,15 @@ extern "C" int GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hb
     return result;
 }
 
-extern "C" int GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *arg0, unsigned int arg1, int arg2) {
-    unsigned int address = (unsigned int)arg0;
+/* Convert a DSP buffer address to a sample count for the given AxVoice format (0=ADPCM, 10=16-bit PCM, 25=8-bit PCM). */
+extern "C" int GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *dspAddress, unsigned int sampleAddress, int format) {
+    unsigned int address = (unsigned int)dspAddress;
     if (address != 0) address += 0x80000000;
     int result = 0;
-    switch (arg2) {
-    case 0: { unsigned int delta = arg1 - address * 2; result = ((delta & 15) + ((delta >> 4) * 14)) - 2; break; }
-    case 25: result = arg1 - address; break;
-    case 10: result = arg1 - (address >> 1); break;
+    switch (format) {
+    case 0: { unsigned int delta = sampleAddress - address * 2; result = ((delta & 15) + ((delta >> 4) * 14)) - 2; break; }
+    case 25: result = sampleAddress - address; break;
+    case 10: result = sampleAddress - (address >> 1); break;
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
     }
     return result;
