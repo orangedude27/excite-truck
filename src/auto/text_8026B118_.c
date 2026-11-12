@@ -21,6 +21,7 @@ extern void fn_80176A00(int);
 extern float fn_801E9FDC(void *, float, float);
 extern int lbl_8055C4FC, lbl_8055C500;
 extern unsigned char lbl_8049A028[];
+extern void fn_8026A1F0(int, int, int);
 void fn_8026B118(void) {}
 
 extern int lbl_8055F4D0, lbl_8055F4CC;
@@ -110,7 +111,7 @@ extern "C" void fn_8026B260(void) {
         virtual void v04();
         virtual void v08();
         virtual void v0C();
-        virtual char *getFileName(char *, int);
+        virtual char *getFileName(const char *, int);
     };
     class Iterator {
     public:
@@ -121,7 +122,6 @@ extern "C" void fn_8026B260(void) {
     public:
         virtual const char *getName();
     };
-    struct StringBase { char first; };
     char name[12];
     char *base = (char *)lbl_80346988;
     register int iteratorOrZero = 0;
@@ -134,7 +134,7 @@ extern "C" void fn_8026B260(void) {
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
-    dot = nameObj->getFileName(&((StringBase *)base)->first, 0);
+    dot = nameObj->getFileName(base + 0, 0);
     if (dot != 0) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
@@ -248,13 +248,13 @@ void fn_8026B3D4(int arg0) {
 
 #pragma scheduling invalid_target
 void fn_8026B644(void) {
-    register unsigned char *base = lbl_80346988;
+    volatile unsigned char *base = lbl_80346988;
     fn_8026B260();
-    fn_801331C4(4, base + 0xA0, &lbl_8055C4F8);
-    fn_8026B11C((void **)&lbl_8055F4D0, base + 0xB0);
-    fn_8026B11C((void **)&lbl_8055F4CC, base + 0xBC);
+    fn_801331C4(4, (unsigned char *)base + 0xA0, &lbl_8055C4F8);
+    fn_8026B11C((void **)&lbl_8055F4D0, (unsigned char *)base + 0xB0);
+    fn_8026B11C((void **)&lbl_8055F4CC, (unsigned char *)base + 0xBC);
 }
-#pragma scheduling on
+#pragma scheduling reset
 void fn_8026B69C(void) {
     lbl_8055F4C8 = 0;
     deleteThreads__6SystemFv_8026B178(&lbl_8055F4CC);
