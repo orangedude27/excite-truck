@@ -6808,6 +6808,26 @@ void BTA_HhSendData(u8 arg0, void *arg1) {
     }
 }
 
+/* BTA-HID device maintenance request, this BTE revision's tBTA_HH_MAINT_DEV
+ * (bta_hh_int.h).  BTA_HhAddDev() and BTA_HhRemoveDev() queue one for the BTA
+ * task; here dscp_info is only the report descriptor, where the newer stack the
+ * reference headers describe carries a whole tBTA_HH_DEV_DSCP_INFO. */
+typedef u16 tBTA_HH_ATTR_MASK;      /* HID attribute mask (bta_hh_api.h) */
+typedef struct {
+    BT_HDR              hdr;        /* 0x00 event; layer_specific = device handle */
+    BD_ADDR             bda;        /* 0x08 device address */
+    UINT16              attr_mask;  /* 0x0E HID attribute mask */
+    UINT16              sub_event;  /* 0x10 BTA_HH_ADD_DEV_EVT / BTA_HH_RMV_DEV_EVT */
+    UINT8               sub_class;  /* 0x12 class-of-device sub-class */
+    UINT8               app_id;     /* 0x13 application ID for this connection */
+    tBTA_HH_DEV_DESCR   dscp_info;  /* 0x14 report descriptor */
+} tBTA_HH_MAINT_DEV;
+
+#define BTA_HH_API_MAINT_DEV_EVT                  0x170A  /* tBTA_HH_INT_EVT */
+#define BTA_HH_ADD_DEV_EVT                        11      /* sub_event: add device */
+#define BTA_HH_INVALID_HANDLE                     0xff    /* no device handle yet */
+#define bta_sys_sendmsg                           fn_80071450  /* -> BTA task */
+
 void BTA_HhAddDev(const u8 *arg0, u16 arg1, u8 arg2, u8 arg3, const void *arg4) {
     u8 *buf = GKI_getbuf(0x1C);
     if (buf != 0) {
