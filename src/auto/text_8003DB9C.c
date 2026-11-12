@@ -1855,6 +1855,27 @@ void GXGetVtxAttrFmtv(void) {
 }
 #pragma use_lmw_stmw reset
 
+// __GXData is the GX data block (the SDK's `gx`). The game's copy is bigger than
+// struct __GXData_struct in <revolution/GX/__gx.h> -- its dirtyState sits at
+// 0x5FC, not 0x4F0 -- so only the head fields this file uses are named here.
+typedef struct {
+    /* 0x000 */ unsigned short vNum;
+    /* 0x002 */ unsigned short bpSent;
+    /* 0x004 */ char pad_004[0x5F8];
+    /* 0x5FC */ unsigned int dirtyState;
+} GXDataHead;
+#define GX_DATA ((GXDataHead *)__GXData)
+
+// RAS command word that pushes a 16-bit draw token to the BP: token in bits
+// 0-15, BP register address (0 here) in bits 16-23, opcode in bits 24-31. The
+// SDK's GXSetDrawSync sends its token twice, once with each opcode.
+#define GX_RAS_TOKEN_OPCODE_FIRST 0x48
+#define GX_RAS_TOKEN_OPCODE_LAST 0x47
+
+// This unit declares OSRestoreInterrupts as taking no argument, so the saved
+// mask has to be passed through a pointer of the right type.
+typedef void (*GXRestoreInterruptsFn)(s32);
+
 void GXMiscInit(s32 arg0) {
     union {
         unsigned int value;
