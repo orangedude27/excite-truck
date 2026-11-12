@@ -3245,10 +3245,11 @@ void *GKI_dequeue(BUFFER_Q *p_q) {
     return (void *)((UINT8 *)p_hdr + BUFFER_HDR_SIZE);
 }
 
+/* Remove a specific buffer from a queue, updating links/count/status, or return NULL if not found. */
 void *GKI_remove_from_queue(BUFFER_Q *p_q, void *p_buf)
 {
-    BUFFER_HDR_T *p_hdr;
-    BUFFER_HDR_T *p_prev;
+    BUFFER_HDR_T *p_buf_hdr;
+    BUFFER_HDR_T *p_scan_hdr;
 
     fn_8006EBAC();
     if (p_buf == p_q->p_first) {
@@ -3256,21 +3257,21 @@ void *GKI_remove_from_queue(BUFFER_Q *p_q, void *p_buf)
         return GKI_dequeue(p_q);
     }
 
-    p_hdr = (BUFFER_HDR_T *)((u8 *)p_buf - BUFFER_HDR_SIZE);
-    p_prev = (BUFFER_HDR_T *)((u8 *)p_q->p_first - BUFFER_HDR_SIZE);
-    while (p_prev != NULL) {
-        if (p_prev->p_next == p_hdr) {
-            p_prev->p_next = p_hdr->p_next;
+    p_buf_hdr = (BUFFER_HDR_T *)((u8 *)p_buf - BUFFER_HDR_SIZE);
+    p_scan_hdr = (BUFFER_HDR_T *)((u8 *)p_q->p_first - BUFFER_HDR_SIZE);
+    while (p_scan_hdr != NULL) {
+        if (p_scan_hdr->p_next == p_buf_hdr) {
+            p_scan_hdr->p_next = p_buf_hdr->p_next;
             if (p_buf == p_q->p_last) {
-                p_q->p_last = (u8 *)p_prev + BUFFER_HDR_SIZE;
+                p_q->p_last = (u8 *)p_scan_hdr + BUFFER_HDR_SIZE;
             }
             p_q->count--;
-            p_hdr->p_next = NULL;
-            p_hdr->status = BUF_STATUS_UNLINKED;
+            p_buf_hdr->p_next = NULL;
+            p_buf_hdr->status = BUF_STATUS_UNLINKED;
             fn_8006EB88();
             return p_buf;
         }
-        p_prev = (BUFFER_HDR_T *)p_prev->p_next;
+        p_scan_hdr = (BUFFER_HDR_T *)p_scan_hdr->p_next;
     }
 
     fn_8006EB88();
@@ -13712,9 +13713,10 @@ block_6:
 void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
     UINT8 status;
     UINT16 opcode;
-    u32 queued_opcode;
+    UINT16 queued_opcode;
     void *buf;
     UINT8 *cmd;
+    UINT8 *cmd_base;
     status = p[0];
     *(UINT16 *)(lbl_803C0A50 + 0x80) = p[1];
     opcode = (UINT16)(p[2] + (p[3] << 8));
@@ -13723,7 +13725,7 @@ void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
     if (opcode != 0xC03 && opcode != 0xC35 && opcode != 0) {
         buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
         if (buf != 0) {
-            UINT8 *cmd_base = (UINT8 *)buf + *(UINT16 *)((UINT8 *)buf + 4);
+            cmd_base = (UINT8 *)buf + *(UINT16 *)((UINT8 *)buf + 4);
             queued_opcode = (UINT16)(cmd_base[8] + (cmd_base[9] << 8));
             cmd = cmd_base + 0xA;
             if (queued_opcode != opcode) {
