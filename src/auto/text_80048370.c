@@ -518,6 +518,8 @@ MEMiHeapHead* MEMCreateExpHeapEx(void *start, u32 size, u16 opt) {
     u32 diff;
     u32 block;
     u32 blockEnd;
+
+    /* Create an expanded heap in [start, start+size): align bounds, init heap head ('EXPH'), and seed one free block ('FR'). */
     if (base > end || end - base < 0x64U)
         return 0;
     diff = end - base;
