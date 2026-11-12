@@ -6971,6 +6971,7 @@ extern "C" s32 fn_80226528(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_80226570(void *arg0, s32 arg1) {
+    /* Update each scroll item's previous/current Y: copy current to previous, advance by step*arg1, and wrap into [min,max] range. */
     s32 offset;
     s32 i;
 
