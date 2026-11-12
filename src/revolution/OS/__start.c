@@ -348,26 +348,27 @@ DECL_SECTION(".init") static asm void __init_registers(void) {
 }
 
 DECL_SECTION(".init") static void __init_data(void) {
-    const RomSection* rs;
-    const BssSection* bs;
+    /* Copy initialized ROM data sections and clear BSS sections during startup. */
+    const RomSection* romSection;
+    const BssSection* bssSection;
 
-    rs = _rom_copy_info;
+    romSection = _rom_copy_info;
     while (TRUE) {
-        if (rs->size == 0) {
+        if (romSection->size == 0) {
             break;
         }
 
-        __copy_rom_section(rs->virt, rs->phys, rs->size);
-        rs++;
+        __copy_rom_section(romSection->virt, romSection->phys, romSection->size);
+        romSection++;
     }
 
-    bs = _bss_init_info;
+    bssSection = _bss_init_info;
     while (TRUE) {
-        if (bs->size == 0) {
+        if (bssSection->size == 0) {
             break;
         }
 
-        __init_bss_section(bs->virt, bs->size);
-        bs++;
+        __init_bss_section(bssSection->virt, bssSection->size);
+        bssSection++;
     }
 }
