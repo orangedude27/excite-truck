@@ -3330,19 +3330,20 @@ extern "C" void* fn_801A1CE4(void *shape, s32 owner, s32 swap) {
     return shape;
 }
 #pragma use_lmw_stmw on
-extern "C" void fn_801A1DD4(void* arg0, void* arg1) {
-    switch (*(s32*)((u8*)arg1 + 0x18)) {
+/* Dispatch a shape operation by the FourCC type at +0x18, calling the type-specific handler. */
+extern "C" void fn_801A1DD4(void* context, void* shape) {
+    switch (*(s32*)((u8*)shape + 0x18)) {
     case 'FLSR':
-        fn_8019D06C(arg1, arg0, 0, 0);
+        fn_8019D06C(shape, context, 0, 0);
         break;
     case 'SPHR':
-        fn_8019BD54(arg1, arg0, 0, 0);
+        fn_8019BD54(shape, context, 0, 0);
         break;
     case 'TUBE':
-        fn_8019EA7C(arg1, arg0);
+        fn_8019EA7C(shape, context);
         break;
     case 'GRUP':
-        ((Fn801A401CDispatch*)arg1)->Call(arg0);
+        ((Fn801A401CDispatch*)shape)->Call(context);
         break;
     }
 }
