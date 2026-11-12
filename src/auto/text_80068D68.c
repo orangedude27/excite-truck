@@ -24811,6 +24811,9 @@ static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UIN
 }
 
 extern void *add_record(); /* defined below: (tSDP_DISCOVERY_DB *p_db, BD_ADDR p_bda) */
+/* This build's tSDP_DISCOVERY_DB was compiled with SDP_MAX_ATTR_FILTERS 12 (the
+ * header uses 15), so its p_free_mem field sits at 0x68, not the header's 0x6C. */
+#define DB_P_FREE_MEM(db) (*(UINT8 **)((UINT8 *)(db) + 0x68))
 extern UINT8 *add_attr(UINT8 *, tSDP_DISCOVERY_DB *, tSDP_DISC_REC *, UINT16, tSDP_DISC_ATTR *, UINT8);
 /* Parses an SDP attribute-sequence element from a response and adds each attribute ID/value to the connection's discovery record. */
 UINT8 *save_attr_seq(tCONN_CB *p_ccb, UINT8 *p, UINT8 *p_msg_end) {
