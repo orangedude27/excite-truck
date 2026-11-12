@@ -18176,22 +18176,23 @@ extern "C" void fn_800CFAC8(void *arg0) {
     p[0xB] = 0;
 }
 
-void homebutton::gui::Manager::addComponent(homebutton::gui::Component *arg1) {
-    void *first = arg1->first();
-    arg1->second(this);
+/* Register a GUI component with this manager and append its list node (using the manager allocator or a fallback). */
+void homebutton::gui::Manager::addComponent(homebutton::gui::Component *component) {
+    void *first = component->first();
+    component->second(this);
     MEMAllocator *allocator = *(MEMAllocator **)((u8 *)this + 0x14);
     if (allocator != 0) {
         void *entry = MEMAllocFromAllocator(allocator, 0x10);
         if (entry != 0) {
             *(void **)entry = first;
-            *((void **)entry + 1) = arg1;
+            *((void **)entry + 1) = component;
         }
         List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv((u8 *)this + 8, entry);
     } else {
         void *entry = fn_80128520(0x10);
         if (entry != 0) {
             *(void **)entry = first;
-            *((void **)entry + 1) = arg1;
+            *((void **)entry + 1) = component;
         }
         List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv((u8 *)this + 8, entry);
     }
