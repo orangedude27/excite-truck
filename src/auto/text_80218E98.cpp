@@ -7957,6 +7957,10 @@ extern "C" void fn_80228990(void) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_80228994(void *arg0) {
+    /* If the source string (+0x244) differs from the cached text (+0x248),
+     * copy up to 0x20 bytes into the cache (null-terminating on truncation),
+     * then notify the dispatch object (+0x268, vtable slot at 0xC). Finally
+     * refresh via fn_80228AEC with the current time/value from fn_80214D48. */
     class CopyDispatch {
     public:
         virtual void v0();
