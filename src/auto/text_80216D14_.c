@@ -1300,22 +1300,23 @@ void fn_80218A34(void *arg0, int arg1) {
         }
     }
 }
-void fn_80218ADC(void *arg0, int arg1) {
+/* Sets a group disable-mask bit and disables/enqueues refresh for affected widgets. */
+void fn_80218ADC(void *group, int bitIndex) {
     char *cursor;
-    void *obj;
+    void *widget;
     int i, one = 1, zero = 0;
-    int mask = fn_80216D14(arg1);
-    if ((*(int *)((char *)arg0 + 0x468) & mask) == 0) {
-        mask = fn_80216D14(arg1);
-        *(int *)((char *)arg0 + 0x468) |= mask;
-        cursor = (char *)arg0;
+    int mask = fn_80216D14(bitIndex);
+    if ((*(int *)((char *)group + 0x468) & mask) == 0) {
+        mask = fn_80216D14(bitIndex);
+        *(int *)((char *)group + 0x468) |= mask;
+        cursor = (char *)group;
         i = 0;
-        for (; i < *(int *)((char *)arg0 + 0x430); cursor += 4, i++) {
-            obj = *(void **)(cursor + 0x30);
-            if (*(int *)((char *)arg0 + 0x468) & *(int *)((char *)obj + 0x238)) {
-                *(unsigned char *)((char *)obj + 0x1B) = zero;
-                if (*(unsigned char *)((char *)obj + 0x1A))
-                    *(unsigned char *)((char *)obj + 0x234) = one;
+        for (; i < *(int *)((char *)group + 0x430); cursor += 4, i++) {
+            widget = *(void **)(cursor + 0x30);
+            if (*(int *)((char *)group + 0x468) & *(int *)((char *)widget + 0x238)) {
+                *(unsigned char *)((char *)widget + 0x1B) = zero;
+                if (*(unsigned char *)((char *)widget + 0x1A))
+                    *(unsigned char *)((char *)widget + 0x234) = one;
             }
         }
     }
