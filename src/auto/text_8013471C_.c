@@ -101,6 +101,8 @@ extern void fn_8013A1E8(void);
 extern void fn_8015F554(void);
 extern void fn_80160850(void);
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
 void fn_8013477C(void *arg0) {
     register char *strings = lbl_8032BBE8;
     register unsigned char *entry;
