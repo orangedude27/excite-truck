@@ -64,7 +64,7 @@ int arg0;
     return *(int *)((char *)base + (arg0 << 4) + 4);
 }
 #pragma scheduling reset
-void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
+void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     register int count = lbl_804C1338[0];
     register int limit = lbl_804C1338[1];
     unsigned char *entry;
@@ -1273,22 +1273,22 @@ s32 fn_802C7830(char *arg0, s32 is_digit, signed char c) {
     return value;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802C7888(void *src, s32 count) {
-    s32 i;
-    if (count <= 0) return;
-    for (i = 0; i < count; i++) {
+    for (; count > 0; count--) {
         volatile u8 *source = (volatile u8 *)src;
-        register volatile u8 *dest;
+        volatile u8 *dest;
         s32 index;
         s32 *key = *(s32 **)((u8 *)src + 0x28);
         register u8 a, b;
-        u32 word;
+        u32 word, word2, word3;
         if (key != 0) *key = -1;
         index = lbl_804C13B4[0];
         if (index < lbl_804C13B4[1]) {
-            dest = (volatile u8 *)(unsigned long)lbl_804C13B4[2] + index * 0x2C;
+            s32 offset = index * 0x2C;
+            unsigned char *base = (unsigned char *)(unsigned long)lbl_804C13B4[2];
             lbl_804C13B4[0] = index + 1;
+            dest = (volatile u8 *)(base + offset);
         } else dest = 0;
         a = source[0]; b = source[1]; dest[0] = a;
         a = source[2]; dest[1] = b;
@@ -1325,15 +1325,14 @@ void fn_802C7888(void *src, s32 count) {
         a = source[0x21]; dest[0x20] = b;
         b = source[0x22]; dest[0x21] = a;
         a = source[0x23]; dest[0x22] = b;
-        word = *(volatile u32 *)(source + 0x24);
+        word2 = *(volatile u32 *)(source + 0x24);
         dest[0x23] = a;
-        *(volatile u32 *)(dest + 0x24) = word;
-        word = *(volatile u32 *)(source + 0x28);
-        *(volatile u32 *)(dest + 0x28) = word;
+        word3 = *(volatile u32 *)(source + 0x28);
         src = (u8 *)src + 0x2C;
+        *(volatile u32 *)(dest + 0x24) = word2;
+        *(volatile u32 *)(dest + 0x28) = word3;
     }
 }
-#pragma scheduling on
 extern int lbl_804C13B4[];
 extern void fn_802C7A00(void);
 void fn_802C7A00(void) {
