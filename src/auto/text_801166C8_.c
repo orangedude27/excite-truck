@@ -244,25 +244,6 @@ BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
 }
 
 BOOL ARCReadDir(ARCDir *dir, ARCDirEntry *entry) {
-    typedef struct ARCNode {
-        union {
-            struct {
-                u32 is_folder : 8;
-                u32 name : 24;
-            };
-            u32 packed_type_name;
-        };
-        union {
-            struct {
-                u32 offset;
-                u32 size;
-            } file;
-            struct {
-                u32 parent;
-                u32 sibling_next;
-            } folder;
-        };
-    } ARCNode;
     u32 it;
     ARCNode *nodes;
     ARCHandle *handle = dir->handle;
