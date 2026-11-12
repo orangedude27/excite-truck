@@ -591,34 +591,37 @@ void fn_80020860(int arg0) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_800208F0(int arg0, unsigned char *arg1, int arg2) {
-    char temp_r3_2;
-    int var_r31;
-    unsigned char *var_r30;
-    char *var_r4;
-    int temp_r3;
+    /* Look up a string/value for arg0 via fn_8001BA90(fn_8000DA10(), arg0, lbl_8055D668,
+     * lbl_8055D66C, -1). If found, copy it with fn_8001BA70; otherwise copy the
+     * fallback string at lbl_80558D8C into the output buffer, truncating to arg2. */
+    char ch;
+    int remaining;
+    unsigned char *dst;
+    char *src;
+    int index;
 
-    var_r31 = arg2;
-    var_r30 = arg1;
-    temp_r3 = fn_8001BA90(fn_8000DA10(), arg0, lbl_8055D668, lbl_8055D66C, -1);
-    if ((unsigned int)((s32)temp_r3 + 0x10000) != 0xFFFF) {
-        fn_8001BA70(arg0, temp_r3, var_r30, var_r31);
+    remaining = arg2;
+    dst = arg1;
+    index = fn_8001BA90(fn_8000DA10(), arg0, lbl_8055D668, lbl_8055D66C, -1);
+    if ((unsigned int)((s32)index + 0x10000) != 0xFFFF) {
+        fn_8001BA70(arg0, index, dst, remaining);
         return;
     }
-    var_r4 = lbl_80558D8C;
+    src = lbl_80558D8C;
     goto loop_body;
 count_check:
-    var_r31 -= 1;
-    if (var_r31 > 0) {
+    remaining -= 1;
+    if (remaining > 0) {
         goto loop_body;
     }
-    var_r30[-1] = 0;
+    dst[-1] = 0;
     return;
 loop_body:
-    temp_r3_2 = *var_r4;
-    var_r4 += 1;
-    *var_r30 = temp_r3_2;
-    var_r30 += 1;
-    if (temp_r3_2 != 0) {
+    ch = *src;
+    src += 1;
+    *dst = ch;
+    dst += 1;
+    if (ch != 0) {
         goto count_check;
     }
 }
