@@ -764,6 +764,7 @@ s32 ISFS_CreateFileAsync(const char* path, u32 attr, u32 ownerPerm,
                           sizeof(FSFileIoctl), NULL, 0, _isfsFuncCb, block);
 }
 
+/* Open a file on the ISFS filesystem and return its file descriptor. */
 s32 ISFS_Open(const char* path, IPCOpenMode mode) {
     s32 ret;
     size_t len;
