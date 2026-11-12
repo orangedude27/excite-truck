@@ -22,40 +22,41 @@ void fn_802793AC(void) {}
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_802793B0(int arg0) {
-    unsigned char *p = lbl_804A16E8 + arg0 * 0xA0;
-    *(unsigned char *)(p + 0x00) = 0;
-    *(float *)(p + 0x28) = lbl_805640D8;
-    *(float *)(p + 0x24) = lbl_805640D8;
-    *(float *)(p + 0x20) = lbl_805640D8;
-    *(float *)(p + 0x34) = lbl_805640DC;
-    *(float *)(p + 0x30) = lbl_805640DC;
-    *(float *)(p + 0x2C) = lbl_805640DC;
-    *(float *)(p + 0x38) = lbl_805640E0;
-    *(float *)(p + 0x3C) = lbl_805640E4;
-    *(float *)(p + 0x48) = lbl_805640D8;
-    *(float *)(p + 0x44) = lbl_805640D8;
-    *(float *)(p + 0x40) = lbl_805640D8;
-    *(float *)(p + 0x54) = lbl_805640DC;
-    *(float *)(p + 0x50) = lbl_805640DC;
-    *(float *)(p + 0x4C) = lbl_805640DC;
-    *(float *)(p + 0x58) = lbl_805640E0;
-    *(float *)(p + 0x5C) = lbl_805640E4;
-    *(float *)(p + 0x68) = lbl_805640D8;
-    *(float *)(p + 0x64) = lbl_805640D8;
-    *(float *)(p + 0x60) = lbl_805640D8;
-    *(float *)(p + 0x74) = lbl_805640DC;
-    *(float *)(p + 0x70) = lbl_805640DC;
-    *(float *)(p + 0x6C) = lbl_805640DC;
-    *(float *)(p + 0x78) = lbl_805640E0;
-    *(float *)(p + 0x7C) = lbl_805640E4;
-    *(float *)(p + 0x88) = lbl_805640D8;
-    *(float *)(p + 0x84) = lbl_805640D8;
-    *(float *)(p + 0x80) = lbl_805640D8;
-    *(float *)(p + 0x94) = lbl_805640DC;
-    *(float *)(p + 0x90) = lbl_805640DC;
-    *(float *)(p + 0x8C) = lbl_805640DC;
-    *(float *)(p + 0x98) = lbl_805640E0;
-    *(float *)(p + 0x9C) = lbl_805640E4;
+/* Initialize one 0xA0-byte entry in lbl_804A16E8 with default float values. */
+void fn_802793B0(int index) {
+    unsigned char *entry = lbl_804A16E8 + index * 0xA0;
+    *(unsigned char *)(entry + 0x00) = 0;
+    *(float *)(entry + 0x28) = lbl_805640D8;
+    *(float *)(entry + 0x24) = lbl_805640D8;
+    *(float *)(entry + 0x20) = lbl_805640D8;
+    *(float *)(entry + 0x34) = lbl_805640DC;
+    *(float *)(entry + 0x30) = lbl_805640DC;
+    *(float *)(entry + 0x2C) = lbl_805640DC;
+    *(float *)(entry + 0x38) = lbl_805640E0;
+    *(float *)(entry + 0x3C) = lbl_805640E4;
+    *(float *)(entry + 0x48) = lbl_805640D8;
+    *(float *)(entry + 0x44) = lbl_805640D8;
+    *(float *)(entry + 0x40) = lbl_805640D8;
+    *(float *)(entry + 0x54) = lbl_805640DC;
+    *(float *)(entry + 0x50) = lbl_805640DC;
+    *(float *)(entry + 0x4C) = lbl_805640DC;
+    *(float *)(entry + 0x58) = lbl_805640E0;
+    *(float *)(entry + 0x5C) = lbl_805640E4;
+    *(float *)(entry + 0x68) = lbl_805640D8;
+    *(float *)(entry + 0x64) = lbl_805640D8;
+    *(float *)(entry + 0x60) = lbl_805640D8;
+    *(float *)(entry + 0x74) = lbl_805640DC;
+    *(float *)(entry + 0x70) = lbl_805640DC;
+    *(float *)(entry + 0x6C) = lbl_805640DC;
+    *(float *)(entry + 0x78) = lbl_805640E0;
+    *(float *)(entry + 0x7C) = lbl_805640E4;
+    *(float *)(entry + 0x88) = lbl_805640D8;
+    *(float *)(entry + 0x84) = lbl_805640D8;
+    *(float *)(entry + 0x80) = lbl_805640D8;
+    *(float *)(entry + 0x94) = lbl_805640DC;
+    *(float *)(entry + 0x90) = lbl_805640DC;
+    *(float *)(entry + 0x8C) = lbl_805640DC;
+    *(float *)(entry + 0x98) = lbl_805640E0;
+    *(float *)(entry + 0x9C) = lbl_805640E4;
 }
 #pragma pop
