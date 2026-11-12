@@ -1,7 +1,7 @@
 #include <revolution/KPAD/__KPAD.h>
 
 /* REXE01's local sqrt thunk is declared by the private KPAD header. */
-/* REXE01's symbol table names this private helper KPADSetSensorHeight. */
+/* Computes the DPD-to-position scale from the sensor window and current IR center offset. */
 void KPADSetSensorHeight(KPADInsideStatus* kp) {
     f32 sx;
     f32 sy;
