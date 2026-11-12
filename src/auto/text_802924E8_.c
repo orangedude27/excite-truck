@@ -87,13 +87,13 @@ void fn_802924F4(void) {
     struct Vec {
         float x, y, z;
     } v;
-    register float one = lbl_805644D4;
-    register float offset = lbl_805644D8;
+    float one = lbl_805644D4;
+    float offset = lbl_805644D8;
     unsigned char *p = lbl_804B4030;
-    int i;
+    long i;
 
     for (i = 0; i < 6; i++, p += 0x34) {
-        float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
+        register float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
         float y = (float)fn_8002F234((one - x * x) - offset);
         float z = (float)fn_8002F234((one - x * x) - offset);
         float w = fn_80129DC4(0, -z, y);
@@ -101,9 +101,9 @@ void fn_802924F4(void) {
         float factor = (fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
         v.x = x;
         *(float *)(p + 0) = (float)(double)x;
-        *(float *)(p + 4) = (float)(double)w;
         v.y = w;
         v.z = q * factor;
+        *(float *)(p + 4) = (float)(double)w;
         *(float *)(p + 8) = v.z;
         *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
     }
@@ -238,10 +238,11 @@ extern void *fn_801284F8(int, const void *);
 extern void *fn_80293034(void *, void *, int);
 extern void *fn_80293A00(void *, void *, int, int, int);
 extern void *fn_80294254(void *, void *, int, int, int);
+#pragma push
+#pragma scheduling invalid_target
 int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     char *str = lbl_80349170;
     void *ptr;
-
     switch (arg1) {
     case 1:
         ptr = fn_801284F8(0x2FF0, str);
@@ -267,6 +268,7 @@ int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     }
     return (int)ptr;
 }
+#pragma pop
 extern int fn_802928D4(int, int, int, int, int, int);
 void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
     fn_802928D4(0, arg0, arg1, arg2, arg3, arg1);
@@ -332,27 +334,40 @@ extern double __fabs(double);
 #pragma processor 750
 int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
     float delta[3];
-    register float x = arg2[0];
     register float y = arg2[1];
-    register float z;
-    float firstDot, secondDot, scale;
-    float nx;
-    delta[0] = arg0[0] - x;
-    z = arg2[2];
-    delta[1] = arg0[1] - y;
-    delta[2] = arg0[2] - z;
+    register float x = arg2[0];
+    register float t0 = arg0[0] - x;
+    register float z = arg2[2];
+    register float t1;
+    register float t2;
+    register float firstDot, secondDot;
+    register float s1, nx, ay, az, abs2, k;
+    register float s2;
+    register float a0, a1, a2;
+    delta[0] = t0;
+    t1 = arg0[1] - y;
+    delta[1] = t1;
+    t2 = arg0[2] - z;
+    delta[2] = t2;
     firstDot = PSVECDotProduct(delta, arg3);
     if (firstDot < lbl_805644D8) {
         secondDot = PSVECDotProduct(arg1, arg3);
         nx = arg3[0];
-        scale = -firstDot;
-        arg0[0] += nx * scale;
-        arg0[1] += arg3[1] * scale;
-        arg0[2] += arg3[2] * scale;
-        scale = lbl_805644E8 * (float)__fabs((double)secondDot) - secondDot;
-        arg1[0] += nx * scale;
-        arg1[1] += arg3[1] * scale;
-        arg1[2] += arg3[2] * scale;
+        s1 = -firstDot;
+        ay = arg3[1];
+        az = arg3[2];
+        abs2 = (float)__fabs((double)secondDot);
+        k = lbl_805644E8;
+        a0 = arg0[0];
+        arg0[0] = a0 + nx * s1;
+        a1 = arg0[1];
+        arg0[1] = a1 + ay * s1;
+        a2 = arg0[2];
+        arg0[2] = a2 + az * s1;
+        s2 = k * abs2 - secondDot;
+        arg1[0] += nx * s2;
+        arg1[1] += ay * s2;
+        arg1[2] += az * s2;
         return 1;
     }
     return 0;
@@ -369,19 +384,19 @@ void fn_80292CD8(void *arg0, int arg1, unsigned char *arg2) {
     char temp[0x2C];
     char *src;
     char c;
-    char *dst;
-    register int count;
-    int offset = arg1;
-    int cursor = (int)arg2;
-
+    int count;
+    register char *dst;
+    register int count2;
+    char *dst2;
+    register int offset = arg1;
+    register int cursor = (int)arg2;
     list = fn_802C6B44();
     memset(temp, 0, 0x2C);
-
     dst = temp + 0x14;
     count = 0x10;
     goto copy_second;
 count_second:
-    count--;
+    count -= 1;
     if (count > 0) goto copy_second;
     dst[-1] = 0;
     goto copied_second;
@@ -390,34 +405,40 @@ copy_second:
     *dst++ = c;
     if ((signed char)c != 0) goto count_second;
 copied_second:
-
     *(int *)(temp + 0x10) = offset;
-    cursor = 0;
     offset = 0;
+    cursor = 0;
     goto check_list;
 copy_first:
     src = fn_802C9C24(*(int *)((char *)list + 4) + offset);
-    dst = temp;
-    count = 0x10;
+    dst2 = temp;
+    count2 = 0x10;
     goto copy_entry;
 count_entry:
-    count--;
-    if (count > 0) goto copy_entry;
-    dst[-1] = 0;
+    count2--;
+    if (count2 > 0) goto copy_entry;
+    dst2[-1] = 0;
     goto copied_entry;
 copy_entry:
     c = *src++;
-    *dst++ = c;
+    *dst2++ = c;
     if ((signed char)c != 0) goto count_entry;
 copied_entry:
     fn_802C7888(temp, 1);
-    offset += 0x10;
     cursor++;
+    offset += 0x10;
 check_list:
     if (cursor < *(int *)list) goto copy_first;
     fn_802C6C20(list);
 }
 #pragma scheduling on
+/* One row of lbl_802FA998: a chunk type's name and the id the chunk system uses
+ * for it (fn_802928D4 allocates the matching "car/ter/wood chunk sys" for it). */
+struct ChunkType {
+    const char *name;
+    int id;
+};
+
 int fn_80292DE8(const char *arg0) {
     int table[6];
     int *src = lbl_802FA998;
@@ -623,7 +644,9 @@ void fn_80293230(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
     object = (u8 *)arg0;
     count = *(s32 *)(object + 0x2FAC);
     if (count >= 0xA0) return;
-    if (*(s32 *)(object + 0x28) == 0) return;
+    if (*(s32 *)(object + 0x28) != 0) goto cont;
+    return;
+cont:
     record = object + count * 0x4C;
     index = fn_80129D18(0, 6);
     offset = index * 0x34;
@@ -657,7 +680,7 @@ void fn_80293230(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
     c = arg2[2];
     *(float *)(record + 0x64) = c;
     *(float *)(record + 0x68) = lbl_805644D8;
-    *(short *)(record + 0x6C) = arg3;
+    *(short *)(record + 0x6C) = (short)arg3;
     mode = 3;
     if (fn_80287B5C(3, (void *)firstWord, c, b, a) != 0)
         mode = 2;
@@ -712,32 +735,34 @@ void fn_80293530(void* arg0) {
 void *fn_802935A0(void *arg0) {
     register u8 *out = (u8 *)arg0;
     register unsigned int *table = lbl_80488648;
-    register float scale = lbl_805644EC;
-    register unsigned int color;
-    register unsigned int checkValue;
-    register unsigned int count = 0;
-    register s32 temp;
-    register s32 component;
-    s32 packed;
+    float scale = lbl_805644EC;
+    unsigned int color;
+    unsigned int checkValue;
+    unsigned int count = 0;
+    s32 tmp;
+    s32 comp;
+    s32 red;
+    s32 green;
+    s32 blue;
     void *item;
     goto check_loop;
 body:
     if (count < 8U) item = (void *)*table;
     else item = 0;
     color = *(unsigned int *)((u8 *)item + 0x3EC);
-    component = 0xFF;
-    temp = (s32)(scale * (float)(u8)color);
-    if (temp <= 0xFF) component = temp;
-    packed = component & 0xFF;
-    component = 0xFF;
-    temp = (s32)(scale * (float)(u8)(color >> 8));
-    if (temp <= 0xFF) component = temp;
-    packed |= (component & 0xFF) << 8;
-    component = 0xFF;
-    temp = (s32)(scale * (float)(u8)(color >> 16));
-    if (temp <= 0xFF) component = temp;
-    packed = (((component & 0xFF) << 16) | 0xFF000000) | packed;
-    *(unsigned int *)(out + 0x2FB0) = (unsigned int)packed;
+    comp = 0xFF;
+    tmp = (s32)(scale * (float)(u8)color);
+    if (tmp <= 0xFF) comp = tmp;
+    red = comp & 0xFF;
+    comp = 0xFF;
+    tmp = (s32)(scale * (float)(u8)(color >> 8));
+    if (tmp <= 0xFF) comp = tmp;
+    green = (comp & 0xFF) << 8;
+    comp = 0xFF;
+    tmp = (s32)(scale * (float)(u8)(color >> 16));
+    if (tmp <= 0xFF) comp = tmp;
+    blue = ((comp & 0xFF) << 16) | 0xFF000000;
+    *(unsigned int *)(out + 0x2FB0) = (unsigned int)(blue | green | red);
     *(unsigned int *)(out + 0x2FB4) = color;
     table++;
     count++;
@@ -1020,9 +1045,9 @@ void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
     int index;
     int offset;
     int flags, zero;
-    u8 *object;
     u8 *record;
     u8 *template;
+    u8 *object;
     float x, y, z, a, b;
     unsigned int secondWord, firstWord;
     object = (u8 *)arg0;
@@ -1176,18 +1201,18 @@ check:
 extern int fn_80287B5C(int, void *, float, float, float);
 void fn_80294408(void *arg0, float *arg1, float *arg2) {
     int count;
-    register int index;
+    int index;
     int offset;
-    register float *second;
-    register float *first;
     register u8 *object;
+    register float *first;
     register u8 *record;
-    register u8 *template;
+    register float *second;
+    u8 *template;
     float x, y, z, a, b, c;
     unsigned int secondWord, firstWord;
-    second = arg2;
-    first = arg1;
     object = (u8 *)arg0;
+    first = arg1;
+    second = arg2;
     count = *(s32 *)(object + 0x222C);
     if (count >= 0x80) goto done;
     if (*(s32 *)(object + 0x28) != 0) goto body;
@@ -1211,15 +1236,15 @@ body:
     *(unsigned int *)(record + 0x2C) = firstWord;
     *(unsigned int *)(record + 0x30) = secondWord;
     *(unsigned int *)(record + 0x34) = *(unsigned int *)(template + 0x18);
-    secondWord = *(unsigned int *)(template + 0x1C);
-    firstWord = *(unsigned int *)(template + 0x20);
-    *(unsigned int *)(record + 0x38) = secondWord;
-    *(unsigned int *)(record + 0x3C) = firstWord;
+    firstWord = *(unsigned int *)(template + 0x1C);
+    secondWord = *(unsigned int *)(template + 0x20);
+    *(unsigned int *)(record + 0x38) = firstWord;
+    *(unsigned int *)(record + 0x3C) = secondWord;
     *(unsigned int *)(record + 0x40) = *(unsigned int *)(template + 0x24);
-    secondWord = *(unsigned int *)(template + 0x28);
-    firstWord = *(unsigned int *)(template + 0x2C);
-    *(unsigned int *)(record + 0x44) = secondWord;
-    *(unsigned int *)(record + 0x48) = firstWord;
+    firstWord = *(unsigned int *)(template + 0x28);
+    secondWord = *(unsigned int *)(template + 0x2C);
+    *(unsigned int *)(record + 0x44) = firstWord;
+    *(unsigned int *)(record + 0x48) = secondWord;
     *(unsigned int *)(record + 0x4C) = *(unsigned int *)(template + 0x30);
     *(float *)(record + 0x5C) = a;
     *(float *)(record + 0x60) = b;
