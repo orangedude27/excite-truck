@@ -581,23 +581,21 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         s32 capacity;
     } Pool;
     s32 size;
-    s32 *data, *slot;
     s32 denom, y, rows, x, index, item, used;
     Node **cell;
     Pool *pool;
     Node *node, *new_node, *tail;
-
+    s32 *data, *slot;
     size = *(s16 *)arg0;
     denom = size * 2;
     y = (arg3 - size + 0x200) / denom;
-    rows = 0x400 / denom;
+    rows = 1024 / denom;
     x = (arg2 - size + 0x200) / denom;
     index = x + y * rows;
     cell = (Node **)((char *)*(void **)((char *)arg0 + 4) + index * 8);
     pool = *(Pool **)((char *)arg0 + 0xC);
     node = cell[1];
     slot = 0;
-
     if (node == 0 || node->used + 1 > node->capacity) {
         node = 0;
         if (pool->used + 1 <= pool->capacity) {
@@ -614,15 +612,15 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
             cell[1] = node;
             node->next = 0;
             tail = cell[1];
-            data = tail->data;
             item = tail->used;
+            data = tail->data;
             tail->used = item + 1;
             slot = data + item;
         }
     } else {
         tail = node;
-        data = tail->data;
         item = tail->used;
+        data = tail->data;
         tail->used = item + 1;
         slot = data + item;
     }
@@ -682,16 +680,11 @@ void fn_802B9B68(void) {
         int count;
         void *allocation;
     };
-    struct Record {
-        void *data;
-        int state;
-        int kind;
-        int unused;
-    };
     struct Manager *manager;
-    struct Record *records;
+    void *memory;
     void *pool;
-    int count;
+    void *records;
+    void *entry;
     int i;
     int offset;
     int index;
@@ -701,30 +694,28 @@ void fn_802B9B68(void) {
     memset(lbl_804C0088, 0, 0x10);
     manager = fn_801284F8(0x14, lbl_8034A990 + 0x24);
     if (manager != 0) {
+        memory = ((void *(*)(int, void *))fn_8012850C)(0x5010, &lbl_8055CEF0);
         manager->records = ((void *(*)(void *, void (*)(void *),
                           void *(*)(void *, s32), int, int))fn_8002F37C)(
-            ((void *(*)(int, void *))fn_8012850C)(0x5010, &lbl_8055CEF0),
-            fn_802B9CF4, fn_802B9C9C, 0x10, 0x500);
-        count = 0x500;
-        manager->count = count;
+            memory, fn_802B9CF4, fn_802B9C9C, 0x10, 0x500);
+        manager->count = 0x500;
         manager->index = 0;
         manager->allocation = manager->records;
         manager->pool = ((void *(*)(int, void *))fn_8012850C)(
-            manager->count << 4, lbl_8034AA1C);
-        records = (struct Record *)manager->records;
-        pool = manager->pool;
+            0x500 << 4, lbl_8034AA1C);
         i = 0;
         offset = 0;
         while (i < manager->count) {
             index = manager->index;
             i++;
             pool = manager->pool;
-            records = (struct Record *)manager->records;
+            records = manager->records;
             manager->index = index + 1;
-            records[index].data = (char *)pool + offset;
+            entry = (char *)records + index * 0x10;
+            *(void **)entry = (char *)pool + offset;
             offset += 0x10;
-            records[index].kind = 4;
-            records[index].state = 0;
+            *(int *)((char *)entry + 8) = 4;
+            *(int *)((char *)entry + 4) = 0;
         }
         manager->index = 0;
     }
@@ -1207,16 +1198,19 @@ extern "C" f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
     f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
     f32 d = y0 * x1 - x0 * y1;
-    f32 hi = x0 + (z0 + y0), z1 = c[1];
+    f32 hi = x0 + (z0 + y0);
+    f32 k1 = lbl_80564CEC;
+    f32 z1 = c[1];
     f32 lo = z0 + x0;
     f32 u, v, w, q;
-    f32 k0 = lbl_80564CD8, k1 = lbl_80564CEC;
-    out[10] = k0;
+    f32 t;
+    out[10] = lbl_80564CD8;
     u = y0 / d;
     v = -x0 / d;
+    t = lbl_80564CD8 * k1;
     out[11] = v;
     w = -y1 / d;
-    out[14] = k0 * k1;
+    out[14] = t;
     q = x1 / d;
     out[9] = q;
     out[13] = w * k1;
@@ -1402,7 +1396,7 @@ void fn_802BAE30(void *arg0) {
 
 extern char lbl_8034AA00[];
 extern char lbl_8034AA10[];
-extern int lbl_8034A064, lbl_8055CEF0;
+extern int lbl_8055CEF0;
 extern void *lbl_8055FA80;
 extern int fn_802E2C20(void *);
 extern void fn_802B9108(short);
@@ -1419,15 +1413,12 @@ void fn_802BAE50(void) {
     char *allocationName;
     short listSize;
     short passSize;
-
     name = (char *)&lbl_8034AA00;
     start = fn_802E2C20((char *)&lbl_8034AA00);
-
     total = 0;
     for (passSize = 4; passSize <= 0x40; passSize *= 2) {
         total += (0x400 / (passSize * 2)) * (0x400 / (passSize * 2)) * 5;
     }
-
     allocationName = (char *)&lbl_8034AA10;
     table = fn_801284F8(0x10, allocationName);
     if (table != 0) {
@@ -1438,17 +1429,14 @@ void fn_802BAE50(void) {
         ((void **)table)[3] = items;
     }
     lbl_8055FA80 = table;
-
     for (listSize = 4; listSize <= 0x40; listSize *= 2)
         fn_802B9108(listSize);
-
     table = lbl_8055FA80;
     if (((int *)table)[1] < ((int *)table)[2]) {
         n = ((int *)table)[2] - ((int *)table)[1];
         fn_801286A0(((void **)table)[3], n * 4);
         ((int *)table)[2] = ((int *)table)[1];
     }
-
     fn_80265DCC(*(void **)lbl_804BFFF4, *((void **)lbl_804BFFF4 + 1), 4,
                 (int (**)(int **, int **))fn_802B9B50);
     if (((int (*)(void))fn_802E2C20)() - start > 0x1F4)
@@ -1479,21 +1467,21 @@ void fn_802BAFA0(void) {
 #pragma scheduling on
 #pragma pop
 void fn_802BAFF8(void ***arg0, int *arg1) {
-    register int zero = 0;
+    int zero = 0;
     arg0 = (void ***)*arg0;
     while (*(void **)arg0 != 0) {
-        register void *entry = *(void **)arg0;
-        register void *queue = *(void **)((char *)entry + 4);
-        register int *slot = 0;
-        register void *pool = *(void * volatile *)&lbl_8055FA74;
-        register int count;
-
-        if (queue == 0 || *(int *)((char *)queue + 4) + 1 > *(int *)((char *)queue + 8)) {
-            register void *node = 0;
-            register int pool_count = *(int *)((char *)pool + 8);
-            if (pool_count + 1 <= *(int *)((char *)pool + 0xC)) {
-                node = (char *)*(void **)((char *)pool + 4) +
-                       (*(int *)((char *)pool + 8))++ * 0x10;
+        void *queue;
+        void *entry;
+        int *slot = 0;
+        void *pool;
+        int count;
+        entry = *(void **)arg0;
+        queue = *(void **)((char *)entry + 4);
+        pool = *(void * volatile *)&lbl_8055FA74;
+        if (queue == 0 || *(volatile int *)((char *)queue + 4) + 1 > *(volatile int *)((char *)queue + 8)) {
+            void *node = 0;
+            if (*(volatile int *)((char *)pool + 8) + 1 <= *(volatile int *)((char *)pool + 0xC)) {
+                node = (char *)*(void **)((char *)pool + 4) + (*(volatile int *)((char *)pool + 8))++ * 0x10;
                 *(int *)((char *)node + 4) = zero;
                 *(int *)((char *)node + 0xC) = zero;
             }
@@ -1515,7 +1503,10 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
             slot = (int *)(*(int *)queue + count * 4);
             *(int *)((char *)queue + 4) = count + 1;
         }
-        if (slot) { *slot = *arg1; lbl_8055FA70++; }
+        if (slot != 0) {
+            *slot = *arg1;
+            lbl_8055FA70++;
+        }
         arg0 = (void ***)((char *)arg0 + 4);
     }
 }
