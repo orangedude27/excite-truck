@@ -2771,54 +2771,8 @@ void fn_800393D4(void) {
     OSRestoreInterrupts(enabled);
 }
 #pragma pop
-#ifndef DVD_DRIVER_TYPES
-// The DVD driver's command block and its status codes. include/revolution/DVD/dvd.h
-// describes the same layout, but this unit's own prototypes of
-// DVDReadAbsAsyncPrio/DVDGetCommandBlockStatus/DVDCancel & co. don't match that
-// header's signatures, so the driver keeps its own view (like DVDNode above).
-typedef struct DVDCommandBlock {
-    struct DVDCommandBlock *next;        // at 0x0
-    struct DVDCommandBlock *prev;        // at 0x4
-    u32 command;                         // at 0x8
-    volatile s32 state;                  // at 0xC
-    u32 offset;                          // at 0x10
-    u32 length;                          // at 0x14
-    void *addr;                          // at 0x18
-    u32 transferSize;                    // at 0x1C
-    u32 transferTotal;                   // at 0x20
-    struct DVDDiskID *id;                // at 0x24
-    void (*callback)(s32 result, struct DVDCommandBlock *block); // at 0x28
-    void *userData;                      // at 0x2C
-} DVDCommandBlock;
-
-typedef void (*DVDCommandCallback)(s32 result, DVDCommandBlock *block);
-
-typedef enum {
-    DVD_RESULT_COVER_CLOSED = -4,
-    DVD_RESULT_CANCELED,
-    DVD_RESULT_IGNORED,
-    DVD_RESULT_FATAL_ERROR,
-    DVD_RESULT_GOOD,
-} DVDResult;
-
-// DVDCommandBlock.state, as DVDGetCommandBlockStatus/DVDGetDriveStatus report it
-typedef enum {
-    DVD_STATE_FATAL = -1,
-    DVD_STATE_IDLE,
-    DVD_STATE_BUSY,
-    DVD_STATE_WAITING,
-    DVD_STATE_COVER_CLOSED,
-    DVD_STATE_NO_DISK,
-    DVD_STATE_COVER_OPENED,
-    DVD_STATE_WRONG_DISK_ID,
-    DVD_STATE_7,
-    DVD_STATE_PAUSED,
-    DVD_STATE_9,
-    DVD_STATE_CANCELED,
-    DVD_STATE_DISK_ERROR,
-    DVD_STATE_MOTOR_STOPPED,
-} DVDAsyncState;
-#endif // DVD_DRIVER_TYPES
+// The DVDCommandBlock, DVDResult and DVDAsyncState types, and the state-static
+// names below, are defined at the top of this file.
 
 // The cancel state machine's own statics (dvdcancel.c); the cover/motor statics
 // it shares with the state machine (Transferring, AlarmInfo, StateToChange,
