@@ -777,6 +777,7 @@ extern "C" void fn_80264FE4(void *arg0) {
         }
     }
 }
+#pragma pop
 
 #pragma cplusplus off
 void fn_8026523C(void *arg0) {
