@@ -393,6 +393,7 @@ extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0)
     }
 }
 
+/* Advances the sequence track by one tick, parsing commands until time passes or pause/end is reached. */
 extern "C" s32 ParseNextTick__Q46nw4hbm3snd6detail8SeqTrackFb(void *arg0, u8 arg1) {
     class Obj { public: virtual void f0(); virtual s32 f1(u8); };
     Obj *obj = (Obj *)arg0;
