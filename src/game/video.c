@@ -209,8 +209,8 @@ void fn_802DF46C(void) {
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
 }
 #pragma pop
-void *fn_802D3130(void);
-void *fn_802D3100(void);
+void *fn_802D3130(void); /* the current material's bump map, into GX_TEXMAP5 */
+void *fn_802D3100(void); /* the texture it distorts, into GX_TEXMAP6 */
 void fn_802DF4A8(void) {
     s32 spC = 0;
     s32 sp8 = 0;
