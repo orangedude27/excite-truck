@@ -7120,12 +7120,10 @@ extern "C" s32 fn_800B0868(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0A60(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0C10(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
-    /* Fix note: keep the remaining size in arg2 and nest the repeated-read checks. */
     u32 sp8;
     u16 *var_r27;
-    s32 result;
     void *temp_r7;
-
+    s32 result;
     temp_r7 = *(void **)((u8 *)arg0 + 8);
     *(void **)((u8 *)temp_r7 + 0x34) = (u8 *)arg0 + 0xC;
     *arg3 = 0;
@@ -7135,26 +7133,22 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
         return result;
     if (sp8 >= arg2)
         return 0;
-
     arg2 -= sp8;
     if (arg0 == 0)
         var_r27 = 0;
     else
         var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
-
     for (;;) {
         result = fn_800B0A60(arg0, arg1 + *arg3, arg2, &sp8);
         *arg3 += sp8;
         if (result != 0)
             return result;
-        if (sp8 != 0) {
-            arg2 -= sp8;
-            if (arg2 >= *var_r27)
-                continue;
-        }
-        break;
+        if (!sp8)
+            break;
+        arg2 -= (short)sp8;
+        if (arg2 < *var_r27)
+            break;
     }
-
     result = fn_800B0C10(arg0, arg1 + *arg3, arg2, &sp8);
     *arg3 += sp8;
     if (result != 0)
@@ -19311,6 +19305,8 @@ extern "C" void fn_800D16C4() {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Initialize a remote-speaker object: install vtable lbl_8031E9C0, publish it in
+ * lbl_8055DDB0, optionally open an ARC handle, and initialize 4 alarm slots. */
 extern "C" void *fn_800D1948(void *arg0, s32 arg1) {
     void *r26 = arg0;
     *(u32 *)((u8 *)r26 + 0x1F0) = (u32)&lbl_8031E9C0;
