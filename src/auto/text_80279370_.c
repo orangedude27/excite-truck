@@ -19,12 +19,6 @@ void fn_80279370(void) {
 }
 
 void fn_802793AC(void) {}
-
-extern unsigned char lbl_804A16E8[];
-extern float lbl_805640D8;
-extern float lbl_805640DC;
-extern float lbl_805640E0;
-extern float lbl_805640E4;
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
