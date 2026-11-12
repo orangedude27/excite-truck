@@ -932,6 +932,7 @@ void fn_801A9AB0(void *self, void *cfg) {
 }
 #pragma scheduling on
 void fn_801ABB54(void *arg0) {
+    /* Clamp/correct a vector at +0x124 against a reference vector at +0x54 using a limit at +0x238. */
     extern float lbl_80562478, lbl_8056247C, lbl_805624A4, lbl_805624AC, lbl_805624D8;
     float dot, magnitude, sign, limit;
     double absolute;
@@ -1167,10 +1168,10 @@ void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
  extern float lbl_805624E8;
  extern int lbl_803357F0[];
  extern void fn_8017D2C8(void *, void *, void *, int, int);
- struct { void *v; float a[3], b[3]; int c,d; } event;
+ struct { void *v; Vec a; Vec b; int c,d; } event;
  float value, scale, squared;
  float z2,y2,x2,z,y,x;
- if(arg3>=100 && *((unsigned char *)arg0+0x220)==0) {
+ if(arg3>=100 && *(unsigned char *)((char *)arg0+0x220)==0) {
  value=*(float *)((char *)arg0+0xD4);
  scale=lbl_805624E8 * value;
  squared=scale*scale;
@@ -1178,8 +1179,8 @@ void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
  x=arg1[0]; y=arg1[1]; z=arg1[2];
  x2=arg2[0]; y2=arg2[1]; z2=arg2[2];
  event.v=lbl_803357F0;
- event.a[0]=x; event.a[1]=y; event.a[2]=z;
- event.b[0]=x2; event.b[1]=y2; event.b[2]=z2;
+ event.a.x=x; event.a.y=y; event.a.z=z;
+ event.b.x=x2; event.b.y=y2; event.b.z=z2;
  event.c=arg3; event.d=arg4;
  ((void (*)(void *, void *))fn_801ABFF8)(arg0,&event);
  }
@@ -1469,18 +1470,11 @@ void fn_801ACA48(void *arg0) {
         *(float *)(p + 0x12C) = z;
         PSVECCrossProduct((Vec *)(p + 0x48), (Vec *)(p + 0x1F8), &cross);
         if (*(float *)(p + 0x4C) < lbl_80562508) {
-            float vz, vy, vx, factor, product;
-            product = cross.x;
-            factor = lbl_8056250C;
-            vx = *(float *)(p + 0x124);
-            vy = *(float *)(p + 0x128);
-            vz = *(float *)(p + 0x12C);
-            vx += product * factor;
-            *(float *)(p + 0x124) = vx;
-            vy += cross.y * factor;
-            *(float *)(p + 0x128) = vy;
-            vz += cross.z * factor;
-            *(float *)(p + 0x12C) = vz;
+            float cxx = cross.x;
+            float factor = lbl_8056250C;
+            *(float *)(p + 0x124) = *(float *)(p + 0x124) + cxx * factor;
+            *(float *)(p + 0x128) = *(float *)(p + 0x128) + cross.y * factor;
+            *(float *)(p + 0x12C) = *(float *)(p + 0x12C) + cross.z * factor;
         }
         copyX = *(float *)(p + 0x210);
         copyY = *(float *)(p + 0x214);
@@ -1551,13 +1545,13 @@ void fn_801ACF94(void) {
     char sp8[0x34];
     char sp3c[0x54];
     char sp90[0xED0];
-    void **obj;
-    int i, j, zero, first;
-    void *root, *a;
-    register void *o;
-    float *src, *dst;
+    Obj_801ACF94 **obj;
+    int i, j, zero, first, last, count, off;
+    void *root;
+    Obj_801ACF94 *o;
+    Mesh_801ACF94 *a;
+    float *base, *dst, *src;
     float fill, special, tail, x, y, z;
-
     root = (void *)lbl_8055E5F0;
     if (root != 0) {
         fill = lbl_8056247C;
@@ -1574,20 +1568,23 @@ void fn_801ACF94(void) {
                     (float *)(sp8 + 0x28), (float *)(sp8 + 0x1C),
                     (float *)(sp8 + 0x10), (float *)(sp8 + 4),
                     special, fill);
-        obj = (void **)lbl_80435628;
+        obj = (Obj_801ACF94 **)lbl_80435628;
         j = 0;
         zero = 0;
         while (j < lbl_8055E5EC) {
             o = *obj;
-            a = *(void **)((char *)o + 0x23C);
+            a = (Mesh_801ACF94 *)o->unk_0x23C;
             if (a != 0) {
-                first = *(int *)((char *)a + 0x254);
-                src = (float *)(sp90 + first * 12);
+                first = a->unk_0x254;
+                base = (float *)(sp90);
+                last = o->unk_0x254;
                 dst = (float *)sp3c;
-                *(int *)sp3c = zero;
-                *(int *)(sp3c + 8) =
-                    *(int *)((char *)o + 0x254) - first + 1;
-                *(int *)(sp3c + 4) = j;
+                off = first * 12;
+                *(int *)dst = zero;
+                count = last - first + 1;
+                *(int *)((char *)dst + 4) = j;
+                *(int *)(sp3c + 8) = count;
+                src = (float *)((char *)base + off);
                 i = 0;
                 while (i < *(int *)(sp3c + 8)) {
                     x = src[0];
@@ -1647,7 +1644,6 @@ void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
     Vec sp8;
     f32 diffX, diffY, diffZ;
     f32 outX, outY, outZ;
-
     fn_8017AB84(*(void **)((char *)arg0 + 0x34), &sp14, arg1);
     if (arg2 != 0) {
         diffX = sp14.x - *(f32 *)((char *)arg2 + 0x60);
@@ -1656,11 +1652,9 @@ void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
         sp8.y = diffY;
         diffZ = sp14.z - *(f32 *)((char *)arg2 + 0x68);
         sp8.z = diffZ;
-
-        outX = ((diffY * *(f32 *)((char *)arg2 + 0x40)) + (diffX * *(f32 *)((char *)arg2 + 0x3C))) + (diffZ * *(f32 *)((char *)arg2 + 0x44));
-        outY = ((diffY * *(f32 *)((char *)arg2 + 0x4C)) + (diffX * *(f32 *)((char *)arg2 + 0x48))) + (diffZ * *(f32 *)((char *)arg2 + 0x50));
-        outZ = ((diffY * *(f32 *)((char *)arg2 + 0x58)) + (diffX * *(f32 *)((char *)arg2 + 0x54))) + (diffZ * *(f32 *)((char *)arg2 + 0x5C));
-
+        outX = (diffZ * *(f32 *)((char *)arg2 + 0x44)) + ((diffY * *(f32 *)((char *)arg2 + 0x40)) + (diffX * *(f32 *)((char *)arg2 + 0x3C)));
+        outY = (diffZ * *(f32 *)((char *)arg2 + 0x50)) + ((diffY * *(f32 *)((char *)arg2 + 0x4C)) + (diffX * *(f32 *)((char *)arg2 + 0x48)));
+        outZ = (diffZ * *(f32 *)((char *)arg2 + 0x5C)) + ((diffY * *(f32 *)((char *)arg2 + 0x58)) + (diffX * *(f32 *)((char *)arg2 + 0x54)));
         sp8.x = outX;
         sp8.y = outY;
         sp8.z = outZ;
@@ -1679,7 +1673,7 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
     Vec sp20;
     Vec sp14;
     Vec delta;
-    f32 x, y, z;
+    f32 z, y, x;
     f32 distance;
     fn_8017AB84(*(void **)((char *)arg0 + 0x34), &sp20, arg1);
     if (arg2 != 0) {
