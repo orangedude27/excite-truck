@@ -221,6 +221,9 @@ BOOL ARCReadDir(ARCDir *dir, ARCDirEntry *entry) {
     nodes = (ARCNode *)handle->FSTStart;
     it = dir->location;
     while (1) {
+        /* Iterate entries in this directory's range, filling entry and
+           advancing location past it (or to a folder's sibling). Returns FALSE
+           when no more entries remain; "." entries are skipped. */
         if (it <= dir->entryNum || dir->next <= it) {
             return FALSE;
         }
