@@ -38,30 +38,29 @@ int memcmp(const unsigned char *arg0, const unsigned char *arg1, unsigned int ar
 void __copy_longs_aligned(unsigned char *dst, const unsigned char *src, unsigned int n) {
     unsigned int align = (-(unsigned int)dst) & 3;
     unsigned int blocks, words, tail;
-    const unsigned char *s;
+    src--;
     dst--;
-    s = src - 1;
     if (align) {
         n -= align;
-        do { *++dst = *++s; } while (--align);
+        do { *++dst = *++src; } while (--align);
     }
-    blocks = n >> 5; s -= 3; dst -= 3;
+    blocks = n >> 5; src -= 3; dst -= 3;
     if (blocks) {
-        const unsigned int *sw = (const unsigned int *)s;
+        const unsigned int *sw = (const unsigned int *)src;
         unsigned int *dw = (unsigned int *)dst;
         do {
             dw[1]=sw[1]; dw[2]=sw[2]; dw[3]=sw[3]; dw[4]=sw[4];
             dw[5]=sw[5]; dw[6]=sw[6]; dw[7]=sw[7]; dw[8]=sw[8];
             sw += 8; dw += 8;
         } while (--blocks);
-        s = (const unsigned char *)sw; dst = (unsigned char *)dw;
+        src = (const unsigned char *)sw; dst = (unsigned char *)dw;
     }
     words = (n >> 2) & 7;
     if (words) {
-        do { *(unsigned int *)(dst+4)=*(const unsigned int *)(s+4); s+=4; dst+=4; } while (--words);
+        do { *(unsigned int *)(dst+4)=*(const unsigned int *)(src+4); src+=4; dst+=4; } while (--words);
     }
-    tail=n&3; s+=3; dst+=3;
-    if(tail) do { *++dst=*++s; } while(--tail);
+    tail=n&3; src+=3; dst+=3;
+    if(tail) do { *++dst=*++src; } while(--tail);
 }
 
 /* Copies n bytes backward from aligned end pointers, using byte alignment, 32-byte blocks, 4-byte words, then tail bytes. */
@@ -96,23 +95,23 @@ void __copy_longs_unaligned(unsigned char *dst, const unsigned char *src, unsign
         n -= align;
         do { *++dst = *++s; } while (--align);
     }
-    dst -= 3;
     offset = (unsigned int)(s + 1) & 3;
-    words = n >> 3;
-    s -= offset;
     shift = offset << 3;
     right = 32 - shift;
-    prev = *(const volatile unsigned int *)(s += 1);
+    words = n >> 3;
+    s -= offset;
+    prev = *(const unsigned int *)(s += 1);
+    dst -= 3;
     do {
-        cur = *(const volatile unsigned int *)(s + 4);
+        cur = *(const unsigned int *)(s + 4);
         --words;
-        *(volatile unsigned int *)(dst + 4) = (prev << shift) | (cur >> right);
-        prev = *(const volatile unsigned int *)(s += 8);
-        *(volatile unsigned int *)(dst += 8) = (cur << shift) | (prev >> right);
+        *(unsigned int *)(dst + 4) = (prev << shift) | (cur >> right);
+        prev = *(const unsigned int *)(s += 8);
+        *(unsigned int *)(dst += 8) = (cur << shift) | (prev >> right);
     } while (words);
     if (n & 4) {
-        cur = *(const volatile unsigned int *)(s += 4);
-        *(volatile unsigned int *)(dst += 4) = (prev << shift) | (cur >> right);
+        cur = *(const unsigned int *)(s += 4);
+        *(unsigned int *)(dst += 4) = (prev << shift) | (cur >> right);
     }
     n &= 3;
     s += 3;
@@ -123,37 +122,41 @@ void __copy_longs_unaligned(unsigned char *dst, const unsigned char *src, unsign
     }
 }
 
+/* memmove's backward block copy (n >= 32, src and dst differently word-aligned):
+   bytes down to an aligned destination, then whole 8-byte pairs rebuilt from two
+   overlapping source words (the volatile word accesses keep mwcc from folding
+   those overlapping loads), then the odd word and the leftover bytes. */
 void __copy_longs_rev_unaligned(unsigned char *dst, const unsigned char *src, unsigned int n) {
-    unsigned int words, offset, shift, right;
+    unsigned int wordPairs, srcOffset, leftShift, rightShift;
     unsigned int prev, cur;
-    const unsigned char *s = src + n;
-    unsigned char *d = dst + n;
-    unsigned int align = (unsigned int)d & 3;
-    if (align) {
-        n -= align;
-        do { *--d = *--s; } while (--align);
+    const unsigned char *srcEnd = src + n;
+    unsigned char *dstEnd = dst + n;
+    unsigned int alignBytes = (unsigned int)dstEnd & 3;
+    if (alignBytes) {
+        n -= alignBytes;
+        do { *--dstEnd = *--srcEnd; } while (--alignBytes);
     }
-    offset = (unsigned int)s & 3;
-    shift = offset << 3;
-    right = 32 - shift;
-    words = n >> 3;
-    s += 4 - offset;
-    prev = *(const volatile unsigned int *)(s -= 4);
+    srcOffset = (unsigned int)srcEnd & 3;
+    leftShift = srcOffset << 3;
+    rightShift = 32 - leftShift;
+    wordPairs = n >> 3;
+    srcEnd += 4 - srcOffset;
+    prev = *(const volatile unsigned int *)(srcEnd -= 4);
     do {
-        cur = *(const volatile unsigned int *)(s - 4);
-        --words;
-        *(volatile unsigned int *)(d - 4) = (cur << shift) | (prev >> right);
-        prev = *(const volatile unsigned int *)(s -= 8);
-        *(volatile unsigned int *)(d -= 8) = (prev << shift) | (cur >> right);
-    } while (words);
+        cur = *(const volatile unsigned int *)(srcEnd - 4);
+        --wordPairs;
+        *(volatile unsigned int *)(dstEnd - 4) = (cur << leftShift) | (prev >> rightShift);
+        prev = *(const volatile unsigned int *)(srcEnd -= 8);
+        *(volatile unsigned int *)(dstEnd -= 8) = (prev << leftShift) | (cur >> rightShift);
+    } while (wordPairs);
     if (n & 4) {
-        cur = *(const volatile unsigned int *)(s -= 4);
-        *(volatile unsigned int *)(d -= 4) = (cur << shift) | (prev >> right);
+        cur = *(const volatile unsigned int *)(srcEnd -= 4);
+        *(volatile unsigned int *)(dstEnd -= 4) = (cur << leftShift) | (prev >> rightShift);
     }
     n &= 3;
     if (n) {
-        s += offset;
-        do { *--d = *--s; } while (--n);
+        srcEnd += srcOffset;
+        do { *--dstEnd = *--srcEnd; } while (--n);
     }
 }
 
