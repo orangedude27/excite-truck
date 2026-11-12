@@ -537,18 +537,17 @@ extern "C" f64 lbl_80561600;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" FloatPair80145A24 fn_80145A24(void *arg0) {
-    f32 out0 = fn_80145A08(lbl_805615D4, (f32)fn_802C9C48(),
+    f32 out0 = fn_80145A08(lbl_805615D4, (f32)(s32)fn_802C9C48(),
                            lbl_805615D4, lbl_805615F4,
                            (f32)*(s32 *)((u8 *)arg0 + 4));
-
-    f32 scaled = lbl_805615F8 * (f32)fn_802C9C48();
+    f32 scaled = lbl_805615F8 * (f32)(s32)fn_802C9C48();
     f32 correction = scaled * lbl_805615D0;
-    u32 converted = (u32)fn_802C9C38();
-    s32 half = (s32)((converted >> 31) + converted) >> 1;
+    s32 conv = (s32)fn_802C9C38();
+    s32 sh = ((u32)conv >> 31);
+    s32 half = (s32)(sh + conv) >> 1;
     f32 base = (f32)half - correction;
-
     f32 out1 = fn_80145A08(base,
-                           base + lbl_805615F8 * (f32)fn_802C9C48(),
+                           base + lbl_805615F8 * (f32)(s32)fn_802C9C48(),
                            lbl_805615D4, lbl_805615FC,
                            (f32)*(s32 *)((u8 *)arg0 + 8));
     FloatPair80145A24 result;
@@ -739,8 +738,7 @@ extern "C" void fn_80145E70(s32 arg0) {
             void *properties = ((Config *)*(void **)(object + 0x28))->getObject(lbl_80559E20);
             s32 value = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
             s32 half = value >> 1;
-            s32 low = value & 1;
-            value = half - low;
+            value = half - (value & 1);
             lbl_8055E208 = (s8)((u32)value >> 31);
         }
         *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(*(void **)(object + 0x28), lbl_80559E30);
@@ -808,6 +806,7 @@ extern "C" void fn_801460F4(void) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 extern "C" void *fn_801460F8(void *collection, const char *wantedName, s32 unused) {
+    /* Build a table of 0x20-byte entries for collection items whose name matches wantedName. */
     extern void fn_80146200(void);
     struct Result { void *data; s32 count; s32 size; void *end; };
     class Collection { public: virtual void a(); virtual void *get(s32); };
@@ -1632,8 +1631,8 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
-    f32 angle;
     f32 tx;
+    f32 angle;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
@@ -1844,6 +1843,7 @@ extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
     f32 out20, end24, end14, src24, diff24, out18, diff14, out1C;
     f32 prod24, prod14, out10, out24, out14;
     u32 w4, w0, wC, w8;
+
     end8 = end->m8;
     src8 = src->m8;
     end4 = end->m4;
@@ -2301,24 +2301,20 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
             }
         }
         {
-            u8 *entry;
-            s32 offset, i;
-            i = 0;
-            offset = 0;
+            register s32 i = 0;
+            register s32 offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0x10) + 4)) {
-                entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
+                u8 *entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
                 fn_8014784C(*(VTable **)(self + 8), *(u32 *)entry, *(u32 *)(entry + 4), *(u32 *)(entry + 8));
                 offset += 0xC;
                 i++;
             }
         }
         {
-            u8 *entry;
-            s32 offset, i;
-            i = 0;
-            offset = 0;
+            register s32 i = 0;
+            register s32 offset = 0;
             while (i < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
-                entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
+                u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
                 const char *format = (const char *)&lbl_80559E1C;
                 fn_801473F8(*(VTable **)(self + 8), *(u32 *)entry, format, *(u32 *)(entry + 4));
                 offset += 8;
