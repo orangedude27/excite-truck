@@ -8756,21 +8756,18 @@ return var_r31;
 extern "C" s32 fn_800B3A70(void *arg0, void *arg1, s32 flags) {
     char *dst = (char *)arg0;
     const char *src = (const char *)arg1;
-    s32 i = 0;
     s32 noPad;
-    while (i < 8 && *src != 0) {
-        if (*src == '.') {
-            if (i == 0) {
-                i = 0;
-                while (i < 2 && *src != 0) {
-                    *dst++ = *src++;
-                    i++;
-                }
-            }
-            break;
-        }
+    s32 i = 0;
+    while (i < 8 && *src != 0 && *src != '.') {
         *dst++ = *src++;
         i++;
+    }
+    if (i == 0) {
+        i = 0;
+        while (i < 2 && *src != 0) {
+            *dst++ = *src++;
+            i++;
+        }
     }
     noPad = flags & 8;
     if (noPad == 0) {
