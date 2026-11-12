@@ -289,6 +289,7 @@ void fn_801381B4(void *arg0) {
         node = *(unsigned char **)(node + 4);
     }
 }
+#pragma pop
 
 #pragma dont_inline on
 void fn_80138434(void) {
