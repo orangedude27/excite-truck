@@ -208,6 +208,8 @@ s32 fn_801355B8(void *arg0, void *arg1, void *arg2, void *arg3) {
 }
 
 #pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801355C0(void *arg0, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
     extern double fn_8002F234(float);
