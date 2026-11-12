@@ -931,6 +931,7 @@ extern char lbl_803020A4[];
 extern char lbl_80558DF8[];
 #pragma push
 #pragma use_lmw_stmw off
+/* Starts an asynchronous read from an open DVD file at a byte offset with priority. */
 s32 DVDReadAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *callback, s32 prio) {
     s32 end;
     if (offset < 0 || (u32)offset > *(u32 *)((u8 *)block + 0x34))
