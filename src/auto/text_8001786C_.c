@@ -124,11 +124,10 @@ void fn_80017A2C(void *arg0, s32 arg1) {
 #pragma scheduling on
 void fn_80017AC8(void* arg0) {
     s32 offset, i;
-    register s32 count;
     extern s32 fn_80129D18(s32);
     i = 0;
     offset = 0;
-    while (i < (count = *(s32*)((char*)arg0 + 4))) {
+    while (i < *(s32*)((char*)arg0 + 4)) {
         s32 left;
         s32 right;
         s32* items;
@@ -136,8 +135,8 @@ void fn_80017AC8(void* arg0) {
         index = fn_80129D18(1);
         items = *(s32**)arg0;
         i++;
-        left = *(s32*)((char*)items + offset);
         right = items[index];
+        left = *(s32*)((char*)items + offset);
         *(s32*)((char*)items + offset) = right;
         offset += 4;
         items[index] = left;
@@ -405,19 +404,30 @@ extern "C" void fn_800180FC(void *arg0, s32 arg1) {
 #pragma cplusplus reset
 
 #pragma cplusplus reset
-void fn_800182A0(s32* arg0, s32* arg1) {
+void fn_800182A0(void* arg0, void* arg1) {
     s32 index;
+    s32 value;
+    s32* src;
     s32 i;
-
-    for (i = 0; i < arg1[0]; i++) {
-        index = arg0[0];
-        arg0[index + 1] = arg1[i + 1];
-        arg0[0] = index + 1;
+    s32 index2;
+    s32 value2;
+    s32* src2;
+    s32 i2;
+    src = (s32*)arg1;
+    for (i = 0; i < *(s32*)arg1; i++) {
+        index = *(s32*)arg0;
+        value = *(s32*)((char*)src + 4);
+        src++;
+        *(s32*)((char*)arg0 + index * 4 + 4) = value;
+        *(s32*)arg0 = index + 1;
     }
-    for (i = 0; i < arg1[9]; i++) {
-        index = arg0[9];
-        arg0[index + 10] = arg1[i + 10];
-        arg0[9] = index + 1;
+    src2 = (s32*)arg1;
+    for (i2 = 0; i2 < *(s32*)((char*)arg1 + 0x24); i2++) {
+        index2 = *(s32*)((char*)arg0 + 0x24);
+        value2 = *(s32*)((char*)src2 + 0x28);
+        src2++;
+        *(s32*)((char*)arg0 + index2 * 4 + 0x28) = value2;
+        *(s32*)((char*)arg0 + 0x24) = index2 + 1;
     }
 }
 
