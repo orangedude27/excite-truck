@@ -243,6 +243,7 @@ extern unsigned char lbl_8055A518;
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801A54EC(void *arg0) {
+    /* Updates an object: runs per-frame helpers, conditionally refreshes state from a subobject, and initializes 8 child entries. */
     struct Dummy11 {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
         virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
@@ -408,54 +409,48 @@ extern "C" float fn_801A5A7C(void * __restrict contact, float * __restrict point
 extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg3) {
     float sp8[3];
     float *p4;
-    float f3;
-    float f2;
     float f1;
     float f0;
+    float f2;
+    float f3;
     float dot;
     char *p2 = (char *)arg2;
-
     if (*(volatile unsigned int *)((char *)arg0 + 0x20) == 0) {
         p4 = *(float **)((char *)arg1 + 0xC);
         f2 = lbl_805623F8;
         *(float *)((char *)arg0 + 0) = p4[0];
         *(float *)((char *)arg0 + 4) = p4[1];
         *(float *)((char *)arg0 + 8) = p4[2];
-
         sp8[0] = *(float *)(p2 + 0x60) + *(float *)(p2 + 0x118) * f2;
         sp8[1] = *(float *)(p2 + 0x64) + *(float *)(p2 + 0x11C) * f2;
         sp8[2] = *(float *)(p2 + 0x68) + *(float *)(p2 + 0x120) * f2;
-
-        if (arg3 != 0) {
+        if (arg3) {
             dot = PSVECDotProduct((float *)arg3, (float *)arg0);
             if (dot < lbl_805623C8) {
                 f2 = *(float *)((char *)arg0 + 0);
                 f3 = lbl_805623FC;
                 f1 = *(float *)((char *)arg0 + 4);
                 f0 = *(float *)((char *)arg0 + 8);
-                f2 *= f3;
                 f1 *= f3;
+                f2 *= f3;
                 f0 *= f3;
-                *(float *)((char *)arg0 + 0) = f2;
                 *(float *)((char *)arg0 + 4) = f1;
+                *(float *)((char *)arg0 + 0) = f2;
                 *(float *)((char *)arg0 + 8) = f0;
             }
         }
-
         *(float *)((char *)arg0 + 0x14) = fn_801A5A7C(arg0, sp8, (float *)((char *)*(void **)((char *)arg1 + 0xC) + 0x24));
-
         dot = PSVECDotProduct((float *)(p2 + 0x118), (float *)arg0);
         f3 = lbl_805623EC;
-        *(float *)((char *)arg0 + 0xC) = dot;
         f0 = -(float)(double)dot;
+        *(float *)((char *)arg0 + 0xC) = dot;
         f3 = (f3 < f0) ? f3 : f0;
         f3 = (f3 > lbl_80562400) ? f3 : lbl_80562400;
-
         f2 = lbl_805623F4;
         f0 = lbl_805623C8;
         f1 = f2 * f3;
-        *(float *)((char *)arg0 + 0x1C) = f2;
         *(float *)((char *)arg0 + 0x18) = f0;
+        *(float *)((char *)arg0 + 0x1C) = f2;
         *(float *)((char *)arg0 + 0x10) = f1;
         *(unsigned int *)((char *)arg0 + 0x20) = arg1;
     } else if (*(volatile unsigned int *)((char *)arg0 + 0x20) == arg1) {
@@ -465,19 +460,15 @@ extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg
 #pragma pop
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
     float values[3];
-    void *record;
-    void *other;
-    void *slot;
-    int val;
+    int count;
     int i;
-    void *candidate;
+    int val;
+    void *slot = (char *)arg0 + 0x2724;
+    void *candidate = 0;
+    void *other = 0;
+    void *record = arg0;
 
-    slot = (char *)arg0 + 0x2724;
-    other = 0;
-    record = arg0;
-    candidate = 0;
-
-    for (i = 0; i < 4; i++) {
+    for (count = 4, i = 0; count > 0; count--, i++) {
         val = *(int *)((char *)record + 0x2744);
         if (val != 0 && (unsigned int)val != key)
             other = slot;
