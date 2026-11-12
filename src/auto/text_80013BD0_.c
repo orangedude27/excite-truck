@@ -328,10 +328,10 @@ extern "C" void *fn_80014524(void *object, s32 index) {
 #pragma pop
 
 void fn_80014638(void *arg0) {
-    register f32 zero = lbl_80560368;
-    register s32 a = 0;
-    register f32 one = lbl_80560398;
-    register s32 six = 6;
+    f32 zero = lbl_80560368;
+    u8 a = 0;
+    f32 one = lbl_80560398;
+    s32 six = 6;
     *(s32 *)((u8 *)arg0 + 0x14) = six;
     *(f32 *)((u8 *)arg0 + 0x1C) = one;
     *(u8 *)((u8 *)arg0 + 0x20) = a;
@@ -839,6 +839,9 @@ extern void fn_80010E94(void *, s32, f32, f32, f32, f32);
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
 void fn_8001529C(void *arg0, u32 arg1, f32 a, f32 b, f32 c, f32 d, f32 e) {
+    /* Position a UI element (arg0+0x38) horizontally by interpolating a between
+     * b and b+d with half-width centering, and place it above or below c based on
+     * arg1's sign bit, then apply the transform via fn_80010E94. */
     f32 width, height, half, left, y, bottom, x;
     s32 negative;
     s32 positive = (arg1 >> 31) ^ 1;
