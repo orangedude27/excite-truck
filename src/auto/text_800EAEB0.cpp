@@ -2156,16 +2156,20 @@ extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *this_, con
     *(u8 *)((u8 *)this_ + 0x16) = 1;
 }
 
-extern "C" int fn_800EF500(void* arg0) {
-    if (*((unsigned char*)arg0 + 0x16) == 0)
+extern "C" int fn_800EF500(void* player) {
+    /* Start this seq player if prepared (+0x16): insert its list node (+0x100)
+     * at the front of the seq player list (lbl_80412A6C), snapshot the
+     * EmissionManager tick (+0x6C32) to +0x14, and mark the player started
+     * (+0x17). Returns 1 on success, 0 if not prepared. */
+    if (*((unsigned char*)player + 0x16) == 0)
         return 0;
     register char* iterator = (char*)lbl_80412A6C + 4;
-    if (arg0 == 0)
+    if (player == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
     char* slot = iterator;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(lbl_80412A6C, (void**)&slot, (char*)arg0 + 0x100);
-    *((unsigned char*)arg0 + 0x14) = *((unsigned char*)Instance__15EmissionManagerFv() + 0x6C32);
-    *((unsigned char*)arg0 + 0x17) = 1;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(lbl_80412A6C, (void**)&slot, (char*)player + 0x100);
+    *((unsigned char*)player + 0x14) = *((unsigned char*)Instance__15EmissionManagerFv() + 0x6C32);
+    *((unsigned char*)player + 0x17) = 1;
     return 1;
 }
 
