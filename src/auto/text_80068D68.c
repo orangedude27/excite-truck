@@ -22472,6 +22472,14 @@ void rfc_send_sabme(void *p_mcb, s32 dlci, void *unused) {
     rfc_check_send_cmd(p_mcb, p_buf);
 }
 
+/* rfc_ts_frames.c's rfc_calc_fcs() (rfc_int.h's RFCOMM_*_FCS macros expand to
+ * it); this auto unit links it under its map name. */
+#define rfc_calc_fcs fn_8009504C
+
+/* rfcdefs.h's RFCOMM_CR(initiator, is_command) for a response frame
+ * (is_command == 0), with the two tests in the order this build emits them. */
+#define RFCOMM_CR_RSP(initiator) ((((!(initiator) && 1) || ((initiator) && !1))) << 1)
+
 void rfc_send_ua(void *arg0, s32 arg1, void *arg2) {
     BT_HDR *p_buf;
     u8 *p_data;
