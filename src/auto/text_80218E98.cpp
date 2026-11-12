@@ -2169,6 +2169,7 @@ extern "C" s32 fn_8021165C(s32, s32);
 extern "C" s32 fn_802C5310(s32, s32, f32, f32, f32);
 #pragma push
 #pragma processor 750
+/* Updates this widget and draws its two value indicators when their bounds differ (checks virtual slots 6/5 on the widget at +0x2A4). */
 extern "C" void fn_8021BFEC(void *arg0) {
     struct Vf {
         virtual void m0();
@@ -2179,33 +2180,33 @@ extern "C" void fn_8021BFEC(void *arg0) {
         virtual s32 second();
         virtual s32 first();
     };
-    f32 spC;
-    f32 sp8;
-    s32 flag;
-    s32 *p;
-    s32 x;
-    s32 y;
-    f32 tmp;
+    f32 posX;
+    f32 posY;
+    s32 isActive;
+    s32 *statePtr;
+    s32 handleA;
+    s32 handleB;
+    f32 scale;
 
     fn_80219660(arg0);
     if (*(s32 *)((u8 *)arg0 + 0x2B0) != *(s32 *)((u8 *)arg0 + 0x2B4)) {
-        p = *(s32 **)((u8 *)arg0 + 0x2A8);
-        flag = 0;
-        if ((p != 0) && (*(s32 *)((u8 *)arg0 + 0x2AC) == *p)) {
-            flag = 1;
+        statePtr = *(s32 **)((u8 *)arg0 + 0x2A8);
+        isActive = 0;
+        if ((statePtr != 0) && (*(s32 *)((u8 *)arg0 + 0x2AC) == *statePtr)) {
+            isActive = 1;
         }
-        x = fn_8021165C(0, 2);
-        y = fn_8021165C(1, 2);
-        tmp = lbl_805634A8;
-        spC = tmp;
-        sp8 = tmp;
-        fn_80230C30(&spC, &sp8, *(s32 *)((u8 *)arg0 + 0x2B0), *(s32 *)((u8 *)arg0 + 0x2B8));
+        handleA = fn_8021165C(0, 2);
+        handleB = fn_8021165C(1, 2);
+        scale = lbl_805634A8;
+        posX = scale;
+        posY = scale;
+        fn_80230C30(&posX, &posY, *(s32 *)((u8 *)arg0 + 0x2B0), *(s32 *)((u8 *)arg0 + 0x2B8));
         if (((Vf *)*(void **)((u8 *)arg0 + 0x2A4))->first() != 0) {
-            fn_802C5310(x, flag, spC, sp8, tmp);
+            fn_802C5310(handleA, isActive, posX, posY, scale);
         }
-        fn_80230C30(&spC, &sp8, *(s32 *)((u8 *)arg0 + 0x2B4), *(s32 *)((u8 *)arg0 + 0x2B8));
+        fn_80230C30(&posX, &posY, *(s32 *)((u8 *)arg0 + 0x2B4), *(s32 *)((u8 *)arg0 + 0x2B8));
         if (((Vf *)*(void **)((u8 *)arg0 + 0x2A4))->second() != 0) {
-            fn_802C5310(y, flag, spC, sp8, tmp);
+            fn_802C5310(handleB, isActive, posX, posY, scale);
         }
     }
 }
