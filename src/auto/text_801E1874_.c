@@ -142,6 +142,7 @@ void fn_801E1B30(void) {
         *(float *)(state + 0xC) = lbl_80562CC8;
     }
 }
+#pragma pop
 #pragma scheduling on
 void fn_801E1D20(void) {
     lbl_8055EA20 = 0;
