@@ -145,7 +145,6 @@ struct BA54CallObj {
 #pragma cplusplus reset
 #pragma scheduling invalid_target
 void fn_8018185C(void *arg0, const float *arg1) {
-    register float slope1 asm("f31");
     float *out = (float *)arg0;
     float x;
     float y;
@@ -156,37 +155,29 @@ void fn_8018185C(void *arg0, const float *arg1) {
     float x2;
     float y2;
     float t;
-
+    float slope1;
     x = arg1[1];
     out[7] = x;
     out[10] = arg1[3];
     out[6] = lbl_80561CA0 * arg1[5];
-
-    if (x <= lbl_80561CA4) {
-        x = lbl_80561CA4;
-    }
+    x = (x > lbl_80561CA4) ? x : lbl_80561CA4;
     y = (lbl_80561CA8 * arg1[0]) / x;
     out[9] = lbl_80561CAC;
     delta = out[7] - arg1[3];
     first = lbl_80561CA0 * arg1[2];
     y = lbl_80561CA0 * y;
     denom = delta * delta;
-    if (denom <= lbl_80561CA4) {
-        denom = lbl_80561CA4;
-    }
+    denom = (denom > lbl_80561CA4) ? denom : lbl_80561CA4;
     slope1 = (y - first) / denom;
     out[8] = y / lbl_80561CB4;
     out[0] = slope1;
     out[1] = out[6] + (lbl_80561CB0 * slope1) * arg1[3];
     out[2] = first + slope1 * (arg1[3] * arg1[3]);
-
     x2 = arg1[4] - out[10];
     y2 = x2 * x2;
     second = lbl_80561CA0 * (lbl_80561CB8 * arg1[2]);
     t = lbl_80561CA0 * arg1[2];
-    if (y2 <= lbl_80561CBC) {
-        y2 = lbl_80561CBC;
-    }
+    y2 = (y2 > lbl_80561CBC) ? y2 : lbl_80561CBC;
     second = (second - t) / y2;
     out[3] = second;
     out[5] = t + second * (out[10] * out[10]);
@@ -492,6 +483,7 @@ int fn_801837DC(int arg0, int arg1) {
     return arg0;
 }
 
+/* Restore saved transform/state words from +0x274..+0x2A0 into +0x3C..+0x68, then refresh and reinitialize. */
 void fn_8018381C(void *arg0) {
     int l, k, j, i, h, g, f, e, d, c, b, a;
 
@@ -1876,6 +1868,10 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
     float z;
     float y;
     float x;
+    float c;
+    void *p;
+    float inv;
+    int idx;
 #pragma unused(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
     value = *(int *)((char *)arg0 + 0x328);
     if (value != 0) {
@@ -1901,11 +1897,15 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
         *(float *)((char *)arg0 + 0x334) / lbl_80561D58,
         *(float *)((char *)arg0 + 0x338) / lbl_80561D58);
     x = *(float *)((char *)arg0 + 0x32C);
+    p = (void *)((unsigned int)arg0 + 0x32C);
+    c = lbl_80561CD0;
     *(float *)((char *)arg0 + 0xD4) = x;
-    *(float *)((char *)arg0 + 0xE4) = lbl_80561CD0 / x;
-    fn_801BDA74(*(int *)((char *)arg0 + 0x1EC), (void *)((unsigned int)arg0 + 0x32C), x);
-    fn_801D11D8((char *)lbl_8055E908 + *(int *)((char *)arg0 + 0x1EC) * 0x34);
-    fn_801D1540((char *)lbl_8055E918 + *(int *)((char *)arg0 + 0x1EC) * 0x9C);
+    inv = c / x;
+    idx = *(int *)((char *)arg0 + 0x1EC);
+    *(float *)((char *)arg0 + 0xE4) = inv;
+    fn_801BDA74(idx, p, x);
+    fn_801D11D8((char *)lbl_8055E908 + *(int *)((char *)arg0 + 0x1EC) * 0x34, *(int *)((char *)arg0 + 0x1EC));
+    fn_801D1540((char *)lbl_8055E918 + *(int *)((char *)arg0 + 0x1EC) * 0x9C, *(int *)((char *)arg0 + 0x1EC));
 }
 #pragma cplusplus reset
 void fn_8018A2BC(void) {
@@ -2059,12 +2059,12 @@ void fn_8018A750(void *arg0, int arg_sp0) {
         object = *(void **)(base + 0x26C0);
         count = *(int *)((char *)object + 0xC8);
         if (count > 0) {
-            register int i = 0;
-            register int slot = 0;
-            register int k = 0;
-            register int *entry = work.entries[0];
-            register float *vec = work.vectors[0];
-            register unsigned int *record = work.records[0];
+            int i = 0;
+            int slot = 0;
+            int k = 0;
+            int *entry = work.entries[0];
+            float *vec = work.vectors[0];
+            unsigned int *record = work.records[0];
             float cd0 = lbl_80561CD0;
             float cdc = lbl_80561CDC;
             do {
@@ -2099,46 +2099,52 @@ void fn_8018A750(void *arg0, int arg_sp0) {
     }
 }
 
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma scheduling on
 void fn_8018A8A8(void *arg0) {
-    float sp[15];
-    float temp_f1, temp_f2, temp_f3, temp_f3_2;
-    float temp_f4, temp_f4_2, temp_f31_2;
-    double temp_f30;
-    double temp_f31;
-
-    sp[12] = lbl_80561CAC;
-    sp[13] = lbl_80561DBC;
-    sp[14] = lbl_80561CAC;
-    sp[9] = lbl_80561CAC;
-    sp[10] = lbl_80561CD0;
-    sp[11] = lbl_80561CAC;
-    sp[6] = lbl_80561CAC;
-    sp[7] = lbl_80561CAC;
-    sp[8] = lbl_80561CAC;
+    float sp38[3];
+    float sp2C[3];
+    float sp20[3];
+    float sp14[3];
+    float sp8[3];
+    float angle;
+    float value;
+    float calculated;
+    register float temp_f31;
+    register float temp_f30;
+    sp38[0] = lbl_80561CAC;
+    sp38[1] = lbl_80561DBC;
+    sp38[2] = lbl_80561CAC;
+    sp2C[0] = lbl_80561CAC;
+    sp2C[1] = lbl_80561CD0;
+    sp2C[2] = lbl_80561CAC;
+    sp20[0] = lbl_80561CAC;
+    sp20[1] = lbl_80561CAC;
+    sp20[2] = lbl_80561CAC;
     if (*(int *)((char *)arg0 + 0x26C4) != 0) {
         temp_f31 = lbl_8055E3C8;
-        temp_f4 = (float)fn_8002EFB4((float)temp_f31, lbl_80561F20);
-        temp_f3 = temp_f4 - lbl_80561D00;
-        temp_f30 = lbl_80561F28 * temp_f3;
-        temp_f4_2 = (float)fn_8002EFB4((float)temp_f31, lbl_80561F30);
-        temp_f3_2 = temp_f4_2 - lbl_80561F3C;
-        temp_f31_2 = lbl_80561F38 * temp_f3_2;
-        temp_f2 = (float)fn_8002EFB4((float)temp_f31, lbl_80561F40);
-        temp_f1 = temp_f2 - lbl_80561F4C;
-        sp[4] = temp_f31_2;
-        sp[5] = (float)temp_f30;
-        sp[3] = lbl_80561F48 * temp_f1;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), &sp[12], &sp[9], &sp[3], &sp[6]);
+        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F20);
+        value = angle - lbl_80561D00;
+        temp_f30 = lbl_80561F28 * value;
+        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F30);
+        value = angle - lbl_80561F3C;
+        calculated = lbl_80561F38 * value;
+        angle = (float)fn_8002EFB4(temp_f31, lbl_80561F40);
+        sp14[1] = calculated;
+        value = angle - lbl_80561F4C;
+        sp14[2] = temp_f30;
+        sp14[0] = lbl_80561F48 * value;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C4), sp38, sp2C, sp14, sp20);
     }
     if (*(int *)((char *)arg0 + 0x26C8) != 0) {
-        sp[0] = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
-        sp[1] = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
-        sp[2] = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
-        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), &sp[12], &sp[9], &sp[0], &sp[6]);
+        sp8[0] = *(float *)((char *)arg0 + 0x118) * lbl_80561F50;
+        sp8[1] = *(float *)((char *)arg0 + 0x11C) * lbl_80561F50;
+        sp8[2] = *(float *)((char *)arg0 + 0x120) * lbl_80561F50;
+        fn_801C27D8(*(void **)((char *)arg0 + 0x26C8), sp38, sp2C, sp8, sp20);
     }
 }
+#pragma pop
 extern void fn_801C2BDC(void *, unsigned int *, unsigned int *, unsigned int *);
 void fn_8018A9F0(void *arg0, void *arg1) {
     float sp54, sp50, sp4C, sp48, sp44, sp40, sp3C, sp38, sp34, sp30, sp2C;
@@ -2386,44 +2392,46 @@ int fn_8018AF04(void *arg0) {
         float z;
         float w;
     } frame;
-    int a;
-    int b;
-    int c;
-    int d;
+    unsigned a;
+    unsigned b;
+    unsigned c;
+    unsigned d;
     int index;
+    float tx;
+    float ty;
+    float tz;
+    float tw;
     float x;
     float y;
     float z;
     float w;
-
+    int cond;
     if (fn_801CF064() == 0)
         path = p + 0x1E44;
     else
         path = p + 0x20F8;
     fn_8018F2C0(arg0, path);
-
-    a = *(int *)(p + 0x241C);
-    b = *(int *)(p + 0x2490);
-    a &= ~8;
-    d = *(int *)(p + 0x2578);
-    x = *(float *)(p + 0x23E8);
-    b &= ~8;
-    c = *(int *)(p + 0x2504);
-    d &= ~8;
-    y = *(float *)(p + 0x245C);
-    c &= ~8;
-    z = *(float *)(p + 0x24D0);
-    w = *(float *)(p + 0x2544);
-    *(int *)(p + 0x241C) = a;
+    a = *(unsigned *)(p + 0x241C);
+    b = *(unsigned *)(p + 0x2490);
+    a &= ~8u;
+    d = *(unsigned *)(p + 0x2578);
+    tx = *(float *)(p + 0x23E8);
+    b &= ~8u;
+    c = *(unsigned *)(p + 0x2504);
+    d &= ~8u;
+    ty = *(float *)(p + 0x245C);
+    c &= ~8u;
+    tz = *(float *)(p + 0x24D0);
+    tw = *(float *)(p + 0x2544);
+    *(unsigned *)(p + 0x241C) = a;
     index = *(int *)(p + 0x1EC);
-    frame.x = x;
-    *(int *)(p + 0x2490) = b;
-    frame.y = y;
-    *(int *)(p + 0x2504) = c;
-    frame.z = z;
-    *(int *)(p + 0x2578) = d;
-    frame.w = w;
-
+    frame.x = tx;
+    *(unsigned *)(p + 0x2490) = b;
+    frame.y = ty;
+    *(unsigned *)(p + 0x2504) = c;
+    frame.z = tz;
+    *(unsigned *)(p + 0x2578) = d;
+    frame.w = tw;
     fn_801BEB30(index, (int *)&frame.obj);
     x = frame.x;
     obj = (unsigned char *)frame.obj;
@@ -2433,19 +2441,21 @@ int fn_8018AF04(void *arg0) {
     *(float *)(obj + 0x74) = y;
     w = frame.w;
     *(float *)(obj + 0x78) = z;
-    *(float *)(obj + 0x7C) = w;
-    frame.values[0] = x;
     zero = lbl_80561CAC;
+    *(float *)(obj + 0x7C) = w;
+    obj = (unsigned char *)frame.obj;
+    frame.values[0] = x;
     *(float *)(obj + 0x130) = zero;
     *(float *)(obj + 0x134) = zero;
     *(float *)(obj + 0x138) = zero;
     *(float *)(obj + 0x13C) = zero;
-    frame.values[1] = y;
     obj = (unsigned char *)frame.obj;
+    frame.values[1] = y;
     *(float *)(obj + 0x140) = zero;
     *(float *)(obj + 0x144) = zero;
     *(float *)(obj + 0x148) = zero;
     *(float *)(obj + 0x14C) = zero;
+    cond = *(int *)(p + 0x26B0);
     frame.values[2] = z;
     frame.values[3] = w;
     frame.matrix0[4] = zero;
@@ -2456,7 +2466,7 @@ int fn_8018AF04(void *arg0) {
     frame.matrix0[1] = zero;
     frame.matrix0[2] = zero;
     frame.matrix0[3] = zero;
-    if (*(int *)(p + 0x26B0) >= 0) {
+    if (cond >= 0) {
         *(int *)(p + 0x26B0) = -1;
         *(int *)(p + 0x1E40) = 0;
         if (*fn_801E1F44() == 1)
