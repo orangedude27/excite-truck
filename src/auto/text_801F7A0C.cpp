@@ -2603,7 +2603,8 @@ void fn_802C6CF8(s32);
 void *__dt__Q28PSSystem7SeqHeapFv_801EACF8(void *, s32);
 void fn_80128668(void *);
 #pragma small_data off
-extern "C" void *fn_801FC674(void *arg0, s32 arg1) {
+/* Destroy this object: set its vtable, unlink it from the global list, release its owned resource/id, run base destruction, and optionally free it. */
+extern "C" void *fn_801FC674(void *arg0, s32 shouldDelete) {
     void **link;
     void *next;
     if (arg0 != 0) {
@@ -2615,7 +2616,7 @@ extern "C" void *fn_801FC674(void *arg0, s32 arg1) {
         }
         if ((u32)arg0 + 0x44 != 0 && ((s32 *)arg0)[17] != -1) fn_802C6CF8(((s32 *)arg0)[17]);
         __dt__Q28PSSystem7SeqHeapFv_801EACF8(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(arg0);
     }
     return arg0;
 }
