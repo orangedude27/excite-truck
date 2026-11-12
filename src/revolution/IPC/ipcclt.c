@@ -411,6 +411,8 @@ s32 IOS_Open(const char* path, IPCOpenMode mode) {
     return ret;
 }
 
+/* Asynchronously closes an IOS file descriptor: builds a close request via
+ * __ios_Ipc1 and submits it with __ios_Ipc2 when setup succeeds. */
 s32 IOS_CloseAsync(s32 fd, IPCAsyncCallback callback, void* callbackArg) {
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(fd, IPC_REQ_CLOSE, callback, callbackArg, &req);
