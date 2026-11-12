@@ -22050,6 +22050,7 @@ extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
 extern "C" void fn_8005EE6C(void);
 extern "C" void fn_8005EE70(void);
 extern "C" void fn_800CA16C(OSAlarm *alarm, OSContext *ctx) {
+    /* OSAlarm callback: check sync state and reschedule itself after ~100ms if inactive. */
     u8 *base = (u8 *)lbl_8055DD98;
     void *userData;
     s32 active;
