@@ -33,8 +33,8 @@ extern float lbl_80562AE0;
 extern void fn_801D9AB8(void *, float);
 extern void fn_80178DBC(int, float);
 extern char lbl_804422F0[];
-extern float lbl_80562ADC;
-extern float lbl_80558DC4;
+  extern float lbl_80562ADC;
+  __declspec(section ".rodata") extern float lbl_80558DC4;
 extern int fn_801D56C0(void*);
     extern float PSVECDotProduct(void *, void *);
     extern void PSVECNormalize(void *, void *);
@@ -497,8 +497,6 @@ void fn_801D50B8(int arg0) {
         virtual void v1();
         virtual void v2();
         virtual void v3();
-        virtual void v4();
-        virtual void v5();
         virtual int state();
         virtual void v7();
         virtual void v8();
@@ -510,24 +508,22 @@ void fn_801D50B8(int arg0) {
     struct Other {
         virtual void v0();
         virtual void v1();
-        virtual void v2();
-        virtual void v3();
         virtual void *get();
     };
     extern int fn_8017960C(int);
     extern void *fn_801B2EC0(int);
     extern int fn_801B2F24(void);
-    int state = *(int *)((char *)arg0 + 4);
-    if (state == 2) {
-        int i = 0;
-        int found = 0;
-        int count = *(int *)((char *)arg0 + 0x34);
-        void **items = *(void ***)((char *)arg0 + 0x30);
-        int offset = 0;
+    if (*(int *)((char *)arg0 + 4) == 2) {
+        int offset;
+        int found;
+        int i;
+        found = 0;
+        i = 0;
+        offset = 0;
         goto test1;
 loop1:
         {
-            Item *obj = *(Item **)((char *)items + offset);
+            Item *obj = *(Item **)(*(char **)((char *)arg0 + 0x30) + offset);
             int s = obj->state();
             if (s == 2) {
                 found = 1;
@@ -538,7 +534,7 @@ loop1:
         offset += 4;
         i++;
 test1:
-        if (i < count) goto loop1;
+        if (i < *(int *)((char *)arg0 + 0x34)) goto loop1;
         if (found == 0) {
             unsigned char flag = *(unsigned char *)((char *)arg0 + 0x20);
             if (flag != 0) {
@@ -547,13 +543,13 @@ test1:
                 goto test2;
 loop2:
                 {
-                    Item *obj2 = *(Item **)((char *)items + off2);
+                    Item *obj2 = *(Item **)(*(char **)((char *)arg0 + 0x30) + off2);
                     obj2->run3();
                 }
                 off2 += 4;
                 j++;
 test2:
-                if (j < count) goto loop2;
+                if (j < *(int *)((char *)arg0 + 0x34)) goto loop2;
                 *(int *)((char *)arg0 + 4) = 1;
                 return;
             }
@@ -564,7 +560,6 @@ test2:
     {
         int maxVal = -1;
         int idx = 0;
-        int total = fn_801B2F24();
         goto test3;
 loop3:
         {
@@ -576,18 +571,17 @@ loop3:
                 if (v > maxVal) maxVal = v;
             }
             idx++;
-            fn_801B2F24();
         }
 test3:
-        if (idx < total) goto loop3;
+        if (idx < fn_801B2F24()) goto loop3;
         if (maxVal >= 0) {
-            if (state == 1) {
+            if (*(int *)((char *)arg0 + 4) == 1) {
                 if ((*(int *)((char *)arg0 + 0x24) >= 0 && maxVal < *(int *)((char *)arg0 + 0x24)) ||
                     (*(int *)((char *)arg0 + 0x28) < 0 || maxVal > *(int *)((char *)arg0 + 0x28))) {
                     *(int *)((char *)arg0 + 4) = 4;
                     return;
                 }
-            } else if (state == 4) {
+            } else if (*(int *)((char *)arg0 + 4) == 4) {
                 if ((*(int *)((char *)arg0 + 0x24) < 0 || maxVal >= *(int *)((char *)arg0 + 0x24)) &&
                     (*(int *)((char *)arg0 + 0x28) >= 0 && maxVal <= *(int *)((char *)arg0 + 0x28))) {
                     *(int *)((char *)arg0 + 4) = 1;
