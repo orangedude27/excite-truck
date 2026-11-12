@@ -674,6 +674,7 @@ done:
     if (flag > 0) fn_80128668(self);
     return self;
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
