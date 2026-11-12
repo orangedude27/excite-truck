@@ -426,11 +426,10 @@ void fn_802DA2F4(void) {
     void *object;
     void *buffer;
     float *matrix;
-    register int count;
-    float value0;
+    int count;
     float value1;
+    float value0;
     float *last;
-
     object = fn_801284F8(0x28, lbl_8055D128);
     if (object != 0) {
         buffer = (void *)fn_8012850C(0x19000, lbl_8034C908);
@@ -444,11 +443,10 @@ void fn_802DA2F4(void) {
         *(void **)((char *)object + 0x1C) = (void *)fn_802DA1F4;
     }
     lbl_8055FE5C = object;
-
+    count = 0xB;
     value0 = lbl_80565030;
     value1 = lbl_80565034;
     matrix = lbl_804DAC48;
-    count = 0xB;
     do {
         matrix[0] = value0;
         matrix[1] = value1;
@@ -476,7 +474,6 @@ void fn_802DA2F4(void) {
         matrix[23] = value1;
         matrix += 24;
     } while (--count != 0);
-
     value0 = lbl_80565030;
     value1 = lbl_80565034;
     last = lbl_804DB434;
@@ -624,52 +621,54 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+/* Allocates a 12-byte-per-element record from the stack allocator arena (type 7). */
 void *fn_802DA704(int owner, void *data, int count) {
     volatile unsigned char *state;
-    int saved;
-    unsigned char *base;
-    int bytes;
+    int savedInitialized;
+    unsigned char *blockBase;
+    int payloadBytes;
     int used;
-    int size;
-    int rounded;
-    int aligned;
-    unsigned int position;
-    int updated;
-    void *result;
+    int recordSize;
+    int roundedSize;
+    int alignedSize;
+    unsigned int blockOffset;
+    int newUsed;
+    void *record;
+
     state = (volatile unsigned char *)lbl_8055FE5C;
-    bytes = count * 12;
-    saved = state[0x25];
+    payloadBytes = count * 12;
+    savedInitialized = state[0x25];
     state[0x25] = 0;
-    size = bytes + 0x18;
-    rounded = size + 3;
+    recordSize = payloadBytes + 0x18;
+    roundedSize = recordSize + 3;
     used = *(volatile int *)(state + 0x10);
-    aligned = rounded & ~3;
-    if (aligned + used + 8 > *(volatile int *)(state + 0x0C)) {
-        int limit = *(volatile int *)(state + 0x0C);
-        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), size, limit / 1024);
-        result = 0;
+    alignedSize = roundedSize & ~3;
+    if (alignedSize + used + 8 > *(volatile int *)(state + 0x0C)) {
+        int capacity = *(volatile int *)(state + 0x0C);
+        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), recordSize, capacity / 1024);
+        record = 0;
     } else {
-        position = *(unsigned int *)(state + 4);
-        base = (unsigned char *)*(volatile int *)(state + 0x10);
-        base += position;
-        *(int *)base = 1;
-        result = base + 4;
-        position = *(unsigned int *)(state + 4);
+        blockOffset = *(unsigned int *)(state + 4);
+        blockBase = (unsigned char *)*(volatile int *)(state + 0x10);
+        blockBase += blockOffset;
+        *(int *)blockBase = 1;
+        record = blockBase + 4;
+        blockOffset = *(unsigned int *)(state + 4);
         used = *(volatile int *)(state + 0x10);
-        used = position + used;
-        position = used + aligned;
-        *(int *)(position + 4) = aligned;
-        updated = aligned + *(volatile int *)(state + 0x10);
-        *(volatile int *)(state + 0x10) = updated + 8;
+        used = blockOffset + used;
+        blockOffset = used + alignedSize;
+        *(int *)(blockOffset + 4) = alignedSize;
+        newUsed = alignedSize + *(volatile int *)(state + 0x10);
+        *(volatile int *)(state + 0x10) = newUsed + 8;
     }
-    *(int *)((char *)result + 0) = 7;
-    *(int *)((char *)result + 4) = owner;
-    *(int *)((char *)result + 8) = count;
-    *(int *)((char *)result + 0x0C) = 0;
-    *(int *)((char *)result + 0x14) = 0;
-    *(unsigned char *)((char *)result + 0x10) = (unsigned char)saved;
-    memcpy((char *)result + 0x18, data, bytes);
-    return result;
+    *(int *)((char *)record + 0) = 7;
+    *(int *)((char *)record + 4) = owner;
+    *(int *)((char *)record + 8) = count;
+    *(int *)((char *)record + 0x0C) = 0;
+    *(int *)((char *)record + 0x14) = 0;
+    *(unsigned char *)((char *)record + 0x10) = (unsigned char)savedInitialized;
+    memcpy((char *)record + 0x18, data, payloadBytes);
+    return record;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
