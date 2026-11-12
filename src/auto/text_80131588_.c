@@ -253,7 +253,8 @@ s32 fn_80131B50(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 extern s32 fn_80131C88(void*, const char*);
-s32 fn_80131BD0(void* arg0, const char* name) {
+/* Return nonzero if `name` exists in this table's entries or, if not found, in its child table. */
+s32 fn_80131BD0(void* table, const char* name) {
     volatile struct { const char *n; s32 v; } key;
     s32 index;
     char *found;
@@ -263,16 +264,16 @@ s32 fn_80131BD0(void* arg0, const char* name) {
     found = 0;
     index = 0;
     offset = 0;
-    while (index < *(s32*)((char*)arg0 + 0xC)) {
-        if (stricmp(name, *(char**)(*(char**)((char*)arg0 + 0x10) + offset)) == 0) {
-            found = *(char**)((char*)arg0 + 0x10) + index * 8;
+    while (index < *(s32*)((char*)table + 0xC)) {
+        if (stricmp(name, *(char**)(*(char**)((char*)table + 0x10) + offset)) == 0) {
+            found = *(char**)((char*)table + 0x10) + index * 8;
             break;
         }
         offset += 8;
         index++;
     }
-    if (found == 0 && *(void**)((char*)arg0 + 0x14) != 0) {
-        found = (char*)fn_80131C88(*(void**)((char*)arg0 + 0x14), name);
+    if (found == 0 && *(void**)((char*)table + 0x14) != 0) {
+        found = (char*)fn_80131C88(*(void**)((char*)table + 0x14), name);
     }
     return found != 0;
 }
