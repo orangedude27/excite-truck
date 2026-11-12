@@ -247,6 +247,8 @@ typedef struct { int w[8]; } Blk32;
 typedef struct { int w[3]; } Blk12;
 typedef struct { Blk32 a; int b; Blk12 c; } Cam48;
 #pragma cplusplus on
+#pragma push
+#pragma processor 750
 extern "C" void fn_80205FCC(void) {
     Cam48 cam;
     Mtx48 buf;
