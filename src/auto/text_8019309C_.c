@@ -2050,6 +2050,33 @@ extern float lbl_805621EC, lbl_80562244, lbl_80562248;
 extern void fn_801EA18C(void *, void *, int, int, void *, float);
 extern void fn_8018AE2C(void *, float);
 extern void fn_8018AE34(void *, float);
+
+/* The truck's world transform in the vehicle object reached at +0x294: three
+ * basis vectors followed by the translation (basis X at +0x3C, Y at +0x48, Z at
+ * +0x54, translation at +0x60). Dotted with the world up vector, basis Z says how
+ * far the nose is up and basis X how far the right side is up. */
+typedef struct TruckXf {
+    float right[3];    /* basis X */
+    float up[3];       /* basis Y */
+    float forward[3];  /* basis Z */
+    float position[3]; /* translation */
+} TruckXf;
+#define TRUCK_XF(vehicle) ((TruckXf *)((char *)(vehicle) + 0x3C))
+
+/* fn_801EA18C is handed the point to drop to the terrain as whole words (the
+ * truck's position) and writes the ground point back as floats. */
+typedef union GroundPoint {
+    int word[3];
+    float f[3];
+} GroundPoint;
+
+#define F_ZERO lbl_80562144 /* 0.0f */
+#define F_ONE lbl_80562140 /* 1.0f */
+#define TILT_SCALE lbl_80562184 /* 5.0f: turns an axis/up dot into a -1..1 tilt */
+#define TILT_MIN lbl_805621A4 /* -1.0f: tilts are clamped to -1..1 */
+#define GROUND_DEPTH_FLOOR lbl_80562244 /* -0.01f: keeps the ground depth off zero */
+#define PITCH_CUTOFF lbl_805621EC /* 0.7f: nose-up wanted when off the ground */
+#define PITCH_CUTOFF_SWEEP lbl_80562248 /* -1.1f: how far that cut-off falls */
 void fn_801965AC(void *arg0) {
     float position[3];
     int transform[3];
