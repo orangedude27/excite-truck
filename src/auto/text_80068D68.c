@@ -20312,6 +20312,7 @@ void PORT_ControlInd(void *rfcommMcb, u8 dlci, u8 *params) {
 }
 
 void PORT_ControlCnf(void *mcb, u8 dlci, void *pars) {
+    /* RFCOMM control-confirmation callback: record peer acknowledgement of modem-signal control, send pending TX data if ready, and notify the port's event callback. */
     extern char lbl_80319430[];
     extern u32 port_rfc_send_tx_data(void *);
     u8 *port = port_find_mcb_dlci_port(mcb, dlci);
@@ -20836,20 +20837,19 @@ void fn_800911DC(void) {
 }
 
 void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
-    struct MSGTAB { char m0[0x1C]; char m1[0x8C]; char m2[1]; };
-    register struct MSGTAB *messages = (void *)lbl_803196B8;
+    register volatile char *messages = (volatile char *)lbl_803196B8;
     s32 temp_r0 = arg0 - 0x40;
     void *var_r30;
 
     if (temp_r0 >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, messages->m0, arg0);
+            fn_80070954(0x90000, (char *)messages, arg0);
         var_r30 = 0;
     } else {
         var_r30 = *(void **)((u8 *)&lbl_803C4828 + temp_r0 * 4 + 0x3C);
         if (var_r30 && *(u16 *)((u8 *)var_r30 + 0x68) != arg0) {
             if (lbl_803C4828[0x414] >= 2)
-                fn_8007096C(0x90001, messages->m1, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
+                fn_8007096C(0x90001, (char *)messages + 0x1C, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
             var_r30 = 0;
         }
     }
@@ -20857,7 +20857,7 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
         L2CA_DisconnectRsp(arg0);
     if (!var_r30) {
         if (lbl_803C4828[0x414] >= 2)
-            fn_80070954(0x90001, messages->m2, arg0);
+            fn_80070954(0x90001, (char *)messages + 0xA8, arg0);
     } else {
         fn_800916F4(var_r30, 0xE, 0);
     }
