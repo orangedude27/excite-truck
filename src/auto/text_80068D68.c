@@ -10476,7 +10476,8 @@ typedef struct {
     UINT16 state;             /* 0x08: SCO_ST_* */
     UINT8  _0A[0x14 - 0x0A];  /* 0x0A: the HCI handle and the flags after it */
     tBTM_ESCO_PARAMS setup;   /* 0x14: esco.setup - parameters to negotiate with */
-    UINT8  _24[0x2E - 0x24];  /* 0x24: esco.data - the SCO handle and the peer BDA */
+    UINT8  _24[4];            /* 0x24: esco.data - the SCO handle of the link */
+    BD_ADDR bd_addr;          /* 0x28: esco.data.bd_addr - the peer of the link */
     UINT8  link_type;         /* 0x2E: esco.data.link_type, BTM_LINK_TYPE_* */
     UINT8  _2F[5];            /* 0x2F: the rest of esco.data and its HCI status */
 } ScoConnView;
