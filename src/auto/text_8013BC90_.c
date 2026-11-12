@@ -364,16 +364,6 @@ typedef struct CacheTable {
 #define CACHE_ENTRY_SIZE sizeof(CacheEntry)
 #define CACHE_COUNT (*(int *)(lbl_8042F8C8 + 0x240))
 
-#ifndef CACHE_RESOURCE_DECLARED
-// A cached resource, as fn_8013BF40 builds it.
-typedef struct CacheResource {
-    unsigned char name[0x40];   // at 0x00: the name the entry is filed under
-    unsigned char blocks[0x20]; // at 0x40: loaded blocks, freed by fn_8013A598
-    unsigned char unk60[0x14];  // at 0x60: set up by fn_8013BF3C
-    int buffer;                 // at 0x74: buffer released with the resource
-} CacheResource;
-#endif
-
 // The game's compiler copies an entry's 64-byte name (bytes 4..0x43 of the
 // entry) two bytes at a time, one register per byte and both loads before
 // either store. Written out that way so the entry copy comes out byte for byte.
