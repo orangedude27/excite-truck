@@ -171,6 +171,9 @@ static s32 nandSeek(s32 fd, s32 offset, NANDSeekMode whence,
     }
 }
 
+/* Synchronously seek an open NAND file: bail out unless NAND is initialized,
+ * then map the IPC result of the (inlined) seek to a NAND result. The command
+ * block is NULL and async is FALSE, so nandSeek() ends in ISFS_Seek(). */
 s32 NANDSeek(NANDFileInfo* info, s32 offset, NANDSeekMode whence) {
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
