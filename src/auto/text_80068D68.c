@@ -9840,12 +9840,15 @@ tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT
     if (active & origin) goto return2;
     if (origin == 1) {
         if (active != 0) {
-            if (memcmp(remote_bda, base + 0x16A8, 6) != 0) goto return2;
-            start = 0;
+            if (memcmp(remote_bda, base + 0x16A8, 6) == 0) {
+                start = 0;
+            } else {
+                return 2;
+            }
         }
         *(tBTM_CMPL_CB **)(base + 0x167C) = p_cb;
     } else if (active != 0) {
-        goto return2;
+        return 2;
     }
     if (start) {
         memcpy(base + 0x16A8, remote_bda, 6);
