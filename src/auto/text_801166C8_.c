@@ -465,7 +465,7 @@ s32 fn_80116E54(s32 (*arg0)(s32), s32 arg1) {
     return lbl_8055DECC != 0;
 }
 
-void fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
+s8 *fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
     s16 *var_r4 = arg1;
     s8 *var_r3 = arg0;
     u32 var_r5 = arg2 >> 1U;
