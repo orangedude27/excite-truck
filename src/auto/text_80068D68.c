@@ -15009,13 +15009,31 @@ BOOLEAN btsnd_hcic_rmt_name_req(BD_ADDR bd_addr, UINT8 page_scan_rep_mode,
     return TRUE;
 }
 
-s32 btsnd_hcic_link_key_neg_reply_800843D8(u8 *arg0) {
-    u8 *buf = (u8 *)GKI_getpoolbuf(2);
-    if (buf == 0) return 0;
-    *(u16 *)(buf + 2)=9; *(u16 *)(buf + 4)=0;
-    buf[8]=0x1A; buf[9]=4; buf[10]=6;
-    buf[11]=arg0[5]; buf[12]=arg0[4]; buf[13]=arg0[3]; buf[14]=arg0[2]; buf[15]=arg0[1]; buf[16]=arg0[0];
-    btu_hcif_send_cmd(buf); return 1;
+/* Build and send an HCI Remote_Name_Request_Cancel command for bd_addr: drop the
+   pending Remote_Name_Request, which is all BTM_CancelRemoteDeviceName() wants.
+   NOTE: the name is a misnomer left over from the draft - the opcode streamed
+   here is HCI_RMT_NAME_REQUEST_CANCEL (0x041A), not the Link_Key_Request
+   negative reply (0x040C, which is btsnd_hcic_link_key_neg_reply above).
+   Returns FALSE when the HCI command pool has no buffer left. */
+s32 btsnd_hcic_link_key_neg_reply_800843D8(BD_ADDR bd_addr) {
+    BT_HDR *p;
+    UINT8 *pp;
+
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_RMT_NAME_REQ_CANCEL)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_RMT_NAME_REQ_CANCEL;
+    p->offset = 0;
+
+    UINT16_TO_STREAM (pp, HCI_RMT_NAME_REQUEST_CANCEL);
+    UINT8_TO_STREAM  (pp, HCIC_PARAM_SIZE_RMT_NAME_REQ_CANCEL);
+
+    BDADDR_TO_STREAM (pp, bd_addr);
+
+    btu_hcif_send_cmd(p);
+    return TRUE;
 }
 
 s32 btsnd_hcic_auth_request_80084478(u16 arg0) {
