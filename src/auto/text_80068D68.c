@@ -20945,9 +20945,9 @@ void PORT_DlcReleaseInd(void *arg0, u8 arg1) {
 #define PORT_PEER_CONNECTION_FAILED   0x10  /* port_api.h: PORT_ERR_BASE + 16 */
 
 /* port_rfc.c's PORT_CloseInd(): the RFCOMM layer reports that the multiplexer
- * connection under p_mcb is gone.  Every port running on it is closed with
- * PORT_PEER_CONNECTION_FAILED (its callback gets the event), then the
- * multiplexer channel itself is released. */
+ * connection under p_mcb is gone.  Walk the port pool and close every port
+ * running on it with PORT_PEER_CONNECTION_FAILED (port_rfc_closed() tells the
+ * application's callback), then release the multiplexer channel itself. */
 void PORT_CloseInd(void *p_mcb) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319468[];               /* "PORT_CloseInd" */
@@ -20956,6 +20956,7 @@ void PORT_CloseInd(void *p_mcb) {
     u8 *p_port;
     s32 i;
 
+    /* RFCOMM_TRACE_EVENT0(): group 9, event level */
     if (rfc_cb[0x414] >= BT_TRACE_LEVEL_EVENT) fn_8007093C(0x90003, lbl_80319468);
     for (i = 0, p_port = rfc_cb_ports; i < RFC_PORT_COUNT; i++, p_port += PORT_INFO_SIZE)
         if (*(void **)(p_port + PORT_MCB) == p_mcb) port_rfc_closed((struct t_port_info *)p_port, PORT_PEER_CONNECTION_FAILED);
