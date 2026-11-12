@@ -50,17 +50,16 @@ extern int stricmp(const char *, const char *);
 extern int fn_802E37C4(void);
 extern int fn_802E72B8(int);
 int fn_802E7354(const char *name) {
-    int index = 0;
-    int count;
+    int index;
+    unsigned char *entry;
     int fileIndex;
     int size;
     int blocks;
-    int remaining;
-    unsigned char *entry;
     char *dst;
+    int remaining;
     signed char c;
-
     entry = lbl_804FC978;
+    index = 0;
     goto search_test;
 search_body:
     if (stricmp(name, (char *)(entry + 0x10)) == 0)
@@ -70,41 +69,36 @@ search_body:
 search_test:
     if (index < lbl_8055FFD8)
         goto search_body;
-
     fileIndex = fn_802E36D8((void *)name);
-    if (fileIndex != -1)
-        goto create_entry;
-    return fileIndex;
-create_entry:
-    count = lbl_8055FFD8;
-    entry = lbl_804FC978;
-    entry += count * 0x90;
-    lbl_8055FFD8 = count + 1;
+    if (fileIndex == -1)
+        goto fail;
+    index = lbl_8055FFD8;
+    entry = lbl_804FC978 + index * 0x90;
+    lbl_8055FFD8 = index + 1;
     dst = (char *)(entry + 0x10);
     remaining = 0x80;
-    goto copy_body;
-copy_limit:
-    remaining--;
-    if (remaining > 0)
-        goto copy_body;
-    *--dst = 0;
-    goto copy_end;
-copy_body:
-    c = *name;
-    name++;
-    *dst = c;
-    dst++;
+    goto copy_start;
+dec:
+    if (--remaining <= 0) {
+        dst[-1] = 0;
+        goto done;
+    }
+copy_start:
+    c = *name++;
+    *dst++ = c;
     if (c != 0)
-        goto copy_limit;
-copy_end:
+        goto dec;
+done:
     size = fn_802E37C4();
     blocks = fn_802E72B8(size);
-    *(int *)(entry + 0) = lbl_8055FFDC;
+    *(int *)entry = lbl_8055FFDC;
     lbl_8055FFDC += blocks;
     *(int *)(entry + 4) = lbl_8055FFDC;
     *(int *)(entry + 8) = size;
     fn_802E3734(&fileIndex);
-    return count;
+    return index;
+fail:
+    return -1;
 }
 
 void fn_802E746C(int arg0, int *arg1, int *arg2) {
@@ -115,6 +109,7 @@ void fn_802E746C(int arg0, int *arg1, int *arg2) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Open the stream entry containing arg0, seek to its byte offset, and read up to arg2 bytes into arg1. */
 int fn_802E748C(int arg0, void *arg1, int arg2, int arg3) {
     unsigned char *temp_r31;
     int var_r5;
