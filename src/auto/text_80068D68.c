@@ -8494,19 +8494,25 @@ tBTM_SEC_DEV_REC *btm_find_oldest_dev(void) {
 #define btm_cb_afh_last      (lbl_803C0F78[0x27BE]) /* AFH bad-frame range, last channel */
 
 #pragma small_data on
+/* Initialize the BTM device-control block and kick off controller startup:
+ * load the default local class of device and page timeout, reset the HCI-reset
+ * state machine (state 0, 5 retries) and its command timer, clear the AFH
+ * bad-frame range, then send the first HCI reset.  The reset-completion
+ * handlers (btm_read_local_version/features/buf_size_complete) advance the
+ * state machine from here. */
 void btm_dev_init(void) {
-    memcpy(lbl_803C0F78 + 0x648, &lbl_80559060, 3);
-    *(u16 *)(lbl_803C0F78 + 0x64C) = 0x1400;
-    *(u32 *)(lbl_803C0F78 + 0x584) = 1;
+    memcpy(btm_cb_dev_class, &lbl_80559060, 3);
+    BTM_CB_PAGE_TIMEOUT = 0x1400;
+    *(u32 *)(lbl_803C0F78 + 0x584) = 1;   /* HCI command-sequencing slots */
     *(u32 *)(lbl_803C0F78 + 0x5A0) = 2;
     *(u32 *)(lbl_803C0F78 + 0x5BC) = 4;
-    *(u16 *)(lbl_803C0F78 + 0x654) = 0xCC18;
-    *(u16 *)(lbl_803C0F78 + 0x656) = 0x3F;
-    lbl_803C0F78[0x27BD] = 0xFF;
-    lbl_803C0F78[0x27BE] = 0xFF;
-    lbl_803C0F78[0x64E] = 0;
-    lbl_803C0F78[0x64F] = 5;
-    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
+    btm_cb_pkt_types = 0xCC18;
+    btm_cb_sco_pkt_types = 0x3F;
+    btm_cb_afh_first = 0xFF;
+    btm_cb_afh_last = 0xFF;
+    btm_cb_dev_state = 0;
+    btm_cb_dev_retry = 5;
+    btu_start_timer((TIMER_LIST_ENT *)btm_cb_hci_cmd_timer, 1, 4);
     ((void (*)(void))btsnd_hcic_reset)();
 }
 void btm_discovery_db_reset(void);
