@@ -398,30 +398,41 @@ void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
 #pragma cplusplus on
 extern "C" void fn_801287D0(void *arg0) {
     struct Obj {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
         virtual void m14(s32);
     };
     struct S {
         void *vtable;
-        s32 f4;
-        s32 f8;
-        s32 fc;
+        s32 errorCode;
+        s32 endOffset;
+        s32 currentUsed;
         s32 f10;
-        s32 s14;
-        u32 u18;
-        u32 u1c;
+        s32 startOffset;
+        u32 highWaterMark;
+        u32 capacity;
     };
-    struct S *s = (struct S *)arg0;
-    fn_802E30C8(lbl_8032A000 + 0x140, (void *)(s->s14 / 1024), (void *)s->u1c, (void *)(s->u1c >> 10));
-    fn_802E30C8(lbl_8032A000 + 0x178, (void *)s->u18, (void *)(s->u18 >> 10), (void *)((s->u1c - s->u18) >> 10));
-    ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x1AC, (void *)((s->f8 - s->s14) / 1024));
-    if (s->f4 != 0) {
+    struct S *heap = (struct S *)arg0;
+
+    /* Print ring-buffer usage stats and abort if an allocation error was recorded. */
+    fn_802E30C8(lbl_8032A000 + 0x140, (void *)(heap->startOffset / 1024), (void *)heap->capacity, (void *)(heap->capacity >> 10));
+    fn_802E30C8(lbl_8032A000 + 0x178, (void *)heap->highWaterMark, (void *)(heap->highWaterMark >> 10), (void *)((heap->capacity - heap->highWaterMark) >> 10));
+    ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x1AC, (void *)((heap->endOffset - heap->startOffset) / 1024));
+    if (heap->errorCode != 0) {
         ((Obj *)arg0)->m14(1);
-        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x1C8, (void *)s->f4);
+        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x1C8, (void *)heap->errorCode);
     }
-    s->fc = 0;
+    heap->currentUsed = 0;
 }
 #pragma pop
 s32 fn_801288A4(void) {
@@ -556,7 +567,10 @@ void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
 
 extern int strcmp(const char *, const char *);
 extern char lbl_80559970, lbl_80559974;
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80128C5C(void *arg0, int arg1, int arg2) {
+    struct Hdr { int u0; int lim; int u8; char *base; };
     register char *text = lbl_8032A000;
     int used;
     int count;
@@ -572,7 +586,7 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
         goto check;
     loop:
         {
-            char *record = *(char **)((char *)arg0 + 0xC) + offset;
+            char *record = ((struct Hdr *)arg0)->base + offset;
             if (*(unsigned int *)record != 0x53544B41)
                 ((void (*)(void *, ...))fn_802E317C)(text + 0x380, record);
             equal = !strcmp(record + 4, text + 0x5C);
@@ -592,18 +606,18 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
                 fn_802E2D74(1);
         }
     check:
-        if (offset < *(int *)((char *)arg0 + 4))
+        if (offset < ((struct Hdr *)arg0)->lim)
             goto loop;
         fn_802E30C8(text + 0x3B4,
-                    (void *)(*(int *)((char *)arg0 + 4) / 1024),
+                    (void *)(((struct Hdr *)arg0)->lim / 1024),
                     (void *)(*(int *)((char *)arg0 + 8) / 1024),
-                    (void *)((*(int *)((char *)arg0 + 8) - *(int *)((char *)arg0 + 4)) / 1024),
+                    (void *)((*(int *)((char *)arg0 + 8) - ((struct Hdr *)arg0)->lim) / 1024),
                     (void *)(used / 1024));
         ((void (*)(void *, ...))fn_802E30C8)(text + 0x3E8, (void *)count);
         ((void (*)(void *, ...))fn_802E30C8)(text + 0x3F8);
     }
 }
-
+#pragma pop
 void fn_80128DCC(void *arg0) {
     register s32 *base = (s32 *)arg0;
     register s32 offset = 0;
