@@ -14868,6 +14868,7 @@ s32 btsnd_hcic_exit_sniff_mode(void *arg0, u16 arg1) {
     return 1;
 }
 
+/* Build and send HCI Hold_Mode command (OGF 0x08, OCF 0x0001) for handle with max/min intervals; allocates pool buffer if needed. */
 s32 btsnd_hcic_hold_mode_80084A34(u8 *p, u16 handle, u16 max_interval, u16 min_interval) {
     if (p == NULL) {
         p = GKI_getpoolbuf(2);
