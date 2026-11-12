@@ -618,10 +618,9 @@ int fn_8028F0C0(int *arg0, int arg1, int arg2) {
 #pragma scheduling invalid_target
 void fn_8028F114(int *arg0, int arg1, int arg2) {
     void *tmp[64];
+    register int n1 = 0;
     register int n2 = 0;
     register int n3 = 0;
-    register int n1 = 0;
-
     memset(tmp, 0, 0x100);
     if (arg1 != -2) {
         int *src = arg0;
@@ -642,7 +641,6 @@ void fn_8028F114(int *arg0, int arg1, int arg2) {
         if (i < *(int *)((char *)arg0 + 0x100))
             goto first_loop;
     }
-
     if (arg2 != -2) {
         int *src = arg0;
         int i = 0;
@@ -661,7 +659,6 @@ void fn_8028F114(int *arg0, int arg1, int arg2) {
         if (i < *(int *)((char *)arg0 + 0x100))
             goto second_loop;
     }
-
     {
         int *src = arg0;
         int i = 0;
@@ -673,13 +670,13 @@ void fn_8028F114(int *arg0, int arg1, int arg2) {
             if (id != arg1 && id != arg2) {
                 int *search = (int *)(tmp + n1);
                 int j = 0;
-                int equal = 0;
+                unsigned int equal = 0;
             search_loop:
                 {
                     void *q = *(void **)search;
                     search++;
                     j++;
-                    equal = (*(int *)((char *)q + 0xA4) == id);
+                    equal = (unsigned int)(*(int *)((char *)q + 0xA4) == id);
                 }
                 if (equal != 0)
                     goto search_done;
@@ -1198,8 +1195,8 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     case 1: {
         int result = fn_8028F534(f84);
         float converted = (float)result;
-        dst->a8 = result;
         dst->ac = lbl_80564424 / converted;
+        dst->a8 = result;
         break;
     }
     default:
@@ -1207,9 +1204,9 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     }
     {
         float temp = dst->f34;
-        if (temp < lbl_80564424) temp = lbl_80564424;
-        if (temp > lbl_80564420) temp = lbl_80564420;
-        dst->f34 = temp;
+        float x = (lbl_80564424 < temp) ? lbl_80564424 : temp;
+        x = (x > lbl_80564420) ? x : lbl_80564420;
+        dst->f34 = x;
     }
     fn_8028F8C4((int)arg0);
 }
