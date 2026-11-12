@@ -54,7 +54,7 @@ extern u8 lbl_803394A4[];
 extern void *lbl_8055E9C8;
 void fn_801DDF0C(void) {
     void *sp8;
-    u32 value;
+    void *value;
     u8 *entry;
     s32 i;
     f32 x;
@@ -62,12 +62,12 @@ void fn_801DDF0C(void) {
     f32 *ptr;
     f32 off;
     f32 thr;
-    value = fn_801DDE78();
-    if (value != (u32)lbl_8055E9C8) {
-        lbl_8055E9C8 = (void *)value;
+    value = (void *)fn_801DDE78();
+    if (value != lbl_8055E9C8) {
+        lbl_8055E9C8 = value;
         sp8 = lbl_803394A4;
         lbl_8055E9C4 = 0;
-        fn_8018A2C0(&sp8);
+        fn_8018A2C0(value, &sp8);
         thr = lbl_80562BC4;
         off = lbl_80562BC0;
         entry = (u8 *)lbl_80486F30;
@@ -90,47 +90,48 @@ void fn_801DDF0C(void) {
 
 #pragma push
 #pragma processor 750
-void fn_801DDFE8(void* arg0) {
+/* Copies two float blocks forward by 0x24 bytes (0x80..0xA0 -> 0xA4..0xC4, 0xC8..0xE8 -> 0xEC..0x10C). */
+void fn_801DDFE8(void* obj) {
     float temp_e8; float temp_e4; float temp_e0; float temp_dc;
     float temp_d8; float temp_d4; float temp_d0; float temp_cc; float temp_c8;
     float temp_a0; float temp_9c; float temp_98; float temp_94; float temp_90;
     float temp_8c; float temp_88; float temp_84; float temp_80;
-    temp_80 = *(float*)((unsigned char*)arg0 + 0x80);
-    temp_84 = *(float*)((unsigned char*)arg0 + 0x84);
-    temp_88 = *(float*)((unsigned char*)arg0 + 0x88);
-    temp_8c = *(float*)((unsigned char*)arg0 + 0x8c);
-    temp_90 = *(float*)((unsigned char*)arg0 + 0x90);
-    temp_94 = *(float*)((unsigned char*)arg0 + 0x94);
-    temp_98 = *(float*)((unsigned char*)arg0 + 0x98);
-    temp_9c = *(float*)((unsigned char*)arg0 + 0x9c);
-    temp_a0 = *(float*)((unsigned char*)arg0 + 0xa0);
-    temp_c8 = *(float*)((unsigned char*)arg0 + 0xc8);
-    temp_cc = *(float*)((unsigned char*)arg0 + 0xcc);
-    temp_d0 = *(float*)((unsigned char*)arg0 + 0xd0);
-    temp_d4 = *(float*)((unsigned char*)arg0 + 0xd4);
-    temp_d8 = *(float*)((unsigned char*)arg0 + 0xd8);
-    temp_dc = *(float*)((unsigned char*)arg0 + 0xdc);
-    temp_e0 = *(float*)((unsigned char*)arg0 + 0xe0);
-    temp_e4 = *(float*)((unsigned char*)arg0 + 0xe4);
-    temp_e8 = *(float*)((unsigned char*)arg0 + 0xe8);
-    *(float*)((unsigned char*)arg0 + 0xa4) = temp_80;
-    *(float*)((unsigned char*)arg0 + 0xa8) = temp_84;
-    *(float*)((unsigned char*)arg0 + 0xac) = temp_88;
-    *(float*)((unsigned char*)arg0 + 0xb0) = temp_8c;
-    *(float*)((unsigned char*)arg0 + 0xb4) = temp_90;
-    *(float*)((unsigned char*)arg0 + 0xb8) = temp_94;
-    *(float*)((unsigned char*)arg0 + 0xbc) = temp_98;
-    *(float*)((unsigned char*)arg0 + 0xc0) = temp_9c;
-    *(float*)((unsigned char*)arg0 + 0xc4) = temp_a0;
-    *(float*)((unsigned char*)arg0 + 0xec) = temp_c8;
-    *(float*)((unsigned char*)arg0 + 0xf0) = temp_cc;
-    *(float*)((unsigned char*)arg0 + 0xf4) = temp_d0;
-    *(float*)((unsigned char*)arg0 + 0xf8) = temp_d4;
-    *(float*)((unsigned char*)arg0 + 0xfc) = temp_d8;
-    *(float*)((unsigned char*)arg0 + 0x100) = temp_dc;
-    *(float*)((unsigned char*)arg0 + 0x104) = temp_e0;
-    *(float*)((unsigned char*)arg0 + 0x108) = temp_e4;
-    *(float*)((unsigned char*)arg0 + 0x10c) = temp_e8;
+    temp_80 = *(float*)((unsigned char*)obj + 0x80);
+    temp_84 = *(float*)((unsigned char*)obj + 0x84);
+    temp_88 = *(float*)((unsigned char*)obj + 0x88);
+    temp_8c = *(float*)((unsigned char*)obj + 0x8c);
+    temp_90 = *(float*)((unsigned char*)obj + 0x90);
+    temp_94 = *(float*)((unsigned char*)obj + 0x94);
+    temp_98 = *(float*)((unsigned char*)obj + 0x98);
+    temp_9c = *(float*)((unsigned char*)obj + 0x9c);
+    temp_a0 = *(float*)((unsigned char*)obj + 0xa0);
+    temp_c8 = *(float*)((unsigned char*)obj + 0xc8);
+    temp_cc = *(float*)((unsigned char*)obj + 0xcc);
+    temp_d0 = *(float*)((unsigned char*)obj + 0xd0);
+    temp_d4 = *(float*)((unsigned char*)obj + 0xd4);
+    temp_d8 = *(float*)((unsigned char*)obj + 0xd8);
+    temp_dc = *(float*)((unsigned char*)obj + 0xdc);
+    temp_e0 = *(float*)((unsigned char*)obj + 0xe0);
+    temp_e4 = *(float*)((unsigned char*)obj + 0xe4);
+    temp_e8 = *(float*)((unsigned char*)obj + 0xe8);
+    *(float*)((unsigned char*)obj + 0xa4) = temp_80;
+    *(float*)((unsigned char*)obj + 0xa8) = temp_84;
+    *(float*)((unsigned char*)obj + 0xac) = temp_88;
+    *(float*)((unsigned char*)obj + 0xb0) = temp_8c;
+    *(float*)((unsigned char*)obj + 0xb4) = temp_90;
+    *(float*)((unsigned char*)obj + 0xb8) = temp_94;
+    *(float*)((unsigned char*)obj + 0xbc) = temp_98;
+    *(float*)((unsigned char*)obj + 0xc0) = temp_9c;
+    *(float*)((unsigned char*)obj + 0xc4) = temp_a0;
+    *(float*)((unsigned char*)obj + 0xec) = temp_c8;
+    *(float*)((unsigned char*)obj + 0xf0) = temp_cc;
+    *(float*)((unsigned char*)obj + 0xf4) = temp_d0;
+    *(float*)((unsigned char*)obj + 0xf8) = temp_d4;
+    *(float*)((unsigned char*)obj + 0xfc) = temp_d8;
+    *(float*)((unsigned char*)obj + 0x100) = temp_dc;
+    *(float*)((unsigned char*)obj + 0x104) = temp_e0;
+    *(float*)((unsigned char*)obj + 0x108) = temp_e4;
+    *(float*)((unsigned char*)obj + 0x10c) = temp_e8;
 }
 #pragma pop
 void fn_801DE0A4(void) {
