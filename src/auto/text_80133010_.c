@@ -681,58 +681,70 @@ extern char lbl_8042F558[], lbl_8032BAC8[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void fn_80133FCC(long arg0, long arg_sp0) {
+void fn_80133FCC(long stage, long unusedArg) {
+    /* Memory-card call-back for the options record ('OPTS' = 0x4F505473), which
+     * fn_80133024 registers with the save system.  src/game/memcard.c calls it
+     * with a SaveRecordStage around the memcpy of the record's bytes: after a
+     * load the card's block has just replaced the whole option table, so the
+     * entries held back in lbl_8042F558 are copied over the table entries of the
+     * same section and key and every module that registered a call-back in
+     * lbl_8042F718 is told to read its options again; a load that failed only
+     * gets a message; before a save the table is sorted so the record is written
+     * out in a fixed order. */
     typedef struct { long a, b; } Pair;
-    char *dst;
-    char *src;
-    long off;
+    char *slot;    /* a table slot; the OptionEntry it holds starts 8 later */
+    char *staged;  /* an entry of lbl_8042F558, then a slot of lbl_8042F718 */
+    long slotOff;
     long i, j;
-    unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
-    unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
+    unsigned char key0, key1, key2, key3, key4, key5, key6, key7;
+    unsigned char key8, key9, key10, key11, key12, key13, key14, key15;
     void (*callback)(void);
-    if (arg0 == 1) {
-        src = lbl_8042F558;
-        for (i = 0; i < lbl_8055E080; src += 0x38, i++) {
-            for (j = 0, off = 0; j < *(long *)((char *)lbl_8055E07C + 4); off += 0x38, j++) {
-                dst = (char *)lbl_8055E07C + off;
-                if (*(long *)(src + 4) == *(long *)(dst + 0xC) &&
-                    stricmp(src + 0x24, dst + 0x2C) == 0) {
-                    *(long *)(dst + 0x08) = *(long *)(src + 0x00);
-                    *(long *)(dst + 0x0C) = *(long *)(src + 0x04);
-                    *(Pair *)(dst + 0x10) = *(Pair *)(src + 0x08);
-                    *(Pair *)(dst + 0x18) = *(Pair *)(src + 0x10);
-                    *(Pair *)(dst + 0x20) = *(Pair *)(src + 0x18);
-                    *(long *)(dst + 0x28) = *(long *)(src + 0x20);
-                    b0 = *(volatile unsigned char *)(src + 0x24); b1 = *(volatile unsigned char *)(src + 0x25);
-                    *(volatile unsigned char *)(dst + 0x2C) = b0; *(volatile unsigned char *)(dst + 0x2D) = b1;
-                    b2 = *(volatile unsigned char *)(src + 0x26); b3 = *(volatile unsigned char *)(src + 0x27);
-                    *(volatile unsigned char *)(dst + 0x2E) = b2; *(volatile unsigned char *)(dst + 0x2F) = b3;
-                    b4 = *(volatile unsigned char *)(src + 0x28); b5 = *(volatile unsigned char *)(src + 0x29);
-                    *(volatile unsigned char *)(dst + 0x30) = b4; *(volatile unsigned char *)(dst + 0x31) = b5;
-                    b6 = *(volatile unsigned char *)(src + 0x2A); b7 = *(volatile unsigned char *)(src + 0x2B);
-                    *(volatile unsigned char *)(dst + 0x32) = b6; *(volatile unsigned char *)(dst + 0x33) = b7;
-                    b8 = *(volatile unsigned char *)(src + 0x2C); b9 = *(volatile unsigned char *)(src + 0x2D);
-                    *(volatile unsigned char *)(dst + 0x34) = b8; *(volatile unsigned char *)(dst + 0x35) = b9;
-                    b10 = *(volatile unsigned char *)(src + 0x2E); b11 = *(volatile unsigned char *)(src + 0x2F);
-                    *(volatile unsigned char *)(dst + 0x36) = b10; *(volatile unsigned char *)(dst + 0x37) = b11;
-                    b12 = *(volatile unsigned char *)(src + 0x30); b13 = *(volatile unsigned char *)(src + 0x31);
-                    *(volatile unsigned char *)(dst + 0x38) = b12; *(volatile unsigned char *)(dst + 0x39) = b13;
-                    b14 = *(volatile unsigned char *)(src + 0x32); b15 = *(volatile unsigned char *)(src + 0x33);
-                    *(volatile unsigned char *)(dst + 0x3A) = b14; *(volatile unsigned char *)(dst + 0x3B) = b15;
-                    dst[0x3C] = src[0x34]; dst[0x3D] = src[0x35];
-                    dst[0x3E] = src[0x36]; dst[0x3F] = src[0x37];
+    if (stage == SAVE_RECORD_AFTER_LOAD) {
+        staged = lbl_8042F558;
+        for (i = 0; i < lbl_8055E080; staged += sizeof(OptionEntry), i++) {
+            for (j = 0, slotOff = 0; j < *(long *)((char *)lbl_8055E07C + 4); /* the table's entry count */
+                 slotOff += sizeof(OptionEntry), j++) {
+                slot = (char *)lbl_8055E07C + slotOff;
+                if (*(long *)(staged + 4) == *(long *)(slot + 0xC) && /* section */
+                    stricmp(staged + 0x24, slot + 0x2C) == 0) {       /* key */
+                    /* the staged entry over the slot's whole entry: its value
+                     * words first, then its key one byte at a time. */
+                    *(long *)(slot + 0x08) = *(long *)(staged + 0x00);  // valueType
+                    *(long *)(slot + 0x0C) = *(long *)(staged + 0x04);  // section
+                    *(Pair *)(slot + 0x10) = *(Pair *)(staged + 0x08);  // boolValue, intValue
+                    *(Pair *)(slot + 0x18) = *(Pair *)(staged + 0x10);  // floatValue, text[0..3]
+                    *(Pair *)(slot + 0x20) = *(Pair *)(staged + 0x18);  // text[4..11]
+                    *(long *)(slot + 0x28) = *(long *)(staged + 0x20);  // text[12..15]
+                    key0 = *(volatile unsigned char *)(staged + 0x24); key1 = *(volatile unsigned char *)(staged + 0x25);
+                    *(volatile unsigned char *)(slot + 0x2C) = key0; *(volatile unsigned char *)(slot + 0x2D) = key1;
+                    key2 = *(volatile unsigned char *)(staged + 0x26); key3 = *(volatile unsigned char *)(staged + 0x27);
+                    *(volatile unsigned char *)(slot + 0x2E) = key2; *(volatile unsigned char *)(slot + 0x2F) = key3;
+                    key4 = *(volatile unsigned char *)(staged + 0x28); key5 = *(volatile unsigned char *)(staged + 0x29);
+                    *(volatile unsigned char *)(slot + 0x30) = key4; *(volatile unsigned char *)(slot + 0x31) = key5;
+                    key6 = *(volatile unsigned char *)(staged + 0x2A); key7 = *(volatile unsigned char *)(staged + 0x2B);
+                    *(volatile unsigned char *)(slot + 0x32) = key6; *(volatile unsigned char *)(slot + 0x33) = key7;
+                    key8 = *(volatile unsigned char *)(staged + 0x2C); key9 = *(volatile unsigned char *)(staged + 0x2D);
+                    *(volatile unsigned char *)(slot + 0x34) = key8; *(volatile unsigned char *)(slot + 0x35) = key9;
+                    key10 = *(volatile unsigned char *)(staged + 0x2E); key11 = *(volatile unsigned char *)(staged + 0x2F);
+                    *(volatile unsigned char *)(slot + 0x36) = key10; *(volatile unsigned char *)(slot + 0x37) = key11;
+                    key12 = *(volatile unsigned char *)(staged + 0x30); key13 = *(volatile unsigned char *)(staged + 0x31);
+                    *(volatile unsigned char *)(slot + 0x38) = key12; *(volatile unsigned char *)(slot + 0x39) = key13;
+                    key14 = *(volatile unsigned char *)(staged + 0x32); key15 = *(volatile unsigned char *)(staged + 0x33);
+                    *(volatile unsigned char *)(slot + 0x3A) = key14; *(volatile unsigned char *)(slot + 0x3B) = key15;
+                    slot[0x3C] = staged[0x34]; slot[0x3D] = staged[0x35];  // the key's
+                    slot[0x3E] = staged[0x36]; slot[0x3F] = staged[0x37];  // last 4 bytes
                 }
             }
         }
-        src = (char *)lbl_8042F718;
-        for (i = 0; i < 8; i++, src += 8) {
-            callback = *(void (**)(void))(src + 4);
+        staged = (char *)lbl_8042F718;  // the {name, call-back} slots
+        for (i = 0; i < 8; i++, staged += 8) {
+            callback = *(void (**)(void))(staged + 4);
             if (callback) callback();
         }
-    } else if (arg0 == 2) {
-        fn_802E30C8(lbl_8032BAC8);
+    } else if (stage == SAVE_RECORD_LOAD_FAILED) {
+        fn_802E30C8(lbl_8032BAC8);  // "opt: loading error not handled!"
     }
-    if (arg0 == 3) fn_801337C8();
+    if (stage == SAVE_RECORD_BEFORE_SAVE) fn_801337C8();  // sort the table
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
