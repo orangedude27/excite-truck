@@ -47,27 +47,17 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
         unsigned int pad;
         float box[4];
     } temp;
-    register unsigned int a;
-    register unsigned int b;
-    register unsigned int c;
-    register unsigned int d;
     register float dx;
     register float dy;
     register float dz;
     float dot;
     float radius;
     int mask;
-
-    a = *(unsigned int *)((char *)arg0 + 0);
-    b = *(unsigned int *)((char *)arg0 + 4);
-    c = *(unsigned int *)((char *)arg0 + 8);
-    d = *(unsigned int *)((char *)arg0 + 12);
-    temp.words[0] = a;
-    temp.words[1] = b;
-    temp.words[2] = c;
-    temp.words[3] = d;
+    temp.words[0] = *(unsigned int *)((char *)arg0 + 0);
+    temp.words[1] = *(unsigned int *)((char *)arg0 + 4);
+    temp.words[2] = *(unsigned int *)((char *)arg0 + 8);
+    temp.words[3] = *(unsigned int *)((char *)arg0 + 12);
     memcpy(temp.box, temp.words, 0x10);
-
     dx = arg1[0] - *(float *)((char *)arg0 + 0x10);
     dy = arg1[1] - *(float *)((char *)arg0 + 0x14);
     dz = arg1[2] - *(float *)((char *)arg0 + 0x18);
@@ -80,7 +70,6 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
     temp.copies[1] = *((double *)temp.box + 1);
     radius = arg3 * radius;
     mask = 0;
-
     if (((float *)temp.copies)[0] > radius) mask |= 1;
     if (((float *)temp.copies)[0] < -radius) mask |= 2;
     if (((float *)temp.copies)[1] > radius) mask |= 4;
@@ -337,16 +326,17 @@ loop_41_test:
 extern void fn_802CAC54(int);
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_802CD254(void *arg0) {
+extern "C" void fn_802CD254(void *list) {
     int index;
     int byteOffset;
     int reset;
     char *entry;
+    /* Clear material list entries and destroy referenced objects, then reset the list state. */
     index = 0;
     byteOffset = 0;
     reset = -2;
-    while (index < *(int *)((char *)arg0 + 0x30)) {
-        entry = *(char **)((char *)arg0 + 0x34) + byteOffset;
+    while (index < *(int *)((char *)list + 0x30)) {
+        entry = *(char **)((char *)list + 0x34) + byteOffset;
         fn_802CAC54(*(int *)(entry + 0x10));
         *(int *)(entry + 0x10) = reset;
         byteOffset += 0x1C;
@@ -355,18 +345,18 @@ extern "C" void fn_802CD254(void *arg0) {
     byteOffset = 0;
     index = 0;
     reset = 0;
-    while (byteOffset < *(int *)((char *)arg0 + 0x88)) {
-        void **items = *(void ***)((char *)arg0 + 0x90);
+    while (byteOffset < *(int *)((char *)list + 0x88)) {
+        void **items = *(void ***)((char *)list + 0x90);
         void *obj = *(void **)((char *)items + index);
         if (obj != 0)
             ((Dummy *)obj)->method0(1);
-        items = *(void ***)((char *)arg0 + 0x90);
+        items = *(void ***)((char *)list + 0x90);
         byteOffset++;
         *(void **)((char *)items + index) = (void *)reset;
         index += 4;
     }
-    *(int *)((char *)arg0 + 0x88) = 0;
-    *(int *)((char *)arg0 + 8) &= ~2;
+    *(int *)((char *)list + 0x88) = 0;
+    *(int *)((char *)list + 8) &= ~2;
 }
 #pragma cplusplus reset
 
