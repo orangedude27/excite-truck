@@ -1454,26 +1454,27 @@ extern "C" void fn_80007318(void) {
     fn_802C9904();
 }
 #pragma cplusplus reset
-void fn_800073D8(s32 arg0) {
-    s32 *p;
+/* Ensures the object at lbl_8034EEB8+0x5C is in state 3 with an associated value, sets its mode (p[4]) from arg0 (0..2), then dispatches and updates. */
+void fn_800073D8(s32 mode) {
+    s32 *obj;
     s32 value;
     fn_80005C20();
-    p = (s32 *)*(u32 *)((u8 *)lbl_8034EEB8 + 0x5C);
-    if (p[2] != 3) {
-        p[2] = 3;
+    obj = (s32 *)*(u32 *)((u8 *)lbl_8034EEB8 + 0x5C);
+    if (obj[2] != 3) {
+        obj[2] = 3;
         if (fn_80009C84() != 0) {
             value = lbl_8055D348;
         } else {
             value = fn_802E2C20();
         }
-        p[3] = value;
+        obj[3] = value;
     }
-    switch (arg0) {
-    case 0: p[4] = 0; break;
-    case 1: p[4] = 1; break;
-    case 2: p[4] = 2; break;
+    switch (mode) {
+    case 0: obj[4] = 0; break;
+    case 1: obj[4] = 1; break;
+    case 2: obj[4] = 2; break;
     }
-    fn_800066B4(p);
+    fn_800066B4(obj);
     fn_80011A2C();
 }
 
