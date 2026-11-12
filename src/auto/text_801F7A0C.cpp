@@ -33,7 +33,7 @@ struct F7B10Obj {
     virtual void s8(); virtual void sC(); virtual void s10(); virtual void s14(); virtual void s18();
     virtual void s1C(); virtual void s20(); virtual void s24(); virtual void s28(); virtual void s2C();
     virtual void s30();
-    virtual FAAVec getVec(const char *);
+    virtual F7B10Vec getVec(const char *);
 };
 struct FAANames { char *n[24]; };
 struct FAANames2 { u32 w[24]; };
