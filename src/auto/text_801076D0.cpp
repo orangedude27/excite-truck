@@ -739,30 +739,46 @@ u16 nw4hbm::ut::detail::ResFontBase::GetTextureFormat() const {
     return *(u16*)(*(u32*)(*(u32*)((char*)this + 0x14) + 8) + 0xA);
 }
 
-extern "C" s32 GetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseCFv(void *self) {
+/* nw4hbm::ut::detail::ResFontBase::GetLineFeed() -- the font's line feed
+ * (leading), kept as the signed byte at mFontInfo + 1.  nw4hbm's debug build
+ * first checks that `this` and then mFontInfo point into memory the library
+ * accepts, so a ResFontBase whose resource was never installed panics here. */
+s32 nw4hbm::ut::detail::ResFontBase::GetLineFeed() const {
     const char *file = lbl_80329140;
-    u32 thisValue = (u32)self;
-    int validAll = 1, validD = 1, validC = 1, validB = 1, validA = 1, validMem1 = 1;
-    u32 top = thisValue & 0xFF000000U;
-    if (top != 0x80000000U && (thisValue & 0xFF800000U) != 0x81000000U) validMem1 = 0;
-    if (validMem1 == 0 && (thisValue & 0xF8000000U) != 0x90000000U) validA = 0;
-    if (validA == 0 && top != 0xC0000000U) validB = 0;
-    if (validB == 0 && (thisValue & 0xFF800000U) != 0xC1000000U) validC = 0;
-    if (validC == 0 && (thisValue & 0xF8000000U) != 0xD0000000U) validD = 0;
-    if (validD == 0 && (thisValue & 0xFFFFC000U) != 0xE0000000U) validAll = 0;
-    if (validAll == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x128, file + 0xF0, self);
-    int dataValidAll = 1, dataValidD = 1;
-    u32 dataPtrValue = *(u32*)((char*)self + 0x14);
-    int dataValidC = 1, dataValidB = 1, dataValidA = 1, dataValidMem1 = 1;
-    u32 dataTop = dataPtrValue & 0xFF000000U;
-    if (dataTop != 0x80000000U && (dataPtrValue & 0xFF800000U) != 0x81000000U) dataValidMem1 = 0;
-    if (dataValidMem1 == 0 && (dataPtrValue & 0xF8000000U) != 0x90000000U) dataValidA = 0;
-    if (dataValidA == 0 && dataTop != 0xC0000000U) dataValidB = 0;
-    if (dataValidB == 0 && (dataPtrValue & 0xFF800000U) != 0xC1000000U) dataValidC = 0;
-    if (dataValidC == 0 && (dataPtrValue & 0xF8000000U) != 0xD0000000U) dataValidD = 0;
-    if (dataValidD == 0 && (dataPtrValue & 0xFFFFC000U) != 0xE0000000U) dataValidAll = 0;
-    if (dataValidAll == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x129, file + 0x128);
-    return *(s8*)(*(u32*)((char*)self + 0x14) + 1);
+    u32 selfAddr = (u32)this;
+    /* nw4hbm::db's valid-pointer check, unrolled by the compiler: a flag stays
+     * 1 while the address has not matched any range checked so far (MEM1
+     * 0x80000000 and the 8 MiB expanded at 0x81000000, MEM2 0x90000000, their
+     * uncached mirrors 0xC0000000, 0xC1000000 and 0xD0000000, and the 16 KiB
+     * block at 0xE0000000), and `valid` is the verdict.  The flags are declared
+     * innermost check last, which is what binds them to r5..r10 in that order;
+     * see SetLineFeed, which asserts the same three things. */
+    int valid = 1, matched_d0 = 1, matched_c1 = 1, matched_c0 = 1, matched_mem2 = 1, matched_mem1 = 1;
+    u32 selfTop = selfAddr & 0xFF000000U;
+    if (selfTop != 0x80000000U && (selfAddr & 0xFF800000U) != 0x81000000U) matched_mem1 = 0;
+    if (matched_mem1 == 0 && (selfAddr & 0xF8000000U) != 0x90000000U) matched_mem2 = 0;
+    if (matched_mem2 == 0 && selfTop != 0xC0000000U) matched_c0 = 0;
+    if (matched_c0 == 0 && (selfAddr & 0xFF800000U) != 0xC1000000U) matched_c1 = 0;
+    if (matched_c1 == 0 && (selfAddr & 0xF8000000U) != 0xD0000000U) matched_d0 = 0;
+    if (matched_d0 == 0 && (selfAddr & 0xFFFFC000U) != 0xE0000000U) valid = 0;
+    /* "this(=%p) is not valid pointer." */
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x128, file + 0xF0, this);
+    /* the same check over mFontInfo; it needs two flags fewer (r4 and r5) and
+     * its message names the field but not an address. */
+    int info_valid = 1, info_matched_d0 = 1;
+    u32 fontInfoPtr = *(u32*)((char*)this + 0x14);
+    int info_matched_c1 = 1, info_matched_c0 = 1, info_matched_mem2 = 1, info_matched_mem1 = 1;
+    u32 fontInfoTop = fontInfoPtr & 0xFF000000U;
+    if (fontInfoTop != 0x80000000U && (fontInfoPtr & 0xFF800000U) != 0x81000000U) info_matched_mem1 = 0;
+    if (info_matched_mem1 == 0 && (fontInfoPtr & 0xF8000000U) != 0x90000000U) info_matched_mem2 = 0;
+    if (info_matched_mem2 == 0 && fontInfoTop != 0xC0000000U) info_matched_c0 = 0;
+    if (info_matched_c0 == 0 && (fontInfoPtr & 0xFF800000U) != 0xC1000000U) info_matched_c1 = 0;
+    if (info_matched_c1 == 0 && (fontInfoPtr & 0xF8000000U) != 0xD0000000U) info_matched_d0 = 0;
+    if (info_matched_d0 == 0 && (fontInfoPtr & 0xFFFFC000U) != 0xE0000000U) info_valid = 0;
+    if (info_valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x129, file + 0x128);
+    /* mFontInfo is read out again for the load itself, and the byte reaches the
+     * caller sign-extended into r3. */
+    return ((const FontInformation *)*(u32 *)((char *)this + 0x14))->line_feed;
 }
 
 s32 nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
