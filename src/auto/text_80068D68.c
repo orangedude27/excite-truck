@@ -1821,7 +1821,7 @@ void fn_80069FE8(void)
 
             if ((*(u16 *)(version + 2) & 0xFFF) == 0xA7) {
                 volatile u8 *addr = lbl_803135C0;
-                u32 first, second, byte;
+                u32 byte, first, second;
                 DBPrintf_8006CFA8((const char *)(strings + 0x360));
                 first = addr[3];
                 second = addr[7];
@@ -10053,6 +10053,7 @@ extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
+    tBTM_PM_MODE mode;
     int ind;
     u32 acl_ind;
     UINT8 acl_index;
@@ -10060,13 +10061,10 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
     UINT8 *p_cb;
     UINT8 *p_acl;
     UINT8 *p_features;
-    tBTM_PM_MODE mode;
-
     if (pm_id >= 2)
         pm_id = BTM_PM_SET_ONLY_ID;
     if (p_mode == NULL)
         return BTM_ILLEGAL_VALUE;
-
     mode = p_mode->mode & ~BTM_PM_MD_FORCE;
     acl_ind = 0;
     p_acl = lbl_803C0F78 + 0x34;
@@ -10085,7 +10083,6 @@ found:
     acl_index = (UINT8)acl_ind;
     if ((s32)acl_index == 4)
         return BTM_UNKNOWN_ADDR;
-
     p_cb = lbl_803C0F78 + acl_index * 0x22 + 0x4CC;
     if (mode != BTM_PM_MD_ACTIVE) {
         ind = mode - BTM_PM_MD_HOLD;
@@ -10095,14 +10092,12 @@ found:
         if (!(p_features[feature_offset] & feature_mask))
             return BTM_MODE_UNSUPPORTED;
     }
-
     if (mode == p_cb[0x20]) {
         if (mode == BTM_PM_MD_ACTIVE ||
             (p_mode->max >= *(UINT16 *)(p_cb + 0x1E) &&
              p_mode->min <= *(UINT16 *)(p_cb + 0x1E)))
             return BTM_SUCCESS;
     }
-
     if (pm_id != BTM_PM_SET_ONLY_ID &&
         ((lbl_803C0F78 + ((pm_id * 8) & 0x7F8))[0x558] & BTM_PM_REG_SET)) {
         UINT16 max = p_mode->max;
@@ -10120,7 +10115,6 @@ found:
         p_req[4] = *(UINT16 *)&p_mode->mode;
         p_cb[0x21] = TRUE;
     }
-
     if (p_cb[0x20] == 1 || p_cb[0x20] == 4 ||
         lbl_803C0F78[0x564] != 4)
         return 0xD;
@@ -17626,6 +17620,56 @@ void l2c_csm_w4_l2cap_connect_rsp(tL2C_CCB_VIEW *p_ccb, u16 event, void *p_msg)
     }
 }
 
+void l2c_csm_w4_l2ca_connect_rsp(void *p_ccb, u16 event, void *p_data)
+{
+    extern char lbl_803187B0[];
+    extern char lbl_803183F0[];
+    void *disconnect_ind;
+    u16 local_cid;
+    disconnect_ind = *(void **)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 0x18);
+    local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
+    if (lbl_803C4040[0] >= 4)
+        fn_80070954(0x80003, lbl_803187B0, event);
+    switch (event)
+    {
+    case 3:
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, lbl_803183F0, *(u16 *)((u8 *)p_ccb + 0x14));
+        l2cu_release_ccb(p_ccb);
+        ((void (*)(u16, u8))disconnect_ind)(local_cid, 0);
+        break;
+    case 21:
+        if (p_data == 0 || *(u16 *)((u8 *)p_data + 0xA) == 0) {
+            l2cu_send_peer_connect_rsp(p_ccb, 0, 0);
+            *(u32 *)((u8 *)p_ccb + 4) = 5;
+            btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        } else {
+            l2cu_send_peer_connect_rsp(p_ccb, *(u16 *)((u8 *)p_data + 0xA), *(u16 *)((u8 *)p_data + 0xC));
+            btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x78);
+        }
+        break;
+    case 22:
+        l2cu_send_peer_connect_rsp(p_ccb, *(u16 *)((u8 *)p_data + 0xA), *(u16 *)((u8 *)p_data + 0xC));
+        l2cu_release_ccb(p_ccb);
+        break;
+    case 19:
+        l2cu_send_peer_connect_rsp(p_ccb, 2, 0);
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, lbl_803183F0, *(u16 *)((u8 *)p_ccb + 0x14));
+        l2cu_release_ccb(p_ccb);
+        ((void (*)(u16, u8))disconnect_ind)(local_cid, 0);
+        break;
+    case 20:
+        GKI_freebuf(p_data);
+        break;
+    case 30:
+        l2cu_send_peer_disc_req(p_ccb);
+        *(u32 *)((u8 *)p_ccb + 4) = 7;
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        break;
+    }
+}
+
 void l2c_csm_config(void *p_ccb, u16 event, void *p_data)
 {
     void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
@@ -18447,7 +18491,6 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     extern void fn_8007093C(u32, void *);
     u8 *p;
     u16 handle;
-    u16 hci_word;
     u16 hci_len;
     u16 pkt_type;
     u8 *p_lcb;
@@ -18455,10 +18498,10 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
 
     p = (u8 *)p_cur_buf + p_cur_buf->offset;
     p_cur_buf->layer_specific = 0;
-    hci_word = p[8] + (p[9] << 8);
+    handle = p[8] + (p[9] << 8);
     hci_len = p[10] + (p[11] << 8);
-    pkt_type = (hci_word >> 12) & 3;
-    handle = hci_word & 0x0FFF;
+    pkt_type = (handle >> 12) & 3;
+    handle &= 0x0FFF;
     *(void **)(lbl_803C4040 + 0x7BC) = 0;
     p_lcb = (u8 *)l2cu_find_lcb_by_handle(handle);
     if (p_lcb == 0)
