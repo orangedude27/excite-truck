@@ -20,13 +20,13 @@ extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
 void fn_8020BF58(void) {
     struct { char sp8[64]; char sp48[64]; char padding[0xD0]; } scratch;
-    register int var_r29 __asm("r29");
-    register int var_r28 __asm("r28");
-    register int temp_r26 __asm("r26");
-    register int temp_r27 __asm("r27");
-    register int zero __asm("r31") = 0;
-    register unsigned int temp_r0 __asm("r0");
-    register unsigned int temp_r3 __asm("r3");
+    register int var_r29 asm("r29");
+    register int var_r28 asm("r28");
+    register int temp_r26 asm("r26");
+    register int temp_r27 asm("r27");
+    register int zero asm("r31") = 0;
+    register unsigned int temp_r0 asm("r0");
+    register unsigned int temp_r3 asm("r3");
     int var_r3, var_r3_3, var_r6_2, var_r5;
     unsigned int temp_r4;
     char *var_r3_2, *var_r6;
