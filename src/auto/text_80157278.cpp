@@ -812,7 +812,7 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
 }
 #pragma scheduling on
 #pragma small_data reset
-extern "C" void *fn_80157DA0(void *self, void *arg1, void *arg2) {
+extern "C" void *fn_80157DA0(void *self, s32 arg1, s32 arg2) {
     extern void *lbl_8032EF08;
     extern float lbl_80561760;
     unsigned char *p;
@@ -827,9 +827,9 @@ extern "C" void *fn_80157DA0(void *self, void *arg1, void *arg2) {
         memset(p, 0, 4);
         p += 0x38;
     } while (p < (unsigned char *)self + 0x244);
-    *(void **)((char *)self + 4) = arg2;
+    *(s32 *)((char *)self + 4) = arg2;
     *(int *)((char *)self + 0xC) = 0;
-    *(void **)((char *)self + 0x244) = arg1;
+    *(s32 *)((char *)self + 0x244) = arg1;
     *(int *)((char *)self + 0x258) = 0;
     *(float *)((char *)self + 0x250) = lbl_80561760;
     *(int *)((char *)self + 0x268) = 0;
