@@ -6517,8 +6517,8 @@ void bta_hh_get_acl_q_info(void) {
                 *(u16 *)(config + entry[0x26] * 0x34 + 0x16));
             if (ccb != 0 && (p = *(u8 **)(ccb + 0x10)) != 0 && p[0] != 0) {
                 *(u16 *)(row + 8) = *(u16 *)(p + 0x4C);
+                count++;
                 *(u16 *)(row + 0xA) = *(u16 *)(p + 0x38);
-                ++count;
             }
         }
     }
@@ -22518,13 +22518,12 @@ void rfc_send_rpn(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars, s32 mask) {
     if (buf == NULL)
         return;
     *(u16 *)(buf + 4) = 0xC;
-    sign = -is_command | is_command;
-    buf[0x14] = (u8)(((sign >> 31) & 2) | 0x91);
     p_data = buf + 0x14;
-    p_data++;
+    sign = -is_command | is_command;
+    *p_data++ = (u8)(((sign >> 31) & 2) | 0x91);
     if (p_pars == NULL) {
         *p_data++ = 3;
-        *p_data = (u8)((((u8)dlci) << 2) | 3);
+        *p_data++ = (u8)((((u8)dlci) << 2) | 3);
         *(u16 *)(buf + 2) = 3;
     } else {
         *p_data++ = 0x11;
