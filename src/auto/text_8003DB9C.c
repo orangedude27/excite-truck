@@ -5508,34 +5508,62 @@ void GXClearGPMetric(void) {
 #define CP_GP_COUNT3_LO (0x4C / 2)
 #define CP_GP_COUNT3_HI (0x4E / 2)
 
-void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
+/* Reads the four GX GP metric counters out of the CP registers. Each counter is
+ * a 32-bit count held in two 16-bit registers, so the high half is read again
+ * after the low half and the pair is only taken once two reads of the high
+ * half agree - the count cannot be torn by a carry between the two reads.
+ * The counters come back rotated: count0/count1 get CP counters 2 and 3,
+ * count2/count3 get CP counters 0 and 1.
+ * REXE01's symbol table names this KPADSetBtnRepeat, but it is GX code: the
+ * neighbour above, GXClearGPMetric, is what clears these counters. */
+void KPADSetBtnRepeat(u32 *count0, u32 *count1, u32 *count2, u32 *count3) {
     {
-        unsigned int low, second, first;
+        unsigned int low, previous, high;
         volatile unsigned short *cp = __cpReg;
-        first = cp[0x42/2];
-        for (;;) { second = first; low = cp[0x40/2]; first = cp[0x42/2]; if (first == second) break; }
-        *arg2 = (first << 16) | low;
+        high = cp[CP_GP_COUNT0_HI];
+        for (;;) {
+            previous = high;
+            low = cp[CP_GP_COUNT0_LO];
+            high = cp[CP_GP_COUNT0_HI];
+            if (high == previous) break;
+        }
+        *count2 = (high << 16) | low;
     }
     {
-        unsigned int low, second, first;
+        unsigned int low, previous, high;
         volatile unsigned short *cp = __cpReg;
-        first = cp[0x46/2];
-        for (;;) { second = first; low = cp[0x44/2]; first = cp[0x46/2]; if (first == second) break; }
-        *arg3 = (first << 16) | low;
+        high = cp[CP_GP_COUNT1_HI];
+        for (;;) {
+            previous = high;
+            low = cp[CP_GP_COUNT1_LO];
+            high = cp[CP_GP_COUNT1_HI];
+            if (high == previous) break;
+        }
+        *count3 = (high << 16) | low;
     }
     {
-        unsigned int low, second, first;
+        unsigned int low, previous, high;
         volatile unsigned short *cp = __cpReg;
-        first = cp[0x4A/2];
-        for (;;) { second = first; low = cp[0x48/2]; first = cp[0x4A/2]; if (first == second) break; }
-        *arg0 = (first << 16) | low;
+        high = cp[CP_GP_COUNT2_HI];
+        for (;;) {
+            previous = high;
+            low = cp[CP_GP_COUNT2_LO];
+            high = cp[CP_GP_COUNT2_HI];
+            if (high == previous) break;
+        }
+        *count0 = (high << 16) | low;
     }
     {
-        unsigned int low, second, first;
+        unsigned int low, previous, high;
         volatile unsigned short *cp = __cpReg;
-        first = cp[0x4E/2];
-        for (;;) { second = first; low = cp[0x4C/2]; first = cp[0x4E/2]; if (first == second) break; }
-        *arg1 = (first << 16) | low;
+        high = cp[CP_GP_COUNT3_HI];
+        for (;;) {
+            previous = high;
+            low = cp[CP_GP_COUNT3_LO];
+            high = cp[CP_GP_COUNT3_HI];
+            if (high == previous) break;
+        }
+        *count1 = (high << 16) | low;
     }
 }
 typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
