@@ -590,6 +590,8 @@ end:
     return ret;
 }
 
+/* Asynchronously deletes the file or directory at path.
+ * Validates the path, allocates a command block, and issues the delete ioctl. */
 s32 ISFS_DeleteAsync(const char* path, FSAsyncCallback callback,
                      void* callbackArg) {
     size_t len;
