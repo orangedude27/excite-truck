@@ -1376,24 +1376,24 @@ extern long lbl_80347B4C;
 __declspec(section ".rodata") extern long lbl_80347B4C;
 #pragma use_lmw_stmw off
 void fn_8027CCB4(long arg0, long arg1, long arg2, long arg3) {
-    long temp_r3;
-    long temp_r3_2;
-    long temp_r3_3;
-    temp_r3 = fn_80012810();
-    if (temp_r3 != 0x130) {
-        if (temp_r3 != 0x134) fn_80012794();
+    long savedMode;
+    long savedContext;
+    long currentMode;
+    savedMode = fn_80012810();
+    if (savedMode != 0x130) {
+        if (savedMode != 0x134) fn_80012794();
         fn_80012790(0x130);
     }
-    temp_r3_2 = fn_8000DA10();
-    if (temp_r3_2 != arg1) fn_8000D984(arg1);
+    savedContext = fn_8000DA10();
+    if (savedContext != arg1) fn_8000D984(arg1);
     fn_8027C59C(arg2);
     fn_8027B2F8(arg0, &lbl_80347B4C, 1);
-    if (temp_r3_2 != arg1) fn_8000D984(temp_r3_2);
+    if (savedContext != arg1) fn_8000D984(savedContext);
     fn_8027C610();
-    temp_r3_3 = fn_80012810();
-    if (temp_r3 != temp_r3_3) {
-        if (temp_r3_3 != 0x134) fn_80012794();
-        if (temp_r3 != 0x134) fn_80012790(temp_r3);
+    currentMode = fn_80012810();
+    if (savedMode != currentMode) {
+        if (currentMode != 0x134) fn_80012794();
+        if (savedMode != 0x134) fn_80012790(savedMode);
     }
 }
 
