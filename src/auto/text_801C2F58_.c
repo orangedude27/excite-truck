@@ -1276,22 +1276,32 @@ done:
 }
 
 #pragma scheduling invalid_target
+/* Move the debug timeline selection down one entry.  When the entry left and the
+ * one entered were recorded at the same time (fn_801C34CC compares the entry
+ * times), their ranks at +0x4 are swapped so the player's order wins over the
+ * stored one, and the table is re-sorted the way its writers do. */
 void fn_801C7480(void) {
-    register long index = lbl_8055E828;
-    long next = index + 1;
-    int count = lbl_8055E7F0;
-    if (count) {
-        if (0 <= (int)next) {
-            if (next < count) {
-                long nextOff = next * 0x30C;
-                long idxOff = index * 0x30C;
-                if (fn_801C34CC(*(f32 *)((char *)(s32)lbl_8055E7F8 + idxOff), *(f32 *)((char *)(s32)lbl_8055E7F8 + nextOff))) {
-                    s32 *current = (s32 *)((char *)lbl_8055E7F8 + idxOff);
-                    s32 *following = (s32 *)((char *)lbl_8055E7F8 + nextOff);
-                    int value = current[1];
+    typedef struct TimelineEntry {
+        f32 time; /* +0x0: sort key of the entry */
+        s32 rank; /* +0x4: order among entries sharing the time */
+    } TimelineEntry; /* one 0x30C-byte entry of sTimelineEntries */
+    register long selectedIndex = sTimelineSelection;
+    long nextIndex = selectedIndex + 1;
+    int entryCount = sTimelineCount;
+    if (entryCount) {
+        if (0 <= (int)nextIndex) {
+            if (nextIndex < entryCount) {
+                long nextOff = nextIndex * 0x30C;
+                long selectedOff = selectedIndex * 0x30C;
+                TimelineEntry *left = (TimelineEntry *)((char *)(s32)sTimelineEntries + selectedOff);
+                TimelineEntry *right = (TimelineEntry *)((char *)(s32)sTimelineEntries + nextOff);
+                if (fn_801C34CC(left->time, right->time)) {
+                    s32 *current = (s32 *)((char *)sTimelineEntries + selectedOff);
+                    s32 *following = (s32 *)((char *)sTimelineEntries + nextOff);
+                    int swappedRank = current[1];
                     current[1] = following[1];
-                    following[1] = value;
-                    qsort((void *)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
+                    following[1] = swappedRank;
+                    qsort((void *)sTimelineEntries, (size_t)sTimelineCount, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
                 }
             }
         }
