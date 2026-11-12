@@ -1181,6 +1181,7 @@ extern "C" void fn_80219F14(void *arg0) {
     };
     Object *object = (Object *)arg0;
 
+    /* Refresh watched fields, then update cached source text/handle for active states. */
     fn_802192AC(arg0);
     switch (object->state) {
     case 3:
