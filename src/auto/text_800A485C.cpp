@@ -1130,28 +1130,30 @@ extern "C" s32 VFipdm_disk_convert_sector_into_block(void *arg0, s32 arg1, s32 a
     return result;
 }
 
-extern "C" s32 VFipdm_disk_convert_block_into_sector(void *arg0, u32 arg1, u32 arg2, u32 size, u32 *arg4, u32 *arg5) {
+/* Convert block-based I/O values to 512-byte sector units for the given block size.
+   Returns 0 on success, or 4 if blockSize is smaller than 512 bytes. */
+extern "C" s32 VFipdm_disk_convert_block_into_sector(void *device, u32 block, u32 count, u32 blockSize, u32 *outSector, u32 *outCount) {
     u32 shift;
     s32 result = 0;
 
-    *arg4 = arg1;
-    *arg5 = arg2;
-    if (size > 0x200) {
-        shift = (size >> 9) & 0x7F;
+    *outSector = block;
+    *outCount = count;
+    if (blockSize > 0x200) {
+        shift = (blockSize >> 9) & 0x7F;
         if (shift == 2)
-            *arg4 >>= 1;
+            *outSector >>= 1;
         else if (shift == 4)
-            *arg4 >>= 2;
+            *outSector >>= 2;
         else if (shift == 8)
-            *arg4 >>= 3;
+            *outSector >>= 3;
 
         if (shift == 2)
-            *arg5 >>= 1;
+            *outCount >>= 1;
         else if (shift == 4)
-            *arg5 >>= 2;
+            *outCount >>= 2;
         else if (shift == 8)
-            *arg5 >>= 3;
-    } else if (size < 0x200) {
+            *outCount >>= 3;
+    } else if (blockSize < 0x200) {
         result = 4;
     }
     return result;
@@ -4769,35 +4771,29 @@ extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
 extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
-    /* Fix note: execute the two reads before checking whether another page sector remains. */
     void *sp10;
     s32 spC;
     u32 sp8;
-    s32 temp_r30;
-    s32 temp_r31;
-    s32 temp_r3;
-    u32 var_r29;
+    s32 base;
+    s32 i;
+    s32 ret;
 
-    temp_r3 = fn_800A8D08(arg0, -1, &sp10, &spC);
-    if (temp_r3 != 0)
-        return temp_r3;
+    ret = fn_800A8D08(arg0, -1, &sp10, &spC);
+    if (ret != 0)
+        return ret;
 
-    var_r29 = 0;
-    temp_r30 = *(s32 *)((u8 *)arg0 + 0x30) +
-               ((arg1 - 2) << *((u8 *)arg0 + 0x21));
-    do {
-        temp_r31 = temp_r30 + var_r29;
-        if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31,
+    base = *(s32 *)((u8 *)arg0 + 0x30) + ((arg1 - 2) << *((u8 *)arg0 + 0x21));
+    for (i = 0; (u32)i < *((u8 *)arg0 + 6); i++) {
+        if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), base + i,
                         0, *(u16 *)arg0, &sp8, 1) != 0 ||
-            sp8 != *(u16 *)arg0)
+            !(*(u16 *)arg0 == sp8))
             break;
         fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
-        if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31,
+        if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), base + i,
                         0, *(u16 *)arg0, &sp8, 1) != 0 ||
             sp8 != *(u16 *)arg0)
             break;
-        ++var_r29;
-    } while (var_r29 < *((u8 *)arg0 + 6));
+    }
 
     VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
     return 0;
@@ -9387,21 +9383,20 @@ extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559224[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055922C[]; }
 extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
     u16 sp8[2];
-    u16 **p = (u16 **)arg2;
-    if (fn_800A4D44(p) == 1U) {
-        if (fn_800A4AD0((u8 *)*p, (u8 *)lbl_8055922C) == 0) {
+    if (fn_800A4D44((u16 **)arg2) == 1U) {
+        if (fn_800A4AD0((u8 *)*(u16 **)arg2, (u8 *)lbl_8055922C) == 0) {
             fn_800A4AAC(arg0, (char *)lbl_80559224);
             return;
         }
-        fn_800A4AAC(arg0, (char *)*p);
+        fn_800A4AAC(arg0, (char *)*(u16 **)arg2);
         return;
     }
-    if (VFiPFSTR_StrCmp(p, (s32)lbl_8055922C) == 0) {
+    if (VFiPFSTR_StrCmp((u16 **)arg2, (s32)lbl_8055922C) == 0) {
         sp8[0] = 0x2A;
         sp8[1] = 0;
         fn_800A4B78(arg1, sp8);
     } else {
-        fn_800A4B78(arg1, *p);
+        fn_800A4B78(arg1, *(u16 **)arg2);
     }
     if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
         fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
@@ -24321,86 +24316,12 @@ extern "C" s32 fn_800A4BF4(s32 arg0, u16 *arg1, s16 *arg2) {
 extern "C" u32 fn_800A4C04(u8 *arg0) { return (arg0[1] << 8) | arg0[0]; }
 
 extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
-    s32 var_r0;
-    u32 temp_r6;
-    u32 temp_r7;
-    u32 var_ctr;
-    u32 var_ctr_2;
-    register u32 var_r5;
-    u8 *var_r6_2;
-    u8 temp_r7_3;
-    u8 temp_r8;
-    u8 *temp_r4;
-    u8 *var_r6;
-    u8 *temp_r7_2;
-    u8 *buffer = (u8 *)arg0;
-
-    var_r5 = 0;
-    if (arg1 != 0) {
-        temp_r6 = arg1 + 1;
-        temp_r7 = arg1 - 0x10;
-        if ((temp_r6 >> 1) > 8) {
-            var_r0 = 0;
-            if (temp_r6 >= 1 && (u32)arg1 <= temp_r6)
-                var_r0 = 1;
-            if (var_r0 != 0) {
-                var_r6 = buffer;
-                var_ctr = (temp_r7 + 0xF) >> 4;
-                if (temp_r7 > 0) {
-                    for (; var_ctr != 0; --var_ctr) {
-                        temp_r7_2 = buffer + var_r5;
-                        temp_r8 = var_r6[0];
-                        temp_r7_3 = temp_r7_2[1];
-                        buffer[var_r5] = temp_r7_3;
-                        var_r5 += 0x10;
-                        temp_r7_2[1] = temp_r8;
-                        temp_r8 = var_r6[2];
-                        temp_r7_3 = temp_r7_2[3];
-                        temp_r7_2[2] = temp_r7_3;
-                        temp_r7_2[3] = temp_r8;
-                        temp_r8 = var_r6[4];
-                        temp_r7_3 = temp_r7_2[5];
-                        temp_r7_2[4] = temp_r7_3;
-                        temp_r7_2[5] = temp_r8;
-                        temp_r8 = var_r6[6];
-                        temp_r7_3 = temp_r7_2[7];
-                        temp_r7_2[6] = temp_r7_3;
-                        temp_r7_2[7] = temp_r8;
-                        temp_r8 = var_r6[8];
-                        temp_r7_3 = temp_r7_2[9];
-                        temp_r7_2[8] = temp_r7_3;
-                        temp_r7_2[9] = temp_r8;
-                        temp_r8 = var_r6[0xA];
-                        temp_r7_3 = temp_r7_2[0xB];
-                        temp_r7_2[0xA] = temp_r7_3;
-                        temp_r7_2[0xB] = temp_r8;
-                        temp_r8 = var_r6[0xC];
-                        temp_r7_3 = temp_r7_2[0xD];
-                        temp_r7_2[0xC] = temp_r7_3;
-                        temp_r7_2[0xD] = temp_r8;
-                        temp_r8 = var_r6[0xE];
-                        var_r6 += 0x10;
-                        temp_r7_3 = temp_r7_2[0xF];
-                        temp_r7_2[0xE] = temp_r7_3;
-                        temp_r7_2[0xF] = temp_r8;
-                    }
-                }
-            }
-        }
-        var_r6_2 = buffer + var_r5;
-        var_ctr_2 = ((u32)arg1 + 1 - var_r5) >> 1;
-        if (var_r5 < (u32)arg1) {
-            do {
-                temp_r4 = buffer + var_r5;
-                temp_r7_3 = *var_r6_2;
-                var_r6_2 += 2;
-                temp_r8 = temp_r4[1];
-                buffer[var_r5] = temp_r8;
-                var_r5 += 2;
-                temp_r4[1] = temp_r7_3;
-                var_ctr_2--;
-            } while (var_ctr_2 != 0);
-        }
+    u8 *b = (u8 *)arg0;
+    u32 i;
+    for (i = 0; i < (u32)arg1; i += 2) {
+        u8 t = b[i];
+        b[i] = b[i + 1];
+        b[i + 1] = t;
     }
 }
 
