@@ -6909,7 +6909,6 @@ BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
     UINT16 event = p_msg->event;
     UINT8 index = 0x10;
     tBTA_HH_DEV_CB *p_cb = NULL;
-
     switch (event) {
     case 0x170C:
         bta_hh_api_enable(p_msg);
@@ -6924,7 +6923,6 @@ BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
         bta_hh_get_acl_q_info();
         goto done;
     }
-
     if (event == 0x1700) {
         index = bta_hh_find_cb((u8 *)p_msg + 8);
     } else if (event == 0x170A) {
@@ -6936,15 +6934,13 @@ BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
     } else if (p_msg->layer_specific < 0x10) {
         index = *(lbl_803C0D48 + p_msg->layer_specific + 0x214);
     }
-
     if (index != 0x10) {
-        p_cb = (tBTA_HH_DEV_CB *)&((tBTA_HH_DEV_ENTRY_VIEW *)lbl_803C0D48)[index].cb[0];
+        p_cb = (tBTA_HH_DEV_CB *)(((lbl_803C0D48 + ((u32)index << 5))) + 0x10);
     }
     if (lbl_8055DC80 >= 5) {
         fn_8007096C(0x504, lbl_803157DC, p_msg->layer_specific, index);
     }
     bta_hh_sm_execute(p_cb, p_msg->event, p_msg);
-
 done:
     return TRUE;
 }
@@ -20140,6 +20136,7 @@ void PORT_ParNegCnf(void *p_mcb, u8 dlci, u16 mtu, u8 cl_type, u8 k) {
 }
 
 void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
+    /* RFCOMM PORT: handle DLC establishment indication - resolve port for (mcb, dlci), adopt peer MTU if smaller, respond, stop timer, fire port callbacks, and mark port opened. */
     extern char lbl_8031932C[];
     extern void RFCOMM_DlcEstablishRsp(void *, u8, s32, u16);
     u8 *port;
