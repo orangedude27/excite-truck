@@ -5758,7 +5758,7 @@ loop_cond:
     u8 *base = (u8 *)arg0 + cur;
     s32 diff = count - cur;
     for (s32 j = diff - 1; j > 0; j--) {
-        u8 *p = base + j;
+        u8 *p = j + base;
         if (p[0x2D0]) {
             *pIndex += j;
             ((void (*)(void *))fn_8022375C)(arg0);
@@ -7061,21 +7061,22 @@ extern "C" s32 fn_802268A0(void *arg0, s32 arg1) {
 
 extern "C" u32 fn_802268E8(void *arg0) {
     class Obj7 { public: virtual s32 f0(); virtual s32 f1(); virtual s32 f2(); virtual s32 f3(); virtual s32 f4(); virtual s32 f5(); virtual s32 f6(); virtual s32 f7(); };
-    s32 *p;
-    s32 eq;
-    u32 result;
+    /* Compute a UI/state result from tracked/flag fields and a related object's vtable query. */
+    s32 *trackedValue;
+    s32 isMatch;
+    u32 state;
     void *obj;
-    p = *(s32 **)((char *)arg0 + 0x264);
-    if (p == 0) return 0;
-    eq = (*(s32 *)((char *)arg0 + 0x260) == *p);
+    trackedValue = *(s32 **)((char *)arg0 + 0x264);
+    if (trackedValue == 0) return 0;
+    isMatch = (*(s32 *)((char *)arg0 + 0x260) == *trackedValue);
     if (*(u8 *)((char *)arg0 + 0x18) != 0)
-        result = (u32)(eq != 0) + 2;
+        state = (u32)(isMatch != 0) + 2;
     else
-        result = (u32)(eq != 0);
+        state = (u32)(isMatch != 0);
     obj = *(void **)((char *)arg0 + 0x244);
-    if (((Obj7 *)obj)->f5() == 3 && result == 3) result = 1;
-    if (*(u8 *)((char *)arg0 + 0x1B) == 0) result = 4;
-    return result;
+    if (((Obj7 *)obj)->f5() == 3 && state == 3) state = 1;
+    if (*(u8 *)((char *)arg0 + 0x1B) == 0) state = 4;
+    return state;
 }
 
 extern char lbl_8033DAF8[];
@@ -7355,22 +7356,17 @@ extern "C" void *fn_802270DC(void *arg0, void *arg1) {
 
 #pragma pop
 extern "C" void *fn_80227244(void *arg0, s32 arg1) {
-    s32 h;
-    void *obj = arg0;
-    if (obj != 0) {
-        *(void **)obj = &lbl_8033DFB4;
-        fn_8022EE98(*(void **)((u8 *)obj + 0x260));
-        h = *(s32 *)((u8 *)obj + 0x254);
-        if (h != -2) {
-            if (h != -1)
-                fn_802CAC54();
-        }
-        *(s32 *)((u8 *)obj + 0x254) = -1;
-        fn_8021915C(obj, 0);
+    if (arg0 != 0) {
+        *(void **)arg0 = &lbl_8033DFB4;
+        fn_8022EE98(*(void **)((u8 *)arg0 + 0x260));
+        if (*(s32 *)((u8 *)arg0 + 0x254) != -2 && *(s32 *)((u8 *)arg0 + 0x254) != -1)
+            fn_802CAC54();
+        *(s32 *)((u8 *)arg0 + 0x254) = -1;
+        fn_8021915C(arg0, 0);
         if (arg1 > 0)
-            fn_80128668(obj);
+            fn_80128668(arg0);
     }
-    return obj;
+    return arg0;
 }
 
 extern "C" f32 lbl_805634C4;
