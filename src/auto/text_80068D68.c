@@ -26029,6 +26029,7 @@ static void USB_LOG(const char *fmt, ...) {
     }
 }
 
+/* Conditionally prints a "USB ERR: " prefix and the formatted message when the USB debug/error flag is set. */
 static void USB_ERR(const char *fmt, ...) {
     va_list list;
 
