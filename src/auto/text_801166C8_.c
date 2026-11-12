@@ -70,6 +70,50 @@ extern u8 lbl_802F6990[];
 extern char lbl_80559930;
 extern char lbl_80329B28[];
 extern void OSPanic(const char *, s32, const char *, ...);
+/* The archive image ARCInitHandle sets a handle on: a header that points at
+ * the node table (the "FST") and at the file data behind it.  A node is a
+ * file's offset and size, or a folder's parent and next sibling; the top byte
+ * of its first word says which and the low 24 bits are the offset of its name
+ * in the string table that follows the last node. */
+#define ARC_FILE_MAGIC 0x55AA382D  /* every archive image starts with this */
+
+typedef struct ARCNode {
+    union {
+        struct {
+            u32 is_folder : 8;
+            u32 name : 24;
+        };
+        u32 packed_type_name;
+    }; // at 0x0
+
+    union {
+        struct {
+            u32 offset;
+            u32 size;
+        } file;
+
+        struct {
+            u32 parent;
+            u32 sibling_next;
+        } folder;
+    }; // at 0x4
+} ARCNode;
+
+typedef struct ARCHeader {
+    u32 magic; // at 0x0
+
+    struct {
+        s32 offset; // at 0x4
+        s32 size;   // at 0x8
+    } nodes;
+
+    struct {
+        s32 offset; // at 0xC
+    } files;
+
+    char UNK_0x10[0x10];
+} ARCHeader;
+
 BOOL ARCInitHandle(void *bin, ARCHandle *handle) {
     u32 magic = *(u32 *)bin;
     u8 *base = (u8 *)bin;
