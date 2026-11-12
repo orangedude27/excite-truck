@@ -146,8 +146,8 @@ loop:
     entry->y = initial;
     entry->z = initial;
     entry->id = fn_802CAC28(query_object->getSetting((char *)&lbl_8055C930), 0);
-    entry->unk10 = zero;
-    entry->flags = zero;
+    entry->unk10 = 0;
+    entry->flags = 0;
     entry->color = ((int)(scale * result2) << 24) | 0x00FFFFFF;
     entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
     entry->value2 = query_object->getFloat((char *)&lbl_8055C940, result3);
@@ -317,7 +317,9 @@ void fn_80291C7C(void *arg0, int arg1) {
 }
 
 extern double lbl_805644C0;
-#pragma ppc_psq_save off
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_80291E64(void *arg0) {
     float v[3];
     float e[3];
