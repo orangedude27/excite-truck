@@ -2817,38 +2817,36 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *arg0) {
 }
 
 extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0, void *unused1, void *unused2, void *unused3, void *unused4, void *node) {
+    u32 zero = 0;
     s32 minusOne = -1;
-    s32 zero = 0;
-    void *head;
+    u32 head;
     u16 flags;
-
     goto first_test;
 first_body:
     if (node == 0) goto first_test;
     flags = *(volatile u16 *)node;
     *(volatile u16 *)node = flags & 0xFFFC;
-    *(volatile u32 *)((u8 *)node + 0xC) = (u32)zero;
-    *(volatile u32 *)((u8 *)node + 0x10) = (u32)zero;
+    *(volatile u32 *)((u8 *)node + 0xC) = zero;
+    *(volatile u32 *)((u8 *)node + 0x10) = zero;
     *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
-    *(volatile u32 *)((u8 *)node + 0x1C) = (u32)zero;
-    head = *(void * volatile *)((u8 *)arg0 + 0x1630);
-    if (node == head) {
-        *(void * volatile *)((u8 *)arg0 + 0x1630) = *(void * volatile *)((u8 *)node + 0x20);
+    *(volatile u32 *)((u8 *)node + 0x1C) = zero;
+    head = *(u32 volatile *)((u8 *)arg0 + 0x1630);
+    if (node == (void *)head) {
+        *(u32 volatile *)((u8 *)arg0 + 0x1630) = *(u32 volatile *)((u8 *)node + 0x20);
         goto first_test;
     }
     if (node == *(void * volatile *)((u8 *)head + 0x24)) goto first_test;
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = *(void * volatile *)((u8 *)node + 0x20);
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x20) + 0x24) = *(void * volatile *)((u8 *)node + 0x24);
-    head = *(void * volatile *)((u8 *)arg0 + 0x1630);
-    *(void * volatile *)((u8 *)node + 0x20) = head;
-    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)arg0 + 0x1630) + 0x24);
+    head = *(u32 volatile *)((u8 *)arg0 + 0x1630);
+    *(void * volatile *)((u8 *)node + 0x20) = (void *)head;
+    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(u32 volatile *)((u8 *)arg0 + 0x1630) + 0x24);
     *(void * volatile *)((u8 *)head + 0x24) = node;
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = node;
 first_test:
     node = *(void * volatile *)((u8 *)arg0 + 0x1630);
     flags = *(volatile u16 *)node;
     if (flags & 1) goto first_body;
-
     zero = 0;
     minusOne = -1;
     goto second_test;
@@ -2856,21 +2854,21 @@ second_body:
     if (node == 0) goto second_test;
     flags = *(volatile u16 *)node;
     *(volatile u16 *)node = flags & 0xFFFC;
-    *(volatile u32 *)((u8 *)node + 0xC) = (u32)zero;
-    *(volatile u32 *)((u8 *)node + 0x10) = (u32)zero;
+    *(volatile u32 *)((u8 *)node + 0xC) = zero;
+    *(volatile u32 *)((u8 *)node + 0x10) = zero;
+    *(volatile u32 *)((u8 *)node + 0x1C) = zero;
     *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
-    *(volatile u32 *)((u8 *)node + 0x1C) = (u32)zero;
-    head = *(void * volatile *)((u8 *)arg0 + 0x1634);
-    if (node == head) {
-        *(void * volatile *)((u8 *)arg0 + 0x1634) = *(void * volatile *)((u8 *)node + 0x20);
+    head = *(u32 volatile *)((u8 *)arg0 + 0x1634);
+    if (node == (void *)head) {
+        *(u32 volatile *)((u8 *)arg0 + 0x1634) = *(u32 volatile *)((u8 *)node + 0x20);
         goto second_test;
     }
     if (node == *(void * volatile *)((u8 *)head + 0x24)) goto second_test;
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = *(void * volatile *)((u8 *)node + 0x20);
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x20) + 0x24) = *(void * volatile *)((u8 *)node + 0x24);
-    head = *(void * volatile *)((u8 *)arg0 + 0x1634);
-    *(void * volatile *)((u8 *)node + 0x20) = head;
-    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)arg0 + 0x1634) + 0x24);
+    head = *(u32 volatile *)((u8 *)arg0 + 0x1634);
+    *(void * volatile *)((u8 *)node + 0x20) = (void *)head;
+    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(u32 volatile *)((u8 *)arg0 + 0x1634) + 0x24);
     *(void * volatile *)((u8 *)head + 0x24) = node;
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = node;
 second_test:
@@ -9016,7 +9014,7 @@ extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *text) {
 }
 
 #define fn_800A4B9C_CALL fn_800A4B9C
-extern "C" VFT_RET VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
+extern "C" int VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
     struct Locals {
         s16 inputLength;
         s16 outputLength;
@@ -9028,6 +9026,7 @@ extern "C" VFT_RET VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) 
 
     u8 *table = (u8 *)lbl_803D2140;
     u8 *out = (u8 *)arg0;
+    u16 *src = arg1;
 
     if ((*(u32 *)(table + 0x60) & 2) == 2) {
         u16 *scan;
@@ -9035,18 +9034,18 @@ extern "C" VFT_RET VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) 
         local.zeroDot = 0;
         local.space = 0x20;
         local.zeroSpace = 0;
-        scan = arg1;
+        scan = src;
         goto check;
         do {
-            if (fn_800A4B9C_CALL(arg1, &local.dot, 1) == 0) {
+            if (fn_800A4B9C_CALL(src, &local.dot, 1) == 0) {
                 *out = 0x2E;
-            } else if (fn_800A4B9C_CALL(arg1, &local.space, 1) == 0) {
+            } else if (fn_800A4B9C_CALL(src, &local.space, 1) == 0) {
                 *out = 0x20;
             } else {
                 *out = 0x5F;
             }
             out++;
-            arg1++;
+            src++;
             scan++;
         check:;
         } while (*scan != 0);
@@ -9054,15 +9053,16 @@ extern "C" VFT_RET VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) 
         s32 offset = 0;
         goto check2;
         do {
-            s32 result = ((s32 (*)(u8 *, u8 *))(*(u32 **)(table + 0x4C)))((u8 *)arg1 + (offset << 1), out);
+            s32 result = ((s32 (*)(u8 *, u8 *))(*(u32 **)(table + 0x4C)))((u8 *)src + (offset << 1), out);
             fn_800A4BF4(result, (u16 *)&local.outputLength, &local.inputLength);
             out += local.outputLength;
             offset += local.inputLength >> 1;
         check2:;
-        } while (arg1[offset] != 0);
+        } while (src[offset] != 0);
     }
 
     *out = 0;
+    return 0;
 }
 
 extern "C" s32 fn_800A4BF4(s32, u16 *, s16 *);
@@ -10725,25 +10725,26 @@ extern "C" s32 fn_800B73E4(s32 arg0) {
 extern "C" s32 fn_800B73BC(s32);
 
 #pragma dont_inline on
-extern "C" void fn_800B7408(s32* arg0, void* arg1) {
+/* Attaches/mounts a NULL-terminated list of VF drivers (fn_800B6628). Optional context at +0x50 is passed as the third argument; on empty list sets lbl_803D2140+0x40 (last error) to 10 and returns fn_800B73BC(result). */
+extern "C" void fn_800B7408(s32* drivers, void* context) {
     extern s32 fn_800B6628(void*, void*, s32);
     extern s32 fn_800B73BC(s32);
     extern s32 lbl_803D2140[];
     s32 result;
-    if ((arg0 == 0) || (*arg0 == 0)) {
+    if ((drivers == 0) || (*drivers == 0)) {
         result = 10;
         *(s32*)((u8*)lbl_803D2140 + 0x40) = 10;
     } else {
-        while (*arg0 != 0) {
-            if (arg1 != 0)
-                result = fn_800B6628((void*)*arg0, arg1, *(s32*)((u8*)arg1 + 0x50));
+        while (*drivers != 0) {
+            if (context != 0)
+                result = fn_800B6628((void*)*drivers, context, *(s32*)((u8*)context + 0x50));
             else
-                result = fn_800B6628((void*)*arg0, 0, 0);
+                result = fn_800B6628((void*)*drivers, 0, 0);
             if (result != 0) {
                 fn_800B73BC(result);
                 return;
             }
-            arg0++;
+            drivers++;
         }
     }
     fn_800B73BC(result);
@@ -11311,8 +11312,6 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     u8 countB;
     u32 shift = 0x200;
     u32 word;
-    u32 first;
-    u32 second;
     s32 value;
     u16 size;
     u16 temp;
@@ -11321,12 +11320,12 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     u32 start;
     s32 shortEnd;
     u32 end;
-
+    u32 result;
+    u32 shifted;
     while ((shift = (shift >> 1) & 0x7FFF) != 0) countA++;
     countB = 0;
     shift = 1;
     while ((shift = (shift >> 1) & 0x7FFF) != 0) countB++;
-
     if (((u32)(p + 0x11) & 1) != 0) {
         value = p[0x11] | (p[0x12] << 8);
     } else {
@@ -11335,7 +11334,6 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
         value = (s32)swapped << 5;
     }
     size = (u16)((value + 0x1FF) >> countA);
-
     if (((u32)(p + 0x16) & 1) != 0) {
         shortStart = p[0x16] | (p[0x17] << 8);
     } else {
@@ -11345,14 +11343,17 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     }
     if (shortStart == 0) {
         word = *(u32 *)(p + 0x24);
-        first = ((word >> 8U) & 0xFF00) | (word << 0x18);
-        second = ((word << 8) & 0xFF0000) | (word >> 0x18U);
-        start = first | second;
+        {
+            u32 low = __rlwinm(word, 8, 8, 15);
+            low = __rlwimi(low, word, 24, 0, 7);
+            u32 high = __rlwinm(word, 24, 16, 23);
+            high = __rlwimi(high, word, 8, 24, 31);
+            start = low | high;
+        }
     } else {
         start = shortStart;
     }
     start = (start << 1) + size + 1;
-
     if (((u32)(p + 0x13) & 1) != 0) {
         shortEnd = p[0x13] | (p[0x14] << 8);
     } else {
@@ -11362,18 +11363,26 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     }
     if (shortEnd == 0) {
         word = *(u32 *)(p + 0x20);
-        first = ((word >> 8U) & 0xFF00) | (word << 0x18);
-        second = ((word << 8) & 0xFF0000) | (word >> 0x18U);
-        end = first | second;
+        {
+            u32 low = __rlwinm(word, 8, 8, 15);
+            low = __rlwimi(low, word, 24, 0, 7);
+            u32 high = __rlwinm(word, 24, 16, 23);
+            high = __rlwimi(high, word, 8, 24, 31);
+            end = low | high;
+        }
     } else {
         end = shortEnd;
     }
-
-    u32 result = end - start;
+    result = end - start;
+    shifted = result >> countB;
     *arg1 = result;
-    if ((result >> countB) < 0xFF5) return 0;
-    if ((result >> countB) < 0xFFF5) return 1;
-    return 2;
+    if (shifted < 0xFF5) {
+        return 0;
+    } else if (shifted < 0xFFF5) {
+        return 1;
+    } else {
+        return 2;
+    }
 }
 
 extern "C" s32 fn_800B865C(u8 *buffer) {
@@ -11648,15 +11657,11 @@ extern "C" u8 lbl_80405D58[];
 extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
     u16 index;
     u8 *entry;
-    void *found = 0;
-    u32 size;
+    u8 *found = 0;
     u32 sectors;
     u32 groups;
-    u32 temp;
-    s32 deltaA;
-    s32 deltaB;
-    s32 equalMask;
-    s32 check;
+    u16 cyl;
+    u8 *out = (u8 *)arg1;
 
     fn_800B8004(lbl_8055DD30);
     if (arg0 == 0 || arg1 == 0) {
@@ -11670,25 +11675,20 @@ extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
             break;
         }
     }
-    deltaA = (s32)(u32)index - 0x17;
-    deltaB = 0x17 - (s32)(u32)index;
-    equalMask = ~(deltaA | deltaB) >> 31;
-    check = equalMask & -0x16;
-    if (check != 0) {
+    if (index == 0x17 ? -0x16 : 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    size = *(u32 *)((u8 *)found + 0x54);
-    sectors = size >> 9;
+    sectors = *(u32 *)(found + 0x54) >> 9;
+    out[7] = 0x3F;
+    out[6] = 0xFF;
+    *(u32 *)(out + 0xC) = 0;
+    *(u32 *)(out + 0x10) = 0;
     groups = sectors / 255;
-    *(volatile u8 *)((u8 *)arg1 + 7) = 0x3F;
-    *(volatile u8 *)((u8 *)arg1 + 6) = 0xFF;
-    *(volatile u32 *)((u8 *)arg1 + 0xC) = 0;
-    *(volatile u32 *)((u8 *)arg1 + 0x10) = 0;
-    *(volatile u32 *)arg1 = sectors;
-    *(volatile u16 *)((u8 *)arg1 + 8) = 0x200;
-    temp = groups / 0x7E00;
-    *(volatile u16 *)((u8 *)arg1 + 4) = temp;
+    *(u32 *)out = sectors;
+    *(u16 *)(out + 8) = 0x200;
+    cyl = (groups / 63) >> 9;
+    *(u16 *)(out + 4) = cyl;
     fn_800B8048(lbl_8055DD30);
     return 0;
 }
