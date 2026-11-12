@@ -1132,17 +1132,19 @@ void fn_801F383C(void *arg0, int arg1) {
 struct ValueWordBytes { unsigned char b[4]; };
 
 void fn_801F387C(void *unused, int arg1) {
+    /* ShadowColorTMH's byte-swap method: reverse the byte order of each of the
+       four words of the source parameter block's raw value field at +0x2C. */
     extern int *fn_801F1CE8(int);
-    unsigned char *p = (unsigned char *)fn_801F1CE8(arg1);
-    unsigned char t;
-    t = p[0]; p[0] = p[3]; p[3] = t;
-    t = p[1]; p[1] = p[2]; p[2] = t;
-    t = p[4]; p[4] = p[7]; p[7] = t;
-    t = p[5]; p[5] = p[6]; p[6] = t;
-    t = p[8]; p[8] = p[11]; p[11] = t;
-    t = p[9]; p[9] = p[10]; p[10] = t;
-    t = p[12]; p[12] = p[15]; p[15] = t;
-    t = p[13]; p[13] = p[14]; p[14] = t;
+    struct ValueWordBytes *words = (struct ValueWordBytes *)fn_801F1CE8(arg1);
+    unsigned char tmp;
+    tmp = words[0].b[0]; words[0].b[0] = words[0].b[3]; words[0].b[3] = tmp;
+    tmp = words[0].b[1]; words[0].b[1] = words[0].b[2]; words[0].b[2] = tmp;
+    tmp = words[1].b[0]; words[1].b[0] = words[1].b[3]; words[1].b[3] = tmp;
+    tmp = words[1].b[1]; words[1].b[1] = words[1].b[2]; words[1].b[2] = tmp;
+    tmp = words[2].b[0]; words[2].b[0] = words[2].b[3]; words[2].b[3] = tmp;
+    tmp = words[2].b[1]; words[2].b[1] = words[2].b[2]; words[2].b[2] = tmp;
+    tmp = words[3].b[0]; words[3].b[0] = words[3].b[3]; words[3].b[3] = tmp;
+    tmp = words[3].b[1]; words[3].b[1] = words[3].b[2]; words[3].b[2] = tmp;
 }
 
 void fn_801F3920(void *arg0) {
