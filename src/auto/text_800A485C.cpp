@@ -1103,28 +1103,30 @@ extern "C" s32 fn_800A7688(void *, void **, void **);
 extern "C" s32 fn_800A7214(void *);
 extern "C" void fn_800A535C(u32);
 extern "C" void fn_800A52DC(u32);
-extern "C" s32 VFipdm_disk_convert_sector_into_block(void *arg0, s32 arg1, s32 arg2, u32 size, s32 *arg4, s32 *arg5) {
+extern "C" s32 VFipdm_disk_convert_sector_into_block(void *ctx, s32 sector, s32 count, u32 sectorSize, s32 *outBlock, s32 *outCount) {
+    /* Converts sector/count to block/count for sector sizes != 512.
+       For >512 it scales by sectorSize/512 (powers of two up to 8), for <512 it returns error 4. */
     u32 shift;
     s32 result = 0;
 
-    *arg4 = arg1;
-    *arg5 = arg2;
-    if (size > 0x200) {
-        shift = (size >> 9) & 0x7F;
+    *outBlock = sector;
+    *outCount = count;
+    if (sectorSize > 0x200) {
+        shift = (sectorSize >> 9) & 0x7F;
         if (shift == 2)
-            *arg4 <<= 1;
+            *outBlock <<= 1;
         else if (shift == 4)
-            *arg4 <<= 2;
+            *outBlock <<= 2;
         else if (shift == 8)
-            *arg4 <<= 3;
+            *outBlock <<= 3;
 
         if (shift == 2)
-            *arg5 <<= 1;
+            *outCount <<= 1;
         else if (shift == 4)
-            *arg5 <<= 2;
+            *outCount <<= 2;
         else if (shift == 8)
-            *arg5 <<= 3;
-    } else if (size < 0x200) {
+            *outCount <<= 3;
+    } else if (sectorSize < 0x200) {
         result = 4;
     }
     return result;
@@ -9037,17 +9039,19 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
         u16 zeroDot;
     } local;
 
+    u8 *table = (u8 *)lbl_803D2140;
     u8 *out = (u8 *)arg0;
     u16 *src = arg1;
-    u8 *table = (u8 *)lbl_803D2140;
 
     if ((*(u32 *)(table + 0x60) & 2) == 2) {
-        u16 *scan = src;
+        u16 *scan;
         local.dot = 0x2E;
         local.zeroDot = 0;
         local.space = 0x20;
         local.zeroSpace = 0;
-        for (;;) {
+        scan = src;
+        goto check;
+        do {
             if (fn_800A4B9C_CALL(src, &local.dot, 1) == 0) {
                 *out = 0x2E;
             } else if (fn_800A4B9C_CALL(src, &local.space, 1) == 0) {
@@ -9058,8 +9062,8 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
             out++;
             src++;
             scan++;
-            if (*scan == 0) break;
-        }
+        check:;
+        } while (*scan != 0);
     } else {
         s32 offset = 0;
         do {
