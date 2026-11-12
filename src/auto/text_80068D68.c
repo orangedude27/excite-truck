@@ -14093,6 +14093,17 @@ BOOLEAN WBT_ExtCreateRecord(void) {
     return TRUE;
 }
 
+/* --- the GAP control block, lbl_803C3740, 0x3AC bytes zeroed by GAP_Init ---
+ * trace level at 0x28 (BT_TRACE_LEVEL_*), the two BTM callbacks at 0x20/0x24,
+ * the L2CAP callbacks at 0x84..0xA8 and eight connection entries of 0x10 bytes
+ * from 0xAC.  What is left is the single GAP_FindAddr_byname request the stack
+ * can have running, whose fields the macros below name: */
+#define gap_cb                    lbl_803C3740
+#define gap_find_addr_cback(cb)   (*(void (**)(u32, u16 *))((u8 *)(cb) + 0x2C)) /* the user's tGAP_CALLBACK, called with a GAP_EVT_* and the result below */
+#define gap_find_addr_inq_rec(cb) (*(void **)((u8 *)(cb) + 0x30))               /* inquiry DB record whose name is being read */
+#define gap_find_addr_result(cb)  ((u16 *)((u8 *)(cb) + 0x34))                  /* status for that callback, its BD_ADDR at +2, the name looked for at +8 */
+#define gap_find_addr_busy(cb)    (((u8 *)(cb))[0x7E])                          /* set while the request is running */
+
 void GAP_Init(void) {
     memset(lbl_803C3740, 0, 0x3AC);
     *(void **)(lbl_803C3740 + 0x20) = fn_800833E8;
