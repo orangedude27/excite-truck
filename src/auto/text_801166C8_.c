@@ -5710,19 +5710,21 @@ void fn_80122518(s32 arg0, u8 *arg1, void *arg2) {
 }
 
 extern void fn_801233F8(s32, volatile f32 *, f32 *);
-void fn_80122E08(s32 arg0, void *arg1, s32 arg2, void *arg3) {
-    s32 n2;
-    s32 n = arg0 >> 2;
-    n2 = n * 2;
-    fn_801233F8(arg0, (volatile f32 *)arg1, (f32 *)((u8 *)arg3 + (arg2 - n2) * 4));
-    if (arg0 > 0x200) {
-        fn_80122E08(n, arg1, arg2, arg3);
-        fn_80122ED8(n, (u8 *)arg1 + n * 4, arg2, arg3);
-        fn_80122E08(n, (u8 *)arg1 + (n2 * 4), arg2, arg3);
-        fn_80122E08(n, (u8 *)arg1 + ((n * 3) << 2), arg2, arg3);
+void fn_80122E08(s32 length, void *data, s32 twiddleOffset, void *twiddleBase) {
+    s32 halfLength;
+    s32 quarterLength = length >> 2;
+    /* Recursively split a complex FFT block into four quarters, applying the
+       stage twiddles and falling back to the leaf transform for small blocks. */
+    halfLength = quarterLength * 2;
+    fn_801233F8(length, (volatile f32 *)data, (f32 *)((u8 *)twiddleBase + (twiddleOffset - halfLength) * 4));
+    if (length > 0x200) {
+        fn_80122E08(quarterLength, data, twiddleOffset, twiddleBase);
+        fn_80122ED8(quarterLength, (u8 *)data + quarterLength * 4, twiddleOffset, twiddleBase);
+        fn_80122E08(quarterLength, (u8 *)data + (halfLength * 4), twiddleOffset, twiddleBase);
+        fn_80122E08(quarterLength, (u8 *)data + ((quarterLength * 3) << 2), twiddleOffset, twiddleBase);
         return;
     }
-    fn_80122FA4(arg0, arg1, arg2, arg3);
+    fn_80122FA4(length, data, twiddleOffset, twiddleBase);
 }
 
 #pragma scheduling invalid_target
