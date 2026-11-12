@@ -1831,7 +1831,7 @@ struct ArchiveStream {
     virtual void Seek(s32 offset, s32 origin);// 0x44
     virtual void f16();                       // 0x48
     virtual void f17();                       // 0x4C
-    virtual s32 IsAvailable();                // 0x50
+    virtual s32 IsReady();                      // 0x50
 };
 
 #pragma push
