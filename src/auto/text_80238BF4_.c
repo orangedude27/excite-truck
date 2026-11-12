@@ -178,20 +178,16 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
 
 #pragma scheduling invalid_target
 void fn_80238FCC(u32 arg0, u32 arg1) {
-    u8 *data = *(u8 **)((u8 *)arg0 + 0x14);
-    s32 count = *(s32 *)(data + 0x24);
-    s32 stride = *(s32 *)(data + 4);
-    u8 *entry = (u8 *)(data + 0x24) + ((arg1 % stride) * 0xC);
-    s32 i = 0;
+    register u8 *data = *(u8 **)((u8 *)arg0 + 0x14);
+    register u32 stride = *(u32 *)(data + 4);
     s32 offset = 0;
-    u16 num;
-
-    do {
-        fn_80238BF4((void *)arg0, entry + offset);
-        offset += 0x1C;
+    u8 *entry = (u8 *)((*(u32 *)(data + 0x24)) + ((arg1 % stride) * 12));
+    s32 i = 0;
+    while (i < (s32)*(u16 *)entry) {
+        fn_80238BF4((void *)arg0, (u8 *)((*(s32 *)(entry + 8)) + offset));
+        offset += 28;
         i++;
-        num = *(u16 *)entry;
-    } while (i < num);
+    }
 }
 
 #pragma dont_inline on
@@ -270,8 +266,9 @@ void fn_802390B4(void *arg0, s32 arg1) {
                 entry[2] = t;
             }
 
+            i = 0;
             if (*(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC) != 0) {
-                for (offset = 0, i = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC); offset += 0x28, i++) {
+                for (offset = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC); offset += 0x28, i++) {
                     u8 *table = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C);
                     u8 *entry = table + offset;
                     u8 t = table[offset];
@@ -279,8 +276,12 @@ void fn_802390B4(void *arg0, s32 arg1) {
                     entry[1] = t;
                     SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset, 4);
                     for (j = 0; j < 0x20; j += 8) {
-                        SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j, 8);
-                        SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j, 12);
+                        u8 *sub = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j;
+                        t = sub[8]; sub[8] = sub[11]; sub[11] = t;
+                        t = sub[9]; sub[9] = sub[10]; sub[10] = t;
+                        sub = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j;
+                        t = sub[12]; sub[12] = sub[15]; sub[15] = t;
+                        t = sub[13]; sub[13] = sub[14]; sub[14] = t;
                     }
                 }
             }
@@ -320,33 +321,34 @@ s32 fn_8023967C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_802396BC(void *arg0) {
+/* Advances a frame index on a timed object when its rate timer elapses, clamping or wrapping within min/max bounds. */
+void fn_802396BC(void *state) {
     s32 now;
-    u32 next;
-    u32 max;
-    u32 min;
-    u32 rate;
+    u32 nextFrame;
+    u32 maxFrame;
+    u32 minFrame;
+    u32 frameRate;
 
-    if (*(u32 **)((u8 *)arg0 + 0x14) != 0 && *((u8 *)arg0 + 4) != 0) {
+    if (*(u32 **)((u8 *)state + 0x14) != 0 && *((u8 *)state + 4) != 0) {
         now = fn_802E2C20();
-        rate = **(u32 **)((u8 *)arg0 + 0x14);
-        if ((u32)(now - *(s32 *)arg0) >= 1000U / rate) {
-            max = *(u32 *)((u8 *)arg0 + 0x10);
-            next = *(u32 *)((u8 *)arg0 + 8) + 1;
-            *(u32 *)((u8 *)arg0 + 8) = next;
-            if (next > max) {
-                if (*((u8 *)arg0 + 5) != 0) {
-                    *(u32 *)((u8 *)arg0 + 8) = *(u32 *)((u8 *)arg0 + 0xC);
+        frameRate = **(u32 **)((u8 *)state + 0x14);
+        if ((u32)(now - *(s32 *)state) >= 1000U / frameRate) {
+            maxFrame = *(u32 *)((u8 *)state + 0x10);
+            nextFrame = *(u32 *)((u8 *)state + 8) + 1;
+            *(u32 *)((u8 *)state + 8) = nextFrame;
+            if (nextFrame > maxFrame) {
+                if (*((u8 *)state + 5) != 0) {
+                    *(u32 *)((u8 *)state + 8) = *(u32 *)((u8 *)state + 0xC);
                 } else {
-                    *(u32 *)((u8 *)arg0 + 8) = max;
+                    *(u32 *)((u8 *)state + 8) = maxFrame;
                 }
             } else {
-                min = *(u32 *)((u8 *)arg0 + 0xC);
-                if (next < min) {
-                    *(u32 *)((u8 *)arg0 + 8) = min;
+                minFrame = *(u32 *)((u8 *)state + 0xC);
+                if (nextFrame < minFrame) {
+                    *(u32 *)((u8 *)state + 8) = minFrame;
                 }
             }
-            *(s32 *)arg0 = now;
+            *(s32 *)state = now;
         }
     }
 }
@@ -362,55 +364,55 @@ extern s32 fn_802CAC28(void *, s32);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_80340B2C[];
 void fn_80239784(void *arg0, s32 arg1) {
-    s32 i;
-    s32 offset;
-    u8 *data;
-
-    fn_8023905C(arg0);
+    s32 a;
+    s32 b;
+    u32 *c;
+    ((void (*)())fn_8023905C)();
     fn_802390B4(arg0, arg1);
-    data = *(u8 **)((u8 *)arg0 + 0x14);
-    if (data == 0) {
+    c = *(u32 **)((u8 *)arg0 + 0x14);
+    if (c == 0) {
         fn_802E30C8(lbl_80340B2C, arg1);
         return;
     }
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    i = 0;
-    offset = 0;
-    *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)(data + 4) - 1;
-    do {
-        u8 *entry = *(u8 **)(data + 0x18) + offset;
-        if ((s8)entry[4] != 0) {
-            *(s32 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18 + offset) =
-                (s32 *)fn_802CAC28(entry + 4, 0);
+    *(s32 *)((u8 *)arg0 + 0x0C) = 0;
+    b = 0;
+    a = 0;
+    *(s32 *)((u8 *)arg0 + 0x10) = (s32)c[1] - 1;
+    while ((u32)b < c[2]) {
+        u8 *d = *(u8 **)((u8 *)c + 0x18) + a;
+        if ((s8)d[4] != 0) {
+            void *e = (void *)fn_802CAC28(d + 4, 0);
+            *(void **)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + a) = e;
         } else {
-            *(s32 *)entry = -1;
+            *(s32 *)d = -1;
         }
-        offset += 0x14;
-        i++;
-        data = *(u8 **)((u8 *)arg0 + 0x14);
-    } while ((u32)i < *(u32 *)(data + 8));
+        a += 0x14;
+        b++;
+        c = *(u32 **)((u8 *)arg0 + 0x14);
+    }
 }
 
 #pragma push
 #pragma scheduling invalid_target
 void fn_8023986C(void *arg0) {
     s32 offset;
-    u32 i;
-    s32 marker = -2;
-    if (*(void **)((u8 *)arg0 + 0x14) != 0) {
+    unsigned int i;
+    s32 marker;
+    marker = -2;
+    if (*(void **)((char *)arg0 + 0x14) != 0) {
         i = 0;
         offset = 0;
-        while (i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8)) {
-            if (*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) == -2) {
-            } else {
+        while (i < *(unsigned int *)(*(char **)((char *)arg0 + 0x14) + 8)) {
+            s32 v = *(s32 *)(*(char **)(*(char **)((char *)arg0 + 0x14) + 0x18) + offset);
+            if (v != -2) {
                 fn_802CAC54();
-                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = marker;
+                *(s32 *)(*(char **)(*(char **)((char *)arg0 + 0x14) + 0x18) + offset) = marker;
             }
             offset += 0x14;
             i++;
         }
         fn_8012C4D8();
-        *(u32 *)((u8 *)arg0 + 0x14) = 0;
+        *(void **)((char *)arg0 + 0x14) = 0;
     }
 }
 #pragma pop
