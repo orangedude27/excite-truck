@@ -2275,34 +2275,56 @@ extern "C" void fn_8021C12C(void *arg0) {
 extern "C" char lbl_80558DC4[];
 #pragma push
 #pragma processor 750
-extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
-    f32 first;
-    s32 *check = *(s32 **)((u8 *)arg0 + 0x2A8);
-    if (check == 0)
+/* Key handler of a widget that steps through a selector: the widget's cached
+ * selection state (+0x2A8, whose value must still match the id at +0x2AC) is
+ * still current, so step the selector object (+0x2A4) forward on 0x127 and back
+ * on 0x125 -- when its position does not change the ends were reached and the UI
+ * key sound is suppressed -- or, on 0x126/0x128, ask the screen (+0x2C) for the
+ * previous/next page of its list when it holds more than one.  Returns 1 when
+ * the message was handled. */
+extern "C" s32 fn_8021C18C(void *widget, s32 msg) {
+    /* the selector at widget+0x2A4: value() is where it stands now, moveNext()
+       and movePrev() step it; two destructor slots lead its vtable, so the
+       methods below sit at the offsets in the comments */
+    struct Selector {
+        virtual void slot08();
+        virtual void slot0C();
+        virtual void slot10();
+        virtual f32 moveNext(); /* +0x14 */
+        virtual f32 movePrev(); /* +0x18 */
+        virtual void slot1C();
+        virtual void slot20();
+        virtual f32 value();    /* +0x24 */
+    };
+    f32 before;
+    s32 *selection = *(s32 **)((u8 *)widget + 0x2A8);
+    if (selection == 0)
         return 0;
-    if (*(s32 *)((u8 *)arg0 + 0x2AC) != *check)
+    if (*(s32 *)((u8 *)widget + 0x2AC) != *selection)
         return 0;
-    first = ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
-    switch (arg1) {
+    before = ((Selector *)*(void **)((u8 *)widget + 0x2A4))->value();
+    switch (msg) {
     case 0x127:
-        ((V14x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
-        if ((f32)FN8021C18C_ABS((double)(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get())) <= *(f32 *)&lbl_80558DC4)
+        ((Selector *)*(void **)((u8 *)widget + 0x2A4))->moveNext();
+        /* lbl_80558DC4 is an epsilon (0x34 read as a float, about 7e-43), so this
+           is "the position did not change": fn_80216D28 mutes the UI key sound */
+        if ((f32)FN8021C18C_ABS((double)(before - ((Selector *)*(void **)((u8 *)widget + 0x2A4))->value())) <= *(f32 *)&lbl_80558DC4)
             fn_80216D28();
         return 1;
     case 0x125:
-        ((V20x *)*(void **)((u8 *)arg0 + 0x2A4))->get();
-        if ((f32)FN8021C18C_ABS((double)(first - ((V24x *)*(void **)((u8 *)arg0 + 0x2A4))->get())) <= *(f32 *)&lbl_80558DC4)
+        ((Selector *)*(void **)((u8 *)widget + 0x2A4))->movePrev();
+        if ((f32)FN8021C18C_ABS((double)(before - ((Selector *)*(void **)((u8 *)widget + 0x2A4))->value())) <= *(f32 *)&lbl_80558DC4)
             fn_80216D28();
         return 1;
     case 0x126:
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+        if (*(s32 *)((u8 *)*(void **)((u8 *)widget + 0x2C) + 0x494) > 1) {
+            fn_80217D84(*(s32 *)((u8 *)widget + 0x2C)); /* the list's previous page */
             return 1;
         }
         goto done;
     case 0x128:
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+        if (*(s32 *)((u8 *)*(void **)((u8 *)widget + 0x2C) + 0x494) > 1) {
+            fn_80217C4C(*(s32 *)((u8 *)widget + 0x2C)); /* and its next page */
             return 1;
         }
     }
