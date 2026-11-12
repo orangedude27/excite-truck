@@ -421,6 +421,7 @@ public:
 };
 
 class Dispatch19718 { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void set(s32, s32); };
+class Dispatch19718_1C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void set(s32, s32); };
 
 class Vf78 { public:
 virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4();
@@ -2627,28 +2628,24 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     spC = tmp ^ 0x80000000;
 }
 extern "C" void fn_8021CBBC(void *arg0) {
-    register s32 y;
     register s32 x;
+    register s32 y;
     f32 a;
     f32 b;
     register f32 rate;
-
-    x = *(s32 *)((u8 *)arg0 + 4) -
-        ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
+    x = *(s32 *)((u8 *)arg0 + 4) - lbl_8055FB9C / 2;
     a = (f32)x;
-    y = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1) -
-        *(s32 *)((u8 *)arg0 + 8);
+    y = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)arg0 + 8);
     b = (f32)y;
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x24C), 0,
                 a, b - lbl_80563500, lbl_805634A8);
-
     rate = (*(V24x **)((u8 *)arg0 + 0x248))->get();
     x = ((VfObj *)arg0)->vf28();
     y = *(s32 *)((u8 *)arg0 + 0x254);
     x = (s32)(rate * (f32)(x - y));
     fn_80230C30(&a, &b,
-                *(s32 *)((u8 *)arg0 + 4) + x,
-                *(s32 *)((u8 *)arg0 + 8) + 3);
+                x + *(s32 *)((u8 *)arg0 + 4),
+                3 + *(s32 *)((u8 *)arg0 + 8));
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), 0, a, b, lbl_805634A8);
 }
 
@@ -3324,8 +3321,8 @@ extern "C" void fn_8021E3BC(void *arg0, s32 arg1) {
     register s32 base;
     register s32 index;
     register s32 selected;
-    register s32 xBase;
     register s32 yBase;
+    register s32 xBase;
     register s32 result;
     register s32 status;
 
@@ -3344,8 +3341,8 @@ extern "C" void fn_8021E3BC(void *arg0, s32 arg1) {
 body:
     selected = **(s32 **)((u8 *)arg0 + 0x25C) == item;
     if (selected) {
-        xBase = *(s32 *)((u8 *)arg0 + 4);
         yBase = *(s32 *)((u8 *)arg0 + 8);
+        xBase = *(s32 *)((u8 *)arg0 + 4);
         result = xBase + ((VfObj *)arg0)->vf28();
         s32 rowHeight = *(s32 *)((u8 *)arg0 + 0x258);
         fn_802C3424(xBase + 2,
@@ -3355,10 +3352,14 @@ body:
                     color);
     }
 
-    selected = (u32)(-selected | selected) >> 31;
-    status = ((-scratch | scratch) >> 31) & 2;
-    yBase = *(s32 *)((u8 *)arg0 + 8);
-    xBase = *(s32 *)((u8 *)arg0 + 4);
+    {
+        s32 tmpSel = -selected | selected;
+        yBase = *(s32 *)((u8 *)arg0 + 8);
+        s32 tmpScr = -scratch | scratch;
+        xBase = *(s32 *)((u8 *)arg0 + 4);
+        status = (tmpScr >> 31) & 2;
+        selected = (u32)tmpSel >> 31;
+    }
     result = ((s32 (*)(s32, s32, s32 *))fn_8022D3F8)(
         *(s32 *)((u8 *)arg0 + 0x244), item, 0);
     fn_8022B91C(7, xBase + 2,
@@ -7144,12 +7145,10 @@ extern "C" void fn_80226B6C(void *arg0) {
     f32 factor;
     f32 y;
     f32 delta2;
-    void *vec;
 
     one = lbl_805634A4;
     zero = lbl_805634A8;
     matrix[0] = one;
-    vec = scratch;
     scale = now / lbl_805634E4;
     matrix[1] = zero;
     matrix[2] = zero;
@@ -7173,7 +7172,7 @@ extern "C" void fn_80226B6C(void *arg0) {
 
     {
         void *obj = *(void **)(p + 0x248);
-        ((void (*)(void *, void *))fn_80015A20)(scratch + 0x0c, vec);
+        ((void (*)(void *, void *))fn_80015A20)(scratch + 0x0c, scratch);
         fn_80015B20(obj, scratch + 0x0c, obj);
     }
 
