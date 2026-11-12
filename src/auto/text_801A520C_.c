@@ -80,11 +80,12 @@ struct Dummy_801A5258 {
     virtual void d10(void *) {}
 };
 #pragma cplusplus on
-extern "C" void fn_801A5258(void *arg0, void *arg1) {
-    class VTable {
+extern "C" void fn_801A5258(void *self, void *initData) {
+    /* Reset this object's runtime state, bind/init its subobject, and clear transient timers. */
+    class SubobjectVTable {
     public:
         virtual void f0();
-        virtual void f2(void *, void *);
+        virtual void f2(void *owner, void *data);
         virtual void f1();
         virtual void f3();
         virtual void f4();
@@ -92,23 +93,27 @@ extern "C" void fn_801A5258(void *arg0, void *arg1) {
         virtual void f6();
         virtual void f9();
     };
-    VTable *obj;
+    SubobjectVTable *subobj;
     float zero;
+
     fn_80182074();
-    fn_80265D38(arg0, *(int *)((char *)arg0 + 0x1EC));
-    obj = (VTable *)*(void **)((char *)arg0 + 0x270C);
-    *(int *)((char *)arg0 + 0x2708) = 0;
-    *(unsigned char *)((char *)arg0 + 0x2704) = 0;
-    *(int *)((char *)arg0 + 0x2700) = 0;
-    obj->f2(arg0, arg1);
-    obj = (VTable *)*(void **)((char *)arg0 + 0x270C);
-    obj->f9();
+    fn_80265D38(self, *(int *)((char *)self + 0x1EC));
+
+    subobj = (SubobjectVTable *)*(void **)((char *)self + 0x270C);
+    *(int *)((char *)self + 0x2708) = 0;
+    *(unsigned char *)((char *)self + 0x2704) = 0;
+    *(int *)((char *)self + 0x2700) = 0;
+    subobj->f2(self, initData);
+
+    subobj = (SubobjectVTable *)*(void **)((char *)self + 0x270C);
+    subobj->f9();
+
     zero = lbl_805623C8;
-    *(int *)((char *)arg0 + 0x2714) = 1;
-    *(int *)((char *)arg0 + 0x2720) = 0;
-    *(float *)((char *)arg0 + 0x271C) = zero;
-    *(float *)((char *)arg0 + 0x2718) = zero;
-    *(unsigned char *)((char *)arg0 + 0x2710) = 0;
+    *(int *)((char *)self + 0x2714) = 1;
+    *(int *)((char *)self + 0x2720) = 0;
+    *(float *)((char *)self + 0x271C) = zero;
+    *(float *)((char *)self + 0x2718) = zero;
+    *(unsigned char *)((char *)self + 0x2710) = 0;
 }
 #pragma cplusplus on
 extern "C" void fn_801A5300(void *arg0, void **arg1) {
