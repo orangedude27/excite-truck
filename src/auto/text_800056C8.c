@@ -115,7 +115,10 @@ typedef struct OverlayManager {
 } OverlayManager;
 
 typedef struct SessionState { /* lbl_8034EE84, what lbl_8055D350 points at */
-    u8 pad0[0x14];
+    u8 pad0[0x08];
+    void *field08;   /* 0x08: the object fn_801E87A8 hands out at startup; the
+                      * word at its +4 holds flags the HUD code tests (0x80000) */
+    u8 pad0C[0x08];
     s32 playerCount; /* 0x14: how many of the four slots are in use */
 } SessionState;
 
@@ -960,17 +963,22 @@ extern void *fn_801EA9B0(s32);
 extern f32 lbl_80560118, lbl_80560170, lbl_80560174, lbl_80560178, lbl_8056017C;
 extern f32 lbl_80560180, lbl_80560184, lbl_80560188, lbl_8056018C;
 extern const char lbl_80558930[4], lbl_80558934[6], lbl_80558940[8];
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_80006B18(void *arg0) {
-    u8 sp8[8];
-    u8 sp10[16];
+    double bias;
+    double dd;
+    u32 hi;
     f32 start;
     f32 now;
     f32 y;
     f32 advance;
-    f32 scale;
     f32 gap;
     f32 threshold;
+    f32 unk11C;
     f32 percent;
+    f32 scale;
     f32 offset;
     f32 percentScale;
     f32 value;
@@ -979,19 +987,26 @@ void fn_80006B18(void *arg0) {
     s32 whole;
     s32 remainder;
     void *entry;
+    u8 sp8[8];
+    u8 sp10[16];
 
     start = fn_80011E34();
     now = fn_80011E54() - lbl_80560170;
     i = 0;
-    scale = lbl_80560174;
     gap = lbl_80560178;
     threshold = lbl_8056017C;
+    unk11C = lbl_8056011C;
     percent = lbl_80560188;
+    bias = lbl_80560128;
+    scale = lbl_80560174;
     offset = lbl_80560184;
     percentScale = lbl_8056018C;
+    hi = 0x43300000;
     for (; i < fn_801EA994(); i++) {
         entry = fn_801EA9B0(i);
-        y = now - scale * (f32)i;
+        ((u32 *)&dd)[0] = hi;
+        ((u32 *)&dd)[1] = (u32)i ^ 0x80000000;
+        y = now - scale * (f32)(dd - bias);
         fn_80010E94(*(s32 *)((u8 *)arg0 + 0x14), 0, start,
                     y - gap, lbl_80560118, lbl_8056017C);
         flags = *(s32 *)((u8 *)entry + 0xC);
@@ -1003,29 +1018,28 @@ void fn_80006B18(void *arg0) {
             advance += offset;
         } else if (flags & 2) {
             value = *(f32 *)((u8 *)entry + 0x18);
-            if (value < lbl_8056011C) {
+            if (value < unk11C) {
                 fn_801345D8(sp8, 8, lbl_80558934);
             } else {
                 whole = (s32)value;
                 remainder = (s32)(percent * value) - whole * 100;
                 fn_801345D8(sp8, 8, lbl_80558940, whole, remainder);
             }
-            fn_8000FF88(-0x100, 0x41, &lbl_80558948,
+            fn_8000FF88(-0x100, 0x41, (void *)&lbl_80558948,
                         lbl_80560180, advance, (y - gap) - threshold, sp8);
             advance += percentScale;
         } else {
-            fn_8000FF88(-0x100, 0x41, &lbl_80558948,
+            fn_8000FF88(-0x100, 0x41, (void *)&lbl_80558948,
                         lbl_80560180, advance, (y - gap) - threshold,
                         fn_800122B4(i + 1, sp10));
             advance += offset;
         }
-        fn_8000FF88(-0x100, 0x21, &lbl_80558948,
+        fn_8000FF88(-0x100, 0x21, (void *)&lbl_80558948,
                     lbl_80560130, advance, (y - gap) - threshold,
                     (u8 *)entry + 0x48);
     }
 }
-#pragma ppc_psq_save reset
-#pragma use_lmw_stmw reset
+#pragma pop
 
 #pragma scheduling invalid_target
 void fn_80006D30(void) {
@@ -1602,10 +1616,12 @@ extern void *fn_801E87A8(void);
 extern s32 fn_801CB8FC(void);
 #pragma scheduling invalid_target
 void fn_800077E4(void *arg0) {
-    void *base = lbl_8055D350;
-    void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
+    void *base;
+    void *p;
+    base = lbl_8055D350;
+    p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
-    if (fn_8000561C(p, base)) {
+    if (fn_8000561C(p, base) != 0) {
         *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
         fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
