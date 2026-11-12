@@ -59,6 +59,16 @@ struct Fn8021832CObj {
     virtual void s20(); virtual void s21();
     virtual int Query();
 };
+struct VObj2 {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void f28();
+    virtual void q0(); virtual void q1(); virtual void q2(); virtual void q3(); virtual void q4();
+    virtual void q5(); virtual void q6(); virtual void q7(); virtual void q8(); virtual void q9();
+    virtual void q10(); virtual void q11(); virtual void q12(); virtual void q13(); virtual void q14();
+    virtual void q15(); virtual void q16(); virtual void q17(); virtual void q18();
+    virtual int f78();
+};
 #pragma cplusplus reset
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -785,18 +795,18 @@ first_test:
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 int fn_80217EC0(void *arg0, int arg1, int arg2) {
-    register int count = *(int *)((char *)arg0 + 0x494);
-    register int last;
-    register int candidateIndex;
-    register char *entry;
     register int currentX;
     register int currentY;
+    register int count = *(int *)((char *)arg0 + 0x494);
+    register int candidateIndex;
+    register int last;
     register int bestIndex;
     register int best;
+    register char *entry;
     register int deltaX;
     register int deltaY;
     register int keyIndex;
-    register char *item;
+    char *item;
     int direction;
     int value;
     int score;
@@ -813,11 +823,11 @@ int fn_80217EC0(void *arg0, int arg1, int arg2) {
     }
     threshold = lbl_80563490;
     item = *(char **)((char *)arg0 + last * 8 + 0x4A4);
+    best = 100000;
     bestIndex = last;
     currentX = *(int *)(item + 4);
     entry = (char *)arg0;
     currentY = *(int *)(item + 8);
-    best = 100000;
     candidateIndex = 0;
     goto loop_test;
 loop:
@@ -1143,54 +1153,54 @@ void fn_80218574(void *arg0) {
     struct State state;
     struct State *src;
     float x,y;
-    int index;
-    char *entry;
+    void *entry;
     int current, i;
     float limit, one, zero;
-    char *obj;
-    char *base;
+    void *obj;
+    void *base;
+    int index;
     base=arg0;
-    if (*(void **)(base+8)) {
+    if (*(void **)((char*)base+8)) {
         fn_80230C30(&x,&y,0,0);
-        fn_802C5310(*(void **)(base+8),0,x,y,lbl_80563490);
-    } else if(fn_80215228() && !*(unsigned char *)(base+0xde4)) {
+        fn_802C5310(*(void **)((char*)base+8),0,x,y,lbl_80563490);
+    } else if(fn_80215228() && !*(unsigned char *)((char*)base+0xde4)) {
         fn_802C86E8(0xff000000); fn_802C88BC(3);
     }
     zero=lbl_80563490; one=lbl_80563494; limit=lbl_80563498;
-    current=-1; entry=base;
-    for(i=0;i<*(int *)(base+0x430);i++,entry+=4) {
+    entry=base; current=-1;
+    for(i=0;i<*(int *)((char*)base+0x430);entry=(void*)((char*)entry+4),i++) {
         int active=0;
-        obj=*(char **)(entry+0x30);
-        if(*(unsigned char *)(obj+0x1a) || *(float *)(obj+0x20)>=zero) active=1;
+        obj=*(void **)((char*)entry+0x30);
+        if(*(unsigned char *)((char*)obj+0x1a) || *(float *)((char*)obj+0x20)>=zero) active=1;
         if(active) {
             int pushed;
             float alpha;
-            int *p=*(int **)(obj+0x240);
-            if(p) index=*p; else index=*(int *)(obj+0x23c);
+            int *p=*(int **)((char*)obj+0x240);
+            if(p) index=*p; else index=*(int *)((char*)obj+0x23c);
             if(index!=current) {
                 if(current!=-1) fn_8022EDB8();
                 current=index;
-                fn_8022ED00(base+index*0x3c+0x6a0);
+                fn_8022ED00((char*)base+index*0x3c+0x6a0);
             }
-            if (*(float *)(obj+0x20)>=zero) alpha=one-*(float *)(obj+0x20);
-            else if (*(float *)(obj+0x1c)>=zero) alpha=*(float *)(obj+0x1c);
-            else if (*(unsigned char *)(obj+0x1a)) alpha=lbl_80563494;
+            if (*(float *)((char*)obj+0x20)>=zero) alpha=one-*(float *)((char*)obj+0x20);
+            else if (*(float *)((char*)obj+0x1c)>=zero) alpha=*(float *)((char*)obj+0x1c);
+            else if (*(unsigned char *)((char*)obj+0x1a)) alpha=lbl_80563494;
             else alpha=zero;
             pushed=0;
-            if(alpha<limit && *(void **)(base+0x444)) {
+            if(alpha<limit && *(void **)((char*)base+0x444)) {
                 int b,a,c,result;
                 float innerAlpha;
                 pushed=1;
                 src=(struct State *)fn_8022EDC4();
                 state.m = src->m;
                 state.a=src->a; state.b=src->b; state.c=src->c;
-                if (*(float *)(obj+0x20)>=zero) innerAlpha=one-*(float *)(obj+0x20);
-                else if (*(float *)(obj+0x1c)>=zero) innerAlpha=*(float *)(obj+0x1c);
-                else if (*(unsigned char *)(obj+0x1a)) innerAlpha=lbl_80563494;
+                if (*(float *)((char*)obj+0x20)>=zero) innerAlpha=one-*(float *)((char*)obj+0x20);
+                else if (*(float *)((char*)obj+0x1c)>=zero) innerAlpha=*(float *)((char*)obj+0x1c);
+                else if (*(unsigned char *)((char*)obj+0x1a)) innerAlpha=lbl_80563494;
                 else innerAlpha=zero;
-                c=*(int *)(obj+8); b=*(int *)(obj+4); a=*(int *)(obj+0x238);
+                a=*(int *)((char*)obj+0x238); b=*(int *)((char*)obj+4); c=*(int *)((char*)obj+8);
                 result=((struct VObj *)obj)->vt->f78((struct VObj *)obj);
-                (*(void (**)(void *,int,int,int,int,int,int,float))(base+0x444))(&state,a,b,c,result,*(int *)(obj+0x10)-c,0,innerAlpha);
+                (*(void (**)(void *,int,int,int,int,int,int,float))((char*)base+0x444))(&state,a,b,c,result,*(int *)((char*)obj+0x10)-c,0,innerAlpha);
                 fn_8022ED00(&state);
             }
             ((struct VObj *)obj)->vt->f28((struct VObj *)obj);
