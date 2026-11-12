@@ -7,6 +7,63 @@ typedef struct Unk18440 {
     s32 unk_0x28[8];
 } Unk18440;
 
+/* A driver/vehicle pairing list, 0x48 bytes: up to 8 driver numbers at +0x4 and
+ * the number of the vehicle each of them drives at +0x28, each half carrying a
+ * count of its own. */
+typedef struct EntryPairList {
+    s32 driverCount;
+    s32 driverNums[8];
+    s32 vehicleCount;
+    s32 vehicleNums[8];
+} EntryPairList;
+
+/* One driver record (stride 0x5C): the fixed base table lbl_803577F0 followed
+ * by the ones read from the DAV data (lbl_8055D540).  Only the fields this file
+ * touches are named; see src/auto/text_80016354_.c for the rest. */
+typedef struct DriverInfo {
+    /* 0x00 */ s32 unk_0x00;
+    /* 0x04 */ s32 number;         /* unique driver number */
+    /* 0x08 */ char name[0x40];
+    /* 0x48 */ s32 unk_0x48;
+    /* 0x4C */ s32 vehicleIndex;   /* index of the VehicleInfo this driver drives */
+    /* 0x50 */ s32 vehicleOverride;
+    /* 0x54 */ s32 unk_0x54[2];
+} DriverInfo;
+
+/* One vehicle record (stride 0xA8): the fixed base table lbl_80357960 followed
+ * by the ones read from the DAV data (lbl_8055D544). */
+typedef struct VehicleInfo {
+    /* 0x00 */ s32 unk_0x00;
+    /* 0x04 */ s32 number;         /* unique vehicle number */
+    /* 0x08 */ s32 linkedNumber;   /* number of the vehicle this one is tied to */
+    /* 0x0C */ s32 unk_0x0C[8];
+    /* 0x2C */ char name[0x24];
+    /* 0x50 */ s32 unk_0x50[5];
+    /* 0x64 */ s32 altVehicles[12]; /* alternate vehicle numbers it can be given */
+    /* 0x94 */ s32 altIndex;       /* which alternate is in use, -1 for none */
+    /* 0x98 */ s32 altCount;
+    /* 0x9C */ s32 carClass;       /* car class of the name at +0x2C */
+    /* 0xA0 */ s32 flags;
+    /* 0xA4 */ s32 classMask;
+} VehicleInfo;
+
+#define VEHICLE_CLASS_UNCLASSIFIED 6 /* fn_8013C8E8's answer for an unknown name */
+
+/* Driver/vehicle record accessors (src/auto/text_80016354_.c) and the pairing
+ * list helpers defined below in this file. */
+#define GetBaseEntryCount         fn_800167F4 /* records in the fixed base tables */
+#define GetBaseDriver             fn_800167B8 /* DriverInfo *by index in lbl_803577F0 */
+#define GetVehicleByIndex         fn_80016510 /* VehicleInfo *by index */
+#define GetVehicleByNumber        fn_80016544 /* VehicleInfo *by number */
+#define SetDriverVehicleOverride  fn_800168B0 /* driver number, vehicle number */
+#define GetCarClass               fn_8013C8E8 /* car class of a vehicle name */
+#define debug_printf              fn_802E30C8 /* debug console print */
+#define STR_UNCLASSIFIED_CAR      lbl_802FD088 /* "DAVMap: WARNING! Player is driving the %s, an unclassified car!" */
+#define AddDriverVehiclePair      fn_800178BC /* append one driver/vehicle number pair */
+#define WarnIfUnclassifiedVehicle fn_8001786C /* warn when a vehicle has no car class */
+#define VehicleOverrideEnabled    fn_800178F0 /* whether to re-apply the alternate vehicle */
+#define SetDriverVehicleFromTable fn_800178F8 /* driver number, vehicle number */
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -123,11 +180,12 @@ void fn_80017A2C(void *arg0, s32 arg1) {
 }
 #pragma scheduling on
 void fn_80017AC8(void* arg0) {
-    s32 offset, i;
+    s32 offset = 0;
+    s32 i = 0;
     extern s32 fn_80129D18(s32);
-    i = 0;
-    offset = 0;
-    while (i < *(s32*)((char*)arg0 + 4)) {
+    goto check;
+loop:
+    {
         s32 left;
         s32 right;
         s32* items;
@@ -135,12 +193,14 @@ void fn_80017AC8(void* arg0) {
         index = fn_80129D18(1);
         items = *(s32**)arg0;
         i++;
-        right = items[index];
         left = *(s32*)((char*)items + offset);
+        right = items[index];
         *(s32*)((char*)items + offset) = right;
         offset += 4;
         items[index] = left;
     }
+check:
+    if (i < *(s32*)((char*)arg0 + 4)) goto loop;
 }
 
 extern s32 fn_800165D4(void);
