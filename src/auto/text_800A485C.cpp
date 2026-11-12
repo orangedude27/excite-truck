@@ -16366,6 +16366,7 @@ extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s3
 
 #pragma push
 #pragma opt_dead_assignments off
+/* Allocate and initialize a 0xED78-byte audio/decode context, then run device init. */
 extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 *p;
     fn_800C4B5C(arg2, arg3);
