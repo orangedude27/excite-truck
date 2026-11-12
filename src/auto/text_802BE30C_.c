@@ -262,6 +262,8 @@ void fn_802BEAB0(void) {
     s16 x;
     s16 y;
     void *p;
+
+    /* Initialize grid entries for each tile size (4..64) when not already initialized, adjusting flags at offset +8. */
     if (lbl_8055FACC == 0) {
         for (size = 4; size <= 0x40; size *= 2) {
             start = size - 0x200;
@@ -288,26 +290,23 @@ extern f32 lbl_80564D5C;
 extern f32 lbl_80564D58;
 extern f64 lbl_80564D60;
 extern f32 lbl_80564D68;
+#pragma push
+#pragma processor 750
 void fn_802BEB70(void) {
-    s32 size;
+    s16 size;
     s32 start;
     s32 step;
     s16 x;
     s16 y;
-    s32 *field;
     s32 raw;
-    f64 convert_bias;
-    f32 scale;
-    f32 offset;
-    f32 threshold;
-    f32 correction;
-    f32 subtract_value;
     f32 rounded;
-
+    f32 subtract_value;
+    f32 correction;
+    f32 threshold;
+    f32 offset;
+    f32 scale;
     if (lbl_8055FACC != 0)
         return;
-
-    convert_bias = lbl_80564D70;
     scale = lbl_80564D50;
     offset = lbl_80564D54;
     threshold = lbl_80564D5C;
@@ -315,17 +314,14 @@ void fn_802BEB70(void) {
     subtract_value = lbl_80564D68;
     size = 4;
     goto size_check;
-
 size_loop:
     start = size - 0x200;
     x = (s16)start;
-    step = size * 2;
+    step = size + size;
     goto x_check;
-
 x_loop:
     y = (s16)start;
     goto y_check;
-
 y_loop:
     {
         void *cell = fn_802BE844(x, y, size);
@@ -334,31 +330,25 @@ y_loop:
             height -= correction;
         else
             height += correction;
-
         raw = *(s32 *)((char *)cell + 8);
         *(s32 *)((char *)cell + 8) = (raw & 0xFF803FFF) | ((s32)height << 14);
-
         rounded = (f32)ceil(lbl_80564D60) - subtract_value;
         raw = *(s32 *)((char *)cell + 8);
         *(s32 *)((char *)cell + 8) =
             (raw & 0xFFFFC3FF) | ((s32)rounded << 10);
     }
-
     y = (s16)(y + step);
 y_check:
     if (y < 0x200)
         goto y_loop;
-
     x = (s16)(x + step);
 x_check:
     if (x < 0x200)
         goto x_loop;
-
-    size *= 2;
+    size = size * 2;
 size_check:
     if (size <= 0x40)
         goto size_loop;
-
     fn_802BE7F4();
 }
-
+#pragma pop
