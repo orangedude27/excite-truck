@@ -530,7 +530,8 @@ void fn_801D25BC(void *arg0, void *arg1) {
 #pragma cplusplus reset
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_801D2A24(void *obj_) {
+/* Initializes the next event entry (stride 0x4C4 in lbl_80438958, indexed by lbl_8055E930) from a scene object: id, effect sub-object, and spawn sub-object. */
+extern "C" void fn_801D2A24(void *sceneObj_) {
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -555,11 +556,11 @@ extern "C" void fn_801D2A24(void *obj_) {
         virtual void v58();
         virtual void *fn5C(u32);
     };
-    s32 *entry = (s32 *)(lbl_80438958 + lbl_8055E930 * 0x4C4);
-    Dummy *obj = (Dummy *)obj_;
-    entry[0] = obj->fn1C((u32)&lbl_8055ABE0);
-    fn_801D25BC(&entry[1], obj->fn5C((u32)&lbl_8055AC18));
-    fn_801D26C8(&entry[12], obj->fn5C((u32)&lbl_8055AC20));
+    s32 *eventEntry = (s32 *)(lbl_80438958 + lbl_8055E930 * 0x4C4);
+    Dummy *sceneObj = (Dummy *)sceneObj_;
+    eventEntry[0] = sceneObj->fn1C((u32)&lbl_8055ABE0); /* "id" */
+    fn_801D25BC(&eventEntry[1], sceneObj->fn5C((u32)&lbl_8055AC18)); /* "effect" */
+    fn_801D26C8(&eventEntry[12], sceneObj->fn5C((u32)&lbl_8055AC20)); /* "spawn" */
     lbl_8055E930 += 1;
 }
 #pragma scheduling on
