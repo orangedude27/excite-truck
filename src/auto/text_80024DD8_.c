@@ -124,20 +124,20 @@ void __copy_longs_unaligned(unsigned char *dst, const unsigned char *src, unsign
 }
 
 void __copy_longs_rev_unaligned(unsigned char *dst, const unsigned char *src, unsigned int n) {
-    unsigned char *d = dst + n;
-    const unsigned char *s = src + n;
-    unsigned int align = (unsigned int)d & 3;
-    unsigned int shift, right, words;
+    unsigned int words, offset, shift, right;
     unsigned int prev, cur;
+    const unsigned char *s = src + n;
+    unsigned char *d = dst + n;
+    unsigned int align = (unsigned int)d & 3;
     if (align) {
         n -= align;
         do { *--d = *--s; } while (--align);
     }
-    align = (unsigned int)s & 3;
-    shift = align << 3;
+    offset = (unsigned int)s & 3;
+    shift = offset << 3;
     right = 32 - shift;
     words = n >> 3;
-    s += 4 - align;
+    s += 4 - offset;
     prev = *(const volatile unsigned int *)(s -= 4);
     do {
         cur = *(const volatile unsigned int *)(s - 4);
@@ -152,7 +152,7 @@ void __copy_longs_rev_unaligned(unsigned char *dst, const unsigned char *src, un
     }
     n &= 3;
     if (n) {
-        s += align;
+        s += offset;
         do { *--d = *--s; } while (--n);
     }
 }
