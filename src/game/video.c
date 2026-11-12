@@ -211,30 +211,42 @@ void fn_802DF46C(void) {
 #pragma pop
 void *fn_802D3130(void); /* the current material's bump map, into GX_TEXMAP5 */
 void *fn_802D3100(void); /* the texture it distorts, into GX_TEXMAP6 */
+/* The water surface pass: drgc_surf.c asks for mode 3 of the render request
+ * block (lbl_804C5700) and fn_802D2B0C builds the pipeline here.  Stage 0 draws
+ * the surface itself, stage 1 adds the GX_TEXMAP6 texture whose coordinates
+ * indirect stage 0 shifts with the bump map in GX_TEXMAP5.  fn_802DF684 undoes
+ * it again; fn_802DF6D0 is the twin used when a second texture stage is wanted.
+ */
 void fn_802DF4A8(void) {
-    s32 spC = 0;
-    s32 sp8 = 0;
-    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
-    GXSetTexCoordGen2(1, 0, 1, 0x2A, 1, 0x4C);
+    s32 alphaSel = GX_ITBA_OFF; /* GXSetTevIndirect's last two arguments go on */
+    s32 utcLod = FALSE;         /* the stack, so they need somewhere to live */
+    /* texcoord0 is the model's own texture coordinates; texcoord1 is the normal,
+     * taken through GX_TEXMTX4 and post-multiplied by GX_PTTEXMTX4. */
+    GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX3x4, GX_TG_NRM, GX_TEXMTX4, GX_TRUE, GX_PTTEXMTX4);
     GXSetNumTexGens(2);
-    GXSetIndTexOrder(0, 1, 5);
+    GXSetIndTexOrder(GX_INDTEXSTAGE0, GX_TEXCOORD1, GX_TEXMAP5);
     GXSetNumIndStages(1);
-    GXSetTevOrder(0, 0, 0, 4);
-    GXSetTevOrder(1, 0xFF, 6, 0xFF);
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevSwapMode(1, 0, 0);
-    GXSetTevColorIn(0, 0xF, 0xA, 8, 0xF);
-    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(0, 7, 7, 7, 7);
-    GXSetTevAlphaOp(0, 0, 1, 1, 1, 0);
-    GXSetTevColorIn(1, 0, 8, 9, 0xF);
-    GXSetTevColorOp(1, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(1, 7, 7, 7, 0);
-    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
-    GXSetTevIndirect(1, 0, 0, 0, 1, 6, 6, 0, sp8, spC);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD_NULL, GX_TEXMAP6, GX_COLOR_NULL);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    /* Stage 0: the texture over the lit surface. */
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_RASC, GX_CC_TEXC, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    /* the alpha equation ignores bias and scale; the game still sets them */
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ADDHALF, GX_CS_SCALE_2, GX_TRUE, GX_TEVPREV);
+    /* Stage 1: the bump-shifted texture, added to stage 0's result. */
+    GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_CPREV, GX_CC_TEXC, GX_CC_TEXA, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevIndirect(GX_TEVSTAGE1, GX_INDTEXSTAGE0, GX_ITF_8, GX_ITB_NONE, GX_ITM_0, GX_ITW_0,
+                     GX_ITW_0, GX_DISABLE, utcLod, alphaSel);
     GXSetNumTevStages(2);
-    GXLoadTexObj(fn_802D3130(), 5);
-    GXLoadTexObj(fn_802D3100(), 6);
+    GXLoadTexObj(fn_802D3130(), GX_TEXMAP5);
+    GXLoadTexObj(fn_802D3100(), GX_TEXMAP6);
 }
 
 #pragma scheduling invalid_target
