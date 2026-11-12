@@ -614,9 +614,9 @@ extern "C" int stricmp(const char *, const char *);
 #pragma small_data on
 #pragma small_data off
 extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
-    s32 id = arg2;
-    char *name = arg1;
     void *entry = arg0;
+    char *name = arg1;
+    s32 id = arg2;
     char first = *arg1;
     char buf[0x100];
     if (first == '#') {
@@ -2323,17 +2323,20 @@ extern "C" void fn_802C4F2C(s32, s32 *, s32 *);
 extern "C" s32 fn_802C4EE4(s32);
 extern "C" s32 fn_802C4EFC(s32);
 #pragma use_lmw_stmw off
-extern "C" void fn_8021568C(void *arg0, s32 arg1, s32 arg2,
-                            s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6,
-                            s32 arg7) {
-    s32 spC = 0;
-    s32 sp8 = 0;
+extern "C" void fn_8021568C(void *arg0, s32 x, s32 y,
+                            s32 *outLeft, s32 *outTop, s32 *outRight, s32 *outBottom,
+                            s32 unused) {
+    /* Compute a local-space rect for the canvas/object at arg0+4 from point
+     * (x,y): get its origin, output left/top relative to it in outLeft/outTop,
+     * and right/bottom in outRight/outBottom by adding its width/height. */
+    s32 originX = 0;
+    s32 originY = 0;
 
-    fn_802C4F2C(*(s32 *)((u8 *)arg0 + 4), &spC, &sp8);
-    *arg3 = arg1 - spC;
-    *arg4 = arg2 - sp8;
-    *arg5 = *arg3 + fn_802C4EE4(*(s32 *)((u8 *)arg0 + 4));
-    *arg6 = *arg4 + fn_802C4EFC(*(s32 *)((u8 *)arg0 + 4));
+    fn_802C4F2C(*(s32 *)((u8 *)arg0 + 4), &originX, &originY);
+    *outLeft = x - originX;
+    *outTop = y - originY;
+    *outRight = *outLeft + fn_802C4EE4(*(s32 *)((u8 *)arg0 + 4));
+    *outBottom = *outTop + fn_802C4EFC(*(s32 *)((u8 *)arg0 + 4));
 }
 #pragma use_lmw_stmw reset
 extern "C" s32 fn_80215730(void *arg0) {
