@@ -482,6 +482,7 @@ BOOL EXIDeselect(EXIChannel chan) {
 }
 
 static void EXIIntrruptHandler(s16 intr, OSContext* ctx) {
+    /* Handle an EXI interrupt by clearing it and invoking the channel's registered callback in a temporary OS context. */
     EXIData* exi;
     EXIChannel chan;
     EXICallback callback;
