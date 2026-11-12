@@ -1139,8 +1139,8 @@ void fn_8027C610(void) {
 }
 
 #pragma cplusplus on
-extern "C" long fn_8027C650(void *arg0) {
-    class List {
+extern "C" long fn_8027C650(void *contest) {
+    class GradeTableList {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -1150,25 +1150,26 @@ extern "C" long fn_8027C650(void *arg0) {
         virtual void v20();
         virtual long lookup(long);
     };
-    long value = fn_8027D1F4();
-    void *object;
-    long id;
-    void *manager;
-    List *list;
-    long left;
-    long right;
-    char buffer[0x18];
+    long contextValue = fn_8027D1F4();
+    void *resource;
+    long gradeId;
+    void *courseManager;
+    GradeTableList *gradeTable;
+    long requiredGrade;
+    long currentGrade;
+    char gradeInfo[0x18];
 
-    object = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), value, 0);
-    if (object != 0) {
-        id = fn_80205268(lbl_80347AB0,
-                         *(long *)((char *)(long)lbl_8055F654 + 0xB01C), -1);
-        manager = fn_8001285C(*(long *)((char *)arg0 + 4));
-        list = *(List **)((char *)manager + 0x20);
-        fn_8001D884(buffer, list->lookup(id));
-        left = *(volatile long *)(buffer + 0x14);
-        right = *(volatile long *)((char *)object + 8);
-        return left >= right;
+    /* Check whether the contest's current grade meets the grade-table requirement. */
+    resource = fn_8001BB58(fn_8000DA10(), *(long *)((char *)contest + 4), contextValue, 0);
+    if (resource != 0) {
+        gradeId = fn_80205268(lbl_80347AB0,
+                              *(long *)((char *)(long)lbl_8055F654 + 0xB01C), -1);
+        courseManager = fn_8001285C(*(long *)((char *)contest + 4));
+        gradeTable = *(GradeTableList **)((char *)courseManager + 0x20);
+        fn_8001D884(gradeInfo, gradeTable->lookup(gradeId));
+        requiredGrade = *(volatile long *)(gradeInfo + 0x14);
+        currentGrade = *(volatile long *)((char *)resource + 8);
+        return requiredGrade >= currentGrade;
     }
     return 0;
 }
