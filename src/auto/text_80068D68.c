@@ -17085,19 +17085,19 @@ BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT
 extern u8 lbl_80317F78[];
 extern u8 lbl_80317F98[];
 BOOLEAN L2CA_ConfigReq(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
-    void *p_ccb;
+    void *channelControlBlock;
     if (lbl_803C4040[0] >= 3) {
         fn_80070954(0x80002, lbl_80317F78, cid);
     }
-    p_ccb = l2cu_find_ccb_by_cid(NULL, cid);
-    if (p_ccb == NULL) {
+    channelControlBlock = l2cu_find_ccb_by_cid(NULL, cid);
+    if (channelControlBlock == NULL) {
         if (lbl_803C4040[0] >= 2) {
             fn_80070954(0x80001, lbl_80317F98, cid);
         }
         return FALSE;
     }
     ((u8 *)p_cfg)[0x24] = 0;
-    fn_80089E40(p_ccb, 0x17, p_cfg);
+    fn_80089E40(channelControlBlock, 0x17, p_cfg);
     return TRUE;
 }
 
