@@ -2886,11 +2886,11 @@ extern "C" void *fn_8021D300(void *arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_8021D378(void *arg0, s32 arg1) {
+    f32 scale, base, value1, value2;
     f32 x, y;
     s32 enabled;
     s32 *p;
     s32 a, b;
-    f32 scale, value, base;
     fn_80219660(arg0);
     if (*(s32 *)((u8 *)arg0 + 0x25C) == *(s32 *)((u8 *)arg0 + 0x260))
         return;
@@ -2909,11 +2909,11 @@ checked:
     x = base;
     y = base;
     fn_80230C30(&x, &y, *(s32 *)((u8 *)arg0 + 0x25C), *(s32 *)((u8 *)arg0 + 0x264));
-    value = scale * (f32)fn_802C5220(a);
-    fn_802C5320(a, enabled, x, y - ((f32)fn_802C5220(a) - value), base, (f32)fn_802C51C0(a), value);
+    value1 = scale * (f32)fn_802C5220(a);
+    fn_802C5320(a, enabled, x, y - ((f32)fn_802C5220(a) - value1), base, (f32)fn_802C51C0(a), value1);
     fn_80230C30(&x, &y, *(s32 *)((u8 *)arg0 + 0x260), *(s32 *)((u8 *)arg0 + 0x264));
-    value = scale * (f32)fn_802C5220(b);
-    fn_802C5320(b, enabled, x, y - ((f32)fn_802C5220(b) - value), base, (f32)fn_802C51C0(b), value);
+    value2 = scale * (f32)fn_802C5220(b);
+    fn_802C5320(b, enabled, x, y - ((f32)fn_802C5220(b) - value2), base, (f32)fn_802C51C0(b), value2);
 }
 #pragma pop
 
@@ -4505,15 +4505,16 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
     register s32 time = frame - field4;
     time -= 5;
     register s32 distance = range - field250;
-    register s32 adjusted = distance * time;
+    register s32 tmp = distance * time;
+    register s32 adjusted = tmp;
     duration -= 10;
     adjusted /= duration;
     register s32 result = field250;
-    result += adjusted;
-    if (result < field250) result = field250;
+    result = result + adjusted;
+    result = result < field250 ? field250 : result;
     register s32 max = *(volatile s32 *)((u8 *)arg0 + 0x254);
     max -= 1;
-    if (result >= max) result = max;
+    result = result >= max ? max : result;
     *(s32 *)*(void **)((u8 *)arg0 + 0x244) = result;
 }
 
