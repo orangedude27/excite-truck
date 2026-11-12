@@ -1819,26 +1819,30 @@ typedef struct StreamPlayer {
 } StreamPlayer;
 
 #pragma optimization_level 4
-s32 fn_80119C0C(void *arg0, s32 arg1) {
-    u8 *base = (u8 *)arg0;
-    if (arg1 != 0) {
-        if (*(s32 *)((u8 *)arg0 + 0x64) == 0) {
-            *(s32 *)((u8 *)arg0 + 0xb0) = 0;
-            *(s32 *)((u8 *)arg0 + 0x64) = 1;
-            *(s32 *)((u8 *)arg0 + 0xb8) = 0;
-            *(s32 *)((u8 *)arg0 + 0xbc) = *(s32 *)((u8 *)arg0 + 0xc0);
+/* Start (start != 0) or stop the stream player and return the new playing flag.
+   Starting re-arms the ring with its pre-fill and drops the loop flag; stopping
+   parks both AX voices, re-applies their centred range parameters and zeroes the
+   whole output buffer. */
+s32 fn_80119C0C(StreamPlayer *arg0, s32 start) {
+    StreamPlayer *self = arg0;
+    if (start != 0) {
+        if (arg0->playing == 0) {
+            arg0->looping = 0;
+            arg0->playing = 1;
+            arg0->writePos = 0;
+            arg0->bytesToPlay = arg0->preFill;
             goto exit;
         }
     }
-    if (arg1 == 0 && *(s32 *)((u8 *)arg0 + 0x64) != 0) {
-        arg0 = (u8 *)arg0 + 0x7c;
-        fn_8011943C(arg0, 0);
-        fn_801199A4(base + 0x7c, 1);
-        fn_80119300(base + 0x7c, 0, *(s32 *)(base + 0x94));
-        *(s32 *)(base + 0x64) = 0;
+    if (start == 0 && arg0->playing != 0) {
+        VoicePair *voices = &arg0->voices;
+        fn_8011943C(voices, 0);
+        fn_801199A4(&self->voices, 1);
+        fn_80119300(&self->voices, 0, self->voices.length);
+        self->playing = 0;
     }
 exit:
-    return *(s32 *)(base + 0x64);
+    return self->playing;
 }
 s32 fn_80119CB0(void *arg0, s32 arg1) {
     s32 *var_r3;
