@@ -6361,27 +6361,29 @@ after_conditions:
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void fn_802248FC(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    if (*(s32 *)(p + 0x280) == 0) return;
-    if (p[0x1B] == 0)
-        *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = lbl_805634C4;
-    else if (p[0x260] != 0)
-        *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = *(f32 *)(p + 0x268);
+    /* Render the intensity-fade effect: set the effect slot's scale, combine it
+     * with the current draw context, and submit the image for this frame. */
+    u8 *self = (u8 *)arg0;
+    if (*(s32 *)(self + 0x280) == 0) return;
+    if (self[0x1B] == 0)
+        *(f32 *)(*(u8 **)(self + 0x284) + 0x30) = lbl_805634C4;
+    else if (self[0x260] != 0)
+        *(f32 *)(*(u8 **)(self + 0x284) + 0x30) = *(f32 *)(self + 0x268);
     else
-        *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = (*(s32 *)(p + 0x248) == 1) ? lbl_805634A4 : lbl_805634A8;
-    fn_8022EEF8(*(void **)(p + 0x288), fn_8022EDC4(), (s32)*(u32 *)(p + 0x284));
-    fn_8022ED00(*(void **)(p + 0x288));
+        *(f32 *)(*(u8 **)(self + 0x284) + 0x30) = (*(s32 *)(self + 0x248) == 1) ? lbl_805634A4 : lbl_805634A8;
+    fn_8022EEF8(*(void **)(self + 0x288), fn_8022EDC4(), (s32)*(u32 *)(self + 0x284));
+    fn_8022ED00(*(void **)(self + 0x288));
     s32 delta;
     s32 rem;
-    rem = *(s32 *)(p + 0x10) - *(s32 *)(p + 8);
-    s32 divisor = fn_802C51AC(*(s32 *)(p + 0x280));
-    s32 value = *(s32 *)(p + 0x244);
+    rem = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
+    s32 divisor = fn_802C51AC(*(s32 *)(self + 0x280));
+    s32 value = *(s32 *)(self + 0x244);
     delta = value % divisor;
     s32 got = ((Vf78x *)arg0)->get();
     f32 gotFloat = (f32)got;
     f32 remFloat = (f32)rem;
-    fn_802C5320(*(s32 *)(p + 0x280), delta, *(f32 *)(p + 0x270),
-        *(f32 *)(p + 0x274), lbl_805634A8, gotFloat, remFloat);
+    fn_802C5320(*(s32 *)(self + 0x280), delta, *(f32 *)(self + 0x270),
+        *(f32 *)(self + 0x274), lbl_805634A8, gotFloat, remFloat);
     fn_8022EDB8();
 }
 #pragma scheduling on
