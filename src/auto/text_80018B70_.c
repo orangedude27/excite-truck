@@ -106,12 +106,12 @@ extern "C" void fn_80018CCC(void) {
     extern void *lbl_802FD2A0 __attribute__((section(".rodata")));
     extern const char lbl_80558C48[] __attribute__((section(".sdata")));
     extern s32 stricmp(const char *, const char *);
-    register char *name;
-    register char *strings = (char *)&lbl_802FD2A0;
-    register int row;
-    register int offset;
-    register Item *object;
-    register int outer = 0;
+    char *name;
+    char *strings = (char *)&lbl_802FD2A0;
+    int row;
+    int offset;
+    Item *object;
+    int outer = 0;
 
     goto get_next;
 check_object:
@@ -252,13 +252,12 @@ void fn_800196F0(void) {
 
 #pragma dont_inline on
 s32 fn_80019604(void) {
-    static volatile s32 result;
     s32 var_r31;
     if ((s32)(u8)lbl_8055D588 != 0) {
         var_r31 = 1;
     } else {
         var_r31 = 0;
-        if (((result = fn_80019430()) != 0) || (fn_8027DE68(2) != 0)) {
+        if (((volatile s32)fn_80019430() != 0) || (fn_8027DE68(2) != 0)) {
             var_r31 = 1;
         }
     }
@@ -352,11 +351,11 @@ s32 fn_8001EFC0(s32, s32);
 #pragma small_data off
 #pragma scheduling invalid_target
 s32 fn_80019144(s32 arg0) {
+    char *entry;
     register s32 index;
     register s32 offset;
     register const char *name;
-    char *entry;
-    s32 value0;
+    int value0;
     s32 value1;
     s32 found2;
     s32 result;
@@ -373,8 +372,8 @@ s32 fn_80019144(s32 arg0) {
     index = -1;
 found:
     entry = (char *)lbl_803580A4 + index * 0x10 + 4;
-    if (index < 0) entry = 0;
-    if (entry != 0) {
+    if (0 > index) entry = 0;
+    if (entry) {
         if ((u8)lbl_8055D588 != 0) return 1;
         value0 = fn_8001EFC0(0, arg0);
         offset = *(s32 *)entry <= value0;
@@ -435,9 +434,9 @@ loop:
         goto advance;
     goto found;
 advance:
-    i++;
     offset += 0x10;
-    if (i < *(volatile s32 *)((char *)&lbl_803580A4 + 4))
+    i++;
+    if (i < *(s32 *)((char *)&lbl_803580A4 + 4))
         goto loop;
     i = -1;
 found:
