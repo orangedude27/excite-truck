@@ -1,4 +1,5 @@
 #include "types.h"
+typedef struct { f32 x, y, z; } Vec3_80015A20;
 extern s32 fn_80014ADC(void);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -78,7 +79,7 @@ extern "C" void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     char first[20];
     char second[20];
     u8 *base = lbl_802FCB98;
-    ((Obj *)arg0)->v1((u8 *)(0 + (u32)base));
+    ((Obj *)arg0)->v1(base + 0);
     fn_801476C4();
     ((Obj *)arg0)->v1(base + 0xC);
     fn_801476C4();
@@ -115,7 +116,9 @@ f32 fn_80013D60(f32 x) {
     f32 y;
     if (lbl_80560360 == x)
         return x;
-    if (lbl_80560368 != x) {
+    if (lbl_80560368 == x) {
+        return x;
+    } else {
         y = lbl_8056036C;
         if (x < y)
             y = lbl_8056036C;
@@ -142,7 +145,6 @@ f32 fn_80013D60(f32 x) {
         }
         return y;
     }
-    return x;
 }
 
 #pragma scheduling invalid_target
@@ -330,7 +332,7 @@ extern "C" void *fn_80014524(void *object, s32 index) {
 
 void fn_80014638(void *arg0) {
     f32 zero = lbl_80560368;
-    u8 a = 0;
+    s32 a = 0;
     f32 one = lbl_80560398;
     s32 six = 6;
     *(s32 *)((u8 *)arg0 + 0x14) = six;
@@ -470,6 +472,7 @@ extern char *strcpy(char *, const char *);
 extern u8 lbl_80558B88, lbl_80558B90, lbl_80558B98;
 extern f32 lbl_805603B0;
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_800148A0(void *arg0) {
     char name[0x40];
     char first[0x40];
@@ -480,6 +483,7 @@ void fn_800148A0(void *arg0) {
     s32 mode;
     void *info;
     void *other;
+    u8 *ap = (u8 *)arg0;
     value1 = lbl_80560360;
     value2 = value1;
     base = lbl_802FCB98;
@@ -531,7 +535,7 @@ void fn_800148A0(void *arg0) {
         strcpy(first, (char *)base + 0x1D4);
     }
     ((void (*)(void *, void *, s32, void *, void *, f32, f32, f32))fn_80013EDC)(
-        arg0, name, mode, first, second, *(f32 *)((u8 *)arg0 + 0x2C), value1, value2);
+        arg0, name, mode, first, second, *(f32 *)(ap + 0x2C), value1, value2);
 }
 void fn_80014A98(void *arg0) {
     void *p;
@@ -1055,6 +1059,8 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
 #pragma pop
 void fn_80015AA0(void *, f32);
 void fn_80015EB0(void *, f32);
+#pragma use_lmw_stmw off
+#pragma optimize_for_size off
 #pragma scheduling on
 void fn_80015A20(void *arg0, f32 *arg1) {
     f32 matrix[9];
@@ -1067,7 +1073,6 @@ void fn_80015A20(void *arg0, f32 *arg1) {
     fn_80015AA0(matrix, angle2);
     fn_80015B20(arg0, matrix, arg0);
 }
-#pragma scheduling on
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[];
 extern u8 lbl_802FCDB4[];
@@ -1076,26 +1081,26 @@ extern void fn_80015B20(void *, void *, void *);
 extern f64 cos(void);
 extern f64 sin(f32);
 #pragma scheduling invalid_target
-void fn_80015AA0(void *arg0, f32 angle) {
-    f32 one;
-    f32 zero;
-    f32 sine;
-    f32 cosine;
-    f32 *m;
-    cosine = (f32)cos();
-    sine = (f32)sin(angle);
-    zero = lbl_80560360;
-    one = lbl_80560368;
-    m = (f32 *)arg0;
-    m[0] = cosine;
-    m[1] = sine;
-    m[2] = zero;
-    m[3] = -sine;
-    m[4] = cosine;
-    m[5] = zero;
-    m[6] = zero;
-    m[7] = zero;
-    m[8] = one;
+void fn_80015AA0(void *arg0, float angle) {
+    float j1;
+    float j2;
+    float j3;
+    float j4;
+    float *p;
+    j4 = (float)cos();
+    j3 = (float)sin(angle);
+    j2 = lbl_80560360;
+    j1 = lbl_80560368;
+    p = (float *)arg0;
+    p[0] = j4;
+    p[1] = j3;
+    p[2] = j2;
+    p[3] = -j3;
+    p[4] = j4;
+    p[5] = j2;
+    p[6] = j2;
+    p[7] = j2;
+    p[8] = j1;
 }
 #pragma push
 #pragma scheduling invalid_target
@@ -1133,9 +1138,9 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
         out[8] = (b[8] * a[8]) + ((b[2] * a[6]) + (b[5] * a[7]));
     }
 }
-#pragma push
-#pragma scheduling on
+#pragma scheduling off
 void fn_80015E30(void *arg0, f32 angle) {
+    f32 neg;
     f32 zero;
     f32 one;
     f32 sine;
@@ -1144,27 +1149,26 @@ void fn_80015E30(void *arg0, f32 angle) {
     sine = (f32)sin(angle);
     zero = lbl_80560360;
     one = lbl_80560368;
-    *(f32 *)((u8 *)arg0 + 4) = zero;
+    *(volatile f32 *)((u8 *)arg0 + 4) = zero;
+    neg = -sine;
     *(f32 *)((u8 *)arg0 + 0) = one;
     *(f32 *)((u8 *)arg0 + 8) = zero;
     *(f32 *)((u8 *)arg0 + 0xC) = zero;
     *(f32 *)((u8 *)arg0 + 0x10) = cosine;
     *(f32 *)((u8 *)arg0 + 0x14) = sine;
     *(f32 *)((u8 *)arg0 + 0x18) = zero;
-    *(f32 *)((u8 *)arg0 + 0x1C) = -sine;
+    *(f32 *)((u8 *)arg0 + 0x1C) = neg;
     *(f32 *)((u8 *)arg0 + 0x20) = cosine;
 }
-#pragma pop
+#pragma scheduling on
 void fn_80015EB0(void *arg0, f32 angle) {
     f32 c;
-    f32 a;
     f32 s;
     f32 zero;
     f32 neg;
     f32 *m;
-    a = angle;
     c = (f32)cos();
-    s = (f32)sin(a);
+    s = (f32)sin(angle);
     zero = lbl_80560360;
     m = (f32 *)arg0;
     m[0] = c;
@@ -1249,8 +1253,8 @@ extern "C" void fn_80015F30(void* arg0) {
 #pragma scheduling off
 #pragma processor 750
 s32 fn_80016214(void) {
-    register void *manager = lbl_8055D350;
-    register f64 scale = lbl_80560400;
+    f64 scale = lbl_80560400;
+    void *manager = lbl_8055D350;
     f32 speed = *(f32 *)((u8 *)manager + 0x10);
     f32 value = (f32)((f64 (*)(void *, f32, f64))fn_8002EFB4)(manager, speed, scale);
     s32 greater = value > lbl_805603BC;
