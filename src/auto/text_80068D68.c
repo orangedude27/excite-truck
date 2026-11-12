@@ -9084,18 +9084,20 @@ void btm_vendor_specific_evt(UINT8 *p, UINT8 evt_len) {
 
 extern char lbl_80316220[]; /* "BTM: BTM_WritePageTimeout: Timeout: %d." */
 extern void fn_8008534C(void *, u16);
+/* Sends the HCI Write_Page_Timeout command to the controller, and remembers the
+   timeout - given in 0.625 ms slots - in btm_cb as milliseconds. */
 tBTM_STATUS BTM_WritePageTimeout(UINT16 timeout) {
-    void *buf;
-    if (lbl_803C0F78[0x27c0] >= 4) {
-        fn_80070954(0xD0003, lbl_80316220, timeout);
+    void *cmd_buf;
+    if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT) {
+        fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, lbl_80316220, timeout);
     }
-    *(u16 *)(lbl_803C0F78 + 0x64c) = (timeout * 0x271) / 1000;
-    buf = GKI_getpoolbuf(2);
-    if (buf != NULL) {
-        fn_8008534C(buf, timeout);
-        return 0;
+    BTM_CB_PAGE_TIMEOUT = (timeout * 625) / 1000;
+    cmd_buf = GKI_getpoolbuf(BTM_CMD_POOL_ID);
+    if (cmd_buf != NULL) {
+        btsnd_hcic_write_page_tout(cmd_buf, timeout);
+        return BTM_SUCCESS;
     }
-    return 3;
+    return BTM_NO_RESOURCES;
 }
 
 /* Reads stored link key(s) for bdAddr (or all if NULL) via HCI and invokes completionCb when done. */
