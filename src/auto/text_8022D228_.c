@@ -57,6 +57,7 @@ void *fn_8022D2BC(void *arg0, int arg1) {
     return arg0;
 }
 #pragma scheduling on
+/* Append a string entry into a fixed-capacity string table, storing a per-entry tag byte after the null terminator. */
 void fn_8022D350(void *arg0, const char *arg1, char arg2) {
     if (*(int *)((char *)arg0 + 8) < *(int *)((char *)arg0)) {
         strncpy((*(char ***)((char *)arg0 + 0x10))[*(int *)((char *)arg0 + 8)],
@@ -345,16 +346,14 @@ void fn_8022DD9C(void *arg0,int *arg1,int *arg2) {
 #pragma opt_propagation off
 #pragma scheduling invalid_target
 void fn_8022DDB0(void *arg0) {
-    double m = lbl_805635C8;
     float c = lbl_805635D4;
     float *p = *(float **)((char *)arg0 + 0x18);
     float step = *(float *)((char *)arg0 + 0x14);
     float v = step * (float)(int)(c + ((*p + step) / step));
     float low = *(float *)((char *)arg0 + 0x10);
-    (void)m;
     *p = (low < v) ? low : v;
 }
-#pragma opt_propagation on
+#pragma scheduling on
 void fn_8022DE1C(void *arg0) {
     float c = lbl_805635D4;
     float *p = *(float **)((char *)arg0 + 0x18);
@@ -363,7 +362,7 @@ void fn_8022DE1C(void *arg0) {
     float low = *(float *)((char *)arg0 + 0x0C);
     *p = (low > v) ? low : v;
 }
-#pragma opt_propagation reset
+#pragma scheduling invalid_target
 int fn_8022DE88(void *arg0) {
     float current = *(float *)((char *)arg0 + 0x10);
     float *value_ptr = *(float **)((char *)arg0 + 0x18);
