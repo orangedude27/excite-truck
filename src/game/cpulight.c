@@ -667,29 +667,26 @@ extern int __cntlzw(unsigned int);
 void fn_802DC71C(int arg0, int arg1) {
     extern void GXLoadTexObj(void *, int);
     int useAlt;
+    void **base;
     void *tex1;
-    unsigned char texFlag;
+    int texFlag;
     void *info;
-    unsigned short wrapS;
-
+    int wrapS;
     fn_802DBD88();
     lbl_8055FEB4 = 0;
     fn_802CADD0(arg1, 1);
     fn_802D2D1C();
-
-    tex1 = lbl_804DB468[1];
+    base = lbl_804DB468;
+    tex1 = base[1];
     useAlt = *((unsigned char *)tex1 + 0xCC);
     info = ((void *(*)(int))fn_802DC628)(arg0);
     texFlag = *((unsigned char *)info + 8);
     lbl_8055FEBB = (texFlag == 0x1D);
-
-    wrapS = GXGetTexObjWrapS((unsigned char *)lbl_804DB468[0] + 0x24);
+    wrapS = GXGetTexObjWrapS((unsigned char *)base[0] + 0x24);
     lbl_8055FEB9 = (wrapS == 0x200);
-
-    GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
+    GXLoadTexObj((unsigned char *)base[0] + 0x24, 0);
     GXLoadTexObj((unsigned char *)tex1 + 0x24, 1);
     if (useAlt != 0) GXLoadTexObj((unsigned char *)tex1 + 0x78, 2);
-
     if (lbl_8055FEBB != 0) {
         if (useAlt != 0) fn_802E0218();
         else fn_802E009C();
@@ -703,7 +700,6 @@ void fn_802DC71C(int arg0, int arg1) {
         else fn_802DFD00();
         lbl_8055FEB0 = (*(unsigned int *)((unsigned char *)tex1 + 0xE0) >> 3) & 1;
     }
-
     GXSetAlphaCompare(4, *((unsigned char *)tex1 + 0xE4), 1, 0, 0);
     lbl_8055FD24 = *((unsigned char *)tex1 + 0xE4);
     *(unsigned int *)(lbl_804DB480 + 4) = 0;
@@ -1038,15 +1034,15 @@ void fn_802DD228(void) { if (lbl_8055FEC0 != 0) { fn_802D3E88(); lbl_8055FEC0 = 
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DD27C(void *vertices, int count, unsigned short *list, int size) {
-    int i;
+void fn_802DD27C(void *__restrict vertices, int count, unsigned short *__restrict list, int size) {
+    register int i;
     unsigned short x;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     GXSetArray(9, vertices, 0x18);
     GXSetArray(0xB, (char *)vertices + 0xC, 0x18);
     GXSetArray(0xD, (char *)vertices + 0x10, 0x18);
     DCFlushRange(vertices, count * 0x18);
-    GXBegin(0x90, 0, size);
+    GXBegin(0x90, 0, (unsigned short)size);
     for (i = 0; i < size; ++i) {
         x = list[i];
         *fifo = x;
