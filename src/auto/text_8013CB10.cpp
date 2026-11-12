@@ -3223,22 +3223,23 @@ extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
 }
 #pragma scheduling on
 extern "C" void fn_801B8A68(void *, s32);
-extern "C" void fn_801432D4(TObj20b *arg0, s32 arg1) {
-    u8 *obj = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
+/* Update one indexed sub-entry's state when active, then dispatch a follow-up handler. */
+extern "C" void fn_801432D4(TObj20b *owner, s32 index) {
+    u8 *entry = *(u8 **)((u8 *)owner + 0xB8) + index * 0x12C;
     s32 zero = 0;
-    if (obj[0x118] != 0 && arg0->v20() != 0) {
-        *(s32 *)(obj + 0x104) = zero;
-        if (*(s32 *)(obj + 0xE4) > 0) {
-            *(s32 *)(obj + 0xF4) = *(s32 *)(obj + 0xE4);
-            *(f32 *)(obj + 0xF0) = fn_8013CB3C();
-            *(s32 *)(obj + 0xE4) = zero;
+    if (entry[0x118] != 0 && owner->v20() != 0) {
+        *(s32 *)(entry + 0x104) = zero;
+        if (*(s32 *)(entry + 0xE4) > 0) {
+            *(s32 *)(entry + 0xF4) = *(s32 *)(entry + 0xE4);
+            *(f32 *)(entry + 0xF0) = fn_8013CB3C();
+            *(s32 *)(entry + 0xE4) = zero;
         }
-        if (*(s32 *)(obj + 0x100) > 0) {
-            *(f32 *)(obj + 0xD4) = fn_8001DAE8(obj + 0xD0);
+        if (*(s32 *)(entry + 0x100) > 0) {
+            *(f32 *)(entry + 0xD4) = fn_8001DAE8(entry + 0xD0);
         }
-        *(s32 *)(obj + 0x100) = zero;
+        *(s32 *)(entry + 0x100) = zero;
     }
-    fn_801B8A68(arg0, arg1);
+    fn_801B8A68(owner, index);
 }
 
 class VTable43398 { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27(); virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(); virtual void f34(); virtual void f35(); virtual void f36(); virtual void f37(); virtual void f38(); virtual void f39(); virtual void f40(); virtual void f41(); virtual void f42(); virtual void f43(); }; extern "C" void fn_80143398(void *arg0) { ((VTable43398 *)arg0)->f41(); }
