@@ -9134,9 +9134,9 @@ u8 fn_8007B340(void) {
 
 extern u8 lbl_803163D0[];
 tBTM_STATUS BTM_CancelInquiry(void) {
-    tBTM_STATUS result = 0;
-    u8 *cb = lbl_803C0F78;
     u8 *cb2;
+    u8 *cb = lbl_803C0F78;
+    tBTM_STATUS result = 0;
     if (cb[0x27C0] >= 3) fn_8007093C(0xD0002, lbl_803163D0);
     if (fn_80079514() == 0) return 6;
     if (cb[0x1848] != 0 && !(cb[0x1848] & 4)) {
@@ -20730,7 +20730,7 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
     char *msg = lbl_803196B8;
     void *port;
     if (index >= 10) {
-        if (lbl_803C4828[0x414] >= 1) ((void (*)(u32, char *, u32))fn_80070954)(0x90000, msg + 0, arg0);
+        if (lbl_803C4828[0x414] >= 1) ((void (*)(u32, char *, u32))fn_80070954)(0x90000, lbl_803196B8, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
