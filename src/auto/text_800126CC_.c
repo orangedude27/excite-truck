@@ -486,29 +486,30 @@ extern "C" void fn_8001335C(int a0, int arg1) {
     Dummy *arg0 = (Dummy *)a0;
     Dummy *obj;
     int i;
+    char *base = lbl_802FC610;
     if (arg0 != 0) {
         for (i = 0; (obj = (Dummy *)arg0->child(i)) != 0; i++) {
             if (stricmp(obj->name(), lbl_80558B68) == 0) {
                 if (fn_8012C33C(obj->get(lbl_80558B1C)) == 0)
-                    fn_802E317C(lbl_802FC610 + 0x488, obj->get(lbl_80558B1C));
+                    fn_802E317C(base + 0x488, obj->get(lbl_80558B1C));
                 obj->set(lbl_80558B1C, 0);
                 ((void (*)())fn_80013618)();
             } else if (stricmp(obj->name(), lbl_80558B70) == 0) {
                 if ((int)lbl_8055D504 >= 0x23)
-                    fn_802E317C(lbl_802FC610 + 0x4B4, (int)lbl_8055D504 - 1);
+                    fn_802E317C(base + 0x4B4, (int)lbl_8055D504 - 1);
                 if (fn_80012AB4(obj) != 0) {
                     fn_80012B50(lbl_803518C0 + (int)lbl_8055D504 * 0x84, (int)lbl_8055D504, obj, arg1);
                     lbl_8055D504 = (void *)((int)lbl_8055D504 + 1);
                 }
             } else if (stricmp(obj->name(), lbl_80558B78) == 0) {
                 if (lbl_8055D518 >= 0x23)
-                    fn_802E317C(lbl_802FC610 + 0x4E4, lbl_8055D518 - 1);
+                    fn_802E317C(base + 0x4E4, lbl_8055D518 - 1);
                 if (fn_80012AB4(obj) != 0) {
                     fn_80012B50(lbl_803551E0 + lbl_8055D518 * 0x88, -1 - lbl_8055D518, obj, arg1);
                     *(int *)(lbl_803551E0 + lbl_8055D518 * 0x88 + 0x84) = 0;
                     lbl_8055D518 += 1;
                 }
-            } else if (stricmp(obj->name(), lbl_802FC610 + 0x524) == 0 && lbl_8055D514 == 0) {
+            } else if (stricmp(obj->name(), base + 0x524) == 0 && lbl_8055D514 == 0) {
                 lbl_8055D514 = (int)obj;
             }
         }
@@ -534,14 +535,16 @@ extern void fn_8001335C(int, int);
 void fn_80013618(int arg0) {
     int count;
     int result;
+    int *base;
     if (arg0 == 0)
         return;
     if (fn_8012C33C() == 0)
         return;
     result = fn_80131808(arg0);
-    count = ((int *)lbl_8035183C)[0x20];
-    ((int *)lbl_8035183C)[count] = result;
-    ((int *)lbl_8035183C)[0x20] = count + 1;
+    base = (int *)lbl_8035183C;
+    count = base[0x20];
+    base[count] = result;
+    base[0x20] = count + 1;
     fn_8001335C(result, arg0);
 }
 
