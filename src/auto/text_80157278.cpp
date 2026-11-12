@@ -2214,6 +2214,7 @@ extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
     }
 }
 #pragma scheduling on
+/* Resets per-entry state for this object and clears its aggregate/tail fields. */
 extern "C" void fn_8015B15C(Unk801577F0* arg0) {
     f32 zero = 0.0f;
     s32 i = 0;
