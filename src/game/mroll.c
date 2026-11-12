@@ -41,8 +41,18 @@ s32 fn_8023FE34(void) {
     return result + 1;
 }
 
-extern char lbl_803422C0[];
+extern char lbl_803422C0[]; /* "mroll.cpp: get_player_info got bad index %d (there are only %d p..." */
+
+/* g_MRollPlayerSlots (lbl_80498828): two 0x10-byte player-info slots; slot[0] < 0 means empty. */
+typedef struct MRollPlayerSlot {
+    s32 id;      /* +0x00 */
+    s32 pad1;    /* +0x04 */
+    s32 field2;  /* +0x08 */
+    s32 field3;  /* +0x0C */
+} MRollPlayerSlot;
+
 #pragma scheduling invalid_target
+/* Looks up the nth active player-info slot and returns its id/fields; aborts on bad index. */
 void fn_8023FE60(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     register s32 *cursor = (s32 *)lbl_80498828;
     register s32 found = 0;
