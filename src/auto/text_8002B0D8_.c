@@ -1459,15 +1459,20 @@ __declspec(section ".sdata") extern double lbl_80560AC8;
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
+/* sin(x) -- MSL/fdlibm s_sin.c. Sine of x: |x| <= pi/4 goes straight to the
+   kernel, Inf/NaN give NaN, anything else is reduced by __ieee754_rem_pio2 to
+   y[0]+y[1] in [-pi/4, pi/4] with n = the number of quarter turns (n&3 picks
+   sin/cos and the sign). __kernel_sin's first argument is its iy flag: 1 when
+   the double after it is the tail of x, 0 when that double is just a zero. */
 double sin(double x) {
     double y[2], z = 0.0;
     int ix, n;
-    ix = *(int *)&x;
+    ix = __HI(x);
     ix &= 0x7fffffff;
-    if (ix <= 0x3fe921fb) return __kernel_sin(0, x, z);
-    else if (ix >= 0x7ff00000) return x - x;
+    if (ix <= trig_pio4_hi) return __kernel_sin(0, x, z);	/* |x| ~< pi/4 */
+    else if (ix >= trig_inf_hi) return x - x;			/* sin(Inf or NaN) is NaN */
     else {
-        n = __ieee754_rem_pio2(x, y);
+        n = __ieee754_rem_pio2(x, y);		/* argument reduction needed */
         switch (n & 3) {
         case 0: return __kernel_sin(1, y[0], y[1]);
         case 1: return __kernel_cos(y[0], y[1]);
