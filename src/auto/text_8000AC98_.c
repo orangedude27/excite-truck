@@ -467,8 +467,12 @@ int fn_8000B53C(int arg0) {
     return 0;
 }
 
-int fn_8000B5A8(int arg0, int arg1) {
-    if (arg0 == 2 && (arg1 == 0x58 || arg1 == 0xd)) {
+int fn_8000B5A8(int event, int param) {
+    /* Handle a UI/menu event: for event 2 with param 0x58 or 0x0D, switch to
+     * state 0x18 and install AXFX hook fn_8000B53C, returning 1; otherwise
+     * apply state 1 with callbacks fn_8000B42C/fn_8000B3B4 when lbl_8055D3EC
+     * is set, or restore lbl_8055D3DC, and return whether event is 5. */
+    if (event == 2 && (param == 0x58 || param == 0xd)) {
         ((void (*)(int))fn_8000ADE0)(0x18);
         AXFXSetHooks_80210950((void *)fn_8000B53C, 0);
         return 1;
@@ -479,7 +483,7 @@ int fn_8000B5A8(int arg0, int arg1) {
     } else {
         ((void (*)(int))fn_8000ADE0)(lbl_8055D3DC);
     }
-    return arg0 == 5;
+    return event == 5;
 }
 
 extern int fn_80137C98(int);
