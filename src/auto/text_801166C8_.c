@@ -114,23 +114,29 @@ typedef struct ARCHeader {
     char UNK_0x10[0x10];
 } ARCHeader;
 
+/* Sets handle up for the archive image at bin: checks its magic, then records
+ * where the image, its node table, its file data and its string table are, and
+ * starts it at the root directory.  Only a bad magic can make it fail. */
 BOOL ARCInitHandle(void *bin, ARCHandle *handle) {
-    u32 magic = *(u32 *)bin;
+    ARCHeader *header = (ARCHeader *)bin;
     u8 *base = (u8 *)bin;
     u32 entries;
-    u8 *fst;
+    ARCNode *nodes;
 
-    if (magic != 0x55AA382D) {
+    if (header->magic != ARC_FILE_MAGIC) {
+        /* OS_ASSERT in arc.c, line 0x47: "ARCInitHandle: bad archive format" */
         OSPanic((const char *)&lbl_80559930, 0x47, lbl_80329B28);
     }
-    handle->archiveStartAddr = bin;
-    fst = base + *(u32 *)(base + 4);
-    handle->FSTStart = fst;
-    handle->fileStart = base + *(u32 *)(base + 0xC);
-    entries = *(u32 *)(fst + 8);
+    handle->archiveStartAddr = header;
+    nodes = (ARCNode *)(base + header->nodes.offset);
+    handle->FSTStart = nodes;
+    handle->fileStart = base + header->files.offset;
+    /* The right bound of the root node is the number of nodes */
+    entries = nodes[0].folder.sibling_next;
     handle->entryNum = entries;
-    handle->FSTStringStart = (char *)(fst + entries * 0xC);
-    handle->FSTLength = *(u32 *)(base + 8);
+    /* Strings exist directly after the last node. */
+    handle->FSTStringStart = (char *)(nodes + entries);
+    handle->FSTLength = header->nodes.size;
     handle->currDir = 0;
     return TRUE;
 }
