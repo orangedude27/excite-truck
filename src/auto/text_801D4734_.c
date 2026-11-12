@@ -6,6 +6,7 @@
     extern char lbl_803387C8[];
   
   #include <types.h>
+#include <math.h>
 
   extern void fn_801D50B8(int);
 
@@ -491,42 +492,68 @@ void fn_801D50B0(int arg0) {
       #pragma cplusplus on
 
 void fn_801D50B8(int arg0) {
+    struct Item {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual int state();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void run2();
+        virtual void run3();
+    };
+    struct Other {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void *get();
+    };
+    extern int fn_8017960C(int);
+    extern void *fn_801B2EC0(int);
+    extern int fn_801B2F24(void);
     int state = *(int *)((char *)arg0 + 4);
-    int count = *(int *)((char *)arg0 + 0x34);
-    void **items = *(void ***)((char *)arg0 + 0x30);
-    int result = 0;
-
     if (state == 2) {
         int i = 0;
         int found = 0;
-
-        while (i < count) {
-            void **item = items + i;
-            void *obj = *item;
-            int (*func1)(void *) = *(int (**)(void *))((char *)obj + 0x18);
-            int res1 = func1(obj);
-
-            if (res1 == 2) {
+        int count = *(int *)((char *)arg0 + 0x34);
+        void **items = *(void ***)((char *)arg0 + 0x30);
+        int offset = 0;
+        goto test1;
+loop1:
+        {
+            Item *obj = *(Item **)((char *)items + offset);
+            int s = obj->state();
+            if (s == 2) {
                 found = 1;
-                int (*func2)(void *) = *(int (**)(void *))((char *)obj + 0x2C);
-                func2(obj);
-                func1(obj);
+                obj->run2();
+                obj->state();
             }
-
-            i += 1;
         }
-
+        offset += 4;
+        i++;
+test1:
+        if (i < count) goto loop1;
         if (found == 0) {
-            u8 flag = *(u8 *)((char *)arg0 + 0x20);
+            unsigned char flag = *(unsigned char *)((char *)arg0 + 0x20);
             if (flag != 0) {
                 int j = 0;
-                while (j < count) {
-                    void **item = items + j;
-                    void *obj = *item;
-                    int (*func3)(void *) = *(int (**)(void *))((char *)obj + 0x30);
-                    func3(obj);
-                    j += 1;
+                int off2 = 0;
+                goto test2;
+loop2:
+                {
+                    Item *obj2 = *(Item **)((char *)items + off2);
+                    obj2->run3();
                 }
+                off2 += 4;
+                j++;
+test2:
+                if (j < count) goto loop2;
                 *(int *)((char *)arg0 + 4) = 1;
                 return;
             }
@@ -534,40 +561,38 @@ void fn_801D50B8(int arg0) {
         }
         return;
     }
-
-    int maxVal = -1;
-    int idx = 0;
-    int total = fn_801B2F24();
-
-    while (idx < total) {
-        int actorIdx = fn_8017960C(idx);
-        void *actor = (void *)actorIdx;
-        if (*(int *)((char *)actor + 0x1F0) == 0x50) {
-            void *other = fn_801B2EC0(idx);
-            int val = *(int *)((char *)other + 0x10);
-            if (val > maxVal) {
-                maxVal = val;
+    {
+        int maxVal = -1;
+        int idx = 0;
+        int total = fn_801B2F24();
+        goto test3;
+loop3:
+        {
+            int a = fn_8017960C(idx);
+            if (*(int *)((char *)a + 0x1F0) == 0x50) {
+                Other *o = (Other *)fn_801B2EC0(idx);
+                void *p = o->get();
+                int v = *(int *)((char *)p + 0x10);
+                if (v > maxVal) maxVal = v;
             }
+            idx++;
+            fn_801B2F24();
         }
-        idx += 1;
-        fn_801B2F24();
-    }
-
-    if (maxVal >= 0) {
-        switch (state) {
-        case 1:
-            if ((*(int *)((char *)arg0 + 0x24) >= 0 && maxVal < *(int *)((char *)arg0 + 0x24)) ||
-                ((*(int *)((char *)arg0 + 0x28) < 0 || maxVal > *(int *)((char *)arg0 + 0x28)))) {
-                *(int *)((char *)arg0 + 4) = 4;
-                return;
+test3:
+        if (idx < total) goto loop3;
+        if (maxVal >= 0) {
+            if (state == 1) {
+                if ((*(int *)((char *)arg0 + 0x24) >= 0 && maxVal < *(int *)((char *)arg0 + 0x24)) ||
+                    (*(int *)((char *)arg0 + 0x28) < 0 || maxVal > *(int *)((char *)arg0 + 0x28))) {
+                    *(int *)((char *)arg0 + 4) = 4;
+                    return;
+                }
+            } else if (state == 4) {
+                if ((*(int *)((char *)arg0 + 0x24) < 0 || maxVal >= *(int *)((char *)arg0 + 0x24)) &&
+                    (*(int *)((char *)arg0 + 0x28) >= 0 && maxVal <= *(int *)((char *)arg0 + 0x28))) {
+                    *(int *)((char *)arg0 + 4) = 1;
+                }
             }
-            break;
-        case 4:
-            if ((*(int *)((char *)arg0 + 0x24) < 0 || maxVal >= *(int *)((char *)arg0 + 0x24)) &&
-                (*(int *)((char *)arg0 + 0x28) >= 0 && maxVal <= *(int *)((char *)arg0 + 0x28))) {
-                *(int *)((char *)arg0 + 4) = 1;
-            }
-            break;
         }
     }
 }
