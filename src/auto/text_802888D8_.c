@@ -85,23 +85,24 @@ extern int fn_80287B38(void *);
 extern int lbl_8055F6D8;
 extern char lbl_80348A90[];
 extern void fn_80288A74(void **, int);
+/* Initializes global smoke/effect subsystems (alloc+construct four managers) and registers the update callback. */
 void fn_802888D8(void) {
-    int r3;
-    int r0;
-    char *data = lbl_80348A90;
-    r3 = (int)fn_801284F8(0x6c, data + 0xc);
-    if (r3) r3 = fn_80288B40(r3);
-    lbl_8055F6D8 = r3;
-    r3 = (int)fn_801284F8(8, data + 0x20);
-    if (r3) r3 = fn_80289BE8(r3);
-    lbl_8055F6E0 = (void *)r3;
-    r3 = (int)fn_801284F8(0xa8, data + 0x30);
-    if (r3) r3 = fn_802894B4(r3);
-    lbl_8055F6DC = r3;
-    r3 = (int)fn_801284F8(8, data + 0x44);
-    r0 = r3;
-    if (r3) r0 = fn_80289EA0(r3);
-    lbl_8055F6E4 = r0;
+    int allocResult;
+    int lastAlloc;
+    char *smokeData = lbl_80348A90;
+    allocResult = (int)fn_801284F8(0x6c, smokeData + 0xc);
+    if (allocResult) allocResult = fn_80288B40(allocResult);
+    lbl_8055F6D8 = allocResult;
+    allocResult = (int)fn_801284F8(8, smokeData + 0x20);
+    if (allocResult) allocResult = fn_80289BE8(allocResult);
+    lbl_8055F6E0 = (void *)allocResult;
+    allocResult = (int)fn_801284F8(0xa8, smokeData + 0x30);
+    if (allocResult) allocResult = fn_802894B4(allocResult);
+    lbl_8055F6DC = allocResult;
+    allocResult = (int)fn_801284F8(8, smokeData + 0x44);
+    lastAlloc = allocResult;
+    if (allocResult) lastAlloc = fn_80289EA0(allocResult);
+    lbl_8055F6E4 = lastAlloc;
     fn_80287B38(fn_80288A74);
 }
 
