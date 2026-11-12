@@ -3325,9 +3325,10 @@ unsigned int GXGetTexBufferSize(unsigned short width, unsigned short height, uns
     return bufferSize;
 }
 
-void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_x, int *tiles_y, int *compressed) {
-    int shift_x;
-    int shift_y;
+void __GetImageTileCount(unsigned int format, int width, int height, int *tilesX, int *tilesY, int *tileBlocks) {
+    /* Compute tile counts and block compression factor for a GX texture/copy format. */
+    int tileWidthShift;
+    int tileHeightShift;
 
     switch (format) {
     case 0x0:
@@ -3335,8 +3336,8 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_
     case 0xE:
     case 0x20:
     case 0x30:
-        shift_x = 3;
-        shift_y = 3;
+        tileWidthShift = 3;
+        tileHeightShift = 3;
         break;
     case 0x1:
     case 0x2:
@@ -3348,8 +3349,8 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_
     case 0x29:
     case 0x39:
     case 0x3A:
-        shift_x = 3;
-        shift_y = 2;
+        tileWidthShift = 3;
+        tileHeightShift = 2;
         break;
     case 0x3:
     case 0x4:
@@ -3362,12 +3363,12 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_
     case 0x2B:
     case 0x2C:
     case 0x3C:
-        shift_x = 2;
-        shift_y = 2;
+        tileWidthShift = 2;
+        tileHeightShift = 2;
         break;
     default:
-        shift_y = 0;
-        shift_x = 0;
+        tileHeightShift = 0;
+        tileWidthShift = 0;
         break;
     }
 
@@ -3376,9 +3377,9 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_
     if (height == 0)
         height = 1;
 
-    *tiles_x = (width + (1 << shift_x) - 1) >> shift_x;
-    *tiles_y = (height + (1 << shift_y) - 1) >> shift_y;
-    *compressed = ((int)format == 6 || (int)format == 0x16) ? 2 : 1;
+    *tilesX = (width + (1 << tileWidthShift) - 1) >> tileWidthShift;
+    *tilesY = (height + (1 << tileHeightShift) - 1) >> tileHeightShift;
+    *tileBlocks = ((int)format == 6 || (int)format == 0x16) ? 2 : 1;
 }
 
 void GXInitTexObj(register void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap) {
