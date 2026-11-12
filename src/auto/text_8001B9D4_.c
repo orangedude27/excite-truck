@@ -1112,30 +1112,34 @@ inner:
 }
 #pragma scheduling invalid_target
 #pragma scheduling on
+/* Apply a pointer-relocation callback to record pointers in the statistics buffer
+ * (lbl_8055D5CC): fix up all entries in each of the four per-slot tables and
+ * their associated record blocks, then the shared trailing block at +0x36B10. */
 void fn_8001D528(void *arg0) {
-    s32 var_r31;
-    u8 *var_r30;
-    s32 var_r29;
-    u8 *var_r28;
-    s32 var_r27;
-    s32 (*callback)(s32);
-    callback = (s32 (*)(s32))arg0;
-    var_r29 = 0;
-    var_r31 = 0;
+    s32 slotOffset;
+    u8 *entryPtr;
+    s32 slotIndex;
+    u8 *slotBase;
+    s32 entryIndex;
+    s32 (*fixupCallback)(s32);
+
+    fixupCallback = (s32 (*)(s32))arg0;
+    slotIndex = 0;
+    slotOffset = 0;
 loop_outer_528:
-    var_r27 = 0;
-    var_r28 = lbl_8055D5CC + var_r31;
-    var_r30 = var_r28;
-    while (var_r27 < *(s32 *)(var_r28 + 0x6E00)) {
-        *(s32 *)(var_r30 + 4) = callback(*(s32 *)(var_r30 + 4));
-        var_r30 += 0x2C;
-        var_r27 += 1;
+    entryIndex = 0;
+    slotBase = lbl_8055D5CC + slotOffset;
+    entryPtr = slotBase;
+    while (entryIndex < *(s32 *)(slotBase + 0x6E00)) {
+        *(s32 *)(entryPtr + 4) = fixupCallback(*(s32 *)(entryPtr + 4));
+        entryPtr += 0x2C;
+        entryIndex += 1;
     }
-    ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(var_r28 + 0x6E04, 0xF0, callback);
-    var_r29 += 1;
-    var_r31 += 0xDAC4;
-    if (var_r29 < 4) goto loop_outer_528;
-    ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(lbl_8055D5CC + 0x36B10, 0xF0, callback);
+    ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(slotBase + 0x6E04, 0xF0, fixupCallback);
+    slotIndex += 1;
+    slotOffset += 0xDAC4;
+    if (slotIndex < 4) goto loop_outer_528;
+    ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(lbl_8055D5CC + 0x36B10, 0xF0, fixupCallback);
 }
 #pragma scheduling reset
 extern s32 fn_8001D464(s32);
