@@ -765,6 +765,7 @@ extern "C" char lbl_80559E48[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+/* Builds a result object containing copies of all collection items whose name matches wantedName (0x28-byte entries). */
 extern "C" void *fn_80145FEC(void *collection, const char *wantedName, s32 unused) {
     extern void fn_801460F4(void);
     struct Result { void *data; s32 count; s32 size; void *end; };
