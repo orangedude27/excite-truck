@@ -1341,6 +1341,9 @@ int fn_801D6508(int arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* While active (state 2), after start delay iterate objects from fn_8017960C
+ * and apply fn_80267E40 to those passing optional filter fn_80139B5C; advance
+ * to state 3 once start+duration has elapsed. */
 void fn_801D6534(void *self) {
     extern int fn_80139B5C(int, int);
     extern int fn_8017960C(int);
