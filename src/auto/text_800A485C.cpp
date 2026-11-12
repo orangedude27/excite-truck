@@ -25140,57 +25140,68 @@ extern "C" void fn_800D2480(void) {
     ((u8 *)lbl_8055DDBC)[0x22] = 0;
 }
 
-extern "C" void fn_800D24D4(void *arg0, s32 arg1)
+/* Prints the debug console's stored lines from its scroll position on: through the
+   nw4hbm::ut::CharWriter in charWriter, or straight onto the screen through
+   db_directPrint (fn_800D2FDC) when that is 0. At most viewLines lines are drawn,
+   stopping at the line being written (which is shown only once terminated).
+   Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead calls it
+   under the console mutex; rename_symbol refuses game symbols, so it keeps its
+   placeholder name. */
+extern "C" void fn_800D24D4(void *consoleHead, s32 charWriter)
 {
-    u8 *p = (u8 *)arg0;
-    s32 avail;
-    u16 pos;
-    s32 n;
-    u16 count = 0;
-    u8 *entry;
+    nw4hbm::db::detail::ConsoleHead *console = (nw4hbm::db::detail::ConsoleHead *)consoleHead;
+    s32 skip;
+    u16 line;
+    s32 stored;
+    u16 drawn = 0;
+    char *text;
 
-    avail = *(s32 *)(p + 0x18) - *(s32 *)(p + 0x14);
-    if (avail < 0) {
-        avail = 0;
+    /* Lines the caller scrolled past, counted from the oldest line still in the ring. */
+    skip = console->topLine - console->droppedLines;
+    if (skip < 0) {
+        skip = 0;
     } else {
-        if (arg0 == 0) {
+        if (consoleHead == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x70, lbl_8031EA90);
         }
-        n = *(u16 *)(p + 0xC) - *(u16 *)(p + 0x12);
-        if (n < 0) {
-            n += *(u16 *)(p + 6);
+        /* Lines in the ring, plus the unterminated one being written. */
+        stored = console->writeLine - console->readLine;
+        if (stored < 0) {
+            stored += console->lineCount;
         }
-        n = (u16)n;
-        if (*(u16 *)(p + 0x10) != 0) {
-            n = (u16)(n + 1);
+        stored = (u16)stored;
+        if (console->partial != 0) {
+            stored = (u16)(stored + 1);
         }
-        if (avail > n) return;
+        /* Scrolled past everything the console still holds. */
+        if (skip > stored) return;
     }
-    pos = *(u16 *)(p + 0x12) + avail;
-    if (pos >= *(u16 *)(p + 6)) {
-        pos = pos - *(u16 *)(p + 6);
+    line = console->readLine + skip;
+    if (line >= console->lineCount) {
+        line = line - console->lineCount;
     }
     for (;;) {
-        if (pos == *(u16 *)(p + 0xC) && *(u16 *)(p + 0x10) == 0) break;
-        entry = *(u8 **)p + (*(u16 *)(p + 4) + 1) * (u16)pos;
-        if (arg1 != 0) {
-            fn_8010DC74(arg1, lbl_805597E0, entry);
+        if (line == console->writeLine && console->partial == 0) break;
+        text = console->lines + (console->lineWidth + 1) * (u16)line;
+        if (charWriter != 0) {
+            fn_8010DC74(charWriter, lbl_805597E0, text);
         } else {
-            fn_800D2FDC((void *)(s32)*(s16 *)(p + 0x1C),
-                        (void *)(s32)(*(s16 *)(p + 0x1E) + (u16)count * 10), 0,
-                        lbl_805597E0, entry);
+            /* One line feed of the console's text is 10 pixels. */
+            fn_800D2FDC((void *)(s32)console->drawX,
+                        (void *)(s32)(console->drawY + (u16)drawn * 10), 0,
+                        lbl_805597E0, text);
         }
-        count++;
-        if (pos == *(u16 *)(p + 0xC)) break;
-        pos++;
-        if (pos == *(u16 *)(p + 6)) {
-            if (!(*(u16 *)(p + 0xA) & 2)) {
-                pos = 0;
+        drawn++;
+        if (line == console->writeLine) break;
+        line++;
+        if (line == console->lineCount) {
+            if (!(console->flags & 2)) {
+                line = 0;
             } else {
                 break;
             }
         }
-        if (count >= *(u16 *)(p + 0x20)) break;
+        if (drawn >= console->viewLines) break;
     }
 }
 
