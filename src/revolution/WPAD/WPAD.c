@@ -1732,6 +1732,7 @@ s32 WPADControlLed(s32 chan, u8 flags, WPADCallback pCallback) {
     return status;
 }
 
+/* Save WPAD settings (speaker volume and rumble/motor mode) to system config and flush asynchronously. */
 BOOL WPADSaveConfig(WPADSaveCallback pCallback) {
     BOOL success = TRUE;
     BOOL enabled;
