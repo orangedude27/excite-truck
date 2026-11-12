@@ -403,15 +403,16 @@ found:
     return 0;
 }
 
-int fn_80258C08(void *arg0, const char *arg1) {
+int fn_80258C08(void *mgr, const char *name) {
     int index = 0;
     int offset = 0;
     char *entries;
     int entry_offset;
     int len;
+    /* Look up name in UIObjectEntry table (+4, count +8, stride 0x48) and return the item id at +0x44, or 0. */
     goto check;
 loop:
-    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
+    len = stricmp((const char *)(*(unsigned int *)((char *)mgr + 4) + offset), name);
     switch (((unsigned int)__cntlzw(len) >> 5)) {
     case 0:
         goto increment;
@@ -422,14 +423,14 @@ increment:
     offset += 0x48;
     index++;
 check:
-    if (index < *(int *)((char *)arg0 + 8)) {
+    if (index < *(int *)((char *)mgr + 8)) {
         goto loop;
     }
     index = -1;
 found:
     if (index >= 0) {
         entry_offset = index * 0x48;
-        entries = *(char **)((char *)arg0 + 4);
+        entries = *(char **)((char *)mgr + 4);
         return *(int *)(entries + entry_offset + 0x44);
     }
     return 0;
