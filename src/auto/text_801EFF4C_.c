@@ -147,7 +147,7 @@ extern float lbl_80562F1C;
 extern char lbl_8033A420[];
 
 #pragma scheduling invalid_target
-extern "C" void fn_801F0148(void *arg0, void *arg1) {
+extern "C" void fn_801F0148(void *out, void *source) {
     class Fn801F0148VTable {
     public:
         virtual void v0();
@@ -160,14 +160,16 @@ extern "C" void fn_801F0148(void *arg0, void *arg1) {
         virtual float v7(int);
     };
     float value;
-    Fn801F0148VTable *object = (Fn801F0148VTable *)arg1;
+    Fn801F0148VTable *object = (Fn801F0148VTable *)source;
+
+    /* Read tire_diameter, rim_diameter, and width values via v7, scale them, and store results into out. */
     value = object->v7((int)&lbl_8033A400) * lbl_80562F10;
-    *(float *)((char *)arg0 + 0x18) = value * lbl_80562F14;
+    *(float *)((char *)out + 0x18) = value * lbl_80562F14;
     value = object->v7((int)&lbl_8033A410) * lbl_80562F10;
-    *(float *)((char *)arg0 + 0x1C) = value * lbl_80562F14;
+    *(float *)((char *)out + 0x1C) = value * lbl_80562F14;
     value = object->v7((int)&lbl_8055B0C0) * lbl_80562F10;
-    *(float *)((char *)arg0 + 0x24) = lbl_80562F18;
-    *(float *)((char *)arg0 + 0x20) = value;
+    *(float *)((char *)out + 0x24) = lbl_80562F18;
+    *(float *)((char *)out + 0x20) = value;
 }
 
 /* --- wheel mod LOD table -------------------------------------------------
@@ -825,41 +827,35 @@ void fn_801F1474(int *arg0, void *arg1) {
 #pragma push
 #pragma processor 750
 int fn_801F1494(int arg0, void *arg1, short arg2) {
-    struct Entry {
-        int id;
-        float limit;
-    };
-    struct Table {
-        struct Entry entries[8];
-        int count;
-        float f44;
-        float f48;
-    };
-
     short saved = arg2;
     int base = *(int *)arg0;
-    struct Table *table = (struct Table *)(base + 0xEC);
+    char *table = (char *)(base + 0xEC);
     float speed = ((float (*)(int, int))fn_801E88F0)(-1, base);
     float squared = speed * speed;
     float value = ((float (*)(void *))fn_802C88E8)((char *)arg0 + 0x3C);
-    struct Entry *entry;
-    int count;
-
+    char *cursor;
+    int index;
+    int vx, vy, vz;
+    Vec vec;
     value = value * squared;
-    count = table->count - 1;
-    entry = &table->entries[count];
-    while (count >= 0 && value < entry->limit) {
-        entry--;
-        count--;
+    index = *(int *)(table + 0x40) - 1;
+    cursor = table + index * 8;
+    while (index >= 0 && value < *(float *)(cursor + 4)) {
+        cursor -= 8;
+        index--;
     }
-
-    if (value < table->f48 && count >= 0) {
-        Vec vec = *(Vec *)((char *)arg1 + 0x24);
+    if (value < *(float *)(table + 0x48) && index >= 0) {
+        vz = *(int *)((char *)arg1 + 0x2C);
+        vy = *(int *)((char *)arg1 + 0x28);
+        vx = *(int *)((char *)arg1 + 0x24);
+        *(int *)&vec.x = vx;
+        *(int *)&vec.y = vy;
+        *(int *)&vec.z = vz;
         if (fn_801EA03C(&saved, &vec)) {
             float second = *(float *)((char *)arg1 + 0x28);
             if (second > vec.y) {
-                float f = table->f44 + second - vec.y;
-                fn_802C7AE0(table->entries[count].id, arg1, -1, f);
+                float f = *(float *)(table + 0x44) + second - vec.y;
+                fn_802C7AE0(*(int *)(table + index * 8), arg1, -1, f);
             }
         }
     }
@@ -954,10 +950,9 @@ int fn_801F196C(int a, int b) { return b + a * 4; }
 extern char lbl_8033A5B0[];
 #pragma push
 #pragma scheduling invalid_target
-int fn_801F1978(register int arg) {
+int fn_801F1978(int arg) {
     int result = -1;
-    arg &= ~0x10;
-    switch (arg) {
+    switch (arg & ~0x10) {
     case 0:
         result = 1;
         result |= 0x100;
