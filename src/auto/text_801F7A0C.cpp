@@ -942,6 +942,7 @@ extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg);
 extern "C" int strcmp(const char *, const char *);
 #pragma use_lmw_stmw off
 extern "C" void *fn_801F9338(void *self) {
+    /* Collect child nodes named "object" and build a linked list of placed instances. */
     class Node {
     public:
         virtual const char *name();
@@ -973,35 +974,35 @@ extern "C" void *fn_801F9338(void *self) {
         virtual void *get(s32);
     };
 
-    u8 sp8[0x30];
-    void *data;
-    void *result;
-    void *node;
+    u8 frameData[0x30];
+    void *transform;
+    void *head;
+    void *child;
     s32 index;
 
-    data = 0;
-    if (fn_801F7EB0(sp8, self, 0) != 0) {
-        data = sp8;
+    transform = 0;
+    if (fn_801F7EB0(frameData, self, 0) != 0) {
+        transform = frameData;
     }
-    result = 0;
+    head = 0;
     index = 0;
     goto get_node;
 
 body:
-    if (strcmp(((Node *)node)->name(), (const char *)&lbl_8055B36C) == 0) {
-        void *newNode = fn_801F8188(node, (s32)data, 0);
-        *(void **)((u8 *)newNode + 0x24) = result;
-        result = newNode;
+    if (strcmp(((Node *)child)->name(), (const char *)&lbl_8055B36C) == 0) {
+        void *placed = fn_801F8188(child, (s32)transform, 0);
+        *(void **)((u8 *)placed + 0x24) = head;
+        head = placed;
     }
     index++;
 
 get_node:
-    node = ((List *)self)->get(index);
-    if (node != 0) {
+    child = ((List *)self)->get(index);
+    if (child != 0) {
         goto body;
     }
 
-    return result;
+    return head;
 }
 
 #pragma push
