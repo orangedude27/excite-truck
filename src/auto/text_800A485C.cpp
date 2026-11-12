@@ -1192,6 +1192,7 @@ extern "C" s32 fn_800A607C(void *loader, s32 *outRecord) {
     u32 params[3];
     s32 allocResult;
 
+    /* Find a free 0x3C-byte slot (count at lbl_803D1640+2, max 0x1A), load resource, allocate/init record, mark used, and return it. */
     *outRecord = 0;
     if (*(u16 *)(lbl_803D1640 + 2) >= 0x1A) {
         return 8;
@@ -12285,7 +12286,7 @@ extern "C" s32 fn_800BAA8C(s32 arg0, void *arg1) {
     default:
         break;
     }
-    if (*(s32 *)req != 0 && ((u32)arg0 + 0x3DF00000U) != 0U) {
+    if (*(s32 *)req != 0 && (arg0 + 0x3DF00000U) != 0) {
         ((void (*)(s32, s32))*(s32 *)req)(arg0, *(s32 *)(req + 4));
     }
     if (*(void **)(req + 0x18) != 0) {
