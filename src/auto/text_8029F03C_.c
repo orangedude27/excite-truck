@@ -187,28 +187,30 @@ void fn_8029F188(void) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Per-frame: refresh HUD/effect state, then for each active view (when count is 1) draw a
+   screen quad if the entry at lbl_8055F820 has a nonzero high byte; clears each entry. */
 void fn_8029F300(void) {
-    int offset, i, zero;
-    int a, b, c, d;
+    int byteOffset, entryIndex, clearValue;
+    int left, top, right, bottom;
     fn_802029FC();
-    i = 0;
-    offset = 0;
-    zero = 0;
+    entryIndex = 0;
+    byteOffset = 0;
+    clearValue = 0;
     goto check;
 loop:
     if (fn_801E85A4() == 1) {
         fn_802C92D0();
-        if (((unsigned int)*(int *)((char *)lbl_8055F820 + offset) >> 24) != 0) {
-            fn_801E88B4(&a, &b, &c, &d, i);
-            fn_802C92DC(a, b, c, d, *(int *)((char *)lbl_8055F820 + offset));
+        if (((unsigned int)*(int *)((char *)lbl_8055F820 + byteOffset) >> 24) != 0) {
+            fn_801E88B4(&left, &top, &right, &bottom, entryIndex);
+            fn_802C92DC(left, top, right, bottom, *(int *)((char *)lbl_8055F820 + byteOffset));
         }
         fn_802C92D8();
     }
-    i++;
-    *(int *)((char *)lbl_8055F820 + offset) = zero;
-    offset += 4;
+    entryIndex++;
+    *(int *)((char *)lbl_8055F820 + byteOffset) = clearValue;
+    byteOffset += 4;
 check:
-    if (i < fn_801E85A4()) goto loop;
+    if (entryIndex < fn_801E85A4()) goto loop;
 }
 #pragma scheduling on
 #pragma pop
