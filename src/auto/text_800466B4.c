@@ -200,71 +200,83 @@ extern f32 lbl_80558EC4;
 extern f32 lbl_8055D998;
 extern f32 lbl_8055D99C;
 extern f32 lbl_80560BF0;
+/* Continues the pair of DPD (Wii pointer) objects KPAD used in the last sample:
+   of every pair among the four objects WPAD reported, it keeps the one whose
+   direction agrees most with kp->sec_nrm while its length stays near
+   kp->sec_dist. The best-scoring pair goes to kp->kobj_regular the way it is
+   moving (kp->sec_nrm points from kobj_regular[0] to [1]) and 2 is returned;
+   0 when no pair scored under F_TWO. The SDK's select_2obj_continue
+   (src/review_KPAD.c), called from read_kpad_dpd. */
 s32 select_2obj_continue(void *arg0) {
-    struct Pair { u32 x, y; };
-    u8 *obj = (u8 *)arg0;
-    u8 *aEnd;
-    u8 *bEnd;
-    u8 *a;
-    u8 *b;
-    u8 *bestA;
-    u8 *bestB;
-    f32 best;
-    f32 length;
-    f32 threshold;
-    volatile f32 temp[2];
+    KPADInsideStatus *kp = (KPADInsideStatus *)arg0;
+    KPADObject *op1End;
+    KPADObject *op2End;
+    KPADObject *op1;
+    KPADObject *op2;
+    KPADObject *rp1;
+    KPADObject *rp2;
+    f32 min;
+    f32 one;
+    f32 zero;
+    volatile Vec2 nrm;
 
-    best = lbl_80560BF0;
-    threshold = lbl_80560BD8;
-    a = obj + 0xC8;
-    length = lbl_80560BE4;
-    aEnd = obj + 0xEC;
+    min = F_TWO;
+    zero = F_ZERO;
+    op1 = kp->kobj_sample;
+    one = F_ONE;
+    op1End = &kp->kobj_sample[WPAD_DPD_MAX_OBJECTS - 1];
     do {
-        if (*(s8 *)(a + 8) == 0) {
-            b = a + 0xC;
-            bEnd = obj + 0xEC;
+        if (op1->flags.f.error_fg == 0) {
+            op2 = op1 + 1;
+            op2End = &kp->kobj_sample[WPAD_DPD_MAX_OBJECTS - 1];
             do {
-                if (*(s8 *)(b + 8) == 0) {
-                    f32 dx, dy, mag, scale, dot;
-                    s32 reverse;
-                    dx = *(f32 *)(b + 0) - *(f32 *)(a + 0);
-                    dy = *(f32 *)(b + 4) - *(f32 *)(a + 4);
-                    mag = (f32)fn_8002F234((f64)(dx * dx + dy * dy));
-                    scale = length / mag;
-                    temp[0] = dx * scale;
-                    temp[1] = dy * scale;
-                    scale *= lbl_8055D990;
-                    if (scale <= lbl_8055D9B0 || scale >= lbl_80558EB8) goto skip;
-                    scale = scale - *(f32 *)(obj + 0x3AC);
-                    if (scale < threshold) scale *= lbl_8055D998;
-                    else scale *= lbl_8055D99C;
-                    if (scale >= length) goto skip;
-                    dot = *(volatile f32 *)(obj + 0x3A4) * temp[0] + *(volatile f32 *)(obj + 0x3A8) * temp[1];
-                    if (dot < threshold) {
+                if (op2->flags.f.error_fg == 0) {
+                    f32 vx, vy, dist, scale, dot;
+                    s32 rev_fg;
+                    /* The pair as a vector, and its length in screen units. */
+                    vx = op2->center.x - op1->center.x;
+                    vy = op2->center.y - op1->center.y;
+                    dist = (f32)fn_8002F234((f64)(vx * vx + vy * vy));
+                    scale = one / dist;
+                    nrm.x = vx * scale;
+                    nrm.y = vy * scale;
+                    scale *= kp_dist_vv1;
+                    if (scale <= kp_err_dist_min || scale >= kp_err_dist_max) goto skip;
+                    /* Penalise how far the pair moved away from the last length. */
+                    scale = scale - kp->sec_dist;
+                    if (scale < zero) scale *= kp_err_dist_speedM_1;
+                    else scale *= kp_err_dist_speed_1;
+                    if (scale >= one) goto skip;
+                    /* Cosine with the last pair's direction. The volatile reads keep
+                       the order the four loads are issued in, which is what matches. */
+                    dot = *(volatile f32 *)&kp->sec_nrm * nrm.x +
+                          *(volatile f32 *)&kp->sec_nrm.y * nrm.y;
+                    if (dot < zero) {
                         dot = -dot;
-                        reverse = 1;
+                        rev_fg = 1;
                     } else {
-                        reverse = 0;
+                        rev_fg = 0;
                     }
-                    if (dot <= lbl_80558EC4) goto skip;
-                    scale += (length - dot) / (length - lbl_80558EC4);
-                    if (scale < best) {
-                        best = scale;
-                        if (reverse) { bestA = b; bestB = a; }
-                        else { bestA = a; bestB = b; }
+                    if (dot <= kp_err_next_inpr) goto skip;
+                    /* The less the pair turned, the better; lowest score wins. */
+                    scale += (one - dot) / (one - kp_err_next_inpr);
+                    if (scale < min) {
+                        min = scale;
+                        if (rev_fg) { rp1 = op2; rp2 = op1; }
+                        else { rp1 = op1; rp2 = op2; }
                     }
                 }
             skip:
-                b += 0xC;
-            } while (b <= bEnd);
+                op2++;
+            } while (op2 <= op2End);
         }
-        a += 0xC;
-    } while (a < aEnd);
-    if (lbl_80560BF0 == best) return 0;
-    *(struct Pair *)(obj + 0xF8) = *(struct Pair *)bestA;
-    *(u32 *)(obj + 0x100) = *(u32 *)(bestA + 8);
-    *(struct Pair *)(obj + 0x104) = *(struct Pair *)bestB;
-    *(u32 *)(obj + 0x10C) = *(u32 *)(bestB + 8);
+        op1++;
+    } while (op1 < op1End);
+    if (F_TWO == min) return 0;
+    kp->kobj_regular[0].center = rp1->center;
+    kp->kobj_regular[0].flags.all = rp1->flags.all;
+    kp->kobj_regular[1].center = rp2->center;
+    kp->kobj_regular[1].flags.all = rp2->flags.all;
     return 2;
 }
 
