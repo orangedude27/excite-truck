@@ -558,6 +558,9 @@ void GXSetCPUFifo(void *arg0) {
     PPCSync();
     ((void (*)(int))OSRestoreInterrupts)(intStatus);
 }
+typedef struct GPFifoCopy {
+    unsigned int w[9];
+} GPFifoCopy;
 void GXSetGPFifo(unsigned int *fifo) {
     int intStatus;
     unsigned int tmp;
@@ -3739,8 +3742,8 @@ void GXLoadTlut(void *arg0, int arg1) {
         struct { unsigned int hi : 22; unsigned int lo : 10; } f;
     };
     union Low10 v;
-    unsigned int *src = (unsigned int *)arg0;
-    unsigned int *dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
+    unsigned int * __restrict src = (unsigned int *)arg0;
+    unsigned int * __restrict dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = src[1];
@@ -4296,98 +4299,68 @@ void GXSetTevAlphaIn(s32 stage, s32 a, s32 b, s32 c, s32 d) {
 }
 
 void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    unsigned int *data = (unsigned int *)((unsigned char *)__GXData + arg0 * 4);
-    {
-        union TevColorOpReg {
-            unsigned int value;
-            struct {
-                unsigned int pad0 : 8;
-                unsigned int konst : 2;
-                unsigned int scale : 2;
-                unsigned int arg4 : 1;
-                unsigned int clamp : 1;
-                unsigned int bias : 2;
-                unsigned int pad1 : 16;
-            } bits;
-        } reg;
-        reg.value = data[0x180 / 4];
-        reg.bits.clamp = arg1;
-        if (arg1 <= 1) {
-            reg.bits.scale = arg3;
-            reg.bits.bias = arg2;
-        } else {
-            reg.bits.scale = ((unsigned int)arg1) >> 1;
-            reg.bits.bias = 3;
-        }
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        reg.bits.arg4 = arg4;
-        reg.bits.konst = arg5;
-        *(volatile unsigned int *)0xCC008000 = reg.value;
-        data[0x180 / 4] = reg.value;
+    unsigned int *base = __GXData;
+    unsigned int *data;
+    unsigned int v;
+    data = (unsigned int *)((unsigned char *)base + arg0 * 4);
+    v = data[0x180 / 4];
+    v = __rlwimi(v, arg1, 18, 13, 13);
+    if (arg1 <= 1) {
+        v = __rlwimi(v, arg3, 20, 10, 11);
+        v = __rlwimi(v, arg2, 16, 14, 15);
+    } else {
+        v = __rlwimi(v, arg1, 19, 10, 11);
+        v |= 0x30000;
     }
-    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    v = __rlwimi(v, arg4, 19, 12, 12);
+    v = __rlwimi(v, arg5, 22, 8, 9);
+    *(volatile unsigned int *)0xCC008000 = v;
+    data[0x180 / 4] = v;
+    *(volatile unsigned short *)((unsigned char *)base + 2) = 0;
 }
 
 void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    unsigned int v;
-    unsigned int *data = (unsigned int *)((unsigned char *)__GXData + arg0 * 4);
-    union TevAlphaOpReg {
-        unsigned int value;
-        struct {
-            unsigned int pad0 : 8;
-            unsigned int konst : 2;
-            unsigned int scale : 2;
-            unsigned int arg4 : 1;
-            unsigned int clamp : 1;
-            unsigned int bias : 2;
-            unsigned int pad1 : 16;
-        } bits;
-    };
-    union TevAlphaOpReg *reg = (union TevAlphaOpReg *)&v;
-    reg->value = data[0x1C0 / 4];
-    reg->bits.clamp = arg1;
+    unsigned int *base = __GXData;
+    int v;
+    unsigned int *data;
+    data = (unsigned int *)((unsigned char *)base + arg0 * 4);
+    v = data[0x1C0 / 4];
+    v = __rlwimi(v, arg1, 18, 13, 13);
     if (arg1 <= 1) {
-        reg->bits.scale = arg3;
-        reg->bits.bias = arg2;
+        v = __rlwimi(v, arg3, 20, 10, 11);
+        v = __rlwimi(v, arg2, 16, 14, 15);
     } else {
-        reg->bits.scale = ((unsigned int)arg1) >> 1;
-        reg->bits.bias = 3;
+        v = __rlwimi(v, arg1, 19, 10, 11);
+        v |= 0x30000;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg->bits.arg4 = arg4;
-    reg->bits.konst = arg5;
-    *(volatile unsigned int *)0xCC008000 = reg->value;
-    data[0x1C0 / 4] = reg->value;
-    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
+    v = __rlwimi(v, arg4, 19, 12, 12);
+    v = __rlwimi(v, arg5, 22, 8, 9);
+    *(volatile unsigned int *)0xCC008000 = v;
+    data[0x1C0 / 4] = v;
+    *(volatile unsigned short *)((unsigned char *)base + 2) = 0;
 }
 
 void GXSetTevColor(s32 arg0, unsigned int *arg1) {
-    s32 index;
-    unsigned int value;
-    s32 reg;
-    s32 reg2;
-    unsigned int word;
-    unsigned int *gxbase;
-    index = arg0 * 2;
-    value = *arg1;
-    reg = index + 0xE0;
-    word = (unsigned int)(reg << 24);
-    word = __rlwimi(word, value, 8, 24, 31);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    word = __rlwimi(word, value, 12, 12, 19);
-    reg2 = index + 0xE1;
-    *(volatile unsigned int *)0xCC008000 = word;
-    word = (unsigned int)(reg2 << 24);
-    word = __rlwimi(word, value, 24, 24, 31);
-    gxbase = __GXData;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    word = __rlwimi(word, value, 28, 12, 19);
-    *(volatile unsigned int *)0xCC008000 = word;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = word;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = word;
-    *(unsigned short *)((char *)gxbase + 2) = 0;
+    s32 index = arg0 * 2;
+    unsigned int value = *arg1;
+    unsigned int first = (unsigned int)((index + 0xE0) << 24);
+    unsigned int second;
+    first = __rlwimi(first, value, 8, 24, 31);
+    WGPIPE.c = 0x61;
+    first = __rlwimi(first, value, 12, 12, 19);
+    second = (unsigned int)((index + 0xE1) << 24);
+    WGPIPE.i = first;
+    second = __rlwimi(second, value, 24, 24, 31);
+    WGPIPE.c = 0x61;
+    second = __rlwimi(second, value, 28, 12, 19);
+    WGPIPE.i = second;
+    WGPIPE.c = 0x61;
+    WGPIPE.i = second;
+    WGPIPE.c = 0x61;
+    WGPIPE.i = second;
+    *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetTevColorS10(s32 tevReg, void *color) {
@@ -4416,15 +4389,16 @@ void GXSetTevColorS10(s32 tevReg, void *color) {
 
 void GXSetTevKColor(s32 tevReg, unsigned int *color) {
     unsigned int index = tevReg << 1;
+    unsigned int idx0 = index + 0xE0;
+    unsigned int idx1 = index + 0xE1;
     unsigned int value = *color;
-    unsigned int first = __rlwimi(__rlwimi(__rlwimi((index + 0xE0) << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
-    unsigned int second = __rlwimi(__rlwimi(__rlwimi((index + 0xE1) << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
-    unsigned int *data = __GXData;
+    unsigned int first = __rlwimi(__rlwimi(__rlwimi(idx0 << 24, value, 8, 24, 31), value, 12, 12, 19), 8, 20, 8, 11);
+    unsigned int second = __rlwimi(__rlwimi(__rlwimi(idx1 << 24, value, 24, 24, 31), value, 28, 12, 19), 8, 20, 8, 11);
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = first;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = second;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetTevKColorSel(s32 arg0, s32 arg1) {
@@ -4492,13 +4466,13 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
             unsigned int rasSel : 2;
         } fields;
     } word;
-    register u32 offset0;
-    register u32 index2;
-    register u32 offset1;
-    register unsigned int *table;
-    register unsigned int *data;
-    offset0 = (u32)index << 3;
-    index2 = (u32)index << 1;
+    int offset0;
+    int index2;
+    int offset1;
+    unsigned int *table;
+    unsigned int *data;
+    offset0 = index << 3;
+    index2 = index << 1;
     offset1 = index2 + 1;
     data = __GXData;
     table = (unsigned int *)((char *)data + 0x200);
@@ -4542,7 +4516,7 @@ void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
-void GXSetZTexture(unsigned int op, unsigned int format, unsigned int bias) {
+void GXSetZTexture(s32 op, s32 format, s32 bias) {
     union {
         unsigned int value;
         struct {
@@ -4947,17 +4921,15 @@ void GXSetDstAlpha(s32 enable, s32 alpha) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetFieldMask(unsigned char even, unsigned char odd) {
-    unsigned int value;
-    unsigned int *data;
+void GXSetFieldMask(s32 even, s32 odd) {
+    unsigned int *data = __GXData;
+    unsigned int value = 0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = 0;
     value = __rlwimi(value, odd, 0, 31, 31);
     value = __rlwimi(value, even, 1, 30, 30);
-    data = __GXData;
     value = __rlwimi(value, 0x44, 24, 0, 7);
     *(volatile unsigned int *)0xCC008000 = value;
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    *(unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetFieldMode(s32 mode, s32 field) {
@@ -5056,7 +5028,6 @@ extern float lbl_80560BD0;
 void __GXSetProjection(void) {
     double *src = (double *)((u8 *)__GXData + 0x52C);
     volatile double *fifo = (volatile double *)0xCC008000;
-
     *(volatile u8 *)0xCC008000 = 0x10;
     *(volatile u32 *)0xCC008000 = 0x61020;
     fifo[0] = src[0];
@@ -5113,7 +5084,6 @@ void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id) {
     f64 p3 = *(const f64 *)&mtx[1][2];
     f64 p4 = *(const f64 *)&mtx[2][0];
     f64 p5 = *(const f64 *)&mtx[2][2];
-
     *fifo8 = 0x10;
     *fifo32 = (id << 2) | 0xB0000;
     *fifo64 = p0;
@@ -5219,7 +5189,6 @@ void __GXSetViewport(void) {
     f0 = *(f32 *)((u8 *)d + 0x55C);
     f3 = f3 * f2;
     f9 = f1 * f2;
-
     *bp8 = 16;
     f2 = lbl_80560BD0;
     f1 = f4 + f5;
