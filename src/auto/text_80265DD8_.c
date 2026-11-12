@@ -363,7 +363,7 @@ void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     float var_f3;
     float temp_f4;
     float var_f0;
-    register float var_f4;
+    float var_f4;
     int temp_r0_2;
     int temp_r0;
 
@@ -386,7 +386,7 @@ void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     temp_r0_2 = *(int *)((char *)arg0 + 4);
     temp_r0 = arg1 - temp_r0;
     *(int *)((char *)arg0 + 0) = arg1;
-    temp_r0 = temp_r0_2 + temp_r0;
+    temp_r0 += temp_r0_2;
     *(int *)((char *)arg0 + 4) = temp_r0;
     var_f4 = lbl_80563C2C;
     temp_f0 = (float)lbl_8055C4B4;
@@ -408,24 +408,25 @@ void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     *(float *)((char *)arg0 + 0xC) = var_f3;
 }
 
-void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
-    float t;
+void fn_802662D8(float *params, float *outPoint, float *basePoint, float *direction, int count) {
+    float dot;
     float weight;
     float factor;
     float x;
     float y;
     float z;
 
-    t = PSQUATMultiply(arg2, arg4) - lbl_8055C4C4;
-    weight = arg0[3];
-    t = t - lbl_80563C20;
-    factor = lbl_80563C20 + weight * t;
-    x = arg2[0] + arg3[0] * factor;
-    y = arg2[1] + arg3[1] * factor;
-    z = arg2[2] + arg3[2] * factor;
-    arg1[0] = x;
-    arg1[1] = y;
-    arg1[2] = z;
+    /* Compute outPoint = basePoint + direction * (params[3] * (PSQUATMultiply(basePoint, count) - 30.0)). */
+    dot = PSQUATMultiply(basePoint, count) - lbl_8055C4C4;
+    weight = params[3];
+    dot = dot - lbl_80563C20;
+    factor = lbl_80563C20 + weight * dot;
+    x = basePoint[0] + direction[0] * factor;
+    y = basePoint[1] + direction[1] * factor;
+    z = basePoint[2] + direction[2] * factor;
+    outPoint[0] = x;
+    outPoint[1] = y;
+    outPoint[2] = z;
 }
 
 #pragma push
@@ -2050,7 +2051,8 @@ void fn_8026A394(void *arg0) {
    q = *(char * volatile *)(p + 0x140);
    scale = *(float *)(q + 0x25d4);
    factor = factor * scale;
-   *(volatile float *)(p + 0x13c) = threshold < factor ? factor : threshold;
+   threshold = threshold < factor ? factor : threshold;
+   *(float *)(p + 0x13c) = threshold;
    zero = lbl_80563C20;
    *(float *)(p + 0x154) = zero;
    *(float *)(p + 0x158) = zero;
