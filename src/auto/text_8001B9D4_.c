@@ -247,12 +247,12 @@ void fn_8001BD54(Unk8001BBBC *arg0, void *arg1) {
 }
 #pragma scheduling invalid_target
 u32 fn_8001BD6C(void *arg0, void *arg1) {
-    u32 a0 = *(u32 *)((u8 *)arg0 + 0x18);
-    u32 a0c = *(u32 *)((u8 *)arg0 + 0xC);
-    u32 a18 = *(u32 *)((u8 *)arg1 + 0x18);
-    u32 a1c = *(u32 *)((u8 *)arg1 + 0xC);
+    u32 a0 = *(u32 *)((s8 *)arg0 + 0x18);
+    u32 a0c = *(u32 *)((s8 *)arg0 + 0xC);
+    u32 a18 = *(u32 *)((s8 *)arg1 + 0x18);
+    u32 a1c = *(u32 *)((s8 *)arg1 + 0xC);
     u32 r = fn_8001D2E4(a0, a0c, a18, a1c);
-    return (r >> 31);
+    return (r & 0x80000000) >> 31;
 }
 #pragma scheduling on
 extern void *fn_800167CC(s32);
@@ -531,13 +531,13 @@ extern s32 fn_802E317C(const char *);
 #pragma scheduling invalid_target
 #pragma scheduling on
 s32 *fn_8001C4E0(s32 arg0) {
-    u8 *entry = (u8 *)lbl_802ED7B8;
+    s32 *entry = lbl_802ED7B8;
     for (;;) {
-        if (*(s32 *)entry == arg0) {
-            return (s32 *)entry;
+        if (*entry == arg0) {
+            return entry;
         }
-        entry = entry + 0xC;
-        if (*(s32 *)entry == 0) {
+        entry += 3;
+        if (*entry == 0) {
             ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD85C, arg0);
             return 0;
         }
@@ -546,21 +546,18 @@ s32 *fn_8001C4E0(s32 arg0) {
 
 extern const char lbl_802FD894[];
 extern const char lbl_802FD8C4[];
-#pragma push
-#pragma scheduling invalid_target
-#pragma scheduling on
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    char *name = (char *)arg1;
-    char *record;
+    register char *record;
+    register char *name = (char *)arg1;
     char *freeEntry;
     char *p;
     char *out;
     s32 i;
     s32 room;
-    char c;
+    s8 c;
     s32 *descriptor;
-
     if (arg0 < 0) {
         record = (char *)(lbl_8055D5CC + 0x36B10);
     } else {
@@ -571,15 +568,12 @@ void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     do {
         if (*(u8 *)(record + 0x70) == 0) {
             freeEntry = record;
-        } else if (*(s32 *)(record + 4) == arg2 &&
-                   *(s32 *)record != 0 &&
-                   stricmp(name, *(const char **)record) == 0) {
+        } else if (*(s32 *)(record + 4) == arg2 && *(s32 *)record != 0 && stricmp(name, *(const char **)record) == 0) {
             return record;
         }
         i++;
         record += 0x74;
     } while (i < 0xF0);
-
     if (arg3 == 0) {
         return 0;
     }
@@ -588,7 +582,6 @@ void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, name);
     }
     memset(freeEntry, 0, 0x74);
-
     descriptor = lbl_8055D5D0;
     *((u8 *)descriptor + 8) = 0;
     p = *(char **)descriptor;
@@ -596,19 +589,19 @@ void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         if (stricmp(p, name) == 0) {
             break;
         }
-        while (*p != 0) {
+        while (*(s8 *)p != 0) {
             p++;
         }
         p++;
-        if (*p == 0) {
+        if (*(s8 *)p == 0) {
             room = descriptor[1] - (p - *(char **)descriptor) - 1;
             if (room <= 0) {
                 p[-1] = 0;
             } else {
                 out = p;
                 do {
-                    c = *name++;
-                    *out++ = c;
+                    c = *(s8 *)name++;
+                    *(s8 *)out++ = c;
                 } while (c != 0);
             }
             break;
@@ -619,7 +612,6 @@ void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(u8 *)(freeEntry + 0x70) = 1;
     return freeEntry;
 }
-#pragma pop
 
 #pragma scheduling reset
 void fn_8001C714(void) {
@@ -852,23 +844,20 @@ s32 fn_8001CE74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma processor 750
 s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     void *ptr = (void *)fn_8001285C(arg1);
-    u32 count = *(u32 *)((u8 *)arg0 + 0x6C);
-    s32 result = 0;
-    if ((s32)count > 0 && *(s32 *)((u8 *)arg0 + 8) != 0 && *(s32 *)((u8 *)arg0 + 0xC) >= arg2) {
-        do {
-            if (*(s32 *)((u8 *)arg0 + 0xC) == arg2) {
-                if (*(u32 *)((u8 *)ptr + 8) == 0x00180302) {
-                    if (*(f32 *)((u8 *)arg0 + 0x14) > arg3)
-                        break;
-                } else if (*(f32 *)((u8 *)arg0 + 0x14) < arg3) {
-                    break;
-                }
-            }
-            arg0 = (u8 *)arg0 + 0x14;
-            result++;
-        } while (--count != 0);
+    s32 count = *(s32 *)((u8 *)arg0 + 0x6C);
+    s32 i;
+    for (i = 0; i < count; arg0 = (u8 *)arg0 + 0x14, i++) {
+        s32 key;
+        if (*(s32 *)((u8 *)arg0 + 8) == 0) break;
+        key = *(s32 *)((u8 *)arg0 + 0xC);
+        if (key < arg2) break;
+        if (arg2 == key) {
+            if (*(u32 *)((u8 *)ptr + 8) == 0x00180302) {
+                if (*(f32 *)((u8 *)arg0 + 0x14) > arg3) break;
+            } else if (*(f32 *)((u8 *)arg0 + 0x14) < arg3) break;
+        }
     }
-    return result;
+    return i;
 }
 #pragma pop
 int fn_8001CF8C(arg0, arg1, arg2, arg3, arg4)
