@@ -291,6 +291,10 @@ extern "C" int Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6deta
 }
 #pragma pop
 extern "C" int fn_80100654(void* arg0) {
+    /* Start the WSD player if prepared (+0x1E): insert its list node (+0x14) at
+     * the front of the WSD player list (lbl_8041D4C4), snapshot the
+     * EmissionManager tick (+0x6C32) to +0x1C, and mark the player started
+     * (+0x1F). Returns 1 on success, 0 if not prepared. */
     if (*((unsigned char*)arg0 + 0x1E) == 0)
         return 0;
 
