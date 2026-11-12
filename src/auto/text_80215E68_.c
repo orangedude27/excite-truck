@@ -134,15 +134,15 @@ u8 fn_80215FEC(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
 
 u8 fn_80215FF4(u8 *arg0) { return *arg0; }
 
+#pragma push
+#pragma scheduling on
 #pragma peephole off
-#pragma scheduling invalid_target
 s32 fn_80215FFC(void *arg0) {
     s32 result = 0;
     if (*(u8 *)arg0 != 0 && *(s32 *)((u8 *)arg0 + 4) == fn_802E4A10()) result = 1;
     return result;
 }
-#pragma scheduling on
-#pragma peephole on
+#pragma pop
 u32 fn_80216054(void) { return 1; }
 
 void fn_8021605C(void *arg0, s32 arg1) {
@@ -172,47 +172,27 @@ extern f32 lbl_80563478;
 #pragma scheduling invalid_target
 #pragma fp_contract on
 s32 fn_802160AC(void) {
-    struct Scratch {
-        u8 buffer[0x30];
-        union {
-            f64 value;
-            struct {
-                u32 high;
-                u32 low;
-            } words;
-        } x;
-        union {
-            f64 value;
-            struct {
-                u32 high;
-                u32 low;
-            } words;
-        } y;
-    } scratch;
-    s32 temp_r31;
-    f32 a;
-    f32 b;
+    u8 b2[0x30];
+    s32 s31;
+    f32 v1;
+    f32 v2;
     if (lbl_8055EF88 != 0)
-        temp_r31 = fn_8021832C();
+        s31 = fn_8021832C();
     else
-        temp_r31 = 0;
-    if (temp_r31 == 0 && lbl_8055EF7C == 0)
+        s31 = 0;
+    if (s31 == 0 && lbl_8055EF7C == 0)
         goto done;
     fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
-    fn_80230B5C(scratch.buffer);
-    fn_802C8638(scratch.buffer);
-    scratch.x.words.low = (u32)lbl_8055EF80 ^ 0x80000000;
-    scratch.x.words.high = 0x43300000;
-    a = scratch.x.value - lbl_80563460;
-    a -= lbl_80563474;
-    scratch.y.words.low = (u32)lbl_8055EF84 ^ 0x80000000;
-    scratch.y.words.high = 0x43300000;
-    b = scratch.y.value - lbl_80563460;
-    b = lbl_80563478 - b;
-    if (temp_r31 != 0)
-        fn_802C5310(temp_r31, 0, a, b, lbl_80563458);
+    fn_80230B5C(b2);
+    fn_802C8638(b2);
+    v1 = (f32)lbl_8055EF80;
+    v1 -= lbl_80563474;
+    v2 = (f32)lbl_8055EF84;
+    v2 = lbl_80563478 - v2;
+    if (s31 != 0)
+        fn_802C5310(s31, 0, v1, v2, lbl_80563458);
     else
-        fn_802C5310(lbl_8055EF7C, 0, a, b, lbl_80563458);
+        fn_802C5310(lbl_8055EF7C, 0, v1, v2, lbl_80563458);
 done:
     ;
 }
@@ -378,6 +358,8 @@ extern void *fn_80216D40(void *, s32, s32, s32, s32, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+/* Allocate and initialize a 0xDE8-byte widget/window object, register it in
+ * the 16-entry window table (lbl_804908C8), or report if the table is full. */
 void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     const char *name = (const char *)lbl_8033D7A4;
     void *result = fn_801284F8(0xDE8, name);
