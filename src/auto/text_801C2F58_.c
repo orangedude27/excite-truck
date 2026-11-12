@@ -2603,45 +2603,46 @@ void fn_801C9830(void) {
 }
 
 extern void fn_801C855C(void);
+/* Initializes/reloads state, finds the first 0xFF terminator in the byte table to set the active count, and clears the selection index. */
 void fn_801C9834(void) {
-    u8 *var_r3;
-    s32 temp_r4;
-    s32 temp_r4_2;
-    s32 temp_r4_3;
-    s32 temp_r4_4;
-    s32 var_ctr;
-    s32 var_r4;
+    u8 *tablePtr;
+    s32 tempIndex1;
+    s32 tempIndex2;
+    s32 tempIndex3;
+    s32 tempIndex4;
+    s32 scanCount;
+    s32 index;
 
     fn_801C855C();
-    var_r3 = (u8 *)lbl_80337474;
-    var_r4 = 0;
-    for (var_ctr = 0; var_ctr < 11; var_ctr++) {
-        if (var_r3[0] == 0xFF) {
-            lbl_8055E824 = var_r4;
+    tablePtr = (u8 *)lbl_80337474;
+    index = 0;
+    for (scanCount = 0; scanCount < 11; scanCount++) {
+        if (tablePtr[0] == 0xFF) {
+            lbl_8055E824 = index;
             break;
         } else {
-            temp_r4 = var_r4 + 1;
-            if (var_r3[1] == 0xFF) {
-                lbl_8055E824 = temp_r4;
+            tempIndex1 = index + 1;
+            if (tablePtr[1] == 0xFF) {
+                lbl_8055E824 = tempIndex1;
                 break;
             } else {
-                temp_r4_2 = temp_r4 + 1;
-                if (var_r3[2] == 0xFF) {
-                    lbl_8055E824 = temp_r4_2;
+                tempIndex2 = tempIndex1 + 1;
+                if (tablePtr[2] == 0xFF) {
+                    lbl_8055E824 = tempIndex2;
                     break;
                 } else {
-                    temp_r4_3 = temp_r4_2 + 1;
-                    if (var_r3[3] == 0xFF) {
-                        lbl_8055E824 = temp_r4_3;
+                    tempIndex3 = tempIndex2 + 1;
+                    if (tablePtr[3] == 0xFF) {
+                        lbl_8055E824 = tempIndex3;
                         break;
                     } else {
-                        temp_r4_4 = temp_r4_3 + 1;
-                        if (var_r3[4] == 0xFF) {
-                            lbl_8055E824 = temp_r4_4;
+                        tempIndex4 = tempIndex3 + 1;
+                        if (tablePtr[4] == 0xFF) {
+                            lbl_8055E824 = tempIndex4;
                             break;
                         } else {
-                            var_r3 += 5;
-                            var_r4 = temp_r4_4 + 1;
+                            tablePtr += 5;
+                            index = tempIndex4 + 1;
                         }
                     }
                 }
