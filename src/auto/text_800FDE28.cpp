@@ -878,6 +878,61 @@ no:
 
 extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *, s32, const void *);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *, s32, const void *, u32);
+
+namespace nw4hbm {
+namespace snd {
+/* One block of wave samples queued on a WavePlayer.  The per-channel sample
+ * pointers follow one another in the packet, so the code that feeds the voice
+ * reads them four bytes at a time. */
+struct WavePacket {
+    u32 unk0;                    /* 0x00 */
+    u32 unk4;                    /* 0x04 */
+    const void *channelData[2];  /* 0x08 sample data, one pointer per channel */
+    u32 sampleBytes;             /* 0x10 bytes of sample data in the packet */
+    u8 valid;                    /* 0x14 cleared once the packet leaves the queue */
+    u8 pad15[3];                 /* 0x15 */
+    void *listLink[2];           /* 0x18 ut::detail::LinkListNode in WavePlayer::packets */
+};
+
+/* Why a WavePlayer hands a packet to its callback. */
+enum WavePlayerCallbackStage {
+    WAVE_CALLBACK_PACKET_PLAYED = 0,  /* the voice has played it to its end */
+    WAVE_CALLBACK_PACKET_DROPPED = 1  /* Stop gave up a packet still queued */
+};
+
+/* nw4hbm::snd::WavePlayer: plays the wave packets queued for it through one
+ * nw4hbm::snd::detail::AxVoice, one of its channels per packet channel.  Only
+ * the fields the sound code here touches are named. */
+class WavePlayer {
+public:
+    struct PacketList {  /* ut::detail::LinkListImpl of WavePacket */
+        u32 count;       /* 0x04 packets waiting */
+        void *head;      /* 0x08 first packet's list node */
+        void *tail;      /* 0x0C */
+    };
+
+    void *vtable;        /* 0x00 */
+    PacketList packets;  /* 0x04 wave packets waiting to be played */
+    u32 voiceCount;      /* 0x10 channels to feed */
+    u32 unk14;           /* 0x14 */
+    void *voice;         /* 0x18 detail::AxVoice playing the packets */
+    u8 inPlayerList;     /* 0x1C queued in the detail::WavePlayer list */
+    u8 playing;          /* 0x1D the voice has been set up on these packets */
+    u8 loopSet;          /* 0x1E loop points set for the queued packets */
+    u8 paused;           /* 0x1F pause state to hand the voice */
+    s32 format;          /* 0x20 1: 4-bit ADPCM, 2: 8-bit PCM */
+    u32 sampleRate;      /* 0x24 */
+    s64 samplesPlayed;   /* 0x28 samples handed to the voice so far */
+    u8 pad30[0x5C];      /* 0x30 */
+    void (*callback)(s32 stage, WavePlayer *player, WavePacket *packet,
+                     u32 arg);  /* 0x8C told about every packet */
+    u32 callbackArg;     /* 0x90 handed to that callback */
+    void *playerLink[2]; /* 0x94 ut::detail::LinkListNode in the player list */
+
+    void UpdateWavePacket();
+};
+}  // namespace snd
+}  // namespace nw4hbm
 extern "C" void UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(void *self) {
     struct PacketNode {
         u32 unk0, unk4;
