@@ -1870,7 +1870,8 @@ extern "C" char lbl_8032CA48[];
 extern "C" char lbl_8032CA58[];
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
+/* When one axis delta is in range and the other is out of range, looks up "missed_start"/"missed_end" items and reports squared magnitude. */
+extern "C" void fn_80140614(void *obj, void *unused, void *boundsPtr) {
     class Item {
     public:
         virtual void d0();
@@ -1883,7 +1884,7 @@ extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
         volatile f32 low1;
         volatile f32 high1;
     };
-    Bounds *bounds = (Bounds *)arg2;
+    Bounds *bounds = (Bounds *)boundsPtr;
     f32 d1 = fn_8001DAE8((void *)&bounds->low1) - bounds->high1;
     s32 flag = 0;
     if (d1 >= lbl_805614A4) {
@@ -1898,8 +1899,8 @@ extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
                 flag = 1;
         }
         if (flag != 0) {
-            void *r1 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(lbl_8032CA48);
-            void *r2 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(lbl_8032CA58);
+            void *r1 = ((Item *)*(void **)((char *)obj + 0x54))->lookup(lbl_8032CA48);
+            void *r2 = ((Item *)*(void **)((char *)obj + 0x54))->lookup(lbl_8032CA58);
             f32 d = fn_8001DAF0((f32 *)&bounds->low0);
             fn_80147ABC(r1, r2, (const char *)*(s32 *)((char *)r1 + 0x1C), (f64)(d * d));
         }
