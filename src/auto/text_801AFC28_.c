@@ -243,7 +243,11 @@ extern void fn_8017A580(void *, f32);
 extern f32 lbl_80562598;
 extern f32 lbl_80562588;
 #pragma cplusplus on
-extern "C" void fn_801B022C(void *arg0) {
+extern "C" void fn_801B022C(void *self) {
+    /* Resets this audio/mix object: clears position/flags, sets +0x60..0x68 to
+       (0, -500, 0), copies +0x28 into +0x24, invokes virtual callback slot f8 on
+       the selected child (+0x14 when +0x28 > 0) setting its +0x24 to 1.0f, then
+       clears lbl_8055E654 and +0x24. */
     class Callback {
     public:
         virtual void f0();
@@ -256,37 +260,37 @@ extern "C" void fn_801B022C(void *arg0) {
         virtual void f7();
         virtual void f8();
     };
-    s32 temp_r0;
-    void *var_r31;
-    f32 temp_f0;
-    f32 temp_f1;
-    volatile f32 stack_temp[3];
+    s32 selectedId;
+    void *callback;
+    f32 neg500;
+    f32 zero;
+    volatile f32 stackPos[3];
 
     fn_8017B164();
-    temp_f1 = lbl_80562578;
-    temp_f0 = lbl_80562598;
-    *(volatile f32 *)((u8 *)arg0 + 0x1EC) = temp_f1;
-    *(volatile u8 *)((u8 *)arg0 + 0x1F8) = 0;
-    stack_temp[0] = temp_f1;
-    stack_temp[1] = temp_f0;
-    stack_temp[2] = temp_f1;
-    *(volatile f32 *)((u8 *)arg0 + 0x60) = temp_f1;
-    *(volatile f32 *)((u8 *)arg0 + 0x64) = temp_f0;
-    *(volatile f32 *)((u8 *)arg0 + 0x68) = temp_f1;
-    ((void (*)(void *))fn_8017A580)(arg0);
-    temp_r0 = *(s32 *)((u8 *)arg0 + 0x28);
-    *(s32 *)((u8 *)arg0 + 0x24) = temp_r0;
-    if (temp_r0 > 0) {
-        var_r31 = *(void **)((u8 *)arg0 + 0x14);
+    zero = lbl_80562578;    /* 0.0f */
+    neg500 = lbl_80562598;  /* -500.0f */
+    *(volatile f32 *)((u8 *)self + 0x1EC) = zero;
+    *(volatile u8 *)((u8 *)self + 0x1F8) = 0;
+    stackPos[0] = zero;
+    stackPos[1] = neg500;
+    stackPos[2] = zero;
+    *(volatile f32 *)((u8 *)self + 0x60) = zero;
+    *(volatile f32 *)((u8 *)self + 0x64) = neg500;
+    *(volatile f32 *)((u8 *)self + 0x68) = zero;
+    ((void (*)(void *))fn_8017A580)(self);
+    selectedId = *(s32 *)((u8 *)self + 0x28);
+    *(s32 *)((u8 *)self + 0x24) = selectedId;
+    if (selectedId > 0) {
+        callback = *(void **)((u8 *)self + 0x14);
     } else {
-        var_r31 = NULL;
+        callback = NULL;
     }
-    if (var_r31 != NULL) {
-        ((Callback *)var_r31)->f8();
-        *(f32 *)((u8 *)var_r31 + 0x24) = lbl_80562588;
+    if (callback != NULL) {
+        ((Callback *)callback)->f8();
+        *(f32 *)((u8 *)callback + 0x24) = lbl_80562588; /* 1.0f */
     }
     lbl_8055E654 = 0;
-    *(s32 *)((u8 *)arg0 + 0x24) = 0;
+    *(s32 *)((u8 *)self + 0x24) = 0;
 }
 #pragma cplusplus reset
 extern f32 PSVECMag(void *);
