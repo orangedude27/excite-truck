@@ -2659,31 +2659,15 @@ extern "C" void fn_8021CBBC(void *arg0) {
 extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
     class CacheSource {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual f32 Get();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual f32 Get();
     };
     class BoundsSource {
     public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
-        virtual s32 GetWidth();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual s32 GetWidth();
     };
     class CacheTarget {
     public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void Set(f32);
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void Set(f32);
     };
     u8 *self = (u8 *)arg0;
     if (self[0x244] == 0) {
@@ -2692,10 +2676,7 @@ extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
         *(f32 *)(self + 0x258) = source->Get();
     }
     s32 left = *(s32 *)(self + 4);
-    if (arg1 < left - 0x20 ||
-        arg2 < *(s32 *)(self + 8) - 0x20 ||
-        arg1 > left + ((BoundsSource *)arg0)->GetWidth() + 0x20 ||
-        arg2 > *(s32 *)(self + 0x10) + 0x20) {
+    if (arg1 < left - 0x20 || arg2 < *(s32 *)(self + 8) - 0x20 || arg1 > left + ((BoundsSource *)arg0)->GetWidth() + 0x20 || arg2 > *(s32 *)(self + 0x10) + 0x20) {
         CacheTarget *target = *(CacheTarget **)(self + 0x248);
         target->Set(*(f32 *)(self + 0x258));
         return;
@@ -2707,8 +2688,8 @@ extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
     s32 numer = arg1 - left - size / 2;
     f32 fden = (f32)denom;
     f32 fnum = (f32)numer;
-    f32 amount = fnum / fden;
-    f32 value = lbl_805634A4;
+    register f32 amount = fnum / fden;
+    register f32 value = lbl_805634A4;
     value = (value < amount) ? amount : value;
     value = (value > lbl_805634A8) ? lbl_805634A8 : value;
     CacheTarget *target = *(CacheTarget **)(self + 0x248);
@@ -3484,52 +3465,68 @@ extern "C" void fn_8021E7D4(void *);
 #pragma optimization_level 4
 // Match jump table dispatch structure from target
 extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
-    s32 *state = *(s32 **)((u8 *)arg0 + 0x25C);
-    s32 value;
-    
     switch (arg1) {
-    case 0x121:
-        value = *state;
-        if (value > 0) *state = value - 1;
+    case 0x121: {
+        s32 v = *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C);
+        if (v > 0)
+            *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = v - 1;
         fn_8021E7D4(arg0);
         return 1;
+    }
     case 0x122: {
-        s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
-        value = *state + 1;
-        if (value < limit[2]) *state = value;
+        s32 v = *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) + 1;
+        if (v < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8))
+            *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = v;
         fn_8021E7D4(arg0);
         return 1;
     }
     case 0x123: {
-        s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
-        s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
-        value = limit[2] - 1;
-        if (*state < value + range[1]) *state = value;
-        value = range[2] + range[1];
-        range[2] = value;
-        if (value > range[0] - range[1]) range[2] = range[0] - range[1];
-        if (range[2] < 0) range[2] = 0;
+        s32 *limitPtr = *(s32 **)((u8 *)arg0 + 0x244);
+        s32 *rangePtr = *(s32 **)((u8 *)arg0 + 0x248);
+        s32 *statePtr = *(s32 **)((u8 *)arg0 + 0x25C);
+        s32 lim = limitPtr[2] - 1;
+        s32 rg1 = rangePtr[1];
+        s32 st = *statePtr;
+        if (lim < st + rg1) {
+            s32 tmp = lim;
+            *statePtr = tmp;
+        }
+        {
+            s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
+            s32 nv = range[2] + range[1];
+            range[2] = nv;
+            if (nv > range[0] - range[1])
+                range[2] = range[0] - range[1];
+            if (range[2] < 0)
+                range[2] = 0;
+        }
         fn_8021E7D4(arg0);
         return 1;
     }
     case 0x124: {
-        s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
-        value = *state - range[1];
-        *state = abs_val(value);
-        value = range[2] - range[1];
-        range[2] = value;
-        if (value > range[0] - range[1]) range[2] = range[0] - range[1];
-        if (range[2] < 0) range[2] = 0;
+        s32 st = *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C);
+        s32 rg1 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x248) + 4);
+        s32 v = st - rg1;
+        *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = v & ~(v >> 31);
+        {
+            s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
+            s32 nv = range[2] - range[1];
+            range[2] = nv;
+            if (nv > range[0] - range[1])
+                range[2] = range[0] - range[1];
+            if (range[2] < 0)
+                range[2] = 0;
+        }
         fn_8021E7D4(arg0);
         return 1;
     }
     case 0x125:
-        *state = 0;
+        *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = 0;
         fn_8021E7D4(arg0);
         return 1;
     case 0x126: {
-        s32 *limit = *(s32 **)((u8 *)arg0 + 0x244);
-        *state = limit[2] - 1;
+        s32 lim = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8) - 1;
+        *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = lim;
         fn_8021E7D4(arg0);
         return 1;
     }
@@ -4531,6 +4528,8 @@ extern "C" void fn_80220B5C(void *arg0, s32 arg1) {
     fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x24C), *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5, div, flag);
 }
 
+#pragma push
+#pragma processor 750
 extern "C" void fn_80220C54(void *arg0) {
     register void *self = arg0;
     register s32 enabled = 0;
@@ -4555,6 +4554,7 @@ extern "C" void fn_80220C54(void *arg0) {
                 lbl_805634E0 + x, y - lbl_805634E0,
                 lbl_805634A8, (f32)size, following);
 }
+#pragma pop
 
 extern "C" void fn_802C40B8(s32, s32, s32);
 extern "C" void fn_80220E08(void *arg0, s32 arg1) {
@@ -4714,25 +4714,23 @@ extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
 }
 #pragma pop
 extern "C" void fn_802213A4(void *arg0, s32 arg1, s32 arg2) {
-    s32 value;
-    s32 limit;
     void *state;
+    s32 value;
     if (*(u8 *)((u8 *)arg0 + 0x250) == 0) return;
     if (*(s32 *)((u8 *)arg0 + 0x254) == 0) {
         state = *(void **)((u8 *)arg0 + 0x244);
         value = (s32)(((f32)*(s32 *)state / (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8))) * (f32)(arg2 + *(s32 *)((u8 *)arg0 + 0x25C)));
         *(s32 *)((u8 *)state + 8) = value;
-        limit = *(s32 *)state - *(s32 *)((u8 *)state + 4);
-        if (value > limit) *(s32 *)((u8 *)state + 8) = limit;
+        if (value > *(s32 *)state - *(s32 *)((u8 *)state + 4)) *(s32 *)((u8 *)state + 8) = *(s32 *)state - *(s32 *)((u8 *)state + 4);
         if (*(s32 *)((u8 *)state + 8) < 0) *(s32 *)((u8 *)state + 8) = 0;
     } else {
+        s32 den;
+        s32 num = *(s32 *)(*(void **)((u8 *)arg0 + 0x244));
+        den = ((Vf78 *)arg0)->get();
+        value = (s32)(((f32)num / (f32)den) * (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
         state = *(void **)((u8 *)arg0 + 0x244);
-        s32 numerator = *(s32 *)state;
-        s32 denominator = ((Vf78 *)arg0)->get();
-        value = (s32)(((f32)numerator / (f32)denominator) * (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
         *(s32 *)((u8 *)state + 8) = value;
-        limit = *(s32 *)state - *(s32 *)((u8 *)state + 4);
-        if (value > limit) *(s32 *)((u8 *)state + 8) = limit;
+        if (value > *(s32 *)state - *(s32 *)((u8 *)state + 4)) *(s32 *)((u8 *)state + 8) = *(s32 *)state - *(s32 *)((u8 *)state + 4);
         if (*(s32 *)((u8 *)state + 8) < 0) *(s32 *)((u8 *)state + 8) = 0;
     }
 }
