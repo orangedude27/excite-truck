@@ -49,6 +49,30 @@ struct RacerObject {
 };
 #define COMPETITOR_SETS_LAPS 0x50 /* the competitor id that runs laps */
 
+/* One timed cue an action sequence starts (fn_801D8CAC) and steps every frame
+ * (fn_801D8D00): it waits "delay" seconds from startTime, runs for "length"
+ * seconds and then finishes.  The two leading virtual slots are the destructor
+ * pair, so the first declared method sits at 0x8; the last three are the steps
+ * fn_801D8D00 drives from the frame update. */
+#pragma cplusplus on
+struct TimedEffect {
+    virtual void v0();   virtual void v1();   virtual void v2();
+    virtual void v3();   virtual void v4();   virtual void v5();
+    virtual void v6();   virtual void v7();   virtual void v8();
+    virtual void v9();   virtual void v10();  virtual void v11();
+    virtual void v12();
+    virtual void onWaiting();     /* 0x3C: the delay has not run out yet */
+    virtual void onRunning(float);/* 0x40: seconds since the delay ran out */
+    virtual void onFinished();    /* 0x44: the length ran out */
+    int   state;                  /* 0x04: 1 ready, 2 running, 3 finished */
+    float delay;                  /* 0x08, the value file's "delay" */
+    float length;                 /* 0x0C, the value file's "length" */
+    float startTime;              /* 0x10: lbl_8055E3C8 when it was started */
+    float interval;               /* 0x14, the value file's "interval" */
+    int   index;                  /* 0x18: last (elapsed / interval) step */
+};
+#pragma cplusplus reset
+
   extern void fn_801D50B8(int);
 
 extern int fn_8017960C(int);
@@ -360,7 +384,7 @@ extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
         virtual void v5();
         virtual int getInt(char *, int);
         virtual void v7();
-        virtual float value(float, char *);
+        virtual float value(char *, float);
         virtual void v9();
         virtual unsigned char flag(char *, int);
         virtual void v11();
@@ -404,8 +428,7 @@ extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
     char *src;
     int remaining;
     char *dst;
-
-    if (obj->has(&lbl_8055AC80) == 0) {
+    if (obj->has(&lbl_8055AC80) == 0x0) {
         ((void (*)(const char *, ...))fn_802E30C8)(base + 0x44);
         return 0;
     }
@@ -441,7 +464,7 @@ loop_test:
     node = obj->child(i);
     if (node != 0) goto loop_body;
     out->b20 = obj->flag(base + 0xC8, 0);
-    out->f1c = obj->value(lbl_80562B00, base + 0xD4);
+    out->f1c = obj->value(base + 0xD4, lbl_80562B00);
     out->b21 = obj->flag(base + 0xE0, 1);
     out->b22 = obj->flag(base + 0xF0, 1);
     out->i24 = obj->getInt(base + 0xFC, -1);
@@ -2518,12 +2541,10 @@ extern "C" int fn_801D7A0C(void *arg0, void *arg1) {
     *(int *)((char *)arg0 + 0xC) = (int)(lbl_80562B0C * value);
     value = obj->value(&lbl_8055ACB8, zero);
     zero = lbl_80562ADC;
-    index = (int)(lbl_80562B0C * value);
-    *(int *)((char *)arg0 + 0x10) = index;
+    *(int *)((char *)arg0 + 0x10) = (int)(lbl_80562B0C * value);
     obj->value(base + 0xAD8, zero);
     *(float *)((char *)arg0 + 0x14) = ((ManagerAlt *)arg1)->value(&lbl_8055AD10);
-    value = lbl_80562AE0;
-    obj->value(base + 0xAE4, value);
+    obj->value(base + 0xAE4, lbl_80562AE0);
     *(float *)((char *)arg0 + 0x18) = ((ManagerAlt *)arg1)->value(&lbl_8055AD18);
     *(int *)((char *)arg0 + 0x28) = 1;
     ((Output *)arg0)->finish();
