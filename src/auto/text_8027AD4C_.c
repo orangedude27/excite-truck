@@ -1333,35 +1333,36 @@ long fn_8027CBF0(void) { return 1; }
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_8027CBF8(long arg0, char *arg1, long arg2) {
+void fn_8027CBF8(long unused, char *dst, long maxLen) {
     char *src;
-    char c;
+    char ch;
+    /* Copies a bounded string into dst, choosing source by fn_8027CB28() (lbl_80347B78 or lbl_80347C14). */
     if (fn_8027CB28()) {
         src = fn_80131234(lbl_80347B78);
         goto copy_a;
     check_a:
-        if (--arg2 > 0)
+        if (--maxLen > 0)
             goto copy_a;
-        arg1[-1] = 0;
+        dst[-1] = 0;
         goto done;
     copy_a:
-        c = *src++;
-        *arg1++ = c;
-        if ((signed char)c == 0)
+        ch = *src++;
+        *dst++ = ch;
+        if ((signed char)ch == 0)
             goto done;
         goto check_a;
     } else {
         src = fn_80131234(lbl_80347C14);
         goto copy_b;
     check_b:
-        if (--arg2 > 0)
+        if (--maxLen > 0)
             goto copy_b;
-        arg1[-1] = 0;
+        dst[-1] = 0;
         goto done;
     copy_b:
-        c = *src++;
-        *arg1++ = c;
-        if ((signed char)c == 0)
+        ch = *src++;
+        *dst++ = ch;
+        if ((signed char)ch == 0)
             goto done;
         goto check_b;
     }
