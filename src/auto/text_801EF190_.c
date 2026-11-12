@@ -24,6 +24,7 @@ extern float lbl_80562EEC;
 typedef struct { float x, y, z; } Vec801EF;
 typedef struct { Vec801EF x, y, z, pos; } Matrix801EF;
 #pragma scheduling invalid_target
+#pragma dont_inline on
 float fn_801EF190(int arg0) {
     float a, c, e, b, d, f;
     if (arg0 == -1) {
