@@ -630,7 +630,28 @@ loop_body:
 extern int fn_80020184(void);
 extern int fn_801E8838(void);
 extern int fn_8020DE1C(void);
-extern char lbl_8035BAFC[], lbl_8035BB08[], lbl_802FE374[], lbl_802FE398[];
+/* One of the module's lazily-created UI text objects.  fn_801312EC starts one
+   from a "Page:Element" path, fn_80131318 resolves that path against the font
+   set currently loaded (lbl_8055E044) and records its id, so the object is
+   resolved again whenever the game switches font.  lbl_8035BAE4, the
+   "Tips:LOADING" text drawn by fn_8001FF34, has the same layout. */
+struct TipsTextObj {
+    void *path;               /* +0 the "Page:Element" string it was built from */
+    int text;                 /* +4 resolved text object, drawn by fn_80232BA4 */
+    unsigned int resolvedFor; /* +8 id of the font set +4 was resolved for */
+};
+extern struct TipsTextObj lbl_8035BAFC; /* the "ResultsOverlay:PRESS_TO_CONTINUE" prompt */
+extern struct TipsTextObj lbl_8035BB08; /* the "ResultsOverlay:PRESS_FOR_OPTIONS" prompt */
+extern char lbl_802FE374[], lbl_802FE398[]; /* those two prompts' "Page:Element" paths */
+
+/* Where the two prompts sit under the tips box, in UI screen coordinates. */
+#define PROMPT_LAYOUT      20          /* fn_80232BA4 layout flags the prompts share */
+#define PROMPT_LEFT_X      lbl_80560500 /* -107.0f: "PRESS_FOR_OPTIONS" */
+#define PROMPT_RIGHT_X     lbl_8056055C /* +107.0f: "PRESS_TO_CONTINUE" */
+#define PROMPT_Y           lbl_80560558 /* -190.0f, shared by both */
+#define PROMPT_SCALE       lbl_805604B0 /* 0.7333333 */
+#define ALPHA_OPAQUE       255          /* full alpha of the box / of the fade */
+#define ALPHA_TO_UNIT      lbl_80560554 /* 255.0f: turns an 0..255 alpha into 0..1 */
 extern unsigned char lbl_8055D672, lbl_8055D673;
 extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 #pragma dont_inline on
