@@ -1297,32 +1297,33 @@ void **fn_801AC3AC(void **arg0, int arg1) {
 
 extern void fn_802E30C8(const char *, ...);
 #pragma scheduling invalid_target
-void fn_801AC454(void *arg0, void *arg1) {
+void fn_801AC454(void *self, void *config) {
     extern float lbl_805624EC;
     extern char lbl_80335728[];
-    int count;
-    int hasEntries;
+    int poleCount;
+    int hasPreviousPole;
     float defaultValue;
-    float configValue;
-    void *candidate;
+    float configuredRadius;
+    void *candidatePole;
 
-    *(void **)((char *)arg0 + 0x23C) = 0;
-    *(void **)((char *)arg0 + 0x240) = 0;
-    fn_801A9AB0(arg0, arg1);
-    count = *(int *)((char *)arg0 + 0x250);
-    configValue = *(float *)((char *)arg1 + 0x5C);
+    /* Initialize fence pole state, copy base fields from config, and bind to the previous pole if it is within range. */
+    *(void **)((char *)self + 0x23C) = 0;
+    *(void **)((char *)self + 0x240) = 0;
+    fn_801A9AB0(self, config);
+    poleCount = *(int *)((char *)self + 0x250);
+    configuredRadius = *(float *)((char *)config + 0x5C);
     defaultValue = lbl_8056247C;
-    hasEntries = count > 0;
-    *(float *)((char *)arg0 + 0x248) = configValue;
-    *(float *)((char *)arg0 + 0x244) = defaultValue;
-    *(float *)((char *)arg0 + 0x24C) = defaultValue;
-    *(void **)((char *)arg0 + 0x23C) = 0;
-    if (hasEntries) {
-        candidate = lbl_80435628[count - 1];
-        if (PSVECSquareDistance((const Vec *)((char *)candidate + 0x60),
-                                (const Vec *)((char *)arg0 + 0x60)) < lbl_805624EC) {
-            *(void **)((char *)arg0 + 0x23C) = candidate;
-            fn_802E30C8(lbl_80335728, candidate);
+    hasPreviousPole = poleCount > 0;
+    *(float *)((char *)self + 0x248) = configuredRadius;
+    *(float *)((char *)self + 0x244) = defaultValue;
+    *(float *)((char *)self + 0x24C) = defaultValue;
+    *(void **)((char *)self + 0x23C) = 0;
+    if (hasPreviousPole) {
+        candidatePole = lbl_80435628[poleCount - 1];
+        if (PSVECSquareDistance((const Vec *)((char *)candidatePole + 0x60),
+                                (const Vec *)((char *)self + 0x60)) < lbl_805624EC) {
+            *(void **)((char *)self + 0x23C) = candidatePole;
+            fn_802E30C8(lbl_80335728, candidatePole);
         }
     }
 }
