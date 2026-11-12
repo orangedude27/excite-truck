@@ -465,26 +465,26 @@ extern int fn_800241CC(int);
 extern void fn_8022B390(const char *, const char *, int, int *, int *);
 #pragma push
 #pragma use_lmw_stmw off
-int fn_8022B2D4(int arg0, const char *arg1, int arg2, int arg3) {
-    int bestIndex = 0, best = -1, i = 0;
+/* Returns the character index in `text` whose measured cursor position is closest to (`targetX`, `targetY`) in Manhattan distance. */
+int fn_8022B2D4(int textContext, const char *text, int targetX, int targetY) {
+    int bestIndex = 0, bestDistance = -1, charIndex = 0;
     goto check;
 body: {
-        int x, y;
-        int cost;
-        fn_8022B390((const char *)arg0, arg1, i, &x, &y);
-        cost = fn_800241CC(x - arg2) + fn_800241CC(y - arg3);
-        if (best < 0 || cost < best) {
-            bestIndex = i;
-            best = cost;
+        int cursorX, cursorY;
+        int distance;
+        fn_8022B390((const char *)textContext, text, charIndex, &cursorX, &cursorY);
+        distance = fn_800241CC(cursorX - targetX) + fn_800241CC(cursorY - targetY);
+        if (bestDistance < 0 || distance < bestDistance) {
+            bestIndex = charIndex;
+            bestDistance = distance;
         }
-        i = i + 1;
+        charIndex = charIndex + 1;
     }
 check:
-    if (i == 0) goto body;
-    if ((signed char)arg1[i - 1] != 0) goto body;
+    if (charIndex == 0) goto body;
+    if ((signed char)text[charIndex - 1] != 0) goto body;
     return bestIndex;
 }
-
 extern int fn_801E4A6C(int *, const char *);
 extern int fn_801E4BA8(int *);
 /* Advances a cursor position over up to maxChars of text in the current UI font context, measuring glyph advance/newline height via the vector or bitmap font. */
