@@ -1441,7 +1441,6 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
     }
     return result;
 }
-#pragma use_lmw_stmw off
 
 extern char lbl_8034BB28[];
 void *fn_802CC2C8(void *arg0, int arg1) {
