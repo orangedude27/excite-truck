@@ -2125,12 +2125,12 @@ struct TextReadoutWidget {
 #pragma small_data off
 extern "C" __declspec(align(32)) char lbl_8033EF68[];
 #pragma scheduling invalid_target
+/* Builds a floating-point text readout: after the base widget's box it installs this
+   class' vtable and the readout itself - the f32 to watch, the sprintf format to
+   print it with and the scale/offset that turn it into the shown number - starts
+   watching the value through fn_80219440 and prints it once. */
 extern "C" void *fn_8021BD98(void *object, s32 x, s32 y, void *value, const char *format,
                              s32 style, f32 scale, f32 offset) {
-    /* Builds a floating-point text readout: after the base widget's box it installs
-       this class' vtable and the readout itself - the f32 to watch, the sprintf
-       format to print it with and the scale/offset that turn it into the shown
-       number - starts watching the value through fn_80219440 and prints it once. */
     TextReadoutWidget *widget = (TextReadoutWidget *)object;
 
     ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(object, x, y, 0, style, 0, 0);
