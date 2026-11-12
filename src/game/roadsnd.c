@@ -112,14 +112,15 @@ struct CC78_Item { virtual void s0(int); };
 static inline void CC78_call(void *p, int v) { ((CC78_Item *)p)->s0(v); }
 #pragma cplusplus reset
 #pragma scheduling invalid_target
-void *fn_8020CC78(void *arg0, int arg1) {
+/* Destroys a road-sound container: installs its vtable, calls slot 0(v=1) on each active 0x24-byte entry's object, and optionally frees the container. */
+void *fn_8020CC78(void *obj, int freeFlag) {
     void *cur;
     int i;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033C650;
-        cur = arg0;
+    if (obj != 0) {
+        *(void **)obj = lbl_8033C650;
+        cur = obj;
         i = 0;
-        while (i < *(int *)((char *)arg0 + 8)) {
+        while (i < *(int *)((char *)obj + 8)) {
             void *item = *(void **)((char *)cur + 0xC);
             if (item == 0) {
                 goto next;
@@ -132,11 +133,11 @@ void *fn_8020CC78(void *arg0, int arg1) {
             cur = (char *)cur + 0x24;
             i++;
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (freeFlag > 0) {
+            fn_80128668(obj);
         }
     }
-    return arg0;
+    return obj;
 }
 
 void fn_8020CD28(char *arg0) {
