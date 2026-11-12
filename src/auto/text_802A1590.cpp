@@ -2,6 +2,18 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 extern "C" void fn_802A41D8(void *arg0, s32 arg1);
+static inline void MtxMultVecLocal(const unsigned char *m, const f32 *src, f32 *dst) {
+    f32 x = src[0], y = src[1], z = src[2];
+    if (src == dst) {
+        dst[0] = z * *(f32 *)(m + 0x18) + (x * *(f32 *)m + y * *(f32 *)(m + 0xC));
+        dst[1] = z * *(f32 *)(m + 0x1C) + (x * *(f32 *)(m + 4) + y * *(f32 *)(m + 0x10));
+        dst[2] = z * *(f32 *)(m + 0x20) + (x * *(f32 *)(m + 8) + y * *(f32 *)(m + 0x14));
+    } else {
+        dst[0] = z * *(f32 *)(m + 0x18) + (x * *(f32 *)m + y * *(f32 *)(m + 0xC));
+        dst[1] = z * *(f32 *)(m + 0x1C) + (dst[0] * *(f32 *)(m + 4) + y * *(f32 *)(m + 0x10));
+        dst[2] = z * *(f32 *)(m + 0x20) + (dst[0] * *(f32 *)(m + 8) + dst[1] * *(f32 *)(m + 0x14));
+    }
+}
 extern "C" f32 fn_802C9A4C(f32);
 extern "C" void fn_802C8BD0(void*);
 extern "C" void fn_802C8D74(void);
@@ -542,13 +554,13 @@ extern "C" f32 lbl_80564730, lbl_80564748, lbl_8056474C, lbl_80564750;
 #pragma scheduling off
 extern "C" void fn_802A1F88(void *arg0) {
     register f32 step;
-    f32 bound;
+    register f32 bound;
     register f32 max;
     register f32 scale;
     register void *p;
     register char *wheel;
-    register s32 i;
     f32 rawStep;
+    register s32 i;
     f32 stepScale;
 
     rawStep = fn_801E7E24();
@@ -577,30 +589,30 @@ loop_body:
                 if (*(u8 *)(wheel + 0x30) != 0) goto wheel_next;
                 --active;
 wheel_next:
-                ++j;
+                j++;
                 wheel += 0x3C;
-            } while (j < 4);
+            } while (4 > j);
             if (active == 0) goto skip;
         }
         {
             f32 b = *(f32 *)((char *)obj + 0x14C);
             f32 a = *(f32 *)((char *)obj + 0x110);
-            b = (b > a) ? a : b;
+            b = (a < b) ? a : b;
             f32 speed = *(f32 *)((char *)obj + 0x50);
             f32 amount = scale * b;
             speed = speed * step;
-            speed = (speed > amount) ? amount : speed;
+            speed = (amount < speed) ? amount : speed;
             if (max < speed) speed = max;
             if (*(f32 *)((char *)p + 0x14) > bound - lbl_80558DC4)
                 *(f32 *)((char *)p + 0x14) -= bound;
             *(f32 *)((char *)p + 0x14) += speed;
             if (*(f32 *)((char *)p + 0x18) > bound - lbl_80558DC4)
                 *(f32 *)((char *)p + 0x18) -= bound;
-            *(f32 *)((char *)p + 0x18) += speed;
+            *(f32 *)((char *)p + (unsigned)0x18) += speed;
         }
 skip:
         p = (char *)p + 0x10;
-        ++i;
+        i++;
 loop_test:
         if (i < ((s32 (*)(void))fn_80287B14)()) goto loop_body;
     }
