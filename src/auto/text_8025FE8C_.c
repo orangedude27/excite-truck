@@ -526,27 +526,28 @@ extern "C" s32 fn_80260E30(void) {
 }
 #pragma push
 #pragma cplusplus on
+/* If active, lock, invoke two virtual getters on the current manager object, pass results to handler, then unlock/clear state. */
 extern "C" s32 fn_802610C8(void) {
-    struct Obj {
+    struct Manager {
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4(); virtual void v5();
-        virtual s32 m8(u8 *);
-        virtual s32 m9();
+        virtual s32 getParam(u8 *self);
+        virtual s32 getValue();
     };
-    s32 result = 0;
-    u32 *base;
-    Obj *object;
-    s32 second;
+    s32 value = 0;
+    u32 *managerBase;
+    Manager *manager;
+    s32 param;
     if (lbl_8055F3EB != 0) {
         lbl_8055F3EA = 1;
         fn_80214A9C(30);
-        base = (u32 *)lbl_8055F420;
-        object = *(Obj **)(base + base[0] + 0x18);
-        result = object->m9();
-        base = (u32 *)lbl_8055F420;
-        object = *(Obj **)(base + base[0] + 0x18);
-        second = object->m8((u8 *)base);
-        ((s32 (*)(s32, s32))fn_8025C204)(second, result);
+        managerBase = (u32 *)lbl_8055F420;
+        manager = *(Manager **)(managerBase + managerBase[0] + 0x18);
+        value = manager->getValue();
+        managerBase = (u32 *)lbl_8055F420;
+        manager = *(Manager **)(managerBase + managerBase[0] + 0x18);
+        param = manager->getParam((u8 *)managerBase);
+        ((s32 (*)(s32, s32))fn_8025C204)(param, value);
         fn_80214AF0(30);
         fn_80230E90(0);
         lbl_8055F3EA = 0;
@@ -916,82 +917,60 @@ void fn_80261AF0(s32 *arg0, s32 arg1) {
     struct Frame {
         s32 args[6];
         s32 objects[6][5];
-        char buffer[100];
+        char buffer[116];
     } frame;
-
     register s32 zero = 0;
-    register s32 zero1;
-    register s32 zero2;
-    register s32 three;
-    register s32 two;
-    register s32 *a;
-    register s32 *b;
-    register void *func;
-    register s32 six;
-    register s32 minusTwo;
-    register s32 thirteen;
-    register s32 eight;
+    register s32 zero1 = 0;
+    register s32 zero2 = 0;
+    register s32 three = 3;
+    register s32 two = 2;
+    register s32 six = 6;
+    register s32 minusTwo = -2;
+    register s32 thirteen = 13;
+    register s32 eight = 8;
+    register s32 *a = lbl_802FA6D4;
+    register s32 *b = (s32*)lbl_80498F00;
+    register s32 func = (s32)fn_80261A40;
     s32 hash1;
     s32 hash2;
-
     fn_801345D8(frame.buffer, 0x64, lbl_80345DE0, arg1);
-
     frame.objects[0][0] = zero;
     frame.objects[0][1] = 5;
     frame.objects[0][2] = (s32)lbl_80498F20;
-    zero1 = 0;
-    frame.objects[0][3] = zero;
+    frame.objects[0][3] = zero1;
     frame.objects[0][4] = zero;
-
     hash1 = fn_80131234(lbl_80345E0C);
-    three = 3;
-    frame.objects[1][2] = hash1;
-    frame.objects[1][1] = three;
-    zero2 = 0;
     frame.objects[1][0] = (s32)&lbl_8055C418;
+    frame.objects[1][1] = three;
+    frame.objects[1][2] = hash1;
     frame.objects[1][3] = zero1;
     frame.objects[1][4] = zero;
-
     hash2 = fn_80131234(frame.buffer);
-
-    a = lbl_802FA6D4;
-    b = (s32*)lbl_80498F00;
-    frame.objects[2][2] = hash2;
-    func = (void*)fn_80261A40;
-    six = 6;
-    minusTwo = -2;
-    frame.objects[2][1] = three;
-    thirteen = 13;
-    eight = 8;
     frame.objects[2][0] = (s32)&lbl_8055C420;
-    two = 2;
+    frame.objects[2][1] = three;
+    frame.objects[2][2] = hash2;
     frame.objects[2][3] = zero2;
     frame.objects[2][4] = zero;
-
-    frame.objects[3][1] = six;
     frame.objects[3][0] = (s32)&lbl_8055B860;
+    frame.objects[3][1] = six;
     frame.objects[3][2] = zero;
     frame.objects[3][3] = minusTwo;
     frame.objects[3][4] = thirteen;
-
-    frame.objects[4][1] = eight;
     frame.objects[4][0] = (s32)&lbl_8055BAB8;
-    frame.objects[4][2] = (s32)func;
+    frame.objects[4][1] = eight;
+    frame.objects[4][2] = func;
     frame.objects[4][3] = two;
     frame.objects[4][4] = zero;
-
     frame.objects[5][0] = b[0];
     frame.objects[5][1] = b[1];
     frame.objects[5][2] = b[2];
     frame.objects[5][3] = b[3];
     frame.objects[5][4] = b[4];
-
     frame.args[0] = a[0];
     frame.args[2] = a[2];
     frame.args[3] = a[3];
     frame.args[4] = a[4];
     frame.args[1] = (s32)frame.objects;
-
     fn_802146BC(frame.args, -0x3E7, -0x3E7, 1);
 }
 #pragma pop
