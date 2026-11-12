@@ -1300,17 +1300,18 @@ extern "C" void fn_801F9AA4(void *arg0, s32 arg1) {
         fn_80131818(obj);
     }
 }
+/* Configure static objects/collections on startup from named resources under the "objects" group. */
 extern "C" int fn_801F9B28(void) {
-    void *list;
-    char *base = lbl_8033AF80;
-    fn_8013A0B0(&list, base + 0x35C, &lbl_8055B388);
-    if (list != 0) fn_801F9928(list, 3);
-    fn_801F9AA4(base + 0x368, 3);
-    F9Manager *obj = *(F9Manager **)((u8 *)fn_8000AC38() + 0x20);
-    if (obj->s30(base + 0x378, 0) != 0)
-        fn_801F9AA4(base + 0x38C, 3);
-    fn_801F9AA4(base + 0x39C, 2);
-    fn_8013A198(&list, -1);
+    void *objectList;
+    char *resourceBase = lbl_8033AF80;
+    fn_8013A0B0(&objectList, resourceBase + 0x35C, &lbl_8055B388);
+    if (objectList != 0) fn_801F9928(objectList, 3);
+    fn_801F9AA4(resourceBase + 0x368, 3);
+    F9Manager *manager = *(F9Manager **)((u8 *)fn_8000AC38() + 0x20);
+    if (manager->s30(resourceBase + 0x378, 0) != 0)
+        fn_801F9AA4(resourceBase + 0x38C, 3);
+    fn_801F9AA4(resourceBase + 0x39C, 2);
+    fn_8013A198(&objectList, -1);
 }
 #pragma dont_inline reset
 
