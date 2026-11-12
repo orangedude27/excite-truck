@@ -5176,6 +5176,35 @@ u8 bta_dm_authorize_cback(const void *bd_addr, const void *dev_class, const char
     return 0xB;
 }
 
+/* bta_dm_cb, the BTA Device Manager control block.  The SDK name belongs to the
+ * unbuilt reference source src/revolution/BTE/bta/dm/bta_dm_act.c, so its
+ * fields are reached through these.  A PIN request for a peer whose name is not
+ * known saves the address, class of device and PIN numeric here while BTM looks
+ * the name up; bta_dm_pinname_cback is what BTM then calls back. */
+#define bta_dm_cb_p_sec_cback   (*(tBTA_DM_SEC_CBACK **)(lbl_803C0C14 + 0x50)) /* the registered DM callback */
+#define bta_dm_cb_pin_bd_addr   (lbl_803C0C14 + 0xF8)   /* pin_bd_addr */
+#define bta_dm_cb_pin_dev_class (lbl_803C0C14 + 0xFE)   /* pin_dev_class */
+/* bdcpy() of bd.h: the six byte BD_ADDR copy. */
+#define bdcpy fn_80070FA4
+/* This build's BD_NAME_LEN (the reference headers say 248): a device name in a
+ * DM security event is this long, the terminating NUL included. */
+#define DM_BD_NAME_LEN 0x21
+#define BTA_DM_PIN_REQ_EVT 2 /* tBTA_DM_SEC_EVT of bta_api.h, which is not included here */
+/* The part of tBTA_DM_SEC - the union of the DM security event data - that the
+ * PIN-request path fills; the rest of the 0x108 byte event belongs to the other
+ * members of that union. */
+typedef struct {
+    BD_ADDR   bd_addr;                 /* 0x00 peer address */
+    u8        bd_name[DM_BD_NAME_LEN]; /* 0x06 peer name, NUL-terminated */
+    u8        pad_27[0xFE - 0x27];
+    DEV_CLASS dev_class;               /* 0xFE peer class of device */
+    u8        pad_101[0x108 - 0x101];
+} tDmSecEvent;
+/* The security callback an upper layer registers with the Device Manager.  The
+ * SDK calls it (event, &event data); the game's code loads it through the
+ * control block and keeps that in a register for the call, so the block travels
+ * as a third argument here to match what the compiler did. */
+typedef void (tBTA_DM_SEC_CBACK)(int event, void *p_sec_event, void *p_dm_cb);
 void bta_dm_pinname_cback(u8 *arg0) {
     u8 local[0x108];
     u16 len;
@@ -9807,15 +9836,15 @@ tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT
     u8 status = 1;
     if (!fn_80079514()) return 6;
     active = base[0x16AE];
-    if (active & origin) return 2;
+    if (active & origin) goto return2;
     if (origin == 1) {
         if (active != 0) {
-            if (memcmp(remote_bda, base + 0x16A8, 6) != 0) return 2;
+            if (memcmp(remote_bda, base + 0x16A8, 6) != 0) goto return2;
             start = 0;
         }
         *(tBTM_CMPL_CB **)(base + 0x167C) = p_cb;
     } else if (active != 0) {
-        return 2;
+        goto return2;
     }
     if (start) {
         memcpy(base + 0x16A8, remote_bda, 6);
@@ -9826,8 +9855,15 @@ tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT
             result = btsnd_hcic_rmt_name_req(remote_bda, 1, 0, 0);
         }
     }
-    if (result) base[0x16AE] |= origin;
-    else status = 3;
+    if (result) {
+        base[0x16AE] |= origin;
+    } else {
+        status = 3;
+    }
+    goto done;
+return2:
+    status = 2;
+done:
     return status;
 }
 
