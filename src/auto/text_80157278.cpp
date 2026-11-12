@@ -1064,7 +1064,7 @@ extern "C" void *fn_80158374(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
-extern "C" void fn_801584A4(void) {
+extern "C" void fn_801584A4(void* arg0) {
 }
 
 extern "C" void fn_801584A8(void* arg0) {
