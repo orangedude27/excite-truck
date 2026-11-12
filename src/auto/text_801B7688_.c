@@ -116,6 +116,7 @@ extern void fn_80136468(void *, float);
 #pragma push
 #pragma processor 750
 void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float farg2) {
+    /* Compute an interpolated track/sample triple from arg1 via one of two helpers, then apply it with arg0/farg0/farg2. */
     struct Triple {
         int first;
         float second;
