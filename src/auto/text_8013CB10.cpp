@@ -3195,30 +3195,31 @@ extern "C" f32 lbl_805615A0;
 extern "C" f32 lbl_805615A4;
 extern "C" f32 lbl_805615A8;
 #pragma scheduling invalid_target
+/* Computes and stores a transformed/scaled position from the given object state, updating its active flag and cleaning up the temporary transform context. */
 extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
-    u8 obj[0x38];
-    volatile f32 *input = (volatile f32 *)(arg1 + 0x18);
-    f32 *output = (f32 *)(arg1 + 0x30);
-    f32 fx, fy, fz;
+    u8 transformCtx[0x38];
+    volatile f32 *inputPos = (volatile f32 *)(arg1 + 0x18);
+    f32 *outputPos = (f32 *)(arg1 + 0x30);
+    f32 scaledX, scaledY, scaledZ;
 
-    fn_801352B8(obj);
-    fn_80135D60(obj, ((TObjC *)fn_80156A40())->vC(0));
-    u8 *v = *(u8 **)(obj + 0x2C);
-    fn_801B8048(arg1, obj, v, lbl_805614A4,
-                (*(f32 *)(v + 8) - lbl_805615A0) - lbl_805615A4);
+    fn_801352B8(transformCtx);
+    fn_80135D60(transformCtx, ((TObjC *)fn_80156A40())->vC(0));
+    u8 *linked = *(u8 **)(transformCtx + 0x2C);
+    fn_801B8048(arg1, transformCtx, linked, lbl_805614A4,
+                (*(f32 *)(linked + 8) - lbl_805615A0) - lbl_805615A4);
 
-    fx = input[0];
+    scaledX = inputPos[0];
     register f32 scale = *(volatile f32 *)&lbl_805615A8;
-    fy = input[1];
-    fz = input[2];
-    fx *= scale;
-    fy *= scale;
-    fz *= scale;
-    output[0] = fx;
-    output[1] = fy;
+    scaledY = inputPos[1];
+    scaledZ = inputPos[2];
+    scaledX *= scale;
+    scaledY *= scale;
+    scaledZ *= scale;
+    outputPos[0] = scaledX;
+    outputPos[1] = scaledY;
     *(s32 *)(arg1 + 0x44) = 1;
-    output[2] = fz;
-    fn_8013530C(obj, -1, fy, fx, scale);
+    outputPos[2] = scaledZ;
+    fn_8013530C(transformCtx, -1, scaledY, scaledX, scale);
     return 1;
 }
 #pragma scheduling on
