@@ -8,7 +8,25 @@
   extern int stricmp(const char *, const char *);
   extern int fn_802E317C(const char *, ...);
   typedef struct { const char *name; int value; } Entry;
-  typedef struct { char bytes[0x14]; } Record;
+      typedef struct { char bytes[0x14]; } Record;
+typedef struct SurfObj SurfObj;
+typedef struct {
+    int pad0, pad1;
+    SurfObj *(*get)(SurfObj *, char *);
+    int pad3;
+    int (*has)(SurfObj *, char *);
+    int pad5, pad6, pad7;
+    int (*getInt)(SurfObj *, const char *, int);
+    int pad9;
+    float (*getFloat)(SurfObj *, const char *, float);
+} SurfVT;
+struct SurfObj { SurfVT *vt; };
+extern SurfObj *fn_80131808(char *);
+extern SurfObj *fn_80131810(char *);
+extern void fn_80131818(SurfObj *);
+extern int sprintf(char *, const char *, ...);
+extern char lbl_8055AB58[], lbl_8055AB60[], lbl_8055AB68[], lbl_8055AB70[], lbl_8055AB78[];
+typedef struct { float f[3]; signed char b0; unsigned char b1; short pad; int i; } SurfRec;
   void fn_801D049C(void) {
       lbl_8055E8C0 = 0;
   }
