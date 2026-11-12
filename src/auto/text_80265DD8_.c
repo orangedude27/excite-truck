@@ -1017,6 +1017,7 @@ void fn_80267680(void) {
         *out++ = zero;
     }
 }
+#pragma processor gekko
 
 #pragma push
 #pragma cplusplus on
