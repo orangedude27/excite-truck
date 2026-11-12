@@ -1766,25 +1766,26 @@ set_flag:
 extern "C" s32 fn_800A6358(void *);
 extern "C" s32 fn_800A6728(void *, s32);
 extern "C" s32 fn_800A6B74(void *);
-extern "C" s32 fn_800A728C(void *arg0) {
+extern "C" s32 fn_800A728C(void *device) {
     s32 result;
-    if ((*(u32 *)arg0 & 8) != 0)
+    /* Opens/readies the device, returning 0 on success or an error/status code. */
+    if ((*(u32 *)device & 8) != 0)
         goto retC;
-    result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+    result = fn_800A625C(*(void **)((u8 *)device + 4), (s32)device);
     if (result != 0)
         return result;
-    result = fn_800A6358(*(void **)((u8 *)arg0 + 4));
+    result = fn_800A6358(*(void **)((u8 *)device + 4));
     if (result != 0)
         return result;
-    result = fn_800A6B74(arg0);
+    result = fn_800A6B74(device);
     if (result == 0)
         goto setflag;
-    fn_800A6728(*(void **)((u8 *)arg0 + 4), 0);
+    fn_800A6728(*(void **)((u8 *)device + 4), 0);
     return result;
 retC:
     return 0xC;
 setflag:
-    *(u32 *)arg0 = (*(u32 *)arg0 & ~2) | 8;
+    *(u32 *)device = (*(u32 *)device & ~2) | 8;
     return 0;
 }
 
@@ -12286,7 +12287,7 @@ extern "C" s32 fn_800BAA8C(s32 arg0, void *arg1) {
     default:
         break;
     }
-    if (*(s32 *)req != 0 && (arg0 + 0x3DF00000U) != 0) {
+    if (*(s32 *)req != 0 && ((u32)arg0 + 0x3DF00000U) >= 1U) {
         ((void (*)(s32, s32))*(s32 *)req)(arg0, *(s32 *)(req + 4));
     }
     if (*(void **)(req + 0x18) != 0) {
@@ -12820,7 +12821,6 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
     s32 returnValue = 0;
     s32 handle;
     void *context;
-
     if (lbl_80559248 < 0) {
         returnValue = (s32)0xC1000000;
     } else {
@@ -12828,36 +12828,29 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
             OSReport(messages + 0x498);
             return -4;
         }
-
         context = *arg1;
         if (context == 0) {
             OSReport(messages + 0x4BC);
             return -4;
         }
-
         {
             const char *pathTable = (const char *)lbl_80407580;
             handle = IOS_Open(pathTable + ((u32)arg0 << 5), 0);
             if (handle < 0) {
                 if (handle == -2) {
-                    OSReport(messages + 0x2DC,
-                             pathTable + (arg0 * 0x20));
+                    OSReport(messages + 0x2DC, pathTable + (arg0 * 0x20));
                 } else if (handle == -6) {
-                    OSReport(messages + 0x2F0,
-                             pathTable + (arg0 * 0x20));
+                    OSReport(messages + 0x2F0, pathTable + (arg0 * 0x20));
                 } else {
-                    OSReport(messages + 0x304,
-                             pathTable + (arg0 * 0x20), handle);
+                    OSReport(messages + 0x304, pathTable + (arg0 * 0x20), handle);
                 }
             }
         }
-
         *(s32 *)*arg1 = handle;
         if (*(s32 *)*arg1 < 0) {
             returnValue = -1;
             OSReport(messages + 0x4E0);
         }
-
         *(s32 *)((u8 *)*arg1 + 0x24) = 0;
         *(s32 *)((u8 *)*arg1 + 0x18) = 0x4000;
         *(s32 *)((u8 *)*arg1 + 0x20) = 0;
