@@ -914,35 +914,39 @@ extern void *fn_80131808(void *);
 extern void *fn_8023512C(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
-void *fn_8016D024(void *arg0) {
-    char *base = lbl_803306D0;
-    fn_802C2914(arg0);
-    *(void **)((u8 *)arg0 + 4) = lbl_80330A90;
-    *(void **)((u8 *)arg0 + 0x14) = fn_80131808(base + 0x1E0);
-    *(void **)((u8 *)arg0 + 0x20) = fn_8023512C(base + 0x1F8);
-    *(void **)((u8 *)arg0 + 0x4C) = fn_802076A0(base + 0x204, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x50) = fn_802076A0(base + 0x210, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x58) = fn_802076A0(base + 0x220, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x54) = fn_802076A0(base + 0x22C, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x5C) = fn_802076A0(base + 0x23C, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x60) = fn_802076A0(base + 0x24C, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x64) = fn_802076A0(base + 0x258, 1, 0, 0);
-    *(s32 *)((u8 *)arg0 + 0x24) = -1;
-    *(u8 *)((u8 *)arg0 + 0x48) = 0;
-    *(u8 *)((u8 *)arg0 + 0x49) = 0;
-    *(u8 *)((u8 *)arg0 + 0x4A) = 1;
-    *(f32 *)((u8 *)arg0 + 0x28) = lbl_80561980;
-    *(s32 *)((u8 *)arg0 + 0x38) = 0;
-    *(s32 *)((u8 *)arg0 + 0x3C) = 0;
-    SetNodeF8(*(void **)((u8 *)arg0 + 0x4C));
-    SetNodeF8(*(void **)((u8 *)arg0 + 0x50));
-    SetNodeF8(*(void **)((u8 *)arg0 + 0x58));
-    SetNodeF8(*(void **)((u8 *)arg0 + 0x54));
-    SetNodeF8(*(void **)((u8 *)arg0 + 0x5C));
-    SetNodeF8(*(void **)((u8 *)arg0 + 0x60));
-    SetNodeF8(*(void **)((u8 *)arg0 + 0x64));
-    *(s32 *)((u8 *)arg0 + 0x40) = fn_80204CF0();
-    return arg0;
+void *fn_8016D024(void *a0) {
+    char *b = lbl_803306D0;
+    void *last;
+    void *nfirst;
+    fn_802C2914(a0);
+    *(void **)((u8 *)a0 + 4) = lbl_80330A90;
+    *(void **)((u8 *)a0 + 0x14) = fn_80131808(b + 0x1E0);
+    *(void **)((u8 *)a0 + 0x20) = fn_8023512C(b + 0x1F8);
+    *(void **)((u8 *)a0 + 0x4C) = fn_802076A0(b + 0x204, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x50) = fn_802076A0(b + 0x210, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x58) = fn_802076A0(b + 0x220, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x54) = fn_802076A0(b + 0x22C, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x5C) = fn_802076A0(b + 0x23C, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x60) = fn_802076A0(b + 0x24C, 1, 0, 0);
+    last = fn_802076A0(b + 0x258, 1, 0, 0);
+    nfirst = *(void **)((u8 *)a0 + 0x4C);
+    *(void **)((u8 *)a0 + 0x64) = last;
+    *(s32 *)((u8 *)a0 + 0x24) = -1;
+    *(u8 *)((u8 *)a0 + 0x48) = 0;
+    *(u8 *)((u8 *)a0 + 0x49) = 0;
+    *(u8 *)((u8 *)a0 + 0x4A) = 1;
+    *(f32 *)((u8 *)a0 + 0x28) = lbl_80561980;
+    *(s32 *)((u8 *)a0 + 0x38) = 0;
+    *(s32 *)((u8 *)a0 + 0x3C) = 0;
+    SetNodeF8(nfirst);
+    SetNodeF8(*(void **)((u8 *)a0 + 0x50));
+    SetNodeF8(*(void **)((u8 *)a0 + 0x58));
+    SetNodeF8(*(void **)((u8 *)a0 + 0x54));
+    SetNodeF8(*(void **)((u8 *)a0 + 0x5C));
+    SetNodeF8(*(void **)((u8 *)a0 + 0x60));
+    SetNodeF8(*(void **)((u8 *)a0 + 0x64));
+    *(s32 *)((u8 *)a0 + 0x40) = fn_80204CF0();
+    return a0;
 }
 
 #pragma scheduling on
@@ -976,6 +980,20 @@ void fn_8016D278(void *arg0) { *(u32 *)arg0=(u32)arg0+0xC; *(u32 *)((u8 *)arg0+8
 #define SET_FMT_10        (strings + 0x270) /* "set_%i_10" */
 #define SET_FMT_15        (strings + 0x27C) /* "set_%i_15" */
 #define SET_BAD_DIFFICULTY (strings + 0x288) /* "Unknown difficulty specification in Ring Challenge mode." */
+
+/* The ring-set controller's gem lists.  Its +0x18 holds the ring-set list
+ * { array of 0x14-byte ring-set entries (+0), number of sets (+4) }; each
+ * entry's +0 is its gem list { array of 0x44-byte gems (+0), gem count (+4) }.
+ * A gem record holds the object fn_802BAA68 built for it (+4), the handle that
+ * object is built from (+8), a built flag (+0xC, 0 = not built yet) and the
+ * transform data fn_802BAA68 reads (+0x14). */
+#define RING_SETS(o)     (*(u8 **)((u8 *)(o) + 0x18))
+#define LIST_DATA(l)     (*(u8 **)(l))
+#define LIST_COUNT(l)    (*(s32 *)((u8 *)(l) + 4))
+#define GEM_OBJECT(g)    (*(s32 *)((u8 *)(g) + 4))
+#define GEM_HANDLE(g)    (*(s32 *)((u8 *)(g) + 8))
+#define GEM_BUILT(g)     (*(s32 *)((u8 *)(g) + 0xC))
+#define GEM_TRANSFORM(g) ((u8 *)(g) + 0x14)
 
 /*
  * Select ring set `setIndex` for the Ring Challenge master (lbl_8055E378).
