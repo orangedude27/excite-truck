@@ -9090,17 +9090,23 @@ void fn_8007AD38(void) {
 
 }
 
-tBTM_STATUS BTM_SetInquiryScanType(UINT16 arg0) {
-    void *p_buf;
+tBTM_STATUS BTM_SetInquiryScanType(UINT16 scan_type) {
+    /* Sets the inquiry scan type in BTM state and sends the HCI command if
+       interlaced scan is supported, the stack is in the right mode, and the
+       requested type differs from the current one. */
+    void *p_cmd_buf;
     tBTM_STATUS status;
-    if (arg0 != 0 && arg0 != 1) return BTM_ILLEGAL_VALUE;
-    if (!(lbl_803C0F78[0x643] & 0x10)) return BTM_MODE_UNSUPPORTED;
-    if (arg0 != *(u16 *)(lbl_803C0F78 + 0x16A4)) {
+
+    if (scan_type != BTM_SCAN_TYPE_STANDARD && scan_type != BTM_SCAN_TYPE_INTERLACED)
+        return BTM_ILLEGAL_VALUE;
+    if (!(lbl_803C0F78[0x643] & 0x10))
+        return BTM_MODE_UNSUPPORTED;
+    if (scan_type != *(u16 *)(lbl_803C0F78 + 0x16A4)) {
         if ((u8)fn_80079514() != 0) {
-            p_buf = GKI_getpoolbuf(2);
-            if (p_buf != 0) {
-                fn_80085DC4(p_buf, (u8)arg0);
-                *(u16 *)(lbl_803C0F78 + 0x16A4) = arg0;
+            p_cmd_buf = GKI_getpoolbuf(2);
+            if (p_cmd_buf != 0) {
+                fn_80085DC4(p_cmd_buf, (u8)scan_type);
+                *(u16 *)(lbl_803C0F78 + 0x16A4) = scan_type;
                 goto done;
             }
             status = BTM_NO_RESOURCES;
