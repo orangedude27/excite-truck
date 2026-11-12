@@ -5716,13 +5716,6 @@ extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
 extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
     s32 sp8;
     s32 status;
-    s32 remA;
-    s32 remB;
-    u16 unitSize;
-    u8 unitCount, shiftAmount;
-    u32 units;
-    u32 clustersNeeded;
-    u32 roundedUnits;
     void *fatInfo;
     u32 *fileState;
     u32 fileCount;
@@ -5730,26 +5723,29 @@ extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) 
     fileState = *(u32 **)((u8 *)arg0 + 8);
     fileCount = *(u32 *)((u8 *)fatInfo + 0x1C);
     if (*fileState == 1 && fileCount <= 1) {
-        s32 result = 0;
+        s32 result;
         if (arg1 >= *(u16 *)((u8 *)fatInfo + 0x24)) {
-            result = 0;
             *arg4 = -1;
-        } else {
             result = 0;
+        } else {
             *arg4 = *(s32 *)((u8 *)fatInfo + 0x2C) + arg1;
+            result = 0;
         }
-        return result;
+        if (result == 0)
+            return 0;
+        else
+            return result;
     }
-    shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
+    u8 shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
     u32 shiftedOffset = arg1 >> shiftAmount;
     if (arg2 == 2) {
-        unitSize = *(u16 *)fatInfo;
-        unitCount = *(u8 *)((u8 *)fatInfo + 6);
-        units = arg3 / unitSize;
-        remA = arg3 - units * unitSize;
-        roundedUnits = units + (remA != 0);
-        clustersNeeded = roundedUnits / unitCount;
-        remB = roundedUnits - clustersNeeded * unitCount;
+        u16 unitSize = *(u16 *)fatInfo;
+        u8 unitCount = *(u8 *)((u8 *)fatInfo + 6);
+        u32 units = arg3 / unitSize;
+        s32 remA = arg3 - units * unitSize;
+        u32 roundedUnits = units + (remA != 0);
+        u32 clustersNeeded = roundedUnits / unitCount;
+        s32 remB = roundedUnits - clustersNeeded * unitCount;
         u32 sectorCount = clustersNeeded + (remB != 0);
         status = fn_800AE3A8(arg0, (s32)shiftedOffset, (s32)sectorCount, (u32 *)&sp8);
         if (status == 0)
@@ -9872,32 +9868,33 @@ done:
 }
 
 extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
+    s32 enabled = arg0 & 0x10000;
     u32 first;
-    volatile u8 *state;
-    volatile u8 *entries;
+    u8 *state;
+    u8 *entries;
     u32 zero;
     u8 *record;
     s32 i;
 
-    if (arg0 & 0x10000)
+    if (enabled != 0)
         *(u32 *)((u8 *)lbl_803D2140 + 0x38) |= 0x10000;
     else
         *(u32 *)((u8 *)lbl_803D2140 + 0x38) &= 0xFFFEFFFF;
 
-    state = (volatile u8 *)lbl_803D2140;
+    state = (u8 *)lbl_803D2140;
     first = *(u32 *)lbl_803D2140;
     entries = state + 0xA0;
     zero = 0;
     first |= 1;
-    *(void **)(state + 0x08) = (void *)entries;
-    *(void **)(state + 0x14) = (void *)entries;
-    *(void **)(state + 0x20) = (void *)entries;
-    *(void **)(state + 0x2C) = (void *)entries;
+    *(void **)(state + 0x08) = entries;
+    *(void **)(state + 0x14) = entries;
+    *(void **)(state + 0x20) = entries;
+    *(void **)(state + 0x2C) = entries;
     *(u32 *)lbl_803D2140 = first;
     *(u32 *)(state + 0x30) = zero;
     *(u32 *)(state + 0x34) = zero;
 
-    if (arg0 & 0x10000)
+    if (enabled != 0)
         *(u32 *)(state + 0x38) |= 0x10000;
     else
         *(u32 *)(state + 0x38) &= 0xFFFEFFFF;
@@ -10254,7 +10251,7 @@ s32 fn_800B6928(s8 arg0) {
     };
     u8 *base;
     u8 *successBase;
-    u8 *record;
+    u32 record;
     s16 index = fn_800A485C(arg0) - 0x41;
     Entry *entry;
     u16 flags;
@@ -10270,9 +10267,9 @@ s32 fn_800B6928(s8 arg0) {
     } else {
         fn_800B783C(base + 0x64);
     }
-    record = base + index * 0x1FC8;
+    record = (u32)base + index * 0x1FC8;
     entry = (Entry *)(record + 0xA0);
-    flags = entry->flags;
+    flags = ((volatile Entry *)entry)->flags;
     if (flags & 8) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
         entry->result = 10;
@@ -10919,13 +10916,16 @@ extern "C" s32 fn_800B7968(u32 arg0, s32 arg1, s32 arg2, void* arg3) {
     return 0;
 }
 
-extern "C" s32 fn_800B7B34(s8 arg0) {
-    s32 a = lbl_80405C30[arg0 - 0x41];
-    s32 b = lbl_80405C98[arg0 - 0x41];
-    if (fn_800B74B8(arg0)) return -1;
-    if (a && b) {
-        if (fn_800A59CC(b)) return -1;
-        if (fn_800A5990(a)) return -1;
+/* Validates the drive/slot identified by slotChar ('A' + index): returns -1 if
+   the slot is unusable, and if both per-slot handles are set, only succeeds when
+   the secondary and primary handle checks both pass. */
+extern "C" s32 fn_800B7B34(s8 slotChar) {
+    s32 primaryHandle = lbl_80405C30[slotChar - 0x41];
+    s32 secondaryHandle = lbl_80405C98[slotChar - 0x41];
+    if (fn_800B74B8(slotChar)) return -1;
+    if (primaryHandle && secondaryHandle) {
+        if (fn_800A59CC(secondaryHandle)) return -1;
+        if (fn_800A5990(primaryHandle)) return -1;
     }
     return 0;
 }
@@ -16531,16 +16531,16 @@ extern "C" s32 fn_800C4E5C(s32, void *);
 #pragma use_lmw_stmw on
 #pragma dont_inline fn_800C34B4
 void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
-    register s8 inner;
-    register s32 var_r29;
-    register s32 var_r28;
-    register s32 var_r27;
-    register s32 var_r26;
-    register s32 var_r25;
-    register s32 var_r24;
-    register s32 var_r22;
-    register s32 var_r17;
-    register s32 var_r16;
+    s8 inner;
+    s32 var_r29;
+    s32 var_r28;
+    s32 var_r27;
+    s32 var_r26;
+    s32 var_r25;
+    s32 var_r24;
+    s32 var_r22;
+    s32 var_r17;
+    s32 var_r16;
     var_r29 = 0x480;
     if (*(s32 *)((u8 *)arg0 + 4) == 1) var_r29 = 0x240;
     var_r28 = arg2;
@@ -16555,13 +16555,11 @@ void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
             *(s16 *)((u8 *)arg0 + 0x27C) = 0x3C0;
         var_r25 = arg1;
         var_r24 = var_r28;
-        inner = 0;
-        do {
+        for (inner = 0; inner < arg4; inner++) {
             fn_800C4E5C(var_r24, (void *)(var_r25 + (*(s16 *)((u8 *)arg0 + 0x27C) * 4)));
             var_r25 += 0x1000;
             var_r24 += 0x80;
-            ++inner;
-        } while (inner < arg4);
+        }
         if (arg4 == 2) {
             if (arg5 == 0) {
                 ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1, arg3 + var_r17, *(s16 *)((u8 *)arg0 + 0x27C), arg5);
