@@ -10492,6 +10492,7 @@ typedef struct {
 #define BTM_SCO_DB_LINKS    3      /* BTM_MAX_SCO_LINKS as this build counts it */
 
 #define btm_cb_esco_supported (lbl_803C0F78[0x1908]) /* btm_cb.sco_cb.esco_supported: 1.2 cntlr with eSCO links */
+#define btm_cb_desired_sco_mode (lbl_803C0F78[0x1909]) /* btm_cb.sco_cb.desired_sco_mode: 0 unknown, 1 SCO, 2 eSCO (BTM_DEFAULT_SCO_MODE) */
 #define btm_cb_def_pkt_types  (*(UINT16 *)(lbl_803C0F78 + 0x1904)) /* btm_cb.sco_cb.def_esco_parms.packet_types */
 #define btm_cb_sco_pkt_types  (*(UINT16 *)(lbl_803C0F78 + 0x656))  /* btm_cb.btm_sco_pkt_types_supported */
 #define btm_cb_hci_version    (lbl_803C0F78[0x636]) /* btm_cb.devcb.local_version.hci_version */
