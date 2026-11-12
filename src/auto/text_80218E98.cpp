@@ -3503,34 +3503,35 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
 }
 #pragma pop
 
-extern "C" void fn_8021E7D4(void *arg0) {
-    s32 temp_r0;
-    s32 temp_r0_2;
-    s32 temp_r5;
-    s32 temp_r5_2;
-    void *temp_r4;
-    s32 temp_r5_3;
-    s32 temp_r6;
-    void *temp_r7;
+/* Clamp the visible range at widget+0x248 so it stays within bounds and includes the current index at widget+0x25C. */
+extern "C" void fn_8021E7D4(void *widget) {
+    s32 maxVisible;
+    s32 maxVisible2;
+    s32 rangeBase;
+    s32 clampedCount;
+    void *rangeReload;
+    s32 currentIndex2;
+    s32 currentIndex;
+    void *range;
 
-    temp_r7 = *(void **)((u8 *)arg0 + 0x248);
-    if (temp_r7 != 0) {
-        temp_r5 = *(s32 *)((u8 *)temp_r7 + 4);
-        temp_r6 = **(s32 **)((u8 *)arg0 + 0x25C);
-        if (temp_r6 > (temp_r5 + *(s32 *)((u8 *)temp_r7 + 8)) - 1) {
-            temp_r5_2 = (temp_r6 - temp_r5) + 1;
-            *(s32 *)((u8 *)temp_r7 + 8) = temp_r5_2;
-            temp_r0 = *(s32 *)temp_r7 - *(s32 *)((u8 *)temp_r7 + 4);
-            if (temp_r5_2 > temp_r0) *(s32 *)((u8 *)temp_r7 + 8) = temp_r0;
-            if (*(s32 *)((u8 *)temp_r7 + 8) < 0) *(s32 *)((u8 *)temp_r7 + 8) = 0;
+    range = *(void **)((u8 *)widget + 0x248);
+    if (range != 0) {
+        rangeBase = *(s32 *)((u8 *)range + 4);
+        currentIndex = **(s32 **)((u8 *)widget + 0x25C);
+        if (currentIndex > (rangeBase + *(s32 *)((u8 *)range + 8)) - 1) {
+            clampedCount = (currentIndex - rangeBase) + 1;
+            *(s32 *)((u8 *)range + 8) = clampedCount;
+            maxVisible = *(s32 *)range - *(s32 *)((u8 *)range + 4);
+            if (clampedCount > maxVisible) *(s32 *)((u8 *)range + 8) = maxVisible;
+            if (*(s32 *)((u8 *)range + 8) < 0) *(s32 *)((u8 *)range + 8) = 0;
         }
-        temp_r4 = *(void **)((u8 *)arg0 + 0x248);
-        temp_r5_3 = **(s32 **)((u8 *)arg0 + 0x25C);
-        if (temp_r5_3 < *(s32 *)((u8 *)temp_r4 + 8)) {
-            *(s32 *)((u8 *)temp_r4 + 8) = temp_r5_3;
-            temp_r0_2 = *(s32 *)temp_r4 - *(s32 *)((u8 *)temp_r4 + 4);
-            if (temp_r5_3 > temp_r0_2) *(s32 *)((u8 *)temp_r4 + 8) = temp_r0_2;
-            if (*(s32 *)((u8 *)temp_r4 + 8) < 0) *(s32 *)((u8 *)temp_r4 + 8) = 0;
+        rangeReload = *(void **)((u8 *)widget + 0x248);
+        currentIndex2 = **(s32 **)((u8 *)widget + 0x25C);
+        if (currentIndex2 < *(s32 *)((u8 *)rangeReload + 8)) {
+            *(s32 *)((u8 *)rangeReload + 8) = currentIndex2;
+            maxVisible2 = *(s32 *)rangeReload - *(s32 *)((u8 *)rangeReload + 4);
+            if (currentIndex2 > maxVisible2) *(s32 *)((u8 *)rangeReload + 8) = maxVisible2;
+            if (*(s32 *)((u8 *)rangeReload + 8) < 0) *(s32 *)((u8 *)rangeReload + 8) = 0;
         }
     }
 }
