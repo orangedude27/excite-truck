@@ -1863,17 +1863,17 @@ void fn_8006A1BC(u32 r3, u32 r4)
 
 #pragma use_lmw_stmw off
 u8 fn_8006A1DC(void) {
-    register char *strings = (char *)lbl_803130C8;
-    register u8 *entry;
-    register u8 *addr;
-    register s32 i;
-    register u8 *dev;
+    char *strings = (char *)lbl_803130C8;
+    u8 *entry;
+    u8 *addr;
+    s32 i;
+    u8 *dev;
     u8 one = 1;
     u8 zero = 0;
     u8 two = 2;
     u32 value = 0x10000;
     u8 three = 3;
-
+    u8 b40 = 0;
     memset(lbl_80393058, 0, 0x461);
     SCGetBtDeviceInfoArray(lbl_80393058);
     entry = lbl_80393058 + 1;
@@ -1890,7 +1890,8 @@ u8 fn_8006A1DC(void) {
             dev[0x57] = two;
             *(u16 *)(dev + 0x5E) = value - 0x7F8C;
             dev[0x58] = three;
-            DBPrintf_8006CFA8(strings + 0x1CC, dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45]);
+            b40 = dev[0x40];
+            DBPrintf_8006CFA8(strings + 0x1CC, b40, dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45]);
             DBPrintf_8006CFA8(strings + 0x390, dev);
         }
         entry += 0x46;
@@ -4192,8 +4193,7 @@ void uusb_issue_intr_read(void) {
         u8 pool_id;
         u8 pad1D[0x0B];
         u8 at_0x28;
-    };
-    register struct uusb_intr_cb_view *control = (struct uusb_intr_cb_view *)&lbl_803BD1E0;
+    } *control = (struct uusb_intr_cb_view *)&lbl_803BD1E0;
     extern char lbl_803142C8[];
     extern void uusb_ReadIntrDataCB(s32, BT_HDR *);
     extern u16 fn_8006D8D0(u32);
@@ -4205,8 +4205,12 @@ void uusb_issue_intr_read(void) {
 
     for (;;) {
         buf = GKI_getpoolbuf(control->pool_id);
-        if (buf != 0) break;
-        if (control->at_0x28 != 0) OSReport(report + 0x378);
+        if (buf != 0) {
+            break;
+        }
+        if (control->at_0x28 != 0) {
+            OSReport(report + 0x378);
+        }
     }
 
     *(u16 *)buf = 0x1000;
@@ -4214,14 +4218,20 @@ void uusb_issue_intr_read(void) {
     *(u16 *)(buf + 2) = 0;
     header = (u16)(aligned - (buf + 8));
     *(u16 *)(buf + 4) = header;
+
     result = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, control->endpoint,
                                    fn_8006D8D0((u32)buf) - 0x28 - header,
                                    aligned, (void (*)(void))uusb_ReadIntrDataCB, buf);
     if (result != 0) {
-        if (control->at_0x28 != 0) OSReport(report + 0x3CC, result);
-        if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x404, result);
+        if (control->at_0x28 != 0) {
+            OSReport(report + 0x3CC, result);
+        }
+        if (lbl_803BD1E0.at_0x28 != 0) {
+            OSReport(report + 0x404, result);
+        }
         GKI_freebuf(buf);
     }
+
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 
@@ -5028,14 +5038,15 @@ void fn_80071088(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x88) = arg0; }
 void fn_80071098(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x84) = arg0; }
 
 typedef void (*tConnOpenCb)(u8, u8, u16);
-void bta_sys_conn_open(s32 arg0, s32 arg1, s32 arg2) {
+/* Notify registered BTA system connection-open callbacks (event 0) with the given id/app/peer. */
+void bta_sys_conn_open(s32 id, s32 app_id, s32 peer_addr) {
     typedef void (*tConnOpenCb2)(s32, s32, s32, s32);
     tConnOpenCb2 *callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
-    if (callbacks[0x80 / 4] != 0) callbacks[0x80 / 4](0, arg0, arg1, arg2);
+    if (callbacks[0x80 / 4] != 0) callbacks[0x80 / 4](0, id, app_id, peer_addr);
     callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
-    if (callbacks[0x84 / 4] != 0) callbacks[0x84 / 4](0, arg0, arg1, arg2);
+    if (callbacks[0x84 / 4] != 0) callbacks[0x84 / 4](0, id, app_id, peer_addr);
     callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
-    if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](0, arg0, arg1, arg2);
+    if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](0, id, app_id, peer_addr);
 }
 
 void bta_sys_conn_open_8007116C(s32 connId, s32 param1, s32 param2) {
