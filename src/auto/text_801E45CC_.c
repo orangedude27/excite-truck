@@ -68,6 +68,7 @@ void fn_801E45CC(void) {
 int fn_801E47BC(int arg0) {
     double var_f1;
     int var_r31 = 1;
+    int t;
     switch (arg0) {
     case 0x74:
         if (fn_801769F8() != 0) {
@@ -83,12 +84,12 @@ int fn_801E47BC(int arg0) {
     case 0x5B: lbl_8055AEC4 -= lbl_80562D30; break;
     case 0x27: lbl_8055AEC4 = lbl_80562D34; break;
     case 0x5D: lbl_8055AEC4 += lbl_80562D30; break;
-    case 0x6E: lbl_8055EA8C = !lbl_8055EA8C; break;
-    case 0x63: lbl_8055AEDC = !lbl_8055AEDC; break;
+    case 0x6E: t = (unsigned char)lbl_8055EA8C; lbl_8055EA8C = t == 0; break;
+    case 0x63: t = (unsigned char)lbl_8055AEDC; lbl_8055AEDC = t == 0; break;
     case 0x6D: lbl_8055EA8E = 1; break;
-    case 0x6C: lbl_8055EA8F = !lbl_8055EA8F; break;
-    case 0x77: lbl_8055EA90 = !lbl_8055EA90; break;
-    case 0x45: lbl_8055EA8D = !lbl_8055EA8D; break;
+    case 0x6C: t = lbl_8055EA8F; *(char *)&lbl_8055EA8F = t == 0; break;
+    case 0x77: t = lbl_8055EA90; *(char *)&lbl_8055EA90 = t == 0; break;
+    case 0x45: t = (unsigned char)lbl_8055EA8D; lbl_8055EA8D = t == 0; break;
     case 0xB: fn_801EC1F8(); fn_802E4CDC(); break;
     case 0x4: fn_801EC204(); fn_802E4CDC(); break;
     case 0x9: break;
@@ -99,7 +100,7 @@ int fn_801E47BC(int arg0) {
         var_f1 = lbl_80562D38;
         lbl_8055AEC4 = lbl_80562D38;
     }
-    if (var_f1 < lbl_80562D30) lbl_8055AEC4 = lbl_80562D30;
+    if ((float)var_f1 < lbl_80562D30) lbl_8055AEC4 = lbl_80562D30;
     return var_r31;
 }
 
