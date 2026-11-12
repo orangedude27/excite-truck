@@ -538,7 +538,10 @@ u32 fn_80116F8C(void *arg0) {
     return 0;
 }
 #pragma pop
-extern s32 fn_80117074(void*);
+extern void fn_80117074(void*);
+extern s32 lbl_8055DED4;
+extern u32 fn_8011C1E0(s32, void *);
+extern void *memcpy(void *, const void *, u32);
 extern s32 fn_80116D30(void);
 void fn_80117330(void* arg0) {
  if(*(s32*)((u8*)arg0+0x268)==0) {
@@ -3982,34 +3985,44 @@ void fn_8011CE18(void *arg0, void *arg1) {
 }
 
 void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
- u32 *p=(u32*)M2C_FIELD(arg1,u32*,4), bits=M2C_FIELD(arg1,u32*,0), n=M2C_FIELD(arg1,u32*,8), width=M2C_FIELD(arg0,u32*,0x28), out;
- s32 left, tree=M2C_FIELD(arg2,s32*,0x180);
- u32 code, mask, value;
- u8 *dst;
- if(M2C_FIELD(arg0,u8**,0)!=M2C_FIELD(arg0,u8**,4)) return;
+ u32 out, code, rem, value, c, sign;
+ u32 *p, bits, n, width;
+ s32 tree;
+ u8 *dst, *table, *lut;
+ u32 w2, mask;
+ if(M2C_FIELD(arg0,u32*,0)!=M2C_FIELD(arg0,u32*,4)) return;
+ n=M2C_FIELD(arg1,u32*,8); width=M2C_FIELD(arg0,u32*,0x28); p=M2C_FIELD(arg1,u32**,4); bits=M2C_FIELD(arg1,u32*,0);
  if(n<width){u32 x=*p++; out=(-1U>>(32-width))&(bits|(x<<n)); bits=x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
  if(out){
   dst=M2C_FIELD(arg0,u8**,0x2C); M2C_FIELD(arg0,u8**,0)=dst; M2C_FIELD(arg0,u8**,4)=dst+out;
-  if(n==0){bits=*p++>>1;n=31;} else {bits>>=1;n--;}
-  if(bits&1) out=-20-out;
-  mask=-1U>>(32-M2C_FIELD(arg0,u32*,0x20));
+  w2=M2C_FIELD(arg0,u32*,0x20); lut=(u8*)arg0+0x10; table=M2C_FIELD(arg0,u8**,0x24);
+  tree=M2C_FIELD(arg2,s32*,0x180);
+  if(n==0){sign=*p++; bits=sign>>1; n=31;} else {sign=bits; bits>>=1; n--;}
+  if(sign&1) out=-20-out;
+  mask=-1U>>(32-w2);
   do {
-   s32 rem;
+   u32 *ent=(u32*)((u8*)arg2+tree*4);
+   u32 w=ent[0x40];
    out--;
-   {u8 *tab=(u8*)M2C_FIELD(arg2,u32*,tree*4+0x140); u32 w=M2C_FIELD(arg2,u32*,tree*4+0x100);
-    if(n>=w){code=tab[bits&(-1U>>(32-w))];}
-    else {u32 x=*p, idx=(bits|(x<<n))&(-1U>>(32-w)); code=tab[idx];}
-    tree=*(u8*)((u8*)arg2+tree*16+(code&15)); rem=code>>4;
-    if(n<rem){u32 x=*p++; bits=x>>(rem-n); n=n+32-rem;} else {bits>>=rem;n-=rem;}
+   if(n>=w){
+    code=((u8*)ent[0x50])[bits&(-1U>>(32-w))];
+    tree=((u8*)arg2)[tree*16+(code&15)]; rem=code>>4; bits>>=rem; n-=rem;
+   } else {
+    u32 x=*p;
+    code=((u8*)ent[0x50])[(bits|(x<<n))&(-1U>>(32-w))];
+    tree=((u8*)arg2)[tree*16+(code&15)]; rem=code>>4;
+    if(n>=rem){bits>>=rem;n-=rem;} else {p++; bits=x>>(rem-n); n=n+32-rem;}
    }
-   {u8 *table=(u8*)M2C_FIELD(arg0,u8**,0x24); u32 ix;
-    if(n>=M2C_FIELD(arg0,u32*,0x20)){u8 c=table[bits&mask]; value=*(u8*)((u8*)arg0+0x10+(c&15)); rem=c>>4;}
-    else {u32 x=*p, ix2=(bits|(x<<n))&mask; u8 c=table[ix2]; value=*(u8*)((u8*)arg0+0x10+(c&15)); rem=c>>4;}
-    if(n<rem){u32 x=*p++;bits=x>>(rem-n);n=n+32-rem;}else{bits>>=rem;n-=rem;}
+   if(n>=w2){
+    c=table[bits&mask]; value=lut[c&15]; rem=c>>4; bits>>=rem; n-=rem;
+   } else {
+    u32 x=*p;
+    c=table[(bits|(x<<n))&mask]; value=lut[c&15]; rem=c>>4;
+    if(n>=rem){bits>>=rem;n-=rem;} else {p++; bits=x>>(rem-n); n=n+32-rem;}
    }
-   {u32 c=value|(tree<<4); u32 v=c&127; if(c&128)v=(u8)(-v); *dst++=v+128;}
-  } while(out>0);
-  if(out < -22) memset(M2C_FIELD(arg0,u8**,0x2C),*(u8*)M2C_FIELD(arg0,u8**,0x2C),-(out+21));
+   c=value|(tree<<4); value=c&127; if(c&128)value=(u8)(-value); *dst++=value+128;
+  } while((s32)out>0);
+  if((s32)out < -22) memset(M2C_FIELD(arg0,u8**,0x2C),*(u8*)M2C_FIELD(arg0,u8**,0x2C),-((s32)out+21));
   M2C_FIELD(arg2,s32*,0x180)=tree;
  } else {dst=M2C_FIELD(arg0,u8**,0x2C);M2C_FIELD(arg0,u8**,4)=dst;M2C_FIELD(arg0,u8**,0)=dst+4;}
  M2C_FIELD(arg1,u32**,4)=p;M2C_FIELD(arg1,u32*,0)=bits;M2C_FIELD(arg1,u32*,8)=n;
