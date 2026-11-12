@@ -127,8 +127,8 @@ extern float lbl_80562B6C;
 float fn_801DB398(float grid[4][4], float t, float u) {
     float values[4];
     float *src = (float *)grid;
-    int i;
-    for (i = 0; i < 4; i++) {
+    int qq;
+    for (qq = 0; qq < 4; qq++) {
         float p2 = src[8];
         float p0 = src[0];
         float p1 = src[4];
@@ -147,18 +147,20 @@ float fn_801DB398(float grid[4][4], float t, float u) {
         float t2 = t * t;
         float t3 = t2 * t;
         coeff3 = coeff3 - half31;
-        values[i] = (coeff2 * t3 + coeff3 * t2) + half20 * t + p1;
+        values[qq] = (coeff2 * t3 + coeff3 * t2) + half20 * t + p1;
         src++;
     }
     {
         float p2 = values[2];
+        float u2 = u * u;
         float p0 = values[0];
         float p1 = values[1];
         float dp20 = p2 - p0;
-        float p3 = values[3];
-        float dp21 = p2 - p1;
-        float dp31 = p3 - p1;
         float half20 = lbl_80562B64 * dp20;
+        float dp21 = p2 - p1;
+        float p3 = values[3];
+        float u3 = u2 * u;
+        float dp31 = p3 - p1;
         float twice20 = lbl_80562B68 * half20;
         float half31 = lbl_80562B64 * dp31;
         float c3t = lbl_80562B6C * dp21;
@@ -166,10 +168,8 @@ float fn_801DB398(float grid[4][4], float t, float u) {
         float twice21 = lbl_80562B68 * dp21;
         float coeff3 = c3t - twice20;
         float coeff2 = sum - twice21;
-        float t2 = u * u;
-        float t3 = t2 * u;
         coeff3 = coeff3 - half31;
-        return (coeff2 * t3 + coeff3 * t2) + half20 * u + p1;
+        return (coeff2 * u3 + coeff3 * u2) + half20 * u + p1;
     }
 }
 #pragma pop
@@ -372,9 +372,9 @@ extern void fn_802E317C(const char *, ...);
 extern void fn_801DC32C(void *);
 extern char lbl_8033940C[];
 extern char lbl_80339418[];
-#pragma push
 #pragma auto_inline off
 #pragma scheduling invalid_target
+/* Load the ground resource "track.gnd" (tag 'Grnd'), log a version/size mismatch if reported, and free the buffer when flagged. */
 int fn_801DC9B0(void) {
     char *path = lbl_8033940C;
     s32 size = 0;
@@ -394,7 +394,6 @@ int fn_801DC9B0(void) {
     return result;
 }
 #pragma scheduling on
-#pragma pop
 
 #pragma paired_single reset
 void fn_801DCA5C(void) {
