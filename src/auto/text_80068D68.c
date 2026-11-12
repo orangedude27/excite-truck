@@ -11808,15 +11808,19 @@ int btm_num_sco_links_active(void) {
     int count = 0;
     int state;
     state = *(unsigned short *)(base + 0x185c);
-    if (state < 7) {
-        if (state >= 2)
-            count = 1;
-    }
+    if (state >= 7) goto next1;
+    if (state >= 2) goto set1;
+    goto next1;
+set1:
+    count = 1;
+next1:
     state = *(unsigned short *)(base + 0x1890);
-    if (state < 7) {
-        if (state >= 2)
-            count++;
-    }
+    if (state >= 7) goto next2;
+    if (state >= 2) goto set2;
+    goto next2;
+set2:
+    count++;
+next2:
     state = *(unsigned short *)(base + 0x18c4);
     if (state >= 7)
         return count;
@@ -24789,7 +24793,7 @@ static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UIN
     sdp_disconnect(p_ccb, SDP_SUCCESS);
 }
 
-extern void *add_record(void *, void *);
+extern void *add_record(); /* defined below: (tSDP_DISCOVERY_DB *p_db, BD_ADDR p_bda) */
 extern UINT8 *add_attr(UINT8 *, tSDP_DISCOVERY_DB *, tSDP_DISC_REC *, UINT16, tSDP_DISC_ATTR *, UINT8);
 /* Parses an SDP attribute-sequence element from a response and adds each attribute ID/value to the connection's discovery record. */
 UINT8 *save_attr_seq(tCONN_CB *p_ccb, UINT8 *p, UINT8 *p_msg_end) {
