@@ -449,6 +449,14 @@ extern "C" s32 fn_800B6004(void *);
 extern "C" void fn_800B783C(void *arg0);
 extern "C" s32 fn_800B77C0(void *arg0);
 extern "C" s32 fn_800B5E14(void *arg0);
+extern "C" s32 fn_800A53C0(void *);
+extern "C" s32 fn_800A53DC(void *);
+extern "C" void fn_800A53E8(void *);
+extern "C" void fn_800A53CC(void *);
+extern "C" s32 fn_800A5788(void *, s32);
+extern "C" s32 fn_800B5988(void *);
+extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *);
+extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *);
 extern "C" s32 fn_800AEF6C(void *);
 extern "C" s32 fn_800B5700(s32, void *, s32, u16, u32, u32 *, u32);
 extern "C" void fn_800A52A0(void *, const void *);
@@ -3372,9 +3380,9 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
-    u8 raw = src[0];
-    u32 count = raw & ~0x40;
-    u8 tag = src[0xD];
+    u32 raw = src[0];
+    u32 count = raw & 0xFFFFFFBF;
+    u32 tag = src[0xD];
     u32 index;
     u8 *entry;
     s32 first;
@@ -7050,16 +7058,15 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     extern s32 fn_800AE620(void *, u32, s32, void *);
     extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
-    u32 *out = arg3;
     VFiPFCursor *cur = (VFiPFCursor *)arg0;
     s32 sp8, result, sector;
     u32 length = arg2;
     VFiPFVol *fat;
-    *out = 0;
+    *arg3 = 0;
     if (cur == 0) sector = 0;
     else sector = (s32)cur->file->vol;
-    if (arg2 == 0) return 0;
-    if (cur->pos + arg2 > cur->file->size) {
+    if (length == 0) return 0;
+    if (cur->pos + length > cur->file->size) {
         length = cur->file->size - cur->pos;
         if (length == 0) return 0;
     }
@@ -7083,7 +7090,7 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     }
     result = fn_800B5324(sector, arg1, cur->off, length, &sp8, 1);
     if (result != 0 && sp8 == 0) return result;
-    *out = sp8;
+    *arg3 = sp8;
     VFiPFFILE_Cursor_AdvanceToRead(cur, sp8, cur->cluster);
     if ((u32)sp8 != length) return result;
     return 0;
@@ -7126,9 +7133,8 @@ extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
     u8 *a1 = (u8 *)arg1;
     u8 *chosen = 0;
     s32 chosenIndex = 0;
-    s32 i;
     u8 *entry = base;
-    for (i = 0; i < 5; i++) {
+    for (s32 i = 0; i < 5; i++) {
         u32 flags = *(u32 *)(entry + 0x40);
         if ((flags & 1) == 0 || ((__cntlzw(flags) >> 5) & 2) != 0) {
             if (chosen == 0) {
@@ -7146,26 +7152,29 @@ extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
     *(u32 *)chosen = 3;
     *(u16 *)(chosen + 0x298) = 0;
     *(B240 *)(chosen + 0x3C) = *(B240 *)a1;
-    *(u16 *)(chosen + 0x27C) = 0;
-    *(u16 *)(chosen + 0x27E) = 0;
-    *(u32 *)(chosen + 0x280) = 0;
-    *(u32 *)(chosen + 0x284) = 0;
-    *(u32 *)(chosen + 0x288) = 0;
-    fn_800AF530(chosen + 4, 0, *(u32 *)(a1 + 0x22C), (s32)(chosen + 0x270));
-    if (*(u16 *)(base + 0x1FB0) & 1) {
-        *(u32 *)(chosen + 0x20) = *(u32 *)(base + 0x1FB4) + chosenIndex * *(u32 *)(base + 0x1FB8) * 4;
-        fn_800A499C((const char *)*(u32 *)(chosen + 0x20), 0, *(u32 *)(base + 0x1FB8) * 4);
-        *(u32 *)(chosen + 0x2C) = *(u32 *)(base + 0x1FB8);
-        *(u16 *)(chosen + 0x24) = *(u16 *)(base + 0x1FB2);
-        *(u16 *)(chosen + 0x26) = 0;
-        *(u32 *)(chosen + 0x28) = 0;
-        *(u32 *)(chosen + 0x30) = 0;
-        if (*(u32 *)(a1 + 0x228) != 0 && *(u32 *)(chosen + 0x2C) != 0) {
-            **(u32 **)(chosen + 0x20) = *(u32 *)(a1 + 0x234);
-            *(u32 *)(chosen + 0x28) += 1;
+    {
+        s32 zero = 0;
+        *(u16 *)(chosen + 0x27C) = zero;
+        *(u16 *)(chosen + 0x27E) = zero;
+        *(u32 *)(chosen + 0x280) = zero;
+        *(u32 *)(chosen + 0x284) = zero;
+        *(u32 *)(chosen + 0x288) = zero;
+        ((s32 (*)(void *, void *, s32, s32))fn_800AF530)(chosen + 4, 0, *(u32 *)(a1 + 0x22C), (s32)(chosen + 0x270));
+        if (*(u16 *)(base + 0x1FB0) & 1) {
+            *(u32 *)(chosen + 0x20) = *(u32 *)(base + 0x1FB4) + chosenIndex * *(u32 *)(base + 0x1FB8) * 4;
+            fn_800A499C((const char *)*(u32 *)(chosen + 0x20), 0, *(u32 *)(base + 0x1FB8) * 4);
+            *(u32 *)(chosen + 0x2C) = *(u32 *)(base + 0x1FB8);
+            *(u16 *)(chosen + 0x24) = *(u16 *)(base + 0x1FB2);
+            *(u16 *)(chosen + 0x26) = zero;
+            *(u32 *)(chosen + 0x28) = zero;
+            *(u32 *)(chosen + 0x30) = zero;
+            if (*(u32 *)(a1 + 0x228) != 0 && *(u32 *)(chosen + 0x2C) != 0) {
+                **(u32 **)(chosen + 0x20) = *(u32 *)(a1 + 0x234);
+                *(u32 *)(chosen + 0x28) += 1;
+            }
         }
+        return chosen;
     }
-    return chosen;
 }
 
 extern "C" s32 VFiPFPATH_parseShortName(void *, void *);
@@ -7985,9 +7994,11 @@ extern "C" void *fn_800B224C(void *fileObj, void *info) {
 }
 
 extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    struct Tok { s32 w[4]; };
+    union Tok { s32 w[4]; f64 d[2]; };
     Tok cur;
     Tok prev;
+    Tok *psrc;
+    Tok *pdst;
     s32 var;
     s32 userData;
     s32 r;
@@ -8009,8 +8020,8 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (r != 0) return r;
     if (cur.w[0] == 0 || (u16)fn_800A4F08(&cur) == 0) return 2;
     if (((u32 *)arg0)[1] < (u32)cur.w[1]) return 2;
-    ((f64 *)&prev)[0] = ((f64 *)&cur)[0];
-    ((f64 *)&prev)[1] = ((f64 *)&cur)[1];
+    prev.d[0] = cur.d[0];
+    prev.d[1] = cur.d[1];
     for (;;) {
         if (VFiPFSTR_StrNCmp((s32)&cur, lbl_8055920C, 2, 0, 1) == 0) {
             var = prev.w[1];
@@ -8021,8 +8032,8 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         if ((u16)fn_800A4F08(&cur) == 0) return 2;
         if (((u32 *)arg0)[1] >= (u32)cur.w[1] && cur.w[0] != 0) {
             var = prev.w[1];
-            ((f64 *)&prev)[0] = ((f64 *)&cur)[0];
-            ((f64 *)&prev)[1] = ((f64 *)&cur)[1];
+            prev.d[0] = cur.d[0];
+            prev.d[1] = cur.d[1];
             continue;
         }
         break;
@@ -8030,7 +8041,12 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     ((s32 *)arg1)[0] = ((s32 *)arg0)[0];
     ((s32 *)arg1)[1] = var;
     if (arg2 != 0) {
-        *(Tok *)arg2 = prev;
+        psrc = &prev;
+        pdst = (Tok *)arg2;
+        pdst->w[0] = psrc->w[0];
+        pdst->w[1] = psrc->w[1];
+        pdst->w[2] = psrc->w[2];
+        pdst->w[3] = psrc->w[3];
     }
     return 0;
 }
@@ -10414,10 +10430,10 @@ extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
         return fn_800A4BE8(1, 2);
     }
     if (c >= 0xa1 && c <= 0xdf) {
+        s32 n = 2 - 1;
         s32 w = c + 0x10000;
-        w -= 0x140;
-        *arg1 = w;
-        return fn_800A4BE8(1, 2);
+        *arg1 = w - 0x140;
+        return fn_800A4BE8(n, 2);
     }
     if (c == 0x80 || c == 0x85 || c == 0x86 || c == 0xa0 || c == 0xeb || c == 0xec ||
         (c >= 0xef && c <= 0xf9) || (c >= 0xfd && c == 0xff)) {
@@ -11376,7 +11392,7 @@ extern "C" s32 fn_800B8BE8(s32 arg0) { if (!arg0) return -0x14; if (!lbl_8055DD2
 extern "C" s32 fn_800B808C(s32, void *, s32);
 extern "C" unsigned char lbl_80405D58[];
 #pragma dont_inline on
-extern "C" s32 fn_800B8C74(s32 arg0) {
+extern "C" s32 fn_800B8C74(s32 arg0) { /* z5 */
     u8 *found;
     u16 i;
     u8 *cur;
@@ -11391,7 +11407,7 @@ extern "C" s32 fn_800B8C74(s32 arg0) {
         cur = lbl_80405D58 + i * 0xF0;
         if (*(u32 *)cur == (u32)arg0) { entry = cur; break; }
     }
-    if (((-0x16) & ((s32)~((i - 0x17) | (0x17 - i)) >> 31)) == 0) {
+    if ((((s32)~((i - 0x17) | (0x17 - i)) >> 31) & -0x16) == 0) {
         if (*(u32 *)(entry + 0xE4) & 2) {
             fn_800B8048(lbl_8055DD30);
             return -21;
@@ -16125,8 +16141,9 @@ extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, v
 extern "C" s32 lbl_8031D718[];
 extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
     s32 t;
-    s32 a6, a7, a8;
-    s32 *b44 = b + 17;
+    s32 a6;
+    s32 a7;
+    s32 a8;
     t = -a[0]; o1[0] = b[0]; o2[0] = -(t + b[17]);
     t = -a[1]; o1[64] = -b[1]; o2[-64] = t + b[16];
     t = -a[2]; o1[128] = b[2]; o2[-128] = -(t + b[15]);
@@ -16134,14 +16151,14 @@ extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
     t = -a[4]; o1[256] = b[4]; o2[-256] = -(t + b[13]);
     t = -a[5]; o1[320] = -b[5]; o2[-320] = t + b[12];
     a6 = a[6];
-    o1[384]=(s32)(((s64)a6*lbl_8031D718[0])>>20)+b[6];
-    o2[-384]= -((s32)(((s64)a6*lbl_8031D718[1])>>20)+b[11]);
+    o1[384] = (s32)(((s64)a6 * lbl_8031D718[0]) >> 20) + b[6];
+    o2[-384] = -((s32)(((s64)a6 * lbl_8031D718[1]) >> 20) + b[11]);
     a7 = a[7];
-    o1[448]= -((s32)(((s64)a7*lbl_8031D718[2])>>20)+b[7]);
-    o2[-448]= (s32)(((s64)a7*lbl_8031D718[3])>>20)+b44[-7];
+    o1[448] = -((s32)(((s64)a7 * lbl_8031D718[2]) >> 20) + b[7]);
+    o2[-448] = (s32)(((s64)a7 * lbl_8031D718[3]) >> 20) + b[10];
     a8 = a[8];
-    o1[512]=(s32)(((s64)a8*lbl_8031D718[4])>>20)+b[8];
-    o2[-512]= -((s32)(((s64)a8*lbl_8031D718[5])>>20)+b44[-8]);
+    o1[512] = (s32)(((s64)a8 * lbl_8031D718[4]) >> 20) + b[8];
+    o2[-512] = -((s32)(((s64)a8 * lbl_8031D718[5]) >> 20) + b[9]);
 }
 
 extern u32 lbl_8031D730[];
@@ -18242,6 +18259,50 @@ extern "C" s32 fn_800CFBC0(void *arg0, s32 arg1) {
     return *(s32 *)((char *)entry + 4);
 }
 
+s32 homebutton::gui::Manager::update(int arg1, f32 farg0, f32 farg1, unsigned long arg2, unsigned long arg3, unsigned long arg4, void *arg5) {
+    class ObjDispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
+        virtual s32 d6(); virtual void d7(unsigned long, u32 *); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12();
+        virtual void prepare(unsigned long, u32 *);
+        virtual void d14(); virtual void d15();
+        virtual s32 handle(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *);
+        virtual s32 check();
+    };
+    class MgrDispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
+        virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9();
+        virtual void apply(s32, s32, void *);
+    };
+    u32 sp14[3];
+    u32 sp8[3];
+    s32 result = 0;
+    ObjDispatch *last = 0;
+    u32 index = 0;
+    while (index < *(u16 *)((u8 *)this + 0x10)) {
+        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, (u16)index);
+        if ((*(ObjDispatch **)((u8 *)item + 4))->handle(arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
+            if ((*(ObjDispatch **)((u8 *)item + 4))->check()) last = *(ObjDispatch **)((u8 *)item + 4);
+            result = 1;
+        }
+        index++;
+        if ((u8 *)this + 8 == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    }
+    if (last) {
+        if (arg2) {
+            last->prepare(arg2, sp14);
+            ((MgrDispatch *)this)->apply(last->d6(), 0, arg5);
+        }
+        if (arg4) {
+            last->prepare(arg4, sp8);
+            ((MgrDispatch *)this)->apply(last->d6(), 5, arg5);
+        }
+    }
+    return result;
+}
+
 #pragma push
 #pragma processor 750
 extern "C" s32 update__Q310homebutton3gui9ComponentFiffUlUlUlPv(void *self, int pointIndex, f32 x, f32 y, unsigned long param4, unsigned long param5, unsigned long param6, void *userData) {
@@ -20313,17 +20374,20 @@ extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
     if (lbl_80560E48 < delta && delta < lbl_80560E4C) found = 1;
     if (found) {
         if ((u32)high < arg1 - 1) {
-            const u8 *next = base + (high + 1) * 12;
-            if (*(f32 *)right == *(f32 *)next)
-                return *(f32 *)(next + 4);
+            s32 off = (high + 1) * 12;
+            if (*(f32 *)right == *(f32 *)(base + off)) {
+                base += off;
+                return *(f32 *)(base + 4);
+            }
         }
         return *(f32 *)(right + 4);
     }
     f32 d = farg0 - *(f32 *)left;
     f32 one = lbl_80560E50;
-    f32 scale = one / (*(f32 *)right - *(f32 *)left);
+    f32 dx = *(f32 *)right - *(f32 *)left;
     f32 k54 = lbl_80560E54;
     f32 k58 = lbl_80560E58;
+    f32 scale = one / dx;
     f32 k5c = lbl_80560E5C;
     f32 ly = *(f32 *)(left + 4);
     f32 ry = *(f32 *)(right + 4);
