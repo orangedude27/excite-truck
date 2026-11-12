@@ -233,6 +233,11 @@ void *__DSPHandler(void *arg0) {
     return arg0;
 }
 
+/* Assert (preempt) the current DSP task with a higher-priority task.
+ * If `task` is already running, marks it as the rude task and returns it.
+ * If `task` has higher priority than the running task, marks it as the rude
+ * task; if the running task is active, requests a DSP preempt via CC00500A.
+ * Returns `task` when accepted, or NULL if it cannot preempt. */
 void *DSPAssertTask(void *arg0) {
     s32 interrupts;
     s32 irq;
