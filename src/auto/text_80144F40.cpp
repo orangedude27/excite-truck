@@ -458,6 +458,7 @@ extern "C" void fn_801456E8(void *arg0, s32 arg1) {
     fn_802E3AD0(arg1, lbl_80559E14);
 }
 #pragma scheduling on
+/* Dump each 0x28-byte entry of a table to arg1 using format strings in lbl_8032CEC8. */
 extern "C" void fn_801457D0(void *arg0, s32 arg1) {
     char *base = lbl_8032CEC8;
     s32 offset;
