@@ -10604,18 +10604,19 @@ void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) 
 }
 
 tBTM_STATUS BTM_RemoveSco(UINT16 sco_inx) {
-    u8 *entry = lbl_803C0F78 + sco_inx * 0x34;
-    u16 state;
-    if (sco_inx >= 3 || (state = *(u16 *)(entry + 0x185C)) == 0) return 7;
-    if (*(u16 *)(entry + 0x185E) == 0xFFFF || state == 6) {
-        *(u16 *)(entry + 0x185E) = 0xFFFF;
-        *(u16 *)(entry + 0x185C) = 0;
-        *(u32 *)(entry + 0x1864) = 0;
+    /* Remove a SCO connection by index, or clear a pending/unparked slot. */
+    u8 *scoEntry = lbl_803C0F78 + sco_inx * 0x34;
+    u16 savedState;
+    if (sco_inx >= 3 || (savedState = *(u16 *)(scoEntry + 0x185C)) == 0) return 7;
+    if (*(u16 *)(scoEntry + 0x185E) == 0xFFFF || savedState == 6) {
+        *(u16 *)(scoEntry + 0x185E) = 0xFFFF;
+        *(u16 *)(scoEntry + 0x185C) = 0;
+        *(u32 *)(scoEntry + 0x1864) = 0;
         return 0;
     }
-    *(u16 *)(entry + 0x185C) = 5;
-    if (!btsnd_hcic_disconnect(*(u16 *)(entry + 0x185E), 0x13)) {
-        *(u16 *)(entry + 0x185C) = state;
+    *(u16 *)(scoEntry + 0x185C) = 5;
+    if (!btsnd_hcic_disconnect(*(u16 *)(scoEntry + 0x185E), 0x13)) {
+        *(u16 *)(scoEntry + 0x185C) = savedState;
         return 3;
     }
     return 1;
