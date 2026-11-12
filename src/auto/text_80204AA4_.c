@@ -101,7 +101,7 @@ float fn_80204CFC(const char *arg0) {
 
     temp = lbl_8055ED5C;
     if (*(int *)((char *)temp + 0x10) != 0) {
-        fn_801345D8(buf, 0x64, &lbl_8055B4AC, arg0);
+        fn_801345D8(buf, 0x64, lbl_8055B4AC, arg0);
         obj = *(void **)((char *)temp + 0xC);
         if (obj != 0 && (*(int (**)(void *))(*(void ***)obj + 3))(buf) != 0) {
             obj = *(void **)((char *)temp + 0xC);
