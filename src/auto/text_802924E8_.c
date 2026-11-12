@@ -716,29 +716,34 @@ cont:
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_80293374(void *arg0, void *arg1) {
+/* Loads the car chunk effect's chunk models: the MODL resources
+ * "<base>1.mod" .. "<base>8.mod" (lbl_80349250 is "%s%d.mod"), stopping at the
+ * first name the resource system does not have, and leaving the slots no model
+ * was found for at -1.  The car one takes no instance and remaps no texture;
+ * fn_80293CD0 and fn_80294530 do the "ter" and "wood" ones. */
+int fn_80293374(void *object, void *modelBase) {
     char name[0x20];
     int count;
-    *(s32 *)((u8 *)arg0 + 0x28) = 0;
+    ChunkSys *chunkSys = (ChunkSys *)object;
+    chunkSys->modelCount = 0;
     goto check;
 loop:
     ((void (*)(void *, int, const char *, ...))fn_801345D8)(
-        name, 0x20, lbl_80349250, (int)arg1,
-        *(s32 *)((u8 *)arg0 + 0x28) + 1);
+        name, 0x20, lbl_80349250, (int)modelBase,
+        chunkSys->modelCount + 1);
     if (fn_8012C33C(name) == 0) goto padding;
-    *(s32 *)((u8 *)arg0 + *(s32 *)((u8 *)arg0 + 0x28) * 4 + 8) =
-        fn_802C6FC0(name, 0, 0);
-    count = *(s32 *)((u8 *)arg0 + 0x28);
+    chunkSys->models[chunkSys->modelCount] = fn_802C6FC0(name, 0, 0);
+    count = chunkSys->modelCount;
     count++;
-    *(s32 *)((u8 *)arg0 + 0x28) = count;
+    chunkSys->modelCount = count;
 check:
-    if (*(s32 *)((u8 *)arg0 + 0x28) < 8) goto loop;
+    if (chunkSys->modelCount < 8) goto loop;
 padding:
     {
-        s32 *arr = (s32 *)arg0;
-        count = *(s32 *)((u8 *)arg0 + 0x28);
+        s32 *models = (s32 *)chunkSys;  /* models[2 + i] is model handle i */
+        count = chunkSys->modelCount;
         for (; count < 8; count++)
-            arr[count + 2] = -1;
+            models[count + 2] = -1;
     }
 }
 #pragma pop
