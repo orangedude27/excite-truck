@@ -5411,11 +5411,10 @@ void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused)
             lbl_803C0C14[(u32)i * 0xB + 6] = 1;
             config = lbl_80559010;
             for (j = 1; j <= config[1]; j++) {
-                u32 peer_offset = (u32)j * 4 - j;
-                if ((addr == config[peer_offset + 1] || config[peer_offset + 1] == 0xFF) &&
-                    addr_type == config[peer_offset]) {
-                    if (config[peer_offset + 2] > lbl_803C0C14[(u32)i * 0xB + 7])
-                        lbl_803C0C14[(u32)i * 0xB + 7] = config[peer_offset + 2];
+                if ((addr == config[(u32)j * 3 + 1] || config[(u32)j * 3 + 1] == 0xFF) &&
+                    addr_type == config[(u32)j * 3]) {
+                    if (config[(u32)j * 3 + 2] > lbl_803C0C14[(u32)i * 0xB + 7])
+                        lbl_803C0C14[(u32)i * 0xB + 7] = config[(u32)j * 3 + 2];
                     return;
                 }
             }
@@ -9134,30 +9133,33 @@ u8 fn_8007B340(void) {
 
 extern u8 lbl_803163D0[];
 tBTM_STATUS BTM_CancelInquiry(void) {
-    u8 *cb2;
-    u8 *cb = lbl_803C0F78;
-    tBTM_STATUS result = 0;
-    if (cb[0x27C0] >= 3) fn_8007093C(0xD0002, lbl_803163D0);
+    u8 *btmCb2;
+    u8 *btmCb = lbl_803C0F78;
+    tBTM_STATUS status = 0;
+    /* Cancel an active inquiry: log if busy, refuse when not ready, clear inquiry
+       state (or complete pending cancel via HCI), bump the cancel count, and free
+       any queued inquiry result buffer. */
+    if (btmCb[0x27C0] >= 3) fn_8007093C(0xD0002, lbl_803163D0);
     if (fn_80079514() == 0) return 6;
-    if (cb[0x1848] != 0 && !(cb[0x1848] & 4)) {
-        cb[0x1848] = 0;
-        cb[0x1847] = 0;
-        *(u32 *)(cb + 0x16B4) = 0;
-        *(u32 *)(cb + 0x16B0) = 0;
-        if (cb[0x1844] != 0) {
-            cb[0x1844] = 0;
-            cb[0x1845]++;
-        } else if (btsnd_hcic_inq_cancel() == 0) result = 3;
-        cb2 = lbl_803C0F78;
-        *(u32 *)(cb + 0x16C0) += 1;
-        if (*(void **)(cb2 + 0x16DC) != NULL) {
-            GKI_freebuf(*(void **)(cb2 + 0x16DC));
-            *(u32 *)(cb2 + 0x16DC) = 0;
+    if (btmCb[0x1848] != 0 && !(btmCb[0x1848] & 4)) {
+        btmCb[0x1848] = 0;
+        btmCb[0x1847] = 0;
+        *(u32 *)(btmCb + 0x16B4) = 0;
+        *(u32 *)(btmCb + 0x16B0) = 0;
+        if (btmCb[0x1844] != 0) {
+            btmCb[0x1844] = 0;
+            btmCb[0x1845]++;
+        } else if (btsnd_hcic_inq_cancel() == 0) status = 3;
+        btmCb2 = lbl_803C0F78;
+        *(u32 *)(btmCb + 0x16C0) += 1;
+        if (*(void **)(btmCb2 + 0x16DC) != NULL) {
+            GKI_freebuf(*(void **)(btmCb2 + 0x16DC));
+            *(u32 *)(btmCb2 + 0x16DC) = 0;
         }
-        *(u16 *)(cb2 + 0x16E0) = 0;
-        *(u16 *)(cb2 + 0x16E2) = 0;
+        *(u16 *)(btmCb2 + 0x16E0) = 0;
+        *(u16 *)(btmCb2 + 0x16E2) = 0;
     }
-    return result;
+    return status;
 }
 
 tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *results_cb, tBTM_CMPL_CB *complete_cb) {
@@ -14045,13 +14047,13 @@ psm_found:
 
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
-    u8 i = 0;
-
-    while (i < 8) {
-        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
-            goto found;
-        i++;
-        conn += 0x60;
+    u8 i;
+    for (i = 0; i < 8; i++, conn += 0x60) {
+        if (conn[0] == 0)
+            continue;
+        if (*(u16 *)(conn + 6) != cid)
+            continue;
+        goto found;
     }
     conn = NULL;
 found:
