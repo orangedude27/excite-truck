@@ -2240,7 +2240,7 @@ extern "C" void fn_8021C12C(void *arg0) {
 
 extern "C" char lbl_80558DC4[];
 #pragma push
-#pragma ppc_psq_save off
+#pragma processor 750
 extern "C" s32 fn_8021C18C(void *arg0, s32 arg1) {
     f32 first;
     s32 *check = *(s32 **)((u8 *)arg0 + 0x2A8);
@@ -2703,12 +2703,14 @@ extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
     left = *(s32 *)(self + 4);
     s32 size = *(s32 *)(self + 0x254);
     s32 width = ((BoundsSource *)arg0)->GetWidth();
-    f32 amount = (f32)(arg1 - left - size / 2) / (f32)(width - size);
+    s32 denom = width - size;
+    s32 numer = arg1 - left - size / 2;
+    f32 fden = (f32)denom;
+    f32 fnum = (f32)numer;
+    f32 amount = fnum / fden;
     f32 value = lbl_805634A4;
-    if (value < amount)
-        value = amount;
-    if (value > lbl_805634A8)
-        value = lbl_805634A8;
+    value = (value < amount) ? amount : value;
+    value = (value > lbl_805634A8) ? lbl_805634A8 : value;
     CacheTarget *target = *(CacheTarget **)(self + 0x248);
     target->Set(value);
 }
@@ -4960,13 +4962,11 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     s32 var_r31;
     void *temp_r21;
     s32 *items;
-
     fn_802C3034(arg1);
     temp_r18 = *(s32 *)((u8 *)arg0 + 4);
     temp_r20 = *(s32 *)((u8 *)arg0 + 8);
     var_r18 = ((VfObj *)arg0)->vf28();
-    fn_802C3424(temp_r18, temp_r20, temp_r18 + var_r18,
-                temp_r20 + 0xA, lbl_8055FBE4);
+    fn_802C3424(temp_r18, temp_r20, temp_r18 + var_r18, temp_r20 + 0xA, lbl_8055FBE4);
     var_r24 = *(s32 *)((u8 *)arg0 + 4);
     var_r22 = 0;
     temp_r23 = *(s32 *)((u8 *)arg0 + 8);
@@ -4975,29 +4975,23 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     temp_r29 = lbl_8055FBFC;
     temp_r28 = lbl_8055FBF8;
     goto outer_check;
-
 outer_body:
     temp_r21 = *(void **)((u8 *)items + var_r31);
-    fn_802C4F58(var_r24 + 2, temp_r23 + 2,
-                (const char *)((u8 *)items + var_r31 + 4), temp_r30);
+    fn_802C4F58(var_r24 + 2, temp_r23 + 2, (const char *)((u8 *)items + var_r31 + 4), temp_r30);
     if (var_r22 == *(s32 *)((u8 *)arg0 + 0x24C)) {
         temp_r20 = *(s32 *)((u8 *)temp_r21 + 8);
-        fn_802C3424(var_r24, temp_r23 + 0xA, var_r24 + 0x32,
-                    temp_r23 + (temp_r20 + 1) * 0xA, temp_r29);
+        fn_802C3424(var_r24, temp_r23 + 0xA, var_r24 + 0x32, temp_r23 + (temp_r20 + 1) * 0xA, temp_r29);
         var_r26 = temp_r23 + 0xB;
         var_r25 = temp_r23 + 0xC;
         var_r20 = 0;
         var_r27 = 0;
         do {
             if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
-                fn_802C3424(var_r24 + 1, var_r26, var_r24 + 0x31,
-                            temp_r23 + var_r27 + 0x13, temp_r30);
+                fn_802C3424(var_r24 + 1, var_r26, var_r24 + 0x31, temp_r23 + var_r27 + 0x13, temp_r30);
             temp_r18 = temp_r30;
             if (var_r20 == *(s32 *)((u8 *)arg0 + 0x250))
                 temp_r18 = temp_r28;
-            fn_802C4F58(var_r24 + 2, var_r25,
-                        (const char *)((s32 (*)(s32 *, s32))fn_8022D97C)(
-                            (s32 *)temp_r21, var_r20), temp_r18);
+            fn_802C4F58(var_r24 + 2, var_r25, (const char *)((s32 (*)(s32 *, s32))fn_8022D97C)((s32 *)temp_r21, var_r20), temp_r18);
             var_r27 += 0xA;
             var_r26 += 0xA;
             var_r25 += 0xA;
@@ -6017,21 +6011,19 @@ extern "C" void *fn_80223B94(void *arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma push
 #pragma processor 750
 extern "C" void fn_80223C20(void *arg0) {
-    f32 temp_f31;
-    u8 sp8[0x40];
-    temp_f31 = lbl_805634A8;
-    *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x260) + 0x30) = lbl_805634A4 - *(f32 *)((u8 *)arg0 + 0x25C);
-    if (*(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x260) + 0x30) > temp_f31 && *(s32 *)((u8 *)arg0 + 0x250) != 0) {
-        fn_8022EEF8(sp8, (s32)*(void **)((u8 *)arg0 + 0x260), fn_8022EDC4());
+    float temp_f31 = lbl_805634A8;
+    unsigned char sp8[0x40];
+    *(float *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x260) + 0x30) = lbl_805634A4 - *(float *)((unsigned char *)arg0 + 0x25C);
+    if (*(float *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x260) + 0x30) > temp_f31 && *(int *)((unsigned char *)arg0 + 0x250) != 0) {
+        fn_8022EEF8(sp8, (int)*(void **)((unsigned char *)arg0 + 0x260), fn_8022EDC4());
         fn_8022ED00(sp8);
-        fn_802C5320(*(s32 *)((u8 *)arg0 + 0x250), 0, *(f32 *)((u8 *)arg0 + 0x244), *(f32 *)((u8 *)arg0 + 0x248), temp_f31, *(f32 *)((u8 *)arg0 + 0x254), *(f32 *)((u8 *)arg0 + 0x258));
+        fn_802C5320(*(int *)((unsigned char *)arg0 + 0x250), 0, *(float *)((unsigned char *)arg0 + 0x244), *(float *)((unsigned char *)arg0 + 0x248), temp_f31, *(float *)((unsigned char *)arg0 + 0x254), *(float *)((unsigned char *)arg0 + 0x258));
         fn_8022EDB8();
     }
 }
-#pragma pop
+#pragma processor pop
 extern "C" void fn_80223CC4(void *arg0) {
     void *obj = *(void **)((u8 *)arg0 + 0x264);
     s32 a = *(s32 *)((u8 *)arg0 + 0x24C);
@@ -7357,21 +7349,21 @@ extern "C" void fn_80226F94(void *arg0) {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
-    f32 result[11];
-    f32 scaled[3];
-    *(u8 *)((u8 *)arg0 + 0x260) = 1;
+extern "C" void fn_80227044(void *arg0, float x, float y, float z) {
+    float result[11];
+    float scaled[3];
+    *(unsigned char *)((char *)arg0 + 0x260) = 1;
     void *tmp = fn_8022EE9C();
-    f32 k = lbl_805634F8;
-    *(void **)((u8 *)arg0 + 0x25C) = tmp;
-    f32 sz = k * z;
-    f32 sx = k * x;
-    f32 sy = k * y;
+    float k = lbl_805634F8;
+    *(void **)((char *)arg0 + 0x25C) = tmp;
+    float sz = k * z;
+    float sy = k * y;
+    float sx = k * x;
     scaled[0] = sx;
     scaled[1] = sy;
     scaled[2] = sz;
-    void *handle = *(void **)((u8 *)arg0 + 0x25C);
-    ((void (*)(void *, void *, f32, f32))fn_80015A20)(&result[0], &scaled[0], sx, sy);
+    void *handle = *(void **)((char *)arg0 + 0x25C);
+    ((void (*)(void *, void *, float, float))fn_80015A20)(&result[0], &scaled[0], sx, sy);
     fn_80015B20(handle, &result[0], handle);
 }
 #pragma pop
