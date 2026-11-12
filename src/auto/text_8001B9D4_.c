@@ -470,22 +470,25 @@ s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
 #pragma push
 #pragma use_lmw_stmw off
 s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
-    s32 offset = 0;
-    s32 i = 0;
-    void *entry;
     void *record;
-    for (;;) {
-        entry = lbl_80358658[arg0];
-        record = (void *)(*(s32 *)entry + offset);
-        if (fn_8001C27C(record, arg1, arg2) != 0) {
-            return (s32)record;
-        }
-        offset += 0x2C;
-        i++;
-        if (i >= *(s32 *)((u8 *)entry + 4)) {
-            return 0;
-        }
+    s32 offset;
+    s32 i;
+    void *entry;
+    i = 0;
+    offset = 0;
+    goto bottom;
+top:
+    record = (void *)(*(s32 *)entry + offset);
+    if (fn_8001C27C(record, arg1, arg2) != 0) {
+        return (s32)record;
     }
+    offset += 0x2C;
+    i++;
+bottom:
+    entry = lbl_80358658[arg0];
+    if (i < *(s32 *)((u8 *)entry + 4))
+        goto top;
+    return 0;
 }
 #pragma pop
 #pragma use_lmw_stmw reset
