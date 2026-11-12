@@ -701,7 +701,7 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 deleteFlag, 
 #pragma scheduling on
 #pragma use_lmw_stmw off
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
-    typedef void (*Callback)(s32, void *, void *, void *);
+    typedef void (*Callback)(s32, void *, void *, u32);
     struct LinkList { void *next; void *prev; };
     struct WavePlayer {
         u8 pad_0[4];
@@ -713,18 +713,9 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
         u8 stopped;
         u8 pad_1e[0x6E];
         Callback callback;
-        void *callbackArg;
+        u32 callbackArg;
     };
-    u32 level;
-    u32 voiceLevel;
-    u8 zero;
-    void *sentinel;
-    void *node;
-    void *entry;
-    void *iterator;
-    void *userData;
-
-    level = OSDisableInterrupts();
+    u32 level = OSDisableInterrupts();
     if (((WavePlayer *)arg0)->inList != 0) {
         if (arg0 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803274C0, 0x233,
@@ -733,29 +724,29 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
             lbl_8041D4AC, (u8 *)arg0 + 0x94);
         ((WavePlayer *)arg0)->inList = 0;
     }
-    voiceLevel = OSDisableInterrupts();
+    u32 voiceLevel = OSDisableInterrupts();
     if (((WavePlayer *)arg0)->voice != 0)
         Stop__Q46nw4hbm3snd6detail7AxVoiceFv(((WavePlayer *)arg0)->voice);
-    zero = 0;
-    ((WavePlayer *)arg0)->stopped = zero;
+    ((WavePlayer *)arg0)->stopped = 0;
     OSRestoreInterrupts(voiceLevel);
-    sentinel = (u8 *)arg0 + 8;
-    node = ((WavePlayer *)arg0)->waves.next;
+
+    void *sentinel = (u8 *)arg0 + 8;
+    void *node = ((WavePlayer *)arg0)->waves.next;
     while (node != sentinel) {
-        entry = node;
+        void *entry = node;
         node = *(void **)node;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
                                          (const char *)lbl_8032746C);
-        *((u8 *)entry - 4) = zero;
-        iterator = entry;
+        *((u8 *)entry - 4) = 0;
+        void *iterator = entry;
         Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(
             (u8 *)arg0 + 8, &iterator);
         if (((WavePlayer *)arg0)->callback != 0) {
             if (entry == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
                                              (const char *)lbl_8032746C);
-            userData = (u8 *)entry - 0x18;
+            void *userData = (u8 *)entry - 0x18;
             if (userData == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                              (const char *)lbl_8032743C);
@@ -766,7 +757,7 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
     if (*(volatile u32 *)((volatile u8 *)arg0 + 4) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327040, 0x162,
                                      (const char *)lbl_803271B8);
-    *((u8 *)arg0 + 0x1F) = zero;
+    *((u8 *)arg0 + 0x1F) = 0;
     OSRestoreInterrupts(level);
 }
 
@@ -783,8 +774,8 @@ extern "C" void fn_800FF090(void *arg0) {
         u8 pad[0x34];
     };
     struct WaveData waveData[2];
+    u8 *wave;
     u32 interruptLevel;
-    u32 wave;
     const char *base;
     u32 format;
     u8 *waveOut;
@@ -802,7 +793,7 @@ extern "C" void fn_800FF090(void *arg0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1F1,
                                     (const char *)lbl_8032740C);
     }
-    wave = (u32)*(void **)((u8 *)arg0 + 8);
+    wave = (u8 *)*(void **)((u8 *)arg0 + 8);
     if (wave == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
                                     (const char *)lbl_8032746C);
@@ -832,10 +823,10 @@ extern "C" void fn_800FF090(void *arg0) {
     waveData[0].loopStart = 0;
     waveData[0].sampleBytes =
         GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(
-            *(u32 *)((u8 *)wave + 0x10), format);
+            *(u32 *)(wave + 0x10), format);
     waveOut = (u8 *)&waveData[0];
     for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x10); i++) {
-        *(const void **)(waveOut + 0x10) = *(const void **)((u8 *)wave + 8);
+        *(const void **)(waveOut + 0x10) = *(const void **)(wave + 8);
         wave += 4;
         waveOut += 0x44;
     }
@@ -894,51 +885,66 @@ extern "C" void UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(void *self) {
         u32 unkC, sampleBytes;
         u8 valid, pad[3];
     };
-    register u32 sample;
-    register s32 i;
+    struct WP {
+        u32 unk0, count;
+        void *head;
+        u32 unkC, voiceCount;
+        u32 unk14;
+        void *voice;
+        u8 pad1c[2];
+        u8 stopped;
+        u8 pad1f[1];
+        s32 format;
+        u8 pad24[4];
+        s64 bytes;
+        u8 pad30[0x5c];
+        void (*callback)(s32, void *, void *, u32);
+        u32 callbackArg;
+    };
+    WP *w = (WP *)self;
     register PacketNode *node;
-    u64 size;
+    u32 size;
     void *iterator;
-    void (*callback)(s32, void *, void *, u32);
-    if (*(u32 *)((u8 *)self + 4) == 0)
+    if (w->count == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1f1,
                                      (const char *)lbl_8032740C);
-    node = (PacketNode *)*(void **)((u8 *)self + 8);
+    node = (PacketNode *)w->head;
     if (node == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23d,
                                      (const char *)lbl_8032746C);
-    node -= 1;
+    node = (PacketNode *)((u8 *)node - 0x18);
     if (node == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                      (const char *)lbl_8032743C);
-    *(volatile u8 *)&node->valid = 0;
-    iterator = *(void **)((u8 *)self + 8);
+    node->valid = 0;
+    iterator = w->head;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)self + 4, &iterator);
     size = node->sampleBytes;
-    if (*(s32 *)((u8 *)self + 0x20) == 1) size >>= 1;
-    *(u64 *)((u8 *)self + 0x28) += size;
-    callback = *(void (**)(s32, void *, void *, u32))((u8 *)self + 0x8c);
-    if (callback != 0) callback(0, self, node, *(u32 *)((u8 *)self + 0x90));
-    if (*(u32 *)((u8 *)self + 4) != 0) {
-        if (*(u32 *)((u8 *)self + 4) == 0)
+    if (w->format == 1) size >>= 1;
+    w->bytes += size;
+    if (w->callback != 0) w->callback(0, w, node, w->callbackArg);
+    if (w->count != 0) {
+        u32 sample;
+        s32 i;
+        if (w->count == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1f1,
                                          (const char *)lbl_8032740C);
-        node = (PacketNode *)*(void **)((u8 *)self + 8);
+        node = (PacketNode *)w->head;
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23d,
                                          (const char *)lbl_8032746C);
-        node -= 1;
+        node = (PacketNode *)((u8 *)node - 0x18);
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                          (const char *)lbl_8032743C);
         sample = GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(
-            node->sampleBytes, *(u32 *)((u8 *)*(void **)((u8 *)self + 0x18) + 0x118));
-        for (i = 0; i < *(s32 *)((u8 *)self + 0x10); node = (PacketNode *)((u8 *)node + 4), ++i) {
-            SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(*(void **)((u8 *)self + 0x18), i, node->data);
-            StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((u8 *)self + 0x18), i, node->data, sample);
+            node->sampleBytes, *(u32 *)((u8 *)w->voice + 0x118));
+        for (i = 0; i < (s32)w->voiceCount; node = (PacketNode *)((u8 *)node + 4), ++i) {
+            SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(w->voice, i, node->data);
+            StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(w->voice, i, node->data, sample);
         }
     }
-    *(u8 *)((u8 *)self + 0x1e) = 0;
+    w->stopped = 0;
 }
 
 #pragma use_lmw_stmw reset
