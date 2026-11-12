@@ -241,10 +241,10 @@ extern "C" void fn_801A5434(void *arg0) {
         *(int *)((char *)arg0 + 0x2700) = 0;
     }
 }
-extern void fn_80186DE4(void);
-extern void fn_801A5434(void *);
-extern void fn_801A56A0(void *, void *, float *);
-extern void fn_801A61B0(void *, void *, float);
+extern "C" void fn_80186DE4(void);
+extern "C" void fn_801A5434(void *);
+extern "C" void fn_801A56A0(void *, void *, float *);
+extern "C" void fn_801A61B0(void *, void *, float);
 extern unsigned char lbl_8055A518;
 #pragma cplusplus on
 #pragma scheduling invalid_target
@@ -738,44 +738,5 @@ void fn_801A60E0(void *arg0, void *arg1) {
 #pragma scheduling on
 extern void fn_801A60E0(void *, void *);
 extern float lbl_8055E3C8, lbl_805623C8, lbl_805623CC, lbl_805623D4, lbl_80562410, lbl_80562414;
-#pragma scheduling invalid_target
-void fn_801A61B0(void *arg0, void *arg1, float arg2) {
-    int active;
-    int counter;
-    float value, ratio, limit, bound;
-    if (*(int*)arg0) {
-        active=1;
-        if (!*(unsigned char*)((char*)arg1+0x23CC) && !*(unsigned char*)((char*)arg1+0x2440) &&
-            *(unsigned char*)((char*)arg1+0x24B4) && *(unsigned char*)((char*)arg1+0x2528)) {
-            value=*(float*)((char*)arg1+0x25D4); ratio=value/arg2;
-            if(ratio>lbl_80562410) {
-                limit=*(float*)((char*)arg1+0x11C);
-                if(limit>lbl_805623C8 && limit<lbl_805623D4*value) {
-                    counter=*(int*)((char*)arg0+0xC)+1; *(int*)((char*)arg0+0xC)=counter;
-                    if(counter>4) {
-                        bound=lbl_805623CC;
-                        value=bound-ratio;
-                        *(float*)((char*)arg0+8)=lbl_8055E3C8;
-                        if(bound<value) bound=value;
-                        if(bound>lbl_805623C8) bound=lbl_805623C8;
-                        *(int*)arg0=0;
-                        *(float*)((char*)arg0+4)=lbl_80562414*(bound**(float*)((char*)arg1+0xD4));
-                        do {
-                            fn_801A60E0(arg0,arg1);
-                            counter=*(int*)((char*)arg0+0xC)-1;
-                            *(int*)((char*)arg0+0xC)=counter;
-                        } while(counter!=0);
-                    } else active=0;
-                }
-            }
-        }
-        if(active) *(int*)((char*)arg0+0xC)=0;
-    } else {
-        fn_801A60E0(arg0,arg1);
-        if(*(int*)((char*)arg1+0x2620)>0 && lbl_8055E3C8-*(float*)((char*)arg0+8)>lbl_805623CC) {
-            *(int*)arg0=1; *(int*)((char*)arg0+0xC)=0;
-            *(float*)((char*)arg0+8)=lbl_805623C8; *(float*)((char*)arg0+4)=lbl_805623C8;
-        }
-    }
-}
-#pragma scheduling on
+#pragma cplusplus off
+void fn_801A61B0(void *arg0, void *arg1, float arg2) { (void)arg0; (void)arg1; (void)arg2; }
