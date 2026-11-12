@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#define M2F(e, t, o) (*(t)((char *)(e) + (o)))
 extern char lbl_8033BBD8[];
 extern void *fn_801E87A8(void);
 extern void *fn_801284F8(int, void *);
