@@ -2000,6 +2000,8 @@ extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802514B4(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h) {
+    /* Draw a UI element in three layers (ids 0, 3, 6) at (x,y,w,h): the middle
+     * layer uses a per-entry value from arg0's table at +0xCC, indexed by arg1. */
     s32 value = *(s32 *)(*(char **)((char *)arg0 + 0xCC) + arg1 * 0x14 + 0x10);
     fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 0, -1, x, y, lbl_80563960, w, h);
     fn_80216CB4();
@@ -2626,15 +2628,17 @@ void *fn_802522A8(void *arg0, s32 arg1) {
 }
 
 void fn_80252320(void *arg0, u8 *arg1, signed char arg2, int arg3) {
-    register s32 index = *(s32 *)((u8 *)arg0 + 8);
-    u8 *record = *(u8 **)((u8 *)arg0 + 4) + index * 0x48;
+    register s32 index;
+    u8 *record;
     register u8 *dst;
     register u8 *src;
     register s32 count;
     u8 c;
+    index = *(s32 *)((u8 *)arg0 + 8);
+    record = *(u8 **)((u8 *)arg0 + 4) + index * 0x48;
     *(s32 *)((u8 *)arg0 + 8) = index + 1;
-    src = arg1;
     dst = record;
+    src = arg1;
     count = 0x20;
     goto copy_first;
 first_loop:
@@ -2651,16 +2655,12 @@ first_done:
         src = fn_80019098(arg1);
         dst = record + 0x21;
         count = 0x20;
-        goto copy_second;
-second_loop:
-        count--;
-        if (count <= 0) { dst[-1] = 0; goto second_done; }
-copy_second:
-        c = *src++;
-        *dst++ = c;
-        if ((signed char)c != 0) goto second_loop;
-second_done:
-        ;
+        while ((signed char)(*dst++ = *src++) != 0) {
+            if (--count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
     } else {
         src = &lbl_8055C0E8;
         dst = record + 0x21;
