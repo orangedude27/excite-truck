@@ -20293,6 +20293,7 @@ void PORT_ControlCnf(void *mcb, u8 dlci, void *pars) {
         (*(void (**)(s32, u8))(port + 0x8c))(event, port[0]);
 }
 
+/* Notify the port's event callback of RFCOMM remote line status changes. */
 void PORT_LineStatusInd(void *mcb, u8 dlci, u8 line_status) {
     extern char lbl_80319440[];
     u8 *port;
