@@ -1798,7 +1798,7 @@ extern "C" void fn_8002F634(void *, void *, s32, s32);
 extern "C" void fn_800D2DD4(void);
 extern "C" s32 fn_80128668(void);
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, s32);
-extern "C" void *__dt__Q34nw4r3lyt8MaterialFv(void *self, s32 shouldDelete) {
+extern "C" void *__dt__Q34nw4r3lyt8MaterialFv(void *this_, s32 deleteFlag) {
     extern char lbl_8031FF08[];
     struct Obj {
         virtual void d0();
@@ -1809,23 +1809,24 @@ extern "C" void *__dt__Q34nw4r3lyt8MaterialFv(void *self, s32 shouldDelete) {
     };
     register void *data;
 
-    if (self != 0) {
-        *(char **)self = lbl_8031FF08;
-        ((Obj *)self)->d4();
-        data = *(void **)((u8 *)self + 0x58);
+    /* Destroy nw4r::lyt::Material: run virtual cleanup, free allocator-owned data at +0x58, destroy subobjects, and optionally delete. */
+    if (this_ != 0) {
+        *(char **)this_ = lbl_8031FF08;
+        ((Obj *)this_)->d4();
+        data = *(void **)((u8 *)this_ + 0x58);
         if (data != 0) {
             MEMFreeToAllocator(lbl_8055DDF0, data);
-            *(void **)((u8 *)self + 0x58) = 0;
+            *(void **)((u8 *)this_ + 0x58) = 0;
         }
-        fn_8002F634((u8 *)self + 0x3C, (void *)fn_800D2DD4, 4, 4);
-        if ((u8 *)self + 0x18 != 0) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x18, 0);
+        fn_8002F634((u8 *)this_ + 0x3C, (void *)fn_800D2DD4, 4, 4);
+        if ((u8 *)this_ + 0x18 != 0) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)this_ + 0x18, 0);
         }
-        if (shouldDelete > 0) {
-            ((void (*)(void *))fn_80128668)(self);
+        if (deleteFlag > 0) {
+            ((void (*)(void *))fn_80128668)(this_);
         }
     }
-    return self;
+    return this_;
 }
 
 extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u8 h, u8 i, u8 j, u8 k) {
