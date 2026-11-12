@@ -650,33 +650,36 @@ extern float lbl_805636B8;
 extern int fn_8012C33C(const char *);
 extern int fn_802CAC28(const char *, int);
 #pragma scheduling invalid_target
-void fn_80236134(void *arg0, int arg1, const char *arg2) {
-    unsigned char ch;
-    char *dst;
-    int count;
+/* If the name is valid, append a new 0x2C-byte entry to the pool: copy up to 0x21
+ * bytes of the name (null-terminating on truncation), then store the resolved
+ * resource id at +0x24 and the caller's value at +0x28. */
+void fn_80236134(void *namePool, int userValue, const char *name) {
+    unsigned char character;
+    char *cursor;
+    int remaining;
     char *entry;
-    int id;
-    if (fn_8012C33C(arg2) != 0) {
-        id = fn_802CAC28(arg2, 0);
-        entry = *(char **)((char *)arg0 + 4) + (*(int *)((char *)arg0 + 0xC))++ * 0x2C;
-        dst = entry;
-        count = 0x21;
+    int resourceId;
+    if (fn_8012C33C(name) != 0) {
+        resourceId = fn_802CAC28(name, 0);
+        entry = *(char **)((char *)namePool + 4) + (*(int *)((char *)namePool + 0xC))++ * 0x2C;
+        cursor = entry;
+        remaining = 0x21;
         goto loop_body;
     count_check:
-        count -= 1;
-        if (count > 0)
+        remaining -= 1;
+        if (remaining > 0)
             goto loop_body;
-        dst[-1] = 0;
+        cursor[-1] = 0;
         goto finish;
     loop_body:
-        ch = *arg2++;
-        *dst = ch;
-        dst++;
-        if ((signed char)ch != 0)
+        character = *name++;
+        *cursor = character;
+        cursor++;
+        if ((signed char)character != 0)
             goto count_check;
     finish:
-        *(int *)(entry + 0x28) = arg1;
-        *(int *)(entry + 0x24) = id;
+        *(int *)(entry + 0x28) = userValue;
+        *(int *)(entry + 0x24) = resourceId;
     }
 }
 
