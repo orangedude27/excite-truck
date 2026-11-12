@@ -9122,17 +9122,18 @@ result:
 }
 
 extern void fn_80085E24(void *, u8);
-tBTM_STATUS BTM_SetPageScanType(UINT16 arg0) {
+/* Set the page scan type (0=standard, 1=interlaced) in the controller if supported. */
+tBTM_STATUS BTM_SetPageScanType(UINT16 scanType) {
     void *p_buf;
     tBTM_STATUS status;
-    if (arg0 != 0 && arg0 != 1) return BTM_ILLEGAL_VALUE;
+    if (scanType != 0 && scanType != 1) return BTM_ILLEGAL_VALUE;
     if (!(lbl_803C0F78[0x643] & 0x20)) return BTM_MODE_UNSUPPORTED;
-    if (arg0 != *(u16 *)(lbl_803C0F78 + 0x16A6)) {
+    if (scanType != *(u16 *)(lbl_803C0F78 + 0x16A6)) {
         if ((u8)fn_80079514() != 0) {
             p_buf = GKI_getpoolbuf(2);
             if (p_buf != 0) {
-                fn_80085E24(p_buf, (u8)arg0);
-                *(u16 *)(lbl_803C0F78 + 0x16A6) = arg0;
+                fn_80085E24(p_buf, (u8)scanType);
+                *(u16 *)(lbl_803C0F78 + 0x16A6) = scanType;
                 goto done;
             }
             status = BTM_NO_RESOURCES;
