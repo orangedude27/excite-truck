@@ -328,24 +328,33 @@ asm void LCStoreBlocks(register void* dst, register const void* src,
     // clang-format on
 }
 
+/**
+ * Copies @len bytes from main memory (@src) into the locked cache (@dst) with
+ * the LC DMA engine, splitting the copy into transfers of at most one full
+ * DMA length (128 cache lines = 4 KiB).
+ *
+ * Returns the number of DMA transfers queued, which is what LCQueueWait()
+ * has to be waited on afterwards.
+ */
 u32 LCLoadData(void* dst, const void* src, u32 len) {
-    u32 blocks = (len + 31) / 32;
-    u32 ret = (blocks + 127) / 128;
+    u32 blocks = (len + (LC_LINE_SIZE - 1)) / LC_LINE_SIZE;
+    u32 transfers = (blocks + (LC_MAX_BLOCKS - 1)) / LC_MAX_BLOCKS;
 
     while (blocks > 0) {
-        if (blocks < 128) {
+        if (blocks < LC_MAX_BLOCKS) {
             LCLoadBlocks(dst, src, blocks);
             blocks = 0;
         } else {
+            // A block count of 0 is the widest transfer the DMA can do.
             LCLoadBlocks(dst, src, 0);
-            blocks -= 128;
+            blocks -= LC_MAX_BLOCKS;
 
-            dst = (u8*)dst + 0x1000;
-            src = (u8*)src + 0x1000;
+            dst = (u8*)dst + LC_MAX_TRANSFER;
+            src = (u8*)src + LC_MAX_TRANSFER;
         }
     }
 
-    return ret;
+    return transfers;
 }
 
 u32 LCStoreData(void* dst, const void* src, u32 len) {
