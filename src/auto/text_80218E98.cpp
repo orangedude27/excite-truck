@@ -4471,22 +4471,22 @@ extern "C" void fn_80220B3C(void *arg0) {
 }
 
 extern "C" void fn_80220B5C(void *arg0, s32 arg1) {
-    s32 flag;
     s32 v0;
     s32 *entries;
     s32 *p;
-    s32 cur;
-    s32 div;
-    s32 f4b;
+    s32 flag;
+    u32 cur;
     s32 f8b;
+    s32 f4b;
+    s32 div;
     s32 v1;
     fn_802C3034(arg1);
     v0 = ((VfObj *)arg0)->vf28();
     entries = *(s32 **)((u8 *)arg0 + 0x244);
     p = *(s32 **)((u8 *)arg0 + 0x25C);
     flag = 0;
-    cur = *(s32 *)((u8 *)arg0 + 0x250);
-    div = ((v0 - 11) * (*entries - cur)) / (*(s32 *)((u8 *)arg0 + 0x254) - cur - 1);
+    cur = *(u32 *)((u8 *)arg0 + 0x250);
+    div = ((*entries - (s32)cur) * (v0 - 11)) / ((s32)*(s32 *)((u8 *)arg0 + 0x254) - (s32)cur - 1);
     if (p != 0 && *p == *(s32 *)((u8 *)arg0 + 0x260)) {
         flag = 1;
     }
@@ -7808,7 +7808,26 @@ extern "C" char lbl_8033DC58[];
 extern "C" void *lbl_8033DEAC[];
 #pragma pop
 
-extern "C" void *fn_80228418(void *p,void *q,s32 a){s32 r;fn_80218F80();*(s32*)((u8*)p+0x244)=0;*(void**)p=lbl_8033DE28;*(u8*)((u8*)p+0x248)=0;if(a){*(s32*)((u8*)p+0x244)=a;}else{r=fn_801284F8(0x18,lbl_8033DCDC);if(r)r=fn_8023964C();*(s32*)((u8*)p+0x244)=r;*(u8*)((u8*)p+0x248)=1;}fn_80239784(*(s32*)((u8*)p+0x244),(u8*)q+0x40);return p;}
+extern "C" void *fn_80228418(void *p, void *q, s32 a) {
+    /* Initialize a movie widget, attaching an external movie handle or creating and
+     * owning one, then bind it to data at q+0x40. */
+    s32 r;
+    fn_80218F80();
+    *(s32 *)((u8 *)p + 0x244) = 0;
+    *(void **)p = lbl_8033DE28;
+    *(u8 *)((u8 *)p + 0x248) = 0;
+    if (a) {
+        *(s32 *)((u8 *)p + 0x244) = a;
+    } else {
+        r = fn_801284F8(0x18, lbl_8033DCDC);
+        if (r)
+            r = fn_8023964C();
+        *(s32 *)((u8 *)p + 0x244) = r;
+        *(u8 *)((u8 *)p + 0x248) = 1;
+    }
+    fn_80239784(*(s32 *)((u8 *)p + 0x244), (u8 *)q + 0x40);
+    return p;
+}
 
 extern "C" void *fn_802284BC(void *p,s32 a){if(p){*(void**)p=lbl_8033DE28;fn_8023986C(*(s32*)((u8*)p+0x244));if(*(u8*)((u8*)p+0x248))fn_8023967C(*(s32*)((u8*)p+0x244),1);*(s32*)((u8*)p+0x244)=0;register void *q=p;fn_8021915C(q,0);if(a>0)fn_80128668(p);}return p;}
 
