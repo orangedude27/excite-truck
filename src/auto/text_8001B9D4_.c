@@ -118,6 +118,7 @@ void fn_8001BA6C(void) {
     fn_8001C714();
 }
 
+extern s32 fn_8001C73C();
 void fn_8001BA70(void) {
     fn_8001C73C();
 }
