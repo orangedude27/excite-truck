@@ -186,11 +186,9 @@ int fn_802E1BB4(void *arg0, int arg1) {
     char *slot;
     char *dest;
     unsigned char *p;
-    (void)arg1;
     ((Calc)fn_802E1A9C)((char *)arg0 + 0x100, &sp20, &sp1C, &sp18, &sp14, &sp10, &spC, &sp8);
     temp = fn_8011FFC4(sp10 + sp14 * *(int *)((char *)arg0 + 0x100) + 0x7F, sp14);
     if (temp == 0) goto fail;
-
     *(int *)((char *)arg0 + 0x178) = temp;
     p = (unsigned char *)(((unsigned int)temp + 0x7F) & ~0x7F);
     slot = (char *)arg0;
@@ -220,7 +218,6 @@ int fn_802E1BB4(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x17C) = sp14;
     fn_802E1A38(arg0, (int)p);
     return 1;
-
 fail:
     fn_802E1728(arg0);
     return 0;
@@ -512,6 +509,50 @@ void fn_802E2E0C(int arg0, int arg1) {
     lbl_804DB790[index] = arg0;
     lbl_804DB7D0[index] = arg1;
 }
+/* Reset / power-down.
+ * A subsystem that has to wind down before the console leaves the game
+ * registers with fn_802E2E0C(callback, name):
+ *   lbl_804DB790[]  the registered callbacks
+ *   lbl_804DB7D0[]  the name a callback logs under when it cancels a reset
+ *   lbl_8055FF00    how many are registered
+ * fn_802E2E38 runs the table, then resets. */
+typedef int (*ResetCallback)(int request, int mode);
+
+/* First argument handed to a reset callback. */
+#define KERNEL_RESET_ASK 0 /* may we reset?  answer 1 to cancel it */
+#define KERNEL_RESET_NOTIFY 1 /* the reset is on: save, close, stop */
+
+/* The mode fn_802E2E38 is asked for (the Home Menu hands back its own). */
+#define KERNEL_MODE_RESTART 0 /* hot-reset the console */
+#define KERNEL_MODE_MENU 1 /* back to the Wii Menu */
+#define KERNEL_MODE_STANDBY 2 /* power the console off */
+
+/* WPAD keeps reporting this while the controllers are still powering down. */
+#define KERNEL_WPAD_SHUTTING_DOWN 4
+
+/* The strings of this file's block at lbl_8034CCE0 that the reset path logs with. */
+#define KERNEL_LOG_RESET_BEGIN (base + 0xB8) /* "resetting system..." */
+#define KERNEL_LOG_CANCELLED (base + 0xCC) /* " reset cancelled by %s" */
+#define KERNEL_LOG_RESET_OKAY (base + 0xE4) /* "kernel: reset is okay" */
+#define KERNEL_LOG_CANCEL_DVD (base + 0xFC) /* "kernel: cancelling DVD..." */
+#define KERNEL_LOG_DVD_FAIL (base + 0x118) /* "DVDCancelAll fails" */
+#define KERNEL_LOG_RESET_MODE (base + 0x12C) /* "doing reset %d" */
+#define KERNEL_LOG_RESTART (base + 0x13C) /* "kernel: doing restart" */
+#define KERNEL_LOG_DISC_ERROR (base + 0x154) /* "kernel: restart during disk error (go to menu)" */
+#define KERNEL_LOG_POWER_DOWN (base + 0x184) /* "kernel: doing power down" */
+#define KERNEL_LOG_WAIT_WPAD (base + 0x1A0) /* "kernel: waiting for WPAD to shut down" */
+#define KERNEL_LOG_WPAD_DOWN (base + 0x1C8) /* "kernel: WPAD has shut down" */
+#define KERNEL_LOG_MENU (base + 0x1E4) /* "kernel: doing return to menu" */
+
+extern int fn_80039840(void); /* DVDCancelAll: non-zero when the cancel failed */
+extern int fn_802D9BF0(void); /* the disc/drive error state is set */
+extern int fn_802D9C04(void); /* that state is 1: the reset button, not a bad disc */
+extern int fn_8005EE7C(void); /* WPAD shutdown status */
+extern void fn_800527CC(int); /* OSReset: hot-reset the console */
+extern void fn_8005ED8C(void); /* WPADiClose: start the controllers powering down */
+extern void OSReturnToMenu(void);
+extern void OSShutdownSystem(void);
+
 #pragma push
 #pragma scheduling invalid_target
 void fn_802E2E38(int arg0) {
