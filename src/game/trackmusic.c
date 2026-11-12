@@ -518,6 +518,7 @@ extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
 extern long lbl_8055EEE8;
 extern void fn_8020FE90(void);
+/* Adjusts the track-music digit selection state by delta, clamping to valid range and refreshing on change. */
 void fn_8020FFE4(long arg0) {
     long old = lbl_8055EEE0;
     long value = lbl_8055EEBC;
