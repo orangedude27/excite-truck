@@ -727,68 +727,78 @@ extern unsigned short OSUTF32toSJIS(int);
 extern int lbl_8055DA4C; // FixedPitch: the loaded font is fixed-pitch
 #pragma push
 #pragma use_lmw_stmw off
-void *ParseStringW(int format, void *input, int *outFont, int *outCode, int unused) {
-    int mode;
-    unsigned short ch = 0;
-    int code = 0;
+/* Read the one character of a string the wide-encoding font parser handles.
+ *
+ * `encode` says how the character at `str` is encoded: ANSI and Shift-JIS are
+ * read straight off the string (a SJIS lead byte pulls in its trail byte),
+ * UTF-8/16/32 are decoded to UTF-32 and then converted back down to a code the
+ * font actually has - ANSI first, and SJIS when there is no ANSI equivalent or
+ * when a fixed-pitch font draws the ASCII range better.  `codeOut` gets that
+ * code and `fontOut` the OSFontHeader* (FontDataAnsi/FontDataSjis) holding its
+ * glyph.  Returns the cursor just past the character; the NUL that ends the
+ * string is returned unread, so the cursor stops there. */
+void *ParseStringW(int encode, void *str, int *fontOut, int *codeOut, int unused) {
+    OSFontHeader *font;
+    u16 code = 0;
+    int utf32 = 0;
 
-    switch (format) {
-    case 0:
-        ch = *(unsigned char *)input;
-        mode = (int)lbl_8055DA54;
-        if (ch != 0)
-            input = (char *)input + 1;
+    switch (encode) {
+    case OS_FONT_ENCODE_ANSI:
+        code = *(unsigned char *)str;
+        font = (OSFontHeader *)lbl_8055DA54; // FontDataAnsi
+        if (code != 0)
+            str = (char *)str + 1;
         break;
-    case 1:
-        ch = *(unsigned char *)input;
-        mode = (int)lbl_8055DA50;
-        if (ch != 0) {
+    case OS_FONT_ENCODE_SJIS:
+        code = *(unsigned char *)str;
+        font = (OSFontHeader *)lbl_8055DA50; // FontDataSjis
+        if (code != 0) {
             int valid = 0;
             unsigned char trail;
-            input = (char *)input + 1;
-            if ((ch >= 0x81 && ch <= 0x9F) || (ch >= 0xE0 && ch <= 0xFC))
+            str = (char *)str + 1;
+            if ((code >= 0x81 && code <= 0x9F) || (code >= 0xE0 && code <= 0xFC))
                 valid = 1;
             if (valid != 0) {
                 valid = 0;
-                trail = *(unsigned char *)input;
+                trail = *(unsigned char *)str;
                 if (trail >= 0x40 && trail <= 0xFC && trail != 0x7F)
                     valid = 1;
                 if (valid != 0) {
-                    ch = (ch << 8) | *(volatile unsigned char *)input;
-                    input = (char *)input + 1;
+                    code = (code << 8) | *(volatile unsigned char *)str;
+                    str = (char *)str + 1;
                 }
             }
         }
         break;
-    case 3:
-        input = OSUTF8to32(input, &code);
+    case OS_FONT_ENCODE_UTF8:
+        str = OSUTF8to32(str, &utf32);
         break;
-    case 4:
-        input = OSUTF16to32(input, &code);
+    case OS_FONT_ENCODE_UTF16:
+        str = OSUTF16to32(str, &utf32);
         break;
-    case 5:
-        code = *(int *)input;
-        if (code != 0)
-            input = (char *)input + 4;
+    case OS_FONT_ENCODE_UTF32:
+        utf32 = *(int *)str;
+        if (utf32 != 0)
+            str = (char *)str + 4;
         break;
     }
 
-    if (code != 0) {
-        mode = (int)lbl_8055DA54;
-        format = 0;
-        ch = ((unsigned char (*)(int))OSUTF32toANSI)(code);
-        if ((ch == 0) || (lbl_8055DA4C != 0 &&
-            (unsigned int)*(volatile int *)&code <= 0x7F)) {
-            ch = OSUTF32toSJIS(*(volatile int *)&code);
-            if (ch != 0) {
-                format = 1;
-                mode = (int)lbl_8055DA50;
+    if (utf32 != 0) {
+        font = (OSFontHeader *)lbl_8055DA54;
+        encode = OS_FONT_ENCODE_ANSI;
+        code = ((unsigned char (*)(int))OSUTF32toANSI)(utf32);
+        if ((code == 0) || (lbl_8055DA4C != 0 &&
+            (unsigned int)*(volatile int *)&utf32 <= 0x7F)) {
+            code = OSUTF32toSJIS(*(volatile int *)&utf32);
+            if (code != 0) {
+                encode = OS_FONT_ENCODE_SJIS;
+                font = (OSFontHeader *)lbl_8055DA50;
             }
         }
     }
-    *outFont = mode;
-    *outCode = ((unsigned int (*)(int, unsigned short))GetFontCode)(format, ch);
-    return input;
+    *fontOut = (int)font;
+    *codeOut = ((unsigned int (*)(int, unsigned short))GetFontCode)(encode, code);
+    return str;
 }
 #pragma use_lmw_stmw off
 void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *arg4) {
