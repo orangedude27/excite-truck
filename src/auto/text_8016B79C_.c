@@ -391,8 +391,9 @@ extern "C" void *fn_8016BE60(void *arg0) {
 #pragma cplusplus on
 extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
     class VObj { public: virtual void destroy(int); };
+    struct Rec { s32 a, b, c, d; };
     VObj *p;
-    register s32 *data;
+    Rec *data;
     register void *object = arg0;
     register s32 freeFlag = arg1;
 
@@ -414,24 +415,24 @@ extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
         p = *(VObj **)((u8 *)object + 0x64);
         if (p != 0) { if (p != 0) p->destroy(1); }
 
-        data = *(s32 **)((u8 *)object + 0x18);
+        data = *(Rec **)((u8 *)object + 0x18);
         if (data != 0) {
-            ((s32 (*)(s32, void *))fn_8002F6AC)(data[3], fn_8016C168);
+            ((s32 (*)(s32, void *))fn_8002F6AC)(data->d, fn_8016C168);
             if (data != 0) {
-                *(volatile s32 *)&data[0] = 0;
-                *(volatile s32 *)&data[1] = 0;
-                *(volatile s32 *)&data[2] = 0;
-                fn_80128668(data);
+                *(volatile s32 *)&data->a = 0;
+                *(volatile s32 *)&data->b = 0;
+                *(volatile s32 *)&data->c = 0;
+                fn_80128668((void *)data);
             }
         }
-        data = *(s32 **)((u8 *)object + 0x1C);
+        data = *(Rec **)((u8 *)object + 0x1C);
         if (data != 0) {
-            fn_80128670(data[3]);
+            fn_80128670(data->d);
             if (data != 0) {
-                *(volatile s32 *)&data[0] = 0;
-                *(volatile s32 *)&data[1] = 0;
-                *(volatile s32 *)&data[2] = 0;
-                fn_80128668(data);
+                *(volatile s32 *)&data->a = 0;
+                *(volatile s32 *)&data->b = 0;
+                *(volatile s32 *)&data->c = 0;
+                fn_80128668((void *)data);
             }
         }
         if ((u32)object + 0x14 != 0) fn_80131818(*(s32 *)((u8 *)object + 0x14));
@@ -908,14 +909,14 @@ void *fn_8016CF08(void *obj) {
 
 extern char lbl_80330A90[];
 extern f32 lbl_80561984;
-extern void fn_802C2914(void);
+extern void fn_802C2914(void *);
 extern void *fn_80131808(void *);
 extern void *fn_8023512C(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
 void *fn_8016D024(void *arg0) {
     char *base = lbl_803306D0;
-    fn_802C2914();
+    fn_802C2914(arg0);
     *(void **)((u8 *)arg0 + 4) = lbl_80330A90;
     *(void **)((u8 *)arg0 + 0x14) = fn_80131808(base + 0x1E0);
     *(void **)((u8 *)arg0 + 0x20) = fn_8023512C(base + 0x1F8);
