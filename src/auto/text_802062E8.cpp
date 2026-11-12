@@ -733,18 +733,20 @@ extern "C" void fn_8020769C(void* arg0, int arg1, int arg2) {
 	fn_802073A4(arg0, arg1, arg2);
 }
 
+/* Create a SoundDash sound object (0x70 bytes), initialize it, and
+ * return it only if construction produced a valid inner sound handle at +0xC. */
 extern "C" void *fn_802076A0(int arg0, int arg1, int arg2, int arg3) {
     struct Callback {
         virtual ~Callback();
     };
-    void *obj = (void *)fn_801284F8(0x70, lbl_8033BD4C);
-    if (obj != 0)
-        obj = fn_80207428(obj, arg0, arg1, arg2, arg3);
-    if (obj != 0 && *(int *)((char *)obj + 0xC) == 0) {
-        delete (Callback *)obj;
-        obj = 0;
+    void *soundObj = (void *)fn_801284F8(0x70, lbl_8033BD4C);
+    if (soundObj != 0)
+        soundObj = fn_80207428(soundObj, arg0, arg1, arg2, arg3);
+    if (soundObj != 0 && *(int *)((char *)soundObj + 0xC) == 0) {
+        delete (Callback *)soundObj;
+        soundObj = 0;
     }
-    return obj;
+    return soundObj;
 }
 
 #pragma dont_inline reset
