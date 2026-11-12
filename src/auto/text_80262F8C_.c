@@ -309,38 +309,45 @@ void fn_80263BCC(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_80263BE4(void *arg0, s32 arg1) {
-    u8 *self = (u8 *)arg0;
-    if (self[0x29] != 0) {
-        switch (arg1) {
+/* Handles UI/state events 0x125-0x127 using flags at +0x28, +0x29, and +0x2A. */
+s32 fn_80263BE4(void *arg0, s32 event) {
+    u8 *state = (u8 *)arg0;
+
+    if (state[0x29] != 0) {
+        switch (event) {
         case 0x125:
-            if (self[0x28] == 0) {
-                self[0x28] = 1;
-                self[0x2A] = 1;
+            if (state[0x28] == 0) {
+                state[0x28] = 1;
+                state[0x2A] = 1;
             }
             break;
         case 0x126:
             break;
         case 0x127:
-            if (self[0x28] != 0)
-                self[0x28] = 0;
+            if (state[0x28] != 0) {
+                state[0x28] = 0;
+            }
             break;
         }
     }
-    if (self[0x29] != 0) {
-        switch (arg1) {
+
+    if (state[0x29] != 0) {
+        switch (event) {
         case 0x125:
-            if (self[0x28] == 0)
-                self[0x28] = 1;
+            if (state[0x28] == 0) {
+                state[0x28] = 1;
+            }
             break;
         case 0x126:
             break;
         case 0x127:
-            if (self[0x28] != 0)
-                self[0x28] = 0;
+            if (state[0x28] != 0) {
+                state[0x28] = 0;
+            }
             break;
         }
     }
+
     return 0;
 }
 #pragma scheduling on
