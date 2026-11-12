@@ -4,6 +4,12 @@
 #pragma small_data off
 extern char lbl_803583C8[];
 #pragma small_data on
+extern int lbl_8055D5B8;
+extern void *lbl_8055D5B4;
+extern void fn_80235380(int);
+extern void fn_80128668(void *);
+extern void fn_802CAC54(int);
+extern void fn_802CB228(int);
 extern void fn_802C8BD0(int);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
