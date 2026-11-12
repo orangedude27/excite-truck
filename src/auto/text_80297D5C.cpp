@@ -893,6 +893,7 @@ extern "C" void fn_802C8E00(int arg0, int arg1, float farg0, float farg1, float 
 extern float lbl_805645E0;
 extern float lbl_80564590, lbl_8056459C, lbl_805645E0;
 extern "C" void fn_80299830(void* arg0, int arg1) {
+    /* Draw up to 4 elements for an entry when its scaled alpha value is >= 1. */
     char* var_r31 = (char*)arg0 + (arg1 << 6);
     int temp_r0 = (int)(255.0f * *(float*)(var_r31 + 0x3C));
     if (temp_r0 >= 1) {
