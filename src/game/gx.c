@@ -2564,6 +2564,11 @@ void fn_802D3894(void) {
     }
 }
 
+// Reads back the depth of every query fn_802D3A5C queued this frame and marks
+// the query visible when its own depth is nearer than the depth read at its
+// pixel, then empties the queue. GXInitLightDir (the draft's name for the GX
+// read helper in auto/text_8003DB9C.c) reads one word out of the GX read
+// window: *(volatile u32 *)(0xC8000000 + (1 << 22) + (row << 12) + (col << 2)).
 void fn_802D3900(void) {
     ZQueryPool *pool;
     ZQuery **slot;
