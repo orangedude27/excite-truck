@@ -179,13 +179,14 @@ void fn_8000A644(void* arg0, void* arg1) {
     }
     ((void (*)(void))fn_80009DC8)();
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_8000A688(void (*arg0)(void*), s32 arg1) DECOMP_DONT_INLINE {
     char sp8[0x20];
-    fn_801345D8(sp8, 0x20, &lbl_80558A14, arg1);
+    ((void(*)(void*, s32, void*, s32, ...))fn_801345D8)(sp8, 0x20, &lbl_80558A14, arg1);
     arg0(sp8);
 }
-
+#pragma pop
 extern void *fn_80131810(const char *);
 extern void fn_80131818(void *);
 extern void fn_802E317C(const char *, ...);
