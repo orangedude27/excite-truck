@@ -19831,12 +19831,13 @@ void fn_8008EC30(void *arg0) {
     *(u16 *)((u8 *)arg0 + 2) = 0;
 }
 
+/* Find the registration control block for a PSM in l2cb's RCB pool, or NULL if none. */
 void *l2cu_find_rcb_by_psm(UINT16 psm) {
     UINT16 xx;
-    u8 *p_rcb = lbl_803C4040 + 0x650;
+    tL2C_RCB_VIEW *p_rcb = (tL2C_RCB_VIEW *)(lbl_803C4040 + 0x650);
 
-    for (xx = 0; xx < 8; xx++, p_rcb += 0x2C) {
-        if ((p_rcb[0]) && (*(UINT16 *)(p_rcb + 2) == psm))
+    for (xx = 0; xx < 8; xx++, p_rcb++) {
+        if ((p_rcb->in_use) && (p_rcb->psm == psm))
             return p_rcb;
     }
 
