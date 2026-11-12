@@ -7251,9 +7251,9 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 }
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
-    UINT8 cod = (sub_class >> 2) & 0x3F;
-    UINT8 xx;
     UINT8 max_devt = lbl_80559030[0];
+    UINT32 cod = (sub_class >> 2) & 0x3F;
+    UINT8 xx;
     for (xx = 0; xx < max_devt; xx++) {
         UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
         if (cod == p_list[xx * 2]) {
@@ -10508,15 +10508,14 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
 
 void fn_8007D4C4(void) {
     extern u32 lbl_802EEBF8[];
+    extern u8 lbl_803C0F78[];
     u32 *src = lbl_802EEBF8;
-    u8 *dst = lbl_803C0F78;
-
-    *(u16 *)(dst + 0x18F6) = 0xFFFF;
-    *(u32 *)(dst + 0x18F8) = *src++;
-    *(u32 *)(dst + 0x18FC) = *src++;
-    *(u32 *)(dst + 0x1900) = *src++;
-    *(u32 *)(dst + 0x1904) = *src++;
-    dst[0x1909] = 2;
+    *(u16 *)(lbl_803C0F78 + 0x18F6) = 0xFFFF;
+    *(u32 *)(lbl_803C0F78 + 0x18F8) = *src++;
+    *(u32 *)(lbl_803C0F78 + 0x18FC) = *src++;
+    *(u32 *)(lbl_803C0F78 + 0x1900) = *src++;
+    *(u32 *)(lbl_803C0F78 + 0x1904) = *src++;
+    lbl_803C0F78[0x1909] = 2;
 }
 
 /* One entry of btm_cb.sco_cb.sco_db[] - the game's tSCO_CONN, 0x34 bytes.  The
@@ -14852,14 +14851,27 @@ BOOLEAN btsnd_hcic_link_key_req_reply(BD_ADDR bd_addr, LINK_KEY link_key) {
     return TRUE;
 }
 
+/* Build and send an HCI Link_Key_Request_Negative_Reply command for bd_addr:
+   answer a Link_Key_Request event with "no stored link key for this device",
+   so the controller authenticates with the combination (PIN) key instead.
+   Returns FALSE when the HCI command pool has no buffer left. */
 BOOLEAN btsnd_hcic_link_key_neg_reply(BD_ADDR bd_addr) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 9;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0xC; p[9] = 4; p[10] = 6;
-    p[11] = bd_addr[5]; p[12] = bd_addr[4]; p[13] = bd_addr[3];
-    p[14] = bd_addr[2]; p[15] = bd_addr[1]; p[16] = bd_addr[0];
+    BT_HDR *p;
+    UINT8 *pp;
+
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_LINK_KEY_NEG_REPLY)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_LINK_KEY_NEG_REPLY;
+    p->offset = 0;
+
+    UINT16_TO_STREAM (pp, HCI_LINK_KEY_REQUEST_NEG_REPLY);
+    UINT8_TO_STREAM  (pp, HCIC_PARAM_SIZE_LINK_KEY_NEG_REPLY);
+
+    BDADDR_TO_STREAM (pp, bd_addr);
+
     btu_hcif_send_cmd(p);
     return TRUE;
 }
