@@ -6,6 +6,10 @@
 extern f32 lbl_80560250, lbl_80560254, lbl_80560258, lbl_8056025C, lbl_80560260, lbl_80560264;
 extern s32 lbl_80558AA4;
 extern s32 lbl_802FC2A8[];
+static inline void setRange(s32 *p, s32 a, s32 b) {
+    p[1] = a;
+    p[2] = b;
+}
 typedef struct UnkF4F0Style {
     s32 unk_0x00, unk_0x04, unk_0x08, unk_0x0C;
     f32 unk_0x10;
@@ -857,7 +861,8 @@ void fn_80010724(s32 x, s32 y, s32 arg2) {
 #pragma processor 750
 #pragma paired_single off
 s32 fn_8001084C(s32 arg0, s32 arg1) {
-    return (s32)(((f32)arg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg1, lbl_80560264)) / (f32)lbl_80558A90);
+    f32 s3 = lbl_80560264;
+    return (s32)(((f32)arg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg1, s3)) / (f32)lbl_80558A90);
 }
 #pragma pop
 f32 fn_800108C8(f32 farg0, s32 arg0) {
@@ -1745,20 +1750,21 @@ extern int sprintf(char *, const char *, ...);
 #pragma dont_inline on
 f32 fn_80011EDC(void) {
     char buffer[0x10];
-    f32 scale;
-    f32 best;
+    f32 scale = lbl_805602C8;
+    f32 best = lbl_80560280;
     f32 value;
     s32 i = 0;
-    scale = lbl_805602C8;
-    best = lbl_80560280;
+
     do {
         sprintf(buffer, lbl_80558ACC, (char)(i + 0x30));
         value = scale * ((f32 (*)(s32, char *, f32))fn_8023293C)(
             lbl_8055D490, buffer, lbl_80560264);
-        if (value > best)
+        if (value > best) {
             best = value;
+        }
         i++;
     } while (i < 10);
+
     return best;
 }
 #pragma pop
