@@ -839,12 +839,14 @@ void fn_802CFBA8(void) {
 
 extern double __fabs(double);
 #pragma scheduling invalid_target
-void fn_802CFCA0(void* alarm) {
+void fn_802CFCA0(void *alarm) {
     extern char lbl_80558DC4[];
-    char fifo[0x80];
-    int spC;
-    int sp8;
-    float value;
+    char fifoBuffer[0x80];
+    int fifoReadPtr;
+    int fifoWritePtr;
+    float sampleValue;
+
+    /* GX draw-sync callback: reset per-frame state, set FIFO break point, and flag threshold exceed. */
     fn_802D6C68();
     *(volatile unsigned char *)&lbl_8055FE39 = 1;
     lbl_8055FDA4 = lbl_8055FD94;
@@ -854,16 +856,16 @@ void fn_802CFCA0(void* alarm) {
     fn_802DA52C();
     GXSetDrawSync();
     GXGetVtxDesc();
-    GXGetCPUFifo(fifo);
-    GXGetFifoPtrs(fifo, &spC, &sp8);
-    GXEnableBreakPt(sp8);
+    GXGetCPUFifo(fifoBuffer);
+    GXGetFifoPtrs(fifoBuffer, &fifoReadPtr, &fifoWritePtr);
+    GXEnableBreakPt(fifoWritePtr);
     GXGetVtxDesc();
     GXInvalidateVtxCache();
     GXMiscInit(1);
     lbl_8055FD30 += 1;
     if (lbl_804C97B0[0] == 0) {
-        value = *(volatile float *)((unsigned char *)lbl_804C97B0 + 0x10);
-        if (!((float)__fabs((double)value) <= *(volatile float *)lbl_80558DC4)) {
+        sampleValue = *(volatile float *)((unsigned char *)lbl_804C97B0 + 0x10);
+        if (!((float)__fabs((double)sampleValue) <= *(volatile float *)lbl_80558DC4)) {
             lbl_804C97B0[0] = 1;
             lbl_804C97B0[0x1C] = 1;
         }
