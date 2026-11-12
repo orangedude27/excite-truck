@@ -1229,6 +1229,7 @@ s32 fn_80035CB4(u32 arg0) {
 }
 
 void fn_80035DA8(s32 arg0) {
+    /* Record a DVD error (command 0x10) in the next __ErrorInfo slot, then invoke fn_8003AF1C with callback fn_80036624. */
     s32 enabled;
     u32 tick;
     u8 *info;
