@@ -90,9 +90,9 @@ extern char lbl_8055AEF8;
 extern float lbl_80562D78;
 extern float lbl_80562D7C;
 void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
-    s32 *entry;
-    void *result;
     s32 handle;
+    void *result;
+    s32 *entry;
     float *dst;
     float *src;
     u8 *base;
@@ -270,8 +270,10 @@ extern double fn_8002F234(double);
     t = (t > cZero) ? t : cZero;
 
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
 void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
-    u32 sp8;
+    u32 sp8 = 0;
     const char *messages = lbl_80339A20;
     float *dst;
     float *src;
