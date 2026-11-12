@@ -958,7 +958,7 @@ extern s32 fn_801EA994(void);
 extern void *fn_801EA9B0(s32);
 extern f32 lbl_80560118, lbl_80560170, lbl_80560174, lbl_80560178, lbl_8056017C;
 extern f32 lbl_80560180, lbl_80560184, lbl_80560188, lbl_8056018C;
-extern const char lbl_80558930[], lbl_80558934[], lbl_80558940[];
+extern const char lbl_80558930[4], lbl_80558934[6], lbl_80558940[8];
 void fn_80006B18(void *arg0) {
     u8 sp8[8];
     u8 sp10[16];
