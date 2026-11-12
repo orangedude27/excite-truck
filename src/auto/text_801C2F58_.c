@@ -3045,9 +3045,10 @@ extern s32 lbl_8055E7F8;
 #pragma push
 #pragma scheduling reset
 void fn_801C6B70(void) {
-    const char *temp_r31;
-    const char *temp_r31_2;
+    const char *name1;
+    const char *name0;
 
+    /* If the pending timer at lbl_80437E24[2] is active, either reset it when out of window relative to lbl_8055E3C8, or trigger actions for the two stored string names. */
     if (*(f32 *)&lbl_80437E24[2] >= lbl_80562970) {
         if ((lbl_8055E3C8 < *(f32 *)&lbl_80437E24[2]) || ((lbl_8055E3C8 - *(f32 *)&lbl_80437E24[2]) > lbl_80562978)) {
             *(f32 *)&lbl_80437E24[2] = lbl_80562994;
@@ -3055,13 +3056,13 @@ void fn_801C6B70(void) {
             lbl_80437E24[1] = 0;
             return;
         }
-        temp_r31 = (const char *)lbl_80437E24[1];
-        if (strlen(temp_r31) != 0) {
-            fn_8000FC8C(temp_r31);
+        name1 = (const char *)lbl_80437E24[1];
+        if (strlen(name1) != 0) {
+            fn_8000FC8C(name1);
         }
-        temp_r31_2 = (const char *)lbl_80437E24[0];
-        if (strlen(temp_r31_2) != 0) {
-            fn_8000FDF0(temp_r31_2);
+        name0 = (const char *)lbl_80437E24[0];
+        if (strlen(name0) != 0) {
+            fn_8000FDF0(name0);
         }
     }
 }
