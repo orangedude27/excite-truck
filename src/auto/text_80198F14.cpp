@@ -4664,34 +4664,36 @@ extern "C" void fn_801EA1E0(void*, s32, f32, f32);
 void fn_801A48E4(void* arg0) {
     struct Matrix { virtual void v0(); virtual void update(); };
     u8* obj = (u8*)arg0;
-    s32 type;
-    void* mat;
+    s32 shapeType;
+    void* shape;
     f32 scale;
-    f32 matVal;
-    f32 mul;
-    f32 x;
-    f32 y;
-    f32 z;
+    f32 shapeScale;
+    f32 scaledOffset;
+    f32 posX;
+    f32 posY;
+    f32 posZ;
     volatile f32 out[3];
+
+    /* Mark object dirty, update its attached shape, and recompute world position/orientation for sphere (0x53504852) or tube (0x54554245) shapes. */
     *(u8*)(obj + 0x40) = 1;
     ((Matrix*)*(void**)(obj + 0x3C))->update();
-    type = *(s32*)((u8*)*(void**)(obj + 0x3C) + 0x18);
-    if (type == 0x53504852) {
-        mat = *(void**)(obj + 0x3C);
-        fn_801EA1E0((u8*)mat + 0x38, 0, *(f32*)((u8*)mat + 0x34), *(f32*)((u8*)mat + 0x3C));
+    shapeType = *(s32*)((u8*)*(void**)(obj + 0x3C) + 0x18);
+    if (shapeType == 0x53504852) {
+        shape = *(void**)(obj + 0x3C);
+        fn_801EA1E0((u8*)shape + 0x38, 0, *(f32*)((u8*)shape + 0x34), *(f32*)((u8*)shape + 0x3C));
         fn_801EA1E0(obj + 0x2C, 0, *(f32*)(obj + 0x28), *(f32*)(obj + 0x30));
     }
-    if (type == 0x54554245) {
+    if (shapeType == 0x54554245) {
         scale = *(f32*)(obj + 0x20) > lbl_805622D0 ? lbl_805622DC : lbl_805622E0;
-        matVal = *(f32*)((u8*)*(void**)(obj + 0x3C) + 0x28);
-        mul = scale * matVal;
-        x = *(f32*)(obj + 0x28) + *(f32*)(obj + 0x1C) * mul;
-        y = *(f32*)(obj + 0x2C) + *(f32*)(obj + 0x20) * mul;
-        z = *(f32*)(obj + 0x30) + *(f32*)(obj + 0x24) * mul;
-        out[0] = x;
-        out[1] = y;
-        out[2] = z;
-        fn_801EA1E0(obj + 0x2C, 0, x, z);
+        shapeScale = *(f32*)((u8*)*(void**)(obj + 0x3C) + 0x28);
+        scaledOffset = scale * shapeScale;
+        posX = *(f32*)(obj + 0x28) + *(f32*)(obj + 0x1C) * scaledOffset;
+        posY = *(f32*)(obj + 0x2C) + *(f32*)(obj + 0x20) * scaledOffset;
+        posZ = *(f32*)(obj + 0x30) + *(f32*)(obj + 0x24) * scaledOffset;
+        out[0] = posX;
+        out[1] = posY;
+        out[2] = posZ;
+        fn_801EA1E0(obj + 0x2C, 0, posX, posZ);
     }
 }
 
