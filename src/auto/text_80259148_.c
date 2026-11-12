@@ -1554,20 +1554,22 @@ extern unsigned char *fn_8001EFAC(int, int);
 extern int fn_801345D8(char *, int, const char *, int);
 extern const char lbl_80344F08[];
 void fn_8025BE0C(void *arg0) {
+    /* Copy a bounded text label into the object and format its level string. */
     typedef void (*Fmt)(char *, int, const char *, ...);
-    void *tmp = arg0;
+    void *request = arg0;
     void *obj;
-    int size;
-    int res;
+    int level;
+    int textId;
     unsigned char c;
     int count;
     unsigned char *dst;
     unsigned char *src;
-    size = *(int *)((char *)arg0 + 0x24);
-    res = *(int *)((char *)arg0 + 0x20);
-    obj = *(void **)((char *)tmp + 0x18);
-    *(int *)((char *)obj + 0x4C) = size;
-    src = fn_8001EFAC(res, size);
+
+    level = *(int *)((char *)arg0 + 0x24);
+    textId = *(int *)((char *)arg0 + 0x20);
+    obj = *(void **)((char *)request + 0x18);
+    *(int *)((char *)obj + 0x4C) = level;
+    src = fn_8001EFAC(textId, level);
     if (src == 0)
         goto else_copy;
     dst = (unsigned char *)obj + 4;
@@ -1588,8 +1590,8 @@ copy:
 else_copy:
     *((unsigned char *)obj + 4) = 0;
 done:
-    if (size > 0)
-        ((Fmt)fn_801345D8)((char *)obj + 0x36, 0x14, lbl_80344F08, size);
+    if (level > 0)
+        ((Fmt)fn_801345D8)((char *)obj + 0x36, 0x14, lbl_80344F08, level);
     else
         *((unsigned char *)obj + 0x36) = 0;
 }
