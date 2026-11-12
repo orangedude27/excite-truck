@@ -153,6 +153,7 @@ extern "C" void NWC24Data_Init(void*);
 extern "C" s32 fn_800FAB98(void*, void*);
 extern "C" s32 fn_800FACC0(void*, void*, s32);
 extern "C" s32 fn_800FAF10(void*, void*, unsigned long, s32);
+struct ExecStream { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual int v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual int v20(); };
 extern "C" const char lbl_803251B0[];
 extern "C" const char lbl_80325158[];
 extern "C" const char lbl_803250C8[];
