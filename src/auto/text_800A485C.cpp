@@ -3888,45 +3888,48 @@ struct FatIter {
     u8 shift;           /* 0x6C */
 };
 
-extern "C" s32 fn_800AB378(void *arg0, s32 arg1) {
-    typedef s32 (*LookupPage)(void *, s32, void **, s32 *);
-    typedef s32 (*ReadData)(void *, s32, s32, s32, u16, u32 *, s32);
+extern "C" s32 fn_800AB378(void *arg0, s32 grow) {
+    typedef s32 (*ClaimPage)(void *, s32, void **, s32 *);              /* fn_800A8D08: a page of the volume's cache; -1 asks for one held by nobody */
+    typedef s32 (*WriteSector)(void *, s32, s32, s32, u16, u32 *, s32); /* fn_800B5700: write bytes to a sector */
     FatIter *it = (FatIter *)arg0;
-    void *sp10;
-    u32 spC;
-    s32 sp8;
+    void *page;
+    u32 bytesWritten;
+    s32 pageCached;
     s32 result;
     u32 i;
-    u32 cur = it->pos >> it->shift;
-    u32 prev = it->prev;
+    u32 sector = it->pos >> it->shift;
+    u32 lastSector = it->prev;
 
-    if (cur != prev) {
-        it->prev = cur;
-        result = fn_800AE620((s32)it->fat, cur, 0, (s32)&it->cluster);
+    if (sector != lastSector) {
+        it->prev = sector;
+        result = fn_800AE620((s32)it->fat, sector, 0, (s32)&it->cluster);
         if (result != 0)
             return result;
-        if (it->cluster + 0x10000 == 0xFFFF && arg1 != 0) {
-            result = fn_800AE620((s32)it->fat, cur, 1, (s32)&it->cluster);
+        if (VF_SECTOR_IS_END(it->cluster) && grow != 0) {
+            /* the directory has no cluster this far: take one more */
+            result = fn_800AE620((s32)it->fat, sector, 1, (s32)&it->cluster);
             if (result != 0)
                 return result;
-            if (it->cluster + 0x10000 != 0xFFFF && prev + 0x10000 != 0xFFFF) {
-                result = ((LookupPage)fn_800A8D08)(it->cache, -1, &sp10, &sp8);
+            if (!VF_SECTOR_IS_END(it->cluster) && !VF_SECTOR_IS_END(lastSector)) {
+                /* and clear the new cluster on the disk before anything is
+                 * written into it: one page of zeroes, a sector at a time */
+                result = ((ClaimPage)fn_800A8D08)(it->cache, -1, &page, &pageCached);
                 if (result != 0)
                     return result;
-                fn_800A499C((const char *)*(void **)((u8 *)sp10 + 8), 0, **(u16 **)&it->cache);
-                for (i = 0; i < *(u8 *)((u8 *)it->cache + 6); i++) {
-                    void *ctx = it->cache;
-                    result = ((ReadData)fn_800B5700)(ctx, *(s32 *)((u8 *)sp10 + 8), it->cluster + i, 0, *(u16 *)ctx, &spC, 0);
+                fn_800A499C((const char *)VF_PAGE_DATA(page), 0, VF_VOL_SECTOR_SIZE(it->cache));
+                for (i = 0; i < VF_VOL_SECTORS_PER_CLUSTER(it->cache); i++) {
+                    void *volume = it->cache;
+                    result = ((WriteSector)fn_800B5700)(volume, (s32)VF_PAGE_DATA(page), it->cluster + i, 0, VF_VOL_SECTOR_SIZE(volume), &bytesWritten, 0);
                     if (result != 0) {
-                        VFiPFCACHE_FreeFATPage_800A8E10(it->cache, sp10);
+                        VFiPFCACHE_FreeFATPage_800A8E10(it->cache, page); /* gives the page back to the volume's data list */
                         return result;
                     }
-                    if (spC != **(u16 **)&it->cache) {
-                        VFiPFCACHE_FreeFATPage_800A8E10(it->cache, sp10);
-                        return 0x11;
+                    if (bytesWritten != VF_VOL_SECTOR_SIZE(it->cache)) {
+                        VFiPFCACHE_FreeFATPage_800A8E10(it->cache, page);
+                        return VF_ERR_SHORT_TRANSFER;
                     }
                 }
-                VFiPFCACHE_FreeFATPage_800A8E10(it->cache, sp10);
+                VFiPFCACHE_FreeFATPage_800A8E10(it->cache, page);
             }
         }
     }
