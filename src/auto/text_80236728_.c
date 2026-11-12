@@ -693,49 +693,52 @@ void fn_80237A9C(void) {
 }
 
 extern float lbl_805636E4;
+typedef struct SVT { void *pad[3]; float (*get)(void *); void (*set)(void *, float); } SVT;
+typedef struct SObj { SVT *vt; } SObj;
+#pragma push
+#pragma processor 750
 void fn_80237AA0(arg0, arg1, arg2)
-int arg0; void *arg1; double arg2;
+int arg0; float *arg1; float arg2;
 {
-    double var_f31 = arg2;
+    float var_f31 = arg2;
     float var_f1, var_f2;
     unsigned char var_r4;
-    void *p;
+    void **p;
     if (arg0 == 0) {
-        p = *(void **)(lbl_8055F0C0 + 0x28);
-        if (p) { void **v = *(void ***)p; var_f1 = ((float (*)(void))v[3])(); }
+        p = *(void ***)(lbl_8055F0C0 + 0x28);
+        if (p) var_f1 = ((float (*)(void *))(*(void ***)p)[3])(p);
         else var_f1 = lbl_805636E0;
-        *(float *)arg1 = var_f1;
-        p = *(void **)(lbl_8055F0C0 + 0x2C);
-        if (p) { void **v = *(void ***)p; var_f2 = ((float (*)(void))v[3])(); }
+        arg1[0] = var_f1;
+        p = *(void ***)(lbl_8055F0C0 + 0x2C);
+        if (p) var_f2 = ((float (*)(void *))(*(void ***)p)[3])(p);
         else var_f2 = lbl_805636E0;
-        *(float *)((char *)arg1 + 4) = var_f2;
-        var_r4 = (unsigned char)lbl_8055F0C0[0x21];
-        if (var_r4 == 0) {
-            *(float *)((char *)arg1 + 4) = *(float *)arg1;
-            *(float *)arg1 = var_f2;
+        arg1[1] = var_f2;
+        if ((unsigned char)lbl_8055F0C0[0x21] == 0) {
+            arg1[1] = arg1[0];
+            arg1[0] = var_f2;
         }
-        if ((unsigned char)lbl_8055F0C0[0x1F] != 0) *(float *)arg1 = lbl_805636E0;
-        if ((unsigned char)lbl_8055F0C0[0x20] != 0) *(float *)((char *)arg1 + 4) = lbl_805636E0;
+        if ((unsigned char)lbl_8055F0C0[0x1F] != 0) arg1[0] = lbl_805636E0;
+        if ((unsigned char)lbl_8055F0C0[0x20] != 0) arg1[1] = lbl_805636E0;
     } else {
         if (arg0 == 3) {
             var_r4 = (unsigned char)lbl_8055F0C0[0x21];
-            if (var_r4 != 0) var_f31 = (double)lbl_805636E4 - arg2;
+            if (var_r4 != 0) var_f31 = lbl_805636E4 - arg2;
         } else {
             var_r4 = (unsigned char)lbl_8055F0C0[0x21];
-            if (var_r4 == 0) var_f31 = (double)lbl_805636E4 - arg2;
+            if (var_r4 == 0) var_f31 = lbl_805636E4 - arg2;
         }
         if ((unsigned int)(arg0 == 3) == var_r4) {
-            p = *(void **)(lbl_8055F0C0 + 0x2C);
-            if (p) { void **v = *(void ***)p; ((void (*)(double))v[4])(var_f31); }
+            p = *(void ***)(lbl_8055F0C0 + 0x2C);
+            if (p) ((void (*)(void *, float))(*(void ***)p)[4])(p, var_f31);
         } else {
-            p = *(void **)(lbl_8055F0C0 + 0x28);
-            if (p) { void **v = *(void ***)p; ((void (*)(double))v[4])(var_f31); }
+            p = *(void ***)(lbl_8055F0C0 + 0x28);
+            if (p) ((void (*)(void *, float))(*(void ***)p)[4])(p, var_f31);
         }
-        p = *(void **)(lbl_8055F0C0 + 0x30);
-        if (p) { void **v = *(void ***)p; ((void (*)(double))v[4])(var_f31); }
+        p = *(void ***)(lbl_8055F0C0 + 0x30);
+        if (p) ((void (*)(void *, float))(*(void ***)p)[4])(p, var_f31);
     }
 }
-
+#pragma pop
 extern int stricmp(const char *, const char *);
 extern char lbl_8034094C[];
 extern void *fn_801284F8(int, char *);
