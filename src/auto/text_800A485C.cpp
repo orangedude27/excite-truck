@@ -25054,21 +25054,22 @@ extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ
 }
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(void* head, const char* fmt, ...) {
-    va_list ap;
-    va_start(ap, fmt);
-    if (head == 0) {
+// Format a message into the shared nw4hbm debug console buffer, report it, and append it to the console head.
+extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(void* consoleHead, const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    if (consoleHead == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x368, lbl_8031EA90);
     }
     OSLockMutex(&lbl_804077C0);
-    vsnprintf(lbl_804077D8, 0x400, fmt, ap);
-    if (head == 0) {
+    vsnprintf(lbl_804077D8, 0x400, format, args);
+    if (consoleHead == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x34B, lbl_8031EA90);
     }
     OSReport(lbl_805597E4, lbl_804077D8);
-    fn_800D272C(head, lbl_804077D8);
+    fn_800D272C(consoleHead, lbl_804077D8);
     OSUnlockMutex(&lbl_804077C0);
-    va_end(ap);
+    va_end(args);
 }
 
 s32 nw4hbm::db::Console_GetTotalLines(nw4hbm::db::detail::ConsoleHead *console) {
