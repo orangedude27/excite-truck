@@ -3008,7 +3008,10 @@ extern "C" void fn_8021D878(void *arg0) {
     if(fn_80129BC4()!=0){ result=fn_80217BD8(*(s32*)((u8*)arg0+0x2C),*(s32*)((u8*)arg0+0x25C),arg0); *(void**)((u8*)arg0+0x258)=result; ((void(*)(void*,s32,void*,s32))fn_80219440)(arg0,1,result,4); }
 }
 
-extern "C" s32 fn_8021D8D4(void *arg0) {
+extern "C" s32 fn_8021D8D4(void *self) {
+    /* Return object state: 0 if pointer at +0x258 is null; 4 if flag at +0x1B
+       is clear; otherwise if virtual v0() of object at +0x254 is nonzero returns
+       normalized v1(), else returns normalized comparison *(*+0x258) == *(+0x25C). */
     struct BaseA {
         int a, b, c;
     };
@@ -3017,16 +3020,16 @@ extern "C" s32 fn_8021D8D4(void *arg0) {
         virtual s32 v1();
     };
 
-    if (*(void **)((u8 *)arg0 + 0x258) == 0) {
+    if (*(void **)((u8 *)self + 0x258) == 0) {
         return 0;
     }
-    if (*(u8 *)((u8 *)arg0 + 0x1B) != 0) {
+    if (*(u8 *)((u8 *)self + 0x1B) != 0) {
         s32 result;
-        ClassB *obj = *(ClassB **)((u8 *)arg0 + 0x254);
+        ClassB *obj = *(ClassB **)((u8 *)self + 0x254);
         if (obj->v0() != 0) {
-            result = (*(ClassB **)((u8 *)arg0 + 0x254))->v1();
+            result = (*(ClassB **)((u8 *)self + 0x254))->v1();
         } else {
-            result = **(s32 **)((u8 *)arg0 + 0x258) == *(s32 *)((u8 *)arg0 + 0x25C);
+            result = **(s32 **)((u8 *)self + 0x258) == *(s32 *)((u8 *)self + 0x25C);
         }
         return result != 0;
     }
@@ -4468,10 +4471,10 @@ extern "C" void fn_80220B3C(void *arg0) {
 }
 
 extern "C" void fn_80220B5C(void *arg0, s32 arg1) {
+    s32 flag;
     s32 v0;
     s32 *entries;
     s32 *p;
-    s32 flag;
     s32 cur;
     s32 div;
     s32 f4b;
