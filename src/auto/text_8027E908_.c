@@ -227,6 +227,7 @@ __declspec(section ".data") extern int lbl_802FA848;
 __declspec(section ".data") extern int lbl_804B2FF8;
 __declspec(section ".data") extern int lbl_803480A8;
 extern int lbl_8055C7C8, lbl_8055B860;
+#pragma use_lmw_stmw off
 void fn_8027ED78(int arg0, int arg1, int arg2) {
     register int a0 = ((int *)&lbl_802FA848)[0];
     register int a2 = ((int *)&lbl_802FA848)[2];
@@ -246,7 +247,6 @@ void fn_8027ED78(int arg0, int arg1, int arg2) {
     register int minusTwo = -2;
     register int thirteen = 13;
     int block[26];
-
     block[0] = a0;
     block[1] = (int)&block[6];
     block[2] = a2;
@@ -272,10 +272,9 @@ void fn_8027ED78(int arg0, int arg1, int arg2) {
     block[23] = b2;
     block[24] = b3;
     block[25] = b4;
-    ((int (*)(int *, int, int, int, int))fn_802146BC)(
-        block, -999, -999, 1, block[0]);
+    ((int (*)(int *, int, int, int))fn_802146BC)(block, -999, -999, 1);
 }
-
+#pragma use_lmw_stmw on
 void fn_8027EE74(int arg0) {
     extern unsigned char lbl_8055F684;
     extern int fn_80236914(void);
@@ -1144,10 +1143,10 @@ extern "C" int fn_802808D0(void) {
     extern char lbl_80348480[];
     char buffer[0x1E];
     void **base;
-    void **p;
+    int index;
     void *entry;
     int count;
-    int index;
+    void **p;
     int active;
 
     count = lbl_804B3048.count;
@@ -1173,7 +1172,7 @@ found_item:
             if (*(unsigned char *)((char *)lbl_8055F688 + 0x64) != 0) {
                 index = 5;
             } else {
-                count = lbl_804B3048.count;
+                register count = lbl_804B3048.count;
                 index = 0;
                 p = lbl_804B3048.items;
                 for (; index < count; index++, p++) {
@@ -1553,11 +1552,11 @@ extern "C" int fn_80281138(void) {
     extern void *lbl_8055F694;
     extern char lbl_8034848C[];
     extern char lbl_8034849C[];
-    unsigned int *items;
-    unsigned int key;
-    void *selected;
-    int count;
     int index;
+    int count;
+    unsigned int key;
+    unsigned int *items;
+    void *selected;
     char buffer1[0x1E];
     char buffer2[0x1E];
 
@@ -1565,10 +1564,11 @@ extern "C" int fn_80281138(void) {
     index = 0;
     key = lbl_8055F688;
     items = (unsigned int *)lbl_804B3048.items;
-    for (; count > 0; --count, ++items, ++index) {
+    for (; index < count; ++items, ++index) {
         if (*items != key)
             goto update_first;
-        goto found_first;
+        else
+            goto found_first;
 update_first:
         ;
     }
@@ -1582,10 +1582,11 @@ found_first:
             index = 0;
             key = lbl_8055F688;
             items = (unsigned int *)lbl_804B3048.items;
-            for (; count > 0; --count, ++items, ++index) {
+            for (; index < count; ++items, ++index) {
                 if (*items != key)
                     goto update_second;
-                goto found_second;
+                else
+                    goto found_second;
 update_second:
                 ;
             }
@@ -1606,10 +1607,11 @@ found_second:
             count = lbl_804B3048.count;
             index = 0;
             items = (unsigned int *)lbl_804B3048.items;
-            for (; count > 0; --count, ++items, ++index) {
+            for (; index < count; ++items, ++index) {
                 if (*items != (unsigned int)selected)
                     goto update_third;
-                goto found_third;
+                else
+                    goto found_third;
 update_third:
                 ;
             }
@@ -3187,14 +3189,16 @@ static inline void fn_80286A34_select(int idx) {
 }
 
 #pragma dont_inline on
+// Plays the score-up tally sound effect and initializes tally state
 void fn_80287238(void *arg0) {
-    extern float lbl_80564200, lbl_805641FC;
-    extern char lbl_80347FB4[];
+    extern float lbl_80564200; // 0.0f
+    extern float lbl_805641FC; // 1.0f
+    extern char lbl_80347FB4[]; // "scoreup_tally"
     extern int fn_80214A9C(int);
     extern void *fn_8027ED70(void);
-    void *temp = *(void **)((char *)arg0 + 0x20);
-    if (temp != 0) {
-        *(float *)((char *)temp + 0x10) = lbl_80564200;
+    void *sub = *(void **)((char *)arg0 + 0x20);
+    if (sub != 0) {
+        *(float *)((char *)sub + 0x10) = lbl_80564200;
         *(unsigned char *)((char *)arg0 + 0x29) = 0;
         *(unsigned char *)((char *)arg0 + 0x2a) = 0;
 #pragma cplusplus on
@@ -3206,10 +3210,10 @@ void fn_80287238(void *arg0) {
         return;
     }
     {
-    float f = lbl_80564200;
-    *(unsigned char *)((char *)arg0 + 0x29) = 1;
-    *(unsigned char *)((char *)arg0 + 0x2a) = 0;
-    *(float *)((char *)arg0 + 0x178) = f;
+        float zero = lbl_80564200;
+        *(unsigned char *)((char *)arg0 + 0x29) = 1;
+        *(unsigned char *)((char *)arg0 + 0x2a) = 0;
+        *(float *)((char *)arg0 + 0x178) = zero;
     }
 }
 #pragma dont_inline reset
