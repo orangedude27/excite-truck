@@ -643,13 +643,14 @@ void fn_80264D5C(void *arg0) {
     SparkList *l;
     SparkParticle *p, *last;
     float dt;
-    int i, count;
+    int i, off;
 
-    l = (SparkList *)((char *)arg0 + 0x40);
+    l = (SparkList *)arg0;
     dt = fn_80214D48();
     i = 0;
+    off = 0;
     while (i < l->count) {
-        p = &l->items[i];
+        p = (SparkParticle *)((char *)l->items + off);
         p->life -= dt;
         if (p->life < lbl_80558DC4[0]) {
             if (i >= 0 && i < l->count) {
@@ -667,19 +668,24 @@ void fn_80264D5C(void *arg0) {
                 l->count = l->count - 1;
             }
         } else {
-            i++;
-            p->vx += l->gx * dt;
-            p->vy += l->gy * dt;
-            p->x += p->vx * dt;
-            p->y += p->vy * dt;
+            float nvx, nvy;
+            nvx = p->vx + l->gx * dt;
+            p->vx = nvx;
+            nvy = p->vy + l->gy * dt;
+            p->vy = nvy;
+            p->x += nvx * dt;
+            p->y += nvy * dt;
             p->a10 += p->a14 * dt;
+            off += 0x20;
+            i++;
         }
     }
-    l = (SparkList *)((char *)arg0 + 0xA0);
+    l = (SparkList *)((char *)arg0 + 0x60);
     dt = fn_80214D48();
     i = 0;
+    off = 0;
     while (i < l->count) {
-        p = &l->items[i];
+        p = (SparkParticle *)((char *)l->items + off);
         p->life -= dt;
         if (p->life < lbl_80558DC4[0]) {
             if (i >= 0 && i < l->count) {
@@ -697,12 +703,16 @@ void fn_80264D5C(void *arg0) {
                 l->count = l->count - 1;
             }
         } else {
-            i++;
-            p->vx += l->gx * dt;
-            p->vy += l->gy * dt;
-            p->x += p->vx * dt;
-            p->y += p->vy * dt;
+            float nvx, nvy;
+            nvx = p->vx + l->gx * dt;
+            p->vx = nvx;
+            nvy = p->vy + l->gy * dt;
+            p->vy = nvy;
+            p->x += nvx * dt;
+            p->y += nvy * dt;
             p->a10 += p->a14 * dt;
+            off += 0x20;
+            i++;
         }
     }
 }
@@ -813,6 +823,20 @@ done:
     *(int *)((char *)arg0 + 0xB4) = strlen((char *)arg0 + 0x1C);
     *(float *)((char *)arg0 + 0xB8) = farg0;
 }
+
+/* A "firetext" credits item.  fn_802640C4 builds it under the name "TextWoot" (0xbc bytes)
+   and fn_80265268 hands it the line to show; its class vtable is lbl_80346618 and
+   fn_802652E8 is that vtable's slot 0x28 (draw the line). */
+typedef struct FireText {
+    /* 0x00 */ void *vt;
+    /* 0x04 */ int x;           /* anchor of the line, kept as an int, drawn as a float */
+    /* 0x08 */ int y;
+    /* 0x0C */ char pad0C[0x0C];
+    /* 0x18 */ int fontId;      /* the text object fn_8022ACFC measures / fn_8022BD40 draws */
+    /* 0x1C */ char text[0x98]; /* the line, at most 0x96 characters (fn_80265268) */
+    /* 0xB4 */ int length;      /* strlen(text) */
+    /* 0xB8 */ float startTime; /* the credits clock the line starts typing out at */
+} FireText;
 
 #pragma push
 #pragma processor 750
