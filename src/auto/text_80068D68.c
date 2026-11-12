@@ -26025,6 +26025,7 @@ typedef struct USBCommandBlock {
     };
 } USBCommandBlock;
 
+/* Log a formatted USB debug message when USB debug logging is enabled. */
 static void USB_LOG(const char *fmt, ...) {
     va_list list;
     if (lbl_8055DC90) {
