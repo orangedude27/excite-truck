@@ -108,12 +108,11 @@ void fn_800178F8(s32 arg0, s32 arg1) {
  * driver record contributes its number and the number of the vehicle record it
  * is assigned to, each vehicle is checked for having a car class, and the
  * driver's alternate vehicle is re-applied when that override is switched on. */
-void fn_80017944(void *list_) {
+void fn_80017944(EntryPairList *list) {
     register s32 driverCount;
     register s32 i;
     register s32 driverNum;
     register s32 vehicleNum;
-    EntryPairList *list = (EntryPairList *)list_;
     DriverInfo *driver;
     VehicleInfo *vehicle;
 
