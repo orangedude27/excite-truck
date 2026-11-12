@@ -34,6 +34,8 @@ extern s32 lbl_8055D578;
 extern s32 lbl_8055D57C;
 extern const char lbl_802FD270[];
 #pragma cplusplus on
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_8001880C(void) {
     char buf1[0x14];
     char buf2[0x14];
@@ -84,7 +86,7 @@ extern "C" void fn_8001880C(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_80018A8C(const char *arg0) {
+s32 fn_80018A8C(const char *arg0) {
     s32 offset = 0;
     s32 i = 0;
     while (i < lbl_8055D57C) {
