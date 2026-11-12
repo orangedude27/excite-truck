@@ -3333,6 +3333,7 @@ extern "C" void fn_8021E3BC(void *arg0, s32 arg1) {
     ((void (*)(void *, s32))fn_802192A0)(arg0, arg1);
     fn_802C3034(arg1);
 
+    /* Draw visible list items: highlight the selected row and draw each item's label/text with selection/scratch flags. */
     color = lbl_8055FBDC;
     scratch = 0;
     index = 0;
