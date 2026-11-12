@@ -785,7 +785,6 @@ void fn_8001B7BC(void *obj) {
 #pragma small_data on
 extern float lbl_80560418;
 extern float lbl_8056041C;
-extern void fn_8001B478(float);
 extern void *fn_80156A40(void);
 extern double cos(double);
 extern double sin(double);
