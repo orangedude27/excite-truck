@@ -287,20 +287,21 @@ void fn_801933FC(void *arg0, void *arg1) {
     fn_8019330C(arg1, arg1, (arg0 = *(void **)((char *)arg0 + 0x294), (int)((char *)arg0 + 0x70)));
 }
 #pragma scheduling reset
-int fn_80193524(void *arg0, void *arg1) {
+int fn_80193524(void *first, void *second) {
+    /* Returns nonzero if the objects' directions are not nearly parallel and their positions overlap along those directions. */
     extern float PSVECDotProduct(const void *, const void *);
     extern float lbl_8056215C;
-    struct S93524 *a = arg0, *b = arg1;
+    struct S93524 *objA = first, *objB = second;
     int result = 0;
-    float delta[3];
-    float dot;
-    dot = __fabs(PSVECDotProduct(a->dir, b->dir));
-    if (dot < lbl_8056215C) {
-        delta[0] = b->pos[0] - a->pos[0];
-        delta[1] = b->pos[1] - a->pos[1];
-        delta[2] = b->pos[2] - a->pos[2];
-        dot = PSVECDotProduct(delta, a->dir);
-        result = dot > -PSVECDotProduct(delta, b->dir);
+    float deltaPos[3];
+    float dirDot;
+    dirDot = __fabs(PSVECDotProduct(objA->dir, objB->dir));
+    if (dirDot < lbl_8056215C) {
+        deltaPos[0] = objB->pos[0] - objA->pos[0];
+        deltaPos[1] = objB->pos[1] - objA->pos[1];
+        deltaPos[2] = objB->pos[2] - objA->pos[2];
+        dirDot = PSVECDotProduct(deltaPos, objA->dir);
+        result = dirDot > -PSVECDotProduct(deltaPos, objB->dir);
     }
     return result;
 }
@@ -1593,46 +1594,42 @@ void fn_80195B28(void *arg0, float arg1) {
 
     if (p[0x234 / 4] < p[0x26C / 4] || lbl_80562144 != arg1) {
         table = (float *)__AXFXGetLfoSinTable_801769CC();
-        {
-            unsigned int expected = 0x180201;
-            tableValue = *(unsigned int *)((char *)table + 4);
-            if (((expected - tableValue) | (tableValue - expected)) >> 31) {
-                index = *(int *)((char *)arg0 + 0x268);
-                selected = (unsigned int)__cntlzw(index - 1) >> 5;
-                table = lbl_80333308;
-                if (selected)
-                    table += 3;
-                {
-                    volatile float *vp = (volatile float *)arg0;
-                    float base = vp[0x26C / 4];
-                    float first = table[0];
-                    p[0x22C / 4] = base;
-                    p[0x234 / 4] = fn_80129DC4(3, first, table[1]);
-                }
-                if (!selected)
-                    p[0x234 / 4] *= lbl_8055E56C;
-                p[0x228 / 4] = p[0x220 / 4];
-                p[0x234 / 4] += p[0x26C / 4];
-                p[0x230 / 4] = table[2];
-                if (selected)
-                    p[0x224 / 4] = fn_80129DC4(3, lbl_8056220C, lbl_8056215C);
-                else
-                    p[0x224 / 4] = fn_80129DC4(3, lbl_805621A4, lbl_80562140);
-                if (lbl_80562144 != arg1) {
-                    value = (float)__fabs((double)p[0x224 / 4]);
-                    if (arg1 > lbl_80562144)
-                        scale = lbl_80562140;
-                    else
-                        scale = lbl_805621A4;
-                    p[0x224 / 4] = scale * value;
-                }
-            } else {
-                p[0x234 / 4] = p[0x26C / 4];
-                p[0x228 / 4] = lbl_80562144;
-                p[0x224 / 4] = lbl_80562144;
-                p[0x22C / 4] = p[0x26C / 4];
-                p[0x230 / 4] = p[0x26C / 4];
+        tableValue = *(unsigned int *)((char *)table + 4);
+        if (((0x180201u - tableValue) | (tableValue - 0x180201u)) >> 31) {
+            index = *(int *)((char *)arg0 + 0x268);
+            selected = (unsigned int)__cntlzw(index - 1) >> 5;
+            table = lbl_80333308;
+            if (selected)
+                table += 3;
+            {
+                float base = p[0x26C / 4];
+                float first = table[0];
+                p[0x22C / 4] = base;
+                p[0x234 / 4] = fn_80129DC4(3, first, table[1]);
             }
+            if (!selected)
+                p[0x234 / 4] *= lbl_8055E56C;
+            p[0x228 / 4] = p[0x220 / 4];
+            p[0x234 / 4] += p[0x26C / 4];
+            p[0x230 / 4] = table[2];
+            if (selected)
+                p[0x224 / 4] = fn_80129DC4(3, lbl_8056220C, lbl_8056215C);
+            else
+                p[0x224 / 4] = fn_80129DC4(3, lbl_805621A4, lbl_80562140);
+            if (lbl_80562144 != arg1) {
+                value = (float)__fabs((double)p[0x224 / 4]);
+                if (arg1 > lbl_80562144)
+                    scale = lbl_80562140;
+                else
+                    scale = lbl_805621A4;
+                p[0x224 / 4] = scale * value;
+            }
+        } else {
+            p[0x234 / 4] = p[0x26C / 4];
+            p[0x228 / 4] = lbl_80562144;
+            p[0x224 / 4] = lbl_80562144;
+            p[0x22C / 4] = p[0x26C / 4];
+            p[0x230 / 4] = p[0x26C / 4];
         }
     }
 }
@@ -2299,16 +2296,17 @@ void fn_80196C90(void *arg0) {
     extern float lbl_80562260;
     extern float lbl_8055E548, lbl_8055E54C;
     extern int __fpclassifyf(float);
-    extern int __cntlzw(unsigned int);
     char *obj = (char *)arg0;
     int flag = 0;
-    float f1;
     float f0;
-    float f148;
-    float f144;
-    int r4;
+    float f1;
+    double d148;
+    double d144;
     int r0;
+    int r4;
     int r31;
+    int nan;
+    int fin;
     *(float *)(obj + 0x144) = *(float *)(obj + 0x144) * *(float *)(obj + 0x14C);
     if (*(unsigned char *)(obj + 0x9C) != 0 || *(unsigned char *)(obj + 0x74) != 0) {
         flag = 1;
@@ -2318,24 +2316,20 @@ void fn_80196C90(void *arg0) {
         f0 = *(float *)(obj + 0xCC);
         r4 = *(int *)&f1;
         r0 = *(int *)&f0;
-        if ((r4 & 0x80000000) == (r0 & 0x80000000)) {
+        if ((int)(r4 & 0x80000000) == (int)(r0 & 0x80000000)) {
             *(float *)(obj + 0x144) = f1 * lbl_80562260;
         }
     }
-    f148 = __fabs(*(float *)(obj + 0x148));
-    f144 = __fabs(*(float *)(obj + 0x144));
-    if (f144 < f148) {
+    d148 = __fabs(*(float *)(obj + 0x148));
+    d144 = __fabs(*(float *)(obj + 0x144));
+    if ((float)d144 < (float)d148) {
         float f31 = *(float *)(obj + 0x150);
         r31 = 0;
-        if (__fpclassifyf(f31) != 1) {
-            int r = __fpclassifyf(f31);
-            if (((u32)__cntlzw((u32)r - 1) >> 5) != 0) {
+        nan = __fpclassifyf(f31) == 1;
+        if (!nan) {
+            fin = __fpclassifyf(f31) > 2;
+            if (fin) {
                 r31 = 1;
-            } else {
-                int x = r ^ 2;
-                if (((x & r) - (x >> 1)) >> 31) {
-                    r31 = 1;
-                }
             }
         }
         if (r31 == 0) {
@@ -2792,9 +2786,9 @@ extern "C" void fn_80197AB8(void *arg0, int arg1, float farg0, float farg1, floa
     unsigned char *p = (unsigned char *)arg0;
     float vals[2];
     float rate;
-    float motion;
-    float field3C;
     float field38;
+    float field3C;
+    float motion;
     float term1;
     float term2;
     float height;
@@ -2894,7 +2888,6 @@ int fn_80197FE4(void *arg0, void *arg1) {
     extern float lbl_80562184, lbl_8056215C, lbl_80562140;
     extern float lbl_80562290, lbl_80562294;
     extern void *lbl_804349C0[];
-
     if (!(*(int *)((char *)arg0 + 0x2D0) & 4)) {
         special = 1;
         z_limit = lbl_80562290 * lbl_8055A488;
@@ -2907,12 +2900,11 @@ int fn_80197FE4(void *arg0, void *arg1) {
         else
             speed = lbl_80562140;
         *(float *)((char *)arg0 + 0x134) = speed;
-
         projected_x = speed * *(float *)((char *)arg1 + 0x10);
         projected_x += *(float *)((char *)arg1 + 8);
         projected_z = speed * *(float *)((char *)arg1 + 0x0C);
         projected_z += *(float *)((char *)arg1 + 4);
-        x_ok = *(float *)((char *)arg1 + 8) < lbl_8056215C * lbl_8055A48C;
+        x_ok = *(float *)((char *)arg1 + 8) > lbl_8056215C * lbl_8055A48C;
         in_range = 0;
         between = 0;
         if (projected_x < upper) {
@@ -2923,7 +2915,6 @@ int fn_80197FE4(void *arg0, void *arg1) {
         if (between && x_ok)
             in_range = 1;
         angle_ok = (float)__fabs((double)projected_z) < z_limit;
-
         entry = lbl_804349C0[*(int *)((char *)arg1 + 0x18)];
         allowed = 1;
         if (entry && *((unsigned char *)entry + 0x2A5))
