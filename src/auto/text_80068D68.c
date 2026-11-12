@@ -23084,6 +23084,7 @@ u8 arg2;
 }
 #pragma pop
 extern char lbl_80319EB0[];
+/* Allocate or reuse an RFCOMM multiplexer channel for a peer BD address. */
 void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
     u8 *existing;
     long i;
@@ -24942,14 +24943,14 @@ void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     extern char lbl_8031A4E8[];
     UINT8 *p;
     UINT8 *p_end;
-    TIMER_LIST_ENT *timer;
+    UINT16 off;
     UINT8 opcode;
     UINT16 trans_num;
     UINT16 param_len;
-    timer = (TIMER_LIST_ENT *)((UINT8 *)p_ccb + 8);
-    p = (UINT8 *)p_msg + p_msg->offset + 8;
+    off = p_msg->offset;
+    p = (UINT8 *)p_msg + off + 8;
     p_end = p + p_msg->len;
-    btu_start_timer(timer, 5, 0x1E);
+    btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)p_ccb + 8), 5, 0x1E);
     opcode = *p++;
     trans_num = ((UINT16)p[0] << 8) + p[1];
     param_len = ((UINT16)p[2] << 8) + p[3];
