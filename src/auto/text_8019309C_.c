@@ -1392,14 +1392,13 @@ void fn_80195654(void *arg0, void *arg1) {
     void *second;
     void *left;
     void *right;
-    int firstWord;
     int secondWord;
+    int firstWord;
     int flags;
-
     *(volatile int *)((char *)arg0 + 0x2D0) = 0;
     difference = current - previous;
     doInterpolate = difference < threshold;
-    if (doInterpolate != 0) {
+    if (doInterpolate) {
         first = *(void **)((char *)arg0 + 0x1A0);
         second = *(void **)((char *)arg0 + 0x16C);
         left = *(void **)((char *)first + 0x14);
@@ -1435,8 +1434,8 @@ void fn_80195654(void *arg0, void *arg1) {
         ((void (*)(void *, void *, float))fn_80194FD0)(arg0, arg1, interpolated);
         if (*(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1E4) <
             *(float *)((char *)arg0 + 0x2BC)) {
-            firstWord = ((int *)arg1)[0];
             secondWord = ((int *)arg1)[1];
+            firstWord = ((int *)arg1)[0];
             scratch.word0 = firstWord;
             scratch.word1 = secondWord;
             scratch.value0 = ((float *)arg1)[2];
@@ -2055,10 +2054,10 @@ void fn_801965AC(void *arg0) {
     float position[3];
     int transform[3];
     float delta;
-    float diff;
     float depth;
-    float value;
     float range;
+    float diff;
+    float value;
     float scalar;
     float adjusted;
     float product;
@@ -2086,7 +2085,7 @@ void fn_801965AC(void *arg0) {
     diff = *(float *)((char *)obj + 0x64) - *(float *)((char *)transform + 4);
     delta = delta > diff ? delta : diff;
     depth = *(float *)((char *)obj + 0x11C);
-    depth = depth < lbl_80562244 ? lbl_80562244 : depth;
+    depth = depth < lbl_80562244 ? depth : lbl_80562244;
     range = lbl_80562140;
     doEffect = (-delta / depth) < range;
     scalar = lbl_80562184;
@@ -2108,8 +2107,8 @@ void fn_801965AC(void *arg0) {
 
     value = __fabs(*(float *)((char *)arg0 + 0x23C));
     value = (value - lbl_80562144) / range;
-    range = range < value ? value : range;
-    range = range > lbl_80562144 ? lbl_80562144 : range;
+    range = range < value ? range : value;
+    range = range > lbl_80562144 ? range : lbl_80562144;
     adjusted = *(float *)((char *)obj + 0x58) - (lbl_805621EC + range * lbl_80562248);
     product = scalar * adjusted;
     value = lbl_80562140;
