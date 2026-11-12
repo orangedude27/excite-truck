@@ -3291,54 +3291,46 @@ extern "C" s32 VFiPFENT_findEmptyTailSFN(void *arg0, void *name, u32 *out) {
     u8 sp18[0x38];
     u8 sp8[0x10];
     u8 *volume = *(u8 **)((u8 *)arg0 + 0x22C);
-    u32 *count = out;
     u32 candidate;
     u32 base;
     u32 limit;
-    u32 blockIndex;
-    u32 byteOffset;
-    volatile u32 *entries;
-    u32 value;
-    u32 blocks;
+    u32 idx;
+    u32 off;
     s32 result;
-
-    *count = 1;
-    fn_800AF530(sp18, sp8, *(s32 *)((u8 *)arg0 + 0x22C),
-                (s32)((u8 *)arg0 + 0x234));
+    *out = 1;
+    fn_800AF530(sp18, sp8, *(s32 *)((u8 *)arg0 + 0x22C), (s32)((u8 *)arg0 + 0x234));
     base = 0xF0000;
     candidate = 1;
     limit = base + 0x423F;
     goto candidateCheck;
 search:
-    result = VFiPFENT_searchEmptyTailSFN(sp18, candidate, name,
-                                          *(s32 **)(volume + 0x1F7C));
-    if (result != 0)
-        return result;
-    blockIndex = 0;
-    byteOffset = 0;
-    goto scan;
+    result = VFiPFENT_searchEmptyTailSFN(sp18, candidate, name, *(s32 **)(volume + 0x1F7C));
+    if (result == 0)
+        goto haveResult;
+    return 0;
+haveResult:
+    idx = 0;
+    off = 0;
+    goto blocksCheck;
 scan:
-    entries = *(volatile u32 **)(volume + 0x1F7C);
-    value = entries[blockIndex];
-    if (value != 0xFFFEFFFF)
-        goto shift;
-    goto advanceWord;
-shift:
-    entries = *(volatile u32 **)(volume + 0x1F7C);
-    value = entries[blockIndex] >> 1;
-    entries[blockIndex] = value;
-    *count += 1;
-    if (entries[blockIndex] & 1)
-        goto shift;
+    if (*(volatile u32 *)((u8 *)*(volatile u32 **)(volume + 0x1F7C) + off) == 0xFFFFFFFFU)
+        goto advance;
+    off = idx << 2;
+    while ((*(volatile u32 *)((u8 *)off + (u32)*(volatile u32 **)(volume + 0x1F7C)) & 1U) != 0) {
+        *(volatile u32 *)((u8 *)off + (u32)*(volatile u32 **)(volume + 0x1F7C)) >>= 1;
+        *out += 1;
+    }
     candidate = base + 0x4240;
-advanceWord:
-    *count += 0x20;
-    byteOffset += 4;
-    blockIndex++;
-    blocks = *(u32 *)(volume + 0x1F74);
-    if (blockIndex < blocks)
+    goto update;
+advance:
+    *out += 0x20;
+    off += 4;
+    idx += 1;
+blocksCheck:
+    if (idx < *(volatile u32 *)(volume + 0x1F74))
         goto scan;
-    candidate += blocks << 5;
+update:
+    candidate += *(volatile u32 *)(volume + 0x1F74) << 5;
 candidateCheck:
     if (candidate <= limit)
         goto search;
@@ -5721,31 +5713,37 @@ extern "C" s32 fn_800ADD84(void *, s32, s32, s32, u32 *, s32 *);
 extern "C" s32 fn_800AE3A8(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
     s32 spC;
     u32 sp8;
-    u32 *temp_r7 = *(u32 **)((u8 *)arg0 + 8);
-    void *temp_r8 = *(void **)((u8 *)arg0 + 0x34);
-    void *temp_r31 = *(void **)((u8 *)arg0 + 0x30);
-    u32 temp_r4 = *(u32 *)((u8 *)temp_r8 + 0x1C);
     s32 var_r3;
+    u32 *temp_r7;
+    void *temp_r31;
+    void *temp_r8;
+    u32 temp_r4;
+    temp_r7 = *(u32 **)((u8 *)arg0 + 8);
+    temp_r8 = *(void **)((u8 *)arg0 + 0x34);
+    temp_r4 = *(u32 *)((u8 *)temp_r8 + 0x1C);
+    temp_r31 = *(void **)((u8 *)arg0 + 0x30);
     if (*temp_r7 == 1) {
         if (temp_r4 <= 1) {
-            *arg3 = -1;
+            *arg3 = (u32)-1;
             return 0;
         }
         *temp_r7 = *(u32 *)((u8 *)temp_r8 + 0x10);
     }
-    *arg3 = -1;
+    *arg3 = (u32)-1;
     var_r3 = fn_800ADD84(arg0, arg1, 2, arg2, &sp8, &spC);
-    if (var_r3 != 0) goto sentinel;
-    if (sp8 >= 2 && sp8 < *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2) {
-        *arg3 = sp8;
+    if (var_r3 == 0) {
+        if ((sp8 >= 2) && (sp8 < (u32)(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2))) {
+            *arg3 = sp8;
+        }
+        var_r3 = 0;
     }
-    var_r3 = 0;
-    if (var_r3 != 0) goto sentinel;
+    if (var_r3 != 0) {
+        return var_r3;
+    }
     if ((*arg3 + 0x10000) == 0xFFFF) {
-sentinel:
         return 0;
     }
-    *(u32 *)((u8 *)temp_r31 + 8) = *(u32 *)arg0;
+    *(s32 *)((u8 *)temp_r31 + 8) = *(s32 *)arg0;
     *(s32 *)temp_r31 = arg1;
     *(u32 *)((u8 *)temp_r31 + 4) = *arg3;
     return 0;
@@ -6937,22 +6935,22 @@ void fn_800B0748(void) {
 }
 
 extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
-    void *var_r9;
     u32 temp_r8;
+    void *var_r9;
+    void *temp_r6;
     u32 temp_r10;
     s32 temp_r7;
     s32 var_r31 = 1;
     u16 temp_r5;
     void *var_r5;
     u32 temp_r6_2;
-    void *temp_r6;
     if (arg0 == 0) var_r9 = 0;
     else var_r9 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
-    temp_r6 = M2C_FIELD(arg0, void **, 8);
-    temp_r10 = M2C_FIELD(temp_r6, u32 *, 0x264);
     temp_r8 = M2C_FIELD(arg0, u16 *, 0x28);
     temp_r8 += arg1;
     temp_r7 = arg2 + (temp_r8 >> M2C_FIELD(var_r9, u8 *, 0x20));
+    temp_r6 = M2C_FIELD(arg0, void **, 8);
+    temp_r10 = M2C_FIELD(temp_r6, u32 *, 0x264);
     if ((u32)(M2C_FIELD(arg0, u32 *, 0x1C) + arg1) < temp_r10) {
         if ((M2C_FIELD(var_r9, u16 *, 0) - 1) & temp_r8) M2C_FIELD(arg0, s32 *, 0x20) = temp_r7;
         else M2C_FIELD(arg0, s32 *, 0x20) = -1;
@@ -6964,7 +6962,7 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
     } else {
         var_r31 = 0;
         M2C_FIELD(arg0, s32 *, 0x20) = -1;
-        M2C_FIELD(arg0, u32 *, 0x1C) = M2C_FIELD(M2C_FIELD(arg0, void **, 8), u32 *, 0x264);
+        M2C_FIELD(arg0, u32 *, 0x1C) = M2C_FIELD(temp_r6, u32 *, 0x264);
     }
     if (arg0 == 0) var_r5 = 0;
     else var_r5 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
@@ -12265,12 +12263,12 @@ extern "C" s32 fn_800BA404(void) {
 
 #pragma dont_inline on
 extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
-    register u8 count;
-    register u8 *out;
-    register u8 *record;
-    register u32 i;
-    register u8 *groupBase;
-    register u32 j;
+    u8 count;
+    u8 *out;
+    u8 *record;
+    u32 i;
+    u8 *groupBase;
+    u32 j;
 
     if (arg1 != 0) {
         if (arg2 == 0)
@@ -12284,7 +12282,7 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     for (i = 0; i < 0x1A; i++) {
         if (fn_800A71C4((u32 *)record) != 0 &&
             *(u32 *)(record + 4) == (u32)arg0) {
-            register u8 *group = groupBase + 0xA0;
+            u8 *group = groupBase + 0xA0;
             for (j = 0; j < 13; j++, group += 0x3F90) {
                 if (*(u32 *)(group + 0x1FBC) == (u32)record) {
                     count++;
