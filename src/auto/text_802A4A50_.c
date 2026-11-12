@@ -1127,6 +1127,7 @@ void fn_802A6790(void *arg0) {
     f32 second;
     f32 third;
 
+    /* Fill entries [count@+4, limit@+8) with random 3-float samples derived from ranges at +0x20/+0x24/+0x28. */
     *(s32 *)((u8 *)arg0 + 4) = 0;
     while (*(s32 *)((u8 *)arg0 + 4) < *(s32 *)((u8 *)arg0 + 8)) {
         first = fn_80287BC8(*(f32 *)((u8 *)arg0 + 0x24), *(f32 *)((u8 *)arg0 + 0x28));
