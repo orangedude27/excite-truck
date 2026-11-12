@@ -1681,11 +1681,9 @@ extern double lbl_805634B8;
 extern float lbl_805634C4;
 #pragma scheduling invalid_target
 extern "C" void fn_8021AFF4(void *arg0) {
-    f32 diff = *(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258);
-    f32 frames = (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
-    f32 step = diff / frames;
+    f32 step = (*(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258)) / (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
     *(f32 *)*(void **)((u8 *)arg0 + 0x254) += (f32)*(s32 *)((u8 *)arg0 + 0x264) * step;
-    *(f32 *)*(void **)((u8 *)arg0 + 0x254) = step * (f32)(s32)(lbl_805634C4 + (*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step));
+    *(f32 *)*(void **)((u8 *)arg0 + 0x254) = step * (f32)(s32)((*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step) + lbl_805634C4);
     if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) < *(f32 *)((u8 *)arg0 + 0x258)) {
         *(f32 *)*(void **)((u8 *)arg0 + 0x254) = *(f32 *)((u8 *)arg0 + 0x258);
     }
@@ -2901,13 +2899,17 @@ checked:
 
 #pragma dont_inline on
 extern "C" void fn_8021D568(void *arg0, s32 arg1) {
+    /* Set the active gx canvas, then if this object's linked selection id
+       (+0x2BC) matches the expected id (+0x2C0), draw the object's horizontal
+       span via fn_802C3424 using vf28() as width and global lbl_8055FBC0
+       (sbss, purpose unclear). Finally forward to fn_802195DC. */
     fn_802C3034(arg1);
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x2BC);
-    if (p != 0 && *(s32 *)((u8 *)arg0 + 0x2C0) == *p) {
-        s32 a = *(s32 *)((u8 *)arg0 + 4);
-        s32 b = *(s32 *)((u8 *)arg0 + 8);
-        s32 n = ((VfObj *)arg0)->vf28();
-        fn_802C3424(a, b, a + n, *(s32 *)((u8 *)arg0 + 0x10), lbl_8055FBC0);
+    s32 *selectionIdPtr = *(s32 **)((u8 *)arg0 + 0x2BC);
+    if (selectionIdPtr != 0 && *(s32 *)((u8 *)arg0 + 0x2C0) == *selectionIdPtr) {
+        s32 left = *(s32 *)((u8 *)arg0 + 4);
+        s32 top = *(s32 *)((u8 *)arg0 + 8);
+        s32 width = ((VfObj *)arg0)->vf28();
+        fn_802C3424(left, top, left + width, *(s32 *)((u8 *)arg0 + 0x10), lbl_8055FBC0);
     }
     fn_802195DC(arg0, arg1);
 }
@@ -4885,10 +4887,11 @@ extern "C" void fn_80221EA0(void *arg0, s32 arg1, void *arg2, s32 arg3) {
 #pragma dont_inline reset
 extern "C" s32 fn_80221EA8(void *arg0) {
     extern char lbl_8033DA2C[];
-    u32 value = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x14) + 0x238);
-    for (u32 i = 0; i < 32; i++) {
+    void *tmp = *(void **)((u8 *)arg0 + 0x14);
+    u32 value = *(u32 *)((u8 *)tmp + 0x238);
+    for (s32 i = 0; i < 32; i++) {
         if (value == (1u << i)) {
-            return (s32)i;
+            return i;
         }
     }
     fn_802E317C(lbl_8033DA2C);
