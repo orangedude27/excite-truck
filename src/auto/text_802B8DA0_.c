@@ -1521,6 +1521,8 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
 }
 
 #pragma scheduling invalid_target
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802BB0FC(int a, int b) {
     /* Traverse pending render batches, draw them, and clear their lists. */
     RenderList *list = (RenderList *)lbl_804BFFF4;
@@ -1595,27 +1597,27 @@ clear_nodes:
 #pragma use_lmw_stmw off
 void fn_802BB3B8(int a, int b) {
     /* Traverse pending render batches, draw them, and clear their lists. */
-    RenderList *list = (RenderList *)lbl_804BFFF4;
-    RenderBatch *batch;
-    RenderNode *node;
+    int i, off;
     RenderEntry *entry;
+    RenderNode *node, *cur;
+    RenderBatch *batch;
+    int j, v;
     u16 **items;
-    int i, j, v;
     RenderMatrix matrix; int zero = 0;
-    for (i = 0; i < list->count; i++) {
-        entry = list->items[i];
+    for (i = 0, off = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
+        entry = *(RenderEntry **)(*(char **)lbl_804BFFF4 + off);
         if (entry->kind == 999) continue;
         node = entry->nodes;
         if (!node) continue;
         if (entry->state == -2) goto clear_nodes;
         switch (node->type) { case 0: case 1: {
             fn_802C8BD0(); fn_802DC130();
-            node = entry->nodes;
-            while (node) {
-                if (node->batches) {
-                    if (node->enabled) {
-                        ((void (*)(int,void *))fn_802D3D94)(0, (char *)node + 0x24);
-                        batch = node->batches;
+            cur = entry->nodes;
+            while (cur) {
+                if (cur->batches) {
+                    if (cur->enabled) {
+                        ((void (*)(int,void *))fn_802D3D94)(0, (char *)cur + 0x24);
+                        batch = cur->batches;
                         do {
                             for (j = 0; j < batch->count; j++) {
                                 items = batch->items;
@@ -1626,9 +1628,9 @@ void fn_802BB3B8(int a, int b) {
                             batch = batch->next;
                         } while (batch);
                     }
-                    node->count = zero; node->batches = (RenderBatch *)zero;
+                    cur->count = zero; cur->batches = (RenderBatch *)zero;
                 }
-                node = node->next;
+                cur = cur->next;
             }
             fn_802DC134(); fn_802C8D74();
         break; } case 2: {
@@ -1637,11 +1639,11 @@ void fn_802BB3B8(int a, int b) {
             fn_802CADD0(((int (*)(void))fn_802C21B8)(),2);
             matrix = *(RenderMatrix *)lbl_802FAB40;
             ((void (*)(int,void *))fn_802D3D94)(2,&matrix);
-            node = entry->nodes;
-            while (node) {
-                if (node->batches) {
-                    ((void (*)(int,void *))fn_802D3D94)(0,(char *)node + 0x34);
-                    batch = node->batches;
+            cur = entry->nodes;
+            while (cur) {
+                if (cur->batches) {
+                    ((void (*)(int,void *))fn_802D3D94)(0,(char *)cur + 0x34);
+                    batch = cur->batches;
                     do {
                         for (j = 0; j < batch->count; j++) {
                             items = batch->items;
@@ -1651,9 +1653,9 @@ void fn_802BB3B8(int a, int b) {
                         }
                         batch = batch->next;
                     } while (batch);
-                    node->count = zero; node->batches = (RenderBatch *)zero;
+                    cur->count = zero; cur->batches = (RenderBatch *)zero;
                 }
-                node = node->next;
+                cur = cur->next;
             }
             fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
         break; } }
