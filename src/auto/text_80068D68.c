@@ -14503,57 +14503,66 @@ void gap_find_addr_name_cb(void *param) {
 
 extern char lbl_80317620[];
 extern void gap_find_addr_name_cb(void *);
+/* GAP_FindAddr_byname's inquiry-complete callback.  The inquiry the request
+ * started is over, so ask the first device in the inquiry database for its
+ * name -- gap_find_addr_name_cb compares it and walks on with BTM_InqDbNext --
+ * or report why that cannot be done; then hand the result to the user's
+ * callback and release the request.  param is BTM's inquiry result: byte 0 is
+ * its tBTM_STATUS, byte 1 how many devices answered. */
 void gap_find_addr_inq_cb(u8 *param) {
-    u8 *state = lbl_803C3740;
-    u16 *out = (u16 *)(state + 0x34);
-    void *info;
+    u8 *cb = lbl_803C3740;
+    u16 *result = gap_find_addr_result(cb);
+    void *inqRec;
     u16 status;
 
-    if (state[0x7E] == 0) return;
-    if (state[0x28] >= 4)
+    if (gap_find_addr_busy(cb) == 0) return;
+    if (cb[0x28] >= BT_TRACE_LEVEL_EVENT) /* "GAP: FindAddrByName Inq Cmpl Evt (Status 0x%04x, Result(s) %d" */
         fn_8007096C(0xE0003, &lbl_80317620, param[0], param[1]);
-    if (param[0] == 0) {
-        *out = 0x111;
-        info = BTM_InqDbFirst();
-        *(void **)(state + 0x30) = info;
-        if (info != 0) {
-            if ((u8)BTM_ReadRemoteDeviceName((u8 *)info + 2, gap_find_addr_name_cb) == 1)
+    if (param[0] == BTM_SUCCESS) {
+        *result = GAP_NO_DATA_AVAIL;
+        inqRec = BTM_InqDbFirst();
+        gap_find_addr_inq_rec(cb) = inqRec;
+        if (inqRec != 0) {
+            /* +2 is the record's BD_ADDR; BTM_CMD_STARTED means the name
+             * callback will report the outcome instead of what follows. */
+            if ((u8)BTM_ReadRemoteDeviceName((u8 *)inqRec + 2, gap_find_addr_name_cb) == BTM_CMD_STARTED)
                 return;
+            /* the stack's BTM -> GAP status conversion, as in gap_convert_btm_status */
             switch (param[0]) {
-            case 0: status = 0; break;
-            case 1: status = 0x10B; break;
-            case 2: status = 0x103; break;
-            case 3: status = 0x109; break;
-            case 4: status = 0x10C; break;
-            case 5: status = 0x10D; break;
-            case 6: status = 0x115; break;
-            case 7:
-            case 8:
-            default: status = 0x114; break;
+            case BTM_SUCCESS: status = 0; break;
+            case BTM_CMD_STARTED: status = GAP_CMD_INITIATED; break;
+            case BTM_BUSY: status = GAP_ERR_BUSY; break;
+            case BTM_NO_RESOURCES: status = GAP_ERR_ILL_PARM; break;
+            case BTM_MODE_UNSUPPORTED: status = GAP_DEVICE_NOT_UP; break;
+            case BTM_ILLEGAL_VALUE: status = GAP_BAD_BD_ADDR; break;
+            case BTM_WRONG_MODE: status = GAP_ERR_TIMEOUT; break;
+            case BTM_UNKNOWN_ADDR:
+            case BTM_DEVICE_TIMEOUT:
+            default: status = GAP_ERR_PROCESSING; break;
             }
-            *out = status;
+            *result = status;
         } else {
-            *out = 0x102;
+            *result = GAP_EOINQDB; /* nothing in the inquiry database */
         }
     } else {
         switch (param[0]) {
-        case 0: status = 0; break;
-        case 1: status = 0x10B; break;
-        case 2: status = 0x103; break;
-        case 3: status = 0x109; break;
-        case 4: status = 0x10C; break;
-        case 5: status = 0x10D; break;
-        case 6: status = 0x115; break;
-        case 7:
-        case 8:
-        default: status = 0x114; break;
+        case BTM_SUCCESS: status = 0; break;
+        case BTM_CMD_STARTED: status = GAP_CMD_INITIATED; break;
+        case BTM_BUSY: status = GAP_ERR_BUSY; break;
+        case BTM_NO_RESOURCES: status = GAP_ERR_ILL_PARM; break;
+        case BTM_MODE_UNSUPPORTED: status = GAP_DEVICE_NOT_UP; break;
+        case BTM_ILLEGAL_VALUE: status = GAP_BAD_BD_ADDR; break;
+        case BTM_WRONG_MODE: status = GAP_ERR_TIMEOUT; break;
+        case BTM_UNKNOWN_ADDR:
+        case BTM_DEVICE_TIMEOUT:
+        default: status = GAP_ERR_PROCESSING; break;
         }
-        *out = status;
+        *result = status;
     }
-    if (*(void (**)(u32, u16 *))(state + 0x2C) != 0)
-        (*(void (**)(u32, u16 *))(state + 0x2C))(5, out);
-    state[0x7E] = 0;
-    *(void **)(state + 0x2C) = 0;
+    if (gap_find_addr_cback(cb) != 0)
+        gap_find_addr_cback(cb)(GAP_EVT_FIND_ADDR_COMPLETE, result);
+    gap_find_addr_busy(cb) = 0;
+    gap_find_addr_cback(cb) = 0;
 }
 
 u16 gap_convert_btm_status(u16 status) {
