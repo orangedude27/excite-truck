@@ -87,8 +87,11 @@ extern "C" s32 fn_8022D1B4(const char *);
 extern "C" const char lbl_8033D940[];
 
 extern "C" s32 stricmp(const char *, const char *);
-extern "C" s32 fn_801E4A6C(s32, s32);
-extern "C" s32 fn_801E4BA8(s32);
+// Font helpers (src/auto/text_801E4A2C_.c): fn_801E4A6C adds up the s16 glyph
+// widths the font keeps at +0x204 for every byte of the string, so it measures
+// the string in pixels; fn_801E4BA8 is the font's full line height.
+extern "C" s32 fn_801E4A6C(s32 font, s32 str);
+extern "C" s32 fn_801E4BA8(s32 font);
 extern "C" void fn_802328D4(void *);
 extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32, f32);
