@@ -31,49 +31,52 @@ DECL_SECTION(".init") void * memcpy(void * dest, const void * src, size_t count)
 
 DECL_SECTION(".init") void __fill_mem(void* dst, int val, unsigned long n)
 {
-	unsigned long			v = (unsigned char) val;
-	unsigned long			i;
+	/* Fill n bytes at dst with (unsigned char)val. Aligns to a word boundary,
+	   stores 32-byte then 4-byte blocks when large enough, then writes any
+	   remaining bytes; pointer-cast stepping is kept as-is for codegen. */
+	unsigned long			fillWord = (unsigned char) val;
+	unsigned long			count;
 	
 	((unsigned char *) dst) = ((unsigned char *) dst) - 1;
 	
 	if (n >= 32)
 	{
-		i = (~ (unsigned long) dst) & 3;
+		count = (~ (unsigned long) dst) & 3;
 
-		if (i) {
-			n -= i;
+		if (count) {
+			n -= count;
 			
 			do {
-				*++(((unsigned char *) dst)) = v;
-			} while (--i);
+				*++(((unsigned char *) dst)) = fillWord;
+			} while (--count);
 		}
 	
-		if (v)
-			v |= v << 24 | v << 16 | v <<  8;
+		if (fillWord)
+			fillWord |= fillWord << 24 | fillWord << 16 | fillWord <<  8;
 		
 		((unsigned long *) dst) = ((unsigned long *) (((unsigned char *) dst) + 1)) - 1;
 		
-		i = n >> 5;
+		count = n >> 5;
 		
-		if (i) {
+		if (count) {
 			do {
-				*++((unsigned long *) dst) = v;
-				*++((unsigned long *) dst) = v;
-				*++((unsigned long *) dst) = v;
-				*++((unsigned long *) dst) = v;
-				*++((unsigned long *) dst) = v;
-				*++((unsigned long *) dst) = v;
-				*++((unsigned long *) dst) = v;
-				*++((unsigned long *) dst) = v;
-			} while (--i);
+				*++((unsigned long *) dst) = fillWord;
+				*++((unsigned long *) dst) = fillWord;
+				*++((unsigned long *) dst) = fillWord;
+				*++((unsigned long *) dst) = fillWord;
+				*++((unsigned long *) dst) = fillWord;
+				*++((unsigned long *) dst) = fillWord;
+				*++((unsigned long *) dst) = fillWord;
+				*++((unsigned long *) dst) = fillWord;
+			} while (--count);
 		}
 		
-		i = (n & 31) >> 2;
+		count = (n & 31) >> 2;
 		
-		if (i) {
+		if (count) {
 			do {
-				*++((unsigned long *) dst) = v;
-			} while (--i);
+				*++((unsigned long *) dst) = fillWord;
+			} while (--count);
 		}
 		
 		((unsigned char *) dst) = ((unsigned char *) (((unsigned long *) dst) + 1)) - 1;
@@ -83,7 +86,7 @@ DECL_SECTION(".init") void __fill_mem(void* dst, int val, unsigned long n)
 	
 	if (n)
 		do {
-			*++((unsigned char *) dst) = v;
+			*++((unsigned char *) dst) = fillWord;
 		} while (--n);
 	
 	return;
