@@ -17678,52 +17678,72 @@ void l2c_csm_w4_l2cap_connect_rsp(tL2C_CCB_VIEW *p_ccb, u16 event, void *p_msg)
     }
 }
 
+/* L2CAP channel state machine, W4_L2CA_CONNECT_RSP state (l2c_csm.c's
+ * l2c_csm_w4_l2ca_connect_rsp): the peer's connect request was passed up to the
+ * upper layer with a connect indication, so this waits for what ends the wait -
+ * the layer's answer, which is forwarded to the peer as our connect response
+ * (OK/pending goes CONFIG, a rejection frees the channel), the link going away or
+ * the connect timeout, both of which drop the channel and call the layer's
+ * disconnect callback, and data that can only be freed here. */
 void l2c_csm_w4_l2ca_connect_rsp(void *p_ccb, u16 event, void *p_data)
 {
-    extern char lbl_803187B0[];
-    extern char lbl_803183F0[];
-    void *disconnect_ind;
-    u16 local_cid;
-    disconnect_ind = *(void **)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 0x18);
-    local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
-    if (lbl_803C4040[0] >= 4)
-        fn_80070954(0x80003, lbl_803187B0, event);
+    extern char lbl_803183F0[];   /* "L2CAP - Calling Disconnect_Ind_Cb(), CID: 0x%04x  No Conf Needed" */
+    tL2C_CCB_VIEW *ccb = (tL2C_CCB_VIEW *)p_ccb;
+    void (*disconnect_ind)(u16, u16) = ccb->p_rcb->pL2CA_DisconnectInd_Cb;
+    u16 local_cid = ccb->local_cid;
+
+    if (l2cb_trace_level >= 4)
+        fn_80070954(0x80003, lbl_803187B0, event); /* "L2CAP - st: W4_L2CA_CON_RSP evt: %d" */
+
     switch (event)
     {
-    case 3:
-        if (lbl_803C4040[0] >= 3)
-            fn_80070954(0x80002, lbl_803183F0, *(u16 *)((u8 *)p_ccb + 0x14));
+    case L2CEVT_LP_DISCONNECT_IND:                  /* Link was disconnected */
+        if (l2cb_trace_level >= 3)
+            fn_80070954(0x80002, lbl_803183F0, ccb->local_cid);
         l2cu_release_ccb(p_ccb);
-        ((void (*)(u16, u8))disconnect_ind)(local_cid, 0);
+        disconnect_ind(local_cid, FALSE);
         break;
-    case 21:
-        if (p_data == 0 || *(u16 *)((u8 *)p_data + 0xA) == 0) {
-            l2cu_send_peer_connect_rsp(p_ccb, 0, 0);
-            *(u32 *)((u8 *)p_ccb + 4) = 5;
-            btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
-        } else {
-            l2cu_send_peer_connect_rsp(p_ccb, *(u16 *)((u8 *)p_data + 0xA), *(u16 *)((u8 *)p_data + 0xC));
-            btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x78);
+
+    case L2CEVT_L2CA_CONNECT_RSP:                   /* Upper layer answered the connect indication */
+        /* Result should be OK or PENDING */
+        if (p_data == 0 || ((tL2C_CONN_INFO *)p_data)->l2cap_result == L2CAP_CONN_OK)
+        {
+            l2cu_send_peer_connect_rsp(p_ccb, L2CAP_CONN_OK, 0);
+            ccb->chnl_state = CST_CONFIG;
+            btu_start_timer(&ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_TIMEOUT);
+        }
+        else
+        {
+            /* If pending, stay in same state and start extended timer */
+            l2cu_send_peer_connect_rsp(p_ccb, ((tL2C_CONN_INFO *)p_data)->l2cap_result,
+                                       ((tL2C_CONN_INFO *)p_data)->l2cap_status);
+            btu_start_timer(&ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_CONNECT_TOUT_EXT);
         }
         break;
-    case 22:
-        l2cu_send_peer_connect_rsp(p_ccb, *(u16 *)((u8 *)p_data + 0xA), *(u16 *)((u8 *)p_data + 0xC));
+
+    case L2CEVT_L2CA_CONNECT_RSP_NEG:               /* Upper layer rejected the connection */
+        l2cu_send_peer_connect_rsp(p_ccb, ((tL2C_CONN_INFO *)p_data)->l2cap_result,
+                                   ((tL2C_CONN_INFO *)p_data)->l2cap_status);
         l2cu_release_ccb(p_ccb);
         break;
-    case 19:
-        l2cu_send_peer_connect_rsp(p_ccb, 2, 0);
-        if (lbl_803C4040[0] >= 3)
-            fn_80070954(0x80002, lbl_803183F0, *(u16 *)((u8 *)p_ccb + 0x14));
+
+    case L2CEVT_TIMEOUT:                            /* Upper layer took too long to answer */
+        l2cu_send_peer_connect_rsp(p_ccb, L2CAP_CONN_NO_PSM, 0);
+        if (l2cb_trace_level >= 3)
+            fn_80070954(0x80002, lbl_803183F0, ccb->local_cid);
         l2cu_release_ccb(p_ccb);
-        ((void (*)(u16, u8))disconnect_ind)(local_cid, 0);
+        disconnect_ind(local_cid, FALSE);
         break;
-    case 20:
+
+    case L2CEVT_L2CA_CONNECT_REQ:                   /* Upper layer wants to connect while we wait */
+    case L2CEVT_L2CAP_DATA:                         /* Peer data packet rcvd */
         GKI_freebuf(p_data);
         break;
-    case 30:
+
+    case L2CEVT_L2CA_DISCONNECT_REQ:                /* Upper wants to disconnect */
         l2cu_send_peer_disc_req(p_ccb);
-        *(u32 *)((u8 *)p_ccb + 4) = 7;
-        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        ccb->chnl_state = CST_W4_L2CAP_DISCONNECT_RSP;
+        btu_start_timer(&ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_TIMEOUT);
         break;
     }
 }
