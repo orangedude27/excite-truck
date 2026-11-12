@@ -553,6 +553,7 @@ extern "C" char lbl_8055A054;
 #define lbl_8055A054 (&lbl_8055A054)
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_80157560(VObj *arg0) {
     VObj *a = (VObj *)fn_80131810(lbl_8032EAD4);
     VObj *b0 = (VObj *)fn_80131808(lbl_8032EAE0);
