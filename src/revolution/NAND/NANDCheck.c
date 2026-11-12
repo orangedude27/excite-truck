@@ -7,6 +7,7 @@ extern const char* lbl_8031AF70[];
 
 static s32 nandCalcUsage(s32* blockCountOut, s32* fileCountOut,
                          const char** dirList) {
+    // Accumulates NAND block and file usage for each directory in a NULL-terminated list.
     s32 result = -117;
 
     *blockCountOut = 0;
