@@ -23,7 +23,11 @@ typedef struct KPADInsideStatus {
     Vec2 sec_nrm_hori; /* 0x0B4 */
     Vec2 center_org; /* 0x0BC */
     f32 dpd2pos_scale; /* 0x0C4 */
-    u8 _pad0[0x324]; /* 0x0C8..0x3EB */
+    u8 _pad0[0x110 - 0x0C8];
+    s16 valid_objs; /* 0x110 DPD objects usable in this sample */
+    u16 repeat_count; /* 0x112 how long the buttons have been held */
+    s16 active_chan; /* 0x114 channel WPAD samples for; <0 = none */
+    u8 _pad116[0x3EC - 0x116];
     BOOL is_dpd_enabled; /* 0x3EC */
     BOOL sampling_pending; /* 0x3F0 */
     BOOL sampling_restart; /* 0x3F4 */
