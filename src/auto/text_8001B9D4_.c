@@ -79,6 +79,43 @@ typedef struct StatSlot {
     (*(s32 *)((u8 *)lbl_8055D5CC + (slot) * STAT_SLOT_SIZE + 0x6E00))
 #define STAT_FIRST_LOAD lbl_8055D5D8 /* set until the first load is reported */
 
+/* One row of a contest record's ranking list (StatRecord.entries, stride 0x14);
+ * fn_8001D020 builds one and fn_8001CED4 finds where a new one belongs. */
+struct StatEntry {
+    char *name;  /* +0x00: player name, into the string archive; null ends the list */
+    s32 key;     /* +0x04: what the list is ordered by first, highest first */
+    s32 value1;  /* +0x08 */
+    f32 score;   /* +0x0C: the ranked value, a time on "excite" contests and a
+                  *         score on the others */
+    u32 encoded; /* +0x10: three packed bytes, see fn_8001D220 and fn_8001D234 */
+};
+
+/* One contest's statistics record: 0xF0 of them per slot from +0x6E04 (stride
+ * 0x74), found by name with fn_8001C540.  Its ranking list of up to five
+ * entries starts at +0x08, so the list is full at five and the record ends at
+ * the count itself. */
+struct StatRecord {
+    char *name;                /* +0x00: the contest's name, into the string archive */
+    s32 id;                    /* +0x04: fn_8001C540 matches the caller's id with it */
+    struct StatEntry entries[5]; /* +0x08: the ranked entries, best first */
+    s32 entryCount;            /* +0x6C: how many of them the record holds */
+    u8 inUse;                  /* +0x70: the record holds a contest */
+};
+
+/* Contest type word, ContestEntry+0x08; fn_80204AA4 gives the names the game's
+ * data uses for them. */
+#define CONTEST_TYPE_EXCITE 0x00180302 /* "excite": ranked by a smaller value (a time) */
+#define CONTEST_TYPE_ZONE 0x00180201   /* "zone" */
+#define CONTEST_TYPE_FS 0x00180303     /* "fs" */
+
+/* One contest of the global contest table (lbl_80352AD0, stride 0x28), which
+ * fn_8001285C indexes; only the head is used here. */
+struct ContestEntry {
+    s32 index;   /* +0x00: its index in the table */
+    s32 eventId; /* +0x04: the event the contest belongs to */
+    s32 type;    /* +0x08: one of the CONTEST_TYPE_* words */
+};
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
