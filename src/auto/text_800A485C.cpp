@@ -12566,7 +12566,8 @@ extern "C" s32 fn_800BAD9C(void *device, u32 *outValue) {
     return result;
 }
 
-  extern "C" s32 fn_800BB3F4(s32 arg0) {
+extern "C" s32 fn_800BB3F4(s32 arg0) {
+    // Opens the SD/IOS device, queries its status, performs setup if needed, and closes it.
     u8 buffer[0x28];
     void* context = buffer;
     u32 flags;
@@ -19927,7 +19928,7 @@ extern "C" u8 fn_800D3840(s32 arg0) {
     u32 end;
     s32 temp_r4;
     u32 temp_r5;
-
+    u32 sum;
     temp_r5 = (u32)arg0 & 0x7FFFFFFF;
     var_r29 = temp_r5 - lbl_805597E8;
     if (temp_r5 >= lbl_8055DDD0)
@@ -19937,8 +19938,9 @@ extern "C" u8 fn_800D3840(s32 arg0) {
         lbl_805597E8 = temp_r4;
         var_r29 = temp_r5 - temp_r4;
         var_r31 = 0x200;
+        sum = (u32)(temp_r4 + 0x200);
         end = lbl_8055DDD0;
-        if ((u32)(temp_r4 + 0x200) >= end)
+        if (sum >= end)
             var_r31 = (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
         temp_r28 = OSEnableInterrupts();
         temp_r31 = DVDReadAsyncPrio((void *)lbl_80407E00, (void *)lbl_80407C00, var_r31,
