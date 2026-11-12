@@ -2756,25 +2756,28 @@ extern "C" s32 fn_8012C5B8(s32, s32, s32);
 extern "C" s32 fn_8012C6F0(void *);
 extern "C" void fn_8012EE80(void *);
 extern "C" s32 fn_8012EDA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 *p;
-    s32 *base = (s32*)((char*)arg0 + 4);
-    s32 j;
-    s32 i;
-    s32 result;
-    for (p = base, i = 0; i < 2; i++, p += 4) {
-        if (p[1]) {
-            fn_8012C90C((void*)p[1]);
-            fn_8012C958((void*)p[1]);
-            p[1] = 0;
-            p[3] = 0;
+    s32 *slot;
+    s32 *slots = (s32 *)((char *)arg0 + 4);
+    s32 slotIndex;
+    s32 initIndex;
+    s32 handle;
+    /* Reset both stream slots (release any active request), open the resource
+       identified by (arg1,arg2,arg3) into each slot, record its data size, then
+       start the prefetch; returns 0 if a slot cannot be opened. */
+    for (slot = slots, initIndex = 0; initIndex < 2; initIndex++, slot += 4) {
+        if (slot[1]) {
+            fn_8012C90C((void *)slot[1]);
+            fn_8012C958((void *)slot[1]);
+            slot[1] = 0;
+            slot[3] = 0;
         }
     }
-    *(s32*)((char*)arg0 + 0x28) = 0;
-    for (j = 0; j < 2; j++, base += 4) {
-        result = fn_8012C5B8(arg1, arg2, arg3);
-        base[1] = result;
-        if (!result) return 0;
-        *(s32*)((char*)arg0 + 0x24) = fn_8012C6F0((void*)result);
+    *(s32 *)((char *)arg0 + 0x28) = 0;
+    for (slotIndex = 0; slotIndex < 2; slotIndex++, slots += 4) {
+        handle = fn_8012C5B8(arg1, arg2, arg3);
+        slots[1] = handle;
+        if (!handle) return 0;
+        *(s32 *)((char *)arg0 + 0x24) = fn_8012C6F0((void *)handle);
     }
     fn_8012EE80(arg0);
     return 1;
