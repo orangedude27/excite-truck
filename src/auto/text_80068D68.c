@@ -10286,27 +10286,30 @@ tBTM_STATUS btm_pm_snd_md_req(UINT8 pm_id, int link_ind, tBTM_PM_PWR_MD *p_mode)
 }
 
 void btm_pm_proc_cmd_status(UINT8 status) {
+    /* Handle HCI command status for BTM power management: update the current PM
+     * record state on success/failure, optionally notify the registered callback,
+     * and mark PM state as idle (4). Uses lbl_803C0F78 (btm_cb) offsets directly. */
     u8 result;
-    u8 *base = lbl_803C0F78;
-    u8 state = base[0x564];
-    u8 *record;
-    if (state >= 4) {
+    u8 *btmCb = lbl_803C0F78;
+    u8 pmState = btmCb[0x564];
+    u8 *pmRecord;
+    if (pmState >= 4) {
         return;
     }
-    record = base + state * 0x22;
+    pmRecord = btmCb + pmState * 0x22;
     if (status == 0) {
-        record[0x4EC] = 4;
+        pmRecord[0x4EC] = 4;
         result = 4;
     } else {
         result = 5;
     }
     if (lbl_803C0F78[0x565] != 0x80) {
-        u8 *entry = lbl_803C0F78 + (lbl_803C0F78[0x565] << 3);
-        if (entry[0x558] & 2) {
+        u8 *pmEntry = lbl_803C0F78 + (lbl_803C0F78[0x565] << 3);
+        if (pmEntry[0x558] & 2) {
             void *context = lbl_803C0F78 +
                 *(volatile u8 *)(lbl_803C0F78 + 0x564) * 0x11C + 0x3C;
             void (*callback)(void *, s32, s32, UINT8) =
-                *(void (**)(void *, s32, s32, UINT8))(entry + 0x554);
+                *(void (**)(void *, s32, s32, UINT8))(pmEntry + 0x554);
             callback(context, result, 0, status);
         }
     }
