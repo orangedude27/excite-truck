@@ -789,9 +789,9 @@ extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
     struct LayoutNodeDispatch { virtual void Destroy(s32); };
     struct LayoutObject : LayoutNodeDispatch, GroupListNode {};
     LayoutFields *layout = (LayoutFields *)self;
-    register u32 node;
-    register u32 end;
-    register u32 current;
+    GroupListNode *node;
+    GroupListNode *end;
+    u32 current;
     if (layout != 0) {
         void *container = *(void **)((u8 *)layout + 0x14);
         layout->vtable = (u32)lbl_8031F868;
@@ -804,11 +804,11 @@ extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
             ((ResourceDispatch *)resource)->Destroy(-1);
             MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)layout + 0x10));
         }
-        node = *(u32*)((u8 *)layout + 8);
-        end = (u32)((u8 *)layout + 8);
+        node = *(GroupListNode **)((u8 *)layout + 8);
+        end = (GroupListNode *)((u8 *)layout + 8);
         while (node != end) {
-            current = node;
-            node = *(u32*)node;
+            current = (u32)node;
+            node = node->next;
             void *slot = (void*)current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&layout->link, &slot);
             if (current == 0)
@@ -816,9 +816,10 @@ extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
             static_cast<LayoutObject &>(*(GroupListNode *)current).Destroy(-1);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F920, 0x23D, lbl_8031F8FC);
-            if ((current = current - 4) == 0)
+            char *p = (char*)current - 4;
+            if (p == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8F0, 0x193, lbl_8031F8CC);
-            MEMFreeToAllocator(lbl_8055DDF0, (void*)current);
+            MEMFreeToAllocator(lbl_8055DDF0, p);
         }
         if (&layout->link != 0)
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&layout->link, 0);
@@ -2198,6 +2199,8 @@ extern "C" void GXGetTexObjWidth(void*, int, ...);
 extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8 index, const void* tex) {
     extern const char lbl_8031F990[];
     extern const char lbl_8031FDE8[];
+
+    /* Set the GXTexObj at the given texture map index, asserting index is within the material's count. */
     u32 count = *(u32*)((char*)self + 0x50) >> 28;
     if (index >= count) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x425, lbl_8031FDE8);
     void* dst = *(void**)((char*)self + 0x58);
