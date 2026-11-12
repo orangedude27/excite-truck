@@ -6823,6 +6823,8 @@ extern "C" void fn_80224E74(void *this_) {
 extern "C" u8 lbl_8033DA84[];
 extern "C" u8 lbl_8033DAEC[];
 extern "C" u8 lbl_8033E140[];
+#define ScrollList_vtable lbl_8033E140 /* vtable of the scrolling list widget; its
+                                        * deleting destructor is slot 0x8 */
 extern f32 lbl_80563544;
 extern f32 lbl_805634E0;
 #pragma push
