@@ -1625,21 +1625,22 @@ extern "C" void* fn_801FEFC8(void* arg0, int arg1) {
 }
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_801FF014(void *arg0, int arg1, int arg2, int arg3) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    int end = arg2 + 0x2C;
-    if (obj == 0) {
-        obj = fn_801284F8(0x10CC, lbl_8033B86C);
-        if (obj != 0) {
-            *(void **)obj = (void *)lbl_8033B898;
-            fn_8002F53C((char *)obj + 4, (void *)fn_801FF0D4, (void *)fn_801FCED8, 0x70, 0x20);
-            *(int *)((char *)obj + 0xE04) = 0;
-            fn_801FF354((char *)obj + 0xE08);
+/* Lazily creates and initializes the DroneManager object stored at (char*)arg0 + 4, then adds an entry covering [start, start + 0x2C). */
+extern "C" void fn_801FF014(void *arg0, int arg1, int start, int arg3) {
+    void *manager = *(void **)((char *)arg0 + 4);
+    int end = start + 0x2C;
+    if (manager == 0) {
+        manager = fn_801284F8(0x10CC, lbl_8033B86C);
+        if (manager != 0) {
+            *(void **)manager = (void *)lbl_8033B898;
+            fn_8002F53C((char *)manager + 4, (void *)fn_801FF0D4, (void *)fn_801FCED8, 0x70, 0x20);
+            *(int *)((char *)manager + 0xE04) = 0;
+            fn_801FF354((char *)manager + 0xE08);
         }
-        *(void **)((char *)arg0 + 4) = obj;
-        fn_802CD320(arg1, obj);
+        *(void **)((char *)arg0 + 4) = manager;
+        fn_802CD320(arg1, manager);
     }
-    fn_801FF1C4(*(void **)((char *)arg0 + 4), arg2, end);
+    fn_801FF1C4(*(void **)((char *)arg0 + 4), start, end);
 }
 #pragma pop
 extern "C" void fn_801FF0D4(void* arg0) {
