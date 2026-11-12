@@ -1932,24 +1932,25 @@ extern "C" void fn_8021BA64(void *, s32, s32, s32, s32, void *, s32, s32, s32, s
 
 #pragma push
 #pragma small_data off
-extern "C" void *fn_8021B9AC(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+extern "C" void *fn_8021B9AC(void *self, void *desc, s32 arg2, s32 arg3) {
+    /* Construct an object from descriptor fields, set vtable lbl_8033F0FC, and initialize via fn_8021BA64. */
     fn_80218F80();
-    *(u32 *)arg0 = (u32)(void *)&lbl_8033F0FC;
+    *(u32 *)self = (u32)(void *)&lbl_8033F0FC;
     fn_8021BA64(
-        arg0,
-        *(s32 *)((u8 *)arg1 + 0x14),
-        *(s32 *)((u8 *)arg1 + 0x18),
+        self,
+        *(s32 *)((u8 *)desc + 0x14),
+        *(s32 *)((u8 *)desc + 0x18),
         arg2,
         arg3,
-        (u8 *)arg1 + 0x20,
-        *(s32 *)((u8 *)arg1 + 4),
-        *(s32 *)((u8 *)arg1 + 0x90),
-        *(s32 *)((u8 *)arg1 + 0xA4),
-        *(s32 *)((u8 *)arg1 + 0x94),
-        *(s32 *)((u8 *)arg1 + 0x98),
-        (s32)*(f32 *)((u8 *)arg1 + 0x1C),
-        *(s32 *)((u8 *)arg1 + 0x84));
-    return arg0;
+        (u8 *)desc + 0x20,
+        *(s32 *)((u8 *)desc + 4),
+        *(s32 *)((u8 *)desc + 0x90),
+        *(s32 *)((u8 *)desc + 0xA4),
+        *(s32 *)((u8 *)desc + 0x94),
+        *(s32 *)((u8 *)desc + 0x98),
+        (s32)*(f32 *)((u8 *)desc + 0x1C),
+        *(s32 *)((u8 *)desc + 0x84));
+    return self;
 }
 
 extern "C" char lbl_8055B878;
