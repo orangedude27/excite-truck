@@ -172,7 +172,7 @@ s32 select_2obj_continue(void *arg0) {
             bEnd = obj + 0xEC;
             do {
                 if (*(s8 *)(b + 8) == 0) {
-                    f32 dx, dy, mag, scale, angle, dot;
+                    f32 dx, dy, mag, scale, dot;
                     s32 reverse;
                     dx = *(f32 *)(b + 0) - *(f32 *)(a + 0);
                     dy = *(f32 *)(b + 4) - *(f32 *)(a + 4);
@@ -180,13 +180,13 @@ s32 select_2obj_continue(void *arg0) {
                     scale = length / mag;
                     temp[0] = dx * scale;
                     temp[1] = dy * scale;
-                    angle = scale * lbl_8055D990;
-                    if (angle <= lbl_8055D9B0 || angle >= lbl_80558EB8) goto skip;
-                    angle = angle - *(f32 *)(obj + 0x3AC);
-                    if (angle < threshold) angle *= lbl_8055D998;
-                    else angle *= lbl_8055D99C;
-                    if (angle >= length) goto skip;
-                    dot = *(f32 *)(obj + 0x3A4) * temp[0] + *(f32 *)(obj + 0x3A8) * temp[1];
+                    scale *= lbl_8055D990;
+                    if (scale <= lbl_8055D9B0 || scale >= lbl_80558EB8) goto skip;
+                    scale = scale - *(f32 *)(obj + 0x3AC);
+                    if (scale < threshold) scale *= lbl_8055D998;
+                    else scale *= lbl_8055D99C;
+                    if (scale >= length) goto skip;
+                    dot = *(volatile f32 *)(obj + 0x3A4) * temp[0] + *(volatile f32 *)(obj + 0x3A8) * temp[1];
                     if (dot < threshold) {
                         dot = -dot;
                         reverse = 1;
@@ -194,9 +194,9 @@ s32 select_2obj_continue(void *arg0) {
                         reverse = 0;
                     }
                     if (dot <= lbl_80558EC4) goto skip;
-                    angle += (length - dot) / (length - lbl_80558EC4);
-                    if (angle < best) {
-                        best = angle;
+                    scale += (length - dot) / (length - lbl_80558EC4);
+                    if (scale < best) {
+                        best = scale;
                         if (reverse) { bestA = b; bestB = a; }
                         else { bestA = a; bestB = b; }
                     }
