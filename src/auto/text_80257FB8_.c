@@ -5,6 +5,8 @@ extern int fn_80161D14(void);
 extern int fn_80161ECC(void);
 extern void fn_80161E40(int);
 extern int fn_8016208C(void);
+#pragma push
+#pragma dont_inline on
 #pragma use_lmw_stmw off
 int fn_80257FB8(void) {
     register int total asm("r30");
