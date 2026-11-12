@@ -287,7 +287,17 @@ void fn_802C57B0(void) { }
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_802C53C4
-void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
+/* Submits one model instance for drawing.  For every group of the instance
+ * whose bit is set in the group mask lbl_8055D008 -- and, when the instance has
+ * per-group positions, whose position fn_802C9638 still finds inside the view
+ * volume (which may replace the status byte the caller measured) -- this links
+ * a display entry for each element the model draws here into that element's
+ * display node for this instance, and hands the node's id to fn_802CC550 with
+ * the caller's distance.  Unless the caller is batching submits
+ * (lbl_8055FC20), the entry list is emptied first and sorted and submitted
+ * afterwards.  Elements of type 4, 6, 9 and 11, and every type from 13 up, are
+ * left to the other passes (fn_802C729C and fn_802C74D8 pick those up). */
+void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char status, float distance) {
     extern int lbl_8055D008;
     extern s8 lbl_8055FC20;
     extern void fn_802C543C(void);
@@ -296,37 +306,37 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
     extern void fn_802CC550(int, void *, float, float);
     extern int fn_802C9638(void *, unsigned char *, float);
 
-    void *manager;
-    unsigned char d;
+    struct ModelInstance *instance;
+    unsigned char entryStatus;
     int j;
-    int *inner_info;
+    struct ElementList *inner_info;
     int offset;
-    int idx_shift;
+    int nodeSlotOffset;
     int inner_offset;
-    int *outer_info;
+    struct GroupList *groups;
     int i;
-    char *entry;
+    struct GroupEntry *entry;
 
-    manager = fn_802C5390(arg0);
-    outer_info = *(int **)((char *)manager + 4);
+    instance = (struct ModelInstance *)fn_802C5390(instanceId);
+    groups = instance->groups;
     if ((u8)lbl_8055FC20 == 0) {
         fn_802C543C();
     }
-    idx_shift = *(int *)((char *)manager + 8) << 2;
-    for (i = 0, offset = 0; i < *outer_info; offset += 0x10, i++) {
-        int bit_idx;
-        entry = *(char **)((char *)outer_info + 4) + offset;
-        bit_idx = *(int *)entry;
-        if (lbl_8055D008 & (1 << bit_idx)) {
-            unsigned char local_d = arg3;
-            char *sub = *(char **)((char *)manager + 12);
-            if (sub == 0 || fn_802C9638(sub + offset, &local_d, *(float *)(sub + offset + 12)) != 0) {
-                d = local_d;
-                inner_info = *(int **)(entry + 8);
-                for (j = 0, inner_offset = 0; j < *inner_info; inner_offset += 4, j++) {
+    nodeSlotOffset = instance->nodeSlot << 2;
+    for (i = 0, offset = 0; i < groups->count; offset += 0x10, i++) {
+        int bitIndex;
+        entry = (struct GroupEntry *)(groups->items + offset);
+        bitIndex = entry->bitIndex;
+        if (lbl_8055D008 & (1 << bitIndex)) {
+            unsigned char localStatus = status;
+            char *positions = instance->groupPositions;
+            if (positions == 0 || fn_802C9638(positions + offset, &localStatus, *(float *)(positions + offset + 12)) != 0) {
+                entryStatus = localStatus;
+                inner_info = entry->elements;
+                for (j = 0, inner_offset = 0; j < inner_info->count; inner_offset += 4, j++) {
                     int valid = 0;
-                    void *elem = *(void **)(*(char **)((char *)inner_info + 4) + inner_offset);
-                    unsigned int type = *(unsigned int *)elem;
+                    struct ModelElement *elem = (struct ModelElement *)*(void **)(inner_info->items + inner_offset);
+                    unsigned int type = elem->type;
                     if (type < 13) {
                         int skip;
                         valid = 1;
@@ -344,11 +354,11 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
                         if (skip) valid = 0;
                     }
                     if (valid) {
-                        void *node = *(void **)(idx_shift + (int)elem + 0x14);
+                        void *node = *(void **)(nodeSlotOffset + (int)elem + 0x14);
                         void *r4;
-                        fn_802C53C4(entry, node, arg1, arg2, d);
-                        r4 = ((void *(*)(void *))fn_802C57B0)(*(void **)(entry + 12));
-                        fn_802CC550(*(int *)node, r4, arg4, *(float *)((char *)r4 + 0x18));
+                        fn_802C53C4(entry, node, transformId, entryId, entryStatus);
+                        r4 = ((void *(*)(void *))fn_802C57B0)((void *)entry->id);
+                        fn_802CC550(*(int *)node, r4, distance, *(float *)((char *)r4 + 0x18));
                     }
                 }
             }
