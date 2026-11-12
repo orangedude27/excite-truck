@@ -1406,18 +1406,20 @@ s32 fn_80162734(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) != 0; }
 s32 fn_80162748(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
 
 #pragma cplusplus on
-extern "C" void fn_8016275C(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_8016275C(void *arg0, s32 event, s32 index) {
+    /* On event 0, if not blocked by f7() and the object at lbl_804348E8[index]
+     * has tag 'PCAR' (0x50434152) at +0x10, invoke f22(2) and set flag +0x91. */
     if (((Obj8016275C *)arg0)->f7() != 0) {
         goto done;
     }
-    switch (arg1) {
+    switch (event) {
     case 0:
         goto body;
     default:
         goto done;
     }
 body:
-    if (((s32 *)lbl_804348E8[arg2])[4] == (s32)0x50434152) {
+    if (((s32 *)lbl_804348E8[index])[4] == (s32)0x50434152) {
         ((Obj8016275C *)arg0)->f22(2);
         *((u8 *)arg0 + 0x91) = 1;
     }
