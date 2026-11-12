@@ -103,10 +103,9 @@ static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
         z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
-        x = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
-        y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
-        dst[0] = x; dst[1] = y; dst[2] = z;
+        dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
 }
 #pragma always_inline reset
@@ -2860,14 +2859,14 @@ extern "C" void fn_801A0F10(void* arg0) {
     u8 buffer[0x300];
     s32 i;
     s32 j;
-    u8* ent;
+    void* ent;
     s32 maxCount = 0x40;
     fn_801A0160(arg0);
-    ent = (u8*)arg0;
+    ent = arg0;
     i = 0;
     while (i < *(s32*)((u8*)arg0 + 0x174)) {
-        ((Fn801A0F10Child*)*(void**)(ent + 0x24))->Update();
-        ent += 4;
+        ((Fn801A0F10Child*)*(void**)((u8*)ent + 0x24))->Update();
+        ent = (u8*)ent + 4;
         i++;
     }
     if (lbl_8055E5A0 != 0) {
