@@ -43,27 +43,28 @@ int fn_8012F968(unsigned char *arg0) {
 extern int strlen(const char *);
 extern int fn_8012F968(unsigned char *);
 #pragma use_lmw_stmw off
-int fn_8012F9E8(unsigned char *out, int max, unsigned char *in) {
-    int len = strlen((const char *)in);
+int fn_8012F9E8(unsigned char *decodedBytes, int maxDecodedBytes, unsigned char *encodedText) {
+    /* Decodes a base64-like string (length multiple of 4) into bytes, returning 1 on success or 0 on bad length/invalid chars. */
+    int encodedLen = strlen((const char *)encodedText);
     int ok = 1;
-    if (len & 3) return 0;
+    if (encodedLen & 3) return 0;
     {
-        int inpos = 0;
-        int outpos = 0;
-        while (inpos < len && outpos < max) {
-            int value = fn_8012F968(in + inpos);
-            if (!(value & 0xFF000000)) {
+        int inputPos = 0;
+        int outputPos = 0;
+        while (inputPos < encodedLen && outputPos < maxDecodedBytes) {
+            int decodedBlock = fn_8012F968(encodedText + inputPos);
+            if (!(decodedBlock & 0xFF000000)) {
                 int shift = 16;
-                while (outpos < max && shift >= 0) {
-                    out[outpos] = (unsigned int)value >> shift;
+                while (outputPos < maxDecodedBytes && shift >= 0) {
+                    decodedBytes[outputPos] = (unsigned int)decodedBlock >> shift;
                     shift -= 8;
-                    outpos++;
+                    outputPos++;
                 }
             } else {
                 ok = 0;
                 break;
             }
-            inpos += 4;
+            inputPos += 4;
         }
     }
     return ok;
