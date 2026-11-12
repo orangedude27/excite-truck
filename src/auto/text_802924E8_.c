@@ -614,22 +614,23 @@ void fn_80293128(void* arg0) {
 
 #pragma use_lmw_stmw off
 void fn_80293178(void *arg0, int unused) {
-    register unsigned char *entry;
-    int temp_r30;
-    int temp_r29;
-    register int i;
+    /* Draw each entry using per-entry state/color parameters, restoring prior state. */
+    register unsigned char *entryPtr;
+    int savedState9950;
+    int savedState9994;
+    register int index;
 
-    temp_r30 = fn_802C9950(0);
-    temp_r29 = fn_802C9994(0);
-    entry = (unsigned char *)arg0 + 0x2C;
-    i = 0;
-    for (; i < *(int *)((char *)arg0 + 0x2FAC); entry += 0x4C, i++) {
-        fn_802C9950(*(int *)((char *)arg0 + (*(unsigned char *)(entry + 0x4A) << 3) + 0x2FB0));
-        fn_802C9994(*(int *)((char *)arg0 + (*(unsigned char *)(entry + 0x4A) << 3) + 0x2FB4));
-        fn_802C744C(*(void **)((char *)arg0 + (*(unsigned char *)(entry + 0x48) << 2) + 8), entry);
+    savedState9950 = fn_802C9950(0);
+    savedState9994 = fn_802C9994(0);
+    entryPtr = (unsigned char *)arg0 + 0x2C;
+    index = 0;
+    for (; index < *(int *)((char *)arg0 + 0x2FAC); entryPtr += 0x4C, index++) {
+        fn_802C9950(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB0));
+        fn_802C9994(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB4));
+        fn_802C744C(*(void **)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x48) << 2) + 8), entryPtr);
     }
-    fn_802C9994(temp_r29);
-    fn_802C9950(temp_r30);
+    fn_802C9994(savedState9994);
+    fn_802C9950(savedState9950);
 }
 
 void fn_80293230(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
