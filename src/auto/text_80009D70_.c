@@ -161,15 +161,14 @@ void fn_80009DC8(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8000A644(void* arg0, void* arg1) {
-    s32 v;
-    s32 w;
+    s32 count = 0;
     s32* base = (s32*)((u8*)arg0 + 0x20);
     s32* dst = base;
-    s32* limit = base;
     u8* src = (u8*)arg1;
-    s32 count = 0;
+    s32 w;
+    s32 v;
     ((s32*)arg0)[0x3E0 / 4] = *(s32*)(src + 0x24);
-    while (count < limit[0x3C0 / 4]) {
+    while (count < base[0x3C0 / 4]) {
         v = *(s32*)(src + 4);
         w = *(s32*)(src + 0x28);
         src += 4;
@@ -209,6 +208,7 @@ extern "C" int lbl_80558A30;
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8000A6D8(void) {
+    /* Warns if the active weather differs from the weather specified in weather.val. */
     class ManagerView {
     public:
         virtual void unused0() = 0;
@@ -223,22 +223,22 @@ extern "C" void fn_8000A6D8(void) {
         virtual void unused2() = 0;
         virtual const char *getName(const char *) = 0;
     };
-    const char *original;
-    const char *name;
+    const char *contestWeather;
+    const char *resourceWeather;
     void *resource;
     void *manager;
     void *item;
     manager = *(void **)((u8 *)(void *)lbl_8055D3B8 + 0x20);
-    original = ((ManagerView *)manager)->getName((const char *)&lbl_80558A20);
-    name = (const char *)&lbl_80558A28;
+    contestWeather = ((ManagerView *)manager)->getName((const char *)&lbl_80558A20);
+    resourceWeather = (const char *)&lbl_80558A28;
     resource = fn_80131810(lbl_802FBC08);
     if (resource != 0) {
         item = ((ResourceView *)resource)->getItem((const char *)&lbl_80558A20);
-        name = ((ResourceView *)item)->getName((const char *)&lbl_80558A30);
+        resourceWeather = ((ResourceView *)item)->getName((const char *)&lbl_80558A30);
         fn_80131818(resource);
     }
-    if (stricmp(name, original) != 0) {
-        fn_802E317C(lbl_802FBC18, original, name);
+    if (stricmp(resourceWeather, contestWeather) != 0) {
+        fn_802E317C(lbl_802FBC18, contestWeather, resourceWeather);
     }
 }
 #pragma pop
