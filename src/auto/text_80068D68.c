@@ -1638,6 +1638,37 @@ void fn_80069C14(u32 r3, u32 r4) {
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069408, (u8*)&lbl_80393680 + 0x1000);
 }
 
+/* --- WUD paired-device database -------------------------------------------------
+   One of the device records the WUD control block keeps, as this build lays it out
+   (0x60 bytes; same fields and offsets as the SDK's WUDDevInfo in
+   include/revolution/WUD/WUD.h, which needs SCDevInfo, so it is repeated here). */
+typedef struct {
+    u8 conf[0x40];  /* SCDevInfo: device name, class of device, ... */
+    u8 devAddr[6];  /* 0x40: BD_ADDR */
+    u8 linkKey[16]; /* 0x46: LINK_KEY */
+    u8 devHandle;   /* 0x56: HID device handle */
+    u8 subclass;    /* 0x57 */
+    u8 appID;       /* 0x58 */
+    u8 status;      /* 0x59: 0 = free, 1 = registered, >1 while a link is up */
+} WUDDevInfoSlot;
+
+/* The WUD control block (lbl_80392960, the SDK's "WUDCB _wcb").  This build has no
+   stdList[] array, so from the device records on everything sits 0x80 below the
+   layout in include/revolution/WUD/WUDInternal.h. */
+typedef struct {
+    u8 pad0[0x64];
+    WUDDevInfoSlot stdDevs[10]; /* WUD_MAX_DEV_ENTRY_FOR_STD standard-pairing devices */
+    WUDDevInfoSlot smpDevs[6];  /* WUD_MAX_DEV_ENTRY_FOR_SMP simple-pairing devices */
+    u8 connectedNum;            /* 0x664: devices HID is talking to */
+    u8 linkedNum;               /* 0x665: devices with a link up */
+} WUDCBView;
+
+/* include/revolution/WUD/WUDInternal.h's WUDDeleteState; spelled out here because this
+   unit does not include the WUD headers. */
+#define WUD_STATE_DELETE_CLEANUP_DATABASE 3
+#define WUD_STATE_DELETE_CLEANUP_SETTING 5
+#define WUDiRemoveDevice fn_8006B598 /* drops a paired device given its BD_ADDR */
+
 #pragma push
 #pragma dont_inline on
 s32 WUDiTerminateDevice(void) {
@@ -8172,14 +8203,15 @@ void btm_read_link_quality_complete(u8 *arg0) {
 }
 
 tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
-    u32 i = 0;
+    u32 i;
     u8 *entry = lbl_803C0F78 + 0x34;
     u16 handle;
-    while (i < 4) {
-        if (entry[0x119] != 0 && memcmp(entry + 8, bd_addr, 6) == 0)
-            goto found;
-        i++;
-        entry += 0x11C;
+    for (i = 0; i < 4; i++, entry += 0x11C) {
+        if (entry[0x119] == 0)
+            continue;
+        if (memcmp(entry + 8, bd_addr, 6) != 0)
+            continue;
+        goto found;
     }
     entry = 0;
 found:
