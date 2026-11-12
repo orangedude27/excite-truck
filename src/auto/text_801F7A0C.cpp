@@ -771,6 +771,8 @@ extern "C" void *lbl_8055B2F8;
 extern u8 lbl_8033B3F0[];
 #pragma scheduling invalid_target
 extern "C" void *fn_801F861C(void) {
+    /* Allocate and initialize a SoundDI object (0x10C bytes): set initial/final vtables,
+     * default fields, fill the first 0x30 bytes with 0x61, and mark index -1. */
     F92Obj *obj = (F92Obj *)fn_801284F8(0x10C, &lbl_8055B2F8);
     if (obj) {
         f32 b = lbl_80563000;
