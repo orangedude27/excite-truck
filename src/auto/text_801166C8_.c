@@ -2223,16 +2223,17 @@ void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
+/* DvdStreamReadCallback: completion callback of the 32 KiB read fn_8011A6A0 queued
+   for a stream.  transferSize bytes landed at the write pointer, padSize of them
+   ahead of the wanted data, so slide the chunk into the ring, update the stream's
+   counters, wait off the pacing rate and queue the next read unless the stream is
+   paused.  @p fileInfo is the +0x54 file info the read was started with. */
 void fn_8011A4F8(s32 transferSize, DVDFileInfo *fileInfo) {
     s32 padMoved, elapsed, padSize;
     u32 writePos, newWritePos, size;
     DvdStream *stream;
     s32 remaining;
 
-    /* Completion callback of the 32 KiB read fn_8011A6A0 queued: transferSize bytes
-       landed at the write pointer, padSize of them ahead of the wanted data, so
-       slide the chunk into the ring, update the stream's counters, wait off the
-       pacing rate and queue the next read unless the stream is paused. */
     size = transferSize;
     stream = *(DvdStream **)((u8 *)fileInfo + 0x7C); /* stream->self, see fn_8011AC10 */
     if (stream->cancelling == 0) {
