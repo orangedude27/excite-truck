@@ -109,11 +109,12 @@ extern void fn_8000DBC8(void (*)(int, int));
 extern void *memmove(void *, const void *, unsigned int);
 #pragma scheduling invalid_target
 void fn_80133024(void) {
-    void *p;
+    /* Initialize the options table, load default options, and register save/load callbacks. */
+    void *optionsTable;
     lbl_8055E078 = 1;
-    p = fn_801284F8(0x6D68, lbl_8032B880);
-    lbl_8055E07C = (int)p;
-    *(int *)((char *)p + 4) = 0;
+    optionsTable = fn_801284F8(0x6D68, lbl_8032B880);
+    lbl_8055E07C = (int)optionsTable;
+    *(int *)((char *)optionsTable + 4) = 0;
     lbl_8055E080 = 0;
     lbl_8042F718[1] = 0;
     lbl_8042F718[3] = 0;
