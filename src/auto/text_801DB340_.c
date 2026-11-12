@@ -183,9 +183,9 @@ static inline float eval_spline(const float *p, int stride, float t, float *out_
     float dp21 = p2 - p1;
     float dp31 = p3 - p1;
     float half20 = lbl_80562B64 * dp20;
+    float twice20 = lbl_80562B68 * half20;
     float c3_term = lbl_80562B6C * dp21;
     float half31 = lbl_80562B64 * dp31;
-    float twice20 = lbl_80562B68 * half20;
     float twice21 = lbl_80562B68 * dp21;
     float sum = half20 + half31;
     float coeff3 = c3_term - twice20;
@@ -212,23 +212,18 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     float *pb = b;
     int i;
     float height;
-
     for (i = 0; i < 4; i++) {
         *pb++ = eval_spline(&grid[0][i], 4, t, pa);
         pa++;
     }
-
     height = eval_spline(b, 1, u, &deriv_u);
     normal[1] = lbl_80562B70 / *(float *)((char *)lbl_8055E990 + 8);
     normal[2] = -deriv_u;
     normal[0] = -eval_spline(a, 1, u, 0);
-
     PSVECNormalize(normal, normal);
-
     ((float *)out)[0] = normal[0];
     ((float *)out)[1] = normal[1];
     ((float *)out)[2] = normal[2];
-
     return height;
 }
 #pragma pop
