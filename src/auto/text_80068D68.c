@@ -4244,12 +4244,15 @@ void uusb_issue_intr_read(void) {
 void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
+    register char *report;
+    register s32 status;
     u16 offset;
-    char *report = lbl_803142C8;
+    status = arg0;
+    report = lbl_803142C8;
     if (lbl_803BD1E0.at_0x28 != 0)
-        OSReport(report + 0x460, arg0);
-    if (arg0 < 0 && lbl_803BD1E0.at_0x28 != 0)
-        OSReport(report + 0x498, arg0);
+        OSReport(report + 0x460, status);
+    if (status < 0 && lbl_803BD1E0.at_0x28 != 0)
+        OSReport(report + 0x498, status);
     if (arg1 != 0) {
         GKI_freebuf(arg1);
         fn_8006EBAC();
@@ -22701,6 +22704,7 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
     rfc_send_buf_uih((void *)arg0, 0);
 }
 
+/* Build and queue an RFCOMM UIH frame carrying flow-control credits for a DLCI. */
 void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 credit) {
     BT_HDR *p_buf;
     UINT8 *p_data;
