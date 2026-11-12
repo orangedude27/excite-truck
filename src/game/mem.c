@@ -8,6 +8,8 @@ extern char lbl_8034D020[];
 void fn_802E3DF8(int arena, void **outLo, unsigned int *outSize) {
     unsigned int hi = 0;
     unsigned int lo = 0;
+
+    /* Query MEM1 (0) or MEM2 (1) arena bounds, align lo up to 128 bytes, and return the aligned base/size; log bad arena ids. */
     if (arena == 0) {
         lo = OSGetMEM1ArenaLo();
         hi = OSGetMEM1ArenaHi();
