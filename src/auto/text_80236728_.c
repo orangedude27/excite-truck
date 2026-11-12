@@ -201,20 +201,22 @@ void fn_80236960(char *source) {
     }
 }
 #pragma scheduling on
-void fn_802369A8(char *arg0, int arg1, int arg2) {
+void fn_802369A8(char *dst, int size, int index) {
     extern char lbl_8055BA08[8], lbl_8055BA10[8];
     extern int fn_801345D8(void *, int, const char *, ...);
     extern char *fn_80029004(char *, int);
     char *dot;
     const char *suffix;
-    fn_801345D8(arg0, arg1, lbl_8055BA08, arg2);
-    dot = fn_80029004(arg0, '.');
+
+    /* Build "a_<index>.val" into dst by formatting a prefix, stripping any extension, and appending ".val". */
+    fn_801345D8(dst, size, lbl_8055BA08, index);
+    dot = fn_80029004(dst, '.');
     if (dot) *dot = 0;
     suffix = lbl_8055BA10;
-    while ((signed char)*arg0) { --arg1; ++arg0; }
-    if (arg1 > 0) {
-        while ((signed char)(*arg0++ = *suffix++) != 0) {
-            if (--arg1 <= 0) { arg0[-1] = 0; break; }
+    while ((signed char)*dst) { --size; ++dst; }
+    if (size > 0) {
+        while ((signed char)(*dst++ = *suffix++) != 0) {
+            if (--size <= 0) { dst[-1] = 0; break; }
         }
     }
 }
