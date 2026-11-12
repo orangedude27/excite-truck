@@ -589,59 +589,60 @@ extern int fn_802B3DA4(int, unsigned short, int);
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-void fn_802B4E44(int arg0, int arg1) {
+void fn_802B4E44(int context, int unused) {
     unsigned int slotIndex;
-    int index;
+    int fieldIndex;
     int *record;
-    int count;
+    int recordCount;
     int *table;
-    int offset;
-    int *out;
+    int recordOffset;
+    int *fieldOut;
     char *slot;
-    int *entry;
-    unsigned int outer;
-    int keepSlot;
-    int keepOuter;
+    int *recordSet;
+    unsigned int tableIndex;
+    int hasMoreSlots;
+    int hasMoreTables;
 
+    /* Refresh cached field pointers for every record in all skagbag tables. */
     table = lbl_804BE248;
-    outer = 0;
+    tableIndex = 0;
 outer_loop:
     slot = (char *)*table;
     if (slot != 0) {
         slotIndex = 0;
 slot_loop:
-        entry = *(int **)slot;
-        if (entry != 0) {
-            count = 0;
-            offset = 0;
+        recordSet = *(int **)slot;
+        if (recordSet != 0) {
+            recordCount = 0;
+            recordOffset = 0;
             goto record_test;
 record_loop:
-            record = (int *)(*(int *)entry + offset);
-            out = record;
-            index = 0;
+            record = (int *)(*(int *)recordSet + recordOffset);
+            fieldOut = record;
+            fieldIndex = 0;
 field_loop:
-            *(int *)((char *)out + 0xC) =
-                fn_802B3DA4(arg0, *(unsigned short *)((char *)record + 8), index);
-            index++;
-            out++;
-            if (index < 6)
+            *(int *)((char *)fieldOut + 0xC) =
+                fn_802B3DA4(context, *(unsigned short *)((char *)record + 8), fieldIndex);
+            fieldIndex++;
+            fieldOut++;
+            if (fieldIndex < 6)
                 goto field_loop;
-            offset += 0x24;
-            count++;
+            recordOffset += 0x24;
+            recordCount++;
 record_test:
-            if (count < entry[1])
+            if (recordCount < recordSet[1])
                 goto record_loop;
         }
         slotIndex++;
-        keepSlot = slotIndex < 0x400;
+        hasMoreSlots = slotIndex < 0x400;
         slot += 8;
-        if (keepSlot)
+        if (hasMoreSlots)
             goto slot_loop;
     }
-    outer++;
-    keepOuter = outer < 0x80;
+    tableIndex++;
+    hasMoreTables = tableIndex < 0x80;
     table++;
-    if (keepOuter)
+    if (hasMoreTables)
         goto outer_loop;
 }
 #pragma use_lmw_stmw on
