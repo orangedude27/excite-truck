@@ -11,13 +11,17 @@ extern void *fn_802C86DC(void);
 extern int fn_801E4F3C(int, int, float, float, float, float, float);
 extern float lbl_80564F70, lbl_80564F74, lbl_80564F78, lbl_80564F7C;
 extern float lbl_802FAC60[];
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double z0) {
-    struct SignTable { float values[3]; };
-    struct Locals { volatile float output[3]; float signs[3]; volatile float homes[3]; };
+    struct SignTable { float v[3]; };
+    float signs[3];
+    volatile float out[3];
+    volatile float homes[3];
     float *a;
     float *b;
-    struct Locals local;
     float xBase;
     float yBase;
     float zBase;
@@ -29,15 +33,15 @@ void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double
     int i;
     a = (float *)fn_802C86DC();
     b = (float *)fn_802C86DC();
-    *(struct SignTable *)local.signs = *(struct SignTable *)lbl_802FAC60;
+    *(struct SignTable *)signs = *(struct SignTable *)lbl_802FAC60;
     xBase = (float)x0;
     yBase = (float)y0;
     zBase = (float)z0;
-    local.homes[0] = x0;
-    local.homes[1] = y0;
-    local.homes[2] = z0;
-    x = local.signs[arg1 & 1];
-    y = local.signs[arg1 & 2];
+    homes[0] = xBase;
+    homes[1] = yBase;
+    homes[2] = zBase;
+    x = signs[arg1 & 1];
+    y = signs[arg1 & 2];
     coeff0 = lbl_80564F78;
     zero = lbl_80564F70;
     coeff1 = lbl_80564F7C;
@@ -66,10 +70,11 @@ void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double
         xx = u + b[3] * t;
         yy = v + b[4] * t;
         zz = w + b[5] * t;
-        local.output[0] = xx;
-        local.output[1] = yy;
-        local.output[2] = zz;
-        if (((int (*)())fn_801E4F3C)(arg0, i >= 2, xx, yy, zz, w, v, u, q, t) != 0) break;
+        out[0] = xx;
+        out[1] = yy;
+        out[2] = zz;
+        if (fn_801E4F3C((int)arg0, i >= 2, xx, yy, zz, f4, f5) != 0) break;
     }
 }
 #pragma scheduling on
+#pragma pop
