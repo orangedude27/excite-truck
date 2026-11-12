@@ -318,7 +318,7 @@ extern "C" int fn_8027EE88(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void fn_8027EEE4(register int arg0) {
+extern "C" void fn_8027EEE4(int arg0) {
     extern void fn_801345D8(char *, int, const char *, ...);
     extern int fn_80131234(int);
     extern int lbl_802FA85C[];
@@ -335,8 +335,8 @@ extern "C" void fn_8027EEE4(register int arg0) {
         char buffer[100];
     } frame;
     register int zero = 0;
-    register int zero1 = 0;
-    register int zero2 = 0;
+    register int zero1;
+    register int zero2;
     register int three;
     register int two;
     register int q1;
@@ -371,6 +371,7 @@ extern "C" void fn_8027EEE4(register int arg0) {
     frame.objects[1][2] = hash1;
     three = 3;
     frame.objects[1][1] = three;
+    zero1 = 0;
     frame.objects[1][0] = (int)&lbl_8055C7D0;
     frame.objects[1][3] = zero1;
     frame.objects[1][4] = zero;
@@ -1200,6 +1201,7 @@ found_item_2:
 
 #pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 extern "C" int fn_80280A38(void) {
     class Object {
     public:
@@ -1210,84 +1212,63 @@ extern "C" int fn_80280A38(void) {
     extern int lbl_8055F68C;
     extern int lbl_8055F690;
     extern unsigned char lbl_804B3068[];
-    register Object *object;
-    register void *candidate;
-    register int offset;
-    register int i;
-    register int count;
-    register void **p;
-    register void **items;
-    void *selected;
-    char *src;
-    char *dst;
-    int n;
+    int i;
+    int j;
+    void *item;
 
     if (lbl_8055F688 == 0)
         goto done;
     if (*(Object * volatile *)((char *)lbl_8055F688 + 0x60) == 0)
         goto done;
-    object = *(Object **)((char *)lbl_8055F688 + 0x60);
-    if (object->getKey() == 0)
+    if ((*(Object **)((char *)lbl_8055F688 + 0x60))->getKey() == 0)
         goto done;
 
     lbl_8055F690 = lbl_8055F688;
     if (lbl_8055F68C == 0) {
-        offset = 0;
-        i = 0;
-        goto first_scan;
-first_scan:
-        candidate = *(void **)((char *)lbl_804B3048.items + offset);
-        object = *(Object **)((char *)candidate + 0x60);
-        if (object != 0 && object->getKey() == 0) {
-            lbl_8055F68C = (int)candidate;
-        } else {
-            offset += 4;
-            i++;
-            count = *(volatile int *)((char *)&lbl_804B3048 + 4);
-            if (i < count)
-                goto first_scan;
+        for (i = 0; i < lbl_804B3048.count; i++) {
+            void *c = lbl_804B3048.items[i];
+            Object *o = *(Object **)((char *)c + 0x60);
+            if (o != 0 && o->getKey() == 0) {
+                lbl_8055F68C = (int)c;
+                break;
+            }
         }
     }
     if (lbl_8055F68C == 0)
         goto done;
 
-    selected = (void *)*(volatile int *)&lbl_8055F68C;
-    items = lbl_804B3048.items;
-    count = lbl_804B3048.count;
-    i = 0;
-    p = items;
-    while (i < count) {
-        if (*p != selected)
-            goto search_next;
-        goto found;
-search_next:
-        p++;
-        i++;
-    }
-    i = -1;
+    {
+        void *sel = (void *)lbl_8055F68C;
+        int count = lbl_804B3048.count;
+        void **items = lbl_804B3048.items;
+        for (j = 0; j < count; j++) {
+            if (items[j] == sel)
+                goto found;
+        }
+        j = -1;
 found:
-    lbl_804B3068[0] = 0;
-    if (i < 0)
-        goto clear;
-    if (i >= lbl_804B3048.count)
-        goto clear;
-    selected = items[i];
-    lbl_8055F688 = (unsigned int)selected;
-    if (selected != 0) {
-        object = *(Object **)((char *)selected + 0x60);
-        if (object != 0) {
-            src = object->getText();
-            dst = (char *)lbl_804B3068;
-            n = 100;
-            do {
-                char c = *src++;
-                *dst++ = c;
-                if ((signed char)c == 0)
-                    break;
-                n--;
-            } while (n > 0);
-            if (n == 0)
-                dst[-1] = 0;
+        lbl_804B3068[0] = 0;
+        if (j < 0 || j >= lbl_804B3048.count)
+            goto clear;
+        item = items[j];
+        lbl_8055F688 = (unsigned int)item;
+        if (item != 0) {
+            Object *o = *(Object **)((char *)item + 0x60);
+            if (o != 0) {
+                char *src = o->getText();
+                char *dst = (char *)lbl_804B3068;
+                int n = 100;
+                goto copy_test;
+                for (;;) {
+                    if (--n <= 0) {
+                        dst[-1] = 0;
+                        break;
+                    }
+copy_test:
+                    if ((*dst++ = *src++) == 0)
+                        break;
+                }
+            }
         }
     }
     goto done;
@@ -1398,13 +1379,13 @@ extern unsigned char lbl_804B3068[];
 typedef unsigned int (*GetKeyFn)(void *);
 typedef char *(*GetTextFn)(void *);
 int fn_80280DC8(void) {
-    register int index;
-    register int count;
     register unsigned int key;
     register void *obj;
     register void *item;
     register void **p;
     register void **items;
+    register int count;
+    register int index;
     char *src;
     char *dst;
     int n;
@@ -1489,12 +1470,11 @@ extern "C" int fn_80280F7C(void) {
     if (*(volatile unsigned int *)&lbl_8055F688 == 0)
         goto reset;
     void *key = (void *)*(volatile unsigned int *)&lbl_8055F688;
+    int i;
     int count = lbl_804B3048.count;
-    long i;
     for (i = 0; i < count; ++i) {
-        if (lbl_804B3048.items[i] != key)
-            continue;
-        goto found;
+        if (lbl_804B3048.items[i] == key)
+            goto found;
     }
     i = -1;
 found:
