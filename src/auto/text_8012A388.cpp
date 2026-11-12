@@ -1443,7 +1443,7 @@ func_exit:
 extern "C" s32 fn_802E748C(s32 arg0, s32 arg1, void *arg2);
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_8012D024_old(void *arg0, s32 arg1, s32 arg2) {
     u8 sp80[0x80];
     void *parser;
     u8 sp8[8];
