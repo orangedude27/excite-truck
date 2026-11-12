@@ -3879,46 +3879,46 @@ struct FatIter {
 extern "C" s32 fn_800AB378(void *arg0, s32 arg1) {
     typedef s32 (*LookupPage)(void *, s32, void **, s32 *);
     typedef s32 (*ReadData)(void *, s32, s32, s32, u16, u32 *, s32);
-    typedef s32 (*FatFn)(void *, u32, s32, void *);
+    FatIter *it = (FatIter *)arg0;
     void *sp10;
     u32 spC;
     s32 sp8;
     s32 result;
     u32 i;
-    u32 prev = *(u32 *)((u8 *)arg0 + 0x40);
-    u32 cur = *(u32 *)arg0 >> *((u8 *)arg0 + 0x6C);
+    u32 cur = it->pos >> it->shift;
+    u32 prev = it->prev;
 
     if (cur != prev) {
-        *(u32 *)((u8 *)arg0 + 0x40) = cur;
-        result = ((FatFn)fn_800AE620)((u8 *)arg0 + 8, cur, 0, (u8 *)arg0 + 0x44);
+        it->prev = cur;
+        result = fn_800AE620((s32)it->fat, cur, 0, (s32)&it->cluster);
         if (result != 0)
             return result;
-        if ((u32)(((s32 *)arg0)[0x11] + 0x10000) == 0xFFFF && arg1 != 0) {
-            result = ((FatFn)fn_800AE620)((void *)((s32)arg0 + 8), cur, 1, (void *)((s32)arg0 + 0x44));
+        if (it->cluster + 0x10000 == 0xFFFF && arg1 != 0) {
+            result = fn_800AE620((s32)it->fat, cur, 1, (s32)&it->cluster);
             if (result != 0)
                 return result;
-            if ((u32)(((s32 *)arg0)[0x11] + 0x10000) != 0xFFFF && (u32)(prev + 0x10000) != 0xFFFF) {
-                result = ((LookupPage)fn_800A8D08)(*(void **)((u8 *)arg0 + 4), -1, &sp10, &sp8);
+            if (it->cluster + 0x10000 != 0xFFFF && prev + 0x10000 != 0xFFFF) {
+                result = ((LookupPage)fn_800A8D08)(it->cache, -1, &sp10, &sp8);
                 if (result != 0)
                     return result;
-                fn_800A499C((const char *)*(void **)((u8 *)sp10 + 8), 0, **(u16 **)((u8 *)arg0 + 4));
-                for (i = 0; i < *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 6); i++) {
-                    void *ctx = *(void **)((u8 *)arg0 + 4);
-                    result = ((ReadData)fn_800B5700)(ctx, *(s32 *)((u8 *)sp10 + 8), ((s32 *)arg0)[0x11] + i, 0, *(u16 *)ctx, &spC, 0);
+                fn_800A499C((const char *)*(void **)((u8 *)sp10 + 8), 0, **(u16 **)&it->cache);
+                for (i = 0; i < *(u8 *)((u8 *)it->cache + 6); i++) {
+                    void *ctx = it->cache;
+                    result = ((ReadData)fn_800B5700)(ctx, *(s32 *)((u8 *)sp10 + 8), it->cluster + i, 0, *(u16 *)ctx, &spC, 0);
                     if (result != 0) {
-                        VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 4), sp10);
+                        VFiPFCACHE_FreeFATPage_800A8E10(it->cache, sp10);
                         return result;
                     }
-                    if (spC != **(u16 **)((u8 *)arg0 + 4)) {
-                        VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 4), sp10);
+                    if (spC != **(u16 **)&it->cache) {
+                        VFiPFCACHE_FreeFATPage_800A8E10(it->cache, sp10);
                         return 0x11;
                     }
                 }
-                VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 4), sp10);
+                VFiPFCACHE_FreeFATPage_800A8E10(it->cache, sp10);
             }
         }
     }
-    *(u16 *)((u8 *)arg0 + 0x48) = ((*(u32 *)arg0 & *(u16 *)((u8 *)arg0 + 0x4A)) << 5) & 0xFFE0;
+    it->off = ((it->pos & it->mask) << 5) & 0xFFE0;
     return 0;
 }
 
@@ -16126,6 +16126,7 @@ extern "C" s32 lbl_8031D718[];
 extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
     s32 t;
     s32 a6, a7, a8;
+    s32 *b44 = b + 17;
     t = -a[0]; o1[0] = b[0]; o2[0] = -(t + b[17]);
     t = -a[1]; o1[64] = -b[1]; o2[-64] = t + b[16];
     t = -a[2]; o1[128] = b[2]; o2[-128] = -(t + b[15]);
@@ -16137,10 +16138,10 @@ extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
     o2[-384]= -((s32)(((s64)a6*lbl_8031D718[1])>>20)+b[11]);
     a7 = a[7];
     o1[448]= -((s32)(((s64)a7*lbl_8031D718[2])>>20)+b[7]);
-    o2[-448]= (s32)(((s64)a7*lbl_8031D718[3])>>20)+b[10];
+    o2[-448]= (s32)(((s64)a7*lbl_8031D718[3])>>20)+b44[-7];
     a8 = a[8];
     o1[512]=(s32)(((s64)a8*lbl_8031D718[4])>>20)+b[8];
-    o2[-512]= -((s32)(((s64)a8*lbl_8031D718[5])>>20)+b[9]);
+    o2[-512]= -((s32)(((s64)a8*lbl_8031D718[5])>>20)+b44[-8]);
 }
 
 extern u32 lbl_8031D730[];
