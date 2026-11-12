@@ -91,6 +91,8 @@ void fn_80279D3C(void) {
 }
 
 extern float lbl_80564108,lbl_8056410C,lbl_80564110,lbl_80564114,lbl_80564118,lbl_8056411C,lbl_80564124,lbl_80564128,lbl_8056412C,lbl_80564130,lbl_80564134,lbl_80564138,lbl_8056413C,lbl_80564140,lbl_80564144,lbl_80564148,lbl_8056414C,lbl_80564150,lbl_80564154,lbl_80564158,lbl_8056415C,lbl_80564160,lbl_80564164,lbl_80564168,lbl_8056416C,lbl_80564170,lbl_80564174,lbl_80564178,lbl_8056417C,lbl_80564180,lbl_80564184,lbl_80564188,lbl_8056418C,lbl_80564190,lbl_80564194;
+#pragma push
+#pragma processor 750
 void fn_80279D40(void *arg0, int arg1) {
     float *f = (float *)arg0;
     int *w = (int *)arg0;
@@ -327,37 +329,62 @@ void fn_8027A888(float *arg0) {
     arg0[8] = zero;
 }
 
-void fn_8027A8B4(void *arg0, void *arg1, int arg_sp0) {
-    float temp_f1;
-    float temp_f25;
-    float temp_f25_2;
-    float temp_f26;
-    float temp_f2;
-    temp_f2 = *(float *)((char *)arg1 + 4);
-    temp_f1 = *(float *)((char *)arg1 + 8);
-    temp_f26 = *(float *)((char *)arg1 + 0x18);
-    temp_f25 = *(float *)((char *)arg1 + 0x10);
-    temp_f25_2 = *(float *)((char *)arg1 + 0x14);
-    *(float *)((char *)arg0 + 0) = *(float *)((char *)arg0 + 0) * *(float *)((char *)arg1 + 0);
-    *(float *)((char *)arg0 + 4) = *(float *)((char *)arg0 + 4) * temp_f2;
-    *(float *)((char *)arg0 + 8) = *(float *)((char *)arg0 + 8) * temp_f2;
-    *(float *)((char *)arg0 + 0xC) = *(float *)((char *)arg0 + 0xC) * temp_f2;
-    *(float *)((char *)arg0 + 0x54) = *(float *)((char *)arg0 + 0x54) * temp_f1;
-    *(float *)((char *)arg0 + 0x50) = *(float *)((char *)arg0 + 0x50) * temp_f1;
-    *(float *)((char *)arg0 + 0x30) = *(float *)((char *)arg0 + 0x30) * *(float *)((char *)arg1 + 0xC);
-    *(float *)((char *)arg0 + 0x110) = *(float *)((char *)arg0 + 0x110) * *(float *)((char *)arg1 + 0x1C);
-    *(float *)((char *)arg0 + 0x114) = *(float *)((char *)arg0 + 0x114) * *(float *)((char *)arg1 + 0x20);
-    *(float *)((char *)arg0 + 0x84) = *(float *)((char *)arg0 + 0x84) * temp_f26;
-    *(float *)((char *)arg0 + 0x88) = *(float *)((char *)arg0 + 0x88) * temp_f25;
-    *(float *)((char *)arg0 + 0x8C) = *(float *)((char *)arg0 + 0x8C) * temp_f25_2;
-    *(float *)((char *)arg0 + 0xA8) = *(float *)((char *)arg0 + 0xA8) * temp_f26;
-    *(float *)((char *)arg0 + 0xAC) = *(float *)((char *)arg0 + 0xAC) * temp_f25;
-    *(float *)((char *)arg0 + 0xB0) = *(float *)((char *)arg0 + 0xB0) * temp_f25_2;
-    *(float *)((char *)arg0 + 0xCC) = *(float *)((char *)arg0 + 0xCC) * temp_f26;
-    *(float *)((char *)arg0 + 0xD0) = *(float *)((char *)arg0 + 0xD0) * temp_f25;
-    *(float *)((char *)arg0 + 0xD4) = *(float *)((char *)arg0 + 0xD4) * temp_f25_2;
-    *(float *)((char *)arg0 + 0xF0) = *(float *)((char *)arg0 + 0xF0) * temp_f26;
-    *(float *)((char *)arg0 + 0xF4) = *(float *)((char *)arg0 + 0xF4) * temp_f25;
-    *(float *)((char *)arg0 + 0xF8) = *(float *)((char *)arg0 + 0xF8) * temp_f25_2;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_8027A8B4(void *arg0, void *arg1) {
+    float s0 = *(float *)((char *)arg1 + 0);
+    float s4 = *(float *)((char *)arg1 + 4);
+    float s8 = *(float *)((char *)arg1 + 8);
+    float sC = *(float *)((char *)arg1 + 0xC);
+    float s10 = *(float *)((char *)arg1 + 0x10);
+    float s14 = *(float *)((char *)arg1 + 0x14);
+    float s18 = *(float *)((char *)arg1 + 0x18);
+    float s1C = *(float *)((char *)arg1 + 0x1C);
+    float s20 = *(float *)((char *)arg1 + 0x20);
+    float p0 = *(float *)((char *)arg0 + 0) * s0;
+    float p4 = *(float *)((char *)arg0 + 4) * s4;
+    float p8 = *(float *)((char *)arg0 + 8) * s4;
+    float pC = *(float *)((char *)arg0 + 0xC) * s4;
+    float p50 = *(float *)((char *)arg0 + 0x50) * s8;
+    float p54 = *(float *)((char *)arg0 + 0x54) * s8;
+    float p30 = *(float *)((char *)arg0 + 0x30) * sC;
+    float p110 = *(float *)((char *)arg0 + 0x110) * s1C;
+    float p114 = *(float *)((char *)arg0 + 0x114) * s20;
+    float p84 = *(float *)((char *)arg0 + 0x84) * s18;
+    float p88 = *(float *)((char *)arg0 + 0x88) * s10;
+    float p8C = *(float *)((char *)arg0 + 0x8C) * s14;
+    float pA8 = *(float *)((char *)arg0 + 0xA8) * s18;
+    float pAC = *(float *)((char *)arg0 + 0xAC) * s10;
+    float pB0 = *(float *)((char *)arg0 + 0xB0) * s14;
+    float pCC = *(float *)((char *)arg0 + 0xCC) * s18;
+    float pD0 = *(float *)((char *)arg0 + 0xD0) * s10;
+    float pD4 = *(float *)((char *)arg0 + 0xD4) * s14;
+    float pF0 = *(float *)((char *)arg0 + 0xF0) * s18;
+    float pF4 = *(float *)((char *)arg0 + 0xF4) * s10;
+    float pF8 = *(float *)((char *)arg0 + 0xF8) * s14;
+    *(float *)((char *)arg0 + 0) = p0;
+    *(float *)((char *)arg0 + 4) = p4;
+    *(float *)((char *)arg0 + 8) = p8;
+    *(float *)((char *)arg0 + 0xC) = pC;
+    *(float *)((char *)arg0 + 0x54) = p54;
+    *(float *)((char *)arg0 + 0x50) = p50;
+    *(float *)((char *)arg0 + 0x30) = p30;
+    *(float *)((char *)arg0 + 0x110) = p110;
+    *(float *)((char *)arg0 + 0x114) = p114;
+    *(float *)((char *)arg0 + 0x84) = p84;
+    *(float *)((char *)arg0 + 0x88) = p88;
+    *(float *)((char *)arg0 + 0x8C) = p8C;
+    *(float *)((char *)arg0 + 0xA8) = pA8;
+    *(float *)((char *)arg0 + 0xAC) = pAC;
+    *(float *)((char *)arg0 + 0xB0) = pB0;
+    *(float *)((char *)arg0 + 0xCC) = pCC;
+    *(float *)((char *)arg0 + 0xD0) = pD0;
+    *(float *)((char *)arg0 + 0xD4) = pD4;
+    *(float *)((char *)arg0 + 0xF0) = pF0;
+    *(float *)((char *)arg0 + 0xF4) = pF4;
+    *(float *)((char *)arg0 + 0xF8) = pF8;
 }
-
+#pragma scheduling on
+#pragma pop
