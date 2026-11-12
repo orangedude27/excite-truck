@@ -1,11 +1,5 @@
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
-typedef struct Unk18440 {
-    s32 unk_0x00;
-    s32 unk_0x04[8];
-    s32 unk_0x24;
-    s32 unk_0x28[8];
-} Unk18440;
 
 /* A driver/vehicle pairing list, 0x48 bytes: up to 8 driver numbers at +0x4 and
  * the number of the vehicle each of them drives at +0x28, each half carrying a
