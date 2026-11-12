@@ -2759,6 +2759,7 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
 #pragma processor reset
 #pragma optimization_level reset
 
+/* Store an effect in the manager, dispatch its setup callback, and expand the bounding radius. */
 extern "C" void fn_801A0378(void* arg0, void* arg1) {
     extern f32 PSVECMag(const Vec*);
     extern f32 lbl_805622E8;
