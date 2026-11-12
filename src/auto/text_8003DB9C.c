@@ -3345,18 +3345,16 @@ typedef union _GXChanCtrl {
 void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc ambSrc, GXColorSrc matSrc,
                    GXLightID lightMask, GXDiffuseFn diffFn, GXAttnFn attnFn) {
     GXChanCtrl u;
-    unsigned int *base;
-    unsigned int *data;
-    unsigned int idx = chan & 3;
+    unsigned int *gxData;
+    unsigned int *chanCtrl;
+    unsigned int regIdx = chan & 3;
     unsigned int diffuse = diffFn;
 
-    /* Builds this channel's COLORnCNTRL word and marks it dirty for
-       __GXSetDirtyState; GX_COLOR0A0/GX_COLOR1A1 write the same word into the
-       matching ALPHA0CNTRL/ALPHA1CNTRL as well. */
     u.value = 0;
     u.f.light = enable;
     u.f.matSrc = matSrc;
     u.f.ambSrc = ambSrc;
+    /* specular light has no distance attenuation to speak of */
     if (attnFn == GX_AF_SPEC) {
         diffuse = GX_DF_NONE;
     }
@@ -3365,18 +3363,18 @@ void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc ambSrc, GXColorSr
     u.f.attnSelect = (attnFn != GX_AF_SPEC);
     u.f.lightMaskLo = lightMask;
     u.f.lightMaskHi = ((unsigned int)lightMask) >> 4;
-    base = __GXData;
-    data = base + idx;
-    data[XF_COLOR0CNTRL / 4] = u.value;
-    base[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR0 << idx;
+    gxData = __GXData;
+    chanCtrl = gxData + regIdx;
+    chanCtrl[XF_COLOR0CNTRL / 4] = u.value;
+    gxData[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR0 << regIdx;
     if (chan == GX_COLOR0A0) {
-        base[XF_ALPHA0CNTRL / 4] = u.value;
-        base[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR0 | DIRTY_CHAN_ALPHA0;
+        gxData[XF_ALPHA0CNTRL / 4] = u.value;
+        gxData[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR0 | DIRTY_CHAN_ALPHA0;
         return;
     }
     if (chan == GX_COLOR1A1) {
-        base[XF_ALPHA1CNTRL / 4] = u.value;
-        base[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR1 | DIRTY_CHAN_ALPHA1;
+        gxData[XF_ALPHA1CNTRL / 4] = u.value;
+        gxData[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR1 | DIRTY_CHAN_ALPHA1;
     }
 }
 
