@@ -616,6 +616,7 @@ void fn_802AB21C(void) {
 #pragma pop
 void fn_802AB500(void) {}
 
+/* Shutdown: unregister callbacks, destroy owned objects/buffers, and reset handles. */
 void fn_802AB504(void) {
     extern void fn_801EF024(void (*)(void));
     extern void fn_80128670(void *);
@@ -625,22 +626,28 @@ void fn_802AB504(void) {
     extern unsigned char lbl_8055F92C;
     extern void *lbl_8055F924;
     extern int lbl_8055F928, lbl_8055CC60, lbl_8055CC64;
-    int *p;
-    int *q;
+    int *object;
+    int *buffer;
+
     lbl_8055F92C = 0;
     fn_801EF024((void (*)(void))fn_802A9F30);
     fn_801EF024((void (*)(void))fn_802A9F90);
     fn_801EF024((void (*)(void))fn_802A9FB0);
-    p = (int *)lbl_8055F924;
-    if (p) {
-        fn_8028E398(p[0]);
-        fn_8028E398(p[1]);
-        fn_80128668(p);
+
+    object = (int *)lbl_8055F924;
+    if (object) {
+        fn_8028E398(object[0]);
+        fn_8028E398(object[1]);
+        fn_80128668(object);
     }
     lbl_8055F924 = 0;
-    q = (int *)lbl_8055F928;
-    if (q) fn_80128670((char *)q - 0x10);
+
+    buffer = (int *)lbl_8055F928;
+    if (buffer) {
+        fn_80128670((char *)buffer - 0x10);
+    }
     lbl_8055F928 = 0;
+
     fn_802CAC54(lbl_8055CC60);
     lbl_8055CC60 = -2;
     fn_802CAC54(lbl_8055CC64);
