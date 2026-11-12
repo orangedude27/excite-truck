@@ -2092,6 +2092,55 @@ read_done:
     return total;
 }
 
+/* Ring-buffered DVD file stream.  fn_8011ACC4 opens the file (or takes the caller's
+   already-open DVDFileInfo, which it copies in at +0x54), fn_8011AC10 hands it the
+   ring buffer to fill, fn_8011A6A0 keeps queueing 32 KiB async reads into the ring
+   and fn_8011A8FC drains it.  A read is padded backwards to a 32-byte boundary, so
+   its data lands padSize bytes past the write pointer and the read callback (
+   fn_8011A4F8) slides it into place. */
+typedef struct DvdStream {
+    void *readAt;          /* 0x00 fn_8011A388: read at an absolute file offset */
+    void *read;            /* 0x04 fn_8011A8FC: read the next bytes of the stream */
+    void *roundSize;       /* 0x08 fn_8011AC04: round a read size up to a 32 KiB block */
+    void *setBuffer;       /* 0x0C fn_8011AC10: give the stream its ring buffer */
+    void *poll;            /* 0x10 fn_8011A7CC: pump the drive and report the stream state */
+    void *close;           /* 0x14 fn_8011AC84 */
+    void *setPause;        /* 0x18 fn_8011A870 */
+    char pad_1C[4];
+    s32 error;             /* 0x20 set when a read came up short */
+    s32 reading;           /* 0x24 an async read is in flight */
+    s32 totalRead;         /* 0x28 bytes the drive has moved into the ring */
+    s32 timeMode;          /* 0x2C which of the two read-time counters a read counts into */
+    s32 readTime;          /* 0x30 time spent waiting on reads */
+    s32 totalTime;         /* 0x34 time spent inside the read calls */
+    s32 readTimeSync;      /* 0x38 readTime with timeMode 0 */
+    s32 readTimeStream;    /* 0x3C readTime with timeMode set */
+    u32 capacity;          /* 0x40 ring size in bytes */
+    volatile u32 peakFill; /* 0x44 most data the ring has ever held */
+    u32 available;         /* 0x48 bytes a reader can take without waiting */
+    volatile u32 fill;     /* 0x4C data the ring holds right now */
+    s32 paused;            /* 0x50 stop queueing reads */
+    DVDFileInfo fileInfo;  /* 0x54 the file being streamed */
+    s32 readOffset;        /* 0x90 file offset the next read starts at */
+    s32 padSize;           /* 0x94 bytes read before readOffset to reach a 32-byte boundary */
+    u32 consumerOffset;    /* 0x98 file offset of the next byte the reader wants */
+    u32 consumerPtr;       /* 0x9C where that byte sits in the ring */
+    u32 freeSpace;         /* 0xA0 room left in the ring */
+    u32 bufferStart;       /* 0xA4 */
+    u32 bufferEnd;         /* 0xA8 */
+    u32 writePtr;          /* 0xAC where the next read's data goes */
+    s32 keepOpen;          /* 0xB0 the caller's file info: close() must not DVDClose it */
+    u32 discOffset;        /* 0xB4 base offset the reads are relative to */
+    s32 endOffset;         /* 0xB8 offset the stream ends at */
+    s32 rate;              /* 0xBC bytes/second to pace the reads at, 0 = no pacing */
+    s32 waitTicks;         /* 0xC0 pacing debt still to sleep off (fn_8011A45C) */
+    s32 cancelling;        /* 0xC4 a DVDCancel is in progress */
+    s32 timeModeUsed;      /* 0xC8 timeMode as it was when the current read was queued */
+    s32 readStart;         /* 0xCC tick the current read was queued at, then its duration */
+    struct DvdStream *self; /* 0xD0 the stream itself, so the read callback, which only
+                                gets the +0x54 file info, can find its owner */
+} DvdStream;
+
 #pragma push
 #pragma scheduling on
 #pragma dont_inline on
