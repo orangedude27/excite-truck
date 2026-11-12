@@ -257,6 +257,7 @@ __declspec(section ".sdata") extern char lbl_8055B168[];
 __declspec(section ".sdata") extern char lbl_8055B170[];
 #pragma cplusplus on
 extern "C" int fn_801F4ECC(void *arg0) {
+    /* Query object flags/properties (vtable slot 0x30) and return a bitmask; rigid+flag is invalid. */
     int result = 0;
     Obj_801F4ECC *object = (Obj_801F4ECC *)arg0;
 
