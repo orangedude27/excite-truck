@@ -795,6 +795,7 @@ extern "C" void fn_801D4F2C(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_801D5730(void) {
+    /* Destroy all entries in the global object list: clean up each, remove from list (swap-with-last), and release. */
     struct Entry { virtual void release(int); };
     int count;
     void *entry;
