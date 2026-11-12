@@ -4088,34 +4088,35 @@ extern "C" void fn_801593F0(Unk801577F0* arg0) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_80159488(Unk801577F0* arg0) {
+extern "C" void fn_80159488(Unk801577F0* object) {
     f32 zero = 0.0f;
-    s32 i = 0;
-    s32 offset = 0;
-    s32 value = 0;
-    for (; i < arg0->mCount; ++i) {
-        u8* base = (u8*)arg0->mData;
-        *(s32*)(base + offset) = value;
-        s32* p = (s32*)arg0->mData;
-        *(s32*)((u8*)p + offset + 4) = value;
-        p = (s32*)arg0->mData;
-        *(s32*)((u8*)p + offset + 8) = value;
-        p = (s32*)arg0->mData;
-        *(f32*)((u8*)p + offset + 0xC) = zero;
-        offset += 0x38;
+    s32 index = 0;
+    s32 byteOffset = 0;
+    s32 zeroInt = 0;
+    /* Reset per-entry data/state fields, invoke v31, and activate the child if present. */
+    for (; index < object->mCount; ++index) {
+        u8* base = (u8*)object->mData;
+        *(s32*)(base + byteOffset) = zeroInt;
+        s32* p = (s32*)object->mData;
+        *(s32*)((u8*)p + byteOffset + 4) = zeroInt;
+        p = (s32*)object->mData;
+        *(s32*)((u8*)p + byteOffset + 8) = zeroInt;
+        p = (s32*)object->mData;
+        *(f32*)((u8*)p + byteOffset + 0xC) = zero;
+        byteOffset += 0x38;
     }
     zero = 0.0f;
-    *(f32*)((u8*)arg0 + 0x25C) = zero;
-    *(f32*)((u8*)arg0 + 0x260) = zero;
-    *(f32*)((u8*)arg0 + 0x258) = zero;
-    *(f32*)((u8*)arg0 + 0x264) = zero;
-    arg0->v31();
-    void* child = *(void**)((u8*)arg0 + 0x278);
+    *(f32*)((u8*)object + 0x25C) = zero;
+    *(f32*)((u8*)object + 0x260) = zero;
+    *(f32*)((u8*)object + 0x258) = zero;
+    *(f32*)((u8*)object + 0x264) = zero;
+    object->v31();
+    void* child = *(void**)((u8*)object + 0x278);
     s32 one = 1;
     f32 finalZero = 0.0f;
     bool hasChild = child != 0;
-    *(volatile u8*)((u8*)arg0 + 0x274) = one;
-    *(volatile f32*)((u8*)arg0 + 0x270) = finalZero;
+    *(volatile u8*)((u8*)object + 0x274) = one;
+    *(volatile f32*)((u8*)object + 0x270) = finalZero;
     if (hasChild) {
         *(u8*)((u8*)child + 0x4A) = 1;
         *(u8*)((u8*)child + 0x4C) = 0;
