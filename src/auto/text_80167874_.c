@@ -12,6 +12,8 @@ struct DummyVec2 {
 
 class DummyItem {
 public:
+    virtual void _dtor0();
+    virtual void _dtor1();
     virtual void v0();
     virtual s32 v1(const char *name);
     virtual void v2();
@@ -560,43 +562,43 @@ second_check:
 #pragma processor 750
 void fn_80168104(void) {
     extern void *fn_802C86DC(void);
-    extern f64 fn_8002F234(f32);
-    extern u32 fn_802C9994(u32);
-    extern u32 fn_802C9950(u32);
-    extern void fn_802C9900(f32);
+    extern double fn_8002F234(float);
+    extern unsigned int fn_802C9994(unsigned int);
+    extern unsigned int fn_802C9950(unsigned int);
+    extern void fn_802C9900(float);
     extern void fn_802C9904(void);
     extern void fn_802C744C(void *, void *);
-    extern u8 lbl_8042FF60[];
-    extern f32 lbl_8056193C;
-    extern f32 lbl_80561940;
-    extern f64 lbl_80561948;
-    struct { f32 x, y; } pos, d;
-    u8 *data = (u8 *)fn_802C86DC();
-    s32 i, offset;
-    f32 scale = lbl_80561940;
-    f32 limit = lbl_8056193C;
-    pos.x = *(f32 *)(data + 0x24);
-    pos.y = *(f32 *)(data + 0x2C);
+    extern unsigned char lbl_8042FF60[];
+    extern float lbl_8056193C;
+    extern float lbl_80561940;
+    extern double lbl_80561948;
+    struct { float x, y; } pos, d;
+    unsigned char *data = (unsigned char *)fn_802C86DC();
+    int i, offset;
+    float scale = lbl_80561940;
+    float limit = lbl_8056193C;
+    pos.x = *(float *)(data + 0x24);
+    pos.y = *(float *)(data + 0x2C);
     offset = 0;
-    for (i = 0; i < *(s32 *)((u8 *)lbl_8055E354 + 0x1D4D0); i++, offset += 0x20) {
-        u8 *entry = *(u8 **)((u8 *)lbl_8055E354 + 0x1D4CC) + offset;
-        s32 j;
+    for (i = 0; i < *(int *)((unsigned char *)lbl_8055E354 + 0x1D4D0); i++, offset += 0x20) {
+        unsigned char *entry = *(unsigned char **)((unsigned char *)lbl_8055E354 + 0x1D4CC) + offset;
+        int j;
         if (entry[4] == 0) continue;
-        if (entry[0x1C] == 0 || (d.y = pos.y - *(f32 *)(entry + 0xC), d.x = pos.x - *(f32 *)(entry + 8), (f32)fn_8002F234(d.x * d.x + d.y * d.y) - *(f32 *)(entry + 0x10) < limit)) {
-            for (j = 0; j < *(s32 *)(*(u8 **)((u8 *)lbl_8055E354 + 0x1D4CC) + offset + 0x18); j++) {
-                u8 *record = *(u8 **)lbl_8055E354 + (*(s32 *)(*(u8 **)((u8 *)lbl_8055E354 + 0x1D4CC) + offset + 0x14) + j) * 0x18;
-                u8 *obj = *(u8 **)record;
-                if (obj != 0 && *(s32 *)(obj + 0x10) != 0 && record[0x14] == 0) {
-                    u32 token = obj ? *(u32 *)(obj + 8) : (u32)-1;
-                    u32 a = fn_802C9994(token);
-                    u32 b = fn_802C9950((((token >> 25) & 0x7F) << 24) | (((token >> 17) & 0x7F) << 16) | (((token >> 9) & 0x7F) << 8) | ((token >> 1) & 0x7F));
-                    fn_802C9900(((f32)(token >> 24) - (f32)lbl_80561948) / scale);
+        if (entry[0x1C] == 0 || (d.y = pos.y - *(float *)(entry + 0xC), d.x = pos.x - *(float *)(entry + 8), (float)fn_8002F234(d.x * d.x + d.y * d.y) - *(float *)(entry + 0x10) < limit)) {
+            for (j = 0; j < *(int *)(*(unsigned char **)((unsigned char *)lbl_8055E354 + 0x1D4CC) + offset + 0x18); j++) {
+                unsigned char *record = *(unsigned char **)lbl_8055E354 + (*(int *)(*(unsigned char **)((unsigned char *)lbl_8055E354 + 0x1D4CC) + offset + 0x14) + j) * 0x18;
+                unsigned char *obj = *(unsigned char **)record;
+                if (obj != 0 && *(int *)(obj + 0x10) != 0 && record[0x14] == 0) {
+                    unsigned int token = obj ? *(unsigned int *)(obj + 8) : (unsigned int)-1;
+                    unsigned int a = fn_802C9994(token);
+                    unsigned int b = fn_802C9950((((token >> 25) & 0x7F) << 24) | (((token >> 17) & 0x7F) << 16) | (((token >> 9) & 0x7F) << 8) | ((token >> 1) & 0x7F));
+                    fn_802C9900(((float)(token >> 24) - (float)lbl_80561948) / scale);
                     {
-                        u8 *out = lbl_8042FF60 + ((*(s32 *)record / 12) & 0xF) * 0x30;
-                        *(f32 *)(out + 0x24) = *(f32 *)(record + 4);
-                        *(f32 *)(out + 0x28) = *(f32 *)(record + 8);
-                        *(f32 *)(out + 0x2C) = *(f32 *)(record + 0xC);
-                        fn_802C744C(*(void **)(*(u32 *)record + 0x10), out);
+                        unsigned char *out = lbl_8042FF60 + ((*(int *)record / 12) & 0xF) * 0x30;
+                        *(float *)(out + 0x24) = *(float *)(record + 4);
+                        *(float *)(out + 0x28) = *(float *)(record + 8);
+                        *(float *)(out + 0x2C) = *(float *)(record + 0xC);
+                        fn_802C744C(*(void **)(*(unsigned int *)record + 0x10), out);
                     }
                     fn_802C9994(a);
                     fn_802C9950(b);
