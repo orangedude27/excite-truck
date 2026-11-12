@@ -209,6 +209,18 @@ extern char lbl_8055C638, lbl_8055C63C, lbl_8055C644;
 extern void fn_80277F84(void *, void *, int);
 extern int stricmp(const char *, const char *);
 extern char *strncpy(char *, const char *, unsigned int);
+
+/* One camera record of the table at lbl_8049FEE0 (lbl_8055F5A0 of them, each
+ * filled from a camera object's named parameters by fn_80277F84). The record
+ * just before the table, at lbl_8049FE98, is the fallback all others blend from. */
+struct CameraEntry {
+    unsigned char inUse;   /* set once the record holds a camera */
+    float rot[3][3];       /* camera rotation matrix */
+    float pos[3];          /* camera position */
+    float fov;             /* field of view, the "fov" parameter */
+    char name[16];         /* fn_80276A44 looks records up by this name */
+};
+
 #pragma cplusplus on
 extern "C" void fn_80276ACC(void *arg0, int arg1) {
     struct Iface {
