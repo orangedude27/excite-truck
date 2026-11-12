@@ -15447,6 +15447,9 @@ void fn_80086468(void *arg) {
 }
 
 s32 HID_HostGetSDPRecord(void *addr, void *p_db, u32 db_len, void *sdp_cback) {
+    /* Start SDP discovery for a HID (Human Interface Device, UUID 0x1124) service
+     * record at addr, storing the DB/callback in the HID host control block and
+     * marking SDP busy; returns 0 on success, 0x10 if busy, or 3 on request failure. */
     extern u8 lbl_803C3C38[];
     extern void hidh_search_callback(u16);
     tSDP_UUID uuid_list;
