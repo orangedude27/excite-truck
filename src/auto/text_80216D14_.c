@@ -1099,21 +1099,24 @@ extern "C" void fn_802184D0(void *arg0) {
         virtual void v8();
         virtual void v9();
     };
-    register float threshold;
+    float threshold = lbl_80563490;
     char *cursor;
     int i;
     char *base;
-    for (threshold = lbl_80563490, i = 0, base = (char *)arg0, cursor = base;
-         i < *(int *)(base + 0x430); cursor += 4, i++) {
+    base = (char *)arg0;
+    cursor = base;
+    i = 0;
+    while (i < *(int *)(base + 0x430)) {
         void *obj = *(void **)(cursor + 0x30);
         int call = 0;
-        if (*(unsigned char *)((char *)obj + 0x1A) != 0 ||
-            *(float *)((char *)obj + 0x20) >= threshold) {
+        if (*(unsigned char *)((char *)obj + 0x1A) != 0 || *(float *)((char *)obj + 0x20) >= threshold) {
             call = 1;
         }
         if (call != 0) {
             ((Obj *)obj)->v9();
         }
+        cursor += 4;
+        i++;
     }
 }
 #pragma cplusplus off
@@ -1240,35 +1243,36 @@ void fn_8021889C(void *arg0, int arg1, float arg2) {
 }
 
 extern void fn_80219358(float);
-void fn_80218968(void *arg0, int arg1, float arg2) {
-    int mask = fn_80216D14(arg1);
-    if (*(int *)((char *)arg0 + 0x464) & mask) {
-        char *cursor;
-        int calls;
+/* Unmute one sound id and notify each active sound slot when no other group still enables it. */
+void fn_80218968(void *soundManager, int soundId, float fadeTime) {
+    int bitMask = fn_80216D14(soundId);
+    if (*(int *)((char *)soundManager + 0x464) & bitMask) {
+        char *slotCursor;
+        int notifiedCount;
         int currentMask;
         int flags;
         int i;
 
-        calls = 0;
-        currentMask = fn_80216D14(arg1);
-        flags = *(int *)((char *)arg0 + 0x464);
-        cursor = (char *)arg0;
+        notifiedCount = 0;
+        currentMask = fn_80216D14(soundId);
+        flags = *(int *)((char *)soundManager + 0x464);
+        slotCursor = (char *)soundManager;
         i = 0;
-        *(int *)((char *)arg0 + 0x464) = flags & ~currentMask;
+        *(int *)((char *)soundManager + 0x464) = flags & ~currentMask;
         goto check;
     loop:
-        if ((*(int *)((char *)arg0 + 0x464) &
-             *(int *)((char *)*(void **)(cursor + 0x30) + 0x238)) == 0) {
-            fn_80219358(arg2);
-            calls++;
+        if ((*(int *)((char *)soundManager + 0x464) &
+             *(int *)((char *)*(void **)(slotCursor + 0x30) + 0x238)) == 0) {
+            fn_80219358(fadeTime);
+            notifiedCount++;
         }
-        cursor += 4;
+        slotCursor += 4;
         i++;
     check:
-        if (i < *(int *)((char *)arg0 + 0x430))
+        if (i < *(int *)((char *)soundManager + 0x430))
             goto loop;
-        if (calls >= 8)
-            *(char *)((char *)arg0 + 0x46C) = 1;
+        if (notifiedCount >= 8)
+            *(char *)((char *)soundManager + 0x46C) = 1;
     }
 }
 
@@ -1336,15 +1340,15 @@ extern "C" void fn_80218B88(void *arg0, int arg1, int arg2, int arg3, int arg4) 
 #pragma cplusplus off
 #pragma pop
 void fn_80218C14(void *arg0, int arg1, void *arg2) {
-    register const unsigned int *src = (const unsigned int *)arg2;
-    register unsigned int a;
-    register unsigned int b;
+    const unsigned int *src = (const unsigned int *)arg2;
+    unsigned int a;
+    unsigned int b;
+    unsigned int *dst = (unsigned int *)((char *)arg0 + arg1 * 0x3C + 0x6A0);
     unsigned int c;
-    register unsigned int *dst = (unsigned int *)((char *)arg0 + arg1 * 0x3C + 0x6A0);
-    register float z;
-    register float y;
-    register float x;
-    float *fsrc = (float *)arg2;
+    float z;
+    float y;
+    float x;
+
     a = src[0];
     b = src[1];
     c = src[2];
@@ -1367,11 +1371,11 @@ void fn_80218C14(void *arg0, int arg1, void *arg2) {
     dst[8] = c;
     c = src[11];
     dst[9] = a;
-    x = fsrc[12];
+    x = ((const float *)src)[12];
     dst[10] = b;
-    y = fsrc[13];
+    y = ((const float *)src)[13];
     dst[11] = c;
-    z = fsrc[14];
+    z = ((const float *)src)[14];
     ((float *)dst)[12] = x;
     ((float *)dst)[13] = y;
     ((float *)dst)[14] = z;
