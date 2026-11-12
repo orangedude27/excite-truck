@@ -2621,6 +2621,7 @@ extern "C" void fn_8019FFD8(void* arg0, s32 arg1, s32 arg2) {
     *(s32*)((u8*)arg0 + 0x180) = minusOne;
 }
 #pragma small_data on
+/* Destructor: set vtable, destroy owned items/child, and optionally free self. */
 extern "C" void* fn_801A0040(void* arg0, s32 arg1) {
     struct ItemDummy {
         virtual void m0(s32) = 0;
