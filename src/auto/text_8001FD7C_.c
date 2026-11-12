@@ -665,7 +665,7 @@ extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 #pragma dont_inline on
 int fn_80021258(void) {
     /* Per-frame update of the results overlay shown over the tips box.
-       Does nothing while the overlay is switched off (lbl_8055D644).
+       Does nothing while the overlay is switched off (OVERLAY_ACTIVE).
        fn_80020184() is the overlay's own fade-out: still fully opaque for the
        first 300 ms of the results screen and gone a second later.  While it is
        up the "loadback" image is drawn over the box (fn_80020860) and the box
@@ -676,30 +676,33 @@ int fn_80021258(void) {
     int fade;
     float boxAlpha;
     unsigned int fontSetId;
-    if (!lbl_8055D644) return 0;
+    if (!OVERLAY_ACTIVE) return 0;
     fade = fn_80020184();
     if (fade > 0) fn_80020860(fade);
-    if (fade > 0) boxAlpha = lbl_805604B4;
+    if (fade > 0) boxAlpha = lbl_805604B4; /* 0.0f */
     else boxAlpha = (float)fn_801E8838() / ALPHA_TO_UNIT;
     fn_800209A0(ALPHA_OPAQUE, boxAlpha);
     if (fn_8020DE1C() == 0) {
         /* the two prompts are built once, the first time they are needed */
-        if ((signed char)lbl_8055D672 == 0) {
-            fn_801312EC(&lbl_8035BAFC, &lbl_802FE374);
-            lbl_8055D672 = 1;
+        if ((signed char)CONTINUE_MADE == 0) {
+            fn_801312EC(&lbl_8035BAFC, &lbl_802FE374); /* "ResultsOverlay:PRESS_TO_CONTINUE" */
+            CONTINUE_MADE = 1;
         }
-        if ((signed char)lbl_8055D673 == 0) {
-            fn_801312EC(&lbl_8035BB08, &lbl_802FE398);
-            lbl_8055D673 = 1;
+        if ((signed char)OPTIONS_MADE == 0) {
+            fn_801312EC(&lbl_8035BB08, &lbl_802FE398); /* "ResultsOverlay:PRESS_FOR_OPTIONS" */
+            OPTIONS_MADE = 1;
         }
+        /* re-resolve each text when the font set changed, then draw it */
         fontSetId = lbl_8035BB08.resolvedFor;
-        if (fontSetId != lbl_8055E044) fn_80131318(&lbl_8035BB08, fontSetId);
-        fn_80232BA4(lbl_8035BB08.text, lbl_8055D64C, -1, PROMPT_LAYOUT,
-                    PROMPT_LEFT_X, PROMPT_Y, PROMPT_SCALE, lbl_805604B4, lbl_805604B8);
+        if (fontSetId != FONT_SET) fn_80131318(&lbl_8035BB08, fontSetId);
+        fn_80232BA4(lbl_8035BB08.text, UI_FONT, -1 /* opaque white */, PROMPT_LAYOUT,
+                    PROMPT_LEFT_X, PROMPT_Y, PROMPT_SCALE,
+                    lbl_805604B4 /* 0.0f */, lbl_805604B8 /* 1.0f */);
         fontSetId = lbl_8035BAFC.resolvedFor;
-        if (fontSetId != lbl_8055E044) fn_80131318(&lbl_8035BAFC, fontSetId);
-        fn_80232BA4(lbl_8035BAFC.text, lbl_8055D64C, -1, PROMPT_LAYOUT,
-                    PROMPT_RIGHT_X, PROMPT_Y, PROMPT_SCALE, lbl_805604B4, lbl_805604B8);
+        if (fontSetId != FONT_SET) fn_80131318(&lbl_8035BAFC, fontSetId);
+        fn_80232BA4(lbl_8035BAFC.text, UI_FONT, -1 /* opaque white */, PROMPT_LAYOUT,
+                    PROMPT_RIGHT_X, PROMPT_Y, PROMPT_SCALE,
+                    lbl_805604B4 /* 0.0f */, lbl_805604B8 /* 1.0f */);
     }
     return 1;
 }
