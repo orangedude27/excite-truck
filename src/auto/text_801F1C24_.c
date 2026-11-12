@@ -996,18 +996,19 @@ void fn_801F3288(void *arg0) {
     }
 }
 #pragma pop
-void fn_801F33BC(void *unused, int arg1) {
+/* Fetches a byte buffer by id and byte-swaps four 4-byte words in place. */
+void fn_801F33BC(void *unused, int id) {
     extern int *fn_801F1CE8(int);
-    unsigned char *p = (unsigned char *)fn_801F1CE8(arg1);
-    unsigned char t;
-    t = p[0]; p[0] = p[3]; p[3] = t;
-    t = p[1]; p[1] = p[2]; p[2] = t;
-    t = p[4]; p[4] = p[7]; p[7] = t;
-    t = p[5]; p[5] = p[6]; p[6] = t;
-    t = p[8]; p[8] = p[11]; p[11] = t;
-    t = p[9]; p[9] = p[10]; p[10] = t;
-    t = p[12]; p[12] = p[15]; p[15] = t;
-    t = p[13]; p[13] = p[14]; p[14] = t;
+    unsigned char *bytes = (unsigned char *)fn_801F1CE8(id);
+    unsigned char tmp;
+    tmp = bytes[0]; bytes[0] = bytes[3]; bytes[3] = tmp;
+    tmp = bytes[1]; bytes[1] = bytes[2]; bytes[2] = tmp;
+    tmp = bytes[4]; bytes[4] = bytes[7]; bytes[7] = tmp;
+    tmp = bytes[5]; bytes[5] = bytes[6]; bytes[6] = tmp;
+    tmp = bytes[8]; bytes[8] = bytes[11]; bytes[11] = tmp;
+    tmp = bytes[9]; bytes[9] = bytes[10]; bytes[10] = tmp;
+    tmp = bytes[12]; bytes[12] = bytes[15]; bytes[15] = tmp;
+    tmp = bytes[13]; bytes[13] = bytes[14]; bytes[14] = tmp;
 }
 
 #pragma small_data off
