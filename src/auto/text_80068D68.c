@@ -10699,6 +10699,9 @@ void fn_80071510(void *arg0, s32 arg1, u8 arg2) {
 }
 
 void ptim_timer_update(tPTIM_CB *p_cb) {
+    /* Advance this protocol timer queue by one period and dispatch any expired
+       entries: call their callback, or post an event message via fn_80071450,
+       stopping the GKI timer when the queue becomes empty. */
     TIMER_LIST_ENT *p_entry;
     BT_HDR *p_buf;
 
