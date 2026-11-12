@@ -523,77 +523,75 @@ extern void fn_801796EC(int, void *, int);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma paired off
-extern "C" void fn_802C1A0C(void **arg0, int arg1) {
+extern "C" void fn_802C1A0C(void **hit, int player) {
+    /* The hit's tree reference: handle at vtable+0x24, cleared at vtable+0x18. */
     struct Dispatch {
         virtual void unk0();
         virtual void unk1();
         virtual void unk2();
         virtual void unk3();
-        virtual void call18(int);
+        virtual void setTree(int);
         virtual void unk5();
         virtual void unk6();
-        virtual int call24();
+        virtual int getTreeHandle();
     };
-    struct Params {
-        f32 pos[3];
-        f32 extra[3];
-        s16 id;
-        u8 pad[2];
-        int item;
-    };
-    struct Params params;
-    int current;
-    register char *entry;
-    register int index;
-    int *record;
-    void *target;
-    register f32 delta;
-    f32 value;
+    struct TreeHitEvent event;
+    int hitIndex;
+    register char *base;
+    register int treeIndex;
+    int *classEntry;
+    struct TreeObject *tree;
+    register f32 lift;
+    f32 coord;
     f32 z;
-    entry = lbl_804C0E10;
-    for (index = 0; index < 8; index++, entry += 0x48) {
-        current = ((Dispatch *)arg0)->call24() - lbl_8055CFA0;
-        if (*(int *)(entry + 4) != 0 && *(int *)entry == current)
-            fn_802C1180(entry);
+    /* Hand back the pose of every queued hit waiting for this tree. */
+    base = lbl_804C0E10;
+    for (treeIndex = 0; treeIndex < 8; treeIndex++, base += sizeof(struct TreeHitRecord)) {
+        hitIndex = ((Dispatch *)hit)->getTreeHandle() - lbl_8055CFA0;
+        if (((struct TreeHitRecord *)base)->tree != 0 &&
+            ((struct TreeHitRecord *)base)->treeIndex == hitIndex)
+            fn_802C1180(base);
     }
-    index = ((Dispatch *)arg0)->call24() - lbl_8055CFA0;
-    if (index < 0)
+    treeIndex = ((Dispatch *)hit)->getTreeHandle() - lbl_8055CFA0;
+    if (treeIndex < 0)
         goto done;
-    if (index >= lbl_8055FB2C)
+    if (treeIndex >= lbl_8055FB2C)
         goto done;
-    record = (int *)fn_802C110C(index);
-    entry = (char *)lbl_8055FB30;
-    target = *(void **)(entry + index * 4);
-    if (*(f32 *)((char *)target + 0x28) > lbl_80564E70) {
-        target = fn_8017960C(arg1);
-        params.extra[0] = *(f32 *)((char *)target + 0x118);
-        params.extra[1] = *(f32 *)((char *)target + 0x11C);
-        params.extra[2] = *(f32 *)((char *)target + 0x120);
-        params.id = *(s16 *)((char *)target + 0x6C);
-        delta = lbl_80564E54;
+    classEntry = (int *)fn_802C110C(treeIndex); /* the tree's class */
+    base = (char *)lbl_8055FB30;                /* the tree list */
+    tree = (struct TreeObject *)*(void **)(base + treeIndex * 4);
+    if (tree->pos[1] > lbl_80564E70) { /* still above the ground, so: cut it */
+        struct PlayerObject *hitter = (struct PlayerObject *)fn_8017960C(player);
+        event.velocity[0] = hitter->velocity[0];
+        event.velocity[1] = hitter->velocity[1];
+        event.velocity[2] = hitter->velocity[2];
+        event.angle = hitter->heading;
+        lift = lbl_80564E54; /* spawn the drops 1.0 above the hit point */
         {
             u32 i;
-            for (i = 0; i < 8; i++, record++) {
-                if (record[0x40 / 4] >= 0) {
-                    volatile f32 *pos = params.pos;
-                    target = *(void **)(entry + index * 4);
-                    value = *(f32 *)((char *)target + 0x24);
-                    pos[0] = value;
-                    value = *(f32 *)((char *)target + 0x28);
-                    pos[1] = value;
-                    value += delta;
-                    z = *(f32 *)((char *)target + 0x2C);
+            /* One event per class slot that has an "efx_event_id%d"; classEntry
+             * walks the class a word at a time, so the slot adds to it. */
+            for (i = 0; i < 8; i++, classEntry++) {
+                if (classEntry[TREE_CLASS_EVENT_ID / 4] >= 0) {
+                    volatile f32 *pos = event.pos;
+                    tree = (struct TreeObject *)*(void **)(base + treeIndex * 4);
+                    coord = tree->pos[0];
+                    pos[0] = coord;
+                    coord = tree->pos[1];
+                    pos[1] = coord;
+                    coord += lift;
+                    z = tree->pos[2];
                     pos[2] = z;
-                    pos[1] = value;
-                    params.item = record[0x40 / 4];
-                    fn_801796EC(10, &params, 0x20);
+                    pos[1] = coord;
+                    event.eventId = classEntry[TREE_CLASS_EVENT_ID / 4];
+                    fn_801796EC(10, &event, 0x20);
                 }
             }
         }
-        target = *(void **)(entry + index * 4);
-        *(f32 *)((char *)target + 0x28) += lbl_80564E74;
-        ((Dispatch *)arg0)->call18(0);
-        ((void (*)(int *, int))fn_802BDFF4)((int *)*(void **)(entry + index * 4), 0);
+        tree = (struct TreeObject *)*(void **)(base + treeIndex * 4);
+        tree->pos[1] += lbl_80564E74; /* drop it out of the world */
+        ((Dispatch *)hit)->setTree(0); /* the hit no longer holds the tree */
+        fn_802BDFF4((struct TreeObject *)*(void **)(base + treeIndex * 4), 0);
     }
 done:
     ;
