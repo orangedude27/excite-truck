@@ -5,9 +5,10 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1);
 static inline void MtxMultVecLocal(const unsigned char *m, const f32 *src, f32 *dst) {
     f32 x = src[0], y = src[1], z = src[2];
     if (src == dst) {
-        dst[0] = *(f32 *)(m + 0x18) * z + (*(f32 *)m * x + *(f32 *)(m + 0xC) * y);
-        dst[1] = *(f32 *)(m + 0x1C) * z + (*(f32 *)(m + 4) * x + *(f32 *)(m + 0x10) * y);
-        dst[2] = *(f32 *)(m + 0x20) * z + (*(f32 *)(m + 8) * x + *(f32 *)(m + 0x14) * y);
+        f32 rx = z * *(f32 *)(m + 0x18) + (x * *(f32 *)m + y * *(f32 *)(m + 0xC));
+        f32 ry = z * *(f32 *)(m + 0x1C) + (x * *(f32 *)(m + 4) + y * *(f32 *)(m + 0x10));
+        f32 rz = z * *(f32 *)(m + 0x20) + (x * *(f32 *)(m + 8) + y * *(f32 *)(m + 0x14));
+        dst[0] = rx; dst[1] = ry; dst[2] = rz;
     } else {
         dst[0] = *(f32 *)(m + 0x18) * z + (*(f32 *)m * x + *(f32 *)(m + 0xC) * y);
         dst[1] = *(f32 *)(m + 0x1C) * z + (*(f32 *)(m + 4) * dst[0] + *(f32 *)(m + 0x10) * y);
