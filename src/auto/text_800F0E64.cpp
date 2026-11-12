@@ -4181,16 +4181,19 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
     return 1;
 }
 #pragma pop
-extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(void *self, void *heap) {
-    register void *iterator;
-    void *slot;
+extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(void *player, void *heap) {
+    /* Append a PlayerHeap to the SoundPlayer's heap list and mark the player
+       as having a heap attached. */
+    register void *insertIterator;
+    void *iteratorSlot;
+
     if (!heap) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x256, (const char *)lbl_80325D6C);
-    *(void **)((u8 *)heap + 0x38) = self;
-    iterator = (char *)self + 0x1C;
+    *(void **)((u8 *)heap + 0x38) = player;
+    insertIterator = (char *)player + 0x1C;
     if (!heap) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323834, 0x233, (const char *)lbl_80323810);
-    slot = iterator;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self + 0x18, &slot, (char *)heap + 0x2C);
-    *(u8 *)((u8 *)self + 0x2D) = 1;
+    iteratorSlot = insertIterator;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)player + 0x18, &iteratorSlot, (char *)heap + 0x2C);
+    *(u8 *)((u8 *)player + 0x2D) = 1;
 }
 
 // nw4hbm::ut::LinkListNode: one node of the library's intrusive doubly linked
