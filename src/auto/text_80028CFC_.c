@@ -9,6 +9,7 @@ unsigned char *strcpy(unsigned char *dst, const unsigned char *src) {
     unsigned int x;
     int n;
 
+    /* Copy string from src to dst; uses word-at-a-time fast path when alignments match. */
     if (((unsigned int)p & 3) != (align = (unsigned int)q & 3)) {
         goto byte_tail;
     }
