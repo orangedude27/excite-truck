@@ -1475,27 +1475,29 @@ void fn_801D6814(void *arg0) {
     extern int lbl_8055E3C4;
     extern void fn_801E9DC4(void *);
     extern void fn_801796CC(int, void *, int);
-    struct Data {
+    struct MessageData {
         float values[6];
         int unk18;
         int unk1C;
     };
-    struct Data data;
-    int v4 = *(int *)((char *)arg0 + 4);
-    int v10 = *(int *)((char *)arg0 + 0x10);
-    int vC = *(int *)((char *)arg0 + 0x0C);
-    int elapsed = lbl_8055E3C4 - (v10 + vC);
-    if (v4 == 2 && elapsed > 0) {
-        data.values[0] = *(float *)((char *)arg0 + 0x14);
-        data.values[1] = *(float *)((char *)arg0 + 0x18);
-        data.values[2] = *(float *)((char *)arg0 + 0x1C);
-        data.values[3] = *(float *)((char *)arg0 + 0x20);
-        data.values[4] = *(float *)((char *)arg0 + 0x24);
-        data.values[5] = *(float *)((char *)arg0 + 0x28);
-        fn_801E9DC4((char *)&data + 0x18);
-        data.unk1C = *(int *)((char *)arg0 + 0x2C);
-        fn_801796CC(10, data.values, 0x20);
-        if (elapsed >= *(int *)((char *)arg0 + 8)) {
+    struct MessageData messageData;
+    int state = *(int *)((char *)arg0 + 4);
+    int startTick = *(int *)((char *)arg0 + 0x10);
+    int delayTicks = *(int *)((char *)arg0 + 0x0C);
+    int elapsedTicks = lbl_8055E3C4 - (startTick + delayTicks);
+
+    /* If active (state 2) and delay elapsed, send a 0x20-byte message from arg0 fields and advance to state 3 when duration expires. */
+    if (state == 2 && elapsedTicks > 0) {
+        messageData.values[0] = *(float *)((char *)arg0 + 0x14);
+        messageData.values[1] = *(float *)((char *)arg0 + 0x18);
+        messageData.values[2] = *(float *)((char *)arg0 + 0x1C);
+        messageData.values[3] = *(float *)((char *)arg0 + 0x20);
+        messageData.values[4] = *(float *)((char *)arg0 + 0x24);
+        messageData.values[5] = *(float *)((char *)arg0 + 0x28);
+        fn_801E9DC4((char *)&messageData + 0x18);
+        messageData.unk1C = *(int *)((char *)arg0 + 0x2C);
+        fn_801796CC(10, messageData.values, 0x20);
+        if (elapsedTicks >= *(int *)((char *)arg0 + 8)) {
             *(int *)((char *)arg0 + 4) = 3;
         }
     }
