@@ -170,6 +170,7 @@ void fn_8013477C(void *arg0) {
     fn_8015F554();
     fn_80160850();
 }
+#pragma use_lmw_stmw reset
 #pragma pop
 extern void fn_80160AE4(void);
 extern void fn_8015F558(void);
