@@ -30,6 +30,7 @@ extern void fn_802E317C(const char *, ...);
 extern void *memmove(void *, const void *, unsigned long);
 extern char lbl_803449D4[];
 
+#pragma always_inline on
 static inline void removeDeadEntry(void) {
     void **cursor = lbl_80498E08;
     s32 index = 0;
