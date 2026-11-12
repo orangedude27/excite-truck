@@ -50,7 +50,7 @@ extern "C" int fn_801E1894(void) {
  virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual int flag(const char *); virtual int val(const char *, int);
  virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual Settings *child(const char *);
  };
- Obj *obj; Settings *settings; char *name; float v[3]; int r,g,b, n, raw;
+ Obj *obj; Settings *settings; char *name; int r,g,b, n, raw;
  fn_801E1874();
  if (fn_802AE414((const char *)&lbl_8055AE60) != 0) {
   obj=(Obj *)fn_802AE414((const char *)&lbl_8055AE60);
@@ -66,10 +66,10 @@ extern "C" int fn_801E1894(void) {
   }
   *((unsigned char *)&lbl_804874D4+4)=obj->val((const char *)lbl_8033986C,0);
   if(settings) {
-   { register void **table = *(void ***)settings; ((void(*)(float *,void *,const char *))table[13])(v,settings,(const char *)&lbl_8055AE8C); }
-   raw=(int)(lbl_80562CA8*v[0]); n=raw&((-raw&~raw)>>31); r = n < 255 ? n : 255;
-   raw=(int)(lbl_80562CA8*v[1]); n=raw&((-raw&~raw)>>31); g = n < 255 ? n : 255;
-   raw=(int)(lbl_80562CA8*v[2]); n=raw&((-raw&~raw)>>31); b = n < 255 ? n : 255;
+   const Vec &v = settings->vector((const char *)&lbl_8055AE8C);
+   raw=(int)(lbl_80562CA8*v.x); n=raw&((-raw&~raw)>>31); r = n < 255 ? n : 255;
+   raw=(int)(lbl_80562CA8*v.y); n=raw&((-raw&~raw)>>31); g = n < 255 ? n : 255;
+   raw=(int)(lbl_80562CA8*v.z); n=raw&((-raw&~raw)>>31); b = n < 255 ? n : 255;
    *(int *)((char *)&lbl_804874D4+8)=((r & 255)<<16)|0xff000000|((g & 255)<<8)|(b & 255);
    *(float *)((char *)&lbl_804874D4+0xc)=settings->get((const char *)&lbl_8055AE94);
    *(float *)((char *)&lbl_804874D4+0x10)=settings->get((const char *)&lbl_8055AE9C);
@@ -78,7 +78,6 @@ extern "C" int fn_801E1894(void) {
   }
  }
  lbl_8055EA20=1;
-
 }
 #pragma pop
 extern float __fabsf(float);
@@ -89,8 +88,9 @@ extern double __fabs(double);
 void fn_801E1B30(void) {
     float temp = lbl_8055E3C8;
     char *state = lbl_804874B8;
-    int zero = 0;
+    int zero;
 
+    zero = 0;
     if (fn_80129D18(4, 0x12C) == 0 || (unsigned char)lbl_8055EA21 != 0) {
         if (*(int *)state == 1 || (unsigned char)lbl_8055EA21 != 0) {
             if (fn_80129D18(4, 0xA) < 6 || (unsigned char)lbl_8055EA21 != 0) {
@@ -108,12 +108,10 @@ void fn_801E1B30(void) {
 
     lbl_8055EA21 = zero;
     if (*(int *)state != 1) {
-        float current = *(float *)(state + 4);
         float target = *(float *)(state + 8);
-        if ((float)__fabs((double)(current - target)) < lbl_80562CC4) {
-#pragma small_data off
+        float current = *(float *)(state + 4);
+        if ((float)__fabs((double)(target - current)) < lbl_80562CC4) {
             if ((float)__fabs((double)target) <= lbl_80558DC4) {
-#pragma small_data on
                 goto set_mode;
             }
             *(float *)(state + 8) = lbl_80562CAC;
