@@ -1138,45 +1138,46 @@ outerTest:
 
 s32 fn_802BAA68(s32, void *);
 #pragma use_lmw_stmw off
-void fn_8016D5B8(void *arg0) {
-    u8 *arg = (u8 *)arg0;
-    u8 *list;
-    u8 *outer;
-    s32 innerIndex;
-    u8 *item;
-    s32 outerOffset;
-    s32 innerOffset;
-    s32 outerIndex;
-    u8 *entry;
+void fn_8016D5B8(void *controller) {
+    u8 *ctrl = (u8 *)controller;
+    u8 *setList;
+    u8 *setEntries;
+    s32 gemIndex;
+    u8 *gem;
+    s32 setOffset;
+    s32 gemOffset;
+    s32 setIndex;
+    u8 *gemList;
 
-    outerIndex = 0;
-    outerOffset = 0;
+    /* For every ring set, build the render object of each gem that lacks one. */
+    setIndex = 0;
+    setOffset = 0;
     goto outer_check;
 
 outer_setup:
-    outer = *(u8 **)list;
-    innerIndex = 0;
-    innerOffset = 0;
+    setEntries = LIST_DATA(setList);
+    gemIndex = 0;
+    gemOffset = 0;
     goto inner_check;
 
 inner_body:
-    item = *(u8 **)entry + innerOffset;
-    if (*(s32 *)(item + 0xC) == 0) {
-        *(s32 *)(item + 4) =
-            fn_802BAA68(*(s32 *)(item + 8), item + 0x14);
+    gem = LIST_DATA(gemList) + gemOffset;
+    if (GEM_BUILT(gem) == 0) {
+        GEM_OBJECT(gem) =
+            fn_802BAA68(GEM_HANDLE(gem), GEM_TRANSFORM(gem));
     }
-    innerOffset += 0x44;
-    innerIndex++;
+    gemOffset += 0x44;
+    gemIndex++;
 
 inner_check:
-    entry = *(u8 **)(outer + outerOffset);
-    if (innerIndex < *(s32 *)(entry + 4)) goto inner_body;
-    outerOffset += 0x14;
-    outerIndex++;
+    gemList = *(u8 **)(setEntries + setOffset);
+    if (gemIndex < LIST_COUNT(gemList)) goto inner_body;
+    setOffset += 0x14;
+    setIndex++;
 
 outer_check:
-    list = *(u8 **)(arg + 0x18);
-    if (outerIndex < *(s32 *)(list + 4)) goto outer_setup;
+    setList = RING_SETS(ctrl);
+    if (setIndex < LIST_COUNT(setList)) goto outer_setup;
 }
 #pragma use_lmw_stmw on
 int fn_8000DA10();
