@@ -359,13 +359,7 @@ extern void *fn_80207848(void *, int);
 extern void *fn_8023512C(void *);
 extern float lbl_80562A04;
 void fn_801CC470(void) {
-    register void *object;
-    register int i;
-    register s32 *table;
-    register void *item;
-    void **slot;
-    void *field;
-
+    register void *object; register int i; s32 *table; register void *item; void **slot; void *field;;;;;;
     object = fn_801284F8(0x618, lbl_80337AC8 + 0x190);
     if (object != 0) {
         fn_801CC8FC((char *)object + 0x18);
@@ -375,24 +369,19 @@ void fn_801CC470(void) {
         *(int *)((char *)object + 0x2A4) = fn_80145E70(lbl_80337AC8 + 0x1AC);
         *((unsigned char *)object + 0x10) = 0;
         table = __AXFXGetLfoSinTable_801769CC();
-        *(s32 *)object = table[0];
-        *((s32 *)object + 1) = table[2];
-        *((unsigned char *)object + 0x11) = 1;
-        *((unsigned char *)object + 0x12) = 1;
-        *((unsigned char *)object + 0x13) = 1;
-        *((unsigned char *)object + 0x14) = 1;
+        *(s32 *)object = table[0]; *((s32 *)object + 1) = table[2];
+        *((unsigned char *)object + 0x11) = 1; *((unsigned char *)object + 0x12) = 1;
+        *((unsigned char *)object + 0x13) = 1; *((unsigned char *)object + 0x14) = 1;
         i = 1;
         do {
             int mode = fn_8001BA74(i);
             item = ((void *(*)(int, void *))fn_801CB954)(mode, object);
             slot = fn_801CC784((char *)object + 0x18);
-            i++;
-            *slot = item;
+            i++; *slot = item;
         } while (i <= 7);
         field = fn_80207848(lbl_80337AC8 + 0x1BC, 1);
         *(void **)((char *)object + 8) = field;
-        if (field != 0)
-            fn_801CC768(field, lbl_80562A04);
+        if (field != 0) fn_801CC768(field, lbl_80562A04);
         *(void **)((char *)object + 0xC) = fn_8023512C(lbl_80337AC8 + 0x1C8);
         fn_801CC594(object);
     }
@@ -508,11 +497,10 @@ void *fn_801CC7A0(void *arg0) {
     unsigned char *end = base + 0x14C;
     long zero = 0;
     unsigned char *p = base + 0x20;
-
-    *(long *)(base + 8) = zero;
-    *(long *)(base + 0xC) = zero;
-    *(long *)(base + 0x10) = zero;
-    *(long *)(base + 0x14) = zero;
+    *(long *)(base + 8) = 0;
+    *(long *)(base + 0xC) = 0;
+    *(long *)(base + 0x10) = 0;
+    *(long *)(base + 0x14) = 0;
     do {
         memset(p, 0x7A, 3);
         p[3] = zero;
@@ -1726,25 +1714,29 @@ extern void fn_801CD730(s32 *, s32 *);
 int fn_801CE8CC(void) {
     s32 spC;
     s32 sp8;
-    s32 *temp_r30;
-    s32 *temp_r31;
-    s32 temp_r0;
-    s32 temp_r29;
-    void *temp_r3;
+    s32 *lfoTable2;
+    s32 *lfoTable1;
+    s32 value;
+    s32 limit;
+    void *candidate;
+
+    /* Check whether a valid object/index is available (early reject, direct lookup, or fallback query). */
     if (fn_801CE898() != 0) return 1;
-    temp_r29 = fn_80160AB4();
-    temp_r30 = __AXFXGetLfoSinTable_801769CC();
-    temp_r31 = __AXFXGetLfoSinTable_801769CC();
-    temp_r3 = (void *)fn_8000DA10();
-    temp_r3 = ((void *(*)(int, s32, s32, s32))fn_8001BB58)((int)temp_r3, *temp_r31, temp_r30[2], 0);
-    if (temp_r3 != NULL) {
-        temp_r0 = ((s32 *)temp_r3)[2];
-        if ((temp_r0 >= 0) && (temp_r0 <= temp_r29)) return 1;
+
+    limit = fn_80160AB4();
+    lfoTable2 = __AXFXGetLfoSinTable_801769CC();
+    lfoTable1 = __AXFXGetLfoSinTable_801769CC();
+    candidate = (void *)fn_8000DA10();
+    candidate = ((void *(*)(int, s32, s32, s32))fn_8001BB58)((int)candidate, *lfoTable1, lfoTable2[2], 0);
+    if (candidate != NULL) {
+        value = ((s32 *)candidate)[2];
+        if ((value >= 0) && (value <= limit)) return 1;
     }
+
     spC = -1;
     sp8 = 0;
     fn_801CD730(&sp8, &spC);
-    if ((spC >= 0) && (spC <= temp_r29)) return 1;
+    if ((spC >= 0) && (spC <= limit)) return 1;
     return 0;
 }
 #pragma dont_inline reset
