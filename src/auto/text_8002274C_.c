@@ -13,6 +13,8 @@ extern int fclose(FileNode *);
 extern void free(void *);
 
 void __close_all(void) {
+    /* Close all open FILEs in the global __files list; free dynamically-allocated
+     * file nodes, or mark static ones unavailable and unlink trailing dynamic nodes. */
     struct CloseFile {
         int unk0;
         unsigned int : 7;
