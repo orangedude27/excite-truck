@@ -1983,34 +1983,33 @@ extern "C" void OSUnlockMutex(void *);
 extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *, unsigned long, void *, int);
 #pragma push
 #pragma use_lmw_stmw off
+/* Read one file of the archive this loader works on: open a stream on it, seek to
+ * `offset' and read `length' rounded up to a 0x20 boundary into `buffer'.  The
+ * loader's mutex is held over the whole read and the stream is published in the
+ * loader while it runs so Cancel() can stop it.  Returns `length', or -1 when the
+ * file cannot be opened, the stream is not usable or the read failed. */
 extern "C" long ReadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPvll(void *self, unsigned long fileId, void *buffer, long length, long offset) {
-    struct FileStream {
-        virtual void m00(); virtual void m04();
-        virtual void Close(); virtual int Read(void*, unsigned long);
-        virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24(); virtual void m28();
-        virtual int CanUse(); virtual void m30(); virtual void m34(); virtual void m38(); virtual void m3C(); virtual void m40();
-        virtual void Seek(long, int); virtual void m48(); virtual void m4C();
-        virtual int IsAvailable();
-    };
-    FileStream *stream;
-    long result;
+    ArchiveStream *stream;
+    long bytesRead;
     OSLockMutex(self);
-    stream = (FileStream*)detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), fileId, (char *)self + 0x1c, 0x200);
+    /* the archive at +0x18, the loader's stream setup at +0x1c and its 0x200 */
+    stream = (ArchiveStream*)detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), fileId, (char *)self + 0x1c, 0x200);
     if (stream == 0) {
+        /* every exit closes the stream; here that can only be the null check */
         if (stream != 0) stream->Close();
         OSUnlockMutex(self);
         return -1;
     }
-    if (stream->IsAvailable() == 0 || stream->CanUse() == 0) {
+    if (stream->IsReady() == 0 || stream->IsOpen() == 0) {
         if (stream != 0) stream->Close();
         OSUnlockMutex(self);
         return -1;
     }
     stream->Seek(offset, 0);
     *(void **)((char *)self + 0x21c) = stream;
-    result = stream->Read(buffer, ((length + 0x1f) & ~0x1f));
+    bytesRead = stream->Read(buffer, ((length + 0x1f) & ~0x1f));
     *(void **)((char *)self + 0x21c) = 0;
-    if (result == 0) {
+    if (bytesRead == 0) {
         if (stream != 0) stream->Close();
         OSUnlockMutex(self);
         return -1;
