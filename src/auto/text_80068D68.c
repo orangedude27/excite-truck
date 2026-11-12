@@ -8147,17 +8147,18 @@ found:
         if (entry == 0)
             return FALSE;
     }
-    id = *(volatile u32 *)(lbl_803C0F78 + 0x1974);
+    id = *(u32 *)(lbl_803C0F78 + 0x1974);
     *(u32 *)(entry + 0xC) = id;
-    *(volatile u32 *)(lbl_803C0F78 + 0x1974) = id + 1;
-    if (dev_class == 0)
-        goto after_class;
-    memcpy(entry + 0x22, dev_class, 3);
-after_class:
+    *(u32 *)(lbl_803C0F78 + 0x1974) = id + 1;
+    if (dev_class != 0) {
+        memcpy(entry + 0x22, dev_class, 3);
+    }
     memset(entry + 0x35, 0, 0x41);
-    if (bd_name != 0 && bd_name[0] != 0) {
-        entry[0x76] |= 8;
-        strncpy((char *)entry + 0x35, (char *)bd_name, 0x40);
+    if (bd_name != 0) {
+        if (bd_name[0] != 0) {
+            entry[0x76] |= 8;
+            strncpy((char *)entry + 0x35, (char *)bd_name, 0x40);
+        }
     }
     if (features != 0)
         memcpy(entry + 0x77, features, 8);
@@ -8165,11 +8166,10 @@ after_class:
         memset(entry + 0x77, 0, 8);
     *(u32 *)(entry + 0x10) = trusted_mask[0];
     *(u32 *)(entry + 0x14) = trusted_mask[1];
-    if (link_key == 0)
-        goto done;
-    entry[0x76] |= 0x10;
-    memcpy(entry + 0x25, link_key, 0x10);
-done:
+    if (link_key != 0) {
+        entry[0x76] |= 0x10;
+        memcpy(entry + 0x25, link_key, 0x10);
+    }
     return TRUE;
 }
 
@@ -14013,8 +14013,9 @@ void fn_800826D4(void) {
 
 extern u8 lbl_80559078[],lbl_80317310[],lbl_80317354[];
 void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
+ extern u8 lbl_80559078[8];
  u8 *entry=lbl_803C3740+0xAC;
- register u8 i=0;
+ register u16 i=0;
  register u8 *entry_reg=entry;
  while(i<8){if(entry_reg[0]==1&&*(u16 *)(entry_reg+0x10)==psm&&(entry_reg[8]==0||memcmp(addr,entry_reg+9,6)==0))break;i++;entry_reg+=0x60;}
  if(i==8){if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80317310);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);L2CA_DisconnectReq(cid);return;}
