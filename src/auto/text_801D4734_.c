@@ -8,6 +8,47 @@
   #include <types.h>
 #include <math.h>
 
+/* One loaded action sequence: a table of the "action_sequence_file" value
+ * file (actseq.val), built by fn_801D4B34/fn_801D4CF8 and updated every frame
+ * by fn_801D50B8.  Its *_ASE elements are the events it hands out. */
+enum ActionSequenceState {
+    ACTION_SEQ_UNLOADED = 0, /* no table loaded yet */
+    ACTION_SEQ_READY = 1,    /* idle, may be started */
+    ACTION_SEQ_PLAYING = 2,  /* its elements are ticking */
+    ACTION_SEQ_FINISHED = 3, /* nothing left to run and auto_reset is off */
+    ACTION_SEQ_LAP_GAP = 4   /* leader's lap outside first/last_active_lap */
+};
+struct ActionSequence {
+    void *vtable;                /* 0x00 */
+    int state;                   /* 0x04, enum ActionSequenceState */
+    char name[0x14];             /* 0x08 the sequence's "name" */
+    float resetTime;             /* 0x1C "reset_time" */
+    unsigned char autoReset;     /* 0x20 "auto_reset" */
+    unsigned char triggerResets; /* 0x21 "trigger_resets" */
+    unsigned char hasRumble;     /* 0x22 "has_rumble" */
+    int firstActiveLap;          /* 0x24 "first_active_lap", -1: no lower bound */
+    int lastActiveLap;           /* 0x28 "last_active_lap", -1: no upper bound */
+    unsigned char startFlag;     /* 0x2C how fn_801D5328 started the sequence */
+    char pad2d[3];               /* 0x2D */
+    void **elements;             /* 0x30 the *_ASE elements, &inlineElements */
+    int elementCount;            /* 0x34 */
+    int elementCapacity;         /* 0x38 bytes; 0x40 = 16 elements */
+    void *inlineElements[16];    /* 0x3C what elements points at */
+};
+/* The AI truck (racer) table: fn_801B2EC0 gives the 0x80-byte slot of a racer
+ * and fn_801B2F24 the number of racers.  vtable+0x10 of a slot hands back the
+ * racer state block that starts at slot+4. */
+struct RacerState {
+    char pad0[0x10];
+    int laps;                    /* 0x10 laps this racer has completed */
+};
+/* The player/vehicle object of fn_8017960C. */
+struct RacerObject {
+    char pad0[0x1F0];
+    int competitorId;            /* 0x1F0, the competitor id of the race table */
+};
+#define COMPETITOR_SETS_LAPS 0x50 /* the competitor id that runs laps */
+
   extern void fn_801D50B8(int);
 
 extern int fn_8017960C(int);
