@@ -652,6 +652,14 @@ extern char lbl_802FE374[], lbl_802FE398[]; /* those two prompts' "Page:Element"
 #define PROMPT_SCALE       lbl_805604B0 /* 0.7333333 */
 #define ALPHA_OPAQUE       255          /* full alpha of the box / of the fade */
 #define ALPHA_TO_UNIT      lbl_80560554 /* 255.0f: turns an 0..255 alpha into 0..1 */
+
+/* What the globals fn_80021258 works on hold.  The game's symbols can't be
+   renamed yet, so the rest of the file still uses the lbl_ names. */
+#define OVERLAY_ACTIVE  lbl_8055D644 /* the tips/results overlay is being shown */
+#define CONTINUE_MADE   lbl_8055D672 /* the "PRESS_TO_CONTINUE" text was built */
+#define OPTIONS_MADE    lbl_8055D673 /* the "PRESS_FOR_OPTIONS" text was built */
+#define UI_FONT         lbl_8055D64C /* the "uifnt_o.gtx" font fn_8001FD7C opened */
+#define FONT_SET        lbl_8055E044 /* id of the font set loaded right now */
 extern unsigned char lbl_8055D672, lbl_8055D673;
 extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 #pragma dont_inline on
