@@ -369,25 +369,34 @@ BOOL EXIAttach(EXIChannel chan, EXICallback callback) {
     return ret;
 }
 
+/* Detaches the external device from an EXI channel: clears the channel's
+ * attached state and masks off its EXI and EXT interrupts again.  Nothing being
+ * attached counts as detached (TRUE); a channel locked for the external device
+ * is still owned by whoever locked it, so detaching fails (FALSE) until it is
+ * unlocked. */
 BOOL EXIDetach(EXIChannel chan) {
     EXIData* exi = &Ecb[chan];
     BOOL enabled;
-    u32 mask;
+    u32 intrMask;
 
     enabled = OSDisableInterrupts();
+    // no device attached: there is nothing to detach
     if (!(exi->state & EXI_STATE_ATTACHED)) {
         OSRestoreInterrupts(enabled);
         return TRUE;
     }
 
+    // the external device is locked by its owner: EXIUnlock() first
     if (exi->state & EXI_STATE_LOCKED && exi->dev == EXI_DEV_EXT) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
 
     exi->state &= ~EXI_STATE_ATTACHED;
-    mask = OS_INTR_MASK(OS_INTR_EXI_0_EXI) | OS_INTR_MASK(OS_INTR_EXI_0_EXT);
-    __OSMaskInterrupts(mask >> (chan * 3));
+    // the OS interrupt mask holds one channel's EXI, TC and EXT interrupts
+    // three bits apart, so channel 0's EXI and EXT bits shift down to this one
+    intrMask = OS_INTR_MASK(OS_INTR_EXI_0_EXI) | OS_INTR_MASK(OS_INTR_EXI_0_EXT);
+    __OSMaskInterrupts(intrMask >> (chan * 3));
     OSRestoreInterrupts(enabled);
     return TRUE;
 }
