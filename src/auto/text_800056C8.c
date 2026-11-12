@@ -1067,42 +1067,42 @@ extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 
 #pragma cplusplus on
 #pragma dont_inline on
 extern "C" void fn_80006D9C(void) {
-    volatile u8 *resource = (volatile u8 *)lbl_802FB0C8;
+    volatile u8 *names = (volatile u8 *)lbl_802FB0C8;
     u8 *state;
-    struct Dummy {
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
-        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
-        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-        virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
-        virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27();
-        virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31();
-        virtual void f32(); virtual void f33(); virtual void f34(); virtual void f35();
-        virtual void f36(); virtual void f37(); virtual void f38(); virtual void f39();
-        virtual void f40(); virtual void f41(); virtual void f42(); virtual void f43();
-        virtual void f44(); virtual void f45(); virtual void f46(); virtual void f47();
-        virtual void f48(); virtual void f49(); virtual void f50(); virtual void f51();
-        virtual void f52(); virtual void f53(); virtual void f54(); virtual void f55();
-        virtual void f56(); virtual void f57(); virtual void f58(); virtual void f59();
-        virtual void f60();
+    struct ModeMaster {
+        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0; virtual void v3() = 0;
+        virtual void v4() = 0; virtual void v5() = 0; virtual void v6() = 0; virtual void v7() = 0;
+        virtual void v8() = 0; virtual void v9() = 0; virtual void v10() = 0; virtual void v11() = 0;
+        virtual void v12() = 0; virtual void v13() = 0; virtual void v14() = 0; virtual void v15() = 0;
+        virtual void v16() = 0; virtual void v17() = 0; virtual void v18() = 0; virtual void v19() = 0;
+        virtual void v20() = 0; virtual void v21() = 0; virtual void v22() = 0; virtual void v23() = 0;
+        virtual void v24() = 0; virtual void v25() = 0; virtual void v26() = 0; virtual void v27() = 0;
+        virtual void v28() = 0; virtual void v29() = 0; virtual void v30() = 0; virtual void v31() = 0;
+        virtual void v32() = 0; virtual void v33() = 0; virtual void v34() = 0; virtual void v35() = 0;
+        virtual void v36() = 0; virtual void v37() = 0; virtual void v38() = 0; virtual void v39() = 0;
+        virtual void v40() = 0; virtual void v41() = 0; virtual void v42() = 0; virtual void v43() = 0;
+        virtual void v44() = 0; virtual void v45() = 0; virtual void v46() = 0; virtual void v47() = 0;
+        virtual void v48() = 0; virtual void v49() = 0; virtual void v50() = 0; virtual void v51() = 0;
+        virtual void v52() = 0; virtual void v53() = 0; virtual void v54() = 0; virtual void v55() = 0;
+        virtual void v56() = 0; virtual void v57() = 0; virtual void v58() = 0; virtual void v59() = 0;
+        virtual void hook() = 0; /* +0xF8 */
     };
     fn_800201F0();
     fn_801A7F8C();
     fn_800054E0();
-    fn_8000F0E4((u8 *)resource + 0x1EC);
+    fn_8000F0E4((u8 *)names + 0x1EC);
     fn_8000F884();
     fn_80011F64();
     state = lbl_8034EE84;
     *(void **)(state + 8) = fn_801E87A8();
     *(s32 *)(state + 0x14) = fn_80137C74();
-    lbl_8055D354 = fn_802090D4((u8 *)resource + 0x1F8);
-    fn_801331C4(4, (u8 *)resource + 0x204, &lbl_8055892C);
+    lbl_8055D354 = fn_802090D4((u8 *)names + 0x1F8);
+    fn_801331C4(4, (u8 *)names + 0x204, &lbl_8055892C);
     fn_80005464();
     fn_80005C88();
     fn_80011A5C(((s32 *)lbl_8055D350)[5]);
     fn_8001DB54();
-    ((Dummy *)fn_801B83A0())->f60();
+    ((ModeMaster *)fn_801B83A0())->hook();
     fn_800070DC();
 }
 #pragma pop
