@@ -2784,14 +2784,19 @@ struct ValueTextWidget {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Refreshes this numeric readout: prints the watched integer as
+ * offset + value * scale rounded to the nearest whole number, swaps the '.' of
+ * the result for the current locale's decimal separator, re-fits the text to
+ * the widget's box and asks for a redraw when the widget is live. */
 extern "C" void fn_8021CF9C(void *arg0) {
-    f32 value = (f32)*(s32 *)*(void **)((u8 *)arg0 + 0x25C);
-    volatile char *buf = (char *)arg0 + 0x264;
-    sprintf((char *)buf, *(const char **)((u8 *)arg0 + 0x260), (s32)(*(f32 *)((u8 *)arg0 + 0x258) + value * *(f32 *)((u8 *)arg0 + 0x254) + lbl_805634C4));
-    fn_80130568((char *)arg0 + 0x264);
+    ValueTextWidget *widget = (ValueTextWidget *)arg0;
+    f32 value = (f32)*(s32 *)widget->value;
+    volatile char *buf = widget->text;
+    sprintf((char *)buf, widget->format, (s32)(widget->offset + value * widget->scale + WIDGET_ROUND_HALF));
+    fn_80130568(widget->text);
     fn_80219718(arg0);
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    if (widget->live != 0)
+        widget->redraw = 1;
 }
 #pragma scheduling on
 #pragma pop
