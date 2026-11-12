@@ -1497,17 +1497,19 @@ long fn_8027CF3C(long arg0) {
 
 #pragma cplusplus on
 extern "C" long fn_8027CFB4(long arg0) {
-    long *obj = fn_8027C120(lbl_8055F654, arg0);
-    long id = fn_80205268(lbl_80347AB0,
-                          *(long *)((char *)(long)lbl_8055F654 + 0xB01C), -1);
-    void *manager = fn_8001285C(*(long *)((char *)obj + 4));
-    Fn8027CFB4List *list = *(Fn8027CFB4List **)((char *)manager + 0x20);
-    char result[0x18];
+    /* Looks up the grade-table entry for the current context and returns the
+       first non-negative value (index 0..4) from its result, or 0 if none. */
+    long *entry = fn_8027C120(lbl_8055F654, arg0);
+    long gradeId = fn_80205268(lbl_80347AB0,
+                               *(long *)((char *)(long)lbl_8055F654 + 0xB01C), -1);
+    void *courseManager = fn_8001285C(*(long *)((char *)entry + 4));
+    Fn8027CFB4List *gradeTable = *(Fn8027CFB4List **)((char *)courseManager + 0x20);
+    char gradeInfo[0x18];
     long i;
-    fn_8001D884(result, list->lookup(id));
+    fn_8001D884(gradeInfo, gradeTable->lookup(gradeId));
     i = 0;
     do {
-        long found = fn_8001DA48(result, i);
+        long found = fn_8001DA48(gradeInfo, i);
         if (found >= 0)
             return found;
         i++;
