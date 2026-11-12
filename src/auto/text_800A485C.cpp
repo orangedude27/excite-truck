@@ -579,6 +579,7 @@ public:
     void clearCallback();
     s32 isPlayingSoundId(s32) const;
     int isPlayingSoundId(int) const;
+    static void wpadConnectCallback(long, long);
 };
 class FrameController {
 public:
@@ -1687,8 +1688,6 @@ extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
     u32 table;
     u32 offset;
     u32 record;
-    u16 count;
-    u16 nextCount;
     s32 result;
 
     *arg2 = 0;
@@ -1720,9 +1719,7 @@ found:
         return result;
 
     record = table + offset;
-    count = *(u16 *)&lbl_803D1640;
-    nextCount = count + 1;
-    *(u16 *)&lbl_803D1640 = nextCount;
+    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
     *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
