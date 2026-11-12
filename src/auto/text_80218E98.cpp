@@ -2764,31 +2764,6 @@ extern "C" void *fn_8021CEEC(void *object, s32 arg1, s32 arg2, s32 arg3, s32 arg
     return object;
 }
 
-/* Numeric readout widget (0x2B4 bytes, vtable lbl_8033ECB8, built by fn_8021CEEC
- * for UI layout node type 7; its alloc tag string is lbl_8033CAE8 + 0x44C).
- * The base widget (fn_80218F34 / fn_80219568) keeps its box at +0x04/+0x08
- * (left/top) and +0x10, the values it watches at +0x30 (stride 0x10, count
- * +0x230, added by fn_80219440), a text scroll offset at +0x244/+0x248, a draw
- * style at +0x250 and a redraw request at +0x234.  This class adds the readout
- * itself: the watched s32 to show, the sprintf format to print it with, the
- * scale/offset that turn the value into the shown number, and the text. */
-struct ValueTextWidget {
-    void *vtable;        /* 0x00 */
-    u8 _04[0x1A - 0x04];
-    u8 live;             /* 0x1A: bound to a live value, so ask for a redraw */
-    u8 _1B[0x234 - 0x1B];
-    u8 redraw;           /* 0x234: set to ask the screen to redraw this widget */
-    u8 _235[0x244 - 0x235];
-    s32 scrollX;         /* 0x244: how far the text is scrolled out to the left */
-    s32 scrollY;         /* 0x248: ... and out to the top */
-    s32 _24C;            /* 0x24C: base widget field (fn_80219568 sets it) */
-    s32 style;           /* 0x250: text style/handle fn_8022AC1C draws with */
-    f32 scale;           /* 0x254: multiplies the watched value */
-    f32 offset;          /* 0x258: added to the scaled value */
-    void *value;         /* 0x25C: the watched s32 this readout shows */
-    const char *format;  /* 0x260: sprintf format, from the layout node */
-    char text[4];        /* 0x264: the printed text (sprintf destination) */
-};
 /* lbl_805634C4 is the 0.5f that rounds the scaled value to the nearest whole. */
 #define WIDGET_ROUND_HALF lbl_805634C4
 
