@@ -167,9 +167,9 @@ void fn_8029F188(void) {
             dy = *(float *)(object + 0x64) - *(float *)(entry + 8);
             *(float *)(entry + 0x14) = dy;
             dz = *(float *)(object + 0x68) - *(float *)(entry + 0xc);
-            *(float *)(entry + 0x10) = dx * scale + *(float *)(entry + 0x1c);
-            *(float *)(entry + 0x14) = dy * scale + *(float *)(entry + 0x20);
-            *(float *)(entry + 0x18) = dz * scale + *(float *)(entry + 0x24);
+            *(float *)(entry + 0x10) = *(float *)(entry + 0x1c) + dx * scale;
+            *(float *)(entry + 0x14) = *(float *)(entry + 0x20) + dy * scale;
+            *(float *)(entry + 0x18) = *(float *)(entry + 0x24) + dz * scale;
             *(float *)(entry + 4) = *(float *)(object + 0x60);
             *(float *)(entry + 8) = *(float *)(object + 0x64);
             *(float *)(entry + 0xc) = *(float *)(object + 0x68);
@@ -664,20 +664,23 @@ check:
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+/* Initialize track-effect entries by scanning scene objects for children named "trkeffect*". */
 extern "C" void fn_8029FEF8(void) {
-    Dummy_8029FEF8 *object;
-    int i = 0;
-    int j;
-    Dummy_8029FEF8 *child;
-    while ((object = (Dummy_8029FEF8 *)fn_802AE4C8(i)) != 0) {
-        j = 0;
-        while (object->f1(j) != 0) {
-            child = (Dummy_8029FEF8 *)object->f1(j);
-            if (strncmp(child->d0(), lbl_80349854, 9) == 0)
-                fn_8029F658(child);
-            j++;
+    Dummy_8029FEF8 *sceneObj;
+    int objIndex = 0;
+    int childIndex;
+    Dummy_8029FEF8 *childObj;
+
+    while ((sceneObj = (Dummy_8029FEF8 *)fn_802AE4C8(objIndex)) != 0) {
+        childIndex = 0;
+        while (sceneObj->f1(childIndex) != 0) {
+            childObj = (Dummy_8029FEF8 *)sceneObj->f1(childIndex);
+            if (strncmp(childObj->d0(), lbl_80349854, 9) == 0) {
+                fn_8029F658(childObj);
+            }
+            childIndex++;
         }
-        i++;
+        objIndex++;
     }
 }
 #pragma cplusplus off
@@ -732,9 +735,8 @@ extern "C" float PSVECMag(const void *);
 extern float lbl_805646BC;
 #pragma optimization_level 2
 extern "C" void fn_802A0098(Result_802A0098 *out, const float *arg0, const Unk802A0794Params *arg1) {
-    register float width;
     float span = arg0[1] * PSVECMag(&arg1->values[3]);
-    width = lbl_805646BC;
+    float width = lbl_805646BC;
     if (width < span) width = span;
 
     out->count = (int)(arg0[2] + arg0[3] * width);
@@ -816,6 +818,7 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
     float a0, a1, a2;
     float b0, b1, b2;
     int i;
+    register void *objp;
 
     fn_802A0098(&out, arg0, params);
     out.data[4] += *(float *)((char *)arg0 + 0x74);
@@ -833,8 +836,9 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
         b0 = out.data[3] + fn_80287BC8(-out.data[8], out.data[8]);
         b[1] = b1;
         b[2] = b2;
-
-        (*(TargetObj **)((char *)arg0 + 0x70))->call(a, (b[0] = b0, b), params->unk_0x18, -1);
+        b[0] = b0;
+        objp = *(void **)((char *)arg0 + 0x70);
+        ((TargetObj *)objp)->call(a, b, params->unk_0x18, -1);
     }
 }
 #pragma pop
