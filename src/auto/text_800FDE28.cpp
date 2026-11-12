@@ -933,73 +933,59 @@ public:
 };
 }  // namespace snd
 }  // namespace nw4hbm
-extern "C" void UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(void *self) {
-    struct PacketNode {
-        u32 unk0, unk4;
-        const void *data;
-        u32 unkC, sampleBytes;
-        u8 valid, pad[3];
-    };
-    struct WP {
-        u32 unk0, count;
-        void *head;
-        u32 unkC, voiceCount;
-        u32 unk14;
-        void *voice;
-        u8 pad1c[2];
-        u8 stopped;
-        u8 pad1f[1];
-        s32 format;
-        u8 pad24[4];
-        s64 bytes;
-        u8 pad30[0x5c];
-        void (*callback)(s32, void *, void *, u32);
-        u32 callbackArg;
-    };
-    WP *w = (WP *)self;
-    register PacketNode *node;
-    u32 size;
+/* Hands the voice the packet queued behind the one it is playing.  The voice
+ * has played its way past the front packet, so that packet leaves the queue
+ * and is reported to the callback, and every channel of the voice is moved on
+ * to the packet behind it, stopping at that packet's end. */
+void nw4hbm::snd::WavePlayer::UpdateWavePacket() {
+    register WavePacket *packet;
+    u32 byteCount;
     void *iterator;
-    if (w->count == 0)
+    if (packets.count == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1f1,
                                      (const char *)lbl_8032740C);
-    node = (PacketNode *)w->head;
-    if (node == 0)
+    packet = (WavePacket *)packets.head;
+    if (packet == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23d,
                                      (const char *)lbl_8032746C);
-    node = (PacketNode *)((u8 *)node - 0x18);
-    if (node == 0)
+    packet = (WavePacket *)((u8 *)packet - 0x18);
+    if (packet == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                      (const char *)lbl_8032743C);
-    node->valid = 0;
-    iterator = w->head;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)self + 4, &iterator);
-    size = node->sampleBytes;
-    if (w->format == 1) size >>= 1;
-    w->bytes += size;
-    if (w->callback != 0) w->callback(0, w, node, w->callbackArg);
-    if (w->count != 0) {
-        u32 sample;
-        s32 i;
-        if (w->count == 0)
+    packet->valid = 0;
+    iterator = packets.head;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)this + 4, &iterator);
+    byteCount = packet->sampleBytes;
+    if (format == 1) byteCount >>= 1;  /* 4-bit ADPCM: two samples to a byte */
+    samplesPlayed += byteCount;
+    if (callback != 0)
+        callback(WAVE_CALLBACK_PACKET_PLAYED, this, packet, callbackArg);
+    if (packets.count != 0) {
+        u32 stopSample;
+        s32 channel;
+        if (packets.count == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1f1,
                                          (const char *)lbl_8032740C);
-        node = (PacketNode *)w->head;
-        if (node == 0)
+        packet = (WavePacket *)packets.head;
+        if (packet == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23d,
                                          (const char *)lbl_8032746C);
-        node = (PacketNode *)((u8 *)node - 0x18);
-        if (node == 0)
+        packet = (WavePacket *)((u8 *)packet - 0x18);
+        if (packet == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
                                          (const char *)lbl_8032743C);
-        sample = GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(
-            node->sampleBytes, *(u32 *)((u8 *)w->voice + 0x118));
-        for (i = 0; i < (s32)w->voiceCount; node = (PacketNode *)((u8 *)node + 4), ++i) {
-            SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(w->voice, i, node->data);
-            StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(w->voice, i, node->data, sample);
+        stopSample = GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(
+            packet->sampleBytes, *(u32 *)((u8 *)voice + 0x118));
+        /* the queued packets' channel data pointers follow one another */
+        for (channel = 0; channel < (s32)voiceCount;
+             packet = (WavePacket *)((u8 *)packet + 4), ++channel) {
+            SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(voice, channel,
+                                                              packet->channelData[0]);
+            StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(
+                voice, channel, packet->channelData[0], stopSample);
         }
     }
-    w->stopped = 0;
+    loopSet = 0;
 }
 
 #pragma use_lmw_stmw reset
