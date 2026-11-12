@@ -186,6 +186,7 @@ extern void *lbl_8055D808;
 void DSPInit(void) {
     s32 interrupts;
 
+    /* Initialize the DSP subsystem once: register version, install handler, and enable DSP interrupts. */
     DBPrintf_800343C8(lbl_80301DB0 + 0x48,
                       lbl_80301DB0 + 0x68,
                       lbl_80301DB0 + 0x74);
