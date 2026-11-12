@@ -33,6 +33,43 @@ typedef struct {
     s32 unk_54, unk_58, unk_5c, unk_60;
 } Unk_80135278;
 
+// One stretch of a path: where it starts, the direction it runs in, the next
+// stretch and how far along the path it begins.
+typedef struct PathNode {
+    /* 0x00 */ float x;                // start of the stretch
+    /* 0x04 */ float y;
+    /* 0x08 */ float dirX;             // direction of the stretch (not unit length)
+    /* 0x0C */ float dirY;
+    /* 0x10 */ float unk_10;
+    /* 0x14 */ volatile struct PathNode *next;
+    /* 0x18 */ float length;           // length of this stretch
+    /* 0x1C */ float pathDistance;     // distance along the path at the start
+    /* 0x20 */ float value;            // per-node value the samplers interpolate
+    /* 0x24 */ float unk_24;
+} PathNode;
+
+// A place along a path: the stretch it is on, how far along that stretch it is
+// (0..1) and a tag saying how it was found - fn_80135B24 leaves 0x2710 when it
+// cannot place the sample and writes 0 when it can.
+typedef struct PathSample {
+    /* 0x00 */ PathNode *node;
+    /* 0x04 */ float fraction;
+    /* 0x08 */ s32 tag;
+} PathSample;
+
+// The path follower object (Unk_80135278) as the samplers see it: its vtable
+// and then the sample it has reached.
+typedef struct PathCursor {
+    /* 0x00 */ void *vtable;
+    /* 0x04 */ PathSample sample;
+} PathCursor;
+
+// A 2D point or direction, as handed to and from the path samplers.
+typedef struct PathVec {
+    /* 0x00 */ float x;
+    /* 0x04 */ float y;
+} PathVec;
+
 s32 fn_80135D60(Unk_80135278 *, s32);
 void fn_80135390(Unk_80135278 *);
 void fn_801355C0(void *, s32, s32, void *, s32);
@@ -215,42 +252,40 @@ void fn_801355C0(void *arg0, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
     extern double fn_8002F234(float);
     extern double __fabs(double);
     extern float lbl_80561330;
-    s32 id = *(s32 *)((char *)arg0 + 0xC);
-    void **nodeState = (void **)arg3;
-    float *fractionState = (float *)((char *)arg3 + 4);
+    typedef struct { void *node; float frac; s32 unk8; } State;
     void *node;
     void *next;
+    float fraction;
+    float length;
+    float dot;
     float scratch[6];
     float zero;
     float epsilon;
     float one;
-    float fraction;
-    float length;
-    float dot;
-
-    *(s32 *)((char *)arg3 + 8) = id;
-    if (((s32 (*)(void *, void *, void *, void *))fn_801355B8)(arg0, (void *)arg1, arg3, (char *)arg3 + 4) != 0) return;
-    if (*nodeState == 0) {
-        *nodeState = fn_80135420((float *)arg1, (void *)arg2, *(void **)((char *)arg0 + 0x2C));
-        *fractionState = lbl_80561320;
+    State *st = (State *)arg3;
+    void *tmpNode;
+    float tmpFrac;
+    st->unk8 = *(s32 *)((char *)arg0 + 0xC);
+    if (((s32 (*)(void *, void *, void *, void *))fn_801355B8)(arg0, (void *)arg1, arg3, &st->frac) != 0) return;
+    if (st->node == 0) {
+        tmpNode = fn_80135420((float *)arg1, (void *)arg2, *(void **)((char *)arg0 + 0x2C));
+        tmpFrac = lbl_80561320;
+        st->node = tmpNode;
+        st->frac = tmpFrac;
     }
-    if (*nodeState == 0) return;
+    if (st->node == 0) return;
     one = lbl_80561324;
     arg2 = 0;
     epsilon = lbl_80561330;
     zero = lbl_80561320;
-
 loop_start:
-    node = *nodeState;
-    fraction = *fractionState;
+    node = st->node;
+    fraction = st->frac;
     next = *(void **)((char *)node + 0x14);
-    scratch[2] = *(float *)((char *)node + 8) +
-                 fraction * (*(float *)((char *)next + 8) - *(float *)((char *)node + 8));
-    scratch[3] = *(float *)((char *)node + 0xC) +
-                 fraction * (*(float *)((char *)next + 0xC) - *(float *)((char *)node + 0xC));
+    scratch[2] = *(float *)((char *)node + 8) + fraction * (*(float *)((char *)next + 8) - *(float *)((char *)node + 8));
+    scratch[3] = *(float *)((char *)node + 0xC) + fraction * (*(float *)((char *)next + 0xC) - *(float *)((char *)node + 0xC));
     scratch[4] = *(float *)node + fraction * (*(float *)next - *(float *)node);
-    scratch[5] = *(float *)((char *)node + 4) +
-                 fraction * (*(float *)((char *)next + 4) - *(float *)((char *)node + 4));
+    scratch[5] = *(float *)((char *)node + 4) + fraction * (*(float *)((char *)next + 4) - *(float *)((char *)node + 4));
     length = (float)fn_8002F234(scratch[2] * scratch[2] + scratch[3] * scratch[3]);
     length = one / length;
     scratch[0] = ((float *)arg1)[0] - scratch[4];
@@ -260,18 +295,19 @@ loop_start:
     dot = scratch[2] * scratch[0] + scratch[3] * scratch[1];
     if ((float)__fabs((double)dot) < epsilon) goto done;
     if (dot < zero) {
-        *fractionState = zero;
+        st->frac = zero;
         goto done;
     }
-advance:
     length = *(float *)((char *)node + 0x18);
     if (dot > length) {
-        dot -= length;
-        node = *(void **)((char *)node + 0x14);
-        *nodeState = node;
-        goto advance;
+        do {
+            dot -= length;
+            node = *(void **)((char *)node + 0x14);
+            st->node = node;
+            length = *(float *)((char *)node + 0x18);
+        } while (dot > length);
     }
-    *fractionState = dot / length;
+    st->frac = dot / length;
     ++arg2;
     if (arg2 < 10) goto loop_start;
 done:
