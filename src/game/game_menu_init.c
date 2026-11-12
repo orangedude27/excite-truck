@@ -252,19 +252,22 @@ extern int fn_80028F94(char*, const char*, int);
 #define RES_PATH_PREFIX_LEN 4 /* strlen("res:") */
 #define sInterludeMode lbl_8055F63C
 
+/* Boot option scan run by main() before anything else: hands the argument string to the option-name
+ * table parser, then looks through it for "-interlude"/"/interlude" and turns on the interlude-mode
+ * flag when it finds one. Always returns 1, so the boot continues either way. */
 int fn_80004D64(char* args) {
     char* p;
 
     if (args != NULL) {
-        fn_800199B8();
+        fn_800199B8(); /* option table parser; the argument string is still in r3 */
         for (p = args; *p != '\0'; p++) {
             switch (*p) {
             case '-':
             case '/':
-                if (strncmp(p + 1, lbl_802FAFD4, 9) == 0) {
-                    lbl_8055F63C = 1;
+                if (strncmp(p + 1, INTERLUDE_OPT_NAME, INTERLUDE_OPT_LEN) == 0) {
+                    sInterludeMode = 1;
                 } else {
-                    strncmp(p + 1, lbl_80558910, 4);
+                    strncmp(p + 1, RES_PATH_PREFIX, RES_PATH_PREFIX_LEN); /* result unused */
                 }
                 break;
             case ' ':
