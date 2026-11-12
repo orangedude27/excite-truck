@@ -439,34 +439,35 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
     } Self_802B;
 
     Self_802B *self = (Self_802B *)arg0;
-    Node_802B **nodePtr;
-    Node_802B *node;
-    int sp8;
-    int flag;
-    unsigned short h;
+    Node_802B **nodeSlotPtr;
+    Node_802B *blockNode;
+    int recordId;
+    int shouldQueue;
+    unsigned short recordSize;
     Entry_802B *entry;
-    float f;
+    float remainingTime;
 
+    /* Finalizes a pending record: shrinks the active block at +0xA38 by (0x18 - desc.size), clears it, queues (id, 1.0-time) when type==4 and time<1.0, then notifies fn_802BAFF8. */
     if (self == 0) return;
 
-    sp8 = *(int *)arg2;
-    nodePtr = *(Node_802B ***)((char *)self + 0xa38);
-    h = *(unsigned short *)((char *)arg2 + 4);
-    node = *nodePtr;
-    node->size -= 0x18 - h;
+    recordId = *(int *)arg2;
+    nodeSlotPtr = *(Node_802B ***)((char *)self + 0xa38);
+    recordSize = *(unsigned short *)((char *)arg2 + 4);
+    blockNode = *nodeSlotPtr;
+    blockNode->size -= 0x18 - recordSize;
     *(void **)((char *)self + 0xa38) = 0;
 
-    flag = (arg3 == 4 && farg0 < lbl_80564BD0);
-    if (flag) {
+    shouldQueue = (arg3 == 4 && farg0 < lbl_80564BD0);
+    if (shouldQueue) {
         if (self->used + 1 <= self->capacity) {
-            f = lbl_80564BD0 - farg0;
+            remainingTime = lbl_80564BD0 - farg0;
             entry = &self->entries[self->used++];
-            entry->time = f;
-            entry->id = sp8;
+            entry->time = remainingTime;
+            entry->id = recordId;
         }
     }
 
-    fn_802BAFF8(arg1, &sp8);
+    fn_802BAFF8(arg1, &recordId);
 }
 
 #pragma use_lmw_stmw off
