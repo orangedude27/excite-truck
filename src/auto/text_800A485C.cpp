@@ -2271,6 +2271,98 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
     return 0;
 }
 
+extern "C" s32 fn_800A8050(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    u32 spC;
+    s32 sp8;
+    s32 r;
+    void **ppage = (void **)arg3;
+    void **head = (void **)arg1;
+    r = fn_800A7C20(arg0, head, (u32)arg2, ppage, &sp8);
+    if (r != 0) return r;
+    if (sp8 == 0) {
+        r = fn_800A586C(arg0, *(s32 *)((u8 *)*ppage + 4), *(s32 *)((u8 *)*ppage + 0x18), *(s32 *)((u8 *)*ppage + 0x14), (s32)&spC);
+        if (r != 0) {
+            void *page = *ppage;
+            void *h1;
+            void *h2;
+            *(u16 *)page = (u16)(*(u16 *)page & 0xFFFC);
+            *(s32 *)((u8 *)page + 0xC) = 0;
+            *(s32 *)((u8 *)page + 0x10) = 0;
+            *(s32 *)((u8 *)page + 0x18) = -1;
+            *(u32 *)((u8 *)page + 0x1C) = 0;
+            h1 = *head;
+            if (page == h1) {
+                *head = *(void **)((u8 *)page + 0x20);
+            } else {
+                h2 = *head;
+                if (page != *(void **)((u8 *)h2 + 0x24)) {
+                    *(void **)((u8 *)*(void **)((u8 *)page + 0x24) + 0x20) = *(void **)((u8 *)page + 0x20);
+                    *(void **)((u8 *)*(void **)((u8 *)page + 0x20) + 0x24) = *(void **)((u8 *)page + 0x24);
+                    h1 = *head;
+                    *(void **)((u8 *)page + 0x20) = h1;
+                    h2 = *head;
+                    *(void **)((u8 *)page + 0x24) = *(void **)((u8 *)h2 + 0x24);
+                    *(void **)((u8 *)h1 + 0x24) = page;
+                    *(void **)((u8 *)*(void **)((u8 *)page + 0x24) + 0x20) = page;
+                }
+            }
+            return r;
+        }
+        {
+            void *pg = *ppage;
+            if (spC != *(u32 *)((u8 *)pg + 0x14) && *(u32 *)((u8 *)arg0 + 8) != (u32)(*(s32 *)((u8 *)pg + 0x18) + (s32)spC)) {
+                void *h1;
+                void *h2;
+                *(u16 *)pg = (u16)(*(u16 *)pg & 0xFFFC);
+                *(s32 *)((u8 *)pg + 0xC) = 0;
+                *(s32 *)((u8 *)pg + 0x10) = 0;
+                *(s32 *)((u8 *)pg + 0x18) = -1;
+                *(u32 *)((u8 *)pg + 0x1C) = 0;
+                h1 = *head;
+                if (pg == h1) {
+                    *head = *(void **)((u8 *)pg + 0x20);
+                } else {
+                    h2 = *head;
+                    if (pg != *(void **)((u8 *)h2 + 0x24)) {
+                        *(void **)((u8 *)*(void **)((u8 *)pg + 0x24) + 0x20) = *(void **)((u8 *)pg + 0x20);
+                        *(void **)((u8 *)*(void **)((u8 *)pg + 0x20) + 0x24) = *(void **)((u8 *)pg + 0x24);
+                        h1 = *head;
+                        *(void **)((u8 *)pg + 0x20) = h1;
+                        h2 = *head;
+                        *(void **)((u8 *)pg + 0x24) = *(void **)((u8 *)h2 + 0x24);
+                        *(void **)((u8 *)h1 + 0x24) = pg;
+                        *(void **)((u8 *)*(void **)((u8 *)pg + 0x24) + 0x20) = pg;
+                    }
+                }
+                return 0x11;
+            }
+        }
+        {
+            void *pg = *ppage;
+            *(u16 *)pg = (u16)(*(u16 *)pg & 0xFFFFFFFD);
+            *(s32 *)((u8 *)*ppage + 0xC) = 0;
+            *(s32 *)((u8 *)*ppage + 0x10) = 0;
+            if (arg4 != 0) {
+                *(u32 *)((u8 *)*ppage + 0x1C) = *(u32 *)((u8 *)arg0 + 0x1644);
+            } else {
+                *(u32 *)((u8 *)*ppage + 0x1C) = 0;
+            }
+        }
+    } else {
+        if (arg4 != 0) {
+            void *pg = *ppage;
+            if ((*(u16 *)pg & 2) && (*(s32 *)((u8 *)arg0 + 0x1624) & 2) && *(u32 *)((u8 *)pg + 0x1C) != *(u32 *)((u8 *)arg0 + 0x1644)) {
+                r = fn_800A7B34(arg0, pg);
+                if (r != 0) {
+                    *ppage = 0;
+                    return r;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
@@ -18006,8 +18098,8 @@ extern "C" void *fn_800D0F1C(void *, s32);
 extern "C" s32 fn_800D67B8(s32, s32);
 extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
-    u8 *q;
     s32 i;
+    u8 *q;
     if (arg0 != 0) {
         ((Freeable800C6A1C *)*(void **)(self + 0x1F4))->free(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1F4));
@@ -18015,7 +18107,7 @@ extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1E0));
         if (*(s32 *)((u8 *)*(void **)(self + 4) + 0x20) == 0) {
             q = self;
-            for (i = 0; i < 4; q += 4, i++) {
+            for (i = 0; i < 4; i++, q += 4) {
                 ((Freeable800C6A1C *)*(void **)(q + 0x1E4))->free(-1);
                 MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x1E4));
             }
