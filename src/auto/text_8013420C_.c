@@ -82,13 +82,14 @@ void *fn_801342B0(LoadPool *pool, s32 deletePool, s32 unused) {
     }
     return pool;
 }
-void fn_8013436C(Container *arg0, s32 arg1) {
+/* Polls the load pool: for each entry in the loading state, check completion and invoke the callback if ready. */
+void fn_8013436C(LoadPool *pool, s32 unused) {
     s32 i;
-    Entry *entry;
+    LoadPoolEntry *entry;
     s32 result;
     s32 value;
-    for (i = 0; i < arg0->count; i++) {
-        entry = (Entry *)((char *)arg0->entries + i * 0x18);
+    for (i = 0; i < pool->count; i++) {
+        entry = (LoadPoolEntry *)((char *)pool->entries + i * 0x18);
         if (entry->state == 1) {
             value = 0;
             result = fn_8012C7FC(entry->obj, &value);
