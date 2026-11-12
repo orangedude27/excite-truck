@@ -202,7 +202,16 @@ static void __SCClearDirtyFlag(void);
 static u8* __SCGetConfBuf(void);
 static u32 __SCGetConfBufSize(void);
 
+/**
+ * Starts the SYSCONF read. The first call marks the module initialized, puts
+ * the background job status to SC_STATUS_BUSY and queues an asynchronous read
+ * of /shared2/sys/SYSCONF into the module's configuration buffer; later calls
+ * do nothing. SCCheckStatus() reports when the read is over (SC_STATUS_OK, or
+ * SC_STATUS_FATAL if NAND could not be reached).
+ */
 void SCInit(void) {
+    // Held while testing and setting Initialized, so two threads cannot both
+    // start the read.
     BOOL enabled = OSDisableInterrupts();
 
     if (Initialized) {
@@ -222,6 +231,8 @@ void SCInit(void) {
         IsDevKit = TRUE;
     }
 
+    // No callback: the reload's own NAND callbacks finish the job and set the
+    // background status.
     if (NANDInit() != NAND_RESULT_OK ||
         SCReloadConfFileAsync(__SCGetConfBuf(), __SCGetConfBufSize(), NULL) !=
             NAND_RESULT_OK) {
