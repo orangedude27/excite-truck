@@ -63,17 +63,18 @@ extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
 #pragma scheduling invalid_target
-int fn_802BECE4(const char *arg0, int arg1) {
-    int a, b, c, d;
-    int result = arg1;
-    d = c = b = a = 0;
-    if (sscanf(arg0, lbl_8034ACC0, &a, &b, &c, &d) == 4) {
-        result = ((a & 0xff) << 24) | ((b & 0xff) << 16) |
-                 ((c & 0xff) << 8) | (d & 0xff);
+/* Parses a 4-byte dotted decimal string into a packed integer, or falls back to hex parsing; returns defaultValue on failure. */
+int fn_802BECE4(const char *str, int defaultValue) {
+    int b0, b1, b2, b3;
+    int value = defaultValue;
+    b3 = b2 = b1 = b0 = 0;
+    if (sscanf(str, lbl_8034ACC0, &b0, &b1, &b2, &b3) == 4) {
+        value = ((b0 & 0xff) << 24) | ((b1 & 0xff) << 16) |
+                 ((b2 & 0xff) << 8) | (b3 & 0xff);
     } else {
-        sscanf(arg0, lbl_8055CF78, &result);
+        sscanf(str, lbl_8055CF78, &value);
     }
-    return result;
+    return value;
 }
 #pragma scheduling on
 void fn_802BED90(float *arg0) {
