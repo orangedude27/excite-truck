@@ -19766,21 +19766,22 @@ extern void *l2cu_build_header(u16, u8, u8, s32);
 extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
 extern void fn_8007093C(u32, void *);
 extern char lbl_80319174[];
-void l2cu_send_peer_info_rsp(void *arg0, s32 arg1, u16 arg2) {
-    void *p;
+/* Send an L2CAP Information Response (cmd 0x0B) for the requested info type. */
+void l2cu_send_peer_info_rsp(void *p_lcb, s32 id, u16 info_type) {
+    void *p_buf;
     extern void *l2cu_build_header(u16, u8, u8, s32);
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
     extern void fn_8007093C(u32, void *);
     extern char lbl_80319174[];
-    p = l2cu_build_header(*(u16 *)((u8 *)arg0 + 0x28), 4, 0xb, arg1);
-    if (p == 0) {
+    p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 0xb, id);
+    if (p_buf == 0) {
         if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80319174);
     } else {
-        *(u8 *)((u8 *)p + 0x14) = arg2;
-        *((u8 *)p + 0x15) = arg2 >> 8;
-        *((u8 *)p + 0x16) = 1;
-        *((u8 *)p + 0x17) = 0;
-        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(arg0, 0, p);
+        *(u8 *)((u8 *)p_buf + 0x14) = info_type;
+        *((u8 *)p_buf + 0x15) = info_type >> 8;
+        *((u8 *)p_buf + 0x16) = 1;
+        *((u8 *)p_buf + 0x17) = 0;
+        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, p_buf);
     }
 }
 
