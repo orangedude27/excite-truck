@@ -1437,6 +1437,7 @@ void fn_8016DFB8(void *object) {
 
 #pragma scheduling invalid_target
 void fn_8016E06C(void *arg0) {
+    /* Activate the selected 0x14-byte item entry and enable each of its sub-handles. */
     u8 **baseSlot;
     s32 index = *(s32 *)((u8 *)arg0 + 0x2c);
     if (index < *(s32 *)((u8 *)arg0 + 0x3c)) {
