@@ -119,7 +119,9 @@ void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
     fn_801357A4(arg0, arg1);
 }
-#pragma scheduling reset
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_80135420(float *point, void *unused, void *list) {
     extern double __fabs(double);
@@ -136,8 +138,8 @@ void *fn_80135420(float *point, void *unused, void *list) {
         if (fn_80135278((float *)((char *)node + 8), point, node) > threshold) {
             void *next = *(void **)((char *)node + 0x14);
             if (fn_80135278((float *)((char *)next + 8), point, next) < threshold) {
-                float dx;
                 float dy;
+                float dx;
                 float normalY;
                 float normalX;
                 float negativeNormalY;
@@ -163,8 +165,8 @@ void *fn_80135420(float *point, void *unused, void *list) {
         float fallbackDistance = lbl_8056132C;
         node = *(void **)((char *)list + 0x1C);
         do {
-            float dx;
             float dy;
+            float dx;
             float nx;
             float ny;
             float dot;
@@ -181,7 +183,8 @@ void *fn_80135420(float *point, void *unused, void *list) {
             dot = nx * dx + ny * dy;
             dotSquared = dot * dot;
             along = fn_80135278((float *)((char *)node + 8), point, node);
-            dist = dotSquared + along * along;
+            dist = along * along;
+            dist += dotSquared;
             if (dist < fallbackDistance) {
                 best = node;
                 fallbackDistance = dist;
@@ -195,7 +198,7 @@ void *fn_80135420(float *point, void *unused, void *list) {
     }
     return best;
 }
-#pragma scheduling on
+#pragma pop
 s32 fn_801353C4(void) {
     return fn_801357A4();
 }
@@ -679,7 +682,7 @@ extern const char lbl_8032BE30[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
+extern "C" void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
     char *p = (char *)*(void **)((char *)self + 0x2c);
     char *latestP;
     char *sentinel;
