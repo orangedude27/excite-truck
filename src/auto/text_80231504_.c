@@ -765,18 +765,20 @@ void fn_802324D8(void) {
     s32 offset = 0;
     s32 i = 0;
 
-    /* Log and release each 12-byte entry, then clear the global list. */
-    while (i < *(s32 *)(lbl_8055F068 + 0x168)) {
-        u8 *entry = lbl_8055F068 + offset;
-        ((void (*)(const char *, ...))fn_802E30C8)(lbl_803404FC, *(s32 *)(entry + 4));
-        fn_802CB228((s32)*(void **)*(void **)entry);
-        fn_8012C4D8(*(void **)entry);
-        fn_80128670(*(void **)(entry + 4));
+    /* gText shutdown: every font block still in the cache at this point was
+     * never let go by the code that loaded it, so each is reported by name
+     * before its texture resource, the block and its name copy are freed. */
+    while (i < ((GTexCache *)gTexBlockTable)->count) {
+        u8 *entry = gTexBlockTable + offset;
+        ((void (*)(const char *, ...))fn_802E30C8)(gTexMsgFontGone, ((GTexCacheEntry *)entry)->name);
+        fn_802CB228(((GTexCacheEntry *)entry)->block->resourceIndex);
+        fn_8012C4D8(((GTexCacheEntry *)entry)->block);
+        fn_80128670(((GTexCacheEntry *)entry)->name);
         offset += 0xC;
         i++;
     }
-    fn_80128668();
-    lbl_8055F068 = 0;
+    fn_80128668(gTexBlockTable); /* the cache table itself, still in r3 */
+    gTexBlockTable = 0;
 }
 
 #pragma pop
