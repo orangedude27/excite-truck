@@ -1553,6 +1553,7 @@ void fn_802D09E8(void) {
 }
 
 void fn_802D0BD8(void) {
+    /* Set the GX viewport from the current render target (jittered on next field when enabled) and invalidate vertex/texture caches. */
     extern void *lbl_8055FD64;
     extern float lbl_80564F88;
     extern float lbl_80564F8C;
@@ -1562,19 +1563,20 @@ void fn_802D0BD8(void) {
     extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
     extern void GXInvalidateVtxCache(void);
     extern void GXInvalidateTexAll(void);
-    unsigned char *p = (unsigned char *)lbl_8055FD64;
-    unsigned short x;
-    unsigned short y;
+    unsigned char *renderTarget = (unsigned char *)lbl_8055FD64;
+    unsigned short width;
+    unsigned short height;
     unsigned long field;
-    if (p[0x18]) {
+
+    if (renderTarget[0x18]) {
         field = VIGetNextField();
-        x = *(unsigned short *)(p + 4);
-        y = *(unsigned short *)(p + 6);
-        ((void (*)(unsigned long, float, float, float, float, float, float))GXSetViewportJitter)(field, lbl_80564F88, lbl_80564F88, (float)x, (float)y, lbl_80564F88, lbl_80564F8C);
+        width = *(unsigned short *)(renderTarget + 4);
+        height = *(unsigned short *)(renderTarget + 6);
+        ((void (*)(unsigned long, float, float, float, float, float, float))GXSetViewportJitter)(field, lbl_80564F88, lbl_80564F88, (float)width, (float)height, lbl_80564F88, lbl_80564F8C);
     } else {
-        x = *(unsigned short *)(p + 4);
-        y = *(unsigned short *)(p + 6);
-        ((void (*)(float, float, float, float, float, float))GXSetViewport)(lbl_80564F88, lbl_80564F88, (float)x, (float)y, lbl_80564F88, lbl_80564F8C);
+        width = *(unsigned short *)(renderTarget + 4);
+        height = *(unsigned short *)(renderTarget + 6);
+        ((void (*)(float, float, float, float, float, float))GXSetViewport)(lbl_80564F88, lbl_80564F88, (float)width, (float)height, lbl_80564F88, lbl_80564F8C);
     }
     GXInvalidateVtxCache();
     GXInvalidateTexAll();
