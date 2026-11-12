@@ -141,7 +141,7 @@ void fn_80270B74(void) {
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-void fn_80270C04(void *arg0, int arg1) {
+void fn_80270C04(void *arg0, unsigned int arg1) {
     extern char lbl_80346B00[];
     extern char lbl_8049EDC8[];
     extern char lbl_8049F9D8[];
@@ -154,7 +154,7 @@ void fn_80270C04(void *arg0, int arg1) {
     register unsigned char flag;
 
     fn_80270B74();
-    if (lbl_8055F550 == 0)
+    if (0 == lbl_8055F550)
         return;
     flag = (arg1 >> 8) & 1;
     lbl_8055F564 = flag;
@@ -162,12 +162,14 @@ void fn_80270C04(void *arg0, int arg1) {
     record = lbl_8049EDC8;
     table = lbl_8049F9D8;
     arg1 = 0;
-    while (arg1 < lbl_8055F550) {
+    while ((int)arg1 < lbl_8055F550) {
+        char *slot;
         DBPrintf_80270B00(name + 0x1F8, arg1);
         DBPrintf_80270B00(name + 0x208);
         *(char **)(table + lbl_8055F554 * 0x1C) = record;
-        if (flag != 0)
-            fn_80272738(table + lbl_8055F554 * 0x1C, arg0);
+        slot = table + lbl_8055F554 * 0x1C;
+        if (flag)
+            fn_80272738(slot, arg0);
         record += 0x60;
         arg1++;
         lbl_8055F554++;
@@ -175,7 +177,7 @@ void fn_80270C04(void *arg0, int arg1) {
     if (lbl_8055F554 == 0) {
         DBPrintf_80270B00(name + 0x224);
         *(int *)lbl_8049F9D8 = (int)lbl_8049EDC8;
-        if (flag != 0)
+        if (flag)
             fn_80272738(lbl_8049F9D8, arg0);
         lbl_8055F554 = 1;
     }
@@ -1262,6 +1264,32 @@ int fn_80273494(int arg0) {
     }
 }
 #pragma dont_inline reset
+
+/* The five region groups of the event types fn_80273494 maps 11..15 onto (the table at
+ * 0x8049A258).  A group is the run of region records from `start` to `start + count` in
+ * the table at 0x80346BA0; `cursor` is which of them is current.  fn_80273354 fills the
+ * groups in and fn_802733F4 advances a cursor, wrapping it back to 0 at `count`. */
+typedef struct RegionGroup {
+    /* 0x00 */ s32 unk00;
+    /* 0x04 */ s32 start;
+    /* 0x08 */ s32 count;
+    /* 0x0C */ s32 cursor;
+} RegionGroup;
+
+/* One region record of the table at 0x80346BA0 (0x28 bytes): the kind of region it is --
+ * fn_80273604 switches on it (0, 2, 4, 5, 7 and 0x22) --, where and how big it is, and
+ * two per-record flags whose meaning the readers only show through the bit masks they
+ * build (fn_802734F0 reports 0x1 when flag24 is clear and 0x4 when flag25 is). */
+typedef struct RegionRecord {
+    /* 0x00 */ s32 kind;
+    /* 0x04 */ s32 unk04;
+    /* 0x08 */ f32 pos[3];
+    /* 0x14 */ f32 dir[3];
+    /* 0x20 */ f32 scale;
+    /* 0x24 */ u8 flag24;
+    /* 0x25 */ u8 flag25;
+    /* 0x26 */ short unk26;
+} RegionRecord;
 
 #pragma push
 #pragma small_data off
