@@ -494,9 +494,9 @@ void GXSetCPUFifo(void *arg0) {
     } piWord;
     GXFifoObjInternal *source;
     GXFifoObjInternal *fifo;
-    register GXFifoObjInternal *fifoElse;
+    GXFifoObjInternal *fifoElse;
     int intStatus;
-    register unsigned int *gd;
+    unsigned int *gd;
     unsigned int tmp;
 
     intStatus = OSDisableInterrupts();
@@ -830,7 +830,21 @@ void GXEnableBreakPt(u32 address) {
     ((void (*)(s32))OSRestoreInterrupts)(interruptState);
 }
 
-void GXDisableBreakPt(void) { unsigned int *data; unsigned int value; unsigned int cleared; OSDisableInterrupts(); data = __GXData; value = data[2]; value = __rlwinm(value, 0, 31, 29); cleared = __rlwinm(value, 0, 27, 25); data[2] = cleared; *(unsigned short *)((char *)__cpReg + 2) = (unsigned short)cleared; lbl_8055D950 = 0; OSRestoreInterrupts(); }
+void GXDisableBreakPt(void) {
+    int intStatus;
+    unsigned int value;
+    unsigned int cleared;
+    unsigned int *data;
+    intStatus = OSDisableInterrupts();
+    data = __GXData;
+    value = data[2];
+    value = __rlwinm(value, 0, 31, 29);
+    cleared = __rlwinm(value, 0, 27, 25);
+    data[2] = cleared;
+    *(unsigned short *)((char *)__cpReg + 2) = (unsigned short)cleared;
+    lbl_8055D950 = 0;
+    ((void (*)(int))OSRestoreInterrupts)(intStatus);
+}
 
 extern GXFifoIntrHandler __OSSetInterruptHandler(int, GXFifoIntrHandler);
 extern unsigned int __OSUnmaskInterrupts(unsigned int);
@@ -851,19 +865,16 @@ void __GXCleanGPFifo(void) {
     unsigned int *fifo;
     int intStatus;
     unsigned int tmp;
-
     if ((unsigned char)lbl_8055D949 == 0) {
         return;
     }
     intStatus = OSDisableInterrupts();
     gd = __GXData;
     fifo = (unsigned int *)lbl_8037C0C0;
-
     gd[2] &= ~1u;
     __cpReg[1] = (unsigned short)gd[2];
     gd[2] &= 0xFFFFFFF3u;
     __cpReg[1] = (unsigned short)gd[2];
-
     fifo[7] = zero;
     fifo[5] = fifo[6];
     __cpReg[0x30 / 2] = (unsigned short)zero;
@@ -873,18 +884,16 @@ void __GXCleanGPFifo(void) {
     __cpReg[0x36 / 2] = (unsigned short)((fifo[6] >> 16) & 0x3FFF);
     __cpReg[0x3A / 2] = (unsigned short)((fifo[5] >> 16) & 0x3FFF);
     PPCSync();
-
     if ((unsigned char)lbl_8055D960 != 0) {
         unsigned int wrPtr = fifo[6];
         unsigned int *piFifo = (unsigned int *)lbl_8037C0E4;
         unsigned int rdPtr = fifo[5];
         unsigned int count = fifo[7];
-
         piFifo[5] = rdPtr;
         piFifo[6] = wrPtr;
         piFifo[7] = count;
-        __piReg[5] = wrPtr & 0x1FFFFFE0u;
-
+        zero = (wrPtr & 0x1FFFFFE0u);
+        __piReg[5] = zero;
         tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
         gd[2] = tmp;
         __cpReg[1] = (unsigned short)tmp;
@@ -892,12 +901,11 @@ void __GXCleanGPFifo(void) {
         gd[2] = tmp;
         __cpReg[1] = (unsigned short)tmp;
     }
-
     tmp = gd[2] & ~2u;
     tmp &= ~0x20u;
     gd[2] = tmp;
     __cpReg[1] = (unsigned short)tmp;
-    lbl_8055D950 = zero;
+    lbl_8055D950 = 0;
     tmp = __GXData[4] | 3u;
     __GXData[4] = tmp;
     __cpReg[2] = (unsigned short)tmp;
@@ -1171,33 +1179,30 @@ void GXSetVtxDescv(unsigned int *list) {
 }
 
 void __GXSetVCD(void) {
-    unsigned int *data = __GXData;
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
     unsigned int count;
     unsigned int value;
+    unsigned int masked;
     unsigned int compCount;
     unsigned int vatPart;
     unsigned int vatCount;
-    unsigned int masked;
     unsigned int sizeCount;
     unsigned int sizePart;
     unsigned int countPart;
-
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
+    unsigned int *data = __GXData;
     *fifo8 = 8;
     *fifo8 = 0x50;
     *fifo32 = data[0x14 / 4];
     *fifo8 = 8;
     *fifo8 = 0x60;
     *fifo32 = data[0x18 / 4];
-
     if (*((unsigned char *)data + 0x525) != 0) {
         count = 2;
     } else {
         unsigned int flag = *((unsigned char *)data + 0x524);
         count = (unsigned int)(-(int)flag | (int)flag) >> 31;
     }
-
     compCount = (data[0x14 / 4] >> 13) & 0xF;
     vatPart = __cntlzw(compCount);
     masked = data[0x18 / 4] & 0xFFFF;
@@ -1783,40 +1788,36 @@ void GXGetVtxAttrFmt(void) {
 #pragma use_lmw_stmw off
 extern char __GXIsGPFifoReady(void) __attribute__((noinline));
 void GXGetVtxAttrFmtv(void) {
-    unsigned int old, value;
+    unsigned int value, old;
     signed long long start, now;
     unsigned int *data = __GXData;
     if (*(unsigned char *)((char *)data + 0x5FA) &&
         (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
-        unsigned int high, firstHigh, low;
-        volatile unsigned short *reg;
-        for (;;) {
-            reg = (volatile unsigned short *)__memReg;
-            high = reg[0x4E / 2];
+        unsigned int firstHigh, high, low;
+        volatile unsigned short *reg = (volatile unsigned short *)__memReg;
+        high = reg[0x4E / 2];
+        do {
             firstHigh = high;
             low = reg[0x50 / 2];
             high = reg[0x4E / 2];
-            if (firstHigh == high)
-                break;
-        }
-        old = (firstHigh << 16) | low;
+        } while (high != firstHigh);
+        old = (high << 16) | low;
         for (;;) {
+            unsigned int firstHigh2, low2, high2;
             start = OSGetTime();
             do {
                 now = OSGetTime();
             } while (now - start <= 8);
             {
                 volatile unsigned short *reg2 = (volatile unsigned short *)__memReg;
-                for (;;) {
-                    high = reg2[0x4E / 2];
-                    firstHigh = high;
-                    low = reg2[0x50 / 2];
-                    high = reg2[0x4E / 2];
-                    if (firstHigh == high)
-                        break;
-                }
+                high2 = reg2[0x4E / 2];
+                do {
+                    firstHigh2 = high2;
+                    low2 = reg2[0x50 / 2];
+                    high2 = reg2[0x4E / 2];
+                } while (high2 != firstHigh2);
             }
-            value = (high << 16) | low;
+            value = (high2 << 16) | low2;
             {
                 unsigned int previous = old;
                 old = value;
@@ -2787,81 +2788,78 @@ void GXSetCopyClear(unsigned char *color, unsigned int depth) {
 }
 
 #pragma use_lmw_stmw off
-void GXSetCopyFilter(s32 arg0, u8 *arg1, s32 arg2, u8 *arg3) {
+void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3) {
     union MSLoc {
-        u32 word;
+        unsigned int word;
         struct {
-            u32 tag : 8;
-            u32 n5 : 4;
-            u32 n4 : 4;
-            u32 n3 : 4;
-            u32 n2 : 4;
-            u32 n1 : 4;
-            u32 n0 : 4;
+            unsigned int tag : 8;
+            unsigned int n5 : 4;
+            unsigned int n4 : 4;
+            unsigned int n3 : 4;
+            unsigned int n2 : 4;
+            unsigned int n1 : 4;
+            unsigned int n0 : 4;
         } bits;
     };
     union Coeff {
-        u32 word;
+        unsigned int word;
         struct {
-            u32 tag : 8;
-            u32 f3 : 6;
-            u32 f2 : 6;
-            u32 f1 : 6;
-            u32 f0 : 6;
+            unsigned int tag : 8;
+            unsigned int f3 : 6;
+            unsigned int f2 : 6;
+            unsigned int f1 : 6;
+            unsigned int f0 : 6;
         } bits;
     };
     union MSLoc a,b,c,d;
     union Coeff coeff0,coeff1;
-
     if (arg0 != 0) {
         a.word = 0;
-        a.bits.n0 = arg1[0];
-        a.bits.n1 = arg1[1];
-        a.bits.n2 = arg1[2];
-        a.bits.n3 = arg1[3];
-        a.bits.n4 = arg1[4];
-        a.bits.n5 = arg1[5];
-        a.bits.tag = 1;
         b.word = 0;
-        b.bits.n0 = arg1[6];
-        b.bits.n1 = arg1[7];
-        b.bits.n2 = arg1[8];
-        b.bits.n3 = arg1[9];
-        b.bits.n4 = arg1[10];
-        b.bits.n5 = arg1[11];
-        b.bits.tag = 2;
         c.word = 0;
-        c.bits.n0 = arg1[12];
-        c.bits.n1 = arg1[13];
-        c.bits.n2 = arg1[14];
-        c.bits.n3 = arg1[15];
-        c.bits.n4 = arg1[16];
-        c.bits.n5 = arg1[17];
-        c.bits.tag = 3;
         d.word = 0;
         d.bits.n0 = arg1[18];
+        c.bits.n0 = arg1[12];
+        b.bits.n0 = arg1[6];
+        a.bits.n0 = arg1[0];
         d.bits.n1 = arg1[19];
+        c.bits.n1 = arg1[13];
+        b.bits.n1 = arg1[7];
+        a.bits.n1 = arg1[1];
         d.bits.n2 = arg1[20];
+        c.bits.n2 = arg1[14];
+        b.bits.n2 = arg1[8];
+        a.bits.n2 = arg1[2];
         d.bits.n3 = arg1[21];
+        c.bits.n3 = arg1[15];
+        b.bits.n3 = arg1[9];
+        a.bits.n3 = arg1[3];
         d.bits.n4 = arg1[22];
+        c.bits.n4 = arg1[16];
+        b.bits.n4 = arg1[10];
+        a.bits.n4 = arg1[4];
         d.bits.n5 = arg1[23];
+        c.bits.n5 = arg1[17];
+        b.bits.n5 = arg1[11];
+        a.bits.n5 = arg1[5];
         d.bits.tag = 4;
+        c.bits.tag = 3;
+        b.bits.tag = 2;
+        a.bits.tag = 1;
     } else {
         a.word = 0x01666666u;
         b.word = 0x02666666u;
         c.word = 0x03666666u;
         d.word = 0x04666666u;
     }
-
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = a.word;
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = b.word;
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = c.word;
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = d.word;
-
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = a.word;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = b.word;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = c.word;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = d.word;
     coeff0.word = 0;
     coeff0.bits.tag = 0x53;
     coeff1.word = 0;
@@ -2883,12 +2881,11 @@ void GXSetCopyFilter(s32 arg0, u8 *arg1, s32 arg2, u8 *arg3) {
         coeff1.bits.f1 = 0;
         coeff1.bits.f2 = 0;
     }
-
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = coeff0.word;
-    *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = coeff1.word;
-    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = coeff0.word;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = coeff1.word;
+    *(volatile unsigned short *)((unsigned char *)__GXData + 2) = 0;
 }
 void GXSetDispCopyGamma(s32 arg0) {
     ((GXDispCopyGammaReg *)&__GXData[0x23c / 4])->gamma = arg0;
