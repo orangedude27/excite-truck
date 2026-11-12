@@ -8311,8 +8311,9 @@ void btm_dev_init(void) {
     ((void (*)(void))btsnd_hcic_reset)();
 }
 void btm_discovery_db_reset(void);
+// Reset BTM inquiry/discovery databases and invoke pending completion callbacks with reset status.
 void btm_db_reset(void) {
-    u8 param = 12;
+    u8 resetStatus = 12;
     btm_inq_db_reset();
     btm_discovery_db_reset();
     if (*(void (**)(void *))(lbl_803C0F78 + 0x5A8)) {
@@ -8323,12 +8324,12 @@ void btm_db_reset(void) {
     if (*(void (**)(void *))(lbl_803C0F78 + 0x5C4)) {
         void (*callback)(void *) = *(void (**)(void *))(lbl_803C0F78 + 0x5C4);
         *(void (**)(void *))(lbl_803C0F78 + 0x5C4) = NULL;
-        if (callback) callback(&param);
+        if (callback) callback(&resetStatus);
     }
     if (*(void (**)(void *))(lbl_803C0F78 + 0x5E0)) {
         void (*callback)(void *) = *(void (**)(void *))(lbl_803C0F78 + 0x5E0);
         *(void (**)(void *))(lbl_803C0F78 + 0x5E0) = NULL;
-        if (callback) callback(&param);
+        if (callback) callback(&resetStatus);
     }
 }
 
