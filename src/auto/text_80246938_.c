@@ -112,7 +112,7 @@ extern void fn_802E317C(const char *, ...);
 #pragma optimization_level 4
 #pragma scheduling invalid_target
 s32 fn_80246938(void) {
-    register s32 index;
+    s32 index;
     struct {
         volatile s32 args[5];
         s32 text;
@@ -742,15 +742,13 @@ void fn_802478A4(void) {
     s32 data[40];
     volatile s32 *q = (volatile s32 *)lbl_804988F0;
     volatile s32 *p = (volatile s32 *)lbl_802FA3F0;
-    register s32 zero, eight, one, three, four, five, six;
+    register s32 eight, three, four, five, six;
     s32 b0 = lbl_804988F0[0];
     s32 b1, b2, b3, b4;
     s32 a0, a2, a3, a4;
     s32 stringBase;
 
-    zero = 0;
     eight = 8;
-    one = 1;
     three = 3;
     four = 4;
     five = 5;
@@ -771,28 +769,28 @@ void fn_802478A4(void) {
     data[12] = (s32)fn_80247880;
     data[5] = (s32)&lbl_8055BAC0;
     data[10] = (s32)&lbl_8055BABC;
-    data[13] = one;
-    data[8] = zero;
-    data[9] = zero;
-    data[14] = zero;
+    data[13] = 1;
+    data[8] = 0;
+    data[9] = 0;
+    data[14] = 0;
     data[15] = stringBase + 0x2A0;
-    data[16] = zero;
-    data[17] = zero;
+    data[16] = 0;
+    data[17] = 0;
     data[18] = three;
-    data[19] = zero;
+    data[19] = 0;
     data[20] = stringBase + 0x2AC;
-    data[21] = zero;
-    data[22] = zero;
+    data[21] = 0;
+    data[22] = 0;
     data[23] = four;
-    data[24] = zero;
+    data[24] = 0;
     data[25] = stringBase + 0x2B8;
-    data[26] = zero;
-    data[27] = zero;
+    data[26] = 0;
+    data[27] = 0;
     data[28] = five;
-    data[29] = zero;
+    data[29] = 0;
     data[30] = (s32)&lbl_8055B860;
     data[31] = six;
-    data[32] = zero;
+    data[32] = 0;
     eight = -1;
     data[33] = eight;
     data[34] = 0x1B;
@@ -1251,35 +1249,40 @@ extern void fn_8020A600(void);
 #pragma optimization_level 3
 #pragma scheduling invalid_target
 void fn_80248668(s32 arg0) {
-    s32 work[0x1B];
+    s32 text[12];
+    s32 item[10];
+    s32 menu[6];
+    s32 taddr = (s32)text;
+    s32 tmp;
     if (fn_8020A640() != 0)
         return;
     fn_8020A600();
-    work[21] = 0;
-    work[16] = (s32)lbl_803436C0;
-    work[24] = 0x7530;
-    work[25] = 1;
-    work[26] = 0;
-    work[23] = fn_802E2C20();
-    work[6] = 0;
-    work[7] = 5;
-    work[8] = (s32)&work[16];
-    work[9] = 0;
-    work[10] = 0;
-    work[11] = lbl_804988F0[0];
-    work[12] = lbl_804988F0[1];
-    work[13] = lbl_804988F0[2];
-    work[14] = lbl_804988F0[3];
-    work[15] = lbl_804988F0[4];
-    work[0] = lbl_802FA498[0];
-    work[1] = lbl_802FA498[1];
-    work[2] = lbl_802FA498[2];
-    work[3] = lbl_802FA498[3];
-    work[4] = lbl_802FA498[4];
-    work[1] = (s32)&work[6];
-    work[22] = 1;
+    text[5] = 0;
+    text[0] = (s32)lbl_803436C0;
+    text[8] = 30000;
+    text[9] = 1;
+    text[10] = 0;
+    text[7] = ((s32 (*)(void *))fn_802E2C20)(lbl_803436C0);
+    tmp = lbl_802FA498[1];
+    text[6] = 1;
+    item[1] = 5;
+    item[0] = 0;
+    item[2] = taddr;
+    item[3] = 0;
+    item[4] = 0;
+    item[5] = lbl_804988F0[0];
+    item[6] = lbl_804988F0[1];
+    item[7] = lbl_804988F0[2];
+    item[8] = lbl_804988F0[3];
+    item[9] = lbl_804988F0[4];
+    menu[1] = tmp;
+    menu[0] = lbl_802FA498[0];
+    menu[2] = lbl_802FA498[2];
+    menu[3] = lbl_802FA498[3];
+    menu[4] = lbl_802FA498[4];
+    menu[1] = (s32)item;
     ((void (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
-        work, -0x3E7, -0x3E7, 1,
+        menu, -0x3E7, -0x3E7, 1,
         lbl_802FA498[4], lbl_802FA498[3], lbl_802FA498[2], lbl_802FA498[0]);
 }
 #pragma pop
@@ -1407,55 +1410,79 @@ int fn_80248C94(void *arg0, int arg1) {
 
 extern float lbl_805638D0, lbl_805638D4, lbl_805638D8;
 extern s32 fn_802C942C(s32);
-void fn_80248CD8(void *arg0) {
-    register s32 elapsed;
-    s32 limit;
-    register s32 alpha;
-    s32 converted;
-    s32 mask;
-    float factor;
-    float amount;
-    float value;
-    float next;
-    s32 now;
+void fn_80248CD8(void *arg0)
+{
+  register s32 elapsed;
+  s32 limit;
+  register s32 alpha;
+  s32 converted;
+  float factor;
+  float amount;
+  float value;
+  float next;
+  s32 now;
+  now = fn_802E2C20();
+  factor = lbl_805638B0;
+  elapsed = now - (*((s32 *) (((char *) arg0) + 0x1C)));
+  if (elapsed < 0x1F4)
+  {
+    if (factor <= (lbl_80563898 - (((float) elapsed) / lbl_805638D0)))
+    {
+      goto update_first;
+    }
+    goto after_first;
+    update_first:
+    factor = lbl_80563898 - (((float) elapsed) / lbl_805638D0);
 
-    now = fn_802E2C20();
-    factor = lbl_805638B0;
-    elapsed = now - *(s32 *)((char *)arg0 + 0x1C);
-    if (elapsed < 0x1F4) {
-        if (factor <= lbl_80563898 - (float)elapsed / lbl_805638D0)
-            goto update_first;
-        goto after_first;
-update_first:
-        factor = lbl_80563898 - (float)elapsed / lbl_805638D0;
-after_first:
-        ;
+    after_first:
+    ;
+
+    ;
+  }
+  limit = *((s32 *) (((char *) arg0) + 0x20));
+  if ((limit != 0) || ((*((s32 *) (((char *) arg0) + 0x18))) != 1))
+  {
+    if (elapsed > (limit - 0x1F4))
+    {
+      value = lbl_80563898 - (((float) (limit - elapsed)) / lbl_805638D0);
+      if (factor <= value)
+      {
+        goto update_second;
+      }
+      if (value)
+      {
+        goto after_second;
+      }
+      else
+      {
+        goto after_second;
+      }
+      update_second:
+      factor = value;
+
+      after_second:
+      ;
+
+      ;
     }
-    limit = *(s32 *)((char *)arg0 + 0x20);
-    if (limit != 0 || *(s32 *)((char *)arg0 + 0x18) != 1) {
-        if (elapsed > limit - 0x1F4) {
-            value = lbl_80563898 - (float)(limit - elapsed) / lbl_805638D0;
-            if (factor <= value)
-                goto update_second;
-            goto after_second;
-update_second:
-            factor = value;
-after_second:
-            ;
-        }
-    }
-    amount = lbl_805638D4 * factor;
-    if (amount < lbl_805638B0)
-        next = amount - lbl_805638D8;
-    else
-        next = lbl_805638D8 + amount;
-    alpha = 0xFF;
-    converted = (s32)next;
-    mask = -converted & ~converted;
-    converted = converted & (mask >> 31);
-    if (converted < 0xFF)
-        alpha = converted;
-    fn_802C942C((alpha << 24) | 0xFFFFFF);
+  }
+  amount = lbl_805638D4 * factor;
+  if (amount < lbl_805638B0)
+  {
+    next = amount - lbl_805638D8;
+  }
+  else
+  {
+    next = lbl_805638D8 + amount;
+  }
+  alpha = 0xFF;
+  converted = (s32) next;
+  converted = converted & (((-converted) & (~converted)) >> 31);
+  if (converted < 0xFF)
+  {
+    alpha = converted;
+  }
+  fn_802C942C((alpha << 24) | 0xFFFFFF);
 }
 
 void fn_80248E30(void *arg0) {
@@ -1464,12 +1491,12 @@ void fn_80248E30(void *arg0) {
     extern void fn_8020A634(void);
     extern s32 fn_8020A640(void);
     extern void fn_80221F94(void *, s32);
-    register s32 now;
-    register s32 state;
+    s32 now;
     s32 duration;
-    register s32 elapsed;
-    float value;
+    s32 elapsed;
+    s32 state;
     float factor;
+    float value;
 
     if (*(s32 *)((char *)arg0 + 0x20) == 0 &&
         *(s32 *)((char *)arg0 + 0x18) == 1)
@@ -1628,24 +1655,25 @@ loop_test:
     *(float *)(base + 0x2C) = y;
 }
 #pragma pop
-s32 fn_80249334(void *arg0, s32 arg1) {
-    s32 *val = (s32 *)((char *)arg0 + 0x28);
+/* Handle menu navigation input: adjust selected index at +0x28 within [0, count at +0x24), calling fn_80214D50(0) on move or (1) on boundary. */
+s32 fn_80249334(void *menu, s32 input) {
+    s32 *index = (s32 *)((char *)menu + 0x28);
 
-    switch (arg1) {
+    switch (input) {
     case 0x126:
         break;
     case 0x125:
-        if (*val > 0) {
+        if (*index > 0) {
             fn_80214D50(0);
-            *val = *val - 1;
+            *index = *index - 1;
         } else {
             fn_80214D50(1);
         }
         break;
     case 0x127:
-        if (*val + 1 < *(s32 *)((char *)arg0 + 0x24)) {
+        if (*index + 1 < *(s32 *)((char *)menu + 0x24)) {
             fn_80214D50(0);
-            *val = *val + 1;
+            *index = *index + 1;
         } else {
             fn_80214D50(1);
         }
