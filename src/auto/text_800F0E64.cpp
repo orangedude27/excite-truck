@@ -2253,6 +2253,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(void *arg0, 
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self, s32 flag) {
+    /* nw4hbm::snd::SoundArchivePlayer destructor: reset vtables, unregister dispose callback, destroy embedded lists, optionally delete. */
     if (self != 0) {
         *(void **)((u8 *)self + 8) = (void *)lbl_80325640;
         *(void **)((u8 *)self + 0xC) = (void *)(lbl_80325640 + 0x14);
