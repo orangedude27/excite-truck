@@ -433,9 +433,8 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
         }
         *(float *)((char *)output + 0x44) =
             ((Fn801F06DCResource *)arg1)->getValue(strings + 0x9C);
-        fallbackValue = *(volatile float *)&lbl_80562F28;
-        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(
-            strings + 0xA8, fallbackValue);
+        fallbackValue = lbl_80562F28;
+        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(strings + 0xA8, fallbackValue);
         *(float *)((char *)output + 0x48) = value * value;
     } else {
         fallbackHandle = fn_802C6FC0(
@@ -894,6 +893,57 @@ int fn_801F15A8(void **arg0, int arg1) {
     }
     return count - 1;
 }
+
+void fn_801F163C(void *arg0, int arg1, float farg0) {
+    struct Pair { int a; int b; };
+    int temp = *(int *)((char *)arg0 + 0xC);
+    char *base;
+    char *entry;
+    int isSet;
+    int v0, v1;
+    int dst[12];
+    float mtx9[9];
+    Vec vec;
+    unsigned int flags;
+    int var_r8 = 1;
+    if (temp != 0 && temp != 2) var_r8 = 0;
+    flags = *(unsigned int *)((char *)arg0 + 4);
+    base = *(char **)arg0 + arg1 * 0x18;
+    entry = base + 0x28;
+    *(struct Pair *)&dst[0] = *(struct Pair *)((char *)arg0 + 0x18);
+    isSet = (flags >> 4) & 1;
+    *(struct Pair *)&dst[2] = *(struct Pair *)((char *)arg0 + 0x20);
+    *(struct Pair *)&dst[4] = *(struct Pair *)((char *)arg0 + 0x28);
+    *(struct Pair *)&dst[6] = *(struct Pair *)((char *)arg0 + 0x30);
+    dst[8] = *(int *)((char *)arg0 + 0x38);
+    *(struct Pair *)&dst[9] = *(struct Pair *)((char *)arg0 + 0x3C);
+    dst[11] = *(int *)((char *)arg0 + 0x44);
+    (void)v0; (void)v1;
+    if (*(unsigned char *)(base + 0x3C) != 0) {
+        float scale = (var_r8 != 0) ? lbl_80562F18 : lbl_80562F2C;
+        float tmp = farg0 * scale;
+        float c = lbl_80562F1C;
+        vec.x = tmp; vec.y = c; vec.z = c;
+        fn_80015A20(mtx9, &vec, tmp);
+        fn_80015B20(dst, mtx9, dst);
+    }
+    {
+        float f = *(float *)(*(char **)arg0 + 0x24);
+        *(float *)&dst[0] *= f; *(float *)&dst[1] *= f; *(float *)&dst[2] *= f;
+    }
+    {
+        int out;
+        if (isSet != 0) {
+            int idx = *(int *)((char *)arg0 + 0x10);
+            out = *(int *)(entry + idx*4 + 8);
+        } else {
+            int idx = *(int *)((char *)arg0 + 0x10);
+            out = *(int *)(entry + idx*4);
+        }
+        fn_802C70AC(out, dst, 0, fn_801F1978(*(unsigned int *)((char *)arg0 + 4)));
+    }
+}
+
 #pragma pop
 void fn_801F17C8(int unused) {
     memset(lbl_80488798, 0, 0x100);
