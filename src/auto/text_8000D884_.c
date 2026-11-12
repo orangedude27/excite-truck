@@ -27,12 +27,11 @@ extern int fn_80128658(int);
 static inline void copyName(char *dst, const char *src) {
     int n = 0x12;
     char c;
-    while (1) {
+    do {
         c = *src++;
         *dst++ = c;
         if (c == 0) return;
-        if (--n <= 0) break;
-    }
+    } while (--n > 0);
     dst[-1] = 0;
 }
 
