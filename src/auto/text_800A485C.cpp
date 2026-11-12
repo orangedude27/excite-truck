@@ -3417,11 +3417,14 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
 
 extern "C" void fn_800A4C14(void *, s32);
 extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 index, s32 type, s32 flag) {
-    if (flag) *(u8 *)out = (u8)(index | 0x40);
-    else *(u8 *)out = (u8)index;
+    if (flag) {
+        *(u8 *)out = (u8)(index | 0x40);
+    } else {
+        *(u8 *)out = (u8)index;
+    }
     u8 *dst = (u8 *)out;
-    u32 zero = 0;
     s32 slot = index - 1;
+    u32 zero = 0;
     dst[0xB] = 0xF;
     dst[0xD] = (u8)type;
     u8 *entry = entries + slot * 0x1A;
@@ -3439,12 +3442,12 @@ extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 in
         }
         for (; p < end; ++p) *p = 0xFFFF;
     }
-    VFipf_memcpy(dst + 1, entry, 10);
-    VFipf_memcpy(dst + 14, entry + 10, 12);
-    VFipf_memcpy(dst + 28, entry + 22, 4);
-    fn_800A4C14(dst + 1, 10);
-    fn_800A4C14(dst + 14, 12);
-    fn_800A4C14(dst + 28, 4);
+    VFipf_memcpy(dst + 1, entry, 0xA);
+    VFipf_memcpy(dst + 0xE, entry + 0xA, 0xC);
+    VFipf_memcpy(dst + 0x1C, entry + 0x16, 4);
+    fn_800A4C14(dst + 1, 0xA);
+    fn_800A4C14(dst + 0xE, 0xC);
+    fn_800A4C14(dst + 0x1C, 4);
 }
 
 extern "C" s32 fn_800AC1B4(void *, s32);
@@ -6641,11 +6644,12 @@ extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u32 retry = 1;
     s32 result;
     u16 value;
-    u32 mask;
+    u32 cached;
 
     if (flags & 0x80) {
+        cached = *(u32 *)((u8 *)descriptor + 0x18);
         retry = flags & 7;
-        if (*(u32 *)((u8 *)descriptor + 0x18) == sector)
+        if (cached == sector)
             goto read_value;
         if (*(u16 *)((u8 *)descriptor + 2) == 1) {
             u16 i;
@@ -6687,8 +6691,8 @@ check_result:
         goto fetch;
 
 read_value:
-    mask = scaled & (*(u16 *)object - 1);
-    value = *(u16 *)((u8 *)*(void **)((u8 *)descriptor + 8) + mask);
+    value = *(u16 *)((u8 *)*(void **)((u8 *)descriptor + 8) +
+                     (scaled & (*(u16 *)object - 1)));
     *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     return 0;
 }
@@ -8749,107 +8753,42 @@ var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, r5
 return var_r31;
 }
 
-extern "C" s32 fn_800B3A70(void *arg0, void *arg1, s32 arg2) {
-    s32 temp_r8;
-    s32 var_r9;
-    u32 temp_r0_4, temp_r0_6, temp_r5;
-    u32 var_ctr, var_ctr_2, var_ctr_3, var_ctr_4;
-    u32 var_r4_2, var_r6;
-    char *var_r3 = (char *)arg0;
-    const char *var_r4 = (const char *)arg1;
-    u8 temp_r0, temp_r0_2, temp_r0_3, temp_r0_5;
-    var_r9 = 0;
-    goto loop_check;
-loop_copy:
-    temp_r0 = *var_r4;
-    var_r9 += 1;
-    var_r4 += 1;
-    *var_r3 = temp_r0;
-    var_r3 += 1;
-    if (var_r9 >= 8) goto after_first;
-loop_check:
-    temp_r0 = *var_r4;
-    if ((s8)temp_r0 == 0) goto after_first;
-    if ((s8)temp_r0 == 0x2E) {
-        if (var_r9 != 0) goto after_first;
-        var_r9 = 0;
-        goto loop_8_check;
-    }
-    goto loop_copy;
-loop_8_check:
-    temp_r0_3 = *var_r4;
-    if ((s8)temp_r0_3 == 0) goto after_first;
-loop_8_copy:
-    temp_r0_3 = *var_r4;
-    var_r9 += 1;
-    var_r4 += 1;
-    *var_r3 = temp_r0_3;
-    var_r3 += 1;
-    if (var_r9 >= 2) goto after_first;
-    goto loop_8_check;
-after_first:
-    temp_r8 = arg2 & 8;
-    if (temp_r8 == 0) {
-        var_r6 = 8 - var_r9;
-        if (var_r9 < 8) {
-            temp_r5 = var_r6 >> 3U;
-            temp_r0_4 = var_r6;
-            var_ctr = temp_r5;
-            if (temp_r5 != 0) {
-                do {
-                    var_r3[0] = 0x20; var_r3[1] = 0x20; var_r3[2] = 0x20; var_r3[3] = 0x20;
-                    var_r3[4] = 0x20; var_r3[5] = 0x20; var_r3[6] = 0x20; var_r3[7] = 0x20;
-                    var_r3 += 8;
-                    var_ctr -= 1;
-                } while (var_ctr != 0);
-                var_r6 &= 7;
-                if (var_r6 != 0) goto block_15;
-            } else {
-block_15:
-                var_ctr_2 = var_r6;
-                do {
-                    *var_r3 = 0x20;
-                    var_r3 += 1;
-                    var_ctr_2 -= 1;
-                } while (var_ctr_2 != 0);
+extern "C" s32 fn_800B3A70(void *arg0, void *arg1, s32 flags) {
+    char *dst = (char *)arg0;
+    const char *src = (const char *)arg1;
+    s32 i = 0;
+    s32 noPad;
+    while (i < 8 && *src != 0) {
+        if (*src == '.') {
+            if (i == 0) {
+                i = 0;
+                while (i < 2 && *src != 0) {
+                    *dst++ = *src++;
+                    i++;
+                }
             }
-            var_r9 += temp_r0_4;
+            break;
+        }
+        *dst++ = *src++;
+        i++;
+    }
+    noPad = flags & 8;
+    if (noPad == 0) {
+        while (i < 8) {
+            *dst++ = ' ';
+            i++;
         }
     }
-    if ((s8)*var_r4 != 0) {
-        if (temp_r8 == 0) var_r4 += 1;
-loop_22:
-        if ((s8)*var_r4 != 0) {
-            temp_r0_5 = *var_r4;
-            var_r9 += 1;
-            var_r4 += 1;
-            *var_r3 = temp_r0_5;
-            var_r3 += 1;
-            goto loop_22;
+    if (*src != 0) {
+        if (noPad == 0) src++;
+        while (*src != 0) {
+            *dst++ = *src++;
+            i++;
         }
     }
-    var_r4_2 = 0xB - var_r9;
-    if (var_r9 < 0xB) {
-        temp_r0_6 = var_r4_2 >> 3U;
-        var_ctr_3 = temp_r0_6;
-        if (temp_r0_6 != 0) {
-            do {
-                var_r3[0] = 0x20; var_r3[1] = 0x20; var_r3[2] = 0x20; var_r3[3] = 0x20;
-                var_r3[4] = 0x20; var_r3[5] = 0x20; var_r3[6] = 0x20; var_r3[7] = 0x20;
-                var_r3 += 8;
-                var_ctr_3 -= 1;
-            } while (var_ctr_3 != 0);
-            var_r4_2 &= 7;
-            if (var_r4_2 != 0) goto block_27;
-        } else {
-block_27:
-            var_ctr_4 = var_r4_2;
-            do {
-                *var_r3 = 0x20;
-                var_r3 += 1;
-                var_ctr_4 -= 1;
-            } while (var_ctr_4 != 0);
-        }
+    while (i < 11) {
+        *dst++ = ' ';
+        i++;
     }
     return 0;
 }
@@ -18974,47 +18913,53 @@ void homebutton::Controller::clearCallback() {
     *(s32 *)((u8 *)this + 0x2C) = 0;
 }
 
-extern "C" void fn_800D1054(void *arg0, void *arg1, s32 arg2) {
-    s32 temp_r0, temp_r4, temp_r5, temp_r6_2, fb;
-    void *temp_r6, *temp_r7;
+extern "C" void fn_800D1054(void *dst, void *src, s32 copyPos) {
+    /* Copy transform/flag fields from src->object (src+0x0) into dst: optionally
+       copies position floats to dst+0x8/0xC, copies three s32 fields (obj+4/0/8)
+       to dst+0x10/0x14/0x18, then if obj type (obj+0x5C)==2 mirrors selected
+       bits from obj+0x60/0x64/0x68 into dst flags (0x10<->0x800, 0x400->0x10,
+       0x1000->0x1000, 0x800->0x8000). */
+    s32 flagsA, flagsB, flagsC, field0, fb;
+    void *obj, *obj2;
     f32 f0, f1;
-    temp_r6 = M2C_FIELD(arg1, void **, 0);
-    if (temp_r6 == 0) return;
-    if (arg2 != 0) {
-        if ((u32)M2C_FIELD(temp_r6, u32 *, 0x5C) == 2 &&
-            (u32)M2C_FIELD(arg1, u32 *, 0xC) == 2) {
-            f1 = M2C_FIELD(arg1, f32 *, 4);
-            f0 = M2C_FIELD(arg1, f32 *, 8);
-            M2C_FIELD(arg0, f32 *, 8) = f1;
-            M2C_FIELD(arg0, f32 *, 0xC) = f0;
+
+    obj = M2C_FIELD(src, void **, 0);
+    if (obj == 0) return;
+    if (copyPos != 0) {
+        if ((u32)M2C_FIELD(obj, u32 *, 0x5C) == 2 &&
+            (u32)M2C_FIELD(src, u32 *, 0xC) == 2) {
+            f1 = M2C_FIELD(src, f32 *, 4);
+            f0 = M2C_FIELD(src, f32 *, 8);
+            M2C_FIELD(dst, f32 *, 8) = f1;
+            M2C_FIELD(dst, f32 *, 0xC) = f0;
         } else {
-            f0 = M2C_FIELD(temp_r6, f32 *, 0x20);
-            fb = (s32)M2C_FIELD(arg1, s32 *, 0);
-            M2C_FIELD(arg0, f32 *, 8) = f0;
-            M2C_FIELD(arg0, f32 *, 0xC) = M2C_FIELD((void *)fb, f32 *, 0x24);
+            f0 = M2C_FIELD(obj, f32 *, 0x20);
+            fb = (s32)M2C_FIELD(src, s32 *, 0);
+            M2C_FIELD(dst, f32 *, 8) = f0;
+            M2C_FIELD(dst, f32 *, 0xC) = M2C_FIELD((void *)fb, f32 *, 0x24);
         }
     }
-    temp_r7 = M2C_FIELD(arg1, void **, 0);
-    M2C_FIELD(arg0, s32 *, 0x10) = M2C_FIELD(temp_r7, s32 *, 4);
-    temp_r6_2 = M2C_FIELD(temp_r7, s32 *, 0);
-    M2C_FIELD(arg0, s32 *, 0x14) = temp_r6_2;
-    M2C_FIELD(arg0, s32 *, 0x18) = M2C_FIELD(temp_r7, s32 *, 8);
-    if ((u32)M2C_FIELD(temp_r7, u32 *, 0x5C) == 2) {
-        temp_r0 = M2C_FIELD(temp_r7, s32 *, 0x60);
-        temp_r4 = M2C_FIELD(temp_r7, s32 *, 0x64);
-        temp_r5 = M2C_FIELD(temp_r7, s32 *, 0x68);
-        if (temp_r0 & 0x10) M2C_FIELD(arg0, s32 *, 0x14) = temp_r6_2 | 0x800;
-        if (temp_r4 & 0x10) M2C_FIELD(arg0, s32 *, 0x10) |= 0x800;
-        if (temp_r5 & 0x10) M2C_FIELD(arg0, s32 *, 0x18) |= 0x800;
-        if (temp_r0 & 0x400) M2C_FIELD(arg0, s32 *, 0x14) |= 0x10;
-        if (temp_r4 & 0x400) M2C_FIELD(arg0, s32 *, 0x10) |= 0x10;
-        if (temp_r5 & 0x400) M2C_FIELD(arg0, s32 *, 0x18) |= 0x10;
-        if (temp_r0 & 0x1000) M2C_FIELD(arg0, s32 *, 0x14) |= 0x1000;
-        if (temp_r4 & 0x1000) M2C_FIELD(arg0, s32 *, 0x10) |= 0x1000;
-        if (temp_r5 & 0x1000) M2C_FIELD(arg0, s32 *, 0x18) |= 0x1000;
-        if (temp_r0 & 0x800) M2C_FIELD(arg0, s32 *, 0x14) |= 0x8000;
-        if (temp_r4 & 0x800) M2C_FIELD(arg0, s32 *, 0x10) |= 0x8000;
-        if (temp_r5 & 0x800) M2C_FIELD(arg0, s32 *, 0x18) |= 0x8000;
+    obj2 = M2C_FIELD(src, void **, 0);
+    M2C_FIELD(dst, s32 *, 0x10) = M2C_FIELD(obj2, s32 *, 4);
+    field0 = M2C_FIELD(obj2, s32 *, 0);
+    M2C_FIELD(dst, s32 *, 0x14) = field0;
+    M2C_FIELD(dst, s32 *, 0x18) = M2C_FIELD(obj2, s32 *, 8);
+    if ((u32)M2C_FIELD(obj2, u32 *, 0x5C) == 2) {
+        flagsA = M2C_FIELD(obj2, s32 *, 0x60);
+        flagsB = M2C_FIELD(obj2, s32 *, 0x64);
+        flagsC = M2C_FIELD(obj2, s32 *, 0x68);
+        if (flagsA & 0x10) M2C_FIELD(dst, s32 *, 0x14) = field0 | 0x800;
+        if (flagsB & 0x10) M2C_FIELD(dst, s32 *, 0x10) |= 0x800;
+        if (flagsC & 0x10) M2C_FIELD(dst, s32 *, 0x18) |= 0x800;
+        if (flagsA & 0x400) M2C_FIELD(dst, s32 *, 0x14) |= 0x10;
+        if (flagsB & 0x400) M2C_FIELD(dst, s32 *, 0x10) |= 0x10;
+        if (flagsC & 0x400) M2C_FIELD(dst, s32 *, 0x18) |= 0x10;
+        if (flagsA & 0x1000) M2C_FIELD(dst, s32 *, 0x14) |= 0x1000;
+        if (flagsB & 0x1000) M2C_FIELD(dst, s32 *, 0x10) |= 0x1000;
+        if (flagsC & 0x1000) M2C_FIELD(dst, s32 *, 0x18) |= 0x1000;
+        if (flagsA & 0x800) M2C_FIELD(dst, s32 *, 0x14) |= 0x8000;
+        if (flagsB & 0x800) M2C_FIELD(dst, s32 *, 0x10) |= 0x8000;
+        if (flagsC & 0x800) M2C_FIELD(dst, s32 *, 0x18) |= 0x8000;
     }
 }
 
