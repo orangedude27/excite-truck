@@ -22147,7 +22147,9 @@ typedef struct {
     UINT16  peer_mtu;             /* 0x14 max MTU this port can send */
     UINT8   queues[0x51 - 0x16];  /* 0x16 tPORT_DATA tx and rx */
     tPORT_STATE peer_port_pars;   /* 0x51 peer's port parameters */
-    UINT8   pad5A[0x69 - 0x5A];   /* 0x5A user/peer ctrl, port_ctrl, rx flag */
+    tPORT_CTRL local_ctrl;        /* 0x5A our modem status, sent to the peer in an MSC */
+    UINT8   pad5F[0x68 - 0x5F];   /* 0x5F peer ctrl, port_ctrl, rx flag */
+    UINT8   rfc_state;            /* 0x68 tRFC_PORT.rfc.state, RFC_STATE_* */
     UINT8   expected_rsp;         /* 0x69 tRFC_PORT.rfc.expected_rsp, RFC_RSP_* */
 } tPORT_VIEW;
 #endif
