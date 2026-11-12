@@ -2064,11 +2064,24 @@ typedef struct TruckXf {
 #define TRUCK_XF(vehicle) ((TruckXf *)((char *)(vehicle) + 0x3C))
 
 /* fn_801EA18C is handed the point to drop to the terrain as whole words (the
- * truck's position) and writes the ground point back as floats. */
+ * truck's position) and writes the ground point back as floats: x, the terrain
+ * height there, z.  Its second argument comes back as the terrain's surface
+ * normal, so it is seeded with the world up for the case where the query finds
+ * nothing (fn_801EA18C -> fn_801DCE14 -> fn_801DB74C -> fn_801DB514). */
 typedef union GroundPoint {
     int word[3];
     float f[3];
 } GroundPoint;
+
+/* The truck object this controller drives, reached through its +0x294 link. */
+#define CTRL_TRUCK(controller) (*(void **)((char *)(controller) + 0x294))
+/* Truck flag: non-zero while something else holds the body tilt still. */
+#define TRUCK_TILT_FROZEN(truck) (*(int *)((char *)(truck) + 0x2620))
+/* How far below the truck's origin its ground contact sits; negative. */
+#define TRUCK_GROUND_DEPTH(truck) (*(float *)((char *)(truck) + 0x11C))
+/* Controller's sprung air value at +0x23C (fn_801941A8 springs it towards a
+ * target and hands the same value to the truck). */
+#define CTRL_AIR_VALUE(controller) (*(float *)((char *)(controller) + 0x23C))
 
 #define F_ZERO lbl_80562144 /* 0.0f */
 #define F_ONE lbl_80562140 /* 1.0f */
