@@ -1080,13 +1080,14 @@ extern "C" void fn_800ECC58(void *arg0) {
     ((void (*)(void))fn_800F27AC)();
 }
 
-s32 nw4hbm::snd::MemorySoundArchive::detail_GetFileAddress(u32 id) const {
-    struct { s32 v[13]; } local;
-    if (!fn_800F283C((void *)this, id, 0, &local.v[0])) return 0;
-    if (!fn_800F2824((void *)this, local.v[0], &local.v[8])) return 0;
-    if (!fn_800F282C((void *)this, local.v[0], local.v[1], &local.v[2])) return 0;
-    if (local.v[9] != 0) return 0;
-    return (local.v[3] + *(u32 *)((u8 *)this + 0x108)) + local.v[10];
+/* Resolve the absolute file address for a sound archive item id, or 0 if unavailable. */
+s32 nw4hbm::snd::MemorySoundArchive::detail_GetFileAddress(u32 soundId) const {
+    struct { s32 v[13]; } fileInfo;
+    if (!fn_800F283C((void *)this, soundId, 0, &fileInfo.v[0])) return 0;
+    if (!fn_800F2824((void *)this, fileInfo.v[0], &fileInfo.v[8])) return 0;
+    if (!fn_800F282C((void *)this, fileInfo.v[0], fileInfo.v[1], &fileInfo.v[2])) return 0;
+    if (fileInfo.v[9] != 0) return 0;
+    return (fileInfo.v[3] + *(u32 *)((u8 *)this + 0x108)) + fileInfo.v[10];
 }
 
 extern u8 lbl_803231D8[];
