@@ -58,6 +58,15 @@ struct CfgObj { CfgVTab* vt; };
 
 __declspec(section ".sdata") extern char lbl_8055B8B0[];
 extern char lbl_80490968[];
+struct Record74 {
+    unsigned char b0;
+    unsigned char pad[3];
+    unsigned int w4, w8, wC, w10, w14, w18, w1C, w20, w24, w28, w2C, w30;
+    float f34;
+    unsigned int w38, w3C, w40, w44, w48, w4C, w50, w54, w58;
+    float f5C, f60;
+    unsigned int w64, w68, w6C, w70;
+};
 extern char *strstr(const char *, const char *);
 extern void fn_8022C9D0(void);
 extern int fn_80232B70(int);
@@ -222,12 +231,13 @@ void fn_8022A8E4(int arg0) {
     extern void fn_802C4C80(void *);
     extern void fn_802C519C(void *);
     extern void fn_80235380(void *);
-    register unsigned int offset;
-    unsigned char *entry;
-    register const unsigned char *source;
-    register unsigned char *destination;
+    unsigned long offset;
+    register unsigned char *entry;
+    register unsigned int *destination;
+    register const unsigned int *source;
     register unsigned int b, a;
     float f0, f1;
+
     offset = arg0 * 0x74;
     entry = (unsigned char *)lbl_80490968 + offset;
     if (*(void **)(entry + 4) != 0) fn_801E4A2C(*(void **)(entry + 4));
@@ -236,44 +246,45 @@ void fn_8022A8E4(int arg0) {
     if (*(void **)(entry + 0x68) != 0) fn_802C519C(*(void **)(entry + 0x68));
     if (*(void **)(entry + 0x6c) != 0) fn_80235380(*(void **)(entry + 0x6c));
     if (*(void **)(entry + 0x70) != 0) fn_80235380(*(void **)(entry + 0x70));
-    entry[0] = *(const unsigned char *)lbl_80497D68;
-    source = (const unsigned char *)lbl_80497D68;
-    destination = (unsigned char *)lbl_80490968 + arg0 * 0x74;
-    a = *(const unsigned int *)(source + 4); b = *(const unsigned int *)(source + 8);
-    *(unsigned int *)(destination + 4) = a; a = *(const unsigned int *)(source + 0xc);
-    *(unsigned int *)(destination + 8) = b; b = *(const unsigned int *)(source + 0x10);
-    *(unsigned int *)(destination + 0xc) = a; a = *(const unsigned int *)(source + 0x14);
-    *(unsigned int *)(destination + 0x10) = b; b = *(const unsigned int *)(source + 0x18);
-    *(unsigned int *)(destination + 0x14) = a; a = *(const unsigned int *)(source + 0x1c);
-    *(unsigned int *)(destination + 0x18) = b; b = *(const unsigned int *)(source + 0x20);
-    *(unsigned int *)(destination + 0x1c) = a; a = *(const unsigned int *)(source + 0x24);
-    *(unsigned int *)(destination + 0x20) = b; b = *(const unsigned int *)(source + 0x28);
-    *(unsigned int *)(destination + 0x24) = a; a = *(const unsigned int *)(source + 0x2c);
-    *(unsigned int *)(destination + 0x28) = b; b = *(const unsigned int *)(source + 0x30);
-    *(unsigned int *)(destination + 0x2c) = a;
-    f0 = *(const float *)(source + 0x34);
-    *(unsigned int *)(destination + 0x30) = b;
-    *(float *)(destination + 0x34) = f0;
-    a = *(const unsigned int *)(source + 0x38); b = *(const unsigned int *)(source + 0x3c);
-    *(unsigned int *)(destination + 0x38) = a; a = *(const unsigned int *)(source + 0x40);
-    *(unsigned int *)(destination + 0x3c) = b; b = *(const unsigned int *)(source + 0x44);
-    *(unsigned int *)(destination + 0x40) = a; a = *(const unsigned int *)(source + 0x48);
-    *(unsigned int *)(destination + 0x44) = b; b = *(const unsigned int *)(source + 0x4c);
-    *(unsigned int *)(destination + 0x48) = a; a = *(const unsigned int *)(source + 0x50);
-    *(unsigned int *)(destination + 0x4c) = b; b = *(const unsigned int *)(source + 0x54);
-    *(unsigned int *)(destination + 0x50) = a; a = *(const unsigned int *)(source + 0x58);
-    *(unsigned int *)(destination + 0x54) = b;
-    f1 = *(const float *)(source + 0x5c);
-    *(unsigned int *)(destination + 0x58) = a;
-    f0 = *(const float *)(source + 0x60);
-    *(float *)(destination + 0x5c) = f1;
-    a = *(const unsigned int *)(source + 0x64);
-    *(float *)(destination + 0x60) = f0;
-    b = *(const unsigned int *)(source + 0x68);
-    *(unsigned int *)(destination + 0x64) = a; a = *(const unsigned int *)(source + 0x6c);
-    *(unsigned int *)(destination + 0x68) = b;
-    *(unsigned int *)(destination + 0x6c) = a;
-    *(unsigned int *)(destination + 0x70) = *(const unsigned int *)(source + 0x70);
+
+    entry[0] = *(unsigned char *)lbl_80497D68;
+    destination = (unsigned int *)((unsigned char *)lbl_80490968 + arg0 * 0x74);
+    source = (const unsigned int *)lbl_80497D68;
+    a = source[1];
+    b = source[2];
+    destination[1] = a; a = source[3];
+    destination[2] = b; b = source[4];
+    destination[3] = a; a = source[5];
+    destination[4] = b; b = source[6];
+    destination[5] = a; a = source[7];
+    destination[6] = b; b = source[8];
+    destination[7] = a; a = source[9];
+    destination[8] = b; b = source[10];
+    destination[9] = a; a = source[11];
+    destination[10] = b; b = source[12];
+    destination[11] = a; a = source[13];
+    destination[12] = b;
+    f0 = *(const float *)((const unsigned char *)source + 0x34);
+    *(float *)(destination + 13) = f0;
+    a = source[14]; b = source[15];
+    destination[14] = a; a = source[16];
+    destination[15] = b; b = source[17];
+    destination[16] = a; a = source[18];
+    destination[18] = a; a = source[20];
+    destination[17] = b; b = source[19];
+    destination[19] = b; b = source[21];
+    destination[20] = a; a = source[22];
+    destination[22] = a;
+    destination[21] = b; b = source[23];
+    f1 = *(const float *)((const unsigned char *)source + 0x5c);
+    f0 = *(const float *)((const unsigned char *)source + 0x60);
+    *(float *)(destination + 23) = f1;
+    *(float *)(destination + 24) = f0;
+    a = source[25]; b = source[26];
+    destination[25] = a; a = source[27];
+    destination[27] = a;
+    destination[26] = b; b = source[28];
+    destination[28] = b;
     entry[0] = 0;
 }
 #pragma scheduling reset
@@ -525,10 +536,11 @@ void fn_8022B390(const char *unusedLabel, const char *text, int maxChars, int *o
     *outY = y;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 int fn_8022B498(int unused, const char *arg1) {
-    int max;
     void *ctx;
+    int max;
     int value;
 
     ctx = fn_8022CA2C();
@@ -550,13 +562,15 @@ int fn_8022B498(int unused, const char *arg1) {
             result = fn_801E4A6C(font, arg1);
         }
         if (*(void **)((char *)ctx + 8) != 0) {
-            float scale = lbl_80563588;
-            if (*(float *)((char *)ctx + 0x34) >= scale) {
+            float scale;
+            if (*(float *)((char *)ctx + 0x34) < lbl_80563588) {
+                scale = lbl_80563588;
+            } else {
                 scale = *(float *)((char *)ctx + 0x34) /
                     (float)fn_80232B70(*(int *)((char *)ctx + 8));
             }
-            result = (int)(scale * ((float (*)(void *, char *, float))fn_8023293C)(
-                                      *(void **)((char *)ctx + 8), (char *)arg1, lbl_80563588));
+            result = (int)(scale * ((float (*)(void *, const char *, float))fn_8023293C)(
+                                      *(void **)((char *)ctx + 8), arg1, lbl_80563588));
         }
         flags = *(int *)((char *)ctx + 0x38);
         if (flags & 2) {
@@ -579,7 +593,7 @@ int fn_8022B498(int unused, const char *arg1) {
     }
     return max;
 }
-
+#pragma pop
 /* One of the 0x100 UI text styles of lbl_80490968, read from styles.val;
  * fn_8022CA2C(index) is the address of one.  Only the fields the text
  * measuring code uses are named here. */
