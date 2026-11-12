@@ -1153,21 +1153,22 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     return *(float *)((char *)arg0 + 0x24);
 }
 
+/* Returns this CharWriter's horizontal scale, panicking if the pointer is not in a valid address range. */
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(void *arg0) {
-    int v0 = 1;
-    int v1 = 1;
-    int v2 = 1;
-    int v3 = 1;
-    int v4 = 1;
-    int v5 = 1;
-    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
-    if ((top != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) v5 = 0;
-    if ((v5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) v4 = 0;
-    if ((v4 == 0) && (top != 0xC0000000U)) v3 = 0;
-    if ((v3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) v2 = 0;
-    if ((v2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) v1 = 0;
-    if ((v1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) v0 = 0;
-    if (v0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x21A, lbl_8032818C, arg0);
+    int isValid = 1;
+    int inRange1 = 1;
+    int inRange2 = 1;
+    int inRange3 = 1;
+    int inRange4 = 1;
+    int inRange5 = 1;
+    unsigned int topMask = (unsigned int)arg0 & 0xFF000000U;
+    if ((topMask != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) inRange5 = 0;
+    if ((inRange5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) inRange4 = 0;
+    if ((inRange4 == 0) && (topMask != 0xC0000000U)) inRange3 = 0;
+    if ((inRange3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) inRange2 = 0;
+    if ((inRange2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) inRange1 = 0;
+    if ((inRange1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) isValid = 0;
+    if (isValid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x21A, lbl_8032818C, arg0);
     return *(float *)((char *)arg0 + 0x28);
 }
 
