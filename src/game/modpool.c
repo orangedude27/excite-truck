@@ -23,24 +23,26 @@ extern char lbl_8034BCE4[];
 extern char lbl_8034BCD8[];
 extern void fn_802CE474(void *);
 __declspec(section ".sdata") extern char lbl_8055D0A8[];
-void *fn_802CE3A4(int arg0, int arg1, int arg2) {
+void *fn_802CE3A4(int slotCount, int arg1, int arg2) {
     int count;
-    void *manager;
+    void *pool;
     void *data;
-    void *size;
-    manager = fn_801284F8(0x14, lbl_8055D0A8);
-    if (manager != 0) {
-        *(int *)((char *)manager + 8) = arg0;
-        *(int *)((char *)manager + 0xC) = arg1;
+    void *storage;
+
+    /* Allocates and initializes a pooled manager: inner data block, backing storage, and a table of slotCount entries. */
+    pool = fn_801284F8(0x14, lbl_8055D0A8);
+    if (pool != 0) {
+        *(int *)((char *)pool + 8) = slotCount;
+        *(int *)((char *)pool + 0xC) = arg1;
         data = fn_801284F8(0x10, lbl_8034BCE4);
-        if (data != 0) data = ((void *(*)(void *, int, int))fn_8013420C)(data, *(int *)((char *)manager + 0xC), arg2);
-        *(void **)((char *)manager + 4) = data;
-        count = *(int *)((char *)manager + 8);
-        size = fn_8012850C((count << 6) + 0x10, lbl_8034BCD8);
-        *(void **)manager = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(size, fn_802CE474, 0, 0x40, count);
-        *(int *)((char *)manager + 0x10) = 0;
+        if (data != 0) data = ((void *(*)(void *, int, int))fn_8013420C)(data, *(int *)((char *)pool + 0xC), arg2);
+        *(void **)((char *)pool + 4) = data;
+        count = *(int *)((char *)pool + 8);
+        storage = fn_8012850C((count << 6) + 0x10, lbl_8034BCD8);
+        *(void **)pool = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(storage, fn_802CE474, 0, 0x40, count);
+        *(int *)((char *)pool + 0x10) = 0;
     }
-    return manager;
+    return pool;
 }
 
 void fn_802CE474(void *arg0) {
