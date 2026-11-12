@@ -104,28 +104,32 @@ void fn_800178F8(s32 arg0, s32 arg1) {
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-/* Match note: register count, index, id, and kind as r31-r28; disable lmw/stmw and auto-inlining to preserve the target save sequence and helper calls. */
-void fn_80017944(s32 *arg0) {
-    register s32 count;
+/* Fill a driver/vehicle pairing list from the game's fixed roster: every base
+ * driver record contributes its number and the number of the vehicle record it
+ * is assigned to, each vehicle is checked for having a car class, and the
+ * driver's alternate vehicle is re-applied when that override is switched on. */
+void fn_80017944(void *list_) {
+    register s32 driverCount;
     register s32 i;
-    register s32 id;
-    register s32 kind;
-    void *object;
-    void *resource;
+    register s32 driverNum;
+    register s32 vehicleNum;
+    EntryPairList *list = (EntryPairList *)list_;
+    DriverInfo *driver;
+    VehicleInfo *vehicle;
 
-    count = fn_800167F4();
-    *(s32 *)((char *)arg0 + 0x24) = 0;
+    driverCount = GetBaseEntryCount();
+    list->vehicleCount = 0;
     i = 0;
-    *(s32 *)arg0 = 0;
-    for (; i < count; i++) {
-        object = fn_800167B8(i);
-        id = *(s32 *)((char *)object + 4);
-        resource = fn_80016510(*(s32 *)((char *)object + 0x4C));
-        kind = *(s32 *)((char *)resource + 4);
-        fn_800178BC(arg0, id, kind);
-        fn_8001786C(kind);
-        if (fn_800178F0() != 0) {
-            fn_800178F8(id, kind);
+    list->driverCount = 0;
+    for (; i < driverCount; i++) {
+        driver = (DriverInfo *)GetBaseDriver(i);
+        driverNum = driver->number;
+        vehicle = (VehicleInfo *)GetVehicleByIndex(driver->vehicleIndex);
+        vehicleNum = vehicle->number;
+        AddDriverVehiclePair(list, driverNum, vehicleNum);
+        WarnIfUnclassifiedVehicle(vehicleNum);
+        if (VehicleOverrideEnabled() != 0) {
+            SetDriverVehicleFromTable(driverNum, vehicleNum);
         }
     }
 }
