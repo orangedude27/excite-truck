@@ -1533,16 +1533,17 @@ fallback:
 #pragma scheduling on
 #pragma pop
 extern "C" void *fn_8021AC24(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    u8 *base = (u8 *)arg0;
     s32 a = fn_802C5220(arg3);
     s32 b = fn_802C51C0(arg3);
     fn_80218F34(arg0, arg1, arg2, arg1 + b, arg2 + a, 0);
     f32 fb = lbl_805634E8;
     f32 fa = lbl_805634A8;
-    *(void **)arg0 = lbl_8033F6E0;
-    *(s32 *)((u8 *)arg0 + 0x250) = arg3;
-    *(u8 *)((u8 *)arg0 + 0x244) = 0;
-    *(f32 *)((u8 *)arg0 + 0x248) = fa;
-    *(f32 *)((u8 *)arg0 + 0x24C) = fb;
+    *(void **)base = lbl_8033F6E0;
+    *(s32 *)(base + 0x250) = arg3;
+    *(u8 *)(base + 0x244) = 0;
+    *(f32 *)(base + 0x248) = fa;
+    *(f32 *)(base + 0x24C) = fb;
     return arg0;
 }
 
@@ -1716,7 +1717,7 @@ extern "C" void fn_8021B134(void *arg0) {
     end = *(s32 *)((u8 *)arg0 + 0x25C);
     *p = value + increment;
     s32 *check = *(s32 **)((u8 *)arg0 + 0x254);
-    s32 flag = (end - start - 2) == 0;
+    int flag = end - start - 2 == 0;
     if (*check >= *(s32 *)((u8 *)arg0 + 0x25C)) {
         if (flag)
             *check = *(s32 *)((u8 *)arg0 + 0x258);
@@ -2739,17 +2740,18 @@ extern "C" void fn_8021CEAC(void *arg0) {
 
 extern char lbl_8033ECB8[];
 extern "C" void fn_8021CF9C(void *);
-extern "C" void *fn_8021CEEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 x, f32 y) {
-    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0);
-    *(s32 *)((u8 *)arg0 + 0x25C) = arg3;
-    *(void **)arg0 = lbl_8033ECB8;
-    *(f32 *)((u8 *)arg0 + 0x254) = x;
-    *(f32 *)((u8 *)arg0 + 0x258) = y;
-    *(s32 *)((u8 *)arg0 + 0x260) = arg4;
-    *(u8 *)((u8 *)arg0 + 0x264) = 0;
-    fn_80219440(arg0, 0, (void *)arg3, 4);
-    fn_8021CF9C(arg0);
-    return arg0;
+// Initialize a UI text/value object: run base setup, install vtable/fields, store source data, then refresh display.
+extern "C" void *fn_8021CEEC(void *object, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 x, f32 y) {
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(object, arg1, arg2, 0, arg5, 0, 0);
+    *(s32 *)((u8 *)object + 0x25C) = arg3;
+    *(void **)object = lbl_8033ECB8;
+    *(f32 *)((u8 *)object + 0x254) = x;
+    *(f32 *)((u8 *)object + 0x258) = y;
+    *(s32 *)((u8 *)object + 0x260) = arg4;
+    *(u8 *)((u8 *)object + 0x264) = 0;
+    fn_80219440(object, 0, (void *)arg3, 4);
+    fn_8021CF9C(object);
+    return object;
 }
 
 #pragma push
@@ -6544,16 +6546,20 @@ extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
     f32 result[11];
     f32 scaled[3];
     *(u8 *)((u8 *)arg0 + 0x299) = 1;
-    *(void **)((u8 *)arg0 + 0x29C) = fn_8022EE9C();
-    f32 sx = lbl_805634F8 * x;
-    f32 sy = lbl_805634F8 * y;
-    f32 sz = lbl_805634F8 * z;
-    scaled[0] = sx;
-    scaled[1] = sy;
-    scaled[2] = sz;
+    void *tmp = fn_8022EE9C();
+    f32 c = lbl_805634F8;
+    f32 *ps = scaled;
+    *(void **)((u8 *)arg0 + 0x29C) = tmp;
+    f32 *pr = result;
+    f32 sx = c * x;
+    f32 sy = c * y;
+    f32 sz = c * z;
+    ps[0] = sx;
+    ps[1] = sy;
+    ps[2] = sz;
     void *handle = *(void **)((u8 *)arg0 + 0x29C);
-    ((void (*)(void *, void *, f32, f32))fn_80015A20)(&result[0], &scaled[0], sx, sy);
-    fn_80015B20(handle, &result[0], handle);
+    ((void (*)(void *, void *, f32, f32))fn_80015A20)(pr, ps, sx, sy);
+    fn_80015B20(handle, pr, handle);
 }
 #pragma pop
 extern "C" f32 lbl_80563544;
