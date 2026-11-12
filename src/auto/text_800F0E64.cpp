@@ -1432,23 +1432,25 @@ extern "C" s32 ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlP
     register const void *reader = self;
     register u32 playerIndex = index;
     register void *outInfo = out;
-    register u8 *players;
+    register u8 *playerTable;
     void *player;
+
+    /* Look up a player entry by index and copy its info (playable sound count and heap size) to out. */
     if (*((u8 *)archive + 0x11) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A8, 0x6f, lbl_80324CDC);
-    players = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+    playerTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
         *((u8 *)archive + 0x10), *(u32 *)((u8 *)archive + 0x14), archive);
-    if (players == 0)
+    if (playerTable == 0)
         player = 0;
-    else if (playerIndex >= *(u32 *)players)
+    else if (playerIndex >= *(u32 *)playerTable)
         player = 0;
     else {
         playerIndex <<= 3;
         archive = *(void **)((u8 *)reader + 0x28);
-        if (players[playerIndex + 5] != 0)
+        if (playerTable[playerIndex + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559850, 0x6f, lbl_80324AF8);
         player = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-            players[playerIndex + 4], *(u32 *)(players + playerIndex + 8), archive);
+            playerTable[playerIndex + 4], *(u32 *)(playerTable + playerIndex + 8), archive);
     }
     if (player == 0)
         return 0;
