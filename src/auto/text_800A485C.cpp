@@ -3422,15 +3422,14 @@ extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 in
     } else {
         *(u8 *)out = (u8)index;
     }
-
     u8 *dst = (u8 *)out;
     u32 zero = 0;
+    s32 slot = index - 1;
     dst[0xB] = 0xF;
     dst[0xD] = (u8)type;
-    u8 *entry = &entries[(index - 1) * 0x1A];
+    u8 *entry = entries + slot * 0x1A;
     dst[0xC] = (u8)zero;
     *(u16 *)(dst + 0x1A) = (u16)zero;
-
     if (flag) {
         u16 *p = (u16 *)entry;
         u16 *end = (u16 *)(entry + 0x1A);
@@ -3447,7 +3446,6 @@ extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 in
             *p = 0xFFFF;
         }
     }
-
     VFipf_memcpy(dst + 1, entry, 0xA);
     VFipf_memcpy(dst + 0xE, entry + 0xA, 0xC);
     VFipf_memcpy(dst + 0x1C, entry + 0x16, 4);
@@ -10248,10 +10246,10 @@ s32 fn_800B6928(s8 arg0) {
         s32 result;
         u8 pad1F84[8];
         u16 flags;
+        u8 pad1F8E[0x1FC8 - 0x1F8E];
     };
     u8 *base;
     u8 *successBase;
-    u32 record;
     s16 index = fn_800A485C(arg0) - 0x41;
     Entry *entry;
     u16 flags;
@@ -10267,9 +10265,8 @@ s32 fn_800B6928(s8 arg0) {
     } else {
         fn_800B783C(base + 0x64);
     }
-    record = (u32)base + index * 0x1FC8;
-    entry = (Entry *)(record + 0xA0);
-    flags = ((volatile Entry *)entry)->flags;
+    entry = (Entry *)(base + 0xA0) + index;
+    flags = entry->flags;
     if (flags & 8) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
         entry->result = 10;
