@@ -23212,6 +23212,8 @@ void *fn_80095C64(void **head, u32 attr) {
     return NULL;
 }
 
+/* Find the next discovery-db record offering a 16-bit service UUID in its
+ * ServiceClassIDList or ServiceID attribute, starting after p_start_rec. */
 tSDP_DISC_REC *SDP_FindServiceInDb(tSDP_DISCOVERY_DB *p_db, UINT16 service_uuid, tSDP_DISC_REC *p_start_rec) {
     tSDP_DISC_REC *p_rec;
     tSDP_DISC_ATTR *p_attr;
