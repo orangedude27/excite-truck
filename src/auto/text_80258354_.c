@@ -319,26 +319,27 @@ found:
 }
 #pragma scheduling on
 #pragma pop
-float fn_80258A00(void *arg0, int arg1) {
+/* Look up a named entry in a 0x48-byte stride table and return its value via fn_80235EF0, or 0.0f if not found. */
+float fn_80258A00(void *table, int name) {
     int index = 0;
     int offset = 0;
-    int len;
+    int compareResult;
     goto check;
 loop:
-    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), (const char *)arg1);
-    if (((unsigned int)__cntlzw(len) >> 5)) {
+    compareResult = stricmp((const char *)(*(unsigned int *)((char *)table + 4) + offset), (const char *)name);
+    if (((unsigned int)__cntlzw(compareResult) >> 5)) {
         if (lbl_80563AD0) goto found;
         else goto found;
     }
     offset += 0x48;
     index++;
 check:
-    if (index < *(int *)((char *)arg0 + 8)) goto loop;
+    if (index < *(int *)((char *)table + 8)) goto loop;
     index = -1;
 found:
     if (index >= 0) {
-        unsigned int p = *(unsigned int *)((char *)arg0 + 4) + index * 0x48;
-        return fn_80235EF0(*(unsigned int *)(p + 0x40), *(unsigned int *)(p + 0x44));
+        unsigned int entry = *(unsigned int *)((char *)table + 4) + index * 0x48;
+        return fn_80235EF0(*(unsigned int *)(entry + 0x40), *(unsigned int *)(entry + 0x44));
     }
     return lbl_80563AD0;
 }
