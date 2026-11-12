@@ -831,23 +831,11 @@ f32 fn_800108C8(f32 farg0, s32 arg0) {
 extern s32 lbl_80558A90;
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
-#pragma fp_contract on
+#pragma paired_single off
+#pragma fp_contract off
 f32 fn_8001090C(f32 farg0) {
-    union {
-        f64 value;
-        u32 words[2];
-    } converted;
-    s32 raw;
-    f64 number;
-    f64 magic;
     f32 scaled;
-    raw = fn_80232B70(lbl_8055D490);
-    converted.words[1] = (u32)raw ^ 0x80000000;
-    converted.words[0] = 0x43300000;
-    number = converted.value;
-    magic = lbl_80560268;
-    scaled = (f32)(number - magic);
+    scaled = (f32)fn_80232B70(lbl_8055D490);
     return lbl_805602C8 * (farg0 * scaled);
 }
 #pragma pop
