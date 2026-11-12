@@ -163,6 +163,7 @@ void fn_802DF1B4(void) {
 }
 #pragma scheduling on
 void fn_802DF21C(void) {
+    /* Configure a simple 1-texgen, 1-stage GX TEV setup (texcoord gen, color/alpha combine passes, 1 TEV stage). */
     GXSetTexCoordGen2(0, 1, 1, 0x2A, 0, 0x7D);
     GXSetNumTexGens(1);
     GXSetTevOrder(0, 0, 0, 4);
