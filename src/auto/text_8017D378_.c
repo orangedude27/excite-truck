@@ -399,13 +399,14 @@ void fn_8017DCB4(void *arg0) {
  extern void GXInitLightAttnA_80144B44(float*,float,float,float);
  extern void fn_8017DEE0(void*,long,long,short,float); extern int fn_801E9E30(void*,int*);
  extern void fn_8017B81C(void*);
+ struct V3I8017DCB4{int x,y,z;};
  if(p[0x1FC]) { fn_8017B164(); fn_8017D380(v1,*(int*)(p+0x1F8)); *(float*)(p+0x60)=v1[0]; *(float*)(p+0x64)=v1[1]; *(float*)(p+0x68)=v1[2]; fn_8017A580(arg0); p[0x1E9]=0; p[0x1FC]=0; }
  if(*(int*)(p+0x1F0)==0 && *(float*)(p+0x1F4)<fn_8017D378()) { tag=*(unsigned*)((char*)fn_8017960C(*(int*)(p+0x1F8))+0x10); mode=1; if(tag==0x41434152) mode=2; *(int*)(p+0x1F0)=mode; }
  x=lbl_8055D430; fl=0; if((x&1)&&(x&0x88)) fl=1;
  if(fl==0) { fn_8017D380(v2,*(int*)(p+0x1F8)); *(float*)(p+0x60)=v2[0]; *(float*)(p+0x64)=v2[1]; *(float*)(p+0x68)=v2[2]; fn_8017A580(arg0); z=lbl_80561BE0; *(float*)(p+0x118)=z; *(float*)(p+0x11C)=z; *(float*)(p+0x120)=z; }
  if(!p[0x1FE]) { x=lbl_8055D430; fl=0; if((x&1)&&(x&0x80)) fl=1;
- if(fl!=0) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void*r=((struct VT8017DCB4*)obj)->f4(); if(*(int*)((char*)r+0x24)==0) { short angle; float f31; float t; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(bc.b); fn_8017E388(bc.b); fn_80160230(bc.c,a); f31=fn_8017E380(arg0); fn_8017960C(*(int*)(p+0x1F8)); t=*(float*)((char*)fn_801602B4()+0x28); bc.c[1]=t+f31; GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)bc.b,(long)d,angle,lbl_80561BE0); } } }
- v3[0]=*(int*)(p+0x60);v3[1]=*(int*)(p+0x64);v3[2]=*(int*)(p+0x68); if(fn_801E9E30(p+0x6C,v3)==0)p[0x1FC]=1; fn_8017B81C(arg0);
+ if(fl!=0) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void*r=((struct VT8017DCB4*)obj)->f2(); if(*(int*)((char*)r+0x24)==0) { short angle; float f31; float t; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(bc.b); fn_8017E388(bc.b); fn_80160230(bc.c,a); f31=fn_8017E380(arg0); fn_8017960C(*(int*)(p+0x1F8)); t=*(float*)((char*)fn_801602B4()+0x28); bc.c[1]=t+f31; GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)bc.b,(long)d,angle,lbl_80561BE0); } } }
+ *(struct V3I8017DCB4*)v3=*(struct V3I8017DCB4*)(p+0x60); if(fn_801E9E30(p+0x6C,v3)==0)p[0x1FC]=1; fn_8017B81C(arg0);
 }
 #pragma pop
 
