@@ -515,29 +515,28 @@ void fn_802E2E0C(int arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802E2E38(int arg0) {
-    typedef int (*Callback)(int, int);
     extern char lbl_8034CCE0[];
     extern int lbl_804DB790[], lbl_804DB7D0[], lbl_8055FF00;
     extern int fn_80039840(void), fn_802D9BF0(void), fn_802D9C04(void), fn_8005EE7C(void);
     extern void fn_800527CC(int), fn_8005ED8C(void), OSReturnToMenu(void), OSShutdownSystem(void);
-    Callback *cursor;
     char *text = lbl_8034CCE0;
+    int *c1;
+    int *c2;
     int i;
     int j;
-
     fn_802E30C8(text + 0xB8);
-    cursor = (Callback *)lbl_804DB790;
-    for (i = 0; i < lbl_8055FF00; i++, cursor++) {
-        if ((*cursor)(0, arg0) == 1) {
+    c1 = lbl_804DB790;
+    for (i = 0; i < lbl_8055FF00; c1++, i++) {
+        if (((int (*)(int, int))*c1)(0, arg0) == 1) {
             fn_802E30C8(text + 0xCC, lbl_804DB7D0[i]);
             return;
         }
     }
     fn_802E30C8(text + 0xE4);
     j = lbl_8055FF00 - 1;
-    cursor = (Callback *)lbl_804DB790 + j;
-    for (; j >= 0; j--, cursor--) {
-        (*cursor)(1, arg0);
+    c2 = lbl_804DB790 + j;
+    for (; j >= 0; c2--, j--) {
+        ((int (*)(int, int))*c2)(1, arg0);
     }
     fn_802E30C8(text + 0xFC);
     if (fn_80039840()) fn_802E30C8(text + 0x118);
