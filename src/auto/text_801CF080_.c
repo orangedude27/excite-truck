@@ -208,17 +208,18 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
 #pragma pop
 #pragma dont_inline on
 #pragma scheduling invalid_target
-f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
+f32 fn_801CF778(const float *point, const float *origin, const float *dir) {
+    /* Returns the squared length of (point - origin) perpendicular to dir. */
     float delta[3];
     float dot;
 
-    delta[0] = arg0[0] - arg1[0];
-    delta[1] = arg0[1] - arg1[1];
-    delta[2] = arg0[2] - arg1[2];
-    dot = -PSVECDotProduct(delta, arg2);
-    delta[0] += arg2[0] * dot;
-    delta[1] += arg2[1] * dot;
-    delta[2] += arg2[2] * dot;
+    delta[0] = point[0] - origin[0];
+    delta[1] = point[1] - origin[1];
+    delta[2] = point[2] - origin[2];
+    dot = -PSVECDotProduct(delta, dir);
+    delta[0] += dir[0] * dot;
+    delta[1] += dir[1] * dot;
+    delta[2] += dir[2] * dot;
     return PSVECDotProduct(delta, delta);
 }
 #pragma dont_inline reset
