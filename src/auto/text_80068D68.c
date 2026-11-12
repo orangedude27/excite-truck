@@ -21795,7 +21795,6 @@ void rfc_port_sm_disc_wait_ua(void *p_port, s32 event, void *p_data) {
     switch (event) {
     case 9:
     case 11:
-    default:
         if (lbl_803C4828[0x414] >= 1)
             ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90000, lbl_80319AC4, port[0x68], event);
         return;
@@ -21828,6 +21827,7 @@ void rfc_port_sm_disc_wait_ua(void *p_port, s32 event, void *p_data) {
     case 8:
     case 10:
     case 12:
+    default:
         if (lbl_803C4828[0x414] >= 2)
             ((void (*)(u32, void *, u32))fn_80070954)(0x90001, lbl_80319D48, event);
         return;
