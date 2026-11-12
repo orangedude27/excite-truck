@@ -575,43 +575,49 @@ extern f32 lbl_805602B0, lbl_805602E8;
 #pragma processor 750
 #pragma paired_single off
 #pragma scheduling on
-void fn_8000FDF0(s32 arg0, s32 arg1) {
+void fn_8000FDF0(const char *text) {
     extern f32 fn_80011E60(void);
     extern f32 fn_80011E70(void);
     extern f32 fn_8023293C(s32, f32);
     extern f32 fn_80235F64(s32, s32);
     extern f32 fn_80235EF0(s32, s32);
     extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
-    f32 scale = lbl_80560308 / (f32)fn_80232B70(lbl_8055D4C8);
-    f32 x = fn_80011E70();
-    f32 y = lbl_805602E8 + fn_80011E60();
-    f32 w = scale * ((f32 (*)(s32, s32, f32))fn_8023293C)(
-        lbl_8055D4C8, arg0, lbl_80560264);
-    f32 left = x - (lbl_8056025C * w);
+    /* Scale the UI font so a line is INTERLUDE_TEXT_HEIGHT pixels tall, and lay
+     * the text out centred on the screen's horizontal middle. */
+    f32 textScale = INTERLUDE_TEXT_HEIGHT / (f32)fn_80232B70(INTERLUDE_FONT);
+    f32 centerX = fn_80011E70();
+    f32 baseY = INTERLUDE_BOTTOM_GAP + fn_80011E60();
+    f32 textWidth = textScale * ((f32 (*)(s32, const char *, f32))fn_8023293C)(
+        INTERLUDE_FONT, text, ONE_PIXEL);
+    f32 left = centerX - (HALF_PIXEL * textWidth);
 
-    fn_800109E4(0x66000000, left - lbl_8056030C,
-                lbl_805602E8 + y, lbl_80560310 + w,
-                lbl_80560314);
-    if (lbl_8055D4C0 != 0) {
-        f32 iy = y + (lbl_8056025C * fn_80235F64(lbl_8055D4C0, 2));
+    /* Translucent panel behind the whole banner, then the end caps hanging off
+     * both ends of the text, vertically centred on the banner's middle. */
+    fn_800109E4(COLOR_PANEL, left - INTERLUDE_SIDE_PAD,
+                INTERLUDE_BOTTOM_GAP + baseY, INTERLUDE_EXTRA_WIDTH + textWidth,
+                INTERLUDE_PANEL_HEIGHT);
+    if (INTERLUDE_ART != 0) {
+        f32 capY = baseY + (HALF_PIXEL * fn_80235F64(INTERLUDE_ART, INTERLUDE_END_CAP));
         ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(
-            lbl_8055D4C0, 2,
-            (left - fn_80235EF0(lbl_8055D4C0, 2)) - lbl_8056030C,
-            iy, lbl_80560280, lbl_80560280);
+            INTERLUDE_ART, INTERLUDE_END_CAP,
+            (left - fn_80235EF0(INTERLUDE_ART, INTERLUDE_END_CAP)) - INTERLUDE_SIDE_PAD,
+            capY, DEFAULT_SCALE, DEFAULT_SCALE);
         ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(
-            lbl_8055D4C0, 2,
-            lbl_8056030C + (left + w),
-            iy, lbl_80560280, lbl_80560280);
+            INTERLUDE_ART, INTERLUDE_END_CAP,
+            INTERLUDE_SIDE_PAD + (left + textWidth),
+            capY, DEFAULT_SCALE, DEFAULT_SCALE);
     }
     {
-        f32 ty = lbl_805602B0 + y;
-        fn_802337A0(lbl_80560264 + x, lbl_8055D4C8,
-                    ty - lbl_80560264, 0xFF000000,
-                    lbl_80560280, scale, 0x14, lbl_80560264,
-                    (const char *)&lbl_80558AA4, arg0);
-        fn_802337A0(x, lbl_8055D4C8, ty, -1,
-                    lbl_80560280, scale, 0x14, lbl_80560264,
-                    (const char *)&lbl_80558AA4, arg0);
+        /* Black copy one pixel down and right of the white text; both are drawn
+         * centred on their pen point (TEXT_ALIGN_CENTER). */
+        f32 textY = TEXT_SHADOW_OFFSET + baseY;
+        fn_802337A0(ONE_PIXEL + centerX, INTERLUDE_FONT,
+                    textY - ONE_PIXEL, COLOR_TEXT_SHADOW,
+                    DEFAULT_SCALE, textScale, TEXT_ALIGN_CENTER, ONE_PIXEL,
+                    (const char *)&lbl_80558AA4, text);
+        fn_802337A0(centerX, INTERLUDE_FONT, textY, COLOR_TEXT,
+                    DEFAULT_SCALE, textScale, TEXT_ALIGN_CENTER, ONE_PIXEL,
+                    (const char *)&lbl_80558AA4, text);
     }
 }
 #pragma pop
