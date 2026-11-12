@@ -34,6 +34,7 @@ DECL_WEAK void* __sys_alloc(size_t size) {
 }
 
 DECL_WEAK void __sys_free(void* block) {
+    /* Free a block to the current OS heap, initializing the default heap when none is selected. */
     if (__OSCurrHeap == -1) {
         InitDefaultHeap();
     }
