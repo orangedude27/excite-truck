@@ -1,3 +1,9 @@
+// RVL_SDK DVD waiting queue (dvdqueue.c).  One circular list per request
+// priority holds the DVDCommandBlocks that could not start yet; the heads are
+// the WaitingQueue array and an empty list is a head that points to itself.
+// A block is linked in through its next/prev fields (+0x00/+0x04), which is why
+// every function below casts a head to DVDCommandBlock*.  All of the pointer
+// surgery runs between OSDisableInterrupts() and OSRestoreInterrupts().
 #include <revolution/DVD.h>
 
 typedef struct DVDWaitingQueue {
