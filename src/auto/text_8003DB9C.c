@@ -3286,6 +3286,9 @@ typedef enum _GXChannelID {
     GX_COLOR_NULL = 255
 } GXChannelID;
 
+// GXBool of include/revolution/GX/GXTypes.h.
+typedef unsigned char GXBool;
+
 // Where a channel's color comes from: the XF register or the vertex.
 typedef enum _GXColorSrc { GX_SRC_REG, GX_SRC_VTX } GXColorSrc;
 
