@@ -416,6 +416,7 @@ extern u8 lbl_80326FD8[];
 extern u8 lbl_80326FEC[];
 #pragma pop
 extern "C" s32 Destroy__Q46nw4hbm3snd6detail10TaskThreadFv(void *arg0) {
+    /* Stop the NW4HBM sound task thread and wait for it to exit. */
     if (*(u8 *)((u8 *)arg0 + 0x2360) == 0) return 0;
     if ((s8)lbl_8055DE80 == 0) {
         lbl_8041B138[0x2360] = 0;
