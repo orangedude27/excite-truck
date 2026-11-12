@@ -14105,6 +14105,37 @@ BOOLEAN WBT_ExtCreateRecord(void) {
 #define gap_find_addr_result(cb)  ((u16 *)((u8 *)(cb) + 0x34))                  /* status for that callback, its BD_ADDR at +2, the name looked for at +8 */
 #define gap_find_addr_busy(cb)    (((u8 *)(cb))[0x7E])                          /* set while the request is running */
 
+/* How many connections GAP can have at once (gap_int.h's GAP_NUM_CONNECTIONS);
+   the control block's array of them starts at +0xAC. */
+#define GAP_NUM_CONNECTIONS 8
+
+/* Where a GAP connection is in its setup (gap_int.h's tGAP_CONN_STATE); the
+   values are the game's, read off what its callbacks store in state. */
+typedef enum {
+    GAP_CONN_STATE_DISCONNECTED,    /* the block is free */
+    GAP_CONN_STATE_WF_SEC_CMP,      /* waiting for BTM security to clear the peer */
+    GAP_CONN_STATE_WF_L2CA_CONN,    /* L2CA_ConnectReq sent, waiting for its confirm */
+    GAP_CONN_STATE_WF_L2CA_CFG,     /* channel up, both sides still configuring */
+    GAP_CONN_STATE_OPEN             /* configured: data can flow */
+} tGAP_CONN_STATE;
+
+/* One GAP connection (gap_int.h's tGAP_CONNECTION), as far as this unit reaches
+   into it; only the fields it uses are named. */
+typedef struct {
+    u8                  state;          /* +0x00 a tGAP_CONN_STATE */
+    u8                  conn_flags;     /* +0x01 2: the peer's configuration is done, 4: ours is */
+    u8                  pad_02[2];
+    u16                 id;             /* +0x04 the GAP handle the client was given */
+    u16                 cid;            /* +0x06 the L2CAP channel it rides on */
+    u8                  wildcard;       /* +0x08 the BD_ADDR below stands for any address */
+    BD_ADDR             bd_addr;        /* +0x09 the peer's address */
+    u16                 psm;            /* +0x10 the PSM the client registered for */
+    u16                 rem_mtu;        /* +0x12 MTU the peer's configuration allows (clamped to 0x69B) */
+    BUFFER_Q            pending_data;   /* +0x14 buffers that arrived before the client had a callback */
+    tGAP_CONN_CALLBACK *p_conn_cb;      /* +0x20 the client's callback, called with a GAP_EVT_CONN_* */
+    u8                  my_cfg[0x3C];   /* +0x24 the tL2CAP_CFG_INFO we ask L2CAP for (the game's is smaller than l2c_api.h's) */
+} tGAP_CONN_VIEW;                       /* 0x60 */
+
 void GAP_Init(void) {
     memset(lbl_803C3740, 0, 0x3AC);
     *(void **)(lbl_803C3740 + 0x20) = fn_800833E8;
