@@ -1774,6 +1774,50 @@ extern void fn_80119288(void *, f32);
 extern s32 fn_80119300(void *, s32, s32);
 extern s32 fn_8011943C(void *, s32);
 extern s32 fn_801199A4(void *, s32);
+
+/* The pair of AX voices a stream is played through, plus the PCM ring buffers
+   they read. fn_8011943C sets both voices' AX state, fn_80119300 clears a range
+   of the buffers and fn_801199A4 re-applies their sample-range parameters. */
+typedef struct VoicePair {
+    s32 voice0;   /* 0x00 AX voice handle, left or mono */
+    s32 voice1;   /* 0x04 AX voice handle, right */
+    void *buf0;   /* 0x08 PCM buffer the voices read, left or mono */
+    void *buf1;   /* 0x0C PCM buffer, right */
+    char pad_10[8];
+    s32 length;   /* 0x18 ring size in bytes */
+} VoicePair;
+
+/* Streaming PCM player: fn_80119DD0 opens it and installs the callbacks below,
+   fn_801195D8 copies decoded samples into the voice buffers as a ring of
+   voices.length bytes, and 0xBC counts the bytes still left to play. */
+typedef struct StreamPlayer {
+    void *tick;         /* 0x00 fn_80119824, called every frame while playing */
+    void *field_04;     /* 0x04 */
+    void *field_08;     /* 0x08 */
+    void *setVolume;    /* 0x0C fn_80119AB0 */
+    void *setPan;       /* 0x10 fn_80119B38 */
+    void *setPause;     /* 0x14 fn_80119CB0 */
+    void *setPlay;      /* 0x18 fn_80119C0C, this one */
+    void *release;      /* 0x1C fn_80119D40 */
+    char pad_20[0x44];
+    s32 playing;        /* 0x64 */
+    char pad_68[8];
+    s32 sampleRate;     /* 0x70 */
+    s32 field_74;       /* 0x74 */
+    s32 channels;       /* 0x78 1 = mono, 2 = stereo */
+    VoicePair voices;   /* 0x7C */
+    char pad_98[8];
+    s32 field_A0;       /* 0xA0 sample rate again */
+    s32 volume;         /* 0xA4 */
+    s32 pan0;           /* 0xA8 */
+    s32 pan1;           /* 0xAC */
+    s32 looping;        /* 0xB0 keep the voices running when the buffer runs dry */
+    s32 paused;         /* 0xB4 */
+    s32 writePos;       /* 0xB8 where the next decoded byte goes in the ring */
+    s32 bytesToPlay;    /* 0xBC bytes still to play before the stream ends */
+    s32 preFill;        /* 0xC0 bytesToPlay to arm the ring with on start */
+} StreamPlayer;
+
 #pragma optimization_level 4
 s32 fn_80119C0C(void *arg0, s32 arg1) {
     u8 *base = (u8 *)arg0;
