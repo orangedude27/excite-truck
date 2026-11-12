@@ -89,19 +89,27 @@ void fn_802022A0(int *arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_802022E4(const Vec *arg0) {
-    float bestDist = lbl_805630A0;
-    int offset = 0;
-    int best = 0;
-    int i = 0;
-    while (i < lbl_8055ECC0) {
-        float d = PSVECSquareDistance(arg0, (const Vec *)((char *)lbl_8055ECC4 + offset));
-        if (d < bestDist) {
-            bestDist = d;
-            best = i;
-        }
-        offset += 0x10;
-        i++;
+    register float bestDist;
+    register int offset;
+    register int best;
+    register int i;
+    register float d;
+    bestDist = lbl_805630A0;
+    offset = 0;
+    best = 0;
+    i = 0;
+    goto test;
+loop:
+    d = PSVECSquareDistance(arg0, (const Vec *)((char *)lbl_8055ECC4 + offset));
+    if (d < bestDist) {
+        bestDist = d;
+        best = i;
     }
+    offset += 0x10;
+    i += 1;
+test:
+    if (i < lbl_8055ECC0)
+        goto loop;
     return best;
 }
 #pragma pop
@@ -360,49 +368,44 @@ test:
     fn_802CE4F4(lbl_8055ECC8);
 }
 void fn_802029FC(void) {
-    /* Re-apply the current one-second pulse to every model picked out for this
-     * frame: the time left in the current second, 1.0 - fmod(time, 1.0), is
-     * turned into an effect record by fn_802C7A3C and handed to each listed
-     * model together with an identity transform. */
-    extern double lbl_805630A8;                            /* 1.0: pulse period, in seconds */
-    extern float lbl_805630A4, lbl_805630B0, lbl_805630B4; /* 0.0f, 1.0f, 50.0f */
+    /* Compute a color/intensity value from current time and apply it to each active entry in lbl_804888E0. */
+    extern double lbl_805630A8;
+    extern float lbl_805630A4, lbl_805630B0, lbl_805630B4;
     extern int lbl_804888E0[];
     extern float fn_801E7E18(void);
     extern double fn_8002EFB4();
     extern int fn_802C7A3C(float, float, float);
     extern void fn_802C70AC(int, float *, int, int);
+    float color[12];
+    float timeValue;
+    int *base, *entry;
+    int computedValue, index;
 
-    struct ModelTransform identity;
-    float time;
-    struct ModelIdList *list;
-    int *entry;
-    int effect, index;
-
-    time = fn_801E7E18();
-    effect = fn_802C7A3C(lbl_805630B0 - (float)fn_8002EFB4(time, lbl_805630A8),
-                         lbl_805630A4, lbl_805630B4);
-    identity.basis[0].x = lbl_805630B0;
-    identity.basis[0].y = lbl_805630A4;
-    identity.basis[0].z = lbl_805630A4;
-    identity.basis[1].x = lbl_805630A4;
-    identity.basis[1].y = lbl_805630B0;
-    identity.basis[1].z = lbl_805630A4;
-    identity.basis[2].x = lbl_805630A4;
-    identity.basis[2].y = lbl_805630A4;
-    identity.basis[2].z = lbl_805630B0;
-    identity.translate.x = lbl_805630A4;
-    identity.translate.y = lbl_805630A4;
-    identity.translate.z = lbl_805630A4;
+    timeValue = fn_801E7E18();
+    computedValue = fn_802C7A3C(lbl_805630B0 - (float)fn_8002EFB4(timeValue, lbl_805630A8),
+                                lbl_805630A4, lbl_805630B4);
+    color[0] = lbl_805630B0;
+    color[1] = lbl_805630A4;
+    color[2] = lbl_805630A4;
+    color[3] = lbl_805630A4;
+    color[4] = lbl_805630B0;
+    color[5] = lbl_805630A4;
+    color[6] = lbl_805630A4;
+    color[7] = lbl_805630A4;
+    color[8] = lbl_805630B0;
+    color[9] = lbl_805630A4;
+    color[10] = lbl_805630A4;
+    color[11] = lbl_805630A4;
     entry = lbl_804888E0;
-    list = (struct ModelIdList *)entry;
+    base = entry;
     index = 0;
     goto test;
 loop:
-    fn_802C70AC(*entry, (float *)&identity, effect, 8);
+    fn_802C70AC(*entry, color, computedValue, 8);
     entry++;
     index++;
 test:
-    if (index < list->count)
+    if (index < base[0x20])
         goto loop;
 }
 
@@ -428,18 +431,15 @@ int fn_802C7040(int);
 void fn_802C7A50(void);
 #pragma push
 #pragma scheduling on
-#pragma peephole off
 void fn_80202AD4(float *arg0) {
     float c, b, a;
-    int flag;
     a = arg0[0];
-    flag = 1;
     b = arg0[1];
     c = arg0[2];
     ((float *)lbl_80488964)[0] = a;
     ((float *)lbl_80488964)[1] = b;
     ((float *)lbl_80488964)[2] = c;
-    lbl_8055ECE0 = flag;
+    lbl_8055ECE0 = 1;
 }
 #pragma pop
 int fn_80202B00(void) {
