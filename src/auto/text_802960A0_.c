@@ -284,38 +284,39 @@ extern char *strncpy(char *, const char *, unsigned int);
 extern char lbl_80349348[], lbl_80349354[];
 extern void fn_80296D24(void);
 #pragma use_lmw_stmw off
-void fn_80296838(void *arg0) {
+void fn_80296838(void *obj) {
     int offset;
     int i;
-    int entryAddress;
+    int entryPtr;
     int state;
-    void *list;
+    void *entries;
 
-    if (arg0 == 0) {
+    /* Destroy: release each active entry's resource (state at +0x18, -1/-2 unused) via fn_802CAC54 and mark freed, then free the 0x30-sized entry array and the object. */
+    if (obj == 0) {
         return;
     }
-    list = *(void **)((char *)arg0 + 0x24);
-    if (list != 0) {
+    entries = *(void **)((char *)obj + 0x24);
+    if (entries != 0) {
         i = 0;
         offset = 0;
-        while (i < *(int *)((char *)arg0 + 0x2C)) {
-            list = *(void **)((char *)arg0 + 0x24);
-            entryAddress = (int)list + offset;
-            state = *(int *)(entryAddress + 0x18);
+        while (i < *(int *)((char *)obj + 0x2C)) {
+            entries = *(void **)((char *)obj + 0x24);
+            entryPtr = (int)entries + offset;
+            state = *(int *)(entryPtr + 0x18);
             if (state != -1 && state != -2) {
                 fn_802CAC54(state);
-                *(int *)(entryAddress + 0x18) = -2;
+                *(int *)(entryPtr + 0x18) = -2;
             }
             offset += 0x30;
             i++;
         }
-        list = *(void **)((char *)arg0 + 0x24);
-        if (list != 0) {
-            fn_80128670((char *)list - 0x10);
+        entries = *(void **)((char *)obj + 0x24);
+        if (entries != 0) {
+            fn_80128670((char *)entries - 0x10);
         }
-        *(void **)((char *)arg0 + 0x24) = 0;
+        *(void **)((char *)obj + 0x24) = 0;
     }
-    fn_80128668(arg0);
+    fn_80128668(obj);
 }
 #pragma use_lmw_stmw on
 void fn_802968E8(void *arg0) {
