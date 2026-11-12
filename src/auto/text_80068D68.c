@@ -9840,6 +9840,8 @@ tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT
     u8 start = 1;
     u8 result = 1;
     u8 status = 1;
+
+    /* Start a remote-name request if idle, or attach to an in-progress inquiry request for the same device. */
     if (!fn_80079514()) return 6;
     active = base[0x16AE];
     if (active & origin) goto return2;
@@ -15965,24 +15967,23 @@ u8 HID_HostOpenDev(u32 arg0) {
 }
 
 u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, BT_HDR *pbuf) {
-    typedef struct { char m0[0x18]; char m1[0x18]; char m2[0x30]; } HID_Msgs;
-    HID_Msgs *messages = (HID_Msgs *)lbl_80317720;
+    u32 messages = (u32)lbl_80317720;
     u8 status = 0;
 
     if (lbl_803C3C38[0x400] == 0) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages->m0);
+            fn_8007093C(0x1E0000, (char *)(messages + 0));
         status = 1;
     }
     if ((dev_handle > 0x10) ||
         (*((u8 *)lbl_803C3C38 + dev_handle * 0x34) == 0)) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages->m1);
+            fn_8007093C(0x1E0000, (char *)(messages + 0x18));
         status = 5;
     }
     if (*((u8 *)lbl_803C3C38 + dev_handle * 0x34 + 0xA) != 1) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_80070954(0x1E0000, messages->m2, dev_handle);
+            fn_80070954(0x1E0000, (char *)(messages + 0x30), dev_handle);
         status = 4;
     }
     if (status != 0) {
