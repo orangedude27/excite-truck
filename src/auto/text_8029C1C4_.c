@@ -170,37 +170,37 @@ void fn_8029C450(void *arg0, int arg1) {
     extern int lbl_8055F7F0, lbl_8055F7F4;
     extern int lbl_804B5010[], lbl_804B5030[];
     extern float lbl_80558DC4, lbl_80564638, lbl_8056463C;
-    float f30;
-    float tmp;
     float f31;
+    float tmp;
+    float f30;
     void **p;
-    int n, i;
+    int i, n;
     f30 = lbl_80564638;
     tmp = fn_801E7E24();
     if (!((float)__fabs((double)tmp) <= lbl_80558DC4)) {
         f31 = lbl_8056463C;
-        n = 0;
+        i = 0;
         p = (void **)arg0;
-        while (n < arg1) {
+        while (i < arg1) {
             if (((float *)p)[2] < f30 &&
                 ((float *)p[0])[0x50 / 4] > f31 &&
                 ((unsigned char *)p)[0xC] != 0) {
-                i = 0;
-                while (i < lbl_8055F7F0) {
-                    fn_8029D7D0(lbl_804B5010[i], p);
-                    i++;
+                n = 0;
+                while (n < lbl_8055F7F0) {
+                    fn_8029D7D0(lbl_804B5010[n], p);
+                    n++;
                 }
-                i = 0;
-                while (i < lbl_8055F7F4) {
-                    fn_8029EA34((void *)lbl_804B5030[i], p);
-                    i++;
+                n = 0;
+                while (n < lbl_8055F7F4) {
+                    fn_8029EA34((void *)lbl_804B5030[n], p);
+                    n++;
                 }
                 if (fn_802BF4F0() != 0) {
                     fn_8029CD48(p[0]);
                 }
             }
             p = (void **)((char *)p + 0x10);
-            n++;
+            i++;
         }
     }
 }
@@ -458,8 +458,8 @@ extern "C" void fn_8029CBA0(void) {
     };
     union ScratchValue { float f; int i; };
     volatile ScratchValue scratch[40];
-    register float var_f31 = *(volatile float *)&lbl_80564654;
     int *var_r31 = (int *)&lbl_8034968C;
+    register float var_f31 = *(volatile float *)&lbl_80564654;
     Dummy *obj;
     obj = (Dummy *)fn_802AE414(&lbl_8055CAC8);
     if (obj != 0) {
@@ -469,7 +469,7 @@ extern "C" void fn_8029CBA0(void) {
     if (fn_802BF4F0() != 0 || lbl_8055F7F0 > 0 || lbl_8055F7F4 > 0) {
         register float zero, high, scale, low, far;
         register int two, five;
-        register unsigned int size;
+        register unsigned short size;
         fn_8028E61C((int *)&scratch[6]);
         zero = *(volatile float *)&lbl_80564658;
         two = 2;
@@ -981,7 +981,7 @@ calculate:
         int row;
         int base;
         volatile short *heights;
-        short north, east, south, west;
+        int north, east, south, west;
         float dx, dz, nx, nz;
 
         row = z * width;
@@ -1167,7 +1167,6 @@ int fn_8029DFE0(void *arg0, void *arg1) {
     float v = z * *(float *)((char *)arg0 + 0x50) + x * *(float *)((char *)arg0 + 0x4C);
     float upper = (float)*(int *)((char *)arg0 + 0xC) - lbl_805646A0;
     int result = 0, inside = 0, test = 0;
-
     delta.x = x;
     delta.z = z;
     if (u >= lbl_8056465C - lbl_80558DC4 &&
@@ -1369,6 +1368,7 @@ void fn_8029E8E0(float *arg0, int arg1) {
     struct Vec3 sp8;
     float f30, f31, radius, norm;
     int i;
+    int b, a;
     fn_802C8BD0(*(int *)((char *)arg0 + 0x40));
     if (fn_802C8DBC(4) != 0) {
         struct ReverseVec3 *view;
@@ -1393,12 +1393,14 @@ void fn_8029E8E0(float *arg0, int arg1) {
                 radius = y * y + len2;
                 norm = (float)fn_8002F234(radius);
                 norm = f31 / norm;
-                fn_802C8E00(-1, (unsigned int)(i >> 1), arg0[0], arg0[1], arg0[2],
-                    f31 + sp8.z * norm, f31 + sp8.x * norm);
+                b = (i ^ 1) & i;
+                a = (i ^ 1) >> 1;
+                fn_802C8E00(-1, (unsigned int)(a - b) >> 31, arg0[0], arg0[1], arg0[2],
+                    f31 + sp8.x * norm, f31 + sp8.z * norm);
             }
             i++;
             arg0 += 3;
-        } while (i < 4);
+        } while ((unsigned int)i < 4);
         fn_802C8E48();
     }
     fn_802C8D74();
@@ -1407,31 +1409,34 @@ void fn_8029E8E0(float *arg0, int arg1) {
 extern void fn_8029EC64(void *, int);
 extern float lbl_805646A8;
 #pragma scheduling on
-void fn_8029EA34(void *arg0, void **__restrict arg1) {
-    void *temp = *arg1;
-    float radius, x0, x1, z0, z1, radius_sq, dz, dx, dz2, dx2, distance_sq;
-    int offset, i;
-    radius = *(float *)((char *)arg0 + 0x3C);
-    z1 = *(float *)((char *)temp + 0x2C);
-    z0 = *(float *)((char *)arg0 + 0x38);
-    radius_sq = radius * radius;
-    x1 = *(float *)((char *)temp + 0x24);
-    x0 = *(float *)((char *)arg0 + 0x30);
-    dz = z1 - z0;
-    dx = x1 - x0;
-    dz2 = dz * dz;
-    dx2 = dx * dx;
-    distance_sq = dx2 + dz2;
-    if (!(distance_sq > radius_sq)) {
-        i = 0;
+void fn_8029EA34(void *area, void **__restrict targetRef) {
+    /* If target (*targetRef) is within area's XZ radius, test each of its 4
+     * 0x3C-byte entries (flag at +0x9C, bit 3 clear) against area via fn_8029EC64. */
+    void *target = *targetRef;
+    float radius, areaX, targetX, areaZ, targetZ, radiusSq, dz, dx, dzSq, dxSq, distSq;
+    int offset, index;
+
+    radius = *(float *)((char *)area + 0x3C);
+    targetZ = *(float *)((char *)target + 0x2C);
+    areaZ = *(float *)((char *)area + 0x38);
+    radiusSq = radius * radius;
+    targetX = *(float *)((char *)target + 0x24);
+    areaX = *(float *)((char *)area + 0x30);
+    dz = targetZ - areaZ;
+    dx = targetX - areaX;
+    dzSq = dz * dz;
+    dxSq = dx * dx;
+    distSq = dxSq + dzSq;
+    if (!(distSq > radiusSq)) {
+        index = 0;
         offset = 0;
         do {
-            void *base = *arg1;
+            void *base = *targetRef;
             if (!(*(unsigned int *)((char *)base + offset + 0x9C) & 8))
-                ((void (*)(void *, void *, int))fn_8029EC64)(arg0, base, i);
-            i++;
+                ((void (*)(void *, void *, int))fn_8029EC64)(area, base, index);
+            index++;
             offset += 0x3C;
-        } while (i < 4);
+        } while (index < 4);
     }
 }
 int fn_8029EAE8(void *arg0) {
