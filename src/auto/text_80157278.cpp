@@ -507,8 +507,6 @@ extern "C" void* fn_80131808(void*);
 extern "C" void fn_80131818(void*);
 extern "C" void fn_801345D8(void*, s32, void*, ...);
 struct VObj {
-    virtual void vslot0();
-    virtual void vslot1();
     virtual VObj* vslot2(const void*);
     virtual void vslot3();
     virtual s32 vslot4(const void*);
@@ -546,71 +544,48 @@ extern "C" char lbl_8055A044[];
 extern "C" char lbl_8055A048[];
 extern "C" char lbl_8055A050[];
 extern "C" char lbl_8055A054[];
-extern "C" void fn_80157560(void *arg0) {
-    void *a;
-    void *b0;
-    void *b1;
-    void *p;
-    f32 best;
-    void *iter;
-    s32 idx;
-    s32 s28;
-    s32 s22;
-    s32 s29;
-    f32 f1v;
-    s32 cnt;
-
-    a = fn_80131810(lbl_8032EAD4);
-    b0 = fn_80131808(lbl_8032EAE0);
+extern "C" void fn_80157560(VObj *arg0) {
+    VObj *a = (VObj *)fn_80131810(lbl_8032EAD4);
+    VObj *b0 = (VObj *)fn_80131808(lbl_8032EAE0);
+    VObj *b1;
     if (a == 0) {
         a = b0;
     }
-    p = ((void *(*)(void *))(*(void ***)arg0 + 28))(arg0);
-    if (((s32 (*)(void *, void *))(*(void ***)a + 4))(a, p) != 0) {
-        b1 = ((void *(*)(void *, void *))(*(void ***)a + 2))(a, p);
+    const void *p = arg0->vslot28();
+    if (a->vslot4(p) != 0) {
+        b1 = a->vslot2(p);
+    } else if (b0->vslot4(p) != 0) {
+        b1 = b0->vslot2(p);
     } else {
-        if (((s32 (*)(void *, void *))(*(void ***)b0 + 4))(b0, p) != 0) {
-            b1 = ((void *(*)(void *, void *))(*(void ***)b0 + 2))(b0, p);
-        } else {
-            b1 = ((void *(*)(void *, void *))(*(void ***)b0 + 2))(b0, &lbl_8055A030);
-        }
+        b1 = b0->vslot2(lbl_8055A030);
     }
     if (b1 != 0) {
-        best = lbl_80561754;
-        iter = ((void *(*)(void *, s32))(*(void ***)b1 + 24))(b1, 0);
-        idx = 0;
+        f32 best = lbl_80561754;
+        s32 idx = 0;
+        VObj *iter = b1->vslot24(0);
         while (iter != 0) {
-            s28 = ((s32 (*)(void *, void *))(*(void ***)iter + 7))(iter, lbl_8055A038);
-            s22 = ((s32 (*)(void *, void *, void *))(*(void ***)iter + 6))(iter, lbl_8055A040, lbl_8055A044);
-            s29 = ((s32 (*)(void *, void *, s32))(*(void ***)iter + 8))(iter, lbl_8055A048, 0);
-            f1v = ((f32 (*)(void *, void *, f32))(*(void ***)iter + 10))(iter, lbl_8055A050, lbl_80561754);
+            s32 s28 = iter->vslot7(lbl_8055A038);
+            s32 s22 = iter->vslot6(lbl_8055A040, lbl_8055A044);
+            s32 s29 = iter->vslot8(lbl_8055A048, 0);
+            f32 f1v = iter->vslot10(lbl_8055A050, lbl_80561754);
             if (f1v < best) {
-                void *tmp = ((void *(*)(void *, void *))(*(void ***)b0 + 2))(b0, &lbl_8055A030);
-                f1v = ((f32 (*)(void *, f32))(*(void ***)tmp + 9))(tmp, lbl_80561754);
+                f1v = b0->vslot2(lbl_8055A030)->vslot24(idx)->vslot9(lbl_8055A050);
             }
-            cnt = (s32)((char *)arg0 + 0xC);
-            if (cnt != 0) {
-                s32 off;
-                off = s28 * 0x38;
-                {
-                    char *base = (char *)arg0 + 8;
-                    char *rec = base + off;
-                    *(s32 *)(base + off) = 0;
-                    *(s32 *)(rec + 4) = 0;
-                    *(s32 *)(rec + 8) = 0;
-                    *(f32 *)(rec + 12) = best;
-                    *(f32 *)(rec + 16) = f1v;
-                    *(s32 *)(rec + 20) = s29;
-                    fn_801345D8(rec + 24, 0x20, lbl_8055A054, s22, rec);
-                    idx = idx + 1;
-                    iter = ((void *(*)(void *, s32))(*(void ***)b1 + 24))(b1, idx);
-                }
-            } else {
-                iter = 0;
-            }
+            char *base = *(char **)((char *)arg0 + 8);
+            char *rec = base + s28 * 0x38;
+            *(s32 *)((char *)arg0 + 0xC) += 1;
+            *(s32 *)rec = 0;
+            *(s32 *)(rec + 4) = 0;
+            *(s32 *)(rec + 8) = 0;
+            *(f32 *)(rec + 12) = best;
+            *(f32 *)(rec + 16) = f1v;
+            *(s32 *)(rec + 20) = s29;
+            fn_801345D8(rec + 24, 0x20, lbl_8055A054, s22);
+            idx++;
+            iter = b1->vslot24(idx);
         }
     }
-    if ((u32)a != (u32)b0) {
+    if (a != b0) {
         fn_80131818(a);
     }
     fn_80131818(b0);
