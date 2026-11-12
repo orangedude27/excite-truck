@@ -17927,6 +17927,40 @@ initial_done:
     }
 }
 
+void l2c_link_hci_conn_req(u8 *bd_addr)
+{
+    void *p_buf;
+    tL2C_LCB_VIEW *p_lcb;
+    p_buf = GKI_getpoolbuf(2);
+    if (p_buf == 0)
+        return;
+    p_lcb = (tL2C_LCB_VIEW *)l2cu_find_lcb_by_bd_addr(bd_addr);
+    if (p_lcb == 0) {
+        p_lcb = (tL2C_LCB_VIEW *)l2cu_allocate_lcb(bd_addr);
+        if (p_lcb == 0) {
+            btsnd_hcic_reject_conn(p_buf, bd_addr, 0x14);
+            if (lbl_803C4040[0] >= 1)
+                fn_8007093C(0x80000, lbl_80318BE8);
+        } else {
+            p_lcb->link_role = fn_8008D7C4();
+            btsnd_hcic_accept_conn(p_buf, bd_addr, p_lcb->link_role);
+            p_lcb->link_state = 3;
+            btu_start_timer(&p_lcb->timer_entry, 2, 0x3C);
+        }
+    } else {
+        if (p_lcb->link_state == 3 || p_lcb->link_state == 1) {
+            btsnd_hcic_accept_conn(p_buf, bd_addr, p_lcb->link_role);
+            p_lcb->link_state = 3;
+        } else if (p_lcb->link_state == 5) {
+            btsnd_hcic_reject_conn(p_buf, bd_addr, 0x15);
+        } else {
+            if (lbl_803C4040[0] >= 1)
+                fn_8007093C(0x80000, lbl_80318C08);
+            GKI_freebuf(p_buf);
+        }
+    }
+}
+
 /*******************************************************************************
 **
 ** Function         l2c_link_hci_conn_comp
