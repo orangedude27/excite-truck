@@ -262,6 +262,9 @@ s32 fn_80134A44(s32 arg0) {
   }
 
 #pragma scheduling invalid_target
+/* Flushes per-entry pending changes: for each active entry in the table, applies
+ * the enabled/disabled state transition, clears its flag, notifies by value, then
+ * finalizes the owner context and runs end-of-frame updates. */
 void fn_80134A8C(void) {
     extern void *lbl_8042F758[];
     extern void *lbl_8055E0D4;
@@ -275,10 +278,10 @@ void fn_80134A8C(void) {
     extern void fn_80166A24(void);
     struct Entry { s32 value; u8 flag; };
     struct Entry *entry;
-    s32 i;
+    s32 index;
     struct Entry **entries = (struct Entry **)lbl_8042F758;
-    for (i = 0; i < *(s32 *)&lbl_8055E0B0; i++) {
-        entry = entries[i];
+    for (index = 0; index < *(s32 *)&lbl_8055E0B0; index++) {
+        entry = entries[index];
         if (entry != 0) {
             if (entry->flag != 0)
                 fn_80136CB8(lbl_8055E0D4, entry->value);
