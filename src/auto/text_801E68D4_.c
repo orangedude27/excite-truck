@@ -327,6 +327,7 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
         *(s32 *)((u8 *)arg0 + 0x14) = 0;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
