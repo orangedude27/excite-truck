@@ -3008,6 +3008,9 @@ void *GKI_getpoolbuf(UINT8 pool_id) {
 #define GKI_STR_FREE_BUF_CORRUPTED  0x30  /* "Free - Buf Corrupted" */
 #define GKI_STR_FREEING_LINKED_BUF  0x48  /* "Freeing Linked Buf" */
 #define GKI_STR_BAD_BUF_QID         0x5C  /* "Bad Buf QId" */
+#define GKI_STR_SEND_BAD_DEST       0x68  /* "Sending to unknown dest" */
+#define GKI_STR_SEND_BUF_CORRUPTED  0x80  /* "Send - Buffer corrupted" */
+#define GKI_STR_SEND_BUF_LINKED     0x98  /* "Send - buffer linked" */
 
 /*
  * Return a buffer to the free list of the pool it came from (gki_buffer.c).
