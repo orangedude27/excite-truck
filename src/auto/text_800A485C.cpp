@@ -9041,7 +9041,6 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
 
     u8 *table = (u8 *)lbl_803D2140;
     u8 *out = (u8 *)arg0;
-    u16 *src = arg1;
 
     if ((*(u32 *)(table + 0x60) & 2) == 2) {
         u16 *scan;
@@ -9049,29 +9048,31 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
         local.zeroDot = 0;
         local.space = 0x20;
         local.zeroSpace = 0;
-        scan = src;
+        scan = arg1;
         goto check;
         do {
-            if (fn_800A4B9C_CALL(src, &local.dot, 1) == 0) {
+            if (fn_800A4B9C_CALL(arg1, &local.dot, 1) == 0) {
                 *out = 0x2E;
-            } else if (fn_800A4B9C_CALL(src, &local.space, 1) == 0) {
+            } else if (fn_800A4B9C_CALL(arg1, &local.space, 1) == 0) {
                 *out = 0x20;
             } else {
                 *out = 0x5F;
             }
             out++;
-            src++;
+            arg1++;
             scan++;
         check:;
         } while (*scan != 0);
     } else {
         s32 offset = 0;
+        goto check2;
         do {
-            s32 result = ((s32 (*)(u8 *, u8 *))(*(u32 **)(table + 0x4C)))((u8 *)src + (offset << 1), out);
+            s32 result = ((s32 (*)(u8 *, u8 *))(*(u32 **)(table + 0x4C)))((u8 *)arg1 + (offset << 1), out);
             fn_800A4BF4(result, (u16 *)&local.outputLength, &local.inputLength);
             out += local.outputLength;
             offset += local.inputLength >> 1;
-        } while (src[offset] != 0);
+        check2:;
+        } while (arg1[offset] != 0);
     }
 
     *out = 0;
@@ -23836,6 +23837,9 @@ found3:
 
 #pragma pop
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
+    /* Returns the index of a named pane: first searches this instance's pane
+       list (count at +8, names in lbl_8031D990), then the 10 global panes in
+       lbl_8031E218 (offset by count). Returns -1 if not found. */
     register s32 count = *(s32 *)((u8 *)this + 8);
     register s32 result = -1;
     register s32 i;
@@ -24318,10 +24322,9 @@ extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
     u8 *b = (u8 *)arg0;
     u32 i;
     for (i = 0; i < (u32)arg1; i += 2) {
-        u8 t0 = b[i];
-        u8 t1 = b[i + 1];
-        b[i] = t1;
-        b[i + 1] = t0;
+        u8 t = b[i];
+        b[i] = b[i + 1];
+        b[i + 1] = t;
     }
 }
 
