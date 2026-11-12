@@ -2916,35 +2916,50 @@ enum IndicatorSide { INDICATOR_LEFT = 0, INDICATOR_RIGHT = 1, INDICATOR_UP = 2, 
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_8021D378(void *arg0, s32 arg1) {
-    f32 scale, base, value1, value2;
+/* Draws the option widget's two blinker arrows after the widget's own frame:
+ * the left one at leftX and the right one at rightX, both at arrowY, and
+ * nothing at all while the widget has no room for them (both x equal).  Each
+ * arrow is the blinker art (fn_8021165C) drawn at its natural width and
+ * stretched to the current UI scale (the +0x34 of fn_8022EDC4()'s screen) from
+ * its bottom edge, and is taken from the art's second frame - the lit one -
+ * while this widget is the option the screen currently selects.
+ *
+ * fn_80230C30 turns a screen position into the screen-centred one the art is
+ * drawn in, fn_802C5320(art, frame, x, y, z, width, height) draws the art and
+ * fn_802C5220 / fn_802C51C0 are its height and width. */
+extern "C" void fn_8021D378(void *object, s32 device) {
+    OptionWidget *widget = (OptionWidget *)object;
+    f32 scale, zero, leftHeight, rightHeight;
     f32 x, y;
-    s32 enabled;
-    s32 *p;
-    s32 a, b;
-    fn_80219660(arg0);
-    if (*(s32 *)((u8 *)arg0 + 0x25C) == *(s32 *)((u8 *)arg0 + 0x260))
+    s32 frame;
+    s32 *selectedId;
+    s32 leftArt, rightArt;
+
+    fn_80219660(object);
+    if (widget->leftX == widget->rightX)
         return;
-    p = *(s32 **)((u8 *)arg0 + 0x2BC);
-    enabled = 0;
-    if (p == 0)
+    selectedId = widget->selectedId;
+    frame = 0;
+    if (selectedId == 0)
         goto checked;
-    if (*(s32 *)((u8 *)arg0 + 0x2C0) != *p)
+    if (widget->id != *selectedId)
         goto checked;
-    enabled = 1;
+    frame = 1;
 checked:
-    a = fn_8021165C(0, 2);
-    b = fn_8021165C(1, 2);
+    leftArt = fn_8021165C(INDICATOR_LEFT, INDICATOR_SET_BLINKER);
+    rightArt = fn_8021165C(INDICATOR_RIGHT, INDICATOR_SET_BLINKER);
     scale = *(f32 *)((u8 *)fn_8022EDC4() + 0x34);
-    base = lbl_805634A8;
-    x = base;
-    y = base;
-    fn_80230C30(&x, &y, *(s32 *)((u8 *)arg0 + 0x25C), *(s32 *)((u8 *)arg0 + 0x264));
-    value1 = scale * (f32)fn_802C5220(a);
-    fn_802C5320(a, enabled, x, y - ((f32)fn_802C5220(a) - value1), base, (f32)fn_802C51C0(a), value1);
-    fn_80230C30(&x, &y, *(s32 *)((u8 *)arg0 + 0x260), *(s32 *)((u8 *)arg0 + 0x264));
-    value2 = scale * (f32)fn_802C5220(b);
-    fn_802C5320(b, enabled, x, y - ((f32)fn_802C5220(b) - value2), base, (f32)fn_802C51C0(b), value2);
+    zero = lbl_805634A8;
+    x = zero;
+    y = zero;
+    fn_80230C30(&x, &y, widget->leftX, widget->arrowY);
+    leftHeight = scale * (f32)fn_802C5220(leftArt);
+    fn_802C5320(leftArt, frame, x, y - ((f32)fn_802C5220(leftArt) - leftHeight), zero,
+                (f32)fn_802C51C0(leftArt), leftHeight);
+    fn_80230C30(&x, &y, widget->rightX, widget->arrowY);
+    rightHeight = scale * (f32)fn_802C5220(rightArt);
+    fn_802C5320(rightArt, frame, x, y - ((f32)fn_802C5220(rightArt) - rightHeight), zero,
+                (f32)fn_802C51C0(rightArt), rightHeight);
 }
 #pragma pop
 
