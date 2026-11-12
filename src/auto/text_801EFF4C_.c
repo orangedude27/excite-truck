@@ -917,6 +917,12 @@ int fn_801F15A8(void **arg0, int arg1) {
     return count - 1;
 }
 
+#define wheelmod_spin_forward lbl_80562F18  /* .sdata2: 1.0f, the wheels that are not mirrored */
+#define wheelmod_spin_reversed lbl_80562F2C /* .sdata2: -1.0f, mirrored wheels roll the other way */
+#define wheelmod_angle_zero lbl_80562F1C    /* .sdata2: 0.0f, the Euler components left alone */
+#define WHEELMOD_LOD_TABLE 0x28             /* offsetof(WheelMod, lods) */
+#define WHEELMOD_LOD_SPIN_FLAG 0x3C         /* WHEELMOD_LOD_TABLE + offsetof(WheelModLod, yesFlag) */
+
 void fn_801F163C(void *arg0, int arg1, float farg0) {
     struct Pair { int a; int b; };
     int temp = *(int *)((char *)arg0 + 0xC);
