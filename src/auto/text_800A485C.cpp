@@ -270,7 +270,7 @@ extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800B7F28(void *);
 extern "C" Fn800A4B78Ret fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
-#define VFT_RET void
+#define VFT_RET int
 extern "C" VFT_RET VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
 namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor { public: virtual ~ResourceAccessor(); virtual void *GetResource(u32, const char *, u32); }; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
 
