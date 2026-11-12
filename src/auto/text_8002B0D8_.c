@@ -88,6 +88,10 @@ extern double lbl_80560A98;
 extern double __kernel_tan(int, double, double);
 extern int __ieee754_rem_pio2(double, double *);
 
+/* fdlibm trig argument limits, as the high word of the double (src/MSL/s_sin.c). */
+#define trig_pio4_hi 0x3fe921fb /* high word of pi/4; |x| at or below it needs no reduction */
+#define trig_inf_hi  0x7ff00000 /* high word of +Inf; |x| at or above it is Inf or NaN */
+
 
 extern unsigned char lbl_802FE850[];
 extern double lbl_805609D8, lbl_805609E0, lbl_805609E8, lbl_805609F0, lbl_805609F8, lbl_80560A00, lbl_80560A08;
@@ -101,10 +105,12 @@ loop:
     c = (signed char)*p;
     skip = 0;
     if (c < 0 || c >= 256) skip = 1;
-    if (skip == 0) {
-        c = *(unsigned char *)(*(unsigned int *)(*(unsigned int *)(base + 0x38) + 0x10) + c);
-        *p = (unsigned char)c;
-    }
+    if (skip == 0) goto lookup;
+    goto next;
+lookup:
+    c = *(unsigned char *)(*(unsigned int *)(*(unsigned int *)(base + 0x38) + 0x10) + c);
+    *p = (unsigned char)c;
+next:
     p++;
 check:
     c = (signed char)*p;
