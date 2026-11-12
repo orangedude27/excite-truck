@@ -14167,16 +14167,43 @@ void fn_800826D4(void) {
 }
 
 extern u8 lbl_80559078[],lbl_80317310[],lbl_80317354[];
+/* L2CAP's connect-indication callback (the GAP control block's +0x84): the peer
+ * is connecting to a PSM GAP registered for one of its clients.  Hand the new
+ * channel to the connection block that was waiting for it -- same PSM, and
+ * either any address or exactly this one -- answer L2CAP in its name and start
+ * negotiating configuration; a connection nobody waited for is dropped again.
+ * The traces go through fn_8007093C/fn_80070954, the LogMsg_0/LogMsg_1 wrappers
+ * around LogMsg, with the GAP trace code. */
 void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
- extern u8 lbl_80559078[8];
- u8 *entry=lbl_803C3740+0xAC;
- register u16 i=0;
- register u8 *entry_reg=entry;
- while(i<8){if(entry_reg[0]==1&&*(u16 *)(entry_reg+0x10)==psm&&(entry_reg[8]==0||memcmp(addr,entry_reg+9,6)==0))break;i++;entry_reg+=0x60;}
- if(i==8){if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80317310);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);L2CA_DisconnectReq(cid);return;}
- entry_reg[0]=3;memcpy(entry_reg+9,addr,6);*(u16 *)(entry_reg+6)=cid;L2CA_ConnectRsp(addr,status,cid,0,0);
- if(lbl_803C3740[0x28]>=4)fn_80070954(0xE0003,lbl_80317354,*(u16 *)(entry_reg+6));
- L2CA_ConfigReq(cid,(tL2CAP_CFG_INFO *)(entry_reg+0x24));
+    extern u8 lbl_80559078[8]; /* "*******", the line the warning is printed between */
+    tGAP_CONN_VIEW *first = (tGAP_CONN_VIEW *)(gap_cb + 0xAC);
+    register UINT16 i = 0;
+    register tGAP_CONN_VIEW *ccb = first;
+
+    while (i < GAP_NUM_CONNECTIONS) {
+        if (ccb->state == GAP_CONN_STATE_WF_SEC_CMP && ccb->psm == psm &&
+            (ccb->wildcard == 0 || memcmp(addr, ccb->bd_addr, BD_ADDR_LEN) == 0))
+            break;
+        i++;
+        ccb++;
+    }
+    if (i == GAP_NUM_CONNECTIONS) {
+        if (gap_cb[0x28] >= BT_TRACE_LEVEL_WARNING) /* "*******" */
+            fn_8007093C(TRACE_CTRL_GENERAL | TRACE_LAYER_GAP | TRACE_ORG_STACK | TRACE_TYPE_WARNING, lbl_80559078);
+        if (gap_cb[0x28] >= BT_TRACE_LEVEL_WARNING) /* "WARNING: GAP Conn Indication for Unexpected Bd Addr...Disconnecting" */
+            fn_8007093C(TRACE_CTRL_GENERAL | TRACE_LAYER_GAP | TRACE_ORG_STACK | TRACE_TYPE_WARNING, lbl_80317310);
+        if (gap_cb[0x28] >= BT_TRACE_LEVEL_WARNING) /* "*******" */
+            fn_8007093C(TRACE_CTRL_GENERAL | TRACE_LAYER_GAP | TRACE_ORG_STACK | TRACE_TYPE_WARNING, lbl_80559078);
+        L2CA_DisconnectReq(cid);
+        return;
+    }
+    ccb->state = GAP_CONN_STATE_WF_L2CA_CFG;
+    memcpy(ccb->bd_addr, addr, BD_ADDR_LEN);
+    ccb->cid = cid;
+    L2CA_ConnectRsp(addr, status, cid, 0, 0); /* the client's handle, and a PSM of L2CAP's choosing */
+    if (gap_cb[0x28] >= BT_TRACE_LEVEL_EVENT) /* "GAP_CONN - Rcvd L2CAP conn ind, CID: 0x%x" */
+        fn_80070954(TRACE_CTRL_GENERAL | TRACE_LAYER_GAP | TRACE_ORG_STACK | TRACE_TYPE_EVENT, lbl_80317354, ccb->cid);
+    L2CA_ConfigReq(cid, (tL2CAP_CFG_INFO *)&ccb->my_cfg);
 }
 
 void gap_connect_cfm(u32 cid, s32 result) {
