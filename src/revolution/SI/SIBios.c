@@ -3,28 +3,6 @@
 #include <revolution/VI.h>
 #include <string.h>
 
-extern s32 lbl_80558F74;
-extern u32 lbl_8055DB10;
-extern u32 lbl_8055DB14;
-extern u32 lbl_8055DB08;
-extern u32 lbl_8055DB00;
-extern u32 lbl_8055DB04;
-extern u32 lbl_8055DB0C;
-extern u32 lbl_8055DAFC;
-extern u32 lbl_80558F80;
-u32 SIDisablePolling(u32 mask);
-extern BOOL lbl_8055DAF0;
-extern BOOL lbl_8055DAF4;
-BOOL fn_800568C4(u32 mask);
-extern int __cntlzw(unsigned int);
-BOOL SIGetResponse(s32 chan, void* data);
-extern u8 lbl_80558F88;
-extern u8 lbl_80558F8C;
-void fn_8005649C(s32 chan, u32 status);
-u32 SIGetTypeAsync(s32 chan, SICallback callback);
-u32 SIEnablePolling(u32 chan);
-void fn_80057F2C(s32 chan, u32 command);
-
 typedef enum {
     SI_ERROR_NOREP = (1 << 3),
     SI_ERROR_BUSY = (1 << 7),
@@ -55,15 +33,16 @@ typedef struct SIPacket {
  * argument remains compatible with existing two-argument callbacks. */
 typedef void (*SIContextCallback)(s32 chan, u32 status, OSContext* context);
 
-const char* __SIVersion =
-    "<< RVL_SDK - SI \trelease build: Nov 30 2006 03:31:44 (0x4199_60831) >>";
+/* .data */
+char lbl_803115E8[] =
+    "<< RVL_SDK - SI \trelease build: Sep  7 2006 07:20:53 (0x4200_60422) >>";
 
 /* SI driver main state (the SDK's `Si` context). */
 static SIMain Si_80311630 = {SI_CHAN_NONE};
 static u32 Type[SI_MAX_CHAN] = {SI_ERROR_NOREP, SI_ERROR_NOREP, SI_ERROR_NOREP,
                                 SI_ERROR_NOREP};
 
-#define Packet Packet_8038F100
+/* .bss */
 static SIPacket Packet[SI_MAX_CHAN] = {0};
 static s64 XferTime[SI_MAX_CHAN];
 static s64 TypeTime[SI_MAX_CHAN];
@@ -71,68 +50,15 @@ static OSAlarm Alarm[SI_MAX_CHAN];
 static u32 InputBuffer[SI_MAX_CHAN][2];
 static BOOL InputBufferValid[SI_MAX_CHAN];
 static u32 InputBufferVcount[SI_MAX_CHAN];
-#define RDSTHandler lbl_8038F2C0
 static OSInterruptHandler RDSTHandler[SI_MAX_CHAN];
 static SICallback TypeCallback[SI_MAX_CHAN][SI_MAX_TYPE];
-extern OSAlarm Alarm[SI_MAX_CHAN];
 
-extern u32 __PADFixBits;
+/* .sdata */
+const char* __SIVersion = lbl_803115E8;
 
-/* ---------------------------------------------------------------------
- * PAD code recovered into the SIBios TU.  REXE01's splits.txt assigns
- * 0x80056164..0x80058920 to revolution/SI/SIBios.c, which includes the
- * GameCube-era PAD helpers; the PAD statics also live in this address
- * region (data ownership pending promotion).
- * ------------------------------------------------------------------- */
-
-#define PAD_MAX_CONTROLLER 4
-
-#define PAD_BUTTON_A 0x0100
-#define PAD_BUTTON_B 0x0200
-#define PAD_BUTTON_X 0x0400
-#define PAD_BUTTON_Y 0x0800
-#define PAD_BUTTON_START 0x1000
-#define PAD_TRIGGER_L 0x0040
-#define PAD_TRIGGER_R 0x0020
-
-#define PAD_CHAN0_BIT 0x80000000
-#define PAD_CHAN1_BIT 0x40000000
-#define PAD_CHAN2_BIT 0x20000000
-#define PAD_CHAN3_BIT 0x10000000
-
-/* REXE01 PADStatus: u16 button @0, four centered sticks @2-5, triggers/
- * analogs @6-9, err @0xA and one pad byte (0xC stride). */
-typedef struct PADStatus {
-    u16 button; // at 0x0
-    s8 stickX;  // at 0x2
-    s8 stickY;  // at 0x3
-    s8 substickX; // at 0x4
-    s8 substickY; // at 0x5
-    u8 triggerLeft; // at 0x6
-    u8 triggerRight; // at 0x7
-    u8 analogA; // at 0x8
-    u8 analogB; // at 0x9
-    u8 err;     // at 0xA
-    u8 unk;     // at 0xB
-} PADStatus;
-
-extern BOOL lbl_8055DB18;
-extern const char* lbl_80558F70;
-extern u32 __PADSpec;
-extern BOOL lbl_8055DB2C;
-extern u32 lbl_8038F0C0[PAD_MAX_CONTROLLER];
-extern OSShutdownFunctionInfo lbl_803115D8;
-extern void (*lbl_80558F84)(s32 chan, PADStatus* status, u32 data[2]);
-void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]);
-
-static PADStatus lbl_8038F080[PAD_MAX_CONTROLLER];
-static u32 lbl_80558F7C = 0x00000300;
-static u32 XPatchBits =
-    PAD_CHAN0_BIT | PAD_CHAN1_BIT | PAD_CHAN2_BIT | PAD_CHAN3_BIT;
-
-void UpdateOrigin(s32 chan);
-void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]);
-void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]);
+/* .sbss */
+u32 lbl_8055DB20;
+u32 lbl_8055DB2C;
 
 static void GetTypeCallback(s32 chan, u32 status);
 static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
@@ -140,48 +66,6 @@ static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
 
 static BOOL SIIsChanBusy(s32 chan) {
     return Packet[chan].chan != SI_CHAN_NONE || Si_80311630.chan == chan;
-}
-
-typedef void (*SISamplingCallback)(void);
-
-static SISamplingCallback __SISamplingCallback;
-
-void SamplingHandler(s16 intr, OSContext* ctx) {
-#pragma unused(intr)
-
-    if (__SISamplingCallback != NULL) {
-        OSContext tmpCtx;
-
-        OSClearContext(&tmpCtx);
-        OSSetCurrentContext(&tmpCtx);
-
-        __SISamplingCallback();
-
-        OSClearContext(&tmpCtx);
-        OSSetCurrentContext(ctx);
-    }
-}
-
-BOOL __PADDisableRecalibration(BOOL disable) {
-    BOOL enabled = OSDisableInterrupts();
-    BOOL old = (OS_PAD_FLAGS & 0x40) ? TRUE : FALSE;
-
-    OS_PAD_FLAGS &= ~0x40;
-    if (disable) {
-        OS_PAD_FLAGS |= 0x40;
-    }
-    OSRestoreInterrupts(enabled);
-    return old;
-}
-
-#pragma dont_inline on
-BOOL fn_80057460(void) {
-    return Si_80311630.chan != SI_CHAN_NONE;
-}
-#pragma dont_inline off
-
-static BOOL PADSync(void) {
-    return lbl_8055DB10 == 0 && lbl_80558F74 == 32;
 }
 
 static u32 SIGetStatus(s32 chan) {
@@ -441,6 +325,7 @@ BOOL SIUnregisterPollingHandler(OSInterruptHandler handler) {
 }
 
 void SIInit(void) {
+    /* Initialize the serial interface once: reset state, configure interrupts, and probe device types. */
     static BOOL Initialized = FALSE;
 
     if (Initialized) {
@@ -649,9 +534,9 @@ static void GetTypeCallback(s32 chan, u32 status) {
     Type[chan] |= status;
     TypeTime[chan] = __OSGetSystemTime();
     type = Type[chan];
-    chanBit = PAD_CHAN0_BIT >> chan;
-    fix = __PADFixBits & chanBit;
-    __PADFixBits &= ~chanBit;
+    chanBit = 0x80000000 >> chan;
+    fix = lbl_8055DB2C & chanBit;
+    lbl_8055DB2C &= ~chanBit;
 
     /* Error, or no device we can talk to: drop the channel's stored ID. */
     if ((status & SI_STATUS_ERROR_MASK) ||
@@ -826,513 +711,6 @@ BOOL SIGetResponse(s32 chan, void* data) {
 }
 
 #pragma dont_inline reset
-
-/* ---------------------------------------------------------------------
- * PAD helpers (REXE01 0x80056164..0x80056D5C region)
- * ------------------------------------------------------------------- */
-
-void UpdateOrigin(s32 chan) {
-    /* Normalizes a controller's origin/calibration values for the current analog mode and applies platform-specific stick fixes. */
-    PADStatus* origin;
-    u32 chanBit = PAD_CHAN0_BIT >> chan;
-
-    origin = &lbl_8038F080[chan];
-    switch (lbl_80558F7C & 0x00000700u) {
-    case 0x00000000:
-    case 0x00000500:
-    case 0x00000600:
-    case 0x00000700: {
-        origin->triggerLeft &= ~15;
-        origin->triggerRight &= ~15;
-        origin->analogA &= ~15;
-        origin->analogB &= ~15;
-        break;
-    }
-    case 0x00000100: {
-        origin->substickX &= ~15;
-        origin->substickY &= ~15;
-        origin->analogA &= ~15;
-        origin->analogB &= ~15;
-        break;
-    }
-    case 0x00000200: {
-        origin->substickX &= ~15;
-        origin->substickY &= ~15;
-        origin->triggerLeft &= ~15;
-        origin->triggerRight &= ~15;
-        break;
-    }
-    case 0x00000300: {
-        break;
-    }
-    case 0x00000400: {
-        break;
-    }
-    }
-
-    origin->stickX -= 128;
-    origin->stickY -= 128;
-    origin->substickX -= 128;
-    origin->substickY -= 128;
-
-    if (XPatchBits & chanBit) {
-        if (0x40 < origin->stickX &&
-            (SIGetType(chan) & 0xFFFF0000) == 0x09000000) {
-            origin->stickX = 0;
-        }
-    }
-}
-
-void fn_80056308(s32 chan, u32 status) {
-    u32 data[2];
-    s32 enabledChan;
-
-    if ((status & 0xF) == 0) {
-        UpdateOrigin(lbl_80558F74);
-        enabledChan = lbl_80558F74;
-        lbl_8055DB14 |= PAD_CHAN0_BIT >> enabledChan;
-        SIGetResponse(enabledChan, data);
-        fn_80057F2C(enabledChan, lbl_80558F7C | 0x00400000);
-        SIEnablePolling(lbl_8055DB14);
-    }
-    lbl_80558F74 = __cntlzw(lbl_8055DB10);
-    if (lbl_80558F74 != 32) {
-        lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-        memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
-        SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-    }
-}
-
-/* SI callback for the 8-byte origin transfer fn_8005649C() started on a channel that
- * reported a plain GameCube controller type. The low nibble of status holds that
- * channel's SI error bits; when the transfer came back clean the channel joins the
- * polling mask lbl_8055DB14, its leftover response is drained into data, its SI
- * output buffer is loaded with the origin command (lbl_80558F7C plus the 64-bit
- * transfer bit 0x00400000) through fn_80057F2C, polling is re-enabled for the whole
- * mask, and the channel is recorded in lbl_8055DB08 as origin-read - which is what
- * keeps fn_800567BC()/fn_800568C4() from putting it back in the pending mask
- * lbl_8055DB10. Unlike fn_80056308 it does not call UpdateOrigin().
- * Either way the scan then moves to the next channel still pending in lbl_8055DB10
- * (__cntlzw yields its number, or 32 when none is left): it is cleared from the
- * mask, its PADStatus is zeroed and its type is requested again through
- * fn_8005649C. The chan argument is the SI callback's channel; the driver works from
- * the channel it is running on, lbl_80558F74. */
-void fn_800563C8(s32 chan, u32 status) {
-    u32 data[2];
-    s32 runningChan;
-
-    if ((status & 0xF) == 0) { /* no SI error on this channel */
-        runningChan = lbl_80558F74;
-        lbl_8055DB14 |= PAD_CHAN0_BIT >> runningChan;
-        SIGetResponse(runningChan, data);
-        fn_80057F2C(runningChan, lbl_80558F7C | 0x00400000);
-        SIEnablePolling(lbl_8055DB14);
-        lbl_8055DB08 |= PAD_CHAN0_BIT >> lbl_80558F74;
-    }
-    lbl_80558F74 = __cntlzw(lbl_8055DB10);
-    if (lbl_80558F74 != 32) {
-        lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-        memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
-        SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-    }
-}
-
-void fn_8005649C(s32 chan, u32 type) {
-    u32 bit = 0x80000000;
-    u8* origin = (u8*)lbl_8038F080;
-    u32 chanMask;
-    s32 currentChan;
-    u32 resetMask;
-    u32 t;
-    s32 nextChan;
-    BOOL ret;
-    u32 data[2];
-
-    currentChan = lbl_80558F74;
-    resetMask = lbl_8055DB0C;
-    chanMask = bit >> currentChan;
-    lbl_8055DB0C = resetMask & ~chanMask;
-    resetMask &= chanMask;
-    ret = TRUE;
-
-    if (type & 0xF) {
-        nextChan = __cntlzw(lbl_8055DB10);
-        lbl_80558F74 = nextChan;
-        if (nextChan != 32) {
-            lbl_8055DB10 &= ~(bit >> nextChan);
-            memset(origin + nextChan * 12, 0, 12);
-            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-        }
-    } else {
-        t = type & ~0xFF;
-        *(u32*)(origin + 0x30 + currentChan * 4) = t;
-        if ((type & 0x18000000) != 0x08000000 || !(t & 0x01000000)) {
-            nextChan = __cntlzw(lbl_8055DB10);
-            lbl_80558F74 = nextChan;
-            if (nextChan != 32) {
-                lbl_8055DB10 &= ~(0x80000000 >> nextChan);
-                memset(origin + nextChan * 12, 0, 12);
-                SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-            }
-        } else if (lbl_80558F80 < 2) {
-            lbl_8055DB14 |= chanMask;
-            SIGetResponse(currentChan, data);
-            fn_80057F2C(currentChan, lbl_80558F7C | 0x00400000);
-            SIEnablePolling(lbl_8055DB14);
-            nextChan = __cntlzw(lbl_8055DB10);
-            lbl_80558F74 = nextChan;
-            if (nextChan != 32) {
-                lbl_8055DB10 &= ~(bit >> nextChan);
-                memset(origin + nextChan * 12, 0, 12);
-                SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-            }
-        } else {
-            if (!(t & 0x80000000) || (t & 0x04000000)) {
-                if (resetMask) {
-                    ret = SITransfer(lbl_80558F74, &lbl_80558F8C, 3, origin + lbl_80558F74 * 12, 10, (SICallback)fn_80056308, 0);
-                } else {
-                    ret = SITransfer(lbl_80558F74, &lbl_80558F88, 1, origin + lbl_80558F74 * 12, 10, (SICallback)fn_80056308, 0);
-                }
-            } else if ((t & 0x00100000) && !(t & 0x00080000) && !(t & 0x00040000)) {
-                if (t & 0x40000000) {
-                    ret = SITransfer(currentChan, &lbl_80558F88, 1, origin + currentChan * 12, 10, (SICallback)fn_80056308, 0);
-                } else {
-                    ret = SITransfer(currentChan, (void*)(origin + 0x40 + currentChan * 4), 3, origin + currentChan * 12, 8, (SICallback)fn_800563C8, 0);
-                }
-            }
-            if (!ret) {
-                nextChan = __cntlzw(lbl_8055DB10);
-                lbl_80558F74 = nextChan;
-                lbl_8055DB00 |= chanMask;
-                if (nextChan != 32) {
-                    lbl_8055DB10 &= ~(0x80000000 >> nextChan);
-                    memset(origin + nextChan * 12, 0, 12);
-                    SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-                }
-            }
-        }
-    }
-}
-
-BOOL fn_800567BC(u32 mask) {
-    /* Update PAD/SI channel/reset state for the given channel mask: fold in pending reset
-       bits, clear related masks, optionally mark a reset, disable polling for affected
-       channels, and if no channel scan is in progress start an async type query for the
-       next pending channel. */
-    BOOL enabled;
-    u32 disable;
-
-    enabled = OSDisableInterrupts();
-    mask |= lbl_8055DB00;
-    mask &= ~(lbl_8055DB08 | lbl_8055DB04);
-    lbl_8055DB00 = 0;
-    lbl_8055DB10 |= mask;
-    disable = lbl_8055DB10 & lbl_8055DB14;
-    lbl_8055DB14 &= ~mask;
-    lbl_8055DAFC &= ~mask;
-    if (lbl_80558F80 == 4) {
-        lbl_8055DB0C |= mask;
-    }
-    SIDisablePolling(disable);
-    if (lbl_80558F74 == 32) {
-        lbl_80558F74 = __cntlzw(lbl_8055DB10);
-        if (lbl_80558F74 != 32) {
-            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-            memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
-            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-        }
-    }
-    OSRestoreInterrupts(enabled);
-    return TRUE;
-}
-
-/* Enables/reset-handles PAD channels for the given mask, updating PAD/SI polling state and starting type detection if needed. */
-BOOL fn_800568C4(u32 chanMask) {
-    BOOL intrEnabled;
-    u32 pollingMask;
-
-    intrEnabled = OSDisableInterrupts();
-    chanMask |= lbl_8055DB00;
-    lbl_8055DB00 = 0;
-    chanMask &= ~(lbl_8055DB08 | lbl_8055DB04);
-    lbl_8055DB10 |= chanMask;
-    pollingMask = lbl_8055DB10 & lbl_8055DB14;
-    lbl_8055DB14 &= ~chanMask;
-    lbl_8055DAFC &= ~chanMask;
-    if ((OS_PAD_FLAGS & 0x40) == 0) {
-        lbl_8055DB0C |= chanMask;
-    }
-    SIDisablePolling(pollingMask);
-    if (lbl_80558F74 == 32) {
-        lbl_80558F74 = __cntlzw(lbl_8055DB10);
-        if (lbl_80558F74 != 32) {
-            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-            memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
-            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-        }
-    }
-    OSRestoreInterrupts(intrEnabled);
-    return TRUE;
-}
-
-BOOL fn_800569D0(void) {
-    if (lbl_8055DB18) {
-        return TRUE;
-    }
-    OSRegisterVersion(lbl_80558F70);
-    if (__PADSpec != 0) {
-        u32 spec = __PADSpec;
-        __PADSpec = 0;
-        switch (spec) {
-        case 0:
-            lbl_80558F84 = SPEC0_MakeStatus;
-            break;
-        case 1:
-            lbl_80558F84 = SPEC1_MakeStatus;
-            break;
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-            lbl_80558F84 = fn_80056D5C;
-            break;
-        }
-        lbl_80558F80 = spec;
-    }
-    lbl_8055DB18 = TRUE;
-    {
-        BOOL flag = lbl_8055DB2C;
-        lbl_8055DB18 = TRUE;
-        if (flag) {
-            s64 time = OSGetTime();
-            *(u16*)0x800030E0 = ((time & 0xFFFF) + ((time >> 16) & 0xFFFF) + ((time >> 32) & 0xFFFF) + ((time >> 48) & 0xFFFF)) & 0x3FFF;
-            lbl_8055DB0C = 0xF0000000;
-        }
-    }
-    {
-        u32 id = (*(u16*)0x800030E0 & 0x3FFF) << 8;
-        lbl_8038F0C0[0] = id | 0x4D000000;
-        lbl_8038F0C0[1] = id | 0x4D400000;
-        lbl_8038F0C0[2] = id | 0x4D800000;
-        lbl_8038F0C0[3] = id | 0x4DC00000;
-    }
-    SIRefreshSamplingRate();
-    OSRegisterShutdownFunction(&lbl_803115D8);
-    return fn_800567BC(0xF0000000);
-}
-
-void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
-    /* Builds a PADStatus from raw SPEC0 report words in data[0]/data[1]:
-     * maps buttons/triggers, extracts stick/substick/trigger bytes, sets
-     * digital trigger buttons at 0xAA threshold, and centers sticks by -128. */
-    (void)chan;
-
-    status->button = 0;
-    status->button |= (data[0] & 0x00080000) ? PAD_BUTTON_A : 0;
-    status->button |= (data[0] & 0x00200000) ? PAD_BUTTON_B : 0;
-    status->button |= (data[0] & 0x01000000) ? PAD_BUTTON_X : 0;
-    status->button |= (data[0] & 0x00010000) ? PAD_BUTTON_Y : 0;
-    status->button |= (data[0] & 0x00100000) ? PAD_BUTTON_START : 0;
-
-    status->stickX = (s8)(data[1] >> 16);
-    status->stickY = (s8)(data[1] >> 24);
-    status->substickX = (s8)(data[1]);
-    status->substickY = (s8)(data[1] >> 8);
-
-    status->triggerLeft = (u8)(data[0] >> 8);
-    status->triggerRight = (u8)data[0];
-
-    status->analogA = 0;
-    status->analogB = 0;
-
-    if (0xAA <= status->triggerLeft) {
-        status->button |= PAD_TRIGGER_L;
-    }
-    if (0xAA <= status->triggerRight) {
-        status->button |= PAD_TRIGGER_R;
-    }
-
-    status->stickX -= 128;
-    status->stickY -= 128;
-    status->substickX -= 128;
-    status->substickY -= 128;
-}
-
-/* Decode controller report words for PAD spec type 1 into a PADStatus. */
-void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
-    (void)chan;
-
-    status->button = 0;
-    status->button |= (data[0] & 0x00800000) ? PAD_BUTTON_A : 0;
-    status->button |= (data[0] & 0x01000000) ? PAD_BUTTON_B : 0;
-    status->button |= (data[0] & 0x00200000) ? PAD_BUTTON_X : 0;
-    status->button |= (data[0] & 0x00100000) ? PAD_BUTTON_Y : 0;
-    status->button |= (data[0] & 0x02000000) ? PAD_BUTTON_START : 0;
-
-    status->stickX = (s8)(data[1] >> 16);
-    status->stickY = (s8)(data[1] >> 24);
-    status->substickX = (s8)(data[1]);
-    status->substickY = (s8)(data[1] >> 8);
-
-    status->triggerLeft = (u8)(data[0] >> 8);
-    status->triggerRight = (u8)data[0];
-
-    status->analogA = 0;
-    status->analogB = 0;
-
-    if (0xAA <= status->triggerLeft) {
-        status->button |= PAD_TRIGGER_L;
-    }
-    if (0xAA <= status->triggerRight) {
-        status->button |= PAD_TRIGGER_R;
-    }
-
-    status->stickX -= 128;
-    status->stickY -= 128;
-    status->substickX -= 128;
-    status->substickY -= 128;
-}
-
-static inline s8 ClampS8(s8 var, s8 org) {
-    if (org > 0) {
-        s8 min = org - 128;
-        if (var < min) var = min;
-    } else if (org < 0) {
-        s8 max = org + 127;
-        if (max < var) var = max;
-    }
-    return var - org;
-}
-
-static inline u8 ClampU8(u8 var, u8 org) {
-    if (var < org) var = org;
-    return var - org;
-}
-
-static inline s32 abs_diff_sqr(s32 a, s32 b) {
-    s32 diff = a * a - b * b;
-    return (diff < 0) ? -diff : diff;
-}
-#define SQR_DIFF(a, b) abs_diff_sqr(a, b)
-
-void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
-    u8* origin = (u8*)lbl_8038F080;
-    s32 chanOffset;
-    u8* chanOrigin;
-
-    status->button = (data[0] >> 16) & 0x3FFF;
-    status->stickX = (s8)(data[0] >> 8);
-    status->stickY = (s8)data[0];
-
-    switch (lbl_80558F7C & 0x700) {
-    case 0x000:
-    case 0x500:
-    case 0x600:
-    case 0x700:
-        status->substickX = (s8)(data[1] >> 24);
-        status->substickY = (s8)(data[1] >> 16);
-        status->triggerLeft = (u8)((data[1] >> 8) & 0xF0);
-        status->triggerRight = (u8)((data[1] >> 4) & 0xF0);
-        status->analogA = (u8)(data[1] & 0xF0);
-        status->analogB = (u8)((data[1] * 16) & 0xF0);
-        break;
-    case 0x100:
-        status->substickX = (u8)((data[1] >> 24) & 0xF0);
-        status->substickY = (u8)((data[1] >> 20) & 0xF0);
-        status->triggerLeft = (u8)(data[1] >> 16);
-        status->triggerRight = (u8)(data[1] >> 8);
-        status->analogA = (u8)(data[1] & 0xF0);
-        status->analogB = (s8)((data[1] * 16) & 0xF0);
-        break;
-    case 0x200:
-        status->substickX = (u8)((data[1] >> 24) & 0xF0);
-        status->substickY = (u8)((data[1] >> 20) & 0xF0);
-        status->triggerLeft = (u8)((data[1] >> 16) & 0xF0);
-        status->triggerRight = (u8)((data[1] >> 12) & 0xF0);
-        status->analogA = (u8)(data[1] >> 8);
-        status->analogB = (s8)data[1];
-        break;
-    case 0x300:
-        status->substickX = (s8)(data[1] >> 24);
-        status->substickY = (s8)(data[1] >> 16);
-        status->triggerLeft = (u8)(data[1] >> 8);
-        status->triggerRight = (u8)data[1];
-        status->analogA = 0;
-        status->analogB = 0;
-        break;
-    case 0x400:
-        status->substickX = (s8)(data[1] >> 24);
-        status->substickY = (s8)(data[1] >> 16);
-        status->triggerLeft = 0;
-        status->triggerRight = 0;
-        status->analogA = (u8)(data[1] >> 8);
-        status->analogB = (s8)data[1];
-        break;
-    }
-
-    status->stickX -= 128;
-    status->stickY -= 128;
-    status->substickX -= 128;
-    status->substickY -= 128;
-
-    if ((*(u32*)(origin + 0x30 + chan * 4) & 0xFFFF0000) == 0x09000000 && (status->button & 0x80) == 0) {
-        lbl_8055DAFC |= 0x80000000 >> chan;
-        status->stickX = 0;
-        status->stickY = 0;
-        status->substickX = 0;
-        status->substickY = 0;
-        return;
-    }
-
-    chanOffset = chan * 12;
-    chanOrigin = origin + chanOffset;
-    lbl_8055DAFC &= ~(0x80000000 >> chan);
-
-    status->stickX = ClampS8(status->stickX, *(s8*)(chanOrigin + 2));
-    status->stickY = ClampS8(status->stickY, *(s8*)(chanOrigin + 3));
-    status->substickX = ClampS8(status->substickX, *(s8*)(chanOrigin + 4));
-    status->substickY = ClampS8(status->substickY, *(s8*)(chanOrigin + 5));
-
-    status->triggerLeft = ClampU8(status->triggerLeft, *(u8*)(chanOrigin + 6));
-    status->triggerRight = ClampU8(status->triggerRight, *(u8*)(chanOrigin + 7));
-
-    {
-        u8* prev = (origin + 0x50) + chanOffset;
-        if (SQR_DIFF(status->stickX, *(s8*)(prev + 2)) >= 9 ||
-            SQR_DIFF(status->stickY, *(s8*)(prev + 3)) >= 9 ||
-            SQR_DIFF(status->substickX, *(s8*)(prev + 4)) >= 9 ||
-            SQR_DIFF(status->substickY, *(s8*)(prev + 5)) >= 9 ||
-            SQR_DIFF(status->triggerLeft, *(u8*)(prev + 6)) >= 9 ||
-            SQR_DIFF(status->triggerRight, *(u8*)(prev + 7)) >= 9 ||
-            status->button != *(u16*)prev) {
-            fn_8005B01C();
-        }
-    }
-
-    memcpy((origin + 0x50) + chanOffset, status, 12);
-}
-
-BOOL fn_800572DC(BOOL final) {
-    BOOL ready;
-
-    if (lbl_8055DAF4) {
-        lbl_8055DAF4 = FALSE;
-        SIUnregisterPollingHandler(SamplingHandler);
-    }
-    if (!final) {
-        ready = FALSE;
-        if (PADSync() && !fn_80057460()) {
-            ready = TRUE;
-        }
-        if (!lbl_8055DAF0 && ready) {
-            lbl_8055DAF0 = fn_800568C4(0xF0000000);
-            return FALSE;
-        }
-        return ready;
-    }
-    lbl_8055DAF0 = FALSE;
-    return TRUE;
-}
 
 /**
  * Get the controller type for a SI channel asynchronously.
