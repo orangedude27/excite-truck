@@ -555,53 +555,52 @@ extern void OSShutdownSystem(void);
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802E2E38(int arg0) {
-    extern char lbl_8034CCE0[];
-    extern int lbl_804DB790[], lbl_804DB7D0[], lbl_8055FF00;
-    extern int fn_80039840(void), fn_802D9BF0(void), fn_802D9C04(void), fn_8005EE7C(void);
-    extern void fn_800527CC(int), fn_8005ED8C(void), OSReturnToMenu(void), OSShutdownSystem(void);
-    char *text = lbl_8034CCE0;
-    int *c1;
-    int *c2;
+void fn_802E2E38(int mode) {
+    char *base = lbl_8034CCE0;
+    ResetCallback *callback;
+    ResetCallback *last;
     int i;
-    int j;
-    fn_802E30C8(text + 0xB8);
-    c1 = lbl_804DB790;
-    for (i = 0; i < lbl_8055FF00; c1++, i++) {
-        if (((int (*)(int, int))*c1)(0, arg0) == 1) {
-            fn_802E30C8(text + 0xCC, lbl_804DB7D0[i]);
+    int n;
+
+    /* Ask every subsystem whether the reset may go ahead. */
+    fn_802E30C8(KERNEL_LOG_RESET_BEGIN);
+    callback = (ResetCallback *)lbl_804DB790;
+    for (i = 0; i < lbl_8055FF00; callback++, i++) {
+        if ((*callback)(KERNEL_RESET_ASK, mode) == 1) {
+            fn_802E30C8(KERNEL_LOG_CANCELLED, (const char *)lbl_804DB7D0[i]);
             return;
         }
     }
-    fn_802E30C8(text + 0xE4);
-    j = lbl_8055FF00 - 1;
-    c2 = lbl_804DB790 + j;
-    for (; j >= 0; c2--, j--) {
-        ((int (*)(int, int))*c2)(1, arg0);
+    /* Nobody objected: tell them all, last registered first. */
+    fn_802E30C8(KERNEL_LOG_RESET_OKAY);
+    n = lbl_8055FF00 - 1;
+    last = (ResetCallback *)lbl_804DB790 + n;
+    for (; n >= 0; last--, n--) {
+        (*last)(KERNEL_RESET_NOTIFY, mode);
     }
-    fn_802E30C8(text + 0xFC);
-    if (fn_80039840()) fn_802E30C8(text + 0x118);
-    fn_802E30C8(text + 0x12C, arg0);
-    if (arg0 == 0) {
+    fn_802E30C8(KERNEL_LOG_CANCEL_DVD);
+    if (fn_80039840()) fn_802E30C8(KERNEL_LOG_DVD_FAIL);
+    fn_802E30C8(KERNEL_LOG_RESET_MODE, mode);
+    if (mode == KERNEL_MODE_RESTART) {
         if (fn_802D9BF0() == 0 || fn_802D9C04() != 0) {
-            fn_802E30C8(text + 0x13C);
+            fn_802E30C8(KERNEL_LOG_RESTART);
             fn_800527CC(0);
         } else {
-            fn_802E30C8(text + 0x154);
+            fn_802E30C8(KERNEL_LOG_DISC_ERROR);
             OSReturnToMenu();
         }
         return;
     }
-    if (arg0 == 2) {
-        fn_802E30C8(text + 0x184);
+    if (mode == KERNEL_MODE_STANDBY) {
+        fn_802E30C8(KERNEL_LOG_POWER_DOWN);
         fn_8005ED8C();
-        fn_802E30C8(text + 0x1A0);
-        while (fn_8005EE7C() == 4) {}
-        fn_802E30C8(text + 0x1C8);
+        fn_802E30C8(KERNEL_LOG_WAIT_WPAD);
+        while (fn_8005EE7C() == KERNEL_WPAD_SHUTTING_DOWN) {}
+        fn_802E30C8(KERNEL_LOG_WPAD_DOWN);
         OSShutdownSystem();
         return;
     }
-    fn_802E30C8(text + 0x1E4);
+    fn_802E30C8(KERNEL_LOG_MENU);
     OSReturnToMenu();
 }
 #pragma pop
