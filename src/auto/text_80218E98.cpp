@@ -2167,33 +2167,49 @@ extern "C" void fn_8021BF90(void *arg0) {
 
 extern "C" s32 fn_8021165C(s32, s32);
 extern "C" s32 fn_802C5310(s32, s32, f32, f32, f32);
+#pragma push
+#pragma processor 750
 extern "C" void fn_8021BFEC(void *arg0) {
-    class Local {
-    public:
-        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
-        virtual void a4(); virtual void a5(); virtual void a6(); virtual s32 second(); virtual s32 first();
+    struct Vf {
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual s32 second();
+        virtual s32 first();
     };
-    f32 a, b;
-    s32 flag = 0;
+    f32 spC;
+    f32 sp8;
+    s32 flag;
     s32 *p;
-    s32 x, y;
+    s32 x;
+    s32 y;
+    f32 tmp;
+
     fn_80219660(arg0);
     if (*(s32 *)((u8 *)arg0 + 0x2B0) != *(s32 *)((u8 *)arg0 + 0x2B4)) {
         p = *(s32 **)((u8 *)arg0 + 0x2A8);
-        if (p != 0 && *(s32 *)((u8 *)arg0 + 0x2AC) == *p) flag = 1;
+        flag = 0;
+        if ((p != 0) && (*(s32 *)((u8 *)arg0 + 0x2AC) == *p)) {
+            flag = 1;
+        }
         x = fn_8021165C(0, 2);
         y = fn_8021165C(1, 2);
-        a = lbl_805634A8;
-        b = lbl_805634A8;
-        fn_80230C30(&a, &b, *(s32 *)((u8 *)arg0 + 0x2B0), *(s32 *)((u8 *)arg0 + 0x2B8));
-        if (((Local *)*(void **)((u8 *)arg0 + 0x2A4))->first())
-            fn_802C5310(x, flag, a, b, lbl_805634A8);
-        fn_80230C30(&a, &b, *(s32 *)((u8 *)arg0 + 0x2B4), *(s32 *)((u8 *)arg0 + 0x2B8));
-        if (((Local *)*(void **)((u8 *)arg0 + 0x2A4))->second())
-            fn_802C5310(y, flag, a, b, lbl_805634A8);
+        tmp = lbl_805634A8;
+        spC = tmp;
+        sp8 = tmp;
+        fn_80230C30(&spC, &sp8, *(s32 *)((u8 *)arg0 + 0x2B0), *(s32 *)((u8 *)arg0 + 0x2B8));
+        if (((Vf *)*(void **)((u8 *)arg0 + 0x2A4))->first() != 0) {
+            fn_802C5310(x, flag, spC, sp8, tmp);
+        }
+        fn_80230C30(&spC, &sp8, *(s32 *)((u8 *)arg0 + 0x2B4), *(s32 *)((u8 *)arg0 + 0x2B8));
+        if (((Vf *)*(void **)((u8 *)arg0 + 0x2A4))->second() != 0) {
+            fn_802C5310(y, flag, spC, sp8, tmp);
+        }
     }
 }
-
+#pragma pop
 extern "C" void fn_8021C128(void) {
     ((void (*)())fn_8021C12C)();
 }
