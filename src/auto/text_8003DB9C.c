@@ -4806,34 +4806,37 @@ void GXSetZCompLoc(s32 enable) {
 
 extern u32 lbl_80303CA8[];
 void GXSetPixelFmt(s32 pixelFmt, s32 zFmt) {
-    unsigned int old;
-    unsigned int value;
+    /* Set the pixel format and Z format in GX state (PE control registers),
+       update dirty state when changed, and configure destination alpha for
+       formats whose mapped pixel-format table entry is 4. */
+    unsigned int oldZControl;
+    unsigned int zControlReg;
     unsigned int offset;
-    unsigned int *gx;
-    unsigned int *table;
-    gx = __GXData;
-    table = (unsigned int *)lbl_80303CA8;
+    unsigned int *gxRegs;
+    unsigned int *pixelFormatTable;
+    gxRegs = __GXData;
+    pixelFormatTable = (unsigned int *)lbl_80303CA8;
     offset = (unsigned int)pixelFmt * 4;
-    old = gx[0x22C / 4];
-    value = old;
-    value = __rlwimi(value, table[pixelFmt], 0, 29, 31);
-    value = __rlwimi(value, zFmt, 3, 26, 28);
-    gx[0x22C / 4] = value;
-    if (old != value) {
+    oldZControl = gxRegs[0x22C / 4];
+    zControlReg = oldZControl;
+    zControlReg = __rlwimi(zControlReg, pixelFormatTable[pixelFmt], 0, 29, 31);
+    zControlReg = __rlwimi(zControlReg, zFmt, 3, 26, 28);
+    gxRegs[0x22C / 4] = zControlReg;
+    if (oldZControl != zControlReg) {
         *(volatile u8 *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = gx[0x22C / 4];
-        gx[0x254 / 4] = __rlwimi(gx[0x254 / 4], __cntlzw(pixelFmt - 2), 4, 22, 22);
-        gx[0x5FC / 4] |= 4;
+        *(volatile unsigned int *)0xCC008000 = gxRegs[0x22C / 4];
+        gxRegs[0x254 / 4] = __rlwimi(gxRegs[0x254 / 4], __cntlzw(pixelFmt - 2), 4, 22, 22);
+        gxRegs[0x5FC / 4] |= 4;
     }
-    if (table[pixelFmt] == 4) {
-        unsigned int dstAlpha = gx[0x224 / 4];
+    if (pixelFormatTable[pixelFmt] == 4) {
+        unsigned int dstAlpha = gxRegs[0x224 / 4];
         dstAlpha = __rlwimi(dstAlpha, pixelFmt - 4, 9, 21, 22);
         dstAlpha = __rlwimi(dstAlpha, 0x42, 24, 0, 7);
-        gx[0x224 / 4] = dstAlpha;
+        gxRegs[0x224 / 4] = dstAlpha;
         *(volatile u8 *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = gx[0x224 / 4];
+        *(volatile unsigned int *)0xCC008000 = gxRegs[0x224 / 4];
     }
-    *(volatile u16 *)((u8 *)gx + 2) = 0;
+    *(volatile u16 *)((u8 *)gxRegs + 2) = 0;
 }
 
 void GXSetDither(s32 enable) {
