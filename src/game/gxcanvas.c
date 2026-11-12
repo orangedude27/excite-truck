@@ -163,19 +163,23 @@ s32 fn_802C3060(void *arg0, s32 arg1, s32 arg2) {
 }
 
 s32 fn_802C307C(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
-    s32 x0 = *arg1;
-    s32 x1;
-    s32 x2;
-    if (x0 >= *(s32 *)((u8 *)arg0 + 0x1C)) return 0;
+    /* Clip the axis-aligned integer rectangle (*arg1,*arg2)-(*arg3,*arg4) to
+       the bounds stored in arg0 at +0x14/+0x18 (min x/y) and +0x1C/+0x20
+       (max x/y). Updates the in/out corners to the intersection and returns
+       nonzero if the clipped rectangle is non-empty. */
+    s32 left = *arg1;
+    s32 bound;
+    s32 rightBound;
+    if (left >= *(s32 *)((u8 *)arg0 + 0x1C)) return 0;
     if (*arg2 >= *(s32 *)((u8 *)arg0 + 0x20)) return 0;
-    x1 = *(s32 *)((u8 *)arg0 + 0x14);
-    if (x0 < x1) *arg1 = x1;
-    x1 = *(s32 *)((u8 *)arg0 + 0x18);
-    if (*arg2 < x1) *arg2 = x1;
-    x1 = *(s32 *)((u8 *)arg0 + 0x1C);
-    if (*arg3 > x1) *arg3 = x1;
-    x2 = *(s32 *)((u8 *)arg0 + 0x20);
-    if (*arg4 > x2) *arg4 = x2;
+    bound = *(s32 *)((u8 *)arg0 + 0x14);
+    if (left < bound) *arg1 = bound;
+    bound = *(s32 *)((u8 *)arg0 + 0x18);
+    if (*arg2 < bound) *arg2 = bound;
+    bound = *(s32 *)((u8 *)arg0 + 0x1C);
+    if (*arg3 > bound) *arg3 = bound;
+    rightBound = *(s32 *)((u8 *)arg0 + 0x20);
+    if (*arg4 > rightBound) *arg4 = rightBound;
     if (*arg1 >= *arg3) return 0;
     return *arg2 < *arg4;
 }
