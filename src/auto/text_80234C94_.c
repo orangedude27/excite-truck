@@ -121,14 +121,16 @@ void fn_80234D44(int arg0) {
 }
 #pragma scheduling on
 
-void fn_80234DE4(unsigned int arg0) {
+void fn_80234DE4(unsigned int artId) {
+    /* Remove the node matching artId from the lbl_8055F084 linked list and
+     * free it; if a NULL node is reached, report via fn_802E317C. */
     unsigned int *node;
     unsigned int *prev;
     node = (unsigned int *)lbl_8055F084;
     prev = 0;
-    while (*node != arg0) {
+    while (*node != artId) {
         if (node == 0)
-            fn_802E317C((const char *)lbl_80340680, arg0);
+            fn_802E317C((const char *)lbl_80340680, artId);
         prev = node;
         node = (unsigned int *)node[1];
     }
