@@ -506,6 +506,7 @@ tail:
             } while (var_ctr_2 != 0);
         }
     }
+    return var_r3;
 }
 
 #pragma push
