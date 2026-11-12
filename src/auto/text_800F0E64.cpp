@@ -1987,21 +1987,27 @@ extern "C" void DCStoreRange(void *, u32);
 extern "C" void *LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(void *self, unsigned int fileId, void *allocator) {
     typedef s32 (*ReadFileInfoFn)(void *, unsigned int, long *);
     DummyAllocatable_LoadFile *alloc = (DummyAllocatable_LoadFile *)allocator;
-    long info[4];
+    long fileInfo[4];
+
+    /* Load a sound archive file into memory allocated via the provided allocator. */
     if (alloc == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E40, 0x12B, lbl_80324E5C);
-    if (((ReadFileInfoFn)fn_800F2834)(*(void **)((u8 *)self + 0x18), fileId, info) == 0)
+    if (((ReadFileInfoFn)fn_800F2834)(*(void **)((u8 *)self + 0x18), fileId, fileInfo) == 0)
         return 0;
-    long size = info[0];
-    if (size == 0)
+
+    long fileSize = fileInfo[0];
+    if (fileSize == 0)
         return 0;
-    void *buf = alloc->Alloc(size);
-    if (buf == 0)
+
+    void *buffer = alloc->Alloc(fileSize);
+    if (buffer == 0)
         return 0;
-    if ((unsigned long)size != (unsigned long)ReadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPvll(self, fileId, buf, size, 0))
+
+    if ((unsigned long)fileSize != (unsigned long)ReadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPvll(self, fileId, buffer, fileSize, 0))
         return 0;
-    DCStoreRange(buf, size);
-    return buf;
+
+    DCStoreRange(buffer, fileSize);
+    return buffer;
 }
 
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *self) {
