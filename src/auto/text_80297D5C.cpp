@@ -1728,12 +1728,13 @@ extern double lbl_805645F8;
 extern int lbl_8055CA84, lbl_8055CA88;
 extern const char lbl_8034951C[], lbl_80349550[];
 #pragma dont_inline on
+/* Initializes backfire texture handles, validates size/shift params, and caches derived constants. */
 extern "C" void fn_8029B1B8(void* arg0) {
     char* p = (char*)arg0;
-    *(int*)(p + 0x1E4) = fn_802CAC28(lbl_8055CA84, 0);
-    *(int*)(p + 0x1E8) = fn_802CAC28(lbl_8055CA88, 0);
+    *(int*)(p + 0x1E4) = fn_802CAC28(lbl_8055CA84, 0); /* "bfface.tex" */
+    *(int*)(p + 0x1E8) = fn_802CAC28(lbl_8055CA88, 0); /* "bfedge.tex" */
     if (fn_80297D5C(p + 0x1EC, 0x10) == 0 || fn_80297D90(p + 0x1F0, *(int*)(p + 0x1EC)) == 0) {
-        fn_802E317C(lbl_8034951C);
+        fn_802E317C(lbl_8034951C); /* "fire: numerical error with backfire textures" */
     }
     int v = *(int*)(p + 0x1F0);
     *(float*)(p + 0x1F8) = lbl_80564590 / (float)*(int*)(p + 0x1EC);
