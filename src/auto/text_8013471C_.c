@@ -531,25 +531,26 @@ s32 fn_80134F40(void) {
     return 0;
 }
 
+// Select an AX/effect factory implementation from global state/config, then allocate and construct an object with it.
 void *fn_80134F48(void) {
-    void *p = __AXFXGetLfoSinTable_801769CC();
-    s32 flag = 0;
+    void *factory = __AXFXGetLfoSinTable_801769CC();
+    s32 useAltFactory = 0;
     void *result;
     u32 bits;
-    if (*((u8*)fn_801792F8() + 0xD8) & 4) flag = 1;
-    if (flag) p = fn_801350C0();
+    if (*((u8*)fn_801792F8() + 0xD8) & 4) useAltFactory = 1;
+    if (useAltFactory) factory = fn_801350C0();
     else {
-        bits = *((u32*)p + 1);
-        if (bits & 0x100) p = fn_80134E90();
-        else if (bits & 0x200) p = ((void *(*)(s32))fn_80134EC8)(bits);
-        else p = fn_80134FF8();
+        bits = *((u32*)factory + 1);
+        if (bits & 0x100) factory = fn_80134E90();
+        else if (bits & 0x200) factory = ((void *(*)(s32))fn_80134EC8)(bits);
+        else factory = fn_80134FF8();
     }
     {
         register const void *name = lbl_8032BC84;
         register u32 id = 0x2844;
         result = fn_801284F8(id, name);
     }
-    if (result != 0) result = fn_801A520C(result, p);
+    if (result != 0) result = fn_801A520C(result, factory);
     return result;
 }
 #pragma scheduling invalid_target
