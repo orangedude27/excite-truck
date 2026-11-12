@@ -17198,23 +17198,29 @@ BOOLEAN L2CA_DisconnectReq(UINT16 cid) {
     return 1;
 }
 
+/* Higher layers acknowledge that a channel is disconnected with this (l2c_api.c's
+ * L2CA_DisconnectRsp): the channel's state machine is told the upper layer is
+ * done with it. FALSE when no channel has that CID. */
 BOOLEAN L2CA_DisconnectRsp(UINT16 cid)
 {
-    void *p_ccb;
+    tL2C_CCB_VIEW *p_ccb;
 
-    if (lbl_803C4040[0] >= 3) {
-        fn_80070954(0x80002, lbl_8031806C, cid);
+    if (l2cb_trace_level >= BT_TRACE_LEVEL_API) /* "L2CA_DisconnectRsp()  CID: 0x%04x" */
+    {
+        fn_80070954(TRACE_LAYER_L2CAP | TRACE_TYPE_API, lbl_8031806C, cid);
     }
 
+    /* Find the channel control block. We don't know the link it is on. */
     p_ccb = l2cu_find_ccb_by_cid(NULL, cid);
     if (p_ccb == NULL) {
-        if (lbl_803C4040[0] >= 2) {
-            fn_80070954(0x80001, lbl_80318090, cid);
+        if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING) /* "L2CAP - no CCB for L2CA_disc_rsp, CID: %d" */
+        {
+            fn_80070954(TRACE_LAYER_L2CAP | TRACE_TYPE_WARNING, lbl_80318090, cid);
         }
         return FALSE;
     }
 
-    fn_80089E40(p_ccb, 0x1B, NULL);
+    fn_80089E40(p_ccb, L2CEVT_L2CA_DISCONNECT_RSP, NULL); /* l2c_csm_execute() */
     return TRUE;
 }
 
