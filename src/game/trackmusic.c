@@ -250,52 +250,54 @@ void fn_8020F950(void) {
 
 #pragma scheduling invalid_target
 long fn_8020F9F4(void) {
-    char *b;
-    long k;
-    long g;
-    long t0;
-    long t1;
-    long t2;
-    long t3;
-    long t4;
-    long t5;
-    long t6;
-    b = (char *)fn_8020F5F0(fn_8000DA10());
-    k = 0;
-    for (g = 0; g < 8; g++) {
-        if ((signed char)b[4] == 0) {
-            return k;
+    char *groupBase;
+    long slotIndex;
+    long group;
+    long nextIndex0;
+    long nextIndex1;
+    long nextIndex2;
+    long nextIndex3;
+    long nextIndex4;
+    long nextIndex5;
+    long nextIndex6;
+
+    /* Return the index of the first free track-music slot in the current context's 8x8 table, or 0 if none are free. */
+    groupBase = (char *)fn_8020F5F0(fn_8000DA10());
+    slotIndex = 0;
+    for (group = 0; group < 8; group++) {
+        if ((signed char)groupBase[4] == 0) {
+            return slotIndex;
         }
-        t0 = k + 1;
-        if ((signed char)b[0x68] == 0) {
-            return t0;
+        nextIndex0 = slotIndex + 1;
+        if ((signed char)groupBase[0x68] == 0) {
+            return nextIndex0;
         }
-        t1 = t0 + 1;
-        if ((signed char)b[0xCC] == 0) {
-            return t1;
+        nextIndex1 = nextIndex0 + 1;
+        if ((signed char)groupBase[0xCC] == 0) {
+            return nextIndex1;
         }
-        t2 = t1 + 1;
-        if ((signed char)b[0x130] == 0) {
-            return t2;
+        nextIndex2 = nextIndex1 + 1;
+        if ((signed char)groupBase[0x130] == 0) {
+            return nextIndex2;
         }
-        t3 = t2 + 1;
-        if ((signed char)b[0x194] == 0) {
-            return t3;
+        nextIndex3 = nextIndex2 + 1;
+        if ((signed char)groupBase[0x194] == 0) {
+            return nextIndex3;
         }
-        t4 = t3 + 1;
-        if ((signed char)b[0x1F8] == 0) {
-            return t4;
+        nextIndex4 = nextIndex3 + 1;
+        if ((signed char)groupBase[0x1F8] == 0) {
+            return nextIndex4;
         }
-        t5 = t4 + 1;
-        if ((signed char)b[0x25C] == 0) {
-            return t5;
+        nextIndex5 = nextIndex4 + 1;
+        if ((signed char)groupBase[0x25C] == 0) {
+            return nextIndex5;
         }
-        t6 = t5 + 1;
-        if ((signed char)b[0x2C0] == 0) {
-            return t6;
+        nextIndex6 = nextIndex5 + 1;
+        if ((signed char)groupBase[0x2C0] == 0) {
+            return nextIndex6;
         }
-        b += 0x320;
-        k = t6 + 1;
+        groupBase += 0x320;
+        slotIndex = nextIndex6 + 1;
     }
     return 0;
 }
@@ -462,8 +464,13 @@ void fn_8020FE90(void) {
 
 long fn_8020FEF0(long arg0) {
     long state = lbl_8055EEE0;
+    long count;
+    long pos;
+    long max;
+    long tmp;
+
     if (state == -2) {
-        long count = lbl_8055EEBC;
+        count = lbl_8055EEBC;
         if (count > 0) {
             if (arg0 == 1) {
                 lbl_8055EEE0 = -1;
@@ -480,29 +487,26 @@ long fn_8020FEF0(long arg0) {
         fn_8020FE90();
         return;
     }
-    {
-        long pos = lbl_8055EEE4;
-        long max = lbl_8055EEE8 - 1;
-        long tmp = pos + arg0;
-        tmp &= ((-tmp & ~tmp) >> 31);
-        if (tmp < max) {
-            max = tmp;
-        }
-        lbl_8055EEE4 = max;
-        {
-            long count = lbl_8055EEBC;
-            if (pos == max) {
-                return;
-            }
-            if (count == 0) {
-                lbl_8055EEE0 = -2;
-            } else if (state >= 0 && state + max * 10 >= count) {
-                lbl_8055EEE0 = (count - 1) % 10;
-            }
-            if (lbl_8055EEE0 >= 0) {
-                fn_8020FE90();
-            }
-        }
+
+    pos = lbl_8055EEE4;
+    max = lbl_8055EEE8 - 1;
+    tmp = pos + arg0;
+    tmp &= ((-tmp & ~tmp) >> 31);
+    if (tmp < max) {
+        max = tmp;
+    }
+    lbl_8055EEE4 = max;
+    count = lbl_8055EEBC;
+    if (pos == max) {
+        return;
+    }
+    if (count == 0) {
+        lbl_8055EEE0 = -2;
+    } else if (state >= 0 && state + max * 10 >= count) {
+        lbl_8055EEE0 = (count - 1) % 10;
+    }
+    if (lbl_8055EEE0 >= 0) {
+        fn_8020FE90();
     }
 }
 
