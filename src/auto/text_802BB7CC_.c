@@ -95,7 +95,7 @@ extern void *fn_802B51E4(int, int);
 extern void fn_802B52B4(void *);
 extern int fn_802B52C0(int, void *);
 extern char *strchr(const char *, int);
-extern char lbl_8055CF18[];
+extern char lbl_8055CF18;
 int fn_802BBA08(void *arg0, int arg1) {
     struct Image {
         int width;
