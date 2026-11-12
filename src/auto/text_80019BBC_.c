@@ -472,15 +472,12 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
     int status;
     unsigned char *base;
     int index;
-    int one;
 
-    one = 1;
     status = 0;
     base = (unsigned char *)&lbl_803583C8;
     index = 0;
     for (group = 0; group < 4; group++) {
-        status = (base[16] == 0);
-        if (status) {
+        if (base[0x10] == 0) {
             *(int *)(base + 0) = arg1;
             status = 1;
             {
@@ -489,67 +486,67 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                 {
                     float first = *(float *)arg0;
                     *(float *)(base + 8) = first;
-                    *(float *)(base + 12) = second;
+                    *(float *)(base + 0xC) = second;
                 }
             }
-            base[16] = one;
+            base[0x10] = 1;
         } else {
             status = 0;
         }
         if (status != 0) return index;
         index++;
-        status = (base[36] == 0);
-        if (status) {
-            *(int *)(base + 20) = arg1;
+
+        if (base[0x24] == 0) {
+            *(int *)(base + 0x14) = arg1;
             status = 1;
             {
                 float second = *((float *)arg0 + 1);
-                *(int *)(base + 24) = arg2;
+                *(int *)(base + 0x18) = arg2;
                 {
                     float first = *(float *)arg0;
-                    *(float *)(base + 28) = first;
-                    *(float *)(base + 32) = second;
+                    *(float *)(base + 0x1C) = first;
+                    *(float *)(base + 0x20) = second;
                 }
             }
-            base[36] = one;
+            base[0x24] = 1;
         } else {
             status = 0;
         }
         if (status != 0) return index;
         index++;
-        status = (base[56] == 0);
-        if (status) {
-            *(int *)(base + 40) = arg1;
+
+        if (base[0x38] == 0) {
+            *(int *)(base + 0x28) = arg1;
             status = 1;
             {
                 float second = *((float *)arg0 + 1);
-                *(int *)(base + 44) = arg2;
+                *(int *)(base + 0x2C) = arg2;
                 {
                     float first = *(float *)arg0;
-                    *(float *)(base + 48) = first;
-                    *(float *)(base + 52) = second;
+                    *(float *)(base + 0x30) = first;
+                    *(float *)(base + 0x34) = second;
                 }
             }
-            base[56] = one;
+            base[0x38] = 1;
         } else {
             status = 0;
         }
         if (status != 0) return index;
         index++;
-        status = (base[76] == 0);
-        if (status) {
-            *(int *)(base + 60) = arg1;
+
+        if (base[0x4C] == 0) {
+            *(int *)(base + 0x3C) = arg1;
             status = 1;
             {
                 float second = *((float *)arg0 + 1);
-                *(int *)(base + 64) = arg2;
+                *(int *)(base + 0x40) = arg2;
                 {
                     float first = *(float *)arg0;
-                    *(float *)(base + 68) = first;
-                    *(float *)(base + 72) = second;
+                    *(float *)(base + 0x44) = first;
+                    *(float *)(base + 0x48) = second;
                 }
             }
-            base[76] = one;
+            base[0x4C] = 1;
         } else {
             status = 0;
         }
@@ -677,8 +674,6 @@ extern char lbl_802FD618[];
 extern char lbl_802FD6CC[];
 extern char lbl_802FD6C0[];
 extern char* lbl_80358508;
-extern int lbl_8055D5B8;
-extern void* lbl_8055D5B4;
 extern char lbl_80558C70[8];
 extern char lbl_80558C78[8];
 extern char lbl_80558C80[8];
