@@ -1068,7 +1068,7 @@ extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 
 #pragma dont_inline on
 extern "C" void fn_80006D9C(void) {
     volatile u8 *names = (volatile u8 *)lbl_802FB0C8;
-    u8 *state;
+    u8 *session;
     struct ModeMaster {
         virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0; virtual void v3() = 0;
         virtual void v4() = 0; virtual void v5() = 0; virtual void v6() = 0; virtual void v7() = 0;
@@ -1093,14 +1093,14 @@ extern "C" void fn_80006D9C(void) {
     fn_8000F0E4((u8 *)names + 0x1EC);
     fn_8000F884();
     fn_80011F64();
-    state = lbl_8034EE84;
-    *(void **)(state + 8) = fn_801E87A8();
-    *(s32 *)(state + 0x14) = fn_80137C74();
+    session = lbl_8034EE84;
+    ((SessionState *)session)->field08 = fn_801E87A8();
+    ((SessionState *)session)->playerCount = fn_80137C74();
     lbl_8055D354 = fn_802090D4((u8 *)names + 0x1F8);
     fn_801331C4(4, (u8 *)names + 0x204, &lbl_8055892C);
     fn_80005464();
     fn_80005C88();
-    fn_80011A5C(((s32 *)lbl_8055D350)[5]);
+    fn_80011A5C(SESSION->playerCount);
     fn_8001DB54();
     ((ModeMaster *)fn_801B83A0())->hook();
     fn_800070DC();
