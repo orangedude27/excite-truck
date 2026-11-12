@@ -1398,36 +1398,72 @@ extern "C" f32 PSVECSquareDistance(const Vec*, const Vec*);
 extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
 extern f32 lbl_8056232C;
 extern "C" void fn_8019D19C(void* arg0, void* arg1) {
-    Vec sp1, sp2;
-    f32 scale, dot, value, dist;
-    sp1.x = ((Vec*)((u8*)arg1 + 0x34))->x - ((Vec*)((u8*)arg0 + 0x34))->x;
-    sp1.y = ((Vec*)((u8*)arg1 + 0x34))->y - ((Vec*)((u8*)arg0 + 0x34))->y;
-    sp1.z = ((Vec*)((u8*)arg1 + 0x34))->z - ((Vec*)((u8*)arg0 + 0x34))->z;
-    dist = PSVECSquareDistance((Vec*)((u8*)arg1 + 0x34), (Vec*)((u8*)arg0 + 0x34));
-    if (dist > lbl_8056232C) {
-        scale = lbl_805622E0 / (f32)fn_8002F234(dist);
-        sp1.x *= scale; sp1.y *= scale; sp1.z *= scale;
-        dot = PSVECDotProduct(&sp1, (Vec*)(*(u8**)((u8*)arg0 + 0xC) + 0xC));
-        value = *(f32*)((u8*)arg0 + 0x54) + (f32)__fabs((f64)dot) * (*(f32*)((u8*)arg0 + 0x58) - *(f32*)((u8*)arg0 + 0x54));
+    struct T { u8 pad[0x34]; Vec point; };
+    T* t0 = (T*)arg0;
+    T* t1 = (T*)arg1;
+    {
+    Vec d1;
+    d1.x = t1->point.x - t0->point.x;
+    Vec* p1 = &t1->point;
+    d1.y = p1->y - t0->point.y;
+    d1.z = p1->z - t0->point.z;
+    f32 distance = PSVECSquareDistance(p1, &t0->point);
+    f32 result;
+    if (distance > lbl_8056232C) {
+        f32 root = (f32)fn_8002F234(distance);
+        f32 scale = lbl_805622E0 / root;
+        d1.x *= scale;
+        d1.y *= scale;
+        d1.z *= scale;
+        Vec* axis = (Vec*)((u8*)*(void**)((u8*)arg0 + 0xC) + 0xC);
+        f32 dot = PSVECDotProduct(&d1, axis);
+        register f32 high;
+        register f32 low;
+        register f32 magnitude;
+        high = *(f32*)((u8*)arg0 + 0x58);
+        low = *(f32*)((u8*)arg0 + 0x54);
+        magnitude = (f32)__fabs((f64)dot);
+        f32 difference = high - low;
+        result = low + magnitude * difference;
     } else {
-        value = *(f32*)((u8*)arg0 + 0x54);
-        if (value > *(f32*)((u8*)arg0 + 0x58)) value = *(f32*)((u8*)arg0 + 0x58);
+        f32 high = *(f32*)((u8*)arg0 + 0x58);
+        f32 low = *(f32*)((u8*)arg0 + 0x54);
+        if (low > high) result = low;
+        else result = high;
     }
-    *(f32*)((u8*)arg0 + 0x24) = value;
-    sp2.x = ((Vec*)((u8*)arg0 + 0x34))->x - ((Vec*)((u8*)arg1 + 0x34))->x;
-    sp2.y = ((Vec*)((u8*)arg0 + 0x34))->y - ((Vec*)((u8*)arg1 + 0x34))->y;
-    sp2.z = ((Vec*)((u8*)arg0 + 0x34))->z - ((Vec*)((u8*)arg1 + 0x34))->z;
-    dist = PSVECSquareDistance((Vec*)((u8*)arg0 + 0x34), (Vec*)((u8*)arg1 + 0x34));
-    if (dist > lbl_8056232C) {
-        scale = lbl_805622E0 / (f32)fn_8002F234(dist);
-        sp2.x *= scale; sp2.y *= scale; sp2.z *= scale;
-        dot = PSVECDotProduct(&sp2, (Vec*)(*(u8**)((u8*)arg1 + 0xC) + 0xC));
-        value = *(f32*)((u8*)arg1 + 0x54) + (f32)__fabs((f64)dot) * (*(f32*)((u8*)arg1 + 0x58) - *(f32*)((u8*)arg1 + 0x54));
+    *(f32*)((u8*)arg0 + 0x24) = result;
+    }
+    {
+    Vec d2;
+    d2.x = t0->point.x - t1->point.x;
+    d2.y = t0->point.y - t1->point.y;
+    d2.z = t0->point.z - t1->point.z;
+    f32 distance = PSVECSquareDistance(&t0->point, &t1->point);
+    f32 result;
+    if (distance > lbl_8056232C) {
+        f32 root = (f32)fn_8002F234(distance);
+        f32 scale = lbl_805622E0 / root;
+        d2.x *= scale;
+        d2.y *= scale;
+        d2.z *= scale;
+        Vec* axis = (Vec*)((u8*)*(void**)((u8*)arg1 + 0xC) + 0xC);
+        f32 dot = PSVECDotProduct(&d2, axis);
+        register f32 high;
+        register f32 low;
+        register f32 magnitude;
+        high = *(f32*)((u8*)arg1 + 0x58);
+        low = *(f32*)((u8*)arg1 + 0x54);
+        magnitude = (f32)__fabs((f64)dot);
+        f32 difference = high - low;
+        result = low + magnitude * difference;
     } else {
-        value = *(f32*)((u8*)arg1 + 0x54);
-        if (value > *(f32*)((u8*)arg1 + 0x58)) value = *(f32*)((u8*)arg1 + 0x58);
+        f32 high = *(f32*)((u8*)arg1 + 0x58);
+        f32 low = *(f32*)((u8*)arg1 + 0x54);
+        if (low > high) result = low;
+        else result = high;
     }
-    *(f32*)((u8*)arg1 + 0x24) = value;
+    *(f32*)((u8*)arg1 + 0x24) = result;
+    }
     fn_8019B068(arg0, arg1, 0, 0);
 }
 
@@ -1686,14 +1722,14 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
     delta[0] = dx;
     delta[1] = dy;
     delta[2] = dz;
-    val = lbl_8056234C * PSVECDotProduct((const Vec *)delta, (const Vec *)delta);
+    val = lbl_8056234C * PSVECDotProduct((const Vec *)delta, (const Vec *)arg1);
     dot2 = PSVECDotProduct((const Vec *)delta, (const Vec *)delta);
     radiusSq = farg0 * farg0;
     valueSq = val * val;
     t = valueSq - lbl_80562350 * (dot2 - radiusSq);
     if (t > lbl_80562354) {
         mag = (f32)fn_8002F234(t);
-        scale = lbl_805622E8 * (-val - mag);
+        scale = lbl_805622E8 * (0.0f - val - mag);
         if (scale >= lbl_805622D0 && scale < *(f32 *)arg2) {
             register f32 x0 = ((f32 *)arg1)[0];
             *(f32 *)arg2 = scale;
@@ -3531,50 +3567,49 @@ extern "C" void fn_801A2474(void *arg0) {
         u32 *matrix;
         char pad10[0x28];
         Vec input;
-        char pad14[0x24];
+        u32 cache[9];
         volatile Vec output;
     };
     Object *self = (Object *)arg0;
-    register u32 *mw = self->matrix;
-    register f32 *m = (f32 *)mw;
-    u32 *cache = (u32 *)((char *)self + 0x44);
+    u32 *mw = self->matrix;
+    f32 *m = (f32 *)mw;
     u32 m0 = mw[0], m1 = mw[1], m2, m3, m4, m5, m6, m7, m8;
-    cache[0] = m0; cache[1] = m1;
-    m2 = mw[2]; cache[2] = m2;
+    self->cache[0] = m0; self->cache[1] = m1;
+    m2 = mw[2]; self->cache[2] = m2;
     m3 = mw[3]; m4 = mw[4];
-    cache[3] = m3; cache[4] = m4;
-    m5 = mw[5]; cache[5] = m5;
+    self->cache[3] = m3; self->cache[4] = m4;
+    m5 = mw[5]; self->cache[5] = m5;
     m6 = mw[6]; m7 = mw[7];
-    cache[6] = m6; cache[7] = m7;
-    m8 = mw[8]; cache[8] = m8;
+    self->cache[6] = m6; self->cache[7] = m7;
+    m8 = mw[8]; self->cache[8] = m8;
     if (&self->output == (volatile Vec *)&self->input) {
-        register f32 y = self->input.y;
-        register f32 p03 = y * m[3];
-        register f32 p14 = y * m[4];
-        register f32 p25 = y * m[5];
-        register f32 x = self->input.x;
-        register f32 p00 = x * m[0];
-        register f32 p11 = x * m[1];
-        register f32 p22 = x * m[2];
-        register f32 z = self->input.z;
-        register f32 p06 = z * m[6];
-        register f32 p17 = z * m[7];
-        register f32 p28 = z * m[8];
+        f32 y = self->input.y;
+        f32 p03 = y * m[3];
+        f32 p14 = y * m[4];
+        f32 p25 = y * m[5];
+        f32 x = self->input.x;
+        f32 p00 = x * m[0];
+        f32 p11 = x * m[1];
+        f32 p22 = x * m[2];
+        f32 z = self->input.z;
+        f32 p06 = z * m[6];
+        f32 p17 = z * m[7];
+        f32 p28 = z * m[8];
         self->output.x = p00 + p03 + p06;
         self->output.y = p11 + p14 + p17;
         self->output.z = p22 + p25 + p28;
     } else {
-        register f32 p03 = self->input.y * m[3];
-        register f32 p00 = self->input.x * m[0];
-        register f32 p06 = self->input.z * m[6];
+        f32 p03 = self->input.y * m[3];
+        f32 p00 = self->input.x * m[0];
+        f32 p06 = self->input.z * m[6];
         self->output.x = p00 + p03 + p06;
-        register f32 p14 = self->input.y * m[4];
-        register f32 p11 = self->input.x * m[1];
-        register f32 p17 = self->input.z * m[7];
+        f32 p14 = self->input.y * m[4];
+        f32 p11 = self->input.x * m[1];
+        f32 p17 = self->input.z * m[7];
         self->output.y = p11 + p14 + p17;
-        register f32 p25 = self->input.y * m[5];
-        register f32 p22 = self->input.x * m[2];
-        register f32 p28 = self->input.z * m[8];
+        f32 p25 = self->input.y * m[5];
+        f32 p22 = self->input.x * m[2];
+        f32 p28 = self->input.z * m[8];
         self->output.z = p22 + p25 + p28;
     }
     self->output.x += m[9];
@@ -4246,26 +4281,24 @@ extern f32 lbl_80562314;
 extern "C" void fn_801E41D8(void*, void*, s32, f32);
 extern "C" void fn_801A3BE0(void* arg0, void* arg1) {
     f32 pos[3];
-    f32 out[3];
     f32 v[3];
+    f32 out[3];
     f32* entry = (f32*)((u8*)arg0 + 0x3C);
-    void* matrix = *(void**)((u8*)arg0 + 0xC);
-    s32 count = *(s32*)((u8*)arg0 + 0xBC);
-    s32 i;
-    pos[0] = *(f32*)((u8*)matrix + 0x24);
-    pos[1] = *(f32*)((u8*)matrix + 0x28);
-    pos[2] = *(f32*)((u8*)matrix + 0x2C);
-    for (i = 0; i < count; i++, entry += 4) {
+    const f32* m0 = *(const f32**)((u8*)arg0 + 0xC);
+    s32 i = 0;
+    ((u32*)pos)[0] = ((u32*)m0)[9];
+    ((u32*)pos)[1] = ((u32*)m0)[10];
+    ((u32*)pos)[2] = ((u32*)m0)[11];
+    for (; i < *(s32*)((u8*)arg0 + 0xBC); i++, entry += 4) {
+        const f32* m = *(const f32**)((u8*)arg0 + 0xC);
         f32 w = entry[3];
         v[0] = entry[0] * w;
         v[1] = entry[1] * w;
         v[2] = entry[2] * w;
-        out[0] = v[0] * *(f32*)matrix + v[1] * *(f32*)((u8*)matrix + 0xC) + v[2] * *(f32*)((u8*)matrix + 0x18);
-        out[1] = v[0] * *(f32*)((u8*)matrix + 4) + v[1] * *(f32*)((u8*)matrix + 0x10) + v[2] * *(f32*)((u8*)matrix + 0x1C);
-        out[2] = v[0] * *(f32*)((u8*)matrix + 8) + v[1] * *(f32*)((u8*)matrix + 0x14) + v[2] * *(f32*)((u8*)matrix + 0x20);
-        out[0] += *(f32*)((u8*)matrix + 0x24);
-        out[1] += *(f32*)((u8*)matrix + 0x28);
-        out[2] += *(f32*)((u8*)matrix + 0x2C);
+        MtxMulVecRevInl(m, v, out);
+        out[0] += m[9];
+        out[1] += m[10];
+        out[2] += m[11];
         fn_801E41D8(pos, out, lbl_8055E598, lbl_80562314);
     }
 }
