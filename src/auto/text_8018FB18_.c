@@ -1133,6 +1133,7 @@ extern "C" char lbl_80332EDC[];
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" void fn_80190FA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    /* Dispatch a virtual event call to the current target, warning once if it hits the fallback object. */
     class Dummy {
     public:
         virtual void v0();
@@ -1150,10 +1151,10 @@ extern "C" void fn_80190FA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
         virtual void v12();
         virtual void v13(s32, s32, s32, s32);
     };
-    void *target = *(void **)((u8 *)arg0 + 0x10);
+    void *currentTarget = *(void **)((u8 *)arg0 + 0x10);
 
-    if (target != 0) {
-        if (target == *(void **)((u8 *)arg0 + 0xC) &&
+    if (currentTarget != 0) {
+        if (currentTarget == *(void **)((u8 *)arg0 + 0xC) &&
             lbl_8055E523 != 0 &&
             lbl_8055E520 == 0 &&
             arg3 != 1) {
