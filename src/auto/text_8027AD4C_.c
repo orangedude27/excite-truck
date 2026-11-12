@@ -997,62 +997,55 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
 void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     extern char lbl_80347A50[];
     extern void *fn_80131808(void *);
-    void **outerArray;
+    int tableCount;
     void *outerList;
     void *outerItem;
     void *innerItem;
-    void **tableArray;
-    char *record;
-    long outerCount;
-    long outerIndex;
-    long tableCount;
-    long innerIndex;
-    long itemCount;
     char *name;
-
+    char *record;
+    int outerCount;
+    int outerIndex;
+    void **outerArray;
+    int innerIndex;
+    int itemCount;
+    void **tableArray;
+    volatile void *arg0b = arg0;
     outerList = fn_80131808(arg2);
     if (outerList == 0)
         return;
-
-    outerCount = *(volatile long *)((char *)arg0 + 0xB00C);
+    outerCount = *(volatile int *)((char *)arg0 + 0xB00C);
     outerIndex = 0;
     outerArray = *(void ***)((char *)arg0 + 0xB008);
-    *(volatile long *)((char *)arg0 + 0xB00C) = outerCount + 1;
+    *(volatile int *)((char *)arg0 + 0xB00C) = outerCount + 1;
     outerArray[outerCount] = outerList;
     goto fetch_outer;
-
 outer_loop:
     name = ((char *(*)(void *))(*(void ***)outerItem)[2])(outerItem);
     if (stricmp(name, (const char *)&lbl_8055C760) == 0) {
-        tableCount = *(volatile long *)((char *)arg0 + 0xAF10);
-        tableArray = *(void ***)((char *)arg0 + 0xAF0C);
+        tableCount = *(volatile int *)((char *)arg0b + 0xAF10);
+        tableArray = *(void ***)((char *)arg0b + 0xAF0C);
         record = (char *)tableArray + tableCount * 0xC;
-        *(volatile long *)((char *)arg0 + 0xAF10) = tableCount + 1;
+        *(volatile int *)((char *)arg0b + 0xAF10) = tableCount + 1;
         fn_8027C0D0(record, arg1, outerItem);
-
         innerIndex = 0;
         goto fetch_inner;
 inner_loop:
         name = ((char *(*)(void *))(*(void ***)innerItem)[2])(innerItem);
         if (stricmp(name, lbl_80347A50) == 0) {
-            itemCount = *(volatile long *)((char *)arg0 + 4);
+            itemCount = *(volatile int *)((char *)arg0 + 4);
             tableArray = *(void ***)arg0;
-            *(volatile long *)((char *)arg0 + 4) = itemCount + 1;
-            fn_8027C014((char *)tableArray + itemCount * 0x14,
-                        arg1, *(long *)(record + 4), innerItem);
+            *(volatile int *)((char *)arg0 + 4) = itemCount + 1;
+            fn_8027C014((char *)tableArray + itemCount * 0x14, arg1, *(long *)(record + 4), innerItem);
         }
         innerIndex++;
 fetch_inner:
-        innerItem = ((void *(*)(void *, long))(*(void ***)outerItem)[24])(
-            outerItem, innerIndex);
+        innerItem = ((void *(*)(void *, long))(*(void ***)outerItem)[24])(outerItem, innerIndex);
         if (innerItem != 0)
             goto inner_loop;
     }
-
     outerIndex++;
 fetch_outer:
-    outerItem = ((void *(*)(void *, long))(*(void ***)outerList)[3])(
-        outerList, outerIndex);
+    outerItem = ((void *(*)(void *, long))(*(void ***)outerList)[3])(outerList, outerIndex);
     if (outerItem != 0)
         goto outer_loop;
 }
@@ -1407,6 +1400,7 @@ extern long lbl_80347B5C;
 #pragma use_lmw_stmw off
 __declspec(section ".rodata") extern long lbl_80347B5C;
 #pragma use_lmw_stmw off
+/* Temporarily switch mode/context, apply settings, run action on "ep_chal.val", then restore state. */
 void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
     long temp_r3;
     long temp_r3_2;
