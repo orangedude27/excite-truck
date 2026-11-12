@@ -1870,27 +1870,28 @@ extern "C" s32 fn_800A7484(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s
 
 #pragma dont_inline on
 extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
-    /* If the request is open, bind the driver and step it; otherwise return 0xE.
-     * When the step completes or arg1 requests finalization, clear flags 2 and 8. */
-    s32 result = 0;
-    s32 driverResult;
+    /* Process an SD/request object: if open (flag8) bind driver and step via
+     * fn_800A6728, propagating its error; otherwise return 0xE. After processing,
+     * clear flags 2 and 8 if the operation completed (result==0) or if arg1==1. */
+    s32 ret = 0;
+    s32 drvRet;
     if (*(u32 *)arg0 & 8) {
-        driverResult = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-        if (driverResult != 0) {
-            return driverResult;
+        drvRet = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+        if (drvRet != 0) {
+            return drvRet;
         }
-        driverResult = fn_800A6728(*(void **)((u8 *)arg0 + 4), arg1);
-        if (driverResult != 0) {
-            result = driverResult;
+        drvRet = fn_800A6728(*(void **)((u8 *)arg0 + 4), arg1);
+        if (drvRet != 0) {
+            ret = drvRet;
         }
     } else {
-        result = 0xE;
+        ret = 0xE;
     }
-    if ((result == 0) || ((u32)arg1 == 1U)) {
+    if ((ret == 0) || ((u32)arg1 == 1U)) {
         *(u32 *)arg0 &= ~2U;
         *(u32 *)arg0 &= ~8U;
     }
-    return result;
+    return ret;
 }
 
 extern "C" s32 fn_800A7610(void *arg0) {
