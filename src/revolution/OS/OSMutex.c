@@ -43,6 +43,7 @@ void OSLockMutex(OSMutex* mutex) {
     OSRestoreInterrupts(enabled);
 }
 
+/* Unlocks a mutex owned by the current thread, updating ownership/priority and waking waiters as needed. */
 void OSUnlockMutex(OSMutex* mutex) {
     BOOL enabled = OSDisableInterrupts();
     OSThread* currThread = OSGetCurrentThread();
