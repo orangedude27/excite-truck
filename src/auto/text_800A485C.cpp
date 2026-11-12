@@ -270,7 +270,8 @@ extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800B7F28(void *);
 extern "C" Fn800A4B78Ret fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
-extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
+#define VFT_RET void
+extern "C" VFT_RET VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
 namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor { public: virtual ~ResourceAccessor(); virtual void *GetResource(u32, const char *, u32); }; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
 
 extern "C" const char lbl_8031EE58[];
@@ -7129,30 +7130,22 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
     *arg3 = 0;
     result = fn_800B0868(arg0, arg1, arg2, &sp8);
     *arg3 += sp8;
-    if (result != 0)
-        return result;
-    if (sp8 >= arg2)
-        return 0;
+    if (result != 0) return result;
+    if (sp8 >= arg2) return 0;
     arg2 -= sp8;
-    if (arg0 == 0)
-        var_r27 = 0;
-    else
-        var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    if (arg0 == 0) var_r27 = 0;
+    else var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
     for (;;) {
         result = fn_800B0A60(arg0, arg1 + *arg3, arg2, &sp8);
         *arg3 += sp8;
-        if (result != 0)
-            return result;
-        if (!sp8)
-            break;
+        if (result != 0) return result;
+        if (!sp8) break;
         arg2 -= (short)sp8;
-        if (arg2 < *var_r27)
-            break;
+        if (arg2 < *var_r27) break;
     }
     result = fn_800B0C10(arg0, arg1 + *arg3, arg2, &sp8);
     *arg3 += sp8;
-    if (result != 0)
-        return result;
+    if (result != 0) return result;
     return 0;
 }
 
