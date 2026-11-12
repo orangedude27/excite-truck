@@ -280,12 +280,12 @@ typedef void (*Cross7)(float *, float *, float *, float, float, float, float);
 #pragma push
 #pragma scheduling on
 void fn_80020070(float *arg0) {
-    float b4 = lbl_805604B4;
-    float b8 = lbl_805604B8;
     float axis[3];
     float vec2[3];
     float cross[3];
     float vec0[3];
+    float b4 = lbl_805604B4;
+    float b8 = lbl_805604B8;
     float x, y, z, a, b, c;
 
     axis[0] = b4;
@@ -545,9 +545,10 @@ int fn_80020434(void* arg0, float* arg1) {
 extern int fn_80020434(void*, float*);
 extern int fn_8026A2CC(void*, int, float);
 extern int fn_8000C630(int, int);
+/* Update timed overlay state and, while active, draw it and trigger sound 0x15. */
 void fn_800207B0(void) {
-    char sp10[0x30];
-    float sp8;
+    char overlayData[0x30];
+    float overlayScale;
 
     if ((lbl_8055D644 != 0) && (lbl_8055D645 == 0)) {
         fn_802E2C20();
@@ -557,8 +558,8 @@ void fn_800207B0(void) {
         lbl_8055D644 = 0;
     }
     if (lbl_8055D644 != 0) {
-        fn_80020434(&sp10, &sp8);
-        fn_8026A2CC(&sp10, 0, sp8);
+        fn_80020434(&overlayData, &overlayScale);
+        fn_8026A2CC(&overlayData, 0, overlayScale);
         fn_8000C630(0x15, -1);
     }
 }
