@@ -3307,7 +3307,8 @@ search:
     result = VFiPFENT_searchEmptyTailSFN(sp18, candidate, name, *(s32 **)(volume + 0x1F7C));
     if (result == 0)
         goto haveResult;
-    return 0;
+    else
+        return 0;
 haveResult:
     idx = 0;
     off = 0;
@@ -6934,44 +6935,46 @@ void fn_800B0748(void) {
     ((void (*)(void))fn_800B5CB4)();
 }
 
-extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
-    u32 temp_r8;
-    void *var_r9;
-    void *temp_r6;
-    u32 temp_r10;
-    s32 temp_r7;
-    s32 var_r31 = 1;
-    u16 temp_r5;
-    void *var_r5;
-    u32 temp_r6_2;
-    if (arg0 == 0) var_r9 = 0;
-    else var_r9 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
-    temp_r8 = M2C_FIELD(arg0, u16 *, 0x28);
-    temp_r8 += arg1;
-    temp_r7 = arg2 + (temp_r8 >> M2C_FIELD(var_r9, u8 *, 0x20));
-    temp_r6 = M2C_FIELD(arg0, void **, 8);
-    temp_r10 = M2C_FIELD(temp_r6, u32 *, 0x264);
-    if ((u32)(M2C_FIELD(arg0, u32 *, 0x1C) + arg1) < temp_r10) {
-        if ((M2C_FIELD(var_r9, u16 *, 0) - 1) & temp_r8) M2C_FIELD(arg0, s32 *, 0x20) = temp_r7;
-        else M2C_FIELD(arg0, s32 *, 0x20) = -1;
-        M2C_FIELD(arg0, u32 *, 0x1C) = M2C_FIELD(arg0, u32 *, 0x1C) + arg1;
-    } else if ((s32)temp_r10 == 0) {
-        M2C_FIELD(arg0, s32 *, 0x20) = -1;
-        M2C_FIELD(arg0, u32 *, 0x1C) = 0;
-        if (arg1 != 0) var_r31 = 0;
+extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 startCluster) {
+    /* Advance a file cursor by byteCount bytes and update its cluster/sector/offset fields. */
+    u32 offsetWithAdvance;
+    void *volume;
+    void *file;
+    u32 fileSize;
+    s32 newCluster;
+    s32 ok = 1;
+    u16 sectorMask;
+    void *volumeForPos;
+    u32 finalPos;
+
+    if (cursor == 0) volume = 0;
+    else volume = M2C_FIELD(M2C_FIELD(cursor, void **, 8), void **, 0x268);
+    offsetWithAdvance = M2C_FIELD(cursor, u16 *, 0x28);
+    offsetWithAdvance += byteCount;
+    newCluster = startCluster + (offsetWithAdvance >> M2C_FIELD(volume, u8 *, 0x20));
+    file = M2C_FIELD(cursor, void **, 8);
+    fileSize = M2C_FIELD(file, u32 *, 0x264);
+    if ((u32)(M2C_FIELD(cursor, u32 *, 0x1C) + byteCount) < fileSize) {
+        if ((M2C_FIELD(volume, u16 *, 0) - 1) & offsetWithAdvance) M2C_FIELD(cursor, s32 *, 0x20) = newCluster;
+        else M2C_FIELD(cursor, s32 *, 0x20) = -1;
+        M2C_FIELD(cursor, u32 *, 0x1C) = M2C_FIELD(cursor, u32 *, 0x1C) + byteCount;
+    } else if ((s32)fileSize == 0) {
+        M2C_FIELD(cursor, s32 *, 0x20) = -1;
+        M2C_FIELD(cursor, u32 *, 0x1C) = 0;
+        if (byteCount != 0) ok = 0;
     } else {
-        var_r31 = 0;
-        M2C_FIELD(arg0, s32 *, 0x20) = -1;
-        M2C_FIELD(arg0, u32 *, 0x1C) = M2C_FIELD(temp_r6, u32 *, 0x264);
+        ok = 0;
+        M2C_FIELD(cursor, s32 *, 0x20) = -1;
+        M2C_FIELD(cursor, u32 *, 0x1C) = M2C_FIELD(file, u32 *, 0x264);
     }
-    if (arg0 == 0) var_r5 = 0;
-    else var_r5 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
-    temp_r6_2 = M2C_FIELD(arg0, u32 *, 0x1C);
-    M2C_FIELD(arg0, u32 *, 0x24) = temp_r6_2 >> M2C_FIELD(var_r5, u8 *, 0x20);
-    temp_r5 = M2C_FIELD(var_r5, u16 *, 0);
-    M2C_FIELD(arg0, u16 *, 0x28) = temp_r6_2 & (temp_r5 - 1);
-    VFiPFCLUSTER_UpdateLastAccessCluster(arg0, temp_r7);
-    return var_r31;
+    if (cursor == 0) volumeForPos = 0;
+    else volumeForPos = M2C_FIELD(M2C_FIELD(cursor, void **, 8), void **, 0x268);
+    finalPos = M2C_FIELD(cursor, u32 *, 0x1C);
+    M2C_FIELD(cursor, u32 *, 0x24) = finalPos >> M2C_FIELD(volumeForPos, u8 *, 0x20);
+    sectorMask = M2C_FIELD(volumeForPos, u16 *, 0);
+    M2C_FIELD(cursor, u16 *, 0x28) = finalPos & (sectorMask - 1);
+    VFiPFCLUSTER_UpdateLastAccessCluster(cursor, newCluster);
+    return ok;
 }
 
 extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
