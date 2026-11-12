@@ -1837,28 +1837,7 @@ struct ArchiveStream {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(void *self, u32 groupId, void *allocator, void **outWave, u32 blockSize) {
-    class Stream {
-    public:
-        virtual void v0();
-        virtual void v1();
-        virtual void Close();
-        virtual s32 Read(void *, u32);
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual s32 IsOpen();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual u32 GetSize();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual s32 IsReady();
-    };
+    typedef ArchiveStream Stream; /* the archive stream, described above */
     class Allocator {
     public:
         virtual void v0();
