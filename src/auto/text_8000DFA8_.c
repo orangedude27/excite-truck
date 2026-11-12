@@ -2168,22 +2168,29 @@ s32 fn_8000EE54(s32 arg0) {
 }
 
 #pragma dont_inline on
-f32 fn_8000EEC8(s32 arg0, f32 arg1) {
-    f32 f1;
-    f32 f31;
-    f32 tmp;
+f32 fn_8000EEC8(s32 regionId, f32 listHeight) {
+    /* Top edge of a HUD list of the given total height inside layout region
+     * regionId (negative: the whole screen, whose box is lbl_80350EC4 as
+     * {top, left, right, bottom}, so fn_80011E90 is its vertical centre).
+     * With one player (fn_801E85A4 is the player count) the list simply starts
+     * 100 below the region's top; with more players the top is blended 0.2/0.8
+     * between the region's two stored tops (lbl_80350F28[region][0] and [5]),
+     * and half the list's height is added back to centre it. */
+    f32 top;
+    f32 scaledTop;
+    f32 scaledAltTop;
     if (fn_801E85A4() == 1) {
-        if (arg0 < 0) f1 = fn_80011E54();
-        else f1 = fn_80011DC0(arg0);
-        return f1 - lbl_80560260;
+        if (regionId < 0) top = fn_80011E54();
+        else top = fn_80011DC0(regionId);
+        return top - lbl_80560260; /* 100.0f */
     }
-    if (arg0 < 0) f1 = fn_80011E90();
+    if (regionId < 0) top = fn_80011E90();
     else {
-        f31 = lbl_805602C4 * fn_80011DC0(arg0);
-        tmp = fn_80011E1C(arg0) * lbl_805602C0;
-        f1 = tmp + f31;
+        scaledTop = lbl_805602C4 * fn_80011DC0(regionId); /* 0.2f */
+        scaledAltTop = fn_80011E1C(regionId) * lbl_805602C0; /* 0.8f */
+        top = scaledAltTop + scaledTop;
     }
-    return f1 + (lbl_8056025C * arg1);
+    return top + (lbl_8056025C * listHeight); /* 0.5f */
 }
 
 #pragma use_lmw_stmw off
