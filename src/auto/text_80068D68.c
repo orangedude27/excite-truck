@@ -22648,16 +22648,17 @@ void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
     rfc_send_buf_uih(p_mcb, 0, p_buf);
 }
 
-void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
-    u8 *buf = GKI_getpoolbuf(2);
-    if (buf != 0) {
-        *(u16 *)(buf + 4) = 0xC;
-        buf[0x14] = (u8)((((s32)(-arg2 | arg2) >> 31) & 2) | 0x51);
-        buf[0x15] = 5;
-        buf[0x16] = (u8)((arg1 << 2) | 3);
-        buf[0x17] = arg3 | 1;
-        *(u16 *)(buf + 2) = 4;
-        rfc_send_buf_uih(arg0, 0, buf);
+/* Send an RFCOMM Remote Line Status (RLS) UIH frame for the given DLCI. */
+void rfc_send_rls(void *p_mcb, u8 dlci, s32 isCommand, u8 lineStatus) {
+    u8 *p_buf = GKI_getpoolbuf(2);
+    if (p_buf != 0) {
+        *(u16 *)(p_buf + 4) = 0xC;
+        p_buf[0x14] = (u8)((((s32)(-isCommand | isCommand) >> 31) & 2) | 0x51);
+        p_buf[0x15] = 5;
+        p_buf[0x16] = (u8)((dlci << 2) | 3);
+        p_buf[0x17] = lineStatus | 1;
+        *(u16 *)(p_buf + 2) = 4;
+        rfc_send_buf_uih(p_mcb, 0, p_buf);
     }
 }
 
