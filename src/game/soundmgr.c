@@ -531,15 +531,17 @@ extern "C" signed long fn_8020815C(void *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-signed long fn_8020820C(SoundMgrObj* arg0, SoundMgrObj* arg1) {
-    float rhs = arg1->field_68;
-    float lhs = arg0->field_68;
-    unsigned long greater = lhs > rhs;
-    signed long type = arg0->field_44;
-    if (type == arg1->field_44 && (unsigned long)(type - 3) <= 1) {
-        signed long id = fn_8026A344(0);
-        signed long other = id == arg1->field_10;
-        return id == arg0->field_10 || (!other && greater);
+signed long fn_8020820C(SoundMgrObj* lhsObj, SoundMgrObj* rhsObj) {
+    float rhsValue = rhsObj->field_68;
+    float lhsValue = lhsObj->field_68;
+    unsigned long greater = lhsValue > rhsValue;
+    signed long type = lhsObj->field_44;
+
+    /* Compare sound manager objects for ordering: for type 3/4 prefer the object owned by fn_8026A344(0), else compare field_68. */
+    if (type == rhsObj->field_44 && (unsigned long)(type - 3) <= 1) {
+        signed long ownerId = fn_8026A344(0);
+        signed long rhsIsOwner = ownerId == rhsObj->field_10;
+        return ownerId == lhsObj->field_10 || (!rhsIsOwner && greater);
     }
     return greater;
 }
