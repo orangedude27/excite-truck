@@ -1144,7 +1144,6 @@ extern void *fn_8022EDC4(void);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma cplusplus on
 void fn_80218574(void *arg0) {
     struct Mtx { int w[12]; };
     struct State { struct Mtx m; float a, b, c; };
