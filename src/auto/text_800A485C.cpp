@@ -1870,20 +1870,27 @@ extern "C" s32 fn_800A7484(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s
 
 #pragma dont_inline on
 extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
-    s32 temp_r3;
-    s32 temp_r3_2;
-    s32 var_r31 = 0;
-    if (*(s32 *)arg0 & 8) {
-        temp_r3 = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-        if (temp_r3 != 0) return temp_r3;
-        temp_r3_2 = fn_800A6728(*(void **)((u8 *)arg0 + 4), arg1);
-        if (temp_r3_2 != 0) var_r31 = temp_r3_2;
-    } else var_r31 = 0xE;
-    if ((var_r31 == 0) || ((u32)arg1 == 1U)) {
+    /* If the request is open, bind the driver and step it; otherwise return 0xE.
+     * When the step completes or arg1 requests finalization, clear flags 2 and 8. */
+    s32 result = 0;
+    s32 driverResult;
+    if (*(u32 *)arg0 & 8) {
+        driverResult = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+        if (driverResult != 0) {
+            return driverResult;
+        }
+        driverResult = fn_800A6728(*(void **)((u8 *)arg0 + 4), arg1);
+        if (driverResult != 0) {
+            result = driverResult;
+        }
+    } else {
+        result = 0xE;
+    }
+    if ((result == 0) || ((u32)arg1 == 1U)) {
         *(u32 *)arg0 &= ~2U;
         *(u32 *)arg0 &= ~8U;
     }
-    return var_r31;
+    return result;
 }
 
 extern "C" s32 fn_800A7610(void *arg0) {
