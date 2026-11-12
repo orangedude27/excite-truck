@@ -1401,6 +1401,23 @@ extern "C" s32 fn_8021A804(void *arg0, s32 arg1) {
     return fn_802192A4(arg0, arg1);
 }
 
+/* Cursor-bound icon widget (0x25C bytes), built by fn_8021A808 (vtable
+ * lbl_8033F298, UI layout node types 16 and 27 in fn_80211690) and by the plain
+ * fn_8021A77C (vtable lbl_8033F324), which watches only the cursor.  The base
+ * widget (fn_80222340) keeps its box at +0x04/+0x08, the values it watches at
+ * +0x30 (stride 0x10, count +0x230, added by fn_80219440), the drawer that
+ * names the graphic to draw at +0x244 and where to draw it at
+ * +0x248/+0x24C/+0x250.  This class adds the binding: +0x254 points at the
+ * selection the menu cursor writes and +0x258 is the entry this widget stands
+ * for, so fn_8021AA18 draws it full size only while *cursor == cursorId, and
+ * dims it while the UI mode byte behind fn_80216708() is clear. */
+struct CursorIconWidget {
+    void *vtable;        /* 0x00 */
+    u8 _04[0x254 - 0x04];
+    s32 *cursor;         /* 0x254: selection the menu cursor writes; NULL when unbound */
+    s32 cursorId;        /* 0x258: the entry this widget stands for */
+};
+
 extern "C" int lbl_8033F298[];
 extern "C" void *fn_8021A808(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     fn_80222340(arg0, arg1, arg2, 0, 0, 0, arg5);
@@ -3813,14 +3830,13 @@ extern "C" void fn_8021EDA4(void *self) {
         f32 width = (f32)((Vf78 *)self)->get();
         fn_802C5320(*(s32 *)(p + 0xA60), 0, x, y, lbl_805634A8, width, height);
     }
-    #pragma scheduling off
-    ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,f32,s32))fn_8022BAD0)(*(s32 *)(p + 0xA58), *(s32 *)(p + 4), *(s32 *)(p + 8), 0, 0, 0, *(s32 *)(p + 0xA54), *(u8 *)(p + 0x19) != 0, lbl_805634A4, 0);
-    #pragma scheduling on
+    s32 zero = 0;
+    ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,f32,s32))fn_8022BAD0)(*(s32 *)(p + 0xA58), *(s32 *)(p + 4), *(s32 *)(p + 8), zero, zero, zero, *(s32 *)(p + 0xA54), *(u8 *)(p + 0x19) != 0, lbl_805634A4, zero);
     if (*(u8 *)(p + 0x19)) {
         f32 x = (f32)(*(s32 *)(p + 4) - lbl_8055FB9C / 2);
         f32 y = (f32)(lbl_8055FBA0 / 2 - *(s32 *)(p + 8));
         strcpy(text, *(char **)(p + 0xA54));
-        if (*(s32 *)(p + 0x250) >= 0) text[*(s32 *)(p + 0x250)] = 0;
+        if (*(s32 *)(p + 0x250) >= 0) text[*(s32 *)(p + 0x250)] = zero;
         x += (f32)fn_8022B498(*(s32 *)(p + 0xA58), (s32)text);
         f32 height = (f32)fn_8022B620(*(s32 *)(p + 0xA58), text);
         ((void (*)(s32,f32,f32,f32,f32,f32))fn_80230924)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
@@ -4108,8 +4124,7 @@ extern "C" s32 fn_8021F848(void *arg0, s32 arg1) {
         s32 n = *(s32 *)((u8 *)arg0 + 0x254) - 1;
         f32 span = max - min;
         f32 delta = old - min;
-        f32 product = (f32)n * delta;
-        s32 step = (s32)(lbl_80563518 + product / span) + 1;
+        s32 step = (s32)(lbl_80563518 + (f32)n * delta / span) + 1;
         f32 t = min + (f32)step * span / (f32)n;
         if (t < min) t = min;
         if (t > *(f32 *)((u8 *)arg0 + 0x24c)) t = *(f32 *)((u8 *)arg0 + 0x24c);
@@ -4123,8 +4138,7 @@ extern "C" s32 fn_8021F848(void *arg0, s32 arg1) {
         s32 n = *(s32 *)((u8 *)arg0 + 0x254) - 1;
         f32 span = max - min;
         f32 delta = old - min;
-        f32 product = (f32)n * delta;
-        s32 step = (s32)(lbl_80563518 + product / span) - 1;
+        s32 step = (s32)(lbl_80563518 + (f32)n * delta / span) - 1;
         f32 t = min + (f32)step * span / (f32)n;
         if (t < min) t = min;
         if (t > *(f32 *)((u8 *)arg0 + 0x24c)) t = *(f32 *)((u8 *)arg0 + 0x24c);
@@ -7393,7 +7407,8 @@ extern "C" void *fn_80226CBC(void *arg0, void *arg1) {
     memcpy(&x, arg + 0xA4, 4);
     memcpy(&y, arg + 0xA8, 4);
     memcpy(&z, arg + 0xAC, 4);
-    if (!((f32)__fabs((double)x) <= *(f32 *)lbl_80558DC4) || !((f32)__fabs((double)y) <= *(f32 *)lbl_80558DC4) || !((f32)__fabs((double)z) <= *(f32 *)lbl_80558DC4))
+    f32 lim = *(f32 *)lbl_80558DC4;
+    if (! (lim >= (f32)__fabs((double)x)) || ! (lim >= (f32)__fabs((double)y)) || ! (lim >= (f32)__fabs((double)z)))
         fn_80227044(self, x, y, z);
     return self;
 }
