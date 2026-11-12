@@ -209,26 +209,29 @@ extern char lbl_8032A0A0[];
 void fn_80128AA4(void *, u8 *, s32, s32);
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_80128584(s32 arg0, s32 arg1) {
-    s32 var_r4;
-    u32 start;
-    u32 end;
-    if (((s32)lbl_8055DF80 == 0) || (arg0 != 0)) {
+void fn_80128584(s32 ptr, s32 arg1) {
+    s32 inPrimaryBuffer;
+    u32 bufferStart;
+    u32 bufferEnd;
+
+    /* Free a ring-buffer allocation from the primary or secondary heap, if enabled. */
+    if (((s32)lbl_8055DF80 == 0) || (ptr != 0)) {
         fn_80127964();
         if (((s32)lbl_8055DF80 == 0) && ((u8)lbl_8055DF88 != 0))
             ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A0A0);
-        var_r4 = 0;
-        start = *(u32 *)(lbl_8041E140 + 0xC);
-        if ((u32)arg0 >= start) {
-            end = start + *(u32 *)(lbl_8041E140 + 8);
-            if ((u32)arg0 < end)
-                var_r4 = 1;
+
+        inPrimaryBuffer = 0;
+        bufferStart = *(u32 *)(lbl_8041E140 + 0xC);
+        if ((u32)ptr >= bufferStart) {
+            bufferEnd = bufferStart + *(u32 *)(lbl_8041E140 + 8);
+            if ((u32)ptr < bufferEnd)
+                inPrimaryBuffer = 1;
         }
-        if (var_r4 != 0) {
-            ((void (*)(void *, u8 *, s32))fn_80128AA4)(lbl_8041E140, (u8 *)arg0, arg1);
+        if (inPrimaryBuffer != 0) {
+            ((void (*)(void *, u8 *, s32))fn_80128AA4)(lbl_8041E140, (u8 *)ptr, arg1);
             return;
         }
-        ((void (*)(void *, u8 *, s32))fn_80128AA4)(lbl_8041E160, (u8 *)arg0, arg1);
+        ((void (*)(void *, u8 *, s32))fn_80128AA4)(lbl_8041E160, (u8 *)ptr, arg1);
     }
 }
 #pragma scheduling on
