@@ -322,7 +322,6 @@ void fn_80207C80(void *arg0) {
     }
     fn_8020815C(arg0);
     fn_80207E70(arg0);
-    return;
 }
 
 #pragma dont_inline on
@@ -385,6 +384,8 @@ extern void* memmove(void*, const void*, unsigned long);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Compacts the owner's pointer list at +0x94/+0x114 by removing entries whose
+ * child object reports state 3 (f7()==3), deleting them (f0(1)) as it goes. */
 extern "C" void fn_80207E70(void *arg0) {
     void *base = arg0;
     void *cur = base;
@@ -496,26 +497,32 @@ extern "C" signed long fn_8020815C(void *arg0) {
         virtual void f6();
         virtual signed long check();
     };
+    struct Lim5 {
+        signed long total;
+        char pad[0x28];
+    };
     register signed long offset;
     register signed long limit;
     register signed long matches;
     register signed long i;
     void *entry;
     void *owner;
-    signed long idx;
-    idx = (signed long)fn_802090B4();
-    limit = *(signed long *)((char *)lbl_802F9DC8 + idx * 0x2C);
+    limit = ((struct Lim5 *)lbl_802F9DC8)[(signed long)fn_802090B4()].total;
     matches = 0;
     i = 0;
     offset = 0;
     while (i < *(signed long *)((char *)arg0 + 0x10)) {
         entry = *(void **)((char *)*(void ***)((char *)arg0 + 0xC) + offset);
         owner = *(void **)((char *)entry + 0xC);
-        if (((Obj *)owner)->check() == 1) matches++;
+        if (((Obj *)owner)->check() == 1) {
+            matches++;
+        }
         offset += 4;
         i++;
     }
-    if (matches > limit) fn_802E317C(lbl_8033BE20, matches, limit);
+    if (matches > limit) {
+        fn_802E317C(lbl_8033BE20, matches, limit);
+    }
 }
 #pragma pop
 
@@ -539,35 +546,34 @@ signed long fn_8020820C(SoundMgrObj* arg0, SoundMgrObj* arg1) {
 
 #pragma inline_depth(0)
 void fn_802082C0(void *arg0, void *arg1) {
-    register SoundMgrObj **source;
-    register SoundMgrObj **target;
+    register signed long *source;
+    register signed long *target;
     register signed long count;
-    register SoundMgrObj **base;
+    register signed long *base;
     register signed long i;
-    register SoundMgrObj *value;
+    register signed long value;
     register signed long j;
     register signed long outerOffset;
-    base = *(SoundMgrObj ***)arg1;
+
+    base = *(signed long **)arg1;
     i = 1;
     count = *(signed long *)((char *)arg1 + 4);
     outerOffset = 4;
-    source = base + 1;
+    source = (signed long *)((char *)base + 4);
+
     goto outer_check;
 outer:
     value = *source;
     j = i;
-    target = (SoundMgrObj **)((char *)base + outerOffset);
+    target = (signed long *)((char *)base + outerOffset);
     goto inner;
 inner:
     *target = target[-1];
-    j = j - 1;
-    target = target - 1;
-    if (j <= 0)
-        goto done;
-    if (fn_8020820C(value, target[-1]) == 0)
-        goto done;
-    goto inner;
-done:
+    j--;
+    target--;
+    if (j > 0 &&
+        fn_8020820C((SoundMgrObj *)value, (SoundMgrObj *)target[-1]) != 0)
+        goto inner;
     base[j] = value;
     source++;
     i++;
