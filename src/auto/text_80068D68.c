@@ -6082,20 +6082,19 @@ void bta_hh_sdp_cback(s32 arg0, u16 arg1, void *arg2) {
     u8 sp8 = 0x10;
     void *temp_r31 = *(void **)(lbl_803C0D48 + 0x210);
     void *var_r30 = arg2;
-    int var_r29 = arg1;
     if (arg0 == 0) {
         if (*(u8 *)((u8 *)temp_r31 + 0x14) != 0) {
-            var_r29 |= 0x8000;
+            arg1 |= 0x8000;
         }
         if (lbl_8055DC80 >= 4) {
-            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(0x503, lbl_803151D8, temp_r31, arg0, (u16)var_r29);
+            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(0x503, lbl_803151D8, temp_r31, arg0, arg1);
         }
         if (bta_hh_tod_spt(temp_r31, *(u8 *)((u8 *)var_r30 + 0x64)) != 0) {
             if (*(u8 *)((u8 *)temp_r31 + 0x16) == 0xFF) {
-                sp8 = HID_HostAddDev((u8 *)temp_r31 + 8, (u16)var_r29, &sp9);
+                sp8 = HID_HostAddDev((u8 *)temp_r31 + 8, arg1, &sp9);
                 if (sp8 == 0) {
                     *(u8 *)(lbl_803C0D48 + 0x214 + sp9) = *(u8 *)((u8 *)temp_r31 + 0x12);
-                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(temp_r31, sp9, (u16)var_r29, (u8 *)var_r30 + 0x68, *(u8 *)((u8 *)var_r30 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
+                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(temp_r31, sp9, arg1, (u8 *)var_r30 + 0x68, *(u8 *)((u8 *)var_r30 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
                 } else {
                     *(u8 *)((u8 *)temp_r31 + 0x15) = 0;
                 }
@@ -23523,22 +23522,16 @@ tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
         for (yy = 0; yy < p_seq->num_uids; yy++) {
             p_attr = base + 0xC;
             for (xx = 0; xx < *(UINT16 *)(base + 8); xx++, p_attr += 0xC) {
-                UINT8 type = p_attr[0xA];
-                if (type == 3) {
+                if (p_attr[0xA] == UUID_DESC_TYPE) {
                     if (sdpu_compare_uuid_arrays(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len))
-                        goto attr_found;
-                    goto attr_next;
-                }
-                if (type == 6) {
+                        break;
+                } else if (p_attr[0xA] == DATA_ELE_SEQ_DESC_TYPE) {
                     if (find_uuid_in_seq(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len, 0))
-                        goto attr_found;
+                        break;
                 }
-attr_next:
-                ;
             }
-attr_found:
             if (xx == *(UINT16 *)(base + 8))
                 break;
         }
