@@ -3347,19 +3347,20 @@ extern "C" void fn_8019D06C(void*, void*, s32, s32);
 extern "C" s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
 #pragma paired off
 #pragma paired_single off
-extern "C" s32 fn_801A1E7C(void* arg0, s32 arg1, s32 arg2, s32 arg3, void* arg4) {
-    register f32 c = *(f32*)((u8*)arg0 + 0x2c);
-    register f32 b = *(f32*)((u8*)arg0 + 0x28);
-    register f32 a = *(f32*)((u8*)arg0 + 0x24);
-    void* result = ((VTab1A1E7C*)arg0)->Call();
-    if (fn_8019E2D0(arg1, arg2, arg3, result, a, b, c)) {
+extern "C" s32 fn_801A1E7C(void *object, s32 rayOrigin, s32 rayDirection, s32 hitDistance, void *outNormal) {
+    /* Tests a ray against the object's oriented bounds using its transform; on hit sets outNormal to (0, 0.5, 0) and returns 1. */
+    register f32 extentZ = *(f32 *)((u8 *)object + 0x2c);
+    register f32 extentY = *(f32 *)((u8 *)object + 0x28);
+    register f32 extentX = *(f32 *)((u8 *)object + 0x24);
+    void *transform = ((VTab1A1E7C *)object)->Call();
+    if (fn_8019E2D0(rayOrigin, rayDirection, hitDistance, transform, extentX, extentY, extentZ)) {
         f32 middle;
         f32 same;
         same = lbl_805622D0;
         middle = lbl_805622E0;
-        *(f32*)arg4 = same;
-        *((f32*)arg4 + 1) = middle;
-        *((f32*)arg4 + 2) = same;
+        *(f32 *)outNormal = same;
+        *((f32 *)outNormal + 1) = middle;
+        *((f32 *)outNormal + 2) = same;
         return 1;
     }
     return 0;
