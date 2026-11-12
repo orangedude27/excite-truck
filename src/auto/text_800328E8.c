@@ -33,6 +33,8 @@ void fn_800328F0(void *arg0) {
     unsigned int *cs;
     unsigned int *cd;
     int *z;
+    void *m0;
+    void *m1;
 
     dst = p + 0x138;
     lbl_8055D7E0 = (void *)((unsigned int)lbl_8055D7E0 + 1);
@@ -46,7 +48,9 @@ void fn_800328F0(void *arg0) {
         return;
     }
     if (flags & 0x80000000) {
-        memcpy(src, dst, 0x120);
+        m1 = dst;
+        m0 = src;
+        memcpy(m0, m1, 0x120);
         n = *(unsigned int *)(p + 0x28);
         if (n != 0) {
             cs = (unsigned int *)(p + 0x34);
@@ -73,7 +77,9 @@ void fn_800328F0(void *arg0) {
             *(unsigned short *)(src + 0x12) = *(unsigned short *)(dst + 0x12);
         }
         if (flags & 0x10) {
-            memcpy(src + 0x14, dst + 0x14, 0x30);
+            m1 = dst + 0x14;
+            m0 = src + 0x14;
+            memcpy(m0, m1, 0x30);
         }
         if (flags & 0x40) {
             *(unsigned short *)(src + 0x4E) = *(unsigned short *)(dst + 0x4E);
@@ -384,10 +390,11 @@ void fn_80033404(void) {
 extern unsigned char lbl_80363C60[];
 extern unsigned long OSDisableInterrupts(void);
 extern void OSRestoreInterrupts(unsigned long);
-void fn_80033408(void *arg0, int arg1) {
-    unsigned char *p = (unsigned char *)arg0;
-    unsigned long state = OSDisableInterrupts();
-    switch (arg1) {
+/* Sets the voice mix mode fields at offsets 0x140/0x142 and flags bit 0 of the status word at 0x1C under disabled interrupts. */
+void fn_80033408(void *voice, int mode) {
+    unsigned char *p = (unsigned char *)voice;
+    unsigned long saved = OSDisableInterrupts();
+    switch (mode) {
     case 0: *(short *)(p + 0x140) = 2; break;
     case 1: *(short *)(p + 0x140) = 1; break;
     case 2: *(short *)(p + 0x140) = 0; *(short *)(p + 0x142) = 0; break;
@@ -395,6 +402,6 @@ void fn_80033408(void *arg0, int arg1) {
     case 4: *(short *)(p + 0x140) = 0; *(short *)(p + 0x142) = 2; break;
     }
     *(unsigned int *)(p + 0x1C) |= 1;
-    OSRestoreInterrupts(state);
+    OSRestoreInterrupts(saved);
 }
 
