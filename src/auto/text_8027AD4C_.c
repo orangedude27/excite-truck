@@ -905,39 +905,45 @@ struct ContestEntry {
 };
 
 #pragma cplusplus on
-extern "C" void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
-    class FirstInterface {
+/* Fills one contest-event record: keeps the event id, the parent record's field and
+ * the scene object it was read from, reads that object's "contest_name" attribute,
+ * then looks the name up in the global contest table to store the contest's id. */
+extern "C" void fn_8027C014(void *recordPtr, long eventId, long parentField, void *object) {
+    /* The object the event was read from: slot 0x14 reads a string attribute. */
+    class EventObject {
     public:
         virtual void m0();
         virtual void m1();
         virtual void m2();
-        virtual char *getName(const char *);
+        virtual char *getString(const char *name);
     };
-    class SecondInterface {
+    /* A contest's scene object in the table: slot 0x18 reads a string attribute. */
+    class ContestObject {
     public:
         virtual void m0();
         virtual void m1();
         virtual void m2();
         virtual void m3();
-        virtual char *getName(const char *, const char *);
+        virtual char *getString(const char *name, const char *def);
     };
-    long i;
-    void *p;
+    long index;
+    struct ContestEntry *entry;
+    struct ContestEvent *event = (struct ContestEvent *)recordPtr;
 
-    *(long *)arg0 = arg1;
-    *(long *)((char *)arg0 + 8) = arg2;
-    *(void **)((char *)arg0 + 0x10) = arg3;
-    *(char **)((char *)arg0 + 0xC) = ((FirstInterface *)arg3)->getName((const char *)&lbl_80347A5C);
-    i = 0;
+    event->eventId = eventId;
+    event->parentField = parentField;
+    event->object = object;
+    event->contestName = ((EventObject *)object)->getString(ATTR_CONTEST_NAME);
+    index = 0;
     goto check;
 loop:
-    p = fn_8001285C(i);
-    if (stricmp(((SecondInterface *)*(void **)((char *)p + 0x20))->getName((const char *)&lbl_8055C758, (const char *)&lbl_8055C770),
-                *(char **)((char *)arg0 + 0xC)) == 0)
-        *(void **)((char *)arg0 + 4) = *(void **)p;
-    i++;
+    entry = (struct ContestEntry *)fn_8001285C(index);
+    if (stricmp(((ContestObject *)entry->child)->getString(ATTR_NAME, ATTR_NAME_DEFAULT),
+                event->contestName) == 0)
+        event->contestId = entry->id;
+    index++;
 check:
-    if (i < fn_80012854())
+    if (index < fn_80012854())
         goto loop;
 }
 #pragma cplusplus reset
