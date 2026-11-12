@@ -14039,17 +14039,6 @@ void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
  L2CA_ConfigReq(cid,(tL2CAP_CFG_INFO *)(entry_reg+0x24));
 }
 
-/* gap_utils.c gap_find_connection_by_cid(): scans the 8 GAP connection blocks. */
-static inline u8 *gap_find_conn_by_cid(u32 cid) {
-    u8 *p = lbl_803C3740 + 0xAC;
-    u8 i;
-    for (i = 0; i < 8; i++, p += 0x60) {
-        if (p[0] != 0 && *(u16 *)(p + 6) == cid)
-            return p;
-    }
-    return 0;
-}
-
 void gap_connect_cfm(u32 cid, s32 result) {
     u8 *entry = lbl_803C3740 + 0xAC;
     u8 i = 0;
