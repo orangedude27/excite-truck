@@ -123,13 +123,15 @@ void UpdateOrigin(s32 chan) {
 }
 
 void fn_80056308(s32 chan, u32 status) {
-    u32 data[2];
+    /* SI transfer callback: on success, refresh PAD origin/response and enable polling, then advance probing to the next pending channel. */
+    u32 response[2];
     s32 enabledChan;
+
     if ((status & 0xF) == 0) {
         UpdateOrigin(lbl_80558F74);
         enabledChan = lbl_80558F74;
         lbl_8055DB14 |= PAD_CHAN0_BIT >> enabledChan;
-        SIGetResponse(enabledChan, data);
+        SIGetResponse(enabledChan, response);
         fn_80057F2C(enabledChan, lbl_80558F7C | 0x00400000);
         SIEnablePolling(lbl_8055DB14);
     }
