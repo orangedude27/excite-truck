@@ -22480,23 +22480,27 @@ void rfc_send_sabme(void *p_mcb, s32 dlci, void *unused) {
  * (is_command == 0), with the two tests in the order this build emits them. */
 #define RFCOMM_CR_RSP(initiator) ((((!(initiator) && 1) || ((initiator) && !1))) << 1)
 
-void rfc_send_ua(void *arg0, s32 arg1, void *arg2) {
+/* Builds and sends an RFCOMM UA (unnumbered acknowledgment) frame for `dlci` on
+ * the multiplexer channel of `p_mcb`: the C/R bit is the inverse of our
+ * initiator flag because this is a response, P/F is set, and the 4-byte frame is
+ * handed to rfc_check_send_cmd(). The third argument is unused. */
+void rfc_send_ua(void *p_mcb, s32 dlci, void *unused) {
     BT_HDR *p_buf;
     u8 *p_data;
     u8 cr;
-    u8 command = 0x73;
-    u8 initiator = *(u8 *)((u8 *)arg0 + 0x6D);
-    cr = (u8)((((!initiator && 1) || (initiator && !1)) << 1));
-    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == 0)
+    u8 type_field = RFCOMM_UA | RFCOMM_PF;
+    u8 initiator = ((tRFC_MCB_VIEW *)p_mcb)->is_initiator;
+    cr = (u8)RFCOMM_CR_RSP(initiator);
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(RFCOMM_CMD_POOL_ID)) == 0)
         return;
-    p_data = (u8 *)(p_buf + 1) + 9;
+    p_data = (u8 *)(p_buf + 1) + 9; /* L2CAP_MIN_OFFSET of this build */
     p_buf->offset = 9;
-    p_data[0] = (u8)(1 | cr | ((u8)arg1 << 2));
-    p_data[1] = command;
-    p_data[2] = 1;
-    p_data[3] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9);
+    p_data[0] = (u8)(RFCOMM_EA | cr | ((u8)dlci << RFCOMM_SHIFT_DLCI));
+    p_data[1] = type_field;
+    p_data[2] = RFCOMM_EA;
+    p_data[3] = rfc_calc_fcs(3, (u8 *)(p_buf + 1) + 9);
     p_buf->len = 4;
-    rfc_check_send_cmd(arg0, p_buf);
+    rfc_check_send_cmd(p_mcb, p_buf);
 }
 
 /* Sends an RFCOMM DM frame for the given DLCI, setting P/F from pf and using the
