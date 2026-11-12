@@ -370,22 +370,24 @@ s32 fn_80246E4C(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
-    s32 *p;
-    if (arg0 != 0) {
-        arg0->vtable = &lbl_80343600;
-        fn_80235380(arg0->field18);
-        fn_80235380(arg0->field1C);
-        fn_802C519C(arg0->field20);
-        p = arg0->field30;
-        if (p != 0) {
-            fn_802328D4(*p);
-            *p = 0;
-            fn_80128668(p);
+/* Destructor for the "cup" menu tile: releases its two art models, its track
+   image and its text label, then deletes the object itself when deleteFlag > 0. */
+Obj_802470D4 *fn_802470D4(Obj_802470D4 *self, s32 deleteFlag) {
+    s32 *label;
+    if (self != 0) {
+        self->vtable = &lbl_80343600;
+        fn_80235380(self->field18);
+        fn_80235380(self->field1C);
+        fn_802C519C(self->field20);
+        label = self->field30;
+        if (label != 0) {
+            fn_802328D4(*label);
+            *label = 0;
+            fn_80128668(label);
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (deleteFlag > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 #pragma pop
 void fn_80247174(void) {
