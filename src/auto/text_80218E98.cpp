@@ -5261,6 +5261,8 @@ extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
     f32 spC;
     f32 sp8;
     register f32 value;
+
+    /* If object has a valid image/resource, compute screen coords and draw frame arg4 (when not -1). */
     if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 4)) != 0) {
         value = lbl_805634A8;
         spC = value;
