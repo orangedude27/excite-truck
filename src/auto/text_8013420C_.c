@@ -61,25 +61,26 @@ void *fn_8013420C(void *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 #pragma use_lmw_stmw off
-void *fn_801342B0(Container *arg0, s32 arg1, s32 arg2) {
+/* Cancels any in-progress load/stream slots, frees pool buffers, and optionally deletes the pool. */
+void *fn_801342B0(LoadPool *pool, s32 deletePool, s32 unused) {
     s32 i;
-    Entry *entry;
-    if (arg0 != 0) {
-        for (i = 0; i < arg0->count; i++) {
-            entry = (Entry *)((char *)arg0->entries + i * 0x18);
+    LoadPoolEntry *entry;
+    if (pool != 0) {
+        for (i = 0; i < pool->count; i++) {
+            entry = (LoadPoolEntry *)((char *)pool->entries + i * 0x18);
             if (entry->state != 0) {
                 if (entry->state == 1) {
-                    fn_802E30C8(lbl_8032BB24);
+                    fn_802E30C8(sLoadPoolCancelStreamMsg);
                     fn_8012C90C(entry->obj);
                     fn_8012C958(entry->obj);
                 }
             }
         }
-        fn_80128670(arg0->entries);
-        fn_80128670(arg0->data);
-        if (arg1 > 0) fn_80128668(arg0);
+        fn_80128670(pool->entries);
+        fn_80128670(pool->data);
+        if (deletePool > 0) fn_80128668(pool);
     }
-    return arg0;
+    return pool;
 }
 void fn_8013436C(Container *arg0, s32 arg1) {
     s32 i;
