@@ -258,8 +258,8 @@ void fn_802DF684(void) {
 }
 #pragma scheduling on
 void fn_802DF6D0(void) {
-    volatile s32 spC = 0;
-    volatile s32 sp8 = 0;
+    s32 spC = 0;
+    s32 sp8 = 0;
     GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     GXSetTexCoordGen2(1, 0, 1, 0x2A, 1, 0x4C);
     GXSetNumTexGens(2);
