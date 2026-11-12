@@ -8429,8 +8429,10 @@ extern "C" s32 VFiPFPATH_cmpName(void *arg0, s32 arg1, s32 arg2) {
         return 1;
     }
     if (fn_800A4AD0(temp_r30, &lbl_80559218) == 0) {
+        goto test;
         do {
-            var_r31 = (u8 *)((u32)var_r31 + 1);
+            var_r31 = var_r31 + 1;
+test:
             temp_r3 = *var_r31;
         } while ((s8)temp_r3 != 0 && (s8)temp_r3 != '.');
         if ((s8)temp_r3 != 0) goto compare;
@@ -12820,7 +12822,6 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
     const char *messages = lbl_8031B838;
     s32 returnValue = 0;
     s32 handle;
-    void *context;
     if (lbl_80559248 < 0) {
         returnValue = (s32)0xC1000000;
     } else {
@@ -12828,8 +12829,7 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
             OSReport(messages + 0x498);
             return -4;
         }
-        context = *arg1;
-        if (context == 0) {
+        if (*arg1 == 0) {
             OSReport(messages + 0x4BC);
             return -4;
         }
