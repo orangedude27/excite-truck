@@ -7831,12 +7831,17 @@ tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     entry = lbl_803C0F78 + 0x34;
     i = 0;
     do {
-        if (entry[0x119] == 0 || memcmp(entry + 8, remote_bda, 6) != 0) {
-            i++;
-            entry += 0x11C;
-        } else {
+        if (entry[0x119] == 0)
+            goto next;
+        switch (memcmp(entry + 8, remote_bda, 6)) {
+        case 0:
             goto found;
+        default:
+            goto next;
         }
+next:
+        i++;
+        entry += 0x11C;
     } while (i < 4);
     entry = NULL;
 found:
@@ -7867,14 +7872,14 @@ tBTM_STATUS BTM_ReadLinkQuality(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     }
     p_dev_rec = lbl_803C0F78 + 0x34;
     i = 0;
-search:
-    if (p_dev_rec[0x119] && !memcmp(p_dev_rec + 8, remote_bda, 6)) {
+    for (; i < 4; i++, p_dev_rec += 0x11C) {
+        if (p_dev_rec[0x119] == 0) {
+            continue;
+        }
+        if (memcmp(p_dev_rec + 8, remote_bda, 6) != 0) {
+            continue;
+        }
         goto found;
-    }
-    i++;
-    p_dev_rec += 0x11C;
-    if (i < 4) {
-        goto search;
     }
     p_dev_rec = NULL;
 found:
@@ -9341,26 +9346,23 @@ tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
     u8 *base;
     u8 *entry;
     u16 index;
-    s32 count;
-    s32 i;
+    u16 xx;
 
     if (p_cur != 0) {
         base = lbl_803C0F78;
-        index = (((u8 *)p_cur - 8 - (base + 0x16E4)) / 28) + 1;
-        entry = base + index * 0x1C + 0x16E4;
-        count = 0xC - index;
-        if (index < 0xC) {
-            for (; count != 0; count--) {
-                if (entry[0x1A] != 0) return (tBTM_INQ_INFO *)(entry + 8);
-                entry += 0x1C;
-            }
+        index = (u16)(((u8 *)p_cur - 8 - (base + 0x16E4)) / 28 + 1);
+        entry = base + 0x16E4;
+        entry += (u32)index * 0x1C;
+        for (; index < 12; index++, entry += 0x1C) {
+            if (entry[0x1A] != 0)
+                return (tBTM_INQ_INFO *)(entry + 8);
         }
         return 0;
     }
-    base = lbl_803C0F78;
-    entry = base + 0x16E4;
-    for (i = 0; i < 12; i++, entry += 0x1C) {
-        if (entry[0x1A] != 0) return (tBTM_INQ_INFO *)(entry + 8);
+    entry = lbl_803C0F78 + 0x16E4;
+    for (xx = 0; xx < 12; xx++, entry += 0x1C) {
+        if (entry[0x1A])
+            return (tBTM_INQ_INFO *)(entry + 8);
     }
     return 0;
 }
@@ -14394,17 +14396,18 @@ u8 btsnd_hcic_inq_cancel(void) {
     return 1;
 }
 
+/* Build and send HCI Periodic_Inquiry_Mode command with the given inquiry parameters. */
 BOOLEAN btsnd_hcic_per_inq_mode(UINT16 max_period, UINT16 min_period, const LAP inq_lap, UINT8 duration, UINT8 response_cnt) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 0xC;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 3; p[9] = 4; p[10] = 9;
-    p[11] = max_period; p[12] = max_period >> 8;
-    p[13] = min_period; p[14] = min_period >> 8;
-    p[15] = inq_lap[2]; p[16] = inq_lap[1]; p[17] = inq_lap[0];
-    p[18] = duration; p[19] = response_cnt;
-    btu_hcif_send_cmd(p);
+    u8 *cmd = (u8 *)GKI_getpoolbuf(2);
+    if (cmd == NULL) return FALSE;
+    *(u16 *)(cmd + 2) = 0xC;
+    *(u16 *)(cmd + 4) = 0;
+    cmd[8] = 3; cmd[9] = 4; cmd[10] = 9;
+    cmd[11] = max_period; cmd[12] = max_period >> 8;
+    cmd[13] = min_period; cmd[14] = min_period >> 8;
+    cmd[15] = inq_lap[2]; cmd[16] = inq_lap[1]; cmd[17] = inq_lap[0];
+    cmd[18] = duration; cmd[19] = response_cnt;
+    btu_hcif_send_cmd(cmd);
     return TRUE;
 }
 
