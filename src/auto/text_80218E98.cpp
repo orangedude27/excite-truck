@@ -2125,17 +2125,24 @@ struct TextReadoutWidget {
 #pragma small_data off
 extern "C" __declspec(align(32)) char lbl_8033EF68[];
 #pragma scheduling invalid_target
-extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 arg6, f32 arg7) {
-    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0);
-    *(s32 *)((u8 *)arg0 + 0x25C) = arg3;
-    *(void **)arg0 = lbl_8033EF68;
-    *(f32 *)((u8 *)arg0 + 0x254) = arg6;
-    *(f32 *)((u8 *)arg0 + 0x258) = arg7;
-    *(s32 *)((u8 *)arg0 + 0x260) = arg4;
-    *(u8 *)((u8 *)arg0 + 0x264) = 0;
-    ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 0, (void *)arg3, 4);
-    fn_8021BE48(arg0);
-    return arg0;
+extern "C" void *fn_8021BD98(void *object, s32 x, s32 y, void *value, const char *format,
+                             s32 style, f32 scale, f32 offset) {
+    /* Builds a floating-point text readout: after the base widget's box it installs
+       this class' vtable and the readout itself - the f32 to watch, the sprintf
+       format to print it with and the scale/offset that turn it into the shown
+       number - starts watching the value through fn_80219440 and prints it once. */
+    TextReadoutWidget *widget = (TextReadoutWidget *)object;
+
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(object, x, y, 0, style, 0, 0);
+    widget->value = value;
+    *(void **)object = lbl_8033EF68;
+    widget->scale = scale;
+    widget->offset = offset;
+    widget->format = format;
+    widget->text[0] = 0;
+    fn_80219440(object, 0, value, 4);
+    fn_8021BE48(object);
+    return object;
 }
 
 #pragma dont_inline on
