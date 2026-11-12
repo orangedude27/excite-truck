@@ -2439,17 +2439,19 @@ extern void GXSetTevOrder(int, int, int, int);
 extern void GXSetTevOp(int, int);
 #pragma dont_inline on
 void fn_802D3360(void) {
-    int var_r31;
+    /* Initialize GX/TEV state for this render path: reset helpers, enable pending render flags, set texcoord generators, configure stages, and select matrix 0. */
+    int texCoord;
+
     fn_802CF5D4();
     lbl_8055FD84 = 1;
     lbl_804C5700[0] = 1;
     fn_802CFF50();
     GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
-    var_r31 = 0;
+    texCoord = 0;
     do {
-        GXSetTexCoordGen2(var_r31, 1, 4, 0x3C, 0, 0x7D);
-        var_r31 += 1;
-    } while (var_r31 < 4);
+        GXSetTexCoordGen2(texCoord, 1, 4, 0x3C, 0, 0x7D);
+        texCoord += 1;
+    } while (texCoord < 4);
     fn_802D2640();
     if (lbl_8055FE1C != 0) fn_802D92B0();
     GXSetTevOrder(0, 0, 0, 4);
