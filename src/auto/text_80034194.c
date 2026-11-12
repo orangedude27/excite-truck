@@ -2231,6 +2231,7 @@ void fn_80037B54(u32 status_code) {
 extern void fn_8003A834(void *, void *);
 extern char lbl_80376B00[];
 extern void fn_80037DBC(u32);
+/* Schedules an async DVD error info read by recording an error entry and starting the read callback chain. */
 void fn_80037CEC(void) {
     s32 enabled;
     u8 *base;
