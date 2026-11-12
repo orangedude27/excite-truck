@@ -97,12 +97,11 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
-        f32 x = src[0], y = src[1], z = src[2];
-        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
-        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
-        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+        dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     } else {
-        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
         dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
         dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
