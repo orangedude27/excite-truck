@@ -3096,45 +3096,68 @@ valid_buffer:
     fn_8006EB88();                            /* GKI_enable() */
 }
 
-void GKI_send_msg(u8 task_id, u8 mbox, void *msg) {
+/*
+ * Send a buffer to a task's mailbox (gki_buffer.c).
+ *
+ * A buffer for a task that does not exist or has not started is dropped with
+ * GKI_exception() and freed.  The buffer is then checked the way
+ * gki_chk_buf_damage() does (its size from the pool named by the header's queue
+ * id, MAGIC_NO sitting in the word past it); a damaged buffer or one whose
+ * header is already linked is reported and left alone.  Otherwise, with
+ * interrupts disabled, the header is appended to gki_cb.com.OSTaskQ[task][mbox],
+ * marked queued and owned by the task, and the task is woken with the mailbox's
+ * event bit.
+ */
+void GKI_send_msg(UINT8 task_id, UINT8 mbox, void *msg) {
     BUFFER_HDR_T *p_hdr;
-    char *p_err_str = lbl_80314110;
-    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
-    u16 size;
-    u32 *magic;
-    u8 damaged;
+    char *p_err_str = lbl_80314110;   /* GKI_exception() message strings */
+    tGKI_COM_CB *p_cb = &gki_cb.com;
+    UINT16 size;
+    UINT32 *magic;
+    BOOLEAN damaged;
 
-    if (task_id >= 8 || mbox >= 4 || p_cb->OSRdyTbl[task_id] == 0) {
-        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFB, p_err_str + 0x68);
+    /* If task non-existent or not started, drop buffer */
+    if (task_id >= GKI_MAX_TASKS || mbox >= NUM_TASK_MBOX || p_cb->OSRdyTbl[task_id] == TASK_DEAD) {
+        /* GKI_exception(GKI_ERROR_SEND_MSG_BAD_DEST, "Sending to unknown dest") */
+        ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_SEND_MSG_BAD_DEST,
+                                                   p_err_str + GKI_STR_SEND_BAD_DEST);
         GKI_freebuf(msg);
         return;
     }
-    p_hdr = (BUFFER_HDR_T *)((u8 *)msg - 8);
-    if (((u32)p_hdr & 1) != 0) {
+
+    /* gki_chk_buf_damage(): the magic word written past the user's buffer */
+    p_hdr = (BUFFER_HDR_T *)((UINT8 *)msg - BUFFER_HDR_SIZE);
+    if (((UINT32)p_hdr & 1) != 0) {
         size = 0;
     } else {
-        u8 pool_id = p_hdr->q_id;
-        if (pool_id < 9)
-            size = *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (pool_id << 4));
+        UINT8 pool_id = p_hdr->q_id;
+        if (pool_id < GKI_NUM_TOTAL_BUF_POOLS)
+            size = gki_cb.com.freeq[pool_id].size;
         else
             size = 0;
     }
-    magic = (u32 *)((u8 *)msg + size);
-    if (((u32)magic & 1) != 0)
-        damaged = 1;
-    else if (*magic == 0xDDBADDBA)
-        damaged = 0;
+    magic = (UINT32 *)((UINT8 *)msg + size);
+    if (((UINT32)magic & 1) != 0)
+        damaged = TRUE;
+    else if (*magic == MAGIC_NO)
+        damaged = FALSE;
     else
-        damaged = 1;
-    if (damaged != 0) {
-        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFF, p_err_str + 0x80);
+        damaged = TRUE;
+    if (damaged != FALSE) {
+        /* GKI_exception(GKI_ERROR_BUF_CORRUPTED, "Send - Buffer corrupted") */
+        ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_BUF_CORRUPTED,
+                                                   p_err_str + GKI_STR_SEND_BUF_CORRUPTED);
         return;
     }
+
     if (p_hdr->status != BUF_STATUS_UNLINKED) {
-        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFA, p_err_str + 0x98);
+        /* GKI_exception(GKI_ERROR_SEND_MSG_BUF_LINKED, "Send - buffer linked") */
+        ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_SEND_MSG_BUF_LINKED,
+                                                   p_err_str + GKI_STR_SEND_BUF_LINKED);
         return;
     }
-    fn_8006EBAC();
+
+    fn_8006EBAC();                            /* GKI_disable() */
     if (p_cb->OSTaskQFirst[task_id][mbox])
         p_cb->OSTaskQLast[task_id][mbox]->p_next = p_hdr;
     else
@@ -3143,8 +3166,8 @@ void GKI_send_msg(u8 task_id, u8 mbox, void *msg) {
     p_hdr->p_next = NULL;
     p_hdr->status = BUF_STATUS_QUEUED;
     p_hdr->task_id = task_id;
-    fn_8006EB88();
-    GKI_send_event(task_id, (u16)(1 << mbox));
+    fn_8006EB88();                            /* GKI_enable() */
+    GKI_send_event(task_id, (UINT16)EVENT_MASK(mbox));
 }
 
 void *GKI_read_mbox(UINT8 mbox) {
