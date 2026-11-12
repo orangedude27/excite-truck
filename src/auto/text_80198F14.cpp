@@ -97,9 +97,10 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
-        dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
-        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+        f32 x = src[0], y = src[1], z = src[2];
+        dst[0] = z * m[6] + (y * m[3] + x * m[0]);
+        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
     } else {
         dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
         dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
@@ -1838,7 +1839,10 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     Vec origin, direction;
     f32 minimum, maximum;
     f32 *matrix = (f32 *)arg3;
-
+    f32 *p = (f32 *)arg0;
+    f32 *v = (f32 *)arg1;
+    f32 x = p[0] - matrix[9];
+    f32 y = p[1] - matrix[10];
     f32 m1 = matrix[1];
     f32 m4 = matrix[4];
     f32 m3 = matrix[3];
@@ -1847,10 +1851,6 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     f32 m8 = matrix[8];
     f32 m2 = matrix[2];
     f32 m5 = matrix[5];
-    f32 *p = (f32 *)arg0;
-    f32 *v = (f32 *)arg1;
-    f32 x = p[0] - matrix[9];
-    f32 y = p[1] - matrix[10];
     f32 z = p[2] - matrix[11];
     origin.y = z * m5 + (x * m3 + y * m4);
     origin.x = z * m2 + (x * matrix[0] + y * m1);
@@ -2859,6 +2859,7 @@ extern "C" void fn_801A0F10(void* arg0) {
     s32 i;
     s32 j;
     u8* ent;
+    s32 maxCount = 0x40;
     fn_801A0160(arg0);
     ent = (u8*)arg0;
     i = 0;
@@ -2890,7 +2891,6 @@ extern "C" void fn_801A0F10(void* arg0) {
             s32 k = 0;
             f32 one = lbl_805622E0;
             f32 zero = lbl_805622D4;
-            s32 maxCount = 0x40;
             do {
                 fn_801BEAEC(e, k, &tmp);
                 Vec v = tmp;
