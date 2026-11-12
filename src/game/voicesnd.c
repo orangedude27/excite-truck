@@ -145,16 +145,14 @@ int fn_8020A878(void *arg0) {
 }
 
 void fn_8020A8E8(void *arg0) {
-    int *list = *(int **)((char *)arg0 + 4);
-    int i = 0;
-    int off = 0;
+    int off;
+    int i;
     fn_802E6B34();
-    while (i < 0x200) {
+    for (i = 0, off = 0; i < 0x200; i++, off += 4) {
+        int *list = *(int **)((char *)arg0 + 4);
         if (*(int *)((char *)list + off) != 0) {
             fn_802E317C(lbl_8033C388);
         }
-        i++;
-        off += 4;
     }
     fn_80128670(*(void **)((char *)arg0 + 4));
     *(int *)((char *)arg0 + 4) = 0;
@@ -804,27 +802,29 @@ int fn_8020B874(void *object, void *name) {
 extern void fn_802E61E4(float);
 extern int lbl_8055EDFC;
 extern float lbl_805632B0;
+/* Mute a playing voice sound: pause/release its voices and silence their volume. */
 void fn_8020B908(void *arg0) {
-    if (*((unsigned char *)arg0 + 0x3E) == 0 && *(int *)((char *)arg0 + 4) != 3) {
-        *((unsigned char *)arg0 + 0x3E) = 1;
+    VoiceSnd *snd = (VoiceSnd *)arg0;
+    if (snd->mute == 0 && snd->state != 3) {
+        snd->mute = 1;
         lbl_8055EDFC++;
-        if (*(void **)((char *)arg0 + 8) != 0) {
-            fn_802E61D8(*(void **)((char *)arg0 + 8));
-            if (*(void **)((char *)arg0 + 0xC) != 0)
-                fn_802E61D8(*(void **)((char *)arg0 + 0xC));
-            if (*(void **)((char *)arg0 + 0xC) != 0) {
-                ((void (*)(void *))fn_802E6138)(*(void **)((char *)arg0 + 0xC));
-                *(void **)((char *)arg0 + 0xC) = 0;
+        if (snd->voice != 0) {
+            fn_802E61D8(snd->voice);
+            if (snd->voice2 != 0)
+                fn_802E61D8(snd->voice2);
+            if (snd->voice2 != 0) {
+                SND_ReleaseVoice(snd->voice2);
+                snd->voice2 = 0;
             }
-            if (*(void **)((char *)arg0 + 8) != 0) {
-                ((void (*)(void *))fn_802E6138)(*(void **)((char *)arg0 + 8));
-                *(void **)((char *)arg0 + 8) = 0;
+            if (snd->voice != 0) {
+                SND_ReleaseVoice(snd->voice);
+                snd->voice = 0;
             }
         }
-        if (*(void **)((char *)arg0 + 8) != 0)
-            ((void (*)(void *, float))fn_802E61E4)(*(void **)((char *)arg0 + 8), lbl_805632B0);
-        if (*(void **)((char *)arg0 + 0xC) != 0)
-            ((void (*)(void *, float))fn_802E61E4)(*(void **)((char *)arg0 + 0xC), lbl_805632B0);
+        if (snd->voice != 0)
+            SND_SetVolume(snd->voice, FLOAT_ZERO);
+        if (snd->voice2 != 0)
+            SND_SetVolume(snd->voice2, FLOAT_ZERO);
     }
 }
 
