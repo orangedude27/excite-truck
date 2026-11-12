@@ -5140,7 +5140,7 @@ extern "C" void *fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 #pragma dont_inline on
 extern "C" void fn_802223C4(void *arg0, s32 arg1) {
     s32 value;
-    if (arg0 == 0)
+    if (!arg0)
         return;
     value = *(s32 *)((u8 *)arg0 + 0x244);
     *(void **)arg0 = lbl_8033F90C;
@@ -5763,13 +5763,13 @@ loop_test:
 #pragma pop
 extern "C" void fn_802235B4(void *arg0) {
     s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
+    s32 next;
     s32 count = *(s32 *)((u8 *)arg0 + 0x2C8);
     s32 cur = *pIndex;
-    u8 *base = (u8 *)arg0 + cur;
+    u32 baseAddr = (u32)arg0 + cur;
     s32 i;
-    s32 next;
-    for (next = cur + 1, i = 1; count > next; i++, next++) {
-        if (base[i + 0x2D0] != 0) {
+    for (i = 1, next = cur + 1; next < count; i++, next++) {
+        if (*(u8 *)(i + baseAddr + 0x2D0) != 0) {
             *pIndex += i;
             ((void (*)(void *))fn_8022375C)(arg0);
             return;
