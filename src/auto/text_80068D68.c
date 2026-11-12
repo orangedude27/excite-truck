@@ -8215,10 +8215,9 @@ tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
 loop:
     if (entry[0x119] == 0)
         goto next;
-    if (memcmp(entry + 8, bd_addr, 6) != 0)
+    if (memcmp(entry + 8, bd_addr, 6))
         goto next;
-    else
-        goto found;
+    goto found;
 next:
     i++;
     entry += 0x11C;
@@ -9073,8 +9072,19 @@ void btm_vendor_specific_evt(UINT8 *p, UINT8 evt_len) {
     }
 }
 
-extern char lbl_80316220[];
+/* btm_cb.page_timeout: the page timeout in milliseconds.  BTM_WritePageTimeout
+   takes it in 0.625 ms slots and converts it; the BTA search times its SDP
+   database with it. */
+#define BTM_CB_PAGE_TIMEOUT (*(u16 *)(lbl_803C0F78 + 0x64C))
+
+/* The game's btsnd_hcic_write_page_tout: writes the HCI Write_Page_Timeout
+   command (opcode 0x0C18) into a buffer the caller took from the command pool
+   and hands it to the BTU task. */
+#define btsnd_hcic_write_page_tout fn_8008534C
+
+extern char lbl_80316220[]; /* "BTM: BTM_WritePageTimeout: Timeout: %d." */
 extern void fn_8008534C(void *, u16);
+/* Sends the HCI Write_Page_Timeout command; timeout is in 0.625 ms slots. */
 tBTM_STATUS BTM_WritePageTimeout(UINT16 timeout) {
     void *buf;
     if (lbl_803C0F78[0x27c0] >= 4) {
