@@ -123,9 +123,11 @@ int fn_8024C550(void) {
     return 0;
 }
 #pragma scheduling invalid_target
-int fn_8024C578(int arg0) {
+/* Selects a memory-card slot for use. If the slot is empty, shows the name-entry flow and creates/saves a new slot entry; otherwise selects the existing slot. */
+int fn_8024C578(int slot) {
     int result;
     if (((int (*)(void))fn_8000DBAC)() != 0) {
+        /* Temporary 0x12-byte slot name/state buffer (matches slot record layout). */
         struct S { int w[4]; short h; } s;
         s.w[0] = 0;
         s.w[1] = 0;
@@ -133,7 +135,7 @@ int fn_8024C578(int arg0) {
         s.w[3] = 0;
         s.h = 0;
         if (fn_8023FAD4(&s, 0x12) != 0) {
-            fn_8000D984(arg0);
+            fn_8000D984(slot);
             fn_8000DA80();
             fn_8000DA1C(&s);
             fn_802E6FBC();
@@ -143,8 +145,9 @@ int fn_8024C578(int arg0) {
             result = 0;
         }
     } else {
-        lbl_8055F2C4 = (int)(lbl_80498A00 + arg0 * 0x12);
-        fn_8000D984(arg0);
+        /* lbl_8055F2C4: pointer to the selected slot's name within lbl_80498A00 (0x12 bytes per slot). */
+        lbl_8055F2C4 = (int)(lbl_80498A00 + slot * 0x12);
+        fn_8000D984(slot);
         fn_8024C464();
         result = 1;
     }
