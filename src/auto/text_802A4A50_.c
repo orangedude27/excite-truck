@@ -193,21 +193,31 @@ f32 fn_802A4AD4(void) {
     return lbl_8055F8A0;
 }
 
-void fn_802A4ADC(void) {
-    void *base = lbl_80349BF0;
-    s32 result = (s32)fn_801E1F44();
-    if (fn_800167F4() == 1) fn_802A5384(result);
-    fn_80287B38((void *)fn_802A53B0);
-    fn_802A5878();
-    lbl_8055F89C = fn_802CAC28((char *)base + 0x28, 0);
-    result = (s32)((char *)base + 0x38);
+#pragma cplusplus on
+extern "C" void fn_802A4ADC(void) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual s32 f4(void *, void *);
+    };
+    u8 *base = lbl_80349BF0;
     {
-        void **p = fn_802AE414(&lbl_8055CBC8);
-        if (p != 0) result = ((s32 (*)(void *, void *, void *))(*(u32 *)((u8 *)*p + 0x18)))(p, (char *)base + 0x48, (void *)result);
+        s32 result = (s32)fn_801E1F44();
+        if (fn_800167F4() == 1) fn_802A5384(result);
+        fn_80287B38((void *)fn_802A53B0);
+        fn_802A5878();
+        lbl_8055F89C = fn_802CAC28((char *)base + 0x28, 0);
+        result = (s32)((char *)base + 0x38);
+        {
+            struct Dummy *p = (struct Dummy *)fn_802AE414(&lbl_8055CBC8);
+            if (p != 0) result = p->f4((void *)((char *)base + 0x48), (void *)result);
+        }
+        lbl_8055F898 = fn_802C6FC0((void *)result, 0, 0);
     }
-    lbl_8055F898 = fn_802C6FC0((void *)result, 0, 0);
 }
-
+#pragma cplusplus reset
 void fn_802A4B90(void) {
     s32 value;
     value = lbl_8055F898;
@@ -446,15 +456,14 @@ extern "C" void fn_802A50F8(void) {
     };
     struct Frame frame;
     char name[4];
-    u8 *base;
-    u8 *entry;
-    s32 i;
     void *obj;
-    struct Init *initPtr;
+    s32 i;
+    u8 *entry;
+    u8 *base;
     base = lbl_80349BF0;
     fn_8028E61C(&frame.init);
-    frame.init.b = 0x100;
     frame.init.a = 0;
+    frame.init.b = 0x100;
     frame.init.c[0] = lbl_80564868;
     frame.init.c[1] = lbl_8056485C;
     frame.init.c[2] = lbl_8056486C;
@@ -472,8 +481,7 @@ extern "C" void fn_802A50F8(void) {
     frame.init.c[27] = lbl_8056485C;
     frame.init.c[25] = lbl_8056485C;
     frame.init.c[23] = lbl_8056485C;
-    initPtr = &frame.init;
-    lbl_8055F894 = fn_8028E2F8(initPtr, base + 0x80, base + 0x1c, lbl_80564870, lbl_8056486C, lbl_8056485C, lbl_80564868);
+    lbl_8055F894 = fn_8028E2F8(&frame.init, base + 0x80, base + 0x1c, lbl_80564870, lbl_8056486C, lbl_8056485C, lbl_80564868);
     entry = lbl_804BCFB8;
     for (i = 0; i < fn_80287B14(); ++i, entry += 0xC4) {
         obj = fn_80288208(i);
@@ -481,12 +489,12 @@ extern "C" void fn_802A50F8(void) {
         if (((s32 (*)(void *, s32))fn_80287E20)(obj, (s32)&lbl_8055CBE8)) {
             obj = fn_80287E80(obj, (s32)&lbl_8055CBE8);
             *(s32 *)(entry + 0xC0) = 0;
-            while (*(volatile s32 *)(entry + 0xC0) < 4) {
+            while (*(s32 *)(entry + 0xC0) < 4) {
                 void *value;
-                sprintf(name, (char *)(base + 0x8c), *(volatile s32 *)(entry + 0xC0) + 1);
+                sprintf(name, (char *)(base + 0x8c), *(s32 *)(entry + 0xC0) + 1);
                 value = ((Lookup *)obj)->get(name);
-                if (!fn_802A4FA8((float *)(entry + *(volatile s32 *)(entry + 0xC0) * 0x30), value)) break;
-                *(volatile s32 *)(entry + 0xC0) = *(volatile s32 *)(entry + 0xC0) + 1;
+                if (!fn_802A4FA8((float *)(entry + *(s32 *)(entry + 0xC0) * 0x30), value)) break;
+                *(s32 *)(entry + 0xC0) = *(s32 *)(entry + 0xC0) + 1;
             }
         }
     }
@@ -987,28 +995,27 @@ void fn_802A62CC(void *arg0, s32 arg1) {
     f32 sp10;
     s32 spC;
     f32 sp8;
-    register f32 temp_f10;
-    register f32 temp_f29;
-    register f32 temp_f29_2;
-    register f32 temp_f2;
-    register f32 temp_f30;
-    register f32 temp_f30_2;
-    register f32 temp_f31;
-    register f32 temp_f3;
-    register f32 temp_f4;
-    register f32 temp_f6;
-    register f32 temp_f7;
-    register f32 temp_f8;
-    register f32 temp_f9;
-
+    f32 temp_f10;
+    f32 temp_f29;
+    f32 temp_f29_2;
+    f32 temp_f2;
+    f32 temp_f30;
+    f32 temp_f30_2;
+    f32 temp_f31;
+    f32 temp_f3;
+    f32 temp_f4;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 temp_f9;
     temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x1C));
     temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x1C));
     temp_f29 = fn_801E8894(*(s32 *)((u8 *)arg0 + 0x1C));
     fn_801E88B4(&sp14, &sp10, &spC, &sp8, *(s32 *)((u8 *)arg0 + 0x1C));
     temp_f10 = (f32)fn_8002EF30(temp_f30);
     *(f32 *)((u8 *)arg0 + 0x20) = temp_f10;
-    temp_f7 = temp_f29 * lbl_8056489C;
     temp_f30_2 = temp_f29 + temp_f31;
+    temp_f7 = temp_f29 * lbl_8056489C;
     *(f32 *)((u8 *)arg0 + 0x24) = lbl_805648A0 + temp_f31;
     temp_f9 = lbl_80564894 * temp_f30_2;
     temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
@@ -1144,7 +1151,7 @@ void fn_802A6838(void *arg0) {
     float divisor;
     float dt;
     float speed;
-    register float scale;
+    float scale;
     float one;
     float curve;
     float product;
@@ -1323,9 +1330,10 @@ extern void fn_802C8D74(void);
 #pragma push
 #pragma processor 750
 void fn_802A6D68(void *arg0) {
-    float saved;
+    float savedScale;
+    /* Update particles for arg0 and draw them if setup succeeds. */
     if (*(int *)((char *)arg0 + 4) >= 1) {
-        saved = fn_802C9A4C(lbl_8055F884);
+        savedScale = fn_802C9A4C(lbl_8055F884);
         fn_802C8B98(*(int *)((char *)arg0 + 0xC), fn_802C86DC());
         if (fn_801E501C(*(int *)((char *)arg0 + 4), (char *)arg0 + 0x2C, lbl_805648B4, 0xFF) != 0) {
             int offset;
@@ -1333,35 +1341,35 @@ void fn_802A6D68(void *arg0) {
             i = 0;
             offset = 0;
             while (i < *(int *)((char *)arg0 + 4)) {
-                float *entry = (float *)((char *)*(float **)arg0 + offset);
-                fn_801E5174(entry, *(float *)((char *)*(float **)arg0 + offset), entry[1], entry[2]);
+                float *position = (float *)((char *)*(float **)arg0 + offset);
+                fn_801E5174(position, *(float *)((char *)*(float **)arg0 + offset), position[1], position[2]);
                 offset += 0xC;
                 i++;
             }
             fn_801E5348();
         }
         fn_802C8D74();
-        fn_802C9A4C(saved);
+        fn_802C9A4C(savedScale);
     }
 }
 
 extern float lbl_80564850, lbl_8056485C, lbl_80564860, lbl_80564890, lbl_805648B4, lbl_805648B8, lbl_805648BC;
 #pragma push
-#pragma optimization_level 2
+#pragma optimization_level 4
 #pragma processor 750
 void fn_802A6E34(void *arg0) {
     f32 sp14;
     f32 sp10;
     s32 spC;
     f32 sp8;
-    u32 conv[2];
-    f32 temp_f10;
+    volatile union { double value; struct { u32 high, low; } words; } conversion;
+    f32 temp_f30;
+    f32 temp_f31;
     f32 temp_f29;
+    f32 temp_f10;
     f32 temp_f29_2;
     f32 temp_f2;
-    f32 temp_f30;
     f32 temp_f30_2;
-    f32 temp_f31;
     f32 temp_f3;
     f32 temp_f4;
     f32 temp_f6;
@@ -1369,23 +1377,22 @@ void fn_802A6E34(void *arg0) {
     f32 temp_f8;
     f32 temp_f9;
     f32 disc;
-
-    temp_f30 = fn_801E8738(*(s32 *)((u8 *)arg0 + 0x10)) * lbl_80564850;
+    temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x10));
     temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x10));
     temp_f29 = fn_801E8894(*(s32 *)((u8 *)arg0 + 0x10));
     fn_801E88B4(&sp14, &sp10, &spC, &sp8, *(s32 *)((u8 *)arg0 + 0x10));
     temp_f10 = (f32)fn_8002EF30(temp_f30);
     *(f32 *)((u8 *)arg0 + 0x14) = temp_f10;
-    temp_f7 = temp_f29 * lbl_805648BC;
     temp_f30_2 = temp_f29 + temp_f31;
+    temp_f7 = temp_f29 * lbl_805648BC;
     *(f32 *)((u8 *)arg0 + 0x18) = lbl_8056485C + temp_f31;
     temp_f9 = lbl_805648B8 * temp_f30_2;
     temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
     temp_f6 = temp_f31 * temp_f7;
     temp_f29_2 = temp_f9 - temp_f8;
-    conv[0] = 0x43300000;
-    conv[1] = (u32)spC ^ 0x80000000;
-    temp_f3 = lbl_805648B4 * ((f32)(*(double *)conv - lbl_80564848) *
+    conversion.words.high = 0x43300000;
+    conversion.words.low = (u32)spC ^ 0x80000000;
+    temp_f3 = lbl_805648B4 * ((f32)(conversion.value - lbl_80564848) *
         (lbl_80564890 * temp_f31));
     temp_f4 = temp_f29_2 * temp_f29_2;
     temp_f2 = temp_f3 * (temp_f29 - temp_f31);
@@ -1395,7 +1402,7 @@ void fn_802A6E34(void *arg0) {
         (f32)((-temp_f29_2 + (f32)fn_8002F234(disc)) /
             (lbl_80564860 * temp_f30_2));
 }
-
+#pragma pop
 extern f32 fn_802A4AD4(void);
 extern f32 fn_802C9A50(void);
 extern f32 lbl_805648B0;
@@ -1411,7 +1418,7 @@ void fn_802A6F70(void *arg0, void *arg1) {
     f32 divisor;
     f32 dt;
     f32 speed;
-    register f32 scale;
+    f32 scale;
     f32 xVelocity;
     f32 yVelocity;
     f32 zVelocity;
@@ -1424,11 +1431,16 @@ void fn_802A6F70(void *arg0, void *arg1) {
     f32 pointX;
     f32 pointY;
     f32 pointZ;
-    register f32 radiusBase;
-    register s32 offset;
-    register s32 count;
-    register u8 *out;
-
+    f32 radiusBase;
+    s32 offset;
+    s32 count;
+    u8 *out;
+    double ddx;
+    double ddy;
+    double ddz;
+    f32 rx;
+    f32 ry;
+    f32 rz;
     divisor = fn_802C9A50();
     dt = *(f32 *)((u8 *)arg0 + 0x14);
     speed = dt / divisor;
@@ -1445,6 +1457,12 @@ void fn_802A6F70(void *arg0, void *arg1) {
     yOffset = yBase + yVelocity;
     out = *(u8 **)arg0;
     zOffset = zBase + zVelocity;
+    ddx = xOffset;
+    ddy = yOffset;
+    ddz = zOffset;
+    rx = (f32)ddx;
+    ry = (f32)ddy;
+    rz = (f32)ddz;
     sp14 = xOffset;
     sp18 = yOffset;
     sp1C = zOffset;
@@ -1456,9 +1474,9 @@ loop:
         pointX = *(f32 *)(pointBase + offset);
         pointZ = *(f32 *)(pointBase + offset + 8);
         pointY = *(f32 *)(pointBase + offset + 4);
-        pointX += xOffset;
-        pointZ += zOffset;
-        pointY += yOffset;
+        pointX += rx;
+        pointZ += rz;
+        pointY += ry;
     }
     sp8 = pointX;
     spC = pointY;
@@ -1686,34 +1704,28 @@ extern f32 lbl_80564858, lbl_805648C8;
 #pragma push
 #pragma processor 750
 s32 fn_802A7680(s32 arg0) {
-    struct Vec { f32 x, y, z; };
     u8 *object = (u8 *)arg0;
     f32 amplitude = lbl_805648C8;
     s32 offset = 0;
     s32 i = 0;
-
     while (i < *(s32 *)(object + 4)) {
-        f32 angle2;
         f32 angle;
         f32 y;
         f32 z;
         f32 x;
-        struct Vec *out;
-
+        f32 angle2;
+        u32 addr;
         angle = *(f32 *)(object + 0x18);
-        z = *(f32 *)(object + 0x14) +
-            fn_80287BC8(amplitude * -angle, amplitude * angle);
-        y = *(f32 *)(object + 0x10) +
-            fn_80287BC8(lbl_80564858, *(f32 *)(object + 0x1C));
+        z = *(f32 *)(object + 0x14) + fn_80287BC8(amplitude * -angle, amplitude * angle);
+        y = *(f32 *)(object + 0x10) + fn_80287BC8(lbl_80564858, *(f32 *)(object + 0x1C));
         angle2 = *(f32 *)(object + 0x18);
-        x = *(f32 *)(object + 0xC) +
-            fn_80287BC8(amplitude * -angle2, amplitude * angle2);
-        out = (struct Vec *)(*(u32 *)object + offset);
+        x = *(f32 *)(object + 0xC) + fn_80287BC8(amplitude * -angle2, amplitude * angle2);
+        addr = *(u32 *)object + offset;
         i++;
         offset += 0xC;
-        out->x = x;
-        out->y = y;
-        out->z = z;
+        *(f32 *)(addr + 0) = x;
+        *(f32 *)(addr + 4) = y;
+        *(f32 *)(addr + 8) = z;
     }
     *(f32 *)(object + 0x3C) = lbl_80564858;
 }
