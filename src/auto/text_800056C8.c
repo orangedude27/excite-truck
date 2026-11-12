@@ -1066,9 +1066,32 @@ extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
+/* fn_80006D9C - start the game's managers up; fn_80006E54 is its reverse.
+ *
+ * It opens the subsystems fn_80006E54 closes again at its end - fn_800201F0
+ * (shut by fn_80020430), the HUD font read from "uifnt_o.gtx" (freed by
+ * fn_8000F158), fn_8000F884 (fn_8000FB44) and fn_80011F64 (fn_800120BC) -
+ * fills the session's state block with the object fn_801E87A8 hands out and the
+ * number of players this session has, registers the "dashboard" sound group by
+ * name (its handle is lbl_8055D354, which fn_800070DC brings back to full
+ * volume), reads the saved "effects_volume" with 1.0 as its default, clears the
+ * mode flags (fn_80005464) and builds the HUD overlay managers (fn_80005C88)
+ * that fn_800070DC then resets to their starting state.  The current mode's
+ * master object gets its slot-0xF8 hook, the same one fn_80006E54 calls on the
+ * way out.
+ */
 extern "C" void fn_80006D9C(void) {
+    /* The game's own strings, the block the overlay names live in.  The
+     * volatile is what makes the compiler materialise the base in r30 before
+     * the first calls, as the original does - do not drop it. */
     volatile u8 *names = (volatile u8 *)lbl_802FB0C8;
+    /* the session's state block (SessionState); declaring this pointer as a
+     * SessionState * instead moves it to r30 and the strings to r31, which is
+     * not what the original does. */
     u8 *session;
+    /* The current mode's master object: fn_801B83A0 returns the instance
+     * fn_801B81E0 created for the running mode.  Only its slot-0xF8 hook is
+     * called here, so the 60 slots before it are placeholders. */
     struct ModeMaster {
         virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0; virtual void v3() = 0;
         virtual void v4() = 0; virtual void v5() = 0; virtual void v6() = 0; virtual void v7() = 0;
@@ -1090,20 +1113,20 @@ extern "C" void fn_80006D9C(void) {
     fn_800201F0();
     fn_801A7F8C();
     fn_800054E0();
-    fn_8000F0E4((u8 *)names + 0x1EC);
+    fn_8000F0E4((u8 *)names + 0x1EC);   /* "uifnt_o.gtx": the HUD's font texture */
     fn_8000F884();
     fn_80011F64();
     session = lbl_8034EE84;
     ((SessionState *)session)->field08 = fn_801E87A8();
     ((SessionState *)session)->playerCount = fn_80137C74();
-    lbl_8055D354 = fn_802090D4((u8 *)names + 0x1F8);
-    fn_801331C4(4, (u8 *)names + 0x204, &lbl_8055892C);
-    fn_80005464();
-    fn_80005C88();
-    fn_80011A5C(SESSION->playerCount);
+    lbl_8055D354 = fn_802090D4((u8 *)names + 0x1F8);     /* the "dashboard" sound group */
+    fn_801331C4(4, (u8 *)names + 0x204, &lbl_8055892C);  /* saved "effects_volume", else 1.0 */
+    fn_80005464();                        /* the session's mode flags off */
+    fn_80005C88();                        /* build the HUD overlay managers */
+    fn_80011A5C(SESSION->playerCount);    /* the count fn_80006E54 walks later */
     fn_8001DB54();
     ((ModeMaster *)fn_801B83A0())->hook();
-    fn_800070DC();
+    fn_800070DC();                        /* the overlays to their starting state */
 }
 #pragma pop
 
