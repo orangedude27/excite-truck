@@ -18176,7 +18176,7 @@ extern "C" void fn_800CFAC8(void *arg0) {
     p[0xB] = 0;
 }
 
-/* Register a GUI component with this manager and append its list node (using the manager allocator or a fallback). */
+/* Register a GUI component with this manager and append its list node (allocated via manager allocator or fallback). */
 void homebutton::gui::Manager::addComponent(homebutton::gui::Component *component) {
     void *first = component->first();
     component->second(this);
