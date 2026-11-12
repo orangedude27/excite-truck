@@ -92,22 +92,19 @@ extern int __ieee754_rem_pio2(double, double *);
 extern unsigned char lbl_802FE850[];
 extern double lbl_805609D8, lbl_805609E0, lbl_805609E8, lbl_805609F0, lbl_805609F8, lbl_80560A00, lbl_80560A08;
 void fn_8002B0D8(unsigned char *s) {
-    register unsigned char *base;
-    register int c;
-    register int skip;
-    register unsigned char *p;
-
-    base = lbl_802FE850;
-    p = s;
+    unsigned char *p = s;
+    unsigned char *base = lbl_802FE850;
+    int c;
+    unsigned skip;
     goto check;
 loop:
     c = (signed char)*p;
     skip = 0;
     if (c < 0 || c >= 256) skip = 1;
-    if (skip != 0) goto store;
-    c = *(unsigned char *)(*(unsigned int *)(*(unsigned int *)(base + 0x38) + 0x10) + c);
-store:
-    *p = (unsigned char)c;
+    if (skip == 0) {
+        c = *(unsigned char *)(*(unsigned int *)(*(unsigned int *)(base + 0x38) + 0x10) + c);
+        *p = (unsigned char)c;
+    }
     p++;
 check:
     c = (signed char)*p;
@@ -122,14 +119,14 @@ int stricmp(unsigned char *a, unsigned char *b) {
     register int skip;
     locale = *(int *)(base + 0x38);
     for (;;) {
+        skip = 0;
         c1 = (signed char)*a;
         a++;
-        skip = 0;
         if (c1 < 0 || c1 >= 256) skip = 1;
         c1 = (skip != 0) ? c1 : (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
+        skip = 0;
         c2 = (signed char)*b;
         b++;
-        skip = 0;
         if (c2 < 0 || c2 >= 256) skip = 1;
         c2 = (skip != 0) ? c2 : (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
         if (c1 < c2) return -1;
@@ -1457,9 +1454,8 @@ __declspec(section ".sdata") extern double lbl_80560AC8;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 double sin(double x) {
-    double y[2];
-    double z = lbl_80560AC8;
-    int n, ix;
+    double y[2], z = 0.0;
+    int ix, n;
     ix = *(int *)&x;
     ix &= 0x7fffffff;
     if (ix <= 0x3fe921fb) return __kernel_sin(0, x, z);
