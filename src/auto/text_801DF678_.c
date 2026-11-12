@@ -161,7 +161,9 @@ void fn_801DFF1C(int arg0) {
     *(int*)(entry + 0x1C) = -1;
 }
 
-extern float lbl_8055AE40, lbl_80562C18, lbl_80562C4C, lbl_80562C1C, lbl_80558DC4;
+extern float lbl_8055AE40, lbl_80562C18, lbl_80562C4C, lbl_80562C1C;
+extern double __fabs(double);
+__declspec(section ".data") extern float lbl_80558DC4;
 extern float lbl_80562C30, lbl_80562C20, lbl_80562C28;
 extern double lbl_80562C50;
 extern int lbl_8055CFF0;
