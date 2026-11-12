@@ -39,8 +39,39 @@ struct VObj_8017D6E0 {
 };
 #pragma cplusplus reset
 #pragma cplusplus on
+/* The object fn_801B2EC0 gives for a target id; slot 0x10 returns the state whose +0x24
+   says whether the target can still have a body dropped next to it. */
 struct VT8017DCB4 { virtual void f0(); virtual void f1(); virtual void* f2(); virtual void f3(); virtual void* f4(); };
 #pragma cplusplus reset
+
+/* Scene object tag (object+0x10) of the AI trucks; see FOURCC_* in text_801D21C0_.c. */
+#define FOURCC_ACAR 0x41434152 /* 'ACAR' */
+
+/* A rigid-body ball that follows the scene object in targetId.  Its class vtable is
+   lbl_80331D18; fn_8017B81C steps the simulation and fn_8017DEE0 moves the body to a
+   transform.  Only the fields used by this file are named. */
+typedef struct BallBody {
+    /* 0x00 */ void *vt;
+    /* 0x04 */ u8 pad04[0x38];
+    /* 0x3C */ f32 rotation[9]; /* body space -> world */
+    /* 0x60 */ Vec position;
+    /* 0x6C */ s16 groundId;    /* what the body stands on, -1 for nothing */
+    /* 0x6E */ u8 pad6E[0xAA];
+    /* 0x118 */ Vec velocity;
+    /* 0x124 */ u8 pad124[0xC4];
+    /* 0x1E8 */ u8 flag1E8;
+    /* 0x1E9 */ u8 moved;       /* set by fn_8017DEE0, cleared once the body is refreshed */
+    /* 0x1EA */ u8 pad1EA[0x06];
+    /* 0x1F0 */ s32 followMode; /* 0 = undecided, 1 = anything else, 2 = an 'ACAR' truck */
+    /* 0x1F4 */ f32 decideTime; /* when followMode gets decided, against fn_8017D378() */
+    /* 0x1F8 */ s32 targetId;   /* the scene object this body follows */
+    /* 0x1FC */ u8 needsReposition;
+    /* 0x1FD */ u8 enabled;
+    /* 0x1FE */ u8 placed;
+} BallBody;
+
+/* A Vec handed to the ground query fn_801E9E30 as the three words it reads. */
+typedef struct WordVec3 { s32 x, y, z; } WordVec3;
 void fn_802066C8(void*, unsigned int);
 void fn_80206C70(void*);
 #pragma push
