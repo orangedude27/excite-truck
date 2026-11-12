@@ -543,17 +543,17 @@ s32 fn_800183C0(void *arg0) {
 extern void *fn_8001285C(s32);
 #pragma push
 #pragma dont_inline on
-void fn_80018440(Unk18440 *arg0, s32 arg1, Unk18440 *arg2) {
+void fn_80018440(EntryPairList *arg0, s32 arg1, EntryPairList *arg2) {
     s32 count, i, n, m;
     count = fn_800183C0(fn_8001285C(arg1));
     memset(arg0, 0, 0x48);
-    n = arg2->unk_0x00;
-    m = arg2->unk_0x24;
+    n = arg2->driverCount;
+    m = arg2->vehicleCount;
     for (i = 0; i < count; i++) {
-        arg0->unk_0x04[i] = arg2->unk_0x04[n - 1 - i];
-        arg0->unk_0x00++;
-        arg0->unk_0x28[i] = arg2->unk_0x28[m - 1 - i];
-        arg0->unk_0x24++;
+        arg0->driverNums[i] = arg2->driverNums[n - 1 - i];
+        arg0->driverCount++;
+        arg0->vehicleNums[i] = arg2->vehicleNums[m - 1 - i];
+        arg0->vehicleCount++;
     }
 }
 #pragma pop
