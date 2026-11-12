@@ -507,21 +507,22 @@ extern int lbl_8055EBF0;
 int stricmp(const char *, const char *);
 void fn_801F08AC(int, const char *);
 #pragma scheduling invalid_target
-int fn_801F09FC(const char *arg0) {
+int fn_801F09FC(const char *name) {
     int offset = 0;
-    int count = 0;
-    while (count < lbl_8055EBF0) {
-        if (stricmp((const char *)(lbl_8055EBEC + offset), arg0) == 0) {
-            return lbl_8055EBEC + count * 0x138;
+    int i = 0;
+    /* Look up a wheel mod by name in the detached wheel table; create and initialize if missing. */
+    while (i < lbl_8055EBF0) {
+        if (stricmp((const char *)(lbl_8055EBEC + offset), name) == 0) {
+            return lbl_8055EBEC + i * 0x138;
         }
         offset += 0x138;
-        count++;
+        i++;
     }
     {
         int index = lbl_8055EBF0;
         int result = lbl_8055EBEC + index * 0x138;
         lbl_8055EBF0 = index + 1;
-        fn_801F08AC(result, arg0);
+        fn_801F08AC(result, name);
         return result;
     }
 }
