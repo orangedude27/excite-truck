@@ -16156,28 +16156,29 @@ u8 hidh_conn_reg(void) {
     return 0;
 }
 
-u8 hidh_conn_disconnect(u32 index) {
-    u8 *conn;
+/* Disconnect a HID host connection by device index, requesting L2CAP disconnects for any active CIDs. */
+u8 hidh_conn_disconnect(u32 deviceIndex) {
+    u8 *connBase;
 
-    conn = lbl_803C3C38 + index * 0x34;
+    connBase = lbl_803C3C38 + deviceIndex * 0x34;
     if (lbl_803C3C38[0x401] >= 4) {
         fn_8007093C(0x1E0003, lbl_8031787C);
     }
-    if (*(u16 *)(conn + 0x14) == 0) {
-        if (*(u16 *)(conn + 0x16) == 0) {
+    if (*(u16 *)(connBase + 0x14) == 0) {
+        if (*(u16 *)(connBase + 0x16) == 0) {
             goto clear_state;
         }
     }
-    conn[0x10] = 5;
-    if (*(u16 *)(conn + 0x16) != 0) {
-        L2CA_DisconnectReq(*(u16 *)(conn + 0x16));
+    connBase[0x10] = 5;
+    if (*(u16 *)(connBase + 0x16) != 0) {
+        L2CA_DisconnectReq(*(u16 *)(connBase + 0x16));
     }
-    if (*(u16 *)(conn + 0x14) != 0) {
-        L2CA_DisconnectReq(*(u16 *)(conn + 0x14));
+    if (*(u16 *)(connBase + 0x14) != 0) {
+        L2CA_DisconnectReq(*(u16 *)(connBase + 0x14));
     }
     goto done;
 clear_state:
-    conn[0x10] = 0;
+    connBase[0x10] = 0;
 done:
     return 0;
 }
