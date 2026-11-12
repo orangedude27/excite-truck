@@ -2094,7 +2094,7 @@ extern "C" void fn_8021BD48(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma small_data off
-extern "C" __declspec(align(32)) void *lbl_8033EF68;
+extern "C" __declspec(align(32)) char lbl_8033EF68[];
 #pragma scheduling invalid_target
 extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2d, s32 arg3, s32 arg4, s32 arg5, f32 arg6, f32 arg7) {
     register void *vtable = (char *)&lbl_8033EF68;
