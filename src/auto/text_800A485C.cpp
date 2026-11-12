@@ -1405,16 +1405,20 @@ extern "C" void fn_800A71D0(void *, s32);
 #define VFSemaphoreSignal(h) fn_800B8048(h)
 
 #pragma dont_inline on
-extern "C" s32 fn_800A6480(void *arg0, s32 arg1) {
+/* Run operation slot 0x10 of the device this one drives: take its semaphore, call the
+ * operation with the caller's scalar, give the semaphore back, and if the operation
+ * failed leave its error in the request being served and report VF_OP_ERROR so the
+ * caller goes and reads that error. */
+extern "C" s32 fn_800A6480(void *device, s32 arg1) {
     s32 result;
-    void *obj;
-    if (fn_800B8004(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x14;
-    obj = *(void **)((u8 *)arg0 + 4);
-    result = ((s32 (*)(void *, s32, void *))(*(u32 **)((u8 *)obj + 0x10)))(arg0, arg1, obj);
-    if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x14;
+    void *target;
+    if (VFSemaphoreWait(VF_DEV_SEMAPHORE(device)) != 0) return VF_OP_NO_SEMAPHORE;
+    target = VF_DEV_TARGET(device);
+    result = ((s32 (*)(void *, s32, void *))(*(u32 **)((u8 *)target + 0x10)))(device, arg1, target);
+    if (VFSemaphoreSignal(VF_DEV_SEMAPHORE(device)) != 0) return VF_OP_NO_SEMAPHORE;
     if (result != 0) {
-        fn_800A71D0((void *)*(s32 *)((u8 *)arg0 + 0x2C), result);
-        return 0x15;
+        fn_800A71D0(VF_DEV_REQUEST(device), result);
+        return VF_OP_ERROR;
     }
     return 0;
 }
