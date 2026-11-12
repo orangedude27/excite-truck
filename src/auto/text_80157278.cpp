@@ -656,6 +656,9 @@ extern "C" void* fn_80157990(void* arg0, s32 arg1) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void* fn_801579F4(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    /* Constructor-like initializer: set up base/vtable/state (lbl_8032F2BC), clear 10
+     * 0x38-byte entries, store arg fields at +4/+0x244/+0x24C, then finalize vtable to
+     * lbl_8032EBF8. */
     // Note: a typed final field retains the target's base plus 0x244 store form.
     struct Tail {
         u8 pad[0x244];
