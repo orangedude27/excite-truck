@@ -187,28 +187,29 @@ done:;
 }
 
 int fn_802E8A18(void) {
-    char spC[0x8C];
-    unsigned int sp8;
-    int r;
-    int ret = 0;
-    r = NANDOpen(lbl_8034D9C0 + 0x3B8, spC, 1);
-    if (r == 0) {
-        sp8 = 0;
-        if (NANDGetLength(spC, &sp8) == 0) {
-            if (sp8 == 0xF0A0) {
+    char fileInfo[0x8C];
+    unsigned int fileLength;
+    int result;
+    int isValid = 0;
+    /* Check that the title's banner.bin exists and is exactly 0xF0A0 bytes. */
+    result = NANDOpen(lbl_8034D9C0 + 0x3B8, fileInfo, 1);
+    if (result == 0) {
+        fileLength = 0;
+        if (NANDGetLength(fileInfo, &fileLength) == 0) {
+            if (fileLength == 0xF0A0) {
                 fn_802E30C8(lbl_8034D9C0 + 0x3C4);
-                ret = 1;
+                isValid = 1;
             } else {
-                fn_802E30C8(lbl_8034D9C0 + 0x3EC, sp8, 0xF0A0);
+                fn_802E30C8(lbl_8034D9C0 + 0x3EC, fileLength, 0xF0A0);
             }
         } else {
             fn_802E30C8(lbl_8034D9C0 + 0x428);
         }
-        NANDClose(spC);
+        NANDClose(fileInfo);
     } else {
-        fn_802E30C8(lbl_8034D9C0 + 0x460, r);
+        fn_802E30C8(lbl_8034D9C0 + 0x460, result);
     }
-    return ret;
+    return isValid;
 }
 
 #pragma scheduling on
