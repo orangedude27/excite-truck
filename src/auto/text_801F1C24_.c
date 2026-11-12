@@ -1208,18 +1208,20 @@ void fn_801F3B00(void *arg0, int arg1) {
     *(char *)((char *)arg0 + 4) = 1;
 }
 
+// Byte-swap four consecutive 32-bit words in place (reverse each word's bytes)
+// at the buffer returned by fn_801F1CE8 for the given argument.
 void fn_801F3B40(void *unused, int arg1) {
     extern int *fn_801F1CE8(int);
-    unsigned char *p = (unsigned char *)fn_801F1CE8(arg1);
-    unsigned char t;
-    t = p[0]; p[0] = p[3]; p[3] = t;
-    t = p[1]; p[1] = p[2]; p[2] = t;
-    t = p[4]; p[4] = p[7]; p[7] = t;
-    t = p[5]; p[5] = p[6]; p[6] = t;
-    t = p[8]; p[8] = p[11]; p[11] = t;
-    t = p[9]; p[9] = p[10]; p[10] = t;
-    t = p[12]; p[12] = p[15]; p[15] = t;
-    t = p[13]; p[13] = p[14]; p[14] = t;
+    unsigned char *bytes = (unsigned char *)fn_801F1CE8(arg1);
+    unsigned char temp;
+    temp = bytes[0]; bytes[0] = bytes[3]; bytes[3] = temp;
+    temp = bytes[1]; bytes[1] = bytes[2]; bytes[2] = temp;
+    temp = bytes[4]; bytes[4] = bytes[7]; bytes[7] = temp;
+    temp = bytes[5]; bytes[5] = bytes[6]; bytes[6] = temp;
+    temp = bytes[8]; bytes[8] = bytes[11]; bytes[11] = temp;
+    temp = bytes[9]; bytes[9] = bytes[10]; bytes[10] = temp;
+    temp = bytes[12]; bytes[12] = bytes[15]; bytes[15] = temp;
+    temp = bytes[13]; bytes[13] = bytes[14]; bytes[14] = temp;
 }
 
 void fn_801F3BE4(void *arg0) {
