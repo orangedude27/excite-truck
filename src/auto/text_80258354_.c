@@ -139,35 +139,40 @@ typedef struct UIObjectEntry {
 } UIObjectEntry;        /* == 0x48 */
 
 #pragma scheduling invalid_target
-void fn_80258550(void *arg0, const char *arg1, const char *arg2, int arg3) {
-    struct Entry { char first[0x20]; char second[0x20]; void *field; int value; };
-    struct Entry *entry;
-    int count;
+/* UIObjects_impl: add a named object to the manager's object table.  The next
+ * free entry (+0x04 array, its count at +0x08 incremented here) takes a copy of
+ * the name callers look the object up by and of the art set's name -- both at
+ * most 0x20 characters, the last one given up to the terminator when the string
+ * is longer -- then a reference on that art set and the number of the item
+ * within it the object shows. */
+void fn_80258550(void *mgr, const char *name, const char *artName, int item) {
+    UIObjectEntry *entry;
+    int remaining;
     char *dst;
-    count = 0x20;
-    entry = &((struct Entry *)(*(unsigned int *)((char *)arg0 + 4)))[(*(int *)((char *)arg0 + 8))++];
-    dst = entry->first;
+    remaining = 0x20;
+    entry = &((UIObjectEntry *)*(unsigned int *)((char *)mgr + 4))[( *(int *)((char *)mgr + 8))++];
+    dst = entry->name;
     goto copy1;
 check1:
-    if (--count > 0) goto copy1;
+    if (--remaining > 0) goto copy1;
     dst[-1] = 0;
     goto copied1;
 copy1:
-    if ((*dst++ = *arg1++) != 0) goto check1;
+    if ((*dst++ = *name++) != 0) goto check1;
 copied1:
-    arg1 = arg2;
-    dst = entry->second;
-    count = 0x20;
+    name = artName;
+    dst = entry->artName;
+    remaining = 0x20;
     goto copy2;
 check2:
-    if (--count > 0) goto copy2;
+    if (--remaining > 0) goto copy2;
     dst[-1] = 0;
     goto copied2;
 copy2:
-    if ((*dst++ = *arg1++) != 0) goto check2;
+    if ((*dst++ = *name++) != 0) goto check2;
 copied2:
-    entry->field = (void *)fn_8023512C((void *)arg2);
-    entry->value = arg3;
+    entry->art = (void *)fn_8023512C((void *)artName);
+    entry->item = item;
 }
 #pragma scheduling on
 void fn_8025861C(void *arg0, const char *arg1, void *arg2) {
