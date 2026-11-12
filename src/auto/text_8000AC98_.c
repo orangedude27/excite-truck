@@ -65,16 +65,15 @@ void fn_8000AD20(void) {
 int fn_8000AD24(void) { return 0; }
 
 int fn_8000AD2C(void) {
- int index = ((char *)lbl_8055D3D0 - lbl_802FBC90) / 0x14;
- if (index == 0x12) goto no;
- if (index >= 0x12) goto yes;
- if (index >= 2) goto yes;
- if (index >= 0) goto no;
- goto yes;
-no:
- return 0;
-yes:
- return 1;
+    int index = ((char *)lbl_8055D3D0 - lbl_802FBC90) / 0x14;
+    switch (index) {
+    case 0:
+    case 1:
+    case 0x12:
+        return 0;
+    default:
+        return 1;
+    }
 }
 
 int fn_8000AD84(void) {
