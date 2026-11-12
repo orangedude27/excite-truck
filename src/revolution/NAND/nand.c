@@ -180,6 +180,9 @@ s32 NANDSeek(NANDFileInfo* info, s32 offset, NANDSeekMode whence) {
         nandSeek(info->fd, offset, whence, NULL, FALSE));
 }
 
+/* Asynchronously seek a NAND file: validate initialization, store the callback
+ * in the command block, perform the seek through nandSeek, and convert the
+ * IPC result to a NAND result. */
 s32 NANDSeekAsync(NANDFileInfo* info, s32 offset, NANDSeekMode whence,
                   NANDAsyncCallback callback, NANDCommandBlock* block) {
     if (!nandIsInitialized()) {
