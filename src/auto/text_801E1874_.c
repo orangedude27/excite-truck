@@ -75,45 +75,60 @@ typedef struct WeatherState {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma inline_depth(0)
+/* Reads the level's "weather" object out of the parameter archive and fills the
+ * weather state block with it: what precipitation falls, whether lightning
+ * flashes with it, whether it is night, and the "fog" group's colour, start,
+ * stop and density.  fn_801E1F44 calls it the first time the weather is asked
+ * for, and fn_801E1D20/fn_801E1D2C clear gWeatherLoaded to make it run again. */
 extern "C" int fn_801E1894(void) {
- struct Vec { float x,y,z; };
- struct Settings {
- virtual void s2(); virtual void s3(); virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7(); virtual void s8();
- virtual float get(const char *); virtual void s10(); virtual void s11(); virtual void s12(); virtual Vec vector(const char *);
+ struct Vec3 { float x,y,z; };
+ /* A named group of values inside the parameter object.  This ABI keeps the
+  * two destructor slots first, so the first method declared here is the one at
+  * vtable+0x8. */
+ struct ParamGroup {
+ virtual void method_0x8(); virtual void method_0xC(); virtual void method_0x10(); virtual void method_0x14(); virtual void method_0x18(); virtual void method_0x1C(); virtual void method_0x20();
+ virtual float get(const char *key); virtual void method_0x28(); virtual void method_0x2C(); virtual void method_0x30();
+ virtual Vec3 vector(const char *key); /* returns the three floats in a hidden buffer */
  };
- struct Obj {
- virtual void s2(); virtual int has(const char *); virtual void s4(); virtual void s5(); virtual char *text(const char *, const char *);
- virtual void s7(); virtual void s8(); virtual void s9(); virtual void s10(); virtual int flag(const char *); virtual int val(const char *, int);
- virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22(); virtual Settings *child(const char *);
+ /* The archive object itself, found by name; hands out its groups and values. */
+ struct ParamObject {
+ virtual void method_0x8(); virtual int has(const char *key); virtual void method_0x10(); virtual void method_0x14();
+ virtual char *text(const char *key, const char *fallback);
+ virtual void method_0x1C(); virtual void method_0x20(); virtual void method_0x24(); virtual void method_0x28();
+ virtual int flag(const char *key); virtual int val(const char *key, int fallback);
+ virtual void method_0x34(); virtual void method_0x38(); virtual void method_0x3C(); virtual void method_0x40(); virtual void method_0x44(); virtual void method_0x48(); virtual void method_0x4C(); virtual void method_0x50(); virtual void method_0x54(); virtual void method_0x58();
+ virtual ParamGroup *child(const char *name);
  };
- Obj *obj; Settings *settings; char *name; int r,g,b, n, raw;
+ ParamObject *weather; ParamGroup *fog; char *precip; int r,g,b, clamped, scaled;
  fn_801E1874();
- if (fn_802AE414((const char *)&lbl_8055AE60) != 0) {
-  obj=(Obj *)fn_802AE414((const char *)&lbl_8055AE60);
-  settings=obj->child((const char *)&lbl_8055AE68);
-  name=obj->text((const char *)&lbl_8055AE6C,(const char *)&lbl_8055AE74);
-  if(stricmp(name,(const char *)&lbl_8055AE7C)==0) *(int *)&lbl_804874D4=1;
-  else if(stricmp(name,(const char *)&lbl_8055AE84)==0) *(int *)&lbl_804874D4=2;
-  { int flag;
-  if(obj->has((const char *)lbl_80339860)!=0)
-   flag=obj->flag((const char *)lbl_80339860);
-  else flag=(*(int *)&lbl_804874D4==1);
-  lbl_8055EA22=flag;
+ if (fn_802AE414((const char *)&KEY_WEATHER) != 0) {
+  weather=(ParamObject *)fn_802AE414((const char *)&KEY_WEATHER);
+  fog=weather->child((const char *)&KEY_FOG);
+  precip=weather->text((const char *)&KEY_PRECIP,(const char *)&VAL_PRECIP_NONE);
+  if(stricmp(precip,(const char *)&VAL_PRECIP_RAIN)==0) ((WeatherState *)gWeatherState)->precipType=PRECIP_RAIN;
+  else if(stricmp(precip,(const char *)&VAL_PRECIP_SNOW)==0) ((WeatherState *)gWeatherState)->precipType=PRECIP_SNOW;
+  { int lightning;
+  if(weather->has((const char *)KEY_LIGHTNING)!=0)
+   lightning=weather->flag((const char *)KEY_LIGHTNING);
+  else lightning=(((WeatherState *)gWeatherState)->precipType==PRECIP_RAIN);
+  gLightningOn=lightning;
   }
-  *((unsigned char *)&lbl_804874D4+4)=obj->val((const char *)lbl_8033986C,0);
-  if(settings) {
-   const Vec &v = settings->vector((const char *)&lbl_8055AE8C);
-   raw=(int)(lbl_80562CA8*v.x); n=raw&((-raw&~raw)>>31); r = n < 255 ? n : 255;
-   raw=(int)(lbl_80562CA8*v.y); n=raw&((-raw&~raw)>>31); g = n < 255 ? n : 255;
-   raw=(int)(lbl_80562CA8*v.z); n=raw&((-raw&~raw)>>31); b = n < 255 ? n : 255;
-   *(int *)((char *)&lbl_804874D4+8)=((r & 255)<<16)|0xff000000|((g & 255)<<8)|(b & 255);
-   *(float *)((char *)&lbl_804874D4+0xc)=settings->get((const char *)&lbl_8055AE94);
-   *(float *)((char *)&lbl_804874D4+0x10)=settings->get((const char *)&lbl_8055AE9C);
-   *(float *)((char *)&lbl_804874D4+0x14)=settings->get((const char *)&lbl_8055AEA8);
-   *((unsigned char *)&lbl_804874D4+0x18)=1;
+  ((WeatherState *)gWeatherState)->isNight=weather->val((const char *)KEY_IS_NIGHT,0);
+  if(fog) {
+   const Vec3 &color = fog->vector((const char *)&KEY_COLOR);
+   /* Each channel is 255.0f * the colour, clamped to 0..255; x & ((-x & ~x) >>
+    * 31) is the branchless max(x, 0). */
+   scaled=(int)(lbl_80562CA8*color.x); clamped=scaled&((-scaled&~scaled)>>31); r = clamped < 255 ? clamped : 255;
+   scaled=(int)(lbl_80562CA8*color.y); clamped=scaled&((-scaled&~scaled)>>31); g = clamped < 255 ? clamped : 255;
+   scaled=(int)(lbl_80562CA8*color.z); clamped=scaled&((-scaled&~scaled)>>31); b = clamped < 255 ? clamped : 255;
+   ((WeatherState *)gWeatherState)->fogColor=((r & 255)<<16)|0xff000000|((g & 255)<<8)|(b & 255);
+   ((WeatherState *)gWeatherState)->fogStart=fog->get((const char *)&KEY_START);
+   ((WeatherState *)gWeatherState)->fogStop=fog->get((const char *)&KEY_STOP);
+   ((WeatherState *)gWeatherState)->fogDensity=fog->get((const char *)&KEY_DENSITY);
+   ((WeatherState *)gWeatherState)->fogActive=1;
   }
  }
- lbl_8055EA20=1;
+ gWeatherLoaded=1;
 }
 #pragma pop
 extern float __fabsf(float);
