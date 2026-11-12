@@ -904,6 +904,7 @@ void fn_80267420(void) {
 #pragma push
 #pragma optimize_for_size on
 #pragma use_lmw_stmw on
+#pragma processor 750
 void fn_80267680(void) {
     extern float lbl_80563C54, lbl_80563C58, lbl_80563C5C, lbl_80563C60, lbl_80563C64;
     extern int lbl_8055F494;
