@@ -470,26 +470,30 @@ int fn_802E8D8C(const char *path, void *buf, int len) {
 #pragma push
 #pragma optimization_level 3
 void fn_802E9010(void) {
-    char *data;
+    char *saveState;
+
+    /* Pump the rmemcard save state machine: advance the async NAND write step,
+     * then progress the outer state (2: start banner write, 3: start file write
+     * once banner done, 4: finish once file write done). */
     fn_802E9254((char *)&lbl_80507288 + 4);
-    data = (char *)&lbl_80507288;
+    saveState = (char *)&lbl_80507288;
     switch (lbl_80507288) {
     case 2:
-        fn_802E91D8(data + 4, lbl_8034E108, *(int *)(data + 0x260), *(int *)(data + 0x264));
+        fn_802E91D8(saveState + 4, lbl_8034E108, *(int *)(saveState + 0x260), *(int *)(saveState + 0x264));
         lbl_80507288 = 3;
         break;
     case 3:
-        if (fn_802E91BC((int *)(data + 4)) != 0) {
-            if (fn_802E91AC((int *)(data + 4)) == 0) {
-                fn_802E91D8(data + 4, data + 0x270, *(int *)(data + 0x268), *(int *)(data + 0x26C));
+        if (fn_802E91BC((int *)(saveState + 4)) != 0) {
+            if (fn_802E91AC((int *)(saveState + 4)) == 0) {
+                fn_802E91D8(saveState + 4, saveState + 0x270, *(int *)(saveState + 0x268), *(int *)(saveState + 0x26C));
                 lbl_80507288 = 4;
-            } else fn_802E9160(data);
+            } else fn_802E9160(saveState);
         }
         break;
     case 4:
-        if (fn_802E91BC((int *)(data + 4)) != 0) {
-            if (fn_802E91AC((int *)(data + 4)) == 0) fn_802E9118(data);
-            else fn_802E9160(data);
+        if (fn_802E91BC((int *)(saveState + 4)) != 0) {
+            if (fn_802E91AC((int *)(saveState + 4)) == 0) fn_802E9118(saveState);
+            else fn_802E9160(saveState);
         }
         break;
     }
