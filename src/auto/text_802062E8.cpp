@@ -595,6 +595,7 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
         if (!p[0x64]) p[0x18] = 0;
     }
 }
+#pragma processor gekko
 #pragma scheduling on
 #pragma dont_inline reset
 extern "C" void *fn_802065F8(void *, int, int);
