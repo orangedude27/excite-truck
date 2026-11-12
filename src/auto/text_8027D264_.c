@@ -577,14 +577,15 @@ int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
     void *obj;
     int found;
     void *manager;
-
     fn_800167FC(1);
     manager = (void *)fn_80012820(arg2);
     found = 0;
     if (manager != 0) {
         obj = *(void **)((char *)manager + 0x80);
         if (obj != 0) {
-            result = ((int (*)(void *, const char *))*(void **)((char *)*(void **)obj + 0x5C))(obj, lbl_80347E30);
+            void **vt = *(void ***)obj;
+            const char *s = lbl_80347E30;
+            result = ((int (*)(void *, const char *))vt[0x5C / 4])(obj, s);
             if (((unsigned int)(-result | result) >> 31) != 0) {
                 obj = *(void **)((char *)manager + 0x80);
                 obj = (void *)((int (*)(void *, const char *))*(void **)((char *)*(void **)obj + 0x5C))(obj, lbl_80347E30);
@@ -608,6 +609,8 @@ int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
 void *fn_80012870(int, int);
 void fn_8023BF4C(void *);
 void fn_8027E024(int arg0, int arg1, int arg2) {
+    /* Resolve arg1 through the global table/list context, scan for a matching key in
+     * that list to fill a found index (or -1), then forward the packed args to fn_8023BF4C. */
     struct Args {
         int list;
         int found;
