@@ -9535,21 +9535,22 @@ extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800A8EA0(void *, u32, void **);
-extern "C" s32 fn_800B5260(void *arg0, void *arg1, u32 arg2, u32 arg3, s32 arg4) {
+extern "C" s32 fn_800B5260(void *volume, void *dst, u32 sector, u32 offset, s32 size) {
+    /* Reads `size` bytes from the cached page for `sector` of `volume` at byte `offset` into `dst` (VFipf cache read helper). */
     void *page;
-    if (!(M2C_FIELD(arg0, u16 *, 0x1F8C) & 1) || fn_800A53B4(arg0) == 0) {
+    if (!(M2C_FIELD(volume, u16 *, 0x1F8C) & 1) || fn_800A53B4(volume) == 0) {
         return 9;
     }
-    if (arg2 >= M2C_FIELD(arg0, u32 *, 8) ||
-        arg3 >= M2C_FIELD(arg0, u16 *, 0) ||
-        (s32)(arg3 + arg4) > (s32)M2C_FIELD(arg0, u16 *, 0)) {
+    if (sector >= M2C_FIELD(volume, u32 *, 8) ||
+        offset >= M2C_FIELD(volume, u16 *, 0) ||
+        (s32)(offset + size) > (s32)M2C_FIELD(volume, u16 *, 0)) {
         return 10;
     }
-    s32 result = fn_800A8EA0(arg0, arg2, &page);
+    s32 result = fn_800A8EA0(volume, sector, &page);
     if (result != 0) {
         return result;
     }
-    VFipf_memcpy(arg1, M2C_FIELD(page, u8 **, 8) + arg3, arg4);
+    VFipf_memcpy(dst, M2C_FIELD(page, u8 **, 8) + offset, size);
     return 0;
 }
 
