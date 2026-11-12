@@ -1855,6 +1855,9 @@ extern "C" void fn_800E5338(void *arg0, float arg1) {
 }
 
 extern "C" void SetVeVolume__Q46nw4hbm3snd6detail7AxVoiceFff(void *self, float arg0, float arg1) {
+    /* Set voice envelope/VE volume(s), clamped to [0,1]. If arg1 < 0 only update
+     * the target volume (+0x1A0); otherwise update current (+0x19C) and target and
+     * mark the VE/volume dirty flag in the status byte at +0x123. */
     float f0 = lbl_80560F3C;
     if (arg1 < f0) {
         float f2 = arg0 > lbl_80560F38
