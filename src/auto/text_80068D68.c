@@ -8477,6 +8477,22 @@ tBTM_SEC_DEV_REC *btm_find_oldest_dev(void) {
     return (tBTM_SEC_DEV_REC *)candidate;
 }
 
+/* btm_cb device-control block (devcb): the HCI-reset state machine and the
+ * local controller capabilities that get read back after a reset.  Named from
+ * btm_dev_init, BTM_DeviceReset and the btm_read_local_*_complete handlers.
+ * BTM_CB_PAGE_TIMEOUT and btm_cb_sco_pkt_types are re-defined here (identical
+ * to their later definitions) so btm_dev_init, which sits above them, can use
+ * the project's names. */
+#define btm_cb_hci_cmd_timer (lbl_803C0F78 + 0x574) /* timer waiting on an HCI command reply */
+#define btm_cb_dev_class     (lbl_803C0F78 + 0x648) /* local class of device (3 bytes) */
+#define BTM_CB_PAGE_TIMEOUT  (*(u16 *)(lbl_803C0F78 + 0x64C)) /* page timeout, 0.625 ms slots */
+#define btm_cb_dev_state     (lbl_803C0F78[0x64E])  /* reset/init state, BTM_DEV_STATE_* */
+#define btm_cb_dev_retry     (lbl_803C0F78[0x64F])  /* retries left for the current step */
+#define btm_cb_pkt_types     (*(u16 *)(lbl_803C0F78 + 0x654)) /* supported packet types */
+#define btm_cb_sco_pkt_types (*(UINT16 *)(lbl_803C0F78 + 0x656)) /* supported eSCO packet types */
+#define btm_cb_afh_first     (lbl_803C0F78[0x27BD]) /* AFH bad-frame range, first channel */
+#define btm_cb_afh_last      (lbl_803C0F78[0x27BE]) /* AFH bad-frame range, last channel */
+
 #pragma small_data on
 void btm_dev_init(void) {
     memcpy(lbl_803C0F78 + 0x648, &lbl_80559060, 3);
@@ -8791,8 +8807,8 @@ void btm_read_hci_buf_size_complete(UINT8 *p, UINT16 evt_len) {
 }
 
 void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
-    register UINT8 *base = lbl_803C0F78;
     UINT8 status = p[0];
+    register UINT8 *base = lbl_803C0F78;
     if (status == 0) {
         base[0x636] = p[1];
         *(u16 *)(base + 0x638) = (p[3] << 8) + p[2];
