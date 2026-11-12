@@ -68,6 +68,25 @@ static inline void CatStrC_8023512C(const char *src, int n, char *dst) {
     if (n > 0) CopyStrB_8023512C(s, n, dst);
 }
 extern void *fn_801284F8(int, const char *);
+/* One picture of an art set, 0x1C bytes: the six floats of its row in the
+ * "gArt" resource table (fn_80234EF4) -- the texture rectangle
+ * (s0,t0)-(s1,t1) and the size to draw it at -- and the next picture. */
+typedef struct ArtPicture {
+    float s0, t0;                /* 0x00: top-left of the picture in the texture */
+    float s1, t1;                /* 0x08: bottom-right */
+    float height;                /* 0x10: column 5 of the table row */
+    float width;                 /* 0x14: column 4 */
+    struct ArtPicture *next;     /* 0x18 */
+} ArtPicture;
+/* An art set, 0x8C bytes: the art file it was loaded from, how many hold it,
+ * the display list that file's textures were made into (fn_802CAC28) and the
+ * pictures, in the file's order (fn_8023505C walks them by index). */
+typedef struct ArtSet {
+    char name[0x80];             /* 0x00 */
+    int refCount;                /* 0x80 */
+    int drawHandle;              /* 0x84 */
+    ArtPicture *pictures;        /* 0x88 */
+} ArtSet;
 extern void fn_802E317C(const char *, ...);
 extern char lbl_80340670[];
 extern unsigned char lbl_80340680[];
@@ -236,8 +255,8 @@ void *fn_8023512C(const char *arg0) {
     char *tbl = (char *)lbl_80340670;
     char full[0x80];
     char name[0x80];
-    int *obj;
     char *dot;
+    int *obj;
     CopyStrB_8023512C(arg0, 0x80, full);
     if (fn_8012C33C(arg0) == 0) {
         fn_802E30C8(tbl + 0x120, arg0);
