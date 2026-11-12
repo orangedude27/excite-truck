@@ -2306,6 +2306,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self, s32 flag)
 
 extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUl(void *self, const void *archive, void *buffer, u32 size);
 extern "C" void Setup__Q46nw4hbm3snd6detail14StrmBufferPoolFPvUli(void *this_, void *buffer, u32 size, s32 count);
+struct SetupStrings { char file[0x1C]; char m1C[0x28]; char m44[0x2C]; char m70[0x30]; char mA0[8]; };
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(void *self, const void *archive, void *buffer, u32 size, void *streamBuffer, u32 streamBufferSize) {
@@ -4249,9 +4250,9 @@ extern "C" const char lbl_80326378[];
 extern "C" const char lbl_80326354[];
 #pragma use_lmw_stmw off
 extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external) {
+    int limit;
     u8 *first;
     u8 *sound;
-    int limit;
     if (*(u16 *)((u8 *)self + 0x24) == 0)
         return 0;
     while (*(s32 *)self >= *(u16 *)((u8 *)self + 0x24)) {
@@ -4269,7 +4270,7 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
         limit = (limit > 0x7F) ? 0x7F : ((limit < 0) ? 0 : limit);
         if (priority < limit)
             return 0;
-        ((DummyCheckPlayable *)sound)->f10();
+        ((DummyCheckPlayable *)sound)->f7();
     }
     if (external != 0) {
         if (*(u16 *)((u8 *)external + 0xC) == 0)
@@ -4282,7 +4283,7 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
             limit = (limit > 0x7F) ? 0x7F : ((limit < 0) ? 0 : limit);
             if (priority < limit)
                 return 0;
-            ((DummyCheckPlayable *)sound)->f10();
+            ((DummyCheckPlayable *)sound)->f7();
         } while (*(s32 *)external >= *(u16 *)((u8 *)external + 0xC));
     }
     return 1;
