@@ -376,7 +376,7 @@ void fn_80291E64(void *arg0) {
         }
     }
 }
-#pragma ppc_psq_save reset
+#pragma pop
 
 #pragma dont_inline on
 void fn_802920D0(void) {
