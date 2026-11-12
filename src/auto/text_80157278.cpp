@@ -2719,17 +2719,18 @@ extern "C" void* fn_8015C07C(void* arg0, s32 arg1) {
 }
 
 #pragma scheduling on
+/* Reset all entry records in this object's data buffer and clear its playback/aggregate state. */
 extern "C" void fn_8015C0E8(Unk801577F0* arg0) {
     f32 entryValue = 0.0f;
-    s32 r6 = 0;
-    s32 r7 = 0;
-    s32 r5 = 0;
-    for (; r6 < arg0->mCount; r6++) {
-        *(s32*)(arg0->mData + r7) = r5;
-        *(s32*)(arg0->mData + r7 + 4) = r5;
-        *(s32*)(arg0->mData + r7 + 8) = r5;
-        *(f32*)(arg0->mData + r7 + 0xC) = entryValue;
-        r7 += 0x38;
+    s32 entryIndex = 0;
+    s32 entryOffset = 0;
+    s32 zeroWord = 0;
+    for (; entryIndex < arg0->mCount; entryIndex++) {
+        *(s32*)(arg0->mData + entryOffset) = zeroWord;
+        *(s32*)(arg0->mData + entryOffset + 4) = zeroWord;
+        *(s32*)(arg0->mData + entryOffset + 8) = zeroWord;
+        *(f32*)(arg0->mData + entryOffset + 0xC) = entryValue;
+        entryOffset += 0x38;
     }
     f32 resetValue = 0.0f;
     entryValue = 1.0f;
