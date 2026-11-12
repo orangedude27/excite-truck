@@ -146,16 +146,15 @@ void fn_8028E1A4(void) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
-#pragma scheduling on
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8028E240(void) {
-    float temp_f31;
+    register float temp_f31;
     int *base;
     int value;
     int *entries;
     int current;
     int i;
-
     if (lbl_8055F740 == 0) {
         return;
     }
@@ -164,21 +163,15 @@ void fn_8028E240(void) {
     fn_802C8BD0(current);
     entries = &lbl_804B34B0;
     base = entries;
-    i = 0;
-    goto test;
-loop:
-    value = *(int *)((char *)*entries + 0xa4);
-    if (value != current) {
-        fn_802C8D74();
-        fn_802C8BD0(value);
-        current = value;
-    }
-    fn_8028FA1C(*entries);
-    entries++;
-    i++;
-test:
-    if (i < base[64]) {
-        goto loop;
+    for (i = 0; i < base[64]; i++) {
+        value = *(int *)((char *)*entries + 0xa4);
+        if (value != current) {
+            fn_802C8D74();
+            fn_802C8BD0(value);
+            current = value;
+        }
+        fn_8028FA1C(*entries);
+        entries++;
     }
     fn_802C8D74();
     fn_802C9A4C(temp_f31);
@@ -515,21 +508,18 @@ int fn_8028EE34(void *arg0, int arg1, int *arg2) {
 extern int fn_8002B1D8(int, void *, int);
 extern char *strncpy(char *, const char *, unsigned int);
 void fn_8028EEB4(void *arg0, int arg1, const char *arg2) {
-    int count;
-    int *countp;
-    char *p;
-    char *q;
-    count = *(int *)((char *)arg0 + 0x600);
-    p = (char *)arg0 + count * 0x18;
+    int count = *(int *)((char *)arg0 + 0x600);
+    char *p = (char *)arg0 + count * 0x18;
+    int zero = 0;
+    int one = 1;
     strncpy(p, arg2, 0x10);
-    countp = (int *)((char *)arg0 + 0x600);
-    q = (char *)arg0 + *countp * 0x18;
-    q[0xF] = 0;
-    q = (char *)arg0 + *countp * 0x18;
-    *(int *)(q + 0x10) = arg1;
-    q = (char *)arg0 + *countp * 0x18;
-    *(int *)(q + 0x14) = 1;
-    (*countp)++;
+    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
+    p[0xF] = (char)zero;
+    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
+    *(int *)(p + 0x10) = arg1;
+    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
+    *(int *)(p + 0x14) = one;
+    (*(int *)((char *)arg0 + 0x600))++;
 }
 
 int fn_8028EF44(void *arg0, unsigned int arg1) {
@@ -770,15 +760,37 @@ extern float fn_80129DC4(int, float, float);
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0, float farg1) {
-    float first = arg2[0];
-    float x;
+    float t0 = arg2[0];
+    float h0 = fn_80129DC4(0, -t0, t0);
+    float a0 = arg1[0];
+    float h0s = farg1 * h0;
+    float c0 = arg3[0];
+    float n1 = arg2[1];
+    float x = a0 * c0 + h0s;
+    float h1;
+    float a1;
+    float h1s;
+    float c1;
+    float n2;
     float y;
+    float h2;
+    float a2;
+    float h2s;
+    float c2;
     float z;
-    x = arg1[0] * arg3[0] + farg1 * fn_80129DC4(0, -first, first);
     arg0[0] = x;
-    y = arg1[1] * arg3[1] + farg1 * fn_80129DC4(0, -arg2[1], arg2[1]);
+    h1 = fn_80129DC4(0, -n1, n1);
+    a1 = arg1[1];
+    h1s = farg1 * h1;
+    c1 = arg3[1];
+    n2 = arg2[2];
+    y = a1 * c1 + h1s;
     arg0[1] = y;
-    z = arg1[2] * arg3[2] + farg1 * fn_80129DC4(0, -arg2[2], arg2[2]);
+    h2 = fn_80129DC4(0, -n2, n2);
+    a2 = arg1[2];
+    h2s = farg1 * h2;
+    c2 = arg3[2];
+    z = a2 * c2 + h2s;
     arg0[1] += farg1 * farg0;
     arg0[2] = z;
 }
@@ -855,7 +867,6 @@ int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
     int count;
     void *self;
     int *params;
-
     self = arg0;
     params = (int *)arg1;
     ((int (*)(void *))fn_8028E61C)(self);
@@ -865,7 +876,7 @@ int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
         fn_8002F37C(fn_8012850C(count * 0x28 + 0x10, lbl_80348FC4),
                     (void *)fn_8028F854, 0, 0x28, count);
     *(int *)((char *)self + 0x98) = count;
-    *(void **)((char *)self + 0xa4) = (void *)fn_802CAC28(arg2, 0);
+    *(int *)((char *)self + 0xa4) = fn_802CAC28(arg2, 0);
     return (int)self;
 }
 #pragma pop
@@ -946,6 +957,7 @@ void fn_8028F8E0(int playbackState, float timeNow) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" int fn_8028FA1C(int arg0) {
+    /* Flushes pending array entries by invoking a method from lbl_80348FD0 based on the object type, handling wrap-around ranges. */
     class ArrayObject {
     public:
         virtual void apply(int entries, int count) = 0;
@@ -1000,18 +1012,18 @@ void fn_8028FAE4(void *arg0, int arg1, float *arg2, float farg0) {
 #pragma dont_inline on
 void fn_8028FB98(void *arg0, int arg1, float *arg2, float farg0) {
     extern void fn_8028FEE4(void *, int, float *, float, float);
+    extern float lbl_80564424;
+    extern float lbl_80558DC4;
+    extern float lbl_80564420;
     float sp8[2];
-    int result = 0;
-
-    if (*(float *)((char *)arg0 + 0x9C) >=
-            lbl_80564424 - lbl_80558DC4 &&
-        *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94))
-        result = 1;
+    int result;
+    result = 0;
+    if (*(float *)((char *)arg0 + 0x9C) >= lbl_80564424 - lbl_80558DC4) {
+        if (*(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94))
+            result = 1;
+    }
     if (result != 0) {
-        fn_8028F444(sp8, arg2,
-                    (float *)((char *)arg0 + 0x10),
-                    (float *)((char *)arg0 + 0x1C),
-                    *(float *)((char *)arg0 + 0x28), farg0);
+        fn_8028F444(sp8, arg2, (float *)((char *)arg0 + 0x10), (float *)((char *)arg0 + 0x1C), *(float *)((char *)arg0 + 0x28), farg0);
         fn_8028FEE4(arg0, arg1, sp8, lbl_80564420, lbl_80564424);
     }
 }
@@ -1273,14 +1285,12 @@ extern float lbl_80564424, lbl_80564448, lbl_8056444C, lbl_80564450, lbl_8056445
 extern float lbl_8056445C;
 typedef struct { float x, y, z; unsigned int color; float u, v; } EfVtx;
 typedef struct { float m[9]; } EfMtx3;
-#pragma push
 #pragma scheduling off
 void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
-    float a, b, c, d, e, f, g, h, i, j, k, l, m, n;
-    float o, p, q, r, s, t, u, v, w, x, y, z;
-    float aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an;
-    volatile float spillC, spill10, spill8;
-
+    register float a, b, c, d, e, f, g, h, i, j, k, l, m, n;
+    register float o, p, q, r, s, t, u, v, w, x, y, z;
+    register float aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an;
+    volatile float spill10, spill8, spillC;
     a = *(volatile float *)&lbl_8056444C;
     b = *(volatile float *)((char *)arg0 + 0xa0);
     c = a * farg0;
@@ -1324,12 +1334,10 @@ void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
     am = aj * farg0;
     spillC = aj;
     an = aa + am;
-
     *(float *)arg1 = ak;
     *(float *)((char *)arg1 + 8) = al;
     *(float *)((char *)arg1 + 4) = an;
 }
-
 extern void *fn_802C86DC(void);
 extern void fn_802C8DB8(void *, int, void *, int);
 extern float PSVECDotProduct(float *, float *);
