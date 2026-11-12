@@ -441,7 +441,9 @@ extern "C" int fn_801B526C(void);
 extern "C" int fn_801769F8(void);
 extern "C" unsigned char lbl_8055E521;
 #pragma cplusplus on
-extern "C" int fn_801901F0(void *arg0) {
+/* Query the current status/result flags for this object, combining subobject state
+ * and applying additional flags when local conditions (at +0x34, lbl_8055E521) hold. */
+extern "C" int fn_801901F0(void *self) {
     class VT1 {
     public:
         virtual int d0(void );
@@ -485,14 +487,14 @@ extern "C" int fn_801901F0(void *arg0) {
     };
     int result;
     if (fn_801B526C() == 0) {
-        if (*(void **)((char *)arg0 + 4) != 0 && fn_801769F8() != 0) {
-            VT1 *obj = *(VT1 **)((char *)arg0 + 4);
+        if (*(void **)((char *)self + 4) != 0 && fn_801769F8() != 0) {
+            VT1 *obj = *(VT1 **)((char *)self + 4);
             obj->d28(0);
         }
-        if (*(void **)((char *)arg0 + 0x10) != 0) {
-            VT2 *obj = *(VT2 **)((char *)arg0 + 0x10);
+        if (*(void **)((char *)self + 0x10) != 0) {
+            VT2 *obj = *(VT2 **)((char *)self + 0x10);
             result = obj->e3();
-            if (*(unsigned char *)((char *)arg0 + 0x34) == 0)
+            if (*(unsigned char *)((char *)self + 0x34) == 0)
                 result |= 0x10;
             if (lbl_8055E521 != 0)
                 result |= 0x100;
