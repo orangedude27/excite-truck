@@ -3957,7 +3957,7 @@ void fn_8011CD90(s32 arg0, s32 arg1, s32 arg2) {
     *(s32 *)(arg2 + 0x180) = 0;
 }
 
-extern u8 lbl_80561208[];
+const u8 lbl_80561208[] = {0x04, 0x08, 0x0C, 0x20};
 void fn_8011CE18(void *arg0, void *arg1) {
     u32 *bits;
     u32 value, bitCount, available, mask, count, code, len, s, w, fill;
