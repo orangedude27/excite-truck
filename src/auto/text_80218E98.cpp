@@ -2886,6 +2886,34 @@ extern "C" void *fn_8021D300(void *arg0, s32 arg1) {
     return arg0;
 }
 
+/* The option widget built by fn_8021D044 (vtable lbl_8033EBA0): a base widget
+ * (its box at +0x04/+0x08) holding the option strings and the index of the one
+ * in use, plus the screen positions of the two "blinker" arrows that flank it.
+ * fn_8021D154 links the widget to the screen with fn_80217BD8, which returns
+ * the slot holding the id the screen currently selects; the widget's own id is
+ * fn_80228F40(x, y), so the two are equal while this is the widget being
+ * changed. */
+struct OptionWidget {
+    void *vtable;    /* 0x00 */
+    u8 _04[0x254 - 0x04];
+    s32 *index;      /* 0x254: index of the option in use */
+    s32 count;       /* 0x258: how many options there are */
+    s32 leftX;       /* 0x25C: screen x of the left arrow */
+    s32 rightX;      /* 0x260: screen x of the right arrow */
+    s32 arrowY;      /* 0x264: their screen y */
+    u8 _268[0x2B8 - 0x268];
+    char **options;  /* 0x2B8: the option strings (fn_8021D61C copies the current one) */
+    s32 *selectedId; /* 0x2BC: id the screen selects now; 0 while unlinked */
+    s32 id;          /* 0x2C0: this widget's own id */
+};
+
+/* The screen's indicator graphics (lbl_80490528), four sides to a set, picked
+ * with fn_8021165C(side, set): set 0 is the slider art (a_lslide, a_rslide,
+ * a_uscroll, ...), set 2 the blinker arrows flanking a changeable option
+ * (blinkerlt, blinkerrt, blinkerup, blinkerdn). */
+enum IndicatorSide { INDICATOR_LEFT = 0, INDICATOR_RIGHT = 1, INDICATOR_UP = 2, INDICATOR_DOWN = 3 };
+#define INDICATOR_SET_BLINKER 2
+
 #pragma push
 #pragma processor 750
 extern "C" void fn_8021D378(void *arg0, s32 arg1) {
@@ -3335,8 +3363,8 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
             }
         }
         if (var_r5 >= 0 && var_r5 < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8)) {
-            void *dst = *(void **)((u8 *)arg0 + 0x25C);
-            *(s32 *)dst = var_r5;
+            arg0 = *(void **)((u8 *)arg0 + 0x25C);
+            *(s32 *)arg0 = var_r5;
         }
     }
 }
