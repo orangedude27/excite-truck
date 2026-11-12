@@ -50,6 +50,7 @@ typedef struct KPADInsideStatus {
     /* 0x0C8 */ KPADObject kobj_sample[4]; /* what WPAD reported this sample */
     /* 0x0F8 */ KPADObject kobj_regular[2]; /* the pair KPAD uses, nearer one first */
     /* 0x110 */ s16 valid_objs;
+    /* 0x112 */ u16 repeat_count; /* how long the buttons have been held this sample */
     /* 0x114 */ s16 active_chan; /* channel WPAD is sampling for; <0 = none */
     u8 pad116[0x3A0 - 0x116];
     /* 0x3A0 */ f32 sec_length;
