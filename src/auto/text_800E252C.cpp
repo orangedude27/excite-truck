@@ -2434,28 +2434,29 @@ void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int index, const void *address, un
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loop) {
-    unsigned int level = OSDisableInterrupts();
+extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loopFlag) {
+    /* Set or clear the loop flag on every AX voice in this AxVoice's voice grid, with interrupts disabled. */
+    unsigned int savedIrq = OSDisableInterrupts();
     void *voice;
-    char *group;
-    char *entry;
-    int i;
-    int j;
-    group = (char *)self;
-    i = 0;
-    for (; i < *(int *)((char *)self + 0x104); group += 0x10, ++i) {
-        entry = group;
-        j = 0;
-        for (; j < *(int *)((char *)self + 0x108); entry += 4, ++j) {
-            voice = *(void **)(entry + 0xC);
-            unsigned int inner = OSDisableInterrupts();
-            *(unsigned short *)((char *)voice + 0x1B0) = loop;
-            unsigned int flags = *(unsigned int *)((char *)voice + 0x1C);
-            if ((flags & 0x800) == 0) *(unsigned int *)((char *)voice + 0x1C) = flags | 0x1000;
-            OSRestoreInterrupts(inner);
+    char *groupPtr;
+    char *entryPtr;
+    int groupIndex;
+    int voiceIndex;
+    groupPtr = (char *)self;
+    groupIndex = 0;
+    for (; groupIndex < *(int *)((char *)self + 0x104); groupPtr += 0x10, ++groupIndex) {
+        entryPtr = groupPtr;
+        voiceIndex = 0;
+        for (; voiceIndex < *(int *)((char *)self + 0x108); entryPtr += 4, ++voiceIndex) {
+            voice = *(void **)(entryPtr + 0xC);
+            unsigned int innerIrq = OSDisableInterrupts();
+            *(unsigned short *)((char *)voice + 0x1B0) = loopFlag;
+            unsigned int voiceFlags = *(unsigned int *)((char *)voice + 0x1C);
+            if ((voiceFlags & 0x800) == 0) *(unsigned int *)((char *)voice + 0x1C) = voiceFlags | 0x1000;
+            OSRestoreInterrupts(innerIrq);
         }
     }
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(savedIrq);
 }
 
 #pragma dont_inline on
