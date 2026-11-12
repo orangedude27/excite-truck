@@ -117,31 +117,32 @@ void fn_8023D704(long arg0) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_8023D70C(void) {
-    register long len;
-    register char *base = lbl_803416A8;
-    register long i = 0;
-    char spC;
-    char spB;
-    char spA;
-    char sp9;
-    char sp8;
+    /* Initialize five menu option byte fields (offsets 0x368,0x378,0x38C,0x3A0,0x3B0) to defaults over five entries. */
+    register long valueSize;
+    register char *optionBase = lbl_803416A8;
+    register long index = 0;
+    char value368;
+    char value378;
+    char value38C;
+    char value3A0;
+    char value3B0;
 
     do {
-        len = 0x10;
-        if (i < 4)
-            len = i + 0xC;
-        spC = 1;
-        spB = 1;
-        spA = 0;
-        sp9 = 0;
-        sp8 = 1;
-        fn_801333E8(len, base + 0x368, &spC);
-        fn_801333E8(len, base + 0x378, &spB);
-        fn_801333E8(len, base + 0x38C, &spA);
-        fn_801333E8(len, base + 0x3A0, &sp9);
-        fn_801333E8(len, base + 0x3B0, &sp8);
-        i++;
-    } while (i < 5);
+        valueSize = 0x10;
+        if (index < 4)
+            valueSize = index + 0xC;
+        value368 = 1;
+        value378 = 1;
+        value38C = 0;
+        value3A0 = 0;
+        value3B0 = 1;
+        fn_801333E8(valueSize, optionBase + 0x368, &value368);
+        fn_801333E8(valueSize, optionBase + 0x378, &value378);
+        fn_801333E8(valueSize, optionBase + 0x38C, &value38C);
+        fn_801333E8(valueSize, optionBase + 0x3A0, &value3A0);
+        fn_801333E8(valueSize, optionBase + 0x3B0, &value3B0);
+        index++;
+    } while (index < 5);
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
@@ -600,10 +601,14 @@ void fn_8023E33C(void *arg0) {
 }
 
 int fn_8023E3D8(int arg0, int arg1) {
-    s32 max = fn_801A902C() + 1;
+    s32 max = fn_801A902C();
     s32 *p = (s32 *)arg0;
-    s32 old = p[4] + 1;
-    p[4] = (old + (max + arg1)) % max - 1;
+    s32 old = p[4];
+    s32 tmp;
+    max += 1;
+    tmp = max + arg1;
+    old += 1;
+    p[4] = (old + tmp) % max - 1;
     fn_8023E33C(p);
 }
 
