@@ -993,7 +993,7 @@ extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
 extern "C" char lbl_8032F184[];
 extern "C" f32 lbl_80561774;
 extern "C" f32 lbl_80561770;
-extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2, void* arg3) {
+extern "C" void* fn_801582A4(void* self, s32 arg1, s32 arg2, void* arg3) {
     u8* p = (u8*)self + 0x14;
     *(void**)((u8*)self + 8) = p;
     *(void**)self = &lbl_8032F2BC;
@@ -1005,8 +1005,8 @@ extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2, void* arg3) {
     } while (p < (u8*)self + 0x244);
     *(s32*)((u8*)self + 0x248) = 0;
     *(s32*)((u8*)self + 0xC) = 0;
-    *(void**)((u8*)self + 4) = arg2;
-    *(void**)((u8*)self + 0x244) = arg1;
+    *(s32*)((u8*)self + 4) = arg2;
+    *(s32*)((u8*)self + 0x244) = arg1;
     *(s32*)((u8*)self + 0x268) = 0x40901;
     *(f32*)((u8*)self + 0x24C) = 30.5f;
     *(f32*)((u8*)self + 0x250) = 1.0f;
@@ -1014,7 +1014,7 @@ extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2, void* arg3) {
     *(s32*)((u8*)self + 0x248) = 0;
     *(s32*)((u8*)self + 0x26C) = 0;
     *(void**)self = &lbl_8032F184;
-    *(void**)((u8*)self + 0x278) = arg2;
+    *(s32*)((u8*)self + 0x278) = arg2;
     return self;
 }
 
