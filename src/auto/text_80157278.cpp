@@ -4121,6 +4121,28 @@ extern "C" void fn_80159488(Unk801577F0* arg0) {
         *(u8*)((u8*)child + 0x4C) = 0;
     }
 }
+// The lifetime counters fn_8001EF5C(id, amount) adds to, by the key each one
+// is looked up by in the table at lbl_802FDF30.  The bonus trackers bank their
+// record's count here when their bonus ends: air, tree_run, drift, rings and
+// crash are the categories fn_80158E88, fn_8015A538, fn_80159554, fn_8015D270
+// and fn_8015B618 belong to.
+#define ACH_COUNTER_SCORE    0  // "score"
+#define ACH_COUNTER_WIN      1  // "win"
+#define ACH_COUNTER_AAA      2  // "AAA"
+#define ACH_COUNTER_AIR      3  // "air"
+#define ACH_COUNTER_TREE_RUN 4  // "tree_run"
+#define ACH_COUNTER_DRIFT    5  // "drift"
+#define ACH_COUNTER_RINGS    6  // "rings"
+#define ACH_COUNTER_CRASH    7  // "crash"
+
+// End of this drift bonus tracker's bonus, called with the tracker and the
+// player whose bonus ended.  It hands the value built up so far to fn_80158D60,
+// which scores it into the record being filled and resets the progress
+// counters; banks the last record's count of scored values in the "drift"
+// lifetime counter -- only for a single player run (fn_80179650() == 1) in the
+// ordinary truck (player + 0x1F0 == 0x50) that is not a replay playback
+// (fn_801CF064()); and asks the tracker's drift sound to stop, the way
+// fn_80159624 does once the truck stops sliding.
 extern "C" void fn_80159554(void *arg0, void *arg1) {
     void *sp8 = arg1;
     s32 temp_r31;
