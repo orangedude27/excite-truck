@@ -1751,6 +1751,7 @@ extern "C" void fn_801FA550(void) {
 struct BatchedGob {
     void *vtable;        // +0x00 the node's vtable, lbl_8033B588
     f32 world[12];       // +0x04 3x4 world matrix the model is drawn at
+    u8 pad34[8];         // +0x34 what the node keeps after its matrix
     s32 gobId;           // +0x3C model instance drawn from `world`
     u8 pad40[0x50 - 0x40];
     u8 batchDraw;        // +0x50 set: drawn by the batched pass, clear: drawn on its own
