@@ -14992,7 +14992,32 @@ BOOLEAN btsnd_hcic_pin_code_req_reply(BD_ADDR bd_addr, UINT8 pin_code_len, PIN_C
     return TRUE;
 }
 
-BOOL btsnd_hcic_link_key_neg_reply_800840C8(void *link_key) { u8 *p; p = GKI_getpoolbuf(2); if (p == 0) return FALSE; *(u16 *)(p + 2) = 9; *(u16 *)(p + 4) = 0; p[8] = 0xE; p[9] = 4; p[10] = 6; p[11] = ((u8 *)link_key)[5]; p[12] = ((u8 *)link_key)[4]; p[13] = ((u8 *)link_key)[3]; p[14] = ((u8 *)link_key)[2]; p[15] = ((u8 *)link_key)[1]; p[16] = ((u8 *)link_key)[0]; btu_hcif_send_cmd(p); return TRUE; }
+/* Build and send an HCI PIN_Code_Request_Negative_Reply command for bd_addr: tell
+   the controller to reject the remote device's PIN code request. NOTE: the name is
+   a misnomer left over from the draft - the opcode streamed here is
+   HCI_PIN_CODE_REQUEST_NEG_REPLY (0x040E), not the Link_Key_Request negative reply
+   (0x040C, which is btsnd_hcic_link_key_neg_reply above). Returns FALSE when the
+   HCI command pool has no buffer left. */
+BOOL btsnd_hcic_link_key_neg_reply_800840C8(BD_ADDR bd_addr) {
+    BT_HDR *p;
+    UINT8 *pp;
+
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_PIN_CODE_NEG_REPLY)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_PIN_CODE_NEG_REPLY;
+    p->offset = 0;
+
+    UINT16_TO_STREAM (pp, HCI_PIN_CODE_REQUEST_NEG_REPLY);
+    UINT8_TO_STREAM  (pp, HCIC_PARAM_SIZE_PIN_CODE_NEG_REPLY);
+
+    BDADDR_TO_STREAM (pp, bd_addr);
+
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
 
 BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     u8 *p = (u8 *)GKI_getpoolbuf(2);
