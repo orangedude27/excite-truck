@@ -3138,6 +3138,7 @@ extern "C" void fn_80143128(u8 *arg0) {
 
 #pragma use_lmw_stmw off
 
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void fn_80143138(u8 *self, u8 *out) {
     class TObj10Local {
@@ -3146,27 +3147,27 @@ extern "C" void fn_80143138(u8 *self, u8 *out) {
         virtual void d1();
         virtual u8 *v10();
     };
+    /* Copies header/state fields into out and serializes per-entry data for each element (count at +0xBC, stride 0x12C/0x14) using fn_801B2EC0 entry info and table at +0xB8. */
     *(s32 *)out = *(s32 *)(self + 0xBC);
     *(s32 *)(out + 4) = *(s32 *)(self + 0x130);
     *(u8 *)(out + 0xD) = ((TObj24 *)self)->v24();
-    s32 z = 0;
-    u8 *p = out + 0x10;
-    *(u8 *)(out + 0xC) = z;
-    s32 off;
-    s32 i;
-    i = 0;
-    off = 0;
-    while (i < *(s32 *)(self + 0xBC)) {
-        *(u8 *)(p + 0x10) = z;
-        u8 *q = ((TObj10Local *)fn_801B2EC0(i))->v10();
-        i++;
-        *(s32 *)(p + 4) = *(s32 *)(q + 4);
-        *(s32 *)(p + 8) = *(s32 *)(*(u8 **)(self + 0xB8) + off + 0x10C);
-        off += 0x12C;
-        p += 0x14;
+    s32 zero = 0;
+    u8 *entryOut = out + 0x10;
+    *(u8 *)(out + 0xC) = zero;
+    s32 entryOffset;
+    s32 index;
+    index = 0;
+    entryOffset = 0;
+    while (index < *(s32 *)(self + 0xBC)) {
+        *(u8 *)(entryOut + 0x10) = zero;
+        u8 *entryInfo = ((TObj10Local *)fn_801B2EC0(index))->v10();
+        index++;
+        *(s32 *)(entryOut + 4) = *(s32 *)(entryInfo + 4);
+        *(s32 *)(entryOut + 8) = *(s32 *)(*(u8 **)(self + 0xB8) + entryOffset + 0x10C);
+        entryOffset += 0x12C;
+        entryOut += 0x14;
     }
 }
-#pragma scheduling on
 extern "C" void fn_801431F4(u8 *arg0) {
     *(u8 *)(arg0 + 0x26C) = 1;
 }
