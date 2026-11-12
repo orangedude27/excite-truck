@@ -547,6 +547,7 @@ extern float lbl_805631F8, lbl_805631FC, lbl_80563208;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_80206D3C(void *self, void *list, int count) {
     register unsigned char *p = (unsigned char *)self;
     float vec[3];
