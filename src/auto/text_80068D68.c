@@ -9,7 +9,9 @@ extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
 #include <stdarg.h>
 #include <printf.h>
 #include "revolution/BTE/stack/include/btm_api.h"
+#define btm_sco_chk_pend_unpark btm_sco_chk_pend_unpark_old2
 #include "revolution/BTE/stack/btm/btm_int.h"
+#undef btm_sco_chk_pend_unpark
 #define btsnd_hcic_reject_conn btsnd_hcic_reject_conn_public
 #define btsnd_hcic_reject_esco_conn btsnd_hcic_reject_esco_conn_public
 #define btsnd_hcic_accept_conn btsnd_hcic_accept_conn_public
@@ -13549,34 +13551,24 @@ void *arg0;
     u8 *msg = (u8 *)arg0;
     u8 *queueBase;
     u8 *newMsg;
-    u8 *payload;
     u16 count;
     u16 opcode;
     u16 offset;
-
+    u8 *payload;
     if (msg != 0) {
-        register u8 *firstBase = lbl_803C0A50;
-        if (*(u16 *)(firstBase + 0x6C) != 0) {
-            GKI_enqueue((BUFFER_Q *)(firstBase + 0x64), msg);
+        if (*(volatile u16 *)(lbl_803C0A50 + 0x6C) != 0) {
+            GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
             msg = 0;
         }
     }
-
-    {
-        register u8 *secondBase = lbl_803C0A50;
-        if (*(u16 *)(secondBase + 0x80) == 0 &&
-            lbl_803C0F78[0x64E] == 0)
-            *(u16 *)(secondBase + 0x80) =
-                *(u16 *)(secondBase + 0x6C) + 1;
-    }
-
+    if (*(volatile u16 *)(lbl_803C0A50 + 0x80) == 0 && lbl_803C0F78[0x64E] == 0)
+        *(volatile u16 *)(lbl_803C0A50 + 0x80) = *(volatile u16 *)(lbl_803C0A50 + 0x6C) + 1;
     queueBase = lbl_803C0A50;
-    while (*(u16 *)(queueBase + 0x80) != 0) {
+    while (*(volatile u16 *)(queueBase + 0x80) != 0) {
         if (msg == 0)
             msg = (u8 *)GKI_dequeue((BUFFER_Q *)(queueBase + 0x64));
         if (msg == 0)
             break;
-
         offset = *(u16 *)(msg + 4);
         payload = msg + offset;
         opcode = (u16)(((u16)payload[9] << 8) + payload[8]);
@@ -13591,12 +13583,11 @@ void *arg0;
                 btu_start_timer((TIMER_LIST_ENT *)(queueBase + 0x4C), 0x3C, 8);
             }
         }
-        count = *(u16 *)(queueBase + 0x80);
-        *(u16 *)(queueBase + 0x80) = count - 1;
+        count = *(volatile u16 *)(queueBase + 0x80);
+        *(volatile u16 *)(queueBase + 0x80) = count - 1;
         ((void (*)(void *, u16, u16))fn_8007079C)(msg, 0x2000, count);
         msg = 0;
     }
-
     if (msg != 0)
         GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
 }
@@ -15915,11 +15906,10 @@ do_clear:
 
 u8 HID_HostAddDev(u8 *addr, u16 attr_mask, u8 *handle) {
     u32 offset;
-    s32 index;
+    int index;
     u8 *p;
-    s32 ctr;
-    u8 value;
-
+    int ctr;
+    int value;
     p = lbl_803C3C38;
     if (p[0x400] == 0)
         return 1;
