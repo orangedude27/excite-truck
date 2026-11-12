@@ -239,6 +239,19 @@ void fn_800052F8(void) DECOMP_DONT_INLINE {
 extern void fn_800199B8(void);
 extern int fn_80028F94(char*, const char*, int);
 
+/* Names for fn_80004D64's globals (the project can't rename the game's symbols yet, so they are
+ * aliased here; read_data on each address shows the string it holds):
+ *   lbl_802FAFD4  .data  "interlude" - boot option name, written "-interlude" or "/interlude"
+ *   lbl_80558910  .sdata "res:"      - resource-path prefix, compared for but never used
+ *   lbl_8055F63C  .sbss              - boot flag, set to 1 once the interlude option was given
+ * fn_800199B8 walks the option-name table at lbl_802FD528 (name, flag, handler) over the argument
+ * string and ORs the flags of the options it finds into lbl_8055D5A0. */
+#define INTERLUDE_OPT_NAME lbl_802FAFD4
+#define INTERLUDE_OPT_LEN 9 /* strlen("interlude") */
+#define RES_PATH_PREFIX lbl_80558910
+#define RES_PATH_PREFIX_LEN 4 /* strlen("res:") */
+#define sInterludeMode lbl_8055F63C
+
 int fn_80004D64(char* args) {
     char* p;
 
