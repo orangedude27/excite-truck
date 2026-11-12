@@ -283,7 +283,8 @@ extern "C" float fn_801452E0(void *arg0, const char *arg1) {
 #pragma pop
 #pragma push
 #pragma dont_inline on
-extern "C" void fn_80145368(void *arg0, void *arg1) {
+extern "C" void fn_80145368(void *outEntry, void *propertySource) {
+    /* Initializes a basic on-screen text entry (id, x, y, justification) from property keys. */
     class Obj {
     public:
         virtual void f0();
@@ -299,15 +300,15 @@ extern "C" void fn_80145368(void *arg0, void *arg1) {
     extern u8 lbl_8055E208;
     extern f32 fn_801452C8(f32);
     extern f32 fn_801452D4(f32);
-    Obj *obj = (Obj *)arg1;
-    *(s32 *)arg0 = obj->f3(lbl_80559DD0);
-    *(f32 *)((u8 *)arg0 + 4) = obj->f7(lbl_80559DD8);
-    *(f32 *)((u8 *)arg0 + 8) = obj->f7(lbl_80559DDC);
+    Obj *obj = (Obj *)propertySource;
+    *(s32 *)outEntry = obj->f3(lbl_80559DD0);
+    *(f32 *)((u8 *)outEntry + 4) = obj->f7(lbl_80559DD8);
+    *(f32 *)((u8 *)outEntry + 8) = obj->f7(lbl_80559DDC);
     if (lbl_8055E208) {
-        *(f32 *)((u8 *)arg0 + 4) = fn_801452C8(*(f32 *)((u8 *)arg0 + 4));
-        *(f32 *)((u8 *)arg0 + 8) = fn_801452D4(*(f32 *)((u8 *)arg0 + 8));
+        *(f32 *)((u8 *)outEntry + 4) = fn_801452C8(*(f32 *)((u8 *)outEntry + 4));
+        *(f32 *)((u8 *)outEntry + 8) = fn_801452D4(*(f32 *)((u8 *)outEntry + 8));
     }
-    *(s32 *)((u8 *)arg0 + 0xC) = obj->f6(lbl_8032CF18, 0);
+    *(s32 *)((u8 *)outEntry + 0xC) = obj->f6(lbl_8032CF18, 0);
 }
 #pragma dont_inline reset
 #pragma pop
