@@ -194,33 +194,34 @@ extern "C" void fn_8029AAE0(int, int, void*);
     }
 
 #pragma dont_inline on
+/* Initialize race visual/effect subsystems and register the per-frame callback. */
 extern "C" void fn_80297ED8(void) {
-    char *data = lbl_80349408;
-    int value;
+    char *resourceNames = lbl_80349408;
+    int allocatedObject;
 
-    value = fn_801284F8(0xC, data + 0x54);
-    if (value != 0) {
-        value = (int)fn_802988A4((void *)value);
+    allocatedObject = fn_801284F8(0xC, resourceNames + 0x54);
+    if (allocatedObject != 0) {
+        allocatedObject = (int)fn_802988A4((void *)allocatedObject);
     }
-    lbl_8055F7C8 = (void *)value;
+    lbl_8055F7C8 = (void *)allocatedObject;
 
-    value = fn_801284F8(0xA4, data + 0x64);
-    if (value != 0) {
-        value = (int)fn_8029B938((void *)value);
+    allocatedObject = fn_801284F8(0xA4, resourceNames + 0x64);
+    if (allocatedObject != 0) {
+        allocatedObject = (int)fn_8029B938((void *)allocatedObject);
     }
-    lbl_8055F7D8 = (void *)value;
+    lbl_8055F7D8 = (void *)allocatedObject;
 
-    value = fn_801284F8(0xA8, data + 0x70);
-    if (value != 0) {
-        value = fn_8029BD14(value);
+    allocatedObject = fn_801284F8(0xA8, resourceNames + 0x70);
+    if (allocatedObject != 0) {
+        allocatedObject = fn_8029BD14(allocatedObject);
     }
-    lbl_8055F7DC = (void *)value;
+    lbl_8055F7DC = (void *)allocatedObject;
 
-    value = fn_801284F8(0x164, data + 0x80);
-    if (value != 0) {
-        value = (int)fn_8029A6F4((void *)value);
+    allocatedObject = fn_801284F8(0x164, resourceNames + 0x80);
+    if (allocatedObject != 0) {
+        allocatedObject = (int)fn_8029A6F4((void *)allocatedObject);
     }
-    lbl_8055F7D4 = (void *)value;
+    lbl_8055F7D4 = (void *)allocatedObject;
 
     if ((unsigned int)(*(unsigned int *)((char *)fn_801E87A8() + 4) - 0x00180000) == 0x201) {
         fn_80297E90();
