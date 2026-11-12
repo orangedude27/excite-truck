@@ -1523,14 +1523,12 @@ extern "C" char lbl_80559848;
 extern "C" char lbl_805598B8;
 extern "C" char lbl_805598C0;
 extern "C" char lbl_80559848, lbl_805598B8, lbl_805598C0;
-#pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive13GroupItemInfo(void *arg0, u32 arg1, u32 arg2, void *arg3) {
     u8 *ref = *(u8 **)((u8 *)arg0 + 0x28);
     u32 *files;
     u8 *entry;
     u32 *result;
-
     if (ref[0x21] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A0, 0x6F, lbl_80324CB0);
     files = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0x20], *(u32 *)(ref + 0x24), ref);
     if (files == 0) { entry = 0; goto second; }
@@ -1558,7 +1556,6 @@ second:
     ((u32 *)arg3)[0] = result[0]; ((u32 *)arg3)[1] = result[1]; ((u32 *)arg3)[2] = result[2]; ((u32 *)arg3)[3] = result[3]; ((u32 *)arg3)[4] = result[4];
     return 1;
 }
-#pragma pop
 extern "C" s32 ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPQ46nw4hbm3snd12SoundArchive22SoundArchivePlayerInfo(void *arg0, void *arg1) {
     extern const char lbl_80324D08[];
     extern char lbl_805598B0;
@@ -2306,7 +2303,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self, s32 flag)
 
 extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUl(void *self, const void *archive, void *buffer, u32 size);
 extern "C" void Setup__Q46nw4hbm3snd6detail14StrmBufferPoolFPvUli(void *this_, void *buffer, u32 size, s32 count);
-struct SetupStrings { char file[0x1C]; char m1C[0x28]; char m44[0x2C]; char m70[0x30]; char mA0[8]; };
+struct SetupStrings { char file; char _pad1[0x1B]; char m1C[0x28]; char m44[0x2C]; char m70[0x30]; char mA0[8]; };
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(void *self, const void *archive, void *buffer, u32 size, void *streamBuffer, u32 streamBufferSize) {
