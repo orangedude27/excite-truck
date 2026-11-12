@@ -11711,6 +11711,7 @@ BOOLEAN BTM_SecDeleteRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
 }
 
 extern char lbl_80316908[];
+/* Sets the host's PIN type/code in BTM state and programs the controller when ready. */
 void BTM_SetPinType(UINT8 pin_type, PIN_CODE pin_code, UINT8 pin_code_len) {
     if (lbl_803C0F78[0x27C0] >= 3) {
         ((void (*)(u32, void *, UINT8, PIN_CODE_PTR, UINT8))fn_80070984)(
