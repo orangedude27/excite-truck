@@ -1464,15 +1464,18 @@ extern void fn_80035C64(void);
 extern void fn_80035C78(void);
 #pragma push
 #pragma scheduling invalid_target
-void fn_80036550(u32 arg0) {
-    register u32 value = arg0;
+void fn_80036550(u32 errorCode) {
+    register u32 code = errorCode;
     s32 interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) *(u32 *)(__ErrorInfo + 0x78) = value;
-    else *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+
+    /* Store the error code in the error info record while interrupts are disabled. */
+    if (*(volatile u32 *)&lbl_8055D848 == 0) *(u32 *)(__ErrorInfo + 0x78) = code;
+    else *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = code;
     OSRestoreInterrupts(interrupts);
-    if (value == 0x10) fn_8003A1A0(0x1234568, fn_80035C78);
-    else if (value == 0x20) fn_8003A1A0(0x1234569, fn_80035C78);
-    else if (value & 2) fn_8003A1A0(0x1234567, fn_80035C64);
+
+    if (code == 0x10) fn_8003A1A0(0x1234568, fn_80035C78);
+    else if (code == 0x20) fn_8003A1A0(0x1234569, fn_80035C78);
+    else if (code & 2) fn_8003A1A0(0x1234567, fn_80035C64);
     else ((void (*)(void *, void (*)(void)))fn_8003A1A0)(((void *(*)(void))fn_8003BCC0)(), fn_80035C64);
 }
 #pragma pop
@@ -3036,8 +3039,8 @@ void cbForPrepareReset(void) {
 }
 
 void __DVDPrepareReset(void) {
-    s32 savedInterrupts;
     s32 tempInterrupts;
+    s32 savedInterrupts;
     void *active;
     s32 oldInterrupts;
     s32 one = 1;
