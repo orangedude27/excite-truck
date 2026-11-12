@@ -21202,7 +21202,7 @@ void rfc_mx_sm_state_configure(void *p_mcb, s32 event, void *p_data) {
     case 6:
     case 9:
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x90003, trace + 0x3C, *(u8 *)((u8 *)p_mcb + 0x6C), event);
+            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x90000, trace + 0x3C, *(u8 *)((u8 *)p_mcb + 0x6C), event);
         break;
     case 12:
         rfc_mx_conf_ind(p_mcb, p_data);
