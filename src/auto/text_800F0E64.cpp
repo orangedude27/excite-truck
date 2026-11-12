@@ -3263,12 +3263,11 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     void *waveDataAddress;
     u8 loader[0x220];
     u32 *table;
-
     if (*(void * volatile *)((u8 *)arg0 + 0x10) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x518, fileName + 0x2A0);
+        Panic__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x518, fileName + 0x2A0);
     }
     if (arg3 & 0x1F) {
-        Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x519, fileName + 0x4D4, arg3);
+        Panic__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x519, fileName + 0x4D4, arg3);
     }
     if ((*(void * volatile *)((u8 *)arg0 + 0x10) == 0 ? 0 : fn_800F273C(*(void * volatile *)((u8 *)arg0 + 0x10))) == 0) {
         return 0;
@@ -3276,12 +3275,11 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     if (arg1 >= (u32)fn_800F27CC(*(void * volatile *)((u8 *)arg0 + 0x10))) {
         return 0;
     }
-
     table = *(u32 **)((u8 *)arg0 + 0x14);
     u32 loaded = 0;
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x333, fileName + 0x2D0);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x333, fileName + 0x2D0);
     } else if (arg1 >= table[0]) {
         loaded = 0;
     } else {
@@ -3293,40 +3291,35 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     if (arg2 == 0) {
         return 0;
     }
-
     fn_800F41D0(loader, (s32)*(void * volatile *)((u8 *)arg0 + 0x10));
-    arg3 = (u32)LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(
-        loader, arg1, arg2, &waveDataAddress, arg3);
+    arg3 = (u32)LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(loader, arg1, arg2, &waveDataAddress, arg3);
     if (arg3 == 0) {
         fn_800F420C((s32)loader, -1);
         return 0;
     }
-
     table = *(u32 **)((u8 *)arg0 + 0x14);
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x34D, fileName + 0x388);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x34D, fileName + 0x388);
     } else {
         if (arg1 >= table[0]) {
-            Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x351, fileName + 0x3E0, arg1, 0);
+            Panic__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x351, fileName + 0x3E0, arg1, 0);
         }
         table = *(u32 **)((u8 *)arg0 + 0x14);
         *(u32 *)((u8 *)table + arg1 * 8 + 4) = arg3;
     }
-
     arg3 = (u32)waveDataAddress;
     table = *(u32 **)((u8 *)arg0 + 0x14);
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x380, fileName + 0x420);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x380, fileName + 0x420);
     } else {
         if (arg1 >= table[0]) {
-            Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x384, fileName + 0x3E0, arg1, 0);
+            Panic__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x384, fileName + 0x3E0, arg1, 0);
         }
         table = *(u32 **)((u8 *)arg0 + 0x14);
         *(u32 *)((u8 *)table + arg1 * 8 + 8) = arg3;
     }
-
     fn_800F420C((s32)loader, -1);
     return 1;
 }
@@ -4825,6 +4818,8 @@ struct AdpcmParam {
     u16 data[24];
 };
 #pragma use_lmw_stmw off
+struct fn_800FACC0_Data { u16 v[24]; };
+
 extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 arg2) {
     if (*(s32 *)arg0 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326518, 0xAD, lbl_80326688);
@@ -4838,12 +4833,12 @@ extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 arg2) {
     if (*codec != 2)
         return 0;
 
-    head = (u8 *)*((void **)arg0 + 1);
-    base = head + 8;
-    if (head[0x19] != 0)
+    u8 *head2 = (u8 *)*((void **)arg0 + 1);
+    u8 *base2 = head2 + 8;
+    if (head2[0x19] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598E0, 0x6F, lbl_803266B4);
 
-    u8 *table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(head[0x18], *(u32 *)(head + 0x1C), base);
+    u8 *table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(head2[0x18], *(u32 *)(head2 + 0x1C), base2);
     if (arg2 >= *table)
         return 0;
 
@@ -4856,12 +4851,12 @@ extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 arg2) {
     u8 *entry = table + arg2;
     u8 *ref2 = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[4], *(u32 *)(entry + 8), base);
 
-    head = (u8 *)*((void **)arg0 + 1);
-    base = head + 8;
+    head2 = (u8 *)*((void **)arg0 + 1);
+    base2 = head2 + 8;
     if (ref2[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598F0, 0x6F, lbl_8032670C);
 
-    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref2[0], *(u32 *)(ref2 + 4), base);
+    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref2[0], *(u32 *)(ref2 + 4), base2);
 
     u16 *dst = (u16 *)arg1;
     const u16 *src = (const u16 *)data;
@@ -4874,8 +4869,8 @@ extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 arg2) {
     a = src[10]; b = src[11]; dst[10] = a; dst[11] = b;
     a = src[12]; b = src[13]; dst[12] = a; dst[13] = b;
     a = src[14]; b = src[15]; dst[14] = a; dst[15] = b;
-    b = src[16]; a = src[17]; dst[16] = b; dst[17] = a;
-    b = src[18]; a = src[19]; dst[18] = b; dst[19] = a;
+    a = src[16]; b = src[17]; dst[16] = a; dst[17] = b;
+    b = src[18]; a = src[19]; dst[19] = a; dst[18] = b;
     dst[20] = src[20];
     dst[21] = src[21];
     dst[22] = src[22];
