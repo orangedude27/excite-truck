@@ -9366,12 +9366,13 @@ tBTM_INQ_INFO *BTM_InqDbRead(BD_ADDR p_bda) {
 }
 
 tBTM_INQ_INFO *BTM_InqDbFirst(void) {
-    UINT16 xx;
-    u8 *entry = lbl_803C0F78 + 0x16E4;
+    /* Return the first in-use inquiry database entry, or NULL if none. */
+    UINT16 index;
+    u8 *dbEntry = lbl_803C0F78 + 0x16E4;
 
-    for (xx = 0; xx < 12; xx++, entry += 0x1C) {
-        if (entry[0x1A])
-            return (tBTM_INQ_INFO *)(entry + 8);
+    for (index = 0; index < 12; index++, dbEntry += 0x1C) {
+        if (dbEntry[0x1A])
+            return (tBTM_INQ_INFO *)(dbEntry + 8);
     }
 
     return 0;
