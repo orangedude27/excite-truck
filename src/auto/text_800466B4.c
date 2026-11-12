@@ -4,6 +4,8 @@ extern float lbl_80558ED0;
 #include <types.h>
 #include "revolution/MTX/mtxtypes.h"
 #include "revolution/KPAD/KPAD.h"
+#include "revolution/WPAD/WPAD.h"
+#include "revolution/OS/OSInterrupt.h"
 
 typedef struct KPADReadStatus {
     KPADStatus status;
@@ -655,62 +657,79 @@ void clamp_stick_cross(void *arg0, void *arg1) {
     }
 }
 
-s32 read_kpad_stick(s32 chan, void *arg1) {
-    s32 irq;
-    u32 probe;
-    s32 ret;
-    u8 *state;
-    u8 *obj = (u8 *)arg1;
-    extern s32 WPADProbe(s32, s32 *);
-    extern void WPADSetAutoSamplingBuf(s32, void *, u32);
-    extern s32 OSDisableInterrupts(void);
-    extern void OSRestoreInterrupts(s32);
+s32 read_kpad_stick(s32 chan, KPADInsideStatus *kp) {
+    BOOL irqState;
+    s32 devType;
+    s32 result;
+    KPADInsideStatus *chanKp;
     extern void reset_kpad(void *);
-    extern s32 fn_80062460(s32);
-    extern void KPADiControlDpdCallback(s32, u32);
-    extern void KPADiSamplingCallback(s32, u32);
-    extern u8 lbl_8037C808[];
-    ret = WPADProbe(chan, (s32 *)&probe);
-    if (ret == -1) {
-        if (*(s16 *)(obj + 0x114) >= 0) {
-            WPADSetAutoSamplingBuf(chan, 0, 0);
-            *(s16 *)(obj + 0x114) = chan - 4;
-            *(u32 *)(obj + 0x5C) = 0xFD;
-            state = lbl_8037C808 + (chan << 10);
-            irq = OSDisableInterrupts();
-            if (*(u32 *)(state + 0x3F0) != 0) {
-                *(u32 *)(state + 0x3F0) = 0;
-                if (*(u32 *)(state + 0x3F8) != 0) {
-                    ((void (*)(s32, s32))(*(u32 *)(state + 0x3F8)))(chan, 1);
+    extern s32 fn_80062460(s32); /* WPAD's "DPD enabled" state for chan */
+    extern void KPADiControlDpdCallback(s32, u32); /* sample with DPD: the SDK's set_dpd_enable */
+    extern void KPADiSamplingCallback(s32, u32); /* sample without DPD: the SDK's set_dpd_disable */
+
+    result = WPADProbe(chan, &devType);
+    if (result == WPAD_ERR_NO_CONTROLLER) {
+        if (kp->active_chan >= 0) {
+            WPADSetAutoSamplingBuf(chan, NULL, 0);
+            kp->active_chan = chan - WPAD_MAX_CONTROLLERS;
+            kp->dev_type = WPAD_DEV_NOT_FOUND;
+            chanKp = &inside_kpads[chan]; /* the SDK's control_dpd_end_(chan), inlined */
+            irqState = OSDisableInterrupts();
+            if (chanKp->sampling_pending != 0) {
+                chanKp->sampling_pending = 0;
+                if (chanKp->dpd_ctrl_callback != NULL) {
+                    chanKp->dpd_ctrl_callback(chan, 1);
                 }
             }
-            OSRestoreInterrupts(irq);
+            OSRestoreInterrupts(irqState);
         }
         return -1;
     }
-    if (ret != 0) return 0;
-    if (probe == *(u32 *)(obj + 0x5C)) {
-        if (*(u32 *)(obj + 0x3F4) != 0) { reset_kpad(obj); return 1; }
-        ret = fn_80062460(chan);
-        if (*(u32 *)(obj + 0x3EC) != 0 && ret == 0) { KPADiControlDpdCallback(chan, probe); reset_kpad(obj); return 1; }
-        if (*(u32 *)(obj + 0x3EC) == 0 && ret != 0) { KPADiSamplingCallback(chan, probe); reset_kpad(obj); return 1; }
-        if (*(u32 *)(obj + 0x3FC) != 0) {
-            if (*(u32 *)(obj + 0x3EC) != 0) KPADiControlDpdCallback(chan, probe);
-            else KPADiSamplingCallback(chan, probe);
-            reset_kpad(obj); return 1;
+    if (result != WPAD_ERR_OK) {
+        return 0;
+    }
+    if ((u32)devType == kp->dev_type) {
+        if (kp->sampling_restart != 0) {
+            reset_kpad(kp);
+            return 1;
+        }
+        result = fn_80062460(chan);
+        if (kp->is_dpd_enabled != 0 && result == 0) {
+            KPADiControlDpdCallback(chan, devType);
+            reset_kpad(kp);
+            return 1;
+        }
+        if (kp->is_dpd_enabled == 0 && result != 0) {
+            KPADiSamplingCallback(chan, devType);
+            reset_kpad(kp);
+            return 1;
+        }
+        if (kp->data_format_failed != 0) {
+            if (kp->is_dpd_enabled != 0) {
+                KPADiControlDpdCallback(chan, devType);
+            } else {
+                KPADiSamplingCallback(chan, devType);
+            }
+            reset_kpad(kp);
+            return 1;
         }
         return 0;
     }
-    if (*(volatile u32 *)&probe != 0xFD) {
-        if (*(u32 *)(obj + 0x3EC) != 0) KPADiControlDpdCallback(chan, probe);
-        else KPADiSamplingCallback(chan, probe);
+    /* the SDK's is_valid_device(devType); the volatile keeps the reload from the
+       stack slot WPADProbe wrote */
+    if (*(volatile u32 *)&devType != WPAD_DEV_NOT_FOUND) {
+        if (kp->is_dpd_enabled != 0) {
+            KPADiControlDpdCallback(chan, devType);
+        } else {
+            KPADiSamplingCallback(chan, devType);
+        }
     } else {
-        *(s16 *)(obj + 0x114) = chan - 4;
+        kp->active_chan = chan - WPAD_MAX_CONTROLLERS;
         return -1;
     }
-    *(s16 *)(obj + 0x114) = chan;
-    *(u32 *)(obj + 0x5C) = probe;
-    reset_kpad(obj);
+    kp->active_chan = chan;
+    kp->dev_type = (u32)devType;
+    reset_kpad(kp);
     return 1;
 }
 
