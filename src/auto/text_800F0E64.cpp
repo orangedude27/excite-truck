@@ -1956,39 +1956,45 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
 extern "C" void OSLockMutex(void *);
 extern "C" void OSUnlockMutex(void *);
 extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *, unsigned long, void *, int);
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" long ReadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPvll(void *self, unsigned long fileId, void *buffer, long length, long offset) {
-    void *stream;
+    struct FileStream {
+        virtual void m00(); virtual void m04();
+        virtual void Close(); virtual int Read(void*, unsigned long);
+        virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24(); virtual void m28();
+        virtual int CanUse(); virtual void m30(); virtual void m34(); virtual void m38(); virtual void m3C(); virtual void m40();
+        virtual void Seek(long, int); virtual void m48(); virtual void m4C();
+        virtual int IsAvailable();
+    };
+    FileStream *stream;
     long result;
     OSLockMutex(self);
-    stream = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), fileId, (char *)self + 0x1c, 0x200);
+    stream = (FileStream*)detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), fileId, (char *)self + 0x1c, 0x200);
     if (stream == 0) {
-        ((void (*)(void *))(*(void ***)stream)[0x10 / 4])(stream);
+        if (stream != 0) stream->Close();
         OSUnlockMutex(self);
         return -1;
     }
-    if (((int (*)(void *))(*(void ***)stream)[0x50 / 4])(stream) == 0 ||
-        ((int (*)(void *))(*(void ***)stream)[0x2c / 4])(stream) == 0) {
-        if (stream != 0)
-            ((void (*)(void *))(*(void ***)stream)[0x10 / 4])(stream);
+    if (stream->IsAvailable() == 0 || stream->CanUse() == 0) {
+        if (stream != 0) stream->Close();
         OSUnlockMutex(self);
         return -1;
     }
-    ((void (*)(void *, long, int))(*(void ***)stream)[0x44 / 4])(stream, offset, 0);
+    stream->Seek(offset, 0);
     *(void **)((char *)self + 0x21c) = stream;
-    result = ((int (*)(void *, void *, unsigned long))(*(void ***)stream)[0x14 / 4])(stream, buffer, ((length + 0x1f) & ~0x1f));
+    result = stream->Read(buffer, ((length + 0x1f) & ~0x1f));
     *(void **)((char *)self + 0x21c) = 0;
     if (result == 0) {
-        if (stream != 0)
-            ((void (*)(void *))(*(void ***)stream)[0x10 / 4])(stream);
+        if (stream != 0) stream->Close();
         OSUnlockMutex(self);
         return -1;
     }
-    if (stream != 0)
-        ((void (*)(void *))(*(void ***)stream)[0x10 / 4])(stream);
+    if (stream != 0) stream->Close();
     OSUnlockMutex(self);
     return length;
 }
-
+#pragma pop
 extern "C" void DCStoreRange(void *, u32);
 extern "C" void *LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(void *self, unsigned int fileId, void *allocator) {
     typedef s32 (*ReadFileInfoFn)(void *, unsigned int, long *);
