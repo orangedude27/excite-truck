@@ -15,8 +15,6 @@ extern void fn_802389E4(void);
 extern void fn_80238A74(int, int, const char *, int);
 extern void fn_80238B44(int, int, int, int, int);
 extern void fn_802E6B38(int, char *);
-extern int lbl_8055EE24, lbl_8055EE28;
-extern char lbl_8033C5CC[];
 extern char lbl_8055B5C8;
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
