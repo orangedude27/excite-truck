@@ -311,6 +311,7 @@ void fn_8020AC20(void) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8020AC2C(void *arg0) {
  int i,j,mode,now; void *p,*handle; float volume,x,v,high,low;
  lbl_8055B590=fn_80209028();
@@ -427,7 +428,7 @@ appended:                   ;
                     *(void **)(obj + 0x14) = fn_802E5AE8(buffer);
                     *(void **)(obj + 0x18) = fn_8020A6AC(name);
                     length = ((double (*)(void *))fn_802E6040)(*(void **)(obj + 0x10));
-                    { register float scale = lbl_805632C4, base = lbl_805632C0, n = (float)length;
+                    { float scale = lbl_805632C4, base = lbl_805632C0, n = (float)length;
                     *(float *)(obj + 0x48) = length;
                     *(unsigned int *)(obj + 0x4c) = (unsigned int)(lbl_805632BC * (base + scale * n)); }
                     { float one, zero; zero = lbl_805632B0; one = lbl_805632B4;
