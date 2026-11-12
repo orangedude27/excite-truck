@@ -17,6 +17,10 @@ extern f32 lbl_80329BC8[];
 extern s32 lbl_8055DEE0;
 extern s32 lbl_8055DEE8;
 extern void TRKGetFreeBuffer(void *);
+extern void fn_80117074(void*);
+extern s32 lbl_8055DED4;
+extern u32 fn_8011C1E0(s32, void *);
+extern void *memcpy(void *, const void *, u32);
 
 extern void fn_8011AF94(f32 *, s32, void *, f32 *, s32);
 extern void fn_801200BC(s32, s32, f32 *, s32, s32);
