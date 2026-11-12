@@ -569,6 +569,7 @@ void* MEMAllocFromExpHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
 }
 #pragma dont_inline reset
 
+/* Free a block from an expanded heap: unlink its used block and recycle the region. */
 void MEMFreeToExpHeap(MEMiHeapHead* heap, void* memBlock) {
     MEMiExpHeapHead* exp;
     MEMiExpHeapMBlock* mblock;
