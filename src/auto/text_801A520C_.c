@@ -644,7 +644,8 @@ extern "C" int fn_801A5F44(void *arg0, int arg1) {
 }
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-extern "C" void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4, float farg0) {
+extern "C" void fn_801A5F7C(void *arg0, int inX, int inY, int *outX, int *outY, float scale) {
+    /* Query a base offset and a child object's offset, returning their sums in outX/outY. */
     class Obj {
     public:
         virtual void f0();
@@ -654,13 +655,13 @@ extern "C" void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4
         virtual void f4();
         virtual void f5(int, int, int *, int *, float);
     };
-    int x, y, a, b;
+    int baseX, baseY, childX, childY;
     Obj *obj;
-    fn_8018B0D8(arg0, arg1, arg2, &x, &y, farg0);
+    fn_8018B0D8(arg0, inX, inY, &baseX, &baseY, scale);
     obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
-    obj->f5(arg1 + x, arg2 + y, &a, &b, farg0);
-    *arg3 = x + a;
-    *arg4 = y + b;
+    obj->f5(inX + baseX, inY + baseY, &childX, &childY, scale);
+    *outX = baseX + childX;
+    *outY = baseY + childY;
 }
 #pragma use_lmw_stmw on
 extern "C" int fn_801A6024(void *arg0, int arg1) {
