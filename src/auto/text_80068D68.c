@@ -6077,34 +6077,37 @@ void bta_hh_disc_cmpl(void) {
 }
 
 extern u8 bta_hh_tod_spt(void *, u8);
-void bta_hh_sdp_cback(s32 arg0, u16 arg1, void *arg2) {
-    u8 sp9;
-    u8 sp8 = 0x10;
-    void *temp_r31 = *(void **)(lbl_803C0D48 + 0x210);
-    void *var_r30 = arg2;
-    if (arg0 == 0) {
-        if (*(u8 *)((u8 *)temp_r31 + 0x14) != 0) {
-            arg1 |= 0x8000;
+/* SDP callback for HID host: on success, ensures device type is supported, adds the
+ * host device if needed, updates device list, then frees discovery DB and notifies
+ * the state machine with SDP completion status. */
+void bta_hh_sdp_cback(s32 result, u16 attr_mask, void *sdp_rec) {
+    u8 cb_index;
+    u8 status = 0x10;
+    void *p_cb = *(void **)(lbl_803C0D48 + 0x210);
+    void *p_sdp_rec = sdp_rec;
+    if (result == 0) {
+        if (*(u8 *)((u8 *)p_cb + 0x14) != 0) {
+            attr_mask |= 0x8000;
         }
         if (lbl_8055DC80 >= 4) {
-            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(0x503, lbl_803151D8, temp_r31, arg0, arg1);
+            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(0x503, lbl_803151D8, p_cb, result, attr_mask);
         }
-        if (bta_hh_tod_spt(temp_r31, *(u8 *)((u8 *)var_r30 + 0x64)) != 0) {
-            if (*(u8 *)((u8 *)temp_r31 + 0x16) == 0xFF) {
-                sp8 = HID_HostAddDev((u8 *)temp_r31 + 8, arg1, &sp9);
-                if (sp8 == 0) {
-                    *(u8 *)(lbl_803C0D48 + 0x214 + sp9) = *(u8 *)((u8 *)temp_r31 + 0x12);
-                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(temp_r31, sp9, arg1, (u8 *)var_r30 + 0x68, *(u8 *)((u8 *)var_r30 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
+        if (bta_hh_tod_spt(p_cb, *(u8 *)((u8 *)p_sdp_rec + 0x64)) != 0) {
+            if (*(u8 *)((u8 *)p_cb + 0x16) == 0xFF) {
+                status = HID_HostAddDev((u8 *)p_cb + 8, attr_mask, &cb_index);
+                if (status == 0) {
+                    *(u8 *)(lbl_803C0D48 + 0x214 + cb_index) = *(u8 *)((u8 *)p_cb + 0x12);
+                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(p_cb, cb_index, attr_mask, (u8 *)p_sdp_rec + 0x68, *(u8 *)((u8 *)p_sdp_rec + 0x64), *(u8 *)((u8 *)p_cb + 0x15));
                 } else {
-                    *(u8 *)((u8 *)temp_r31 + 0x15) = 0;
+                    *(u8 *)((u8 *)p_cb + 0x15) = 0;
                 }
             }
         } else {
-            sp8 = 0xFF;
+            status = 0xFF;
         }
     }
     fn_800716F0(lbl_803C0D48 + 0x228);
-    bta_hh_sm_execute((tBTA_HH_DEV_CB *)temp_r31, 0x1707, &sp8);
+    bta_hh_sm_execute((tBTA_HH_DEV_CB *)p_cb, 0x1707, &status);
 }
 
 extern char lbl_80315230[];
@@ -23526,6 +23529,8 @@ tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
                     if (sdpu_compare_uuid_arrays(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len))
                         break;
+                    else
+                        continue;
                 } else if (p_attr[0xA] == DATA_ELE_SEQ_DESC_TYPE) {
                     if (find_uuid_in_seq(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len, 0))
