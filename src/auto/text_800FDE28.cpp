@@ -671,7 +671,11 @@ extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
     return 1;
 }
 
-extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 arg2) {
+extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 deleteFlag, u32 arg2) {
+    // nw4hbm::snd::WavePlayer deleting destructor: sets the WavePlayer vtable
+    // (lbl_80327334), stops playback, frees the detail::AxVoice at +0x18, clears
+    // the voice/task pointers, destroys the pending-wave LinkListImpl at +0x4,
+    // and (when deleteFlag > 0) releases the object itself.
     if (this_ != NULL) {
         *(void **)this_ = lbl_80327334;
         u32 level = OSDisableInterrupts();
@@ -686,7 +690,7 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 ar
         if (list != NULL) {
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list, 0);
         }
-        if (arg1 > 0) {
+        if (deleteFlag > 0) {
             fn_80128668(this_);
         }
     }
