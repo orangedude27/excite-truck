@@ -25,7 +25,7 @@ extern SurfObj *fn_80131808(char *);
 extern SurfObj *fn_80131810(char *);
 extern void fn_80131818(SurfObj *);
 extern int sprintf(char *, const char *, ...);
-extern char lbl_8055AB58[], lbl_8055AB60[], lbl_8055AB68[], lbl_8055AB70[], lbl_8055AB78[];
+extern char lbl_8055AB58, lbl_8055AB60, lbl_8055AB68, lbl_8055AB70, lbl_8055AB78;
 typedef struct { float f[3]; signed char b0; unsigned char b1; short pad; int i; } SurfRec;
   void fn_801D049C(void) {
       lbl_8055E8C0 = 0;
