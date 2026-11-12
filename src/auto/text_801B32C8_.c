@@ -147,23 +147,24 @@ int fn_801B3390(void) {
 }
 
 #pragma use_lmw_stmw off
-s32 fn_801B3398(void* arg0) {
+/* Copy 0x38 bytes from src into a local buffer and pass them to fn_801796CC; returns the size copied. */
+s32 fn_801B3398(void* src) {
     Unk801B3398 local;
     s32 t13, t12, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
-    t0 = *(volatile s32 *)((char *)arg0 + 0x00);
-    t1 = *(volatile s32 *)((char *)arg0 + 0x04);
-    t2 = *(volatile s32 *)((char *)arg0 + 0x08);
-    t3 = *(volatile s32 *)((char *)arg0 + 0x0C);
-    t4 = *(volatile s32 *)((char *)arg0 + 0x10);
-    t5 = *(volatile s32 *)((char *)arg0 + 0x14);
-    t6 = *(volatile s32 *)((char *)arg0 + 0x18);
-    t7 = *(volatile s32 *)((char *)arg0 + 0x1C);
-    t8 = *(volatile s32 *)((char *)arg0 + 0x20);
-    t9 = *(volatile s32 *)((char *)arg0 + 0x24);
-    t10 = *(volatile s32 *)((char *)arg0 + 0x28);
-    t11 = *(volatile s32 *)((char *)arg0 + 0x2C);
-    t12 = *(volatile s32 *)((char *)arg0 + 0x30);
-    t13 = *(volatile s32 *)((char *)arg0 + 0x34);
+    t0 = *(volatile s32 *)((char *)src + 0x00);
+    t1 = *(volatile s32 *)((char *)src + 0x04);
+    t2 = *(volatile s32 *)((char *)src + 0x08);
+    t3 = *(volatile s32 *)((char *)src + 0x0C);
+    t4 = *(volatile s32 *)((char *)src + 0x10);
+    t5 = *(volatile s32 *)((char *)src + 0x14);
+    t6 = *(volatile s32 *)((char *)src + 0x18);
+    t7 = *(volatile s32 *)((char *)src + 0x1C);
+    t8 = *(volatile s32 *)((char *)src + 0x20);
+    t9 = *(volatile s32 *)((char *)src + 0x24);
+    t10 = *(volatile s32 *)((char *)src + 0x28);
+    t11 = *(volatile s32 *)((char *)src + 0x2C);
+    t12 = *(volatile s32 *)((char *)src + 0x30);
+    t13 = *(volatile s32 *)((char *)src + 0x34);
     local.unk_0x00 = t0; local.unk_0x04 = t1; local.unk_0x08 = t2; local.unk_0x0C = t3;
     local.unk_0x10 = t4; local.unk_0x14 = t5; local.unk_0x18 = t6; local.unk_0x1C = t7;
     local.unk_0x20 = t8; local.unk_0x24 = t9; local.unk_0x28 = t10; local.unk_0x2C = t11;
