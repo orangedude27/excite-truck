@@ -162,9 +162,7 @@ extern "C" void fn_8026B260(void) {
 }
 
 #pragma cplusplus reset
-#pragma ppc_psq_save off
-#pragma paired off
-#pragma paired_single off
+#pragma processor 750
 void fn_8026B3D4(int arg0) {
     struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
@@ -198,15 +196,13 @@ void fn_8026B3D4(int arg0) {
         } else {
             float sp10[2];
             float sp8[2];
-            double xd = *(float *)(p + 0x60);
-            double zd = *(float *)(p + 0x68);
-            float x = xd;
-            float z = zd;
+            float x = *(float *)(p + 0x60);
+            float z = *(float *)(p + 0x68);
             float *tab = (float *)lbl_8049A028;
             int found = 0;
             int j = 0;
-            sp10[0] = *(float *)(p + 0x60);
-            sp10[1] = *(float *)(p + 0x68);
+            sp10[0] = x;
+            sp10[1] = z;
             while (j < lbl_8055F4C8 && found == 0) {
                 float dz = z - tab[1];
                 float r = tab[2];
