@@ -25629,6 +25629,7 @@ UINT8 *sdpu_extract_attr_seq(UINT8 *p, UINT16 param_len, tSDP_ATTR_SEQ *p_seq) {
 
 UINT8 *sdpu_get_len_from_type (UINT8 *p, UINT8 type, UINT32 *p_len)
 {
+    /* Return the data-element length for a type descriptor, advancing p when the length is encoded inline. */
     UINT8   u8;
     UINT16  u16;
     UINT32  u32;
