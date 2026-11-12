@@ -555,6 +555,14 @@ extern void OSShutdownSystem(void);
 
 #pragma push
 #pragma scheduling invalid_target
+/* Leave the game and hand the console back, in `mode`: KERNEL_MODE_RESTART
+ * hot-resets, KERNEL_MODE_STANDBY powers off and anything else returns to the
+ * Wii Menu.  Every subsystem registered a reset callback with fn_802E2E0C;
+ * each is first asked whether the reset may go ahead - the first one to answer
+ * 1 cancels the whole thing and is named in the log - and otherwise told, last
+ * registered first, that it is happening.  The DVD drive's queued requests are
+ * cancelled next, and a restart falls back to the Wii Menu when the disc is
+ * misbehaving rather than the reset button having been held. */
 void fn_802E2E38(int mode) {
     char *base = lbl_8034CCE0;
     ResetCallback *callback;
