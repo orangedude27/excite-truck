@@ -2765,13 +2765,9 @@ void fn_800393D4(void) {
 // The DVDCommandBlock, DVDResult and DVDAsyncState types, and the state-static
 // names below, are defined at the top of this file.
 
-// The cancel state machine's own statics (dvdcancel.c); the cover/motor statics
-// it shares with the state machine (Transferring, AlarmInfo, StateToChange,
-// StateAlarm, ExecutingBlock) are named above fn_80037E94.
-#define Canceling      lbl_8055D858  // a cancel is waiting for the drive
-#define ResetFlag      lbl_8055D86C  // the drive must be reset before the next command
-#define CancelCallback lbl_8055D8B8  // called once the cancel has finished
-#define DummyBlock     DummyCommandBlock_80376AA0 // "nothing is executing" block
+// The cancel state machine's own statics (dvdcancel.c); Canceling, ResetFlag,
+// CancelCallback and DummyBlock are named at the top of the file, together with
+// the cover/motor statics it shares with the state machine.
 
 extern s32 lbl_8055D858, lbl_8055D86C;
 extern void (*lbl_8055D8B8)(s32, void *);
