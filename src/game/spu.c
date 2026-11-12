@@ -309,6 +309,7 @@ int fn_802E540C(int arg0) {
 }
 
 extern void fn_802E6248(int, float);
+#pragma dont_inline fn_802E5438
 void fn_802E5438(void) {
     int i;
     i = 0;
