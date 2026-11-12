@@ -325,24 +325,23 @@ extern "C" void fn_80005B74(void) {
     extern void *fn_8001285C(s32);
     extern void fn_800105A0(const char *, s32);
     extern f32 lbl_80560120;
-    char buffer[0x20];
-    f32 value, current;
+    char message[0x20];
+    f32 targetTime, currentTime;
     void *object;
     u8 *base = lbl_802FB0C8;
     if (fn_80019B54() != 0) {
         object = *(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
-        value = ((LfoValue *)object)->getValue((char *)base + 0x24);
-        current = *(f32 *)((u8 *)lbl_8055D350 + 0x10);
-        if (current > value) {
-            if (current - value < lbl_80560120)
+        targetTime = ((LfoValue *)object)->getValue((char *)base + 0x24);
+        currentTime = *(f32 *)((u8 *)lbl_8055D350 + 0x10);
+        if (currentTime > targetTime) {
+            if (currentTime - targetTime < lbl_80560120)
                 fn_800105A0((char *)base + 0x38, 0);
         } else {
-            sprintf(buffer, (char *)base + 0x4C, value - current);
-            fn_800105A0(buffer, 0);
+            sprintf(message, (char *)base + 0x4C, targetTime - currentTime);
+            fn_800105A0(message, 0);
         }
     }
 }
-
 void fn_80005C20(void) {
     f32 temp_f0;
     f32 var_f3;
