@@ -5411,10 +5411,10 @@ void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused)
             lbl_803C0C14[(u32)i * 0xB + 6] = 1;
             config = lbl_80559010;
             for (j = 1; j <= config[1]; j++) {
-                if ((addr == config[(u32)j * 3 + 1] || config[(u32)j * 3 + 1] == 0xFF) &&
-                    addr_type == config[(u32)j * 3]) {
-                    if (config[(u32)j * 3 + 2] > lbl_803C0C14[(u32)i * 0xB + 7])
-                        lbl_803C0C14[(u32)i * 0xB + 7] = config[(u32)j * 3 + 2];
+                if ((addr == config[((u32)j << 2) - (u32)j + 1] || config[((u32)j << 2) - (u32)j + 1] == 0xFF) &&
+                    addr_type == config[((u32)j << 2) - (u32)j]) {
+                    if (config[((u32)j << 2) - (u32)j + 2] > lbl_803C0C14[(u32)i * 0xB + 7])
+                        lbl_803C0C14[(u32)i * 0xB + 7] = config[((u32)j << 2) - (u32)j + 2];
                     return;
                 }
             }
@@ -14049,11 +14049,11 @@ void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
     u8 i;
     for (i = 0; i < 8; i++, conn += 0x60) {
-        if (conn[0] == 0)
-            continue;
-        if (*(u16 *)(conn + 6) != cid)
-            continue;
-        goto found;
+        if (conn[0] == 0 || *(u16 *)(conn + 6) != cid)
+            goto next;
+        else
+            goto found;
+next: ;
     }
     conn = NULL;
 found:
@@ -16984,6 +16984,7 @@ BOOLEAN L2CA_ConfigReq(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
     return TRUE;
 }
 
+/* Send an upper-layer configuration response for a channel (L2CA_ConfigRsp). */
 BOOLEAN L2CA_ConfigRsp(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
     extern char lbl_80317FC4[];
     extern char lbl_80317FF0[];
@@ -17000,9 +17001,9 @@ BOOLEAN L2CA_ConfigRsp(UINT16 cid, tL2CAP_CFG_INFO *p_cfg) {
     }
 
     if (p_cfg->result == 0)
-        fn_80089E40(p_ccb, 0x18, p_cfg);
+        fn_80089E40(p_ccb, L2CEVT_L2CA_CONFIG_RSP, p_cfg);
     else
-        fn_80089E40(p_ccb, 0x19, p_cfg);
+        fn_80089E40(p_ccb, L2CEVT_L2CA_CONFIG_RSP_NEG, p_cfg);
     return TRUE;
 }
 
@@ -19730,6 +19731,8 @@ void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
     u8 *cfg = p_cfg;
     u16 size;
     void *buf;
+    u32 second;
+    u32 first;
 
     if (cfg[2] != 0) {
         u16 requested = *(u16 *)(cfg + 4);
@@ -19740,20 +19743,18 @@ void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
         }
     }
     if (cfg[6] != 0) {
-        u32 second;
-        u32 first;
         first = *(u32 *)(cfg + 8);
         second = *(u32 *)(cfg + 0xC);
         *(u32 *)(ccb + 0x58) = first;
         *(u32 *)(ccb + 0x5C) = second;
         first = *(u32 *)(cfg + 0x10);
         second = *(u32 *)(cfg + 0x14);
-        *(u32 *)(ccb + 0x60) = first;
         *(u32 *)(ccb + 0x64) = second;
+        *(u32 *)(ccb + 0x60) = first;
         first = *(u32 *)(cfg + 0x18);
         second = *(u32 *)(cfg + 0x1C);
-        *(u32 *)(ccb + 0x68) = first;
         *(u32 *)(ccb + 0x6C) = second;
+        *(u32 *)(ccb + 0x68) = first;
     }
     if (cfg[0x20] != 0 && *(u16 *)(cfg + 0x22) != 0) {
         *(u16 *)(ccb + 0x3C) = *(u16 *)(cfg + 0x22);
