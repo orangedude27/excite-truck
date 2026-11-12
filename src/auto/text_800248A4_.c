@@ -3,48 +3,65 @@
 
 extern unsigned char lbl_802FE850[];
 int fn_800248A4(unsigned char *a, unsigned char *b, int n) {
-    unsigned char *tbl;
-    int c1, c2;
-    tbl = *(unsigned char **)(*(unsigned int *)(lbl_802FE850 + 0x38) + 0x10);
+    unsigned int locale;
+    register int c asm("r7") = 0;
+    register int scratch asm("r0") = 0;
+    register int first asm("r8") = 0;
+    int raw = 0;
+    locale = *(volatile unsigned int *)(lbl_802FE850 + 0x38);
     while (n > 0) {
-        c1 = (signed char)*a++;
-        if (c1 >= 0 && c1 < 256)
-            c1 = (signed char)tbl[c1];
-        c2 = (signed char)*b++;
-        if (c2 >= 0 && c2 < 256)
-            c2 = (signed char)tbl[c2];
-        if (c1 < c2) return -1;
-        if (c1 > c2) return 1;
-        if (c1 == 0) return 0;
+        c = (signed char)*a++;
+        scratch = 0;
+        if (c < 0 || c >= 256) scratch = 1;
+        if (scratch == 0) goto l1;
+        goto a1;
+l1:
+        c = *(unsigned char *)(*(unsigned int *)(locale + 16) + c);
+a1:
+        raw = *b++;
+        first = (signed char)c;
+        c = (signed char)raw;
+        scratch = 0;
+        if (c < 0 || c >= 256) scratch = 1;
+        if (scratch == 0) goto l2;
+        goto a2;
+l2:
+        c = *(unsigned char *)(*(unsigned int *)(locale + 16) + c);
+a2:
+        scratch = (signed char)c;
+        if (first < scratch) return -1;
+        if (first > scratch) return 1;
+        if (first == 0) return 0;
         n--;
     }
     return 0;
 }
 
 extern int lbl_8055D680;
-int _ftell(arg0)
-void *arg0;
+int _ftell(file)
+void *file;
 {
-    unsigned int temp_r5;
-    int var_r6, temp_r4, var_r7, var_ctr;
-    unsigned char *var_r8;
-    unsigned char temp_r0_2;
-    var_r6 = 0;
-    if ((unsigned char)(((*(volatile unsigned int *)((char *)arg0 + 4) >> 0x16) & 7) + 0xFF) > 1 ||
-        *(unsigned char *)((char *)arg0 + 0xA) != 0) {
+    /* Return the current file position for a stream, accounting for buffer/undo state and newlines in text mode; sets errno on invalid stream. */
+    unsigned int ioState;
+    int wideCharAdjust, bufferUsed, position, charsToScan;
+    unsigned char *bufferPtr;
+    unsigned char ch;
+    wideCharAdjust = 0;
+    if ((unsigned char)(((*(volatile unsigned int *)((char *)file + 4) >> 0x16) & 7) + 0xFF) > 1 ||
+        *(unsigned char *)((char *)file + 0xA) != 0) {
         lbl_8055D680 = 0x28; return -1;
     }
-    temp_r5 = *(unsigned int *)((char *)arg0 + 8) >> 0x1D;
-    if (!temp_r5) return *(int *)((char *)arg0 + 0x18);
-    var_r8 = *(unsigned char **)((char *)arg0 + 0x1C);
-    temp_r4 = *(int *)((char *)arg0 + 0x24) - (int)var_r8;
-    var_r7 = *(int *)((char *)arg0 + 0x34) + temp_r4;
-    if (temp_r5 >= 3) { var_r6 = temp_r5 - 2; var_r7 -= var_r6; }
-    if (((*(volatile unsigned int *)((char *)arg0 + 4) >> 0x13) & 1) == 0) {
-        var_ctr = temp_r4 - var_r6;
-        for (; var_ctr != 0; var_ctr--) { temp_r0_2 = *var_r8++; if (temp_r0_2 == 10) var_r7++; }
+    ioState = *(unsigned int *)((char *)file + 8) >> 0x1D;
+    if (!ioState) return *(int *)((char *)file + 0x18);
+    bufferPtr = *(unsigned char **)((char *)file + 0x1C);
+    bufferUsed = *(int *)((char *)file + 0x24) - (int)bufferPtr;
+    position = *(int *)((char *)file + 0x34) + bufferUsed;
+    if (ioState >= 3) { wideCharAdjust = ioState - 2; position -= wideCharAdjust; }
+    if (((*(volatile unsigned int *)((char *)file + 4) >> 0x13) & 1) == 0) {
+        charsToScan = bufferUsed - wideCharAdjust;
+        for (; charsToScan != 0; charsToScan--) { ch = *bufferPtr++; if (ch == 10) position++; }
     }
-    return var_r7;
+    return position;
 }
 
 void fn_80024A0C(void) {
