@@ -48,35 +48,37 @@ extern int lbl_8055B138;
 #pragma dont_inline on
 extern void PSVECCrossProduct(float *, float *, float *);
 int fn_801F1C24(void *arg0) {
+    /* Build a camera-facing orthonormal basis (right, up, forward) from the camera direction. */
     extern float lbl_80562F48;
     extern float lbl_80562F4C;
     struct Vec { float x, y, z; };
-    struct Frame { struct Vec a, b, c; };
-    struct Frame *p = (struct Frame *)arg0;
+    struct Frame { struct Vec right, up, forward; };
+    struct Frame *basis = (struct Frame *)arg0;
     char *camera;
     float f1, f0, f2, cameraX;
+
     camera = (char *)fn_802C86DC();
     f2 = lbl_80562F40;
     f0 = lbl_80562F44;
-    *(volatile float *)&p->b.x = f2;
+    *(volatile float *)&basis->up.x = f2;
     f1 = lbl_80562F48;
-    *(volatile float *)&p->b.y = f0;
-    p->b.z = f2;
+    *(volatile float *)&basis->up.y = f0;
+    basis->up.z = f2;
     cameraX = *(float *)(camera + 0x18);
-    p->c.x = cameraX * f1;
-    p->c.y = *(float *)(camera + 0x1C) * f1;
-    p->c.z = *(float *)(camera + 0x20) * f1;
-    PSVECCrossProduct((float *)&p->b, (float *)&p->c, (float *)&p->a);
-    if (PSVECDotProduct((float *)&p->a, (float *)&p->a) > lbl_80562F4C) {
-        PSVECNormalize((float *)&p->a, (float *)&p->a);
+    basis->forward.x = cameraX * f1;
+    basis->forward.y = *(float *)(camera + 0x1C) * f1;
+    basis->forward.z = *(float *)(camera + 0x20) * f1;
+    PSVECCrossProduct((float *)&basis->up, (float *)&basis->forward, (float *)&basis->right);
+    if (PSVECDotProduct((float *)&basis->right, (float *)&basis->right) > lbl_80562F4C) {
+        PSVECNormalize((float *)&basis->right, (float *)&basis->right);
     } else {
         f2 = lbl_80562F40;
         f1 = lbl_80562F44;
-        p->a.y = f2;
-        p->a.x = f1;
-        p->a.z = f2;
+        basis->right.y = f2;
+        basis->right.x = f1;
+        basis->right.z = f2;
     }
-    PSVECCrossProduct((float *)&p->c, (float *)&p->a, (float *)&p->b);
+    PSVECCrossProduct((float *)&basis->forward, (float *)&basis->right, (float *)&basis->up);
 }
 
 int *fn_801F1CE8(int arg0) {
@@ -955,10 +957,11 @@ extern void fn_802C70AC(int, void *, int, int);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_loop_invariants off
 void fn_801F3288(void *arg0) {
     float f30, f31;
-    void *planes;
     void *plane;
+    void *planes;
     void *camera;
     int mask;
     unsigned int i;
@@ -972,8 +975,8 @@ void fn_801F3288(void *arg0) {
         *(float *)((char *)arg0 + 0x38) = *(float *)((char *)camera + 0x2C);
         if (*(int *)((char *)arg0 + 8) == 1) {
             mask = 1;
-            i = 0;
             f30 = lbl_80562F64 * (lbl_80562F70 * fn_801E8738(-1));
+            i = 0;
             plane = planes;
             do {
                 f31 = PSVECDotProduct((float *)((char *)camera + 0x18), (float *)plane);
@@ -1288,25 +1291,15 @@ extern void *fn_8002F37C(void *, void *, int, int, int);
 #pragma small_data off
 __declspec(section ".data") extern int lbl_8033AA90, lbl_8033AA18, lbl_8033AA24;
 #pragma push
-#pragma small_data off
-#pragma pop
-#pragma scheduling invalid_target
+#pragma processor 750
 void fn_801F3D34(void *arg0, int arg1, void *arg2) {
-    float temp_f31;
-    void *temp_r31;
-    int temp_r30;
-    void *temp_r3;
-    register float temp_f2;
-    register float temp_f1;
-    register float temp_f0;
-
+    float temp_f31; void *temp_r31; int temp_r30; void *temp_r3; float temp_f2; float temp_f1; float temp_f0;;
     if (*(void **)((char *)arg0 + 4) == 0) {
-        temp_r31 = fn_801284F8(0xC, &lbl_8055B158);
+        temp_r31 = fn_801284F8(12, &lbl_8055B158);
         if (temp_r31 != 0) {
             *(void **)temp_r31 = &lbl_8033AA90;
             temp_r3 = fn_8012850C(0x190, &lbl_8033AA18);
-            *(void **)((char *)temp_r31 + 4) =
-                fn_8002F37C(temp_r3, fn_801F3E60, 0, 0x18, 0x10);
+            *(void **)((char *)temp_r31 + 4) = fn_8002F37C(temp_r3, fn_801F3E60, 0, 24, 16);
             *(int *)((char *)temp_r31 + 8) = 0;
         }
         *(void **)((char *)arg0 + 4) = temp_r31;
@@ -1315,11 +1308,11 @@ void fn_801F3D34(void *arg0, int arg1, void *arg2) {
     temp_r31 = *(void **)((char *)arg0 + 4);
     temp_f31 = *(float *)((char *)arg2 + 0x30);
     temp_r30 = *(int *)((char *)arg2 + 0x2C);
-    if (*(int *)((char *)temp_r31 + 8) >= 0x10) {
+    if (*(int *)((char *)temp_r31 + 8) >= 16) {
         fn_802E317C((const void *)&lbl_8033AA24);
     }
     temp_r3 = *(void **)((char *)temp_r31 + 4);
-    temp_r3 = (char *)temp_r3 + *(int *)((char *)temp_r31 + 8) * 0x18;
+    temp_r3 = (char *)temp_r3 + *(int *)((char *)temp_r31 + 8) * 24;
     temp_f2 = *(float *)((char *)arg2 + 0x20);
     *(int *)temp_r3 = temp_r30;
     temp_f1 = *(float *)((char *)arg2 + 0x24);
@@ -1331,7 +1324,7 @@ void fn_801F3D34(void *arg0, int arg1, void *arg2) {
     *(float *)((char *)temp_r3 + 0x14) = temp_f31;
     (*(int *)((char *)temp_r31 + 8))++;
 }
-#pragma scheduling on
+#pragma pop
 void fn_801F3E60(void) {
 
 }
@@ -1429,11 +1422,11 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     struct Record { int unused; float x, y, z; int kind; float rate, end; int id; };
     struct Owner *owner = (struct Owner *)arg0;
     volatile struct Config *config = (volatile struct Config *)arg2;
-    struct Pool *pool;
     volatile struct Record *entry;
+    struct Pool *pool;
     volatile float v[6];
     int count, kind;
-    float hi, start, end, scaled, baseY, baseX, factor, lo;
+    float hi, start, end, scaled, baseY, baseX, lo;
     if (owner->pool == 0) {
         void *allocated = fn_801284F8(0x548, (void *)lbl_8033AB0C);
         if (allocated != 0) {
@@ -1451,12 +1444,11 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     fn_802C77F0(config->kind, (float *)v);
     hi = v[1];
     lo = v[0];
-    factor = lbl_80562F64;
     hi = hi - lo;
+    scaled = hi * lbl_80562F64;
     baseX = config->x;
     start = config->start;
     end = config->end;
-    scaled = hi * factor;
     start = start - end;
     hi = lbl_80562F44;
     baseY = config->y;
@@ -1469,14 +1461,14 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     start = v[3];
     baseX = v[2];
     start = start - baseX;
-    start = start * factor;
+    start = start * lbl_80562F64;
     start = baseX + start;
     start = baseY + start;
     entry->y = start;
     start = v[5];
     baseY = v[4];
     start = start - baseY;
-    start = start * factor;
+    start = start * lbl_80562F64;
     start = baseY + start;
     start = scaled + start;
     entry->z = start;
@@ -1575,17 +1567,14 @@ extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4
         virtual void v16() = 0;
         virtual float get(int) = 0;
     };
-    void *path;
-    void *obj;
+    void *path = (char *)arg2 + 0x2C;
+    void *obj = *(void **)((char *)arg0 + 4);
     void *newobj;
     void *entry;
     void *item;
     float f;
     int count;
     int value;
-
-    obj = *(void **)((char *)arg0 + 4);
-    path = (char *)arg2 + 0x2C;
     if (obj == 0) {
         newobj = fn_801284F8(0x108, (void *)&lbl_8033AAA8);
         if (newobj != 0) {
@@ -1740,24 +1729,23 @@ void fn_801F49F4(void) {
 }
 
 void fn_801F49F8(void *arg0, int arg1) {
-    void *selected[0x2C];
-    register char *next;
+    void *selected[0x30];
+    char *next;
     char *entry;
-    register unsigned int offset;
+    unsigned int offset;
     int count;
     int i;
     float minimum;
     float maximum;
     float value;
-
-    next = (char *)arg0 + 4;
     entry = (char *)arg0;
-    offset = 0;
+    next = (char *)arg0 + 4;
     count = 0;
+    offset = 0;
     i = 0;
     while (i < *(int *)((char *)arg0 + 0x544)) {
         if (fn_802CDB20(arg1, *(int *)(entry + 0x1C)) != 0) {
-            selected[offset >> 2] = next;
+            selected[offset / 4] = next;
             count++;
             offset += 4;
         }
