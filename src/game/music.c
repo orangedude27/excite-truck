@@ -252,13 +252,14 @@ extern const char lbl_8033C2DC[];
 extern const char lbl_8033C2F0[];
 extern const char lbl_8055B588;
 void fn_8020A47C(void) {
+    /* Initialize UI music playback: reset state, preload two song tracks, register the music callback, and start the first track. */
     struct {
-        char name[8];
+        char songNameBuf[8];
         char pad[0x38];
-        char buf[0x38];
+        char songPathBuf[0x38];
     } local;
-    s32 *value;
-    s8 *flag;
+    s32 *trackId;
+    s8 *loadedFlag;
     s32 i;
     s32 zero;
 
@@ -267,21 +268,21 @@ void fn_8020A47C(void) {
     lbl_8055EDE0 = (void *)zero;
     i = zero;
     lbl_8055EDD0 = 1;
-    value = &lbl_8055B560;
-    flag = &lbl_8055EDD4;
+    trackId = &lbl_8055B560;
+    loadedFlag = &lbl_8055EDD4;
     lbl_8055EDE4 = zero;
     lbl_8055EDE8 = zero;
     do {
-        sprintf(local.buf, &lbl_8055B568, *value);
-        *flag = zero;
-        fn_802E30C8(lbl_8033C2F0, local.buf);
-        fn_8012DDA8(local.buf);
+        sprintf(local.songPathBuf, &lbl_8055B568, *trackId);
+        *loadedFlag = zero;
+        fn_802E30C8(lbl_8033C2F0, local.songPathBuf);
+        fn_8012DDA8(local.songPathBuf);
         i += 1;
-        value++;
-        flag++;
+        trackId++;
+        loadedFlag++;
     } while (i < 2);
     fn_80127C90(fn_8020A100, &lbl_8055B588);
-    sprintf(local.name, &lbl_8055B568, lbl_8055B560);
-    fn_8012E81C(local.name);
+    sprintf(local.songNameBuf, &lbl_8055B568, lbl_8055B560);
+    fn_8012E81C(local.songNameBuf);
 }
 
