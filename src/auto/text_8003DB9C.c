@@ -444,11 +444,11 @@ extern void OSReport(void *, ...);
 extern char lbl_803036E0[];
 extern char lbl_803036F8[];
 int CPGPLinkCheck(void) {
-    int error = 0;
-    int diff1;
-    int diff2;
     unsigned int first;
     unsigned int second;
+    int diff1;
+    int diff2;
+    unsigned int error = 0;
 
     if (lbl_8055D948 == 0 || (unsigned char)lbl_8055D949 == 0) {
         return 0;
@@ -463,7 +463,7 @@ int CPGPLinkCheck(void) {
     if (first == second) {
         error++;
     }
-    if ((unsigned int)error == 2) {
+    if (error == 2) {
         return 1;
     }
     diff1 = (int)*(unsigned int *)(lbl_8037C0E4 + 4) -
@@ -4590,12 +4590,10 @@ void GXSetTevOrder(int stage, int texCoord, int texMap, int color) {
 }
 
 void GXSetNumTevStages(u8 count) {
-    struct {
-        unsigned int pad : 18;
-        unsigned int stages : 4;
-        unsigned int rest : 10;
-    } *fields = (void *)&__GXData[0x254 / 4];
-    fields->stages = count - 1;
+    unsigned int dec = count - 1;
+    unsigned int reg = __GXData[0x254 / 4];
+    reg = __rlwimi(reg, dec, 10, 18, 21);
+    __GXData[0x254 / 4] = reg;
     __GXData[0x5FC / 4] |= 4;
 }
 
