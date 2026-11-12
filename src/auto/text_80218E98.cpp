@@ -2096,11 +2096,10 @@ extern "C" void fn_8021BD48(void *arg0, s32 arg1) {
 #pragma small_data off
 extern "C" __declspec(align(32)) char lbl_8033EF68[];
 #pragma scheduling invalid_target
-extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2d, s32 arg3, s32 arg4, s32 arg5, f32 arg6, f32 arg7) {
-    register void *vtable = (char *)&lbl_8033EF68;
-    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2d, 0, arg5, 0, 0);
+extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 arg6, f32 arg7) {
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0);
     *(s32 *)((u8 *)arg0 + 0x25C) = arg3;
-    *(void **)arg0 = vtable;
+    *(void **)arg0 = lbl_8033EF68;
     *(f32 *)((u8 *)arg0 + 0x254) = arg6;
     *(f32 *)((u8 *)arg0 + 0x258) = arg7;
     *(s32 *)((u8 *)arg0 + 0x260) = arg4;
