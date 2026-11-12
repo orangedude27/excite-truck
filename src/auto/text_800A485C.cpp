@@ -47,6 +47,12 @@ struct Fn800D3C44Str {
     char msg1b4[0x2c];
     char msg1e0[0x20];
 };
+struct Fn800D3B40Str {
+    char file[0x134];
+    char msg134[0x30];
+    char msg164[0x28];
+    char msg18C[0x20];
+};
 #pragma push
 #pragma dont_inline on
 #pragma scheduling on
