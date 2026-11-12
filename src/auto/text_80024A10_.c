@@ -5,6 +5,7 @@
 extern int lbl_8055D680;
 extern int __flush_buffer(FILE *file, size_t *count);
 extern long _ftell(FILE *file);
+/* Reposition a stream, updating its buffer state and position, or set errno on failure. */
 int _fseek(FILE *file, fpos_t offset, int mode) {
     if (file->file_mode.file_kind != __disk_file || file->file_state.error) {
         lbl_8055D680 = 0x28;
