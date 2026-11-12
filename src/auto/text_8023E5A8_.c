@@ -776,6 +776,10 @@ void fn_8023F874(void) {}
 
 #pragma cplusplus on
 extern "C" int fn_8023F878(void) {
+    /* Advance a timed action on lbl_8055F1B0 (v2 checks completion, v3 steps).
+     * Calls optional callback lbl_8055F1C0, samples time via fn_802E2C20, starts
+     * after lbl_8055F1B8 (setting lbl_8055F1BC when v2() reports done), and
+     * returns 1 once the end time lbl_8055F1B4 passes. */
     class Obj {
     public:
         virtual void v0();
