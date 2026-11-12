@@ -1294,35 +1294,35 @@ typedef struct RegionRecord {
 #pragma push
 #pragma small_data off
 #pragma dont_inline on
-int fn_802734F0(int arg0) {
+int fn_802734F0(int eventType) {
     extern unsigned char lbl_8055F480;
     extern unsigned char lbl_80346BA0[];
-    int status = fn_80273494(arg0);
+    int group = fn_80273494(eventType);
     int flags = 0;
-    unsigned char *entry;
-    unsigned char *state;
+    RegionGroup *entry;
+    RegionRecord *state;
 
     if (lbl_8055F480 != 0) {
         flags |= 8;
-    } else if (status != 6 && status != 0) {
-        entry = lbl_8049A258 + status * 0x14;
-        state = lbl_80346BA0 + (*(int *)(entry + 0xC) + *(int *)(entry + 4)) * 0x28;
-        if (state[0x24] == 0)
+    } else if (group != 6 && group != 0) {
+        entry = (RegionGroup *)(lbl_8049A258 + group * 0x14);
+        state = (RegionRecord *)(lbl_80346BA0 + (entry->cursor + entry->start) * 0x28);
+        if (state->flag24 == 0)
             flags |= 1;
-        else if (*(int *)state == 2)
+        else if (state->kind == 2)
             flags |= 2;
-        else if (*(int *)state == 0)
+        else if (state->kind == 0)
             flags |= 8;
-        if (state[0x25] == 0)
+        if (state->flag25 == 0)
             flags |= 4;
     } else {
-        if (arg0 == 1) goto done;
-        if (arg0 == 1) goto fallback;
-        if (arg0 >= 1) goto check3;
-        if (arg0 < 0) goto fallback;
+        if (eventType == 1) goto done;
+        if (eventType == 1) goto fallback;
+        if (eventType >= 1) goto check3;
+        if (eventType < 0) goto fallback;
         goto flag8;
 check3:
-        if (arg0 >= 3) goto fallback;
+        if (eventType >= 3) goto fallback;
         flags |= 6;
         goto done;
 flag8:
