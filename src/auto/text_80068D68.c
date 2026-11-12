@@ -6690,9 +6690,9 @@ void bta_hh_write_dev_act(void *p_dev, void *p_msg) {
         goto state_special;
     if (state < 1)
         goto state_log;
-    if (state < 4)
-        goto state_log;
-    goto state_store;
+    if (state >= 4)
+        goto state_store;
+    goto state_log2;
 
 state_store:
     *(u16 *)(dev + 0x10) = saved_event;
@@ -6701,6 +6701,7 @@ state_special:
     if (msg[9] == 5)
         dev[0x17] = 1;
     goto state_done;
+state_log2:
 state_log:
     if (lbl_8055DC80 >= 5)
         ((void (*)(u32, void *))fn_80070954)(0x504, lbl_8031555C);
@@ -15023,12 +15024,12 @@ BOOLEAN btsnd_hcic_reset(UINT8 local_controller_id) {
 }
 
 BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_type, UINT8 *p_cond, UINT8 cond_len) {
-    BT_HDR *p = (BT_HDR *)p_buf;
     UINT8 *raw = (UINT8 *)p_buf;
+    BT_HDR *p = (BT_HDR *)p_buf;
     UINT8 *src = p_cond;
     UINT8 *dst;
-    s32 len = cond_len;
-    register int ijk;
+    int len = cond_len;
+    int ijk;
     p->offset = 0;
     raw[8] = 5;
     raw[9] = 0xC;
@@ -15061,7 +15062,7 @@ BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_typ
         }
         if (len != 0) {
             for (ijk = 0; ijk < len; ijk++) {
-                dst[ijk] = src[ijk];
+                *dst++ = src[ijk];
             }
         }
     } else {
@@ -25534,12 +25535,8 @@ void fn_80099F58(void *arg0) {
 
 #pragma unroll off
 UINT8 *sdpu_build_attrib_seq(UINT8 *out, UINT16 *attribs, UINT16 count) {
-    UINT32 i;
+    UINT16 xx;
     UINT16 length;
-    UINT16 group_len;
-    UINT32 remaining;
-    UINT32 groups;
-    UINT32 loop;
 
     if (attribs != NULL)
         length = count * 3;
@@ -25565,54 +25562,11 @@ UINT8 *sdpu_build_attrib_seq(UINT8 *out, UINT16 *attribs, UINT16 count) {
         out[4] = 0xFF;
         out += 5;
     } else {
-        i = 0;
-        if (count != 0) {
-            remaining = (UINT32)count + 0x10000 - 8;
-            if (count > 8) {
-                group_len = (UINT16)remaining;
-                groups = ((UINT32)group_len + 7) >> 3;
-                {
-                    for (loop = 0; loop < groups; loop++) {
-                        out[0] = 9;
-                        out[1] = attribs[0] >> 8;
-                        out[2] = attribs[0];
-                        out[3] = 9;
-                        out[4] = attribs[1] >> 8;
-                        out[5] = attribs[1];
-                        out[6] = 9;
-                        out[7] = attribs[2] >> 8;
-                        out[8] = attribs[2];
-                        out[9] = 9;
-                        out[10] = attribs[3] >> 8;
-                        out[11] = attribs[3];
-                        out[12] = 9;
-                        out[13] = attribs[4] >> 8;
-                        out[14] = attribs[4];
-                        out[15] = 9;
-                        out[16] = attribs[5] >> 8;
-                        out[17] = attribs[5];
-                        out[18] = 9;
-                        out[19] = attribs[6] >> 8;
-                        out[20] = attribs[6];
-                        out[21] = 9;
-                        out[22] = attribs[7] >> 8;
-                        out[23] = attribs[7];
-                        attribs += 8;
-                        out += 24;
-                        i += 8;
-                    }
-                }
-            }
-            if (i < count) {
-                do {
-                    out[0] = 9;
-                    out[1] = attribs[0] >> 8;
-                    out[2] = attribs[0];
-                    attribs++;
-                    out += 3;
-                    i++;
-                } while (i < count);
-            }
+        for (xx = 0; xx < count; xx++) {
+            *out++ = 9;
+            *out++ = (UINT8)(*attribs >> 8);
+            *out++ = (UINT8)*attribs;
+            attribs++;
         }
     }
     return out;
