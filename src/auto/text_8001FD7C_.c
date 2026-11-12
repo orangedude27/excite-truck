@@ -654,11 +654,11 @@ int fn_80021258(void) {
             lbl_8055D673 = 1;
         }
         currentID = *(unsigned int *)((char *)&lbl_8035BB08 + 8);
-        if (currentID != lbl_8055E044) fn_80131318();
+        if (currentID != lbl_8055E044) fn_80131318(&lbl_8035BB08, currentID);
         fn_80232BA4(*(int *)((char *)&lbl_8035BB08 + 4), lbl_8055D64C, -1, 20,
                     lbl_80560500, lbl_80560558, lbl_805604B0, lbl_805604B4, lbl_805604B8);
         currentID = *(unsigned int *)((char *)&lbl_8035BAFC + 8);
-        if (currentID != lbl_8055E044) fn_80131318();
+        if (currentID != lbl_8055E044) fn_80131318(&lbl_8035BAFC, currentID);
         fn_80232BA4(*(int *)((char *)&lbl_8035BAFC + 4), lbl_8055D64C, -1, 20,
                     lbl_8056055C, lbl_80560558, lbl_805604B0, lbl_805604B4, lbl_805604B8);
     }
