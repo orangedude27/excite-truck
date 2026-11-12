@@ -212,8 +212,8 @@ void fn_802DF46C(void) {
 void *fn_802D3130(void);
 void *fn_802D3100(void);
 void fn_802DF4A8(void) {
-    s32 spC;
-    s32 sp8;
+    s32 spC = 0;
+    s32 sp8 = 0;
     GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     GXSetTexCoordGen2(1, 0, 1, 0x2A, 1, 0x4C);
     GXSetNumTexGens(2);
