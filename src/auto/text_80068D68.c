@@ -6975,37 +6975,38 @@ char *bta_hh_evt_code(u32 event) {
     }
 }
 
-u8 bta_hh_find_cb(BD_ADDR bda) {
+u8 bta_hh_find_cb(u8 *bd_addr) {
     extern u8 lbl_803159E0[];
     extern u8 lbl_80565228;
-    u8 *messages = lbl_803159E0;
-    UINT8 xx;
+    u8 *messages;
+    u8 i;
+    messages = lbl_803159E0;
 
-    for (xx = 0; xx < 0x10; xx++) {
-        if (bdcmp(bda, lbl_803C0D48 + ((xx & 0xFF) << 5) + 0x18) == 0 &&
-            bdcmp(bda, &lbl_80565228) != 0) {
+    for (i = 0; i < 0x10; i++) {
+        if (bdcmp(bd_addr, lbl_803C0D48 + ((i & 0xFF) << 5) + 0x18) == 0 &&
+            bdcmp(bd_addr, &lbl_80565228) != 0) {
             if (lbl_8055DC80 >= 5)
-                fn_8007096C(0x504, messages, xx,
-                            lbl_803C0D48[((xx & 0xFF) << 5) + 0x26]);
-            return xx;
-        } else if (lbl_8055DC80 >= 5) {
+                fn_8007096C(0x504, messages + 0, i,
+                            lbl_803C0D48[((i & 0xFF) << 5) + 0x26]);
+            return i;
+        }
+        if (5 <= lbl_8055DC80)
             ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)
                 (0x504, messages + 0x24,
-                 lbl_803C0D48[((xx & 0xFF) << 5) + 0x28],
-                 xx, lbl_803C0D48[((xx & 0xFF) << 5) + 0x26],
-                 lbl_803C0D48[((xx & 0xFF) << 5) + 0x2C]);
-        }
+                 lbl_803C0D48[((i & 0xFF) << 5) + 0x28],
+                 i, lbl_803C0D48[((i & 0xFF) << 5) + 0x26],
+                 lbl_803C0D48[((i & 0xFF) << 5) + 0x2C]);
     }
 
-    for (xx = 0; xx < 0x10; xx++) {
-        if (lbl_803C0D48[((u32)xx << 5) + 0x28] == 0) {
-            fn_80070FA4(lbl_803C0D48 + ((u32)xx << 5) + 0x18, bda);
+    for (i = 0; i < 0x10; i++) {
+        if (lbl_803C0D48[(i << 5) + 0x28] == 0) {
+            fn_80070FA4(lbl_803C0D48 + ((u32)i << 5) + 0x18, bd_addr);
             break;
         }
     }
     if (lbl_8055DC80 >= 5)
-        fn_8007096C(0x504, messages + 0x58, xx, 0x10);
-    return xx;
+        fn_8007096C(0x504, messages + 0x58, i, 0x10);
+    return i;
 }
 
 void bta_hh_clean_up_kdev(void *arg0) {
@@ -9312,20 +9313,21 @@ tBTM_STATUS BTM_CancelRemoteDeviceName(void) {
 #pragma pop
 
 tBTM_INQ_INFO *BTM_InqDbRead(BD_ADDR p_bda) {
+    /* Look up a device by BD_ADDR in the BTM inquiry database and return its inquiry info, or NULL if not found. */
     extern char lbl_80316484[];
-    u32 i;
-    u8 *cb = lbl_803C0F78;
-    u8 *entry = cb + 0x16E4;
+    u32 index;
+    u8 *btmCb = lbl_803C0F78;
+    u8 *inqEntry = btmCb + 0x16E4;
 
-    if (cb[0x27C0] >= 3) {
+    if (btmCb[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80316484,
                     p_bda[0], p_bda[1], p_bda[2],
                     p_bda[3], p_bda[4], p_bda[5]);
     }
 
-    for (i = 0; i < 0xC; i++, entry += 0x1C) {
-        if (entry[0x1A] != 0 && memcmp(entry + 0xA, p_bda, 6) == 0)
-            return (tBTM_INQ_INFO *)(entry + 8);
+    for (index = 0; index < 0xC; index++, inqEntry += 0x1C) {
+        if (inqEntry[0x1A] != 0 && memcmp(inqEntry + 0xA, p_bda, 6) == 0)
+            return (tBTM_INQ_INFO *)(inqEntry + 8);
     }
     return NULL;
 }
@@ -13951,35 +13953,25 @@ void gap_connect_cfm(u32 cid, s32 result) {
 
 void gap_config_ind(u16 cid, void *p_cfg) {
     u8 *conn = lbl_803C3740 + 0xAC;
-    register u32 outer = 2;
-
+    u32 outer = 2;
+    u32 idx = 0;
     do {
-        if (conn[0] == 0) goto next1;
-        if (*(u16 *)(conn + 6) != cid) goto next1;
-        goto found;
-next1:
-        conn += 0x60;
-
-        if (conn[0] == 0) goto next2;
-        if (*(u16 *)(conn + 6) != cid) goto next2;
-        goto found;
-next2:
-        conn += 0x60;
-
-        if (conn[0] == 0) goto next3;
-        if (*(u16 *)(conn + 6) != cid) goto next3;
-        goto found;
-next3:
-        conn += 0x60;
-
-        if (conn[0] == 0) goto next4;
-        if (*(u16 *)(conn + 6) != cid) goto next4;
-        goto found;
-next4:
-        conn += 0x60;
+        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
+            goto found;
+        conn += 0x60; idx++;
+        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
+            goto found;
+        conn += 0x60; idx++;
+        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
+            goto found;
+        conn += 0x60; idx++;
+        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
+            goto found;
+        conn += 0x60; idx++;
     } while (--outer != 0);
     conn = NULL;
 found:
+    (void)idx;
     if (conn == NULL)
         return;
     if (((u8 *)p_cfg)[2] != 0) {
