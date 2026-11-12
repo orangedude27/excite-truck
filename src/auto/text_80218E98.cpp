@@ -689,34 +689,35 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     *(s32 *)((u8 *)arg0 + 0x2C) = 0;
 }
 
-extern "C" void fn_80219044(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    u8 flag;
-    f32 threshold;
-    f32 factor;
-    f32 current;
-    f32 product;
-    f32 rate;
-    f32 value;
-    f32 threshold2;
-    f32 factor2;
-    f32 current2;
-    f32 product2;
-    f32 rate2;
-    f32 value2;
+/* Updates fade timers at +0x1C/+0x20 based on state flag +0x1A, decaying by dt * rate until threshold and setting dirty flag +0x234 on transitions. */
+extern "C" void fn_80219044(void *obj) {
+    u8 *p = (u8 *)obj;
+    u8 state;
+    f32 expireThreshold;
+    f32 decayRate;
+    f32 timer;
+    f32 decrement;
+    f32 dt;
+    f32 remaining;
+    f32 expireThreshold2;
+    f32 decayRate2;
+    f32 timer2;
+    f32 decrement2;
+    f32 dt2;
+    f32 remaining2;
     if (*(u8 *)(p + 0x1A) != 0) {
         if (*(f32 *)(p + 0x1C) >= lbl_805634A8) {
-            rate = fn_80214D48();
-            factor = *(f32 *)(p + 0x24);
-            current = *(f32 *)(p + 0x1C);
-            product = factor * rate;
-            threshold = lbl_805634AC;
-            value = current - product;
-            *(f32 *)(p + 0x1C) = value;
-            if (value <= threshold) {
-                flag = *(u8 *)(p + 0x1A);
-                if ((unsigned)flag != 0) {
-                    if (flag != 0) {
+            dt = fn_80214D48();
+            decayRate = *(f32 *)(p + 0x24);
+            timer = *(f32 *)(p + 0x1C);
+            decrement = decayRate * dt;
+            expireThreshold = lbl_805634AC;
+            remaining = timer - decrement;
+            *(f32 *)(p + 0x1C) = remaining;
+            if (remaining <= expireThreshold) {
+                state = *(u8 *)(p + 0x1A);
+                if ((unsigned)state != 0) {
+                    if (state != 0) {
                         *(u8 *)(p + 0x234) = 1;
                     }
                     *(u8 *)(p + 0x1A) = 0;
@@ -729,16 +730,16 @@ extern "C" void fn_80219044(void *arg0) {
     }
     if (*(u8 *)(p + 0x1A) == 0) {
         if (*(f32 *)(p + 0x20) >= lbl_805634A8) {
-            rate2 = fn_80214D48();
-            factor2 = *(f32 *)(p + 0x28);
-            current2 = *(f32 *)(p + 0x20);
-            product2 = factor2 * rate2;
-            threshold2 = lbl_805634AC;
-            value2 = current2 - product2;
-            *(f32 *)(p + 0x20) = value2;
-            if (value2 <= threshold2) {
-                flag = *(u8 *)(p + 0x1A);
-                if (!flag) {
+            dt2 = fn_80214D48();
+            decayRate2 = *(f32 *)(p + 0x28);
+            timer2 = *(f32 *)(p + 0x20);
+            decrement2 = decayRate2 * dt2;
+            expireThreshold2 = lbl_805634AC;
+            remaining2 = timer2 - decrement2;
+            *(f32 *)(p + 0x20) = remaining2;
+            if (remaining2 <= expireThreshold2) {
+                state = *(u8 *)(p + 0x1A);
+                if (!state) {
                     *(u8 *)(p + 0x1A) = 1;
                     *(u8 *)(p + 0x234) = 1;
                 }
