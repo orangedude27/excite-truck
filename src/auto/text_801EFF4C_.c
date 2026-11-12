@@ -704,7 +704,7 @@ int fn_801F0F18(int arg0, int arg1) {
 extern float lbl_80562F30;
 extern float lbl_80562F34;
 float fn_801F159C(void **);
-void fn_80015A20(void *, float *);
+void fn_80015A20();
 void fn_80015B20(void *, void *, void *);
 #pragma push
 #pragma processor 750
