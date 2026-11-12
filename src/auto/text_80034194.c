@@ -2165,6 +2165,9 @@ extern s32 fn_8003BCDC(s32);
 extern void fn_8003B69C(u32, void*);
 extern void fn_80037B54(u32);
 void fn_80037A8C(void) {
+    /* Request a DVD cover-interrupt clear, log error command 0x25 into the next
+     * __ErrorInfo slot, then configure DVD audio buffering and continue via
+     * fn_80037B54. */
     s32 enabled;
     u8 *base;
     fn_8003BCDC(0);
