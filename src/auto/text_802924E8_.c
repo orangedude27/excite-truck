@@ -149,8 +149,8 @@ extern "C" void fn_80292698(void) {
     register unsigned char *p;
     register float one;
     register float threshold;
-    float angle;
-    float zero;
+    register float angle;
+    register float zero;
 
     angle = fn_801E7E18();
     one = lbl_805644D4;
@@ -161,7 +161,7 @@ extern "C" void fn_80292698(void) {
     for (; i < 6; ++i, p += 0x34) {
         float axis[3];
         float magnitude;
-        float x, y, z, s, c, t;
+        float x, y, z, s, c, t, tx, ty, xx, yy, zz;
         float scale = angle * *(float *)(p + 0xC);
         axis[0] = *(float *)(p + 0x0) * scale;
         axis[1] = *(float *)(p + 0x4) * scale;
@@ -174,16 +174,21 @@ extern "C" void fn_80292698(void) {
             z = inverse * axis[2];
             s = (float)sin(magnitude);
             c = (float)cos(magnitude);
+            xx = x * x;
             t = one - c;
-            *(float *)(p + 0x10) = c + t * (x * x);
-            *(float *)(p + 0x14) = (y * (t * x)) + (s * z);
-            *(float *)(p + 0x18) = (z * (t * x)) - (s * y);
-            *(float *)(p + 0x1C) = (y * (t * x)) - (s * z);
-            *(float *)(p + 0x20) = c + t * (y * y);
-            *(float *)(p + 0x24) = (z * (t * y)) + (s * x);
-            *(float *)(p + 0x28) = (z * (t * x)) + (s * y);
-            *(float *)(p + 0x2C) = (z * (t * y)) - (s * x);
-            *(float *)(p + 0x30) = c + t * (z * z);
+            tx = t * x;
+            ty = t * y;
+            yy = y * y;
+            *(float *)(p + 0x10) = c + t * xx;
+            *(float *)(p + 0x14) = (y * tx) + (s * z);
+            *(float *)(p + 0x18) = (z * tx) - (s * y);
+            *(float *)(p + 0x1C) = (y * tx) - (s * z);
+            *(float *)(p + 0x20) = c + t * yy;
+            *(float *)(p + 0x24) = (z * ty) + (s * x);
+            *(float *)(p + 0x28) = (z * tx) + (s * y);
+            *(float *)(p + 0x2C) = (z * ty) - (s * x);
+            zz = z * z;
+            *(float *)(p + 0x30) = c + t * zz;
         } else {
             *(float *)(p + 0x10) = one;
             *(float *)(p + 0x14) = zero;
@@ -699,7 +704,6 @@ cont:
 int fn_80293374(void *arg0, void *arg1) {
     char name[0x20];
     int count;
-
     *(s32 *)((u8 *)arg0 + 0x28) = 0;
     goto check;
 loop:
@@ -715,9 +719,12 @@ loop:
 check:
     if (*(s32 *)((u8 *)arg0 + 0x28) < 8) goto loop;
 padding:
-    count = *(s32 *)((u8 *)arg0 + 0x28);
-    for (; count < 8; count++)
-        *(s32 *)((u8 *)arg0 + count * 4 + 8) = -1;
+    {
+        s32 *arr = (s32 *)arg0;
+        count = *(s32 *)((u8 *)arg0 + 0x28);
+        for (; count < 8; count++)
+            arr[count + 2] = -1;
+    }
 }
 #pragma pop
 
@@ -1105,21 +1112,29 @@ extern int fn_802C6FC0(void *, int, int);
 extern char lbl_80349250[];
 void fn_80293CD0(void *arg0, int arg1, int arg2, int arg3) {
     char name[0x20];
-    int i;
+    int count;
     *(s32 *)((u8 *)arg0 + 0x28) = 0;
-    for (i = 0; i < 8; i++) {
-        fn_801345D8(name, 0x20, lbl_80349250, arg1, i + 1);
-        if (fn_8012C33C(name) != 0) {
-            if (arg3 != 0 && *(s8 *)arg3 != 0) fn_80292CD8(name, arg2, (u8 *)arg3);
-            i = *(s32 *)((u8 *)arg0 + 0x28);
-            *(s32 *)((u8 *)arg0 + i * 4 + 8) = fn_802C6FC0(name, arg2, 0);
-            i = *(s32 *)((u8 *)arg0 + 0x28);
-            i++;
-            *(s32 *)((u8 *)arg0 + 0x28) = i;
-        }
+    goto check;
+loop:
+    ((void (*)(void *, int, const char *, ...))fn_801345D8)(name, 0x20, lbl_80349250, arg1, *(s32 *)((u8 *)arg0 + 0x28) + 1);
+    if (fn_8012C33C(name) == 0)
+        goto padding;
+    if (arg3 != 0 && *(s8 *)arg3 != 0)
+        fn_80292CD8(name, arg2, (u8 *)arg3);
+    *(s32 *)((u8 *)arg0 + *(s32 *)((u8 *)arg0 + 0x28) * 4 + 8) = fn_802C6FC0(name, arg2, 0);
+    count = *(s32 *)((u8 *)arg0 + 0x28);
+    count++;
+    *(s32 *)((u8 *)arg0 + 0x28) = count;
+check:
+    if (*(s32 *)((u8 *)arg0 + 0x28) < 8)
+        goto loop;
+padding:
+    {
+        s32 *arr = (s32 *)arg0;
+        count = *(s32 *)((u8 *)arg0 + 0x28);
+        for (; count < 8; count++)
+            arr[count + 2] = -1;
     }
-    i = *(s32 *)((u8 *)arg0 + 0x28);
-    for (; i < 8; i++) *(s32 *)((u8 *)arg0 + i * 4 + 8) = -1;
 }
 
 #pragma push
@@ -1298,8 +1313,9 @@ extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D
 extern unsigned char lbl_804B4030[];
 #pragma scheduling invalid_target
 void fn_80294780(void *arg0) {
+    struct W3 { unsigned int a, b, c; };
     struct Particle {
-        unsigned int copy[9];
+        struct W3 copy[3];
         float x, y, z;
         float vx, vy, vz;
         float age;
@@ -1309,60 +1325,44 @@ void fn_80294780(void *arg0) {
     };
     struct ParticleTemplate {
         unsigned int pad[4];
-        unsigned int copy[9];
+        struct W3 copy[3];
     };
+    struct { float x, y, z; } v;
     register struct ParticleTemplate *src;
-    register struct Particle *out;
     register struct Particle *cur;
+    register struct Particle *out;
     register int i;
     float dt = fn_801E7E24(arg0);
-    float scale = lbl_805644D4 - lbl_80564510 * dt;
-    float minAge = lbl_805644D8;
-    float maxAge = lbl_805644FC;
     float gravity = lbl_80564500;
-    float x, y, z, vy;
+    float maxAge = lbl_805644FC;
+    float minAge = lbl_805644D8;
+    float scale = lbl_805644D4 - lbl_80564510 * dt;
     cur = (struct Particle *)((unsigned char *)arg0 + 0x2C);
     out = cur;
     for (i = 0; i < *(int *)((unsigned char *)arg0 + 0x222C); ++i, ++cur) {
-        unsigned int a, b;
         if (cur->age < minAge) continue;
         if (cur->age >= maxAge) continue;
-        x = cur->vx * scale;
-        y = cur->vy * scale;
-        z = cur->vz * scale;
-        vy = y - (gravity * dt) * *(float *)((unsigned char *)arg0 + 4);
-        out->x = cur->x + x * dt;
-        out->y = cur->y + vy * dt;
-        out->z = cur->z + z * dt;
+        v.x = cur->vx * scale;
+        v.y = cur->vy * scale;
+        v.z = cur->vz * scale;
+        v.y -= (gravity * dt) * *(float *)((unsigned char *)arg0 + 4);
+        out->x = cur->x + v.x * dt;
+        out->y = cur->y + v.y * dt;
+        out->z = cur->z + v.z * dt;
         src = (struct ParticleTemplate *)(lbl_804B4030 + cur->type * 0x34);
-        a = src->copy[0];
-        b = src->copy[1];
-        out->copy[0] = a;
-        out->copy[1] = b;
-        a = src->copy[2];
-        out->copy[2] = a;
-        a = src->copy[3];
-        b = src->copy[4];
-        out->copy[3] = a;
-        out->copy[4] = b;
-        a = src->copy[5];
-        out->copy[5] = a;
-        a = src->copy[6];
-        b = src->copy[7];
-        out->copy[6] = a;
-        out->copy[7] = b;
-        a = src->copy[8];
-        out->copy[8] = a;
-        out->vx = x;
-        out->vy = vy;
-        out->vz = z;
+        out->copy[0] = src->copy[0];
+        out->copy[1] = src->copy[1];
+        out->copy[2] = src->copy[2];
+        out->vx = v.x;
+        out->vy = v.y;
+        out->vz = v.z;
         out->age = cur->age + dt;
         out->flag = cur->flag;
         out->type = cur->type;
         ++out;
     }
     *(int *)((unsigned char *)arg0 + 0x222C) =
-        out - (struct Particle *)((unsigned char *)arg0 + 0x2C);
+        ((int)out - ((int)arg0 + 0x2C)) / 0x44;
 }
 
   #pragma scheduling on
