@@ -25651,42 +25651,45 @@ void fn_80099F58(void *arg0) {
 }
 
 #pragma unroll off
-UINT8 *sdpu_build_attrib_seq(UINT8 *out, UINT16 *attribs, UINT16 count) {
+UINT8 *sdpu_build_attrib_seq(UINT8 *p_out, UINT16 *p_attr, UINT16 num_attrs) {
     UINT16 xx;
     UINT16 length;
 
-    if (attribs != NULL)
-        length = count * 3;
+    /* Data element sequence header. A NULL list means a 4-byte wildcard id. */
+    if (p_attr != NULL)
+        length = num_attrs * 3;
     else
         length = 5;
 
     if (length > 0xFF) {
-        out[0] = 0x36;
-        out[1] = length >> 8;
-        out[2] = length;
-        out += 3;
+        p_out[0] = (DATA_ELE_SEQ_DESC_TYPE << 3) | SIZE_IN_NEXT_WORD;
+        p_out[1] = length >> 8;
+        p_out[2] = length;
+        p_out += 3;
     } else {
-        out[0] = 0x35;
-        out[1] = length;
-        out += 2;
+        p_out[0] = (DATA_ELE_SEQ_DESC_TYPE << 3) | SIZE_IN_NEXT_BYTE;
+        p_out[1] = length;
+        p_out += 2;
     }
 
-    if (attribs == NULL) {
-        out[0] = 0x0A;
-        out[1] = 0;
-        out[2] = 0;
-        out[3] = 0xFF;
-        out[4] = 0xFF;
-        out += 5;
+    if (p_attr == NULL) {
+        /* Wildcard: one 4-byte uint attribute id covering 0x0000..0xFFFF. */
+        p_out[0] = (UINT_DESC_TYPE << 3) | SIZE_FOUR_BYTES;
+        p_out[1] = 0;
+        p_out[2] = 0;
+        p_out[3] = 0xFF;
+        p_out[4] = 0xFF;
+        p_out += 5;
     } else {
-        for (xx = 0; xx < count; xx++) {
-            *out++ = 9;
-            *out++ = (UINT8)(*attribs >> 8);
-            *out++ = (UINT8)*attribs;
-            attribs++;
+        /* One 2-byte uint attribute id per entry in the list. */
+        for (xx = 0; xx < num_attrs; xx++) {
+            *p_out++ = (UINT_DESC_TYPE << 3) | SIZE_TWO_BYTES;
+            *p_out++ = (UINT8)(*p_attr >> 8);
+            *p_out++ = (UINT8)*p_attr;
+            p_attr++;
         }
     }
-    return out;
+    return p_out;
 }
 #pragma unroll reset
 UINT8 *sdpu_build_attrib_entry(UINT8 *p_out, tSDP_ATTRIBUTE *p_attr)
