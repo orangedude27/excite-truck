@@ -3990,6 +3990,7 @@ void GXSetIndTexCoordScale(s32 stage, s32 scaleS, s32 scaleT) {
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
+/* Set indirect texture stage order: bind tex map/coord (0xFF -> 0) and write BP reg. */
 void GXSetIndTexOrder(s32 arg0, s32 arg1, s32 arg2) {
     s32 r4 = arg1;
     s32 r5 = arg2;
