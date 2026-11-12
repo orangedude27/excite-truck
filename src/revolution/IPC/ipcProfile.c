@@ -13,6 +13,7 @@ static void AddReqInfo(IPCRequestEx* req, s32 fd);
 static void DelReqInfo(IPCRequestEx* req, s32 fd);
 
 void IPCiProfInit(void) {
+    /* Reset IPC profiling counters and clear tracked request slots. */
     int i;
 
     IpcNumPendingReqs = 0;
