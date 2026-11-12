@@ -592,21 +592,21 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     f32 rate;
     s32 var_r31;
     s32 temp_r30;
-    register s32 var_r5;
     u8 *var_r29;
-
+    s32 var_r5;
+    f32 tmpRate;
     sp8 = (s32)arg0;
     spC = farg0;
     sp10 = farg1;
     sp14 = arg2;
-    lbl_8055F074 = (u8)(arg2 == (s32)0xFF000000);
+    lbl_8055F074 = (arg2 == (s32)0xFF000000);
     ((void (*)(u8 **, u8 **))fn_80232024)((u8 **)&sp8, (u8 **)&sp14);
     var_r31 = 1;
     if (*(u32 *)((u8 *)arg1 + 8) != 0)
         var_r31 = 2;
     rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
-    temp_f31 = (f32)((u8 *)arg1)[4] * farg2;
-    temp_f31 *= rate;
+    tmpRate = (f32)((u8 *)arg1)[4] * farg2;
+    temp_f31 = tmpRate * rate;
     fn_80233BF0((u8 *)sp8, (u8 *)arg1, &spC, &sp10, arg3, farg2, farg4);
     while (var_r31 > 0) {
         var_r5 = sp14;
@@ -647,13 +647,12 @@ void fn_802321D8(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80232230(void) {
+    int i;
     char *stringBase;
-    struct Fn80232230_List *list;
-    s32 i;
     struct Fn80232230_Entry *entry;
+    struct Fn80232230_List *list;
     Fn80232230_Record *record;
     s32 count;
-    s32 offset;
     f32 temp_f31;
 
     *(s32 *)(lbl_80497F14 + 4) = 0;
@@ -664,9 +663,8 @@ void fn_80232230(void) {
         for (i = 0; (entry = list->vtable->getEntry(list, i)) != NULL; i++) {
             if (stricmp(entry->vtable->getName(entry), lbl_8055B9B0) == 0) {
                 count = *(s32 *)(lbl_80497F14 + 4);
+                record = (Fn80232230_Record *)(*(u8 **)lbl_80497F14) + count;
                 *(s32 *)(lbl_80497F14 + 4) = count + 1;
-                offset = count * 0x1C;
-                record = (Fn80232230_Record *)(*(u8 **)lbl_80497F14 + offset);
                 record->seq = entry->vtable->getString(entry, lbl_8055B9B8);
                 if (entry->vtable->hasKey(entry, lbl_8055B9BC) != 0 &&
                     entry->vtable->hasKey(entry, lbl_8055B9C0) != 0) {
@@ -710,9 +708,59 @@ void fn_8023243C(void) {
     *(s32 *)(lbl_80497F14 + 4) = 0;
 }
 
+/* Readable aliases; the game's own symbols keep their placeholder names. */
+#define gTexBlockTable lbl_8055F068 /* the cache of loaded font blocks, see GTexCache below */
+#define gTexMessages lbl_80340440   /* gText's block of message strings */
+#define gTexExtension lbl_8055B9D4  /* ".tex" */
+#define GETX_FOURCC 0x47544558      /* 'GETX': the fourcc of a font texture block */
+
+/* Messages inside the string block at lbl_80340440. */
+enum {
+    GTEX_MSG_BAD_VERSION = 0xE4,    /* gText: Font "%s" has bad version %d */
+    GTEX_MSG_NULL_FONT = 0x108,     /* gText: Null font %s! */
+    GTEX_MSG_NO_BLOCK = 0x144,      /* gText: Failed to extract texture with font- returning NULL font. */
+    GTEX_MSG_NAME_TOO_LONG = 0x15C, /* gText: Texture name %s is longer than %d, it's %d */
+    GTEX_MSG_NO_RESOURCE = 0x190    /* the texture could not be registered */
+};
+
+/* Its own symbol inside that string block. */
+#define gTexMsgFontGone lbl_803404FC /* gText: font %s gone but not forgotten */
+
+/* A loaded 'GETX' font block, as handed back by the archive manager.
+ * records and texture are stored in the file as offsets from the block and are
+ * turned into pointers the first time the block is loaded (see swap below). */
+typedef struct GTexBlock {
+    /* 0x00 */ s32 resourceIndex;          /* texture index in the gTex resource table */
+    /* 0x04 */ s32 unk04;
+    /* 0x08 */ struct GTexBlock *outline;  /* the "_ol_<name>" variant, 0 when there is none */
+    /* 0x0C */ u16 recordCount;            /* 0x1C-byte records at records[] */
+    /* 0x0E */ u16 unk0E;
+    /* 0x10 */ s32 records;
+    /* 0x14 */ s32 unk14;
+    /* 0x18 */ s32 texture;                /* the pixels registered as the resource */
+} GTexBlock;
+
+/* One slot of the font block cache: the loaded block, the name it is filed
+ * under (a 0x40-byte copy of the file name) and how many hold it -
+ * fn_8023158C adds to the count and fn_802315FC takes back, releasing the
+ * block once the count is gone. */
+typedef struct GTexCacheEntry {
+    /* 0x00 */ GTexBlock *block;
+    /* 0x04 */ char *name;
+    /* 0x08 */ s32 useCount;
+} GTexCacheEntry;
+
+/* The cache is one 0x16C-byte allocation (fn_802321D8): its slots, then the
+ * number of them in use where the next slot would start. */
+#define GTEX_CACHE_MAX 30
+typedef struct GTexCache {
+    /* 0x000 */ GTexCacheEntry entries[GTEX_CACHE_MAX];
+    /* 0x168 */ s32 count;
+} GTexCache;
+
 extern char lbl_803404FC[];
 extern void fn_802CB228(void *);
-extern void fn_80128668(void);
+extern void fn_80128668();
 void fn_802324D8(void) {
     s32 offset = 0;
     s32 i = 0;
@@ -736,35 +784,6 @@ extern void *fn_8012C370(const char *, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_80028E00(char *, const char *);
 extern s32 fn_802CAC34(char *, s32);
 extern u32 lbl_8055B9D4;
-
-/* Readable aliases; the game's own symbols keep their placeholder names. */
-#define gTexBlockTable lbl_8055F068 /* cache of loaded GETX blocks: 0xC-byte { block, name, useCount } slots, count at +0x168 */
-#define gTexMessages lbl_80340440   /* gText's block of message strings */
-#define gTexExtension lbl_8055B9D4  /* ".tex" */
-#define GETX_FOURCC 0x47544558      /* 'GETX': the fourcc of a font texture block */
-
-/* Messages inside the string block at lbl_80340440. */
-enum {
-    GTEX_MSG_BAD_VERSION = 0xE4,    /* gText: Font "%s" has bad version %d */
-    GTEX_MSG_NULL_FONT = 0x108,     /* gText: Null font %s! */
-    GTEX_MSG_NO_BLOCK = 0x144,      /* gText: Failed to extract texture with font- returning NULL font. */
-    GTEX_MSG_NAME_TOO_LONG = 0x15C, /* gText: Texture name %s is longer than %d, it's %d */
-    GTEX_MSG_NO_RESOURCE = 0x190    /* the texture could not be registered */
-};
-
-/* A loaded 'GETX' font block, as handed back by the archive manager.
- * records and texture are stored in the file as offsets from the block and are
- * turned into pointers the first time the block is loaded (see swap below). */
-typedef struct GTexBlock {
-    /* 0x00 */ s32 resourceIndex;          /* texture index in the gTex resource table */
-    /* 0x04 */ s32 unk04;
-    /* 0x08 */ struct GTexBlock *outline;  /* the "_ol_<name>" variant, 0 when there is none */
-    /* 0x0C */ u16 recordCount;            /* 0x1C-byte records at records[] */
-    /* 0x0E */ u16 unk0E;
-    /* 0x10 */ s32 records;
-    /* 0x14 */ s32 unk14;
-    /* 0x18 */ s32 texture;                /* the pixels registered as the resource */
-} GTexBlock;
 
 #pragma push
 #pragma small_data on
@@ -904,89 +923,92 @@ void fn_80232930(void) {
 #pragma push
 #pragma scheduling invalid_target
 f32 fn_8023293C(s32 font, char *text, f32 extra) {
-    register f64 magicDouble;
-    register f32 width;
     register f32 height;
-    register f32 ext;
+    register f32 width;
     f64 escapeWidth;
     f32 escapeScale;
     register s32 index;
     register u8 *recordCount;
+    s32 tokenOffset;
     s32 tokenIndex;
     u8 *character;
     const char *token;
     register u8 *next;
+    register u8 *entry;
     register u8 *glyphs;
     register u8 *glyph;
     s32 consumed;
     register u16 codepoint;
     u8 first;
 
-    ext = extra;
     if (text == NULL) {
         return lbl_8056368C;
     }
 
     width = lbl_8056368C;
-    height = width;
     index = 0;
+    height = width;
     strlen(text);
     recordCount = (u8 *)(&((s32 *)lbl_80497F14)[1]);
+    goto char_test;
 
-    while ((s8)text[index] != 0) {
-        escapeWidth = (f32)*(u8 *)(font + 4);
-        escapeScale = (f32)*(u8 *)(font + 4);
+char_body:
+    escapeWidth = (f32)*(u8 *)(font + 4);
+    escapeScale = (f32)*(u8 *)(font + 4);
 
-        if ((s8)text[index] == '\\') {
-            character = (u8 *)text + index + 1;
-            for (tokenIndex = 0; tokenIndex < *(s32 *)recordCount; tokenIndex++) {
-                token = *(const char **)(*(u8 **)lbl_80497F14 + tokenIndex * 0x1C);
-                if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
-                    u8 *entry = *(u8 **)lbl_80497F14 + tokenIndex * 0x1C;
-                    if (*(s32 *)(entry + 0xC) != 0) {
-                        escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
-                        escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
-                                    + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
-                    } else {
-                        escapeWidth = escapeScale * *(f32 *)(entry + 4);
-                    }
-                    consumed = strlen(*(const char **)(*(u8 **)lbl_80497F14 + tokenIndex * 0x1C)) + 1;
-                    goto match;
+    if ((s8)text[index] == '\\') {
+        character = (u8 *)text + index + 1;
+        for (tokenOffset = 0, tokenIndex = 0; tokenIndex < *(s32 *)recordCount; tokenOffset += 0x1C, tokenIndex++) {
+            token = *(const char **)(*(u8 **)lbl_80497F14 + tokenOffset);
+            if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
+                tokenOffset = tokenIndex * 0x1C;
+                entry = *(u8 **)lbl_80497F14 + tokenOffset;
+                if (*(s32 *)(entry + 0xC) != 0) {
+                    escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
+                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
+                                + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
+                } else {
+                    escapeWidth = escapeScale * *(f32 *)(entry + 4);
                 }
+                consumed = strlen(*(const char **)(*(u8 **)lbl_80497F14 + tokenIndex * 0x1C)) + 1;
+                goto match;
             }
-            consumed = 0;
+        }
+        consumed = 0;
 match: ;
-        } else {
-            consumed = 0;
-        }
-
-        if (consumed != 0) {
-            index += consumed;
-            width += (f32)escapeWidth;
-            continue;
-        }
-
-        first = text[index];
-        character = (u8 *)text + index;
-        if ((first & 0xF0) == 0xE0) {
-            codepoint = ((first & 0x0F) << 12) | ((character[1] & 0x3F) << 6) | (character[2] & 0x3F);
-            next = character + 3;
-        } else if ((first & 0xE0) == 0xC0) {
-            codepoint = ((first & 0x1F) << 6) | __rlwinm(character[1], 0, 26, 23);
-            next = character + 2;
-        } else {
-            codepoint = first & 0x7F;
-            next = character + 1;
-        }
-
-        glyphs = *(u8 **)(font + 0x10);
-        glyph = glyphs + (u16)codepoint * 0x1C;
-        index += next - character;
-        width += *(f32 *)(glyph + 4);
-        height += *(f32 *)glyph + *(f32 *)(glyph + 8);
+    } else {
+        consumed = 0;
     }
 
-    height *= ext;
+    if (consumed != 0) {
+        index += consumed;
+        width += (f32)escapeWidth;
+        goto char_test;
+    }
+
+    first = text[index];
+    character = (u8 *)text + index;
+    if ((first & 0xF0) == 0xE0) {
+        codepoint = ((first & 0x0F) << 12) | ((character[1] & 0x3F) << 6) | (character[2] & 0x3F);
+        next = character + 3;
+    } else if ((first & 0xE0) == 0xC0) {
+        codepoint = ((first & 0x1F) << 6) | __rlwinm(character[1], 0, 26, 23);
+        next = character + 2;
+    } else {
+        codepoint = first & 0x7F;
+        next = character + 1;
+    }
+
+    glyphs = *(u8 **)(font + 0x10);
+    glyph = glyphs + (u16)codepoint * 0x1C;
+    index += next - character;
+    width += *(f32 *)(glyph + 4);
+    height += *(f32 *)glyph + *(f32 *)(glyph + 8);
+
+char_test:
+    if ((s8)text[index] != 0) goto char_body;
+
+    height *= extra;
     return (width + height) * *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
 }
 #pragma pop
@@ -1062,9 +1084,12 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
     }
 }
 void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
-    s32 sp10 = color;
-    f32 spC = y;
-    f32 sp8 = x;
+    s32 sp10;
+    f32 spC;
+    f32 sp8;
+    sp8 = x;
+    spC = y;
+    sp10 = color;
 
     fn_80231714(&sp10);
     if ((s8)*text != 0) {
@@ -1377,8 +1402,6 @@ extern f32 lbl_80563688;
 void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1) {
     u32 code;
     f32 value;
-    f32 metric;
-
     if (arg4 & 1) {
         u8 first = arg0[0];
         if ((first & 0xF0) == 0xE0) {
@@ -1392,8 +1415,7 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
     } else if (arg4 & 2) {
         *arg2 -= farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1);
     } else if (arg4 & 4) {
-        metric = fn_8023293C((s32)arg1, (char *)arg0, farg1);
-        *arg2 -= (farg0 * metric) * lbl_80563688;
+        *arg2 -= (farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1)) * lbl_80563688;
     }
     value = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
     if (arg4 & 8) {
@@ -1401,7 +1423,7 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
     } else if (arg4 & 0x20) {
         *arg3 -= value * ((f32)arg1[6] * farg0);
     } else if (arg4 & 0x10) {
-        *arg3 -= value * ((f32)arg1[4] * farg0) * lbl_80563688;
+        *arg3 -= (value * ((f32)arg1[4] * farg0)) * lbl_80563688;
     }
 }
 #pragma scheduling on
@@ -1493,7 +1515,7 @@ f32 fn_8023400C(s32 arg0) {
     text = (char *)(*(volatile s32 *)&lbl_8055F06C) + offset;
     font = (u8 *)(*(volatile s32 *)&lbl_8055F058);
     strlen(text);
-    recordCount = (u8 *)lbl_80497F14 + 4;
+    recordCount = (u8 *)(&((s32 *)lbl_80497F14)[1]);
     goto char_test;
 
 char_body:
@@ -1561,7 +1583,7 @@ char_test:
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_8023423C(s32 arg0, s32 arg1) {
-    register s32 offset = arg0 * 0x58;
+    register unsigned int offset = arg0 * 0x58;
     u8 *base = (u8 *)lbl_8055F06C;
     u8 *record = base + offset;
     u8 *font = (u8 *)lbl_8055F058;
@@ -1570,7 +1592,7 @@ void fn_8023423C(s32 arg0, s32 arg1) {
     u8 *table;
     u8 *metrics;
     f32 speed = *(f32 *)(record + 0x50);
-    f32 scale = *(f32 *)(record + 0x54);
+    register f32 scale = *(f32 *)(record + 0x54);
 
     if (arg1 & 1) {
         first = record[0];
@@ -1585,7 +1607,7 @@ void fn_8023423C(s32 arg0, s32 arg1) {
         metrics = table + codepoint * 0x1C;
         {
             f32 glyphRate = *(volatile f32 *)metrics;
-            *(volatile f32 *)(base + offset + 0x40) -= scale * glyphRate;
+            *(volatile f32 *)((s32)base + offset + 0x40) -= scale * glyphRate;
         }
     } else if (arg1 & 2) {
         *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= fn_8023400C(arg0);
