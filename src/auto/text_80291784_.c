@@ -476,6 +476,7 @@ void fn_8029231C(float *arg0) {
     register float temp_f2;
     register float temp_f3;
     register float temp_f4;
+    /* Advance the sun/flare position by arg0 scaled by frame time when enabled. */
     if (lbl_8055F75C != 0) {
         dt = fn_801EC114();
         base = (float *)fn_802C86DC();
