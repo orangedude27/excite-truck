@@ -887,27 +887,30 @@ void fn_80241DE8(void *arg0) {
 }
 #pragma pop
 s32 fn_80241E40(void *arg0) {
+    /* If active and synced with the current selection value, write selection/value to each output entry and return 1; otherwise return 0. */
     s32 i;
-    s32 result;
-    void *out;
-    s32 value;
-    void *entry;
+    s32 selected;
+    void *outEntry;
+    s32 currentValue;
+    void *entryCursor;
+
     if (*(s32 *)*(s32 **)((char *)arg0 + 0x34) == fn_802E4A10()) {
         if (*(u8 *)((char *)arg0 + 0x38) != 0)
             goto do_loop;
     }
     return 0;
+
 do_loop:
-    entry = arg0;
+    entryCursor = arg0;
     i = 0;
     while (i < *(s32 *)((char *)arg0 + 0x2C)) {
-        value = *(s32 *)*(s32 **)((char *)arg0 + 0x34);
-        result = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30)) ? 1 : 0;
-        out = *(void **)((char *)entry + 0x18);
-        entry = (char *)entry + 4;
+        currentValue = *(s32 *)*(s32 **)((char *)arg0 + 0x34);
+        selected = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30)) ? 1 : 0;
+        outEntry = *(void **)((char *)entryCursor + 0x18);
+        entryCursor = (char *)entryCursor + 4;
         ++i;
-        *(u8 *)out = result;
-        *(s32 *)((char *)out + 4) = value;
+        *(u8 *)outEntry = selected;
+        *(s32 *)((char *)outEntry + 4) = currentValue;
     }
     return 1;
 }
