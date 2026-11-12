@@ -220,25 +220,27 @@ extern int lbl_8055D22C;
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
+/* Initialize WPAD/KPAD input: register callbacks, wait for ready state,
+ * install per-controller sampling callbacks, register Joy handler, and mark ready. */
 void fn_802E7C64(void) {
     extern unsigned char lbl_80560009;
-    int *var_r30;
-    int temp_r3;
-    int var_r29;
+    int *callbackSlot;
+    int previousCallback;
+    int controllerIndex;
 
     fn_8005EE78(&fn_802E7A14, &fn_802E7A70);
     fn_800569D0();
     KPADInit();
     do {
     } while (fn_8005EE7C() != 3);
-    var_r30 = lbl_80507268;
-    var_r29 = 0;
+    callbackSlot = lbl_80507268;
+    controllerIndex = 0;
     do {
-        temp_r3 = WPADSetSamplingCallback(var_r29, (int)fn_802E7B6C);
-        var_r29 += 1;
-        *var_r30 = temp_r3;
-        var_r30 += 1;
-    } while (var_r29 < 4);
+        previousCallback = WPADSetSamplingCallback(controllerIndex, (int)fn_802E7B6C);
+        controllerIndex += 1;
+        *callbackSlot = previousCallback;
+        callbackSlot += 1;
+    } while (controllerIndex < 4);
     fn_802E2E0C((int)fn_802E7AF4, (int)&lbl_8055D22C);
     fn_802E7C40();
     lbl_80560009 = 1;
