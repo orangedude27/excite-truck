@@ -25,7 +25,10 @@ extern void *fn_8020FAF0(void);
 extern long fn_8000DA10(void);
 extern long fn_8020F9F4(void);
 extern int stricmp(const char *, const char *);
-extern struct Unk_804900AC { long *m_entries; long m_count; long m_capacity; } lbl_804900AC;
+// Track-music file list: m_entries is an array of m_count char* song paths
+// (fn_8020F950 fills it from the dash's scanned music table), m_capacity is how
+// many of them fit in the buffer.
+extern struct TrackMusicList { char **m_entries; long m_count; long m_capacity; } lbl_804900AC;
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
