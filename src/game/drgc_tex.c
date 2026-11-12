@@ -906,24 +906,26 @@ void fn_802D92B8(void *arg0) {
     GXLoadTexObj(obj + 0x24, 3);
 }
 
+/* Push a freshly created drgc texture out to memory so GX can read it: flush the
+ * texel image, re-split the source RGBA8888 palette into the record's RGB565
+ * and alpha CLUTs when it has one (fn_802D78D4, entry count from the primary
+ * tlut object) and flush both palettes, then invalidate GX's whole texture
+ * cache.  drCreateTexture (fn_802D8E9C) calls it on whatever its format
+ * creator returned, including the 0 it returns on an unknown format. */
 void fn_802D9340(void *arg0) {
+    DrTexRecord *tex = (DrTexRecord *)arg0;
     unsigned int value;
-    value = *(unsigned int *)((char *)arg0 + 0xD0);
-    if (value != 0 && *(unsigned int *)((char *)arg0 + 0xD4) != 0) {
-        DCFlushRange((void *)value, *(unsigned int *)((char *)arg0 + 0xD4));
+    value = (unsigned int)tex->texelData;
+    if (value != 0 && tex->texelSize != 0) {
+        DCFlushRange((void *)value, tex->texelSize);
     }
-    if (*(unsigned int *)((char *)arg0 + 0x70) != 0 &&
-        *(unsigned int *)((char *)arg0 + 0x74) != 0) {
-        fn_802D78D4(*(void **)((char *)arg0 + 0x70),
-                    *(void **)((char *)arg0 + 0xC4),
-                    *(unsigned int *)((char *)arg0 + 0xD8),
-                    GXGetTexObjTlut((char *)arg0 + 0x64) & 0xFFFF);
-        DCFlushRange(*(void **)((char *)arg0 + 0x70),
-                     *(unsigned int *)((char *)arg0 + 0x74));
+    if (tex->rgbClut != 0 && tex->rgbClutSize != 0) {
+        fn_802D78D4(tex->rgbClut, tex->alphaClut, (unsigned int)tex->srcClut,
+                    GXGetTexObjTlut(&tex->tlutObj) & 0xFFFF);
+        DCFlushRange(tex->rgbClut, tex->rgbClutSize);
     }
-    if (*(void **)((char *)arg0 + 0xC4) != 0) {
-        DCFlushRange(*(void **)((char *)arg0 + 0xC4),
-                     *(unsigned int *)((char *)arg0 + 0xC8));
+    if (tex->alphaClut != 0) {
+        DCFlushRange(tex->alphaClut, tex->alphaClutSize);
     }
     GXInvalidateTexAll();
 }
