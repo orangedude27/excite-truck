@@ -4245,41 +4245,30 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     s32 result;
     s32 status;
     VFiPFEntIter *iter = (VFiPFEntIter *)arg0;
-
-    if (iter->sector == 0xFFFFFFFFu ||
-        iter->entry[0] == 0 ||
-        iter->position < 0xF423Fu) {
+    if (iter->sector == 0xFFFFFFFFu || iter->entry[0] == 0 || iter->position < 0xF423Fu)
         goto return_zero;
-    }
     index = iter->index;
     old = iter->position;
     iter->position = (index + 1) << iter->shift;
     if (((s32 (*)(void *, s32, s32))fn_800AB378)(arg0, 0, index + 1) != 0) {
-        iter->position = old;
-        iter->index = index;
+        ((VFiPFEntIter *)arg0)->position = old;
+        ((VFiPFEntIter *)arg0)->index = index;
         goto return_one;
     }
-
-    if (iter->sector == 0xFFFFFFFFu) {
+    if (iter->sector == 0xFFFFFFFFu)
         goto use_short_error;
-    }
-    if (iter->sector != 0xFFFFFFFFu) {
+    if (iter->sector != 0xFFFFFFFFu)
         goto read_entry;
-    }
 use_short_error:
     status = 0x10;
     goto finish_status;
-
 read_entry:
-    result = fn_800B5324(iter->volume, iter->entry, iter->sector,
-                         iter->sectorOff, 0x20, &sp8, 0);
+    result = fn_800B5324(iter->volume, iter->entry, iter->sector, iter->sectorOff, 0x20, &sp8, 0);
     status = 0x11;
-    if (sp8 == 0x20) {
+    if (sp8 == 0x20)
         status = result;
-    }
 finish_status:
     return status != 0;
-
 return_one:
     return 1;
 return_zero:
@@ -18136,6 +18125,7 @@ extern "C" void *__dt__Q310homebutton3gui7ManagerFv(void *arg0, s32 arg1) {
     void *node;
     u8 *self;
 
+    /* homebutton::gui::Manager destructor: clear the component list, freeing each node via the allocator if set, then optionally delete self. */
     if (arg0 != 0) {
         *(void **)arg0 = (void *)lbl_8031E83C;
         self = (u8 *)arg0;
@@ -19997,7 +19987,6 @@ extern "C" u32 fn_800D3A30(const char *arg0) {
     const char *p = arg0;
     u8 c;
     u32 digit;
-
     if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E6, base + 0x164);
     if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E7, base + 0x134);
     for (;;) {
@@ -20587,18 +20576,15 @@ extern "C" const char lbl_8031F1D8[];
 extern "C" const char lbl_8031F1CC[];
 extern "C" const char lbl_8031F1A8[];
 extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
-    u32 head = (u32)arg0;
     u32 node;
     u32 sentinel;
-    const char *file = lbl_8031EE58;
-
-    if (head == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x22F, file + 0x2B0);
+    register int fileBase = (int)lbl_8031EE58;
+    if (arg0 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((char *)(fileBase + 0), 0x22F, (char *)(fileBase + 0x2B0));
     if (arg1 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x230, file + 0x2DC);
-
-    node = *(u32 *)(head + 4);
-    sentinel = head + 4;
+        Panic__Q26nw4hbm2dbFPCciPCce((char *)(fileBase + 0), 0x230, (char *)(fileBase + 0x2DC));
+    node = *(u32 *)((u8 *)arg0 + 4);
+    sentinel = (u32)arg0 + 4;
     while (node != sentinel) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
