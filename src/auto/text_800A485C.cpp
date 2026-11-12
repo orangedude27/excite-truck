@@ -23823,6 +23823,7 @@ extern "C" void fn_800CEBE0(void *homeButton, s32 on) {
 extern "C" void fn_800CB820(void *, const char *, void *);
 extern "C" void fn_800CD38C(const char *, const char *);
 void startLeftEvent__Q210homebutton10HomeButtonFPCc(const char *);
+/* Dispatch HomeButton UI events to the appropriate handler based on event type. */
 void homebutton::HomeButtonEventHandler::onEvent(unsigned long, unsigned long event, void *arg) {
     EventDispatchA *a = dispatch;
     EventDispatchB *b = (EventDispatchB *)a->first();
