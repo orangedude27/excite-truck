@@ -129,16 +129,19 @@ void WPADiClearQueue(s32 chan) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
+/* WPAD sampling-complete callback: clear the sampling-restart flag, mark a data
+ * format failure on error, or when the DPD enabled state matches and there is no
+ * format failure, notify KPAD that sampling is ready for this channel. */
 void WPADiSamplingCallback(s32 chan, s32 result) {
     extern u32 fn_80062460(s32);
-    s32 enabled;
+    s32 dpdEnabled;
     KPADInsideStatus *status = &inside_kpads[chan];
     status->sampling_restart = 0;
     if (result != 0) {
         status->data_format_failed = 1;
     } else {
-        enabled = fn_80062460(chan);
-        if (enabled == status->is_dpd_enabled && status->data_format_failed == 0) {
+        dpdEnabled = fn_80062460(chan);
+        if (dpdEnabled == status->is_dpd_enabled && status->data_format_failed == 0) {
             KPADNotifySampling(chan);
         }
     }
@@ -236,11 +239,8 @@ void MEMiFinalizeHeap(MEMiHeapHead *heap) {
     MEMiHeapHead *outer;
     MEMiHeapHead *child;
     MEMiHeapHead *block;
-    MEMiHeapHead *result;
-
     OSLockMutex((OSMutex *)lbl_8037D818);
     list = (MEMList *)lbl_8037D808;
-    result = 0;
     outer = 0;
     while ((outer = (MEMiHeapHead *)MEMGetNextListObject(list, outer)) != 0) {
         if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
@@ -250,24 +250,24 @@ void MEMiFinalizeHeap(MEMiHeapHead *heap) {
                     block = 0;
                     while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
                         if ((u32)block->start <= (u32)heap && (u32)heap < (u32)block->end) {
-                            result = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
-                            if (result == 0)
-                                result = block;
+                            block = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
+                            if (block == 0)
+                                block = (MEMiHeapHead *)((u8 *)child + 0);
                             break;
                         }
                     }
-                    if (result == 0)
-                        result = child;
+                    if (block == 0)
+                        block = child;
                     break;
                 }
             }
-            if (result == 0)
-                result = outer;
+            if (block == 0)
+                block = outer;
             break;
         }
     }
-    if (result != 0)
-        list = &result->list;
+    if (block != 0)
+        list = &block->list;
     MEMRemoveListObject(list, heap);
     OSUnlockMutex((OSMutex *)lbl_8037D818);
     heap->magic = 0;
@@ -730,39 +730,35 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
     u32 mask;
     u32 alignStart;
     u32 strideEnd;
-    u32 head;
+    void *head;
     u32 stride;
     u32 count;
     u32 remaining;
-    u32 next;
-
-    if ((s32)(base - end) <= 0) {
-    } else {
+    void *next;
+    if ((s32)(base - end) > 0) {
         return 0;
     }
     area = base + 0x3C;
     mask = ~((align - 1) | (align - 1));
     alignStart = area + align;
     strideEnd = align + unitSize;
-    head = (alignStart + 7) & mask;
-    if ((s32)(head - end) <= 0) {
-    } else {
+    head = (void *)(mask & (alignStart + 7));
+    if ((s32)((u32)head - end) > 0) {
         return 0;
     }
-    stride = (strideEnd - 1) & mask;
-    count = (end - head) / stride;
-    if (count != 0) {
-    } else {
+    stride = mask & (strideEnd - 1);
+    count = (end - (u32)head) / stride;
+    if (count == 0) {
         return 0;
     }
-    MEMiInitHeapHead((MEMiHeapHead *)base, 0x554E5448, (void *)head, (void *)(head + count * stride), opt);
+    MEMiInitHeapHead((MEMiHeapHead *)base, 0x554E5448, head, (void *)((u32)head + count * stride), opt);
     remaining = count - 1;
-    *(u32 *)(area + 0) = head;
+    *(u32 *)(area + 0) = (u32)head;
     *(u32 *)(area + 4) = stride;
     next = head;
     while (remaining != 0) {
-        u32 following = next + stride;
-        *(u32 *)next = following;
+        void *following = (void *)((u32)next + stride);
+        *(void **)next = following;
         next = following;
         remaining -= 1;
     }
