@@ -1481,18 +1481,19 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     ((volatile int *)((char *)pool + pool->count * 0x1C))[7] = arg3;
     pool->count = pool->count + 1;
 }
-void fn_801F41CC(int unused, volatile unsigned char *arg0) {
-    unsigned char t;
-    t = arg0[0x2c]; arg0[0x2c] = arg0[0x2f]; arg0[0x2f] = t;
-    t = arg0[0x2d]; arg0[0x2d] = arg0[0x2e]; arg0[0x2e] = t;
-    t = arg0[0x30]; arg0[0x30] = arg0[0x33]; arg0[0x33] = t;
-    t = arg0[0x31]; arg0[0x31] = arg0[0x32]; arg0[0x32] = t;
-    t = arg0[0x34]; arg0[0x34] = arg0[0x37]; arg0[0x37] = t;
-    t = arg0[0x35]; arg0[0x35] = arg0[0x36]; arg0[0x36] = t;
-    t = arg0[0x38]; arg0[0x38] = arg0[0x3b]; arg0[0x3b] = t;
-    t = arg0[0x39]; arg0[0x39] = arg0[0x3a]; arg0[0x3a] = t;
-    t = arg0[0x3c]; arg0[0x3c] = arg0[0x3f]; arg0[0x3f] = t;
-    t = arg0[0x3d]; arg0[0x3d] = arg0[0x3e]; arg0[0x3e] = t;
+/* Byte-reverses five contiguous 4-byte fields at offsets 0x2C-0x3F in place. */
+void fn_801F41CC(int unused, volatile unsigned char *bytes) {
+    unsigned char tmp;
+    tmp = bytes[0x2c]; bytes[0x2c] = bytes[0x2f]; bytes[0x2f] = tmp;
+    tmp = bytes[0x2d]; bytes[0x2d] = bytes[0x2e]; bytes[0x2e] = tmp;
+    tmp = bytes[0x30]; bytes[0x30] = bytes[0x33]; bytes[0x33] = tmp;
+    tmp = bytes[0x31]; bytes[0x31] = bytes[0x32]; bytes[0x32] = tmp;
+    tmp = bytes[0x34]; bytes[0x34] = bytes[0x37]; bytes[0x37] = tmp;
+    tmp = bytes[0x35]; bytes[0x35] = bytes[0x36]; bytes[0x36] = tmp;
+    tmp = bytes[0x38]; bytes[0x38] = bytes[0x3b]; bytes[0x3b] = tmp;
+    tmp = bytes[0x39]; bytes[0x39] = bytes[0x3a]; bytes[0x3a] = tmp;
+    tmp = bytes[0x3c]; bytes[0x3c] = bytes[0x3f]; bytes[0x3f] = tmp;
+    tmp = bytes[0x3d]; bytes[0x3d] = bytes[0x3e]; bytes[0x3e] = tmp;
 }
 
 #pragma scheduling invalid_target
