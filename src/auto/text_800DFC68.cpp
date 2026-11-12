@@ -17,6 +17,7 @@ namespace lyt {
 }
 }
 namespace nw4hbm { namespace lyt {
+    struct AnimTransform;   /* one running animation; panes and materials hold links to it */
     struct Window {
         struct Link { Link* next; Link* prev; };
         u8 unk_0[0x14];
@@ -27,9 +28,10 @@ namespace nw4hbm { namespace lyt {
         u8 alpha;      /* 0xCE: pane alpha, passed to DrawQuad */
         u8 flags;      /* 0xCF: bit 0 keeps the children from being animated */
         u8 unk_D0[0x2C];
-        void* materials;
-        u8 materialCount;
+        void* materials;    /* 0xFC: count entries of {u8 flag, Material*} frame materials */
+        u8 materialCount;   /* 0x100: number of frame materials */
         void* FindMaterialByName(const char*, bool);
+        void* FindAnimationLink(AnimTransform*);
     };
 } }
 namespace nw4hbm { namespace lyt {
