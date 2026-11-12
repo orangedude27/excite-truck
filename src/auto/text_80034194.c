@@ -848,7 +848,6 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     u32 offset;
     u32 parentIndex;
     u32 nextParent;
-    u32 n;
     u32 pos;
     u32 start;
     u32 left;
@@ -868,50 +867,44 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     name = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
     if (parentIndex == 0) {
         pos = 0;
-        goto append_name;
+    } else {
+        offset = parentIndex * 12;
+        nextParent = *(u32 *)(parentTable + offset);
+        parentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+        if (nextParent == 0) {
+            pos = 0;
+        } else {
+            offset = nextParent * 12;
+            grandparentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+            pos = DVDConvertEntrynumToPath(*(u32 *)(parentTable + offset), path, max);
+            if (pos != max) {
+                start = pos + 1;
+                initialLeft = max - start;
+                path[pos] = '/';
+                dst = path + start;
+                left = initialLeft;
+                src = grandparentName;
+                do {
+                    *dst++ = *src++;
+                    left--;
+                } while (left != 0 && *src != 0);
+                pos = start + (initialLeft - left);
+            }
+        }
+        if (pos != max) {
+            start = pos + 1;
+            initialLeft = max - start;
+            path[pos] = '/';
+            dst = path + start;
+            left = initialLeft;
+            src = parentName;
+            do {
+                *dst++ = *src++;
+                left--;
+            } while (left != 0 && *src != 0);
+            pos = start + (initialLeft - left);
+        }
     }
-
-    offset = parentIndex * 12;
-    nextParent = *(u32 *)(parentTable + offset);
-    parentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
-    if (nextParent == 0) {
-        pos = 0;
-        goto append_parent;
-    }
-
-    offset = nextParent * 12;
-    n = *(u32 *)(parentTable + offset);
-    grandparentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
-    n = DVDConvertEntrynumToPath(n, path, max);
-    pos = n;
-    if (pos != max) {
-        start = pos + 1;
-        initialLeft = max - start;
-        path[pos] = '/';
-        dst = path + start;
-        left = initialLeft;
-        src = grandparentName;
-        do {
-            *dst++ = *src++;
-        } while (--left != 0 && *src != 0);
-        pos = start + (initialLeft - left);
-    }
-
-append_parent:
-    if (pos != max) {
-        start = pos + 1;
-        initialLeft = max - start;
-        path[pos] = '/';
-        dst = path + start;
-        left = initialLeft;
-        src = parentName;
-        do {
-            *dst++ = *src++;
-        } while (--left != 0 && *src != 0);
-        pos = start + (initialLeft - left);
-    }
-
-append_name:
     if (pos != max) {
         start = pos + 1;
         initialLeft = max - start;
@@ -921,7 +914,8 @@ append_name:
         src = name;
         do {
             *dst++ = *src++;
-        } while (--left != 0 && *src != 0);
+            left--;
+        } while (left != 0 && *src != 0);
         pos = start + (initialLeft - left);
     }
     return pos;
@@ -1667,28 +1661,31 @@ void fn_8003684C(void) {
 
 #pragma push
 #pragma dont_inline on
-void fn_80036B84(u32 arg0) {
-    s32 firstInterrupts;
+/* Handles a DVD drive status value: records it in __ErrorInfo, then starts an
+ * error-report/reset flow for 0x10, 0x20 or an odd code, else issues a
+ * stop-motor/reset command sequence. */
+void fn_80036B84(u32 status) {
+    s32 interrupts;
 
-    firstInterrupts = OSDisableInterrupts();
+    interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
-        *(u32 *)(__ErrorInfo + 0x78) = arg0;
+        *(u32 *)(__ErrorInfo + 0x78) = status;
     } else {
         *(u32 *)(__ErrorInfo + 0x28 +
-                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = arg0;
+                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status;
     }
-    OSRestoreInterrupts(firstInterrupts);
+    OSRestoreInterrupts(interrupts);
 
-    if (arg0 == 0x10) {
+    if (status == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
         return;
     }
-    if (arg0 == 0x20) {
+    if (status == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
         return;
     }
-    if (arg0 & 1) {
-        u8 *errorBase;
+    if (status & 1) {
+        u8 *info;
         s32 state;
 
         lbl_8055D860 = 0;
@@ -1698,11 +1695,11 @@ void fn_80036B84(u32 arg0) {
         state = OSDisableInterrupts();
         if (*(volatile u32 *)&lbl_8055D848 >= 5)
             *(volatile u32 *)&lbl_8055D848 = 0;
-        errorBase = (u8 *)__ErrorInfo;
-        *(s32 *)(errorBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
-        *(s32 *)(errorBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10008;
-        *(s32 *)(errorBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
-        *(s32 *)(errorBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+        info = (u8 *)__ErrorInfo;
+        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
+        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10008;
+        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(state);
         fn_8003AD88(lbl_80376B40, 0x20, 0x10008, (u32)fn_80036D24);
@@ -2007,18 +2004,13 @@ void fn_800373E0(u32 arg0) {
 void fn_800375A8(u32 arg0) {
     register u32 value = arg0;
     s32 interrupts;
-
     interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = value;
     } else {
-        register s32 count = *(volatile s32 *)&lbl_8055D848;
-        register u8 *info = (u8 *)__ErrorInfo;
-        info += (count - 1) * 0x14;
-        *(u32 *)(info + 0x28) = value;
+        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = value;
     }
     OSRestoreInterrupts(interrupts);
-
     if (value == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
     } else if (value == 0x20) {
@@ -2026,30 +2018,20 @@ void fn_800375A8(u32 arg0) {
     } else if (value & 1) {
         u32 layout;
         register u32 shiftedSize;
-        register u32 formattedSize;
         register u32 rawSize;
-        register u32 discOffset;
         lbl_8055D860 = 0;
         lbl_8055D8CC = (s32)fn_8003588C;
-        if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) <
-            *(u32 *)(lbl_80376A80 + 8)) {
-            ((void (*)(const char *, s32, const char *, ...))OSPanic)(
-                lbl_80558E0C, 0x3F6, lbl_80302120);
+        if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) < *(u32 *)(lbl_80376A80 + 8)) {
+            ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558E0C, 0x3F6, lbl_80302120);
         }
         fn_8003BCDC(0);
         layout = *(volatile u32 *)&__DVDLayoutFormat;
-        shiftedSize = *(u32 *)(lbl_80376A80 + 8) <<
-                      (~*(volatile u32 *)&__DVDLayoutFormat & 2);
-        formattedSize = (shiftedSize + 0x1F) & ~0x1F;
+        shiftedSize = *(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2);
         rawSize = *(u32 *)(lbl_80376A80 + 4);
-        discOffset = rawSize >> layout;
-        ((void (*)(s32, s32, s32, u32, u32))fn_800356F4)(
-            1, discOffset, formattedSize, layout, rawSize);
+        ((void (*)(s32, s32, s32, u32, u32))fn_800356F4)(1, rawSize >> layout, (shiftedSize + 0x1F) & ~0x1F, layout, rawSize);
         fn_8003B81C(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
-                    ((*(u32 *)(lbl_80376A80 + 8) <<
-                      (~*(volatile u32 *)&__DVDLayoutFormat & 2)) + 0x1F) & ~0x1F,
-                    *(u32 *)(lbl_80376A80 + 4) >>
-                        *(volatile u32 *)&__DVDLayoutFormat,
+                    ((*(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2)) + 0x1F) & ~0x1F,
+                    *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat,
                     (s32)fn_80035A04);
     } else {
         fn_800356F4(0x27, 0, 0);
