@@ -10786,15 +10786,20 @@ void bta_dm_disable(void) {
     fn_8007146C((s32)(lbl_803C0C14 + 0x74), 0, 0x1388);
 }
 
+/* Called when BTA DM disable timer expires; tears down ACL links or reports disable complete. */
 void bta_dm_disable_timer_cback(void) {
- u8 i;
- if (lbl_8055DC80 >= 4) fn_8007093C(0x503, lbl_80315048);
- if (BTM_GetNumAclLinks() && lbl_803C0C14[0x101] == 0) {
-  for (i=0; i<lbl_803C0C14[0x4D]; i++) btm_remove_acl((u8 *)lbl_803C0C14+i*0xB);
- } else {
-  lbl_803C0C14[0x72]=0;
-  ((void (**)(int,int,void *))(lbl_803C0C14+0x50))[0](1,0,lbl_803C0C14);
- }
+    u8 device_index;
+    if (lbl_8055DC80 >= 4) {
+        fn_8007093C(0x503, lbl_80315048);
+    }
+    if (BTM_GetNumAclLinks() && lbl_803C0C14[0x101] == 0) {
+        for (device_index = 0; device_index < lbl_803C0C14[0x4D]; device_index++) {
+            btm_remove_acl((u8 *)lbl_803C0C14 + device_index * 0xB);
+        }
+    } else {
+        lbl_803C0C14[0x72] = 0;
+        ((void (**)(int, int, void *))(lbl_803C0C14 + 0x50))[0](1, 0, lbl_803C0C14);
+    }
 }
 
 void fn_800719B0(void *arg0) { BTM_SetLocalDeviceName((char *)arg0 + 8); }
