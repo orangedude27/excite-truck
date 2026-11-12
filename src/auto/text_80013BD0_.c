@@ -382,35 +382,37 @@ extern "C" void *fn_80014664(void *object, s32 deleting) {
 
 extern int __cntlzw(unsigned int);
 void fn_80014750(void *arg0) {
-    void *manager;
-    void *state;
-    void *input;
-    f32 value;
-    s32 result;
-    s32 pressed;
+    void *gameManager;
+    void *gameState;
+    void *padInput;
+    f32 stateValue;
+    s32 inRange;
+    s32 buttonPressed;
+
+    /* Triggers transition 0x17 when flag set and timeout elapsed, or when state value is in range and button 0x20 pressed. */
     if (*(u8 *)((u8 *)arg0 + 8)) {
-        manager = lbl_8055D350;
-        state = *(void **)((u8 *)manager + 0xC);
-        if (*(f32 *)((u8 *)manager + 0x10) - *(f32 *)((u8 *)state + 0xC) <
+        gameManager = lbl_8055D350;
+        gameState = *(void **)((u8 *)gameManager + 0xC);
+        if (*(f32 *)((u8 *)gameManager + 0x10) - *(f32 *)((u8 *)gameState + 0xC) <
             lbl_80562068 - lbl_8056039C)
             fn_8000C630(0x17, -1);
     } else {
-        manager = lbl_8055D350;
-        state = *(void **)((u8 *)manager + 0xC);
-        value = *(f32 *)((u8 *)state + 0x10);
-        result = 0;
-        if (value > lbl_8056039C) {
-            if (value < lbl_805603A0)
+        gameManager = lbl_8055D350;
+        gameState = *(void **)((u8 *)gameManager + 0xC);
+        stateValue = *(f32 *)((u8 *)gameState + 0x10);
+        inRange = 0;
+        if (stateValue > lbl_8056039C) {
+            if (stateValue < lbl_805603A0)
                 goto set_result;
         }
-        if (value > lbl_805603A4) {
+        if (stateValue > lbl_805603A4) {
         set_result:
-            result = 1;
+            inRange = 1;
         }
-        input = *(void **)((u8 *)manager + 0x2C);
-        pressed = (u32)__cntlzw(*(u32 *)((u8 *)input + 0x2C0) & 0x20) >> 5;
-        result = result && pressed;
-        if (result != 0)
+        padInput = *(void **)((u8 *)gameManager + 0x2C);
+        buttonPressed = (u32)__cntlzw(*(u32 *)((u8 *)padInput + 0x2C0) & 0x20) >> 5;
+        inRange = inRange && buttonPressed;
+        if (inRange != 0)
             fn_8000C630(0x17, -1);
     }
 }
