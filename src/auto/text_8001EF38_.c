@@ -224,27 +224,28 @@ void fn_8001EFF0(void) {
 }
 #pragma scheduling on
 s32 fn_8001F2C8(void* alarm) {
+    /* Release each lifetime-counter attachment and close the achievements archive. */
     if (lbl_8055D610 != 0) {
-        SrcCoef* p = lbl_802FDF30;
-        void* c;
-        u32 i = 0;
+        SrcCoef* slot = lbl_802FDF30;
+        void* attachment;
+        u32 index = 0;
         void* zero = NULL;
         do {
-            c = p->unkC;
-            if (c != NULL) {
-                if (c != NULL) {
-                    if (*(s32*)c != 0) {
-                        fn_80128670(*(s32*)c);
+            attachment = slot->unkC;
+            if (attachment != NULL) {
+                if (attachment != NULL) {
+                    if (*(s32*)attachment != 0) {
+                        fn_80128670(*(s32*)attachment);
                     }
-                    *(s32*)c = (s32)zero;
-                    ((s32*)c)[1] = (s32)zero;
-                    fn_80128668(c);
+                    *(s32*)attachment = (s32)zero;
+                    ((s32*)attachment)[1] = (s32)zero;
+                    fn_80128668(attachment);
                 }
-                p->unkC = zero;
+                slot->unkC = zero;
             }
-            i++;
-            p++;
-        } while (i < 8);
+            index++;
+            slot++;
+        } while (index < 8);
         fn_80131818(lbl_8055D610);
         lbl_8055D610 = 0;
     }
