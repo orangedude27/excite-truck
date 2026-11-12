@@ -35,6 +35,42 @@ extern int stricmp(const char *, const char *);
 extern unsigned char lbl_8055AE60, lbl_8055AE68, lbl_8055AE6C, lbl_8055AE74, lbl_8055AE7C, lbl_8055AE84, lbl_8055AE8C, lbl_8055AE94, lbl_8055AE9C, lbl_8055AEA8;
 extern unsigned char lbl_80339860[], lbl_8033986C[];
 extern float lbl_80562CA8;
+
+/* Keys of the level's weather parameters, read out of the parameter archive by
+ * fn_801E1894 (pooled string literals). */
+#define KEY_WEATHER     lbl_8055AE60 /* "weather": the archive object */
+#define KEY_FOG         lbl_8055AE68 /* "fog": its value group */
+#define KEY_PRECIP      lbl_8055AE6C /* "precip" */
+#define VAL_PRECIP_NONE lbl_8055AE74 /* "none" */
+#define VAL_PRECIP_RAIN lbl_8055AE7C /* "rain" */
+#define VAL_PRECIP_SNOW lbl_8055AE84 /* "snow" */
+#define KEY_COLOR       lbl_8055AE8C /* "color" */
+#define KEY_START       lbl_8055AE94 /* "start" */
+#define KEY_STOP        lbl_8055AE9C /* "stop" */
+#define KEY_DENSITY     lbl_8055AEA8 /* "density" */
+#define KEY_LIGHTNING   lbl_80339860 /* "lightning" */
+#define KEY_IS_NIGHT    lbl_8033986C /* "is_night" */
+
+/* WeatherState::precipType, from the "precip" text. */
+#define PRECIP_NONE 0
+#define PRECIP_RAIN 1
+#define PRECIP_SNOW 2
+
+/* Weather state block: cleared by fn_801E1874, filled by fn_801E1894 and handed
+ * out by fn_801E1F44. */
+typedef struct WeatherState {
+    int precipType;               /* 0x00: PRECIP_* */
+    unsigned char isNight;        /* 0x04: the "is_night" value */
+    int fogColor;                 /* 0x08: 0xFFRRGGBB */
+    float fogStart;               /* 0x0C: "start" */
+    float fogStop;                /* 0x10: "stop" */
+    float fogDensity;             /* 0x14: "density" */
+    unsigned char fogActive;      /* 0x18: the object had a "fog" group */
+} WeatherState;
+
+#define gWeatherState  lbl_804874D4 /* the WeatherState above */
+#define gWeatherLoaded lbl_8055EA20 /* 0: reload the parameters next time */
+#define gLightningOn   lbl_8055EA22 /* lightning flashes with this weather */
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
