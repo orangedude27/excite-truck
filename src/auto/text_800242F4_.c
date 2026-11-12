@@ -3,6 +3,7 @@
 #include <ansi_files.h>
 #include <buffer_io.h>
 
+/* Flush the FILE's write buffer to the underlying write function and reset buffer state. */
 int __flush_buffer(FILE* file, size_t* bytes_flushed) {
     size_t buffer_len;
     int ioresult;
