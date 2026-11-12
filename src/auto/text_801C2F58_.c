@@ -3100,6 +3100,7 @@ void fn_801C6AD0(s32 *arg0) {
 }
 
 void fn_801C6D94(void) {
+    /* Copy a 12-word state block into the working buffer, then enable mode 1. */
     struct MtxCopy {
         s32 data[12];
     };
