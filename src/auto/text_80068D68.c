@@ -8729,20 +8729,21 @@ void fn_80085DC4(void *arg0, u8 arg1) {
     btu_hcif_send_cmd(arg0);
 }
 
+/* Set the local Bluetooth device name and send HCI Change_Local_Name (BTM_SetLocalDeviceName). */
 tBTM_STATUS BTM_SetLocalDeviceName(char *p_name) {
-    void *buf;
-    u8 *name;
+    void *cmd_buf;
+    u8 *btm_cb_ptr;
 
     if (p_name == NULL) return 5;
-    name = lbl_803C0F78;
-    if (name[0x64E] <= 1) return 0xC;
-    buf = GKI_getpoolbuf(2);
-    if (buf != NULL) {
-        if ((void *)name != (void *)p_name) {
-            memset(name, 0, 0x20);
-            strncpy((char *)name, p_name, 0x1F);
+    btm_cb_ptr = lbl_803C0F78;
+    if (btm_cb_ptr[0x64E] <= 1) return 0xC;
+    cmd_buf = GKI_getpoolbuf(2);
+    if (cmd_buf != NULL) {
+        if ((void *)btm_cb_ptr != (void *)p_name) {
+            memset(btm_cb_ptr, 0, 0x20);
+            strncpy((char *)btm_cb_ptr, p_name, 0x1F);
         }
-        ((BOOLEAN (*)(void *, BD_NAME))btsnd_hcic_change_name)(buf, name);
+        ((BOOLEAN (*)(void *, BD_NAME))btsnd_hcic_change_name)(cmd_buf, btm_cb_ptr);
         return 1;
     }
     return 3;
