@@ -627,6 +627,7 @@ extern char lbl_80318040[];
 extern char lbl_8031806C[];
 extern char lbl_80318090[];
 extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
+extern void l2c_link_hci_conn_req(u8 *bd_addr);
 extern void l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_803130C8[];
 extern u8 lbl_80392960[];
@@ -15967,23 +15968,23 @@ u8 HID_HostOpenDev(u32 arg0) {
 }
 
 u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, BT_HDR *pbuf) {
-    u32 messages = (u32)lbl_80317720;
+    char *messages = lbl_80317720;
     u8 status = 0;
 
     if (lbl_803C3C38[0x400] == 0) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, (char *)(messages + 0));
+            fn_8007093C(0x1E0000, messages + 0);
         status = 1;
     }
     if ((dev_handle > 0x10) ||
         (*((u8 *)lbl_803C3C38 + dev_handle * 0x34) == 0)) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, (char *)(messages + 0x18));
+            fn_8007093C(0x1E0000, messages + 0x18);
         status = 5;
     }
     if (*((u8 *)lbl_803C3C38 + dev_handle * 0x34 + 0xA) != 1) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_80070954(0x1E0000, (char *)(messages + 0x30), dev_handle);
+            fn_80070954(0x1E0000, messages + 0x30, dev_handle);
         status = 4;
     }
     if (status != 0) {
