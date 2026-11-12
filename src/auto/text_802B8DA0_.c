@@ -1043,8 +1043,8 @@ extern "C" void fn_802BA348(void) {
         int cap;
         void *buf[4];
     } s;
-    int i, j, total, n;
     void *first, *cur, *p, *obj, *entry, *buffer, *items;
+    int i, total, off, j, n;
     s.name = lbl_8034A9D0;
     s.start = fn_802E2C20(lbl_8034A9D0);
     s.data = s.buf;
@@ -1062,8 +1062,8 @@ extern "C" void fn_802BA348(void) {
         if (cur == first || cur == 0) break;
     }
     total = 0;
-    for (i = 0; i < s.count; i++) {
-        obj = s.data[i];
+    for (i = 0, off = 0; i < s.count; off += 4, i++) {
+        obj = *(void **)((char *)s.data + off);
         p = fn_80138B4C(obj, 0);
         if (p != 0) {
             do {
@@ -1082,13 +1082,13 @@ extern "C" void fn_802BA348(void) {
         *(void **)((char *)entry + 0xC) = items;
     }
     lbl_8055FA78 = entry;
-    for (j = 0; j < s.count; j++)
-        fn_802BA010(s.data[j], j);
+    for (j = 0, off = 0; j < s.count; off += 4, j++)
+        fn_802BA010(*(void **)((char *)s.data + off), j);
     s.data = 0;
     s.count = 0;
     s.cap = 0;
     if (((int (*)(void))fn_802E2C20)() - s.start > 0x1F4)
-        fn_802E30C8(&lbl_8034A064, s.name);
+        fn_802E30C8(lbl_8034A064, s.name);
 }
 
 #pragma cplusplus reset
@@ -1198,12 +1198,13 @@ extern "C" f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
     f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
     f32 d = y0 * x1 - x0 * y1;
-    f32 hi = x0 + (z0 + y0);
     f32 k1 = lbl_80564CEC;
+    f32 hi = x0 + (z0 + y0);
     f32 z1 = c[1];
     f32 lo = z0 + x0;
     f32 u, v, w, q;
     f32 t;
+    f32 v5, n_lo, n_hi;
     out[10] = lbl_80564CD8;
     u = y0 / d;
     v = -x0 / d;
@@ -1221,20 +1222,29 @@ extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
     hi = c[0] + a[0];
     lo = (hi < lo) ? hi : lo;
     hi = c[0];
-    out[5] = (hi < lo) ? hi : lo;
-    lo = c[1] + b[1]; hi = b[1] + (c[1] + a[1]);
+    v5 = (hi < lo) ? hi : lo;
+    n_lo = c[1] + b[1];
+    n_hi = b[1] + (c[1] + a[1]);
+    out[5] = v5;
+    lo = n_lo; hi = n_hi;
     lo = (lo < hi) ? lo : hi;
     hi = c[1] + a[1];
     lo = (hi < lo) ? hi : lo;
     hi = c[1];
-    out[6] = (hi < lo) ? hi : lo;
-    lo = c[0] + b[0]; hi = b[0] + (c[0] + a[0]);
+    v5 = (hi < lo) ? hi : lo;
+    n_lo = c[0] + b[0];
+    n_hi = b[0] + (c[0] + a[0]);
+    out[6] = v5;
+    lo = n_lo; hi = n_hi;
     lo = (lo > hi) ? lo : hi;
     hi = c[0] + a[0];
     lo = (hi > lo) ? hi : lo;
     hi = c[0];
-    out[7] = (hi > lo) ? hi : lo;
-    lo = c[1] + b[1]; hi = b[1] + (c[1] + a[1]);
+    v5 = (hi > lo) ? hi : lo;
+    n_lo = c[1] + b[1];
+    n_hi = b[1] + (c[1] + a[1]);
+    out[7] = v5;
+    lo = n_lo; hi = n_hi;
     lo = (lo > hi) ? lo : hi;
     hi = c[1] + a[1];
     lo = (hi > lo) ? hi : lo;
@@ -1287,7 +1297,9 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     int index;
     int *entry;
     int off;
+    int state;
     int count;
+    int **items;
     char *result;
     char *name;
     float angle;
@@ -1314,30 +1326,27 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     *(int *)(result+8) = 0;
     name = ((Object *)arg0)->name(&lbl_8055CEF8);
     extra = ((Object *)arg0)->v6(&lbl_8055CEE4, 0x378);
-    index = 0;
+    RenderList *list = (RenderList *)lbl_804BFFF4;
     off = 0;
-    for(; index < *(int *)((char *)&lbl_804BFFF4+4); ) {
-        entry = *(int **)(*(char **)&lbl_804BFFF4 + off);
+    for(index=0; index < list->count; index++) {
+        entry=(int *)((int **)list->items)[off >> 2];
         if (stricmp((char *)entry[0],name)==0) goto found;
         off += 4;
-        index++;
     }
-    count=*(int *)((char *)&lbl_804BFFF4+4);
-    {
-    char *items=*(char **)&lbl_804BFFF4;
-    *(int *)((char *)&lbl_804BFFF4+4)=count+1;
-    off = count << 2;
+    count=list->count;
+    items=(int **)list->items;
+    list->count=count+1;
     entry=(int *)fn_801284F8(0x10,&lbl_8055CECC);
     if(entry) {
         entry[0]=(int)name;
-        if ((signed char)*name) entry[1]=fn_802B110C((void *)fn_802B8E50,name);
-        else entry[1]=-2;
-        if(entry[1]==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
+        if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
+        else state=-2;
+        entry[1]=state;
+        if(state==-2 && (signed char)*name) fn_802E317C((char *)lbl_8034AA2C,name);
         entry[3]=0;
         entry[2]=extra;
     }
-    *(int **)(items + off) = entry;
-    }
+    items[count]=entry;
 found:
     *(int *)(result+16)=entry[3];
     entry[3]=(int)result;
@@ -1582,6 +1591,8 @@ clear_nodes:
     }
 }
 #pragma scheduling on
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802BB3B8(int a, int b) {
     /* Traverse pending render batches, draw them, and clear their lists. */
     RenderList *list = (RenderList *)lbl_804BFFF4;
