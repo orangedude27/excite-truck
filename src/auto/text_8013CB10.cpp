@@ -1,7 +1,7 @@
 #include "types.h"
-struct V9_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3(); virtual void m4(); virtual void m5(); virtual void m6(); virtual void *v9(int); };
-struct V10_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); virtual void m1(); virtual void *v10(void *); };
-struct VC_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); virtual void vC(void *); };
+struct V9_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3(); virtual void m4(); virtual void *v9(int); };
+struct V10_8013FAC4 { virtual void d0(); virtual void d1(); virtual void *v10(void *); };
+struct VC_8013FAC4 { virtual void d0(); virtual void vC(void *); };
 extern "C" void *memset(void *, s32, u32);
 extern "C" f32 fn_801B306C(void);
 extern "C" s32 fn_80009C84(void);
@@ -3864,7 +3864,7 @@ extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
     enabled = *(s32 *)((u8 *)arg2 + 0x104);
     dataObj = (u8 *)arg2;
     if (enabled == 0) return;
-    result = ((void *(*)(void *, int))(*(void ***)arg0)[9])(arg0, arg1);
+    result = ((V9_8013FAC4 *)arg0)->v9(arg1);
     if (result != 0) return;
     delta = fn_8001DAE8(dataObj + 0xC8) - *(f32 *)(dataObj + 0xCC);
     scale = lbl_805614A4;
@@ -3881,8 +3881,7 @@ extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
     } else scale = lbl_805614AC;
     {
         void *obj = *(void **)((u8 *)arg0 + 0x54);
-        void *fn = *(void **)((u8 *)*(void ***)obj + 0x10);
-        result = ((void *(*)(void *, void *))fn)(obj, lbl_8032C978);
+        result = ((V10_8013FAC4 *)obj)->v10(lbl_8032C978);
     }
     if (result != 0) {
         data = *(Copy *)result;
@@ -3892,8 +3891,7 @@ extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
     }
     {
         void *obj = *(void **)((u8 *)arg0 + 0x54);
-        void *fn = *(void **)((u8 *)*(void ***)obj + 0x0C);
-        ((void (*)(void *, void *))fn)(obj, lbl_8032C988);
+        ((VC_8013FAC4 *)obj)->vC(lbl_8032C988);
     }
     fn_801476C4();
 }
