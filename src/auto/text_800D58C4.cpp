@@ -206,6 +206,13 @@ struct ResAccess_800D58C4 {
 };
 struct ResFlagView_800D58C4 { u8 pad[0x3C]; u32 flags; };
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
+static inline bool HasState_800D6CA0(StateNode_800D6CA0 *t, StateNode_800D6CA0 *s) {
+    while (t) {
+        if (t == s) return true;
+        t = t->next;
+    }
+    return false;
+}
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
 extern "C" s32 lbl_8055DE08;
@@ -479,6 +486,55 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
     mask = (u32)((s32)mask >> 31);
     const void* outColors = (const void*)((u32)adjustedColors & mask);
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(pos, size, texCoordCount, texCoords, outColors);
+}
+
+extern "C" void GXSetTevOp(u8, u8);
+extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
+    GXClearVtxDesc();
+    GXSetVtxDesc((GXAttr)9, (GXAttrType)1);
+    GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)9, (GXCompCnt)0, (GXCompType)4, (u8)0);
+    GXSetNumChans((u32)1);
+    GXSetChanCtrl((u32)4, (u32)0, (u32)0, (u32)0, (u32)0, (u32)0, (u32)2);
+    u8 *color = (u8 *)arg2;
+    u8 r = color[0];
+    u8 g = color[1];
+    u8 b = color[2];
+    u8 a = color[3];
+    u8 buf[4];
+    buf[0] = r;
+    buf[1] = g;
+    buf[2] = b;
+    buf[3] = a;
+    GXSetChanMatColor_Internal((u32)4, buf, b, g, r);
+    GXSetNumTexGens((u8)0);
+    GXSetNumTevStages((u32)1);
+    GXSetNumIndStages((u32)0);
+    GXSetTevOrder((u8)0, (u8)0xFF, (u8)0xFF, (u8)4);
+    GXSetTevOp((u8)0, (u8)4);
+    GXSetTevDirect((u8)0);
+    GXSetTevSwapMode((u8)0, (u32)0, (u32)0);
+    GXSetTevSwapModeTable((u32)0, (u32)0, (u32)1, (u32)2, (u32)3);
+    GXSetAlphaCompare((u32)7, (u8)0, (u8)0, (u32)7, (u8)0);
+    GXSetBlendMode((u8)1, (u8)4, (u8)5, (u8)0xF);
+    GXSetLineWidth((u8)6, (u32)0);
+    GXBegin((GXPrimitive)0xB0, (GXVtxFmt)0, (u16)5);
+    volatile f32 *fifo = (volatile f32 *)0xCC008000;
+    f32 w = *(f32 *)arg1;
+    f32 x0 = *(f32 *)arg0;
+    *fifo = x0;
+    f32 y0 = *(f32 *)((u8 *)arg0 + 4);
+    f32 x1 = x0 + w;
+    f32 h = *(f32 *)((u8 *)arg1 + 4);
+    *fifo = y0;
+    f32 y1 = y0 + h;
+    *fifo = x1;
+    *fifo = y0;
+    *fifo = x1;
+    *fifo = y1;
+    *fifo = x0;
+    *fifo = y1;
+    *fifo = x0;
+    *fifo = y0;
 }
 
 #pragma use_lmw_stmw off
@@ -981,9 +1037,9 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
             }
             }
             if (result) {
-                void *it=(char *)self+8;
+                void *it=(void *)((int)self+8);
                 if (result==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8C0,0x233,lbl_8031F89C);
-                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self+4,(void **)&it,(char *)result+4);
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((void *)((int)self+4),(void **)&it,(char *)result+4);
             }
             break;
         }
@@ -1092,6 +1148,7 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 
 extern "C" void fn_800D6CA0(s32, s32);
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
+    StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
     StateNode_800D6CA0 *type;
     StateNode_800D6CA0 *n1, *n2, *n3;
@@ -1100,7 +1157,7 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1();
     found = false;
     while (type) {
-        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+        if (type == sentinel) { found = true; break; }
         type = type->next;
     }
     { u8 *cast = found ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
@@ -1152,39 +1209,33 @@ extern "C" const char lbl_8031F854[];
 extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
     void* obj;
     switch (kind) {
-    case 0x70616E31: {
-        const void *data = pane;
+    case 0x70616E31:
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
-        if (obj) return new (obj) nw4hbm::lyt::Pane((const nw4hbm::lyt::res::Pane*)data);
+        if (obj) return new (obj) nw4hbm::lyt::Pane((const nw4hbm::lyt::res::Pane*)pane);
         return 0;
-    }
     case 0x70696331: {
-        const void *data = pane;
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
-        if (obj) return new (obj) nw4hbm::lyt::Picture((const nw4hbm::lyt::res::Picture*)data, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        if (obj) return new (obj) nw4hbm::lyt::Picture((const nw4hbm::lyt::res::Picture*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x74787431: {
-        const void *data = pane;
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
-        if (obj) return new (obj) nw4hbm::lyt::TextBox((const nw4hbm::lyt::res::TextBox*)data, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        if (obj) return new (obj) nw4hbm::lyt::TextBox((const nw4hbm::lyt::res::TextBox*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x776E6431: {
-        const void *data = pane;
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
-        if (obj) return new (obj) nw4hbm::lyt::Window((const nw4hbm::lyt::res::Window*)data, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        if (obj) return new (obj) nw4hbm::lyt::Window((const nw4hbm::lyt::res::Window*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x626E6431: {
-        const void *data = pane;
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
         if (!obj) return 0;
-        return fn_800D57AC(obj, data, &tmp);
+        return fn_800D57AC(obj, pane, &tmp);
     }
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0x1F7, lbl_8031F854);
@@ -1242,9 +1293,9 @@ extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E94;
 extern "C" f32 lbl_80560E98;
 extern "C" void fn_800D7D5C(void* arg0, f32* m) {
+    s8 scale=0;
     f32 a=m[0], b=m[1], c=m[2], d=m[3], e=m[4], f=m[5];
     f32 aa=__fabsf(a), bb=__fabsf(b), cc=__fabsf(c), dd=__fabsf(d), ee=__fabsf(e), ff=__fabsf(f);
-    s8 scale=0;
     if (aa <= lbl_80560E94 && bb <= lbl_80560E94 && cc <= lbl_80560E94 && dd <= lbl_80560E94 && ee <= lbl_80560E94 && ff <= lbl_80560E94) {
         while (scale < 0x2E && aa <= lbl_80560E94 && bb <= lbl_80560E94 && cc <= lbl_80560E94 && dd <= lbl_80560E94 && ee <= lbl_80560E94 && ff <= lbl_80560E94) {
             aa *= lbl_80560E88; a *= lbl_80560E88; b *= lbl_80560E88;
@@ -2072,10 +2123,10 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
     u32 *p = (u32 *)self;
     const char *msg = lbl_8031F990;
     if (count > ((p[0x4C / 4] >> 20) & 15))
-        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x39c, msg + 0x38c);
+        Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x39c, msg + 0x38c);
     if (count != 0) {
         if (p[0x58 / 4] == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x39f, msg + 0x360);
+            Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x39f, msg + 0x360);
         u32 raw = p[0x4C / 4];
         u8 *base = (u8 *)p[0x58 / 4] + ((raw >> 23) & 0x1E0) + ((raw >> 24) & 15) * 20;
         u32 old = (p[0x50 / 4] >> 20) & 15;
@@ -2254,19 +2305,18 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
         case 3: *(s16 *)((u8 *)arg0 + index * 8 + 0x2A) = arg2; return;
         }
         return;
-    } else {
-        if (arg1 >= 0x20) return;
-        s32 value = arg2 & ~(arg2 >> 31);
-        s32 byte = 0xFF;
-        if (value <= 0xFF) byte = value;
-        index = (u32)(arg1 - 0x10) >> 2;
-        component = (arg1 - 0x10) & 3;
-        switch (component) {
-        case 0: *((u8 *)arg0 + index * 4 + 0x3C) = byte; return;
-        case 1: *((u8 *)arg0 + index * 4 + 0x3D) = byte; return;
-        case 2: *((u8 *)arg0 + index * 4 + 0x3E) = byte; return;
-        case 3: *((u8 *)arg0 + index * 4 + 0x3F) = byte; return;
-        }
+    }
+    if (arg1 >= 0x20) return;
+    s32 value = arg2 & ~(arg2 >> 31);
+    s32 byte = 0xFF;
+    if (value <= 0xFF) byte = value;
+    index = (u32)(arg1 - 0x10) >> 2;
+    component = (arg1 - 0x10) & 3;
+    switch (component) {
+    case 0: *((u8 *)arg0 + index * 4 + 0x3C) = byte; return;
+    case 1: *((u8 *)arg0 + index * 4 + 0x3D) = byte; return;
+    case 2: *((u8 *)arg0 + index * 4 + 0x3E) = byte; return;
+    case 3: *((u8 *)arg0 + index * 4 + 0x3F) = byte; return;
     }
 }
 
