@@ -46,37 +46,38 @@ static OSHeapCell* DLExtract(OSHeapCell* list, OSHeapCell* child) {
     return list;
 }
 
-static OSHeapCell* DLInsert(OSHeapCell* list, OSHeapCell* child) {
+/* Inserts a free heap cell into the address-sorted free list, coalescing with adjacent cells. Returns the new list head. */
+static OSHeapCell* DLInsert(OSHeapCell* list, OSHeapCell* cell) {
     OSHeapCell* prev = NULL;
     OSHeapCell* next = list;
 
     for (; next != NULL; prev = next, next = next->next) {
-        if (child <= next) {
+        if (cell <= next) {
             break;
         }
     }
 
-    child->next = next;
-    child->prev = prev;
+    cell->next = next;
+    cell->prev = prev;
 
     if (next != NULL) {
-        next->prev = child;
+        next->prev = cell;
 
-        if ((u8*)child + child->size == (u8*)next) {
-            child->size += next->size;
+        if ((u8*)cell + cell->size == (u8*)next) {
+            cell->size += next->size;
             next = next->next;
-            child->next = next;
+            cell->next = next;
             if (next != NULL) {
-                next->prev = child;
+                next->prev = cell;
             }
         }
     }
 
     if (prev != NULL) {
-        prev->next = child;
+        prev->next = cell;
 
-        if ((u8*)prev + prev->size == (u8*)child) {
-            prev->size += child->size;
+        if ((u8*)prev + prev->size == (u8*)cell) {
+            prev->size += cell->size;
             prev->next = next;
             if (next != NULL) {
                 next->prev = prev;
@@ -85,7 +86,7 @@ static OSHeapCell* DLInsert(OSHeapCell* list, OSHeapCell* child) {
 
         return list;
     } else {
-        return child;
+        return cell;
     }
 }
 
