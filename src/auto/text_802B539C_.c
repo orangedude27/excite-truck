@@ -298,43 +298,44 @@ extern "C" void fn_802B562C(void *, void *, void *);
 #pragma dont_inline on
 #pragma push
 #pragma use_lmw_stmw off
+/* Collect all "unified_material_set" items from loaded UMat archives into the material-set list. */
 extern "C" void fn_802B58E0(void) {
-    class Obj {
+    class ArchiveObj {
     public:
         virtual void f0();
         virtual void *getItem(int);
     };
-    int offset;
-    int i;
-    void *obj;
+    int archiveOffset;
+    int archiveIndex;
+    void *archive;
     void *item;
     int itemIndex;
-    unsigned int count;
-    void *entries;
+    unsigned int setCount;
+    void *setEntries;
 
-    i = 0;
-    offset = 0;
+    archiveIndex = 0;
+    archiveOffset = 0;
     goto outer_test;
 outer_body:
-    obj = *(void **)((char *)lbl_804BE454.entries + offset);
+    archive = *(void **)((char *)UMatArchives.entries + archiveOffset);
     itemIndex = 0;
     goto item_fetch;
 item_body:
     if (fn_802B54CC(item) != 0) {
-        count = lbl_804BE4AC.count;
-        entries = lbl_804BE4AC.entries;
-        lbl_804BE4AC.count = count + 1;
-        fn_802B562C((char *)entries + count * 0x30, item, entries);
+        setCount = UMatSetList.count;
+        setEntries = UMatSetList.entries;
+        UMatSetList.count = setCount + 1;
+        fn_802B562C((char *)setEntries + setCount * 0x30, item, setEntries);
     }
     itemIndex++;
 item_fetch:
-    item = ((Obj *)obj)->getItem(itemIndex);
+    item = ((ArchiveObj *)archive)->getItem(itemIndex);
     if (item != 0)
         goto item_body;
-    offset += 4;
-    i++;
+    archiveOffset += 4;
+    archiveIndex++;
 outer_test:
-    if (i < (int)lbl_804BE454.count)
+    if (archiveIndex < (int)UMatArchives.count)
         goto outer_body;
 }
 #pragma pop
