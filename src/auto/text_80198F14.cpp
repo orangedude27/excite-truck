@@ -3055,30 +3055,30 @@ __declspec(section ".data") extern void* lbl_80333968;
 extern f32 lbl_80562370;
 #pragma push
 #pragma small_data off
-extern "C" void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
-    u8 temp_r6;
-    u8 temp_r7;
-    u8 temp_r8;
-    u8 temp_r9;
+extern "C" void* fn_801A1520(void* self, void* unused, s32 doSwap) {
+    u8 b24;
+    u8 b28;
+    u8 b25;
+    u8 b29;
     fn_8019ECC4();
-    *(void**)arg0 = &lbl_80333968;
-    if (arg2 != 0) {
-        temp_r6 = *(u8*)((u8*)arg0 + 0x24);
-        temp_r8 = *(u8*)((u8*)arg0 + 0x25);
-        temp_r7 = *(u8*)((u8*)arg0 + 0x28);
-        temp_r9 = *(u8*)((u8*)arg0 + 0x29);
-        *(u8*)((u8*)arg0 + 0x24) = *(u8*)((u8*)arg0 + 0x27);
-        *(u8*)((u8*)arg0 + 0x27) = temp_r6;
-        *(u8*)((u8*)arg0 + 0x25) = *(u8*)((u8*)arg0 + 0x26);
-        *(u8*)((u8*)arg0 + 0x26) = temp_r8;
-        *(u8*)((u8*)arg0 + 0x28) = *(u8*)((u8*)arg0 + 0x2B);
-        *(u8*)((u8*)arg0 + 0x2B) = temp_r7;
-        *(u8*)((u8*)arg0 + 0x29) = *(u8*)((u8*)arg0 + 0x2A);
-        *(u8*)((u8*)arg0 + 0x2A) = temp_r9;
-        if (*(s32*)((u8*)arg0 + 0x20) == 0x3EB)
-            *(f32*)((u8*)arg0 + 0x24) += lbl_80562370;
+    *(void**)self = &lbl_80333968;
+    if (doSwap != 0) {
+        b24 = *(u8*)((u8*)self + 0x24);
+        b25 = *(u8*)((u8*)self + 0x25);
+        b28 = *(u8*)((u8*)self + 0x28);
+        b29 = *(u8*)((u8*)self + 0x29);
+        *(u8*)((u8*)self + 0x24) = *(u8*)((u8*)self + 0x27);
+        *(u8*)((u8*)self + 0x27) = b24;
+        *(u8*)((u8*)self + 0x25) = *(u8*)((u8*)self + 0x26);
+        *(u8*)((u8*)self + 0x26) = b25;
+        *(u8*)((u8*)self + 0x28) = *(u8*)((u8*)self + 0x2B);
+        *(u8*)((u8*)self + 0x2B) = b28;
+        *(u8*)((u8*)self + 0x29) = *(u8*)((u8*)self + 0x2A);
+        *(u8*)((u8*)self + 0x2A) = b29;
+        if (*(s32*)((u8*)self + 0x20) == 0x3EB)
+            *(f32*)((u8*)self + 0x24) += lbl_80562370;
     }
-    return arg0;
+    return self;
 }
 #pragma pop
 extern f32 lbl_805622D0, lbl_805622D4, lbl_805622E0;
