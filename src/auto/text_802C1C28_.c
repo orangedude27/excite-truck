@@ -108,6 +108,8 @@ __declspec(section ".sdata") extern char lbl_8055CFC8[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_802C1F8C(int unused, void *arg1) {
+    /* Resolve arg1 to a named object and append arg1 to the matching entry's
+     * item list in the global entry table (lbl_804C0810, count lbl_8055FB28). */
     class FirstInterface {
     public:
         virtual void *resolve();
@@ -129,7 +131,7 @@ extern "C" void fn_802C1F8C(int unused, void *arg1) {
         char tail[0x20];
     };
     struct Fn802CEntry *entry;
-    char *name;
+    char *objectName;
     int i;
     SecondInterface *object;
     FirstInterface *input;
@@ -137,11 +139,11 @@ extern "C" void fn_802C1F8C(int unused, void *arg1) {
     input = (FirstInterface *)arg1;
     object = (SecondInterface *)input->resolve();
     if (object != 0) {
-        name = object->getName(lbl_8055CFC0, lbl_8055CFC8);
+        objectName = object->getName(lbl_8055CFC0, lbl_8055CFC8);
         entry = (struct Fn802CEntry *)lbl_804C0810;
         i = 0;
         while (i < lbl_8055FB28) {
-            if (strcmp(name, entry->name) == 0) {
+            if (strcmp(objectName, entry->name) == 0) {
                 volatile int *countPtr = (volatile int *)((char *)entry + 0x3C);
                 void ** volatile *itemsPtr = (void ** volatile *)((char *)entry + 0x34);
                 int count = *countPtr;
@@ -229,12 +231,8 @@ void fn_802C21C0(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802C21DC(int x, int y, unsigned int color) {
-    unsigned int a;
-    unsigned int b;
-    unsigned int packed;
-    short sx;
-    short sy;
-    int *state;
+    int *state; short sx; short sy;
+    unsigned int lo; unsigned int hi; unsigned int packed;
     short yCoord;
     short xCoord;
     int height;
@@ -243,11 +241,9 @@ void fn_802C21DC(int x, int y, unsigned int color) {
     int index;
     int result;
     if (lbl_8055FB54 != 0) {
-        a = (color << 8) & 0xFF00;
-        a |= color & 0xFF;
-        b = (color << 16) & 0x00FF0000;
-        b |= (color >> 8) << 24;
-        packed = a | b;
+        lo = ((color & 0xFF) << 8) | (color & 0xFF);
+        hi = (((color >> 8) & 0xFF) << 24) | (((color >> 8) & 0xFF) << 16);
+        packed = lo | hi;
         sx = fn_802C2120(x);
         sy = fn_802C2120(y);
         state = (int *)lbl_8055FB54;
