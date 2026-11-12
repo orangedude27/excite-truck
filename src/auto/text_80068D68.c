@@ -6434,6 +6434,7 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
     register u8 *strings = lbl_803151D8;
     u8 cfm[10];
     s32 event;
+
     if (lbl_8055DC80 >= 5) {
         register u8 *msg;
         switch (*(u16 *)(cb + 0x10)) {
@@ -6449,8 +6450,10 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
         case 3: msg = strings + 0x200; break;
         default: break;
         }
-        ((void (*)(u32, void *, void *))fn_80070954)(0x504, strings + 0x2A8, msg);
+        ((void (*)(u32, void *, void *))fn_80070954)(
+            0x504, strings + 0x2A8, msg);
     }
+
     cfm[0] = 0;
     cfm[1] = cb[0x16];
     event = *(u16 *)(cb + 0x10);
@@ -6460,22 +6463,25 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
     if (event >= 5) goto byte6;
     if (event < 4) goto second_trace;
     goto copy_eight;
+
 event_high:
     if (event == 9) goto second_trace;
     if (event >= 9) goto second_trace;
     cfm[2] = tail[8];
     goto data_done;
+
 copy_eight:
     memcpy(cfm + 2, buf, 8);
     goto data_done;
+
 byte6:
     cfm[2] = tail[8];
     goto data_done;
+
 second_trace:
-    (void)tail;
     if (lbl_8055DC80 >= 5) {
         register u8 *msg;
-        switch (*(u16 *)(cb + 0x10)) {
+        switch (event) {
         case 4: msg = strings + 0x16C; break;
         case 5: msg = strings + 0x180; break;
         case 6: msg = strings + 0x194; break;
@@ -6488,12 +6494,14 @@ second_trace:
         case 3: msg = strings + 0x200; break;
         default: break;
         }
-        ((void (*)(u32, void *, void *))fn_80070954)(0x504, strings + 0x2CC, msg);
+        ((void (*)(u32, void *, void *))fn_80070954)(
+            0x504, strings + 0x2CC, msg);
     }
 data_done:
     fn_80071298((void *)0x17, (void *)(u32)cb[0x15], cb + 8);
     fn_80071264((void *)0x17, (void *)(u32)cb[0x15], cb + 8);
-    (*(void (**)(u16, void *))(lbl_803C0D48 + 0x224))(*(u16 *)(cb + 0x10), cfm);
+    (*(void (**)(u16, void *))(lbl_803C0D48 + 0x224))(
+        *(u16 *)(cb + 0x10), cfm);
     *(u16 *)(cb + 0x10) = 0;
     fn_800716F0(&buf);
 }
@@ -10433,8 +10441,36 @@ void fn_8007D4C4(void) {
     dst[0x1909] = 2;
 }
 
-int btsnd_hcic_accept_conn(void *, u8 *, u8);
-void btsnd_hcic_accept_esco_conn(BT_HDR *, BD_ADDR, UINT32, UINT32, UINT16, UINT16, UINT8, UINT16);
+/* One entry of btm_cb.sco_cb.sco_db[] - the game's tSCO_CONN, 0x34 bytes.  The
+ * header's tSCO_CONN sits at another offset in this build, so this describes
+ * the record where it really is and names only what the SCO code reads. */
+typedef struct {
+    UINT8  _00[8];            /* 0x00: the connect/disconnect callbacks */
+    UINT16 state;             /* 0x08: SCO_ST_* */
+    UINT8  _0A[0x14 - 0x0A];  /* 0x0A: the HCI handle and the flags after it */
+    tBTM_ESCO_PARAMS setup;   /* 0x14: esco.setup - parameters to negotiate with */
+    UINT8  _24[0x2E - 0x24];  /* 0x24: esco.data - the SCO handle and the peer BDA */
+    UINT8  link_type;         /* 0x2E: esco.data.link_type, BTM_LINK_TYPE_* */
+    UINT8  _2F[5];            /* 0x2F: the rest of esco.data and its HCI status */
+} ScoConnView;
+
+#define SCO_ST_UNUSED       0 /* the record is free */
+#define SCO_ST_LISTENING    1 /* waiting for an (e)SCO connection */
+#define SCO_ST_W4_CONN_RSP  2 /* an (e)SCO request is waiting for the application */
+#define SCO_ST_CONNECTING   3
+
+#define BTM_SCO_DB          0x1854 /* btm_cb.sco_cb.sco_db[] */
+#define BTM_SCO_DB_LINKS    3      /* BTM_MAX_SCO_LINKS as this build counts it */
+
+#define btm_cb_esco_supported (lbl_803C0F78[0x1908]) /* btm_cb.sco_cb.esco_supported: 1.2 cntlr with eSCO links */
+#define btm_cb_def_pkt_types  (*(UINT16 *)(lbl_803C0F78 + 0x1904)) /* btm_cb.sco_cb.def_esco_parms.packet_types */
+#define btm_cb_sco_pkt_types  (*(UINT16 *)(lbl_803C0F78 + 0x656))  /* btm_cb.btm_sco_pkt_types_supported */
+#define btm_cb_hci_version    (lbl_803C0F78[0x636]) /* btm_cb.devcb.local_version.hci_version */
+
+int btsnd_hcic_accept_conn(void *p_buf, u8 *bda, u8 link_type);
+void btsnd_hcic_accept_esco_conn(BT_HDR *p_buf, BD_ADDR bda, UINT32 tx_bw, UINT32 rx_bw,
+                                 UINT16 max_latency, UINT16 voice_contfmt,
+                                 UINT8 retrans_effort, UINT16 packet_types);
 void btm_chg_all_acl_pkt_types(UINT8);
 static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBTM_ESCO_PARAMS *p_parms) {
     UINT8 *p_sco;
