@@ -98,6 +98,29 @@ void *fn_802D7600(void *arg0) {
 }
 #pragma pop
 
+/* drgc texture format ids: the word at +0x00 of the source texture record that
+ * drCreateTexture (fn_802D8E9C) switches on to pick a creator.  The 0x40.. run
+ * is the set the game ships content in; the small ids are the older spelling of
+ * the same formats that switch still accepts (0 C4, 1 C8, 2 RGB565, 3 RGBA8,
+ * 0x10/0x11 CMPR+I4, 0x17 CMPR).  The GX format each one is built in is noted. */
+enum DrTexFormat {
+    DRTEX_OLD_RGB565 = 2,   /* GX_TF_RGB565, fn_802D7D98 */
+    DRTEX_OLD_RGBA8 = 3,    /* GX_TF_RGBA8,  fn_802D7D98 */
+    DRTEX_C4 = 0x40,        /* GX_TF_C4,   fn_802D7B5C (palette + 4bpp tiles) */
+    DRTEX_C8 = 0x41,        /* GX_TF_C8,   fn_802D7B5C */
+    DRTEX_CMPR = 0x42,      /* GX_TF_CMPR, fn_802D8A84, no alpha */
+    DRTEX_CMPR_A = 0x43,    /* GX_TF_CMPR, fn_802D8A84, alpha block */
+    DRTEX_CMPR_I4 = 0x44,   /* fn_802D8C00: CMPR + a second I4 texture */
+    DRTEX_RGB565 = 0x45,    /* GX_TF_RGB565, fn_802D7FA0/fn_802D7D98 */
+    DRTEX_RGB5A3 = 0x46,    /* GX_TF_RGB5A3, fn_802D7FA0 */
+    DRTEX_RGBA8 = 0x47,     /* GX_TF_RGBA8,  fn_802D7D98 */
+    DRTEX_I4 = 0x48,        /* GX_TF_I4,  fn_802D7FA0 */
+    DRTEX_I8 = 0x49,        /* GX_TF_I8,  fn_802D7FA0 */
+    DRTEX_IA4 = 0x4A,       /* GX_TF_IA4, fn_802D7FA0 */
+    DRTEX_IA8 = 0x4B,       /* GX_TF_IA8, fn_802D7FA0 */
+    DRTEX_FMT_4C = 0x4C     /* opaque; drCreateTexture rejects it */
+};
+
 #pragma dont_inline on
 void fn_802D768C(void *arg0) {
     extern void fn_80128658(s32);
@@ -206,7 +229,6 @@ void *fn_802D7B5C(void *arg0, void *arg1) {
     char *name = (char *)arg1;
     int entries;
     int palBytes;
-    u32 rawPal;
     int width;
     int height;
     char *texData;
@@ -214,19 +236,17 @@ void *fn_802D7B5C(void *arg0, void *arg1) {
     char *dst;
     unsigned char ch;
     int size;
-    u32 type;
-
-    type = *(u32 *)obj;
+    unsigned int type;
+    int fmt;
+    type = *(unsigned int *)obj;
     isCi4 = 1;
     if (type != 0 && type != 0x40) {
         isCi4 = 0;
     }
-
     texture = *(void **)((char *)obj + 0x30);
     if (texture == 0) {
         texture = fn_802D7600(name);
     }
-
     count = 0x20;
     dst = (char *)texture;
     goto copy_char;
@@ -250,8 +270,7 @@ copied_name:
     if (isCi4 != 0) {
         entries = 0x10;
     }
-    texData = *(char **)((char *)obj + 0x2C);
-    rawPal = *(u32 *)texData;
+    width = *(int *)(*(char **)((char *)obj + 0x2C));
     fn_801282EC(0x20);
     palBytes = entries * 2;
     *(void **)((char *)texture + 0x70) = fn_8012850C((void *)palBytes, lbl_8034C4DC);
@@ -259,31 +278,44 @@ copied_name:
     dst = (char *)fn_8012850C((void *)palBytes, lbl_8034C4E8);
     *(void **)((char *)texture + 0xC4) = dst;
     *(char *)((char *)texture + 0xCC) = 1;
-    *(u32 *)((char *)texture + 0xD8) = rawPal;
-    *(u32 *)((char *)texture + 0x74) = (u32)palBytes;
-    fn_802D78D4(*(void **)((char *)texture + 0x70), dst, rawPal, entries);
-    DCFlushRange(*(void **)((char *)texture + 0x70), *(u32 *)((char *)texture + 0x74));
+    *(int *)((char *)texture + 0xD8) = width;
+    *(int *)((char *)texture + 0x74) = palBytes;
+    fn_802D78D4(*(void **)((char *)texture + 0x70), dst, width, entries);
+    DCFlushRange(*(void **)((char *)texture + 0x70), *(unsigned int *)((char *)texture + 0x74));
     GXInitTlutObj((char *)texture + 0x64, *(void **)((char *)texture + 0x70), 1, (unsigned short)entries);
-    *(u32 *)((char *)texture + 0xC8) = (u32)palBytes;
-    DCFlushRange(*(void **)((char *)texture + 0xC4), (u32)palBytes);
+    *(int *)((char *)texture + 0xC8) = palBytes;
+    DCFlushRange(*(void **)((char *)texture + 0xC4), palBytes);
     GXInitTlutObj((char *)texture + 0xB8, *(void **)((char *)texture + 0xC4), 0, (unsigned short)entries);
-
     width = *(int *)((char *)obj + 0x24);
     height = *(int *)((char *)obj + 0x28);
-    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, (isCi4 != 0) ? 8 : 9, 0, 1);
+    if (isCi4 == 0) {
+        fmt = 9;
+    } else {
+        fmt = 8;
+    }
+    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, fmt, 0, 1);
     texData = *(char **)((char *)obj + 0x2C);
     dst = *(char **)(texData + 4);
     *(char **)((char *)texture + 0xD0) = dst;
     size = (width * height) / ((isCi4 != 0) + 1);
     *(int *)((char *)texture + 0xD4) = size;
     DCFlushRange(dst, size);
-
+    if (isCi4 == 0) {
+        fmt = 9;
+    } else {
+        fmt = 8;
+    }
     GXInitTexObjCI((char *)texture + 0x24, *(void **)(texData + 4),
                    (unsigned short)width, (unsigned short)height,
-                   (isCi4 != 0) ? 8 : 9, 1, 1, 0, 0);
+                   fmt, 1, 1, 0, 0);
+    if (isCi4 == 0) {
+        fmt = 9;
+    } else {
+        fmt = 8;
+    }
     GXInitTexObjCI((char *)texture + 0x78, *(void **)(texData + 4),
                    (unsigned short)width, (unsigned short)height,
-                   (isCi4 != 0) ? 8 : 9, 1, 1, 0, 1);
+                   fmt, 1, 1, 0, 1);
     GXInvalidateTexAll();
     fn_802D7780(texture, obj);
     return texture;
@@ -304,11 +336,10 @@ void *fn_802D7D98(void *arg0, void *arg1) {
     char *dst;
     unsigned char ch;
     int mult;
-    u32 type;
-    u32 lod;
-
+    unsigned int type;
+    unsigned int lod;
     format = -1;
-    type = *(u32 *)obj;
+    type = *(unsigned int *)obj;
     if (type == 0x47 || type == 3) {
         format = 6;
     } else if (type == 0x45 || type == 2) {
@@ -316,12 +347,10 @@ void *fn_802D7D98(void *arg0, void *arg1) {
     } else {
         fn_802E317C(lbl_8034C4F8);
     }
-
     texture = *(void **)((char *)obj + 0x30);
     if (texture == 0) {
         texture = fn_802D7600(work);
     }
-
     dst = (char *)texture;
     count = 0x20;
     goto copy_char;
@@ -347,7 +376,7 @@ copied_name:
     *(int *)((char *)texture + 0xC4) = 0;
     *(char *)((char *)texture + 0xCC) = 0;
     lod = GXGetTexBufferSize((unsigned short)width, (unsigned short)height, format, 0, 1);
-    if (*(u32 *)((char *)obj + 4) == 3) {
+    if (*(unsigned int *)((char *)obj + 4) == 3) {
         fn_801282F4();
         fn_801282EC(0x80);
         work = (char *)fn_801284E8(lbl_8034C528, (int)lod);
@@ -363,14 +392,11 @@ copied_name:
     mult = mult * (width * height);
     *(int *)((char *)texture + 0xD4) = mult;
     DCFlushRange(*(void **)((char *)texture + 0xD0), mult);
-
     mult = *(int *)((char *)obj + 0x20);
-    lod = (u32)((((mult ^ 2) >> 1) - ((mult ^ 2) & mult))) >> 31;
-    GXInitTexObj((char *)texture + 0x24, work, (unsigned short)width,
-                 (unsigned short)height, format, 1, 1, lod);
+    lod = (unsigned int)((((mult ^ 2) >> 1) - ((mult ^ 2) & mult))) >> 31;
+    GXInitTexObj((char *)texture + 0x24, work, (unsigned short)width, (unsigned short)height, format, 1, 1, lod);
     if (lod != 0) {
-        GXInitTexObjLOD((char *)((u32)texture + 0x24), 5, 1, lbl_80565018,
-                        (float)(*(int *)((char *)obj + 0x20) - 1), lbl_8056501C, 1, 1, 0);
+        GXInitTexObjLOD((char *)((unsigned int)texture + 0x24), 5, 1, lbl_80565018, (float)(*(int *)((char *)obj + 0x20) - 1), lbl_8056501C, 1, 1, 0);
     }
     GXInvalidateTexAll();
     fn_802D7780(texture, obj);
@@ -382,25 +408,22 @@ extern int stricmp(const char *, const char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802D7FA0(void *arg0, void *arg1) {
+    char *texture;
+    char *obj = (char *)arg0;
     char *base = lbl_8034C460;
-    void *texture;
-    void *obj = arg0;
-    char *work = (char *)arg1;
-    char *temp;
-    int divisor;
-    int format;
+    int format = -1;
+    int divisor = -1;
     int width;
     int height;
+    char *work = (char *)arg1;
+    char *temp;
+    char *data;
     int count;
     char *dst;
     unsigned char ch;
-    int size;
     u32 type;
     u32 lod;
     int mult;
-
-    format = -1;
-    divisor = -1;
     type = *(u32 *)obj;
     switch (type) {
     case 0x48:
@@ -431,8 +454,7 @@ void *fn_802D7FA0(void *arg0, void *arg1) {
         fn_802E317C(base + 0xd8, type);
         break;
     }
-
-    texture = *(void **)((char *)obj + 0x30);
+    texture = *(char **)(obj + 0x30);
     if (texture == 0) {
         goto alloc_texture;
     }
@@ -440,8 +462,7 @@ void *fn_802D7FA0(void *arg0, void *arg1) {
 alloc_texture:
     texture = fn_802D7600(work);
 got_texture:
-
-    dst = (char *)texture;
+    dst = texture;
     count = 0x20;
     goto copy_char;
 count_down:
@@ -460,25 +481,24 @@ copy_char:
         goto count_down;
     }
 copied_name:
-    width = *(int *)((char *)obj + 0x24);
-    height = *(int *)((char *)obj + 0x28);
-    *(int *)((char *)texture + 0x70) = 0;
-    temp = *(char **)((char *)obj + 0x2C);
-    *(int *)((char *)texture + 0xC4) = 0;
-    *(char *)((char *)texture + 0xCC) = 0;
-    size = ((width * height) * 8) / divisor;
-    work = *(char **)(temp + 4);
-    *(char **)((char *)texture + 0xD0) = work;
-    *(int *)((char *)texture + 0xD4) = size;
-    DCFlushRange(work, size);
-
-    mult = *(int *)((char *)obj + 0x20);
+    width = *(int *)(obj + 0x24);
+    height = *(int *)(obj + 0x28);
+    *(int *)(texture + 0x70) = 0;
+    temp = *(char **)(obj + 0x2C);
+    *(int *)(texture + 0xC4) = 0;
+    *(char *)(texture + 0xCC) = 0;
+    count = ((width * height) * 8) / divisor;
+    data = *(char **)(temp + 4);
+    *(char **)(texture + 0xD0) = data;
+    *(int *)(texture + 0xD4) = count;
+    DCFlushRange(data, count);
+    mult = *(int *)(obj + 0x20);
     lod = (u32)((((mult ^ 2) >> 1) - ((mult ^ 2) & mult))) >> 31;
-    GXInitTexObj((char *)texture + 0x24, work, (unsigned short)width,
+    GXInitTexObj(texture + 0x24, data, (unsigned short)width,
                  (unsigned short)height, format, 1, 1, lod);
-    height = *(int *)((char *)obj + 0x20);
+    height = *(int *)(obj + 0x20);
     if (lod != 0) {
-        if (stricmp((char *)texture, base + 0x104) == 0) {
+        if (stricmp(texture, base + 0x104) == 0) {
             fn_802E30C8(base + 0x114, texture);
             height = 4;
         }
@@ -1011,9 +1031,8 @@ void fn_802D9628(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
 int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
-    int mip;
-    int wrap;
-    int pixelFormat;
+    register int wrap;
+    register int mip;
     int base;
     int tile;
     unsigned int ysign;
@@ -1026,8 +1045,7 @@ int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
     mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
     wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
     GXGetTexObjWrapT((char *)arg0 + 0x24);
-    pixelFormat = (int)GXGetTexObjFmt((char *)arg0 + 0x24);
-    base = pixelFormat - 0x40000000;
+    base = (int)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000;
     if (mip == 0) {
         tile = arg1 / 8 + (arg2 / 8) * (wrap / 8);
         base += tile << 5;
@@ -1036,12 +1054,12 @@ int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
         xoff = arg1 << 29;
         xsign = (unsigned int)arg1 >> 31;
         xoff -= xsign;
-        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign +
-                      ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
-        if (arg1 & 1)
-            value = *(unsigned char *)(base + pixel) & 0xF;
-        else
+        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign + ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
+        if ((arg1 & 1) == 0) {
             value = (*(unsigned char *)(base + pixel) >> 4) & 0xF;
+        } else {
+            value = *(unsigned char *)(base + pixel) & 0xF;
+        }
         doubled = value | (value * 0x10);
         return (doubled << 24) | ((doubled << 16) | doubled | (doubled << 8));
     }
@@ -1053,8 +1071,7 @@ int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
         xoff = arg1 << 30;
         xsign = (unsigned int)arg1 >> 31;
         xoff -= xsign;
-        pixel = (int)((((xoff << 2) | (xoff >> 30)) + xsign +
-                      ((((yoff << 2) | (yoff >> 30)) + ysign) * 4)) * 0x10) / 8;
+        pixel = (int)((((xoff << 2) | (xoff >> 30)) + xsign + ((((yoff << 2) | (yoff >> 30)) + ysign) * 4)) * 0x10) / 8;
         value = *(unsigned short *)(base + pixel);
         return (*(unsigned short *)(base + pixel + 0x20) & ~0xFFFF0000) | (value << 16);
     }
