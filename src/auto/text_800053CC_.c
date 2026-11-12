@@ -7,7 +7,7 @@ extern s32 fn_801298E8(f32 *, s32);
 extern s32 fn_801769B8(void);
 extern s32 fn_801EA994(void);
 extern u8 lbl_8034EE84[];
-extern void fn_8002F234(void);
+extern void fn_8002F234();
 extern void fn_80010B80(s32, f32, f32, f32, f32);
 extern f32 lbl_80560110;
 extern f32 lbl_80560114;
@@ -94,16 +94,16 @@ s32 fn_80005564(void) {
 }
 
 #pragma dont_inline on
-s32 fn_80005580(s32 arg0) {
+s32 fn_80005580(s32 a3) {
     s32 flags = ((s32 *)fn_801E87A8())[1];
-    s32 obj = fn_801E86F8(arg0);
+    s32 obj = fn_801E86F8(a3);
     u8 *state = (u8 *)fn_801EA9CC();
-
     if (fn_801B8570(obj) == 0) {
         return 1;
     }
     if (flags & 0x100) {
-        s32 result = 0;
+        s32 result;
+        result = 0;
         if (*(s32 *)(state + 0x30) != 3) {
             if (state[0x34] != 0) {
                 result = 1;
