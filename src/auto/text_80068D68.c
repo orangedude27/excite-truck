@@ -24871,26 +24871,40 @@ UINT8 *save_attr_seq(tCONN_CB *p_ccb, UINT8 *p, UINT8 *p_msg_end) {
     return p;
 }
 
-void *add_record(void *ctx, void *data) {
-    u32 size = *(u32 *)((u8 *)ctx + 4);
-    void *record;
-    void *node;
-    if (size < 0x14) return NULL;
-    record = *(void **)((u8 *)ctx + 0x68);
-    *(u32 *)((u8 *)ctx + 4) = size - 0x14;
-    *(void **)((u8 *)ctx + 0x68) = (u8 *)record + 0x14;
-    *(u32 *)record = 0;
-    *(u32 *)((u8 *)record + 4) = 0;
-    memcpy((u8 *)record + 0xC, data, 6);
-    node = *(void **)((u8 *)ctx + 8);
-    if (node == NULL) {
-        *(void **)((u8 *)ctx + 8) = record;
+/* Allocate the next service-discovery record out of the SDP discovery
+ * database's own free space, remember which remote device it was read from,
+ * and chain it onto the end of the database's record list.  Returns NULL when
+ * the database has less than one record's worth of memory left.
+ * (stack/sdp/sdp_discovery.c: tSDP_DISC_REC *add_record(p_db, p_bda)) */
+void *add_record(tSDP_DISCOVERY_DB *p_db, BD_ADDR p_bda) {
+    UINT32 memFree = p_db->mem_free;
+    tSDP_DISC_REC *p_rec;
+    tSDP_DISC_REC *p_prev;
+
+    /* See if there is enough space in the database */
+    if (memFree < sizeof(tSDP_DISC_REC))
+        return NULL;
+
+    p_rec = (tSDP_DISC_REC *)DB_P_FREE_MEM(p_db);
+    p_db->mem_free = memFree - sizeof(tSDP_DISC_REC);
+    DB_P_FREE_MEM(p_db) = (UINT8 *)p_rec + sizeof(tSDP_DISC_REC);
+
+    p_rec->p_first_attr = NULL;
+    p_rec->p_next_rec = NULL;
+
+    memcpy(p_rec->remote_bd_addr, p_bda, BD_ADDR_LEN);
+
+    /* Add the record to the end of chain */
+    p_prev = p_db->p_first_rec;
+    if (p_prev == NULL) {
+        p_db->p_first_rec = p_rec;
     } else {
-        while (*(void **)((u8 *)node + 4) != NULL)
-            node = *(void **)((u8 *)node + 4);
-        *(void **)((u8 *)node + 4) = record;
+        while (p_prev->p_next_rec != NULL)
+            p_prev = p_prev->p_next_rec;
+        p_prev->p_next_rec = p_rec;
     }
-    return record;
+
+    return p_rec;
 }
 
 UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 attr_id, tSDP_DISC_ATTR *p_parent_attr, UINT8 nest_level) {
