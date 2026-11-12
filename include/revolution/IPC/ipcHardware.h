@@ -93,6 +93,9 @@ typedef enum {
  */
 typedef enum {
     ACR_PPCIRQFLAG_IPC = (1 << 30),
+    // same bit through the mask register: unmasking it lets IPC raise
+    // OS_INTR_PI_ACR on the PPC
+    IPC_PPCIRQMASK_IPC = ACR_PPCIRQFLAG_IPC,
 } IPCPPCIrqFlag;
 
 /**
