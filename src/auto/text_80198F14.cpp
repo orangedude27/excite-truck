@@ -1883,19 +1883,6 @@ public:
 };
 extern "C" void fn_801BEAEC(s32, s32, void*);
 extern "C" void fn_801BEB44(s32, s32, void*, f32*);
-// 3x3 matrix times vector; the original inlines it with a src == dst check, so both branches are emitted.
-static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
-    if (src == dst) {
-        f32 x = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
-        f32 y = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
-        f32 z = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
-        dst[0] = x; dst[1] = y; dst[2] = z;
-    } else {
-        dst[0] = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
-        dst[1] = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
-        dst[2] = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
-    }
-}
 struct Fn801A4548Hdr { s32 count; u8* list; s32 count2; u8* shorts; s32 unk10; void* fn; };
 static inline void Fn801A4548Swap2(u8* q) {
     u8 t = q[0]; q[0] = q[1]; q[1] = t;
