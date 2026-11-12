@@ -1158,6 +1158,7 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
 extern "C" f32 lbl_8056177C;
 extern "C" s32 fn_80141F7C(f32);
 extern "C" void fn_8015889C(void* arg0) {
+    /* If this frame player has progress, emit the current record's scaled value and reset its counters. */
     Fn8015889C* self = (Fn8015889C*)arg0;
     if (self->mProgress25C > 0.0f) {
         f32 value = 0.0f;
