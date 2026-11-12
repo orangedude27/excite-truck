@@ -107,6 +107,7 @@ static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
         dst[2] = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
     }
 }
+#pragma always_inline reset
 extern "C" void fn_801B34DC(void*, s32, Vec*, Vec*, Vec*, s32);
 extern "C" f32 PSVECMag(const Vec*);
 extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
