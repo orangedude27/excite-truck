@@ -63,6 +63,7 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
 void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed);
+void fn_80063324(s32 chan, WPADGameInfo *info);
 
 typedef struct WPADCB_8011_View {
     u8 _unk0[0x7F8];
