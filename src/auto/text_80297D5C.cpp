@@ -339,18 +339,19 @@ extern "C" void fn_80299338(void *, unsigned int, void *, void *, void *, short)
 extern void *lbl_8055F7C4;
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" int fn_8029833C(void *arg0, void *arg1, void *arg2, void *arg3, short arg4, float farg0) {
-    register int index;
-    short local = arg4;
-    void *obj = fn_80298868(arg0);
-    if (obj == 0 || fn_802984D0(arg0, obj, arg1, arg2, arg3, &local) == 0) {
+extern "C" int fn_8029833C(void *slotPool, void *param1, void *param2, void *param3, short angle, float value) {
+    register int slotIndex;
+    short localAngle = angle;
+    void *slot = fn_80298868(slotPool);
+    if (slot == 0 || fn_802984D0(slotPool, slot, param1, param2, param3, &localAngle) == 0) {
         return -1;
     }
-    *(float *)((char *)obj + 0x24) = farg0;
-    *(char *)((char *)obj + 0x28) = 1;
-    index = ((char *)obj - (char *)arg0) / 44;
-    fn_80299338(lbl_8055F7C4, index, obj, (char *)obj + 0xC, (char *)obj + 0x18, local);
-    return index;
+    /* Initializes an allocated 0x2C-byte slot and registers it, returning its index or -1 on failure. */
+    *(float *)((char *)slot + 0x24) = value;
+    *(char *)((char *)slot + 0x28) = 1;
+    slotIndex = ((char *)slot - (char *)slotPool) / 44;
+    fn_80299338(lbl_8055F7C4, slotIndex, slot, (char *)slot + 0xC, (char *)slot + 0x18, localAngle);
+    return slotIndex;
 }
 
 extern "C" void fn_8029840C(void *arg0, int arg1) {
