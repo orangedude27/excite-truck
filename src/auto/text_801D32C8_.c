@@ -112,8 +112,6 @@ int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-#pragma push
-#pragma peephole off
 extern "C" void fn_801D334C(void *arg0, void *arg1) {
     const char *base = lbl_80338340;
     Fn801D334CObj *obj = (Fn801D334CObj *)arg1;
@@ -161,7 +159,6 @@ extern "C" void fn_801D334C(void *arg0, void *arg1) {
         break;
     }
 }
-#pragma pop
 #pragma scheduling on
 #pragma cplusplus reset
 
