@@ -15082,16 +15082,17 @@ BOOLEAN btsnd_hcic_write_stored_key(void *buffer, UINT8 num_keys, BD_ADDR *bd_ad
     btu_hcif_send_cmd(buffer);
 }
 
-s32 btsnd_hcic_switch_role_8008515C(BD_ADDR bd_addr, UINT8 role) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL) return 0;
-    *(u16 *)(p + 2) = 10;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0x12; p[9] = 0xC; p[10] = 7;
-    p[11] = bd_addr[5]; p[12] = bd_addr[4]; p[13] = bd_addr[3];
-    p[14] = bd_addr[2]; p[15] = bd_addr[1]; p[16] = bd_addr[0];
-    p[17] = role;
-    btu_hcif_send_cmd(p);
+/* Builds and sends an HCI Switch Role command for the given remote address and role. */
+s32 btsnd_hcic_switch_role_8008515C(BD_ADDR bdAddr, UINT8 role) {
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == NULL) return 0;
+    *(u16 *)(cmdBuf + 2) = 10;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 0x12; cmdBuf[9] = 0xC; cmdBuf[10] = 7;
+    cmdBuf[11] = bdAddr[5]; cmdBuf[12] = bdAddr[4]; cmdBuf[13] = bdAddr[3];
+    cmdBuf[14] = bdAddr[2]; cmdBuf[15] = bdAddr[1]; cmdBuf[16] = bdAddr[0];
+    cmdBuf[17] = role;
+    btu_hcif_send_cmd(cmdBuf);
     return 1;
 }
 
