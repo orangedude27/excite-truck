@@ -608,7 +608,9 @@ void fn_802E5A54(void) {
     lbl_8055FF78 = 0;
 }
 
-#pragma ppc_psq_save off
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void *fn_802E5AE8(char *arg0) {
     extern char lbl_8034D210[];
     extern float lbl_80565138, lbl_8056513C;
