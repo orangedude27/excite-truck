@@ -10977,6 +10977,7 @@ extern "C" s32 lbl_8055DD18;
 extern "C" s32 lbl_8055DD1C;
 extern "C" s32 lbl_8055DD20;
 extern "C" s32 fn_800B7CE8(s32 arg0) {
+    /* Try to initialize required subsystems once, returning 0 on success or -1 on failure/busy. */
     s32 temp_r3;
     s32 temp_r3_2;
 
