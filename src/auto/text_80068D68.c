@@ -20141,29 +20141,31 @@ void PORT_ParNegCnf(void *p_mcb, u8 dlci, u16 mtu, u8 cl_type, u8 k) {
 
 void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
     extern char lbl_8031932C[];
-    extern void *port_find_dlci_port(unsigned int);
-    extern void rfc_timer_stop(void *);
     extern void RFCOMM_DlcEstablishRsp(void *, u8, s32, u16);
-    void (*rsp)(s32, s32, s32, s32) = (void (*)(s32, s32, s32, s32))RFCOMM_DlcEstablishRsp;
-    void (*logfn)(s32, void *, s32, s32) = (void (*)(s32, void *, s32, s32))fn_8007096C;
     u8 *port;
-    void *(*find_mcb)(void) = (void *(*)(void))port_find_mcb_dlci_port;
-    port = (u8 *)find_mcb();
-    if (lbl_803C4828[0x414] >= 4) logfn(0x90003, lbl_8031932C, arg1, arg2);
+    port = (u8 *)((void *(*)(s32, s32))port_find_mcb_dlci_port)(arg0, arg1);
+    if (lbl_803C4828[0x414] >= 4) {
+        ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x90003, lbl_8031932C, arg1, arg2);
+    }
     if (port == 0) {
-        port = (u8 *)port_find_dlci_port(arg1);
+        port = (u8 *)port_find_dlci_port((unsigned int)arg1);
         if (port == 0) {
-            rsp(arg0, arg1, 0, 1);
+            ((void (*)(s32, s32, s32, s32))RFCOMM_DlcEstablishRsp)(arg0, arg1, 0, 1);
             return;
         }
         *(u8 *)(arg0 + arg1 + 0x24) = port[0];
     }
-    if (arg2 != 0 && (u32)arg2 < *(u16 *)(port + 0x14)) *(u16 *)(port + 0x14) = (u16)arg2;
+    if (arg2 != 0 && (u32)arg2 < *(u16 *)(port + 0x14)) {
+        *(u16 *)(port + 0x14) = (u16)arg2;
+    }
     rfc_timer_stop((void *)arg0);
-    rsp(arg0, arg1, *(u16 *)(port + 0x12), 0);
-    if (*(void (**)(s32,u8))(port + 0x8c) != 0 && (*(u32 *)(port + 0x88) & 0x200))
-        (*(void (**)(s32,u8))(port + 0x8c))(0x200, port[0]);
-    if (*(void (**)(s32,u8))(port + 0x90) != 0) (*(void (**)(s32,u8))(port + 0x90))(0, port[0]);
+    ((void (*)(s32, s32, s32, s32))RFCOMM_DlcEstablishRsp)(arg0, arg1, *(u16 *)(port + 0x12), 0);
+    if (*(void **)(port + 0x8C) != 0 && (*(u32 *)(port + 0x88) & 0x200) != 0) {
+        ((void (*)(u32, u8))*(void **)(port + 0x8C))(0x200, port[0]);
+    }
+    if (*(void **)(port + 0x90) != 0) {
+        ((void (*)(u32, u8))*(void **)(port + 0x90))(0, port[0]);
+    }
     port[2] = 2;
 }
 
