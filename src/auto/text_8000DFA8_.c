@@ -555,41 +555,37 @@ void fn_8000FDF0(s32 arg0, s32 arg1) {
     extern f32 fn_80235F64(s32, s32);
     extern f32 fn_80235EF0(s32, s32);
     extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
-    register f32 temp_f31;
-    register f32 temp_f30;
-    register f32 temp_f29;
-    f32 temp_f28, temp_f27, temp_f26;
-    f32 temp_f1;
-
-    temp_f1 = (f32)fn_80232B70(lbl_8055D4C8);
-    temp_f31 = lbl_80560308 / temp_f1;
-    temp_f30 = fn_80011E70();
-    temp_f29 = lbl_805602E8 + fn_80011E60();
-    temp_f28 = temp_f31 * ((f32 (*)(s32, s32, f32))fn_8023293C)(
+    f32 scale = lbl_80560308 / (f32)fn_80232B70(lbl_8055D4C8);
+    f32 x = fn_80011E70();
+    f32 y = lbl_805602E8 + fn_80011E60();
+    f32 w = scale * ((f32 (*)(s32, s32, f32))fn_8023293C)(
         lbl_8055D4C8, arg0, lbl_80560264);
-    temp_f27 = temp_f30 - (lbl_8056025C * temp_f28);
-    fn_800109E4(0x66000000, temp_f27 - lbl_8056030C,
-                lbl_805602E8 + temp_f29, lbl_80560310 + temp_f28,
+    f32 left = x - (lbl_8056025C * w);
+
+    fn_800109E4(0x66000000, left - lbl_8056030C,
+                lbl_805602E8 + y, lbl_80560310 + w,
                 lbl_80560314);
     if (lbl_8055D4C0 != 0) {
-        temp_f26 = temp_f29 + (lbl_8056025C * fn_80235F64(lbl_8055D4C0, 2));
+        f32 iy = y + (lbl_8056025C * fn_80235F64(lbl_8055D4C0, 2));
         ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(
             lbl_8055D4C0, 2,
-            (temp_f27 - fn_80235EF0(lbl_8055D4C0, 2)) - lbl_8056030C,
-            temp_f26, lbl_80560280, lbl_80560280);
+            (left - fn_80235EF0(lbl_8055D4C0, 2)) - lbl_8056030C,
+            iy, lbl_80560280, lbl_80560280);
         ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(
             lbl_8055D4C0, 2,
-            lbl_8056030C + (temp_f27 + temp_f28),
-            temp_f26, lbl_80560280, lbl_80560280);
+            lbl_8056030C + (left + w),
+            iy, lbl_80560280, lbl_80560280);
     }
-    temp_f26 = lbl_805602B0 + temp_f29;
-    fn_802337A0(lbl_80560264 + temp_f30, lbl_8055D4C8,
-                temp_f26 - lbl_80560264, 0xFF000000,
-                lbl_80560280, temp_f31, 0x14, lbl_80560264,
-                (const char *)&lbl_80558AA4, arg0);
-    fn_802337A0(temp_f30, lbl_8055D4C8, temp_f26, -1,
-                lbl_80560280, temp_f31, 0x14, lbl_80560264,
-                (const char *)&lbl_80558AA4, arg0);
+    {
+        f32 ty = lbl_805602B0 + y;
+        fn_802337A0(lbl_80560264 + x, lbl_8055D4C8,
+                    ty - lbl_80560264, 0xFF000000,
+                    lbl_80560280, scale, 0x14, lbl_80560264,
+                    (const char *)&lbl_80558AA4, arg0);
+        fn_802337A0(x, lbl_8055D4C8, ty, -1,
+                    lbl_80560280, scale, 0x14, lbl_80560264,
+                    (const char *)&lbl_80558AA4, arg0);
+    }
 }
 #pragma pop
 
@@ -1944,8 +1940,9 @@ s32 fn_8000DFC0(s32 arg0) {
 #pragma processor 750
 #pragma scheduling on
 void fn_8000DFD8(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
-    s32 count = *(s32 *)((char *)arg0 + 0x34);
-    if (count > 0 && *(s32 *)((char *)arg0 + 0x38) == 9) {
+    s32 *p = (s32 *)arg0;
+    s32 count = p[0xD];
+    if (count > 0 && p[0xE] == 9) {
         ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
             (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
             arg2, arg3 + lbl_80560254 * lbl_8056025C,
@@ -1953,11 +1950,11 @@ void fn_8000DFD8(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
     }
     ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
         (u32)-1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
-        ((f32)*(s32 *)((char *)arg0 + 0x30) * lbl_80560250) / lbl_80560260,
+        ((f32)p[0xC] * lbl_80560250) / lbl_80560260,
         lbl_80560254);
     ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
         (u32)arg1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
-        ((f32)*(s32 *)((char *)arg0 + 0x2C) * lbl_80560250) / lbl_80560260,
+        ((f32)p[0xB] * lbl_80560250) / lbl_80560260,
         lbl_80560254);
     ((void (*)(s32, s32, const char *, void *, f32, ...))fn_80010074)(
         -1, 0x14, (const char *)&lbl_80558AA4, arg0,
