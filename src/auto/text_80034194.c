@@ -781,6 +781,12 @@ static inline u32 appendPathPart(char *path, u32 loc, u32 maxlen, const char *na
         return loc + (i - left);
     }
 }
+static inline const char *entryName(s32 entry) {
+    return (const char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
+}
+static inline u32 entryParent(s32 entry) {
+    return *(u32 *)(FstStart_8055D840 + 4 + entry * 12);
+}
 #pragma push
 #pragma use_lmw_stmw off
 BOOL DVDGetCurrentDir(const char *path, void *info) {
@@ -788,19 +794,14 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
     s32 entry;
     s32 cur;
     u32 loc;
-    u8 *fst;
-    u8 *parents;
     u8 *strings;
+    u8 *parents;
+    u8 *fst;
     u32 p1;
     u32 p2;
-    u32 p3;
     u8 *name1;
     u8 *name2;
     u8 *name3;
-    u32 start;
-    u32 left;
-    u32 i;
-    u8 *dst;
     u32 offset;
 
     entry = DVDConvertPathToEntrynum(path);
@@ -823,45 +824,11 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
                     loc = 0;
                 } else {
                     name3 = strings + (*(u32 *)(fst + p2 * 12) & 0xFFFFFF);
-                    loc = DVDConvertEntrynumToPath(*(u32 *)(parents + p2 * 12), dir, 0x80);
-                    if (loc != 0x80) {
-                        start = loc + 1;
-                        dir[loc] = '/';
-                        left = 0x80 - start;
-                        i = left;
-                        dst = (u8 *)dir + start;
-                        while (i != 0 && (s8)*name3 != 0) {
-                            *dst++ = *name3++;
-                            i--;
-                        }
-                        loc = start + (left - i);
-                    }
+                    loc = appendPathPart(dir, DVDConvertEntrynumToPath(*(u32 *)(parents + p2 * 12), dir, 0x80), 0x80, (char *)name3);
                 }
-                if (loc != 0x80) {
-                    start = loc + 1;
-                    dir[loc] = '/';
-                    left = 0x80 - start;
-                    i = left;
-                    dst = (u8 *)dir + start;
-                    while (i != 0 && (s8)*name2 != 0) {
-                        *dst++ = *name2++;
-                        i--;
-                    }
-                    loc = start + (left - i);
-                }
+                loc = appendPathPart(dir, loc, 0x80, (char *)name2);
             }
-            if (loc != 0x80) {
-                start = loc + 1;
-                dir[loc] = '/';
-                left = 0x80 - start;
-                i = left;
-                dst = (u8 *)dir + start;
-                while (i != 0 && (s8)*name1 != 0) {
-                    *dst++ = *name1++;
-                    i--;
-                }
-                loc = start + (left - i);
-            }
+            loc = appendPathPart(dir, loc, 0x80, (char *)name1);
         }
         if (loc == 0x80) {
             dir[0x7F] = '\0';
