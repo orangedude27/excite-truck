@@ -1215,10 +1215,11 @@ call_tail:
 }
 
 #pragma dont_inline on
-extern "C" void fn_801F9928(void *list, s32 arg) {
+/* Scans nodeList by index and applies fn_801F981C to the node named "object" (lbl_8055B36C). */
+extern "C" void fn_801F9928(void *nodeList, s32 flags) {
     class Node {
     public:
-        virtual const char *name();
+        virtual const char *getName();
     };
     class List {
     public:
@@ -1246,24 +1247,22 @@ extern "C" void fn_801F9928(void *list, s32 arg) {
         virtual void *s58();
         virtual void *get(s32);
     };
-    void *cur;
-    char *name;
-    s32 i = 0;
+    void *node;
+    char *nodeName;
+    s32 index = 0;
     goto get_cur;
 body:
-    name = (char *)((Node *)cur)->name();
-    if (stricmp(name, (const char *)&lbl_8055B36C) == 0) {
-        fn_801F981C(cur, arg);
+    nodeName = (char *)((Node *)node)->getName();
+    if (stricmp(nodeName, (const char *)&lbl_8055B36C) == 0) {
+        fn_801F981C(node, flags);
     }
-    i++;
+    index++;
 get_cur:
-    cur = ((List *)list)->get(i);
-    if (cur != 0) {
+    node = ((List *)nodeList)->get(index);
+    if (node != 0) {
         goto body;
     }
 }
-
-#pragma scheduling invalid_target
 extern "C" void fn_801F99CC(F92Obj *obj) {
     F92Obj *cur = (F92Obj *)*(void **)((char *)obj + 0x24);
     F92Obj *next;
