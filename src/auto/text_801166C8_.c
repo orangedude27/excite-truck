@@ -538,10 +538,6 @@ u32 fn_80116F8C(void *arg0) {
     return 0;
 }
 #pragma pop
-extern void fn_80117074(void*);
-extern s32 lbl_8055DED4;
-extern u32 fn_8011C1E0(s32, void *);
-extern void *memcpy(void *, const void *, u32);
 extern s32 fn_80116D30(void);
 void fn_80117330(void* arg0) {
  if(*(s32*)((u8*)arg0+0x268)==0) {
