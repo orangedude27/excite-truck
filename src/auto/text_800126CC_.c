@@ -41,26 +41,27 @@ typedef struct VT_8001335C {
 typedef struct Obj_8001335C { VT_8001335C *vt; } Obj_8001335C;
 #define VCALL_8001335C(o, slot) ((Vfn_8001335C)((*(void ***)(o))[slot]))
 #pragma scheduling invalid_target
-void *fn_800126CC(int arg0) DECOMP_DONT_INLINE {
+/* Look up mode info entry by id in lbl_802FC638 (5 entries * 0x14); abort if not found. */
+void *fn_800126CC(int modeId) DECOMP_DONT_INLINE {
     volatile int *table = (volatile int *)lbl_802FC638;
-    int i = 0;
-    if (arg0 != table[0]) {
-        i = 1;
-        if (arg0 != table[5]) {
-            i = 2;
-            if (arg0 != table[10]) {
-                i = 3;
-                if (arg0 != table[15]) {
-                    i = 4;
-                    if (arg0 != table[20])
-                        i = 5;
+    int index = 0;
+    if (modeId != table[0]) {
+        index = 1;
+        if (modeId != table[5]) {
+            index = 2;
+            if (modeId != table[10]) {
+                index = 3;
+                if (modeId != table[15]) {
+                    index = 4;
+                    if (modeId != table[20])
+                        index = 5;
                 }
             }
         }
     }
-    if (i >= 5)
-        fn_802E317C(lbl_802FC69C, arg0);
-    return lbl_802FC638 + i * 0x14;
+    if (index >= 5)
+        fn_802E317C(lbl_802FC69C, modeId); /* "get_mode_info: can't find mode %d" */
+    return lbl_802FC638 + index * 0x14;
 }
 #pragma scheduling on
 void fn_80012778(void) { fn_80012984(0x12F); }
