@@ -448,7 +448,7 @@ void Decode(unsigned char *src, unsigned char *dst) {
             int length = (int)pair >> 12;
             unsigned int distance = pair & 0xFFF;
             unsigned int from;
-            int j;
+            int i;
             input += 2;
             if (length == 0)
                 length = *literal++ + 0x12;
@@ -456,7 +456,7 @@ void Decode(unsigned char *src, unsigned char *dst) {
                 length += 2;
             if (length > 0) {
                 from = output - distance;
-                for (j = 0; j < length; ++j) {
+                for (i = 0; i < length; ++i) {
                     dst[output] = dst[from - 1];
                     ++output;
                     ++from;
@@ -763,10 +763,8 @@ void *ParseStringW(int format, void *input, int *outFont, int *outCode, int unus
         mode = (int)lbl_8055DA54;
         format = 0;
         ch = ((unsigned char (*)(int))OSUTF32toANSI)(code);
-        if (ch == 0)
-            goto output;
-        if (lbl_8055DA4C != 0 &&
-            (unsigned int)*(volatile int *)&code <= 0x7F) {
+        if ((ch == 0) || (lbl_8055DA4C != 0 &&
+            (unsigned int)*(volatile int *)&code <= 0x7F)) {
             ch = OSUTF32toSJIS(*(volatile int *)&code);
             if (ch != 0) {
                 format = 1;
@@ -774,7 +772,6 @@ void *ParseStringW(int format, void *input, int *outFont, int *outCode, int unus
             }
         }
     }
-output:
     *outFont = mode;
     *outCode = ((unsigned int (*)(int, unsigned short))GetFontCode)(format, ch);
     return input;
