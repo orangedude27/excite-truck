@@ -105,6 +105,7 @@ void WPADiDisableRecalibration(s32 chan) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Enable DPD sampling for a WPAD channel and trigger a sampling probe if not already enabled. */
 void WPADiClearQueue(s32 chan) {
     BOOL inner;
     BOOL interrupts;
