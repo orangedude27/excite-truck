@@ -8596,30 +8596,42 @@ extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80229B78(void *arg0, s32 
     return arg0;
 }
 
-extern "C" void fn_80229BE8(void *arg0) {
-    struct Dispatch {
-        virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
-        virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
-        virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
-        virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
-        virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19();
-        virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23();
-        virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27();
-        virtual s32 get();
+/*
+ * Text pane: bring the drawn string up to date.
+ *
+ * First flushes the values bound to this pane (fn_802192AC() copies every
+ * watched block that changed and calls the notification slot for it). Then, if
+ * the string the pane was asked to show (this+0x244, a char*) differs from the
+ * one it currently draws (the buffer at this+0x248), the new string is copied
+ * in, measured in the pane's font (this+0x348) and the pane's bounding box is
+ * grown by that width - never less than the pane's own minimum width, from
+ * vtable slot 0x78 - and by the font's line height. A pane that is attached to
+ * a layout (this+0x1A) marks itself dirty (this+0x234) so it gets redrawn.
+ */
+extern "C" void fn_80229BE8(void *this_) {
+    struct TextPaneVTable {
+        // Two destructor slots lead this ABI's vtables, so the 29th declared
+        // method is the one at 0x78.
+        virtual void v0();  virtual void v1();  virtual void v2();  virtual void v3();
+        virtual void v4();  virtual void v5();  virtual void v6();  virtual void v7();
+        virtual void v8();  virtual void v9();  virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual s32 getMinWidth();
     };
-    fn_802192AC(arg0);
-    char *name = *(char **)((u8 *)arg0 + 0x244);
-    if (strcmp(name, (char *)arg0 + 0x248) != 0) {
-        strcpy((char *)arg0 + 0x248, name);
-        s32 height = fn_801E4A6C(*(s32 *)((u8 *)arg0 + 0x348),
-                                  *(s32 *)((u8 *)arg0 + 0x244));
-        s32 width = ((Dispatch *)arg0)->get();
-        if (width > height)
-            height = width;
-        fn_80219284(arg0, height,
-                    fn_801E4BA8(*(s32 *)((u8 *)arg0 + 0x348)));
-        if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-            *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    fn_802192AC(this_);
+    char *text = TB(0x244, char *);
+    if (strcmp(text, (char *)this_ + 0x248) != 0) {
+        strcpy((char *)this_ + 0x248, text);
+        s32 textWidth = fn_801E4A6C(TB(0x348, s32), TB(0x244, s32));
+        s32 ownWidth = ((TextPaneVTable *)this_)->getMinWidth();
+        if (ownWidth > textWidth)
+            textWidth = ownWidth;
+        fn_80219284(this_, textWidth, fn_801E4BA8(TB(0x348, s32)));
+        if (TB(0x1A, u8) != 0)
+            TB(0x234, u8) = 1;
     }
 }
 
