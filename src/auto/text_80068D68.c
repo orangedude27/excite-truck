@@ -15186,18 +15186,19 @@ void fn_80085568(void *arg0, u16 arg1, u16 arg2) {
     btu_hcif_send_cmd(arg0);
 }
 
+/* Build and send the HCI Set_Host_Buffer_Size command with the given ACL/SCO sizes and counts. */
 BOOLEAN btsnd_hcic_set_host_buf_size(UINT16 acl_len, UINT8 sco_len, UINT16 acl_num, UINT16 sco_num) {
     BT_HDR *buf = GKI_getpoolbuf(2);
-    u8 *p;
+    u8 *cmd;
     if (buf == NULL) return FALSE;
     buf->len = 10;
     buf->offset = 0;
-    p = (u8 *)(buf + 1);
-    p[0] = 0x33; p[1] = 0xC; p[2] = 7;
-    p[3] = acl_len; p[4] = acl_len >> 8;
-    p[5] = sco_len;
-    p[6] = acl_num; p[7] = acl_num >> 8;
-    p[8] = sco_num; p[9] = sco_num >> 8;
+    cmd = (u8 *)(buf + 1);
+    cmd[0] = 0x33; cmd[1] = 0xC; cmd[2] = 7;
+    cmd[3] = acl_len; cmd[4] = acl_len >> 8;
+    cmd[5] = sco_len;
+    cmd[6] = acl_num; cmd[7] = acl_num >> 8;
+    cmd[8] = sco_num; cmd[9] = sco_num >> 8;
     btu_hcif_send_cmd(buf);
     return TRUE;
 }
