@@ -19,6 +19,11 @@ extern s32 lbl_8055DEE8;
 extern void TRKGetFreeBuffer(void *);
 extern void fn_80117074(void*);
 #define E8117074(a) ((u8 *)(off + *(s32 *)((a) + 0x2F0)))
+/* Pointer to the stream entry at byte offset `off` in the manager's entry table
+ * (base+0x2F0, stride 0x17C). Each entry holds callbacks at +0/+4/+8, a circular
+ * source buffer (+0x2C start, +0x30 end, +0x38 cursor), a byte counter (+0x40),
+ * a 16->8-bit sample flag (+0x44) and thresholds (+0x48/+0x54/+0x58). */
+#define STREAM_AT(m, off) ((u8 *)((off) + *(s32 *)((m) + 0x2F0)))
 extern s32 lbl_8055DED4;
 extern u32 fn_8011C1E0(s32, void *);
 extern void *memcpy(void *, const void *, u32);
@@ -3962,7 +3967,9 @@ void fn_8011CE18(void *arg0, void *arg1) {
     u32 *bits;
     u32 value, bitCount, available, mask, count, code, len, s, w, fill;
     u8 *dst, *table, *lookup;
-    u32 sym, runlen, j;
+    u32 sym;
+    u8 run;
+    u32 fw;
     if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
     bitCount = *(u32 *)((u8 *)arg1 + 8);
     available = *(u32 *)((u8 *)arg0 + 0x28);
@@ -4010,10 +4017,24 @@ void fn_8011CE18(void *arg0, void *arg1) {
                     else { value = next >> (len - bitCount); bits++; bitCount = bitCount + 32 - len; }
                 }
                 if (sym >= 12) {
-                    runlen = lbl_80561208[sym - 12];
-                    count -= runlen;
-                    for (j = 0; j < runlen; j++) {
+                    run = lbl_80561208[sym - 12];
+                    count -= run;
+                    fw = fill | (fill << 8);
+                    fw |= fw << 16;
+                    if ((u32)dst & 3) {
+                        do {
+                            *dst++ = fill;
+                            run--;
+                        } while (run != 0 && ((u32)dst & 3));
+                    }
+                    while (run >= 4) {
+                        *(u32 *)dst = fw;
+                        dst += 4;
+                        run -= 4;
+                    }
+                    while (run != 0) {
                         *dst++ = fill;
+                        run--;
                     }
                 } else {
                     *dst++ = sym;
@@ -7209,6 +7230,101 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
     }
 finish:
     arg1[half] *= *arg3;
+}
+
+void fn_80125664(void *outp, void *stridep, void *inp, void *quantp) {
+    u8 *out = outp;
+    s32 stride = (s32)stridep;
+    s16 *in = inp;
+    s32 *quant = quantp;
+    s32 tmp[64];
+    s32 *t;
+    s32 i;
+    t = tmp;
+    for (i = 0; i < 8; i++) {
+        if ((in[56] | (in[48] | (in[24] | in[8])) | (in[40] | (in[32] | in[16]))) == 0) {
+            s32 dc = (in[0] * quant[0]) >> 11;
+            in++;
+            quant++;
+            t[0] = dc;
+            t[8] = dc;
+            t[16] = dc;
+            t[24] = dc;
+            t[32] = dc;
+            t[40] = dc;
+            t[48] = dc;
+            t[56] = dc;
+            t++;
+        } else {
+            s32 s25, s26, s26b, s7, s0, s23, s24, s12, s7b, s0b, s7c, s25b, s9, s10, s11, s23b, s9b, s8, s10b, s25c, s23c, s11b, s9c, s7d;
+            s32 v24 = (in[0] * quant[0]) >> 11;
+            s25 = (in[16] * quant[16]) >> 11;
+            s26 = (in[32] * quant[32]) >> 11;
+            s0 = (in[48] * quant[48]) >> 11;
+            s25b = (in[8] * quant[8]) >> 11;
+            s9 = (in[24] * quant[24]) >> 11;
+            s10 = (in[40] * quant[40]) >> 11;
+            s9b = (in[56] * quant[56]) >> 11;
+            in++;
+            quant++;
+            s7 = v24 + s26;
+            s26b = v24 - s26;
+            s23 = s25 + s0;
+            s24 = s7 + s23;
+            s12 = s7 - s23;
+            s7b = (((s25 - s0) * 0xB50) >> 11) - s23;
+            s0b = s26b + s7b;
+            s7c = s26b - s7b;
+            s11 = s10 - s9;
+            s23b = s10 + s9;
+            s8 = s25b - s9b;
+            s10b = s25b + s9b;
+            s25c = s10b + s23b;
+            t[0] = s24 + s25c;
+            s23c = ((s11 + s8) * 0xEC8) >> 11;
+            t[56] = s24 - s25c;
+            s11b = (s23c + ((s11 * -0x14E8) >> 11)) - s25c;
+            t[8] = s0b + s11b;
+            t[48] = s0b - s11b;
+            s9c = (((s10b - s23b) * 0xB50) >> 11) - s11b;
+            t[16] = s7c + s9c;
+            t[40] = s7c - s9c;
+            s7d = (((s8 * 0x8A9) >> 11) - s23c) + s9c;
+            t[32] = s12 + s7d;
+            t[24] = s12 - s7d;
+            t++;
+        }
+    }
+    t = tmp;
+    for (i = 0; i < 8; i++) {
+        s32 r27 = t[2] + t[6];
+        s32 r26 = t[0] + t[4];
+        s32 r25 = t[5] + t[3];
+        s32 r24 = t[1] + t[7];
+        s32 r30 = t[5] - t[3];
+        s32 r6 = t[1] - t[7];
+        s32 r25b = t[0] - t[4];
+        s32 r29 = r24 + r25;
+        s32 r11 = r26 + r27;
+        s32 r28 = (((t[2] - t[6]) * 0xB50) >> 11) - r27;
+        s32 r7 = ((r30 + r6) * 0xEC8) >> 11;
+        s32 r24b = r25b + r28;
+        s32 r9 = (r7 + ((r30 * -0x14E8) >> 11)) - r29;
+        s32 r0 = r26 - r27;
+        s32 r25c = r25b - r28;
+        s32 r26b = (((r24 - r25) * 0xB50) >> 11) - r9;
+        s32 r24c = (((r6 * 0x8A9) >> 11) - r7) + r26b;
+        out[0] = (r11 + r29 + 0x7F) >> 8;
+        out[7] = ((r11 - r29) + 0x7F) >> 8;
+        out[1] = (r24b + r9 + 0x7F) >> 8;
+        out[6] = ((r24b - r9) + 0x7F) >> 8;
+        out[2] = (r25c + r26b + 0x7F) >> 8;
+        t += 8;
+        out[5] = ((r25c - r26b) + 0x7F) >> 8;
+        out[4] = (r0 + r24c + 0x7F) >> 8;
+        out[3] = ((r0 - r24c) + 0x7F) >> 8;
+        out += stride;
+    }
 }
 
 void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
