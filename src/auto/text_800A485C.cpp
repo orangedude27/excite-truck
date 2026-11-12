@@ -1276,25 +1276,26 @@ extern "C" s32 fn_800A6298(void *arg0, u16 *arg1) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800A62A8(void *arg0) {
-    s16 state = *(s16 *)((u8 *)arg0 + 0xC);
-    s32 result;
-    void *obj;
+/* Run step 0 of this operation: check cancel, invoke target vtable slot 0, report errors, then advance step. */
+extern "C" s32 fn_800A62A8(void *operation) {
+    s16 step = *(s16 *)((u8 *)operation + 0xC);
+    s32 status;
+    void *target;
 
-    if (state == 0) {
-        if (fn_800B8004(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x14;
+    if (step == 0) {
+        if (fn_800B8004(*(s32 *)((u8 *)operation + 0x14)) != 0) return 0x14;
 
-        obj = *(void **)((u8 *)arg0 + 4);
-        result = ((s32 (*)(void *, void *))(*(u32 **)obj))(arg0, obj);
+        target = *(void **)((u8 *)operation + 4);
+        status = ((s32 (*)(void *, void *))(*(u32 **)target))(operation, target);
 
-        if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x14;
-        if (result != 0) {
-            fn_800A71D0((void *)*(s32 *)((u8 *)arg0 + 0x2C), result);
+        if (fn_800B8048(*(s32 *)((u8 *)operation + 0x14)) != 0) return 0x14;
+        if (status != 0) {
+            fn_800A71D0((void *)*(s32 *)((u8 *)operation + 0x2C), status);
             return 0x15;
         }
     }
 
-    *(s16 *)((u8 *)arg0 + 0xC) += 1;
+    *(s16 *)((u8 *)operation + 0xC) += 1;
     return 0;
 }
 #pragma dont_inline reset
@@ -4786,7 +4787,7 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     for (i = 0; (u32)i < *((u8 *)arg0 + 6); i++) {
         if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), base + i,
                         0, *(u16 *)arg0, &sp8, 1) != 0 ||
-            !(*(u16 *)arg0 == sp8))
+            (*(u16 *)arg0 == sp8 ? 0 : 1))
             break;
         fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
         if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), base + i,
@@ -9036,18 +9037,17 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
         u16 zeroDot;
     } local;
 
-    s8 *out = (s8 *)arg0;
+    u8 *out = (u8 *)arg0;
     u16 *src = arg1;
-    u16 *scan = arg1;
     u8 *table = (u8 *)lbl_803D2140;
 
     if ((*(u32 *)(table + 0x60) & 2) == 2) {
+        u16 *scan = src;
         local.dot = 0x2E;
         local.zeroDot = 0;
         local.space = 0x20;
         local.zeroSpace = 0;
-        scan = src;
-        do {
+        for (;;) {
             if (fn_800A4B9C_CALL(src, &local.dot, 1) == 0) {
                 *out = 0x2E;
             } else if (fn_800A4B9C_CALL(src, &local.space, 1) == 0) {
@@ -9056,13 +9056,14 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
                 *out = 0x5F;
             }
             out++;
-            src = (u16 *)((u8 *)src + 2);
-            scan = (u16 *)((u8 *)scan + 2);
-        } while (*scan != 0);
+            src++;
+            scan++;
+            if (*scan == 0) break;
+        }
     } else {
         s32 offset = 0;
         do {
-            s32 result = ((s32 (*)(u8 *, s8 *))(*(u32 **)(table + 0x4C)))((u8 *)src + (offset << 1), out);
+            s32 result = ((s32 (*)(u8 *, u8 *))(*(u32 **)(table + 0x4C)))((u8 *)src + (offset << 1), out);
             fn_800A4BF4(result, (u16 *)&local.outputLength, &local.inputLength);
             out += local.outputLength;
             offset += local.inputLength >> 1;
@@ -24064,29 +24065,26 @@ extern "C" s32 fn_800A485C(s32 arg0) {
     return arg0;
 }
 
-#pragma optimization_level reset
+#pragma optimize_for_size on
 void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
-    /* Fix note: preserve the destination alias while testing the original arguments for alignment. */
-    register u8 *out = (u8 *)dstArg;
-    register const u8 *in = (const u8 *)srcArg;
-    u32 blocks;
+    u8 *out = (u8 *)dstArg;
+    const u8 *in = (const u8 *)srcArg;
     u32 words;
+    u32 blocks;
     s32 byteAdjustment;
     u32 value;
-
+    int i;
     if (((u32)dstArg & 3) != 0)
         goto copy_bytes;
     if (((u32)srcArg & 3) != 0)
         goto copy_bytes;
-
     words = size >> 2;
     if (size <= 3)
         goto copy_bytes;
-
     blocks = words >> 3;
     byteAdjustment = -(s32)(words << 2);
     if (blocks != 0) {
-        do {
+        for (i = 0; i < (int)blocks; i++) {
             value = *(u32 *)(in + 0x00); *(u32 *)(out + 0x00) = value;
             value = *(u32 *)(in + 0x04); *(u32 *)(out + 0x04) = value;
             value = *(u32 *)(in + 0x08); *(u32 *)(out + 0x08) = value;
@@ -24098,43 +24096,40 @@ void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
             in += 0x20;
             *(u32 *)(out + 0x1C) = value;
             out += 0x20;
-        } while (--blocks);
+        }
     }
-
     words &= 7;
     if (words != 0) {
-        do {
+        for (i = 0; i < (int)words; i++) {
             value = *(u32 *)in;
             in += 4;
             *(u32 *)out = value;
             out += 4;
-        } while (--words);
+        }
     }
-
     size += byteAdjustment;
     if (size == 0)
         return;
-
 copy_bytes:
     blocks = size >> 3;
     if (blocks != 0) {
-        do {
+        for (i = 0; i < (int)blocks; i++) {
             out[0] = in[0]; out[1] = in[1];
             out[2] = in[2]; out[3] = in[3];
             out[4] = in[4]; out[5] = in[5];
             out[6] = in[6]; out[7] = in[7];
             in += 8;
             out += 8;
-        } while (--blocks);
+        }
     }
     blocks = size & 7;
     if (blocks == 0)
         return;
-    do {
+    for (i = 0; i < (int)blocks; i++) {
         *out++ = *in++;
-    } while (--blocks);
+    }
 }
-#pragma optimization_level reset
+#pragma optimize_for_size reset
 
 extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
     u8 *dst = (u8 *)dstArg;
@@ -24319,9 +24314,10 @@ extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
     u8 *b = (u8 *)arg0;
     u32 i;
     for (i = 0; i < (u32)arg1; i += 2) {
-        u8 t = b[i];
-        b[i] = b[i + 1];
-        b[i + 1] = t;
+        u8 t0 = b[i];
+        u8 t1 = b[i + 1];
+        b[i] = t1;
+        b[i + 1] = t0;
     }
 }
 
