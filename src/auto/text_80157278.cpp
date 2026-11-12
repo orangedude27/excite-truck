@@ -4143,21 +4143,21 @@ extern "C" void fn_80159488(Unk801577F0* arg0) {
 // ordinary truck (player + 0x1F0 == 0x50) that is not a replay playback
 // (fn_801CF064()); and asks the tracker's drift sound to stop, the way
 // fn_80159624 does once the truck stops sliding.
-extern "C" void fn_80159554(void *arg0, void *arg1) {
-    void *sp8 = arg1;
-    s32 temp_r31;
-    fn_80158F34(&sp8);
-    if (*(f32 *)((u8 *)arg0 + 0x25C) > 0.0f) {
-        fn_80158D60(arg0, sp8);
+extern "C" void fn_80159554(void *tracker, void *player) {
+    void *playerArg = player;
+    s32 scoredCount;
+    fn_80158F34(&playerArg);
+    if (*(f32 *)((u8 *)tracker + 0x25C) > 0.0f) {
+        fn_80158D60(tracker, playerArg);
     }
-    temp_r31 = *(s32 *)((u8 *)(*(u32 *)((u8 *)arg0 + 8) + (*(s32 *)((u8 *)arg0 + 0xC) - 1) * 0x38) + 4);
-    if (temp_r31 > 0 && fn_80179650() == 1 && *(s32 *)((u8 *)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0) {
-        fn_8001EF5C(5, temp_r31);
+    scoredCount = ((BonusRecord *)*(u32 *)((u8 *)tracker + 8))[(s32)(*(s32 *)((u8 *)tracker + 0xC) - 1)].scoredCount;
+    if (scoredCount > 0 && fn_80179650() == 1 && *(s32 *)((u8 *)player + 0x1F0) == 0x50 && fn_801CF064() == 0) {
+        fn_8001EF5C(ACH_COUNTER_DRIFT, scoredCount);
     }
-    u8 *p = *(u8 **)((u8 *)arg0 + 0x278);
-    if (p != 0) {
-        *(u8 *)(p + 0x4A) = 1;
-        *(u8 *)(p + 0x4C) = 0;
+    u8 *sound = *(u8 **)((u8 *)tracker + 0x278);
+    if (sound != 0) {
+        *(u8 *)(sound + 0x4A) = 1;
+        *(u8 *)(sound + 0x4C) = 0;
     }
 }
 
