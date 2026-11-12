@@ -4187,6 +4187,42 @@ extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3s
     *(u8 *)((u8 *)self + 0x2D) = 1;
 }
 
+// nw4hbm::ut::LinkListNode: one node of the library's intrusive doubly linked
+// list.  A LinkList's own head is the sentinel the real nodes hang on, so the
+// first node is sentinel.next and the last sentinel.prev.
+struct UtLinkListNode {
+    UtLinkListNode *next; /* 0x00 towards the back of the list */
+    UtLinkListNode *prev; /* 0x04 towards the front */
+};
+// nw4hbm::ut::LinkList: how many nodes are on the list, and that sentinel.
+struct UtLinkList {
+    u32 size;             /* 0x00 */
+    UtLinkListNode sentinel; /* 0x04 */
+};
+// nw4hbm::snd::SoundPlayer, as far as the player-heap handling sees it.
+struct SoundPlayerLayout {
+    u8 pad_00[0x18];
+    UtLinkList heapList; /* 0x18 the PlayerHeaps detail_AppendPlayerHeap added */
+};
+// nw4hbm::snd::detail::PlayerHeap: the block of memory a SoundPlayer hands out
+// to the sounds it plays.  Only the fields the player-heap handling touches.
+struct PlayerHeapLayout {
+    u8 pad_00[0x2C];
+    UtLinkListNode link; /* 0x2C its place in the player's heap list */
+    void *holder;        /* 0x34 cleared when the heap goes back to that list */
+    void *ownerPlayer;   /* 0x38 the player that appended the heap */
+};
+// nw4hbm::snd::detail::BasicSound, as far as the player-heap handling sees it.
+struct BasicSoundLayout {
+    void *vtable;                  /* 0x00 */
+    PlayerHeapLayout *playerHeap;  /* 0x04 the heap its memory came from, if any */
+};
+// The file names and messages the NW4HBM_ASSERTs here and in the inlined
+// nw4hbm::ut::LinkList::insert hand to nw4hbm::db::Panic.
+#define SND_SOUNDPLAYER_CPP ((const char *)lbl_80325C50) /* "snd_SoundPlayer.cpp" */
+#define SND_PTR_SOUND_MSG   ((const char *)lbl_80325D98) /* "NW4HBM:Pointer must not be NULL (sound)" */
+#define UT_LINKLIST_H       ((const char *)lbl_80323834) /* "LinkList.h" */
+#define UT_PTR_P_MSG        ((const char *)lbl_80323810) /* "NW4HBM:Pointer must not be NULL (p)" */
 extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *player, void *sound) {
     extern u8 lbl_80325D98[];
     extern u8 lbl_80323834[];
