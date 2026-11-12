@@ -24554,18 +24554,19 @@ void sdp_init(void) {
         fn_8007093C(0xA0000, (char *)(log + 0x60));
 }
 
+/* Handle an inbound SDP L2CAP connection indication: allocate/configure a CCB and accept the channel. */
 void sdp_connect_ind(u8 *addr, u16 cid, u16 psm, u8 status) {
     extern void fn_80070954(u32, void *, u16);
     extern u8 lbl_8031A200[];
-    void *ccb = sdpu_allocate_ccb();
-    if (ccb != 0) {
-        *(u8 *)ccb = 2;
-        memcpy((u8 *)ccb + 2, addr, 6);
-        *(u16 *)((u8 *)ccb + 0x22) = cid;
+    void *p_ccb = sdpu_allocate_ccb();
+    if (p_ccb != 0) {
+        *(u8 *)p_ccb = 2;
+        memcpy((u8 *)p_ccb + 2, addr, 6);
+        *(u16 *)((u8 *)p_ccb + 0x22) = cid;
         L2CA_ConnectRsp(addr, status, cid, 0, 0);
         L2CA_ConfigReq(cid, (tL2CAP_CFG_INFO *)lbl_803C4C40);
         if (lbl_803C4C40[0x4630] >= 4) {
-            fn_80070954(0xA0003, lbl_8031A200, *(u16 *)((u8 *)ccb + 0x22));
+            fn_80070954(0xA0003, lbl_8031A200, *(u16 *)((u8 *)p_ccb + 0x22));
         }
     }
 }
