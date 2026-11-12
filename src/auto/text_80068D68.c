@@ -14095,9 +14095,10 @@ BOOLEAN WBT_ExtCreateRecord(void) {
 
 /* --- the GAP control block, lbl_803C3740, 0x3AC bytes zeroed by GAP_Init ---
  * trace level at 0x28 (BT_TRACE_LEVEL_*), the two BTM callbacks at 0x20/0x24,
- * the L2CAP callbacks at 0x84..0xA8 and eight connection entries of 0x10 bytes
- * from 0xAC.  What is left is the single GAP_FindAddr_byname request the stack
- * can have running, whose fields the macros below name: */
+ * the L2CAP callbacks at 0x84..0xA8 and the eight connection blocks
+ * (tGAP_CONN_VIEW below) from 0xAC.  What is left is the single
+ * GAP_FindAddr_byname request the stack can have running, whose fields the
+ * macros below name: */
 #define gap_cb                    lbl_803C3740
 #define gap_find_addr_cback(cb)   (*(void (**)(u32, u16 *))((u8 *)(cb) + 0x2C)) /* the user's tGAP_CALLBACK, called with a GAP_EVT_* and the result below */
 #define gap_find_addr_inq_rec(cb) (*(void **)((u8 *)(cb) + 0x30))               /* inquiry DB record whose name is being read */
