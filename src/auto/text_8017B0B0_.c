@@ -307,18 +307,18 @@ typedef struct RigidBody {
 } RigidBody;
 
 #pragma scheduling on
-void fn_8017B6D4(void * __restrict arg0, float * __restrict arg1, float * __restrict arg2) {
-    float vector[3];
-    float temp0 = arg2[0];
-    float temp1 = arg2[1];
-    float temp2 = arg2[2];
-    vector[0] = temp0 - *(float *)((char *)arg0 + 0x60);
-    vector[1] = temp1 - *(float *)((char *)arg0 + 0x64);
-    vector[2] = temp2 - *(float *)((char *)arg0 + 0x68);
-    PSVECCrossProduct((char *)arg0 + 0x124, vector, arg1);
-    arg1[0] += *(float *)((char *)arg0 + 0x118);
-    arg1[1] += *(float *)((char *)arg0 + 0x11C);
-    arg1[2] += *(float *)((char *)arg0 + 0x120);
+void fn_8017B6D4(RigidBody * __restrict body, Vec * __restrict pointVel, const Vec * __restrict worldPoint) {
+    Vec lever;
+    float px = worldPoint->x;
+    float py = worldPoint->y;
+    float pz = worldPoint->z;
+    lever.x = px - body->position.x;
+    lever.y = py - body->position.y;
+    lever.z = pz - body->position.z;
+    PSVECCrossProduct(&body->angularVelocity, &lever, pointVel);
+    pointVel->x += body->velocity.x;
+    pointVel->y += body->velocity.y;
+    pointVel->z += body->velocity.z;
 }
 extern void PSVECCrossProduct(const float *, const float *, float *);
 #pragma scheduling on
