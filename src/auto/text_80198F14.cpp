@@ -96,16 +96,15 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 // 3x3 matrix times vector; the original inlines it with a src == dst check, so both branches are emitted.
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
-    f32 x, y, z;
-    if (src == dst) {
-        x = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
-        y = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
-        z = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
-        dst[0] = x; dst[1] = y; dst[2] = z;
+    if (dst == src) {
+        f32 x = src[0], y = src[1], z = src[2];
+        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
+        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
     } else {
-        dst[0] = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
-        dst[1] = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
-        dst[2] = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
 }
 #pragma always_inline reset
@@ -1795,15 +1794,7 @@ extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *ar
         ((u32 *)&normal)[2] = ((u32 *)&normalCopy)[2];
         PSVECNormalize(&normal, &normal);
         PSVECCrossProduct(&delta, &normal, &cross);
-        if (&rotated == &cross) {
-            rotated.x = cross.z*m[6] + (cross.y*m[3] + cross.x*m[0]);
-            rotated.y = cross.z*m[7] + (cross.x*m[1] + cross.y*m[4]);
-            rotated.z = cross.z*m[8] + (cross.x*m[2] + cross.y*m[5]);
-        } else {
-            rotated.x = cross.z*m[6] + (cross.y*m[3] + cross.x*m[0]);
-            rotated.y = cross.z*m[7] + (cross.x*m[1] + cross.y*m[4]);
-            rotated.z = cross.z*m[8] + (cross.x*m[2] + cross.y*m[5]);
-        }
+        Fn8019DF88MultVec(m, (f32 *)&cross, (f32 *)&rotated);
         PSVECCrossProduct(&rotated, &delta, &result);
         f32 denominator = lbl_805622E0 / farg0 + PSVECDotProduct(&normal, &result);
         if ((f32)__fabs((f64)denominator) > lbl_8056235C) {
@@ -2867,6 +2858,7 @@ extern "C" void fn_801A0F10(void* arg0) {
     Vec tmp;
     u8 buffer[0x300];
     s32 i;
+    s32 j;
     u8* ent;
     fn_801A0160(arg0);
     ent = (u8*)arg0;
@@ -2909,7 +2901,7 @@ extern "C" void fn_801A0F10(void* arg0) {
                 count = maxCount;
                 fn_801CF080(lbl_8055E5A0, &v, buffer, &count, 0, lbl_8056234C);
                 Vec* cur = (Vec*)buffer;
-                for (i = 0; i < count; i++) {
+                for (j = 0; j < count; j++) {
                     Vec d;
                     d.x = v.x - cur->x;
                     d.y = v.y - cur->y;
