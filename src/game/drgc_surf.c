@@ -119,26 +119,23 @@ void fn_802D4060(void *arg0) {
     register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
-    s32 i;
+    s32 k;
     if (base == 0) return;
     {
-        register f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
+        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
         f32 factor = lbl_80564FF0;
         register volatile f32 *out = base;
-        for (i = 0; i < count; i++) {
+        for (k = 0; k < count; k++) {
             u8 a, b, c, d;
-            s32 offset1, offset2;
             f32 weight1, weight2;
             f32 *direction;
             f32 x, y, z;
             a = src[0xE];
             b = src[0xC];
-            offset1 = b * 12;
-            direction = (f32 *)((u8 *)directions + offset1);
+            direction = (f32 *)((u8 *)directions + b * 12);
             weight1 = factor * (f32)a;
             c = src[0xD];
             d = src[0xF];
-            offset2 = c * 12;
             weight2 = factor * (f32)d;
             x = *(f32 *)((u8 *)src + 0x0) + direction[0] * weight1;
             out[0] = x;
@@ -146,7 +143,7 @@ void fn_802D4060(void *arg0) {
             out[1] = y;
             z = *(f32 *)((u8 *)src + 0x8) + direction[2] * weight1;
             out[2] = z;
-            direction = (f32 *)((u8 *)directions + offset2);
+            direction = (f32 *)((u8 *)directions + c * 12);
             src += 0x10;
             out[0] = x + direction[0] * weight2;
             out[1] = y + direction[1] * weight2;
@@ -204,9 +201,9 @@ void fn_802D42E4(void *arg0) {
         return;
     }
     {
-        register f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
-        register volatile f32 *out = base;
+        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
         f32 factor = lbl_80564FF0;
+        register volatile f32 *out = base;
         for (i = 0; i < count; i++) {
             u8 a, b, c, d;
             f32 weight1, weight2;
@@ -251,12 +248,12 @@ void fn_802D4458(void *arg0) {
     register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)fn_802CFF64(count * 12);
-    s32 i;
+    s32 k;
     if (base == 0) return;
     {
         f32 factor = lbl_80564FF0;
         f32 *out = base;
-        for (i = 0; i < count; i++) {
+        for (k = 0; k < count; k++) {
             u8 a = src[0xE];
             s32 offset1 = src[0xC] * 12;
             s32 offset2 = src[0xD] * 12;
@@ -745,42 +742,53 @@ extern f32 lbl_804DB068[];
 extern f32 lbl_80564FF0;
 extern f64 lbl_80564FF8;
 #pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_802D56D4(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
     extern f32 lbl_80564FF0;
+    extern f64 lbl_80564FF8;
     extern void fn_802D5680(void *);
     register void *object = arg0;
     register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)fn_802CFF64(count * 12);
     s32 i;
+    s32 dummy4;
     if (base == 0) {
         fn_802D5680(object);
         return;
     }
     {
+        double bias = lbl_80564FF8;
         f32 factor = lbl_80564FF0;
         register volatile f32 *out = base;
-        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
+        f32 (*dirs)[3] = (f32 (*)[3])lbl_804DB068;
         for (i = 0; i < count; i++) {
             u8 a = src[0xE];
             u8 b = src[0xC];
             u8 c = src[0xD];
             u8 d = src[0xF];
-            f32 weight1 = factor * (f32)a;
-            f32 weight2 = factor * (f32)d;
+            union { double dd; unsigned int ww[2]; } cd, ca;
+            float fa, fd;
+            f32 weight1, weight2;
             f32 x, y, z;
-            x = *(f32 *)((u8 *)src + 0x0) + directions[b][0] * weight1;
+            ca.ww[0] = 0x43300000; ca.ww[1] = a;
+            cd.ww[0] = 0x43300000; cd.ww[1] = d;
+            fa = (float)(ca.dd - bias);
+            fd = (float)(cd.dd - bias);
+            weight1 = factor * fa;
+            weight2 = factor * fd;
+            x = *(f32 *)((u8 *)src + 0x0) + dirs[b][0] * weight1;
             out[0] = x;
-            y = *(f32 *)((u8 *)src + 0x4) + directions[b][1] * weight1;
+            y = *(f32 *)((u8 *)src + 0x4) + dirs[b][1] * weight1;
             out[1] = y;
-            z = *(f32 *)((u8 *)src + 0x8) + directions[b][2] * weight1;
+            z = *(f32 *)((u8 *)src + 0x8) + dirs[b][2] * weight1;
             out[2] = z;
             src += 0x10;
-            out[0] = x + directions[c][0] * weight2;
-            out[1] = y + directions[c][1] * weight2;
-            out[2] = z + directions[c][2] * weight2;
+            out[0] = x + dirs[c][0] * weight2;
+            out[1] = y + dirs[c][1] * weight2;
+            out[2] = z + dirs[c][2] * weight2;
             out += 3;
         }
     }
@@ -788,6 +796,7 @@ void fn_802D56D4(void *arg0) {
     GXSetArray(10, *(void **)((u8 *)object + 0x24), 3);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
+#pragma dont_inline reset
 #pragma scheduling on
 
 extern f32 *fn_802D2D04(void);
@@ -847,6 +856,7 @@ void fn_802D5ACC(void *arg0) {
     register void *array = data->array0;
     f32 matrix[3][4];
 
+    /* Set up vertex arrays and two rotated position matrices, draw the display list, then mark draw state active. */
     GXSetArray(9, array, 0xC);
     GXSetArray(0xB, data->array1, 2);
     GXSetArray(0xD, data->array2, 4);
@@ -1088,6 +1098,8 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     *arg1 = write->start;
     *arg2 = write->size;
 }
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802D63FC(void *arg0, s32 arg1) {
     extern void fn_802D62FC(void *, s32 *, s32 *);
     extern void fn_802D657C(s32 *, s32);
@@ -1167,6 +1179,7 @@ void fn_802D63FC(void *arg0, s32 arg1) {
     sp8 = temp_r0_6;
     p[0x0B] = (u8)temp_r0_6;
 }
+#pragma pop
 void fn_802D657C(s32 *arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
