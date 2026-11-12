@@ -16280,7 +16280,9 @@ extern "C" void fn_800C3088(volatile s32 *out, const volatile s32 *a, const vola
 
 #pragma dont_inline fn_800C34B4
 extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    /* Apply two synthesis/filter stages with mode-dependent output offset (arg3 == 0 uses wider spacing). */
     typedef void (*Fn3960)(void *, void *, s32, s32, s32, s32);
+
     if (arg3 == 0) {
         ((Fn3960)fn_800C3960)((void *)arg0, lbl_802F4088, arg2, arg1, 0x3FF, arg3);
         fn_800C3574((void *)arg0, lbl_802F4108, arg2 + 1, arg1 + 4, arg3);
