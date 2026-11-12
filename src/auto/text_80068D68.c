@@ -9,6 +9,7 @@ extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
 #include <stdarg.h>
 #include <printf.h>
 #include "revolution/BTE/stack/include/btm_api.h"
+#include "revolution/BTE/stack/include/gap_api.h"
 #define btm_sco_chk_pend_unpark btm_sco_chk_pend_unpark_old2
 #include "revolution/BTE/stack/btm/btm_int.h"
 #undef btm_sco_chk_pend_unpark
