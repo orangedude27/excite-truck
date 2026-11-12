@@ -5,6 +5,7 @@
 
 extern int __sformatter(int (*ReadProc)(void *, int, int), void *ReadProcArg, const char *format_str, va_list arg, int is_secure);
 
+/* Parse formatted input from a string, returning the number of fields matched or -1. */
 int sscanf(const char *s, const char *pFormat, ...) {
     __InStrCtrl isc;
     va_list args;
