@@ -7375,32 +7375,34 @@ void fn_800778C8(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C4) = arg0;
 }
 
-void btm_read_link_policy_complete(u8 *p) {
-    tBTM_CMPL_CB *p_cb;
-    tBTM_LNK_POLICY_RESULTS_LKP lnkpol;
+/* Handles HCI Read Link Policy Settings complete: stores status/settings for the ACL connection and invokes the pending callback. */
+void btm_read_link_policy_complete(u8 *event) {
+    tBTM_CMPL_CB *completionCb;
+    tBTM_LNK_POLICY_RESULTS_LKP results;
     u16 handle;
-    u8 *p_acl_cb;
+    u8 *aclConn;
     u16 index;
-    p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5C4);
-    p_acl_cb = lbl_803C0F78 + 0x34;
+
+    completionCb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5C4);
+    aclConn = lbl_803C0F78 + 0x34;
     fn_80070F90(lbl_803C0F78 + 0x5AC);
     *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5C4) = 0;
-    if (p_cb) {
-        lnkpol.hci_status = p[0];
-        if (lnkpol.hci_status == 0) {
-            lnkpol.status = 0;
-            handle = (u16)(p[1] + (p[2] << 8));
-            lnkpol.settings = (u16)(p[3] + (p[4] << 8));
-            for (index = 0; index < 4; index++, p_acl_cb += 0x11C) {
-                if (p_acl_cb[0x119] != 0 && handle == *(u16 *)p_acl_cb) {
-                    memcpy(lnkpol.rem_bda, p_acl_cb + 8, 6);
+    if (completionCb) {
+        results.hci_status = event[0];
+        if (results.hci_status == 0) {
+            results.status = 0;
+            handle = (u16)(event[1] + (event[2] << 8));
+            results.settings = (u16)(event[3] + (event[4] << 8));
+            for (index = 0; index < 4; index++, aclConn += 0x11C) {
+                if (aclConn[0x119] != 0 && handle == *(u16 *)aclConn) {
+                    memcpy(results.rem_bda, aclConn + 8, 6);
                     break;
                 }
             }
         } else {
-            lnkpol.status = 10;
+            results.status = 10;
         }
-        (*p_cb)(&lnkpol);
+        (*completionCb)(&results);
     }
 }
 
@@ -9696,13 +9698,12 @@ found:
 }
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
-    u8 result;
-    void *zero;
-    void (*callback)(void *);
-    u8 *base;
-    void *buffer;
     u8 *cleanup_base;
-
+    u32 zero;
+    u8 *base;
+    void (*callback)(void *);
+    u8 result;
+    void *buffer;
     base = lbl_803C0F78;
     callback = *(void (**)(void *))(base + 0x16B0);
     if (base[0x1848] != 0) {
@@ -9713,18 +9714,18 @@ void btm_process_inq_complete(UINT8 status, UINT8 unused) {
         base[0x183E] = result;
         if ((base[0x1848] & 4) == 0) {
             cleanup_base = lbl_803C0F78;
-            zero = NULL;
+            zero = 0;
             buffer = *(void **)(cleanup_base + 0x16DC);
-            *(u32 *)(base + 0x16B4) = (u32)zero;
-            base[0x1848] = (u8)zero;
-            base[0x1847] = (u8)zero;
+            *(u32 *)(base + 0x16B4) = zero;
+            base[0x1848] = zero;
+            base[0x1847] = zero;
             *(void (**)(void *))(base + 0x16B0) = NULL;
             if (buffer != NULL) {
                 GKI_freebuf(buffer);
-                *(void **)(cleanup_base + 0x16DC) = zero;
+                *(void **)(cleanup_base + 0x16DC) = (void *)zero;
             }
-            *(u16 *)(cleanup_base + 0x16E0) = (u16)zero;
-            *(u16 *)(cleanup_base + 0x16E2) = (u16)zero;
+            *(u16 *)(cleanup_base + 0x16E0) = zero;
+            *(u16 *)(cleanup_base + 0x16E2) = zero;
             if (lbl_803C0F78[0x27C0] >= 5)
                 fn_8007096C(0xD0004, lbl_803164F4,
                             base[0x183E], base[0x183F]);
@@ -20699,10 +20700,9 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
     void *port;
     u16 port_lcid;
     s16 status = arg1;
-
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, (char *)trace_msg, lcid);
+            fn_80070954(0x90000, (void *)(trace_msg + 0), lcid);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
