@@ -50,6 +50,7 @@ static inline void removeDeadEntry(void) {
     }
     fn_802E317C(lbl_803449D4);
 }
+#pragma always_inline reset
 
 static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
     float outX;
