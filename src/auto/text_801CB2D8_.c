@@ -396,19 +396,19 @@ void fn_801CC594(void *arg0) {
     s32 minusOne;
     void *entry;
     void *object;
-    void *field;
     f32 floatE4;
     f32 floatFC;
     f32 floatA08;
+    void *field;
     if (base[0x10] != 0) return;
     index = 0;
     offset = 0;
-    do {
+    while (index < *(s32 *)(base + 0x1C)) {
         entry = *(void **)((u8 *)*(void **)(base + 0x18) + offset);
         if (entry != 0) fn_8001BE70(*(void **)entry);
         offset += 4;
-        index = offset >> 2;
-    } while (index < *(s32 *)(base + 0x1C));
+        ++index;
+    }
     *(void **)(base + 0x2A0) = base + 0x29C;
     offset = 0;
     *(s32 *)(base + 0x29C) = offset;
@@ -462,7 +462,7 @@ void fn_801CC594(void *arg0) {
     *(f32 *)(base + 0x5FC) = floatFC;
     *(f32 *)(base + 0x600) = floatFC;
     *(f32 *)(base + 0x604) = floatFC;
-    field = *(void * volatile *)(base + 0x2C8);
+    field = *(void **)(base + 0x2C8);
     *(f32 *)(base + 0x608) = floatE4;
     *(f32 *)(base + 0x60C) = floatFC;
     *(f32 *)(base + 0x610) = floatFC;
@@ -548,13 +548,14 @@ void fn_801CC918(void) {
     extern float lbl_805629FC;
     extern float lbl_80562A08;
     void *entry;
-    void *object;
-    register unsigned char *base;
-    register int i;
-    register unsigned int offset;
     float floatE4;
     float floatFC;
+    register long i;
+    register unsigned offset;
     float floatA08;
+    register unsigned char *base;
+    void *object;
+    void *field;
 
     base = (unsigned char *)lbl_8055E884;
     if (base[0x10] != 0) return;
@@ -562,7 +563,7 @@ void fn_801CC918(void) {
     offset = 0;
     for (; i < *(int *)(base + 0x1C); offset += 4, ++i) {
         entry = *(void **)((char *)*(void **)(base + 0x18) + offset);
-        if (entry != 0) fn_8001BE70(*(void **)entry);
+        if (entry) fn_8001BE70(*(void **)entry);
     }
     i = 0;
     *(int *)(base + 0x29C) = i;
@@ -620,19 +621,20 @@ void fn_801CC918(void) {
     *(float *)(base + 1548) = floatFC;
     *(float *)(base + 1552) = floatFC;
     *(float *)(base + 1556) = floatFC;
-    if (*(int *)(base + 0x2C8) != 0) fn_802AE0E0();
+    field = *(void **)(base + 0x2C8);
+    if (field != 0) ((void (*)(void *))fn_802AE0E0)(field);
     object = *(void **)(base + 0x2CC);
-    if (object != 0) {
+    if (object) {
         *(unsigned char *)((char *)object + 0x4A) = 1;
         *(unsigned char *)((char *)object + 0x4C) = 0;
     }
     object = *(void **)(base + 0x2D0);
-    if (object != 0) {
+    if (object) {
         *(unsigned char *)((char *)object + 0x4A) = 1;
         *(unsigned char *)((char *)object + 0x4C) = 0;
     }
     object = *(void **)(base + 0x2D4);
-    if (object != 0) {
+    if (object) {
         *(unsigned char *)((char *)object + 0x4A) = 1;
         *(unsigned char *)((char *)object + 0x4C) = 0;
     }
@@ -1287,21 +1289,19 @@ void fn_801CD730(s32 *arg0, s32 *arg1) {
 extern char lbl_80337D90[];
 extern f32 lbl_805629FC;
 #pragma push
-#pragma paired_single off
-#pragma dont_inline on
+#pragma processor 750
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801CD7BC(int arg0, register int arg1, f32 farg0) {
+extern "C" void fn_801CD7BC(int arg0, int arg1, f32 farg0) {
     s32 statusIndex;
     register s32 offset;
     register s32 index;
     u8 *object;
     s32 status;
     u8 *base;
-    register s32 mapIndex;
+    s32 mapIndex;
     s32 current;
     register s32 id;
-
     if (fn_801CE898() != 0)
         goto done;
     base = (u8 *)lbl_8055E884;
@@ -1321,7 +1321,6 @@ extern "C" void fn_801CD7BC(int arg0, register int arg1, f32 farg0) {
     object = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
     if (object[0] == 0 || arg1 == 0)
         goto done;
-
     if (*(f32 *)(base + 0x2B8) < lbl_805629FC) {
         id = 0x20507;
         index = 0;
@@ -1358,7 +1357,6 @@ done:
     return;
 }
 #pragma cplusplus reset
-#pragma paired_single reset
 #pragma pop
 
 extern f32 lbl_805629E4, lbl_805629F0, lbl_805629FC, lbl_80562A10, lbl_80562A14, lbl_80562A18;
