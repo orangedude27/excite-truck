@@ -7,6 +7,13 @@ extern "C" {
 
 #define OS_CACHE_BASE 0xE0000000
 
+// Locked cache (LC) DMA transfers are counted in cache lines ("blocks"), and
+// the transfer length is split over DMAU/DMAL, so a single transfer moves at
+// most LC_MAX_BLOCKS lines.
+#define LC_LINE_SIZE 32
+#define LC_MAX_BLOCKS 128
+#define LC_MAX_TRANSFER (LC_LINE_SIZE * LC_MAX_BLOCKS)
+
 // Forward declarations
 typedef struct OSContext OSContext;
 
