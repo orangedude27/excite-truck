@@ -212,6 +212,7 @@ extern "C" s32 lbl_80559248;
 extern "C" s32 *lbl_8055DD70;
 extern "C" void *lbl_8055DD7C;
 extern "C" const char lbl_8031B838[];
+extern "C" const char lbl_8031B878[];
 extern "C" s32 IOS_Open(const char *, s32);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 extern u32 lbl_8055DDE0;
@@ -2974,7 +2975,7 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
         u32 remainder = first % size;
         s32 steps = *(s32 *)(context + 0x14);
         s32 sign = -((s32)remainder) | (s32)remainder;
-        aligned = first + (u32)((size - remainder) & (sign >> 31));
+        aligned = first + ((u32)((sign >> 31) & (s32)(size - remainder)));
 
         if (steps != 0) {
             range = (u32)(steps + 1) * size;
@@ -6843,20 +6844,18 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
         if (result != 0) return result;
         *(u32 *)(ctx + 0x18) = block;
     }
-    u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
-    s32 data = *(s32 *)(buffer + offset);
-    u32 upper = __rlwinm((u32)data, 8, 8, 15);
-    u32 lower = __rlwinm((u32)data, 24, 16, 23);
-    upper = __rlwimi(upper, (u32)data, 24, 0, 7);
-    lower = __rlwimi(lower, (u32)data, 8, 24, 31);
-    u32 merged = upper | lower;
-    merged &= 0xF0000000;
-    merged = __rlwimi(merged, arg2, 0, 4, 31);
-    upper = __rlwinm(merged, 8, 8, 15);
-    lower = __rlwinm(merged, 24, 16, 23);
-    upper = __rlwimi(upper, merged, 24, 0, 7);
-    lower = __rlwimi(lower, merged, 8, 24, 31);
-    *(u32 *)(buffer + offset) = upper | lower;
+    u32 data = *(u32 *)(*(u8 **)(ctx + 8) + offset);
+    u32 swapped = (__rlwinm(data, 8, 8, 15) | 0);
+    swapped = __rlwimi(swapped, data, 24, 0, 7);
+    u32 lower = __rlwinm(data, 24, 16, 23);
+    lower = __rlwimi(lower, data, 8, 24, 31);
+    data = (swapped | lower) & 0xF0000000;
+    data = __rlwimi(data, arg2, 0, 4, 31);
+    u32 upper = __rlwinm(data, 8, 8, 15);
+    lower = __rlwinm(data, 24, 16, 23);
+    upper = __rlwimi(upper, data, 24, 0, 7);
+    lower = __rlwimi(lower, data, 8, 24, 31);
+    *(u32 *)(*(u8 **)(ctx + 8) + offset) = upper | lower;
     if (result != 0) saved = result;
     return saved;
 }
@@ -11376,13 +11375,9 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     result = end - start;
     shifted = result >> countB;
     *arg1 = result;
-    if (shifted < 0xFF5) {
-        return 0;
-    } else if (shifted < 0xFFF5) {
-        return 1;
-    } else {
-        return 2;
-    }
+    if (shifted < 0xFF5) return 0;
+    if (shifted < 0xFFF5) return 1;
+    return 2;
 }
 
 extern "C" s32 fn_800B865C(u8 *buffer) {
