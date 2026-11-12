@@ -532,12 +532,12 @@ void fn_801D50B0(int arg0) {
   #pragma use_lmw_stmw off
       #pragma cplusplus on
 
-/* Per-frame update of one loaded action sequence.  While the sequence plays it
- * ticks its *_ASE elements, and once none of them is waiting any more it
- * either resets them all and goes ready again (auto_reset) or ends.  In every
- * other state it follows the lap of the race leader and keeps the sequence
- * ready only while that lap lies between first_active_lap and
- * last_active_lap. */
+/* ActionSequence::Update - per-frame update of one loaded action sequence.
+ * While the sequence plays it ticks its *_ASE elements, and once none of them
+ * is waiting any more it either resets them all and goes ready again
+ * (auto_reset) or ends.  In every other state it follows the lap of the race
+ * leader and keeps the sequence ready only while that lap lies between
+ * first_active_lap and last_active_lap. */
 void fn_801D50B8(int arg0) {
     /* One *_ASE element: state() is vtable+0x18, update() +0x2C and reset()
      * +0x30; the two leading slots are this ABI's destructor pair. */
