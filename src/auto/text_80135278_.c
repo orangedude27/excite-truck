@@ -347,8 +347,15 @@ done:
     return;
 }
 #pragma scheduling on
-void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, float amount) {
-    extern double fn_8002F234(float);
+void fn_80135B9C(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, float *valueOut, PathSample *sampleOut, float amount) {
+    /* Move the follower's place along its path by `amount` world units and read
+     * the path there.  Every output is optional: posOut gets the position,
+     * dirOut the path direction scaled to unit length, valueOut the node value
+     * interpolated across the stretch and sampleOut the new place (stretch,
+     * fraction and tag).  Distance left over at the end of one stretch carries
+     * into the next nodes; with no node to work from the outputs fall back to
+     * position (0, 0) and direction (0, 1). */
+    extern double fn_8002F234(float);  // sqrt
     float step;
     register float fraction;
     float remaining;
@@ -358,70 +365,69 @@ void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, fl
     float scale;
     float temp;
     int id;
-    char *node;
+    PathNode *node;
 
-    node = *(char **)((char *)arg0 + 4);
+    node = cursor->sample.node;
     if (node == 0) {
-        if (arg2 != 0) {
+        if (dirOut != 0) {
             float second;
             float first;
-            first = lbl_80561320;
-            second = lbl_80561324;
-            *(float *)arg2 = first;
-            *((float *)arg2 + 1) = second;
+            first = lbl_80561320;   // 0.0f
+            second = lbl_80561324;  // 1.0f
+            dirOut->x = first;
+            dirOut->y = second;
         }
-        if (arg1 != 0) {
+        if (posOut != 0) {
             float zero = lbl_80561320;
-            *(float *)arg1 = zero;
-            *((float *)arg1 + 1) = zero;
+            posOut->x = zero;
+            posOut->y = zero;
         }
         return;
     }
-    step = *(float *)(node + 0x18);
-    fraction = *(float *)((char *)arg0 + 8);
+    step = node->length;
+    fraction = cursor->sample.fraction;
     remaining = amount / step;
-    if (fraction + remaining > lbl_80561324) {
+    if (fraction + remaining > lbl_80561324) {  // past the end of this stretch
         temp = lbl_80561324 - fraction;
-        node = *(char **)(node + 0x14);
+        node = PATH_NEXT(node);
         remaining = amount - temp * step;
-        while (remaining > *(float *)(node + 0x18)) {
-            step = *(float *)(node + 0x18);
-            node = *(char **)(node + 0x14);
+        while (remaining > node->length) {  // walk whole stretches off
+            step = node->length;
+            node = PATH_NEXT(node);
             remaining -= step;
         }
-        fraction = remaining / *(float *)(node + 0x18);
+        fraction = remaining / node->length;
     } else {
         fraction += remaining;
     }
-    if (arg1 != 0) {
-        dx = *(float *)(*(volatile char **)(node + 0x14)) - *(float *)node;
-        *(float *)arg1 = *(float *)node + fraction * dx;
-        dy = *(float *)(*(volatile char **)(node + 0x14) + 4) - *(float *)(node + 4);
-        *((float *)arg1 + 1) = *(float *)(node + 4) + fraction * dy;
+    if (posOut != 0) {  // the position between this node and the next
+        dx = PATH_NEXT(node)->x - node->x;
+        posOut->x = node->x + fraction * dx;
+        dy = PATH_NEXT(node)->y - node->y;
+        posOut->y = node->y + fraction * dy;
     }
-    if (arg2 != 0) {
-        dx = *(float *)(*(volatile char **)(node + 0x14) + 8) - *(float *)(node + 8);
-        *(float *)arg2 = *(float *)(node + 8) + fraction * dx;
-        dy = *(float *)(*(volatile char **)(node + 0x14) + 0xC) - *(float *)(node + 0xC);
-        *((float *)arg2 + 1) = *(float *)(node + 0xC) + fraction * dy;
-        length = (*((float *)arg2) * *((float *)arg2)) +
-                 (*((float *)arg2 + 1) * *((float *)arg2 + 1));
+    if (dirOut != 0) {  // the direction there, scaled to unit length
+        dx = PATH_NEXT(node)->dirX - node->dirX;
+        dirOut->x = node->dirX + fraction * dx;
+        dy = PATH_NEXT(node)->dirY - node->dirY;
+        dirOut->y = node->dirY + fraction * dy;
+        length = (dirOut->x * dirOut->x) + (dirOut->y * dirOut->y);
         scale = lbl_80561324 / (float)fn_8002F234(length);
-        *(float *)arg2 *= scale;
-        *((float *)arg2 + 1) *= scale;
+        dirOut->x *= scale;
+        dirOut->y *= scale;
     }
-    if (arg4 != 0) {
-        id = *(int *)((char *)arg0 + 0xC);
-        *(char **)arg4 = node;
-        *((float *)arg4 + 1) = fraction;
-        *(int *)((char *)arg4 + 8) = id;
+    if (sampleOut != 0) {
+        id = cursor->sample.tag;
+        sampleOut->node = node;
+        sampleOut->fraction = fraction;
+        sampleOut->tag = id;
     }
-    if (arg3 != 0) {
+    if (valueOut != 0) {  // the node value across the same stretch
         float endValue;
         float startValue;
-        endValue = *(float *)(*(volatile char **)(node + 0x14) + 0x20);
-        startValue = *(float *)(node + 0x20);
-        *(float *)arg3 = startValue + fraction * (endValue - startValue);
+        endValue = PATH_NEXT(node)->value;
+        startValue = node->value;
+        *valueOut = startValue + fraction * (endValue - startValue);
     }
 }
 #pragma opt_propagation off
