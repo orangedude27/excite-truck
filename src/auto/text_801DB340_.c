@@ -175,6 +175,8 @@ float fn_801DB398(float grid[4][4], float t, float u) {
 #pragma pop
 
 static inline float eval_spline(const float *p, int stride, float t, float *out_deriv) {
+    float t2 = t * t;
+    float t3 = t2 * t;
     float p2 = p[stride * 2];
     float p0 = p[0];
     float p1 = p[stride];
@@ -183,18 +185,14 @@ static inline float eval_spline(const float *p, int stride, float t, float *out_
     float dp21 = p2 - p1;
     float dp31 = p3 - p1;
     float half20 = lbl_80562B64 * dp20;
-    float twice20 = lbl_80562B68 * half20;
     float c3_term = lbl_80562B6C * dp21;
     float half31 = lbl_80562B64 * dp31;
+    float twice20 = lbl_80562B68 * half20;
     float twice21 = lbl_80562B68 * dp21;
     float sum = half20 + half31;
     float coeff3 = c3_term - twice20;
     float coeff2 = sum - twice21;
-    float t2 = t * t;
-    float t3 = t2 * t;
-
     coeff3 = coeff3 - half31;
-
     if (out_deriv != 0) {
         *out_deriv = (lbl_80562B6C * coeff2 * t2 + lbl_80562B68 * coeff3 * t) + half20;
     }
@@ -977,6 +975,7 @@ float fn_801DDC8C(float farg0, float farg1) {
     int layerIndex;
     unsigned short sample;
     int next;
+    int tblIdx;
     float offsetX;
     float scaleX;
     float offsetZ;
@@ -987,30 +986,22 @@ float fn_801DDC8C(float farg0, float farg1) {
     float roundZ;
     float value;
     float result;
-    char *layerBase;
     char *layer;
-    union {
-        double d;
-        struct { unsigned int high; unsigned int low; } words;
-    } sampleDouble;
-
+    char *base;
     if (state[4] == 0)
         return lbl_80562B84;
-
     offsetX = farg0 + *(float *)((char *)state + 0);
     scaleX = *(float *)((char *)state + 8);
     offsetZ = farg1 + *(float *)((char *)state + 4);
     scaleZ = *(float *)((char *)state + 12);
     x = scaleX * offsetX;
     z = scaleZ * offsetZ;
-
     roundX = x < lbl_80562B84 ? x - lbl_80562B64 : lbl_80562B64 + x;
     cellX = (int)roundX;
     roundZ = z < lbl_80562B84 ? z - lbl_80562B64 : lbl_80562B64 + z;
     cellZ = (int)roundZ;
     if (cellX < 0 || cellZ < 0)
         return lbl_80562B84;
-
     tileWorldX = cellX / 32;
     tileWorldZ = cellZ / 32;
     tileX = tileWorldX - lbl_8055E99C;
@@ -1018,36 +1009,37 @@ float fn_801DDC8C(float farg0, float farg1) {
     remX = cellX - tileWorldX * 32;
     remZ = cellZ - tileWorldZ * 32;
     if (tileX < 0 || tileZ < 0)
-        return lbl_80562B84;
-    if (tileX >= 0x60 || tileZ >= 0x60)
-        return lbl_80562B84;
-
-    tile = *(unsigned short *)((char *)lbl_80442708 + tileX * 0xC0 + tileZ * 2);
-    if (tile == 0xFFFF)
-        return lbl_80562B84;
-    node = (char *)*(int *)((char *)state + 0x18) + tile * 0x894;
+        node = 0;
+    else if (tileX >= 0x60 || tileZ >= 0x60)
+        node = 0;
+    else {
+        tile = *(unsigned short *)((char *)lbl_80442708 + tileX * 0xC0 + tileZ * 2);
+        if (tile == 0xFFFF)
+            node = 0;
+        else
+            node = (char *)*(int *)((char *)state + 0x18) + tile * 0x894;
+    }
     if (node == 0)
         return lbl_80562B84;
-
     layerIndex = *(int *)(node + 0x890);
     result = lbl_80562B84;
-    if (layerIndex < 0)
+    if (layerIndex >= 0) {
+        base = (char *)*(int *)((char *)state + 0x20);
+        layer = base + layerIndex * 0x810;
+        do {
+            tblIdx = *(int *)(layer + 0x808);
+            sample = *(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8);
+            next = *(int *)(layer + 0x80C);
+            value = *(float *)(layer + 0) + *(float *)(layer + 4) * (float)sample;
+            result += value * lbl_804425DC[tblIdx];
+            if (next < 0)
+                break;
+            base = (char *)*(int *)((char *)state + 0x20);
+            layer = base + next * 0x810;
+        } while (1);
         return result;
-    layerBase = (char *)*(int *)((char *)state + 0x20);
-    layer = layerBase + layerIndex * 0x810;
-    do {
-        next = *(int *)(layer + 0x80C);
-        sample = *(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8);
-        sampleDouble.words.high = 0x43300000;
-        sampleDouble.words.low = (unsigned int)sample;
-        value = *(float *)(layer + 0) +
-                *(float *)(layer + 4) * (float)(sampleDouble.d - lbl_80562B78);
-        result += value * lbl_804425DC[*(int *)(layer + 0x808)];
-        if (next < 0)
-            break;
-        layer = layerBase + next * 0x810;
-    } while (1);
-    return result;
+    } else
+        return result;
 }
 #pragma pop
 
