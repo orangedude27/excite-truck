@@ -1787,31 +1787,30 @@ extern "C" s32 fn_8015A404(void* arg0) {
 #pragma scheduling invalid_target
 extern "C" void fn_8015A40C(void *arg0) {
  extern f32 lbl_80561750, lbl_80561754, lbl_805617AC, lbl_805617B0;
- struct V { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual f32 v18(s32); virtual f32 v19(s32); virtual void v20(); virtual s32 v21(); virtual void v22(); virtual void v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual s32 v29(); virtual void v30(); virtual s32 v31(); };
- f32 entryValue = lbl_80561754;
- s32 r6 = 0;
- s32 r7 = 0;
- s32 r5 = 0;
- while (r6 < *(s32 *)((char *)arg0 + 0xc)) {
-  char *p = *(char **)((char *)arg0 + 8);
-  r6++;
-  *(s32 *)(p + r7) = r5;
-  p = *(char **)((char *)arg0 + 8);
-  *(s32 *)(p + r7 + 4) = r5;
-  p = *(char **)((char *)arg0 + 8);
-  *(s32 *)(p + r7 + 8) = r5;
-  p = *(char **)((char *)arg0 + 8);
-  *(f32 *)(p + r7 + 0xc) = entryValue;
-  r7 += 0x38;
- }
- f32 resetValue = lbl_80561754;
- entryValue = lbl_80561750;
- s32 zero = 0;
+ struct V { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual f32 v18(s32); virtual f32 v19(s32); virtual void v20(); virtual s32 v21(); virtual void v22(); virtual s32 v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual s32 v29(); virtual void v30(); virtual s32 v31(); };
+ f32 z;
+ int count=0, offset=0;
+ int zero=0;
+ z=lbl_80561754;
+ goto check;
+loop:
+ count++;
+ *(int *)(*(volatile char **)((char *)arg0+8)+offset)=zero;
+ *(int *)(*(volatile char **)((char *)arg0+8)+offset+4)=zero;
+ *(int *)(*(volatile char **)((char *)arg0+8)+offset+8)=zero;
+ *(f32 *)(*(volatile char **)((char *)arg0+8)+offset+0xc)=z;
+ offset+=0x38;
+check:
+ if(count<*(int *)((char *)arg0+0xc)) goto loop;
+ f32 val, one;
+ one=lbl_80561754;
+ val=lbl_80561750;
  *(int *)((char *)arg0+0x264)=zero; *(int *)((char *)arg0+0x260)=zero;
- *(f32 *)((char *)arg0+0x254)=resetValue; *(f32 *)((char *)arg0+0x25c)=entryValue;
+ *(f32 *)((char *)arg0+0x254)=one; *(f32 *)((char *)arg0+0x25c)=val;
  ((V *)arg0)->v31();
- f32 init=lbl_805617AC;
- entryValue=lbl_805617B0;
+ f32 end, init;
+ init=lbl_805617AC;
+ end=lbl_805617B0;
  *(int *)((char *)arg0+0x26c)=zero;
  *(f32 *)((char *)arg0+0x270)=init; *(char *)((char *)arg0+0x274)=1;
  *(int *)((char *)arg0+0x278)=zero; *(f32 *)((char *)arg0+0x27c)=init; *(char *)((char *)arg0+0x280)=1;
@@ -1821,7 +1820,7 @@ extern "C" void fn_8015A40C(void *arg0) {
  *(int *)((char *)arg0+0x2a8)=zero; *(f32 *)((char *)arg0+0x2ac)=init; *(char *)((char *)arg0+0x2b0)=1;
  *(int *)((char *)arg0+0x2b4)=zero; *(f32 *)((char *)arg0+0x2b8)=init; *(char *)((char *)arg0+0x2bc)=1;
  *(int *)((char *)arg0+0x2c0)=zero; *(f32 *)((char *)arg0+0x2c4)=init; *(char *)((char *)arg0+0x2c8)=1;
- *(int *)((char *)arg0+0x2cc)=zero; *(char *)((char *)arg0+0x2d1)=0; *(f32 *)((char *)arg0+0x2d4)=entryValue;
+ *(int *)((char *)arg0+0x2cc)=zero; *(char *)((char *)arg0+0x2d1)=0; *(f32 *)((char *)arg0+0x2d4)=end;
 }
 #pragma scheduling on
 extern "C" void fn_8015A538(void* arg0, void* arg1) {
@@ -3329,6 +3328,7 @@ extern "C" void fn_8015D554(void *arg0) {
 
 #pragma push
 #pragma processor 750
+/* Returns the current timeline index plus progress toward the next key (time at +0x14, stride 0x38). */
 extern "C" f32 fn_8015D5A4(void *arg0) {
     struct V {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
