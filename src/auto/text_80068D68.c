@@ -5135,22 +5135,25 @@ extern int strncpy(char *, const char *, unsigned int);
 extern u32 lbl_802EE9C0[];
 u8 bta_dm_authorize_cback(const void *bd_addr, const void *dev_class, const char *bd_name,
                          u8 *service_name, u8 service_id, int is_originator) {
+    /* Build a security-authorize event (copy BD addr, copy name, map service_id
+     * to an index) and, if a DM callback is registered, dispatch event 4 and
+     * return 1; otherwise return 0xB (not authorized/handled). */
     u8 sec_event[0x110];
-    u8 index = 1;
-    u32 (*callback)(u32, void *);
+    u8 service_index = 1;
+    u32 (*dm_callback)(u32, void *);
 
     fn_80070FA4(sec_event, bd_addr);
     strncpy((char *)sec_event + 0x06, bd_name, 0x20);
-    while (index < 0x18) {
-        if (lbl_802EE9C0[index] == service_id) {
-            sec_event[0xFE] = index;
+    while (service_index < 0x18) {
+        if (lbl_802EE9C0[service_index] == service_id) {
+            sec_event[0xFE] = service_index;
             break;
         }
-        index++;
+        service_index++;
     }
-    callback = *(u32 (**)(u32, void *))(lbl_803C0C14 + 0x50);
-    if (callback != 0 && index <= 0x17) {
-        callback(4, sec_event);
+    dm_callback = *(u32 (**)(u32, void *))(lbl_803C0C14 + 0x50);
+    if (dm_callback != 0 && service_index <= 0x17) {
+        dm_callback(4, sec_event);
         return 1;
     }
     return 0xB;
