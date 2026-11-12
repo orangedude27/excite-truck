@@ -229,6 +229,7 @@ extern "C" void *fn_80206570(int index) {
 }
 
 extern "C" char *strncpy(char *, const char *, unsigned int);
+/* Initialize base sound object fields and copy up to 12 bytes of the name. */
 extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
     char *self = (char *)arg0;
     *(void **)self = &lbl_8033BDC0;
