@@ -42,23 +42,24 @@ void fn_80128668(void *); /* free block (heap op 3) */
 void fn_802E30C8(const char *, ...); /* formatted log/warning */
 #pragma unroll off
 #pragma scheduling invalid_target
-void *fn_8013420C(void *arg0, s32 arg1, s32 arg2) {
-    s32 *base = (s32 *)arg0;
-    s32 offset;
-    s32 i;
+/* Initializes a buffer and an entry table, storing per-entry pointers into the buffer. */
+void *fn_8013420C(void *self, s32 count, s32 stride) {
+    s32 *base = (s32 *)self;
+    s32 byteOffset;
+    s32 index;
 
-    base[1] = arg1;
-    base[2] = arg2;
-    base[0] = fn_8012850C(arg1 * arg2, (void *)&lbl_80559BD0);
-    arg1 = base[1];
-    base[3] = fn_8012850C(arg1 * 0x18, lbl_8032BB18);
-    for (i = 0, offset = 0; i < base[1]; offset += 0x18, i++) {
-        s32 *entry = (s32 *)((char *)base[3] + offset);
-        entry[1] = base[0] + i * base[2];
+    base[1] = count;
+    base[2] = stride;
+    base[0] = fn_8012850C(count * stride, (void *)&lbl_80559BD0);
+    count = base[1];
+    base[3] = fn_8012850C(count * 0x18, lbl_8032BB18);
+    for (index = 0, byteOffset = 0; index < base[1]; byteOffset += 0x18, index++) {
+        s32 *entry = (s32 *)((char *)base[3] + byteOffset);
+        entry[1] = base[0] + index * base[2];
         entry[0] = 0;
         entry[2] = 0;
     }
-    return arg0;
+    return self;
 }
 #pragma use_lmw_stmw off
 /* Cancels any in-progress load/stream slots, frees pool buffers, and optionally deletes the pool. */
