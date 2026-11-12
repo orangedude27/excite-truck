@@ -575,102 +575,84 @@ typedef struct {
 } StatHandler;
 
 #pragma scheduling invalid_target
+/* Resets the award stat handler in lbl_8055E884 between races: hands every entry
+ * of the current stat set back to its record, empties the node pool and its free
+ * list, and returns the handler's counters, its queued award and the ten float
+ * groups at the end of it to their starting values.  The three objects it draws
+ * the awards with are told to start over, and the record pool they share is
+ * cleared.  Nothing happens while the handler is paused. */
 void fn_801CC918(void) {
-    extern void fn_8001BE70(void *);
-    extern void fn_802AE0E0(void);
-    extern float lbl_805629E4;
-    extern float lbl_805629FC;
-    extern float lbl_80562A08;
     void *entry;
-    float floatE4;
-    float floatFC;
-    register long i;
-    register unsigned offset;
-    float floatA08;
-    register unsigned char *base;
-    void *object;
-    void *field;
+    f32 one;
+    f32 zero;
+    register s32 index;
+    register u32 byteOffset;
+    f32 unset;
+    register StatHandler *handler;
+    void *actor;
+    void *pool;
 
-    base = (unsigned char *)lbl_8055E884;
-    if (base[0x10] != 0) return;
-    i = 0;
-    offset = 0;
-    for (; i < *(int *)(base + 0x1C); offset += 4, ++i) {
-        entry = *(void **)((char *)*(void **)(base + 0x18) + offset);
+    handler = (StatHandler *)lbl_8055E884;
+    if (handler->paused != 0) return;
+    index = 0;
+    byteOffset = 0;
+    for (; index < handler->entryCount; byteOffset += 4, ++index) {
+        entry = *(void **)((char *)handler->entries + byteOffset);
         if (entry) fn_8001BE70(*(void **)entry);
     }
-    i = 0;
-    *(int *)(base + 0x29C) = i;
-    *(void **)(base + 0x2A0) = base + 0x29C;
-    memset(base + 0x44, i, 0x258);
-    *(int *)(base + 0x2A8) = i;
-    floatA08 = lbl_80562A08;
-    *(int *)(base + 0x2AC) = i;
-    floatFC = lbl_805629FC;
-    *(int *)(base + 0x2B0) = -1;
-    floatE4 = lbl_805629E4;
-    *(int *)(base + 0x2B4) = -1;
-    *(float *)(base + 0x2B8) = floatA08;
-    *(unsigned char *)(base + 0x2BC) = i;
-    *(int *)(base + 0x2C0) = i;
-    *(float *)(base + 0x2C4) = floatFC;
-    *(int *)(base + 0x2D8) = i;
-    *(float *)(base + 1400) = floatE4;
-    *(float *)(base + 1404) = floatFC;
-    *(float *)(base + 1408) = floatFC;
-    *(float *)(base + 1412) = floatFC;
-    *(float *)(base + 1416) = floatE4;
-    *(float *)(base + 1420) = floatFC;
-    *(float *)(base + 1424) = floatFC;
-    *(float *)(base + 1428) = floatFC;
-    *(float *)(base + 1432) = floatE4;
-    *(float *)(base + 1436) = floatFC;
-    *(float *)(base + 1440) = floatFC;
-    *(float *)(base + 1444) = floatFC;
-    *(float *)(base + 1448) = floatE4;
-    *(float *)(base + 1452) = floatFC;
-    *(float *)(base + 1456) = floatFC;
-    *(float *)(base + 1460) = floatFC;
-    *(float *)(base + 1464) = floatE4;
-    *(float *)(base + 1468) = floatFC;
-    *(float *)(base + 1472) = floatFC;
-    *(float *)(base + 1476) = floatFC;
-    *(float *)(base + 1480) = floatE4;
-    *(float *)(base + 1484) = floatFC;
-    *(float *)(base + 1488) = floatFC;
-    *(float *)(base + 1492) = floatFC;
-    *(float *)(base + 1496) = floatE4;
-    *(float *)(base + 1500) = floatFC;
-    *(float *)(base + 1504) = floatFC;
-    *(float *)(base + 1508) = floatFC;
-    *(float *)(base + 1512) = floatE4;
-    *(float *)(base + 1516) = floatFC;
-    *(float *)(base + 1520) = floatFC;
-    *(float *)(base + 1524) = floatFC;
-    *(float *)(base + 1528) = floatE4;
-    *(float *)(base + 1532) = floatFC;
-    *(float *)(base + 1536) = floatFC;
-    *(float *)(base + 1540) = floatFC;
-    *(float *)(base + 1544) = floatE4;
-    *(float *)(base + 1548) = floatFC;
-    *(float *)(base + 1552) = floatFC;
-    *(float *)(base + 1556) = floatFC;
-    field = *(void **)(base + 0x2C8);
-    if (field != 0) ((void (*)(void *))fn_802AE0E0)(field);
-    object = *(void **)(base + 0x2CC);
-    if (object) {
-        *(unsigned char *)((char *)object + 0x4A) = 1;
-        *(unsigned char *)((char *)object + 0x4C) = 0;
+    /* index is still zero from here on: the reset values are written from it. */
+    index = 0;
+    handler->freeList = (void *)index;
+    handler->freeListTail = &handler->freeList;
+    memset(handler->nodes, index, sizeof(handler->nodes));
+    handler->pendingPlace = index;
+    unset = lbl_80562A08;
+    handler->newCount = index;
+    zero = lbl_805629FC;
+    handler->newEntry = -1;
+    one = lbl_805629E4;
+    handler->unknown2B4 = -1;
+    handler->value = unset;
+    handler->hasValue = index;
+    handler->state = index;
+    handler->unknown2C4 = zero;
+    handler->unknown2D8 = index;
+    handler->floats[0][0] = one; handler->floats[0][1] = zero;
+    handler->floats[0][2] = zero; handler->floats[0][3] = zero;
+    handler->floats[1][0] = one; handler->floats[1][1] = zero;
+    handler->floats[1][2] = zero; handler->floats[1][3] = zero;
+    handler->floats[2][0] = one; handler->floats[2][1] = zero;
+    handler->floats[2][2] = zero; handler->floats[2][3] = zero;
+    handler->floats[3][0] = one; handler->floats[3][1] = zero;
+    handler->floats[3][2] = zero; handler->floats[3][3] = zero;
+    handler->floats[4][0] = one; handler->floats[4][1] = zero;
+    handler->floats[4][2] = zero; handler->floats[4][3] = zero;
+    handler->floats[5][0] = one; handler->floats[5][1] = zero;
+    handler->floats[5][2] = zero; handler->floats[5][3] = zero;
+    handler->floats[6][0] = one; handler->floats[6][1] = zero;
+    handler->floats[6][2] = zero; handler->floats[6][3] = zero;
+    handler->floats[7][0] = one; handler->floats[7][1] = zero;
+    handler->floats[7][2] = zero; handler->floats[7][3] = zero;
+    handler->floats[8][0] = one; handler->floats[8][1] = zero;
+    handler->floats[8][2] = zero; handler->floats[8][3] = zero;
+    handler->floats[9][0] = one; handler->floats[9][1] = zero;
+    handler->floats[9][2] = zero; handler->floats[9][3] = zero;
+    pool = handler->pool;
+    if (pool != 0) ((void (*)(void *))fn_802AE0E0)(pool);
+    actor = handler->actor[0];
+    if (actor) {
+        *(unsigned char *)((char *)actor + 0x4A) = 1;
+        *(unsigned char *)((char *)actor + 0x4C) = 0;
     }
-    object = *(void **)(base + 0x2D0);
-    if (object) {
-        *(unsigned char *)((char *)object + 0x4A) = 1;
-        *(unsigned char *)((char *)object + 0x4C) = 0;
+    actor = handler->actor[1];
+    if (actor) {
+        *(unsigned char *)((char *)actor + 0x4A) = 1;
+        *(unsigned char *)((char *)actor + 0x4C) = 0;
     }
-    object = *(void **)(base + 0x2D4);
-    if (object) {
-        *(unsigned char *)((char *)object + 0x4A) = 1;
-        *(unsigned char *)((char *)object + 0x4C) = 0;
+    actor = handler->actor[2];
+    if (actor) {
+        *(unsigned char *)((char *)actor + 0x4A) = 1;
+        *(unsigned char *)((char *)actor + 0x4C) = 0;
     }
 }
 #pragma scheduling on
