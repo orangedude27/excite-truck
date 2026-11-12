@@ -11268,9 +11268,6 @@ void bta_dm_discover(void *data) {
 #define INQ_INFO_BD_ADDR(p)                     ((u8 *)(p) + 2)
 #define INQ_INFO_KNOWS_REM_NAME(p)              (((u8 *)(p))[0x10])
 
-/* btm_cb.page_timeout, in 0.625 ms slots (set by BTM_WritePageTimeout). */
-#define BTM_CB_PAGE_TIMEOUT                     (*(u16 *)(lbl_803C0F78 + 0x64C))
-
 /* tBTA_DM_MSG: BT_HDR followed by the event's payload. */
 #define DM_MSG_EVENT(p)                         (*(u16 *)(p))
 #define DM_MSG_BD_ADDR(p)                       ((u8 *)(p) + 8)
