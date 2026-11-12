@@ -80,6 +80,15 @@ typedef struct OptionTable {
     /* 0x08 */ OptionEntry entries[OPTIONS_MAX_ENTRIES];
 } OptionTable;
 
+// What the save/load call-back fn_80133FCC keeps beside the table:
+//   lbl_8042F558 - up to 8 OptionEntry values held back from the save file and
+//                  copied back over the table after the card's data is loaded
+//   lbl_8055E080 - how many of those entries there are (fn_80133024 zeroes it)
+//   lbl_8042F718 - 8 {name, call-back} slots (fn_8013365C adds one,
+//                  fn_801336E0 clears one, fn_80133144 complains about the ones
+//                  still set at shutdown); each call-back is run after the
+//                  options have been reloaded so its module reads them again
+
 extern void *fn_8012C370(int, int, int *, int *, int, int);
 extern void fn_8012C4D8(void *);
 extern int fn_80133B24(char *);
