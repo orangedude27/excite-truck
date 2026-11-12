@@ -1420,6 +1420,7 @@ done:
     fn_800217E4();
 }
 #pragma cplusplus on
+/* Initializes game state/frame context and related managers (sets up state in lbl_8034EE84 from manager lbl_8055D350, triggers v7 on object at lbl_8034EEB8+0x54, and runs init/update routines). */
 extern "C" void fn_80007318(void) {
     class Dummy {
     public:
@@ -1432,21 +1433,21 @@ extern "C" void fn_80007318(void) {
         virtual void v6(void);
         virtual void v7(void);
     };
-    char stack[0x28];
-    u32 *base;
+    char context[0x28];
+    u32 *state;
     u32 **manager;
     fn_80005C20();
-    fn_80230B5C(stack);
-    fn_802C8638(stack);
+    fn_80230B5C(context);
+    fn_802C8638(context);
     fn_802C974C(lbl_80560130, lbl_80560124, lbl_8056019C);
-    base = (u32 *)lbl_8034EE84;
-    base[0x1C / 4] = 0;
-    base[0x24 / 4] = ((s32 (*)(s32))fn_801E866C)(0);
+    state = (u32 *)lbl_8034EE84;
+    state[0x1C / 4] = 0;
+    state[0x24 / 4] = ((s32 (*)(s32))fn_801E866C)(0);
     ((u32 *)lbl_8034EE84)[0x28 / 4] = (u32)((void *(*)(void *))fn_801EA9A0)(*(void **)((u8 *)lbl_8055D350 + 0x24));
     manager = (u32 **)lbl_8055D350;
-    base[0x2C / 4] = *(u32 *)((u8 *)manager[0x28 / 4] + 8);
-    base[0x30 / 4] = (u32)((u8 *)manager[0x28 / 4] + 0xC);
-    *(f32 *)&base[0x10 / 4] = ((f32 (*)(void))fn_801E7E18)();
+    state[0x2C / 4] = *(u32 *)((u8 *)manager[0x28 / 4] + 8);
+    state[0x30 / 4] = (u32)((u8 *)manager[0x28 / 4] + 0xC);
+    *(f32 *)&state[0x10 / 4] = ((f32 (*)(void))fn_801E7E18)();
     ((Dummy *)*(void **)((u8 *)lbl_8034EEB8 + 0x54))->v7();
     fn_800057BC();
     fn_80011A2C();
