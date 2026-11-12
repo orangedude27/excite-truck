@@ -102,123 +102,77 @@ int fn_802BBA08(void *arg0, int arg1) {
         int height;
         int *pixels;
     };
-    char *var_r27;
     struct Image *image;
-    int *var_r25;
-    int *var_r24;
-    int var_r22;
-    int var_r23;
-    int var_r26;
-    int var_r28;
-    int var_r29;
-    int var_r30;
-    int temp_r0;
-    int width;
-    int height;
-    int row;
-    int *pixels;
+    int *layers;
+    int *p;
+    int y, x, pix, shift, k;
     char filename[0x80];
-    char *var_r5;
-    char *var_r6;
-    char *var_r4;
-    int var_r4_2;
-    signed char temp_r3_2;
-    signed char temp_r3_3;
+    char *dst;
+    char *dst2;
+    char *src;
+    char *dot;
+    int n;
+    int m;
+    char c;
+    char d;
+    char *name;
 
-    var_r27 = (char *)arg0;
+    name = (char *)arg0;
     image = (struct Image *)fn_802B51E4(0x200, 0x200);
     if (image != 0) {
-        var_r25 = &lbl_804C00B0[arg1];
-        var_r30 = 0;
-        var_r26 = 0;
-        var_r29 = 0;
-        var_r24 = var_r25;
-        var_r28 = 0;
-        var_r22 = 0;
-        var_r23 = 0;
-loop_y:
-        var_r24 = var_r25;
-        var_r28 = 0;
-        var_r22 = 0;
-        var_r23 = 0;
-loop_layer:
-        if (*var_r24 != 0) {
-            var_r28 |= (((unsigned int)fn_802D972C(
-                (void *)*var_r24, var_r30, var_r29) >> 8) & 0xFF) << var_r23;
-        }
-        var_r22++;
-        var_r24++;
-        var_r23 += 8;
-        if (var_r22 < 3)
-            goto loop_layer;
-
-        height = image->height;
-        width = image->width;
-        row = height - 1;
-        pixels = image->pixels;
-        row -= var_r29;
-        temp_r0 = row * width;
-        var_r29++;
-        *(int *)((char *)pixels + (temp_r0 << 2) + var_r26) = var_r28;
-        if (var_r29 < 0x200)
-            goto loop_y;
-
-        var_r30++;
-        var_r26 += 4;
-        if (var_r30 < 0x200) {
-            var_r29 = 0;
-            goto loop_y;
-        }
-
-        var_r5 = filename;
-        var_r4_2 = 0x80;
-        goto copy_char;
-copy_check:
-        var_r4_2--;
-        if (var_r4_2 > 0)
-            goto copy_char;
-        *--var_r5 = 0;
-        goto after_copy;
-copy_char:
-        temp_r3_2 = (signed char)*var_r27++;
-        *var_r5++ = (char)temp_r3_2;
-        if (temp_r3_2 != 0)
-            goto copy_check;
-after_copy:
-        {
-            char *dot = strchr(filename, '.');
-            if (dot != 0) {
-                dot = strchr(filename, '.');
-                *dot = 0;
+        layers = &lbl_804C00B0[arg1];
+        for (y = 0; y < 0x200; y++) {
+            for (x = 0; x < 0x200; x++) {
+                pix = 0;
+                p = layers;
+                for (k = 0, shift = 0; k < 3; k++, p++, shift += 8) {
+                    if (*p != 0) {
+                        pix |= ((fn_802D972C((void *)*p, y, x) >> 8) & 0xFF) << shift;
+                    }
+                }
+                image->pixels[(image->height - 1 - x) * image->width + y] = pix;
             }
         }
-
-        var_r6 = filename;
-        var_r4_2 = 0x80;
-scan_name:
-        if ((signed char)*var_r6 != 0)
-            goto scan_step;
-        goto append_check;
-scan_step:
-        var_r4_2--;
-        var_r6++;
-        goto scan_name;
-append_check:
-        if (var_r4_2 <= 0)
-            goto finish;
-        var_r4 = (char *)&lbl_8055CF18;
-append_char:
-        temp_r3_3 = (signed char)*var_r4++;
-        *var_r6++ = (char)temp_r3_3;
-        if (temp_r3_3 != 0)
-            goto append_limit;
-        goto finish;
-append_limit:
-        var_r4_2--;
-        if (var_r4_2 > 0)
-            goto append_char;
-        *--var_r6 = 0;
-finish:
+        dst = filename;
+        n = 0x80;
+        goto body1;
+        for (;;) {
+            if (--n <= 0) {
+                *--dst = 0;
+                break;
+            }
+body1:
+            c = *name++;
+            *dst++ = c;
+            if (c == 0) break;
+        }
+        if (strchr(filename, '.') != 0) {
+            dot = strchr(filename, '.');
+            *dot = 0;
+        }
+        dst2 = filename;
+        m = 0x80;
+        src = (char *)&lbl_8055CF18;
+        goto scan;
+        for (;;) {
+            m--;
+            dst2++;
+scan:
+            if (*dst2 == 0) break;
+        }
+        if (m > 0) {
+            goto body2;
+            for (;;) {
+                if (--m <= 0) {
+                    *--dst2 = 0;
+                    break;
+                }
+body2:
+                d = *src++;
+                *dst2++ = d;
+                if (d == 0) break;
+            }
+        }
         fn_802B52C0((int)filename, image);
         fn_802B52B4(image);
     }
@@ -494,6 +448,7 @@ extern float lbl_80564D00;
 extern float lbl_80564D04;
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
     unsigned char sp10[6];
     unsigned char sp8[6];
