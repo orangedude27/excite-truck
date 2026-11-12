@@ -6074,28 +6074,25 @@ void bta_hh_disc_cmpl(void) {
 }
 
 extern u8 bta_hh_tod_spt(void *, u8);
-void bta_hh_sdp_cback(s32 arg0, u16 arg1, register void *arg2) {
+void bta_hh_sdp_cback(s32 arg0, u16 arg1, void *arg2) {
     u8 sp9;
     u8 sp8 = 0x10;
     register void *temp_r31 = *(void **)(lbl_803C0D48 + 0x210);
+    void *var_r30 = arg2;
     u16 var_r29 = arg1;
-
     if (arg0 == 0) {
         if (*(u8 *)((u8 *)temp_r31 + 0x14) != 0) {
             var_r29 |= 0x8000;
         }
         if (lbl_8055DC80 >= 4) {
-            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(
-                0x503, lbl_803151D8, temp_r31, arg0, var_r29);
+            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(0x503, lbl_803151D8, temp_r31, arg0, var_r29);
         }
-        if (bta_hh_tod_spt(temp_r31, *(u8 *)((u8 *)arg2 + 0x64)) != 0) {
+        if (bta_hh_tod_spt(temp_r31, *(u8 *)((u8 *)var_r30 + 0x64)) != 0) {
             if (*(u8 *)((u8 *)temp_r31 + 0x16) == 0xFF) {
                 sp8 = HID_HostAddDev((u8 *)temp_r31 + 8, var_r29, &sp9);
                 if (sp8 == 0) {
                     lbl_803C0D48[sp9 + 0x214] = *(u8 *)((u8 *)temp_r31 + 0x12);
-                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(
-                        temp_r31, sp9, var_r29, (u8 *)arg2 + 0x68,
-                        *(u8 *)((u8 *)arg2 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
+                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(temp_r31, sp9, var_r29, (u8 *)var_r30 + 0x68, *(u8 *)((u8 *)var_r30 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
                 } else {
                     *(u8 *)((u8 *)temp_r31 + 0x15) = 0;
                 }
@@ -19195,6 +19192,7 @@ void l2cu_send_peer_cmd_reject(void *arg0, u16 arg1, u8 arg2, u16 arg3, u16 arg4
 }
 
 void l2cu_send_peer_connect_req(void *p_ccb) {
+    /* Send an L2CAP connection request for the given channel control block. */
     UINT8 id;
     void *p_buf;
     u8 *p_lcb;
@@ -20965,11 +20963,10 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     void *p_mcb;
     s32 index;
     u16 mcb_lcid;
-
     index = lcid - 0x40;
     if (index >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, &((tRFCOMM_TRACE_TEXT_VIEW *)messages)->first, lcid);
+            fn_80070954(0x90000, messages + 0, lcid);
         p_mcb = 0;
     } else {
         p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -20982,7 +20979,6 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
             }
         }
     }
-
     if (p_mcb == 0) {
         if (lbl_803C4828[0x414] >= 1)
             fn_80070954(0x90000, messages + 0xE4, lcid);
