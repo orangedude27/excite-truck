@@ -98,7 +98,7 @@ extern "C" const char lbl_80324828[];
 struct DummySoundArchiveLookup2 { virtual s32 f0(u32); virtual s32 f1(); };
 struct DummyAllocatable_LoadFile { virtual s32 f0(); virtual void *Alloc(s32 size); };
 struct DummySoundArchiveLookup { virtual void f0(); virtual s32 f1(u32); virtual s32 f2(); };
-struct DummyCheckPlayable { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); };
+struct DummyCheckPlayable { virtual ~DummyCheckPlayable(); virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); };
 struct DummyStrmUpdate { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27(); virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(s32); virtual void f34(); virtual void f35(s32); };
 struct DummyStrmLoadStream {
     virtual void f0();
@@ -4252,7 +4252,6 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
     u8 *first;
     u8 *sound;
     int limit;
-    void (**vtable)(void *);
     if (*(u16 *)((u8 *)self + 0x24) == 0)
         return 0;
     while (*(s32 *)self >= *(u16 *)((u8 *)self + 0x24)) {
@@ -4270,8 +4269,7 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
         limit = (limit > 0x7F) ? 0x7F : ((limit < 0) ? 0 : limit);
         if (priority < limit)
             return 0;
-        vtable = *(void (***)(void *))sound;
-        vtable[10](sound);
+        ((DummyCheckPlayable *)sound)->f10();
     }
     if (external != 0) {
         if (*(u16 *)((u8 *)external + 0xC) == 0)
@@ -4284,8 +4282,7 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
             limit = (limit > 0x7F) ? 0x7F : ((limit < 0) ? 0 : limit);
             if (priority < limit)
                 return 0;
-            vtable = *(void (***)(void *))sound;
-            vtable[10](sound);
+            ((DummyCheckPlayable *)sound)->f10();
         } while (*(s32 *)external >= *(u16 *)((u8 *)external + 0xC));
     }
     return 1;
