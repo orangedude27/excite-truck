@@ -9384,7 +9384,7 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
 extern "C" s32 fn_800B77C0(void *);
 extern "C" void fn_800B783C(void *);
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559224[]; }
-extern "C" const u8 lbl_8055922C[];
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055922C[]; }
 extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
     u16 sp8[2];
     u16 **p = (u16 **)arg2;
