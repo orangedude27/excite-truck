@@ -3039,6 +3039,7 @@ void GXInitLightAttn(void *arg0, float farg0, float farg1, float farg2, float fa
     p[5] = farg5;
 }
 
+/* Computes distance attenuation coefficients (ka, kb, kc) for a light from distance and brightness. */
 void GXInitLightDistAttn_Internal(GXLightObjImpl* light, f32 distance, f32 brightness,
                                   GXDistAttnFn fn) {
     f32 a, b, c;
