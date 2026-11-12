@@ -15319,6 +15319,9 @@ s32 hidd_conn_initiate(void) {
 
 void hidd_proc_repage_timeout(void)
 {
+    /* HID device repage/connect timer callback: count the repage attempt, retry
+     * connection initiation (re-arming the timer while retries remain), or report
+     * timeout/success to the host callback. */
     u8 *cb;
     void (*callback)(u8, u8, void *);
 
