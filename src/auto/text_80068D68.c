@@ -4430,7 +4430,8 @@ void UUSB_Register(tUUSB *uusb) {
     extern s32 lbl_80558FF0;
     register char *report = lbl_803142C8;
     register u8 *c = (u8 *)&lbl_803BD1E0;
-    register u8 pool1;
+    u8 pool0;
+    u8 pool1;
 
     memset(&lbl_803BD1E0, 0, 0x4C);
     fn_8006EBAC();
@@ -4475,7 +4476,8 @@ void UUSB_Register(tUUSB *uusb) {
     c[0x38] = 0;
     fn_8006D4C4(c + 0x3C);
     c[0x48] = 0;
-    c[0x1C] = GKI_create_pool(0x294, 0x2D, 1, 0);
+    pool0 = GKI_create_pool(0x294, 0x2D, 1, 0);
+    c[0x1C] = pool0;
     pool1 = GKI_create_pool(0x708, 0x1E, 1, 0);
     c[0x1D] = pool1;
     if (c[0x1C] == 0xFF || pool1 == 0xFF) {
@@ -5428,6 +5430,63 @@ void bta_dm_acl_change_cback(u8 *bd_addr, s32 arg1, s32 arg2, s32 arg3, u8 event
         buf->event = 0x105;
         fn_80071450(buf);
     }
+}
+
+extern u8 lbl_803150C8[];
+extern u8 fn_80077DD8(void);
+extern void bta_dm_discover_next_device(void);
+extern void fn_80073464(void);
+void bta_dm_acl_change(u8 *arg0) {
+    u8 *bd = arg0 + 0xB;
+    u8 idx;
+    u8 sp[0x110];
+    u8 *entry;
+
+    if (arg0[0xA] != 0) {
+        for (idx = 0; idx < lbl_803C0C14[0x4D]; idx++) {
+            if (bdcmp(lbl_803C0C14 + idx * 0xB, bd) == 0)
+                break;
+        }
+        if (idx == lbl_803C0C14[0x4D]) {
+            fn_80070FA4(lbl_803C0C14 + lbl_803C0C14[0x4D] * 0xB, bd);
+            lbl_803C0C14[0x4D]++;
+        }
+        entry = lbl_803C0C14 + idx * 0xB;
+        entry[6] = 1;
+        entry[7] = 0;
+        fn_80070FA4(sp, bd);
+        ((void (*)(int, void *))(*(void **)(lbl_803C0C14 + 0x50)))(5, sp);
+        return;
+    }
+    for (idx = 0; idx < lbl_803C0C14[0x4D]; idx++) {
+        if (bdcmp(lbl_803C0C14 + idx * 0xB, bd) == 0)
+            break;
+    }
+    if (idx < lbl_803C0C14[0x4D]) {
+        u8 j = idx;
+        for (; j < lbl_803C0C14[0x4D]; j++) {
+            memcpy(lbl_803C0C14 + j * 0xB, lbl_803C0C14 + (j + 1) * 0xB, 0xB);
+        }
+    }
+    lbl_803C0C14[0x4D]--;
+    if (lbl_803C0B98[0x78] != 0 && bdcmp(lbl_803C0B98 + 0x1A, bd) == 0) {
+        lbl_803C0B98[0x78] = 0;
+        if (lbl_803C0B98[0x79] != 0) {
+            if (lbl_8055DC80 >= 4)
+                fn_8007093C(0x503, lbl_803150C8);
+            fn_8007148C((s32)(lbl_803C0B98 + 0x40));
+            bta_dm_discover_next_device();
+        }
+    }
+    if (lbl_803C0C14[0x72] != 0 && BTM_GetNumAclLinks() == 0) {
+        lbl_803C0C14[0x72] = 0;
+        fn_8007148C((s32)(lbl_803C0C14 + 0x74));
+        *(void **)(lbl_803C0C14 + 0x7C) = fn_80073464;
+        fn_8007146C((s32)(lbl_803C0C14 + 0x74), 0, 0x3E8);
+    }
+    fn_80070FA4(sp, bd);
+    sp[6] = fn_80077DD8();
+    ((void (*)(int, void *))(*(void **)(lbl_803C0C14 + 0x50)))(6, sp);
 }
 
 extern void fn_80070FA4(void *, const void *);
@@ -9843,7 +9902,7 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
     UINT8 *base = lbl_803C0F78;
     UINT32 is_new = 1;
     void (*cb)(void *) = *(void (**)(void *))(base + 0x16b4);
-    UINT8 scan = 0, rssi = 0, rep = 0, per = 0;
+    UINT8 rssi = 0, scan = 0, per = 0, rep = 0;
     UINT8 dc[3];
     UINT16 clock;
     UINT8 j;
@@ -11324,7 +11383,7 @@ void bta_dm_sdp_result(u8 *arg0) {
         if (status == 0xFFF4 ||
             (rec = SDP_FindServiceInDb(*(tSDP_DISCOVERY_DB **)(lbl_803C0B98 + 0x14), service, 0)) != 0) {
             if (service == 0x1200) {
-                if (rec != 0 && fn_80095C64((void **)rec, (u16)0x8001) != 0)
+                if (rec != 0 && ((void *(*)(void **, u16))fn_80095C64)((void **)rec, 0x8001) != 0)
                     ok = 1;
             } else {
                 ok = 1;
@@ -11365,14 +11424,13 @@ void bta_dm_sdp_result(u8 *arg0) {
         BTM_SecDeleteRmtNameNotifyCallback(fn_80072AE4);
         msg = GKI_getbuf(0x110);
         if (msg != 0) {
-            u8 *read_name;
             *(u16 *)msg = 0x208;
             msg[0x10C] = 1;
             *(u32 *)(msg + 0x108) = *(u32 *)(state + 0x10);
             fn_80070FA4(msg + 8, state + 0x1A);
             name = state + 0x20;
             if ((s8)state[0x20] == 0) {
-                read_name = (u8 *)BTM_SecReadDevName(state + 0x1A);
+                u8 *read_name = (u8 *)BTM_SecReadDevName(state + 0x1A);
                 if (read_name != 0)
                     name = read_name;
             }
@@ -15834,6 +15892,12 @@ typedef void (*tHID_HOST_DEV_CALLBACK)(UINT8 dev_handle, UINT8 event, UINT32 dat
 #define HID_CONN_FLAGS_ALL_CONFIGURED     0x1E  /* all four done */
 #define HID_CONN_FLAGS_CONGESTED          0x20
 #define HID_CONN_FLAGS_INACTIVE           0x40
+
+/* The security channel a HID connection asks BTM for (hid_conn.h), and the
+   hidh_api.h attribute bit that says the device wants that check at all. */
+#define HID_SEC_CHN                       1
+#define HID_NOSEC_CHN                     2
+#define HID_SEC_REQUIRED                  0x8000
 
 /* hh_cb.devices[].state, the tHID_HOST_DEV_STATE of hidh_api.h. */
 #define HID_DEV_NO_CONN                   0
