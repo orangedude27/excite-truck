@@ -87,14 +87,19 @@ extern "C" s32 fn_800B3A70(void *, void *, s32);
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *, u8 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
+extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
+extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
+extern "C" s32 fn_800A7B34(void *, void *);
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
  register u8 *it=(u8 *)iterator;
  u8 flags=it[0x57];
  u8 name[16], buf[13];
  u32 sum,next,word;
  u16 i;
- u32 a,b;
+ u32 b,a;
  s32 len;
+ u32 attr;
+ u16 hiSwap, loSwap;
  if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)((u8 *)object,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
   if ((flags&15)==15) {
    if (VFiPFENT_LoadLFNEntryFieldsFromBuf(object,it+0x4c)) { ((u8 *)object)[0x20a]=0; *(u16 *)object=0; }
@@ -111,7 +116,9 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
   ((u8 *)object)[0x20c]=sum;
   ((u8 *)object)[0x20b]=1;
  }
- ((u8 *)object)[0x21c]=it[0x57]; ((u8 *)object)[0x21b]=it[0x58]; ((u8 *)object)[0x21d]=it[0x59];
+ attr=it[0x57];
+ ((u8 *)object)[0x21c]=(u8)attr;
+ ((u8 *)object)[0x21b]=it[0x58]; ((u8 *)object)[0x21d]=it[0x59];
  __sthbrx(*(u16 *)(it+0x5a),(u8 *)object+0x21e,0);
  __sthbrx(*(u16 *)(it+0x5c),(u8 *)object+0x220,0);
  __sthbrx(*(u16 *)(it+0x5e),(u8 *)object+0x222,0);
@@ -119,11 +126,15 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  __sthbrx(*(u16 *)(it+0x64),(u8 *)object+0x226,0);
  word=*(u32 *)(it+0x68);
  *(u32 *)((u8 *)object+0x228)=(word>>24)|((word>>8)&0xff00)|((word&0xff00)<<8)|(word<<24);
- b=*(u16 *)(it+0x66); a=*(u16 *)(it+0x60);
- *(u32 *)((u8 *)object+0x234)=(b>>8)|((b&255)<<8)|((a>>8)<<16)|((a&255)<<24);
+ a=*(u16 *)(it+0x60); b=*(u16 *)(it+0x66);
+ hiSwap = (u16)((a>>8)|((a&255)<<8));
+ loSwap = (u16)((b>>8)|((b&255)<<8));
+ *(u32 *)((u8 *)object+0x234)=((u32)hiSwap<<16)|loSwap;
  *(u32 *)((u8 *)object+0x238)=*(u32 *)(it+0x44);
  *(u16 *)((u8 *)object+0x23c)=*(u16 *)(it+0x48);
- if ((((u8 *)object)[0x21c]&0x10) && !*(u32 *)((u8 *)object+0x234)) *(u32 *)((u8 *)object+0x234)=1;
+ if (attr & 0x10) {
+  if (!*(u32 *)((u8 *)object+0x234)) *(u32 *)((u8 *)object+0x234)=1;
+ }
  return 0;
 }
 #pragma pop
@@ -1979,7 +1990,6 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
     u8 *b = (u8*)base;
     u32 d = (u32)data;
     u32 rem, last, i;
-    u32 zero=0, invalid=(u32)-1;
     u8 *p, *end;
     u16 flags;
     if (!n) return 30;
@@ -2009,8 +2019,8 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
         *(void**)(p+0x24)=b+(i-step)*40;
         *(void**)(p+0x20)=b+(i+step)*40;
         *(u32*)(p+4)=d; *(u32*)(p+8)=d;
-        *(u32*)(p+12)=zero; *(u32*)(p+16)=zero; *(u32*)(p+20)=size;
-        *(s32*)(p+24)=invalid; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
+        *(u32*)(p+12)=0; *(u32*)(p+16)=0; *(u32*)(p+20)=size;
+        *(s32*)(p+24)=-1; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
         *(u16*)p &= 0xfffc;
         if(flag) *(u16*)p |= 4; else *(u16*)p &= ~4;
         p+=advance; d+=stride;
@@ -2019,8 +2029,8 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
     *(void**)(p+0x24)=b+(count-rem-2*step)*40;
     *(void**)(p+0x20)=b;
     *(u32*)(p+4)=(u32)data+(last<<9); *(u32*)(p+8)=(u32)data+(last<<9);
-    *(u32*)(p+12)=zero; *(u32*)(p+16)=zero; *(u32*)(p+20)=size;
-    *(s32*)(p+24)=invalid; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
+    *(u32*)(p+12)=0; *(u32*)(p+16)=0; *(u32*)(p+20)=size;
+    *(s32*)(p+24)=-1; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
     *(u16*)end &= 0xfffc;
     if(flag) *(u16*)end |= 4; else *(u16*)end &= ~4;
     return 0;
@@ -2299,7 +2309,7 @@ next:
      VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),length<<volume[0x20]);
      remaining-=*(u32 *)(page+0x14);
     } else if (pos>start && pos<end && pos+*(u32 *)(page+0x14)>=end) {
-     end2=(u32)((u8 *)count+start);
+     end2=count+start;
      VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),(end2-pos)<<volume[0x20]);
      remaining-=end2-*(u32 *)(page+0x18);
     } else if (pos<start && pos+*(u32 *)(page+0x14)>start && pos+*(u32 *)(page+0x14)<=end) {
@@ -4390,12 +4400,12 @@ done:
 s32 fn_800AEBA0(void *, u32, u32 *);
 s32 fn_800B5324(void *, void *, u16, s32, u32 *, s32);
 extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
+    u8 *self = (u8 *)arg0;
+    u8 *vol;
+    u32 a, b, p44, c;
     u32 spC, sp8;
     s32 cnt, r, rv;
-    u32 prev, rem, clus, p44, sec;
-    u32 a, b, c;
-    u8 *vol;
-    u8 *self = (u8 *)arg0;
+    u32 prev, rem, clus, sec;
     cnt = *(s32 *)self;
     if (cnt == 0) return 0;
     prev = cnt - 1;
@@ -6118,10 +6128,10 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     void *page;
     s32 sp8;
     s32 r;
+    s32 type;
     u32 i;
     u32 v;
-    s32 type;
-    r = fn_800A8C90(arg0, -1, &page, &sp8);
+    r = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8C90)(arg0, -1, &page, &sp8);
     if (r != 0) return r;
     fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)arg0);
     i = *(u16 *)((u8 *)arg0 + 2);
@@ -6139,7 +6149,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32, u16))fn_800AF734)(arg0, 0, v);
+        else r = fn_800AF734(arg0, 0, (u16)v);
         break;
     case 1:
         if (v > 0xFFFF) r = 0x10;
@@ -6159,7 +6169,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32, u16))fn_800AF734)(arg0, 1, v);
+        else r = fn_800AF734(arg0, 1, (u16)v);
         break;
     case 1:
         if (v > 0xFFFF) r = 0x10;
@@ -8899,9 +8909,9 @@ extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
     ext = 7;
     if ((u32)in[8] != ' ') {
         ext = 8;
-        if ((u32)in[9] != ' ') {
+        if ((u32)*(volatile u8*)&in[9] != ' ') {
             ext = 9;
-            if ((u32)in[10] != ' ') ext = 10;
+            if ((u32)*(volatile u8*)&in[10] != ' ') ext = 10;
         }
     }
     if (ext > 7) {
@@ -9861,10 +9871,16 @@ extern "C" s32 fn_800B5988(void *arg0) {
                 *(s32 *)((u8 *)arg0 + 0x18A0) = sp8;
             }
             slot = (u8 *)arg0 + 0x165C;
-            for (i = 0; i < 4; i++, slot += 0x248) {
+            i = 0;
+            while (1) {
                 r = fn_800AAEFC((s32)arg0, slot);
-                if (r == 0) continue;
-                goto done;
+                if (r == 0) goto cont;
+                else goto done;
+            cont:
+                i++;
+                slot += 0x248;
+                if (i < 4) continue;
+                else break;
             }
             r = 0;
         }
@@ -13889,23 +13905,23 @@ extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *ar
     s32 *t = lbl_802F3238;
     s32 *out0 = (s32 *)arg3;
     s32 *out1 = (s32 *)arg4;
-
     if (obj->mode == 0) {
-        s32 *a = t;
-        s32 *b = t + 8;
-        *out1 = (s32)(((s64)*out0 * b[arg2]) >> 20);
-        *out0 = (s32)(((s64)*out0 * a[arg2]) >> 20);
+        s32 *a = (s32 *)((u8 *)t + 0x0);
+        s32 *b = (s32 *)((u8 *)t + 0x20);
+        s32 v0 = *out0;
+        *out1 = (s32)(((s64)v0 * b[arg2]) >> 20);
+        *out0 = (s32)(((s64)v0 * a[arg2]) >> 20);
         return;
     }
     if (obj->inited == 0) {
         obj->inited = 1;
         if (arg1 == 1) {
-            s32 *src = t + 58;
+            s32 *src = (s32 *)((u8 *)t + 0xE8);
             for (int i = 0; i < 33; i++) {
                 obj->tab[i] = (s16)src[i];
             }
         } else {
-            s32 *src = t + 16;
+            s32 *src = (s32 *)((u8 *)t + 0x40);
             for (int i = 0; i < 33; i++) {
                 obj->tab[i] = (s16)src[i];
             }
@@ -24118,7 +24134,7 @@ extern "C" void fn_800CEF60(void *object, void *archive, s32 enable) {
  void *p, *stream, *buffer;
  unsigned long size, streamSize;
  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0xd8);
- if(p) { p=__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(p); *(void **)(self+0x5c0)=p; }
+ if (p) { if (p) { p=__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(p); } *(void **)(self+0x5c0)=p; }
  if(!*(void * volatile *)(self+0x5c0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe62,file+0xe14);
  size=GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(*(void **)(self+0x5c0),archive);
  streamSize=GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(*(void **)(self+0x5c0),archive);
@@ -24126,11 +24142,11 @@ extern "C" void fn_800CEF60(void *object, void *archive, s32 enable) {
  buffer=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,size);
  if(!Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(*(void **)(self+0x5c0),archive,buffer,size,stream,streamSize)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe74,file+0xd2c);
  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,4);
- if(p) { *(u32 *)p=0; *(void **)(self+0x5d4)=p; }
+ if (p) { if (p) { *(u32 *)p=0; } *(void **)(self+0x5d4)=p; }
  if(!*(void * volatile *)(self+0x5d4)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe7b,file+0xe44);
  if(enable) {
   p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0x2c);
-  if(p) { p=fn_800F8310(p); *(void **)(self+0x5d0)=p; }
+  if (p) { if (p) { p=fn_800F8310(p); } *(void **)(self+0x5d0)=p; }
   if(!*(void * volatile *)(self+0x5d0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe84,file+0xe6c);
   p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0x60000);
   fn_800F83C8(*(void **)(self+0x5d0),p,0x60000);
@@ -25353,7 +25369,9 @@ extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         else if (arg9 != 0) *(s32 *)arg9 = *(s32 *)lbl_8055DD74;
     }
 done:
-    if (arg10 != 0 && res != 0 && buf != 0) iosFree(lbl_80559248, buf);
+    if (arg10 == 0 || res == 0 || buf == 0) goto skip;
+    iosFree(lbl_80559248, buf);
+skip:
     return res;
 }
 
