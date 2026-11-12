@@ -1280,22 +1280,24 @@ void fn_80218968(void *soundManager, int soundId, float fadeTime) {
 }
 
 #pragma dont_inline on
-void fn_80218A34(void *arg0, int arg1) {
+void fn_80218A34(void *group, int bitIndex) {
+    /* Clear bitIndex in the group's mask and refresh child flags when no remaining mask bits overlap. */
     char *cursor;
-    void *obj;
+    void *child;
     int i, one = 1;
-    int mask = fn_80216D14(arg1);
-    if (*(int *)((char *)arg0 + 0x468) & mask) {
-        mask = fn_80216D14(arg1);
-        *(int *)((char *)arg0 + 0x468) &= ~mask;
-        cursor = (char *)arg0;
+    int mask = fn_80216D14(bitIndex);
+
+    if (*(int *)((char *)group + 0x468) & mask) {
+        mask = fn_80216D14(bitIndex);
+        *(int *)((char *)group + 0x468) &= ~mask;
+        cursor = (char *)group;
         i = 0;
-        for (; i < *(int *)((char *)arg0 + 0x430); cursor += 4, i++) {
-            obj = *(void **)(cursor + 0x30);
-            if ((*(int *)((char *)arg0 + 0x468) & *(int *)((char *)obj + 0x238)) == 0) {
-                *(unsigned char *)((char *)obj + 0x1B) = one;
-                if (*(unsigned char *)((char *)obj + 0x1A))
-                    *(unsigned char *)((char *)obj + 0x234) = one;
+        for (; i < *(int *)((char *)group + 0x430); cursor += 4, i++) {
+            child = *(void **)(cursor + 0x30);
+            if ((*(int *)((char *)group + 0x468) & *(int *)((char *)child + 0x238)) == 0) {
+                *(unsigned char *)((char *)child + 0x1B) = one;
+                if (*(unsigned char *)((char *)child + 0x1A))
+                    *(unsigned char *)((char *)child + 0x234) = one;
             }
         }
     }
