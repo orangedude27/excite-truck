@@ -82,8 +82,7 @@ void fn_802C126C(void) {
     int var_r5;
     unsigned char *var_r6;
     int var_r28, var_r28_2;
-    char *call_base;
-    int check_value;
+    char *check_base, *call_base;
 
     lbl_8055FB2C = 0;
     lbl_8055FB28 = 0;
@@ -92,13 +91,9 @@ void fn_802C126C(void) {
     lbl_8055FB30 = fn_8012850C(0x7D00, lbl_8034AEF8);
     fn_801D0590(&lbl_8055FB40);
     call_base = (char *)&lbl_8055FB40;
-    check_value = (int)&lbl_8055FB40;
-    if (check_value != 0) {
+    check_base = (char *)&lbl_8055FB40;
+    if ((int)check_base != 0)
         fn_801D0800(call_base + 4);
-    } else {
-        goto address_done;
-    }
-address_done:
 
     var_r29 = (int *)&lbl_804C0810;
     var_r28 = 0;
@@ -407,35 +402,35 @@ extern f32 lbl_80564E58;
 extern f32 lbl_80564E70;
 extern f32 lbl_80564E74;
 extern void fn_802BDFF4(int *);
-#pragma use_lmw_stmw off
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 void fn_802C1928(void) {
-    int i;
-
     {
         f32 zero = lbl_80564E58;
         f32 *values = (f32 *)((char *)&lbl_804C1050 + 4);
-        for (i = 0; i < 8; i++)
-            values[i * 2] = zero;
+        values[0] = zero;
+        values[2] = zero;
+        values[4] = zero;
+        values[6] = zero;
+        values[8] = zero;
+        values[10] = zero;
+        values[12] = zero;
+        values[14] = zero;
     }
-
     {
         char *entry = (char *)&lbl_804C0E10;
-        i = 0;
+        int j = 0;
         do {
             fn_802C1180(entry);
-            i++;
+            j++;
             entry += 0x48;
-        } while (i < 8);
+        } while (j < 8);
     }
-
     {
         register f32 delta = lbl_80564E74;
         register int count = 0;
         register f32 min = lbl_80564E70;
         register int offset = 0;
-
         goto check;
     loop:
         {
@@ -453,18 +448,17 @@ void fn_802C1928(void) {
             goto loop;
     }
 }
-#pragma paired_single reset
-#pragma paired reset
-#pragma use_lmw_stmw reset
+#pragma pop
 void fn_802C1A08(void) {}
 
 extern void *fn_8017960C(int);
 extern void fn_801796EC(int, void *, int);
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma paired off
-#pragma paired_single on
 extern "C" void fn_802C1A0C(void **arg0, int arg1) {
     struct Dispatch {
         virtual void unk0();
@@ -492,20 +486,17 @@ extern "C" void fn_802C1A0C(void **arg0, int arg1) {
     register f32 delta;
     f32 value;
     f32 z;
-
     entry = lbl_804C0E10;
     for (index = 0; index < 8; index++, entry += 0x48) {
         current = ((Dispatch *)arg0)->call24() - lbl_8055CFA0;
         if (*(int *)(entry + 4) != 0 && *(int *)entry == current)
             fn_802C1180(entry);
     }
-
     index = ((Dispatch *)arg0)->call24() - lbl_8055CFA0;
     if (index < 0)
         goto done;
     if (index >= lbl_8055FB2C)
         goto done;
-
     record = (int *)fn_802C110C(index);
     entry = (char *)lbl_8055FB30;
     target = *(void **)(entry + index * 4);
@@ -543,7 +534,5 @@ extern "C" void fn_802C1A0C(void **arg0, int arg1) {
 done:
     ;
 }
-#pragma cplusplus reset
-#pragma paired_single off
-
+#pragma pop
 typedef struct { int a, b; } Pair802C;
