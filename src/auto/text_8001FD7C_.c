@@ -9,34 +9,6 @@ extern int fn_80012820(int);
 extern void fn_800081BC(int);
 extern int fn_80008188(void);
 extern int fn_80012910(int);
-#pragma cplusplus on
-struct KObjCPP {
-    virtual void *_00();
-    virtual void *_04();
-    virtual void *f08();
-    virtual unsigned char f0C(void *);
-    virtual void *f10();
-    virtual void *f14();
-    virtual int f18(void *, int);
-    virtual void *f1C();
-    virtual void *f20();
-    virtual void *f24();
-    virtual void *f28();
-    virtual void *f2C();
-    virtual void *f30();
-    virtual void *f34();
-    virtual void *f38();
-    virtual void *f3C();
-    virtual void *f40();
-    virtual void *f44();
-    virtual void *f48();
-    virtual void *f4C();
-    virtual void *f50();
-    virtual void *f54();
-    virtual void *f58();
-    virtual int f5C(int);
-};
-#pragma cplusplus reset
 typedef struct KObj KObj;
 struct KVt {
     char pad0[0xC];
