@@ -904,13 +904,14 @@ int fn_802CFDE0(void) {
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
     extern int fn_802E2C20(void);
-    int next;
     int end;
     int start;
+    int tmp;
     fn_802ECA48();
-    next = lbl_8055FD9C + (int)lbl_8055FD94;
-    if (next > (int)lbl_8055FD98) {
-        lbl_8055FD98 = (unsigned int)next;
+    tmp = (int)lbl_8055FD94;
+    tmp += lbl_8055FD9C;
+    if (tmp > (int)lbl_8055FD98) {
+        lbl_8055FD98 = (unsigned int)tmp;
     }
     fn_802D6C78();
     GXGetVtxDesc();
@@ -1111,19 +1112,20 @@ void fn_802D2218(void);
 #pragma paired off
 #pragma paired_single off
 #pragma scheduling invalid_target
-void fn_802D01E0(int arg0, int arg1, int arg2, int arg3) {
+/* Sets the GX viewport/scissor rectangle (x, y, width, height), adjusting vertical position and height for the non-widescreen aspect when the widescreen flag is clear. */
+void fn_802D01E0(int viewportX, int viewportY, int viewportWidth, int viewportHeight) {
     if (lbl_8055FE24 == 0) {
-        arg1 = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)arg1) / lbl_80564FBC));
-        arg3 = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)arg3) / lbl_80564FBC));
+        viewportY = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)viewportY) / lbl_80564FBC));
+        viewportHeight = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)viewportHeight) / lbl_80564FBC));
     }
     fn_802D2218();
-    *(int *)(lbl_804C9778 + 0x1C) = arg0;
-    *(int *)(lbl_804C9778 + 0x20) = arg1;
-    *(int *)(lbl_804C9778 + 0x24) = arg2;
-    *(int *)(lbl_804C9778 + 0x28) = arg3;
+    *(int *)(lbl_804C9778 + 0x1C) = viewportX;
+    *(int *)(lbl_804C9778 + 0x20) = viewportY;
+    *(int *)(lbl_804C9778 + 0x24) = viewportWidth;
+    *(int *)(lbl_804C9778 + 0x28) = viewportHeight;
     lbl_804C9778[1] = 1;
     lbl_804C9778[0] = 1;
-    *(float *)(lbl_804C9778 + 0x18) = (float)arg2 / (float)arg3;
+    *(float *)(lbl_804C9778 + 0x18) = (float)viewportWidth / (float)viewportHeight;
 }
 #pragma scheduling on
 #pragma paired_single reset
@@ -1593,7 +1595,6 @@ void fn_802D0C98(void) {
     extern int lbl_804C9760[];
     unsigned short temp_r31;
     int temp_r30 = 0;
-    unsigned short *p;
 
     lbl_8055FD4C = temp_r30;
     GXSetZMode(1, 3, 1);
@@ -1606,8 +1607,8 @@ void fn_802D0C98(void) {
     temp_r31 = (unsigned short)GXSetDispCopyYScale(
         GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
                           *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
-    p = (unsigned short *)lbl_8055FD64;
-    GXSetDispCopySrc(0, 0, p[2], p[3]);
+    GXSetDispCopySrc(0, 0, *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4),
+                     *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6));
     GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
     GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
                     (unsigned char *)lbl_8055FD64 + 0x1A, 1,
