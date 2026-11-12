@@ -496,27 +496,28 @@ extern "C" int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
         virtual void v3();
         virtual const char* getName(const char*, u32*);
     };
-    int result = 0;
-    int i;
-    for (i = 0; i < fn_80012818(); i++) {
-        u8* event = fn_80012820(i);
-        int j;
-        for (j = 0; j < *(int*)(event + 0x70); j++) {
-            u8* entry = fn_80012870(i, j);
+    int found = 0;
+    int eventIdx;
+    /* Search events and their entries for an object whose name matches; return its indices. */
+    for (eventIdx = 0; eventIdx < fn_80012818(); eventIdx++) {
+        u8* event = fn_80012820(eventIdx);
+        int entryIdx;
+        for (entryIdx = 0; entryIdx < *(int*)(event + 0x70); entryIdx++) {
+            u8* entry = fn_80012870(eventIdx, entryIdx);
             VirtualObj* object = *(VirtualObj**)(entry + 0x20);
             const char* entryName = object->getName(lbl_80558918, lbl_80558920);
             if (stricmp(entryName, name) == 0) {
-                *eventIndex = i;
-                *subIndex = j;
-                result = 1;
+                *eventIndex = eventIdx;
+                *subIndex = entryIdx;
+                found = 1;
                 break;
             }
         }
-        if (result != 0) {
+        if (found != 0) {
             break;
         }
     }
-    return result;
+    return found;
 }
 #pragma cplusplus off
 #pragma pop
