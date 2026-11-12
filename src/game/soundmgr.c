@@ -604,33 +604,40 @@ typedef struct SndClassList {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-signed long fn_8020835C(void *arg0) {
-    register char *ptr;
-    register signed long i;
+signed long fn_8020835C(void *soundMgr) {
+    /* Re-sort the object list of every positional sound class - engine, tyre
+     * squeal, crash, engine start and wind, the ones fn_802085F0 says may be
+     * voiced in 3D - so the ones the comparator ranks highest come first; the
+     * 2D classes (UI, countdown, 2D engine, gear change) keep their order.  A
+     * class outside the manager's nine is fatal: its name, the file and this
+     * line are reported and the program ends. */
+    register SndClassList *classList;
+    register signed long sndClass;
 
-    i = 0;
-    ptr = (char *)arg0 + 0x14;
+    sndClass = 0;
+    classList = (SndClassList *)((char *)soundMgr + 0x14);
     do {
-        switch (i) {
-        case 0:
-        case 1:
-        case 2:
-        case 7:
+        switch (sndClass) {
+        case SNDCLASS_UI:
+        case SNDCLASS_COUNTDOWN:
+        case SNDCLASS_ENGINE_2D:
+        case SNDCLASS_GEARCHANGE:
             break;
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 8:
-            fn_802082C0(arg0, ptr);
+        case SNDCLASS_ENGINE:
+        case SNDCLASS_TIRESQUEAL:
+        case SNDCLASS_CRASH:
+        case SNDCLASS_ENGINE_START:
+        case SNDCLASS_WIND:
+            fn_802082C0(soundMgr, classList);
             break;
         default:
-            fn_802E317C(lbl_8033BE50, lbl_8033BE70, 0x265, fn_80206570(i));
+            fn_802E317C(SNDMGR_INVALID_SOUNDCLASS_FMT, SNDMGR_FILE,
+                        SNDMGR_LINE_INVALID_SOUNDCLASS, fn_80206570(sndClass));
             break;
         }
-        i++;
-        ptr += 8;
-    } while (i < 9);
+        sndClass++;
+        classList++;
+    } while (sndClass < SNDCLASS_COUNT);
 }
 #pragma pop
 
