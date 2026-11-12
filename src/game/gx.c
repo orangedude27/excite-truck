@@ -1896,22 +1896,23 @@ light_test:
 
 #pragma push
 #pragma scheduling invalid_target
+/* Loads a texture matrix (GX_TEXMTX0) using the negated Y-column components from lbl_804C5690. */
 void fn_802D1B58(void) {
-    int m[8];
-    float *t = (float *)lbl_804C5690;
-    int *p = (int *)lbl_802FAC70;
-    m[0] = p[0];
-    m[1] = p[1];
-    m[2] = p[2];
-    m[3] = p[3];
-    m[4] = p[4];
-    m[5] = p[5];
-    m[6] = p[6];
-    m[7] = p[7];
-    *(float *)&m[0] = 0.5f * -t[1];
-    *(float *)&m[1] = 0.5f * -t[4];
-    *(float *)&m[2] = 0.5f * -t[7];
-    GXLoadTexMtxImm((float *)m, 0x21, 1);
+    int texMtx[8];
+    float *srcMtx = (float *)lbl_804C5690;
+    int *baseMtx = (int *)lbl_802FAC70;
+    texMtx[0] = baseMtx[0];
+    texMtx[1] = baseMtx[1];
+    texMtx[2] = baseMtx[2];
+    texMtx[3] = baseMtx[3];
+    texMtx[4] = baseMtx[4];
+    texMtx[5] = baseMtx[5];
+    texMtx[6] = baseMtx[6];
+    texMtx[7] = baseMtx[7];
+    *(float *)&texMtx[0] = 0.5f * -srcMtx[1];
+    *(float *)&texMtx[1] = 0.5f * -srcMtx[4];
+    *(float *)&texMtx[2] = 0.5f * -srcMtx[7];
+    GXLoadTexMtxImm((float *)texMtx, 0x21, 1);
 }
 
 extern int PSMTXTranspose(void *, void *);
