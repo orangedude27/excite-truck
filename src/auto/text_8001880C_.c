@@ -11,6 +11,15 @@ extern void* fn_80131808(const char*);
 extern int fn_801345D8(char*, int, const char*, ...);
 extern void* memset(void*, int, unsigned long);
 extern char lbl_802FD1B0[];
+struct Tbl8001880C {
+    char f0[0x10];
+    char f10[0xC];
+    char f1C[0xC];
+    char f28[0x10];
+    char f38[0x10];
+    char f48[0x34];
+    char f7C[0x44];
+};
 extern const char lbl_80558C28[4];
 typedef unsigned int u32;
 #pragma cplusplus on
@@ -49,7 +58,7 @@ extern "C" void fn_8001880C(void) {
     u32 n;
 
     lbl_8055D570 = 1;
-    lbl_8055D574 = (s32)fn_80131808(base);
+    lbl_8055D574 = (s32)fn_80131808(base + 0);
     idx = 0;
     lbl_8055D57C = 0;
     while ((item = ((Dir_8001880C*)lbl_8055D574)->getAt(idx)) != 0) {
