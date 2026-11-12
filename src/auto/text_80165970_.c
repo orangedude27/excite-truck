@@ -176,13 +176,15 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
         virtual void d4(); virtual void d5(); virtual void d6();
         virtual float getValue(const char *);
     };
-    Entry *item;
-    int j;
     List *list;
+    int j;
+    Entry *item;
     int count;
+    void *base;
     void *entry;
-    float x, y, z;
-    float scaleX, scaleY;
+    float scaleY, scaleX;
+    float y, x;
+    float z;
     int minusOne;
     scaleX = lbl_80561898;
     scaleY = lbl_805618A0;
@@ -194,9 +196,9 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
 body:
     if (strcmp(item->getName(), lbl_8055A150) == 0) {
         count = *(int *)((char *)&lbl_8042FEB0 + 4);
+        base = *(void **)&lbl_8042FEB0;
         *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
-        entry = *(void **)&lbl_8042FEB0;
-        entry = (char *)entry + count * 0x14;
+        entry = (char *)base + count * 0x14;
         x = item->getValue(lbl_8055A158);
         y = item->getValue(lbl_8055A160);
         *(float *)entry = item->getValue(lbl_8055A168);
@@ -1143,6 +1145,8 @@ extern char lbl_8032FFC4[];
 #pragma push
 #pragma processor 750
 void fn_80167684(float arg0) {
+    /* Warn once if the player cannot possibly finish within the given remaining time
+     * (based on orbit/turtle timing thresholds in lbl_8042FE38 and current progress). */
     float temp_f31;
     if (!lbl_8055E32B && arg0 < *(float *)((char *)&lbl_8042FE38 + 0x5C)) {
         temp_f31 = (lbl_8055E324 - fn_801660C0()) / *(float *)((char *)&lbl_8042FE38 + 0x60);
