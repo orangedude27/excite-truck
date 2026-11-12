@@ -720,6 +720,8 @@ extern "C" void fn_80264FD4(void *arg0) {
     ((Dummy*)arg0)->f5();
 }
 
+#pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_80264FE4(void *arg0) {
     char *p = (char *)arg0;
@@ -955,8 +957,8 @@ int fn_802656C8(void *arg0) {
     void *list;
     int n, idx;
 
-    while ((item = (*(void *(**)(void *, int))(*(char **)arg0 + 0x60))(arg0, i)) != 0) {
-        if (stricmp((*(char *(**)(void *))(*(char **)item + 8))(item), lbl_8055C498) == 0) {
+    while ((item = ((void *(*)(void *, int))(*(void ***)arg0)[0x60 / 4])(arg0, i)) != 0) {
+        if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_8055C498) == 0) {
             count++;
         }
         i++;
@@ -966,8 +968,8 @@ int fn_802656C8(void *arg0) {
     list = fn_8002F37C(fn_802640A0, 0, 0x14, n);
     idx = 0;
     k = 0;
-    while ((item = (*(void *(**)(void *, int))(*(char **)arg0 + 0x60))(arg0, k)) != 0) {
-        if (stricmp((*(char *(**)(void *))(*(char **)item + 8))(item), lbl_8055C498) == 0) {
+    while ((item = ((void *(*)(void *, int))(*(void ***)arg0)[0x60 / 4])(arg0, k)) != 0) {
+        if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_8055C498) == 0) {
             void *dst = (char *)list + idx * 0x14;
             idx++;
             fn_802640C4(dst, item);
@@ -979,7 +981,7 @@ int fn_802656C8(void *arg0) {
     fn_80264444((char *)list + idx++ * 0x14);
     fn_80264484((char *)list + idx * 0x14);
     sp[0] = 0; sp[1] = 0; sp[2] = 0; sp[3] = 0; sp[4] = 0;
-    sp[0] = (*(int (**)(void *, char *))(*(char **)arg0 + 0x14))(arg0, lbl_8055C4A0);
+    sp[0] = ((int (*)(void *, char *))(*(void ***)arg0)[0x14 / 4])(arg0, lbl_8055C4A0);
     sp[1] = (int)list;
     fn_80236910(lbl_803464C8);
     result = fn_802146BC(sp, -999, -999, 1);
@@ -990,7 +992,7 @@ int fn_802656C8(void *arg0) {
     while (j < *(int *)(lbl_80498F78 + 4)) {
         void *p = (*(void ***)lbl_80498F78)[j];
         if (p != 0) {
-            (*(void (**)(void *, int))(*(char **)p + 8))(p, 1);
+            ((void (*)(void *, int))(*(void ***)p)[2])(p, 1);
         }
         j++;
     }
