@@ -100,6 +100,8 @@ extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4
     return this_;
 }
 
+/* nw4hbm::lyt::Picture destructor: release owned picture data/material,
+ * destroy child list and base Pane, then optionally delete storage. */
 extern "C" void* __dt__Q36nw4hbm3lyt7PictureFv(void* this_, s32 arg1) {
     register void* data;
     if (this_ != 0) {
