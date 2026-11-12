@@ -4223,30 +4223,33 @@ struct BasicSoundLayout {
 #define SND_PTR_SOUND_MSG   ((const char *)lbl_80325D98) /* "NW4HBM:Pointer must not be NULL (sound)" */
 #define UT_LINKLIST_H       ((const char *)lbl_80323834) /* "LinkList.h" */
 #define UT_PTR_P_MSG        ((const char *)lbl_80323810) /* "NW4HBM:Pointer must not be NULL (p)" */
-extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *player, void *sound) {
-    extern u8 lbl_80325D98[];
-    extern u8 lbl_80323834[];
-    extern u8 lbl_80323810[];
-    void *iterator;
-    void *heap;
+extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(SoundPlayerLayout *player, BasicSoundLayout *sound) {
+    UtLinkListNode **iterator;
+    PlayerHeapLayout *heap;
     void *slot;
 
+    /* nw4hbm::snd::SoundPlayer::detail_FreePlayerHeap(BasicSound*): hand the
+     * heap a sound was made on back to its player.  The heap goes on the front
+     * of the player's heap list, is detached from whoever held it, and the
+     * sound forgets about it. */
     if (sound == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x280, (const char *)lbl_80325D98);
+        Panic__Q26nw4hbm2dbFPCciPCce(SND_SOUNDPLAYER_CPP, 0x280, SND_PTR_SOUND_MSG);
     }
-    heap = *(void **)((char *)sound + 4);
+    heap = sound->playerHeap;
     if (heap != 0) {
-        iterator = (char *)player + 0x1C;
+        /* nw4hbm::ut::LinkList::begin(), and the NW4HBM_ASSERT(p != NULL) of
+         * the inlined nw4hbm::ut::LinkList::insert. */
+        iterator = &player->heapList.sentinel.next;
         if (heap == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323834, 0x233, (const char *)lbl_80323810);
+            Panic__Q26nw4hbm2dbFPCciPCce(UT_LINKLIST_H, 0x233, UT_PTR_P_MSG);
         }
         slot = iterator;
-        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)player + 0x18, &slot, (char *)heap + 0x2C);
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&player->heapList, &slot, &heap->link);
     }
     if (heap != 0) {
-        *(void **)((char *)heap + 0x34) = 0;
+        heap->holder = 0;
     }
-    *(void **)((char *)sound + 4) = 0;
+    sound->playerHeap = 0;
 }
 
 extern "C" void* detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(void* this_, void* pHandle, unsigned long id, void* pAmbient, void* pPlayer, void* pInfo) {
