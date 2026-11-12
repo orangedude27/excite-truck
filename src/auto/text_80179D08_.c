@@ -412,6 +412,7 @@ void** fn_8017ACCC(void** arg0) {
     return arg0;
 }
 
+typedef struct { int a, b; } Pair8;
 extern void *fn_801284F8(int, void *);
 extern void fn_80179F94(void *, void *);
 extern void fn_802E30C8(const char *);
