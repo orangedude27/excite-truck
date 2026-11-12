@@ -28,6 +28,7 @@ extern f32 lbl_80563010, lbl_80562FFC;
 void fn_801A324C(void*, s32, void*, f32, f32);
 }
 struct FAAVec { f32 x; f32 y; f32 z; };
+struct F7B10Vec { f32 x; f32 y; f32 z; };
 struct F7B10Obj {
     virtual void s8(); virtual void sC(); virtual void s10(); virtual void s14(); virtual void s18();
     virtual void s1C(); virtual void s20(); virtual void s24(); virtual void s28(); virtual void s2C();
