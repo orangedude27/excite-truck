@@ -44,18 +44,19 @@ extern char lbl_8034D690[];
 #pragma scheduling invalid_target
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802E6BD8(unsigned int a, unsigned int b, unsigned int c, unsigned int d, unsigned int e) {
+/* Register a memory-card chunk record, warn on duplicate cookie ids, and append it to the chunk table. */
+void fn_802E6BD8(unsigned int cookieId, unsigned int recordType, unsigned int recordData, unsigned int recordSize, unsigned int recordCallback) {
     unsigned char *record;
     int i;
     int count;
 
-    fn_802E30C8(lbl_8034D678, fn_802E6B98(a), b, d);
+    fn_802E30C8(lbl_8034D678, fn_802E6B98(cookieId), recordType, recordSize);
     record = lbl_804FC8B0;
     i = 0;
     goto loop_check;
 loop_body:
-    if (a == *(unsigned int *)record)
-        fn_802E317C(lbl_8034D690, a);
+    if (cookieId == *(unsigned int *)record)
+        fn_802E317C(lbl_8034D690, cookieId);
     record += 0x14;
     i++;
 loop_check:
@@ -64,12 +65,12 @@ loop_check:
 
     count = lbl_8055FFC0;
     record = lbl_804FC8B0 + count * 0x14;
-    *(unsigned int *)(record + 0) = a;
-    *(unsigned int *)(record + 4) = b;
-    *(unsigned int *)(record + 8) = c;
-    *(unsigned int *)(record + 0xC) = d;
+    *(unsigned int *)(record + 0) = cookieId;
+    *(unsigned int *)(record + 4) = recordType;
+    *(unsigned int *)(record + 8) = recordData;
+    *(unsigned int *)(record + 0xC) = recordSize;
     lbl_8055FFC0 = count + 1;
-    *(unsigned int *)(record + 0x10) = e;
+    *(unsigned int *)(record + 0x10) = recordCallback;
 }
 #pragma pop
 #pragma scheduling on
