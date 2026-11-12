@@ -13,19 +13,22 @@ int sprintf(char *s, const char *format, ...) {
     } state;
     register char *str asm("r27") = s;
     register unsigned int max asm("r30");
-    unsigned int end;
+    unsigned int written;
 
+    /* Format into an unbounded string buffer via __pformatter_800269DC and
+       NUL-terminate; on the no-space sentinel (written >= max) writes the
+       terminator at str[-2] to match the original implementation. */
     va_start(args, format);
     max = 0xFFFFFFFF;
     state.buffer = str;
     state.max = max;
     state.count = 0;
-    end = __pformatter_800269DC(__StringWrite, (void **)&state.buffer, format, args);
+    written = __pformatter_800269DC(__StringWrite, (void **)&state.buffer, format, args);
     if (str) {
-        if (end < max)
-            str[end] = 0;
+        if (written < max)
+            str[written] = 0;
         else
             str[-2] = 0;
     }
-    return end;
+    return written;
 }
