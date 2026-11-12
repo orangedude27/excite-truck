@@ -432,13 +432,14 @@ found:
     return 0;
 }
 
-int fn_80258CB0(void *arg0, const char *arg1) {
+int fn_80258CB0(void *mgr, const char *name) {
     int index = 0;
     int offset = 0;
     int len;
+    /* Look up name in the text-entry table (+0x910, count +0x914, stride 0x24) and return its +0x20 value, or 0. */
     goto check;
 loop:
-    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0x910) + offset), arg1);
+    len = stricmp((const char *)(*(unsigned int *)((char *)mgr + 0x910) + offset), name);
     switch (((unsigned int)__cntlzw(len) >> 5)) {
     case 0:
         goto increment;
@@ -449,14 +450,14 @@ increment:
     offset += 0x24;
     index++;
 check:
-    if (index < *(int *)((char *)arg0 + 0x914))
+    if (index < *(int *)((char *)mgr + 0x914))
         goto loop;
     index = -1;
 found:
     if (index >= 0) {
         int byte_offset = index;
         byte_offset *= 0x24;
-        return *(int *)((char *)*(unsigned int *)((char *)arg0 + 0x910) + byte_offset + 0x20);
+        return *(int *)((char *)*(unsigned int *)((char *)mgr + 0x910) + byte_offset + 0x20);
     }
     return 0;
 }
