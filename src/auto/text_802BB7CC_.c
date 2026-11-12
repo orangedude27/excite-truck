@@ -446,6 +446,7 @@ extern int fn_802B05DC(void);
 extern void *memset(void *, int, unsigned long);
 extern float lbl_80564D00;
 extern float lbl_80564D04;
+extern double lbl_80564D08;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
