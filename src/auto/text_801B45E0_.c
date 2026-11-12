@@ -89,28 +89,29 @@ void fn_801B45E0(void *arg0) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void *fn_801B4610(void *arg0, int arg1) {
+/* Destroy this object: release its owned subobject/resources, clear its fields, and optionally free it. */
+extern "C" void *fn_801B4610(void *self, int shouldDelete) {
     int zero;
-    if (arg0 != 0) {
-        F801B4610 *obj = *(F801B4610 **)arg0;
+    if (self != 0) {
+        F801B4610 *obj = *(F801B4610 **)self;
         if (obj != 0) {
             obj->f2(1);
         }
         zero = 0;
-        *(int *)((char *)arg0 + 0x00) = zero;
-        *(int *)((char *)arg0 + 0x14) = zero;
-        *(int *)((char *)arg0 + 0x10) = zero;
-        *(int *)((char *)arg0 + 0x0C) = zero;
-        *(int *)((char *)arg0 + 0x08) = zero;
-        *(int *)((char *)arg0 + 0x04) = zero;
-        fn_80128670(*(int *)((char *)arg0 + 0x18));
-        *(int *)((char *)arg0 + 0x18) = zero;
-        *(int *)((char *)arg0 + 0x24) = zero;
-        *(int *)((char *)arg0 + 0x20) = zero;
-        *(int *)((char *)arg0 + 0x1C) = zero;
-        if (arg1 > 0) fn_80128668(arg0);
+        *(int *)((char *)self + 0x00) = zero;
+        *(int *)((char *)self + 0x14) = zero;
+        *(int *)((char *)self + 0x10) = zero;
+        *(int *)((char *)self + 0x0C) = zero;
+        *(int *)((char *)self + 0x08) = zero;
+        *(int *)((char *)self + 0x04) = zero;
+        fn_80128670(*(int *)((char *)self + 0x18));
+        *(int *)((char *)self + 0x18) = zero;
+        *(int *)((char *)self + 0x24) = zero;
+        *(int *)((char *)self + 0x20) = zero;
+        *(int *)((char *)self + 0x1C) = zero;
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 #pragma cplusplus off
 #pragma pop
@@ -225,7 +226,7 @@ void fn_801B4820(int unused, int *arg0, int *arg1, unsigned int arg2) {
     }
     *arg0 = 0x5000;
     *arg1 = 0x32;
-    fn_802E30C8(&lbl_80335DCC, (limit / 9) / 60, (limit / 9) % 60, (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
+    fn_802E30C8((int *)&lbl_80335DCC, (limit / 9) / 60, (limit / 9) % 60, (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
 }
 #pragma pop
 
@@ -268,21 +269,22 @@ extern float fn_801B4D10(int, int);
 int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
     int index;
     int value;
+    int *entry;
     void *obj;
     if (fn_801B4B44(arg0) == 0)
         return 0;
     index = ((int (*)(void *, int))fn_801B4C9C)(arg0, arg4);
-    obj = ((void *(*)(void *, int))fn_801B4C58)(arg0, index);
-    value = *(int *)((char *)obj + 8);
-    *arg1 = (void *)((int (*)(void *, int, int))(*(void ***)*(void **)((char *)arg0 + 4))[3])(
-        *(void **)((char *)arg0 + 4), value, 0x2200);
+    entry = ((int *(*)(void *, int))fn_801B4C58)(arg0, index);
+    value = entry[2];
+    obj = *(void **)((char *)arg0 + 4);
+    *arg1 = (void *)((int (*)(void *, int, int))(*(void ***)obj)[3])(obj, value, 0x2200U);
     if (fn_801B4C1C((int)arg0, arg4) != 0) {
         *arg2 = *arg1;
     } else {
-        obj = ((void *(*)(void *, int))fn_801B4C60)(arg0, index);
-        value = *(int *)((char *)obj + 8);
-        *arg2 = (void *)((int (*)(void *, int, int))(*(void ***)*(void **)((char *)arg0 + 4))[3])(
-            *(void **)((char *)arg0 + 4), value, 0x2200);
+        entry = ((int *(*)(void *, int))fn_801B4C60)(arg0, index);
+        value = entry[2];
+        obj = *(void **)((char *)arg0 + 4);
+        *arg2 = (void *)((int (*)(void *, int, int))(*(void ***)obj)[3])(obj, value, 0x2200U);
     }
     *arg3 = fn_801B4D10((int)arg0, arg4);
     return 1;
