@@ -547,6 +547,30 @@ void fn_8000FC8C(s32 value, s32 arg1) {
 extern void fn_800109E4(s32, f32, f32, f32, f32);
 extern f32 lbl_80560308, lbl_8056030C, lbl_80560310, lbl_80560314;
 extern f32 lbl_805602B0, lbl_805602E8;
+
+/* Resources fn_8000F330 loads for the interlude banner (names from the string
+ * table at lbl_802FC2A8: "interlude.art" and the "uifnt.gtx" UI font). */
+#define INTERLUDE_ART lbl_8055D4C0 /* "interlude.art" sprite sheet, 0 when absent */
+#define INTERLUDE_FONT lbl_8055D4C8 /* "uifnt.gtx" */
+#define INTERLUDE_END_CAP 2 /* its frame drawn at both ends of the banner */
+
+/* Layout of the banner, all .sdata2 floats: the text is scaled to
+ * INTERLUDE_TEXT_HEIGHT pixels and centred INTERLUDE_BOTTOM_GAP above the
+ * screen's bottom edge, inside a panel INTERLUDE_PANEL_HEIGHT tall with
+ * INTERLUDE_SIDE_PAD of room past the text on each side. */
+#define INTERLUDE_TEXT_HEIGHT lbl_80560308 /* 27.0f */
+#define INTERLUDE_BOTTOM_GAP lbl_805602E8 /* 13.0f */
+#define INTERLUDE_SIDE_PAD lbl_8056030C /* 7.0f */
+#define INTERLUDE_EXTRA_WIDTH lbl_80560310 /* 14.0f, i.e. 2 * INTERLUDE_SIDE_PAD */
+#define INTERLUDE_PANEL_HEIGHT lbl_80560314 /* 26.0f, i.e. 2 * INTERLUDE_BOTTOM_GAP */
+#define TEXT_SHADOW_OFFSET lbl_805602B0 /* 2.0f: how far above the base line the text sits */
+#define ONE_PIXEL lbl_80560264 /* 1.0f: the shadow's pixel offset, and the text draw's default spacing */
+#define HALF_PIXEL lbl_8056025C /* 0.5f */
+#define DEFAULT_SCALE lbl_80560280 /* 0.0f: "unscaled" for the sprite draw fn_80010E94 */
+#define COLOR_PANEL 0x66000000 /* black at 40% alpha */
+#define COLOR_TEXT_SHADOW 0xFF000000 /* opaque black */
+#define COLOR_TEXT (-1) /* 0xFFFFFFFF: opaque white */
+#define TEXT_ALIGN_CENTER 0x14 /* fn_80233BF0 bits 0x4|0x10: centre the text on the pen point */
 #pragma push
 #pragma processor 750
 #pragma paired_single off
