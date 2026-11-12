@@ -9698,8 +9698,8 @@ found:
 }
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
-    u8 *cleanup_base;
-    u32 zero;
+    register u32 zero;
+    register u8 *cleanup_base;
     u8 *base;
     void (*callback)(void *);
     u8 result;
@@ -9717,15 +9717,15 @@ void btm_process_inq_complete(UINT8 status, UINT8 unused) {
             zero = 0;
             buffer = *(void **)(cleanup_base + 0x16DC);
             *(u32 *)(base + 0x16B4) = zero;
-            base[0x1848] = zero;
-            base[0x1847] = zero;
+            base[0x1848] = (u8)zero;
+            base[0x1847] = (u8)zero;
             *(void (**)(void *))(base + 0x16B0) = NULL;
             if (buffer != NULL) {
                 GKI_freebuf(buffer);
                 *(void **)(cleanup_base + 0x16DC) = (void *)zero;
             }
-            *(u16 *)(cleanup_base + 0x16E0) = zero;
-            *(u16 *)(cleanup_base + 0x16E2) = zero;
+            *(u16 *)(cleanup_base + 0x16E0) = (u16)zero;
+            *(u16 *)(cleanup_base + 0x16E2) = (u16)zero;
             if (lbl_803C0F78[0x27C0] >= 5)
                 fn_8007096C(0xD0004, lbl_803164F4,
                             base[0x183E], base[0x183F]);
@@ -18025,21 +18025,19 @@ void l2c_link_timeout(void *arg0) {
 s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
     u16 len = *(u16 *)((u8 *)p_buf + 2);
     u16 max_len = *(u16 *)(lbl_803C0A50 + 0x7E);
-    u16 packets;
-    u16 mtu;
-    u16 available;
-    u16 credits;
-
     if (len <= max_len) {
         --*(u16 *)((u8 *)p_lcb + 0x36);
         ++*(u16 *)((u8 *)p_lcb + 0x38);
         --*(u16 *)(lbl_803C4040 + 4);
         fn_8007079C(p_buf, 0x2100);
     } else {
+        u16 available;
+        u16 packets;
+        u16 mtu;
+        u16 credits;
         mtu = *(u16 *)(lbl_803C0A50 + 0x7C);
         packets = (len + mtu - 5) / mtu;
         available = *(u16 *)(lbl_803C4040 + 4);
-
         if (packets > available) {
             *(u16 *)((u8 *)p_buf + 6) = available;
             packets = available;
@@ -20694,15 +20692,16 @@ void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
 }
 
 void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
-    const char *trace_msg = lbl_803196B8;
-    u16 lcid = arg0;
     s32 index = (s32)arg0 - 0x40;
+    char *trace_msg = lbl_803196B8;
+    u16 lcid = arg0;
     void *port;
     u16 port_lcid;
     s16 status = arg1;
+
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, (void *)(trace_msg + 0), lcid);
+            fn_80070954(0x90000, trace_msg + 0, lcid);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -20710,14 +20709,14 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
             port_lcid = *(u16 *)((u8 *)port + 0x68);
             if (port_lcid != lcid) {
                 if (lbl_803C4828[0x414] >= 2)
-                    fn_8007096C(0x90001, (void *)(trace_msg + 0x1C), lcid, port_lcid);
+                    fn_8007096C(0x90001, trace_msg + 0x1C, lcid, port_lcid);
                 port = NULL;
             }
         }
     }
     if (port == NULL) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, (void *)(trace_msg + 0x54), lcid);
+            fn_80070954(0x90000, trace_msg + 0x54, lcid);
     } else {
         *(u16 *)((u8 *)port + 0x68) = lcid;
         fn_800916F4(port, 9, &status);
