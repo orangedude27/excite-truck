@@ -246,19 +246,23 @@ void fn_801334F4(int arg0, int arg1, char *arg2, int arg3) {
 
 #pragma push
 #pragma peephole on
-int fn_8013358C(int arg0, int arg1, char *arg2) {
-    void *result;
-    int first = arg0;
-    int second = arg1;
-    fn_80133E10(&result, first, second);
-    strncpy((char*)result + 0x14, arg2, 0x10);
-    *((char*)result + 0x23) = 0;
-    *(int*)((char*)result + 0xC) = fn_801338D8((char*)result + 0x14);
-    *(float*)((char*)result + 0x10) = fn_80133960((char*)result + 0x14);
-    *((unsigned char*)result + 8) = fn_80133844((char*)result + 0x14);
-    *(int*)result = 3;
-    if (strlen(arg2) > 15) {
-        fn_802E30C8(lbl_8032B8F8, arg2, (char*)result + 0x14);
+/* Set an options entry (section, key) to a string value: copy up to 0x10 bytes
+ * into the entry's text buffer (+0x14, null-terminated at +0x23), refresh its
+ * int/float/bool readings, mark its type as OPTIONS_VALUE_STRING (3), and warn
+ * via lbl_8032B8F8 if the input was truncated (longer than 15 chars). */
+int fn_8013358C(int section, int key, char *valueStr) {
+    void *entry;
+    int savedSection = section;
+    int savedKey = key;
+    fn_80133E10(&entry, savedSection, savedKey);
+    strncpy((char *)entry + 0x14, valueStr, 0x10);
+    *((char *)entry + 0x23) = 0;
+    *(int *)((char *)entry + 0xC) = fn_801338D8((char *)entry + 0x14);
+    *(float *)((char *)entry + 0x10) = fn_80133960((char *)entry + 0x14);
+    *((unsigned char *)entry + 8) = fn_80133844((char *)entry + 0x14);
+    *(int *)entry = 3;
+    if (strlen(valueStr) > 15) {
+        fn_802E30C8(lbl_8032B8F8, valueStr, (char *)entry + 0x14);
     }
 }
 
@@ -284,12 +288,13 @@ int fn_8013365C(int arg0, int arg1) {
 
 #pragma scheduling invalid_target
 void fn_801336E0(int arg0, int arg1) {
-    int *entry = &lbl_8042F718[arg0 * 2];
+    int offset = arg0 << 3;
+    int *entry = &lbl_8042F718[arg0 + arg0];
     if (entry[1] == 0) {
         fn_802E317C(lbl_8032B940, arg0);
     }
-    if (entry[1] != arg1) {
-        fn_802E317C(lbl_8032B968, entry[0], arg1);
+    if ((unsigned)entry[1] != (unsigned)arg1) {
+        fn_802E317C(lbl_8032B968, *(int *)((char *)lbl_8042F718 + offset), entry[1], arg1);
     }
     entry[1] = 0;
 }
@@ -426,7 +431,9 @@ int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
     char *start = arg2;
     char *end = p + arg1;
     char *limit = arg2 + arg3 - 1;
-    while (p < end && is_line_space((signed char)*p)) p++;
+    int table = *(int *)((char *)&lbl_802FE850 + 0x38);
+    while (p < end && (((signed char)*p < 0 || (signed char)*p >= 256) ? 0 : (*(unsigned short *)(*(int *)(table + 8) + (signed char)*p * 2) & 0x100)))
+        p++;
     while (p < end && arg2 < limit && (signed char)*p != 13 && (signed char)*p != 10)
         *arg2++ = *p++;
     *arg2 = 0;
@@ -612,7 +619,7 @@ check:
         if (strlen((char *)arg2) >= 0x14)
             fn_802E30C8(lbl_8032BA90, (char *)arg2, slot + 0x24);
         {
-            register int zero = 0x10 - 0x10;
+            register int zero = 0;
             register float initial = lbl_805612D0;
             slot[0x14] = zero;
             slot[8] = zero;
