@@ -6909,6 +6909,7 @@ BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
     UINT16 event = p_msg->event;
     UINT8 index = 0x10;
     tBTA_HH_DEV_CB *p_cb = NULL;
+    u32 addr;
     switch (event) {
     case 0x170C:
         bta_hh_api_enable(p_msg);
@@ -6935,7 +6936,8 @@ BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
         index = *(lbl_803C0D48 + p_msg->layer_specific + 0x214);
     }
     if (index != 0x10) {
-        p_cb = (tBTA_HH_DEV_CB *)(((lbl_803C0D48 + ((u32)index << 5))) + 0x10);
+        addr = (u32)lbl_803C0D48 + ((u32)index << 5);
+        p_cb = (tBTA_HH_DEV_CB *)(addr + 0x10);
     }
     if (lbl_8055DC80 >= 5) {
         fn_8007096C(0x504, lbl_803157DC, p_msg->layer_specific, index);
@@ -15916,14 +15918,13 @@ u8 HID_HostOpenDev(u32 arg0) {
     return hidh_conn_initiate(arg0);
 }
 
-u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
-                         u16 data, u8 report_id, BT_HDR *pbuf) {
+u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, BT_HDR *pbuf) {
     char *messages = lbl_80317720;
     u8 status = 0;
 
     if (lbl_803C3C38[0x400] == 0) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0);
+            fn_8007093C(0x1E0000, lbl_80317720 + 0);
         status = 1;
     }
     if ((dev_handle > 0x10) ||
