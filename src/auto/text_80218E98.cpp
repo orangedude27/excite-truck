@@ -2799,7 +2799,7 @@ struct ValueTextWidget {
  * the result for the current locale's decimal separator, re-fits the text to
  * the widget's box and asks for a redraw when the widget is live. */
 extern "C" void fn_8021CF9C(void *arg0) {
-    ValueTextWidget *widget = (ValueTextWidget *)arg0;
+    TextReadoutWidget *widget = (TextReadoutWidget *)arg0;
     f32 value = (f32)*(s32 *)widget->value;
     volatile char *buf = widget->text;
     sprintf((char *)buf, widget->format, (s32)(widget->offset + value * widget->scale + WIDGET_ROUND_HALF));
