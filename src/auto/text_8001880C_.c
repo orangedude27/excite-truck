@@ -83,6 +83,7 @@ extern "C" void fn_8001880C(void) {
         count++;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
