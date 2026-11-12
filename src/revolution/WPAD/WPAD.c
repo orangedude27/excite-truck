@@ -1658,6 +1658,7 @@ _end:
     return status;
 }
 
+/* Start or stop rumble for a WPAD channel, respecting link/config state. */
 void WPADControlMotor(s32 chan, u32 command) {
     WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
