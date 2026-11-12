@@ -1002,7 +1002,7 @@ extern "C" void fn_80219718(void *arg0) {
     if (sp14 < var_r0) var_r0 = sp14;
     sp14 = var_r0;
     temp_r30 = *(s32 *)((u8 *)arg0 + 4);
-    var_r0_2 = temp_r30 + ((VfObj *)arg0)->vf29();
+    var_r0_2 = temp_r30 + ((VfObj *)arg0)->vf28();
     if (spC > var_r0_2) var_r0_2 = spC;
     spC = var_r0_2;
     var_r0_3 = *(s32 *)((u8 *)arg0 + 8);
@@ -1013,8 +1013,8 @@ extern "C" void fn_80219718(void *arg0) {
     sp8 = var_r0_4;
     *(s32 *)((u8 *)arg0 + 0x244) += *(s32 *)((u8 *)arg0 + 4) - sp14;
     *(s32 *)((u8 *)arg0 + 0x248) += *(s32 *)((u8 *)arg0 + 8) - sp10;
-    ((Dispatch19718 *)arg0)->set(sp14, sp10);
-    fn_80219284(arg0, spC - sp14, var_r0_4 - sp10);
+    ((Dispatch19718_1C *)arg0)->set(sp14, sp10);
+    fn_80219284(arg0, spC - sp14, sp8 - sp10);
 }
 
 extern "C" void *fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
@@ -3341,14 +3341,13 @@ extern "C" void fn_8021E3BC(void *arg0, s32 arg1) {
 body:
     selected = **(s32 **)((u8 *)arg0 + 0x25C) == item;
     if (selected) {
-        yBase = *(s32 *)((u8 *)arg0 + 8);
-        xBase = *(s32 *)((u8 *)arg0 + 4);
-        result = xBase + ((VfObj *)arg0)->vf28();
-        s32 rowHeight = *(s32 *)((u8 *)arg0 + 0x258);
-        fn_802C3424(xBase + 2,
-                    yBase + index * rowHeight + 2,
+        yBase = *(s32 *)((u8 *)arg0 + 4);
+        xBase = *(s32 *)((u8 *)arg0 + 8);
+        result = yBase + ((VfObj *)arg0)->vf28();
+        fn_802C3424(yBase + 2,
+                    xBase + index * *(s32 *)((u8 *)arg0 + 0x258) + 2,
                     result - 2,
-                    yBase + (index + 1) * rowHeight + 2,
+                    xBase + (index + 1) * *(s32 *)((u8 *)arg0 + 0x258) + 2,
                     color);
     }
 
