@@ -478,11 +478,11 @@ extern void DSPSendMailToDSP(u32);
 extern void DBPrintf_800343C8(const char *, ...);
 extern char lbl_80301E30[];
 void __DSP_boot_task(void *arg0) {
-    volatile u32 frame[5];
+    volatile u32 mail;
     u32 *task = (u32 *)arg0;
     const char *fmt = lbl_80301E30;
     while (DSPCheckMailFromDSP() == 0) {}
-    frame[2] = DSPReadMailFromDSP();
+    mail = DSPReadMailFromDSP();
     DSPSendMailToDSP(0x80F3A001);
     while (DSPCheckMailToDSP() != 0) {}
     DSPSendMailToDSP(task[3]);
@@ -503,7 +503,7 @@ void __DSP_boot_task(void *arg0) {
     while (DSPCheckMailToDSP() != 0) {}
     DSPSendMailToDSP(*(u16 *)((u8 *)arg0 + 0x24));
     while (DSPCheckMailToDSP() != 0) {}
-    DBPrintf_800343C8(fmt, arg0);
+    DBPrintf_800343C8(((char (*)[0x20])fmt)[0], arg0);
     DBPrintf_800343C8(fmt + 0x20, task[3]);
     DBPrintf_800343C8(fmt + 0x50, task[5]);
     DBPrintf_800343C8(fmt + 0x80, task[4]);
@@ -1688,8 +1688,8 @@ void fn_80036B84(u32 arg0) {
         return;
     }
     if (arg0 & 1) {
-        register s32 state;
-        register u32 *errorBase;
+        u8 *errorBase;
+        s32 state;
 
         lbl_8055D860 = 0;
         lbl_8055D89C = (u32 *)lbl_80376B20;
@@ -1698,11 +1698,11 @@ void fn_80036B84(u32 arg0) {
         state = OSDisableInterrupts();
         if (*(volatile u32 *)&lbl_8055D848 >= 5)
             *(volatile u32 *)&lbl_8055D848 = 0;
-        errorBase = (u32 *)__ErrorInfo;
-        errorBase[*(volatile u32 *)&lbl_8055D848 * 5 + 7] = 0x21;
-        errorBase[*(volatile u32 *)&lbl_8055D848 * 5 + 8] = 0x10008;
-        errorBase[*(volatile u32 *)&lbl_8055D848 * 5 + 9] = 0x20;
-        errorBase[*(volatile u32 *)&lbl_8055D848 * 5 + 11] = OSGetTick();
+        errorBase = (u8 *)__ErrorInfo;
+        *(s32 *)(errorBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
+        *(s32 *)(errorBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10008;
+        *(s32 *)(errorBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        *(s32 *)(errorBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(state);
         fn_8003AD88(lbl_80376B40, 0x20, 0x10008, (u32)fn_80036D24);
