@@ -22509,6 +22509,7 @@ void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
     }
 }
 
+/* Build and send an RFCOMM Remote Port Negotiation (RPN) command or response. */
 void rfc_send_rpn(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars, s32 mask) {
     u8 *buf;
     u8 *p_data;
