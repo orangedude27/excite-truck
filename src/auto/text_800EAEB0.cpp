@@ -920,11 +920,12 @@ extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, 
 }
 
 void nw4hbm::snd::detail::PoolImpl::DestroyImpl(void* buffer, unsigned long size) {
+    /* Remove any free-list nodes whose addresses fall within [buffer, buffer + size). */
     if (buffer == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)::lbl_80323058, 0x44,
                                      (const char*)::lbl_80323070);
     }
-    u32 level = OSDisableInterrupts();
+    u32 savedInterruptLevel = OSDisableInterrupts();
     void** link = (void**)this;
     void* node = *link;
     while (node != 0) {
@@ -936,7 +937,7 @@ void nw4hbm::snd::detail::PoolImpl::DestroyImpl(void* buffer, unsigned long size
         }
         node = *(void**)node;
     }
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(savedInterruptLevel);
 }
 
 void *nw4r::snd::detail::PoolImpl::AllocImpl() {
