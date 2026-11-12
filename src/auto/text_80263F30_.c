@@ -358,41 +358,42 @@ void fn_802645FC(void *arg0) {
     *(float *)((char *)arg0 + 0x20) = b;
 }
 #pragma dont_inline on
-void fn_80264618(void *arg0) {
+void fn_80264618(void *obj) {
     extern float lbl_80558DC4[];
     extern float lbl_80563BF0;
     extern float fn_80214D48(void);
     extern int fn_802645C0(void);
     extern void fn_80221F94(void *, int);
     extern void fn_80216CA8(void);
-    float a;
-    float b;
-    float c;
-    float limit;
+    float value;
+    float clamped;
+    float delta;
+    float minValue;
 
-    a = (float)__fabs((double)*(float *)((char *)arg0 + 0x1C));
-    if (a <= lbl_80558DC4[0]) {
-        fn_80221F94(arg0, 0);
+    /* If the timer/counter at +0x1C has reached zero, clear state and run callback; then decay fields at +0x18,+0x20,+0x1C by frame delta down to min. */
+    value = (float)__fabs((double)*(float *)((char *)obj + 0x1C));
+    if (value <= lbl_80558DC4[0]) {
+        fn_80221F94(obj, 0);
         fn_80216CA8();
     }
-    a = fn_80214D48();
-    b = *(float *)((char *)arg0 + 0x18);
-    limit = lbl_80563BF0;
-    b = b - a;
-    b = limit > b ? limit : b;
-    *(float *)((char *)arg0 + 0x18) = b;
+    value = fn_80214D48();
+    clamped = *(float *)((char *)obj + 0x18);
+    minValue = lbl_80563BF0;
+    clamped = clamped - value;
+    clamped = minValue > clamped ? minValue : clamped;
+    *(float *)((char *)obj + 0x18) = clamped;
     if (fn_802645C0() != 0) {
-        c = fn_80214D48();
-        b = *(float *)((char *)arg0 + 0x20);
-        b = b + c;
-        *(float *)((char *)arg0 + 0x20) = b;
+        delta = fn_80214D48();
+        clamped = *(float *)((char *)obj + 0x20);
+        clamped = clamped + delta;
+        *(float *)((char *)obj + 0x20) = clamped;
     }
-    c = fn_80214D48();
-    b = *(float *)((char *)arg0 + 0x1C);
-    limit = lbl_80563BF0;
-    b = b - c;
-    b = limit > b ? limit : b;
-    *(float *)((char *)arg0 + 0x1C) = b;
+    delta = fn_80214D48();
+    clamped = *(float *)((char *)obj + 0x1C);
+    minValue = lbl_80563BF0;
+    clamped = clamped - delta;
+    clamped = minValue > clamped ? minValue : clamped;
+    *(float *)((char *)obj + 0x1C) = clamped;
 }
 
 #pragma push
