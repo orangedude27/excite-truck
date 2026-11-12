@@ -24891,6 +24891,7 @@ void sdp_disconnect(tCONN_CB *p_ccb, UINT16 reason) {
 }
 
 void sdp_disconnect_cfm(u16 cid, u16 result) {
+    // Handles L2CAP disconnect confirmation for SDP: logs, invokes completion callback, and frees the connection block.
     extern char lbl_8031A460[];
     extern char lbl_8031A490[];
     u16 handle = cid;
