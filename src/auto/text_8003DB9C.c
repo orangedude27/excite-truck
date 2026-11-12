@@ -3657,23 +3657,59 @@ void GXLoadTlut(void *arg0, int arg1) {
     src[0] = v.v;
 }
 
-void GXInitTexCacheRegion(void *obj, signed char arg1, unsigned int arg2, int arg3, unsigned int arg4, int arg5) {
-    union { unsigned int word; struct { unsigned int pad:11; unsigned int c:3; unsigned int b:3; unsigned int a:15; } f; } v;
-    int size = arg3;
-    switch (size) { case 0: size=3; break; case 1: size=4; break; case 2: size=5; break; }
-    v.word = 0;
-    v.f.a = arg2 >> 5;
-    v.f.b = size;
-    v.f.c = size;
-    *(unsigned int *)obj = v.word;
-    switch (arg5) { case 0: size=3; break; case 1: size=4; break; case 2: size=5; break; case 3: size=0; break; }
-    v.word = 0;
-    v.f.a = arg4 >> 5;
-    v.f.b = size;
-    v.f.c = size;
-    *(unsigned char *)((char *)obj+0xC) = arg1;
-    *((unsigned char *)obj+0xD) = 1;
-    *(unsigned int *)((char *)obj+4) = v.word;
+/* Initialize a texture cache region's even/odd TMEM blocks and mipmap/cache flags. */
+void GXInitTexCacheRegion(void *region, signed char is32bMipmap, unsigned int tmemEven, int sizeEven, unsigned int tmemOdd, int sizeOdd) {
+    union {
+        unsigned int word;
+        struct {
+            unsigned int pad : 11;
+            unsigned int imageCount : 3;
+            unsigned int size : 3;
+            unsigned int tmem : 15;
+        } fields;
+    } reg;
+    int widthExp = sizeEven;
+
+    switch (widthExp) {
+    case 0:
+        widthExp = 3;
+        break;
+    case 1:
+        widthExp = 4;
+        break;
+    case 2:
+        widthExp = 5;
+        break;
+    }
+
+    reg.word = 0;
+    reg.fields.tmem = tmemEven >> 5;
+    reg.fields.size = widthExp;
+    reg.fields.imageCount = widthExp;
+    *(unsigned int *)region = reg.word;
+
+    switch (sizeOdd) {
+    case 0:
+        widthExp = 3;
+        break;
+    case 1:
+        widthExp = 4;
+        break;
+    case 2:
+        widthExp = 5;
+        break;
+    case 3:
+        widthExp = 0;
+        break;
+    }
+
+    reg.word = 0;
+    reg.fields.tmem = tmemOdd >> 5;
+    reg.fields.size = widthExp;
+    reg.fields.imageCount = widthExp;
+    *(unsigned char *)((char *)region + 0xC) = is32bMipmap;
+    *((unsigned char *)region + 0xD) = 1;
+    *(unsigned int *)((char *)region + 4) = reg.word;
 }
 
 void GXInitTlutRegion(unsigned int *region, int tmem_addr, int tlut_name) {
