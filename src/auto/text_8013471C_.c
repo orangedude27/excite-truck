@@ -103,6 +103,7 @@ extern void fn_80160850(void);
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8013477C(void *arg0) {
     register char *strings = lbl_8032BBE8;
     register unsigned char *entry;
@@ -135,7 +136,7 @@ void fn_8013477C(void *arg0) {
     value = fn_80134B58((s32)(strings + 0x0C), lbl_805612F0);
     lbl_8055E0A0 = value;
     if (value < lbl_805612F4) {
-        temp = lbl_805612E8 * fn_80134B58((s32)strings, lbl_805612EC);
+        temp = lbl_805612E8 * fn_80134B58((s32)(strings + 0), lbl_805612EC);
         lbl_8055E0A0 = fn_8013672C() - temp;
     }
     f1 = fn_80134B58((s32)(strings + 0x1C), lbl_805612FC);
