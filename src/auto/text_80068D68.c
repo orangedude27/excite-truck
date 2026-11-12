@@ -1737,10 +1737,11 @@ void fn_80069EB4(u32 r3, u32 r4) {
 extern void WUDStoredLinkKeyCallback(void *);
 extern void *WUDiGetDevInfo(u8 *);
 u8 WUDiClearUnregisteredDevice(void) {
+    u32 offset;
     s32 index;
-    s32 offset;
     u8 *base;
     u8 *entry;
+    void *info;
 
     if (lbl_80392960[0xE] == 0) {
         base = lbl_80392960;
@@ -1761,7 +1762,7 @@ u8 WUDiClearUnregisteredDevice(void) {
                     return 2;
                 }
                 if (entry[0x5C] != 3) {
-                    void *info = WUDiGetDevInfo(entry + 0x40);
+                    info = WUDiGetDevInfo(entry + 0x40);
                     if (info != 0) {
                         interrupt = OSDisableInterrupts();
                         memset(info, 0, 0x60);
@@ -2497,16 +2498,16 @@ void fn_8006B488(void) {
     u8 status;
     BOOL interrupt;
     u8 state;
+    u16 dl_len;
+    u32 dsc_list;
     f64 argData;
-    u16 sp10;
-    u32 sp14;
     status = BTA_DmAddDevice(info + 0x40, info + 0x46, 0, 0);
     DBPrintf_8006CFA8((const char *)(base + 0x5D8), status);
     if (memcmp(info, base + 0x1A0, 0x10) == 0) {
-        sp14 = (u32)base;
-        sp10 = 0xD9;
+        dl_len = 217;
+        dsc_list = (u32)base;
         DBPrintf_8006CFA8((const char *)(base + 0x5F0));
-        argData = *(f64 *)&sp10;
+        argData = *(f64 *)&dl_len;
         BTA_HhAddDev(info + 0x40, *(u16 *)(info + 0x5E), info[0x57], info[0x58], &argData);
     }
     interrupt = OSDisableInterrupts();
@@ -14047,13 +14048,14 @@ psm_found:
 
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
-    u8 i;
-    for (i = 0; i < 8; i++, conn += 0x60) {
-        if (conn[0] == 0 || *(u16 *)(conn + 6) != cid)
-            goto next;
-        else
-            goto found;
-next: ;
+    u8 i = 0;
+    while (i < 8) {
+        if (conn[0] != 0) {
+            if (*(u16 *)(conn + 6) == cid)
+                goto found;
+        }
+        i++;
+        conn += 0x60;
     }
     conn = NULL;
 found:
@@ -14711,33 +14713,34 @@ BOOLEAN btsnd_hcic_hold_mode(UINT16 handle, UINT16 max_hold_period, UINT16 min_h
     return TRUE;
 }
 
-BOOLEAN btsnd_hcic_sniff_mode(BT_HDR *p, s16 handle, s16 max_sniff_period, s16 min_sniff_period, s16 sniff_attempt, UINT16 sniff_timeout) {
-    UINT8 *bytes;
+/* Build and send an HCI Sniff_Mode command for the given connection handle. */
+BOOLEAN btsnd_hcic_sniff_mode(BT_HDR *p_buf, s16 handle, s16 max_sniff_period, s16 min_sniff_period, s16 sniff_attempt, UINT16 sniff_timeout) {
+    UINT8 *p_bytes;
 
-    if (p == NULL) {
-        p = GKI_getpoolbuf(2);
-        if (p == NULL) {
+    if (p_buf == NULL) {
+        p_buf = GKI_getpoolbuf(2);
+        if (p_buf == NULL) {
             return FALSE;
         }
     }
 
-    bytes = (UINT8 *)p;
-    p->len = 0xD;
-    p->offset = 0;
-    bytes[8] = 3;
-    bytes[9] = 8;
-    bytes[10] = 0xA;
-    bytes[11] = handle;
-    bytes[12] = handle >> 8;
-    bytes[13] = max_sniff_period;
-    bytes[14] = max_sniff_period >> 8;
-    bytes[15] = min_sniff_period;
-    bytes[16] = min_sniff_period >> 8;
-    bytes[17] = sniff_attempt;
-    bytes[18] = sniff_attempt >> 8;
-    bytes[19] = sniff_timeout;
-    bytes[20] = sniff_timeout >> 8;
-    btu_hcif_send_cmd(p);
+    p_bytes = (UINT8 *)p_buf;
+    p_buf->len = 0xD;
+    p_buf->offset = 0;
+    p_bytes[8] = 3;
+    p_bytes[9] = 8;
+    p_bytes[10] = 0xA;
+    p_bytes[11] = handle;
+    p_bytes[12] = handle >> 8;
+    p_bytes[13] = max_sniff_period;
+    p_bytes[14] = max_sniff_period >> 8;
+    p_bytes[15] = min_sniff_period;
+    p_bytes[16] = min_sniff_period >> 8;
+    p_bytes[17] = sniff_attempt;
+    p_bytes[18] = sniff_attempt >> 8;
+    p_bytes[19] = sniff_timeout;
+    p_bytes[20] = sniff_timeout >> 8;
+    btu_hcif_send_cmd(p_buf);
     return TRUE;
 }
 
