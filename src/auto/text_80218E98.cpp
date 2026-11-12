@@ -5091,7 +5091,7 @@ fail_row:
 extern "C" void fn_80219440(void *arg0, s32 arg1, void *arg2, s32 arg3);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_80222340_tmp(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+extern "C" void *fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     struct Dummy {
         virtual void v0();
         virtual void v1();
