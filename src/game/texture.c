@@ -291,9 +291,10 @@ int fn_802CA658(int arg0, int arg1) {
     return result;
 }
 #pragma scheduling on
-char *fn_802CA72C(unsigned int arg0) {
+/* Return the GX texture format name string for a texture format id. */
+char *fn_802CA72C(unsigned int textureFormat) {
     char *base = lbl_8034B538;
-    switch (arg0) {
+    switch (textureFormat) {
     case 0: return base + 0x140;
     case 1: return base + 0x150;
     case 2: return base + 0x174;
