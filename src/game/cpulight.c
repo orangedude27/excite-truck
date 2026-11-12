@@ -562,14 +562,14 @@ extern float lbl_80565040, lbl_80565044, lbl_80565048;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DC464(int arg0, int arg1, unsigned short *list, int size) {
+void fn_802DC464(int arg0, int arg1, unsigned short *__restrict list, int size) {
     float field;
     float value;
     float rounded;
-    int raw;
-    int mask;
-    int clipped;
-    int alpha;
+    long raw;
+    long mask;
+    long clipped;
+    long alpha;
     GXColor color;
     int n;
     int i;
@@ -578,7 +578,7 @@ void fn_802DC464(int arg0, int arg1, unsigned short *list, int size) {
 
     fn_802DBBE4(arg0, arg1);
     field = ((float *)lbl_804DB068)[5];
-    value = field * lbl_80565040;
+    value = lbl_80565040 * field;
     if (value < lbl_80565048)
         rounded = value - lbl_80565044;
     else
@@ -590,22 +590,20 @@ void fn_802DC464(int arg0, int arg1, unsigned short *list, int size) {
     alpha = 0xFF;
     if (clipped < 0xFF)
         alpha = clipped;
-    if (alpha != lbl_8055FEA0) {
+    if ((alpha & 0xFF) != lbl_8055FEA0) {
         color.b = 0xFF;
         color.g = 0xFF;
         color.r = 0xFF;
-        color.a = alpha;
-        lbl_8055FEA0 = alpha;
+        color.a = (int)alpha;
+        lbl_8055FEA0 = (int)alpha;
         GXSetTevColor(1, color);
     }
     while (size > 0) {
         n = *list++;
         GXBegin(0xA0, 0, n);
         size -= n + 1;
-        #pragma unroll 8
         for (i = 0; i < n; ++i) {
-            val = *list;
-            list++;
+            val = *list++;
             *fifo = val;
         }
     }
@@ -1030,6 +1028,11 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
 
 #pragma pop
 void fn_802DD228(void) { if (lbl_8055FEC0 != 0) { fn_802D3E88(); lbl_8055FEC0 = 0; } fn_802DBDD8(); fn_802CADD0(-1, 1); GXSetNumIndStages(0); GXSetTevDirect(0); }
+
+/* The vertex record the light renderer builds and points the GX vertex arrays
+ * at: a position, one RGBA8 color and one texture coordinate, 24 bytes. */
+typedef struct { f32 x, y, z; } LightVec3;
+typedef struct { LightVec3 pos; u32 color; f32 u, v; } LightVtx;
 
 #pragma push
 #pragma processor 750
