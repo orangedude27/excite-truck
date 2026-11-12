@@ -678,11 +678,12 @@ extern "C" float fn_8013278C(void *arg0, s32 arg1) {
         virtual void f2();
         virtual char *f3();
     };
-    float a;
+    /* Read a 4-byte float property value from the object and byte-swap it; log an error if unavailable. */
+    float value;
     float b;
     char *name = ((Dummy*)arg0)->f3();
-    if (fn_8012F9E8(&a, 4, (const char*)name) != 0) {
-        unsigned char *p = (unsigned char*)&a;
+    if (fn_8012F9E8(&value, 4, (const char*)name) != 0) {
+        unsigned char *p = (unsigned char*)&value;
         unsigned char t0 = p[0];
         unsigned char t1 = p[1];
         p[0] = p[3]; p[3] = t0;
@@ -690,7 +691,7 @@ extern "C" float fn_8013278C(void *arg0, s32 arg1) {
     } else {
         fn_802E317C(lbl_8032B840, (long)name, arg1, ((Dummy*)arg0)->f0());
     }
-    return a;
+    return value;
 }
 #pragma cplusplus off
 
