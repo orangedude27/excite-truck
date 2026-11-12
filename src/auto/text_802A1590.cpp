@@ -138,30 +138,33 @@ extern "C" void fn_802A1590(void) {
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
         virtual void v20(); virtual s32 v21(void *);
     };
-    register void **entry;
-    register s32 index;
-    char name[0x20];
+    register void **slot;
+    register s32 slotIndex;
+    char terrainName[0x20];
+    /* Initialize the 8 terrain handler slots: for each "terrain_%d", look up the
+       object, fetch its "trail" sub-object (v21), create/cache a handler via
+       fn_802A194C, then register the terrain update and event callbacks. */
     memset(lbl_804BCF88, 0, 0x20);
-    entry = lbl_804BCF88;
-    index = 0;
+    slot = lbl_804BCF88;
+    slotIndex = 0;
 loop:
-    ((void (*)(void *, s32, const char *, ...))fn_801345D8)(name, 0x20, lbl_80349928, index);
+    ((void (*)(void *, s32, const char *, ...))fn_801345D8)(terrainName, 0x20, lbl_80349928, slotIndex);
     {
-        void *obj = fn_802AE414(name);
+        void *obj = fn_802AE414(terrainName);
         if (obj != 0)
             obj = (void *)((Item *)obj)->v21(&lbl_8055CB70);
         if (obj != 0)
-            *entry = fn_802A194C(obj);
+            *slot = fn_802A194C(obj);
     }
-    index++;
-    entry++;
-    if (index < 8)
+    slotIndex++;
+    slot++;
+    if (slotIndex < 8)
         goto loop;
     fn_80287B38((void *)fn_802A1B20);
     fn_802A1CC4();
     {
-        register void *cb = (void *)fn_802A1C30;
-        fn_801EEFDC(cb, 5);
+        register void *callback = (void *)fn_802A1C30;
+        fn_801EEFDC(callback, 5);
     }
 }
 #pragma scheduling on
@@ -1588,7 +1591,7 @@ extern "C" void fn_802A4658(s32 arg0) {
     struct Entry { f32 x, y, z, vx, vy, vz, age, pad; };
     struct List {
         struct Entry *data;
-        s32 count;
+        long count;
         f32 unk8, elapsed, unk10, advance, phase;
         f32 reserved[7];
         f32 scale, factor;
@@ -1604,7 +1607,7 @@ extern "C" void fn_802A4658(s32 arg0) {
     f32 elapsed;
     f32 step;
     f32 scale;
-    f32 factor;
+    register f32 factor;
     volatile f32 temp_z;
     volatile f32 temp_y;
     volatile f32 temp_x;
@@ -1623,8 +1626,8 @@ extern "C" void fn_802A4658(s32 arg0) {
             vy = (in->vy * factor) - scale;
             vz = in->vz * factor;
             temp_x = vx;
-            temp_y = vy;
             temp_z = (vz * step, vz);
+            register temp_y = vy;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
             out->z = in->z + vz * step;
@@ -1636,7 +1639,7 @@ extern "C" void fn_802A4658(s32 arg0) {
             out = (struct Entry *)((u8 *)out + 0x20);
         }
         offset += 0x20;
-        count++;
+        ++count;
     }
     f32 one = lbl_80564730;
     f32 phase = list->phase;
