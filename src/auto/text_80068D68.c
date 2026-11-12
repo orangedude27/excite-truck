@@ -13822,46 +13822,89 @@ void btu_hcif_command_complete_evt(UINT8 *eventData, UINT16 dataLength) {
 }
 
 extern void l2c_link_role_change_failed(void);
+/* Handle an HCI command-status event.  The link-policy mode commands report their
+ * result to the power manager; any other command that failed to start has to be
+ * reported to the BTM/L2CAP layer that started it, with the handle or BD_ADDR read
+ * back out of the command the stack kept queued (p_cmd, NULL when it is gone). */
 void btu_hcif_hdl_command_status(s32 opcode, UINT8 status, UINT8 *p_cmd) {
-    tBTM_ESCO_DATA sp10;
+    tBTM_ESCO_DATA esco_data;
     BD_ADDR bd_addr;
     UINT16 handle;
-    if (opcode != 0x802) {
-        if (opcode < 0x802) {
-            if (opcode < 0x801) goto block_6;
-            goto block_5;
-        }
-        if (opcode < 0x807) {
-block_5:
-            btm_pm_proc_cmd_status(status);
-            return;
-        }
-        goto block_6;
-    }
-block_6:
-    if (status != 0) {
-        switch (opcode) {
-        case 0x401: ((void (*)(UINT8))btm_process_inq_complete)(status); return;
-        case 0x419: btm_process_remote_name(0, 0, 0, status); btm_sec_rmt_name_request_complete(0, 0, status); return;
-        case 0xD: btm_qos_setup_complete(status, 0, 0); return;
-        case 0x80B: btm_acl_role_changed(status, 0, 0xFF); l2c_link_role_change_failed(); return;
-        case 0x405:
-            if (p_cmd != 0) {
-                bd_addr[5]=p_cmd[1]; bd_addr[4]=p_cmd[2]; bd_addr[3]=p_cmd[3]; bd_addr[2]=p_cmd[4]; bd_addr[1]=p_cmd[5]; bd_addr[0]=p_cmd[6];
-                btm_sec_connected(bd_addr,0xFFFF,status,0); l2c_link_hci_conn_comp(status,0xFFFF,bd_addr); return;
+
+    switch (opcode) {
+    /* HCI_HOLD_MODE, HCI_SNIFF_MODE, HCI_EXIT_SNIFF_MODE, HCI_PARK_MODE,
+     * HCI_EXIT_PARK_MODE: the mode change failed or went through. */
+    case HCI_HOLD_MODE:
+    case HCI_SNIFF_MODE:
+    case HCI_EXIT_SNIFF_MODE:
+    case HCI_PARK_MODE:
+    case HCI_EXIT_PARK_MODE:
+        btm_pm_proc_cmd_status(status);
+        return;
+
+    default:
+        /* If the command failed to start, we may need to tell BTM */
+        if (status != HCI_SUCCESS) {
+            switch (opcode) {
+            case HCI_INQUIRY:
+                /* Tell inquiry processing that we are done */
+                ((void (*)(UINT8))btm_process_inq_complete)(status);
+                return;
+
+            case HCI_RMT_NAME_REQUEST:
+                /* Tell inquiry processing that we are done */
+                btm_process_remote_name(0, 0, 0, status);
+                btm_sec_rmt_name_request_complete(0, 0, status);
+                return;
+
+            case HCI_QOS_SETUP_COMP_EVT:
+                /* Tell qos setup that we are done */
+                btm_qos_setup_complete(status, 0, 0);
+                return;
+
+            case HCI_SWITCH_ROLE:
+                /* Tell BTM that the command failed */
+                btm_acl_role_changed(status, 0, BTM_ROLE_UNDEFINED);
+                l2c_link_role_change_failed();
+                return;
+
+            case HCI_CREATE_CONNECTION:
+                /* read bd addr out of stored command */
+                if (p_cmd != 0) {
+                    bd_addr[5] = p_cmd[1];
+                    bd_addr[4] = p_cmd[2];
+                    bd_addr[3] = p_cmd[3];
+                    bd_addr[2] = p_cmd[4];
+                    bd_addr[1] = p_cmd[5];
+                    bd_addr[0] = p_cmd[6];
+                    btm_sec_connected(bd_addr, HCI_INVALID_HANDLE, status, 0);
+                    l2c_link_hci_conn_comp(status, HCI_INVALID_HANDLE, bd_addr);
+                    return;
+                }
+                break;
+
+            case HCI_SETUP_ESCO_CONNECTION:
+                /* read handle out of stored command */
+                if (p_cmd != 0) {
+                    handle = p_cmd[1] + (p_cmd[2] << 8);
+                    /* Determine if initial connection failed or is a change of setup */
+                    if (btm_is_sco_active(handle) != 0) {
+                        btm_esco_proc_conn_chg(status, handle, 0, 0, 0, 0);
+                        return;
+                    }
+                    btm_sco_connected(status, 0, handle, &esco_data);
+                    return;
+                }
+                break;
+
+            default:
+                if ((opcode & HCI_GRP_VENDOR_SPECIFIC) == HCI_GRP_VENDOR_SPECIFIC) {
+                    ((void (*)(UINT8 *, s32, s32))btm_vsc_complete)(p_cmd, opcode, 1);
+                }
+                break;
             }
-            break;
-        case 0x428:
-            if (p_cmd != 0) {
-                handle=p_cmd[1]+(p_cmd[2]<<8);
-                if (btm_is_sco_active(handle)!=0) { btm_esco_proc_conn_chg(status,handle,0,0,0,0); return; }
-                btm_sco_connected(status,0,handle,&sp10); return;
-            }
-            break;
-        default:
-            if ((opcode & 0xFC00)==0xFC00) ((void (*)(UINT8 *, s32, s32))btm_vsc_complete)(p_cmd,opcode,1);
-            break;
         }
+        return;
     }
 }
 
