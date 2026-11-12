@@ -2928,30 +2928,31 @@ extern "C" void fn_8021D61C(void *arg0) {
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
-extern "C" void *fn_8021D6A0(void *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4,
+extern "C" void *fn_8021D6A0(void *self, s32 arg1, s32 arg2, s32 arg3, u8 *arg4,
                              s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
+    /* Initialize a MemoryCard::Resource object, configure it, and return it. */
     s32 zero = 0;
-    s32 result;
+    s32 handle;
 
     ((void *(*)(void *, s32, s32, s32, u8 *, s32, s32, s32, s32))fn_8021D044)(
-        arg0, arg1, arg2, arg3, arg4, 8, 0, 0, zero);
-    *(void **)arg0 = lbl_8033EB14;
+        self, arg1, arg2, arg3, arg4, 8, 0, 0, zero);
+    *(void **)self = lbl_8033EB14;
     {
-        s32 fields[22] = {};
-        fields[0] = arg5;
-        fields[2] = arg6;
-        fields[3] = arg7;
-        fields[4] = arg7;
-        fields[5] = arg8;
-        fields[10] = arg7;
-        fields[11] = arg7;
-        fields[12] = arg8;
-        result = fn_8022A86C(fields);
+        s32 config[22] = {};
+        config[0] = arg5;
+        config[2] = arg6;
+        config[3] = arg7;
+        config[4] = arg7;
+        config[5] = arg8;
+        config[10] = arg7;
+        config[11] = arg7;
+        config[12] = arg8;
+        handle = fn_8022A86C(config);
     }
-    *(s32 *)((u8 *)arg0 + 0x2C4) = result;
-    *(s32 *)((u8 *)arg0 + 0x250) = result;
-    fn_80219718(arg0);
-    return arg0;
+    *(s32 *)((u8 *)self + 0x2C4) = handle;
+    *(s32 *)((u8 *)self + 0x250) = handle;
+    fn_80219718(self);
+    return self;
 }
 
 extern "C" void *__dt__Q34Game10MemoryCard8ResourceFv(void *arg0, s32 arg1) {
