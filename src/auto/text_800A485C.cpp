@@ -2498,6 +2498,7 @@ loop_2:
 }
 
 extern "C" s32 fn_800A8AD4(void *arg0, void *arg1) {
+    /* Flush all in-use pages in a circular cache-page list, returning the first flush error. */
     void *head = arg1;
     void *node = arg1;
     u16 flags = *(u16 *)arg1;
