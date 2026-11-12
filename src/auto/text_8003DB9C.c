@@ -1876,6 +1876,11 @@ typedef struct {
 // mask has to be passed through a pointer of the right type.
 typedef void (*GXRestoreInterruptsFn)(s32);
 
+/* Pushes a 16-bit draw token to the BP as a pair of RAS commands (the FIFO byte
+ * GX_FIFO_CMD_LOAD_BP_REG hands the next word to the BP as a command), re-sends
+ * the BP state if it went dirty, flushes the write-gather pipe with 32 bytes of
+ * zero and clears gx->bpSent so the next draw pushes the BP state again.
+ * Interrupts stay off so no other thread can interleave a FIFO write. */
 void GXMiscInit(s32 token) {
     union {
         unsigned int value;
