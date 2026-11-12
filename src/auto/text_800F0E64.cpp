@@ -4989,6 +4989,7 @@ extern "C" void fn_800FB620(void *self) {
 
 extern "C" const char lbl_803267AC[];
 void nw4hbm::snd::detail::StrmPlayer::Pause(bool arg1) {
+    /* Pauses or resumes stream playback, propagating the paused state to the underlying AxVoice when active. */
     u8* self = (u8*)this;
     self[0x4B] = arg1;
     if (arg1) {
