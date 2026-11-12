@@ -5468,6 +5468,17 @@ extern "C" f32 fn_80111C10(s32 arg0) {
         if (twb_r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_TEXTWRITERBASE_CPP, line, UT_TEXTWRITERBASE_PTR_ERROR, self); \
     }
 
+/* The ut_TextWriterBase.cpp copy of nw4hbm::ut::CharWriter's print position block: +0x4C
+ * is the space its print code adds to a measured line width after every glyph (and the
+ * amount MoveCursorX advances the cursor by), +0x50 the cursor X that
+ * SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111D88 stores; the constructor fn_80111B64
+ * clears both.  The game's symbol table names the accessors of +0x4C SetCursorX and
+ * GetScaleH -- names the other copies of this class in the game use for their own fields. */
+struct CharWriterSpacing {
+    unsigned char pad[0x4C];
+    float charSpace;
+};
+
 /* nw4hbm::ut::CharWriter::SetCursorX(f32) (ut_TextWriterBase.cpp): put the
    writer's cursor at this absolute X. The writer pointer is first checked
    against the Wii's memory windows; one outside them panics. */
