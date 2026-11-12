@@ -22,22 +22,29 @@ void *fn_801D04A8(int arg0) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-int fn_801D04D0(const char *arg0) {
-    Entry entries[13];
-    unsigned int i;
-    int *dst = (int *)entries - 1;
+/* Look up a surface type name in the 13-entry table at lbl_802F9940
+   ({name,value}: default->100, concrete->101, metal->105, plastic->106,
+   rubber->107, wood->108, hay->110, water->111, powerup/glass?->1000,
+   magic_concrete/dirt?->114, tree/grass?->115, tree_fragile/mud?->116,
+   spring/sand?->1002). Copies the table to the stack, returns the matching
+   value on a case-insensitive match, or logs lbl_8033819C
+   "surftype: invalid surface type '%s'" via fn_802E317C and returns 100. */
+int fn_801D04D0(const char *surfaceName) {
+    Entry surfaceTable[13];
+    unsigned int index;
+    int *dst = (int *)surfaceTable - 1;
     int *src = (int *)lbl_802F9940 - 1;
-    i = 13;
-    while (i) {
-        i--;
+    index = 13;
+    while (index) {
+        index--;
         *++dst = *++src;
         *++dst = *++src;
     }
-    for (i = 0; i < 13; i++) {
-        if (stricmp(arg0, entries[i].name) == 0)
-            return entries[i].value;
+    for (index = 0; index < 13; index++) {
+        if (stricmp(surfaceName, surfaceTable[index].name) == 0)
+            return surfaceTable[index].value;
     }
-    fn_802E317C(lbl_8033819C, arg0);
+    fn_802E317C(lbl_8033819C, surfaceName);
     return 100;
 }
 #pragma pop
