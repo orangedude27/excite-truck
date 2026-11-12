@@ -3305,10 +3305,12 @@ extern "C" s32 VFiPFENT_findEmptyTailSFN(void *arg0, void *name, u32 *out) {
     goto candidateCheck;
 search:
     result = VFiPFENT_searchEmptyTailSFN(sp18, candidate, name, *(s32 **)(volume + 0x1F7C));
-    if (result == 0)
+    switch (result) {
+    case 0:
         goto haveResult;
-    else
+    default:
         return 0;
+    }
 haveResult:
     idx = 0;
     off = 0;
@@ -19477,14 +19479,14 @@ extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1) {
 extern void *lbl_8055DDBC;
 extern "C" void __VprintfThunk(const char *, va_list);
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void *, void *, const char *, void *);
-extern "C" void fn_800D1EC4(const char *msg, ...) {
+extern "C" void fn_800D1EC4(const char *fmt, ...) {
     va_list vlist;
-    va_start(vlist, msg);
+    va_start(vlist, fmt);
     void *console = lbl_8055DDBC;
     if (console != 0) {
-        Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void *)3, console, msg, vlist);
+        Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void *)3, console, fmt, vlist);
     } else {
-        __VprintfThunk(msg, vlist);
+        __VprintfThunk(fmt, vlist);
     }
     va_end(vlist);
 }
