@@ -6936,6 +6936,7 @@ extern void bta_hh_disc_cmpl(void);
 extern void bta_hh_get_acl_q_info(void);
 extern UINT8 bta_hh_find_cb(BD_ADDR);
 BOOLEAN bta_hh_hdl_event(BT_HDR *p_msg) {
+    /* HID Host main event handler: dispatch global HH events, resolve target device CB by handle/BD_ADDR mapping, trace, and run device state machine. */
     UINT16 event = p_msg->event;
     UINT8 index = 0x10;
     tBTA_HH_DEV_CB *p_cb = NULL;
