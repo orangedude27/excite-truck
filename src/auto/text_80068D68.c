@@ -7822,22 +7822,22 @@ tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     extern char lbl_80315F4C[];
     u8 *entry;
     u32 i;
-
     if (lbl_803C0F78[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80315F4C,
                     remote_bda[0], remote_bda[1], remote_bda[2],
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
     if (*(void **)(lbl_803C0F78 + 0x5E0) != NULL) return 2;
-
     entry = lbl_803C0F78 + 0x34;
     i = 0;
-    while (i < 4) {
-        if (entry[0x119] != 0 && !memcmp(entry + 8, remote_bda, 6))
+    do {
+        if (entry[0x119] == 0 || memcmp(entry + 8, remote_bda, 6) != 0) {
+            i++;
+            entry += 0x11C;
+        } else {
             goto found;
-        i++;
-        entry += 0x11C;
-    }
+        }
+    } while (i < 4);
     entry = NULL;
 found:
     if (entry != NULL) {
@@ -22371,32 +22371,34 @@ void rfc_send_ua(void *arg0, s32 arg1, void *arg2) {
     rfc_check_send_cmd(arg0, p_buf);
 }
 
-void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
-    u8 *data;
-    u8 *buf;
-    u8 flag;
+/* Sends an RFCOMM DM frame for the given DLCI, setting P/F from pf and using the
+ * MCB's initiator flag to form the control byte, then queues it for transmit. */
+void rfc_send_dm(void *p_mcb, u8 dlci, u8 pf) {
+    u8 *p_data;
+    u8 *p_buf;
+    u8 initiatorFlag;
     u8 control;
-    u32 shifted;
+    u32 dlciShifted;
     u8 command;
 
-    flag = 1;
-    if (((u8 *)arg0)[0x6D] != 0) {
-        flag = 0;
+    initiatorFlag = 1;
+    if (((u8 *)p_mcb)[0x6D] != 0) {
+        initiatorFlag = 0;
     }
-    control = (u8)(flag << 1);
-    buf = (u8 *)GKI_getpoolbuf(2);
-    if (buf != 0) {
-        *(u16 *)(buf + 4) = 9;
-        data = buf + 0x11;
+    control = (u8)(initiatorFlag << 1);
+    p_buf = (u8 *)GKI_getpoolbuf(2);
+    if (p_buf != 0) {
+        *(u16 *)(p_buf + 4) = 9;
+        p_data = p_buf + 0x11;
         control |= 1;
-        shifted = arg1 << 2;
-        command = (u8)(control | shifted);
-        data[0] = command;
-        data[1] = (u8)((((-(s32)arg2 | arg2) >> 31) & 0x10) | 0xF);
-        data[2] = 1;
-        data[3] = fn_8009504C(3, data);
-        *(u16 *)(buf + 2) = 4;
-        rfc_check_send_cmd(arg0, buf);
+        dlciShifted = dlci << 2;
+        command = (u8)(control | dlciShifted);
+        p_data[0] = command;
+        p_data[1] = (u8)((((-(s32)pf | pf) >> 31) & 0x10) | 0xF);
+        p_data[2] = 1;
+        p_data[3] = fn_8009504C(3, p_data);
+        *(u16 *)(p_buf + 2) = 4;
+        rfc_check_send_cmd(p_mcb, p_buf);
     }
 }
 
@@ -23511,7 +23513,7 @@ u8 fn_80096670(u8 value) {
 extern BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_len, int nest_level);
 tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
     UINT16 xx, yy;
-    UINT8 *p_attr;
+    tSDP_ATTRIBUTE *p_attr;
     UINT8 *p_end = lbl_803C4C40 + 0x1224 +
         (*(UINT16 *)(lbl_803C4C40 + 0x1222) * 0x298);
     UINT8 *base;
@@ -23523,16 +23525,14 @@ tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
 
     for (; base < p_end; base += 0x298) {
         for (yy = 0; yy < p_seq->num_uids; yy++) {
-            p_attr = base + 0xC;
-            for (xx = 0; xx < *(UINT16 *)(base + 8); xx++, p_attr += 0xC) {
-                if (p_attr[0xA] == UUID_DESC_TYPE) {
-                    if (sdpu_compare_uuid_arrays(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
+            p_attr = (tSDP_ATTRIBUTE *)(base + 0xC);
+            for (xx = 0; xx < *(UINT16 *)(base + 8); xx++, p_attr++) {
+                if (p_attr->type == UUID_DESC_TYPE) {
+                    if (sdpu_compare_uuid_arrays(p_attr->value_ptr, p_attr->len,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len))
                         break;
-                    else
-                        continue;
-                } else if (p_attr[0xA] == DATA_ELE_SEQ_DESC_TYPE) {
-                    if (find_uuid_in_seq(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
+                } else if (p_attr->type == DATA_ELE_SEQ_DESC_TYPE) {
+                    if (find_uuid_in_seq(p_attr->value_ptr, p_attr->len,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len, 0))
                         break;
                 }
