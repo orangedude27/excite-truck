@@ -853,7 +853,7 @@ void KPADInit(void) {
         *(s32 *)(p + 0x3F8) = 0;
         *(s32 *)(p + 0x5C) = 0xFD;
         *(s16 *)(p + 0x114) = i - 4;
-        read_kpad_stick(i, p);
+        read_kpad_stick(i, (KPADInsideStatus *)p);
         *(f32 *)(p + 0xA8) = lbl_80558E8C;
         *(u32 *)(p + 0xAC) = lbl_80558E90;
         *(u32 *)(p + 0xB0) = lbl_80558E94;
