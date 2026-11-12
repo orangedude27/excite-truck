@@ -3339,47 +3339,41 @@ typedef union _GXChanCtrl {
     } f;
 } GXChanCtrl;
 
-void GXSetChanCtrl(s32 chan, s32 enable, s32 matColor, s32 ambColor, s32 lightMask, s32 diffFn, s32 attnFn) {
-    union {
-        unsigned int value;
-        struct {
-            unsigned int pad0 : 17;
-            unsigned int lightHigh : 4;
-            unsigned int attnHigh : 1;
-            unsigned int attnLow : 1;
-            unsigned int diff : 2;
-            unsigned int mat : 1;
-            unsigned int lightLow : 4;
-            unsigned int enable : 1;
-            unsigned int amb : 1;
-        } f;
-    } u;
+void GXSetChanCtrl(GXChannelID chan, s32 enable, GXColorSrc ambSrc, GXColorSrc matSrc,
+                   GXLightID lightMask, GXDiffuseFn diffFn, GXAttnFn attnFn) {
+    GXChanCtrl u;
     unsigned int *base;
     unsigned int *data;
     unsigned int idx = chan & 3;
-    unsigned int attn = diffFn;
+    unsigned int diffuse = diffFn;
+
+    /* Builds this channel's COLORnCNTRL word and marks it dirty for
+       __GXSetDirtyState; GX_COLOR0A0/GX_COLOR1A1 write the same word into the
+       matching ALPHA0CNTRL/ALPHA1CNTRL as well. */
     u.value = 0;
-    u.f.enable = enable;
-    u.f.amb = ambColor;
-    u.f.mat = matColor;
-    if (attnFn == 0) attn = 0;
-    u.f.diff = attn;
-    u.f.attnLow = (attnFn != 2);
-    u.f.attnHigh = (attnFn != 0);
-    u.f.lightLow = lightMask;
-    u.f.lightHigh = ((unsigned int)lightMask) >> 4;
+    u.f.light = enable;
+    u.f.matSrc = matSrc;
+    u.f.ambSrc = ambSrc;
+    if (attnFn == GX_AF_SPEC) {
+        diffuse = GX_DF_NONE;
+    }
+    u.f.diffuse = diffuse;
+    u.f.attnEnable = (attnFn != GX_AF_NONE);
+    u.f.attnSelect = (attnFn != GX_AF_SPEC);
+    u.f.lightMaskLo = lightMask;
+    u.f.lightMaskHi = ((unsigned int)lightMask) >> 4;
     base = __GXData;
     data = base + idx;
-    data[0xB8 / 4] = u.value;
-    base[0x5FC / 4] |= 0x1000 << idx;
-    if (chan == 4) {
-        base[0xC0 / 4] = u.value;
-        base[0x5FC / 4] |= 0x5000;
+    data[XF_COLOR0CNTRL / 4] = u.value;
+    base[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR0 << idx;
+    if (chan == GX_COLOR0A0) {
+        base[XF_ALPHA0CNTRL / 4] = u.value;
+        base[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR0 | DIRTY_CHAN_ALPHA0;
         return;
     }
-    if (chan == 5) {
-        base[0xC4 / 4] = u.value;
-        base[0x5FC / 4] |= 0xA000;
+    if (chan == GX_COLOR1A1) {
+        base[XF_ALPHA1CNTRL / 4] = u.value;
+        base[XF_DIRTY_STATE / 4] |= DIRTY_CHAN_COLOR1 | DIRTY_CHAN_ALPHA1;
     }
 }
 
