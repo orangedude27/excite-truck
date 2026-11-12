@@ -988,8 +988,9 @@ extern "C" void fn_80219660(void *arg0) {
     x = ((Dispatch *)self)->At84();
     y = ((Dispatch *)self)->At88();
     register s32 z = ((Dispatch *)self)->At78();
+    s32 zero = 0;
     f32 scale = lbl_805634A4;
-    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, u8))fn_8022BAD0)(*(s32 *)((u8 *)self + 0x250), *(s32 *)((u8 *)self + 0x244) + b, *(s32 *)((u8 *)self + 0x248) + a, *(s32 *)((u8 *)self + 0x24C), z, diff, y, x, scale, 0);
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(*(s32 *)((u8 *)self + 0x250), *(s32 *)((u8 *)self + 0x244) + b, *(s32 *)((u8 *)self + 0x248) + a, *(s32 *)((u8 *)self + 0x24C), z, diff, y, x, scale, zero);
 }
 #pragma scheduling on
 #pragma pop
@@ -2092,6 +2093,34 @@ extern "C" void fn_8021BD48(void *arg0, s32 arg1) {
  ((void (*)(s32, ...))fn_801E4BEC)(*(s32 *)((u8 *)arg0+0x348),0,9,*(s32 *)((u8 *)arg0+4),*(s32 *)((u8 *)arg0+8),*(s32 *)((u8 *)arg0+0x244));
 }
 
+/* Text readout widget (0x2B4 bytes), built by fn_8021CEEC (vtable lbl_8033ECB8,
+ * UI layout node type 7, alloc tag lbl_8033CAE8 + 0x44C) and by fn_8021BD98
+ * (vtable lbl_8033EF68).  The base widget (fn_80218F34 / fn_80219568) keeps its box
+ * at +0x04/+0x08 (left/top) and +0x10, the values it watches at +0x30 (stride 0x10,
+ * count +0x230, added by fn_80219440), a text scroll offset at +0x244/+0x248, a draw
+ * style at +0x250 and a redraw request at +0x234.  This class adds the readout
+ * itself: the value to show, the sprintf format to print it with, the scale/offset
+ * that turn the value into the shown number, and the text.  fn_8021CEEC's class
+ * reads the watched value as an s32 and prints it rounded to the nearest whole,
+ * fn_8021BD98's reads it as an f32 and prints the raw value beside it. */
+struct TextReadoutWidget {
+    void *vtable;        /* 0x00 */
+    u8 _04[0x1A - 0x04];
+    u8 live;             /* 0x1A: bound to a live value, so ask for a redraw */
+    u8 _1B[0x234 - 0x1B];
+    u8 redraw;           /* 0x234: set to ask the screen to redraw this widget */
+    u8 _235[0x244 - 0x235];
+    s32 scrollX;         /* 0x244: how far the text is scrolled out to the left */
+    s32 scrollY;         /* 0x248: ... and out to the top */
+    s32 _24C;            /* 0x24C: base widget field (fn_80219568 sets it) */
+    s32 style;           /* 0x250: text style/handle fn_8022AC1C draws with */
+    f32 scale;           /* 0x254: multiplies the watched value */
+    f32 offset;          /* 0x258: added to the scaled value */
+    void *value;         /* 0x25C: the watched value this readout shows */
+    const char *format;  /* 0x260: sprintf format, from the layout node */
+    char text[4];        /* 0x264: the printed text (sprintf destination) */
+};
+
 #pragma push
 #pragma small_data off
 extern "C" __declspec(align(32)) char lbl_8033EF68[];
@@ -2329,7 +2358,7 @@ extern "C" void fn_8021C478(void *arg0) {
 }
 
 extern "C" void fn_8021C4D4(void *arg0) {
-    u8 *self = (u8 *)arg0;
+    register u8 *self = (u8 *)arg0;
     s32 *statusPtr;
     s32 state;
     s32 valid;
@@ -2346,13 +2375,13 @@ extern "C" void fn_8021C4D4(void *arg0) {
             valid = 1;
     }
     state = *(s32 *)(self + 0x2CC);
-    valid = (s32)(((u32)(valid | -valid)) >> 31);
+    valid = (s32)(((u32)((-valid) | valid)) >> 31);
     if (state == 0) {
         if (*(s32 *)(self + 0x2C8) != 0) {
             ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
                 *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2BC),
                 *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
-                *(s32 *)(self + 0x2C8), valid, lbl_805634A8, 1);
+                *(s32 *)(self + 0x2C8), valid, 0.0f, 1);
         }
         goto after_modes;
     }
@@ -2360,7 +2389,7 @@ extern "C" void fn_8021C4D4(void *arg0) {
         ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
             *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2C0),
             *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
-            *(s32 *)(self + 0x2C8), valid, lbl_805634A8, 1);
+            *(s32 *)(self + 0x2C8), valid, 0.0f, 1);
     }
 after_modes:
     if (*(s32 *)(self + 0x2B0) != *(s32 *)(self + 0x2B4) &&
