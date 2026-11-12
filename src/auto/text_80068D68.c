@@ -18024,35 +18024,36 @@ void l2c_link_timeout(void *arg0) {
 }
 
 s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
-    u16 len = *(u16 *)((u8 *)p_buf + 2);
-    u16 max_len = *(u16 *)(lbl_803C0A50 + 0x7E);
-    if (len <= max_len) {
+    /* Send an L2CAP buffer to the lower layer, fragmenting and accounting credits when needed. */
+    u16 bufLen = *(u16 *)((u8 *)p_buf + 2);
+    u16 maxLen = *(u16 *)(lbl_803C0A50 + 0x7E);
+    if (bufLen <= maxLen) {
         --*(u16 *)((u8 *)p_lcb + 0x36);
         ++*(u16 *)((u8 *)p_lcb + 0x38);
         --*(u16 *)(lbl_803C4040 + 4);
         fn_8007079C(p_buf, 0x2100);
     } else {
-        u16 available;
-        u16 packets;
+        u16 controllerCredits;
+        u16 numPackets;
         u16 mtu;
-        u16 credits;
+        u16 linkCredits;
         mtu = *(u16 *)(lbl_803C0A50 + 0x7C);
-        packets = (len + mtu - 5) / mtu;
-        available = *(u16 *)(lbl_803C4040 + 4);
-        if (packets > available) {
-            *(u16 *)((u8 *)p_buf + 6) = available;
-            packets = available;
+        numPackets = (bufLen + mtu - 5) / mtu;
+        controllerCredits = *(u16 *)(lbl_803C4040 + 4);
+        if (numPackets > controllerCredits) {
+            *(u16 *)((u8 *)p_buf + 6) = controllerCredits;
+            numPackets = controllerCredits;
             *((u8 *)p_lcb + 0x40) = 1;
         }
-        credits = *(u16 *)((u8 *)p_lcb + 0x36);
-        if (packets > credits) {
-            *(u16 *)((u8 *)p_buf + 6) = credits;
-            packets = credits;
+        linkCredits = *(u16 *)((u8 *)p_lcb + 0x36);
+        if (numPackets > linkCredits) {
+            *(u16 *)((u8 *)p_buf + 6) = linkCredits;
+            numPackets = linkCredits;
             *((u8 *)p_lcb + 0x40) = 1;
         }
-        *(u16 *)(lbl_803C4040 + 4) -= packets;
-        *(u16 *)((u8 *)p_lcb + 0x36) -= packets;
-        *(u16 *)((u8 *)p_lcb + 0x38) += packets;
+        *(u16 *)(lbl_803C4040 + 4) -= numPackets;
+        *(u16 *)((u8 *)p_lcb + 0x36) -= numPackets;
+        *(u16 *)((u8 *)p_lcb + 0x38) += numPackets;
         fn_8007079C(p_buf, 0x2100);
     }
     return 1;
