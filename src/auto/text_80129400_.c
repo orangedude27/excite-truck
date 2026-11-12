@@ -69,30 +69,32 @@ void fn_801294FC(s32 arg0, s32 arg1) {
 }
 
 void fn_80129508(void *arg0, s32 arg1, void *arg2) {
-    u8* p = (u8*)arg0;
-    u8* q = (u8*)arg2;
+    u8* inputState = (u8*)arg0;
+    u8* inputSource = (u8*)arg2;
     s32 action = 0;
-    s32 flags;
-    s32 changed;
-    f32 value;
-    if (q[0] != 0) {
-        flags = *(s32*)(p + 0x5C);
-        if (flags == 0 && q[1] != 0 && lbl_8055DFD0 != 0) {
-            value = *(f32*)(p + 0x1C);
-            if (value < lbl_80561248) {
-                flags |= 8;
-            } else if (value > lbl_8056124C) {
-                flags |= 2;
+    s32 directionFlags;
+    s32 newDirectionPress;
+    f32 axisValue;
+
+    /* From analog axes in inputSource, derive directional press flags when enabled, detect newly-pressed directions, store flags/active marker, and emit an action if a new direction was pressed. */
+    if (inputSource[0] != 0) {
+        directionFlags = *(s32*)(inputState + 0x5C);
+        if (directionFlags == 0 && inputSource[1] != 0 && lbl_8055DFD0 != 0) {
+            axisValue = *(f32*)(inputState + 0x1C);
+            if (axisValue < lbl_80561248) {
+                directionFlags |= 8;
+            } else if (axisValue > lbl_8056124C) {
+                directionFlags |= 2;
             }
-            value = *(f32*)(p + 0x20);
-            if (value < lbl_80561248) {
-                flags |= 1;
-            } else if (value > lbl_8056124C) {
-                flags |= 4;
+            axisValue = *(f32*)(inputState + 0x20);
+            if (axisValue < lbl_80561248) {
+                directionFlags |= 1;
+            } else if (axisValue > lbl_8056124C) {
+                directionFlags |= 4;
             }
         }
-        changed = (flags ^ *(s32*)(p + 0x18)) & flags;
-        switch (changed) {
+        newDirectionPress = (directionFlags ^ *(s32*)(inputState + 0x18)) & directionFlags;
+        switch (newDirectionPress) {
         case 1:
             action = 0x126;
             break;
@@ -106,9 +108,9 @@ void fn_80129508(void *arg0, s32 arg1, void *arg2) {
             action = 0x127;
             break;
         }
-        *(s32*)(p + 0x18) = flags;
-        if (flags != 0) {
-            p[8] = 1;
+        *(s32*)(inputState + 0x18) = directionFlags;
+        if (directionFlags != 0) {
+            inputState[8] = 1;
         }
     }
     if (action != 0) {
