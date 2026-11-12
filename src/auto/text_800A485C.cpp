@@ -1219,14 +1219,13 @@ extern "C" s32 fn_800A607C(void *arg0, s32 *arg1) {
 
     entryBase = lbl_803D1640 + (u32)index * 0x3C;
     record = entryBase + 4;
+    *(u32 *)(entryBase + 8) = *(u32 *)resource;
+    *(u32 *)(entryBase + 0xC) = *(u32 *)(resource + 4);
     params[0] = 1;
     params[1] = 1;
     params[2] = (u32)(record + 0x30);
-    *(u32 *)(entryBase + 8) = *(u32 *)resource;
-    *(u32 *)(entryBase + 0xC) = *(u32 *)(resource + 4);
 
-    result = ((s32 (*)(void *, s32, s32, void *))fn_800B7F28)(
-        params, params[0], *(s32 *)(resource + 4), entryBase);
+    result = fn_800B7F28(params);
     if (result == 0) {
         return 0x13;
     }
@@ -1473,55 +1472,37 @@ extern "C" void fn_800A68DC(s32 arg0) {
 extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     s32 sp18[4];
     s32 sp8[4];
-    register s16 i;
-    register s32 *a;
-    register s32 *b;
-    register s32 temp;
-    register u8 *p;
-
+    s16 i;
+    s32 *a;
+    s32 *b;
+    s32 temp;
+    u8 *p;
+    s32 n;
     *arg2 = 0;
     p = (u8 *)arg0;
-    if (p[0x1FE] != 0x55 || p[0x1FF] != 0xAA)
-        return 2;
-
+    if (p[0x1FE] != 0x55 || p[0x1FF] != 0xAA) return 2;
     a = sp18;
     b = sp8;
-    i = 0;
-    do {
-        temp = ((u32)p[0x1C9] << 24) +
-               ((u32)p[0x1C8] << 16) +
-               p[0x1C6] +
-               ((u32)p[0x1C7] << 8);
+    for (i = 0; i < 4; i++) {
+        temp = ((u32)p[0x1C9] << 24) + ((u32)p[0x1C8] << 16) + p[0x1C6] + ((u32)p[0x1C7] << 8);
         *a = 0;
         *a = temp;
-        *b = ((u32)p[0x1CD] << 24) +
-             ((u32)p[0x1CC] << 16) +
-             p[0x1CA] +
-             ((u32)p[0x1CB] << 8);
+        *b = ((u32)p[0x1CD] << 24) + ((u32)p[0x1CC] << 16) + p[0x1CA] + ((u32)p[0x1CB] << 8);
         if (temp != 0 && *b != 0) {
-            if (i == 0)
-                *arg2 = 1;
-        } else if (i == 0) {
-            return 2;
-        }
-        i++;
-        b++;
-        p += 0x10;
-        a++;
-    } while (i < 4);
-
+            if (i == 0) *arg2 = 1;
+        } else if (i == 0) return 2;
+        p += 0x10; a++; b++;
+    }
     a = sp8;
     b = sp18;
     i = 0;
+    n = 4;
     do {
-        if ((u32)(*b + *a) > arg1 && i == 0) {
-            *arg2 = 0;
-            return 2;
+        if ((u32)(*b + *a) > arg1) {
+            if (i == 0) { *arg2 = 0; return 2; }
         }
-        i++;
-        b++;
-        a++;
-    } while (i < 4);
+        i++; a++; b++; n--;
+    } while (n != 0);
     return 0;
 }
 
@@ -2957,17 +2938,11 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
     u32 current;
     s32 i;
     struct Local { u32 sp8; u32 spC; u32 sp10; } local;
-
     *out = 0;
     context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
-    if ((*(u32 *)context & 1) == 0 || (*(u32 *)context & 2) == 0)
-        return 0x26;
-
-    if (arg0 == 0)
-        entry = 0;
-    else
-        entry = *(void **)(context + 0x268);
-
+    if ((*(u32 *)context & 1) == 0 || (*(u32 *)context & 2) == 0) return 0x26;
+    if (arg0 == 0) entry = 0;
+    else entry = *(void **)(context + 0x268);
     count = *(u32 *)(context + 0x270);
     size = (u32)*(u16 *)entry << *((u8 *)entry + 0x21);
     if (count != 0) {
@@ -2975,30 +2950,19 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
         u32 remainder = first % size;
         s32 steps = *(s32 *)(context + 0x14);
         s32 sign = -((s32)remainder) | (s32)remainder;
-        aligned = first + ((u32)((sign >> 31) & (s32)(size - remainder)));
-
-        if (steps != 0) {
-            range = (u32)(steps + 1) * size;
-            goto finish;
-        }
-
+        aligned = first + (u32)((size - remainder) & (sign >> 31));
+        if (steps != 0) { range = (u32)(steps + 1) * size; goto finish; }
         if (first != 0) {
-            error = fn_800AF2CC(context + 4, count, first,
-                                (s32 *)&local.sp10, &local.spC, (s32)context);
-            if (error != 0)
-                return error;
-        } else {
-            local.spC = count;
-        }
+            error = fn_800AF2CC(context + 4, count, first, (s32 *)&local.sp10, &local.spC, (s32)context);
+            if (error != 0) return error;
+        } else { local.spC = count; }
         chainEnd = (u32)fn_800AF584(entry);
         current = local.spC;
         i = 0;
         while (current != chainEnd) {
             i++;
-            error = VFiPFFAT_TraceClustersChain(entry, (s32)current,
-                                                (s32 *)&local.sp8);
-            if (error != 0)
-                return error;
+            error = VFiPFFAT_TraceClustersChain(entry, (s32)current, (s32 *)&local.sp8);
+            if (error != 0) return error;
             current = local.sp8;
             local.spC = current;
         }
@@ -12296,6 +12260,47 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     }
     return count;
 }
+
+extern "C" s32 fn_800BAA8C(s32 arg0, void *arg1) {
+    u8 *req = (u8 *)arg1;
+    s32 cmd = *(s32 *)(req + 0x0C);
+    switch (cmd) {
+    case 4:
+        if (arg0 != 0) {
+            if ((u32)(arg0 + 0x3F000000) == 0x20) {
+                OSReport(lbl_8031B838, arg0);
+            } else {
+                OSReport(lbl_8031B878, arg0);
+            }
+            *(s32 *)(*(u8 **)(req + 8) + 0x10) = 0;
+        } else {
+            u8 *dev = *(u8 **)(req + 8);
+            if (dev != 0) {
+                *(s32 *)(dev + 0x10) = *(s32 *)(*(u8 **)(req + 0x14));
+                lbl_8055DD68 = 0x10000;
+                *(s32 *)(*(u8 **)(req + 8) + 0x24) = 2;
+            }
+        }
+        lbl_8055DD6C = 0;
+        break;
+    case 0x19:
+    case 0x26:
+    case 0x12:
+        lbl_8055DD6C = 0;
+        break;
+    default:
+        break;
+    }
+    if (*(s32 *)req != 0 && ((u32)arg0 + 0x3DF00000U) != 0U) {
+        ((void (*)(s32, s32))*(s32 *)req)(arg0, *(s32 *)(req + 4));
+    }
+    if (*(void **)(req + 0x18) != 0) {
+        iosFree(lbl_80559248, *(void **)(req + 0x18));
+    }
+    iosFree(lbl_80559248, req);
+    return arg0;
+}
+
 #pragma dont_inline reset
 
 extern "C" s32 fn_800BB4B0(s32,s32,s32,s32);
@@ -20683,29 +20688,23 @@ extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
 extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     ARCDir dir;
     ARCDirEntry entry;
-    const char *panicFormat;
-    const char *panicFile;
     s32 result = -1;
     register const char *n = name;
     register ARCHandle *h = handle;
+    const char *panicFile;
 
     if (!ARCOpenDir(h, lbl_805597F8, &dir))
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x30, lbl_8031F2E4);
 
     panicFile = lbl_8031F2C8;
-    panicFormat = lbl_8031F2E4;
 
     while (ARCReadDir(&dir, &entry)) {
         if (entry.isDir) {
             if (!ARCChangeDir(h, entry.name))
-                Panic__Q26nw4hbm2dbFPCciPCce(
-                    (const char *)((u8 *)panicFile + 0), 0x39,
-                    (const char *)((u8 *)panicFormat + 0));
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x39, lbl_8031F2E4);
             result = fn_800D50A8(h, n);
             if (!ARCChangeDir(h, lbl_805597FC))
-                Panic__Q26nw4hbm2dbFPCciPCce(
-                    (const char *)((u8 *)panicFile + 0), 0x3C,
-                    (const char *)((u8 *)panicFormat + 0));
+                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x3C, lbl_8031F2E4);
             if (result == -1) continue;
             break;
         } else if (stricmp(n, entry.name) == 0) {
