@@ -3096,6 +3096,9 @@ valid_buffer:
     fn_8006EB88();                            /* GKI_enable() */
 }
 
+void GKI_send_msg(u8 task_id, u8 mbox, void *msg) {
+}
+
 void *GKI_read_mbox(UINT8 mbox) {
     /* Read and dequeue the first buffer from the current task's mailbox queue,
      * returning a pointer to the buffer payload (or NULL if invalid/empty). */
@@ -11557,6 +11560,8 @@ void bta_sys_disable(void) {
 }
 
 tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) {
+    u8 *strBase = lbl_80316570;
+    u8 *pp = (u8 *)p_parms;
     u8 *p_sco;
     u8 *p_setup;
     u16 temp_pkt;
@@ -11570,30 +11575,30 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     }
     p_setup = p_sco + 0x1868;
     if (*(u8 *)(p_sco + 0x1882) == 0 || lbl_803C0F78[0x1908] == 0) {
-        *(u16 *)(p_setup + 0xC) = *(u16 *)((u8 *)p_parms + 2) & (*(u16 *)(lbl_803C0F78 + 0x656) & 7);
+        *(u16 *)(p_setup + 0xC) = (*(u16 *)(pp + 2) & (*(u16 *)(lbl_803C0F78 + 0x656) & 7));
         if (lbl_803C0F78[0x27C0] >= 3) {
-            fn_8007096C(0xD0002, &lbl_80316570[0x248], *(u16 *)(p_sco + 0x185E), *(u16 *)(p_setup + 0xC));
+            fn_8007096C(0xD0002, strBase + 0x248, *(u16 *)(p_sco + 0x185E), *(u16 *)(p_setup + 0xC));
         }
         if (btsnd_hcic_change_conn_type(*(u16 *)(p_sco + 0x185E), (*(u16 *)(p_setup + 0xC) << 5) & 0xE0) == 0) {
             return BTM_NO_RESOURCES;
         }
         return BTM_CMD_STARTED;
     }
-    req = *(u16 *)((u8 *)p_parms + 2);
-    temp_pkt = (req & *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3F;
+    req = *(u16 *)(pp + 2);
+    temp_pkt = ((req & *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3F);
     if (lbl_803C0F78[0x636] >= 3) {
-        temp_pkt |= (req | *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3C0;
+        temp_pkt |= ((req | *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3C0);
     }
     if (lbl_803C0F78[0x27C0] >= 3) {
-        fn_80070954(0xD0002, &lbl_80316570[0x28C], *(u16 *)(p_sco + 0x185E));
+        fn_80070954(0xD0002, strBase + 0x28C, *(u16 *)(p_sco + 0x185E));
     }
     if (lbl_803C0F78[0x27C0] >= 3) {
-        fn_800709CC(0xD0002, &lbl_80316570[0x8C], *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)((u8 *)p_parms + 0), *(u16 *)(p_setup + 0xA), *((u8 *)p_parms + 4), temp_pkt);
+        fn_800709CC(0xD0002, strBase + 0x8C, *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)(pp + 0), *(u16 *)(p_setup + 0xA), *(pp + 4), temp_pkt);
     }
-    if (btsnd_hcic_setup_esco_conn(*(u16 *)(p_sco + 0x185E), *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)((u8 *)p_parms + 0), *(u16 *)(p_setup + 0xA), *((u8 *)p_parms + 4), temp_pkt) == 0) {
+    if (btsnd_hcic_setup_esco_conn(*(u16 *)(p_sco + 0x185E), *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)(pp + 0), *(u16 *)(p_setup + 0xA), *(pp + 4), temp_pkt) == 0) {
         return BTM_NO_RESOURCES;
     }
-    *(u16 *)((u8 *)p_parms + 2) = temp_pkt;
+    *(u16 *)(pp + 2) = temp_pkt;
     return BTM_CMD_STARTED;
 }
 
