@@ -4,12 +4,12 @@
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
+void fn_80137D58(void *arg0, int arg_sp0) {
     volatile int sp18, sp14, sp10, spC, sp8;
     volatile unsigned char *p = (volatile unsigned char *)arg0;
-    register unsigned char temp_r0 asm("r0"), temp_r0_2 asm("r0"), temp_r0_4 asm("r0"), temp_r0_5 asm("r0"); register unsigned int temp_r0_3 asm("r0");
-    register unsigned char temp_r12 asm("r12"), temp_r11 asm("r11"), temp_r10 asm("r10"), temp_r9 asm("r9"), temp_r8 asm("r8"), temp_r7 asm("r7"), temp_r6 asm("r6"), temp_r5 asm("r5"), temp_r4 asm("r4");
-    register unsigned char temp_r31 asm("r31"), temp_r30 asm("r30"), temp_r29 asm("r29"), temp_r28 asm("r28"), temp_r27 asm("r27"), temp_r26 asm("r26"), temp_r25 asm("r25"), temp_r24 asm("r24"), temp_r23 asm("r23"), temp_r22 asm("r22"), temp_r21 asm("r21"), temp_r20 asm("r20"), temp_r19 asm("r19"), temp_r18 asm("r18"), temp_r17 asm("r17"), temp_r16 asm("r16"), temp_r15 asm("r15"), temp_r14 asm("r14");
+    register unsigned char temp_r0, temp_r0_2, temp_r0_4, temp_r0_5; register unsigned int temp_r0_3;
+    register unsigned char temp_r4, temp_r5, temp_r6, temp_r7, temp_r8, temp_r9, temp_r10, temp_r11, temp_r12;
+    register unsigned char temp_r14, temp_r15, temp_r16, temp_r17, temp_r18, temp_r19, temp_r20, temp_r21, temp_r22, temp_r23, temp_r24, temp_r25, temp_r26, temp_r27, temp_r28, temp_r29, temp_r30, temp_r31;
     temp_r4=p[0]; p[0]=p[3]; p[3]=temp_r4;
     temp_r4=p[1]; p[1]=p[2]; p[2]=temp_r4;
     temp_r4=p[4]; p[4]=p[7]; p[7]=temp_r4;
@@ -395,6 +395,8 @@ float fn_801385F0(float arg0, float arg1, float arg2, float arg3) {
 
 extern float lbl_805613B0, lbl_805613B4;
 extern double fn_8002F234(double);
+#pragma push
+#pragma processor 750
 int fn_801386D0(void *arg0, float farg0, float farg1, float farg2) {
     char *ctx = (char *)arg0;
     char *a, *b, *n;
@@ -492,57 +494,46 @@ extern char lbl_8032BF70[];
 #pragma dont_inline on
 void *fn_80138968(int arg0) {
     struct {
-        void *data;
-        union {
-            struct {
-                unsigned char padding[8];
-                int valid;
-                unsigned int size;
-            } output;
-            struct {
-                unsigned int b;
-                unsigned int a;
-            } words;
-        } scratch;
+        unsigned char b1;
+        unsigned char b2;
+        unsigned char pad[2];
+        unsigned int wb;
+        unsigned int wa;
+        int valid;
+        unsigned int size;
     } local;
     void *obj;
     int ok;
-    obj = fn_8012C370(arg0, 0x494C494E, &local.scratch.output.size,
-                      &local.scratch.output.valid, &local.data,
-                      ((unsigned char *)&local.data) + 1);
+    obj = fn_8012C370(arg0, 0x494C494E, &local.size, &local.valid, (void **)&local.b1, &local.b2);
     if (obj != 0) {
         ok = 0;
-        if (local.scratch.output.valid != 0) {
-            if (local.scratch.output.size == 0x1E) {
-                unsigned int *words = (unsigned int *)obj;
-                unsigned char swap = ((unsigned char *)&local.data)[1];
-                unsigned int a = words[1];
-                unsigned int b = words[0];
-                local.scratch.words.a = a;
-                local.scratch.words.b = b;
-                if (swap) {
-                    unsigned char *p = (unsigned char *)&local.scratch.words.a;
-                    unsigned char *q = (unsigned char *)&local.scratch.words.b;
+        if (local.valid != 0) {
+            if (local.size == 0x1E) {
+                unsigned int a = ((unsigned int *)obj)[1];
+                unsigned int b = ((unsigned int *)obj)[0];
+                local.wa = a;
+                local.wb = b;
+                if (local.b2) {
+                    unsigned char *p = (unsigned char *)&local.wa;
+                    unsigned char *q = (unsigned char *)&local.wb;
                     unsigned char t;
                     t = p[0]; p[0] = p[3]; p[3] = t;
                     t = p[1]; p[1] = p[2]; p[2] = t;
                     t = q[0]; q[0] = q[3]; q[3] = t;
                     t = q[1]; q[1] = q[2]; q[2] = t;
                 }
-                if (local.scratch.words.a == 0x3C && local.scratch.words.b == 0x30) {
-                    if (((unsigned char *)&local.data)[1]) {
+                if (local.wa == 0x3C && local.wb == 0x30) {
+                    if (local.b2) {
                         fn_801381B4(obj);
                         fn_80138594(obj);
                     }
                     *(int *)((char *)obj + 0x28) = fn_8013BFE8(arg0);
                     ok = 1;
                 } else {
-                    fn_802E30C8(lbl_8032BF20, local.scratch.words.a, 0x3C,
-                                local.scratch.words.b, 0x30,
-                                ((unsigned char *)&local.data)[1]);
+                    fn_802E30C8(lbl_8032BF20, local.wa, 0x3C, local.wb, 0x30, local.b2);
                 }
             } else {
-                fn_802E30C8(lbl_8032BF70, local.scratch.output.size, 0x1E);
+                fn_802E30C8(lbl_8032BF70, local.size, 0x1E);
             }
         }
         if (!ok) {
