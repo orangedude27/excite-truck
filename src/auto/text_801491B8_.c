@@ -2885,7 +2885,8 @@ finish:
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-extern "C" void fn_80153C44(void *arg0, s32 arg1) {
+/* If multiple entries exist, OR a vtable query over all and dispatch an action when any is set. */
+extern "C" void fn_80153C44(void *self, s32 id) {
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -2895,16 +2896,16 @@ extern "C" void fn_80153C44(void *arg0, s32 arg1) {
         virtual void v5();
         virtual s32 method(s32);
     };
-    Dummy *obj = (Dummy *)arg0;
+    Dummy *obj = (Dummy *)self;
     s32 count = fn_801E85A4();
     if (count > 1) {
-        s32 flag = 0;
+        s32 any = 0;
         s32 i;
         for (i = 0; i < count; i++) {
-            flag = (flag | obj->method(fn_801E866C(i))) != 0;
+            any = (any | obj->method(fn_801E866C(i))) != 0;
         }
-        if (flag != 0) {
-            fn_8014D918((char *)arg0 + fn_801E86F8(arg1) * 0xC0 + 0x9E4, lbl_8055E240, arg1);
+        if (any != 0) {
+            fn_8014D918((char *)self + fn_801E86F8(id) * 0xC0 + 0x9E4, lbl_8055E240, id);
         }
     }
 }
