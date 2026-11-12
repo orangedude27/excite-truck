@@ -1293,14 +1293,15 @@ void fn_801C7480(void) {
             if (nextIndex < entryCount) {
                 long nextOff = nextIndex * 0x30C;
                 long selectedOff = selectedIndex * 0x30C;
-                TimelineEntry *left = (TimelineEntry *)((char *)(s32)sTimelineEntries + selectedOff);
-                TimelineEntry *right = (TimelineEntry *)((char *)(s32)sTimelineEntries + nextOff);
-                if (fn_801C34CC(left->time, right->time)) {
-                    s32 *current = (s32 *)((char *)sTimelineEntries + selectedOff);
-                    s32 *following = (s32 *)((char *)sTimelineEntries + nextOff);
-                    int swappedRank = current[1];
-                    current[1] = following[1];
-                    following[1] = swappedRank;
+                TimelineEntry *selected = (TimelineEntry *)((char *)(s32)sTimelineEntries + selectedOff);
+                TimelineEntry *following = (TimelineEntry *)((char *)(s32)sTimelineEntries + nextOff);
+                if (fn_801C34CC(selected->time, following->time)) {
+                    /* both entry addresses are rebuilt here to trade their rank words */
+                    s32 *selectedRank = (s32 *)((char *)sTimelineEntries + selectedOff);
+                    s32 *followingRank = (s32 *)((char *)sTimelineEntries + nextOff);
+                    int swappedRank = selectedRank[1];
+                    selectedRank[1] = followingRank[1];
+                    followingRank[1] = swappedRank;
                     qsort((void *)sTimelineEntries, (size_t)sTimelineCount, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
                 }
             }
