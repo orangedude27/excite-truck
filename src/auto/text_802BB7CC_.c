@@ -206,7 +206,7 @@ scan_step:
 append_check:
         if (var_r4_2 <= 0)
             goto finish;
-        var_r4 = lbl_8055CF18;
+        var_r4 = (char *)&lbl_8055CF18;
 append_char:
         temp_r3_3 = (signed char)*var_r4++;
         *var_r6++ = (char)temp_r3_3;
