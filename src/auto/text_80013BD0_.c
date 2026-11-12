@@ -1062,12 +1062,11 @@ void fn_80015EB0(void *, f32);
 #pragma use_lmw_stmw off
 #pragma optimize_for_size off
 #pragma scheduling on
-void fn_80015A20(void *arg0, f32 *arg1) {
+void fn_80015A20(void *arg0, Vec3_80015A20 *arg1) {
     f32 matrix[9];
-    f32 angle1 = arg1[1];
-    f32 angle0 = arg1[0];
-    f32 angle2 = arg1[2];
-    fn_80015EB0(arg0, angle1);
+    f32 angle0 = arg1->x;
+    f32 angle2 = arg1->z;
+    fn_80015EB0(arg0, arg1->y);
     fn_80015E30(matrix, angle0);
     fn_80015B20(arg0, matrix, arg0);
     fn_80015AA0(matrix, angle2);
@@ -1081,26 +1080,25 @@ extern void fn_80015B20(void *, void *, void *);
 extern f64 cos(void);
 extern f64 sin(f32);
 #pragma scheduling invalid_target
-void fn_80015AA0(void *arg0, float angle) {
-    float j1;
-    float j2;
-    float j3;
-    float j4;
-    float *p;
-    j4 = (float)cos();
-    j3 = (float)sin(angle);
-    j2 = lbl_80560360;
-    j1 = lbl_80560368;
-    p = (float *)arg0;
-    p[0] = j4;
-    p[1] = j3;
-    p[2] = j2;
-    p[3] = -j3;
-    p[4] = j4;
-    p[5] = j2;
-    p[6] = j2;
-    p[7] = j2;
-    p[8] = j1;
+void fn_80015AA0(void *arg0, f32 angle) {
+    f32 one;
+    f32 zero;
+    f32 sine;
+    f32 cosine = (f32)cos();
+    f32 *m;
+    sine = (f32)sin(angle);
+    zero = lbl_80560360;
+    one = lbl_80560368;
+    m = (f32 *)arg0;
+    m[0] = cosine;
+    m[1] = sine;
+    m[2] = zero;
+    m[3] = -sine;
+    m[4] = cosine;
+    m[5] = zero;
+    m[6] = zero;
+    m[7] = zero;
+    m[8] = one;
 }
 #pragma push
 #pragma scheduling invalid_target
@@ -1138,7 +1136,7 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
         out[8] = (b[8] * a[8]) + ((b[2] * a[6]) + (b[5] * a[7]));
     }
 }
-#pragma scheduling off
+#pragma scheduling on
 void fn_80015E30(void *arg0, f32 angle) {
     f32 neg;
     f32 zero;
@@ -1149,6 +1147,7 @@ void fn_80015E30(void *arg0, f32 angle) {
     sine = (f32)sin(angle);
     zero = lbl_80560360;
     one = lbl_80560368;
+#pragma scheduling off
     *(volatile f32 *)((u8 *)arg0 + 4) = zero;
     neg = -sine;
     *(f32 *)((u8 *)arg0 + 0) = one;
@@ -1160,7 +1159,6 @@ void fn_80015E30(void *arg0, f32 angle) {
     *(f32 *)((u8 *)arg0 + 0x1C) = neg;
     *(f32 *)((u8 *)arg0 + 0x20) = cosine;
 }
-#pragma scheduling on
 void fn_80015EB0(void *arg0, f32 angle) {
     f32 c;
     f32 s;
@@ -1192,6 +1190,7 @@ extern void fn_80148134(f32*,f32*,s32,f32,f32);
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma processor 750
+#pragma scheduling on
 extern "C" void fn_80015F30(void* arg0) {
  struct Desc { s32 a; f32 x,y; s32 d; f32 w,h; s32 g,k; };
  class Obj { public:
