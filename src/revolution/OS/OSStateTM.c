@@ -59,6 +59,7 @@ OSStateCallback OSSetResetCallback(OSStateCallback callback) {
 }
 
 OSStateCallback OSSetPowerCallback(OSStateCallback callback) {
+    /* Set the power-off state callback, registering the STM event handler if needed, and return the previous callback. */
     BOOL enabled;
     OSStateCallback old;
 
