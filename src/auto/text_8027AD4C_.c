@@ -962,13 +962,14 @@ extern "C" void fn_8027C0D0(void *arg0, long arg1, void *arg2) {
     *(long *)((char *)arg0 + 4) = ((Dummy *)arg2)->m3((char **)&lbl_80347B30);
 }
 #pragma cplusplus reset
-long *fn_8027C120(long arg0, long arg1) {
+long *fn_8027C120(long table, long name) {
     long index = 0;
     long offset = 0;
     long len;
+    /* Search ContestEvent array (base at table+0, count at table+4, stride 0x14) by contestName (+0xC); return entry or 0. */
     goto check;
 loop:
-    len = stricmp((char *)arg1, *(char **)((char *)(*(long *)arg0) + offset + 0xC));
+    len = stricmp((char *)name, *(char **)((char *)(*(long *)table) + offset + 0xC));
     switch (((unsigned int)__cntlzw(len) >> 5)) {
     case 0:
         goto advance;
@@ -979,13 +980,13 @@ advance:
     offset += 0x14;
     index++;
 check:
-    if (index < *(volatile long *)(arg0 + 4))
+    if (index < *(volatile long *)(table + 4))
         goto loop;
     index = -1;
 found:
     if (index < 0)
         return 0;
-    return (long *)(*(long *)arg0 + index * 0x14);
+    return (long *)(*(long *)table + index * 0x14);
 }
 
 #pragma push
