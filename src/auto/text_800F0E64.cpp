@@ -1809,7 +1809,7 @@ extern "C" const char lbl_80324E5C[];
 // OpenGroupStream and OpenGroupWaveDataStream all return one.  The two leading
 // destructor slots put the first declared method at 0x8, so the offsets in the
 // comments are the vtable slots the loaders' calls use; only the slots they call
-// are named.  A stream is usable once IsOpen() and IsAvailable() both say so, and
+// are named.  A stream is usable once IsOpen() and IsReady() both say so, and
 // the loader keeps the one it is reading in its own field 0x21C so Cancel() can
 // stop it.
 struct ArchiveStream {
