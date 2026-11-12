@@ -732,8 +732,8 @@ extern "C" void fn_80264FE4(void *arg0) {
 
     limit = lbl_80563C00;
     zero = lbl_80563BF0;
-    i = 0;
     offset = 0;
+    i = 0;
     while (i < *(int *)(p + 0xBC)) {
         item = *(char **)(p + 0xB8) + offset;
         value = *(float *)(p + 0xD0) * (*(float *)(p + 0xA4) - *(float *)(item + 0x18));
@@ -752,29 +752,27 @@ extern "C" void fn_80264FE4(void *arg0) {
         offset += 0x20;
         i++;
     }
-    {
-        float limit2 = lbl_80563C00;
-        zero = lbl_80563BF0;
-        i = 0;
-        offset = 0;
-        while (i < *(int *)(p + 0x5C)) {
-            item = *(char **)(p + 0x58) + offset;
-            value = *(float *)(p + 0x70) * (*(float *)(p + 0x44) - *(float *)(item + 0x18));
-            if (limit2 < value) value = limit2;
-            value = (value > zero) ? value : zero;
-            alpha = 0xFF;
-            a = (int)(value * (*(float *)(item + 0x18) * *(float *)(p + 0x6C)));
-            a = (a > 0) ? a : 0;
-            if (a < 0xFF) alpha = a;
-            id = *(int *)(item + 0x1C);
-            base = *(float *)(p + 0x4C) + *(float *)(p + 0x50) * (limit2 - *(float *)(item + 0x18) * *(float *)(p + 0x68));
-            intensity = base * fn_80235F64(*(void **)(p + 0x54), id);
-            fn_80235AFC(*(void **)(p + 0x54), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
-                        *(float *)item, *(float *)(item + 4), lbl_80563BF0,
-                        base * fn_80235EF0(*(void **)(p + 0x54), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
-            offset += 0x20;
-            i++;
-        }
+    limit = lbl_80563C00;
+    zero = lbl_80563BF0;
+    i = 0;
+    offset = 0;
+    while (i < *(int *)(p + 0x5C)) {
+        item = *(char **)(p + 0x58) + offset;
+        value = *(float *)(p + 0x70) * (*(float *)(p + 0x44) - *(float *)(item + 0x18));
+        if (limit < value) value = limit;
+        value = (value > zero) ? value : zero;
+        alpha = 0xFF;
+        a = (int)(value * (*(float *)(item + 0x18) * *(float *)(p + 0x6C)));
+        a = (a > 0) ? a : 0;
+        if (a < 0xFF) alpha = (int)a;
+        id = *(int *)(item + 0x1C);
+        base = *(float *)(p + 0x4C) + *(float *)(p + 0x50) * (limit - *(float *)(item + 0x18) * *(float *)(p + 0x68));
+        intensity = base * fn_80235F64(*(void **)(p + 0x54), id);
+        fn_80235AFC(*(void **)(p + 0x54), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
+                    *(float *)item, *(float *)(item + 4), lbl_80563BF0,
+                    base * fn_80235EF0(*(void **)(p + 0x54), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
+        offset += 0x20;
+        i++;
     }
 }
 #pragma pop
@@ -816,6 +814,9 @@ done:
     *(float *)((char *)arg0 + 0xB8) = farg0;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802652E8(void *arg0) {
     char *p = (char *)arg0;
     char *q;
@@ -856,10 +857,10 @@ void fn_802652E8(void *arg0) {
     if (!flag) {
         float f5 = f31 - (float)v;
         float f4 = lbl_80563C1C * f5;
-        fn_80264A5C((float)(int)f4 + ((s[4] + s[2]) - s[0]), (s[7] + s[5]) * lbl_80563BF8 * 1.0f);
+        fn_80264A5C((float)(int)f4 + ((s[4] + s[2]) - s[0]), (s[7] + s[5]) / 2.0f);
     }
 }
-
+#pragma pop
 void fn_80265558(void *arg0) {
     extern char lbl_803465B8[];
     extern float lbl_80563BF0;
