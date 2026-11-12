@@ -709,9 +709,12 @@ extern "C" int fn_802996B0(void *, int *);
 #pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg3, void *arg4, short arg5) {
-    short angle = arg5;
-    int index;
-    float points[12];
+    struct Work {
+        short angle;
+        char pad[2];
+        int index;
+        float points[12];
+    } work;
     char *dst;
     float result;
     float x, y, z;
@@ -720,13 +723,14 @@ extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg
     float x34, y34, z34;
     float *src;
     float *out;
-    register float step;
+    float step;
     int i;
 
-    if (fn_802996B0(arg0, &index) == 0)
+    work.angle = arg5;
+    if (fn_802996B0(arg0, &work.index) == 0)
         return;
 
-    dst = (char *)arg0 + (index << 6);
+    dst = (char *)arg0 + (work.index << 6);
     *(unsigned int *)dst = arg1;
     *(int *)(dst + 0x34) = 1;
     result = fn_801E7E18();
@@ -749,27 +753,27 @@ extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg
     y34 = y4 + ((float *)arg3)[1] * lbl_805645D8;
     z34 = z4 + ((float *)arg3)[2] * lbl_805645D8;
 
-    points[0] = x;
-    points[1] = y;
-    points[2] = z;
-    points[3] = x3;
-    points[4] = y3;
-    points[5] = z3;
-    points[6] = x4;
-    points[7] = y4;
-    points[8] = z4;
-    points[9] = x34;
-    points[10] = y34;
-    points[11] = z34;
+    work.points[0] = x;
+    work.points[1] = y;
+    work.points[2] = z;
+    work.points[3] = x3;
+    work.points[4] = y3;
+    work.points[5] = z3;
+    work.points[6] = x4;
+    work.points[7] = y4;
+    work.points[8] = z4;
+    work.points[9] = x34;
+    work.points[10] = y34;
+    work.points[11] = z34;
 
     fn_801E9DD4(lbl_8055CA70, lbl_8055CA7C);
 
-    src = points;
+    src = work.points;
     out = (float *)dst;
     step = lbl_805645DC;
     i = 0;
     do {
-        fn_801E9E30((void *)&angle, src);
+        fn_801E9E30((void *)&work.angle, src);
         src[1] = src[1] + step;
         out[1] = src[0];
         out[2] = src[1];
@@ -1195,22 +1199,23 @@ extern float lbl_805645C8;
 extern float lbl_805645E8;
 extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
     if ((unsigned char *)b == (unsigned char *)a + 0x30) {
+        float t12 = a[12];
+        float t13 = a[13];
+        float t14 = a[14];
+        b[0] = t12*a[0] + t13*a[3] + t14*a[6];
+        b[1] = t12*a[1] + t13*a[4] + t14*a[7];
+        b[2] = t12*a[2] + t13*a[5] + t14*a[8];
+    } else {
         b[0] = a[12]*a[0] + a[13]*a[3] + a[14]*a[6];
         b[1] = a[12]*a[1] + a[13]*a[4] + a[14]*a[7];
         b[2] = a[12]*a[2] + a[13]*a[5] + a[14]*a[8];
-    } else {
-        b[0] = a[12]*a[0] + a[12]*a[3] + a[14]*a[6];
-        b[1] = a[12]*a[1] + a[12]*a[4] + a[14]*a[7];
-        b[2] = a[12]*a[2] + a[12]*a[5] + a[14]*a[8];
     }
     b[0] += a[9];
     b[1] += a[10];
     b[2] += a[11];
-    
     c[0] = a[0] * lbl_805645C8;
     c[1] = a[1] * lbl_805645C8;
     c[2] = a[2] * lbl_805645C8;
-    
     d[0] = a[6] * lbl_805645E8;
     d[1] = a[7] * lbl_805645E8;
     d[2] = a[8] * lbl_805645E8;
@@ -1744,64 +1749,40 @@ extern "C" void fn_8029B1B8(void* arg0) {
 
 extern "C" void fn_8029B138(void* arg0, int arg1, float* arg2, float* arg3, float* arg4, float* arg5);
 extern "C" void fn_802C8E00(int, int, float, float, float, float, float);
-extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6) {
-    float sp44, sp40, sp3C, sp38, sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18;
-    float sp14, sp10, spC, sp8, sp4, sp0;
+#pragma push
+#pragma processor 750
+extern "C" void fn_8029B274(void *arg0, float *c, unsigned char arg2, void *arg3, void *arg4, float f, float arg6) {
+    float *a = (float *)arg3;
+    float *b = (float *)arg4;
+    float v[12];
+    float sp14, sp10, spC, sp8;
+    float neg, h1, h2;
 
-    fn_8029B138(arg3, (int)arg2, &sp14, &sp10, &spC, &sp8);
-    
-    float neg_farg0 = -farg0;
-    float temp_f5 = ((float*)arg3)[0];
-    float temp_f9 = ((float*)arg3)[1];
-    float temp_f6 = ((float*)arg4)[0];
-    float temp_f7 = ((float*)arg4)[1];
-    
-    float temp_f27 = arg1[0] + (temp_f5 * neg_farg0);
-    float temp_f29 = arg1[1] + (temp_f9 * neg_farg0);
-    
-    float temp_f6_2 = temp_f6 * farg0;
-    float temp_f8 = temp_f7 * farg0;
-    
-    float temp_f1 = temp_f27 + temp_f6_2;
-    float temp_f2 = temp_f29 + temp_f8;
-    
-    sp18 = temp_f27;
-    sp1C = temp_f29;
-    
-    float temp_f13 = temp_f1 + (temp_f5 * farg0);
-    float temp_f12 = temp_f2 + (temp_f9 * farg0);
-    
-    sp24 = temp_f13;
-    sp28 = temp_f12;
-    
-    float temp_f7_2 = temp_f13 + temp_f6_2;
-    float temp_f9_2 = temp_f2 + temp_f8;
-    float temp_f6_3 = temp_f12 + temp_f8;
-    
-    float temp_f30 = ((float*)arg3)[2];
-    float temp_f31 = temp_f30 * neg_farg0;
-    float temp_f0 = ((float*)arg4)[2];
-    float temp_f0_2 = temp_f0 * farg0;
-    
-    float temp_f3_2 = arg1[2] + temp_f31 + temp_f0_2;
-    float temp_f0_3 = temp_f0 * temp_f8;
-    
-    float temp_f11 = temp_f3_2 + (temp_f30 * farg0);
-    
-    sp20 = temp_f3_2;
-    sp30 = temp_f1;
-    sp34 = temp_f9_2;
-    sp2C = temp_f11;
-    sp38 = temp_f7_2;
-    sp3C = temp_f6_3;
-    sp40 = temp_f11;
-    sp44 = temp_f11 + temp_f0_3;
-    
-    fn_802C8E00(0xC0FFFFFF, 0, temp_f1, temp_f2, temp_f3_2, sp14, spC);
-    fn_802C8E00(0xC0FFFFFF, 0, sp24, sp28, sp2C, sp10, spC);
-    fn_802C8E00(0xC0FFFFFF, 1, sp30, sp34, sp38, sp14, sp8);
-    fn_802C8E00(0xC0FFFFFF, 1, sp3C, sp40, sp44, sp10, sp8);
+    fn_8029B138(arg0, arg2, &sp14, &sp10, &spC, &sp8);
+    neg = -f;
+    v[0] = c[0] + a[0] * neg;
+    v[1] = c[1] + a[1] * neg;
+    h1 = lbl_8056460C * f;
+    v[0] = v[0] + b[0] * f;
+    h2 = lbl_805645D8 * f;
+    v[1] = v[1] + b[1] * f;
+    v[2] = c[2] + a[2] * neg;
+    v[2] = v[2] + b[2] * f;
+    v[3] = v[0] + a[0] * h1;
+    v[4] = v[1] + a[1] * h1;
+    v[5] = v[2] + a[2] * h1;
+    v[6] = v[0] + b[0] * h2;
+    v[7] = v[1] + b[1] * h2;
+    v[8] = v[2] + b[2] * h2;
+    v[9] = v[3] + b[0] * h2;
+    v[10] = v[4] + b[1] * h2;
+    v[11] = v[5] + b[2] * h2;
+    fn_802C8E00(0xC0FFFFFF, 0, v[0], v[1], v[2], sp14, spC);
+    fn_802C8E00(0xC0FFFFFF, 0, v[3], v[4], v[5], sp10, spC);
+    fn_802C8E00(0xC0FFFFFF, 1, v[6], v[7], v[8], sp14, sp8);
+    fn_802C8E00(0xC0FFFFFF, 1, v[9], v[10], v[11], sp10, sp8);
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
