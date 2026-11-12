@@ -96,10 +96,11 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 // 3x3 matrix times vector; the original inlines it with a src == dst check, so both branches are emitted.
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
+    f32 x, y, z;
     if (src == dst) {
-        f32 x = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
-        f32 y = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
-        f32 z = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
+        x = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
+        y = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
+        z = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
         dst[0] = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
@@ -2898,13 +2899,14 @@ extern "C" void fn_801A0F10(void* arg0) {
             s32 k = 0;
             f32 one = lbl_805622E0;
             f32 zero = lbl_805622D4;
+            s32 maxCount = 0x40;
             do {
                 fn_801BEAEC(e, k, &tmp);
                 Vec v = tmp;
                 v.x += *(f32*)(obj + 0x48) * one;
                 v.y += *(f32*)(obj + 0x4C) * one;
                 v.z += *(f32*)(obj + 0x50) * one;
-                count = 0x40;
+                count = maxCount;
                 fn_801CF080(lbl_8055E5A0, &v, buffer, &count, 0, lbl_8056234C);
                 Vec* cur = (Vec*)buffer;
                 for (i = 0; i < count; i++) {
