@@ -500,6 +500,7 @@ static BOOL PADSync(void) {
     return lbl_8055DB10 == 0 && lbl_80558F74 == 32;
 }
 
+/* PAD shutdown/reset handler: finalize on shutdown or report sync/reset readiness. */
 BOOL fn_800572DC(BOOL final, u32 event) {
     BOOL ready;
 
