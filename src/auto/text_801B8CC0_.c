@@ -99,15 +99,20 @@ extern "C" int fn_802C7A10(int);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_803369A0[];
 #pragma scheduling invalid_target
-extern "C" void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float arg4, float arg5) {
-    unsigned int a = ((unsigned int *)arg3)[0];
-    unsigned int b = ((unsigned int *)arg3)[1];
-    unsigned int c = ((unsigned int *)arg3)[2];
+void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float arg4, float arg5) {
     unsigned int *dst;
+    unsigned int *src;
+    unsigned int a;
+    unsigned int b;
+    unsigned int c;
     void *p;
     int result;
 
     dst = (unsigned int *)arg0;
+    src = (unsigned int *)arg3;
+    a = src[0];
+    b = src[1];
+    c = src[2];
     dst[0] = a;
     dst[1] = b;
     dst[2] = c;
@@ -126,39 +131,44 @@ extern "C" void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float
 #pragma scheduling on
 #pragma cplusplus reset
 extern "C" void *fn_801B8D80(void) {
-    extern void *fn_801284F8(unsigned int, void *);
-    extern void fn_80182010(void *);
-    extern int fn_8017960C(int);
-    extern char lbl_803369C0[];
-    extern char lbl_803369D0[];
-    extern void *lbl_80436D28[];
-    extern float lbl_80562750;
-    void *obj;
+    /* Allocate and initialize a "trlr_car" object (0x2760 bytes), set its vtable
+       (lbl_803369D0), clear/init fields at 0x2700/0x2710/0x272C/0x2730/0x2738/0x275C,
+       assign the next global index (lbl_8055E774), store in the object table
+       (lbl_80436D28), and cache a per-object value from fn_8017960C at 0x2754. */
+    extern void *fn_801284F8(unsigned int, void *); /* allocate tagged memory */
+    extern void fn_80182010(void *);                /* base object constructor/init */
+    extern int fn_8017960C(int);                    /* lookup/init by object index */
+    extern char lbl_803369C0[];                     /* alloc tag string "trlr_car" */
+    extern char lbl_803369D0[];                     /* trlr_car vtable */
+    extern void *lbl_80436D28[];                    /* global trlr_car object table */
+    extern float lbl_80562750;                      /* 0.0f constant */
+    extern int lbl_8055E774;                        /* next trlr_car object index */
+    void *object;
     void *vtable;
-    float value;
+    float zeroFloat;
     int zero;
-    int index;
+    int objectIndex;
 
-    obj = fn_801284F8(0x2760, lbl_803369C0);
-    if (obj != 0) {
-        fn_80182010(obj);
+    object = fn_801284F8(0x2760, lbl_803369C0);
+    if (object != 0) {
+        fn_80182010(object);
         vtable = lbl_803369D0;
-        value = lbl_80562750;
-        *(void **)obj = vtable;
+        zeroFloat = lbl_80562750;
+        *(void **)object = vtable;
         zero = 0;
-        *(int *)((char *)obj + 0x2738) = zero;
-        *(int *)((char *)obj + 0x2710) = zero;
-        *(float *)((char *)obj + 0x272C) = value;
-        *(float *)((char *)obj + 0x2730) = value;
-        index = lbl_8055E774;
-        *(int *)((char *)obj + 0x2700) = index;
-        lbl_8055E774 = index + 1;
-        lbl_80436D28[*(int *)((char *)obj + 0x2700)] = obj;
-        *(int *)((char *)obj + 0x2754) =
-            fn_8017960C(*(int *)((char *)obj + 0x2700));
-        *(unsigned char *)((char *)obj + 0x275C) = zero;
+        *(int *)((char *)object + 0x2738) = zero;
+        *(int *)((char *)object + 0x2710) = zero;
+        *(float *)((char *)object + 0x272C) = zeroFloat;
+        *(float *)((char *)object + 0x2730) = zeroFloat;
+        objectIndex = lbl_8055E774;
+        *(int *)((char *)object + 0x2700) = objectIndex;
+        lbl_8055E774 = objectIndex + 1;
+        lbl_80436D28[*(int *)((char *)object + 0x2700)] = object;
+        *(int *)((char *)object + 0x2754) =
+            fn_8017960C(*(int *)((char *)object + 0x2700));
+        *(unsigned char *)((char *)object + 0x275C) = zero;
     }
-    return obj;
+    return object;
 }
 #pragma cplusplus reset
 #pragma scheduling on
@@ -207,7 +217,7 @@ extern "C" void fn_801B8E28(int arg0) {
     w.h = -1;
     {
         char *matrix = *(char **)((char *)obj + 0x2754);
-        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), (float *)w.input);
+        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), (float *)&w.input);
         w.output[0] += *(float *)(matrix + 0x94);
         w.output[1] += *(float *)(matrix + 0x98);
         w.output[2] += *(float *)(matrix + 0x9c);
@@ -247,18 +257,18 @@ extern "C" void fn_801B8E28(int arg0) {
 #pragma cplusplus reset
 void fn_801B916C(void *arg0) {
     void **table;
-    int *p;
+    char *p;
     int i;
     int sentinel;
     float frequency;
     if (((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x400) {
         table = lbl_80436D28;
         frequency = lbl_80562764;
-        p = (int *)arg0 + 1;
+        p = (char *)arg0 + 4;
         i = 0;
         sentinel = -1;
         while (i < *(int *)((char *)arg0 + 0x394)) {
-            int index = p[0x60 / 4];
+            int index = *(int *)(p + 0x60);
             void *obj;
             if (index < 0) goto no_object;
             if (index >= lbl_8055E774) goto no_object;
@@ -269,28 +279,28 @@ void fn_801B916C(void *arg0) {
         have_object:
             if (obj != 0) {
                 int id = *(int *)((char *)obj + 0x1EC);
-                if (p[0x74 / 4] == id)
-                    p[0x74 / 4] = sentinel;
+                if (*(int *)(p + 0x74) == id)
+                    *(int *)(p + 0x74) = sentinel;
                 {
-                    volatile int *slots = p + 0x8C / 4;
+                    volatile int *slots = (volatile int *)(p + 0x8C);
                     if (slots[0] == id) slots[0] = sentinel;
                     if (slots[6] == id) slots[6] = sentinel;
                     if (slots[12] == id) slots[12] = sentinel;
                 }
-                p[0x74 / 4] = id;
-                *(float *)(p + 0x78 / 4) = frequency;
+                *(int *)(p + 0x74) = id;
+                *(float *)(p + 0x78) = frequency;
                 {
                     float value0;
                     float value1;
                     value0 = *(float *)((char *)obj + 0x2690);
-                    *(float *)(p + 0x7C / 4) = value0;
+                    *(float *)(p + 0x7C) = value0;
                     value1 = *(float *)((char *)obj + 0x2694);
-                    *(float *)(p + 0x80 / 4) = value1;
-                    *(float *)(p + 0x84 / 4) = value0 - value1;
+                    *(float *)(p + 0x80) = value1;
+                    *(float *)(p + 0x84) = value0 - value1;
                 }
-                p[0x88 / 4] = *(int *)((char *)obj + 0x268C);
+                *(int *)(p + 0x88) = *(int *)((char *)obj + 0x268C);
             }
-            p += 0xE0 / 4;
+            p += 0xE0;
             i++;
         }
     }
@@ -300,9 +310,9 @@ void fn_801B916C(void *arg0) {
 #pragma cplusplus off
 void *fn_801B9274(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        s32 index = *(s32 *)((char *)arg0 + 0x2700);
+        u32 index = *(u32 *)((char *)arg0 + 0x2700);
         lbl_8055E774--;
-        lbl_80436D28[index] = 0;
+        ((u32 *)lbl_80436D28)[index] = 0;
         fn_801836E0(arg0, 0);
         if (arg1 > 0) {
             fn_80128668(arg0);
@@ -497,5 +507,9 @@ void fn_801B949C(void *arg0) {
         sp20[2] = *(float *)((char *)arg0 + 0x2744) + *(float *)((char *)arg0 + 0x38);
         fn_801AD28C((char *)arg0 + 0x2704, sp20, matrix, (char *)arg0 + 0x2748, lbl_80562758, lbl_80562760, *(float *)((char *)arg0 + 0x2744));
     }
+}
+
+void fn_801B97D8(void *arg0) {
+    (void)arg0;
 }
 
