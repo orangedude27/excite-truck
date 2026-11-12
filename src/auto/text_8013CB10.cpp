@@ -264,11 +264,12 @@ extern "C" f32 lbl_80561508;
 struct PathNode { u8 data[0x24]; };
 struct PathGroup { s32 count; PathNode *nodes; s32 pad[3]; };
 struct PathData { s32 count; PathGroup *groups; };
+static inline PathGroup *PathGroupAt(u8 *self) {
+    return &(*(PathData **)(self + 0x64))->groups[*(s32 *)(self + 0x68)];
+}
 static inline u8 *NextPathNode(u8 *self, u8 *item) {
-    PathGroup *g = &(*(PathData **)(self + 0x64))->groups[*(s32 *)(self + 0x68)];
-    u8 *first = (u8 *)g->nodes;
-    PathNode *last = &g->nodes[g->count] - 1;
-    return (PathNode *)item == last ? first : item + 0x24;
+    PathNode *last = &PathGroupAt(self)->nodes[PathGroupAt(self)->count] - 1;
+    return (PathNode *)item == last ? (u8 *)PathGroupAt(self)->nodes : item + 0x24;
 }
 extern "C" f32 fn_801E7E24(void);
 extern "C" void fn_802981F8(void *);
@@ -1392,6 +1393,7 @@ extern "C" void fn_8013EB30(void *arg0) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_8013ED74(void *arg0) {
     struct Entry {
