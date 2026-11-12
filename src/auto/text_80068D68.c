@@ -22320,30 +22320,32 @@ void rfc_process_l2cap_congestion(void *arg0, s32 arg1) {
     }
 }
 
-void rfc_set_port_state(void *arg0, void *arg1) {
-    if (*(u16 *)((u8 *)arg1 + 0x12) & 1) {
-        *(u8 *)arg0 = *(u8 *)((u8 *)arg1 + 0xA);
+// Copy RPN port parameters from an MX frame into a port state, for each field
+// whose corresponding bit is set in the frame's parameter mask (u16 at +0x12).
+void rfc_set_port_state(void *portState, void *frame) {
+    if (*(u16 *)((u8 *)frame + 0x12) & 1) {
+        *(u8 *)portState = *(u8 *)((u8 *)frame + 0xA);
     }
-    if (*(u16 *)((u8 *)arg1 + 0x12) & 2) {
-        *(u8 *)((u8 *)arg0 + 1) = *(u8 *)((u8 *)arg1 + 0xB);
+    if (*(u16 *)((u8 *)frame + 0x12) & 2) {
+        *(u8 *)((u8 *)portState + 1) = *(u8 *)((u8 *)frame + 0xB);
     }
-    if (*(u16 *)((u8 *)arg1 + 0x12) & 4) {
-        *(u8 *)((u8 *)arg0 + 2) = *(u8 *)((u8 *)arg1 + 0xC);
+    if (*(u16 *)((u8 *)frame + 0x12) & 4) {
+        *(u8 *)((u8 *)portState + 2) = *(u8 *)((u8 *)frame + 0xC);
     }
-    if (*(u16 *)((u8 *)arg1 + 0x12) & 8) {
-        *(u8 *)((u8 *)arg0 + 3) = *(u8 *)((u8 *)arg1 + 0xD);
+    if (*(u16 *)((u8 *)frame + 0x12) & 8) {
+        *(u8 *)((u8 *)portState + 3) = *(u8 *)((u8 *)frame + 0xD);
     }
-    if (*(u16 *)((u8 *)arg1 + 0x12) & 0x10) {
-        *(u8 *)((u8 *)arg0 + 4) = *(u8 *)((u8 *)arg1 + 0xE);
+    if (*(u16 *)((u8 *)frame + 0x12) & 0x10) {
+        *(u8 *)((u8 *)portState + 4) = *(u8 *)((u8 *)frame + 0xE);
     }
-    if (*(u16 *)((u8 *)arg1 + 0x12) & 0x3F00) {
-        *(u8 *)((u8 *)arg0 + 5) = *(u8 *)((u8 *)arg1 + 0xF);
+    if (*(u16 *)((u8 *)frame + 0x12) & 0x3F00) {
+        *(u8 *)((u8 *)portState + 5) = *(u8 *)((u8 *)frame + 0xF);
     }
-    if (*(u16 *)((u8 *)arg1 + 0x12) & 0x20) {
-        *(u8 *)((u8 *)arg0 + 7) = *(u8 *)((u8 *)arg1 + 0x10);
+    if (*(u16 *)((u8 *)frame + 0x12) & 0x20) {
+        *(u8 *)((u8 *)portState + 7) = *(u8 *)((u8 *)frame + 0x10);
     }
-    if (*(u16 *)((u8 *)arg1 + 0x12) & 0x40) {
-        *(u8 *)((u8 *)arg0 + 8) = *(u8 *)((u8 *)arg1 + 0x11);
+    if (*(u16 *)((u8 *)frame + 0x12) & 0x40) {
+        *(u8 *)((u8 *)portState + 8) = *(u8 *)((u8 *)frame + 0x11);
     }
 }
 
