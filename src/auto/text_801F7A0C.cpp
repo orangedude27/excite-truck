@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#include <revolution/GX/GXTypes.h>  // GXCullMode, for the draw passes below
 __declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[];
 extern s32 lbl_8055EC48;
 extern "C" s32 fn_802C6B44(void *);
@@ -342,10 +343,10 @@ extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
 extern "C" void fn_801F7A14(void *);
 #pragma scheduling invalid_target
 extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
-    void *obj = arg1;
     volatile u8 *dst = (volatile u8 *)arg0;
     s32 i;
-    if (fn_801F7A88(obj, arg2, (void *)dst, 0x30) != 0) {
+    F7B10Obj *obj = (F7B10Obj *)arg1;
+    if (fn_801F7A88(arg1, arg2, arg0, 0x30) != 0) {
         volatile u8 *p = dst;
         for (i = 0; i < 2; i++) {
             u8 t;
@@ -358,17 +359,17 @@ extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
             p += 0x18;
         }
     } else {
-        f32 a[3], b[3], c[3], d[3];
-        ((void (*)(void *, void *, const char *))(*(void ***)obj)[13])(a, obj, lbl_8055B280);
-        ((f32 *)dst)[0]=a[0]; ((f32 *)dst)[1]=a[1]; ((f32 *)dst)[2]=a[2];
-        ((void (*)(void *, void *, const char *))(*(void ***)obj)[13])(b, obj, lbl_8055B288);
-        ((f32 *)dst)[3]=b[0]; ((f32 *)dst)[4]=b[1]; ((f32 *)dst)[5]=b[2];
-        ((void (*)(void *, void *, const char *))(*(void ***)obj)[13])(c, obj, lbl_8055B290);
-        ((f32 *)dst)[6]=c[0]; ((f32 *)dst)[7]=c[1]; ((f32 *)dst)[8]=c[2];
-        ((void (*)(void *, void *, const char *))(*(void ***)obj)[13])(d, obj, lbl_8055B298);
-        ((f32 *)dst)[9]=d[0]; ((f32 *)dst)[10]=d[1]; ((f32 *)dst)[11]=d[2];
+        f32 *o = (f32 *)arg0;
+        const F7B10Vec &a = obj->getVec(lbl_8055B280);
+        o[0] = a.x; o[1] = a.y; o[2] = a.z;
+        const F7B10Vec &b = obj->getVec(lbl_8055B288);
+        o[3] = b.x; o[4] = b.y; o[5] = b.z;
+        const F7B10Vec &c = obj->getVec(lbl_8055B290);
+        o[6] = c.x; o[7] = c.y; o[8] = c.z;
+        const F7B10Vec &d = obj->getVec(lbl_8055B298);
+        o[9] = d.x; o[10] = d.y; o[11] = d.z;
     }
-    fn_801F7A14((void *)dst);
+    fn_801F7A14(arg0);
 }
 #pragma scheduling on
 extern "C" s32 fn_80204BB4(void);
@@ -2443,13 +2444,13 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
         virtual void a4(); virtual void a5(); virtual void a6(); virtual void action(const char *);
     };
     struct ManagerAt28 {
-        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
         virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
+        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
         virtual f32 value(const char *);
     };
     volatile u32 *input = (volatile u32 *)arg1;
     u32 w0 = input[0], w1 = input[1], w2 = input[2], w3 = input[3];
-    u32 w4 = input[4], w5 = input[5], w6 = input[6], w7 = input[7];
+    register u32 w4 = input[4], w5 = input[5], w6 = input[6], w7 = input[7];
     u32 w8 = input[8], w9 = input[9], w10 = input[10], w11 = input[11];
     *(u32 *)((u8 *)arg0 + 0x10c) = w0;
     *(u32 *)((u8 *)arg0 + 0x110) = w1;
@@ -2465,14 +2466,14 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
     *(u32 *)((u8 *)arg0 + 0x138) = w11;
 
     void *object = fn_801284F8(0x6c, (void *)lbl_8055B3A8);
-    if (object != 0) {
+    if (object) {
         *(const char **)((u8 *)object + 0x64) = lbl_8055B3B0;
         void *resource = *(void **)((u8 *)arg1 + 0x34);
         *(void **)((u8 *)object + 0x30) =
             fn_801E6A3C(*(s32 *)((u8 *)arg0 + 0x13c),
                         *(u8 *)((u8 *)arg0 + 0x165) != 0, 0);
+        register long i = 0;
         *(s32 *)((u8 *)object + 0x54) = *(s32 *)((u8 *)arg0 + 0x160);
-        s32 i = 0;
         void *source = arg0;
         void *destination = object;
         while (i < *(s32 *)((u8 *)object + 0x54)) {
@@ -2498,28 +2499,28 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
                 *(f32 *)((u8 *)object + 0x5c) * *(f32 *)((u8 *)object + 0x5c);
         } else {
             *(s32 *)((u8 *)object + 0x60) = 2;
-            s32 index = fn_80129D90(0, 0, *(s32 *)((u8 *)object + 0x54));
+            unsigned index = fn_80129D90(0, 0, *(s32 *)((u8 *)object + 0x54));
             volatile s32 *entries = (volatile s32 *)((u8 *)object + index * 4);
             fn_801E6CD0(*(void **)((u8 *)object + 0x30),
                         entries[0x34 / 4], lbl_80562FF0);
         }
         *(u8 *)((u8 *)object + 0x5a) = 0;
-        u32 a = *(u32 *)((u8 *)arg0 + 0x10c);
+        register int a = *(u32 *)((u8 *)arg0 + 0x10c);
         u32 b = *(u32 *)((u8 *)arg0 + 0x110);
-        *(u32 *)object = a;
         *(u32 *)((u8 *)object + 4) = b;
-        a = *(u32 *)((u8 *)arg0 + 0x114);
+        *(u32 *)object = a;
         b = *(u32 *)((u8 *)arg0 + 0x118);
-        *(u32 *)((u8 *)object + 8) = a;
+        a = *(u32 *)((u8 *)arg0 + 0x114);
         *(u32 *)((u8 *)object + 0xc) = b;
-        a = *(u32 *)((u8 *)arg0 + 0x11c);
+        *(u32 *)((u8 *)object + 8) = a;
         b = *(u32 *)((u8 *)arg0 + 0x120);
-        *(u32 *)((u8 *)object + 0x10) = a;
+        a = *(u32 *)((u8 *)arg0 + 0x11c);
         *(u32 *)((u8 *)object + 0x14) = b;
-        a = *(u32 *)((u8 *)arg0 + 0x124);
+        *(u32 *)((u8 *)object + 0x10) = a;
         b = *(u32 *)((u8 *)arg0 + 0x128);
-        *(u32 *)((u8 *)object + 0x18) = a;
+        a = *(u32 *)((u8 *)arg0 + 0x124);
         *(u32 *)((u8 *)object + 0x1c) = b;
+        *(u32 *)((u8 *)object + 0x18) = a;
         a = *(u32 *)((u8 *)arg0 + 0x12c);
         *(u32 *)((u8 *)object + 0x20) = a;
         a = *(u32 *)((u8 *)arg0 + 0x130);
