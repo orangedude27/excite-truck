@@ -153,7 +153,7 @@ extern "C" void NWC24Data_Init(void*);
 extern "C" s32 fn_800FAB98(void*, void*);
 extern "C" s32 fn_800FACC0(void*, void*, s32);
 extern "C" s32 fn_800FAF10(void*, void*, unsigned long, s32);
-struct ExecStream { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual int v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual int v20(); };
+struct ExecStream { virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual int v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual int v20(); };
 extern "C" const char lbl_803251B0[];
 extern "C" const char lbl_80325158[];
 extern "C" const char lbl_803250C8[];
@@ -3638,6 +3638,65 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* s
     if (loader)
         ((void (*)(void*))((void (*)(void))Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv))(loader);
     OSUnlockMutex(mutex);
+}
+
+extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
+    struct NWCWork { void* stream; s32 valid; void* ref; u32 unk14; };
+    NWCWork work;
+    u8 header[0x38];
+    u8 adpcm[8][0x30];
+    u8 fileBuf[0x200];
+    typedef void (*Cb_t)(s32, void*, u32);
+    typedef s32 (*Faf_t)(void*, void*, u32);
+    if (*(void**)((u8*)self + 0x10) != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x6FD, lbl_80325520);
+    }
+    void* mutex = *(void**)((u8*)self + 0x24);
+    OSLockMutex(mutex);
+    *(void**)((u8*)self + 0x10) = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void**)((u8*)self + 0x14), *(u32*)((u8*)self + 0x18), fileBuf, 0x200);
+    OSUnlockMutex(mutex);
+    void* stream = *(void**)((u8*)self + 0x10);
+    if (stream == 0) {
+        Cb_t cb = *(Cb_t*)((u8*)self + 0x1C);
+        if (cb != 0) cb(0, 0, *(u32*)((u8*)self + 0x20));
+        return;
+    } else if (((ExecStream*)stream)->v20() == 0 || ((ExecStream*)stream)->v11() == 0) {
+        ((ExecStream*)stream)->v4();
+        Cb_t cb = *(Cb_t*)((u8*)self + 0x1C);
+        *(void**)((u8*)self + 0x10) = 0;
+        if (cb != 0) cb(0, 0, *(u32*)((u8*)self + 0x20));
+        return;
+    } else {
+        if (lbl_8055DE58 == 0) {
+            OSInitMutex(&lbl_80412CA0);
+            lbl_8055DE58 = 1;
+        }
+        OSLockMutex(&lbl_80412CA0);
+        work.stream = *(void**)((u8*)self + 0x10);
+        NWC24Data_Init(&work.valid);
+        if (((Faf_t)fn_800FAF10)(&work.stream, &lbl_80412AA0, 0x200) == 0) {
+            ((ExecStream*)stream)->v4();
+            *(void**)((u8*)self + 0x10) = 0;
+            Cb_t cb = *(Cb_t*)((u8*)self + 0x1C);
+            if (cb != 0) cb(0, 0, *(u32*)((u8*)self + 0x20));
+            OSUnlockMutex(&lbl_80412CA0);
+            return;
+        }
+        void* m2 = *(void**)((u8*)self + 0x24);
+        OSLockMutex(m2);
+        ((ExecStream*)stream)->v4();
+        *(void**)((u8*)self + 0x10) = 0;
+        OSUnlockMutex(m2);
+        if (!!work.valid) fn_800FAB98(&work.valid, header);
+        s32 i = 0;
+        s32 off = 0;
+        for (i = 0, off = 0; i < header[2]; i++, off += 0x30) {
+            if (!!work.valid) fn_800FACC0(&work.valid, (void*)((u8*)adpcm + off), i);
+        }
+        Cb_t cb2 = *(Cb_t*)((u8*)self + 0x1C);
+        if (cb2 != 0) cb2(1, header, *(u32*)((u8*)self + 0x20));
+        OSUnlockMutex(&lbl_80412CA0);
+    }
 }
 
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
