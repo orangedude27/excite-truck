@@ -3531,6 +3531,7 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* s
 }
 
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
+    /* Cancel this stream-header load task: clear its state and stop/pause the attached sound if still active. */
     class Sound {
     public:
         virtual void v2();
@@ -3541,7 +3542,7 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(
         virtual void v7();
         virtual void v8();
         virtual void v9();
-        virtual s32 v10();
+        virtual s32 IsActive();
         virtual void v11();
         virtual void v12();
         virtual void v13();
@@ -3549,23 +3550,23 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(
         virtual void v15();
         virtual void v16();
         virtual void v17();
-        virtual void v18();
-        virtual void v19(s32, s32);
+        virtual void Stop();
+        virtual void Pause(s32, s32);
         virtual void v20();
-        virtual s32 v21();
+        virtual s32 IsAttached();
     };
     void* mutex = *(void**)((u8*)self + 0x24);
     OSLockMutex(mutex);
     Sound* sound = *(Sound**)((u8*)self + 0x10);
     *(u32*)((u8*)self + 0x1c) = 0;
-    if (sound != 0 && sound->v21() != 0) {
+    if (sound != 0 && sound->IsAttached() != 0) {
         sound = *(Sound**)((u8*)self + 0x10);
-        if (sound->v10() != 0) {
+        if (sound->IsActive() != 0) {
             sound = *(Sound**)((u8*)self + 0x10);
-            sound->v19(0, 0);
+            sound->Pause(0, 0);
         } else {
             sound = *(Sound**)((u8*)self + 0x10);
-            sound->v18();
+            sound->Stop();
         }
     }
     OSUnlockMutex(mutex);
