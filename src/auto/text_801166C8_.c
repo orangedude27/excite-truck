@@ -2223,40 +2223,57 @@ void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-void fn_8011A4F8(s32 arg0, void *arg1) {
-    s32 temp_r3_2, temp_r3_4, temp_r4;
-    u32 temp_r3, temp_r3_3, var_r30;
-    void *temp_r31;
-    s32 diff;
-    var_r30 = arg0;
-    temp_r31 = *(void **)((u8 *)arg1 + 0x7C);
-    if (*(s32 *)((u8 *)temp_r31 + 0xC4) == 0) {
-        if (arg0 != 0x8000) {
-            diff = *(s32 *)((u8 *)temp_r31 + 0xB8) - *(s32 *)((u8 *)temp_r31 + 0x90);
-            if (arg0 != (u32)(diff + *(s32 *)((u8 *)temp_r31 + 0x94))) {
-                *(s32 *)((u8 *)temp_r31 + 0x24) = 0; *(s32 *)((u8 *)temp_r31 + 0x20) = 1; return;
+void fn_8011A4F8(s32 transferSize, DVDFileInfo *fileInfo) {
+    s32 padMoved, elapsed, padSize;
+    u32 writePos, newWritePos, size;
+    DvdStream *stream;
+    s32 remaining;
+
+    /* Completion callback of the 32 KiB read fn_8011A6A0 queued: transferSize bytes
+       landed at the write pointer, padSize of them ahead of the wanted data, so
+       slide the chunk into the ring, update the stream's counters, wait off the
+       pacing rate and queue the next read unless the stream is paused. */
+    size = transferSize;
+    stream = *(DvdStream **)((u8 *)fileInfo + 0x7C); /* stream->self, see fn_8011AC10 */
+    if (stream->cancelling == 0) {
+        if (transferSize != 0x8000) {
+            remaining = stream->endOffset - stream->readOffset;
+            if (transferSize != (u32)(remaining + stream->padSize)) {
+                stream->reading = 0;
+                stream->error = 1;
+                return;
             }
         }
-        temp_r4 = *(s32 *)((u8 *)temp_r31 + 0x94);
-        if (temp_r4 != 0) {
-            temp_r3 = *(u32 *)((u8 *)temp_r31 + 0xAC);
-            memmove((void *)temp_r3, (void *)(temp_r3 + temp_r4), *(s32 *)((u8 *)temp_r31 + 0xB8) - *(s32 *)((u8 *)temp_r31 + 0x90));
-            temp_r3_2 = *(s32 *)((u8 *)temp_r31 + 0x94); *(s32 *)((u8 *)temp_r31 + 0x94) = 0; var_r30 -= temp_r3_2;
+        padSize = stream->padSize;
+        if (padSize != 0) {
+            writePos = stream->writePtr;
+            memmove((void *)writePos, (void *)(writePos + padSize), stream->endOffset - stream->readOffset);
+            padMoved = stream->padSize;
+            stream->padSize = 0;
+            size -= padMoved;
         }
-        *(s32 *)((u8 *)temp_r31 + 0x28) += var_r30; *(s32 *)((u8 *)temp_r31 + 0x90) += var_r30;
-        temp_r3_3 = *(u32 *)((u8 *)temp_r31 + 0xAC) + var_r30;
-        *(u32 *)((u8 *)temp_r31 + 0xAC) = temp_r3_3;
-        if (temp_r3_3 >= *(u32 *)((u8 *)temp_r31 + 0xA8)) *(u32 *)((u8 *)temp_r31 + 0xAC) = *(u32 *)((u8 *)temp_r31 + 0xA4);
-        *(s32 *)((u8 *)temp_r31 + 0xA0) -= var_r30;
-        *(u32 volatile *)((u8 *)temp_r31 + 0x4C) += var_r30;
-        if (*(u32 volatile *)((u8 *)temp_r31 + 0x4C) > *(u32 volatile *)((u8 *)temp_r31 + 0x44)) *(u32 *)((u8 *)temp_r31 + 0x44) = *(u32 volatile *)((u8 *)temp_r31 + 0x4C);
-        if (*(s32 *)((u8 *)temp_r31 + 0xBC) != 0) fn_8011A45C(temp_r31, var_r30, *(s32 *)((u8 *)temp_r31 + 0xCC));
-        temp_r3_4 = fn_80116D30() - *(s32 *)((u8 *)temp_r31 + 0xCC);
-        *(s32 *)((u8 *)temp_r31 + 0xCC) = temp_r3_4; *(s32 *)((u8 *)temp_r31 + 0x30) += temp_r3_4;
-        if (*(s32 *)((u8 *)temp_r31 + 0xC8) != 0 || *(s32 *)((u8 *)temp_r31 + 0x2C) != 0) *(s32 *)((u8 *)temp_r31 + 0x3C) += *(s32 *)((u8 *)temp_r31 + 0xCC);
-        else *(s32 *)((u8 *)temp_r31 + 0x38) += *(s32 *)((u8 *)temp_r31 + 0xCC);
-        *(s32 *)((u8 *)temp_r31 + 0x24) = 0;
-        if (*(s32 *)((u8 *)temp_r31 + 0x50) == 0) fn_8011A6A0(temp_r31);
+        stream->totalRead += size;
+        stream->readOffset += size;
+        newWritePos = stream->writePtr + size;
+        stream->writePtr = newWritePos;
+        if (newWritePos >= stream->bufferEnd)
+            stream->writePtr = stream->bufferStart;
+        stream->freeSpace -= size;
+        stream->fill += size;
+        if (stream->fill > stream->peakFill)
+            stream->peakFill = stream->fill;
+        if (stream->rate != 0)
+            fn_8011A45C(stream, size, stream->readStart);
+        elapsed = fn_80116D30() - stream->readStart;
+        stream->readStart = elapsed;
+        stream->readTime += elapsed;
+        if (stream->timeModeUsed != 0 || stream->timeMode != 0)
+            stream->readTimeStream += stream->readStart;
+        else
+            stream->readTimeSync += stream->readStart;
+        stream->reading = 0;
+        if (stream->paused == 0)
+            fn_8011A6A0(stream);
     }
 }
 
