@@ -22120,8 +22120,16 @@ typedef struct {
 } tPORT_STATE;
 #endif
 #ifndef PORT_INT_H
-/* tPORT (port_int.h) as far as the RFCOMM port FSM reaches into it; the tx/rx
- * queues (tPORT_DATA) and the modem control blocks are left as raw padding. */
+/* tPORT_CTRL (port_int.h): the modem status of a port, carried in an MSC frame */
+typedef struct {
+    UINT8   modem_signal;     /* 0x00 [DTR/DSR | RTS/CTS | RI | DCD] */
+    UINT8   break_signal;     /* 0x01 0-3 s in steps of 200 ms */
+    UINT8   discard_buffers;  /* 0x02 0 - do not discard, 1 - discard */
+    UINT8   break_signal_seq; /* 0x03 RFCOMM_CTRL_BREAK_* */
+    BOOLEAN fc;               /* 0x04 TRUE when we cannot accept more frames */
+} tPORT_CTRL;
+/* tPORT (port_int.h) as far as the RFCOMM port code reaches into it; the tx/rx
+ * queues (tPORT_DATA) and the peer's modem control block are left as raw padding. */
 typedef struct {
     UINT8   inx;                  /* 0x00 index in the port_info array */
     UINT8   in_use;               /* 0x01 */
