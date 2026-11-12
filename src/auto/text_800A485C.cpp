@@ -3140,6 +3140,7 @@ extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+/* Open a file by path on the current VF volume, returning status and filling file info on success. */
 extern "C" s32 fn_800A9A4C(void *arg0, s32 arg1, s32 arg2) {
     void *vol;
     s32 result;
