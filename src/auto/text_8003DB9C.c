@@ -3342,7 +3342,7 @@ typedef union _GXChanCtrl {
     } f;
 } GXChanCtrl;
 
-void GXSetChanCtrl(GXChannelID chan, s32 enable, GXColorSrc ambSrc, GXColorSrc matSrc,
+void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc ambSrc, GXColorSrc matSrc,
                    GXLightID lightMask, GXDiffuseFn diffFn, GXAttnFn attnFn) {
     GXChanCtrl u;
     unsigned int *base;
