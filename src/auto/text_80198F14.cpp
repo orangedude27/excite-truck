@@ -963,8 +963,8 @@ extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4,
     Vec* b = (Vec*)arg2;
     dx = a->x - b->x;
     dy = a->y - b->y;
-    dz = a->z - b->z;
     d.x = dx;
+    dz = a->z - b->z;
     d.y = dy;
     d.z = dz;
     mag = PSVECMag(&d);
@@ -985,7 +985,7 @@ extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4,
         if (ret > lbl_805622D0) {
             v8.x = dir.x * ret; v8.y = dir.y * ret; v8.z = dir.z * ret;
             var4 = lbl_805622D4;
-            if (var4 > rem) var4 = rem;
+            var4 = (var4 > rem) ? rem : var4;
             ((void (*)(void*, s32, Vec*, s32, s32, s32, s32, f32))(*(void***)arg0)[8])(arg0, arg4, &v8, arg2, arg3, 0, 0, var4);
             fn_801B34DC(arg0, 0, (Vec*)arg2, &v8, &dir, arg3);
         }
@@ -1004,8 +1004,8 @@ extern "C" void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s32 a, s32 b, f32 radius, f32 otherRadius) {
     Vec delta, normal, point;
     f32 sum = radius + otherRadius;
-    const Vec *p = (const Vec *)pos;
-    const Vec *q = (const Vec *)otherPos;
+    Vec *p = (Vec *)pos;
+    Vec *q = (Vec *)otherPos;
     f32 dx = p->x - q->x;
     f32 dz = p->z - q->z;
     f32 dy = p->y - q->y;
@@ -1883,6 +1883,19 @@ public:
 };
 extern "C" void fn_801BEAEC(s32, s32, void*);
 extern "C" void fn_801BEB44(s32, s32, void*, f32*);
+// 3x3 matrix times vector; the original inlines it with a src == dst check, so both branches are emitted.
+static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
+    if (src == dst) {
+        f32 x = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
+        f32 y = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
+        f32 z = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
+        dst[0] = x; dst[1] = y; dst[2] = z;
+    } else {
+        dst[0] = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
+        dst[1] = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
+        dst[2] = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
+    }
+}
 struct Fn801A4548Hdr { s32 count; u8* list; s32 count2; u8* shorts; s32 unk10; void* fn; };
 static inline void Fn801A4548Swap2(u8* q) {
     u8 t = q[0]; q[0] = q[1]; q[1] = t;
@@ -4617,13 +4630,14 @@ extern "C" void* fn_801A4548(s32 arg0) {
     u8 ok = 0;
     Fn801A4548Hdr* h = (Fn801A4548Hdr*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
     if (h && ok) {
-        u8* p = (u8*)h;
         s32* lp = (s32*)&h->list;
-        Fn801A4548Swap4(p);
-        Fn801A4548Swap4(p+8);
-        Fn801A4548Swap4(p+4);
-        Fn801A4548Swap4(p+12);
-        Fn801A4548Swap4(p+16);
+        u8 t;
+        u8* q4 = (u8*)lp;
+        Fn801A4548Swap4((u8*)h);
+        Fn801A4548Swap4((u8*)h+8);
+        Fn801A4548Swap4(q4);
+        Fn801A4548Swap4((u8*)h+12);
+        Fn801A4548Swap4((u8*)h+16);
         fn_801A4768(lp, (s32)h);
         fn_801A4780((s32*)&h->unk10, (s32)h);
         fn_801A4798((s32*)&h->shorts, (s32)h);
