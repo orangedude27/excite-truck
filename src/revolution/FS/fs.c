@@ -862,6 +862,7 @@ s32 ISFS_Read(s32 fd, void* dst, s32 len) {
 
 s32 ISFS_ReadAsync(s32 fd, void* dst, s32 len, FSAsyncCallback callback,
                    void* callbackArg) {
+    /* Asynchronously read from a file descriptor into a 32-byte-aligned buffer using an IOS command block. */
     FSCommandBlock* block;
 
     if (dst == NULL || (u32)dst % 32 != 0) {
