@@ -4587,9 +4587,12 @@ extern "C" void fn_800FA7E0(void *self) {
 #pragma pop
 
 #pragma use_lmw_stmw off
+/* Initialize a StrmBufferPool with a backing buffer split into `count` equal blocks.
+ * Stores buffer, total size, block size, block count, alloc bitmap/index base, and
+ * panics if count exceeds 32 (bitmap capacity). */
 extern "C" void Setup__Q46nw4hbm3snd6detail14StrmBufferPoolFPvUli(void *this_, void *buffer, u32 size, s32 count) {
     if (count != 0) {
-        u32 level = OSDisableInterrupts();
+        u32 savedInterrupts = OSDisableInterrupts();
         *(void **)this_ = buffer;
         *(u32 *)((u8 *)this_ + 4) = size;
         *(u32 *)((u8 *)this_ + 8) = size / (u32)count;
@@ -4601,7 +4604,7 @@ extern "C" void Setup__Q46nw4hbm3snd6detail14StrmBufferPoolFPvUli(void *this_, v
             extern const char lbl_803264F4[];
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264E0, 0x2A, lbl_803264F4);
         }
-        OSRestoreInterrupts(level);
+        OSRestoreInterrupts(savedInterrupts);
     }
 }
 #pragma use_lmw_stmw reset
