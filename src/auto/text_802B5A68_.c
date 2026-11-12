@@ -122,32 +122,30 @@ void fn_802B5B6C(void) {
 
 extern void *lbl_8055FA44;
 s32 fn_802B5B74(void *arg0) {
-    s32 workspace[51];
+    struct Work { s32 *items; s32 count; s32 capacity; s32 entries[48]; } work;
     s32 result;
     s32 index;
     void *object;
-
-    workspace[2] = 0x10;
-    workspace[0] = (s32)&workspace[3];
-    workspace[1] = 0;
+    work.capacity = 0x10;
+    work.items = (s32 *)&work.entries;
+    work.count = 0;
     object = ((void *(*)(void))fn_802B5B6C)();
     ((void (*)(void *, s32, s32, s32))fn_802B321C)(
-        workspace, 0, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
-
+        &work, 0, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
     index = (s32)lbl_8055FA44;
     result = 0;
-    if (index >= 0 && index < workspace[1]) {
+    if (index >= 0 && index < work.count) {
         result = 1;
     }
     if (result != 0) {
-        s32 *entry = (s32 *)workspace[0] + index * 3;
+        s32 *entry = work.items + index * 3;
         ((s32 *)arg0)[0] = entry[0];
         ((s32 *)arg0)[1] = entry[1];
         ((s32 *)arg0)[2] = entry[2];
     }
-    workspace[0] = 0;
-    workspace[1] = 0;
-    workspace[2] = 0;
+    work.items = 0;
+    work.count = 0;
+    work.capacity = 0;
     return result;
 }
 
@@ -156,16 +154,18 @@ s32 fn_802B5B74(void *arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802B5C24(s32 arg0) {
-    register s32 temp_r31;
+    s32 value;
     s32 temp_r3;
-    register s32 value;
+    s32 temp_r31;
+    void *object;
 
 loop_1:
     temp_r3 = arg0 + lbl_8055FA40;
     value = temp_r3 + 7;
     temp_r31 = value % 7;
     lbl_8055FA40 = temp_r31;
-    if (temp_r31 >= fn_802B3F0C(*(s32 *)((u8 *)((void *(*)(void))fn_802B5B6C)() + 8))) {
+    object = ((void *(*)(void))fn_802B5B6C)();
+    if (temp_r31 >= fn_802B3F0C(*(s32 *)((unsigned char *)object + 8))) {
         if (temp_r31 != 6) {
             goto loop_1;
         }
@@ -471,20 +471,29 @@ extern char lbl_8034A70C[];
 extern int strcmp(const char *, const char *);
 #pragma dont_inline on
 void fn_802B62A4(const char **arg) {
-    register s32 *entry = (s32 *)lbl_8034A670;
-    register u32 i = 0;
+    register s32 *entry;
+    register u32 i;
 
+    entry = (s32 *)lbl_8034A670;
+    i = 0;
 loop:
-    if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) {
-        goto action;
+    if (entry[0] != 0) {
+        if (strcmp((const char *)entry[0], *arg) == 0) {
+            goto action;
+        }
     }
-    if (entry[1] == 0 || ((s32 (*)(const char *))entry[1])(*arg) == 0) {
-        goto next;
+    if (entry[1] != 0) {
+        if (((s32 (*)(const char *))entry[1])(*arg) != 0) {
+            goto action;
+        }
     }
+    goto next;
 action:
-    ((void (*)(const char *, void *))*(s32 *)(lbl_8034A670 + i * 12 + 8))(
-        *arg, (void *)(lbl_8034A670 + i * 12));
-    return;
+    {
+        s32 *actionEntry = (s32 *)(lbl_8034A670 + i * 12);
+        ((void (*)(const char *, void *))actionEntry[2])(*arg, (void *)actionEntry);
+        return;
+    }
 next:
     i++;
     entry += 3;
@@ -528,32 +537,40 @@ extern float lbl_80564C78;
 #pragma processor 750
 #pragma scheduling invalid_target
 s32 fn_802B640C(void *arg0, s32 arg1) {
-    f32 temp_f1, temp_f31, var_f4, temp_f5, temp_f6;
-    s32 temp_r3, var_r3, var_r4, var_r5;
-
-    /* Match note: volatile first-member read tests the target's pre-prologue load ordering. */
-    temp_f31 = fn_800108C8(arg1, *(volatile f32 *)((u8 *)arg0 + 0x10));
+    f32 temp_f1;
+    f32 temp_f31;
+    f32 var_f4;
+    f32 temp_f5;
+    f32 temp_f6;
+    s32 temp_r3;
+    s32 var_r3;
+    s32 var_r4;
+    s32 var_r5;
+    f32 firstValue = *(f32 *)((u8 *)arg0 + 0x10);
+    temp_f31 = fn_800108C8(arg1, firstValue);
     temp_f1 = fn_8001090C(*(f32 *)((u8 *)arg0 + 0x10));
     temp_r3 = *(s32 *)((u8 *)arg0 + 0x14);
     temp_f5 = *(f32 *)((u8 *)arg0 + 4);
     temp_f6 = temp_f5 + temp_f31;
-    if (temp_r3 & 1)
+    if (temp_r3 & 1) {
         var_f4 = lbl_80564C74;
-    else if (temp_r3 & 2)
+    } else if (temp_r3 & 2) {
         var_f4 = -temp_f31;
-    else
+    } else {
         var_f4 = -temp_f31 * lbl_80564C78;
+    }
     var_r3 = 0;
     var_r5 = 0;
     var_r4 = 0;
-    if ((f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) >= temp_f5 + var_f4 &&
-        (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) < temp_f6 + var_f4)
+    if ((f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) >= temp_f5 + var_f4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) < temp_f6 + var_f4) {
         var_r4 = 1;
-    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= *(f32 *)((u8 *)arg0 + 8))
+    }
+    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= *(f32 *)((u8 *)arg0 + 8)) {
         var_r5 = 1;
-    if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) <
-        *(f32 *)((u8 *)arg0 + 8) + temp_f1)
+    }
+    if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) < *(f32 *)((u8 *)arg0 + 8) + temp_f1) {
         var_r3 = 1;
+    }
     return var_r3;
 }
 #pragma pop
@@ -1220,24 +1237,26 @@ __declspec(section ".sdata") extern float lbl_8055FA20[];
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+/* Return 1 and update the stored timer once the elapsed seconds since the
+ * previous timestamp exceeds the configured threshold; otherwise return 0. */
 s32 fn_802B7694(void) {
-    s32 result = 0;
-    f32 value = (f32)fn_802E2C20() / lbl_80564C70;
-    s32 less = value - lbl_8055FA20[1] < lbl_8055FA20[0];
+    s32 triggered = 0;
+    f32 elapsedSeconds = (f32)fn_802E2C20() / lbl_80564C70;
+    s32 belowThreshold = elapsedSeconds - lbl_8055FA20[1] < lbl_8055FA20[0];
 
-    if (!less) {
-        f32 newValue = (f32)fn_802E2C20() / lbl_80564C70;
-        result = 1;
-        lbl_8055FA20[0] = newValue;
+    if (!belowThreshold) {
+        f32 currentSeconds = (f32)fn_802E2C20() / lbl_80564C70;
+        triggered = 1;
+        lbl_8055FA20[0] = currentSeconds;
     }
-    return result;
+    return triggered;
 }
 
 #pragma opt_propagation off
 void fn_802B773C(void) {
     f32 sp8[3];
     s32 *state = lbl_804BFF80;
-    s32 previous = lbl_8055FA58;
+    u8 previous = lbl_8055FA58;
 
     lbl_8055FA58 = 0;
     if (*(s8 *)((u8 *)state + 0x34) != 0)
@@ -1593,6 +1612,8 @@ s32 fn_802B8110(u32 arg0, s32 arg1) {
         s32 capacity;
         s32 entries[51];
     } work;
+    void *temp_r3;
+    s32 var_r30;
     s32 *temp_r6;
     s32 temp_r29;
     s32 temp_r3_2;
@@ -1601,10 +1622,6 @@ s32 fn_802B8110(u32 arg0, s32 arg1) {
     s32 temp_r5;
     s32 var_r0;
     s32 var_r0_2;
-    s32 var_r30;
-    void *temp_r3;
-
-    /* Match note: reserve the stack entry table and cast the void helper to its pointer-returning convention. */
     var_r30 = 0;
     temp_r29 = fn_802B5D94(arg1);
     temp_r3 = ((void *(*)(void))fn_802B5B6C)();
@@ -1649,17 +1666,14 @@ s32 fn_802B825C(s32 arg0) {
     struct { s32 pad[2]; float *values; } result;
     float *values;
     float value;
-    float delta;
     float next;
     s32 changed = 0;
-
     if (fn_802B5B74(&result) != 0) {
         values = result.values;
         value = values[1];
-        delta = fn_802B822C(arg0);
-        next = values[0] + delta;
+        next = values[0] + fn_802B822C(arg0);
         value = value < next ? value : next;
-        value = lbl_80564C98 < value ? lbl_80564C98 : value;
+        value = value > lbl_80564C98 ? lbl_80564C98 : value;
         if (value != values[0]) {
             values[0] = value;
             changed = 1;
@@ -1673,17 +1687,14 @@ s32 fn_802B8310(s32 arg0) {
     struct Result {
         s32 pad[2];
         float *values;
-    };
+    } result;
     register f32 lower;
     register f32 bound = lbl_80564C9C;
     register float *values;
-    register s32 changed = 0;
-    struct Result result;
+    register s32 changed;
     f32 value;
-    s32 valid;
-
-    valid = fn_802B5B74(&result);
-    if (valid != 0) {
+    changed = 0;
+    if (fn_802B5B74(&result) != 0) {
         values = result.values;
         lower = values[0];
         value = values[1] + fn_802B822C(arg0);
@@ -1691,7 +1702,7 @@ s32 fn_802B8310(s32 arg0) {
         bound = (bound > lower) ? bound : lower;
         if (bound != values[1]) {
             values[1] = bound;
-            *(u8 *)((u8 *)result.values + 8) = 1;
+            *(volatile u8 *)((u8 *)result.values + 8) = 1;
             changed = 1;
         }
     }
@@ -1701,31 +1712,24 @@ s32 fn_802B8310(s32 arg0) {
 void fn_802B83CC(void) {
     Struct804BFF80 *state = (Struct804BFF80 *)&lbl_804BFF80;
     Struct804BFF80 *callbackState;
-    char *callbackName;
-    Fn802B83CCEntry *entry;
     Fn802B83CCEntry *actionEntry;
     s32 difference;
     u32 i;
-
     if (state->str1[0] == 0)
         return;
     difference = state->unk0[1] - state->unk54[1];
     if (difference == 0)
         return;
-
     for (i = 0; i < 3; i++) {
-        entry = &lbl_8034A95C[i];
-        if (entry->name == 0 || strcmp(entry->name, state->str1) != 0) {
-            if (entry->predicate == 0 || entry->predicate(state->str1) == 0)
+        if (lbl_8034A95C[i].name == 0 || strcmp(lbl_8034A95C[i].name, state->str1) != 0) {
+            if (lbl_8034A95C[i].predicate == 0 || lbl_8034A95C[i].predicate(state->str1) == 0)
                 continue;
         }
-
         actionEntry = (Fn802B83CCEntry *)(volatile void *)&lbl_8034A95C[i];
         callbackState = (Struct804BFF80 *)&lbl_804BFF80;
-        callbackName = callbackState->str1;
-        if (actionEntry->action(difference, callbackName) != 0) {
-            callbackState->unk54[0] = *(u32 *)&lbl_804BFF80;
+        if (actionEntry->action(difference, callbackState->str1) != 0) {
             callbackState->unk54[1] = callbackState->unk0[1];
+            callbackState->unk54[0] = *(u32 *)&lbl_804BFF80;
             callbackState->unk54[2] = callbackState->unk0[2];
             callbackState->unk54[3] = callbackState->unk0[3];
             callbackState->unk54[4] = callbackState->unk0[4];
@@ -1895,7 +1899,10 @@ extern void fn_8001123C(s32), fn_80011A2C(void);
 void fn_802B8848(void) {
     s32 sp8[12], temp_r31;
     s32 temp_r34;
-    s32 state;
+    u32 state;
+    u32 a;
+    u32 b;
+    u32 c;
     if (lbl_8055FA48 != 0) {
         if ((u32)(lbl_8055FA38 - 2) <= 1U) fn_802B773C();
         if ((u8)lbl_8055FA32 != 0 && (temp_r34=lbl_8055FA34) != -1) fn_802C7040();
@@ -1904,8 +1911,12 @@ void fn_802B8848(void) {
         fn_802B86F8(); fn_802B676C();
         if (lbl_8055FA38 != 2 && lbl_8055FA38 != 3) fn_802B6804();
         switch (lbl_8055FA38) { case 0: fn_802B7D4C(); break; case 1: fn_802B69FC(); break; case 2: fn_802B7D1C(); break; case 3: fn_802B7CF0(); break; }
-        state = lbl_8055FA38;
-        temp_r31=fn_802B5B18(((state << 30) - (state >> 31) << 2) + (state >> 31));
+        state = (u32)lbl_8055FA38;
+        a = state << 30;
+        b = state >> 31;
+        c = a - b;
+        c *= 4;
+        temp_r31=fn_802B5B18(c + b);
         fn_802B6568(((void *(*)(void *, void *))(*(u32 **)*lbl_8055FA48)[3])(*lbl_8055FA48,lbl_8034A6C0), (const char *)temp_r31);
         ((void (*)(void *))(*(u32 **)*lbl_8055FA48)[7])(*lbl_8055FA48);
         fn_8001123C(0); fn_80011A2C();
