@@ -35,6 +35,9 @@ struct VObj_8017D6E0 {
     virtual void f38(); virtual void f3C(); virtual void f40(int);
 };
 #pragma cplusplus reset
+#pragma cplusplus on
+struct VT8017DCB4 { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void* f4(); };
+#pragma cplusplus reset
 void fn_802066C8(void*, unsigned int);
 void fn_80206C70(void*);
 #pragma push
@@ -387,7 +390,7 @@ done:
 #pragma processor 750
 #pragma ppc_psq_save off
 void fn_8017DCB4(void *arg0) {
- unsigned char *p=(unsigned char*)arg0; float a[2]; float d[3]; int v3[3]; float v1[3]; float v2[3]; float b[9]; float c[3]; unsigned tag; int mode; int fl; int x; float z;
+ unsigned char *p=(unsigned char*)arg0; struct BC8017DCB4{float b[9]; float c[3];} bc; float v2[3],v1[3]; int v3[3]; float d[3],a[2]; unsigned tag; int mode; int fl; int x; float z;
  extern void fn_8017B164(void); extern void fn_8017D380(float*,int); extern void fn_8017A580(void*);
  extern float fn_8017D378(void); extern void *fn_8017960C(int); extern void *fn_801B2EC0(int);
  extern void fn_801602B0(void*); extern void fn_8017E3C4(void*,void*,short*);
@@ -401,7 +404,7 @@ void fn_8017DCB4(void *arg0) {
  x=lbl_8055D430; fl=0; if((x&1)&&(x&0x88)) fl=1;
  if(fl==0) { fn_8017D380(v2,*(int*)(p+0x1F8)); *(float*)(p+0x60)=v2[0]; *(float*)(p+0x64)=v2[1]; *(float*)(p+0x68)=v2[2]; fn_8017A580(arg0); z=lbl_80561BE0; *(float*)(p+0x118)=z; *(float*)(p+0x11C)=z; *(float*)(p+0x120)=z; }
  if(!p[0x1FE]) { x=lbl_8055D430; fl=0; if((x&1)&&(x&0x80)) fl=1;
- if(fl!=0) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void*r=((void*(*)(void*))(*(void***)obj)[4])(obj); if(*(int*)((char*)r+0x24)==0) { short angle; float f31; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(b); fn_8017E388(b); fn_80160230(c,a); f31=fn_8017E380(arg0); fn_8017960C(*(int*)(p+0x1F8)); c[1]=*(float*)((char*)fn_801602B4()+0x28)+f31; GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)b,(long)d,angle,lbl_80561BE0); } } }
+ if(fl!=0) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void **vt=*(void***)obj; void*r=((void*(*)(void*))vt[4])(obj); if(*(int*)((char*)r+0x24)==0) { short angle; float f31; float t; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(bc.b); fn_8017E388(bc.b); fn_80160230(bc.c,a); f31=fn_8017E380(arg0); fn_8017960C(*(int*)(p+0x1F8)); t=*(float*)((char*)fn_801602B4()+0x28); bc.c[1]=t+f31; GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)bc.b,(long)d,angle,lbl_80561BE0); } } }
  v3[0]=*(int*)(p+0x60);v3[1]=*(int*)(p+0x64);v3[2]=*(int*)(p+0x68); if(fn_801E9E30(p+0x6C,v3)==0)p[0x1FC]=1; fn_8017B81C(arg0);
 }
 #pragma pop
