@@ -662,11 +662,11 @@ extern char lbl_8042F558[], lbl_8032BAC8[];
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 void fn_80133FCC(long arg0, long arg_sp0) {
+    typedef struct { long a, b; } Pair;
     char *dst;
     char *src;
     long off;
     long i, j;
-    long w2, w3, w4, w5, w6, w7;
     unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
     unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
     void (*callback)(void);
@@ -679,21 +679,26 @@ void fn_80133FCC(long arg0, long arg_sp0) {
                     stricmp(src + 0x24, dst + 0x2C) == 0) {
                     *(long *)(dst + 0x08) = *(long *)(src + 0x00);
                     *(long *)(dst + 0x0C) = *(long *)(src + 0x04);
-                    w2 = *(long *)(src + 0x08); w3 = *(long *)(src + 0x0C);
-                    *(long *)(dst + 0x14) = w3; *(long *)(dst + 0x10) = w2;
-                    w4 = *(long *)(src + 0x10); w5 = *(long *)(src + 0x14);
-                    *(long *)(dst + 0x1C) = w5; *(long *)(dst + 0x18) = w4;
-                    w6 = *(long *)(src + 0x18); w7 = *(long *)(src + 0x1C);
-                    *(long *)(dst + 0x24) = w7; *(long *)(dst + 0x20) = w6;
+                    *(Pair *)(dst + 0x10) = *(Pair *)(src + 0x08);
+                    *(Pair *)(dst + 0x18) = *(Pair *)(src + 0x10);
+                    *(Pair *)(dst + 0x20) = *(Pair *)(src + 0x18);
                     *(long *)(dst + 0x28) = *(long *)(src + 0x20);
-                    b0 = src[0x24]; b1 = src[0x25]; dst[0x2D] = b1; dst[0x2C] = b0;
-                    b2 = src[0x26]; b3 = src[0x27]; dst[0x2F] = b3; dst[0x2E] = b2;
-                    b4 = src[0x28]; b5 = src[0x29]; dst[0x31] = b5; dst[0x30] = b4;
-                    b6 = src[0x2A]; b7 = src[0x2B]; dst[0x33] = b7; dst[0x32] = b6;
-                    b8 = src[0x2C]; b9 = src[0x2D]; dst[0x35] = b9; dst[0x34] = b8;
-                    b10 = src[0x2E]; b11 = src[0x2F]; dst[0x37] = b11; dst[0x36] = b10;
-                    b12 = src[0x30]; b13 = src[0x31]; dst[0x39] = b13; dst[0x38] = b12;
-                    b14 = src[0x32]; b15 = src[0x33]; dst[0x3B] = b15; dst[0x3A] = b14;
+                    b0 = *(volatile unsigned char *)(src + 0x24); b1 = *(volatile unsigned char *)(src + 0x25);
+                    *(volatile unsigned char *)(dst + 0x2C) = b0; *(volatile unsigned char *)(dst + 0x2D) = b1;
+                    b2 = *(volatile unsigned char *)(src + 0x26); b3 = *(volatile unsigned char *)(src + 0x27);
+                    *(volatile unsigned char *)(dst + 0x2E) = b2; *(volatile unsigned char *)(dst + 0x2F) = b3;
+                    b4 = *(volatile unsigned char *)(src + 0x28); b5 = *(volatile unsigned char *)(src + 0x29);
+                    *(volatile unsigned char *)(dst + 0x30) = b4; *(volatile unsigned char *)(dst + 0x31) = b5;
+                    b6 = *(volatile unsigned char *)(src + 0x2A); b7 = *(volatile unsigned char *)(src + 0x2B);
+                    *(volatile unsigned char *)(dst + 0x32) = b6; *(volatile unsigned char *)(dst + 0x33) = b7;
+                    b8 = *(volatile unsigned char *)(src + 0x2C); b9 = *(volatile unsigned char *)(src + 0x2D);
+                    *(volatile unsigned char *)(dst + 0x34) = b8; *(volatile unsigned char *)(dst + 0x35) = b9;
+                    b10 = *(volatile unsigned char *)(src + 0x2E); b11 = *(volatile unsigned char *)(src + 0x2F);
+                    *(volatile unsigned char *)(dst + 0x36) = b10; *(volatile unsigned char *)(dst + 0x37) = b11;
+                    b12 = *(volatile unsigned char *)(src + 0x30); b13 = *(volatile unsigned char *)(src + 0x31);
+                    *(volatile unsigned char *)(dst + 0x38) = b12; *(volatile unsigned char *)(dst + 0x39) = b13;
+                    b14 = *(volatile unsigned char *)(src + 0x32); b15 = *(volatile unsigned char *)(src + 0x33);
+                    *(volatile unsigned char *)(dst + 0x3A) = b14; *(volatile unsigned char *)(dst + 0x3B) = b15;
                     dst[0x3C] = src[0x34]; dst[0x3D] = src[0x35];
                     dst[0x3E] = src[0x36]; dst[0x3F] = src[0x37];
                 }
