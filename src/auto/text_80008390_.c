@@ -413,18 +413,24 @@ void fn_80008684(s32 arg0) {
 #pragma pop
 
 #pragma dont_inline on
-s32 fn_80008DBC(s32 arg0) {
-    switch (arg0) {
-    case 0x125: return 2;
-    case 0x126: return 4;
-    case 0x128: return 5;
-    case 0x127: return 3;
-    case 0xD: return 0x13;
-    case 0x20: return 0xF;
-    case 0x6F: return 0xE;
+/* Turns a key from the Shot dev-box keyboard (fn_802E46F0) into the sound-test
+ * command fn_80009534 runs; 0 means the key does nothing here.  Printable keys
+ * arrive as their ASCII code (Enter, Esc, space, '+', ',', '-', '0'..'2', 'o')
+ * and the special keys as 0x100+n; 0x170-0x176 are muted on purpose.  Whether a
+ * command is honoured at all is decided by the enabled-command list fn_80008390
+ * builds, which fn_800085D8 looks the result up in. */
+s32 fn_80008DBC(s32 keyCode) {
+    switch (keyCode) {
+    case 0x125: return 2;      /* audio mode 0 (fn_8026DDD8(0)) */
+    case 0x126: return 4;      /* audio mode 1 (fn_8026DDD8(1)) */
+    case 0x128: return 5;      /* toggle sound flag bit 1 (fn_80008618(1)) */
+    case 0x127: return 3;      /* audio mode 2 (fn_8026DDD8(2)) */
+    case 0xD: return 0x13;     /* Enter */
+    case 0x20: return 0xF;     /* space */
+    case 0x6F: return 0xE;     /* 'o' */
     case 0x113: return 0x15;
     case 0x121: return 0x14;
-    case 0x1B: return 0x12;
+    case 0x1B: return 0x12;    /* Esc: the caller turns this into 0x10 or 0x11 */
     case 0x122: return 0x15;
     case 0x170: return 0;
     case 0x171: return 0;
@@ -433,12 +439,12 @@ s32 fn_80008DBC(s32 arg0) {
     case 0x174: return 0;
     case 0x175: return 0;
     case 0x176: return 0;
-    case 0x31: return 0x17;
-    case 0x32: return 0x18;
-    case 0x30: return 0x19;
-    case 0x2D: return 0x1A;
-    case 0x2B: return 0x1B;
-    case 0x2C:
+    case 0x31: return 0x17;    /* '1' */
+    case 0x32: return 0x18;    /* '2' */
+    case 0x30: return 0x19;    /* '0' */
+    case 0x2D: return 0x1A;    /* '-' */
+    case 0x2B: return 0x1B;    /* '+' */
+    case 0x2C:                 /* ',' */
     default: return 0;
     }
 }
