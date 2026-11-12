@@ -64,7 +64,6 @@ static s32 abs_val(s32 x) {
     s32 sign = x >> 31;
     return (x ^ sign) - sign;
 }
-static inline s32 move_s32(s32 x) { return x; }
 
 extern "C" void fn_8021C12C(void *);
 extern "C" void fn_8021E7D4(void *);
@@ -4532,17 +4531,25 @@ extern "C" void fn_80220B5C(void *arg0, s32 arg1) {
 #pragma processor 750
 extern "C" void fn_80220C54(void *arg0) {
     register void *self = arg0;
-    register s32 enabled = 0;
-    s32 height = ((Vf78 *)self)->get();
-    s32 *entries = *(s32 **)((u8 *)self + 0x244);
-    s32 current = *(s32 *)((u8 *)self + 0x250);
-    s32 target = *(s32 *)((u8 *)self + 0x254);
-    s32 size = (height - 0xB) * (*entries - current) / (target - current - 1);
-    s32 *check = *(s32 **)((u8 *)self + 0x25C);
+    register s32 size;
+    s32 *entries;
+    s32 *check;
+    s32 current;
+    s32 target;
+    register s32 enabled;
+    s32 e0;
+    s32 h = ((Vf78 *)self)->get() - 0xB;
+    entries = *(s32 **)((u8 *)self + 0x244);
+    check = *(s32 **)((u8 *)self + 0x25C);
+    enabled = 0;
+    current = *(s32 *)((u8 *)self + 0x250);
+    e0 = *entries;
+    target = *(s32 *)((u8 *)self + 0x254);
+    size = h * (e0 - current) / (target - current - 1);
     if (check != 0 && *check == *(s32 *)((u8 *)self + 0x260))
         enabled = 1;
-    s32 centerX = (lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1;
-    s32 centerY = (lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1;
+    s32 centerX = ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
+    s32 centerY = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1);
     f32 x = (f32)(*(s32 *)((u8 *)self + 4) - centerX);
     f32 y = (f32)(centerY - *(s32 *)((u8 *)self + 8));
     f32 previous = (f32)fn_802C5220(*(s32 *)((u8 *)self + 0x248));
