@@ -1193,6 +1193,7 @@ s32 fn_80169D64(s32 arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     int sp8 = -1;
@@ -1233,22 +1234,43 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         rec->z = loc.y;
         rec->hit = hit;
         fn_801E9E30(0, &rec->x);
-        rec->y += rec->obj->f18 + rec->hit;
+        rec->y = rec->y + rec->obj->f18 + rec->hit;
         rec->flag = 0;
         fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
         *(s32 *)((u8 *)fn_80167874(1) + 0x1C) += 1;
 
         if (arg2->flag1E158 != 0) {
-            arg2->entries[arg2->entryCount - 1].recordCount++;
+            s32 last2 = arg2->entryCount - 1;
+            u8 *base2 = (u8 *)arg2->entries;
+            u8 *e2 = base2 + last2 * 0x20;
+            (*(s32 *)(e2 + 0x18))++;
         } else {
-            if (arg2->entryCount == 0 || arg2->entries[arg2->entryCount - 1].byte1C != 0) {
+            if (arg2->entryCount == 0) {
+                goto mkEntry;
+            }
+            {
+                s32 last = arg2->entryCount - 1;
+                u8 *base = (u8 *)arg2->entries;
+                u8 *e = base + last * 0x20;
+                if (*(e + 0x1C) == 0) {
+                    goto incEntry;
+                }
+            }
+        mkEntry:;
+            {
                 DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
                 newEntry->byte1C = 0;
                 newEntry->recordStart = arg2->recordCount - 1;
                 newEntry->recordCount = 0;
                 newEntry->byte1D = 0;
             }
-            arg2->entries[arg2->entryCount - 1].recordCount++;
+        incEntry:;
+            {
+                s32 last3 = arg2->entryCount - 1;
+                u8 *base3 = (u8 *)arg2->entries;
+                u8 *e3 = base3 + last3 * 0x20;
+                (*(s32 *)(e3 + 0x18))++;
+            }
         }
     }
 
