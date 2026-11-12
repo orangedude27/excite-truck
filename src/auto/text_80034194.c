@@ -966,22 +966,24 @@ void cbForCancelSync(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_800356F4
-void fn_800356F4(s32 arg0, s32 arg1, s32 arg2) {
-    s32 enabled;
+void fn_800356F4(s32 error, s32 param1, s32 param2) {
+    s32 interrupts;
     u32 tick;
     u8 *info;
-    enabled = OSDisableInterrupts();
+
+    /* Record an error entry in the next __ErrorInfo slot and advance the ring index with interrupts disabled. */
+    interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 >= 5) {
         *(volatile u32 *)&lbl_8055D848 = 0;
     }
     info = (u8 *)__ErrorInfo;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = arg0;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = arg1;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = arg2;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = error;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = param1;
+    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = param2;
     tick = OSGetTick();
     *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interrupts);
 }
 #pragma pop
 void fn_800357A8(void) {
