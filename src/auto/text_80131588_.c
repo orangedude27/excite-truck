@@ -572,18 +572,19 @@ s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
 #pragma processor 750
 #pragma small_data on
 #pragma cplusplus on
-extern "C" f32 fn_80132354(void *arg0, s32 arg1, f32 farg0) {
+/* Parses a "min, max" range string from a node and returns linear interpolation by factor. */
+extern "C" f32 fn_80132354(void *node, s32 index, f32 factor) {
     class A {
     public:
         virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3();
     };
-    f32 a;
-    f32 b;
-    char *value = ((A *)arg0)->f3();
-    if (sscanf(value, lbl_80559B1C, &a, &b) != 2) {
-        fn_802E317C(lbl_8032B7BC, value, arg1, ((A *)arg0)->f0());
+    f32 minVal;
+    f32 maxVal;
+    char *text = ((A *)node)->f3();
+    if (sscanf(text, lbl_80559B1C, &minVal, &maxVal) != 2) {
+        fn_802E317C(lbl_8032B7BC, text, index, ((A *)node)->f0());
     }
-    return a + farg0 * (b - a);
+    return minVal + factor * (maxVal - minVal);
 }
 #pragma cplusplus off
 #pragma small_data off
