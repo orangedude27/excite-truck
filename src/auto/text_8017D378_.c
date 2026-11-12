@@ -1,3 +1,6 @@
+#include <types.h>
+#include <revolution/MTX/mtxtypes.h> /* Vec, Vec2 */
+
 #pragma cplusplus on
 struct VObj_8017D93C { virtual void d0(int); };
 #pragma cplusplus reset
