@@ -3439,12 +3439,12 @@ extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 in
         }
         for (; p < end; ++p) *p = 0xFFFF;
     }
-    VFipf_memcpy(dst + 1, entry, 0xA);
-    VFipf_memcpy(dst + 0xE, entry + 0xA, 0xC);
-    VFipf_memcpy(dst + 0x1C, entry + 0x16, 4);
-    fn_800A4C14(dst + 1, 0xA);
-    fn_800A4C14(dst + 0xE, 0xC);
-    fn_800A4C14(dst + 0x1C, 4);
+    VFipf_memcpy(dst + 1, entry, 10);
+    VFipf_memcpy(dst + 14, entry + 10, 12);
+    VFipf_memcpy(dst + 28, entry + 22, 4);
+    fn_800A4C14(dst + 1, 10);
+    fn_800A4C14(dst + 14, 12);
+    fn_800A4C14(dst + 28, 4);
 }
 
 extern "C" s32 fn_800AC1B4(void *, s32);
@@ -6641,6 +6641,7 @@ extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u32 retry = 1;
     s32 result;
     u16 value;
+    u32 mask;
 
     if (flags & 0x80) {
         retry = flags & 7;
@@ -6667,28 +6668,27 @@ fetch:
             s32 callbackResult =
                 callback(*(void **)((u8 *)object + 0x1F84));
             if (callbackResult == 0)
-                goto store_sector;
+                goto check_result;
             if (callbackResult == 1 &&
                 *(u8 *)((u8 *)object + 0x22) >= 2 &&
                 retry < *(u8 *)((u8 *)object + 0x22)) {
                 retry++;
                 sector += *(u32 *)((u8 *)object + 0xC);
-                goto store_sector;
+                goto check_result;
             }
         }
     }
-    if (result == 0)
-        goto store_sector;
-    return result;
-
-store_sector:
+    if (result != 0)
+        return result;
     *(u32 *)((u8 *)descriptor + 0x18) = sector;
+
+check_result:
     if (result != 0)
         goto fetch;
 
 read_value:
-    value = *(u16 *)((u8 *)*(void **)((u8 *)descriptor + 8) +
-                     (scaled & (*(u16 *)object - 1)));
+    mask = scaled & (*(u16 *)object - 1);
+    value = *(u16 *)((u8 *)*(void **)((u8 *)descriptor + 8) + mask);
     *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     return 0;
 }
@@ -18975,9 +18975,9 @@ void homebutton::Controller::clearCallback() {
 }
 
 extern "C" void fn_800D1054(void *arg0, void *arg1, s32 arg2) {
-    s32 temp_r0, temp_r4, temp_r5, temp_r6_2;
+    s32 temp_r0, temp_r4, temp_r5, temp_r6_2, fb;
     void *temp_r6, *temp_r7;
-    f32 f1, f0;
+    f32 f0, f1;
     temp_r6 = M2C_FIELD(arg1, void **, 0);
     if (temp_r6 == 0) return;
     if (arg2 != 0) {
@@ -18988,9 +18988,10 @@ extern "C" void fn_800D1054(void *arg0, void *arg1, s32 arg2) {
             M2C_FIELD(arg0, f32 *, 8) = f1;
             M2C_FIELD(arg0, f32 *, 0xC) = f0;
         } else {
-            M2C_FIELD(arg0, f32 *, 8) = M2C_FIELD(temp_r6, f32 *, 0x20);
-            temp_r5 = (s32)M2C_FIELD(arg1, s32 *, 0);
-            M2C_FIELD(arg0, f32 *, 0xC) = M2C_FIELD((void *)temp_r5, f32 *, 0x24);
+            f0 = M2C_FIELD(temp_r6, f32 *, 0x20);
+            fb = (s32)M2C_FIELD(arg1, s32 *, 0);
+            M2C_FIELD(arg0, f32 *, 8) = f0;
+            M2C_FIELD(arg0, f32 *, 0xC) = M2C_FIELD((void *)fb, f32 *, 0x24);
         }
     }
     temp_r7 = M2C_FIELD(arg1, void **, 0);
