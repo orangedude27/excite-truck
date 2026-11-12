@@ -1876,7 +1876,7 @@ typedef struct {
 // mask has to be passed through a pointer of the right type.
 typedef void (*GXRestoreInterruptsFn)(s32);
 
-void GXMiscInit(s32 arg0) {
+void GXMiscInit(s32 token) {
     union {
         unsigned int value;
         struct {
@@ -1885,34 +1885,34 @@ void GXMiscInit(s32 arg0) {
             unsigned int low : 16;
         } fields;
     } command;
-    s32 interruptState;
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
+    s32 interruptMask;
+    volatile unsigned char *fifoByte = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifoWord = (volatile unsigned int *)0xCC008000;
 
-    interruptState = OSDisableInterrupts();
-    command.value = (unsigned int)arg0 | 0x48000000;
-    *fifo8 = 0x61;
-    *fifo = command.value;
-    command.fields.low = (unsigned int)arg0;
-    command.fields.top = 0x47;
-    *fifo8 = 0x61;
-    *fifo = command.value;
+    interruptMask = OSDisableInterrupts();
+    command.value = (unsigned int)token | (GX_RAS_TOKEN_OPCODE_FIRST << 24);
+    *fifoByte = GX_FIFO_CMD_LOAD_BP_REG;
+    *fifoWord = command.value;
+    command.fields.low = (unsigned int)token;
+    command.fields.top = GX_RAS_TOKEN_OPCODE_LAST;
+    *fifoByte = GX_FIFO_CMD_LOAD_BP_REG;
+    *fifoWord = command.value;
 
-    if (__GXData[0x5FC / 4] != 0) {
+    if (GX_DATA->dirtyState != 0) {
         __GXSetDirtyState();
     }
 
-    *fifo = 0;
-    *fifo = 0;
-    *fifo = 0;
-    *fifo = 0;
-    *fifo = 0;
-    *fifo = 0;
-    *fifo = 0;
-    *fifo = 0;
+    *fifoWord = 0;
+    *fifoWord = 0;
+    *fifoWord = 0;
+    *fifoWord = 0;
+    *fifoWord = 0;
+    *fifoWord = 0;
+    *fifoWord = 0;
+    *fifoWord = 0;
     PPCSync();
-    ((void (*)(s32))OSRestoreInterrupts)(interruptState);
-    *(unsigned short *)((unsigned char *)__GXData + 2) = 0;
+    ((GXRestoreInterruptsFn)OSRestoreInterrupts)(interruptMask);
+    GX_DATA->bpSent = 0;
 }
 
 void GXSetDrawSync(void) {
