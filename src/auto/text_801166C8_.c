@@ -18,7 +18,6 @@ extern s32 lbl_8055DEE0;
 extern s32 lbl_8055DEE8;
 extern void TRKGetFreeBuffer(void *);
 extern void fn_80117074(void*);
-#define E8117074(a) ((u8 *)(off + *(s32 *)((a) + 0x2F0)))
 /* Pointer to the stream entry at byte offset `off` in the manager's entry table
  * (base+0x2F0, stride 0x17C). Each entry holds callbacks at +0/+4/+8, a circular
  * source buffer (+0x2C start, +0x30 end, +0x38 cursor), a byte counter (+0x40),
