@@ -1843,17 +1843,23 @@ check:
  *(int *)((char *)arg0+0x2cc)=zero; *(char *)((char *)arg0+0x2d1)=0; *(f32 *)((char *)arg0+0x2d4)=end;
 }
 #pragma scheduling on
-extern "C" void fn_8015A538(void* arg0, void* arg1) {
-    void* sp8 = arg1;
-    fn_80158F34(&sp8);
-    if (*(s32*)((char*)arg0 + 0x264) > 0) {
-        fn_80158F34b((void*)arg0, *(void**)((char*)&sp8));
+// End of this tree-run bonus tracker, called with the tracker and the player
+// whose bonus ended. It runs the pre-hook, and if the tracker has an active
+// banked count (tracker + 0x264 > 0) hands the hooked context to fn_80158F34b;
+// then banks the last record's scored count in the "tree_run" lifetime counter
+// -- only for a single player run (fn_80179650() == 1) in the ordinary truck
+// (player + 0x1F0 == 0x50) that is not a replay playback (fn_801CF064()).
+extern "C" void fn_8015A538(void* tracker, void* player) {
+    void* hookedPlayer = player;
+    fn_80158F34(&hookedPlayer);
+    if (*(s32*)((char*)tracker + 0x264) > 0) {
+        fn_80158F34b((void*)tracker, *(void**)((char*)&hookedPlayer));
     }
-    void* r4 = *(void**)((char*)arg0 + 8);
-    void* r3 = (void*)((s32)r4 + (*(s32*)((char*)arg0 + 0xC) - 1) * 0x38);
-    s32 r31 = *(s32*)((char*)r3 + 4);
-    if (r31 > 0 && fn_80179650() == 1 && *(s32*)((char*)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0) {
-        fn_8001EF5C(4, r31);
+    void* records = *(void**)((char*)tracker + 8);
+    void* lastRecord = (void*)((s32)records + (*(s32*)((char*)tracker + 0xC) - 1) * 0x38);
+    s32 scoredCount = *(s32*)((char*)lastRecord + 4);
+    if (scoredCount > 0 && fn_80179650() == 1 && *(s32*)((char*)player + 0x1F0) == 0x50 && fn_801CF064() == 0) {
+        fn_8001EF5C(4, scoredCount);
     }
 }
 
