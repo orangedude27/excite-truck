@@ -2,6 +2,11 @@
 extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 OSInitSemaphore(void *, s32);
 extern "C" const char lbl_8031B1E4[];
+struct KeySlot63FC { u32 flags; s32 key; };
+static inline s32 KeySlot63FCMatch(KeySlot63FC *e, s32 k) {
+    e->flags &= 1;
+    return e->flags && e->key == k;
+}
 struct D0E68Entry {
     u8 bytes[0x30];
 };
@@ -9984,7 +9989,8 @@ extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
 }
 
 extern "C" s32 fn_800B63FC(void) {
-    s32 result, found, i;
+    s32 result, found;
+    u32 i;
     s32 *p;
     s32 key, k;
     fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
@@ -16631,17 +16637,17 @@ extern "C" void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
 }
 
 void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
-    s32 a, b, s, d;
     s32 i;
     for (i = 0; i < 2; i++) {
-        b = arg1[0]; a = arg0[0]; s = a + b; d = a - b; arg0[0] = s; arg1[0] = (s32)(((s64)d * arg2[0]) >> 24);
-        b = arg1[1]; a = arg0[1]; s = a + b; d = a - b; arg0[1] = s; arg1[1] = (s32)(((s64)d * arg2[1]) >> 24);
-        b = arg1[2]; a = arg0[2]; s = a + b; d = a - b; arg0[2] = s; arg1[2] = (s32)(((s64)d * arg2[2]) >> 24);
-        b = arg1[3]; a = arg0[3]; s = a + b; d = a - b; arg0[3] = s; arg1[3] = (s32)(((s64)d * arg2[3]) >> 24);
-        b = arg1[4]; a = arg0[4]; s = a + b; d = a - b; arg0[4] = s; arg1[4] = (s32)(((s64)d * arg2[4]) >> 24);
-        b = arg1[5]; a = arg0[5]; s = a + b; d = a - b; arg0[5] = s; arg1[5] = (s32)(((s64)d * arg2[5]) >> 24);
+        s32 s, d, a, b;
+        s = arg0[0] + arg1[0]; d = arg0[0] - arg1[0]; arg0[0] = s; arg1[0] = (s32)(((s64)d * arg2[0]) >> 24);
+        s = arg0[1] + arg1[1]; d = arg0[1] - arg1[1]; arg0[1] = s; arg1[1] = (s32)(((s64)d * arg2[1]) >> 24);
+        s = arg0[2] + arg1[2]; d = arg0[2] - arg1[2]; arg0[2] = s; arg1[2] = (s32)(((s64)d * arg2[2]) >> 24);
+        s = arg0[3] + arg1[3]; d = arg0[3] - arg1[3]; arg0[3] = s; arg1[3] = (s32)(((s64)d * arg2[3]) >> 24);
+        s = arg0[4] + arg1[4]; d = arg0[4] - arg1[4]; arg0[4] = s; arg1[4] = (s32)(((s64)d * arg2[4]) >> 24);
+        s = arg0[5] + arg1[5]; d = arg0[5] - arg1[5]; arg0[5] = s; arg1[5] = (s32)(((s64)d * arg2[5]) >> 24);
         b = arg1[6]; a = arg0[6]; s = a + b; d = a - b; arg0[6] = s; arg1[6] = (s32)(((s64)d * arg2[6]) >> 24);
-        b = arg1[7]; a = arg0[7]; s = a + b; d = a - b; arg0[7] = s; arg1[7] = (s32)(((s64)d * arg2[7]) >> 24);
+        s = arg0[7] + arg1[7]; d = arg0[7] - arg1[7]; arg0[7] = s; arg1[7] = (s32)(((s64)d * arg2[7]) >> 24);
         arg0 += 16;
         arg1 += 16;
     }
@@ -20855,15 +20861,17 @@ extern "C" void fn_800C776C(void *arg0, s32 arg1) {
 extern "C" void fn_800C7774(u8 *self)
 {
     const char *file = (const char *)lbl_8031D840;
-    char *start = *(char **)(*(u8 **)(self + 4) + 0xC);
+    char *start;
     char *p;
-    s32 len1 = 0;
+    s32 len1;
     s32 len2;
     s32 count;
     s32 i;
     u8 *q;
     void *buf;
+    start = *(char **)(*(u8 **)(self + 4) + 0xC);
     p = start;
+    len1 = 0;
     while (*p != 0) {
         if (*p == ',') break;
         len1++;
@@ -20871,7 +20879,7 @@ extern "C" void fn_800C7774(u8 *self)
     }
     buf = MEMAllocFromAllocator(lbl_80559708, len1 + 1);
     *(void **)(self + 0xA4) = buf;
-    if (buf == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x318, file + 0xCE0);
+    if (buf == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x318, file + 0xCE0);
     strncpy(*(char **)(self + 0xA4), start, len1);
     start = start + len1 + 1;
     (*(char **)(self + 0xA4))[len1] = 0;
@@ -20884,7 +20892,7 @@ extern "C" void fn_800C7774(u8 *self)
     }
     buf = MEMAllocFromAllocator(lbl_80559708, len2 + 1);
     *(void **)(self + 0xA8) = buf;
-    if (buf == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x322, file + 0xD08);
+    if (buf == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x322, file + 0xD08);
     strncpy(*(char **)(self + 0xA8), start, len2);
     (*(char **)(self + 0xA8))[len2] = 0;
     start += len2;
