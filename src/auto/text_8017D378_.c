@@ -383,9 +383,11 @@ done:
     fn_8017D2C8(arg0, arg1, arg2, arg3, arg4);
 }
 
+#pragma push
+#pragma processor 750
 #pragma ppc_psq_save off
 void fn_8017DCB4(void *arg0) {
- unsigned char *p=(unsigned char*)arg0; float b[9],c[3],v2[3],v1[3]; int v3[3]; float d[3],a[2]; int mode; int fl; int x; float z; unsigned tag;
+ unsigned char *p=(unsigned char*)arg0; float a[2]; float d[3]; int v3[3]; float v1[3]; float v2[3]; float b[9]; float c[3]; unsigned tag; int mode; int fl; int x; float z;
  extern void fn_8017B164(void); extern void fn_8017D380(float*,int); extern void fn_8017A580(void*);
  extern float fn_8017D378(void); extern void *fn_8017960C(int); extern void *fn_801B2EC0(int);
  extern void fn_801602B0(void*); extern void fn_8017E3C4(void*,void*,short*);
@@ -399,7 +401,7 @@ void fn_8017DCB4(void *arg0) {
  x=lbl_8055D430; fl=0; if((x&1)&&(x&0x88)) fl=1;
  if(fl==0) { fn_8017D380(v2,*(int*)(p+0x1F8)); *(float*)(p+0x60)=v2[0]; *(float*)(p+0x64)=v2[1]; *(float*)(p+0x68)=v2[2]; fn_8017A580(arg0); z=lbl_80561BE0; *(float*)(p+0x118)=z; *(float*)(p+0x11C)=z; *(float*)(p+0x120)=z; }
  if(!p[0x1FE]) { x=lbl_8055D430; fl=0; if((x&1)&&(x&0x80)) fl=1;
- if(fl!=0) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void*r=((void*(*)(void*))(*(void***)obj)[4])(obj); if(*(int*)((char*)r+0x24)==0) { short angle; float f31; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(b); fn_8017E388(b); fn_80160230(c,a); f31=fn_8017E380(arg0); fn_8017960C(*(int*)(p+0x1F8)); c[1]=f31+*(float*)((char*)fn_801602B4()+0x28); GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)b,(long)d,angle,lbl_80561BE0); } } }
+ if(fl!=0) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void*r=((void*(*)(void*))(*(void***)obj)[4])(obj); if(*(int*)((char*)r+0x24)==0) { short angle; float f31; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(b); fn_8017E388(b); fn_80160230(c,a); f31=fn_8017E380(arg0); fn_8017960C(*(int*)(p+0x1F8)); c[1]=*(float*)((char*)fn_801602B4()+0x28)+f31; GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)b,(long)d,angle,lbl_80561BE0); } } }
  v3[0]=*(int*)(p+0x60);v3[1]=*(int*)(p+0x64);v3[2]=*(int*)(p+0x68); if(fn_801E9E30(p+0x6C,v3)==0)p[0x1FC]=1; fn_8017B81C(arg0);
 }
 #pragma ppc_psq_save reset
@@ -545,26 +547,40 @@ void fn_8017E388(void *arg0) {
  p[1]=a; p[0]=b; p[2]=a; p[3]=a; p[4]=b; p[5]=a; p[6]=a; p[7]=a; p[8]=b; p[9]=a; p[10]=a; p[11]=a;
 }
 
+#pragma small_data off
 void fn_8017E764(void *arg0, int arg1) {
-    extern float lbl_80558DC4;
     extern float lbl_8055E460;
     extern float lbl_80561BF4;
     unsigned char *src = (unsigned char *)arg0;
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
     float delta = lbl_8055E460 - lbl_80561BF4;
-    if (__fabsf(delta) <= lbl_80558DC4) {
-        *(unsigned int *)(dst + 0x00) = *(unsigned int *)(src + 0x70);
-        *(unsigned int *)(dst + 0x04) = *(unsigned int *)(src + 0x74);
-        *(unsigned int *)(dst + 0x08) = *(unsigned int *)(src + 0x78);
-        *(unsigned int *)(dst + 0x0C) = *(unsigned int *)(src + 0x7C);
-        *(unsigned int *)(dst + 0x10) = *(unsigned int *)(src + 0x80);
-        *(unsigned int *)(dst + 0x14) = *(unsigned int *)(src + 0x84);
-        *(unsigned int *)(dst + 0x18) = *(unsigned int *)(src + 0x88);
-        *(unsigned int *)(dst + 0x1C) = *(unsigned int *)(src + 0x8C);
-        *(unsigned int *)(dst + 0x20) = *(unsigned int *)(src + 0x90);
-        *(unsigned int *)(dst + 0x24) = *(unsigned int *)(src + 0x94);
-        *(unsigned int *)(dst + 0x28) = *(unsigned int *)(src + 0x98);
-        *(unsigned int *)(dst + 0x2C) = *(unsigned int *)(src + 0x9C);
+    if ((float)__fabs((double)delta) <= lbl_80558DC4) {
+        unsigned int t0 = *(unsigned int *)(src + 0x70);
+        unsigned int t1 = *(unsigned int *)(src + 0x74);
+        *(unsigned int *)(dst + 0x00) = t0;
+        *(unsigned int *)(dst + 0x04) = t1;
+        t0 = *(unsigned int *)(src + 0x78);
+        t1 = *(unsigned int *)(src + 0x7C);
+        *(unsigned int *)(dst + 0x08) = t0;
+        *(unsigned int *)(dst + 0x0C) = t1;
+        t0 = *(unsigned int *)(src + 0x80);
+        t1 = *(unsigned int *)(src + 0x84);
+        *(unsigned int *)(dst + 0x10) = t0;
+        *(unsigned int *)(dst + 0x14) = t1;
+        t0 = *(unsigned int *)(src + 0x88);
+        t1 = *(unsigned int *)(src + 0x8C);
+        *(unsigned int *)(dst + 0x18) = t0;
+        *(unsigned int *)(dst + 0x1C) = t1;
+        t0 = *(unsigned int *)(src + 0x90);
+        *(unsigned int *)(dst + 0x20) = t0;
+        {
+            unsigned int u0 = *(unsigned int *)(src + 0x94);
+            unsigned int u1 = *(unsigned int *)(src + 0x98);
+            *(unsigned int *)(dst + 0x24) = u0;
+            *(unsigned int *)(dst + 0x28) = u1;
+        }
+        t0 = *(unsigned int *)(src + 0x9C);
+        *(unsigned int *)(dst + 0x2C) = t0;
     } else {
         float tmp[12];
         float *a = (float *)(src + 0x70);
@@ -596,9 +612,9 @@ void fn_8017E764(void *arg0, int arg1) {
         *(unsigned int *)(dst + 0x2C) = *(unsigned int *)&tmp[11];
     }
     *(short *)(dst + 0x30) = *(short *)(src + 0x6C);
-    *((unsigned char *)((unsigned char *)arg1 + *(unsigned int *)(src + 8) + 0x32)) = src[0x1FE];
+    *(unsigned char *)((unsigned char *)arg1 + *(unsigned int *)(src + 8) + 0x32) = src[0x1FE];
 }
-
+#pragma small_data on
 int fn_8017E930(void *arg0, void *arg1, void *arg2) {
     if (*((unsigned char *)arg0 + 0x1FE) != 0) {
         *((float *)arg1) = *((float *)((char *)arg0 + 0x60));
