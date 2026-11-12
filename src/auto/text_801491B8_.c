@@ -2127,20 +2127,21 @@ void fn_80151918(void *arg0, void *arg1) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" s32 fn_80151984(void *arg0, s32 arg1, s32 arg2) {
-    register s32 count;
-    register u8 *object;
-    register s32 i;
+    register s32 entryCount;
+    register u8 *objectIter;
+    register s32 entryIndex;
 
+    /* On event 0x58, updates per-entry state (+0x454/+0x460) using a flag byte at arg0 + index*0xC0 + 0xA84. */
     if (arg2 == 0x58 && ((Dummy_80151984 *)arg0)->check() != 0) {
-        count = fn_801E85A4();
-        object = (u8 *)arg0;
-        for (i = 0; i < count; i++) {
-            if (*((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) != 0 || count > 1) {
-                *(s32 *)(object + 0x454) = 4;
-            } else if (*(s32 *)(object + 0x454) == 2) {
-                *(object + 0x460) = 1;
+        entryCount = fn_801E85A4();
+        objectIter = (u8 *)arg0;
+        for (entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+            if (*((u8 *)arg0 + fn_801E86F8(entryIndex) * 0xC0 + 0xA84) != 0 || entryCount > 1) {
+                *(s32 *)(objectIter + 0x454) = 4;
+            } else if (*(s32 *)(objectIter + 0x454) == 2) {
+                *(objectIter + 0x460) = 1;
             }
-            object += 0x240;
+            objectIter += 0x240;
         }
     }
     return 0;
