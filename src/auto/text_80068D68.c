@@ -10472,57 +10472,65 @@ void btsnd_hcic_accept_esco_conn(BT_HDR *p_buf, BD_ADDR bda, UINT32 tx_bw, UINT3
                                  UINT16 max_latency, UINT16 voice_contfmt,
                                  UINT8 retrans_effort, UINT16 packet_types);
 void btm_chg_all_acl_pkt_types(UINT8);
+/* Answer an incoming (e)SCO connection request (the BTM_ESCO_CONN_REQ_EVT the
+ * application replies to through BTM_EscoConnResponse): with hci_status other
+ * than HCI_SUCCESS the record goes back to listening (or is freed) and HCI is
+ * told to reject, otherwise the link is taken up - as an eSCO link with the
+ * negotiated parameters, or as a plain SCO one when the controller has no eSCO
+ * or the request arrived as SCO.  p_parms is NULL to keep the parameters last
+ * set by BTM_SetEscoMode, of which only the packet types are taken here. */
 static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBTM_ESCO_PARAMS *p_parms) {
-    UINT8 *p_sco;
+    ScoConnView *p_sco;
     void *p_buf;
     UINT16 pkt_types;
     p_sco = 0;
-    p_buf = GKI_getpoolbuf(2);
+    p_buf = GKI_getpoolbuf(2); /* the HCI command to answer with */
     if (p_buf == 0) {
-        if (lbl_803C0F78[0x27C0] >= 1) {
-            fn_8007093C(0xD0000, (void *)lbl_80316570);
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_ERROR) {
+            fn_8007093C(0xD0000, (void *)lbl_80316570); /* "btm_esco_conn_rsp -> No Resources" */
         }
         return;
     }
-    if (sco_inx < 3) {
+    if (sco_inx < BTM_SCO_DB_LINKS) {
         u32 tmp = (u32)lbl_803C0F78 + (u32)(sco_inx * 0x34);
-        p_sco = (UINT8 *)(tmp + 0x1854);
+        p_sco = (ScoConnView *)(tmp + BTM_SCO_DB);
     }
-    if (hci_status != 0) {
+    if (hci_status != HCI_SUCCESS) {
         if (p_sco != 0) {
-            *(UINT16 *)(p_sco + 8) = (*(UINT16 *)(p_sco + 8) - 2) == 0;
+            /* SCO_ST_LISTENING when the request was only awaited, else SCO_ST_UNUSED */
+            p_sco->state = (p_sco->state - SCO_ST_W4_CONN_RSP) == 0;
         }
-        if (lbl_803C0F78[0x1908] == 0) {
+        if (btm_cb_esco_supported == 0) {
             btsnd_hcic_reject_conn(p_buf, bda, hci_status);
         } else {
             btsnd_hcic_reject_esco_conn(p_buf, bda, hci_status);
         }
         return;
     }
-    btm_chg_all_acl_pkt_types(1);
-    *(UINT16 *)(p_sco + 8) = 3;
-    if (lbl_803C0F78[0x1908] != 0 && p_sco[0x2E] == 2) {
+    btm_chg_all_acl_pkt_types(TRUE);
+    p_sco->state = SCO_ST_CONNECTING;
+    if (btm_cb_esco_supported != 0 && p_sco->link_type == BTM_LINK_TYPE_ESCO) {
         if (p_parms != 0) {
-            *(tBTM_ESCO_PARAMS *)(p_sco + 0x14) = *p_parms;
+            p_sco->setup = *p_parms;
         }
-        *(UINT16 *)(p_sco + 0x20) = *(UINT16 *)(lbl_803C0F78 + 0x1904);
-        pkt_types = *(UINT16 *)(p_sco + 0x20) & *(UINT16 *)(lbl_803C0F78 + 0x656);
-        pkt_types &= 0x3F;
-        if ((pkt_types & 0x38) == 0) {
-            pkt_types |= 8;
+        p_sco->setup.packet_types = btm_cb_def_pkt_types;
+        pkt_types = p_sco->setup.packet_types & btm_cb_sco_pkt_types;
+        pkt_types &= BTM_SCO_SUPPORTED_PKTS_MASK;
+        /* ask for at least one eSCO packet type, or the peer may get confused */
+        if ((pkt_types & BTM_ESCO_LINK_ONLY_MASK) == 0) {
+            pkt_types |= BTM_SCO_PKT_TYPES_MASK_EV3;
         }
-        if (lbl_803C0F78[0x636] >= 3) {
-            pkt_types |= (*(UINT16 *)(p_sco + 0x20) |
-                          *(UINT16 *)(lbl_803C0F78 + 0x656)) & 0x3C0;
+        if (btm_cb_hci_version >= HCI_PROTO_VERSION_2_0) {
+            pkt_types |= (p_sco->setup.packet_types | btm_cb_sco_pkt_types) & BTM_SCO_EXCEPTION_PKTS_MASK;
         }
         btsnd_hcic_accept_esco_conn(
-            p_buf, bda, *(UINT32 *)(p_sco + 0x14), *(UINT32 *)(p_sco + 0x18),
-            *(UINT16 *)(p_sco + 0x1C), *(UINT16 *)(p_sco + 0x1E),
-            p_sco[0x22], pkt_types);
-        *(UINT16 *)(p_sco + 0x20) = pkt_types;
+            p_buf, bda, p_sco->setup.tx_bw, p_sco->setup.rx_bw,
+            p_sco->setup.max_latency, p_sco->setup.voice_contfmt,
+            p_sco->setup.retrans_effort, pkt_types);
+        p_sco->setup.packet_types = pkt_types;
         return;
     }
-    btsnd_hcic_accept_conn(p_buf, bda, 0);
+    btsnd_hcic_accept_conn(p_buf, bda, 0); /* accept it as a SCO link */
 }
 
 extern char lbl_803165FC[];
