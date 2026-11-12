@@ -1264,6 +1264,7 @@ void fn_802335F0(u8 *arg0, s32 arg1, f32 farg0, f32 farg1) {
 
 #pragma push
 #pragma dont_inline on
+/* Draw text at (x, y) with default vertical scale, alpha, and no extra offset when the string is non-empty. */
 void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
     #pragma scheduling invalid_target
     s32 sp8;
