@@ -10891,6 +10891,12 @@ void fn_80071510(void *arg0, s32 arg1, u8 arg2) {
     ((u8 *)arg0)[0x10] = arg2;
 }
 
+/* GKI tick conversion, as in revolution/BTE/include/gki_target.h (a header this
+   file does not include): the stack runs at 100 ticks per second, so a tick is
+   10 ms and a protocol timer period in ms converts by dividing by 10. */
+#define TICKS_PER_SEC      100
+#define GKI_MS_TO_TICKS(x) ((x) / (1000 / TICKS_PER_SEC))
+
 void ptim_timer_update(tPTIM_CB *p_cb) {
     /* Advance this protocol timer queue by one period and dispatch any expired
        entries: call their callback, or post an event message via fn_80071450,
