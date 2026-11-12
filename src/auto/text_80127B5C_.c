@@ -7,14 +7,18 @@ extern char lbl_80329FC0[];
 extern void fn_802E317C(const char *, ...);
 extern char lbl_80329FA0[];
 
+#pragma use_lmw_stmw off
 void fn_80127B5C(int arg0) {
-    char *base = (char *)lbl_8041E098;
-    char *entry = base + 8;
+    char *base;
+    char *entry;
     int i;
     int j;
-    char *dest;
+    unsigned char *dest;
 
-    *(unsigned char *)base = 1;
+    ((unsigned char *)lbl_8041E098)[0] = 1;
+    base = (char *)lbl_8041E098;
+    entry = base + 8;
+    dest = (unsigned char *)base;
     for (i = 0; i < *(int *)(base + 4); i++, entry += 16) {
         void (*func)(void) = *(void (**)(void))entry;
         if (func != 0) {
@@ -27,9 +31,8 @@ void fn_80127B5C(int arg0) {
         }
     }
 
-    *(unsigned char *)base = 0;
+    ((unsigned char *)lbl_8041E098)[0] = 0;
     j = 0;
-    dest = base;
     while (j < *(int *)(base + 4)) {
         if (dest[20] != 0) {
             if (j >= 0 && j < *(int *)(base + 4)) {
@@ -37,7 +40,7 @@ void fn_80127B5C(int arg0) {
                     dest[20] = 1;
                 } else {
                     int last = *(int *)(base + 4) - 1;
-                    char *src = base + last * 16;
+                    unsigned char *src = (unsigned char *)base + last * 16;
                     *(int *)(base + 4) = last;
                     *(int *)(dest + 8) = *(int *)(src + 8);
                     *(int *)(dest + 12) = *(int *)(src + 12);
@@ -53,7 +56,7 @@ void fn_80127B5C(int arg0) {
 
     lbl_8055DF70 = arg0;
 }
-
+#pragma use_lmw_stmw reset
 void fn_80127C8C(void) {
 
 }
@@ -110,6 +113,10 @@ void fn_80127CF4(int arg0, int arg1) {
     if (available == 0)
         ((void (*)(const char *, ...))fn_802E317C)(lbl_80329FC0);
 }
+/* Remove the alarm entry whose id matches arg0 and whose object slot (+0xC) is 0.
+ * If the table is currently iterating (lbl_8041E098 byte 0 set), mark the entry
+ * for deferred deletion (byte at +0x14). Otherwise swap-remove it with the last
+ * entry and decrement the count at +4. Entries are 16 bytes. */
 void fn_80127D58(unsigned int arg0) {
     char *entry = (char *)lbl_8041E098;
     int i = 0;
