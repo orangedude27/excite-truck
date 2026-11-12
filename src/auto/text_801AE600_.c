@@ -115,6 +115,7 @@ void fn_801AE628(int arg0) {
     register int i;
     register int offset;
     register char *entry;
+    register int k;
 
     data.max_val = -1;
     data.count = 0;
@@ -134,7 +135,6 @@ void fn_801AE628(int arg0) {
     for (offset = 0, i = 0; i < lbl_80435780[0x3C0 / 4]; i++, offset += 0x1C) {
         entry = (char *)*lbl_8055E624 + offset;
         if (fn_801AE620(entry) != 0) {
-            int k;
             *(short *)(entry + 0x10) = fn_801AE610(arg0, *(short *)(entry + 0xC));
             *(short *)(entry + 0x12) = 0;
             if (*(short *)(entry + 0x14) != 0) {
@@ -712,8 +712,9 @@ void *fn_801AF8D0(int arg0) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_801AF92C(void *arg0) {
-    void *base = arg0;
+/* Populate a competitor summary buffer with count and per-entry result ids/states (skipped if blocked). */
+void fn_801AF92C(void *output) {
+    void *base = output;
     char *entry;
     int count;
     register int i;
