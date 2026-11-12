@@ -149,11 +149,9 @@ float fn_802BF02C(float arg0, int arg1) {
     register u32 *src = lbl_802FABA0;
     register u32 *dst = (u32 *)points;
     register struct Pair *p;
-    register struct Pair *q;
     register int i;
+    float lowX, highX, lowY, highY, numerator, denominator;
     register float min, t;
-    float highX, lowX, highY, numerator, lowY, denominator;
-
     *dst++ = *src++;
     *dst++ = *src++;
     *dst++ = *src++;
@@ -170,20 +168,18 @@ float fn_802BF02C(float arg0, int arg1) {
     *dst = *src;
     p = points + 1;
     i = 1;
-
     for (; i <= 6; ++p, ++i) {
         if (p->x > arg0) {
-            q = points;
             min = lbl_80564D80;
-            highX = q[i].x;
-            lowX = q[i - 1].x;
-            highY = q[i].y;
+            highX = points[i].x;
+            lowX = points[i - 1].x;
+            highY = points[i].y;
             numerator = arg0 - lowX;
-            lowY = q[i - 1].y;
+            lowY = points[i - 1].y;
             denominator = highX - lowX;
             t = numerator / denominator;
-            if (t < min) t = min;
-            if (t > lbl_80564D90) t = lbl_80564D90;
+            t = (min > t) ? min : t;
+            t = (t > lbl_80564D90) ? lbl_80564D90 : t;
             return lowY + t * (highY - lowY);
         }
     }
@@ -293,6 +289,7 @@ void fn_802BF160(void) {
     fn_802C967C();
 }
 void fn_802BF350(void) {
+    // Initializes the water system: resets state, populates per-instance handles, logs activation, and caches an asset handle.
     int i;
     fn_802BEDFC();
     lbl_8055FADC = fn_801E85AC();
