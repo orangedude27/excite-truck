@@ -10,35 +10,36 @@ extern unsigned int strlen(const char *);
 extern unsigned int strlen(const char *);
 #pragma push
 #pragma scheduling invalid_target
-void fn_8022D0E8(unsigned char *arg0, int arg1, unsigned char *arg2) {
-    unsigned char *dst = arg0;
-    int remaining = arg1;
+void fn_8022D0E8(unsigned char *buffer, int capacity, unsigned char *suffix) {
+    unsigned char *cursor = buffer;
+    int remaining = capacity;
     int copyRemaining;
     unsigned char *write;
     int len;
-    while ((signed char)*dst != 0) {
+    /* Append suffix to the end of a double-NUL-terminated buffer within capacity. */
+    while ((signed char)*cursor != 0) {
         do {
-            dst++;
+            cursor++;
             remaining--;
-        } while ((signed char)*dst != 0);
-        dst++;
+        } while ((signed char)*cursor != 0);
+        cursor++;
         remaining--;
     }
     if (remaining > 0) {
-        write = dst;
+        write = cursor;
         copyRemaining = remaining;
-        while ((signed char)(*write++ = *arg2++) != 0) {
+        while ((signed char)(*write++ = *suffix++) != 0) {
             if (--copyRemaining <= 0) {
                 write[-1] = 0;
                 break;
             }
         }
-        len = strlen((const char *)dst) + 1;
+        len = strlen((const char *)cursor) + 1;
         remaining -= len;
         if (remaining >= 1) {
-            dst[len] = 0;
+            cursor[len] = 0;
         } else {
-            *(dst + len - 2) = 0;
+            *(cursor + len - 2) = 0;
         }
     }
 }
