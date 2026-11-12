@@ -10476,7 +10476,7 @@ static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBT
 extern char lbl_803165FC[];
 extern char lbl_8031664C[];
 extern void btm_chg_all_acl_pkt_types(BOOLEAN);
-void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle) {
+void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle, UINT8 mode) {
     UINT32 i;
     UINT8 *entry;
     UINT16 acl_handle;
@@ -10488,6 +10488,8 @@ void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle) {
     entry = lbl_803C0F78 + 0x1854;
     while (i < 3) {
         if (*(UINT16 *)(entry + 8) != 6)
+            goto next;
+        if (mode != 0)
             goto next;
         if (hci_status != 0)
             goto next;
