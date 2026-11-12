@@ -491,22 +491,12 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
         virtual void *lookup(const char *);
         virtual s32 create(const char *);
     };
-    struct Settings {
-        s32 unk0;
-        f32 value4;
-        f32 value8;
-        s32 valueC;
-        f32 value10;
-        s32 value14;
-        s32 value18;
-    };
     u8 *text = lbl_8032F588;
     f32 spC;
     f32 sp8;
     void *temp_r3;
     void *temp_r3_2;
-    Settings *temp_r3_3;
-
+    register void *temp_r3_3;
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
         if (temp_r3 != 0) {
@@ -518,15 +508,18 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
             fn_80148070(temp_r3_2, -1,
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
-        temp_r3_3 = (Settings *)((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
-        f32 value4 = temp_r3_3->value4;
-        f32 value8 = *(volatile f32 *)((u8 *)temp_r3_3 + 8);
-        s32 valueC = temp_r3_3->valueC;
-        fn_80148134(&spC, &sp8, valueC, value4, value8);
+        temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
+        f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
+        f32 *pC = &spC;
+        f32 *p8 = &sp8;
+        f32 value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
+        s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
+        fn_80148134(pC, p8, valueC, value4, value8);
         f32 firstValue = *(f32 *)((u8 *)temp_r3 + 0x10);
-        f32 settingValue = temp_r3_3->value10;
+        f32 settingValue = *(f32 *)((u8 *)temp_r3_3 + 0x10);
         f32 delta = firstValue - lbl_80561844;
-        fn_800103B8(temp_r3_3->value18, temp_r3_3->value14, (s32 *)&lbl_8055A0DC, arg1,
+        fn_800103B8(*(s32 *)((u8 *)temp_r3_3 + 0x18),
+            *(s32 *)((u8 *)temp_r3_3 + 0x14), (s32 *)&lbl_8055A0DC, arg1,
             settingValue, spC, sp8, delta);
         fn_801473F8(lbl_8055E2E0, (const char *)text + 0xFC,
             &lbl_8055A0DC, arg0);
@@ -1334,31 +1327,29 @@ extern "C" void fn_801625E0(void *arg0) {
     };
     extern float lbl_80561848;
     extern float lbl_8056184C;
+    extern void fn_80161438(void);
     extern void fn_801DF380(void *, s32, void (*)(void), s32);
     extern void fn_801EA140(void *);
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
     extern void fn_802A95AC(s32);
     s32 i;
-    u32 offset;
+    s32 offset;
     float resetValue;
-
-    /* Match note: mirror fn_80162178's virtual initializer and update records at 0x48-byte strides. */
     resetValue = lbl_8056184C;
     *(s32 *)((char *)arg0 + 8) = 0;
-    *(u8 *)((char *)arg0 + 0x10) = 0;
-    *(float *)((char *)arg0 + 0xC) = resetValue;
     i = 0;
+    *(u8 *)((char *)arg0 + 0x10) = 0;
     offset = 0;
+    *(float *)((char *)arg0 + 0xC) = resetValue;
     while (i < *(s32 *)((char *)arg0 + 0x38)) {
-        void *obj = *(void **)((char *)arg0 + 4);
-        char *entries = *(char **)((char *)arg0 + 0x34);
-        s32 *entry = (s32 *)(entries + offset);
-        void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
-        fn_801DF380(result, entry[0], (void (*)())fn_80161438, entry[1]);
+        void *obj2 = *(void **)((char *)arg0 + 4);
+        char *entries2 = *(char **)((char *)arg0 + 0x34);
+        s32 *entry = (s32 *)(entries2 + offset);
+        void *result = ((Dummy *)obj2)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
+        fn_801DF380(result, entry[0], fn_80161438, entry[1]);
         offset += 8;
         i++;
     }
-
     resetValue = lbl_80561848;
     *(s32 *)((char *)arg0 + 0x94) = 0;
     *(float *)((char *)arg0 + 0x98) = resetValue;
@@ -1368,24 +1359,32 @@ extern "C" void fn_801625E0(void *arg0) {
     *(u8 *)((char *)arg0 + 0x91) = 0;
     *(u8 *)((char *)arg0 + 0x9C) = 1;
     {
-        s32 offset;
-        s32 i;
-        for (i = 0, offset = 0; i < *(s32 *)((char *)arg0 + 0xE4); i++, offset += 0x48) {
-            char *obj = (char *)*(void **)((char *)arg0 + 0xE0) + offset;
+        s32 offset2;
+        s32 i2;
+        i2 = 0;
+        offset2 = 0;
+        while (i2 < *(s32 *)((char *)arg0 + 0xE4)) {
+            char *obj = (char *)*(void **)((char *)arg0 + 0xE0) + offset2;
+            char *child;
+            u32 j;
             fn_801EA140(obj);
             *(float *)(obj + 4) += *(float *)(obj + 0x38);
             if (*(s32 *)(obj + 0x34) != 0) {
-                char *child;
-                u32 j;
-                for (j = 0, child = obj + 0xC; j < 2; j++, child += 0xC) {
+                child = obj + 0xC;
+                j = 0;
+                do {
                     fn_801EA140(child);
-                }
+                    j++;
+                    child += 0xC;
+                } while (j < 2);
             }
             *(u8 *)(obj + 0x3C) = 1;
             if (*(s32 *)(obj + 0x34) != 0) {
                 ((void (*)(void *, void *))fn_802A95A8)(obj + 0x24, obj + 0x2C);
                 fn_802A95AC(1);
             }
+            offset2 += 0x48;
+            i2++;
         }
     }
 }
@@ -2439,28 +2438,30 @@ extern s32 fn_802A96E8(void *, s32, s32, s32, s32);
 extern s32 fn_802C9950(s32);
 extern s32 fn_802C9994(s32);
 #pragma use_lmw_stmw off
+/* Draw each active entry's sprite when the object is initialized and drawing is enabled. */
 void fn_80164510(void *arg0, s32 arg1) {
-    s32 offset;
-    s32 temp_r30;
-    s32 temp_r29;
+    s32 entryOffset;
+    s32 savedColorState;
+    s32 savedDrawState;
     s32 i;
-    void *p;
-    temp_r30 = fn_802C9950(-0x100);
-    temp_r29 = fn_802C9994(0);
+    void *entry;
+
+    savedColorState = fn_802C9950(-0x100);
+    savedDrawState = fn_802C9994(0);
     if (*(s32 *)((char *)arg0 + 0xA0) != -1) {
         i = 0;
-        offset = 0;
+        entryOffset = 0;
         while (i < *(s32 *)((char *)arg0 + 0xE4)) {
-            p = (char *)*(void **)((char *)arg0 + 0xE0) + offset;
-            if (*(u8 *)((char *)p + 0x3C) != 0 && *(s32 *)((char *)p + 0x34) != 0 && *(u8 *)((char *)arg0 + 0xD8) != 0) {
-                fn_802A96E8((char *)p + 0xC, 2, *(s32 *)((char *)arg0 + 0xD4), *(s32 *)((char *)arg0 + 0xD0), 0);
+            entry = (char *)*(void **)((char *)arg0 + 0xE0) + entryOffset;
+            if (*(u8 *)((char *)entry + 0x3C) != 0 && *(s32 *)((char *)entry + 0x34) != 0 && *(u8 *)((char *)arg0 + 0xD8) != 0) {
+                fn_802A96E8((char *)entry + 0xC, 2, *(s32 *)((char *)arg0 + 0xD4), *(s32 *)((char *)arg0 + 0xD0), 0);
             }
-            offset += 0x48;
+            entryOffset += 0x48;
             i++;
         }
     }
-    fn_802C9950(temp_r30);
-    fn_802C9994(temp_r29);
+    fn_802C9950(savedColorState);
+    fn_802C9994(savedDrawState);
 }
 #pragma use_lmw_stmw reset
 extern s32 lbl_8055A0E0;
