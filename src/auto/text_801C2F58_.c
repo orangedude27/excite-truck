@@ -266,7 +266,8 @@ extern void fn_80015A20(void *, f32 *);
 extern void fn_80015B20(s32, void *, s32);
 #pragma push
 #pragma processor 750
-void fn_801C3A3C(s32 arg0, f32 arg1, f32 arg2) {
+/* Applies a base Y offset (plus node offset) and a Z-axis rotation to the given transform object. */
+void fn_801C3A3C(s32 target, f32 yOffset, f32 zRotation) {
     char out[0x24];
     f32 values[3];
     void *p = fn_80178C9C();
@@ -275,13 +276,13 @@ void fn_801C3A3C(s32 arg0, f32 arg1, f32 arg2) {
         r = *(void **)((char *)r + 0x14);
     {
         f32 offset = (r != 0) ? *(f32 *)((char *)r + 0x1C) : lbl_80562970;
-        fn_801B8054(arg0, p, lbl_80562970, offset + arg1);
+        fn_801B8054(target, p, lbl_80562970, offset + yOffset);
     }
     values[0] = lbl_80562970;
-    values[1] = arg2;
+    values[1] = zRotation;
     values[2] = lbl_80562970;
     fn_80015A20(out, values);
-    fn_80015B20(arg0, out, arg0);
+    fn_80015B20(target, out, target);
 }
 #pragma push
 #pragma processor 750
