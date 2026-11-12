@@ -70,6 +70,9 @@ s32 NANDPrivateCreateAsync(const char* path, u8 perm, u8 attr,
         nandCreate(path, perm, attr, block, TRUE, TRUE));
 }
 
+/* Delete a NAND file or directory by relative path: validate initialization,
+ * build the absolute path, reject private paths, issue ISFS_Delete, and
+ * convert the IPC result to a NAND result. */
 s32 NANDDelete(const char* path) {
     char absPath[64];
     s32 result;
