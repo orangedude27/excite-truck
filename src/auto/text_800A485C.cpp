@@ -3876,64 +3876,70 @@ extern "C" u8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
  * entry code answers with it when a directory sector did not go to disk whole. */
 #define VF_ERR_SHORT_TRANSFER 0x11
 
-struct FatIter {
-    u32 pos;            /* 0x00 */
-    void *cache;        /* 0x04 */
-    u8 fat[0x38];       /* 0x08 */
-    u32 prev;           /* 0x40 */
-    u32 cluster;        /* 0x44 */
-    u16 off;            /* 0x48 */
-    u16 mask;           /* 0x4A */
-    u8 pad[0x20];       /* 0x4C */
-    u8 shift;           /* 0x6C */
-};
-
+/* Put an entry iterator's sector fields on the entry its position points at.
+ *
+ * `position` counts 32-byte directory entries; `shift` and
+ * `entriesPerSectorMask`, which fn_800AC1B4 takes off the volume's sector
+ * size, turn it into the number of the directory sector the entry falls in and
+ * the byte that entry starts on inside that sector.  Only when that sector is
+ * not the one the iterator was left on (+0x40, -1 on a fresh one) is the
+ * directory's cluster chain walked to the disk sector behind it - fn_800AE620,
+ * through the directory copy the iterator carries at +0x08 - and +0x44/+0x48
+ * refreshed from it.
+ *
+ * `grow` is what a caller that writes passes (VFiPFENT_ITER_Advance takes it
+ * from the entry-creating fn_800AAC08): when the chain ends here, one more
+ * cluster is taken for the directory and, unless the iterator was already off
+ * its end, written out empty a sector at a time from a cache page.  A caller
+ * that cannot place the position it asked for puts the old one back and calls
+ * this again, so every call of it in the entry code comes in a pair.
+ */
 extern "C" s32 fn_800AB378(void *arg0, s32 grow) {
     typedef s32 (*ClaimPage)(void *, s32, void **, s32 *);              /* fn_800A8D08: a page of the volume's cache; -1 asks for one held by nobody */
     typedef s32 (*WriteSector)(void *, s32, s32, s32, u16, u32 *, s32); /* fn_800B5700: write bytes to a sector */
-    FatIter *it = (FatIter *)arg0;
+    VFiPFEntIter *it = (VFiPFEntIter *)arg0;
     void *page;
     u32 bytesWritten;
     s32 pageCached;
     s32 result;
     u32 i;
-    u32 sector = it->pos >> it->shift;
-    u32 lastSector = it->prev;
+    u32 dirSector = it->position >> it->shift;
+    u32 lastDirSector = it->index;
 
-    if (sector != lastSector) {
-        it->prev = sector;
-        result = fn_800AE620((s32)it->fat, sector, 0, (s32)&it->cluster);
+    if (dirSector != lastDirSector) {
+        it->index = dirSector;
+        result = fn_800AE620((s32)it->dir, dirSector, 0, (s32)&it->sector);
         if (result != 0)
             return result;
-        if (VF_SECTOR_IS_END(it->cluster) && grow != 0) {
+        if (VF_SECTOR_IS_END(it->sector) && grow != 0) {
             /* the directory has no cluster this far: take one more */
-            result = fn_800AE620((s32)it->fat, sector, 1, (s32)&it->cluster);
+            result = fn_800AE620((s32)it->dir, dirSector, 1, (s32)&it->sector);
             if (result != 0)
                 return result;
-            if (!VF_SECTOR_IS_END(it->cluster) && !VF_SECTOR_IS_END(lastSector)) {
+            if (!VF_SECTOR_IS_END(it->sector) && !VF_SECTOR_IS_END(lastDirSector)) {
                 /* and clear the new cluster on the disk before anything is
                  * written into it: one page of zeroes, a sector at a time */
-                result = ((ClaimPage)fn_800A8D08)(it->cache, -1, &page, &pageCached);
+                result = ((ClaimPage)fn_800A8D08)(it->volume, -1, &page, &pageCached);
                 if (result != 0)
                     return result;
-                fn_800A499C((const char *)VF_PAGE_DATA(page), 0, VF_VOL_SECTOR_SIZE(it->cache));
-                for (i = 0; i < VF_VOL_SECTORS_PER_CLUSTER(it->cache); i++) {
-                    void *volume = it->cache;
-                    result = ((WriteSector)fn_800B5700)(volume, (s32)VF_PAGE_DATA(page), it->cluster + i, 0, VF_VOL_SECTOR_SIZE(volume), &bytesWritten, 0);
+                fn_800A499C((const char *)VF_PAGE_DATA(page), 0, VF_VOL_SECTOR_SIZE(it->volume));
+                for (i = 0; i < VF_VOL_SECTORS_PER_CLUSTER(it->volume); i++) {
+                    void *volume = it->volume;
+                    result = ((WriteSector)fn_800B5700)(volume, (s32)VF_PAGE_DATA(page), it->sector + i, 0, VF_VOL_SECTOR_SIZE(volume), &bytesWritten, 0);
                     if (result != 0) {
-                        VFiPFCACHE_FreeFATPage_800A8E10(it->cache, page); /* gives the page back to the volume's data list */
+                        VFiPFCACHE_FreeFATPage_800A8E10(it->volume, page); /* gives the page back to the volume's data list */
                         return result;
                     }
-                    if (bytesWritten != VF_VOL_SECTOR_SIZE(it->cache)) {
-                        VFiPFCACHE_FreeFATPage_800A8E10(it->cache, page);
+                    if (bytesWritten != VF_VOL_SECTOR_SIZE(it->volume)) {
+                        VFiPFCACHE_FreeFATPage_800A8E10(it->volume, page);
                         return VF_ERR_SHORT_TRANSFER;
                     }
                 }
-                VFiPFCACHE_FreeFATPage_800A8E10(it->cache, page);
+                VFiPFCACHE_FreeFATPage_800A8E10(it->volume, page);
             }
         }
     }
-    it->off = ((it->pos & it->mask) << 5) & 0xFFE0;
+    it->sectorOff = ((it->position & it->entriesPerSectorMask) << 5) & 0xFFE0;
     return 0;
 }
 
