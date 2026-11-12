@@ -256,11 +256,14 @@ unsigned int fn_801D37AC(void *arg0) {
 extern int lbl_802F99A8[];
 extern char lbl_803383E4[];
 extern int stricmp(const char *, const char *);
-int fn_801D37C4(const char *arg0) {
+/* Look up a physics object ("phob") type id by name in lbl_802F99A8 (pairs of
+ * name string and type id: sphere=1, tube=2, hinged=3, cube=4). Returns 0 and
+ * logs lbl_803383E4 ("mut_phob: invalid type '%s'") if the name is unknown. */
+int fn_801D37C4(const char *typeName) {
     int table[8];
     int *src = lbl_802F99A8;
     int *dst = table;
-    int *p = table;
+    int *entry = table;
     unsigned int i = 0;
     *dst++ = *src++;
     *dst++ = *src++;
@@ -271,13 +274,13 @@ int fn_801D37C4(const char *arg0) {
     *dst++ = *src++;
     *dst = *src;
     do {
-        if (stricmp(arg0, (const char *)p[0]) == 0) {
+        if (stricmp(typeName, (const char *)entry[0]) == 0) {
             return *(int *)((char *)table + 4 + (i << 3));
         }
         ++i;
-        p += 2;
+        entry += 2;
     } while (i < 4);
-    fn_802E317C(lbl_803383E4, arg0);
+    fn_802E317C(lbl_803383E4, typeName);
     return 0;
 }
 
@@ -335,41 +338,37 @@ void fn_801D3910(void *arg0) {
     p = (char *)arg0 + 0x248;
     *(void **)((char *)arg0 + 0x244) = p;
     if (p != 0) {
-        void *initialVtable = lbl_80333B98;
+        struct Obj3910 *o = (struct Obj3910 *)p;
         float value = lbl_80562AAC;
         float zero = lbl_80562AB8;
         volatile float sp10;
         volatile float spC;
         volatile float sp8;
-        int zeroInt;
-        void *a;
-        *(volatile void **)p = initialVtable;
-        zeroInt = 0;
+        o->vtable = lbl_80333B98;
         sp8 = zero;
-        a = (char *)arg0 + 0x3C;
         spC = zero;
         sp10 = zero;
-        *(void **)(p + 0xC) = a;
-        *(void **)(p + 4) = arg0;
-        *(int *)(p + 8) = zeroInt;
-        *(int *)(p + 0x18) = 0x53504852;
-        *(float *)(p + 0x10) = value;
-        *(float *)(p + 0x14) = value;
-        *(int *)(p + 0x20) = 100;
-        *(int *)(p + 0x1C) = zeroInt;
-        *(void **)p = lbl_80333B48;
-        *(float *)(p + 0x24) = value;
-        *(float *)(p + 0x34) = zero;
-        *(float *)(p + 0x38) = zero;
-        *(float *)(p + 0x3C) = zero;
-        *(float *)(p + 0x40) = zero;
-        *(float *)(p + 0x44) = zero;
-        *(float *)(p + 0x48) = zero;
-        *(char *)(p + 0x4C) = zeroInt;
-        *(float *)(p + 0x50) = zero;
-        *(float *)(p + 0x28) = zero;
-        *(float *)(p + 0x2C) = zero;
-        *(float *)(p + 0x30) = zero;
+        o->unkC = (char *)arg0 + 0x3C;
+        o->unk4 = arg0;
+        o->unk8 = 0;
+        o->unk18 = 0x53504852;
+        o->unk10 = value;
+        o->unk14 = value;
+        o->unk20 = 100;
+        o->unk1C = 0;
+        o->vtable = lbl_80333B48;
+        o->unk24 = value;
+        o->unk34 = zero;
+        o->unk38 = zero;
+        o->unk3C = zero;
+        o->unk40 = zero;
+        o->unk44 = zero;
+        o->unk48 = zero;
+        o->unk4C = 0;
+        o->unk50 = zero;
+        o->unk28 = zero;
+        o->unk2C = zero;
+        o->unk30 = zero;
         if (arg0 != 0)
             fn_8019EECC(arg0, p + 0x28);
     }
@@ -664,11 +663,11 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
     int zero;
     int t0, t1, t2, t3;
 
-    temp_r7 = ((int *)arg3)[0];
+    temp_r11 = ((int *)arg3)[0];
     temp_r27 = ((int *)arg3)[1];
     temp_r26 = ((int *)arg3)[2];
     temp_r25 = ((int *)arg3)[3];
-    temp_r11 = 0;
+    temp_r7 = 0;
     temp_r24 = ((int *)arg3)[4];
     temp_r23 = ((int *)arg3)[5];
     temp_r22 = ((int *)arg3)[6];
@@ -680,7 +679,7 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
 
     *(int *)((char *)arg0 + 0x1EC) = arg1;
     temp_r4 = *(int *)((char *)arg5 + 0x28);
-    *(int *)((char *)arg0 + 0x1F4) = temp_r7;
+    *(int *)((char *)arg0 + 0x1F4) = temp_r11;
     *(int *)((char *)arg0 + 0x1F0) = arg2;
     *(int *)((char *)arg0 + 0x1F8) = temp_r27;
     *(int *)((char *)arg0 + 0x1FC) = temp_r26;
@@ -695,7 +694,7 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
     *(int *)((char *)arg0 + 0x220) = temp_r6;
     *(float *)((char *)arg0 + 0x224) = lbl_8055E3C8;
     *(int *)((char *)arg0 + 0x228) = arg6;
-    *(int *)((char *)arg0 + 0x22C) = temp_r11;
+    *(int *)((char *)arg0 + 0x22C) = temp_r7;
     *(int *)((char *)arg0 + 0x230) = temp_r4;
     *(float *)((char *)arg0 + 0x234) = *(float *)((char *)arg5 + 0);
     *(int *)((char *)arg0 + 0x238) = *(int *)((char *)arg5 + 0x24);
@@ -736,69 +735,58 @@ int fn_801D411C(void *arg0) {
     float sp8;
     float sp10;
     float spc;
-
     if (*(int *)(p + 0x230) == 2 && *(void **)(p + 0x228) != 0) {
         fn_801A4868(*(void **)(p + 0x228), 1);
     }
-
     {
-        register float neg1000;
+        register float neg;
         register float one;
         register float zero;
-
         zero = lbl_80562AB8;
         one = lbl_80562AAC;
-        neg1000 = lbl_80562ABC;
-        *(float *)(p + 0x220) = zero;
-
-#pragma scheduling off
-        *(float *)(p + 0x120) = zero;
-        *(float *)(p + 0x11C) = zero;
-        *(float *)(p + 0x118) = zero;
-        *(float *)(p + 0x12C) = zero;
-        *(float *)(p + 0x130) = zero;
-        *(float *)(p + 0x124) = zero;
-        *(float *)(p + 0x138) = zero;
-        *(float *)(p + 0x128) = zero;
-        *(float *)(p + 0x134) = zero;
-        *(float *)(p + 0x13C) = zero;
-        *(float *)(p + 0x16C) = zero;
-        *(float *)(p + 0x140) = zero;
-        *(float *)(p + 0x144) = zero;
-        *(float *)(p + 0x178) = zero;
-        *(float *)(p + 0x170) = zero;
-        *(float *)(p + 0x180) = zero;
-        *(float *)(p + 0x174) = zero;
-        *(float *)(p + 0x17C) = zero;
-
-        *(float *)(p + 0x1FC) = zero;
-        *(float *)(p + 0x1F8) = zero;
-        *(float *)(p + 0x1F4) = one;
-        *(float *)(p + 0x208) = zero;
-        *(float *)(p + 0x200) = zero;
-        *(float *)(p + 0x210) = zero;
-        *(float *)(p + 0x204) = one;
-        *(float *)(p + 0x20C) = zero;
-        *(float *)(p + 0x214) = one;
-        *(float *)(p + 0x220) = zero;
-        *(float *)(p + 0x218) = zero;
-        *(float *)(p + 0x21C) = neg1000;
-
+        *(volatile float *)(p + 0x220) = zero;
+        neg = lbl_80562ABC;
+        *(volatile float *)(p + 0x118) = zero;
+        *(volatile float *)(p + 0x11C) = zero;
+        *(volatile float *)(p + 0x120) = zero;
+        *(volatile float *)(p + 0x124) = zero;
+        *(volatile float *)(p + 0x128) = zero;
+        *(volatile float *)(p + 0x12C) = zero;
+        *(volatile float *)(p + 0x130) = zero;
+        *(volatile float *)(p + 0x134) = zero;
+        *(volatile float *)(p + 0x138) = zero;
+        *(volatile float *)(p + 0x13C) = zero;
+        *(volatile float *)(p + 0x140) = zero;
+        *(volatile float *)(p + 0x144) = zero;
+        *(volatile float *)(p + 0x16C) = zero;
+        *(volatile float *)(p + 0x170) = zero;
+        *(volatile float *)(p + 0x174) = zero;
+        *(volatile float *)(p + 0x178) = zero;
+        *(volatile float *)(p + 0x17C) = zero;
+        *(volatile float *)(p + 0x180) = zero;
+        *(volatile float *)(p + 0x1F4) = one;
+        *(volatile float *)(p + 0x1F8) = zero;
+        *(volatile float *)(p + 0x1FC) = zero;
+        *(volatile float *)(p + 0x200) = zero;
+        *(volatile float *)(p + 0x204) = one;
+        *(volatile float *)(p + 0x208) = zero;
+        *(volatile float *)(p + 0x20C) = zero;
+        *(volatile float *)(p + 0x210) = zero;
+        *(volatile float *)(p + 0x214) = one;
+        *(volatile float *)(p + 0x218) = zero;
+        *(volatile float *)(p + 0x21C) = neg;
+        *(volatile float *)(p + 0x220) = zero;
         *(volatile float *)&spc = zero;
         *(volatile float *)&sp10 = zero;
         *(volatile float *)&sp8 = zero;
-        *(float *)(p + 0x30) = zero;
-        *(float *)(p + 0x34) = zero;
-        *(float *)(p + 0x38) = zero;
-#pragma scheduling on
+        *(volatile float *)(p + 0x30) = zero;
+        *(volatile float *)(p + 0x34) = zero;
+        *(volatile float *)(p + 0x38) = zero;
         fn_8017A57C(arg0);
-
         *(struct Mtx48 *)(p + 0x3C) = *(struct Mtx48 *)(p + 0x1F4);
         fn_8017A580(arg0);
-
         *(int *)(p + 0x24) = 0;
         *(int *)(p + 0x1EC) = -1;
-        return 0;
     }
 }
 #pragma pop
@@ -991,6 +979,7 @@ void fn_801D4598(void *arg0, float farg0) {
          ((lbl_80562AAC + *(float *)(p + 0x240)) * (lbl_80562AAC + *(float *)(p + 0x240))))) {
         float f5, f6, f7;
         float step;
+        float py, px, pz;
         PSVECCrossProduct(p + 0x54, p + 0x20C, sp8);
         scale = dot - lbl_80562ACC;
         {
@@ -1009,18 +998,16 @@ void fn_801D4598(void *arg0, float farg0) {
         *(float *)(p + 0x124) = f7;
         *(float *)(p + 0x128) = f6;
         *(float *)(p + 0x12C) = f5;
-        {
-            float py = *(float *)(p + 0x21C);
-            float px = *(float *)(p + 0x218);
-            float pz = *(float *)(p + 0x220);
-            *(float *)(p + 0x124) = f7 + sp8[0] * step;
-            *(float *)(p + 0x128) = f6 + sp8[1] * step;
-            f5 += sp8[2] * step;
-            *(float *)(p + 0x64) = py;
-            *(float *)(p + 0x60) = px;
-            *(float *)(p + 0x68) = pz;
-            *(float *)(p + 0x12C) = f5;
-        }
+        py = *(float *)(p + 0x21C);
+        px = *(float *)(p + 0x218);
+        pz = *(float *)(p + 0x220);
+        *(float *)(p + 0x124) = f7 + sp8[0] * step;
+        *(float *)(p + 0x128) = f6 + sp8[1] * step;
+        f5 += sp8[2] * step;
+        *(float *)(p + 0x64) = py;
+        *(float *)(p + 0x60) = px;
+        *(float *)(p + 0x68) = pz;
+        *(float *)(p + 0x12C) = f5;
         fn_8017A580(arg0);
     } else fn_801D411C(arg0);
 }
