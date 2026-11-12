@@ -5240,6 +5240,7 @@ void getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     }
 }
 #pragma pop
+/* Dispatches an incoming WPAD HID report to the handler for its report ID and performs per-port post-processing. */
 s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 #pragma dont_inline on
     BOOL enabled;
