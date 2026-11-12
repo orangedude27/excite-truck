@@ -1233,33 +1233,31 @@ extern "C" s32 fn_8019CCCC(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
     if (fn_8019B08C(arg0, arg1, arg2, farg0) != 0) {
         return 1;
     }
-    u32 transXBits, transYBits, transZBits;
-    u32 axisXBits, axisYBits, axisZBits;
-    f32 corners[6];
+    CornerV3 pos, neg;
+    u32 axisBits[3];
+    u32 transBits[3];
+    f32 radius;
+    u32* m = *(u32**)((u8*)arg2 + 0xC);
     f32 dim = *(f32*)((u8*)arg2 + 0x28);
-    register u32* m = (u32*)*(void**)((u8*)arg2 + 0xC);
-    axisXBits = m[6];
-    axisYBits = m[7];
-    axisZBits = m[8];
-    transXBits = m[9];
-    transYBits = m[10];
-    transZBits = m[11];
     f32 negDim = -dim;
-    f32 transX = *(f32*)&transXBits;
-    f32 transY = *(f32*)&transYBits;
-    f32 transZ = *(f32*)&transZBits;
-    f32 axisX = *(f32*)&axisXBits;
-    f32 axisY = *(f32*)&axisYBits;
-    f32 axisZ = *(f32*)&axisZBits;
-    corners[3] = transX + axisX * dim;
-    corners[4] = transY + axisY * dim;
-    corners[5] = transZ + axisZ * dim;
-    corners[0] = transX + axisX * negDim;
-    corners[1] = transY + axisY * negDim;
-    corners[2] = transZ + axisZ * negDim;
-    s32 firstHit = fn_8019AA34(arg0, arg1, arg2, &corners[3], 0, 0, farg0, *(f32*)((u8*)arg2 + 0x24));
-    s32 secondHit = fn_8019AA34(arg0, arg1, arg2, &corners[0], 0, 0, farg0, *(f32*)((u8*)arg2 + 0x24));
-    return (firstHit | secondHit) != 0;
+    axisBits[0] = m[6];
+    axisBits[1] = m[7];
+    axisBits[2] = m[8];
+    transBits[0] = m[9];
+    transBits[1] = m[10];
+    transBits[2] = m[11];
+    f32* axis = (f32*)axisBits;
+    f32* trans = (f32*)transBits;
+    pos.x = trans[0] + axis[0] * dim;
+    neg.x = trans[0] + axis[0] * negDim;
+    pos.y = trans[1] + axis[1] * dim;
+    neg.y = trans[1] + axis[1] * negDim;
+    pos.z = trans[2] + axis[2] * dim;
+    neg.z = trans[2] + axis[2] * negDim;
+    radius = *(f32*)((u8*)arg2 + 0x24);
+    s32 a = fn_8019AA34(arg0, arg1, arg2, &pos, 0, 0, farg0, radius) != 0;
+    s32 b = fn_8019AA34(arg0, arg1, arg2, &neg, 0, 0, farg0, radius);
+    return (a | b) != 0;
 }
 
 #pragma scheduling on
@@ -2070,57 +2068,57 @@ extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 
 #pragma scheduling invalid_target
 extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
+    u32 self = (u32)arg0;
+    u32 copyFlag = (u32)arg2;
     u8 second, first, opposite, other;
-    void *self = arg0;
-    s32 copyFlag = arg2;
     fn_8019ECC4();
-    *(void **)self = &lbl_80333B48;
+    *(void**)self = &lbl_80333B48;
     if (copyFlag != 0) {
-        first = *(volatile u8 *)((u8 *)self + 0x24);
-        opposite = *(volatile u8 *)((u8 *)self + 0x27);
-        second = *(volatile u8 *)((u8 *)self + 0x25);
-        other = *(volatile u8 *)((u8 *)self + 0x26);
-        *(volatile u8 *)((u8 *)self + 0x24) = opposite;
-        *(volatile u8 *)((u8 *)self + 0x27) = first;
-        *(volatile u8 *)((u8 *)self + 0x25) = other;
-        *(volatile u8 *)((u8 *)self + 0x26) = second;
-        opposite = *(volatile u8 *)((u8 *)self + 0x28);
-        other = *(volatile u8 *)((u8 *)self + 0x2b);
-        *(volatile u8 *)((u8 *)self + 0x28) = other;
-        *(volatile u8 *)((u8 *)self + 0x2b) = opposite;
-        opposite = *(volatile u8 *)((u8 *)self + 0x29);
-        other = *(volatile u8 *)((u8 *)self + 0x2a);
-        *(volatile u8 *)((u8 *)self + 0x29) = other;
-        *(volatile u8 *)((u8 *)self + 0x2a) = opposite;
-        opposite = *(volatile u8 *)((u8 *)self + 0x2c);
-        other = *(volatile u8 *)((u8 *)self + 0x2f);
-        *(volatile u8 *)((u8 *)self + 0x2c) = other;
-        *(volatile u8 *)((u8 *)self + 0x2f) = opposite;
-        opposite = *(volatile u8 *)((u8 *)self + 0x2d);
-        other = *(volatile u8 *)((u8 *)self + 0x2e);
-        *(volatile u8 *)((u8 *)self + 0x2d) = other;
-        *(volatile u8 *)((u8 *)self + 0x2e) = opposite;
-        opposite = *(volatile u8 *)((u8 *)self + 0x30);
-        other = *(volatile u8 *)((u8 *)self + 0x33);
-        *(volatile u8 *)((u8 *)self + 0x30) = other;
-        *(volatile u8 *)((u8 *)self + 0x33) = opposite;
-        opposite = *(volatile u8 *)((u8 *)self + 0x31);
-        other = *(volatile u8 *)((u8 *)self + 0x32);
-        *(volatile u8 *)((u8 *)self + 0x31) = other;
-        *(volatile u8 *)((u8 *)self + 0x32) = opposite;
-        if (*(volatile s32 *)((u8 *)self + 0x20) == 0x3eb)
-            *(f32 *)((u8 *)self + 0x24) += lbl_80562370;
+        first = *(volatile u8*)(self + 0x24);
+        opposite = *(volatile u8*)(self + 0x27);
+        second = *(volatile u8*)(self + 0x25);
+        other = *(volatile u8*)(self + 0x26);
+        *(volatile u8*)(self + 0x24) = opposite;
+        *(volatile u8*)(self + 0x27) = first;
+        *(volatile u8*)(self + 0x25) = other;
+        *(volatile u8*)(self + 0x26) = second;
+        opposite = *(volatile u8*)(self + 0x28);
+        other = *(volatile u8*)(self + 0x2b);
+        *(volatile u8*)(self + 0x28) = other;
+        *(volatile u8*)(self + 0x2b) = opposite;
+        opposite = *(volatile u8*)(self + 0x29);
+        other = *(volatile u8*)(self + 0x2a);
+        *(volatile u8*)(self + 0x29) = other;
+        *(volatile u8*)(self + 0x2a) = opposite;
+        opposite = *(volatile u8*)(self + 0x2c);
+        other = *(volatile u8*)(self + 0x2f);
+        *(volatile u8*)(self + 0x2c) = other;
+        *(volatile u8*)(self + 0x2f) = opposite;
+        opposite = *(volatile u8*)(self + 0x2d);
+        other = *(volatile u8*)(self + 0x2e);
+        *(volatile u8*)(self + 0x2d) = other;
+        *(volatile u8*)(self + 0x2e) = opposite;
+        opposite = *(volatile u8*)(self + 0x30);
+        other = *(volatile u8*)(self + 0x33);
+        *(volatile u8*)(self + 0x30) = other;
+        *(volatile u8*)(self + 0x33) = opposite;
+        opposite = *(volatile u8*)(self + 0x31);
+        other = *(volatile u8*)(self + 0x32);
+        *(volatile u8*)(self + 0x31) = other;
+        *(volatile u8*)(self + 0x32) = opposite;
+        if (*(volatile s32*)(self + 0x20) == 0x3eb)
+            *(f32*)(self + 0x24) += lbl_80562370;
     }
     f32 zero = lbl_805622D0;
-    *(volatile u8 *)((u8 *)self + 0x4c) = 0;
-    *(f32 *)((u8 *)self + 0x34) = zero;
-    *(f32 *)((u8 *)self + 0x38) = zero;
-    *(f32 *)((u8 *)self + 0x3c) = zero;
-    *(f32 *)((u8 *)self + 0x40) = zero;
-    *(f32 *)((u8 *)self + 0x44) = zero;
-    *(f32 *)((u8 *)self + 0x48) = zero;
-    *(f32 *)((u8 *)self + 0x50) = zero;
-    return self;
+    *(volatile u8*)(self + 0x4c) = 0;
+    *(f32*)(self + 0x34) = zero;
+    *(f32*)(self + 0x38) = zero;
+    *(f32*)(self + 0x3c) = zero;
+    *(f32*)(self + 0x40) = zero;
+    *(f32*)(self + 0x44) = zero;
+    *(f32*)(self + 0x48) = zero;
+    *(f32*)(self + 0x50) = zero;
+    return (void*)self;
 }
 #pragma scheduling on
 extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
@@ -2877,16 +2875,19 @@ extern "C" void fn_801A0160(void*);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" s32 fn_801A1148(void *arg0, const f32 *vec, s32 arg2, f32 *arg3, s32 arg4) {
-    f32 sp[3];
+    /* Test a sphere-swept query against the object's children: compute the projected
+     * distance from the base position to vec, and if within the radius range check
+     * each child entry with fn_8019DDFC, returning 1 if any child is hit. */
+    f32 delta[3];
     void *base = *(void **)((u8 *)arg0 + 0xC);
-    sp[0] = *(f32 *)((u8 *)base + 0x24) - vec[0];
-    sp[1] = *(f32 *)((u8 *)base + 0x28) - vec[1];
-    sp[2] = *(f32 *)((u8 *)base + 0x2C) - vec[2];
-    f32 dot = PSVECDotProduct((const Vec *)sp, (const Vec *)(u32)arg2);
+    delta[0] = *(f32 *)((u8 *)base + 0x24) - vec[0];
+    delta[1] = *(f32 *)((u8 *)base + 0x28) - vec[1];
+    delta[2] = *(f32 *)((u8 *)base + 0x2C) - vec[2];
+    f32 dot = PSVECDotProduct((const Vec *)delta, (const Vec *)(u32)arg2);
     f32 radius = *(f32 *)((u8 *)arg0 + 0x178);
     if (dot >= -radius && dot < *arg3 + radius) {
         fn_801A0160(arg0);
-        s32 found = 0;
+        s32 hit = 0;
         s32 i = 0;
         while (i < *(s32 *)((u8 *)arg0 + 0x174)) {
             void *entry = (u8 *)arg0 + i * 4;
@@ -2894,11 +2895,11 @@ extern "C" s32 fn_801A1148(void *arg0, const f32 *vec, s32 arg2, f32 *arg3, s32 
             if (((s32 (*)(s32, s32, s32, s32, void *, f32))fn_8019DDFC)((s32)vec, arg2, (s32)arg3, arg4,
                             (u8 *)item + 0x34,
                             *(f32 *)((u8 *)item + 0x24)) != 0) {
-                found = 1;
+                hit = 1;
             }
             i++;
         }
-        return found;
+        return hit;
     }
     return 0;
 }
