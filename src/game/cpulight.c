@@ -1037,20 +1037,27 @@ typedef struct { LightVec3 pos; u32 color; f32 u, v; } LightVtx;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DD27C(void *__restrict vertices, int count, unsigned short *__restrict list, int size) {
-    register int i;
-    unsigned short x;
-    volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
-    GXSetArray(9, vertices, 0x18);
-    GXSetArray(0xB, (char *)vertices + 0xC, 0x18);
-    GXSetArray(0xD, (char *)vertices + 0x10, 0x18);
-    DCFlushRange(vertices, count * 0x18);
-    GXBegin(0x90, 0, (unsigned short)size);
-    for (i = 0; i < size; ++i) {
-        x = list[i];
-        *fifo = x;
-        *fifo = x;
-        *fifo = x;
+/* Draws one batch of CPU-lit geometry as an indexed triangle list: points the
+ * position, color 0 and texture coordinate 0 arrays at the renderer's vertex
+ * buffer (`vertexCount` LightVtx records), flushes it out of the cache and
+ * begins a GX_TRIANGLES draw in vertex format 0.  Each of the three arrays is
+ * indexed on its own, so every 16-bit index is written to the FIFO once per
+ * array, three times over, for the `count` vertices of the list. */
+void fn_802DD27C(LightVtx *__restrict vertices, s32 vertexCount,
+                 u16 *__restrict indices, s32 count) {
+    register s32 i;
+    u16 index;
+    volatile u16 *fifo = (volatile u16 *)0xCC008000;
+    GXSetArray(GX_VA_POS, vertices, sizeof(LightVtx));
+    GXSetArray(GX_VA_CLR0, (char *)&vertices->color, sizeof(LightVtx));
+    GXSetArray(GX_VA_TEX0, (char *)&vertices->u, sizeof(LightVtx));
+    DCFlushRange(vertices, vertexCount * sizeof(LightVtx));
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, (u16)count);
+    for (i = 0; i < count; ++i) {
+        index = indices[i];
+        *fifo = index;
+        *fifo = index;
+        *fifo = index;
     }
 }
 #pragma pop
