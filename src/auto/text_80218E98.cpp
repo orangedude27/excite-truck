@@ -1419,16 +1419,18 @@ struct CursorIconWidget {
 };
 
 extern "C" int lbl_8033F298[];
-extern "C" void *fn_8021A808(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    fn_80222340(arg0, arg1, arg2, 0, 0, 0, arg5);
-    *(s32 *)((u8 *)arg0 + 0x254) = arg4;
-    *(void **)arg0 = lbl_8033F298;
-    *(s32 *)((u8 *)arg0 + 0x258) = arg3;
-    if (arg4 != 0) {
-        fn_80219440(arg0, 0, (void *)arg4, 4);
+extern "C" void *fn_8021A808(void *object, s32 x, s32 y, s32 cursorId, s32 *cursor, s32 drawer) {
+    CursorIconWidget *widget = (CursorIconWidget *)object;
+
+    fn_80222340(object, x, y, 0, 0, 0, drawer);
+    widget->cursor = cursor;
+    *(void **)object = lbl_8033F298;
+    widget->cursorId = cursorId;
+    if (cursor != 0) {
+        fn_80219440(object, 0, cursor, 4);
     }
-    fn_80219440(arg0, 1, fn_80216708(), 1);
-    return arg0;
+    fn_80219440(object, 1, fn_80216708(), 1);
+    return object;
 }
 
 #pragma dont_inline reset
