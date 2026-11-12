@@ -248,6 +248,7 @@ void TRKReadBuffer_ui32(void) {
 extern int lbl_8035BEA0[4];
 int TRKReadBuffer_ui8(int index) { return lbl_8035BEA0[index]; }
 
+/* Drains the pending TRK message-buffer queue (lbl_8055D6E8): for each active buffer, invokes its callback, releases it, returns it to free-list pool 0 (lbl_8035BEA0[0]), and clears active. */
 void TRKReadBuffer1_ui64(void) {
     typedef struct TRKBuf {
         struct TRKBuf *next;
