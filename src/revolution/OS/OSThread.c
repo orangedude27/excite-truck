@@ -1033,6 +1033,7 @@ void OSSleepTicks(s64 ticks) {
     OSAlarm alarm;
     OSThread* thread;
 
+    /* Sleep the current thread for `ticks` using an OSAlarm, then cancel the alarm on wake. */
     enabled = OSDisableInterrupts();
 
     thread = OS_CURRENT_THREAD;
