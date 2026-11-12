@@ -224,7 +224,9 @@ f32 fn_801CF778(const float *point, const float *origin, const float *dir) {
 }
 #pragma dont_inline reset
 
-#pragma ppc_psq_save off
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
     f32 *nrm;
     s32 n;
