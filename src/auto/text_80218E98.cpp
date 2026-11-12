@@ -515,7 +515,7 @@ extern "C" void fn_80219440(void *, s32, void *, s32);
 extern "C" void fn_80128670(s32);
 extern "C" int lbl_8033F4B8[];
 extern "C" int lbl_8033FB38[];
-extern "C" void fn_80222340(void *, s32, s32, s32, s32, s32, s32);
+extern "C" void *fn_80222340(void *, s32, s32, s32, s32, s32, s32);
 extern "C" void *fn_80218F80(void *, void *);
 extern "C" char lbl_8033E560[];
 extern "C" char lbl_8033DA60[];
