@@ -17094,6 +17094,7 @@ UINT8 L2CA_DataWrite(UINT16 lcid, BT_HDR *p_buf) {
     return L2CAP_DW_FAILED;
 }
 
+/* Set the L2CAP idle timeout for a CID's link, or globally when requested. */
 BOOLEAN L2CA_SetIdleTimeout(UINT16 cid, UINT16 timeout, BOOLEAN is_global)
 {
     u8 *p_ccb;
