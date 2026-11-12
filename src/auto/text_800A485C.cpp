@@ -9016,7 +9016,7 @@ extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *text) {
 }
 
 #define fn_800A4B9C_CALL fn_800A4B9C
-extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
+extern "C" VFT_RET VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
     struct Locals {
         s16 inputLength;
         s16 outputLength;
@@ -24066,7 +24066,7 @@ extern "C" s32 fn_800A485C(s32 arg0) {
 void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
     u8 *out = (u8 *)dstArg;
     const u8 *in = (const u8 *)srcArg;
-    u32 words;
+    int words;
     u32 blocks;
     s32 byteAdjustment;
     u32 value;
@@ -24075,10 +24075,10 @@ void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
         goto copy_bytes;
     if (((u32)srcArg & 3) != 0)
         goto copy_bytes;
-    words = size >> 2;
+    words = (int)(size >> 2);
     if (size <= 3)
         goto copy_bytes;
-    blocks = words >> 3;
+    blocks = (u32)words >> 3;
     byteAdjustment = -(s32)(words << 2);
     if (blocks != 0) {
         for (i = 0; i < (int)blocks; i++) {
@@ -24097,7 +24097,7 @@ void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
     }
     words &= 7;
     if (words != 0) {
-        for (i = 0; i < (int)words; i++) {
+        for (i = 0; i < words; i++) {
             value = *(u32 *)in;
             in += 4;
             *(u32 *)out = value;
