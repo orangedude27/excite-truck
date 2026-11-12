@@ -246,25 +246,38 @@ static void IPCInterruptHandler(s16 intr, OSContext* ctx) {
     }
 }
 
+/**
+ * Sets up the PPC side of the IPC link to Starlet IOS, once.
+ *
+ * Carves the heap every IOS request is allocated from (the global ios heap
+ * handle hid) out of the tail of the IPC work buffer, then installs
+ * IPCInterruptHandler() on OS_INTR_PI_ACR, unmasks the IPC interrupt and
+ * clears the mailbox control register so the ARM sees the PPC ready.
+ * Returns IPC_RESULT_ALLOC_FAILED when the buffer has no room for the heap;
+ * every call after the first does nothing.
+ */
 s32 IPCCltInit(void) {
     static BOOL initialized = FALSE;
 
-    s32 err = 0;
-    void* lo;
+    s32 err = IPC_RESULT_OK;
+    void* heapStart;
 
     if (!initialized) {
         initialized = TRUE;
         IPCInit();
 
-        lo = IPCGetBufferLo();
-        if ((char*)lo + IPC_HEAP_SIZE > IPCGetBufferHi()) {
+        heapStart = IPCGetBufferLo();
+        if ((char*)heapStart + IPC_HEAP_SIZE > IPCGetBufferHi()) {
             err = IPC_RESULT_ALLOC_FAILED;
         } else {
-            hid = iosCreateHeap(lo, IPC_HEAP_SIZE);
-            IPCSetBufferLo((char*)lo + IPC_HEAP_SIZE);
+            // Requests (ipcAllocReq) come from this heap for the whole boot.
+            hid = iosCreateHeap(heapStart, IPC_HEAP_SIZE);
+            IPCSetBufferLo((char*)heapStart + IPC_HEAP_SIZE);
             __OSSetInterruptHandler(OS_INTR_PI_ACR, IPCInterruptHandler);
             __OSUnmaskInterrupts(OS_INTR_MASK(OS_INTR_PI_ACR));
-            IPCWriteReg(IPC_IPC_PPCCTRL, 0x38);
+            // Report our reply-acked state and clear the ARM's msg/ack flags.
+            IPCWriteReg(IPC_IPC_PPCCTRL,
+                        IPC_PPCCTRL_STATE_REPLY_ACK | IPC_PPCCTRL_ARM_FLAGS);
             IPCiProfInit();
         }
     }
