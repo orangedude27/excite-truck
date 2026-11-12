@@ -3223,17 +3223,19 @@ extern "C" f32 fn_8015CFFC(void *tracker, void *truck) {
     return score;
 }
 #pragma pop
-extern "C" void fn_8015D270(void* arg0, void* arg1) {
-    void* sp8 = arg1;
-    fn_80158F34(&sp8);
-    if (*(s32*)((u8*)arg0 + 0x264) > 0) {
-        ((f32 (*)(void*, void*))fn_8015A368)(arg0, sp8);
+/* If +0x264 is set, updates via fn_8015A368 with the adjusted param; then if the
+   last entry's id is valid and state/mode checks pass, triggers event 6. */
+extern "C" void fn_8015D270(void* self, void* param) {
+    void* paramCopy = param;
+    fn_80158F34(&paramCopy);
+    if (*(s32*)((u8*)self + 0x264) > 0) {
+        ((f32 (*)(void*, void*))fn_8015A368)(self, paramCopy);
     }
-    void* r4 = *(void**)((u8*)arg0 + 8);
-    void* r3 = (void*)((s32)r4 + (*(s32*)((u8*)arg0 + 0xC) - 1) * 0x38);
-    s32 r31 = *(s32*)((u8*)r3 + 4);
-    if (r31 > 0 && fn_80179650() == 1 && *(s32*)((u8*)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0) {
-        fn_8001EF5C(6, r31);
+    void* entries = *(void**)((u8*)self + 8);
+    void* lastEntry = (void*)((s32)entries + (*(s32*)((u8*)self + 0xC) - 1) * 0x38);
+    s32 entryId = *(s32*)((u8*)lastEntry + 4);
+    if (entryId > 0 && fn_80179650() == 1 && *(s32*)((u8*)param + 0x1F0) == 0x50 && fn_801CF064() == 0) {
+        fn_8001EF5C(6, entryId);
     }
 }
 
