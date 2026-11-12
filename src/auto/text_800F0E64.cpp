@@ -3750,8 +3750,8 @@ loop_11_done:
 #pragma use_lmw_stmw on
 #pragma cplusplus reset
 
-extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_800F7FEC(void* self) {
-    class Sound {
+extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_800F7FEC(void* task) {
+    class BasicSound {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -3760,17 +3760,19 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_
         virtual void v13(); virtual void v14(); virtual void v15(); virtual void m16();
         virtual void m17(s32, s32); virtual void v18(); virtual s32 Check();
     };
-    void* mutex = *(void**)((u8*)self + 0x3c);
+
+    /* Cancel this stream-header load task and stop its attached sound if still active. */
+    void* mutex = *(void**)((u8*)task + 0x3c);
     OSLockMutex(mutex);
-    *(u32*)((u8*)self + 0x10) = 0;
-    Sound* sound = *(Sound**)((u8*)self + 0x14);
+    *(u32*)((u8*)task + 0x10) = 0;
+    BasicSound* sound = *(BasicSound**)((u8*)task + 0x14);
     if (sound && sound->Check()) {
-        sound = *(Sound**)((u8*)self + 0x14);
+        sound = *(BasicSound**)((u8*)task + 0x14);
         if (sound->m8()) {
-            sound = *(Sound**)((u8*)self + 0x14);
+            sound = *(BasicSound**)((u8*)task + 0x14);
             sound->m17(0, 0);
         } else {
-            sound = *(Sound**)((u8*)self + 0x14);
+            sound = *(BasicSound**)((u8*)task + 0x14);
             sound->m16();
         }
     }
