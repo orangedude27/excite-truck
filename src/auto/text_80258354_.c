@@ -124,6 +124,20 @@ L_check3:
 #pragma use_lmw_stmw on
 #pragma scheduling on
 extern int fn_8023512C(void *);
+
+/* One entry of UIObjects_impl's object table (array at +0x04, count at +0x08,
+ * 0x20 entries of 0x48 bytes; fn_80258550 adds them and fn_8025878C,
+ * fn_802588C8, fn_80258A00, fn_80258AB0, fn_80258B60 and fn_80258C08 look them
+ * up by name).  The pair at +0x40 says which item of an art set the object
+ * shows: fn_80235EF0 and fn_80235F64 read that item's two floats, which the
+ * callers use as the x and y offset to draw at. */
+typedef struct UIObjectEntry {
+    char name[0x20];    /* +0x00 what callers look the object up by */
+    char artName[0x20]; /* +0x20 name of the art set it draws from */
+    void *art;          /* +0x40 the art set, referenced (see fn_8023512C) */
+    int item;           /* +0x44 which item of that art set */
+} UIObjectEntry;        /* == 0x48 */
+
 #pragma scheduling invalid_target
 void fn_80258550(void *arg0, const char *arg1, const char *arg2, int arg3) {
     struct Entry { char first[0x20]; char second[0x20]; void *field; int value; };
@@ -223,6 +237,7 @@ void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, flo
     int offset = 0;
     float cosine;
     float sine;
+    float k;
     goto check;
 loop:
     switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1)) >> 5) {
@@ -251,20 +266,20 @@ found:
         y += sine;
     else if (flags & 0x10)
         y += lbl_80563ACC * sine;
+    k = lbl_80563AD0;
     ((void (*)(int, int, int, float, float, float, float, float))fn_802354A0)(
         *(int *)(index + 0x40), *(int *)(index + 0x44), arg3,
-        x, y, lbl_80563AD0, cosine, sine);
+        x, y, k, cosine, sine);
 }
-#pragma pop
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale) {
     int index = 0;
     int offset = 0;
     int result;
-    float c;
+    register float c;
     float s;
     goto check;
 loop:
@@ -297,7 +312,7 @@ found:
         y += lbl_80563ACC * s;
     ((void (*)(int, int, int, float, float, float, float, float))fn_802354A0)(*(int *)(index + 0x40), *(int *)(index + 0x44), arg3, x, y, lbl_80563AD0, c, s);
 }
-#pragma scheduling reset
+#pragma scheduling on
 #pragma pop
 float fn_80258A00(void *arg0, int arg1) {
     int index = 0;
