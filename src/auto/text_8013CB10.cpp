@@ -266,8 +266,9 @@ struct PathGroup { s32 count; PathNode *nodes; s32 pad[3]; };
 struct PathData { s32 count; PathGroup *groups; };
 static inline u8 *NextPathNode(u8 *self, u8 *item) {
     PathGroup *g = &(*(PathData **)(self + 0x64))->groups[*(s32 *)(self + 0x68)];
+    u8 *first = (u8 *)g->nodes;
     PathNode *last = &g->nodes[g->count] - 1;
-    return (PathNode *)item == last ? (u8 *)g->nodes : item + 0x24;
+    return (PathNode *)item == last ? first : item + 0x24;
 }
 extern "C" f32 fn_801E7E24(void);
 extern "C" void fn_802981F8(void *);
@@ -3854,26 +3855,26 @@ extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
     extern char lbl_8032C978[];
     extern char lbl_8032C988[];
     extern void fn_801476C4();
-    struct Copy { s32 i0; s32 i1; s32 i2; s32 i3; f32 f0; f32 f1; f32 f2; f32 f3; f32 f4; f32 f5; };
-    register u8 *dataObj;
-    f32 delta, scale, factor;
-    s32 active;
-    s32 enabled;
+    struct Copy { unsigned i0; unsigned i1; unsigned i2; unsigned i3; float f0; float f1; float f2; float f3; float f4; float f5; };
+    u8 *dataObj2;
+    float scale, delta, factor;
+    int active;
+    int enabled;
     void *result;
     Copy data;
-    enabled = *(s32 *)((u8 *)arg2 + 0x104);
-    dataObj = (u8 *)arg2;
+    enabled = *(int *)((u8 *)arg2 + 0x104);
+    dataObj2 = (u8 *)arg2;
     if (enabled == 0) return;
     result = ((V9_8013FAC4 *)arg0)->v9(arg1);
     if (result != 0) return;
-    delta = fn_8001DAE8(dataObj + 0xC8) - *(f32 *)(dataObj + 0xCC);
+    delta = fn_8001DAE8(dataObj2 + 0xC8) - *(float *)(dataObj2 + 0xCC);
     scale = lbl_805614A4;
     active = 0;
     if (delta >= scale) {
-        if (delta < *(f32 *)(dataObj + 0xC8)) active = 1;
+        if (delta < *(float *)(dataObj2 + 0xC8)) active = 1;
     }
     if (active != 0) {
-        delta = (fn_8001DAF0((f32 *)(dataObj + 0xC8)) - lbl_80561498) / lbl_80561498;
+        delta = (fn_8001DAF0((float *)(dataObj2 + 0xC8)) - lbl_80561498) / lbl_80561498;
         factor = lbl_805614AC;
         factor = factor < delta ? delta : factor;
         factor = factor > lbl_805614A4 ? lbl_805614A4 : factor;
@@ -3887,7 +3888,7 @@ extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
         data = *(Copy *)result;
         fn_8013CB90(&data);
         fn_80147EE0(&data, scale);
-        fn_801476D8(&data, (void *)-1, *(s32 *)((u8 *)arg0 + 0xAC));
+        fn_801476D8(&data, (void *)-1, *(int *)((u8 *)arg0 + 0xAC));
     }
     {
         void *obj = *(void **)((u8 *)arg0 + 0x54);
