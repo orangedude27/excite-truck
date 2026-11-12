@@ -10924,11 +10924,16 @@ void ptim_timer_update(tPTIM_CB *p_cb) {
         GKI_stop_timer(p_cb->timer_id);
 }
 
+/* Start a protocol timer: (re)insert p_tle in the queue so it expires after
+   `timeout` ticks, starting the periodic GKI tick timer if the queue was empty. */
 void ptim_start_timer(tPTIM_CB *p_cb, TIMER_LIST_ENT *p_tle, UINT16 type, INT32 timeout) {
+    /* if timer list is currently empty, start periodic GKI timer */
     if (p_cb->timer_queue.p_first == NULL) {
-        GKI_start_timer(p_cb->timer_id, p_cb->period / 10, TRUE);
+        GKI_start_timer(p_cb->timer_id, GKI_MS_TO_TICKS(p_cb->period), TRUE);
     }
+    /* drop the entry from any position it already has in the queue */
     GKI_remove_from_timer_list(&p_cb->timer_queue, p_tle);
+    /* event to report when it expires, and how long to wait */
     p_tle->event = type;
     p_tle->ticks = timeout;
     GKI_add_to_timer_list(&p_cb->timer_queue, p_tle);
