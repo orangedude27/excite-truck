@@ -83,6 +83,8 @@ extern "C" int fn_801E1894(void) {
 extern float __fabsf(float);
 extern double __fabs(double);
 #pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_801E1B30(void) {
     float temp = lbl_8055E3C8;
     char *state = lbl_804874B8;
@@ -156,20 +158,20 @@ void fn_801E1D38(void) {
     }
 }
 
+#pragma push
 #pragma cplusplus on
 extern "C" void fn_801E1D9C(void) {
     struct Dummy_801E1D9C_Local {
         virtual void d1(int);
     };
     typedef Dummy_801E1D9C_Local *LocalPtr;
-
+    // try recompute base
     if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x18) != 0) {
         if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x18) != 0) {
             ((LocalPtr)*(LocalPtr *)((char *)&lbl_804874B8 + 0x18))->d1(1);
         }
         *(void **)((char *)&lbl_804874B8 + 0x18) = 0;
     }
-
     if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x14) != 0) {
         if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x14) != 0) {
             ((LocalPtr)*(LocalPtr *)((char *)&lbl_804874B8 + 0x14))->d1(1);
@@ -177,7 +179,7 @@ extern "C" void fn_801E1D9C(void) {
         *(void **)((char *)&lbl_804874B8 + 0x14) = 0;
     }
 }
-#pragma cplusplus off
+#pragma pop
 void fn_801E1E30(void) {
     int v = lbl_8055EA22;
     *((float *)&lbl_804874B8 + 1) = lbl_80562CAC;
@@ -203,27 +205,43 @@ void fn_801E1E64(void) {
 }
 
 void fn_801E1EA4(void *arg0) {
-    int i;
-    int count = *(int *)((char *)arg0 + 0x394);
-    void *base = (char *)arg0 + 4;
-    float *cfg = (float *)&lbl_804874B8;
-    for (i = 0; i < count; i++) {
-        int type = *(int *)lbl_804874B8;
-        if (type == 3) {
-            *(float *)((char *)base + 0xD4) = lbl_80562CAC;
-            *(float *)((char *)base + 0xD8) = lbl_80562CD4 * cfg[1];
-            *(float *)((char *)base + 0xDC) = lbl_80562CAC;
-        } else if (type == 2) {
-            *(float *)((char *)base + 0xD4) = lbl_80562CCC * cfg[1];
-            *(float *)((char *)base + 0xD8) = lbl_80562CD0 * cfg[1];
-            *(float *)((char *)base + 0xDC) = cfg[4];
-        } else {
-            *(float *)((char *)base + 0xD4) = lbl_80562CAC;
-            *(float *)((char *)base + 0xD8) = lbl_80562CAC;
-            *(float *)((char *)base + 0xDC) = lbl_80562CAC;
-        }
-        base = (char *)base + 0xE0;
+    void *var_r6;
+    int var_r7;
+    float c0 = lbl_80562CAC;
+    float c1 = lbl_80562CD4;
+    float c3 = lbl_80562CD0;
+    float c2 = lbl_80562CCC;
+    float tmp;
+    var_r6 = (char *)arg0 + 4;
+    var_r7 = 0;
+    goto check;
+loop:
+    switch (*(int *)&lbl_804874B8) {
+    case 2:
+        tmp = *(float *)((char *)&lbl_804874B8 + 4);
+        *(float *)((char *)var_r6 + 0xD4) = c2 * tmp;
+        tmp = *(float *)((char *)&lbl_804874B8 + 4);
+        *(float *)((char *)var_r6 + 0xD8) = c3 * tmp;
+        tmp = *(float *)((char *)&lbl_804874B8 + 0x10);
+        *(float *)((char *)var_r6 + 0xDC) = tmp;
+        break;
+    case 3:
+        *(float *)((char *)var_r6 + 0xD4) = c0;
+        tmp = *(float *)((char *)&lbl_804874B8 + 4);
+        *(float *)((char *)var_r6 + 0xD8) = c1 * tmp;
+        *(float *)((char *)var_r6 + 0xDC) = c0;
+        break;
+    default:
+        *(float *)((char *)var_r6 + 0xD4) = c0;
+        *(float *)((char *)var_r6 + 0xD8) = c0;
+        *(float *)((char *)var_r6 + 0xDC) = c0;
+        break;
     }
+    var_r6 = (char *)var_r6 + 0xE0;
+    var_r7 += 1;
+check:
+    if (var_r7 < *(int *)((char *)arg0 + 0x394))
+        goto loop;
 }
 
 int *fn_801E1F44(void) {
