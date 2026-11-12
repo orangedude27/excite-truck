@@ -3751,6 +3751,7 @@ void fn_8006EAD8(void) {
 
 }
 
+/* Post an event mask to a GKI task, taking the GKI interrupt lock around the update. */
 UINT8 GKI_send_event(UINT8 task_id, UINT16 event) {
     if (task_id >= GKI_MAX_TASKS) {
         return GKI_FAILURE;
