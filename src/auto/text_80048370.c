@@ -544,31 +544,33 @@ MEMiHeapHead* MEMDestroyExpHeap(MEMiHeapHead* heap) {
 }
 
 #pragma dont_inline on
+/* Allocate a block from an expanded heap, optionally locking; align >= 0 allocates
+ * from the head, align < 0 allocates from the tail using its magnitude. */
 void* MEMAllocFromExpHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
-    void* memBlock;
-    register u32 rounded;
+    void* block;
+    register u32 roundedSize;
 
     if (size == 0) {
         size = 1;
     }
-    rounded = size + 3;
-    size = rounded & 0xFFFFFFFC;
+    roundedSize = size + 3;
+    size = roundedSize & 0xFFFFFFFC;
 
     if ((*(u32 *)((u8 *)heap + 0x38) & 4) != 0) {
         OSLockMutex((OSMutex *)((u8 *)heap + 0x20));
     }
 
     if (align >= 0) {
-        memBlock = AllocFromHead_(heap, size, align);
+        block = AllocFromHead_(heap, size, align);
     } else {
-        memBlock = AllocFromTail_(heap, size, -align);
+        block = AllocFromTail_(heap, size, -align);
     }
 
     if ((*(u32 *)((u8 *)heap + 0x38) & 4) != 0) {
         OSUnlockMutex((OSMutex *)((u8 *)heap + 0x20));
     }
 
-    return memBlock;
+    return block;
 }
 #pragma dont_inline reset
 
