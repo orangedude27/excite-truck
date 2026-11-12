@@ -880,6 +880,30 @@ void fn_8027BF38(void) {
             fn_80012790(savedMode);
     }
 }
+/* Attribute names the game queries the scene-graph objects with. */
+#define ATTR_CONTEST_NAME ((const char *)&lbl_80347A5C) /* "contest_name" */
+#define ATTR_NAME ((const char *)&lbl_8055C758)         /* "name" */
+#define ATTR_NAME_DEFAULT ((const char *)&lbl_8055C770) /* "" */
+
+/* One contest event in the arrays fn_8027C2B8 builds (stride 0x14);
+ * fn_8027C120 searches them by contestName. */
+struct ContestEvent {
+    /* 0x00 */ long eventId;
+    /* 0x04 */ long contestId;    /* index in the contest table, from its name */
+    /* 0x08 */ long parentField;
+    /* 0x0C */ char *contestName; /* the object's "contest_name" attribute */
+    /* 0x10 */ void *object;      /* the scene object the event was read from */
+};
+
+/* One entry of the global contest table (lbl_80352AD0, count lbl_8055D508,
+ * indexed by fn_8001285C / counted by fn_80012854; stride 0x28). */
+struct ContestEntry {
+    /* 0x00 */ long id;
+    char pad04[0x1C];
+    /* 0x20 */ void *child; /* the contest's scene object, holds its "name" */
+    char pad24[4];
+};
+
 #pragma cplusplus on
 extern "C" void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
     class FirstInterface {
