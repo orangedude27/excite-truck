@@ -128,6 +128,8 @@ BOOL EXIImm(EXIChannel chan, void* buf, s32 len, u32 type,
     return TRUE;
 }
 
+// Perform an immediate EXI transfer larger than one data register by breaking it
+// into at most 4-byte chunks, synchronizing after each one.
 BOOL EXIImmEx(EXIChannel chan, void* buf, s32 len, u32 type) {
     while (len != 0) {
         s32 immLen = (len < 4) ? len : 4;
