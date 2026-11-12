@@ -889,6 +889,9 @@ s32 ISFS_Write(s32 fd, const void* src, s32 len) {
     return IOS_Write(fd, src, len);
 }
 
+// Asynchronously write to an ISFS file. The source buffer must be 32-byte
+// aligned; allocates an FSCommandBlock, stores the user callback/arg, and
+// issues the write via IOS_WriteAsync with _isfsFuncCb as the completion callback.
 s32 ISFS_WriteAsync(s32 fd, const void* src, s32 len, FSAsyncCallback callback,
                     void* callbackArg) {
     FSCommandBlock* block;
