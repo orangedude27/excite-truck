@@ -3556,41 +3556,27 @@ extern "C" s32 fn_801D8CAC(void *arg0) {
 
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+/* Frame update of a running timed cue: work out how long it has been going and
+ * hand the frame to whichever step that time falls in -- still waiting out its
+ * delay, part way through its length (passed the seconds past the delay), or
+ * past its end, which runs the last step and marks the cue finished. */
 extern "C" void fn_801D8D00(void *arg0) {
-    extern float lbl_8055E3C8;
-    struct Dummy {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void m3C();
-        virtual void m40(float);
-        virtual void m44();
-    };
-    float f2;
-    float f1;
-    if (*(int *)((char *)arg0 + 4) == 2) {
-        f2 = *(float *)((char *)arg0 + 8);
-        f1 = lbl_8055E3C8 - *(float *)((char *)arg0 + 0x10);
-        if (f1 < f2) {
-            ((Dummy *)arg0)->m3C();
+    TimedEffect *effect = (TimedEffect *)arg0;
+    float delay;
+    float elapsed;
+    if (effect->state == 2) {
+        delay = effect->delay;
+        elapsed = lbl_8055E3C8 - effect->startTime;
+        if (elapsed < delay) {
+            effect->onWaiting();
             return;
         }
-        if (f1 < f2 + *(float *)((char *)arg0 + 0xC)) {
-            ((Dummy *)arg0)->m40(f1 - f2);
+        if (elapsed < delay + effect->length) {
+            effect->onRunning(elapsed - delay);
             return;
         }
-        ((Dummy *)arg0)->m44();
-        *(int *)((char *)arg0 + 4) = 3;
+        effect->onFinished();
+        effect->state = 3;
     }
 }
 #pragma cplusplus reset
