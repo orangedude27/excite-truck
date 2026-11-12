@@ -759,7 +759,7 @@ typedef struct GTexCache {
 } GTexCache;
 
 extern char lbl_803404FC[];
-extern void fn_802CB228(void *);
+extern void fn_802CB228(s32 resourceIndex);
 extern void fn_80128668();
 void fn_802324D8(void) {
     s32 offset = 0;
@@ -769,7 +769,7 @@ void fn_802324D8(void) {
     while (i < *(s32 *)(lbl_8055F068 + 0x168)) {
         u8 *entry = lbl_8055F068 + offset;
         ((void (*)(const char *, ...))fn_802E30C8)(lbl_803404FC, *(s32 *)(entry + 4));
-        fn_802CB228(*(void **)*(void **)entry);
+        fn_802CB228((s32)*(void **)*(void **)entry);
         fn_8012C4D8(*(void **)entry);
         fn_80128670(*(void **)(entry + 4));
         offset += 0xC;
