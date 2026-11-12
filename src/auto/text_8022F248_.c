@@ -306,18 +306,21 @@ void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, 
 #pragma use_lmw_stmw reset
 #pragma scheduling on
 #pragma pop
-void fn_8022F77C(OverlayQuad *arg0) {
-    struct Node { void *payload; int unk; struct Node *next; };
-    struct Node *prev = 0;
-    struct Node *node = lbl_8055F014;
-    while (node->payload != arg0) {
-        if (node == 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_80340408, arg0->name);
+/* Forget one background overlay quad: unlink the "gBack tracker" node whose
+ * payload is this quad from the global list (lbl_8055F014), panicking if the
+ * quad was never tracked, then clear the node and free it. */
+void fn_8022F77C(OverlayQuad *quad) {
+    struct QuadNode { void *payload; int refCount; struct QuadNode *next; };
+    struct QuadNode *prev = 0;
+    struct QuadNode *node = lbl_8055F014;
+    while (node->payload != quad) {
+        if (node == 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_80340408, quad->name);
         prev = node;
         node = node->next;
     }
     if (prev == 0) lbl_8055F014 = node->next;
     else prev->next = node->next;
-    node->unk = 0;
+    node->refCount = 0;
     node->next = 0;
     node->payload = 0;
     fn_80128668(node);
