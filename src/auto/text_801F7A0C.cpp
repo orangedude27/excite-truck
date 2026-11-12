@@ -1578,35 +1578,37 @@ extern void* lbl_8055EC5C;
 extern s32 fn_80129D90(s32, s32);
 extern s32 fn_801E6CD0(s32, s32, f32);
 s32 fn_80129D90(s32, s32, s32);
+/* Marks flag/list nodes as active and starts playback for each active animation
+ * group node in the third list (random choice when multiple clips, or clip 0). */
 extern "C" void fn_801FA1D4(void) {
-    unsigned char *p;
-    void *cur;
-    s32 i;
-    s32 cnt;
-    p = (unsigned char *)lbl_8055EC4C;
-    while (p != 0) {
-        p[0x40] = 1;
-        p = *(unsigned char **)(p + 0x44);
+    unsigned char *node;
+    void *groupNode;
+    s32 clipIndex;
+    s32 clipCount;
+    node = (unsigned char *)lbl_8055EC4C;
+    while (node != 0) {
+        node[0x40] = 1;
+        node = *(unsigned char **)(node + 0x44);
     }
-    p = (unsigned char *)lbl_8055EC50;
-    while (p != 0) {
-        p[0x40] = 1;
-        p = *(unsigned char **)(p + 0x44);
+    node = (unsigned char *)lbl_8055EC50;
+    while (node != 0) {
+        node[0x40] = 1;
+        node = *(unsigned char **)(node + 0x44);
     }
-    cur = lbl_8055EC5C;
-    while (cur != 0) {
-        cnt = *(s32 *)((char *)cur + 0x54);
-        if (cnt > 0) {
-            if (*(s32 *)((char *)cur + 0x60) != 1) {
-                i = fn_80129D90(0, 0, cnt);
-                fn_801E6CD0(*(s32 *)((char *)cur + 0x30),
-                            *(s32 *)((char *)cur + 0x34 + i * 4),
+    groupNode = lbl_8055EC5C;
+    while (groupNode != 0) {
+        clipCount = *(s32 *)((char *)groupNode + 0x54);
+        if (clipCount > 0) {
+            if (*(s32 *)((char *)groupNode + 0x60) != 1) {
+                clipIndex = fn_80129D90(0, 0, clipCount);
+                fn_801E6CD0(*(s32 *)((char *)groupNode + 0x30),
+                            *(s32 *)((char *)groupNode + 0x34 + clipIndex * 4),
                             lbl_80562FF0);
             } else {
-                fn_801E6CD0(*(s32 *)((char *)cur + 0x30), 0, lbl_80562FF0);
+                fn_801E6CD0(*(s32 *)((char *)groupNode + 0x30), 0, lbl_80562FF0);
             }
         }
-        cur = *(void **)((char *)cur + 0x68);
+        groupNode = *(void **)((char *)groupNode + 0x68);
     }
 }
 
