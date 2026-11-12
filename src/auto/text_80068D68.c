@@ -16430,54 +16430,71 @@ void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
     }
 }
 
-void hidh_l2cif_connect_ind(u8 *addr, u16 cid, u16 psm, u8 id) {
+void hidh_l2cif_connect_ind(BD_ADDR bd_addr, UINT16 l2cap_cid, UINT16 psm, UINT8 l2cap_id) {
     extern void hidh_sec_check_complete_term(u8 *, void *, u8);
-    int accept = 1;
+    BOOLEAN bAccept = TRUE;
     char *strings = lbl_80317838;
-    u8 *p;
+    tHID_HOST_DEV_CTB_VIEW *p_dev;
     int i;
-    u8 *entry;
-    if (lbl_803C3C38[0x401] >= 4)
-        fn_8007096C(0x1e0003, strings + 0x58, psm, cid);
-    p = lbl_803C3C38;
-    for (i = 0; i < 16; i++, p += 0x34) {
-        if (p[0] && memcmp(addr, p + 1, 6) == 0) break;
+    tHID_HOST_DEV_CTB_VIEW *entry;
+
+    if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+        fn_8007096C(TRACE_LAYER_HID | TRACE_TYPE_EVENT, strings + 0x58, psm, l2cap_cid); /* "HID - Rcvd L2CAP conn ind, PSM: 0x%04x  CID 0x%x" */
+
+    /* Which of our records is this device? */
+    p_dev = (tHID_HOST_DEV_CTB_VIEW *)hh_cb_devices;
+    for (i = 0; i < HIDH_MAX_DEVICES; i++, p_dev++) {
+        if (p_dev->in_use && memcmp(bd_addr, p_dev->addr, sizeof(BD_ADDR)) == 0)
+            break;
     }
-    if (i == 16) {
-        L2CA_ConnectRsp(addr, id, cid, 3, 0);
+    if (i == HIDH_MAX_DEVICES) {
+        L2CA_ConnectRsp(bd_addr, l2cap_id, l2cap_cid, L2CAP_CONN_SECURITY_BLOCK, 0);
         return;
     }
-    entry = lbl_803C3C38 + i * 0x34;
-    if (psm == 0x13) {
-        if (*(u16 *)(entry + 0x14) == 0) {
-            if (lbl_803C3C38[0x401] >= 2) fn_8007093C(0x1e0001, strings + 0x8c);
-            accept = 0;
+    entry = hh_cb_dev(i);
+
+    /* Check we are in the correct state for this channel. */
+    if (psm == HID_PSM_INTERRUPT) {
+        if (entry->conn.ctrl_cid == 0) {
+            if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+                fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_WARNING, strings + 0x8c); /* "HID - Rcvd INTR L2CAP conn ind, but no CTL channel" */
+            bAccept = FALSE;
         }
-        if (entry[0x10] != 2) {
-            if (lbl_803C3C38[0x401] >= 2) fn_80070954(0x1e0001, strings + 0xc0, entry[0x10]);
-            accept = 0;
+        if (entry->conn.conn_state != HID_CONN_STATE_INTR_CONNECTING) {
+            if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+                fn_80070954(TRACE_LAYER_HID | TRACE_TYPE_WARNING, strings + 0xc0, entry->conn.conn_state); /* "HID - Rcvd INTR L2CAP conn ind, wrong state: %d" */
+            bAccept = FALSE;
         }
-    } else if (entry[0x10] != 0) {
-        if (lbl_803C3C38[0x401] >= 2) fn_80070954(0x1e0001, strings + 0xf0, entry[0x10]);
-        accept = 0;
+    } else if (entry->conn.conn_state != HID_CONN_STATE_UNUSED) { /* the CTRL channel */
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+            fn_80070954(TRACE_LAYER_HID | TRACE_TYPE_WARNING, strings + 0xf0, entry->conn.conn_state); /* "HID - Rcvd CTL L2CAP conn ind, wrong state: %d" */
+        bAccept = FALSE;
     }
-    if (!accept) {
-        L2CA_ConnectRsp(addr, id, cid, 4, 0);
+    if (!bAccept) {
+        L2CA_ConnectRsp(bd_addr, l2cap_id, l2cap_cid, L2CAP_CONN_NO_RESOURCES, 0);
         return;
     }
-    if (psm == 0x11) {
-        entry[0x11] = 0;
-        *(u16 *)(entry + 0x14) = cid;
-        entry[0x12] = id;
-        *(u16 *)(entry + 0x1a) = 0x100;
-        entry[0x10] = 6;
-        btm_sec_mx_access_request(entry + 1, 0x11, 0, 6, (*(u16 *)(entry + 8) & 0x8000) ? 1 : 2, hidh_sec_check_complete_term, entry);
+
+    if (psm == HID_PSM_CONTROL) {
+        entry->conn.conn_flags = 0;
+        entry->conn.ctrl_cid = l2cap_cid;
+        entry->conn.ctrl_id = l2cap_id;
+        /* in case the channels go down before security is done, this is the
+           reason the application hears about */
+        entry->conn.disc_reason = HID_L2CAP_CONN_FAIL;
+        entry->conn.conn_state = HID_CONN_STATE_SECURITY;
+        /* L2CA_ConnectRsp comes later, from hidh_sec_check_complete_term */
+        btm_sec_mx_access_request(entry->addr, HID_PSM_CONTROL, FALSE, BTM_SEC_PROTO_HID,
+                                  (entry->attr_mask & HID_SEC_REQUIRED) ? HID_SEC_CHN : HID_NOSEC_CHN,
+                                  hidh_sec_check_complete_term, entry);
     } else {
-        entry[0x10] = 3;
-        *(u16 *)(entry + 0x16) = cid;
-        L2CA_ConnectRsp(addr, id, cid, 0, 0);
-        L2CA_ConfigReq(cid, (void *)(lbl_803C3C38 + 0x344));
-        if (lbl_803C3C38[0x401] >= 4) fn_8007096C(0x1e0003, strings + 0x120, psm, cid);
+        /* Transition to the next appropriate state, configuration. */
+        entry->conn.conn_state = HID_CONN_STATE_CONFIG;
+        entry->conn.intr_cid = l2cap_cid;
+        L2CA_ConnectRsp(bd_addr, l2cap_id, l2cap_cid, L2CAP_CONN_OK, L2CAP_CONN_OK);
+        L2CA_ConfigReq(l2cap_cid, (void *)hh_cb_l2cap_cfg);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+            fn_8007096C(TRACE_LAYER_HID | TRACE_TYPE_EVENT, strings + 0x120, psm, l2cap_cid); /* "HID - Rcvd L2CAP conn ind, sent config req, PSM: 0x%04x  CID 0x%x" */
     }
 }
 
