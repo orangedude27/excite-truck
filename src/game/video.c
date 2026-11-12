@@ -259,6 +259,13 @@ void fn_802DF684(void) {
 #pragma scheduling on
 void *fn_802D3134(void); /* the current material's bump map, into GX_TEXMAP5 */
 void *fn_802D30FC(void); /* the texture it distorts, into GX_TEXMAP6 */
+/* fn_802DF4A8's twin for the same indirect (bump) pass when the render request
+ * block (lbl_804C5700) also asks for the second texture stage (+0x08);
+ * fn_802D2B0C picks it in mode 3 and stores fn_802DF938 as the undo.  Stage 0
+ * draws the surface, stage 1 adds the GX_TEXMAP6 texture whose coordinates the
+ * bump map in GX_TEXMAP5 shifts, and stage 2 keeps that colour while taking the
+ * alpha over from the second texture in GX_TEXMAP1.
+ */
 void fn_802DF6D0(void) {
     s32 alphaSel = GX_ITBA_OFF; /* GXSetTevIndirect's last two arguments go on */
     s32 utcLod = FALSE;         /* the stack, so they need somewhere to live */
