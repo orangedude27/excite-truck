@@ -358,7 +358,7 @@ struct ConsoleHead {
     u16 flags;         /* 0x0A bit 1: drop the tail of a line too long for it; bit 2: stop at the last line instead of wrapping the ring back to 0 */
     u16 writeLine;     /* 0x0C ring index of the line being written */
     u16 column;        /* 0x0E characters already written on that line */
-    s16 partial;       /* 0x10 the line being written holds text not yet terminated */
+        u16 partial;        /* 0x10 the line being written holds text not yet terminated */
     u16 readLine;      /* 0x12 ring index of the oldest line kept */
     s32 droppedLines;  /* 0x14 lines overwritten and no longer in the ring */
     s32 topLine;       /* 0x18 absolute index of the first line to display (scroll position) */
