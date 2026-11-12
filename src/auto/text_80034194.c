@@ -2297,13 +2297,13 @@ extern void OSCancelAlarm(void *);
 extern void fn_8003773C(void);
 void fn_80037E94(void) {
     s32 zero = 0;
-    lbl_8055D880 = zero;
-    if (lbl_8055D874 != 0) {
+    *(volatile s32 *)&lbl_8055D880 = zero;
+    if (*(volatile s32 *)&lbl_8055D874 != 0) {
         if (!(fn_8003BB48() & 1)) {
             OSCancelAlarm(&lbl_80376AD0);
-            lbl_8055D874 = zero;
-            lbl_8055D874 = zero;
-            if ((u32)lbl_8055D8BC == 3) lbl_8055D87C = 1;
+            *(volatile s32 *)&lbl_8055D874 = zero;
+            *(volatile s32 *)&lbl_8055D874 = zero;
+            if ((u32)*(volatile s32 *)&lbl_8055D8BC == 3) lbl_8055D87C = 1;
             if ((u32)MotorState_8055D8A8 == 2) {
                 if (executing_8055D8C8 != 0) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
             } else {
@@ -2319,7 +2319,7 @@ void fn_80037E94(void) {
     } else {
         if (fn_8003BB48() & 1) {
             lbl_8055D870 = zero;
-            lbl_8055D874 = 1;
+            *(volatile s32 *)&lbl_8055D874 = 1;
             if ((u32)MotorState_8055D8A8 == 2) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
             else *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 5;
             return;
@@ -2328,8 +2328,8 @@ void fn_80037E94(void) {
             OSCancelAlarm(&lbl_80376AD0);
             lbl_8055D870 = zero;
             fn_8003BCDC(zero);
-            lbl_8055D874 = zero;
-            if ((u32)lbl_8055D8BC == 3) lbl_8055D87C = 1;
+            *(volatile s32 *)&lbl_8055D874 = zero;
+            if ((u32)*(volatile s32 *)&lbl_8055D8BC == 3) lbl_8055D87C = 1;
             if ((u32)MotorState_8055D8A8 == 2) {
                 if (executing_8055D8C8 != 0) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
             } else {
@@ -2694,7 +2694,7 @@ s32 fn_800393C4(s32 value) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_800393D4(void) {
-    s32 interruptsEnabled = OSDisableInterrupts();
+    BOOL interruptsEnabled = OSDisableInterrupts();
     *(volatile s32 *)&lbl_8055D84C = 0;
     if (PausingFlag_8055D850 != 0) {
         PausingFlag_8055D850 = 0;
