@@ -22155,6 +22155,16 @@ typedef struct {
 #endif
 #define RFC_RSP_RPN_REPLY       0x02  /* peer answers our RPN request */
 #define RFC_RSP_RPN             0x04  /* peer answers our RPN command */
+#define RFC_RSP_MSC             0x08  /* peer answers our MSC command */
+
+#define PORT_STATE_OPENED       2     /* tPORT.state: the port is connected */
+#define RFC_STATE_OPENED        4     /* tRFC_PORT.rfc.state: the DLCI is established */
+
+#define RFCOMM_FLOW_STATE_DISABLE   0 /* the port will not accept more data */
+#define RFCOMM_FLOW_STATE_ENABLE    1 /* the port can accept data again */
+
+#define RFC_T2_TIMEOUT          60    /* seconds to wait for an MSC/PN reply; the SDK's
+                                       * rfc_int.h has 20, this build waits 60 */
 
 #define RFCOMM_FC_OFF               0x00
 #define RFCOMM_FC_RTR_ON_INPUT      0x04
