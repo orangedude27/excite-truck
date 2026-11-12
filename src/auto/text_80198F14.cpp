@@ -2998,14 +2998,15 @@ check:
     if (i < *(s32*)((u8*)arg0 + 0x174)) goto loop;
 }
 
-extern "C" void fn_801A1474(void* arg0, f32 scale) {
-    f32* src = (f32*)((u8*)arg0 + 0x64);
-    u8* object = (u8*)arg0;
+extern "C" void fn_801A1474(void* self, f32 scale) {
+    f32* src = (f32*)((u8*)self + 0x64);
+    u8* entrySlot = (u8*)self;
     s32 i = 0;
     volatile f32 tmp[3];
     void* dst;
 
-    *(f32*)((u8*)arg0 + 0x178) = *(f32*)((u8*)arg0 + 0x170) * scale;
+    /* Scales this object's stored factors/vectors and per-entry values by the given scale. */
+    *(f32*)((u8*)self + 0x178) = *(f32*)((u8*)self + 0x170) * scale;
     goto check;
 
 loop:
@@ -3020,7 +3021,7 @@ loop:
     yRaw = src[1];
     x = xRaw * scale;
     zRaw = src[2];
-    dst = *(void**)(object + 0x24);
+    dst = *(void**)(entrySlot + 0x24);
     y = yRaw * scale;
     z = zRaw * scale;
     *(f32*)((u8*)dst + 0x28) = x;
@@ -3029,22 +3030,22 @@ loop:
 
     f32 w = src[3] * scale;
     src += 4;
-    dst = *(void**)(object + 0x24);
-    object += 4;
+    dst = *(void**)(entrySlot + 0x24);
+    entrySlot += 4;
     tmp[0] = x;
     tmp[1] = y;
     tmp[2] = z;
     *(f32*)((u8*)dst + 0x24) = w;
 
 check:
-    if (i < *(s32*)((u8*)arg0 + 0x174)) {
+    if (i < *(s32*)((u8*)self + 0x174)) {
         goto loop;
     }
 
-    dst = *(void**)((u8*)arg0 + 0x17c);
-    f32 tailX = *(f32*)((u8*)arg0 + 0x164) * scale;
-    f32 tailY = *(f32*)((u8*)arg0 + 0x168) * scale;
-    f32 tailZ = *(f32*)((u8*)arg0 + 0x16c) * scale;
+    dst = *(void**)((u8*)self + 0x17c);
+    f32 tailX = *(f32*)((u8*)self + 0x164) * scale;
+    f32 tailY = *(f32*)((u8*)self + 0x168) * scale;
+    f32 tailZ = *(f32*)((u8*)self + 0x16c) * scale;
     *(f32*)((u8*)dst + 0x24) = tailX;
     *(f32*)((u8*)dst + 0x28) = tailY;
     *(f32*)((u8*)dst + 0x2c) = tailZ;
