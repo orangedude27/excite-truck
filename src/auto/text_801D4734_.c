@@ -532,100 +532,110 @@ void fn_801D50B0(int arg0) {
   #pragma use_lmw_stmw off
       #pragma cplusplus on
 
+/* Per-frame update of one loaded action sequence.  While the sequence plays it
+ * ticks its *_ASE elements, and once none of them is waiting any more it
+ * either resets them all and goes ready again (auto_reset) or ends.  In every
+ * other state it follows the lap of the race leader and keeps the sequence
+ * ready only while that lap lies between first_active_lap and
+ * last_active_lap. */
 void fn_801D50B8(int arg0) {
-    struct Item {
-        virtual void v0();
-        virtual void v1();
+    /* One *_ASE element: state() is vtable+0x18, update() +0x2C and reset()
+     * +0x30; the two leading slots are this ABI's destructor pair. */
+    struct Element {
+        virtual void destroy();
+        virtual void destroyDeleting();
         virtual void v2();
         virtual void v3();
         virtual int state();
-        virtual void v7();
+        virtual void v5();
+        virtual void v6();
+        virtual void apply(int mode);
         virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void run2();
-        virtual void run3();
+        virtual void update();
+        virtual void reset();
     };
-    struct Other {
+    /* One racer slot of the AI truck table (fn_801B2EC0). */
+    struct RacerSlot {
         virtual void v0();
         virtual void v1();
-        virtual void *get();
+        virtual struct RacerState *state();
     };
     extern int fn_8017960C(int);
     extern void *fn_801B2EC0(int);
     extern int fn_801B2F24(void);
-    if (*(int *)((char *)arg0 + 4) == 2) {
+    ActionSequence *seq = (ActionSequence *)arg0;
+    if (seq->state == ACTION_SEQ_PLAYING) {
         int offset;
-        int found;
+        int waiting;
         int i;
-        found = 0;
+        waiting = 0;
         i = 0;
         offset = 0;
         goto test1;
 loop1:
         {
-            Item *obj = *(Item **)(*(char **)((char *)arg0 + 0x30) + offset);
-            int s = obj->state();
-            if (s == 2) {
-                found = 1;
-                obj->run2();
-                obj->state();
+            Element *elem = *(Element **)((char *)seq->elements + offset);
+            int elemState = elem->state();
+            if (elemState == 2) {
+                waiting = 1;
+                elem->update();
+                elem->state();
             }
         }
         offset += 4;
         i++;
 test1:
-        if (i < *(int *)((char *)arg0 + 0x34)) goto loop1;
-        if (found == 0) {
-            unsigned char flag = *(unsigned char *)((char *)arg0 + 0x20);
-            if (flag != 0) {
+        if (i < seq->elementCount) goto loop1;
+        if (waiting == 0) {
+            unsigned char autoReset = seq->autoReset;
+            if (autoReset != 0) {
                 int j = 0;
                 offset = 0;
                 goto test2;
 loop2:
                 {
-                    Item *obj2 = *(Item **)(*(char **)((char *)arg0 + 0x30) + offset);
-                    obj2->run3();
+                    Element *nextElem = *(Element **)((char *)seq->elements + offset);
+                    nextElem->reset();
                 }
                 offset += 4;
                 j++;
 test2:
-                if (j < *(int *)((char *)arg0 + 0x34)) goto loop2;
-                *(int *)((char *)arg0 + 4) = 1;
+                if (j < seq->elementCount) goto loop2;
+                seq->state = ACTION_SEQ_READY;
                 return;
             }
-            *(int *)((char *)arg0 + 4) = 3;
+            seq->state = ACTION_SEQ_FINISHED;
         }
         return;
     }
     {
-        int maxVal = -1;
-        int idx = 0;
+        int leaderLap = -1;
+        int racer = 0;
         goto test3;
 loop3:
         {
-            int a = fn_8017960C(idx);
-            if (*(int *)((char *)a + 0x1F0) == 0x50) {
-                Other *o = (Other *)fn_801B2EC0(idx);
-                void *p = o->get();
-                int v = *(int *)((char *)p + 0x10);
-                if (v > maxVal) maxVal = v;
+            RacerObject *player = (RacerObject *)fn_8017960C(racer);
+            if (player->competitorId == COMPETITOR_SETS_LAPS) {
+                RacerSlot *slot = (RacerSlot *)fn_801B2EC0(racer);
+                RacerState *racerState = slot->state();
+                int lap = racerState->laps;
+                if (lap > leaderLap) leaderLap = lap;
             }
-            idx++;
+            racer++;
         }
 test3:
-        if (idx < fn_801B2F24()) goto loop3;
-        if (maxVal >= 0) {
-            if (*(int *)((char *)arg0 + 4) == 1) {
-                if ((*(int *)((char *)arg0 + 0x24) >= 0 && maxVal < *(int *)((char *)arg0 + 0x24)) ||
-                    (*(int *)((char *)arg0 + 0x28) >= 0 && maxVal > *(int *)((char *)arg0 + 0x28))) {
-                    *(int *)((char *)arg0 + 4) = 4;
+        if (racer < fn_801B2F24()) goto loop3;
+        if (leaderLap >= 0) {
+            if (seq->state == ACTION_SEQ_READY) {
+                if ((seq->firstActiveLap >= 0 && leaderLap < seq->firstActiveLap) ||
+                    (seq->lastActiveLap >= 0 && leaderLap > seq->lastActiveLap)) {
+                    seq->state = ACTION_SEQ_LAP_GAP;
                     return;
                 }
-            } else if (*(int *)((char *)arg0 + 4) == 4) {
-                if ((*(int *)((char *)arg0 + 0x24) < 0 || maxVal >= *(int *)((char *)arg0 + 0x24)) &&
-                    (*(int *)((char *)arg0 + 0x28) < 0 || maxVal <= *(int *)((char *)arg0 + 0x28))) {
-                    *(int *)((char *)arg0 + 4) = 1;
+            } else if (seq->state == ACTION_SEQ_LAP_GAP) {
+                if ((seq->firstActiveLap < 0 || leaderLap >= seq->firstActiveLap) &&
+                    (seq->lastActiveLap < 0 || leaderLap <= seq->lastActiveLap)) {
+                    seq->state = ACTION_SEQ_READY;
                 }
             }
         }
