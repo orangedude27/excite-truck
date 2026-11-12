@@ -275,34 +275,39 @@ int fn_801AEA64(float arg0, float arg1) {
 
 #pragma push
 #pragma dont_inline on
-int fn_801AEAA4(const void *arg0, const void *arg1) {
-    int a0 = *(int *)arg0;
-    int a1 = *(int *)arg1;
-    void *r31 = fn_801AF8D0(a0);
-    void *r3 = fn_801AF8D0(a1);
-    int ret;
-    if (r31 != 0 && r3 != 0) {
-        unsigned short f1 = *(unsigned short *)((char *)r31 + 0xE);
-        unsigned short f2 = *(unsigned short *)((char *)r3 + 0xE);
-        if (((f1 | f2) & 8) == 0) {
-            short s2 = *(short *)((char *)r3 + 0x16);
-            short s1 = *(short *)((char *)r31 + 0x16);
-            if (s1 == s2) {
-                return fn_801AEA64(*(float *)r31, *(float *)r3);
+/* Compare two race-result indices by placement for qsort: sort non-disqualified
+ * entries by their recorded rank key, break ties by race time, and push
+ * disqualified or missing entries to the end. */
+int fn_801AEAA4(const void *left, const void *right) {
+    int leftIndex = *(const int *)left;
+    int rightIndex = *(const int *)right;
+    RaceResult *leftResult = (RaceResult *)fn_801AF8D0(leftIndex);
+    RaceResult *rightResult = (RaceResult *)fn_801AF8D0(rightIndex);
+    int cmp;
+
+    if (leftResult != 0 && rightResult != 0) {
+        unsigned short leftFlags = leftResult->flags;
+        unsigned short rightFlags = rightResult->flags;
+        if (((leftFlags | rightFlags) & 8) == 0) {
+            short rightRankKey = rightResult->f16;
+            short leftRankKey = leftResult->f16;
+            if (leftRankKey == rightRankKey) {
+                return fn_801AEA64(leftResult->time, rightResult->time);
             }
-            return s1 - s2;
+            return leftRankKey - rightRankKey;
         }
-        ret = -1;
-        if ((f1 & 8) != 0) {
-            ret = 1;
+        cmp = -1;
+        if ((leftFlags & 8) != 0) {
+            cmp = 1;
         }
-        return ret;
+        return cmp;
     }
-    ret = -1;
-    if (r31 == 0) {
-        ret = 1;
+
+    cmp = -1;
+    if (leftResult == 0) {
+        cmp = 1;
     }
-    return ret;
+    return cmp;
 }
 #pragma pop
 
