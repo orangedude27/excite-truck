@@ -415,28 +415,30 @@ void fn_80008684(s32 arg0) {
 #pragma dont_inline on
 s32 fn_80008DBC(s32 arg0) {
     switch (arg0) {
-    case 0x113: return 0x15;
-    case 0x2C: return 0;
-    case 0x1B: return 0x12;
-    case 0xD: return 0x13;
-    case 0x20: return 0xF;
-    case 0x2B: return 0x1B;
-    case 0x2D: return 0x1A;
-    case 0x2E: return 0;
-    case 0x32: return 0x18;
-    case 0x30: return 0x19;
-    case 0x6F: return 0xE;
-    case 0x170: return 0;
     case 0x125: return 2;
-    case 0x122: return 0x15;
-    case 0x121: return 0x14;
+    case 0x126: return 4;
     case 0x128: return 5;
     case 0x127: return 3;
-    case 0x174: return 0;
+    case 0xD: return 0x13;
+    case 0x20: return 0xF;
+    case 0x6F: return 0xE;
+    case 0x113: return 0x15;
+    case 0x121: return 0x14;
+    case 0x1B: return 0x12;
+    case 0x122: return 0x15;
+    case 0x170: return 0;
+    case 0x171: return 0;
     case 0x172: return 0;
+    case 0x173: return 0;
+    case 0x174: return 0;
+    case 0x175: return 0;
     case 0x176: return 0;
-    case 0x126: return 4;
     case 0x31: return 0x17;
+    case 0x32: return 0x18;
+    case 0x30: return 0x19;
+    case 0x2D: return 0x1A;
+    case 0x2B: return 0x1B;
+    case 0x2C:
     default: return 0;
     }
 }
