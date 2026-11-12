@@ -7643,30 +7643,30 @@ extern "C" void *fn_80227E84(void *self, s32 arg1, void *arg2, s32 arg3) {
     return self;
 }
 
-extern "C" void *fn_80227F5C(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        s32 tmp = *(s32 *)((u8 *)arg0 + 0x250);
-        *(void **)arg0 = lbl_8033DF30;
-        if (tmp != 0) {
-            fn_802328D4((void *)tmp);
+extern "C" void *fn_80227F5C(void *obj, s32 shouldFree) {
+    if (obj != 0) {
+        s32 resource0 = *(s32 *)((u8 *)obj + 0x250);
+        *(void **)obj = lbl_8033DF30;
+        if (resource0 != 0) {
+            fn_802328D4((void *)resource0);
         }
-        s32 tmp2 = *(s32 *)((u8 *)arg0 + 0x254);
-        *(s32 *)((u8 *)arg0 + 0x250) = 0;
-        if (tmp2 != 0) {
-            fn_80235380((void *)tmp2);
+        s32 resource1 = *(s32 *)((u8 *)obj + 0x254);
+        *(s32 *)((u8 *)obj + 0x250) = 0;
+        if (resource1 != 0) {
+            fn_80235380((void *)resource1);
         }
-        s32 tmp3 = *(s32 *)((u8 *)arg0 + 0x258);
-        *(s32 *)((u8 *)arg0 + 0x254) = 0;
-        if (tmp3 != 0) {
-            fn_80235380((void *)tmp3);
+        s32 resource2 = *(s32 *)((u8 *)obj + 0x258);
+        *(s32 *)((u8 *)obj + 0x254) = 0;
+        if (resource2 != 0) {
+            fn_80235380((void *)resource2);
         }
-        *(s32 *)((u8 *)arg0 + 0x258) = 0;
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        *(s32 *)((u8 *)obj + 0x258) = 0;
+        fn_8021915C(obj, 0);
+        if (shouldFree > 0) {
+            fn_80128668(obj);
         }
     }
-    return arg0;
+    return obj;
 }
 
 extern "C" s32 fn_8022DD80(s32);
