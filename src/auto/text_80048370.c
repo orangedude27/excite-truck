@@ -81,6 +81,7 @@ void KPADiControlDpdCallback(s32 chan, u32 type) {
     WPADSetAutoSamplingBuf(chan, (u8*)kp + 0x118, 12);
 }
 
+/* Disable pointer recalibration for a WPAD channel and stop DPD sampling if enabled. */
 void WPADiDisableRecalibration(s32 chan) {
     BOOL inner;
     BOOL interrupts;
