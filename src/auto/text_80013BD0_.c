@@ -55,6 +55,7 @@ extern f32 lbl_80560378, lbl_8056037C, lbl_80560380, lbl_80560384, lbl_80560388;
 extern void fn_802E317C(void *, ...);
 extern void fn_80147230(void *, void *, ...);
 extern void fn_80130978(void *, s32, f32);
+typedef struct { char pad0[4]; int f4; char pad8[4]; void *fC; char pad10[0x20]; void *f30; } State148;
 f32 fn_80013D60(f32);
 void fn_80014B9C(void *);
 s32 fn_800151DC(void *);
@@ -468,27 +469,23 @@ void fn_80014820(void *arg0) {
 extern char *strcpy(char *, const char *);
 extern u8 lbl_80558B88, lbl_80558B90, lbl_80558B98;
 extern f32 lbl_805603B0;
-#pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
 void fn_800148A0(void *arg0) {
     char name[0x40];
     char first[0x40];
     char second[0x40];
-    u8 *base;
-    s32 mode;
     f32 value1;
     f32 value2;
+    u8 *base;
+    s32 mode;
     void *info;
     void *other;
-
-    value1 = *(volatile f32 *)&lbl_80560360;
+    value1 = lbl_80560360;
     value2 = value1;
     base = lbl_802FCB98;
     mode = 1;
     first[0] = 0;
     second[0] = 0;
-
     if (*(s32 *)((u8 *)lbl_8055D350 + 4) != 1) {
         strcpy(name, (char *)base + 0x194);
         info = *(void **)((u8 *)lbl_8055D350 + 0x30);
@@ -498,7 +495,6 @@ void fn_800148A0(void *arg0) {
             value1 = *(f32 *)((u8 *)info + 0x18);
         }
     }
-
     info = *(void **)((u8 *)lbl_8055D350 + 0x30);
     if (*(f32 *)((u8 *)info + 0x1C) > lbl_805603B0 &&
         (*(s32 *)((u8 *)lbl_8055D350 + 4) != 1 ||
@@ -507,7 +503,6 @@ void fn_800148A0(void *arg0) {
         info = *(void **)((u8 *)lbl_8055D350 + 0x30);
         value2 = *(f32 *)((u8 *)info + 0x1C);
     }
-
     if (*(s32 *)((u8 *)info + 0x24) == 3) {
         if (*(s32 *)((u8 *)lbl_8055D350 + 4) != 1) {
             strcpy(name, (char *)base + 0x1A0);
@@ -527,7 +522,6 @@ void fn_800148A0(void *arg0) {
             mode = 0;
         }
     }
-
     if (((s32 (*)(void *))fn_80014ADC)(arg0) != 0) {
         info = *(void **)((u8 *)lbl_8055D350 + 0x30);
         if (*(s32 *)((u8 *)info + 0x24) == 3)
@@ -536,14 +530,9 @@ void fn_800148A0(void *arg0) {
             value1 = *(f32 *)((u8 *)info + 0x14);
         strcpy(first, (char *)base + 0x1D4);
     }
-
     ((void (*)(void *, void *, s32, void *, void *, f32, f32, f32))fn_80013EDC)(
         arg0, name, mode, first, second, *(f32 *)((u8 *)arg0 + 0x2C), value1, value2);
 }
-#pragma pop
-
-#pragma scheduling on
-
 void fn_80014A98(void *arg0) {
     void *p;
     f32 selected;
@@ -927,11 +916,11 @@ extern void fn_8000FF88(s32, s32, void *, s32, s32, f32, f32, f32, ...);
 extern f32 lbl_80560368, lbl_80560384, lbl_805603CC, lbl_805603D0;
 extern char lbl_80558BC4;
 void fn_800154B8(void) {
-    /* Fix note: keep the signed edge counters live in registers before applying the final right-edge mask. */
+    /* Fix note: final loop is a pre-tested for loop (target branches to its condition first). */
     s32 current;
     s32 *base;
-    register s32 first, left, right, start, i, limit;
-    register f32 y, step;
+    s32 first, left, right, start, i, limit;
+    f32 y, step;
     current = fn_801EA994();
     base = *(s32 **)((char *)lbl_8055D350 + 0x30);
     left = 2;
@@ -962,13 +951,12 @@ void fn_800154B8(void) {
                 lbl_80560368, lbl_805603D0, y);
     step = lbl_80560384;
     y -= step;
-    i = *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4) + 1;
-    do {
+    for (i = *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4) + 1;
+         i <= *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4) + right &&
+         i <= fn_801EA994(); ++i) {
         fn_8000FF88(-1, 9, &lbl_80558BC4, i, fn_801EA9B0(i - 1) + 0x48, lbl_80560368, lbl_805603D0, y);
         y -= step;
-        ++i;
-    } while (i <= *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4) + right &&
-             i <= fn_801EA994());
+    }
 }
 
 extern s32 fn_80144F34(void *, s32, void *);
