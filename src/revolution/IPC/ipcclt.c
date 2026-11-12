@@ -437,6 +437,7 @@ s32 IOS_CloseAsync(s32 fd, IPCAsyncCallback callback, void* callbackArg) {
 }
 
 s32 IOS_Close(s32 fd) {
+    /* Synchronously close an IOS file descriptor. */
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(fd, IPC_REQ_CLOSE, NULL, NULL, &req);
     if (ret == IPC_RESULT_OK) {
