@@ -51,6 +51,16 @@ typedef struct CfgVTab {
     int   (*v5c)(CfgObj*, const char*);
 } CfgVTab;
 struct CfgObj { CfgVTab* vt; };
+typedef struct XmlObj2 XmlObj2;
+typedef struct {
+    void *v0;
+    void *v4;
+    void *v8;
+    int (*has)(XmlObj2 *, const char *);
+    void *v10;
+    char *(*get)(XmlObj2 *, const char *);
+} XmlVTab2;
+struct XmlObj2 { XmlVTab2 *vt; };
 
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
