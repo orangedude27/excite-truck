@@ -589,38 +589,37 @@ extern int fn_80133348(int, int, int);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801616FC(void) {
-    register s32 *count_ptr;
-    register s32 offset;
-    register s32 count;
+    /* Apply a stored option value, invoke and reset each item in the global object list, then clear its count and current selection. */
+    register s32 *itemCount;
+    register s32 itemOffset;
+    register s32 index;
     void *item;
 
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, lbl_8055A0B8);
-    count_ptr = (s32 *)((u8 *)lbl_8042FDEC + 4);
-    count = 0;
-    offset = 0;
+    itemCount = (s32 *)((u8 *)lbl_8042FDEC + 4);
+    index = 0;
+    itemOffset = 0;
     goto test_loop;
 loop:
-    item = *(void **)((u8 *)*(void **)lbl_8042FDEC + offset);
+    item = *(void **)((u8 *)*(void **)lbl_8042FDEC + itemOffset);
 #pragma cplusplus on
     ((Dummy_801616FC_A *)item)->invoke();
 #pragma cplusplus off
-    item = *(void **)((u8 *)*(void **)lbl_8042FDEC + offset);
+    item = *(void **)((u8 *)*(void **)lbl_8042FDEC + itemOffset);
     if (item != 0) {
 #pragma cplusplus on
         ((Dummy_801616FC_B *)item)->reset(1);
 #pragma cplusplus off
     }
-    offset += 4;
-    count += 1;
+    itemOffset += 4;
+    index += 1;
 test_loop:
-    if (count < *count_ptr) {
+    if (index < *itemCount) {
         goto loop;
     }
-    *count_ptr = 0;
+    *itemCount = 0;
     lbl_8055E300 = 0;
 }
-#pragma scheduling on
-#pragma use_lmw_stmw reset
 
 #pragma cplusplus on
 extern "C" void fn_802CAC54(int);
