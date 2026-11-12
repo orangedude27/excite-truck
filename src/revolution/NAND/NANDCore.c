@@ -218,6 +218,7 @@ s32 nandConvertErrorCode(s32 result) {
     return NAND_RESULT_UNKNOWN;
 }
 
+/* Generates an absolute NAND path from a relative or absolute input path. */
 void nandGenerateAbsPath(char* abs, const char* rel) {
     s32 len;
 
