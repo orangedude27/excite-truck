@@ -2311,6 +2311,7 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+/* Updates per-entry animation/effect state for a batch of entries when delta time is non-zero. */
 extern "C" void fn_8029C084(void *arg0, int arg1) {
     float temp_f31 = fn_801E7E24();
     if ((float)__fabs((double)temp_f31) <= lbl_80558DC4) {
