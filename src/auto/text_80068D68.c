@@ -2604,6 +2604,7 @@ void *WUDiGetDevInfo(u8 *bdAddr) {
 #pragma use_lmw_stmw on
 extern char lbl_8031377C[];
 void *WUDiGetNewDevInfo(void) {
+    /* Return a free WUD device-info slot (first unused std slot when not SMP mode, else current new-dev slot). */
     struct DevInfo { u8 data[0x60]; };
     struct WUDView { u8 pad[0x64]; struct DevInfo stdDevs[1]; };
     u8 *base = lbl_80392960;
@@ -15919,23 +15920,24 @@ u8 HID_HostOpenDev(u32 arg0) {
 }
 
 u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, BT_HDR *pbuf) {
-    char *messages = lbl_80317720;
+    typedef struct { char m0[0x18]; char m1[0x18]; char m2[0x30]; } HID_Msgs;
+    HID_Msgs *messages = (HID_Msgs *)lbl_80317720;
     u8 status = 0;
 
     if (lbl_803C3C38[0x400] == 0) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, lbl_80317720 + 0);
+            fn_8007093C(0x1E0000, messages->m0);
         status = 1;
     }
     if ((dev_handle > 0x10) ||
         (*((u8 *)lbl_803C3C38 + dev_handle * 0x34) == 0)) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0x18);
+            fn_8007093C(0x1E0000, messages->m1);
         status = 5;
     }
     if (*((u8 *)lbl_803C3C38 + dev_handle * 0x34 + 0xA) != 1) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_80070954(0x1E0000, messages + 0x30, dev_handle);
+            fn_80070954(0x1E0000, messages->m2, dev_handle);
         status = 4;
     }
     if (status != 0) {
