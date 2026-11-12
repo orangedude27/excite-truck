@@ -158,13 +158,10 @@ struct PauseFields {
 static inline float PauseRamp(PauseFields *s) {
     int total = s->total;
     int elapsed = s->elapsed;
-    float r;
     if (elapsed >= total) {
-        r = s->end;
-    } else {
-        r = s->start + (float)elapsed * (s->end - s->start) / (float)total;
+        return s->end;
     }
-    return r;
+    return s->start + (float)elapsed * (s->end - s->start) / (float)total;
 }
 static inline void PauseSetRamp(PauseFields *s, float end, int n) {
     s->start = PauseRamp(s);
@@ -720,7 +717,7 @@ extern const char lbl_803220F4[];
 extern const char lbl_803220D0[];
 extern "C" void fn_800E2F84(void *self) {
     char *base = (char *)self;
-    if (*(u8 *)(base + 0x6C30) != 0) {
+    if (*(unsigned char *)(base + 0x6C30) != 0) {
         AIRegisterDMACallback(*(void **)(base + 0x6C2C));
         fn_800E4364(self, 0); fn_800E4364(self, 1); fn_800E4364(self, 2);
         AXRegisterAuxACallback(*(int *)(base + 0x6CF0), *(int *)(base + 0x6CFC));
@@ -731,6 +728,9 @@ extern "C" void fn_800E2F84(void *self) {
         *(int *)(base + 0x6CF8) = 0; *(int *)(base + 0x6D04) = 0;
         *(int *)(base + 4) = 0;
         while (*(int *)(base + 0x14) != 0) {
+            if (*(int *)(base + 0x14) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
+            }
             void *node = *(void **)(base + 0x18);
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
             void *voice = (char *)node - 0x1A8;
@@ -744,7 +744,7 @@ extern "C" void fn_800E2F84(void *self) {
             void *it = *(void **)(base + 0x24);
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(base + 0x20, &it);
         }
-        *(u8 *)(base + 0x6C30) = 0;
+        *(unsigned char *)(base + 0x6C30) = 0;
     }
 }
 
@@ -2154,52 +2154,62 @@ extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *self, in
 }
 
 extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
-    unsigned int irq = OSDisableInterrupts();
     unsigned int start, end, address, buffer;
-    int format;
+    int fmt;
+    void *mgr;
+    unsigned int level;
+    register unsigned int irq = OSDisableInterrupts();
     if (*(int *)((char *)self + 0x2c) == 0) { OSRestoreInterrupts(irq); return 0; }
-    OSDisableInterrupts();
+    level = OSDisableInterrupts();
     address = *(unsigned int *)((char *)self + 0xc) + 0x138;
-    if (address == 0) { OSRestoreInterrupts(irq); start = 0; }
-    else { start = (*(unsigned short *)(address + 0x84) << 16) | *(unsigned short *)(address + 0x86); OSRestoreInterrupts(irq); }
-    void *mgr = Instance__15EmissionManagerFv();
-    buffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(mgr);
-    if (buffer != 0) buffer += 0x80000000;
-    format = *(int *)((char *)self + 0x118);
-    switch (format) {
-    case 0: end = buffer * 2 + 2; break;
-    case 10: end = buffer >> 1; break;
-    case 25: end = buffer; break;
-    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); end = 0; break;
+    if (address == 0) { OSRestoreInterrupts(level); start = 0; }
+    else {
+        unsigned short hi = *(unsigned short *)(address + 0x84);
+        unsigned short lo = *(unsigned short *)(address + 0x86);
+        start = ((unsigned int)hi << 16) + lo;
+        OSRestoreInterrupts(level);
     }
+    mgr = Instance__15EmissionManagerFv();
+    buffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(mgr);
+    fmt = *(int *)((char *)self + 0x118);
+    if (buffer != 0) buffer += 0x80000000;
+    end = 0;
+    switch (fmt) {
+    case 0: end = buffer * 2 + 2; break;
+    case 25: end = buffer; break;
+    case 10: end = buffer >> 1; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
+    }
+    address = end;
     switch (*(int *)((char *)self + 0x118)) {
     case 0: address = end + 0x200; break;
     case 25: address = end + 0x100; break;
     case 10: address = end + 0x80; break;
-    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x362, lbl_80322438); address = end; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x362, lbl_80322438); break;
     }
     if (end <= start && start < address) { OSRestoreInterrupts(irq); return 1; }
     OSRestoreInterrupts(irq);
     return 0;
 }
 
+#pragma use_lmw_stmw off
 extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
     int level = OSDisableInterrupts();
-    long size = *(long *)((char *)self + 0x2C);
+    int size = *(int *)((char *)self + 0x2C);
     if (size == 0) {
         OSRestoreInterrupts(level);
         return 0;
     }
     if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(self)) {
-        int inner = OSDisableInterrupts();
+        level = OSDisableInterrupts();
         unsigned char *pos = *(unsigned char **)((char *)self + 0xC) + 0x138;
         int position;
         if (pos == 0) {
-            OSRestoreInterrupts(inner);
+            OSRestoreInterrupts(level);
             position = 0;
         } else {
             position = ((int)*(unsigned short *)(pos + 0x80) << 16) + *(unsigned short *)(pos + 0x82);
-            OSRestoreInterrupts(inner);
+            OSRestoreInterrupts(level);
         }
         int format = *(int *)((char *)self + 0x118);
         if (size != 0) size += (int)0x80000000;
@@ -2214,18 +2224,19 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
         case 10: result = position - ((unsigned int)size >> 1); break;
         default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
         }
+        level = OSDisableInterrupts();
         OSRestoreInterrupts(level);
         return result + 1;
     } else {
-        int inner = OSDisableInterrupts();
+        level = OSDisableInterrupts();
         unsigned char *pos = *(unsigned char **)((char *)self + 0xC) + 0x138;
         int position;
         if (pos == 0) {
-            OSRestoreInterrupts(inner);
+            OSRestoreInterrupts(level);
             position = 0;
         } else {
             position = ((int)*(unsigned short *)(pos + 0x84) << 16) + *(unsigned short *)(pos + 0x86);
-            OSRestoreInterrupts(inner);
+            OSRestoreInterrupts(level);
         }
         int format = *(int *)((char *)self + 0x118);
         if (size != 0) size += (int)0x80000000;
@@ -2240,11 +2251,12 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
         case 10: result = position - ((unsigned int)size >> 1); break;
         default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
         }
+        level = OSDisableInterrupts();
         OSRestoreInterrupts(level);
         return result;
     }
 }
-
+#pragma use_lmw_stmw reset
 extern const char lbl_80322400[];
 extern "C" void fn_8003381C(void *, void *);
 #pragma use_lmw_stmw off
@@ -2461,13 +2473,12 @@ extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loo
 
 #pragma dont_inline on
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
-    char *self=(char *)arg0;
-    int irq=OSDisableInterrupts();
+    unsigned long irq=OSDisableInterrupts();
     void *emission=Instance__15EmissionManagerFv();
     unsigned int address=(unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(emission);
-    int format=*(int *)(self+0x118);
+    unsigned int format=*(int *)((char *)arg0+0x118);
     if(address) address+=0x80000000;
-    unsigned int start=0;
+    s32 start=0;
     switch(format) {
     case 0: start=address*2+2; break;
     case 25: start=address; break;
@@ -2475,12 +2486,12 @@ extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8,0x561,lbl_80322438); break;
     }
     unsigned int offset=(unsigned int)arg2;
-    int format2=*(int *)(self+0x118);
+    int format2=*(int *)((char *)arg0+0x118);
     if(offset) offset+=0x80000000;
     unsigned int end=0;
     switch(format2) {
     case 0: {
-        unsigned int x=arg3-1;
+        u32 x=arg3-1;
         end=(x%14) + (offset*2) + ((x/14)*16) + 2;
         break;
     }
@@ -2490,9 +2501,9 @@ extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int
     }
     unsigned short sh=start>>16, sl=start;
     unsigned short eh=end>>16, el=end;
-    int i;
-    char *entry=self+arg1*0x10;
-    for(i=0; i<*(int *)(self+0x108); i++, entry+=4) {
+    long i;
+    char *entry=(char *)arg0+arg1*0x10;
+    for(i=0; i<*(int *)((char *)arg0+0x108); i++, entry+=4) {
         void *voice=*(void **)(entry+0xC);
         if(voice) {
             unsigned int *flags=(unsigned int *)((char *)voice+0x1C);
@@ -2547,18 +2558,24 @@ extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1
     float gain = lbl_80560F58;
     float max = lbl_80560F38;
     float min = lbl_80560F3C;
-    int i = 0, offset = 0, j;
+    int i = 0;
+    int offset = 0;
+    int j;
     unsigned char *src = self;
     short values[7];
     while (i < *(int *)(self + 0x108)) {
         float volume = *(float *)(src + 0x98);
         if (volume > max) volume = max;
         else if (volume < min) volume = min;
-        if (mode) {
+        if (mode != 0) {
             unsigned int sample = (unsigned int)(gain * ratio * volume);
             values[0] = (short)(sample >> 16);
             values[1] = (short)sample;
-            values[2] = values[3] = values[4] = values[5] = values[6] = 0;
+            values[2] = 0;
+            values[3] = 0;
+            values[4] = 0;
+            values[5] = 0;
+            values[6] = 0;
             unsigned char *channel = self + offset;
             for (j = 0; j < *(int *)(self + 0x104); j++) {
                 fn_800339B0(*(void **)(channel + 0xc), values);
@@ -2872,23 +2889,24 @@ extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hb
 }
 
 extern float lbl_80560F38, lbl_80560F3C, lbl_80560F54, lbl_80560F60, lbl_80560F64, lbl_80560F68, lbl_80560F6C, lbl_80560F70, lbl_80560F74, lbl_80560F78;
+#pragma fp_contract off
 void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float a, float b) {
     float d = b - lbl_80560F38;
-    float aa = a < 0.0f ? -a : a;
-    float ad = d < 0.0f ? -d : d;
-    if (aa == ad) {
-        if (d == lbl_80560F3C) {
+    float aa = __fabsf(a);
+    float ad = __fabsf(d);
+    if (aa <= ad) {
+        if (d <= lbl_80560F3C) {
             *out0 = a; *out1 = lbl_80560F60 + lbl_80560F64 * d;
         } else { *out0 = lbl_80560F68 * a; *out1 = lbl_80560F60 + lbl_80560F6C * d; }
-    } else if (a == lbl_80560F3C) {
-        if (d == lbl_80560F3C) {
+    } else if (a >= lbl_80560F3C) {
+        if (d <= lbl_80560F3C) {
             *out0 = (lbl_80560F70 + lbl_80560F74 * (-d / a)) * aa;
             *out1 = lbl_80560F60 + lbl_80560F54 * d + lbl_80560F64 * a;
         } else {
             *out0 = (lbl_80560F70 + lbl_80560F78 * (-d / a)) * aa;
             *out1 = lbl_80560F60 + lbl_80560F6C * a;
         }
-    } else if (d == lbl_80560F3C) {
+    } else if (d <= lbl_80560F3C) {
         *out0 = (lbl_80560F74 * (-d / a) - lbl_80560F70) * aa;
         *out1 = lbl_80560F60 + lbl_80560F54 * d - lbl_80560F6C * a;
     } else {
@@ -2897,7 +2915,6 @@ void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float 
     }
     *out1 += lbl_80560F38;
 }
-
 extern float lbl_80560F3C, lbl_80560F80;
 extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(void* self, int a, int b, void* out) {
     unsigned short* mix=(unsigned short*)out;
@@ -2910,7 +2927,7 @@ extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(vo
         if (*(volatile u32*)((char*)self+0x13c) & (2<<i))
             volume=lbl_80560F38 * *(float*)(voice+0x154);
         else
-            volume=0.0f;
+            volume=lbl_80560F3C;
         mainVol[i]*=volume;
         auxVol[i]*=volume;
         float left=*(float*)(voice+0x164);
@@ -3019,8 +3036,8 @@ void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &n
     *(int *)((char *)channel + 0xCC) = noteInfo.unk_4;
     *(int *)((char *)channel + 0xD0) = inst[8];
     float level = (float)noteInfo.unk_8 / lbl_80560F88;
-    float multiplier = (float)inst[0xA] / lbl_80560F88;
     float levelSquared = level * level;
+    float multiplier = (float)inst[0xA] / lbl_80560F88;
     *(float *)((char *)channel + 0xB4) = levelSquared * multiplier;
     *(float *)((char *)channel + 0xC0) = *(float *)(inst + 0xC);
     SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[4]);
@@ -3071,17 +3088,15 @@ extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3sn
     extern const char lbl_80322760[];
     extern const char lbl_80559830;
     extern float lbl_80560FA8;
-    struct F { char x[1]; };
-    F *fp = (F *)lbl_803224F0;
-    char *base = (char *)fp;
+    const char *base = lbl_803224F0;
     char *ref;
     char *entry;
     unsigned int address;
 
     if (arg1 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&fp->x[0], 0x7B, base + 0x194);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x7B, base + 0x194);
     if (*(void **)arg0 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&fp->x[0], 0x7C, base + 0x1C0);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x7C, base + 0x1C0);
     if (*(void **)arg0 == 0)
         return 0;
     if (arg2 < 0 || arg2 >= *(int *)(*(char **)((char *)arg0 + 4) + 8))
@@ -3133,16 +3148,16 @@ extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3sn
 
 extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
     int type = *((unsigned char *)arg1 + 1);
-    int i;
     unsigned char *data;
-    unsigned int base, address;
+    unsigned int address;
+    int i;
     switch (type) {
     case 0:
         return 0;
     case 1:
         return arg1;
-    case 2:
-        base = *(unsigned int *)((char *)arg0 + 4) + 8;
+    case 2: {
+        unsigned int base = *(unsigned int *)((char *)arg0 + 4) + 8;
         if (type != 2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559820, 0x71, lbl_80322708);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
@@ -3159,14 +3174,16 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
             return (void *)(off + (unsigned int)(data + i * 8));
         }
         goto inc;
-    case 3:
-        base = *(unsigned int *)((char *)arg0 + 4) + 8;
+    }
+    case 3: {
+        unsigned int base = *(unsigned int *)((char *)arg0 + 4) + 8;
         if (type != 3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559828, 0x72, lbl_80322734);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
         if (!data) return 0;
         if (arg2 < data[0] || arg2 > data[1]) return 0;
         return data + (arg2 - data[0]) * 8 + 4;
+    }
     default:
         return 0;
     }
@@ -3367,12 +3384,12 @@ extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
         sound->stop();
         return;
     }
-    int total = fields->total;
     int elapsed = fields->elapsed;
+    int total = fields->total;
     float start = fields->start;
     float end = fields->end;
     float current;
-    if (elapsed < total) current = start + (float)elapsed * (end - start) / (float)total;
+    if (total > elapsed) current = start + (float)elapsed * (end - start) / (float)total;
     else current = end;
     fields->start = current;
     fields->end = lbl_80560FB0;
