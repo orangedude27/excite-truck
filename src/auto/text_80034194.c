@@ -1553,78 +1553,82 @@ void fn_80036550(u32 errorCode) {
 }
 #pragma pop
 
-void fn_80036624(s32 arg0) {
-    extern s32 lbl_8055D8BC;
-    extern s32 lbl_8055D870, lbl_8055D874;
-    extern void fn_8003801C(void);
-    register u32 value = arg0;
+/* Drive error handler run on the DVD thread (queued through fn_8003AF1C with the
+ * error code as its argument).  The code goes into the last __ErrorInfo entry;
+ * the codes the NAND error report of fn_8003A1A0 deals with end the handling
+ * here, and any other code finishes the cancel that is in flight: the command
+ * the drive was running is completed with DVD_RESULT_CANCELED.  When nothing
+ * was being cancelled the dummy block is marked as needing attention instead
+ * and the periodic cover/motor poll is armed. */
+void fn_80036624(s32 errorCode) {
+    register u32 code = errorCode;
     s32 interrupts;
-    s32 resetDone;
-    void *block;
-    void (*callback)(s32, void *);
+    s32 complete;
+    DVDCommandBlock *block;
+    DVDCommandCallback callback;
     u32 tick;
     u32 period;
 
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
-        *(u32 *)(__ErrorInfo + 0x78) = value;
+    if (*(volatile u32 *)&ErrorInfoEntry == 0) {
+        *(u32 *)(__ErrorInfo + 0x78) = code;
     } else {
-        *(u32 *)(__ErrorInfo +
-                 *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&ErrorInfoEntry * 0x14 + 0x14) = code;
     }
     OSRestoreInterrupts(interrupts);
 
-    if (value == 0x10) {
+    if (code == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
         return;
     }
-    if (value == 0x20) {
+    if (code == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
         return;
     }
-    if (value & 2) {
+    if (code & 2) {
         fn_8003A1A0(0x1234567, fn_80035C64);
         return;
     }
 
-    *(volatile s32 *)&lbl_8055D860 = 0;
-    if (*(volatile u32 *)&lbl_8055D8BC == 4 ||
-        *(volatile u32 *)&lbl_8055D8BC == 5 ||
-        *(volatile u32 *)&lbl_8055D8BC == 13 ||
-        *(volatile u32 *)&lbl_8055D8BC == 33 ||
-        *(volatile u32 *)&lbl_8055D8BC == 34 ||
-        *(volatile u32 *)&lbl_8055D8BC == 15 ||
-        *(volatile u32 *)&lbl_8055D8BC == 37) {
+    *(volatile s32 *)&DriveErrorCount = 0;
+    // The commands that do not need the drive reset before they can be retried.
+    if (*(volatile u32 *)&DriveCommand == 4 ||
+        *(volatile u32 *)&DriveCommand == 5 ||
+        *(volatile u32 *)&DriveCommand == 13 ||
+        *(volatile u32 *)&DriveCommand == 33 ||
+        *(volatile u32 *)&DriveCommand == 34 ||
+        *(volatile u32 *)&DriveCommand == 15 ||
+        *(volatile u32 *)&DriveCommand == 37) {
         lbl_8055D8AC = 1;
     }
 
-    if (*(volatile s32 *)&lbl_8055D858 != 0) {
-        block = (void *)executing_8055D8C8;
-        *(volatile s32 *)&lbl_8055D85C = 2;
-        *(volatile s32 *)&lbl_8055D858 = 0;
-        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        *(s32 *)((char *)block + 0xC) = 0xA;
-        callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
+    if (*(volatile s32 *)&Canceling != 0) {
+        block = (DVDCommandBlock *)ExecutingBlock;
+        *(volatile s32 *)&StateToChange = 2;
+        *(volatile s32 *)&Canceling = 0;
+        ExecutingBlock = (s32)DummyBlock;
+        block->state = DVD_STATE_CANCELED;
+        callback = block->callback;
         if (callback != 0)
-            callback(-3, block);
-        if (lbl_8055D8B8 != 0)
-            lbl_8055D8B8(0, block);
+            callback(DVD_RESULT_CANCELED, block);
+        if (CancelCallback != 0)
+            CancelCallback(DVD_RESULT_GOOD, block);
         fn_80038040();
-        resetDone = 1;
+        complete = 1;
     } else {
-        resetDone = 0;
+        complete = 0;
     }
-    if (resetDone != 0)
+    if (complete != 0)
         return;
 
-    *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xB;
-    MotorState_8055D8A8 = 1;
-    if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-        lbl_8055D870 = 1;
-        OSCreateAlarm(&lbl_80376AD0);
+    ((DVDCommandBlock *)ExecutingBlock)->state = DVD_STATE_DISK_ERROR;
+    MotorState_8055D8A8 = DVD_STATE_BUSY;
+    if (Transferring == 0 && AlarmInfo == 0) {
+        Transferring = 1;
+        OSCreateAlarm(&StateAlarm);
         tick = OSGetTick();
-        period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-        OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
+        period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100; // 100 ms in timer ticks
+        OSSetPeriodicAlarm(&StateAlarm, 0x10624DD3, 0, tick, 0, period,
                            fn_8003801C);
     }
 }
