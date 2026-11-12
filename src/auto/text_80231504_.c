@@ -1010,13 +1010,13 @@ void fn_80232B80(s32 arg0) {
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-void fn_80232BA4(char *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    s32 sp8 = arg2;
+void fn_80232BA4(char *text, s32 font, s32 color, s32 x, f32 y, f32 scaleX, f32 scaleY, f32 spacing, f32 alpha) {
+    s32 adjustedColor = color;
 
-    /* Let the debug hook adjust arg2, then render only when the text is nonempty. */
-    fn_80231714(&sp8);
-    if ((s8)*arg0 != 0) {
-        fn_80232040((u8 *)arg0, arg1, sp8, arg3, 0, farg0, farg1, farg2, farg3, farg4, lbl_8056368C);
+    /* Let the debug hook adjust the color, then render with default extra spacing when text is non-empty. */
+    fn_80231714(&adjustedColor);
+    if ((s8)*text != 0) {
+        fn_80232040((u8 *)text, font, adjustedColor, x, 0, y, scaleX, scaleY, spacing, alpha, lbl_8056368C);
     }
 }
 
