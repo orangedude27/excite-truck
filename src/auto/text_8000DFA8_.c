@@ -151,28 +151,31 @@ void fn_8000F1E0(void) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
-#pragma scheduling on
-void fn_8000F22C(void) {
-    UnkF22C *obj;
-    void (*destroy)(UnkF22C *, s32);
-    if (lbl_8055D4BC != 0) fn_80235380(lbl_8055D4BC);
+#pragma cplusplus on
+extern "C" void fn_8000F22C(void) {
+    struct D { virtual void m2(int); };
+    void *p;
+    if (lbl_8055D4BC != 0) {
+        fn_80235380(lbl_8055D4BC);
+    }
     lbl_8055D4BC = 0;
-    obj = lbl_8055D4B4;
-    if (obj != 0) {
-        if (obj != 0) {
-            destroy = obj->vtable->unk_0x8;
-            destroy(obj, 1);
+    p = lbl_8055D4B4;
+    if (p != 0) {
+        volatile void *q = p;
+        if (q != 0) {
+            ((D *)p)->m2(1);
         }
     }
-    obj = lbl_8055D4B8;
-    if (obj != 0) {
-        if (obj != 0) {
-            destroy = obj->vtable->unk_0x8;
-            destroy(obj, 1);
+    p = lbl_8055D4B8;
+    if (p != 0) {
+        volatile void *q = p;
+        if (q != 0) {
+            ((D *)p)->m2(1);
         }
     }
 }
+#pragma pop
+#pragma cplusplus reset
 void fn_8000F2A8(s32 arg0, s32 arg1) {
     lbl_80350F88 = fn_8023512C(arg0);
     lbl_80351214 = fn_8023512C(arg1);
