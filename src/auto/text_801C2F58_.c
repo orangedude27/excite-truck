@@ -1814,21 +1814,22 @@ extern void fn_8012BEF0(void *);
 extern void fn_8012BF24(void *);
 extern void fn_80128678(void);
 void fn_801C8420(void) {
-    char sp8[256];
-    char *base = lbl_80336B00;
-    char *temp_r30 = base + 0x4fc;
-    char *temp_r29 = base + 0x50c;
+    /* Load the selected interlude file from the debug menu: query path/name parts, build the file path, load it, and report status. */
+    char filePath[256];
+    char *debugStrings = lbl_80336B00;
+    char *fileName = debugStrings + 0x4fc;
+    char *dirName = debugStrings + 0x50c;
 
-    if (fn_8013181C(base + 0x51c, temp_r29, temp_r30) != 0) {
-        sprintf(sp8, lbl_8055AA68, temp_r30, temp_r29);
+    if (fn_8013181C(debugStrings + 0x51c, dirName, fileName) != 0) {
+        sprintf(filePath, lbl_8055AA68, fileName, dirName);
         fn_80128684();
-        fn_8012BEF0(temp_r30);
-        fn_801C3D88(sp8);
-        fn_8012BF24(temp_r30);
+        fn_8012BEF0(fileName);
+        fn_801C3D88(filePath);
+        fn_8012BF24(fileName);
         fn_80128678();
-        sprintf(lbl_80437FC0, base + 0x52c);
+        sprintf(lbl_80437FC0, debugStrings + 0x52c);
     } else {
-        sprintf(lbl_80437FC0, base + 0x544);
+        sprintf(lbl_80437FC0, debugStrings + 0x544);
     }
 }
 
