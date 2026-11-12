@@ -10,6 +10,7 @@ void OSInitMessageQueue(OSMessageQueue* queue, OSMessage* buffer,
     queue->size = 0;
 }
 
+/* Send a message to queue; block if full and OS_MSG_BLOCKING set, else return FALSE. */
 BOOL OSSendMessage(OSMessageQueue* queue, OSMessage mesg, u32 flags) {
     s32 mesgId;
     BOOL enabled = OSDisableInterrupts();
