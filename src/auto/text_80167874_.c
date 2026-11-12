@@ -38,8 +38,6 @@ public:
 
 class DummyArg1 {
 public:
-    virtual void _dtor0();
-    virtual void _dtor1();
     virtual const char *getName();
     virtual void v1();
     virtual void v2();
