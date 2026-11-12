@@ -841,47 +841,57 @@ typedef struct FireText {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* Draws one credits line (vtable slot 0x28 of lbl_80346618).
+ *
+ * The line types itself out at lbl_80563C18 (30) characters a second from startTime, so the
+ * text is cut at the character reached and only that part is measured and drawn.  The anchor
+ * is shifted back by the width still hidden (all of it when the text object is right aligned,
+ * half when centred) so the line keeps its place while it grows.  Until the whole line is up,
+ * fn_80264A5C throws sparks at the character being typed, part way into it (lbl_80563C1C = 10
+ * pixels for a whole character) and at the vertical middle of the text.
+ * Nothing happens at all until startTime comes up.
+ */
 void fn_802652E8(void *arg0) {
-    char *p = (char *)arg0;
-    char *q;
-    float s[8];
-    float f31, f30, f29;
-    int v, max, flag;
+    FireText *item = (FireText *)arg0;
+    char *cut;
+    float box[8];              /* [0..3] the shown part, [4..7] the whole line: minX, minY, maxX, maxY */
+    float typed, hidden, x;
+    int index, length, done;
     signed char saved;
-    float t;
+    float now;
 
-    t = fn_80264588();
-    if (t < *(float *)(p + 0xB8)) return;
-    f31 = lbl_80563C18 * (t - *(float *)(p + 0xB8));
-    fn_8022ACFC(*(int *)(p + 0x18), p + 0x1C, &s[4], &s[5], &s[6], &s[7], (float)*(int *)(p + 4), (float)*(int *)(p + 8));
-    v = (int)f31;
-    max = *(int *)(p + 0xB4);
-    flag = v > max;
-    if (flag) {
-        v = max;
+    now = fn_80264588(); /* the credits clock */
+    if (now < item->startTime) return;
+    typed = lbl_80563C18 * (now - item->startTime); /* how many characters are up by now */
+    fn_8022ACFC(item->fontId, item->text, &box[4], &box[5], &box[6], &box[7], (float)item->x, (float)item->y);
+    index = (int)typed;
+    length = item->length;
+    done = index > length;
+    if (done) {
+        index = length;
     } else {
-        fn_802645EC();
+        fn_802645EC(); /* keep the credits clock from running on */
     }
-    q = p + v;
-    saved = q[0x1C];
-    q[0x1C] = 0;
-    fn_8022ACFC(*(int *)(p + 0x18), p + 0x1C, &s[0], &s[1], &s[2], &s[3], (float)*(int *)(p + 4), (float)*(int *)(p + 8));
-    f30 = (s[6] - s[4]) - (s[2] - s[0]);
-    f29 = (float)*(int *)(p + 4);
+    cut = (char *)item + index; /* text[index]: the character the typing has reached */
+    saved = cut[0x1C];          /* the line starts 0x1C bytes into the item */
+    cut[0x1C] = 0;              /* end the string here, so only the shown part is measured */
+    fn_8022ACFC(item->fontId, item->text, &box[0], &box[1], &box[2], &box[3], (float)item->x, (float)item->y);
+    hidden = (box[6] - box[4]) - (box[2] - box[0]); /* the width of the characters still hidden */
+    x = (float)item->x;
     {
-        int r = fn_8022AA84(*(int *)(p + 0x18));
-        if (r & 2) {
-            f29 = f29 - f30;
-        } else if (r & 4) {
-            f29 = f29 - lbl_80563BF8 * f30;
+        int align = fn_8022AA84(item->fontId); /* the text object's alignment flags */
+        if (align & 2) {                       /* right aligned */
+            x = x - hidden;
+        } else if (align & 4) {                /* centred */
+            x = x - lbl_80563BF8 * hidden;
         }
     }
-    fn_8022BD40(*(int *)(p + 0x18), p + 0x1C, 0, 0, f29, (float)*(int *)(p + 8), lbl_80563BF0, s[6] - s[4], s[7] - s[5], lbl_80563C00);
-    q[0x1C] = saved;
-    if (!flag) {
-        float f5 = f31 - (float)v;
-        float f4 = lbl_80563C1C * f5;
-        fn_80264A5C((float)(int)f4 + ((s[4] + s[2]) - s[0]), (s[7] + s[5]) / 2.0f);
+    fn_8022BD40(item->fontId, item->text, 0, 0, x, (float)item->y, lbl_80563BF0, box[6] - box[4], box[7] - box[5], lbl_80563C00);
+    cut[0x1C] = saved; /* put the rest of the line back */
+    if (!done) {
+        float rest = typed - (float)index;    /* how far into the current character we are */
+        float spark = lbl_80563C1C * rest;
+        fn_80264A5C((float)(int)spark + ((box[4] + box[2]) - box[0]), (box[7] + box[5]) / 2.0f);
     }
 }
 #pragma pop
