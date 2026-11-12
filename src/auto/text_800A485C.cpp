@@ -11493,19 +11493,20 @@ loop:
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-extern "C" s32 fn_800B8F20(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+extern "C" s32 fn_800B8F20(s32 buffer, s32 path, s32 length, s32 offset, s32 *outBytes, s32 unused) {
+    /* Read NAND data with locking: validates args, performs operation, returns status. */
     s32 result;
     fn_800B8004(lbl_8055DD30);
-    *arg4 = 0;
-    if (arg0 == 0) {
+    *outBytes = 0;
+    if (buffer == 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    if (arg1 == 0) {
+    if (path == 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    result = fn_800B960C(arg3, arg1, arg2, 0x200, arg4, arg0);
+    result = fn_800B960C(offset, path, length, 0x200, outBytes, buffer);
     if (result != 0) {
         fn_800B8048(lbl_8055DD30);
         return result;
