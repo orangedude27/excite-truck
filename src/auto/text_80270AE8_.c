@@ -1294,6 +1294,14 @@ typedef struct RegionRecord {
 #pragma push
 #pragma small_data off
 #pragma dont_inline on
+/* A four-bit report on the region an event type is pointed at: 0x1 when that record's
+ * flag24 is clear, 0x4 when its flag25 is clear, 0x2 when it is a kind-2 region and 0x8
+ * when it is a kind-0 one -- or 0x8 for every type while lbl_8055F480 is set.  An event
+ * type with no region group of its own (fn_80273494's 6, and 0, which type 11 shares)
+ * answers from its kind alone: kind 0 gives 0x8, kind 1 nothing, kind 2 0x6 and anything
+ * else 0x5 -- the same bits a record with both flags clear and another kind would give.
+ * The repeated `eventType == 1` test is the original's; the target keeps the dead branch
+ * it leaves, so the if-chain below stands in for its switch on the event type. */
 int fn_802734F0(int eventType) {
     extern unsigned char lbl_8055F480;
     extern unsigned char lbl_80346BA0[];
