@@ -2000,24 +2000,27 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     return res != 0;
 }
 #pragma use_lmw_stmw on
-extern "C" void fn_8019EB14(s32 arg0_raw, s32 arg1) {
-    u8 *arg0 = (u8 *)arg0_raw;
-    u32 offset = arg1 * 8;
-    u8 *p = arg0 + offset;
-    u8 t;
+extern "C" void fn_8019EB14(s32 baseRaw, s32 index) {
+    u8 *base = (u8 *)baseRaw;
+    u32 offset = index * 8;
+    u8 *node = base + offset;
+    u8 temp;
 
-    t = arg0[offset];
-    arg0[offset] = p[1];
-    p[1] = t;
+    /* Byte-swap the four 16-bit fields of this 8-byte node, then recurse into
+       four children starting at the child index stored in the node's third
+       field (offset 4) when it is non-zero. */
+    temp = base[offset];
+    base[offset] = node[1];
+    node[1] = temp;
 
-    t = p[2]; p[2] = p[3]; p[3] = t;
-    t = p[4]; p[4] = p[5]; p[5] = t;
-    t = p[6]; p[6] = p[7]; p[7] = t;
+    temp = node[2]; node[2] = node[3]; node[3] = temp;
+    temp = node[4]; node[4] = node[5]; node[5] = temp;
+    temp = node[6]; node[6] = node[7]; node[7] = temp;
 
-    if (*(u16 *)(p + 4) != 0) {
-        s32 i;
-        for (i = 0; i < 4; i++) {
-            fn_8019EB14(arg0_raw, *(u16 *)(p + 4) + i);
+    if (*(u16 *)(node + 4) != 0) {
+        s32 child;
+        for (child = 0; child < 4; child++) {
+            fn_8019EB14(baseRaw, *(u16 *)(node + 4) + child);
         }
     }
 }
