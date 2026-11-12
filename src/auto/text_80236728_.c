@@ -88,9 +88,9 @@ void fn_80236774(void) {
 }
 
 extern char *fn_80237C40(void);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80236780(void) {
-    char *p; // v1
+    char *p;
     if (lbl_8055F0BC == 0) {
         p = fn_80237C40();
         lbl_8055F0BC = p;
@@ -114,7 +114,6 @@ void fn_80236780(void) {
     lbl_8055F0B4 = 0;
     lbl_8055F0B8 = 0;
 }
-#pragma scheduling on
 extern void fn_80237D00(void *);
 void fn_80236848(void) {
     QueueNode_80236848 *end = (QueueNode_80236848 *)lbl_8055F0C0;
@@ -738,22 +737,22 @@ int arg0; void *arg1; double arg2;
 extern int stricmp(const char *, const char *);
 extern char lbl_8034094C[];
 extern void *fn_801284F8(int, char *);
-  char *fn_80237C40(void)
-  {
-    char *p = fn_801284F8(0x34, lbl_8034094C);
-  int *new_var;
-  int i;
-  for (i = 0; i < 0x21; i++)
-  {
-    p[i] = 0;
-  }
+char *fn_80237C40(void) {
+    /* Allocate and initialize a 0x34-byte AnimeSetStack node. */
+    char *node = fn_801284F8(0x34, lbl_8034094C);
+    int *field24;
+    int index;
 
-  *((int *) (p + 0x28)) = 0;
-  *((int *) (p + 0x2c)) = 0;
-      new_var = (int *) (p + 0x24);
-    *new_var = 0;
-    return p;
-  }
+    for (index = 0; index < 0x21; index++) {
+        node[index] = 0;
+    }
+
+    *((int *)(node + 0x28)) = 0;
+    *((int *)(node + 0x2c)) = 0;
+    field24 = (int *)(node + 0x24);
+    *field24 = 0;
+    return node;
+}
   
   void fn_80128668(void*);
 #pragma push
