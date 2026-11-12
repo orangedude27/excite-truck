@@ -1282,9 +1282,10 @@ found:
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_801FEEC0(void *arg0, int arg1, int arg2, int arg3) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    int end = arg2 + 0x2C;
+/* Lazily create the DroneManager object for this slot, register it, and update its active range. */
+extern "C" void fn_801FEEC0(void *slot, int context, int start, int unused) {
+    void *obj = *(void **)((char *)slot + 4);
+    int end = start + 0x2C;
     if (obj == 0) {
         obj = fn_801284F8(0x14CC, lbl_8033B86C);
         if (obj != 0) {
@@ -1293,10 +1294,10 @@ extern "C" void fn_801FEEC0(void *arg0, int arg1, int arg2, int arg3) {
             *(int *)((char *)obj + 0x1004) = 0;
             fn_801FF6A4((char *)obj + 0x1008);
         }
-        *(void **)((char *)arg0 + 4) = obj;
-        fn_802CD320(arg1, obj);
+        *(void **)((char *)slot + 4) = obj;
+        fn_802CD320(context, obj);
     }
-    fn_801FF2B8(*(void **)((char *)arg0 + 4), arg2, end);
+    fn_801FF2B8(*(void **)((char *)slot + 4), start, end);
 }
 #pragma pop
 extern "C" void fn_801FEF80(void* arg0) {
