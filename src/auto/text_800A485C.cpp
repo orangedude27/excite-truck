@@ -47,6 +47,11 @@ struct Fn800D3C44Str {
     char msg1b4[0x2c];
     char msg1e0[0x20];
 };
+struct Fn800C6774Msgs {
+    char file[0x4C];
+    char msg4C[0x34];
+    char msg80[1];
+};
 struct Fn800D3B40Str {
     char file[0x134];
     char msg134[0x30];
@@ -17749,10 +17754,9 @@ extern "C" void *fn_800ECAEC(void *);
 extern "C" s32 fn_800ECB90(void *, s32);
 extern "C" void fn_800CEF60(void *, void *, s32);
 extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
-    const char *file = (const char *)lbl_8031D840;
+    char *file = (char *)lbl_8031D840;
     void *base;
     void *block;
-
     MEMInitAllocatorForFrmHeap((MEMAllocator *)lbl_804075F0,
                                MEMCreateFrmHeapEx(arg1, arg2, 0), 0x20);
     base = lbl_8055DD98;
@@ -17769,10 +17773,10 @@ extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
         *(void **)((u8 *)base + 0x5C8) = block;
     }
     if (*(void * volatile *)((u8 *)base + 0x5C8) == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, (s32)0xEFC, file + 0x4C);
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, (s32)0xEFC, file + 0x4C);
     }
     if (fn_800ECB90(*(void * volatile *)((u8 *)base + 0x5C8), arg0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, (s32)0xF01, file + 0x80);
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, (s32)0xF01, file + 0x80);
     }
     fn_800CEF60(base, *(void * volatile *)((u8 *)base + 0x5C8), 0);
 }
@@ -19934,7 +19938,6 @@ extern "C" u8 fn_800D3840(s32 arg0) {
     u32 end;
     s32 temp_r4;
     u32 temp_r5;
-    u32 sum;
     temp_r5 = (u32)arg0 & 0x7FFFFFFF;
     var_r29 = temp_r5 - lbl_805597E8;
     if (temp_r5 >= lbl_8055DDD0)
@@ -19943,11 +19946,8 @@ extern "C" u8 fn_800D3840(s32 arg0) {
         temp_r4 = temp_r5 & 0xFFFFFFE0;
         lbl_805597E8 = temp_r4;
         var_r29 = temp_r5 - temp_r4;
-        var_r31 = 0x200;
-        sum = (u32)(temp_r4 + 0x200);
         end = lbl_8055DDD0;
-        if (sum >= end)
-            var_r31 = (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
+        var_r31 = ((u32)(temp_r4 + 0x200) >= end) ? (s32)((end - temp_r4 + 0x1F) & 0xFFFFFFE0) : 0x200;
         temp_r28 = OSEnableInterrupts();
         temp_r31 = DVDReadAsyncPrio((void *)lbl_80407E00, (void *)lbl_80407C00, var_r31,
                                     lbl_805597E8, 0, 2);
@@ -20018,15 +20018,10 @@ extern "C" u32 fn_800D3A30(const char *arg0) {
 
 extern "C" u32 fn_800D3B40(const char *str, char *buffer, s32 count, u32 delim) {
     s32 copied = 0;
-    register char *base = (char *)lbl_8031EC50;
-
-    if (str == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x220, base + 0x18C);
-    if (buffer == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x221, base + 0x164);
-    if (lbl_8055DDD8 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x222, base + 0x134);
-
+    const char *base = lbl_8031EC50;
+    if (str == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x220, base + 0x18C);
+    if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x221, base + 0x164);
+    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x222, base + 0x134);
     count--;
     for (;;) {
         const char *p = str;
