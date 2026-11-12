@@ -537,13 +537,22 @@ struct VObj {
 };
 extern "C" char lbl_8032EAD4[];
 extern "C" char lbl_8032EAE0[];
-extern "C" char lbl_8055A030[];
-extern "C" char lbl_8055A038[];
-extern "C" char lbl_8055A040[];
-extern "C" char lbl_8055A044[];
-extern "C" char lbl_8055A048[];
-extern "C" char lbl_8055A050[];
-extern "C" char lbl_8055A054[];
+extern "C" char lbl_8055A030;
+extern "C" char lbl_8055A038;
+extern "C" char lbl_8055A040;
+extern "C" char lbl_8055A044;
+extern "C" char lbl_8055A048;
+extern "C" char lbl_8055A050;
+extern "C" char lbl_8055A054;
+#define lbl_8055A030 (&lbl_8055A030)
+#define lbl_8055A038 (&lbl_8055A038)
+#define lbl_8055A040 (&lbl_8055A040)
+#define lbl_8055A044 (&lbl_8055A044)
+#define lbl_8055A048 (&lbl_8055A048)
+#define lbl_8055A050 (&lbl_8055A050)
+#define lbl_8055A054 (&lbl_8055A054)
+#pragma push
+#pragma processor 750
 extern "C" void fn_80157560(VObj *arg0) {
     VObj *a = (VObj *)fn_80131810(lbl_8032EAD4);
     VObj *b0 = (VObj *)fn_80131808(lbl_8032EAE0);
