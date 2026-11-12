@@ -5963,8 +5963,8 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     void *page;
     void *pageForRead;
     s32 pageIndex;
-    u32 tableType;
-    u32 tableOffset;
+    s32 tableType;
+    s32 tableOffset;
     void *object;
     u32 *output;
     u32 expected;
@@ -5972,7 +5972,8 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     u32 maxValue;
     u32 bound;
     s32 result;
-    tableType = *(u32 *)((u8 *)arg0 + 0x1C);
+    typeTableDecl:;
+    tableType = *(s32 *)((u8 *)arg0 + 0x1C);
     tableOffset = tableType * 0x14;
     expected = arg2;
     *arg3 = -1;
@@ -6813,8 +6814,9 @@ extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     void *object = arg0;
     u32 *output = arg2;
     void *context = arg3;
+    u32 scaled;
     u16 flags = *(u16 *)((u8 *)object + 0x18);
-    u32 scaled = (u32)arg1 * 4;
+    scaled = (u32)arg1 * 4;
     sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
                        (scaled >> *(u8 *)((u8 *)object + 0x20)));
     retry = 1;
@@ -12592,6 +12594,17 @@ struct IosDevice {
     u8 pad2[0xC];
     u32 offset_limit;   /* 0x20 highest byte offset accepted; 0 = no limit */
     u32 state;          /* 0x24 0 closed, 1 card set up, 2 a raw command ran: set up again */
+};
+
+struct SdRequest {
+    u32 flags;          /* 0x00 */
+    void *drv;          /* 0x04 driver/context object */
+    u8 pad8[0xE - 0x8];
+    s16 state;          /* 0x0E request state */
+    u8 pad10[0x14 - 0x10];
+    s32 unk14;          /* 0x14 */
+    u8 pad18[0x2C - 0x18];
+    void *cbData;       /* 0x2C */
 };
 
 /* The SD module takes one MMC/SD command per request through its ioctl 7
