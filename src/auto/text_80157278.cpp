@@ -632,7 +632,7 @@ extern "C" s32 fn_80157278(s32);
 #pragma small_data off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2) {
     struct Tail {
         u8 pad[0x244];
         s32 field26C;
