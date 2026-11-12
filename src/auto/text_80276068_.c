@@ -222,25 +222,31 @@ struct CameraEntry {
 };
 
 #pragma cplusplus on
-extern "C" void fn_80276ACC(void *arg0, int arg1) {
-    struct Iface {
+/* Adds a record for a camera object to the table of CameraEntry records at
+ * lbl_8049FEE0 (lbl_8055F5A0 of them): takes the camera's "name" parameter,
+ * defaultName when it has none, fills the next record from the camera's
+ * parameters and remembers it as the house camera ("house") or the default
+ * camera ("rddefault") one. */
+extern "C" void fn_80276ACC(void *camera, int defaultName) {
+    struct CameraParams {
         virtual void v0();
         virtual void v1();
         virtual void v2();
         virtual void v3();
-        virtual char *GetName(const char *, int);
+        /* the object's parameter called key, or defaultValue when it has none */
+        virtual char *getString(const char *key, int defaultValue);
     };
-    char *name = ((Iface *)arg0)->GetName(&lbl_8055C63C, arg1);
+    char *name = ((CameraParams *)camera)->getString(&lbl_8055C63C /* "name" */, defaultName);
     int i = lbl_8055F5A0;
-    unsigned char *entry = &lbl_8049FEE0 + i * 0x48;
+    struct CameraEntry *entry = (struct CameraEntry *)&lbl_8049FEE0 + i;
     lbl_8055F5A0 = i + 1;
-    fn_80277F84(entry, arg0, i + 1);
-    strncpy((char *)(entry + 0x38), name, 0x10);
-    if (stricmp(name, &lbl_8055C644) == 0) {
+    fn_80277F84(entry, camera, i + 1);
+    strncpy(entry->name, name, 0x10);
+    if (stricmp(name, &lbl_8055C644 /* "house" */) == 0) {
         lbl_8055F59C = (int)entry;
         return;
     }
-    if (stricmp(name, *(char **)&lbl_8055C638) == 0)
+    if (stricmp(name, *(char **)&lbl_8055C638 /* "rddefault" */) == 0)
         lbl_8055F598 = (int)entry;
 }
 #pragma cplusplus reset
