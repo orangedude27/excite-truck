@@ -439,11 +439,12 @@ struct ChunkType {
     int id;
 };
 
-int fn_80292DE8(const char *arg0) {
+int fn_80292DE8(const char *typeName) {
+    /* The three ChunkType rows of lbl_802FA998, copied off to our own frame. */
     int table[6];
     int *src = lbl_802FA998;
     int *dst = table;
-    int *p = table;
+    struct ChunkType *entry = (struct ChunkType *)table;
     unsigned int i = 0;
 
     *dst++ = *src++;
@@ -453,13 +454,13 @@ int fn_80292DE8(const char *arg0) {
     *dst++ = *src++;
     *dst = *src;
     do {
-        if (strcmp(arg0, (const char *)p[0]) == 0) {
-            return *(int *)((char *)table + 4 + (i << 3));
+        if (strcmp(typeName, entry->name) == 0) {
+            return *(int *)((char *)table + 4 + (i << 3)); /* table[i]'s id */
         }
         ++i;
-        p += 2;
+        entry++;
     } while (i < 3);
-    fn_802E317C(lbl_80349208, arg0);
+    fn_802E317C(lbl_80349208, typeName); /* "chunk: invalid type '%s'" */
     return 0;
 }
 
