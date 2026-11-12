@@ -1578,61 +1578,74 @@ void GXInvalidateVtxCache(void) {
 }
 
 void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned int nrm, unsigned int normalize, int postmtx) {
-    extern unsigned int jumptable_80303884[];
-    extern unsigned int jumptable_80303868[];
     unsigned int *data = __GXData;
     unsigned int type = 0;
     unsigned int source = 5;
     unsigned int normalizeFlag = 0;
-    unsigned int value;
-    unsigned int mask;
-    unsigned int shift;
-
-    if (line <= 0x14) {
-        void (*dispatch)(void) = (void (*)(void))jumptable_80303884[line];
-        dispatch();
-        return;
+    switch (line) {
+        case 0: source = 0; normalizeFlag = 1; break;
+        case 1: source = 1; normalizeFlag = 1; break;
+        case 2: source = 3; normalizeFlag = 1; break;
+        case 3: source = 4; normalizeFlag = 1; break;
+        case 4: source = 2; break;
+        case 5: source = 2; break;
+        case 6: source = 5; break;
+        case 7: source = 6; break;
+        case 8: source = 7; break;
+        case 9: source = 8; break;
+        case 10: source = 9; break;
+        case 11: source = 10; break;
+        case 12: source = 11; break;
+        case 13: source = 12; break;
+        case 14: source = 12; break;
+        case 15: source = 12; break;
+        case 16: source = 12; break;
+        case 17: source = 12; break;
+        case 18: source = 12; break;
+        case 19: source = 12; break;
+        case 20: source = 12; break;
+        default: break;
     }
-
-    if (func == 1) {
-        source = 5; normalizeFlag = 0;
-    } else if (func <= 0) {
-        if (func == 0) { source = 5; normalizeFlag = 1; }
-    } else if (func == 10) {
-        source = (line == 0x13) ? 2 : 3;
-        type = 1;
-    } else if (func < 10) {
-        source = 1;
-        normalizeFlag = 1;
-        type = (unsigned int)(func - 2);
+    {
+        unsigned int value;
+        unsigned int mask;
+        if (func == 1) {
+            type = 0; source = 5; normalizeFlag = 0;
+        } else if (func == 0) {
+            type = 0; source = 5; normalizeFlag = 1;
+        } else if (func == 10) {
+            type = 1;
+            source = (line == 0x13) ? 2 : 3;
+        } else if (func < 10 && func > 1) {
+            type = (unsigned int)(func - 2);
+            source = 1; normalizeFlag = 1;
+        }
+        if (func == 1) value = 0x280;
+        else if (func == 0) value = 0x282;
+        else if (func == 10) value = (line == 0x13) ? 0x120 : 0x130;
+        else {
+            value = 0;
+            value |= source << 7;
+            value |= normalizeFlag << 2;
+            value |= (line - 0xC) << 12;
+            value |= (unsigned int)(func - 2) << 15;
+            value |= type << 4;
+        }
+        *(unsigned int *)((char *)data + coord * 4 + 0xC8) = value;
+        mask = 0x10000 << coord;
+        data[0x5FC / 4] |= mask;
+        *(unsigned int *)((char *)data + coord * 4 + 0xE8) = ((normalize & 1) << 8) | ((postmtx - 0x40) & 0x3F);
     }
-
-    value = source << 7;
-    value |= normalizeFlag << 2;
-    value |= (line - 0xC) << 12;
-    value |= (func - 2) << 15;
-    if (func == 1) value = 0x280;
-    else if (func == 0) value = 0x282;
-    else if (func == 10) value = (line == 0x13) ? 0x120 : 0x130;
-    *(unsigned int *)((char *)data + coord * 4 + 0xC8) = value;
-
-    mask = 0x10000 << coord;
-    data[0x5FC / 4] |= mask;
-    *(unsigned int *)((char *)data + coord * 4 + 0xE8) = ((normalize & 1) << 8) | ((postmtx - 0x40) & 0x3F);
-
-    if (coord > 6) {
-        data[0x84 / 4] = (data[0x84 / 4] & 0xFF03FFFF) | ((nrm & 0x3F) << 18);
-        data[0x5FC / 4] |= 0x4000000;
-        return;
-    }
-    value = jumptable_80303868[coord];
-    (void)value;
-    shift = coord * 6;
-    if (coord < 4) {
-        data[0x80 / 4] = (data[0x80 / 4] & ~(0x3Fu << (26 - shift))) | ((nrm & 0x3F) << (26 - shift));
-    } else {
-        shift = (coord - 4) * 6;
-        data[0x84 / 4] = (data[0x84 / 4] & ~(0x3Fu << (26 - shift))) | ((nrm & 0x3F) << (26 - shift));
+    switch (coord) {
+        case 0: data[0x80/4] = (data[0x80/4] & 0xFC000000) | ((nrm & 0x3F) << 26); break;
+        case 1: data[0x80/4] = (data[0x80/4] & 0x03FFFFFF) | ((nrm & 0x3F) << 20); break;
+        case 2: data[0x80/4] = (data[0x80/4] & 0xFFFFC000) | ((nrm & 0x3F) << 14); break;
+        case 3: data[0x80/4] = (data[0x80/4] & 0xFFFFFF00) | ((nrm & 0x3F) << 8); break;
+        case 4: data[0x84/4] = (data[0x84/4] & 0xFC000000) | ((nrm & 0x3F) << 26); break;
+        case 5: data[0x84/4] = (data[0x84/4] & 0x03FFFFFF) | ((nrm & 0x3F) << 20); break;
+        case 6: data[0x84/4] = (data[0x84/4] & 0xFFFFC000) | ((nrm & 0x3F) << 14); break;
+        case 7: data[0x84/4] = (data[0x84/4] & 0xFFFFFF00) | ((nrm & 0x3F) << 8); break;
+        default: data[0x84/4] = (data[0x84/4] & 0xFF03FFFF) | ((nrm & 0x3F) << 18); break;
     }
     data[0x5FC / 4] |= 0x4000000;
 }
@@ -2168,11 +2181,11 @@ void __GXSetDirtyState(void) {
     unsigned int *data = __GXData;
     unsigned int dirty = data[0x5FC / 4];
     unsigned int r4;
-    unsigned int reg;
-    unsigned int count1;
-    unsigned int count2;
     u8 *ptr1;
+    unsigned int count1;
+    unsigned int reg;
     u8 *ptr2;
+    unsigned int count2;
 
     if (dirty & 1) {
         __GXSetSUTexRegs();
@@ -2230,15 +2243,15 @@ void __GXSetDirtyState(void) {
             }
             ptr1 = (u8*)data;
             count1 = (count1 >> 12) & 0xF;
-            while (count1 != 0) {
+            while (count1) {
                 if (count1 & 1) {
                     WGPIPE.c = 0x10;
                     WGPIPE.i = reg;
                     WGPIPE.i = *(u32*)(ptr1 + 0xB8);
                 }
-                count1 >>= 1;
                 ptr1 += 4;
-                reg++;
+                count1 >>= 1;
+                reg += 1;
             }
         }
         count2 = dirty & 0x02FF0000;
@@ -2536,18 +2549,13 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
     data[0x244 / 4] = dst.value;
 }
 
-void GXSetDispCopyDst(u16 value) {
-    register union {
-        u32 reg;
-        struct {
-            u32 constant : 8;
-            u32 pad : 14;
-            u32 arg : 10;
-        } fields;
-    } data = {0};
-    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
-    data.fields.constant = 0x4D;
-    __GXData[0x238 / 4] = data.reg;
+void GXSetDispCopyDst(s32 value) {
+    unsigned int *gx = __GXData;
+    unsigned int arg = (unsigned int)(((value << 1) & 0xFFFE) >> 5);
+    unsigned int reg = 0;
+    reg = __rlwimi(reg, arg, 0, 22, 31);
+    reg = __rlwimi(reg, 0x4D, 24, 0, 7);
+    gx[0x238 / 4] = reg;
 }
 
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
@@ -3266,6 +3274,71 @@ void GXSetChanMatColor_Internal(s32 type, void *color) {
 
 void GXSetNumChans(s32 num) { union { unsigned int reg; struct { unsigned int pad0 : 25; unsigned int chans : 3; unsigned int pad1 : 4; } fields; } u; u.reg = __GXData[0x254 / 4]; u.fields.chans = num; __GXData[0x254 / 4] = u.reg; __GXData[0x5FC / 4] |= 0x01000004; }
 
+// The argument types of GXSetChanCtrl, from include/revolution/GX/GXTypes.h.
+typedef enum _GXChannelID {
+    GX_COLOR0,   // 0 color channel 0
+    GX_COLOR1,   // 1 color channel 1
+    GX_ALPHA0,   // 2 alpha channel 0
+    GX_ALPHA1,   // 3 alpha channel 1
+    GX_COLOR0A0, // 4 color 0 and its alpha: ALPHA0CNTRL follows it
+    GX_COLOR1A1, // 5 color 1 and its alpha: ALPHA1CNTRL follows it
+
+    GX_COLOR_NULL = 255
+} GXChannelID;
+
+// Where a channel's color comes from: the XF register or the vertex.
+typedef enum _GXColorSrc { GX_SRC_REG, GX_SRC_VTX } GXColorSrc;
+
+typedef enum _GXLightID {
+    GX_LIGHT0 = (1 << 0),
+    GX_LIGHT1 = (1 << 1),
+    GX_LIGHT2 = (1 << 2),
+    GX_LIGHT3 = (1 << 3), // the four low ones go to LMASKLO,
+    GX_LIGHT4 = (1 << 4), // the four high ones to LMASKHI
+    GX_LIGHT5 = (1 << 5),
+    GX_LIGHT6 = (1 << 6),
+    GX_LIGHT7 = (1 << 7),
+
+    GX_MAX_LIGHT = (1 << 8),
+    GX_LIGHT_NULL = 0
+} GXLightID;
+
+typedef enum _GXDiffuseFn { GX_DF_NONE, GX_DF_SIGN, GX_DF_CLAMP } GXDiffuseFn;
+
+// Counted the other way round from the names: specular is 0, "no attenuation"
+// is the last of the three.
+typedef enum _GXAttnFn { GX_AF_SPEC, GX_AF_SPOT, GX_AF_NONE } GXAttnFn;
+
+// __GXData's channel part; GXVtxDescData above names 0x5FC the same way.
+#define XF_COLOR0CNTRL 0xB8 // COLOR0CNTRL..COLOR3CNTRL, one word per channel
+#define XF_ALPHA0CNTRL 0xC0 // ALPHA0CNTRL
+#define XF_ALPHA1CNTRL 0xC4 // ALPHA1CNTRL
+#define XF_DIRTY_STATE 0x5FC
+
+// The dirty bits of GXDirtyFlag (GXTypes.h) for the four channel words.
+#define DIRTY_CHAN_COLOR0 0x1000 // 1 << 12
+#define DIRTY_CHAN_COLOR1 0x2000 // 1 << 13
+#define DIRTY_CHAN_ALPHA0 0x4000 // 1 << 14
+#define DIRTY_CHAN_ALPHA1 0x8000 // 1 << 15
+
+// One XF COLORnCNTRL / ALPHAnCNTRL word. The bit numbers are the hardware's,
+// counted from the MSB; see COLOR0CNTRL in
+// include/revolution/GX/GXHardwareXF.h.
+typedef union _GXChanCtrl {
+    u32 value;
+    struct {
+        u32 pad0 : 17;       // 00-16
+        u32 lightMaskHi : 4; // 17-20 GX_LIGHT4..GX_LIGHT7
+        u32 attnSelect : 1;  // 21    0: specular, 1: spot attenuation
+        u32 attnEnable : 1;  // 22    attenuation used at all
+        u32 diffuse : 2;     // 23-24 GXDiffuseFn
+        u32 ambSrc : 1;      // 25    ambient: GXColorSrc
+        u32 lightMaskLo : 4; // 26-29 GX_LIGHT0..GX_LIGHT3
+        u32 light : 1;       // 30    the channel is lit
+        u32 matSrc : 1;      // 31    material: GXColorSrc
+    } f;
+} GXChanCtrl;
+
 void GXSetChanCtrl(s32 chan, s32 enable, s32 matColor, s32 ambColor, s32 lightMask, s32 diffFn, s32 attnFn) {
     union {
         unsigned int value;
@@ -3407,11 +3480,13 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tilesX
     *tileBlocks = ((int)format == 6 || (int)format == 0x16) ? 2 : 1;
 }
 
-void GXInitTexObj(register void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap) {
-    u32 *p = (u32 *)obj;
+void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap) {
     u32 mode, image0, image3;
     u32 level;
     int rowShift, colShift;
+    u32 *p = (u32 *)obj;
+    u8 *b = (u8 *)obj;
+    u32 fmt = format;
     memset(obj, 0, 0x20);
     mode = p[0];
     mode = __rlwimi(mode, wrapS, 0, 30, 31);
@@ -3419,8 +3494,8 @@ void GXInitTexObj(register void *obj, void *image, unsigned short width, unsigne
     mode |= 0x10;
     p[0] = mode;
     if (mipmap) {
-        ((u8 *)obj)[0x1f] |= 1;
-        if ((u32)(format - 8) <= 2) {
+        b[0x1f] |= 1;
+        if (fmt - 8 <= 2) {
             mode = __rlwimi(mode, 5, 5, 24, 26); p[0] = mode;
         } else {
             mode = __rlwimi(mode, 6, 5, 24, 26); p[0] = mode;
@@ -3435,28 +3510,28 @@ void GXInitTexObj(register void *obj, void *image, unsigned short width, unsigne
     image0 = p[2];
     image0 = __rlwimi(image0, width - 1, 0, 22, 31);
     image0 = __rlwimi(image0, height - 1, 10, 12, 21);
-    p[5] = format;
+    p[5] = fmt;
     image3 = p[3];
     image3 = __rlwimi(image3, (u32)image, 27, 8, 31);
-    image0 = __rlwimi(image0, format, 20, 8, 11);
+    image0 = __rlwimi(image0, fmt, 20, 8, 11);
     p[3] = image3;
     p[2] = image0;
-    switch ((u32)format & 15) {
+    switch (fmt & 15) {
     case 0: case 8:
-        ((u8 *)obj)[0x1e] = 1; rowShift = 3; colShift = 3; break;
+        b[0x1e] = 1; rowShift = 3; colShift = 3; break;
     case 1: case 2: case 9:
-        ((u8 *)obj)[0x1e] = 2; rowShift = 3; colShift = 2; break;
+        b[0x1e] = 2; rowShift = 3; colShift = 2; break;
     case 3: case 4: case 5: case 10:
-        ((u8 *)obj)[0x1e] = 2; rowShift = 2; colShift = 2; break;
+        b[0x1e] = 2; rowShift = 2; colShift = 2; break;
     case 6:
-        ((u8 *)obj)[0x1e] = 3; rowShift = 2; colShift = 2; break;
+        b[0x1e] = 3; rowShift = 2; colShift = 2; break;
     case 14:
-        ((u8 *)obj)[0x1e] = 0; rowShift = 3; colShift = 3; break;
+        b[0x1e] = 0; rowShift = 3; colShift = 3; break;
     default:
-        ((u8 *)obj)[0x1e] = 2; rowShift = 2; colShift = 2; break;
+        b[0x1e] = 2; rowShift = 2; colShift = 2; break;
     }
-    ((u8 *)obj)[0x1f] |= 2;
-    *(u16 *)((u8 *)obj + 0x1c) = (((width + (1 << rowShift) - 1) >> rowShift) * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
+    b[0x1f] |= 2;
+    *(u16 *)(b + 0x1c) = (((width + (1 << rowShift) - 1) >> rowShift) * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
 }
 
 extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
@@ -4598,18 +4673,18 @@ void GXSetNumTevStages(u8 count) {
 }
 
 typedef u32 GXFogType;
-void GXSetFog(GXFogType type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
+void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
     f32 a, c;
     u32 a_bits, c_bits;
 
     u32 fogColorReg = 0;
     u32 fogParamReg0 = 0;
     u32 fogParamReg1 = 0;
-    u32 fogParamReg2 = 0;
+    register u32 fogParamReg2 = 0;
     u32 fogParamReg3 = 0;
 
     u32 fsel = GX_FOG_GET_FSEL(type);
-    BOOL ortho = GX_FOG_GET_PROJ(type);
+    int ortho = GX_FOG_GET_PROJ(type);
 
     if (ortho) {
         if (far == near || end == start) {
@@ -4636,14 +4711,14 @@ void GXSetFog(GXFogType type, GXColor color, f32 start, f32 end, f32 near, f32 f
         expB = 0;
         while (f25 > 1.0l) {
             f25 /= 2.0f;
-            expB++;
+            ++expB;
         }
         while (f25 > 0.0f && f25 < 0.5l) {
             f25 *= 2.0f;
             expB--;
         }
 
-        a = f28 / (1 << expB + 1);
+        a = f28 / (1 << (u32)expB + 1);
         magB = 8388638.0f * f25;
         shiftB = expB + 1;
         c = f24;
@@ -4669,8 +4744,8 @@ void GXSetFog(GXFogType type, GXColor color, f32 start, f32 end, f32 near, f32 f
     GX_BP_SET_FOGPARAM3_FSEL(fogParamReg3, fsel);
     GX_BP_SET_OPCODE(fogParamReg3, GX_BP_REG_FOGPARAM3);
 
-    GX_BP_SET_FOGCOLOR_RGB(fogColorReg, *(u32*)&color >> 8);
     GX_BP_SET_OPCODE(fogColorReg, GX_BP_REG_FOGCOLOR);
+    GX_BP_SET_FOGCOLOR_RGB(fogColorReg, *(u32*)&color >> 8);
 
     GX_BP_LOAD_REG(fogParamReg0);
     GX_BP_LOAD_REG(fogParamReg1);
