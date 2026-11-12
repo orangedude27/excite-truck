@@ -12,8 +12,6 @@ struct DummyVec2 {
 
 class DummyItem {
 public:
-    virtual void _dtor0();
-    virtual void _dtor1();
     virtual void v0();
     virtual s32 v1(const char *name);
     virtual void v2();
@@ -1203,16 +1201,19 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     DummyItem *item;
     s32 i;
     s32 id;
+    f32 zero;
 
     sscanf(arg1->getName(), lbl_8055A1C0, &sp8);
     id = sp8;
 
     {
         DummyEntry *entry = &arg2->entries[arg2->entryCount++];
+        zero = lbl_80561924;
         entry->byte1C = 0;
-        entry->f8 = lbl_80561924;
-        entry->fC = lbl_80561924;
-        entry->f10 = lbl_80561924;
+        i = 0;
+        entry->f8 = zero;
+        entry->fC = zero;
+        entry->f10 = zero;
         entry->recordStart = arg2->recordCount;
         entry->recordCount = 0;
         entry->byte1D = 0;
@@ -1221,7 +1222,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         arg2->flag1E158 = 1;
     }
 
-    for (i = 0; (item = arg1->getItem(i)) != 0; i++) {
+    for (; (item = arg1->getItem(i)) != 0; i++) {
         f32 hit = item->getHit(lbl_8055A1C8);
         DummyVec2 loc = item->getLoc(lbl_8055A1CC);
         s32 count = arg2->recordCount;
@@ -1229,12 +1230,12 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         DummyRecord *rec = &arg2->records[count];
         rec->obj = 0;
         rec->obj = (DummyRecordObj *)fn_80167874(1);
-        rec->x = *(f32 *)&loc.x;
-        rec->y = lbl_80561924;
-        rec->z = *(f32 *)&loc.y;
+        rec->x = loc.x;
+        rec->y = zero;
+        rec->z = loc.y;
         rec->hit = hit;
         fn_801E9E30(0, &rec->x);
-        rec->y = rec->y + rec->obj->f18 + rec->hit;
+        rec->y += rec->obj->f18 + rec->hit;
         rec->flag = 0;
         fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
         *(s32 *)((u8 *)fn_80167874(1) + 0x1C) += 1;
