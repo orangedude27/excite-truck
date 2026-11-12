@@ -188,6 +188,7 @@ void fn_8001BC28(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma small_data off
+/* Initialize a resource/track record: store ids, resolve backing data and count, and cache a derived value. */
 void *fn_8001BC38(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     u8 *base = (u8 *)arg0;
     s32 count;
