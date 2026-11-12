@@ -422,8 +422,8 @@ s32 fn_8001C200(const char *arg0, const char *arg1) {
 }
 #pragma dont_inline on
 s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
-    u32 key = *(u32 *)arg0;
     s32 result = 0;
+    u32 key = *(u32 *)arg0;
     if (key == arg1 && fn_8001C200(*(const char **)((u8 *)arg0 + 4), arg2) != 0) {
         result = 1;
     }
@@ -533,16 +533,14 @@ extern s32 fn_802E317C(const char *);
 #pragma scheduling on
 s32 *fn_8001C4E0(s32 arg0) {
     s32 *entry = lbl_802ED7B8;
-    for (;;) {
-        if (*entry == arg0) {
+    s32 v;
+    for (; (v = *entry) != 0; entry += 3) {
+        if (v == arg0) {
             return entry;
         }
-        entry += 3;
-        if (*entry == 0) {
-            ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD85C, arg0);
-            return 0;
-        }
     }
+    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD85C, arg0);
+    return 0;
 }
 
 extern const char lbl_802FD894[];
@@ -619,6 +617,82 @@ void fn_8001C714(void) {
     fn_80131234(*(s32 *)((u8 *)((s32 *(*)(void))fn_8001C4E0)() + 8));
 }
 
+#pragma push
+#pragma processor 750
+s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    extern char lbl_802FD6D8[];
+    extern char lbl_80558CA4;
+    extern char lbl_80558CAC;
+    extern char lbl_80558CB4;
+    extern char lbl_80558CBC;
+    extern char lbl_80558CC4;
+    extern char lbl_80558CCC;
+    extern int fn_80130978();
+    extern int fn_801308E4();
+    extern int fn_80131234();
+    extern int fn_801345D8();
+    extern int fn_800122B4();
+    extern s32 fn_802E317C(const char *);
+    char *base = lbl_802FD6D8;
+    s32 a3 = arg3;
+    s32 a2 = arg2;
+    s32 a1 = arg1;
+    s32 sp8 = arg1;
+    switch (arg0 & 0x300) {
+    case 0x100: {
+        f32 f = *(f32 *)&sp8;
+        switch (arg0 & 0x1FC00) {
+        case 0x400:
+            ((void (*)(void *, s32, f32))fn_80130978)((void *)a2, a3, f);
+            break;
+        case 0x800:
+            ((void (*)(void *, s32, s32, f32))fn_801308E4)((void *)a2, a3, 1, f);
+            break;
+        default:
+            ((void (*)(const char *, ...))fn_802E317C)(base + 0x218);
+        case 0x4000:
+            ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CA4, f);
+            break;
+        }
+        break;
+    }
+    case 0x200: {
+        switch (arg0 & 0x1FC00) {
+        case 0x1000: {
+            char *sfx = &lbl_80558CBC;
+            if (a1 == 1) sfx = &lbl_80558CB4;
+            ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CAC, a1, sfx);
+            break;
+        }
+        case 0x2000:
+            ((s32 (*)(s32, s32))fn_800122B4)(a1, a2);
+            break;
+        case 0x8000: {
+            s32 v = ((s32 (*)(void *))fn_80131234)(base + 0x260);
+            ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CC4, a1 * 0x168, (void *)(v + 1));
+            break;
+        }
+        case 0x10000: {
+            s32 v = ((s32 (*)(void *))fn_80131234)(base + 0x278);
+            ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CAC, a1, (void *)(v + 1));
+            break;
+        }
+        default:
+            ((void (*)(const char *, ...))fn_802E317C)(base + 0x294);
+        case 0x4000:
+            ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CCC, a1);
+            break;
+        }
+        break;
+    }
+    default:
+        ((void (*)(const char *, ...))fn_802E317C)(base + 0x2D8, arg0 & 0x300);
+        ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, base + 0x2FC);
+        break;
+    }
+    return a2;
+}
+#pragma pop
 extern const char lbl_802FD9E8[];
 int fn_8001C960(u32 arg0) {
     volatile s32 *entry;
