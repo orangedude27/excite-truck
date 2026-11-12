@@ -997,27 +997,28 @@ extern "C" void *fn_80146490(void *arg0) {
     return arg0;
 }
 
-extern "C" void *fn_801464DC(void *arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        void *p;
-        *(void **)arg0 = &lbl_8032D1E8;
-        fn_80145DD8(arg0);
-        p = *(void **)((u8 *)arg0 + 0x28);
-        if (p != NULL) {
-            fn_80131818(p);
-            *(void **)((u8 *)arg0 + 0x28) = NULL;
+extern "C" void *fn_801464DC(void *obj, s32 shouldDelete) {
+    /* Destructor-like cleanup for object with vtable lbl_8032D1E8: unregister, release member at 0x28, destroy subobjects, optionally delete self. */
+    if (obj != NULL) {
+        void *member28;
+        *(void **)obj = &lbl_8032D1E8;
+        fn_80145DD8(obj);
+        member28 = *(void **)((u8 *)obj + 0x28);
+        if (member28 != NULL) {
+            fn_80131818(member28);
+            *(void **)((u8 *)obj + 0x28) = NULL;
         }
-        fn_80146584((u8 *)arg0 + 0x4C);
-        fn_801465C8((u8 *)arg0 + 0x48);
-        fn_80146638((u8 *)arg0 + 0x2C);
-        fn_801466B4((u8 *)arg0 + 0x30);
-        fn_80146730((u8 *)arg0 + 0x34);
-        fn_801467AC((u8 *)arg0 + 0x3C);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        fn_80146584((u8 *)obj + 0x4C);
+        fn_801465C8((u8 *)obj + 0x48);
+        fn_80146638((u8 *)obj + 0x2C);
+        fn_801466B4((u8 *)obj + 0x30);
+        fn_80146730((u8 *)obj + 0x34);
+        fn_801467AC((u8 *)obj + 0x3C);
+        if (shouldDelete > 0) {
+            fn_80128668(obj);
         }
     }
-    return arg0;
+    return obj;
 }
 
 extern "C" void fn_80146584(void *arg0) {
