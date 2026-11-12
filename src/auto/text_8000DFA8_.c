@@ -1222,11 +1222,13 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     s32 idx;
     Unk80350F88 *base;
     volatile Unk80350F88Entry *entry;
+    char *n;
+    n = name;
     base = (Unk80350F88 *)&lbl_80350F88;
     idx = base->unk_0x288;
     base->unk_0x288 = idx + 1;
     entry = &base->entries[idx];
-    strncpy((char *)entry->name, name, 0x28);
+    strncpy((char *)entry->name, n, 0x28);
     entry->unk_0x28 = 0;
     entry->unk_0x2C = a2;
     entry->unk_0x30 = a3;
@@ -1317,9 +1319,11 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
     Unk80350F88 *base;
     volatile Unk80350F88Entry *entry;
-    char *n = name;
+    char *n;
+
     base = (Unk80350F88 *)&lbl_80350F88;
     idx = base->unk_0x288;
+    n = name;
     base->unk_0x288 = idx + 1;
     entry = &base->entries[idx];
     strncpy((char *)entry->name, n, 0x28);
@@ -1881,17 +1885,13 @@ void fn_80012158(void) {
 void fn_800121A4(void) {
     u8 *obj;
     s32 *base;
-    s32 n;
     base = (s32 *)lbl_8055D4AC;
-    obj = ((u8 **)base)[base[0] + 4];
+    obj = *(u8 **)((u8 *)base + base[0] * 4 + 0x10);
     if (obj == 0) return;
     obj[0x49] = 1;
     obj[0x4B] = 0;
     obj[0x4A] = 0;
-    n = base[0];
-    n++;
-    base[0] = n;
-    if (n < 3) return;
+    if (++base[0] < 3) return;
     base[0] = 0;
 }
 
@@ -1902,16 +1902,16 @@ __declspec(section ".data") extern char lbl_802FC580[];
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
 void fn_800121F0(void) {
-    f32 sp8;
+    f32 sp8 = lbl_80560264;
     s32 *var_r3;
-    s32 var_ctr;
+    s32 i;
     register f32 value;
-    void *temp_r4 = 0;
-    sp8 = lbl_80560264;
+    void *temp_r4;
+    void *temp_r4_2;
+    void *temp_r4_3;
     var_r3 = (s32 *)lbl_8055D4AC;
     fn_801331C4(4, (void *)lbl_802FC580, &sp8);
-    var_ctr = 2;
-    do {
+    for (i = 0; i < 2; i++) {
         temp_r4 = (void *)var_r3[1];
         if (temp_r4 != 0) {
             value = sp8;
@@ -1920,25 +1920,24 @@ void fn_800121F0(void) {
                 *(f32 *)((u8 *)temp_r4 + 8) = value;
             }
         }
-        temp_r4 = (void *)var_r3[2];
-        if (temp_r4 != 0) {
+        temp_r4_2 = (void *)var_r3[2];
+        if (temp_r4_2 != 0) {
             value = sp8;
-            if (value != *(f32 *)((u8 *)temp_r4 + 8)) {
-                *((u8 *)temp_r4 + 0x4D) = 1;
-                *(f32 *)((u8 *)temp_r4 + 8) = value;
+            if (value != *(f32 *)((u8 *)temp_r4_2 + 8)) {
+                *((u8 *)temp_r4_2 + 0x4D) = 1;
+                *(f32 *)((u8 *)temp_r4_2 + 8) = value;
             }
         }
-        temp_r4 = (void *)var_r3[3];
-        if (temp_r4 != 0) {
+        temp_r4_3 = (void *)var_r3[3];
+        if (temp_r4_3 != 0) {
             value = sp8;
-            if (value != *(f32 *)((u8 *)temp_r4 + 8)) {
-                *((u8 *)temp_r4 + 0x4D) = 1;
-                *(f32 *)((u8 *)temp_r4 + 8) = value;
+            if (value != *(f32 *)((u8 *)temp_r4_3 + 8)) {
+                *((u8 *)temp_r4_3 + 0x4D) = 1;
+                *(f32 *)((u8 *)temp_r4_3 + 8) = value;
             }
         }
         var_r3 += 3;
-        var_ctr -= 1;
-    } while (var_ctr != 0);
+    }
 }
 #pragma scheduling on
 #pragma optimize_for_size reset
