@@ -2852,18 +2852,19 @@ next_slot:
 }
 #pragma pop
 
-extern "C" s32 fn_8012EFB0(void *arg0, void *arg1, s32 arg2) {
-    s32 pos = *(s32 *)((u8 *)arg0 + 0x28);
+/* Reads bytes from the current buffered stream chunk if available; advances read position on success. */
+extern "C" s32 fn_8012EFB0(void *stream, void *dst, s32 length) {
+    s32 pos = *(s32 *)((u8 *)stream + 0x28);
     s32 i;
-    if (pos + arg2 >= *(s32 *)((u8 *)arg0 + 0x24)) return 0;
+    if (pos + length >= *(s32 *)((u8 *)stream + 0x24)) return 0;
     for (i = 0; i < 2; i++) {
-        u8 *p = (u8 *)arg0 + 4 + i * 0x10;
+        u8 *slot = (u8 *)stream + 4 + i * 0x10;
         s32 start;
-        if (*(s32 *)(p + 0xC) != 2) continue;
-        start = *(s32 *)(p + 8);
-        if (pos >= start && pos < start + *(s32 *)arg0) {
-            memcpy(arg1, (u8 *)*(void **)p + (pos - start), arg2);
-            *(s32 *)((u8 *)arg0 + 0x28) += arg2;
+        if (*(s32 *)(slot + 0xC) != 2) continue;
+        start = *(s32 *)(slot + 8);
+        if (pos >= start && pos < start + *(s32 *)stream) {
+            memcpy(dst, (u8 *)*(void **)slot + (pos - start), length);
+            *(s32 *)((u8 *)stream + 0x28) += length;
             return 1;
         }
     }
