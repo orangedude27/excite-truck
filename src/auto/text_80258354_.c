@@ -371,14 +371,17 @@ found:
 
 #pragma push
 #pragma scheduling on
-void *fn_80258B60(void *arg0, const char *arg1) {
+// Find an entry by name in a table of 0x48-byte records (array at table + 4,
+// count at table + 8) and return a pointer to the field at +0x20 in the
+// matching record, or 0 if not found.
+void *fn_80258B60(void *table, const char *name) {
     int index = 0;
     int offset = 0;
-    int len;
+    int compareResult;
     goto check;
 loop:
-    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
-    switch (((unsigned int)__cntlzw(len) >> 5)) {
+    compareResult = stricmp((const char *)(*(unsigned int *)((char *)table + 4) + offset), name);
+    switch (((unsigned int)__cntlzw(compareResult) >> 5)) {
     case 0:
         goto increment;
     default:
@@ -388,14 +391,14 @@ increment:
     offset += 0x48;
     index++;
 check:
-    if (index < *(int *)((char *)arg0 + 8))
+    if (index < *(int *)((char *)table + 8))
         goto loop;
     index = -1;
 found:
     if (index >= 0) {
-        int byte_offset = index;
-        byte_offset *= 0x48;
-        return (void *)((char *)*(unsigned int *)((char *)arg0 + 4) + byte_offset + 0x20);
+        int byteOffset = index;
+        byteOffset *= 0x48;
+        return (void *)((char *)*(unsigned int *)((char *)table + 4) + byteOffset + 0x20);
     }
     return 0;
 }
