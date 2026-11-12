@@ -272,21 +272,23 @@ extern "C" s32 MEMAllocFromAllocator(s32, s32);
 extern "C" const char lbl_8031F5A8[];
 extern "C" const char lbl_8031F5B8[];
 extern "C" const char lbl_8031F5E8[];
-extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg1) {
-    if (arg1 > 8)
+extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(nw4hbm::lyt::detail::TexCoordAry *self, u8 count) {
+    /* Ensure capacity for at least count texture-coordinate entries (max 8, 0x20 bytes each).
+     * If current capacity is insufficient, frees any existing buffer and allocates a new one. */
+    if (count > 8)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F5A8, 0x5D, lbl_8031F5B8);
-    if (*(u8*)arg0 < arg1) {
-        void *p = *(void**)((u8*)arg0 + 4);
+    if (self->mSize < count) {
+        nw4hbm::lyt::detail::TexCoord *p = self->mpTexCoord;
         if (p != 0) {
             MEMFreeToAllocator(lbl_8055DDF0, p);
-            *(void**)((u8*)arg0 + 4) = 0;
-            *(u8*)arg0 = 0;
-            *((u8*)arg0 + 1) = 0;
+            self->mpTexCoord = 0;
+            self->mSize = 0;
+            self->mTop = 0;
         }
-        s32 newp = MEMAllocFromAllocator(lbl_8055DDF0, arg1 << 5);
-        *(s32*)((u8*)arg0 + 4) = newp;
+        s32 newp = MEMAllocFromAllocator(lbl_8055DDF0, count << 5);
+        self->mpTexCoord = (nw4hbm::lyt::detail::TexCoord *)newp;
         if (newp != 0)
-            *(u8*)arg0 = arg1;
+            self->mSize = count;
     }
 }
 
