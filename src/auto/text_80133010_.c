@@ -50,6 +50,17 @@ typedef enum OptionValueType {
     OPTIONS_VALUE_FLOAT = 4   // fn_8013323C
 } OptionValueType;
 
+// Why the save system (src/game/memcard.c) calls a save record's call-back
+// around the memcpy of the record's bytes; the options record ('OPTS') uses
+// fn_80133FCC as its call-back.
+typedef enum SaveRecordStage {
+    SAVE_RECORD_BEFORE_LOAD = 0, // the record's bytes are about to be replaced
+    SAVE_RECORD_AFTER_LOAD = 1,  // they have just been copied over it
+    SAVE_RECORD_LOAD_FAILED = 2, // no usable save data was found
+    SAVE_RECORD_BEFORE_SAVE = 3, // the record is about to be written out
+    SAVE_RECORD_AFTER_SAVE = 4   // it has been written out
+} SaveRecordStage;
+
 // One option: the value as written plus its int, float and true/false
 // readings, so a reader can ask for whichever type it wants.
 typedef struct OptionEntry {
