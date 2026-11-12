@@ -2702,6 +2702,7 @@ void fn_800393D4(void) {
     OSRestoreInterrupts(enabled);
 }
 #pragma pop
+#ifndef DVD_DRIVER_TYPES
 // The DVD driver's command block and its status codes. include/revolution/DVD/dvd.h
 // describes the same layout, but this unit's own prototypes of
 // DVDReadAbsAsyncPrio/DVDGetCommandBlockStatus/DVDCancel & co. don't match that
@@ -2748,6 +2749,7 @@ typedef enum {
     DVD_STATE_DISK_ERROR,
     DVD_STATE_MOTOR_STOPPED,
 } DVDAsyncState;
+#endif // DVD_DRIVER_TYPES
 
 // The cancel state machine's own statics (dvdcancel.c); the cover/motor statics
 // it shares with the state machine (Transferring, AlarmInfo, StateToChange,
