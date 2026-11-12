@@ -1592,6 +1592,7 @@ clear_nodes:
         while (node) { node->count = 0; node->batches = 0; node = node->next; }
     }
 }
+#pragma pop
 #pragma scheduling on
 #pragma push
 #pragma use_lmw_stmw off
