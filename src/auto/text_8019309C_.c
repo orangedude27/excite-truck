@@ -3029,27 +3029,29 @@ void fn_801981A0(void *arg0, void *arg1) {
 }
 
 #pragma scheduling on
+/* If the combined slot counts exceed the limit in +0x2F4, pick a fallback index
+   from the primary (+0x74/+0x90) or secondary (+0x9C/+0xB8) side and apply it. */
 void fn_80198488(void *arg0) {
-    int temp_r0;
-    int var_r4;
-    int var_r4_2;
-    unsigned char temp_r5, temp_r6;
-    volatile unsigned char *p74 = (volatile unsigned char *)arg0 + 0x74;
-    volatile unsigned char *p9c = (volatile unsigned char *)arg0 + 0x9C;
-    temp_r6 = *p9c;
-    temp_r5 = *p74;
-    if ((int)(temp_r5 + temp_r6 + 1) > (int)*(float *)((char *)arg0 + 0x2F4)) {
-        temp_r0 = *(int *)((char *)arg0 + 0x18) == 0;
-        if ((temp_r0 != 0) && ((int)temp_r5 != 0)) {
-            if ((int)*p74 != 0) var_r4 = *(int *)((char *)arg0 + 0x90);
-            else var_r4 = -1;
-            ((void (*)(void *, int))fn_80193138)(arg0, var_r4);
+    int isPrimaryZero;
+    int selectedIndex;
+    int secondaryIndex;
+    unsigned char primaryCount, secondaryCount;
+    volatile unsigned char *primarySlotCount = (volatile unsigned char *)arg0 + 0x74;
+    volatile unsigned char *secondarySlotCount = (volatile unsigned char *)arg0 + 0x9C;
+    secondaryCount = *secondarySlotCount;
+    primaryCount = *primarySlotCount;
+    if ((int)(primaryCount + secondaryCount + 1) > (int)*(float *)((char *)arg0 + 0x2F4)) {
+        isPrimaryZero = *(int *)((char *)arg0 + 0x18) == 0;
+        if ((isPrimaryZero != 0) && ((int)primaryCount != 0)) {
+            if ((int)*primarySlotCount != 0) selectedIndex = *(int *)((char *)arg0 + 0x90);
+            else selectedIndex = -1;
+            ((void (*)(void *, int))fn_80193138)(arg0, selectedIndex);
             return;
         }
-        if ((temp_r0 == 0) && ((int)temp_r6 != 0)) {
-            if ((int)*p9c != 0) var_r4_2 = *(int *)((char *)arg0 + 0xB8);
-            else var_r4_2 = -1;
-            ((void (*)(void *, int))fn_80193138)(arg0, var_r4_2);
+        if ((isPrimaryZero == 0) && ((int)secondaryCount != 0)) {
+            if ((int)*secondarySlotCount != 0) secondaryIndex = *(int *)((char *)arg0 + 0xB8);
+            else secondaryIndex = -1;
+            ((void (*)(void *, int))fn_80193138)(arg0, secondaryIndex);
         }
     }
 }
