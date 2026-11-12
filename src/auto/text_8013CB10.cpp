@@ -1805,23 +1805,26 @@ extern "C" void fn_8013F918(void *arg0, void *arg2) {
 }
 
 #pragma scheduling on
-extern "C" int fn_8013FC6C(void* arg0) {
+extern "C" int fn_8013FC6C(void* self) {
+    /* Counts active entries (flag at +0x118 in each 0x12C-byte record, base at
+       +0xB8, count at +0xBC) for which virtual slot a6(index) returns 0, and
+       returns 1 once that count reaches the threshold at +0x130. */
     struct V {
         virtual int a0(int); virtual int a1(int); virtual int a2(int);
         virtual int a3(int); virtual int a4(int); virtual int a5(int);
         virtual int a6(int);
     };
-    int a = 0, b = 0, c = 0;
-    V* obj = (V*)arg0;
-    while (c < *(int*)((char*)arg0 + 0xBC)) {
-        if (*(unsigned char*)(*(char**)((char*)arg0 + 0xB8) + a + 0x118)) {
-            if (obj->a6(c) == 0) {
-                b++;
-                if (b >= *(int*)((char*)arg0 + 0x130)) return 1;
+    int entryOffset = 0, matchCount = 0, index = 0;
+    V* obj = (V*)self;
+    while (index < *(int*)((char*)self + 0xBC)) {
+        if (*(unsigned char*)(*(char**)((char*)self + 0xB8) + entryOffset + 0x118)) {
+            if (obj->a6(index) == 0) {
+                matchCount++;
+                if (matchCount >= *(int*)((char*)self + 0x130)) return 1;
             }
         }
-        a += 0x12C;
-        c++;
+        entryOffset += 0x12C;
+        index++;
     }
     return 0;
 }
