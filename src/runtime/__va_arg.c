@@ -1,5 +1,6 @@
 #include <types.h>
 
+/* Retrieves the next argument from a PowerPC varargs list, handling register/stack passing by type. */
 void* __va_arg(va_list argp, int type) {
     char* pRegNo = &argp->gpr;
     int regNo = argp->gpr;
