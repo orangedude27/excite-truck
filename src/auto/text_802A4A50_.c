@@ -1500,24 +1500,28 @@ check:
         ((s32)(out - *(u8 **)arg0)) / 12;
 }
 #pragma scheduling on
-s32 fn_802A711C(void *arg0, f32 arg1, f32 arg2, f32 arg3) {
+s32 fn_802A711C(void *object, f32 arg1, f32 arg2, f32 arg3) {
+    /* Fill object entries while count (+4) < limit (+8): pick a random primary
+       value in [field18, field1C] via fn_80287BC8, scale by +0x14, then build a
+       3-float vector {rand(-scaled,scaled), rand(-scaled,scaled), primary} and
+       pass it to fn_802A70E4; returns final count (+4). arg1/arg2/arg3 unused. */
     f32 values[3];
     f32 first;
     f32 scaled;
     f32 second;
     f32 third;
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    while (*(s32 *)((u8 *)arg0 + 4) < *(s32 *)((u8 *)arg0 + 8)) {
-        first = fn_80287BC8(*(f32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x1C));
-        scaled = *(f32 *)((u8 *)arg0 + 0x14) * first;
+    *(s32 *)((u8 *)object + 4) = 0;
+    while (*(s32 *)((u8 *)object + 4) < *(s32 *)((u8 *)object + 8)) {
+        first = fn_80287BC8(*(f32 *)((u8 *)object + 0x18), *(f32 *)((u8 *)object + 0x1C));
+        scaled = *(f32 *)((u8 *)object + 0x14) * first;
         second = fn_80287BC8(-scaled, scaled);
         third = fn_80287BC8(-scaled, scaled);
         values[0] = second;
         values[1] = third;
         values[2] = first;
-        fn_802A70E4(arg0, values);
+        fn_802A70E4(object, values);
     }
-    return *(s32 *)((u8 *)arg0 + 4);
+    return *(s32 *)((u8 *)object + 4);
 }
 
 extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_805648C4;
