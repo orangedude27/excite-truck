@@ -1210,15 +1210,16 @@ FN_801F70D0_RETURN fn_801F70D0(void *arg0, int arg1) {
 extern void fn_801E8C84(float *);
 #pragma push
 #pragma processor 750
-void fn_801F7160(void *arg0) {
+/* Apply the current wind force to each cloth entry, then step and draw it. */
+void fn_801F7160(void *clothGroup) {
     float sp[6];
     float offset, scale;
     void *entry;
     int i;
 
-    entry = arg0;
+    entry = clothGroup;
     i = 0;
-    while (i < *(int *)((char *)arg0 + 0x120)) {
+    while (i < *(int *)((char *)clothGroup + 0x120)) {
         float c, b, a;
         scale = *(float *)((char *)entry + 0x40);
         offset = *(float *)((char *)entry + 0x3C);
