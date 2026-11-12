@@ -89,28 +89,29 @@ s32 fn_80263658(s32 arg0, s32 arg1) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void *fn_80263698(void *arg0, s32 arg1) {
+extern "C" void *fn_80263698(void *obj, s32 shouldDelete) {
+    /* Destructor-like cleanup for object with vtable at lbl_80346048, then lbl_80346120; optionally frees it. */
     struct VTable_80263698 {
         virtual void destroy(s32);
     };
-    if (arg0 != 0) {
-        void *child = *(void **)((char *)arg0 + 0x30);
-        *(void **)arg0 = (void *)lbl_80346048;
+    if (obj != 0) {
+        void *child = *(void **)((char *)obj + 0x30);
+        *(void **)obj = (void *)lbl_80346048;
         if (child == 0)
             goto cleanup;
         if (child == 0)
             goto cleanup;
         ((VTable_80263698 *)child)->destroy(1);
     cleanup:
-        if (arg0 != 0) {
-            *(void **)arg0 = (void *)lbl_80346120;
-            ((s32 (*)(s32, const u8 *))fn_802328D4)(*(s32 *)((char *)arg0 + 0x18), lbl_80346120);
-            *(s32 *)((char *)arg0 + 0x18) = 0;
+        if (obj != 0) {
+            *(void **)obj = (void *)lbl_80346120;
+            ((s32 (*)(s32, const u8 *))fn_802328D4)(*(s32 *)((char *)obj + 0x18), lbl_80346120);
+            *(s32 *)((char *)obj + 0x18) = 0;
         }
-        if (arg1 > 0)
-            ((void (*)(void *))fn_80128668)(arg0);
+        if (shouldDelete > 0)
+            ((void (*)(void *))fn_80128668)(obj);
     }
-    return arg0;
+    return obj;
 }
 #pragma scheduling on
 #pragma cplusplus off
