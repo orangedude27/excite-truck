@@ -3089,25 +3089,26 @@ void fn_80154580(s32 arg0, void *arg1) {
 
 #pragma cplusplus on
 extern "C" s32 fn_80154618(void *arg0) {
-    s32 **it = (s32 **)&lbl_804348E8;
-    s32 found = 0;
-    s32 i = 0;
-    while (i < fn_801B2F24()) {
-        if (*(s32 *)((u8 *)*it + 0x1F0) == 0x50) {
-            if (((TObj80154618 *)arg0)->f6(i) != 0) {
-                found = 1;
+    s32 **playerIter = (s32 **)&lbl_804348E8;
+    s32 anyMatched = 0;
+    s32 index = 0;
+    /* Returns 1 if no player in state 0x50 matched arg0's vf6 check but fn_801B8514() is set; otherwise returns whether any such match occurred. */
+    while (index < fn_801B2F24()) {
+        if (*(s32 *)((u8 *)*playerIter + 0x1F0) == 0x50) {
+            if (((TObj80154618 *)arg0)->f6(index) != 0) {
+                anyMatched = 1;
             }
         }
-        it++;
-        i++;
+        playerIter++;
+        index++;
     }
-    it = (s32 **)0;
-    if (found == 0) {
+    playerIter = (s32 **)0;
+    if (anyMatched == 0) {
         if (fn_801B8514() != 0) {
-            it = (s32 **)1;
+            playerIter = (s32 **)1;
         }
     }
-    return (s32)it;
+    return (s32)playerIter;
 }
 #pragma cplusplus off
 void fn_801546D4(s32 arg0) {
