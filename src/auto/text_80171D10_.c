@@ -1580,6 +1580,8 @@ void fn_8017431C(int arg0, int arg1) {
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling on
+/* Copies this object's entry count and mode flag to the output, writes a per-entry
+ * status/index/offset record for each entry using fn_80171EC0 and lbl_8043038C[5]. */
 extern "C" void fn_801746D0(int *arg0, int *arg1, int arg2) {
     extern float lbl_8043038C[];
     register int *src;
