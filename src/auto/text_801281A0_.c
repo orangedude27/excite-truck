@@ -373,28 +373,29 @@ void fn_801286A0(void *arg0, s32 arg1) {
     *(u32 *)((u8 *)base + offset) = magic;
 }
 #pragma scheduling on
+/* Initializes a memory-region descriptor; when a base address is provided logs its range, otherwise aborts if a nonzero size was requested. */
 void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
-    s32 *obj = (s32 *)arg0;
-    char *base = lbl_8032A000;
+    s32 *region = (s32 *)arg0;
+    char *strings = lbl_8032A000; /* MemAlloc string table */
     s32 zero = 0;
-    obj[2] = arg2;
-    obj[1] = zero;
-    obj[4] = zero;
-    obj[3] = arg1;
+    region[2] = arg2;
+    region[1] = zero;
+    region[4] = zero;
+    region[3] = arg1;
     if (arg1 != 0) {
-        fn_802E30C8(base + 0xE8, (void *)arg1, (void *)arg2);
-        fn_802E30C8(base + 0x10C, (void *)obj[3], (void *)(obj[3] + obj[2]));
-        obj[7] = zero;
-        obj[5] = zero;
-        obj[6] = 0x02000000;
+        fn_802E30C8(strings + 0xE8, (void *)arg1, (void *)arg2);
+        fn_802E30C8(strings + 0x10C, (void *)region[3], (void *)(region[3] + region[2]));
+        region[7] = zero;
+        region[5] = zero;
+        region[6] = 0x02000000;
         return;
     }
     if (arg2 == 0) {
-        obj[7] = zero;
-        obj[5] = zero;
+        region[7] = zero;
+        region[5] = zero;
         return;
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(base + 0x130, (void *)(arg2 / 1024));
+    ((s32 (*)(const char *, ...))fn_802E317C)(strings + 0x130, (void *)(arg2 / 1024));
 }
 
 #pragma push
