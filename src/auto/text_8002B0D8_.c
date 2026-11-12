@@ -1102,12 +1102,13 @@ recompute:
 	return n&7;
 }
 
+/* Kernel sine function on [-pi/4, pi/4]: approximates sin(x+y); if iy is 0, y is treated as zero. */
 double __kernel_sin(int iy, double x, double y) {
     double z, v, r;
-    int hx;
+    int ix;
     z = x;
-    hx = *(int *)&z & 0x7fffffff;
-    if (hx < 0x3e400000 && (int)x == 0) return x;
+    ix = *(int *)&z & 0x7fffffff;
+    if (ix < 0x3e400000 && (int)x == 0) return x;
     z = x * x;
     v = z * x;
     r = lbl_805609D8 + z * (lbl_805609E0 + z * (lbl_805609E8 + z * (lbl_805609F0 + lbl_805609F8 * z)));
