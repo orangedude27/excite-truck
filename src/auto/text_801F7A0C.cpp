@@ -1759,22 +1759,27 @@ struct BatchedGob {
     BatchedGob *next;    // +0x54 next GOB in the list
 };
 
+/* Draws the batched GOB list (lbl_8055EC48) in one run: picks the cull mode for
+ * the view (front when the render state says it is mirrored, back otherwise),
+ * opens a batched submit run in the model manager, draws every node whose batch
+ * flag is set at its own world matrix, then flushes the sort groups and
+ * restores the cull mode. */
 extern "C" void fn_801FA618(void) {
-    u32 flags = *(u32 *)((u8 *)fn_801E87A8() + 0x10);
-    s32 mode = 2;
-    if (flags & 2) mode = 1;
-    s32 old = fn_802C9C58(mode);
-    fn_802C7A44();
-    void *node = (void *)lbl_8055EC48;
+    u32 flags = *(u32 *)((u8 *)GetRenderState() + 0x10);
+    GXCullMode cullMode = GX_CULL_BACK;
+    if (flags & RENDER_FLAG_MIRROR) cullMode = GX_CULL_FRONT;
+    GXCullMode prevCullMode = (GXCullMode)ModelSetCullMode(cullMode);
+    ModelBeginBatch();
+    BatchedGob *node = (BatchedGob *)GOB_DRAW_LIST;
     while (node != 0) {
-        if (*(u8 *)((u8 *)node + 0x50) != 0 && fn_801F7A0C() != 0) {
-            fn_802C70AC(*(s32 *)((u8 *)node + 0x3C), (u8 *)node + 4, -1, -0xF);
+        if (node->batchDraw != 0 && fn_801F7A0C() != 0) {
+            ModelDraw(node->gobId, node->world, -1, GOB_GROUP_MASK);
         }
-        node = *(void **)((u8 *)node + 0x54);
+        node = node->next;
     }
-    fn_802C7A50();
-    fn_802C7AD4();
-    fn_802C9C58(old);
+    ModelFlushBatch();
+    ModelFinishBatch();
+    ModelSetCullMode(prevCullMode);
 }
 
 #pragma scheduling on
