@@ -789,7 +789,7 @@ extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
 }
 #pragma small_data off
 #pragma scheduling invalid_target
-extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
     *(void**)arg0 = lbl_8032F2BC;
