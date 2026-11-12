@@ -528,6 +528,8 @@ static void TCIntrruptHandler(s16 intr, OSContext* ctx) {
     }
 }
 
+/* Handles an EXI external interrupt: masks EXI/EXT for the channel, clears the
+ * attached state, and invokes the external callback in a temporary context. */
 static void EXTIntrruptHandler(s16 intr, OSContext* ctx) {
     EXIChannel chan;
     EXIData* exi;
