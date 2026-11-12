@@ -2351,17 +2351,18 @@ extern "C" s32 fn_800A8504(void *manager, void *listHeadPtr, s32 nodePtr, s32 se
     return 0;
 }
 
-extern "C" s32 fn_800A861C(void *arg0, void *arg1, s32 arg2, u32 arg3) {
-    u32 sp8;
+extern "C" s32 fn_800A861C(void *volume, void *cache, s32 buffer, u32 sector) {
+    u32 writeCount;
     void *page;
     s32 result;
-    page = (void *)VFiPFCACHE_SearchForPage((s32)arg0, *(s32 *)arg1, (s32)arg3);
+    /* Writes a sector to the page cache if present (copies into page, marks dirty, flushes) or performs a direct write; returns 0 on success. */
+    page = (void *)VFiPFCACHE_SearchForPage((s32)volume, *(s32 *)cache, (s32)sector);
     if (page != 0) {
         volatile u16 *nodeFlags;
         s32 scratch0;
         s32 cachedStart;
         s32 nodeStart;
-        VFipf_memcpy(VF_PAGE_DATA(page), (const void *)arg2, *(u16 *)arg0);
+        VFipf_memcpy(VF_PAGE_DATA(page), (const void *)buffer, *(u16 *)volume);
         nodeFlags = (volatile u16 *)page;
         scratch0 = *nodeFlags;
         *nodeFlags = (u16)(scratch0 | 2);
@@ -2377,14 +2378,14 @@ extern "C" s32 fn_800A861C(void *arg0, void *arg1, s32 arg2, u32 arg3) {
                 VF_PAGE_CHANGED_TO(page) = nodeStart;
             }
         }
-        result = fn_800A7B34(arg0, page);
+        result = fn_800A7B34(volume, page);
         if (result != 0)
             return result;
     } else {
-        result = fn_800A58E0(arg0, arg2, (s32)arg3, 1, (s32)&sp8);
+        result = fn_800A58E0(volume, buffer, (s32)sector, 1, (s32)&writeCount);
         if (result != 0)
             return result;
-        if (sp8 != 1)
+        if (writeCount != 1)
             return 0x11;
     }
     return 0;
