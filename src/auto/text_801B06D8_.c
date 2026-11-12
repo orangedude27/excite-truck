@@ -542,38 +542,36 @@ extern void *lbl_8055E68C;
 extern u8 lbl_8055E690;
 #pragma cplusplus on
 #pragma dont_inline on
-extern "C" s32 fn_801B1130(s32 arg0) {
+/* Return nonzero if the slot's vtable method (+0x14) accepts its table entry at +0x7C, or if no object but the fallback flag is set. */
+extern "C" s32 fn_801B1130(s32 slotIndex) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
         virtual void f2();
         virtual s32 f3(s32, s32);
     };
-    s32 var_r31;
-    s32 var_r30;
-    s32 var_r3;
+    s32 result;
+    s32 matched;
+    s32 altReady;
 
-    var_r31 = 1;
-    var_r30 = 0;
+    result = 1;
+    matched = 0;
     if (lbl_8055E68C != 0) {
         Dummy *obj = (Dummy *)lbl_8055E68C;
-        if (obj->f3(arg0, *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x7C)) != 0)
-            var_r30 = 1;
+        if (obj->f3(slotIndex, *(s32 *)((u8 *)lbl_8055E684 + (slotIndex << 7) + 0x7C)) != 0)
+            matched = 1;
     }
-    if (var_r30 == 0) {
-        var_r3 = 0;
+    if (matched == 0) {
+        altReady = 0;
         if (lbl_8055E68C == 0 && lbl_8055E690 != 0)
-            var_r3 = 1;
-        if (var_r3 == 0)
-            var_r31 = 0;
+            altReady = 1;
+        if (altReady == 0)
+            result = 0;
     }
-    return var_r31;
+    return result;
 }
 #pragma dont_inline reset
 #pragma cplusplus on
-#pragma scheduling invalid_target
-#pragma push
-#pragma use_lmw_stmw off
 __declspec(section ".data") extern float lbl_80558DC4;
 extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
     extern int __cntlzw(unsigned int);
