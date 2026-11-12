@@ -687,6 +687,7 @@ void *fn_802E5AE8(char *arg0) {
     return slot;
 }
 
+#pragma pop
 void fn_802E5D5C(void *arg0) {
     if (*(int *)((char *)arg0 + 0x94) == 1 && *(int *)((char *)arg0 + 0x98) > 0) {
         fn_802E317C(lbl_8034D528, arg0, *(int *)((char *)arg0 + 0x98));
