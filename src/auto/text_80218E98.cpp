@@ -813,20 +813,22 @@ extern "C" s32 fn_802192A4(void *, s32) { return 0; }
 extern "C" int memcmp(const void *, const void *, size_t);
 extern "C" void *memcpy(void *, const void *, size_t);
 #pragma use_lmw_stmw off
+/* For each tracked slot, copy changed source data to destination and
+ * invoke the slot callback; then update this object's internal timers/state. */
 extern "C" void fn_802192AC(void *arg0) {
-    char *p = (char *)arg0;
+    char *slot = (char *)arg0;
     size_t size;
     void *src;
     void *dst;
-    s32 i;
+    s32 index;
 
-    for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x230); p += 0x10, i++) {
-        size = *(size_t *)(p + 0x38);
-        dst = *(void **)(p + 0x3C);
-        src = *(void **)(p + 0x30);
+    for (index = 0; index < *(s32 *)((u8 *)arg0 + 0x230); slot += 0x10, index++) {
+        size = *(size_t *)(slot + 0x38);
+        dst = *(void **)(slot + 0x3C);
+        src = *(void **)(slot + 0x30);
         if (memcmp(src, dst, size) != 0) {
             memcpy(dst, src, size);
-            ((Fn80229900VTable *)arg0)->Call(*(s32 *)(p + 0x34), *(s32 *)(p + 0x30));
+            ((Fn80229900VTable *)arg0)->Call(*(s32 *)(slot + 0x34), *(s32 *)(slot + 0x30));
         }
     }
     ((void (*)(void *))fn_80219044)(arg0);
