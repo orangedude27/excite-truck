@@ -952,6 +952,9 @@ extern "C" void fn_8019A788(void* arg0, void* arg1, void* arg2,
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0) {
     Vec d, dir, v20, delta, v8;
     f32 mag, rem, var4, ret, k, dx, dy, dz;
@@ -990,8 +993,7 @@ extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4,
     }
     return 0;
 }
-
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8019A820(arg0, (u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
 }
@@ -1397,74 +1399,80 @@ extern "C" void fn_8019D06C(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 extern "C" f32 PSVECSquareDistance(const Vec*, const Vec*);
 extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
 extern f32 lbl_8056232C;
-extern "C" void fn_8019D19C(void* arg0, void* arg1) {
-    struct T { u8 pad[0x34]; Vec point; };
-    T* t0 = (T*)arg0;
-    T* t1 = (T*)arg1;
+/* Floor ('FLSR') influence pass: point the object and the floor shape at each
+   other.  For each side the vector toward the other is normalised (1/distance)
+   and projected on that side's influence axis; how well the two line up
+   (|dot|, 0..1) picks a radius between that side's min (+0x54) and max
+   (+0x58).  Sides closer than 0.1 (squared) simply get the larger of the two.
+   Both radii are stored at +0x24, which fn_8019B068 then runs the collision
+   between the two positions with. */
+extern "C" void fn_8019D19C(void *object, void *shape) {
+    CollisionObject *obj = (CollisionObject *)object;
+    CollisionObject *floorShape = (CollisionObject *)shape;
     {
-    Vec d1;
-    d1.x = t1->point.x - t0->point.x;
-    Vec* p1 = &t1->point;
-    d1.y = p1->y - t0->point.y;
-    d1.z = p1->z - t0->point.z;
-    f32 distance = PSVECSquareDistance(p1, &t0->point);
-    f32 result;
-    if (distance > lbl_8056232C) {
-        f32 root = (f32)fn_8002F234(distance);
-        f32 scale = lbl_805622E0 / root;
-        d1.x *= scale;
-        d1.y *= scale;
-        d1.z *= scale;
-        Vec* axis = (Vec*)((u8*)*(void**)((u8*)arg0 + 0xC) + 0xC);
-        f32 dot = PSVECDotProduct(&d1, axis);
-        register f32 high;
-        register f32 low;
-        register f32 magnitude;
-        high = *(f32*)((u8*)arg0 + 0x58);
-        low = *(f32*)((u8*)arg0 + 0x54);
-        magnitude = (f32)__fabs((f64)dot);
-        f32 difference = high - low;
-        result = low + magnitude * difference;
+    Vec toFloor;
+    toFloor.x = floorShape->position.x - obj->position.x;
+    Vec *floorPos = &floorShape->position;
+    toFloor.y = floorPos->y - obj->position.y;
+    toFloor.z = floorPos->z - obj->position.z;
+    f32 squareDistance = PSVECSquareDistance(floorPos, &obj->position);
+    f32 radius;
+    if (squareDistance > lbl_8056232C /* 0.1f */) {
+        f32 distance = (f32)fn_8002F234(squareDistance);
+        f32 invDistance = lbl_805622E0 /* 1.0f */ / distance;
+        toFloor.x *= invDistance;
+        toFloor.y *= invDistance;
+        toFloor.z *= invDistance;
+        Vec *axis = (Vec *)((u8 *)obj->axisSource + 0xC);
+        f32 alignment = PSVECDotProduct(&toFloor, axis);
+        register f32 maxRadius;
+        register f32 minRadius;
+        register f32 strength;
+        maxRadius = obj->maxRadius;
+        minRadius = obj->minRadius;
+        strength = (f32)__fabs((f64)alignment);
+        f32 spread = maxRadius - minRadius;
+        radius = minRadius + strength * spread;
     } else {
-        f32 high = *(f32*)((u8*)arg0 + 0x58);
-        f32 low = *(f32*)((u8*)arg0 + 0x54);
-        if (low > high) result = low;
-        else result = high;
+        f32 maxRadius = obj->maxRadius;
+        f32 minRadius = obj->minRadius;
+        if (minRadius > maxRadius) radius = minRadius;
+        else radius = maxRadius;
     }
-    *(f32*)((u8*)arg0 + 0x24) = result;
+    obj->radius = radius;
     }
     {
-    Vec d2;
-    d2.x = t0->point.x - t1->point.x;
-    d2.y = t0->point.y - t1->point.y;
-    d2.z = t0->point.z - t1->point.z;
-    f32 distance = PSVECSquareDistance(&t0->point, &t1->point);
-    f32 result;
-    if (distance > lbl_8056232C) {
-        f32 root = (f32)fn_8002F234(distance);
-        f32 scale = lbl_805622E0 / root;
-        d2.x *= scale;
-        d2.y *= scale;
-        d2.z *= scale;
-        Vec* axis = (Vec*)((u8*)*(void**)((u8*)arg1 + 0xC) + 0xC);
-        f32 dot = PSVECDotProduct(&d2, axis);
-        register f32 high;
-        register f32 low;
-        register f32 magnitude;
-        high = *(f32*)((u8*)arg1 + 0x58);
-        low = *(f32*)((u8*)arg1 + 0x54);
-        magnitude = (f32)__fabs((f64)dot);
-        f32 difference = high - low;
-        result = low + magnitude * difference;
+    Vec toObject;
+    toObject.x = obj->position.x - floorShape->position.x;
+    toObject.y = obj->position.y - floorShape->position.y;
+    toObject.z = obj->position.z - floorShape->position.z;
+    f32 squareDistance = PSVECSquareDistance(&obj->position, &floorShape->position);
+    f32 radius;
+    if (squareDistance > lbl_8056232C /* 0.1f */) {
+        f32 distance = (f32)fn_8002F234(squareDistance);
+        f32 invDistance = lbl_805622E0 /* 1.0f */ / distance;
+        toObject.x *= invDistance;
+        toObject.y *= invDistance;
+        toObject.z *= invDistance;
+        Vec *axis = (Vec *)((u8 *)floorShape->axisSource + 0xC);
+        f32 alignment = PSVECDotProduct(&toObject, axis);
+        register f32 maxRadius;
+        register f32 minRadius;
+        register f32 strength;
+        maxRadius = floorShape->maxRadius;
+        minRadius = floorShape->minRadius;
+        strength = (f32)__fabs((f64)alignment);
+        f32 spread = maxRadius - minRadius;
+        radius = minRadius + strength * spread;
     } else {
-        f32 high = *(f32*)((u8*)arg1 + 0x58);
-        f32 low = *(f32*)((u8*)arg1 + 0x54);
-        if (low > high) result = low;
-        else result = high;
+        f32 maxRadius = floorShape->maxRadius;
+        f32 minRadius = floorShape->minRadius;
+        if (minRadius > maxRadius) radius = minRadius;
+        else radius = maxRadius;
     }
-    *(f32*)((u8*)arg1 + 0x24) = result;
+    floorShape->radius = radius;
     }
-    fn_8019B068(arg0, arg1, 0, 0);
+    fn_8019B068(object, shape, 0, 0);
 }
 
 extern "C" void fn_8019D378(void *self, void *context) {
@@ -1609,35 +1617,31 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
     register void *object0 = arg0;
     register void *object1 = arg1;
     volatile u32 local[15];
-
     void *shape1 = *(void **)((u8 *)object1 + 0xC);
     void *shape0 = *(void **)((u8 *)object0 + 0xC);
     *(volatile f32 *)&local[12] = *(f32 *)((u8 *)shape0 + 0x24) - *(f32 *)((u8 *)shape1 + 0x24);
     *(volatile f32 *)&local[13] = *(f32 *)((u8 *)shape0 + 0x28) - *(f32 *)((u8 *)shape1 + 0x28);
     *(volatile f32 *)&local[14] = *(f32 *)((u8 *)shape0 + 0x2C) - *(f32 *)((u8 *)shape1 + 0x2C);
-
     f32 radius1 = ((Interface *)object1)->getRadius();
     f32 radius0 = ((Interface *)object0)->getRadius();
     f32 radius = radius0 + radius1;
     f32 radiusSquared = radius * radius;
     if (PSVECDotProduct((Vec *)&local[12], (Vec *)&local[12]) < radiusSquared) {
-        s32 result = fn_8019DAB0(object0, object1);
-        u32 raw = (u32)result;
-        u32 found = ((u32)(-result) | raw) >> 31;
+        u32 result = (u32)fn_8019DAB0(object0, object1) | 0u;
+        u32 found = ((u32)-(s32)result | result) >> 31;
         if (found != 0) {
             return 1;
         }
-
         void *mat = *(void **)((u8 *)object0 + 0xC);
         f32 w = *(f32 *)((u8 *)object0 + 0x28);
-        f32 neg_w = -w;
         volatile u32 *words = (volatile u32 *)mat;
         u32 v14 = words[6];
         u32 v18 = words[7];
+        f32 neg_w = -w;
         local[3] = v14;
-        u32 v8 = words[9];
-        local[4] = v18;
         u32 v1C = words[8];
+        local[4] = v18;
+        u32 v8 = words[9];
         f32 f0 = *(volatile f32 *)&local[3];
         local[5] = v1C;
         u32 vC = words[10];
@@ -1650,7 +1654,6 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
         local[2] = v10;
         f32 f8 = *(volatile f32 *)&local[1];
         f32 f = *(f32 *)((u8 *)object0 + 0x24);
-
         f32 f10 = f0 * w;
         f32 f7 = f2 * w;
         f32 f6 = f5 * w;
@@ -1670,7 +1673,6 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
         *(volatile f32 *)&local[11] = fposZ;
         *(volatile f32 *)&local[7] = fnegY;
         *(volatile f32 *)&local[8] = fnegZ;
-
         s32 first = fn_8019CCCC(object0, (Vec *)&local[9], object1, f);
         s32 combined = (s32)found | first;
         found = ((u32)(-combined) | (u32)combined) >> 31;
@@ -4285,21 +4287,52 @@ extern "C" void fn_801A3BE0(void* arg0, void* arg1) {
     f32 out[3];
     f32* entry = (f32*)((u8*)arg0 + 0x3C);
     const f32* m0 = *(const f32**)((u8*)arg0 + 0xC);
+    s32 g = lbl_8055E598;
     s32 i = 0;
-    ((u32*)pos)[0] = ((u32*)m0)[9];
-    ((u32*)pos)[1] = ((u32*)m0)[10];
-    ((u32*)pos)[2] = ((u32*)m0)[11];
-    for (; i < *(s32*)((u8*)arg0 + 0xBC); i++, entry += 4) {
-        const f32* m = *(const f32**)((u8*)arg0 + 0xC);
+    u32 t0 = ((u32*)m0)[9];
+    u32 t1 = ((u32*)m0)[10];
+    u32 t2 = ((u32*)m0)[11];
+    ((u32*)pos)[0] = t0;
+    ((u32*)pos)[1] = t1;
+    ((u32*)pos)[2] = t2;
+    for (; i < *(s32*)((u8*)arg0 + 0xBC); entry += 4, i++) {
         f32 w = entry[3];
         v[0] = entry[0] * w;
         v[1] = entry[1] * w;
         v[2] = entry[2] * w;
-        MtxMulVecRevInl(m, v, out);
+        const f32* m = *(const f32**)((u8*)arg0 + 0xC);
+        if (out == v) {
+            f32 xc = v[0], yc = v[1], zc = v[2];
+            f32 a0 = yc * m[3];
+            f32 b0 = xc * m[0];
+            f32 b1 = yc * m[4];
+            f32 a1 = xc * m[1];
+            f32 b2 = yc * m[5];
+            f32 a2 = xc * m[2];
+            f32 c0 = zc * m[6];
+            f32 c1 = zc * m[7];
+            f32 c2 = zc * m[8];
+            out[0] = a0 + b0 + c0;
+            out[1] = b1 + a1 + c1;
+            out[2] = b2 + a2 + c2;
+        } else {
+            f32 a0 = v[1] * m[3];
+            f32 b0 = v[0] * m[0];
+            f32 c0 = v[2] * m[6];
+            out[0] = a0 + b0 + c0;
+            f32 a1 = v[1] * m[4];
+            f32 b1 = v[0] * m[1];
+            f32 c1 = v[2] * m[7];
+            out[1] = a1 + b1 + c1;
+            f32 a2 = v[1] * m[5];
+            f32 b2 = v[0] * m[2];
+            f32 c2 = v[2] * m[8];
+            out[2] = a2 + b2 + c2;
+        }
         out[0] += m[9];
         out[1] += m[10];
         out[2] += m[11];
-        fn_801E41D8(pos, out, lbl_8055E598, lbl_80562314);
+        fn_801E41D8(pos, out, g, lbl_80562314);
     }
 }
 
