@@ -174,78 +174,90 @@ void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+/* Find the stretch of the path a point lies beside, or 0.
+ *
+ * The stretches form a circular list whose first entry sits at list + 0x1C;
+ * one runs from its own (x, y) in its (dirX, dirY) direction, so
+ * fn_80135278(&node->dirX, point, (float *)node) says how far ahead of the
+ * stretch's start the point lies along it.  The first pass looks for the pair
+ * of stretches that straddle the point - ahead of this one, behind the next -
+ * and keeps the node of the pair whose line the point sits closest to,
+ * |dir x (point - node)|, up to 1000 away.  No straddling pair means the point
+ * is past one end of the path, so a second pass takes the stretch with the
+ * least along^2 + across^2 within 4e6 of it; if even that finds nothing the
+ * two "ideal:" warnings are printed and 0 comes back. */
 void *fn_80135420(float *point, void *unused, void *list) {
     extern double __fabs(double);
     extern void fn_802E30C8(const char *, ...);
     extern const char lbl_8032BDB8[], lbl_8032BDE4[];
     extern float lbl_80561328, lbl_8056132C;
-    float threshold;
-    float bestDistance = lbl_80561328;
-    void *best;
-    void *node = *(void **)((char *)list + 0x1C);
-    threshold = lbl_80561320;
+    float startSide;
+    float bestAcross = PAIR_ACROSS_LIMIT;
+    PathNode *best;
+    PathNode *node = PATH_FIRST(list);
+    startSide = PATH_ZERO;
     best = 0;
     do {
-        if (fn_80135278((float *)((char *)node + 8), point, node) > threshold) {
-            void *next = *(void **)((char *)node + 0x14);
-            if (fn_80135278((float *)((char *)next + 8), point, next) < threshold) {
+        if (fn_80135278(&node->dirX, point, (float *)node) > startSide) {
+            PathNode *next = node->next;
+            if (fn_80135278(&next->dirX, point, (float *)next) < startSide) {
                 float dy;
                 float dx;
                 float normalY;
                 float normalX;
                 float negativeNormalY;
-                float dist;
-                volatile float savedDiff[2];
-                dx = point[0] - ((float *)node)[0];
-                dy = point[1] - ((float *)node)[1];
-                savedDiff[0] = dx;
-                savedDiff[1] = dy;
-                normalY = ((float *)node)[2];
-                normalX = ((float *)node)[3];
+                float across;
+                volatile float pointOffset[2];
+                dx = point[0] - node->x;
+                dy = point[1] - node->y;
+                pointOffset[0] = dx;
+                pointOffset[1] = dy;
+                normalY = node->dirX;
+                normalX = node->dirY;
                 negativeNormalY = -normalY;
-                dist = (float)__fabs((double)(normalX * dx + negativeNormalY * dy));
-                if (dist < bestDistance) {
+                across = (float)__fabs((double)(normalX * dx + negativeNormalY * dy));
+                if (across < bestAcross) {
                     best = node;
-                    bestDistance = dist;
+                    bestAcross = across;
                 }
             }
         }
-        node = *(void **)((char *)node + 0x14);
-    } while (node != *(void **)((char *)list + 0x1C));
+        node = node->next;
+    } while (node != PATH_FIRST(list));
     if (best == 0) {
-        float fallbackDistance = lbl_8056132C;
-        node = *(void **)((char *)list + 0x1C);
+        float nearestLimit = NEAREST_LIMIT;
+        node = PATH_FIRST(list);
         do {
             float dy;
             float dx;
-            float nx;
-            float ny;
-            float dot;
-            float dotSquared;
+            float normalX;
+            float normalY;
+            float across;
+            float acrossSquared;
             float along;
             float dist;
-            volatile float savedDiff[2];
-            dx = point[0] - ((float *)node)[0];
-            dy = point[1] - ((float *)node)[1];
-            savedDiff[0] = dx;
-            savedDiff[1] = dy;
-            nx = ((float *)node)[3];
-            ny = -((float *)node)[2];
-            dot = nx * dx + ny * dy;
-            dotSquared = dot * dot;
-            along = fn_80135278((float *)((char *)node + 8), point, node);
+            volatile float pointOffset[2];
+            dx = point[0] - node->x;
+            dy = point[1] - node->y;
+            pointOffset[0] = dx;
+            pointOffset[1] = dy;
+            normalX = node->dirY;
+            normalY = -node->dirX;
+            across = normalX * dx + normalY * dy;
+            acrossSquared = across * across;
+            along = fn_80135278(&node->dirX, point, (float *)node);
             dist = along * along;
-            dist += dotSquared;
-            if (dist < fallbackDistance) {
+            dist += acrossSquared;
+            if (dist < nearestLimit) {
                 best = node;
-                fallbackDistance = dist;
+                nearestLimit = dist;
             }
-            node = *(void **)((char *)node + 0x14);
-        } while (node != *(void **)((char *)list + 0x1C));
+            node = node->next;
+        } while (node != PATH_FIRST(list));
     }
     if (best == 0) {
-        fn_802E30C8(lbl_8032BDB8, point[0], point[1]);
-        fn_802E30C8(lbl_8032BDE4);
+        fn_802E30C8(MSG_NO_PAIR, point[0], point[1]);
+        fn_802E30C8(MSG_UPSET);
     }
     return best;
 }
