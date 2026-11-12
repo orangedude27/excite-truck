@@ -492,31 +492,37 @@ void *fn_80241098(void *arg0) {
     return arg0;
 }
 
-void *fn_802410F8(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
-    s32 temp_r4;
-    s32 temp_r3;
-    float temp_f0;
-    *(void **)((u8 *)arg0 + 0xC) = lbl_803426B0;
-    *(s32 *)((u8 *)arg0 + 4) = -1;
-    *(u8 *)arg0 = 0;
-    *((u8 *)arg0 + 8) = 1;
-    *(s32 *)((u8 *)arg0 + 0x24) = 0;
-    *(void **)((u8 *)arg0 + 0x10) = lbl_803426B0 + 0x18;
-    *(s32 *)((u8 *)arg0 + 0x28) = 0;
-    *(s32 *)((u8 *)arg0 + 0x2C) = *arg2;
-    *(s32 **)((u8 *)arg0 + 0x30) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x34) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x38) = arg3;
-    temp_r4 = lbl_8055F1F4;
-    *(s32 *)((u8 *)arg0 + 0x3C) = temp_r4;
-    lbl_8055F1F4 = temp_r4 + 1;
-    temp_r3 = ((s32 (*)(char *))fn_8023512C)(lbl_803425A8);
-    temp_f0 = lbl_80563758;
-    *(s32 *)((u8 *)arg0 + 0x44) = temp_r3;
-    *(float *)((u8 *)arg0 + 0x58) = temp_f0;
-    *(float *)((u8 *)arg0 + 0x54) = temp_f0;
-    *(u8 *)((u8 *)arg0 + 0x5C) = 0;
-    return arg0;
+/* Construct an object (vtable lbl_803426B0, secondary +0x18), copy *valuePtr, store id/arg3,
+   assign next id from lbl_8055F1F4, load resource "caricona.art" via fn_8023512C, init floats to 0.0f. */
+void *fn_802410F8(void *self, s32 id, s32 *valuePtr, s32 arg3) {
+    s32 nextId;
+    s32 resource;
+    float zero;
+
+    *(void **)((u8 *)self + 0xC) = lbl_803426B0;
+    *(s32 *)((u8 *)self + 4) = -1;
+    *(u8 *)self = 0;
+    *((u8 *)self + 8) = 1;
+    *(s32 *)((u8 *)self + 0x24) = 0;
+    *(void **)((u8 *)self + 0x10) = lbl_803426B0 + 0x18;
+    *(s32 *)((u8 *)self + 0x28) = 0;
+    *(s32 *)((u8 *)self + 0x2C) = *valuePtr;
+    *(s32 **)((u8 *)self + 0x30) = valuePtr;
+    *(s32 *)((u8 *)self + 0x34) = id;
+    *(s32 *)((u8 *)self + 0x38) = arg3;
+
+    nextId = lbl_8055F1F4;
+    *(s32 *)((u8 *)self + 0x3C) = nextId;
+    lbl_8055F1F4 = nextId + 1;
+
+    resource = ((s32 (*)(char *))fn_8023512C)(lbl_803425A8);
+    zero = lbl_80563758;
+    *(s32 *)((u8 *)self + 0x44) = resource;
+    *(float *)((u8 *)self + 0x58) = zero;
+    *(float *)((u8 *)self + 0x54) = zero;
+    *(u8 *)((u8 *)self + 0x5C) = 0;
+
+    return self;
 }
 
 s32 fn_802411A4(s32 *arg0) {
