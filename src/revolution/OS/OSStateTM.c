@@ -76,8 +76,8 @@ OSStateCallback OSSetPowerCallback(OSStateCallback callback) {
     return old;
 }
 
-// Old SDK revision: reads and clears the latched reset state, registering the
-// STM event handler if it hasn't been registered yet.
+// Reads and clears the latched reset button state, registering the STM event
+// handler if it has not been registered yet.
 BOOL OSGetResetButtonState(void) {
     BOOL enabled;
     BOOL state;
