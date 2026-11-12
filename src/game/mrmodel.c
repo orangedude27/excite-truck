@@ -256,10 +256,15 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
     extern int fn_802C9638(void *, unsigned char *, float);
 
     void *manager;
-    int *outer_info;
-    int idx_shift;
-    int i;
+    unsigned char d;
+    int j;
+    int *inner_info;
     int offset;
+    int idx_shift;
+    int inner_offset;
+    int *outer_info;
+    int i;
+    char *entry;
 
     manager = fn_802C5390(arg0);
     outer_info = *(int **)((char *)manager + 4);
@@ -267,21 +272,20 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
         fn_802C543C();
     }
     idx_shift = *(int *)((char *)manager + 8) << 2;
-    for (i = 0, offset = 0; i < *outer_info; i++, offset += 0x10) {
-        char *entry = *(char **)((char *)outer_info + 4) + offset;
-        int bit_idx = *(int *)entry;
+    for (i = 0, offset = 0; i < *outer_info; offset += 0x10, i++) {
+        int bit_idx;
+        entry = *(char **)((char *)outer_info + 4) + offset;
+        bit_idx = *(int *)entry;
         if (lbl_8055D008 & (1 << bit_idx)) {
             unsigned char local_d = arg3;
             char *sub = *(char **)((char *)manager + 12);
             if (sub == 0 || fn_802C9638(sub + offset, &local_d, *(float *)(sub + offset + 12)) != 0) {
-                unsigned char d = local_d;
-                int *inner_info = *(int **)(entry + 8);
-                int j;
-                int inner_offset;
-                for (j = 0, inner_offset = 0; j < *inner_info; j++, inner_offset += 4) {
+                d = local_d;
+                inner_info = *(int **)(entry + 8);
+                for (j = 0, inner_offset = 0; j < *inner_info; inner_offset += 4, j++) {
+                    int valid = 0;
                     void *elem = *(void **)(*(char **)((char *)inner_info + 4) + inner_offset);
                     unsigned int type = *(unsigned int *)elem;
-                    int valid = 0;
                     if (type < 13) {
                         int skip;
                         valid = 1;
@@ -299,7 +303,7 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
                         if (skip) valid = 0;
                     }
                     if (valid) {
-                        void *node = *(void **)((char *)elem + idx_shift + 0x14);
+                        void *node = *(void **)(idx_shift + (int)elem + 0x14);
                         void *r4;
                         fn_802C53C4(entry, node, arg1, arg2, d);
                         r4 = ((void *(*)(void *))fn_802C57B0)(*(void **)(entry + 12));
