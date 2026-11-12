@@ -5,6 +5,7 @@ extern unsigned long __strtoul(int base, int max_width, int (*ReadProc)(void *, 
 extern int __StringRead(void *, int, int);
 extern __declspec(section ".sdata") int lbl_8055D680;
 int atoi(const char *str) {
+    /* Convert a decimal string to int, clamping on overflow and setting errno to 0x22. */
     unsigned long sp18[2];
     int overflow;
     int negative;
