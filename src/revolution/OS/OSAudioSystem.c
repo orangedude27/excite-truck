@@ -173,6 +173,7 @@ void __OSInitAudioSystem(void) {
     memcpy(DSP_CODE_WORK_MEM, DSP_CODE_WORK_MEM_BACKUP, sizeof(DSPInitCode));
 }
 
+/* Halt DSP/audio DMA, flush CPU-DSP mailboxes, wait briefly, then reset the DSP. */
 void __OSStopAudioSystem(void) {
     u32 start;
     u16 ctrl;
