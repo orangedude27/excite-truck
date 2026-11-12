@@ -74,32 +74,37 @@ extern char lbl_8055D564;
 extern void* lbl_8055D560;
 s32 atoi(void);
 #pragma scheduling invalid_target
-void fn_8001786C(s32 arg0) {
-    void* object;
-    object = (void*)((char*)fn_80016544(arg0) + 0x2C);
-    if (fn_8013C8E8((s32)object) == 6) {
-        fn_802E30C8(lbl_802FD088, object);
+/* Warn on the debug console when a vehicle's name belongs to no car class. */
+void fn_8001786C(s32 vehicleNum) {
+    void* name;
+    name = (void*)((char*)GetVehicleByNumber(vehicleNum) + 0x2C);
+    if (GetCarClass((s32)name) == VEHICLE_CLASS_UNCLASSIFIED) {
+        debug_printf(STR_UNCLASSIFIED_CAR, name);
     }
 }
 
-void fn_800178BC(void* arg0, s32 arg1, s32 arg2) {
+/* Append one driver and the vehicle he drives to the two halves of a pairing list. */
+void fn_800178BC(void* list, s32 driverNum, s32 vehicleNum) {
     s32 index1;
     s32 index2;
-    index1 = *(s32*)arg0;
-    *(s32*)((char*)arg0 + (index1 << 2) + 4) = arg1;
-    index2 = *(s32*)((char*)arg0 + 0x24);
-    *(s32*)arg0 = index1 + 1;
-    *(s32*)((char*)arg0 + (index2 << 2) + 0x28) = arg2;
-    *(s32*)((char*)arg0 + 0x24) = index2 + 1;
+    index1 = *(s32*)list;
+    *(s32*)((char*)list + (index1 << 2) + 4) = driverNum;
+    index2 = *(s32*)((char*)list + 0x24);
+    *(s32*)list = index1 + 1;
+    *(s32*)((char*)list + (index2 << 2) + 0x28) = vehicleNum;
+    *(s32*)((char*)list + 0x24) = index2 + 1;
 }
 #pragma scheduling on
+/* Whether a driver takes his vehicle from the vehicle record's alternate list
+ * instead of the one picked for him; always off in this build. */
 int fn_800178F0(void) { return 0; }
 
-void fn_800178F8(s32 arg0, s32 arg1) {
-    void* temp = fn_80016544(arg1);
+/* Point a driver at the alternate vehicle his vehicle record selects. */
+void fn_800178F8(s32 driverNum, s32 vehicleNum) {
+    void* temp = GetVehicleByNumber(vehicleNum);
     volatile s32* pIndex = (volatile s32*)((char*)temp + 0x94);
     s32 index = *pIndex;
-    fn_800168B0(arg0, *(s32*)((char*)temp + index * 4 + 0x64));
+    SetDriverVehicleOverride(driverNum, *(s32*)((char*)temp + index * 4 + 0x64));
 }
 
 #pragma use_lmw_stmw off
