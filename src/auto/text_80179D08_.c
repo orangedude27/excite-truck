@@ -171,7 +171,7 @@ void fn_80179EE4(void) {
 
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void *fn_80179EE8(void *arg0, s32 arg1) {
+extern "C" void *fn_80179EE8(void *obj, s32 shouldFree) {
     struct ItemDummy {
         virtual void m0(s32) = 0;
     };
@@ -179,9 +179,10 @@ extern "C" void *fn_80179EE8(void *arg0, s32 arg1) {
     void *item;
     s32 i;
 
-    if (arg0 != NULL) {
-        *(s32 *)arg0 = (s32)&lbl_80331C70[0];
-        p = (u8 *)arg0;
+    /* Destroys contained items (vtable+0x8) and optionally frees the object; returns obj. */
+    if (obj != NULL) {
+        *(s32 *)obj = (s32)&lbl_80331C70[0];
+        p = (u8 *)obj;
         i = 0;
         goto check;
     loop:
@@ -191,12 +192,12 @@ extern "C" void *fn_80179EE8(void *arg0, s32 arg1) {
         p += 4;
         i += 1;
     check:
-        if (i < *(s32 *)((u8 *)arg0 + 0x28))
+        if (i < *(s32 *)((u8 *)obj + 0x28))
             goto loop;
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldFree > 0)
+            fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 #pragma cplusplus reset
 #pragma dont_inline reset
