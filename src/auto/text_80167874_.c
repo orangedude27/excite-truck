@@ -152,6 +152,7 @@ extern char lbl_803300E0[];
 extern void fn_802E317C(const char *, ...);
 #pragma optimization_level 2
 #pragma scheduling invalid_target
+#pragma dont_inline on
 s32 *fn_80167874(s32 arg0) {
     s32 *entry;
     s32 value;
