@@ -6785,15 +6785,11 @@ extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2) {
     s32 result = fn_800B5260(arg0, &sp8, block, index, 4);
     if (result != 0)
         return result;
-
     saved = 0;
-    sp8 = ((sp8 << 8) & 0x00FF0000) | (sp8 << 24) |
-        ((sp8 >> 8) & 0x0000FF00) | (sp8 >> 24);
+    sp8 = (sp8 << 24) | ((sp8 >> 8) & 0x0000FF00) | ((sp8 << 8) & 0x00FF0000) | (sp8 >> 24);
     sp8 &= 0xF0000000;
-    sp8 |= (u32)arg2;
-    sp8 = ((sp8 << 8) & 0x00FF0000) | (sp8 << 24) |
-        ((sp8 >> 8) & 0x0000FF00) | (sp8 >> 24);
-
+    sp8 |= (u32)(arg2 & 0x0FFFFFFF);
+    sp8 = (sp8 << 24) | ((sp8 >> 8) & 0x0000FF00) | ((sp8 << 8) & 0x00FF0000) | (sp8 >> 24);
     for (i = 0; i < obj[0x22]; i++) {
         result = fn_800B5618(arg0, &sp8, block, index, 4);
         if (result != 0 && saved == 0)
@@ -17754,7 +17750,7 @@ extern "C" void *fn_800ECAEC(void *);
 extern "C" s32 fn_800ECB90(void *, s32);
 extern "C" void fn_800CEF60(void *, void *, s32);
 extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
-    char *file = (char *)lbl_8031D840;
+    struct Fn800C6774Msgs *file = (struct Fn800C6774Msgs *)lbl_8031D840;
     void *base;
     void *block;
     MEMInitAllocatorForFrmHeap((MEMAllocator *)lbl_804075F0,
@@ -17773,10 +17769,10 @@ extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
         *(void **)((u8 *)base + 0x5C8) = block;
     }
     if (*(void * volatile *)((u8 *)base + 0x5C8) == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, (s32)0xEFC, file + 0x4C);
+        Panic__Q26nw4hbm2dbFPCciPCce(file->file, (s32)0xEFC, file->msg4C);
     }
     if (fn_800ECB90(*(void * volatile *)((u8 *)base + 0x5C8), arg0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, (s32)0xF01, file + 0x80);
+        Panic__Q26nw4hbm2dbFPCciPCce(file->file, (s32)0xF01, file->msg80);
     }
     fn_800CEF60(base, *(void * volatile *)((u8 *)base + 0x5C8), 0);
 }
@@ -23951,32 +23947,31 @@ extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void);
 extern "C" void fn_800FA350(void);
 extern "C" void fn_800CF170(void *arg0) {
     class HandleDispatch { public: virtual void stop2(s32); };
-    class PlayerDispatch { public: virtual void pad1(); virtual void pad2(); virtual void stop(s32); };
-    struct Object { u8 pad[0x5C0]; PlayerDispatch *player; HandleDispatch *h1; HandleDispatch *h2; HandleDispatch *h3; HandleDispatch *h4; s32 detach; };
-    Object *obj = (Object *)arg0;
-    if (obj->h1 != 0) {
-        fn_800EB36C(obj->h1);
-        obj->h1->stop2(-1);
+    if (*(void **)((u8 *)arg0 + 0x5C4) != 0) {
+        fn_800EB36C(*(void **)((u8 *)arg0 + 0x5C4));
+        ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5C4))->stop2(-1);
     }
-    if (obj->h2 != 0) {
-        fn_800ECC58();
-        obj->h2->stop2(-1);
+    if (*(void **)((u8 *)arg0 + 0x5C8) != 0) {
+        ((void (*)(void *))fn_800ECC58)(*(void **)((u8 *)arg0 + 0x5C8));
+        ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5C8))->stop2(-1);
     }
-    if (obj->h3 != 0) {
-        fn_800EE47C();
-        obj->h3->stop2(-1);
+    if (*(void **)((u8 *)arg0 + 0x5CC) != 0) {
+        ((void (*)(void *))fn_800EE47C)(*(void **)((u8 *)arg0 + 0x5CC));
+        ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5CC))->stop2(-1);
     }
-    if (obj->h4 != 0) {
-        fn_800F83D0();
-        obj->h4->stop2(-1);
+    if (*(void **)((u8 *)arg0 + 0x5D0) != 0) {
+        ((void (*)(void *))fn_800F83D0)(*(void **)((u8 *)arg0 + 0x5D0));
+        ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5D0))->stop2(-1);
     }
-    if (obj->player != 0) {
-        Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv();
-        obj->player->stop(-1);
+    if (*(void **)((u8 *)arg0 + 0x5C0) != 0) {
+        ((void (*)(void *))Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv)(*(void **)((u8 *)arg0 + 0x5C0));
+        void *player = *(void **)((u8 *)arg0 + 0x5C0);
+        void *vt = *(void **)((u8 *)player + 8);
+        ((void (*)(void *, s32))*(void **)((u8 *)vt + 8))(player, -1);
     }
-    if (obj->detach != 0)
-        if (obj->detach != 0)
-            DetachSound__Q34nw4r3snd11SoundHandleFv();
+    if (*(void **)((u8 *)arg0 + 0x5D4) != 0)
+        if (*(void **)((u8 *)arg0 + 0x5D4) != 0)
+            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)((u8 *)arg0 + 0x5D4));
     fn_800FA350();
 }
 
@@ -24740,18 +24735,19 @@ zero: return 0;
 #pragma opt_tail_call on
 #pragma opt_tail_call on
 #pragma opt_tail_call on
-extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(void *arg0) {
-    if (arg0 == NULL) {
+/* Draws an nw4hbm debug console directly (background + contents) if initialized and visible. */
+extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(void *consoleHead) {
+    if (consoleHead == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x26D, lbl_8031EA90);
     }
-    void *r30 = arg0;
+    void *head = consoleHead;
     if (fn_800D2E14() != 0) {
-        if (((u8 *)r30)[0x22] != 0) {
+        if (((u8 *)head)[0x22] != 0) {
             OSLockMutex(&lbl_804077C0);
-            fn_800D2E3C(*(s16 *)((u8 *)r30 + 0x1C) - 6, *(s16 *)((u8 *)r30 + 0x1E) - 3,
-                        (s32)(*(u16 *)((u8 *)r30 + 4)) * 6 + 12,
-                        (s32)(*(u16 *)((u8 *)r30 + 0x20)) * 0xA + 4);
-            fn_800D24D4(r30, 0);
+            fn_800D2E3C(*(s16 *)((u8 *)head + 0x1C) - 6, *(s16 *)((u8 *)head + 0x1E) - 3,
+                        (s32)(*(u16 *)((u8 *)head + 4)) * 6 + 12,
+                        (s32)(*(u16 *)((u8 *)head + 0x20)) * 0xA + 4);
+            fn_800D24D4(head, 0);
             fn_800D2FC8();
             OSUnlockMutex(&lbl_804077C0);
         }
