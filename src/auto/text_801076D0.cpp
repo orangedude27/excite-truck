@@ -6,6 +6,7 @@ extern "C" const char lbl_80329530[];
 extern f32 lbl_80561178, lbl_80561188;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+typedef s32 DWRet;
 namespace nw4hbm { namespace ut { class ResFont { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual int GetEncoding(); bool SetResource(void*); }; struct List; void List_Remove(List*, void*); void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; struct Glyph; struct CharWidths { s8 left; u8 glyphWidth; u8 charWidth; }; class CharWriter { public: void* pad[20]; f32 cursorX; void* pad2[2]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; u8 GetWidth() const; u8 GetCellHeight() const; s32 GetDefaultCharWidths() const; void GetGlyph(nw4hbm::ut::Glyph*, unsigned short) const; void GetGlyphFromIndex(nw4hbm::ut::Glyph*, unsigned short) const; void SetLineFeed(int); void SetDefaultCharWidths(const CharWidths&); }; } } }
 
 extern "C" const char lbl_80328828[];
@@ -740,7 +741,9 @@ s8 nw4hbm::ut::detail::ResFontBase::GetLineFeed() const {
     if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
     if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
     if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x129,file+0x128);
-    return (s8)(*(u8*)(*(u32*)((char*)this+0x14)+1) & 0xFF);
+    u32 data = *(u32*)((char*)this+0x14);
+    u8 b1 = *(u8*)(data+1);
+    return (s8)b1;
 }
 
 s32 nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
