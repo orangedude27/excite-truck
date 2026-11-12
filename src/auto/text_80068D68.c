@@ -23085,7 +23085,7 @@ u8 arg2;
 #pragma pop
 extern char lbl_80319EB0[];
 void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
-    void *existing;
+    u8 *existing;
     long i;
     long j;
     u8 *mcb_base;
@@ -23096,7 +23096,7 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
         if (lbl_803C4828[i * 0x78 + 0x408] != 0 &&
             memcmp(peer_addr, addr, 6) == 0) {
             if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0);
-            existing = lbl_803C4828 + i * 0x78 + 0x39C;
+            existing = (lbl_803C4828 + 0x39C) + i * 0x78;
             fn_80070F90(existing);
             return existing;
         }
@@ -24942,12 +24942,14 @@ void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     extern char lbl_8031A4E8[];
     UINT8 *p;
     UINT8 *p_end;
+    TIMER_LIST_ENT *timer;
     UINT8 opcode;
     UINT16 trans_num;
     UINT16 param_len;
+    timer = (TIMER_LIST_ENT *)((UINT8 *)p_ccb + 8);
     p = (UINT8 *)p_msg + p_msg->offset + 8;
     p_end = p + p_msg->len;
-    btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)p_ccb + 8), 5, 0x1E);
+    btu_start_timer(timer, 5, 0x1E);
     opcode = *p++;
     trans_num = ((UINT16)p[0] << 8) + p[1];
     param_len = ((UINT16)p[2] << 8) + p[3];
