@@ -809,8 +809,10 @@ extern long fn_8020FEF0(long);
 extern long fn_802100AC(void);
 extern long fn_80012158(void);
 #pragma scheduling invalid_target
-long fn_802111E4(long arg0) {
-    switch (arg0) {
+long fn_802111E4(long keyCode) {
+    /* Handle track-music menu key/input codes: navigate selection, invoke a
+     * callback on confirm, refresh state, and return whether the key was handled. */
+    switch (keyCode) {
     case 0x126:
         fn_8020FFE4(-1);
         break;
@@ -824,7 +826,7 @@ long fn_802111E4(long arg0) {
         fn_8020FEF0(-1);
         break;
     case 0x53:
-        ((long (* volatile)(long))lbl_8055EED8)((arg0 - 0x58) == 0);
+        ((long (* volatile)(long))lbl_8055EED8)((keyCode - 0x58) == 0);
         fn_802100AC();
         break;
     case 0x113:
