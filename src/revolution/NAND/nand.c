@@ -92,6 +92,7 @@ s32 NANDDelete(const char* path) {
 
 s32 NANDPrivateDeleteAsync(const char* path, NANDAsyncCallback callback,
                            NANDCommandBlock* block) {
+    /* Asynchronously delete a NAND file/directory: build absolute path and forward to ISFS. */
     char absPath[64];
 
     if (!nandIsInitialized()) {
