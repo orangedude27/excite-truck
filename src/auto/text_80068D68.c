@@ -9084,7 +9084,6 @@ void btm_vendor_specific_evt(UINT8 *p, UINT8 evt_len) {
 
 extern char lbl_80316220[]; /* "BTM: BTM_WritePageTimeout: Timeout: %d." */
 extern void fn_8008534C(void *, u16);
-/* Sends the HCI Write_Page_Timeout command; timeout is in 0.625 ms slots. */
 tBTM_STATUS BTM_WritePageTimeout(UINT16 timeout) {
     void *buf;
     if (lbl_803C0F78[0x27c0] >= 4) {
