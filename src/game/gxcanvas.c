@@ -1287,13 +1287,17 @@ void fn_802C4F58(s32 x, s32 y, const char *text, s32 color) {
 }
 #pragma pop
 extern unsigned int strlen(const char *);
-unsigned int fn_802C4FF8(const char *s) { return strlen(s) * 8; }
+/* Width in pixels the string would occupy in the canvas font. */
+unsigned int fn_802C4FF8(const char *s) { return strlen(s) * CANVAS_CHAR_WIDTH; }
 
+/* The canvas font's character height/width. */
 int fn_802C501C(void) {
-    return 8;
+    return CANVAS_CHAR_WIDTH;
 }
 
-void fn_802C5024(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {}
+/* Blit one character of the canvas font at (x,y) in the given colour.  Built
+ * empty in this release: the debug text overlay never draws. */
+void fn_802C5024(s32 x, s32 y, s32 ch, s32 color) {}
 extern const char lbl_8034B060[];
 extern void fn_802C3320();
 extern void fn_802C33A8();
