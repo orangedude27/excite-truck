@@ -11751,6 +11751,7 @@ BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_
 }
 
 void BTM_PINCodeReply(BD_ADDR bd_addr, UINT8 res, UINT8 pin_len, UINT8 *p_pin, UINT32 trusted_mask[]) {
+    /* Reply to a PIN code request: stop the pairing timer, send negative or positive HCI reply, and save trusted services. */
     void *p_dev;
 
     if (*(u32 *)(lbl_803C0F78 + 0x194C)) {
