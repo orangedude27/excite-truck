@@ -815,6 +815,7 @@ void *__dt__14CollisionSpaceFv_801F2E24(void *arg0, int arg1) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801F2E88(void *arg0, void *arg1) {
     extern float fn_801F3174(void);
     extern void fn_801F3198(void *);
