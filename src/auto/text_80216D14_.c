@@ -200,9 +200,9 @@ extern "C" void *fn_80217270(void *container, int shouldFree) {
 }
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_8021734C(void *arg0) {
-    register char *entry = (char *)arg0;
-    register char *self = (char *)arg0;
+extern "C" void fn_8021734C(void *menuGroup) {
+    register char *entry = (char *)menuGroup;
+    register char *self = (char *)menuGroup;
     register int i = 0;
     Fn8021734CEntry *object;
     void *source;
