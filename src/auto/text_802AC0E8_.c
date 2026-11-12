@@ -487,39 +487,40 @@ extern void fn_80128668(void *);
 extern void fn_80128670(void *);
 extern void fn_802AD30C(void *);
 #pragma scheduling invalid_target
-void *fn_802ADE60(void **arg0, int arg1) {
-    int count;
-    int offset;
-    void *obj;
+void *fn_802ADE60(void **holder, int freeHolder) {
+    int entryCount;
+    int entryOffset;
+    void *set;
     int zero;
-    if (arg0 != 0) {
-        count = *(int *)((char *)*arg0 + 4);
-        offset = count * 0x74;
+    /* Destroy an entry-set holder: release each entry's resource, free the set
+       buffer and clear the header, then optionally free the holder itself. */
+    if (holder != 0) {
+        entryCount = *(int *)((char *)*holder + 4);
+        entryOffset = entryCount * 0x74;
         goto loop_test;
         do {
-            fn_802AD30C(*(void **)(*(char **)*arg0 + offset + 0x64));
+            fn_802AD30C(*(void **)(*(char **)*holder + entryOffset + 0x64));
 loop_test:
-            offset -= 0x74;
-        } while (count-- > 0);
-        *(int *)((char *)*arg0 + 4) = 0;
-        obj = *arg0;
-        if (obj != 0) {
-            if (obj != 0) {
-                fn_80128670(*(void **)((char *)obj + 0xC));
-                if (obj != 0) {
+            entryOffset -= 0x74;
+        } while (entryCount-- > 0);
+        *(int *)((char *)*holder + 4) = 0;
+        set = *holder;
+        if (set != 0) {
+            if (set != 0) {
+                fn_80128670(*(void **)((char *)set + 0xC));
+                if (set != 0) {
                     zero = 0;
-                    *(int *)((char *)obj + 0) = zero;
-                    *(int *)((char *)obj + 4) = zero;
-                    *(int *)((char *)obj + 8) = zero;
+                    *(int *)((char *)set + 0) = zero;
+                    *(int *)((char *)set + 4) = zero;
+                    *(int *)((char *)set + 8) = zero;
                 }
             }
-            fn_80128668(obj);
+            fn_80128668(set);
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (freeHolder > 0) fn_80128668(holder);
     }
-    return arg0;
+    return holder;
 }
-#pragma scheduling invalid_target
 int fn_802ADF34(void **arg0, char *arg1, int arg2) {
     int result;
     char *header;
