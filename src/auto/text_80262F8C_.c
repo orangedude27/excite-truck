@@ -265,28 +265,31 @@ s32 fn_80263998(void *obj, s32 event) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma fp_contract on
-void fn_80263AB4(void *arg0) {
-    f32 t = (f32)fn_802E2C20();
-    f32 b;
-    f32 c;
-    s32 v;
+void fn_80263AB4(void *self) {
+    /* After fn_802E2C20 ticks (ms) exceed the start time at +0x2C by 0.5s, fades
+       the handle at +0x24 to (0,0) via fn_802E8528, else to (1,0). Mirrors active
+       selection (lbl_8055F434 == id at +0x20) into flags at +0x1C/+0x29. */
+    f32 nowMs = (f32)fn_802E2C20();
+    f32 fadeA;
+    f32 fadeB;
+    s32 handle;
 
-    if (t / lbl_80563BD8 - *(f32 *)((u8 *)arg0 + 0x2C) < lbl_80563BE8) {
-        b = lbl_80563BD4;
-        c = lbl_80563BEC;
-        v = *(s32 *)((u8 *)arg0 + 0x24);
-        ((s32 (*)(s32, f32, f32))fn_802E8528)(v, b, c);
+    if (nowMs / lbl_80563BD8 - *(f32 *)((u8 *)self + 0x2C) < lbl_80563BE8) {
+        fadeA = lbl_80563BD4;
+        fadeB = lbl_80563BEC;
+        handle = *(s32 *)((u8 *)self + 0x24);
+        ((s32 (*)(s32, f32, f32))fn_802E8528)(handle, fadeA, fadeB);
     } else {
         ((s32 (*)(s32, f32, f32))fn_802E8528)(
-            *(s32 *)((u8 *)arg0 + 0x24), lbl_80563BEC, lbl_80563BEC);
+            *(s32 *)((u8 *)self + 0x24), lbl_80563BEC, lbl_80563BEC);
     }
 
-    if (lbl_8055F434 == *(s32 *)((u8 *)arg0 + 0x20)) {
-        *(s32 *)((u8 *)arg0 + 0x1C) = 1;
-        *((u8 *)arg0 + 0x29) = 1;
+    if (lbl_8055F434 == *(s32 *)((u8 *)self + 0x20)) {
+        *(s32 *)((u8 *)self + 0x1C) = 1;
+        *((u8 *)self + 0x29) = 1;
     } else {
-        *(s32 *)((u8 *)arg0 + 0x1C) = 0;
-        *((u8 *)arg0 + 0x29) = 0;
+        *(s32 *)((u8 *)self + 0x1C) = 0;
+        *((u8 *)self + 0x29) = 0;
     }
 }
 #pragma pop
