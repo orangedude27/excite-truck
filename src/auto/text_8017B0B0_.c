@@ -290,6 +290,22 @@ void fn_8017B6A8(void *arg0) {
 
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECCrossProduct();
+
+/* Moving body these accessors work on: a column-major 3x3 rotation at 0x3C and
+   world position at 0x60 (see fn_8017AB84), the linear velocity at 0x118 and
+   angular velocity at 0x124, and a second pair of the same at 0x16C / 0x178. */
+typedef struct RigidBody {
+    /* 0x00 */ void *vtable;
+    char pad_04[0x5C];
+    Vec position;             /* 0x60 */
+    char pad_6C[0xAC];
+    Vec velocity;             /* 0x118 */
+    Vec angularVelocity;      /* 0x124 */
+    char pad_130[0x3C];
+    Vec velocity2;            /* 0x16C */
+    Vec angularVelocity2;     /* 0x178 */
+} RigidBody;
+
 #pragma scheduling on
 void fn_8017B6D4(void * __restrict arg0, float * __restrict arg1, float * __restrict arg2) {
     float vector[3];
