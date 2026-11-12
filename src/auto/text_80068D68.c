@@ -6517,8 +6517,8 @@ void bta_hh_get_acl_q_info(void) {
                 *(u16 *)(config + entry[0x26] * 0x34 + 0x16));
             if (ccb != 0 && (p = *(u8 **)(ccb + 0x10)) != 0 && p[0] != 0) {
                 *(u16 *)(row + 8) = *(u16 *)(p + 0x4C);
-                count++;
                 *(u16 *)(row + 0xA) = *(u16 *)(p + 0x38);
+                count++;
             }
         }
     }
@@ -21780,6 +21780,7 @@ void rfc_port_sm_opened(void *p_port, u16 event, void *p_data)
     }
 }
 
+/* Handle RFCOMM port events while in the DISC_WAIT_UA state. */
 void rfc_port_sm_disc_wait_ua(void *p_port, s32 event, void *p_data) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319AC4[];
