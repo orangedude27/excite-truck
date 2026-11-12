@@ -2183,15 +2183,18 @@ extern "C" void GXInitTexObjWrapMode(void*,s32,s32);
 #pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*,void*,u32);
 #pragma dont_inline on
-extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void* self,u8 index,void* palette) {
- extern const char lbl_8031F990[]; extern const char lbl_8031FDE8[];
- u32 count=*(u32*)((char*)self+0x50)>>28;
- if(index>=count) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990,0x409,lbl_8031FDE8);
- void* dst=(u8*)*(void**)((char*)self+0x58)+((u32)index<<5);
- s32 lod=GXGetTexObjLODAll(dst);
- s32 wrap=GXGetTexObjWrap_Internal(dst);
- InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(dst,palette,0);
- GXInitTexObjWrapMode(dst,lod,wrap);
+extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void* material, u8 texMapIndex, void* tplPalette) {
+    /* Set a material's texture map from a TPL palette without changing its wrap mode. */
+    extern const char lbl_8031F990[];
+    extern const char lbl_8031FDE8[];
+    u32 texMapCount = *(u32*)((char*)material + 0x50) >> 28;
+    if (texMapIndex >= texMapCount)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x409, lbl_8031FDE8);
+    void* texObj = (u8*)*(void**)((char*)material + 0x58) + ((u32)texMapIndex << 5);
+    s32 lod = GXGetTexObjLODAll(texObj);
+    s32 wrapMode = GXGetTexObjWrap_Internal(texObj);
+    InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(texObj, tplPalette, 0);
+    GXInitTexObjWrapMode(texObj, lod, wrapMode);
 }
 #pragma dont_inline reset
 
