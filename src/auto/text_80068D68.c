@@ -14913,22 +14913,23 @@ s32 btsnd_hcic_exit_sniff_mode_80084AE8(u8 *p, u16 handle) {
     return 1;
 }
 
+// Build and send an HCI Switch Role command for the given Bluetooth device address and role.
 BOOLEAN btsnd_hcic_switch_role(BD_ADDR bd_addr, UINT8 role) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 10;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0xB;
-    p[9] = 8;
-    p[10] = 7;
-    p[11] = bd_addr[5];
-    p[12] = bd_addr[4];
-    p[13] = bd_addr[3];
-    p[14] = bd_addr[2];
-    p[15] = bd_addr[1];
-    p[16] = bd_addr[0];
-    p[17] = role;
-    btu_hcif_send_cmd(p);
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == NULL) return FALSE;
+    *(u16 *)(cmdBuf + 2) = 10;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 0xB;
+    cmdBuf[9] = 8;
+    cmdBuf[10] = 7;
+    cmdBuf[11] = bd_addr[5];
+    cmdBuf[12] = bd_addr[4];
+    cmdBuf[13] = bd_addr[3];
+    cmdBuf[14] = bd_addr[2];
+    cmdBuf[15] = bd_addr[1];
+    cmdBuf[16] = bd_addr[0];
+    cmdBuf[17] = role;
+    btu_hcif_send_cmd(cmdBuf);
     return TRUE;
 }
 
