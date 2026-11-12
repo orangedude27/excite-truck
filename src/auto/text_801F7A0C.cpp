@@ -1751,6 +1751,7 @@ extern "C" void fn_801FA6B8(void) {
 #pragma dont_inline reset
 
 extern "C" void fn_801FA738(void) {
+    // Selects mode from game flags, then iterates lbl_8055EC4C nodes (flag +0x41 set, +0x40 set) to trigger fn_802C70AC while audio/state is prepared.
     u32 flags = *(u32 *)((u8 *)fn_801E87A8() + 0x10);
     s32 mode = 2;
     if (flags & 2) mode = 1;
