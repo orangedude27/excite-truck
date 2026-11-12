@@ -274,6 +274,7 @@ extern "C" void fn_80205FCC(void) {
     fn_80010188(-1, 0x24, *(int *)(lbl_804891D0 + 4), lbl_805631F0, lbl_80563198 * (float)lbl_8055CFF0, f31);
     fn_802C8638(&cam);
 }
+#pragma pop
 #pragma cplusplus reset
 void fn_802061F8(void) {
     lbl_8055ED6C = fn_802CAC28(lbl_8033BC40, 0);
