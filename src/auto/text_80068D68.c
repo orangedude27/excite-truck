@@ -9060,15 +9060,16 @@ void btm_discovery_db_init(void) {
 
 void btm_discovery_db_reset(void)
 {
-    void (*callback)(s32);
+    /* Reset discovery state/timer and reinitialize the SDP discovery database. */
+    void (*discoveryCmplCallback)(s32);
 
     fn_80070F90(lbl_803C0F78 + 0x658);
     if (lbl_803C0F78[0x1674] != 0) {
-        callback = *(void (**)(s32))(lbl_803C0F78 + 0x6D0);
+        discoveryCmplCallback = *(void (**)(s32))(lbl_803C0F78 + 0x6D0);
         lbl_803C0F78[0x1674] = 0;
         *(void (**)(s32))(lbl_803C0F78 + 0x6D0) = 0;
-        if (callback != 0)
-            callback(0);
+        if (discoveryCmplCallback != 0)
+            discoveryCmplCallback(0);
     }
 
     *(tSDP_DISCOVERY_DB **)(lbl_803C0F78 + 0x1678) =
