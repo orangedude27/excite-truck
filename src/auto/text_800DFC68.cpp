@@ -241,21 +241,24 @@ void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChild
 }
 #pragma use_lmw_stmw reset
 
-extern "C" void* FindAnimationLink__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
-    void* result = FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(self, anim);
+/* nw4hbm::lyt::Window::FindAnimationLink(AnimTransform*): look for the animation
+ * link of pAnim - first in this window's own bindings (the Pane part), then in
+ * each of its frame materials; the first material holding a link for pAnim wins. */
+void* nw4hbm::lyt::Window::FindAnimationLink(AnimTransform* pAnim) {
+    void* result = FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(this, pAnim);
     if (result != 0) return result;
-    struct DummyPane {
+    struct FrameMaterial {   /* nw4hbm::lyt::Material: only its animation virtual, at vtable+0x20 */
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4(); virtual void v5();
-        virtual void* FindAnimationLink(void* anim);
+        virtual void* FindAnimationLink(AnimTransform* pAnim);
     };
     int offset;
     int count;
     count = 0;
     offset = 0;
-    while (count < *((unsigned char*)self + 0x100)) {
-        DummyPane* pane = *(DummyPane**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
-        result = pane->FindAnimationLink(anim);
+    while (count < materialCount) {
+        FrameMaterial* pMaterial = *(FrameMaterial**)((u8*)materials + offset + 4);
+        result = pMaterial->FindAnimationLink(pAnim);
         if (result != 0) return result;
         offset += 8;
         count++;
