@@ -923,53 +923,61 @@ int fn_801F15A8(void **arg0, int arg1) {
 #define WHEELMOD_LOD_TABLE 0x28             /* offsetof(WheelMod, lods) */
 #define WHEELMOD_LOD_SPIN_FLAG 0x3C         /* WHEELMOD_LOD_TABLE + offsetof(WheelModLod, yesFlag) */
 
-void fn_801F163C(void *arg0, int arg1, float farg0) {
-    struct Pair { int a; int b; };
-    int temp = *(int *)((char *)arg0 + 0xC);
-    char *base;
-    char *entry;
-    int isSet;
-    int v0, v1;
-    int dst[12];
-    float mtx9[9];
-    Vec vec;
-    unsigned int flags;
-    int var_r8 = 1;
-    if (temp != 0 && temp != 2) var_r8 = 0;
-    flags = *(unsigned int *)((char *)arg0 + 4);
-    base = *(char **)arg0 + arg1 * 0x18;
-    entry = base + 0x28;
-    *(struct Pair *)&dst[0] = *(struct Pair *)((char *)arg0 + 0x18);
-    isSet = (flags >> 4) & 1;
-    *(struct Pair *)&dst[2] = *(struct Pair *)((char *)arg0 + 0x20);
-    *(struct Pair *)&dst[4] = *(struct Pair *)((char *)arg0 + 0x28);
-    *(struct Pair *)&dst[6] = *(struct Pair *)((char *)arg0 + 0x30);
-    dst[8] = *(int *)((char *)arg0 + 0x38);
-    *(struct Pair *)&dst[9] = *(struct Pair *)((char *)arg0 + 0x3C);
-    dst[11] = *(int *)((char *)arg0 + 0x44);
-    (void)v0; (void)v1;
-    if (*(unsigned char *)(base + 0x3C) != 0) {
-        float scale = (var_r8 != 0) ? lbl_80562F18 : lbl_80562F2C;
-        float tmp = farg0 * scale;
-        float c = lbl_80562F1C;
-        vec.x = tmp; vec.y = c; vec.z = c;
-        fn_80015A20(mtx9, &vec, tmp);
-        fn_80015B20(dst, mtx9, dst);
+/* Draw one wheel of a detached wheel instance: copy its world matrix, roll the
+ * model about its X axis when the LOD entry's flag asks for it (backwards on the
+ * mirrored wheels), scale that axis to the wheel's width, and submit the result
+ * to the model manager as the slow- or fast-spinning model of this side. */
+void fn_801F163C(void *instance, int lodIndex, float spinAngle) {
+    WheelInstance *wheel = (WheelInstance *)instance;
+    int wheelIndex = wheel->wheelIndex;
+    char *lodBase;
+    WheelModLod *lod;
+    int useFastRemap;
+    int spare0, spare1;
+    int matrix[12];
+    float rollMtx[9];
+    Vec angles;
+    unsigned int state;
+    int spinsForward = 1;
+
+    if (wheelIndex != 0 && wheelIndex != 2)
+        spinsForward = 0;
+    state = wheel->state;
+    /* the record's LOD table starts 0x28 into it, so the index is scaled first */
+    lodBase = (char *)wheel->mod + lodIndex * sizeof(WheelModLod);
+    lod = (WheelModLod *)(lodBase + WHEELMOD_LOD_TABLE);
+    *(MatrixPair *)&matrix[0] = *(MatrixPair *)&wheel->matrix[0];
+    useFastRemap = (state >> 4) & 1;
+    *(MatrixPair *)&matrix[2] = *(MatrixPair *)&wheel->matrix[2];
+    *(MatrixPair *)&matrix[4] = *(MatrixPair *)&wheel->matrix[4];
+    *(MatrixPair *)&matrix[6] = *(MatrixPair *)&wheel->matrix[6];
+    matrix[8] = *(int *)&wheel->matrix[8];
+    *(MatrixPair *)&matrix[9] = *(MatrixPair *)&wheel->matrix[9];
+    matrix[11] = *(int *)&wheel->matrix[11];
+    (void)spare0; (void)spare1;
+    if (*(unsigned char *)(lodBase + WHEELMOD_LOD_SPIN_FLAG) != 0) {
+        /* the lod entry's 'y' flag: roll the model by the wheel's angle */
+        float direction = (spinsForward != 0) ? wheelmod_spin_forward : wheelmod_spin_reversed;
+        float angle = spinAngle * direction;
+        float zero = wheelmod_angle_zero;
+        angles.x = angle; angles.y = zero; angles.z = zero;
+        fn_80015A20(rollMtx, &angles, angle);
+        fn_80015B20(matrix, rollMtx, matrix);
     }
     {
-        float f = *(float *)(*(char **)arg0 + 0x24);
-        *(float *)&dst[0] *= f; *(float *)&dst[1] *= f; *(float *)&dst[2] *= f;
+        float width = wheel->mod->modelScale;
+        *(float *)&matrix[0] *= width; *(float *)&matrix[1] *= width; *(float *)&matrix[2] *= width;
     }
     {
-        int out;
-        if (isSet != 0) {
-            int idx = *(int *)((char *)arg0 + 0x10);
-            out = *(int *)(entry + idx*4 + 8);
+        int modelId;
+        if (useFastRemap != 0) {
+            int side = wheel->side;
+            modelId = lod->fastRemap[side];
         } else {
-            int idx = *(int *)((char *)arg0 + 0x10);
-            out = *(int *)(entry + idx*4);
+            int side = wheel->side;
+            modelId = lod->slowRemap[side];
         }
-        fn_802C70AC(out, dst, 0, fn_801F1978(*(unsigned int *)((char *)arg0 + 4)));
+        fn_802C70AC(modelId, matrix, 0, fn_801F1978(wheel->state));
     }
 }
 
