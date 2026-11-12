@@ -5,18 +5,19 @@ extern void __copy_longs_unaligned(void *, const void *, unsigned long);
 extern void __copy_longs_rev_unaligned(void *, const void *, unsigned long);
 extern void __copy_longs_aligned(void *, const void *, unsigned long);
 extern void __copy_longs_rev_aligned(void *, const void *, unsigned long);
+/* Copy n bytes from src to dst, handling overlap by choosing forward or reverse copy. */
 void *memmove(void *dst, const void *src, unsigned long n) {
-    unsigned long diff = (unsigned long)dst ^ (unsigned long)src;
-    int reverse = (unsigned long)dst > (unsigned long)src;
+    unsigned long addr_diff = (unsigned long)dst ^ (unsigned long)src;
+    int copy_reverse = (unsigned long)dst > (unsigned long)src;
     if (n >= 32) {
-        if (diff & 3) {
-            if (reverse == 0) {
+        if (addr_diff & 3) {
+            if (copy_reverse == 0) {
                 __copy_longs_unaligned(dst, src, n);
             } else {
                 __copy_longs_rev_unaligned(dst, src, n);
             }
         } else {
-            if (reverse == 0) {
+            if (copy_reverse == 0) {
                 __copy_longs_aligned(dst, src, n);
             } else {
                 __copy_longs_rev_aligned(dst, src, n);
@@ -24,7 +25,7 @@ void *memmove(void *dst, const void *src, unsigned long n) {
         }
         return dst;
     }
-    if (!reverse) {
+    if (!copy_reverse) {
         const unsigned char *s = (const unsigned char *)src - 1;
         unsigned char *d = (unsigned char *)dst - 1;
         n++;
