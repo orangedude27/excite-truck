@@ -10566,62 +10566,70 @@ static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBT
 extern char lbl_803165FC[];
 extern char lbl_8031664C[];
 extern void btm_chg_all_acl_pkt_types(BOOLEAN);
+/* Called for every HCI mode change event (the parked link's return to active is
+ * mode == HCI_MODE_ACTIVE): each (e)SCO record that was left waiting for that
+ * unpark (SCO_ST_PEND_UNPARK) on this ACL link now gets the connect request it
+ * was holding, as plain SCO or as eSCO, and moves on to SCO_ST_CONNECTING.
+ * This is btm_send_connect_request() inlined for the unpark case. */
 void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle, UINT8 mode) {
-    UINT32 i;
-    UINT8 *entry;
+    UINT32 xx;
+    ScoConnView *p;
     UINT16 acl_handle;
     UINT16 packet_types;
     UINT16 supported;
     UINT16 requested;
     UINT8 status;
-    i = 0;
-    entry = lbl_803C0F78 + 0x1854;
-    while (i < 3) {
-        if (*(UINT16 *)(entry + 8) != 6)
+    xx = 0;
+    p = (ScoConnView *)(lbl_803C0F78 + BTM_SCO_DB);
+    while (xx < BTM_SCO_DB_LINKS) {
+        if (p->state != SCO_ST_PEND_UNPARK)
             goto next;
-        if (mode != 0)
+        if (mode != HCI_MODE_ACTIVE)
             goto next;
-        if (hci_status != 0)
+        if (hci_status != HCI_SUCCESS)
             goto next;
-        acl_handle = BTM_GetHCIConnHandle(entry + 0x28);
+        acl_handle = BTM_GetHCIConnHandle(p->bd_addr);
         if (hci_handle != acl_handle)
             goto next;
-        if (lbl_803C0F78[0x27C0] >= 3)
-            fn_8007096C(0xD0002, lbl_8031664C, acl_handle, lbl_803C0F78[0x1909]);
-        btm_chg_all_acl_pkt_types(1);
-        if (lbl_803C0F78[0x1908] == 0) {
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API)
+            fn_8007096C(TRACE_LAYER_BTM | TRACE_TYPE_API, lbl_8031664C, acl_handle, btm_cb_desired_sco_mode);
+        btm_chg_all_acl_pkt_types(TRUE);
+        if (btm_cb_esco_supported == 0) {
+            /* 1.1 controller: the record's eSCO packet types become SCO ones */
             if (!btsnd_hcic_add_SCO_conn(acl_handle,
-                    (*(UINT16 *)(entry + 0x20) << 5) & 0xE0)) {
-                status = 3;
+                    (p->setup.packet_types << 5) & 0xE0 /* BTM_ESCO_2_SCO() */)) {
+                status = BTM_NO_RESOURCES;
                 goto update_state;
             }
         } else {
-            supported = *(UINT16 *)(lbl_803C0F78 + 0x656);
-            requested = *(UINT16 *)(entry + 0x20);
-            packet_types = (requested & supported) & 0x3F;
-            if (lbl_803C0F78[0x636] >= 3)
-                packet_types |= (requested | supported) & 0x3C0;
-            if (lbl_803C0F78[0x27C0] >= 3)
-                fn_800709CC(0xD0002, lbl_803165FC,
-                    *(UINT32 *)(entry + 0x14), *(UINT32 *)(entry + 0x18),
-                    *(UINT16 *)(entry + 0x1C), *(UINT16 *)(entry + 0x1E),
-                    entry[0x22], packet_types);
+            /* keep only the packet types both sides support, ... */
+            supported = btm_cb_sco_pkt_types;
+            requested = p->setup.packet_types;
+            packet_types = (requested & supported) & BTM_SCO_SUPPORTED_PKTS_MASK;
+            /* ... and pass on the 2.0 exception bits when the controller is 2.0 */
+            if (btm_cb_hci_version >= HCI_PROTO_VERSION_2_0)
+                packet_types |= (requested | supported) & BTM_SCO_EXCEPTION_PKTS_MASK;
+            if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API)
+                fn_800709CC(TRACE_LAYER_BTM | TRACE_TYPE_API, lbl_803165FC,
+                    p->setup.tx_bw, p->setup.rx_bw,
+                    p->setup.max_latency, p->setup.voice_contfmt,
+                    p->setup.retrans_effort, packet_types);
             if (!btsnd_hcic_setup_esco_conn(acl_handle,
-                    *(UINT32 *)(entry + 0x14), *(UINT32 *)(entry + 0x18),
-                    *(UINT16 *)(entry + 0x1C), *(UINT16 *)(entry + 0x1E),
-                    entry[0x22], packet_types)) {
-                status = 3;
+                    p->setup.tx_bw, p->setup.rx_bw,
+                    p->setup.max_latency, p->setup.voice_contfmt,
+                    p->setup.retrans_effort, packet_types)) {
+                status = BTM_NO_RESOURCES;
                 goto update_state;
             }
-            *(UINT16 *)(entry + 0x20) = packet_types;
+            p->setup.packet_types = packet_types;
         }
-        status = 1;
+        status = BTM_CMD_STARTED;
     update_state:
-        if (status == 1)
-            *(UINT16 *)(entry + 8) = 3;
+        if (status == BTM_CMD_STARTED)
+            p->state = SCO_ST_CONNECTING;
     next:
-        i++;
-        entry += 0x34;
+        xx++;
+        p++;
     }
 }
 
