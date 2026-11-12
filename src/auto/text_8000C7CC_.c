@@ -124,6 +124,7 @@ void fn_8000CE60(void) {
 
 #pragma cplusplus on
 extern "C" void fn_8000CEF0(void) {
+    /* Release owned UI objects/resources and reset associated state flags. */
     class Object {
     public:
         virtual void release(s32);
