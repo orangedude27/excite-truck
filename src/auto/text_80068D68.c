@@ -15337,25 +15337,27 @@ void HID_DevInit(void) {
 
 extern char lbl_803176D0[];
 extern char lbl_803176E8[];
+/* Initiate an outgoing HID device connection: trace start, reset connection IDs/state,
+   request an L2CAP connection on the HID control PSM, and return success or failure. */
 s32 hidd_conn_initiate(void) {
-    u16 cid;
-    u8 *cb = lbl_803C3AF0;
+    u16 l2capCid;
+    u8 *devCb = lbl_803C3AF0;
 
-    if (cb[0x141] >= 4) {
+    if (devCb[0x141] >= 4) {
         fn_8007093C(0x1E0003, lbl_803176D0);
     }
-    *(u16 *)(cb + 0x14) = 0;
-    *(s16 *)(cb + 0x16) = 0;
-    cb[0x11] = 1;
-    cid = L2CA_ConnectReq(0x11, lbl_803C3AF0);
-    *(u16 *)(cb + 0x14) = cid;
-    if (cid == 0) {
+    *(u16 *)(devCb + 0x14) = 0;
+    *(s16 *)(devCb + 0x16) = 0;
+    devCb[0x11] = 1;
+    l2capCid = L2CA_ConnectReq(0x11, lbl_803C3AF0);
+    *(u16 *)(devCb + 0x14) = l2capCid;
+    if (l2capCid == 0) {
         if (lbl_803C3AF0[0x141] >= 2) {
             fn_8007093C(0x1E0001, lbl_803176E8);
         }
         return 0xE;
     }
-    cb[0x10] = 1;
+    devCb[0x10] = 1;
     return 0;
 }
 
