@@ -129,6 +129,9 @@ extern "C" int fn_8013A860(float *arg0, void *arg1) {
 #pragma processor 750
 #pragma cplusplus on
 extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
+    /* Interpolate a table float between row arg2 and arg2+1 for column arg1.
+     * Builds the element name for each row via fn_8013A708 and reads it through
+     * vtable slot 0x24 (get float by name), then lerps: value2 + arg3*(value1-value2). */
     class LocalVtable {
     public:
         virtual void v0();
@@ -140,14 +143,14 @@ extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
         virtual void v6();
         virtual float get(char *);
     };
-    char sp28[0x20];
-    char sp8[0x20];
+    char nameNext[0x20];
+    char nameCur[0x20];
     float temp_f1;
     float temp_f31;
     temp_f31 = ((LocalVtable *)arg0)->get(
-        ((char *(*)(char *, int, int))fn_8013A708)(sp8, arg2 + 1, arg1));
+        ((char *(*)(char *, int, int))fn_8013A708)(nameCur, arg2 + 1, arg1));
     temp_f1 = ((LocalVtable *)arg0)->get(
-        ((char *(*)(char *, int, int))fn_8013A708)(sp28, arg2, arg1));
+        ((char *(*)(char *, int, int))fn_8013A708)(nameNext, arg2, arg1));
     return temp_f1 + arg3 * (temp_f31 - temp_f1);
 }
 #pragma pop
