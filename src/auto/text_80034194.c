@@ -2054,6 +2054,7 @@ extern void __DVDClearWaitingQueue(void);
 extern void fn_80038368(void *);
 extern void fn_800379A8(u32);
 extern BOOL __OSInIPL;
+/* Handle DVD command completion/error state transitions based on the current executing command. */
 void fn_8003773C(void) {
     s32 command = lbl_8055D8BC;
     MotorState_8055D8A8 = 1;
