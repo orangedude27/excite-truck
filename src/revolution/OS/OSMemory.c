@@ -501,6 +501,7 @@ static void BATConfig(void) {
     }
 }
 
+/* Initialize memory protection hardware/interrupts and register shutdown handler. */
 void __OSInitMemoryProtection(void) {
     BOOL enabled = OSDisableInterrupts();
 
