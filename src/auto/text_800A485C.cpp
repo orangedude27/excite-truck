@@ -7508,12 +7508,16 @@ extern "C" s32 VFiPFFILE_p_fread(void *, void *buffer, u32 count, u32 size, void
 
 extern "C" s32 fn_800A9470(void *,void *);
 extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
-    register s32 temp_r3, temp_r5;
-    register u32 size;
-    register void *file;
+    s32 temp_r3;
+    s32 temp_r5;
+    u32 size;
+    void *file;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x34) = (u8 *)arg0 + 0xC;
-    if (arg0 == 0) file = 0;
-    else file = *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    if (arg0 == 0) {
+        file = 0;
+    } else {
+        file = *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    }
     *(s32 *)arg1 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264);
     *(s32 *)((u8 *)arg1 + 4) = *(s32 *)((u8 *)arg0 + 0x1C);
     size = *(u16 *)file << *((u8 *)file + 0x21);
@@ -7521,7 +7525,7 @@ extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
         temp_r3 = fn_800A9470(arg0, (u8 *)arg1 + 0xC);
         if (temp_r3 != 0) return temp_r3;
         temp_r5 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264) % size;
-        *(s32 *)((u8 *)arg1 + 8) = ((volatile u32 *)arg1)[3] + ((size - temp_r5) & ((-temp_r5 | temp_r5) >> 31));
+        *(s32 *)((u8 *)arg1 + 8) = ((volatile u32 *)arg1)[3] + (((-temp_r5 | temp_r5) >> 31) & (size - temp_r5));
     } else {
         *(s32 *)((u8 *)arg1 + 0xC) = 0;
         *(s32 *)((u8 *)arg1 + 8) = 0;
@@ -16463,47 +16467,86 @@ extern "C" void fn_800C4BD0(void* hi) {
     lbl_8055DD94 = hi;
 }
 
+#pragma optimize_for_size on
+#pragma unroll off
 extern "C" void fn_800C4BD8(s32 *p, s32 value, u32 size) {
+    u8 *b = (u8 *)p;
+    u32 blocks;
+    u32 blocks2;
     u32 count = size >> 4;
     u32 tail = (size >> 2) & 3;
     if (count != 0) {
-        u32 blocks = count >> 3;
-        if (blocks != 0) {
-            for (; blocks != 0; --blocks) {
-                p[0]=value;p[1]=value;p[2]=value;p[3]=value;
-                p[4]=value;p[5]=value;p[6]=value;p[7]=value;
-                p[8]=value;p[9]=value;p[10]=value;p[11]=value;
-                p[12]=value;p[13]=value;p[14]=value;p[15]=value;
-                p[16]=value;p[17]=value;p[18]=value;p[19]=value;
-                p[20]=value;p[21]=value;p[22]=value;p[23]=value;
-                p[24]=value;p[25]=value;p[26]=value;p[27]=value;
-                p[28]=value;p[29]=value;p[30]=value;p[31]=value;
-                p += 32;
-            }
-            count &= 7;
+        blocks = count >> 3;
+        for (; blocks != 0; --blocks) {
+            ((s32 *)b)[0] = value;
+            ((s32 *)b)[1] = value;
+            ((s32 *)b)[2] = value;
+            ((s32 *)b)[3] = value;
+            ((s32 *)b)[4] = value;
+            ((s32 *)b)[5] = value;
+            ((s32 *)b)[6] = value;
+            ((s32 *)b)[7] = value;
+            ((s32 *)b)[8] = value;
+            ((s32 *)b)[9] = value;
+            ((s32 *)b)[10] = value;
+            ((s32 *)b)[11] = value;
+            ((s32 *)b)[12] = value;
+            ((s32 *)b)[13] = value;
+            ((s32 *)b)[14] = value;
+            ((s32 *)b)[15] = value;
+            ((s32 *)b)[16] = value;
+            ((s32 *)b)[17] = value;
+            ((s32 *)b)[18] = value;
+            ((s32 *)b)[19] = value;
+            ((s32 *)b)[20] = value;
+            ((s32 *)b)[21] = value;
+            ((s32 *)b)[22] = value;
+            ((s32 *)b)[23] = value;
+            ((s32 *)b)[24] = value;
+            ((s32 *)b)[25] = value;
+            ((s32 *)b)[26] = value;
+            ((s32 *)b)[27] = value;
+            ((s32 *)b)[28] = value;
+            ((s32 *)b)[29] = value;
+            ((s32 *)b)[30] = value;
+            ((s32 *)b)[31] = value;
+            b += 0x80;
         }
+        count &= 7U;
         if (count != 0) {
             for (; count != 0; --count) {
-                p[0]=value;p[1]=value;p[2]=value;p[3]=value;
-                p += 4;
+                ((s32 *)b)[0] = value;
+                ((s32 *)b)[1] = value;
+                ((s32 *)b)[2] = value;
+                ((s32 *)b)[3] = value;
+                b += 0x10;
             }
         }
     }
     if (tail != 0) {
-        u32 blocks = tail >> 3;
-        if (blocks != 0) {
-            for (; blocks != 0; --blocks) {
-                p[0]=value;p[1]=value;p[2]=value;p[3]=value;
-                p[4]=value;p[5]=value;p[6]=value;p[7]=value;
-                p += 8;
-            }
-            tail &= 7;
+        blocks2 = tail >> 3;
+        for (; blocks2 != 0; --blocks2) {
+            ((s32 *)b)[0] = value;
+            ((s32 *)b)[1] = value;
+            ((s32 *)b)[2] = value;
+            ((s32 *)b)[3] = value;
+            ((s32 *)b)[4] = value;
+            ((s32 *)b)[5] = value;
+            ((s32 *)b)[6] = value;
+            ((s32 *)b)[7] = value;
+            b += 0x20;
         }
-        if (tail != 0)
-            for (; tail != 0; --tail) *p++ = value;
+        tail &= 7U;
+        if (tail != 0) {
+            for (; tail != 0; --tail) {
+                *(s32 *)b = value;
+                b += 4;
+            }
+        }
     }
 }
-
+#pragma unroll reset
+#pragma optimize_for_size reset
 extern "C" void fn_800C34B4(s32, s32, s32, s32);
 extern "C" s32 fn_800C4E5C(s32, void *);
 #pragma push
@@ -19499,27 +19542,23 @@ extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
 extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
-    /* Fix note: test the sentinel through its pointer value; the remaining mismatch is immediate selection. */
     u8 scratch[0x104];
     const Fn800D1F7CStringTable *messages =
         (const Fn800D1F7CStringTable *)lbl_8031E9D0;
     u32 temp_r28;
     u32 var_r27;
     s32 var_r0;
-
-    fn_800D1EC4(messages->header);
+    fn_800D1EC4(&messages->header[0]);
     fn_800D1EC4(messages->summary);
     var_r27 = 0;
 loop_1:
     if (arg0 == 0)
         goto done;
-    if (arg0 == (s32 *)0xFFFEFFFF)
+    if (arg0 == (s32 *)0xFFFFFFFF)
         goto done;
     if (((u32)arg0 & 0x80000000) == 0)
         goto done;
-
-    fn_800D1EC4(messages->node, arg0,
-                *(s32 *)arg0, *((s32 *)arg0 + 1));
+    fn_800D1EC4(messages->node, arg0, *(s32 *)arg0, *((s32 *)arg0 + 1));
     temp_r28 = (u32)*((s32 *)arg0 + 1);
     if (fn_800D3824() == 0) {
         var_r0 = 0;
@@ -19774,25 +19813,41 @@ extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 wrapLongLines, s3
 extern "C" u8 lbl_802F47D8[];
 extern "C" void fn_800D337C(s32,s32,s32);
 extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
-    s32 var_r26=arg0;
-    s32 var_r27=arg1;
-    const char *var_r28=arg2;
-    s32 var_r29=arg3;
-    s32 var_r30=0;
-    s32 temp;
-    const void *base=lbl_8031EBA0;
-    if (!var_r28) Panic__Q26nw4hbm2dbFPCciPCce((const char *)base,0x2E9,(const char *)base+0x54);
-    if (var_r29<=0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)base,0x2EA,(const char *)base+0x7C);
-    base=lbl_802F47D8;
-    do {
-        if (*var_r28==10 || *var_r28==0) return var_r28;
-        s32 cls=((const u8 *)base)[(u8)*var_r28&0x7F];
-        if(cls==0xFD) { temp=4-(var_r30&3); var_r30+=temp; var_r26+=temp*6; }
-        else { if(cls!=0xFF) fn_800D337C(var_r26,var_r27,cls); var_r26+=6; var_r30++; }
-        if(var_r30>=var_r29) { if(var_r28[1]==10) var_r28++; return var_r28; }
-        var_r28++;
-    } while((s8)*var_r28!=0);
-    return var_r28;
+    s32 dst = arg0;
+    s32 src = arg1;
+    s32 text = (s32)arg2;
+    s32 limit = arg3;
+    s32 count = 0;
+    s32 tmp;
+    s32 ch;
+    u32 base = (u32)lbl_8031EBA0;
+    if (!text) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2E9, (const char *)(base + 0x54));
+    if (limit <= 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2EA, (const char *)(base + 0x7C));
+    base = (u32)lbl_802F47D8;
+    goto cond;
+top:
+    if (ch == 10 || ch == 0) return (const char *)text;
+    {
+        s32 cls = ((const u8 *)base)[(u8)ch & 0x7F];
+        if (cls == 0xFD) {
+            tmp = 4 - (count & 3);
+            count += tmp;
+            dst += tmp * 6;
+        } else {
+            if (cls != 0xFF) fn_800D337C(dst, src, cls);
+            dst += 6;
+            count += 1;
+        }
+    }
+    if (count < limit) goto inc;
+    if (*(const char *)(text + 1) == 10) text++;
+    return (const char *)text;
+inc:
+    text++;
+cond:
+    ch = *(const s8 *)text;
+    if (ch != 0) goto top;
+    return (const char *)text;
 }
 
 extern "C" u16 lbl_80407BE8[];
@@ -20226,10 +20281,10 @@ extern "C" s32 fn_800D3F94(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     register const char *base = lbl_8031EC50;
     s32 result;
     if (arg0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u8 *)base + 0), 0x2D3, base + 0x6C);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x2D3, base + 0x6C);
     }
     if (arg2 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u8 *)base + 0), 0x2D4, base + 0x1B4);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x2D4, base + 0x1B4);
     }
     if (*(s32 *)arg0 != 0) {
         lbl_8055DDD8 = (u8 (*)(const char *))fn_800D3838;
@@ -25000,51 +25055,20 @@ extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(void* head, const char* fmt, ...) {
-    f64 sp_28;
-    f64 sp_30;
-    f64 sp_38;
-    f64 sp_40;
-    f64 sp_48;
-    f64 sp_50;
-    f64 sp_58;
-    f64 sp_60;
-    s32 sp_8;
-    s32 sp_C;
-    s32 sp_10;
-    s32 sp_14;
-    s32 sp_18;
-    s32 sp_1C;
-    s32 sp_20;
-    s32 sp_24;
-    s32 sp_68;
-    s32 sp_6C;
-    s32 sp_70;
-    if (lbl_80407BD8[0] != 0) {
-        sp_28 = (f64)0;
-        sp_30 = (f64)0;
-        sp_38 = (f64)0;
-        sp_40 = (f64)0;
-        sp_48 = (f64)0;
-        sp_50 = (f64)0;
-        sp_58 = (f64)0;
-        sp_60 = (f64)0;
-    }
-    sp_8 = (s32)head;
-    sp_C = (s32)fmt;
-    sp_68 = 0x02000000;
-    sp_6C = (s32)&sp_8;
-    sp_70 = (s32)&sp_8;
-    if (head == NULL) {
+    va_list ap;
+    va_start(ap, fmt);
+    if (head == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x368, lbl_8031EA90);
     }
-    OSLockMutex((void*)0x804077C0);
-    vsnprintf(lbl_804077D8, 0x400, fmt, (VaList1*)&sp_68);
-    if (head == NULL) {
+    OSLockMutex(&lbl_804077C0);
+    vsnprintf(lbl_804077D8, 0x400, fmt, ap);
+    if (head == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x34B, lbl_8031EA90);
     }
     OSReport(lbl_805597E4, lbl_804077D8);
     fn_800D272C(head, lbl_804077D8);
-    OSUnlockMutex((void*)0x804077C0);
+    OSUnlockMutex(&lbl_804077C0);
+    va_end(ap);
 }
 
 s32 nw4hbm::db::Console_GetTotalLines(nw4hbm::db::detail::ConsoleHead *console) {
