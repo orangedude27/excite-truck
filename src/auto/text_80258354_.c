@@ -581,6 +581,7 @@ found:
     *(unsigned char *)((char *)obj + 0x4A) = 0;
 }
 
+/* Find the named entry (table at +0xD9C, count at +0xDA0, stride 0x2C) and mark its object active (+0x4A=1, +0x4C=0). */
 void fn_80258F94(void *arg0, const char *arg1) {
     int index = 0;
     int offset = 0;
@@ -605,7 +606,6 @@ found:
         entry += index * 0x2C;
         object = *(void **)(entry + 0x20);
         if (object != 0) {
-            /* Mark the matched object active and clear its secondary flag. */
             *(unsigned char *)((char *)object + 0x4A) = 1;
             *(unsigned char *)((char *)object + 0x4C) = 0;
         }
