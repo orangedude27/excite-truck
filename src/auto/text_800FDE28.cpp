@@ -337,39 +337,48 @@ extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12Li
 extern "C" void *MEMAdjustFrmHeap(void *, void *);
 extern "C" void OSRestoreInterrupts(u32);
 extern u8 lbl_80326F38[], lbl_80326F14[], lbl_80326F68[], lbl_80326F44[], lbl_80326E08[], lbl_80326E70[];
+#pragma use_lmw_stmw off
 extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0, u32 taskId) {
     struct Iterator { void *node; };
+    struct TaskIf {
+        virtual void vf0();
+        virtual void vf1();
+        virtual void vf2();
+    };
     u32 level = OSDisableInterrupts();
-    s32 count;
-    u8 *list = (u8 *)arg0 + 0x20;
+    s32 count = 0;
+    s32 offset = 0;
     void *node;
-    for (count = 0; count < 3; count++, list += 0xC) {
+    for (; count < 3; count++, offset += 0xC) {
         void *current;
+        u8 *tmp = (u8 *)arg0 + offset;
+        u8 *list = tmp + 0x20;
         void *sentinel = list + 4;
-        node = *(void **)(list + 4);
+        node = *(void **) (tmp + 0x24);
         while (node != sentinel) {
             current = node;
             node = *(void **)node;
             if (!current) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
-            if (*(u32 *)((u8 *)current + 8) == taskId) {
+            if (taskId == *(u32 *)((u8 *)current + 8)) {
                 struct Iterator it;
                 it.node = current;
                 ((void (*)(void *, struct Iterator))Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(list, it);
                 if (!current) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
                 if (!((u8 *)current - 4)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F68, 0x193, (char *)lbl_80326F44);
                 if (!*(void **)((u8 *)arg0 + 0x18)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326E08, 0x5d, (char *)lbl_80326E70);
-                level = OSDisableInterrupts();
-                MEMAdjustFrmHeap(*(void **)((u8 *)arg0 + 0x18), (u8 *)current - 4);
-                OSRestoreInterrupts(level);
+                {
+                    u32 save = OSDisableInterrupts();
+                    MEMAdjustFrmHeap(*(void **)((u8 *)arg0 + 0x18), (u8 *)current - 4);
+                    OSRestoreInterrupts(save);
+                }
             }
         }
     }
     node = *(void **)((u8 *)arg0 + 0x1C);
-    if (node && *(u32 *)((u8 *)node + 0xC) == taskId)
-        ((void (*)(void *))(*(void ***)node)[4])(node);
+    if (node && taskId == *(u32 *)((u8 *)node + 0xC))
+        ((TaskIf *)node)->vf2();
     OSRestoreInterrupts(level);
 }
-
 extern "C" void *fn_800FE648(void) {
     s8 initialized = (s8)lbl_8055DE80;
     if (initialized != 0) {
@@ -381,10 +390,13 @@ extern "C" void *fn_800FE648(void) {
 }
 
 extern "C" s32 fn_800FE814(s32);
+/* Create and start the NW4HBM sound task thread once, using a shared thread object. */
 extern "C" s32 Create__Q46nw4hbm3snd6detail10TaskThreadFl(OSThread *arg0, s32 arg1) {
     s32 result;
     u8 *self = (u8 *)arg0;
-    if (self[0x2360]) return 1;
+
+    if (self[0x2360])
+        return 1;
     self[0x2360] = 1;
     OSInitThreadQueue((OSThreadQueue *)(self + 0x2318));
     if ((s8)lbl_8055DE80 == 0) {
@@ -393,7 +405,8 @@ extern "C" s32 Create__Q46nw4hbm3snd6detail10TaskThreadFl(OSThread *arg0, s32 ar
     }
     result = OSCreateThread(arg0, (OSThreadFunc)fn_800FE814, lbl_8041B138,
              (OSThreadQueue *)(self + 0x2318), 0x2000, arg1, 0);
-    if (result) OSResumeThread(arg0);
+    if (result)
+        OSResumeThread(arg0);
     return result != 0;
 }
 
@@ -932,36 +945,36 @@ extern "C" void fn_800FF090(void *);
 extern u8 lbl_8032734C[], lbl_80327370[], lbl_8032746C[], lbl_80327490[];
 #pragma use_lmw_stmw off
 extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
-    extern u8 lbl_8041D4AC[];
+    extern unsigned char lbl_8041D4AC[];
     void **end = (void **)(lbl_8041D4AC + 4);
     void **node = (void **)*end;
     void *entry, *player, *wave;
-    s32 i, offset;
+    int i, offset;
     goto check_player;
 player_loop:
     entry = node;
     node = (void **)*node;
     if (!entry) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23d, (char *)lbl_8032734C);
-    player = (u8 *)entry - 0x94;
-    if (*((u8 *)entry - 0x77)) {
+    player = (unsigned char *)entry - 0x94;
+    if (*((unsigned char *)entry - 0x77)) {
         if (IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(player)) UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(player);
-        if (!*((u8 *)player + 0x1e) && *(u32 *)((u8 *)player + 4) >= 2) {
+        if (!*((unsigned char *)player + 0x1e) && *(unsigned int *)((unsigned char *)player + 4) >= 2) {
             i = 0;
-            wave = *(void **)((u8 *)player + 8);
+            wave = *(void **)((unsigned char *)player + 8);
             void *list = *(void **)wave;
-            if (*(s32 *)((u8 *)player + 0x10) > 0) {
-                void *base = (u8 *)list - 0x18;
+            if (*(int *)((unsigned char *)player + 0x10) > 0) {
+                void *base = (unsigned char *)list - 0x18;
                 offset = 0;
-                for (i = 0; i < *(s32 *)((u8 *)player + 0x10); i++) {
+                for (i = 0; i < *(int *)((unsigned char *)player + 0x10); i++) {
                     if (!list) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327490, 0x23d, (char *)lbl_8032746C);
-                    SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((u8 *)player + 0x18), i, *(void **)((u8 *)base + offset + 8), 0);
+                    SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((unsigned char *)player + 0x18), i, *(void **)((unsigned char *)base + offset + 8), 0);
                     offset += 4;
                 }
             }
-            SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)((u8 *)player + 0x18), 1);
-            *((u8 *)player + 0x1e) = 1;
+            SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)((unsigned char *)player + 0x18), 1);
+            *((unsigned char *)player + 0x1e) = 1;
         }
-    } else if (*(s32 *)((u8 *)player + 4)) fn_800FF090(player);
+    } else if (*(int *)((unsigned char *)player + 4)) fn_800FF090(player);
 check_player:
     if (node != end) goto player_loop;
 }
