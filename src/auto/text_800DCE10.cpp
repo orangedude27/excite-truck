@@ -69,21 +69,22 @@ extern "C" s32 fn_800DCE60(void) {
     return 0;
 }
 
-extern "C" void fn_800DCE68(void *arg0, const void *arg1) {
-    /* Fix note: clamp four signed channels, stage their bytes, and copy the packed word. */
-    const s16 *src = (const s16 *)arg1;
-    volatile u8 bytes[4];
-    s16 val;
+extern "C" void fn_800DCE68(void *dst, const void *src) {
+    /* Clamp four signed 16-bit color channels to 0..255, store as bytes, and
+     * write the packed 32-bit value to dst (used by nw4hbm::lyt::TextBox). */
+    const s16 *channels = (const s16 *)src;
+    volatile u8 packedBytes[4];
+    s16 channel;
 
-    val = src[0];
-    bytes[0] = (u8)((val < 0) ? 0 : (val > 255) ? 255 : val);
-    val = src[1];
-    bytes[1] = (u8)((val < 0) ? 0 : (val > 255) ? 255 : val);
-    val = src[2];
-    bytes[2] = (u8)((val < 0) ? 0 : (val > 255) ? 255 : val);
-    val = src[3];
-    bytes[3] = (u8)((val < 0) ? 0 : (val > 255) ? 255 : val);
-    *(u32 *)arg0 = *(const volatile u32 *)bytes;
+    channel = channels[0];
+    packedBytes[0] = (u8)((channel < 0) ? 0 : (channel > 255) ? 255 : channel);
+    channel = channels[1];
+    packedBytes[1] = (u8)((channel < 0) ? 0 : (channel > 255) ? 255 : channel);
+    channel = channels[2];
+    packedBytes[2] = (u8)((channel < 0) ? 0 : (channel > 255) ? 255 : channel);
+    channel = channels[3];
+    packedBytes[3] = (u8)((channel < 0) ? 0 : (channel > 255) ? 255 : channel);
+    *(u32 *)dst = *(const volatile u32 *)packedBytes;
 }
 
 extern "C" void *fn_8002F53C(void *, void *, void *, s32, s32);
@@ -984,46 +985,39 @@ nw4hbm::ut::CharStrmReader nw4hbm::ut::Font::GetCharStrmReader() const {
     s32 var_r8;
     s32 var_r9;
     s32 var_r10;
-    s32 temp_r11;
-    s32 font = (s32)this;
+    u32 hi;
+    s32 font;
     nw4hbm::ut::CharStrmReader result;
-
-    temp_r11 = font & 0xFF000000;
+    font = (s32)this;
+    hi = (u32)this & 0xFF000000;
     var_r5 = 1;
     var_r6 = 1;
     var_r7 = 1;
     var_r8 = 1;
     var_r9 = 1;
     var_r10 = 1;
-    if (((u32)(temp_r11 + 0x80000000) > 0U) &&
-        ((u32)((font & 0xFF800000) + 0x7F000000) > 0U)) {
+    if ((hi != 0x80000000U) && (((u32)this & 0xFF800000) != 0x81000000U)) {
         var_r10 = 0;
     }
-    if ((var_r10 == 0) &&
-        ((u32)((font & 0xF8000000) + 0x70000000) > 0U)) {
+    if ((var_r10 == 0) && (((u32)this & 0xF8000000) != 0x90000000U)) {
         var_r9 = 0;
     }
-    if ((var_r9 == 0) &&
-        ((u32)(temp_r11 + 0x40000000) > 0U)) {
+    if ((var_r9 == 0) && (hi != 0xC0000000U)) {
         var_r8 = 0;
     }
-    if ((var_r8 == 0) &&
-        ((u32)((font & 0xFF800000) + 0x3F000000) > 0U)) {
+    if ((var_r8 == 0) && (((u32)this & 0xFF800000) != 0xC1000000U)) {
         var_r7 = 0;
     }
-    if ((var_r7 == 0) &&
-        ((u32)((font & 0xF8000000) + 0x30000000) > 0U)) {
+    if ((var_r7 == 0) && (((u32)this & 0xF8000000) != 0xD0000000U)) {
         var_r6 = 0;
     }
-    if ((var_r6 == 0) &&
-        ((u32)((font & 0xFFFFC000) + 0x20000000) > 0U)) {
+    if ((var_r6 == 0) && (((u32)this & 0xFFFFC000) != 0xE0000000U)) {
         var_r5 = 0;
     }
     if (var_r5 == 0) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(
             (const char *)&lbl_80559804, 0x75, lbl_80320948, font);
     }
-
     result.unk4 = *(s32 *)((u8 *)font + 4);
     result.unk0 = 0;
     result.unk8 = *(s32 *)((u8 *)font + 8);
@@ -1070,41 +1064,40 @@ extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const wch
     u32 wlen = fn_8002AEE8((const u16 *)str);
     ((TextBox *)this_ptr)->setString(str, len, (u32)(u16)wlen);
 }
-#pragma optimization_level reset
+#pragma use_lmw_stmw off
 extern "C" u16 SetString__Q36nw4hbm3lyt7TextBoxFPCwUsUs(void *this_ptr, const u16 *str, u16 offset, u16 len) {
     const char *msg = lbl_80320560;
-    u16 *buffer;
-    u16 capacity;
-    u32 limit;
     u16 count;
-    u32 end;
-    if (*(u16 **)((u8 *)this_ptr + 0xD4) == 0) {
+    u16 max;
+    if (*(void **)((u8 *)this_ptr + 0xD4) == 0) {
         ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2C4, msg + 0x328);
         return 0;
     }
-    capacity = *(u16 *)((u8 *)this_ptr + 0xF8);
-    if (capacity == 0) {
-        limit = 0;
+    if (*(u16 *)((u8 *)this_ptr + 0xF8) == 0) {
+        max = 0;
     } else {
-        if (capacity < 2) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x25D, msg + 0x2EC);
-        limit = (capacity >> 1) - 1;
+        if (*(u16 *)((u8 *)this_ptr + 0xF8) < 2)
+            ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x25D, msg + 0x2EC);
+        max = (u16)(((unsigned)*(u16 *)((u8 *)this_ptr + 0xF8) >> 1) - 1);
     }
-    if (offset >= limit) {
+    if (offset >= max) {
         ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2CC, msg + 0x33C);
         return 0;
     }
-    limit -= offset;
+    max = (u16)(max - offset);
     count = len;
-    if (len > limit) count = limit;
-    if (count < len) ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2D1, msg + 0x358, len - count);
-    buffer = *(u16 **)((u8 *)this_ptr + 0xD4);
-    memcpy(buffer + offset, str, count * 2);
-    end = offset + count;
-    *(u16 *)((u8 *)this_ptr + 0xFA) = end;
-    buffer[end] = 0;
+    if (len > max) count = max;
+    if (count < len)
+        ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2D1, msg + 0x358, (unsigned)(len - count));
+    memcpy(*(u16 **)((u8 *)this_ptr + 0xD4) + offset, str, (unsigned)count * 2);
+    {
+        u16 end = (u16)(offset + count);
+        *(u16 *)((u8 *)this_ptr + 0xFA) = end;
+        (*(u16 **)((u8 *)this_ptr + 0xD4))[end] = 0;
+    }
     return count;
 }
-
+#pragma use_lmw_stmw reset
 extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
