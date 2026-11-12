@@ -58,6 +58,27 @@ struct FontCodeMap {
         /* 0x0C */ FontCodeBinaryMap binary;      /* BINARY: sorted (code, index) pairs */
     } map;
 };
+
+/* nw4hbm::ut::FontInformation -- the small header a font resource is parsed
+ * into, which ResFontBase::SetResourceBuffer installs as its mFontInfo (the
+ * pointer at +0x14) and every ResFontBase accessor validates before use.
+ * Only the members the accessors in this file read or write are named; the
+ * other offsets are the ones those accessors show. */
+struct FontInformation {
+    /* 0x00 */ u8 pad_00;
+    /* 0x01 */ s8 line_feed;              /* GetLineFeed / SetLineFeed */
+    /* 0x02 */ u16 alternate_char;        /* glyph index SetAlternateChar keeps */
+    /* 0x04 */ CharWidths default_widths; /* left, glyph width, character width */
+    /* 0x07 */ u8 width_07;               /* one of the GetWidth variants */
+    /* 0x08 */ const void* glyph_header;  /* cell size +0/+1, baseline +2,
+                                           * texture format +0xA, sheet
+                                           * columns +0xC and rows +0xE */
+    /* 0x0C */ const void* index_map;     /* (first, last] index ranges */
+    /* 0x10 */ const void* code_map;      /* the FontCodeMap list */
+    /* 0x14 */ u8 width_14;               /* GetWidth; GetDescent = 0x14 - 0x16 */
+    /* 0x15 */ u8 width_15;               /* GetWidth */
+    /* 0x16 */ u8 width_16;               /* GetWidth */
+};
 } }
 
 /* FontCodeMap::map_type; at global scope so the switch in FindGlyphIndex can
