@@ -3872,6 +3872,10 @@ extern "C" u8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
     return (u8)*(s32 *)(scratch + 0xC);
 }
 
+/* A sector transfer that came back with fewer bytes than was asked for; the
+ * entry code answers with it when a directory sector did not go to disk whole. */
+#define VF_ERR_SHORT_TRANSFER 0x11
+
 struct FatIter {
     u32 pos;            /* 0x00 */
     void *cache;        /* 0x04 */
@@ -6965,6 +6969,7 @@ extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
     VFiPFCursor *cur = (VFiPFCursor *)arg0;
     s32 sp8, result;
+    u32 length = arg2;
     VFiPFVol *vol, *fat;
     u32 avail;
     *arg3 = 0;
@@ -6972,10 +6977,10 @@ extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     if (cur == 0) vol = 0;
     else vol = cur->file->vol;
     avail = vol->sectorSize - cur->off;
-    if (arg2 > avail) arg2 = avail;
-    if (cur->pos + arg2 > cur->file->size) {
-        arg2 = cur->file->size - cur->pos;
-        if (arg2 < avail) return 0;
+    if (length > avail) length = avail;
+    if (cur->pos + length > cur->file->size) {
+        length = cur->file->size - cur->pos;
+        if (length < avail) return 0;
     }
     if (cur->cluster == 0xFFFFFFFF) {
         result = fn_800AE620(cur->file->fat, cur->sector, 0, &cur->cluster);
@@ -6987,7 +6992,7 @@ extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
             cur->off = cur->pos & (fat->sectorSize - 1);
             return 0x1c;
         }
-        if (cur->pos + arg2 > cur->file->size) {
+        if (cur->pos + length > cur->file->size) {
             cur->pos = cur->file->size;
             fat = cur == 0 ? 0 : cur->file->vol;
             cur->sector = cur->pos >> fat->shift;
@@ -6995,11 +7000,11 @@ extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
             return 0x1b;
         }
     }
-    result = fn_800B5324((s32)vol, arg1, cur->off, arg2, &sp8, 1);
+    result = fn_800B5324((s32)vol, arg1, cur->off, length, &sp8, 1);
     if (result != 0 && sp8 == 0) return result;
     *arg3 = sp8;
     VFiPFFILE_Cursor_AdvanceToRead(cur, sp8, cur->cluster);
-    if ((u32)sp8 != arg2) return result;
+    if ((u32)sp8 != length) return result;
     return 0;
 }
 
@@ -7134,17 +7139,20 @@ extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
     u8 *chosen = 0;
     s32 chosenIndex = 0;
     u8 *entry = base;
-    for (s32 i = 0; i < 5; i++) {
+    u8 *cand = base + 0x40;
+    s32 i = 0;
+    for (; i < 5; i++) {
         u32 flags = *(u32 *)(entry + 0x40);
         if ((flags & 1) == 0 || ((__cntlzw(flags) >> 5) & 2) != 0) {
             if (chosen == 0) {
-                chosen = entry + 0x40;
+                chosen = cand;
                 chosenIndex = i;
             }
         } else if (*(u32 *)(a1 + 0x22C) == *(u32 *)(entry + 0x2A8) && *(u32 *)(a1 + 0x238) == *(u32 *)(entry + 0x2B4) && *(u16 *)(a1 + 0x23C) == *(u16 *)(entry + 0x2B8)) {
             return base + i * 0x29C + 0x40;
         }
         entry += 0x29C;
+        cand += 0x29C;
     }
     if (chosen == 0) {
         return 0;
@@ -9894,6 +9902,74 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     return 0;
 }
 
+extern "C" s32 fn_800B5E14(void *arg0) {
+    s32 result;
+    if (fn_800A53B4(arg0) != 0) {
+        if (fn_800A53DC(arg0) != 0 && (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) {
+            VFiPFFILE_FinalizeAllFiles((u8 *)arg0);
+            VFiPFDIR_FinalizeAllDirs((u8 *)arg0);
+            if (fn_800A5788(arg0, 1) == 0) {
+                if (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) {
+                    *(s32 *)((u8 *)arg0 + 0x1654) = 0;
+                    *(s32 *)((u8 *)arg0 + 0x189C) = 0;
+                    *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
+                    *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
+                }
+                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFF7);
+            }
+            fn_800A53E8(arg0);
+            lbl_803D2140[13] = lbl_803D2140[13] - 1;
+        }
+        if (fn_800A53C0(arg0) != 0) {
+            if (!(*(u16 *)((u8 *)arg0 + 0x1F8C) & 8)) {
+                result = fn_800B5988(arg0);
+                if (result != 0) {
+                } else {
+                    *(u16 *)((u8 *)arg0 + 0x1FAC) = (u16)(*(u16 *)((u8 *)arg0 + 0x1FAC) & 0xFFF8);
+                    fn_800A53E8(arg0);
+                    lbl_803D2140[13] = lbl_803D2140[13] + 1;
+                    goto block_13;
+                }
+            } else {
+block_13:
+                fn_800A53CC(arg0);
+                result = 0;
+            }
+            if (result != 0) {
+            } else {
+                goto block_25;
+            }
+        } else {
+            goto block_25;
+        }
+    } else {
+        if (fn_800A53DC(arg0) != 0 && (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) {
+            VFiPFFILE_FinalizeAllFiles((u8 *)arg0);
+            VFiPFDIR_FinalizeAllDirs((u8 *)arg0);
+            if (fn_800A5788(arg0, 1) == 0) {
+                if (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) {
+                    *(s32 *)((u8 *)arg0 + 0x1654) = 0;
+                    *(s32 *)((u8 *)arg0 + 0x189C) = 0;
+                    *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
+                    *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
+                }
+                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFF7);
+            }
+            fn_800A53E8(arg0);
+            lbl_803D2140[13] = lbl_803D2140[13] - 1;
+        }
+        if (fn_800A53C0(arg0) != 0) {
+            fn_800A53CC(arg0);
+        }
+block_25:
+        result = 0;
+    }
+    if (result != 0) {
+        return result;
+    }
+    return (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) ? 0 : 9;
+}
+
 #pragma pop
 extern "C" s32 fn_800A53B4(void *);
 extern "C" s32 fn_800A53C0(void *);
@@ -9918,7 +9994,7 @@ extern "C" s32 fn_800B6004(void *arg0) {
                     *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
                     *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
                 }
-                *(u16 *)((u8 *)arg0 + 0x1F8C) &= 0xFFF7;
+                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & ~8);
             }
             fn_800A53E8(arg0);
             lbl_803D2140[13]--;
@@ -9926,8 +10002,9 @@ extern "C" s32 fn_800B6004(void *arg0) {
         if (fn_800A53C0(arg0) != 0) {
             if ((*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) {
                 result = fn_800B5988(arg0);
-                if (result == 0) {
-                    *(u16 *)((u8 *)arg0 + 0x1FAC) &= 0xFFF8;
+                if (result != 0) {
+                } else {
+                    *(u16 *)((u8 *)arg0 + 0x1FAC) = (u16)(*(u16 *)((u8 *)arg0 + 0x1FAC) & ~7);
                     fn_800A53E8(arg0);
                     lbl_803D2140[13]++;
                     fn_800A53CC(arg0);
@@ -9947,7 +10024,7 @@ extern "C" s32 fn_800B6004(void *arg0) {
                     *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
                     *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
                 }
-                *(u16 *)((u8 *)arg0 + 0x1F8C) &= 0xFFF7;
+                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & ~8);
             }
             fn_800A53E8(arg0);
             lbl_803D2140[13]--;
@@ -11958,7 +12035,7 @@ extern "C" s32 fn_800B9DCC(void *arg0) {
     s32 r;
     s32 ret;
     const char *str = lbl_8031B2B0;
-    if (arg0 == (void *)0) {
+    if (!arg0) {
         ret = 1;
     } else if (*(volatile u32 *)lbl_80407300 & 1) {
         OSReport(str + 0x7C);
@@ -22092,16 +22169,13 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
     }
 }
 
-#pragma dont_inline fn_800CF3EC
+#pragma dont_inline off
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     void *obj;
-    s32 *ids;
-    u8 *rec;
-    s32 i, index, off;
-    off = n * 0x18;
-    ids = lbl_8031E370 + n * 4;
-    rec = self + off;
+    s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
+    u8 *rec = self + n * 0x18;
+    s32 i, index;
     for (i = 0; i < 4; i++) {
         u8 *pane;
         if (i < rec[0x16C]) {
