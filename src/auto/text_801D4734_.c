@@ -2590,73 +2590,102 @@ int fn_801D7F5C(int arg0, int arg1) {
     return arg0;
 }
 
-int fn_801D7F9C(void *arg0, void *arg1) {
-    extern void fn_802E30C8(char *);
+#pragma push
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" int fn_801D7F9C(void *arg0, void *arg1) {
+    struct Dummy {
+        virtual void v0();
+        virtual char *get(char *);
+        virtual void v2();
+        virtual char *get2(char *);
+        virtual char *get3(char *, char *);
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual float getFloat(float, char *);
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual int getInt(char *);
+    };
+    extern void fn_802E30C8(const char *, ...);
     extern int fn_801399FC(void);
     extern char lbl_80338460;
-    extern char lbl_8055AD20, lbl_8055AD28, lbl_8055AD30, lbl_8055ACB8;
-    extern float lbl_80562ADC, lbl_80562B0C;
-    
-    void **vt;
+    extern char lbl_8055AD20;
+    extern char lbl_8055AD28;
+    extern char lbl_8055AD30;
+    extern char lbl_8055ACB8;
+    extern float lbl_80562ADC;
+    extern float lbl_80562B0C;
+    char *base = &lbl_80338460;
+    Dummy *obj = (Dummy *)arg1;
+    char *out = (char *)arg0;
     char *path;
-    int result;
-    unsigned char *src, *dst;
-    unsigned char c;
-    int n;
+    char *src;
+    int remaining;
+    char *dst;
+    char *src2;
+    int remaining2;
+    char *dst2;
+    int tmp;
     float v;
-    
-    vt = *(void ***)arg1;
-    
-    // First call: vt[3](arg1, &lbl_8055AD20)
-    path = ((char *(*)(void *, char *))vt[3])(arg1, &lbl_8055AD20);
+    float scale;
+    float prod;
+    path = obj->get(&lbl_8055AD20);
     if (path == 0) {
-        fn_802E30C8(&lbl_80338460 + 0xB24);
+        ((void (*)(const char *, ...))fn_802E30C8)(base + 0xB24);
         return 0;
     }
-    
-    // Second call: vt[5](arg1, &lbl_8055AD20)
-    src = ((unsigned char *(*)(void *, char *))vt[5])(arg1, &lbl_8055AD20);
-    dst = (unsigned char *)arg0 + 0x18;
-    n = 0x14;
-    do {
-        c = *src++;
-        *dst++ = c;
-        if ((signed char)c == 0) break;
-        n--;
-    } while (n > 0);
-    if (n == 0) dst[-1] = 0;
-    
-    // Third call: vt[6](arg1, &lbl_8055AD28, &lbl_8055AD30)
-    src = ((unsigned char *(*)(void *, char *, char *))vt[6])(arg1, &lbl_8055AD28, &lbl_8055AD30);
-    dst = (unsigned char *)arg0 + 4;
-    n = 0x14;
-    do {
-        c = *src++;
-        *dst++ = c;
-        if ((signed char)c == 0) break;
-        n--;
-    } while (n > 0);
-    if (n == 0) dst[-1] = 0;
-    
-    // Fourth call: vt[23](arg1, &lbl_80338460 + 0xB64)
-    result = ((int (*)(void *, char *))vt[23])(arg1, &lbl_80338460 + 0xB64);
-    if (result == 0) {
-        *(int *)((char *)arg0 + 0x3C) = 0;
-    } else {
-        *(int *)((char *)arg0 + 0x3C) = fn_801399FC();
-    }
-    
-    // Fifth call: vt[10](arg1, &lbl_8055ACB8, lbl_80562ADC)
-    v = ((float (*)(void *, char *, float))vt[10])(arg1, &lbl_8055ACB8, lbl_80562ADC);
-    *(int *)((char *)arg0 + 0x38) = 0;
-    *(int *)((char *)arg0 + 0x2C) = 0;
-    *(int *)((char *)arg0 + 0x40) = 1;
-    *(int *)((char *)arg0 + 0x30) = (int)(lbl_80562B0C * v);
-    
-    fn_802E30C8(&lbl_80338460 + 0xB70);
+    src = obj->get2(&lbl_8055AD20);
+    dst = out + 0x18;
+    remaining = 0x14;
+    goto copy_body1;
+copy_limit1:
+    if (--remaining > 0)
+        goto copy_body1;
+    dst[-1] = 0;
+    goto copy_done1;
+copy_body1:
+    if ((signed char)(*dst++ = *src++) != 0)
+        goto copy_limit1;
+copy_done1:
+    src2 = obj->get3(&lbl_8055AD28, &lbl_8055AD30);
+    dst2 = out + 4;
+    remaining2 = 0x14;
+    goto copy_body2;
+copy_limit2:
+    if (--remaining2 > 0)
+        goto copy_body2;
+    dst2[-1] = 0;
+    goto copy_done2;
+copy_body2:
+    if ((signed char)(*dst2++ = *src2++) != 0)
+        goto copy_limit2;
+copy_done2:
+    tmp = obj->getInt(base + 0xB64);
+    *(int *)(out + 0x3C) = tmp == 0 ? 0 : fn_801399FC();
+    v = obj->getFloat(lbl_80562ADC, &lbl_8055ACB8);
+    scale = lbl_80562B0C;
+    *(int *)(out + 0x38) = 0;
+    prod = scale * v;
+    *(int *)(out + 0x2C) = 0;
+    *(int *)(out + 0x40) = 1;
+    *(int *)(out + 0x30) = (int)prod;
+    ((void (*)(const char *, ...))fn_802E30C8)(base + 0xB70, out + 4, out + 0x18);
     return 1;
 }
-
+#pragma cplusplus reset
+#pragma pop
 extern char lbl_80338928[];
 void *fn_801D8148(void) {
     return lbl_80338928;
@@ -3638,11 +3667,6 @@ void fn_801D8FE0(int arg0) {
 }
 
 extern char lbl_803385D0[];
-extern char lbl_803385D0[];
-
-extern void fn_80129DC4(int, float, float);
-extern void PSVECDotProduct(void *, void *, float, float, float, float, float, float, float, float, float, float, float);
-extern void PSVECNormalize(void *, void *, float, float, float, float, float, float, float, float, float, float, float);
 
 #pragma push
 #pragma scheduling invalid_target
