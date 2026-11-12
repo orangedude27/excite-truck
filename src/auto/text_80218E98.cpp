@@ -6960,26 +6960,33 @@ typedef struct ScrollList {
     ScrollRow     *rows;        /* 0x278: rowCount of them */
 } ScrollList;
 
-extern "C" void *fn_80225828(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        s32 ptr = *(s32 *)((u8 *)arg0 + 0x278);
-        *(void **)arg0 = lbl_8033E140;
-        if (ptr != 0) {
-            fn_80128670(ptr);
+/* Deleting destructor of the scrolling text-list widget fn_8022553C builds (this
+ * is slot 0x8 of ScrollList_vtable): frees the row table it allocated, releases
+ * the text resource it borrowed, drops its row-table pointer, runs the base
+ * class's destructor and, when called through delete (deleting > 0), frees the
+ * object itself. */
+extern "C" void *fn_80225828(void *self, s32 deleting) {
+    ScrollList *list = (ScrollList *)self;
+
+    if (self != 0) {
+        ScrollRow *rows = list->rows;
+        *(void **)self = ScrollList_vtable;
+        if (rows != 0) {
+            fn_80128670((s32)rows);
         }
-        void *resource = *(void **)((u8 *)arg0 + 0x248);
-        *(s32 *)((u8 *)arg0 + 0x278) = 0;
-        if (resource != 0) {
-            fn_802328D4(resource);
+        void *fontRes = list->fontRes;
+        list->rows = 0;
+        if (fontRes != 0) {
+            fn_802328D4(fontRes);
         }
-        *(s32 *)((u8 *)arg0 + 0x248) = 0;
-        *(s32 *)((u8 *)arg0 + 0x244) = 0;
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        list->fontRes = 0;
+        list->rowTable = 0;
+        fn_8021915C(self, 0);
+        if (deleting > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_802258C8(void *arg0) {
