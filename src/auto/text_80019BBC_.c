@@ -35,13 +35,11 @@ void fn_80019BBC(void) {
     float step;
     float initial;
     float angle;
-    float *p;
-    int i;
+    float *p = (float *)lbl_803582C0;
+    int i = 0;
     step = lbl_8056041C;
     angle = lbl_80560418;
-    p = (float *)lbl_803582C0;
     initial = angle;
-    i = 0;
     do {
         *p++ = (float)cos(angle);
         p[0] = (float)sin(angle);
@@ -73,6 +71,40 @@ extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
     }
     return farg0;
 }
+
+void fn_8001A04C(int *arg0) {
+    int i;
+    int *old;
+
+    if (--lbl_8055D5B8 == 0) {
+        old = (int *)lbl_8055D5B4;
+        if (old != 0) {
+            fn_80235380(old[0]);
+            fn_80128668(old);
+        }
+        lbl_8055D5B4 = 0;
+    }
+    for (i = 0; i < 16; i++) {
+        lbl_803583C8[i * 0x14 + 0x10] = 0;
+        *(int *)&lbl_803583C8[i * 0x14] = 0;
+        *(int *)&lbl_803583C8[i * 0x14 + 4] = -1;
+    }
+    if (arg0 != 0) {
+        if (arg0[6] != -2) { fn_802CAC54(arg0[6]); arg0[6] = -2; }
+        if (arg0[5] != -2) { fn_802CAC54(arg0[5]); arg0[5] = -2; }
+        if (arg0[0] != -2) { fn_802CAC54(arg0[0]); arg0[0] = -2; }
+        if (arg0[2] != -2) { fn_802CAC54(arg0[2]); arg0[2] = -2; }
+        if (arg0[3] != -2) { fn_802CAC54(arg0[3]); arg0[3] = -2; }
+        if (arg0[1] != -2) { fn_802CB228(arg0[1]); arg0[1] = -2; }
+        old = (int *)arg0[4];
+        if (old != 0) {
+            fn_80235380(old[0]);
+            fn_80128668(old);
+            arg0[4] = 0;
+        }
+    }
+}
+
 #pragma cplusplus reset
 void fn_8001A1F0(void) {
 }
@@ -588,9 +620,9 @@ void fn_8001B478(float farg0) {
     float texscale;
     void *shape;
     void *node;
-    void *cursor;
+    void *head;
     fn_801352B8(sp20);
-    if (fn_80135D60(sp20, 0) == 0) {
+    if (fn_80135D60((void *)sp20, (int)0) == 0) {
         fn_8013530C(sp20, -1);
         return;
     }
@@ -600,11 +632,11 @@ void fn_8001B478(float farg0) {
     count = (int)ratio;
     if (ratio - count > lbl_80560420) count++;
     texscale2 = (float)count / step;
-    node = *(void **)((char *)shape + 0x1c);
-    cursor = *(void **)((char *)node + 0x14);
+    head = *(void **)((char *)shape + 0x1c);
+    node = *(void **)((char *)head + 0x14);
     i = 1;
-    while (cursor != node) {
-        cursor = *(void **)((char *)cursor + 0x14);
+    while (node != head) {
+        node = *(void **)((char *)node + 0x14);
         i++;
     }
     if ((i % 4) > 0) i += 4 - (i % 4);
@@ -615,6 +647,7 @@ void fn_8001B478(float farg0) {
     x = lbl_80560424;
     y = lbl_80560420;
     count = i + 1;
+    node = head;
     for (i = 0; i < count; i++, node = *(void **)((char *)node + 0x14)) {
         if ((i % 4) == 0) {
             void *next = *(void **)((char *)node + 0x14);
@@ -641,8 +674,7 @@ void fn_8001B478(float farg0) {
             y0 = a[3] + dy * nx;
             fn_802C8E00(-1, result, x0, lbl_80560418, y0, lbl_80560418, ratio);
             nx = farg0 * y;
-            fn_802C8E00(-1, result, a[2] + dx * nx, lbl_80560418, a[3] + dy * nx,
-                        lbl_80560424, ratio);
+            fn_802C8E00(-1, result, a[2] + dx * nx, lbl_80560418, a[3] + dy * nx, lbl_80560424, ratio);
             result = 1;
         }
     }
@@ -661,13 +693,11 @@ extern "C" int fn_8001B754(float arg0) {
     };
     int i = 0;
     int result;
-    goto check;
-body:
-    fn_8001B478(arg0);
-    i++;
-    result = ((Callback *)fn_80156A40())->invoke(i);
-check:
-    if (result != 0) goto body;
+    while (result != 0) {
+        ((void (*)(float))fn_8001B478)((float)arg0);
+        i = i + 1;
+        result = ((Callback *)fn_80156A40())->invoke(i);
+    }
     return result;
 }
 #pragma cplusplus reset
