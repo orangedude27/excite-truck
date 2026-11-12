@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern char lbl_8055EA21;
-extern float lbl_8055E3C8, lbl_80558DC4;
+extern float lbl_8055E3C8;
+__declspec(section ".data") extern float lbl_80558DC4;
 extern float lbl_80562CB0, lbl_80562CB4, lbl_80562CB8, lbl_80562CBC, lbl_80562CC0, lbl_80562CC4;
 extern int fn_80129D18(int, int);
 extern float fn_80129DC4(int, float, float);
@@ -107,9 +108,9 @@ void fn_801E1B30(void) {
 
     lbl_8055EA21 = zero;
     if (*(int *)state != 1) {
-        float target = *(float *)(state + 8);
         float current = *(float *)(state + 4);
-        if ((float)__fabs((double)(target - current)) < lbl_80562CC4) {
+        float target = *(float *)(state + 8);
+        if ((float)__fabs((double)(current - target)) < lbl_80562CC4) {
 #pragma small_data off
             if ((float)__fabs((double)target) <= lbl_80558DC4) {
 #pragma small_data on
