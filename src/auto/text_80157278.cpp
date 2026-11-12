@@ -490,6 +490,7 @@ extern f32 lbl_8055E3C8;
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" __declspec(section ".data") char lbl_8032E4E0[];
 extern "C" void *lbl_8055A064;
+extern "C" void *fn_801284F8(u32, void *);
 
 extern "C" s32 lbl_8032E540[];
 extern "C" s32 fn_80157278(s32 arg0) {
@@ -590,15 +591,17 @@ extern "C" void fn_80157560(VObj *arg0) {
             if (f1v < best) {
                 f1v = b0->vslot2(lbl_8055A030)->vslot24(idx)->vslot9(lbl_8055A050);
             }
-            Rec157560 *recs = *(Rec157560 **)((char *)arg0 + 8);
-            *(s32 *)((char *)arg0 + 0xC) += 1;
-            recs[s28].a = 0;
-            recs[s28].b = 0;
-            recs[s28].c = 0;
-            recs[s28].d = best;
-            recs[s28].e = f1v;
-            recs[s28].f = s29;
-            fn_801345D8(recs[s28].name, 0x20, lbl_8055A054, s22);
+            s32 n = *(s32 *)((char *)arg0 + 0xC);
+            char *base = *(char **)((char *)arg0 + 8);
+            *(s32 *)((char *)arg0 + 0xC) = n + 1;
+            *(s32 *)(base + s28 * 0x38) = 0;
+            char *rec = base + s28 * 0x38;
+            *(s32 *)(rec + 4) = 0;
+            *(s32 *)(rec + 8) = 0;
+            *(f32 *)(rec + 12) = best;
+            *(f32 *)(rec + 16) = f1v;
+            *(s32 *)(rec + 20) = s29;
+            fn_801345D8(rec + 24, 0x20, lbl_8055A054, s22);
             idx++;
             iter = b1->vslot24(idx);
         }
@@ -2885,6 +2888,7 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
     s32 var_r28 = 0;
     s32 temp_r0;
     s32 temp_r0_2;
+    struct V13 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(void*); };
     if (!((f32)__fabs(actual)<=lbl_80558DC4[0])) {
         f32 lim = lbl_80561754;
         s32 v4 = *(s32*)((char*)arg0 + 0x26c);
@@ -2901,11 +2905,14 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
                 var_r4 = (s32)f0_2;
             }
             temp_r0 = *(s32*)((char*)arg0 + 0x26c) + var_r4;
-            f32 f250 = *(f32*)((char*)arg0 + 0x250);
+            f32 f50;
+            f32 f250;
+            f250 = *(f32*)((char*)arg0 + 0x250);
+            f50 = lbl_80561750;
             *(s32*)((char*)arg0 + 0x264) = temp_r0;
             *(s32*)((char*)arg0 + 0x260) = temp_r0;
             *(f32*)((char*)arg0 + 0x254) = f250;
-            *(f32*)((char*)arg0 + 0x25c) = lbl_80561750;
+            *(f32*)((char*)arg0 + 0x25c) = f50;
             ((Fn8015889C*)arg0)->v32();
             if (*(s32*)((char*)arg0 + 0x248) != 0) {
                 void* q = *(void**)((char*)arg0 + 0x268);
@@ -2923,7 +2930,7 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
     var_r28 = 0;
     if (((Fn8015889C*)arg0)->v39() != 0) {
         temp_r0 = fn_80158D04(arg0) - 1;
-        if (((Fn8015889C*)arg0)->v23() == temp_r0) {
+        if (temp_r0 == ((Fn8015889C*)arg0)->v23()) {
             var_r28 = 1;
         }
     }
@@ -2938,8 +2945,7 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
         ((Fn8015889C*)arg0)->v34();
     }
     if (*(s32*)((char*)arg0 + 0x274) > 0) {
-        void** vtbl = *(void***)arg0;
-        ((void(*)(void*, void*))vtbl[0xF])(arg0, arg1);
+        ((V13*)arg0)->v13(arg1);
     }
     if ((*(s32*)((char*)arg0 + 0x274) > 0) || ((temp_r0_2 = *(s32*)((char*)arg1 + 0x2620), temp_r0_2 > 0)!=0)) {
         f32 newt = *(f32*)((char*)arg0 + 0x27c) + fn_801E7E24();
