@@ -1274,7 +1274,7 @@ s32 fn_80069178(void) {
 }
 #pragma use_lmw_stmw reset
 s32 fn_800692D0(void) {
-    const u8 *record;
+    u8 *record;
     u8 *offset;
     u8 *base = lbl_80392960;
     s32 i;
@@ -1289,10 +1289,10 @@ s32 fn_800692D0(void) {
             interruptState = OSDisableInterrupts();
             if (i < 0) goto high_record;
             if (i >= 0xA) goto high_record;
-            record = (const u8 *)((u32)base + (u32)offset + 0x64);
+            record = (u8 *)((u32)base + (u32)offset + 0x64);
             goto selected_record;
         high_record:
-            record = (const u8 *)((u32)base + ((u32)(i - 0xA) * 0x60u) + 0x424);
+            record = (u8 *)((u32)base + ((u32)(i - 0xA) * 0x60u) + 0x424);
         selected_record:
             OSRestoreInterrupts(interruptState);
             if (record[0x59] == 8) {
@@ -1301,7 +1301,7 @@ s32 fn_800692D0(void) {
                 mode.min = 8;
                 mode.attempt = 1;
                 mode.timeout = 0;
-                BTM_SetPowerMode(lbl_80392960[0x68A], (void *)(record + 0x40), &mode);
+                BTM_SetPowerMode(lbl_80392960[0x68A], record + 0x40, &mode);
                 return 0xE;
             }
             i++;
@@ -6078,8 +6078,8 @@ void bta_hh_sdp_cback(s32 arg0, u16 arg1, void *arg2) {
     u8 sp9;
     u8 sp8 = 0x10;
     register void *temp_r31 = *(void **)(lbl_803C0D48 + 0x210);
-    void *var_r30 = arg2;
-    u16 var_r29 = arg1;
+    register void *var_r30 = arg2;
+    register u16 var_r29 = arg1;
     if (arg0 == 0) {
         if (*(u8 *)((u8 *)temp_r31 + 0x14) != 0) {
             var_r29 |= 0x8000;
@@ -6091,7 +6091,7 @@ void bta_hh_sdp_cback(s32 arg0, u16 arg1, void *arg2) {
             if (*(u8 *)((u8 *)temp_r31 + 0x16) == 0xFF) {
                 sp8 = HID_HostAddDev((u8 *)temp_r31 + 8, var_r29, &sp9);
                 if (sp8 == 0) {
-                    lbl_803C0D48[sp9 + 0x214] = *(u8 *)((u8 *)temp_r31 + 0x12);
+                    *(u8 *)(lbl_803C0D48 + 0x214 + sp9) = *(u8 *)((u8 *)temp_r31 + 0x12);
                     ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(temp_r31, sp9, var_r29, (u8 *)var_r30 + 0x68, *(u8 *)((u8 *)var_r30 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
                 } else {
                     *(u8 *)((u8 *)temp_r31 + 0x15) = 0;
@@ -19135,26 +19135,34 @@ void *l2cu_find_lcb_by_handle(u16 handle) {
 
 u8 fn_8008D7C4(void) { return lbl_803C4040[1]; }
 
+/* Build an L2CAP signaling command header in a command-pool buffer. */
 void *l2cu_build_header(u16 arg0, u8 arg1, u8 arg2, s32 arg3) {
-    BT_HDR *buf = GKI_getpoolbuf(2);
+    void *buf = GKI_getpoolbuf(2);
     u8 *p;
-    u16 length = arg1;
-    if (buf == NULL) return NULL;
-    buf->offset = 0;
-    buf->len = arg1 + 0xC;
-    p = (u8 *)(buf + 1);
-    p[0] = arg0 | 0x2000;
-    p[1] = (arg0 | 0x2000) >> 8;
-    p[2] = arg1 + 8;
-    p[3] = (arg1 + 8) >> 8;
-    p[4] = arg1 + 4;
-    p[5] = (arg1 + 4) >> 8;
+    u16 payloadLen = arg1;
+
+    if (buf == NULL) {
+        return NULL;
+    }
+
+    /* BT_HDR: offset/len */
+    *(u16 *)((u8 *)buf + 4) = 0;
+    *(u16 *)((u8 *)buf + 2) = (u16)(arg1 + 0xC);
+
+    p = (u8 *)buf + 8;
+    p[0] = (u8)(arg0 | 0x2000);
+    p[1] = (u8)((arg0 | 0x2000) >> 8);
+    p[2] = (u8)(arg1 + 8);
+    p[3] = (u8)((arg1 + 8) >> 8);
+    p[4] = (u8)(arg1 + 4);
+    p[5] = (u8)((arg1 + 4) >> 8);
     p[6] = 1;
     p[7] = 0;
     p[8] = arg2;
-    p[9] = arg3;
+    p[9] = (u8)arg3;
     p[10] = arg1;
-    p[11] = length >> 8;
+    p[11] = (u8)(payloadLen >> 8);
+
     return buf;
 }
 
