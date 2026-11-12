@@ -147,30 +147,31 @@ __declspec(section ".data") extern float lbl_80558DC4;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80288A74(void **arg0, int arg1) {
-    void **q;
-    int i;
-    void **p;
-    int temp;
-    int *obj;
-    float limit;
-    float value;
+void fn_80288A74(void **entries, int count) {
+    void **entry;
+    int index;
+    void **baseEntry;
+    int objectField;
+    int *object;
+    float threshold;
+    float magnitude;
 
-    value = __fabs(fn_801E7E24());
-    if (!(value <= lbl_80558DC4)) {
-        limit = lbl_80564270;
-        p = arg0;
-        q = arg0;
-        for (i = 0; i < arg1; i++) {
-            if (*((unsigned char *)q + 0xC) && *((float *)q + 2) < limit) {
-                obj = (int *)*q;
-                temp = obj[23];
-                fn_80288BF0(lbl_8055F6D8, *(int *)((char *)p + 4), temp);
-                fn_80289558(lbl_8055F6DC, *(int *)((char *)p + 4));
-                fn_80289FC4((int **)lbl_8055F6E4, *(int *)((char *)p + 4), temp);
+    /* For each entry whose flag is set and value is below the threshold, notify subsystems. */
+    magnitude = __fabs(fn_801E7E24());
+    if (!(magnitude <= lbl_80558DC4)) {
+        threshold = lbl_80564270;
+        baseEntry = entries;
+        entry = entries;
+        for (index = 0; index < count; index++) {
+            if (*((unsigned char *)entry + 0xC) && *((float *)entry + 2) < threshold) {
+                object = (int *)*entry;
+                objectField = object[23];
+                fn_80288BF0(lbl_8055F6D8, *(int *)((char *)baseEntry + 4), objectField);
+                fn_80289558(lbl_8055F6DC, *(int *)((char *)baseEntry + 4));
+                fn_80289FC4((int **)lbl_8055F6E4, *(int *)((char *)baseEntry + 4), objectField);
             }
-            p = (void **)((char *)p + 0x10);
-            q = (void **)((char *)q + 0x10);
+            baseEntry = (void **)((char *)baseEntry + 0x10);
+            entry = (void **)((char *)entry + 0x10);
         }
     }
 }
