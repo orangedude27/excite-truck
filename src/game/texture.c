@@ -1337,16 +1337,19 @@ extern char lbl_8034BA70[];
 int fn_802D9154(void);
 void fn_802CC03C(int **arg0, int *arg1, int arg2) {
     int offset = arg2 * 0x4C;
-    char sp10[0x20];
-    int sp8;
+    char nameBuf[0x20];
+    int version;
 
-    arg1[0] = fn_8012C5B8((char *)fn_802CA2A8(sp10, 0x20, (int)((char *)lbl_8055FCB0 + offset + 4)), 0x54455820, &sp8);
+    /* Set up a texture record for texId: build its ".tm0" name, load the TEX
+       resource (version to version), store texId and drgc-tex context, report
+       load/version errors, then link the record into the list. */
+    arg1[0] = fn_8012C5B8((char *)fn_802CA2A8(nameBuf, 0x20, (int)((char *)lbl_8055FCB0 + offset + 4)), 0x54455820, &version);
     arg1[1] = arg2;
     arg1[3] = fn_802D9154();
     if (arg1[0] == 0)
-        fn_802E317C(lbl_8034BA34, sp10);
-    if ((unsigned int)sp8 != 0xF)
-        fn_802E317C(lbl_8034BA70, sp10, sp8, 0xF);
+        fn_802E317C(lbl_8034BA34, nameBuf);
+    if ((unsigned int)version != 0xF)
+        fn_802E317C(lbl_8034BA70, nameBuf, version, 0xF);
     ((void (*)(int **, int, int *))fn_802CBB9C)(arg0, (int)arg0 + 4, arg1);
 }
 
