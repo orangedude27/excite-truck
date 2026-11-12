@@ -1419,6 +1419,11 @@ struct CursorIconWidget {
 };
 
 extern "C" int lbl_8033F298[];
+/* Builds a cursor-bound icon widget at (x, y): the drawer names the graphic it
+ * shows, cursor is the selection this menu entry is bound to and cursorId the
+ * value that selects it.  Both the selection (tag 0, only when there is one)
+ * and the UI mode byte (tag 1) are handed to fn_80219440 to watch, so the
+ * widget is told when either changes. */
 extern "C" void *fn_8021A808(void *object, s32 x, s32 y, s32 cursorId, s32 *cursor, s32 drawer) {
     CursorIconWidget *widget = (CursorIconWidget *)object;
 
