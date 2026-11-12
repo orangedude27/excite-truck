@@ -615,26 +615,27 @@ found:
 }
 
 #pragma scheduling invalid_target
-void fn_8025904C(void *arg0, int arg1, float farg0) {
+/* Find the named entry (entries at +0xD9C, count at +0xDA0, stride 0x2C) and set its float value at +0x28. */
+void fn_8025904C(void *table, int name, float value) {
     int index = 0;
     int offset = 0;
-    int len;
+    int cmp;
     goto check;
 loop:
-    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0xD9C) + offset), (const char *)arg1);
-    if (((unsigned int)__cntlzw(len) >> 5)) {
+    cmp = stricmp((const char *)(*(unsigned int *)((char *)table + 0xD9C) + offset), (const char *)name);
+    if (((unsigned int)__cntlzw(cmp) >> 5)) {
         if (lbl_80563AD0) goto found;
         else goto found;
     }
     offset += 0x2C;
     index++;
 check:
-    if (index < *(int *)((char *)arg0 + 0xDA0)) goto loop;
+    if (index < *(int *)((char *)table + 0xDA0)) goto loop;
     index = -1;
 found:
     if (index >= 0) {
         struct Entry { char pad[0x28]; float value; };
-        ((struct Entry *)(*(unsigned int *)((char *)arg0 + 0xD9C)))[index].value = farg0;
+        ((struct Entry *)(*(unsigned int *)((char *)table + 0xD9C)))[index].value = value;
     }
 }
 #pragma scheduling on
