@@ -5965,7 +5965,6 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     s32 pageIndex;
     u32 tableType;
     u32 tableOffset;
-    u8 *typeTable;
     void *object;
     u32 *output;
     u32 expected;
@@ -5973,14 +5972,12 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     u32 maxValue;
     u32 bound;
     s32 result;
-
-    typeTable = (u8 *)lbl_802EEF40;
     tableType = *(u32 *)((u8 *)arg0 + 0x1C);
     tableOffset = tableType * 0x14;
     expected = arg2;
     *arg3 = -1;
     output = arg3;
-    maxValue = *(u32 *)(typeTable + tableOffset + 4);
+    maxValue = *(u32 *)((u8 *)lbl_802EEF40 + tableOffset + 4);
     object = arg0;
     result = ((Fn800A8D08C4 *)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(
         object, -1, &page, &pageIndex);
@@ -5988,7 +5985,6 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
         return result;
     *(u16 *)((u8 *)page + 2) = 0;
     goto checkMax;
-
 dispatch:
     pageForRead = page;
     type = *(s32 *)((u8 *)object + 0x1C);
@@ -6024,7 +6020,6 @@ dispatch:
         *output = expected;
         return 0;
     }
-
 checkMax:
     if (arg1 < maxValue)
         goto dispatch;
@@ -6812,15 +6807,16 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
+    u32 sector;
+    u32 retry;
     s32 status;
     void *object = arg0;
     u32 *output = arg2;
     void *context = arg3;
     u16 flags = *(u16 *)((u8 *)object + 0x18);
     u32 scaled = (u32)arg1 * 4;
-    u32 sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
+    sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
                        (scaled >> *(u8 *)((u8 *)object + 0x20)));
-    u32 retry;
     retry = 1;
     if (flags & 0x80)
         retry = flags & 7;
@@ -8753,40 +8749,46 @@ var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, r5
 return var_r31;
 }
 
-extern "C" s32 fn_800B3A70(void *arg0, void *arg1, s32 flags) {
-    char *dst = (char *)arg0;
-    const char *src = (const char *)arg1;
+extern "C" s32 fn_800B3A70(void *outBuf, void *shortName, s32 flags) {
+    /* Format a FAT 8.3 short name into an 11-byte space-padded name field (VFi short-name formatting). */
+    char *dst = (char *)outBuf;
+    const char *src = (const char *)shortName;
     s32 noPad;
-    s32 i = 0;
-    while (i < 8 && *src != 0 && *src != '.') {
+    s32 count = 0;
+
+    while (count < 8 && *src != 0 && *src != '.') {
         *dst++ = *src++;
-        i++;
+        count++;
     }
-    if (i == 0) {
-        i = 0;
-        while (i < 2 && *src != 0) {
+    if (count == 0) {
+        count = 0;
+        while (count < 2 && *src != 0) {
             *dst++ = *src++;
-            i++;
+            count++;
         }
     }
+
     noPad = flags & 8;
     if (noPad == 0) {
-        while (i < 8) {
+        while (count < 8) {
             *dst++ = ' ';
-            i++;
+            count++;
         }
     }
+
     if (*src != 0) {
         if (noPad == 0) src++;
         while (*src != 0) {
             *dst++ = *src++;
-            i++;
+            count++;
         }
     }
-    while (i < 11) {
+
+    while (count < 11) {
         *dst++ = ' ';
-        i++;
+        count++;
     }
+
     return 0;
 }
 
