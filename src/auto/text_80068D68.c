@@ -1687,31 +1687,35 @@ s32 WUDiTerminateDevice(void) {
 }
 #pragma pop
 
+/* One step of WUD's "delete all devices" state machine: while any device still has a link
+   up there is nothing to remove yet, so stay in this state; once every link is down, drop
+   every paired device record (the 10 standard slots, then the 6 simple-pairing ones) that
+   is registered, and move on to wiping the stored settings. */
 s32 WUDiDeleteDevice(void)
 {
-    u8 busy;
-    u8 *entry;
+    u8 linkedNum;
+    WUDDevInfoSlot *dev;
     s32 i;
     s32 j;
-    u8 *entry2;
+    WUDDevInfoSlot *dev2;
     u32 interrupt_state;
-    register u8 *base = lbl_80392960;
+    register WUDCBView *base = (WUDCBView *)lbl_80392960;
 
     interrupt_state = OSDisableInterrupts();
-    busy = base[0x665];
+    linkedNum = base->linkedNum;
     OSRestoreInterrupts(interrupt_state);
-    if (busy != 0)
-        return 3;
+    if (linkedNum != 0)
+        return WUD_STATE_DELETE_CLEANUP_DATABASE;
 
-    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) {
-        if (entry[0x59] == 1)
-            fn_8006B598(entry + 0x40);
+    for (i = 0, dev = base->stdDevs; i < 10; i++, dev++) {
+        if (dev->status == 1)
+            WUDiRemoveDevice(dev->devAddr);
     }
-    for (j = 0, entry2 = base + 0x424; j < 6; j++, entry2 += 0x60) {
-        if (entry2[0x59] == 1)
-            fn_8006B598(entry2 + 0x40);
+    for (j = 0, dev2 = base->smpDevs; j < 6; j++, dev2++) {
+        if (dev2->status == 1)
+            WUDiRemoveDevice(dev2->devAddr);
     }
-    return 5;
+    return WUD_STATE_DELETE_CLEANUP_SETTING;
 }
 
 void fn_80069D80(void) {
