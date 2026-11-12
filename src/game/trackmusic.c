@@ -228,8 +228,8 @@ void fn_8020F950(void) {
     long limit;
     long i;
     long index;
-    long value;
-    long *entries;
+    char *path;
+    char **entries;
     capacity = lbl_804900AC.m_capacity;
     lbl_804900AC.m_count = 0;
     limit = ((long (*)(void *))fn_802EC0FC)(&lbl_804900AC);
@@ -238,12 +238,12 @@ void fn_8020F950(void) {
     }
     i = 0;
     while (i < limit) {
-        value = fn_802EC104(i);
+        path = (char *)fn_802EC104(i);
         index = lbl_804900AC.m_count;
         i++;
-        entries = lbl_804900AC.m_entries;
+        entries = (char **)lbl_804900AC.m_entries;
         lbl_804900AC.m_count = index + 1;
-        entries[index] = value;
+        entries[index] = path;
     }
     fn_8020F730();
 }
