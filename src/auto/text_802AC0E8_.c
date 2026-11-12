@@ -612,6 +612,7 @@ void fn_802AE118(void *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Update each active entry's accumulated and previous time from the current time value. */
 void fn_802AE168(void *arg0) {
     extern float lbl_8055E3C8;
     extern void fn_802AD414(void *, float);
