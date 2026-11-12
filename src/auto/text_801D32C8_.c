@@ -112,6 +112,8 @@ int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma push
+#pragma peephole off
 extern "C" void fn_801D334C(void *arg0, void *arg1) {
     const char *base = lbl_80338340;
     Fn801D334CObj *obj = (Fn801D334CObj *)arg1;
@@ -159,6 +161,7 @@ extern "C" void fn_801D334C(void *arg0, void *arg1) {
         break;
     }
 }
+#pragma pop
 #pragma scheduling on
 #pragma cplusplus reset
 
@@ -397,7 +400,6 @@ void fn_801D3A1C(void *arg0) {
     *(int *)(self + 0x22C) = zeroInt;
     *(int *)(self + 0x23C) = zeroInt;
     *(int *)(self + 0x24) = *(int *)(self + 0x28);
-#pragma scheduling off
     if (sound != 0) {
         one = lbl_80562AAC;
         *(void **)(sound + 0xC) = self + 0x3C;
@@ -427,7 +429,6 @@ void fn_801D3A1C(void *arg0) {
         if (arg0 != 0)
             fn_8019EECC(arg0, sound + 0x28);
     }
-#pragma scheduling on
 
     {
         float special, zero2, one2;
@@ -528,40 +529,29 @@ void fn_801D3BF0(void *arg0) {
 extern float lbl_8055E460;
 extern char lbl_80558DC4[];
 void fn_801D3CB8(void *arg0, char *arg1) {
-    char *out = arg1 + *(int *)((char *)arg0 + 8);
-    register float blend = lbl_8055E460;
-    register float initial = lbl_80562AAC;
-    register float delta = blend - initial;
+    struct E8 { float f[8]; };
+    float blend = lbl_8055E460;
+    int off = *(int *)((char *)arg0 + 8);
+    float delta = lbl_80562AAC - blend;
+    char *out = arg1 + off;
+    unsigned int w8, w9a, w9b, w11;
     if ((float)fabs((double)delta) <= *(float *)lbl_80558DC4) {
-        unsigned int a, b;
-        b = *(unsigned int *)((char *)arg0 + 0x74);
-        a = *(unsigned int *)((char *)arg0 + 0x70);
-        *(unsigned int *)(out + 0) = a;
-        *(unsigned int *)(out + 4) = b;
-        b = *(unsigned int *)((char *)arg0 + 0x7C);
-        a = *(unsigned int *)((char *)arg0 + 0x78);
-        *(unsigned int *)(out + 8) = a;
-        *(unsigned int *)(out + 0xC) = b;
-        b = *(unsigned int *)((char *)arg0 + 0x84);
-        a = *(unsigned int *)((char *)arg0 + 0x80);
-        *(unsigned int *)(out + 0x10) = a;
-        *(unsigned int *)(out + 0x14) = b;
-        b = *(unsigned int *)((char *)arg0 + 0x8C);
-        a = *(unsigned int *)((char *)arg0 + 0x88);
-        *(unsigned int *)(out + 0x18) = a;
-        *(unsigned int *)(out + 0x1C) = b;
-        *(unsigned int *)(out + 0x20) = *(unsigned int *)((char *)arg0 + 0x90);
-        b = *(unsigned int *)((char *)arg0 + 0x98);
-        a = *(unsigned int *)((char *)arg0 + 0x94);
-        *(unsigned int *)(out + 0x24) = a;
-        *(unsigned int *)(out + 0x28) = b;
-        *(unsigned int *)(out + 0x2C) = *(unsigned int *)((char *)arg0 + 0x9C);
+        *(struct E8 *)out = *(struct E8 *)((char *)arg0 + 0x70);
+        w8 = *(unsigned int *)((char *)arg0 + 0x90);
+        *(unsigned int *)(out + 0x20) = w8;
+        w9b = *(volatile unsigned int *)((char *)arg0 + 0x94);
+        w9a = *(volatile unsigned int *)((char *)arg0 + 0x98);
+        *(unsigned int *)(out + 0x24) = w9b;
+        *(unsigned int *)(out + 0x28) = w9a;
+        w11 = *(unsigned int *)((char *)arg0 + 0x9C);
+        *(unsigned int *)(out + 0x2C) = w11;
     } else {
         float temp[12];
-        float *a = (float *)((char *)arg0 + 0x70);
-        float *b = (float *)((char *)arg0 + 0xA0);
-        float *p = temp;
+        float *a, *b, *p;
         int i;
+        p = temp;
+        b = (float *)((char *)arg0 + 0xA0);
+        a = (float *)((char *)arg0 + 0x70);
         for (i = 0; i < 2; i++) {
             p[0] = b[0] + blend * (a[0] - b[0]);
             p[1] = b[1] + blend * (a[1] - b[1]);
@@ -573,18 +563,15 @@ void fn_801D3CB8(void *arg0, char *arg1) {
             b += 6;
             p += 6;
         }
-        *(int *)(out + 0) = *(int *)&temp[0];
-        *(int *)(out + 4) = *(int *)&temp[1];
-        *(int *)(out + 8) = *(int *)&temp[2];
-        *(int *)(out + 0xC) = *(int *)&temp[3];
-        *(int *)(out + 0x10) = *(int *)&temp[4];
-        *(int *)(out + 0x14) = *(int *)&temp[5];
-        *(int *)(out + 0x18) = *(int *)&temp[6];
-        *(int *)(out + 0x1C) = *(int *)&temp[7];
-        *(int *)(out + 0x20) = *(int *)&temp[8];
-        *(int *)(out + 0x24) = *(int *)&temp[9];
-        *(int *)(out + 0x28) = *(int *)&temp[10];
-        *(int *)(out + 0x2C) = *(int *)&temp[11];
+        *(struct E8 *)out = *(struct E8 *)temp;
+        w8 = *(unsigned int *)((char *)temp + 0x20);
+        *(unsigned int *)(out + 0x20) = w8;
+        w9a = *(volatile unsigned int *)((char *)temp + 0x24);
+        w9b = *(volatile unsigned int *)((char *)temp + 0x28);
+        *(unsigned int *)(out + 0x24) = w9a;
+        *(unsigned int *)(out + 0x28) = w9b;
+        w11 = *(unsigned int *)((char *)temp + 0x2C);
+        *(unsigned int *)(out + 0x2C) = w11;
     }
     *(short *)(out + 0x30) = *(short *)((char *)arg0 + 0x6C);
     *(int *)(out + 0x34) = *(int *)((char *)arg0 + 0x1EC);
