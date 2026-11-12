@@ -36,6 +36,7 @@ float fn_801EF190(int arg0) {
     return d - c;
 }
 #pragma scheduling on
+#pragma dont_inline reset
 void **fn_801EF1F0(void **arg0, void *arg1) {
     Lbl801EF *L = (Lbl801EF *)lbl_8033A380;
     *arg0 = fn_801284F8(0x4C, &L->s0[0]);
