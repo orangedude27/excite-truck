@@ -231,11 +231,26 @@ extern "C" void fn_80292864(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 
+/* The names the chunk system code hands the allocator, and the error it prints
+ * for an unknown type (lbl_80349170; fn_802928D4 picks one per chunk type). */
+typedef struct ChunkSysNames {
+    char car[0x10];      /* "car chunk sys" */
+    char ter[0x10];      /* "ter chunk sys" */
+    char wood[0x10];     /* "wood chunk sys" */
+    char invalid[0x20];  /* "chunk: invalid chunk type %d" */
+} ChunkSysNames;
+
+/* A chunk effect object, an nw4r::ef::Effect: the "car", "ter" and "wood" chunk
+ * systems fn_802928D4 allocates.  Its chunk models -- "<model_base>1.mod" ..
+ * "<model_base>8.mod" -- are loaded by fn_80293374 (car), fn_80293CD0 (ter) and
+ * fn_80294530 (wood); the chunk records start just after, at +0x2C, and their
+ * count is the s32 at the end of the object (+0x2FAC car, +0x4C2C ter,
+ * +0x222C wood). */
 typedef struct ChunkSys {
-    char car[0x10];
-    char ter[0x10];
-    char wood[0x10];
-    char invalid[0x20];
+    void *vtable;     /* +0x00 the effect's vtable (lbl_80349294/78/5C) */
+    float gravity_f;  /* +0x04 gravity scale, the "grav_f" effect argument */
+    s32 models[8];    /* +0x08 handle of model i, -1 when the game has none */
+    s32 modelCount;   /* +0x28 how many of the eight models were found */
 } ChunkSys;
 
 extern char lbl_80349170[];
