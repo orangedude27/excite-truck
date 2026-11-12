@@ -5205,31 +5205,36 @@ typedef struct {
  * control block and keeps that in a register for the call, so the block travels
  * as a third argument here to match what the compiler did. */
 typedef void (tBTA_DM_SEC_CBACK)(int event, void *p_sec_event, void *p_dm_cb);
-void bta_dm_pinname_cback(u8 *arg0) {
-    u8 local[0x108];
+void bta_dm_pinname_cback(tBTM_REMOTE_DEV_NAME *p_result) {
+    tDmSecEvent sec_event;
     u16 len;
-    u32 copy_len;
+    u32 bytes_to_copy;
     u8 *dst;
     const u8 *src;
-    void (*callback)(int, void *, void *);
+    tBTA_DM_SEC_CBACK *p_sec_cback;
 
-    fn_80070FA4(local, lbl_803C0C14 + 0xF8);
-    local[0xFE] = lbl_803C0C14[0xFE];
-    local[0xFF] = lbl_803C0C14[0xFF];
-    local[0x100] = lbl_803C0C14[0x100];
-    if (arg0 != 0 && *(u16 *)arg0 == 0) {
-        len = *(u16 *)(arg0 + 2);
-        dst = local + 6;
-        src = arg0 + 4;
-        copy_len = 0x20;
-        if (len < 0x20) copy_len = len;
-        memcpy(dst, src, copy_len);
-        local[0x26] = 0;
+    /* BTM's answer to the remote name request the Device Manager started for a
+     * PIN request: fill the security event with the peer address, class of
+     * device and PIN numeric saved for it, add the name BTM found - or an empty
+     * one when there is none - and report BTA_DM_PIN_REQ_EVT to the registered
+     * security callback. */
+    bdcpy(sec_event.bd_addr, bta_dm_cb_pin_bd_addr);
+    sec_event.dev_class[0] = bta_dm_cb_pin_dev_class[0];
+    sec_event.dev_class[1] = bta_dm_cb_pin_dev_class[1];
+    sec_event.dev_class[2] = bta_dm_cb_pin_dev_class[2];
+    if (p_result != 0 && p_result->status == BTM_SUCCESS) {
+        len = p_result->length;
+        dst = sec_event.bd_name;
+        src = p_result->remote_bd_name;
+        bytes_to_copy = DM_BD_NAME_LEN - 1;
+        if (len < DM_BD_NAME_LEN - 1) bytes_to_copy = len;
+        memcpy(dst, src, bytes_to_copy);
+        sec_event.bd_name[DM_BD_NAME_LEN - 1] = 0;
     } else {
-        local[6] = 0;
+        sec_event.bd_name[0] = 0;
     }
-    callback = *(void (**)(int, void *, void *))(lbl_803C0C14 + 0x50);
-    callback(2, local, lbl_803C0C14);
+    p_sec_cback = bta_dm_cb_p_sec_cback;
+    p_sec_cback(BTA_DM_PIN_REQ_EVT, &sec_event, lbl_803C0C14);
 }
 
 /* Handle a PIN code request: if no device name is known, cache the request and
