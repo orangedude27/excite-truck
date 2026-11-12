@@ -10044,6 +10044,7 @@ found:
     return btm_pm_snd_md_req(pm_id, acl_index, p_mode);
 }
 
+/* Read the current power mode for the ACL link to remote_bda into *p_mode. */
 tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
     u8 i;
     u8 *p = lbl_803C0F78 + 0x34;
