@@ -495,7 +495,6 @@ void fn_80018318(void* outList, s32 contextId) {
     s32 selectedList[18];
     s32 extraCount;
     extern void fn_8013C804(void);
-    extern void fn_80017944(s32*);
     extern s32 fn_80017F6C(s32);
     extern void fn_80017DD4(s32*, s32, s32*);
     extern void fn_80018030(void*, s32);
