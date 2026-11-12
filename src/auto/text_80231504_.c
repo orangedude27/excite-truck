@@ -235,16 +235,18 @@ void fn_8023158C(void *arg0, const char *arg1) {
 s32 fn_802315FC(s32 arg0) {
     s32 offset = arg0 * 0xC;
     u8 *entry = lbl_8055F068 + offset;
+
+    /* Decrement the entry reference count; replace its slot after releasing an expired entry. */
     if ((*(s32 *)(entry + 8) -= 1) < 1) {
-        char *base;
-        char *destination;
-        char *source;
+        u8 *base;
+        u8 *destination;
+        u8 *source;
         s32 last;
         s32 lastOffset;
         fn_802CAC54(*(void **)*(void **)entry);
         fn_8012C4D8(*(void **)entry);
         fn_80128670(*(void **)(entry + 4));
-        base = (char *)lbl_8055F068;
+        base = lbl_8055F068;
         destination = base + offset;
         last = *(s32 *)(base + 0x168);
         last -= 1;
@@ -1050,17 +1052,15 @@ extern void fn_802C8D74(void);
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-void fn_80232D3C(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    s32 sp8 = arg2;
+void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 scaleX, f32 scaleY, f32 spacing, f32 alpha) {
+    /* Adjust color via debug hook, then draw text with default extra spacing when non-empty. */
+    s32 adjustedColor = color;
 
-    fn_80231714(&sp8);
-    if ((s8)*arg0 != 0) {
-        fn_80232040(arg0, arg1, sp8, arg3, arg4, farg0, farg1, farg2, farg3, farg4, lbl_8056368C);
+    fn_80231714(&adjustedColor);
+    if ((s8)*text != 0) {
+        fn_80232040(text, font, adjustedColor, x, flags, y, scaleX, scaleY, spacing, alpha, lbl_8056368C);
     }
 }
-
-#pragma push
-#pragma scheduling invalid_target
 void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
     s32 sp10 = color;
     f32 spC = y;
@@ -1333,12 +1333,12 @@ extern u16 lbl_802F9FF0[];
 #pragma scheduling invalid_target
 void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     register void *object = arg0;
-    register s32 font;
     register s32 offset;
+    register s32 font;
     u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
     u16 values[6];
     u8 *entry;
-
+    u16 t0, t1, t2, t3, t4, t5;
     if (arg1 != 0x20) {
         offset = arg1 * 0x1C;
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
@@ -1354,15 +1354,19 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(out3, font, farg2, farg3, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-
-        values[0] = lbl_802F9FF0[0];
-        values[1] = lbl_802F9FF0[1];
-        values[2] = lbl_802F9FF0[2];
-        values[3] = lbl_802F9FF0[3];
-        values[4] = lbl_802F9FF0[4];
-        values[5] = lbl_802F9FF0[5];
-        fn_802C8DB8(out0, 4, values, 6,
-                    lbl_802F9FF0[4], lbl_802F9FF0[3], lbl_802F9FF0[2], lbl_802F9FF0[1]);
+        t0 = lbl_802F9FF0[0];
+        t1 = lbl_802F9FF0[1];
+        t2 = lbl_802F9FF0[2];
+        t3 = lbl_802F9FF0[3];
+        t4 = lbl_802F9FF0[4];
+        t5 = lbl_802F9FF0[5];
+        values[0] = t0;
+        values[1] = t1;
+        values[2] = t2;
+        values[3] = t3;
+        values[4] = t4;
+        values[5] = t5;
+        fn_802C8DB8(out0, 4, values, 6, t4, t3, t2, t1);
     }
 }
 #pragma pop
