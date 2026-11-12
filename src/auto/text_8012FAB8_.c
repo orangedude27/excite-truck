@@ -314,20 +314,17 @@ void fn_801303A8(void) {
     register unsigned int v12, v13, v14, v15, v16, v17, v18, v19, v20, v21;
     register unsigned int v22, v23, v24, v25, v26, v27;
     register unsigned char c;
-
     lbl_8055E048 = 1;
     lbl_804230D0 = -1;
     fn_8013111C(lbl_8055E04C);
     s = (unsigned int *)lbl_8042F4B8;
     d = (unsigned int *)lbl_80423054;
-
     v22 = s[22]; d[24] = v22;
     v24 = s[24]; d[26] = v24;
     v25 = s[25]; d[27] = v25;
     v26 = s[26]; d[28] = v26;
     v27 = s[27]; d[29] = v27;
     c = *((unsigned char *)s + 0x70);
-
     v0 = s[0]; v1 = s[1]; v2 = s[2]; v3 = s[3];
     v4 = s[4]; v5 = s[5]; v6 = s[6]; v7 = s[7];
     v8 = s[8]; v9 = s[9]; v10 = s[10]; v11 = s[11];
@@ -340,7 +337,6 @@ void fn_801303A8(void) {
     d[14] = v12; d[15] = v13; d[16] = v14; d[17] = v15;
     d[18] = v16; d[19] = v17; d[20] = v18; d[21] = v19;
     d[22] = v20; d[23] = v21; d[25] = v23;
-
     lbl_80423054[0] = c ? 0x2E : 0x2C;
     *((char *)d + 0x78) = c;
 }
@@ -639,30 +635,32 @@ extern int lbl_802F8EE0[];
 extern char lbl_8032B300[];
 #pragma scheduling invalid_target
 int fn_80130FE0(int arg0) {
-    int values[10];
-    int *p;
-    int quotient;
-    int remainder;
-    p = &lbl_802F8EE0[0];
-    values[0] = *p++;
-    values[1] = *p++;
-    values[2] = *p++;
-    values[3] = *p++;
-    values[4] = *p++;
-    values[5] = *p++;
-    values[6] = *p++;
-    values[7] = *p++;
-    values[8] = *p++;
-    values[9] = *p++;
-    quotient = arg0 / 10;
-    if (quotient == 1) {
+    int ordinalTable[10];
+    int *entry;
+    int tens;
+    int ones;
+
+    /* Return the ordinal string for a value in the 0-10 range (TENTH when tens == 1). */
+    entry = &lbl_802F8EE0[0];
+    ordinalTable[0] = *entry++;
+    ordinalTable[1] = *entry++;
+    ordinalTable[2] = *entry++;
+    ordinalTable[3] = *entry++;
+    ordinalTable[4] = *entry++;
+    ordinalTable[5] = *entry++;
+    ordinalTable[6] = *entry++;
+    ordinalTable[7] = *entry++;
+    ordinalTable[8] = *entry++;
+    ordinalTable[9] = *entry++;
+    tens = arg0 / 10;
+    if (tens == 1) {
         fn_80131234(lbl_8032B300);
     } else {
-        remainder = arg0 % 10;
-        fn_80131234((void *)values[remainder]);
+        ones = arg0 % 10;
+        fn_80131234((void *)ordinalTable[ones]);
     }
 }
-
+#pragma scheduling on
 void fn_801310B4(void *arg0, void *arg1, int arg2) {
     int result = fn_80130FE0(arg2);
     fn_801345D8(arg0, arg1, &lbl_80559AF8, arg2, result + 1);
