@@ -76,26 +76,27 @@ void *fn_8024C3FC(void *arg0, int arg1) {
 #pragma scheduling invalid_target
 __declspec(section ".sdata") extern char lbl_8055C018[];
 void fn_8024C464(void) {
-    char *buffer = lbl_80498A00;
-    int *state = lbl_80498A48;
-    int i = 0;
-    int zero = 0;
-    int one = 1;
-    int two = 2;
+    /* Refresh per-slot name/state arrays from slot info and the currently selected slot. */
+    char *nameBuf = lbl_80498A00;
+    int *stateBuf = lbl_80498A48;
+    int slot = 0;
+    int stateNone = 0;
+    int stateAvailable = 1;
+    int stateActive = 2;
     do {
-        fn_801345D8(buffer, 0x12, lbl_8055C018, fn_8000DB34(i));
-        if (fn_8000DBAC(i) == 0 && i == fn_8000DA10()) {
-            if (fn_8000DB8C(i) != 0)
-                *state = two;
+        fn_801345D8(nameBuf, 0x12, lbl_8055C018, fn_8000DB34(slot));
+        if (fn_8000DBAC(slot) == 0 && slot == fn_8000DA10()) {
+            if (fn_8000DB8C(slot) != 0)
+                *stateBuf = stateActive;
             else
-                *state = one;
+                *stateBuf = stateAvailable;
         } else {
-            *state = zero;
+            *stateBuf = stateNone;
         }
-        i++;
-        buffer += 0x12;
-        state++;
-    } while (i < 4);
+        slot++;
+        nameBuf += 0x12;
+        stateBuf++;
+    } while (slot < 4);
 }
 #pragma pop
 
