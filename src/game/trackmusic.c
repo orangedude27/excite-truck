@@ -227,6 +227,9 @@ void fn_8020F730(void) {
 }
 #pragma use_lmw_stmw reset
 void fn_8020F950(void) {
+    /* Rebuild the track-music list from the dash's scanned music table - one
+       path per scanned song, as many as the list's buffer holds - and rebuild
+       the shuffled play order from the new count. */
     long capacity;
     long limit;
     long i;
@@ -235,16 +238,16 @@ void fn_8020F950(void) {
     char **entries;
     capacity = lbl_804900AC.m_capacity;
     lbl_804900AC.m_count = 0;
-    limit = ((long (*)(void *))fn_802EC0FC)(&lbl_804900AC);
+    limit = ((long (*)(struct TrackMusicList *))fn_802EC0FC)(&lbl_804900AC);
     if (capacity < limit) {
         limit = capacity;
     }
     i = 0;
     while (i < limit) {
-        path = (char *)fn_802EC104(i);
+        path = fn_802EC104(i);
         index = lbl_804900AC.m_count;
         i++;
-        entries = (char **)lbl_804900AC.m_entries;
+        entries = lbl_804900AC.m_entries;
         lbl_804900AC.m_count = index + 1;
         entries[index] = path;
     }
