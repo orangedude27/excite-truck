@@ -7064,23 +7064,24 @@ extern u8 lbl_803C0D48[];
 extern u8 lbl_80315A64[];
 extern void *GKI_getbuf(u16);
 extern void fn_800716F0(void *);
-void bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, s32 arg4, s32 arg5) {
+/* Adds/updates a device in the BTA HH device list, optionally copying descriptor data. */
+void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc, s32 subClass, s32 appId) {
     if (lbl_8055DC80 >= 5) {
-        ((void (*)(u32, void *, s32))fn_80070954)(0x504, lbl_80315A64, arg4);
+        ((void (*)(u32, void *, s32))fn_80070954)(0x504, lbl_80315A64, subClass);
     }
-    *((u8 *)arg0 + 0x16) = arg1;
-    *((u8 *)arg0 + 0x18) = 1;
-    *(u16 *)((u8 *)arg0 + 0xE) = arg2;
-    *((u8 *)arg0 + 0x13) = arg4;
-    *((u8 *)arg0 + 0x15) = arg5;
-    if (arg3 != 0) {
-        fn_800716F0(&((void **)arg0)[1]);
-        if (*(u16 *)arg3 != 0) {
-            void *p = GKI_getbuf(*(u16 *)arg3);
-            ((void **)arg0)[1] = p;
+    *((u8 *)devCb + 0x16) = handle;
+    *((u8 *)devCb + 0x18) = 1;
+    *(u16 *)((u8 *)devCb + 0xE) = attrMask;
+    *((u8 *)devCb + 0x13) = subClass;
+    *((u8 *)devCb + 0x15) = appId;
+    if (desc != 0) {
+        fn_800716F0(&((void **)devCb)[1]);
+        if (*(u16 *)desc != 0) {
+            void *p = GKI_getbuf(*(u16 *)desc);
+            ((void **)devCb)[1] = p;
             if (p != 0) {
-                *(u16 *)arg0 = *(u16 *)arg3;
-                memcpy(p, ((void **)arg3)[1], *(u16 *)arg3);
+                *(u16 *)devCb = *(u16 *)desc;
+                memcpy(p, ((void **)desc)[1], *(u16 *)desc);
             }
         }
     }
