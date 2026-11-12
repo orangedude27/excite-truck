@@ -9933,10 +9933,11 @@ void btm_init(void) {
     btm_dev_init();
 }
 
+/* Registers or deregisters a BTM power-management client in the PM record table. */
 tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_cb)
 {
-    int i;
-    u8 *entry;
+    int slotIndex;
+    u8 *pmEntry;
 
     if (mask & BTM_PM_DEREG) {
         if (*p_pm_id >= BTM_MAX_PM_RECORDS)
@@ -9945,15 +9946,15 @@ tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_c
         return BTM_SUCCESS;
     }
 
-    for (i = 0, entry = lbl_803C0F78; i < BTM_MAX_PM_RECORDS; entry += 8, i++) {
-        if (entry[0x558] == BTM_PM_REC_NOT_USED) {
+    for (slotIndex = 0, pmEntry = lbl_803C0F78; slotIndex < BTM_MAX_PM_RECORDS; pmEntry += 8, slotIndex++) {
+        if (pmEntry[0x558] == BTM_PM_REC_NOT_USED) {
             if (mask & BTM_PM_REG_NOTIF) {
                 if (p_cb == NULL)
                     return BTM_ILLEGAL_VALUE;
-                *(tBTM_PM_STATUS_CBACK **)(lbl_803C0F78 + i * 8 + 0x554) = p_cb;
+                *(tBTM_PM_STATUS_CBACK **)(lbl_803C0F78 + slotIndex * 8 + 0x554) = p_cb;
             }
-            *(u8 *)(lbl_803C0F78 + i * 8 + 0x558) = mask;
-            *p_pm_id = i;
+            *(u8 *)(lbl_803C0F78 + slotIndex * 8 + 0x558) = mask;
+            *p_pm_id = slotIndex;
             return BTM_SUCCESS;
         }
     }
