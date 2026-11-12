@@ -38,23 +38,36 @@ typedef struct KPADObject {
     } flags;
 } KPADObject;
 
-/* KPAD's per-channel state, the SDK's KPADInsideStatus (src/review_kpad.h);
-   only the fields this file reaches are named. */
+/* KPAD's per-channel state, the SDK's KPADInsideStatus (src/review_kpad.h,
+   include/revolution/KPAD/__KPAD.h); only the fields this file reaches are
+   named. One record per WPAD channel, 0x400 bytes each. */
 typedef struct KPADInsideStatus {
-    u8 pad0[0xB4];
+    u8 pad0[0x5C];
+    /* 0x05C */ u32 dev_type; /* KPADStatus.dev_type & friends, set as one word */
+    u8 pad60[0xB4 - 0x60];
     /* 0x0B4 */ Vec2 sec_nrm_hori;
     u8 padBC[0xC8 - 0xBC];
     /* 0x0C8 */ KPADObject kobj_sample[4]; /* what WPAD reported this sample */
     /* 0x0F8 */ KPADObject kobj_regular[2]; /* the pair KPAD uses, nearer one first */
     /* 0x110 */ s16 valid_objs;
-    u8 pad112[0x3A0 - 0x112];
+    /* 0x114 */ s16 active_chan; /* channel WPAD is sampling for; <0 = none */
+    u8 pad116[0x3A0 - 0x116];
     /* 0x3A0 */ f32 sec_length;
     /* 0x3A4 */ Vec2 sec_nrm; /* direction of the pair used in the last sample */
     /* 0x3AC */ f32 sec_dist; /* and its length */
     /* 0x3B0 */ f32 trust_sec_length;
     u8 pad3B4[0x3C8 - 0x3B4];
     /* 0x3C8 */ Vec2 acc_horizon;
+    u8 pad3D0[0x3EC - 0x3D0];
+    /* 0x3EC */ BOOL is_dpd_enabled; /* the pointer state KPAD last asked WPAD for */
+    /* 0x3F0 */ BOOL sampling_pending; /* a DPD start/end notice is outstanding */
+    /* 0x3F4 */ BOOL sampling_restart; /* WPAD is re-choosing its format: drop a sample */
+    /* 0x3F8 */ void (*dpd_ctrl_callback)(s32 chan, s32 reason); /* KPAD's client notice */
+    /* 0x3FC */ BOOL data_format_failed; /* WPAD was busy: retry the format next time */
 } KPADInsideStatus;
+
+/* The four records, one per WPAD channel. */
+#define inside_kpads ((KPADInsideStatus *)lbl_8037C808)
 
 #define WPAD_DPD_MAX_OBJECTS 4
 
