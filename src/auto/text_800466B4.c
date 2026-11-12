@@ -19,6 +19,59 @@ typedef struct KPADReadPrivate {
     u8 ring[0x2E8];
 } KPADReadPrivate;
 
+/* --- KPAD's DPD (Wii pointer) object tracking, src/review_KPAD.c ------------ */
+
+/* The four one-byte flags WPAD reports with each DPD object. */
+typedef struct KPADObjectFlags {
+    s8 error_fg; /* set when this object is not usable in the sample */
+    s8 state_fg;
+    s8 fg1;
+    s8 fg2;
+} KPADObjectFlags;
+
+/* One object WPAD saw: where its centre was, and how far from trusted. */
+typedef struct KPADObject {
+    /* 0x00 */ Vec2 center;
+    /* 0x08 */ union {
+        u32 all; /* the four flags, which KPAD copies as one word */
+        KPADObjectFlags f;
+    } flags;
+} KPADObject;
+
+/* KPAD's per-channel state, the SDK's KPADInsideStatus (src/review_kpad.h);
+   only the fields this file reaches are named. */
+typedef struct KPADInsideStatus {
+    u8 pad0[0xB4];
+    /* 0x0B4 */ Vec2 sec_nrm_hori;
+    u8 padBC[0xC8 - 0xBC];
+    /* 0x0C8 */ KPADObject kobj_sample[4]; /* what WPAD reported this sample */
+    /* 0x0F8 */ KPADObject kobj_regular[2]; /* the pair KPAD uses, nearer one first */
+    /* 0x110 */ s16 valid_objs;
+    u8 pad112[0x3A0 - 0x112];
+    /* 0x3A0 */ f32 sec_length;
+    /* 0x3A4 */ Vec2 sec_nrm; /* direction of the pair used in the last sample */
+    /* 0x3AC */ f32 sec_dist; /* and its length */
+    /* 0x3B0 */ f32 trust_sec_length;
+    u8 pad3B4[0x3C8 - 0x3B4];
+    /* 0x3C8 */ Vec2 acc_horizon;
+} KPADInsideStatus;
+
+#define WPAD_DPD_MAX_OBJECTS 4
+
+/* KPAD's DPD tuning variables; the game keeps them in .sdata/.sbss, so they are
+   named here rather than at their definition (src/review_KPAD.c). */
+#define kp_dist_vv1 lbl_8055D990       /* object distance scaled to screen units */
+#define kp_err_dist_min lbl_8055D9B0   /* pair nearer than this is an error */
+#define kp_err_dist_speedM_1 lbl_8055D998 /* 1 / (1 - kp_err_dist_speed) */
+#define kp_err_dist_speed_1 lbl_8055D99C  /* 1 / (1 + kp_err_dist_speed) */
+#define kp_err_dist_max lbl_80558EB8   /* 3.0f: pair further than this is an error */
+#define kp_err_first_inpr lbl_80558EC0 /* 0.9f: least agreement of a first pair */
+#define kp_err_next_inpr lbl_80558EC4  /* 0.9f: ... of a pair continuing the last */
+/* The unit's pooled literals. */
+#define F_ZERO lbl_80560BD8 /* 0.0f */
+#define F_ONE lbl_80560BE4  /* 1.0f */
+#define F_TWO lbl_80560BF0  /* 2.0f: the score no pair can reach */
+
 extern u8 lbl_8037C808[];
 extern f32 lbl_80558EB8;
 extern f32 lbl_80560BE4;
