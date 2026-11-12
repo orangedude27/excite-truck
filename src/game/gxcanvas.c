@@ -432,31 +432,32 @@ extern void fn_802C4388();
 extern void fn_802C4108(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C4610(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C4388(s32,s32,s32,s32,s32,s32,s32,s32);
-void fn_802C3850(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    u8 mode = *(u8 *)arg0;
-    s32 flag = 0;
-    if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
-    if (flag) {
-        flag = 0;
-        if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
-        if (flag) {
-            fn_802C4108(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+/* Dispatches a canvas copy/blit based on destination/source mode bytes (5/6 special-cased), tracing when unsupported. */
+void fn_802C3850(s32 dstCanvas, s32 srcX, s32 srcY, s32 srcX2, s32 srcY2, s32 srcCanvas, s32 dstX, s32 dstY) {
+    u8 dstMode = *(u8 *)dstCanvas;
+    s32 isNormalMode = 0;
+    if ((s8)dstMode != 5 && (s8)dstMode != 6) isNormalMode = 1;
+    if (isNormalMode) {
+        isNormalMode = 0;
+        if (*(s8 *)srcCanvas != 5 && *(s8 *)srcCanvas != 6) isNormalMode = 1;
+        if (isNormalMode) {
+            fn_802C4108(dstCanvas, srcX, srcY, srcX2, srcY2, srcCanvas, dstX, dstY);
             return;
         }
     }
-    if ((s8)mode == 5 && (s32)*(u8 *)arg5 == 5) {
-        fn_802C4610(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+    if ((s8)dstMode == 5 && (s32)*(u8 *)srcCanvas == 5) {
+        fn_802C4610(dstCanvas, srcX, srcY, srcX2, srcY2, srcCanvas, dstX, dstY);
         return;
     }
-    if ((s8)mode == 5) {
-        flag = 0;
-        if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
-        if (flag) {
-            fn_802C4388(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+    if ((s8)dstMode == 5) {
+        isNormalMode = 0;
+        if (*(s8 *)srcCanvas != 5 && *(s8 *)srcCanvas != 6) isNormalMode = 1;
+        if (isNormalMode) {
+            fn_802C4388(dstCanvas, srcX, srcY, srcX2, srcY2, srcCanvas, dstX, dstY);
             return;
         }
     }
-    fn_802E317C(lbl_8034B094, (s32)*(s8 *)arg0, (s32)*(s8 *)arg5);
+    fn_802E317C(lbl_8034B094, (s32)*(s8 *)dstCanvas, (s32)*(s8 *)srcCanvas);
 }
 
 extern s32 fn_802C3170(void *, s32 *, s32 *, s32 *, s32 *, s32 *, s32 *);
