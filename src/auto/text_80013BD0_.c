@@ -814,12 +814,15 @@ extern "C" s32 fn_800151DC(void *arg0) {
     s32 result;
     void *manager = lbl_8055D350;
     void *obj;
+
+    /* Check manager/state flags and invoke object handlers (reset/wrong-way) when conditions match. */
     if ((*(u32 *)((u8 *)manager + 0x20) & 0x400) &&
         (*(u32 *)((u8 *)*(void **)((u8 *)manager + 0x2C) + 0x2C0) & 0x10)) {
         obj = *(void **)((u8 *)arg0 + 0x50);
         ((Obj *)obj)->v3(lbl_80558BBC);
         fn_801476C4();
     }
+
     manager = lbl_8055D350;
     result = 0;
     if ((*(u32 *)((u8 *)*(void **)((u8 *)manager + 0x30)) & 4) && (*(u32 *)((u8 *)manager + 0x20) & 0x200)) result = 1;
@@ -828,6 +831,7 @@ extern "C" s32 fn_800151DC(void *arg0) {
         ((Obj *)obj)->v3(lbl_802FCDB4);
         fn_801476C4();
     }
+
     return result;
 }
 #pragma pop
