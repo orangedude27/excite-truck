@@ -664,16 +664,17 @@ extern "C" void *Instance__15EmissionManagerFv(void) {
     return &lbl_80407F6C;
 }
 
-extern "C" void *fn_800E2D74(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8002F634((char *)arg0 + 0x6ccc, (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8, 0xc, 3);
-        fn_8002F634((char *)arg0 + 0x2c, (void *)__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1b0, 0x40);
-        if ((char *)arg0 + 0x20 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)arg0 + 0x20, 0);
-        if ((char *)arg0 + 0x14 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)arg0 + 0x14, 0);
-        if ((char *)arg0 + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)arg0 + 8, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* EmissionManager deleting destructor: destroys embedded subobjects/arrays and optionally frees the object. */
+extern "C" void *fn_800E2D74(void *self, int deleteFlag) {
+    if (self != 0) {
+        fn_8002F634((char *)self + 0x6ccc, (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8, 0xc, 3);
+        fn_8002F634((char *)self + 0x2c, (void *)__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1b0, 0x40);
+        if ((char *)self + 0x20 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)self + 0x20, 0);
+        if ((char *)self + 0x14 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)self + 0x14, 0);
+        if ((char *)self + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)self + 8, 0);
+        if (deleteFlag > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma push
