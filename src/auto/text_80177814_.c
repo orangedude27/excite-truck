@@ -575,21 +575,31 @@ int fn_80178604(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma scheduling on
 #pragma dont_inline on
-int fn_80178678(void *arg0, void **arg1, int arg2) {
-    int size;
-    void *data;
-    int position;
-    void *result;
-    data = 0;
-    fn_8012F500(arg0, &size);
-    if (size < 0) return 0;
-    position = fn_8012F450(arg0);
-    fn_8012F550(arg0, &data, 8);
-    fn_8012F448(arg0, position);
-    fn_8012F550(arg0, &data, ((int *)data)[1]);
-    if (arg2 == fn_80178604(data)) result = fn_801783A8(data, size);
-    else result = 0;
-    *arg1 = result;
+/* Load an object from a stream into *outObject when its header type matches expectedType. */
+int fn_80178678(void *stream, void **outObject, int expectedType) {
+    int dataSize;
+    void *buffer;
+    int savedPos;
+    void *loadedObj;
+
+    buffer = 0;
+    fn_8012F500(stream, &dataSize);
+    if (dataSize < 0) {
+        return 0;
+    }
+
+    savedPos = fn_8012F450(stream);
+    fn_8012F550(stream, &buffer, 8);
+    fn_8012F448(stream, savedPos);
+    fn_8012F550(stream, &buffer, ((int *)buffer)[1]);
+
+    if (expectedType == fn_80178604(buffer)) {
+        loadedObj = fn_801783A8(buffer, dataSize);
+    } else {
+        loadedObj = 0;
+    }
+
+    *outObject = loadedObj;
     return 1;
 }
 #pragma pop
@@ -788,6 +798,43 @@ void* fn_80178CA4(void) {
     return lbl_8055E444;
 }
 
+#pragma use_lmw_stmw off
+void fn_80178CAC(void *a, void *b) {
+    int i;
+    int *p;
+    void *x;
+    void *y;
+    int t25, t24;
+    int t31, t30, t28, t29;
+    p = lbl_80430590;
+    for (i = 0; i < 4; i++, p++) {
+        if ((int)a == *p) {
+            *p = (int)b;
+            fn_8026A248((int)b, i);
+        } else if ((int)b == *p) {
+            *p = (int)a;
+            fn_8026A248((int)a, i);
+        }
+    }
+    x = (void *)fn_8017960C((int)a);
+    y = (void *)fn_8017960C((int)b);
+    t25 = *(int *)((char *)x + 0x1F0);
+    t24 = *(int *)((char *)y + 0x1F0);
+    t31 = *(int *)((char *)x + 0x10);
+    t30 = *(int *)((char *)y + 0x10);
+    t28 = *(int *)((char *)y + 0x270C);
+    t29 = *(int *)((char *)x + 0x270C);
+    fn_801A5300(x, 0);
+    fn_801A5300(y, 0);
+    fn_801A5300(x, t28);
+    fn_801A5300(y, t29);
+    *(int *)((char *)x + 0x1F0) = t24;
+    *(int *)((char *)y + 0x1F0) = t25;
+    *(int *)((char *)x + 0x10) = t30;
+    *(int *)((char *)y + 0x10) = t31;
+    fn_801EAA94((int)a, t24);
+    fn_801EAA94((int)b, t25);
+}
 void fn_80178DBC(int arg0, float arg1) {
     lbl_804305D4[arg0] = arg1;
     fn_801DCEC8(arg0, arg1);
