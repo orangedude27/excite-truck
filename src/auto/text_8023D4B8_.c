@@ -524,7 +524,7 @@ extern "C" void fn_8023E1FC(void *arg0) {
         char string[0x14];
     } frame;
     register char *entry;
-    register signed char zero = 0;
+    register int zero = 0;
     int i;
     Interface *object;
 
@@ -602,38 +602,38 @@ void fn_8023E33C(void *arg0) {
 int fn_8023E3D8(int arg0, int arg1) {
     s32 max = fn_801A902C() + 1;
     s32 *p = (s32 *)arg0;
-    s32 sum = max + arg1;
     s32 old = p[4] + 1;
-    p[4] = (old + sum) % max - 1;
+    p[4] = (old + (max + arg1)) % max - 1;
     fn_8023E33C(p);
 }
 
-void *fn_8023E440(void *arg0, void *arg1) {
+/* Initialize a component record and resolve its entry index by matching descriptor fields. */
+void *fn_8023E440(void *self, void *desc) {
     extern int fn_801A902C(void);
     extern int fn_801A9050(void *, int);
     extern void fn_8023E33C(void *);
     extern char lbl_80341C50[];
-    struct Out { int first; int pad; unsigned int second; char tail[4]; } out;
+    struct Out { int first; int pad; unsigned int second; char tail[4]; } entry;
     int zero = 0;
-    int i;
-    *(char *)arg0 = zero;
-    *(s32 *)((char *)arg0 + 4) = -1;
-    *((char *)arg0 + 8) = zero;
-    *(char **)((char *)arg0 + 0xC) = lbl_80341C50;
-    *(s32 *)((char *)arg0 + 0x10) = -1;
-    i = fn_801A902C();
+    int index;
+    *(char *)self = zero;
+    *(s32 *)((char *)self + 4) = -1;
+    *((char *)self + 8) = zero;
+    *(char **)((char *)self + 0xC) = lbl_80341C50;
+    *(s32 *)((char *)self + 0x10) = -1;
+    index = fn_801A902C();
     goto test;
 loop:
-    out.pad = zero;
-    out.tail[0] = zero;
-    fn_801A9050(&out, i);
-    if (out.first == *(s32 *)arg1 && out.second == *(unsigned int *)((char *)arg1 + 8))
-        *(s32 *)((char *)arg0 + 0x10) = i;
+    entry.pad = zero;
+    entry.tail[0] = zero;
+    fn_801A9050(&entry, index);
+    if (entry.first == *(s32 *)desc && entry.second == *(unsigned int *)((char *)desc + 8))
+        *(s32 *)((char *)self + 0x10) = index;
 test:
-    if (i-- > 0)
+    if (index-- > 0)
         goto loop;
-    fn_8023E33C(arg0);
-    return arg0;
+    fn_8023E33C(self);
+    return self;
 }
 
 void fn_8023E504(void *arg0, int *arg1) {
