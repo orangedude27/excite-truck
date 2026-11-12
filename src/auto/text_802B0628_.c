@@ -291,6 +291,8 @@ void fn_802B11BC(void *arg0) {
     int *p;
     int i;
     int found;
+
+    /* Initialize global state and object fields, clear a 13-entry table, and set a flag based on id/conditions. */
     lbl_8055F99C = 0;
     lbl_8055F998 = 0;
     ((int *)arg0)[0x318 / 4] = ((int (*)(int))fn_802CFFA0)(0x24000);
@@ -298,6 +300,7 @@ void fn_802B11BC(void *arg0) {
     ((int *)arg0)[0x31c / 4] = 0;
     fn_802BAFA0();
     fn_802B0904();
+
     p = (int *)arg0;
     for (i = 0; i < 13; i++) {
         ((int *)((char *)p + 0x934))[0] = 0;
@@ -307,6 +310,7 @@ void fn_802B11BC(void *arg0) {
         ((int *)((char *)p + 0x934))[4] = 0;
         p = (int *)((char *)p + 0x14);
     }
+
     found = 0;
     ((int *)arg0)[0xa38 / 4] = 0;
     ((int *)arg0)[0x328 / 4] = 0;
