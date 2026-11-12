@@ -885,14 +885,15 @@ extern "C" void fn_802193C8(void *arg0, f32 value) {
 }
 
 #pragma dont_inline on
-extern "C" void fn_80219440(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    void *value = (void *)fn_8012850C((void *)arg3, lbl_8033D878);
-    *(s32 *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x230)) << 4) + 0x34) = arg1;
-    *(s32 *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x230)) << 4) + 0x30) = (s32)arg2;
-    *(s32 *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x230)) << 4) + 0x38) = arg3;
-    *(void **)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x230)) << 4) + 0x3C) = value;
-    memcpy(value, arg2, (unsigned long)arg3);
-    *(s32 *)((u8 *)arg0 + 0x230) = *(s32 *)((u8 *)arg0 + 0x230) + 1;
+/* Store a copy of widget notification data in the object's old-data list. */
+extern "C" void fn_80219440(void *self, s32 tag, void *data, s32 size) {
+    void *copy = (void *)fn_8012850C((void *)size, lbl_8033D878);
+    *(s32 *)((u8 *)self + ((*(s32 *)((u8 *)self + 0x230)) << 4) + 0x34) = tag;
+    *(s32 *)((u8 *)self + ((*(s32 *)((u8 *)self + 0x230)) << 4) + 0x30) = (s32)data;
+    *(s32 *)((u8 *)self + ((*(s32 *)((u8 *)self + 0x230)) << 4) + 0x38) = size;
+    *(void **)((u8 *)self + ((*(s32 *)((u8 *)self + 0x230)) << 4) + 0x3C) = copy;
+    memcpy(copy, data, (unsigned long)size);
+    *(s32 *)((u8 *)self + 0x230) = *(s32 *)((u8 *)self + 0x230) + 1;
 }
 #pragma dont_inline reset
 
