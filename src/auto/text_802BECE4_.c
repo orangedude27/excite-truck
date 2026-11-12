@@ -309,6 +309,8 @@ void fn_802BF350(void) {
 
 #pragma cplusplus on
 extern "C" void fn_802BF40C(void) {
+    /* Tear down all active water instances (virtual destroy), clear the instance
+     * table/count, and release the cached water asset handle if valid. */
     class Obj {
     public:
         virtual void f0(int);
