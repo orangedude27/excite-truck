@@ -551,6 +551,15 @@ extern "C" char lbl_8055A054;
 #define lbl_8055A048 (&lbl_8055A048)
 #define lbl_8055A050 (&lbl_8055A050)
 #define lbl_8055A054 (&lbl_8055A054)
+struct Rec157560 {
+    s32 a;
+    s32 b;
+    s32 c;
+    f32 d;
+    f32 e;
+    s32 f;
+    char name[32];
+};
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -570,9 +579,9 @@ extern "C" void fn_80157560(VObj *arg0) {
         b1 = b0->vslot2(lbl_8055A030);
     }
     if (b1 != 0) {
+        VObj *iter = b1->vslot24(0);
         f32 best = lbl_80561754;
         s32 idx = 0;
-        VObj *iter = b1->vslot24(0);
         while (iter != 0) {
             s32 s28 = iter->vslot7(lbl_8055A038);
             s32 s22 = iter->vslot6(lbl_8055A040, lbl_8055A044);
@@ -581,10 +590,12 @@ extern "C" void fn_80157560(VObj *arg0) {
             if (f1v < best) {
                 f1v = b0->vslot2(lbl_8055A030)->vslot24(idx)->vslot9(lbl_8055A050);
             }
+            s32 n = *(s32 *)((char *)arg0 + 0xC);
             char *base = *(char **)((char *)arg0 + 8);
-            char *rec = base + s28 * 0x38;
-            *(s32 *)((char *)arg0 + 0xC) += 1;
-            *(s32 *)rec = 0;
+            *(s32 *)((char *)arg0 + 0xC) = n + 1;
+            s32 off = s28 * 0x38;
+            *(s32 *)(base + off) = 0;
+            char *rec = base + off;
             *(s32 *)(rec + 4) = 0;
             *(s32 *)(rec + 8) = 0;
             *(f32 *)(rec + 12) = best;
