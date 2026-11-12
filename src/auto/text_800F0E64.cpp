@@ -1804,6 +1804,36 @@ extern "C" s32 fn_800F420C(s32 arg0, s32 arg1) {
 
 extern "C" const char lbl_80324E40[];
 extern "C" const char lbl_80324E5C[];
+
+// The stream a SoundArchive opens for the loader: detail::OpenFileStream,
+// OpenGroupStream and OpenGroupWaveDataStream all return one.  The two leading
+// destructor slots put the first declared method at 0x8, so the offsets in the
+// comments are the vtable slots the loaders' calls use; only the slots they call
+// are named.  A stream is usable once IsOpen() and IsAvailable() both say so, and
+// the loader keeps the one it is reading in its own field 0x21C so Cancel() can
+// stop it.
+struct ArchiveStream {
+    virtual void f0();                        // 0x08
+    virtual void f1();                        // 0x0C
+    virtual void Close();                     // 0x10
+    virtual s32 Read(void *dst, u32 size);    // 0x14
+    virtual void f4();                        // 0x18
+    virtual void f5();                        // 0x1C
+    virtual void f6();                        // 0x20
+    virtual void f7();                        // 0x24
+    virtual void f8();                        // 0x28
+    virtual s32 IsOpen();                     // 0x2C
+    virtual void f10();                       // 0x30
+    virtual void f11();                       // 0x34
+    virtual void f12();                       // 0x38
+    virtual void f13();                       // 0x3C
+    virtual u32 GetSize();                    // 0x40
+    virtual void Seek(s32 offset, s32 origin);// 0x44
+    virtual void f16();                       // 0x48
+    virtual void f17();                       // 0x4C
+    virtual s32 IsAvailable();                // 0x50
+};
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(void *self, u32 groupId, void *allocator, void **outWave, u32 blockSize) {
@@ -2308,7 +2338,7 @@ struct SetupStrings { char file; char _pad1[0x1B]; char m1C[0x28]; char m44[0x2C
 #pragma use_lmw_stmw off
 extern "C" s32 Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(void *self, const void *archive, void *buffer, u32 size, void *streamBuffer, u32 streamBufferSize) {
     struct PlayerInfo { u32 fields[7]; };
-    register const char *base = lbl_80324E88;
+    const char *base = lbl_80324E88;
     PlayerInfo firstInfo;
     PlayerInfo secondInfo;
     PlayerInfo streamInfo;
@@ -2317,22 +2347,22 @@ extern "C" s32 Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundAr
     s32 thirdCount;
     s32 result;
     if (archive == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x1C - 0x1C], 0xA2, base + 0x1C);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0xA2, base + 0x1C);
     if (buffer == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x44 - 0x44], 0xA3, base + 0x44);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0xA3, base + 0x44);
     if (streamBuffer == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x70 - 0x70], 0xA4, base + 0x70);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0xA4, base + 0x70);
     if (archive == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x1C - 0x1C], 0x119, base + 0x1C);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x119, base + 0x1C);
     firstCount = 0;
     if (((s32 (*)(const void *, void *))fn_800F2814)(archive, &firstInfo))
         firstCount = firstInfo.fields[4];
     if (streamBufferSize < (u32)firstCount * 0xA000)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0xA0 - 0xA0], 0xA5, base + 0xA0);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0xA5, base + 0xA0);
     if (SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUl(self, archive, buffer, size) == 0)
         return 0;
     if (archive == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x1C - 0x1C], 0x119, base + 0x1C);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x119, base + 0x1C);
     secondCount = 0;
     if (((s32 (*)(const void *, void *))fn_800F2814)(archive, &secondInfo))
         secondCount = secondInfo.fields[4];
@@ -3162,6 +3192,7 @@ extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCvl(void *, const void *
 extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8SeqSound15SeqLoadCallbackUl(void *, const void *, unsigned long);
 extern "C" f64 lbl_805610B0;
 extern "C" const char lbl_80325334[];
+#pragma use_lmw_stmw off
 extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6detail8SeqSoundPCQ46nw4hbm3snd12SoundArchive9SoundInfoPCQ46nw4hbm3snd12SoundArchive12SeqSoundInfoi(void *player, void *seqSound, void *soundInfo, void *seqSoundInfo, s32 offset) {
     struct StreamProxy {
         virtual void slot0() = 0;
@@ -3178,7 +3209,7 @@ extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6
         virtual void slot11() = 0;
         virtual void slot12() = 0;
         virtual void slot13() = 0;
-        virtual u32 getSize() = 0;
+        virtual unsigned long getSize() = 0;
     };
     struct SeqSoundProxy {
         virtual void slot0() = 0;
@@ -3192,37 +3223,30 @@ extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6
         virtual void slot8() = 0;
         virtual void slot9() = 0;
         virtual void slot10() = 0;
-        virtual void setRate(f32) = 0;
+        virtual void setRate(float) = 0;
     };
-    union {
-        u32 words[2];
-        f64 value;
-    } conversion;
-    u8 streamBuffer[0x200];
-    u8 reader[8];
+    union { unsigned long words[2]; double value; } conversion;
+    unsigned char streamBuffer[0x200];
+    unsigned char reader[8];
     void *fileData;
     void *stream;
     void *memory;
-    u32 fileSize;
+    unsigned long fileSize;
     s32 status;
-    u32 volume;
-    f32 rate;
+    unsigned long volume;
+    float rate;
     void *base;
-
     if (seqSoundInfo == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x469, lbl_80325334);
-
-    fileData = (void *)detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(player, *(u32 *)soundInfo);
+    fileData = (void *)detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(player, *(unsigned long *)soundInfo);
     if (fileData == 0) {
-        memory = *(void **)((u8 *)seqSound + 4);
+        memory = *(void **)((unsigned char *)seqSound + 4);
         if (memory == 0)
             return 4;
-
-        stream = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((u8 *)player + 0x10), *(u32 *)soundInfo, streamBuffer, 0x200);
-        OSLockMutex((u8 *)memory + 4);
-        fileSize = fn_800EC56C((void **)((u8 *)memory + 0x1C));
-        OSUnlockMutex((u8 *)memory + 4);
-
+        stream = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((unsigned char *)player + 0x10), *(unsigned long *)soundInfo, streamBuffer, 0x200);
+        OSLockMutex((unsigned char *)memory + 4);
+        fileSize = fn_800EC56C((void **)((unsigned char *)memory + 0x1C));
+        OSUnlockMutex((unsigned char *)memory + 4);
         if (fileSize < ((StreamProxy *)stream)->getSize()) {
             if (stream != 0)
                 ((StreamProxy *)stream)->close();
@@ -3231,33 +3255,28 @@ extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6
         if (stream != 0)
             ((StreamProxy *)stream)->close();
     }
-
-    status = Setup__Q46nw4hbm3snd6detail8SeqSoundFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback(
-        seqSound, *(void **)((u8 *)player + 0x68), *(u32 *)((u8 *)seqSoundInfo + 8), offset, (u8 *)player + 0x38);
+    status = Setup__Q46nw4hbm3snd6detail8SeqSoundFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback(seqSound, *(void **)((unsigned char *)player + 0x68), *(unsigned long *)((unsigned char *)seqSoundInfo + 8), offset, (unsigned char *)player + 0x38);
     if (status != 0) {
         if (status == 1)
             return 8;
         return 0xFF;
     }
-
-    volume = *(u32 *)((u8 *)soundInfo + 0xC);
+    volume = *(unsigned long *)((unsigned char *)soundInfo + 0xC);
     conversion.words[0] = 0x43300000;
     conversion.words[1] = volume ^ 0x80000000;
-    rate = (f32)(conversion.value - lbl_805610B0);
+    rate = (float)(conversion.value - lbl_805610B0);
     rate /= lbl_805610A8;
     ((SeqSoundProxy *)seqSound)->setRate(rate);
-    SetChannelPriority__Q46nw4hbm3snd6detail8SeqSoundFi(seqSound, *(int *)((u8 *)seqSoundInfo + 0xC));
-
+    SetChannelPriority__Q46nw4hbm3snd6detail8SeqSoundFi(seqSound, *(int *)((unsigned char *)seqSoundInfo + 0xC));
     if (fileData != 0) {
         __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(reader, fileData);
         base = GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(reader);
         Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCvl(seqSound, base, *(s32 *)seqSoundInfo);
     } else {
-        Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8SeqSound15SeqLoadCallbackUl(seqSound, (const void *)((u8 *)player + 0x18), (unsigned long)seqSound);
+        Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8SeqSound15SeqLoadCallbackUl(seqSound, (const void *)((unsigned char *)player + 0x18), (unsigned long)seqSound);
     }
     return 0;
 }
-
 extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(void *, u32, void *, void **, u32);
 #pragma push
 #pragma use_lmw_stmw off
