@@ -180,7 +180,7 @@ int fn_80204EA0(const char *arg0) {
     return result;
 }
 
-extern int fn_801345D8(void *, int, const char *, const char *);
+extern int fn_801345D8();
 __declspec(section ".sdata") extern const char lbl_8055B4B4[];
 __declspec(section ".sdata") extern const char lbl_8055B4B8[];
 int fn_8020503C(const char *arg0) {
