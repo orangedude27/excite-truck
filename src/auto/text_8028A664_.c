@@ -121,12 +121,9 @@ void fn_8028A664(void) {
     extern s32 fn_8028BA44(void *);
     extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BB14(s32);
-    struct Data { char first; };
-    register char *data asm("r31") = lbl_80348B98;
-    volatile struct Data *header = (volatile struct Data *)data;
+    char *data = lbl_80348B98;
     void *p;
-
-    p = fn_801284F8(0xDC, (void *)&header->first);
+    p = fn_801284F8(0xDC, (void *)(*(char (*)[0xDC])data));
     if (p != 0) p = fn_8028BB68(p, 0x80, lbl_80564328);
     lbl_8055F6F0 = (s32)p;
     p = fn_801284F8(0xDC, data + 0x10);
@@ -255,24 +252,25 @@ extern "C" void fn_8028A9F4(void) {
     } while (i < 8);
 }
 
-void fn_8028AA6C(void *arg0, s32 arg1, f32 arg2) {
-    if (arg1 != 0 && (u32)lbl_804B32B8[0x50] < 0x10U) {
-        f32 t = fn_801E7E18();
+void fn_8028AA6C(void *pos, s32 sequence, f32 unused) {
+    /* Append an explosion spawn entry (time, world position, sequence) to the FX spawn queue at lbl_804B32B8 if there is space. */
+    if (sequence != 0 && (u32)lbl_804B32B8[0x50] < 0x10U) {
+        f32 spawnTime = fn_801E7E18();
         f32 z;
         f32 y;
         f32 x;
-        s32 c;
-        x = ((f32 *)arg0)[0];
-        y = ((f32 *)arg0)[1];
-        z = ((f32 *)arg0)[2];
-        c = *(volatile s32 *)&lbl_804B32B8[0x50];
-        ((f32 *)lbl_804B32B8)[c * 5] = t;
-        c = *(volatile s32 *)&lbl_804B32B8[0x50];
-        ((f32 *)lbl_804B32B8)[c * 5 + 1] = x;
-        ((f32 *)lbl_804B32B8)[c * 5 + 2] = y;
-        ((f32 *)lbl_804B32B8)[c * 5 + 3] = z;
-        c = *(volatile s32 *)&lbl_804B32B8[0x50];
-        lbl_804B32B8[c * 5 + 4] = arg1;
+        s32 count;
+        x = ((f32 *)pos)[0];
+        y = ((f32 *)pos)[1];
+        z = ((f32 *)pos)[2];
+        count = *(volatile s32 *)&lbl_804B32B8[0x50];
+        ((f32 *)lbl_804B32B8)[count * 5] = spawnTime;
+        count = *(volatile s32 *)&lbl_804B32B8[0x50];
+        ((f32 *)lbl_804B32B8)[count * 5 + 1] = x;
+        ((f32 *)lbl_804B32B8)[count * 5 + 2] = y;
+        ((f32 *)lbl_804B32B8)[count * 5 + 3] = z;
+        count = *(volatile s32 *)&lbl_804B32B8[0x50];
+        lbl_804B32B8[count * 5 + 4] = sequence;
         lbl_804B32B8[0x50]++;
     }
 }
@@ -691,9 +689,10 @@ s32 fn_8028B93C(f32 *arg0) {
     f32 pos[3];
     f32 temp_y, temp_z, temp_x;
     f32 radius;
-    register s32 i;
-    f32 x, y, z;
-
+    s32 i;
+    f32 x;
+    f32 y;
+    f32 z;
     x = arg0[0] * lbl_80564328;
     y = arg0[1] * lbl_80564328;
     z = arg0[2] * lbl_80564328;
@@ -702,12 +701,12 @@ s32 fn_8028B93C(f32 *arg0) {
     dir[2] = z;
     radius = lbl_805643A0 * PSVECMag(arg0);
     for (i = 0; i < 2; i++) {
-        temp_z = arg0[5] + fn_80287BC8(lbl_805643A4, lbl_805643A8);
-        temp_y = arg0[4] + fn_80287BC8(lbl_805643A4, lbl_805643A8);
-        temp_x = arg0[3] + fn_80287BC8(lbl_805643A4, lbl_805643A8);
-        pos[1] = temp_y;
+        temp_z = fn_80287BC8(lbl_805643A4, lbl_805643A8) + arg0[5];
+        temp_y = fn_80287BC8(lbl_805643A4, lbl_805643A8) + arg0[4];
+        temp_x = fn_80287BC8(lbl_805643A4, lbl_805643A8) + arg0[3];
         pos[2] = temp_z;
         pos[0] = temp_x;
+        pos[1] = temp_y;
         fn_8028BED4((void *)*(volatile s32 *)&lbl_8055F6F0, 1, pos, dir, radius);
         fn_8028BED4((void *)*(volatile s32 *)&lbl_8055F6F4, 1, pos, dir, radius);
     }
@@ -954,8 +953,8 @@ void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
         src0 = src[0];
         src1 = src[1];
         dst[0] = src0;
-        dst[1] = src1;
         dst[2] = src[2];
+        dst[1] = src1;
         temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
         temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
         temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
@@ -977,9 +976,9 @@ void fn_8028BFEC(s32 arg0) {
     struct List { struct Entry *data; s32 count; s32 pad; f32 time; };
     struct List *list = (struct List *)arg0;
     register struct Entry *out;
-    register struct Entry *in;
-    register s32 count;
     register u8 *offset;
+    register s32 count;
+    register struct Entry *in;
     f32 vz;
     f32 vy;
     f32 vx;
@@ -988,21 +987,20 @@ void fn_8028BFEC(s32 arg0) {
     f32 f7;
     f32 f8;
     volatile f32 temp[3];
-
     elapsed = fn_801E7E18() - list->time;
     time = fn_801E7E24();
     f7 = lbl_80564338 * (lbl_805643B8 * time);
     f8 = lbl_8056432C - (lbl_80564328 * time);
     out = list->data;
-    for (count = 0, offset = 0; count < list->count; count++, offset += 0x1C) {
+    for (count = 0, offset = 0; count < list->count; offset += 0x1C, count++) {
         in = (struct Entry *)((u32)list->data + (u32)offset);
         if (in->age > elapsed) {
             vx = in->vx * f8;
             vy = (in->vy * f8) - f7;
             vz = in->vz * f8;
             temp[0] = vx;
-            temp[1] = vy;
             temp[2] = vz;
+            temp[1] = vy;
             out->x = in->x + vx * time;
             out->y = in->y + vy * time;
             out->z = in->z + vz * time;
@@ -1178,8 +1176,8 @@ void fn_8028C938(s32 arg0) {
             vy = (in->vy * factor) - delta;
             vz = in->vz * factor;
             temp_x = vx;
-            temp_z = (vz * step, vz);
             temp_y = vy;
+            temp_z = vz;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
             out->z = in->z + vz * step;
