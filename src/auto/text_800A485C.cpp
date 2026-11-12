@@ -2281,91 +2281,111 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
 #define VF_CACHE_ACTIVE           2U                               /* the page cache has been set up */
 #define VF_ERR_SHORT_TRANSFER     0x11                             /* a read stopped short of its run */
 
-extern "C" s32 fn_800A8050(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    u32 spC;
-    s32 sp8;
-    s32 r;
-    void **ppage = (void **)arg3;
-    void **head = (void **)arg1;
-    r = fn_800A7C20(arg0, head, (u32)arg2, ppage, &sp8);
-    if (r != 0) return r;
-    if (sp8 == 0) {
-        r = fn_800A586C(arg0, *(s32 *)((u8 *)*ppage + 4), *(s32 *)((u8 *)*ppage + 0x18), *(s32 *)((u8 *)*ppage + 0x14), (s32)&spC);
-        if (r != 0) {
-            void *page = *ppage;
+/* Takes the cache page covering `sector` off one of the volume's page lists
+ * (`list` is the address of the head: volume+0x1630 for the FAT pages,
+ * volume+0x1634 for the file data pages) and, when the list had no page for it
+ * yet, reads that page's whole run of sectors in (fn_800A586C).  A read that
+ * fails, or one that comes back short without stopping at the end of the
+ * volume, drops the page again - flags cleared, changed range cleared, empty
+ * run (first = 0xFFFFFFFF), no owner and off the list - and answers with the
+ * read's error or VF_ERR_SHORT_TRANSFER.  A page that was read whole is no
+ * longer changed and is claimed for the file the volume is working for
+ * (VF_VOL_PAGE_OWNER) when `claim` asks for a owner, unclaimed otherwise.
+ *
+ * A page the list already had is handed out as it is, except when `claim` asks
+ * for a owner and the page still belongs to another file: a changed page of a
+ * live cache whose owner is not the volume's current one is written back first
+ * (fn_800A7B34), and one that will not go to disk is not handed out at all
+ * (*outPage = 0).
+ *
+ * VFiPFCACHE_DoReadPage (fn_800A7E44) is the same read without the claiming: it
+ * never writes a cached page back and never gives a new one an owner.
+ */
+extern "C" s32 fn_800A8050(void *volume, s32 listAddr, s32 sector, s32 outPageAddr, s32 claim) {
+    u32 sectorsRead;
+    s32 cached;
+    s32 result;
+    void **outPage = (void **)outPageAddr;
+    void **list = (void **)listAddr;
+    result = fn_800A7C20(volume, list, (u32)sector, outPage, &cached);
+    if (result != 0) return result;
+    if (cached == 0) {
+        result = fn_800A586C(volume, (s32)VF_PAGE_BUFFER(*outPage), (s32)VF_PAGE_FIRST(*outPage), (s32)VF_PAGE_SECTORS(*outPage), (s32)&sectorsRead);
+        if (result != 0) {
+            void *page = *outPage;
             void *h1;
             void *h2;
-            *(u16 *)page = (u16)(*(u16 *)page & 0xFFFC);
-            *(s32 *)((u8 *)page + 0xC) = 0;
-            *(s32 *)((u8 *)page + 0x10) = 0;
-            *(s32 *)((u8 *)page + 0x18) = -1;
-            *(u32 *)((u8 *)page + 0x1C) = 0;
-            h1 = *head;
+            VF_PAGE_FLAGS(page) = (u16)(VF_PAGE_FLAGS(page) & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
+            VF_PAGE_CHANGED_FROM(page) = 0;
+            VF_PAGE_CHANGED_TO(page) = 0;
+            VF_PAGE_FIRST(page) = -1;
+            VF_PAGE_OWNER(page) = 0;
+            h1 = *list;
             if (page == h1) {
-                *head = *(void **)((u8 *)page + 0x20);
+                *list = VF_PAGE_NEXT(page);
             } else {
-                h2 = *head;
-                if (page != *(void **)((u8 *)h2 + 0x24)) {
-                    *(void **)((u8 *)*(void **)((u8 *)page + 0x24) + 0x20) = *(void **)((u8 *)page + 0x20);
-                    *(void **)((u8 *)*(void **)((u8 *)page + 0x20) + 0x24) = *(void **)((u8 *)page + 0x24);
-                    h1 = *head;
-                    *(void **)((u8 *)page + 0x20) = h1;
-                    h2 = *head;
-                    *(void **)((u8 *)page + 0x24) = *(void **)((u8 *)h2 + 0x24);
-                    *(void **)((u8 *)h1 + 0x24) = page;
-                    *(void **)((u8 *)*(void **)((u8 *)page + 0x24) + 0x20) = page;
+                h2 = *list;
+                if (page != VF_PAGE_PREV(h2)) {
+                    VF_PAGE_NEXT(VF_PAGE_PREV(page)) = VF_PAGE_NEXT(page);
+                    VF_PAGE_PREV(VF_PAGE_NEXT(page)) = VF_PAGE_PREV(page);
+                    h1 = *list;
+                    VF_PAGE_NEXT(page) = h1;
+                    h2 = *list;
+                    VF_PAGE_PREV(page) = VF_PAGE_PREV(h2);
+                    VF_PAGE_PREV(h1) = page;
+                    VF_PAGE_NEXT(VF_PAGE_PREV(page)) = page;
                 }
             }
-            return r;
+            return result;
         }
         {
-            void *pg = *ppage;
-            if (spC != *(u32 *)((u8 *)pg + 0x14) && *(u32 *)((u8 *)arg0 + 8) != (u32)(*(s32 *)((u8 *)pg + 0x18) + (s32)spC)) {
+            void *pg = *outPage;
+            if (sectorsRead != VF_PAGE_SECTORS(pg) && VF_VOL_TOTAL_SECTORS(volume) != (u32)(VF_PAGE_FIRST(pg) + (s32)sectorsRead)) {
                 void *h1;
                 void *h2;
-                *(u16 *)pg = (u16)(*(u16 *)pg & 0xFFFC);
-                *(s32 *)((u8 *)pg + 0xC) = 0;
-                *(s32 *)((u8 *)pg + 0x10) = 0;
-                *(s32 *)((u8 *)pg + 0x18) = -1;
-                *(u32 *)((u8 *)pg + 0x1C) = 0;
-                h1 = *head;
+                VF_PAGE_FLAGS(pg) = (u16)(VF_PAGE_FLAGS(pg) & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
+                VF_PAGE_CHANGED_FROM(pg) = 0;
+                VF_PAGE_CHANGED_TO(pg) = 0;
+                VF_PAGE_FIRST(pg) = -1;
+                VF_PAGE_OWNER(pg) = 0;
+                h1 = *list;
                 if (pg == h1) {
-                    *head = *(void **)((u8 *)pg + 0x20);
+                    *list = VF_PAGE_NEXT(pg);
                 } else {
-                    h2 = *head;
-                    if (pg != *(void **)((u8 *)h2 + 0x24)) {
-                        *(void **)((u8 *)*(void **)((u8 *)pg + 0x24) + 0x20) = *(void **)((u8 *)pg + 0x20);
-                        *(void **)((u8 *)*(void **)((u8 *)pg + 0x20) + 0x24) = *(void **)((u8 *)pg + 0x24);
-                        h1 = *head;
-                        *(void **)((u8 *)pg + 0x20) = h1;
-                        h2 = *head;
-                        *(void **)((u8 *)pg + 0x24) = *(void **)((u8 *)h2 + 0x24);
-                        *(void **)((u8 *)h1 + 0x24) = pg;
-                        *(void **)((u8 *)*(void **)((u8 *)pg + 0x24) + 0x20) = pg;
+                    h2 = *list;
+                    if (pg != VF_PAGE_PREV(h2)) {
+                        VF_PAGE_NEXT(VF_PAGE_PREV(pg)) = VF_PAGE_NEXT(pg);
+                        VF_PAGE_PREV(VF_PAGE_NEXT(pg)) = VF_PAGE_PREV(pg);
+                        h1 = *list;
+                        VF_PAGE_NEXT(pg) = h1;
+                        h2 = *list;
+                        VF_PAGE_PREV(pg) = VF_PAGE_PREV(h2);
+                        VF_PAGE_PREV(h1) = pg;
+                        VF_PAGE_NEXT(VF_PAGE_PREV(pg)) = pg;
                     }
                 }
-                return 0x11;
+                return VF_ERR_SHORT_TRANSFER;
             }
         }
         {
-            void *pg = *ppage;
-            *(u16 *)pg = (u16)(*(u16 *)pg & 0xFFFFFFFD);
-            *(s32 *)((u8 *)*ppage + 0xC) = 0;
-            *(s32 *)((u8 *)*ppage + 0x10) = 0;
-            if (arg4 != 0) {
-                *(u32 *)((u8 *)*ppage + 0x1C) = *(u32 *)((u8 *)arg0 + 0x1644);
+            void *pg = *outPage;
+            VF_PAGE_FLAGS(pg) = (u16)(VF_PAGE_FLAGS(pg) & ~VF_PAGE_CHANGED);
+            VF_PAGE_CHANGED_FROM(*outPage) = 0;
+            VF_PAGE_CHANGED_TO(*outPage) = 0;
+            if (claim != 0) {
+                VF_PAGE_OWNER(*outPage) = (u32)VF_VOL_PAGE_OWNER(volume);
             } else {
-                *(u32 *)((u8 *)*ppage + 0x1C) = 0;
+                VF_PAGE_OWNER(*outPage) = 0;
             }
         }
     } else {
-        if (arg4 != 0) {
-            void *pg = *ppage;
-            if ((*(u16 *)pg & 2) && (*(s32 *)((u8 *)arg0 + 0x1624) & 2) && *(u32 *)((u8 *)pg + 0x1C) != *(u32 *)((u8 *)arg0 + 0x1644)) {
-                r = fn_800A7B34(arg0, pg);
-                if (r != 0) {
-                    *ppage = 0;
-                    return r;
+        if (claim != 0) {
+            void *pg = *outPage;
+            if ((VF_PAGE_FLAGS(pg) & VF_PAGE_CHANGED) && (VF_VOL_CACHE_FLAGS(volume) & VF_CACHE_ACTIVE) && VF_PAGE_OWNER(pg) != (u32)VF_VOL_PAGE_OWNER(volume)) {
+                result = fn_800A7B34(volume, pg);
+                if (result != 0) {
+                    *outPage = 0;
+                    return result;
                 }
             }
         }
@@ -16329,14 +16349,14 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
 }
 
 extern u32 lbl_8031D6B8[];
-extern "C" void fn_800C280C(s32 *a0, s32 *a1, s32 *o2, s32 *o3) {
-    s32 *t = (s32 *)lbl_8031D6B8;
-    s32 c0 = t[0];
-    s32 a = a0[0];
-    s32 b = a1[0];
-    s32 p = (s32)(((s64)a * c0) >> 20);
-    s32 c1 = t[1];
-    s32 q = (s32)(((s64)a * c1) >> 20);
+extern "C" void fn_800C280C(register s32 *a0, register s32 *a1, register s32 *o2, register s32 *o3) {
+    register s32 *t = (s32 *)lbl_8031D6B8;
+    register s32 c0 = t[0];
+    register s32 a = a0[0];
+    register s32 b = a1[0];
+    register s32 p = (s32)(((s64)a * c0) >> 20);
+    register s32 c1 = t[1];
+    register s32 q = (s32)(((s64)a * c1) >> 20);
     o2[0] = p + b;
     o3[0] = q - a1[17];
     c0 = t[2];
