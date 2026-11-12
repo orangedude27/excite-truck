@@ -504,22 +504,23 @@ extern "C" void fn_8014589C(void *arg0, s32 outputHandle) {
     fn_802E3AD0(outputHandle, lbl_80559E14);
 }
 #pragma use_lmw_stmw off
-extern "C" void fn_8014595C(void *arg0, const char *arg1) {
+/* Prints table/list debug info via formatted output (fn_802E3AD0): header lines, each entry's (field+4, field+0) values, then "end". */
+extern "C" void fn_8014595C(void *list, const char *out) {
     char *base = lbl_8032CEC8;
-    fn_802E3AD0((s32)arg1, base + 0x1D0);
-    fn_802E3AD0((s32)arg1, base + 0x1E4);
+    fn_802E3AD0((s32)out, base + 0x1D0);
+    fn_802E3AD0((s32)out, base + 0x1E4);
     s32 offset;
     s32 i;
     i = 0;
     offset = 0;
-    while (i < *(s32 *)((u8 *)arg0 + 4)) {
-        void *entry = (void *)(*(u8 **)arg0 + offset);
-        fn_802E3AD0((s32)arg1, base + 0x1FC,
+    while (i < *(s32 *)((u8 *)list + 4)) {
+        void *entry = (void *)(*(u8 **)list + offset);
+        fn_802E3AD0((s32)out, base + 0x1FC,
             *(s32 *)((u8 *)entry + 4), *(s32 *)entry);
         offset += 0xC;
         i++;
     }
-    fn_802E3AD0((s32)arg1, lbl_80559E14);
+    fn_802E3AD0((s32)out, lbl_80559E14);
 }
 #pragma use_lmw_stmw reset
 #pragma dont_inline on
