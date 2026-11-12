@@ -223,20 +223,21 @@ void fn_802025D8(void) {
     extern void fn_802CE6C0(int);
     extern int fn_802CE49C(int);
     extern int fn_80128670(int);
-    int offset;
-    int count;
+    int entryOffset;
+    int entryIndex;
 
+    /* Release this object's resources: clear two slots, destroy per-entry handles, free the entry buffer, and reset state. */
     fn_802022A0(&lbl_8055ECD0);
     fn_802022A0(&lbl_8055ECCC);
-    count = 0;
-    offset = 0;
+    entryIndex = 0;
+    entryOffset = 0;
     goto test;
 loop:
-    fn_802CE6C0(*(int *)((char *)lbl_8055ECC4 + offset + 12));
-    offset += 0x10;
-    count += 1;
+    fn_802CE6C0(*(int *)((char *)lbl_8055ECC4 + entryOffset + 12));
+    entryOffset += 0x10;
+    entryIndex += 1;
 test:
-    if (count < lbl_8055ECC0)
+    if (entryIndex < lbl_8055ECC0)
         goto loop;
     if (lbl_8055ECC0 > 0) {
         fn_802CE49C(lbl_8055ECC8);
