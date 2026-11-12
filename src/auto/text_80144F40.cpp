@@ -1940,14 +1940,15 @@ extern "C" void fn_80147EE0(void *arg0, f32 scale) {
 
 extern "C" void fn_80011630(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma dont_inline fn_801452B4
-extern "C" void fn_80147F30(s32 arg0, s32 arg1, s32 arg2,
-                            f32 farg0, f32 farg1, f32 farg2, f32 farg3,
-                            f32 farg4, f32 farg5, f32 farg6, f32 farg7,
-                            f32 farg8, f32 farg9) {
-    f32 temp_f31 = fn_801452B4(farg1);
-    f32 temp_f1 = ((f32 (*)(s32, f32))fn_801451DC)(0, farg0);
-    fn_80011630(arg0, arg1, arg2, temp_f1, temp_f31, farg2, farg3,
-                farg4, farg5, farg6, farg7, farg8, farg9);
+/* Transform the first two float coordinates and forward the full argument set to fn_80011630. */
+extern "C" void fn_80147F30(s32 color, s32 param1, s32 layer,
+                            f32 x, f32 y, f32 z, f32 scaleX,
+                            f32 scaleY, f32 rot, f32 param7, f32 param8,
+                            f32 param9, f32 param10) {
+    f32 transformedY = fn_801452B4(y);
+    f32 transformedX = ((f32 (*)(s32, f32))fn_801451DC)(0, x);
+    fn_80011630(color, param1, layer, transformedX, transformedY, z, scaleX,
+                scaleY, rot, param7, param8, param9, param10);
 }
 extern "C" void fn_80147FF0(void * __restrict arg0, s32 arg1) {
     f32 temp_f31;
