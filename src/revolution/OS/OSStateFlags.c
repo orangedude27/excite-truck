@@ -16,17 +16,19 @@ static u32 CheckSum(const OSStateFlags* state) {
     return checksum;
 }
 
+/* Write the OS state flags to NAND, updating the checksum first.
+ * Returns TRUE on success, FALSE on open or write failure. */
 BOOL __OSWriteStateFlags(const OSStateFlags* state) {
     NANDFileInfo file;
-    s32 result;
+    s32 bytesWritten;
 
     memcpy(&StateFlags, state, sizeof(OSStateFlags));
     StateFlags.checksum = CheckSum(&StateFlags);
 
     if (NANDOpen("/title/00000001/00000002/data/state.dat", &file, NAND_ACCESS_WRITE) == NAND_RESULT_OK) {
-        result = NANDWrite(&file, &StateFlags, sizeof(OSStateFlags));
+        bytesWritten = NANDWrite(&file, &StateFlags, sizeof(OSStateFlags));
         NANDClose(&file);
-        if (result == NAND_RESULT_OK)
+        if (bytesWritten == NAND_RESULT_OK)
             goto ok;
         return FALSE;
     }
