@@ -65,6 +65,19 @@ void fn_801E45CC(void) {
     fn_802389E4();
 }
 
+/* The debug overlay's own statics; fn_801E45CC above draws them.  These names
+ * stand in for the lbl_ addresses (the game's symbols can't be renamed yet). */
+#define DBG_DMA_TEST   lbl_8055AEC0 /* 'A' while the DMA test is armed, 0 when off */
+#define DBG_LOD_FACTOR lbl_8055AEC4 /* the "LOD Factor:  %4.1f" the panel prints */
+#define DBG_NEED_PAUSE lbl_803399CC /* "physics must be paused to perform dma test." */
+#define DBG_LOG_WINDOW lbl_8055EA8F /* shows the log lines under the panel */
+#define LOD_STEP       lbl_80562D30 /* 0.2f: one press of '[' or ']', and the floor */
+#define LOD_DEFAULT    lbl_80562D34 /* 1.0f: what ''' restores */
+#define LOD_MAX        lbl_80562D38 /* 20.0: the ceiling */
+
+/* Key handler of the debug overlay panel (fn_801E45CC): takes one typed key as
+ * its ASCII code, adjusts the LOD factor or flips one of the debug flags, and
+ * returns 0 when the key is not the panel's. */
 int fn_801E47BC(int arg0) {
     double var_f1;
     int var_r31 = 1;
