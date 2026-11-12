@@ -1450,16 +1450,17 @@ extern "C" void fn_8021A910(void *arg0, s32 arg1) {
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_8021A9A4(void *arg0) {
-    u8 *base = (u8 *)arg0;
-    u32 flag = *(u8 *)fn_80216708();
-    s32 first = 0;
+    unsigned char *base = (unsigned char *)arg0;
+    unsigned int flag = *(unsigned char *)fn_80216708();
+    s32 second, first = 0;
+    s32 *p;
     if (flag != 0)
         first = 2;
-    s32 *p = *(s32 **)(base + 0x254);
-    s32 second = 0;
+    p = *(s32 **)(base + 0x254);
+    second = 0;
     if (p != 0 && *p == *(s32 *)(base + 0x258))
         second = 1;
-    return (s32)(((u32)(second | -second)) >> 31) | first;
+    return (s32)(((unsigned int)((-second) | second)) >> 31) | first;
 }
 #pragma scheduling on
 extern "C" void fn_8021AA18(void *arg0) {
@@ -2620,18 +2621,16 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     };
     volatile s32 spC;
     volatile s32 sp8;
-    s32 tmp;
     register s32 result;
     register s32 start;
     First *first;
     fn_802C3034(arg1);
-    first = *(First **)((u8 *)arg0 + 0x248);
+    first = *(First **)((unsigned char *)arg0 + 0x248);
     first->call();
     result = ((Second *)arg0)->get();
-    start = *(s32 *)((u8 *)arg0 + 0x254);
-    tmp = result - start;
     sp8 = 0x43300000;
-    spC = tmp ^ 0x80000000;
+    start = *(s32 *)((unsigned char *)arg0 + 0x254);
+    spC = (result - start) ^ 0x80000000;
 }
 extern "C" void fn_8021CBBC(void *arg0) {
     register s32 x;
@@ -5088,7 +5087,6 @@ fail_row:
     state[0x250 / 4] = -1;
 }
 
-extern "C" void fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
 #pragma diag_default 1735
 extern "C" void fn_80219440(void *arg0, s32 arg1, void *arg2, s32 arg3);
 #pragma push
