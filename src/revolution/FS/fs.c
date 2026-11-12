@@ -797,6 +797,7 @@ end:
 
 s32 ISFS_OpenAsync(const char* path, IPCOpenMode mode, FSAsyncCallback callback,
                    void* callbackArg) {
+    /* Asynchronously open an ISFS path, returning an IPC/IOS status immediately and delivering the result via callback. */
     size_t len;
     FSCommandBlock* block;
 
