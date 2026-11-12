@@ -696,23 +696,24 @@ extern void fn_80127D58(void (*)(void));
 extern void fn_802E9DDC(void);
 extern void fn_80128670(int);
 void fn_802EC038(void) {
-    int *p30;
-    int *p29;
+    /* Shuts down two audio/SPU slots (releasing active handles and clearing slot pointers), then unregisters/tears down subsystems and frees global buffers. */
+    int *slotHandle;
+    int *slotState;
     int i;
-    p30 = &lbl_80560090;
-    p29 = &lbl_80560088;
+    slotHandle = &lbl_80560090;
+    slotState = &lbl_80560088;
     i = 0;
     do {
-        if (*p30 != 0) {
-            fn_802E61D8(*p30);
-            fn_802E6138(*p30);
+        if (*slotHandle != 0) {
+            fn_802E61D8(*slotHandle);
+            fn_802E6138(*slotHandle);
         }
-        *p30 = 0;
-        fn_802E5FE4(*p29);
+        *slotHandle = 0;
+        fn_802E5FE4(*slotState);
         i++;
-        *p29 = 0;
-        p30++;
-        p29++;
+        *slotState = 0;
+        slotHandle++;
+        slotState++;
     } while (i < 2);
     fn_80127D58(fn_802E9EB8);
     fn_802EBD40();
