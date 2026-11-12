@@ -56,16 +56,22 @@ static DVDCommandBlock* __DVDPopWaitingQueuePrio(s32 prio) {
     return block;
 }
 
+/* Take the command block at the head of the highest priority queue that has one
+ * (DVD_PRIO_HIGHEST first, DVD_PRIO_LOW last) and unlink it from that queue;
+ * NULL when every queue is empty.  The build inlines __DVDPopWaitingQueuePrio
+ * here, so the target re-disables interrupts for the unlink, rewires
+ * head->next and block->next->prev around the block and clears the block's own
+ * links before handing it back (dvd.c starts it as the executing command). */
 DVDCommandBlock* __DVDPopWaitingQueue(void) {
-    u32 i;
+    u32 prio;
     BOOL enabled = OSDisableInterrupts();
 
-    for (i = 0; i < DVD_PRIO_MAX; i++) {
-        DVDCommandBlock* head = (DVDCommandBlock*)&WaitingQueue[i];
+    for (prio = 0; prio < DVD_PRIO_MAX; prio++) {
+        DVDCommandBlock* head = (DVDCommandBlock*)&WaitingQueue[prio];
 
         if (head->next != head) {
             OSRestoreInterrupts(enabled);
-            return __DVDPopWaitingQueuePrio(i);
+            return __DVDPopWaitingQueuePrio(prio);
         }
     }
 
