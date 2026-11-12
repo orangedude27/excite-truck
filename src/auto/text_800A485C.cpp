@@ -1183,41 +1183,41 @@ extern "C" int fn_800A6048(void) {
     return 0;
 }
 
-extern "C" s32 fn_800A607C(void *arg0, s32 *arg1) {
-    u16 index;
+extern "C" s32 fn_800A607C(void *loader, s32 *outRecord) {
+    u16 slotIndex;
     u32 pair;
     u8 *resource;
     u8 *entryBase;
     u8 *record;
     u32 params[3];
-    s32 result;
+    s32 allocResult;
 
-    *arg1 = 0;
+    *outRecord = 0;
     if (*(u16 *)(lbl_803D1640 + 2) >= 0x1A) {
         return 8;
     }
 
-    index = 0;
+    slotIndex = 0;
     for (pair = 0; pair < 13; pair++) {
-        if ((*(u32 *)(lbl_803D1640 + (u32)index * 0x3C + 4) & 1) == 0) {
+        if ((*(u32 *)(lbl_803D1640 + (u32)slotIndex * 0x3C + 4) & 1) == 0) {
             break;
         }
-        index++;
-        if ((*(u32 *)(lbl_803D1640 + (u32)index * 0x3C + 4) & 1) == 0) {
+        slotIndex++;
+        if ((*(u32 *)(lbl_803D1640 + (u32)slotIndex * 0x3C + 4) & 1) == 0) {
             break;
         }
-        index++;
+        slotIndex++;
     }
 
-    if (index >= 0x1A) {
+    if (slotIndex >= 0x1A) {
         return 8;
     }
 
-    resource = lbl_803D2070 + (u32)index * 8;
-    ((s32 (*)(void *, s32))(*(u32 *)arg0))(
-        resource, *(s32 *)((u8 *)arg0 + 4));
+    resource = lbl_803D2070 + (u32)slotIndex * 8;
+    ((s32 (*)(void *, s32))(*(u32 *)loader))(
+        resource, *(s32 *)((u8 *)loader + 4));
 
-    entryBase = lbl_803D1640 + (u32)index * 0x3C;
+    entryBase = lbl_803D1640 + (u32)slotIndex * 0x3C;
     record = entryBase + 4;
     *(u32 *)(entryBase + 8) = *(u32 *)resource;
     *(u32 *)(entryBase + 0xC) = *(u32 *)(resource + 4);
@@ -1225,15 +1225,15 @@ extern "C" s32 fn_800A607C(void *arg0, s32 *arg1) {
     params[1] = 1;
     params[2] = (u32)(record + 0x30);
 
-    result = fn_800B7F28(params);
-    if (result == 0) {
+    allocResult = fn_800B7F28(params);
+    if (allocResult == 0) {
         return 0x13;
     }
 
-    *(u32 *)(record + 0x14) = result;
+    *(u32 *)(record + 0x14) = allocResult;
     *(u32 *)record |= 1;
     *(u16 *)(lbl_803D1640 + 2) += 1;
-    *arg1 = (s32)record;
+    *outRecord = (s32)record;
     return 0;
 }
 
@@ -1475,20 +1475,17 @@ extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     s16 i;
     s32 *a;
     s32 *b;
-    s32 temp;
     u8 *p;
-    s32 n;
     *arg2 = 0;
     p = (u8 *)arg0;
     if (p[0x1FE] != 0x55 || p[0x1FF] != 0xAA) return 2;
     a = sp18;
     b = sp8;
     for (i = 0; i < 4; i++) {
-        temp = ((u32)p[0x1C9] << 24) + ((u32)p[0x1C8] << 16) + p[0x1C6] + ((u32)p[0x1C7] << 8);
         *a = 0;
-        *a = temp;
+        *a = ((u32)p[0x1C9] << 24) + ((u32)p[0x1C8] << 16) + p[0x1C6] + ((u32)p[0x1C7] << 8);
         *b = ((u32)p[0x1CD] << 24) + ((u32)p[0x1CC] << 16) + p[0x1CA] + ((u32)p[0x1CB] << 8);
-        if (temp != 0 && *b != 0) {
+        if (*a != 0 && *b != 0) {
             if (i == 0) *arg2 = 1;
         } else if (i == 0) return 2;
         p += 0x10; a++; b++;
@@ -1496,13 +1493,10 @@ extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     a = sp8;
     b = sp18;
     i = 0;
-    n = 4;
     do {
-        if ((u32)(*b + *a) > arg1) {
-            if (i == 0) { *arg2 = 0; return 2; }
-        }
-        i++; a++; b++; n--;
-    } while (n != 0);
+        if ((u32)(*b + *a) > arg1 && i == 0) { *arg2 = 0; return 2; }
+        i++; a++; b++;
+    } while (i < 4);
     return 0;
 }
 
