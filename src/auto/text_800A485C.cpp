@@ -1386,6 +1386,24 @@ extern "C" s32 fn_800A6358(void *arg0) {
 }
 
 extern "C" void fn_800A71D0(void *, s32);
+
+/* --- the async device-operation layer -------------------------------------------
+ * Each of these objects drives the one below it (the +0x04 target, whose first word
+ * is a vtable of the operations) and works for the request last bound to it by
+ * fn_800A625C.  Every operation answers the same way: 0 while there is nothing to
+ * report, VF_OP_ERROR once the operation is over and has left its error in that
+ * request (fn_800A71D8 reads the error back), and VF_OP_NO_SEMAPHORE when the object
+ * has no semaphore to run under at all. */
+#define VF_DEV_TARGET(o)    (*(void **)((u8 *)(o) + 0x04)) /* the device being driven */
+#define VF_DEV_SEMAPHORE(o) (*(s32 *)((u8 *)(o) + 0x14))   /* operations run under this */
+#define VF_DEV_REQUEST(o)   (*(void **)((u8 *)(o) + 0x2C)) /* request being served */
+#define VF_OP_NO_SEMAPHORE  0x14 /* the object has no semaphore to lock */
+#define VF_OP_ERROR         0x15 /* the operation failed; the request holds the error */
+/* fn_800B8004/fn_800B8048 are OSWaitSemaphore/OSSignalSemaphore with a check that the
+ * handle was set up, and answer -2 when it was not. */
+#define VFSemaphoreWait(h)   fn_800B8004(h)
+#define VFSemaphoreSignal(h) fn_800B8048(h)
+
 #pragma dont_inline on
 extern "C" s32 fn_800A6480(void *arg0, s32 arg1) {
     s32 result;
