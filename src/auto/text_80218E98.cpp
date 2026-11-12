@@ -4976,22 +4976,23 @@ extern "C" void fn_80222120(void *arg0) {
 }
 
 extern "C" void fn_80222178(void *arg0) {
-    s32 secondary;
-    s32 idx;
-    void *obj;
+    s32 secondaryIndex;
+    s32 primaryIndex;
+    void *entry;
     s32 (*callback)(void *);
+    /* Confirms the pending selection (indices at +0x24C/+0x250): looks up the entry, invokes its callback with its target (+0x20) and, if accepted (or no callback), triggers fn_802168BC; then clears the selection and marks dirty if +0x1A is set. */
     ((VfObj *)arg0)->vf17();
-    idx = *(s32 *)((u8 *)arg0 + 0x24C);
+    primaryIndex = *(s32 *)((u8 *)arg0 + 0x24C);
     *(u8 *)((u8 *)arg0 + 0x248) = 0;
-    if (idx < 0)
+    if (primaryIndex < 0)
         goto done;
-    secondary = *(s32 *)((u8 *)arg0 + 0x250);
-    if (secondary < 0)
+    secondaryIndex = *(s32 *)((u8 *)arg0 + 0x250);
+    if (secondaryIndex < 0)
         goto done;
-    obj = ((void *(*)(void *, s32))fn_8022D97C)(*(void **)(*(s32 *)((u8 *)arg0 + 0x244) + idx * 0x24), secondary);
-    callback = *(s32 (**)(void *))((u8 *)obj + 0x24);
-    if (callback == 0 || callback(*(void **)((u8 *)obj + 0x20)) != 0)
-        fn_802168BC(*(void **)((u8 *)obj + 0x20));
+    entry = ((void *(*)(void *, s32))fn_8022D97C)(*(void **)(*(s32 *)((u8 *)arg0 + 0x244) + primaryIndex * 0x24), secondaryIndex);
+    callback = *(s32 (**)(void *))((u8 *)entry + 0x24);
+    if (callback == 0 || callback(*(void **)((u8 *)entry + 0x20)) != 0)
+        fn_802168BC(*(void **)((u8 *)entry + 0x20));
 done:
     *(s32 *)((u8 *)arg0 + 0x24C) = -1;
     *(s32 *)((u8 *)arg0 + 0x250) = -1;
