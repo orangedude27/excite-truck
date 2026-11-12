@@ -1502,19 +1502,20 @@ void fn_801F4280(void) {
 }
 
 void fn_801F4284(void *unused, void *arg1) {
-    extern unsigned char lbl_8033AAB8[];
+    extern unsigned char lbl_8033AAB8[]; /* "Water objects not currently supported" */
     volatile unsigned char *p;
     int i;
+    /* Report unsupported water objects, then byte-swap three 12-byte blocks at offset 0x2C. */
     fn_802E317C(lbl_8033AAB8);
     p = (volatile unsigned char *)arg1 + 0x2C;
     for (i = 0; i < 3; i++, p += 12) {
-        unsigned char t;
-        t = p[0]; p[0] = p[3]; p[3] = t;
-        t = p[1]; p[1] = p[2]; p[2] = t;
-        t = p[4]; p[4] = p[7]; p[7] = t;
-        t = p[5]; p[5] = p[6]; p[6] = t;
-        t = p[8]; p[8] = p[11]; p[11] = t;
-        t = p[9]; p[9] = p[10]; p[10] = t;
+        unsigned char tmp;
+        tmp = p[0]; p[0] = p[3]; p[3] = tmp;
+        tmp = p[1]; p[1] = p[2]; p[2] = tmp;
+        tmp = p[4]; p[4] = p[7]; p[7] = tmp;
+        tmp = p[5]; p[5] = p[6]; p[6] = tmp;
+        tmp = p[8]; p[8] = p[11]; p[11] = tmp;
+        tmp = p[9]; p[9] = p[10]; p[10] = tmp;
     }
 }
 
