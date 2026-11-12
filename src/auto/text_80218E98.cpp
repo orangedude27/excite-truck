@@ -7283,32 +7283,35 @@ extern "C" void *fn_80226F00(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_80226F94(void *arg0) {
-    struct Object {
+    /* Renders/transforms this UI element when its drawable and index are valid,
+       optionally bracketing with a temporary matrix/state when flag is set. */
+    struct Widget {
         u8 pad0[4];
         s32 width;
         s32 height;
         u8 pad1[0x238];
-        void *field244;
+        void *drawable;
         f32 x;
         f32 y;
-        f32 z;
-        f32 w;
+        f32 scaleZ;
+        f32 scaleW;
         s32 index;
-        s32 value;
-        u8 flag;
+        s32 matrixValue;
+        u8 useMatrix;
     };
-    u8 sp8[0x40];
-    Object *object = (Object *)arg0;
-    if (object->flag != 0) {
-        fn_8022EEF8(sp8, object->value, fn_8022EDC4());
-        fn_8022ED00(sp8);
+    u8 matrixScratch[0x40];
+    Widget *widget = (Widget *)arg0;
+
+    if (widget->useMatrix != 0) {
+        fn_8022EEF8(matrixScratch, widget->matrixValue, fn_8022EDC4());
+        fn_8022ED00(matrixScratch);
     }
-    fn_80230C30(&object->x, &object->y, object->width, object->height);
-    if (object->field244 != 0 && object->index >= 0 && object->index < 0xF) {
-        fn_802354A0((s32)object->field244, object->index, -1,
-                    object->x, object->y, lbl_805634A8, object->w, object->z);
+    fn_80230C30(&widget->x, &widget->y, widget->width, widget->height);
+    if (widget->drawable != 0 && widget->index >= 0 && widget->index < 0xF) {
+        fn_802354A0((s32)widget->drawable, widget->index, -1,
+                    widget->x, widget->y, lbl_805634A8, widget->scaleW, widget->scaleZ);
     }
-    if (object->flag != 0) {
+    if (widget->useMatrix != 0) {
         fn_8022EDB8();
     }
 }
