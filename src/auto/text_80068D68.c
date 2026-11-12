@@ -5612,20 +5612,49 @@ loop:
     return 1;
 }
 
+/* BTA device manager, DM search state machine (SDK bta_dm_main.c).
+ * bta_dm_search_st_tbl holds one table per search state (idle, search active,
+ * search cancelling, discover active); every row of a table is the event's two
+ * action indices into bta_dm_search_action[] followed by the next state.
+ * The SDK spells these bta_dm_search_cb / bta_dm_search_st_tbl /
+ * bta_dm_search_action, names the reference sources already use, so alias them
+ * to the labels this unit was given. */
+#define bta_dm_search_st_tbl                    lbl_802EEB50
+#define bta_dm_search_action                    lbl_802EEA98
+
+/* state table layout */
+#define BTA_DM_SEARCH_NUM_COLS                  3   /* columns of a state table row */
+#define BTA_DM_SEARCH_ACTIONS                   2   /* action columns of a state table row */
+#define BTA_DM_SEARCH_NEXT_STATE                2   /* row column holding the next state */
+#define BTA_DM_SEARCH_IGNORE                    18  /* BTA_DM_SEARCH_NUM_ACTIONS: no action */
+
+/* bta_dm_search_cb.state */
+#define DM_SCB_STATE                            (*(u16 *)(lbl_803C0B98 + 0x18))
+
+/* type for action functions, and for one state table */
+typedef void (*tBTA_DM_ACTION)(BT_HDR *p_data);
+typedef const u8 (*tBTA_DM_ST_TBL)[BTA_DM_SEARCH_NUM_COLS];
+
+extern const tBTA_DM_ST_TBL bta_dm_search_st_tbl[];
+extern const tBTA_DM_ACTION bta_dm_search_action[];
+
+/* Run the DM search state machine for one event: look up the table of the
+ * current state, take the next state from the event's row, then call the row's
+ * action functions until the first BTA_DM_SEARCH_IGNORE. */
 BOOLEAN bta_dm_search_sm_execute(BT_HDR *p_msg) {
-    extern u8 lbl_802EEB50[];
-    extern u8 lbl_802EEA98[];
-    extern u8 lbl_803C0B98[];
-    u8 (*state_table)[3];
+    tBTA_DM_ST_TBL state_table;
     u8 action;
     int i;
 
-    state_table = (u8 (*)[3])*(u32 *)(lbl_802EEB50 + *(u16 *)(lbl_803C0B98 + 0x18) * 4);
-    *(u16 *)(lbl_803C0B98 + 0x18) = state_table[p_msg->event & 0xFF][2];
-    for (i = 0; i < 2; i++) {
+    /* look up the state table for the current state */
+    state_table = bta_dm_search_st_tbl[DM_SCB_STATE];
+    DM_SCB_STATE = state_table[p_msg->event & 0xFF][BTA_DM_SEARCH_NEXT_STATE];
+
+    /* execute action functions */
+    for (i = 0; i < BTA_DM_SEARCH_ACTIONS; i++) {
         action = state_table[p_msg->event & 0xFF][i];
-        if (action != 0x12) {
-            ((void (*)(BT_HDR *))*(u32 *)(lbl_802EEA98 + action * 4))(p_msg);
+        if (action != BTA_DM_SEARCH_IGNORE) {
+            bta_dm_search_action[action](p_msg);
         } else {
             break;
         }
@@ -5928,7 +5957,6 @@ loop_first:
     if (p[0xE] == 0)
         goto check_links;
     goto done;
-
 check_links:
     if (p[0x12] == 0)
         goto fallback;
@@ -22463,46 +22491,29 @@ void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
 void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) { BT_HDR *p_buf; UINT8 *p_data; if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL) return; p_buf->offset = 12; p_data = (UINT8 *)(p_buf + 1) + p_buf->offset; *p_data++ = (UINT8)(0x61 | (arg1 ? 2 : 0)); *p_data = 1; p_buf->len = 2; rfc_send_buf_uih(arg0, 0, p_buf); }
 
 void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
-    struct PORT_CTRL_VIEW {
-        u8 modem_signal;
-        u8 break_signal;
-        u8 discard_buffers;
-        u8 break_signal_seq;
-        u8 fc;
-    } *pars = (struct PORT_CTRL_VIEW *)p_pars;
-    u8 modem_signal = pars->modem_signal;
-    u8 break_signal = pars->break_signal;
-    u8 *buf;
-    u32 n;
-    u32 length;
-    u32 signal;
-
-    buf = (u8 *)GKI_getpoolbuf(2);
-    if (buf == NULL) {
+    BT_HDR *p_buf;
+    u8 *p_data;
+    u8 signals;
+    u8 break_duration;
+    u8 len;
+    signals = p_pars[0];
+    break_duration = p_pars[1];
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL)
         return;
-    }
-
-    *(u16 *)(buf + 4) = 0xC;
-    n = (u32)(break_signal != 0);
-    length = n + 2;
-    buf[0x14] = (u8)((((-is_command | is_command) >> 31) & 2) | 0xE1);
-    buf[0x15] = (u8)((length << 1) | 1);
-    buf[0x16] = (u8)(((u8)dlci << 2) | 3);
-
-    signal = 1 |
-             ((pars->fc != 0 ? 2U : 0U)) |
-             ((modem_signal & 1 ? 4U : 0U)) |
-             ((modem_signal & 2 ? 8U : 0U)) |
-             ((modem_signal & 4 ? 0x40U : 0U)) |
-             ((modem_signal & 8 ? 0x80U : 0U));
-    buf[0x17] = (u8)signal;
-
-    if (break_signal != 0) {
-        *(buf + 0x18) = (u8)((break_signal << 4) | 3);
-    }
-
-    *(u16 *)(buf + 2) = (u16)(length + 2);
-    rfc_send_buf_uih(p_mcb, 0, (BT_HDR *)buf);
+    p_buf->offset = 12;
+    p_data = (u8 *)(p_buf + 1) + p_buf->offset;
+    if (break_duration)
+        len = 3;
+    else
+        len = 2;
+    *p_data++ = (u8)(0xE1 | (is_command ? 2 : 0));
+    *p_data++ = (u8)(1 | (len << 1));
+    *p_data++ = (u8)(3 | (((u8)dlci) << 2));
+    *p_data++ = (u8)(1 | (p_pars[4] ? 2 : 0) | ((signals & 1) ? 4 : 0) | ((signals & 2) ? 8 : 0) | ((signals & 4) ? 0x40 : 0) | ((signals & 8) ? 0x80 : 0));
+    if (break_duration)
+        *p_data++ = (u8)(3 | (break_duration << 4));
+    p_buf->len = (u16)(len + 2);
+    rfc_send_buf_uih(p_mcb, 0, p_buf);
 }
 
 void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
