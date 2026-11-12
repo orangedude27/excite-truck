@@ -3409,55 +3409,52 @@ UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_p
 extern void fn_8006EBF0();
 extern void fn_8006EC20();
 extern char lbl_80314240[];
+#pragma push
+#pragma use_lmw_stmw off
 void GKI_delete_pool(UINT8 pool_id) {
     FREE_QUEUE_T *Q;
-    tGKI_COM_CB *p_cb = &gki_cb.com;
+    tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
+    tGKI_COM_CB *list_base;
     UINT8 i;
-
-    if (pool_id >= GKI_NUM_TOTAL_BUF_POOLS) {
+    if (pool_id >= 9) {
         goto bad_pool;
     }
-    if (!p_cb->pool_start[pool_id]) {
-        goto bad_pool;
-    }
-
-    GKI_disable();
-    Q = &p_cb->freeq[pool_id];
-    if (!Q->cur_cnt) {
-        Q->size = 0;
-        Q->total = 0;
-        Q->cur_cnt = 0;
-        Q->max_cnt = 0;
-        Q->p_first = NULL;
-        Q->p_last = NULL;
-
-        GKI_os_free(p_cb->pool_start[pool_id]);
-        p_cb->pool_start[pool_id] = NULL;
-        p_cb->pool_end[pool_id] = NULL;
-        p_cb->pool_size[pool_id] = 0;
-
-        for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
-            if (pool_id == p_cb->pool_list[i]) {
-                break;
+    if (p_cb->pool_start[pool_id] != NULL) {
+        fn_8006EBAC();
+        Q = &p_cb->freeq[pool_id];
+        if (!Q->cur_cnt) {
+            Q->size = 0;
+            Q->total = 0;
+            Q->cur_cnt = 0;
+            Q->max_cnt = 0;
+            Q->p_first = NULL;
+            Q->p_last = NULL;
+            fn_8006EC20(p_cb->pool_start[pool_id]);
+            p_cb->pool_start[pool_id] = NULL;
+            p_cb->pool_end[pool_id] = NULL;
+            p_cb->pool_size[pool_id] = 0;
+            list_base = p_cb;
+            for (i = 0; i < list_base->curr_total_no_of_pools; i++) {
+                if (pool_id == list_base->pool_list[i]) {
+                    break;
+                }
             }
+            while (i < (list_base->curr_total_no_of_pools - 1)) {
+                list_base->pool_list[i] = list_base->pool_list[i + 1];
+                i++;
+            }
+            list_base->curr_total_no_of_pools--;
+        } else {
+            goto bad_pool;
         }
-        while (i < (p_cb->curr_total_no_of_pools - 1)) {
-            p_cb->pool_list[i] = p_cb->pool_list[i + 1];
-            i++;
-        }
-        p_cb->curr_total_no_of_pools--;
-    } else {
-        goto bad_pool;
+        fn_8006EB88();
+        return;
     }
-
-    GKI_enable();
-    return;
-
 bad_pool:
-    GKI_exception(GKI_ERROR_DELETE_POOL_BAD_QID, "Deleting bad pool");
-    GKI_enable();
+    fn_8006EBF0(0xFFF8, lbl_80314240);
+    fn_8006EB88();
 }
-
+#pragma pop
 void gki_timers_init(void) {
     u8 *base = (u8 *)&lbl_803946C0 + 0x30000;
     *(u32 *)(base - 0x77C8) = 0;
@@ -4287,13 +4284,16 @@ void uusb_WriteCtrlDataCB(s32 arg0, s32 arg1) {
 void uusb_WriteBulkDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
-    register char *report = lbl_803142C8;
+    register s32 status;
+    register char *report;
     u16 offset;
+    status = arg0;
+    report = lbl_803142C8;
     if (lbl_803BD1E0.at_0x28 != 0) {
-        OSReport(report + 0x518, arg0);
+        OSReport(report + 0x518, status);
     }
-    if (arg0 < 0 && lbl_803BD1E0.at_0x28 != 0) {
-        OSReport(report + 0x550, arg0);
+    if (status < 0 && lbl_803BD1E0.at_0x28 != 0) {
+        OSReport(report + 0x550, status);
     }
     if (arg1 != 0) {
         GKI_freebuf(arg1);
@@ -11110,7 +11110,7 @@ void bta_dm_rmt_name(s32 arg0) {
     extern unsigned char lbl_803C0F78[];
     extern void bta_dm_remname_cback(u8 *);
     unsigned char info[0x104];
-    s32 retry = 1;
+    int retry = 1;
     void *entry;
     void *buf;
     void (*callback)(s32, void *);
@@ -11125,15 +11125,12 @@ void bta_dm_rmt_name(s32 arg0) {
         callback(2, info);
     }
     if (*(u16 *)(lbl_803C0F78 + 0x64C) < 0x7530)
-        fn_8007146C((s32)(lbl_803C0B98 + 0x58), 0x205,
-                    *(u16 *)(lbl_803C0F78 + 0x64C) + 0x64);
-    if (BTM_ReadRemoteDeviceName((u8 *)*(void **)(lbl_803C0B98 + 4) + 2,
-                                (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
+        fn_8007146C((s32)(lbl_803C0B98 + 0x58), 0x205, *(u16 *)(lbl_803C0F78 + 0x64C) + 0x64);
+    if (BTM_ReadRemoteDeviceName((u8 *)*(void **)(lbl_803C0B98 + 4) + 2, (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
         fn_8007148C((s32)(lbl_803C0B98 + 0x58));
         buf = GKI_getbuf(0x110);
         if (buf != 0) {
-            fn_80070FA4((u8 *)buf + 8,
-                        (u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
+            fn_80070FA4((u8 *)buf + 8, (u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
             *((u8 *)buf + 0xE) = 0;
             *(u16 *)buf = 0x204;
             fn_80071450(buf);
@@ -21330,15 +21327,13 @@ void rfc_mx_sm_sabme_wait_ua(void *p_mcb, s32 event, void *p_data) {
     extern void PORT_StartCnf(void *, u16);
     char *trace = jumptable_803197F8;
     u8 *mcb = (u8 *)p_mcb;
-
     if (lbl_803C4828[0x414] >= 4)
         ((void (*)(u32, void *, s32))fn_80070954)(0x90003, trace + 0x13C, event);
-
     switch (event) {
     case 6:
     case 9:
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x90003, trace + 0x3C, mcb[0x6C], event);
+            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x90000, trace + 0x3C, mcb[0x6C], event);
         break;
     case 12:
         rfc_mx_conf_ind(p_mcb, p_data);
@@ -21358,7 +21353,6 @@ void rfc_mx_sm_sabme_wait_ua(void *p_mcb, s32 event, void *p_data) {
         break;
     case 2:
         rfc_timer_stop(p_mcb);
-        /* fall through */
     case 5:
         mcb[0x6C] = 0;
         L2CA_DisconnectReq(*(u16 *)(mcb + 0x68));
