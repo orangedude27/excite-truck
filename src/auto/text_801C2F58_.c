@@ -3026,7 +3026,7 @@ s32 fn_801CB114(s32 arg0) {
             if (lbl_8055E828 < lbl_8055E7F0 - 1) lbl_8055E828 += 1;
             fn_801C96E4();
         } break;
-    case 0xD: fn_801C95EC((f32)0); break;
+    case 0xD: ((void (*)(void))fn_801C95EC)(); break;
     }
     return 0;
 }
