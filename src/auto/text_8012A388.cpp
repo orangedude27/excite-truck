@@ -594,6 +594,7 @@ extern "C" void fn_8012B328(void) {
 extern "C" void *fn_8012AFE0(void *, void *);
 extern char lbl_8032A960[];
 #pragma scheduling invalid_target
+/* Look up a named resource by iterating candidate nodes until fn_8012AFE0 resolves one (logs "res: loading %s"). */
 extern "C" void *fn_8012B32C(const char *arg0) {
     u8 scratch[0x48];
     void *result = 0;
