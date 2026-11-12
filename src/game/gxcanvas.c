@@ -1268,18 +1268,21 @@ void fn_802C4F2C(void *arg0, s32 *arg1, s32 *arg2) {
 
 #pragma push
 #pragma inline_depth(0)
-void fn_802C4F58(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
-    s32 var_r31 = arg3;
-    const char *var_r30 = arg2;
-    s32 var_r29 = arg1;
-    s32 var_r28 = arg0;
+/* Draw a string with the built-in fixed-pitch canvas font at (x,y) in the given
+ * colour, one 8-pixel cell per character; anything outside printable ASCII is
+ * drawn as '#'.  Callers draw it twice, once offset by a pixel for the shadow. */
+void fn_802C4F58(s32 x, s32 y, const char *text, s32 color) {
+    s32 penColor = color;
+    const char *p = text;
+    s32 penY = y;
+    s32 penX = x;
     s32 ch;
-    while ((ch = (s8)*var_r30++) != 0) {
-        if ((s8)ch < 0x20 || (u8)ch > 0x7F)
-            fn_802C5024(var_r28, var_r29, 0x23, var_r31);
+    while ((ch = (s8)*p++) != 0) {
+        if ((s8)ch < ' ' || (u8)ch > 0x7F)
+            DrawCanvasChar(penX, penY, CANVAS_CHAR_UNKNOWN, penColor);
         else
-            fn_802C5024(var_r28, var_r29, ch, var_r31);
-        var_r28 += 8;
+            DrawCanvasChar(penX, penY, ch, penColor);
+        penX += CANVAS_CHAR_WIDTH;
     }
 }
 #pragma pop
