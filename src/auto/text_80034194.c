@@ -2277,6 +2277,17 @@ extern u8 lbl_80376AD0[0x30];
 extern s32 fn_8003BB48(void);
 extern void OSCancelAlarm(void *);
 extern void fn_8003773C(void);
+
+// The DVD cover/motor state machine's statics, shared with the cancel code below.
+#define Transferring    lbl_8055D870  // the cover-poll timeout alarm is running
+#define AlarmInfo       lbl_8055D874  // waiting on the cover interrupt instead
+#define CoverRegPending lbl_8055D880  // a cover-register read is in flight
+#define DriveCommand    lbl_8055D8BC  // the drive command being processed
+#define DiskChanged     lbl_8055D87C  // cover opened during the disk-ID check
+#define StateToChange   lbl_8055D85C  // drive state __DVDIssueCallback moves to next
+#define StateAlarm      lbl_80376AD0  // the DVD state timeout alarm
+#define ExecutingBlock  executing_8055D8C8 // block the driver is running
+
 void fn_80037E94(void) {
     s32 zero = 0;
     *(volatile s32 *)&lbl_8055D880 = zero;
