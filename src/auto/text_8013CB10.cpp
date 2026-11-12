@@ -267,6 +267,11 @@ struct PathData { s32 count; PathGroup *groups; };
 static inline PathGroup *PathGroupAt(u8 *self) {
     return &(*(PathData **)(self + 0x64))->groups[*(s32 *)(self + 0x68)];
 }
+static inline u8 *NextPathNode1(u8 *self, u8 *item) {
+    PathGroup *g = PathGroupAt(self);
+    PathNode *last = &g->nodes[g->count] - 1;
+    return (PathNode *)item == last ? (u8 *)g->nodes : item + 0x24;
+}
 static inline u8 *NextPathNode(u8 *self, u8 *item) {
     PathNode *last = &PathGroupAt(self)->nodes[PathGroupAt(self)->count] - 1;
     return (PathNode *)item == last ? (u8 *)PathGroupAt(self)->nodes : item + 0x24;
