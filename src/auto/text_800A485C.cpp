@@ -13064,9 +13064,11 @@ extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32
 extern "C" s32 lbl_8055DD78;
 extern "C" const char lbl_8031BF54[];
 extern "C" const char lbl_8031BF74[];
+/* Issues SD command 0x40 via fn_800BB0A8 with the given callback/argument, validating
+ * the SD heap, inputs, and argument pointer, and reports non-zero results. */
 extern "C" s32 fn_800BC474(s32 *arg0, s32 arg1, s32 *arg2) {
     s32 result;
-    s32 v;
+    s32 argValue;
     if (lbl_80559248 < 0) {
         result = (s32)0xC1000000;
     } else if (arg1 == 0) {
@@ -13074,13 +13076,13 @@ extern "C" s32 fn_800BC474(s32 *arg0, s32 arg1, s32 *arg2) {
     } else {
         if (arg2 == 0)
             goto neg4;
-        v = *arg2;
+        argValue = *arg2;
         goto docall;
 neg4:
         result = -4;
         goto report;
 docall:
-        result = fn_800BB0A8(*arg0, 0x40, 0, 0, v, 0, 0, 0, 0, lbl_8055DD78, arg1, (s32)arg2);
+        result = fn_800BB0A8(*arg0, 0x40, 0, 0, argValue, 0, 0, 0, 0, lbl_8055DD78, arg1, (s32)arg2);
         goto report;
     }
 report:
