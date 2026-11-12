@@ -3005,6 +3005,26 @@ extern char lbl_8033701C[]; /* "intrlude.txt" */
 s32 fn_801C9708();
 s32 fn_80176780(s32, s32);
 void fn_801C9514(void);
+
+/* State of the debug interlude overlay that the key handler below drives; the
+ * overlay itself is fn_801CA67C and its help text the "%c - ..." strings of the
+ * lbl_80336B00 pool from +0xE50 ("Un/Pause", "Restart", "Change Cam",
+ * "+0.1 Secs", "Save", "Hide", "[ and ] Scroll"). */
+#define sTextInputActive  lbl_8055E838 /* a console text field is being typed into */
+#define sOverlayHidden    lbl_8055E7E0 /* 'h': overlay shows only "HIDDEN ('H')" */
+#define sRestartRequested lbl_8055E7E1 /* 'r': interlude restart was asked for */
+#define sFreeCamera       lbl_8055E80C /* 'c': interlude stops driving the camera */
+#define sEntryListShown   lbl_8055E839 /* the timeline entry list panel is up */
+#define INTERLUDE_FILE    lbl_8033701C /* 'l' saves the timeline here */
+#define KEY_CURSOR_LEFT   0x126        /* debug keyboard cursor messages */
+#define KEY_CURSOR_RIGHT  0x128
+#define console_text_key  fn_801C9708  /* edits the console line lbl_804380F0 */
+#define physics_switch    fn_80176780  /* new mode + PHYS_FLAG_* bits, extra byte */
+#define save_interlude    fn_801CA070  /* writes the timeline table to a file */
+#define fast_forward_time fn_801C9514  /* ticks the game on by 0.1 s */
+#define menu_move         fn_801C968C  /* steps the menu item selection, wrapping */
+#define timeline_page     fn_801C96E4  /* entry list page = selection / 10 */
+#define menu_activate     fn_801C95EC  /* runs the selected menu entry */
 s32 fn_801CB114(s32 arg0) {
     if ((u8)lbl_8055E838 != 0) return fn_801C9708();
     if (arg0 == 0x68) lbl_8055E7E0 = (u8)lbl_8055E7E0 == 0;
