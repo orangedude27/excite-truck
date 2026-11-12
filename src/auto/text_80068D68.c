@@ -18077,36 +18077,37 @@ extern void *l2cu_find_lcb_by_state(s32);
 extern BOOLEAN l2cu_create_conn(void *);
 extern void l2cu_release_lcb(void *);
 extern void btm_sco_acl_removed(u8 *);
+/* Handles HCI disconnect complete for an L2CAP link: notifies channels, cleans up the link, and starts any pending connection. */
 BOOLEAN l2c_link_hci_disc_comp(UINT16 handle, UINT8 reason) {
-    u8 *p_lcb;
-    BOOLEAN status = TRUE;
-    u8 *p_next_ccb;
-    u8 *p_ccb;
-    UINT8 reason_copy = reason;
+    u8 *p_link_cb;
+    BOOLEAN disconnectHandled = TRUE;
+    u8 *p_next_channel_cb;
+    u8 *p_channel_cb;
+    UINT8 disconnectReason = reason;
 
-    p_lcb = (u8 *)l2cu_find_lcb_by_handle(handle);
-    if (p_lcb == 0) {
-        status = FALSE;
+    p_link_cb = (u8 *)l2cu_find_lcb_by_handle(handle);
+    if (p_link_cb == 0) {
+        disconnectHandled = FALSE;
     } else {
         if (lbl_803C0F78[0x27BF] != 0x0E)
-            lbl_803C0F78[0x27BF] = reason_copy;
+            lbl_803C0F78[0x27BF] = disconnectReason;
 
-        p_ccb = *(u8 **)(p_lcb + 8);
-        while (p_ccb != 0) {
-            p_next_ccb = *(u8 **)(p_ccb + 8);
-            fn_80089E40(p_ccb, 3, &reason_copy);
-            p_ccb = p_next_ccb;
+        p_channel_cb = *(u8 **)(p_link_cb + 8);
+        while (p_channel_cb != 0) {
+            p_next_channel_cb = *(u8 **)(p_channel_cb + 8);
+            fn_80089E40(p_channel_cb, 3, &disconnectReason);
+            p_channel_cb = p_next_channel_cb;
         }
 
-        btm_sco_acl_removed(p_lcb + 0x2A);
-        l2cu_release_lcb(p_lcb);
+        btm_sco_acl_removed(p_link_cb + 0x2A);
+        l2cu_release_lcb(p_link_cb);
     }
 
-    p_lcb = (u8 *)l2cu_find_lcb_by_state(1);
-    if (p_lcb != 0)
-        l2cu_create_conn(p_lcb);
+    p_link_cb = (u8 *)l2cu_find_lcb_by_state(1);
+    if (p_link_cb != 0)
+        l2cu_create_conn(p_link_cb);
 
-    return status;
+    return disconnectHandled;
 }
 
 extern void *l2cu_find_lcb_by_handle(u16 handle);
