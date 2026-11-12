@@ -324,22 +324,18 @@ extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
 #pragma use_lmw_stmw off
 #pragma processor 750
 void fn_8015F1E4(void *arg0, void *arg1) {
-    void *inputState;
-    f32 base;
-    f32 x;
-    f32 z;
+    void *inputState = *(void **)((char *)arg1 + 0xC);
+    f32 base = *(f32 *)((char *)arg1 + 0x24);
+    f32 x = *(f32 *)((char *)inputState + 0x18);
+    f32 z = *(f32 *)((char *)inputState + 0x20);
     f32 result[5];
     f32 speed;
     void *state;
     f32 threshold;
     f32 tmp;
     f32 angle;
-    inputState = *(void **)((char *)arg1 + 0xC);
-    base = *(f32 *)((char *)arg1 + 0x24);
-    x = *(f32 *)((char *)inputState + 0x18);
-    z = *(f32 *)((char *)inputState + 0x20);
-    result[0] = x;
     result[1] = z;
+    result[0] = x;
     speed = (f32)((double (*)(f32))fn_8002F234)(x * x + z * z);
     state = *(void **)((char *)arg1 + 0xC);
     tmp = lbl_805617D8 * speed;
@@ -371,30 +367,31 @@ void fn_8015EC50(unsigned short *, void *);
 int fn_8015ECC0(void *);
 void fn_8015F1E4(void *, void *);
 #pragma scheduling invalid_target
-void fn_8015F320(void **arg0, int arg1, void *arg2) {
-    void *e;
-    void **ptr = arg0;
-    int off;
-    int outer;
-    int *child;
-    int inner;
-    void *ctx = arg2;
-    int lim = arg1;
-    for (outer = 0; outer < lim; ptr++, outer++) {
-        child = *(int **)ptr;
-        if (child != 0) {
-            for (inner = 0, off = 0; inner < child[0]; off += 4, inner++) {
-                void *item = *(void **)((char *)((void **)child)[1] + off);
-                e = *(void **)((char *)item + 0x3C);
-                if (fn_8015ECC0(e)) {
-                    int count;
-                    void *array;
-                    volatile int *reg = (volatile int *)lbl_8055E29C;
-                    array = (void *)reg[0];
-                    count = reg[1]++;
-                    item = (char *)array + count * 0x10;
-                    fn_8015F1E4(item, e);
-                    fn_8015EC50((unsigned short *)item, ctx);
+/* Collects valid tube-related entries from a list of node groups into the global entry buffer. */
+void fn_8015F320(void **nodeGroups, int groupCount, void *context) {
+    void *candidate;
+    void **groupPtr = nodeGroups;
+    int childOffset;
+    int groupIndex;
+    int *group;
+    int childIndex;
+    void *processContext = context;
+    int groupLimit = groupCount;
+    for (groupIndex = 0; groupIndex < groupLimit; groupPtr++, groupIndex++) {
+        group = *(int **)groupPtr;
+        if (group != 0) {
+            for (childIndex = 0, childOffset = 0; childIndex < group[0]; childOffset += 4, childIndex++) {
+                void *node = *(void **)((char *)((void **)group)[1] + childOffset);
+                candidate = *(void **)((char *)node + 0x3C);
+                if (fn_8015ECC0(candidate)) {
+                    int entryIndex;
+                    void *entryArray;
+                    volatile int *entryRecord = (volatile int *)lbl_8055E29C;
+                    entryArray = (void *)entryRecord[0];
+                    entryIndex = entryRecord[1]++;
+                    node = (char *)entryArray + entryIndex * 0x10;
+                    fn_8015F1E4(node, candidate);
+                    fn_8015EC50((unsigned short *)node, processContext);
                 }
             }
         }
@@ -420,8 +417,7 @@ void fn_8015F3FC(void *arg0) {
     register int i;
     register int outIndex;
     int count;
-    int *dst, *array, *items;
-    volatile int *out;
+    int *dst, *array, *out, *items;
     if (*(volatile int *)(lbl_8055E29C + 4) <= 0) return;
     fn_80265DCC(*(void **)lbl_8055E29C, *(volatile int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
     count = (int)(*(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16);
@@ -446,16 +442,16 @@ void fn_8015F3FC(void *arg0) {
         max = *(volatile int *)(lbl_8055E29C + 4) - 1;
         if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             src = (int *)*(int *)lbl_8055E29C;
-            out = (volatile int *)*(int *)&lbl_8055E2A0;
-            outIndex = out[1];
+            out = *(int **)&lbl_8055E2A0;
             items = (int *)out[0];
+            outIndex = out[1];
             out[1] = outIndex + 1;
             items[outIndex] = (int)src;
         } else {
             src = (int *)((char *)*(int *)lbl_8055E29C + offset);
-            out = (volatile int *)*(int *)&lbl_8055E2A0;
-            outIndex = out[1];
+            out = *(int **)&lbl_8055E2A0;
             items = (int *)out[0];
+            outIndex = out[1];
             out[1] = outIndex + 1;
             items[outIndex] = (int)src;
         }
