@@ -81,22 +81,24 @@ void fn_802CA0E4(void) {
 }
 
 void fn_802CA1E0(void) {
-    int offset;
-    int i;
+    /* Texture system shutdown: release active texture handles, warn for any of the
+       512 0x4C-byte texture slots still in use, then free the texture pool. */
+    int slotOffset;
+    int slotIndex;
     if (lbl_8055D03C != -1) {
         fn_802CAC54(lbl_8055D03C);
         lbl_8055D03C = -1;
     }
     fn_802CAC54(lbl_8055FCB4);
     lbl_8055FCB4 = -1;
-    i = 0;
-    offset = 0;
+    slotIndex = 0;
+    slotOffset = 0;
     do {
-        if (*(int *)(lbl_8055FCB0 + offset) != 0)
-            fn_802E317C(lbl_8034B5F0, i, lbl_8055FCB0 + offset + 4);
-        i++;
-        offset += 0x4C;
-    } while (i < 0x200);
+        if (*(int *)(lbl_8055FCB0 + slotOffset) != 0)
+            fn_802E317C(lbl_8034B5F0, slotIndex, lbl_8055FCB0 + slotOffset + 4);
+        slotIndex++;
+        slotOffset += 0x4C;
+    } while (slotIndex < 0x200);
     fn_802CB6B4();
     fn_80128670(lbl_8055FCB0);
     lbl_8055FCB0 = 0;
