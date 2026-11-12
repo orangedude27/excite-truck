@@ -347,7 +347,8 @@ void fn_801B5BDC(void **arg0, s32 arg1, void *arg2) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_801B5C58(void *arg0) {
+extern "C" void fn_801B5C58(void *container) {
+    /* Destroy each entry's contents and owned subobject, then destroy the container. */
     class D {
     public:
         virtual void m0(int);
@@ -361,29 +362,30 @@ extern "C" void fn_801B5C58(void *arg0) {
         virtual void m8();
         virtual void m9(int);
     };
-    s32 index = 0;
+    s32 offset = 0;
     s32 i = 0;
-    void *item;
-    void *object;
-    while (i < *(s32 *)arg0) {
-        item = *(void **)((unsigned char *)arg0 + 4);
-        item = *(void **)((unsigned char *)item + index);
-        fn_801A49FC(item);
-        item = *(void **)((unsigned char *)arg0 + 4);
-        item = *(void **)((unsigned char *)item + index);
-        object = *(void **)((unsigned char *)item + 0x3C);
-        if (object != 0) {
-            ((D *)object)->m0(1);
+    void *entry;
+    void *owned;
+
+    while (i < *(s32 *)container) {
+        entry = *(void **)((unsigned char *)container + 4);
+        entry = *(void **)((unsigned char *)entry + offset);
+        fn_801A49FC(entry);
+        entry = *(void **)((unsigned char *)container + 4);
+        entry = *(void **)((unsigned char *)entry + offset);
+        owned = *(void **)((unsigned char *)entry + 0x3C);
+        if (owned != 0) {
+            ((D *)owned)->m0(1);
         }
-        item = *(void **)((unsigned char *)arg0 + 4);
-        item = *(void **)((unsigned char *)item + index);
-        if (item != 0) {
-            ((D *)item)->m9(1);
+        entry = *(void **)((unsigned char *)container + 4);
+        entry = *(void **)((unsigned char *)entry + offset);
+        if (entry != 0) {
+            ((D *)entry)->m9(1);
         }
-        index += 4;
+        offset += 4;
         i++;
     }
-    fn_80128658(arg0);
+    fn_80128658(container);
 }
 #pragma pop
 s32 fn_801B5D10(void *arg0) {
