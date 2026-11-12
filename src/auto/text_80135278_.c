@@ -41,12 +41,16 @@ typedef struct PathNode {
     /* 0x08 */ float dirX;             // direction of the stretch (not unit length)
     /* 0x0C */ float dirY;
     /* 0x10 */ float unk_10;
-    /* 0x14 */ volatile struct PathNode *next;
+    /* 0x14 */ struct PathNode *next;
     /* 0x18 */ float length;           // length of this stretch
     /* 0x1C */ float pathDistance;     // distance along the path at the start
     /* 0x20 */ float value;            // per-node value the samplers interpolate
     /* 0x24 */ float unk_24;
 } PathNode;
+
+// The next stretch, read straight from memory every time: the path code reads it
+// through a volatile pointer, so the compiler reloads it at each use.
+#define PATH_NEXT(node) ((struct PathNode *)(*(volatile struct PathNode **)&(node)->next))
 
 // A place along a path: the stretch it is on, how far along that stretch it is
 // (0..1) and a tag saying how it was found - fn_80135B24 leaves 0x2710 when it
