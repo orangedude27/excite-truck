@@ -215,6 +215,7 @@ void fn_801AE894(void *q) {
 #pragma processor 750
 #pragma dont_inline on
 void fn_801AE928(void) {
+    /* For each active entry (stride 0x1C), initialize inactive ones: set flags, store default duration, recompute. */
     int count;
     float duration;
     int offset;
