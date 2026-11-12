@@ -20836,19 +20836,20 @@ void fn_800911DC(void) {
 }
 
 void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
-    register char *messages = lbl_803196B8;
+    struct MSGTAB { char m0[0x1C]; char m1[0x8C]; char m2[1]; };
+    register struct MSGTAB *messages = (void *)lbl_803196B8;
     s32 temp_r0 = arg0 - 0x40;
     void *var_r30;
 
     if (temp_r0 >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, messages, arg0);
+            fn_80070954(0x90000, messages->m0, arg0);
         var_r30 = 0;
     } else {
         var_r30 = *(void **)((u8 *)&lbl_803C4828 + temp_r0 * 4 + 0x3C);
         if (var_r30 && *(u16 *)((u8 *)var_r30 + 0x68) != arg0) {
             if (lbl_803C4828[0x414] >= 2)
-                fn_8007096C(0x90001, messages + 0x1C, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
+                fn_8007096C(0x90001, messages->m1, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
             var_r30 = 0;
         }
     }
@@ -20856,7 +20857,7 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
         L2CA_DisconnectRsp(arg0);
     if (!var_r30) {
         if (lbl_803C4828[0x414] >= 2)
-            fn_80070954(0x90001, messages + 0xA8, arg0);
+            fn_80070954(0x90001, messages->m2, arg0);
     } else {
         fn_800916F4(var_r30, 0xE, 0);
     }
@@ -23056,8 +23057,9 @@ void rfc_port_timer_stop(void *arg0) {
     fn_80070F90((u8 *)arg0 + 0x70);
 }
 
-void rfc_check_mcb_active(void *arg0) {
-    u8 *mcb = (u8 *)arg0;
+/* Check if any DLCI is active on this RFCOMM MCB; clear idle state or start close timer as needed. */
+void rfc_check_mcb_active(void *p_mcb) {
+    u8 *mcb = (u8 *)p_mcb;
     u16 i;
     for (i = 0; i < 0x3D; i++) {
         if (mcb[i + 0x24] != 0) {
@@ -23067,14 +23069,14 @@ void rfc_check_mcb_active(void *arg0) {
     }
     if (mcb[0x74] != 0) {
         mcb[0x74] = 0;
-        fn_800916F4(arg0, 8, 0);
+        fn_800916F4(p_mcb, 8, 0);
         return;
     }
     if (lbl_803C4828[0x414] >= 4) {
         fn_80070954(0x90003, lbl_80319EC0, 2);
     }
-    *(void **)(mcb + 0x10) = arg0;
-    btu_start_timer(arg0, 0xB, 2);
+    *(void **)(mcb + 0x10) = p_mcb;
+    btu_start_timer(p_mcb, 0xB, 2);
 }
 
 /* Match note: widening the halfword state and guarding non-12 values preserves the signed checks and tail-call order. */
@@ -26517,9 +26519,9 @@ void __BzeroDelayLines(void *arg0) {
         if (*(void **)(entry + 0x2C))
             memset(*(void **)(entry + 0x2C), 0, *(u32 *)((u8 *)arg0 + 0x40) * 4);
         {
-            register u8 *p = entry2;
-            register u8 *q = (u8 *)arg0;
-            register u32 j = 0;
+            u8 *p = entry2;
+            u8 *q = (u8 *)arg0;
+            u32 j = 0;
             do {
                 if (*(void **)(p + 0x44))
                     memset(*(void **)(p + 0x44), 0, *(u32 *)(q + 0x80) * 4);
@@ -26529,9 +26531,9 @@ void __BzeroDelayLines(void *arg0) {
             } while (j < 3);
         }
         {
-            register u8 *p = entry3;
-            register u8 *q = (u8 *)arg0;
-            register u32 j = 0;
+            u8 *p = entry3;
+            u8 *q = (u8 *)arg0;
+            u32 j = 0;
             do {
                 if (*(void **)(p + 0x98))
                     memset(*(void **)(p + 0x98), 0, *(u32 *)(q + 0xC0) * 4);
