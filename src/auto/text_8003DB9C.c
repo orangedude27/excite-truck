@@ -5496,6 +5496,18 @@ void GXClearGPMetric(void) {
     __cpReg[2] = 4;
 }
 
+/* CP (GX command processor) registers: the four GP metric counters that
+ * GXClearGPMetric() clears above. Each counter is 32 bits held in a low and a
+ * high 16-bit register. */
+#define CP_GP_COUNT0_LO (0x40 / 2)
+#define CP_GP_COUNT0_HI (0x42 / 2)
+#define CP_GP_COUNT1_LO (0x44 / 2)
+#define CP_GP_COUNT1_HI (0x46 / 2)
+#define CP_GP_COUNT2_LO (0x48 / 2)
+#define CP_GP_COUNT2_HI (0x4A / 2)
+#define CP_GP_COUNT3_LO (0x4C / 2)
+#define CP_GP_COUNT3_HI (0x4E / 2)
+
 void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     {
         unsigned int low, second, first;
