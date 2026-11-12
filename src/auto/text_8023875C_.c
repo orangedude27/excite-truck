@@ -35,26 +35,18 @@ extern int fn_802344CC(int, int, int, int, float, float, float);
 void fn_8023875C(int x, int y, const char *text, int arg3, int arg4) {
     int halfWidth;
     int halfHeight;
-
-    if ((fn_802344B0() != 0) &&
-        ((unsigned int)(strlen(text) + 1) < 0x40U)) {
-        halfHeight = (int)(((unsigned int)lbl_8055CFF4 >> 31) +
-                           lbl_8055CFF4) >> 1;
-        halfWidth = (int)(((unsigned int)lbl_8055CFF0 >> 31) +
-                          lbl_8055CFF0) >> 1;
-        fn_802344CC((int)text, arg3, arg4, 0,
-                    (float)(x - halfWidth),
-                    (float)(halfHeight - y), lbl_805636F0);
-        return;
-    }
-
-    halfHeight = (int)(((unsigned int)lbl_8055CFF4 >> 31) +
-                       lbl_8055CFF4) >> 1;
-    halfWidth = (int)(((unsigned int)lbl_8055CFF0 >> 31) +
-                      lbl_8055CFF0) >> 1;
-    fn_80232BA4((int)text, lbl_8055F0D4, arg3, arg4, halfWidth,
-                (float)(x - halfWidth), (float)(halfHeight - y),
-                lbl_805636F0, lbl_805636F4, lbl_805636F8);
+    if (fn_802344B0() == 0)
+        goto long_text;
+    if ((unsigned int)(strlen(text) + 1) >= 0x40U)
+        goto long_text;
+    halfWidth = (int)lbl_8055CFF0 / 2;
+    halfHeight = (int)lbl_8055CFF4 / 2;
+    fn_802344CC((int)text, arg3, arg4, 0, (float)(x - halfWidth), (float)(halfHeight - y), lbl_805636F0);
+    return;
+long_text:
+    halfWidth = (int)lbl_8055CFF0 / 2;
+    halfHeight = (int)lbl_8055CFF4 / 2;
+    fn_80232BA4((int)text, lbl_8055F0D4, arg3, arg4, halfWidth, (float)(x - halfWidth), (float)(halfHeight - y), lbl_805636F0, lbl_805636F4, lbl_805636F8);
 }
 
 #pragma scheduling invalid_target
@@ -84,18 +76,20 @@ void fn_80238920(void) {
         fn_802328D4();
     lbl_8055F0D4 = 0;
 }
-#pragma scheduling invalid_target
+#pragma scheduling dynamic
 void fn_8023895C(void) {
     float sp8[12];
-
+    unsigned int sign;
+    int half;
     fn_802C974C(lbl_805636F8, lbl_80563710, lbl_80563714);
     fn_80230B5C(&sp8[0]);
-    sp8[11] = (float)(-((int)(((lbl_8055CFF0 >> 31) + lbl_8055CFF0)) >> 1)) / lbl_8055FC88;
+    sign = lbl_8055CFF0 >> 31;
+    half = (int)(lbl_8055CFF0 + sign) >> 1;
+    sp8[11] = (float)(-half) / lbl_8055FC88;
     ((void (*)(void *))fn_802C8638)(&sp8[0]);
     lbl_8055F0D8 = 1;
     fn_802344C4(1);
 }
-#pragma scheduling on
 void fn_802389E4(void) {
     if (fn_802344B0())
         fn_802346C8();
@@ -110,6 +104,7 @@ int fn_80238A20(void) {
 void fn_80238A74(int arg0, int arg1, int arg2, int arg3) { ((int (*)(int, int, int, int, int))fn_8023875C)(arg0, arg1 - 3, arg2, arg3, 9); }
 
 void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
+    /* Format a printf-style string into a local buffer and pass it to fn_80238A74. */
     char buffer[256];
     va_list args;
     va_start(args, fmt);
@@ -119,11 +114,14 @@ void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
 
 #pragma use_lmw_stmw off
 void fn_80238B44(int arg0, int arg1, int arg2, int arg3, int arg4) {
-    int halfX = 0;
-    int halfY = 0;
+    int halfY;
+    int halfX;
+    unsigned int sign;
     fn_802C8BD0(-1);
-    halfY = (int)(((unsigned int)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1;
-    halfX = (int)(((unsigned int)lbl_8055CFF0 >> 31) + lbl_8055CFF0) >> 1;
+    sign = (unsigned int)lbl_8055CFF4 >> 31;
+    halfY = (int)(sign + lbl_8055CFF4) >> 1;
+    sign = (unsigned int)lbl_8055CFF0 >> 31;
+    halfX = (int)(sign + lbl_8055CFF0) >> 1;
     fn_802C92DC(arg0 - halfX, halfY - arg1, arg2 - halfX, halfY - arg3, arg4);
     fn_802C8D74();
 }
