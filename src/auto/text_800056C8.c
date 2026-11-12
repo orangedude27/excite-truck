@@ -638,8 +638,8 @@ s32 fn_8000624C(void) {
 
 #pragma cplusplus on
 extern "C" void fn_80006254(s32 arg0, s32 arg1) {
-    int flag = 0;
     f32 threshold = lbl_8056011C;
+    unsigned char flag = 0;
     f32 f2 = *(f32 *)((s8 *)arg0 + ((s32 *)lbl_8055D350)[7] * 4 + 4);
     if (f2 >= threshold) {
         f32 f0 = ((f32 *)lbl_8055D350)[4] - f2;
@@ -1052,8 +1052,7 @@ extern s32 lbl_8055892C;
 #pragma cplusplus on
 #pragma dont_inline on
 extern "C" void fn_80006D9C(void) {
-#pragma scheduling invalid_target
-    u8 *resource = lbl_802FB0C8;
+    volatile u8 *resource = (volatile u8 *)lbl_802FB0C8;
     u8 *state;
     struct Dummy {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
@@ -1076,21 +1075,20 @@ extern "C" void fn_80006D9C(void) {
     fn_800201F0();
     fn_801A7F8C();
     fn_800054E0();
-    fn_8000F0E4(resource + 0x1EC);
+    fn_8000F0E4((u8 *)resource + 0x1EC);
     fn_8000F884();
     fn_80011F64();
     state = lbl_8034EE84;
     *(void **)(state + 8) = fn_801E87A8();
     *(s32 *)(state + 0x14) = fn_80137C74();
-    lbl_8055D354 = fn_802090D4(resource + 0x1F8);
-    fn_801331C4(4, resource + 0x204, &lbl_8055892C);
+    lbl_8055D354 = fn_802090D4((u8 *)resource + 0x1F8);
+    fn_801331C4(4, (u8 *)resource + 0x204, &lbl_8055892C);
     fn_80005464();
     fn_80005C88();
     fn_80011A5C(((s32 *)lbl_8055D350)[5]);
     fn_8001DB54();
     ((Dummy *)fn_801B83A0())->f60();
     fn_800070DC();
-#pragma scheduling on
 }
 #pragma pop
 
@@ -1606,11 +1604,10 @@ void fn_800077E4(void *arg0) {
     void *base = lbl_8055D350;
     void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
-    if (!fn_8000561C(p, base)) {
-        return;
+    if (fn_8000561C(p, base)) {
+        *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
+        fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
-    *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
-    fn_80276DC8(((s32 *)lbl_8055D350)[7]);
 }
 void fn_80007848(void) {
     void *base = lbl_8055D350;
