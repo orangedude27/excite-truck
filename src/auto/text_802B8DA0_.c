@@ -887,7 +887,7 @@ extern "C" void fn_802E30C8(void *, ...);
 extern "C" void *lbl_8055FA78;
 extern "C" void *lbl_8055FA84;
 extern "C" char lbl_8034A9C0[];
-extern "C" int lbl_8034A064;
+extern "C" char lbl_8034A064[];
 extern "C" double lbl_80564CD0;
 extern "C" float lbl_80564CCC, lbl_80564CC4, lbl_80564CD8;
 extern void fn_801352B8(void *);
@@ -902,7 +902,7 @@ extern double fn_8002F234(void *, void *, short, float, float, float);
 extern double fn_8002EFB4(void *, float, double, float);
 extern void *lbl_8055FA78;
 extern char lbl_8034A9C0[];
-extern int lbl_8034A064;
+extern char lbl_8034A064[];
 extern double lbl_80564CD0;
 extern float lbl_80564CCC, lbl_80564CC4, lbl_80564CD8;
 #pragma push
