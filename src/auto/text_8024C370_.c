@@ -160,23 +160,39 @@ extern int fn_80214CB4();
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8024C628(void) {
-    int offset, i, all, player, active;
-    player = fn_8000DA10();
-    i = 0;
-    offset = 0;
-    for (; i < 4; ++i) {
-        all = 1;
+    int menuOffset;
+    int playerIndex;
+    int allComplete;
+    int currentPlayer;
+    int activeIndex;
+
+    /* Update menu item states for 4 players based on completion, and select the active one. */
+    currentPlayer = fn_8000DA10();
+    playerIndex = 0;
+    menuOffset = 0;
+    for (; playerIndex < 4; ++playerIndex) {
+        allComplete = 1;
         {
-            int j;
-            for (j = 0; j < 3; ++j) if (fn_8027B8E4(j, i) == 0) all = 0;
+            int groupIndex;
+            for (groupIndex = 0; groupIndex < 3; ++groupIndex)
+                if (fn_8027B8E4(groupIndex, playerIndex) == 0)
+                    allComplete = 0;
         }
         {
-            int k;
-            for (k = 0; k < 2; ++k) if (fn_8027B984(k, i) == 0) all = 0;
+            int groupIndex;
+            for (groupIndex = 0; groupIndex < 2; ++groupIndex)
+                if (fn_8027B984(groupIndex, playerIndex) == 0)
+                    allComplete = 0;
         }
-        if (all) fn_80214A9C(i + 1); else fn_80214A9C(i + 0xB);
-        if (i == player) { active = offset + all; fn_80214CB4(active); }
-        offset += 2;
+        if (allComplete)
+            fn_80214A9C(playerIndex + 1);
+        else
+            fn_80214A9C(playerIndex + 0xB);
+        if (playerIndex == currentPlayer) {
+            activeIndex = menuOffset + allComplete;
+            fn_80214CB4(activeIndex);
+        }
+        menuOffset += 2;
     }
 }
 #pragma scheduling on
