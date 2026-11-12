@@ -66,19 +66,20 @@ void fn_8023B77C(void) {
 
 #pragma push
 #pragma opt_common_subs off
-void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 sp8[16];
+/* Initialize and run one game context frame sequence, preparing buffers/state used by subsequent systems. */
+void fn_8023B7EC(void *context, s32 arg1, s32 arg2, s32 arg3) {
+    s32 tempBuf[16];
     fn_802ECC18(0);
     fn_802445FC(arg1, arg2, arg3);
     fn_8023B77C();
     fn_8020A634();
     fn_8027B77C();
     fn_80211F4C();
-    fn_8023C0EC(arg0, arg1, arg2);
-    fn_80018318((u8 *)arg0 + 0x3F8, arg1);
-    fn_800126B4(arg0, (u8 *)arg0 + 0x3F8, 0, 1);
-    fn_80018440(sp8, *(s32 *)((u8 *)arg0 + 0x3E4), (u8 *)arg0 + 0x3F8);
-    fn_8000AB48(arg0, sp8);
+    fn_8023C0EC(context, arg1, arg2);
+    fn_80018318((u8 *)context + 0x3F8, arg1);
+    fn_800126B4(context, (u8 *)context + 0x3F8, 0, 1);
+    fn_80018440(tempBuf, *(s32 *)((u8 *)context + 0x3E4), (u8 *)context + 0x3F8);
+    fn_8000AB48(context, tempBuf);
 }
 #pragma pop
 void fn_8023B8AC(s32 arg0) {
@@ -250,7 +251,6 @@ void fn_8023BCEC(void) {
     s32 spC;
     s32 sp8;
     u8 temp_r31;
-
     fn_80137C78(1);
     fn_80137C84(fn_802E4A10(), 0);
     sp1C = *(s32 *)((u8 *)fn_80016464(0) + 4);
@@ -259,20 +259,15 @@ void fn_8023BCEC(void) {
     sp10 = 0;
     spC = 0;
     sp8 = 0;
-    goto loop;
-loop:
-    if (((int (*)(s32 *, s32 *, s32 *, s32))fn_8023BC24)(&sp1C, &sp18, &sp14, 0) == 0) {
-        goto loop;
-    }
-    temp_r31 = lbl_8055F291;
-    fn_8000DA10();
-    fn_800169F8(fn_8000DB34(), 0);
-    fn_80016970(0, sp1C, sp18, sp14);
-    fn_8023B9EC(sp10, spC, (s32)sp20, sp8, temp_r31);
-    fn_80137C80(0);
-    if (fn_8024A4C4((s32)&sp10, (s32)&spC, (s32)&sp8) != 0) {
-        goto loop;
-    }
+    do {
+        while (((int (*)(s32 *, s32 *, s32 *, s32))fn_8023BC24)(&sp1C, &sp18, &sp14, 0) == 0) { (void)0; }
+        temp_r31 = lbl_8055F291;
+        fn_8000DA10();
+        fn_800169F8(fn_8000DB34(), 0);
+        fn_80016970(0, sp1C, sp18, sp14);
+        fn_8023B9EC(sp10, spC, (s32)sp20, sp8, temp_r31);
+        fn_80137C80(0);
+    } while (fn_8024A4C4((s32)&sp10, (s32)&spC, (s32)&sp8) != 0);
 }
 #pragma opt_propagation reset
 extern int fn_80128668(void);
