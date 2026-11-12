@@ -2771,6 +2771,7 @@ struct ValueTextWidget {
     u8 _235[0x244 - 0x235];
     s32 scrollX;         /* 0x244: how far the text is scrolled out to the left */
     s32 scrollY;         /* 0x248: ... and out to the top */
+    s32 _24C;            /* 0x24C: base widget field (fn_80219568 sets it) */
     s32 style;           /* 0x250: text style/handle fn_8022AC1C draws with */
     f32 scale;           /* 0x254: multiplies the watched value */
     f32 offset;          /* 0x258: added to the scaled value */
