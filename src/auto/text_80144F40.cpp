@@ -323,16 +323,17 @@ extern "C" s32 lbl_80559DF4;
 extern "C" __declspec(section ".sdata") char lbl_80559DFC[];
 extern "C" __declspec(section ".sdata") char lbl_80559E04[];
 extern "C" __declspec(section ".sdata") char lbl_80559E0C[];
-extern "C" void fn_80145438(void *arg0, void *arg1) {
+/* Initializes a textured/text entry from property keys: base fields via fn_80145368, width/height via virtual getter (slot 0x24), and UV bounds via fn_801452E0. */
+extern "C" void fn_80145438(void *outEntry, void *propertySource) {
     class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual f32 f7(const char *); };
-    V *obj = (V *)arg1;
-    fn_80145368(arg0, arg1);
-    *(f32 *)((u8 *)arg0 + 0x10) = obj->f7((const char *)&lbl_80559DE0);
-    *(f32 *)((u8 *)arg0 + 0x14) = obj->f7((const char *)&lbl_80559DE4);
-    *(f32 *)((u8 *)arg0 + 0x18) = fn_801452E0(arg1, (const char *)&lbl_80559DE8);
-    *(f32 *)((u8 *)arg0 + 0x20) = fn_801452E0(arg1, (const char *)&lbl_80559DEC);
-    *(f32 *)((u8 *)arg0 + 0x1C) = fn_801452E0(arg1, (const char *)&lbl_80559DF0);
-    *(f32 *)((u8 *)arg0 + 0x24) = fn_801452E0(arg1, (const char *)&lbl_80559DF4);
+    V *obj = (V *)propertySource;
+    fn_80145368(outEntry, propertySource);
+    *(f32 *)((u8 *)outEntry + 0x10) = obj->f7((const char *)&lbl_80559DE0); /* "wid" */
+    *(f32 *)((u8 *)outEntry + 0x14) = obj->f7((const char *)&lbl_80559DE4); /* "hit" */
+    *(f32 *)((u8 *)outEntry + 0x18) = fn_801452E0(propertySource, (const char *)&lbl_80559DE8); /* "u0" */
+    *(f32 *)((u8 *)outEntry + 0x20) = fn_801452E0(propertySource, (const char *)&lbl_80559DEC); /* "u1" */
+    *(f32 *)((u8 *)outEntry + 0x1C) = fn_801452E0(propertySource, (const char *)&lbl_80559DF0); /* "v0" */
+    *(f32 *)((u8 *)outEntry + 0x24) = fn_801452E0(propertySource, (const char *)&lbl_80559DF4); /* "v1" */
 }
 
 #pragma push
