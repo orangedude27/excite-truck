@@ -897,27 +897,28 @@ void *fn_802C0138(void *arg0) {
 
 extern char lbl_8034AE08[];
 #pragma cplusplus on
-extern "C" void *fn_802C0310(void *arg0, int arg1) {
+extern "C" void *fn_802C0310(void *self, int shouldFree) {
     class Obj {
     public:
         virtual void v0(int);
     };
-    int id;
-    void *obj;
-    if (arg0 != 0) {
-        id = *(int *)((char *)arg0 + 0x2c50);
-        *(void **)arg0 = lbl_8034AE08;
-        if (id != -2) fn_802CAC54(id);
-        id = *(int *)((char *)arg0 + 0x2c54);
-        if (id != -2) fn_802CAC54(id);
-        obj = *(void **)((char *)arg0 + 0x2c58);
-        if (obj != 0) {
-            if (obj != 0)
-                ((Obj *)obj)->v0(1);
+    int resourceId;
+    void *child;
+    /* Destructor-like cleanup: reset vtable, release owned resources, optionally free. */
+    if (self != 0) {
+        resourceId = *(int *)((char *)self + 0x2c50);
+        *(void **)self = lbl_8034AE08;
+        if (resourceId != -2) fn_802CAC54(resourceId);
+        resourceId = *(int *)((char *)self + 0x2c54);
+        if (resourceId != -2) fn_802CAC54(resourceId);
+        child = *(void **)((char *)self + 0x2c58);
+        if (child != 0) {
+            if (child != 0)
+                ((Obj *)child)->v0(1);
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldFree > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 #pragma cplusplus off
 #pragma cplusplus on
