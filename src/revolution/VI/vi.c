@@ -54,10 +54,10 @@ s16 lbl_8055DB5C;
 s16 lbl_8055DB5E;
 u32 lbl_8055DB60;
 u32 lbl_8055DB64;
-volatile u64 lbl_8055DB68;
+u64 lbl_8055DB68;
 u32 lbl_8055DB70;
 u32 lbl_8055DB74;
-volatile u64 lbl_8055DB78;
+u64 lbl_8055DB78;
 u32 lbl_8055DB80;
 u32 lbl_8055DB84;
 u32 lbl_8055DB88;
@@ -168,6 +168,8 @@ struct SomeVIStruct {
 static u16 regs[60];
 static SomeVIStruct HorVer;
 static u16 shdwRegs[60];
+extern u16 lbl_8038F320[];
+extern u16 lbl_8038F418[];
 static u8 lbl_8038F490[0x30];
 
 #define MARK_CHANGED(index) (changed |= (u64)1 << (63 - (index)))
@@ -1261,17 +1263,19 @@ void VIConfigurePan(u16 xOrg, u16 yOrg, u16 width, u16 height)
 void VIFlush(void)
 {
     BOOL interrupts;
-    s32 regIndex;
+    u32 regIndex;
     u64 mask;
+    u32 tmp;
 
     interrupts = OSDisableInterrupts();
-    lbl_8055DB70 |= lbl_8055DB60;
+    tmp = lbl_8055DB70 | lbl_8055DB60;
+    lbl_8055DB70 = tmp;
     lbl_8055DB60 = 0;
     shdwChanged |= changed;
     while (changed != 0) {
-        regIndex = cntlzd(changed);
+        regIndex = (u32)cntlzd(changed);
         regs[regIndex] = shdwRegs[regIndex];
-        mask = fn_8002FD30(0, 1, 0x3F - regIndex, (void*)(regIndex * 2));
+        mask = fn_8002FD30(0, 1, 0x3F - (s32)regIndex, (void*)((s32)regIndex * 2));
         changed &= ~mask;
     }
     lbl_8055DBCC = 1;
