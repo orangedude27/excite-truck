@@ -1,6 +1,7 @@
 #include "decomp.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+typedef struct Ctx80012794 { void *items[32]; int count; } Ctx80012794;
 
 extern void fn_802E317C(void *, ...);
 extern char lbl_802FC638[];
@@ -551,7 +552,7 @@ void fn_80013618(int arg0) {
 #pragma scheduling on
 #pragma cplusplus on
 extern "C" int fn_80013680(void *arg0, void *arg1) {
-    struct Dummy {
+    struct Dummy4 {
         virtual int f0();
         virtual int f1();
         virtual int f2();
@@ -561,8 +562,8 @@ extern "C" int fn_80013680(void *arg0, void *arg1) {
         virtual int f6(char *, int);
     };
     void *a = *(void **)((char *)arg0 + 0x80);
-    int x = ((Dummy *)a)->f6(lbl_802FCB74, 0x63);
-    int y = ((Dummy *)*(void **)((char *)arg1 + 0x80))->f6(lbl_802FCB74, 0x63);
+    int x = ((Dummy4 *)a)->f6(lbl_802FCB74, 0x63);
+    int y = ((Dummy4 *)*(void **)((char *)arg1 + 0x80))->f6(lbl_802FCB74, 0x63);
     return x - y;
 }
 #pragma cplusplus reset
