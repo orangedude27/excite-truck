@@ -16430,6 +16430,13 @@ void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
     }
 }
 
+/* L2CAP connection indication on one of the two PSMs this host serves
+   (hidh_l2cif_connect_ind of stack/hid/hidh_conn.c).  The peer has to be one of
+   the 16 host-device records already; the interrupt channel is only accepted
+   while the control channel is up and the record waits for it, the control
+   channel only while the record is free.  A control channel then runs the BTM
+   security check and answers L2CAP from its callback; an interrupt channel is
+   answered at once and sent its L2CAP configuration request. */
 void hidh_l2cif_connect_ind(BD_ADDR bd_addr, UINT16 l2cap_cid, UINT16 psm, UINT8 l2cap_id) {
     extern void hidh_sec_check_complete_term(u8 *, void *, u8);
     BOOLEAN bAccept = TRUE;
