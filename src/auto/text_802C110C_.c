@@ -404,7 +404,7 @@ extern f32 lbl_804C1050[16];
 extern f32 lbl_80564E58;
 extern f32 lbl_80564E70;
 extern f32 lbl_80564E74;
-extern void fn_802BDFF4(int *);
+extern void fn_802BDFF4(void *, int);
 #pragma push
 #pragma processor 750
 void fn_802C1928(void) {
