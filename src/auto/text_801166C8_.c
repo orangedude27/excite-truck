@@ -2174,39 +2174,41 @@ void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-void fn_8011A4F8(u32 arg0, void *arg1) {
-#define FIELD(p, o) (*(s32 *)((u8 *)(p) + (o)))
+void fn_8011A4F8(s32 arg0, void *arg1) {
     s32 temp_r3_2, temp_r3_4, temp_r4;
     u32 temp_r3, temp_r3_3, var_r30;
     void *temp_r31;
+    s32 diff;
     var_r30 = arg0;
     temp_r31 = *(void **)((u8 *)arg1 + 0x7C);
-    if (FIELD(temp_r31, 0xC4) == 0) {
-        if ((arg0 != 0x8000) && (arg0 != (u32)((FIELD(temp_r31, 0xB8) - FIELD(temp_r31, 0x90)) + FIELD(temp_r31, 0x94)))) {
-            FIELD(temp_r31, 0x24) = 0; FIELD(temp_r31, 0x20) = 1; return;
+    if (*(s32 *)((u8 *)temp_r31 + 0xC4) == 0) {
+        if (arg0 != 0x8000) {
+            diff = *(s32 *)((u8 *)temp_r31 + 0xB8) - *(s32 *)((u8 *)temp_r31 + 0x90);
+            if (arg0 != (u32)(diff + *(s32 *)((u8 *)temp_r31 + 0x94))) {
+                *(s32 *)((u8 *)temp_r31 + 0x24) = 0; *(s32 *)((u8 *)temp_r31 + 0x20) = 1; return;
+            }
         }
-        temp_r4 = FIELD(temp_r31, 0x94);
+        temp_r4 = *(s32 *)((u8 *)temp_r31 + 0x94);
         if (temp_r4 != 0) {
             temp_r3 = *(u32 *)((u8 *)temp_r31 + 0xAC);
-            memmove((void *)temp_r3, (void *)(temp_r3 + temp_r4), FIELD(temp_r31, 0xB8) - FIELD(temp_r31, 0x90));
-            temp_r3_2 = FIELD(temp_r31, 0x94); FIELD(temp_r31, 0x94) = 0; var_r30 -= temp_r3_2;
+            memmove((void *)temp_r3, (void *)(temp_r3 + temp_r4), *(s32 *)((u8 *)temp_r31 + 0xB8) - *(s32 *)((u8 *)temp_r31 + 0x90));
+            temp_r3_2 = *(s32 *)((u8 *)temp_r31 + 0x94); *(s32 *)((u8 *)temp_r31 + 0x94) = 0; var_r30 -= temp_r3_2;
         }
-        FIELD(temp_r31, 0x28) += var_r30; FIELD(temp_r31, 0x90) += var_r30;
+        *(s32 *)((u8 *)temp_r31 + 0x28) += var_r30; *(s32 *)((u8 *)temp_r31 + 0x90) += var_r30;
         temp_r3_3 = *(u32 *)((u8 *)temp_r31 + 0xAC) + var_r30;
         *(u32 *)((u8 *)temp_r31 + 0xAC) = temp_r3_3;
         if (temp_r3_3 >= *(u32 *)((u8 *)temp_r31 + 0xA8)) *(u32 *)((u8 *)temp_r31 + 0xAC) = *(u32 *)((u8 *)temp_r31 + 0xA4);
-        FIELD(temp_r31, 0xA0) -= var_r30;
-        *(u32 *)((u8 *)temp_r31 + 0x4C) += var_r30;
-        if (*(u32 *)((u8 *)temp_r31 + 0x4C) > *(u32 *)((u8 *)temp_r31 + 0x44)) *(u32 *)((u8 *)temp_r31 + 0x44) = *(u32 *)((u8 *)temp_r31 + 0x4C);
-        if (FIELD(temp_r31, 0xBC) != 0) fn_8011A45C(temp_r31, var_r30, FIELD(temp_r31, 0xCC));
-        temp_r3_4 = fn_80116D30() - FIELD(temp_r31, 0xCC);
-        FIELD(temp_r31, 0xCC) = temp_r3_4; FIELD(temp_r31, 0x30) += temp_r3_4;
-        if (FIELD(temp_r31, 0xC8) != 0 || FIELD(temp_r31, 0x2C) != 0) FIELD(temp_r31, 0x3C) += FIELD(temp_r31, 0xCC);
-        else FIELD(temp_r31, 0x38) += FIELD(temp_r31, 0xCC);
-        FIELD(temp_r31, 0x24) = 0;
-        if (FIELD(temp_r31, 0x50) == 0) fn_8011A6A0(temp_r31);
+        *(s32 *)((u8 *)temp_r31 + 0xA0) -= var_r30;
+        *(u32 volatile *)((u8 *)temp_r31 + 0x4C) += var_r30;
+        if (*(u32 volatile *)((u8 *)temp_r31 + 0x4C) > *(u32 volatile *)((u8 *)temp_r31 + 0x44)) *(u32 *)((u8 *)temp_r31 + 0x44) = *(u32 volatile *)((u8 *)temp_r31 + 0x4C);
+        if (*(s32 *)((u8 *)temp_r31 + 0xBC) != 0) fn_8011A45C(temp_r31, var_r30, *(s32 *)((u8 *)temp_r31 + 0xCC));
+        temp_r3_4 = fn_80116D30() - *(s32 *)((u8 *)temp_r31 + 0xCC);
+        *(s32 *)((u8 *)temp_r31 + 0xCC) = temp_r3_4; *(s32 *)((u8 *)temp_r31 + 0x30) += temp_r3_4;
+        if (*(s32 *)((u8 *)temp_r31 + 0xC8) != 0 || *(s32 *)((u8 *)temp_r31 + 0x2C) != 0) *(s32 *)((u8 *)temp_r31 + 0x3C) += *(s32 *)((u8 *)temp_r31 + 0xCC);
+        else *(s32 *)((u8 *)temp_r31 + 0x38) += *(s32 *)((u8 *)temp_r31 + 0xCC);
+        *(s32 *)((u8 *)temp_r31 + 0x24) = 0;
+        if (*(s32 *)((u8 *)temp_r31 + 0x50) == 0) fn_8011A6A0(temp_r31);
     }
-#undef FIELD
 }
 
 void fn_8011A6A0(void* arg0) {
@@ -4076,19 +4078,21 @@ void fn_8011D5F0(void* arg0, void* arg1) {
 }
 
 void fn_8011D7F8(void *arg0, void *arg1) {
-    u32 sh;
-    u32 w;
-    u32 cnt;
-    u32 bits;
-    s8 *out;
     u32 *in;
-    s32 n;
+    u32 bits;
+    u32 cnt;
+    u32 sh;
+    u32 width;
     u32 mask;
-    u32 b;
-    u32 sym;
+    s8 *out;
+    u32 n;
+    u32 e;
+    u32 idx;
     u32 lo;
+    u32 sym;
     void *tab;
     void *ntab;
+    u32 next;
 
     if (*(s8 **)((u8 *)arg0 + 0) == *(s8 **)((u8 *)arg0 + 4)) {
         cnt = *(u32 *)((u8 *)arg1 + 8);
@@ -4096,10 +4100,10 @@ void fn_8011D7F8(void *arg0, void *arg1) {
         in = *(u32 **)((u8 *)arg1 + 4);
         bits = *(u32 *)((u8 *)arg1 + 0);
         if (cnt < sh) {
-            w = *in;
-            n = bits | (w << cnt);
-            in += 4;
-            bits = w >> (sh - cnt);
+            next = *in;
+            n = bits | (next << cnt);
+            in++;
+            bits = next >> (sh - cnt);
             cnt = (cnt + 0x20) - sh;
             mask = (-1U >> (0x20 - sh)) & n;
         } else {
@@ -4113,44 +4117,52 @@ void fn_8011D7F8(void *arg0, void *arg1) {
             *(s8 **)((u8 *)arg0 + 4) = (s8 *)(out + mask);
             tab = *(void **)((u8 *)arg0 + 0x24);
             ntab = (u8 *)arg0 + 0x10;
-            w = *(u32 *)((u8 *)arg0 + 0x20);
-            sh = -1U >> (0x20 - w);
+            width = *(u32 *)((u8 *)arg0 + 0x20);
+            sh = -1U >> (0x20 - width);
             do {
                 mask -= 1;
-                if (cnt >= w) {
-                    b = *(u8 *)((u8 *)tab + (bits & sh));
-                    lo = *(u8 *)((u8 *)ntab + (b & 0xF));
-                    bits = bits >> (b >> 4U);
-                    cnt = cnt - (b >> 4U);
+                if (cnt >= width) {
+                    e = *(u8 *)((u8 *)tab + (bits & sh));
+                    idx = e & 0xF;
+                    e >>= 4U;
+                    lo = *(u8 *)((u8 *)ntab + idx);
+                    bits = bits >> e;
+                    cnt = cnt - e;
                 } else {
-                    w = *in;
-                    b = *(u8 *)((u8 *)tab + (sh & (bits | (w << cnt))));
-                    lo = *(u8 *)((u8 *)ntab + (b & 0xF));
-                    if (cnt >= (b >> 4U)) {
-                        bits = bits >> (b >> 4U);
-                        cnt = cnt - (b >> 4U);
+                    next = *in;
+                    e = *(u8 *)((u8 *)tab + (sh & (bits | (next << cnt))));
+                    idx = e & 0xF;
+                    e >>= 4U;
+                    lo = *(u8 *)((u8 *)ntab + idx);
+                    if (cnt >= e) {
+                        bits = bits >> e;
+                        cnt = cnt - e;
                     } else {
-                        bits = w >> ((b >> 4U) - cnt);
-                        in += 4;
-                        cnt = (cnt + 0x20) - (b >> 4U);
+                        bits = next >> (e - cnt);
+                        in++;
+                        cnt = (cnt + 0x20) - e;
                     }
                 }
-                if (cnt >= w) {
-                    b = *(u8 *)((u8 *)tab + (bits & sh));
-                    sym = *(u8 *)((u8 *)ntab + (b & 0xF));
-                    bits = bits >> (b >> 4U);
-                    cnt = cnt - (b >> 4U);
+                if (cnt >= width) {
+                    e = *(u8 *)((u8 *)tab + (bits & sh));
+                    idx = e & 0xF;
+                    e >>= 4U;
+                    sym = *(u8 *)((u8 *)ntab + idx);
+                    bits = bits >> e;
+                    cnt = cnt - e;
                 } else {
-                    w = *in;
-                    b = *(u8 *)((u8 *)tab + (sh & (bits | (w << cnt))));
-                    sym = *(u8 *)((u8 *)ntab + (b & 0xF));
-                    if (cnt >= (b >> 4U)) {
-                        bits = bits >> (b >> 4U);
-                        cnt = cnt - (b >> 4U);
+                    next = *in;
+                    e = *(u8 *)((u8 *)tab + (sh & (bits | (next << cnt))));
+                    idx = e & 0xF;
+                    e >>= 4U;
+                    sym = *(u8 *)((u8 *)ntab + idx);
+                    if (cnt >= e) {
+                        bits = bits >> e;
+                        cnt = cnt - e;
                     } else {
-                        bits = w >> ((b >> 4U) - cnt);
-                        in += 4;
-                        cnt = (cnt + 0x20) - (b >> 4U);
+                        bits = next >> (e - cnt);
+                        in++;
+                        cnt = (cnt + 0x20) - e;
                     }
                 }
                 *out = lo | (sym * 0x10);
