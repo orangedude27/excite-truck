@@ -1204,6 +1204,7 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
             fn_802E30C8(base + 0x318, name);
             goto call_tail;
         }
+        goto call_tail;
     }
 call_tail:
     return ((void *(*)(void *, void *, u32))fn_801F973C)(
@@ -1694,8 +1695,9 @@ extern "C" void *lbl_8055EC5C;
 extern "C" u8 lbl_8055EC40;
 #pragma scheduling invalid_target
 extern "C" void fn_801FA550(void) {
+    /* Iterates two global lists: for each active node in the first list triggers fn_802C70AC when enabled, and for each node in the second list matching lbl_8055EC40's second byte calls fn_801E75C8. */
     void *node;
-    void *other;
+    void *otherNode;
     node = lbl_8055EC50;
     while (node != 0) {
         if (*((u8 *)node + 0x41) == 0 &&
@@ -1705,13 +1707,13 @@ extern "C" void fn_801FA550(void) {
         }
         node = *(void **)((u8 *)node + 0x44);
     }
-    other = lbl_8055EC5C;
-    while (other != 0) {
+    otherNode = lbl_8055EC5C;
+    while (otherNode != 0) {
         if (fn_801F7A0C() != 0 &&
-            *(u8 *)((u8 *)other + 0x58) == *((u8 *)&lbl_8055EC40 + 1)) {
-            fn_801E75C8(*(s32 *)((u8 *)other + 0x30), other);
+            *(u8 *)((u8 *)otherNode + 0x58) == *((u8 *)&lbl_8055EC40 + 1)) {
+            fn_801E75C8(*(s32 *)((u8 *)otherNode + 0x30), otherNode);
         }
-        other = *(void **)((u8 *)other + 0x68);
+        otherNode = *(void **)((u8 *)otherNode + 0x68);
     }
 }
 
@@ -1767,12 +1769,13 @@ extern "C" void *fn_801F96C8(void *);
 extern "C" void fn_801F973C(void *, void *, u32);
 #pragma dont_inline on
 #pragma use_lmw_stmw on
-extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
+extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
     volatile u32 *src = (volatile u32 *)arg1;
-    u32 zero, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    s32 zero = 0;
     f32 data[14];
-    zero = 0;
     t0 = src[0];
+    ((u32 *)data)[13] = zero;
     t1 = src[1];
     t2 = src[2];
     t3 = src[3];
@@ -1784,7 +1787,6 @@ extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     t9 = src[9];
     t10 = src[10];
     t11 = src[11];
-    ((u32 *)data)[13] = zero;
     ((u32 *)data)[12] = zero;
     *(u32 *)&data[0] = t0;
     *(u32 *)&data[1] = t1;
@@ -2377,7 +2379,6 @@ extern "C" void *fn_801FC12C(void *arg0) {
         f32 val14 = lbl_80563014;
         f32 x, y, z;
         f32 sum;
-
         *(void **)obj = lbl_80333B98;
         *(u32 *)(obj + 0xC) = 0;
         *(u32 *)(obj + 0x4) = 0;
