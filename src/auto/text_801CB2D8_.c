@@ -540,6 +540,40 @@ void fn_801CC8FC(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
 }
 
+/* The award stat handler kept in lbl_8055E884 (its heap name strings at
+ * lbl_80337AC8 read "StatHandler::Create: ..." and "award_int"/"award_real").
+ * fn_801CC470 allocates the 0x618 bytes, fn_801CC594 initialises them and
+ * fn_801CC918 resets them between races.  Only the fields the functions in this
+ * file reach are named; the node pool at 0x44 holds the 0x14-byte stat nodes the
+ * free list at 0x29C hands out. */
+typedef struct {
+    /* 0x00 */ u32 unknown0[4];
+    /* 0x10 */ u8 paused;         // fn_801CCBA4 sets it, fn_801CCBB4 clears it
+    /* 0x11 */ s8 player[4];      // one byte per player slot
+    /* 0x15 */ u8 pad15[3];
+    /* 0x18 */ void *entries;     // entryCount stat entries, one pointer each
+    /* 0x1C */ s32 entryCount;
+    /* 0x20 */ u8 pad20[0x24];
+    /* 0x44 */ u8 nodes[0x258];   // stat node pool, cleared by a reset
+    /* 0x29C */ void *freeList;   // first free node, null when none
+    /* 0x2A0 */ void **freeListTail; // last node's next link, &freeList when empty
+    /* 0x2A4 */ s32 unknown2A4;
+    /* 0x2A8 */ s32 pendingPlace; // place of the award queued, see fn_801CD4CC
+    /* 0x2AC */ s32 newCount;
+    /* 0x2B0 */ s32 newEntry;     // -1 while none
+    /* 0x2B4 */ s32 unknown2B4;   // -1 while none
+    /* 0x2B8 */ f32 value;        // lbl_80562A08 (-999) while unset
+    /* 0x2BC */ u8 hasValue;
+    /* 0x2BD */ u8 pad2BD[3];
+    /* 0x2C0 */ s32 state;        // fn_801CE75C tests it for 3
+    /* 0x2C4 */ f32 unknown2C4;
+    /* 0x2C8 */ void *pool;       // 0x74-byte records, fn_802AE0E0 clears +0x68
+    /* 0x2CC */ void *actor[3];   // a reset sets their +0x4A and clears +0x4C
+    /* 0x2D8 */ s32 unknown2D8;
+    /* 0x2DC */ u8 pad2DC[0x29C];
+    /* 0x578 */ f32 floats[10][4]; // reset to {1,0,0,0}
+} StatHandler;
+
 #pragma scheduling invalid_target
 void fn_801CC918(void) {
     extern void fn_8001BE70(void *);
