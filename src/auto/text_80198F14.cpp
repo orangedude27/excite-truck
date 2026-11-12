@@ -3435,8 +3435,9 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
     }
 }
 #pragma pop
-extern "C" void fn_801A22A4(void* arg0) {
-    volatile u32* result = (volatile u32*)((VTab1A1E7C*)arg0)->Call();
+extern "C" void fn_801A22A4(void* obj) {
+    /* Copy a 12-word transform from the object's vtable slot 0x50 into a temp buffer and submit it with this object's position (+0x24/28/2C) to fn_801E44F4 (tag 0x50000000). */
+    volatile u32* result = (volatile u32*)((VTab1A1E7C*)obj)->Call();
     volatile u32 words[12];
     u32 value1;
     u32 value0;
@@ -3470,9 +3471,9 @@ extern "C" void fn_801A22A4(void* arg0) {
     words[10] = value10;
     u32 value11 = result[11];
     words[11] = value11;
-    f32 tailZ = *(f32*)((u8*)arg0 + 0x2c);
-    f32 tailY = *(f32*)((u8*)arg0 + 0x28);
-    f32 tailX = *(f32*)((u8*)arg0 + 0x24);
+    f32 tailZ = *(f32*)((u8*)obj + 0x2c);
+    f32 tailY = *(f32*)((u8*)obj + 0x28);
+    f32 tailX = *(f32*)((u8*)obj + 0x24);
     typedef void (*Fn801E44F4)(volatile u32*, u32, u32, f32, f32, f32);
     ((Fn801E44F4)fn_801E44F4)(words, 0x50000000, value9, tailX, tailY, tailZ);
 }
