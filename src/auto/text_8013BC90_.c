@@ -32,7 +32,6 @@ extern const char lbl_8032C414[];
 /* The heap tag every LineInfo is allocated under. */
 #define LINE_INFO_TAG lbl_8032C414 /* "LineInfo" */
 
-#define CACHE_RESOURCE_DECLARED
 // A LineInfo: the record the resource cache (lbl_8042F8C8) holds a resource
 // under its name, as fn_8013BE64 builds it around a loaded resource and
 // fn_8013BF40 builds the default one used when it cannot be opened.
