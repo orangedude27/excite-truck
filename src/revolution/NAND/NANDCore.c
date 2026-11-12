@@ -155,6 +155,7 @@ void nandReportErrorCode(s32 result) {
 }
 
 s32 nandConvertErrorCode(s32 result) {
+    /* Convert an IPC/ISFS result code to the corresponding NAND_RESULT_* value. */
     int i;
 
     // clang-format off
