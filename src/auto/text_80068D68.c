@@ -10788,6 +10788,11 @@ void bta_dm_enable(void *arg0) {
 
 extern const BD_ADDR BT_BD_ANY;
 void bta_dm_disable(void) {
+    /* BTA device-manager disable: set L2CAP idle timeout for any BD addr, disable
+     * BTA/sys and inquiry/connectability, tear down PM state. If no ACL links
+     * remain, arm the disable timer (+0x74) for 1000 ms with callback fn_80073464
+     * (+0x7C); otherwise mark disabling (+0x72) and arm a 5000 ms timer with
+     * bta_dm_disable_timer_cback. */
     extern void bta_dm_disable_timer_cback(void);
     extern void bta_sys_disable(void);
 
