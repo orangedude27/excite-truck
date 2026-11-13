@@ -1661,6 +1661,78 @@ extern "C" void fn_800E5E74(void *, int, int, int, int, int, int);
 extern "C" void fn_800E68EC(void *, int, int, void *, int);
 extern "C" void fn_80033408(void *, int);
 extern double lbl_80560F48;
+
+/* ------------------------------------------------------------------ *
+ * nw4hbm::snd::detail::WaveData - a wave as WaveFileReader::ReadWaveParam
+ * reads it: a header followed by one parameter block per channel.
+ * ------------------------------------------------------------------ */
+struct WaveChannelParam {
+    /* 0x00 */ void *dataAddr;    /* address of the channel's sample data */
+    /* 0x04 */ u32 dataParam[4];  /* sample offsets read from the wave file */
+    /* 0x14 */ u16 coef[24];      /* envelope (0x28 bytes), then the mix levels */
+};
+
+struct WaveData {
+    /* 0x00 */ u8 waveForm;       /* 0 = 8-bit PCM, 1 = 16-bit PCM, other = DSP ADPCM */
+    /* 0x01 */ u8 loop;           /* loop between loopStart and loopEnd */
+    /* 0x02 */ u8 channelCount;
+    /* 0x03 */ u8 sampleRateHi;   /* sampleRate = sampleRateHi << 16 | the file's 16-bit rate */
+    /* 0x04 */ s32 sampleRate;
+    /* 0x08 */ s32 loopStart;     /* sample index */
+    /* 0x0C */ s32 loopEnd;       /* sample index */
+    /* 0x10 */ WaveChannelParam channelParam[1];
+};
+
+/* AxVoice::Format - the sample format an AX voice is set to. */
+enum AxVoiceFormat {
+    AX_FORMAT_ADPCM = 0,    /* 14 samples per 16-byte block */
+    AX_FORMAT_PCM16 = 10,   /* two bytes per sample */
+    AX_FORMAT_PCM8 = 25     /* one byte per sample */
+};
+
+/* What an AxVoice keeps per channel: the wave it plays, stride 0x34 at +0x2C. */
+struct AxVoiceChannel {
+    /* 0x00 */ void *dataAddr;   /* the channel's sample data, copied from the wave */
+    /* 0x04 */ u16 coef[24];     /* envelope (0x28 bytes), then the mix levels */
+};
+
+/* What an AxVoice keeps per voice output, stride 0x1C at +0x94. */
+struct AxVoiceOut {
+    /* 0x00 */ f32 volume;     /* volume this output plays at */
+    /* 0x04 */ f32 rateScale;  /* scales the AX source rate of the output */
+    /* 0x08 */ f32 unk_08;
+    /* 0x0C */ f32 unk_0C;
+    /* 0x10 */ f32 unk_10;
+    /* 0x14 */ f32 unk_14;
+    /* 0x18 */ s32 unk_18;
+};
+
+/* nw4hbm::snd::detail::AxVoice: one wave played through a grid of AX voices,
+ * channelCount (1..2) channels of voiceOutCount (1..4) voices each. */
+struct AxVoice {
+    /* 0x00 */ u32 pad_00[3];
+    /* 0x0C */ void *axVoice[2][4];   /* the grid: a voice is 4 bytes, a channel row 0x10 */
+    /* 0x2C */ AxVoiceChannel channel[2];
+    /* 0x68 */ u8 pad_68[0x2C];
+    /* 0x94 */ AxVoiceOut out[4];
+    /* 0x104 */ s32 channelCount;
+    /* 0x108 */ s32 voiceOutCount;
+    /* 0x10C */ void *callback;
+    /* 0x110 */ void *callbackArg;
+    /* 0x114 */ s32 sampleRate;
+    /* 0x118 */ s32 format;           /* AxVoiceFormat */
+    /* 0x11C */ u8 activeFlag;
+    /* 0x11D */ u8 started;
+    /* 0x11E */ u8 playing;
+    /* 0x11F */ u8 pause;
+    /* 0x120 */ u8 paused;
+    /* 0x121 */ u8 unk_121;
+    /* 0x122 */ u8 mute;
+    /* 0x123 */ u8 updateFlags;       /* bits the AX update functions act on */
+    /* 0x124 */ u8 pad_124[0x60];
+    /* 0x184 */ f32 playbackRate;     /* how fast the wave is played, 1.0 = as recorded */
+};
+
 #pragma fp_contract_aggressive on
 extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *arg0, const void *arg1) {
     /* Set this AxVoice up to play the given wave: pick the AX sample format from
