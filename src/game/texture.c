@@ -718,21 +718,22 @@ void fn_802CB29C(int arg0) {
 
 #pragma use_lmw_stmw off
 extern int lbl_8055D070;
-int fn_802CB2FC(int arg0, int arg1, int arg2, unsigned char arg3, unsigned short arg4, unsigned char arg5) {
-    unsigned char *p = (unsigned char *)fn_801284F8(0x18, &lbl_8055D070);
-    *(unsigned short *)(p + 0) = arg0;
-    *(unsigned short *)(p + 2) = arg1;
-    p[4] = arg2;
-    p[5] = arg3;
-    *(unsigned short *)(p + 0xC) = arg4;
-    p[6] = 0;
-    p[8] = 5;
-    p[9] = 0x32;
-    p[7] = arg5;
-    p[0xB] = 2;
-    *(int *)(p + 0x14) = 0;
-    p[0xA] = 0;
-    return (int)p;
+int fn_802CB2FC(int x, int y, int type, unsigned char count, unsigned short id, unsigned char flags) {
+    /* Allocate and initialize a 0x18-byte texture/entry record with the given fields and defaults. */
+    unsigned char *entry = (unsigned char *)fn_801284F8(0x18, &lbl_8055D070);
+    *(unsigned short *)(entry + 0) = x;
+    *(unsigned short *)(entry + 2) = y;
+    entry[4] = type;
+    entry[5] = count;
+    *(unsigned short *)(entry + 0xC) = id;
+    entry[6] = 0;
+    entry[8] = 5;
+    entry[9] = 0x32;
+    entry[7] = flags;
+    entry[0xB] = 2;
+    *(int *)(entry + 0x14) = 0;
+    entry[0xA] = 0;
+    return (int)entry;
 }
 
 char fn_802CAFC8(int arg0) {
