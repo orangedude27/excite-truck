@@ -1499,44 +1499,51 @@ extern "C" s32 fn_8010D4B0(void *self, void *arg0, s32 arg1, void *arg2) {
  extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(s32), fn_80111C10(s32);
  extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(s32), IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
  extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32,f32,f32); extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
- s32 p=(s32)arg2, hi=p&0xFF000000, r4,r5,r6,r7,r8,r9,r10;
+ const char *base=lbl_80329458;
+ u32 p=(u32)arg0, hi=p&0xFF000000;
+ s32 r4,r5,r6,r7,r8,r9,r10;
  r5=r6=r7=r8=r9=r10=1;
- if((u32)(hi+0x80000000)!=0 && (u32)((p&0xFF800000)+0x7F000000)!=0) r10=0;
- if(r10==0 && (u32)((p&0xF8000000)+0x70000000)!=0) r9=0;
- if(r9==0 && (u32)(hi+0x40000000)!=0) r8=0;
- if(r8==0 && (u32)((p&0xFF800000)+0x3F000000)!=0) r7=0;
- if(r7==0 && (u32)((p&0xF8000000)+0x30000000)!=0) r6=0;
- if(r6==0 && (u32)((p&0xFFFFC000)+0x20000000)!=0) r5=0;
- if(r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329458,0x84,lbl_80329458+0x78,arg0);
- if(arg1>=32) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329458,0x85,lbl_80329458+0x18);
- p=(s32)arg2; hi=p&0xFF000000; r4=r5=r6=r7=r8=r9=1;
- if((u32)(hi+0x80000000)!=0 && (u32)((p&0xFF800000)+0x7F000000)!=0) r9=0;
- if(r9==0 && (u32)((p&0xF8000000)+0x70000000)!=0) r8=0;
- if(r8==0 && (u32)(hi+0x40000000)!=0) r7=0;
- if(r7==0 && (u32)((p&0xFF800000)+0x3F000000)!=0) r6=0;
- if(r6==0 && (u32)((p&0xF8000000)+0x30000000)!=0) r5=0;
- if(r5==0 && (u32)((p&0xFFFFC000)+0x20000000)!=0) r4=0;
- if(r4==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329458,0x86,lbl_80329458+0x40,arg2);
- s32 obj=*(s32*)p;
- if(arg1==10) {
+ if(hi!=0x80000000U && (p&0xFF800000)!=0x81000000U) r10=0;
+ if(r10==0 && (p&0xF8000000)!=0x90000000U) r9=0;
+ if(r9==0 && hi!=0xC0000000U) r8=0;
+ if(r8==0 && (p&0xFF800000)!=0xC1000000U) r7=0;
+ if(r7==0 && (p&0xF8000000)!=0xD0000000U) r6=0;
+ if(r6==0 && (p&0xFFFFC000)!=0xE0000000U) r5=0;
+ if(r5==0) Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x84,base+0x78,arg0);
+ if(arg1>=32) Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x85,base+0x18);
+ p=(u32)arg2; hi=p&0xFF000000; r4=r5=r6=r7=r8=r9=1;
+ if(hi!=0x80000000U && (p&0xFF800000)!=0x81000000U) r9=0;
+ if(r9==0 && (p&0xF8000000)!=0x90000000U) r8=0;
+ if(r8==0 && hi!=0xC0000000U) r7=0;
+ if(r7==0 && (p&0xFF800000)!=0xC1000000U) r6=0;
+ if(r6==0 && (p&0xF8000000)!=0xD0000000U) r5=0;
+ if(r5==0 && (p&0xFFFFC000)!=0xE0000000U) r4=0;
+ if(r4==0) Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x86,base+0x40,arg2);
+ switch(arg1) {
+ case 10: {
+  s32 obj=*(s32*)p;
   *(f32*)((char*)arg0+8)=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj);
   *(f32*)((char*)arg0+4)=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj);
-  r5=0; if((u32)(hi+0x80000000)==0 || (u32)((p&0xFF800000)+0x7F000000)==0 || (u32)((p&0xF8000000)+0x70000000)==0 || (u32)(hi+0x40000000)==0 || (u32)((p&0xFF800000)+0x3F000000)==0 || (u32)((p&0xF8000000)+0x30000000)==0 || (u32)((p&0xFFFFC000)+0x20000000)==0) r5=1;
-  if(!r5) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329458,0xC3,lbl_80329458+0x40,arg2);
+  r5=0; if(hi==0x80000000U || (p&0xFF800000)==0x81000000U || (p&0xF8000000)==0x90000000U || hi==0xC0000000U || (p&0xFF800000)==0xC1000000U || (p&0xF8000000)==0xD0000000U || (p&0xFFFFC000)==0xE0000000U) r5=1;
+  if(!r5) Panic__Q26nw4hbm2dbFPCciPCce(base+0,0xC3,base+0x40,arg2);
   s32 o=*(s32*)p; f32 y=*(f32*)(p+8), w=fn_80111C10(o); SetCursor__Q36nw4hbm2ut10CharWriterFff(o,y,GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(o)+w);
   f32 left=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj);
   *(f32*)arg0=left; f32 right=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj)+GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(*(s32*)p);
   f32 t=*(f32*)((char*)arg0+4), b=*(f32*)((char*)arg0+8), x=right-t, z=b-left;
-  *(f32*)((char*)arg0+4)=x>=0?t:right; *(f32*)arg0=z>=0?left:b; *(f32*)((char*)arg0+8)=z>=0?b:left; *(f32*)((char*)arg0+12)=x>=0?right:t; return 3;
+  *(f32*)((char*)arg0+4)=__fsel(x,t,right); *(f32*)arg0=__fsel(z,left,b); *(f32*)((char*)arg0+8)=__fsel(z,b,left); *(f32*)((char*)arg0+12)=__fsel(x,right,t); return 3;
  }
- if(arg1==9) {
-  r5=0; if((u32)(hi+0x80000000)==0 || (u32)((p&0xFF800000)+0x7F000000)==0 || (u32)((p&0xF8000000)+0x70000000)==0 || (u32)(hi+0x40000000)==0 || (u32)((p&0xFF800000)+0x3F000000)==0 || (u32)((p&0xF8000000)+0x30000000)==0 || (u32)((p&0xFFFFC000)+0x20000000)==0) r5=1;
-  if(!r5) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329458,0xD3,lbl_80329458+0x40,arg2);
-  s32 font=GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(obj);
-  if(font>0) { f32 fw=IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(obj)?GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(obj):GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(obj); f32 y=*(f32*)(p+8), step=(f32)font*fw, width=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj)-y; s32 n=(s32)(width/step); SetCursorX__Q36nw4hbm2ut10CharWriterFf(obj,y+step*(f32)(n+1)); }
+ case 9: {
+  s32 obj=*(s32*)p;
+  *(f32*)arg0=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj);
+  r5=0; if(hi==0x80000000U || (p&0xFF800000)==0x81000000U || (p&0xF8000000)==0x90000000U || hi==0xC0000000U || (p&0xFF800000)==0xC1000000U || (p&0xF8000000)==0xD0000000U || (p&0xFFFFC000)==0xE0000000U) r5=1;
+  if(!r5) Panic__Q26nw4hbm2dbFPCciPCce(base+0,0xD3,base+0x40,arg2);
+  s32 o=*(s32*)p;
+  s32 font=GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(o);
+  if(font>0) { f32 fw=IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(o)?GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(o):GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(o); f32 y=*(f32*)((char*)arg0+8), step=(f32)font*fw, width=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(o)-y; s32 n=(s32)(width/step); SetCursorX__Q36nw4hbm2ut10CharWriterFf(o,y+step*(f32)(n+1)); }
   *(f32*)((char*)arg0+8)=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj); *(f32*)((char*)arg0+4)=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj);
   f32 t=*(f32*)((char*)arg0+4), left=*(f32*)arg0, right=t+GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(obj), b=*(f32*)((char*)arg0+8), y=right-t, x=b-left;
-  *(f32*)arg0=x>=0?left:b; *(f32*)((char*)arg0+8)=x>=0?b:left; *(f32*)((char*)arg0+4)=y>=0?t:right; *(f32*)((char*)arg0+12)=y>=0?right:t; return 1;
+  *(f32*)arg0=__fsel(x,left,b); *(f32*)((char*)arg0+8)=__fsel(x,b,left); *(f32*)((char*)arg0+4)=__fsel(y,t,right); *(f32*)((char*)arg0+12)=__fsel(y,right,t); return 1;
+ }
  }
  return 0;
 }
@@ -5555,18 +5562,8 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80111FD0(CharWriterSpaci
 }
 
 extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(void *arg0) {
- extern const char lbl_80329560[]; extern const char lbl_80329578[];
- extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
- u32 p=(u32)arg0; u32 hi=p&0xFF000000;
- s32 r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
- if ((u32)(hi+0x80000000)<1U && (u32)((p&0xFF800000)+0x7F000000)<1U) r10=0;
- if (r10==0 && (u32)((p&0xF8000000)+0x70000000)<1U) r9=0;
- if (r9==0 && (u32)(hi+0x40000000)<1U) r8=0;
- if (r8==0 && (u32)((p&0xFF800000)+0x3F000000)<1U) r7=0;
- if (r7==0 && (u32)((p&0xF8000000)+0x30000000)<1U) r6=0;
- if (r6==0 && (u32)((p&0xFFFFC000)+0x20000000)<1U) r5=0;
- if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0x15A,lbl_80329578,arg0);
- return *(s32*)((char*)arg0+0x54);
+    TWB_CHECK_THIS(arg0, 0x15A);
+    return *(s32 *)((char *)arg0 + 0x54);
 }
 
 /* Sets the CharWriter's font pointer after validating both writer and font addresses. */
