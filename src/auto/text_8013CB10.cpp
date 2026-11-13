@@ -687,12 +687,10 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
         virtual void d1();
         virtual s32 v10(const char *);
     };
-
     ZoneMaster *obj = (ZoneMaster *)arg0;
-    u8 *self = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     const char *base = (const char *)lbl_8032C530;
-
+    u8 *self = (u8 *)obj;
     f32 fc0 = lbl_805614C0;
     obj->vt = lbl_8032CAF0;
     obj->sa.init();
@@ -704,30 +702,24 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     obj->rb.init();
     obj->sub.init();
     obj->perc.init();
-
     void *w0 = fn_80145E70(base + 0x0);
     obj->w54 = w0;
     obj->sa.push(w0);
-
     void *w1 = fn_80145E70(base + 0xC);
     obj->w58 = w1;
     obj->sa.push(w1);
-
     void *w2 = fn_80145E70(base + 0x1C);
     obj->w5C = w2;
     obj->sa.push(w2);
-
     obj->a0 = fn_802CAC28(base + 0x2C, 0);
     obj->a4 = fn_802CAC28(base + 0x38, 0);
     obj->a8 = fn_802CAC28(base + 0x48, 0);
     obj->ac = fn_802CAC28(base + 0x58, 0);
     obj->b0 = fn_802CAC28(base + 0x68, 0);
-
     s32 n = *(s32 *)(src + 0x3E0);
     lbl_8055E1C0 = (s32)self;
     *(s32 *)(self + 0xBC) = n;
     *(void **)(self + 0xB8) = fn_8002F37C(fn_8012850C(n * 0x12C + 0x10, base + 0x78), (void (*)())fn_8013E6E4, 0, 0x12C, n);
-
     *(s32 *)(self + 0x130) = 0;
     for (s32 off = 0, i = 0; i < *(s32 *)(self + 0xBC); src += 0x78, off += 0x12C, i++) {
         *(bool *)((u8 *)(*(void **)(self + 0xB8)) + off + 0x118) = (*(s32 *)(src + 0x20) == 0x50);
@@ -735,22 +727,18 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
             *(s32 *)(self + 0x130) += 1;
         }
     }
-
     *(s32 *)(self + 0x60) = 0;
     u8 *mgr = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     if (((V30 *)*(void **)(mgr + 0x20))->v30(base + 0x88, 1) != 0) {
         *(s32 *)(self + 0x60) = fn_80171698();
     }
-
     mgr = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     s32 res18 = ((V18 *)*(void **)(mgr + 0x20))->v18(base + 0x98, &lbl_80559D20);
     s32 studio = __AXGetStudio_8000AC2C();
-
     char buf[256];
     fn_801345D8(buf, 0x100, base + 0xA4, studio, res18);
     void *docA = fn_80131810(buf);
     void *docB = fn_80131810(base + 0xB0);
-
     if (docA != 0) {
         void *attr = 0;
         if (docB != 0 && ((V08_10 *)docB)->v10(&lbl_80559D28) != 0) {
@@ -770,43 +758,36 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
         fn_802E317C(base + 0xCC, buf);
         *(s32 *)(self + 0x64) = 0;
     }
-
     fn_802049DC(base + 0xE8, lbl_8042FB3C + 0x24, lbl_80561498, lbl_805614C8, lbl_805614CC);
     fn_802049DC(base + 0xFC, lbl_8042FB3C + 0x20, lbl_805614CC, lbl_805614C4, lbl_805614CC);
     fn_802049DC(base + 0x110, lbl_8042FB3C + 0x1C, lbl_805614CC, lbl_805614D0, lbl_805614CC);
     fn_802049DC(base + 0x120, lbl_8042FB3C + 0x18, lbl_805614C4, lbl_805614D4, lbl_805614C4);
-
     *(f32 *)(self + 0x268) = lbl_805614AC;
     ((void (*)(s32, const char *, void *))fn_801331C4)(4, base + 0x12C, self + 0x268);
-
     const char *s1 = base + 0x13C;
     s32 r1 = fn_80207848((void *)s1, 1);
     *(s32 *)(self + 0x270) = r1;
     if (r1 == 0) {
         fn_802E317C(base + 0x148, s1);
     }
-
     const char *s2 = base + 0x15C;
     s32 r2 = fn_80207848((void *)s2, 1);
     *(s32 *)(self + 0x278) = r2;
     if (r2 == 0) {
         fn_802E317C(base + 0x148, s2);
     }
-
     const char *s3 = base + 0x168;
     s32 r3 = fn_80207848((void *)s3, 1);
     *(s32 *)(self + 0x27C) = r3;
     if (r3 == 0) {
         fn_802E317C(base + 0x148, s3);
     }
-
     const char *s4 = base + 0x178;
     s32 r4 = fn_80207848((void *)s4, 1);
     *(s32 *)(self + 0x274) = r4;
     if (r4 == 0) {
         fn_802E317C(base + 0x148, s4);
     }
-
     *(s32 *)(self + 0x288) = -1;
     self[0x26C] = 0;
     *(void **)(self + 0xB4) = fn_802C6FC0(base + 0x184, 0, 0);
@@ -1157,6 +1138,32 @@ extern "C" void *fn_8013E33C(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+
+/* The game's one global time-bonus / race-rule block (the .bss block
+ * lbl_8042FB3C, 0x3C bytes).  fn_8013E3A8 fills it from the zone's attribute
+ * set; the HUD, the path-following code and the scoring code read it back.
+ * The four fields the debug menu exposes carry the names at
+ * lbl_8032C530+0xE8 ("Time-Bonus Freeze"), +0xFC ("Time-Bonus Fadeout"),
+ * +0x110 ("Time-Bonus X") and +0x120 ("Start Time").  Each comment gives the
+ * attribute key (an offset into the lbl_8032C530 string block) and the value
+ * used when the key or the whole attribute set is missing. */
+struct TimeBonusParams {
+    f32 f00;          /* key +0x230, default 0.95 */
+    s32 nodeCount;    /* key +0x220, default 10; last checkpoint of the path */
+    f32 f08;          /* key +0x248, default 0.4; span of a HUD colour ramp */
+    s32 i0C;          /* key +0x210, default 25; period of a modulo test */
+    f32 f10;          /* key +0x258, default 5.0 */
+    s32 groupCount;   /* key +0x270, default 10; number of path groups */
+    f32 startTime;    /* key +0x280, default 40.0; "Start Time" */
+    f32 bonusX;       /* key +0x290, default 1.0; "Time-Bonus X" */
+    f32 bonusFadeout; /* key +0x2B0, default 1.0; "Time-Bonus Fadeout" */
+    f32 bonusFreeze;  /* key +0x29C, default 2.22; "Time-Bonus Freeze" */
+    f32 f28;          /* key +0x2C0, default 0.7 */
+    s32 bonusTime;    /* key +0x2E8, default 100000, scaled by the +0x200 factor */
+    f32 f30;          /* key +0x2D4, default 5.0 */
+    f32 f34;          /* value of key +0x310 in the global numeric table */
+    f32 f38;          /* key +0x300, default 1.0 */
+};
 
 #pragma scheduling invalid_target
 extern "C" void fn_8013E3A8(void *arg0, void *arg1) {
@@ -3235,7 +3242,6 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
     u8 *self=(u8 *)arg0;
     char *base=(char *)lbl_8032C530;
     f32 a,time,c,d,e,opacityScratch,end,b;
-    f32 opacitySecond;
     time=*(f32 *)((u8 *)fn_801E7E3C()+0x10);
     end=lbl_80561588;
     a=end-lbl_805614C0;
@@ -3306,18 +3312,18 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
             void *target=(void *)((TObjC *)*(void **)(self+0x54))->vC((s32)(base+0x470));
             if(one && two && style && target) {
                 if(value<lbl_805614BC) {
-    opacitySecond=lbl_805614BC;
+    opacityScratch=lbl_805614BC;
 } else if(value>lbl_805614AC) {
-    opacitySecond=lbl_805614AC;
+    opacityScratch=lbl_805614AC;
 } else {
     {
         if(value>lbl_805614A4)
-            opacitySecond=(value*(lbl_8056150C*value*value))+(lbl_805614D0*value*value);
+            opacityScratch=(value*(lbl_8056150C*value*value))+(lbl_805614D0*value*value);
         else
-            opacitySecond=(value*(lbl_8056150C*value*value))-(lbl_805614D0*value*value);
+            opacityScratch=(value*(lbl_8056150C*value*value))-(lbl_805614D0*value*value);
     }
 }
-                fn_801479A8(one,two,(const char *)fn_80131234(base+0x808),opacitySecond);
+                fn_801479A8(one,two,(const char *)fn_80131234(base+0x808),opacityScratch);
                 int player=fn_801E866C(0);
                 f32 number=*(f32 *)(*(u8 **)(self+0xb8)+player*0x12c+0x108);
                 char buf[0x14];
@@ -3330,20 +3336,20 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
                 local.d=src->d;local.size=src->size;
                 local.f=src->f;local.g=src->g;local.h=src->h;
                 *(f32 *)&local.b+=lbl_80561498*fn_80147204(&local,buf);
-                f32 opacitySecond2;
+                f32 opacityScratch2;
                 if(value<lbl_805614BC) {
-    opacitySecond2=lbl_805614BC;
+    opacityScratch2=lbl_805614BC;
 } else if(value>lbl_805614AC) {
-    opacitySecond2=lbl_805614AC;
+    opacityScratch2=lbl_805614AC;
 } else {
     {
         if(value>lbl_805614A4)
-            opacitySecond2=(value*(lbl_8056150C*value*value))+(lbl_805614D0*value*value);
+            opacityScratch2=(value*(lbl_8056150C*value*value))+(lbl_805614D0*value*value);
         else
-            opacitySecond2=(value*(lbl_8056150C*value*value))-(lbl_805614D0*value*value);
+            opacityScratch2=(value*(lbl_8056150C*value*value))-(lbl_805614D0*value*value);
     }
 }
-                fn_801479A8(&local,target,buf,opacitySecond2);
+                fn_801479A8(&local,target,buf,opacityScratch2);
             }
         }
     }
