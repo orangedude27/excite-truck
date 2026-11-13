@@ -146,6 +146,7 @@ char *fn_8022D850(void *arg0, int arg1, int arg2, int *arg3) {
 }
 
 #pragma scheduling reset
+/* Write a string cell in a fixed-stride table: store the tag byte, copy the text, update the used row count, and bump the modification count. */
 void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char arg4) {
     char *ptr = fn_8022D82C(arg0, arg1, arg2);
     int next = arg1 + 1;
