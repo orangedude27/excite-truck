@@ -8689,6 +8689,7 @@ extern "C" s32 fn_802299B0(void *arg0) {
     return (((u32)(-value | value)) >> 31) | result;
 }
 #pragma scheduling reset
+/* Dispatch current object range/state to the target callback at +0x244 with args from +0x248/+0x24C/+0x250. */
 extern "C" void fn_802299FC(void *arg0) {
     class LocalObject {
     public:
@@ -8708,16 +8709,16 @@ extern "C" void fn_802299FC(void *arg0) {
         virtual void v0();
         virtual void Apply(s32, s32, s32, s32, s32, s32);
     };
-    s32 a = *(s32 *)((u8 *)arg0 + 8);
-    s32 x;
-    s32 diff;
-    diff = *(s32 *)((u8 *)arg0 + 0x10) - a;
-    x = ((LocalObject *)arg0)->At88(a);
-    s32 y = ((LocalObject *)arg0)->At78();
-    LocalApply *p = *(LocalApply **)((u8 *)arg0 + 0x244);
-    p->Apply(*(s32 *)((u8 *)arg0 + 0x248),
+    s32 start = *(s32 *)((u8 *)arg0 + 8);
+    s32 convertedStart;
+    s32 rangeLength;
+    rangeLength = *(s32 *)((u8 *)arg0 + 0x10) - start;
+    convertedStart = ((LocalObject *)arg0)->At88(start);
+    s32 currentValue = ((LocalObject *)arg0)->At78();
+    LocalApply *callback = *(LocalApply **)((u8 *)arg0 + 0x244);
+    callback->Apply(*(s32 *)((u8 *)arg0 + 0x248),
              *(s32 *)((u8 *)arg0 + 0x24C),
-             *(s32 *)((u8 *)arg0 + 0x250), y, diff, x);
+             *(s32 *)((u8 *)arg0 + 0x250), currentValue, rangeLength, convertedStart);
 }
 
 extern "C" void *lbl_8033DF30[];
