@@ -35,6 +35,44 @@ extern char lbl_8032F5DC[];
 extern char lbl_8032F71C[];
 extern char lbl_8032F760[];
 
+/* __AXFXGetLfoSinTable_801769CC is one of the game's three-instruction
+ * address-of stubs (src/game/game_ax_stubs.c): it hands back &lbl_804303E0, the
+ * current race's state block.  Its first word is the contest being raced, an
+ * index into the global contest table (its AX name is a wrong symbol guess). */
+#define current_contest_index (*__AXFXGetLfoSinTable_801769CC())
+/* lbl_8032F5DC: the parameter-table element "challenge". */
+#define challenge_element lbl_8032F5DC
+/* lbl_8032F71C / lbl_8032F760: the allocation tag "chalsubtaskmgr" and the
+ * vtable of the challenge sub-task manager. */
+#define chalsubtaskmgr_tag lbl_8032F71C
+#define chalsubtaskmgr_vtable lbl_8032F760
+
+/* One entry of the global contest table (lbl_80352AD0, stride 0x28, count
+ * lbl_8055D508); fn_8001285C(index) answers with entry `index`. */
+struct ContestEntry {
+    /* 0x00 */ s32 index;    /* its index in the table */
+    /* 0x04 */ s32 eventId;  /* the event the contest belongs to */
+    /* 0x08 */ s32 type;     /* contest type; fn_80007FF0 turns it into a name */
+    /* 0x0C */ s32 unk_0C[5];
+    /* 0x20 */ void *table;  /* the contest's parameter table object */
+    /* 0x24 */ s32 inUse;    /* the entry holds a contest */
+};
+
+#pragma cplusplus on
+/* A contest's parameter table object (ContestEntry+0x20): a table of named
+ * elements.  Slot 0x20 reads one as an int, falling back on the default it is
+ * handed; slot 0x5C looks one up by name and answers 0 when the table holds no
+ * such element. */
+struct ContestParamTable {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual s32 getInt(const void *, s32); virtual void f7();
+    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+    virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+    virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+    virtual void f20(); virtual s32 findElement(const void *);
+};
+#pragma cplusplus off
+
 #pragma cplusplus on
 struct Obj_80161C94 {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
@@ -2689,7 +2727,6 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
     float frac;
     float speed;
     float scale;
-
     self = arg0;
     scalePtr = (char *)self + arg2 * 4;
     *(float *)((char *)scalePtr + 0x14) = lbl_80561848;
@@ -3075,41 +3112,41 @@ extern "C" s32 fn_8016524C(void *arg0) {
             f32 f31 = lbl_80561840;
             f32 f30 = lbl_8056185C;
             f32 f29 = lbl_80561848;
-            s32 i = 1;
+            u32 i = 1;
+            s32 flag;
             s32 off = 4;
-            for (; i <= *(s32 *)(lbl_8042FDEC + 4); i++, off += 4) {
+            for (; (s32)i <= *(s32 *)(lbl_8042FDEC + 4); off += 4, i++) {
                 Rec *src;
                 ((void (*)(char *, s32, const char *, ...))fn_801345D8)(buf, 10, &lbl_8055A148, i);
                 src = (Rec *)((Manager *)lbl_8055E2E0)->slot1(buf);
                 if (src != 0) {
                     f32 dy, dx;
-                    s32 flag;
                     rec0 = *src;
                     dx = FX(rec0) - *(f32 *)&((Rec *)r24)->x;
                     dy = FY(rec0) - *(f32 *)&((Rec *)r24)->y;
                     rec1 = *(Rec7 *)r26;
-                    flag = (i != *(s32 *)((u8 *)arg0 + 8));
-                    if (i > fn_80160CE4() && i != *(s32 *)(lbl_8042FDEC + 4)) rec1.color = 0x55FFFFFF;
+                    flag = ((s32)i != *(s32 *)((u8 *)arg0 + 8));
+                    if ((s32)i > fn_80160CE4() && (s32)i != *(s32 *)(lbl_8042FDEC + 4)) rec1.color = 0x55FFFFFF;
                     FY(rec1) += dy;
                     FX(rec1) += dx;
                     fn_80147940(lbl_8055E2E0, &rec1, text + 0x6C8, flag);
-                    if (i > fn_80160CE4() && i < *(s32 *)(lbl_8042FDEC + 4))
+                    if ((s32)i > fn_80160CE4() && (s32)i < *(s32 *)(lbl_8042FDEC + 4))
                         rec0.color = ((Rec *)r25)->color;
                     else
                         rec0.color = ((Rec *)r24)->color;
                     alpha = 0xFF;
                     amount = f29;
-                    if (i == *(s32 *)((u8 *)arg0 + 8)) {
+                    if ((s32)i == *(s32 *)((u8 *)arg0 + 8)) {
                         fn_80230F78(&alpha, &amount, &rec0.color, 1);
                         FX(rec1) -= f30 * rec1.e * amount;
                         FY(rec1) -= f30 * rec1.f * amount;
                         rec1.e = rec1.e * (f31 + amount);
                         rec1.f = rec1.f * (f31 + amount);
-                        rec1.color = ((u32)alpha << 24) | (rec1.color & 0x00FF0000) | (rec1.color & 0xFFFF);
+                        rec1.color = (rec1.color & 0x00FF0000) | ((u32)alpha << 24) | (rec1.color & 0xFFFF);
                         fn_80147940(lbl_8055E2E0, &rec1, text + 0x6C8, flag);
                     }
-                    if (i != *(s32 *)(lbl_8042FDEC + 4)) {
-                        if (i < fn_80160CE4()) {
+                    if ((s32)i != *(s32 *)(lbl_8042FDEC + 4)) {
+                        if ((s32)i < fn_80160CE4()) {
                             rec2 = *(Rec7 *)r27;
                             FY(rec2) += dy;
                             FX(rec2) += dx;
@@ -3119,11 +3156,11 @@ extern "C" s32 fn_8016524C(void *arg0) {
                             rec3 = *(Rec7 *)r27;
                             FY(rec3) += dy;
                             FX(rec3) += dx;
-                            if (i > cur) rec3.color = 0x55FFFFFF;
+                            if (cur < (s32)i) rec3.color = 0x55FFFFFF;
                             fn_80147940(lbl_8055E2E0, &rec3, text + 0x6D8, 3);
                         }
                     }
-                    if (i < *(s32 *)(lbl_8042FDEC + 4)) {
+                    if ((s32)i < *(s32 *)(lbl_8042FDEC + 4)) {
                         Entry *entry = *(Entry **)(*(s32 *)lbl_8042FDEC + off);
                         ((void (*)(Rec *, const char *, ...))fn_80147230)(&rec0, (const char *)&lbl_8055A0DC, entry->label());
                     } else {
