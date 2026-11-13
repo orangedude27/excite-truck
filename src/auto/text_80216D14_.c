@@ -1198,7 +1198,7 @@ void fn_80218574(void *arg0) {
                 else if (*(float *)((char*)obj+0x1c)>=zero) innerAlpha=*(float *)((char*)obj+0x1c);
                 else if (*(unsigned char *)((char*)obj+0x1a)) innerAlpha=lbl_80563494;
                 else innerAlpha=zero;
-                a=*(int *)((char*)obj+0x238); b=*(int *)((char*)obj+4); c=*(int *)((char*)obj+8);
+                c=*(int *)((char*)obj+8); b=*(int *)((char*)obj+4); a=*(int *)((char*)obj+0x238);
                 result=((struct VObj *)obj)->vt->f78((struct VObj *)obj);
                 (*(void (**)(void *,int,int,int,int,int,int,float))((char*)base+0x444))(&state,a,b,c,result,*(int *)((char*)obj+0x10)-c,0,innerAlpha);
                 fn_8022ED00(&state);
@@ -1336,17 +1336,18 @@ void fn_80218ADC(void *group, int bitIndex) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80218B88(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+/* Invoke a two-argument method (vslot 8) on each child object whose flag bits match the mask for the given index. */
+extern "C" void fn_80218B88(void *container, int index, int arg2, int arg3, int arg4) {
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5();
         virtual void v8(int, int);
     };
-    int mask = fn_80216D14(arg1);
-    void **cursor = (void **)arg0;
+    int mask = fn_80216D14(index);
+    void **cursor = (void **)container;
     int i = 0;
-    for (; i < *(int *)((char *)arg0 + 0x430); cursor++, i++) {
+    for (; i < *(int *)((char *)container + 0x430); cursor++, i++) {
         void *obj = *(void **)((char *)cursor + 0x30);
         if (mask & *(int *)((char *)obj + 0x238)) {
             ((Obj *)obj)->v8(arg2, arg3);
