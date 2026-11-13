@@ -619,13 +619,14 @@ extern u8 *FstStringStart_8055D83C;
 extern void *lbl_8055D81C;
 extern void *lbl_8055D820;
 extern void *lbl_8055D824;
+/* Remove a task from the DSP task doubly-linked list and mark it done. */
 void __DSP_remove_task(void *task) {
     *(u32 *)((u8 *)task + 8) = 0;
     *(u32 *)task = 3;
     if (lbl_8055D820 == task) {
-        void *next = *(void **)((u8 *)task + 0x38);
-        if (next != 0) {
-            lbl_8055D820 = next;
+        void *nextTask = *(void **)((u8 *)task + 0x38);
+        if (nextTask != 0) {
+            lbl_8055D820 = nextTask;
             task = *(void **)((u8 *)task + 0x38);
             *(void **)((u8 *)task + 0x3c) = 0;
             return;
