@@ -8270,8 +8270,8 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 extern "C" u8 lbl_802EEEE0[];
-static inline s32 Fn800B25CCWide2(u16 *w) {
-    s32 r;
+static inline u32 Fn800B25CCWide2(u16 *w) {
+    u32 r;
     if (*w >= 0xFF41U && *w <= 0xFF5AU) {
         r = 1;
         *w -= 0x20;
