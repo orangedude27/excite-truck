@@ -6248,29 +6248,20 @@ extern "C" const char lbl_8032687C[];
 #pragma push
 #pragma small_data off
 extern "C" u8 lbl_8041506C[];
-/* ut::LinkList<StrmPlayer, 8>::GetPointerFromNode */
-static inline void *StrmPlayer_FromNode(void *node) {
-    if (node == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326B8C, 0x23D, (const char *)lbl_80326B68);
-    }
-    return (u8 *)node - 8;
-}
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
-    void *pHead;
-    void *pList = &lbl_8041506C[0x04];
-    void *p;
-    for (pHead = *(void **)pList; pHead != pList;) {
-        p = pHead;
-        pHead = *(void **)pHead;
-        if (p == 0) {
+    void **list = (void **)lbl_8041506C;
+    void **node = (void **)list[1];
+    while (node != (void **)&list[1]) {
+        void **cur = node++;
+        node = (void **)*cur;
+        if (cur == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326B8C, 0x23D, (const char *)lbl_80326B68);
         }
-        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8 *)p)[-0x08]);
+        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)cur - 0x08);
     }
 }
-
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void) {
     void *pHead = *(void **)&lbl_8041506C[0x04];
     void *pList = &lbl_8041506C[0x04];
