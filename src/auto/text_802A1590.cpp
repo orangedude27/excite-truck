@@ -533,18 +533,19 @@ extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
 }
 
 #pragma processor 750
+/* Initializes per-entry transform values and resets the associated subobject state. */
 extern "C" void fn_802A1F00(void *arg0) {
     register float f31 = 0.5f;
     register float f30 = 0.0f;
-    register void *p = arg0;
-    register int count = 0;
-    while (count < ((int (*)(void))fn_80287B14)()) {
-        *(float *)((char *)p + 0x14) = f30;
-        count++;
-        *(float *)((char *)p + 0x18) = f31;
-        *(float *)((char *)p + 0x1C) = f30;
-        *(float *)((char *)p + 0x20) = f30;
-        p = (char *)p + 0x10;
+    register void *entry = arg0;
+    register int index = 0;
+    while (index < ((int (*)(void))fn_80287B14)()) {
+        *(float *)((char *)entry + 0x14) = f30;
+        index++;
+        *(float *)((char *)entry + 0x18) = f31;
+        *(float *)((char *)entry + 0x1C) = f30;
+        *(float *)((char *)entry + 0x20) = f30;
+        entry = (char *)entry + 0x10;
     }
     fn_802A4524(*(void **)((char *)arg0 + 0x10));
 }
