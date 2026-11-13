@@ -11799,17 +11799,18 @@ void fn_80072AE4(u8 *arg0, u8 *arg1, u8 *arg2) {
     BTM_SecDeleteRmtNameNotifyCallback(fn_80072AE4);
 }
 
-void bta_dm_remname_cback(u8 *arg0) {
-    void *buf;
-    u8 *addr;
+/* BTM remote-name callback: posts BTA_DM_RENAME_EVT with BD address and name for the current search target. */
+void bta_dm_remname_cback(u8 *p_remote_name) {
+    void *msg;
+    u8 *bd_addr;
     fn_8007148C((s32)(lbl_803C0B98 + 0x58));
-    buf = GKI_getbuf(0x110);
-    if (buf != 0) {
-        addr = *(u8 **)(lbl_803C0B98 + 4) + 2;
-        fn_80070FA4((u8 *)buf + 8, addr);
-        strncpy((char *)buf + 0xE, (char *)arg0 + 4, 0x20);
-        *(u16 *)buf = 0x204;
-        fn_80071450(buf);
+    msg = GKI_getbuf(0x110);
+    if (msg != 0) {
+        bd_addr = *(u8 **)(lbl_803C0B98 + 4) + 2;
+        fn_80070FA4((u8 *)msg + 8, bd_addr);
+        strncpy((char *)msg + 0xE, (char *)p_remote_name + 4, 0x20);
+        *(u16 *)msg = 0x204;
+        fn_80071450(msg);
     }
 }
 
