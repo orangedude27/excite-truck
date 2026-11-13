@@ -1811,7 +1811,7 @@ extern int lbl_8055FDCC;
 extern float lbl_80564FD4;
 extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
-static inline void DefaultLight_802D18E8(void *light, float *dir, LightEntry_802D18E8 *e) {
+static void DefaultLight_802D18E8(void *light, float *dir, LightEntry_802D18E8 *e) {
     unsigned int packed;
     unsigned char rgba[4];
     float s = e->scale;
