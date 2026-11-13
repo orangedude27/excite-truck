@@ -7228,12 +7228,13 @@ extern "C" void fn_80226570(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void *fn_80226630(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    fn_802224B4(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, 1, 0);
-    *(void **)arg0 = (void *)&lbl_8033F7F4;
-    *(s32 *)((u8 *)arg0 + 0x260) = fn_80228F40(arg2, arg3);
-    *(s32 *)((u8 *)arg0 + 0x264) = 0;
-    return arg0;
+extern "C" void *fn_80226630(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    /* Constructor: initialize base (fn_802224B4), set vtable, cache computed value at +0x260 and clear +0x264. */
+    fn_802224B4(self, arg1, arg2, arg3, arg4, arg5, arg6, arg7, 1, 0);
+    *(void **)self = (void *)&lbl_8033F7F4;
+    *(s32 *)((u8 *)self + 0x260) = fn_80228F40(arg2, arg3);
+    *(s32 *)((u8 *)self + 0x264) = 0;
+    return self;
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802266B0(void *arg0, s32 arg1) {
