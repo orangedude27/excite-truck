@@ -287,6 +287,8 @@ s32 fn_80019604(void) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" s32 fn_80019664(void) {
+    /* If a global interface object exists and supports the "other_unlockables" key, fetch
+       that subobject and query its "career_completed_chassis" flag/value (arg 0). */
     struct Dummy {
         virtual Dummy *f0(void *);
         virtual void f1();
