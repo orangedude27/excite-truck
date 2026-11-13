@@ -2,7 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
-#pragma dont_inline fn_80211678
 
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" s32 fn_80128314(s32);
