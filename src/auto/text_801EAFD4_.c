@@ -31,7 +31,6 @@ extern void *fn_8012C370(s32, u32 *, void *, void *, u8 *);
 extern s32 fn_8012C33C(void *);
 extern s32 fn_801E2CCC(void *, f32 **);
 extern void fn_801EB6A8(s32);
-extern s32 fn_801EB000(s32 *, void *);
 extern void fn_802CDDC8(void *, s32);
 extern void fn_802E317C(const char *, ...);
 extern void fn_802AE7F4(void);
@@ -123,38 +122,35 @@ extern char lbl_80339F6C[];
 #pragma scheduling invalid_target
 void fn_801EB13C(void *arg0, s32 arg1) {
     register volatile u8 *v = (volatile u8 *)arg0;
-    register u8 b8,bB,b9,bA,b4,b7,b5,b6,bC;
+    register u8 a, b, c, d, e, f, g, h, i;
     register char *name = lbl_80339F6C;
-    u32 offset,address;
-
-    b8=v[8]; name=lbl_80339F6C;
-    bB=v[11]; b9=v[9]; bA=v[10]; v[8]=bB;
-    b4=v[4]; b7=v[7]; v[11]=b8; b5=v[5]; b6=v[6]; v[10]=b9;
-    bC=v[12]; b8=v[15]; v[9]=bA; b9=v[13]; bB=v[14];
-    offset=*(volatile u32 *)(v+8);
-    v[4]=b7; address=(u32)v+offset; v[7]=b4; v[5]=b6; v[6]=b5;
-    v[12]=b8; v[15]=bC; v[13]=bB; v[14]=b9;
-    *(volatile u32 *)(v+8)=address;
-    ((void (*)(void *, void *))fn_802C61BC)((void *)address,name);
-
+    u32 offset, address;
+    a = v[8]; b = v[11]; c = v[9]; d = v[10]; v[8] = b;
+    e = v[4]; f = v[7]; v[11] = a; g = v[5]; h = v[6]; v[10] = c;
+    i = v[12]; a = v[15]; v[9] = d; c = v[13]; b = v[14];
+    offset = *(volatile u32 *)(v + 8);
+    v[4] = f; address = (u32)v + offset; v[7] = e; v[5] = h; v[6] = g;
+    v[12] = a; v[15] = i; v[13] = b; v[14] = c;
+    *(volatile u32 *)(v + 8) = address;
+    fn_802C61BC((void *)address, name, b, a, h, f, e, i);
     if (*(volatile s32 *)v == 1) {
-        register u8 a10,a13,a11,a12,a14,a17,a15,a16;
-        register u8 a18,a1B,a19,a1A,a1C,a1F,a1D,a1E;
-        register u8 t0,t1;
-        a10=v[0x10]; a13=v[0x13]; a11=v[0x11]; a12=v[0x12];
-        a14=v[0x14]; a17=v[0x17]; a15=v[0x15]; a16=v[0x16];
-        a18=v[0x18]; a1B=v[0x1B]; a19=v[0x19]; a1A=v[0x1A];
-        a1C=v[0x1C]; a1F=v[0x1F]; a1D=v[0x1D]; a1E=v[0x1E];
-        v[0x10]=a13; v[0x13]=a10; v[0x11]=a12; v[0x12]=a11;
-        v[0x14]=a17; v[0x17]=a14; v[0x15]=a16; v[0x16]=a15;
-        v[0x18]=a1B; v[0x1B]=a18; v[0x19]=a1A; v[0x1A]=a19;
-        v[0x1C]=a1F; v[0x1F]=a1C; v[0x1D]=a1E; v[0x1E]=a1D;
-        t0=v[0x20]; t1=v[0x23]; v[0x20]=t1; v[0x23]=t0;
-        t0=v[0x21]; t1=v[0x22]; v[0x21]=t1; v[0x22]=t0;
-        t0=v[0x24]; t1=v[0x27]; v[0x24]=t1; v[0x27]=t0;
-        t0=v[0x25]; t1=v[0x26]; v[0x25]=t1; v[0x26]=t0;
-        t0=v[0x28]; t1=v[0x2B]; v[0x28]=t1; v[0x2B]=t0;
-        t0=v[0x29]; t1=v[0x2A]; v[0x29]=t1; v[0x2A]=t0;
+        register u8 a10, a13, a11, a12, a14, a17, a15, a16;
+        register u8 a18, a1B, a19, a1A, a1C, a1F, a1D, a1E;
+        register u8 t0, t1;
+        a10 = v[0x10]; a13 = v[0x13]; a11 = v[0x11]; a12 = v[0x12];
+        a14 = v[0x14]; a17 = v[0x17]; a15 = v[0x15]; a16 = v[0x16];
+        a18 = v[0x18]; a1B = v[0x1B]; a19 = v[0x19]; a1A = v[0x1A];
+        a1C = v[0x1C]; a1F = v[0x1F]; a1D = v[0x1D]; a1E = v[0x1E];
+        v[0x10] = a13; v[0x13] = a10; v[0x11] = a12; v[0x12] = a11;
+        v[0x14] = a17; v[0x17] = a14; v[0x15] = a16; v[0x16] = a15;
+        v[0x18] = a1B; v[0x1B] = a18; v[0x19] = a1A; v[0x1A] = a19;
+        v[0x1C] = a1F; v[0x1F] = a1C; v[0x1D] = a1E; v[0x1E] = a1D;
+        t0 = v[0x20]; t1 = v[0x23]; v[0x20] = t1; v[0x23] = t0;
+        t0 = v[0x21]; t1 = v[0x22]; v[0x21] = t1; v[0x22] = t0;
+        t0 = v[0x24]; t1 = v[0x27]; v[0x24] = t1; v[0x27] = t0;
+        t0 = v[0x25]; t1 = v[0x26]; v[0x25] = t1; v[0x26] = t0;
+        t0 = v[0x28]; t1 = v[0x2B]; v[0x28] = t1; v[0x2B] = t0;
+        t0 = v[0x29]; t1 = v[0x2A]; v[0x29] = t1; v[0x2A] = t0;
     }
 }
 #pragma scheduling on
@@ -172,7 +168,6 @@ extern "C" char lbl_80339FA0[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
-    register s32 node_type;
     u8 *var_r31;
     u8 *var_r30;
     u8 *var_r29;
@@ -182,10 +177,10 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
     s32 var_r24 = 8;
     u8 temp_r5;
     u8 temp_r0;
-    volatile register u8 *temp_r3_11;
+    u8 *temp_r3_11;
     u8 *temp_r27;
     void *temp_obj;
-
+    s32 nt6;
     while (var_r28 != 0) {
         temp_r5 = var_r28[0];
         var_r28[0] = var_r28[3];
@@ -194,8 +189,8 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
         var_r28[1] = var_r28[2];
         var_r28[2] = temp_r5;
         fn_801EB634(var_r28 + 4, (s32)arg1);
-        enum NodeType { Node0 = 0, Node101 = 0x101, Node102 = 0x102, Node103 = 0x103, Node4 = 4 };
-        switch ((NodeType)*(s32 *)var_r28) {
+        nt6 = *(s32 *)var_r28;
+        switch (nt6) {
         case 0:
             temp_r5 = var_r28[8];
                             temp_r0 = var_r28[0xB];
@@ -379,11 +374,11 @@ extern "C" void fn_801EB6A8(s32 arg0) {
         virtual void unused8();
         virtual void dispatch(s32 *, s32, s32, s32, s32);
     };
-    register s32 *item;
+    register s32 *item6;
     register s32 *node;
     register s32 *context;
     register s32 *child;
-    register s32 type;
+    s32 type;
     register s32 i;
     node = (s32 *)arg0;
     while (node != 0) {
@@ -399,11 +394,11 @@ high:
         if (type < 0x101) goto error;
         goto state_special;
 state0:
-        item = node;
+        item6 = node;
         i = 0;
         while (i < node[5]) {
-            fn_801EB6A8(item[7]);
-            item += 2;
+            fn_801EB6A8(item6[7]);
+            item6 += 2;
             i++;
         }
         goto next;
@@ -784,8 +779,9 @@ extern char *fn_801E7E34(void);
 #pragma ppc_psq_save off
 extern double __fabs(double);
 #pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
 #pragma cplusplus on
-#pragma ppc_psq_save off
 extern "C" void fn_801EBF00(void) {
     f32 m[12];
     f32 pos[3];
@@ -795,7 +791,6 @@ extern "C" void fn_801EBF00(void) {
     f32 a, scale, c, s, t;
     s32 v;
     u8 b;
-
     if (lbl_8055EBA0 != 0) {
         ((EBF00Widget *)lbl_804885E8[3])->setVisible(0);
         if (lbl_8055AFB8 != -1) {
