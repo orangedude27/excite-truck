@@ -24,18 +24,19 @@ extern s32 fn_802ECD68(void *, void *, s32);
 extern unsigned char *fn_80029004(const unsigned char *, int);
 extern void strncpy(unsigned char *, const unsigned char *, int);
 #pragma dont_inline on
-void fn_802ECCE4(char *arg0, void *arg1, s32 arg2) {
-    s32 length = arg2;
-    unsigned char *match = fn_80029004((const unsigned char *)arg1, 0x2E);
+/* Copies at most arg2 bytes of src into dst, truncating at the first '.' (including it) when present, and NUL-terminates within the copied length. */
+void fn_802ECCE4(char *dst, void *src, s32 maxLen) {
+    s32 length = maxLen;
+    unsigned char *match = fn_80029004((const unsigned char *)src, 0x2E);
 
     if (match != 0) {
-        s32 matchLength = (s32)((match + 1) - (unsigned char *)arg1);
+        s32 matchLength = (s32)((match + 1) - (unsigned char *)src);
         if (matchLength < length) {
             length = matchLength;
         }
     }
-    strncpy((unsigned char *)arg0, (const unsigned char *)arg1, length);
-    *((unsigned char *)arg0 + length - 1) = 0;
+    strncpy((unsigned char *)dst, (const unsigned char *)src, length);
+    *((unsigned char *)dst + length - 1) = 0;
 }
 #pragma dont_inline reset
 
