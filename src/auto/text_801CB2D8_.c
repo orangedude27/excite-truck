@@ -342,8 +342,8 @@ void fn_801CBD04(void *arg0) {
    terminator, at most n bytes; when n runs out the last byte written is replaced by 0. */
 #define STRNCPY_801CBD48(dst, src, n)                  \
     do {                                               \
-        char *d_ = (char *)(dst);                      \
         const char *s_ = (const char *)(src);          \
+        char *d_ = (char *)(dst);                      \
         int n_ = (n);                                  \
         while ((*d_++ = *s_++) != 0) {                 \
             if (--n_ <= 0) { d_[-1] = 0; break; }      \
@@ -370,8 +370,8 @@ extern f32 lbl_80562A00;
 #pragma push
 #pragma dont_inline on
 void fn_801CBD48(void *arg0, void *arg1) {
-    extern char lbl_8055AB30[];
-    extern char lbl_8055AB34[];
+    extern char lbl_8055AB30[4];
+    extern char lbl_8055AB34[4];
     extern f32 lbl_80558DC0[];
     extern f32 lbl_80558DC4[];
     extern void *fn_8001BB58(s32, s32, s32);
@@ -391,9 +391,7 @@ void fn_801CBD48(void *arg0, void *arg1) {
     if (*(s32 *)(obj + 8) == 0) {
         return;
     }
-    if (lbl_8055E884 == 0) {
-        return;
-    }
+    if (lbl_8055E884 != 0) {
     fn_8001BE94(sp8, fn_8000DA10(), 0x20507, key[0], key[1]);
     isX = *(s32 *)((u8 *)fn_8001285C(key[0]) + 8) == 0x180302;
     s1 = isX ? fn_80131234(strings + 0xC4) : fn_80131234(strings + 0xE0);
@@ -531,6 +529,7 @@ void fn_801CBD48(void *arg0, void *arg1) {
         *(f32 *)(obj + 0x350) = lbl_805629FC + lbl_80562A00 * *(f32 *)(obj + 4);
     }
     fn_802AE168(*(s32 *)(obj + 8));
+    }
 }
 #pragma pop
 
