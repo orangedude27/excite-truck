@@ -19,13 +19,13 @@ typedef struct {
 } TrailKey;
 
 typedef struct {
-    unsigned char pad[0x20];
-    int field20;
+    char name[0x20];        // trail name, matched case-insensitively (stricmp)
+    int field20;            // group value taken from the parsed group; entries sharing it are mutually exclusive
     TrailKey *keys;
     int keyCount;
     unsigned char flag2C;
-    unsigned char active;
-    float field30;
+    unsigned char active;   // selected: set by fn_80237DA0, cleared by fn_80237DA0's siblings/fn_80237E7C
+    float field30;          // time the trail was selected (fn_8023659C)
 } TrailEntry;
 
 typedef struct {
