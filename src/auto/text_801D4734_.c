@@ -670,6 +670,9 @@ test3:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Invoke the run method (vtable slot 0x34) on each element in an action sequence.
+ * When the sequence state is nonzero, iterates its element list and then sets
+ * the state to ACTION_SEQ_READY (1). */
 extern "C" void fn_801D52A4(void *arg0) {
     struct Dummy {
         virtual void v0();
