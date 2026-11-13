@@ -1783,26 +1783,36 @@ done:
 }
 #pragma cplusplus off
 
-#pragma push
 #pragma processor 750
-s32 fn_801631E0(void *arg0) {
-    s32 sp8;
-    f32 limit = lbl_8055E3C8;
-    if (limit > ((f32 (*)(void *))(*(void ***)arg0)[0x34 / 4])(arg0)) {
-        if (((s32 (*)(void *))(*(void ***)arg0)[0x28 / 4])(arg0) == 0) {
-            ((s32 (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, &lbl_8032FA38);
-            fn_801476D8(0, -1, lbl_8055E2F8);
-            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x0C / 4])(lbl_8055E2E0, &lbl_8032FA44);
-            fn_801476C4();
-            fn_80130980(&sp8, 0x14, 3, *(f32 *)((char *)arg0 + 0x84) - *(f32 *)((char *)arg0 + 0x98));
-            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, &sp8);
+#pragma cplusplus on
+extern "C" s32 fn_801631E0(void *arg0) {
+    class HudObject {
+    public:
+        virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
+        virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
+        virtual s32 isOver();
+        virtual void m2C(); virtual void m30();
+        virtual f32 getDelay();
+    };
+    class UiManager {
+    public:
+        virtual void m08();
+        virtual void *getText(const char *);
+        virtual void *getArt(const char *);
+    };
+    char timeStr[0x14];
+    HudObject *obj = (HudObject *)arg0;
+    f32 playTime = lbl_8055E3C8;
+    if (playTime > obj->getDelay()) {
+        if (obj->isOver() == 0) {
+            fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getArt(lbl_8032FA38), -1, lbl_8055E2F8);
+            ((void (*)(void *))fn_801476C4)(((UiManager *)lbl_8055E2E0)->getText(lbl_8032FA44));
+            fn_80130980(timeStr, 0x14, 3, *(f32 *)((u8 *)arg0 + 0x84) - *(f32 *)((u8 *)arg0 + 0x98));
+            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, timeStr);
         }
     }
     return 0;
 }
-
-#pragma scheduling invalid_target
-#pragma cplusplus on
 // Draws the tutorial results banner: the top and bottom bars, the
 // "results_art" graphic in the pass or fail colour, the banner's title line
 // ("results1") and body line ("results2", whose text comes from the message
