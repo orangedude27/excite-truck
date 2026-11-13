@@ -2823,13 +2823,11 @@ int fn_80164CF8(int arg0, int arg1) {
 }
 
 void fn_80164D38(void *arg0) {
-    int one = 1;
-    int zero = 0;
-    *(unsigned char *)((char *)arg0 + 4) = zero;
-    *(int *)((char *)arg0 + 8) = one;
-    *(unsigned char *)((char *)arg0 + 5) = zero;
-    *(unsigned char *)((char *)arg0 + 6) = zero;
-    *(unsigned char *)((char *)arg0 + 7) = zero;
+    *(int *)((char *)arg0 + 8) = 1;
+    *(u8 *)((char *)arg0 + 4) = 0;
+    *(u8 *)((char *)arg0 + 5) = 0;
+    *(u8 *)((char *)arg0 + 6) = 0;
+    *(u8 *)((char *)arg0 + 7) = 0;
 }
 
 void fn_80164D58(void) {
