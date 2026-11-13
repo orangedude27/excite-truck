@@ -3847,12 +3847,13 @@ void fn_80155D20(void *arg0, const char *fmt, ...) {
     vsprintf((char *)arg0 + 0x64, fmt, ap);
 }
 
-void fn_80155DB0(void *arg0, const char *fmt, ...) {
-    char *dest = (char *)arg0 + 0xB4;
-    va_list ap;
-    va_start(ap, fmt);
-    vsprintf(dest, fmt, ap);
-    va_end(ap);
+/* Format a string into this object's text buffer at offset 0xB4. */
+void fn_80155DB0(void *obj, const char *fmt, ...) {
+    char *dest = (char *)obj + 0xB4;
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(dest, fmt, args);
+    va_end(args);
 }
 
 void fn_80155E40(void *arg0, s32 arg1) {
