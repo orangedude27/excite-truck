@@ -132,6 +132,15 @@ void *fn_8016B79C(void *arg0, s32 arg1) {
 }
 
 extern void fn_8016B550(void *);
+// Global container object (lbl_804302E0+0x28): owns a dynamic array of elements.
+typedef struct {
+    void *data;   // 0x0
+    s32 count;    // 0x4
+    s32 limit;    // 0x8
+    s32 pad0c;    // 0xc
+    void *array;  // 0x10 owned array of elements
+    s32 cap;      // 0x14
+} ObjArray80430308;
 void *fn_8016B834(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         s32 value = *(s32 *)((u8 *)arg0 + 0x10);
