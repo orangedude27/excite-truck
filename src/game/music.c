@@ -211,24 +211,25 @@ void fn_8020A100(void) {
 #pragma opt_propagation reset
 #pragma pop
 void fn_8020A368(void) {
-    s32* var_r31;
-    s32 var_r30;
-    f32 temp_f1;
-    void *arg1;
-    var_r31 = lbl_804892C0;
-    var_r30 = 0;
+    /* Initialize two music buffer slots, reset music volume state, register the music manager, and set the music update callback. */
+    s32 *musicSlot;
+    s32 slotIndex;
+    f32 defaultVolume;
+    void *volumeCallback;
+    musicSlot = lbl_804892C0;
+    slotIndex = 0;
     do {
-        var_r31[1] = fn_8012850C(0x70, (void*)&lbl_8055B578);
-        var_r30 += 1;
-        var_r31 = (s32*)((s32)var_r31 + 8);
-    } while (var_r30 < 2);
-    temp_f1 = lbl_80563290;
+        musicSlot[1] = fn_8012850C(0x70, (void *)&lbl_8055B578);
+        slotIndex += 1;
+        musicSlot = (s32 *)((s32)musicSlot + 8);
+    } while (slotIndex < 2);
+    defaultVolume = lbl_80563290;
     lbl_8055EDDC = 0;
-    lbl_8055EDD8 = temp_f1;
-    fn_8013323C(4, (void*)lbl_8033C278, temp_f1);
-    arg1 = (void*)fn_80209FFC;
-    lbl_8055B550 = fn_8013365C((void*)&lbl_8055B580, arg1);
-    fn_8000DBC8((void*)fn_8020A03C);
+    lbl_8055EDD8 = defaultVolume;
+    fn_8013323C(4, (void *)lbl_8033C278, defaultVolume);
+    volumeCallback = (void *)fn_80209FFC;
+    lbl_8055B550 = fn_8013365C((void *)&lbl_8055B580, volumeCallback);
+    fn_8000DBC8((void *)fn_8020A03C);
 }
 
 void fn_8020A400(void) {
