@@ -1096,14 +1096,18 @@ struct LayoutEntry {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void *fn_80219A28(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    fn_80218F80();
-    *(void **)arg0 = lbl_8033F434;
-    fn_80219AB4(arg0, *(s32 *)((u8 *)arg1 + 4), arg2,
-        *(s32 *)((u8 *)arg1 + 0x9C), arg3,
-        *(s32 *)((u8 *)arg1 + 0xA0),
-        *(s32 *)((u8 *)arg1 + 0xA4) != 0);
-    return arg0;
+extern "C" void *fn_80219A28(void *label, LayoutEntry *entry, s32 text, s32 watched) {
+    /* Build one dynamic text label (0x284 bytes) for a layout record: run the
+       base widget constructor over the raw object, install this class's
+       vtable, then let fn_80219AB4 pick the font and the scale that fits the
+       string in the box.  `text` is the string to draw and `watched` the
+       value (or font file name) the label follows; the factory picks both out
+       of the record. */
+    fn_80218F80(); /* base constructor; label and entry are still in r3/r4 */
+    *(void **)label = TextLabelVTable;
+    fn_80219AB4(label, entry->drawKind, text, entry->field9C, watched,
+        entry->fieldA0, entry->fieldA4 != 0);
+    return label;
 }
 
 extern "C" s32 fn_80232B70(s32);
