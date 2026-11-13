@@ -2330,14 +2330,15 @@ extern "C" s32 fn_801FBD94(void *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void *fn_801FBE1C(void **arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) {
-    void *obj = fn_801284F8(0x4C, lbl_8033B5B8);
-    if (obj != 0) {
-        obj = fn_801A4A8C(obj, arg1, arg2, arg3, arg4, arg5);
+extern "C" void *fn_801FBE1C(void **head, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) {
+    /* Allocate and initialize an object, prepend it to a linked list, and return a pointer to its payload (+4). */
+    void *object = fn_801284F8(0x4C, lbl_8033B5B8);
+    if (object != 0) {
+        object = fn_801A4A8C(object, arg1, arg2, arg3, arg4, arg5);
     }
-    *(void **)((u8 *)obj + 0x44) = *arg0;
-    *arg0 = obj;
-    return (u8 *)obj + 4;
+    *(void **)((u8 *)object + 0x44) = *head;
+    *head = object;
+    return (u8 *)object + 4;
 }
 #pragma scheduling invalid_target
 extern "C" void fn_801FBEA8(void *arg0) {
