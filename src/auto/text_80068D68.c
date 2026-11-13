@@ -9063,12 +9063,13 @@ tBTM_STATUS fn_8007A2C8(u16 *arg0) {
 }
 
 tBTM_STATUS BTM_SetDeviceClass(DEV_CLASS dev_class) {
-    void *buf;
+    void *cmdBuf;
+    /* Set the local device class (3 bytes) in BTM control block and send HCI Write_Class_of_Device if ready. */
     memcpy(lbl_803C0F78 + 0x648, dev_class, 3);
     if (lbl_803C0F78[0x64e] <= 1) return 0xc;
-    buf = GKI_getpoolbuf(2);
-    if (buf != 0) {
-        fn_80085524(buf, dev_class);
+    cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf != 0) {
+        fn_80085524(cmdBuf, dev_class);
         return 0;
     }
     return 3;
