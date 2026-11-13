@@ -1078,6 +1078,22 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802199D0(void *arg0, 
     return arg0;
 }
 
+/* One record of the menu layout script; the widget factory fn_802123B8 builds
+   an object from each record.  Only the fields the text-label constructor
+   reads are named here. */
+struct LayoutEntry {
+    u8 pad0[0x4];
+    s32 drawKind; /* 0x04: which draw routine the label runs (see fn_80219FE0) */
+    u8 pad8[0x94];
+    s32 field9C;  /* -> label+0x250: value shown when nothing is being watched */
+    s32 fieldA0;  /* -> label+0x254: text style handed to the draw call */
+    s32 fieldA4;  /* -> label+0x280: draw the glyph at its own size */
+};
+
+/* The dynamic text-label widget's vtable (0x284-byte object; built by
+   fn_80219A28, drawn by fn_80219FE0, destroyed by fn_80219E44). */
+#define TextLabelVTable lbl_8033F434
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *fn_80219A28(void *arg0, void *arg1, s32 arg2, s32 arg3) {
