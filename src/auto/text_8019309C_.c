@@ -345,8 +345,13 @@ void fn_80193604(void *arg0, void *arg1, void *unused, int arg2, void *arg3) {
             *(float *)(obj + 0x2A8) += lbl_80562168;
     }
     if (code < 0x3E8 && PSVECDotProduct(arg1, *(char **)(obj + 0x294) + 0x88) < lbl_80562144) {
-        { unsigned int y = ((unsigned int *)arg1)[1], x = ((unsigned int *)arg1)[0], z = ((unsigned int *)arg1)[2];
-          ((unsigned int *)&normal)[0] = x; ((unsigned int *)&normal)[1] = y; ((unsigned int *)&normal)[2] = z; }
+        unsigned int z; unsigned int y; unsigned int x;
+        x = ((unsigned int *)arg1)[0];
+        y = ((unsigned int *)arg1)[1];
+        z = ((unsigned int *)arg1)[2];
+        ((unsigned int *)&normal)[0] = x;
+        ((unsigned int *)&normal)[1] = y;
+        ((unsigned int *)&normal)[2] = z;
         value = PSVECMag(&normal);
         scale = lbl_80562148 > value ? lbl_80562148 : value;
         scale = lbl_80562140 / scale;
@@ -1032,15 +1037,16 @@ extern float fn_801673A4(int, float *);
 #pragma dont_inline on
 float fn_801948B0(void *arg0, int arg1, float arg2) {
     float *f = (float *)arg0;
-    float t, current, out = lbl_80562144, value, adjust, scale, alt, weight, sample, a, b, factor, high;
-    float upper, lower;
+    float one = lbl_80562140;
+    float out = lbl_80562144;
+    float lim[2];
+    float t, current, value, adjust, scale, alt, weight, sample, a, b, factor, high;
     int mode;
-    factor = lbl_80562140;
     high = f[0x224/4];
     current = f[0x228/4];
     t = (f[0x26C/4] - f[0x22C/4]) / f[0x230/4];
-    t = factor < t ? factor : t;
-    factor = t > lbl_80562144 ? t : lbl_80562144;
+    factor = one < t ? one : t;
+    factor = factor > lbl_80562144 ? factor : lbl_80562144;
     f[0x220/4] = current + factor * (high - current);
     weight = fn_801673A4(*(int *)((char *)arg0 + 0x290), &sample);
     current = f[0x220/4];
@@ -1049,7 +1055,7 @@ float fn_801948B0(void *arg0, int arg1, float arg2) {
     alt = (lbl_805621C0 * lbl_8055A488) * lbl_8055E568;
     weight = fn_801931EC(arg2, f[0x2CC/4]);
     mode = *(int *)((char *)arg0 + 0x268);
-    mode = (mode == 0 || mode == 3) ? 1 : 0;
+    mode = (mode != 0 && mode != 3) ? 0 : 1;
     if (mode) weight *= scale; else weight *= alt;
     adjust = lbl_80562144;
     if (arg1 && *((unsigned char *)arg0 + 0x14)) {
@@ -1059,18 +1065,17 @@ float fn_801948B0(void *arg0, int arg1, float arg2) {
         if (value > lbl_80562144) t *= lbl_80562140; else t *= -lbl_805621A4;
         adjust = t;
     }
-    lower = 0.0f;
-    upper = 0.0f;
+    *(int *)&lim[0] = 0; *(int *)&lim[1] = 0;
     out += adjust + f[0x220/4] * weight;
     out += f[0x144/4] * f[0x2E8/4];
     if (arg1) {
         if ((float)__fabs(f[0x278/4]) < lbl_80562174 + f[0x284/4]) {
             a = f[0x274/4];
             b = f[2];
-            upper = a - b;
-            lower = -a - b;
-            out = upper < out ? upper : out;
-            out = out > lower ? out : lower;
+            lim[1] = a - b;
+            lim[0] = -a - b;
+            out = lim[1] < out ? lim[1] : out;
+            out = out > lim[0] ? out : lim[0];
         } else {
             out = lbl_80562144;
         }
@@ -1794,7 +1799,6 @@ void fn_80195F6C(void *arg0, void *arg1) {
     float m, t;
     int flag;
     char *obj;
-
     if (*(unsigned char *)(self + 0x2A5) == 0) {
         obj = *(char **)(self + 0x164);
         sp24.p = *(void **)(obj + 4);
@@ -2405,6 +2409,8 @@ void fn_80196DC4(void *arg0) {
     float negx, x, u, v, w;
     int s, n, i;
     float zero;
+    int *src;
+    int c0, c1, c2;
     fn_80196C90(arg0);
     x = *(float *)(obj + 0x274);
     *(u8 *)(obj + 0x74) = 0;
@@ -2427,10 +2433,15 @@ void fn_80196DC4(void *arg0) {
     *(float *)(obj + 0xD4) = x;
     *(u8 *)(obj + 0x11C) = 0;
     *(float *)(obj + 0x120) = w;
-    ((void (*)(int, int, float, float, float, float))fn_80136EA4)(lbl_8055E0D0, *(int *)(obj + 0x290), v, u, x, negx);
-    L.cnt = *(struct Cnt *)lbl_802F9578;
+    s = *(int *)(obj + 0x290);
+    ((void (*)(int, int, float, float, float, float))fn_80136EA4)(lbl_8055E0D0, s, v, u, x, negx);
+    src = (int *)lbl_802F9578;
+    c0 = src[0]; c1 = src[1]; c2 = src[2];
     zero = lbl_80562144;
+    L.cnt.a = c0;
     n = (*(struct Table **)&lbl_8055E0D0)->count - 1;
+    L.cnt.b = c1;
+    L.cnt.c = c2;
     for (i = 0; i < n; i++) {
         struct Table *t = *(struct Table **)&lbl_8055E0D0;
         struct Entry *e;
@@ -2562,6 +2573,7 @@ int fn_8019703C(void *arg0, void *arg1) {
     return 0;
 }
 #pragma scheduling on
+/* Advance interpolation factor at +0x25C and lerp the 2D point in/out toward (base+0x48/0x4C + base+0x58/0x5C * speed) when enabled (0x260 != 0, 0x268 != 1). */
 void fn_801971AC(void *arg0, void *arg1) {
     extern float lbl_80562264;
     float sp18[2];
@@ -3009,8 +3021,8 @@ extern float lbl_80562298, lbl_8056229C, lbl_805622A0, lbl_805622A4, lbl_8056227
 void fn_801981A0(void *arg0, void *arg1) {
 #define o ((char *)arg0)
 #define p ((char *)arg1)
-    float c, temp_f3, var_f4, var_f5, temp_f6, temp_f7, temp_f2, temp_f0, temp_f0_2, temp_f0_3, temp_f1, temp_f4;
-    float var_f0, var_f1, var_f5_2;
+    float temp_f3, c, var_f4, var_f5, temp_f6, temp_f7, temp_f2, temp_f0, temp_f0_2, temp_f0_3, temp_f1, temp_f4;
+    float var_f0, var_f1, var_f5_2, temp_f3b, temp_f3c;
     int temp_r5, var_r0, var_r4;
 
     temp_r5 = *(int *)(o + 0x140);
@@ -3037,15 +3049,15 @@ void fn_801981A0(void *arg0, void *arg1) {
             var_f4 = (var_f4 < temp_f0) ? var_f4 : temp_f0;
             var_f4 = (var_f4 > lbl_80562144) ? var_f4 : lbl_80562144;
             var_f5 = lbl_80562140;
-            temp_f3 = temp_f3 + var_f4 * (temp_f7 - temp_f3);
-            *(float *)(p + 8) = temp_f3;
-            *(float *)(o + 0x120) = temp_f3;
+            temp_f3c = temp_f3 + var_f4 * (temp_f7 - temp_f3);
+            *(float *)(p + 8) = temp_f3c;
+            *(float *)(o + 0x120) = temp_f3c;
             temp_f2 = *(float *)(o + 0x134);
-            temp_f3 = *(float *)(p + 0xC);
+            temp_f3b = *(float *)(p + 0xC);
             temp_f0_2 = (*(float *)(o + 0x128) - c) / (temp_f6 - c);
             var_f5 = (var_f5 < temp_f0_2) ? var_f5 : temp_f0_2;
             var_f5 = (var_f5 > lbl_80562144) ? var_f5 : lbl_80562144;
-            *(float *)(p + 0xC) = temp_f2 + var_f5 * (temp_f3 - temp_f2);
+            *(float *)(p + 0xC) = temp_f2 + var_f5 * (temp_f3b - temp_f2);
             if (*(u8 *)(o + 0x9C) != 0) {
                 *(int *)(o + 0x140) = 0x1E;
             }
