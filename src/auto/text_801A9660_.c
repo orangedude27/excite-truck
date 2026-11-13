@@ -45,18 +45,19 @@ extern void *fn_801AC330(void *);
 extern void *fn_801AC26C(void);
 extern void fn_8017AB84(void *, Vec *, void *);
 #pragma scheduling invalid_target
+/* Create/return an obstacle object for the current mode (mode id at fn_801792F8()+0x50): selects constructor/path by (mode-6), logs fatal error for modes reserved to SOL, and returns NULL or the initialized object. */
 void *fn_801A9660(void) {
     extern char lbl_80335528[];
     extern char lbl_80335538[];
-    unsigned int index = *(unsigned int *)((char *)fn_801792F8() + 0x50) - 6;
-    void *obj;
+    unsigned int modeIndex = *(unsigned int *)((char *)fn_801792F8() + 0x50) - 6;
+    void *object;
 
-    switch (index) {
+    switch (modeIndex) {
     case 6:
-        obj = ((void *(*)(int, const char *))fn_801284F8)(0x258, lbl_80335528);
-        if (obj != 0)
-            return fn_801AC330(obj);
-        return obj;
+        object = ((void *(*)(int, const char *))fn_801284F8)(0x258, lbl_80335528);
+        if (object != 0)
+            return fn_801AC330(object);
+        return object;
     case 11:
     case 12:
     case 15:
@@ -70,10 +71,10 @@ void *fn_801A9660(void) {
         fn_802E317C(lbl_80335538);
         return 0;
     default:
-        obj = ((void *(*)(int, int *))fn_801284F8)(0x23c, &lbl_8055A858);
-        if (obj != 0)
-            return fn_801A9700(obj);
-        return obj;
+        object = ((void *(*)(int, int *))fn_801284F8)(0x23c, &lbl_8055A858);
+        if (object != 0)
+            return fn_801A9700(object);
+        return object;
     }
 }
 #pragma scheduling on
@@ -1713,9 +1714,14 @@ void fn_801AD394(void *arg0) {
     Vec pathPoint;
     Vec otherPoint;
     Vec residual;
-    float length;
-    float distance;
+    register float length;
+    register float distance;
     float factor;
+    float t1;
+    float t2;
+    register float base;
+    register float thresh;
+    float sub;
 
     fn_8017AB84(*(void **)((u8 *)arg0 + 0x34), &transformed, (u8 *)arg0 + 0x10);
     if (*(void **)((u8 *)arg0 + 0x0C) != 0) {
@@ -1730,22 +1736,24 @@ void fn_801AD394(void *arg0) {
     delta.y = position.y - transformed.y;
     delta.z = position.z - transformed.z;
     length = PSVECMag(&delta);
-    distance = (float)fn_8002F234(delta.x * delta.x + delta.z * delta.z);
+    t1 = delta.z * delta.z;
+    t2 = delta.x * delta.x;
+    distance = (float)fn_8002F234(t2 + t1);
+    base = *(float *)((u8 *)arg0 + 0x28);
+    thresh = lbl_80562518;
+    sub = length - base;
     *(float *)((u8 *)arg0 + 0x30) = distance;
-    *(float *)((u8 *)arg0 + 0x2C) = length - *(float *)((u8 *)arg0 + 0x28);
+    *(float *)((u8 *)arg0 + 0x2C) = sub;
 
-    if (length > lbl_80562518 && length < *(float *)((u8 *)arg0 + 0x28) + *(float *)((u8 *)arg0 + 0x24)) {
-        register float temp_f3 = lbl_805624AC / length;
-        register float temp_f4 = lbl_8056247C;
-        register float temp_f2 = delta.x;
-        register float temp_f1 = delta.y;
-        register float temp_f0 = delta.z;
-        output.x = temp_f4;
-        output.y = temp_f4;
-        output.z = temp_f4;
-        direction.x = temp_f2 * temp_f3;
-        direction.y = temp_f1 * temp_f3;
-        direction.z = temp_f0 * temp_f3;
+    if (length > thresh && length < base + *(float *)((u8 *)arg0 + 0x24)) {
+        float scale = lbl_805624AC / length;
+        float zero = lbl_8056247C;
+        output.x = zero;
+        output.y = zero;
+        output.z = zero;
+        direction.x = delta.x * scale;
+        direction.y = delta.y * scale;
+        direction.z = delta.z * scale;
         fn_8017B6D4(*(void **)((u8 *)arg0 + 0x34), (float *)&pathPoint, (float *)&transformed);
 
         if (*(void **)((u8 *)arg0 + 0x0C) != 0) {
@@ -1759,10 +1767,10 @@ void fn_801AD394(void *arg0) {
         residual.x = otherPoint.x - pathPoint.x;
         residual.y = otherPoint.y - pathPoint.y;
         residual.z = otherPoint.z - pathPoint.z;
-        temp_f4 = *(float *)((u8 *)arg0 + 0x20);
-        output.x = residual.x * temp_f4;
-        output.y = residual.y * temp_f4;
-        output.z = residual.z * temp_f4;
+        zero = *(float *)((u8 *)arg0 + 0x20);
+        output.x = residual.x * zero;
+        output.y = residual.y * zero;
+        output.z = residual.z * zero;
 
         if (length > *(float *)((u8 *)arg0 + 0x28)) {
             factor = *(float *)((u8 *)arg0 + 0x1C) * (length - *(float *)((u8 *)arg0 + 0x28));
