@@ -5686,7 +5686,19 @@ void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused)
     }
 }
 
-extern const BD_ADDR BT_BD_ANY; void bta_dm_keep_acl(void *arg0) { u16 timeout = *(u16 *)((u8 *)arg0 + 6); lbl_803C0C14[0x101] = timeout; if ((u8)timeout != 0) { L2CA_SetIdleTimeoutByBdAddr((UINT8 *)BT_BD_ANY, 0xFFFF); L2CA_SetIdleTimeout(0, 0xFFFF, TRUE); } else { L2CA_SetIdleTimeoutByBdAddr((UINT8 *)BT_BD_ANY, 2); L2CA_SetIdleTimeout(0, 2, TRUE); } }
+/* Sets ACL idle timeout policy: keep links alive (0xFFFF) or restore default (2). */
+void bta_dm_keep_acl(void *p_msg) {
+    extern const BD_ADDR BT_BD_ANY;
+    u16 keepTimeout = *(u16 *)((u8 *)p_msg + 6);
+    lbl_803C0C14[0x101] = keepTimeout;
+    if ((u8)keepTimeout != 0) {
+        L2CA_SetIdleTimeoutByBdAddr((UINT8 *)BT_BD_ANY, 0xFFFF);
+        L2CA_SetIdleTimeout(0, 0xFFFF, TRUE);
+    } else {
+        L2CA_SetIdleTimeoutByBdAddr((UINT8 *)BT_BD_ANY, 2);
+        L2CA_SetIdleTimeout(0, 2, TRUE);
+    }
+}
 
 void fn_80073A00(void) {
     ((void (**)(int, int)) (lbl_803C0C14 + 0x50))[0](1, 0);
