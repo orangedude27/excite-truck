@@ -6052,15 +6052,16 @@ extern "C" s32 fn_802237F0(s32 arg0, s32 arg1) {
 
 
 extern "C" int lbl_8033E458[];
-extern "C" void *fn_80223800(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
+extern "C" void *fn_80223800(void *self, s32 arg1, s32 arg2, s32 arg3, void *param) {
+    /* Constructor: init base, set vtable and field +0x420, register param (if non-null) and current data source. */
     ((void (*)(void))fn_802230A4)();
-    *(void **)((u8 *)arg0 + 0x420) = arg4;
-    *(void **)arg0 = lbl_8033E458;
-    if (arg4 != 0) {
-        fn_80219440(arg0, 0, arg4, 4);
+    *(void **)((u8 *)self + 0x420) = param;
+    *(void **)self = lbl_8033E458;
+    if (param != 0) {
+        fn_80219440(self, 0, param, 4);
     }
-    fn_80219440(arg0, 1, fn_80216708(), 1);
-    return arg0;
+    fn_80219440(self, 1, fn_80216708(), 1);
+    return self;
 }
 
 extern "C" void fn_802237DC(void *);
