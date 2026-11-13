@@ -2949,6 +2949,7 @@ extern WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
 
 // Global flags
 extern u8 lbl_8055DC05;
+#define _reset lbl_8055DC05 /* WPADReset guard: set once the subsystem is torn down */
 extern void* lbl_8055DC14;
 extern u8 lbl_80393058[0x468];
 extern OSAlarm lbl_8038F4C0;
@@ -5232,10 +5233,18 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
     if (param_2 != 0) {
+        s32 value;
         WPADiClearQueue_80063BD4(&cb->extCmdQueue);
-        ((u8*)cb)[0x801] = (param_2 == -1) ? 0xfd : ((((s32)*(s32*)((u8*)cb + 0x780) | -*(s32*)((u8*)cb + 0x780)) >> 31) & 0xfc);
-        if (*(WPADSamplingCallback*)((u8*)cb + 0x7E0) != NULL) {
-            (*(WPADSamplingCallback*)((u8*)cb + 0x7E0))(chan);
+        if (param_2 == -1) {
+            value = 0xfd;
+        } else {
+            s32 val = *(s32*)((u8*)cb + 0x780);
+            s32 sign = (-val | val) >> 31;
+            value = sign & 0xfc;
+        }
+        ((u8*)cb)[0x801] = (u8)value;
+        if (*(s32*)((u8*)cb + 0x7e0) != 0) {
+            ((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
         }
     }
 }
@@ -5446,11 +5455,10 @@ void fn_800656E8(s32 chan, WPADStatusEx* pStatus)
 {
     WPADCB* pCB;
     volatile u8* pBuf;
-    u32 i;
     u32 idx;
+    u32 i;
     BOOL enabled;
     u8* p = (u8*)pStatus;
-
     pCB = lbl_8038F4F0[(u8)chan];
     idx = *(u8*)((u8*)pCB + 0x806);
     pBuf = (volatile u8*)pCB + idx * 0x60 + 0xA0;
@@ -5908,9 +5916,10 @@ void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed) {
     u16 i;
 
     if (len != 0) {
-        for (i = 0; i < len; i++) {
+        for (i = 0; i < (u16)len; i++) {
             u8 idx = (seed + i) % 8;
-            data[i] = base[0x864 + idx] + (data[i] ^ base[0x86C + idx]);
+            u8 d = data[i];
+            data[i] = base[0x864 + idx] + (d ^ base[0x86C + idx]);
         }
     }
 }
@@ -5928,38 +5937,36 @@ void __a1_22_ack(u8 chan, u8* pReport)
 {
     const char* strBase = (const char*)lbl_80312338;
     WPADCB* pCB;
+    BOOL intr;
     volatile u8* pBuf;
     u32 offset;
     u8 type;
     u8 ext;
-    BOOL intr;
     s32 status;
 
     intr = OSDisableInterrupts();
     DBPrintf_80068D68(strBase + 0x3E0);
     pCB = lbl_8038F4F0[(u8)chan];
-    pBuf = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
-    for (offset = 0; offset < 96; offset += 8) {
+    pBuf = (volatile u8*)pCB->rxBufs[*(u8*)((u8*)pCB + 0x806)];
+    for (offset = 0; offset < 0x60; offset++) {
         pBuf[offset] = 0;
-        pBuf[offset + 1] = 0; pBuf[offset + 2] = 0; pBuf[offset + 3] = 0;
-        pBuf[offset + 4] = 0; pBuf[offset + 5] = 0; pBuf[offset + 6] = 0; pBuf[offset + 7] = 0;
     }
     *(u16*)pBuf = ((u16)pReport[1] | ((u16)pReport[2] << 8)) & 0x9F1F;
     type = pReport[3];
     ext = pReport[4];
     DBPrintf_80068D68(strBase + 0x3F0, type, ext);
-    pBuf[0x29] = -2;
-    pBuf[0x28] = *((u8*)pCB + 0x801);
     status = (ext == 0) ? 0 : -3;
+    ((volatile s8*)pBuf)[0x29] = -2;
+    pBuf[0x28] = pCB->UNK_0x801;
     if (ext) {
         DBPrintf_80068D68(strBase + 0x41C, type, ext);
     }
-    if (*((u8*)pCB + 0x8C7) == type) {
-        WPADCallback callback = *(WPADCallback*)((u8*)pCB + 0x7DC);
+    if (*(u8*)((u8*)pCB + 0x8C7) == type) {
+        WPADCallback callback = pCB->readCB;
         if (callback) {
             callback(chan, status);
-            *(WPADCallback*)((u8*)pCB + 0x7DC) = 0;
-            *(s32*)((u8*)pCB + 0x7FC) = 0;
+            *(u32*)((u8*)pCB + 0x7DC) = 0;
+            *(u32*)((u8*)pCB + 0x7FC) = 0;
         }
     } else {
         DBPrintf_80068D68(strBase + 0x44C);
@@ -5980,7 +5987,7 @@ void fn_8005E8E0(s32 chan)
     s32 enabled;
     u32 i = (u32)chan * 0x14;
     u8 value = 0xFD;
-
+    int m1 = -1;
     *(u8*)(p + 0x806) = 0;
     *(u32*)(p + 0x790) = 0;
     *(u32*)(p + 0x814) = 0;
@@ -5991,7 +5998,7 @@ void fn_8005E8E0(s32 chan)
     *(u32*)(p + 0x7F0) = 0;
     *(u32*)(p + 0x7F4) = 0;
     *(u32*)(p + 0x7F8) = 0;
-    *(u32*)(p + 0x7FC) = -1;
+    *(u32*)(p + 0x7FC) = m1;
     p[0x801] = value;
     p[0x802] = 0;
     p[0x851] = 0;
@@ -6013,7 +6020,7 @@ void fn_8005E8E0(s32 chan)
     *(u32*)(p + 0x8B8) = 0;
     *(u16*)(p + 0x8C0) = 0;
     *(u32*)(p + 0x8BC) = 0;
-    p[0x803] = 0xFF;
+    p[0x803] = m1;
     *(u32*)(p + 0x818) = 0;
     *(u32*)(p + 0x81C) = 0;
     *(u32*)(p + 0x820) = 0;
@@ -6034,8 +6041,8 @@ void fn_8005E8E0(s32 chan)
     memset(p + 0x864, 0, 8);
     memset(p + 0x86C, 0, 8);
     memset(p, 0, 0x38);
-    *(u32*)(p + 0x38) = -1;
-    *(u32*)(p + 0x3C) = -1;
+    *(u32*)(p + 0x38) = m1;
+    *(u32*)(p + 0x3C) = m1;
     *(void**)(p + 0x164) = p + 0x16C;
     *(u32*)(p + 0x168) = 0x18;
     *(void**)(p + 0x5F0) = p + 0x5F8;
