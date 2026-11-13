@@ -6,10 +6,13 @@ typedef unsigned char u8;
 typedef int s32;
 extern u32 __pformatter_800269DC(void *, void **, const char *, void *);
 extern void __StringWrite(void);
+/* Format into an unbounded string buffer (no size limit) and return the number
+   of characters that would be written, NUL-terminating when possible. */
 int vsprintf(char *str, const char *format, void *args) {
     struct { char *buffer; s32 max; s32 count; } state;
     register s32 max = -1;
     u32 written;
+
     state.buffer = str;
     state.max = max;
     state.count = 0;
