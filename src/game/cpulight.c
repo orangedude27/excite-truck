@@ -127,14 +127,15 @@ void fn_802DB4E4(void) {
 }
 #pragma pop
 void fn_802DB58C(void) {
-    int m[8];
-    int *p = (int *)lbl_802FACD8;
-    float *q = (float *)lbl_804DB068;
-    m[0] = p[0]; m[1] = p[1]; m[2] = p[2]; m[3] = p[3];
-    m[4] = p[4]; m[5] = p[5]; m[6] = p[6]; m[7] = p[7];
-    *(float *)&m[0] = q[3];
-    *(float *)&m[6] = q[3];
-    GXLoadTexMtxImm((float *)m, 0x1e, 1);
+    /* Load texture matrix 0x1E (GX_MTX2x4) from the lbl_802FACD8 template, scaling X/Y by lbl_804DB068[3]. */
+    int texMtx[8];
+    int *texMtxTemplate = (int *)lbl_802FACD8;
+    float *texParams = (float *)lbl_804DB068;
+    texMtx[0] = texMtxTemplate[0]; texMtx[1] = texMtxTemplate[1]; texMtx[2] = texMtxTemplate[2]; texMtx[3] = texMtxTemplate[3];
+    texMtx[4] = texMtxTemplate[4]; texMtx[5] = texMtxTemplate[5]; texMtx[6] = texMtxTemplate[6]; texMtx[7] = texMtxTemplate[7];
+    *(float *)&texMtx[0] = texParams[3];
+    *(float *)&texMtx[6] = texParams[3];
+    GXLoadTexMtxImm((float *)texMtx, 0x1e, 1);
 }
 #pragma scheduling on
 void fn_802DB620(void) {
@@ -709,8 +710,8 @@ void fn_802DC71C(int arg0, int arg1) {
 #pragma push
 #pragma processor 750
 void fn_802DC8B4(void) {
-    unsigned int *colorOut;
     int byteOffset;
+    unsigned int *colorOut;
     float *coordOut;
     void *data;
     unsigned char *g;
