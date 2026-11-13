@@ -690,6 +690,8 @@ extern void fn_8016707C(void *, void **);
 extern float lbl_8055E3C8, lbl_80561898, lbl_805618D0, lbl_805618E0, lbl_805618EC;
 #pragma push
 #pragma cplusplus on
+#pragma processor 750
+#pragma dont_inline on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80166A24(void) {
@@ -757,10 +759,10 @@ void fn_80166A24(void) {
                 firstValue = fn_801429D0(lbl_8056189C, *(float *)(((unsigned char *)var_r27) + 0x10) - previous);
                 ((void (*)(float *, float, float))fn_80166F3C)((float *)(temp_r31 + 0x1C), firstValue, previous + *(float *)(((unsigned char *)var_r27) + 0x10));
                 amount = fn_8014C8B4(*(float *)&lbl_8042FE38, *(float *)(((unsigned char *)var_r27) + 4), *(float *)(((unsigned char *)var_r27) + 0xC), *(float *)(((unsigned char *)var_r27) + 8), delta);
-                active = (time > *(float *)(((unsigned char *)var_r27) + 0x18) && time < *(float *)(((unsigned char *)var_r27) + 0x1C));
+                active = time > *(float *)(((unsigned char *)var_r27) + 0x18) && time < *(float *)(((unsigned char *)var_r27) + 0x1C);
                 temp_r31[5] = active;
                 if (active) {
-                    amount = fn_8014C8F8(*(float *)(((unsigned char *)var_r27) + 0x20), *(float *)(((unsigned char *)var_r27) + 0x24));
+                    amount = ((float (*)(float, float, float))fn_8014C8F8)(amount, *(float *)(((unsigned char *)var_r27) + 0x20), *(float *)(((unsigned char *)var_r27) + 0x24));
                 }
                 fn_80166E68((float *)(temp_r31 + 8), *(float *)(((unsigned char *)var_r27) + 0x54) + amount * lbl_8055E31C);
             }
