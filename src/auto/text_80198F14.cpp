@@ -2713,7 +2713,7 @@ extern "C" void fn_801A014C(void* arg0) {
     item->Call();
 }
 
-extern s32 lbl_8055E3C4;
+extern s32 lbl_8055E3C4;  // current frame counter; fn_80176A34 sets it (and its seconds form lbl_8055E3C8) once per frame
 extern "C" void fn_801A0160(void* arg0) {
     s32 value = lbl_8055E3C4;
     if (value != *(s32*)((u8*)arg0 + 0x180)) {
