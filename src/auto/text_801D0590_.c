@@ -31,16 +31,18 @@ static inline int DispatchList_Find1(void *obj) {
 
 static inline void DispatchList_RemoveAt1(int index) {
     int last;
+    int c;
     DispatchList *l;
     if (index < 0) return;
     l = lbl_804386B4;
-    if (index >= ((volatile DispatchList *)l)->count) return;
-    last = lbl_804386B4[0].count - 1;
+    c = ((volatile DispatchList *)l)->count;
+    if (index >= c) return;
+    last = c - 1;
     if (index != last) {
         void **items = lbl_804386B4[0].items;
         items[index] = items[last];
     }
-    lbl_804386B4[0].count = lbl_804386B4[0].count - 1;
+    lbl_804386B4[0].count = ((volatile DispatchList *)lbl_804386B4)->count - 1;
 }
 
 void fn_801D05B4(void *arg0) { int index = DispatchList_Find1(arg0); if (index == -1) return; DispatchList_RemoveAt1(index); }
