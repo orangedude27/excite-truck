@@ -1763,25 +1763,28 @@ extern "C" void fn_80159AB4(void* arg0) {
     self->mTime258 = elapsed + frameTime;
 }
 
-extern "C" void fn_80159BB4(Unk801577F0* arg0) {
-    f32 f = lbl_80561754;
-    s32 r6 = 0;
-    s32 r7 = 0;
-    s32 r5 = 0;
-    for (; r6 < arg0->mCount; r6++) {
-        *(s32*)(arg0->mData + r7) = r5;
-        *(s32*)(arg0->mData + r7 + 4) = r5;
-        *(s32*)(arg0->mData + r7 + 8) = r5;
-        *(f32*)(arg0->mData + r7 + 0xC) = f;
-        r7 += 0x38;
+extern "C" void fn_80159BB4(Unk801577F0* self) {
+    // Reset a bonus tracker: clear the head of every record (its three counters
+    // and the value at +0xC), drop both event counts and the bonus timer, put
+    // the multiplier back at full and let the tracker refresh itself.
+    f32 value = lbl_80561754; // 0.0f
+    s32 i = 0;
+    s32 offset = 0;
+    s32 zero = 0;
+    for (; i < self->mCount; i++) {
+        *(s32*)(self->mData + offset) = zero;
+        *(s32*)(self->mData + offset + 4) = zero;
+        *(s32*)(self->mData + offset + 8) = zero;
+        *(f32*)(self->mData + offset + 0xC) = value;
+        offset += 0x38;
     }
-    f32 a = lbl_80561754;
-    f = lbl_80561750;
-    arg0->m264 = 0;
-    arg0->m260 = 0;
-    arg0->m254 = a;
-    arg0->m25c = f;
-    arg0->v31();
+    f32 none = BONUS_NONE;
+    value = BONUS_FULL; // the loop's float now carries the multiplier
+    self->m264 = 0;     // events scored since the bonus started
+    self->m260 = 0;     // events scored since the last reset
+    self->m254 = none;  // bonus timer
+    self->m25c = value; // multiplier
+    self->v31();        // slot 0x84, the tracker's own refresh hook
 }
 
 extern f32 lbl_8056179C;
