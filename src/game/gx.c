@@ -1801,7 +1801,7 @@ typedef struct LightEntry_802D18E8 {
     float x, y, z;
     float scale;
 } LightEntry_802D18E8;
-static void VecSub_802D18E8(float *dst, float *a, float *b) {
+static inline void VecSub_802D18E8(float *dst, float *a, float *b) {
     dst[0] = a[9] - b[9];
     dst[1] = a[10] - b[10];
     dst[2] = a[11] - b[11];
