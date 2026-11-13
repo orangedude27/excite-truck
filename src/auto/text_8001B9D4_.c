@@ -804,28 +804,29 @@ void fn_8001C9C4(void) {
 
 extern void fn_80131818(void *);
 extern int fn_80128668();
+/* Shut down the statistics subsystem: close config, release descriptor/buffer, clear and free per-slot records, then drop the stat buffer. */
 void fn_8001CAF8(void) {
-    void **ptr;
+    void **slotPtr;
     s32 i;
 
     fn_80131818(lbl_8055D5D4);
     fn_80128668(lbl_8055D5D0);
-    ptr = lbl_80358658;
+    slotPtr = lbl_80358658;
     i = 0;
     do {
-        void *entry = *ptr;
-        if (entry == 0) {
+        void *slot = *slotPtr;
+        if (slot == 0) {
         } else {
-            if (entry == 0) {
+            if (slot == 0) {
             } else {
-                ((s32 *)entry)[0] = 0;
-                ((s32 *)entry)[1] = 0;
-                ((s32 *)entry)[2] = 0;
+                ((s32 *)slot)[0] = 0;
+                ((s32 *)slot)[1] = 0;
+                ((s32 *)slot)[2] = 0;
             }
             fn_80128668();
         }
         i++;
-        ptr++;
+        slotPtr++;
     } while (i < 4);
     fn_80128668(lbl_8055D5CC);
     lbl_8055D5CC = 0;
