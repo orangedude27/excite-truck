@@ -52,6 +52,23 @@ struct MorphGroup {
     void *childrenInline[8]; // 0x34 the first 8 children, stored inside the node
     struct MorphGroup *next; // 0x54
 };
+// One "oml" item of the oml_lists sub-table of wlmodels.val, built by
+// fn_801D9654 and linked into the list at lbl_8055E964; fn_801D91D8 fills in
+// groups from the morph groups that name it. Its models are the 2^groupCount
+// variants of the set, one per combination of its groups being active.
+struct OmlModelSet {
+    MorphGroup **groups;      // 0x00 the morph groups blended into this set; points at groupsInline
+    int groupCount;           // 0x04
+    int groupLimit;           // 0x08 room in the inline array
+    void *groupsInline[2];    // 0x0C the first 2 groups, stored inside the node
+    int *models;              // 0x14 mrmodel handles of the variants; points at modelsInline
+    int modelCount;           // 0x18
+    int modelLimit;           // 0x1C room in the inline array
+    void *modelsInline[4];    // 0x20 the first 4 models, stored inside the node
+    unsigned char active;     // 0x30 set when a group of this set has to be drawn again
+    char pad31[3];
+    struct OmlModelSet *next; // 0x34
+};
 struct DtbManager801D9394 {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
     virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
