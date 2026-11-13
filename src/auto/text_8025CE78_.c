@@ -42,29 +42,26 @@ void *fn_8025D96C(void *arg0, int arg1)
 
 void *fn_8025D9D0(void *arg0) {
     char *src;
-    char *dst;
     int count;
-
-    *(int *)((char *)arg0 + 0x420) = 0;
-    *(void **)((char *)arg0 + 0x40C) = lbl_80345718;
+    char *dst;
+    *(volatile int *)((char *)arg0 + 0x420) = 0;
+    *(volatile void **)((char *)arg0 + 0x40C) = lbl_80345718;
     *(int *)((char *)arg0 + 0x424) = 0;
     *((char *)arg0 + 0x42C) = 0;
-    *(void **)((char *)arg0 + 0x434) = fn_8023512C(lbl_80345694, lbl_80345694, lbl_80345718);
+    *(void **)((char *)arg0 + 0x434) = ((void *(*)(const char *))fn_8023512C)(lbl_80345694);
     dst = (char *)arg0 + 4;
     *(void **)arg0 = lbl_8055C3E0;
     src = lbl_8055C3E0;
     count = 0x14;
-    while (1) {
-        if (*src == 0)
-            break;
-        *dst = *src;
-        src += 1;
-        dst += 1;
+    goto copy;
+    do {
         if (--count <= 0) {
-            *(char *)(dst - 1) = 0;
+            dst[-1] = 0;
             break;
         }
-    }
+    copy:
+        *dst++ = *src++;
+    } while (dst[-1]);
     *(int *)((char *)arg0 + 0x408) = 0;
     *(void **)((char *)arg0 + 0x1C) = lbl_8055C3E0;
     *(void **)((char *)arg0 + 0x18) = lbl_8055C3E0;
@@ -104,7 +101,7 @@ extern char lbl_803456A4[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_8025DAEC(void *arg0, void *arg1) {
+extern "C" void fn_8025DAEC(void *arg0, int arg1) {
     struct Source {
         virtual void s2();
         virtual int has(const char *);
@@ -112,26 +109,26 @@ extern "C" void fn_8025DAEC(void *arg0, void *arg1) {
         virtual char *get(const char *);
     };
     char current[0x24], best[0x24], selected[0x24];
-    int record[3];
-    int i, j, best_i=-1, best_j=-1;
+    int best_i=-1, j, i, best_j=-1;
+    Record8025 record, result;
     char *obj=(char *)arg0;
     for (j=0;j<3;j++) {
         for(i=0;i<fn_80012854();i++) {
-            fn_8001BC38(current,fn_8000DA10(),arg1,i,j);
+            fn_8001BC38(current,fn_8000DA10(),(void *)arg1,i,j);
             if (fn_8001BCF0(current)) {
                 if(best_i<0) { best_i=i; best_j=j; }
                 else {
-                    fn_8001BC38(best,fn_8000DA10(),arg1,best_i,best_j);
+                    fn_8001BC38(best,fn_8000DA10(),(void *)arg1,best_i,best_j);
                     if(fn_8001BD6C(current,best)) { best_i=i; best_j=j; }
                 }
             }
         }
     }
-    *(int *)obj=fn_8001BA6C(arg1);
+    *(int *)obj=fn_8001BA6C((void *)arg1);
     if(best_i<0) {
-        char *dst=obj+4;
         const char *src=&lbl_8055C3E4;
         int n=0x14;
+        char *dst=obj+4;
         goto copy1;
         do { if (--n <= 0) { dst[-1]=0; break; }
 copy1:      *dst++=*src++; } while(dst[-1]);
@@ -144,50 +141,55 @@ copy2:      *dst++=*src++; } while(dst[-1]);
         *(char **)(obj+0x18)=&lbl_8055C3E4;
     } else {
         char *entry;
-        Source *source;
         char *value;
         char *details;
         char *table;
         int index, offset;
-        fn_8001BC38(selected,fn_8000DA10(),arg1,best_i,best_j);
+        int cat;
+        fn_8001BC38(selected,fn_8000DA10(),(void *)arg1,best_i,best_j);
         fn_8001BD38(selected,obj+4,0x14);
         entry=(char *)fn_8001285C(best_i);
-        source=*(Source **)(entry+0x20);
-        if(source->has(&lbl_8055C3EC))
-            *(char **)(obj+0x18)=fn_80008188(source->get(&lbl_8055C3EC));
+        if((*(Source **)(entry+0x20))->has(&lbl_8055C3EC))
+            *(char **)(obj+0x18)=fn_80008188((*(Source **)(entry+0x20))->get(&lbl_8055C3EC));
         else
             *(char **)(obj+0x18)=fn_80008188((void *)(fn_80012820(*(void **)(entry+4))+8));
-        source=*(Source **)(entry+0x20);
-        value=source->get(lbl_803456A4);
+        value=(*(Source **)(entry+0x20))->get(lbl_803456A4);
         *(char **)(obj+0x1c)=value;
         fn_801345D8(obj+0x20,0x3e8,&lbl_8055C3F8,*(char **)(obj+0x18),value+1);
-        fn_8001BD54(record,selected);
-        obj[0x438]=(char)record[2];
-        details=(char *)fn_80016510(record[0]);
+        fn_8001BD54(&result,selected);
+        record=result;
+        cat=record.category;
+        obj[0x438]=*(char *)&record.flags;
+        details=(char *)fn_80016510(record.id);
         table=*(char **)(obj+0x424);
-        offset=0;
-        for(index=0;index<*(int *)(table+4);index++,offset+=0x38) {
-            if(stricmp(*(char **)table+offset,details+0x2c)==0) break;
+        for(index=0,offset=0;index<*(int *)(table+4);offset+=0x38,index++) {
+            if(stricmp(*(char **)table+offset,details+0x2c)==0) goto found;
         }
-        if(index>=*(int *)(table+4)) index=-1;
+        index=-1;
+found:
         *(int *)(obj+0x428)=index;
-        *(int *)(obj+0x430)=*(int *)(details+record[1]*4+0x64);
+        *(int *)(obj+0x430)=*(int *)(details+cat*4+0x64);
         obj[0x42c]=1;
     }
     *(int *)(obj+0x408)=best_j;
 }
-#pragma pop
+
+  #pragma pop
 
 #pragma push
-#pragma use_lmw_stmw off
-void fn_8025DF80(void *arg0) {
-    register int index = 0;
-    register int count = 0;
-    while (count < *(int *)((char *)arg0 + 0x1c)) {
-        fn_80214A9C(*(int *)(*(char **)((char *)arg0 + 0x18) + index));
-        index += 4;
-        count += 1;
-    }
+#pragma cplusplus on
+extern "C" void fn_8025DF80(void *arg0) {
+    register long *base = (long *)arg0;
+    register long offset = 0;
+    register long count = 0;
+    goto check;
+loop:
+    fn_80214A9C(*(long *)((unsigned char *)base[6] + offset));
+    offset += 4;
+    count++;
+check:
+    if (count < base[7])
+        goto loop;
 }
 #pragma pop
 extern void *fn_8000DA10(void); extern int fn_80012854(void); extern void *fn_8001285C(int); extern int fn_80012820(void *); extern void *fn_80016510(int); extern int fn_8001BA6C(void *); extern void fn_8001BC38(void *, void *, void *, int, int); extern int fn_8001BCF0(void *); extern int fn_8001BD6C(void *, void *); extern void fn_8001BD38(void *, void *, int); extern void fn_8001BD54(void *, void *); extern char *fn_80008188(void *); extern char *fn_801345D8(char *, int, const char *, ...); extern int stricmp(const char *, const char *); extern char lbl_8055C3E4, lbl_8055C3E8, lbl_8055C3EC, lbl_8055C3F8; extern char lbl_803456A4[];
