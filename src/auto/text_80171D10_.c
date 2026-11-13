@@ -1485,12 +1485,19 @@ extern "C" void fn_801746D0(int *arg0, int *arg1, int arg2) {
 }
 #pragma cplusplus reset
 void fn_80174794(void **arg0) {
+    extern float fn_801B306C(void);
+    extern int fn_800216D0(void);
+    extern int fn_801EA994(void);
+    extern int fn_801E866C(int);
+    extern void fn_8017248C(int);
+    extern float lbl_80561A44;
     int count;
     int i;
     if (fn_801B306C() < lbl_80561A44 && fn_800216D0() == 0) {
         count = fn_801EA994();
         for (i = 0; i < count; i++) {
-            if (i != fn_801E866C(-1) && ((int (**)(void **, int))*arg0)[8](arg0, i) != 0) {
+            if (i != fn_801E866C(-1) &&
+                ((struct Dummy_80174794 *)arg0)->f6(i) != 0) {
                 fn_8017248C(i);
             }
         }
