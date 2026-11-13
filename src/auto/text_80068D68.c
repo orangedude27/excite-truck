@@ -3831,6 +3831,7 @@ void GKI_remove_from_timer_list(TIMER_LIST_Q *timer_list, TIMER_LIST_ENT *timer_
 }
 
 void GKI_init(void) {
+    /* Initialize GKI control block, buffers/timers, set PPC task ready, and record initial interrupt state. */
     memset(&gki_cb, 0, sizeof(gki_cb));
 
     gki_buffer_init();
