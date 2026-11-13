@@ -1204,10 +1204,10 @@ void fn_80267EF8(void *arg0) {
             fn_801769EC();
         }
     } else {
-        float ratio = t / lbl_80563C34;
+        float w = t / lbl_80563C34;
         float f = lbl_80563C20;
-        float w;
         float s;
+        float u, v;
         MP_80267EF8 a, b, c;
         V3_80267EF8 axis;
         char tmp[0x24];
@@ -1227,14 +1227,20 @@ void fn_80267EF8(void *arg0) {
                 *(float *)(o + 8) = s;
             }
         }
-        if (ratio < lbl_80563C28) {
+        if (w < lbl_80563C28) {
             w = lbl_80563C28;
-        } else if (ratio > lbl_80563C2C) {
+        } else if (w > lbl_80563C2C) {
             w = lbl_80563C2C;
-        } else if (ratio > lbl_80563C20) {
-            w = (((lbl_80563C30 * ratio) * ratio) * ratio) + ((lbl_80563C34 * ratio) * ratio);
+        } else if (w > lbl_80563C20) {
+            u = lbl_80563C30 * w;
+            u *= w;
+            v = lbl_80563C34 * w;
+            w = w * u + v * w;
         } else {
-            w = (((lbl_80563C30 * ratio) * ratio) * ratio) - ((lbl_80563C34 * ratio) * ratio);
+            u = lbl_80563C30 * w;
+            u *= w;
+            v = lbl_80563C34 * w;
+            w = w * u - v * w;
         }
         *(R9_80267EF8 *)&a = *(R9_80267EF8 *)(p + 0x58);
         a.pos = *(V3_80267EF8 *)(p + 0x7c);
