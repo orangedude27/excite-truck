@@ -17,6 +17,8 @@ extern void __AXDepopVoice(void *);
 extern void *memcpy(void *, const void *, unsigned int);
 typedef struct { unsigned char b[0x120]; } Block120;
 typedef struct { unsigned char b[0x30]; } Block30;
+typedef struct { int w[0x48]; } Words120;
+typedef struct { int w[0xC]; } Words30;
 extern void fn_800328F0(void *);
 extern void TRKAppendBuffer(void *);
 void* fn_800328E8(void) {
@@ -33,8 +35,6 @@ void fn_800328F0(void *arg0) {
     unsigned int *cs;
     unsigned int *cd;
     int *z;
-    void *m0;
-    void *m1;
 
     dst = p + 0x138;
     lbl_8055D7E0 = (void *)((unsigned int)lbl_8055D7E0 + 1);
@@ -48,9 +48,7 @@ void fn_800328F0(void *arg0) {
         return;
     }
     if (flags & 0x80000000) {
-        m1 = dst;
-        m0 = src;
-        memcpy(m0, m1, 0x120);
+        memcpy(src, dst, 0x120);
         n = *(unsigned int *)(p + 0x28);
         if (n != 0) {
             cs = (unsigned int *)(p + 0x34);
@@ -77,9 +75,7 @@ void fn_800328F0(void *arg0) {
             *(unsigned short *)(src + 0x12) = *(unsigned short *)(dst + 0x12);
         }
         if (flags & 0x10) {
-            m1 = dst + 0x14;
-            m0 = src + 0x14;
-            memcpy(m0, m1, 0x30);
+            memcpy(src + 0x14, dst + 0x14, 0x30);
         }
         if (flags & 0x40) {
             *(unsigned short *)(src + 0x4E) = *(unsigned short *)(dst + 0x4E);
@@ -230,7 +226,9 @@ void fn_80032EAC(int arg0) {
             }
             if (*(unsigned short *)(p + 0x148) == 1 || *(int *)(p + 0x28) != 0) {
                 if (*(unsigned short *)(p + 0x140) != 2) {
-                    unsigned int v = __rlwimi(*(unsigned short *)(p + 0x1EA), *(unsigned short *)(p + 0x1E8), 16, 0, 15);
+                    unsigned short hi = *(unsigned short *)(p + 0x1E8);
+                    unsigned short lo = *(unsigned short *)(p + 0x1EA);
+                    unsigned int v = ((unsigned int)hi << 16) | (unsigned int)lo;
                     r29 += ((((v * 0x84) + 0x8000) >> 16) + 0x2D8) * 6;
                 }
                 if (*(unsigned short *)(p + 0x1FC) != 0) {
