@@ -388,13 +388,14 @@ void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     return 0;
 }
 #pragma small_data off
-void fn_8021683C(u32 arg0) {
-    s32 i;
-    for (i = 0; i < 16; i++) {
-        u32 value = lbl_804908C8[i];
-        if (value == arg0) {
-            ((void (*)(u32, s32))fn_80217270)(arg0, 1);
-            lbl_804908C8[i] = 0;
+/* Remove a window pointer from the managed window table and destroy it, or log an error if it is not found. */
+void fn_8021683C(u32 windowPtr) {
+    s32 slotIndex;
+    for (slotIndex = 0; slotIndex < 16; slotIndex++) {
+        u32 value = lbl_804908C8[slotIndex];
+        if (value == windowPtr) {
+            ((void (*)(u32, s32))fn_80217270)(windowPtr, 1);
+            lbl_804908C8[slotIndex] = 0;
             return;
         }
     }
