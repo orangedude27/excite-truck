@@ -1942,6 +1942,9 @@ u8 fn_8006A1DC(void) {
     return 3;
 }
 #pragma use_lmw_stmw reset
+/* Advance the WUD/Bluetooth initialization state machine stored in lbl_80392960.
+ * State 1 waits for SC to be ready, state 2 runs the next init step, and
+ * state 3 cancels the pending alarm, marks init active, and enables Bluetooth. */
 void fn_8006A300(void)
 {
     u8 state = lbl_80392960[0x10];
