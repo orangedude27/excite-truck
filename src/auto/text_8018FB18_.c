@@ -1507,7 +1507,8 @@ extern "C" void fn_801331C4(s32, void *, f32 *);
 extern char lbl_8055A480;
 extern "C" void *memset(void *, int, u32);
 #pragma cplusplus on
-extern "C" void fn_801915FC(void *arg0, void *arg1) {
+extern "C" void fn_801915FC(void *self, void *source) {
+    /* Initialize this object from source: copy references/ids, reset transform/state fields, then compute/init field at +0x1C via source interface. */
     class FirstVTable {
     public:
         virtual void f0();
@@ -1549,24 +1550,23 @@ extern "C" void fn_801915FC(void *arg0, void *arg1) {
         virtual void g25();
         virtual int g26();
     };
-    register u8 *self = (u8 *)arg0;
-    SecondVTable *second;
-    s32 result;
+    register u8 *selfBytes = (u8 *)self;
+    SecondVTable *sourceInterface;
+    s32 initValue;
     f32 zero;
-    *(void **)(self + 0x34) = arg1;
-    *(s32 *)(self + 0x3C) = *(s32 *)((u8 *)arg1 + 0x1EC);
-    ((FirstVTable *)self)->f7();
+    *(void **)(selfBytes + 0x34) = source;
+    *(s32 *)(selfBytes + 0x3C) = *(s32 *)((u8 *)source + 0x1EC);
+    ((FirstVTable *)selfBytes)->f7();
     zero = lbl_8056208C;
-    *(f32 *)(self + 0x10) = zero;
-    *(f32 *)(self + 0x14) = zero;
-    *(f32 *)(self + 0x18) = zero;
-    memset(self + 0x20, 0, 0x10);
-    *(f32 *)(self + 0x1C) = lbl_80562090;
-    second = *(SecondVTable **)(self + 0x38);
-    result = second->g26();
-    fn_801331C4(result, &lbl_8055A480, (f32 *)(self + 0x1C));
+    *(f32 *)(selfBytes + 0x10) = zero;
+    *(f32 *)(selfBytes + 0x14) = zero;
+    *(f32 *)(selfBytes + 0x18) = zero;
+    memset(selfBytes + 0x20, 0, 0x10);
+    *(f32 *)(selfBytes + 0x1C) = lbl_80562090;
+    sourceInterface = *(SecondVTable **)(selfBytes + 0x38);
+    initValue = sourceInterface->g26();
+    fn_801331C4(initValue, &lbl_8055A480, (f32 *)(selfBytes + 0x1C));
 }
-#pragma cplusplus reset
 
 #pragma cplusplus on
 extern "C" void fn_80191688(void *arg0) {
