@@ -4411,7 +4411,8 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
 static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     void *sound;
     void *it;
-    void *pos;
+    struct { void *node; } iter;
+    void *&pos = iter.node;
     struct { u32 old; } lock;
     u32 &irq = lock.old;
     lock.old = OSDisableInterrupts();
@@ -4558,113 +4559,60 @@ static inline void SoundPlayer_InsertPriorityList(s32 player, void *sound) {
 #pragma dont_inline off
 #pragma auto_inline off
 extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void *arg6) {
-    s32 sp10;
-    void *spC;
-    void *sp8;
-    s32 sp18[7];
-    s32 var_r30;
-    s32 var_r31;
-    s32 t5;
-    s32 t4;
-    void *var_r29;
-    void *var_r21;
-    u8 *temp_r19_3;
+    s32 startOffset;
+    s32 prio;
+    void *sound;
     if (arg6 == 0) {
         return 0;
     }
-    var_r31 = 0;
+    startOffset = 0;
     if (arg3 != 0) {
+        s32 info[7];
         void *obj = *(void **)arg3;
         void **vt = *(void ***)obj;
-        void *(*f)(void *, void *, s32, s32, s32, s32) = (void *(*)(void *, void *, s32, s32, s32, s32))vt[2];
-        f(obj, (void *)sp18, arg5, 0, *(s32 *)(arg3 + 0xC), 8);
-        var_r31 = sp18[6];
+        ((void (*)(void *, void *, s32, s32, s32, s32))vt[2])(obj, (void *)info, arg5, 0, *(s32 *)(arg3 + 0xC), 8);
+        startOffset = info[6];
     }
-    t5 = arg2 - var_r31;
-    var_r30 = t5 > 0x7F ? 0x7F : (t5 < 0 ? 0 : t5);
-    if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, var_r30, (void *)arg4) == 0) {
+    {
+        s32 p = arg2 - startOffset;
+        prio = p > 0x7F ? 0x7F : (p < 0 ? 0 : p);
+    }
+    if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, prio, (void *)arg4) == 0) {
         return 0;
     }
-    t4 = 0;
-    if (var_r30 >= 0 && var_r30 <= 0x7F) {
-        t4 = 1;
+    {
+        s32 ok = 0;
+        if (prio >= 0 && prio <= 0x7F) {
+            ok = 1;
+        }
+        if (ok == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803260F0, 0x5C, lbl_803260AC, prio, 0, 0x7F);
+        }
     }
-    if (t4 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803260F0, 0x5C, lbl_803260AC, var_r30, 0, 0x7F);
-    }
-    var_r29 = SoundInstanceManager_Alloc(arg6, var_r30);
-    if (var_r29 == 0) {
+    sound = SoundInstanceManager_Alloc(arg6, prio);
+    if (sound == 0) {
         return 0;
     }
-    if (*(s32 *)(arg0 + 0x18) != 0) {
-        if (*(s32 *)(arg0 + 0x18) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E44, 0x1F1, lbl_80325E20);
-        }
-        {
-            s32 id2 = *(s32 *)(arg0 + 0x1C);
-            if (id2 == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325DE4, 0x23D, lbl_80325DC0);
-            }
-            temp_r19_3 = (u8 *)(u32)(id2 - 0x2C);
-            if (temp_r19_3 == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E14, 0x193, lbl_80325DF0);
-            }
-            sp10 = *(s32 *)((u8 *)(arg0 + 0x18) + 4);
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)(arg0 + 0x18), &sp10);
-            *(void **)(temp_r19_3 + 0x34) = var_r29;
-            {
-                u8 *nl = temp_r19_3 + 4;
-                *(void **)((u8 *)var_r29 + 4) = (void *)temp_r19_3;
-                OSLockMutex((void *)nl);
-                fn_800EC1A4((void *)(temp_r19_3 + 0x1C));
-                OSUnlockMutex((void *)nl);
-            }
-        }
-    }
+    SoundPlayer_AttachPlayerHeap(arg0, sound);
     if (arg3 != 0) {
         if (arg3 != 0) {
             void **pp = *(void ***)(arg3 + 8);
-            s32 (*g)(void *, s32) = (s32 (*)(void *, s32))((void (**)(void *, s32))*pp)[2];
-            s32 r = g((void *)pp, *(s32 *)(arg3 + 0x10));
+            s32 r = ((s32 (*)(void *, s32))((void **)*pp)[2])((void *)pp, *(s32 *)(arg3 + 0x10));
             if (r != 0) {
                 memcpy((void *)r, (const void *)*(s32 *)(arg3 + 0xC), (u32)*(s32 *)(arg3 + 0x10));
-                fn_800E9B74(var_r29, *(void ***)arg3, *(s32 *)(arg3 + 4), *(void ***)(arg3 + 8), r);
+                fn_800E9B74(sound, *(void ***)arg3, *(s32 *)(arg3 + 4), *(void ***)(arg3 + 8), r);
             }
         }
     }
-    *(u8 *)((u8 *)var_r29 + 0x74) = (u8)arg1;
-    *(s32 *)((u8 *)var_r29 + 0x40) = var_r31;
-    if (var_r29 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262B8, 0x233, (const char *)lbl_80326294);
-    }
-    spC = (void *)(arg0 + 4);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((void *)arg0, &spC, (u8 *)var_r29 + 0xC0);
-    *(s32 *)((u8 *)var_r29 + 0x10) = arg0;
+    *(u8 *)((u8 *)sound + 0x74) = (u8)arg1;
+    *(s32 *)((u8 *)sound + 0x40) = startOffset;
+    SoundPlayer_PushSoundList(arg0, sound);
+    *(s32 *)((u8 *)sound + 0x10) = arg0;
     if (arg4 != 0) {
-        InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound((void *)arg4, var_r29);
+        InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound((void *)arg4, sound);
     }
-    var_r21 = *(void **)(arg0 + 0x10);
-    while (var_r21 != (void *)(arg0 + 0x10)) {
-        if (var_r21 == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
-        }
-        {
-            s32 c = *(u8 *)((u8 *)var_r21 - 0x54) + *(s32 *)((u8 *)var_r21 - 0x88);
-            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
-            s32 d = *(u8 *)((u8 *)var_r29 + 0x74) + *(s32 *)((u8 *)var_r29 + 0x40);
-            s32 dc = d > 0x7F ? 0x7F : (d < 0 ? 0 : d);
-            if (dc < cc) {
-                break;
-            }
-        }
-        var_r21 = *(void **)var_r21;
-    }
-    if (var_r29 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
-    }
-    sp8 = var_r21;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)(arg0 + 0xC), &sp8, (u8 *)var_r29 + 0xC8);
-    return var_r29;
+    SoundPlayer_InsertPriorityList(arg0, sound);
+    return sound;
 }
 #pragma pop
 extern "C" void *fn_800F975C(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, void *a6) {
