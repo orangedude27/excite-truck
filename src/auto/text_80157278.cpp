@@ -4420,11 +4420,12 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
         sound[0x4C] = 0;
     }
 }
-#pragma scheduling off
-extern "C" int fn_80159708(const void *arg0) {
-    return (int)*(const float *)((const char *)arg0 + 0x25C);
-}
 #pragma scheduling on
+extern "C" int fn_80159708(const void *arg0) {
+    float f = *(const float *)((const char *)arg0 + 0x25C);
+    return (int)f;
+}
+#pragma scheduling off
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
