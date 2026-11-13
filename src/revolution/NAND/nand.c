@@ -318,6 +318,7 @@ static void nandComposePerm(u8* out, u32 ownerPerm, u32 groupPerm,
     *out = perm;
 }
 
+/* Splits a NAND permission byte into owner, group, and other access masks. */
 void nandSplitPerm(u8 perm, u32* ownerPerm, u32* groupPerm,
                           u32* otherPerm) {
     *ownerPerm = 0;
