@@ -4484,6 +4484,7 @@ static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     OSRestoreInterrupts(irq);
     return sound;
 }
+#pragma pop
 
 extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void *arg6) {
     void *sp14;
