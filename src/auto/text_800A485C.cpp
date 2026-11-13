@@ -5313,6 +5313,29 @@ extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg
  * ends at or after here". */
 #define VF_FAT_END_OF_CHAIN(t) lbl_802EEF40[(t) * 5 + 2]
 
+#ifndef VF_CHAIN_BLOCK_DEFINED
+#define VF_CHAIN_BLOCK_DEFINED
+/* [0] of the same table: the first value a data cluster cannot take; at and
+ * above it an entry is a bad-cluster, end-of-chain or reserved value. */
+#define VF_FAT_FIRST_RESERVED(t) (((volatile u32 *)lbl_802EEF40)[(t) * 5])
+
+/* What a stream keeps of its file's chain in front of the cache the VF_CHAIN_*
+ * fields above reach into (the walk block starts four bytes into the stream, so
+ * these are stream+0xC to stream+0x18; the read code calls the last two of them
+ * VF_STREAM_LAST_CLUSTER_INDEX and VF_STREAM_LAST_CLUSTER). */
+#define VF_CHAIN_FIRST_CLUSTER(w) (*(s32 **)((w) + 0x08)) /* where the file's first cluster is kept */
+#define VF_CHAIN_RUN_CLUSTER(w)   (*(s32 *)((w) + 0x0C))  /* last cluster of the run the volume handed out last */
+#define VF_CHAIN_RUN_POS(w)       (*(s32 *)((w) + 0x10))  /* where in the chain that run starts */
+#define VF_CHAIN_CACHE_POS(w)     (*(s32 *)((w) + 0x14))  /* how far into the chain the cluster below is */
+#define VF_CHAIN_CACHE_CLUSTER(w) (*(s32 *)((w) + 0x18))  /* the cluster the last walk stopped at */
+
+/* What following a chain can give up with: a FAT entry that is neither a cluster
+ * of the heap nor an end-of-chain value, and a chain that ends before the
+ * position asked for even after the file has been given more clusters. */
+#define VF_ERR_BROKEN_FAT  0xE
+#define VF_ERR_CHAIN_SHORT 6
+#endif
+
 extern "C" s32 fn_800AF734(void *, s32, s32);
 extern "C" s32 fn_800AFF28(void *, s32, u16);
 extern "C" s32 fn_800B037C(void *, s32, s32);
