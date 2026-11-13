@@ -14934,15 +14934,16 @@ BOOLEAN btsnd_hcic_disconnect(UINT16 handle, UINT8 reason) {
     return TRUE;
 }
 
+/* Send HCI Add SCO Connection command for the given ACL handle and packet types. */
 BOOLEAN btsnd_hcic_add_SCO_conn(UINT16 handle, UINT16 packet_types) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 7;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 7; p[9] = 4; p[10] = 4;
-    p[11] = handle; p[12] = handle >> 8;
-    p[13] = packet_types; p[14] = packet_types >> 8;
-    btu_hcif_send_cmd(p);
+    u8 *command_buffer = (u8 *)GKI_getpoolbuf(2);
+    if (command_buffer == NULL) return FALSE;
+    *(u16 *)(command_buffer + 2) = 7;
+    *(u16 *)(command_buffer + 4) = 0;
+    command_buffer[8] = 7; command_buffer[9] = 4; command_buffer[10] = 4;
+    command_buffer[11] = handle; command_buffer[12] = handle >> 8;
+    command_buffer[13] = packet_types; command_buffer[14] = packet_types >> 8;
+    btu_hcif_send_cmd(command_buffer);
     return TRUE;
 }
 
