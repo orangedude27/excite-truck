@@ -253,6 +253,22 @@ typedef struct ChunkSys {
     s32 modelCount;   /* +0x28 how many of the eight models were found */
 } ChunkSys;
 
+/* One row of the chunk-system cache (lbl_804B4168), as fn_80292EC0 walks it,
+ * fn_80292F40 fills it and fn_80292FB4 releases it. */
+typedef struct ChunkCacheEntry {
+    char name[0x10];  /* +0x00 the name it was requested under (fn_802929F8) */
+    void *system;     /* +0x10 the ChunkSys fn_802928D4 built for it */
+    s32 refCount;     /* +0x14 how many hold it; 0 frees it (fn_80292B48) */
+} ChunkCacheEntry;
+
+/* The cache: CHUNK_CACHE_SLOTS rows, then the number in use at +0x180
+ * (fn_80292EA8/fn_80292EB4 clear it, fn_802924E8/fn_8029261C build and drop it). */
+#define CHUNK_CACHE_SLOTS 16
+typedef struct ChunkCache {
+    ChunkCacheEntry entry[CHUNK_CACHE_SLOTS];  /* +0x00 */
+    s32 count;                                 /* +0x180 */
+} ChunkCache;
+
 extern char lbl_80349170[];
 extern void *fn_801284F8(int, const void *);
 extern void *fn_80293034(void *, void *, int);
