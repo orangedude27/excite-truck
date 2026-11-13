@@ -146,6 +146,7 @@ void *fn_801EAD6C(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0x70) = -1;
     return arg0;
 }
+/* Dispatch a model/command request: if enabled (+0x70 != -1), build an optional parameter pair from +0x78 and submit via fn_802C70AC. */
 void fn_801EADD8(void *arg0) {
     s32 value;
     s32 sp[2];
@@ -163,46 +164,46 @@ void fn_801EADD8(void *arg0) {
     fn_802C70AC(*(s32 *)((char *)arg0 + 0x70), (char *)arg0 + 4, value, *(s32 *)((char *)arg0 + 0x74));
 }
 
-#pragma dont_inline fn_801EABA8
+#pragma push
+#pragma use_lmw_stmw off
 void fn_801EAE68(void *arg0, void *arg1) {
-    register s16 half;
+    s16 half;
     s32 o, n, m, l, k, j, i, h, g, f, e, d, c, b, a;
-
     fn_801EABA8(arg0, arg1);
-    a = *(volatile s32 *)((u8 *)arg1 + 0x00);
-    b = *(volatile s32 *)((u8 *)arg1 + 0x04);
-    c = *(volatile s32 *)((u8 *)arg1 + 0x08);
-    d = *(volatile s32 *)((u8 *)arg1 + 0x0C);
-    e = *(volatile s32 *)((u8 *)arg1 + 0x10);
-    f = *(volatile s32 *)((u8 *)arg1 + 0x14);
-    g = *(volatile s32 *)((u8 *)arg1 + 0x18);
-    h = *(volatile s32 *)((u8 *)arg1 + 0x1C);
-    i = *(volatile s32 *)((u8 *)arg1 + 0x20);
-    j = *(volatile s32 *)((u8 *)arg1 + 0x24);
-    k = *(volatile s32 *)((u8 *)arg1 + 0x28);
-    l = *(volatile s32 *)((u8 *)arg1 + 0x2C);
-    half = *(volatile s16 *)((u8 *)arg1 + 0x30);
-    m = *(volatile s32 *)((u8 *)arg1 + 0x34);
-    n = *(volatile s32 *)((u8 *)arg1 + 0x38);
-    o = *(volatile s32 *)((u8 *)arg1 + 0x3C);
-
-    *(s32 *)((u8 *)arg0 + 0x54) = g;
-    *(s32 *)((u8 *)arg0 + 0x3C) = a;
-    *(s32 *)((u8 *)arg0 + 0x40) = b;
-    *(s32 *)((u8 *)arg0 + 0x44) = c;
-    *(s32 *)((u8 *)arg0 + 0x48) = d;
-    *(s32 *)((u8 *)arg0 + 0x4C) = e;
-    *(s32 *)((u8 *)arg0 + 0x50) = f;
-    *(s32 *)((u8 *)arg0 + 0x58) = h;
-    *(s32 *)((u8 *)arg0 + 0x5C) = i;
-    *(s32 *)((u8 *)arg0 + 0x60) = j;
-    *(s32 *)((u8 *)arg0 + 0x64) = k;
-    *(s32 *)((u8 *)arg0 + 0x68) = l;
-    *(s16 *)((u8 *)arg0 + 0x6C) = half;
-    *(s32 *)((u8 *)arg0 + 0x70) = m;
-    *(s32 *)((u8 *)arg0 + 0x74) = n;
-    *(s32 *)((u8 *)arg0 + 0x78) = o;
+    a = *(volatile s32 *)((char *)arg1 + 0x00);
+    b = *(volatile s32 *)((char *)arg1 + 0x04);
+    c = *(volatile s32 *)((char *)arg1 + 0x08);
+    d = *(volatile s32 *)((char *)arg1 + 0x0C);
+    e = *(volatile s32 *)((char *)arg1 + 0x10);
+    f = *(volatile s32 *)((char *)arg1 + 0x14);
+    g = *(volatile s32 *)((char *)arg1 + 0x18);
+    h = *(volatile s32 *)((char *)arg1 + 0x1C);
+    i = *(volatile s32 *)((char *)arg1 + 0x20);
+    j = *(volatile s32 *)((char *)arg1 + 0x24);
+    k = *(volatile s32 *)((char *)arg1 + 0x28);
+    l = *(volatile s32 *)((char *)arg1 + 0x2C);
+    half = *(volatile s16 *)((char *)arg1 + 0x30);
+    m = *(volatile s32 *)((char *)arg1 + 0x34);
+    n = *(volatile s32 *)((char *)arg1 + 0x38);
+    o = *(volatile s32 *)((char *)arg1 + 0x3C);
+    *(s32 *)((char *)arg0 + 0x54) = g;
+    *(s32 *)((char *)arg0 + 0x3C) = a;
+    *(s32 *)((char *)arg0 + 0x40) = b;
+    *(s32 *)((char *)arg0 + 0x44) = c;
+    *(s32 *)((char *)arg0 + 0x48) = d;
+    *(s32 *)((char *)arg0 + 0x4C) = e;
+    *(s32 *)((char *)arg0 + 0x50) = f;
+    *(s32 *)((char *)arg0 + 0x58) = h;
+    *(s32 *)((char *)arg0 + 0x5C) = i;
+    *(s32 *)((char *)arg0 + 0x60) = j;
+    *(s32 *)((char *)arg0 + 0x64) = k;
+    *(s32 *)((char *)arg0 + 0x68) = l;
+    *(s16 *)((char *)arg0 + 0x6C) = half;
+    *(s32 *)((char *)arg0 + 0x70) = m;
+    *(s32 *)((char *)arg0 + 0x74) = n;
+    *(s32 *)((char *)arg0 + 0x78) = o;
 }
+#pragma pop
 s32 fn_801EAF20(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
