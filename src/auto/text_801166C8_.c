@@ -1980,6 +1980,7 @@ s32 fn_80119CB0(StreamPlayer *player, s32 pause) {
 }
 
 void fn_80119D40(void *arg0) {
+    /* Release stream player voice handles/buffers, invoke allocator release callback, and mark inactive. */
     struct CallbackTable {
         s32 first;
         void (*callback)(s32, struct CallbackTable *);
@@ -1993,21 +1994,22 @@ void fn_80119D40(void *arg0) {
         u8 pad2[0x28];
         s32 flag;
     };
-    struct Context *ctx = (struct Context *)arg0;
-    struct CallbackTable *table;
-    void (*callback)(s32, struct CallbackTable *);
-    if (ctx->buffer0 != 0) {
-        ctx->flag = 1;
-        fn_8011943C(&ctx->buffer0, 0);
-        if (ctx->buffer0 != 0)
-            TRKGetFreeBuffer((void *)ctx->buffer0);
-        if (ctx->buffer1 != 0)
-            TRKGetFreeBuffer((void *)ctx->buffer1);
-        table = (struct CallbackTable *)&lbl_8055DEE0;
-        callback = table->callback;
-        callback(ctx->buffer2, table);
+    struct Context *player = (struct Context *)arg0;
+    struct CallbackTable *callbackTable;
+    void (*releaseCallback)(s32, struct CallbackTable *);
+
+    if (player->buffer0 != 0) {
+        player->flag = 1;
+        fn_8011943C(&player->buffer0, 0);
+        if (player->buffer0 != 0)
+            TRKGetFreeBuffer((void *)player->buffer0);
+        if (player->buffer1 != 0)
+            TRKGetFreeBuffer((void *)player->buffer1);
+        callbackTable = (struct CallbackTable *)&lbl_8055DEE0;
+        releaseCallback = callbackTable->callback;
+        releaseCallback(player->buffer2, callbackTable);
         lbl_8055DEE8 -= 1;
-        ctx->buffer0 = 0;
+        player->buffer0 = 0;
     }
 }
 
