@@ -840,7 +840,11 @@ extern float lbl_8055E2A4, lbl_805617D4, lbl_805617DC, lbl_805617E8, lbl_8056180
 #pragma push
 #pragma processor 750
 #pragma opt_common_subs off
-void fn_801602D4(struct Hit *arg0, void *arg1, void *arg2, float arg3) {
+void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, float arg4_) {
+    struct Hit *arg0 = (struct Hit *)arg0_;
+    void *arg1 = (void *)arg1_;
+    void *arg2 = arg2_;
+    float arg3 = arg4_;
     float dist, pos, height, low, high, t;
     s16 type;
     int first, last, i;
