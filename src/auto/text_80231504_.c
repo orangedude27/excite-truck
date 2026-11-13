@@ -315,42 +315,38 @@ void fn_80231780(void *arg0) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
-    f32 x;
-    f32 y;
-    f32 z;
+    f32 xx;
+    f32 yy;
+    f32 zz;
     u8 *record;
     s32 color;
     s32 offset;
     s32 i;
     u8 *object;
     s32 index;
-
     f31 = lbl_80563680;
     f30 = lbl_80563684;
     f29 = lbl_80563688;
     i = 0;
     offset = 0;
     goto loop_test;
-
 loop_body:
     record = *(u8 **)&lbl_8049846C[0] + offset;
     index = *(s32 *)record;
     object = *(u8 **)lbl_80497F14 + index * 0x1C;
-
     if (object[0x14] != 0)
         color = *(s32 *)(record + 0x18);
     else
         color = fn_80230B9C((*(s32 *)(record + 0x18) & 0xFF000000) | 0x00FFFFFF);
-
     if (*(s32 *)(object + 0x0C) != 0) {
-        z = *(f32 *)(record + 0x0C);
-        y = *(f32 *)(record + 8);
-        x = *(f32 *)(record + 4);
-        sp8 = x;
-        spC = y;
-        sp10 = z;
+        zz = *(f32 *)(record + 0x0C);
+        yy = *(f32 *)(record + 8);
+        xx = *(f32 *)(record + 4);
+        sp8 = xx;
+        spC = yy;
+        sp10 = zz;
         if (arg0 != 0) {
-            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x, y, z);
+            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, xx, yy, zz);
         }
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
@@ -381,7 +377,6 @@ loop_body:
     }
     offset += 0x1C;
     i += 1;
-
 loop_test:
     if (i < lbl_8049846C[1]) goto loop_body;
     lbl_8049846C[1] = 0;
@@ -1419,7 +1414,8 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
     } else if (arg4 & 2) {
         *arg2 -= farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1);
     } else if (arg4 & 4) {
-        *arg2 -= (farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1)) * lbl_80563688;
+        f32 prod = farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1);
+        *arg2 -= prod * lbl_80563688;
     }
     value = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
     if (arg4 & 8) {
@@ -1427,10 +1423,10 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
     } else if (arg4 & 0x20) {
         *arg3 -= value * ((f32)arg1[6] * farg0);
     } else if (arg4 & 0x10) {
-        *arg3 -= (value * ((f32)arg1[4] * farg0)) * lbl_80563688;
+        f32 prod2 = value * ((f32)arg1[4] * farg0);
+        *arg3 -= prod2 * lbl_80563688;
     }
 }
-#pragma scheduling on
 void fn_80233DD8(s32 *arg0, s32 arg1) {
     s32 temp_r31 = fn_8022EDC4();
     lbl_8055F050 = fn_80230B9C(arg1);
@@ -1749,11 +1745,11 @@ s32 textOffset;
 s32 charIndex;
 s32 nameIndex;
 s32 glyphOffset;
-u32 *colorPtr;
+s32 *colorPtr;
 u8 *object;
 u8 *record;
 u8 *glyphDef;
-u32 fontColor;
+s32 fontColor;
 s8 *start;
 s32 totalChars;
 s32 charStep;
@@ -1763,9 +1759,7 @@ s32 code;
 s32 *queue;
 u8 *render;
 u8 *glyphs;
-
 s8 *end;
-
 object = (u8 *)lbl_8055F058;
 mode = (*(u8 **)(object + 8) != 0) + 1;
 goto outer_test;
@@ -1784,8 +1778,8 @@ record = (u8 *)lbl_8055F06C + textOffset;
 f26 = *(f32 *)(record + 0x44);
 f28 = (f32)object[4] * *(f32 *)(record + 0x50);
 f27 = f28 + f26;
-if (mode == 2) colorPtr = (u32 *)(record + 0x4C);
-else colorPtr = (u32 *)(record + 0x48);
+if (mode == 2) colorPtr = (s32 *)(record + 0x4C);
+else colorPtr = (s32 *)(record + 0x48);
 f25 = *(f32 *)(record + 0x40);
 strlen((const char *)((u8 *)lbl_8055F06C + textOffset));
 charIndex = 0;
@@ -1800,9 +1794,7 @@ glyphOffset = 0;
 goto name_test;
 name_body:
 glyphDef = *(u8 **)lbl_80497F14 + glyphOffset;
-if (fn_8002B1D8((const char *)(start + 1),
-(const char *)*(u8 **)glyphDef,
-strlen((const char *)*(u8 **)glyphDef)) == 0) {
+if (fn_8002B1D8((const char *)(start + 1), (const char *)*(u8 **)glyphDef, strlen((const char *)*(u8 **)glyphDef)) == 0) {
 queue = (s32 *)lbl_8049846C;
 f24 = lbl_8056368C;
 glyphIndex = queue[1];
@@ -1810,22 +1802,16 @@ render = *(u8 **)queue + glyphIndex * 0x1C;
 queue[1] = glyphIndex + 1;
 *(s32 *)render = nameIndex;
 if (*(s32 *)(glyphDef + 0x0C) != 0) {
-f24 = f28 / fn_80235F64(*(s32 *)(glyphDef + 0x0C),
-*(s32 *)(glyphDef + 0x10));
+f24 = f28 / fn_80235F64(*(s32 *)(glyphDef + 0x0C), *(s32 *)(glyphDef + 0x10));
 *(f32 *)(render + 0x10) = f28 * *(f32 *)(glyphDef + 4);
-*(f32 *)(render + 0x14) =
-f24 * *(f32 *)(glyphDef + 4) *
-fn_80235EF0(*(s32 *)(glyphDef + 0x0C),
-*(s32 *)(glyphDef + 0x10));
-f24 = *(f32 *)(glyphDef + 4) *
-(*(f32 *)(glyphDef + 0x18) * f24);
+*(f32 *)(render + 0x14) = f24 * *(f32 *)(glyphDef + 4) * fn_80235EF0(*(s32 *)(glyphDef + 0x0C), *(s32 *)(glyphDef + 0x10));
+f24 = *(f32 *)(glyphDef + 4) * (*(f32 *)(glyphDef + 0x18) * f24);
 } else {
 *(f32 *)(render + 0x14) = f28 * *(f32 *)(glyphDef + 4);
 *(f32 *)(render + 0x10) = f28 * *(f32 *)(glyphDef + 4);
 }
 *(f32 *)(render + 4) = f25;
-*(f32 *)(render + 8) =
-f27 + f30 * (*(f32 *)(render + 0x10) - f28);
+*(f32 *)(render + 8) = f27 + f30 * (*(f32 *)(render + 0x10) - f28);
 *(f32 *)(render + 0x0C) = f31;
 *(s32 *)(render + 0x18) = fontColor;
 if (&sp8 != 0) {
@@ -1850,8 +1836,7 @@ f25 += sp8;
 goto char_test;
 }
 if ((start[0] & 0xF0) == 0xE0) {
-decoded = ((start[0] & 0x0F) << 12) |
-((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
+decoded = ((start[0] & 0x0F) << 12) | ((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
 end = start + 3;
 } else if ((start[0] & 0xE0) == 0xC0) {
 decoded = ((start[0] & 0x1F) << 6) | (start[1] & 0x3F);
@@ -1866,14 +1851,10 @@ glyphs = *(u8 **)(object + 0x10);
 f25 += *(f32 *)(record + 0x54) * *(f32 *)(glyphs += glyphOffset);
 f24 = f25 + *(f32 *)(record + 0x50) * *(f32 *)(glyphs + 4);
 if (code != 0x20) {
-fn_802C8E00(*colorPtr, 0, f25, f27, lbl_8056368C,
-*(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x10));
-fn_802C8E00(*colorPtr, 0, f24, f27, lbl_8056368C,
-*(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x10));
-fn_802C8E00(*colorPtr, 1, f25, f26, lbl_8056368C,
-*(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x18));
-fn_802C8E00(*colorPtr, 1, f24, f26, lbl_8056368C,
-*(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x18));
+fn_802C8E00(*colorPtr, 0, f25, f27, lbl_8056368C, *(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x10));
+fn_802C8E00(*colorPtr, 0, f24, f27, lbl_8056368C, *(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x10));
+fn_802C8E00(*colorPtr, 1, f25, f26, lbl_8056368C, *(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x18));
+fn_802C8E00(*colorPtr, 1, f24, f26, lbl_8056368C, *(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x18));
 }
 charIndex += end - start;
 f25 += *(f32 *)(record + 0x50) * *(f32 *)(glyphs + 4);
