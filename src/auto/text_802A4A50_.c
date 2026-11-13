@@ -1245,16 +1245,13 @@ extern f32 lbl_80564858;
 extern f32 lbl_8056485C;
 extern f32 lbl_80564888;
 s32 fn_802A711C(void *, f32, f32, f32);
-#pragma scheduling invalid_target
+#pragma scheduling off
 s32 fn_802A6A44(s32 *arg0) {
-    f32 d;
-    f32 b = lbl_80564888;
-    f32 c;
+    f32 d = lbl_80564858;
     f32 a = lbl_8056485C;
+    f32 c = lbl_80564850;
+    f32 b = lbl_80564888;
     f32 *p = (f32 *)arg0;
-
-    c = lbl_80564850;
-    d = lbl_80564858;
     p[5] = a;
     p[6] = c;
     p[7] = b;
@@ -1266,7 +1263,7 @@ s32 fn_802A6A44(s32 *arg0) {
     p[16] = d;
     return fn_802A711C(arg0, b, c, a);
 }
-
+#pragma scheduling on
 extern f32 lbl_805648A4;
 #pragma scheduling invalid_target
 void fn_802A6A7C(void *arg0) {
