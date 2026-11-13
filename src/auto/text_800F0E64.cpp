@@ -5813,6 +5813,14 @@ extern "C" void fn_800FC600(void *arg0, f32 value) { u32 token = OSDisableInterr
 
 extern "C" f32 fn_800FC640(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x460); }
 
+/* snd_StrmPlayer.cpp's assertion strings.  Each player there keeps one FX send
+ * level per aux bus (nw4hbm::snd::AuxBus); the setters update the array with
+ * interrupts off.  The library's own message still calls the bus "remoteIndex". */
+#define SND_STRMPLAYER_CPP ((const char *)lbl_80326768) /* "snd_StrmPlayer.cpp" */
+#define STR_REMOTE_OOB     ((const char *)lbl_803268E4) /* "remoteIndex is out of bounds(%d)\n%d <= remoteIndex < %d not satisfied" */
+#define AUX_BUS_COUNT      4                            /* aux buses a player sends to */
+#define STRM_FX_SEND(p, bus) (*(f32 *)((u8 *)(p) + 0x480 + (bus) * 4)) /* 0x480 FX send level of one aux bus */
+
 extern "C" const char lbl_803268AC[];
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC648(void *self, s32 bus, f32 value) {
     /* Set the FX send amount for an aux bus (0 <= bus < 3) on this sequence
