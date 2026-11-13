@@ -1681,11 +1681,12 @@ extern unsigned char lbl_802FAC70[];
 extern void GXSetAlphaCompare(int, unsigned char, int, int, int);
 extern void GXSetZMode(int, int, int);
 extern unsigned char lbl_8055FD24;
-void fn_802D0E48(int arg0) {
-    if (arg0 == 0) {
+/* Configure alpha compare and Z mode for transparent (mode 0) or opaque (mode 1) drawing. */
+void fn_802D0E48(int mode) {
+    if (mode == 0) {
         GXSetAlphaCompare(3, lbl_8055FD24, 1, 0, 0);
         GXSetZMode(1, 3, 0);
-    } else if (arg0 == 1) {
+    } else if (mode == 1) {
         GXSetAlphaCompare(4, lbl_8055FD24, 1, 0, 0);
         GXSetZMode(1, 3, 1);
     }
