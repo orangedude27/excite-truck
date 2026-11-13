@@ -4048,7 +4048,8 @@ done:;
 }
 
 #pragma use_lmw_stmw off
-extern "C" void fn_8015E778(Unk801577F0V* arg0, s32 arg1, s32 arg2, f32 farg0) {
+/* Broadcast a 3-argument (s32, s32, f32) call to each active child entry when this container is enabled. */
+extern "C" void fn_8015E778(Unk801577F0V* container, s32 param1, s32 param2, f32 param3) {
     // Note: use_lmw_stmw off selects the target's save helpers; this interface selects slot 0x2c.
     struct Entry {
         virtual void v0();
@@ -4062,16 +4063,16 @@ extern "C" void fn_8015E778(Unk801577F0V* arg0, s32 arg1, s32 arg2, f32 farg0) {
         virtual void v8();
         virtual void Call(s32, s32, f32);
     };
-    if (arg0->m54 != 0) {
-        s32 offset;
-        s32 i;
-        i = 0;
-        offset = 0;
-        while (i < *(s32*)((u8*)arg0 + 8)) {
-            void* item = *(void**)((u8*)*(void**)((u8*)arg0 + 4) + offset);
-            ((Entry*)item)->Call(arg1, arg2, farg0);
-            offset += 4;
-            i++;
+    if (container->m54 != 0) {
+        s32 byteOffset;
+        s32 index;
+        index = 0;
+        byteOffset = 0;
+        while (index < *(s32*)((u8*)container + 8)) {
+            void* child = *(void**)((u8*)*(void**)((u8*)container + 4) + byteOffset);
+            ((Entry*)child)->Call(param1, param2, param3);
+            byteOffset += 4;
+            index++;
         }
     }
 }
