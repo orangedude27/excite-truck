@@ -20,6 +20,20 @@ extern float lbl_80558DC4[];
 extern void *fn_8012850C(int, const char *);
 extern char lbl_80340108[];
 extern char lbl_80340114[];
+typedef struct UITBRec {
+    void *data;
+    int count;
+    int unk8;
+    int unkC;
+    int unk10;
+    int total;
+    int *lens;
+    int *offs;
+    int unk20;
+    int unk24;
+    int magic;
+    int unk2C;
+} UITBRec;
 #pragma scheduling invalid_target
 void *fn_8022D228(void *arg0, int arg1, int arg2, int arg3) {
     /* Initialize a fixed-capacity string list: store capacity/count/maxLen and allocate
@@ -88,7 +102,7 @@ char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
 
 extern void fn_8022D76C(void *);
 #pragma scheduling invalid_target
-void *fn_8022D458(void *arg0, int arg1, int arg2, int *arg3) {
+void *fn_8022D458(void *arg0, int arg1, int arg2, void **arg3) {
     char *base;
     int size;
     int i;
@@ -105,7 +119,7 @@ void *fn_8022D458(void *arg0, int arg1, int arg2, int *arg3) {
     *(int *)((char *)arg0 + 0x28) = 0x55495442;
     *(int *)((char *)arg0 + 0x14) = 0;
     for (i = 0; i < arg2; i++) {
-        ((int *)(*(int *)((char *)arg0 + 0x18)))[i] = arg3[i];
+        ((int *)(*(int *)((char *)arg0 + 0x18)))[i] = (int)arg3[i];
         ((int *)(*(int *)((char *)arg0 + 0x1C)))[i] = *(int *)((char *)arg0 + 0x14);
         *(int *)((char *)arg0 + 0x14) += ((int *)(*(int *)((char *)arg0 + 0x18)))[i] + 1;
     }
