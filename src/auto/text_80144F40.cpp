@@ -368,10 +368,11 @@ struct TextSizeEntry80145538 {
     s32 color;         /* +0x18 "color", "#rrggbb" parsed by fn_801454E8 */
 };
 
-extern "C" void fn_80145538(void *arg0, void *arg1) {
-    extern void fn_80145368(void *, void *);
-    extern s32 fn_801454E8(void *, const char *);
-    class V {
+/* Fills one on-screen text entry from a level's property set: the common
+   id/x/y/justification fields by fn_80145368, then the "wid"/"hit" pixel size
+   and the "#rrggbb" "color" that fn_801454E8 parses as an integer. */
+extern "C" void fn_80145538(TextSizeEntry80145538 *entry, void *propertySource) {
+    class PropertySet {
     public:
         virtual void f0();
         virtual void f1();
@@ -380,13 +381,13 @@ extern "C" void fn_80145538(void *arg0, void *arg1) {
         virtual void f4();
         virtual void f5();
         virtual void f6();
-        virtual f32 f7(const char *);
+        virtual f32 getFloat(const char *); /* vtable slot 0x24: float property */
     };
-    V *obj = (V *)arg1;
-    fn_80145368(arg0, arg1);
-    *(f32 *)((u8 *)arg0 + 0x10) = obj->f7((const char *)&lbl_80559DE0);
-    *(f32 *)((u8 *)arg0 + 0x14) = obj->f7((const char *)&lbl_80559DE4);
-    *(s32 *)((u8 *)arg0 + 0x18) = fn_801454E8(arg1, lbl_80559DFC);
+    PropertySet *props = (PropertySet *)propertySource;
+    fn_80145368(entry, propertySource);
+    entry->width = props->getFloat((const char *)&lbl_80559DE0);  /* "wid" */
+    entry->height = props->getFloat((const char *)&lbl_80559DE4); /* "hit" */
+    entry->color = fn_801454E8(propertySource, lbl_80559DFC);     /* "color" */
 }
 
 extern "C" s32 fn_801455B8(void *arg0, void *arg1) {
