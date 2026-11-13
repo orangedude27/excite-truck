@@ -196,15 +196,16 @@ extern "C" void fn_8018FB18(void) {
 #pragma cplusplus reset
 
 void fn_8018FC38(void) {
-    s32 count = fn_80137C74();
-    s32 *p = (s32 *)lbl_804349B0;
+    /* Allocate a 0x46500-byte replay-packet buffer per player (fn_80137C74) and log total KB allocated. */
+    s32 playerCount = fn_80137C74();
+    s32 *slot = (s32 *)lbl_804349B0;
     s32 i = 0;
-    while (i < count) {
-        *p = fn_8012850C(0x46500, lbl_80332E94);
-        p++;
+    while (i < playerCount) {
+        *slot = fn_8012850C(0x46500, lbl_80332E94);
+        slot++;
         i++;
     }
-    fn_802E30C8(lbl_80332EA0, ((u32)(count * 0x8CA0) >> 7) & 0x3FFFFF);
+    fn_802E30C8(lbl_80332EA0, ((u32)(playerCount * 0x8CA0) >> 7) & 0x3FFFFF);
 }
 #pragma use_lmw_stmw reset
 void fn_8018FCC4(void) {
