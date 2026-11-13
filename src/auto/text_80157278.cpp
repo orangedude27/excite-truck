@@ -258,8 +258,9 @@ public:
     s32 m4;
     u8 pad_4[0x250];
     s32 m258;
-    u8 pad_25c[4];
+    f32 m25c;
     s32 m260;
+    s32 m264;
 };
 
 class Unk8015E910V {
@@ -497,6 +498,110 @@ extern "C" s32 fn_80157278(s32 arg0) {
     s32* item = (s32*)lbl_804348E8[arg0];
     s32 value = item[4];
     return value == 0x41434152;
+}
+
+struct VObj;
+extern "C" void fn_80157560(VObj*);
+extern "C" s32 fn_80157558(void*);
+extern "C" s32 fn_8015782C(s32*, s32);
+extern "C" void* fn_8015783C(void*, s32, s32);
+extern "C" void* fn_801579F4(void*, s32, s32);
+extern "C" void* fn_80157B00(void*, s32, s32);
+extern "C" void* fn_80157CF0(void*, s32, s32);
+extern "C" void* fn_80157DA0(void*, s32, s32);
+extern "C" void* fn_80157F98(void*, s32, s32);
+extern "C" void* fn_80158054(void*, s32, s32, void*);
+extern "C" void* fn_8015812C(void*, s32, s32, void*);
+extern "C" void* fn_801582A4(void*, s32, s32, void*);
+extern "C" void* fn_80158280(void*, s32*);
+extern "C" void* fn_80158374(void*, s32, s32, s32);
+extern "C" void fn_801584A4(void*);
+extern "C" void fn_801584A8(void*);
+extern "C" void fn_801584C4(void**);
+extern "C" void* fn_801284F8(u32, void*);
+extern "C" char lbl_8032EB0C[];
+extern "C" void* fn_801572A4(s32 arg0, s32 arg1, s32 arg2) {
+    s32 sa;
+    lbl_8042FD08[arg1] = lbl_80561750;
+    void* obj = fn_801284F8(0x5C, (void*)(lbl_8032E4E0 + 0x53C));
+    if (obj != 0) {
+        sa = arg2;
+        char* base = lbl_8032E4E0;
+        fn_801584C4((void**)obj);
+        *(void**)obj = (void*)lbl_8032EB0C;
+        fn_801584A8((u8*)obj + 4);
+        fn_801584A4(&sa);
+        void* h = fn_801284F8(0x10, (void*)(base + 0x54C));
+        if (h != 0) {
+            h = fn_80158374(h, (s32)(base + 0x558), (s32)(base + 0x564), arg1);
+        }
+        *(void**)((u8*)obj + 0x50) = h;
+        void *t9, *t8, *t7, *t6, *t5, *t4, *t3, *t2, *t1;
+        void* a;
+        a = fn_801284F8(0x27C, (void*)(base + 0x570));
+        if (a != 0) {
+            a = fn_801582A4(a, arg0, arg1, *(void**)((u8*)obj + 0x50));
+        }
+        t1 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t1);
+        a = fn_801284F8(0x27C, (void*)(base + 0x57C));
+        if (a != 0) {
+            a = fn_8015812C(a, arg0, arg1, *(void**)((u8*)obj + 0x50));
+        }
+        t2 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t2);
+        a = fn_801284F8(0x2DC, (void*)(base + 0x58C));
+        if (a != 0) {
+            a = fn_80158054(a, arg0, arg1, *(void**)((u8*)obj + 0x50));
+        }
+        t3 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t3);
+        a = fn_801284F8(0x280, (void*)(base + 0x59C));
+        if (a != 0) {
+            a = fn_80157F98(a, arg0, arg1);
+        }
+        t4 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t4);
+        a = fn_801284F8(0x2F4, (void*)(base + 0x5A8));
+        if (a != 0) {
+            a = fn_80157DA0(a, arg0, arg1);
+        }
+        t5 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t5);
+        a = fn_801284F8(0x27C, (void*)(base + 0x5B8));
+        if (a != 0) {
+            a = fn_80157CF0(a, arg0, arg1);
+        }
+        t6 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t6);
+        a = fn_801284F8(0x29C, (void*)(base + 0x5C8));
+        if (a != 0) {
+            a = fn_80157B00(a, arg0, arg1);
+        }
+        t7 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t7);
+        a = fn_801284F8(0x254, (void*)(base + 0x5D8));
+        if (a != 0) {
+            a = fn_801579F4(a, arg0, arg1);
+        }
+        t8 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t8);
+        a = fn_801284F8(0x27C, (void*)(base + 0x5E8));
+        if (a != 0) {
+            a = fn_8015783C(a, arg0, arg1);
+        }
+        t9 = a;
+        fn_80158280((void*)((u8*)obj + 4), (s32*)&t9);
+        s32 i = 0;
+        while (i < fn_80157558((void*)((u8*)obj + 4))) {
+            fn_80157560(*(VObj**)(u32)fn_8015782C((s32*)((u8*)obj + 4), i));
+            i++;
+        }
+        *(u8*)((u8*)obj + 0x54) = 1;
+        *(s32*)((u8*)obj + 0x58) = arg1;
+        (void)arg2;
+    }
+    return obj;
 }
 
 extern "C" s32 fn_80157558(void* arg0) {
