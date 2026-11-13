@@ -389,7 +389,8 @@ extern "C" void fn_8028ABE8(void *arg0) {
 #pragma scheduling on
 #pragma pop
 
-void fn_8028AD78(void) {
+#pragma cplusplus on
+extern "C" void fn_8028AD78(void) {
     register u8 *slot;
     register s32 i;
     register s32 zero = 0;
@@ -410,6 +411,7 @@ next:
         if (i < 8) goto loop;
     }
 }
+#pragma cplusplus reset
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -483,8 +485,7 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                     f22 = k27 * FLD(e, 0x24);
                     c1[0] += fn_80287BC8(-f22, f22);
                     c1[2] += fn_80287BC8(-f22, f22);
-                    ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(
-                        *(void **)t, a1, c1, *(s16 *)(m + 0x30), i);
+                    ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(*(void **)t, a1, c1, *(s16 *)(m + 0x30), i);
                 } else if (FLD(e, 0x24) > k28 && roll < *(s32 *)(t + 0xC)) {
                     f32 r;
                     a2.x = FLD(e, 0);
@@ -515,8 +516,7 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                     f22 = k27 * FLD(e, 0x24);
                     b2[0] += fn_80287BC8(-f22, f22);
                     b2[2] += fn_80287BC8(-f22, f22);
-                    ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(
-                        *(void **)t, (f32 *)&a2, b2, *(s16 *)(m + 0x30), i);
+                    ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(*(void **)t, (f32 *)&a2, b2, *(s16 *)(m + 0x30), i);
                 }
             }
         }
@@ -655,7 +655,7 @@ extern "C" s32 fn_8028B500(void *arg0) {
         emitter = *(Emitter **)((u8 *)lbl_804B3238 + kind * 0x10);
         if (emitter) {
             s32 i, n;
-            f32 zero2, spread2;
+            register f32 zero2, spread2;
             spread2 = lbl_80564378 * magnitude;
             n = count / 3;
             spread2 = spread2 < lbl_80564394 ? spread2 : lbl_80564394;
@@ -1035,7 +1035,7 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
     t = fn_801E7E18();
     s = fn_801E7E24();
     for (i = 0; i < 9; i++)
-        m[i] = a2[i];
+        ((s32 *)m)[i] = ((s32 *)a2)[i];
     {
         f32 a = m[1];
         m[1] = m[3];
