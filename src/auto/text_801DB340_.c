@@ -68,10 +68,10 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
         node = 0;
     } else {
         tile = ((unsigned short (*)[0x60])lbl_80442708)[tileX][tileZ];
-        if (tile != 0xFFFF) {
-            node = *(char **)((char *)lbl_8055E990 + 0x18) + tile * 0x894;
-        } else {
+        if (tile == 0xFFFF) {
             node = 0;
+        } else {
+            node = *(char **)((char *)lbl_8055E990 + 0x18) + tile * 0x894;
         }
     }
     if (node == 0) {
