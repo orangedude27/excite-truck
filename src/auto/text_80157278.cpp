@@ -3475,6 +3475,7 @@ extern "C" void fn_8015D384(Unk801577F0* arg0) {
     }
 }
 
+/* Finalize and apply the accumulated adjustment (m25c * v18(v21())) via v33/v31, clear the pending count, and reset m25c. */
 extern "C" void fn_8015D400(Unk801577F0* arg0) {
     class LocalVtable {
     public:
@@ -3488,14 +3489,14 @@ extern "C" void fn_8015D400(Unk801577F0* arg0) {
         virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
         virtual void v32(); virtual void v33(f32*);
     };
-    f32 value;
-    s32 result = arg0->v21();
-    value = arg0->m25c * arg0->v18(result);
-    ((LocalVtable*)arg0)->v33(&value);
+    f32 adjustedValue;
+    s32 index = arg0->v21();
+    adjustedValue = arg0->m25c * arg0->v18(index);
+    ((LocalVtable*)arg0)->v33(&adjustedValue);
     ((LocalVtable*)arg0)->v31();
-    f32 zero = lbl_80561750;
+    f32 resetValue = lbl_80561750;
     arg0->m264 = 0;
-    arg0->m25c = zero;
+    arg0->m25c = resetValue;
 }
 
 extern "C" u32 fn_8015D498(void) { return 1; }
