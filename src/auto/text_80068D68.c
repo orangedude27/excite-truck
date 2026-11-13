@@ -23897,7 +23897,19 @@ done:
     port_rfc_closed((struct t_port_info *)port, 0x13);
 }
 
-extern char lbl_80319F28[];
+/* ---- tPORT / tRFC_MCB fields the credit handling reads ---------------------
+ * port_int.h is not part of this unit, so the fields are named here at the
+ * offsets this build uses (PORT_MCB, tPORT.rfc.p_mcb, is named with the port
+ * pool above).  PORT_FC_CREDIT is port_int.h's flow control mechanism value
+ * for credit-based RFCOMM.
+ */
+#define PORT_DLCI               0x0D    /* tPORT.dlci */
+#define PORT_TX_PEER_FC         0x24    /* tPORT.tx.peer_fc: sending is stopped */
+#define PORT_CREDIT_TX          0x98    /* tPORT.credit_tx: credits we hold */
+#define RFC_MCB_FLOW            0x72    /* tRFC_MCB.flow: the mux's flow control */
+#define PORT_FC_CREDIT          2       /* port_int.h: credit based flow control */
+
+extern char lbl_80319F28[];             /* "rfc_inc_credit:%d" */
 void rfc_inc_credit(struct t_port_info *p_port, u8 credit) {
     u16 newCredit;
     if ((*(u8 **)((u8 *)p_port + 0x6C))[0x72] != 2)
@@ -28000,6 +28012,150 @@ void fn_8006BAA4(u32 arg0) {
         return;
     }
     DBPrintf_8006CFA8(lbl_80313794);
+}
+
+void fn_8006BAD8(u32 event, u8 *data)
+{
+    u8 *strings = lbl_803130C8;
+    u8 *base = lbl_80392960;
+    u8 *wcb = base;
+    u8 *work;
+    u8 *pInfo;
+    u8 pin[6];
+    u8 *pinSrc;
+    int intr;
+    u8 linked;
+    u8 i;
+    OSTime now;
+    u32 scale;
+    DBPrintf_8006CFA8((char *)strings + 0x6ec);
+    switch (event) {
+    case 0: {
+        memcpy(wcb + 0x682, data, 6);
+        DBPrintf_8006CFA8((char *)strings + 0x708);
+        DBPrintf_8006CFA8((char *)strings + 0x718, wcb[0x682], wcb[0x683], wcb[0x684], wcb[0x685], wcb[0x686], wcb[0x687]);
+        BTA_HhEnable(0x12, fn_8006CAA8);
+        wcb[0xF] = 1;
+        OSCreateAlarm((OSAlarm *)(wcb + 0x690));
+        now = __OSGetSystemTime();
+        scale = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 10;
+        ((void (*)(void *, u64, u32, u32, void (*)(u32, u32)))OSSetPeriodicAlarm)(wcb + 0x690, now, 0, scale, (void (*)(u32, u32))fn_8006A1BC);
+        wcb[0x688] = 2;
+        break;
+    }
+    case 1: {
+        DBPrintf_8006CFA8((char *)strings + 0x740);
+        fn_80070AF0((s32)fn_8006BAA4);
+        break;
+    }
+    case 2: {
+        DBPrintf_8006CFA8((char *)strings + 0x754);
+        if (wcb[0x669] == 0)
+            pinSrc = wcb + 0x682;
+        else
+            pinSrc = data;
+        work = base + 0xC68;
+        work[0x5A] = 1;
+        intr = OSDisableInterrupts();
+        pin[0] = pinSrc[5];
+        pin[1] = pinSrc[4];
+        pin[2] = pinSrc[3];
+        pin[3] = pinSrc[2];
+        pin[4] = pinSrc[1];
+        pin[5] = pinSrc[0];
+        OSRestoreInterrupts(intr);
+        BTA_DmPinReply(data, 1, 6, pin);
+        break;
+    }
+    case 3: {
+        DBPrintf_8006CFA8((char *)strings + 0x768);
+        DBPrintf_8006CFA8((char *)strings + 0x780, data[0], data[1], data[2], data[3], data[4], data[5]);
+        DBPrintf_8006CFA8((char *)strings + 0x7a8, data[0xFF], data[0x100], data[0x101], data[0x102], data[0x103], data[0x104], data[0x105], data[0x106], data[0x107], data[0x108], data[0x109], data[0x10A], data[0x10B], data[0x10C], data[0x10D], data[0x10E]);
+        DBPrintf_8006CFA8((char *)strings + 0x804, data[0x10F]);
+        if (data[0x10F] == 0)
+            break;
+        pInfo = WUDiGetDevInfo(data);
+        work = base + 0xC68;
+        if (memcmp(work + 0x40, data, 6) == 0) {
+            work[0x59] = 12;
+            if (pInfo == 0)
+                pInfo = work;
+        }
+        memcpy(pInfo + 0x46, data + 0xFF, 0x10);
+        break;
+    }
+    case 4: {
+        DBPrintf_8006CFA8((char *)strings + 0x814);
+        break;
+    }
+    case 5: {
+        DBPrintf_8006CFA8((char *)strings + 0x82c);
+        DBPrintf_8006CFA8((char *)strings + 0x840, data[0], data[1], data[2], data[3], data[4], data[5]);
+        pInfo = WUDiGetDevInfo(data);
+        work = base + 0xC68;
+        if (pInfo == 0 && memcmp(work + 0x40, data, 6) == 0)
+            pInfo = work;
+        intr = OSDisableInterrupts();
+        linked = base[0x665];
+        OSRestoreInterrupts(intr);
+        if (pInfo == 0 || linked == 4) {
+            btm_remove_acl(data);
+            if (pInfo == 0)
+                DBPrintf_8006CFA8((char *)strings + 0x86c, (char *)strings + 0x894, data[0], data[1], data[2], data[3], data[4], data[5]);
+            else
+                DBPrintf_8006CFA8((char *)strings + 0x86c, (char *)strings + 0x8a0, data[0], data[1], data[2], data[3], data[4], data[5]);
+            break;
+        }
+        if (pInfo[0x59] == 2)
+            pInfo[0x59] = 12;
+        else
+            pInfo[0x59] = 3;
+        wcb[0x665]++;
+        break;
+    }
+    case 6: {
+        DBPrintf_8006CFA8((char *)strings + 0x8b0);
+        DBPrintf_8006CFA8((char *)strings + 0x840, data[0], data[1], data[2], data[3], data[4], data[5]);
+        DBPrintf_8006CFA8((char *)strings + 0x8c8, data[6]);
+        pInfo = WUDiGetDevInfo(data);
+        if (pInfo != 0) {
+            pInfo[0x59] = 1;
+            wcb[0x665]--;
+            if (memcmp(base + 0xC68 + 0x40, data, 6) == 0) {
+                wcb[0xC] = 0xFF;
+                if (data[6] == 0x15) {
+                    for (i = 0; i < 4; i++) {
+                        u8 *entry = base + 0x6F8 + (i + 10) * 0x46 + 1;
+                        if (memcmp(entry, data, 6) == 0) {
+                            memset(entry, 0, 0x46);
+                            lbl_8055DC11 = 1;
+                        }
+                    }
+                }
+            }
+        } else {
+            if (memcmp(base + 0xC68 + 0x40, data, 6) == 0) {
+                wcb[0xC] = 0xFF;
+                wcb[0x665]--;
+            } else {
+                DBPrintf_8006CFA8((char *)strings + 0x8d4);
+            }
+        }
+        if (wcb[0x665] >= 0xFA) {
+            OSReport((char *)strings + 0x8f0);
+            wcb[0x665] = 0;
+        }
+        break;
+    }
+    case 7: {
+        DBPrintf_8006CFA8((char *)strings + 0x914);
+        break;
+    }
+    case 8: {
+        DBPrintf_8006CFA8((char *)strings + 0x930);
+        break;
+    }
+    }
 }
 
 void fn_8006C00C(s32 event, void *arg) {
