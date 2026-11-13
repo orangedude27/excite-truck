@@ -11593,9 +11593,12 @@ void bta_dm_disc_result(void *arg0) {
 
 extern void fn_80072524(void);
 void bta_dm_discover_next_device(void);
-void bta_dm_search_result(void *arg0) {
-    if (*(u32 *)((u8 *)arg0 + 0x108) != 0)
-        ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
+/* Handles a service discovery result during device search: reports any discovered
+ * services to the search callback, then advances to the next device or starts a
+ * wait-for-disconnect timer. */
+void bta_dm_search_result(void *p_data) {
+    if (*(u32 *)((u8 *)p_data + 0x108) != 0)
+        ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)p_data + 8);
     if (lbl_803C0B98[0x78] == 0) {
         lbl_803C0B98[0x78] = 0;
         bta_dm_discover_next_device();
