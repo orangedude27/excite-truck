@@ -2809,22 +2809,26 @@ struct ResourceStream {
 #define RES_STREAM_HEAP      ((void *)&lbl_805599C8)  // "resbuf": the stream object
 #define RES_STREAM_DATA_HEAP ((void *)&lbl_805599D0)  // "resbufb": its read-ahead buffer
 
-extern "C" void *fn_8012EC90(s32 arg0) {
-    s32 count = arg0;
-    void *obj = fn_801284F8(0x2C, (void *)&lbl_805599C8);
-    memset(obj, 0, 0x2C);
-    *(s32 *)obj = count;
-    fn_801282EC(0x80);
-    s32 data = (s32)fn_8012850C(count << 1, (void *)&lbl_805599D0);
-    *(s32 *)((u8 *)obj + 8) = 0;
-    *(s32 *)((u8 *)obj + 4) = data;
-    *(s32 *)((u8 *)obj + 0x10) = 0;
-    *(s32 *)((u8 *)obj + 0x18) = 0;
-    *(s32 *)((u8 *)obj + 0x14) = data + count;
-    *(s32 *)((u8 *)obj + 0x20) = 0;
-    *(s32 *)((u8 *)obj + 0x28) = 0;
-    *(s32 *)((u8 *)obj + 0x24) = 0;
-    return obj;
+extern "C" ResourceStream *fn_8012EC90(s32 chunkSize) {
+    /* Allocate and clear a ResourceStream that reads a resource file ahead in
+       chunks of `chunkSize`: the object comes from the "resbuf" heap and its
+       double buffer (2 * chunkSize bytes, 0x80-aligned) from "resbufb", with
+       slot 1's buffer starting where slot 0's chunk lands. */
+    s32 size = chunkSize;
+    ResourceStream *stream = (ResourceStream *)fn_801284F8(sizeof(ResourceStream), RES_STREAM_HEAP);
+    memset(stream, 0, sizeof(ResourceStream));
+    stream->size = size;
+    fn_801282EC(0x80);  // align the next allocation to 0x80
+    s32 buffer = (s32)fn_8012850C(size << 1, RES_STREAM_DATA_HEAP);
+    stream->entries[0].request = 0;
+    stream->entries[0].buffer = buffer;
+    stream->entries[0].state = 0;
+    stream->entries[1].request = 0;
+    stream->entries[1].buffer = buffer + size;
+    stream->entries[1].state = 0;
+    stream->boundary = 0;
+    stream->limit = 0;
+    return stream;
 }
 
 extern "C" void fn_8012ED20(void *arg0) {
