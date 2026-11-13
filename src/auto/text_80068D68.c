@@ -4683,22 +4683,25 @@ void UUSB_Close(void *arg0) {
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
     fn_8006EBAC();
     {
-        u32 base = (u32)&lbl_803BD1E0;
-        *(u8 *)(base + 0x29) = 0;
+        u8 *base = (u8 *)&lbl_803BD1E0;
+        base[0x29] = 0;
         fn_8006EB88();
         if (*(u16 *)(base + 0x34) != 0) {
             while (*(u16 *)(base + 0x34) != 0) {
                 GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x2C)));
             }
         }
-        base = (u32)&lbl_803BD1E0;
+    }
+    {
+        u8 *base = (u8 *)&lbl_803BD1E0;
         if (*(u16 *)(base + 0x44) != 0) {
             while (*(u16 *)(base + 0x44) != 0) {
                 GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x3C)));
             }
         }
     }
-    IUSB_CloseDeviceAsync(lbl_803BD1E0.fd, (void (*)(void))uusb_CloseDeviceCB, 0);
+    IUSB_CloseDeviceAsync(*(s32 *)&lbl_803BD1E0,
+                          (void (*)(void))uusb_CloseDeviceCB, 0);
 }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
@@ -8270,7 +8273,7 @@ found:
 }
 
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
-    u8 *log = lbl_80315CA0;
+    u8 * const log = lbl_80315CA0;
     u8 *p = lbl_803C0F78 + 0x34;
     u32 i;
     u16 mask, pkt, temp;
@@ -20935,51 +20938,64 @@ void PORT_DlcEstablishCnf(void *p_mcb, u8 dlci, u16 mtu, u16 result) {
     }
 }
 
-void PORT_PortNegInd(void *arg0, u8 arg1, u8 *arg2, u16 arg3) {
-    extern char lbl_80319380[];
-    extern void fn_800937A0(void *, u16, u16, u16);
-    void *port;
-    u8 *dst;
-    u8 *src;
+/* RFCOMM port-negotiation indication (port_rfc.c PORT_PortNegInd): the peer sent
+ * an RPN command frame for this dlci.  Tie the dlci to a port -- the one its
+ * multiplexed connection channel already uses, or, for the first request on a
+ * dlci we do not know yet, the free port with that dlci, which the MCB then
+ * remembers in its port_inx[dlci] -- keep the peer's 9-byte tPORT_STATE line
+ * parameters in the port and answer them with our own.  A dlci that cannot be
+ * tied to any port is refused by answering with a zero parameter mask. */
+void PORT_PortNegInd(void *p_mcb, u8 dlci, u8 *p_pars, u16 param_mask) {
+    extern char lbl_80319380[];                    /* "PORT_PortNegInd" */
+    extern void fn_800937A0(void *, u16, u16, u16); /* RFCOMM_PortNegRsp() */
+    u8 *port;
+    u8 *parsDst;
+    u8 *parsSrc;
     u8 first;
     u8 second;
 
-    port = port_find_mcb_dlci_port(arg0, arg1);
-    if (lbl_803C4828[0x414] >= 4)
+    port = (u8 *)port_find_mcb_dlci_port(p_mcb, dlci);
+    if (lbl_803C4828[0x414] >= 4) /* RFCOMM_TRACE_EVENT0 ("PORT_PortNegInd") */
         fn_8007093C(0x90003, lbl_80319380);
     if (port == NULL) {
-        port = port_find_dlci_port(arg1);
+        /* this can be the first request for this port */
+        port = (u8 *)port_find_dlci_port(dlci);
         if (port == NULL) {
-            dst = (u8 *)port;
-            src = arg2;
-            second = src[0]; first = src[1];
-            dst[0x51] = second; dst[0x52] = first;
-            first = src[2]; second = src[3];
-            dst[0x53] = first; dst[0x54] = second;
-            first = src[4]; second = src[5];
-            dst[0x55] = first; dst[0x56] = second;
-            first = src[6]; second = src[7];
-            dst[0x57] = first; dst[0x58] = second;
-            first = src[8];
-            dst[0x59] = first;
-            ((void (*)(void *, u16, void *, u16))fn_800937A0)(arg0, arg1, src, 0);
+            /* no port to hand the parameters to: they are still copied, to
+             * offset 0x51 of the null port, before the request is refused.
+             * (which of the two temporaries takes the lower byte of each pair
+             * is how the register allocation came out; both copies are the same) */
+            parsDst = (u8 *)port;
+            parsSrc = p_pars;
+            second = parsSrc[0]; first = parsSrc[1];
+            parsDst[0x51] = second; parsDst[0x52] = first;
+            first = parsSrc[2]; second = parsSrc[3];
+            parsDst[0x53] = first; parsDst[0x54] = second;
+            first = parsSrc[4]; second = parsSrc[5];
+            parsDst[0x55] = first; parsDst[0x56] = second;
+            first = parsSrc[6]; second = parsSrc[7];
+            parsDst[0x57] = first; parsDst[0x58] = second;
+            first = parsSrc[8];
+            parsDst[0x59] = first;
+            ((void (*)(void *, u16, void *, u16))fn_800937A0)(p_mcb, dlci, parsSrc, 0);
             return;
         }
-        *((u8 *)arg0 + arg1 + 0x24) = *(u8 *)port;
+        *((u8 *)p_mcb + dlci + 0x24) = port[0]; /* p_mcb->port_inx[dlci] = p_port->inx */
     }
-    dst = (u8 *)port;
-    src = arg2;
-    first = src[0]; second = src[1];
-    dst[0x51] = first; dst[0x52] = second;
-    first = src[2]; second = src[3];
-    dst[0x53] = first; dst[0x54] = second;
-    first = src[4]; second = src[5];
-    dst[0x55] = first; dst[0x56] = second;
-    first = src[6]; second = src[7];
-    dst[0x57] = first; dst[0x58] = second;
-    first = src[8];
-    dst[0x59] = first;
-    ((void (*)(void *, u16, void *, u16))fn_800937A0)(arg0, arg1, src, arg3);
+    /* p_port->peer_port_pars = *p_pars; */
+    parsDst = (u8 *)port;
+    parsSrc = p_pars;
+    first = parsSrc[0]; second = parsSrc[1];
+    parsDst[0x51] = first; parsDst[0x52] = second;
+    first = parsSrc[2]; second = parsSrc[3];
+    parsDst[0x53] = first; parsDst[0x54] = second;
+    first = parsSrc[4]; second = parsSrc[5];
+    parsDst[0x55] = first; parsDst[0x56] = second;
+    first = parsSrc[6]; second = parsSrc[7];
+    parsDst[0x57] = first; parsDst[0x58] = second;
+    first = parsSrc[8];
+    parsDst[0x59] = first;
+    ((void (*)(void *, u16, void *, u16))fn_800937A0)(p_mcb, dlci, parsSrc, param_mask);
 }
 
 extern char lbl_80319240[];
