@@ -990,20 +990,25 @@ extern "C" s32 fn_80161C70(void) {
     return 1;
 }
 extern "C" void **fn_80161C94(void) {
-    void *manager;
-    Obj_80161C94 *object;
+    struct ContestEntry *contest;
+    struct ContestParamTable *table;
     s32 result;
-    void **allocated;
+    void **manager;
 
-    manager = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
-    object = (Obj_80161C94 *)*(void **)((u8 *)manager + 0x20);
-    result = object->f21(lbl_8032F5DC);
+    /* Build the challenge sub-task manager for the contest being raced: its
+     * parameter table has to hold a "challenge" element for the manager -- a
+     * four-byte object that is nothing but the "chalsubtaskmgr" vtable -- to be
+     * allocated; without that element there is nothing to manage and 0 comes
+     * back. */
+    contest = (struct ContestEntry *)fn_8001285C(current_contest_index);
+    table = (struct ContestParamTable *)contest->table;
+    result = table->findElement(challenge_element);
     if (((u32)(-result | result) >> 31) != 0) {
-        allocated = (void **)fn_801284F8(4, lbl_8032F71C);
-        if (allocated != 0) {
-            *allocated = lbl_8032F760;
+        manager = (void **)fn_801284F8(4, chalsubtaskmgr_tag);
+        if (manager != 0) {
+            *manager = chalsubtaskmgr_vtable;
         }
-        return allocated;
+        return manager;
     }
     return 0;
 }
