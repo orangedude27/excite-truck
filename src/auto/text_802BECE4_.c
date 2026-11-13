@@ -431,6 +431,7 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
 
 extern "C" void *fn_802BF780(void *);
 extern "C" int fn_802BF6AC(void) {
+    /* Allocate and construct a water-env-map object; if initialization fails (f2() == 0), delete it and return NULL. */
     struct Dummy {
         virtual ~Dummy();
         virtual int f0();
