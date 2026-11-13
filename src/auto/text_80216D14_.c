@@ -244,23 +244,21 @@ check:
 }
 #pragma cplusplus on
 #pragma dont_inline on
-extern "C" void fn_802173F8(void *arg0) {
-    class Obj {
-    public:
-        virtual void m0();
-        virtual void m1();
-        virtual void m2();
-    };
-    char *base = (char *)arg0;
-    int i;
-    if (*(void **)(base + 0x43C) != 0) (*(void (**)(void))(base + 0x43C))();
-    i = *(int *)(base + 0x430) - 1;
-    base += i * 4;
-    while (i >= 0) {
-        void *obj = *(void **)(base + 0x30);
-        ((Obj *)obj)->m2();
-        base -= 4;
-        i--;
+/* Screen-exit pass for a UI menu group (fn_802168F0 runs it when its menu loop ends):
+ * runs the group's 0x43C callback, then walks the widgets back-to-front calling each
+ * widget's vtable+0x10 handler, and finally sets the UI key-sound suppression flag. */
+extern "C" void fn_802173F8(void *menuGroup) {
+    UiMenuGroup *group = (UiMenuGroup *)menuGroup;
+    char *widgetSlot = (char *)menuGroup;
+    int index;
+    if (group->beforeWidgetsCb != 0) group->beforeWidgetsCb();
+    index = group->widgetCount - 1;
+    widgetSlot += index * 4;
+    while (index >= 0) {
+        UiWidget *widget = *(UiWidget **)(widgetSlot + 0x30);
+        widget->v2();
+        widgetSlot -= 4;
+        index--;
     }
     fn_80216D28();
 }
