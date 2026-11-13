@@ -133,8 +133,9 @@ void fn_80033918(void *arg0, void *arg1) {
 }
 
 void fn_800339B0(void *arg0, void *arg1) {
-    int state;
-    state = OSDisableInterrupts();
+    /* Copy AXPBSRC parameters into the voice's parameter block and mark SRC sync. */
+    int enabled;
+    enabled = OSDisableInterrupts();
     *(unsigned short *)((char *)arg0 + 0x1E8) = *(unsigned short *)arg1;
     *(unsigned short *)((char *)arg0 + 0x1EA) = *(unsigned short *)((char *)arg1 + 2);
     *(unsigned short *)((char *)arg0 + 0x1EC) = *(unsigned short *)((char *)arg1 + 4);
@@ -143,7 +144,7 @@ void fn_800339B0(void *arg0, void *arg1) {
     *(unsigned short *)((char *)arg0 + 0x1F2) = *(unsigned short *)((char *)arg1 + 0xA);
     *(unsigned short *)((char *)arg0 + 0x1F4) = *(unsigned short *)((char *)arg1 + 0xC);
     *(unsigned int *)((char *)arg0 + 0x1C) = (*(unsigned int *)((char *)arg0 + 0x1C) & 0xFFFBFFFF) | 0x20000;
-    OSRestoreInterrupts(state);
+    OSRestoreInterrupts(enabled);
 }
 
 extern float lbl_80560AE8;
