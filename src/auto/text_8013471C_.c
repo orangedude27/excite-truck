@@ -227,22 +227,28 @@ skip_clear:
       fn_8013A1F0();
   }
 
+/* Re-arms the AI cars' proximity records after a restart: for each of the eight
+ * "AI::AICarInfo" slots in lbl_8042F758 (allocated by fn_8013477C, one per AI car,
+ * holding its car/actor index and a reset flag), resets its entry in the global
+ * "Proxer" object lbl_8055E0D4 (fn_80136CB8 = fn_80136D20 update + zero its smoothed
+ * values), runs the per-car hook fn_8013A200 (an empty stub) and sets the flag so the
+ * next flush (fn_80134A8C) re-initializes that car again. */
 void fn_801349C4(void) {
     extern void fn_80136CB8(void *, s32);
     extern void fn_8013A200(s32);
-    struct Entry { s32 value; u8 flag; };
-    struct Entry **entries = (struct Entry **)lbl_8042F758;
-    struct Entry *entry;
+    struct AICarInfo { s32 carIndex; u8 needsReset; };
+    struct AICarInfo **slots = (struct AICarInfo **)lbl_8042F758;
+    struct AICarInfo *carInfo;
     s32 i = 0;
     do {
-        entry = *entries;
-        if (entry != 0) {
-            fn_80136CB8(lbl_8055E0D4, entry->value);
-            fn_8013A200(entry->value);
-            entry->flag = 1;
+        carInfo = *slots;
+        if (carInfo != 0) {
+            fn_80136CB8(lbl_8055E0D4, carInfo->carIndex);
+            fn_8013A200(carInfo->carIndex);
+            carInfo->needsReset = 1;
         }
         i++;
-        entries++;
+        slots++;
     } while (i < 8);
 }
 
