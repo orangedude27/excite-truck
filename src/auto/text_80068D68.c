@@ -11546,6 +11546,14 @@ void bta_dm_disc_rmt_name(void *arg0) {
     ((void (*)(s32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
 }
 
+/* Process the SDP discovery result for the service the search is on.  With the
+ * search over (or the SDP database full, which still means the attributes that
+ * were asked for came in), mark the service in services_found when its record
+ * is in the database - a Plug and Play record only counts when it carries the
+ * vendor's version attribute, so that only this stack's answer counts.  Then
+ * free the database and either start the search for the next service or send
+ * this device's discovery result to the BTA task; a search that could not be
+ * done reports that instead, and stops waiting for the link. */
 void bta_dm_sdp_result(u8 *p_data) {
     u32 service_found = FALSE;
     u8 *p_msg;
