@@ -12445,11 +12445,12 @@ extern "C" s32 fn_800BA3F4(Unk800B7E18Callback arg0, Unk800B7E18Callback arg1) {
 }
 
 extern "C" s32 fn_800BA404(void) {
-    u8 value;
+    /* If active, read a pending status byte once, then close/ack the handle when requested. */
+    u8 statusByte;
     if (*(u32*)lbl_80407300 & 1) {
         if (*(s8*)(lbl_80407300 + 0x14) == 0 &&
-            (*fn_800BA974)(*(s32*)(lbl_80407300 + 0xC), &value, 1) == 1) {
-            lbl_80407300[0x14] = value;
+            (*fn_800BA974)(*(s32*)(lbl_80407300 + 0xC), &statusByte, 1) == 1) {
+            lbl_80407300[0x14] = statusByte;
         }
         if (*(s32*)(lbl_80407300 + 0x10) != 0) {
             fn_800A68DC(*(s32*)(lbl_80407300 + 0xC));
