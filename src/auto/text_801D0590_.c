@@ -109,8 +109,8 @@ void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
 
 static inline int DispatchList_Find2(void *obj) {
     DispatchList *l = lbl_8043870C;
-    int i = 0;
     void **p = l->items;
+    int i = 0;
     for (; i < l->count; i++) {
         if (*p == obj) return i;
         p++;
