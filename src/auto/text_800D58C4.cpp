@@ -3197,6 +3197,7 @@ extern "C" void fn_800DB83C(void) {
 
 }
 
+/* Returns the requested color element for this pane, or the byte at 0xCD for index 0x10. */
 extern "C" u8 GetColorElement__Q36nw4hbm3lyt4PaneCFUl(void* self, u32 index) {
     extern const char lbl_8031FF90[];
     extern const char lbl_80320090[];
