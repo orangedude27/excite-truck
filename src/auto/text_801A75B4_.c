@@ -1042,27 +1042,28 @@ void fn_801A9110(void *out, const char *name) {
     *(int *)out = 0;
 }
 #pragma pop
-void fn_801A91B0(void *arg0, const void *arg1) {
-    int state = *(const int *)((const char *)arg1 + 8);
-    *(int *)arg0 = state;
-    switch (state) {
+/* Copy an input binding (type at +8, payload at +0xC) from src into dst; type 1 stores payload as a byte, other handled types store it as an int. */
+void fn_801A91B0(void *dst, const void *src) {
+    int type = *(const int *)((const char *)src + 8);
+    *(int *)dst = type;
+    switch (type) {
     case 2:
-        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        *(int *)((char *)dst + 8) = *(const int *)((const char *)src + 0xC);
         return;
     case 3:
-        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        *(int *)((char *)dst + 8) = *(const int *)((const char *)src + 0xC);
         return;
     case 5:
-        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        *(int *)((char *)dst + 8) = *(const int *)((const char *)src + 0xC);
         return;
     case 6:
-        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        *(int *)((char *)dst + 8) = *(const int *)((const char *)src + 0xC);
         return;
     case 4:
-        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        *(int *)((char *)dst + 8) = *(const int *)((const char *)src + 0xC);
         return;
     case 1:
-        *(unsigned char *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        *(unsigned char *)((char *)dst + 8) = *(const int *)((const char *)src + 0xC);
         return;
     }
 }
