@@ -343,8 +343,8 @@ void fn_801CBD04(void *arg0) {
 #define STRNCPY_801CBD48(dst, src, n)                  \
     do {                                               \
         const char *s_ = (const char *)(src);          \
-        char *d_ = (char *)(dst);                      \
         int n_ = (n);                                  \
+        char *d_ = (char *)(dst);                      \
         while ((*d_++ = *s_++) != 0) {                 \
             if (--n_ <= 0) { d_[-1] = 0; break; }      \
         }                                              \
@@ -388,10 +388,9 @@ void fn_801CBD48(void *arg0, void *arg1) {
     int valid;
     s32 idx;
 
-    if (*(s32 *)(obj + 8) == 0) {
+    if (*(s32 *)(obj + 8) == 0 || lbl_8055E884 == 0) {
         return;
     }
-    if (lbl_8055E884 != 0) {
     fn_8001BE94(sp8, fn_8000DA10(), 0x20507, key[0], key[1]);
     isX = *(s32 *)((u8 *)fn_8001285C(key[0]) + 8) == 0x180302;
     s1 = isX ? fn_80131234(strings + 0xC4) : fn_80131234(strings + 0xE0);
@@ -442,7 +441,7 @@ void fn_801CBD48(void *arg0, void *arg1) {
     STRNCPY_801CBD48(obj + 0x264, fn_8000DB34(fn_8000DA10()), 0x12);
     valid = 0;
     idx = *(s32 *)((u8 *)lbl_8055E884 + 0x2B4);
-    if (idx >= 0 && idx < 5) {
+    if (idx >= 0 && (u32)idx < 5) {
         valid = 1;
     }
     switch (*(s32 *)obj) {
@@ -529,7 +528,6 @@ void fn_801CBD48(void *arg0, void *arg1) {
         *(f32 *)(obj + 0x350) = lbl_805629FC + lbl_80562A00 * *(f32 *)(obj + 4);
     }
     fn_802AE168(*(s32 *)(obj + 8));
-    }
 }
 #pragma pop
 
