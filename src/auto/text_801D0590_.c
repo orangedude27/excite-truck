@@ -20,8 +20,8 @@ void fn_801D0590(void* arg0) {
 
 static inline int DispatchList_Find1(void *obj) {
     DispatchList *l = lbl_804386B4;
-    int i = 0;
     void **p = l->items;
+    int i = 0;
     for (; i < l->count; i++) {
         if (*p == obj) return i;
         p++;
