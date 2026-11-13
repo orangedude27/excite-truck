@@ -1713,12 +1713,14 @@ extern "C" s32 fn_8021481C(void *arg0) {
 
 #pragma push
 #pragma small_data on
-extern "C" s32 fn_80214934(const void* arg0, s32 arg1, void* arg2, s32 arg3) {
-    s32 end = fn_80029004((const char*)arg1, 0x2e);
-    if (end == 0) {
-        end = (s32)((const char*)arg1 + strlen((const char*)arg1));
+extern "C" s32 fn_80214934(const void* dir, s32 path, void* out, s32 outSize) {
+    /* Write "<dir>\<name>" into out, where <name> is `path` cut at its first '.'
+       (the extension is dropped); returns the number of characters written. */
+    s32 nameEnd = fn_80029004((const char*)path, '.');
+    if (nameEnd == 0) {
+        nameEnd = (s32)((const char*)path + strlen((const char*)path));
     }
-    return ((s32 (*)(void*, s32, const char*, ...))fn_801345D8)(arg2, arg3, lbl_8055B808, (s32)arg0, end - arg1, (const char*)arg1);
+    return ((s32 (*)(void*, s32, const char*, ...))fn_801345D8)(out, outSize, PATH_FORMAT_DIR_NAME, (s32)dir, nameEnd - path, (const char*)path);
 }
 #pragma small_data off
 #pragma pop
