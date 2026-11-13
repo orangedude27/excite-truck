@@ -59,6 +59,7 @@ extern "C" void deleteThreads__6SystemFv_8026B178(void *arg0) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
+/* Copy a 2-float pair and one float from obj's virtual getters into the current output slot. */
 extern "C" void fn_8026B1D0(void *obj_) {
     class Object {
     public:
@@ -196,8 +197,10 @@ void fn_8026B3D4(int arg0) {
         } else {
             float sp10[2];
             float sp8[2];
-            float x = *(float *)(p + 0x60);
-            float z = *(float *)(p + 0x68);
+            double xd = *(float *)(p + 0x60);
+            double zd = *(float *)(p + 0x68);
+            float x = xd;
+            float z = zd;
             float *tab = (float *)lbl_8049A028;
             int found = 0;
             int j = 0;
