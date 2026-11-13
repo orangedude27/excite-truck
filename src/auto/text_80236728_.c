@@ -993,17 +993,18 @@ void fn_8023808C(void *arg0, float value) {
 }
 #pragma pop
 
-void *fn_80238370(void *arg0, int arg1) {
-    int value;
-    if (arg0 != 0) {
-        value = *(int *)((char *)arg0 + 4);
-        *(void **)arg0 = lbl_8034095C;
-        if (value != 0) fn_8002F6AC((void *)value, (void (*)(void))fn_80237968);
-        *(int *)((char *)arg0 + 4) = 0;
-        *(int *)((char *)arg0 + 8) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destructor-like cleanup: installs vtable, destroys owned array at +4, clears fields, optionally frees self. */
+void *fn_80238370(void *self, int deleteFlag) {
+    int ownedArray;
+    if (self != 0) {
+        ownedArray = *(int *)((char *)self + 4);
+        *(void **)self = lbl_8034095C;
+        if (ownedArray != 0) fn_8002F6AC((void *)ownedArray, (void (*)(void))fn_80237968);
+        *(int *)((char *)self + 4) = 0;
+        *(int *)((char *)self + 8) = 0;
+        if (deleteFlag > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 float fn_802383F4(void) { return lbl_805636E0; }
