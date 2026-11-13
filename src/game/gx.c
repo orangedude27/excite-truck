@@ -497,11 +497,13 @@ void fn_802CF5D0(void) {}
 #pragma pop
 
 #pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_802CF5D4(void) {
     lbl_8055FD24 = 0;
     lbl_8055FD91 = 0;
     GXSetAlphaCompare(4, 0, 1, 0, 0);
 }
+#pragma dont_inline reset
 #pragma scheduling on
 
 void fn_802CF5F8(void) {}
