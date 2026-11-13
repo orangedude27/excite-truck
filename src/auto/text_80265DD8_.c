@@ -1219,82 +1219,93 @@ void *fn_80267EE4(int arg0) {
 
 #pragma push
 #pragma processor 750
+/* Replay spin, run every frame on a chase/replay camera while sSpinActive is
+ * set (fn_802693F4 calls it).  Over SPIN_DURATION seconds the camera turns a
+ * full DEG_FULL_TURN about its own up axis; to keep the turn from sweeping
+ * through what it is looking at, it first steps out along its view axis by the
+ * distance to the subject (xform0C0) and steps back by the same amount after
+ * the turn.  The same clock drives the sound: the crash level dips to nothing
+ * over the first HALF_SECOND and comes back over the last one, and the crowd
+ * cheer takes the level the crash loses.  Past SPIN_DURATION the spin is
+ * switched off, the crash level is restored and, unless the pause menu has the
+ * sound, the sound manager is told to go on. */
 void fn_80267EF8(void *arg0) {
-    char *p = (char *)arg0;
-    float t = lbl_80563C80 * (float)fn_802E2C20() - lbl_8055F48C;
-    if (t > lbl_80563C34) {
-        lbl_8055F488 = 0;
-        lbl_8055F48C = lbl_80563C64;
-        fn_80209190(lbl_8055F494, lbl_80563C2C);
+    Camera *cam = (Camera *)arg0;
+    float elapsed = MS_TO_SEC * (float)fn_802E2C20() - sSpinStartTime;
+    if (elapsed > SPIN_DURATION) {
+        sSpinActive = 0;
+        sSpinStartTime = SPIN_IDLE;
+        sound_volume_set(sCrashVolume, FLOAT_ONE);
         if (fn_8000D75C() == 0) {
             fn_801769EC();
         }
     } else {
-        float w = t / lbl_80563C34;
-        float f = lbl_80563C20;
-        float s;
-        float u, v;
-        MP_80267EF8 a, b, c;
-        V3_80267EF8 axis;
-        char tmp[0x24];
-        if (t < lbl_80563C6C) {
-            float q = t / lbl_80563C6C;
-            f = lbl_80563C2C + q * lbl_80563C28;
-        } else if (t > lbl_80563C84) {
-            float q = (t - lbl_80563C84) / lbl_80563C6C;
-            f += q * lbl_80563C2C;
+        float spin = elapsed / SPIN_DURATION; /* of a turn; eased, then radians */
+        float level = FLOAT_ZERO;             /* crash level; then the distance */
+        float cheer;
+        float easeA, easeB;
+        MP_80267EF8 camXform, subjectXform, spun;
+        V3_80267EF8 turnAxis;
+        char turnMatrix[0x24];
+        if (elapsed < HALF_SECOND) {
+            float ramp = elapsed / HALF_SECOND;
+            level = FLOAT_ONE + ramp * FLOAT_MINUS_ONE;
+        } else if (elapsed > SPIN_RAMP_BACK) {
+            float ramp = (elapsed - SPIN_RAMP_BACK) / HALF_SECOND;
+            level += ramp * FLOAT_ONE;
         }
-        fn_80209190(lbl_8055F494, f);
-        s = lbl_80563C2C - f;
+        sound_volume_set(sCrashVolume, level);
+        cheer = FLOAT_ONE - level;
         {
-            char *o = (char *)lbl_8055F490;
-            if (s != *(float *)(o + 8)) {
-                *(char *)(o + 0x4d) = 1;
-                *(float *)(o + 8) = s;
+            SoundObj *crowd = (SoundObj *)sCheerSound;
+            if (cheer != crowd->volume) {
+                crowd->volumeChanged = 1;
+                crowd->volume = cheer;
             }
         }
-        if (w < lbl_80563C28) {
-            w = lbl_80563C28;
-        } else if (w > lbl_80563C2C) {
-            w = lbl_80563C2C;
-        } else if (w > lbl_80563C20) {
-            u = lbl_80563C30 * w;
-            u *= w;
-            v = lbl_80563C34 * w;
-            w = w * u + v * w;
+        if (spin < FLOAT_MINUS_ONE) {
+            spin = FLOAT_MINUS_ONE;
+        } else if (spin > FLOAT_ONE) {
+            spin = FLOAT_ONE;
+        } else if (spin > FLOAT_ZERO) {
+            easeA = FLOAT_MINUS_TWO * spin;   /* 3*spin^2 - 2*spin^3, odd about 0 */
+            easeA *= spin;
+            easeB = FLOAT_THREE * spin;
+            spin = spin * easeA + easeB * spin;
         } else {
-            u = lbl_80563C30 * w;
-            u *= w;
-            v = lbl_80563C34 * w;
-            w = w * u - v * w;
+            easeA = FLOAT_MINUS_TWO * spin;
+            easeA *= spin;
+            easeB = FLOAT_THREE * spin;
+            spin = spin * easeA - easeB * spin;
         }
-        *(R9_80267EF8 *)&a = *(R9_80267EF8 *)(p + 0x58);
-        a.pos = *(V3_80267EF8 *)(p + 0x7c);
-        w = lbl_80563C24 * (lbl_80563C20 + w * lbl_80563C88);
-        *(R9_80267EF8 *)&b = *(R9_80267EF8 *)(p + 0xc0);
-        b.pos = *(V3_80267EF8 *)(p + 0xe4);
-        f = PSQUATMultiply((float *)&b.pos, (int)&a.pos);
-        ((double *)&c)[0] = ((double *)&a)[0];
-        ((double *)&c)[1] = ((double *)&a)[1];
-        ((double *)&c)[2] = ((double *)&a)[2];
-        ((double *)&c.m[6])[0] = ((double *)&a.m[6])[0];
-        *(int *)&c.m[8] = *(int *)&a.m[8];
-        ((double *)&c.pos)[0] = ((double *)&a.pos)[0];
-        *(int *)&c.pos.z = *(int *)&a.pos.z;
-        c.pos.x = c.pos.x + c.m[6] * f;
-        c.pos.y = c.pos.y + c.m[7] * f;
-        c.pos.z = c.pos.z + c.m[8] * f;
-        axis.x = lbl_80563C20;
-        axis.y = w;
-        axis.z = lbl_80563C20;
-        fn_8022FF10(tmp, &axis);
-        fn_80015B20(&c, &c, tmp);
-        f = -f;
-        c.pos.x = c.pos.x + c.m[6] * f;
-        c.pos.y = c.pos.y + c.m[7] * f;
-        c.pos.z = c.pos.z + c.m[8] * f;
-        *(R9_80267EF8 *)(p + 0x58) = *(R9_80267EF8 *)&c;
-        *(V3_80267EF8 *)(p + 0x7c) = c.pos;
+        *(R9_80267EF8 *)&camXform = *(R9_80267EF8 *)&cam->transform;
+        camXform.pos = cam->transform.pos;
+        spin = DEG_TO_RAD * (FLOAT_ZERO + spin * DEG_FULL_TURN);
+        *(R9_80267EF8 *)&subjectXform = *(R9_80267EF8 *)&cam->xform0C0;
+        subjectXform.pos = cam->xform0C0.pos;
+        level = PSQUATMultiply((float *)&subjectXform.pos, (int)&camXform.pos); /* |subject - camera| */
+        /* spun = camXform, copied as four doubles and two words */
+        ((double *)&spun)[0] = ((double *)&camXform)[0];
+        ((double *)&spun)[1] = ((double *)&camXform)[1];
+        ((double *)&spun)[2] = ((double *)&camXform)[2];
+        ((double *)&spun.m[6])[0] = ((double *)&camXform.m[6])[0];
+        *(int *)&spun.m[8] = *(int *)&camXform.m[8];
+        ((double *)&spun.pos)[0] = ((double *)&camXform.pos)[0];
+        *(int *)&spun.pos.z = *(int *)&camXform.pos.z;
+        spun.pos.x = spun.pos.x + spun.m[6] * level;
+        spun.pos.y = spun.pos.y + spun.m[7] * level;
+        spun.pos.z = spun.pos.z + spun.m[8] * level;
+        turnAxis.x = FLOAT_ZERO;
+        turnAxis.y = spin;
+        turnAxis.z = FLOAT_ZERO;
+        fn_8022FF10(turnMatrix, &turnAxis);
+        fn_80015B20(&spun, &spun, turnMatrix);
+        level = -level;
+        spun.pos.x = spun.pos.x + spun.m[6] * level;
+        spun.pos.y = spun.pos.y + spun.m[7] * level;
+        spun.pos.z = spun.pos.z + spun.m[8] * level;
+        *(R9_80267EF8 *)&cam->transform = *(R9_80267EF8 *)&spun;
+        cam->transform.pos = spun.pos;
     }
 }
 #pragma pop
