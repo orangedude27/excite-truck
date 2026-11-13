@@ -511,6 +511,11 @@ extern "C" void *fn_80206BF8(int arg0, void *arg1) {
 }
 #pragma dont_inline off
 
+extern float lbl_8056320C;
+extern float lbl_80563210;
+extern float lbl_80563214;
+extern float lbl_80563218;
+extern float lbl_8056321C;
 extern float lbl_80563200;
 extern char lbl_8033BDC0;
 __declspec(section ".rodata") extern char lbl_8033BDC0;
