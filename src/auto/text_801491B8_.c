@@ -1921,6 +1921,18 @@ s32 *fn_801500F8(void *arg0, s32 *arg1) {
     data[index] = value;
     return &data[index];
 }
+
+#pragma cplusplus on
+extern "C" void *fn_8015011C(void *arg0, ...) {
+    extern s32 fn_802CAC28(void *, s32);
+    extern s32 fn_801D4888();
+    extern u8 lbl_8032D358[];
+    ((s32 *)arg0)[8] = fn_802CAC28(lbl_8032D358 + 0xB28, 0);
+    ((s32 *)arg0)[3] = fn_801D4888();
+    return arg0;
+}
+#pragma cplusplus off
+
 #pragma pop
 s32 fn_80150AD8(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -4000,6 +4012,12 @@ void fn_8014F108(void *owner) {
     *(s32 *)((u8 *)base + 0x9D8) = fn_80145E70(lbl_8032DB40);
 }
 
+void fn_8014F194(void *arg0) {
+    (void)arg0;
+    (void)fn_80179650();
+    fn_802C9A58();
+}
+
 #pragma cplusplus on
 extern "C" void fn_8014FB7C(void *arg0) {
     class VObj {
@@ -4098,7 +4116,7 @@ extern "C" void fn_8014FC8C(s32 arg0) {
             } else check = r;
             if (check == r) {
                 void *alloc = (void *)fn_801284F8(0xD4, &lbl_80559F80);
-                if (alloc != 0) alloc = fn_8015011C(e);
+                if (alloc != 0) alloc = fn_8015011C(alloc, e);
                 spC = (s32)alloc;
                 fn_801500F8((void *)(arg0 + 0x14), &spC);
             }
