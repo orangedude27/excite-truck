@@ -39,16 +39,18 @@ void fn_80258354(void) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void *fn_802583CC(void *o, int arg1, int arg2) {
-    struct Release { virtual void release(int); };
+    struct Release {
+        virtual void release(int);
+    };
     char *p = (char *)o;
     int zero;
     int idx;
     int offset;
     int scan;
     int index3;
-    int offset3;
+    register void *item;
 
-    if (o != 0) {
+    if (o) {
         *(void **)p = &lbl_80344D98;
         offset = 0;
         idx = 0;
@@ -56,12 +58,13 @@ extern "C" void *fn_802583CC(void *o, int arg1, int arg2) {
 L_loop1:
         fn_80235380(*(int *)(*(char **)(p + 4) + idx + 0x40));
         idx += 0x48;
-        offset++;
+        offset += 1;
 L_check1:
         if (offset < *(int *)(p + 8))
             goto L_loop1;
         zero = 0;
         *(int *)(p + 8) = zero;
+
         scan = 0;
         idx = 0;
         goto L_check2;
@@ -79,37 +82,37 @@ L_check2:
             goto L_loop2;
         zero = 0;
         *(int *)(p + 0x914) = zero;
+
         index3 = 0;
-        offset3 = 0;
+        offset = 0;
         goto L_check3;
 L_loop3:
-        if (*(void **)(*(char **)(p + 0xd9c) + offset3 + 0x20) != 0) {
-            void *item = *(void **)(*(char **)(p + 0xd9c) + offset3 + 0x20);
+        item = *(void **)(*(char **)(p + 0xd9c) + offset + 0x20);
+        if (item != 0)
             ((Release *)item)->release(1);
-        }
-        offset3 += 0x2c;
+        offset += 0x2c;
         index3++;
 L_check3:
         if (index3 < *(int *)(p + 0xda0))
             goto L_loop3;
         zero = 0;
         *(int *)(p + 0xda0) = zero;
-        if ((unsigned int)p + 0xd9c != 0) {
-            if ((unsigned int)p + 0xd9c != 0) {
+        if ((char *)p + 0xd9c != 0) {
+            if ((char *)p + (unsigned)0xd9c != 0) {
                 *(int *)(p + 0xd9c) = 0;
                 *(int *)(p + 0xda0) = 0;
                 *(int *)(p + 0xda4) = 0;
             }
         }
-        if ((unsigned int)p + 0x910 != 0) {
-            if ((unsigned int)p + 0x910 != 0) {
+        if ((char *)p + 0x910 != 0) {
+            if ((char *)p + 0x910 != 0) {
                 *(int *)(p + 0x910) = zero;
                 *(int *)(p + 0x914) = zero;
                 *(int *)(p + 0x918) = zero;
             }
         }
-        if ((unsigned int)p + 4 != 0) {
-            if ((unsigned int)p + 4 != 0) {
+        if ((char *)p + 4 != 0) {
+            if ((char *)p + 4 != 0) {
                 *(int *)(p + 4) = zero;
                 *(int *)(p + 8) = zero;
                 *(int *)(p + 0xc) = zero;
@@ -209,12 +212,12 @@ copied:
 extern void *fn_80207848(int, int);
 extern float lbl_80563AC8;
 #pragma scheduling invalid_target
-void fn_802586F0(void *arg0, void *arg1, int arg2, int arg3) {
-    char *base = (char *)arg0;
+void fn_802586F0(void *container, void *name, int resourceId, int flags) {
+    char *base = (char *)container;
     int count = 0x20;
     char *entry;
     char *dst;
-    char *ptr = (char *)arg1;
+    char *src = (char *)name;
     entry = *(char **)(base + 0xD9C) + (*(int *)(base + 0xDA0))++ * 0x2C;
     dst = entry;
     goto copy;
@@ -225,13 +228,13 @@ check:
     dst[-1] = 0;
     goto done;
 copy:
-    if ((*dst++ = *ptr++) != 0) {
+    if ((*dst++ = *src++) != 0) {
         goto check;
     }
 done:
-    *(void **)(entry + 0x20) = fn_80207848(arg2, 0);
+    *(void **)(entry + 0x20) = fn_80207848(resourceId, 0);
     *(float *)(entry + 0x28) = lbl_80563AC8;
-    *(char *)(entry + 0x24) = (char)arg3;
+    *(char *)(entry + 0x24) = (char)flags;
 }
 #pragma push
 #pragma processor 750
