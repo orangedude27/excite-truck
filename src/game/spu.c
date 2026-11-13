@@ -253,11 +253,17 @@ void fn_802E5248(int arg0, int arg1) {
     if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
 }
 
-void fn_802E5264(int arg0, int arg1) {
-    fn_802E30C8(lbl_8034D39C, arg0,
-                 arg1 < 0 ? lbl_8034D3C0 : lbl_8055D1D8);
-    lbl_804FC800[arg0 * 0x2C] = 0;
-    if (arg1 >= 0) fn_80060CC0(arg0, 1, (void (*)())fn_802E5248);
+/* WPAD connect callback for the Wii remote speaker, reached through
+ * fn_802E6B44 from the remote-joy connect handler: it logs which way channel
+ * `chan` went (status < 0 is a disconnect), closes that channel's speaker
+ * stream, and on a connect turns the remote's speaker on.  fn_802E5248 is
+ * answered when the speaker is on and queues the play command, whose answer
+ * fn_802E51D0 uses to mark the stream ready. */
+void fn_802E5264(int chan, int status) {
+    fn_802E30C8(spuConnectMsg, chan,
+                 status < 0 ? spuNameDisconnect : spuNameConnect);
+    spuStreams[chan].enabled = 0;
+    if (status >= 0) fn_80060CC0(chan, WPAD_SPEAKER_ON, (void (*)())fn_802E5248);
 }
 
 
