@@ -534,15 +534,18 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
 
 #pragma push
 #pragma scheduling on
-extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *self, int sustain) {
+/* EnvGenerator::SetSustain: hold the envelope at this sustain level (0-0x7F);
+ * anything else panics in snd_EnvGenerator.cpp:0x116 before being stored. */
+extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *env, int sustain) {
     int valid = 0;
     if (sustain >= 0 && sustain <= 0x7F) {
         valid = 1;
     }
     if (valid == 0) {
+        /* "sustain is out of bounds(%d)\n%d <= sustain <= %d not satisfied." */
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322B80, 0x116, (const char *)lbl_80322C90, sustain, 0, 0x7F);
     }
-    *((u8 *)self + 0x14) = (u8)sustain;
+    ((nw4hbm::snd::detail::EnvGenerator *)env)->sustain = (u8)sustain;
 }
 #pragma pop
 
