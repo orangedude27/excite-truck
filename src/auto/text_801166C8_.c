@@ -2069,48 +2069,7 @@ extern s32 fn_801199A4(void *, s32);
    into this block, to +0x34, +0x38, +0x48 and +0x50: those are the owning
    StreamPlayer's looping, paused, readPos and readPosTime, which the player
    fields below alias. */
-#ifndef STREAM_PLAYER_TYPES
-#define STREAM_PLAYER_TYPES
-typedef struct VoicePair {
-    s32 voice0;   /* 0x00 AX voice handle, left or mono */
-    s32 voice1;   /* 0x04 AX voice handle, right */
-    void *buf0;   /* 0x08 PCM buffer the voices read, left or mono */
-    void *buf1;   /* 0x0C PCM buffer, right */
-    char pad_10[8];
-    s32 length;   /* 0x18 ring size in bytes */
-} VoicePair;
-
-/* Streaming PCM player: fn_80119DD0 opens it and installs the callbacks below,
-   fn_801195D8 copies decoded samples into the voice buffers as a ring of
-   voices.length bytes, and 0xBC counts the bytes still left to play. */
-typedef struct StreamPlayer {
-    void *tick;         /* 0x00 fn_80119824, called every frame while playing */
-    void *field_04;     /* 0x04 */
-    void *field_08;     /* 0x08 */
-    void *setVolume;    /* 0x0C fn_80119AB0 */
-    void *setPan;       /* 0x10 fn_80119B38 */
-    void *setPause;     /* 0x14 fn_80119CB0 */
-    void *setPlay;      /* 0x18 fn_80119C0C */
-    void *release;      /* 0x1C fn_80119D40 */
-    char pad_20[0x44];
-    s32 playing;        /* 0x64 */
-    char pad_68[8];
-    s32 sampleRate;     /* 0x70 */
-    s32 field_74;       /* 0x74 */
-    s32 channels;       /* 0x78 1 = mono, 2 = stereo */
-    VoicePair voices;   /* 0x7C */
-    char pad_98[8];
-    s32 field_A0;       /* 0xA0 sample rate again */
-    s32 volume;         /* 0xA4 */
-    s32 pan0;           /* 0xA8 */
-    s32 pan1;           /* 0xAC */
-    s32 looping;        /* 0xB0 keep the voices running when the buffer runs dry */
-    s32 paused;         /* 0xB4 */
-    s32 writePos;       /* 0xB8 where the next decoded byte goes in the ring */
-    s32 bytesToPlay;    /* 0xBC bytes still to play before the stream ends */
-    s32 preFill;        /* 0xC0 bytesToPlay to arm the ring with on start */
-} StreamPlayer;
-#endif
+/* The pair of AX voices and the StreamPlayer are described above fn_80119824. */
 
 #pragma optimization_level 4
 /* Start (start != 0) or stop the stream player and return the new playing flag.
