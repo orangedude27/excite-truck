@@ -1971,16 +1971,18 @@ extern "C" void fn_8015A318(Unk8015A368C* arg0) {
 
 #pragma dont_inline on
 extern "C" f32 fn_8015A368(void* arg0) {
-    f32 sp8;
-    Unk8015A368C* obj = (Unk8015A368C*)arg0;
-    s32 v21ret = obj->v21();
-    sp8 = *(f32*)((u8*)arg0 + 0x25C) * obj->v18(v21ret);
-    obj->v33(&sp8);
-    obj->v31();
-    f32 f = lbl_80561750;
-    *(s32*)((u8*)arg0 + 0x264) = 0;
-    *(f32*)((u8*)arg0 + 0x25C) = f;
-    return sp8;
+    /* Finalize and return the bonus accumulator: compute (m25c * v18(v21())),
+     * apply it via v33/v31, clear the pending count, and reset m25c to 1.0f. */
+    f32 bonusValue;
+    Unk8015A368C* bonus = (Unk8015A368C*)arg0;
+    s32 currentIndex = bonus->v21();
+    bonusValue = bonus->m25c * bonus->v18(currentIndex);
+    bonus->v33(&bonusValue);
+    bonus->v31();
+    f32 one = lbl_80561750;
+    bonus->m264 = 0;
+    bonus->m25c = one;
+    return bonusValue;
 }
 #pragma dont_inline off
 
