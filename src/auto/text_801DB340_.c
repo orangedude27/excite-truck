@@ -29,6 +29,25 @@ extern char lbl_803393B8[];
 extern char lbl_803393E0[];
 extern void fn_802E317C(const char *, ...);
 
+/* The ground descriptor block lbl_8055E990 points at (0x34 bytes).  It comes
+ * from the "track.gnd" resource, byte-swapped and rebased by fn_801DC32C, or
+ * is built procedurally by fn_801DCA60 (which leaves the tile tables empty,
+ * so only the flat heightmap at lbl_80446F08 is used). */
+typedef struct GroundDesc {
+    /* 0x00 */ float offsetX;   /* world X added before scaling to grid cells */
+    /* 0x04 */ float offsetZ;   /* world Z added before scaling to grid cells */
+    /* 0x08 */ float scaleX;    /* grid cells per world unit, X */
+    /* 0x0C */ float scaleZ;    /* grid cells per world unit, Z */
+    /* 0x10 */ int tiled;       /* 0: flat heightmap only, see fn_801DB348 */
+    /* 0x14 */ int nodeCount;   /* height tiles at nodes, 0x894 bytes each */
+    /* 0x18 */ void *nodes;
+    /* 0x1C */ int layerCount;  /* overlay layers at layers, 0x810 bytes each */
+    /* 0x20 */ void *layers;
+    /* 0x24 */ int recordCount; /* 16-byte records at records */
+    /* 0x28 */ void *records;
+    /* 0x30 */ unsigned char *typeRuns; /* per tile: (type, X length) runs */
+} GroundDesc;
+
 static inline void swap32(unsigned char *p) {
     unsigned char t;
     t = p[0]; p[0] = p[3]; p[3] = t;
@@ -107,20 +126,18 @@ void fn_801DB340(int arg0) { fn_801DB13C(arg0 - 4); }
 
 #pragma auto_inline off
 #pragma dont_inline on
-int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3, void *arg4) {
+int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
     int width, height;
     float *data;
-
     if (arg3 != 0) {
         *arg3 = 0;
     }
     width = lbl_80446F08[0];
     height = lbl_80446F08[1];
     data = (float *)lbl_80446F08[2];
-
+    arg0 &= width - 1;
     arg1 = (arg1 & (height - 1)) * width;
-    arg0 = (arg0 & (width - 1)) + arg1;
-    *arg2 = data[arg0];
+    *arg2 = data[arg0 + arg1];
     return 1;
 }
 #pragma dont_inline reset
@@ -239,9 +256,9 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
-    float grid[4][4];
-    float sp8;
     int i, j;
+    float sp8;
+    float grid[4][4];
 
     if (!sample_tile(arg0, arg1, &sp8, arg3, arg4) &&
         !sample_tile(arg0 + 1, arg1, &sp8, arg3, arg4) &&
