@@ -19,6 +19,7 @@ __declspec(section ".sdata") extern u8 lbl_8055DEBD;
 __declspec(section ".sdata") extern char lbl_8055DEB4[];
 __declspec(section ".sdata") extern char lbl_8055DEB8[];
 void fn_80116644(void) {
+    /* Lazily construct and register two global objects on first use. */
     if ((s8)lbl_8055DEBC == 0) {
         fn_8010C7DC(lbl_8055DEB4);
         __register_global_object(lbl_8055DEB4, fn_8010C7EC, lbl_8041D4F0);
