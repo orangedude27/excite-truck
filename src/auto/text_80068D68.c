@@ -22872,16 +22872,17 @@ void rfc_process_fcoff(void *arg0, s32 arg1) {
     }
 }
 
-void rfc_process_l2cap_congestion(void *arg0, s32 arg1) {
-    *(u8 *)((u8 *)arg0 + 0x73) = (u8)arg1;
-    if (arg1 == 0) {
-        rfc_check_send_cmd(arg0, NULL);
+/* Process an L2CAP congestion status indication for an RFCOMM multiplexer channel. */
+void rfc_process_l2cap_congestion(void *p_mcb, s32 is_congested) {
+    *(u8 *)((u8 *)p_mcb + 0x73) = (u8)is_congested;
+    if (is_congested == 0) {
+        rfc_check_send_cmd(p_mcb, NULL);
     }
     if (*(u8 *)(lbl_803C4828 + 0x64) == 0) {
-        if (arg1 == 0) {
-            PORT_FlowInd(arg0, 0, 1);
+        if (is_congested == 0) {
+            PORT_FlowInd(p_mcb, 0, 1);
         } else {
-            PORT_FlowInd(arg0, 0, 0);
+            PORT_FlowInd(p_mcb, 0, 0);
         }
     }
 }
