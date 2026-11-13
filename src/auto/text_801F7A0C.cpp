@@ -3,6 +3,8 @@
 
 #include <types.h>
 #include <revolution/GX/GXTypes.h>  // GXCullMode, for the draw passes below
+struct VT_C { void *v0; void *v4; void *v8; int (*fC)(void *, void *); };
+struct VT_20 { void *v0; void *v4; void *v8; void *vc; void *v10; void *v14; void *v18; void *v1c; int (*f20)(void *, void *, int); };
 __declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[];
 extern s32 lbl_8055EC48;
 extern "C" s32 fn_802C6B44(void *);
@@ -333,6 +335,15 @@ extern "C" void fn_801F7A14(void *arg0) {
     }
 }
 
+#pragma use_lmw_stmw off
+extern "C" s32 fn_801F7A88(void *self, s32 arg1, void *arg2, s32 arg3) {
+    s32 res = 0;
+    if (((F7A88Class *)self)->vC()) {
+        res = fn_8012F9E8(arg2, arg3, ((F7A88Class *)self)->v14(arg1));
+    }
+    return res;
+}
+#pragma use_lmw_stmw on
 extern "C" void fn_801F7A14(void *);
 extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
 __declspec(section ".sdata") extern const char lbl_8055B280[];
@@ -1295,7 +1306,8 @@ extern "C" void fn_801F9A24(F92Node **arg0) {
         fn_801F99CC((F92Obj *)node);
         next = (F92Node *)*(void **)((char *)node + 0x20);
         if (node != 0) {
-            ((void (*)(F92Obj *, s32))(*(void **)((u8 *)*(void **)((char *)node + 0x108) + 8)))((F92Obj *)node, 1);
+            F92Elem *elem = (F92Elem *)node;
+            elem->tbl->fn8((void *)node, 1);
         }
         node = next;
     }
@@ -1999,21 +2011,21 @@ extern "C" void fn_801FAAC4(char *dest, void *arg1) {
     case 4:
         *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(base + 0x1A8);
         *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B338);
-        *(f32 *)(dest + 0x60) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
+        *(f32 *)((u8 *)dest + 0x60) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
         break;
     case 8:
-        *(f32 *)(dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
-        *(f32 *)(dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B344);
-        *(f32 *)(dest + 0x60) = ((FAAMgr *)arg1)->getF(lbl_8055B348);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
+        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B344);
+        *(f32 *)((u8 *)dest + 0x60) = ((FAAMgr *)arg1)->getF(lbl_8055B348);
         break;
     case 5:
     case 7:
-        *(f32 *)(dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B328);
-        *(f32 *)(dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B328);
+        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
         break;
     case 9:
-        *(f32 *)(dest + 0x58) = ((FAAMgr *)arg1)->getF(base + 0x1B4);
-        *(f32 *)(dest + 0x5C) = ((FAAMgr *)arg1)->getF(base + 0x1C0);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(base + 0x1B4);
+        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(base + 0x1C0);
         break;
     case 10:
     {
@@ -2053,13 +2065,9 @@ extern "C" void fn_801FAAC4(char *dest, void *arg1) {
         d = dest + 0x58;
         n = 0x10;
         s = lbl_8055B34C;
-        {
-            volatile char *vd = d;
-            do {
-                n--;
-                vd++;
-            } while (*(s8 *)vd != 0);
-            d = (char *)vd;
+        while (d[0] != 0) {
+            n--;
+            d++;
         }
         if (n <= 0) {
             return;
@@ -2112,13 +2120,9 @@ extern "C" void fn_801FAAC4(char *dest, void *arg1) {
         d = dest + 0x58;
         n = 0x10;
         s = lbl_8055B354;
-        {
-            volatile char *vd = d;
-            do {
-                n--;
-                vd++;
-            } while (*(s8 *)vd != 0);
-            d = (char *)vd;
+        while (d[0] != 0) {
+            n--;
+            d++;
         }
         if (n <= 0) {
             return;
