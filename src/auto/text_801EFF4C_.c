@@ -691,13 +691,15 @@ int fn_801F0DC0(int arg0, int arg1, int arg2, int arg3) {
 extern float lbl_80562F1C;
 #pragma dont_inline on
 int fn_801F0E88(int arg0, int arg1) {
-    int result = fn_801F09FC((const char *)arg1);
+    /* Initialize a wheel instance for an unregistered/detached wheel mod. */
+    int mod = fn_801F09FC((const char *)arg1);
     float zero = lbl_80562F1C;
     float one = lbl_80562F18;
-    *(int *)(arg0 + 0) = result;
-    *(int *)(arg0 + 4) = 0;
-    *(int *)(arg0 + 8) = -1;
-    *(int *)(arg0 + 0xC) = -1;
+
+    *(int *)(arg0 + 0x00) = mod;
+    *(int *)(arg0 + 0x04) = 0;
+    *(int *)(arg0 + 0x08) = -1;
+    *(int *)(arg0 + 0x0C) = -1;
     *(int *)(arg0 + 0x10) = 0;
     *(char *)(arg0 + 0x14) = 1;
     *(float *)(arg0 + 0x18) = one;
