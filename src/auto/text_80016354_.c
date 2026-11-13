@@ -416,6 +416,7 @@ __declspec(section ".sdata") extern char lbl_80558BE8[];
 extern int sscanf(const char *, const char *, ...);
 #pragma push
 #pragma processor gekko
+#pragma dont_inline fn_80016DD8
 int fn_80016DD8(const char *arg0) {
     unsigned int hex, red, green, blue;
     int c;
