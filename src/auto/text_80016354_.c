@@ -506,8 +506,8 @@ extern char *fn_80029004(char *, int);
 extern char *fn_80131234(char *);
 extern int fn_80016DD8(const char *);
 extern int fn_8013C8E8(char *);
-extern void fn_802E317C(const char *, ...);
-extern void fn_801345D8(char *, int, const char *, ...);
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" void fn_801345D8(char *, int, const char *, ...);
 extern "C" void fn_80017010(void *arg0) {
     struct Interface {
         virtual void m0();
