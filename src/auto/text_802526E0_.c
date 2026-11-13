@@ -29,7 +29,8 @@ void fn_802E30C8(const char *, const char *);
 
 extern s32 lbl_8055EAA8, lbl_8055EAAC, lbl_8055F2F8;
 void fn_801BD790(void);
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_802526E0(void *arg0) {
     volatile f32 spC;
     volatile f32 sp8;
@@ -70,6 +71,7 @@ void fn_802526E0(void *arg0) {
     out[8] = temp_f6;
     PSVECCrossProduct((void *)(out + 6), (void *)out, (void *)(out + 3));
 }
+#pragma pop
 void fn_80252B88(s32 arg0) {
     u8 sp8[0x28];
     fn_802526E0(sp8);
@@ -83,16 +85,17 @@ void fn_80252BC8(void) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
+/* Allocates the next camera slot, initializes its state, and marks it active. */
 void fn_80252BF0(void) {
     u8 scratch[0x138];
-    s32 index = lbl_8055F2F8;
-    lbl_8055F2F8 = index + 1;
+    s32 slotIndex = lbl_8055F2F8;
+    lbl_8055F2F8 = slotIndex + 1;
     fn_801BD808();
     fn_801BDA70(scratch);
-    fn_801BDA74(index, scratch);
-    memset(lbl_80498D00 + index * 0x78, 0, 0x78);
-    fn_80252B88(index);
-    lbl_80498D00[index * 0x78 + 0x30] = 1;
+    fn_801BDA74(slotIndex, scratch);
+    memset(lbl_80498D00 + slotIndex * 0x78, 0, 0x78);
+    fn_80252B88(slotIndex);
+    lbl_80498D00[slotIndex * 0x78 + 0x30] = 1;
 }
 #pragma scheduling on
 #pragma dont_inline reset
@@ -116,20 +119,20 @@ extern double lbl_805639F0;
 void fn_80252C90(void) {
     int a,b,c,d,count;
     int i,j;
-    u8 *dst;
-    float phase;
+    u8 *dst2;
+    float phase7;
     fn_801BEDA8(&a,&b,&c,&d,&count);
     for (i=0;i<count;i++)
         fn_8025280C((void *)(a+i*0xb0), *(float *)(&lbl_8055F300+4));
     fn_801BEDD4();
-    phase = lbl_805639D0;
-    dst=lbl_80498D00;
-    for(i=0;i<count;i++,dst+=0x78) {
+    phase7 = lbl_805639D0;
+    dst2=lbl_80498D00;
+    for(i=0;i<count;i++,dst2+=0x78) {
         float *angles=(float *)(b+i*0x1f0);
         float *src=(float *)(a+i*0xb0);
         float *wheel=(float *)(c+i*0x190);
         Vec4_80252 previous; Vec4_80252 current;
-        float *out=(float *)dst;
+        float *out=(float *)dst2;
         { float z=src[2], y=src[1], x=src[0]; out[9]=x; out[10]=y; out[11]=z; }
         { float z=src[6], y=src[5], x=src[4]; out[0]=x; out[1]=y; out[2]=z; }
         { float z=src[10], y=src[9], x=src[8]; out[3]=x; out[4]=y; out[5]=z; }
@@ -140,11 +143,11 @@ void fn_80252C90(void) {
         previous=*(Vec4_80252 *)angles;
         out[20]=current.x; out[21]=current.y; out[22]=current.z; out[23]=current.w;
         for (j=0;j<4;j++) {
-            out[20+j]=(float)fn_8002EFB4(phase+out[20+j],lbl_805639F0);
+            out[20+j]=(float)fn_8002EFB4(phase7+out[20+j],lbl_805639F0);
             out[16+j]=wheel[j*4+1]+((float *)&previous)[j];
         }
         { float w=out[23], z=out[22], y=out[21], x=out[20]; angles[4]=x; angles[5]=y; angles[6]=z; angles[7]=w; }
-        dst[0x30]=1;
+        dst2[0x30]=1;
     }
     fn_801BF1B4();
 }
@@ -230,26 +233,19 @@ extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
-    s32 index;
-    u8 *base;
-    s32 offset;
+    f32 z, y, x;
     volatile u8 *entry;
     u32 args[12];
-    f32 z, y, x;
-    index = arg0;
-    base = lbl_80498D00;
-    offset = index * 0x78;
     x = *(volatile f32 *)((u8 *)arg1 + 0x12C);
     y = *(volatile f32 *)((u8 *)arg1 + 0x130);
     z = *(volatile f32 *)((u8 *)arg1 + 0x134);
-    entry = base + offset;
+    entry = lbl_80498D00 + arg0 * 0x78;
     *(volatile f32 *)(entry + 0x34) = x;
     *(volatile f32 *)(entry + 0x38) = y;
     *(volatile f32 *)(entry + 0x3C) = z;
-    fn_801BDA74(index, (void *)entry);
-    entry = base + offset;
+    fn_801BDA74(arg0, (void *)entry);
     if (entry[0x30] == 0) {
-        fn_80252B88(index);
+        fn_80252B88(arg0);
     } else {
         args[9] = *(volatile u32 *)(entry + 0x24);
         args[11] = *(volatile u32 *)(entry + 0x2C);
@@ -264,7 +260,7 @@ void fn_80253104(s32 arg0, void *arg1) {
         args[8] = *(volatile u32 *)(entry + 0x20);
         args[10] = *(volatile u32 *)(entry + 0x28);
         *(f32 *)&args[10] = lbl_805639FC + fn_801DCF48(0, args[9], args[8], args[7], args[6], args[5], args[4], args[3], *(f32 *)(entry + 0x24), *(f32 *)(entry + 0x2C));
-        fn_801BE400(index, args, lbl_805639E8);
+        fn_801BE400(arg0, args, lbl_805639E8);
     }
 }
 extern s8 lbl_8055F308;
