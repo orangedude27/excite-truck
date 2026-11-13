@@ -162,7 +162,7 @@ void fn_80133144(void) {
  int *entry=&lbl_8042F718[0];
  int i;
  for(i=0;i<8;i++){
-  if(*(entry+1)!=0) fn_802E317C(lbl_8032B8D0, *entry);
+  if(entry[1]!=0) fn_802E317C(lbl_8032B8D0, entry[0], entry[1]);
   entry+=2;
  }
  fn_80128668(lbl_8055E07C);
@@ -247,12 +247,12 @@ __declspec(section ".sdata") extern const char lbl_80559B64[];
 __declspec(section ".sdata") extern const char lbl_80559B68[];
 #pragma scheduling invalid_target
 int fn_80133460(int arg0, int arg1, unsigned char arg2) {
-    void *sp8;
-    fn_80133E10(&sp8, arg0, arg1);
-    *(unsigned char *)((char *)sp8 + 8) = arg2;
-    *(int *)((char *)sp8 + 0xC) = arg2;
-    *(float *)((char *)sp8 + 0x10) = (float)arg2;
-    strcpy((char *)sp8 + 0x14, arg2 ? lbl_80559B64 : lbl_80559B68);
+    char *sp8;
+    fn_80133E10((void **)&sp8, arg0, arg1);
+    *(unsigned char *)(sp8 + 8) = arg2;
+    *(int *)(sp8 + 0xC) = arg2;
+    *(float *)(sp8 + 0x10) = (float)arg2;
+    strcpy(sp8 + 0x14, arg2 ? lbl_80559B64 : lbl_80559B68);
     *(int *)sp8 = 1;
 }
 #pragma scheduling on
