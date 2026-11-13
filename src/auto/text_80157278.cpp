@@ -4265,6 +4265,7 @@ extern "C" s32 fn_80159338(void) {
 }
 
 extern "C" void *fn_80159340(void *object, s32 deleting) {
+    /* Destructor: reset vtable, destroy owned child at +0x278, clear embedded list (+8/+C/+10), and optionally free. */
     struct Child { virtual void destroy(s32); };
     if (object) {
         Child *child = *(Child **)((u8 *)object + 0x278);
