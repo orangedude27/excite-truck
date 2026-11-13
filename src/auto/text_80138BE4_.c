@@ -57,6 +57,13 @@ extern double fabs(double);
 extern double __fabs(double);
 #pragma push
 #pragma processor 750
+/* Solves a MotionPair's relative motion for the time its position crosses zero:
+ * con + lin * t + quad * t * t == 0, con/lin/quad being the differences of the
+ * two Motion1Ds' position, velocity and acceleration (quad = half the
+ * acceleration difference). Returns 1 with *out_time on the crossing ahead: the
+ * far root when the two straddle zero, the near one when both lie ahead, and
+ * NO_CROSSING when neither does. Returns 0 otherwise, and when the quadratic
+ * never reaches zero writes how far it falls short into *out_distance. */
 int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
     float quad;
     float lin;
@@ -96,9 +103,10 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
             if ((*out_time) >= ZERO)
                 return 1;
         } else if (out_distance != 0) {
+            float absQuad;
             term = ((-lin) > ZERO) ? (-lin) : (ZERO);
-            targetAccel = (float)__fabs((double)quad);
-            term = (term + lin) * (TWO * targetAccel);
+            absQuad = (float)__fabs((double)quad);
+            term = (term + lin) * (TWO * absQuad);
             *out_distance = ((term * term) - discriminant) / (TWO * con);
         }
     }
