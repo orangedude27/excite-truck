@@ -1286,6 +1286,7 @@ extern "C" s32 fn_800A607C(void *loader, s32 *outRecord) {
 
 extern "C" s32 fn_800B7FC4(s32);
 extern "C" s32 fn_800A61D0(void *arg0) {
+    /* Validate and release a slot entry: return error codes if busy fields are set or fn_800B7FC4 fails, else clear in-use flag and decrement global count at lbl_803D1640+2. */
     volatile u32 *flags = (volatile u32 *)arg0;
     if (*(s16 *)((u8 *)arg0 + 0xC) != 0) return 0x10;
     if (*(s16 *)((u8 *)arg0 + 0xE) != 0) return 0x11;
