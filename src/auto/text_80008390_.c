@@ -488,30 +488,6 @@ s32 fn_80008F68(s32 arg0) {
     }
 }
 
-extern void fn_802782C4(void);
-extern void fn_80278318(void);
-extern int fn_80278358(void);
-extern void fn_80278778(char *);
-extern void fn_802787E4(void);
-extern int fn_802787F4(void);
-extern void fn_8027888C(int);
-extern void fn_80278894(int);
-extern void fn_8027889C(float);
-extern void fn_802788E0(float);
-extern int fn_80278924(float *, float *);
-extern float fn_801E7E18(void);
-extern void fn_801E85BC(int);
-extern void fn_801E85CC(int);
-extern void fn_80010188(int, int, const char *, ...);
-extern int sprintf(char *, const char *, ...);
-extern char lbl_805589F0[];
-extern char lbl_805589F8[];
-extern char lbl_805589FC[];
-extern int lbl_8055D398;
-extern float lbl_805601BC;
-extern float lbl_805601DC;
-extern float lbl_805601E0;
-extern float lbl_805601E4;
 #pragma push
 #pragma processor 750
 void fn_80008F98(void) {
