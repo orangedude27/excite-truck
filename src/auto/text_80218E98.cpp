@@ -2090,22 +2090,23 @@ extern "C" void fn_8022ED00(void *);
 extern "C" void fn_8022EDB8(void);
 #pragma push
 #pragma small_data off
-extern "C" void *fn_8021BBA0(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033F0FC;
-        fn_8022A8E4(*(s32 *)((u8 *)arg0 + 0x244));
+/* Destructor for a UI/object type: install its vtable, release owned resources, run base teardown, and optionally free the object. */
+extern "C" void *fn_8021BBA0(void *object, s32 shouldDelete) {
+    if (object != 0) {
+        *(void **)object = lbl_8033F0FC;
+        fn_8022A8E4(*(s32 *)((u8 *)object + 0x244));
         {
-            void *ptr = *(void **)((u8 *)arg0 + 0x258);
-            if (ptr != 0) {
-                fn_802C519C(ptr);
+            void *ownedPtr = *(void **)((u8 *)object + 0x258);
+            if (ownedPtr != 0) {
+                fn_802C519C(ownedPtr);
             }
         }
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        fn_8021915C(object, 0);
+        if (shouldDelete > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 #pragma pop
 extern "C" s32 fn_8022D850(void *, s32, s32, s32 *);
