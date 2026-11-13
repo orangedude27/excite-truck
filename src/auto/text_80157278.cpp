@@ -4063,28 +4063,17 @@ extern "C" void fn_8015E778(Unk801577F0V* container, s32 param1, s32 param2, f32
     }
 }
 #pragma use_lmw_stmw reset
-extern "C" void fn_8015E80C(void* arg0, s32 arg1) {
-    s32 var_r31 = 0;
-    s32 var_r30 = 0;
-    while (var_r30 < *(s32*)((char*)arg0 + 8)) {
-        class Entry {
-        public:
-            virtual void v0();
-            virtual void v1();
-            virtual void v2();
-            virtual void v3();
-            virtual void v4();
-            virtual void v5();
-            virtual void v6();
-            virtual void v7();
-            virtual void v8();
-            virtual void v9();
-            virtual void dispatch(s32);
-        };
-        Entry* obj = *(Entry**)((char*)*(void**)((char*)arg0 + 4) + var_r31);
-        obj->dispatch(arg1);
-        var_r31 += 4;
-        var_r30 += 1;
+/* Hands the value to every bonus tracker this group owns: virtual slot 0x30 of the
+ * "arraytracker" group forwards it to slot 0x30 of each tracker in its array (the
+ * trackers seen here implement that slot as the empty fn_8015E0FC). */
+extern "C" void fn_8015E80C(ArrayTracker* group, s32 value) {
+    s32 off = 0;
+    s32 i = 0;
+    while (i < group->mCount) {
+        BonusTracker* tracker = *(BonusTracker**)((u8*)group->mTrackers + off);
+        tracker->v10(value);
+        off += 4;
+        i += 1;
     }
 }
 
