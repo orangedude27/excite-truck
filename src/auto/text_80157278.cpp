@@ -17,6 +17,9 @@ extern "C" f32 lbl_8042FD08[];
 extern "C" f32 lbl_80558DC4[];
 extern "C" f32 PSVECDotProduct(const void *, const void *);
 extern "C" f32 lbl_80561750, lbl_80561754, lbl_8056177C, lbl_80561788, lbl_8056178C, lbl_80561790, lbl_80561794, lbl_80561798;
+// The bonus trackers' two shared multipliers, used from the first reset below.
+#define BONUS_FULL  lbl_80561750 // .sdata2: 1.0f, the multiplier an event starts at
+#define BONUS_NONE  lbl_80561754 // .sdata2: 0.0f
 class Fn8015B404Obj {
 public:
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -4414,12 +4417,11 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
         sound[0x4C] = 0;
     }
 }
-#pragma push
 #pragma scheduling off
-extern "C" int fn_80159708(void *arg0) {
-    return (int)(*(float *)((char *)arg0 + 0x25C));
+extern "C" int fn_80159708(const void *arg0) {
+    return (int)*(const float *)((const char *)arg0 + 0x25C);
 }
-#pragma pop
+#pragma scheduling on
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
