@@ -497,9 +497,9 @@ extern "C" void fn_80016ED4(void *carDefObj) {
 #pragma push
 #pragma cplusplus on
 extern char lbl_802FCEA8[];
-extern char lbl_80558C08[];
-extern char lbl_80558C10[];
-extern char lbl_80558BD0[];
+__declspec(section ".sdata") extern char lbl_80558C08[];
+__declspec(section ".sdata") extern char lbl_80558C10[];
+__declspec(section ".sdata") extern char lbl_80558BD0[];
 extern char *fn_80029004(char *, int);
 extern char *fn_80131234(char *);
 extern int fn_80016DD8(const char *);
