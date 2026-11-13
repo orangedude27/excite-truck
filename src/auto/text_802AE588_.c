@@ -1175,19 +1175,22 @@ void fn_802AFEA4(int *arg0, short arg1) {
     *(short *)((char *)arg0 + index * 0x1C + 8) = arg1;
 }
 
-int fn_802AFEC0(int arg0) {
-    float converted;
-    int index;
-    int result;
-    if (arg0 >= 2) {
-        converted = (float)arg0;
-        index = (((*(unsigned int *)&converted) >> 23) & 0x7F) + 1;
+/* Compute a bucketed slot from the count: uses the float exponent for counts >= 2
+ * to index lbl_804BDFF0, offsets from the base in lbl_8055F984, fills (count+1)*8
+ * bytes with 0xFF, and returns the slot pointer. */
+int fn_802AFEC0(int count) {
+    float countAsFloat;
+    int bucketIndex;
+    int slotPtr;
+    if (count >= 2) {
+        countAsFloat = (float)count;
+        bucketIndex = (((*(unsigned int *)&countAsFloat) >> 23) & 0x7F) + 1;
     } else {
-        index = 0;
+        bucketIndex = 0;
     }
-    result = *(int *)lbl_8055F984 + lbl_804BDFF0[index] * 2;
-    memset((void *)result, -1, (arg0 + 1) * 8);
-    return result;
+    slotPtr = *(int *)lbl_8055F984 + lbl_804BDFF0[bucketIndex] * 2;
+    memset((void *)slotPtr, -1, (count + 1) * 8);
+    return slotPtr;
 }
 
 int fn_802AFF54(void *arg0) {
@@ -1380,37 +1383,37 @@ s32 fn_802B02C8(void *arg0) {
 }
 #pragma scheduling on
 s32 fn_802B03C0(void *arg0) {
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f1;
-    f32 temp_f2;
-    f32 temp_f2_2;
-    s32 var_r0;
-    s32 var_r31;
-    u32 temp_r4;
-    var_r31 = 0;
+    f32 a;
+    f32 b;
+    f32 c;
+    f32 d;
+    f32 e;
+    s32 v0;
+    s32 v31;
+    u32 t4;
+    v31 = 0;
     if ((fn_802AE7AC() != 0) && (lbl_8055F970 != 0)) {
-        var_r0 = 0;
-        temp_f0 = *(f32 *)arg0;
-        temp_f2 = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
-        temp_f1 = -temp_f2;
-        if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2)) {
-            temp_f0_2 = *(f32 *)((char *)arg0 + 8);
-            if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2))
-                var_r0 = 1;
+        v0 = 0;
+        d = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
+        a = *(f32 *)arg0;
+        c = -d;
+        if ((a > c) && (a < d)) {
+            b = *(f32 *)((char *)arg0 + 8);
+            if ((b > c) && (b < d))
+                v0 = 1;
         }
-        if (var_r0 != 0) {
-            temp_f2_2 = *(f32 *)((char *)arg0 + 8);
-            temp_r4 = *(u32 *)((char *)fn_802BE844(
+        if (v0 != 0) {
+            e = *(f32 *)((char *)arg0 + 8);
+            t4 = *(u32 *)((char *)fn_802BE844(
                 (s16)((s16)((s32)(*(f32 *)arg0 / lbl_80564AF0) & 0xFFFFFFF8) + 4),
-                (s16)((s16)((s32)(temp_f2_2 / lbl_80564AF0) & 0xFFFFFFF8) + 4),
-                4, temp_f2_2) + 8);
-            var_r31 = fn_802B1C50(*(void **)((char *)lbl_8055F970 + 4),
-                                  (temp_r4 >> 6) & 7,
-                                  ((temp_r4 >> 24) & 1) ^ 1);
+                (s16)((s16)((s32)(e / lbl_80564AF0) & 0xFFFFFFF8) + 4),
+                4, e) + 8);
+            v31 = fn_802B1C50(*(void **)((char *)lbl_8055F970 + 4),
+                              (t4 >> 6) & 7,
+                              ((t4 >> 24) & 1) ^ 1);
         }
     }
-    return var_r31;
+    return v31;
 }
 #pragma dont_inline reset
 s32 fn_802B04D4(void *arg0) {
