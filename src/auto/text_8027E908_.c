@@ -533,20 +533,22 @@ extern "C" void fn_802E30C8(const char *, ...);
 extern "C" int lbl_8055F69C;
 extern "C" const char lbl_80348270[];
 #pragma scheduling invalid_target
+/* Appends a fixed-size (0x1E-byte) copy of src into the string buffer managed
+ * by the global state in lbl_8055F69C, or reports overflow via fn_802E30C8. */
 extern "C" void fn_8027F204(char *src) {
     char *dst;
-    int len;
+    int remaining;
     int count;
     struct Fn8027F204State *state = (struct Fn8027F204State *)lbl_8055F69C;
 
     if (state == 0) return;
     count = state->count;
     if (count + 1 <= state->max) {
-        len = 0x1e;
+        remaining = 0x1e;
         dst = state->buffer + state->count++ * 0x1e;
         goto enter;
         for (;;) {
-            if (--len <= 0) {
+            if (--remaining <= 0) {
                 dst[-1] = 0;
                 return;
             }
