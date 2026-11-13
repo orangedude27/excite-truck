@@ -1683,19 +1683,19 @@ void fn_801C7F00(void) {
 #pragma push
 #pragma small_data off
 #pragma pop
+/* Menu item "who not": moves the typed name list out of the text field into
+ * sWhoNotList (defaulting to "nobody" when nothing was typed), clears the field,
+ * closes text entry and leaves the menu with its idle action. */
 void fn_801C7F64(void) {
-    strcpy(lbl_80438380, lbl_804380F0);
-    strcpy(lbl_804380F0, lbl_8055AA44);
-    if (lbl_80438380[0] == 0) {
-        strcpy(lbl_80438380, lbl_8055A95C);
+    strcpy(sWhoNotList, sInputLine);
+    strcpy(sInputLine, STR_EMPTY);
+    if (sWhoNotList[0] == 0) {
+        strcpy(sWhoNotList, STR_NOBODY);
     }
-    fn_801C957C(0);
-    lbl_8055E868 = fn_801C6CB0;
-    lbl_8055E83A = 1;
+    set_text_entry(0);
+    sMenuAction = fn_801C6CB0;
+    sTextFieldFlag = 1;
 }
-
-#pragma push
-#pragma opt_propagation off
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
     char *base = (char *)&lbl_80437D88;
