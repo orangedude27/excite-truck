@@ -236,20 +236,21 @@ check:
     lbl_8055BC54 = -1;
 }
 #pragma scheduling on
-char *fn_8023DC38(char *arg0) {
-    char **var_r31;
-    s32 var_r30;
+char *fn_8023DC38(char *controlName) {
+    /* Look up a control-info entry by name and return a pointer to it, or panic if not found. */
+    char **entry;
+    s32 index;
 
-    var_r31 = (char **)&lbl_802FA0A8;
-    var_r30 = 0;
-    while (var_r30 < 0x1D) {
-        if (stricmp(*(char **)(var_r31 + 1), arg0) == 0) {
-            return (char *)&lbl_802FA0A8 + (var_r30 * 8);
+    entry = (char **)&lbl_802FA0A8;
+    index = 0;
+    while (index < 0x1D) {
+        if (stricmp(*(char **)(entry + 1), controlName) == 0) {
+            return (char *)&lbl_802FA0A8 + (index * 8);
         }
-        var_r31 += 2;
-        var_r30 += 1;
+        entry += 2;
+        index += 1;
     }
-    fn_802E317C(lbl_80341B9C, arg0);
+    fn_802E317C(lbl_80341B9C, controlName);
     return 0;
 }
 
