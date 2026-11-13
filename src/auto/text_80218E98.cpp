@@ -2,6 +2,19 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+
+/* Keys a menu item's handler sees.  The arrows are the Windows virtual-key
+   codes with a 0x100 base; Return and Escape keep their plain codes. */
+#define MENU_KEY_ENUM_MOVED
+enum {
+    MENU_KEY_RETURN = 0xD,
+    MENU_KEY_ESCAPE = 0x1B,
+    MENU_KEY_LEFT = 0x125,
+    MENU_KEY_UP = 0x126,
+    MENU_KEY_RIGHT = 0x127,
+    MENU_KEY_DOWN = 0x128
+};
+
 extern "C" f64 lbl_805634B8;
 extern "C" char lbl_8033DAD8[];
 extern "C" s32 fn_80129D90(s32, s32, s32);
