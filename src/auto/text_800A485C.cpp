@@ -11300,16 +11300,17 @@ extern "C" s32 fn_800B7EAC(s32 *arg0) {
 }
 
 extern "C" s32 fn_800B7F28(void *arg0) {
-    s32 count;
+    /* Initialize the semaphore for a counter object and wait until its pending count is drained, returning the semaphore handle. */
+    s32 waitCount;
     if (arg0 == 0 || *(void **)((u8 *)arg0 + 8) == 0 || *(u32 *)arg0 > *(u32 *)((u8 *)arg0 + 4)) {
         OSReport(lbl_8031B1E4);
         return 0;
     }
     OSInitSemaphore(*(void **)((u8 *)arg0 + 8), *(u32 *)((u8 *)arg0 + 4));
-    count = (s32)(*(u32 *)((u8 *)arg0 + 4) - *(u32 *)arg0);
-    while (count != 0) {
+    waitCount = (s32)(*(u32 *)((u8 *)arg0 + 4) - *(u32 *)arg0);
+    while (waitCount != 0) {
         OSWaitSemaphore(*(void **)((u8 *)arg0 + 8));
-        count -= 1;
+        waitCount -= 1;
     }
     return *(s32 *)((u8 *)arg0 + 8);
 }
