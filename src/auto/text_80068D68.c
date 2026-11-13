@@ -11375,9 +11375,9 @@ void bta_dm_discover(void *data) {
 #define BTA_DM_INQUIRY_CMPL_EVT                 0x203
 #define BTA_DM_REMT_NAME_EVT                    0x204
 #define BTA_DM_REMT_NAME_TOUT_EVT               0x205
-#define BTA_DM_SDP_RESULT_EVT                   0x205
+#define BTA_DM_SDP_RESULT_EVT                   0x206
 #define BTA_DM_SEARCH_CMPL_EVT                  0x207
-#define BTA_DM_DISCOVERY_RESULT_EVT             0x207
+#define BTA_DM_DISCOVERY_RESULT_EVT             0x208
 #endif
 
 /* tBTA_DM_SEARCH_EVT codes for the application's search callback. */
