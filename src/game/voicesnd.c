@@ -200,27 +200,28 @@ extern void fn_802E59BC(void *);
 extern void fn_802E5950(int, int);
 extern void fn_802E6138(void);
 extern void fn_802E61D8(void *);
-void fn_8020AA0C(void *arg0) {
-    int value = *(int *)((char *)arg0 + 8);
-    if (value != 0) {
-        fn_802E61D8((void *)value);
-        value = *(int *)((char *)arg0 + 0xC);
-        if (value != 0) {
-            fn_802E61D8((void *)value);
+void fn_8020AA0C(void *self) {
+    /* Release the two active voice handles at +8/+0xC and mark the object state as idle. */
+    int handle = *(int *)((char *)self + 8);
+    if (handle != 0) {
+        fn_802E61D8((void *)handle);
+        handle = *(int *)((char *)self + 0xC);
+        if (handle != 0) {
+            fn_802E61D8((void *)handle);
         }
-        value = *(int *)((char *)arg0 + 0xC);
-        if (value != 0) {
-            ((void (*)(void *))fn_802E6138)((void *)value);
-            *(int *)((char *)arg0 + 0xC) = 0;
+        handle = *(int *)((char *)self + 0xC);
+        if (handle != 0) {
+            ((void (*)(void *))fn_802E6138)((void *)handle);
+            *(int *)((char *)self + 0xC) = 0;
         }
-        value = *(int *)((char *)arg0 + 8);
-        if (value != 0) {
-            ((void (*)(void *))fn_802E6138)((void *)value);
-            *(int *)((char *)arg0 + 8) = 0;
+        handle = *(int *)((char *)self + 8);
+        if (handle != 0) {
+            ((void (*)(void *))fn_802E6138)((void *)handle);
+            *(int *)((char *)self + 8) = 0;
         }
     }
-    *(int *)((char *)arg0 + 4) = 3;
-    *((unsigned char *)arg0 + 0x3E) = 0;
+    *(int *)((char *)self + 4) = 3;
+    *((unsigned char *)self + 0x3E) = 0;
 }
 
 int fn_8020AA98(void *arg0) { volatile int *p = (volatile int *)((char *)arg0 + 4); if (*p == 1 && *((unsigned char *)arg0 + 0x3E) != 0) return 2; return *p; }
