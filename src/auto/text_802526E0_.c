@@ -1,6 +1,7 @@
 #include <revolution/MTX/mtxtypes.h>
 #include "types.h"
-extern f32 lbl_805639DC, lbl_805639E4, lbl_80558DC4, lbl_805639E0;
+extern f32 lbl_805639DC, lbl_805639E4, lbl_805639E0;
+extern f32 lbl_80558DC4[];
 extern f32 fn_8002F234(f32);
 extern f32 PSVECDotProduct(void *, void *);
 typedef struct { f32 x, y, z, w; } Vec4_80252;
