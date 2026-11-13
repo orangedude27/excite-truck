@@ -735,14 +735,15 @@ void fn_801838C8(void *arg0) {
 }
 #pragma pop
 
+/* Sync vehicle/replay state at 0x1E44 with the object at 0x328; when in mode 2 and not a PCAR record with flag 0x4 set, apply an adjustment and copy the state back. */
 void fn_80183DF8(void *arg0) {
-    unsigned char *p = (unsigned char *)arg0;
-    if (*(int *)(p + 0x328) != 0) {
-        fn_8018F538(p, p + 0x1E44);
-        fn_80279C00(*(int *)(p + 0x328), p + 0x1E44);
-        if (fn_801769C4() == 2 && *(unsigned int *)(p + 0x10) != 0x50434152 && (*(unsigned char *)(p + 0x260) & 4) == 0) {
-            fn_80181EAC(*(int *)(p + 0x328));
-            fn_80279B28(*(int *)(p + 0x328), p + 0x1E44);
+    unsigned char *base = (unsigned char *)arg0;
+    if (*(int *)(base + 0x328) != 0) {
+        fn_8018F538(base, base + 0x1E44);
+        fn_80279C00(*(int *)(base + 0x328), base + 0x1E44);
+        if (fn_801769C4() == 2 && *(unsigned int *)(base + 0x10) != 0x50434152 && (*(unsigned char *)(base + 0x260) & 4) == 0) {
+            fn_80181EAC(*(int *)(base + 0x328));
+            fn_80279B28(*(int *)(base + 0x328), base + 0x1E44);
         }
     }
 }
