@@ -273,12 +273,12 @@ extern double fn_8002F234(double);
 #pragma push
 #pragma processor 750
 void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
-    u32 sp8 = 0;
     const char *messages = lbl_80339A20;
+    u32 sp8 = 0;
     float *dst;
     float *src;
     s32 i;
-    float a, b, c, d;
+    double a, b, c, d;
 
     *(void **)((u8 *)arg0 + 0x10) = arg1;
     *(s32 *)((u8 *)arg0 + 0x18) = 0;
@@ -293,18 +293,18 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
     while (i < *(s32 *)((u8 *)arg0 + 8) + 1) {
         a = src[0x53C / 4];
         i++;
-        dst[4] = a;
+        dst[4] = (float)a;
         b = src[0x540 / 4];
-        dst[5] = b;
+        dst[5] = (float)b;
         c = src[0x544 / 4];
-        dst[6] = c;
+        dst[6] = (float)c;
         d = src[0x548 / 4];
         src += 4;
-        dst[7] = d;
-        dst[0] = a;
-        dst[1] = b;
-        dst[2] = c;
-        dst[3] = d;
+        dst[7] = (float)d;
+        dst[0] = (float)a;
+        dst[1] = (float)b;
+        dst[2] = (float)c;
+        dst[3] = (float)d;
         dst[9] = -farg0;
         dst[8] = -farg0;
         dst += 10;
@@ -456,15 +456,16 @@ void fn_801E6E9C(AnimPlayer *obj, float dt) {
 }
 #pragma pop
 
-void fn_801E75C8(void* arg0, s32 arg1) {
+/* Draws the model for an animation node by building its world transform and submitting it. */
+void fn_801E75C8(void* node, s32 param) {
     u8 sp[0x5c];
     s32 temp_r31;
 
-    temp_r31 = fn_801E5E24(*(s32*)((u8*)arg0 + 4), (u8*)arg0 + 0x53c,
-                             *(s32*)((u8*)arg0 + 8), sp + 0x30);
-    fn_801BFD34(sp + 0x24, sp + 0x54, arg1);
-    fn_80015B20(sp, sp + 0x30, arg1);
-    fn_802C70AC(*(s32*)arg0, sp, temp_r31, -1);
+    temp_r31 = fn_801E5E24(*(s32*)((u8*)node + 4), (u8*)node + 0x53c,
+                             *(s32*)((u8*)node + 8), sp + 0x30);
+    fn_801BFD34(sp + 0x24, sp + 0x54, param);
+    fn_80015B20(sp, sp + 0x30, param);
+    fn_802C70AC(*(s32*)node, sp, temp_r31, -1);
 }
 #pragma scheduling reset
 s32 fn_801E7650(void* arg0) {
