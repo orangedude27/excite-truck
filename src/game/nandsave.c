@@ -267,10 +267,11 @@ int fn_802E8C6C(int arg0) {
     return 0;
 }
 
+/* Initialize NAND/save subsystem: NAND init, allocator setup, async buffer, callbacks, and handlers. */
 void fn_802E8CA8(void) {
-    int result = NANDInit();
-    if (result != 0) {
-        fn_802E317C(lbl_8034DED4, result);
+    int nandInitResult = NANDInit();
+    if (nandInitResult != 0) {
+        fn_802E317C(lbl_8034DED4, nandInitResult);
     }
     fn_801282F4();
     fn_801282EC(0x80);
