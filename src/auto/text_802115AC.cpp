@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#pragma dont_inline fn_80211678
 
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" s32 fn_80128314(s32);
@@ -273,6 +274,7 @@ extern "C" s32 fn_80211678(u8 *arg0) {
 }
 
 extern "C" void fn_80211690(s32 arg0) {
+    s32 isZero;
     const char *base = (const char *)lbl_8033CAE8;
     S12Ptr tbl;
     S3Word w3;
@@ -280,10 +282,8 @@ extern "C" void fn_80211690(s32 arg0) {
     char buf38[0x20];
     char buf18[0x20];
     s32 sp8;
-    s32 isZero;
     s32 notZero;
     s32 i, j;
-    s32 zero = 0;
     Ent18 *e;
     const char *r25;
     char **srow;
@@ -308,10 +308,10 @@ extern "C" void fn_80211690(s32 arg0) {
         s32 *d = drow;
         for (j = 0; j < 4; j++) {
             if (isZero != 0) {
-                if (i == 2 && (u32)j <= 1)
+                if (i == 2 && (unsigned)j <= 1)
                     *d = fn_802C5130(*s);
                 else
-                    *d = zero;
+                    *d = 0;
             } else {
                 *d = fn_802C5130(*s);
             }
@@ -1554,7 +1554,8 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         flag28 = 0;
         do {
             s32 type = *(s32 *)(q + 4);
-            if (type == 5) {
+            switch (type) {
+            case 5: {
                 if (*(void **)q != NULL) {
                     *(s32 *)&lbl_8055EF38 = z;
                     void *rec = fn_801284F8(0x248, lbl_8055B7C8);
@@ -1572,7 +1573,9 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
                     }
                     *(s32 *)&lbl_8055EF38 = ng;
                 }
-            } else if (type == 6) {
+                break;
+            }
+            case 6: {
                 void *rec = fn_801284F8(0x250, lbl_8055B7FC);
                 if (rec != NULL) {
                     void *a8 = *(void **)(q + 8);
@@ -1585,20 +1588,32 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
                     *(u16 *)((u8 *)rec + 0x244) = a10;
                     fn_802168EC(out, rec, -1);
                 }
-            } else if (type == 8) {
+                break;
+            }
+            case 8: {
                 s32 v = *(s32 *)(q + 0xC);
-                if (v == 0) {
+                switch (v) {
+                case 0:
                     *(void **)((u8 *)out + 0x438) = *(void **)(q + 8);
-                } else if (v == 1) {
+                    break;
+                case 1:
                     *(void **)((u8 *)out + 0x43C) = *(void **)(q + 8);
-                } else if (v == 2) {
+                    break;
+                case 2:
                     flag28 = 1;
                     *(void **)((u8 *)out + 0x440) = *(void **)(q + 8);
-                } else if (v == 3) {
+                    break;
+                case 3:
                     *(void **)((u8 *)out + 0x444) = *(void **)(q + 8);
-                } else {
+                    break;
+                default:
                     fn_802E317C((const char *)(lbl_8033CAE8 + 0x6e0));
+                    break;
                 }
+                break;
+            }
+            default:
+                break;
             }
             q = q + 0x14;
         } while (*(s32 *)(q + 4) != 0x7b);
