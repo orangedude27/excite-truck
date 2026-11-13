@@ -20,6 +20,7 @@ static inline InitArrayB59D4 *initArrayB59D4(InitArrayB59D4 *a) {
 }
 /* Construct and register the two embedded arrays without defining their data. */
 #pragma push
+#pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma cplusplus on
