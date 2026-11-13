@@ -125,30 +125,35 @@ char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
 
 extern void fn_8022D76C(void *);
 #pragma scheduling invalid_target
-void *fn_8022D458(UITBRec *arg0, int arg1, int arg2, const int *__restrict arg3) {
-    char *base;
-    int size;
-    int i;
-    base = lbl_80340108;
-    size = arg2 * 4;
-    arg0->unkC = arg1;
-    arg0->unk8 = 0;
-    arg0->count = arg2;
-    arg0->lens = fn_8012850C(size, base + 0x38);
-    arg0->offs = fn_8012850C(size, base + 0x44);
-    arg0->unk10 = arg1;
-    arg0->unk2C = -1;
-    arg0->unk24 = 0;
-    arg0->magic = 0x55495442;
-    arg0->total = 0;
-    for (i = 0; i < arg2; i++) {
-        arg0->lens[i] = arg3[i];
-        arg0->offs[i] = arg0->total;
-        arg0->total += arg0->lens[i] + 1;
+/* Build a "UITB" text table in the caller's record: `rows` rows of `columns` strings,
+ * every cell one tag byte followed by its text, all packed into a single buffer of
+ * rows * rowSize bytes. Allocates the column size and column offset tables and the
+ * cell buffer (tags "column_wids", "column_offs" and "UITable:buf"), lays the columns
+ * out back to back in a row, and clears the buffer. Returns the table. */
+void *fn_8022D458(UITable *table, int rows, int columns, const int *__restrict columnWidths) {
+    char *tagStrings;
+    int tableBytes;
+    int column;
+    tagStrings = lbl_80340108;
+    tableBytes = columns * 4;
+    table->rows = rows;
+    table->rowsUsed = 0;
+    table->columns = columns;
+    table->columnSizes = fn_8012850C(tableBytes, tagStrings + UITAG_COLUMN_SIZES);
+    table->columnStarts = fn_8012850C(tableBytes, tagStrings + UITAG_COLUMN_STARTS);
+    table->rowsInit = rows;
+    table->field_2C = -1;
+    table->updates = 0;
+    table->magic = UITABLE_MAGIC;
+    table->rowSize = 0;
+    for (column = 0; column < columns; column++) {
+        table->columnSizes[column] = columnWidths[column];
+        table->columnStarts[column] = table->rowSize;
+        table->rowSize += table->columnSizes[column] + 1;
     }
-    arg0->data = fn_8012850C(arg1 * arg0->total, base + 0x50);
-    fn_8022D76C(arg0);
-    return arg0;
+    table->text = fn_8012850C(rows * table->rowSize, tagStrings + UITAG_TEXT);
+    fn_8022D76C(table);
+    return table;
 }
 void fn_8022D76C(void *arg0) {
     memset(*(void **)arg0, 0, *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x14));
