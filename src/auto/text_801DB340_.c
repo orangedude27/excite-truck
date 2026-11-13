@@ -106,7 +106,7 @@ void fn_801DB340(int arg0) { fn_801DB13C(arg0 - 4); }
 
 #pragma auto_inline off
 #pragma dont_inline on
-int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
+int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3, void *arg4) {
     int width, height;
     float *data;
 
