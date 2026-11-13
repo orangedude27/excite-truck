@@ -230,6 +230,7 @@ u16 OSGetWirelessID(s32 pad) {
 void OSSetWirelessID(s32 pad, u16 id) {
     OSSramEx* sram;
 
+    /* Set the stored wireless controller ID for a pad, marking SRAM dirty only if it changes. */
     sram = __OSLockSramEx();
     if (id != sram->wirelessPadId[pad]) {
         sram->wirelessPadId[pad] = id;
