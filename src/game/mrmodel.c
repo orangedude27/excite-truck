@@ -238,11 +238,12 @@ extern void fn_802D6B08(int);
 extern void fn_802DAA18(void);
 extern void fn_802DB2BC(unsigned char);
 extern int lbl_804C139C[];
-void fn_802C5690(void *arg0) {
+/* Tear down this model/resource list: release its handle, destroy each node's resources, then clear the head. */
+void fn_802C5690(void *obj) {
     void *node;
-    if (*(int *)((char *)arg0 + 8) != 0) {
-        fn_802C8B70(*(int *)arg0);
-        node = *(void **)((char *)arg0 + 8);
+    if (*(int *)((char *)obj + 8) != 0) {
+        fn_802C8B70(*(int *)obj);
+        node = *(void **)((char *)obj + 8);
         while (node != 0) {
             fn_802D0610(*(int *)((char *)node + 8));
             if ((unsigned int)(*(int *)((char *)node + 12) + 0x10000) != 0xFFFF) {
@@ -253,7 +254,7 @@ void fn_802C5690(void *arg0) {
             node = *(void **)((char *)node + 16);
         }
         fn_802C8D74();
-        *(int *)((char *)arg0 + 8) = 0;
+        *(int *)((char *)obj + 8) = 0;
     }
 }
 
