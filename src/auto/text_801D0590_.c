@@ -51,8 +51,14 @@ static inline void DispatchList_RemoveAt1(int index) {
     lbl_804386B4[0].count = lbl_804386B4[0].count - 1;
 }
 
-void fn_801D05B4(void *arg0) { int index = DispatchList_Find1(arg0); if (index == -1) return; DispatchList_RemoveAt1(index); }
-
+/* Take an object out of the first listener list, the counterpart of fn_801D0590:
+ * find it, then let the list's last entry move into the slot it frees.  An
+ * object that is not in the list is left alone. */
+void fn_801D05B4(void *obj) {
+    int index = DispatchList_Find1(obj);
+    if (index == -1) return;
+    DispatchList_RemoveAt1(index);
+}
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801D0650(void *arg0) {
