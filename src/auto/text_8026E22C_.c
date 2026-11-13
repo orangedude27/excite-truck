@@ -6,6 +6,35 @@
 extern f32 lbl_80563E20;
 extern f32 lbl_80563E24;
 extern f32 lbl_80563E2C;
+extern f32 lbl_80563E28;
+extern double fn_8002F234(double);
+extern void fn_8012F57C(float *, float *, float *, float);
+
+static inline void mtx_to_quat(float m[3][3], float *q) {
+    float sum = m[0][0] + m[1][1] + m[2][2];
+    float sn, inv;
+    int i, j, k;
+    if (sum > lbl_80563E20) {
+        sn = (float)fn_8002F234(lbl_80563E24 + sum);
+        inv = lbl_80563E28 / sn;
+        q[3] = lbl_80563E28 * sn;
+        q[0] = inv * (m[1][2] - m[2][1]);
+        q[1] = inv * (m[2][0] - m[0][2]);
+        q[2] = inv * (m[0][1] - m[1][0]);
+    } else {
+        i = 0;
+        if (m[1][1] > m[0][0]) i = 1;
+        if (m[2][2] > m[0][i]) i = 2;
+        j = (i + 1) % 3;
+        k = (j + 1) % 3;
+        sn = (float)fn_8002F234(lbl_80563E24 + (m[i][i] - (m[j][j] + m[k][k])));
+        inv = lbl_80563E28 / sn;
+        q[i] = lbl_80563E28 * sn;
+        q[3] = inv * (m[j][k] - m[k][j]);
+        q[j] = inv * (m[i][j] + m[j][i]);
+        q[k] = inv * (m[i][k] + m[k][i]);
+    }
+}
 extern float __fabsf(float);
 extern double fabs(double);
 extern double __fabs(double);
@@ -18,9 +47,9 @@ void fn_8026E688(f32* arg0, f32* arg1, f32* arg2, f32* arg3) {
     volatile f32* inputA = (volatile f32*)arg1;
     volatile f32* inputB = (volatile f32*)arg2;
     volatile f32* matrix = (volatile f32*)arg0;
-    register f32 px, py, pz, qx, qy, qz;
-    register f32 dx, dy, dz;
-    register f32 one, zero;
+    f32 px, py, pz, qx, qy, qz;
+    f32 dx, dy, dz;
+    f32 one, zero;
     f32 x0, x1, x2, z0, z1, z2;
 
     px = inputA[0];
