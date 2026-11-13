@@ -1699,41 +1699,42 @@ void GXSetNumTexGens(unsigned int value) {
     __GXData[0x5FC / 4] = flags.reg;
 }
 
-void GXSetMisc(s32 which, u32 value) {
-    switch (which) {
+void GXSetMisc(s32 token, u32 value) {
+    /* Apply a GX misc setting: token 1 updates vertex/dirty state, tokens 2 and 3 set boolean flags in GX state. */
+    switch (token) {
     case 2:
-        goto set_2;
+        goto set_flag_5f9;
     case 0:
         goto out;
     case 1:
-        goto set_1;
+        goto set_vertex_misc;
     case 3:
-        goto set_3;
+        goto set_flag_5fa;
     default:
         goto out;
     }
 
-set_1:
+set_vertex_misc:
     {
-        u32 flag;
-        u32 leading;
-        unsigned int *data;
-        flag = value & 0xFFFF;
-        data = __GXData;
-        *(u16 *)((u8 *)data + 4) = (u16)value;
-        leading = __cntlzw((unsigned int)flag);
-        *(u16 *)data = (u16)(leading >> 5);
-        *(u16 *)((u8 *)data + 2) = 1;
-        if (flag == 0) return;
-        data[0x5FC / 4] |= 8;
+        u32 maskedValue;
+        u32 leadingZeros;
+        unsigned int *gxData;
+        maskedValue = value & 0xFFFF;
+        gxData = __GXData;
+        *(u16 *)((u8 *)gxData + 4) = (u16)value;
+        leadingZeros = __cntlzw((unsigned int)maskedValue);
+        *(u16 *)gxData = (u16)(leadingZeros >> 5);
+        *(u16 *)((u8 *)gxData + 2) = 1;
+        if (maskedValue == 0) return;
+        gxData[0x5FC / 4] |= 8;
         return;
     }
 
-set_2:
+set_flag_5f9:
     *((u8 *)__GXData + 0x5F9) = value != 0;
     return;
 
-set_3:
+set_flag_5fa:
     *((u8 *)__GXData + 0x5FA) = value != 0;
     return;
 
