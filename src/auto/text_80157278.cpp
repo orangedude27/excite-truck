@@ -2607,7 +2607,7 @@ extern "C" void fn_8015B618(void *arg0, void *context) {
     }
 }
 
-extern "C" void fn_8015B708(Unk801577F0* arg0) {
+extern "C" void fn_8015B708(Unk801577F0* self) {
     class LocalVtable {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2621,10 +2621,12 @@ extern "C" void fn_8015B708(Unk801577F0* arg0) {
         virtual void v32(); virtual void v33(f32*);
     };
     f32 value;
-    s32 result = arg0->v21();
-    value = arg0->v18(result);
-    ((LocalVtable*)arg0)->v33(&value);
-    ((LocalVtable*)arg0)->v31();
+    s32 index = self->v21();
+
+    /* Fetch the selected index/value and apply it via v33/v31. */
+    value = self->v18(index);
+    ((LocalVtable*)self)->v33(&value);
+    ((LocalVtable*)self)->v31();
 }
 
 extern "C" void* fn_8017960C(s32);
