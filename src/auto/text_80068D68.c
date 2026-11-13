@@ -26021,11 +26021,12 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
     L2CA_DataWrite(p_ccb->connection_id, p_buf);
 }
 
+/* Find L2CAP connection control block by handle in the L2CB table (4 entries, stride 0x478, base+0x3C). */
 tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16 handle) {
-    u8 *p = lbl_803C4C40 + 0x3C;
+    u8 *ccb = lbl_803C4C40 + 0x3C;
     int i;
-    for (i = 0; i < 4; i++, p += 0x478) {
-        if (p[0] != 0 && *(UINT16 *)(p + 0x22) == handle) return (tCONN_CB *)p;
+    for (i = 0; i < 4; i++, ccb += 0x478) {
+        if (ccb[0] != 0 && *(UINT16 *)(ccb + 0x22) == handle) return (tCONN_CB *)ccb;
     }
     return NULL;
 }
