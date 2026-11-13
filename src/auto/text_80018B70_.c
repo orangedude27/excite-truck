@@ -24,6 +24,25 @@ s32 stricmp(const char *, const char *);
 extern char lbl_8055D588;
 extern u8 lbl_80357E0C[12];
 
+#define sUnlockableMaxExcitePointsName lbl_802FD2F4
+#define sUnlockableNotFoundFmt lbl_802FD308
+#define sUnlockableTable lbl_80357E0C
+
+typedef struct UnlockableEntry {
+    const char *name;
+    const char *category;
+    s32 value;
+    u8 flag;
+    u8 pad[3];
+    s32 sortIndex;
+} UnlockableEntry;
+
+typedef struct UnlockableTable {
+    UnlockableEntry *entries;
+    volatile s32 count;
+    s32 unk8;
+} UnlockableTable;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -326,9 +345,8 @@ s32 fn_80019098(s32 arg0) {
     offset = 0;
     goto check;
 loop:
-    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0) {
+    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0)
         goto advance;
-    }
     goto found;
 advance:
     offset += 0x10;
