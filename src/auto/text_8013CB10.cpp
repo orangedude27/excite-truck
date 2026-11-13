@@ -1166,74 +1166,79 @@ struct TimeBonusParams {
 };
 
 #pragma scheduling invalid_target
-extern "C" void fn_8013E3A8(void *arg0, void *arg1) {
-    u8 *dst = (u8 *)arg0;
-    u8 *base = lbl_8032C530;
-    s32 value;
-    f32 fvalue;
+extern "C" void fn_8013E3A8(void *params, void *attrs) {
+    TimeBonusParams *p = (TimeBonusParams *)params;
+    const char *keys = (const char *)lbl_8032C530;
+    s32 intValue;
+    f32 floatValue;
     f32 scale;
 
-    if (arg1) value = ((TDispatchStringInt20 *)arg1)->v20((const char *)(base + 0x210), 0x19);
-    else value = 0x19;
-    *(s32 *)(dst + 0xC) = value;
+    /* number of path nodes to the finish */
+    if (attrs) intValue = ((TDispatchStringInt20 *)attrs)->v20(keys + 0x210, 0x19);
+    else intValue = 0x19;
+    p->i0C = intValue;
 
-    if (arg1) value = ((TDispatchStringInt20 *)arg1)->v20((const char *)(base + 0x220), 0xA);
-    else value = 0xA;
-    *(s32 *)(dst + 4) = value;
+    if (attrs) intValue = ((TDispatchStringInt20 *)attrs)->v20(keys + 0x220, 0xA);
+    else intValue = 0xA;
+    p->nodeCount = intValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x230), lbl_805614E0);
-    else fvalue = lbl_805614E0;
-    *(f32 *)(dst + 0) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x230, lbl_805614E0);
+    else floatValue = lbl_805614E0;
+    p->f00 = floatValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x248), lbl_805614E4);
-    else fvalue = lbl_805614E4;
-    *(f32 *)(dst + 8) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x248, lbl_805614E4);
+    else floatValue = lbl_805614E4;
+    p->f08 = floatValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x258), lbl_805614E8);
-    else fvalue = lbl_805614E8;
-    *(f32 *)(dst + 0x10) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x258, lbl_805614E8);
+    else floatValue = lbl_805614E8;
+    p->f10 = floatValue;
 
-    if (arg1) value = ((TDispatchStringInt20 *)arg1)->v20((const char *)(base + 0x270), 0xA);
-    else value = 0xA;
-    *(s32 *)(dst + 0x14) = value;
+    /* number of path groups (laps) in the zone */
+    if (attrs) intValue = ((TDispatchStringInt20 *)attrs)->v20(keys + 0x270, 0xA);
+    else intValue = 0xA;
+    p->groupCount = intValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x280), lbl_805614EC);
-    else fvalue = lbl_805614EC;
-    *(f32 *)(dst + 0x18) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x280, lbl_805614EC);
+    else floatValue = lbl_805614EC;
+    p->startTime = floatValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x290), lbl_805614AC);
-    else fvalue = lbl_805614AC;
-    *(f32 *)(dst + 0x1C) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x290, lbl_805614AC);
+    else floatValue = lbl_805614AC;
+    p->bonusX = floatValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x29C), lbl_805614F0);
-    else fvalue = lbl_805614F0;
-    *(f32 *)(dst + 0x24) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x29C, lbl_805614F0);
+    else floatValue = lbl_805614F0;
+    p->bonusFreeze = floatValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x2B0), lbl_805614AC);
-    else fvalue = lbl_805614AC;
-    *(f32 *)(dst + 0x20) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x2B0, lbl_805614AC);
+    else floatValue = lbl_805614AC;
+    p->bonusFadeout = floatValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x2C0), lbl_805614F4);
-    else fvalue = lbl_805614F4;
-    *(f32 *)(dst + 0x28) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x2C0, lbl_805614F4);
+    else floatValue = lbl_805614F4;
+    p->f28 = floatValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x2D4), lbl_805614E8);
-    else fvalue = lbl_805614E8;
-    *(f32 *)(dst + 0x30) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x2D4, lbl_805614E8);
+    else floatValue = lbl_805614E8;
+    p->f30 = floatValue;
 
-    if (arg1) value = ((TDispatchStringInt20 *)arg1)->v20((const char *)(base + 0x2E8), 0x186A0);
-    else value = 0x186A0;
-    *(s32 *)(dst + 0x2C) = value;
+    /* time bonus for the last checkpoint, in the table's own units */
+    if (attrs) intValue = ((TDispatchStringInt20 *)attrs)->v20(keys + 0x2E8, 0x186A0);
+    else intValue = 0x186A0;
+    p->bonusTime = intValue;
 
-    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x300), lbl_805614AC);
-    else fvalue = lbl_805614AC;
-    *(f32 *)(dst + 0x38) = fvalue;
+    if (attrs) floatValue = ((TDispatchStringFloat28 *)attrs)->v28(keys + 0x300, lbl_805614AC);
+    else floatValue = lbl_805614AC;
+    p->f38 = floatValue;
 
-    *(f32 *)(dst + 0x34) = fn_80204CFC((const char *)(base + 0x310));
-    scale = fn_80204CFC((const char *)(base + 0x200));
-    f32 conv = (f32)*(s32 *)(dst + 0x2C);
-    *(f32 *)(dst + 0x24) = lbl_805614F8;
-    *(s32 *)(dst + 0x2C) = (s32)(conv * scale);
+    /* the two values the attribute set cannot carry come from the global
+     * numeric table, and the bonus is scaled by its global factor */
+    p->f34 = fn_80204CFC(keys + 0x310);
+    scale = fn_80204CFC(keys + 0x200);
+    f32 conv = (f32)p->bonusTime;
+    p->bonusFreeze = lbl_805614F8;
+    p->bonusTime = (s32)(conv * scale);
 }
 #pragma push
 #pragma processor 750
