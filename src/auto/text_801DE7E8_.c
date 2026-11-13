@@ -423,6 +423,10 @@ void fn_801DEF98(void) {
     *(int *)((char *)&lbl_804873B8 + 4) = 0;
 }
 #pragma scheduling on
+/* If enabled (lbl_8055E9E8), run the AX DSP init callback and apply level
+ * lbl_80562BE8 to lbl_8055E9EC. Otherwise, when the 64-bit value at
+ * lbl_8055ADF0/lbl_8055ADF4 is non-negative, run fn_801769EC, apply
+ * lbl_80562BF4 to lbl_8055E9EC, then clear both to -1. */
 void fn_801DEFE0(void) {
     extern int lbl_8055E9E8;
     extern int lbl_8055E9EC;
