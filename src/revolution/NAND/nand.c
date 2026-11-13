@@ -404,6 +404,7 @@ static void nandGetStatusCallback(s32 result, void* arg) {
     block->callback(nandConvertErrorCode(result), block);
 }
 
+/* Asynchronously fetch NAND status for a path, storing results into `status` and invoking `callback` via `block`. */
 s32 NANDPrivateGetStatusAsync(const char* path, NANDStatus* status,
                               NANDAsyncCallback callback,
                               NANDCommandBlock* block) {
