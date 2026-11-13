@@ -76,32 +76,34 @@ extern "C" void *__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
 extern "C" const char lbl_80320C24[];
 extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(u8 *self, u8 *res, u8 *set) {
     u8 *arr;
-    u8 *data;
-    u8 *table;
-    u8 *m;
     u8 n;
     u8 cnt;
+    u8 *table;
+    u8 *data;
+    u8 *m;
+    u32 matRes;
     int i;
     int off;
     int *p;
     u8 *entry;
     f32 f0, f1, f2, f3;
     int w0, w1, w2, w3;
-
+    int set8;
     __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(self, res);
     *(const char **)self = lbl_80320CFC;
     arr = self + 0xE4;
     fn_8002F53C(arr, (void *)fn_800D7F6C, (void *)fn_800D2DD4, 4, 4);
     fn_800D5978(arr + 0x10);
-    f0 = *(f32 *)(res + 0x4C);
-    f1 = *(f32 *)(res + 0x50);
-    f2 = *(f32 *)(res + 0x54);
-    f3 = *(f32 *)(res + 0x58);
-    *(f32 *)(self + 0xD4) = f0;
-    *(f32 *)(self + 0xD8) = f1;
-    *(f32 *)(self + 0xDC) = f2;
-    *(f32 *)(self + 0xE0) = f3;
-    if (*(int *)(set + 8) == 0) {
+    set8 = *(int *)(set + 8);
+    f3 = *(f32 *)(res + 0x4C);
+    f2 = *(f32 *)(res + 0x50);
+    f1 = *(f32 *)(res + 0x54);
+    f0 = *(f32 *)(res + 0x58);
+    *(f32 *)(self + 0xD4) = f3;
+    *(f32 *)(self + 0xD8) = f2;
+    *(f32 *)(self + 0xDC) = f1;
+    *(f32 *)(self + 0xE0) = f0;
+    if (set8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0xC1, lbl_80320C24);
     }
     data = res + *(int *)(res + 0x60);
@@ -125,9 +127,9 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     }
     m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
     if (m != 0) {
-        if (m != 0) {
-            m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(
-                m, (void *)(*(int *)(set + 8) + *(int *)(table + *(u16 *)(data + 0x10) * 4)), set);
+        matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)(data + 0x10) * 4);
+        if (matRes != 0) {
+            m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
         }
         *(u8 **)(self + 0x28) = m;
     }
@@ -147,9 +149,9 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
                 *(int *)(*(u8 **)(self + 0xFC) + off + 4) = 0;
                 m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
                 if (m != 0) {
-                    if (m != 0) {
-                        m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(
-                            m, (void *)(*(int *)(set + 8) + *(int *)(table + *(u16 *)entry * 4)), set);
+                    matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)entry * 4);
+                    if (matRes != 0) {
+                        m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
                     }
                     *(u8 **)(*(u8 **)(self + 0xFC) + off + 4) = m;
                 }
@@ -268,6 +270,7 @@ void* nw4hbm::lyt::Window::FindAnimationLink(AnimTransform* pAnim) {
 
 extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(void* self, void* anim, bool enable, bool recursive);
 #pragma use_lmw_stmw off
+/* Enables or disables an animation on each child pane in the window's list, then forwards to Pane. */
 extern "C" void SetAnimationEnable__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransformbb(void* self, void* anim, bool enable, bool recursive) {
     struct DummyPane {
         virtual void v0(); virtual void v1(); virtual void v2();
@@ -275,15 +278,15 @@ extern "C" void SetAnimationEnable__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTra
         virtual void v6();
         virtual void SetAnimationEnable(void* anim, bool enable);
     };
-    int offset;
-    int count;
-    count = 0;
-    offset = 0;
-    while (count < *((unsigned char*)self + 0x100)) {
-        DummyPane* pane = *(DummyPane**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
-        pane->SetAnimationEnable(anim, enable);
-        offset += 8;
-        count++;
+    int childOffset;
+    int childIndex;
+    childIndex = 0;
+    childOffset = 0;
+    while (childIndex < *((unsigned char*)self + 0x100)) {
+        DummyPane* childPane = *(DummyPane**)(*(unsigned char**)((unsigned char*)self + 0xFC) + childOffset + 4);
+        childPane->SetAnimationEnable(anim, enable);
+        childOffset += 8;
+        childIndex++;
     }
     SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(self, anim, enable, recursive);
 }
