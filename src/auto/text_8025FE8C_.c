@@ -206,18 +206,23 @@ typedef struct {
 
 #pragma push
 #pragma small_data off
-void *fn_80260854(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_80345E28;
-        fn_80235380(*(s32 *)((u8 *)arg0 + 0x24), (s32 *)lbl_80345E28);
-        *(s32 *)((u8 *)arg0 + 0x24) = 0;
-        fn_802328D4(*(s32 *)((u8 *)arg0 + 0x28));
-        *(s32 *)((u8 *)arg0 + 0x28) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+/* Deleting destructor of one challenge-selector group row -- slot 0x8 of its
+ * vtable, which the screen loop's cleanup calls as destroy(1).  It drops the
+ * two resources the row was built with (the gArt animation and the gText
+ * font) and then frees the row itself when the delete flag is set. */
+void *fn_80260854(SelectorGroupRow *row, s32 deleteFlag) {
+    if (row != 0) {
+        row->vtable = &SELECTOR_GROUP_VTABLE;
+        /* fn_80235380 only reads its first argument; the vtable is what the
+         * store above leaves in the second register. */
+        fn_80235380((s32)row->art, (s32 *)&SELECTOR_GROUP_VTABLE);
+        row->art = 0;
+        fn_802328D4((s32)row->font);
+        row->font = 0;
+        if (deleteFlag > 0) fn_80128668(row);
     }
-    return arg0;
+    return row;
 }
-#pragma pop
 extern s32 fn_80128668(void);
 extern s32 fn_802328D4(s32);
 extern s32 fn_80235380(s32, s32 *);
