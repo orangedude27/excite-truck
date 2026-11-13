@@ -3693,6 +3693,7 @@ void GKI_start_timer(UINT8 tnum, INT32 ticks, BOOLEAN is_continuous) {
 #pragma pop
 #pragma pop
 
+/* Called by an application to stop one of its general purpose timers. */
 void GKI_stop_timer(UINT8 tnum) {
     UINT8 task_id = GKI_get_taskid();
 
