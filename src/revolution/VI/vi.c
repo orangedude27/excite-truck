@@ -709,11 +709,7 @@ void __VIInit(VITVMode mode)
     temp = (u16)(((u32)tm->nhlines >> 1) + 1);
     __VIRegs[25] = tm->hlw + 1;
     __VIRegs[24] = temp | 0x1000;
-    if (tv < 4) {
-        if (tv < 1) {
-            tv = 0;
-        }
-    } else {
+    if (tv >= 4 || tv < 1) {
         tv = 0;
     }
     if (nonInter <= 1) {
@@ -1261,7 +1257,7 @@ void VIConfigurePan(u16 xOrg, u16 yOrg, u16 width, u16 height)
 void VIFlush(void)
 {
     BOOL interrupts;
-    u32 regIndex;
+    s32 regIndex;
     u64 mask;
     u32 tmp;
 
@@ -1271,9 +1267,9 @@ void VIFlush(void)
     lbl_8055DB60 = 0;
     shdwChanged |= changed;
     while (changed != 0) {
-        regIndex = (u32)cntlzd(changed);
+        regIndex = cntlzd(changed);
         regs[regIndex] = shdwRegs[regIndex];
-        mask = fn_8002FD30(0, 1, 0x3F - (s32)regIndex, (void*)((s32)regIndex * 2));
+        mask = fn_8002FD30(0, 1, 0x3F - regIndex, (void*)(regIndex * 2));
         changed &= ~mask;
     }
     lbl_8055DBCC = 1;
@@ -1355,28 +1351,29 @@ static u32 getCurrentFieldEvenOdd(void)
     return 0U;
 }
 
+/* Read VI regs to determine the next field and combine with adjusted display Y parity. */
 u32 VIGetNextField(void)
 {
     u32 vcount;
     u32 hcount;
-    u32 vcount0;
-    VITiming *tm;
-    u32 halfLine;
-    u32 nextField;
+    u32 prevVCount;
+    VITiming *timing;
+    u32 halfLineIndex;
+    u32 isNextFieldFirst;
     BOOL enabled;
 
     enabled = OSDisableInterrupts();
     vcount = __VIRegs[22] & 0x7FF;
     do {
-        vcount0 = vcount;
+        prevVCount = vcount;
         hcount = __VIRegs[23] & 0x7FF;
         vcount = __VIRegs[22] & 0x7FF;
-    } while (vcount0 != vcount);
-    tm = lbl_8055DBA0;
-    halfLine = ((vcount - 1) * 2) + ((hcount - 1) / tm->hlw);
-    nextField = halfLine < tm->nhlines;
+    } while (prevVCount != vcount);
+    timing = lbl_8055DBA0;
+    halfLineIndex = ((vcount - 1) * 2) + ((hcount - 1) / timing->hlw);
+    isNextFieldFirst = halfLineIndex < timing->nhlines;
     OSRestoreInterrupts(enabled);
-    return (nextField ^ 1) ^ (HorVer.AdjustedDispPosY & 1);
+    return (isNextFieldFirst ^ 1) ^ (HorVer.AdjustedDispPosY & 1);
 }
 
 u32 VIGetCurrentLine(void)
