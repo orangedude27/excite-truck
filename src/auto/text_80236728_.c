@@ -91,6 +91,9 @@ extern char *fn_80237C40(void);
 #pragma scheduling on
 void fn_80236780(void) {
     char *p;
+    unsigned char c7;
+    unsigned char zero = 0;
+    unsigned char one = 1;
     if (lbl_8055F0BC == 0) {
         p = fn_80237C40();
         lbl_8055F0BC = p;
@@ -100,10 +103,11 @@ void fn_80236780(void) {
         *(char **)(lbl_8055F0C0 + 0x24) = p;
         lbl_8055F0C0 = *(char **)(lbl_8055F0C0 + 0x24);
     }
-    lbl_8055F0C0[0x1F] = lbl_8055F0C7;
-    lbl_8055F0C0[0x20] = 0;
+    c7 = lbl_8055F0C7;
+    lbl_8055F0C0[0x1F] = c7;
+    lbl_8055F0C0[0x20] = zero;
     if ((unsigned char)lbl_8055F0C5 != 0 || (unsigned char)lbl_8055F0C6 == 0)
-        lbl_8055F0C0[0x21] = 1;
+        lbl_8055F0C0[0x21] = one;
     *(int *)(lbl_8055F0C0 + 0x28) = lbl_8055F0B0;
     *(int *)(lbl_8055F0C0 + 0x2C) = lbl_8055F0B4;
     *(int *)(lbl_8055F0C0 + 0x30) = lbl_8055F0B8;
@@ -700,18 +704,18 @@ typedef struct SObj { SVT *vt; } SObj;
 void fn_80237AA0(arg0, arg1, arg2)
 int arg0; float *arg1; float arg2;
 {
-    register void **vt;
     float var_f31 = arg2;
     float var_f1, var_f2;
     unsigned char var_r4;
     SObj *p;
+    SVT *vt;
     if (arg0 == 0) {
         p = *(SObj **)(lbl_8055F0C0 + 0x28);
-        if (p) var_f1 = p->vt->get(p);
+        if (p) { vt = p->vt; var_f1 = vt->get(p); }
         else var_f1 = lbl_805636E0;
         arg1[0] = var_f1;
         p = *(SObj **)(lbl_8055F0C0 + 0x2C);
-        if (p) var_f2 = p->vt->get(p);
+        if (p) { vt = p->vt; var_f2 = vt->get(p); }
         else var_f2 = lbl_805636E0;
         arg1[1] = var_f2;
         if ((unsigned char)lbl_8055F0C0[0x21] == 0) {
@@ -730,13 +734,13 @@ int arg0; float *arg1; float arg2;
         }
         if ((unsigned int)(arg0 == 3) == var_r4) {
             p = *(SObj **)(lbl_8055F0C0 + 0x2C);
-            if (p) p->vt->set(p, var_f31);
+            if (p) { vt = p->vt; vt->set(p, var_f31); }
         } else {
             p = *(SObj **)(lbl_8055F0C0 + 0x28);
-            if (p) p->vt->set(p, var_f31);
+            if (p) { vt = p->vt; vt->set(p, var_f31); }
         }
         p = *(SObj **)(lbl_8055F0C0 + 0x30);
-        if (p) p->vt->set(p, var_f31);
+        if (p) { vt = p->vt; vt->set(p, var_f31); }
     }
 }
 #pragma pop
@@ -763,30 +767,31 @@ char *fn_80237C40(void) {
   void fn_80128668(void*);
 #pragma push
 #pragma cplusplus on
+/* Destroys owned subobjects at +0x28/+0x2C/+0x30 when present, then finalizes the object. */
 void fn_80237D00(void *arg0) {
-    class D {
+    class Deletable {
     public:
-        virtual void m2(int);
+        virtual void destroy(int);
     };
-    void *p = *(void **)((char *)arg0 + 0x28);
-    if (p != 0) {
-        volatile void *q = p;
-        if (q != 0) {
-            ((D *)p)->m2(1);
+    void *subObject = *(void **)((char *)arg0 + 0x28);
+    if (subObject != 0) {
+        volatile void *subObjectCheck = subObject;
+        if (subObjectCheck != 0) {
+            ((Deletable *)subObject)->destroy(1);
         }
     }
-    p = *(void **)((char *)arg0 + 0x2c);
-    if (p != 0) {
-        volatile void *q = p;
-        if (q != 0) {
-            ((D *)p)->m2(1);
+    subObject = *(void **)((char *)arg0 + 0x2c);
+    if (subObject != 0) {
+        volatile void *subObjectCheck = subObject;
+        if (subObjectCheck != 0) {
+            ((Deletable *)subObject)->destroy(1);
         }
     }
-    p = *(void **)((char *)arg0 + 0x30);
-    if (p != 0) {
-        volatile void *q = p;
-        if (q != 0) {
-            ((D *)p)->m2(1);
+    subObject = *(void **)((char *)arg0 + 0x30);
+    if (subObject != 0) {
+        volatile void *subObjectCheck = subObject;
+        if (subObjectCheck != 0) {
+            ((Deletable *)subObject)->destroy(1);
         }
     }
     fn_80128668(arg0);
@@ -972,10 +977,10 @@ void fn_8023808C(void *arg0, float value) {
                 s1=next->scale; s0=first->scale;
                 z1=next->z; z0=first->z;
                 interpolated.p.y=y0+t*(y1-y0);
-                scale=(s1-s0)*t+s0;
+                scale=s0+t*(s1-s0);
                 interpolated.p.x=x0+t*(x1-x0);
-                ipos.d=interpolated.d;
                 z=z0+t*(z1-z0);
+                ipos.d=interpolated.d;
                 cp[10]=ipos.p.y; cp[9]=ipos.p.x; cp[11]=zero; cp[0]=one; cp[1]=zero; cp[2]=zero; cp[3]=zero; cp[4]=one; cp[5]=zero; cp[6]=zero; cp[7]=zero; cp[8]=one;
                 result=fn_8022EDE4(cp,scale); ((float*)result)[14]=z;
             }
