@@ -2173,6 +2173,8 @@ unsigned int GXLoadLightObjIndx(unsigned int value) {
     return old;
 }
 
+/* PE token interrupt handler: acknowledge PE reg bit, set pending flag, run the
+ * registered callback on a temporary OSContext if present, then wake waiters. */
 void GXSetChanAmbColor(short intr, void *ctx) {
     char local[0x2D0];
 
