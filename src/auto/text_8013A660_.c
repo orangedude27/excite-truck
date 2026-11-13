@@ -79,13 +79,15 @@ char *fn_8013A708(char *arg0, int arg1, int arg2) {
 #pragma dont_inline fn_8013A708
 #pragma cplusplus on
 extern "C" int fn_8013A760(unkVtable **arg0, int arg1) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1(char *);
+    };
     char buffer[0x20];
     int i = 0;
     do {
         char *name = ((char *(*)(char *, int, int))fn_8013A708)(buffer, i, arg1);
-        void *tbl = *(void **)arg0;
-        int (*slot)(unkVtable **, char *) = *(int (**)(unkVtable **, char *))((char *)tbl + 0xc);
-        if (slot(arg0, name) != 0)
+        if (((Dummy *)arg0)->f1(name) != 0)
             return 1;
         i++;
     } while (i < 3);
