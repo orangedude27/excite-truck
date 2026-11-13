@@ -3841,10 +3841,11 @@ void fn_80155C90(void *obj, const char *fmt, ...) {
     vsprintf((char *)obj + 0x14, fmt, args);
 }
 
-void fn_80155D20(void *arg0, const char *fmt, ...) {
+/* Formats a string into the buffer at offset 0x64 of the given object. */
+void fn_80155D20(void *dst, const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    vsprintf((char *)arg0 + 0x64, fmt, ap);
+    vsprintf((char *)dst + 0x64, fmt, ap);
 }
 
 /* Format a string into this object's text buffer at offset 0xB4. */
