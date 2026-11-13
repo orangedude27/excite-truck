@@ -444,6 +444,9 @@ void fn_80116E2C(const u8 *arg0) {
 }
 
 extern u8 lbl_8041D508[];
+#define sVideoInitCallback lbl_8055DEC8 /* active init callback */
+#define sVideoInitResult lbl_8055DECC   /* last non-zero result from init callback */
+#define sVideoInitLockCount lbl_8055DED0 /* blocks callback replacement when non-zero */
 extern s32 (*lbl_8055DEC8)(s32);
 extern s32 lbl_8055DECC;
 extern s32 lbl_8055DED0;
