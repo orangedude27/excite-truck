@@ -5848,9 +5848,10 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
     extern const char lbl_80326768[];
     extern const char lbl_803268AC[];
-    s32 valid = 0;
-    if (bus >= 0 && bus < 3) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x310, lbl_803268AC, bus, 0, 3);
+    s32 isBusValid = 0;
+    /* Return the FX send level for aux bus 0-2 from this seq player (+0x464), panicking if the bus index is out of range. */
+    if (bus >= 0 && bus < 3) isBusValid = 1;
+    if (isBusValid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x310, lbl_803268AC, bus, 0, 3);
     return *(f32 *)((u8 *)self + 0x464 + bus * 4);
 }
 
