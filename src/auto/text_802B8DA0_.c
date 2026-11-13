@@ -839,22 +839,35 @@ void fn_802B9EC8(void *arg0) {
 
 #pragma push
 #pragma opt_common_subs off
-void fn_802B9F38(void **arg0) {
-    void *ptr = *arg0;
-    if (ptr != 0) {
-        if (ptr != 0) {
-            fn_802B9FC0(ptr);
-            if ((char *)ptr + 4 != 0) {
-                fn_8002F6AC(((int *)ptr)[4], (void (*)(void))fn_802B9C9C);
-                if ((char *)ptr + 4 != 0) {
-                    ((int *)ptr)[1] = 0;
-                    ((int *)ptr)[2] = 0;
-                    ((int *)ptr)[3] = 0;
+void fn_802B9F38(void **managerSlot) {
+    /* Record manager built by fn_802B9B68 (the global at lbl_8055FA74). */
+    struct RecordManager {
+        void *dataPool;    /* 0x00: 0x10 slot words per record */
+        void *records;     /* 0x04: array of 0x10-byte records */
+        int nextRecord;    /* 0x08: next free record */
+        int count;         /* 0x0C: records in the array */
+        void *recordArray; /* 0x10: the records block, owned by __vec_delete */
+    };
+    struct RecordManager *manager = (struct RecordManager *)*managerSlot;
+    /* Shuts the record manager down: frees its slot pool, destroys the record
+     * array with the MSL array helper fn_8002F6AC (__vec_delete), which runs the
+     * record destructor fn_802B9C9C over every record and frees the block, then
+     * clears the bookkeeping, frees the manager itself and leaves *managerSlot
+     * NULL.  fn_802B9D08 calls it with &lbl_8055FA74. */
+    if (manager != 0) {
+        if (manager != 0) {
+            fn_802B9FC0(manager);
+            if ((char *)manager + 4 != 0) {
+                fn_8002F6AC((int)manager->recordArray, (void (*)(void))fn_802B9C9C);
+                if ((char *)manager + 4 != 0) {
+                    manager->records = 0;
+                    manager->nextRecord = 0;
+                    manager->count = 0;
                 }
             }
-            fn_80128668(ptr);
+            fn_80128668(manager);
         }
-        *arg0 = 0;
+        *managerSlot = 0;
     }
 }
 #pragma pop
