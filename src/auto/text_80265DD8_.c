@@ -35,6 +35,30 @@ typedef struct { V3_80267EF8 r[4]; } M34_80267EF8;
 typedef struct { float m[9]; } R9_80267EF8;
 typedef struct { float m[9]; V3_80267EF8 pos; } MP_80267EF8;
 
+/* One point of the random path fn_80265E2C refills with random values: where it
+ * goes and how long the move on to the next point takes.  NOISE_POINT_COUNT of
+ * them form the ring every camera's walk below steps through. */
+typedef struct NoisePoint {
+    /* 0x0 */ float x;
+    /* 0x4 */ float y;
+    /* 0x8 */ int duration;
+} NoisePoint;
+
+/* Cursor on that ring, one per Camera at +0x160: the point in reach, the time
+ * spent past it, the clock the last update saw, the easing weight of the step
+ * and the point interpolated along it. */
+typedef struct NoiseWalk {
+    /* 0x00 */ int index;
+    /* 0x04 */ int elapsed;
+    /* 0x08 */ int lastTime;
+    /* 0x0C */ float weight;
+    /* 0x10 */ float x;
+    /* 0x14 */ float y;
+} NoiseWalk;
+
+#define NOISE_POINT_COUNT 100                  /* points in the ring */
+#define sNoisePoints      ((NoisePoint *)lbl_804999A0) /* the ring itself */
+
 /* One camera of the game's four-camera array.  The module keeps the
  * transform it used last frame next to the one it just built so
  * fn_802678E8 can blend between the two, and hands the result to the
