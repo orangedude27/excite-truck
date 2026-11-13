@@ -1724,6 +1724,14 @@ typedef struct Spring {
     void *body;                 /* +0x34 */
 } Spring;
 
+/* Measure a spring and apply it.  Both ends are brought into the world: the
+   anchor (+0x10) through the body at +0x34, the target (+0x00) through the
+   second body at +0x0C when there is one.  Their separation is written back as
+   the stretch past the rest length (+0x2C) and as the distance ignoring height
+   (+0x30); while that stretch lies between the epsilon and the spring's range,
+   the relative speed of the two ends and the spring's own pull are added into a
+   force and pushed into the body at the anchor - and, for a spring between two
+   bodies, into the other body the other way round. */
 #pragma scheduling invalid_target
 void fn_801AD394(Spring *spring) {
     extern double fn_8002F234(float);              /* sqrt */
