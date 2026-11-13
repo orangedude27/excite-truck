@@ -9121,6 +9121,7 @@ extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *arg0) {
 
 typedef s32 (*UnicodeLengthCallback)(const u16 *, void *);
 extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *text) {
+    /* Compute encoded byte length of a UTF-16 path by converting each character via the callback at lbl_803D2140+0x4C and fn_800A4BF4. */
     struct Scratch {
         void *state;
         s16 inputLength;
