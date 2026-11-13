@@ -2831,19 +2831,22 @@ extern "C" ResourceStream *fn_8012EC90(s32 chunkSize) {
     return stream;
 }
 
-extern "C" void fn_8012ED20(void *arg0) {
- u8 *p;
- s32 i;
- struct S { s32 a; s32 b; };
- for (i=0, p=(u8 *)arg0+4; i<2; i++, p+=0x10) {
-  if (*(s32 *)(p+4)) {
-   fn_8012C90C((void *)*(s32 *)(p+4));
-   fn_8012C958((void *)*(s32 *)(p+4));
-   *(s32 *)(p+4)=0;
-  }
- }
- fn_80128670(((struct S *)arg0)->b);
- fn_80128668(arg0);
+extern "C" void fn_8012ED20(void *object) {
+    /* Release two child resource handles stored at offsets +8 and +0x18 of the
+     * object (cancel/reset each if non-null, then clear), free the object's
+     * owned buffer at +4, and delete the object. */
+    u8 *slot;
+    s32 index;
+    struct OwnedBuffer { s32 _pad; s32 buffer; };
+    for (index = 0, slot = (u8 *)object + 4; index < 2; index++, slot += 0x10) {
+        if (*(s32 *)(slot + 4)) {
+            fn_8012C90C((void *)*(s32 *)(slot + 4));
+            fn_8012C958((void *)*(s32 *)(slot + 4));
+            *(s32 *)(slot + 4) = 0;
+        }
+    }
+    fn_80128670(((struct OwnedBuffer *)object)->buffer);
+    fn_80128668(object);
 }
 
 extern "C" s32 fn_8012C5B8(s32, s32, s32);
