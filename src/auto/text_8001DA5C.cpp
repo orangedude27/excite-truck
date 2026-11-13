@@ -77,23 +77,12 @@ extern f64 lbl_80560468;
 #pragma push
 #pragma scheduling invalid_target
 extern "C" f32 fn_8001DA5C(s32 arg0) {
+    s32 quotient = lbl_8055E3C4 / arg0;
+    f32 fraction = (f32)(lbl_8055E3C4 - quotient * arg0);
+    f32 angle = (f32)arg0;
     f32 scale = lbl_80560460;
-    f64 bias = lbl_80560468;
-    f64 angle;
-    f64 fraction;
-    s32 quotient;
-    s32 remainder;
-    union { f64 d; u32 words[2]; } angle_bits;
-    union { f64 d; u32 words[2]; } fraction_bits;
-    angle_bits.words[0] = 0x43300000;
-    angle_bits.words[1] = (u32)arg0 ^ 0x80000000;
-    angle = angle_bits.d - bias;
-    quotient = lbl_8055E3C4 / arg0;
-    remainder = lbl_8055E3C4 - quotient * arg0;
-    fraction_bits.words[0] = 0x43300000;
-    fraction_bits.words[1] = (u32)remainder ^ 0x80000000;
-    fraction = fraction_bits.d - bias;
-    return lbl_80560464 + lbl_80560464 * (f32)sin((f64)(scale * fraction / angle));
+    f32 x = (scale * fraction) / angle;
+    return lbl_80560464 + lbl_80560464 * (f32)sin((double)x);
 }
 #pragma pop
 extern "C" void fn_8001DAD8(void) { extern int fn_8001DA5C(int); fn_8001DA5C(0x40); }
@@ -108,65 +97,64 @@ extern "C" f32 fn_8001DAE8(void) {
 
 #pragma dont_inline on
 extern "C" f32 fn_8001DAF0(void *arg0) {
-    f32 value = (fn_8001DAE8() - *(f32 *)((u8 *)arg0 + 4)) / *(f32 *)arg0;
-    f32 result = lbl_80560470;
-    if (result >= value)
-        result = value;
-    if (result > lbl_80560474)
-        result = lbl_80560474;
-    return result;
+    f32 v = (fn_8001DAE8() - *(f32 *)((u8 *)arg0 + 4)) / *(f32 *)arg0;
+    f32 r = lbl_80560470;
+    r = r < v ? r : v;
+    r = r > lbl_80560474 ? lbl_80560474 : r;
+    return r;
 }
 
 #pragma scheduling invalid_target
 extern "C" void fn_8001DB54(void) {
-    char* base = lbl_802FDB68;
+    register u32 base = (u32)lbl_802FDB68;
+    register u8* object;
 
-    lbl_8055D5F4 = (void**)fn_80145E70(base + 0);
-    lbl_8055D5F8 = (void**)fn_80145E70(base + 0xC);
-    lbl_8055D5FC = (void**)fn_80145E70(base + 0x1C);
-    lbl_8055D600 = (void**)fn_80145E70(base + 0x28);
-    lbl_8055D604 = (void**)fn_80145E70(base + 0x38);
+    lbl_8055D5F4 = (void**)fn_80145E70((void*)(base + 0));
+    lbl_8055D5F8 = (void**)fn_80145E70((void*)(base + 0xC));
+    lbl_8055D5FC = (void**)fn_80145E70((void*)(base + 0x1C));
+    lbl_8055D600 = (void**)fn_80145E70((void*)(base + 0x28));
+    lbl_8055D604 = (void**)fn_80145E70((void*)(base + 0x38));
 
-    void* object0 = fn_801284F8(0xC, base + 0x48);
-    if (object0 != 0) {
-        *(void**)object0 = lbl_802FDC98;
-        *(void**)((u8*)object0 + 4) = fn_802CAC28(base + 0x58, 0);
+    object = (u8*)fn_801284F8(0xC, (void*)(base + 0x48));
+    if (object != 0) {
+        *(void**)object = lbl_802FDC98;
+        *(void**)(object + 4) = fn_802CAC28((void*)(base + 0x58), 0);
     }
-    lbl_80358680[0] = object0;
+    lbl_80358680[0] = object;
 
-    void* object1 = fn_801284F8(0x64, base + 0x68);
-    if (object1 != 0) *(void**)object1 = lbl_802FDC84;
-    lbl_80358680[1] = object1;
+    object = (u8*)fn_801284F8(0x64, (void*)(base + 0x68));
+    if (object != 0) *(void**)object = lbl_802FDC84;
+    lbl_80358680[1] = object;
 
-    void* object2 = fn_801284F8(0x38, base + 0x78);
-    if (object2 != 0) {
+    object = (u8*)fn_801284F8(0x38, (void*)(base + 0x78));
+    if (object != 0) {
         f32 initial_value = lbl_80560478;
-        *(void**)object2 = lbl_802FDC70;
-        fn_8001DAE0((f32*)((u8*)object2 + 0x28), initial_value);
-        fn_8001DAE0((f32*)((u8*)object2 + 0x30), lbl_80560464);
-        *(void**)((u8*)object2 + 0x24) = fn_80207848(base + 0x88, 1);
-        *(s32*)((u8*)object2 + 4) = -1;
-        *(s32*)((u8*)object2 + 8) = -1;
-        *(s32*)((u8*)object2 + 0xC) = -1;
-        *(s32*)((u8*)object2 + 0x10) = -1;
-        *(s32*)((u8*)object2 + 0x14) = -1;
-        *(s32*)((u8*)object2 + 0x18) = -1;
-        *(s32*)((u8*)object2 + 0x1C) = -1;
-        *(s32*)((u8*)object2 + 0x20) = -1;
+        *(void**)object = lbl_802FDC70;
+        fn_8001DAE0((f32*)(object + 0x28), initial_value);
+        fn_8001DAE0((f32*)(object + 0x30), lbl_80560464);
+        *(void**)(object + 0x24) = fn_80207848((void*)(base + 0x88), 1);
+        *(s32*)(object + 4) = -1;
+        *(s32*)(object + 8) = -1;
+        *(s32*)(object + 0xC) = -1;
+        *(s32*)(object + 0x10) = -1;
+        *(s32*)(object + 0x14) = -1;
+        *(s32*)(object + 0x18) = -1;
+        *(s32*)(object + 0x1C) = -1;
+        *(s32*)(object + 0x20) = -1;
     }
-    lbl_80358680[2] = object2;
+    lbl_80358680[2] = (void*)object;
 
-    void* object3 = fn_801284F8(0x44, base + 0x98);
-    if (object3 != 0) *(void**)object3 = lbl_802FDC5C;
-    lbl_80358680[3] = object3;
+    object = (u8*)fn_801284F8(0x44, (void*)(base + 0x98));
+    if (object != 0) *(void**)object = lbl_802FDC5C;
+    lbl_80358680[3] = object;
 
-    void* object4 = fn_801284F8(4, base + 0xA8);
-    if (object4 != 0) *(void**)object4 = lbl_802FDC48;
-    lbl_80358680[4] = object4;
+    object = (u8*)fn_801284F8(4, (void*)(base + 0xA8));
+    if (object != 0) *(void**)object = lbl_802FDC48;
+    lbl_80358680[4] = object;
 
-    void* object5 = fn_801284F8(4, base + 0xB8);
-    if (object5 != 0) *(void**)object5 = lbl_802FDC34;
-    lbl_80358680[5] = object5;
+    object = (u8*)fn_801284F8(4, (void*)(base + 0xB8));
+    if (object != 0) *(void**)object = lbl_802FDC34;
+    lbl_80358680[5] = object;
 }
 #pragma scheduling on
 
@@ -267,17 +255,18 @@ extern "C" s32 fn_800167F4(s32);
 extern "C" s32 fn_80204CF0(void);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" u32 lbl_80558D00;
-extern "C" void fn_8001E078(void *arg0, s32 arg1, s32 arg2) {
+#pragma scheduling invalid_target
+extern "C" void fn_8001E078(s32 arg0, s32 arg1, s32 arg2) {
     class PaneContainer3 {
     public:
         virtual void dummy0();
         virtual void dummy1();
         virtual void *select(const char *);
     };
-    register void **container;
     register char *strings = lbl_802FDB68;
-    register s32 entryValue;
     register s32 rowValue;
+    register s32 entryValue;
+    register void **container;
     s32 selection;
     s32 mode;
     s32 status;
@@ -285,7 +274,7 @@ extern "C" void fn_8001E078(void *arg0, s32 arg1, s32 arg2) {
     s32 half;
     s32 masked;
     PaneData *pane;
-    PaneData data;
+    volatile PaneData data;
     char buffer1[0x14];
     char buffer2[0x14];
 
@@ -333,20 +322,20 @@ extern "C" void fn_8001E078(void *arg0, s32 arg1, s32 arg2) {
             data.w1c = pane->w1c;
             status = ((s32 (*)(void))fn_800167F4)();
             test = status ^ 1;
-            half = test >> 1;
             masked = test & status;
+            half = test >> 1;
             if (((u32)(half - masked) >> 31) == 0) {
                 ((PaneContainer *)container)->getPane(strings + 0x1DC);
-                fn_801476C4();
+                ((void (*)(void))fn_801476C4)();
                 fn_801308F4(buffer1, 0x14, fn_80160A90());
                 fn_801473F8(container, strings + 0x1E8, lbl_80558D08, buffer1);
             }
             fn_801308F8(buffer2, 0x14, arg2);
-            fn_80147230(&data, lbl_80558D08, buffer2);
+            fn_80147230((void *)&data, lbl_80558D08, buffer2);
         }
     }
 }
-
+#pragma scheduling on
 extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -354,25 +343,31 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
+    PaneData temp;
     PaneData buffer;
     f32* p;
     const char* base = lbl_802FDB68;
     void* truck = fn_8017960C(arg1);
     p = (f32*)arg0 + arg1 * 3;
-    bool active = *(f32*)((u8*)truck + 0x2588) > lbl_80560474;
+    f32 mem2588 = *(f32*)((u8*)truck + 0x2588);
+    bool active = mem2588 > lbl_80560474;
+    f32 save;
     if (active) {
         if (!((f32)fabs(p[2] - lbl_80560470) <= lbl_80558DC4)) {
             p[1] = lbl_8055E3C8;
             p[2] = lbl_80560470;
-        } else {
-            p[2] = *(volatile f32*)&p[2] - lbl_8056047C;
+            goto skip_p2;
         }
+        f32 reload = *(volatile f32*)&p[2];
+        save = reload - lbl_8056047C;
     } else {
-        p[2] = lbl_80560474;
+        save = lbl_80560474;
     }
+    p[2] = save;
+skip_p2:
     p[3] = *(f32*)((u8*)truck + 0x25A0);
-
     PaneContainer* paneMgr;
     if (fn_801E85A4() == 2) {
         paneMgr = (PaneContainer*)lbl_8055D5F8;
@@ -382,38 +377,48 @@ extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
     if (paneMgr == NULL) {
         return;
     }
-
     if (p[2] > lbl_80560480) {
         arg1 = (s32)(lbl_80560484 * p[2]);
         void* r28 = paneMgr->getPane(base + 0x1FC);
         void* r29 = paneMgr->getPane(base + 0x20C);
         if (r28 != NULL && r29 != NULL) {
             f32 f2 = lbl_80560470;
-            f32 f0 = ((lbl_8055E3C8 - p[1]) - f2) / lbl_80560488;
-            f2 = (f2 < f0) ? f2 : f0;
+            f32 fq0 = ((lbl_8055E3C8 - p[1]) - f2) / lbl_80560488;
+            f2 = (f2 < fq0) ? f2 : fq0;
             f2 = (f2 > lbl_80560474) ? f2 : lbl_80560474;
             fn_80147CEC(&buffer, r28, r29, lbl_80560474 + f2 * lbl_80560470);
             f32 factor1 = ((f32(*)(void))fn_8001DAD8)();
-            u32 c1 = (u32)fn_80147C50(*(u32*)((u8*)r28 + 0x18), *(u32*)((u8*)r29 + 0x18), factor1);
-            buffer.w18 = (c1 & 0x00FFFFFF) | (arg1 << 24);
+            u32 c1 = (u32)fn_80147C50(*(u32*)((u8*)r28 + 0x18), *(u32*)((u8*)r29 + 0x18), factor1) & 0x00FFFFFF;
+            buffer.w18 = __rlwimi((int)c1, arg1, 24, 0, 7);
             arg1 <<= 24;
             f32 factor2 = ((f32(*)(void))fn_8001DAD8)();
-            u32 c2 = (u32)fn_80147C50(*(u32*)((u8*)r29 + 0x18), *(u32*)((u8*)r28 + 0x18), factor2);
-            fn_80232928((c2 & 0x00FFFFFF) | arg1);
+            u32 c2raw = (u32)fn_80147C50(*(u32*)((u8*)r29 + 0x18), *(u32*)((u8*)r28 + 0x18), factor2);
+            u32 masked = c2raw & 0x00FFFFFF;
+            fn_80232928((int)(masked | (u32)arg1));
             fn_80147230(&buffer, lbl_80558D08, fn_80131234(base + 0x220));
             fn_80232930();
         }
     } else if (p[3] > lbl_8056048C) {
         void* r3 = paneMgr->getPane(base + 0x238);
         if (r3 != NULL) {
-            PaneData temp = *(PaneData*)r3;
+            PaneData* src = (PaneData*)r3;
+            temp.w0 = src->w0;
+            u32 a2 = src->w8;
+            u32 a1 = src->w4;
+            temp.w4 = a1;
+            temp.w8 = a2;
+            temp.wc = src->wc;
+            temp.f10 = src->f10;
+            temp.w14 = src->w14;
+            temp.w18 = src->w18;
+            temp.w1c = src->w1c;
             f32 factor = ((f32(*)(void))fn_8001DAD8)();
             temp.w18 = fn_80147C50(0xC0FFFFFFU, 0xFFFF2020U, factor);
-            fn_801476C4(&temp);
+            ((void(*)(void*))fn_801476C4)(&temp);
         }
     }
 }
-
+#pragma scheduling on
 extern "C" f32 fn_8001DA5C(s32);
 extern f32 lbl_80560490;
 #pragma scheduling off
@@ -470,6 +475,140 @@ extern "C" void* fn_8001E5B0(void* arg0, s32 arg1) {
     }
     return arg0;
 }
+
+extern "C" s32 __AXGetStackHead(s32, s32);
+extern f32 lbl_80560494;
+extern f32 lbl_80560498;
+extern f32 lbl_8056049C;
+extern f32 lbl_805604A0;
+extern f32 lbl_805604A4;
+extern u32 lbl_80558D0C;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+extern "C" void fn_8001E634(void *arg0, s32 arg1, s32 arg2) {
+    s32 pick;
+    void **var_r27;
+    void *temp_r3;
+    void *temp_r3_2;
+    s32 var_r28;
+    s32 temp_r31;
+    s32 var_r0;
+    f32 var_f2;
+    f32 temp_f31;
+    f32 temp_f0;
+    f32 temp_f1;
+    s32 sp44;
+    s32 sp40;
+    s32 sp3C;
+    f32 sp38;
+    s32 sp34;
+    s32 sp30;
+    s32 sp2C;
+    s32 sp28;
+    s32 sp24;
+    s32 sp20;
+    s32 sp1C;
+    f32 sp18;
+    s32 sp14;
+    s32 sp10;
+    s32 spC;
+    s32 sp8;
+
+    temp_r31 = fn_801609C4(arg2);
+    if (fn_801E85A4() == 2) {
+        var_r27 = lbl_8055D5F8;
+    } else {
+        var_r27 = lbl_8055D5F4;
+    }
+    if (var_r27 != 0) {
+        fn_8014784C(var_r27, lbl_802FDB68 + 0x248, lbl_802FDB68 + 0x258, 0);
+        if (temp_r31 <= 4 && temp_r31 >= 0) {
+            pick = *(s32 *)((u8 *)arg0 + arg1 * 4 + 4);
+            if (temp_r31 != pick) {
+                *(f32 *)((u8 *)arg0 + 0x2C) = fn_8001DAE8();
+            } else {
+                *(f32 *)((u8 *)arg0 + 0x34) = fn_8001DAE8();
+            }
+            temp_f31 = lbl_80560494 - fn_8001DAF0((u8 *)arg0 + 0x30);
+            var_r28 = (s32)lbl_802FDB68;
+            {
+                typedef void *(*PaneFunc)(void *, const char *);
+                PaneFunc paneFn = (PaneFunc)(*(void **)((u8 *)*var_r27 + 0xC));
+                temp_r3 = paneFn((void **)*var_r27, (const char *)(var_r28 + 0x26C));
+            }
+            if (temp_r3 != 0) {
+                sp28 = *(s32 *)temp_r3;
+                sp2C = *(s32 *)((u8 *)temp_r3 + 4);
+                sp30 = *(s32 *)((u8 *)temp_r3 + 8);
+                sp34 = *(s32 *)((u8 *)temp_r3 + 0xC);
+                sp38 = *(f32 *)((u8 *)temp_r3 + 0x10);
+                sp3C = *(s32 *)((u8 *)temp_r3 + 0x14);
+                sp40 = *(s32 *)((u8 *)temp_r3 + 0x18);
+                sp44 = *(s32 *)((u8 *)temp_r3 + 0x1C);
+                sp38 = (*(f32 *)((u8 *)temp_r3 + 0x10)) * temp_f31;
+                fn_8001DAF0((u8 *)arg0 + 0x30);
+                sp40 = fn_80147C50(sp40 & 0xFFFFFF, sp40, sp38);
+                fn_801476C4(&sp28);
+            }
+            if (temp_r31 >= 0) {
+                typedef void *(*PaneFunc)(void *, const char *);
+                PaneFunc paneFn2 = (PaneFunc)(*(void **)((u8 *)*var_r27 + 0xC));
+                temp_r3_2 = paneFn2((void **)*var_r27, (const char *)&lbl_80558D0C);
+                if (temp_r3_2 != 0) {
+                    sp8 = *(s32 *)temp_r3_2;
+                    spC = *(s32 *)((u8 *)temp_r3_2 + 4);
+                    sp10 = *(s32 *)((u8 *)temp_r3_2 + 8);
+                    sp14 = *(s32 *)((u8 *)temp_r3_2 + 0xC);
+                    sp18 = *(f32 *)((u8 *)temp_r3_2 + 0x10);
+                    sp1C = *(s32 *)((u8 *)temp_r3_2 + 0x14);
+                    sp20 = *(s32 *)((u8 *)temp_r3_2 + 0x18);
+                    sp24 = *(s32 *)((u8 *)temp_r3_2 + 0x1C);
+                    var_r28 = __AXGetStackHead(temp_r31, spC);
+                    var_r0 = 0;
+                    temp_f1 = fn_8001DAE8() - (*(f32 *)((u8 *)arg0 + 0x2C));
+                    if ((temp_f1 == lbl_80560474) && (temp_f1 < *(f32 *)((u8 *)arg0 + 0x28))) {
+                        var_r0 = 1;
+                    }
+                    if (var_r0 != 0) {
+                        var_r28 = __AXGetStackHead(temp_r31, spC);
+                        if (fn_8001DAF0((u8 *)arg0 + 0x28) > lbl_80560464) {
+                            var_f2 = lbl_80560470;
+                            temp_f0 = (fn_8001DAF0((u8 *)arg0 + 0x28) - var_f2) / lbl_80560498;
+                            if (var_f2 < temp_f0) {
+                            } else {
+                                var_f2 = temp_f0;
+                            }
+                            if (var_f2 > lbl_80560474) {
+                            } else {
+                                var_f2 = lbl_80560474;
+                            }
+                            sp18 *= lbl_80560470 + (var_f2 * lbl_8056049C);
+                        } else {
+                            var_f2 = lbl_80560470;
+                            temp_f0 = (fn_8001DAF0((u8 *)arg0 + 0x28) - lbl_80560464) / lbl_80560498;
+                            if (var_f2 < temp_f0) {
+                            } else {
+                                var_f2 = temp_f0;
+                            }
+                            if (var_f2 > lbl_80560474) {
+                            } else {
+                                var_f2 = lbl_80560474;
+                            }
+                            sp18 *= lbl_805604A0 + (var_f2 * lbl_805604A4);
+                        }
+                    } else {
+                        sp18 *= temp_f31;
+                        fn_8001DAF0((u8 *)arg0 + 0x30);
+                        sp20 = fn_80147C50(sp20 & 0xFFFFFF, sp20, sp18);
+                    }
+                    fn_80147230(&sp8, (const char *)var_r28);
+                }
+            }
+        }
+    }
+    *(s32 *)((u8 *)arg0 + arg1 * 4 + 4) = temp_r31;
+}
 #pragma pop
 extern "C" void fn_8001E964(void* arg0) {
     f32 value = lbl_80560490;
@@ -496,13 +635,16 @@ extern "C" char lbl_80558D24[];
 __declspec(section ".sdata") extern char lbl_80558D14[];
 __declspec(section ".sdata") extern char lbl_80558D1C[];
 __declspec(section ".sdata") extern char lbl_80558D24[];
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
     register char* base = lbl_802FDB68;
     register s32* record;
     register void* object = fn_801EA9A0(arg1);
     f32 now = fn_801E7E18();
-    record = (s32*)((u8*)arg0 + (arg1 << 3));
+    s32 offset = arg1 << 3;
+    record = (s32*)((u8*)arg0 + offset);
     struct Locals {
         s32 idsA[4];
         s32 idsB[4];
@@ -516,17 +658,16 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
     volatile u32* src = (volatile u32*)lbl_802ED840;
     void* widget;
     f32 delta;
-
     if (*(s32*)((u8*)object + 0x1C) > record[1]) {
         *(f32*)((u8*)record + 8) = now;
         record[1] = *(s32*)((u8*)object + 0x1C);
     }
-    delta = now - *(volatile f32*)((u8*)arg0 + (arg1 << 3) + 8);
-    widget = *((void* volatile*)&lbl_8055D604);
+    delta = now - *(volatile f32*)((u8*)arg0 + offset + 8);
     work.thresholds[0] = *src++;
     work.thresholds[1] = *src++;
     work.thresholds[2] = *src++;
     work.thresholds[3] = *src++;
+    widget = *((void* volatile*)&lbl_8055D604);
     if (widget != 0 && delta < *(f32*)&work.thresholds[3]) {
         s32 row = 0;
         do {
@@ -551,7 +692,7 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
                 const char* text = fn_80131234(base + 0x278);
                 char* dst = work.nameA;
                 s32 left = 0x20;
-                            goto copy_a;
+                goto copy_a;
             count_a:
                 left--;
                 if (left > 0) goto copy_a;
@@ -565,7 +706,7 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
                 text = fn_80131234(work.temp);
                 dst = work.nameB;
                 left = 0x20;
-                            goto copy_b;
+                goto copy_b;
             count_b:
                 left--;
                 if (left > 0) goto copy_b;
@@ -580,7 +721,7 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
                 const char* text = fn_80131234(base + 0x2A4);
                 char* dst = work.nameA;
                 s32 left = 0x20;
-                            goto copy_c;
+                goto copy_c;
             count_c:
                 left--;
                 if (left > 0) goto copy_c;
@@ -593,7 +734,7 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
                 text = fn_80131234(base + 0x2B8);
                 dst = work.nameB;
                 left = 0x20;
-                            goto copy_d;
+                goto copy_d;
             count_d:
                 left--;
                 if (left > 0) goto copy_d;
@@ -632,7 +773,7 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
         }
     }
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_8001ED2C(void* arg0) {
     f32 value = lbl_80560490;
     *(s32*)((u8*)arg0 + 0x04) = 0;
@@ -687,28 +828,29 @@ extern "C" s32 fn_8001EE14(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+/* Show "timed_out" and "disqualified" result panes on the active UI object, refreshing after each. */
 extern "C" void fn_8001EE54(void) {
     class Pane {
     public:
         virtual void v0();
         virtual void set(void*);
     };
-    void* object = lbl_802FDE48;
-    void* selected;
+    void* paneText = lbl_802FDE48;
+    void* targetPane;
 
     if (fn_801E85A4() == 2)
-        selected = lbl_8055D600;
+        targetPane = lbl_8055D600;
     else
-        selected = lbl_8055D5FC;
-    ((Pane*)selected)->set(object);
+        targetPane = lbl_8055D5FC;
+    ((Pane*)targetPane)->set(paneText);
     ((void (*)(void))fn_801476C4)();
 
-    object = lbl_802FDE54;
+    paneText = lbl_802FDE54;
     if (fn_801E85A4() == 2)
-        selected = lbl_8055D600;
+        targetPane = lbl_8055D600;
     else
-        selected = lbl_8055D5FC;
-    ((Pane*)selected)->set(object);
+        targetPane = lbl_8055D5FC;
+    ((Pane*)targetPane)->set(paneText);
     ((void (*)(void))fn_801476C4)();
 }
 
