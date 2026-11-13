@@ -118,6 +118,13 @@ extern "C" void fn_801D06C4(void *arg0) {
 #pragma pop
 #pragma cplusplus reset
 #pragma cplusplus on
+/* Notify every listener in the first listener list (lbl_804386B4) that a
+ * truck's soevent is running: for each entry's dispatch sub-object, call the
+ * virtual at slot 2 with the soevent instance, the truck's slot in the
+ * per-object table and the caller's extra argument.  Only the four vehicle
+ * tags that carry soevents get through; fn_801A4A10 calls this right after
+ * fn_801D2414 has run the event's class record, and only when the instance
+ * has a second handler (+0x48).  The truck's position is not passed on. */
 extern "C" void fn_801D0738(void *instance, Vec *position, VehicleObject *object,
                             void *extra) {
     struct Listener {
