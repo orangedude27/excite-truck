@@ -4,6 +4,7 @@ extern char lbl_8055E7E1;
 extern char lbl_8055E7E2;
 extern char lbl_8055E7E3;
 extern void __AXDSPInitCallback_801769E0(void);
+extern f32 fn_801C3B6C(void);
 
 /* Debug event timeline drawn by this unit: 0x30C-byte entries appended by
  * fn_801C3C80 and kept sorted by fn_801C3B7C on the time at entry+0x0.
