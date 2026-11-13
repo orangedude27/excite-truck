@@ -63,6 +63,7 @@ int fn_802C5220(void* arg0) {
 
 #pragma dont_inline on
 int fn_802C5280(int arg0, int arg1, int arg2) {
+    /* Return nonzero if (x,y) lies within the image bounds (0 <= x < width, 0 <= y < height). */
     int result;
 
     if (arg0 != 0) {
