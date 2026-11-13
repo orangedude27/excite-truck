@@ -362,7 +362,6 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     Method18 *method18Obj;
     Method0C1 *method0C1Obj;
     Method0C2 *method0C2Obj;
-
     *(s32 *)((u8 *)arg0 + 0x28) = *(u8 *)((u8 *)arg1 + 0x260) & 3;
     temp_r3 = fn_801284F8(0x24, &lbl_8055A478);
     if (temp_r3 != 0) {
@@ -390,7 +389,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     }
     *(void **)((u8 *)arg0 + 4) = temp_r3;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
-    u32 leading = __cntlzw(*(u32 *)((u8 *)arg2 + 0x5C));
+    int leading = __cntlzw(*(int *)((u8 *)arg2 + 0x5C));
     leading >>= 5;
     *(u8 *)((u8 *)arg0 + 0x25) = leading;
     {
@@ -986,6 +985,12 @@ int fn_80190CD0(float a, float b, float c) {
 }
 #pragma scheduling on
 int fn_80190D38(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC))); }
+
+extern float lbl_805620B8;
+#pragma scheduling on
+int fn_80190D9C(float a, float b, float c) { float lower; float value; value = (a - b) / (c - b); lower = lbl_80562090; if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620B8))); }
+#pragma scheduling pop
+
 #pragma scheduling pop
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 
@@ -1329,41 +1334,39 @@ extern "C" void fn_801912D8(void *arg0) {
     public:
         virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
         virtual void m18(); virtual void m1C(); virtual void m20();
-        virtual void setA(s32);
-        virtual void setB(void *, f32);
+        virtual void setA(int);
+        virtual void setB(void *, float);
         virtual void m2C(); virtual void m30(); virtual void m34(); virtual void m38(); virtual void m3C();
         virtual void m40(); virtual void m44(); virtual void m48(); virtual void m4C(); virtual void m50();
         virtual void m54(); virtual void m58(); virtual void m5C(); virtual void m60(); virtual void m64();
-        virtual u8 getFlag();
+        virtual unsigned char getFlag();
         virtual void *getKey();
     };
-    u8 *self = (u8 *)arg0;
+    unsigned char *self = (unsigned char *)arg0;
     char *base = lbl_80332E70;
-    u8 flagOn;
-    s32 enabled;
-    s32 mask;
-    u8 spA, sp9, sp8;
-    *(u8 *)(*(u8 **)(self + 0x34) + 0x2680) = (*(Obj **)(self + 0x38))->getFlag();
-    *(s32 *)(*(u8 **)(self + 0x34) + 0x267C) = 0;
-    *(f32 *)(*(u8 **)(self + 0x34) + 0x5F0) = lbl_80562090;
+    int enabled;
+    int mask;
+    unsigned char spA, sp9, sp8;
+    *(unsigned char *)(*(unsigned char **)(self + 0x34) + 0x2680) = (*(Obj **)(self + 0x38))->getFlag();
+    *(int *)(*(unsigned char **)(self + 0x34) + 0x267C) = 0;
+    *(float *)(*(unsigned char **)(self + 0x34) + 0x5F0) = lbl_80562090;
     enabled = 1;
     self[4] = 1;
     fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x7C, self + 4);
-    flagOn = 1;
-    self[5] = flagOn;
+    self[5] = 1;
     fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x8C, self + 5);
     if (self[4] != 0) {
-        self[5] = flagOn;
+        self[5] = 1;
     }
     if (self[4] == 0) {
         enabled = 0;
     }
     {
-        s32 v = 0;
+        int v = 0;
         if (enabled != 0) {
             v = 4;
         }
-        *(s32 *)(self + 0x30) = v;
+        *(int *)(self + 0x30) = v;
     }
     spA = 1;
     sp9 = 1;
@@ -1383,11 +1386,11 @@ extern "C" void fn_801912D8(void *arg0) {
         sp9 = 0;
     }
     (*(Obj **)(self + 0x38))->setA(fn_8018B06C(*(void **)(self + 0x34)));
-    (*(Obj **)(self + 0x38))->setB(*(void **)(self + 0x34), *(f32 *)(*(u8 **)(self + 0x34) + 0x25F4));
-    *(s32 *)(self + 8) = *(s32 *)(*(u8 **)(self + 0x38) + 0x20);
-    *(f32 *)(self + 0x10) = lbl_8056208C;
-    *(f32 *)(self + 0x14) = lbl_8056208C;
-    *(f32 *)(self + 0x18) = lbl_8056208C;
+    (*(Obj **)(self + 0x38))->setB(*(void **)(self + 0x34), *(float *)(*(unsigned char **)(self + 0x34) + 0x25F4));
+    *(int *)(self + 8) = *(int *)(*(unsigned char **)(self + 0x38) + 0x20);
+    *(float *)(self + 0x10) = lbl_8056208C;
+    *(float *)(self + 0x14) = lbl_8056208C;
+    *(float *)(self + 0x18) = lbl_8056208C;
     memset(self + 0x20, 0, 0x10);
 }
 extern "C" void fn_801914F8(void *arg0) {
@@ -2584,19 +2587,20 @@ s32 fn_80192E20(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-f32 fn_80192E3C(void *arg0) {
-    register u32 swapped;
-    register u32 packed;
+/* Return a normalized [0..1] value from the swapped low/high nibbles of the byte at state->data[6]. */
+f32 fn_80192E3C(void *state) {
+    register u32 swappedNibbleByte;
+    register u32 packedByte;
     f32 normalized;
     f32 value;
-    packed = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 6);
-    swapped = packed & 0x0F;
-    swapped = __rlwimi(swapped, packed, 4, 24, 27);
-    normalized = ((f32)swapped - lbl_8056208C) / lbl_805620AC;
+    packedByte = *(u8 *)((u8 *)*(void **)((u8 *)state + 8) + 6);
+    swappedNibbleByte = packedByte & 0x0F;
+    swappedNibbleByte = __rlwimi(swappedNibbleByte, packedByte, 4, 24, 27);
+    normalized = ((f32)swappedNibbleByte - lbl_8056208C) / lbl_805620AC;
     if (lbl_80562090 < normalized) {
         value = lbl_80562090;
     } else {
-        value = ((f32)(u8)swapped - lbl_8056208C) / lbl_805620AC;
+        value = ((f32)(u8)swappedNibbleByte - lbl_8056208C) / lbl_805620AC;
     }
     value = value > lbl_8056208C ? value : lbl_8056208C;
     return lbl_8056208C + value * lbl_80562090;
