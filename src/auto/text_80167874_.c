@@ -823,6 +823,7 @@ s32 fn_80168944(s32 arg0, s32 arg1) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 /* Name patterns for path objects: name prefix, sscanf format for lane count/id, object type (6 ends the table). */
 struct DummyPattern {
