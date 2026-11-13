@@ -1682,18 +1682,21 @@ typedef struct UIGroupList {
 
 #pragma push
 #pragma optimization_level 3
+/* Show or hide every UI group of a menu: walks the list of entries and calls
+ * UIShowGroup (fn_80214AF0) for the ones flagged shown, UIHideGroup
+ * (fn_80214A9C) for the rest, on the window those two pick up themselves. */
 void fn_802493E8(void *arg0) {
-    s32 var_r31 = 0;
-    s32 var_r30 = 0;
-    register s32 var_r29 = (s32)arg0;
-    while (var_r30 < *(s32 *)((char *)var_r29 + 0x1C)) {
-        s32 *entry = (s32 *)(*(s32 *)((char *)var_r29 + 0x18) + var_r31);
-        if (*(unsigned char *)((char *)entry + 4) != 0)
-            fn_80214AF0(*entry);
+    s32 byteOffset = 0;
+    s32 i = 0;
+    register UIGroupList *list = (UIGroupList *)arg0;
+    while (i < list->count) {
+        UIGroupEntry *entry = (UIGroupEntry *)((char *)list->entries + byteOffset);
+        if (entry->shown != 0)
+            fn_80214AF0(entry->groupId);
         else
-            fn_80214A9C(*entry);
-        var_r31 += 8;
-        var_r30 += 1;
+            fn_80214A9C(entry->groupId);
+        byteOffset += 8;
+        i += 1;
     }
 }
 #pragma pop
