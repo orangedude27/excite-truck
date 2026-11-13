@@ -118,21 +118,22 @@ void *fn_801DA03C(int **arg0, int arg1) {
 }
 
 #pragma use_lmw_stmw off
-int fn_801DA064(void *arg0, const char *arg1, int arg2) {
+int fn_801DA064(void *lookup, const char *name, int unused) {
+    /* Find a named entry (0x18-byte stride) in a table at lookup[0] and store its address in lookup[1]. */
     register int offset;
     register int count;
     register char *entries;
     register int index;
-    char *base;
+    char *table;
 
-    base = *(char **)arg0;
-    count = *(int *)base;
-    entries = base + 4;
+    table = *(char **)lookup;
+    count = *(int *)table;
+    entries = table + 4;
     index = 0;
     offset = 0;
     while (index < count) {
-        if (strcmp(entries + offset, arg1) == 0) {
-            *(char **)((char *)arg0 + 4) = entries + index * 0x18;
+        if (strcmp(entries + offset, name) == 0) {
+            *(char **)((char *)lookup + 4) = entries + index * 0x18;
             return 1;
         }
         offset += 0x18;
@@ -142,30 +143,39 @@ int fn_801DA064(void *arg0, const char *arg1, int arg2) {
 }
 
 void fn_801DA0EC(void *arg0, float farg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    int index;
+    struct S { int pad0; void *obj; int idx; float cur; };
+    volatile struct S *vs = (volatile struct S *)arg0;
+    float zero;
+    float old;
     float *values;
-
-    if (obj == 0) return;
-    *(float *)((char *)arg0 + 0xC) = *(float *)((char *)arg0 + 0xC) + farg0;
-    if (farg0 >= 0.0f) {
+    void *o;
+    int idx;
+    if (vs->obj == 0) {
+        return;
+    }
+    zero = lbl_80562B38;
+    old = vs->cur;
+    vs->cur = old + farg0;
+    if (farg0 >= zero) {
         do {
-            index = *(int *)((char *)arg0 + 8) + 1;
-            *(int *)((char *)arg0 + 8) = index;
-            obj = *(void **)((char *)arg0 + 4);
-            index = *(int *)((char *)arg0 + 8);
-            if (index + 1 >= *(int *)((char *)obj + 0x10)) return;
-            values = *(float **)((char *)obj + 0x14);
-        } while (*(float *)((char *)arg0 + 0xC) > values[index * 8 + 8]);
+            ++vs->idx;
+            o = (void *)vs->obj;
+            idx = vs->idx;
+            if (idx + 1 >= *(int *)((char *)o + 0x10)) {
+                return;
+            }
+            values = *(float **)((char *)o + 0x14);
+        } while (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]);
     } else {
         do {
-            index = *(int *)((char *)arg0 + 8) - 1;
-            *(int *)((char *)arg0 + 8) = index;
-            index = *(int *)((char *)arg0 + 8);
-            if (index <= 0) return;
-            obj = *(void **)((char *)arg0 + 4);
-            values = *(float **)((char *)obj + 0x14);
-        } while (values[index * 8] > *(float *)((char *)arg0 + 0xC));
+            --vs->idx;
+            idx = vs->idx;
+            if (idx <= 0) {
+                return;
+            }
+            o = (void *)vs->obj;
+            values = *(float **)((char *)o + 0x14);
+        } while (values[idx * 8] > *(float *)((char *)arg0 + 0xC));
     }
 }
 
@@ -191,11 +201,10 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
     register float *values;
     register float *next;
     register float *current;
-    register float nextValue;
     register float value;
+    float nv;
     register float difference;
     register float numerator;
-
     obj = *(void **)((char *)arg0 + 4);
     if (obj != 0) {
         max = *(int *)((char *)obj + 0x10) - 2;
@@ -204,17 +213,15 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
         } else {
             index = max;
         }
-
         values = *(float **)((char *)obj + 0x14);
         next = values + (index + 1) * 8;
         current = values + index * 8;
-        nextValue = *next;
         value = *(float *)((char *)arg0 + 0xC);
-        value = (value < nextValue) ? nextValue : value;
+        nv = *next;
+        value = (value < nv) ? nv : value;
         difference = *next - *current;
         difference = (difference > lbl_80562B3C) ? difference : lbl_80562B3C;
         numerator = value - *current;
-
         *(float **)arg1 = current;
         *(float **)arg2 = next;
         *arg3 = numerator / difference;
