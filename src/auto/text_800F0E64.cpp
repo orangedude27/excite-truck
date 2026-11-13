@@ -6555,18 +6555,19 @@ extern "C" int fn_800FD8F4(void* arg0) {
 }
 
 extern "C" void* fn_8002F634(void*, void*, int, int);
-extern "C" void* __dt__Q46nw4hbm3snd6detail10StrmPlayerFv(void* arg0, int arg1) {
-    void* temp_r3;
-    void* temp_r3_2;
-    if (arg0 != 0) {
-        fn_8002F634((char*)arg0 + 0xAC, (void*)fn_800FB374, 0x1C, 0x20);
-        temp_r3 = (char*)arg0 + 0xA0;
-        if (temp_r3 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(temp_r3, 0);
-        temp_r3_2 = (char*)arg0 + 0x94;
-        if (temp_r3_2 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(temp_r3_2, 0);
-        if (arg1 > 0) ((void (*)(void*))fn_80128668)(arg0);
+extern "C" void* __dt__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self, int shouldDelete) {
+    /* Destroy a StrmPlayer: tear down embedded collections/lists and optionally delete. */
+    void* list;
+    void* list2;
+    if (self != 0) {
+        fn_8002F634((char*)self + 0xAC, (void*)fn_800FB374, 0x1C, 0x20);
+        list = (char*)self + 0xA0;
+        if (list != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list, 0);
+        list2 = (char*)self + 0x94;
+        if (list2 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list2, 0);
+        if (shouldDelete > 0) ((void (*)(void*))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 extern "C" void Setup__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(void *, const void *);
 extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *, void *);
