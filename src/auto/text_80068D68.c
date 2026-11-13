@@ -8875,14 +8875,14 @@ extern char lbl_803160C0[];
 extern void fn_8007F5A4(void);
 void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
     register u8 *cb;
-    register u8 *strings;
+    register u8 (*strings)[1];
     register u8 temp_r29;
     register void (*temp_r28)(s32);
     register u8 temp_r27;
     register u8 temp_r0;
     u8 flags;
     cb = lbl_803C0F78;
-    strings = (u8 *)lbl_803160C0;
+    strings = (u8 (*)[1])lbl_803160C0;
     temp_r28 = *(void (**)(s32))(cb + 0x58C);
     *(void (**)(s32))(cb + 0x58C) = 0;
     if (arg0[0] == 0) {
@@ -8949,7 +8949,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
             (*(u8 *)(lbl_803C0F78 + 0x27BE)) = 0xFF;
             (*(u8 *)(lbl_803C0F78 + 0x27BD)) = 0xFF;
             if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 3) {
-                ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, (void *)((u32)strings * 1 + (temp_r27 & 0)), temp_r27, 0xFF, temp_r29, 0xFF);
+                ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, strings[0], temp_r27, 0xFF, temp_r29, 0xFF);
             }
             flags = *(u8 *)(lbl_803C0F78 + 0x645);
             if (((flags & 8) || (*(u8 *)(lbl_803C0F78 + 0x644) & 0x10) || (flags & 0x10)) && (((*(u8 *)(lbl_803C0F78 + 0x27BD)) != temp_r27) || ((*(u8 *)(lbl_803C0F78 + 0x27BE)) != temp_r29)) && btsnd_hcic_set_afh_channels(temp_r27, temp_r29)) {
@@ -10583,7 +10583,8 @@ void btm_pm_proc_cmd_status(UINT8 status) {
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
-    u8 *acl, *pm, *reg, *dev, *addr, *link;
+    u8 *acl, *pm, *reg, *addr, *link;
+    void *dev;
     int offset, index, i;
     index = (u8)btm_handle_to_acl_index(handle);
     if (index >= 4) return;
@@ -10614,8 +10615,8 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     link = (u8 *)((u32)lbl_803C0F78 + offset);
     if (link[0x14f] == 1) {
         addr = link + 0x3c;
-        dev = (u8 *)btm_find_dev(addr);
-        if (dev != 0 && (dev[0x76] & 4)) {
+        dev = (void *)btm_find_dev(addr);
+        if (dev != 0 && (((u8 *)dev)[0x76] & 4)) {
             if (btsnd_hcic_set_conn_encrypt(handle, 0)) {
                 link[0x14f] = 2;
                 return;
@@ -11360,10 +11361,22 @@ void bta_dm_discover(void *data) {
 #define DM_MSG_BD_NAME(p)                       ((u8 *)(p) + 0xE)
 #define BTA_DM_MSG_SIZE                         0x110
 
-/* tBTA_DM_MSG events (bta_dm_int.h's DM search events). */
+/* tBTA_DM_MSG events: the DM search state machine's events.  They are numbered
+ * from BTA_SYS_EVT_START(BTA_ID_DM_SEARCH) = 0x200: bta_dm_search_sm_execute()
+ * indexes its state tables with event & 0xFF, and the idle state's first row is
+ * bta_dm_search_start.  This BTE revision has one event the SDK reference
+ * sources do not, at 0x205 - the timer watching a remote name request, whose
+ * only action is BTM_CancelRemoteDeviceName() - so the three events after it
+ * are numbered one higher than the reference sources have them. */
 #ifndef BTA_DM_REMT_NAME_EVT
+#define BTA_DM_API_SEARCH_EVT                   0x200
+#define BTA_DM_API_SEARCH_CANCEL_EVT            0x201
+#define BTA_DM_API_DISCOVER_EVT                 0x202
+#define BTA_DM_INQUIRY_CMPL_EVT                 0x203
 #define BTA_DM_REMT_NAME_EVT                    0x204
+#define BTA_DM_REMT_NAME_TOUT_EVT               0x205
 #define BTA_DM_SDP_RESULT_EVT                   0x205
+#define BTA_DM_SEARCH_CMPL_EVT                  0x207
 #define BTA_DM_DISCOVERY_RESULT_EVT             0x207
 #endif
 
@@ -20227,7 +20240,7 @@ void l2cu_send_peer_disc_req(void *pCcb) {
 int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
     void *p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 7, remote_id);
     u8 *packet;
-    if (p_buf == NULL) {
+    if (!p_buf) {
         if (lbl_803C4040[0] >= 2) {
             fn_8007093C(0x80001, lbl_80319174);
         }
@@ -21265,6 +21278,7 @@ extern u8 lbl_80319514[],lbl_80319540[];
 void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
     void *mcb = *(void **)((u8 *)arg0 + 0x6C);
     s32 signals = 0;
+
     if (*((u8 *)arg0 + 2) == 1 && *((u8 *)arg0 + 0xC)) {
         if (lbl_803C4828[0x414] >= 4)
             fn_8007093C(0x90003, lbl_80319514);
@@ -21279,7 +21293,7 @@ void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
         return;
     }
     if (*((u8 *)arg0 + 2) != 3 && *((u8 *)arg0 + 2) != 0) {
-        s32 mask = -12;
+        u32 mask = 0xFFFFFFF4;
         *((u8 *)arg0 + 0xF) |= 0x10;
         *((u8 *)arg0 + 0x5F) = *((u8 *)arg0 + 0x5F) & mask;
         signals = port_get_signal_changes(arg0);
