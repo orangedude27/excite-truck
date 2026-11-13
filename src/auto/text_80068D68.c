@@ -15672,19 +15672,20 @@ BOOLEAN btsnd_hcic_set_host_buf_size(UINT16 acl_len, UINT8 sco_len, UINT16 acl_n
     return TRUE;
 }
 
-s32 btsnd_hcic_write_policy_set_80085668(u16 arg0, u16 arg1) {
-    u8 *buf = GKI_getpoolbuf(2);
-    if (buf == 0) return 0;
-    *(u16 *)(buf + 2) = 7;
-    *(u16 *)(buf + 4) = 0;
-    buf[8] = 0x37;
-    buf[9] = 0x0C;
-    buf[10] = 4;
-    buf[11] = arg0;
-    buf[12] = arg0 >> 8;
-    buf[13] = arg1;
-    buf[14] = arg1 >> 8;
-    btu_hcif_send_cmd(buf);
+/* Send HCI Write_Policy_Settings (opcode 0x0C37) for a connection handle with the given settings. */
+s32 btsnd_hcic_write_policy_set_80085668(u16 handle, u16 settings) {
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == 0) return 0;
+    *(u16 *)(cmdBuf + 2) = 7;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 0x37;
+    cmdBuf[9] = 0x0C;
+    cmdBuf[10] = 4;
+    cmdBuf[11] = handle;
+    cmdBuf[12] = handle >> 8;
+    cmdBuf[13] = settings;
+    cmdBuf[14] = settings >> 8;
+    btu_hcif_send_cmd(cmdBuf);
     return 1;
 }
 
