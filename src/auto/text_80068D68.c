@@ -5773,17 +5773,18 @@ void fn_80073CA8(void) {
     }
 }
 
+/* Handles a PIN code reply: posts BTA_DM_API_PIN_REPLY_EVT with BD address, accept flag, and PIN. */
 void BTA_DmPinReply(u8 *bd_addr, u8 accept, u8 pin_len, u8 *pin_code) {
-    u8 *buf = GKI_getbuf(0x20);
-    if (buf != 0) {
-        *(u16 *)buf = 0x107;
-        fn_80070FA4(buf + 8, bd_addr);
-        buf[0xE] = accept;
+    u8 *msg = GKI_getbuf(0x20);
+    if (msg != 0) {
+        *(u16 *)msg = 0x107;
+        fn_80070FA4(msg + 8, bd_addr);
+        msg[0xE] = accept;
         if (accept != 0) {
-            buf[0xF] = pin_len;
-            memcpy(buf + 0x10, pin_code, pin_len);
+            msg[0xF] = pin_len;
+            memcpy(msg + 0x10, pin_code, pin_len);
         }
-        fn_80071450(buf);
+        fn_80071450(msg);
     }
 }
 
