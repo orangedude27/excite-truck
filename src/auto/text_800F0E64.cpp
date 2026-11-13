@@ -287,14 +287,15 @@ extern "C" void fn_800F0E64(void **arg0) {
         *arg0 = 0;
 }
 
-extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(void *arg0, int arg1) {
+/* Set envelope sustain level (valid range 0-16); panics on out-of-range value. */
+extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(void *self, int sustainLevel) {
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
     extern const char lbl_80324390[];
     extern const char lbl_803243A4[];
-    int valid = arg1 >= 0 && arg1 <= 0x10;
-    if (!valid)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x25, lbl_803243A4, arg1, 0, 0x10);
-    *((unsigned char *)arg0 + 4) = arg1;
+    int isValid = sustainLevel >= 0 && sustainLevel <= 0x10;
+    if (!isValid)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x25, lbl_803243A4, sustainLevel, 0, 0x10);
+    *((unsigned char *)self + 4) = sustainLevel;
 }
 
 extern "C" f32 lbl_80561078;
