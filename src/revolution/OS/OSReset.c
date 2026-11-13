@@ -193,6 +193,7 @@ extern void fn_80052390(u32, u32);
 extern u32 lbl_8055DA78[2];
 
 void fn_800527CC(u32 param_1) {
+    /* Reset the console: stop play record/state, shut down devices, then hot-reset or boot depending on app type. */
     u8 flag;
 
     flag = OSGetAppType();
