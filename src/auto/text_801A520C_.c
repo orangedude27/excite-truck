@@ -541,8 +541,9 @@ extern "C" void fn_801A5D80(void *arg0, int arg1, int arg2, int arg3, int arg4) 
 }
 
 #pragma cplusplus on
-extern "C" void fn_801A5E0C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    class Obj {
+extern "C" void fn_801A5E0C(void *self, int param1, int param2, int mode, int param4) {
+    /* Forward action to the subobject at +0x270C (vslot 13); on mode 0x6D reset timer/state. */
+    class Subobject {
     public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
@@ -551,16 +552,16 @@ extern "C" void fn_801A5E0C(void *arg0, int arg1, int arg2, int arg3, int arg4) 
         virtual void f13(int, int, int, int);
     };
     float zero;
-    Obj *obj;
+    Subobject *subobj;
     fn_8018956C();
-    obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
-    obj->f13(arg1, arg2, arg3, arg4);
-    if (arg3 == 0x6D) {
+    subobj = (Subobject *)*(void **)((char *)self + 0x270C);
+    subobj->f13(param1, param2, mode, param4);
+    if (mode == 0x6D) {
         zero = lbl_805623C8;
-        *(int *)((char *)arg0 + 0x2714) = 1;
-        *(int *)((char *)arg0 + 0x2720) = 0;
-        *(float *)((char *)arg0 + 0x271C) = zero;
-        *(float *)((char *)arg0 + 0x2718) = zero;
+        *(int *)((char *)self + 0x2714) = 1;
+        *(int *)((char *)self + 0x2720) = 0;
+        *(float *)((char *)self + 0x271C) = zero;
+        *(float *)((char *)self + 0x2718) = zero;
     }
 }
 struct Dummy_801A5E98 {
@@ -738,5 +739,48 @@ void fn_801A60E0(void *arg0, void *arg1) {
 #pragma scheduling on
 extern void fn_801A60E0(void *, void *);
 extern float lbl_8055E3C8, lbl_805623C8, lbl_805623CC, lbl_805623D4, lbl_80562410, lbl_80562414;
-#pragma cplusplus off
-void fn_801A61B0(void *arg0, void *arg1, float arg2) { (void)arg0; (void)arg1; (void)arg2; }
+#pragma cplusplus on
+extern "C" void fn_801A61B0(void *arg0, void *arg1, float arg2) {
+    int active;
+    int counter;
+    float bound, limit, ratio, value;
+    float tmp;
+    float scale;
+    float zero;
+    if (*(int*)arg0) {
+        active=1;
+        if (!*(unsigned char*)((char*)arg1+0x23CC) && !*(unsigned char*)((char*)arg1+0x2440) &&
+            *(unsigned char*)((char*)arg1+0x24B4) && *(unsigned char*)((char*)arg1+0x2528)) {
+            value=*(float*)((char*)arg1+0x25D4); ratio=value/arg2;
+            if(ratio>lbl_80562410) {
+                limit=*(float*)((char*)arg1+0x11C);
+                if(limit>lbl_805623C8 && limit<lbl_805623D4*value) {
+                    counter=*(int*)((char*)arg0+0xC)+1; *(int*)((char*)arg0+0xC)=counter;
+                    if(counter>4) {
+                        bound=lbl_805623CC;
+                        value=bound-ratio;
+                        *(float*)((char*)arg0+8)=lbl_8055E3C8;
+                        bound = bound<value ? value : bound;
+                        bound = bound>lbl_805623C8 ? lbl_805623C8 : bound;
+                        tmp=*(float*)((char*)arg1+0xD4);
+                        scale=lbl_80562414;
+                        tmp=bound*tmp;
+                        *(int*)arg0=0;
+                        *(float*)((char*)arg0+4)=scale*tmp;
+                        while(--*(int*)((char*)arg0+0xC)!=0) {
+                            fn_801A60E0(arg0,arg1);
+                        }
+                    } else active=0;
+                }
+            }
+        }
+        if(active) *(int*)((char*)arg0+0xC)=0;
+    } else {
+        fn_801A60E0(arg0,arg1);
+        if(*(int*)((char*)arg1+0x2620)>0 && lbl_8055E3C8-*(float*)((char*)arg0+8)>lbl_805623CC) {
+            zero=lbl_805623C8;
+            *(int*)arg0=1; *(int*)((char*)arg0+0xC)=0;
+            *(float*)((char*)arg0+8)=zero; *(float*)((char*)arg0+4)=zero;
+        }
+    }
+}
