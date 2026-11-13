@@ -117,10 +117,10 @@ static inline void DispatchList_RemoveAt2(int index) {
     if (index >= l->count) return;
     last = l->count - 1;
     if (index != last) {
-        void **items = l->items;
+        void **items = lbl_8043870C[0].items;
         items[index] = items[last];
     }
-    l->count = l->count - 1;
+    lbl_8043870C[0].count = lbl_8043870C[0].count - 1;
 }
 
 #pragma scheduling invalid_target
