@@ -650,22 +650,23 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
 #pragma pop
 
 #pragma dont_inline on
-void fn_802670A0(int *arg0, int arg1) {
+void fn_802670A0(int *cellRect, int index) {
+    /* Compute grid cell origin/size for index based on player count and screen dimensions. */
     int count;
     int cols;
     int div;
-    int a;
-    int b;
+    int cellWidth;
+    int cellHeight;
 
     count = fn_80178CA4();
     cols = (count > 1) ? 2 : 1;
     div = (count + cols - 1) / cols;
-    a = lbl_8055CFF0 / cols;
-    b = lbl_8055CFF4 / div;
-    arg0[16] = a;
-    arg0[17] = b;
-    arg0[14] = a * (arg1 / div);
-    arg0[15] = b * (arg1 % div);
+    cellWidth = lbl_8055CFF0 / cols;
+    cellHeight = lbl_8055CFF4 / div;
+    cellRect[16] = cellWidth;
+    cellRect[17] = cellHeight;
+    cellRect[14] = cellWidth * (index / div);
+    cellRect[15] = cellHeight * (index % div);
 }
 
 #pragma scheduling invalid_target
