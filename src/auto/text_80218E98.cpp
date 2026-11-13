@@ -1927,10 +1927,11 @@ return arg0;
 
 extern "C" void *fn_8021B8AC(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        void *ptr = *(void **)((u8 *)arg0 + 0x370);
+        /* Destructor: reset vtable, free owned resources, run base cleanup, optionally delete. */
+        void *ownedPtr = *(void **)((u8 *)arg0 + 0x370);
         *(void **)arg0 = lbl_8033F180;
-        if (ptr != 0) {
-            fn_8022EE98(ptr);
+        if (ownedPtr != 0) {
+            fn_8022EE98(ownedPtr);
             *(void **)((u8 *)arg0 + 0x370) = 0;
         }
         fn_8022A8E4(*(s32 *)((u8 *)arg0 + 0x368));
