@@ -520,16 +520,17 @@ extern "C" void *fn_802A1DF4(void *arg0, DummyReceiver_802A3314 *arg1) {
     return self;
 }
 #pragma scheduling on
-extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(volatile void**)arg0 = &lbl_80349B78;
-        fn_802A44B8(*(void**)((char*)arg0 + 0x10), 1);
-        fn_8028E398(*(void**)((char*)arg0 + 0xC));
-        fn_8028E398(*(void**)((char*)arg0 + 8));
-        fn_8028E398(*(void**)((char*)arg0 + 4));
-        if (arg1 > 0) ((s32 (*)(void*))fn_80128668)(arg0);
+extern "C" void* fn_802A1E80(void* self, s32 shouldFree) {
+    /* Destructor: reset vtable, tear down owned resources (+0x10, +0xC, +0x8, +0x4), and optionally free. */
+    if (self != 0) {
+        *(volatile void**)self = &lbl_80349B78;
+        fn_802A44B8(*(void**)((char*)self + 0x10), 1);
+        fn_8028E398(*(void**)((char*)self + 0xC));
+        fn_8028E398(*(void**)((char*)self + 8));
+        fn_8028E398(*(void**)((char*)self + 4));
+        if (shouldFree > 0) ((s32 (*)(void*))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma processor 750
