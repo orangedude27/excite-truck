@@ -120,42 +120,28 @@ extern "C" void fn_8012834C(void *arg0, void *arg1, s32 arg2) {
         virtual void d1();
         virtual void *alloc(s32, void *, s32);
     };
-    void *queue;
-    void *result;
-    s32 sum;
-    s32 mask;
-    s32 size;
-    s32 offset;
+    struct H {
+        static inline void pad(Ring *q, s32 size) {
+            s32 mask = size - 1;
+            s32 sum = *(s32 *)((u8 *)q + 0xC) + *(s32 *)((u8 *)q + 4);
+            if (((sum + 0x40) & mask) != 0) {
+                void *r = q->alloc(mask & (size - ((sum + 0x80) & mask)), lbl_8032A05C, 3);
+                *(u8 *)((u8 *)r - 0x1C) = 0;
+            }
+        }
+    };
 
     fn_80127964();
     if (lbl_8055DF80 == 0 && (u8)lbl_8055DF88 != 0) {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A034, arg0);
     }
 
-    size = lbl_8055DF8C;
-    if (size != 0) {
+    if (lbl_8055DF8C != 0) {
+        s32 size = lbl_8055DF8C;
         if ((u8)lbl_8055DF81 == 0) {
-            if (size > 0x40) {
-                queue = lbl_8041E140;
-                mask = size - 1;
-                sum = *(s32 *)((u8 *)queue + 0xC) +
-                      *(s32 *)((u8 *)queue + 4);
-                if (((sum + 0x40) & mask) != 0) {
-                    mask = mask & (size - ((sum + 0x80) & mask));
-                    result = ((Ring *)queue)->alloc(mask, lbl_8032A05C, 3);
-                    *(u8 *)((u8 *)result - 0x1C) = 0;
-                }
-            }
-        } else if (size > 0x40) {
-            queue = lbl_8041E160;
-            mask = size - 1;
-            sum = *(s32 *)((u8 *)queue + 0xC) +
-                  *(s32 *)((u8 *)queue + 4);
-            if (((sum + 0x40) & mask) != 0) {
-                mask = mask & (size - ((sum + 0x80) & mask));
-                result = ((Ring *)queue)->alloc(mask, lbl_8032A05C, 3);
-                *(u8 *)((u8 *)result - 0x1C) = 0;
-            }
+            if (size > 0x40) H::pad((Ring *)lbl_8041E140, size);
+        } else {
+            if (size > 0x40) H::pad((Ring *)lbl_8041E160, size);
         }
         lbl_8055DF8C = 0;
     }
@@ -450,6 +436,9 @@ extern char lbl_8032A204[];
 #pragma cplusplus on
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" char *strcpy(char *, const char *);
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
 extern "C" void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
     struct Ring {
         virtual void d0();
@@ -484,7 +473,7 @@ extern "C" void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
         *((u8 *)found + 0x24) = 1;
         return (u8 *)found + 0x40;
     }
-    limit = size + *(s32 *)((u8 *)ctx + 4) + 0x40;
+    limit = size + *(s32 *)((u8 *)ctx + 4) + 64;
     if (limit >= *(s32 *)((u8 *)ctx + 8)) {
         ((Ring *)ctx)->flush(1);
         ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A204, name, size);
@@ -523,12 +512,17 @@ extern "C" void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
 #pragma cplusplus off
 #pragma use_lmw_stmw on
 u32 fn_801281A0(s32);
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
-    u32 magic = *(u32 *)(arg1 - 0x40);
     u8 *p;
-    char *text = lbl_8032A000;
-    u8 *base = arg1 - 0x40;
-    void *entry;
+    char *text;
+    u8 *base;
+    u32 magic;
+    u8 *tmp;
+    base = arg1 - 0x40;
+    text = lbl_8032A000;
+    magic = *(u32 *)base;
 
     if (magic != 0x53544B41)
         ((s32 (*)(void *, ...))fn_802E317C)(text + 0x228, base);
@@ -540,12 +534,12 @@ void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
     while (p < arg1 + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(base + 0x2C), 4)) {
         if (*p != 0xE3)
             ((s32 (*)(void *, ...))fn_802E317C)(
-                text + 0x278, p, p - (arg1 + *(s32 *)(base + 0x2C)), base + 4, 0xE3);
+                text + 0x278, p, p - (arg1 + *(s32 *)(base + 0x2C)), base + 4, *p, 0xE3);
         p++;
     }
 
     if (*(u32 *)(base + 0x3C) != 0x53544B41)
-        ((s32 (*)(void *, ...))fn_802E317C)(text + 0x2C8, base + 4);
+        ((s32 (*)(void *, ...))fn_802E317C)(text + 0x2C8, base + 4, *(u32 *)(base + 0x3C));
     if (base[0x24] == 0)
         ((s32 (*)(void *, ...))fn_802E317C)(text + 0x304, base + 4);
     if (*(s32 *)(base + 0x30) != arg2) {
@@ -554,21 +548,25 @@ void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
         ((s32 (*)(void *, ...))fn_802E317C)(text + 0x31C, base + 4, oldname, newname);
     }
 
-    entry = *(void **)((u8 *)arg0 + 0x10);
     base[0x24] = 0;
-    while (entry != 0 && *(u8 *)((u8 *)entry + 0x24) == 0) {
-        *(void **)((u8 *)arg0 + 0x10) = *(void **)((u8 *)entry + 0x34);
-        *(void **)((u8 *)entry + 0x34) = 0;
-        entry = *(void **)((u8 *)arg0 + 0x10);
-    }
-    if (entry != 0)
-        *(u32 *)((u8 *)arg0 + 4) =
-            ((u8 *)entry - *(u8 **)((u8 *)arg0 + 0xC)) +
-            *(u32 *)((u8 *)entry + 0x28) + 0x40;
-    else
+    goto check;
+loop:
+    if (*(u8 *)((u8 *)tmp + 0x24) != 0)
+        goto done;
+    *(void **)((u8 *)arg0 + 0x10) = *(void **)((u8 *)tmp + 0x34);
+    *(void **)((u8 *)tmp + 0x34) = 0;
+check:
+    tmp = *(u8 **)((u8 *)arg0 + 0x10);
+    if (tmp != 0)
+        goto loop;
+done:
+    if (tmp != 0) {
+        s32 b = *(s32 *)((u8 *)arg0 + 0xC);
+        u32 v = *(u32 *)(tmp + 0x28);
+        *(u32 *)((u8 *)arg0 + 4) = v + ((u32)tmp - (u32)b) + 0x40;
+    } else
         *(u32 *)((u8 *)arg0 + 4) = 0;
 }
-
 extern int strcmp(const char *, const char *);
 extern char lbl_80559970, lbl_80559974;
 #pragma push
@@ -622,18 +620,19 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
     }
 }
 #pragma pop
-void fn_80128DCC(void *arg0) {
-    register s32 *base = (s32 *)arg0;
+void fn_80128DCC(void *heap) {
+    /* Walk heap entries and report any whose signature is not 'STKA'. */
+    register s32 *heapWords = (s32 *)heap;
     register s32 offset = 0;
     register s32 *entry;
     goto check;
 loop:
-    entry = (s32 *)(base[3] + offset);
+    entry = (s32 *)(heapWords[3] + offset);
     if ((u32)entry[0] != 0x53544B41)
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A430, entry);
     offset = offset + entry[10] + 0x40;
 check:
-    if (offset < base[1])
+    if (offset < heapWords[1])
         goto loop;
 }
 
