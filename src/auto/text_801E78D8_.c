@@ -49,6 +49,7 @@ extern float lbl_80562DB4, lbl_80562DD0;
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern long fn_800167F4(void);
+extern void fn_801E96D8(long);
 extern float fn_80129DC4(long, float, float);
 extern void PSVECNormalize(float *, float *);
 extern float lbl_80562DBC, lbl_80562DC0, lbl_80562DD4, lbl_80562DD8;
