@@ -10,6 +10,23 @@
    entry's virtual functions.  The order of the entries means nothing: removing
    an entry just moves the last one into its slot. */
 typedef struct { void **items; int count; } DispatchList;
+
+/* Scene object tags (object+0x10) of the vehicles that carry soevents -- the
+   same four fn_801D2414 accepts. */
+#define FOURCC_CAR  0x43415220 /* 'CAR ' */
+#define FOURCC_PCAR 0x50434152 /* 'PCAR' player truck */
+#define FOURCC_ACAR 0x41434152 /* 'ACAR' AI truck */
+#define FOURCC_NCAR 0x4E434152 /* 'NCAR' */
+
+/* What these walkers read of a scene object: its tag and the slot it holds in
+   the per-object table.  text_801D21C0_.c describes the object as a whole. */
+typedef struct VehicleObject {
+    /* 0x00 */ void *vt;
+    /* 0x04 */ u8 pad04[0x0C];
+    /* 0x10 */ u32 fourcc;       /* FOURCC_* above */
+    /* 0x14 */ u8 pad14[0x1D8];
+    /* 0x1EC */ s32 recordIndex;
+} VehicleObject;
 #pragma push
 #pragma small_data off
 extern DispatchList lbl_804386B4[];
