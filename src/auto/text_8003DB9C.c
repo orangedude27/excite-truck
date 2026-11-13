@@ -1950,6 +1950,7 @@ void GXMiscInit(s32 token) {
     GX_DATA->bpSent = 0;
 }
 
+/* Issue a GX draw-sync (token 0) command, flush dirty state, sync, and clear the draw-done flag. */
 void GXSetDrawSync(void) {
     s32 interruptState = OSDisableInterrupts();
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
