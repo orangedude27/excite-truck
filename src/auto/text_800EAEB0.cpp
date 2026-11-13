@@ -1899,21 +1899,24 @@ extern u8 lbl_8055DE40;
 #pragma dont_inline fn_800EE4F0
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void) {
     if ((s8)lbl_8055DE40 == 0) {
+        /* Lazily initialize singleton RemoteSpeakerManager and its speaker slots. */
         u8* end;
-        u8* base;
-        u8* p;
-        base = lbl_804127A8;
-        base[0] = 0;
-        p = base + 0x38;
-        end = base + 0x2B8;
+        u8* instance;
+        u8* speaker;
+
+        instance = lbl_804127A8;
+        instance[0] = 0;
+        speaker = instance + 0x38;
+        end = instance + 0x2B8;
         do {
-            fn_800EE4F0(p);
-            p += 0xA0;
-        } while (p < end);
-        *(s32*)(base + 0x64) = 0;
-        *(s32*)(base + 0x104) = 1;
-        *(s32*)(base + 0x1A4) = 2;
-        *(s32*)(base + 0x244) = 3;
+            fn_800EE4F0(speaker);
+            speaker += 0xA0;
+        } while (speaker < end);
+
+        *(s32*)(instance + 0x64) = 0;
+        *(s32*)(instance + 0x104) = 1;
+        *(s32*)(instance + 0x1A4) = 2;
+        *(s32*)(instance + 0x244) = 3;
         lbl_8055DE40 = 1;
     }
     return lbl_804127A8;
