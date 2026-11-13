@@ -1329,15 +1329,17 @@ extern double lbl_80563590;
 extern int fn_80232B70(int);
 extern char lbl_8033FF98[];
 extern int stricmp(const char *, const char *);
-int fn_8022CC8C(const char *arg0) {
-    char *p;
-    unsigned int i;
+/* Look up a UI/style name in the style table (name/id pairs) and return its id,
+   or 0x1A if the name is not found. */
+int fn_8022CC8C(const char *styleName) {
+    char *entry;
+    unsigned int index;
 
-    p = lbl_8033FF98;
-    i = 0;
-    for (; i < 0x1B; i++, p += 8) {
-        if (stricmp(arg0, *(const char **)(p + 4)) == 0)
-            return *(int *)(lbl_8033FF98 + i * 8);
+    entry = lbl_8033FF98;
+    index = 0;
+    for (; index < 0x1B; index++, entry += 8) {
+        if (stricmp(styleName, *(const char **)(entry + 4)) == 0)
+            return *(int *)(lbl_8033FF98 + index * 8);
     }
     return 0x1A;
 }
