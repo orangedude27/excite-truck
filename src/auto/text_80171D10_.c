@@ -210,8 +210,10 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     return *(unsigned long long *)pos;
 }
 #pragma pop
-unsigned int fn_801720E0(unsigned int arg0) {
-    return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) >> 1);
+unsigned int fn_801720E0(unsigned int arg0) { // v6
+    unsigned int high = arg0 & 0xFF000000u;
+    unsigned int low = (arg0 & 0xFEFEFEu) >> 1;
+    return high | low;
 }
 #pragma dont_inline reset
 
@@ -495,7 +497,7 @@ extern float lbl_80561A54;
     void *temp_r3_6;
     void *temp_r3_7;
     void *temp_r3_8;
-    int mgr8;
+    unsigned int mgr8;
 
     if ((int) (*(void **)((char *)(arg0) + (0xC))) != 0) {
         fn_801308F4((char *)(unsigned char *)arg0 + 0x30, 0x14, arg2);
@@ -549,9 +551,9 @@ extern float lbl_80561A54;
                 lbl_8055E3AC = 1;
             }
             fn_80130980((unsigned char *)arg0 + 0x9E, 0x14, 2, (float) var_r28);
-            mgr8 = (*(int *)((char *)(&lbl_804303B8) + 8));
-            if ((unsigned int)mgr8 != (unsigned int) lbl_8055E044) {
-                fn_80131318();
+            mgr8 = *(unsigned int *)((char *)(&lbl_804303B8) + 8);
+            if (mgr8 != lbl_8055E044) {
+                fn_80131318(&lbl_804303B8);
             }
             var_r4_3 = (*(unsigned char **)((char *)(&lbl_804303B8) + (4)));
             var_r6_4 = (unsigned char *)arg0 + 0x58;
