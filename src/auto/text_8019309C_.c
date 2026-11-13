@@ -1468,6 +1468,7 @@ void fn_80195654(void *arg0, void *arg1) {
     }
 }
 
+/* Computes a normalized 2D output direction from the object's XY (at +0x20) with minimum length clamp. */
 void fn_80195830(void *arg0) {
     struct Fields { unsigned char pad[0x20]; float x; float y; unsigned char mid[0x18]; float outX; float outY; };
     struct Fields* obj = (struct Fields*)arg0;
