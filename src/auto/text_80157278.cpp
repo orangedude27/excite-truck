@@ -2793,6 +2793,9 @@ struct BonusDisplay {
 #define BONUS_TYPE_SCALE lbl_8042FD08  // .bss: score multiplier per bonus category, indexed by tracker+0x4
 #define BONUS_EPSILON    lbl_80558DC4  // .sdata: 2^-23; |value| <= this means nothing was scored
 #define BONUS_TEXT_FMT   lbl_8055A058  // .sdata: "%s", format of the popup's print* setters
+#define BONUS_TEXT2_FMT  lbl_8055A05C  // .sdata: "%s %d", the same line with a second value after it
+#define BONUS_QUEUED_STEP 0x168        // 360, taken per event queued since the last frame
+                                       // (tracker+0x26C) and shown after count/extra
 
 #pragma push
 #pragma processor 750
