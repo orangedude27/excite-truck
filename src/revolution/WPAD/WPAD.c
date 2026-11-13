@@ -6349,12 +6349,6 @@ u16 _WUDGetNotAckedSize(s8 handle) {
     return 0;
 }
 u8 _WUDGetLinkNumber(void) { return 0; }
-static inline void __a1_22_ack_clear_a(WPADCB *pCB) {
-    pCB->readCB = 0;
-}
-static inline void __a1_22_ack_clear_b(WPADCB *pCB) {
-    *(u32 *)((u8 *)pCB + 0x7FC) = 0;
-}
 void __a1_22_ack(u8 chan, u8* pReport)
 {
     const char* strBase = (const char*)lbl_80312338;
