@@ -4413,6 +4413,32 @@ static inline s32 ClampS32(s32 x, s32 low, s32 high) {
     return x > high ? high : (x < low ? low : x);
 }
 
+/* SoundInstanceManager: insert the sound into the pool's priority-sorted list (+0x4, node at sound+0xB8). */
+static inline void SoundInstanceManager_InsertPriorityList(void *pool, void *sound, s32 priority) {
+    void *it;
+    struct { void *node; } iter;
+    void *&pos = iter.node;
+    pos = *(void **)((u8 *)pool + 8);
+    while (pos != (void *)((u8 *)pool + 8)) {
+        if (pos == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+        }
+        {
+            s32 c = *(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78);
+            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
+            if (priority < cc) {
+                break;
+            }
+        }
+        pos = *(void **)pos;
+    }
+    if (sound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
+    }
+    it = pos;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)pool + 4, &it, (u8 *)sound + 0xB8);
+}
+
 static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     void *sound;
     void *it;
@@ -4569,6 +4595,7 @@ static inline void SoundPlayer_InsertPriorityList(s32 player, void *sound) {
 #pragma auto_inline off
 extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void *arg6) {
     s32 startOffset;
+    s32 prio;
     void *sound;
     if (arg6 == 0) {
         return 0;
@@ -4581,8 +4608,7 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
         ((void (*)(void *, void *, s32, s32, s32, s32))vt[2])(obj, (void *)info, arg5, 0, *(s32 *)(arg3 + 0xC), 8);
         startOffset = info[6];
     }
-    s32 p = arg2 - startOffset;
-    s32 prio = p > 0x7F ? 0x7F : (p < 0 ? 0 : p);
+    prio = ClampS32(arg2 - startOffset, 0, 0x7F);
     if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, prio, (void *)arg4) == 0) {
         return 0;
     }
