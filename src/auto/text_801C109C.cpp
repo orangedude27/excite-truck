@@ -543,30 +543,26 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
             int first = *(int *)rec;
             char *transform = *(char **)(rec + 4);
             char *object = *(char **)(rec + 8);
-            char *points;
-            float diff[3];
-            float m[9];
+            float *mat;
+            float dx, dy, dz;
             int index;
             char *q;
             float x, y, z;
             if (object != 0) {
-                points = object;
-                diff[0] = *(float *)points - *(float *)(points + 0x24);
-                diff[1] = *(float *)(points + 4) - *(float *)(points + 0x28);
-                diff[2] = *(float *)(points + 8) - *(float *)(points + 0x2C);
-                for (int j = 0; j < 9; j++)
-                    m[j] = ((float *)points)[j];
+                mat = (float *)object;
+                dx = mat[0] - mat[9];
+                dy = mat[1] - mat[10];
+                dz = mat[2] - mat[11];
             } else {
-                points = *(char **)(base + 0x24) + first * 12;
-                diff[0] = *(float *)points - *(float *)(transform + 0x24);
-                diff[1] = *(float *)(points + 4) - *(float *)(transform + 0x28);
-                diff[2] = *(float *)(points + 8) - *(float *)(transform + 0x2C);
-                for (int j = 0; j < 9; j++)
-                    m[j] = ((float *)transform)[j];
+                char *points = *(char **)(base + 0x24) + first * 12;
+                mat = (float *)transform;
+                dx = *(float *)points - *(float *)(transform + 0x24);
+                dy = *(float *)(points + 4) - *(float *)(transform + 0x28);
+                dz = *(float *)(points + 8) - *(float *)(transform + 0x2C);
             }
-            x = diff[2] * m[6] + (diff[0] * m[0] + diff[1] * m[3]);
-            y = diff[2] * m[7] + (diff[0] * m[1] + diff[1] * m[4]);
-            z = diff[2] * m[8] + (diff[0] * m[2] + diff[1] * m[5]);
+            x = dz * mat[6] + (dx * mat[0] + dy * mat[3]);
+            y = dz * mat[7] + (dx * mat[1] + dy * mat[4]);
+            z = dz * mat[8] + (dx * mat[2] + dy * mat[5]);
             index = *(int *)(base + 0x1C);
             *(int *)(base + 0x1C) = index + 1;
             q = *(char **)(base + 0x4C) + index * 0x18;
@@ -927,19 +923,16 @@ extern "C" void fn_801E41D8(float *, float *, int, float);
 struct Vec3f { float x, y, z; };
 static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
     if (dst == src) {
-        float x = src->z * m[6] + (src->y * m[3] + src->x * m[0]);
-        float y = src->z * m[7] + (src->y * m[4] + src->x * m[1]);
-        float z = src->z * m[8] + (src->y * m[5] + src->x * m[2]);
+        float x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        float y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        float z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
         dst->x = x;
         dst->y = y;
         dst->z = z;
     } else {
-        float sx = src->x;
-        float sy = src->y;
-        float sz = src->z;
-        float x = sz * m[6] + (sx * m[0] + sy * m[3]);
-        float y = sz * m[7] + (sx * m[1] + sy * m[4]);
-        float z = sz * m[8] + (sx * m[2] + sy * m[5]);
+        float x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        float y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        float z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
         dst->x = x;
         dst->y = y;
         dst->z = z;
