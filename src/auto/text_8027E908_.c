@@ -3256,6 +3256,7 @@ extern "C" void fn_802873F8(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v7();
 }
 #pragma cplusplus on
+/* Returns nonzero only if every item in the list reports itself valid. */
 extern "C" int fn_8028740C(void *arg0) {
     class List {
     public:
@@ -3274,11 +3275,11 @@ extern "C" int fn_8028740C(void *arg0) {
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual long valid();
     };
-    long i = 0;
-    while (i < ((List *)arg0)->count()) {
-        if (((Item *)((List *)arg0)->item(i))->valid() == 0)
+    long index = 0;
+    while (index < ((List *)arg0)->count()) {
+        if (((Item *)((List *)arg0)->item(index))->valid() == 0)
             return 0;
-        i++;
+        index++;
     }
     return 1;
 }
