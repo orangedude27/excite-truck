@@ -151,25 +151,28 @@ extern float lbl_80564E38;
 extern float lbl_80564E48;
 #pragma push
 #pragma opt_propagation off
+/* If a sun/light resource handle is set, build an identity matrix with translation
+ * copied from the drawlist base and apply it to that resource; then run the per-frame
+ * tick and advance the sun position using the global sun direction vector. */
 void fn_802C1020(void) {
-    float sp[12];
-    float *obj;
+    float matrix[12];
+    float *drawlistBase;
     if (*(int *)lbl_8055FB14 != -1) {
-        float *sp_ptr = sp;
-        sp[1] = lbl_80564E38;
-        sp[0] = lbl_80564E48;
-        sp[2] = lbl_80564E38;
-        sp[3] = lbl_80564E38;
-        sp[4] = lbl_80564E48;
-        sp[5] = lbl_80564E38;
-        sp[6] = lbl_80564E38;
-        sp[7] = lbl_80564E38;
-        sp[8] = lbl_80564E48;
-        obj = fn_802C86DC(lbl_80564E48);
-        sp[9] = obj[9];
-        sp[10] = obj[10];
-        sp[11] = obj[11];
-        fn_802C744C(*(int *)lbl_8055FB14, sp_ptr);
+        float *matrixPtr = matrix;
+        matrix[1] = lbl_80564E38;
+        matrix[0] = lbl_80564E48;
+        matrix[2] = lbl_80564E38;
+        matrix[3] = lbl_80564E38;
+        matrix[4] = lbl_80564E48;
+        matrix[5] = lbl_80564E38;
+        matrix[6] = lbl_80564E38;
+        matrix[7] = lbl_80564E38;
+        matrix[8] = lbl_80564E48;
+        drawlistBase = fn_802C86DC(lbl_80564E48);
+        matrix[9] = drawlistBase[9];
+        matrix[10] = drawlistBase[10];
+        matrix[11] = drawlistBase[11];
+        fn_802C744C(*(int *)lbl_8055FB14, matrixPtr);
     }
     fn_802A4E08();
     fn_8029231C((char *)lbl_804C0800);
