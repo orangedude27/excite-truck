@@ -2301,26 +2301,27 @@ return_arg3:
 
 #pragma unroll reset
 void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
+    /* Accumulate pacing debt from the requested work and sleep until the elapsed time catches up. */
     s32 temp_r0;
-    s32 temp_r31;
-    s32 temp_r3;
-    s32 temp_r3_2;
-    s32 temp_r4;
-    s32 var_r31;
-    volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0xC0);
+    s32 scaledTicks;
+    s32 now;
+    s32 now2;
+    s32 elapsed;
+    s32 lastTime;
+    volatile s32 *waitTicks = (volatile s32 *)((u8 *)arg0 + 0xC0);
 
-    temp_r31 = fn_80116BD4(arg1, 0x3E8, *(s32 *)((u8 *)arg0 + 0xBC));
-    temp_r3 = fn_80116D30();
-    var_r31 = temp_r3;
-    *counter = *counter + (temp_r31 - (temp_r3 - arg2));
-    while (*counter > 0) {
+    scaledTicks = fn_80116BD4(arg1, 0x3E8, *(s32 *)((u8 *)arg0 + 0xBC));
+    now = fn_80116D30();
+    lastTime = now;
+    *waitTicks = *waitTicks + (scaledTicks - (now - arg2));
+    while (*waitTicks > 0) {
         do {
-            temp_r3_2 = fn_80116D30();
-            temp_r0 = *counter;
-            temp_r4 = temp_r3_2 - var_r31;
-        } while (temp_r4 < temp_r0);
-        var_r31 = temp_r3_2;
-        *counter = temp_r0 - temp_r4;
+            now2 = fn_80116D30();
+            temp_r0 = *waitTicks;
+            elapsed = now2 - lastTime;
+        } while (elapsed < temp_r0);
+        lastTime = now2;
+        *waitTicks = temp_r0 - elapsed;
     }
 }
 
