@@ -594,18 +594,24 @@ void fn_802E5950(int arg0, int arg1) {
 }
 #pragma scheduling on
 void fn_802E59BC(unsigned char *arg0) {
-    int index = lbl_8055FF78;
-    unsigned char *dst = lbl_804FC558 + (index << 5);
-    unsigned char *src = arg0;
-    int count = 0x20;
-    lbl_8055FF78 = index + 1;
-    while (count > 0) {
-        count--;
-    }
-    *--dst = 0;
-    while ((signed char)*src != 0) {
-        *dst++ = *src++;
-    }
+    const unsigned char *src = arg0;
+    int count;
+    unsigned char *dst;
+    unsigned char c;
+    dst = lbl_804FC558 + (lbl_8055FF78++ << 5);
+    count = 0x20;
+    goto copy;
+count_check:
+    if (--count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+done:
     fn_8012BEF0(arg0);
     fn_8012C41C((void (*)())fn_802E58A0, 0, arg0);
 }
