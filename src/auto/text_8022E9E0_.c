@@ -280,38 +280,45 @@ void fn_8022EE9C(void) {
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
-void fn_8022EEF8(f32 *dst, f32 *left, f32 *right) {
-    f32 temp_f24, temp_f25, temp_f26, temp_f27, temp_f28, temp_f29, temp_f30, temp_f31, temp_f1;
+/* Combines two UI draw-contexts into `dst`: the 3x3 matrices multiply
+ * (dst->mtx = left->mtx * right->mtx), the draw offsets add and the three
+ * factors (brightness, scale, rate) multiply.  Callers build a widget's own
+ * context, combine it with the current one (fn_8022EDC4) and push the result
+ * (fn_8022ED00) for the widget to draw in.  When `dst` is one of the inputs
+ * every product goes through a temporary first, so nothing is overwritten
+ * before the last row that reads it. */
+void fn_8022EEF8(UIContext *dst, const UIContext *left, const UIContext *right) {
+    f32 m00, m10, m20, m01, m11, m21, m02, m12, m22;
 
-    dst[12] = left[12] * right[12];
-    dst[13] = left[13] * right[13];
-    dst[14] = left[14] * right[14];
+    dst->brightness = left->brightness * right->brightness;
+    dst->scale = left->scale * right->scale;
+    dst->rate = left->rate * right->rate;
     if (dst == left || dst == right) {
-        temp_f24 = fn_80144514(right[0], left[0], right[3], left[1], right[6], left[2]);
-        temp_f25 = fn_80144514(right[0], left[3], right[3], left[4], right[6], left[5]);
-        temp_f26 = fn_80144514(right[0], left[6], right[3], left[7], right[6], left[8]);
-        temp_f27 = fn_80144514(right[1], left[0], right[4], left[1], right[7], left[2]);
-        temp_f28 = fn_80144514(right[1], left[3], right[4], left[4], right[7], left[5]);
-        temp_f29 = fn_80144514(right[1], left[6], right[4], left[7], right[7], left[8]);
-        temp_f30 = fn_80144514(right[2], left[0], right[5], left[1], right[8], left[2]);
-        temp_f31 = fn_80144514(right[2], left[3], right[5], left[4], right[8], left[5]);
-        temp_f1 = fn_80144514(right[2], left[6], right[5], left[7], right[8], left[8]);
-        dst[0] = temp_f24; dst[3] = temp_f25; dst[6] = temp_f26;
-        dst[1] = temp_f27; dst[4] = temp_f28; dst[7] = temp_f29;
-        dst[2] = temp_f30; dst[5] = temp_f31; dst[8] = temp_f1;
+        m00 = fn_80144514(right->mtx[0][0], left->mtx[0][0], right->mtx[1][0], left->mtx[0][1], right->mtx[2][0], left->mtx[0][2]);
+        m10 = fn_80144514(right->mtx[0][0], left->mtx[1][0], right->mtx[1][0], left->mtx[1][1], right->mtx[2][0], left->mtx[1][2]);
+        m20 = fn_80144514(right->mtx[0][0], left->mtx[2][0], right->mtx[1][0], left->mtx[2][1], right->mtx[2][0], left->mtx[2][2]);
+        m01 = fn_80144514(right->mtx[0][1], left->mtx[0][0], right->mtx[1][1], left->mtx[0][1], right->mtx[2][1], left->mtx[0][2]);
+        m11 = fn_80144514(right->mtx[0][1], left->mtx[1][0], right->mtx[1][1], left->mtx[1][1], right->mtx[2][1], left->mtx[1][2]);
+        m21 = fn_80144514(right->mtx[0][1], left->mtx[2][0], right->mtx[1][1], left->mtx[2][1], right->mtx[2][1], left->mtx[2][2]);
+        m02 = fn_80144514(right->mtx[0][2], left->mtx[0][0], right->mtx[1][2], left->mtx[0][1], right->mtx[2][2], left->mtx[0][2]);
+        m12 = fn_80144514(right->mtx[0][2], left->mtx[1][0], right->mtx[1][2], left->mtx[1][1], right->mtx[2][2], left->mtx[1][2]);
+        m22 = fn_80144514(right->mtx[0][2], left->mtx[2][0], right->mtx[1][2], left->mtx[2][1], right->mtx[2][2], left->mtx[2][2]);
+        dst->mtx[0][0] = m00; dst->mtx[1][0] = m10; dst->mtx[2][0] = m20;
+        dst->mtx[0][1] = m01; dst->mtx[1][1] = m11; dst->mtx[2][1] = m21;
+        dst->mtx[0][2] = m02; dst->mtx[1][2] = m12; dst->mtx[2][2] = m22;
     } else {
-        dst[0] = fn_80144514(right[0], left[0], right[3], left[1], right[6], left[2]);
-        dst[3] = fn_80144514(right[0], left[3], right[3], left[4], right[6], left[5]);
-        dst[6] = fn_80144514(right[0], left[6], right[3], left[7], right[6], left[8]);
-        dst[1] = fn_80144514(right[1], left[0], right[4], left[1], right[7], left[2]);
-        dst[4] = fn_80144514(right[1], left[3], right[4], left[4], right[7], left[5]);
-        dst[7] = fn_80144514(right[1], left[6], right[4], left[7], right[7], left[8]);
-        dst[2] = fn_80144514(right[2], left[0], right[5], left[1], right[8], left[2]);
-        dst[5] = fn_80144514(right[2], left[3], right[5], left[4], right[8], left[5]);
-        dst[8] = fn_80144514(right[2], left[6], right[5], left[7], right[8], left[8]);
+        dst->mtx[0][0] = fn_80144514(right->mtx[0][0], left->mtx[0][0], right->mtx[1][0], left->mtx[0][1], right->mtx[2][0], left->mtx[0][2]);
+        dst->mtx[1][0] = fn_80144514(right->mtx[0][0], left->mtx[1][0], right->mtx[1][0], left->mtx[1][1], right->mtx[2][0], left->mtx[1][2]);
+        dst->mtx[2][0] = fn_80144514(right->mtx[0][0], left->mtx[2][0], right->mtx[1][0], left->mtx[2][1], right->mtx[2][0], left->mtx[2][2]);
+        dst->mtx[0][1] = fn_80144514(right->mtx[0][1], left->mtx[0][0], right->mtx[1][1], left->mtx[0][1], right->mtx[2][1], left->mtx[0][2]);
+        dst->mtx[1][1] = fn_80144514(right->mtx[0][1], left->mtx[1][0], right->mtx[1][1], left->mtx[1][1], right->mtx[2][1], left->mtx[1][2]);
+        dst->mtx[2][1] = fn_80144514(right->mtx[0][1], left->mtx[2][0], right->mtx[1][1], left->mtx[2][1], right->mtx[2][1], left->mtx[2][2]);
+        dst->mtx[0][2] = fn_80144514(right->mtx[0][2], left->mtx[0][0], right->mtx[1][2], left->mtx[0][1], right->mtx[2][2], left->mtx[0][2]);
+        dst->mtx[1][2] = fn_80144514(right->mtx[0][2], left->mtx[1][0], right->mtx[1][2], left->mtx[1][1], right->mtx[2][2], left->mtx[1][2]);
+        dst->mtx[2][2] = fn_80144514(right->mtx[0][2], left->mtx[2][0], right->mtx[1][2], left->mtx[2][1], right->mtx[2][2], left->mtx[2][2]);
     }
-    dst[9] = left[9] + right[9];
-    dst[10] = left[10] + right[10];
-    dst[11] = left[11] + right[11];
+    dst->pos[0] = left->pos[0] + right->pos[0];
+    dst->pos[1] = left->pos[1] + right->pos[1];
+    dst->pos[2] = left->pos[2] + right->pos[2];
 }
 #pragma pop
