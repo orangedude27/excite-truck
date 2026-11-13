@@ -102,6 +102,32 @@ typedef struct Camera {
 #define sound_volume_set  fn_80209190  /* slot, level (clamped to 0..1) */
 #define sound_object_create fn_80207848 /* name, arg -> 0x70-byte sound object */
 #define callback_install  fn_801EEFDC  /* fn, category -> first free of 4 slots */
+
+/* The replay spin fn_80267EF8 runs on the chase/replay cameras: one full turn
+ * about the camera's up axis over SPIN_DURATION seconds, with the crash level
+ * dipping into a crowd cheer over the same clock. */
+#define MS_TO_SEC         lbl_80563C80 /* 0.001f: fn_802E2C20's ms -> seconds */
+#define FLOAT_MINUS_ONE   lbl_80563C28 /* -1.0f */
+#define FLOAT_MINUS_TWO   lbl_80563C30 /* -2.0f */
+#define FLOAT_THREE       lbl_80563C34 /* 3.0f */
+#define DEG_TO_RAD        lbl_80563C24 /* pi/180 */
+#define DEG_FULL_TURN     lbl_80563C88 /* 360.0f */
+#define HALF_SECOND       lbl_80563C6C /* 0.5f: the sound ramp in/out */
+#define SPIN_DURATION     lbl_80563C34 /* 3.0f: how long the turn takes */
+#define SPIN_RAMP_BACK    lbl_80563C84 /* 2.5f: when the levels ramp back */
+#define SPIN_IDLE         lbl_80563C64 /* -1000.0f: no spin started */
+#define sSpinActive       lbl_8055F488 /* 1 while fn_80267EF8 is turning a camera */
+#define sSpinStartTime    lbl_8055F48C /* seconds (MS_TO_SEC clock) it started at */
+
+/* The "Sound" object sound_object_create builds (0x70 bytes).  The mixer only
+ * re-reads the volume at +8 once the dirty flag at +0x4d has been set. */
+typedef struct SoundObj {
+    void *vtable;                /* 0x00 */
+    int w004;                    /* 0x04 */
+    float volume;                /* 0x08 */
+    char gap00C[0x41];
+    unsigned char volumeChanged; /* 0x4d */
+} SoundObj;
 extern float lbl_80563C80, lbl_80563C84, lbl_80563C88, lbl_80563C64;
 extern float lbl_8055F48C;
 extern int fn_802E2C20(void);
