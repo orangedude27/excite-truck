@@ -2649,17 +2649,18 @@ extern s32 fn_801B2F54(s32);
 extern f32 fn_8018AE3C(void *);
 #pragma push
 #pragma processor 750
-void fn_80192F80(void *arg0) {
+void fn_80192F80(void *source) {
+    /* Populate AX studio/state fields from source object data. */
     s32 result;
     f32 value;
     *(s32 *)__AXGetStudio_80178C90() = 0;
-    result = fn_801B2F54(*(s32 *)((u8 *)arg0 + 0x3C));
+    result = fn_801B2F54(*(s32 *)((u8 *)source + 0x3C));
     *(s32 *)((u8 *)__AXGetStudio_80178C90() + 4) = result;
-    value = *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x25CC);
+    value = *(f32 *)((u8 *)*(void **)((u8 *)source + 0x34) + 0x25CC);
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 8) = value;
-    value = fn_8018AE3C(*(void **)((u8 *)arg0 + 0x34));
+    value = fn_8018AE3C(*(void **)((u8 *)source + 0x34));
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0xC) = value;
-    value = ((f32 (*)(void *))fn_8018AE4C)(*(void **)((u8 *)arg0 + 0x34));
+    value = ((f32 (*)(void *))fn_8018AE4C)(*(void **)((u8 *)source + 0x34));
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0x10) = value;
 }
 #pragma pop
