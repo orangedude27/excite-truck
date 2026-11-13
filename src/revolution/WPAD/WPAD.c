@@ -2218,18 +2218,19 @@ static BOOL IsBusyStream(s32 chan) {
     }
 }
 #pragma pop
+/* Return whether stream data can be sent to the controller on `chan` (connected, handshake complete, and stream not busy). */
 BOOL WPADCanSendStreamData(s32 chan) {
-    WPADCB* p = lbl_8038F4F0[chan];
+    WPADCB* cb = lbl_8038F4F0[chan];
     BOOL enabled;
-    BOOL handshake;
+    BOOL handshakeFinished;
     s32 status;
 
     enabled = OSDisableInterrupts();
-    status = *(s32*)((u8*)p + 0x7FC);
-    handshake = *(BOOL*)((u8*)p + 0x81C);
+    status = *(s32*)((u8*)cb + 0x7FC);
+    handshakeFinished = *(BOOL*)((u8*)cb + 0x81C);
     OSRestoreInterrupts(enabled);
 
-    if (status == WPAD_ERR_NO_CONTROLLER || !handshake || IsBusyStream(chan)) {
+    if (status == WPAD_ERR_NO_CONTROLLER || !handshakeFinished || IsBusyStream(chan)) {
         return FALSE;
     } else {
         return TRUE;
