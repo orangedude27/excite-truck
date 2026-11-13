@@ -1091,8 +1091,8 @@ extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
     s32 idx = ((s32 *)arg0)[1];
     s32 *base = *(s32 **)arg0;
     ((s32 *)arg0)[1] = idx + 1;
-    base[idx] = val;
-    return &base[idx];
+    idx[base] = val;
+    return &idx[base];
 }
 
 extern "C" char lbl_8032F184[];
@@ -4137,6 +4137,7 @@ extern "C" s32 fn_8015E88C(void *arg0) {
 
 #pragma scheduling on
 extern "C" s32 fn_8015E910(void *arg0, s32 arg1) {
+    /* Return 1 if any object in the container's array handles arg1 via slot v14 (vtable +0x40). */
     // Note: v14 selects the target's virtual slot at vtable offset 0x40.
     struct Entry {
         virtual void v0();
@@ -4155,13 +4156,16 @@ extern "C" s32 fn_8015E910(void *arg0, s32 arg1) {
         virtual void v13();
         virtual s32 v14(s32);
     };
-    s32 var_r31 = 0;
-    s32 var_r30 = 0;
-    while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
-        Entry *obj = *(Entry **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
-        if (obj->v14(arg1) != 0) return 1;
-        var_r31 += 4;
-        var_r30 += 1;
+    s32 byteOffset = 0;
+    s32 index = 0;
+
+    while (index < *(s32 *)((char *)arg0 + 8)) {
+        Entry *obj = *(Entry **)((char *)*(void **)((char *)arg0 + 4) + byteOffset);
+        if (obj->v14(arg1) != 0) {
+            return 1;
+        }
+        byteOffset += 4;
+        index += 1;
     }
     return 0;
 }
@@ -4450,11 +4454,11 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
         sound[0x4C] = 0;
     }
 }
+#pragma scheduling off
 extern "C" int fn_80159708(void *arg0) {
     float v = *(float *)((char *)arg0 + 0x25C);
     return (int)v;
 }
-#pragma pop
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
