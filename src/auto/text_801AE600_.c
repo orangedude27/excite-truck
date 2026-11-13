@@ -242,12 +242,13 @@ void fn_801AE928(void) {
 #pragma dont_inline reset
 #pragma processor gekko
 
-float fn_801AE9E0(int arg0, float *arg1) {
+float fn_801AE9E0(int competitorIndex, float *outValue) {
+    /* Returns a competitor's stored lap/time value, optionally writing a derived inverse value to outValue. */
     char *entry;
-    if (arg1 != 0) *arg1 = lbl_80562560;
-    entry = (char *)lbl_8055E624[0] + arg0 * 0x1C;
+    if (outValue != 0) *outValue = lbl_80562560;
+    entry = (char *)lbl_8055E624[0] + competitorIndex * 0x1C;
     if (fn_801AE620(entry)) {
-        if (arg1 != 0) *arg1 = lbl_8055E630 / *(float *)(entry + 8);
+        if (outValue != 0) *outValue = lbl_8055E630 / *(float *)(entry + 8);
         return *(float *)(entry + 8);
     }
     return lbl_80562558;
