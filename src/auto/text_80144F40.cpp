@@ -1073,22 +1073,26 @@ extern "C" void fn_801465C8(void *arg0) {
     }
 }
 
-extern "C" void fn_80146638(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != NULL) {
-        if (p != NULL) {
-            s32 x = ((s32 *)p)[3];
-            if (x != 0) {
-                fn_80128670(x - 0x10);
+/* Releases the name-matched item table an object holds in the slot it passes
+   (its member at +0x2C): frees the item block the table's data points into
+   (the block starts 0x10 bytes behind it), clears the table's header, frees
+   the table itself and leaves the slot empty. */
+extern "C" void fn_80146638(void *slot) {
+    NamedItemTable80145FEC *table = *(NamedItemTable80145FEC **)slot;
+    if (table != NULL) {
+        if (table != NULL) {
+            s32 items = (s32)table->end;
+            if (items != 0) {
+                fn_80128670(items - 0x10);
             }
-            if (p != NULL) {
-                ((s32 *)p)[0] = 0;
-                ((s32 *)p)[1] = 0;
-                ((s32 *)p)[2] = 0;
+            if (table != NULL) {
+                table->data = NULL;
+                table->count = 0;
+                table->size = 0;
             }
-            fn_80128668(p);
+            fn_80128668(table);
         }
-        *(void **)arg0 = NULL;
+        *(void **)slot = NULL;
     }
 }
 
