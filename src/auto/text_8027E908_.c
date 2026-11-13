@@ -2245,29 +2245,33 @@ increment:
     return -1;
 }
 
-void *fn_80283814(void *arg0, int arg1) {
-    int i;
-    int n;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_80348738;
-        if (lbl_8055F698 == arg0) lbl_8055F698 = 0;
-        i = fn_80283814_find((void **)lbl_804B30D8[0], arg0, (int)lbl_804B30D8[1]);
-        if (i != -1 && i >= 0 && i < (n = *(volatile int *)&lbl_804B30D8[1])) {
-            if (i != n - 1)
-                ((void **)lbl_804B30D8[0])[i] = ((void **)lbl_804B30D8[0])[n - 1];
-            lbl_804B30D8[1]--;
+/* Destructor of an ebi UI record entry: installs the destructor's vtable, drops the
+ * list selection if it pointed here, takes the entry out of the live-entry list (the
+ * last entry moves into its slot), resets the entry's flags and, when shouldFree is
+ * positive, frees the entry itself. */
+void *fn_80283814(struct EbiListItem *entry, int shouldFree) {
+    int index;
+    int count;
+    if (entry != 0) {
+        *(void **)entry = lbl_80348738;
+        if (lbl_8055F698 == entry) lbl_8055F698 = 0;
+        index = fn_80283814_find(EBI_ITEMS, entry, (int)EBI_ITEM_COUNT);
+        if (index != -1 && index >= 0 && index < (count = *(volatile int *)&EBI_ITEM_COUNT)) {
+            if (index != count - 1)
+                EBI_ITEMS[index] = EBI_ITEMS[count - 1];
+            EBI_ITEM_COUNT--;
         }
-        if (arg0 != 0) {
-            *((unsigned char *)arg0 + 0x18) = 0;
-            *((unsigned char *)arg0 + 0x50) = 0;
-            *((unsigned char *)arg0 + 0x5C) = 0;
-            *(int *)((char *)arg0 + 0x24) = 1;
-            *(int *)((char *)arg0 + 0x20) = 0;
-            *((unsigned char *)arg0 + 0x44) = 0;
+        if (entry != 0) {
+            entry->flag18 = 0;
+            entry->flag50 = 0;
+            entry->flag5C = 0;
+            entry->state24 = 1;
+            entry->unk20 = 0;
+            entry->flag44 = 0;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldFree > 0) fn_80128668(entry);
     }
-    return arg0;
+    return entry;
 }
 
 /* Destroys this object: installs its vtable pair, clears the active state pointer, frees
