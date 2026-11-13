@@ -18045,21 +18045,23 @@ extern "C" void fn_800C64E8(u32 size) {
     MEMFreeToAllocator(lbl_80559708, (void*)size);
 }
 
-extern "C" void fn_800C64F4(void* arg0) {
-    void* block;
+extern "C" void fn_800C64F4(void *homeButtonInfo) {
+    void *homeButtonObj;
 
+    /* Initialize the home-button heap/allocator from the provided memory block,
+       allocate and construct the 0x758-byte home-button state object, and run its setup. */
     MEMInitAllocatorForExpHeap(&lbl_804075E0,
-                               MEMCreateExpHeapEx(*(void**)((u8*)arg0 + 0x10),
-                                                  *(u32*)((u8*)arg0 + 0x24), 0),
+                               MEMCreateExpHeapEx(*(void **)((u8 *)homeButtonInfo + 0x10),
+                                                  *(u32 *)((u8 *)homeButtonInfo + 0x24), 0),
                                0x20);
     lbl_80559708 = &lbl_804075E0;
     lbl_8055DDF0 = &lbl_804075E0;
-    block = MEMAllocFromAllocator(&lbl_804075E0, 0x758);
-    if (block != NULL) {
-        if (block != NULL) {
-            block = fn_800C6914(block, arg0);
+    homeButtonObj = MEMAllocFromAllocator(&lbl_804075E0, 0x758);
+    if (homeButtonObj != NULL) {
+        if (homeButtonObj != NULL) {
+            homeButtonObj = fn_800C6914(homeButtonObj, homeButtonInfo);
         }
-        lbl_8055DD98 = block;
+        lbl_8055DD98 = homeButtonObj;
     }
     fn_800C6CE8(lbl_8055DD98);
 }
