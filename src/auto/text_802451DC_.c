@@ -33,6 +33,21 @@ int fn_8024521C(void *arg0, int arg1) {
 
 extern char lbl_80342FC0[];
 extern float lbl_80563830;
+
+// The static description of the "mc_status" screen: its J3D layout name at
+// +0x00, the image to fetch at +0x60, the message printed when that image is
+// missing at +0x78 and the gText font file to load at +0xB4.
+// The text/menu drawing context fn_80245264 builds from it and fn_802452E4
+// releases; fn_80245360 draws a menu title, description and items through it.
+struct MenuTextContext {
+    int unused0;    /* +0x00 */
+    int image;      /* +0x04 the layout's image, fetched by name */
+    int image2;     /* +0x08 a second image; none while the context starts up */
+    int font;       /* +0x0C gText font block, loaded from its .gtx name */
+    int font2;      /* +0x10 the same font loaded again, so a second use count */
+    float xOffset;  /* +0x14 added to every x the printers are given */
+};
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
