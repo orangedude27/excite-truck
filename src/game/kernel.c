@@ -118,10 +118,11 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride)
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
 #pragma optimization_level reset
-int fn_802E18D4(int arg0, int arg1, int arg2, int arg3, void *arg4, int arg5) {
-    GXInitTexObj((GXTexObj *)arg4, (void *)arg5, (unsigned short)arg0, (unsigned short)arg1,
-                 arg2, arg3, arg3, 0);
-    GXInitTexObjLOD((GXTexObj *)arg4, 0, 0, 0, 0, 0,
+int fn_802E18D4(int width, int height, int format, int wrapMode, void *texObj, int imagePtr) {
+    /* Initialize a GX texture object and set all LOD parameters to zero. */
+    GXInitTexObj((GXTexObj *)texObj, (void *)imagePtr, (unsigned short)width, (unsigned short)height,
+                 format, wrapMode, wrapMode, 0);
+    GXInitTexObjLOD((GXTexObj *)texObj, 0, 0, 0, 0, 0,
                     lbl_805650F0, lbl_805650F0, lbl_805650F0);
     return 1;
 }
