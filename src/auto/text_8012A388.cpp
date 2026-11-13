@@ -554,12 +554,12 @@ done2:
                     n = 0;
                     while (var_r31 < *(s32 *)(p + 0x88)) {
                         u8 *e = (u8 *)*(void **)(p + 0x60) + n;
-                        if (*(u32 *)(e + 0x34) & 4) fn_802E317C(lbl_8032AE20);
+                        u32 fl = *(u32 *)(e + 0x34);
+                        if (fl & 4) fn_802E317C(lbl_8032AE20);
                         var_r31 += 1;
                         e = (u8 *)*(void **)(p + 0x60) + n;
-                        u32 fl = *(u32 *)(e + 0x34);
                         n += 0x44;
-                        *(u32 *)(e + 0x34) = fl & ~0xF;
+                        *(u32 *)(e + 0x34) = *(u32 *)(e + 0x34) & ~0xF;
                     }
                     if (*(s32 *)(p + 0x64) != 0) fn_8012C4D8(*(void **)(p + 0x64));
                     if (*(s32 *)(p + 0xA0) != 0) fn_80128660(*(s32 *)(p + 0xA0));
@@ -745,25 +745,24 @@ extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
 #pragma dont_inline on
 #pragma scheduling on
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
+    s32 size2;
     u8 *entry;
-    register u8 *header;
+    u8 *header;
     void *object;
     s32 handle;
     s32 startTime;
-    s32 allocSize;
     u32 flags;
     const char *strings;
     s32 size;
-
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
     strings = lbl_8032A630;
     if (!(flags & 8)) {
-        allocSize = (size = *(s32 *)(entry + 0x28)) + 0x80;
+        size2 = (size = *(s32 *)(entry + 0x28)) + 0x80;
         ((void (*)(s32))fn_801282F4)(size);
         size = 0x80;
         fn_801282EC(size);
-        object = ((void *(*)(void *, s32))fn_801284F0)(entry, allocSize);
+        object = ((void *(*)(void *, s32))fn_801284F0)(entry, size2);
         if (object != 0) {
             startTime = fn_802E2C20();
             handle = ((s32 (*)(void *))fn_802E36D8)((u8 *)arg0 + 0x20);
@@ -2290,7 +2289,6 @@ done:
 }
 
 extern "C" void *fn_8012E060(void *arg0, const char *arg1) {
-    u8 *data;
     char sp10[0x80];
     s32 spC;
     u8 sp8;
@@ -2302,12 +2300,13 @@ extern "C" void *fn_8012E060(void *arg0, const char *arg1) {
     char *var_r6_2;
     u8 temp_r3;
     u8 temp_r3_2;
+    void *data;
     u8 t;
+    u8 t2;
     u32 n;
     u8 *entry;
     void *ret;
     char *dot;
-
     var_r4 = (char *)arg1; var_r6 = sp10; var_r5 = 0x80;
     goto path_copy;
 path_limit:
@@ -2343,29 +2342,30 @@ suffix_copy:
     if ((s8)temp_r3_2 != 0) goto suffix_limit;
 path_all_done:
     fn_8002B0D8(sp10);
-    data = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
+    data = (void *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
     if (data != 0 && sp8 != 0) {
-        t = data[0]; data[0] = data[3]; data[3] = t;
-        t = data[1]; data[1] = data[2]; data[2] = t;
-        t = data[4]; data[4] = data[7]; data[7] = t;
-        t = data[5]; data[5] = data[6]; data[6] = t;
-        t = data[8]; data[8] = data[0xB]; data[0xB] = t;
-        t = data[9]; data[9] = data[0xA]; data[0xA] = t;
-        t = data[0xC]; data[0xC] = data[0xF]; data[0xF] = t;
-        t = data[0xD]; data[0xD] = data[0xE]; data[0xE] = t;
-        t = data[0x10]; data[0x10] = data[0x13]; data[0x13] = t;
-        t = data[0x11]; data[0x11] = data[0x12]; data[0x12] = t;
-        if (*(u32 *)data != 0 || *(u32 *)(data + 4) != 0x14)
-            fn_802E317C(lbl_8032AE60, *(u32 *)data, 0, *(u32 *)(data + 4), 0x14);
-        entry = data + 0x14; n = 0;
+        u8 *d = (u8 *)data;
+        t = d[0]; d[0] = d[3]; d[3] = t;
+        t = d[1]; d[1] = d[2]; d[2] = t;
+        t = d[4]; d[4] = d[7]; d[7] = t;
+        t = d[5]; d[5] = d[6]; d[6] = t;
+        t = d[8]; d[8] = d[0xB]; d[0xB] = t;
+        t = d[9]; d[9] = d[0xA]; d[0xA] = t;
+        t = d[0xC]; d[0xC] = d[0xF]; d[0xF] = t;
+        t = d[0xD]; d[0xD] = d[0xE]; d[0xE] = t;
+        t = d[0x10]; d[0x10] = d[0x13]; d[0x13] = t;
+        t = d[0x11]; d[0x11] = d[0x12]; d[0x12] = t;
+        if (*(u32 *)d != 0 || *(u32 *)(d + 4) != 0x14)
+            fn_802E317C(lbl_8032AE60, *(u32 *)d, 0, *(u32 *)(d + 4), 0x14);
+        entry = d + 0x14; n = 0;
         goto entries_test;
 entries_loop:
         fn_8012A388(entry); entry += 0x44; n += 1;
 entries_test:
-        if (n < *(u32 *)(data + 0xC)) goto entries_loop;
+        if (n < *(u32 *)(d + 0xC)) goto entries_loop;
     }
     if (data == 0) fn_802E317C(lbl_8032ADDC, arg1);
-    ret = (void *)(*(s32 *)(data + 0x10) + 0x80);
+    ret = (void *)(*(s32 *)((char *)data + 0x10) + 0x80);
     fn_8012C4D8(data);
     return ret;
 }
@@ -2804,6 +2804,10 @@ struct ResourceStream {
     s32 limit;                                 // +0x24 size of the streamed file
     s32 boundary;                              // +0x28 offset the reader has reached
 };
+
+// Heap-name tags fn_801284F8/fn_8012850C record with an allocation (strings in .sdata).
+#define RES_STREAM_HEAP      ((void *)&lbl_805599C8)  // "resbuf": the stream object
+#define RES_STREAM_DATA_HEAP ((void *)&lbl_805599D0)  // "resbufb": its read-ahead buffer
 
 extern "C" void *fn_8012EC90(s32 arg0) {
     s32 count = arg0;
