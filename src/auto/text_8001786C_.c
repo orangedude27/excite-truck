@@ -520,7 +520,11 @@ void fn_80018318(void* outList, s32 contextId) {
 }
 #pragma push
 #pragma dont_inline on
-s32 fn_800183C0(void *arg0) {
+/* Return the number of entries to use: lbl_8055D560 forces a fixed minimum (capped
+ * below by the base entry count), otherwise, when only the single base entry
+ * exists, the larger of the base entry count and the value at +0x10 of the given
+ * entry; with more than one base entry, just the base entry count. */
+s32 fn_800183C0(void *entry) {
     s32 value;
     s32 best;
 
@@ -532,7 +536,7 @@ s32 fn_800183C0(void *arg0) {
     }
     if (fn_80017F40() != 0) {
         value = fn_800167F4();
-        best = *(s32 *)((char *)arg0 + 0x10);
+        best = *(s32 *)((char *)entry + 0x10);
         if (value > best) best = value;
     } else {
         best = fn_800167F4();
@@ -577,3 +581,33 @@ void fn_800187B8(const char* source) {
 void fn_800187F8(void) {
     lbl_8055D564 = 1;
 }
+
+/* Shuffle the indexed word array. Reload its base after the random call. */
+#pragma push
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_80017D5C(void* arg0) {
+    s32 offset = 0;
+    s32 i = 0;
+    extern s32 fn_80129D18(s32);
+    goto check;
+loop:
+    {
+        s32 left;
+        s32 right;
+        s32* items;
+        s32 index;
+        index = fn_80129D18(1);
+        items = *(s32**)arg0;
+        i++;
+        left = *(s32*)((char*)items + offset);
+        right = items[index];
+        *(s32*)((char*)items + offset) = right;
+        offset += 4;
+        items[index] = left;
+    }
+check:
+    { s32 count = *(s32*)((char*)arg0 + 4);
+      if (i < count) goto loop; }
+}
+#pragma pop
