@@ -133,6 +133,42 @@ extern unsigned int lbl_8055F688;
 struct Fn8027F834List { void **items; int count; int pad[2]; };
 extern struct Fn8027F834List lbl_804B3048;
 
+/* One entry of the ebi UI's record list: it shows the record its +0x60 child points at
+   and carries the flags the list walks to move the selection (lbl_8055F698) over it.
+   Built by fn_802812B4, destroyed by fn_80283814. */
+struct EbiListItem {
+    void *vtable;            /* 0x00 */
+    char pad04[0x10];
+    int unk14;               /* 0x14 */
+    unsigned char flag18;    /* 0x18 */
+    char pad19[7];
+    int unk20;               /* 0x20 */
+    int state24;             /* 0x24 2 while alive, 1 once destroyed */
+    char pad28[0x10];
+    float unk38;             /* 0x38 */
+    float unk3C;             /* 0x3C */
+    int unk40;               /* 0x40 */
+    unsigned char flag44;    /* 0x44 */
+    char pad45[0xB];
+    unsigned char flag50;    /* 0x50 */
+    char pad51[0xB];
+    unsigned char flag5C;    /* 0x5C */
+    char pad5D[3];
+    void *child;             /* 0x60 the record this entry lists */
+    char pad64[8];
+    char name[0x1E];         /* 0x6C the child's name, copied in at build */
+    char text[0xA];          /* 0x8A */
+    int selected;            /* 0x94 this entry is the current selection */
+    unsigned char flag98;    /* 0x98 */
+    unsigned char flag99;    /* 0x99 */
+    char pad9A[2];
+    int mode;                /* 0x9C */
+};
+
+/* The live entries of that list: the list at lbl_804B2FF8+0xE0, entry pointers at
+   +0x00 and the count at +0x04. */
+#define EBI_ITEM_LIST ((struct Fn80283E28List *)lbl_804B30D8)
+
 extern void *lbl_8055F680;
 #pragma dont_inline on
 #pragma push
