@@ -6,6 +6,8 @@
 
 #pragma dont_inline fn_802D1678
 #pragma dont_inline fn_802CFF50
+#pragma dont_inline fn_802CF104
+#pragma dont_inline fn_802CF5D4
 extern char lbl_8034BF80[];
 extern void DCInvalidateRange(void *, unsigned long);
 extern void *memcpy(void *, const void *, unsigned long);
