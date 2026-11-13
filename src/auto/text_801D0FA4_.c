@@ -20,18 +20,19 @@ void *fn_801D0FA4(void *arg0) {
     return arg0;
 }
 
-void *fn_801D1008(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        s32 index = lbl_8055E8FC - 1;
-        lbl_8055E8FC = index;
-        lbl_80438858[index] = 0;
-        if (arg0 != 0) {
-            *(void **)arg0 = lbl_803381C0;
-            fn_801D0DFC(arg0);
+/* Effect object scalar-deleting destructor: pop from active list, reset vtable, destroy base, conditionally free. */
+void *fn_801D1008(void *object, s32 shouldDelete) {
+    if (object != 0) {
+        s32 count = lbl_8055E8FC - 1;
+        lbl_8055E8FC = count;
+        lbl_80438858[count] = 0;
+        if (object != 0) {
+            *(void **)object = lbl_803381C0;
+            fn_801D0DFC(object);
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma cplusplus on
