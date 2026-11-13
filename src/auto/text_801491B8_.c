@@ -28,6 +28,7 @@ extern void fn_8014AF60(void *, void *, s32);
 extern s32 fn_8014AD64(void *);
 extern f32 fn_8014AD6C(void *);
 extern void fn_8014AD74(void *);
+extern s32 fn_80141F7C(f32);
 extern int fn_801476C4();
 extern u8 *__AXGetStackHead();
 extern void fn_801308F4(void *, s32, s32);
