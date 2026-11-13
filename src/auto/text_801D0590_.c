@@ -99,7 +99,13 @@ extern "C" void fn_801D06C4(void *arg0) {
 }
 #pragma pop
 #pragma cplusplus reset
-void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
+#pragma cplusplus on
+extern "C" void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2(void *, int, void *);
+    };
     int type = *(int *)((char *)arg2 + 0x10);
     int ok = 0;
     if (type == 0x43415220 || type == 0x50434152 ||
@@ -115,13 +121,13 @@ void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
         offset = 0;
         while (i < lbl_804386B4[0].count) {
             void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
-            ((void (*)(void *, void *, int, void *))(*(void ***)obj)[4])(obj, arg0, count, arg3);
+            ((Dummy *)obj)->f2(arg0, count, arg3);
             offset += 4;
             i++;
         }
     }
 }
-
+#pragma cplusplus reset
 static inline int DispatchList_Find2(void *obj) {
     DispatchList *l = lbl_8043870C;
     void **p = l->items;
