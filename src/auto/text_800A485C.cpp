@@ -2200,6 +2200,7 @@ extern "C" s32 fn_800A7B34(void *volume, void *block) {
 #define VF_VOL_FAT_TYPE(v)      (*(s32 *)((v) + 0x1C))        /* which FAT it was mounted with */
 #define VF_VOL_SECTOR_SHIFT(v)  (*(u8 *)((u8 *)(v) + 0x20))   /* log2 of the bytes in a sector */
 #define VF_VOL_DATA_START(v)    (*(u32 *)((u8 *)(v) + 0x30))  /* first sector of the cluster heap */
+#define VF_VOL_OPEN_FILES(v)    (*(s32 *)((u8 *)(v) + 0x161C)) /* files open on the volume */
 #define VF_FAT_TYPE_32          2                             /* VF_VOL_FAT_TYPE: FAT32 */
 #define VF_SECTOR_IS_END(s)     ((u32)((s) + 0x10000) == 0xFFFFU) /* no sector at all */
 #define VF_ERR_NO_FREE_PAGE     0x1E /* the page cache has no page left to hand out */
