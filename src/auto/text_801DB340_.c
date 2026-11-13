@@ -118,6 +118,8 @@ int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
     *arg2 = data[arg0];
     return 1;
 }
+#pragma dont_inline reset
+#pragma auto_inline reset
 
 extern float lbl_80562B64;
 extern float lbl_80562B68;
