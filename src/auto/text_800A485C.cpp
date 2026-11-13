@@ -24914,21 +24914,23 @@ extern "C" s32 fn_800A53F8(void *arg0) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800A54AC(void *arg0) {
-    s32 result;
-    s32 value;
-    if (fn_800A76A0(*(void **)((u8 *)arg0 + 0x1FBC)) == 0)
+extern "C" s32 fn_800A54AC(void *volume) {
+    /* Issue the volume device's status/init step; on a retriable device failure
+       cache the device error and ask the caller to retry. */
+    s32 status;
+    s32 devErr;
+    if (fn_800A76A0(*(void **)((u8 *)volume + 0x1FBC)) == 0)
         goto continue_check;
     return -1;
 continue_check:
-    result = fn_800A7610(*(void **)((u8 *)arg0 + 0x1FBC));
-    if (result == 0)
+    status = fn_800A7610(*(void **)((u8 *)volume + 0x1FBC));
+    if (status == 0)
         goto done;
-    if (result != 21)
+    if (status != 21)
         goto error;
-    value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
-    *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
-    *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+    devErr = fn_800A71D8(*(void **)((u8 *)volume + 0x1FBC));
+    *(s32 *)((u8 *)lbl_803D2140 + 0x44) = devErr;
+    *(s32 *)((u8 *)volume + 0x1F84) = devErr;
     return 0x1000;
 error:
     return -1;
