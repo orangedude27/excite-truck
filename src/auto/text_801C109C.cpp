@@ -941,9 +941,14 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         dst->y = y;
         dst->z = z;
     }
-    dst->x += m[9];
-    dst->y += m[10];
-    dst->z += m[11];
+    {
+        float x = dst->x + m[9];
+        float y = dst->y + m[10];
+        float z = dst->z + m[11];
+        dst->x = x;
+        dst->y = y;
+        dst->z = z;
+    }
 }
 #pragma push
 #pragma dont_inline off
