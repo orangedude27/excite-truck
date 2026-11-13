@@ -7374,19 +7374,20 @@ void fn_80076E70(void) {
     lbl_803C0F78[0x27BF] = 0xFF;
 }
 
+/* Returns the ACL connection DB index for the given HCI handle, or 4 if not found. */
 u8 btm_handle_to_acl_index(u16 hci_handle) {
-    u8 *base = lbl_803C0F78;
-    u32 index = 0;
-    if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == hci_handle) goto done;
-    index = 1;
-    if (base[0x269] != 0 && *(u16 *)(base + 0x150) == hci_handle) goto done;
-    index = 2;
-    if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == hci_handle) goto done;
-    index = 3;
-    if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == hci_handle) goto done;
-    index = 4;
+    u8 *btm_cb = lbl_803C0F78;
+    u32 acl_index = 0;
+    if (btm_cb[0x14D] != 0 && *(u16 *)(btm_cb + 0x34) == hci_handle) goto done;
+    acl_index = 1;
+    if (btm_cb[0x269] != 0 && *(u16 *)(btm_cb + 0x150) == hci_handle) goto done;
+    acl_index = 2;
+    if (btm_cb[0x385] != 0 && *(u16 *)(btm_cb + 0x26C) == hci_handle) goto done;
+    acl_index = 3;
+    if (btm_cb[0x4A1] != 0 && *(u16 *)(btm_cb + 0x388) == hci_handle) goto done;
+    acl_index = 4;
 done:
-    return index;
+    return acl_index;
 }
 
 extern u8 lbl_80315CE0[];
