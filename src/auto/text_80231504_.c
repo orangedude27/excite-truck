@@ -196,6 +196,7 @@ s32 fn_80231504(void) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Look up a texture block by name in the global block table and return its index, or -1 if not found. */
 s32 fn_8023150C(const char *name) {
     s32 offset = 0;
     s32 i = 0;
