@@ -4,17 +4,19 @@
 
 extern void fn_8000D838(void *);
 extern s32 lbl_8034F610[];
-extern s32 lbl_8055D3F0;
-extern u32 lbl_8055D3F8;
-extern u32 lbl_8055D3FC;
+extern struct { s32 a, b; u32 c, d; } lbl_8055D3F0;
+#define lbl_8055D3F8 (lbl_8055D3F0.c)
+#define lbl_8055D3FC (lbl_8055D3F0.d)
 
 void fn_8000D780(void) {
+    s32 *p = lbl_8034F610;
     fn_8000D838(&lbl_8055D3F0);
-    lbl_8034F610[0] = 0;
-    lbl_8034F610[1] = 0x7B;
+    *p = 0;
+    p[1] = 0x7B;
     lbl_8055D3F8 = 0xFFFF0000;
-    lbl_8034F610[2] = 0;
-    lbl_8034F610[3] = 0;
-    lbl_8034F610[4] = 0;
+    p[2] = 0;
+    p[3] = 0;
+    p[4] = 0;
     lbl_8055D3FC = 0x7F000000;
 }
+#pragma scheduling reset
