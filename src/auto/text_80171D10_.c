@@ -25,15 +25,27 @@ extern float PSQUATMultiply(void *, void *);
 extern void *fn_8017960C();
 extern void fn_802AE0E0();
 extern float lbl_80561A50;
-/* A Sound object (created by fn_80207848); only its two stop-request flags
-   matter here: +0x4A latches the sound stopped, +0x4C asks for a one-shot
-   stop that the sound's own update clears (fn_80206824). */
+/* A Sound object (created by fn_80207848). Its update (fn_80206824) acts on
+   the request flags below and keeps +0x19 set while the sound is running, so
+   callers ask for a sound by testing +0x19 and then setting +0x49. */
 typedef struct Sound {
-    char pad[0x4A];
-    unsigned char stop;
-    char pad4B;
-    unsigned char stopOnce;
+    char pad19[0x19];
+    unsigned char active;       /* +0x19: kept set while the sound is running */
+    char pad1A[0x49 - 0x1A];
+    unsigned char play;         /* +0x49: play request, cleared by the update */
+    unsigned char stop;         /* +0x4A: stop request */
+    unsigned char loop;         /* +0x4B: play mode: loop rather than play once */
+    unsigned char stopOnce;     /* +0x4C: stop when the current play ends */
 } Sound;
+
+/* A message key with the text it resolved to, cached until the message table
+   changes (lbl_8055E044): fn_801312EC stores the key, fn_80131318 resolves it
+   and stamps the current table, fn_80131234 looks a key up. */
+typedef struct CachedMessage {
+    const char *key;            /* +0x00 */
+    char *text;                 /* +0x04 */
+    unsigned int tag;           /* +0x08: the table stamp, ~it while unresolved */
+} CachedMessage;
 
 /* Crush-mode round state, embedded in the "crushmaster" object (fn_80172C28)
    at +0x1AC and built by fn_8017353C. */
@@ -1677,10 +1689,10 @@ extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double f
         unsigned int *src = (unsigned int *)p;
         unsigned int w4, w8;
         dst[0] = src[0];
-        w4 = src[1];
         w8 = src[2];
-        dst[1] = w4;
+        w4 = src[1];
         dst[2] = w8;
+        dst[1] = w4;
         dst[3] = src[3];
         *(float *)(result + 0x10) = *(float *)((char *)p + 0x10);
         dst[5] = src[5];
