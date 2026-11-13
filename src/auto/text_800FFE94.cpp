@@ -516,14 +516,15 @@ extern "C" float fn_80100FA0(void* arg0) {
     return *(float*)((char*)arg0 + 0x48);
 }
 
-extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(void* arg0, int arg1) {
-    int valid = arg1 >= 0 && arg1 <= 0x7F;
-    if (!valid) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x18A, "channel priority %d out of range [%d, %d]", arg1, 0, 0x7F);
+/* Set the channel priority on this sequence player (0..127). */
+extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(void* self, int priority) {
+    int isValid = priority >= 0 && priority <= 0x7F;
+    if (!isValid) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x18A, "channel priority %d out of range [%d, %d]", priority, 0, 0x7F);
     }
-    int level = OSDisableInterrupts();
-    *((char*)arg0 + 0x90) = arg1;
-    OSRestoreInterrupts(level);
+    int interrupts = OSDisableInterrupts();
+    *((char*)self + 0x90) = priority;
+    OSRestoreInterrupts(interrupts);
 }
 
 #pragma push
