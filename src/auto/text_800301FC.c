@@ -352,30 +352,31 @@ void TRKAppendBuffer(void *arg0) {
     lbl_8055D6E8 = (u32)arg0;
 }
 
-void TRKReleaseBuffer(void *arg0) {
-    s32 index = *(s32 *)((u8 *)arg0 + 0xC);
-    u32 first = ((u32 *)lbl_8035BEA0)[index];
-    u32 last = lbl_8035BF20[index];
-    if (first == last) {
-        lbl_8035BF20[index] = 0;
-        ((u32 *)lbl_8035BEA0)[index] = 0;
+/* Remove a message buffer from the per-pool doubly-linked list indicated by buffer->poolIndex (+0xC). */
+void TRKReleaseBuffer(void *buffer) {
+    s32 poolIndex = *(s32 *)((u8 *)buffer + 0xC);
+    u32 head = ((u32 *)lbl_8035BEA0)[poolIndex];
+    u32 tail = lbl_8035BF20[poolIndex];
+    if (head == tail) {
+        lbl_8035BF20[poolIndex] = 0;
+        ((u32 *)lbl_8035BEA0)[poolIndex] = 0;
         return;
     }
-    if ((u32)arg0 == first) {
-        void *next = *(void **)arg0;
-        ((u32 *)lbl_8035BEA0)[index] = (u32)next;
+    if ((u32)buffer == head) {
+        void *next = *(void **)buffer;
+        ((u32 *)lbl_8035BEA0)[poolIndex] = (u32)next;
         *(u32 *)((u8 *)next + 4) = 0;
         return;
     }
-    if ((u32)arg0 == last) {
-        void *prev = *(void **)((u8 *)arg0 + 4);
-        lbl_8035BF20[index] = (u32)prev;
+    if ((u32)buffer == tail) {
+        void *prev = *(void **)((u8 *)buffer + 4);
+        lbl_8035BF20[poolIndex] = (u32)prev;
         *(u32 *)prev = 0;
         return;
     }
     {
-        void *prev = *(void **)((u8 *)arg0 + 4);
-        void *next = *(void **)arg0;
+        void *prev = *(void **)((u8 *)buffer + 4);
+        void *next = *(void **)buffer;
         *(void **)prev = next;
         *(void **)((u8 *)next + 4) = prev;
     }
