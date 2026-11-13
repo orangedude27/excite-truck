@@ -2970,6 +2970,8 @@ extern "C" void fn_801A1250(void* arg0) {
     *(s32*)((u8*)arg0 + 0x180) = -1;
 }
 
+/* Store value at +0x1C, notify the primary child at +0x17C, then broadcast the value
+ * to each entry in the child pointer array at +0x24 (count at +0x174). */
 extern "C" void fn_801A12C4(void *arg0, s32 arg1) {
     class FirstDispatch {
     public:
@@ -2989,14 +2991,14 @@ extern "C" void fn_801A12C4(void *arg0, s32 arg1) {
     };
 
     *(s32 *)((u8 *)arg0 + 0x1C) = arg1;
-    FirstDispatch *first = *(FirstDispatch **)((u8 *)arg0 + 0x17C);
-    first->call();
-    u8 *entries = (u8 *)arg0;
+    FirstDispatch *primaryChild = *(FirstDispatch **)((u8 *)arg0 + 0x17C);
+    primaryChild->call();
+    u8 *entryPtr = (u8 *)arg0;
     s32 i = 0;
     while (i < *(s32 *)((u8 *)arg0 + 0x174)) {
-        EntryDispatch *item = *(EntryDispatch **)(entries + 0x24);
-        item->call(arg1);
-        entries += 4;
+        EntryDispatch *child = *(EntryDispatch **)(entryPtr + 0x24);
+        child->call(arg1);
+        entryPtr += 4;
         i++;
     }
 }
