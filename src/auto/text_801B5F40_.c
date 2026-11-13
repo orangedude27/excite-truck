@@ -109,7 +109,7 @@ extern float lbl_805626B8;
 static inline s32 GridCell(f32 v) {
     s32 i;
     v += lbl_805626B4;
-    i = __OSf32tos32_801B619C(v / lbl_805626B0);
+    i = (s32)(v / lbl_805626B0);
     if (i < 0)
         i = 0;
     else if (i >= 0x64)
