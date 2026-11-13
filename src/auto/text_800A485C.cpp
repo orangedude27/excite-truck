@@ -2090,29 +2090,33 @@ extern "C" s32 VFiPFCACHE_SearchForPage(s32 arg0, s32 arg1, s32 arg2) {
     return 0;
 }
 
-extern "C" s32 VFiPFCACHE_SearchForFreePage(void *arg0, void **arg1) {
-    void *page = *(void **)((u8 *)arg0 + 0x24);
-    while (page != arg0) {
+/* Searches the page-cache circular list starting at head->next for a free
+ * page (flags bit 0 clear) or a reclaimable page (sector/count field != -1).
+ * Returns 1 and sets *outPage for a free page, 0 and sets *outPage for a
+ * reclaimable page, or 0 with *outPage NULL if none found. */
+extern "C" s32 VFiPFCACHE_SearchForFreePage(void *cacheHead, void **outPage) {
+    void *page = *(void **)((u8 *)cacheHead + 0x24);
+    while (page != cacheHead) {
         u16 flags = *(u16 *)page;
         if ((flags & 1) == 0) {
-            *arg1 = page;
+            *outPage = page;
             return 1;
         }
         if (*(u32 *)((u8 *)page + 0x18) != 0xFFFFFFFF) {
-            *arg1 = page;
+            *outPage = page;
             return 0;
         }
         page = *(void **)((u8 *)page + 0x24);
     }
     if ((*(u16 *)page & 1) == 0) {
-        *arg1 = page;
+        *outPage = page;
         return 1;
     }
     if (*(u32 *)((u8 *)page + 0x18) != 0xFFFFFFFF) {
-        *arg1 = page;
+        *outPage = page;
         return 0;
     }
-    *arg1 = 0;
+    *outPage = 0;
     return 0;
 }
 
