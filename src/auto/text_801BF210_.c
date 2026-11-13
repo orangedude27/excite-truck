@@ -904,7 +904,6 @@ int fn_801C0454(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma optimization_level 3
-#pragma scheduling off
 void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
     float *out = (float *)arg0;
     float *input = (float *)arg1;
