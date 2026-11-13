@@ -478,15 +478,15 @@ extern "C" s32 fn_80260E30(void) {
     s32 offset;
     s32 i;
     s32 ret;
-    if (lbl_8055F3EB != 0) {
+    if (lbl_8055F3EB) {
         lbl_8055F3EB = 0;
-        i = 0;
         offset = 0;
+        i = 0;
         for (; i < *(s32 *)(lbl_8055F420 + 0xC); offset += 4, i++) {
             (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
         }
-        offset = 0;
         i = 0;
+        offset = 0;
         for (; i < *(s32 *)(lbl_8055F420 + 8); offset += 4, i++) {
             if (lbl_8055F3EB == 0) {
                 (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f60();
@@ -500,10 +500,10 @@ extern "C" s32 fn_80260E30(void) {
                 (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
             }
         }
-        offset = 0;
         i = 0;
+        register offset = 0;
         for (; i < *(s32 *)(lbl_8055F420 + 0xC); offset += 4, i++) {
-            if (lbl_8055F3EB == 0) {
+            if (!lbl_8055F3EB) {
                 if (i == *(s32 *)(lbl_8055F420 + 4)) {
                     (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
                 } else {
@@ -1195,10 +1195,13 @@ s32 fn_80262160(void) {
     return 0;
 }
 
-void fn_80262168(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x1E) && lbl_8055F3E9 && !lbl_8055F3EA) {
+void fn_80262168(void *obj) {
+    /* If the object's flag at +0x1E is set while lbl_8055F3E9 is set and lbl_8055F3EA is clear,
+       clear that flag and call fn_80230E90(0). Then enable UI element 0x1E with fn_80214AF0 if
+       lbl_8055F3EB is set and lbl_8055F3EA is clear, otherwise disable it with fn_80214A9C. */
+    if (*(u8 *)((u8 *)obj + 0x1E) && lbl_8055F3E9 && !lbl_8055F3EA) {
         fn_80230E90(0);
-        *(u8 *)((u8 *)arg0 + 0x1E) = 0;
+        *(u8 *)((u8 *)obj + 0x1E) = 0;
     }
     if (lbl_8055F3EB && !lbl_8055F3EA) {
         fn_80214AF0(0x1E);
