@@ -1021,20 +1021,24 @@ void fn_801A90A4(char *arg0, int arg1, const char *arg2) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_801A9110(void *arg0, const char *arg1) {
-    int offset;
-    int i;
+/* Finds the input binding whose display name matches `name` in the table built
+ * by fn_801A7628 and copies its type/value into `out` (via fn_801A91B0); if no
+ * entry matches, clears out's type field to 0. */
+void fn_801A9110(void *out, const char *name) {
+    int entryOffset;
+    int index;
+
     fn_801A7628();
-    i = 0;
-    offset = 0;
-    for (; i < lbl_8055E5D0; i++) {
-        if (stricmp(*(const char **)((char *)lbl_8055E5CC + offset), arg1) == 0) {
-            fn_801A91B0(arg0, (char *)lbl_8055E5CC + i * 0x18);
+    index = 0;
+    entryOffset = 0;
+    for (; index < gInputBindingCount; index++) {
+        if (stricmp(((const InputBinding *)((const char *)gInputBindingTable + entryOffset))->name, name) == 0) {
+            fn_801A91B0(out, (const char *)gInputBindingTable + index * 0x18);
             return;
         }
-        offset += 0x18;
+        entryOffset += 0x18;
     }
-    *(int *)arg0 = 0;
+    *(int *)out = 0;
 }
 #pragma pop
 void fn_801A91B0(void *arg0, const void *arg1) {
