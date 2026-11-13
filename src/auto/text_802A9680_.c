@@ -198,6 +198,7 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         fn_802C8D74();
     }
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
