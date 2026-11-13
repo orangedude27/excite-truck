@@ -740,10 +740,10 @@ int fn_8017E930(void *arg0, void *arg1, void *arg2) {
     return 0;
 }
 
-extern char lbl_80331DC0[];
-extern int lbl_8055A318;
-extern int lbl_8055A320;
-extern int lbl_8055A328;
+extern char lbl_80331DC0[]; /* "Exploded" */
+extern int lbl_8055A318;   /* "UNK" */
+extern int lbl_8055A320;   /* "Press  " */
+extern int lbl_8055A328;   /* "Arming" */
 void fn_8017E96C(void *object, int **outText, signed char *outFlag) {
     int state = *(int *)((char *)object + 0x1F0);
     switch (state) {
