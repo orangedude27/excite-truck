@@ -217,6 +217,25 @@ unsigned short fn_802E5168(float arg0) {
     return (unsigned short)result;
 }
 
+#define SPK_STREAM_MOVED_UP
+/* One Wii remote speaker stream per Wii remote channel, 0x2C bytes each in the
+ * table at lbl_804FC800; fn_802E51D0 opens one, fn_802E5264 closes it again. */
+struct SpkStream {
+    unsigned char enabled;   /* +0x00: the channel's speaker stream is open */
+    unsigned char enc[0x20]; /* +0x01: the WENCInfo ADPCM encoder state (wenc.h) */
+    int restart;             /* +0x24: encode the next frame from scratch */
+    int unk_28;              /* +0x28: cleared when the stream is opened */
+};
+
+/* WPAD's speaker commands (WPADSpeakerCommand in WPAD.h, which this unit can't
+ * include) and the words fn_802E5264 prints with its connect message. */
+#define WPAD_SPEAKER_ON       1
+#define WPAD_SPEAKER_PLAY     4
+#define spuConnectMsg         lbl_8034D39C /* "spu: WPAD connect callback(%d) : %s" */
+#define spuNameDisconnect     lbl_8034D3C0 /* "disconnect" */
+#define spuNameConnect        lbl_8055D1D8 /* "connect" */
+#define spuStreams            ((struct SpkStream *)lbl_804FC800)
+
 #pragma scheduling invalid_target
 void fn_802E51D0(int arg0, int arg1) {
     unsigned char *entry;
