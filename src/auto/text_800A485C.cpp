@@ -3335,17 +3335,19 @@ extern "C" s32 fn_800A98B8(void *volumeContext, s32 pathId, s32 outputIndexByte,
 }
 
 #pragma pop
-extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
-    u16 i;
-    for (i = 0; i < 3; i++) {
-        u8 *dir = arg0 + i * 0x280;
-        *(s32 *)(dir + 0xE3C) = 0;
-        fn_800AF574(dir + 0xE44);
+extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *volumeState) {
+    /* Reset per-directory state for all 3 directory slots and clear the volume's cached-directory flags/count. */
+    u16 dirIndex;
+
+    for (dirIndex = 0; dirIndex < 3; dirIndex++) {
+        u8 *directory = volumeState + dirIndex * 0x280;
+        *(s32 *)(directory + 0xE3C) = 0;
+        fn_800AF574(directory + 0xE44);
     }
-    *(u32 *)(arg0 + 0x15BC) &= ~1U;
-    *(u32 *)(arg0 + 0x15DC) &= ~1U;
-    *(u32 *)(arg0 + 0x15FC) &= ~1U;
-    *(s32 *)(arg0 + 0x1620) = 0;
+    *(u32 *)(volumeState + 0x15BC) &= ~1U;
+    *(u32 *)(volumeState + 0x15DC) &= ~1U;
+    *(u32 *)(volumeState + 0x15FC) &= ~1U;
+    *(s32 *)(volumeState + 0x1620) = 0;
 }
 
 #pragma use_lmw_stmw off
