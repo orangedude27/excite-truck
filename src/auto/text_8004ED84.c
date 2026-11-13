@@ -246,7 +246,8 @@ void ConfigureVideo(short width, short height) {
 void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
     int start;
     unsigned long long t0;
-    unsigned char b7, b6, b5, b4, b3, b2, b1, b0;
+    unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
+    unsigned char *dst;
     OSDisableInterrupts();
     OSDisableScheduler();
     OSClearContext(lbl_8038E060);
@@ -283,23 +284,24 @@ void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
     GXGetVtxAttrFmtv();
     OSSetArenaLo((void *)0x81400000);
     OSSetArenaHi(*(void **)0x80000038);
+    dst = (unsigned char *)lbl_8038E328;
     b0 = arg0[0];
     b1 = arg0[1];
+    *dst++ = b0;
     b2 = arg0[2];
     b3 = arg0[3];
     b4 = arg1[0];
     b5 = arg1[1];
     b6 = arg1[2];
     b7 = arg1[3];
-    lbl_8038E328[0] = b0;
-    lbl_8038E328[1] = b1;
-    lbl_8038E328[2] = b2;
-    lbl_8038E328[3] = b3;
-    lbl_8038E328[4] = b4;
-    lbl_8038E328[5] = b5;
-    lbl_8038E328[6] = b6;
-    lbl_8038E328[7] = b7;
-    *(int *)(lbl_8038E328 + 8) = arg2;
+    dst[0] = b1;
+    dst[1] = b2;
+    dst[2] = b3;
+    dst[3] = b4;
+    dst[4] = b5;
+    dst[5] = b6;
+    dst[6] = b7;
+    *(int *)((char *)lbl_8038E328 + 8) = arg2;
     ((void (*)(void *, void *))OSSwitchFiber)(Halt, OSGetArenaHi());
 }
 
@@ -493,12 +495,14 @@ unsigned short OSGetFontEncode(void) {
     return lbl_80558F58;
 }
 #pragma opt_propagation reset
-unsigned short OSSetFontEncode(unsigned short arg0) {
+/* Set the OS font encoding (0-5). Updates lbl_80558F58 when valid and, for
+ * encodings 3-5, selects ParseStringW as the string parser. Returns previous. */
+unsigned short OSSetFontEncode(unsigned short encode) {
     u16 old = OSGetFontEncode();
 
-    if (arg0 <= 5) {
-        lbl_80558F58 = arg0;
-        if (arg0 >= 3 && arg0 <= 5) {
+    if (encode <= 5) {
+        lbl_80558F58 = encode;
+        if (encode >= 3 && encode <= 5) {
             lbl_8055DA48 = (void *)ParseStringW;
         }
     }
@@ -564,7 +568,6 @@ extern u16 lbl_80560CBE;
 #pragma use_lmw_stmw off
 int ReadFont(int dst, int encode, int font) {
     u8* tex;
-    int i;
     u32 code;
     u32 size;
     s32 sheet;
@@ -572,6 +575,12 @@ int ReadFont(int dst, int encode, int font) {
     s32 row;
     s32 col;
     u8* tmp;
+    int i;
+    int k;
+    int m;
+    int n;
+    int o;
+    int p;
     OSFontHeader* f = (OSFontHeader*)font;
 
     if ((u32)encode == 1) {
@@ -816,9 +825,6 @@ void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *ar
         if (console == 0) {
             mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
             lbl_80558F58 = mode;
-        } else if (console < 0) {
-            mode = 0;
-            lbl_80558F58 = 0;
         } else {
             mode = 0;
             lbl_80558F58 = 0;
