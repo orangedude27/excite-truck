@@ -367,21 +367,22 @@ float fn_801725C8(float arg0) {
 }
 #pragma dont_inline reset
 
+/* Compare two objects by dot product of their vectors at +0x118, weighted with object A's threshold at +0x25D4 and lbl_8043038C coefficients, returning 2/1/0 by threshold bands. */
 int fn_80172624(void *arg0, int arg1) {
       extern void *fn_8017960C();
   extern float PSQUATMultiply(void *, void *);
     extern float lbl_8043038C[];
-    void *a = fn_8017960C((int)arg0);
-    void *b = fn_8017960C(arg1);
-    float dot = PSQUATMultiply((char *)a + 0x118, (char *)b + 0x118);
-    float threshold = *(float *)((char *)a + 0x25D4);
-    float upper = lbl_8043038C[9];
+    void *objectA = fn_8017960C((int)arg0);
+    void *objectB = fn_8017960C(arg1);
+    float dot = PSQUATMultiply((char *)objectA + 0x118, (char *)objectB + 0x118);
+    float objectAThreshold = *(float *)((char *)objectA + 0x25D4);
+    float upperWeight = lbl_8043038C[9];
     int result;
-    float value = upper * dot + lbl_8043038C[10] * threshold;
+    float score = upperWeight * dot + lbl_8043038C[10] * objectAThreshold;
     result = 0;
-    if (value >= lbl_8043038C[8])
+    if (score >= lbl_8043038C[8])
         return 2;
-    if (value >= lbl_8043038C[7])
+    if (score >= lbl_8043038C[7])
         result = 1;
     return result;
 }
@@ -743,6 +744,8 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
     extern void fn_802ADE60(int, int);
     extern int fn_80128668(void);
     VObj *first;
+    void *resource;
+    VObj *sub;
     if (arg0 != 0) {
         first = *(VObj **)((char *)arg0 + 0x2B4);
         *(void **)arg0 = lbl_80331018;
@@ -756,40 +759,23 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
         fn_802CAC54(*(int *)&lbl_8055E3A8);
         fn_802CAC54(*(int *)((char *)arg0 + 0x198));
         if ((char *)arg0 + 0x1AC != 0) {
-            if (*(int *)((char *)arg0 + 0x1B8) != 0) {
-                fn_802ADE60(*(int *)((char *)arg0 + 0x1B8), 1);
-                *(int *)((char *)arg0 + 0x1B8) = 0;
+            resource = *(void **)((char *)arg0 + 0x1B8);
+            if (resource != 0) {
+                fn_802ADE60((int)resource, 1);
+                *(void **)((char *)arg0 + 0x1B8) = 0;
             }
-            if (*(VObj **)((char *)arg0 + 0x1C0) != 0) {
-                if (*(VObj **)((char *)arg0 + 0x1C0) != 0)
-                    (*(VObj **)((char *)arg0 + 0x1C0))->destroy(1);
-                *(VObj **)((char *)arg0 + 0x1C0) = 0;
-            }
-            if (*(VObj **)((char *)arg0 + 0x1C4) != 0) {
-                if (*(VObj **)((char *)arg0 + 0x1C4) != 0)
-                    (*(VObj **)((char *)arg0 + 0x1C4))->destroy(1);
-                *(VObj **)((char *)arg0 + 0x1C4) = 0;
-            }
-            if (*(VObj **)((char *)arg0 + 0x1C8) != 0) {
-                if (*(VObj **)((char *)arg0 + 0x1C8) != 0)
-                    (*(VObj **)((char *)arg0 + 0x1C8))->destroy(1);
-                *(VObj **)((char *)arg0 + 0x1C8) = 0;
-            }
-            if (*(VObj **)((char *)arg0 + 0x1D0) != 0) {
-                if (*(VObj **)((char *)arg0 + 0x1D0) != 0)
-                    (*(VObj **)((char *)arg0 + 0x1D0))->destroy(1);
-                *(VObj **)((char *)arg0 + 0x1D0) = 0;
-            }
-            if (*(VObj **)((char *)arg0 + 0x1D4) != 0) {
-                if (*(VObj **)((char *)arg0 + 0x1D4) != 0)
-                    (*(VObj **)((char *)arg0 + 0x1D4))->destroy(1);
-                *(VObj **)((char *)arg0 + 0x1D4) = 0;
-            }
-            if (*(VObj **)((char *)arg0 + 0x1D8) != 0) {
-                if (*(VObj **)((char *)arg0 + 0x1D8) != 0)
-                    (*(VObj **)((char *)arg0 + 0x1D8))->destroy(1);
-                *(VObj **)((char *)arg0 + 0x1D8) = 0;
-            }
+            sub = *(VObj **)((char *)arg0 + 0x1C0);
+            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1C0) = 0; }
+            sub = *(VObj **)((char *)arg0 + 0x1C4);
+            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1C4) = 0; }
+            sub = *(VObj **)((char *)arg0 + 0x1C8);
+            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1C8) = 0; }
+            sub = *(VObj **)((char *)arg0 + 0x1D0);
+            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1D0) = 0; }
+            sub = *(VObj **)((char *)arg0 + 0x1D4);
+            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1D4) = 0; }
+            sub = *(VObj **)((char *)arg0 + 0x1D8);
+            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1D8) = 0; }
         }
         if ((int *)arg0 + 1 != 0) {
             if ((int *)arg0 + 1 != 0) {
@@ -803,6 +789,7 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
             return arg0;
         }
     }
+    return arg0;
 }
 
 extern "C" void fn_80173424(Fn80173424Obj *o) {
@@ -1844,9 +1831,9 @@ extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double f
     if (v != 0) {
         fn_80147CEC(result, v, p, farg0);
     } else {
-        int *dst = (int *)result;
-        int *src = (int *)p;
-        int w4, w8;
+        unsigned int *dst = (unsigned int *)result;
+        unsigned int *src = (unsigned int *)p;
+        unsigned int w4, w8;
         dst[0] = src[0];
         w4 = src[1];
         w8 = src[2];
@@ -2138,14 +2125,14 @@ extern float fn_801725C8(float);
 #pragma use_lmw_stmw off
 void fn_80175B0C(char *arg0) {
     float k = lbl_80561B04;
-    float min24 = lbl_80561A78;
-    float shrink24 = lbl_80561ABC;
-    float min25 = lbl_80561B0C;
-    float min26 = lbl_80561A80;
-    float shrink = lbl_80561B08;
     float step = lbl_80561A38;
-    char *out = arg0;
+    float shrink = lbl_80561B08;
+    float min26 = lbl_80561A80;
+    float min25 = lbl_80561B0C;
+    float shrink24 = lbl_80561ABC;
+    float min24 = lbl_80561A78;
     int i = 0;
+    char *out = arg0;
     for (; i < *(int *)(arg0 + 0x124); i++, out += 0x24) {
         float a, b, f24, f25, f26;
         float d[2], v[2], w[2];
@@ -2208,16 +2195,13 @@ void fn_80175B0C(char *arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma dont_inline on
 void fn_80175D40(void *arg0) {
  float old[2],delta[2],base[2],velocity[2],pos[2],candidate[2];
  union {unsigned long long bits;float v[2];} result;
  float angle,cs,sn,len,scale,x,y;
- float factor=lbl_80561B04, step=lbl_80561A38;
- float decay=lbl_80561B08, minTime=lbl_80561A80,minValue=lbl_80561B0C;
- float grow=lbl_80561ABC,minScale=lbl_80561A78,radius=lbl_80561AB4,fallback=lbl_80561AC8;
+ float fallback=lbl_80561AC8,radius=lbl_80561AB4,minScale=lbl_80561A78,grow=lbl_80561ABC,minValue=lbl_80561B0C,minTime=lbl_80561A80,decay=lbl_80561B08,step=lbl_80561A38,factor=lbl_80561B04;
  float left,right,value,time,distance;
- int i,tries;void *p,*obj;char *entry=(char *)arg0+4;
+ char *entry=(char *)arg0+4; int i,tries;void *p,*obj;
  for(i=0;i<(*(int *)((char *)(arg0)+(0x124)));i++,entry+=0x24) {
  obj=(*(void * *)((char *)(arg0)+(0x128)));
  if(((int (*)(void *,int))(*(void ***)obj)[8])(obj,i)==0)continue;
