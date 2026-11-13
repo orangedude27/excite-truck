@@ -840,18 +840,19 @@ void fn_80237DA0(char *name, void *unused) {
 #pragma use_lmw_stmw reset
 
 #pragma use_lmw_stmw off
-void fn_80237E7C(char *arg0, int unused) {
-    char **items = *(char ***)((char *)lbl_8055F0C0 + 0x30);
-    int i = 0;
-    int offset = 0;
-    while (i < *(int *)((char *)items + 8)) {
-        if (stricmp(*(char **)((char *)items + 4) + offset, arg0) == 0)
-            *(*(char **)((char *)items + 4) + offset + 0x2d) = 0;
-        offset += 0x34;
-        i++;
+/* Deselect a trail: clear the active flag of every entry in the current uiAnime
+ * node's trail table whose name matches (case-insensitively). */
+void fn_80237E7C(char *trailName, int unused) {
+    TrailMgr *trailManager = *(TrailMgr **)((char *)lbl_8055F0C0 + 0x30);
+    int index = 0;
+    int entryOffset = 0;
+    while (index < trailManager->count) {
+        if (stricmp((char *)trailManager->entries + entryOffset, trailName) == 0)
+            ((TrailEntry *)((char *)trailManager->entries + entryOffset))->active = 0;
+        entryOffset += sizeof(TrailEntry);
+        index++;
     }
 }
-
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
