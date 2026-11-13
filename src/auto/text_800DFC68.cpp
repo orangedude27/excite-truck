@@ -57,6 +57,9 @@ extern "C" const char lbl_803204F8[];
 extern "C" const char lbl_803204BC[];
 extern "C" const char lbl_80320C14[];
 extern "C" const char lbl_80320C60[];
+#define sAssertFile_lyt_window lbl_80320C14 /* __FILE__ of these panes' asserts */
+#define sAssertIdxVtxColor lbl_80320C60 /* "NW4HBM:Failed assertion idx < VERTEXCOLOR_NUM" */
+enum { VERTEXCOLOR_NUM = 4 };  /* corner colors a pane's vertex array carries */
 extern void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void*, void*);
 extern "C" const char lbl_8031E8FC[];
 extern "C" const char lbl_8031E8D8[];
