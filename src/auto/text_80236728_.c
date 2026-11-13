@@ -18,8 +18,11 @@ typedef struct {
     float f10;
 } TrailKey;
 
+// One "special" record of an "anim" group in a ui_anim file (parsed by fn_80236A5C).
+// "Trail" is this decomp's shorthand for those records; the file's allocation label
+// string is "ui_anim" and the node names are "anim" / "special".
 typedef struct {
-    char name[0x20];        // trail name, matched case-insensitively (stricmp)
+    char name[0x20];        // trail ("special") name, matched case-insensitively (stricmp)
     int field20;            // group value taken from the parsed group; entries sharing it are mutually exclusive
     TrailKey *keys;
     int keyCount;
