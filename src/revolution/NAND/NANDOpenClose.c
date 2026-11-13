@@ -35,6 +35,7 @@ static s32 nandOpen(const char* path, u8 accessMode, NANDCommandBlock* block,
     }
 }
 
+/* Opens a NAND file and stores its descriptor in info on success. */
 s32 NANDOpen(const char* path, NANDFileInfo* info, u8 mode) {
     s32 result;
 
