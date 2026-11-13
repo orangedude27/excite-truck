@@ -20,6 +20,21 @@ extern float lbl_8055B4D4;
 extern float fn_80208A18(float);
 extern char lbl_80489258[];
 
+/* Mixer volume-handle table (bss lbl_80489258): up to 8 named volume handles.
+ * A sound subsystem opens one with fn_802090D4(name) to scale the master
+ * volume, sets its value with fn_80209190 and gives it back with
+ * fn_80209110; fn_80208A18 multiplies the handles that have a name (an empty
+ * name means the slot is free) and fn_80208D80 dumps the ones still held at
+ * shutdown ("mixer: "%s" never destroyed their volume handle").
+ * The number of slots in use is the int at +0x40. */
+struct MixerVolumeHandle {
+    /* 0x0 */ float volume;
+    /* 0x4 */ const char *name;
+};
+#define MIXER_VOLUME_HANDLES ((struct MixerVolumeHandle *)lbl_80489258)
+#define MIXER_VOLUME_HANDLE_COUNT (*(int *)(lbl_80489258 + 0x40))
+#define MIXER_VOLUME_HANDLE_MAX 8
+
 extern float lbl_80563230;
 extern float lbl_80563234;
 extern void fn_80208A50(float *);
@@ -174,12 +189,11 @@ extern "C" void fn_80208D80(int arg0) {
     int enabled;
     int index = 0;
     int index2;
-    struct Table {
+    const struct Table {
         void *entries[6];
         int count;
         int value;
-    };
-    struct Table *base;
+    } *base;
     void **items;
     void *object;
 
@@ -194,8 +208,9 @@ extern "C" void fn_80208D80(int arg0) {
 
     if (arg0 != 0) {
         items = (void **)lbl_80489238;
-        base = (struct Table *)items;
-        for (index2 = 0; index2 < base->count; items++, index2++) {
+        base = (const struct Table *)items;
+        index2 = 0;
+        while (index2 < base->count) {
             object = *items;
             if (object != 0) {
                 struct Dummy {
@@ -203,10 +218,12 @@ extern "C" void fn_80208D80(int arg0) {
                 };
                 ((struct Dummy *)object)->call(1);
             }
+            items++;
+            index2++;
         }
     }
 
-    fn_80133348(4, &lbl_8055B4E8, ((struct Table *)lbl_80489238)->value);
+    fn_80133348(4, &lbl_8055B4E8, ((const struct Table *)lbl_80489238)->value);
     fn_8013323C(4, lbl_8033BEF8, lbl_8055B4D0);
     fn_80133348(4, &lbl_8055B4E0, (int)lbl_8055EDA8);
     fn_801336E0(lbl_8055B4DC, fn_80208A78);
@@ -228,17 +245,16 @@ extern "C" void fn_80208E90(void *arg0, int arg1) {
     };
     Dummy *object = (Dummy *)arg0;
     const char *strings = lbl_8033BEF8;
-    int *table = (int *)lbl_80489238;
     int addObject;
     unsigned int count;
 
-    if (strncmp(object->name(), strings + 0x60, 0xB) == 0) {
+    if (strncmp(object->name(), strings + 96, 11) == 0) {
         fn_802E30C8(strings + 0x70, object->name());
         if (arg0 != 0) {
             object->close(1);
         }
     } else {
-        count = (unsigned int)table[6];
+        count = (unsigned int)lbl_80489238[6];
         if (count < 6) {
             addObject = arg1 == 0;
             if (arg1 == 1 && object->enabled() != 0) {
@@ -246,8 +262,9 @@ extern "C" void fn_80208E90(void *arg0, int arg1) {
                 object->finish();
             }
             if (addObject != 0) {
-                table[table[6]] = (int)arg0;
-                table[6] = table[6] + 1;
+                unsigned int idx = lbl_80489238[6];
+                lbl_80489238[idx] = (int)arg0;
+                lbl_80489238[6] = idx + 1;
             } else if (arg0 != 0) {
                 object->close(1);
             }
@@ -394,9 +411,9 @@ int fn_8020921C(void) {
     extern unsigned int lbl_8048929C[];
     extern unsigned int lbl_8055E044;
     extern void fn_80131318(void);
-    if (lbl_8048929C[2] != lbl_8055E044)
+    if (*(lbl_8048929C + 2) != lbl_8055E044)
         fn_80131318();
-    return (int)lbl_8048929C[1];
+    return (int)*(lbl_8048929C + 1);
 }
 #pragma scheduling default
 int fn_80209260(int arg0) { return arg0 + 4; }
