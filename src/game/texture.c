@@ -215,12 +215,13 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         dst[2] = flags;
     }
 }
-int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
-    char sp8[0x34];
-    if (fn_802C90E0() == 0 && (unsigned int)arg1 != (unsigned int)lbl_8055D058)
-        fn_802E30C8(lbl_8034B618, arg1);
-    fn_802CA3F4(sp8, arg0, arg2 == 1 ? 3 : 1, arg3, arg4);
-    return fn_802D8E9C(sp8, arg1);
+// Creates a texture from a descriptor and name, logging creation to the current scene when needed.
+int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int param4) {
+    char request[0x34];
+    if (fn_802C90E0() == 0 && (unsigned int)textureName != (unsigned int)lbl_8055D058)
+        fn_802E30C8(lbl_8034B618, textureName);
+    fn_802CA3F4(request, textureDesc, mode == 1 ? 3 : 1, param3, param4);
+    return fn_802D8E9C(request, textureName);
 }
 #pragma use_lmw_stmw on
 
@@ -852,6 +853,7 @@ void fn_802CB424(void) {
         int f0; Big *f4; Big *f8; int fC; Node *f10; Node *f14; int f18[2];
         Heap *heap; Sub *sub; int f28; int f2C; int f30; int f34; void *f38;
         int slots[0x2800 / 4];
+        int pad283C; int pad2840;
         int f2844; int f2848;
     } Mgr;
     Mgr *m;
@@ -866,6 +868,8 @@ void fn_802CB424(void) {
 
     m = (Mgr *)fn_801284F8(0x284C, strs + 0x488);
     if (m != 0) {
+        int v;
+        int *p;
         zero = 0;
         m->heap = 0;
         m->sub = 0;
@@ -902,24 +906,22 @@ void fn_802CB424(void) {
         m->f14 = nd;
         m->f10 = nd;
         m->fC = zero2;
-        m->f14[0].next = m->f14 + 1;
-        m->f14[1].next = m->f14 + 2;
-        m->f14[2].next = m->f14 + 3;
-        m->f14[3].next = m->f14 + 4;
-        m->f14[4].next = m->f14 + 5;
-        m->f14[5].next = m->f14 + 6;
-        m->f14[6].next = m->f14 + 7;
-        m->f14[7].next = m->f14 + 8;
-        m->f14[8].next = m->f14 + 9;
-        m->f14[9].next = (Node *)zero2;
+        for (i = 0; i < 9; i++) {
+            m->f14[i].next = &m->f14[i + 1];
+        }
+        m->f14[i].next = (Node *)zero2;
         memset(m->f18, 0, 8);
         m->f2844 = zero2;
         memset(m->slots, 0, 0x2800);
-        for (i = 0; i < 0x40; i++) {
+        v = 0;
+        p = (int *)m;
+        i = 0x40;
+        do {
             int k;
             for (k = 0; k < 8; k++)
-                m->slots[i * 40 + k * 5] = i * 8 + k;
-        }
+                p[0xF + k * 5] = v++;
+            p += 40;
+        } while (--i);
         m->f2848 = 0;
     }
     *(void **)lbl_8055FCBC = m;
