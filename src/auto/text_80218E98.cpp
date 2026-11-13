@@ -6411,20 +6411,21 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 *ar
     return self;
 }
 #pragma pop
-extern "C" void *fn_802244C8(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        void *ptr = *(void **)((u8 *)arg0 + 0x280);
-        *(void **)arg0 = lbl_8033E248;
-        if (ptr != 0)
-            fn_802C519C(ptr);
-        *(void **)((u8 *)arg0 + 0x280) = 0;
-        fn_8022EE98(*(void **)((u8 *)arg0 + 0x288));
-        fn_8022EE98(*(void **)((u8 *)arg0 + 0x284));
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+/* Destructor: reset vtable, release owned resources, destroy base, and optionally delete self. */
+extern "C" void *fn_802244C8(void *self, s32 shouldDelete) {
+    if (self != 0) {
+        void *ownedPtr = *(void **)((u8 *)self + 0x280);
+        *(void **)self = lbl_8033E248;
+        if (ownedPtr != 0)
+            fn_802C519C(ownedPtr);
+        *(void **)((u8 *)self + 0x280) = 0;
+        fn_8022EE98(*(void **)((u8 *)self + 0x288));
+        fn_8022EE98(*(void **)((u8 *)self + 0x284));
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_8022455C(void *arg0) {
