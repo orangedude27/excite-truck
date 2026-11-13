@@ -2748,7 +2748,7 @@ struct BonusTracker {
     virtual void v13(s32);   // 0x3C what the group forwards (fn_8015E5F4); the air tracker flushes its progress here
     virtual void v14();
     virtual void v15();
-    virtual void v16();
+    virtual void drawToDisplay(void* display);  // 0x48 write this tracker's line into the bonus popup (fn_8015DD9C)
     virtual s32 getRecordCount();  // 0x4C records this tracker holds
     virtual void v18();
     virtual void v19();
