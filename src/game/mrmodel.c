@@ -1226,10 +1226,10 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
     float *rot;
     float *out;
     float *input;
-
-    rot = (float *)((char *)*(void **)((char *)fn_802C5390(arg0) + 4) + 0x20);
+    void *inst = fn_802C5390(arg0);
+    rot = (float *)((char *)*(void **)((char *)inst + 4) + 0x20);
+    entry = *(void **)((char *)inst + 4);
     out = local.vector;
-    entry = *(void **)((char *)rot - 0x20);
     input = (float *)arg1;
     if (local.vector == rot) {
         float y = input[3];
@@ -1249,11 +1249,11 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
         out[1] = (x1 + y1) + z1;
         out[2] = (x2 + y2) + z2;
     } else {
-        out[0] = (rot[0] * input[0] + rot[1] * input[3]) +
+        out[0] = (rot[1] * input[3] + rot[0] * input[0]) +
                  rot[2] * input[6];
-        out[1] = (rot[0] * input[1] + rot[1] * input[4]) +
+        out[1] = (rot[1] * input[4] + rot[0] * input[1]) +
                  rot[2] * input[7];
-        out[2] = (rot[0] * input[2] + rot[1] * input[5]) +
+        out[2] = (rot[1] * input[5] + rot[0] * input[2]) +
                  rot[2] * input[8];
     }
     {
@@ -1296,14 +1296,15 @@ void fn_802C7758(void) {
     fn_802D0610(0);
 }
 
-void fn_802C7760(void *arg0, f32 *arg1, f32 *arg2, f32 *arg3, f32 *arg4, f32 *arg5, f32 *arg6) {
-    void *temp_r3 = fn_802C5390((int)arg0);
-    *arg1 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x2C);
-    *arg2 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x30);
-    *arg3 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x34);
-    *arg4 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x38);
-    *arg5 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x3C);
-    *arg6 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x40);
+/* Copies six float fields (offsets 0x2C-0x40) from a model entry to output parameters. */
+void fn_802C7760(void *arg0, f32 *out1, f32 *out2, f32 *out3, f32 *out4, f32 *out5, f32 *out6) {
+    void *entry = fn_802C5390((int)arg0);
+    *out1 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x2C);
+    *out2 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x30);
+    *out3 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x34);
+    *out4 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x38);
+    *out5 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x3C);
+    *out6 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x40);
 }
 
 #pragma dont_inline fn_802C7760
