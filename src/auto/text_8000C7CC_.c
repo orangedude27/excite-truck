@@ -107,8 +107,10 @@ void fn_8000D048(void) {
 }
 
 void fn_8000CE60(void) {
-    volatile u8 *p404 = &lbl_8055D404;
-    *p404 = 0;
+    /* Initialize pause/menu UI state and create its mixer, layout and sound resources. */
+    volatile u8 *activeFlag = &lbl_8055D404;
+
+    *activeFlag = 0;
     lbl_8055D405 = 0;
     lbl_8055D407 = 0;
     lbl_8055D400 = 0;
