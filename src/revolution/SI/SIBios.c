@@ -643,6 +643,7 @@ u32 SIGetType(s32 chan) {
 }
 
 #pragma dont_inline on
+/* Enables polling for the specified SI channels and returns the updated poll mask. */
 u32 SIEnablePolling(u32 chan) {
     BOOL enabled;
     u32 poll;
