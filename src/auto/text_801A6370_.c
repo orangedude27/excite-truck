@@ -162,33 +162,34 @@ extern void fn_80182074(void);
 extern void *fn_801B2EC0(int);
 extern void fn_80265D40(void *, int, float);
 #pragma scheduling invalid_target
-void fn_801A65FC(void *arg0) {
-    float value0;
-    float value1;
-    int object;
+/* Reset the camera/vehicle state: initialize internals, bind the tracked object for slot 0x1EC, clear runtime flags, seed default scalar fields, then notify 80265D40 and mark state active (0x267C). */
+void fn_801A65FC(void *obj) {
+    float zeroValue;
+    float oneValue;
+    int objectSlot;
     fn_80182074();
-    *(void **)((char *)arg0 + 0x2774) =
-        fn_801B2EC0(*(int *)((char *)arg0 + 0x1EC));
-    *(volatile unsigned char *)((char *)arg0 + 0x2740) = 0;
-    *(volatile unsigned char *)((char *)arg0 + 0x2741) = 1;
-    fn_801A6558(arg0);
-    value0 = *(volatile float *)&lbl_80562430;
-    value1 = *(volatile float *)&lbl_8056242C;
-    *(volatile float *)((char *)arg0 + 0x2748) = value0;
-    object = *(volatile int *)((char *)arg0 + 0x1EC);
-    *(volatile float *)((char *)arg0 + 0x2744) = value1;
-    *(volatile float *)((char *)arg0 + 0x274C) = value0;
-    *(volatile float *)((char *)arg0 + 0x2750) = value0;
-    *(volatile float *)((char *)arg0 + 0x2754) = value1;
-    *(volatile float *)((char *)arg0 + 0x2758) = value0;
-    *(volatile float *)((char *)arg0 + 0x275C) = value0;
-    *(volatile float *)((char *)arg0 + 0x2760) = value0;
-    *(volatile float *)((char *)arg0 + 0x2764) = value1;
-    *(volatile float *)((char *)arg0 + 0x2768) = value0;
-    *(volatile float *)((char *)arg0 + 0x276C) = value0;
-    *(volatile float *)((char *)arg0 + 0x2770) = value0;
-    fn_80265D40(arg0, object, value1);
-    *(int *)((char *)arg0 + 0x267C) = 1;
+    *(void **)((char *)obj + 0x2774) =
+        fn_801B2EC0(*(int *)((char *)obj + 0x1EC));
+    *(volatile unsigned char *)((char *)obj + 0x2740) = 0;
+    *(volatile unsigned char *)((char *)obj + 0x2741) = 1;
+    fn_801A6558(obj);
+    zeroValue = *(volatile float *)&lbl_80562430;
+    oneValue = *(volatile float *)&lbl_8056242C;
+    *(volatile float *)((char *)obj + 0x2748) = zeroValue;
+    objectSlot = *(volatile int *)((char *)obj + 0x1EC);
+    *(volatile float *)((char *)obj + 0x2744) = oneValue;
+    *(volatile float *)((char *)obj + 0x274C) = zeroValue;
+    *(volatile float *)((char *)obj + 0x2750) = zeroValue;
+    *(volatile float *)((char *)obj + 0x2754) = oneValue;
+    *(volatile float *)((char *)obj + 0x2758) = zeroValue;
+    *(volatile float *)((char *)obj + 0x275C) = zeroValue;
+    *(volatile float *)((char *)obj + 0x2760) = zeroValue;
+    *(volatile float *)((char *)obj + 0x2764) = oneValue;
+    *(volatile float *)((char *)obj + 0x2768) = zeroValue;
+    *(volatile float *)((char *)obj + 0x276C) = zeroValue;
+    *(volatile float *)((char *)obj + 0x2770) = zeroValue;
+    fn_80265D40(obj, objectSlot, oneValue);
+    *(int *)((char *)obj + 0x267C) = 1;
 }
 #pragma scheduling on
 extern void fn_80128668(void *);
@@ -341,12 +342,10 @@ extern "C" void fn_801A69F4(void *arg0, float *arg1) {
     float out0[3], outA[3], outB[3];
     float a0;
     double a, b, c, d, x, y, z;
-
     a0 = fn_801A63C4(k, *(int *)(*(char **)(p + 0x2700) + 4));
     t[0] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x1e), *(float *)(p + 0x2708), *(float *)(p + 0x272c), a0);
     t[1] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x22), *(float *)(p + 0x270c), *(float *)(p + 0x2730), a0);
     t[2] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x26), *(float *)(p + 0x2710), *(float *)(p + 0x2734), a0);
-
     a = fn_801A63C4(*(int *)(*(char **)(p + 0x2700) + 0x51), *(int *)(*(char **)(p + 0x2700) + 0x9e));
     b = fn_801A63C4(*(int *)(*(char **)(p + 0x2700) + 4), *(int *)(*(char **)(p + 0x2700) + 0x9e));
     c = fn_801A63C4(k, *(int *)(*(char **)(p + 0x2700) + 0x9e));
@@ -658,15 +657,15 @@ extern double fn_8002F234(double);
 #pragma dont_inline on
 void fn_801A7178(void *arg0, float *arg1) {
     float a[4], b[4], q[4], rot[4];
-    register float *rotp;
-    register float (*m)[3];
-    register char *p = arg0;
+    float *rotp;
+    float (*m)[3];
+    char *p = arg0;
     char *data;
-    register int time = lbl_8055E3C4;
-    float trace, t, scale, blend, tick, step;
-    int positive;
-    int i,j,k;
-    register float *mk,*mj,*mi;
+    int time = lbl_8055E3C4;
+    float trace, t, scale, blend, tick, step, thr;
+    float m00, m11, m22, tmp;
+    int k,j,i;
+    float *mk,*mj,*mi;
     float x,y,z,w,xy,wz,xz,wy,yz,wx,zz,yy,xx,one,x2,y2,z2;
     float d0,d1,d2, a0,a1,a2,a3,a4,a5;
     data = *(char **)(p + 0x2700);
@@ -675,13 +674,17 @@ void fn_801A7178(void *arg0, float *arg1) {
     fn_801A70EC((int)b, data+0x9a, data+0x4d, time);
     fn_8012F57C((int)q,b,a,*(float *)(p+0x2738));
     m = (float (*)[3])(p+0x3c);
-    trace = m[2][2] + (m[0][0] + m[1][1]);
-    tick = *(float *)(p+0x2738);
-    step = *(float *)(p+0x273c);
+    thr = lbl_80562430;
+    m00 = *(volatile float *)&m[0][0];
+    m11 = *(volatile float *)&m[1][1];
+    tick = *(volatile float *)(p+0x2738);
+    tmp = m00 + m11;
+    m22 = *(volatile float *)&m[2][2];
+    step = *(volatile float *)(p+0x273c);
+    trace = m22 + tmp;
     blend = *arg1;
-    positive = trace > lbl_80562430;
     *(float *)(p+0x2738) = tick+step;
-    if (positive) {
+    if (trace > thr) {
         t = (float)fn_8002F234(lbl_8056242C + trace);
         scale = lbl_80562418 / t;
         rot[3] = lbl_80562418 * t;
@@ -707,8 +710,8 @@ void fn_801A7178(void *arg0, float *arg1) {
     x=q[0]; y=q[1]; z=q[2]; w=q[3];
     x2=x+x; y2=y+y; z2=z+z;
     xx=x*x2; yy=y*y2; zz=z*z2;
-    wx=w*x2; yz=y*z2;
     one=lbl_8056242C;
+    wx=w*x2; yz=y*z2;
     d0=one-(yy+zz); d1=one-(xx+zz); d2=one-(xx+yy);
     a0=yz-wx; a1=yz+wx;
     wy=w*y2; xz=x*z2; wz=w*z2;
