@@ -3221,20 +3221,25 @@ void fn_8005EB44(void) {
     OSRegisterVersion(__WPADVersion);
 }
 
-// fn_8005ED8C: WPAD reset
+// WPADReset: tear the Wii controller subsystem down once - hide the devices,
+// wipe the four paired-controller slots from the SC Bluetooth device array,
+// cancel the manager alarm, then drop the HID receive callback and shut the
+// WUD library down so it can be brought back up.
 void fn_8005ED8C(void) {
-    if (lbl_8055DC05 == 0) {
-        void* ptr;
+    if (_reset == 0) {
+        void* pDev;
         s32 i;
 
-        lbl_8055DC05 = 1;
+        _reset = 1;
         WUDSetVisibility(0, 0);
-        
-        for (i = 10, ptr = lbl_80393058 + 0x2bd; i < 14; i++, ptr = (void*)((u8*)ptr + 0x46)) {
-            memset(ptr, 0, 0x46);
+
+        for (i = WUD_MAX_DEV_ENTRY_FOR_STD, pDev = &_scArray.devices[WUD_MAX_DEV_ENTRY_FOR_STD];
+             i < WUD_MAX_DEV_ENTRY_FOR_STD + WPAD_MAX_CONTROLLERS;
+             i++, pDev = (void*)((u8*)pDev + sizeof(SCBtDeviceInfo))) {
+            memset(pDev, 0, sizeof(SCBtDeviceInfo));
         }
-        
-        OSCancelAlarm(&lbl_8038F4C0);
+
+        OSCancelAlarm(&_managerAlarm);
         fn_8006ADC4(NULL);
         fn_8006A81C();
     }
