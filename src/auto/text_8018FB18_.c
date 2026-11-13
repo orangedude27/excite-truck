@@ -2556,17 +2556,18 @@ f32 fn_80192C7C(void *arg0) {
 #pragma scheduling invalid_target
 extern f32 lbl_8056208C, lbl_80562090, lbl_805620AC, lbl_80562094, lbl_80562138;
 #pragma scheduling invalid_target
-f32 fn_80192D10(void *arg0) {
-    u8 raw = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 5);
+f32 fn_80192D10(void *object) {
+    /* Normalize byte 5 of the object referenced at offset 8 to [-1, 1]. */
+    u8 raw = *(u8 *)((u8 *)*(void **)((u8 *)object + 8) + 5);
     f32 normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
-    f32 value;
+    f32 clamped;
     if (lbl_80562090 < normalized) {
-        value = lbl_80562090;
+        clamped = lbl_80562090;
     } else {
-        value = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+        clamped = ((f32)raw - lbl_8056208C) / lbl_805620AC;
     }
-    value = value > lbl_8056208C ? value : lbl_8056208C;
-    return lbl_80562094 + value * lbl_80562138;
+    clamped = clamped > lbl_8056208C ? clamped : lbl_8056208C;
+    return lbl_80562094 + clamped * lbl_80562138;
 }
 #pragma scheduling on
 extern f32 lbl_8056208C, lbl_80562090, lbl_80562094, lbl_805620AC, lbl_80562138;
