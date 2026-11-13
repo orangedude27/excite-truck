@@ -130,16 +130,40 @@ extern unsigned long fn_802CE9FC(int, int, int, int);
 typedef struct { float x, y, z; } Vec_802D1C04;
 // 3x3 matrix times vector (MTXMultVecSR shape); src/dst may alias.
 static inline void mulVecSR_802D1C04(const float *m, const float *src, float *dst) {
-    float x = src[0], y = src[1], z = src[2];
     if (dst == src) {
-        dst[0] = z * m[2] + (x * m[0] + y * m[1]);
-        dst[1] = z * m[5] + (x * m[3] + y * m[4]);
-        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
+        float x = src[2] * m[2] + (src[0] * m[0] + src[1] * m[1]);
+        float y = src[2] * m[5] + (src[0] * m[3] + src[1] * m[4]);
+        float z = src[2] * m[8] + (src[0] * m[6] + src[1] * m[7]);
+        dst[0] = x;
+        dst[1] = y;
+        dst[2] = z;
     } else {
-        dst[0] = z * m[2] + (x * m[0] + y * m[1]);
-        dst[1] = z * m[5] + (x * m[3] + y * m[4]);
-        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
+        float x = src[2] * m[2] + (src[0] * m[0] + src[1] * m[1]);
+        float y = src[2] * m[5] + (src[0] * m[3] + src[1] * m[4]);
+        float z = src[2] * m[8] + (src[0] * m[6] + src[1] * m[7]);
+        dst[0] = x;
+        dst[1] = y;
+        dst[2] = z;
     }
+}
+extern float lbl_80564F90;
+// 3x3 rotation followed by a translation.
+typedef struct { float m[9]; } Mtx33_802D1C04;
+typedef struct { Mtx33_802D1C04 r; Vec_802D1C04 t; } Xform_802D1C04;
+static inline void mtx33Transpose_802D1C04(float *m) {
+    float t;
+    t = m[1]; m[1] = m[3]; m[3] = t;
+    t = m[2]; m[2] = m[6]; m[6] = t;
+    t = m[5]; m[5] = m[7]; m[7] = t;
+}
+// Inverse of a rigid transform: transposed rotation, negated rotated translation.
+static inline void xformInverse_802D1C04(Xform_802D1C04 *dst, const Xform_802D1C04 *src) {
+    dst->r = src->r;
+    mtx33Transpose_802D1C04(dst->r.m);
+    mulVecSR_802D1C04(src->r.m, &src->t.x, &dst->t.x);
+    dst->t.x *= lbl_80564F90;
+    dst->t.y *= lbl_80564F90;
+    dst->t.z *= lbl_80564F90;
 }
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
