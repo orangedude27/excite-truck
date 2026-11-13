@@ -269,19 +269,20 @@ extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
 }
 
 #pragma dont_inline on
-extern "C" void *fn_802066C8(void *arg0, u32 arg1) {
-    if (arg0 != 0) {
-        int value = *(int *)((char *)arg0 + 0xC);
-        *(void **)arg0 = (void *)&lbl_8033BDC0;
-        if (value != 0) {
-            fn_80208620(lbl_8055ED80, arg0);
-            fn_8020899C(lbl_8055ED80, *(int *)((char *)arg0 + 0xC));
-            *(int *)((char *)arg0 + 0xC) = 0;
+extern "C" void *fn_802066C8(void *object, u32 shouldFree) {
+    /* Destructor-like cleanup: reset vtable to lbl_8033BDC0, detach/clear the handle at +0xC via lbl_8055ED80 manager helpers, and optionally free the object. */
+    if (object != 0) {
+        int handle = *(int *)((char *)object + 0xC);
+        *(void **)object = (void *)&lbl_8033BDC0;
+        if (handle != 0) {
+            fn_80208620(lbl_8055ED80, object);
+            fn_8020899C(lbl_8055ED80, *(int *)((char *)object + 0xC));
+            *(int *)((char *)object + 0xC) = 0;
         }
-        if ((int)arg1 > 0)
-            fn_80128668(arg0);
+        if ((int)shouldFree > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 #pragma dont_inline reset
 
