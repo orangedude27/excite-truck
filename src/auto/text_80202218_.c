@@ -20,8 +20,10 @@ extern int lbl_8055B414, lbl_8055ECDC;
 extern int lbl_8055ECC0;
 extern int lbl_8055ECC4;
 extern int lbl_8055ECC8;
-extern int lbl_8055ECCC;
-extern int lbl_8055ECD0;
+extern int lbl_8055ECCC; /* primary model handle (-1 when unset) */
+extern int lbl_8055ECD0; /* secondary model handle (-1 when unset) */
+#define sPrimaryModelHandle lbl_8055ECCC
+#define sSecondaryModelHandle lbl_8055ECD0
 extern unsigned char lbl_8055ECE0;
 extern void fn_802CE6C0(int);
 extern int fn_802CE49C(int);
