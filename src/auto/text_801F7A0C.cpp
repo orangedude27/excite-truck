@@ -1816,6 +1816,7 @@ extern "C" void fn_801FA618(void) {
 }
 
 #pragma scheduling on
+/* Walk the lbl_8055EC4C node list and trigger fn_802C70AC for active, unblocked nodes. */
 extern "C" void fn_801FA6B8(void) {
     void *node = lbl_8055EC4C;
     while (node != 0) {
