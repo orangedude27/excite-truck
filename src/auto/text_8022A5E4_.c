@@ -819,9 +819,10 @@ check:
 #pragma scheduling reset
 #pragma dont_inline off
 extern void fn_8022BD40(int, int, int, unsigned char, float, float, float, float, float, float);
-void fn_8022BAD0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, float farg0, unsigned char arg8) {
-    fn_8022BD40(arg0, arg6, arg7, arg8,
-                (float)arg1, (float)arg2, (float)arg3, (float)arg4, (float)arg5, farg0);
+void fn_8022BAD0(int context, int x, int y, int w, int h, int param5, int textOrSlot, int index, float scale, unsigned char flags) {
+    /* Forwards integer text/layout arguments as floats to the main text draw helper. */
+    fn_8022BD40(context, textOrSlot, index, flags,
+                (float)x, (float)y, (float)w, (float)h, (float)param5, scale);
 }
 
 extern void fn_80230C30(float *, float *, int, int);
@@ -1386,29 +1387,37 @@ __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma dont_inline(fn_8022CD0C)
 void fn_8022CDE4(int *d, void *o) {
- char *s; const char *base = lbl_8033FBE8;
- if (o == 0) goto end;
- 
- if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x498)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x498); d[0]=fn_8022CD0C(s); }
- 
- if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x4A4)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x4A4); d[1]=fn_8022CD0C(s); }
- 
- if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x4BC)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x4BC); d[2]=fn_8022CD0C(s); }
- 
- if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x4C8)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x4C8); d[3]=fn_8022CD0C(s); }
- 
- if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x4E0)) {
-  s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x4E0);
-  if (!stricmp(s,lbl_8055B930)) d[4]=0;
-  else if (!stricmp(s,lbl_8055B938)) d[4]=4;
-  else if (!stricmp(s,lbl_8055B940)) d[4]=2;
-  else if (!stricmp(s,base+0x4EC)) d[4]=1;
-  else if (!stricmp(s,base+0x4F8)) d[4]=5;
-  else if (!stricmp(s,base+0x504)) d[4]=6;
-  else d[4]=fn_8022CD0C(s);
- }
- 
- if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,lbl_8055B948)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,lbl_8055B948); sscanf(s,lbl_8055B950,&d[5],&d[6]); }
-end:;
+    register const char *base;
+    register char *s;
+    base = lbl_8033FBE8;
+    if (!o)
+        return;
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x498) != 0)
+        d[0] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x498));
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4A4) != 0)
+        d[1] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4A4));
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4BC) != 0)
+        d[2] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4BC));
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4C8) != 0)
+        d[3] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4C8));
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4E0) != 0) {
+        s = ((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4E0);
+        if (stricmp(s, lbl_8055B930) == 0)
+            d[4] = 0;
+        else if (stricmp(s, lbl_8055B938) == 0)
+            d[4] = 4;
+        else if (stricmp(s, lbl_8055B940) == 0)
+            d[4] = 2;
+        else if (stricmp(s, base + 0x4EC) == 0)
+            d[4] = 1;
+        else if (stricmp(s, base + 0x4F8) == 0)
+            d[4] = 5;
+        else if (stricmp(s, base + 0x504) == 0)
+            d[4] = 6;
+        else
+            d[4] = fn_8022CD0C(s);
+    }
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, lbl_8055B948) != 0)
+        sscanf(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, lbl_8055B948), lbl_8055B950, &d[5], &d[6]);
 }
 #pragma dont_inline reset
