@@ -361,20 +361,22 @@ extern char lbl_8032C358[];
 extern float lbl_80561450;
 extern float lbl_80561454;
 extern float lbl_80561438;
+/* Collects per-entry values from the source data, applies them, then initializes
+ * the drone-speed state/parameters. */
 void fn_8013B4E0(void *arg0) {
-    int sp8[10];
-    char *src = (char *)arg0;
-    int *dst = sp8;
+    int entry_values[10];
+    char *entry = (char *)arg0;
+    int *dst = entry_values;
     int i = 0;
     int value;
     while (i < *(int *)((char *)arg0 + 0x3C0)) {
-        value = *(int *)(src + 0x68);
-        src += 0x78;
+        value = *(int *)(entry + 0x68);
+        entry += 0x78;
         i++;
         *dst = value;
         dst++;
     }
-    fn_8013AC78(0, sp8);
+    fn_8013AC78(0, entry_values);
     lbl_80559C98 = lbl_80561440;
     fn_802049DC((int)(void *)lbl_8032C358, (int)(void *)&lbl_80559C98,
                 lbl_80561450, lbl_80561454, lbl_80561438);
