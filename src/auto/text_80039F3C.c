@@ -80,14 +80,16 @@ void fn_8003A074(int result) {
 extern int NANDPrivateCreateAsync(const char *, int, void *, void *, void *);
 extern char lbl_80302368[];
 extern void fn_8003A074(int);
-void fn_8003A10C(int arg0) {
-    if (arg0 == 0 || arg0 == -6) {
-        if (NANDPrivateCreateAsync(lbl_80302368, 0x3F, 0, fn_8003A074, lbl_8037B6D0) != 0 &&
-            lbl_8055D8D0 != 0) {
-            lbl_8055D8D0(2, 0);
+/* NAND async step after creating the error-report directory: create /shared2/test/dvderror.dat
+ * or report failure via the registered callback. */
+void fn_8003A10C(int result) {
+    if (result == 0 || result == -6) {
+        if (NANDPrivateCreateAsync(sDvderrorPath, 0x3F, 0, fn_8003A074, sNandDvderrorCmdBlock) != 0 &&
+            sNandErrorReportCallback != 0) {
+            sNandErrorReportCallback(2, 0);
         }
-    } else if (lbl_8055D8D0 != 0) {
-        lbl_8055D8D0(2, 0);
+    } else if (sNandErrorReportCallback != 0) {
+        sNandErrorReportCallback(2, 0);
     }
 }
 
