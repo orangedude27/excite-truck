@@ -1149,13 +1149,16 @@ extern "C" void fn_8029A114(void* arg0) {
 
 extern "C" int fn_8029A290(void*, void*);
 extern "C" void fn_8029A60C(void*, void*);
+/* If this object has a valid slot index, validate the slot is active and, when
+ * it matches the target object for arg0+0x3C, apply/update via fn_8029A60C;
+ * otherwise clear the slot index to -1. */
 extern "C" void fn_8029A17C(void* arg0) {
-    int temp_r0 = *(int*)((char*)arg0 + 0x40);
-    if (temp_r0 != -1) {
-        if (*((unsigned char*)lbl_8055F7C0 + temp_r0 * 0x2C + 0x28) != 0) {
-            void* temp_r3 = (void*)fn_80287B24(*(int*)((char*)arg0 + 0x3C));
-            if (fn_8029A290(arg0, temp_r3) != 0) {
-                fn_8029A60C(arg0, temp_r3);
+    int slotIndex = *(int*)((char*)arg0 + 0x40);
+    if (slotIndex != -1) {
+        if (*((unsigned char*)lbl_8055F7C0 + slotIndex * 0x2C + 0x28) != 0) {
+            void* target = (void*)fn_80287B24(*(int*)((char*)arg0 + 0x3C));
+            if (fn_8029A290(arg0, target) != 0) {
+                fn_8029A60C(arg0, target);
             }
         } else {
             *(int*)((char*)arg0 + 0x40) = -1;
