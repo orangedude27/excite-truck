@@ -2497,18 +2497,6 @@ extern void fn_8003B508(u32, u32, void *);
 extern void fn_8003B0B0(void *, void *);
 extern void fn_8003AC24(void *);
 extern void (*lbl_80558E08)(void *, void *);
-static inline void DVDLogCommand_80038368(s32 cmd, s32 offset, s32 length) {
-    s32 interrupts = OSDisableInterrupts();
-    u32 tick;
-    if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
-    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = cmd;
-    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = offset;
-    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = length;
-    tick = OSGetTick();
-    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
-    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-    OSRestoreInterrupts(interrupts);
-}
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80038368(void *arg0) {
