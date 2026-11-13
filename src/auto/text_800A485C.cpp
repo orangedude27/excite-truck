@@ -8280,16 +8280,17 @@ static inline u32 Fn800B25CCWide2(u16 *w) {
     }
     if (r == 1) {
         M2C_FIELD(&lbl_803D2140, void (**)(u16 *, u16 *), 0x4C)(w, w);
-        return 1;
+        r = 1;
+    } else {
+        r = 0;
     }
-    return 0;
+    return r;
 }
 u16 fn_800B25CC(void *arg0, s32 arg1) {
     u8 work[0x14];
     s32 var_r0;
     u32 var_r3;
     u32 var_r3_2;
-    u32 var_r3_3;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -8359,19 +8360,7 @@ block_27:
         }
     } else {
         M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *) &(*(u16 *)(work + 4)), &(*(u16 *)work), (s32 *)lbl_803D2140);
-        if (((*(u16 *)work) >= 0xFF41U) && ((*(u16 *)work) <= 0xFF5AU)) {
-            var_r3_3 = 1U;
-            (*(u16 *)work) -= 0x20;
-        } else {
-            var_r3_3 = 0U;
-        }
-        if (var_r3_3 == 1U) {
-            M2C_FIELD(&lbl_803D2140, void (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
-            var_r3_3 = 1U;
-        } else {
-            var_r3_3 = 0U;
-        }
-        if (var_r3_3 == 1U) {
+        if (Fn800B25CCWide2((u16 *)work) == 1U) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
