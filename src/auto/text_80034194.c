@@ -581,6 +581,9 @@ void __DSP_boot_task(void *arg0) {
 }
 
 void __DSP_insert_task(void *arg0) {
+    /* Insert a DSP task into the global priority-sorted task list
+     * (__DSP_first_task/__DSP_last_task/__DSP_curr_task). Priority is at +4;
+     * prev at +0x3C, next at +0x38. */
     extern void *lbl_8055D81C;
     extern void *lbl_8055D820;
     extern void *lbl_8055D824;
