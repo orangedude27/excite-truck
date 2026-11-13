@@ -447,24 +447,25 @@ extern u8 lbl_8041D508[];
 extern s32 (*lbl_8055DEC8)(s32);
 extern s32 lbl_8055DECC;
 extern s32 lbl_8055DED0;
-s32 fn_80116E54(s32 (*arg0)(s32), s32 arg1) {
-    s32 (*func)(s32);
+/* Video/init callback registration: set/replace the active init callback and invoke it once. */
+s32 fn_80116E54(s32 (*callback)(s32), s32 arg) {
+    s32 (*current)(s32);
     s32 result;
-    if (arg0 == 0)
+    if (callback == 0)
         return 0;
-    func = lbl_8055DEC8;
-    if (func == 0) {
-        func = arg0;
-        lbl_8055DEC8 = arg0;
+    current = lbl_8055DEC8;
+    if (current == 0) {
+        current = callback;
+        lbl_8055DEC8 = callback;
     }
-    if ((u32)func != (u32)arg0) {
+    if ((u32)current != (u32)callback) {
         if (lbl_8055DED0 == 0) {
-            lbl_8055DEC8 = arg0;
+            lbl_8055DEC8 = callback;
         } else {
             return 0;
         }
     }
-    result = lbl_8055DEC8(arg1);
+    result = lbl_8055DEC8(arg);
     if (result != 0)
         lbl_8055DECC = result;
     return lbl_8055DECC != 0;
