@@ -217,7 +217,6 @@ unsigned short fn_802E5168(float arg0) {
     return (unsigned short)result;
 }
 
-#define SPK_STREAM_MOVED_UP
 /* One Wii remote speaker stream per Wii remote channel, 0x2C bytes each in the
  * table at lbl_804FC800; fn_802E51D0 opens one, fn_802E5264 closes it again. */
 struct SpkStream {
