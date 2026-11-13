@@ -386,8 +386,10 @@ void fn_8025A204(void) {
     } state;
     float base;
     int *entry;
-    int index, changed, current, result, count, firstResult, secondResult;
-    char *src, *dst;
+    int index, changed, current, result, firstResult, secondResult;
+    char *src;
+    int count;
+    char *dst;
     char * volatile text;
     register int zero = 0;
     ((void (*)(void))fn_80259148)();
@@ -400,6 +402,7 @@ void fn_8025A204(void) {
     entry = lbl_80344EA0;
     do {
         float f;
+        int s, n;
         if (*entry == 0) f = lbl_80563AF4;
         else f = lbl_80563AF8;
         state.state = zero;
@@ -452,8 +455,10 @@ void fn_8025A204(void) {
                 if (count <= 0) { dst[-1] = 0; break; }
             }
         }
+        s = state.selected;
+        n = state.next;
         state.dialog = 1;
-        if (state.next != state.selected) {
+        if (n != s) {
             ((void (*)(void *, void *))(*(void ***)lbl_8055F394)[14])(lbl_8055F394, lbl_80344DE0);
             fn_8025978C((void **)&text);
         }
@@ -621,58 +626,62 @@ extern char *fn_80029004(char *, int);
 extern int strlen(char *);
 void fn_8025A8B8(void *arg0, char *arg1) {
     char name[0x40];
-    register char *input = arg1;
-    register void *obj = arg0;
-    register char *dst;
+    char *input = arg1;
+    void *obj = arg0;
     register char *src;
     register int count;
     signed char c;
+    register char *dst = name;
     int id;
     float one;
     float zero;
-
     id = *(int *)((char *)obj + 0x50);
     if (id != -1) {
         fn_802C6CF8(id);
         *(int *)((char *)obj + 0x50) = -1;
     }
-
     if (*(signed char *)input != 0 && strlen(input) != 0) {
         src = lbl_80345208;
         dst = name;
         count = 0x40;
         goto prefix_char;
 prefix_check:
-        --count;
+        count--;
         if (count > 0)
             goto prefix_char;
-        *--dst = 0;
+        dst--;
+        *dst = 0;
         goto prefix_done;
 prefix_char:
-        c = (signed char)*src++;
-        *dst++ = (char)c;
+        c = src[0];
+        src++;
+        dst[0] = c;
+        dst++;
         if (c != 0)
             goto prefix_check;
 prefix_done:
         dst = name;
         count = 0x40;
-        do {
-            --count;
-            ++dst;
-        } while ((signed char)*dst != 0);
+        while (dst[0] != 0) {
+            count--;
+            dst++;
+        }
         if (count > 0) {
             goto input_char;
         }
         goto input_done;
 input_check:
-        --count;
+        count--;
         if (count > 0)
             goto input_char;
-        *--dst = 0;
+        dst--;
+        *dst = 0;
         goto input_done;
 input_char:
-        c = (signed char)*input++;
-        *dst++ = (char)c;
+        c = input[0];
+        input++;
+        dst[0] = c;
+        dst++;
         if (c != 0)
             goto input_check;
 input_done:
@@ -680,34 +689,35 @@ input_done:
             dst = fn_80029004(name, '.');
             *dst = 0;
         }
-
         dst = name;
         count = 0x40;
         src = lbl_8055C384;
-        do {
-            --count;
-            ++dst;
-        } while ((signed char)*dst != 0);
+        while (dst[0] != 0) {
+            count--;
+            dst++;
+        }
         if (count > 0) {
             goto suffix_char;
         }
         goto suffix_done;
 suffix_check:
-        --count;
+        count--;
         if (count > 0)
             goto suffix_char;
-        *--dst = 0;
+        dst--;
+        *dst = 0;
         goto suffix_done;
 suffix_char:
-        c = (signed char)*src++;
-        *dst++ = (char)c;
+        c = src[0];
+        src++;
+        dst[0] = c;
+        dst++;
         if (c != 0)
             goto suffix_check;
 suffix_done:
         if (fn_8012C33C(name))
             *(int *)((char *)obj + 0x50) = fn_802C6FC0(name, 0, 0);
     }
-
     one = lbl_80563AE4;
     zero = lbl_80563AE0;
     *(float *)((char *)obj + 0x88) = one;
@@ -759,55 +769,55 @@ void fn_8025AA90(void *arg0, float farg0) {
     float v8[3];
     unsigned int flags40, flags50;
     float color0, color1, sum, d1;
-    if (*(int *)((char *)arg0 + 0x50) != -1) {
-        if (((unsigned char *)arg0)[0x4A] != 0) {
-            if (fn_801298E8(info, 0) != 0) {
-                flags40 = *(int *)(info + 0x40);
-                color0 = (flags40 & 2) ? lbl_80563AE0 : lbl_80563AE4;
-                color1 = (flags40 & 8) ? lbl_80563AEC : lbl_80563AE4;
-                sum = color1 + color0;
-                lbl_8055F398 += farg0 * (lbl_80563B08 * sum);
-                fn_8001BA68(v8);
-                flags50 = *(int *)(info + 0x50);
-                if (flags50 & 0x20) {
-                    fn_80144DAC(v8, (float *)(info + 0x54));
-                } else {
-                    GXInitLightAttnA_801BFEBC(v8,
-                        *(float *)(info + 0),
-                        -fn_8025ADF4(fn_801429D0(lbl_80563AE4,
-                            (lbl_80563AE0 - fn_80144CC8(*(float *)(info + 0))) + fn_80144CC8(*(float *)(info + 4)))),
-                        *(float *)(info + 4));
-                }
-                fn_8025AD8C((char *)arg0 + 0x84, lbl_80498EAC, lbl_80498EAC, v8, farg0);
-                GXInitLightAttnA_801BFEBC((char *)arg0 + 0x90, lbl_80498EAC[0], -lbl_80498EAC[1], lbl_80498EAC[2]);
-                fn_801F3198((char *)arg0 + 0x90);
-            }
-            GXInitLightAttnA_80144B44(v14, lbl_80563AE0, lbl_80563AE4, lbl_80563AE4);
-            GXInitLightAttnA_80144B44(v20, lbl_80563AE4, lbl_80563AE4, lbl_80563AE0);
-            d1 = fn_8017F70C(((float (*)(void *, void *))fn_8025AD88)(v14, (char *)arg0 + 0x90));
-            fn_8017F70C(((float (*)(void *, void *))fn_8025AD88)((char *)arg0 + 0x90, v20));
-            if (d1 > lbl_80563B0C) {
-                fn_8001BA68(v2C);
-                fn_8001BA68(v38);
-                fn_8001BA68(v44);
-                fn_801C0E4C(v44, v14, (char *)arg0 + 0x90);
-                fn_801C0E4C(v2C, (char *)arg0 + 0x90, v44);
-                fn_801C0E4C(v38, (char *)arg0 + 0x90, v20);
-                d1 = fn_8014C8B4(lbl_80563B0C, lbl_80563B10, lbl_80563AE4, lbl_80563AE0, d1);
-                fn_8025AD3C(v50, v2C, v38, d1);
-                fn_801C0E4C((char *)arg0 + 0x9C, v50, (char *)arg0 + 0x90);
-                fn_801F3198((char *)arg0 + 0x9C);
-                fn_801C0E4C((char *)arg0 + 0x84, (char *)arg0 + 0x90, (char *)arg0 + 0x9C);
-            } else {
-                fn_801C0E4C((char *)arg0 + 0x9C, v14, (char *)arg0 + 0x90);
-                fn_801F3198((char *)arg0 + 0x9C);
-                fn_801C0E4C((char *)arg0 + 0x84, (char *)arg0 + 0x90, (char *)arg0 + 0x9C);
-            }
-            fn_80015EB0(rot, lbl_8055F398);
-            fn_80015B20((char *)arg0 + 0x84, rot, (char *)arg0 + 0x84);
-            fn_80015B20((char *)arg0 + 0x84, (char *)arg0 + 0x84, fn_802C86DC());
+    if (*(int *)((char *)arg0 + 0x50) == -1) return;
+    if (((unsigned char *)arg0)[0x4A] != 0) goto body;
+    return;
+body:
+    if (fn_801298E8(info, 0) != 0) {
+        flags40 = *(int *)(info + 0x40);
+        color0 = (flags40 & 2) ? lbl_80563AE0 : lbl_80563AE4;
+        color1 = (flags40 & 8) ? lbl_80563AEC : lbl_80563AE4;
+        sum = color1 + color0;
+        lbl_8055F398 += farg0 * (lbl_80563B08 * sum);
+        fn_8001BA68(v8);
+        flags50 = *(int *)(info + 0x50);
+        if (flags50 & 0x20) {
+            fn_80144DAC(v8, (float *)(info + 0x54));
+        } else {
+            GXInitLightAttnA_801BFEBC(v8,
+                *(float *)(info + 0),
+                -fn_8025ADF4(fn_801429D0(lbl_80563AE4,
+                    (lbl_80563AE0 - fn_80144CC8(*(float *)(info + 0))) + fn_80144CC8(*(float *)(info + 4)))),
+                *(float *)(info + 4));
         }
+        fn_8025AD8C((char *)arg0 + 0x84, lbl_80498EAC, lbl_80498EAC, v8, farg0);
+        GXInitLightAttnA_801BFEBC((char *)arg0 + 0x90, lbl_80498EAC[0], -lbl_80498EAC[1], lbl_80498EAC[2]);
+        fn_801F3198((char *)arg0 + 0x90);
     }
+    GXInitLightAttnA_80144B44(v14, lbl_80563AE0, lbl_80563AE4, lbl_80563AE4);
+    GXInitLightAttnA_80144B44(v20, lbl_80563AE4, lbl_80563AE4, lbl_80563AE0);
+    d1 = fn_8017F70C(((float (*)(void *, void *))fn_8025AD88)(v14, (char *)arg0 + 0x90));
+    fn_8017F70C(((float (*)(void *, void *))fn_8025AD88)((char *)arg0 + 0x90, v20));
+    if (d1 > lbl_80563B0C) {
+        fn_8001BA68(v2C);
+        fn_8001BA68(v38);
+        fn_8001BA68(v44);
+        fn_801C0E4C(v44, v14, (char *)arg0 + 0x90);
+        fn_801C0E4C(v2C, (char *)arg0 + 0x90, v44);
+        fn_801C0E4C(v38, (char *)arg0 + 0x90, v20);
+        d1 = fn_8014C8B4(lbl_80563B0C, lbl_80563B10, lbl_80563AE4, lbl_80563AE0, d1);
+        fn_8025AD3C(v50, v2C, v38, d1);
+        fn_801C0E4C((char *)arg0 + 0x9C, v50, (char *)arg0 + 0x90);
+        fn_801F3198((char *)arg0 + 0x9C);
+        fn_801C0E4C((char *)arg0 + 0x84, (char *)arg0 + 0x90, (char *)arg0 + 0x9C);
+    } else {
+        fn_801C0E4C((char *)arg0 + 0x9C, v14, (char *)arg0 + 0x90);
+        fn_801F3198((char *)arg0 + 0x9C);
+        fn_801C0E4C((char *)arg0 + 0x84, (char *)arg0 + 0x90, (char *)arg0 + 0x9C);
+    }
+    fn_80015EB0(rot, lbl_8055F398);
+    fn_80015B20((char *)arg0 + 0x84, rot, (char *)arg0 + 0x84);
+    fn_80015B20((char *)arg0 + 0x84, (char *)arg0 + 0x84, fn_802C86DC());
 }
 #pragma pop
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
@@ -876,7 +886,7 @@ void fn_8025AE18(void *arg0) {
     float state[3], vec[3];
     char *camera, *other;
     int a, b, index;
-    float ratio, size, z, y, x, old;
+    float ratio, size, x, z, y, old, t;
     if (*(int *)(obj + 0x50) == -1 || *(unsigned char *)(obj + 0x4A) == 0) return;
     fn_8025B0E8(obj + 0x54, ((void *(*)(void *))fn_8025B134)(obj + 0x84));
     other = (char *)fn_8022EDC4();
@@ -889,7 +899,8 @@ void fn_8025AE18(void *arg0) {
     if (index <= 0) {
         fn_802E30C8(lbl_80345218);
     } else {
-        size = (lbl_80563B18 * values[index - 1]) * lbl_80563B1C;
+        t = lbl_80563B18 * values[index - 1];
+        size = t * lbl_80563B1C;
         ratio = size / fn_8025B0C4(lbl_80563B1C * lbl_8055F39C);
         size = lbl_80563B20 + size;
         camera = (char *)fn_802C86DC();
@@ -998,14 +1009,15 @@ copyDone:
 
 extern int fn_80214A9C(int);
 extern int fn_80214AF0(int);
-void fn_8025B22C(void *arg0) {
+/* Update 5-star level indicators: highlight selected (0x74) and show achieved (<= 0x1C). */
+void fn_8025B22C(void *menu) {
     int i;
     for (i = 1; i <= 5; i++) {
-        if (*(int *)((char *)arg0 + 0x74) == i)
+        if (*(int *)((char *)menu + 0x74) == i)
             fn_80214AF0(i + 5);
         else
             fn_80214A9C(i + 5);
-        if (i <= *(int *)((char *)arg0 + 0x1C)) {
+        if (i <= *(int *)((char *)menu + 0x1C)) {
             fn_80214AF0(i);
             fn_80214A9C(i + 10);
         } else {
