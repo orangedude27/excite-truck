@@ -1019,9 +1019,10 @@ void fn_8014D6EC(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_8014D700(void *arg0, s32 arg1) {
+extern "C" void fn_8014D700(void *context, s32 param) {
+    /* Finalize a subobject via vcall (slot 16), then forward to fn_80149658 with a table value when enabled. */
     s32 index;
-    s32 var_r6;
+    s32 tableValue;
     void *temp_r5;
     void *temp;
     struct TObjD1Call {
@@ -1043,20 +1044,20 @@ extern "C" void fn_8014D700(void *arg0, s32 arg1) {
         virtual void f15();
         virtual void f16(void *);
     };
-    temp_r5 = *(void **)((u8 *)arg0 + 0xC);
+    temp_r5 = *(void **)((u8 *)context + 0xC);
     *(s32 *)((u8 *)temp_r5 + 8) = 0;
-    temp = *(void **)((u8 *)arg0 + 0x10);
-    ((TObjD1Call *)temp)->f16(*(void **)((u8 *)arg0 + 0xC));
+    temp = *(void **)((u8 *)context + 0x10);
+    ((TObjD1Call *)temp)->f16(*(void **)((u8 *)context + 0xC));
 
-    temp_r5 = *(void **)((u8 *)arg0 + 0x68);
-    index = *(s32 *)arg0;
+    temp_r5 = *(void **)((u8 *)context + 0x68);
+    index = *(s32 *)context;
     void *table = (u8 *)temp_r5 + 0x8F4;
     if (*(u8 *)table != 0) {
-        var_r6 = *(s32 *)((u8 *)table + index * 0x1C + 8);
+        tableValue = *(s32 *)((u8 *)table + index * 0x1C + 8);
     } else {
-        var_r6 = 0;
+        tableValue = 0;
     }
-    fn_80149658(arg1, (void *)((u8 *)arg0 + 0x6C), *(void **)((u8 *)arg0 + 0xC), var_r6);
+    fn_80149658(param, (void *)((u8 *)context + 0x6C), *(void **)((u8 *)context + 0xC), tableValue);
 }
 
 extern "C" bool fn_8014D794(void *arg0, void *arg1) {
