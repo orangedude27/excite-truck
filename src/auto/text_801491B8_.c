@@ -2797,12 +2797,15 @@ extern s32 lbl_8055E238;
 extern s32 lbl_8055E23C;
 s32 fn_80153A30(void) { return 0; }
 
-s32 fn_80153A38(void *arg0) {
+s32 fn_80153A38(void *base) {
+    /* Returns 1 if every indexed entry is ready: per-index flag at (playerIndex*0xC0 + 0xA84) is set
+       or the per-slot state at (index*0x240 + 0x454) is 2. */
     s32 i;
+
     fn_80179650();
     for (i = 0; i < fn_801E85A4(); i++) {
-        if (*(u8 *)((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0 &&
-            *(s32 *)((u8 *)arg0 + i * 0x240 + 0x454) != 2) {
+        if (*(u8 *)((u8 *)base + fn_801E86F8(i) * 0xC0 + 0xA84) == 0 &&
+            *(s32 *)((u8 *)base + i * 0x240 + 0x454) != 2) {
             return 0;
         }
     }
