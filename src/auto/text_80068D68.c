@@ -19802,11 +19802,12 @@ void l2cu_release_lcb(void *arg0) {
 extern u8 lbl_803C4040[];
 extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
 extern void l2cu_create_conn_after_switch(void *p_lcb);
-void *l2cu_find_lcb_by_bd_addr(u8 *addr) {
+void *l2cu_find_lcb_by_bd_addr(u8 *bdAddr) {
+    /* Find an active L2CAP link control block by peer BD address. */
     int i = 0;
     u8 *lcb = lbl_803C4040 + 8;
     while (i < 4) {
-        if (lcb[0] && memcmp(lcb + 0x2A, addr, 6) == 0) return lcb;
+        if (lcb[0] && memcmp(lcb + 0x2A, bdAddr, 6) == 0) return lcb;
         lcb += 0x5C;
         i++;
     }
