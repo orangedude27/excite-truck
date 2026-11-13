@@ -400,26 +400,26 @@ long fn_8020FC6C(void) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8020FCC4(void) {
-    long result;
-    long index;
-    long current;
+    int result;
+    int index;
+    int current;
     void *base;
     struct Dummy_802113D8 *object;
     base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
     object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
     result = object->f6(&lbl_8055B674, lbl_8033C970);
-    index = ((long (*)(void))fn_8020FC6C)();
+    index = ((int (*)(void))fn_8020FC6C)();
     if (index >= 0 && index < lbl_804900AC.m_count) {
         fn_802E30C8(lbl_8033C980, index, lbl_804900AC.m_entries[index], result);
     }
-    if (index == ((long (*)(long))fn_8020F3B4)(0)) {
-        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
-            index = ((long (*)(long))fn_8020F3B4)(1);
+    if (index == ((int (*)(int))fn_8020F3B4)(0)) {
+        if (lbl_8055B658 == ((int (*)(int))fn_8020F3B4)(1)) {
+            index = ((int (*)(int))fn_8020F3B4)(1);
         }
     }
-    if (index == ((long (*)(long))fn_8020F3B4)(0)) {
-        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2)) {
-            index = ((long (*)(long))fn_8020F3B4)(2);
+    if (index == ((int (*)(int))fn_8020F3B4)(0)) {
+        if (lbl_8055B658 == ((int (*)(int))fn_8020F3B4)(2)) {
+            index = ((int (*)(int))fn_8020F3B4)(2);
         }
     }
     current = lbl_8055B658;
@@ -782,18 +782,35 @@ long fn_80210570(void) {
     }
 }
 
-void fn_80210688(unsigned char arg0) {
-    long tmp;
-    long tmp2;
-    long r30;
-    long r29;
-    long late;
-    struct Dummy_802113D8 *obj;
+/* Per-frame track-music update, run with the "music is muted" flag.
+ *
+ * It loads any song bank that is not loaded yet, rebuilds the song list when
+ * the number of songs the dash found (fn_802EC0FC) changed - telling the
+ * player-facing selection state about it through lbl_8055EEC0 - and, while a
+ * song is selected (lbl_8055B658, -1 = none), hands the current one to the
+ * music system (fn_802EC11C) whenever no song is already on hold and the race
+ * is not inside the window (lbl_8055EEC8/lbl_8055EECC, 0xFA0 timebase ticks)
+ * in which a change is held off.  A slot of the random type then advances to
+ * the next shuffled song, and a change of the mute flag starts or stops the
+ * music.  fn_8020F3B4() returns the "no song" index (-1) whatever it is
+ * passed, so the three mode tests below only compare against that index;
+ * fn_801B85CC() is a query on the current scene object and fn_800216D0()
+ * reports the tips/results overlay being up, both suppressed while the game is
+ * paused (fn_80009C84).  The virtual call is slot 6 of the audio resource
+ * list, looking the "name" property up on the "invalid_contest" contest.
+ */
+void fn_80210688(unsigned char mute) {
+    long songCount;
+    long now;
+    long overlayUp;
+    long sceneActive;
+    long holdSongChange;
+    struct Dummy_802113D8 *resource;
     if ((unsigned char)lbl_8055EEF4 == 0 || (unsigned char)lbl_8055EEF5 == 0 || (unsigned char)lbl_8055EEF6 == 0) {
         fn_8020F444();
     }
-    tmp = fn_802EC0FC();
-    if (tmp != lbl_8055EEBC) {
+    songCount = fn_802EC0FC();
+    if (songCount != lbl_8055EEBC) {
         fn_802EC12C();
         fn_8020F950();
         fn_8020FCC4();
@@ -801,53 +818,53 @@ void fn_80210688(unsigned char arg0) {
     } else {
         lbl_8055EEC0 = 0;
     }
-    lbl_8055EEBC = tmp;
-    r30 = 0;
+    lbl_8055EEBC = songCount;
+    overlayUp = 0;
     if (fn_800216D0() != 0 && fn_80009C84() == 0) {
-        r30 = 1;
+        overlayUp = 1;
     }
-    r29 = 1;
+    sceneActive = 1;
     if (fn_801B85CC() == 0 && fn_80009C84() == 0) {
-        r29 = 0;
+        sceneActive = 0;
     }
     if (lbl_8055B658 != -1) {
-        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(0) && r30 != 0) {
+        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(0) && overlayUp != 0) {
             lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(2);
             fn_802EC12C();
             fn_802EC1D8();
-        } else if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2) && r30 == 0) {
+        } else if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2) && overlayUp == 0) {
             lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(0);
             fn_802EC12C();
             fn_802EC1D8();
-        } else if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(0) && r29 != 0) {
+        } else if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(0) && sceneActive != 0) {
             lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(1);
             fn_802EC12C();
             fn_802EC1D8();
         }
-        late = 0;
+        holdSongChange = 0;
         if ((unsigned char)lbl_8055EEC8 != 0) {
-            tmp2 = fn_802E2C20();
-            if (tmp2 >= lbl_8055EECC && tmp2 < lbl_8055EECC + 0xFA0) {
-                late = 1;
+            now = fn_802E2C20();
+            if (now >= lbl_8055EECC && now < lbl_8055EECC + 0xFA0) {
+                holdSongChange = 1;
             }
         }
-        if (fn_802EC124() == -1 && late == 0) {
+        if (fn_802EC124() == -1 && holdSongChange == 0) {
             fn_802EC11C(lbl_8055B658);
             fn_802EC138();
-            obj = *(struct Dummy_802113D8 **)((char *)fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
-            obj->f6(&lbl_8055B674, lbl_8033C970);
+            resource = *(struct Dummy_802113D8 **)((char *)fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
+            resource->f6(&lbl_8055B674, lbl_8033C970);
             if (*(long *)fn_8020FAF0() == 1 && lbl_8055EEBC > 0) {
                 lbl_8055B658 = fn_8020F6FC();
             }
         }
-        if ((unsigned char)lbl_8055B660 != arg0) {
-            if (arg0 != 0) {
+        if ((unsigned char)lbl_8055B660 != mute) {
+            if (mute != 0) {
                 fn_802EC158();
             } else {
                 fn_802EC138();
             }
         }
-        lbl_8055B660 = arg0;
+        lbl_8055B660 = mute;
     }
 }
 
