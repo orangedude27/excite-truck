@@ -751,6 +751,7 @@ typedef struct { unsigned int mode0; unsigned int mode1; } __GXTexObjInt;
 
 static unsigned char GX2HWFiltConv[6] = { 0x00, 0x04, 0x01, 0x05, 0x02, 0x06 };
 #pragma dont_inline on
+/* Copy the current CPU FIFO object state into `fifo`; returns 0 if GX is not initialized. */
 int GXGetCPUFifo(void *fifo) {
     struct Pair {
         unsigned int first;
@@ -764,6 +765,7 @@ int GXGetCPUFifo(void *fifo) {
     {
         struct Pair *src = (struct Pair *)lbl_8037C0E4;
         struct Pair *dst = (struct Pair *)fifo;
+
         dst[0] = src[0];
         dst[1] = src[1];
         dst[2] = src[2];
