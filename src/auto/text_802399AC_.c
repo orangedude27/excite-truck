@@ -31,6 +31,8 @@ extern s32 lbl_8055BB00;
 extern s32 lbl_8055F110;
 extern void *lbl_8055F10C;
 extern s32 lbl_802FA040[];
+extern s32 lbl_804986F8[];
+extern s32 fn_802146BC(void *, s32, s32, s32);
 extern char lbl_8055BAC0[];
 extern char lbl_8055BABC[];
 extern char lbl_8055B860[];
