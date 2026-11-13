@@ -142,11 +142,12 @@ void fn_801CB518(void) {
     fn_801CCCAC();
 }
 
-void fn_801CB55C(int arg0, int arg1) {
+/* Queue an award event for a player if awards are active and the player entry is valid. */
+void fn_801CB55C(int playerIndex, int param) {
     if (fn_80019BA8() || fn_80161C38()) return;
-    if (fn_801CE874(arg0)) {
-        fn_801CCDAC(0x22205, arg0, arg1);
-        fn_801CD4CC(arg0, arg1);
+    if (fn_801CE874(playerIndex)) {
+        fn_801CCDAC(0x22205, playerIndex, param);
+        fn_801CD4CC(playerIndex, param);
     }
 }
 
