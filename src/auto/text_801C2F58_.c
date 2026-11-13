@@ -1709,6 +1709,7 @@ void fn_801C7F64(void) {
     sMenuAction = menu_action_idle;
     sTextFieldFlag = 1;
 }
+
 #pragma push
 #pragma opt_propagation off
 void fn_801C7FE4(void) {
