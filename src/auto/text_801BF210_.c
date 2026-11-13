@@ -595,17 +595,18 @@ extern void fn_80179EE8(void *, int);
 extern void fn_80128668(void *);
 extern int lbl_8055E7BC;
 extern char lbl_80336A90[];
-void *fn_801C0180(void *arg0, int arg1) {
-    int temp_r4;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_80336A90;
-        temp_r4 = lbl_8055E7BC;
-        lbl_8055E7BC = temp_r4 - 1;
-        fn_801C1C7C(*(void **)((char *)arg0 + 0x214), temp_r4);
-        if (arg0 != 0) fn_80179EE8(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destructor-like cleanup: installs vtable, decrements ref count, tears down subobject at +0x214, runs base dtor, optionally frees. */
+void *fn_801C0180(void *self, int deleteFlag) {
+    int refCount;
+    if (self != 0) {
+        *(void **)self = lbl_80336A90;
+        refCount = lbl_8055E7BC;
+        lbl_8055E7BC = refCount - 1;
+        fn_801C1C7C(*(void **)((char *)self + 0x214), refCount);
+        if (self != 0) fn_80179EE8(self, 0);
+        if (deleteFlag > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 /* Initializes an object (arg0) with setup params from arg1, sets default transform/volume fields, creates a "panelvol" subobject, attaches it, and clears a flag at 0x1E8. */
