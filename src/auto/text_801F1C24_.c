@@ -996,41 +996,46 @@ struct Camera {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_loop_invariants off
-void fn_801F3288(void *arg0) {
-    float f30, f31;
-    void *plane;
-    void *planes;
-    void *camera;
+void fn_801F3288(struct Sky *sky) {
+    /* Works out which of the sky dome's 32 direction planes the camera looks
+     * along: a plane counts when the camera's view axis lies nearer to its
+     * normal than the plane's own angle, widened by the scene's sky parameter.
+     * The sky's matrix keeps its position on the camera, and the matrix goes to
+     * the sky model together with the mask of the planes that counted. */
+    float baseAngle, dot;
+    struct SkyPlane *plane;
+    struct SkyPlane *walk;
+    struct Camera *camera;
     int mask;
     unsigned int i;
-    *(int *)((char *)arg0 + 4) = 0;
-    if (*(void **)((char *)arg0 + 0x3C) != 0 && *(int *)((char *)arg0 + 8) != 0) {
-        camera = fn_802C86DC();
-        *(float *)((char *)arg0 + 0x30) = *(float *)((char *)camera + 0x24);
-        planes = *(void **)((char *)arg0 + 0x3C);
-        *(float *)((char *)arg0 + 0x34) = *(float *)((char *)camera + 0x28);
-        plane = (char *)planes + 0x2C;
-        *(float *)((char *)arg0 + 0x38) = *(float *)((char *)camera + 0x2C);
-        if (*(int *)((char *)arg0 + 8) == 1) {
+    sky->planeCount = 0;
+    if (sky->resource != 0 && sky->mode != 0) {
+        camera = (struct Camera *)fn_802C86DC();
+        sky->matrix[9] = camera->position[0];
+        walk = (struct SkyPlane *)sky->resource;   /* the resource; its planes start at +0x2C */
+        sky->matrix[10] = camera->position[1];
+        plane = (struct SkyPlane *)((char *)walk + 0x2C);
+        sky->matrix[11] = camera->position[2];
+        if (sky->mode == 1) {
             mask = 1;
-            f30 = lbl_80562F64 * (lbl_80562F70 * fn_801E8738(-1));
+            baseAngle = lbl_80562F64 * (lbl_80562F70 * fn_801E8738(-1));
             i = 0;
-            planes = plane;
+            walk = plane;
             do {
-                f31 = PSVECDotProduct((float *)((char *)camera + 0x18), (float *)plane);
-                if (f31 > (float)cos(f30 + *(float *)((char *)planes + 0xC))) {
+                dot = PSVECDotProduct(camera->viewAxis, plane->normal);
+                if (dot > (float)cos(baseAngle + walk->angle)) {
                     mask |= 1 << i;
-                    *(int *)((char *)arg0 + 4) = *(int *)((char *)arg0 + 4) + 1;
+                    sky->planeCount = sky->planeCount + 1;
                 }
                 i++;
-                plane = (char *)plane + 0x10;
-                planes = (char *)planes + 0x10;
+                plane = plane + 1;
+                walk = walk + 1;
             } while (i < 0x20);
         } else {
-            *(int *)((char *)arg0 + 4) = 0x20;
+            sky->planeCount = 0x20;
             mask = -1;
         }
-        fn_802C70AC(*(int *)((char *)*(void **)((char *)arg0 + 0x3C) + 4), (char *)arg0 + 0xC, -1, mask);
+        fn_802C70AC(sky->resource->model, sky->matrix, -1, mask);
     }
 }
 #pragma pop
