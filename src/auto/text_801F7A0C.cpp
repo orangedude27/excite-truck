@@ -1410,21 +1410,22 @@ extern "C" s32 fn_801F9CF8(void *arg0) {
 
 extern "C" void *fn_80016544(s32);
 extern "C" s32 fn_801F9D70(void *arg0) {
+    /* Scan the 0x78-byte item list at arg0+0x20 (count at +0x3c0): if any item has type 0x50, require flag bit 4 in fn_80016544(item[+0x6c])+0xa0 and return 1 only when all such items satisfy it. */
     char *item;
-    s32 ret = 0;
-    char *base = (char *)arg0 + 0x20;
+    s32 allRequiredFlagsSet = 0;
+    char *itemsBase = (char *)arg0 + 0x20;
     s32 i;
 
-    item = base;
-    for (i = 0; i < *(s32 *)(base + 0x3c0); item += 0x78, i++) {
+    item = itemsBase;
+    for (i = 0; i < *(s32 *)(itemsBase + 0x3c0); item += 0x78, i++) {
         if (*(s32 *)item == 0x50) {
-            ret = 1;
+            allRequiredFlagsSet = 1;
             if (!(*(u32 *)((char *)fn_80016544(*(s32 *)(item + 0x6c)) + 0xa0) & 4)) {
                 return 0;
             }
         }
     }
-    return ret;
+    return allRequiredFlagsSet;
 }
 
 extern "C" void fn_801EEFDC(void *, s32);
