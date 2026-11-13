@@ -1556,19 +1556,22 @@ extern "C" void fn_801FA010(void **listHead) {
     *listHead = 0;
 }
 
-extern "C" void fn_801FA0B0(void **arg0) {
-    void *node = *arg0;
+extern "C" void fn_801FA0B0(void **head) {
+    /* Walk a singly-linked list (next at +4), destroying and freeing each node.
+     * Each node owns an object at +0 freed via fn_80131818; the slot is cleared
+     * and the node is freed with fn_80128668, then the head is cleared. */
+    void *node = *head;
     while (node != 0) {
         void *next = *(void **)((char *)node + 4);
         if (node != 0) {
-            void *value = *(void **)node;
-            if (value != 0) fn_80131818(value);
+            void *ownedObject = *(void **)node;
+            if (ownedObject != 0) fn_80131818(ownedObject);
             *(s32 *)node = 0;
             ((void (*)(void *))fn_80128668)(node);
         }
         node = next;
     }
-    *arg0 = 0;
+    *head = 0;
 }
 
 extern "C" void fn_801FA138(void **arg0) {
