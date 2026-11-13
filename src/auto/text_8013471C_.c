@@ -136,7 +136,7 @@ void fn_8013477C(void *arg0) {
     value = fn_80134B58((s32)(strings + 0x0C), lbl_805612F0);
     lbl_8055E0A0 = value;
     if (value < lbl_805612F4) {
-        temp = lbl_805612E8 * fn_80134B58((s32)(strings + 0), lbl_805612EC);
+        temp = lbl_805612E8 * fn_80134B58((s32)(strings + 12 - 12), lbl_805612EC);
         lbl_8055E0A0 = fn_8013672C() - temp;
     }
     f1 = fn_80134B58((s32)(strings + 0x1C), lbl_805612FC);
@@ -187,6 +187,7 @@ void fn_8013490C(void) {
     register s32 zero;
     void *item;
 
+    /* Shut down AX/DSP-related subsystems, free/clear 8 tracked resource slots in lbl_8042F758, then reset DSP callback/state. */
     fn_80160AE4();
     fn_8015F558();
     fn_8013A1EC();
