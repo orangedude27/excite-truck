@@ -621,12 +621,13 @@ void fn_802DC628(void) {}
 #pragma push
 #pragma small_data off
 void fn_802DC62C(void) {
-    volatile unsigned char *p = (volatile unsigned char *)*(void **)&lbl_804DB468;
-    if (GXGetTexObjMipMap((void *)(p + 0x24)) != 6)
+    volatile unsigned char *textureBase = (volatile unsigned char *)*(void **)&lbl_804DB468;
+    /* Validate CPU-light source texture (mipmap/wrap/size expectations) and cache its GX format for lookups. */
+    if (GXGetTexObjMipMap((void *)(textureBase + 0x24)) != 6)
         ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB00);
-    if (GXGetTexObjWrapS((void *)(p + 0x24)) != 0x200)
+    if (GXGetTexObjWrapS((void *)(textureBase + 0x24)) != 0x200)
         ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB24);
-    lbl_8055FEBC = GXGetTexObjFmt((void *)(p + 0x24)) + 0x80000000;
+    lbl_8055FEBC = GXGetTexObjFmt((void *)(textureBase + 0x24)) + 0x80000000;
 }
 #pragma pop
 extern int GXGetTexObjMipMap(void *);
