@@ -178,9 +178,13 @@ void fn_801D0824(void *listener) {
 #pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_801D08C0(void *arg0) {
-    struct Dummy {
-        virtual void f0(void *);
+/* Notify every listener in the second listener list (lbl_8043870C): call the first
+   virtual function of each entry's dispatch sub-object, with the notifier's own
+   sub-object as its argument.  fn_801D0934, fn_801D09A8 and fn_801D0A24 walk the
+   same list for the three virtual functions after this one. */
+extern "C" void fn_801D08C0(void *notifier) {
+    struct Listener {
+        virtual void notify(void *);
     };
     int offset;
     int i;
@@ -188,7 +192,7 @@ extern "C" void fn_801D08C0(void *arg0) {
     offset = 0;
     while (i < lbl_8043870C[0].count) {
         void *obj = *(void **)((char *)lbl_8043870C[0].items + offset);
-        ((Dummy *)obj)->f0(arg0);
+        ((Listener *)obj)->notify(notifier);
         offset += 4;
         i++;
     }
