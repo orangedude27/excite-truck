@@ -8,11 +8,14 @@ int __AXGetStackHead(int index) {
 
 int fn_8001D7EC(char *name) {
     extern char *lbl_802ED818[];
-    int i;
-    for (i = 0; i < 5; i++) {
-        if (lbl_802ED818[i] != 0 && strcmp(lbl_802ED818[i], name) == 0) {
+    char **table = lbl_802ED818;
+    int i = 0;
+    while (i < 5) {
+        if (*table != 0 && strcmp(*table, name) == 0) {
             return i;
         }
+        if (++i >= 5) break;
+        table++;
     }
     return -1;
 }
@@ -33,55 +36,60 @@ int fn_8001D884(int arg0) {
 
 int stricmp(const char *, const char *);
 void fn_8001D8B4(int *arg0, void *arg1, int arg2) {
+    typedef char *(*GetName)(void *, char *, char *);
+    typedef int (*GetValue)(void *, char *, int);
+    struct Vtbl {
+        void *f0, *f1, *f2, *f3, *f4, *f5;
+        GetName get_name;
+        void *f7;
+        GetValue get_value;
+    };
+    struct Obj { struct Vtbl *vtable; };
     extern char *lbl_802ED818[];
     extern char lbl_802FDB44[];
     extern char lbl_802FDB54[];
-    int i;
-    void **vtable;
+    struct Obj *obj = (struct Obj *)arg1;
     char *name;
-    int (*get_name)(void *, char *, char *);
-    int (*get_value)(void *, int, int);
-
+    int i;
     arg0[5] = -1;
-    vtable = *(void ***)arg1;
-    get_name = (int (*)(void *, char *, char *))vtable[6];
-    name = (char *)get_name(arg1, lbl_802FDB44, lbl_802FDB54);
-    for (i = 0; i < 5; i++) {
-        if (stricmp(lbl_802ED818[i], name) == 0) {
+    name = obj->vtable->get_name(arg1, lbl_802FDB44, lbl_802FDB54);
+    i = 0;
+    while (i < 5) {
+        if (stricmp(lbl_802ED818[i], name) == 0)
             arg0[5] = i;
-        }
+        i++;
     }
-    if (arg0[5] == -1) {
+    if (arg0[5] == -1)
         arg0[5] = 2;
-    }
-    get_value = (int (*)(void *, int, int))vtable[8];
-    for (i = 5; i >= 0; i--) {
-        arg0[i + 4] = get_value(arg1, (int)lbl_802ED818[i], -1);
-    }
+    i = 5;
+    do {
+        arg0[i] = obj->vtable->get_value(arg1, lbl_802ED818[i], -1);
+    } while (--i >= 0);
     arg0[4] = 0;
 }
 
-int fn_8001D9B4(int *arg0, int arg1) {
+/* Return index of first element in 5-value array within [0, maxValue], or -1 if none. */
+int fn_8001D9B4(int *values, int maxValue) {
     int value;
 
-    value = arg0[0];
-    if (value >= 0 && value <= arg1) {
+    value = values[0];
+    if (value >= 0 && value <= maxValue) {
         return 0;
     }
-    value = arg0[1];
-    if (value >= 0 && value <= arg1) {
+    value = values[1];
+    if (value >= 0 && value <= maxValue) {
         return 1;
     }
-    value = arg0[2];
-    if (value >= 0 && value <= arg1) {
+    value = values[2];
+    if (value >= 0 && value <= maxValue) {
         return 2;
     }
-    value = arg0[3];
-    if (value >= 0 && value <= arg1) {
+    value = values[3];
+    if (value >= 0 && value <= maxValue) {
         return 3;
     }
-    value = arg0[4];
-    if (value >= 0 && value <= arg1) {
+    value = values[4];
+    if (value >= 0 && value <= maxValue) {
         return 4;
     }
     return -1;
