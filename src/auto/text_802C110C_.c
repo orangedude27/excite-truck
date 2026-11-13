@@ -169,9 +169,9 @@ extern int lbl_8055FB28;
 #pragma push
 #pragma cplusplus on
 struct Dummy_802C143C { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual int get(char *, int); };
-#pragma pop
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-int fn_802C143C(void *arg0) {
+extern "C" int fn_802C143C(void *arg0) {
     char buf[0x20];
     int index;
     int *entry;
@@ -188,8 +188,7 @@ int fn_802C143C(void *arg0) {
     do {
         if (arg0 != NULL) {
             fn_801345D8(buf, 0x20, lbl_8034AF14, i + 1);
-            entry[0x40 / 4] =
-                ((int (**)(void *, char *, int))(*(void **)arg0))[8](arg0, buf, -1);
+            entry[0x40 / 4] = ((Dummy_802C143C *)arg0)->get(buf, -1);
         } else {
             entry[0x40 / 4] = -1;
         }
