@@ -65,14 +65,22 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
         out[1] = z * m7 + (x * m1 + y * m4);
         out[2] = z * m8 + (x * m2 + y * m5);
     } else {
-        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
-        float y;
-        m3 = m[3]; m0 = m[0]; m6 = m[6]; m4 = m[4]; m1 = m[1]; m7 = m[7]; m5 = m[5]; m2 = m[2]; m8 = m[8];
+        float m3 = m[3];
+        float m0 = m[0];
+        float m6 = m[6];
         out[0] = in[2] * m6 + (in[0] * m0 + in[1] * m3);
-        y = in[1];
-        out[1] = in[2] * m7 + (in[0] * m1 + y * m4);
-        y = in[1];
-        out[2] = in[2] * m8 + (in[0] * m2 + y * m5);
+        {
+            float m4 = m[4];
+            float m1 = m[1];
+            float m7 = m[7];
+            out[1] = in[2] * m7 + (in[0] * m1 + in[1] * m4);
+        }
+        {
+            float m5 = m[5];
+            float m2 = m[2];
+            float m8 = m[8];
+            out[2] = in[2] * m8 + (in[0] * m2 + in[1] * m5);
+        }
     }
 
 }
