@@ -96,8 +96,7 @@ typedef struct Camera {
     float volume;                 /* 0x154: sound level this camera may ask for */
     float startTime;              /* 0x158: time that level was last raised */
     float f15C;                   /* 0x15C */
-    int w160[3];                  /* 0x160: path cursor (fn_80265E08) */
-    float f16C[3];                /* 0x16C */
+    NoiseWalk pathWalk;           /* 0x160: random-path cursor (fn_80265E08/fn_80265EC4) */
     int w178[2];                  /* 0x178: spline cursor (fn_80266150) */
     float f180[2];                /* 0x180 */
     int pad188;                   /* 0x188 */
