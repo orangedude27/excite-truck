@@ -777,6 +777,9 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
 }
 #pragma pop
 BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) {
+    /* Free the frame heap back to the most recently recorded state: pop the
+     * saved state under the heap lock (flag 0x4), then if present zero the
+     * freed tail region when the heap clear-on-free flag (0x1) is set. */
     MEMiFrmHeapState *state;
     u32 size;
     #pragma unused(id)
