@@ -6880,7 +6880,7 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
             case 5: event = 0x1710; fn_800716F0((void *)((u8 *)arg3 + 4)); break;
             case 6: {
                 u8 *base = lbl_803C0D48;
-                u32 i;
+                s32 i;
                 for (i = 0; i < 9; i++) {
                     u8 *e = base + i * 0x28;
                     if (e[0x26] == arg0) { e[0x27] = 1; break; }
@@ -6889,7 +6889,7 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
             }
             case 7: {
                 u8 *base = lbl_803C0D48;
-                u32 i;
+                s32 i;
                 for (i = 0; i < 9; i++) {
                     u8 *e = base + i * 0x28;
                     if (e[0x26] == arg0) { e[0x27] = 1; break; }
@@ -6898,7 +6898,7 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
             }
             case 8: {
                 u8 *base = lbl_803C0D48;
-                u32 i;
+                s32 i;
                 for (i = 0; i < 9; i++) {
                     u8 *e = base + i * 0x28;
                     if (e[0x26] == arg0) { e[0x27] = 1; break; }
@@ -9317,6 +9317,10 @@ void btm_discovery_db_reset(void)
 
 void fn_8007AD38(void) {
 
+}
+
+tBTM_STATUS BTM_SetDiscoverability(UINT16 inq_mode, UINT16 window, UINT16 interval) {
+    return 0;
 }
 
 tBTM_STATUS BTM_SetInquiryScanType(UINT16 scan_type) {
@@ -12498,16 +12502,13 @@ scan_early:
 
 extern u8 lbl_80316DC8[];
 
-tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_originator,
-                               UINT32 mx_proto_id, UINT32 mx_chan_id,
-                               tBTM_SEC_CALLBACK *p_callback, void *p_ref_data)
+tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_originator, UINT32 mx_proto_id, UINT32 mx_chan_id, tBTM_SEC_CALLBACK *p_callback, void *p_ref_data)
 {
     tBTM_SEC_DEV_REC *p_dev_rec;
     u8 *p_serv_rec;
     u8 *dev;
     u32 index;
     u8 rc;
-
     p_dev_rec = btm_find_dev(bd_addr);
     if (p_dev_rec == 0) {
         p_dev_rec = btm_sec_alloc_dev(bd_addr);
@@ -12517,7 +12518,6 @@ tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_or
             return;
         }
     }
-
     p_serv_rec = lbl_803C0F78 + 0x1990;
     for (index = 0; index < 0x18; index++, p_serv_rec += 0x3C) {
         if ((p_serv_rec[0xE] & 0x80) &&
@@ -12529,7 +12529,6 @@ tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_or
         }
     }
     p_serv_rec = 0;
-
 found:
     if (p_serv_rec == 0) {
         if (p_callback != 0)
@@ -12538,7 +12537,6 @@ found:
             ((void (*)(u32, void *, u32, u32, u32))fn_80070984)(0xD0000, lbl_80316DC8, psm, mx_proto_id, mx_chan_id);
         return;
     }
-
     dev = (u8 *)p_dev_rec;
     *(u8 **)dev = p_serv_rec;
     dev[0x81] = p_serv_rec[0xE];
@@ -12546,7 +12544,6 @@ found:
     *(tBTM_SEC_CALLBACK **)(dev + 4) = p_callback;
     *(void **)(dev + 8) = p_ref_data;
     dev[0x76] &= ~0x01;
-
     rc = btm_sec_execute_procedure(p_dev_rec);
     if (rc != 1) {
         if (p_callback != 0) {
@@ -17216,8 +17213,7 @@ static void hidh_l2cif_data_ind(UINT16 l2cap_cid, BT_HDR *p_msg) {
 }
 
 extern UINT8 L2CA_DataWrite(UINT16, BT_HDR *);
-UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param,
-                         UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
+UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param, UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
     register s32 var_r17;
     register s32 var_r20;
     s32 var_r4;
@@ -17237,13 +17233,12 @@ UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param,
     register u8 var_r29;
     register u8 var_r28;
     register u8 var_r31;
-
     var_r17 = trans_type;
     temp_r27 = lbl_803C3C38 + (dhandle * 0x34);
     var_r21 = 0;
     var_r20 = 0;
     if (temp_r27[0x11] & 0x20) {
-        if (buf != NULL) GKI_freebuf(buf);
+        if (buf != 0) GKI_freebuf(buf);
         return 8;
     }
     if (4 > trans_type) {
@@ -17276,11 +17271,10 @@ block_12:
     var_r28 = (u8)(data >> 8);
     var_r31 = 9;
 loop_18:
-    if (buf == NULL || var_r20 != 0) {
-allocate_new:
+    if (buf == 0 || var_r20 != 0) {
         temp_r3 = GKI_getpoolbuf(var_r22);
         var_r26 = (BT_HDR *)temp_r3;
-        if (temp_r3 == NULL) return 3;
+        if (temp_r3 == 0) return 3;
         var_r26->offset = var_r31;
         var_r4 = 0;
         var_r24 = 0;
@@ -17288,12 +17282,11 @@ allocate_new:
         var_r20 = 0;
         goto block_28;
     }
-use_existing:
     var_r24 = buf->len;
     if ((s32)var_r24 > (s32)(*(u16 *)(temp_r27 + 0x18) - 1)) {
         temp_r3_2 = GKI_getpoolbuf(var_r22);
         var_r26 = (BT_HDR *)temp_r3_2;
-        if (temp_r3_2 == NULL) return 3;
+        if (temp_r3_2 == 0) return 3;
         var_r26->offset = var_r31;
         var_r4 = 1;
         var_r24 = buf->len;
@@ -21065,16 +21058,17 @@ void PORT_CloseInd(void *p_mcb) {
     rfc_release_multiplexer_channel(p_mcb);
 }
 
-void Port_TimeOutCloseMux(void *arg0) {
+void Port_TimeOutCloseMux(void *p_mcb) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319478[];
       extern void fn_8007093C(u32, void *);
-      u8 *entry;
+      u8 *p_port;
     s32 i;
 
-    if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319478);
-    for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4)
-        if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed((struct t_port_info *)entry, 0x12);
+    /* RFCOMM mux close timeout: close ports on this MCB with peer-timeout reason (0x12). */
+    if (rfc_cb[0x414] >= BT_TRACE_LEVEL_EVENT) fn_8007093C(0x90003, lbl_80319478);
+    for (i = 0, p_port = rfc_cb_ports; i < RFC_PORT_COUNT; i++, p_port += PORT_INFO_SIZE)
+        if (*(void **)(p_port + PORT_MCB) == p_mcb) port_rfc_closed((struct t_port_info *)p_port, 0x12);
 }
 
 extern void port_flow_control_peer(void *, s32, u16);
@@ -21550,7 +21544,6 @@ void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
     void *p_port;
     u16 connection_id;
     s32 result;
-
     index = (s32)cid - 0x40;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
@@ -21567,20 +21560,17 @@ void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
             }
         }
     }
-
     if (p_mcb == NULL) {
         if (lbl_803C4828[0x414] >= 2)
             ((void (*)(u32, void *, u32))fn_80070954)(0x90001, messages + 0xC8, cid);
         GKI_freebuf(p_buf);
         return;
     }
-
     result = rfc_parse_data(p_mcb, lbl_803C4828, (u8 *)p_buf);
     if ((u8)result == 0x32) {
         GKI_freebuf(p_buf);
         return;
     }
-
     if (lbl_803C4828[0] == 0) {
         if ((u8)result == 4) {
             rfc_process_mx_message(p_mcb, p_buf);
@@ -21590,18 +21580,15 @@ void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
         GKI_freebuf(p_buf);
         return;
     }
-
     p_port = port_find_mcb_dlci_port(p_mcb, lbl_803C4828[0]);
     if (p_port == NULL || *(s32 *)((u8 *)p_port + 0x6C) == 0) {
         if ((u8)result != 0) {
             u8 mcb_flag = *(u8 *)((u8 *)p_mcb + 0x6D);
-            if (((mcb_flag != 0) && (lbl_803C4828[2] == 0)) ||
-                ((mcb_flag == 0) && (lbl_803C4828[2] != 0)))
+            if (((mcb_flag != 0) && (lbl_803C4828[2] == 0)) || ((mcb_flag == 0) && (lbl_803C4828[2] != 0)))
                 rfc_send_dm(p_mcb, lbl_803C4828[0], lbl_803C4828[4]);
             GKI_freebuf(p_buf);
             return;
         }
-
         p_port = port_find_dlci_port(lbl_803C4828[0]);
         if (p_port == NULL) {
             rfc_send_dm(p_mcb, lbl_803C4828[0], 1);
@@ -21611,7 +21598,6 @@ void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
         *((u8 *)p_mcb + lbl_803C4828[0] + 0x24) = *(u8 *)p_port;
         *(void **)((u8 *)p_port + 0x6C) = p_mcb;
     }
-
     if ((u8)result == 4) {
         if (p_buf->len != 0)
             rfc_port_sm_execute(p_port, (u8)result, p_buf);
