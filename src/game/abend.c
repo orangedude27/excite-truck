@@ -57,6 +57,10 @@ extern void fn_802E3028();
 extern char lbl_8055D190;
 extern char lbl_8055D198;
 extern void exit(int);
+
+#define sPanicPrefix lbl_8055D190 /* "PANIC: " */
+#define sPanicLabel lbl_8055D198  /* "PANIC" */
+#define sAbendFormat lbl_8034CF34  /* "\nABEND: %s\n" */
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_802E3150(void *arg0) {
