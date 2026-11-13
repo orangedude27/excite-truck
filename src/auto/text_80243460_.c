@@ -614,10 +614,10 @@ struct Dummy_80244440 {
 extern "C" s32 fn_80244440(void *object, s32 inputCode) {
     /* Dispatch input codes to movement/action/cancel handlers. */
     switch (inputCode) {
-    case 0x125: fn_80243764((u8 *)object + 0x30, (u8 *)object + 0x2C, -1, 0); goto handled;
-    case 0x127: fn_80243764((u8 *)object + 0x30, (u8 *)object + 0x2C, 1, 0); goto handled;
-    case 0x126: fn_80243764((u8 *)object + 0x30, (u8 *)object + 0x2C, 0, -1); goto handled;
-    case 0x128: fn_80243764((u8 *)object + 0x30, (u8 *)object + 0x2C, 0, 1); goto handled;
+          case 0x125: fn_80243764(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, -1, 0); goto handled;
+      case 0x127: fn_80243764(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 1, 0); goto handled;
+      case 0x126: fn_80243764(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 0, -1); goto handled;
+      case 0x128: fn_80243764(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 0, 1); goto handled;
     case 0xD:
         ((Dummy_80244440 *)object)->f22();
         goto handled;
