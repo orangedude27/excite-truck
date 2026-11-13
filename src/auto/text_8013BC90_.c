@@ -46,6 +46,7 @@ typedef struct CacheResource {
                                 //        values (see the "lineinfo" selector)
     int buffer;                 // at 0x74: buffer released with the resource
 } CacheResource;
+/* Copy up to arg1 chars from arg2 into arg0 (NUL-terminating on truncation), then return basename without path prefix and with extension stripped. */
 char *fn_8013BC90(char *arg0, int arg1, const char *arg2) {
     char *base = arg0;
     char *dst = base;
