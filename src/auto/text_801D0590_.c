@@ -119,7 +119,7 @@ static inline void DispatchList_RemoveAt2(int index) {
     int last;
     if (index < 0) return;
     l = lbl_8043870C;
-    if (index >= l->count) return;
+    if (index >= *(volatile int *)&l->count) return;
     last = l->count - 1;
     if (index != last) {
         void **items = lbl_8043870C[0].items;
