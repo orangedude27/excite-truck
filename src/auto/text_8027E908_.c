@@ -2209,24 +2209,15 @@ increment:
 }
 
 void *fn_80283814(void *arg0, int arg1) {
-    void **p;
     int i;
+    int n;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80348738;
         if (lbl_8055F698 == arg0) lbl_8055F698 = 0;
-        p = (void **)lbl_804B30D8[0];
-        i = 0;
-        for (; i < (int)lbl_804B30D8[1]; ++i) {
-            if (*p != arg0) goto increment;
-            goto found;
-increment:
-            ++p;
-        }
-        i = -1;
-found:;
-        if (i != -1 && i >= 0 && i < *(volatile int *)&lbl_804B30D8[1]) {
-            if (i != *(volatile int *)&lbl_804B30D8[1] - 1)
-                ((void **)lbl_804B30D8[0])[i] = ((void **)lbl_804B30D8[0])[*(volatile int *)&lbl_804B30D8[1] - 1];
+        i = fn_80283814_find((void **)lbl_804B30D8[0], arg0, (int)lbl_804B30D8[1]);
+        if (i != -1 && i >= 0 && i < (n = *(volatile int *)&lbl_804B30D8[1])) {
+            if (i != n - 1)
+                ((void **)lbl_804B30D8[0])[i] = ((void **)lbl_804B30D8[0])[n - 1];
             lbl_804B30D8[1]--;
         }
         if (arg0 != 0) {
