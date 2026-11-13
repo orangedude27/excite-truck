@@ -182,32 +182,33 @@ loop:
 }
 #pragma scheduling on
 extern "C" void fn_802A1660(void) {
+    /* Unregister the terrain callback and reset/clear all 8 terrain handler slots. */
     class Dummy {
     public:
         virtual void reset(int);
     };
-    register void **entries;
-    register int i;
-    register int zero = 0;
+    register void **slot;
+    register int slotIndex;
+    register int nullSlot = 0;
     fn_801EF024((void *)fn_802A1C30);
     fn_802A1DC0();
-    entries = lbl_804BCF88;
-    i = 0;
+    slot = lbl_804BCF88;
+    slotIndex = 0;
     goto loop;
 loop:
     {
-        void *obj = *entries;
-        if (obj == 0)
+        void *handler = *slot;
+        if (handler == 0)
             goto next;
-        if (obj == 0)
+        if (handler == 0)
             goto clear;
-        ((Dummy *)obj)->reset(1);
+        ((Dummy *)handler)->reset(1);
 clear:
-        *entries = (void *)zero;
+        *slot = (void *)nullSlot;
 next:
-        i++;
-        entries++;
-        if (i < 8)
+        slotIndex++;
+        slot++;
+        if (slotIndex < 8)
             goto loop;
     }
 }
