@@ -162,21 +162,22 @@ unsigned char fn_802CEA1C(unsigned int arg0) {
         (unsigned char)(arg0 >> 24));
 }
 
+/* Allocate and clear the EFB copy buffer based on the current render mode dimensions. */
 void fn_802CEA34(void) {
-    unsigned char *display = (unsigned char *)lbl_8055FD64;
-    unsigned short width = *(unsigned short *)(display + 4);
-    unsigned short height = *(unsigned short *)(display + 8);
-    int rowBytes = (width + 0xF) & 0xFFF0;
-    int size = rowBytes * height;
-    void *buffer;
+    unsigned char *renderMode = (unsigned char *)lbl_8055FD64;
+    unsigned short fbWidth = *(unsigned short *)(renderMode + 4);
+    unsigned short efbHeight = *(unsigned short *)(renderMode + 8);
+    int rowBytes = (fbWidth + 0xF) & 0xFFF0;
+    int bufferSize = rowBytes * efbHeight;
+    void *copyBuffer;
 
-    lbl_804C9760[2] = width;
-    lbl_804C9760[3] = *(unsigned short *)(display + 8);
+    lbl_804C9760[2] = fbWidth;
+    lbl_804C9760[3] = *(unsigned short *)(renderMode + 8);
     lbl_804C9760[4] = 2;
-    buffer = ((void *(*)(int, void *, int, unsigned short, void *))fn_8012850C)(
-        size * 2, &lbl_8055D0F0, size, width, display);
-    lbl_804C9760[0] = (int)buffer;
-    memset(buffer, 0, size * 2);
+    copyBuffer = ((void *(*)(int, void *, int, unsigned short, void *))fn_8012850C)(
+        bufferSize * 2, &lbl_8055D0F0, bufferSize, fbWidth, renderMode);
+    lbl_804C9760[0] = (int)copyBuffer;
+    memset(copyBuffer, 0, bufferSize * 2);
     lbl_804C9760[1] = lbl_804C9760[0];
 }
 
