@@ -1709,6 +1709,7 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
 #pragma processor reset
 
 extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    /* Resolve two virtual slots from arg0 (first() and second(arg2)); if both are non-null, forward them to fn_80145CF4 with arg3. */
     class V {
     public:
         virtual void f0();
@@ -1717,12 +1718,12 @@ extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         virtual s32 first();
         virtual s32 second(s32);
     };
-    s32 result1;
-    s32 result2;
-    result1 = ((V *)arg0)->first();
-    result2 = ((V *)arg0)->second(arg2);
-    if (result1 != 0 && result2 != 0)
-        ((void (*)(void *, void *, u32))fn_80145CF4)((void *)result1, (void *)result2, (u32)arg3);
+    s32 firstResult;
+    s32 secondResult;
+    firstResult = ((V *)arg0)->first();
+    secondResult = ((V *)arg0)->second(arg2);
+    if (firstResult != 0 && secondResult != 0)
+        ((void (*)(void *, void *, u32))fn_80145CF4)((void *)firstResult, (void *)secondResult, (u32)arg3);
 }
 
 #pragma push
