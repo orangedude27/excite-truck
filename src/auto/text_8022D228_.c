@@ -35,8 +35,8 @@ typedef struct UITBRec {
     int unk2C;
 } UITBRec;
 /* A "UITB" text table: rows x columns of strings packed into one character buffer,
-   each cell holding one tag byte and then its text. Built by UITable_init, cleared
-   by UITable_clear, cells written by fn_8022D894 and read back by fn_8022D850. */
+   each cell holding one tag byte and then its text. Cells are written by fn_8022D894
+   and read back by fn_8022D850. */
 typedef struct UITable {
     char *text;        /* 0x00 "UITable:buf": every cell's string */
     int columns;       /* 0x04 */
