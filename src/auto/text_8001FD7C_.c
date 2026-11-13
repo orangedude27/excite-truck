@@ -902,6 +902,7 @@ void fn_800218F8(void) {
     fn_8001FE20();
 }
 void fn_8001FF34(int arg0) {
+    /* Lazily initialize the "Tips:LOADING" text object, re-resolve it if the font set changed, then draw it. */
     if ((char)lbl_8055D670 == 0) {
         fn_801312EC(&lbl_8035BAE4, &lbl_802FE1C0);
         lbl_8055D670 = 1;
