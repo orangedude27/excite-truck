@@ -55,36 +55,25 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
     }
 }
 static inline void transform_vec_scheduled(float *out, const float *m, float *in) {
-if (out == in) {
-float m3 = m[3];
-float m4 = m[4];
-float m5 = m[5];
-float m0 = m[0];
-float m1 = m[1];
-float m2 = m[2];
-float m6 = m[6];
-float m7 = m[7];
-float m8 = m[8];
-float x = in[0];
-float y = in[1];
-float z = in[2];
-out[0] = z * m6 + (x * m0 + y * m3);
-out[1] = z * m7 + (x * m1 + y * m4);
-out[2] = z * m8 + (x * m2 + y * m5);
-} else {
-float m3 = m[3];
-float m0 = m[0];
-float m6 = m[6];
-out[0] = in[2] * m6 + (in[0] * m0 + in[1] * m3);
-float m4 = m[4];
-float m1 = m[1];
-float m7 = m[7];
-out[1] = in[2] * m7 + (in[0] * m1 + in[1] * m4);
-float m5 = m[5];
-float m2 = m[2];
-float m8 = m[8];
-out[2] = in[2] * m8 + (in[0] * m2 + in[1] * m5);
-}
+    /* same code as fn_801E67B4 (matched), inlined here */
+    if (out == in) {
+        float x, y, z;
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        m3 = m[3]; m4 = m[4]; m5 = m[5]; m0 = m[0]; m1 = m[1]; m2 = m[2]; m6 = m[6]; m7 = m[7]; m8 = m[8];
+        x = in[0]; y = in[1]; z = in[2];
+        out[0] = z * m6 + (x * m0 + y * m3);
+        out[1] = z * m7 + (x * m1 + y * m4);
+        out[2] = z * m8 + (x * m2 + y * m5);
+    } else {
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        float y;
+        m3 = m[3]; m0 = m[0]; m6 = m[6]; m4 = m[4]; m1 = m[1]; m7 = m[7]; m5 = m[5]; m2 = m[2]; m8 = m[8];
+        out[0] = in[2] * m6 + (in[0] * m0 + in[1] * m3);
+        y = in[1];
+        out[1] = in[2] * m7 + (in[0] * m1 + y * m4);
+        y = in[1];
+        out[2] = in[2] * m8 + (in[0] * m2 + y * m5);
+    }
 
 }
 #pragma push
@@ -341,11 +330,10 @@ void fn_801B92F0(void *arg0, int arg1) {
     };
     union { double align; struct Work work; } frame;
     unsigned int bits = ((unsigned int *)__AXFXGetLfoSinTable_801769CC())[1];
-    float *copySrc;
+    unsigned int *copySrc;
     unsigned int word2, word1, word0;
     float result, top, zero, param1, out0, out1, out2;
-
-    *((unsigned char *)arg0 + 0x275d) = (bits >> 12) & 1;
+    *((unsigned char *)arg0 + 10077) = (bits >> 12) & 1;
     fn_80182074(arg0, arg1);
     frame.work.sp44[0] = lbl_80562750;
     frame.work.sp44[1] = lbl_80562750;
@@ -358,7 +346,6 @@ void fn_801B92F0(void *arg0, int arg1) {
     *(float *)((unsigned char *)arg0 + 0x273c) = frame.work.sp5c[0];
     *(float *)((unsigned char *)arg0 + 0x2740) = frame.work.sp5c[1];
     *(float *)((unsigned char *)arg0 + 0x2744) = frame.work.sp5c[2];
-
     fn_802C77F0(*(int *)((unsigned char *)arg0 + 0x59c), frame.work.sp90);
     if (*((unsigned char *)arg0 + 0x275d)) {
         top = frame.work.sp90[5];
@@ -371,7 +358,6 @@ void fn_801B92F0(void *arg0, int arg1) {
         *(float *)((unsigned char *)arg0 + 0x2740) = zero;
         *(float *)((unsigned char *)arg0 + 0x2744) = result;
     }
-
     fn_802C77F0(*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x2754) + 0x59c),
         frame.work.sp78);
     if (*((unsigned char *)arg0 + 0x275d)) {
@@ -381,7 +367,7 @@ void fn_801B92F0(void *arg0, int arg1) {
         frame.work.sp2c[0] = param1;
         frame.work.sp2c[1] = param1;
         frame.work.sp2c[2] = result;
-        copySrc = frame.work.sp2c;
+        copySrc = (unsigned int *)frame.work.sp2c;
     } else {
         top = frame.work.sp78[4];
         param1 = lbl_80562774;
@@ -389,11 +375,11 @@ void fn_801B92F0(void *arg0, int arg1) {
         frame.work.sp20[0] = lbl_80562750;
         frame.work.sp20[1] = param1;
         frame.work.sp20[2] = result;
-        copySrc = frame.work.sp20;
+        copySrc = (unsigned int *)frame.work.sp20;
     }
-    word0 = ((unsigned int *)copySrc)[0];
-    word1 = ((unsigned int *)copySrc)[1];
-    word2 = ((unsigned int *)copySrc)[2];
+    word0 = copySrc[0];
+    word1 = copySrc[1];
+    word2 = copySrc[2];
     ((unsigned int *)frame.work.sp68)[0] = word0;
     ((unsigned int *)frame.work.sp8)[0] = word0;
     ((unsigned int *)frame.work.sp68)[1] = word1;
