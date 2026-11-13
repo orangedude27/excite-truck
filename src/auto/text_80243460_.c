@@ -130,43 +130,52 @@ extern s32 fn_8024360C(s32, s32);
 extern s32 fn_80243710(s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
-s32 fn_80243764(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    s32 old0 = *(s32 *)arg0;
-    s32 old1 = *(volatile s32 *)arg1;
-    s32 next = old1 + arg3;
-    s32 value, count, current;
-    s32 tmpc;
-    if ((*(volatile s32 *)arg1 = next) < 0) *(volatile s32 *)arg1 = 4;
-    else if (next > 4) *(volatile s32 *)arg1 = 0;
-    if (*(volatile s32 *)arg1 != old1) {
-        value = fn_8024360C(fn_80243528(*(s32 *)arg0, old1), *(volatile s32 *)arg1);
-        count = fn_80243478(*(volatile s32 *)arg1);
-        tmpc = fn_80243478(old1);
-        if (tmpc != count) {
-            if (fn_80243710(lbl_8055BE0C, *(volatile s32 *)arg1) && *(s32 *)arg0 == lbl_8055BE10) {
-                value = lbl_8055BE0C;
-                lbl_8055BE0C = lbl_8055BE10;
-                lbl_8055BE10 = value;
+/* Move the menu cursor: entryDelta steps through the entries of the current
+ * group and groupDelta between the menu table's five groups, both wrapping.
+ * Entering another group keeps the cursor at the same horizontal offset of
+ * the new group and swaps s_cursorHoldGroup/s_cursorHoldEntry so that stepping
+ * back restores the entry it left.  Returns 1 (and marks the list for a
+ * redraw through fn_80230E90) when the cursor moved. */
+s32 fn_80243764(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s32 groupDelta) {
+    s32 oldEntry = *entryIndex;
+    s32 oldGroup = *groupIndex;
+    s32 newGroup = oldGroup + groupDelta;
+    s32 entry, newCount, current;
+    s32 oldCount;
+    if ((*groupIndex = newGroup) < 0) *groupIndex = 4;
+    else if (newGroup > 4) *groupIndex = 0;
+    if (*groupIndex != oldGroup) {
+        /* the entry widths the cursor covered in the old group choose its entry here */
+        entry = fn_8024360C(fn_80243528(*entryIndex, oldGroup), *groupIndex);
+        newCount = fn_80243478(*groupIndex);
+        oldCount = fn_80243478(oldGroup);
+        if (oldCount != newCount) {
+            if (fn_80243710(s_cursorHoldGroup, *groupIndex) && *entryIndex == s_cursorHoldEntry) {
+                /* take the entry saved for this group and leave ours behind */
+                entry = s_cursorHoldGroup;
+                s_cursorHoldGroup = s_cursorHoldEntry;
+                s_cursorHoldEntry = entry;
             } else {
-                s32 tmp0 = *(s32 *)arg0;
-                lbl_8055BE10 = value;
-                lbl_8055BE0C = tmp0;
+                s32 leftEntry = *entryIndex;
+                s_cursorHoldEntry = entry;
+                s_cursorHoldGroup = leftEntry;
             }
         } else {
-            lbl_8055BE10 = -1;
-            lbl_8055BE0C = -1;
+            /* both groups hold the same entries, so there is nothing to remember */
+            s_cursorHoldEntry = -1;
+            s_cursorHoldGroup = -1;
         }
-        *(s32 *)arg0 = value;
+        *entryIndex = entry;
     }
-    current = *(s32 *)arg0 + arg2;
-    *(s32 *)arg0 = current;
-    if (current < 0) *(s32 *)arg0 = fn_80243478(*(volatile s32 *)arg1) - 1;
-    else if (*(s32 *)arg0 > fn_80243478(*(volatile s32 *)arg1) - 1) *(s32 *)arg0 = 0;
-    if (*(s32 *)arg0 != lbl_8055BE10) {
-        lbl_8055BE0C = -1;
-        lbl_8055BE10 = -1;
+    current = *entryIndex + entryDelta;
+    *entryIndex = current;
+    if (current < 0) *entryIndex = fn_80243478(*groupIndex) - 1;
+    else if (*entryIndex > fn_80243478(*groupIndex) - 1) *entryIndex = 0;
+    if (*entryIndex != s_cursorHoldEntry) {
+        s_cursorHoldGroup = -1;
+        s_cursorHoldEntry = -1;
     }
-    if (old0 != *(s32 *)arg0 || old1 != *(volatile s32 *)arg1) {
+    if (oldEntry != *entryIndex || oldGroup != *groupIndex) {
         fn_80230E90(0);
         return 1;
     }
