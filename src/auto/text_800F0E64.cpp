@@ -4406,6 +4406,8 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
 
 /* SoundInstanceManager::Alloc(priority): take a free sound from the pool, or evict the
    lowest-priority active one (the list is sorted, front = lowest); inlined into fn_800F9200. */
+#pragma push
+#pragma always_inline on
 static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     void *sound;
     void *it;
