@@ -458,15 +458,23 @@ void fn_802AE02C(void *, void *);                      /* extern */
 void fn_802AE0B8(void *, void *);                      /* extern */
 void fn_802AE168(void *);                           /* extern */
 unsigned int strlen(const char *); /* extern */
-#define COPY_STR20(dst, src) do { \
+/* Copy a string into one of the overlay's fixed-size text cells; when the
+   source does not fit, the last byte of the cell is left as the terminator. */
+#define COPY_STRN(dst, src, size) do { \
     unsigned char *d_ = (unsigned char *)(dst); \
     const unsigned char *s_ = (const unsigned char *)(src); \
-    int n_ = 0x14; int c_; \
+    int n_ = (size); int c_; \
     for (;;) { \
         if (--n_ <= 0) { *(signed char *)(d_ - 1) = 0; } \
         c_ = *s_++; \
         *d_++ = c_; \
         if ((signed char)c_ == 0) break; \
+    } } while (0)
+#define COPY_STR20(dst, src) COPY_STRN(dst, src, 0x14)
+/* Ask a sound of the round to play once, unless it is already running. */
+#define PLAY_SOUND(sound) do { Sound *snd_ = (sound); \
+    if (snd_ != 0 && snd_->active == 0) { \
+        snd_->play = 1; snd_->loop = 0; snd_->stop = 0; \
     } } while (0)
 extern void *fn_80131234(const char *);
 extern float fn_8001DAE8(void *);
