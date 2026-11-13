@@ -486,17 +486,18 @@ next_item:
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_8027B60C(void *arg0) {
-    int offset;
-    int i;
-    if (*(int *)((char *)arg0 + 4) != 0) {
-        for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x1F4, i++) {
-            fn_8027B288((char *)*(void **)((char *)arg0 + 8) + offset);
+/* Destroy all elements in the container, free its storage handle, and reset it. */
+void fn_8027B60C(void *container) {
+    int elementOffset;
+    int index;
+    if (*(int *)((char *)container + 4) != 0) {
+        for (index = 0, elementOffset = 0; index < *(int *)((char *)container + 0xC); elementOffset += 0x1F4, index++) {
+            fn_8027B288((char *)*(void **)((char *)container + 8) + elementOffset);
         }
-        offset = 0;
-        *(int *)((char *)arg0 + 0xC) = 0;
-        fn_80131818(*(int *)((char *)arg0 + 4));
-        *(int *)((char *)arg0 + 4) = 0;
+        elementOffset = 0;
+        *(int *)((char *)container + 0xC) = 0;
+        fn_80131818(*(int *)((char *)container + 4));
+        *(int *)((char *)container + 4) = 0;
     }
 }
 
