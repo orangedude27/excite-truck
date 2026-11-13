@@ -956,28 +956,29 @@ void *fn_801F69C8(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-FN_801F6A08_RETURN fn_801F6A08(void *arg0, int arg1) {
-    void *entry;
-    int i;
+FN_801F6A08_RETURN fn_801F6A08(void *object, int shouldFree) {
+    /* Destroy each 0x48-byte entry (count at +0x900), reset the count, and optionally free the container. */
+    void *currentEntry;
+    int index;
 
-    if (arg0 != 0) {
-        entry = arg0;
-        i = 0;
+    if (object != 0) {
+        currentEntry = object;
+        index = 0;
         goto check;
     loop:
-        fn_801F639C(entry);
-        entry = (char *)entry + 0x48;
-        i++;
+        fn_801F639C(currentEntry);
+        currentEntry = (char *)currentEntry + 0x48;
+        index++;
     check:
-        if (i < *(int *)((char *)arg0 + 0x900)) {
+        if (index < *(int *)((char *)object + 0x900)) {
             goto loop;
         }
-        *(int *)((char *)arg0 + 0x900) = 0;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        *(int *)((char *)object + 0x900) = 0;
+        if (shouldFree > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 extern float fn_801E7E24(void);
