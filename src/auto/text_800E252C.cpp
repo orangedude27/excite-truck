@@ -2278,7 +2278,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
     char *entry;
     int i;
     if (arg1 >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce(f, 0x396, f + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x396, f + 0x258);
     }
     if (arg2 != 0) {
         int fmt = *(int *)(self + 0x118);
@@ -2289,7 +2289,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: start = ((unsigned int)arg5 % 14) + (off * 2) + (((unsigned int)arg5 / 14) * 16) + 2; break;
         case 25: start = off + arg5; break;
         case 10: start = (off >> 1) + arg5; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x561, f + 0x290); break;
         }
     } else {
         unsigned int addr = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(Instance__15EmissionManagerFv());
@@ -2300,7 +2300,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: start = addr * 2 + 2; break;
         case 25: start = addr; break;
         case 10: start = addr >> 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x561, f + 0x290); break;
         }
     }
     {
@@ -2312,7 +2312,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: cur = off * 2 + 2; break;
         case 25: cur = off; break;
         case 10: cur = off >> 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x561, f + 0x290); break;
         }
     }
     {
@@ -2328,7 +2328,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         }
         case 25: end = off2 + arg6 - 1; break;
         case 10: end = arg6 + (off2 >> 1) - 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x561, f + 0x290); break;
         }
     }
     rec.flag = arg2;
@@ -3634,6 +3634,7 @@ void nw4hbm::snd::detail::BasicSound::Shutdown() {
 #pragma dont_inline on
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this_, int priority) {
     int valid = 0;
+    /* Set this sound's player priority (0-127), reordering it in the sound player's priority list. */
     if (priority >= 0) {
         if (priority <= 0x7F) valid = 1;
     }
