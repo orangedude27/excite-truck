@@ -36,19 +36,20 @@ void *fn_802C110C(int arg0) {
     return 0;
 }
 #pragma scheduling on
-void fn_802C1180(void *arg0) {
+void fn_802C1180(void *node) {
+    /* Copy this node's cached data to its target node, update the target table entry, and clear the link. */
     struct Pair { int a; int b; };
-    int *src = (int *)arg0;
+    int *src = (int *)node;
     int *dst = (int *)src[1];
-    struct Pair *s = (struct Pair *)src;
-    struct Pair *d = (struct Pair *)dst;
+    struct Pair *srcPairs = (struct Pair *)src;
+    struct Pair *dstPairs = (struct Pair *)dst;
     if (dst == 0) {
         return;
     }
-    d[0] = s[1];
-    d[1] = s[2];
-    d[2] = s[3];
-    d[3] = s[4];
+    dstPairs[0] = srcPairs[1];
+    dstPairs[1] = srcPairs[2];
+    dstPairs[2] = srcPairs[3];
+    dstPairs[3] = srcPairs[4];
     dst[8] = src[10];
     *(struct Pair *)(dst + 9) = *(struct Pair *)(src + 11);
     dst[11] = src[13];
