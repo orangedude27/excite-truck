@@ -1695,9 +1695,10 @@ void fn_801C7F00(void) {
 #pragma push
 #pragma small_data off
 #pragma pop
-/* Menu item "who not": moves the typed name list out of the text field into
- * sWhoNotList (defaulting to "nobody" when nothing was typed), clears the field,
- * closes text entry and leaves the menu with its idle action. */
+/* Menu item "who not" (id 0x16): the name list typed into the text field is
+ * moved out into sWhoNotList, defaulting to "nobody" when the field was left
+ * empty.  The field is cleared and closed, the menu drops back to its idle
+ * action and the name-list rows stay shown. */
 void fn_801C7F64(void) {
     strcpy(sWhoNotList, sInputLine);
     strcpy(sInputLine, STR_EMPTY);
@@ -1705,10 +1706,9 @@ void fn_801C7F64(void) {
         strcpy(sWhoNotList, STR_NOBODY);
     }
     set_text_entry(0);
-    sMenuAction = fn_801C6CB0;
+    sMenuAction = menu_action_idle;
     sTextFieldFlag = 1;
 }
-
 #pragma push
 #pragma opt_propagation off
 void fn_801C7FE4(void) {
