@@ -509,14 +509,16 @@ extern int lbl_8034B1F0[];
 #pragma push
 #pragma small_data off
 #pragma scheduling invalid_target
-void fn_802C5C40(int *arg0, int arg1, int arg2) {
-    int temp_r30 = *arg0;
-    int result = fn_802CAC28(lbl_8034B1F0, 0);
-    int *entry = *(int **)((char *)arg2 + arg1 * 4 + 0x14);
-    s16 field = *(s16 *)((char *)entry + 6);
-    u16 adjusted = field - 1;
-    *(int *)((char *)arg0 + arg1 * 4 + 0x14) =
-        (int)fn_802C5A60(result, temp_r30, adjusted);
+/* Resolves a texture reference from the "zonly.tex" resource and stores the
+ * looked-up entry into the destination slot for the given index. */
+void fn_802C5C40(int *dest, int index, int source) {
+    int baseId = *dest;
+    int texture = fn_802CAC28(lbl_8034B1F0, 0);
+    int *entry = *(int **)((char *)source + index * 4 + 0x14);
+    s16 refId = *(s16 *)((char *)entry + 6);
+    u16 adjusted = refId - 1;
+    *(int *)((char *)dest + index * 4 + 0x14) =
+        (int)fn_802C5A60(texture, baseId, adjusted);
 }
 #pragma pop
 extern int fn_8012C33C(char *);
