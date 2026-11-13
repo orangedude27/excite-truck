@@ -324,20 +324,21 @@ extern "C" int fn_80259224(void **arg0) {
 #pragma scheduling on
 #pragma cplusplus reset
 
-void *fn_80259680(void *arg0, int arg1) {
-    int value;
-    if (arg0 != 0) {
-        value = *(int *)((char *)arg0 + 0x50);
-        *(void **)arg0 = &lbl_80345158;
-        if (value != -1) {
-            fn_802C6CF8(value);
-            *(int *)((char *)arg0 + 0x50) = -1;
+void *fn_80259680(void *obj, int shouldFree) {
+    int resourceId;
+    /* Destructor: reset vtable, release owned resources (+0x50, +0xA8), and optionally free the object. */
+    if (obj != 0) {
+        resourceId = *(int *)((char *)obj + 0x50);
+        *(void **)obj = &lbl_80345158;
+        if (resourceId != -1) {
+            fn_802C6CF8(resourceId);
+            *(int *)((char *)obj + 0x50) = -1;
         }
-        fn_802CAC54(*(int *)((char *)arg0 + 0xA8));
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        fn_802CAC54(*(int *)((char *)obj + 0xA8));
+        if (shouldFree > 0)
+            fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 int fn_80259700(int arg0, int arg1) {
