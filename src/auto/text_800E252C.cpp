@@ -1761,7 +1761,7 @@ extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveD
         int n;
         unsigned char *base;
         unsigned char *slot;
-        float rate = *(float *)(self + 0x184) * (float)*(unsigned long *)(self + 0x114) / lbl_80560F40;
+        float rate = *(float *)(self + 0x184) * (float)*(int *)(self + 0x114) / lbl_80560F40;
         if (rate > lbl_80560F44) mixMode = 2;
         else if (rate > lbl_80560F38) mixMode = 3;
         else mixMode = 4;
@@ -2928,6 +2928,156 @@ void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float 
     }
     *out1 += lbl_80560F38;
 }
+
+extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg0, int arg1, int arg2, void *arg3) {
+    float f22 = lbl_80560F38;
+    float f21 = f22;
+    float f23 = f22;
+    float f20 = f22;
+    float f19 = f22;
+    float f31 = f22;
+    float f18 = f22;
+    float f17 = f22;
+    float f30 = f22;
+    float f29 = f22;
+    float f28 = f22;
+    float f27 = f22;
+    float spC, sp8;
+    char *self = (char *)arg0;
+    unsigned short *out = (unsigned short *)arg3;
+    int mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
+    switch (mode) {
+    case 3:
+    case 0:
+        f23 = lbl_80560F3C; f31 = lbl_80560F3C; f30 = lbl_80560F3C; f27 = lbl_80560F3C;
+        break;
+    default: break;
+    }
+    float f24;
+    if ((*(int *)(self + 0x13c) & 1) != 0) f24 = lbl_80560F38 * *(float *)(self + 0x140);
+    else f24 = lbl_80560F3C;
+    mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
+    switch (mode) {
+    case 3:
+    case 0:
+        f22 *= f24; f21 *= f24; f20 *= f24; f19 *= f24; f18 *= f24; f17 *= f24;
+        f29 = (float)f29 * f24; f28 = (float)f28 * f24;
+        break;
+    case 1:
+        f22 *= f24; f21 *= f24; f23 = (float)f23 * f24; f20 *= f24; f19 *= f24;
+        f31 = (float)f31 * f24; f18 *= f24; f17 *= f24; f30 = (float)f30 * f24;
+        f29 = (float)f29 * f24; f28 = (float)f28 * f24; f27 = (float)f27 * f24;
+        break;
+    case 2:
+        f22 *= f24; f21 *= f24; f23 = (float)f23 * f24; f29 = (float)f29 * f24;
+        f20 *= f24; f19 *= f24; f31 = (float)f31 * f24; f28 = (float)f28 * f24;
+        f18 *= f24; f17 *= f24; f30 = (float)f30 * f24; f27 = (float)f27 * f24;
+        break;
+    default: break;
+    }
+    float f24b = lbl_80560F3C;
+    if (*(int *)(self + 0x104) == 2) {
+        if (arg1 == 0) f24b = lbl_80560F50;
+        if (arg1 == 1) f24b = lbl_80560F38;
+    }
+    mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
+    switch (mode) {
+    case 2: {
+        char *r6 = self + arg2 * 0x1c;
+        float a = f24b + (*(float *)(self + 0x128) + *(float *)(self + 0x130)) + *(float *)(r6 + 0x9c);
+        float b = (*(float *)(self + 0x12c) + *(float *)(self + 0x134)) + *(float *)(r6 + 0xa0);
+        ((nw4r::snd::detail::Voice *)self)->TransformDpl2Pan(&spC, &sp8, a, b);
+        break;
+    }
+    case 3: spC = lbl_80560F3C; sp8 = lbl_80560F3C; break;
+    default: {
+        char *r6 = self + arg2 * 0x1c;
+        spC = f24b + (*(float *)(self + 0x128) + *(float *)(self + 0x130)) + *(float *)(r6 + 0x9c);
+        sp8 = (*(float *)(self + 0x12c) + *(float *)(self + 0x134)) + *(float *)(r6 + 0xa0);
+        break;
+    }
+    }
+    float t24 = CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(spC);
+    float t26 = CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(-spC);
+    float t25 = CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(lbl_80560F7C);
+    mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
+    switch (mode) {
+    case 3:
+    case 0:
+        f22 *= t24; f21 *= t26; f20 *= t24; f19 *= t26; f18 *= t24; f17 *= t26;
+        f29 = (float)f29 * t24; f28 = (float)f28 * t26;
+        break;
+    case 1:
+        f22 *= t24; f21 *= t26; f23 = (float)f23 * t25; f20 *= t24; f19 *= t26;
+        f31 = (float)f31 * t25; f18 *= t24; f17 *= t26; f30 = (float)f30 * t25;
+        f29 = (float)f29 * t24; f28 = (float)f28 * t26; f27 = (float)f27 * t25;
+        break;
+    case 2:
+        f22 *= t24; f21 *= t26; f23 = (float)f23 * t24; f29 = (float)f29 * t26;
+        f20 *= t24; f19 *= t26; f31 = (float)f31 * t24; f28 = (float)f28 * t26;
+        f18 *= t24; f17 *= t26; f30 = (float)f30 * t24; f27 = (float)f27 * t26;
+        break;
+    default: break;
+    }
+    float s25 = CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(sp8);
+    float s26 = CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(lbl_80560F54 - sp8);
+    mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
+    switch (mode) {
+    case 0: break;
+    case 1:
+        f22 *= s25; f21 *= s25; f23 = (float)f23 * s26; f20 *= s25; f19 *= s25;
+        f31 = (float)f31 * s26; f18 *= s25; f17 *= s25; f30 = (float)f30 * s26;
+        f29 = (float)f29 * s25; f28 = (float)f28 * s25; f27 = (float)f27 * s26;
+        break;
+    case 2:
+        f22 *= s25; f21 *= s25; f23 = (float)f23 * s26; f29 = (float)f29 * s26;
+        f20 *= s25; f19 *= s25; f31 = (float)f31 * s26; f28 = (float)f28 * s26;
+        f18 *= s25; f17 *= s25; f30 = (float)f30 * s26; f27 = (float)f27 * s26;
+        break;
+    default: break;
+    }
+    float v24 = lbl_80560F38;
+    float v25 = *(float *)(self + 0x144);
+    float tmp = *(float *)(self + 0x148) + *(float *)(self + arg2 * 0x1c + 0xa4);
+    if (tmp > v24) {} else { v24 = lbl_80560F3C; if (tmp >= v24) v24 = tmp; }
+    float v26 = *(float *)(self + 0x14c);
+    float v16 = *(float *)(self + 0x150);
+    mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
+    switch (mode) {
+    case 3:
+    case 0:
+        f22 *= v25; f21 *= v25; f20 *= v24; f19 *= v24; f18 *= v26; f17 *= v26;
+        f29 = (float)f29 * v16; f28 = (float)f28 * v16;
+        break;
+    case 1:
+        f22 *= v25; f21 *= v25; f23 = (float)f23 * v25; f20 *= v24; f19 *= v24;
+        f31 = (float)f31 * v24; f18 *= v26; f17 *= v26; f30 = (float)f30 * v26;
+        f29 = (float)f29 * v16; f28 = (float)f28 * v16; f27 = (float)f27 * v16;
+        break;
+    case 2:
+        f22 *= v25; f21 *= v25; f23 = (float)f23 * v25; f29 = (float)f29 * v25;
+        f20 *= v24; f19 *= v24; f31 = (float)f31 * v24; f28 = (float)f28 * v24;
+        f18 *= v26; f17 *= v26; f30 = (float)f30 * v26; f27 = (float)f27 * v26;
+        break;
+    default: break;
+    }
+    unsigned int c;
+    c = (unsigned int)(lbl_80560F80 * f22); out[0] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * f21); out[2] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * (float)f23); out[0x10] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * f20); out[4] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * f19); out[6] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * (float)f31); out[0x12] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * f18); out[8] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * f17); out[0x0a] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * (float)f30); out[0x14] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * (float)f29); out[0x0c] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * (float)f28); out[0x0e] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    c = (unsigned int)(lbl_80560F80 * (float)f27); out[0x16] = c >= 0xffff ? 0xffff : (unsigned short)c;
+    out[1] = 0; out[3] = 0; out[0x11] = 0; out[5] = 0; out[7] = 0; out[0x13] = 0;
+    out[9] = 0; out[0x0b] = 0; out[0x15] = 0; out[0x0d] = 0; out[0x0f] = 0; out[0x17] = 0;
+}
+
 extern float lbl_80560F3C, lbl_80560F80;
 extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(void* self, int a, int b, void* out) {
     unsigned short* mix=(unsigned short*)out;
