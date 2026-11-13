@@ -534,7 +534,7 @@ void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
         value = *(int *)((char *)arg0 + 0x10) == 0
             ? *(int *)((char *)arg0 + 0x14) + (int)((f32)*(int *)((char *)arg0 + 0x18) * rate)
             : 0;
-        if (value != *(int *)((char *)arg0 + 0x20)) {
+        if (value != ((int *)arg0)[8]) {
             object = *(void **)((char *)arg1 + 8);
             if (object != 0 && *(void **)((char *)object + 0x1258) != 0) {
                 char *p = *(char **)((char *)object + 0x1258);
@@ -543,7 +543,7 @@ void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
                 p[0x4A] = 0;
             }
         }
-        *(int *)((char *)arg0 + 0x20) = value;
+        ((int *)arg0)[8] = value;
     } else {
         count = *(int *)((char *)arg0 + 0x10);
         if (count < 0) goto no_frame;
@@ -553,21 +553,17 @@ void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
     no_frame:
         value = 0;
     frame_ready:
-        *(int *)((char *)arg0 + 0x20) = value;
+        ((int *)arg0)[8] = value;
     }
-
     object = *(void **)((char *)arg1 + 0x68);
     {
         f32 threshold = lbl_80561648;
         f32 top = *(f32 *)((char *)object + 0x8DC);
         f32 bottom = *(f32 *)((char *)object + 0x8D4);
         f32 difference = top - bottom;
-        if (threshold > difference) {
-            difference = threshold;
-        }
-        end = difference;
+        end = threshold > difference ? threshold : difference;
     }
-    *(int *)((char *)arg0 + 0x24) = *(int *)arg0 + *(int *)((char *)arg0 + 0x20);
+    *(int *)((char *)arg0 + 0x24) = *(int *)arg0 + ((int *)arg0)[8];
     *(int *)((char *)arg0 + 0x1C) = (int)end;
     *(int *)((char *)arg0 + 0x30) = fn_801609C4(*(int *)((char *)arg0 + 0x24));
 }
@@ -1147,7 +1143,7 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     Rec *b, *a;
     void *obj;
     char storage[0x64];
-    f32 t, time, x, y, w, h, rate;
+    f32 t, time, rate;
     Rec v;
     char *strs = (char *)lbl_8032D358;
     obj = *(void **)((u8 *)arg0 + 0x68);
@@ -1165,18 +1161,22 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     if (a != 0 && b != 0) {
         time = (f32)fn_8002EFB4(rate, lbl_805616A0);
         if (time < lbl_8056163C) {
-            x = (time - lbl_80561648) / lbl_805616C8;
+            f32 x = (time - lbl_80561648) / lbl_805616C8;
             v = *a;
             x = (lbl_8056164C < x) ? lbl_8056164C : x;
             x = (lbl_80561648 > x) ? lbl_80561648 : x;
             v.w6 = ((s32 (*)(s32, s32, f32))fn_80147C50)(v.w6 & 0xFFFFFF, v.w6, lbl_80561648 + x * lbl_8056164C);
         } else {
+            f32 x = lbl_80561670 * time - lbl_8056164C;
+            f32 y = lbl_8056164C - x;
+            f32 w = x * x;
+            f32 h = lbl_8056164C - y * y;
             f32 *pa = (f32 *)a, *pb = (f32 *)b, *pv = (f32 *)&v;
-            x = lbl_80561670 * time - lbl_8056164C;
             v = *a;
-            y = lbl_8056164C - x; w = x * x; h = lbl_8056164C - y * y;
-            pv[1] = pa[1] + h * (pb[1] - pa[1]); pv[2] = pa[2] + w * (pb[2] - pa[2]);
-            pv[4] = pa[4] + w * (pb[4] - pa[4]); pv[5] = pa[5] + w * (pb[5] - pa[5]);
+            pv[1] = pa[1] + h * (pb[1] - pa[1]);
+            pv[2] = pa[2] + w * (pb[2] - pa[2]);
+            pv[4] = pa[4] + w * (pb[4] - pa[4]);
+            pv[5] = pa[5] + w * (pb[5] - pa[5]);
             v.w6 = ((s32 (*)(s32, s32, f32))fn_80147C50)(a->w6, b->w6, x);
         }
         fn_80147940((void *)arg1, &v, strs + 0x27C, 0);
@@ -1205,9 +1205,8 @@ extern "C" void fn_8014DC08(void *arg0) {
     extern void fn_801CB5DC(void *, int, int);
     extern char lbl_8032D704[];
     extern float lbl_8055E3C8;
-    register Lists *list;
-    register Node *pending;
-    Node *node, *next, *p;
+    Lists *list;
+    Node *pending, *node, *next, *p;
     float total, diff;
     int a, b;
     void *obj;
@@ -1407,20 +1406,21 @@ extern "C" void *fn_8014E1D0(void *arg0, s32 arg1) {
         s32 valueA;
         s32 valueB;
     };
-    register Obj *obj = (Obj *)arg0;
     register u8 *strings = lbl_8032D358;
-    void *table;
-    s32 ok;
-    Iter_8014E1D0 *iter;
-    char name[0x64];
+    register Obj *obj = (Obj *)arg0;
     s32 i;
+    Iter_8014E1D0 *iter;
+    s32 ok;
+    void *table;
+    char name[0x64];
+    s32 off;
     void **items;
     obj->items = 0;
     obj->count = 0;
     obj->unk7c = -1;
     obj->valueA = 1;
     obj->valueB = 1;
-    table = fn_80131808(strings + 0x4c8, -1, 0);
+    table = fn_80131808(strings + 0x4c8, obj->unk7c, obj->count);
     if (table != 0) {
         ok = 0;
         iter = (Iter_8014E1D0 *)((Iter_8014E1D0 *)table)->open((char *)(strings + 0x4d8));
@@ -1434,11 +1434,11 @@ extern "C" void *fn_8014E1D0(void *arg0, s32 arg1) {
                 obj->count++;
             }
             obj->items = (void **)fn_8012850C((obj->count + 1) * 4, strings + 0x4f0);
-            for (i = 0; i < obj->count - 1; i++) {
+            for (i = 0, off = 0; i < obj->count - 1; i++, off += 4) {
                 ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(name, 0x64, (char *)(strings + 0x4e4), i + 1);
-                obj->items[i] = iter->next(name);
+                *(void **)((u8 *)obj->items + off) = iter->next(name);
             }
-            obj->items[obj->count - 1] = 0;
+            obj->items[i] = 0;
             obj->valueA = iter->get((char *)(strings + 0x500), obj->valueA);
             obj->valueB = iter->get((char *)(strings + 0x50c), obj->valueB);
         }
@@ -1579,35 +1579,35 @@ s32 fn_8014E738(void) { return 0; }
 
 #pragma processor 750
 void fn_8014E740(void *arg0, f32 arg1) {
+    /* Allocate a 0x14-byte puddle entry, copy xyz from arg0 and store arg1, then append it to manager+0x220. */
     void *manager;
-    void *entry;
+    void *puddleEntry;
     s32 count;
-    void **buffer;
-    f32 first;
-    f32 second;
-    f32 third;
+    void **entryList;
+    f32 posX;
+    f32 posY;
+    f32 posZ;
     u32 zero;
     manager = lbl_8055E268;
     if (manager != 0) {
-        entry = (void *)fn_801284F8(0x14, &lbl_80559F40);
-        if (entry != 0) {
-            first = *(f32 *)((u8 *)arg0 + 0);
+        puddleEntry = (void *)fn_801284F8(0x14, &lbl_80559F40);
+        if (puddleEntry != 0) {
+            posX = *(f32 *)((u8 *)arg0 + 0);
             zero = 0;
-            second = *(f32 *)((u8 *)arg0 + 4);
-            *(f32 *)((u8 *)entry + 0) = first;
-            third = *(f32 *)((u8 *)arg0 + 8);
-            *(f32 *)((u8 *)entry + 4) = second;
-            *(f32 *)((u8 *)entry + 8) = third;
-            *(f32 *)((u8 *)entry + 0xC) = arg1;
-            *((u8 *)entry + 0x10) = zero;
+            posY = *(f32 *)((u8 *)arg0 + 4);
+            *(f32 *)((u8 *)puddleEntry + 0) = posX;
+            posZ = *(f32 *)((u8 *)arg0 + 8);
+            *(f32 *)((u8 *)puddleEntry + 4) = posY;
+            *(f32 *)((u8 *)puddleEntry + 8) = posZ;
+            *(f32 *)((u8 *)puddleEntry + 0xC) = arg1;
+            *((u8 *)puddleEntry + 0x10) = zero;
         }
         count = *(s32 *)((u8 *)manager + 0x224);
-        buffer = *(void ***)((u8 *)manager + 0x220);
+        entryList = *(void ***)((u8 *)manager + 0x220);
         *(s32 *)((u8 *)manager + 0x224) = count + 1;
-        buffer[count] = entry;
+        entryList[count] = puddleEntry;
     }
 }
-#pragma processor reset
 void fn_8014E7D8(void) {
 
 }
@@ -3769,6 +3769,63 @@ void fn_80155700(void *arg0, void *arg1, s32 index) {
 
 void fn_80155AEC(void) {
 
+}
+
+void fn_80155AF0(void *arg0, void *arg1) {
+    u8 *b358 = lbl_8032D358;
+    void *fn;
+    void *tmp;
+    s32 c;
+    void *alloc;
+    void *ret;
+    float *fp;
+    s32 idx;
+    void **base;
+    fn = *(void **)((u8 *)*(void **)arg1 + 8);
+    tmp = ((void *(*)(void *))fn)(arg1);
+    fn = *(void **)((u8 *)*(void **)tmp + 0xc);
+    c = ((s32(*)(void *, void *))fn)(tmp, lbl_80559FB8);
+    if (c != 0) {
+        alloc = (void *)fn_801284F8(0x1c, b358 + 0xdcc);
+        if (alloc != 0) {
+            *(void **)((u8 *)alloc + 0x18) = lbl_8032E1E4;
+            *(void **)alloc = arg1;
+            fn = *(void **)((u8 *)*(void **)arg1 + 0x10);
+            ret = ((void *(*)(void *, void *))fn)(arg1, lbl_8032E1E4);
+            fp = (float *)ret;
+            *(float *)((u8 *)alloc + 8) = fp[0];
+            *(float *)((u8 *)alloc + 0xc) = fp[1];
+            *(float *)((u8 *)alloc + 0x10) = fp[2];
+            *(void **)((u8 *)alloc + 0x18) = lbl_8032E1D8;
+        }
+        idx = *(s32 *)((u8 *)arg0 + 0x330);
+        base = *(void ***)((u8 *)arg0 + 0x32c);
+        *(s32 *)((u8 *)arg0 + 0x330) = idx + 1;
+        base[idx] = alloc;
+        return;
+    }
+    fn = *(void **)((u8 *)*(void **)arg1 + 8);
+    tmp = ((void *(*)(void *))fn)(arg1);
+    fn = *(void **)((u8 *)*(void **)tmp + 0xc);
+    c = ((s32(*)(void *, void *))fn)(tmp, b358 + 0xdd8);
+    if (c != 0) {
+        void *alloc2 = (void *)fn_801284F8(0x1c, b358 + 0xde8);
+        if (alloc2 != 0) {
+            *(void **)((u8 *)alloc2 + 0x18) = lbl_8032E1E4;
+            *(void **)alloc2 = arg1;
+            fn = *(void **)((u8 *)*(void **)arg1 + 0x10);
+            ret = ((void *(*)(void *, void *))fn)(arg1, lbl_8032E1E4);
+            fp = (float *)ret;
+            *(float *)((u8 *)alloc2 + 8) = fp[0];
+            *(float *)((u8 *)alloc2 + 0xc) = fp[1];
+            *(float *)((u8 *)alloc2 + 0x10) = fp[2];
+            *(void **)((u8 *)alloc2 + 0x18) = lbl_8032E1CC;
+        }
+        idx = *(s32 *)((u8 *)arg0 + 0x3bc);
+        base = *(void ***)((u8 *)arg0 + 0x3b8);
+        *(s32 *)((u8 *)arg0 + 0x3bc) = idx + 1;
+        base[idx] = alloc2;
+    }
 }
 
 u32 fn_80155C88(void) { return 1; }
