@@ -19607,13 +19607,14 @@ extern "C" void fn_800D15B4(void *arg0) {
 }
 #pragma dont_inline reset
 
-extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void* this_ptr, void* arg1) {
-    if (*(s32*)this_ptr >= 4) return -2;
-    if (fn_800D1E5C(*(s32**)((u8*)this_ptr + 0x24), *(s32*)this_ptr) != 0 ||
-        *(u8*)((u8*)this_ptr + 0x1c) != 0) {
+/* Request async WPAD info for a valid, ready controller channel; returns -2 on invalid/busy or WPAD result. */
+extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void* controller, void* info) {
+    if (*(s32*)controller >= 4) return -2;
+    if (fn_800D1E5C(*(s32**)((u8*)controller + 0x24), *(s32*)controller) != 0 ||
+        *(u8*)((u8*)controller + 0x1c) != 0) {
         return -2;
     }
-    return fn_800604E8(*(s32*)this_ptr, (s32)arg1, (void*)&fn_800D1668);
+    return fn_800604E8(*(s32*)controller, (s32)info, (void*)&fn_800D1668);
 }
 
 extern "C" void fn_800D1668(s32 arg0, s32 arg1) {
