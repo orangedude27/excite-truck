@@ -2458,20 +2458,32 @@ extern "C" void fn_80163F7C(void *arg0) {
 #pragma scheduling on
 #pragma cplusplus off
 int fn_801643C8(void *arg0) {
+    extern void fn_80128658(int);
+    extern void fn_802CAC54(int);
+    extern void fn_802C6CF8(int);
+#pragma cplusplus on
+    struct Obj {
+        virtual void destroy(int);
+    };
+#pragma cplusplus off
     int a = 0;
     int b = 0;
     void *obj;
     while (b < *((int *)((char *)arg0 + 0xE4))) {
+        int v;
+        int *p;
         obj = *((void **)((char *)arg0 + 0xE0));
-        if (*((int *)((char *)obj + a + 0x34)) != 0) {
-            fn_80128658();
+        p = (int *)((char *)obj + a);
+        v = p[0x34 / 4];
+        if (v != 0) {
+            fn_80128658(v);
         }
         a += 0x48;
         b += 1;
     }
     obj = *((void **)((char *)arg0 + 0xDC));
     if (obj != 0) {
-        ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        ((struct Obj *)obj)->destroy(1);
     }
     fn_802CAC54(*((int *)((char *)arg0 + 0xD0)));
     fn_802C6CF8(*((int *)((char *)arg0 + 0xA0)));
