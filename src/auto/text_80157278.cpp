@@ -2742,7 +2742,7 @@ struct BonusTracker {
     virtual void v7();
     virtual void v8();
     virtual void v9();
-    virtual void v10();
+    virtual void v10(s32);   // 0x30 what the group forwards (fn_8015E80C); the trackers seen here leave it empty (fn_8015E0FC)
     virtual void v11();
     virtual void v12();
     virtual void v13(s32);   // 0x3C what the group forwards (fn_8015E5F4); the air tracker flushes its progress here
@@ -4424,11 +4424,13 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
         sound[0x4C] = 0;
     }
 }
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" int fn_80159708(void *arg0) {
-    float f = ((float *)arg0)[0x25C / 4];
-    return (int)f;
+    double d = (double)(*(float *)((char *)arg0 + 0x25C));
+    return (int)d;
 }
+#pragma pop
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
