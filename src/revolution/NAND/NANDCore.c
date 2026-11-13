@@ -546,30 +546,31 @@ static s32 _ES_InitLib(s32* fd) {
     return result;
 }
 
-static s32 _ES_GetDataDir(s32* fd, u64 tid, char* dirOut) {
+/* Get the NAND data directory path for a title by issuing ES ioctlv GET_DATA_DIR. */
+static s32 _ES_GetDataDir(s32* esFd, u64 titleId, char* dataDirOut) {
     // TODO: Hacky solution
-    u8 tidWork[256] ALIGN(32);
-    u8 vectorWork[32] ALIGN(32);
-    IPCIOVector* pVectors = (IPCIOVector*)vectorWork;
-    u64* pTid = (u64*)tidWork;
+    u8 titleIdWork[256] ALIGN(32);
+    u8 ioctlVectorWork[32] ALIGN(32);
+    IPCIOVector* ioctlVectors = (IPCIOVector*)ioctlVectorWork;
+    u64* titleIdStorage = (u64*)titleIdWork;
 
     // Cast is necessary
-    if (*fd < 0 || dirOut == ((void*)NULL)) {
+    if (*esFd < 0 || dataDirOut == ((void*)NULL)) {
         return -0x3F9;
     }
 
-    if ((u32)dirOut % 32 != 0) {
+    if ((u32)dataDirOut % 32 != 0) {
         return -0x3F9;
     }
 
-    *pTid = tid;
+    *titleIdStorage = titleId;
 
-    pVectors[0].base = pTid;
-    pVectors[0].length = sizeof(u64);
-    pVectors[1].base = dirOut;
-    pVectors[1].length = 30;
+    ioctlVectors[0].base = titleIdStorage;
+    ioctlVectors[0].length = sizeof(u64);
+    ioctlVectors[1].base = dataDirOut;
+    ioctlVectors[1].length = 30;
 
-    return IOS_Ioctlv(*fd, ES_IOCTLV_GET_DATA_DIR, 1, 1, pVectors);
+    return IOS_Ioctlv(*esFd, ES_IOCTLV_GET_DATA_DIR, 1, 1, ioctlVectors);
 }
 
 static s32 _ES_GetTitleId(s32* fd, u64* tidOut) {
