@@ -25620,6 +25620,7 @@ void sdp_disconnect_cfm(u16 cid, u16 result) {
 }
 
 #undef sdp_server_handle_client_req
+/* Handle SDP connection timeout: disconnect L2CAP, report failure, and release the control block. */
 void sdp_conn_timeout(tCONN_CB *p_ccb) {
     extern char lbl_8031A4B8[];
     extern u8 lbl_803C4C40[];
