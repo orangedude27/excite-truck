@@ -50,6 +50,7 @@ long_text:
 }
 
 #pragma scheduling invalid_target
+/* Tries candidate UI font texture names in order and loads the first one that exists. */
 void fn_8023889C(void) {
     int values[2];
     int *var_r31;
@@ -79,13 +80,9 @@ void fn_80238920(void) {
 #pragma scheduling dynamic
 void fn_8023895C(void) {
     float sp8[12];
-    unsigned int sign;
-    int half;
     fn_802C974C(lbl_805636F8, lbl_80563710, lbl_80563714);
     fn_80230B5C(&sp8[0]);
-    sign = lbl_8055CFF0 >> 31;
-    half = (int)(lbl_8055CFF0 + sign) >> 1;
-    sp8[11] = (float)(-half) / lbl_8055FC88;
+    sp8[11] = (float)(-((int)(((lbl_8055CFF0 >> 31) + lbl_8055CFF0)) >> 1)) / lbl_8055FC88;
     ((void (*)(void *))fn_802C8638)(&sp8[0]);
     lbl_8055F0D8 = 1;
     fn_802344C4(1);
@@ -116,12 +113,9 @@ void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
 void fn_80238B44(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int halfY;
     int halfX;
-    unsigned int sign;
     fn_802C8BD0(-1);
-    sign = (unsigned int)lbl_8055CFF4 >> 31;
-    halfY = (int)(sign + lbl_8055CFF4) >> 1;
-    sign = (unsigned int)lbl_8055CFF0 >> 31;
-    halfX = (int)(sign + lbl_8055CFF0) >> 1;
+    halfY = (int)(((unsigned int)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1;
+    halfX = (int)(((unsigned int)lbl_8055CFF0 >> 31) + lbl_8055CFF0) >> 1;
     fn_802C92DC(arg0 - halfX, halfY - arg1, arg2 - halfX, halfY - arg3, arg4);
     fn_802C8D74();
 }
