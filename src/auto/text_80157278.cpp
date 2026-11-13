@@ -4472,3 +4472,33 @@ public:
  virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
  virtual void v32(); virtual void v33(); virtual void v34(); virtual s32 v35();
 };
+
+/* Destroy the owned +0x278 child, clear the embedded list and optionally free. */
+#pragma push
+#pragma scheduling on
+extern "C" void *fn_8015CE50(void *object, s32 deleting) {
+    struct Child { virtual void destroy(s32); };
+    if (object) {
+        Child *child = *(Child **)((u8 *)object + 0x278);
+        *(void **)object = lbl_8032EB58;
+        if (child) {
+            if (child) child->destroy(1);
+        }
+        if (object) {
+            if (object) {
+                if ((u32)object + 8 != 0) {
+                    if ((u32)object + 8 != 0) {
+                        if ((u32)object + 8 != 0) {
+                            *(u32 *)((u8 *)object + 8) = 0;
+                            *(u32 *)((u8 *)object + 0xC) = 0;
+                            *(u32 *)((u8 *)object + 0x10) = 0;
+                        }
+                    }
+                }
+            }
+        }
+        if (deleting > 0) fn_80128668(object);
+    }
+    return object;
+}
+#pragma pop
