@@ -439,6 +439,7 @@ extern float lbl_805618D4;
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" float fn_80166274(void) {
+    /* Computes a clamped ratio from a virtual object's value and a global scale. */
     class Obj {
     public:
         virtual void v0();
@@ -449,21 +450,21 @@ extern "C" float fn_80166274(void) {
         virtual void *get(void);
     };
     Obj *object;
-    void *p;
+    void *data;
     fn_80179630(-1);
     object = (Obj *)fn_801B2EC0();
-    p = object->get();
+    data = object->get();
     fn_80179630(-1);
     {
-        void *r3 = fn_8017960C();
-        float f0 = *(float *)((char *)*(void **)((char *)p + 4) + 0x20);
-        float f1 = *(float *)((char *)r3 + 0x25CC);
-        float f2 = lbl_805618D0;
-        f2 = (f2 > f0) ? f2 : f0;
-        f0 = f1 / f2;
-        f1 = lbl_805618D4;
-        f1 = (f1 > f0) ? f1 : f0;
-        return f1;
+        void *scaleData = fn_8017960C();
+        float limit = *(float *)((char *)*(void **)((char *)data + 4) + 0x20);
+        float value = *(float *)((char *)scaleData + 0x25CC);
+        float minLimit = lbl_805618D0;
+        minLimit = (minLimit > limit) ? minLimit : limit;
+        float ratio = value / minLimit;
+        float minRatio = lbl_805618D4;
+        minRatio = (minRatio > ratio) ? minRatio : ratio;
+        return minRatio;
     }
 }
 #pragma cplusplus reset
