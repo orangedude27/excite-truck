@@ -16,6 +16,22 @@ typedef struct MenuTableEntry {
 typedef MenuTableEntry MenuTable[5][16];
 /* The table under its entry type. */
 #define MENU_TABLE (*(MenuTable *)lbl_803428B0)
+
+/* The menu list widget the functions in this file drive. */
+typedef struct MenuListObject {
+    /* 0x00 */ void *vtable;
+    /* 0x04 */ u8 pad_04[0x10];
+    /* 0x14 */ s32 field_14;
+    /* 0x18 */ char *text;     /* string the player is typing in */
+    /* 0x1C */ s32 textLimit;  /* its buffer size, at most 11 */
+    /* 0x20 */ s32 font;
+    /* 0x24 */ char *field_24;
+    /* 0x28 */ u8 edited;
+    /* 0x29 */ u8 toggle;      /* flips between the two labels of a 2-char entry */
+    /* 0x2C */ s32 groupIndex; /* menu table group (page) the cursor is on */
+    /* 0x30 */ s32 entryIndex; /* entry of that group the cursor is on */
+    /* 0x34 */ s32 field_34;
+} MenuListObject;
 extern char lbl_80342CEC[];
 s32 fn_80243478(s32);
 extern s32 fn_80244558(void *);
