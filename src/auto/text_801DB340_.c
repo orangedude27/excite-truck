@@ -405,8 +405,8 @@ extern double fn_8002F234(double);
 #pragma dont_inline on
 int fn_801DCA60(void) {
     float *object;
-    float scale, size, val, power, radius, factor, x, z, sum, amp, zero, one;
-    float pi, falloff, minR, maxR, peak, offset, range, amplitude, base;
+    float one, pi, falloff, peak, offset, range, zero, amplitude, maxR, minR;
+    float scale, size, val, power, radius, factor, sum, amp, base;
     int row, col, row2, col2, offsetRow, dx, dz, width, octave;
     lbl_80446F08[1] = 256;
     lbl_80446F08[0] = 256;
@@ -438,9 +438,7 @@ int fn_801DCA60(void) {
             dx = col - 128;
             val = lbl_80562B84;
             factor = lbl_80562B70;
-            x = (float)dx;
-            z = (float)dz;
-            radius = z*z + x*x;
+            radius = (float)dz * (float)dz + (float)dx * (float)dx;
             if (radius > minR && radius < maxR) {
                 radius = (float)fn_8002F234(radius);
                 if (radius > peak) radius = peak - (radius - peak);
@@ -819,6 +817,8 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
 extern int fn_801DC9B0(void);
 extern int fn_801DCA60(void);
 void fn_801DD808(void) {
+    /* Write out computed float values for each 0x20-byte entry by combining a base
+       value with three indexed terms from lbl_804424B0. */
     unsigned char *entry = lbl_80446F18;
     int i = 0;
     while (i < (int)lbl_8055E9A8) {
