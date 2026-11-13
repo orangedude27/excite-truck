@@ -538,19 +538,22 @@ extern "C" int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
 #pragma push
 #pragma use_lmw_stmw off
 int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
-    int result = 0;
+    /* Generic event lookup (no '$'/'@' prefix in the scene loader): scan the event
+     * table for the record whose name field (+0x28) matches `name`. On a hit store
+     * the event index in *eventIndex, 0 in *subIndex, and return 1; else return 0. */
+    int found = 0;
     int i;
 
     for (i = 0; i < fn_80012818(); i++) {
-        u8* event = fn_80012820(i);
-        if (stricmp((const char*)(event + 0x28), name) == 0) {
+        u8* eventRecord = fn_80012820(i);
+        if (stricmp((const char*)(eventRecord + 0x28), name) == 0) {
             *eventIndex = i;
             *subIndex = 0;
-            result = 1;
+            found = 1;
             break;
         }
     }
-    return result;
+    return found;
 }
 
 #pragma pop
