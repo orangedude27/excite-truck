@@ -5,29 +5,30 @@ typedef struct StringReadContext {
     int eof;
 } StringReadContext;
 
-int __StringRead(StringReadContext *arg0, unsigned char arg1, int arg2) {
-    unsigned char *temp_r4;
-    unsigned char temp_r5;
+/* Read/unget/test EOF for string scanning (__ReadProcActions: 0=get, 1=unget, 2=test). */
+int __StringRead(StringReadContext *context, unsigned char ch, int action) {
+    unsigned char *current;
+    unsigned char currentChar;
 
-    switch (arg2) {
+    switch (action) {
     case 0:
-        temp_r4 = arg0->current;
-        temp_r5 = *temp_r4;
-        if ((signed char) temp_r5 == 0) {
-            arg0->eof = 1;
+        current = context->current;
+        currentChar = *current;
+        if ((signed char) currentChar == 0) {
+            context->eof = 1;
             return -1;
         }
-        arg0->current = temp_r4 + 1;
-        return temp_r5;
+        context->current = current + 1;
+        return currentChar;
     case 1:
-        if (arg0->eof == 0) {
-            arg0->current = arg0->current - 1;
+        if (context->eof == 0) {
+            context->current = context->current - 1;
         } else {
-            arg0->eof = 0;
+            context->eof = 0;
         }
-        return arg1;
+        return ch;
     case 2:
-        return arg0->eof;
+        return context->eof;
     default:
         return 0;
     }
