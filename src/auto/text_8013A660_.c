@@ -78,7 +78,7 @@ char *fn_8013A708(char *arg0, int arg1, int arg2) {
 
 #pragma dont_inline fn_8013A708
 #pragma cplusplus on
-int fn_8013A760(unkVtable **arg0, int arg1) {
+extern "C" int fn_8013A760(unkVtable **arg0, int arg1) {
     char buffer[0x20];
     int i = 0;
     do {
