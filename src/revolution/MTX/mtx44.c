@@ -65,6 +65,7 @@ void C_MTXPerspective(Mtx44 mtx, f32 fovy, f32 aspect, f32 n, f32 f) {
 }
 
 void C_MTXOrtho(Mtx44 mtx, f32 t, f32 b, f32 l, f32 r, f32 n, f32 f) {
+    /* Build an orthographic projection matrix from top/bottom/left/right/near/far bounds. */
     f32 invrange;
 
     invrange = 1.0f / (r - l);
