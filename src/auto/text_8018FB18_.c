@@ -2615,17 +2615,18 @@ f32 fn_80192E3C(void *state) {
 extern f64 lbl_805620B0;
 extern f32 lbl_805620B8, lbl_80562084, lbl_805620A4;
 #pragma scheduling invalid_target
-f32 fn_80192ED0(void *arg0) {
-    u16 angle = *(u16 *)*(void **)((u8 *)arg0 + 8);
-    f32 normalized = ((f32)angle - lbl_8056208C) / lbl_805620B8;
-    f32 value;
+/* Reads the u16 at offset 0 of the object referenced at arg0+8, normalizes it to [0,1], and maps it to [-3,3] via lbl_80562084 + value*lbl_805620A4. */
+f32 fn_80192ED0(void *object) {
+    u16 rawAngle = *(u16 *)*(void **)((u8 *)object + 8);
+    f32 normalized = ((f32)rawAngle - lbl_8056208C) / lbl_805620B8;
+    f32 clamped;
     if (lbl_80562090 < normalized) {
-        value = lbl_80562090;
+        clamped = lbl_80562090;
     } else {
-        value = ((f32)angle - lbl_8056208C) / lbl_805620B8;
+        clamped = ((f32)rawAngle - lbl_8056208C) / lbl_805620B8;
     }
-    value = value > lbl_8056208C ? value : lbl_8056208C;
-    return lbl_80562084 + value * lbl_805620A4;
+    clamped = clamped > lbl_8056208C ? clamped : lbl_8056208C;
+    return lbl_80562084 + clamped * lbl_805620A4;
 }
 
 #pragma cplusplus on
