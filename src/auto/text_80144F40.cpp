@@ -2156,6 +2156,7 @@ extern "C" int stricmp(const char *, const char *);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *fn_801484A4(const char *arg0, void *arg1) {
+    /* Find a 0xC-byte table entry by case-insensitively matching its name string. */
     s32 offset = 0;
     s32 i = 0;
     while (i < *(s32 *)((u8 *)arg1 + 4)) {
