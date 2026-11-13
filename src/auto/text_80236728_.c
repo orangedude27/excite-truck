@@ -896,21 +896,22 @@ int fn_80237EFC(char *trailName) {
     return 0;
 }
 #pragma pop
-void *fn_80237FF8(void *arg0, int arg1) {
-    int value;
-    if (arg0 != 0) {
-        value = *(int *)((char *)arg0 + 4);
-        *(void **)arg0 = lbl_80340970;
-        if (value != 0) fn_8002F6AC((void *)value, (void (*)(void))fn_80237A08);
+void *fn_80237FF8(void *object, int destroyFlag) {
+    /* Destructor/reset for this object: restore its vtable, release the cached resource, clear fields, and optionally free the object. */
+    int cachedResource;
+    if (object != 0) {
+        cachedResource = *(int *)((char *)object + 4);
+        *(void **)object = lbl_80340970;
+        if (cachedResource != 0) fn_8002F6AC((void *)cachedResource, (void (*)(void))fn_80237A08);
         {
             float initial = lbl_805636E0;
-            *(int *)((char *)arg0 + 4) = 0;
-            *(int *)((char *)arg0 + 8) = 0;
-            *(float *)((char *)arg0 + 0xC) = initial;
+            *(int *)((char *)object + 4) = 0;
+            *(int *)((char *)object + 8) = 0;
+            *(float *)((char *)object + 0xC) = initial;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (destroyFlag > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 float fn_80238084(void *arg0) { return *(float *)((char *)arg0 + 0xC); }
