@@ -1723,14 +1723,15 @@ extern "C" void fn_8029B044(void* arg0, int arg1, void* arg2) {
 }
 
 extern "C" void fn_8029B138(void* arg0, int arg1, float* arg2, float* arg3, float* arg4, float* arg5) {
-    float temp_f1;
-    float temp_f1_2;
-    temp_f1 = *(float*)((char*)arg0 + 0x1F8) * (float)(arg1 & (*(int*)((char*)arg0 + 0x1EC) - 1));
-    *arg2 = temp_f1;
-    *arg3 = temp_f1 + *(float*)((char*)arg0 + 0x1F8);
-    temp_f1_2 = *(float*)((char*)arg0 + 0x1F8) * (float)(arg1 >> *(int*)((char*)arg0 + 0x1F0));
-    *arg4 = temp_f1_2;
-    *arg5 = temp_f1_2 - *(float*)((char*)arg0 + 0x1F8);
+    /* Compute backfire texture quad UV bounds for tile arg1 from cached grid size/step at +0x1EC/+0x1F0/+0x1F8. */
+    float minU;
+    float minV;
+    minU = *(float*)((char*)arg0 + 0x1F8) * (float)(arg1 & (*(int*)((char*)arg0 + 0x1EC) - 1));
+    *arg2 = minU;
+    *arg3 = minU + *(float*)((char*)arg0 + 0x1F8);
+    minV = *(float*)((char*)arg0 + 0x1F8) * (float)(arg1 >> *(int*)((char*)arg0 + 0x1F0));
+    *arg4 = minV;
+    *arg5 = minV - *(float*)((char*)arg0 + 0x1F8);
 }
 
 extern "C" int fn_802CAC28(int, int);
