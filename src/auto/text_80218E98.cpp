@@ -5912,22 +5912,24 @@ loop_test:
 }
 #pragma pop
 extern "C" void fn_802235B4(void *arg0) {
-    s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
-    s32 next;
-    s32 count = *(s32 *)((u8 *)arg0 + 0x2C8);
-    s32 cur = *pIndex;
-    u32 baseAddr = (u32)arg0 + cur;
-    s32 i;
-    for (i = 1, next = cur + 1; next < count; i++, next++) {
-        if (*(u8 *)(i + baseAddr + 0x2D0) != 0) {
-            *pIndex += i;
+    /* Move selection forward to the next enabled item (flag at +0x2D0), wrapping
+     * by scanning backward from the current index if none found ahead. */
+    s32 *pSelectedIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
+    s32 nextIndex;
+    s32 itemCount = *(s32 *)((u8 *)arg0 + 0x2C8);
+    s32 curIndex = *pSelectedIndex;
+    u32 baseAddr = (u32)arg0 + curIndex;
+    s32 step;
+    for (step = 1, nextIndex = curIndex + 1; nextIndex < itemCount; step++, nextIndex++) {
+        if (*(u8 *)(step + baseAddr + 0x2D0) != 0) {
+            *pSelectedIndex += step;
             ((void (*)(void *))fn_8022375C)(arg0);
             return;
         }
     }
-    for (i = cur; i > 0; i--) {
-        if (((u8 *)arg0)[cur - i + 0x2D0] != 0) {
-            *pIndex -= i;
+    for (step = curIndex; step > 0; step--) {
+        if (((u8 *)arg0)[curIndex - step + 0x2D0] != 0) {
+            *pSelectedIndex -= step;
             ((void (*)(void *))fn_8022375C)(arg0);
             return;
         }
