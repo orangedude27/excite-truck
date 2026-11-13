@@ -8,6 +8,15 @@ typedef struct E2640Scratch { s32 count; f32 dot; } E2640Scratch;
 
 typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
 typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
+#pragma cplusplus on
+struct Dummy_801E2100 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual int f6(void *a1, void *a2, int a3, int *a4);
+};
+#pragma cplusplus off
 extern void *lbl_8055EA40;
 extern void *lbl_8055EA3C;
 extern char lbl_8055EA38;
