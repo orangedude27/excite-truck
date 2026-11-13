@@ -514,17 +514,20 @@ void fn_80292EB4(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling off
-int fn_80292EC0(void *arg0, const char *arg1, s32 *arg2, s32 arg3) {
-    char *p;
+/* Finds the cache row whose name matches `name` (case-insensitive, at most the
+ * 15 characters a row holds), stores its index in *outIndex and returns 1;
+ * returns 0 when the cache holds no such system. */
+int fn_80292EC0(void *cache, const char *name, s32 *outIndex, s32 unused) {
+    ChunkCacheEntry *entry;
     int i;
-    p = (char *)arg0;
+    entry = ((ChunkCache *)cache)->entry;
     i = 0;
-    while (i < *(int *)((char *)arg0 + 0x180)) {
-        if (fn_8002B1D8(arg1, p, 15) == 0) {
-            *arg2 = i;
+    while (i < ((ChunkCache *)cache)->count) {
+        if (fn_8002B1D8(name, entry->name, 15) == 0) { /* strnicmp */
+            *outIndex = i;
             return 1;
         }
-        p += 0x18;
+        entry++;
         i++;
     }
     return 0;
