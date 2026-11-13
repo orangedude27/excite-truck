@@ -221,7 +221,8 @@ s32 fn_8016A30C(void) {
  if(e < *(s32 *)((u8 *)&lbl_80430318+4)) goto loop;
  return f;} return 0;
 }
-#pragma pop
+#pragma push
+#pragma processor 750
 void fn_8016A438(void) {
     Blk8016A438 blk;
     s32 i;
@@ -231,6 +232,11 @@ void fn_8016A438(void) {
     f32 now;
     f32 t;
     f32 scale;
+    f32 c70 = lbl_80561970;
+    f32 c60 = lbl_80561960;
+    f32 c74 = lbl_80561974;
+    f32 c78 = lbl_80561978;
+    f32 c7c = lbl_8056197C;
     for (i = 0; i < lbl_80430340.unk_0x4; i++) {
         ent = lbl_80430340.unk_0x0 + i * 0x2C;
         j = *(s32 *)(ent + 0x24);
@@ -239,15 +245,14 @@ void fn_8016A438(void) {
             if (*(u8 *)rec == 0)
                 continue;
             now = fn_801E7E18();
-            t = ((now - *(f32 *)(rec + 0x44)) - lbl_80561970) / lbl_80561974;
-            if (t > lbl_80561960)
-                t = lbl_80561960;
-            if (!(t > lbl_80561970))
-                t = lbl_80561970;
-            scale = lbl_80561970 + t * lbl_80561960;
+            t = ((now - *(f32 *)(rec + 0x44)) - c70) / c74;
+            if (c60 < t)
+                t = c60;
+            t = (t <= c70) ? c70 : t;
+            scale = c70 + t * c60;
             if (*(u8 *)(rec + 0x3C) == 0)
-                scale = lbl_80561960 - scale;
-            if (scale > lbl_80561978) {
+                scale = c60 - scale;
+            if (scale > c78) {
                 fn_802C9900(scale);
                 blk = *(Blk8016A438 *)(rec + 0xC);
                 blk.f[0] *= scale;
@@ -261,7 +266,7 @@ void fn_8016A438(void) {
                 blk.f[8] *= scale;
                 if (*(u8 *)(rec + 0x3D) != 0) {
                     fn_802C70AC(*(s32 *)(*(char **)(rec + 8) + 0x20), blk.f, -1, 4);
-                    if (now - *(f32 *)(rec + 0x40) > lbl_8056197C && *(u8 *)(rec + 0x3C) != 0) {
+                    if (now - *(f32 *)(rec + 0x40) > c7c && *(u8 *)(rec + 0x3C) != 0) {
                         *(u8 *)(rec + 0x3C) = 0;
                         *(f32 *)(rec + 0x44) = lbl_8055E3C8;
                     }
@@ -273,7 +278,7 @@ void fn_8016A438(void) {
         }
     }
 }
-#pragma ppc_psq_save reset
+#pragma pop
 
 void fn_8016B634(s32 arg0);
 
@@ -355,21 +360,22 @@ s32 fn_8016A780(const char *arg0, s32 arg1) {
 #pragma pop
 
 #pragma use_lmw_stmw off
-s32 fn_8016A878(const char* arg0) {
-    s32* state;
-    s32 offset;
-    s32 count;
-    s32 i;
-    state = &lbl_80430340.unk_0x4;
-    count = 0;
-    i = 0;
-    offset = 0;
-    while (i < *state) {
-        if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) count++;
-        offset += 0x2C;
-        i++;
+/* Count how many named entries in the lbl_80430340 table match the given name (case-insensitive). */
+s32 fn_8016A878(const char* name) {
+    s32* entryCountPtr;
+    s32 entryOffset;
+    s32 matchCount;
+    s32 index;
+    entryCountPtr = &lbl_80430340.unk_0x4;
+    matchCount = 0;
+    index = 0;
+    entryOffset = 0;
+    while (index < *entryCountPtr) {
+        if (stricmp(lbl_80430340.unk_0x0 + entryOffset + 1, name) == 0) matchCount++;
+        entryOffset += 0x2C;
+        index++;
     }
-    return count;
+    return matchCount;
 }
 
 s32 fn_8016A8F8(void* alarm) {
