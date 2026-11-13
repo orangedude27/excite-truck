@@ -787,7 +787,7 @@ s32 fn_8016024C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_8016025C(void *arg0, f32 farg0, f32 farg1) {
+void fn_8016025C(void *arg0, void *arg1, float farg0, float farg1, float farg2, float farg3) {
     *(f32 *)((u8 *)arg0 + 0) = farg0;
     *(f32 *)((u8 *)arg0 + 4) = farg1;
 }
