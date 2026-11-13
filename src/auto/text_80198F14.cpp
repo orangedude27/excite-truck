@@ -945,26 +945,29 @@ extern "C" s32 fn_8019A780(void *arg0) {
 
 extern "C" void fn_80199894(void*, void*, void*, void*, s32, s32, f32, f32, f32);
 #pragma scheduling invalid_target
-extern "C" void fn_8019A788(void* arg0, void* arg1, void* arg2,
-                                 Vec* arg3, s32 arg4, s32 arg5,
-                                 f32 farg0, f32 farg1, f32 farg2) {
-    f32 savedFarg1 = farg1;
+/* Wrapper for fn_80199894: passes through when arg0 has a flag at +4 or arg4 is set;
+ * otherwise swaps the two object args, negates/scales the direction vector (lbl_805622DC)
+ * into a temp, and swaps the index/flag pair and the two float params. */
+extern "C" void fn_8019A788(void *first, void *second, void *param3,
+                            Vec *direction, s32 flag4, s32 flag5,
+                            f32 depth, f32 paramF1, f32 paramF2) {
+    f32 savedParamF1 = paramF1;
 
-    if (*(s32*)((u8*)arg0 + 4) != 0 || arg4 != 0) {
-        fn_80199894(arg0, arg1, arg2, arg3, arg4, arg5,
-                    farg0, savedFarg1, farg2);
+    if (*(s32 *)((u8 *)first + 4) != 0 || flag4 != 0) {
+        fn_80199894(first, second, param3, direction, flag4, flag5,
+                    depth, savedParamF1, paramF2);
     } else {
-        register f32 x = arg3->x;
+        register f32 x = direction->x;
         register f32 scale = lbl_805622DC;
         register f32 sx = x * scale;
-        register f32 sy = arg3->y * scale;
-        register f32 sz = arg3->z * scale;
-        Vec scaled;
-        scaled.x = sx;
-        scaled.y = sy;
-        scaled.z = sz;
-        fn_80199894(arg1, arg0, arg2, &scaled, arg5, arg4,
-                    farg0, farg2, savedFarg1);
+        register f32 sy = direction->y * scale;
+        register f32 sz = direction->z * scale;
+        Vec scaledDirection;
+        scaledDirection.x = sx;
+        scaledDirection.y = sy;
+        scaledDirection.z = sz;
+        fn_80199894(second, first, param3, &scaledDirection, flag5, flag4,
+                    depth, paramF2, savedParamF1);
     }
 }
 
@@ -1840,10 +1843,7 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     Vec origin, direction;
     f32 minimum, maximum;
     f32 *matrix = (f32 *)arg3;
-    f32 *p = (f32 *)arg0;
-    f32 *v = (f32 *)arg1;
-    f32 x = p[0] - matrix[9];
-    f32 y = p[1] - matrix[10];
+
     f32 m1 = matrix[1];
     f32 m4 = matrix[4];
     f32 m3 = matrix[3];
@@ -1852,6 +1852,10 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     f32 m8 = matrix[8];
     f32 m2 = matrix[2];
     f32 m5 = matrix[5];
+    f32 *p = (f32 *)arg0;
+    f32 *v = (f32 *)arg1;
+    f32 x = p[0] - matrix[9];
+    f32 y = p[1] - matrix[10];
     f32 z = p[2] - matrix[11];
     origin.y = z * m5 + (x * m3 + y * m4);
     origin.x = z * m2 + (x * matrix[0] + y * m1);
@@ -2858,40 +2862,37 @@ extern "C" void fn_801A0F10(void* arg0) {
     Vec tmp;
     u8 buffer[0x300];
     s32 i;
+    u8* ent;
     s32 j;
-    void* ent;
-    s32 maxCount = 0x40;
     fn_801A0160(arg0);
-    ent = arg0;
+    ent = (u8*)arg0;
     i = 0;
     while (i < *(s32*)((u8*)arg0 + 0x174)) {
-        ((Fn801A0F10Child*)*(void**)((u8*)ent + 0x24))->Update();
-        ent = (u8*)ent + 4;
+        ((Fn801A0F10Child*)*(void**)(ent + 0x24))->Update();
+        ent += 4;
         i++;
     }
     if (lbl_8055E5A0 != 0) {
         u8* obj = *(u8**)((u8*)arg0 + 4);
         s32 ok;
-        if (obj != 0) {
-            switch (*(s32*)(obj + 0x10)) {
-            case 0x4E434152:
-            case 0x43415220:
-            case 0x41434152:
-            case 0x50434152:
-                ok = 1;
-                break;
-            default:
-                ok = 0;
-                break;
-            }
-        } else {
-            ok = 0;
+        if (obj == 0) goto set0;
+        switch (*(s32*)(obj + 0x10)) {
+        case 0x4E434152:
+        case 0x43415220:
+        case 0x41434152:
+        case 0x50434152:
+            ok = 1;
+            goto done;
         }
+    set0:
+        ok = 0;
+    done:
         if (ok != 0) {
             s32 e = *(s32*)(obj + 0x1EC);
             s32 k = 0;
             f32 one = lbl_805622E0;
             f32 zero = lbl_805622D4;
+            s32 maxCount = 0x40;
             do {
                 fn_801BEAEC(e, k, &tmp);
                 Vec v = tmp;
@@ -3971,7 +3972,18 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     p = corners;
     for (i = 0; i < 8; i++, p += 3) {
         m = *(const f32 **)((u8 *)arg0 + 0xC);
-        MtxMulVecInl(m, p, tmp);
+        if (p == tmp) {
+            f32 y = p[1], x = p[0], z = p[2];
+            f32 rx = z * m[6] + (x * m[0] + y * m[3]);
+            f32 ry = z * m[7] + (x * m[1] + y * m[4]);
+            f32 rz = z * m[8] + (x * m[2] + y * m[5]);
+            tmp[0] = rx; tmp[1] = ry; tmp[2] = rz;
+        } else {
+            f32 y = p[1], x = p[0], z = p[2];
+            tmp[0] = z * m[6] + (x * m[0] + y * m[3]);
+            tmp[1] = z * m[7] + (x * m[1] + y * m[4]);
+            tmp[2] = z * m[8] + (x * m[2] + y * m[5]);
+        }
         tmp[0] = tmp[0] + m[9];
         tmp[1] = tmp[1] + m[10];
         tmp[2] = tmp[2] + m[11];
@@ -4066,16 +4078,15 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
 
 #pragma use_lmw_stmw off
 extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 farg1) {
-    u8 *self;
-    TagList *list;
-    TagNode *node;
+    u8 *self = (u8 *)arg0;
+    register TagList *list;
+    unsigned int i;
     TagNode *child;
-    int i;
-    *(int *)((u8 *)arg0 + 0xC) = arg1;
-    self = (u8 *)arg0;
+    TagNode *node;
+    *(int *)(self + 0xC) = arg1;
+    *(int *)(self + 8) = 0;
+    *(int *)(self + 4) = 0;
     *(f32 *)(self + 0x10) = farg0;
-    *(int *)((u8 *)arg0 + 4) = 0;
-    *(int *)((u8 *)arg0 + 8) = 0;
     *(int *)(self + 0x18) = 0x504F4C59;
     *(f32 *)(self + 0x14) = farg1;
     *(int *)(self + 0x20) = 100;
@@ -4101,8 +4112,8 @@ extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 fa
         if (strcmp(child->GetName(), lbl_8055A4D8) == 0) {
             int idx = *(int *)(self + 0xBC);
             u8 *rec;
-            *(int *)(self + 0xBC) = idx + 1;
             rec = self + idx * 0x10;
+            *(int *)(self + 0xBC) = idx + 1;
             {
                 const TagVec3 &v = child->GetVec3(lbl_8055A4E0);
                 *(f32 *)(rec + 0x3C) = v.x;
@@ -4844,15 +4855,16 @@ extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* ar
 extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
     u8* p = (u8*)arg0;
     s32 magic;
-    s32 i;
     *(void**)arg0 = lbl_803336F8;
     if (arg1) {
+        u8* q = p + 4;
+        s32 i;
         Swap4(p + 0x34);
         Swap4(p + 0x38);
         for (i = 0; i < 2; i++) {
-            u8* q = p + 4 + i * 0x18;
             Swap4(q); Swap4(q + 4); Swap4(q + 8);
             Swap4(q + 0xC); Swap4(q + 0x10); Swap4(q + 0x14);
+            q += 0x18;
         }
     }
     *(s32*)(p + 0x48) = 0;
