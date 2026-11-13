@@ -29,6 +29,7 @@ extern void fn_802C88BC(s32);
 extern void fn_802C8530(void);
 extern void fn_802C8638(s32);
 extern void fn_802C974C(f32, f32, f32);
+/* Initialize the rendering/UI subsystem: set up a default transform matrix, create its context, and run dependent init routines. */
 void fn_80230090(void) {
     extern s32 lbl_8055F028;
     extern f32 lbl_80563610, lbl_80563614;
@@ -41,14 +42,14 @@ void fn_80230090(void) {
     extern void fn_8023509C(void);
     extern void fn_802365D8(void);
     extern void fn_80236728(void);
-    f32 values[12];
+    f32 transform[12];
     fn_80129C64(2);
     fn_8022EB90();
-    values[0]=lbl_80563610; values[1]=lbl_80563614; values[2]=lbl_80563614;
-    values[3]=lbl_80563614; values[4]=lbl_80563610; values[5]=lbl_80563614;
-    values[6]=lbl_80563614; values[7]=lbl_80563614; values[8]=lbl_80563610;
-    values[9]=lbl_80563614; values[10]=lbl_80563614; values[11]=lbl_80563614;
-    lbl_8055F028=fn_8022EDE4(values,lbl_80563610);
+    transform[0]=lbl_80563610; transform[1]=lbl_80563614; transform[2]=lbl_80563614;
+    transform[3]=lbl_80563614; transform[4]=lbl_80563610; transform[5]=lbl_80563614;
+    transform[6]=lbl_80563614; transform[7]=lbl_80563614; transform[8]=lbl_80563610;
+    transform[9]=lbl_80563614; transform[10]=lbl_80563614; transform[11]=lbl_80563614;
+    lbl_8055F028=fn_8022EDE4(transform,lbl_80563610);
     fn_8022ED00(); fn_802321D8(); fn_8022F248(); fn_8023509C();
     fn_802365D8(); fn_80236728();
 }
