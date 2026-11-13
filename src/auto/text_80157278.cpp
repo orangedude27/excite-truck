@@ -4264,35 +4264,30 @@ extern "C" s32 fn_80159338(void) {
     return 3;
 }
 
-extern "C" void* fn_80159340(void* arg0, s32 arg1) {
-    struct ChildVTable {
-        virtual void call(s32);
-    };
-    void* child;
-    if (arg0) {
-        child = *(void**)((char*)arg0 + 0x278);
-        *(void**)arg0 = lbl_8032F0E8;
+extern "C" void *fn_80159340(void *object, s32 deleting) {
+    struct Child { virtual void destroy(s32); };
+    if (object) {
+        Child *child = *(Child **)((u8 *)object + 0x278);
+        *(void **)object = lbl_8032F0E8;
         if (child) {
-            if (child) {
-                ((ChildVTable*)child)->call(1);
-            }
+            if (child) child->destroy(1);
         }
-        if (arg0) {
-            if (arg0) {
-                if (arg0) {
-                    if (arg0) {
-                        if (arg0) {
-                            *(u32*)((char*)arg0 + 8) = 0;
-                            *(u32*)((char*)arg0 + 0xC) = 0;
-                            *(u32*)((char*)arg0 + 0x10) = 0;
+        if (object) {
+            if (object) {
+                if ((u32)object + 8 != 0) {
+                    if ((u32)object + 8 != 0) {
+                        if ((u32)object + 8 != 0) {
+                            *(u32 *)((u8 *)object + 8) = 0;
+                            *(u32 *)((u8 *)object + 0xC) = 0;
+                            *(u32 *)((u8 *)object + 0x10) = 0;
                         }
                     }
                 }
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (deleting > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 /* Reset this object's state and notify/reset its linked object if present. */
