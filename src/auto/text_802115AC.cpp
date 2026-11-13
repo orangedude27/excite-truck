@@ -1625,6 +1625,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         *(void **)((u8 *)out + 0x440) = (void *)&fn_80236914;
     }
 }
+#pragma small_data off
 #pragma dont_inline off
 
 #pragma push
