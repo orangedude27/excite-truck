@@ -256,11 +256,12 @@ void fn_80139E18(void *self) {
     fn_80128668((void *)base);
 }
 #pragma scheduling on
-int fn_80139EC4(void *arg0, float arg1, float arg2) {
+/* Return 1 if (x,y) is inside any element of the container (count at +8, element pointers at +4), else 0. */
+int fn_80139EC4(void *container, float x, float y) {
     int i = 0;
     int offset = 0;
-    while (i < *(int *)((char *)arg0 + 8)) {
-        if (fn_80139B70(*(int *)(*(int *)((char *)arg0 + 4) + offset), arg1, arg2) != 0)
+    while (i < *(int *)((char *)container + 8)) {
+        if (fn_80139B70(*(int *)(*(int *)((char *)container + 4) + offset), x, y) != 0)
             return 1;
         offset += 4;
         i++;
