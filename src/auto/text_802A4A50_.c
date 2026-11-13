@@ -304,8 +304,9 @@ void fn_802A4D08(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802A4E08(void) {
-    s32 alpha;
+    register s32 alpha;
     u8 *slot;
+    s32 off;
     f32 value;
     f32 absolute;
     s32 scaled;
@@ -317,9 +318,8 @@ void fn_802A4E08(void) {
     f32 sine;
     f32 maximum;
     f32 clamp;
-
-    slot = ((u8 (*)[0xE0])fn_801E7E34())[fn_801E85B4()];
-
+    off = fn_801E85B4() * 0xE0;
+    slot = (u8 *)fn_801E7E34() + off;
     value = *(f32 *)(slot + 0xDC);
     absolute = (f32)__fabs((double)value);
     if (!(absolute <= *(f32 *)lbl_80558DC4)) {
@@ -328,7 +328,6 @@ void fn_802A4E08(void) {
         nonnegative = scaled & ((-scaled & ~scaled) >> 31);
         if (nonnegative < 0xFF)
             alpha = nonnegative;
-
         fn_802C90F0(lbl_8055F89C);
         ((void (*)(f32, f32, f32, f32, s32, s32, s32, s32, s32))fn_802C9124)(
             lbl_80564858, lbl_80564858, lbl_8056485C, lbl_8056485C,
@@ -336,18 +335,15 @@ void fn_802A4E08(void) {
             (alpha << 24) | 0x00E6F0FF);
         fn_802C9118();
     }
-
     absolute = (f32)__fabs((double)*(f32 *)(slot + 0xD8));
     if (!(absolute <= *(f32 *)lbl_80558DC4) && lbl_8055F898 != -1) {
         camera = (void *)fn_802C86DC();
         matrix[9] = *(f32 *)((u8 *)camera + 0x24);
         matrix[10] = *(f32 *)((u8 *)camera + 0x28);
         matrix[11] = *(f32 *)((u8 *)camera + 0x2C);
-
         angle = *(f32 *)(slot + 0xE0);
         cosine = (f32)cos((double)angle);
         sine = (f32)sin((double)angle);
-
         matrix[0] = cosine;
         matrix[1] = lbl_80564858;
         matrix[2] = -sine;
@@ -357,7 +353,6 @@ void fn_802A4E08(void) {
         matrix[6] = sine;
         matrix[7] = lbl_80564858;
         matrix[8] = cosine;
-
         maximum = lbl_8056485C;
         clamp = lbl_80564860 * *(f32 *)(slot + 0xD8);
         maximum = (maximum < clamp) ? maximum : clamp;
@@ -1924,9 +1919,18 @@ struct Obj802A5878 {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_802A70E4(void *object, float *input) {
-    V3A70E4 *data = *(V3A70E4 **)object;
-    data[((s32 *)object)[1]] = *(V3A70E4 *)input;
-    ++((s32 *)object)[1];
+f32 *data = *(f32 **)object;
+s32 idx = ((s32 *)object)[1];
+float z;
+float y;
+float x;
+x = input[0];
+y = input[1];
+z = input[2];
+data[idx * 3] = x;
+data[idx * 3 + 1] = y;
+data[idx * 3 + 2] = z;
+((s32 *)object)[1] = ((s32 *)object)[1] + 1;
 }
 #pragma pop
 
