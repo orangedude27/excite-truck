@@ -33,8 +33,8 @@ static inline void DispatchList_RemoveAt1(int index) {
     int last;
     DispatchList *l;
     if (index < 0) return;
+    if (index >= lbl_804386B4[0].count) return;
     l = lbl_804386B4;
-    if (index >= l->count) return;
     last = l->count - 1;
     if (index != last) {
         void **items = lbl_804386B4[0].items;
