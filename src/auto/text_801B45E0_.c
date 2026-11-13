@@ -305,21 +305,24 @@ int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801B4AC4(int arg0, int arg1) {
+/* Replay playback: once this tick's audio command list has been built, hand
+ * the recorded data of the current replay frame and of the next one to the
+ * queue's VirtualMemory pool (its slot-0x14 method, a stub in that class). */
+extern "C" void fn_801B4AC4(int queue, int tick) {
     int index;
-    volatile int *entry;
-    int value;
-    F801B4AC4 *obj;
+    volatile ReplayFrame *frame;
+    int dataOfs;
+    F801B4AC4 *memory;
 
-    index = ((int (*)(int, int))fn_801B4C9C)(arg0, arg1);
-    entry = ((volatile int *(*)(int, int))fn_801B4C58)(arg0, index);
-    value = entry[2];
-    obj = *(F801B4AC4 **)(arg0 + 4);
-    obj->f3(value);
-    entry = ((volatile int *(*)(int, int))fn_801B4C60)(arg0, index);
-    value = entry[2];
-    obj = *(F801B4AC4 **)(arg0 + 4);
-    obj->f3(value);
+    index = ((int (*)(int, int))fn_801B4C9C)(queue, tick);
+    frame = ((volatile ReplayFrame *(*)(int, int))fn_801B4C58)(queue, index);
+    dataOfs = frame->dataOfs;
+    memory = *(F801B4AC4 **)(queue + 4);
+    memory->f3(dataOfs);
+    frame = ((volatile ReplayFrame *(*)(int, int))fn_801B4C60)(queue, index);
+    dataOfs = frame->dataOfs;
+    memory = *(F801B4AC4 **)(queue + 4);
+    memory->f3(dataOfs);
 }
 #pragma cplusplus off
 int fn_801B4B44(char *arg0) {
