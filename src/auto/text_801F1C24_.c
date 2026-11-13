@@ -1270,7 +1270,7 @@ void fn_801F3C14(int unused, unsigned char *data) {
 
 #pragma push
 #pragma processor 750
-void fn_801F3CAC(void *arg0, void *arg1) {
+void fn_801F3CAC(void *unused, void *list) {
     extern float fn_801E7E18(void);
     extern void fn_80144DC8(void *);
     extern void fn_80015EB0(void *, float);
@@ -1281,12 +1281,15 @@ void fn_801F3CAC(void *arg0, void *arg1) {
         float sp2c[3];
     } buffers;
     void *node;
-    float value;
-    node = arg1;
+    float scale;
+
+    /* For each node in the list, build a transform buffer from its scale/offset
+     * data and submit it for the node's id. */
+    node = list;
     while (node != 0) {
-        value = *(float *)((char *)node + 0x30) * fn_801E7E18();
+        scale = *(float *)((char *)node + 0x30) * fn_801E7E18();
         fn_80144DC8(buffers.sp8);
-        fn_80015EB0(buffers.sp8, value);
+        fn_80015EB0(buffers.sp8, scale);
         fn_80015B20(buffers.sp8, buffers.sp8, (char *)node + 0x34);
         fn_80144DAC(buffers.sp2c, (float *)((char *)node + 0x20));
         fn_802C744C(*(int *)((char *)node + 4), buffers.sp8);
