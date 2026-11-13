@@ -1707,6 +1707,7 @@ extern void fn_8016E984(void *);
 extern s32 fn_80179650(void);
 #pragma scheduling invalid_target
 void fn_8016E880(void *arg0, void *arg1) {
+    /* Initializes an output record from an input descriptor: copies count, stores current context, sets flags, and expands each input item into a 0x14-byte entry. */
     u8 *input = (u8 *)arg0;
     u8 *output = (u8 *)arg1;
     u8 *entry;
