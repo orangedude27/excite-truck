@@ -519,15 +519,16 @@ s32 fn_80288060(s32 arg0, s32 arg1) {
     return *(s32 *)(arg0 + (arg1 << 2) + 4);
 }
 
-void fn_80288070(s32 arg0, s32 arg1, s32 arg2) {
-    s32 index = (arg0 - lbl_8055F6C4) / 40;
-    s32 value;
+/* Looks up the per-car effect entry for the given instance pointer and forwards the request. */
+void fn_80288070(s32 instancePtr, s32 arg1, s32 arg2) {
+    s32 index = (instancePtr - lbl_8055F6C4) / 40;
+    s32 effectId;
     if ((unsigned int)index < 8U)
-        value = lbl_80488648[index];
+        effectId = lbl_80488648[index];
     else
-        value = 0;
-    value = fn_801EE0C8(value);
-    ((s32 (*)(s32, s32, s32))fn_801E2CCC)(value, arg1, arg2);
+        effectId = 0;
+    effectId = fn_801EE0C8(effectId);
+    ((s32 (*)(s32, s32, s32))fn_801E2CCC)(effectId, arg1, arg2);
 }
 
 void fn_802880F4(void) {
