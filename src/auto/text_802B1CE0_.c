@@ -112,6 +112,7 @@ extern "C" void fn_802B1E28(void) {
         volatile int capacity;
         void *storage;
     } Pool;
+    typedef void *(*AllocArray)(void *, void (*)(void *), void *(*)(void *, int), int, int);
     Pool *pool;
     void *storage;
     void *nodes;
@@ -127,7 +128,7 @@ extern "C" void fn_802B1E28(void) {
     pool = (Pool *)fn_801284F8(0x14, lbl_8034A288 + 0x28);
     if (pool != 0) {
         storage = fn_8012850C(0x610, (const char *)&lbl_8055CDC0);
-        nodes = fn_8002F37C(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
+        nodes = ((AllocArray)fn_8002F37C)(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
         pool->nodes = nodes;
         pool->capacity = 0x60;
         pool->used = 0;
@@ -135,15 +136,15 @@ extern "C" void fn_802B1E28(void) {
         count = pool->capacity;
         size = count << 6;
         storage = fn_8012850C(size * 0x14 + 0x10, lbl_8034A3F8);
-        data = fn_8002F37C(storage, (void (*)(void *))fn_802B1F64, (void *(*)(void *, int))0, 0x14, size);
+        data = ((AllocArray)fn_8002F37C)(storage, (void (*)(void *))fn_802B1F64, (void *(*)(void *, int))0, 0x14, size);
         pool->data = data;
         i = 0;
         offset = 0;
         do {
             index = pool->used;
             i++;
-            data = pool->data;
             nodes = pool->nodes;
+            data = pool->data;
             pool->used = index + 1;
             entry = (char *)nodes + index * 0x10;
             *(void **)entry = (char *)data + offset;
@@ -185,8 +186,9 @@ void fn_802B1FC0(void *arg0) {
 #pragma dont_inline on
 #pragma opt_common_subs off
 void fn_802B1FD4(void) {
-    void *table;
     int i;
+    void *table;
+    int zero = 0;
     void *r27;
     int j;
     void *r25;
@@ -195,7 +197,6 @@ void fn_802B1FD4(void) {
     int off_i;
     int off_j;
     int off_k;
-
     fn_802B2104(&lbl_8055F9BC);
     table = &lbl_804BE1FC;
     i = 0;
@@ -213,29 +214,29 @@ void fn_802B1FD4(void) {
                             fn_80128668(r23);
                         }
                     }
-                    *(int *)((char *)r25 + 0x40c) = 0;
+                    *(int *)((char *)r25 + 0x40c) = zero;
                     if ((char *)r25 + 0x408 != 0) {
                         if ((char *)r25 + 0x408 != 0) {
-                            *(int *)((char *)r25 + 0x408) = 0;
-                            *(int *)((char *)r25 + 0x40c) = 0;
-                            *(int *)((char *)r25 + 0x410) = 0;
+                            *(int *)((char *)r25 + 0x408) = zero;
+                            *(int *)((char *)r25 + 0x40c) = zero;
+                            *(int *)((char *)r25 + 0x410) = zero;
                         }
                     }
                     fn_80128668(r25);
                 }
             }
-            *(int *)((char *)r27 + 4) = 0;
+            *(int *)((char *)r27 + 4) = zero;
             if (r27 != 0) {
                 if (r27 != 0) {
-                    *(int *)r27 = 0;
-                    *((int *)r27 + 1) = 0;
-                    *((int *)r27 + 2) = 0;
+                    *(int *)r27 = zero;
+                    *((int *)r27 + 1) = zero;
+                    *((int *)r27 + 2) = zero;
                 }
             }
             fn_80128668(r27);
         }
     }
-    *(int *)((char *)table + 4) = 0;
+    *(int *)((char *)table + 4) = zero;
 }
 #pragma pop
 
@@ -304,9 +305,11 @@ void fn_802B21D4(void **arg0) {
 }
 
 #pragma push
+#pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma cplusplus on
+#pragma dont_inline on
+#pragma opt_common_subs off
 extern "C" void fn_802B224C(void *arg0) {
     class Obj {
     public:
@@ -333,20 +336,17 @@ extern "C" void fn_802B224C(void *arg0) {
         virtual void v20();
         virtual int v21(const char *);
     };
-
     char name[16];
     void *object;
     int index;
     void *child;
     void *item;
-    int count;
+    unsigned int count;
     void **items;
     Obj *self = (Obj *)arg0;
-
     count = *(int *)((char *)&lbl_804BE1FC + 4);
-    if (count + 1 > *(int *)((char *)&lbl_804BE1FC + 8))
+    if ((int)(count + 1) > *(int *)((char *)&lbl_804BE1FC + 8))
         return;
-
     object = fn_801284F8(0x28, lbl_8034A2C4);
     if (object != 0) {
         fn_802B2C7C(object);
@@ -365,14 +365,11 @@ extern "C" void fn_802B224C(void *arg0) {
         } while (1);
         *(void **)((char *)object + 0x24) = self->v3((const char *)&lbl_8055CDD0);
     }
-
-    items = *(void ***)&lbl_804BE1FC;
     count = *(int *)((char *)&lbl_804BE1FC + 4);
+    items = *(void ***)&lbl_804BE1FC;
     *(int *)((char *)&lbl_804BE1FC + 4) = count + 1;
     items[count] = object;
 }
-#pragma scheduling on
-#pragma cplusplus reset
 #pragma pop
 
 extern char lbl_8034A2E8[];
@@ -907,82 +904,43 @@ void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
     extern int lbl_8055F9B8;
     extern void *lbl_8055F9BC;
     typedef struct Entry802B3E00 {
-        short value;
-        unsigned short padding;
-        float x;
-        float y;
-        float z;
-        float weight;
+        short value; unsigned short padding; float x; float y; float z; float weight;
     } Entry802B3E00;
     typedef struct Node802B3E00 {
-        void *data;
-        volatile int count;
-        int capacity;
-        struct Node802B3E00 *next;
+        void *data; volatile int count; int capacity; struct Node802B3E00 *next;
     } Node802B3E00;
-    typedef struct Queue802B3E00 {
-        Node802B3E00 *head;
-        Node802B3E00 *tail;
-    } Queue802B3E00;
-    typedef struct Pool802B3E00 {
-        void *unknown0;
-        Node802B3E00 *nodes;
-        volatile int used;
-        int capacity;
-    } Pool802B3E00;
+    typedef struct Queue802B3E00 { Node802B3E00 *head; Node802B3E00 *tail; } Queue802B3E00;
+    typedef struct Pool802B3E00 { void *unknown0; Node802B3E00 *nodes; volatile int used; int capacity; } Pool802B3E00;
     Queue802B3E00 *queue = (Queue802B3E00 *)arg0;
     Node802B3E00 *tail = queue->tail;
-    Node802B3E00 *node;
     Pool802B3E00 *pool = (Pool802B3E00 *)lbl_8055F9BC;
     Entry802B3E00 *out = 0;
-    int index;
-    void *data;
-
+    int index; void *data; Node802B3E00 *node;
     if (tail == 0 || tail->count + 1 > tail->capacity) {
         Node802B3E00 *newNode = 0;
         if (pool->used + 1 <= pool->capacity) {
             newNode = (Node802B3E00 *)((char *)pool->nodes + pool->used++ * 0x10);
-            newNode->count = 0;
-            newNode->next = 0;
+            newNode->count = 0; newNode->next = 0;
         }
         if (newNode != 0) {
-            if (queue->head == 0) {
-                queue->head = newNode;
-            }
-            {
-                Node802B3E00 *prev = queue->tail;
-                if (prev != 0) {
-                    prev->next = newNode;
-                }
-            }
-            queue->tail = newNode;
-            newNode->next = 0;
-            node = queue->tail;
-            index = node->count;
-            data = node->data;
+            if (queue->head == 0) queue->head = newNode;
+            { Node802B3E00 *prev = queue->tail; if (prev != 0) prev->next = newNode; }
+            queue->tail = newNode; newNode->next = 0;
+            node = queue->tail; index = node->count; data = node->data;
             out = (Entry802B3E00 *)((char *)data + index * 0x14);
             node->count = index + 1;
         }
     } else {
-        index = tail->count;
-        data = tail->data;
+        index = tail->count; data = tail->data;
         out = (Entry802B3E00 *)((char *)data + index * 0x14);
         tail->count = index + 1;
     }
     if (out != 0) {
-        float x = ((float *)arg1)[0];
-        float y = ((float *)arg1)[1];
+        float x = ((float *)arg1)[0]; float y = ((float *)arg1)[1];
         out->x = x;
-        {
-            float z = ((float *)arg1)[2];
-            out->y = y;
-            out->z = z;
-        }
-        out->value = arg2;
-        out->weight = farg0;
-    } else {
-        lbl_8055F9B8 += 1;
-    }
+        { float z = ((float *)arg1)[2]; out->y = y; out->z = z; }
+        out->value = arg2; out->weight = farg0;
+    } else lbl_8055F9B8 += 1;
 }
 #pragma pop
 int fn_802B3F0C(void *arg0) {
@@ -1077,18 +1035,19 @@ void fn_802B2C7C(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
-int fn_802B2C98(char *arg0) {
+/* Look up an entry by name in lbl_804BE1FC and return it, or 0 if not found. */
+int fn_802B2C98(char *name) {
     void *table;
-    int off_i;
+    int offset;
     int result;
     int i;
 
     table = &lbl_804BE1FC;
     result = 0;
     i = 0;
-    off_i = 0;
-    for (; i < *(int *)((char *)table + 4); off_i += 4, i++) {
-        if (stricmp(arg0, *(char **)(*(char **)(*(char **)&lbl_804BE1FC + off_i) + 0x24)) == 0) {
+    offset = 0;
+    for (; i < *(int *)((char *)table + 4); offset += 4, i++) {
+        if (stricmp(name, *(char **)(*(char **)(*(char **)&lbl_804BE1FC + offset) + 0x24)) == 0) {
             result = (int)((void **)*(char **)&lbl_804BE1FC)[i];
             break;
         }
