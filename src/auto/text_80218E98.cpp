@@ -6176,7 +6176,7 @@ extern "C" f32 lbl_80563538;
 extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     f32 temp_f1;
     f32 temp_f1_2;
-    f32 temp_f1_3;
+    s32 temp_r0;
     f32 temp_f1_4;
     f32 var_f0;
     f32 var_f0_2;
@@ -6188,8 +6188,7 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 temp_r5;
     s32 temp_r6;
     s32 temp_r3;
-    s32 temp_r0;
-
+    f32 temp_f1_3;
     fn_80218F80();
     *(s32 *)((u8 *)arg0 + 0x258) = 0;
     *(void **)arg0 = lbl_8033E350;
@@ -6219,22 +6218,18 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
                 temp_f1_3 = lbl_80563538 * (f32)((VfObj *)arg0)->vf28();
                 var_f0_3 = (temp_f1_3 < lbl_805634A8) ? temp_f1_3 - lbl_805634C4 : lbl_805634C4 + temp_f1_3;
                 temp_r3 = temp_r28 + (s32)var_f0_3;
-                temp_f1_4 = (f32)(*(s32 *)((u8 *)arg0 + 0x10) -
-                                  *(s32 *)((u8 *)arg0 + 8));
+                temp_f1_4 = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
                 var_f0_4 = (temp_f1_4 < lbl_805634A8) ? temp_f1_4 - lbl_805634C4 : lbl_805634C4 + temp_f1_4;
                 *(s32 *)((u8 *)arg0 + 4) = temp_r28;
                 *(s32 *)((u8 *)arg0 + 8) = temp_r27;
-                *(s32 *)((u8 *)arg0 + 0xC) = temp_r3;
+                *(s32 *)((u8 *)arg0 + 0xC) = (unsigned short)temp_r3;
                 *(s32 *)((u8 *)arg0 + 0x10) = temp_r27 + (s32)var_f0_4;
             }
         }
     }
-    fn_80230C30((f32 *)((u8 *)arg0 + 0x244),
-                (f32 *)((u8 *)arg0 + 0x248),
-                *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
+    fn_80230C30((f32 *)((u8 *)arg0 + 0x244), (f32 *)((u8 *)arg0 + 0x248), *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
     *(f32 *)((u8 *)arg0 + 0x24C) = (f32)((VfObj *)arg0)->vf28();
-    *(f32 *)((u8 *)arg0 + 0x250) =
-        (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
+    *(f32 *)((u8 *)arg0 + 0x250) = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
     if (arg2 != 0) {
         *(s32 *)((u8 *)arg0 + 0x258) = arg2;
     } else {
@@ -6243,8 +6238,8 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     temp_r0 = *(s32 *)((u8 *)arg1 + 0xA4);
     temp_r5 = temp_r0;
     temp_r4 = -temp_r5;
-    *(s32 *)((u8 *)arg0 + 0x254) = 0;
     temp_r4 |= temp_r5;
+    *(s32 *)((u8 *)arg0 + 0x254) = 0;
     *(u8 *)((u8 *)arg0 + 0x25C) = (u8)((u32)temp_r4 >> 31);
     return arg0;
 }
@@ -6842,7 +6837,6 @@ f32 temp_f4;
 f32 temp_f3;
 f32 temp_f2;
 f32 temp_f1;
-
 ((void (*)(void *, void *))fn_80218F80)(arg0, ctx);
 *(s32 *)(obj + 0x244) = (s32)arg1;
 *(void **)obj = lbl_8033E140;
@@ -6854,34 +6848,25 @@ count = count < 3 ? count : 3;
 *(s32 *)(obj + 0x24C) = count;
 temp_f4 = (f32)lbl_8055FB9C;
 temp_f3 = temp_f4 / lbl_80563544;
-*(f32 *)(obj + 0x254) =
-(f32)*(s32 *)(obj + 4) + temp_f3;
+*(f32 *)(obj + 0x254) = (f32)*(s32 *)(obj + 4) + temp_f3;
 temp_f2 = (f32)lbl_8055FBA0;
 temp_f1 = temp_f2 * lbl_805634C4;
-*(f32 *)(obj + 0x258) =
-temp_f1 - (f32)*(s32 *)(obj + 8);
-*(f32 *)(obj + 0x25C) =
-(f32)fn_80232B70(*(s32 *)(obj + 0x248)) + lbl_805634E0;
+*(f32 *)(obj + 0x258) = temp_f1 - (f32)*(s32 *)(obj + 8);
+*(f32 *)(obj + 0x25C) = (f32)fn_80232B70(*(s32 *)(obj + 0x248)) + lbl_805634E0;
 value = *(f32 *)(obj + 0x25C) * (f32)*(s32 *)(*(s32 *)(obj + 0x244) + 8);
 half = lbl_805634C4 * value;
 *(f32 *)(obj + 0x260) = value;
 *(f32 *)(obj + 0x264) = *(f32 *)(obj + 0x258) + half;
 *(f32 *)(obj + 0x268) = *(f32 *)(obj + 0x258) - half;
-*(s32 *)(obj + 0x278) = fn_8012850C(
-(void *)(*(s32 *)(*(s32 *)(obj + 0x244) + 8) * 0xC),
-(const char *)lbl_8033DAEC);
+*(s32 *)(obj + 0x278) = fn_8012850C((void *)(*(s32 *)(*(s32 *)(obj + 0x244) + 8) * 0xC), (const char *)lbl_8033DAEC);
 count = *(s32 *)(*(s32 *)(obj + 0x244) + 0xC);
 offset = count * 0xC;
 row = count;
 frame = 0;
 while (row < *(s32 *)(*(s32 *)(obj + 0x244) + 8)) {
-*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) =
-*(f32 *)(obj + 0x258) - *(f32 *)(obj + 0x25C) * (f32)frame;
-if (*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) <
-*(f32 *)(obj + 0x268)) {
-*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) =
-*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) +
-*(f32 *)(obj + 0x260);
+*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) = *(f32 *)(obj + 0x258) - *(f32 *)(obj + 0x25C) * (f32)frame;
+if (*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) < *(f32 *)(obj + 0x268)) {
+*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) = *(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) + *(f32 *)(obj + 0x260);
 }
 frame++;
 row++;
@@ -6893,13 +6878,9 @@ offset += 0xC;
 row = 0;
 offset = 0;
 while (row < *(s32 *)(*(s32 *)(obj + 0x244) + 0xC)) {
-*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) =
-*(f32 *)(obj + 0x258) - *(f32 *)(obj + 0x25C) * (f32)frame;
-if (*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) <
-*(f32 *)(obj + 0x268)) {
-*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) =
-*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) +
-*(f32 *)(obj + 0x260);
+*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) = *(f32 *)(obj + 0x258) - *(f32 *)(obj + 0x25C) * (f32)frame;
+if (*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) < *(f32 *)(obj + 0x268)) {
+*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) = *(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) + *(f32 *)(obj + 0x260);
 }
 frame++;
 row++;
@@ -8091,19 +8072,20 @@ extern "C" void *fn_8022886C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
  return arg0;
 }
 
-extern "C" void *__dt__10J2DTextBoxFv(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        u8 flag = *(u8 *)((u8 *)arg0 + 0x26C);
-        *(void ***)arg0 = (void **)&lbl_8033DD20;
-        if (flag != 0) {
-            void *obj = *(void **)((u8 *)arg0 + 0x268);
-            if (obj != 0) ((VfObjCall *)obj)->vf2(1);
-            *(void **)((u8 *)arg0 + 0x268) = 0;
+extern "C" void *__dt__10J2DTextBoxFv(void *self, s32 shouldDelete) {
+    /* J2DTextBox destructor: release owned subobject (+0x268) if flagged (+0x26C), chain to base destructor, and optionally delete. */
+    if (self != 0) {
+        u8 ownsSubObject = *(u8 *)((u8 *)self + 0x26C);
+        *(void ***)self = (void **)&lbl_8033DD20;
+        if (ownsSubObject != 0) {
+            void *subObject = *(void **)((u8 *)self + 0x268);
+            if (subObject != 0) ((VfObjCall *)subObject)->vf2(1);
+            *(void **)((u8 *)self + 0x268) = 0;
         }
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_8022897C(void *arg0) {
@@ -8202,7 +8184,6 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     s32 var_r4;
     s32 var_r7;
     s32 got;
-
     temp_r30 = lbl_8055CFF0;
     var_r4 = temp_r30 - 2;
     var_f4 = lbl_805634A4;
@@ -8212,7 +8193,6 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     temp_r0 = (s32)(lbl_805634A8 + (var_f4 * ((f32)temp_r30 - lbl_805634A8)));
     var_r4 = temp_r0 < var_r4 ? temp_r0 : var_r4;
     *(s32 *)(arg0 + 0x270) = var_r4;
-
     var_f4_2 = lbl_805634A4;
     temp_f0_2 = ((f32)*(s32 *)(arg0 + 8) - lbl_805634A8) / lbl_80563580;
     var_f4_2 = var_f4_2 < temp_f0_2 ? temp_f0_2 : var_f4_2;
@@ -8221,7 +8201,6 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     temp_r4 = (s32)(lbl_805634A8 + (var_f4_2 * ((f32)lbl_8055CFF4 - lbl_805634A8)));
     var_r0 = temp_r4 < var_r0 ? temp_r4 : var_r0;
     *(s32 *)(arg0 + 0x274) = var_r0;
-
     got = ((Vf78 *)arg0)->get();
     temp_f1 = ((f32)temp_r30 * (f32)got) / lbl_8056357C;
     if (temp_f1 < lbl_805634A8) {
@@ -8234,7 +8213,6 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     if (temp_r3 < var_r0_2)
         var_r0_2 = temp_r3;
     *(s32 *)(arg0 + 0x278) = var_r0_2;
-
     temp_f1_2 = ((f32)lbl_8055CFF4 * (f32)(*(s32 *)(arg0 + 0x10) - *(s32 *)(arg0 + 8))) / lbl_80563580;
     if (temp_f1_2 < lbl_805634A8) {
         var_f0_2 = temp_f1_2 - lbl_805634C4;
@@ -8246,9 +8224,7 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     if (temp_r0_2 < var_r7)
         var_r7 = temp_r0_2;
     *(s32 *)(arg0 + 0x27C) = var_r7;
-    ((Vf14Apply *)*(void **)(arg0 + 0x268))->apply(
-        *(s32 *)(arg0 + 0x270), *(s32 *)(arg0 + 0x274),
-        *(s32 *)(arg0 + 0x278), saved_arg);
+    ((Vf14Apply *)*(void **)(arg0 + 0x268))->apply(*(s32 *)(arg0 + 0x270), *(s32 *)(arg0 + 0x274), *(s32 *)(arg0 + 0x278), saved_arg);
 }
 #pragma pop
 extern "C" void fn_80228D90(void *arg0) {
