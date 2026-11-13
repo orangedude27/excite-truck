@@ -1335,16 +1335,17 @@ extern "C" void fn_80219FE0(void *arg0) {
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F3B0[];
 extern "C" u8 lbl_8033F434[];
-extern "C" void *fn_8021A5B8(void *arg0, s32 arg1, u8 arg2, u8 arg3, s32 arg4, f32 arg5) {
-    fn_80218F34(arg0, 0, 0, 0, 0, (s32)arg5);
-    *(s32 *)((u8 *)arg0 + 0x248) = arg1;
-    *(void **)arg0 = lbl_8033F3B0;
-    *(f32 *)((u8 *)arg0 + 0x24C) = arg5;
-    *(u8 *)((u8 *)arg0 + 0x250) = arg2;
-    *(u8 *)((u8 *)arg0 + 0x251) = arg3;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg4;
-    *(s32 *)((u8 *)arg0 + 0x244) = 0;
-    return arg0;
+/* Initialize an object: run base setup, install lbl_8033F3B0 vtable, and store the provided config fields. */
+extern "C" void *fn_8021A5B8(void *object, s32 id, u8 flagA, u8 flagB, s32 value, f32 amount) {
+    fn_80218F34(object, 0, 0, 0, 0, (s32)amount);
+    *(s32 *)((u8 *)object + 0x248) = id;
+    *(void **)object = lbl_8033F3B0;
+    *(f32 *)((u8 *)object + 0x24C) = amount;
+    *(u8 *)((u8 *)object + 0x250) = flagA;
+    *(u8 *)((u8 *)object + 0x251) = flagB;
+    *(s32 *)((u8 *)object + 0x254) = value;
+    *(s32 *)((u8 *)object + 0x244) = 0;
+    return object;
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021A650(void *arg0, int arg1) {
