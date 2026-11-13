@@ -5873,12 +5873,15 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
     return *(f32 *)(arg0 + arg1 * 4 + 0x470);
 }
 
-extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC8D8(void *arg0, s32 arg1, f32 value) {
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC8D8(void *self, s32 bus, f32 value) {
+    /* Set this player's FX send level for one aux bus (snd_StrmPlayer.cpp:0x32f
+     * checks the bus number first); interrupts are off so the sound update
+     * cannot see a half-written level. */
     int valid = 0;
-    if (arg1 >= 0 && arg1 < 4) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x32f, lbl_803268E4, arg1, 0, 4);
+    if (bus >= 0 && bus < AUX_BUS_COUNT) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(SND_STRMPLAYER_CPP, 0x32f, STR_REMOTE_OOB, bus, 0, AUX_BUS_COUNT);
     u32 token = OSDisableInterrupts();
-    *(f32 *)((char *)arg0 + 0x480 + arg1 * 4) = value;
+    STRM_FX_SEND(self, bus) = value;
     OSRestoreInterrupts(token);
 }
 
