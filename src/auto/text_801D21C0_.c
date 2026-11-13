@@ -101,7 +101,6 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
         s32 id;
     } temp;
     register f32 *vec = (f32 *)arg1;
-    register volatile f32 *vecRead = (volatile f32 *)arg1;
     register u8 *object = (u8 *)arg2;
     register u8 *entry = (u8 *)arg0;
     register s32 i = 0;
@@ -137,22 +136,15 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
             done_type:
                 if (isType != 0) {
                     u8 *record;
-                    s32 rawIndex;
-                    f32 bonus = lbl_8055E3C8;
-                    f32 v0, v1, v2;
-                    rawIndex = *(s32 *)(object + 0x1EC);
-                    index = rawIndex * 0x18;
+                    index = *(s32 *)(object + 0x1EC) * 0x18;
                     record = (u8 *)(lbl_80438898 + index);
                     *record++ = (u8)active;
                     *(s32 *)(record + 3) = temp.id;
                     *(f32 *)(lbl_80438898 + index + 8) =
-                        *(f32 *)(entry + 0xC) + bonus;
-                    v0 = vecRead[0];
-                    v1 = vecRead[1];
-                    v2 = vecRead[2];
-                    x = v0 - *(f32 *)(object + 0x60);
-                    y = v1 - *(f32 *)(object + 0x64);
-                    z = v2 - *(f32 *)(object + 0x68);
+                        *(f32 *)(entry + 0xC) + lbl_8055E3C8;
+                    x = vec[0] - *(f32 *)(object + 0x60);
+                    y = vec[1] - *(f32 *)(object + 0x64);
+                    z = vec[2] - *(f32 *)(object + 0x68);
                     *(f32 *)(record + 0xB) = x;
                     *(f32 *)(record + 0xF) = y;
                     *(f32 *)(record + 0x13) = z;
@@ -275,9 +267,9 @@ void fn_801D2210(void) {
 
 extern s32 fn_801B2F24(void);
 extern void *lbl_804348E8[];
-#pragma scheduling invalid_target
-#pragma paired reset
-#pragma paired_single reset
+#pragma push
+#pragma use_lmw_stmw on
+#pragma processor 750
 void fn_801D2214(void) {
     struct Record { u8 active; u8 pad[3]; s32 id; f32 time; f32 position[3]; };
     struct Temp { f32 position[3]; f32 velocity[3]; s16 type; s16 pad; s32 id; } temp;
@@ -303,15 +295,15 @@ void fn_801D2214(void) {
                     f32 x = record->position[0];
                     f32 y = record->position[1];
                     f32 z = record->position[2];
-                    f32 out0 = y * matrix[0x48 / 4] +
+                    f32 out0 = x * matrix[0x3C / 4] +
                                z * matrix[0x54 / 4] +
-                               x * matrix[0x3C / 4];
-                    f32 out1 = y * matrix[0x4C / 4] +
+                               y * matrix[0x48 / 4];
+                    f32 out1 = x * matrix[0x40 / 4] +
                                z * matrix[0x58 / 4] +
-                               x * matrix[0x40 / 4];
-                    f32 out2 = y * matrix[0x50 / 4] +
+                               y * matrix[0x4C / 4];
+                    f32 out2 = x * matrix[0x44 / 4] +
                                z * matrix[0x5C / 4] +
-                               x * matrix[0x44 / 4];
+                               y * matrix[0x50 / 4];
                     temp.position[0] = out0;
                     temp.position[1] = out1;
                     temp.position[2] = out2;
@@ -347,6 +339,7 @@ void fn_801D2214(void) {
         }
     }
 }
+#pragma pop
 extern f32 PSVECMag(void*);
 extern void fn_801A4868(void*, int);
 extern void fn_801D2C70(void*, s32, void*, s32);
@@ -455,7 +448,7 @@ void fn_801D2414(SoeventInstance *instance, Vec *position, VehicleObject *object
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" u8 fn_801D2550(void *arg0, void *arg1) {
+extern "C" s32 fn_801D2550(void *arg0, void *arg1) {
     struct Dummy {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
@@ -527,6 +520,91 @@ void fn_801D25BC(void *arg0, void *arg1) {
         }
     }
 }
+
+void fn_801D26C8(void *arg0, void *arg1) {
+    typedef struct ScnVtx {
+        char pad0[8];
+        void *fn08;
+        s32 (*fn0C)(void *, const char *);
+        char pad10[4];
+        void *(*fn14)(void *, const char *);
+        char pad18[4];
+        s32 (*fn1C)(void *, unsigned int);
+        s32 (*fn20)(void *, const char *, s32);
+        char pad24[4];
+        float (*fn28)(void *, const char *, float);
+        char pad2C[12];
+        void (*fn38)(Vec *, void *, const char *, Vec *);
+        char pad3C[32];
+        void *(*fn5C)(void *, const char *);
+    } ScnVtx;
+    typedef struct ScnObj { const ScnVtx *vt; } ScnObj;
+    char name[32];
+    Vec ret1;
+    Vec def1;
+    Vec init1;
+    Vec ret2;
+    Vec def2;
+    Vec init2;
+    unsigned char *base = lbl_803382A8;
+    float zero;
+    unsigned char *self = (unsigned char *)arg0;
+    ScnObj *obj = (ScnObj *)arg1;
+    ScnObj *child;
+    unsigned char *entry;
+    if (fn_801D2550(arg0, arg1)) {
+        if ((obj->vt->fn0C)(obj, (const char *)(base + 0x70)))
+            fn_801D3610(self + 8, (obj->vt->fn14)(obj, (const char *)(base + 0x70)));
+        else
+            fn_801D334C(self + 8, obj);
+        *(int *)(self + 0x2C) = (obj->vt->fn20)(obj, (const char *)(base + 0x7C), -1);
+        *(int *)(self + 0x3C) = fn_802C6FC0((obj->vt->fn14)(obj, (const char *)lbl_8055ABE8), 0, 0);
+        zero = lbl_80562A90;
+        *(int *)(self + 0x490) = 0;
+        while (*(int *)(self + 0x490) < 12) {
+            fn_801345D8(name, 32, (const char *)lbl_8055ABF0, *(int *)(self + 0x490) + 1);
+            if (!(obj->vt->fn5C)(obj, name))
+                break;
+            child = (ScnObj *)(obj->vt->fn5C)(obj, name);
+            entry = self + *(int *)(self + 0x490) * 0x5C;
+            init1.x = init1.y = init1.z = zero;
+            def1 = init1;
+            (child->vt->fn38)(&ret1, child, (const char *)lbl_8055ABF8, &def1);
+            *(float *)(entry + 0x78) = ret1.x;
+            *(float *)(entry + 0x7C) = ret1.y;
+            *(float *)(entry + 0x80) = ret1.z;
+            init2.x = init2.y = init2.z = zero;
+            def2 = init2;
+            (child->vt->fn38)(&ret2, child, (const char *)lbl_8055AC00, &def2);
+            *(float *)(entry + 0x84) = ret2.x;
+            *(float *)(entry + 0x88) = ret2.y;
+            *(float *)(entry + 0x8C) = ret2.z;
+            if ((child->vt->fn0C)(child, (const char *)lbl_8055AC08))
+                *(int *)(entry + 0x98) = fn_802C7830((child->vt->fn14)(child, (const char *)lbl_8055AC08));
+            else
+                *(int *)(entry + 0x98) = -1;
+            if ((unsigned char)(child->vt->fn5C)(child, (const char *)(base + 0x70)) != 0) {
+                fn_801D334C(entry + 0x44, (child->vt->fn5C)(child, (const char *)(base + 0x70)));
+                entry[0x40] = 1;
+            } else
+                entry[0x40] = 0;
+            *(float *)(entry + 0x90) = (child->vt->fn28)(child, (const char *)lbl_8055AC10, lbl_80562A94);
+            *(float *)(entry + 0x94) = (child->vt->fn28)(child, (const char *)(base + 0x88), lbl_80562A90);
+            ++*(int *)(self + 0x490);
+        }
+        if (*(int *)(self + 0x490) < 1) {
+            *(int *)(self + 0x98) = -1;
+            *(float *)(self + 0x78) = lbl_80562A90;
+            *(float *)(self + 0x7C) = lbl_80562A90;
+            *(float *)(self + 0x80) = lbl_80562A90;
+            *(int *)(self + 0x490) = 1;
+        }
+    } else {
+        *(int *)(self + 0x3C) = -1;
+        *(int *)(self + 0x490) = 0;
+    }
+}
+
 #pragma cplusplus reset
 #pragma cplusplus on
 #pragma scheduling invalid_target
