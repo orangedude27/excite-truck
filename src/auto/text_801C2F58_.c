@@ -1,5 +1,9 @@
 #include <types.h>
 #include <string.h>
+extern char lbl_8055E7E1;
+extern char lbl_8055E7E2;
+extern char lbl_8055E7E3;
+extern void __AXDSPInitCallback_801769E0(void);
 
 /* Debug event timeline drawn by this unit: 0x30C-byte entries appended by
  * fn_801C3C80 and kept sorted by fn_801C3B7C on the time at entry+0x0.
@@ -2634,10 +2638,10 @@ s32 fn_801C9708(s32 arg0) {
             (arg0 >= 0x30 && arg0 <= 0x39) ||
             arg0 == 0x3A || arg0 == 0x2E ||
             arg0 == 0x20 || arg0 == 0x2D) {
-            u32 length = strlen(lbl_804380F0);
+            register u32 length = strlen(lbl_804380F0);
             if (length < 0xFF) {
                 lbl_804380F0[length] = (char)arg0;
-                *(length + lbl_804380F0 + 1) = 0;
+                lbl_804380F0[length + 1] = 0;
             }
         }
         break;
@@ -3191,10 +3195,12 @@ extern double fn_8002EFA8(double);
 extern void fn_80144CD0(f32 *, f32 *, f32 *);
 extern void fn_801C7254(void *);
 extern double fabs(double);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801C6E40(void) {
-    char *base;
-    void *obj;
-    f32 *mat;
+    register char *base = (char *)&lbl_80437D88;
+    register void *obj;
     f32 quat[4];
     s32 swz[9];
     f32 rot[9];
@@ -3208,27 +3214,26 @@ void fn_801C6E40(void) {
     f32 sv;
     f32 scale;
     f32 inv;
-    base = (char *)&lbl_80437D88;
     lbl_8055E830 = (f32) atof(base + 0x368);
     obj = fn_801C3C80();
     ((s32 *)obj)[2] = 1;
-    mat = (f32 *)(base + 0x468);
     ((f32 *)obj)[21] = lbl_8055E834;
-    ((f32 *)obj)[3] = mat[9];
-    ((f32 *)obj)[4] = mat[10];
-    ((f32 *)obj)[5] = mat[11];
-    ((s32 *)obj)[6] = ((s32 *)mat)[0];
-    ((s32 *)obj)[7] = ((s32 *)mat)[1];
-    ((s32 *)obj)[8] = ((s32 *)mat)[2];
-    ((s32 *)obj)[9] = ((s32 *)mat)[3];
-    ((s32 *)obj)[10] = ((s32 *)mat)[4];
-    ((s32 *)obj)[11] = ((s32 *)mat)[5];
-    ((s32 *)obj)[12] = ((s32 *)mat)[6];
-    ((s32 *)obj)[13] = ((s32 *)mat)[7];
-    ((s32 *)obj)[14] = ((s32 *)mat)[8];
+    ((f32 *)obj)[3] = *(f32 *)(base + 0x468 + 0x24);
+    ((f32 *)obj)[4] = *(f32 *)(base + 0x468 + 0x28);
+    ((f32 *)obj)[5] = *(f32 *)(base + 0x468 + 0x2c);
+    ((s32 *)obj)[6] = *(s32 *)(base + 0x468 + 0x0);
+    ((s32 *)obj)[7] = *(s32 *)(base + 0x468 + 0x4);
+    ((s32 *)obj)[8] = *(s32 *)(base + 0x468 + 0x8);
+    ((s32 *)obj)[9] = *(s32 *)(base + 0x468 + 0xc);
+    ((s32 *)obj)[10] = *(s32 *)(base + 0x468 + 0x10);
+    ((s32 *)obj)[11] = *(s32 *)(base + 0x468 + 0x14);
+    ((s32 *)obj)[12] = *(s32 *)(base + 0x468 + 0x18);
+    ((s32 *)obj)[13] = *(s32 *)(base + 0x468 + 0x1c);
+    ((s32 *)obj)[14] = *(s32 *)(base + 0x468 + 0x20);
     ((f32 *)obj)[22] = ((f32 *)obj)[0] + lbl_8055E830;
     ((u8 *)obj)[0x5C] = 1;
     if (lbl_8055E830 > lbl_805629D0) {
+        f32 *mat = (f32 *)(base + 0x468);
         swz[0] = ((s32 *)mat)[0];
         swz[1] = ((s32 *)mat)[1];
         swz[2] = ((s32 *)mat)[2];
@@ -3294,7 +3299,7 @@ void fn_801C6E40(void) {
     qsort((void *)(s32)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
     fn_801C957C(0);
 }
-
+#pragma pop
 void fn_801C7254(void *arg0) {
     f32 *p = (f32 *)arg0;
     f32 t;
