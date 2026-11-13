@@ -541,10 +541,12 @@ void fn_802DC280(int verts, int count, unsigned short *list, int size) {
     }
 }
 
-void fn_802DC3C0(int arg0) {
+/* Prepare cpulight draw state for the given mode and load the first two texture
+ * objects from lbl_804DB468 (GX texobj at +0x24) into GX texmap slots 0 and 1. */
+void fn_802DC3C0(int mode) {
     fn_802DBD88();
     fn_802DB58C();
-    fn_802CADD0(arg0, 1);
+    fn_802CADD0(mode, 1);
     GXLoadTexObj((unsigned char *)lbl_804DB468[0] + 0x24, 0);
     GXLoadTexObj((unsigned char *)lbl_804DB468[1] + 0x24, 1);
     GXSetAlphaCompare(7, 0, 1, 7, 0);
