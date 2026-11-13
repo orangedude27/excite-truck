@@ -542,6 +542,10 @@ int fn_802E582C(void) {
 #pragma dont_inline reset
 
 #pragma dont_inline fn_802E582C
+/* One slot of the sound-name queue lbl_804FC558 (8 slots, count lbl_8055FF78),
+ * which holds the resource-directory names currently being played. */
+#define SFX_NAME_SLOT_SIZE 0x20
+
 /* fn_8012C41C callback used by fn_802E58B8: allocate a voice object for every
  * loaded entry of the directory whatever its type (r3 still carries the entry's
  * name into fn_802E5AE8). The tail call hands fn_802E582C's result back to
@@ -549,10 +553,6 @@ int fn_802E582C(void) {
 void fn_802E589C(void) {
     fn_802E582C();
 }
-
-/* One slot of the sound-name queue lbl_804FC558 (8 slots, count lbl_8055FF78),
- * which holds the resource-directory names currently being played. */
-#define SFX_NAME_SLOT_SIZE 0x20
 extern unsigned char lbl_804FC558[]; /* sound-name queue: 0x20-byte NUL-terminated names */
 extern int lbl_8055FF78;             /* sound-name queue: names in use */
 extern int lbl_8055FFA0;             /* voice table lbl_8055FF9C: entries in use */
