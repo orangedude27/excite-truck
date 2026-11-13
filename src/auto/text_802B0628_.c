@@ -263,8 +263,115 @@ void *fn_802B0AC0(void *arg0, int arg1) {
 }
 
 void fn_802B0B20(void *arg0, void *arg1) {
+    char *sbase = lbl_8034A078;
     int *tbl = (int *)&lbl_804BE104;
-    tbl[1]++;
+    if (tbl[1] + 1 <= tbl[2]) {
+        char *obj = (char *)fn_801284F8(0xA40, sbase + 0x5C);
+        if (obj != 0) {
+            int idx;
+            char buf[0x10];
+            *(char **)(obj + 0xC) = obj + 0x18;
+            *(int *)(obj + 0x14) = 6;
+            *(int *)(obj + 0x10) = 0;
+            fn_8002F53C(obj + 0x18, (void *)fn_802B111C, (void *)fn_802B0AC0, 0x80, 6);
+            *(int *)(obj + 0x318) = 0;
+            *(int *)(obj + 0x320) = 0;
+            *(int *)(obj + 0x31C) = 0;
+            *(char **)(obj + 0x324) = obj + 0x330;
+            *(int *)(obj + 0x32C) = 0xC0;
+            *(int *)(obj + 0x328) = 0;
+            *(int *)(obj + 0x934) = 0;
+            {
+                int *p = (int *)(obj + 0x938);
+                int *end = (int *)(obj + 0xA38);
+                while (p < end) *p++ = 0;
+            }
+            *obj = (fn_802B05E4() == 0 && ((int (*)(void))fn_802B06D4)() == 0);
+            idx = 1;
+            while (1) {
+                void *mat;
+                void *gr;
+                void *mat2;
+                int id;
+                char *row;
+                float f0, f1, f2, f3;
+                fn_801345D8(buf, 0x10, lbl_8055CDA8, idx);
+                if (((void *(*)(void *, char *))((void **)*(void ***)arg0)[23])(arg0, buf) == 0)
+                    break;
+                mat = ((void *(*)(void *, char *))((void **)*(void ***)arg0)[23])(arg0, buf);
+                if (((void *(*)(void *, char *))((void **)*(void ***)mat)[23])(mat, lbl_8055CDA0) == 0) {
+                    fn_802E317C(sbase + 0x178, buf);
+                    idx++;
+                    continue;
+                }
+                mat2 = ((void *(*)(void *, char *))((void **)*(void ***)arg0)[23])(arg0, buf);
+                gr = ((void *(*)(void *, char *))((void **)*(void ***)mat)[23])(mat, lbl_8055CD98);
+                id = ((int (*)(void *))((void **)*(void ***)mat2)[2])(mat2);
+                row = *(char **)(obj + 0xC) + (*(int *)(obj + 0x10) * 0x80);
+                (*(int *)(obj + 0x10))++;
+                f0 = lbl_80564BC0; f1 = lbl_80564BC4; f2 = lbl_80564BC8; f3 = lbl_80564BCC;
+                if (arg1 != 0) {
+                    f0 = ((float (*)(void *, char *))((void **)*(void ***)arg1)[9])(arg1, sbase + 0x6C);
+                    f1 = ((float (*)(void *, char *))((void **)*(void ***)arg1)[9])(arg1, sbase + 0x78);
+                    f2 = ((float (*)(void *, char *))((void **)*(void ***)arg1)[9])(arg1, sbase + 0x84);
+                    f3 = ((float (*)(void *, char *))((void **)*(void ***)arg1)[9])(arg1, sbase + 0x90);
+                }
+                ((void (*)(void *, char *, char *))((void **)*(void ***)gr)[6])(gr, sbase + 0x9C, sbase + 0xA8);
+                *(int *)(row + 0x7C) = ((int (*)(void))fn_802B0628)();
+                {
+                    int t = 1;
+                    char tbuf[0x10];
+                    float *pa = &f1;
+                    float *pb = &f3;
+                    while (1) {
+                        fn_801345D8(tbuf, 0x10, lbl_8055CD90, t);
+                        if (((int (*)(void *, char *))((void **)*(void ***)gr)[3])(gr, tbuf) == 0)
+                            break;
+                        {
+                            void *tex = ((void *(*)(void *, char *))((void **)*(void ***)gr)[5])(gr, tbuf);
+                            int n = *(int *)(row + 8);
+                            char *base = *(char **)(row + 4);
+                            char *item = base + n * 0x10;
+                            int v;
+                            (*(int *)(row + 8)) = n + 1;
+                            *(float *)(item + 4) = *(pa - 1);
+                            *(float *)(item + 8) = *(pb - 1);
+                            *(int *)(item + 0xC) = t - 1;
+                            v = ((int (*)(void *, void *))fn_802B110C)((void *)fn_802B0628, tex);
+                            *(int *)item = v;
+                            if (v == -2)
+                                fn_802E317C(sbase + 0xB4, tex);
+                            else if (t == 1 && fn_802CAF8C() != 0 && ((int (*)(void))fn_802B06D4)() == 0)
+                                fn_802E317C(sbase + 0xD8, tex);
+                            pa++; pb++; t++;
+                        }
+                    }
+                }
+                *(int *)(row + 0x70) = id;
+                memset(row + 0x74, 0, 8);
+                *(int *)(row + 0x78) = ((int (*)(void *, char *, int))((void **)*(void ***)gr)[8])(gr, sbase + 0x118, 2);
+                *(int *)(row + 0x74) = ((int (*)(void *, char *, int))((void **)*(void ***)gr)[8])(gr, sbase + 0x130, 0);
+                idx++;
+            }
+            if (*(int *)(obj + 0x10) == 0)
+                fn_802E317C(sbase + 0x158, *(void **)(obj + 0xA3C));
+            *(void **)(obj + 0xA3C) = ((void *(*)(void *, char *))((void **)*(void ***)arg0)[5])(arg0, lbl_8055CDB0);
+            ((void (*)(void *, char *, void *))((void **)*(void ***)arg0)[6])(arg0, sbase + 0x1CC, 0);
+            *(int *)(obj + 4) = ((int (*)(void))fn_802B0628)();
+            ((void (*)(void *, char *, char *))((void **)*(void ***)arg0)[6])(arg0, sbase + 0x1C0, sbase + 0x1B0);
+            {
+                int v = ((int (*)(void))fn_802B0628)();
+                *(int *)(obj + 8) = v;
+                if (v == -2)
+                    *(int *)(obj + 8) = *(int *)(obj + 4);
+            }
+        }
+        {
+            int c = tbl[1];
+            tbl[1] = c + 1;
+            ((void **)tbl[0])[c] = obj;
+        }
+    }
 }
 
 extern void *lbl_804BE104;
@@ -789,9 +896,10 @@ void *fn_802B1C1C(void *arg0, int arg1) {
 
 int fn_802B1C50(void *arg0, int arg1, int arg2) {
     if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 0x10)) {
-        char *row = (char *)*(int *)((char *)arg0 + 0xC);
-        row += arg1 << 7;
-        return *(int *)(row + (arg2 << 2) + 0x74);
+        unsigned int base = *(unsigned int *)((char *)arg0 + 0xC);
+        unsigned int addr = base + (unsigned int)(arg1 << 7);
+        addr += (unsigned int)(arg2 << 2);
+        return *(int *)(addr + 0x74);
     }
     return 0;
 }
