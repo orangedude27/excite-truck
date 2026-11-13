@@ -53,7 +53,7 @@ extern float lbl_80564BB0;
 extern float fn_801EA0E8(float, float);
 extern unsigned int fn_802BBD38(short, short, float);
 struct ETConfigPaths;
-extern struct ETConfigPaths lbl_8034A020;
+extern char lbl_8034A020[];
 extern float lbl_804BE090[];
 extern float lbl_80564B40;
 extern float lbl_80564B44;
