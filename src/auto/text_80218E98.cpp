@@ -6671,25 +6671,30 @@ extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
 
 #pragma push
 #pragma small_data on
-extern "C" void *fn_80224D40(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        u8 enabled = *(u8 *)((u8 *)arg0 + 0x299);
-        *(void **)arg0 = lbl_8033E1C4;
-        if (enabled != 0) {
-            fn_8022EE98(*(void **)((u8 *)arg0 + 0x29C));
+extern "C" void *fn_80224D40(void *obj, s32 deleteFlags) {
+    // Destructor-like cleanup: reset vtable, conditionally destroy owned subobjects, clear fields, reset string/base, optional delete.
+    if (obj != 0) {
+        u8 ownsSubobject = *(u8 *)((u8 *)obj + 0x299);
+
+        *(void **)obj = lbl_8033E1C4;
+        if (ownsSubobject != 0) {
+            fn_8022EE98(*(void **)((u8 *)obj + 0x29C));
         }
-        fn_802328D4(*(void **)((u8 *)arg0 + 0x248));
-        *(s32 *)((u8 *)arg0 + 0x248) = 0;
-        char *dst = (char *)arg0 + 0x259;
-        char *src = (char *)&lbl_8055B88C;
-        *(s32 *)((u8 *)arg0 + 0x244) = 0;
-        strcpy(dst, src);
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+
+        fn_802328D4(*(void **)((u8 *)obj + 0x248));
+        *(s32 *)((u8 *)obj + 0x248) = 0;
+
+        char *nameDst = (char *)obj + 0x259;
+        char *emptyStr = (char *)&lbl_8055B88C;
+        *(s32 *)((u8 *)obj + 0x244) = 0;
+        strcpy(nameDst, emptyStr);
+
+        fn_8021915C(obj, 0);
+        if (deleteFlags > 0) {
+            fn_80128668(obj);
         }
     }
-    return arg0;
+    return obj;
 }
 #pragma push
 #pragma processor 750
