@@ -1407,33 +1407,40 @@ extern f32 lbl_80563688;
 #define TEXT_ALIGN_CENTER_Y 0x10 /* by half of that height */
 #define TEXT_ALIGN_ASCENT   0x20 /* by the font's second height (font[6]) */
 #pragma scheduling invalid_target
-void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1) {
+/* Move the pen point (*x, *y) back by the part of the string's size the
+   TEXT_ALIGN_* flags ask for, so that the string is drawn anchored on it:
+   the width comes from the first glyph's left bearing (0x1), from the whole
+   string measured by fn_8023293C (0x2) or half of that (0x4), and the height
+   from the font's own height byte font[4] (0x8), half of it (0x10) or the
+   second height byte font[6] (0x20), all scaled by the font scale and the
+   renderer's rate (fn_8022EDC4()'s field 0x38). */
+void fn_80233BF0(u8 *text, u8 *font, f32 *x, f32 *y, s32 flags, f32 scale, f32 extra) {
     u32 code;
-    f32 value;
-    if (arg4 & 1) {
-        u8 first = arg0[0];
+    f32 rate;
+    if (flags & TEXT_ALIGN_BEARING) {
+        u8 first = text[0];
         if ((first & 0xF0) == 0xE0) {
-            code = ((first & 0x0F) << 12) | ((arg0[1] & 0x3F) << 6) | (arg0[2] & 0x3F);
+            code = ((first & 0x0F) << 12) | ((text[1] & 0x3F) << 6) | (text[2] & 0x3F);
         } else if ((first & 0xE0) == 0xC0) {
-            code = ((first & 0x1F) << 6) | (arg0[1] & ~0xC0);
+            code = ((first & 0x1F) << 6) | (text[1] & ~0xC0);
         } else {
             code = first & 0x7F;
         }
-        *arg2 -= *(f32 *)(*(u8 **)(arg1 + 0x10) + (code & 0xFFFF) * 0x1C);
-    } else if (arg4 & 2) {
-        *arg2 -= farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1);
-    } else if (arg4 & 4) {
-        f32 prod = farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1);
-        *arg2 -= prod * lbl_80563688;
+        *x -= *(f32 *)(*(u8 **)(font + 0x10) + (code & 0xFFFF) * 0x1C);
+    } else if (flags & TEXT_ALIGN_RIGHT) {
+        *x -= scale * fn_8023293C((s32)font, (char *)text, extra);
+    } else if (flags & TEXT_ALIGN_CENTER_X) {
+        f32 textWidth = scale * fn_8023293C((s32)font, (char *)text, extra);
+        *x -= textWidth * lbl_80563688;
     }
-    value = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
-    if (arg4 & 8) {
-        *arg3 -= value * ((f32)arg1[4] * farg0);
-    } else if (arg4 & 0x20) {
-        *arg3 -= value * ((f32)arg1[6] * farg0);
-    } else if (arg4 & 0x10) {
-        f32 prod2 = value * ((f32)arg1[4] * farg0);
-        *arg3 -= prod2 * lbl_80563688;
+    rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
+    if (flags & TEXT_ALIGN_TOP) {
+        *y -= rate * ((f32)font[4] * scale);
+    } else if (flags & TEXT_ALIGN_ASCENT) {
+        *y -= rate * ((f32)font[6] * scale);
+    } else if (flags & TEXT_ALIGN_CENTER_Y) {
+        f32 textHeight = rate * ((f32)font[4] * scale);
+        *y -= textHeight * lbl_80563688;
     }
 }
 void fn_80233DD8(s32 *arg0, s32 arg1) {
