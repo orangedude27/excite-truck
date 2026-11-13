@@ -982,26 +982,25 @@ void fn_80010B80(s32 arg0, float arg1, float arg2, float arg3, float arg4) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void *fn_80010BEC(void *arg0) {
+    /* Flush queued quad entries: replay each buffered entry through fn_80010A50
+     * and reset the entry count. */
     Unk0x18 *entry;
-    s32 i;
+    s32 index;
 
     if (lbl_8055D4A8 > 0) {
         fn_80010B74();
         entry = lbl_8034F6B0;
-        i = 0;
-        while (i < lbl_8055D4A8) {
+        index = 0;
+        while (index < lbl_8055D4A8) {
             fn_80010A50(entry->unk_0x00, entry->unk_0x04, entry->unk_0x08,
                         entry->unk_0x0C, entry->unk_0x10, entry->unk_0x14);
             entry++;
-            i++;
+            index++;
         }
         fn_80010B7C();
         lbl_8055D4A8 = 0;
     }
 }
-
-#pragma push
-#pragma scheduling invalid_target
 void fn_80010C74(f32 farg0, f32 farg1, f32 farg2) {
     volatile s32 sp34;
     volatile s32 sp30;
