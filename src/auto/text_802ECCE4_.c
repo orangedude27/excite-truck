@@ -39,16 +39,17 @@ void fn_802ECCE4(char *arg0, void *arg1, s32 arg2) {
 }
 #pragma dont_inline reset
 
-s32 fn_802ECD68(void *arg0, void *arg1, s32 arg2) {
-    s32 result;
-    memset(arg0, 0, 0x44);
-    fn_802ECCE4((char *)arg0, arg1, 0x40);
-    result = fn_802E11A4(arg0, arg2);
-    if (result == 0) {
-        result = fn_802E11A4(&lbl_8055D300, arg2);
+/* Initializes a 0x44-byte record with a copied name and resolves/stores its handle. */
+s32 fn_802ECD68(void *record, void *name, s32 mode) {
+    s32 handle;
+    memset(record, 0, 0x44);
+    fn_802ECCE4((char *)record, name, 0x40);
+    handle = fn_802E11A4(record, mode);
+    if (handle == 0) {
+        handle = fn_802E11A4(&lbl_8055D300, mode);
     }
-    ((s32 *)arg0)[16] = result;
-    return result != 0;
+    ((s32 *)record)[16] = handle;
+    return handle != 0;
 }
 
 s32 fn_802ECEC0(void) {
@@ -74,20 +75,20 @@ s32 fn_802ECF04(void) {
     return fn_802ECDF4();
 }
 
+#pragma dont_inline on
 void *fn_802ECF08(void *arg0, s32 arg1) {
     void *result;
-    const char *name;
     if (fn_802ECEEC() != 0) {
         return (void *)lbl_805600F8;
     }
-    name = lbl_8034EC18;
-    result = fn_801284F8(0x44, name);
+    result = fn_801284F8(0x44U, lbl_8034EC18);
     if (fn_802ECD68(result, arg0, arg1) == 0) {
         fn_80128668(result);
         result = 0;
     }
     return result;
 }
+#pragma dont_inline reset
 s32 fn_802ECF90(const char *arg0, void *arg1) {
     char buffer[64];
     if (lbl_805600F8 != 0) {
