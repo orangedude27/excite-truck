@@ -2734,22 +2734,23 @@ extern char lbl_8033072C[];
 extern char lbl_803308A0[];
 extern f32 lbl_80561980;
 extern void fn_802E317C(const char *, ...);
-void fn_80170E98(void *arg0, void *arg1, s32 arg2) {
+/* Format a status label for arg0's kind (field 0x44) and value (field 0x2C) into the output buffer; panics on unknown kinds. */
+void fn_80170E98(void *source, void *buffer, s32 bufferSize) {
     register const char *messages = lbl_803306D0;
-    s32 value = *(s32 *)((u8 *)arg0 + 0x44);
+    s32 kind = *(s32 *)((u8 *)source + 0x44);
 
-    switch (value) {
+    switch (kind) {
     case 0:
         ((void (*)(void *, s32, const char *, ...))fn_801345D8)(
-            arg1, arg2, messages + 0x264, *(s32 *)((u8 *)arg0 + 0x2c));
+            buffer, bufferSize, messages + 0x264, *(s32 *)((u8 *)source + 0x2c));
         break;
     case 1:
         ((void (*)(void *, s32, const char *, ...))fn_801345D8)(
-            arg1, arg2, messages + 0x270, *(s32 *)((u8 *)arg0 + 0x2c));
+            buffer, bufferSize, messages + 0x270, *(s32 *)((u8 *)source + 0x2c));
         break;
     case 2:
         ((void (*)(void *, s32, const char *, ...))fn_801345D8)(
-            arg1, arg2, messages + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
+            buffer, bufferSize, messages + 0x27c, *(s32 *)((u8 *)source + 0x2c));
         break;
     default:
         fn_802E317C((void *)(messages + 0x288));
