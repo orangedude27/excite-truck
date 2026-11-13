@@ -2,7 +2,19 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef unsigned int size_t;
-extern char lbl_80351790[];
+
+// The one progress/loading message the game shows (its own name string is
+// "ProgressUpdate", lbl_802FC600). fn_80012478/fn_80012628 clear it,
+// fn_800124DC starts one, fn_8001255C advances it and fn_800125D4 drops it.
+typedef struct {
+    unsigned char active;     // +0x00: a message is set
+    char message[0x80];       // +0x01: text, strncpy'd 0x7f chars with the last byte forced to NUL
+    float progress;           // +0x84: accumulated progress (fn_8001255C adds to it)
+    float target;             // +0x88: value the message was started with
+    unsigned int startTime;   // +0x8C: ms (fn_802E2C20) when the message was started
+    unsigned int elapsed;     // +0x90: ms between the last update and startTime
+} ProgressMessage;
+extern char lbl_80351790[];   // the ProgressMessage record
 extern char lbl_802FC600[];
 extern float lbl_80560350;
 extern float lbl_8056034C;
@@ -31,7 +43,8 @@ void *fn_80012384(void *arg0, int arg1) {
     }
     return arg0;
 }
-#pragma scheduling on
+#pragma push
+#pragma processor 750
 void fn_800123EC(float arg0) {
     float f;
     int value;
@@ -39,13 +52,14 @@ void fn_800123EC(float arg0) {
     fn_802C92D0();
     f = lbl_80560348 * arg0;
     value = (int)f;
-    if (value <= 0) value = 0;
-    color = value;
-    if (color >= 0xff) color = 0xff;
+    color = 0;
+    if (value > 0)
+        color = (int)f;
+    color = (color >= 0xff ? 0xff : color);
     fn_802C92DC(-0x14, -0x14, lbl_8055FB9C + 0x14, lbl_8055FBA0 + 0x14, color << 24);
     fn_802C92D8();
 }
-#pragma dont_inline reset
+#pragma pop
 
 #pragma push
 #pragma scheduling on
