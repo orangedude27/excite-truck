@@ -139,6 +139,7 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
 }
 #pragma scheduling on
 #pragma pop
+/* Load the white texture/model resources and cache half the sphere bounds height. */
 void fn_801E3C04(void) {
     float a, b, d, e, c, f;
     float t;
@@ -293,9 +294,8 @@ int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
     float tx;
     float ty;
     float tz;
-
     delta[0] = b[0] - a[0];
-    delta[1] = b[1] - a[1];
+    delta[1] = b[0x1] - a[1];
     delta[2] = b[2] - a[2];
     fn_801E3640(delta, &matrix[0][0]);
     matrix[2][0] = delta[0] * lbl_80562D08;
@@ -343,18 +343,15 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     volatile struct LocalData local;
     float *base = (float *)arg0;
     float *matrix;
-    register float zero;
-    register f64 seedXY;
-    register s32 seedZ;
+    float zero = lbl_80562CF4;
+    f64 seedXY = *(volatile f64 *)&local.seed.x;
+    s32 seedZ = *(volatile s32 *)&local.seed.z;
     float x, y, z;
     float negScale;
     float sidePositive;
     float depthNegative;
     float sideNegative;
 
-    zero = lbl_80562CF4;
-    seedXY = *(volatile f64 *)&local.seed.x;
-    seedZ = *(volatile s32 *)&local.seed.z;
     local.seed.id = arg1;
     local.seed.u = zero;
     local.seed.v = zero;
@@ -416,51 +413,52 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
 void fn_801E43BC(void *arg0, float scale, float alpha) {
     typedef void (*LineCall)(void *, void *, int, float);
     float p[3];
-    register float *base = (float *)arg0;
-    register float x, y, z, vx, vy, vz;
+    float *v = (float *)arg0;
+    float x, y, z, vx, vy, vz;
 
-    vx = base[0];
-    vz = base[2];
+    vx = v[0];
+    vz = v[2];
     x = vx * scale;
-    vy = base[1];
+    vy = v[1];
     y = vy * scale;
-    vx = base[9];
-    vy = base[10];
+    vx = v[9];
+    vy = v[10];
     z = vz * scale;
-    vz = base[11];
+    vz = v[11];
     p[0] = vx + x;
     p[1] = vy + y;
     p[2] = vz + z;
     ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFFFF0000, alpha);
 
-    vx = base[3];
-    vz = base[5];
+    vx = v[3];
+    vz = v[5];
     x = vx * scale;
-    vy = base[4];
+    vy = v[4];
     y = vy * scale;
-    vx = base[9];
-    vy = base[10];
+    vx = v[9];
+    vy = v[10];
     z = vz * scale;
-    vz = base[11];
+    vz = v[11];
     p[0] = vx + x;
     p[1] = vy + y;
     p[2] = vz + z;
     ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFF00FF00, alpha);
 
-    vx = base[6];
-    vz = base[8];
+    vx = v[6];
+    vz = v[8];
     x = vx * scale;
-    vy = base[7];
+    vy = v[7];
     y = vy * scale;
-    vx = base[9];
-    vy = base[10];
+    vx = v[9];
+    vy = v[10];
     z = vz * scale;
-    vz = base[11];
+    vz = v[11];
     p[0] = vx + x;
     p[1] = vy + y;
     p[2] = vz + z;
     ((LineCall)fn_801E41D8)((char *)arg0 + 0x24, p, 0xFF0000FF, alpha);
 }
+#pragma scheduling on
 #pragma pop
 extern void fn_801E370C();
 #pragma push
