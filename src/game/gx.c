@@ -162,7 +162,21 @@ static inline void mtx33Transpose_802D1C04(float *m) {
 static inline void xformInverse_802D1C04(Xform_802D1C04 *dst, const Xform_802D1C04 *src) {
     dst->r = src->r;
     mtx33Transpose_802D1C04(dst->r.m);
-    mulVecSR_802D1C04(src->r.m, &src->t.x, &dst->t.x);
+    if (&dst->t == &src->t) {
+        float x = src->t.z * src->r.m[2] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[1]);
+        float y = src->t.z * src->r.m[5] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[4]);
+        float z = src->t.z * src->r.m[8] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[7]);
+        dst->t.x = x;
+        dst->t.y = y;
+        dst->t.z = z;
+    } else {
+        float x = src->t.z * src->r.m[2] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[1]);
+        float y = src->t.z * src->r.m[5] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[4]);
+        float z = src->t.z * src->r.m[8] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[7]);
+        dst->t.x = x;
+        dst->t.y = y;
+        dst->t.z = z;
+    }
     dst->t.x *= lbl_80564F90;
     dst->t.y *= lbl_80564F90;
     dst->t.z *= lbl_80564F90;
