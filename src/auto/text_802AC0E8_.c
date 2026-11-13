@@ -632,5 +632,20 @@ void fn_802AE168(void *arg0) {
     }
 }
 #pragma pop
-void fn_802AE220(void *arg0,int arg1){int offset=0,i=0;unsigned char *entry;while(i<*(int *)(*(char **)arg0+4)){entry=(unsigned char *)*(char **)*(char **)arg0+offset;if(entry[0x68])fn_802AD4C4(*(void **)(entry+0x64),arg1,*(float *)((char *)arg0+4)-*(float *)(entry+0x6c));offset+=0x74;i++;}}
+/* Evaluate active timeline entries at the current time, passing an extra parameter. */
+void fn_802AE220(void *arg0, int arg1) {
+    int offset = 0;
+    int i = 0;
+    unsigned char *entry;
+
+    while (i < *(int *)(*(char **)arg0 + 4)) {
+        entry = (unsigned char *)*(char **)*(char **)arg0 + offset;
+        if (entry[0x68]) {
+            fn_802AD4C4(*(void **)(entry + 0x64), arg1,
+                        *(float *)((char *)arg0 + 4) - *(float *)(entry + 0x6c));
+        }
+        offset += 0x74;
+        i++;
+    }
+}
 
