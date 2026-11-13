@@ -3695,7 +3695,6 @@ extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4,
         }
     }
     result = fn_800AC1B4(iter, name);
-    goto loop;
 loop:
     if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
     state = iter[0x4C];
@@ -6630,71 +6629,71 @@ extern "C" s32 fn_800AF734(void *fatCtx, s32 clusterIndex, s32 entryValue) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
+/* Write a 12-bit FAT entry for a cluster into the cached FAT page, reloading/flushing sectors as needed. */
+extern "C" s32 fn_800AF8EC(void *fatCtx, s32 cluster, u32 entryValue, void *page) {
     extern s32 fn_800B5260(void *, void *, u32, u32, s32);
     extern s32 fn_800B5618(void *, void *, u32, u32, s32);
-    s32 r9 = (arg1 + (arg1 >> 1)) & 0xFFFF;
-    u32 value = (*(u32 *)((char *)arg0 + 0x28) + (r9 >> *(u8 *)((char *)arg0 + 0x20))) & 0xFFFF;
-    u16 index = r9 & (*(u16 *)arg0 - 1);
-    u32 nv;
-    u32 result = 0;
-    s32 oldResult = 0;
+    s32 byteOffset = (cluster + (cluster >> 1)) & 0xFFFF;
+    u32 sector = (*(u32 *)((char *)fatCtx + 0x28) + (byteOffset >> *(u8 *)((char *)fatCtx + 0x20))) & 0xFFFF;
+    u16 pageOffset = byteOffset & (*(u16 *)fatCtx - 1);
+    u32 nextSector;
+    u32 readResult = 0;
+    s32 savedError = 0;
     u16 i;
 
-    if (*(u32 *)((char *)arg3 + 0x18) != value) {
-        for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
-            s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
-                *(u32 *)((char *)arg3 + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
-                0, *(u16 *)arg0);
-            if (r != 0 && oldResult == 0) oldResult = r;
+    if (*(u32 *)((char *)page + 0x18) != sector) {
+        for (i = 0; (s32)i < *(u8 *)((char *)fatCtx + 0x22); i++) {
+            s32 r = fn_800B5618(fatCtx, *(void **)((char *)page + 8),
+                *(u32 *)((char *)page + 0x18) + (s32)i * *(s32 *)((char *)fatCtx + 0xC),
+                0, *(u16 *)fatCtx);
+            if (r != 0 && savedError == 0) savedError = r;
         }
-        result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), value, 0, *(u16 *)arg0);
-        if (result != 0) return result;
-        *(u32 *)((char *)arg3 + 0x18) = value;
+        readResult = fn_800B5260(fatCtx, *(void **)((char *)page + 8), sector, 0, *(u16 *)fatCtx);
+        if (readResult != 0) return readResult;
+        *(u32 *)((char *)page + 0x18) = sector;
     }
-    if (arg1 & 1) {
-        *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) =
-            (*(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) & 0xF) | ((arg2 & 0xF) << 4);
-        if ((u32)index == (u32)*(u16 *)arg0 - 1) {
-            for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
-                s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
-                    *(u32 *)((char *)arg3 + 0x18) + i * *(s32 *)((char *)arg0 + 0xC),
-                    0, *(u16 *)arg0);
-                if (r != 0 && oldResult == 0) oldResult = r;
+    if (cluster & 1) {
+        *(u8 *)((u8 *)*(s32 *)((char *)page + 8) + pageOffset) =
+            (*(u8 *)((u8 *)*(s32 *)((char *)page + 8) + pageOffset) & 0xF) | ((entryValue & 0xF) << 4);
+        if ((u32)pageOffset == (u32)*(u16 *)fatCtx - 1) {
+            for (i = 0; (s32)i < *(u8 *)((char *)fatCtx + 0x22); i++) {
+                s32 r = fn_800B5618(fatCtx, *(void **)((char *)page + 8),
+                    *(u32 *)((char *)page + 0x18) + i * *(s32 *)((char *)fatCtx + 0xC),
+                    0, *(u16 *)fatCtx);
+                if (r != 0 && savedError == 0) savedError = r;
             }
-            nv = value + 1;
-            result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), nv, 0, *(u16 *)arg0);
-            if (result != 0) return result;
-            *(u32 *)((char *)arg3 + 0x18) = nv;
-            *(u8 *)*(s32 *)((char *)arg3 + 8) = (u8)(arg2 >> 4);
+            nextSector = sector + 1;
+            readResult = fn_800B5260(fatCtx, *(void **)((char *)page + 8), nextSector, 0, *(u16 *)fatCtx);
+            if (readResult != 0) return readResult;
+            *(u32 *)((char *)page + 0x18) = nextSector;
+            *(u8 *)*(s32 *)((char *)page + 8) = (u8)(entryValue >> 4);
         } else {
-            u8 *addr = (u8 *)(*(s32 *)((char *)arg3 + 8) + index + 1);
-            *addr = (u8)(arg2 >> 4);
+            u8 *addr = (u8 *)(*(s32 *)((char *)page + 8) + pageOffset + 1);
+            *addr = (u8)(entryValue >> 4);
         }
     } else {
-        *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) = (u8)arg2;
-        if ((u32)index == (u32)*(u16 *)arg0 - 1) {
-            for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
-                s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
-                    *(u32 *)((char *)arg3 + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
-                    0, *(u16 *)arg0);
-                if (r != 0 && oldResult == 0) oldResult = r;
+        *(u8 *)((u8 *)*(s32 *)((char *)page + 8) + pageOffset) = (u8)entryValue;
+        if ((u32)pageOffset == (u32)*(u16 *)fatCtx - 1) {
+            for (i = 0; (s32)i < *(u8 *)((char *)fatCtx + 0x22); i++) {
+                s32 r = fn_800B5618(fatCtx, *(void **)((char *)page + 8),
+                    *(u32 *)((char *)page + 0x18) + (s32)i * *(s32 *)((char *)fatCtx + 0xC),
+                    0, *(u16 *)fatCtx);
+                if (r != 0 && savedError == 0) savedError = r;
             }
-            nv = value + 1;
-            result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), nv, 0, *(u16 *)arg0);
-            if (result) return result;
-            *(u32 *)((char *)arg3 + 0x18) = nv;
-            *(u8 *)*(s32 *)((char *)arg3 + 8) =
-                (*(u8 *)*(s32 *)((char *)arg3 + 8) & 0xF0) | (u8)(arg2 >> 8);
+            nextSector = sector + 1;
+            readResult = fn_800B5260(fatCtx, *(void **)((char *)page + 8), nextSector, 0, *(u16 *)fatCtx);
+            if (readResult) return readResult;
+            *(u32 *)((char *)page + 0x18) = nextSector;
+            *(u8 *)*(s32 *)((char *)page + 8) =
+                (*(u8 *)*(s32 *)((char *)page + 8) & 0xF0) | (u8)(entryValue >> 8);
         } else {
-            *(u8 *)((u8 *)(index + 1 + *(s32 *)((char *)arg3 + 8))) =
-                (*(u8 *)((u8 *)(index + 1 + *(s32 *)((char *)arg3 + 8))) & 0xF0) | (u8)(arg2 >> 8);
+            *(u8 *)((u8 *)(pageOffset + 1 + *(s32 *)((char *)page + 8))) =
+                (*(u8 *)((u8 *)(pageOffset + 1 + *(s32 *)((char *)page + 8))) & 0xF0) | (u8)(entryValue >> 8);
         }
     }
-    if (result != 0) oldResult = result;
-    return oldResult;
+    if (readResult != 0) savedError = readResult;
+    return savedError;
 }
-
 extern "C" s32 fn_800AFBA8(void *arg0, u16 arg1, u32 *result, void *page) {
     u8 *ctx=(u8*)arg0;
     u8 *pg=(u8*)page;
@@ -15824,7 +15823,7 @@ extern "C" u8 lbl_8031C2E0[];
 extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
     register s16 var_r0, var_r29, var_r30, var_r31;
     register s32 temp_r26_2, temp_r27, shift;
-    s32 temp_r3;
+    s32 tmp_r3;
     register u32 temp_r26, temp_r28, temp_r0, var_ctr, var_ctr_2, var_r3_2;
     register u32 temp_r27_2;
     register s32 var_r7;
@@ -15833,9 +15832,9 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4,
     var_r7 = arg4;
     var_r12 = arg3 + var_r7;
     var_ctr = (u32)((arg1 + 3) - var_r7) >> 2U;
-    
     for (; var_ctr != 0; --var_ctr) {
-            if (var_r7 >= arg1) break;            temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
+            if (var_r7 >= arg1) break;
+            temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
             temp_r28 = temp_r26 + 6;
             temp_r27 = 0x10 - (temp_r26 & 7);
             M2C_FIELD(arg0, u32 *, 0xC) = temp_r28;
@@ -15891,10 +15890,10 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4,
             var_r12[2] = var_r30; var_r12[3] = var_r29;
             if ((s32)M2C_FIELD(arg0, u32 *, 0xC) > M2C_FIELD(arg0, s32 *, 0x10)) {
                 if (arg5 == 1 && *arg6 == 0) *arg6 = (s16)var_r7;
-                temp_r3 = (s32)(arg1 + 3);
+                tmp_r3 = (s32)(arg1 + 3);
                 var_r5 = arg3 + var_r7;
-                temp_r3 -= var_r7;
-                var_r3_2 = (u32)temp_r3 >> 2;
+                tmp_r3 -= var_r7;
+                var_r3_2 = (u32)tmp_r3 >> 2;
                 if (var_r7 < arg1) {
                     temp_r0 = var_r3_2 >> 3U;
                     var_ctr_2 = temp_r0;
