@@ -5321,7 +5321,7 @@ extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 index) {
     block = (u8 *)*((void **)arg0 + 1);
     refBase = block + 8;
     if ((table + index)[5] != 0) /* the entry's ref, likewise */
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598E8, 0x6F, lbl_8032670C);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598E8, 0x6F, lbl_803266E0);
     u8 *entry = table + index;
     u8 *paramRef = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[4], *(u32 *)(entry + 8), refBase);
     block2 = (u8 *)*((void **)arg0 + 1);
