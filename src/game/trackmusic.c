@@ -397,15 +397,14 @@ long fn_8020FC6C(void) {
 
 #pragma push
 #pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" void fn_8020FCC4(void) {
     long result;
     long index;
+    long current;
     void *base;
     struct Dummy_802113D8 *object;
-    long current;
-
     base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
     object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
     result = object->f6(&lbl_8055B674, lbl_8033C970);
@@ -413,11 +412,15 @@ extern "C" void fn_8020FCC4(void) {
     if (index >= 0 && index < lbl_804900AC.m_count) {
         fn_802E30C8(lbl_8033C980, index, lbl_804900AC.m_entries[index], result);
     }
-    if (index == ((long (*)(long))fn_8020F3B4)(0) && lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
-        index = ((long (*)(long))fn_8020F3B4)(1);
+    if (index == ((long (*)(long))fn_8020F3B4)(0)) {
+        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
+            index = ((long (*)(long))fn_8020F3B4)(1);
+        }
     }
-    if (index == ((long (*)(long))fn_8020F3B4)(0) && lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2)) {
-        index = ((long (*)(long))fn_8020F3B4)(2);
+    if (index == ((long (*)(long))fn_8020F3B4)(0)) {
+        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2)) {
+            index = ((long (*)(long))fn_8020F3B4)(2);
+        }
     }
     current = lbl_8055B658;
     if (current != -1 && current != index) {
