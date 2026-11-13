@@ -22826,20 +22826,21 @@ void rfc_process_msc(void *mcb, s32 is_command, void *message) {
     }
 }
 
-void rfc_process_rls(void *arg0, s32 arg1, void *arg2) {
-    void *mcb;
+/* Process an RFCOMM RLS (Remote Line Status) control frame: on command, report line status to the port and reply; on response, clear the port's pending-RLS flag and stop its timer. */
+void rfc_process_rls(void *p_mcb, s32 is_command, void *p_frame) {
+    void *port;
 
-    if (arg1 != 0) {
-        PORT_LineStatusInd(arg0, *(u8 *)arg2, *(u8 *)((u8 *)arg2 + 9));
-        rfc_send_rls(arg0, *(u8 *)arg2, 0, *(u8 *)((u8 *)arg2 + 9));
+    if (is_command != 0) {
+        PORT_LineStatusInd(p_mcb, *(u8 *)p_frame, *(u8 *)((u8 *)p_frame + 9));
+        rfc_send_rls(p_mcb, *(u8 *)p_frame, 0, *(u8 *)((u8 *)p_frame + 9));
         return;
     }
-    mcb = port_find_mcb_dlci_port(arg0, *(u8 *)arg2);
-    if (mcb == NULL || (*(u8 *)((u8 *)mcb + 0x69) & 0x10) == 0) {
+    port = port_find_mcb_dlci_port(p_mcb, *(u8 *)p_frame);
+    if (port == NULL || (*(u8 *)((u8 *)port + 0x69) & 0x10) == 0) {
         return;
     }
-    *(u8 *)((u8 *)mcb + 0x69) &= 0xFFFFFFEF;
-    rfc_port_timer_stop(mcb);
+    *(u8 *)((u8 *)port + 0x69) &= 0xFFFFFFEF;
+    rfc_port_timer_stop(port);
 }
 
 void fn_800932D8(void) {
