@@ -308,21 +308,26 @@ void fn_8028E590(void *arg0, int arg1, float *arg2, float farg0) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-int fn_8028E594(const char *arg0) {
+/* Map a particle type name read out of a table resource onto its code: the
+ * table at particleTypeNames holds "Simple", "Animated" and "Rotating", whose
+ * indexes are the codes.  A name none of them matches is logged with
+ * particleTypeNotFound and comes back as PARTICLE_TYPE_UNKNOWN.  fn_8028E654
+ * stores the result as the type of the particle entry it is parsing. */
+int fn_8028E594(const char *typeName) {
     char **list;
     int i;
 
-    list = (char **)&lbl_80348CF8;
+    list = particleTypeNames;
     i = 0;
     do {
-        if (stricmp(arg0, *list) == 0) {
+        if (stricmp(typeName, *list) == 0) {
             return i;
         }
         i++;
         list++;
-    } while (i < 3);
-    fn_802E317C(lbl_80348D28, arg0);
-    return 3;
+    } while (i < PARTICLE_TYPE_COUNT);
+    fn_802E317C(particleTypeNotFound, typeName);
+    return PARTICLE_TYPE_UNKNOWN;
 }
 #pragma pop
 void *memset(void *, int, unsigned int);
