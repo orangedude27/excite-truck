@@ -2558,27 +2558,28 @@ extern "C" void fn_8016464C(void *arg0) {
     if (iterator != 0)
         fn_80131818(iterator);
 }
-extern "C" void fn_801647DC(void *arg0) {
+/* Destroy all owned objects in the list and reset its count. */
+extern "C" void fn_801647DC(void *list) {
     struct Object {
         virtual void method(s32);
     };
-    s32 var_r31;
-    s32 var_r30;
-    void *temp_r3;
+    s32 offset;
+    s32 index;
+    void *object;
 
-    var_r31 = 0;
-    var_r30 = 0;
-    while (var_r30 < *(s32 *)((char *)arg0 + 0x38)) {
-        temp_r3 = *(void **)((char *)(*(s32 *)((char *)arg0 + 0x34)) + var_r31 + 4);
-        if (temp_r3 != 0) {
-            if (temp_r3 != 0) {
-                ((Object *)temp_r3)->method(1);
+    offset = 0;
+    index = 0;
+    while (index < *(s32 *)((char *)list + 0x38)) {
+        object = *(void **)((char *)(*(s32 *)((char *)list + 0x34)) + offset + 4);
+        if (object != 0) {
+            if (object != 0) {
+                ((Object *)object)->method(1);
             }
         }
-        var_r31 += 8;
-        var_r30 += 1;
+        offset += 8;
+        index += 1;
     }
-    *(s32 *)((char *)arg0 + 0x38) = 0;
+    *(s32 *)((char *)list + 0x38) = 0;
 }
 #pragma cplusplus off
 int fn_80164868(void) {
