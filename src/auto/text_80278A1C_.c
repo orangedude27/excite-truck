@@ -353,7 +353,6 @@ void* fn_80279254(s32 arg0, s32 arg1) {
     return var_r31;
 }
 
-void* fn_80279254(s32, s32);
 void fn_80131818(void*);
 void fn_80128670(s32);
 void fn_80128668(void*);
