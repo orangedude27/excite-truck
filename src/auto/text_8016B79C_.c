@@ -89,7 +89,7 @@ typedef struct { s32 data; s32 index; s32 count; s32 data2; } List8016C768;
 extern int stricmp(const char *, const char *);
 extern int strcmp(const char *, const char *);
 extern char lbl_8055A228, lbl_8055A230, lbl_8055A238, lbl_8055A240;
-extern s32 fn_802C6FC0(s32, s32);
+extern s32 fn_802C6FC0();
 static inline void SetNodeF8(void *node) {
     if (node != 0) {
         f32 value = lbl_80561984;
@@ -727,7 +727,6 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
     List8016C768 **out = (List8016C768 **)arg0;
     Doc *doc = (Doc *)arg1;
     Doc **coll = (Doc **)arg2;
-
     list = (List8016C768 *)fn_801284F8(0x10, str + 0x114);
     if (list != 0) {
         count = 0;
@@ -797,6 +796,7 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
                 }
                 *(Blk *)(e + 0x14) = obj->getblk(str + 0x190);
                 *(u8 *)(e + 0x10) = 1;
+                if (*(u8 *)(e + 0x10) == 0) ok = 0;
             } else {
                 if (strcmp(obj->search(&lbl_8055A230), str + 0x120) == 0) {
                     List8016C768 *l = out[1];
@@ -806,6 +806,7 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
                     *(Blk *)e = obj->getblk(str + 0x190);
                     *(f32 *)(e + 0x34) = obj->getf(&lbl_8055A240, lbl_805619A0);
                     *(u8 *)(e + 0x31) = 1;
+                    if (*(u8 *)(e + 0x31) == 0) ok = 0;
                 }
             }
         }
@@ -1277,7 +1278,7 @@ extern void fn_802E30C8(const char *, ...);
 extern char lbl_80330AA4[];
 #pragma scheduling invalid_target
 extern void fn_8016E15C();
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_8016DA0C(void *arg0) {
     s32 i, j, n;
     f32 f, zero;
@@ -1362,7 +1363,7 @@ void fn_8016DA0C(void *arg0) {
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
     M2C_FIELD(arg0, s8 *, 0xA8) = 0;
 }
-#pragma scheduling on
+#pragma use_lmw_stmw on
 s32 fn_8016DD98(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
     switch (value) {
@@ -1639,7 +1640,7 @@ if (blend < value) {} else {
        fn_801479A8(one,two,fn_80131234(base+0x490),value);
        fn_80160A74(); ((void (*)(void *,int,int))fn_801308F4)(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
-       { int cword=*(int *)((char *)panel+8), bword=*(int *)((char *)panel+4); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
+       { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561988*fn_80147204(&frame.rect1,frame.text1);
        value=lbl_805619A4;
 if (blend < value) {} else {
@@ -1674,7 +1675,7 @@ if (blend < value) {} else {
        fn_801479A8(one,two,fn_80131234(base+0x4dc),value);
        fn_80130978(frame.text2,0x14,*(float *)((char *)arg0+0x38));
        frame.rect2.a=*(int *)panel;
-       { int cword=*(int *)((char *)panel+8), bword=*(int *)((char *)panel+4); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
+       { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561988*fn_80147204(&frame.rect2,frame.text2);
        value=lbl_805619A4;
 if (blend < value) {} else {
@@ -2963,10 +2964,10 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
         virtual void p0(); virtual void p1(); virtual void p2();
         virtual s32 m3();
     };
-    void *obj;
     s32 index;
     void *holder;
     s32 result;
+    void *obj;
     s32 r25;
     void *data;
     void *item;
@@ -2976,7 +2977,6 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
     f32 x, y, dx, dy;
     f32 v;
-
     result = 0;
     v = lbl_8055E3C8;
     if (v > ((Base *)arg0)->f12() && *(u8 *)((u8 *)arg0 + 0x78) == 0) {
@@ -3066,13 +3066,14 @@ extern s32 fn_80179650(void);
 #pragma push
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void **fn_8016CE9C(void *object, void **input) {
-    s32 index = *(s32 *)((u8 *)object + 4);
-    void *value = *input;
-    *(s32 *)((u8 *)object + 4) = index + 1;
-    void **slot = *(void ***)object + index;
-    *slot = value;
-    return slot;
+extern "C" void **fn_8016CE9C(void *object, void **input)
+{
+  s32 index = *((s32 *) (((u8 *) object) + 4));
+  register void *value = *input;
+  void **slot = (*((void ***) object)) + index;
+  *((s32 *) (((u8 *) object) + 4)) = index + 1;
+  *slot = value;
+  return slot;
 }
 #pragma pop
 
