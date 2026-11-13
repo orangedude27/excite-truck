@@ -361,21 +361,22 @@ extern "C" void *fn_801B3C98(void *arg0, s32 arg1) {
 }
 #pragma cplusplus reset
 #pragma scheduling on
-void* fn_801B3D24(void* arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        s32* p = (s32*)arg0;
+/* Destroys this object: release 6 owned handles, destroy 0x10 embedded elements at +0x2FC, and optionally free. */
+void* fn_801B3D24(void* obj, s32 shouldFree) {
+    if (obj != NULL) {
+        s32* slot = (s32*)obj;
         s32 i;
 
         for (i = 0; i < 6; i++) {
-            fn_80128670(*p);
-            p += 3;
+            fn_80128670(*slot);
+            slot += 3;
         }
-        fn_8002F634((u8*)arg0 + 0x2FC, (void*)fn_801B3BD4, 0x2C, 0x10);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        fn_8002F634((u8*)obj + 0x2FC, (void*)fn_801B3BD4, 0x2C, 0x10);
+        if (shouldFree > 0) {
+            fn_80128668(obj);
         }
     }
-    return arg0;
+    return obj;
 }
 #pragma scheduling reset
 void fn_801B3DBC(void* arg0) {
@@ -425,7 +426,6 @@ extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 ar
     f32 y;
     f32 x;
     f32 zero;
-    f32 candidate;
     f32 maximum;
     s32 index;
     volatile f32 unused[3];
@@ -450,9 +450,8 @@ extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 ar
         maximum = lbl_8056264C;
         *(volatile s32 *)((u8 *)row + 0x320) = arg3;
         *(volatile f32 *)((u8 *)row + 0x324) = lbl_8055E3C8;
-        candidate = farg0 * *(f32 *)((u8 *)selected + 4);
-        if (maximum > candidate)
-            maximum = candidate;
+        if (farg0 * *(f32 *)((u8 *)selected + 4) < maximum)
+            maximum = farg0 * *(f32 *)((u8 *)selected + 4);
         zero = lbl_80562624;
         x = *(f32 *)arg1;
         *(volatile f32 *)((u8 *)row + 0x30C) = zero;
@@ -493,13 +492,12 @@ extern void* fn_8012850C(s32, void*);
 void fn_801B3FD8(void* arg0) {
     Out801B3FD8* out = (Out801B3FD8*)arg0;
     Ent801B3FD8* tbl = (Ent801B3FD8*)lbl_802F9630;
-    Ent801B3FD8* p = tbl;
-    s32 g = 0, start, i;
+    s32 g, start = 0;
     u32 pos = 0;
-    s32 n;
-    for (; g < 6; g++, out++) {
+    for (g = 0; g < 6; g++, out++) {
+        s32 n, i;
         start = pos;
-        while (pos < 13 && g == p->group) { p++; pos++; }
+        while (pos < 13 && tbl[pos].group == g) pos++;
         n = pos - start;
         if (n < 1) fn_802E317C(lbl_80335D50, g);
         out->p = fn_8012850C(n * 8, lbl_80335D74);
