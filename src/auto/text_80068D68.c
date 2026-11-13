@@ -552,6 +552,10 @@ typedef struct {
     void (*pL2CA_CongestionStatus_Cb)(u16 lcid, u16 congested);/* +0x28  transmit queue filled up */
 } tL2C_RCB_VIEW;
 
+/* A two-word piece of the 24-byte FLOW_SPEC. The stack copies a whole QOS block
+   three of these at a time, which is how the compiler lays that struct copy out. */
+typedef struct { u32 word[2]; } tL2CAP_QOS_PART;
+
 /* The L2CAP channel control block (l2c_int.h's tL2C_CCB); the game lays it out
    the same way, so the names below are the header's. */
 typedef struct t_l2c_ccb_view {
