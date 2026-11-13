@@ -4,11 +4,41 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <math.h>
+#include <revolution/MTX/mtxtypes.h> /* Vec */
 extern float PSVECDotProduct(const float *, const float *);
-typedef struct { f32 x, y, z; } Vec801CF;
-extern f32 lbl_80558DC4[];
-extern f32 lbl_80562A38, lbl_80562A3C;
+typedef Vec Vec801CF;
+extern f32 lbl_80558DC4[]; /* [0] = 2^-23: "outside the triangle" tolerance */
+extern f32 lbl_80562A38, lbl_80562A3C; /* 0.0f and 0.001f */
 extern float PSVECSquareDistance(const float *, const float *);
+
+/* 'PMSh' triangle mesh, read from "track.msh" by fn_801CFEAC; fn_801CFA48
+ * byte-swaps this header and the three arrays it points at in place. */
+typedef struct MeshNode {
+    /* 0x00 */ Vec center;   /* bounding sphere centre */
+    /* 0x0C */ f32 radius;   /* bounding sphere radius */
+    /* 0x10 */ s32 triStart; /* first triangle of this node in Mesh::tris */
+    /* 0x14 */ s32 triEnd;   /* one past the last */
+} MeshNode; /* 0x18 */
+
+typedef struct MeshTri {
+    /* 0x00 */ u16 edgeFlags;     /* bit k: corner k may be a closest point;
+                                   * bit 3+k: edge k may be one */
+    /* 0x02 */ s16 vidx[3];       /* corners, indices into Mesh::verts */
+    /* 0x08 */ Vec normal;        /* plane normal */
+    /* 0x14 */ f32 planeDist;     /* dot(normal, corner) */
+    /* 0x18 */ Vec edgeNormal[3]; /* inward normal of the edge plane through
+                                   * corner k, used to test a point against the
+                                   * triangle (fn_801CF080, fn_801CF828) */
+} MeshTri; /* 0x3C */
+
+typedef struct Mesh {
+    /* 0x00 */ MeshNode *nodes;
+    /* 0x04 */ s32 nodeCount;
+    /* 0x08 */ Vec *verts;
+    /* 0x0C */ s32 vertCount;
+    /* 0x10 */ MeshTri *tris;
+    /* 0x14 */ s32 triCount;
+} Mesh; /* 0x18 */
 
 static inline void fn_801CF080_xform(f32 *dst, f32 *src, f32 *m) {
     if (dst == src) {
