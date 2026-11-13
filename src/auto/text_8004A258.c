@@ -207,65 +207,99 @@ static inline void ClearMEM2Range(void *mem, u32 size) {
     DCZeroRange(mem, size);
     DCFlushRange((u32)flush, 0x40000);
 }
+#pragma push
+#pragma scheduling invalid_target
 void ClearArena(void) {
-    unsigned int reset = OSGetResetCode();
-    unsigned int start;
+    unsigned int reset;
+    unsigned int base;
+    unsigned int flush;
     unsigned int size;
+    reset = OSGetResetCode();
 
     if ((reset >> 31) == 0) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
-        start = OSGetArenaLo();
-        if (size > 0x40000)
-            start += size - 0x40000;
-        DCZeroRange((void *)start, size);
-        DCFlushRange(start, 0x40000);
+        base = OSGetArenaLo();
+        if (size <= 0x40000)
+            goto clear0_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear0_join;
+    clear0_small:
+        flush = base;
+    clear0_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
     if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) != 0) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
-        start = OSGetArenaLo();
-        if (size > 0x40000)
-            start += size - 0x40000;
-        DCZeroRange((void *)start, size);
-        DCFlushRange(start, 0x40000);
+        base = OSGetArenaLo();
+        if (size <= 0x40000)
+            goto clear1_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear1_join;
+    clear1_small:
+        flush = base;
+    clear1_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
-    start = OSGetArenaLo();
-    if (start >= __OSRebootParams[3])
+    if (OSGetArenaLo() >= __OSRebootParams[3])
         return;
 
     if (OSGetArenaHi() <= __OSRebootParams[3]) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
-        start = OSGetArenaLo();
-        if (size > 0x40000)
-            start += size - 0x40000;
-        DCZeroRange((void *)start, size);
-        DCFlushRange(start, 0x40000);
+        base = OSGetArenaLo();
+        if (size <= 0x40000)
+            goto clear2_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear2_join;
+    clear2_small:
+        flush = base;
+    clear2_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
         return;
     }
 
-    start = OSGetArenaLo();
-    size = __OSRebootParams[3] - start;
-    start = OSGetArenaLo();
-    if (size > 0x40000)
-        start += size - 0x40000;
-    DCZeroRange((void *)start, size);
-    DCFlushRange(start, 0x40000);
+    size = __OSRebootParams[3] - OSGetArenaLo();
+    base = OSGetArenaLo();
+    if (size <= 0x40000)
+        goto clear3_small;
+    flush = size - 0x40000;
+    flush = base + flush;
+    goto clear3_join;
+clear3_small:
+    flush = base;
+clear3_join:
+    DCZeroRange((void *)base, size);
+    DCFlushRange(flush, 0x40000);
 
-    start = __OSRebootParams[4];
-    if (OSGetArenaHi() > start) {
-        size = OSGetArenaHi() - start;
-        if (size > 0x40000)
-            start += size - 0x40000;
-        DCZeroRange((void *)start, size);
-        DCFlushRange(start, 0x40000);
+    base = __OSRebootParams[4];
+    if (OSGetArenaHi() > base) {
+        size = OSGetArenaHi();
+        size -= base;
+        if (size <= 0x40000)
+            goto clear4_small;
+        flush = size - 0x40000;
+        flush = base + flush;
+        goto clear4_join;
+    clear4_small:
+        flush = base;
+    clear4_join:
+        DCZeroRange((void *)base, size);
+        DCFlushRange(flush, 0x40000);
     }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
@@ -380,8 +414,6 @@ extern const char lbl_80558F04[6];
 
 void ReportOSInfo_8004AA40(void) {
     u32 type;
-    u32 category;
-    u32 tdev;
     u32 version;
     u32 builddate;
 
@@ -390,8 +422,7 @@ void ReportOSInfo_8004AA40(void) {
 
     OSReport("Console Type : ");
     type = OSGetConsoleType();
-    category = type & OS_CONSOLE_MASK;
-    switch (category) {
+    switch (type & OS_CONSOLE_MASK) {
     case OS_CONSOLE_MASK_RVL:
         switch (type) {
         case OS_CONSOLE_RVL_PP_1:
@@ -434,8 +465,7 @@ void ReportOSInfo_8004AA40(void) {
         }
         break;
     case OS_CONSOLE_MASK_TDEV:
-        tdev = type & 0x0FFFFFFF;
-        OSReport("TDEV-based emulation HW%d\n\0", tdev - 3);
+        OSReport("TDEV-based emulation HW%d\n\0", (type & 0x0FFFFFFF) - 3);
         break;
     default:
         OSReport(lbl_80558F04, type);
@@ -523,7 +553,7 @@ extern void OSSetMEM2ArenaHi(void*);
 extern void OSPanic(const char*, s32, const char*, ...);
 void OSInit(void) {
     OSBI2* bi2;
-    register u8* rebootParams = (u8*)__OSRebootParams;
+    u8* rebootParams = (u8*)__OSRebootParams;
     void* mem1lo;
     void* mem1hi;
     void* mem2lo;
@@ -667,10 +697,72 @@ void OSInit(void) {
         }
     }
 }
+
+extern void DBPrintf(const char *, ...);
+extern u8 __DBIsExceptionMarked(u8);
+extern void *memcpy(void *, const void *, unsigned int);
+extern void DCFlushRangeNoSync(const void *, u32);
+extern void ICInvalidateRange(const void *, u32);
+extern void __OSDBINTSTART(void);
+extern void __OSDBINTEND(void);
+extern void *__OSSetExceptionHandler(u8, void *);
+extern void OSDefaultExceptionHandler(u8, void *);
+void OSExceptionInit(void) {
+    u32 *pInst;
+    u32 inst;
+    void *vectorCode;
+    u32 vectorSize;
+    u32 *dst;
+    u8 i;
+    int j;
+    u32 *code;
+    u32 size2;
+    pInst = (u32 *)__OSEVSetNumber;
+    inst = *pInst;
+    vectorCode = (void *)__OSEVStart;
+    vectorSize = (u32)__OSEVEnd - (u32)__OSEVStart;
+    dst = (u32 *)0x80000060;
+    if (*dst == 0) {
+        DBPrintf("Installing OSDBIntegrator\n");
+        size2 = (u32)__OSDBINTEND - (u32)__OSDBINTSTART;
+        memcpy(dst, (void *)__OSDBINTSTART, size2);
+        DCFlushRangeNoSync(dst, size2);
+        __sync();
+        ICInvalidateRange(dst, size2);
+    }
+    for (i = 0; i < 15; i++) {
+        if (BI2DebugFlag_8055D9F4 != 0 && *BI2DebugFlag_8055D9F4 >= 2 && __DBIsExceptionMarked(i)) {
+            DBPrintf(">>> OSINIT: exception %d commandeered by TRK\n", i);
+        } else {
+            *pInst = inst | i;
+            if (__DBIsExceptionMarked(i)) {
+                DBPrintf(">>> OSINIT: exception %d vectored to debugger\n", i);
+                memcpy((void *)__DBVECTOR, (void *)__OSDBJUMPSTART, (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART);
+            } else {
+                code = (u32 *)__DBVECTOR;
+                for (j = 0; j < (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART; j += 4, code++) {
+                    *code = 0x60000000;
+                }
+            }
+            dst = (u32 *)0x80000000;
+            memcpy(dst, vectorCode, vectorSize);
+            DCFlushRangeNoSync(dst, vectorSize);
+            __sync();
+            ICInvalidateRange(dst, vectorSize);
+        }
+    }
+    OSExceptionTable_8055D9D0 = (void **)0x80003000;
+    for (i = 0; i < 15; i++) {
+        __OSSetExceptionHandler(i, (void *)OSDefaultExceptionHandler);
+    }
+    *pInst = inst;
+    DBPrintf("Exceptions initialized...\n");
+}
+
 #pragma pop
 
 void __OSDBIntegrator(void) {
-    register volatile u32 *base = (volatile u32 *)0x40;
+    register volatile unsigned int *base = (volatile unsigned int *)0x40;
     base[3] = 0;
     base[2] |= 0x80000000;
     PPCMtmsr(0x30);
