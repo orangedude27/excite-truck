@@ -1387,19 +1387,21 @@ extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     return ret;
 }
 
-extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(void *self, u32 index, void *info) {
+extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(void *reader, u32 soundId, void *waveSoundInfo) {
     extern const char lbl_80324B7C[];
     extern char lbl_80559868;
-    u64 result = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
-    u8 *bytes = (u8 *)&result;
-    void *base = *(void **)((u8 *)self + 0x28);
-    if (bytes[1] != 3)
+    /* Looks up the wave sound entry for soundId and copies its WaveSoundInfo
+       fields (data file id and sub index) into waveSoundInfo. */
+    u64 soundInfoRef = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(reader, soundId);
+    u8 *soundInfoRefBytes = (u8 *)&soundInfoRef;
+    void *soundInfoBase = *(void **)((u8 *)reader + 0x28);
+    if (soundInfoRefBytes[1] != 3)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559868, 0x72, lbl_80324B7C);
-    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
-    if (!data)
+    void *soundInfoData = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundInfoRefBytes[0], *(u32 *)(soundInfoRefBytes + 4), soundInfoBase);
+    if (!soundInfoData)
         return 0;
-    *(u32 *)info = *(u32 *)data;
-    *(u32 *)((u8 *)info + 4) = *(u8 *)((u8 *)data + 8);
+    *(u32 *)waveSoundInfo = *(u32 *)soundInfoData;
+    *(u32 *)((u8 *)waveSoundInfo + 4) = *(u8 *)((u8 *)soundInfoData + 8);
     return 1;
 }
 
@@ -3641,15 +3643,21 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* s
     OSUnlockMutex(mutex);
 }
 
+#pragma opt_strength_reduction off
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
     struct Frame { void* stream; s32 valid; void* ref; u32 pad; u8 header[0x38]; u8 adpcm[8][0x30]; u8 fileBuf[0x200]; };
     Frame f;
     typedef void (*Cb_t)(s32, void*, u32);
     typedef s32 (*Faf_t)(void*, void*, u32);
+    void* mutex;
+    void* gm;
+    void* m2;
+    s32 off;
+    s32 i;
     if (*(void**)((u8*)self + 0x10) != 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x6FD, lbl_80325520);
     }
-    void* mutex = *(void**)((u8*)self + 0x24);
+    mutex = *(void**)((u8*)self + 0x24);
     OSLockMutex(mutex);
     *(void**)((u8*)self + 0x10) = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void**)((u8*)self + 0x14), *(u32*)((u8*)self + 0x18), f.fileBuf, 0x200);
     OSUnlockMutex(mutex);
@@ -3668,7 +3676,7 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
             OSInitMutex(lbl_80412CA0);
             lbl_8055DE58 = 1;
         }
-        u8* gm = lbl_80412CA0;
+        gm = lbl_80412CA0;
         OSLockMutex(gm);
         f.stream = *(void**)((u8*)self + 0x10);
         NWC24Data_Init(&f.valid);
@@ -3680,31 +3688,21 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
             OSUnlockMutex(gm);
             return;
         }
-        void* m2 = *(void**)((u8*)self + 0x24);
+        m2 = *(void**)((u8*)self + 0x24);
         OSLockMutex(m2);
         ((ExecStream*)*(void**)((u8*)self + 0x10))->v4();
         *(void**)((u8*)self + 0x10) = 0;
         OSUnlockMutex(m2);
-        if (((u32)(-f.valid | f.valid) >> 31)) goto DO_FAB;
-        goto AFTER_FAB;
-    DO_FAB:
-        fn_800FAB98(&f.valid, f.header);
-    AFTER_FAB:;
-        s32 i = 0;
-        s32 off = 0;
-        for (i = 0, off = 0; i < f.header[2]; i++, off += 0x30) {
-            if (((u32)(-f.valid | f.valid) >> 31)) goto DO_FAC;
-            goto AFTER_FAC;
-        DO_FAC:
-            fn_800FACC0(&f.valid, (void*)((u8*)f.adpcm + off), i);
-        AFTER_FAC:;
+        if (((u32)(-f.valid | f.valid) >> 31)) fn_800FAB98(&f.valid, f.header);
+        for (off = 0, i = 0; i < f.header[2]; i++, off += 0x30) {
+            if (((u32)(-f.valid | f.valid) >> 31)) fn_800FACC0(&f.valid, (void*)((u8*)f.adpcm + off), i);
         }
         Cb_t cb2 = *(Cb_t*)((u8*)self + 0x1C);
         if (cb2 != 0) cb2(1, f.header, *(u32*)((u8*)self + 0x20));
         OSUnlockMutex(gm);
     }
 }
-
+#pragma opt_strength_reduction reset
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
     /* Cancel this stream-header load task: clear its state and stop/pause the attached sound if still active. */
     class Sound {
