@@ -593,96 +593,82 @@ int fn_801D9B28(void *arg0, int arg1) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* Draw the terrain morph map ("wlmap.mod") and the model sets blended over it.
+   A morph group whose weight is above zero switches on every model set that
+   uses it; each set that is switched on then draws its 2^groupCount variants,
+   giving each one the product of its groups' weights and 1-weight (fn_801D9120)
+   as its alpha, never quite invisible thanks to morphMinAlpha. A set is drawn
+   once and switched off again, so this only costs work while a morph group is
+   actually fading in or out. */
 void fn_801D9B58(void) {
-    float workspace[4];
-    int markOffset;
-    struct MarkNode {
-        char pad00[0x20];
-        float value;
-        char pad24[4];
-        void **children;
-        int childCount;
-        char pad30[0x24];
-        struct MarkNode *next;
-    };
-    struct ProcessNode {
-        void **samples;
-        int sampleCount;
-        char pad08[0x0C];
-        int *effects;
-        int playCount;
-        char pad1C[0x14];
-        unsigned char active;
-        char pad31[3];
-        struct ProcessNode *next;
-    };
-    struct MarkNode *markNode;
-    float markThreshold;
-    float threshold;
+    float blend[4];
+    int childOffset;
+    struct MorphGroup *group;
+    float zeroWeight;
+    float minAlpha;
     int count;
-    float *sampleDest;
     void *child;
-    float *playWeight;
-    int playOffset;
-    struct ProcessNode *node;
-    int playIndex;
+    float *variantWeight;
+    int variantOffset;
+    struct OmlModelSet *modelSet;
+    int variantIndex;
 
-    fn_802C7040(lbl_8055E960);
-    markNode = lbl_8055E96C;
-    markThreshold = lbl_80562B2C;
-    while (markNode != 0) {
-        float v = markNode->value;
-        if (v > markThreshold) {
-            int markIndex = 0;
-            markOffset = 0;
-            while (markIndex < markNode->childCount) {
-                ++markIndex;
-                child = *(void **)((char *)markNode->children + markOffset);
-                *(unsigned char *)((char *)child + 0x30) = 1;
-                markOffset += 4;
+    fn_802C7040(wlMapModel);
+    group = morphGroupList;
+    zeroWeight = dtbZeroWeight;
+    while (group != 0) {
+        float weight = group->weight;
+        if (weight > zeroWeight) {
+            int childIndex = 0;
+            childOffset = 0;
+            while (childIndex < group->childCount) {
+                ++childIndex;
+                child = *(void **)((char *)group->children + childOffset);
+                ((struct OmlModelSet *)child)->active = 1;
+                childOffset += 4;
             }
         }
-        markNode = markNode->next;
+        group = group->next;
     }
 
-    node = lbl_8055E964;
-    threshold = lbl_80562B30;
-    while (node != 0) {
-        if (node->active != 0) {
-            int sampleOffset;
-            float *sampleDest2;
-            int sampleIndex;
-            sampleDest2 = workspace;
-            sampleIndex = 0;
-            sampleOffset = 0;
-            while (sampleIndex < (count = node->sampleCount)) {
-                ++sampleIndex;
-                child = *(void **)((char *)node->samples + sampleOffset);
-                sampleOffset += 4;
-                *sampleDest2++ = *(float *)((char *)child + 0x20);
+    modelSet = omlList;
+    minAlpha = morphMinAlpha;
+    while (modelSet != 0) {
+        if (modelSet->active != 0) {
+            int groupOffset;
+            float *weightDest;
+            int groupIndex;
+            weightDest = blend;
+            groupIndex = 0;
+            groupOffset = 0;
+            while (groupIndex < (count = modelSet->groupCount)) {
+                ++groupIndex;
+                child = *(void **)((char *)modelSet->groups + groupOffset);
+                groupOffset += 4;
+                *weightDest++ = ((struct MorphGroup *)child)->weight;
             }
 
-            fn_801D9120(workspace + 2, workspace, count, lbl_80562B28);
+            fn_801D9120(blend + 2, blend, count, morphUnitWeight);
             {
-                float maximum = workspace[2];
-                if (threshold > maximum)
-                    maximum = threshold;
-                fn_802C9900(maximum);
+                float firstAlpha = blend[2];
+                if (minAlpha > firstAlpha)
+                    firstAlpha = minAlpha;
+                fn_802C9900(firstAlpha);
             }
-            fn_802C7040(*node->effects);
-            playWeight = workspace + 3;
-            playIndex = 1;
-            playOffset = 4;
-            while (playIndex < (count = node->playCount)) {
-                fn_802C9900(*playWeight);
-                fn_802C7040(*(int *)((char *)node->effects + playOffset));
-                ++playWeight;
-                playOffset += 4;
-                ++playIndex;
+            fn_802C7040(*modelSet->models);
+            variantWeight = blend + 3;
+            variantIndex = 1;
+            variantOffset = 4;
+            while (variantIndex < (count = modelSet->modelCount)) {
+                fn_802C9900(*variantWeight);
+                fn_802C7040(*(int *)((char *)modelSet->models + variantOffset));
+                ++variantWeight;
+                variantOffset += 4;
+                ++variantIndex;
             }
-            node->active = 0;
+            modelSet->active = 0;
         }
-        node = node->next;
+        modelSet = modelSet->next;
     }
     fn_802C9904();
 }
