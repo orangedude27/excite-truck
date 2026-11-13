@@ -553,6 +553,9 @@ int fn_802E582C(void) {
 void fn_802E589C(void) {
     fn_802E582C();
 }
+
+/* FourCC of the sample blobs fn_802E4DC8 loads, found at a resource entry's data. */
+#define TAG_SFX0 0x53465830
 extern unsigned char lbl_804FC558[]; /* sound-name queue: 0x20-byte NUL-terminated names */
 extern int lbl_8055FF78;             /* sound-name queue: names in use */
 extern int lbl_8055FFA0;             /* voice table lbl_8055FF9C: entries in use */
