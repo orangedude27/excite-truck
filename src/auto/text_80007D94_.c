@@ -160,13 +160,15 @@ const char* fn_80007FF0(u32 arg0) {
 }
 
 #pragma scheduling invalid_target
-u32 fn_80008050(const char* arg0) {
-    register u32 key;
-    register Unk802FB70C* p;
-    for (p = lbl_802FB70C; (key = p->unk_0x0) != 0; ++p) {
-        if (strcmp(p->unk_0x4, arg0) == 0) return key;
+/* Look up the event id (unk_0x0) for an event identifier string by scanning lbl_802FB70C
+ * entries and comparing each entry's name (unk_0x4) to eventName. Returns 0 if not found. */
+u32 fn_80008050(const char* eventName) {
+    register u32 eventId;
+    register Unk802FB70C* entry;
+    for (entry = lbl_802FB70C; (eventId = entry->unk_0x0) != 0; ++entry) {
+        if (strcmp(entry->unk_0x4, eventName) == 0) return eventId;
     }
-    fn_802E30C8(lbl_802FB7A4, arg0);
+    fn_802E30C8(lbl_802FB7A4, eventName);
     return 0;
 }
 #pragma scheduling on
