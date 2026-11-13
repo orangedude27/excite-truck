@@ -496,7 +496,6 @@ extern unsigned char lbl_8055F584;
 extern double lbl_80563FB8;
 #pragma push
 #pragma processor 750
-#pragma use_lmw_stmw off
 void fn_802749FC(void *arg0, void *arg1) {
     extern float PSVECDotProduct(float *, float *);
     struct { int sp8; float spC[3]; float sp18[3]; float sp24[3]; float sp30[3]; float sp3C; float pad[2]; float sp48[3]; } local;
