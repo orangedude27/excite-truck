@@ -4573,22 +4573,28 @@ extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg
 }
 
 extern "C" void fn_800FA350(void) {
-    void *v;
+    void *instance;
+
+    /* Shut down nw4hbm sound system subsystems if initialized. */
     if (lbl_8055DE60 != 0) {
         GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv();
         if (Shutdown__Q46nw4hbm3snd6detail11SoundThreadFv() == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803263B8, 0x8D,
-                                         (const char*)lbl_80326400);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803263B8, 0x8D,
+                                         (const char *)lbl_80326400);
         }
+
         fn_800FE648();
         if (Destroy__Q46nw4hbm3snd6detail10TaskThreadFv() == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803263B8, 0x91,
-                                         (const char*)lbl_80326400);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803263B8, 0x91,
+                                         (const char *)lbl_80326400);
         }
-        v = GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
-        fn_800EEB64(v);
-        v = Instance__15EmissionManagerFv();
-        fn_800E2F84(v);
+
+        instance = GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
+        fn_800EEB64(instance);
+
+        instance = Instance__15EmissionManagerFv();
+        fn_800E2F84(instance);
+
         lbl_8055DE60 = 0;
     }
 }
