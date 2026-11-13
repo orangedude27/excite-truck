@@ -137,6 +137,23 @@ unsigned int fn_802E1960(unsigned int arg0) {
     return result;
 }
 
+#pragma use_lmw_stmw off
+int fn_802E1980(int image, void *texObj, void *outWidth, void *outHeight, unsigned int size) {
+    unsigned char buf[0x800];
+    int width;
+    int bytes;
+
+    width = fn_802E1960(size);
+    *(int *)outWidth = width;
+    *(int *)outHeight = 4;
+    bytes = fn_802E1954(width << 3);
+    fn_802E1780(buf, size, width);
+    fn_802E1804((void *)image, buf, width, 4, 2);
+    DCFlushRange((void *)image, bytes);
+    fn_802E18D4(width, 4, 3, 1, texObj, image);
+    return bytes;
+}
+#pragma use_lmw_stmw reset
 void fn_802E1A38(void *arg0, int arg1) {
     int result;
     result = fn_802E1980(arg1, (char *)arg0 + 0x190, (char *)arg0 + 0x180, (char *)arg0 + 0x184, *(int *)((char *)arg0 + 0x104));
