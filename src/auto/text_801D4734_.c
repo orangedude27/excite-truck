@@ -3073,16 +3073,16 @@ extern "C" void fn_801796CC(int, void *, int);
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801D8544(void *arg0) {
-    int sp8;
-    int temp_r31;
+extern "C" void fn_801D8544(void *stream) {
+    int data;
+    int remaining;
 
-    temp_r31 = lbl_8055E3C4 - (*(int *)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0xC));
-    if (*(int *)((char *)arg0 + 4) == 2 && temp_r31 > 0) {
-        sp8 = *(int *)((char *)arg0 + 0x14);
-        fn_801796CC(0xB, &sp8, 4);
-        if (temp_r31 >= *(int *)((char *)arg0 + 8)) {
-            *(int *)((char *)arg0 + 4) = 3;
+    remaining = lbl_8055E3C4 - (*(int *)((char *)stream + 0x10) + *(int *)((char *)stream + 0xC));
+    if (*(int *)((char *)stream + 4) == 2 && remaining > 0) {
+        data = *(int *)((char *)stream + 0x14);
+        fn_801796CC(0xB, &data, 4);
+        if (remaining >= *(int *)((char *)stream + 8)) {
+            *(int *)((char *)stream + 4) = 3;
         }
     }
 }
