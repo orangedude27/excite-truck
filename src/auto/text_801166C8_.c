@@ -1914,17 +1914,17 @@ s32 fn_80119824(void *arg0) {
     }
     readPos = player->readPos;
     if ((u32)(fn_80116D30() - player->readPosTime) > 0xC) {
-    block_6:
+    resample:
         readPos = fn_801194E4(&player->voices);
         now = fn_80116D30();
         sinceSample = now - player->readPosTime;
         player->readPos = readPos;
         if ((u32)sinceSample < (u32)player->resyncInterval) {
-            goto block_8;
+            goto stamp;
         }
         player->readPosTime = now;
-        goto block_16;
-    block_8:
+        goto skipAhead;
+    stamp:
         player->readPosTime = now;
     }
     writePos = player->writePos;
@@ -1936,19 +1936,19 @@ s32 fn_80119824(void *arg0) {
     /* what fits before the read position, keeping a 1 kB safety margin */
     block = (freeBytes < 0x400) ? 0 : ((freeBytes - 0x400) & 0xFFFFFFFC);
     if (block >= (u32)player->blockBytes) {
-        goto block_15;
+        goto enough;
     }
     if (player->bytesToPlay == 0) {
-        goto return_zero;
+        goto done;
     }
     if (block == 0) {
-        goto return_zero;
+        goto done;
     }
-block_15:
+enough:
     if (block < (u32)player->resyncLimit) {
-        goto block_18;
+        goto handOver;
     }
-block_16:
+skipAhead:
     player->resynced = 1;
     fn_80119300(&player->voices, player->writePos, player->blockBytes * 2);
     ringSize = player->voices.length;
@@ -1957,11 +1957,11 @@ block_16:
     if (writePos >= ringSize) {
         player->writePos = writePos - ringSize;
     }
-    goto block_6;
-block_18:
+    goto resample;
+handOver:
     player->bytesToPlay = block;
     fn_801195D8(player);
-return_zero:
+done:
     return 0;
 }
 
