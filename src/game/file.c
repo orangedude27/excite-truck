@@ -265,11 +265,12 @@ extern char lbl_8034CFC0[];
 #pragma cplusplus on
 extern "C" void fn_802E3898(s32, const char *, s32 *);
 extern "C" void fn_802E3804(s32 arg0, const char *arg1, s32 arg2) {
-    s32 object = fn_802E33D8(arg0, lbl_8034CFB4, 0x130);
-    s32 value = arg2;
-    fn_802E3898(arg0, arg1, &value);
-    if (value != arg2) {
-        fn_802E317C(lbl_8034CFC0, arg2, object);
+    /* Read arg2 bytes from file handle arg0 into arg1 (file.cpp:0x130 context), and warn via fn_802E317C if the bytes read differ. */
+    s32 fileEntry = fn_802E33D8(arg0, lbl_8034CFB4, 0x130);
+    s32 bytesRead = arg2;
+    fn_802E3898(arg0, arg1, &bytesRead);
+    if (bytesRead != arg2) {
+        fn_802E317C(lbl_8034CFC0, arg2, fileEntry);
     }
 }
 #pragma use_lmw_stmw off
