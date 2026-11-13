@@ -785,7 +785,7 @@ void fn_80210688(unsigned char arg0) {
     long r30;
     long r29;
     long late;
-    void *obj;
+    struct Dummy_802113D8 *obj;
     if ((unsigned char)lbl_8055EEF4 == 0 || (unsigned char)lbl_8055EEF5 == 0 || (unsigned char)lbl_8055EEF6 == 0) {
         fn_8020F444();
     }
@@ -831,8 +831,8 @@ void fn_80210688(unsigned char arg0) {
         if (fn_802EC124() == -1 && late == 0) {
             fn_802EC11C(lbl_8055B658);
             fn_802EC138();
-            obj = *(void **)((char *)fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
-            ((void (*)(void *, void *, void *))(*(void ***)obj)[6])(obj, &lbl_8055B674, lbl_8033C970);
+            obj = *(struct Dummy_802113D8 **)((char *)fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
+            obj->f6(&lbl_8055B674, lbl_8033C970);
             if (*(long *)fn_8020FAF0() == 1 && lbl_8055EEBC > 0) {
                 lbl_8055B658 = fn_8020F6FC();
             }
