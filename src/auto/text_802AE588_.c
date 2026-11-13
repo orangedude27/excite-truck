@@ -255,12 +255,10 @@ int fn_802AE7AC(void) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_802AE7F4(void) {
-    struct PathTbl { char text[0xC]; char lookupKey[0xC]; char statusKey[8]; };
     float values[8];
     float total;
-    register PathTbl *base = (PathTbl *)&lbl_8034A020;
     int i;
-    lbl_8055F980 = fn_8012C33C((void *)(&(base + 1)->text - 1));
+    lbl_8055F980 = fn_8012C33C(lbl_8034A020);
     fn_802AE5E0(0x400);
     fn_802BE7F8();
     fn_802B40F8();
@@ -278,11 +276,11 @@ extern "C" void fn_802AE7F4(void) {
     fn_802B58E0();
     {
         ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
-        lbl_8055CD78 = obj->lookup(base->lookupKey, -1);
+        lbl_8055CD78 = obj->lookup(lbl_8034A02C, -1);
     }
     {
         ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
-        lbl_8055F981 = obj->status(base->statusKey, 0);
+        lbl_8055F981 = obj->status(lbl_8034A038, 0);
     }
     values[0] = lbl_80564B40 * (lbl_80564B44 * lbl_80564AF0);
     total = values[0];
