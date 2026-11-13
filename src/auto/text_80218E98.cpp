@@ -2540,17 +2540,6 @@ typedef struct MenuValueItem {
 /* Keys a menu item's handler sees.  The arrows are the Windows virtual-key
    codes with a 0x100 base (see the TEXT_KEY_* enum further down this file);
    Return and Escape keep their plain codes. */
-#ifndef MENU_KEY_ENUM_MOVED
-enum {
-    MENU_KEY_RETURN = 0xD,
-    MENU_KEY_ESCAPE = 0x1B,
-    MENU_KEY_LEFT = 0x125,
-    MENU_KEY_UP = 0x126,
-    MENU_KEY_RIGHT = 0x127,
-    MENU_KEY_DOWN = 0x128
-};
-#endif
-
 /* The screen's "move the selection to the neighbouring item" helpers:
    fn_80217EC0(screen, axis, direction) for each of the four arrows. */
 #define MoveSelectionLeft fn_802180B0
