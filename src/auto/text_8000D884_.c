@@ -55,7 +55,9 @@ void fn_8000D884(int arg0, int arg1, int arg2, int arg3, int arg4) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8000D8C8(void) {
-    int i;
+    /* Initialize the IdentInfo subsystem: allocate its buffer, register it, then
+       run setup for each of the four initial IDs. */
+    int id;
     int stack = *(volatile int *)&lbl_80558A88;
 
     *(volatile unsigned char *)&lbl_8055D470 = 1;
@@ -64,8 +66,8 @@ void fn_8000D8C8(void) {
         lbl_80558A88, fn_8000DC84);
     lbl_8055D46C = (int *)lbl_8055D468;
     fn_8000DD98();
-    for (i = 3; i >= 0; i--) {
-        fn_8000D984(i);
+    for (id = 3; id >= 0; id--) {
+        fn_8000D984(id);
         fn_8000DA80();
     }
 }
