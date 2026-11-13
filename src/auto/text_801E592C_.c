@@ -1,4 +1,5 @@
 #include <types.h>
+#include <revolution/MTX/mtxtypes.h> /* Vec */
 
 extern void *fn_802C6C34(void);
 struct Rec14 { s32 v[14]; };
