@@ -630,48 +630,50 @@ extern "C" void fn_800EBB88(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *__dt__Q46nw4hbm3snd6detail9FrameHeapFv(void *self, s32 flag) {
-    FrameHeapDestroyView *state = (FrameHeapDestroyView *)self;
-    if (self == 0) return self;
-    if (state->heap == 0) goto done;
-    if (state->count == 0) goto free_heap;
-    {
-        register FrameHeapDestroyListView *head = &state->list;
-        goto loop_test;
+    if (self != 0) {
+        FrameHeapDestroyView *state = (FrameHeapDestroyView *)self;
+        void *heap = state->heap;
+        if (heap == 0) goto done;
+        if (heap == 0) goto done;
+        if (state->count != 0) {
+            u8 *head = (u8 *)self + 8;
+            goto loop_test;
 loop_body:
-        if (state->count == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
-        }
-        {
-            void *list = head->tail;
-            if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
-            if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
-            if (list != 0) {
-                register void *node = (u8 *)list + 0xC;
-                while (1) {
-                    void (*callback)(void *, void *, void *);
-                    node = *(void **)((u8 *)node + 4);
-                    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
-                    if (node != 0) {
-                        callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
-                        if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
-                    }
-                    if (node == *(void **)((u8 *)list + 0xC)) break;
-                }
-                if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
+            if (state->count == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
             }
-            if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)head - 4, list);
-        }
+            {
+                void *listA = *(void **)(head + 4);
+                void *list = listA;
+                if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
+                if (listA == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+                if (list != 0) {
+                    void *node = (u8 *)listA + 0xC;
+                    while (1) {
+                        void (*callback)(void *, void *, void *);
+                        node = *(void **)((u8 *)node + 4);
+                        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
+                        if (node != 0) {
+                            callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
+                            if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
+                        }
+                        if (node == *(void **)((u8 *)list + 0xC)) break;
+                    }
+                    if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
+                }
+                if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
+                Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)self + 4, list);
+            }
 loop_test:
-        if (state->count != 0) goto loop_body;
-    }
-free_heap:
-    MEMFreeToFrmHeap(state->heap, 3);
-    MEMDestroyFrmHeap(state->heap);
-    state->heap = 0;
+            if (state->count != 0) goto loop_body;
+        }
+        MEMFreeToFrmHeap(state->heap, 3);
+        MEMDestroyFrmHeap(state->heap);
+        state->heap = 0;
 done:
-    __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 4, 0);
-    if (flag > 0) fn_80128668(self);
+        if ((u8 *)self + 4 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 4, 0);
+        if (flag > 0) fn_80128668(self);
+    }
     return self;
 }
 #pragma pop
@@ -680,21 +682,22 @@ done:
 #pragma use_lmw_stmw off
 bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
     FrameHeapDestroyView *state = (FrameHeapDestroyView *)this;
+    void *head2;
     if (buffer == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0x4B, (const char *)lbl_80322D74);
     }
     if (state->heap != 0) {
         if (state->heap != 0) {
-            register FrameHeapDestroyListView *head;
+            void *volatile_head;
             if (state->count == 0) goto free_heap;
-            head = &state->list;
+            head2 = (u8 *)state + 8;
             goto loop_test;
         loop_body:
             if (state->count == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
             }
             {
-                void *list = head->tail;
+                void *list = *(void **)((u8 *)head2 + 4);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
                 if (list != 0) {
@@ -746,7 +749,7 @@ bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
             *((void **)node + 3) = t;
             *((void **)node + 4) = t;
         }
-        void *head2 = (u8 *)state + 8;
+        head2 = (u8 *)state + 8;
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
         }
@@ -840,9 +843,7 @@ loop_body:
                 if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
                 if (node != 0) {
                     callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
-                    if (callback != 0) callback((u8 *)node + 0x20,
-                                                 *(void **)((u8 *)node + 8),
-                                                 *(void **)((u8 *)node + 0x10));
+                    if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
                 }
             }
             if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
@@ -1522,6 +1523,89 @@ extern "C" void fn_800F2330(s32, s32, s32, s32, s32);
 extern "C" void fn_800EE060(void* this_, s32 a, s32 b, s32 c, s32 d, s32 e) {
     fn_800F2330(a, b, c, d, e);
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void*, s32);
+extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void*, s32);
+#pragma push
+#pragma use_lmw_stmw off
+s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, SeqTrack *track, SeqArgType type) const {
+    register const u8 **rpp = pp;
+    register SeqPlayer *rplayer = player;
+    register SeqTrack *rtrack = track;
+    register const char *rbase = (const char*)::lbl_80323268;
+    s32 res;
+    if (type == (SeqArgType)2) {
+        s32 count = 0;
+        res = 0;
+        for (;;) {
+            const u8 *p;
+            u8 b;
+            if (count >= 4) {
+                Panic__Q26nw4hbm2dbFPCciPCce(rbase, 0x326, rbase + 0x4C4);
+            }
+            p = *rpp;
+            res <<= 7;
+            *rpp = p + 1;
+            b = *p;
+            res |= (b & 0x7F);
+            if ((b & 0x80) == 0) break;
+            count++;
+        }
+    } else if (type == (SeqArgType)0) {
+        const u8 *p = *rpp;
+        *rpp = p + 1;
+        res = *p;
+    } else if (type == (SeqArgType)1) {
+        const u8 *p = *rpp;
+        u8 b0 = *p;
+        *rpp = p + 1;
+        u8 b1 = *(p + 1);
+        *rpp = p + 2;
+        res = (b0 << 8) | b1;
+    } else if (type == (SeqArgType)4) {
+        const u8 *p = *rpp;
+        u8 v = *p;
+        s16 *ptr;
+        *rpp = p + 1;
+        if (v > 0x30) {
+            Panic__Q26nw4hbm2dbFPCciPCce(rbase, 0x370, rbase + 0xC8, v, 0, 0x30);
+        }
+        if (v < 0x20) {
+            ptr = GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi((void*)rplayer, v);
+        } else if (v < 0x30) {
+            ptr = GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi((void*)rtrack, v - 0x20);
+        } else {
+            ptr = 0;
+        }
+        if (ptr == 0) return 0;
+        res = *ptr;
+    } else if (type == (SeqArgType)3) {
+        const u8 *p = *rpp;
+        u8 b0 = *p;
+        *rpp = p + 1;
+        u8 b1 = *(p + 1);
+        *rpp = p + 2;
+        s16 first = (s16)((b0 << 8) | b1);
+        u8 b2 = *(p + 2);
+        *rpp = p + 3;
+        u8 b3 = *(p + 3);
+        *rpp = p + 4;
+        s16 second = (s16)((b2 << 8) | b3);
+        u32 rnd = fn_800FEB9C();
+        u32 low = rnd & 0xFFFF;
+        s32 diff = (s32)second - (s32)first;
+        s32 range = diff + 1;
+        s32 scaled = (s32)(low * (u32)range) >> 16;
+        res = (s32)first + scaled;
+    } else {
+        res = 0;
+    }
+    return res;
+}
+#pragma pop
+
 #pragma push
 #pragma dont_inline on
 extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *arg0) {
@@ -2403,25 +2487,26 @@ extern "C" s32 fn_800EFBAC(void* arg0) {
 #pragma push
 #pragma small_data off
 #pragma pop
+/* Set an FX send value for an aux bus on the sequence player (index 0-3). */
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800EFBB4(
-    void* this_, s32 auxBus, f32 send) {
+    void* seqPlayer, s32 auxBus, f32 send) {
     s32 bus = auxBus;
     f32 value = send;
-    BOOL valid = 0;
+    BOOL isValidBus = 0;
 
     if (bus >= 0 && bus < 4) {
-        valid = 1;
+        isValidBus = 1;
     }
 
-    if (valid == 0) {
+    if (isValidBus == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x1C6,
                                      (const char*)lbl_80323C74, bus, 0, 4);
     }
 
     {
-        u32 level = OSDisableInterrupts();
-        ((f32*)((u8*)this_ + 0x54))[bus] = value;
-        OSRestoreInterrupts(level);
+        u32 interruptLevel = OSDisableInterrupts();
+        ((f32*)((u8*)seqPlayer + 0x54))[bus] = value;
+        OSRestoreInterrupts(interruptLevel);
     }
 }
 #pragma push
@@ -2677,7 +2762,7 @@ extern "C" void fn_800F0360(void *self) {
     if (*(u8 *)((u8 *)player + 0x15) != 0 && *(u8 *)((u8 *)player + 0x17) != 0) {
         if (*(u8 *)((u8 *)player + 0x18) == 0 && *(u8 *)((u8 *)player + 0x19) == 0 &&
             (*(u8 *)((u8 *)player + 0x14) != 0 || *((u8 *)Instance__15EmissionManagerFv() + 0x6C32) == 0)) {
-            s32 ticks = 0;
+            register s32 ticks = 0;
             while (*(u16 *)((u8 *)player + 0x88) >= 0x1A0) {
                 ticks++;
                 *(u16 *)((u8 *)player + 0x88) -= 0x1A0;
