@@ -1663,31 +1663,36 @@ extern "C" void fn_80033408(void *, int);
 extern double lbl_80560F48;
 #pragma fp_contract_aggressive on
 extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *arg0, const void *arg1) {
+    /* Set this AxVoice up to play the given wave: pick the AX sample format from
+     * the wave form, copy every channel's sample address and its envelope/mix
+     * coefficients out of the wave, hand the playback addresses to the AX voices,
+     * reset the per-output volumes and the AX voice types, choose the mix rate
+     * class from the playback rate, and ask for a full AX update. */
     unsigned char *self = (unsigned char *)arg0;
-    unsigned char *entry;
-    const unsigned char *inst;
-    unsigned char *output;
-    unsigned char *env;
-    unsigned char *mix;
-    int i;
+    unsigned char *row;               /* channel row of the AX voice grid, stride 0x10 */
+    const unsigned char *inst;        /* the wave's parameter block of this channel, stride 0x44 */
+    unsigned char *output;            /* channel's address + coefficients, stride 0x34 at +0x2C */
+    unsigned char *env;               /* envelope parameters of the channel (output + 4) */
+    unsigned char *mix;               /* mix levels of the channel (output + 0x30) */
+    int channel;
     const unsigned char *wave = (const unsigned char *)arg1;
     int format;
     if (wave[0] == 1) {
-        format = 10;
+        format = 10;                  /* 16-bit PCM */
     } else {
-        format = 0;
-        if (wave[0] == 0) format = 25;
+        format = 0;                   /* DSP ADPCM */
+        if (wave[0] == 0) format = 25;   /* 8-bit PCM */
     }
     *(int *)(self + 0x118) = format;
     *(int *)(self + 0x114) = *(int *)(wave + 4);
-    entry = self;
+    row = self;
     inst = wave;
     output = self;
     env = self + 0x30;
     mix = self + 0x58;
-    i = 0;
-    while (i < *(int *)(self + 0x104)) {
-        if (*(int *)(entry + 0xC) != 0) {
+    channel = 0;
+    while (channel < *(int *)(self + 0x104)) {   /* channelCount */
+        if (*(int *)(row + 0xC) != 0) {          /* the channel has an AX voice */
             if (*(int *)(inst + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x1BC, lbl_803222A0);
             *(int *)(output + 0x2C) = *(int *)(inst + 0x10);
             *(unsigned short *)(output + 0x30) = *(unsigned short *)(inst + 0x24);
@@ -1714,70 +1719,74 @@ extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveD
             *(unsigned short *)(output + 0x5A) = *(unsigned short *)(inst + 0x4E);
             *(unsigned short *)(output + 0x5C) = *(unsigned short *)(inst + 0x50);
             *(unsigned short *)(output + 0x5E) = *(unsigned short *)(inst + 0x52);
-            fn_800E5E74(arg0, i, wave[1] != 0, *(int *)(self + 0x118), *(int *)(inst + 0x10), *(int *)(wave + 8), *(int *)(wave + 0xC));
-            if (*(int *)(self + 0x118) == 0) {
-                ((void (*)(void *, int, int, void *))fn_800E68EC)(arg0, i, *(int *)(self + 0x118), env);
-                ((void (*)(void *, int, int, void *))fn_800E6A44)(arg0, i, *(int *)(self + 0x118), mix);
+            fn_800E5E74(arg0, channel, wave[1] != 0, *(int *)(self + 0x118), *(int *)(inst + 0x10), *(int *)(wave + 8), *(int *)(wave + 0xC));
+            if (*(int *)(self + 0x118) == 0) {   /* only ADPCM waves carry envelope and mix data */
+                ((void (*)(void *, int, int, void *))fn_800E68EC)(arg0, channel, *(int *)(self + 0x118), env);
+                ((void (*)(void *, int, int, void *))fn_800E6A44)(arg0, channel, *(int *)(self + 0x118), mix);
             }
         }
-        entry += 0x10; inst += 0x44; output += 0x34; env += 0x34; mix += 0x34; i++;
+        row += 0x10; inst += 0x44; output += 0x34; env += 0x34; mix += 0x34; channel++;
     }
     float zero0;
     float zero1;
-    zero1 = lbl_80560F38;
-    zero0 = lbl_80560F3C;
-    unsigned char *param = self;
-    int j = 0;
-    while (j < *(int *)(self + 0x108)) {
-        *(float *)(param + 0x94) = zero1;
-        j++;
-        *(float *)(param + 0x98) = zero1;
-        *(float *)(param + 0x9C) = zero0;
-        *(float *)(param + 0xA0) = zero0;
-        *(float *)(param + 0xA4) = zero0;
-        *(float *)(param + 0xA8) = zero0;
-        *(int *)(param + 0xAC) = 0;
-        param += 0x1C;
+    zero1 = lbl_80560F38;             /* 1.0f */
+    zero0 = lbl_80560F3C;             /* 0.0f */
+    unsigned char *out = self;
+    int outIndex = 0;
+    while (outIndex < *(int *)(self + 0x108)) {  /* voiceOutCount */
+        *(float *)(out + 0x94) = zero1;          /* output volume */
+        outIndex++;
+        *(float *)(out + 0x98) = zero1;          /* output rate scale */
+        *(float *)(out + 0x9C) = zero0;
+        *(float *)(out + 0xA0) = zero0;
+        *(float *)(out + 0xA4) = zero0;
+        *(float *)(out + 0xA8) = zero0;
+        *(int *)(out + 0xAC) = 0;
+        out += 0x1C;
     }
     {
-        int k;
-        int n;
+        int channel2;
+        int outIndex2;
         unsigned char *base;
         unsigned char *slot;
-        base = self; k = 0;
-        while (k < *(int *)(self + 0x104)) {
-            slot = base; n = 0;
-            while (n < *(int *)(self + 0x108)) {
+        base = self; channel2 = 0;
+        while (channel2 < *(int *)(self + 0x104)) {
+            slot = base; outIndex2 = 0;
+            while (outIndex2 < *(int *)(self + 0x108)) {
                 void *voice = *(void **)(slot + 0xC);
-                if (voice != 0) ((void (*)(void *, int))fn_80033538)(voice, 0);
-                slot += 4; n++;
+                if (voice != 0) ((void (*)(void *, int))fn_80033538)(voice, 0);   /* AX voice type 0 */
+                slot += 4; outIndex2++;
             }
-            base += 0x10; k++;
+            base += 0x10; channel2++;
         }
     }
     {
         int mixMode;
-        int k;
-        int n;
+        int channel2;
+        int outIndex2;
         unsigned char *base;
         unsigned char *slot;
+        /* how far the wave is played above its 32 kHz reference decides the mix rate class */
         float rate = *(float *)(self + 0x184) * (float)*(int *)(self + 0x114) / lbl_80560F40;
-        if (rate > lbl_80560F44) mixMode = 2;
-        else if (rate > lbl_80560F38) mixMode = 3;
+        if (rate > lbl_80560F44) mixMode = 2;      /* more than 4/3 of the reference */
+        else if (rate > lbl_80560F38) mixMode = 3; /* up to twice */
         else mixMode = 4;
-        base = self; k = 0;
-        while (k < *(int *)(self + 0x104)) {
-            slot = base; n = 0;
-            while (n < *(int *)(self + 0x108)) {
+        base = self; channel2 = 0;
+        while (channel2 < *(int *)(self + 0x104)) {
+            slot = base; outIndex2 = 0;
+            while (outIndex2 < *(int *)(self + 0x108)) {
                 void *voice = *(void **)(slot + 0xC);
                 if (voice != 0) fn_80033408(voice, mixMode);
-                slot += 4; n++;
+                slot += 4; outIndex2++;
             }
-            base += 0x10; k++;
+            base += 0x10; channel2++;
         }
     }
-    self[0x11F] = 0; self[0x120] = 0; self[0x11D] = 0; self[0x11E] = 0;
-    self[0x123] |= 0x70;
+    self[0x11F] = 0;   /* pause */
+    self[0x120] = 0;   /* paused */
+    self[0x11D] = 0;   /* started */
+    self[0x11E] = 0;   /* playing */
+    self[0x123] |= 0x70;   /* update the AX voices */
 }
 extern "C" void fn_800E519C(void *arg0) {
     unsigned int level = OSDisableInterrupts();
