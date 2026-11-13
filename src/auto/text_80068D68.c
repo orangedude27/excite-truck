@@ -5391,6 +5391,7 @@ u8 bta_dm_pin_cback(u8 *bd_addr, u8 *pin_info, u8 *pin_name) {
 s32 fn_80072EF4(void) { return 0xB; }
 
 static UINT8 bta_dm_new_link_key_cback(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, UINT8 *link_key) {
+    /* Build and dispatch a BTA security event for a newly generated link key. */
     u8 sec_event[0x110];
     void (*callback)(int, void *);
 
