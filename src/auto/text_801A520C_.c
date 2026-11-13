@@ -518,7 +518,8 @@ extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
     }
 }
 #pragma cplusplus on
-extern "C" void fn_801A5D80(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+/* Forward action (vslot 12) to the subobject at +0x270C; on mode 0x6D reset the local timer/state fields. */
+extern "C" void fn_801A5D80(void *self, int arg1, int arg2, int mode, int arg4) {
     class Obj {
     public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
@@ -527,16 +528,16 @@ extern "C" void fn_801A5D80(void *arg0, int arg1, int arg2, int arg3, int arg4) 
         virtual void f12(int, int, int, int);
     };
     float zero;
-    Obj *obj;
+    Obj *subobj;
     fn_8018B09C();
-    obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
-    obj->f12(arg1, arg2, arg3, arg4);
-    if (arg3 == 0x6D) {
+    subobj = (Obj *)*(void **)((char *)self + 0x270C);
+    subobj->f12(arg1, arg2, mode, arg4);
+    if (mode == 0x6D) {
         zero = lbl_805623C8;
-        *(int *)((char *)arg0 + 0x2714) = 1;
-        *(int *)((char *)arg0 + 0x2720) = 0;
-        *(float *)((char *)arg0 + 0x271C) = zero;
-        *(float *)((char *)arg0 + 0x2718) = zero;
+        *(int *)((char *)self + 0x2714) = 1;
+        *(int *)((char *)self + 0x2720) = 0;
+        *(float *)((char *)self + 0x271C) = zero;
+        *(float *)((char *)self + 0x2718) = zero;
     }
 }
 
