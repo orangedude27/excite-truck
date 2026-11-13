@@ -265,19 +265,17 @@ void fn_80273BD0(void *arg0) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80274268(void *arg0) {
-    extern void fn_80274460();
+    extern void fn_80274460(void *);
     extern void fn_80273B4C(void *);
     extern float lbl_80563FB0, lbl_80563FE4, lbl_80563FE8, lbl_80563FEC;
     char *state = *(char **)((char *)arg0 + 0x140);
     float sp1C, sp18, sp14, sp10, spC, sp8;
     float *result = &sp8;
     float *vector = &sp14;
-
     if (*(unsigned char *)(state + 0x260C) != 0) {
-        fn_80274460();
+        fn_80274460(arg0);
         return;
     }
-
     *(int *)((char *)arg0 + 0x58) = *(int *)((char *)arg0 + 0xC0);
     *(int *)((char *)arg0 + 0x5C) = *(int *)((char *)arg0 + 0xC4);
     *(int *)((char *)arg0 + 0x60) = *(int *)((char *)arg0 + 0xC8);
@@ -290,11 +288,9 @@ void fn_80274268(void *arg0) {
     *(int *)((char *)arg0 + 0x7C) = *(int *)((char *)arg0 + 0xE4);
     *(int *)((char *)arg0 + 0x80) = *(int *)((char *)arg0 + 0xE8);
     *(int *)((char *)arg0 + 0x84) = *(int *)((char *)arg0 + 0xEC);
-
     sp14 = lbl_80563FB0;
     sp18 = lbl_80563FE8;
     sp1C = lbl_80563FEC + (*(float *)(state + 0x2458) - lbl_80563FE4);
-
     if (result == vector) {
         sp8 = sp14 * *(float *)((char *)arg0 + 0x58) + sp18 * *(float *)((char *)arg0 + 0x64) + sp1C * *(float *)((char *)arg0 + 0x70);
         spC = sp14 * *(float *)((char *)arg0 + 0x5C) + sp18 * *(float *)((char *)arg0 + 0x68) + sp1C * *(float *)((char *)arg0 + 0x74);
@@ -304,7 +300,6 @@ void fn_80274268(void *arg0) {
         result[1] = vector[0] * *(float *)((char *)arg0 + 0x5C) + vector[1] * *(float *)((char *)arg0 + 0x68) + vector[2] * *(float *)((char *)arg0 + 0x74);
         result[2] = vector[0] * *(float *)((char *)arg0 + 0x60) + vector[1] * *(float *)((char *)arg0 + 0x6C) + vector[2] * *(float *)((char *)arg0 + 0x78);
     }
-
     *(float *)((char *)arg0 + 0x7C) += sp8;
     *(float *)((char *)arg0 + 0x80) += spC;
     *(float *)((char *)arg0 + 0x84) += sp10;
@@ -336,7 +331,6 @@ void fn_80274460(void *arg0) {
     };
     float zero = lbl_80563FE0;
     float one = lbl_80563FB0;
-    void *temp_r3;
     struct {
         float sp8;
         float spC;
@@ -352,8 +346,7 @@ void fn_80274460(void *arg0) {
     work.callVec[1] = zero;
     work.callVec[2] = one;
     ((void (*)(void *, float *))fn_80015A20)(work.matrix, work.callVec);
-    temp_r3 = (char *)arg0 + 0x58;
-    fn_80015B20(temp_r3, work.matrix, temp_r3);
+    fn_80015B20((char *)arg0 + 0x58, work.matrix, (char *)arg0 + 0x58);
     work.sp14 = lbl_80563FB0;
     work.sp18 = lbl_80563FE8;
     work.sp1C = lbl_80563FB0;
@@ -441,10 +434,11 @@ extern float  lbl_80563FC4, lbl_80563FD8, lbl_80563FFC, lbl_80564000, lbl_805640
 int fn_80274730(void *arg0, float arg1, float arg2, float arg3, float arg4) {
     float up[3], forward[3], side[3], right[3];
     char *p=arg0;
-    float z,y,x,d,scale,dist,lower,angle,ratio,speed,v;
-    z=(*(float *)(p+0x54))-(*(float *)(p+0x84)); y=(*(float *)(p+0x50))-(*(float *)(p+0x80)); x=(*(float *)(p+0x4c))-(*(float *)(p+0x7c));
+    float x,y,z,d,scale,dist,lower,angle,ratio,speed,v;
+    float th;
+    x=(*(float *)(p+0x4c))-(*(float *)(p+0x7c)); y=(*(float *)(p+0x50))-(*(float *)(p+0x80)); z=(*(float *)(p+0x54))-(*(float *)(p+0x84));
     (*(float *)(p+0x70))=x; (*(float *)(p+0x74))=y; (*(float *)(p+0x78))=z;
-    if ((float)__fabs(x)<=lbl_80558DC4[0] && (float)__fabs(z)<=lbl_80558DC4[0]) {
+    if ((float)__fabs(x)<=(th=lbl_80558DC4[0]) && (float)__fabs(z)<=th) {
         x=(*(float *)(p+0xd8)); z=(*(float *)(p+0xe0)); (*(float *)(p+0x70))=x; (*(float *)(p+0x78))=z;
     }
     up[0]=lbl_80563FB0; up[1]=lbl_80563FAC; up[2]=lbl_80563FB0;
@@ -810,7 +804,7 @@ void fn_80275410(void *arg0) {
     if (mag > lbl_80564020) {
         scale = lbl_80563FAC / mag;
         x = scale * input[0]; y = scale * input[1]; z = scale * input[2];
-        s = sin(mag); c = cos(mag); t = lbl_80563FAC - c;
+        s = (float)sin(mag); c = (float)cos(mag); t = lbl_80563FAC - c;
         matrix[0] = c + t * (x*x);
         matrix[1] = y * (t*x) + s*z;
         matrix[2] = z * (t*x) - s*y;
@@ -947,44 +941,33 @@ void fn_80275D0C(void *arg0, void *arg1) {
         float matrix[9];
         float sp84[3];
     } work;
-
     extern const struct Words7 lbl_802FA7F8;
-
     float x, s, z, y, mag;
     float scale, c, t;
     float m2, m1, m0;
     float zero, one;
-
     work.local_14 = lbl_802FA7F8;
     *(struct Words12 *)((char *)arg0 + 0x58) = *(struct Words12 *)((char *)arg0 + 0xC0);
-
     work.sp54[0] = *(float *)((char *)arg0 + 0xE4);
     work.sp54[1] = *(float *)((char *)arg0 + 0xE8);
     work.sp54[2] = *(float *)((char *)arg0 + 0xEC);
-
     work.sp48[0] = *(float *)((char *)arg0 + 0xD8);
     work.sp48[1] = *(float *)((char *)arg0 + 0xDC);
     work.sp48[2] = *(float *)((char *)arg0 + 0xE0);
-
     work.sp3C[0] = lbl_80563FB0;
     work.sp3C[1] = lbl_80563FAC;
     work.sp3C[2] = lbl_80563FB0;
-
     PSVECCrossProduct(work.sp3C, work.sp48, work.sp30);
     PSVECCrossProduct(work.sp48, work.sp30, work.sp3C);
-
     m2 = ((float *)&work.local_14)[5] * lbl_80564024;
     m1 = ((float *)&work.local_14)[4] * lbl_80564024;
     m0 = ((float *)&work.local_14)[3] * lbl_80564024;
-
     work.sp84[1] = ((float *)&work.local_14)[1];
     work.sp84[0] = ((float *)&work.local_14)[0];
     work.sp84[2] = ((float *)&work.local_14)[2];
-
     work.sp8[0] = m0;
     work.sp8[1] = m1;
     work.sp8[2] = m2;
-
     mag = PSVECMag(work.sp8);
     if (mag > lbl_80564020) {
         scale = lbl_80563FAC / mag;
@@ -1016,26 +999,28 @@ void fn_80275D0C(void *arg0, void *arg1) {
         work.matrix[7] = zero;
         work.matrix[8] = one;
     }
-
     fn_801BFD34((char *)arg0 + 0x7C, work.sp84, work.sp30);
     fn_80015B20((char *)arg0 + 0x58, work.matrix, work.sp30);
     *(float *)((char *)arg0 + 0xBC) = ((float *)&work.local_14)[6] * lbl_80564024;
 }
 #pragma pop
-void fn_80275FC0(void *arg0) {
-    *(int *)((char *)arg0 + 0x58) = *(int *)((char *)arg0 + 0x1A4);
-    *(int *)((char *)arg0 + 0x5C) = *(int *)((char *)arg0 + 0x1A8);
-    *(int *)((char *)arg0 + 0x60) = *(int *)((char *)arg0 + 0x1AC);
-    *(int *)((char *)arg0 + 0x64) = *(int *)((char *)arg0 + 0x1B0);
-    *(int *)((char *)arg0 + 0x68) = *(int *)((char *)arg0 + 0x1B4);
-    *(int *)((char *)arg0 + 0x6C) = *(int *)((char *)arg0 + 0x1B8);
-    *(int *)((char *)arg0 + 0x70) = *(int *)((char *)arg0 + 0x1BC);
-    *(int *)((char *)arg0 + 0x74) = *(int *)((char *)arg0 + 0x1C0);
-    *(int *)((char *)arg0 + 0x78) = *(int *)((char *)arg0 + 0x1C4);
-    *(int *)((char *)arg0 + 0x7C) = *(int *)((char *)arg0 + 0x1C8);
-    *(int *)((char *)arg0 + 0x80) = *(int *)((char *)arg0 + 0x1CC);
-    *(int *)((char *)arg0 + 0x84) = *(int *)((char *)arg0 + 0x1D0);
-    *(float *)((char *)arg0 + 0xBC) = *(float *)((char *)arg0 + 0x1D4);
+void fn_80275FC0(void *camera) {
+    /* Camera mode 21: make the view transform and angle an outside system stored
+     * for this camera (0x1A4/0x1D4) the ones in use (0x058/0x0BC), for fn_80276044
+     * to hand to the renderer.  See the Camera struct in src/auto/text_80265DD8_.c. */
+    *(int *)((char *)camera + 0x58) = *(int *)((char *)camera + 0x1A4);
+    *(int *)((char *)camera + 0x5C) = *(int *)((char *)camera + 0x1A8);
+    *(int *)((char *)camera + 0x60) = *(int *)((char *)camera + 0x1AC);
+    *(int *)((char *)camera + 0x64) = *(int *)((char *)camera + 0x1B0);
+    *(int *)((char *)camera + 0x68) = *(int *)((char *)camera + 0x1B4);
+    *(int *)((char *)camera + 0x6C) = *(int *)((char *)camera + 0x1B8);
+    *(int *)((char *)camera + 0x70) = *(int *)((char *)camera + 0x1BC);
+    *(int *)((char *)camera + 0x74) = *(int *)((char *)camera + 0x1C0);
+    *(int *)((char *)camera + 0x78) = *(int *)((char *)camera + 0x1C4);
+    *(int *)((char *)camera + 0x7C) = *(int *)((char *)camera + 0x1C8);
+    *(int *)((char *)camera + 0x80) = *(int *)((char *)camera + 0x1CC);
+    *(int *)((char *)camera + 0x84) = *(int *)((char *)camera + 0x1D0);
+    *(float *)((char *)camera + 0xBC) = *(float *)((char *)camera + 0x1D4);
 }
 
 void fn_80276044(int arg0) {
