@@ -711,11 +711,12 @@ int fn_80021258(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
-int fn_800213DC(int arg0) {
-    int r;
+int fn_800213DC(int keyCode) {
+    /* Handles specific key presses when enabled and no blocking state is active. */
+    int handled;
     if (lbl_8055D644) {
         if (!lbl_8055D645 && !fn_801E8838() && !fn_802E4A10()) {
-            switch (arg0) {
+            switch (keyCode) {
                 case 0x58:
                     fn_8001FEB8();
                     break;
@@ -724,11 +725,11 @@ int fn_800213DC(int arg0) {
                     break;
             }
         }
-        r = 1;
+        handled = 1;
     } else {
-        r = 0;
+        handled = 0;
     }
-    return r;
+    return handled;
 }
 
 void fn_80021464(void *a_, int arg1) {
