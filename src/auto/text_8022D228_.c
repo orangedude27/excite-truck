@@ -42,21 +42,22 @@ void *fn_8022D228(void *arg0, int arg1, int arg2, int arg3) {
     return result;
 }
 #pragma scheduling on
-void *fn_8022D2BC(void *arg0, int arg1) {
+void *fn_8022D2BC(void *object, int freeObject) {
+    /* Free each entry in the pointer table at +0x10 (count at +0x00), free the table, then optionally free object. */
     int offset;
-    int i;
-    if (arg0 != 0) {
-        i = 0;
+    int index;
+    if (object != 0) {
+        index = 0;
         offset = 0;
-        while (i < *(int *)arg0) {
-            fn_80128670(*(void **)((char *)(*(void **)((char *)arg0 + 0x10)) + offset));
+        while (index < *(int *)object) {
+            fn_80128670(*(void **)((char *)(*(void **)((char *)object + 0x10)) + offset));
             offset += 4;
-            i++;
+            index++;
         }
-        fn_80128670(*(void **)((char *)arg0 + 0x10));
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+        fn_80128670(*(void **)((char *)object + 0x10));
+        if (freeObject > 0) ((void (*)(void *))fn_80128668)(object);
     }
-    return arg0;
+    return object;
 }
 #pragma scheduling on
 /* Append a string entry into a fixed-capacity string table, storing a per-entry tag byte after the null terminator. */
