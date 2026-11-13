@@ -2497,6 +2497,18 @@ extern void fn_8003B508(u32, u32, void *);
 extern void fn_8003B0B0(void *, void *);
 extern void fn_8003AC24(void *);
 extern void (*lbl_80558E08)(void *, void *);
+static inline void DVDLogCommand_80038368(s32 cmd, s32 offset, s32 length) {
+    s32 interrupts = OSDisableInterrupts();
+    u32 tick;
+    if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = cmd;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = offset;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = length;
+    tick = OSGetTick();
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    OSRestoreInterrupts(interrupts);
+}
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80038368(void *arg0) {
@@ -2506,7 +2518,8 @@ void fn_80038368(void *arg0) {
  command = *(int *)(p+8);
  switch (command) {
  case 2: case 3: case 5: case 13: case 14: case 15: case 16: case 34: case 37: {
-   u32 length = *(u32 *)(p+0x14), offset = *(u32 *)(p+0x10);
+   int length = *(int *)(p+0x14);
+   int offset = *(int *)(p+0x10);
    {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
