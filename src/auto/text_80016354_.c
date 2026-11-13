@@ -441,7 +441,7 @@ done:
 
 extern char lbl_80558BEC, lbl_80558BF4, lbl_80558BFC;
 extern char lbl_802FCF10[];
-extern void fn_801345D8(char *, int, const char *, int);
+extern void fn_801345D8(char *, int, const char *, ...);
 #pragma cplusplus on
 /* Registers a car definition from an interface object into the car definition table (lbl_8055D540) at the current count (lbl_8055D54C). */
 extern "C" void fn_80016ED4(void *carDefObj) {
