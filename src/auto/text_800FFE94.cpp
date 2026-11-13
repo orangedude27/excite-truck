@@ -470,12 +470,13 @@ extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus
 }
 
 extern "C" char lbl_80327994[];
-extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_80100D18(void* arg0, int arg1, float arg2) {
-    int valid = arg1 >= 0 && arg1 < 4;
-    if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x164, lbl_803279CC, arg1, 0, 4);
-    int level = OSDisableInterrupts();
-    *(float*)((char*)arg0 + arg1 * 4 + 0x6C) = arg2;
-    OSRestoreInterrupts(level);
+/* Set the second FX send value for an aux bus on the sequence player (index 0-3). */
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_80100D18(void* seqPlayer, int auxBus, float send) {
+    int isValidBus = auxBus >= 0 && auxBus < 4;
+    if (!isValidBus) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x164, lbl_803279CC, auxBus, 0, 4);
+    int interruptLevel = OSDisableInterrupts();
+    *(float*)((char*)seqPlayer + auxBus * 4 + 0x6C) = send;
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100DB4(void* arg0, int arg1) {
