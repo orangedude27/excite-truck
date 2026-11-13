@@ -607,6 +607,8 @@ char *fn_802CAE34(int arg0) {
 }
 #pragma dont_inline on
 void fn_802CAE98(int arg0, char *arg1) {
+    /* Copy a texture slot's name into its 0x20-byte name buffer, truncating to
+       0x1F characters and null-terminating. */
     int count;
     char *dst;
     unsigned char c;
