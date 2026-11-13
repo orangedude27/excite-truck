@@ -308,20 +308,22 @@ extern "C" void fn_80165B78(void **arg0) {
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_80165FAC(void) {
+    /* Load the orbit config/value table, resolve its selected subtable, and populate orbit parameters. */
     class Obj {
     public:
         virtual void **method(int) = 0;
     };
-    Obj *obj;
-    int value;
-    void **result;
-    obj = (Obj *)fn_80131808(lbl_8032FCC0 + 0x1C0);
-    value = fn_80204EA0(lbl_8032FCC0 + 0x1CC);
-    fn_802E30C8(lbl_8032FCC0 + 0x1D8, value);
-    result = obj->method(value);
+    Obj *orbitVal;
+    int subtableId;
+    void **subtable;
+
+    orbitVal = (Obj *)fn_80131808(lbl_8032FCC0 + 0x1C0);
+    subtableId = fn_80204EA0(lbl_8032FCC0 + 0x1CC);
+    fn_802E30C8(lbl_8032FCC0 + 0x1D8, subtableId);
+    subtable = orbitVal->method(subtableId);
     ((void (*)(void))fn_80165A30)();
-    fn_80165B78(result);
-    fn_80131818(obj);
+    fn_80165B78(subtable);
+    fn_80131818(orbitVal);
 }
 #pragma cplusplus reset
 #pragma pop
@@ -603,15 +605,15 @@ extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
 void fn_80166898(void) {
     register float scale;
-    register float height;
+    float height;
     register float zero;
     register int zeroInt;
-    register int i;
-    register int j;
+    register unsigned int i;
+    register unsigned int j;
     register unsigned int offset;
-    register unsigned char *p1;
+    unsigned char *p1;
     register unsigned char *p2;
-    register int minusOne;
+    register unsigned int minusOne;
     register char *countPtr;
     register unsigned char *holder;
     float arg1;
@@ -627,7 +629,7 @@ void fn_80166898(void) {
     scale = lbl_805618A0;
     lbl_8055E320 = zero;
     lbl_8055E31C = zero;
-    while (i < *(int *)((char *)*(unsigned char * volatile *)&lbl_8055E32C + 4)) {
+    while ((int)i < *(int *)((char *)*(unsigned char * volatile *)&lbl_8055E32C + 4)) {
         holder = *(unsigned char * volatile *)&lbl_8055E32C;
         p1 = *(unsigned char **)holder + offset;
         arg1 = lbl_805618E4;
@@ -650,15 +652,20 @@ void fn_80166898(void) {
         *(float *)(p1 + 0x30) = zero;
         memset(p1 + 0x64, zeroInt, 0x24);
         offset += 0x88;
-        i++;
+        i += 1;
     }
     scale = lbl_805618A0;
     countPtr = (char *)&lbl_8042FEB0 + 4;
-    for (j = zeroInt, offset = zeroInt, minusOne = -1; j < *(int *)countPtr; offset += 0x14, j++) {
+    offset = (unsigned int)zeroInt;
+    j = (unsigned int)(short)zeroInt;
+    minusOne = (unsigned int)-1;
+    while ((int)j < *(int *)countPtr) {
         callArg = lbl_8056189C;
         p2 = *(unsigned char **)&lbl_8042FEB0 + offset;
-        *(int *)(p2 + 0x10) = minusOne;
+        *(int *)(p2 + 0x10) = (int)minusOne;
         *(float *)(p2 + 0xC) = lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, callArg, scale * *(float *)(p2 + 8));
+        j++;
+        offset += 0x14;
     }
 }
 #pragma pop
@@ -980,6 +987,7 @@ unsigned char fn_801671AC(int arg0) { void *base; if (!((int (*)(void))fn_801667
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma optimization_level 2
 extern "C" float fn_801671FC(int arg0) {
     extern int fn_80139EC4(void *, float, float);
     extern float lbl_80561900;
@@ -1000,15 +1008,15 @@ extern "C" float fn_801671FC(int arg0) {
     int result;
     float gate1;
     float gate2;
-    void *table;
-    void *record;
+    register void *table;
+    register void *record;
     void *other;
     void *object;
     float threshold;
     float f31;
-    float f0;
-    float f1;
     float f2;
+    float f1;
+    float f0;
     float f30;
 
     if (((int (*)(void))fn_801667F0)() != 0) {
@@ -1056,7 +1064,6 @@ extern "C" float fn_801671FC(int arg0) {
     }
     return lbl_805618D0;
 }
-#pragma cplusplus reset
 #pragma pop
 
 extern float lbl_805618A0, lbl_8056189C, lbl_805618D0;
@@ -1118,11 +1125,11 @@ float fn_801673A4(int arg0, float *arg1) {
 
         highValue = entry[0x38 / 4];
         lowValue = entry[0x34 / 4];
-        d = lbl_805618D0;
-        c = (lbl_8055E318 - startTime) / (endTime - startTime);
-        d = (d < c) ? c : d;
-        d = (d > lbl_8056189C) ? lbl_8056189C : d;
-        return lowValue + d * (highValue - lowValue);
+        c = lbl_805618D0;
+        d = (lbl_8055E318 - startTime) / (endTime - startTime);
+        c = (c < d) ? d : c;
+        c = (c > lbl_8056189C) ? lbl_8056189C : c;
+        return lowValue + c * (highValue - lowValue);
     }
 
     fallbackValue = lbl_8056189C;
