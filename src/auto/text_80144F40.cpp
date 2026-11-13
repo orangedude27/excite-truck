@@ -2130,12 +2130,13 @@ extern "C" void fn_801483C4(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void *fn_801483D4(const char *arg0, void *arg1) {
+/* Finds an entry in a table by case-insensitively matching its name string. */
+extern "C" void *fn_801483D4(const char *name, void *table) {
     s32 offset = 0;
     s32 i = 0;
-    while (i < *(s32 *)((u8 *)arg1 + 4)) {
-        if (stricmp(*(const char **)(*(u32 *)arg1 + offset), arg0) == 0) {
-            return (void *)(*(u32 *)arg1 + i * 0x1C);
+    while (i < *(s32 *)((u8 *)table + 4)) {
+        if (stricmp(*(const char **)(*(u32 *)table + offset), name) == 0) {
+            return (void *)(*(u32 *)table + i * 0x1C);
         }
         offset += 0x1C;
         i++;
