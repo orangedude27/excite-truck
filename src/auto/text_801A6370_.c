@@ -77,6 +77,8 @@ void *fn_801A644C(void *arg0) {
 #pragma dont_inline off
 
 void *fn_801A6484(void *arg0) {
+    /* Initialize this object: run base init, set vtable, clear embedded
+     * 0xC-byte entries at +0x2708..+0x272C, and create/store its netcar task. */
     char *end;
     char *current;
     void *handle;
