@@ -2454,33 +2454,35 @@ extern "C" void *fn_8019F564(void *arg0,s32 arg1,void *arg2,s32 arg3,f32 a,f32 b
 }
 #pragma dont_inline off
 extern "C" void fn_8019F6F0(void *arg0) {
-    f32 value;
+    /* Reset object fields by reinitializing its base state and zeroing the float block at +0x64..+0xC0. */
+    f32 zeroValue;
+
     fn_8019F03C(arg0);
-    value = lbl_805622D0;
-    *(f32 *)((u8 *)arg0 + 0x64) = value;
-    *(f32 *)((u8 *)arg0 + 0x68) = value;
-    *(f32 *)((u8 *)arg0 + 0x6C) = value;
-    *(f32 *)((u8 *)arg0 + 0x70) = value;
-    *(f32 *)((u8 *)arg0 + 0x74) = value;
-    *(f32 *)((u8 *)arg0 + 0x78) = value;
-    *(f32 *)((u8 *)arg0 + 0x7C) = value;
-    *(f32 *)((u8 *)arg0 + 0x80) = value;
-    *(f32 *)((u8 *)arg0 + 0x84) = value;
-    *(f32 *)((u8 *)arg0 + 0x88) = value;
-    *(f32 *)((u8 *)arg0 + 0x8C) = value;
-    *(f32 *)((u8 *)arg0 + 0x90) = value;
-    *(f32 *)((u8 *)arg0 + 0x94) = value;
-    *(f32 *)((u8 *)arg0 + 0x98) = value;
-    *(f32 *)((u8 *)arg0 + 0x9C) = value;
-    *(f32 *)((u8 *)arg0 + 0xA0) = value;
-    *(f32 *)((u8 *)arg0 + 0xA4) = value;
-    *(f32 *)((u8 *)arg0 + 0xA8) = value;
-    *(f32 *)((u8 *)arg0 + 0xAC) = value;
-    *(f32 *)((u8 *)arg0 + 0xB0) = value;
-    *(f32 *)((u8 *)arg0 + 0xB4) = value;
-    *(f32 *)((u8 *)arg0 + 0xB8) = value;
-    *(f32 *)((u8 *)arg0 + 0xBC) = value;
-    *(f32 *)((u8 *)arg0 + 0xC0) = value;
+    zeroValue = lbl_805622D0;
+    *(f32 *)((u8 *)arg0 + 0x64) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x68) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x6C) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x70) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x74) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x78) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x7C) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x80) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x84) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x88) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x8C) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x90) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x94) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x98) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x9C) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xA0) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xA4) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xA8) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xAC) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xB0) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xB4) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xB8) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xBC) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0xC0) = zeroValue;
 }
 
 extern "C" f64 fn_801E9DDC(void*, f32, f32);
