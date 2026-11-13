@@ -1189,20 +1189,21 @@ void *fn_8024FFF8(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma small_data on
-void *fn_8025007C(s32 arg0) {
-    void *result;
-    void *array;
-    result = fn_801284F8(0x20, lbl_80344378);
-    if (result != 0) {
-        *(void **)result = lbl_80344384;
-        array = fn_8012850C(arg0 * 0x48, &lbl_8055C0E0);
-        *(void **)((u8 *)result + 4) = array;
-        *(s32 *)((u8 *)result + 0xC) = arg0;
-        *(s32 *)((u8 *)result + 8) = 0;
-        *(void **)((u8 *)result + 0x10) = array;
-        fn_801312EC((u8 *)result + 0x14, lbl_80344690);
+void *fn_8025007C(s32 count) {
+    void *list;
+    void *elements;
+    /* Allocate and initialize a chassis list: object storage, per-chassis entries, and event path subobject. */
+    list = fn_801284F8(0x20, lbl_80344378);
+    if (list != 0) {
+        *(void **)list = lbl_80344384;
+        elements = fn_8012850C(count * 0x48, &lbl_8055C0E0);
+        *(void **)((u8 *)list + 4) = elements;
+        *(s32 *)((u8 *)list + 0xC) = count;
+        *(s32 *)((u8 *)list + 8) = 0;
+        *(void **)((u8 *)list + 0x10) = elements;
+        fn_801312EC((u8 *)list + 0x14, lbl_80344690);
     }
-    return result;
+    return list;
 }
 #pragma pop
 void fn_80250108(void *arg0) {
