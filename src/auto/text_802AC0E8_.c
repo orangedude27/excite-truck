@@ -562,21 +562,22 @@ copied:
 #pragma scheduling on
 void fn_802ADFF4(int **arg0,int arg1){unsigned char *p=*(unsigned char **)*arg0+arg1*0x74;if(p[0x68]==0){p[0x68]=1;p[0x69]=0;*(float *)(p+0x6c)=lbl_8055E3C8;}}
 
-void fn_802AE02C(void *arg0, int arg1) {
-    char **p;
-    char *base;
+/* Pause an animation entry by index, recording its pause time; warn and mark it running if it was not already started. */
+void fn_802AE02C(void *manager, int animIndex) {
+    char **entriesHolder;
+    char *entriesBase;
     unsigned char *entry;
-    p = *(char ***)arg0;
-    base = *p;
-    entry = (unsigned char *)base + arg1 * 0x74;
+    entriesHolder = *(char ***)manager;
+    entriesBase = *entriesHolder;
+    entry = (unsigned char *)entriesBase + animIndex * 0x74;
     if (!entry[0x69]) {
         if (!entry[0x68]) {
-            fn_802E30C8(lbl_80349FB0, arg1, arg1);
+            fn_802E30C8(lbl_80349FB0, animIndex, animIndex);
             entry[0x68] = 1;
-            *(float *)(entry + 0x6c) = *(float *)((char *)arg0 + 4);
+            *(float *)(entry + 0x6c) = *(float *)((char *)manager + 4);
         }
         entry[0x69] = 1;
-        *(float *)(entry + 0x70) = *(float *)((char *)arg0 + 4);
+        *(float *)(entry + 0x70) = *(float *)((char *)manager + 4);
     }
 }
 
