@@ -190,7 +190,8 @@ extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
     return (u8)var_r0;
 }
 
-extern "C" s32 fn_80145140(void *arg0, const char *arg1) {
+extern "C" s32 fn_80145140(void *container, const char *name) {
+    // Count items in a virtual container whose virtual name string matches `name` (case-insensitive).
     struct Container {
         virtual void *v0(s32);
         virtual void *v1(s32);
@@ -201,14 +202,16 @@ extern "C" s32 fn_80145140(void *arg0, const char *arg1) {
     s32 count = 0;
     s32 index = 0;
     Item *item;
+
 loop:
-    item = (Item *)((Container *)arg0)->v1(index);
+    item = (Item *)((Container *)container)->v1(index);
     if (item == 0)
         goto done;
-    if (stricmp(item->v0(), arg1) == 0)
+    if (stricmp(item->v0(), name) == 0)
         count++;
     index++;
     goto loop;
+
 done:
     return count;
 }
