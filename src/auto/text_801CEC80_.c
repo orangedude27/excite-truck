@@ -108,7 +108,7 @@ outer_body:
         *(float *)(var_r28 + 4) = *(float *)(var_r29 + 4);
         *(float *)(var_r28 + 0x10) = *(float *)(var_r29 + 8);
         if (temp_r3 >= 0) {
-            temp_r3 = (int)fn_8017960C();
+            temp_r3 = (int)fn_8017960C(temp_r3);
             *(float *)(var_r28 + 8) = *(float *)((char *)temp_r3 + 0x2690);
             *(float *)(var_r28 + 0xc) = *(float *)((char *)temp_r3 + 0x2694);
             *(int *)(var_r28 + 0x14) = *(int *)((char *)temp_r3 + 0x268c);
