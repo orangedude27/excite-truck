@@ -48,22 +48,35 @@ typedef struct CachedMessage {
 } CachedMessage;
 
 /* Crush-mode round state, embedded in the "crushmaster" object (fn_80172C28)
-   at +0x1AC and built by fn_8017353C. */
+   at +0x1AC and built by fn_8017353C.  The ten text cells are the results
+   overlay's fields; fn_8017272C refills them every frame and fn_80173ACC
+   writes the last three. */
 typedef struct CrushRoundState {
     int state;                  /* +0x00: 0 idle, 1 running, 2 ended, 4 scored */
     float time;                 /* +0x04: game time the round began, -1.0 unused */
     unsigned char active;       /* +0x08 */
-    unsigned char flag9;        /* +0x09 */
+    unsigned char flag9;        /* +0x09: resume the results animation */
     char padA[2];
     void **animPlayer;          /* +0x0C: DSA player holding the round's cues */
-    unsigned char flag10;       /* +0x10 */
+    unsigned char flag10;       /* +0x10: hide the time-bonus text */
     char pad11[3];
     Sound *sound14; Sound *sound18; Sound *sound1C;
     unsigned char flag20;       /* +0x20 */
     char pad21[3];
     Sound *sound24; Sound *sound28; Sound *sound2C;
-    char pad30[0xF8 - 0x30];    /* +0x30: overlay text fields and counters */
-    int counters[4];            /* +0xF8 */
+    char bonusText[0x14];       /* +0x30: bonus score, comma grouped */
+    char countText[0x14];       /* +0x44: time bonus counting up, "%d" */
+    char captionText[0x14];     /* +0x58: ResultsOverlay:TIME_BONUS_CAPS */
+    char totalText[0x14];       /* +0x6C: total score, comma grouped */
+    char rankText[0xA];         /* +0x80: grade letter, "-" when unranked */
+    char scoreText[0x14];       /* +0x8A: score without the time bonus */
+    char timeText[0x14];        /* +0x9E: time bonus left, as a clock */
+    char textB2[0x14];          /* +0xB2 */
+    char textC6[0x14];          /* +0xC6 */
+    char textDA[0x14];          /* +0xDA: non-empty picks sound2C over sound28 */
+    char padEE[6];
+    int animIndex;              /* +0xF4: the round's cue in the animation player */
+    int counters[4];            /* +0xF8: cue flags: abort, step, pause, finish */
 } CrushRoundState;
 extern double fn_8002F234(float), cos(double), sin(double);
 extern float fn_80129DC4(int,float,float);
