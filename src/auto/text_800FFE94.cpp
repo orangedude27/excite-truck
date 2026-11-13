@@ -452,6 +452,7 @@ extern "C" float lbl_80561124;
 extern "C" char lbl_80327994[];
 extern "C" char lbl_803279CC[];
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_80100BF4(void* arg0, int arg1, float arg2) {
+    /* Set this sequence player's FX send level for an aux bus, with interrupt-safe update. */
     int valid = arg1 >= 0 && arg1 < 4;
     if (!valid) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x157, lbl_803279CC, arg1, 0, 4);
