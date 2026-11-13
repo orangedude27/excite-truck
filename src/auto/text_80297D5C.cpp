@@ -276,8 +276,9 @@ extern "C" void fn_802980A0(void) {
     }
 
 extern "C" void fn_80298160(void) {
-    float value = fn_801E7E24();
-    if (!((float)__fabs((double)value) <= lbl_80558DC4)) {
+    /* Run per-frame updates for several global subsystems when the global time delta is non-zero. */
+    float timeDelta = fn_801E7E24();
+    if (!((float)__fabs((double)timeDelta) <= lbl_80558DC4)) {
         fn_80298B48(lbl_8055F7C8);
         fn_8029BDC4(lbl_8055F7DC);
         if (lbl_8055F7C4 != 0) fn_80299544(lbl_8055F7C4);
