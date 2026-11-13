@@ -506,6 +506,14 @@ extern int fn_80009C84(void);
 extern void fn_801CB5DC(int, int, int);
 extern void fn_801CB648(int, int, float);
 #pragma scheduling invalid_target
+/* Refresh the crush-mode results overlay and step the round's results
+   animation.  Every text cell of the overlay is rebuilt here: the bonus score,
+   the time bonus counting up over the second after the round began, the
+   ResultsOverlay:TIME_BONUS_CAPS caption beside the time still to be added,
+   the total score, the score without the time bonus and the grade that total
+   earns ("-" when it earns none).  The round then walks its animation cue -
+   start, pause, resume, pause again - asking the round's sounds to play as it
+   goes, and the animation player is advanced at the end. */
 void fn_8017272C(CrushRoundState *round, int totalScore, int bonusScore, int timeBonus, int scale) {
     extern void fn_802ADFF4(void *, int);  /* ArtAnimManager::StartAnim(manager, cue) */
     extern void fn_802AE02C(void *, int);  /* ArtAnimManager::PauseAnim(manager, cue) */
