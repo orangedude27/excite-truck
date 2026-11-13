@@ -1932,29 +1932,30 @@ loop_check:
 }
 
 #pragma cplusplus off
-void *fn_80163658(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            if ((u32)arg0 + 0xE0 != 0) {
-                if ((u32)arg0 + 0xE0 != 0) {
-                    ((s32 *)arg0)[56] = 0;
-                    ((s32 *)arg0)[57] = 0;
-                    ((s32 *)arg0)[58] = 0;
+/* Destroys/clears two embedded subobjects at offsets 0xE0 and 0x34 and optionally finalizes. */
+void *fn_80163658(void *obj, s32 freeFlag) {
+    if (obj != 0) {
+        if (obj != 0) {
+            if ((u32)obj + 0xE0 != 0) {
+                if ((u32)obj + 0xE0 != 0) {
+                    ((s32 *)obj)[56] = 0;
+                    ((s32 *)obj)[57] = 0;
+                    ((s32 *)obj)[58] = 0;
                 }
             }
-            if (arg0 != 0) {
-                if ((u32)arg0 + 0x34 != 0) {
-                    if ((u32)arg0 + 0x34 != 0) {
-                        ((s32 *)arg0)[13] = 0;
-                        ((s32 *)arg0)[14] = 0;
-                        ((s32 *)arg0)[15] = 0;
+            if (obj != 0) {
+                if ((u32)obj + 0x34 != 0) {
+                    if ((u32)obj + 0x34 != 0) {
+                        ((s32 *)obj)[13] = 0;
+                        ((s32 *)obj)[14] = 0;
+                        ((s32 *)obj)[15] = 0;
                     }
                 }
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (freeFlag > 0) fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 #pragma cplusplus on
