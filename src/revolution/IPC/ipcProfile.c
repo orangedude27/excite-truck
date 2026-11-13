@@ -36,6 +36,7 @@ void IPCiProfAck(void) {
     IpcNumUnIssuedReqs--;
 }
 
+/* A reply reached the application: stop counting the request as in flight and free its tracking slot. */
 void IPCiProfReply(IPCRequestEx* req, s32 fd) {
     IpcNumPendingReqs--;
     DelReqInfo(req, fd);
