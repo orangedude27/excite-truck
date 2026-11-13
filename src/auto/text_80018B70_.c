@@ -476,16 +476,18 @@ found:
     fn_80131234(strings + 0xE4);
 }
 #pragma pop
+/* Returns 1 when no "CAR" unlockable entry is currently blocking; returns 0 if
+ * a "CAR" entry exists whose requirement is met and not restricted. */
 s32 fn_80019438(void) {
-    s32 i = 0;
-    while (i < fn_80019088()) {
-        void *entry = fn_80019054(i);
-        if (stricmp(*(const char **)entry, lbl_80558C54) == 0) {
-            if (fn_80019098(((s32 *)entry)[1]) != 0 && fn_80019144(((s32 *)entry)[1]) == 0) {
+    s32 index = 0;
+    while (index < fn_80019088()) {
+        void *unlockableEntry = fn_80019054(index);
+        if (stricmp(*(const char **)unlockableEntry, lbl_80558C54) == 0) {
+            if (fn_80019098(((s32 *)unlockableEntry)[1]) != 0 && fn_80019144(((s32 *)unlockableEntry)[1]) == 0) {
                 return 0;
             }
         }
-        i++;
+        index++;
     }
     return 1;
 }
