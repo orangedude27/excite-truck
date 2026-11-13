@@ -106,6 +106,23 @@ static volatile union {
 #define GX_BP_LOAD_REG(data) \
     WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG; \
     WGPIPE.i = (data)
+#define GX_FIFO_CMD_NOOP 0x00
+#define GX_FIFO_CMD_LOAD_CP_REG 0x08
+#define GX_CP_LOAD_REG(addr, data) \
+    WGPIPE.c = GX_FIFO_CMD_LOAD_CP_REG; \
+    WGPIPE.c = (addr); \
+    WGPIPE.i = (data)
+
+// CP vertex attribute format registers, one per group, the eight vertex
+// formats addressed by the low bits (include/revolution/GX/GXHardwareCP.h)
+#define GX_CP_REG_VAT_GROUP0 0x70 // position
+#define GX_CP_REG_VAT_GROUP1 0x80 // normal
+#define GX_CP_REG_VAT_GROUP2 0x90 // colour and texture coordinates
+
+// GXData's vertex attribute table: vatA/vatB/vatC hold one register word per
+// vertex format at 0x1C, 0x3C and 0x5C, and 0x5FB is the byte of dirty bits.
+#define GX_VAT_DIRTY(base) (*(unsigned char *)((char *)(base) + 0x5FB))
+#define GX_VAT_WORD(ptr, off) ((ptr)[(off) / sizeof(unsigned int)])
 
 typedef struct {
     unsigned short unused0 : 11;
@@ -3930,8 +3947,8 @@ void __GXSetTmemConfig(s32 arg0) {
     volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
     if (arg0 == 1) goto case1;
-    if (arg0 >= 1) goto compare3;
-    goto default_case;
+    if (arg0 < 1) goto default_case;
+    goto compare3;
 compare3:
     if (arg0 >= 3) goto default_case;
     *fifo8 = 0x61;
@@ -5314,11 +5331,11 @@ void GXSetGPMetric(unsigned int metric1, unsigned int metric2) {
     if (old1 == 0x22) goto doA;
     if (old1 >= 0x22) goto end1;
     if (old1 >= 0xB) goto checkB1;
-    if (old1 >= 0) goto doA;
-    goto end1;
+    if (old1 < 0) goto end1;
+    goto doA;
 checkB1:
-    if (old1 >= 0x1B) goto doB2;
-    goto doB1;
+    if (old1 < 0x1B) goto doB1;
+    goto doB2;
 doA:
     WGPIPE.c = 0x10;
     WGPIPE.i = 0x1006;
@@ -5337,11 +5354,11 @@ end1:;
         if (old2 == 0x15) goto doC;
         if (old2 >= 0x15) goto end2;
         if (old2 >= 9) goto checkD;
-        if (old2 >= 0) goto doC;
-        goto end2;
+        if (old2 < 0) goto end2;
+        goto doC;
 checkD:
-        if (old2 >= 0x11) goto doCP;
-        goto doD;
+        if (old2 < 0x11) goto doD;
+        goto doCP;
 doC:
         WGPIPE.c = 0x61;
         WGPIPE.i = 0x67000000;
