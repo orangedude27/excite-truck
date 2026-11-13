@@ -4412,7 +4412,9 @@ static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     void *sound;
     void *it;
     void *pos;
-    u32 irq = OSDisableInterrupts();
+    struct { u32 old; } lock;
+    u32 &irq = lock.old;
+    lock.old = OSDisableInterrupts();
     void *mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(pool);
     if (mem != 0) {
         sound = mem;
