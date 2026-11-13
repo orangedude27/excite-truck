@@ -1894,7 +1894,7 @@ extern u8 lbl_80393058[];
 extern void fn_80069FE8(void);
 extern void fn_8006A300(void);
 extern u8 fn_8006A1DC(void);
-extern void fn_8006BAD8(void);
+extern void fn_8006BAD8(u32, u8 *);
 extern s32 SCCheckStatus(void);
 extern s32 BTA_EnableBluetooth(void *);
 extern s32 SCSetBtDeviceInfoArray(void *);
