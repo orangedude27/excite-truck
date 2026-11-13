@@ -2918,6 +2918,11 @@ extern "C" void fn_80284760(void *arg0) {
     }
 }
 
+void fn_802849E8(void *arg0) {
+    if (*(unsigned char *)((char *)arg0 + 0x64) != 0) return;
+    *(int *)((char *)arg0 + 0x24) = *(int *)((char *)arg0 + 0x20);
+}
+
 #pragma scheduling reset
 #pragma pop
 
@@ -3168,6 +3173,8 @@ void fn_802857A8(void *arg0) {
     }
 }
 #pragma pop
+extern "C" int fn_80214AF0(int);
+extern "C" int fn_80214A9C(int);
 extern "C" void fn_80286724(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v1();
 }
