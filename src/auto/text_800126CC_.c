@@ -16,6 +16,8 @@ extern int lbl_8055D514;
 extern int lbl_80558AD8;
 extern int lbl_8055D508;
 extern void *lbl_8055D504;
+extern char lbl_80351828[];
+extern void qsort(void *, int, int, void *);
 extern int lbl_8055D518;
 extern char lbl_8055D500;
 extern char lbl_803518C0[];
