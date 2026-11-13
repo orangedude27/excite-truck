@@ -686,7 +686,8 @@ extern float lbl_8055D020;
 extern double lbl_80563C38;
 extern float fn_801EA0E8(float, float);
 #pragma push
-#pragma ppc_psq_save off
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802671CC(void *arg0, int arg1) {
     union IntDouble {
         double value;
@@ -766,7 +767,6 @@ void fn_802671CC(void *arg0, int arg1) {
     (void)arg1;
 }
 #pragma pop
-#pragma dont_inline reset
 
 extern int fn_8026A554(int *);
 #pragma push
@@ -915,38 +915,24 @@ void fn_80267680(void) {
     extern void fn_80209190(int, float);
     extern void fn_80268B94(int);
     extern void fn_80270484(void);
-    struct StackData {
-        float matrix[12];
-        union { double d; unsigned int word[2]; } value;
-    };
     char *p;
-    volatile struct StackData temp;
-    unsigned int high;
-    int oneInt, minusOne, zeroInt, i;
+    volatile float matrix[12];
+    int i;
     float bottom, limit;
-    double conversionConstant;
     float start, angle, one, zero;
     fn_802733C8();
     zero = lbl_80563C20;
     one = lbl_80563C2C;
     p = lbl_80499080;
     angle = lbl_80563C54;
-    i = 0;
     start = lbl_80563C58;
-    conversionConstant = lbl_80563C38;
-    zeroInt = 0;
-    limit = lbl_80563C5C;
-    minusOne = -1;
-    bottom = lbl_80563C60;
-    oneInt = 1;
-    high = 0x43300000;
-    do {
+    for (i = 0; i < 4; i++) {
         *(float *)(p + 8) = zero;
         *(float *)(p + 0xC) = zero;
-        *(int *)(p + 0x144) = zeroInt;
-        *(int *)(p + 0xB8) = minusOne;
-        *(unsigned char *)(p + 0x138) = (unsigned char)oneInt;
-        *(unsigned char *)(p + 0x139) = (unsigned char)oneInt;
+        *(int *)(p + 0x144) = 0;
+        *(int *)(p + 0xB8) = -1;
+        *(unsigned char *)(p + 0x138) = 1;
+        *(unsigned char *)(p + 0x139) = 1;
         *(float *)(p + 0x13C) = zero;
         *(float *)(p + 0x40) = zero;
         *(float *)(p + 0x44) = zero;
@@ -954,36 +940,35 @@ void fn_80267680(void) {
         *(float *)(p + 0x28) = zero;
         *(float *)(p + 0x2C) = one;
         *(float *)(p + 0x30) = zero;
-        *(int *)(p + 0x148) = zeroInt;
+        *(int *)(p + 0x148) = 0;
         *(float *)(p + 0x194) = angle;
         fn_80265E08(p + 0x160);
         fn_80266150(p + 0x178);
-        temp.value.word[0] = high;
-        temp.value.word[1] = ((unsigned int)i) ^ 0x80000000;
         *(float *)(p + 0x158) = start;
-        *(float *)(p + 0x15C) = temp.value.d - conversionConstant;
+        *(float *)(p + 0x15C) = (float)i;
+        limit = lbl_80563C5C;
+        bottom = lbl_80563C60;
         *(float *)(p + 0x198) = zero;
         *(float *)(p + 0x19C) = zero;
-        *(int *)(p + 0x14C) = minusOne;
-        *(int *)(p + 0x150) = minusOne;
+        *(int *)(p + 0x14C) = -1;
+        *(int *)(p + 0x150) = -1;
         if (fn_801796B4() == 0) {
-            temp.matrix[0] = one;
-            temp.matrix[1] = zero;
-            temp.matrix[2] = zero;
-            temp.matrix[3] = zero;
-            temp.matrix[4] = one;
-            temp.matrix[5] = zero;
-            temp.matrix[6] = zero;
-            temp.matrix[7] = zero;
-            temp.matrix[8] = one;
-            temp.matrix[9] = zero;
-            temp.matrix[10] = zero;
-            temp.matrix[11] = zero;
+            matrix[0] = one;
+            matrix[1] = zero;
+            matrix[2] = zero;
+            matrix[3] = zero;
+            matrix[4] = one;
+            matrix[5] = zero;
+            matrix[6] = zero;
+            matrix[7] = zero;
+            matrix[8] = one;
+            matrix[9] = zero;
+            matrix[10] = zero;
+            matrix[11] = zero;
             fn_80276BE4((int)(p + 0x1A4), (int)(p + 0x1D4));
         }
         fn_801E9DC4((int *)(p + 0x1EC));
         *(float *)(p + 0x1F8) = one;
-        ++i;
         *(float *)(p + 0x1FC) = zero;
         *(float *)(p + 0x200) = zero;
         *(float *)(p + 0x204) = zero;
@@ -998,7 +983,7 @@ void fn_80267680(void) {
         *(float *)(p + 0x1F4) = limit;
         *(float *)(p + 0x1F0) = bottom;
         p += 0x228;
-    } while (i < 4);
+    }
     lbl_8055F488 = 0;
     lbl_8055F48C = lbl_80563C64;
     fn_80209190(lbl_8055F494, lbl_80563C2C);
@@ -1164,21 +1149,23 @@ void fn_802678E8(void *arg0, int arg1) {
 }
 #pragma push
 #pragma processor 750
-void fn_80267E40(unsigned int arg0, float arg1) {
-    float temp_f31;
-    float temp_f30;
-    float temp_f29;
-    int i;
-    void *p;
-    temp_f29 = lbl_8055E3C8;
-    temp_f30 = lbl_80563C6C;
-    temp_f31 = lbl_80563C2C;
-    for (i = 0; i < 4; i++) {
-        p = fn_80267EE4(i);
-        if (*(unsigned int *)((char *)p + 0x140) == arg0) {
-            if (arg1 > *(float *)((char *)p + 0x154) * (temp_f31 - ((temp_f29 - *(float *)((char *)p + 0x158)) / temp_f30))) {
-                *(float *)((char *)p + 0x158) = temp_f29;
-                *(float *)((char *)p + 0x154) = arg1;
+void fn_80267E40(unsigned int targetId, float value) {
+    /* Update a matching slot's stored value/timestamp if the new value beats its time-decayed threshold. */
+    float decayBase;
+    float decayWindow;
+    float currentTime;
+    int index;
+    void *slot;
+
+    currentTime = lbl_8055E3C8;
+    decayWindow = lbl_80563C6C;
+    decayBase = lbl_80563C2C;
+    for (index = 0; index < 4; index++) {
+        slot = fn_80267EE4(index);
+        if (*(unsigned int *)((char *)slot + 0x140) == targetId) {
+            if (value > *(float *)((char *)slot + 0x154) * (decayBase - ((currentTime - *(float *)((char *)slot + 0x158)) / decayWindow))) {
+                *(float *)((char *)slot + 0x158) = currentTime;
+                *(float *)((char *)slot + 0x154) = value;
                 return;
             }
         }
