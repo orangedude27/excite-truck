@@ -388,6 +388,9 @@ int fn_80176F9C(void) {
     return v != 0 && v != 3;
 }
 #pragma scheduling on
+/* Request the AX DSP fade/init transition: if already in state 3 run the completion
+ * callback immediately, otherwise arm state 2 with the pending callback and timing
+ * fields, trigger DSP init, then run the common update step. */
 void fn_80176FC4(void) {
     if (*(s32 *)(lbl_80430558 + 0xC) == 3) {
         fn_80176F28();
@@ -516,7 +519,7 @@ void fn_801771A8(void) {
 
 s32 fn_801773E4(void) {
     f32 f;
-    s32 d, t, v, q, cur, cnt;
+    s32 d, t, v, q, cur;
     u8 r;
     if (*(u32 *)(lbl_80430558 + 0xC) - 1 <= 1U) {
         if (fn_802ECC10() != 0) {
@@ -538,33 +541,32 @@ s32 fn_801773E4(void) {
             }
             f = (f > lbl_80561B30) ? f : lbl_80561B30;
             q = (s32)(lbl_80561B40 / f);
-            cnt = lbl_8055E3C4;
-            d = cnt - *(s32 *)lbl_80430558;
-            n = 2;
+            d = lbl_8055E3C4 - *(s32 *)lbl_80430558;
             cur = lbl_80430558[0x14];
-            if (d <= 2) {
+            n = 2;
+            if (2 >= d) {
                 n = d;
             }
             t = cur + ((n << 8) - n) / q;
             t = t & ((-t & ~t) >> 31);
             v = 0xFF;
-            if (t < 0xFF) {
+            if (0xFF > t) {
                 v = t;
             }
-            *(s32 *)lbl_80430558 = cnt;
             lbl_80430558[0x14] = v;
+            *(s32 *)lbl_80430558 = lbl_8055E3C4;
         } else {
-            s32 now = fn_802E2C20();
+            unsigned int now = fn_802E2C20();
             s32 n = 0x21;
+            int cur2 = lbl_80430558[0x14];
             d = now - *(s32 *)(lbl_80430558 + 4);
-            cur = lbl_80430558[0x14];
             if (d <= 0x21) {
                 n = d;
             }
-            t = cur + ((n << 8) - n) / 750;
+            t = cur2 + ((n << 8) - n) / 750;
             t = t & ((-t & ~t) >> 31);
             v = 0xFF;
-            if (t < 0xFF) {
+            if (0xFF > t) {
                 v = t;
             }
             lbl_80430558[0x14] = v;
