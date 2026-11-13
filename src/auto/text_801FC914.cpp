@@ -912,29 +912,30 @@ extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
 #pragma cplusplus on
 #pragma pop
 
-extern "C" void fn_801FE3B8(void *arg0, void *arg1) {
+/* Append a source entry (at arg1+0x2C) into arg0's list at +0x34 (max 6), storing computed value. */
+extern "C" void fn_801FE3B8(void *container, void *arg1) {
     char *source = (char *)arg1 + 0x2C;
-    char *item;
+    char *entry;
     int count;
     float first;
     float second;
-    float result;
+    float value;
 
-    count = *(int *)((char *)arg0 + 0x34);
+    count = *(int *)((char *)container + 0x34);
     if (count >= 6) {
         fn_802E317C(lbl_8033B638, 6);
     }
-    count = *(int *)((char *)arg0 + 0x34);
+    count = *(int *)((char *)container + 0x34);
     first = *(float *)(source + 0x314);
-    item = (char *)arg0 + count * 8;
+    entry = (char *)container + count * 8;
     second = *(float *)(source + 0x318);
-    *(char **)(item + 4) = source;
-    result = fn_80129DC4(0, item, first, second);
-    count = *(int *)((char *)arg0 + 0x34);
-    item = (char *)arg0 + count * 8;
-    *(float *)(item + 8) = result;
-    count = *(int *)((char *)arg0 + 0x34);
-    *(int *)((char *)arg0 + 0x34) = count + 1;
+    *(char **)(entry + 4) = source;
+    value = fn_80129DC4(0, entry, first, second);
+    count = *(int *)((char *)container + 0x34);
+    entry = (char *)container + count * 8;
+    *(float *)(entry + 8) = value;
+    count = *(int *)((char *)container + 0x34);
+    *(int *)((char *)container + 0x34) = count + 1;
 }
 
 extern "C" void fn_801FEB58(void*);
