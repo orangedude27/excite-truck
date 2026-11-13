@@ -1732,26 +1732,27 @@ extern "C" void fn_801B2910(void) {
 #pragma cplusplus off
 #pragma use_lmw_stmw reset
 #pragma dont_inline reset
-void fn_801B2BE8(void *arg0) {
+/* Resets this object state block and notifies its resource/owner handlers. */
+void fn_801B2BE8(void *obj) {
     s32 increment;
     f32 initial;
     s32 resource;
 
-    memset((char *)arg0 + 4, 0, 0x38);
-    increment = *(s32 *)((char *)arg0 + 0x6C);
+    memset((char *)obj + 4, 0, 0x38);
+    increment = *(s32 *)((char *)obj + 0x6C);
     initial = lbl_805625BC;
-    *(s32 *)((char *)arg0 + 8) = increment + 1;
-    resource = *(s32 *)((char *)arg0 + 0x5C);
-    *(s32 *)((char *)arg0 + 0x68) = 0;
-    *(f32 *)((char *)arg0 + 0x70) = initial;
-    *(s32 *)((char *)arg0 + 0x74) = 0;
-    *(u8 *)((char *)arg0 + 0x78) = 0;
-    *(u8 *)((char *)arg0 + 0x79) = 0;
-    *(s32 *)((char *)arg0 + 0x7C) = 0;
-    *(s32 *)((char *)arg0 + 0x64) = 0;
+    *(s32 *)((char *)obj + 8) = increment + 1;
+    resource = *(s32 *)((char *)obj + 0x5C);
+    *(s32 *)((char *)obj + 0x68) = 0;
+    *(f32 *)((char *)obj + 0x70) = initial;
+    *(s32 *)((char *)obj + 0x74) = 0;
+    *(u8 *)((char *)obj + 0x78) = 0;
+    *(u8 *)((char *)obj + 0x79) = 0;
+    *(s32 *)((char *)obj + 0x7C) = 0;
+    *(s32 *)((char *)obj + 0x64) = 0;
     fn_8018B0D0(resource, 0);
-    fn_801CB360(*(s32 *)((char *)arg0 + 0x60));
-    *(s32 *)((char *)arg0 + 0x28) = 1;
+    fn_801CB360(*(s32 *)((char *)obj + 0x60));
+    *(s32 *)((char *)obj + 0x28) = 1;
 }
 #pragma scheduling on
 void fn_801B2C6C(void) {
