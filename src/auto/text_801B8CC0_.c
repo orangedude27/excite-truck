@@ -2,10 +2,28 @@
 void fn_801836E0(void *, int);
 void fn_80128668(void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern float lbl_80562750;
 extern float lbl_80562754;
 extern float lbl_80562758;
 extern float lbl_8056275C;
 extern float lbl_80562760;
+extern float lbl_8056277C;
+extern float lbl_80562780;
+extern float lbl_80562784;
+extern float lbl_80562788;
+extern float lbl_8056278C;
+extern float lbl_80562790;
+extern float lbl_80562794;
+extern float lbl_80562798;
+extern float lbl_8056279C;
+extern float lbl_805627A0;
+extern float lbl_805627A4;
+extern char lbl_80336A30[];
+extern void fn_8017B4AC(void *, void *);
+extern void fn_8018ADA4(void *, float);
+extern void fn_801AD394(void *);
+extern void fn_802E30C8(const char *, ...);
+extern long fn_801796CC(long, long, long);
 extern float PSVECDotProduct(const float *, const float *);
 extern void fn_8018381C(void *);
 extern void fn_80189C64(void *, void **);
@@ -207,7 +225,6 @@ extern "C" void fn_801B8E28(int arg0) {
     } w;
     register float temp_f2, temp_f3, temp_f1, temp_f1_2;
     float dot;
-
     fn_80189C64(obj, lbl_80436D28);
     temp_f3 = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
     w.input[0] = temp_f3;
