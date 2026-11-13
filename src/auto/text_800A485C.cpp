@@ -8270,6 +8270,20 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 extern "C" u8 lbl_802EEEE0[];
+static inline s32 Fn800B25CCWide2(u16 *w) {
+    s32 r;
+    if (*w >= 0xFF41U && *w <= 0xFF5AU) {
+        r = 1;
+        *w -= 0x20;
+    } else {
+        r = 0;
+    }
+    if (r == 1) {
+        M2C_FIELD(&lbl_803D2140, void (**)(u16 *, u16 *), 0x4C)(w, w);
+        return 1;
+    }
+    return 0;
+}
 u16 fn_800B25CC(void *arg0, s32 arg1) {
     u8 work[0x14];
     s32 var_r0;
