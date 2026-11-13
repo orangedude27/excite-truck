@@ -77,19 +77,21 @@ char *fn_8013A708(char *arg0, int arg1, int arg2) {
 #pragma pop
 
 #pragma dont_inline fn_8013A708
+#pragma cplusplus on
 int fn_8013A760(unkVtable **arg0, int arg1) {
     char buffer[0x20];
     int i = 0;
-    while (1) {
+    do {
         char *name = ((char *(*)(char *, int, int))fn_8013A708)(buffer, i, arg1);
-        if (((int (*)(unkVtable **, char *))(*arg0)->m_fn)(arg0, name) != 0)
+        void *tbl = *(void **)arg0;
+        int (*slot)(unkVtable **, char *) = *(int (**)(unkVtable **, char *))((char *)tbl + 0xc);
+        if (slot(arg0, name) != 0)
             return 1;
         i++;
-        if (i >= 3)
-            break;
-    }
+    } while (i < 3);
     return 0;
 }
+#pragma cplusplus reset
 #pragma push
 #pragma scheduling invalid_target
 void fn_8013A7E8(unkVtable **arg0, char *arg1, char *arg2) {
@@ -267,7 +269,6 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     int *a;
     int count, n, i, j, k, pairs;
     int *q;
-
     a = fn_801E87A8();
     count = fn_80135108();
     fn_801E879C();
