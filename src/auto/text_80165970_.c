@@ -575,6 +575,8 @@ int fn_801667F0(void) {
     return result;
 }
 
+/* Frees and clears the global resources tracked by lbl_8055E334 and
+ * lbl_8055E32C, releasing any embedded buffer before freeing the object. */
 void fn_80166814(void) {
     int temp_r3;
     void *temp_r31;
