@@ -9,6 +9,8 @@ extern volatile unsigned char lbl_805599E8; /* set until the table is built */
 extern unsigned char lbl_80422F40[];        /* character -> 6-bit value */
 extern signed char lbl_8032AFE0[];          /* the alphabet itself */
 extern int memset(void *, int, unsigned int);
+/* fn_8012F7E0: the 6-bit value of a base64 character, building the reverse of
+ * the alphabet above on the first call. */
 #pragma scheduling invalid_target
 #pragma dont_inline on
 unsigned char fn_8012F7E0(signed char arg0) {
