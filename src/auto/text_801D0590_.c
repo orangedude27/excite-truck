@@ -113,9 +113,10 @@ static inline int DispatchList_Find2(void *obj) {
 
 static inline void DispatchList_RemoveAt2(int index) {
     int last;
+    DispatchList *l = lbl_8043870C;
     if (index < 0) return;
-    if (index >= lbl_8043870C[0].count) return;
-    last = lbl_8043870C[0].count - 1;
+    if (index >= l->count) return;
+    last = l->count - 1;
     if (index != last) {
         void **items = lbl_8043870C[0].items;
         items[index] = items[last];
