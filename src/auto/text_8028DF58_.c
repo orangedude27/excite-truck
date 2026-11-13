@@ -408,13 +408,12 @@ extern "C" void fn_8028E654(void *arg0, void *arg1) {
     extern char lbl_80348CE0[];
     extern int lbl_8055C8F0, lbl_8055C8F8, lbl_8055C900, lbl_8055C908, lbl_8055C910;
     extern float lbl_80564420, lbl_80564424;
-
     Obj *obj = (Obj *)arg1;
     char *base = lbl_80348CE0;
-    float buf[6];
-    float buf2[6];
-    float inA[6];
-    float inB[6];
+    float buf[9];
+    float buf2[9];
+    float inA[9];
+    float inB[9];
     memset(arg0, 0, 0x8C);
     obj->v14((const char *)&lbl_8055C8F0);
     *(int *)arg0 = fn_8028E594();
@@ -524,14 +523,14 @@ extern char lbl_80348F4C[];
   #pragma scheduling invalid_target
   #pragma scheduling on
 int fn_8028EDA8(unsigned int *arg0, unsigned int arg1) {
-    register unsigned int *base = arg0;
-    register long i = 0;
-    register int count = *(unsigned int *)((char *)arg0 + 0x100);
-    for (; i < count; i++) {
-        if (base[i] != arg1)
-            continue;
-        base[i] = 0;
-        return 1;
+    unsigned int *base = arg0;
+    int count = *(int *)((char *)arg0 + 0x100);
+    int i = 0;
+    for (; i < count; base++, i++) {
+        if (*base == arg1) {
+            arg0[i] = 0;
+            return 1;
+        }
     }
     fn_802E317C(lbl_80348F4C);
     return 0;
@@ -1199,7 +1198,7 @@ void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
     float *a6 = (float *)arg1;
     EfEntry2 e6;
     EfEntry2 *d6;
-    int m6;
+    register int m6;
     if (lbl_8055F73C == 0 && lbl_8055F74C == 0) {
         lbl_8055F74C = 1;
         fn_802E30C8(lbl_8055C918, lbl_80349024);
@@ -1329,7 +1328,6 @@ void fn_80290224(void *arg0, void *arg1, int arg2) {
     float one;
     float t, tm, k, alpha, h, nh;
     int r, g, b, a;
-
     {
         float *bb = (float *)fn_802C86DC();
         dsub.x = bb[3] - bb[0];
@@ -1355,8 +1353,7 @@ void fn_80290224(void *arg0, void *arg1, int arg2) {
         float fa, fb, fc, fd;
         unsigned int col;
         t = one - *(float *)(p + 0x18);
-        h = lbl_8056444C * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
-              + lbl_8056444C * *(float *)((char *)arg0 + 0x4c) * (t * t));
+        h = lbl_8056444C * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t + lbl_8056444C * *(float *)((char *)arg0 + 0x4c) * (t * t));
         k = t * *(float *)((char *)arg0 + 0xa0);
         fn_80290160(arg0, &pos, p, t);
         bb = (float *)fn_802C86DC();
@@ -1419,7 +1416,9 @@ void fn_80290224(void *arg0, void *arg1, int arg2) {
 #pragma use_lmw_stmw off
 #pragma scheduling on
 void fn_802908CC(void *arg0, void *arg1, int arg2) {
-    typedef struct { EfMtx3 m; EfVec p; } EfCam;
+    typedef struct { float m[9]; float p[3]; } EfCam;
+    typedef struct { float x; float y; float z; } EfVec;
+    typedef struct { float x; float y; float z; unsigned int color; float u; float v; } EfVtx;
     struct { EfVtx v[32]; short idx[48]; } buf;
     EfVtx q[4];
     EfCam cam;
@@ -1436,7 +1435,6 @@ void fn_802908CC(void *arg0, void *arg1, int arg2) {
     int r, g, b, a;
     int frames, fr, cols, row, col;
     volatile int count;
-
     {
         float *bb = (float *)fn_802C86DC();
         dsub.x = bb[3] - bb[0];
@@ -1467,15 +1465,14 @@ void fn_802908CC(void *arg0, void *arg1, int arg2) {
         frames = *(int *)((char *)arg0 + 0x84);
         t = one - *(float *)(p + 0x18);
         k = t * *(float *)((char *)arg0 + 0xa0);
-        h = half * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
-              + half * *(float *)((char *)arg0 + 0x4c) * (t * t));
+        h = half * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t + half * *(float *)((char *)arg0 + 0x4c) * (t * t));
         fr = (*(unsigned char *)(p + 0x1d) + (int)(k * ((float)frames * *(float *)((char *)arg0 + 0x80)))) % frames;
         fn_80290160(arg0, &pos, p, t);
         bb = (float *)fn_802C86DC();
         cam = *(EfCam *)bb;
-        dir.x = cam.p.x - pos.x;
-        dir.y = cam.p.y - pos.y;
-        dir.z = cam.p.z - pos.z;
+        dir.x = cam.p[0] - pos.x;
+        dir.y = cam.p[1] - pos.y;
+        dir.z = cam.p[2] - pos.z;
         {
             float f0 = *(float *)((char *)arg0 + 0x3c);
             float f1 = *(float *)((char *)arg0 + 0x40);
