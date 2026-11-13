@@ -4404,6 +4404,142 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     fn_8002F634(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
 }
 
+extern "C" void* fn_800F07EC(void*, void*);
+extern "C" void* fn_800F8CA4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void* arg6) {
+    extern const char lbl_8032624C[];
+    extern const char lbl_80326208[];
+    extern const char lbl_803261F0[];
+    extern const char lbl_803261C8[];
+    extern const char lbl_803259E4[];
+    extern const char lbl_803259C0[];
+    extern const char lbl_80324314[];
+    extern const char lbl_803242F0[];
+    extern const char lbl_803259B4[];
+    extern const char lbl_80325990[];
+    extern const char lbl_80324344[];
+    extern const char lbl_80324320[];
+    unsigned char* pool = (unsigned char*)arg6;
+    unsigned char* player = (unsigned char*)arg0;
+    unsigned char* info = (unsigned char*)arg3;
+    s32 tmpBuf[8];
+    void* it;
+    s32 v;
+    s32 prio;
+    s32 base;
+    u32 save;
+    void* snd;
+    void* cur;
+    void* end;
+    void* node;
+    if (pool == 0) return 0;
+    base = 0;
+    if (info != 0) {
+        unsigned char* obj = *(unsigned char**)info;
+        typedef s32 (*Fn)(void*, void*, s32, s32, s32, s32);
+        Fn f = *(Fn*)(*(unsigned char**)obj + 8);
+        f(obj, tmpBuf, (s32)arg5, 0, *(s32*)(info + 0xC), 8);
+        base = tmpBuf[6];
+    }
+    v = (s32)arg2 - base;
+    if (v > 0x7F) prio = 0x7F;
+    else prio = v & ~(v >> 31);
+    if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void*)arg0, (int)prio, (void*)arg4) == 0) return 0;
+    if (!(prio >= 0 && prio <= 0x7F)) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8032624C, 0x5C, lbl_80326208, prio, 0, 0x7F);
+    save = OSDisableInterrupts();
+    snd = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(pool);
+    if (snd != 0) {
+        snd = fn_800F07EC(snd, pool);
+        goto alloc_done;
+    }
+    if (*(s32*)(pool + 4) == 0) {
+        OSRestoreInterrupts(save);
+        snd = 0;
+    } else {
+        cur = *(void**)(pool + 8);
+        if (cur == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324314, 0x23D, lbl_803242F0);
+        node = (unsigned char*)cur - 0xB8;
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803259B4, 0x193, lbl_80325990);
+        if (node == 0) {
+            OSRestoreInterrupts(save);
+            snd = 0;
+        } else {
+            s32 q = *(unsigned char*)((unsigned char*)node + 0x74) + *(s32*)((unsigned char*)node + 0x40);
+            s32 qc = (q > 0x7F) ? 0x7F : (q & ~(q >> 31));
+            if (prio < qc) {
+                OSRestoreInterrupts(save);
+                snd = 0;
+            } else {
+                typedef void (*G)(void*, s32);
+                G g = *(G*)(*(unsigned char**)node + 0x18);
+                g(node, 0);
+                snd = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(pool);
+                if (snd == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803261F0, 0x72, lbl_803261C8);
+                if (snd != 0) snd = fn_800F07EC(snd, pool);
+alloc_done:
+                cur = *(void**)(pool + 8);
+                end = pool + 8;
+                while (cur != end) {
+                    if (cur == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324314, 0x23D, lbl_803242F0);
+                    s32 r = *(unsigned char*)((unsigned char*)cur - 0x44) + *(s32*)((unsigned char*)cur - 0x78);
+                    s32 rc = (r > 0x7F) ? 0x7F : (r & ~(r >> 31));
+                    if (prio < rc) break;
+                    cur = *(void**)cur;
+                }
+                if (snd == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
+                it = cur;
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(pool + 4, &it, (unsigned char*)snd + 0xB8);
+                OSRestoreInterrupts(save);
+            }
+        }
+    }
+    if (snd == 0) return 0;
+    if (*(s32*)(player + 0x18) != 0) {
+        cur = *(void**)(player + 0x1C);
+        if (cur == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325DE4, 0x23D, lbl_80325DC0);
+        node = (unsigned char*)cur - 0x2C;
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E14, 0x193, lbl_80325DF0);
+        v = *(s32*)(player + 0x1C);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(player + 0x18, &v);
+        *(void**)((unsigned char*)node + 0x34) = snd;
+        *(void**)((unsigned char*)snd + 4) = node;
+        OSLockMutex((unsigned char*)node + 4);
+        fn_800EC1A4((unsigned char*)node + 0x1C);
+        OSUnlockMutex((unsigned char*)node + 4);
+    }
+    if (info != 0) {
+        unsigned char* a = *(unsigned char**)(info + 8);
+        typedef s32 (*H)(void*, s32);
+        H h = *(H*)(*(unsigned char**)a + 8);
+        s32 hv = h(a, *(s32*)(info + 0x10));
+        if (hv != 0) {
+            memcpy((void*)(*(s32*)(info + 0xC)), (void*)(*(s32*)(info + 0x10)), (u32)hv);
+            fn_800E9B74(snd, *(void**)info, *(s32*)(info + 4), *(void**)(info + 8), hv);
+        }
+    }
+    *(unsigned char*)((unsigned char*)snd + 0x74) = (unsigned char)arg1;
+    *(s32*)((unsigned char*)snd + 0x40) = base;
+    if (snd == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803262B8, 0x233, (const char*)lbl_80326294);
+    it = player + 4;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(player, &it, (unsigned char*)snd + 0xC0);
+    *(void**)((unsigned char*)snd + 0x10) = player;
+    if (arg4 != 0) InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound((void*)arg4, snd);
+    cur = *(void**)(player + 0x10);
+    end = player + 0x10;
+    while (cur != end) {
+        if (cur == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326348, 0x23D, (const char*)lbl_80326324);
+        s32 r2 = *(unsigned char*)((unsigned char*)cur - 0x54) + *(s32*)((unsigned char*)cur - 0x88);
+        s32 c2 = (r2 > 0x7F) ? 0x7F : (r2 & ~(r2 >> 31));
+        s32 s2 = *(unsigned char*)((unsigned char*)snd + 0x74) + *(s32*)((unsigned char*)snd + 0x40);
+        s32 sc2 = (s2 > 0x7F) ? 0x7F : (s2 & ~(s2 >> 31));
+        if (sc2 < c2) break;
+        cur = *(void**)cur;
+    }
+    if (snd == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326288, 0x233, (const char*)lbl_80326264);
+    it = cur;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator(player + 0xC, &it, (unsigned char*)snd + 0xC8);
+    return snd;
+}
+
 /* SoundInstanceManager::Alloc(priority): take a free sound from the pool, or evict the
    lowest-priority active one (the list is sorted, front = lowest); inlined into fn_800F9200. */
 #pragma push
@@ -6112,6 +6248,13 @@ extern "C" const char lbl_8032687C[];
 #pragma push
 #pragma small_data off
 extern "C" u8 lbl_8041506C[];
+/* ut::LinkList<StrmPlayer, 8>::GetPointerFromNode */
+static inline void *StrmPlayer_FromNode(void *node) {
+    if (node == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326B8C, 0x23D, (const char *)lbl_80326B68);
+    }
+    return (u8 *)node - 8;
+}
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
