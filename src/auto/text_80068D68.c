@@ -11372,6 +11372,16 @@ void bta_dm_discover(void *data) {
 #define DM_MSG_BD_NAME(p)                       ((u8 *)(p) + 0xE)
 #define BTA_DM_MSG_SIZE                         0x110
 
+/* Past the message's bd_name, the discovery result carries the services found
+ * and how the discovery went (tBTA_STATUS, SDK bta_api.h). */
+#define DM_MSG_SERVICES(p)                      (*(u32 *)((u8 *)(p) + 0x108))
+#define DM_MSG_STATUS(p)                        (((u8 *)(p))[0x10C])
+
+#ifndef BTA_SUCCESS
+#define BTA_SUCCESS                             0
+#define BTA_FAILURE                             1
+#endif
+
 /* tBTA_DM_MSG events: the DM search state machine's events.  They are numbered
  * from BTA_SYS_EVT_START(BTA_ID_DM_SEARCH) = 0x200: bta_dm_search_sm_execute()
  * indexes its state tables with event & 0xFF, and the idle state's first row is
