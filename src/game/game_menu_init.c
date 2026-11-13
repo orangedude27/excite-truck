@@ -479,19 +479,20 @@ void fn_80005364(void) {
 #pragma push
 #pragma use_lmw_stmw off
 int fn_80005044(int* eventIndex, int* subIndex, const char* name) {
-    int result = 0;
+    /* Find an event by the name at +8 in its record; return 1 and set outputs if found. */
+    int found = 0;
     int i;
 
     for (i = 0; i < fn_80012818(); i++) {
-        u8* event = fn_80012820(i);
-        if (stricmp(name, (const char*)(event + 8)) == 0) {
+        u8* eventRecord = fn_80012820(i);
+        if (stricmp(name, (const char*)(eventRecord + 8)) == 0) {
             *eventIndex = i;
             *subIndex = 0;
-            result = 1;
+            found = 1;
             break;
         }
     }
-    return result;
+    return found;
 }
 
 #pragma pop
