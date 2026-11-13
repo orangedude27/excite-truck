@@ -1,7 +1,25 @@
   // Code of main that had no source file yet: decomp.wtf gave it this one.
   // split_file divides it into the game's real files (file_status shows its range).
   
-  typedef signed int s32;
+      typedef signed int s32;
+
+/* One row of the configurable-control table at lbl_802FA190 (17 rows): the name of a
+   control action ("steer_left", "throttle", "e_brake", ...) and the input binding it
+   gets back when the control defaults are restored ("Joy Left", "Button 1", "" = none). */
+typedef struct DefaultControl {
+    char *name;
+    char *binding;
+} DefaultControl;
+#define NUM_DEFAULT_CONTROLS 0x11
+
+/* One row of the control list at lbl_802FA0A8 (0x1D rows), which get_control_info
+   (fn_8023DC38) searches by name; see the "get_control_info: %s was not found in
+   all_controls." check there. */
+typedef struct ControlInfo {
+    int unk0;
+    char *name;
+} ControlInfo;
+
 extern void fn_8013358C(int, int, void *);
 extern void fn_801A7974(const char *, int, int);
 extern int lbl_8055BC08;
