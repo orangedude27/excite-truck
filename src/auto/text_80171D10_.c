@@ -506,232 +506,235 @@ extern int fn_80009C84(void);
 extern void fn_801CB5DC(int, int, int);
 extern void fn_801CB648(int, int, float);
 #pragma scheduling invalid_target
-void fn_8017272C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-extern int lbl_8055A2A0;
-extern unsigned char lbl_8055A2A4;
-extern unsigned char lbl_8055A2A8;
-extern unsigned int lbl_8055E044;
-extern unsigned char lbl_8055E3AC;
-extern float lbl_8055E3C8;
-extern float lbl_80561A40;
-extern float lbl_80561A44;
-extern float lbl_80561A54;
+void fn_8017272C(CrushRoundState *round, int totalScore, int bonusScore, int timeBonus, int scale) {
+    extern void fn_802ADFF4(void *, int);  /* ArtAnimManager::StartAnim(manager, cue) */
+    extern void fn_802AE02C(void *, int);  /* ArtAnimManager::PauseAnim(manager, cue) */
+    extern void fn_802AE0B8(void *, int);  /* ArtAnimManager::ResumeAnim(manager, cue) */
+    extern int lbl_8055A2A0;               /* "%d" */
+    extern unsigned char lbl_8055A2A4;     /* "" */
+    extern unsigned char lbl_8055A2A8;     /* "-" */
+    extern unsigned int lbl_8055E044;      /* message table stamp */
+    extern unsigned char lbl_8055E3AC;     /* the time-bonus caption has been cached */
+    extern float lbl_8055E3C8;             /* current game time */
+    extern float lbl_80561A40;             /* 1.0f: how long the count-up takes */
+    extern float lbl_80561A44;             /* 0.0f */
+    extern float lbl_80561A54;             /* 0.5f: rounds the counted value up */
 
-    float temp_f0;
-    float temp_f1;
-    float temp_f2;
-    float var_f4;
-    int temp_r0;
-    int var_r28;
-    int var_r6;
-    unsigned char *var_r4;
-    int var_r5;
-    unsigned char *var_r6_2;
-    unsigned char *var_r4_2;
-    long var_r5_2;
-    unsigned char *var_r6_3;
-    unsigned char *var_r4_3;
-    long var_r5_3;
-    unsigned char *var_r6_4;
-    unsigned char *var_r3;
-    int var_r5_4;
-    unsigned char *var_r6_5;
-    unsigned char *var_r4_4;
-    int var_r5_5;
-    unsigned char *var_r6_6;
-    void *temp_r3_9;
-    int temp_r3;
-    int temp_r3_2;
-    int temp_r3_3;
-    int temp_r3_4;
-    int temp_r4;
-    void *temp_r3_10;
-    void *temp_r3_5;
-    void *temp_r3_6;
-    void *temp_r3_7;
-    void *temp_r3_8;
-    unsigned int mgr8;
+    float startTime;
+    float gameTime;
+    float sinceStart;
+    float elapsed;
+    float progress;
+    int state;
+    int counted;
+    int left;
+    /* the text copies below, each walking its own cursor */
+    unsigned char *emptySrc;
+    int timeRoom;
+    unsigned char *timeDst;
+    unsigned char *emptySrc2;
+    int captionRoom;
+    unsigned char *captionDst;
+    unsigned char *captionMsg;
+    int captionRoom2;
+    unsigned char *captionDst2;
+    unsigned char *rankText;
+    int rankRoom;
+    unsigned char *rankDst;
+    unsigned char *dashSrc;
+    int dashRoom;
+    unsigned char *dashDst;
+    int byte;
+    Sound *sound;
+    unsigned int stamp;
 
-    if ((int) (*(void **)((char *)(arg0) + (0xC))) != 0) {
-        fn_801308F4((char *)(unsigned char *)arg0 + 0x30, 0x14, arg2);
-        var_r28 = arg3;
-        var_r6 = 0;
-        if (arg3 != 0) {
-            temp_f1 = (*(float *)((char *)(arg0) + (4)));
-            if ((*(float *)((char *)(arg0) + (4))) > lbl_80561A44) {
-                temp_f2 = lbl_8055E3C8;
-                var_f4 = lbl_80561A40;
-                temp_f1 = temp_f2 - temp_f1;
-                temp_f0 = temp_f1 - lbl_80561A44;
-                temp_f0 = temp_f0 / var_f4;
-                var_f4 = (var_f4 < temp_f0) ? var_f4 : temp_f0;
-                var_f4 = (var_f4 > lbl_80561A44) ? var_f4 : lbl_80561A44;
-                var_r6 = (int) (lbl_80561A44 + (var_f4 * ((lbl_80561A54 + (float) arg3) - lbl_80561A44)));
-                var_r28 = arg3 - var_r6;
+    if (round->animPlayer != 0) {
+        fn_801308F4(round->bonusText, 0x14, bonusScore);
+        /* Count the time bonus up from zero over the second after the round
+           began; what is still to be added shows as a clock beside it. */
+        left = timeBonus;
+        counted = 0;
+        if (timeBonus != 0) {
+            startTime = round->time;
+            if (round->time > lbl_80561A44) {
+                gameTime = lbl_8055E3C8;
+                progress = lbl_80561A40;
+                sinceStart = gameTime - startTime;
+                elapsed = sinceStart - lbl_80561A44;
+                elapsed = elapsed / progress;
+                progress = (progress < elapsed) ? progress : elapsed;
+                progress = (progress > lbl_80561A44) ? progress : lbl_80561A44;
+                counted = (int) (lbl_80561A44 + (progress * ((lbl_80561A54 + (float) timeBonus) - lbl_80561A44)));
+                left = timeBonus - counted;
             }
         }
-        ((void (*)(void *, int, const void *, ...))fn_801345D8)((unsigned char *)arg0 + 0x44, 0x14, &lbl_8055A2A0, var_r6);
-        if ((int) (*(unsigned char *)((char *)(arg0) + (0x10))) != 0) {
-            var_r6_2 = (unsigned char *)arg0 + 0x9E;
-            var_r4 = &lbl_8055A2A4;
-            var_r5 = 0x14;
-            goto copy1;
+        ((void (*)(void *, int, const void *, ...))fn_801345D8)(round->countText, 0x14, &lbl_8055A2A0, counted);
+        if (round->flag10 != 0) {
+            timeDst = (unsigned char *) round->timeText;
+            emptySrc = &lbl_8055A2A4;
+            timeRoom = 0x14;
+            goto clearTime;
             for (;;) {
-                if (--var_r5 <= 0) {
-                    var_r6_2[-1] = 0;
+                if (--timeRoom <= 0) {
+                    timeDst[-1] = 0;
                     break;
                 }
-            copy1: temp_r3 = *var_r4++;
-                *var_r6_2++ = temp_r3;
-                if ((signed char)temp_r3 == 0) break;
+            clearTime:
+                byte = *emptySrc++;
+                *timeDst++ = byte;
+                if ((signed char) byte == 0) break;
             }
-            var_r6_3 = (unsigned char *)arg0 + 0x58;
-            var_r4_2 = &lbl_8055A2A4;
-            var_r5_2 = 0x14;
-            goto copy2;
+            captionDst = (unsigned char *) round->captionText;
+            emptySrc2 = &lbl_8055A2A4;
+            captionRoom = 0x14;
+            goto clearCaption;
             for (;;) {
-                if (--var_r5_2 <= 0) {
-                    var_r6_3[-1] = 0;
+                if (--captionRoom <= 0) {
+                    captionDst[-1] = 0;
                     break;
                 }
-            copy2: temp_r3_2 = *var_r4_2++;
-                *var_r6_3++ = temp_r3_2;
-                if ((signed char)temp_r3_2 == 0) break;
+            clearCaption:
+                byte = *emptySrc2++;
+                *captionDst++ = byte;
+                if ((signed char) byte == 0) break;
             }
         } else {
             if ((signed char) lbl_8055E3AC == 0) {
-                fn_801312EC(&lbl_804303B8, &lbl_80330F54);
+                fn_801312EC((CachedMessage *) &lbl_804303B8, &lbl_80330F54);
                 lbl_8055E3AC = 1;
             }
-            fn_80130980((unsigned char *)arg0 + 0x9E, 0x14, 2, (float) var_r28);
-            mgr8 = *(unsigned int *)((char *)(&lbl_804303B8) + 8);
-            if (mgr8 != lbl_8055E044) {
-                fn_80131318(&lbl_804303B8);
+            fn_80130980(round->timeText, 0x14, 2, (float) left);
+            stamp = ((CachedMessage *) &lbl_804303B8)->tag;
+            if (stamp != lbl_8055E044) {
+                fn_80131318((CachedMessage *) &lbl_804303B8);
             }
-            var_r4_3 = (*(unsigned char **)((char *)(&lbl_804303B8) + (4)));
-            var_r6_4 = (unsigned char *)arg0 + 0x58;
-            var_r5_3 = 0x14;
-            goto copy3;
+            captionMsg = (unsigned char *) ((CachedMessage *) &lbl_804303B8)->text;
+            captionDst2 = (unsigned char *) round->captionText;
+            captionRoom2 = 0x14;
+            goto copyCaption;
             for (;;) {
-                if (--var_r5_3 <= 0) {
-                    var_r6_4[-1] = 0;
+                if (--captionRoom2 <= 0) {
+                    captionDst2[-1] = 0;
                     break;
                 }
-            copy3: temp_r3_3 = *var_r4_3++;
-                *var_r6_4++ = temp_r3_3;
-                if ((signed char)temp_r3_3 == 0) break;
+            copyCaption:
+                byte = *captionMsg++;
+                *captionDst2++ = byte;
+                if ((signed char) byte == 0) break;
             }
         }
-        fn_801308F4((unsigned char *)arg0 + 0x6C, 0x14, arg1);
-        fn_801308F4((unsigned char *)arg0 + 0x8A, 0x14, arg1 - arg3);
-        if (fn_801609C4(arg1) != -1) {
-            var_r3 = __AXGetStackHead();
-            var_r6_5 = (unsigned char *)arg0 + 0x80;
-            var_r5_4 = 0xA;
-            goto copy4;
+        fn_801308F4(round->totalText, 0x14, totalScore);
+        fn_801308F4(round->scoreText, 0x14, totalScore - timeBonus);
+        if (fn_801609C4(totalScore) != -1) {
+            rankText = __AXGetStackHead();
+            rankDst = (unsigned char *) round->rankText;
+            rankRoom = 0xA;
+            goto copyRank;
             for (;;) {
-                if (--var_r5_4 <= 0) {
-                    var_r6_5[-1] = 0;
+                if (--rankRoom <= 0) {
+                    rankDst[-1] = 0;
                     break;
                 }
-            copy4: temp_r4 = *var_r3++;
-                *var_r6_5++ = temp_r4;
-                if ((signed char)temp_r4 == 0) break;
+            copyRank:
+                byte = *rankText++;
+                *rankDst++ = byte;
+                if ((signed char) byte == 0) break;
             }
         } else {
-            var_r6_6 = (unsigned char *)arg0 + 0x80;
-            var_r4_4 = &lbl_8055A2A8;
-            var_r5_5 = 0xA;
-            goto copy5;
+            dashDst = (unsigned char *) round->rankText;
+            dashSrc = &lbl_8055A2A8;
+            dashRoom = 0xA;
+            goto noRank;
             for (;;) {
-                if (--var_r5_5 <= 0) {
-                    var_r6_6[-1] = 0;
+                if (--dashRoom <= 0) {
+                    dashDst[-1] = 0;
                     break;
                 }
-            copy5: temp_r3_4 = *var_r4_4++;
-                *var_r6_6++ = temp_r3_4;
-                if ((signed char)temp_r3_4 == 0) break;
+            noRank:
+                byte = *dashSrc++;
+                *dashDst++ = byte;
+                if ((signed char) byte == 0) break;
             }
         }
-        if ((int) (*(int *)((char *)(arg0) + (0xF8))) != 0) {
-            (*(signed char *)((char *)(arg0) + (8))) = 0;
+        if (round->counters[0] != 0) {
+            round->active = 0;
         }
-        temp_r0 = (*(int *)((char *)(arg0) + (0)));
-        switch (temp_r0) {
+        state = round->state;
+        switch (state) {
         case 4:
             break;
         case 0:
-            fn_802ADFF4((*(void **)((char *)(arg0) + (0xC))), (*(void **)((char *)(arg0) + (0xF4))));
-            if (strlen((char *)arg0 + 0xDA) != 0) {
-                temp_r3_5 = (*(void **)((char *)(arg0) + (0x2C)));
-                if ((temp_r3_5 != 0) && ((int) (*(unsigned char *)((char *)(temp_r3_5) + (0x19))) == 0)) {
-                    (*(signed char *)((char *)(temp_r3_5) + (0x49))) = 1;
-                    (*(signed char *)((char *)(temp_r3_5) + (0x4B))) = 0;
-                    (*(signed char *)((char *)(temp_r3_5) + (0x4A))) = 0;
+            fn_802ADFF4(round->animPlayer, round->animIndex);
+            if (strlen(round->textDA) != 0) {
+                sound = round->sound2C;
+                if ((sound != 0) && (sound->active == 0)) {
+                    sound->play = 1;
+                    sound->loop = 0;
+                    sound->stop = 0;
                 }
             } else {
-                temp_r3_6 = (*(void **)((char *)(arg0) + (0x28)));
-                if ((temp_r3_6 != 0) && ((int) (*(unsigned char *)((char *)(temp_r3_6) + (0x19))) == 0)) {
-                    (*(signed char *)((char *)(temp_r3_6) + (0x49))) = 1;
-                    (*(signed char *)((char *)(temp_r3_6) + (0x4B))) = 0;
-                    (*(signed char *)((char *)(temp_r3_6) + (0x4A))) = 0;
+                sound = round->sound28;
+                if ((sound != 0) && (sound->active == 0)) {
+                    sound->play = 1;
+                    sound->loop = 0;
+                    sound->stop = 0;
                 }
             }
-            if (arg3 > 0) {
-                temp_r3_7 = (*(void **)((char *)(arg0) + (0x14)));
-                if (temp_r3_7 != 0) {
-                    (*(signed char *)((char *)(temp_r3_7) + (0x49))) = 1;
-                    (*(signed char *)((char *)(temp_r3_7) + (0x4B))) = 0;
-                    (*(signed char *)((char *)(temp_r3_7) + (0x4A))) = 0;
+            if (timeBonus > 0) {
+                sound = round->sound14;
+                if (sound != 0) {
+                    sound->play = 1;
+                    sound->loop = 0;
+                    sound->stop = 0;
                 }
             } else {
-                temp_r3_8 = (*(void **)((char *)(arg0) + (0x18)));
-                if (temp_r3_8 != 0) {
-                    (*(signed char *)((char *)(temp_r3_8) + (0x49))) = 1;
-                    (*(signed char *)((char *)(temp_r3_8) + (0x4B))) = 0;
-                    (*(signed char *)((char *)(temp_r3_8) + (0x4A))) = 0;
+                sound = round->sound18;
+                if (sound != 0) {
+                    sound->play = 1;
+                    sound->loop = 0;
+                    sound->stop = 0;
                 }
             }
-            (*(int *)((char *)(arg0) + (0))) = 1;
+            round->state = 1;
             break;
         case 1:
-            if (((int) (*(int *)((char *)(arg0) + (0xFC))) != 0) && ((*(float *)((char *)(arg0) + (4))) < lbl_80561A44)) {
-                (*(float *)((char *)(arg0) + (4))) = (float) lbl_8055E3C8;
+            if ((round->counters[1] != 0) && (round->time < lbl_80561A44)) {
+                round->time = (float) lbl_8055E3C8;
             }
-            if (((int) (*(int *)((char *)(arg0) + (0xFC))) == 2) && ((int) (*(unsigned char *)((char *)(arg0) + (0x20))) == 0)) {
-                temp_r3_9 = (*(void **)((char *)(arg0) + (0x1C)));
-                (*(unsigned char *)((char *)(arg0) + (0x20))) = 1U;
-                if (temp_r3_9 != 0) {
-                    (*(signed char *)((char *)(temp_r3_9) + (0x49))) = 1;
-                    (*(signed char *)((char *)(temp_r3_9) + (0x4B))) = 0;
-                    (*(signed char *)((char *)(temp_r3_9) + (0x4A))) = 0;
+            if ((round->counters[1] == 2) && (round->flag20 == 0)) {
+                sound = round->sound1C;
+                round->flag20 = 1;
+                if (sound != 0) {
+                    sound->play = 1;
+                    sound->loop = 0;
+                    sound->stop = 0;
                 }
             }
-            if ((int) (*(int *)((char *)(arg0) + (0x100))) != 0) {
-                fn_802AE02C((*(void **)((char *)(arg0) + (0xC))), (*(void **)((char *)(arg0) + (0xF4))));
-                (*(int *)((char *)(arg0) + (0))) = 2;
+            if (round->counters[2] != 0) {
+                fn_802AE02C(round->animPlayer, round->animIndex);
+                round->state = 2;
             }
             break;
         case 2:
-            if ((int) (*(unsigned char *)((char *)(arg0) + (9))) != 0) {
-                fn_802AE0B8((*(void **)((char *)(arg0) + (0xC))), (*(void **)((char *)(arg0) + (0xF4))));
-                temp_r3_10 = (*(void **)((char *)(arg0) + (0x24)));
-                if (temp_r3_10 != 0) {
-                    (*(signed char *)((char *)(temp_r3_10) + (0x49))) = 1;
-                    (*(signed char *)((char *)(temp_r3_10) + (0x4B))) = 0;
-                    (*(signed char *)((char *)(temp_r3_10) + (0x4A))) = 0;
+            if (round->flag9 != 0) {
+                fn_802AE0B8(round->animPlayer, round->animIndex);
+                sound = round->sound24;
+                if (sound != 0) {
+                    sound->play = 1;
+                    sound->loop = 0;
+                    sound->stop = 0;
                 }
-                (*(int *)((char *)(arg0) + (0))) = 3;
+                round->state = 3;
             }
             break;
         case 3:
-            if ((int) (*(int *)((char *)(arg0) + (0x104))) != 0) {
-                fn_802AE02C((*(void **)((char *)(arg0) + (0xC))), (*(void **)((char *)(arg0) + (0xF4))));
-                (*(int *)((char *)(arg0) + (0))) = 4;
+            if (round->counters[3] != 0) {
+                fn_802AE02C(round->animPlayer, round->animIndex);
+                round->state = 4;
             }
             break;
         }
-        fn_802AE168((*(void **)((char *)(arg0) + (0xC))));
+        fn_802AE168(round->animPlayer);
     }
 }
 
