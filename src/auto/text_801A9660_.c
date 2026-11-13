@@ -1141,22 +1141,14 @@ void fn_801ABFF4(void) {
 }
 
 void fn_801ABFF8(void *self, int **manager) {
-    struct CallbackTable {
-        void *unk[2];
-        void (*call)(void *, void *);
-    };
-    struct CallbackObject {
-        struct CallbackTable *vtable;
-    };
     void *node;
-
     node = *(void **)((char *)self + 0x224);
     if (node != 0 &&
         *(unsigned char *)((char *)self + 0x223) != 0 &&
         lbl_8055E3C4 > 1) {
         while (node != self) {
             *(unsigned char *)((char *)node + 0x223) = 0;
-            ((struct CallbackObject *)manager)->vtable->call(manager, node);
+            ((struct Dummy_801ABFF8 *)manager)->f0(node);
             node = *(void **)((char *)node + 0x224);
         }
         *(unsigned char *)((char *)self + 0x223) = 0;
