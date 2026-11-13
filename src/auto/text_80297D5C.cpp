@@ -484,19 +484,21 @@ extern float lbl_80564618;
   extern "C" void fn_80298A48(void) {
   }
 
-extern "C" void* fn_80298A4C(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        void **p = (void **)arg0;
-        if (p[2] != 0) {
-            ((void (*)(void *))fn_802976DC)(p[2]);
-            p[2] = 0;
+extern "C" void* fn_80298A4C(void* self, int shouldDelete) {
+    /* Destructor-like cleanup: destroy owned object at +8, release resource at +4,
+       free header-buffer at +0 (stored as ptr-0x10), and optionally free self. */
+    if (self != 0) {
+        void **fields = (void **)self;
+        if (fields[2] != 0) {
+            ((void (*)(void *))fn_802976DC)(fields[2]);
+            fields[2] = 0;
         }
-        fn_8028E398(p[1]);
-        if (p[0] != 0) fn_80128670((int)p[0] - 0x10);
-        p[0] = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+        fn_8028E398(fields[1]);
+        if (fields[0] != 0) fn_80128670((int)fields[0] - 0x10);
+        fields[0] = 0;
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_80298AD8(void* arg0) {
