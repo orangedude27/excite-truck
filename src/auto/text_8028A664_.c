@@ -391,6 +391,9 @@ extern "C" void fn_8028ABE8(void *arg0) {
 
 #pragma cplusplus on
 extern "C" void fn_8028AD78(void) {
+    struct Dummy {
+        virtual void f0(s32);
+    };
     register u8 *slot;
     register s32 i;
     register s32 zero = 0;
@@ -402,7 +405,7 @@ loop:
         void *p = *(void **)slot;
         if (p == 0) goto next;
         if (p == 0) goto clear;
-        ((void (*)(void *, s32))(*(void ***)p)[2])(p, 1);
+        ((Dummy *)p)->f0(1);
 clear:
         *(void **)slot = (void *)zero;
 next:
