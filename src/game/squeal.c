@@ -29,18 +29,19 @@ typedef struct {
 } RecordSet;
 #pragma scheduling invalid_target
 void *fn_80209D4C(void *arg0) {
-    void *obj;
-    void *child;
-    obj = fn_801284F8(0x10, &lbl_8055B548);
-    if (obj != 0) {
-        *(void **)obj = lbl_8033C258;
-        *((void **)obj + 1) = arg0;
-        child = fn_802077A4(lbl_8033C268, 4, (char *)arg0 + 0x118, (char *)arg0 + 0x60);
-        *((void **)obj + 2) = child;
-        if (child != 0) *(int *)((char *)child + 0x10) = *(int *)((char *)*((void **)obj + 1) + 0x1ec);
-        *((void **)obj + 3) = (void *)fn_8020CA3C(arg0);
+    /* Construct a squeal sound object, attaching its SFX handle and a road-sound helper. */
+    void *squealObj;
+    void *sfxHandle;
+    squealObj = fn_801284F8(0x10, &lbl_8055B548);
+    if (squealObj != 0) {
+        *(void **)squealObj = lbl_8033C258;
+        *((void **)squealObj + 1) = arg0;
+        sfxHandle = fn_802077A4(lbl_8033C268, 4, (char *)arg0 + 0x118, (char *)arg0 + 0x60);
+        *((void **)squealObj + 2) = sfxHandle;
+        if (sfxHandle != 0) *(int *)((char *)sfxHandle + 0x10) = *(int *)((char *)*((void **)squealObj + 1) + 0x1ec);
+        *((void **)squealObj + 3) = (void *)fn_8020CA3C(arg0);
     }
-    return obj;
+    return squealObj;
 }
 
 extern void fn_80128668(void *);
