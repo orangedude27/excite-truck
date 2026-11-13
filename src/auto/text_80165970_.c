@@ -1062,6 +1062,32 @@ extern "C" float fn_801671FC(int arg0) {
 
 extern float lbl_805618A0, lbl_8056189C, lbl_805618D0;
 extern float lbl_805618F4, lbl_805618F8, lbl_805618FC;
+
+/* One automation entry of the effect list whose holder is lbl_8055E32C (0x88 bytes
+ * each; fn_801663C8 allocates the list, fn_80166754 fills the fields below).
+ * Only the fields read here are named. */
+typedef struct LfoEntry {
+    char pad_00[0x34];
+    float fadeStartValue; /* +0x34 value before / without the fade */
+    float fadeEndValue;   /* +0x38 value once the fade is over */
+    float fadeStartTime;  /* +0x3C fade start on the lbl_8055E318 clock */
+    float fadeEndTime;    /* +0x40 fade end; equal to the start means no fade */
+    float unk44;          /* +0x44 */
+    float lfoMin;         /* +0x48 LFO output at its lowest point */
+    float lfoMax;         /* +0x4C LFO output at its highest point */
+    float lfoPeriod;      /* +0x50 length of one ramp; a full cycle is twice this */
+    float lfoPhase;       /* +0x54 clock the LFO was started at */
+} LfoEntry;
+
+/* Floats the LFO takes from the small-data pool. */
+#define CYCLE_FACTOR lbl_805618A0     /* 2.0f: up+down cycle = 2 * lfoPeriod */
+#define FLOAT_ONE lbl_805618D0        /* 1.0f */
+#define FLOAT_ZERO lbl_8056189C       /* 0.0f */
+#define FLOAT_NEG_ONE lbl_805618F4    /* -1.0f */
+#define SMOOTHSTEP_C1 lbl_805618F8    /* -2.0f / 3.0f: smoothstep(t) = -2t^3 + 3t^2 */
+#define SMOOTHSTEP_C2 lbl_805618FC
+#define CLOCK_EPSILON lbl_80558DC4    /* 2^-15: a time span at or below this is empty */
+
 #pragma push
 #pragma scheduling invalid_target
 #pragma processor 750
