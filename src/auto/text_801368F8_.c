@@ -42,8 +42,10 @@ s32 fn_801368F8(s32 arg0, s32 arg1) {
     s32 data;
     s32 buf;
     s32 m;
+    s32 u;
     m = arg1 * (arg1 - 1);
-    pairs = ((s32)(((unsigned)m >> 31) + m) >> 1);
+    u = (s32)(((unsigned)m) >> 31);
+    pairs = (u + m) >> 1;
     *(s32 *)arg0 = arg1;
     count = (pairs > 1) ? pairs : 1;
     *(s32 *)(arg0 + 8) = fn_8002F37C(fn_8012850C(count * 0x2C + 0x10, (s32)lbl_8032BE98), (s32)&fn_801369EC, 0, 0x2C, count);
@@ -429,8 +431,8 @@ void fn_801371E0(void *arg0) {
                         } else B(pair, 0x10) = 0;
                     }
                 } else if (!fn_8013705C(F(pair, 0x28), F(pair, 0x20))) {
-                    velocity = F(pair, 0x28);
                     distance = F(pair, 0x20);
+                    velocity = F(pair, 0x28);
                     distance = (float)__fabs(distance);
                     velocity = (float)__fabs(velocity);
                     F(pair, 4) = (distance - radius) / velocity;
