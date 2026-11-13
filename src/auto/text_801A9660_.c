@@ -1725,90 +1725,102 @@ typedef struct Spring {
 } Spring;
 
 #pragma scheduling invalid_target
-void fn_801AD394(void *arg0) {
-    extern double fn_8002F234(float);
-    extern float lbl_8056247C, lbl_805624A4, lbl_805624AC, lbl_80562518;
-    extern void fn_8017B6D4(void *, float *, float *);
-    extern void fn_8017B3A8(void *, float *, float *);
-    Vec transformed;
-    Vec position;
+void fn_801AD394(Spring *spring) {
+    extern double fn_8002F234(float);              /* sqrt */
+    extern float lbl_8056247C;                     /* 0.0f */
+    extern float lbl_805624A4;                     /* -1.0f */
+    extern float lbl_805624AC;                     /* 1.0f */
+    extern float lbl_80562518;                     /* 0.001f */
+    extern void fn_8017B6D4(void *, Vec *, Vec *); /* velocity of a body at a world point */
+    extern void fn_8017B3A8(void *, Vec *, Vec *); /* add a force at a world point */
+    Vec anchorPos;
+    Vec targetPos;
     Vec delta;
     Vec direction;
-    Vec output;
-    Vec pathPoint;
-    Vec otherPoint;
-    Vec residual;
+    Vec force;
+    Vec anchorVel;
+    Vec targetVel;
+    Vec closingVel;
     float length;
-    float thresh;
-    float distance;
+    float minLength;
+    float flatDistance;
     float factor;
-    float t1;
-    float t2;
-    float base;
-    float sub;
+    float dz2;
+    float dx2;
+    float restLength;
+    float stretch;
 
-    fn_8017AB84(*(void **)((u8 *)arg0 + 0x34), &transformed, (u8 *)arg0 + 0x10);
-    if (*(void **)((u8 *)arg0 + 0x0C) != 0) {
-        fn_8017AB84(*(void **)((u8 *)arg0 + 0x0C), &position, arg0);
+    /* Where the two ends of the spring are in the world: the anchor goes
+       through the body's frame, the target through the second body's when the
+       spring hangs off another body rather than off a fixed point. */
+    fn_8017AB84(spring->body, &anchorPos, &spring->anchor);
+    if (spring->other != 0) {
+        fn_8017AB84(spring->other, &targetPos, &spring->target);
     } else {
-        position.x = *(float *)arg0;
-        position.y = *(float *)((u8 *)arg0 + 4);
-        position.z = *(float *)((u8 *)arg0 + 8);
+        targetPos.x = spring->target.x;
+        targetPos.y = spring->target.y;
+        targetPos.z = spring->target.z;
     }
 
-    delta.x = position.x - transformed.x;
-    delta.y = position.y - transformed.y;
-    delta.z = position.z - transformed.z;
+    delta.x = targetPos.x - anchorPos.x;
+    delta.y = targetPos.y - anchorPos.y;
+    delta.z = targetPos.z - anchorPos.z;
     length = PSVECMag(&delta);
-    t1 = delta.z * delta.z;
-    t2 = delta.x * delta.x;
-    distance = (float)fn_8002F234(t2 + t1);
-    base = *(float *)((u8 *)arg0 + 0x28);
-    thresh = lbl_80562518;
-    sub = length - base;
-    *(float *)((u8 *)arg0 + 0x30) = distance;
-    *(float *)((u8 *)arg0 + 0x2C) = sub;
+    dz2 = delta.z * delta.z;
+    dx2 = delta.x * delta.x;
+    flatDistance = (float) fn_8002F234(dx2 + dz2);
+    restLength = spring->restLength;
+    minLength = lbl_80562518;
+    stretch = length - restLength;
+    spring->flatDistance = flatDistance;
+    spring->stretch = stretch;
 
-    if (length > thresh && length < base + *(float *)((u8 *)arg0 + 0x24)) {
-        float scale = lbl_805624AC / length;
-        float zero = lbl_8056247C;
-        output.x = zero;
-        output.y = zero;
-        output.z = zero;
-        direction.x = delta.x * scale;
-        direction.y = delta.y * scale;
-        direction.z = delta.z * scale;
-        fn_8017B6D4(*(void **)((u8 *)arg0 + 0x34), (float *)&pathPoint, (float *)&transformed);
+    if (length > minLength && length < restLength + spring->range) {
+        float invLength;
+        float zero;
+        float damping;
+        invLength = lbl_805624AC / length;
+        zero = lbl_8056247C;
+        force.x = zero;
+        force.y = zero;
+        force.z = zero;
+        direction.x = delta.x * invLength;
+        direction.y = delta.y * invLength;
+        direction.z = delta.z * invLength;
+        fn_8017B6D4(spring->body, &anchorVel, &anchorPos);
 
-        if (*(void **)((u8 *)arg0 + 0x0C) != 0) {
-            fn_8017B6D4(*(void **)((u8 *)arg0 + 0x0C), (float *)&otherPoint, (float *)&position);
+        if (spring->other != 0) {
+            fn_8017B6D4(spring->other, &targetVel, &targetPos);
         } else {
-            otherPoint.x = lbl_8056247C;
-            otherPoint.y = lbl_8056247C;
-            otherPoint.z = lbl_8056247C;
+            targetVel.x = lbl_8056247C;
+            targetVel.y = lbl_8056247C;
+            targetVel.z = lbl_8056247C;
         }
 
-        residual.x = otherPoint.x - pathPoint.x;
-        residual.y = otherPoint.y - pathPoint.y;
-        residual.z = otherPoint.z - pathPoint.z;
-        zero = *(float *)((u8 *)arg0 + 0x20);
-        output.x = residual.x * zero;
-        output.y = residual.y * zero;
-        output.z = residual.z * zero;
+        /* Damping works against the speed the two ends approach each other at,
+           the spring itself against the stretch past the rest length. */
+        closingVel.x = targetVel.x - anchorVel.x;
+        closingVel.y = targetVel.y - anchorVel.y;
+        closingVel.z = targetVel.z - anchorVel.z;
+        damping = spring->damping;
+        force.x = closingVel.x * damping;
+        force.y = closingVel.y * damping;
+        force.z = closingVel.z * damping;
 
-        if (length > *(float *)((u8 *)arg0 + 0x28)) {
-            factor = *(float *)((u8 *)arg0 + 0x1C) * (length - *(float *)((u8 *)arg0 + 0x28));
-            output.x += direction.x * factor;
-            output.y += direction.y * factor;
-            output.z += direction.z * factor;
+        if (length > spring->restLength) {
+            factor = spring->strength * (length - spring->restLength);
+            force.x += direction.x * factor;
+            force.y += direction.y * factor;
+            force.z += direction.z * factor;
         }
 
-        fn_8017B3A8(*(void **)((u8 *)arg0 + 0x34), (float *)&output, (float *)&transformed);
-        if (*(void **)((u8 *)arg0 + 0x0C) != 0) {
-            output.x *= lbl_805624A4;
-            output.y *= lbl_805624A4;
-            output.z *= lbl_805624A4;
-            fn_8017B3A8(*(void **)((u8 *)arg0 + 0x0C), (float *)&output, (float *)&transformed);
+        fn_8017B3A8(spring->body, &force, &anchorPos);
+        if (spring->other != 0) {
+            /* the second body gets the same force the other way round */
+            force.x *= lbl_805624A4;
+            force.y *= lbl_805624A4;
+            force.z *= lbl_805624A4;
+            fn_8017B3A8(spring->other, &force, &anchorPos);
         }
     }
 }
