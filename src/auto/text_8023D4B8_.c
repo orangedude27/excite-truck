@@ -273,25 +273,27 @@ char *fn_8023DC38(char *controlName) {
 }
 
 #pragma scheduling invalid_target
-char *fn_8023DCCC(char *arg0) {
-    char **var_r31;
-    s32 var_r30;
-    s32 repeat;
-    var_r31 = (char **)&lbl_802FA190;
-    var_r30 = 0;
+/* Look up a control action by name in the configurable-control table at lbl_802FA190
+   (17 rows of name + default binding) and return a pointer to its row, or 0 when the
+   control is not one the player can bind. */
+char *fn_8023DCCC(char *controlName) {
+    DefaultControl *entry;
+    s32 index;
+    s32 moreEntries;
+    entry = (DefaultControl *)&lbl_802FA190;
+    index = 0;
 loop_1:
-    if (stricmp(*var_r31, arg0) == 0) {
-        return (char *)&lbl_802FA190 + (var_r30 * 8);
+    if (stricmp(entry->name, controlName) == 0) {
+        return (char *)&lbl_802FA190 + (index * sizeof(DefaultControl));
     }
-    var_r30 += 1;
-    repeat = var_r30 < 0x11;
-    var_r31 += 2;
-    if (repeat) {
+    index += 1;
+    moreEntries = index < NUM_DEFAULT_CONTROLS;
+    entry += 1;
+    if (moreEntries) {
         goto loop_1;
     }
     return 0;
 }
-
 int fn_8023DD4C() {
     fn_8023DA64(lbl_8055F19C, 1, 1);
     fn_8023E1FC(lbl_8055F190);
