@@ -2056,7 +2056,8 @@ extern "C" void *LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm
     return buffer;
 }
 
-extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *self) {
+extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *loader) {
+    /* Cancel the loader's current sound, if any: stop it when active, otherwise finalize it. */
     class Sound {
     public:
         virtual void v0();
@@ -2081,14 +2082,14 @@ extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *self) {
         virtual s32 Check();
     };
 
-    Sound *sound = *(Sound **)((u8 *)self + 0x21C);
+    Sound *sound = *(Sound **)((u8 *)loader + 0x21C);
     if (sound && sound->Check()) {
-        sound = *(Sound **)((u8 *)self + 0x21C);
+        sound = *(Sound **)((u8 *)loader + 0x21C);
         if (sound->m8()) {
-            sound = *(Sound **)((u8 *)self + 0x21C);
+            sound = *(Sound **)((u8 *)loader + 0x21C);
             sound->m17(0, 0);
         } else {
-            sound = *(Sound **)((u8 *)self + 0x21C);
+            sound = *(Sound **)((u8 *)loader + 0x21C);
             sound->m16();
         }
     }
@@ -3641,11 +3642,8 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* s
 }
 
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
-    struct NWCWork { void* stream; s32 valid; void* ref; u32 unk14; };
-    NWCWork work;
-    u8 header[0x38];
-    u8 adpcm[8][0x30];
-    u8 fileBuf[0x200];
+    struct Frame { void* stream; s32 valid; void* ref; u32 pad; u8 header[0x38]; u8 adpcm[8][0x30]; u8 fileBuf[0x200]; };
+    Frame f;
     typedef void (*Cb_t)(s32, void*, u32);
     typedef s32 (*Faf_t)(void*, void*, u32);
     if (*(void**)((u8*)self + 0x10) != 0) {
@@ -3653,49 +3651,57 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
     }
     void* mutex = *(void**)((u8*)self + 0x24);
     OSLockMutex(mutex);
-    *(void**)((u8*)self + 0x10) = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void**)((u8*)self + 0x14), *(u32*)((u8*)self + 0x18), fileBuf, 0x200);
+    *(void**)((u8*)self + 0x10) = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void**)((u8*)self + 0x14), *(u32*)((u8*)self + 0x18), f.fileBuf, 0x200);
     OSUnlockMutex(mutex);
-    void* stream = *(void**)((u8*)self + 0x10);
-    if (stream == 0) {
+    if (*(void**)((u8*)self + 0x10) == 0) {
         Cb_t cb = *(Cb_t*)((u8*)self + 0x1C);
         if (cb != 0) cb(0, 0, *(u32*)((u8*)self + 0x20));
         return;
-    } else if (((ExecStream*)stream)->v20() == 0 || ((ExecStream*)stream)->v11() == 0) {
-        ((ExecStream*)stream)->v4();
+    } else if (((ExecStream*)*(void**)((u8*)self + 0x10))->v20() == 0 || ((ExecStream*)*(void**)((u8*)self + 0x10))->v11() == 0) {
+        ((ExecStream*)*(void**)((u8*)self + 0x10))->v4();
         Cb_t cb = *(Cb_t*)((u8*)self + 0x1C);
         *(void**)((u8*)self + 0x10) = 0;
         if (cb != 0) cb(0, 0, *(u32*)((u8*)self + 0x20));
         return;
     } else {
         if (lbl_8055DE58 == 0) {
-            OSInitMutex(&lbl_80412CA0);
+            OSInitMutex(lbl_80412CA0);
             lbl_8055DE58 = 1;
         }
-        OSLockMutex(&lbl_80412CA0);
-        work.stream = *(void**)((u8*)self + 0x10);
-        NWC24Data_Init(&work.valid);
-        if (((Faf_t)fn_800FAF10)(&work.stream, &lbl_80412AA0, 0x200) == 0) {
-            ((ExecStream*)stream)->v4();
+        u8* gm = lbl_80412CA0;
+        OSLockMutex(gm);
+        f.stream = *(void**)((u8*)self + 0x10);
+        NWC24Data_Init(&f.valid);
+        if (((Faf_t)fn_800FAF10)(&f.stream, lbl_80412AA0, 0x200) == 0) {
+            ((ExecStream*)*(void**)((u8*)self + 0x10))->v4();
             *(void**)((u8*)self + 0x10) = 0;
             Cb_t cb = *(Cb_t*)((u8*)self + 0x1C);
             if (cb != 0) cb(0, 0, *(u32*)((u8*)self + 0x20));
-            OSUnlockMutex(&lbl_80412CA0);
+            OSUnlockMutex(gm);
             return;
         }
         void* m2 = *(void**)((u8*)self + 0x24);
         OSLockMutex(m2);
-        ((ExecStream*)stream)->v4();
+        ((ExecStream*)*(void**)((u8*)self + 0x10))->v4();
         *(void**)((u8*)self + 0x10) = 0;
         OSUnlockMutex(m2);
-        if (!!work.valid) fn_800FAB98(&work.valid, header);
+        if (((u32)(-f.valid | f.valid) >> 31)) goto DO_FAB;
+        goto AFTER_FAB;
+    DO_FAB:
+        fn_800FAB98(&f.valid, f.header);
+    AFTER_FAB:;
         s32 i = 0;
         s32 off = 0;
-        for (i = 0, off = 0; i < header[2]; i++, off += 0x30) {
-            if (!!work.valid) fn_800FACC0(&work.valid, (void*)((u8*)adpcm + off), i);
+        for (i = 0, off = 0; i < f.header[2]; i++, off += 0x30) {
+            if (((u32)(-f.valid | f.valid) >> 31)) goto DO_FAC;
+            goto AFTER_FAC;
+        DO_FAC:
+            fn_800FACC0(&f.valid, (void*)((u8*)f.adpcm + off), i);
+        AFTER_FAC:;
         }
         Cb_t cb2 = *(Cb_t*)((u8*)self + 0x1C);
-        if (cb2 != 0) cb2(1, header, *(u32*)((u8*)self + 0x20));
-        OSUnlockMutex(&lbl_80412CA0);
+        if (cb2 != 0) cb2(1, f.header, *(u32*)((u8*)self + 0x20));
+        OSUnlockMutex(gm);
     }
 }
 
@@ -5442,7 +5448,6 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     f32 temp_f29;
     f32 temp_f30;
     f32 temp_f31;
-
     if ((s32)M2C_FIELD(arg0, u8 *, 0x49) != 0) {
         if ((s32)M2C_FIELD(arg0, s32 *, 0x438) == 0) {
             ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(arg0);
@@ -5481,7 +5486,6 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
         temp_f27 += M2C_FIELD(arg0, volatile f32 *, 0x44C);
         temp_f25 = temp_f8;
         temp_f25 += M2C_FIELD(arg0, volatile f32 *, 0x460);
-
         slots[8] = temp_f7;
         slots[9] = temp_f6;
         slots[10] = temp_f5;
@@ -5493,7 +5497,6 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
         slots[2] = temp_f2;
         slots[7] = temp_f0;
         slots[3] = temp_f0;
-
         fn_800E5338(M2C_FIELD(arg0, s32 *, 0x438), temp_f1);
         fn_800E5444(M2C_FIELD(arg0, s32 *, 0x438), temp_f31);
         fn_800E5464(M2C_FIELD(arg0, s32 *, 0x438), temp_f30);
