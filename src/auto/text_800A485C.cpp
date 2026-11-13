@@ -684,6 +684,7 @@ class HomeButtonEventHandler { public: char pad[4]; EventDispatchA *dispatch; co
       PaneSearch *paneSearch;               /* 0x1F8 the pane set to switch */
 
       s32 getPaneNo(const char *name);
+              void startLeftEvent(const char *name);
               void updateTrigPane();
         void calc_battery(int);
     };
@@ -18040,6 +18041,16 @@ extern "C" void* __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_, s32 fla
         }
     }
     return this_;
+}
+
+extern "C" void fn_800C7774(unsigned char *);
+extern "C" void fn_800C790C(void *);
+void fn_800C6CE8(void *arg0) {
+    ((char *)arg0)[0x8b] = 0;
+    ((char *)arg0)[0x8c] = 0;
+    ((char *)arg0)[0x8d] = 0;
+    fn_800C7774((unsigned char *)arg0);
+    fn_800C790C(arg0);
 }
 
 extern "C" s32 fn_800C771C(s32 arg0, s32 arg1) {
