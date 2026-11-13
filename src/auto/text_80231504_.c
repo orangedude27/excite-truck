@@ -1397,6 +1397,15 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
 #pragma pop
 
 extern f32 lbl_80563688;
+/* How fn_80233BF0 moves the pen point back before a string is drawn; the text
+   drawing entry points pass these down as their layout flags (the UI's
+   TEXT_ALIGN_CENTER is 0x4|0x10, centring the string on the point). */
+#define TEXT_ALIGN_BEARING  0x1  /* by the first glyph's left bearing */
+#define TEXT_ALIGN_RIGHT    0x2  /* by the whole string's measured width */
+#define TEXT_ALIGN_CENTER_X 0x4  /* by half of that width */
+#define TEXT_ALIGN_TOP      0x8  /* by the font's height (font[4]) */
+#define TEXT_ALIGN_CENTER_Y 0x10 /* by half of that height */
+#define TEXT_ALIGN_ASCENT   0x20 /* by the font's second height (font[6]) */
 #pragma scheduling invalid_target
 void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1) {
     u32 code;
