@@ -4722,9 +4722,9 @@ check_end:
     return 0;
 }
 #pragma pop
-extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
+extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 extern "C" void fn_800B78F4(void *arg0, void *arg1);
-extern "C" s32 fn_800ABC60(s32, s32);
+extern "C" s32 fn_800ABC60(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_800ACA44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 0, arg4);
 }
