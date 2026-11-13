@@ -1433,23 +1433,24 @@ void WPADDisconnect(s32 chan) {
     WPADiDisconnect(chan, TRUE);
 }
 
-s32 WPADProbe(s32 chan, s32* pDevType) {
-    WPADCB* p = lbl_8038F4F0[chan];
+/* Returns the current controller status and, if requested, its device type. */
+s32 WPADProbe(s32 chan, s32* outDevType) {
+    WPADCB* cb = lbl_8038F4F0[chan];
     BOOL enabled;
     s32 status;
 
     enabled = OSDisableInterrupts();
 
-    if (pDevType != NULL) {
-        *pDevType = ((u8*)p)[0x801];
+    if (outDevType != NULL) {
+        *outDevType = ((u8*)cb)[0x801];
     }
 
-    status = ((s32*)((u8*)p + 0x7FC))[0];
+    status = ((s32*)((u8*)cb + 0x7FC))[0];
 
     if (status != WPAD_ERR_NO_CONTROLLER) {
-        if (((u8*)p)[0x801] == WPAD_DEV_NOT_FOUND) {
+        if (((u8*)cb)[0x801] == WPAD_DEV_NOT_FOUND) {
             status = WPAD_ERR_NO_CONTROLLER;
-        } else if (!((BOOL*)((u8*)p + 0x81C))[0]) {
+        } else if (!((BOOL*)((u8*)cb + 0x81C))[0]) {
             status = WPAD_ERR_COMMUNICATION_ERROR;
         }
     }
