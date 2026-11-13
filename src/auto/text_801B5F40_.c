@@ -106,11 +106,6 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
 }
 
 extern float lbl_805626B8;
-static inline s32 __OSf32tos32_801B619C(f32 in) {
-    volatile union { f64 d; s32 i[2]; } u;
-    u.d = __fctiwz(in);
-    return u.i[1];
-}
 static inline s32 GridCell(f32 v) {
     s32 i;
     v += lbl_805626B4;
