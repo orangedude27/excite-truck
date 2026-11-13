@@ -837,22 +837,23 @@ s32 fn_8024B618(s32 arg0, s32 arg1) {
     return arg0 + arg1 * 0x68 + 0xDC;
 }
 
-void fn_8024B628(void *arg0) {
+void fn_8024B628(void *obj) {
     s32 index;
-    fn_80214CB4(*(s32 *)((char *)arg0 + 0x280));
-    index = *(s32 *)((char *)arg0 + 0x1C);
+    /* Update menu/UI selection state from object fields and refresh display (via fn_8024B260). */
+    fn_80214CB4(*(s32 *)((char *)obj + 0x280));
+    index = *(s32 *)((char *)obj + 0x1C);
     goto loop_test;
     do {
         fn_80214A9C(index + 1);
         index++;
     loop_test:
         ;
-    } while (index < *(s32 *)((char *)arg0 + 0x20));
-    if (*(unsigned char *)((char *)arg0 + 0x284) == 0)
+    } while (index < *(s32 *)((char *)obj + 0x20));
+    if (*(unsigned char *)((char *)obj + 0x284) == 0)
         fn_80214A9C(10);
     else
         fn_80214AF0(10);
-    fn_8024B260(arg0);
+    fn_8024B260(obj);
 }
 
 void fn_8024B6A8(void) {
