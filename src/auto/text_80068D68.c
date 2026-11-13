@@ -11464,7 +11464,7 @@ void bta_dm_inq_cmpl(void *p_data) {
         DM_SCB_SERVICES = 0;
         p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
         if (p_msg != 0) {
-            DM_MSG_EVENT(p_msg) = BTA_DM_DISCOVERY_RESULT_EVT;
+            DM_MSG_EVENT(p_msg) = BTA_DM_SEARCH_CMPL_EVT;
             bta_sys_sendmsg(p_msg);
         }
     }
