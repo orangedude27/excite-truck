@@ -3,6 +3,8 @@
 // Static-init thunk fn_802D3ED4 (+ .ctors slot 0x802ED5C0) remains in
 // auto/text_802D3ED4_.c pending a promotion pass.
 #include <revolution/GX/GXTypes.h>
+typedef int M2C_UNK;
+#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 
 #pragma dont_inline fn_802D1678
 #pragma dont_inline fn_802CFF50
@@ -1980,23 +1982,35 @@ void fn_802D1C04(void) {
     if (*(unsigned char *)&lbl_8055FD70 != 0) {
         Xform_802D1C04 inv;
         Xform_802D1C04 comb;
+        float texMtx[12];
+        Xform_802D1C04 rel;
+        Xform_802D1C04 relInv;
+        Xform_802D1C04 view;
+        float viewMtx[12];
+        float trans[12];
+        float scale[12];
+        float proj[12];
+        Mtx33_802D1C04 rot;
+        float nrm[12];
+        Mtx24_802D1C04 tex;
         Xform_802D1C04 *src = (Xform_802D1C04 *)(base + 0x70);
         Xform_802D1C04 *b;
         float t;
+        float k;
         inv.r = src->r;
         lbl_8055FD70 = 0;
         t = inv.r.m[1]; inv.r.m[1] = inv.r.m[3]; inv.r.m[3] = t;
         t = inv.r.m[2]; inv.r.m[2] = inv.r.m[6]; inv.r.m[6] = t;
         t = inv.r.m[5]; inv.r.m[5] = inv.r.m[7]; inv.r.m[7] = t;
         if (&inv.t == &src->t) {
-            float x = src->t.z * src->r.m[2] + (src->t.y * src->r.m[1] + src->t.x * src->r.m[0]);
-            float y = src->t.z * src->r.m[5] + (src->t.y * src->r.m[4] + src->t.x * src->r.m[3]);
-            float z = src->t.z * src->r.m[8] + (src->t.y * src->r.m[7] + src->t.x * src->r.m[6]);
+            float x = src->t.z * src->r.m[2] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[1]);
+            float y = src->t.z * src->r.m[5] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[4]);
+            float z = src->t.z * src->r.m[8] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[7]);
             inv.t.x = x; inv.t.y = y; inv.t.z = z;
         } else {
-            float x = src->t.z * src->r.m[2] + (src->t.y * src->r.m[1] + src->t.x * src->r.m[0]);
-            float y = src->t.z * src->r.m[5] + (src->t.y * src->r.m[4] + src->t.x * src->r.m[3]);
-            float z = src->t.z * src->r.m[8] + (src->t.y * src->r.m[7] + src->t.x * src->r.m[6]);
+            float x = src->t.z * src->r.m[2] + (src->t.x * src->r.m[0] + src->t.y * src->r.m[1]);
+            float y = src->t.z * src->r.m[5] + (src->t.x * src->r.m[3] + src->t.y * src->r.m[4]);
+            float z = src->t.z * src->r.m[8] + (src->t.x * src->r.m[6] + src->t.y * src->r.m[7]);
             inv.t.x = x; inv.t.y = y; inv.t.z = z;
         }
         inv.t.x *= lbl_80564F90;
@@ -2013,29 +2027,21 @@ void fn_802D1C04(void) {
         }
         switch (*(int *)(base + 0xB4)) {
         case 2:
-        case 3: {
-            Xform_802D1C04 rel;
-            Xform_802D1C04 relInv;
-            Xform_802D1C04 view;
-            float viewMtx[12];
-            float texMtx[12];
-            float scale[12];
-            float trans[12];
-            float proj[12];
+        case 3:
             fn_802C8588(&rel, &((Xform_802D1C04 *)(base + 0x70))->t, &((Xform_802D1C04 *)(base + 0x40))->t);
             relInv.r = rel.r;
             t = relInv.r.m[1]; relInv.r.m[1] = relInv.r.m[3]; relInv.r.m[3] = t;
             t = relInv.r.m[2]; relInv.r.m[2] = relInv.r.m[6]; relInv.r.m[6] = t;
             t = relInv.r.m[5]; relInv.r.m[5] = relInv.r.m[7]; relInv.r.m[7] = t;
             if (&relInv.t == &rel.t) {
-                float x = rel.t.z * rel.r.m[2] + (rel.t.y * rel.r.m[1] + rel.t.x * rel.r.m[0]);
-                float y = rel.t.z * rel.r.m[5] + (rel.t.y * rel.r.m[4] + rel.t.x * rel.r.m[3]);
-                float z = rel.t.z * rel.r.m[8] + (rel.t.y * rel.r.m[7] + rel.t.x * rel.r.m[6]);
+                float x = rel.t.z * rel.r.m[2] + (rel.t.x * rel.r.m[0] + rel.t.y * rel.r.m[1]);
+                float y = rel.t.z * rel.r.m[5] + (rel.t.x * rel.r.m[3] + rel.t.y * rel.r.m[4]);
+                float z = rel.t.z * rel.r.m[8] + (rel.t.x * rel.r.m[6] + rel.t.y * rel.r.m[7]);
                 relInv.t.x = x; relInv.t.y = y; relInv.t.z = z;
             } else {
-                float x = rel.t.z * rel.r.m[2] + (rel.t.y * rel.r.m[1] + rel.t.x * rel.r.m[0]);
-                float y = rel.t.z * rel.r.m[5] + (rel.t.y * rel.r.m[4] + rel.t.x * rel.r.m[3]);
-                float z = rel.t.z * rel.r.m[8] + (rel.t.y * rel.r.m[7] + rel.t.x * rel.r.m[6]);
+                float x = rel.t.z * rel.r.m[2] + (rel.t.x * rel.r.m[0] + rel.t.y * rel.r.m[1]);
+                float y = rel.t.z * rel.r.m[5] + (rel.t.x * rel.r.m[3] + rel.t.y * rel.r.m[4]);
+                float z = rel.t.z * rel.r.m[8] + (rel.t.x * rel.r.m[6] + rel.t.y * rel.r.m[7]);
                 relInv.t.x = x; relInv.t.y = y; relInv.t.z = z;
             }
             relInv.t.x *= lbl_80564F90;
@@ -2052,12 +2058,8 @@ void fn_802D1C04(void) {
             GXLoadTexMtxImm(texMtx, 0x2A, 0);
             GXLoadTexMtxImm(proj, 0x4C, 0);
             break;
-        }
         case 1:
-        case 5: {
-            Mtx33_802D1C04 rot;
-            Mtx24_802D1C04 tex;
-            float k;
+        case 5:
             rot = ((Xform_802D1C04 *)(base + 0x40))->r;
             tex = lbl_802FAC90;
             t = rot.m[1]; rot.m[1] = rot.m[3]; rot.m[3] = t;
@@ -2072,17 +2074,13 @@ void fn_802D1C04(void) {
             tex.m[1][2] = k * rot.m[5];
             GXLoadTexMtxImm(&tex, 0x2A, 1);
             break;
-        }
         case 4:
             fn_802D18E8();
             break;
         }
-        {
-            float nrm[12];
-            fn_802D0DD4(nrm, base + 0x40);
-            nrm[3] = nrm[7] = nrm[11] = lbl_80564F88;
-            GXLoadNrmMtxImm(nrm, 0);
-        }
+        fn_802D0DD4(nrm, base + 0x40);
+        nrm[3] = nrm[7] = nrm[11] = lbl_80564F88;
+        GXLoadNrmMtxImm(nrm, 0);
         if (*(int *)(base + 0xB4) == 2) fn_802D1B58();
     }
 }
@@ -2697,11 +2695,10 @@ void fn_802D37E4(void) {
 }
 
 void fn_802D3894(void) {
-    struct Entry { unsigned char pad[0xC]; unsigned char flag; unsigned char pad2[0xB]; };
-    struct Entry *p = (struct Entry *)lbl_804C9984;
+    unsigned char *p = lbl_804C9984;
     int i;
-    for (i = 0; i < 0x40; i++, p++) {
-        if (p->flag == 0) {
+    for (i = 0; i < 0x40; i++, p += 0x18) {
+        if (!p[0xC]) {
             break;
         }
         fn_802E317C((const char *)lbl_8034C1C4);
