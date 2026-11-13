@@ -281,7 +281,9 @@ void fn_80265EC4(void *arg0, int arg1, int arg2) {
     float weight;
     struct Record *current;
     struct Record *next;
-
+    float a;
+    float b;
+    float c;
     if (arg2 != 0) {
         state[2] = arg1;
         return;
@@ -289,7 +291,6 @@ void fn_80265EC4(void *arg0, int arg1, int arg2) {
     state[1] = state[1] + (arg1 - state[2]);
     state[2] = arg1;
     goto check;
-
 advance:
     index = *(volatile int *)arg0;
     elapsed = *(volatile int *)((char *)arg0 + 4);
@@ -297,7 +298,6 @@ advance:
     updatedElapsed = elapsed - duration;
     *(volatile int *)((char *)arg0 + 4) = updatedElapsed;
     *(volatile int *)arg0 = nextIndex;
-
 check:
     index = *(volatile int *)arg0;
     elapsed = *(volatile int *)((char *)arg0 + 4);
@@ -305,7 +305,6 @@ check:
     if (elapsed > duration) {
         goto advance;
     }
-
     ratio = (float)elapsed / (float)duration;
     if (ratio < lbl_80563C28) {
         weight = lbl_80563C28;
@@ -314,15 +313,23 @@ check:
     if (ratio > lbl_80563C2C) {
         weight = lbl_80563C2C;
     } else if (ratio > lbl_80563C20) {
-        weight = (((lbl_80563C30 * ratio) * ratio) * ratio) +
-                 ((lbl_80563C34 * ratio) * ratio);
+        a = lbl_80563C30 * ratio;
+        b = lbl_80563C34 * ratio;
+        a *= ratio;
+        b *= ratio;
+        c = ratio * a;
+        weight = c + b;
     } else {
-        weight = (((lbl_80563C30 * ratio) * ratio) * ratio) -
-                 ((lbl_80563C34 * ratio) * ratio);
+        a = lbl_80563C30 * ratio;
+        b = lbl_80563C34 * ratio;
+        a *= ratio;
+        b *= ratio;
+        c = ratio * a;
+        weight = c - b;
     }
 weight_done:
     *(float *)((char *)arg0 + 0xC) = weight;
-    index = *(volatile int *)arg0;
+    index = *(volatile int *)((char *)arg0 + 0);
     nextIndex = (index + 1) % 100;
     current = &((struct Record *)lbl_804999A0)[index];
     next = &((struct Record *)lbl_804999A0)[nextIndex];
@@ -372,14 +379,14 @@ void *fn_80266120(void *arg0) {
 
 #pragma dont_inline on
 void fn_80266150(void *arg0) {
-    float a;
-    float b;
-    ((int *)arg0)[1] = 0;
-    a = lbl_80563C2C;
-    ((int *)arg0)[0] = 0;
-    b = lbl_8055C4C0;
-    *(float *)((char *)arg0 + 8) = b;
-    *(float *)((char *)arg0 + 0xC) = a;
+    int zero = 0;
+    float f0 = lbl_80563C2C;
+    float f1;
+    *(int *)((char *)arg0 + 4) = zero;
+    *(int *)((char *)arg0 + 0) = zero;
+    f1 = lbl_8055C4C0;
+    *(float *)((char *)arg0 + 8) = f1;
+    *(float *)((char *)arg0 + 0xC) = f0;
 }
 #pragma dont_inline reset
 
@@ -472,11 +479,12 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
     float v[3];
     float p2[2];
     float q[2];
+    float t9, t11, tq0, tq2;
     if (mode == 0) {
         VObj_80266388 *camobj = *(VObj_80266388 **)((char *)owner + 0x270);
         cam = camobj->vt->m18(camobj);
-        p2[0] = matrix[9];
-        p2[1] = matrix[11];
+        t9 = matrix[9]; t11 = matrix[11];
+        p2[0] = t9; p2[1] = t11;
         fn_80136594(&r, cam, p2);
         base = lbl_8055C4CC + (r.p[7] + r.p[6] * r.f);
         count = ((int (*)(void))fn_8026A2C8)();
@@ -487,8 +495,8 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
             VObj_80266388 *ob = (VObj_80266388 *)fn_801B2EC0(i);
             o = (char *)ob->vt->m20(ob);
             opos = (float *)(o + 0x60);
-            q[0] = opos[0];
-            q[1] = opos[2];
+            tq0 = opos[0]; tq2 = opos[2];
+            q[0] = tq0; q[1] = tq2;
             fn_80136594(&r2, cam, q);
             d = (r2.p[7] + r2.p[6] * r2.f) - base;
             if (d < zero) {
@@ -580,12 +588,13 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
     float v[3];
     float p2[2];
     float q[2];
+    float t9, t11, tq0, tq2;
     fn_80274F74();
     if (fn_801769F8() == 0) {
         VObj_80266388 *camobj = *(VObj_80266388 **)(*(char **)((char *)fs + 0x140) + 0x270);
         cam = camobj->vt->m18(camobj);
-        p2[0] = fs[0x7C / 4];
-        p2[1] = fs[0x84 / 4];
+        t9 = fs[0x7C / 4]; t11 = fs[0x84 / 4];
+        p2[0] = t9; p2[1] = t11;
         fn_80136594(&r, cam, p2);
         base = lbl_8055C4CC + (r.p[7] + r.p[6] * r.f);
         count = ((int (*)(void))fn_8026A2C8)();
@@ -596,8 +605,8 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
             VObj_80266388 *ob = (VObj_80266388 *)fn_801B2EC0(i);
             o = (char *)ob->vt->m20(ob);
             opos = (float *)(o + 0x60);
-            q[0] = opos[0];
-            q[1] = opos[2];
+            tq0 = opos[0]; tq2 = opos[2];
+            q[0] = tq0; q[1] = tq2;
             fn_80136594(&r2, cam, q);
             d = (r2.p[7] + r2.p[6] * r2.f) - base;
             if (d < zero) {
