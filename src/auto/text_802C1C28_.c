@@ -25,6 +25,8 @@ void fn_802C1C2C(void) {}
 void fn_802C1C30(void) {}
 
 #pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802C1C34(void *arg0, void *obj, int slot) {
     typedef struct { int v[9]; } Block9;
     typedef struct { float v[3]; } Vec3;
