@@ -1026,14 +1026,15 @@ void fn_80161DE4(void) {
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, total + 1);
 }
 
-s32 fn_80161E40(s32 arg0) {
-    s32 i;
+s32 fn_80161E40(s32 targetValue) {
+    /* Return the index of the first item whose object query for "tutorial" with -999 equals targetValue, or -1. */
+    s32 index;
     void *item;
-    for (i = 0; i < fn_80012854(); i++) {
-        item = fn_8001285C(i);
+    for (index = 0; index < fn_80012854(); index++) {
+        item = fn_8001285C(index);
 #pragma cplusplus on
-        if (((Obj_80161C94 *)*(void **)((char *)item + 0x20))->f6(lbl_8032F738, -999) == arg0) {
-            return i;
+        if (((Obj_80161C94 *)*(void **)((char *)item + 0x20))->f6(lbl_8032F738, -999) == targetValue) {
+            return index;
         }
 #pragma cplusplus off
     }
