@@ -585,7 +585,7 @@ extern "C" FloatPair80145A24 fn_80145A24(void *arg0) {
 #pragma processor reset
 
 // One line of the game's on-screen text, as read from the level's text data
-// (see fn_80145368 / fn_80145538, which fill it from the "name", "x", "y",
+// (see fn_80145368 / fn_801455B8, which fill it from the "name", "x", "y",
 // "elem_just", ... keys) and drawn by the fn_80145B50..fn_80145CF4 printers.
 struct TextEntry80145C08 {
     s32 id;            /* +0x00 "name" */
