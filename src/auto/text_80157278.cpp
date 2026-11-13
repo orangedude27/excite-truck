@@ -3942,7 +3942,8 @@ extern "C" void fn_8015E4C4(Unk801577F0V* arg0, s8 arg1) {
     arg0->m54 = arg1;
 }
 
-extern "C" void fn_8015E4CC(Unk801577F0V* arg0, s32 arg1, f32 arg2) {
+extern "C" void fn_8015E4CC(Unk801577F0V* container, s32 param, f32 value) {
+    /* Dispatches a (s32, f32) virtual call to each child entry when this container is active. */
     // Note: six leading virtual entries place Call at the target's 0x20 slot.
     struct Entry {
         virtual void v0();
@@ -3953,16 +3954,16 @@ extern "C" void fn_8015E4CC(Unk801577F0V* arg0, s32 arg1, f32 arg2) {
         virtual void v5();
         virtual void Call(s32, f32);
     };
-    if (arg0->m54 != 0) {
-        s32 offset;
-        s32 i;
-        i = 0;
-        offset = 0;
-        while (i < *(s32*)((u8*)arg0 + 8)) {
-            void* item = *(void**)((u8*)*(void**)((u8*)arg0 + 4) + offset);
-            ((Entry*)item)->Call(arg1, arg2);
-            offset += 4;
-            i++;
+    if (container->m54 != 0) {
+        s32 byteOffset;
+        s32 index;
+        index = 0;
+        byteOffset = 0;
+        while (index < *(s32*)((u8*)container + 8)) {
+            void* entry = *(void**)((u8*)*(void**)((u8*)container + 4) + byteOffset);
+            ((Entry*)entry)->Call(param, value);
+            byteOffset += 4;
+            index++;
         }
     }
 }
