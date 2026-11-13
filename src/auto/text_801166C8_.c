@@ -1718,10 +1718,8 @@ s32 fn_80119824(void *arg0) {
     u32 temp_r3_3;
     u32 temp_r4_3;
     u32 var_r30;
-    if (*(s32 *)((u8 *)arg0 + 0xB4) == 0) {
-        if (*(s32 *)((u8 *)arg0 + 0x64) == 0) {
-            return 0;
-        }
+    if (*(s32 *)((u8 *)arg0 + 0xB4) != 0 || *(s32 *)((u8 *)arg0 + 0x64) == 0) {
+        return 0;
     }
     if (*(s32 *)((u8 *)arg0 + 0xB0) == 0) {
         ((void (*)(void))fn_801195D8)();
@@ -1748,9 +1746,7 @@ s32 fn_80119824(void *arg0) {
     } else {
         var_r4 = var_r30 - temp_r3_2;
     }
-    temp_r3_3 = (var_r4 < 0x400)
-        ? 0
-        : ((var_r4 - 0x400) & 0xFFFFFFFC);
+    temp_r3_3 = (var_r4 < 0x400) ? 0 : ((var_r4 - 0x400) & 0xFFFFFFFC);
     if (temp_r3_3 >= *(u32 *)((u8 *)arg0 + 0x9C)) {
         goto block_15;
     }
@@ -1766,12 +1762,9 @@ block_15:
     }
 block_16:
     *(s32 *)((u8 *)arg0 + 0x5C) = 1;
-    fn_80119300((u8 *)arg0 + 0x7C,
-                *(s32 *)((u8 *)arg0 + 0xB8),
-                *(s32 *)((u8 *)arg0 + 0x9C) * 2);
+    fn_80119300((u8 *)arg0 + 0x7C, *(s32 *)((u8 *)arg0 + 0xB8), *(s32 *)((u8 *)arg0 + 0x9C) * 2);
     temp_r4_3 = *(u32 *)((u8 *)arg0 + 0x94);
-    temp_r0 = *(u32 *)((u8 *)arg0 + 0xB8) +
-              *(u32 *)((u8 *)arg0 + 0x9C) * 2;
+    temp_r0 = *(u32 *)((u8 *)arg0 + 0xB8) + *(u32 *)((u8 *)arg0 + 0x9C) * 2;
     *(u32 *)((u8 *)arg0 + 0xB8) = temp_r0;
     if (temp_r0 >= temp_r4_3) {
         *(u32 *)((u8 *)arg0 + 0xB8) = temp_r0 - temp_r4_3;
@@ -2032,7 +2025,6 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     u32 count, rate, frames, i, loopSample, loopBuffer;
     u32 *buffer;
     struct { s16 config[7]; u8 pad[2]; u8 work[0x28]; volatile u8 reserve[8]; } scratch;
-
     if (!lbl_8055DEE0) return 0;
     memset(arg0, 0, 0x17C);
     *(u32 *)(ctx + 0x5C) = 0;
@@ -2058,7 +2050,7 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     *(u32 *)(ctx + 0x9C) = ((count * 0x32) / 1000 + 0xFF) & ~0xFF;
     if (*(u32 *)((u8 *)arg5 + 0x14) != 0 && *(u32 *)((u8 *)arg5 + 0x18) != 0) {
         int divisor = *(u32 *)((u8 *)arg5 + 0x14);
-        u64 numerator = *(u32 *)((u8 *)arg5 + 8) * ((u64)count * *(u32 *)((u8 *)arg5 + 0x18));
+        u64 numerator = (u64)count * *(u32 *)((u8 *)arg5 + 0x18) * *(u32 *)((u8 *)arg5 + 8);
         rate = (u32)(numerator / divisor);
     } else {
         rate = *(u32 *)(ctx + 0x9C);
@@ -2505,118 +2497,117 @@ extern u32 fn_8011A240(void *, u32, s32, u32);
 extern void fn_8011A45C(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
-    u8 *obj = (u8 *)arg0;
-    u8 *buf = (u8 *)arg3;
-    u8 *buf0 = buf;
-    u32 len = arg4;
-    u32 total = 0;
-    s32 seek = arg2;
-    u32 t0;
-    u32 t1;
-    u32 chunk;
-    u32 first;
-    volatile u32 *rd;
-
-    if (*(s32 *)(obj + 0x20) != 0)
-        return 0;
-    t0 = fn_80116D30();
-    if (seek != -1 && *(u32 *)(obj + 0x98) != (u32)seek) {
-        if ((u32)seek > *(u32 *)(obj + 0x98) && (u32)seek <= *(u32 *)(obj + 0x90)) {
-            BOOL en = OSDisableInterrupts();
-            u32 d = (u32)seek - *(u32 *)(obj + 0x98);
-            u32 p;
-            *(u32 *)(obj + 0xA0) += d;
-            p = *(u32 *)(obj + 0x9C) + d;
-            *(u32 *)(obj + 0x98) = seek;
-            *(u32 *)(obj + 0x4C) -= d;
-            *(u32 *)(obj + 0x9C) = p;
-            if (p > *(u32 *)(obj + 0xA8))
-                *(u32 *)(obj + 0x9C) = p - *(u32 *)(obj + 0x40);
-            OSRestoreInterrupts(en);
-        } else {
-            BOOL en;
-            fn_8011A330(arg0);
-            en = OSDisableInterrupts();
-            {
-                u32 a4 = *(u32 *)(obj + 0xA4);
-                *(u32 *)(obj + 0x90) = seek;
-                *(u32 *)(obj + 0x98) = seek;
-                *(u32 *)(obj + 0xA0) = *(u32 *)(obj + 0x40);
-                *(u32 *)(obj + 0x4C) = 0;
-                *(u32 *)(obj + 0x9C) = a4;
-                *(u32 *)(obj + 0xAC) = a4;
-            }
-            OSRestoreInterrupts(en);
-        }
-    }
-    if (*(u32 *)(obj + 0xA4) == 0) {
-        t1 = fn_80116D30();
-        total = fn_8011A240(obj + 0x54, *(u32 *)(obj + 0x90), (s32)buf, len);
-        if (total < len) {
-            *(s32 *)(obj + 0x20) = 1;
-            fn_8011A330(arg0);
-        }
-        rd = (volatile u32 *)(obj + 0x98);
-        *(u32 *)(obj + 0x90) += total;
-        *rd += total;
-        *(u32 *)(obj + 0x28) += total;
-        if (*(s32 *)(obj + 0xBC) != 0)
-            fn_8011A45C(arg0, total, t1);
-        {
-            u32 now = fn_80116D30();
-            *(u32 *)(obj + 0x30) += now - t1;
-            *(u32 *)(obj + 0x34) += now - t0;
-        }
-    } else {
-        rd = (volatile u32 *)(obj + 0x98);
-        while (len != 0 && *(s32 *)(obj + 0x20) == 0) {
-            fn_8011A6A0(arg0);
-            chunk = *(u32 *)(obj + 0x4C);
-            if (chunk != 0) {
-                if (chunk > len)
-                    chunk = len;
-                len -= chunk;
-                total += chunk;
-                first = *(u32 *)(obj + 0xA8) - *(u32 *)(obj + 0x9C);
-                *rd += chunk;
-                if (first <= chunk) {
-                    memcpy(buf, (void *)*(u32 *)(obj + 0x9C), first);
-                    buf += first;
-                    chunk -= first;
-                    *(u32 *)(obj + 0x9C) = *(u32 *)(obj + 0xA4);
-                    {
-                        BOOL en = OSDisableInterrupts();
-                        *(u32 *)(obj + 0x4C) -= first;
-                        *(u32 *)(obj + 0xA0) += first;
-                        OSRestoreInterrupts(en);
-                    }
-                }
-                if (chunk != 0) {
-                    memcpy(buf, (void *)*(u32 *)(obj + 0x9C), chunk);
-                    buf += chunk;
-                    *(u32 *)(obj + 0x9C) += chunk;
-                    {
-                        BOOL en = OSDisableInterrupts();
-                        *(u32 *)(obj + 0x4C) -= chunk;
-                        *(u32 *)(obj + 0xA0) += chunk;
-                        OSRestoreInterrupts(en);
-                    }
-                }
-            }
-        }
-        *(u32 *)(obj + 0x34) += fn_80116D30() - t0;
-    }
-    {
-        u32 rem = *(u32 *)(obj + 0xB8) - *rd;
-        if (rem < *(u32 *)(obj + 0x40))
-            *(u32 *)(obj + 0x48) = rem;
-        else
-            *(u32 *)(obj + 0x48) = *(u32 *)(obj + 0x40);
-    }
-    if (*(volatile u32 *)(obj + 0x4C) + 0x8000 > *(volatile u32 *)(obj + 0x48))
-        *(u32 *)(obj + 0x48) = *(volatile u32 *)(obj + 0x4C);
-    fn_8011A1A0((u32 *)buf0, total);
-    return total;
+u8 *obj = (u8 *)arg0;
+u8 *buf = (u8 *)arg3;
+u8 *buf0 = buf;
+s32 seek = arg2;
+u32 len = arg4;
+u32 total = 0;
+u32 t0;
+u32 t1;
+u32 chunk;
+u32 first;
+volatile u32 *rd;
+if (*(s32 *)(obj + 0x20) != 0)
+return 0;
+t0 = fn_80116D30();
+if (seek != -1 && *(u32 *)(obj + 0x98) != (u32)seek) {
+if ((u32)seek > *(u32 *)(obj + 0x98) && (u32)seek <= *(u32 *)(obj + 0x90)) {
+BOOL en = OSDisableInterrupts();
+u32 d = (u32)seek - *(u32 *)(obj + 0x98);
+u32 p;
+*(u32 *)(obj + 0xA0) += d;
+p = *(u32 *)(obj + 0x9C) + d;
+*(u32 *)(obj + 0x98) = seek;
+*(u32 *)(obj + 0x4C) -= d;
+*(u32 *)(obj + 0x9C) = p;
+if (p > *(u32 *)(obj + 0xA8))
+*(u32 *)(obj + 0x9C) = p - *(u32 *)(obj + 0x40);
+OSRestoreInterrupts(en);
+} else {
+BOOL en;
+fn_8011A330(arg0);
+en = OSDisableInterrupts();
+{
+u32 a4 = *(u32 *)(obj + 0xA4);
+*(u32 *)(obj + 0x90) = seek;
+*(u32 *)(obj + 0x98) = seek;
+*(u32 *)(obj + 0xA0) = *(u32 *)(obj + 0x40);
+*(u32 *)(obj + 0x4C) = 0;
+*(u32 *)(obj + 0x9C) = a4;
+*(u32 *)(obj + 0xAC) = a4;
+}
+OSRestoreInterrupts(en);
+}
+}
+if (*(u32 *)(obj + 0xA4) == 0) {
+t1 = fn_80116D30();
+total = fn_8011A240(obj + 0x54, *(u32 *)(obj + 0x90), (s32)buf, len);
+if (total < len) {
+*(s32 *)(obj + 0x20) = 1;
+fn_8011A330(arg0);
+}
+rd = (volatile u32 *)(obj + 0x98);
+*(u32 *)(obj + 0x90) += total;
+*rd += total;
+*(u32 *)(obj + 0x28) += total;
+if (*(s32 *)(obj + 0xBC) != 0)
+fn_8011A45C(arg0, total, t1);
+{
+u32 now = fn_80116D30();
+*(u32 *)(obj + 0x30) += now - t1;
+*(u32 *)(obj + 0x34) += now - t0;
+}
+} else {
+rd = (volatile u32 *)(obj + 0x98);
+while (len != 0 && *(s32 *)(obj + 0x20) == 0) {
+fn_8011A6A0(arg0);
+chunk = *(u32 *)(obj + 0x4C);
+if (chunk != 0) {
+if (chunk > len)
+chunk = len;
+len -= chunk;
+total += chunk;
+first = *(u32 *)(obj + 0xA8) - *(u32 *)(obj + 0x9C);
+*rd += chunk;
+if (first <= chunk) {
+memcpy(buf, (void *)*(u32 *)(obj + 0x9C), first);
+buf += first;
+chunk -= first;
+*(u32 *)(obj + 0x9C) = *(u32 *)(obj + 0xA4);
+{
+BOOL en = OSDisableInterrupts();
+*(u32 *)(obj + 0x4C) -= first;
+*(u32 *)(obj + 0xA0) += first;
+OSRestoreInterrupts(en);
+}
+}
+if (chunk != 0) {
+memcpy(buf, (void *)*(u32 *)(obj + 0x9C), chunk);
+buf += chunk;
+*(u32 *)(obj + 0x9C) += chunk;
+{
+BOOL en = OSDisableInterrupts();
+*(u32 *)(obj + 0x4C) -= chunk;
+*(u32 *)(obj + 0xA0) += chunk;
+OSRestoreInterrupts(en);
+}
+}
+}
+}
+*(u32 *)(obj + 0x34) += fn_80116D30() - t0;
+}
+{
+u32 rem = *(u32 *)(obj + 0xB8) - *rd;
+if (rem < *(u32 *)(obj + 0x40))
+*(u32 *)(obj + 0x48) = rem;
+else
+*(u32 *)(obj + 0x48) = *(u32 *)(obj + 0x40);
+}
+if (*(volatile u32 *)(obj + 0x4C) + 0x8000 > *(volatile u32 *)(obj + 0x48))
+*(u32 *)(obj + 0x48) = *(volatile u32 *)(obj + 0x4C);
+fn_8011A1A0((u32 *)buf0, total);
+return total;
 }
 
 #pragma dont_inline reset
@@ -3131,7 +3122,7 @@ void *fn_8011B584(u32 arg0, s32 arg1, s32 arg2, s32 arg_sp0) {
     fn_8011FE20(&spC, temp_r28 >> 1U);
     fn_8011FE20(&sp8, temp_r28);
     temp_r3 = fn_8011FF2C(0x34);
-    if (!temp_r3) {
+    if (temp_r3 == NULL) {
         return NULL;
     }
     memset(temp_r3, 0, 0x34);
@@ -4976,25 +4967,21 @@ void fn_80120834(s32 n, s32 *info, f32 *table) {
     f32 angle2;
     f32 stage_scale;
     f32 stage_zero;
-
     info[0] = n;
     info[1] = 1;
     if (n <= 2)
         return;
-
     half = n >> 1;
     angle = lbl_80561214 / (f32)half;
     endpoint = (f32)cos((f64)(angle * (f32)half));
     table[0] = lbl_80561218;
     table[1] = endpoint;
-
     if (half >= 4) {
         f32 first = (f32)cos((f64)(lbl_8056121C * angle));
         f32 second_angle = lbl_80561220 * angle;
-        table[2] = lbl_80561210 / first;
+        table[2] = (lbl_80561210 / first);
         table[3] = lbl_80561210 / (f32)cos((f64)second_angle);
     }
-
     angle2 = lbl_80561224 * angle;
     for (i = 4; i < half; i += 4) {
         table[i + 0] = (f32)cos((f64)(angle * (f32)i));
@@ -5002,7 +4989,6 @@ void fn_80120834(s32 n, s32 *info, f32 *table) {
         table[i + 2] = (f32)cos((f64)(angle2 * (f32)i));
         table[i + 3] = (f32)sin((f64)(angle2 * (f32)i));
     }
-
     stage_scale = lbl_80561210;
     stage_zero = lbl_80561218;
     i = 0;
@@ -5256,70 +5242,69 @@ void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80121400(s32 n, s32 *map, f32 *data) {
-    s32 i, j, half, a, b;
-    s32 size = 1;
-    *map = 0;
-    while ((size << 3) < n) {
-        n >>= 1;
-        for (i = 0; i < size; i++) map[size + i] = n + map[i];
-        size <<= 1;
-    }
-    half = size;
-    if ((size << 3) == n) {
-        for (i = 0; i < size; i++) {
-            for (j = 0; j < i; j++) {
-                f32 t0, t1;
-                a = map[i] + j * 2;
-                b = map[j] + i * 2;
-                t0 = data[b]; t1 = data[b + 1];
-                data[b] = data[a]; data[b + 1] = -data[a + 1];
-                data[a] = t0; data[a + 1] = -t1;
-                a += half * 2; b += half * 4;
-                t0 = data[b]; t1 = data[b + 1];
-                data[b] = data[a]; data[b + 1] = -data[a + 1];
-                data[a] = t0; data[a + 1] = -t1;
-                a += half * 2; b -= half * 2;
-                t0 = data[b]; t1 = data[b + 1];
-                data[b] = data[a]; data[b + 1] = -data[a + 1];
-                data[a] = t0; data[a + 1] = -t1;
-                a += half * 2; b += half * 4;
-                t0 = data[b]; t1 = data[b + 1];
-                data[b] = data[a]; data[b + 1] = -data[a + 1];
-                data[a] = t0; data[a + 1] = -t1;
-            }
-            {
-                f32 t0, t1;
-                a = map[i] + i * 2;
-                data[a + 1] = -data[a + 1];
-                a += half * 2;
-                t0 = data[a + half * 2]; t1 = data[a + half * 2 + 1];
-                data[a + half * 2] = data[a]; data[a + half * 2 + 1] = -data[a + 1];
-                data[a] = t0; data[a + 1] = -t1;
-                a += half * 2;
-                data[a + half * 2 + 1] = -data[a + half * 2 + 1];
-            }
+    s32 *ip = map;
+    f32 *a = data;
+    int j, j1, k, k1, l, m, m2;
+    float xr, xi, yr, yi;
+    int d;
+    float t0, t1;
+    ip[0] = 0;
+    l = n;
+    m = 1;
+    while ((m << 3) < l) {
+        l >>= 1;
+        for (j = 0; j < m; j++) {
+            ip[m + j] = ip[j] + l;
         }
-        return;
+        m <<= 1;
     }
-    data[1] = -data[1];
-    data[half * 2 + 1] = -data[half * 2 + 1];
-    for (i = 1; i < size; i++) {
-        for (j = 0; j < i; j++) {
-            f32 t0, t1;
-            a = map[i] + j * 2;
-            b = map[j] + i * 2;
-            t0 = data[b]; t1 = data[b + 1];
-            data[b] = data[a]; data[b + 1] = -data[a + 1];
-            data[a] = t0; data[a + 1] = -t1;
-            a += half * 2; b += half * 2;
-            t0 = data[b]; t1 = data[b + 1];
-            data[b] = data[a]; data[b + 1] = -data[a + 1];
-            data[a] = t0; data[a + 1] = -t1;
+    m2 = 2 * m;
+    if ((m << 3) == l) {
+        for (k = 0; k < m; k++) {
+            for (j = 0; j < k; j++) {
+                j1 = 2 * j + ip[k];
+                k1 = 2 * k + ip[j];
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                j1 += m2;
+                k1 += 2 * m2;
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                j1 += m2;
+                k1 -= m2;
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                j1 += m2;
+                k1 += 2 * m2;
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+            }
+            d = ip[k] + k * 2;
+            a[d + 1] = -a[d + 1];
+            d += m2;
+            t0 = a[d + m2]; t1 = a[d + m2 + 1];
+            a[d + m2] = a[d]; a[d + m2 + 1] = -a[d + 1];
+            a[d] = t0; a[d + 1] = -t1;
+            d += m2;
+            a[d + m2 + 1] = -a[d + m2 + 1];
         }
-        {
-            a = map[i + 1] + i * 2;
-            data[a + 1] = -data[a + 1];
-            data[a + half * 2 + 1] = -data[a + half * 2 + 1];
+    } else {
+        a[1] = -a[1];
+        a[m2 + 1] = -a[m2 + 1];
+        for (k = 1; k < m; k++) {
+            for (j = 0; j < k; j++) {
+                j1 = 2 * j + ip[k];
+                k1 = 2 * k + ip[j];
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                j1 += m2;
+                k1 += m2;
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+            }
+            d = 2 * k + ip[k + 1];
+            a[d + 1] = -a[d + 1];
+            a[d + m2 + 1] = -a[d + m2 + 1];
         }
     }
 }
@@ -5466,9 +5451,558 @@ void fn_80121BF4(void *arg0) {
 extern float lbl_80561218;
 extern float lbl_80561230;
 void fn_80121C68(s32 arg0, void *arg1, void *arg2) {
-    float a = lbl_80561218;
-    float b = lbl_80561230;
-    (void)arg0; (void)arg1; (void)arg2; (void)a; (void)b;
+    f64 sp20;
+    f64 sp18;
+    f32 sp14;
+    f32 sp10;
+    f32 spC;
+    f32 sp8;
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f0_3;
+    f32 temp_f10;
+    f32 temp_f10_10;
+    f32 temp_f10_11;
+    f32 temp_f10_12;
+    f32 temp_f10_13;
+    f32 temp_f10_14;
+    f32 temp_f10_2;
+    f32 temp_f10_3;
+    f32 temp_f10_4;
+    f32 temp_f10_5;
+    f32 temp_f10_6;
+    f32 temp_f10_7;
+    f32 temp_f10_8;
+    f32 temp_f10_9;
+    f32 temp_f11;
+    f32 temp_f11_2;
+    f32 temp_f11_3;
+    f32 temp_f11_4;
+    f32 temp_f11_5;
+    f32 temp_f11_6;
+    f32 temp_f11_7;
+    f32 temp_f11_8;
+    f32 temp_f12;
+    f32 temp_f12_2;
+    f32 temp_f12_3;
+    f32 temp_f12_4;
+    f32 temp_f12_5;
+    f32 temp_f12_6;
+    f32 temp_f13;
+    f32 temp_f13_2;
+    f32 temp_f13_3;
+    f32 temp_f13_4;
+    f32 temp_f13_5;
+    f32 temp_f13_6;
+    f32 temp_f14;
+    f32 temp_f14_2;
+    f32 temp_f14_3;
+    f32 temp_f14_4;
+    f32 temp_f14_5;
+    f32 temp_f14_6;
+    f32 temp_f14_7;
+    f32 temp_f15;
+    f32 temp_f15_2;
+    f32 temp_f15_3;
+    f32 temp_f15_4;
+    f32 temp_f15_5;
+    f32 temp_f15_6;
+    f32 temp_f15_7;
+    f32 temp_f15_8;
+    f32 temp_f16;
+    f32 temp_f16_2;
+    f32 temp_f16_3;
+    f32 temp_f16_4;
+    f32 temp_f16_5;
+    f32 temp_f16_6;
+    f32 temp_f17;
+    f32 temp_f17_2;
+    f32 temp_f17_3;
+    f32 temp_f17_4;
+    f32 temp_f17_5;
+    f32 temp_f18;
+    f32 temp_f18_2;
+    f32 temp_f18_3;
+    f32 temp_f18_4;
+    f32 temp_f19;
+    f32 temp_f19_2;
+    f32 temp_f19_3;
+    f32 temp_f19_4;
+    f32 temp_f1;
+    f32 temp_f1_2;
+    f32 temp_f1_3;
+    f32 temp_f1_4;
+    f32 temp_f20;
+    f32 temp_f20_2;
+    f32 temp_f20_3;
+    f32 temp_f21;
+    f32 temp_f21_2;
+    f32 temp_f22;
+    f32 temp_f23;
+    f32 temp_f24;
+    f32 temp_f25;
+    f32 temp_f25_2;
+    f32 temp_f25_3;
+    f32 temp_f26;
+    f32 temp_f26_2;
+    f32 temp_f27;
+    f32 temp_f27_2;
+    f32 temp_f28;
+    f32 temp_f28_2;
+    f32 temp_f28_3;
+    f32 temp_f29;
+    f32 temp_f29_2;
+    f32 temp_f2;
+    f32 temp_f2_2;
+    f32 temp_f2_3;
+    f32 temp_f2_4;
+    f32 temp_f2_5;
+    f32 temp_f30;
+    f32 temp_f30_2;
+    f32 temp_f31;
+    f32 temp_f31_2;
+    f32 temp_f3;
+    f32 temp_f3_2;
+    f32 temp_f3_3;
+    f32 temp_f3_4;
+    f32 temp_f3_5;
+    f32 temp_f4;
+    f32 temp_f4_2;
+    f32 temp_f4_3;
+    f32 temp_f4_4;
+    f32 temp_f4_5;
+    f32 temp_f4_6;
+    f32 temp_f4_7;
+    f32 temp_f5;
+    f32 temp_f5_2;
+    f32 temp_f5_3;
+    f32 temp_f5_4;
+    f32 temp_f5_5;
+    f32 temp_f5_6;
+    f32 temp_f5_7;
+    f32 temp_f5_8;
+    f32 temp_f6;
+    f32 temp_f6_2;
+    f32 temp_f6_3;
+    f32 temp_f6_4;
+    f32 temp_f6_5;
+    f32 temp_f6_6;
+    f32 temp_f7;
+    f32 temp_f7_10;
+    f32 temp_f7_11;
+    f32 temp_f7_12;
+    f32 temp_f7_13;
+    f32 temp_f7_14;
+    f32 temp_f7_2;
+    f32 temp_f7_3;
+    f32 temp_f7_4;
+    f32 temp_f7_5;
+    f32 temp_f7_6;
+    f32 temp_f7_7;
+    f32 temp_f7_8;
+    f32 temp_f7_9;
+    f32 temp_f8;
+    f32 temp_f8_10;
+    f32 temp_f8_11;
+    f32 temp_f8_12;
+    f32 temp_f8_13;
+    f32 temp_f8_14;
+    f32 temp_f8_15;
+    f32 temp_f8_16;
+    f32 temp_f8_2;
+    f32 temp_f8_3;
+    f32 temp_f8_4;
+    f32 temp_f8_5;
+    f32 temp_f8_6;
+    f32 temp_f8_7;
+    f32 temp_f8_8;
+    f32 temp_f8_9;
+    f32 temp_f9;
+    f32 temp_f9_10;
+    f32 temp_f9_11;
+    f32 temp_f9_12;
+    f32 temp_f9_13;
+    f32 temp_f9_2;
+    f32 temp_f9_3;
+    f32 temp_f9_4;
+    f32 temp_f9_5;
+    f32 temp_f9_6;
+    f32 temp_f9_7;
+    f32 temp_f9_8;
+    f32 temp_f9_9;
+    f32 var_f6;
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r0_3;
+    s32 temp_r0_4;
+    s32 temp_r10;
+    s32 temp_r10_2;
+    s32 temp_r10_3;
+    s32 temp_r10_5;
+    s32 temp_r10_6;
+    s32 temp_r11;
+    s32 temp_r11_2;
+    s32 temp_r11_3;
+    s32 temp_r11_5;
+    s32 temp_r11_6;
+    s32 temp_r12;
+    s32 temp_r12_2;
+    s32 temp_r12_4;
+    s32 temp_r12_5;
+    s32 temp_r25;
+    s32 temp_r25_3;
+    s32 temp_r25_4;
+    s32 temp_r26;
+    s32 temp_r26_2;
+    s32 temp_r26_4;
+    s32 temp_r27;
+    s32 temp_r27_2;
+    s32 temp_r28;
+    s32 temp_r28_2;
+    s32 temp_r29;
+    s32 temp_r29_2;
+    s32 temp_r30;
+    s32 temp_r30_2;
+    s32 temp_r31;
+    s32 temp_r3;
+    s32 temp_r5;
+    s32 temp_r5_2;
+    s32 temp_r6;
+    s32 temp_r6_3;
+    s32 temp_r6_4;
+    s32 temp_r6_6;
+    s32 temp_r7;
+    s32 temp_r7_2;
+    s32 temp_r7_3;
+    s32 temp_r8;
+    s32 temp_r8_2;
+    s32 temp_r8_3;
+    s32 temp_r9;
+    s32 var_r3;
+    u32 var_ctr;
+    void *temp_r10_4;
+    void *temp_r11_4;
+    void *temp_r12_3;
+    void *temp_r25_2;
+    void *temp_r26_3;
+    void *temp_r6_2;
+    void *temp_r6_5;
+    u8 *var_r27;
+    u8 *var_r5;
+    var_r5 = arg2;
+    temp_r9 = arg0 >> 3;
+    temp_r26 = (arg0 * 2) & 0xFFFFFFF0;
+    temp_r8 = temp_r9 * 2;
+    temp_r11 = arg0 & 0xFFFFFFF8;
+    temp_r7 = temp_r9 - 2;
+    temp_r12 = temp_r9 * 6;
+    temp_r25 = ((temp_r9 * 4) + 1) * 4;
+    temp_r12_2 = temp_r12 * 4;
+    temp_r6 = (temp_r8 + 1) * 4;
+    temp_f2 = M2C_FIELD(arg1, f32 *, 0);
+    temp_f1 = M2C_FIELD(arg1, f32 *, temp_r26);
+    temp_r10 = (temp_r12 + 1) * 4;
+    temp_f5 = M2C_FIELD(arg1, f32 *, 4);
+    temp_f0 = M2C_FIELD(arg1, f32 *, temp_r25);
+    temp_f6 = temp_f2 + temp_f1;
+    temp_f8 = temp_f2 - temp_f1;
+    temp_f4 = M2C_FIELD(arg1, f32 *, temp_r11);
+    temp_f3 = M2C_FIELD(arg1, f32 *, temp_r12_2);
+    temp_f7 = temp_f5 + temp_f0;
+    temp_f5_2 = temp_f5 - temp_f0;
+    temp_f2_2 = M2C_FIELD(arg1, f32 *, temp_r6);
+    temp_f9 = temp_f4 + temp_f3;
+    temp_f1_2 = M2C_FIELD(arg1, f32 *, temp_r10);
+    temp_f11 = temp_f4 - temp_f3;
+    sp10 = lbl_80561218;
+    temp_f12 = temp_f2_2 - temp_f1_2;
+    var_r27 = (u8 *)arg1 + 8;
+    temp_f10 = temp_f2_2 + temp_f1_2;
+    spC = lbl_80561230;
+    var_r3 = 2;
+    M2C_FIELD(arg1, f32 *, 0) = (f32) (temp_f6 + temp_f9);
+    var_f6 = spC;
+    M2C_FIELD(arg1, f32 *, 4) = (f32) (temp_f7 + temp_f10);
+    M2C_FIELD(arg1, f32 *, temp_r11) = temp_f6 - temp_f9;
+    M2C_FIELD(arg1, f32 *, temp_r6) = temp_f7 - temp_f10;
+    M2C_FIELD(arg1, f32 *, temp_r26) = temp_f8 - temp_f12;
+    M2C_FIELD(arg1, f32 *, temp_r25) = temp_f5_2 + temp_f11;
+    M2C_FIELD(arg1, f32 *, temp_r12_2) = temp_f8 + temp_f12;
+    M2C_FIELD(arg1, f32 *, temp_r10) = temp_f5_2 - temp_f11;
+    sp8 = lbl_80561218;
+    temp_f1_3 = M2C_FIELD(var_r5, f32 *, 0xC);
+    sp14 = M2C_FIELD(var_r5, f32 *, 4);
+    temp_f0_2 = M2C_FIELD(var_r5, f32 *, 8);
+    var_ctr = (u32) (temp_r7 + 1) >> 2U;
+    if (temp_r7 > 2) {
+        do {
+            temp_r11_2 = var_r3 + temp_r8;
+            temp_f5_3 = M2C_FIELD(var_r27, f32 *, 0);
+            temp_r0 = temp_r11_2 + temp_r8;
+            temp_f24 = M2C_FIELD(var_r5, f32 *, 0x18);
+            temp_f26 = M2C_FIELD(var_r5, f32 *, 0x1C);
+            temp_r12_3 = (u8 *)arg1 + (temp_r0 * 4);
+            temp_r0_2 = temp_r11_2 * 4;
+            temp_r25_2 = (u8 *)arg1 + ((temp_r0 + temp_r8) * 4);
+            temp_f4_2 = M2C_FIELD(temp_r12_3, f32 *, 0);
+            temp_f12_2 = M2C_FIELD(arg1, f32 *, temp_r0_2);
+            temp_r6_2 = (u8 *)arg1 + temp_r0_2;
+            temp_f11_2 = M2C_FIELD(temp_r25_2, f32 *, 0);
+            temp_f9_2 = temp_f5_3 + temp_f4_2;
+            temp_f21 = temp_f5_3 - temp_f4_2;
+            temp_f10_2 = temp_f12_2 + temp_f11_2;
+            temp_f29 = M2C_FIELD(var_r27, f32 *, 8);
+            temp_f25 = sp8 + temp_f24;
+            temp_f30 = M2C_FIELD(temp_r12_3, f32 *, 8);
+            temp_f10_3 = M2C_FIELD(temp_r6_2, f32 *, 8);
+            temp_f9_3 = M2C_FIELD(temp_r25_2, f32 *, 8);
+            sp20 = (f64) (temp_f9_2 - temp_f10_2);
+            temp_f27 = M2C_FIELD(var_r27, f32 *, 4);
+            temp_f6_2 = temp_f29 + temp_f30;
+            temp_f28 = M2C_FIELD(temp_r12_3, f32 *, 4);
+            temp_f18 = temp_f10_3 + temp_f9_3;
+            temp_f8_2 = M2C_FIELD(temp_r6_2, f32 *, 4);
+            temp_f5_4 = temp_f1_3 * (var_f6 - temp_f26);
+            temp_f7_2 = M2C_FIELD(temp_r25_2, f32 *, 4);
+            temp_f22 = M2C_FIELD(var_r5, f32 *, 0x10);
+            temp_f23 = M2C_FIELD(var_r5, f32 *, 0x14);
+            temp_f15 = temp_f27 + temp_f28;
+            temp_f14 = temp_f8_2 + temp_f7_2;
+            temp_f31 = M2C_FIELD(var_r27, f32 *, 0xC);
+            temp_f20 = temp_f8_2 - temp_f7_2;
+            temp_f13 = M2C_FIELD(temp_r12_3, f32 *, 0xC);
+            temp_f8_3 = M2C_FIELD(temp_r6_2, f32 *, 0xC);
+            temp_f7_3 = M2C_FIELD(temp_r25_2, f32 *, 0xC);
+            temp_f19 = temp_f31 + temp_f13;
+            M2C_FIELD(var_r27, f32 *, 0) = (f32) (temp_f9_2 + temp_f10_2);
+            sp18 = (f64) (temp_f6_2 + temp_f18);
+            temp_f17 = temp_f8_3 + temp_f7_3;
+            M2C_FIELD(var_r27, f32 *, 4) = (f32) (temp_f15 + temp_f14);
+            temp_f2_3 = sp10 + temp_f22;
+            sp10 = temp_f22;
+            M2C_FIELD(var_r27, f32 *, 8) = (f32) sp18;
+            temp_f2_4 = temp_f0_2 * temp_f2_3;
+            M2C_FIELD(var_r27, f32 *, 0xC) = (f32) (temp_f19 + temp_f17);
+            temp_f3_2 = temp_f0_2 * (spC + temp_f23);
+            temp_f15_2 = temp_f27 - temp_f28;
+            var_r5 += 0x10;
+            M2C_FIELD(arg1, f32 *, temp_r0_2) = (f32) sp20;
+            temp_f14_2 = temp_f29 - temp_f30;
+            temp_f13_2 = temp_f31 - temp_f13;
+            M2C_FIELD(temp_r6_2, f32 *, 4) = (f32) (temp_f15 - temp_f14);
+            temp_f4_3 = temp_f1_3 * temp_f25;
+            M2C_FIELD(temp_r6_2, f32 *, 8) = (f32) (temp_f6_2 - temp_f18);
+            temp_f25_2 = temp_f8_3 - temp_f7_3;
+            var_f6 = -temp_f26;
+            temp_f11_3 = temp_f12_2 - temp_f11_2;
+            spC = temp_f23;
+            temp_f19_2 = temp_f10_3 - temp_f9_3;
+            temp_f7_4 = temp_f21 - temp_f20;
+            sp8 = temp_f24;
+            M2C_FIELD(temp_r6_2, f32 *, 0xC) = (f32) (temp_f19 - temp_f17);
+            temp_f8_4 = temp_f15_2 + temp_f11_3;
+            temp_r10_2 = temp_r8 - var_r3;
+            temp_r26_2 = temp_r10_2 + temp_r8;
+            temp_f15_3 = temp_f15_2 - temp_f11_3;
+            temp_r6_3 = temp_r26_2 + temp_r8;
+            temp_r11_3 = temp_r6_3 * 4;
+            temp_r6_4 = (temp_r6_3 + temp_r8) * 4;
+            temp_f17_2 = temp_f14_2 - temp_f25_2;
+            temp_r0_3 = temp_r26_2 * 4;
+            temp_f7_5 = temp_f14_2 + temp_f25_2;
+            temp_r10_3 = temp_r10_2 * 4;
+            temp_r26_3 = (u8 *)arg1 + temp_r0_3;
+            temp_f18_2 = temp_f13_2 + temp_f19_2;
+            temp_f8_5 = temp_f13_2 - temp_f19_2;
+            M2C_FIELD(temp_r12_3, f32 *, 0) = (f32) ((temp_f2_4 * temp_f7_4) - (temp_f3_2 * temp_f8_4));
+            temp_f16 = temp_f21 + temp_f20;
+            M2C_FIELD(temp_r12_3, f32 *, 4) = (f32) ((temp_f2_4 * temp_f8_4) + (temp_f3_2 * temp_f7_4));
+            M2C_FIELD(temp_r12_3, f32 *, 8) = (f32) ((temp_f22 * temp_f17_2) - (temp_f23 * temp_f18_2));
+            M2C_FIELD(temp_r12_3, f32 *, 0xC) = (f32) ((temp_f22 * temp_f18_2) + (temp_f23 * temp_f17_2));
+            M2C_FIELD(temp_r25_2, f32 *, 0) = (f32) ((temp_f4_3 * temp_f16) + (temp_f5_4 * temp_f15_3));
+            M2C_FIELD(temp_r25_2, f32 *, 4) = (f32) ((temp_f4_3 * temp_f15_3) - (temp_f5_4 * temp_f16));
+            M2C_FIELD(temp_r25_2, f32 *, 8) = (f32) ((temp_f24 * temp_f7_5) + (var_f6 * temp_f8_5));
+            M2C_FIELD(temp_r25_2, f32 *, 0xC) = (f32) ((temp_f24 * temp_f8_5) - (var_f6 * temp_f7_5));
+            temp_f10_4 = M2C_FIELD(arg1, f32 *, temp_r10_3);
+            temp_r10_4 = (u8 *)arg1 + temp_r10_3;
+            temp_f9_4 = M2C_FIELD(arg1, f32 *, temp_r11_3);
+            temp_r11_4 = (u8 *)arg1 + temp_r11_3;
+            temp_f11_4 = M2C_FIELD(arg1, f32 *, temp_r6_4);
+            temp_r6_5 = (u8 *)arg1 + temp_r6_4;
+            temp_f16_2 = temp_f10_4 + temp_f9_4;
+            temp_f8_6 = M2C_FIELD(temp_r10_4, f32 *, 4);
+            temp_f7_6 = M2C_FIELD(temp_r11_4, f32 *, 4);
+            temp_f9_5 = temp_f10_4 - temp_f9_4;
+            temp_f19_3 = M2C_FIELD(temp_r10_4, f32 *, -8);
+            temp_f18_3 = M2C_FIELD(temp_r11_4, f32 *, -8);
+            temp_f17_3 = temp_f8_6 + temp_f7_6;
+            temp_f15_4 = M2C_FIELD(temp_r10_4, f32 *, -4);
+            temp_f14_3 = M2C_FIELD(temp_r11_4, f32 *, -4);
+            temp_f10_5 = temp_f8_6 - temp_f7_6;
+            temp_f12_3 = M2C_FIELD(arg1, f32 *, temp_r0_3);
+            temp_f13_3 = temp_f19_3 + temp_f18_3;
+            temp_f8_7 = M2C_FIELD(temp_r26_3, f32 *, 4);
+            temp_f20_2 = temp_f15_4 + temp_f14_3;
+            temp_f25_3 = temp_f15_4 - temp_f14_3;
+            temp_f7_7 = M2C_FIELD(temp_r6_5, f32 *, 4);
+            temp_f15_5 = temp_f12_3 + temp_f11_4;
+            temp_f31_2 = M2C_FIELD(temp_r26_3, f32 *, -8);
+            temp_f28_2 = M2C_FIELD(temp_r6_5, f32 *, -8);
+            temp_f11_5 = temp_f12_3 - temp_f11_4;
+            temp_f21_2 = temp_f19_3 - temp_f18_3;
+            temp_f14_4 = temp_f8_7 + temp_f7_7;
+            temp_f12_4 = temp_f8_7 - temp_f7_7;
+            temp_f26_2 = temp_f31_2 + temp_f28_2;
+            temp_f30_2 = M2C_FIELD(temp_r26_3, f32 *, -4);
+            temp_f29_2 = M2C_FIELD(temp_r6_5, f32 *, -4);
+            temp_f7_8 = temp_f9_5 - temp_f12_4;
+            var_r27 += 0x10;
+            M2C_FIELD(temp_r10_4, f32 *, 0) = (f32) (temp_f16_2 + temp_f15_5);
+            temp_f27_2 = temp_f30_2 + temp_f29_2;
+            var_r3 += 4;
+            M2C_FIELD(temp_r10_4, f32 *, 4) = (f32) (temp_f17_3 + temp_f14_4);
+            temp_f8_8 = temp_f10_5 + temp_f11_5;
+            M2C_FIELD(temp_r10_4, f32 *, -8) = (f32) (temp_f13_3 + temp_f26_2);
+            M2C_FIELD(temp_r10_4, f32 *, -4) = (f32) (temp_f20_2 + temp_f27_2);
+            temp_f28_3 = temp_f31_2 - temp_f28_2;
+            M2C_FIELD(temp_r26_3, f32 *, 0) = (f32) (temp_f16_2 - temp_f15_5);
+            temp_f14_5 = temp_f30_2 - temp_f29_2;
+            M2C_FIELD(temp_r26_3, f32 *, 4) = (f32) (temp_f17_3 - temp_f14_4);
+            temp_f10_6 = temp_f10_5 - temp_f11_5;
+            M2C_FIELD(temp_r26_3, f32 *, -8) = (f32) (temp_f13_3 - temp_f26_2);
+            temp_f9_6 = temp_f9_5 + temp_f12_4;
+            temp_f16_3 = temp_f25_3 + temp_f28_3;
+            M2C_FIELD(temp_r26_3, f32 *, -4) = (f32) (temp_f20_2 - temp_f27_2);
+            temp_f13_4 = temp_f21_2 - temp_f14_5;
+            temp_f3_3 = temp_f21_2 + temp_f14_5;
+            M2C_FIELD(temp_r11_4, f32 *, 0) = (f32) ((temp_f3_2 * temp_f7_8) - (temp_f2_4 * temp_f8_8));
+            M2C_FIELD(temp_r11_4, f32 *, 4) = (f32) ((temp_f3_2 * temp_f8_8) + (temp_f2_4 * temp_f7_8));
+            M2C_FIELD(temp_r11_4, f32 *, -8) = (f32) ((temp_f23 * temp_f13_4) - (temp_f22 * temp_f16_3));
+            M2C_FIELD(temp_r11_4, f32 *, -4) = (f32) ((temp_f23 * temp_f16_3) + (temp_f22 * temp_f13_4));
+            temp_f8_9 = temp_f25_3 - temp_f28_3;
+            M2C_FIELD(temp_r6_5, f32 *, 0) = (f32) ((temp_f5_4 * temp_f9_6) + (temp_f4_3 * temp_f10_6));
+            M2C_FIELD(temp_r6_5, f32 *, 4) = (f32) ((temp_f5_4 * temp_f10_6) - (temp_f4_3 * temp_f9_6));
+            M2C_FIELD(temp_r6_5, f32 *, -8) = (f32) ((var_f6 * temp_f3_3) + (temp_f24 * temp_f8_9));
+            M2C_FIELD(temp_r6_5, f32 *, -4) = (f32) ((var_f6 * temp_f8_9) - (temp_f24 * temp_f3_3));
+            var_ctr -= 1;
+        } while (var_ctr != 0);
+    }
+    temp_r6_6 = temp_r9 * 3;
+    temp_r25_3 = temp_r7 * 4;
+    temp_r7_2 = temp_r9 * 5;
+    temp_r8_2 = temp_r9 * 7;
+    temp_r12_4 = (temp_r6_6 - 2) * 4;
+    temp_r30 = (temp_r7_2 - 2) * 4;
+    temp_r27 = (temp_r8_2 - 2) * 4;
+    temp_r28 = (temp_r9 - 1) * 4;
+    temp_f10_7 = M2C_FIELD(arg1, f32 *, temp_r25_3);
+    temp_r10_5 = (temp_r6_6 - 1) * 4;
+    temp_f9_7 = M2C_FIELD(arg1, f32 *, temp_r30);
+    temp_r29 = (temp_r7_2 - 1) * 4;
+    temp_r11_5 = (temp_r8_2 - 1) * 4;
+    temp_f15_6 = temp_f10_7 + temp_f9_7;
+    temp_f7_9 = M2C_FIELD(arg1, f32 *, temp_r12_4);
+    temp_f5_5 = M2C_FIELD(arg1, f32 *, temp_r27);
+    temp_f8_10 = M2C_FIELD(arg1, f32 *, temp_r28);
+    temp_f9_8 = temp_f10_7 - temp_f9_7;
+    temp_f6_3 = M2C_FIELD(arg1, f32 *, temp_r29);
+    temp_f17_4 = temp_f7_9 + temp_f5_5;
+    temp_f4_4 = M2C_FIELD(arg1, f32 *, temp_r10_5);
+    temp_f3_4 = M2C_FIELD(arg1, f32 *, temp_r11_5);
+    temp_f16_4 = temp_f8_10 + temp_f6_3;
+    temp_f10_8 = temp_f8_10 - temp_f6_3;
+    temp_f18_4 = temp_f4_4 + temp_f3_4;
+    temp_r5 = temp_r9 * 0x14;
+    temp_f20_3 = temp_f4_4 - temp_f3_4;
+    temp_r3 = (temp_r7_2 + 1) * 4;
+    M2C_FIELD(arg1, f32 *, temp_r25_3) = temp_f15_6 + temp_f17_4;
+    temp_f19_4 = temp_f7_9 - temp_f5_5;
+    temp_r25_4 = temp_r9 * 4;
+    temp_f7_10 = temp_f9_8 - temp_f20_3;
+    temp_r26_4 = (temp_r9 + 1) * 4;
+    temp_f8_11 = temp_f10_8 + temp_f19_4;
+    M2C_FIELD(arg1, f32 *, temp_r28) = temp_f16_4 + temp_f18_4;
+    temp_f2_5 = temp_f0_2 * (sp10 + sp14);
+    temp_f0_3 = temp_f0_2 * (spC + sp14);
+    M2C_FIELD(arg1, f32 *, temp_r12_4) = temp_f15_6 - temp_f17_4;
+    temp_f3_5 = temp_f1_3 * (sp8 - sp14);
+    M2C_FIELD(arg1, f32 *, temp_r10_5) = temp_f16_4 - temp_f18_4;
+    temp_f9_9 = temp_f9_8 + temp_f20_3;
+    temp_f1_4 = temp_f1_3 * (var_f6 - sp14);
+    temp_f10_9 = temp_f10_8 - temp_f19_4;
+    M2C_FIELD(arg1, f32 *, temp_r30) = (temp_f2_5 * temp_f7_10) - (temp_f0_3 * temp_f8_11);
+    M2C_FIELD(arg1, f32 *, temp_r29) = (temp_f2_5 * temp_f8_11) + (temp_f0_3 * temp_f7_10);
+    M2C_FIELD(arg1, f32 *, temp_r27) = (temp_f3_5 * temp_f9_9) + (temp_f1_4 * temp_f10_9);
+    M2C_FIELD(arg1, f32 *, temp_r11_5) = (temp_f3_5 * temp_f10_9) - (temp_f1_4 * temp_f9_9);
+    temp_f11_6 = M2C_FIELD(arg1, f32 *, temp_r25_4);
+    temp_f10_10 = M2C_FIELD(arg1, f32 *, temp_r5);
+    temp_f9_10 = M2C_FIELD(arg1, f32 *, temp_r26_4);
+    temp_f8_12 = M2C_FIELD(arg1, f32 *, temp_r3);
+    temp_f12_5 = temp_f11_6 + temp_f10_10;
+    temp_f13_5 = temp_f9_10 + temp_f8_12;
+    temp_r0_4 = temp_r9 * 0x1C;
+    temp_r27_2 = temp_r9 * 0xC;
+    temp_f7_11 = M2C_FIELD(arg1, f32 *, temp_r27_2);
+    temp_f6_4 = M2C_FIELD(arg1, f32 *, temp_r0_4);
+    temp_r28_2 = (temp_r8_2 + 1) * 4;
+    temp_f10_11 = temp_f11_6 - temp_f10_10;
+    temp_r29_2 = (temp_r6_6 + 1) * 4;
+    temp_f14_6 = temp_f7_11 + temp_f6_4;
+    temp_f5_6 = M2C_FIELD(arg1, f32 *, temp_r29_2);
+    temp_f16_5 = temp_f7_11 - temp_f6_4;
+    temp_f4_5 = M2C_FIELD(arg1, f32 *, temp_r28_2);
+    temp_f11_7 = temp_f9_10 - temp_f8_12;
+    temp_f17_5 = temp_f5_6 - temp_f4_5;
+    temp_f15_7 = temp_f5_6 + temp_f4_5;
+    temp_f7_12 = temp_f10_11 - temp_f17_5;
+    M2C_FIELD(arg1, f32 *, temp_r25_4) = temp_f12_5 + temp_f14_6;
+    temp_f8_13 = temp_f11_7 + temp_f16_5;
+    temp_f9_11 = temp_f10_11 + temp_f17_5;
+    temp_r30_2 = (temp_r7_2 + 2) * 4;
+    M2C_FIELD(arg1, f32 *, temp_r26_4) = temp_f13_5 + temp_f15_7;
+    M2C_FIELD(arg1, f32 *, temp_r27_2) = temp_f12_5 - temp_f14_6;
+    temp_f10_12 = temp_f11_7 - temp_f16_5;
+    temp_r31 = (temp_r9 + 2) * 4;
+    M2C_FIELD(arg1, f32 *, temp_r29_2) = temp_f13_5 - temp_f15_7;
+    temp_r12_5 = (temp_r7_2 + 3) * 4;
+    temp_r11_6 = (temp_r9 + 3) * 4;
+    temp_r10_6 = (temp_r8_2 + 2) * 4;
+    temp_f6_5 = -sp14;
+    temp_r8_3 = (temp_r6_6 + 2) * 4;
+    temp_r7_3 = (temp_r8_2 + 3) * 4;
+    M2C_FIELD(arg1, f32 *, temp_r5) = sp14 * (temp_f7_12 - temp_f8_13);
+    temp_r5_2 = (temp_r6_6 + 3) * 4;
+    M2C_FIELD(arg1, f32 *, temp_r3) = sp14 * (temp_f8_13 + temp_f7_12);
+    M2C_FIELD(arg1, f32 *, temp_r0_4) = temp_f6_5 * (temp_f9_11 + temp_f10_12);
+    M2C_FIELD(arg1, f32 *, temp_r28_2) = temp_f6_5 * (temp_f10_12 - temp_f9_11);
+    temp_f5_7 = M2C_FIELD(arg1, f32 *, temp_r31);
+    temp_f4_6 = M2C_FIELD(arg1, f32 *, temp_r30_2);
+    temp_f9_12 = M2C_FIELD(arg1, f32 *, temp_r11_6);
+    temp_f8_14 = M2C_FIELD(arg1, f32 *, temp_r12_5);
+    temp_f10_13 = temp_f5_7 + temp_f4_6;
+    temp_f13_6 = temp_f5_7 - temp_f4_6;
+    temp_f7_13 = M2C_FIELD(arg1, f32 *, temp_r8_3);
+    temp_f6_6 = M2C_FIELD(arg1, f32 *, temp_r10_6);
+    temp_f12_6 = temp_f9_12 + temp_f8_14;
+    temp_f14_7 = temp_f9_12 - temp_f8_14;
+    temp_f8_15 = temp_f7_13 + temp_f6_6;
+    temp_f5_8 = M2C_FIELD(arg1, f32 *, temp_r5_2);
+    temp_f7_14 = temp_f7_13 - temp_f6_6;
+    temp_f4_7 = M2C_FIELD(arg1, f32 *, temp_r7_3);
+    temp_f15_8 = temp_f5_8 + temp_f4_7;
+    temp_f16_6 = temp_f5_8 - temp_f4_7;
+    temp_f9_13 = temp_f13_6 - temp_f16_6;
+    temp_f11_8 = temp_f14_7 + temp_f7_14;
+    M2C_FIELD(arg1, f32 *, temp_r31) = temp_f10_13 + temp_f8_15;
+    M2C_FIELD(arg1, f32 *, temp_r11_6) = temp_f12_6 + temp_f15_8;
+    temp_f10_14 = temp_f14_7 - temp_f7_14;
+    M2C_FIELD(arg1, f32 *, temp_r8_3) = temp_f10_13 - temp_f8_15;
+    temp_f8_16 = temp_f13_6 + temp_f16_6;
+    M2C_FIELD(arg1, f32 *, temp_r5_2) = temp_f12_6 - temp_f15_8;
+    M2C_FIELD(arg1, f32 *, temp_r30_2) = (temp_f0_3 * temp_f9_13) - (temp_f2_5 * temp_f11_8);
+    M2C_FIELD(arg1, f32 *, temp_r12_5) = (temp_f0_3 * temp_f11_8) + (temp_f2_5 * temp_f9_13);
+    M2C_FIELD(arg1, f32 *, temp_r10_6) = (temp_f1_4 * temp_f8_16) + (temp_f3_5 * temp_f10_14);
+    M2C_FIELD(arg1, f32 *, temp_r7_3) = (temp_f1_4 * temp_f10_14) - (temp_f3_5 * temp_f8_16);
 }
 
 extern f32 lbl_80561218;
@@ -6180,8 +6714,6 @@ void fn_801233F8(s32 arg0, volatile f32 *input, f32 *arg2) {
     u8 *var_r30, *var_r5;
     s32 temp_r8_4, temp_r9_3, temp_r10_4, temp_r11_3, temp_r12_2, temp_r29_2;
     s32 temp_r31_2;
-    s32 temp_r0_4;
-
     temp_r7 = arg0 >> 3;
     temp_r10 = arg0 & 0xFFFFFFF8;
     temp_r6 = temp_r7 * 2;
@@ -6225,7 +6757,6 @@ void fn_801233F8(s32 arg0, volatile f32 *input, f32 *arg2) {
     *(f32 *)((u8 *)arg1 + temp_r12) = temp_f2_3;
     *(f32 *)((u8 *)arg1 + temp_r11_2) = temp_f1_4;
     *(f32 *)((u8 *)arg1 + temp_r9) = temp_f0_2;
-
     temp_f0 = arg2[1];
     var_r5 = (u8 *)arg2;
     var_ctr = (u32)(temp_r7 - 1) >> 1;
@@ -6317,7 +6848,6 @@ void fn_801233F8(s32 arg0, volatile f32 *input, f32 *arg2) {
             var_ctr -= 1;
         } while (var_ctr != 0);
     }
-
     temp_r9_4 = temp_r7 * 4;
     temp_r5 = temp_r7 * 0xC;
     temp_r10_5 = temp_r7 * 0x14;
@@ -7362,11 +7892,11 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
     s16 temp_r0, temp_r10, temp_r23, temp_r25, temp_r4, temp_r4_2, temp_r7, temp_r8, temp_r9;
     s32 temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5, temp_r0_6, temp_r0_7;
     s32 temp_r10_2, temp_r10_3, temp_r10_4, temp_r10_5, temp_r10_6;
-    s32 temp_r11;
+    register s32 temp_r11;
     s32 temp_r11_2, temp_r11_3, temp_r11_4, temp_r11_5;
     s32 temp_r12, temp_r12_2, temp_r12_3, temp_r12_4, temp_r12_5;
     s32 temp_r23_2, temp_r23_3, temp_r23_4, temp_r23_5, temp_r23_6, temp_r23_7, temp_r23_8, temp_r23_9, temp_r23_10, temp_r23_11;
-    s32 temp_r24;
+    register s32 temp_r24;
     s32 temp_r24_2, temp_r24_3, temp_r24_4, temp_r24_5, temp_r24_6, temp_r24_7, temp_r24_8;
     s32 temp_r25_2, temp_r25_3, temp_r25_4, temp_r25_5, temp_r25_6;
     s32 temp_r26, temp_r26_2, temp_r26_3, temp_r27, temp_r28, temp_r29, temp_r30;
@@ -7386,7 +7916,7 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
     var_r31 = var_r3 + arg1;
     temp_r30 = arg1 * 2;
     var_r12 = sp8;
-    for (var_ctr = 8; var_ctr != 0; var_ctr--) {
+    for (var_ctr = 0; var_ctr < 8; var_ctr++) {
         temp_r7 = var_r5[8];
         temp_r8 = var_r5[24];
         temp_r23 = var_r5[16];
@@ -7394,6 +7924,8 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
         temp_r4 = var_r5[48];
         temp_r9 = var_r5[40];
         temp_r24 = temp_r8 | temp_r7;
+        temp_r4 = var_r5[48];
+        temp_r9 = var_r5[40];
         temp_r11 = temp_r0 | temp_r23;
         temp_r10 = var_r5[56];
         temp_r24 = temp_r4 | temp_r24;
@@ -7463,7 +7995,7 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
         }
     }
     var_r4 = sp8;
-    for (var_ctr_2 = 8; var_ctr_2 != 0; var_ctr_2--) {
+    for (var_ctr_2 = 0; var_ctr_2 < 8; var_ctr_2++) {
         temp_r9_5 = M2C_FIELD(var_r4, s32 *, 0x18);
         temp_r11_4 = M2C_FIELD(var_r4, s32 *, 8);
         temp_r5 = M2C_FIELD(var_r4, s32 *, 0xC);
@@ -7528,8 +8060,8 @@ void fn_80125CB4(void *arg0, void *arg1, void *arg2, s32 arg3) {
 extern u8 lbl_802F7A40[];
 void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg5) {
     s32 sp8[64];
-    register u8 *var_r6;
-    register u8 *var_r6_2;
+    u8 *var_r6;
+    u8 *var_r6_2;
     s16 temp_r0;
     s16 temp_r10;
     s16 temp_r10_2;
@@ -7605,50 +8137,49 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
     s32 var_ctr;
     s32 var_ctr_2;
     u8 temp_r5_3;
-    register u8 *var_r3;
-    register u8 *var_r5;
-    register u8 *var_r7;
-    register u8 *var_r9;
-
+    u8 *var_r3;
+    u8 *var_r5;
+    u8 *var_r7;
+    u8 *var_r9;
     var_r3 = arg0;
     var_r5 = arg2;
     var_r7 = arg4;
     var_r9 = lbl_802F7A40 + (arg3 << 8);
     var_r6 = (u8 *)&sp8;
     for (var_ctr = 0; var_ctr < 8; var_ctr++) {
-        temp_r31 = M2C_FIELD(var_r5, s16 *, 0x60);
-        temp_r12 = M2C_FIELD(var_r5, s16 *, 0x50);
-        temp_r11 = M2C_FIELD(var_r5, s16 *, 0x40);
-        temp_r10 = M2C_FIELD(var_r5, s16 *, 0x30);
-        temp_r30 = M2C_FIELD(var_r5, s16 *, 0x70);
-        temp_r0 = M2C_FIELD(var_r5, s16 *, 0x10);
-        temp_r26 = M2C_FIELD(var_r5, s16 *, 0x20);
+        temp_r31 = ((s16 *)var_r5)[0x30];
+        temp_r12 = ((s16 *)var_r5)[0x28];
+        temp_r11 = ((s16 *)var_r5)[0x20];
+        temp_r10 = ((s16 *)var_r5)[0x18];
+        temp_r30 = ((s16 *)var_r5)[0x38];
+        temp_r0 = ((s16 *)var_r5)[0x8];
+        temp_r26 = ((s16 *)var_r5)[0x10];
         if ((temp_r30 | (temp_r31 | temp_r12) | (temp_r11 | temp_r10 | (temp_r0 | temp_r26))) == 0) {
-            temp_r10_2 = M2C_FIELD(var_r5, s16 *, 0);
+            temp_r10_2 = ((s16 *)var_r5)[0];
             var_r5 += 2;
-            temp_r0_2 = M2C_FIELD(var_r9, s32 *, 0);
+            temp_r0_2 = ((s32 *)var_r9)[0];
             var_r9 += 4;
             temp_r0_3 = (s32) (temp_r10_2 * temp_r0_2) >> 0xB;
-            M2C_FIELD(var_r6, s32 *, 0) = temp_r0_3;
-            M2C_FIELD(var_r6, s32 *, 0x20) = temp_r0_3;
-            M2C_FIELD(var_r6, s32 *, 0x40) = temp_r0_3;
-            M2C_FIELD(var_r6, s32 *, 0x60) = temp_r0_3;
-            M2C_FIELD(var_r6, s32 *, 0x80) = temp_r0_3;
-            M2C_FIELD(var_r6, s32 *, 0xA0) = temp_r0_3;
-            M2C_FIELD(var_r6, s32 *, 0xC0) = temp_r0_3;
-            M2C_FIELD(var_r6, s32 *, 0xE0) = temp_r0_3;
+            ((s32 *)var_r6)[0] = temp_r0_3;
+            ((s32 *)var_r6)[8] = temp_r0_3;
+            ((s32 *)var_r6)[16] = temp_r0_3;
+            ((s32 *)var_r6)[24] = temp_r0_3;
+            ((s32 *)var_r6)[32] = temp_r0_3;
+            ((s32 *)var_r6)[40] = temp_r0_3;
+            ((s32 *)var_r6)[48] = temp_r0_3;
+            ((s32 *)var_r6)[56] = temp_r0_3;
             var_r6 += 4;
         } else {
-            temp_r22 = M2C_FIELD(var_r5, s16 *, 0);
+            temp_r22 = ((s16 *)var_r5)[0];
             var_r5 += 2;
-            temp_r25 = M2C_FIELD(var_r9, s32 *, 0x80);
-            temp_r24 = M2C_FIELD(var_r9, s32 *, 0xC0);
-            temp_r20 = M2C_FIELD(var_r9, s32 *, 0x20);
-            temp_r23 = M2C_FIELD(var_r9, s32 *, 0x60);
-            temp_r22_2 = M2C_FIELD(var_r9, s32 *, 0xA0);
-            temp_r26_2 = temp_r26 * M2C_FIELD(var_r9, s32 *, 0x40);
-            temp_r29 = (s32) (temp_r22 * M2C_FIELD(var_r9, s32 *, 0)) >> 0xB;
-            temp_r21 = M2C_FIELD(var_r9, s32 *, 0xE0);
+            temp_r25 = ((s32 *)var_r9)[32];
+            temp_r24 = ((s32 *)var_r9)[48];
+            temp_r20 = ((s32 *)var_r9)[8];
+            temp_r23 = ((s32 *)var_r9)[24];
+            temp_r22_2 = ((s32 *)var_r9)[40];
+            temp_r26_2 = temp_r26 * ((s32 *)var_r9)[16];
+            temp_r29 = (s32) (temp_r22 * ((s32 *)var_r9)[0]) >> 0xB;
+            temp_r21 = ((s32 *)var_r9)[56];
             var_r9 += 4;
             temp_r11_2 = temp_r26_2 >> 0xB;
             temp_r28 = (s32) (temp_r11 * temp_r25) >> 0xB;
@@ -7670,33 +8201,33 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
             temp_r30_2 = temp_r0_4 - temp_r10_4;
             temp_r0_5 = temp_r0_4 + temp_r10_4;
             temp_r10_5 = temp_r0_5 + temp_r23_2;
-            M2C_FIELD(var_r6, s32 *, 0) = (s32) (temp_r29_2 + temp_r10_5);
-            M2C_FIELD(var_r6, s32 *, 0xE0) = (s32) (temp_r29_2 - temp_r10_5);
+            ((s32 *)var_r6)[0] = (s32) (temp_r29_2 + temp_r10_5);
+            ((s32 *)var_r6)[56] = (s32) (temp_r29_2 - temp_r10_5);
             temp_r20_3 = (s32) ((temp_r12_2 + temp_r30_2) * 0xEC8) >> 0xB;
             temp_r20_4 = (temp_r20_3 + ((s32) (temp_r12_2 * -0x14E8) >> 0xB)) - temp_r10_5;
             temp_r10_6 = ((s32) ((temp_r0_5 - temp_r23_2) * 0xB50) >> 0xB) - temp_r20_4;
-            M2C_FIELD(var_r6, s32 *, 0x20) = (s32) (temp_r11_3 + temp_r20_4);
-            M2C_FIELD(var_r6, s32 *, 0xC0) = (s32) (temp_r11_3 - temp_r20_4);
+            ((s32 *)var_r6)[8] = (s32) (temp_r11_3 + temp_r20_4);
+            ((s32 *)var_r6)[48] = (s32) (temp_r11_3 - temp_r20_4);
             temp_r0_6 = (((s32) (temp_r30_2 * 0x8A9) >> 0xB) - temp_r20_3) + temp_r10_6;
-            M2C_FIELD(var_r6, s32 *, 0x40) = (s32) (temp_r28_2 + temp_r10_6);
-            M2C_FIELD(var_r6, s32 *, 0xA0) = (s32) (temp_r28_2 - temp_r10_6);
-            M2C_FIELD(var_r6, s32 *, 0x80) = (s32) (temp_r31_3 + temp_r0_6);
-            M2C_FIELD(var_r6, s32 *, 0x60) = (s32) (temp_r31_3 - temp_r0_6);
+            ((s32 *)var_r6)[16] = (s32) (temp_r28_2 + temp_r10_6);
+            ((s32 *)var_r6)[40] = (s32) (temp_r28_2 - temp_r10_6);
+            ((s32 *)var_r6)[32] = (s32) (temp_r31_3 + temp_r0_6);
+            ((s32 *)var_r6)[24] = (s32) (temp_r31_3 - temp_r0_6);
             var_r6 += 4;
         }
     }
     var_r6_2 = (u8 *)&sp8;
     for (var_ctr_2 = 0; var_ctr_2 < 8; var_ctr_2++) {
-        temp_r22_3 = M2C_FIELD(var_r6_2, s32 *, 8);
-        temp_r21_2 = M2C_FIELD(var_r6_2, s32 *, 0x18);
-        temp_r10_7 = M2C_FIELD(var_r6_2, s32 *, 0x14);
-        temp_r0_7 = M2C_FIELD(var_r6_2, s32 *, 0xC);
-        temp_r9 = M2C_FIELD(var_r6_2, s32 *, 4);
-        temp_r5 = M2C_FIELD(var_r6_2, s32 *, 0x1C);
+        temp_r22_3 = ((s32 *)var_r6_2)[2];
+        temp_r21_2 = ((s32 *)var_r6_2)[6];
+        temp_r10_7 = ((s32 *)var_r6_2)[5];
+        temp_r0_7 = ((s32 *)var_r6_2)[3];
+        temp_r9 = ((s32 *)var_r6_2)[1];
+        temp_r5 = ((s32 *)var_r6_2)[7];
         temp_r12_3 = temp_r10_7 - temp_r0_7;
         temp_r23_3 = temp_r10_7 + temp_r0_7;
-        temp_r25_3 = M2C_FIELD(var_r6_2, s32 *, 0);
-        temp_r10_8 = M2C_FIELD(var_r6_2, s32 *, 0x10);
+        temp_r25_3 = ((s32 *)var_r6_2)[0];
+        temp_r10_8 = ((s32 *)var_r6_2)[4];
         temp_r30_3 = temp_r9 - temp_r5;
         temp_r0_8 = temp_r9 + temp_r5;
         temp_r24_3 = temp_r22_3 + temp_r21_2;
@@ -7714,19 +8245,19 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
         temp_r20_5 = (s32) ((temp_r12_3 + temp_r30_3) * 0xEC8) >> 0xB;
         temp_r9_2 = temp_r29_3 + temp_r10_9 + 0x7F;
         var_r6_2 += 0x20;
-        M2C_FIELD(var_r3, s8 *, 0) = (s8) (M2C_FIELD(var_r7, u8 *, 0) + (temp_r9_2 >> 8));
+        ((s8 *)var_r3)[0] = (s8) (((u8 *)var_r7)[0] + (temp_r9_2 >> 8));
         temp_r20_6 = (temp_r20_5 + ((s32) (temp_r12_3 * -0x14E8) >> 0xB)) - temp_r10_9;
         temp_r10_10 = temp_r26_5 - temp_r20_6;
-        M2C_FIELD(var_r3, s8 *, 7) = (s8) (M2C_FIELD(var_r7, u8 *, 7) + (temp_r0_9 >> 8));
+        ((s8 *)var_r3)[7] = (s8) (((u8 *)var_r7)[7] + (temp_r0_9 >> 8));
         temp_r0_10 = ((temp_r5_2 >> 0xB) - temp_r20_5) + temp_r10_10;
-        M2C_FIELD(var_r3, s8 *, 1) = (s8) (M2C_FIELD(var_r7, u8 *, 1) + ((s32) (temp_r11_4 + temp_r20_6 + 0x7F) >> 8));
-        M2C_FIELD(var_r3, s8 *, 6) = (s8) (M2C_FIELD(var_r7, u8 *, 6) + ((s32) ((temp_r11_4 - temp_r20_6) + 0x7F) >> 8));
-        M2C_FIELD(var_r3, s8 *, 2) = (s8) (M2C_FIELD(var_r7, u8 *, 2) + ((s32) (temp_r28_3 + temp_r10_10 + 0x7F) >> 8));
-        M2C_FIELD(var_r3, s8 *, 5) = (s8) (M2C_FIELD(var_r7, u8 *, 5) + ((s32) ((temp_r28_3 - temp_r10_10) + 0x7F) >> 8));
-        M2C_FIELD(var_r3, s8 *, 3) = (s8) (M2C_FIELD(var_r7, u8 *, 3) + ((s32) ((temp_r31_4 - temp_r0_10) + 0x7F) >> 8));
-        temp_r5_3 = M2C_FIELD(var_r7, u8 *, 4);
+        ((s8 *)var_r3)[1] = (s8) (((u8 *)var_r7)[1] + ((s32) (temp_r11_4 + temp_r20_6 + 0x7F) >> 8));
+        ((s8 *)var_r3)[6] = (s8) (((u8 *)var_r7)[6] + ((s32) ((temp_r11_4 - temp_r20_6) + 0x7F) >> 8));
+        ((s8 *)var_r3)[2] = (s8) (((u8 *)var_r7)[2] + ((s32) (temp_r28_3 + temp_r10_10 + 0x7F) >> 8));
+        ((s8 *)var_r3)[5] = (s8) (((u8 *)var_r7)[5] + ((s32) ((temp_r28_3 - temp_r10_10) + 0x7F) >> 8));
+        ((s8 *)var_r3)[3] = (s8) (((u8 *)var_r7)[3] + ((s32) ((temp_r31_4 - temp_r0_10) + 0x7F) >> 8));
+        temp_r5_3 = ((u8 *)var_r7)[4];
         var_r7 += arg5;
-        M2C_FIELD(var_r3, s8 *, 4) = (s8) (temp_r5_3 + ((s32) (temp_r31_4 + temp_r0_10 + 0x7F) >> 8));
+        ((s8 *)var_r3)[4] = (s8) (temp_r5_3 + ((s32) (temp_r31_4 + temp_r0_10 + 0x7F) >> 8));
         var_r3 += arg1;
     }
 }
