@@ -2122,7 +2122,8 @@ extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(voi
 
 extern "C" void *Instance__15EmissionManagerFv(void);
 extern "C" void fn_800E3DDC(void *, void *);
-extern "C" void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *this_, int priority) {
+extern "C" void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *voice, int priority) {
+    /* Set this AxVoice's priority (0-255), asserting on out-of-range values, then notify the emission manager. */
     int valid = 0;
     if (priority >= 0) {
         if (priority <= 0xFF) valid = 1;
@@ -2130,8 +2131,8 @@ extern "C" void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *this_, int pri
     if (!valid) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x306, lbl_803223BC, priority, 0, 0xFF);
     }
-    *(int *)((char *)this_ + 0x124) = priority;
-    fn_800E3DDC(Instance__15EmissionManagerFv(), this_);
+    *(int *)((char *)voice + 0x124) = priority;
+    fn_800E3DDC(Instance__15EmissionManagerFv(), voice);
 }
 
 extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
