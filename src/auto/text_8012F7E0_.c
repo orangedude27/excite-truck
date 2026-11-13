@@ -25,24 +25,27 @@ unsigned char fn_8012F7E0(signed char arg0) {
     return lbl_80422F40[(int)arg0];
 }
 
-int fn_8012F968(unsigned char *arg0) {
-    unsigned char *p = arg0;
-    int result = 0;
+/* Decodes one block of four base64 characters into the 24 bits they hold, six
+ * bits to a character; returns 0xFF000000 if the block holds a character the
+ * alphabet does not (fn_8012F7E0 answers 0xFF for those). */
+int fn_8012F968(unsigned char *block) {
+    unsigned char *p = block;
+    int bits = 0;
     int i = 0;
     do {
         unsigned char value;
-        result <<= 6;
+        bits <<= 6;
         value = fn_8012F7E0((signed char)*p);
         if (!(value & 0xC0)) {
-            result |= value;
+            bits |= value;
         } else {
-            result = 0xFF000000;
+            bits = 0xFF000000;
             break;
         }
         i++;
         p++;
     } while (i < 4);
-    return result;
+    return bits;
 }
 
 extern int strlen(const char *);
