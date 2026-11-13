@@ -71,6 +71,7 @@ extern char lbl_804A4380[];
 #pragma cplusplus on
 extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
     extern char lbl_80347A50[];
+    extern int fn_802E30C8b(const char *, ...);
     class First {
     public:
         virtual char *m0();
@@ -107,7 +108,6 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
     char *name;
     int found, i;
     void *res;
-
     *(void **)(a0 + 8) = arg1;
     *(unsigned char *)(a0 + 4) = 1;
     if (stricmp(((First *)arg1)->m0(), base) == 0) {
@@ -119,7 +119,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
             if ((*(Second **)(p + 0x20))->m1(&lbl_8055C758) != 0) {
                 if (stricmp((*(Second **)(p + 0x20))->m3(&lbl_8055C758), name) == 0) {
                     if (found != 0) {
-                        fn_802E30C8(base + 0x1C, name);
+                        fn_802E30C8b(base + 0x1C, name);
                     } else {
                         long id, r, key;
                         key = *(long *)p;
@@ -130,7 +130,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
                         if ((((unsigned long)(-r | r)) >> 31) != 0) {
                             fn_8001D8B4(a0 + 0x14, (*(Second **)(p + 0x20))->m21(id));
                         } else {
-                            fn_802E30C8(base + 0x6C, name, id);
+                            fn_802E30C8b(base + 0x6C, name, id);
                         }
                     }
                 }
@@ -187,8 +187,8 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
         virtual void v2();
         virtual long get(const char *);
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
         virtual void v20(); virtual void v21();
         virtual Entry *at(long);
@@ -201,7 +201,7 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
 
     *(void **)(a0 + 8) = arg1;
     *(unsigned char *)(a0 + 4) = 1;
-    if (arg1 != 0) {
+    if (arg1) {
         rate = 0;
         if (((Source *)arg1)->has(base + 0xCC) != 0) {
             rate = fn_80204BB4((const char *)((Source *)arg1)->get(base + 0xCC));
@@ -219,7 +219,7 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
                 char *list = *(char **)(a0 + 0x18);
                 *(volatile long *)(a0 + 0x1C) = n + 1;
                 if (((long (*)(char *, void *))fn_8027AD4C)(list + n * 0x3C, obj) == 0) {
-                    long idx = *(volatile long *)(a0 + 0x1C) - 1;
+                    register long idx = *(volatile long *)(a0 + 0x1C) - 1;
                     if (idx >= 0) {
                         long cnt = *(volatile long *)(a0 + 0x1C);
                         if (idx < cnt) {
@@ -236,18 +236,18 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
                                 d[0x12] = s[0x12];
                                 {
                                     long w14 = *(long *)(s + 0x14);
-                                    long w18 = *(long *)(s + 0x18);
+                                    register long w18 = *(long *)(s + 0x18);
                                     *(long *)(d + 0x14) = w14;
                                     *(long *)(d + 0x18) = w18;
                                 }
                                 {
                                     long w1c = *(long *)(s + 0x1C);
-                                    long w20 = *(long *)(s + 0x20);
+                                    register long w20 = *(long *)(s + 0x20);
                                     *(long *)(d + 0x1C) = w1c;
                                     *(long *)(d + 0x20) = w20;
                                 }
                                 *(long *)(d + 0x24) = *(long *)(s + 0x24);
-                                *(long *)(d + 0x28) = *(long *)(s + 0x28);
+                                *(long *)((unsigned short)d + 0x28) = *(long *)(s + 0x28);
                                 *(long *)(d + 0x2C) = *(long *)(s + 0x2C);
                                 *(long *)(d + 0x30) = *(long *)(s + 0x30);
                                 *(long *)(d + 0x34) = *(long *)(s + 0x34);
@@ -257,15 +257,15 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
                         }
                     }
                 }
-                i++;
+                i += 1;
             }
             if (*(long *)(a0 + 0x1C) > 0) {
                 long c;
                 *(char *)(a0 + 0x1F0) = fn_8027D0E0(*(long *)(a0 + 0x10));
                 *(char *)(a0 + 0x1F1) = fn_8027D068(*(long *)(a0 + 0x10));
                 i = 0;
-                c = *(long *)(a0 + 0x1C);
                 *(unsigned char *)(a0 + 0x1F2) = 1;
+                c = *(long *)(a0 + 0x1C);
                 if (c > 0) {
                     long off = 0;
                     do {
@@ -647,10 +647,11 @@ extern "C" long fn_8027BA24(void *arg0) {
 }
 #pragma cplusplus reset
 #pragma cplusplus on
-extern "C" long fn_8027BAB8(void *arg0) {
+/* Return 1 if every item in the list reports valid, otherwise 0. */
+extern "C" long fn_8027BAB8(void *list) {
     long i = 0;
-    while (i < ((Fn8027BA24List *)arg0)->count()) {
-        if (((Fn8027BAB8Item *)((Fn8027BA24List *)arg0)->item(i))->valid() == 0)
+    while (i < ((Fn8027BA24List *)list)->count()) {
+        if (((Fn8027BAB8Item *)((Fn8027BA24List *)list)->item(i))->valid() == 0)
             return 0;
         i++;
     }
@@ -762,8 +763,8 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
         virtual void m8();
         virtual void m9();
         virtual void m10();
-        virtual void m11();
         virtual void m12();
+        virtual void m11();
         virtual void m13();
         virtual void m14();
         virtual long m15();
@@ -788,8 +789,7 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
         virtual Entry *m2(long);
     };
     char *a0 = (char *)arg0;
-    long k;
-
+    register long k;
     k = 0;
     do {
         Group *group = (Group *)fn_8027B834((void *)k);
@@ -801,18 +801,19 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
                 Obj *obj = entry->m5(i);
                 long key = obj->m6();
                 long idx;
+                long off;
                 char *rec;
                 long flag;
-                for (idx = 0; idx < *(long *)(a0 + 4); idx++) {
-                    if (*(long *)(*(char **)a0 + idx * 0x18) != key)
-                        continue;
-                    goto found;
+                for (idx = 0, off = 0; idx < *(long *)((int)a0 + 4); off += 0x18, idx++) {
+                    if (*(long *)(*(char **)a0 + off) == key)
+                        goto found;
                 }
                 idx = -1;
             found:
                 if (idx == -1) {
                     long cnt = *(long *)(a0 + 4);
-                    rec = *(char **)a0 + cnt * 0x18;
+                    long baseAddr = *(long *)a0;
+                    rec = (char *)(baseAddr + cnt * 0x18);
                     *(long *)(a0 + 4) = cnt + 1;
                     *(long *)(rec + 0) = obj->m6();
                     *(long *)(rec + 4) = entry->m1();
