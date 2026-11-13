@@ -27,61 +27,56 @@ extern double fabs(double);
 #pragma push
 #pragma scheduling invalid_target
 extern double __fabs(double);
+#pragma push
+#pragma processor 750
 int fn_80138C28(void *rect, float *out_t, float *out_distance) {
-    // Fix note: load the geometry pair in target order and use the double absolute-value intrinsic for the fallback distance.
-    register float a;
-    register float b;
-    register float c;
-    register float disc;
+    float a;
+    float b;
+    float c;
+    float disc;
     float roots[2];
-    float ac;
     float term;
     float left;
     float right;
-
+    float diff;
+    float tmp;
     if (out_distance != 0)
         *out_distance = lbl_805613B8;
     left = *(float *)((char *)rect + 0x08);
     right = *(float *)((char *)rect + 0x14);
-    a = (right - left) * lbl_805613C0;
+    diff = right - left;
+    a = diff * lbl_805613C0;
     b = *(float *)((char *)rect + 0x10) - *(float *)((char *)rect + 0x04);
     c = *(float *)((char *)rect + 0x0C) - *(float *)((char *)rect + 0x00);
-
     if (fn_80138BFC(a) == 0) {
-        ac = lbl_805613C4 * a;
-        disc = b * b - ac * c;
+        tmp = lbl_805613C4 * a;
+        disc = b * b - tmp * c;
         if (disc >= lbl_805613B8) {
-            roots[0] = (-b + (float)fn_8002F234(disc)) / (lbl_805613C8 * a);
-            roots[1] = (-b - (float)fn_8002F234(disc)) / (lbl_805613C8 * a);
-            if (fn_80138BE4(roots[0], roots[1]) != 0)
-                *out_t = roots[0] > roots[1] ? roots[0] : roots[1];
-            else if (roots[0] >= lbl_805613B8)
-                *out_t = roots[0] < roots[1] ? roots[0] : roots[1];
-            else
+            roots[0] = ((-b) + ((float)fn_8002F234(disc))) / (lbl_805613C8 * a);
+            roots[1] = ((-b) - ((float)fn_8002F234(disc))) / (lbl_805613C8 * a);
+            if (fn_80138BE4(roots[0], roots[1]) != 0) {
+                float hi = roots[1];
+                float lo = roots[0];
+                *out_t = (lo > hi) ? (lo) : (hi);
+            } else if (roots[0] >= lbl_805613B8) {
+                float hi = roots[1];
+                float lo = roots[0];
+                *out_t = (lo < hi) ? (lo) : (hi);
+            } else {
                 *out_t = lbl_805613CC;
-            if (*out_t >= lbl_805613B8)
+            }
+            if ((*out_t) >= lbl_805613B8)
                 return 1;
         } else if (out_distance != 0) {
-            term = -b;
-            if (term <= lbl_805613B8)
-                term = lbl_805613B8;
-            term = (term + b) * (lbl_805613C8 * (float)__fabs((double)a));
-            *out_distance = (term * term - disc) / (lbl_805613C8 * c);
+            term = ((-b) > lbl_805613B8) ? (-b) : (lbl_805613B8);
+            right = (float)__fabs((double)a);
+            term = (term + b) * (lbl_805613C8 * right);
+            *out_distance = ((term * term) - disc) / (lbl_805613C8 * c);
         }
     }
     return 0;
 }
 #pragma pop
-#pragma scheduling on
-#pragma dont_inline fn_80138BFC
-#pragma dont_inline fn_80138BE4
-#pragma push
-#pragma scheduling invalid_target
-#pragma optimize_for_size on
-#pragma opt_propagation off
-#pragma paired off
-#pragma paired_single off
-#pragma use_lmw_stmw off
 float fn_80138DF4(void *arg0) {
     float spC;
     float sp8;
@@ -89,19 +84,16 @@ float fn_80138DF4(void *arg0) {
     float temp_f1_2;
     float temp_f2;
     float temp_f3;
-    float temp_f3_2;
     float var_f31;
     float var_f4;
     int state;
-
     if (fn_80138BFC(*(float *)((char *)arg0 + 0xC) - *(float *)arg0) == 0) {
-        if (fn_80138BFC(*(float *)((char *)arg0 + 8) - *(float *)((char *)arg0 + 0x14)) == 0) {
-            if (fn_80138C28(arg0, &spC, &sp8) != 0) {
+        if (fn_80138BFC(*(float *)((char *)arg0 + 0x14) - *(float *)((char *)arg0 + 8)) == 0) {
+            if (fn_80138C28(arg0, &spC, &sp8)) {
                 var_f4 = spC;
-                temp_f1 = (*(float *)((char *)arg0 + 0x10) + (*(float *)((char *)arg0 + 0x14) * var_f4)) - *(float *)((char *)arg0 + 4);
-                if (var_f4 <= lbl_805613D0) {
+                temp_f1 = (*(float *)((char *)arg0 + 0x10) + (var_f4 * *(float *)((char *)arg0 + 0x14))) - *(float *)((char *)arg0 + 4);
+                if (var_f4 <= lbl_805613D0)
                     var_f4 = lbl_805613D0;
-                }
                 var_f31 = temp_f1 / var_f4;
                 lbl_8055E100 = -5;
             } else {
@@ -113,17 +105,14 @@ float fn_80138DF4(void *arg0) {
             temp_f1_2 = *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4);
             temp_f3 = temp_f1_2 * temp_f1_2;
             var_f31 = temp_f3 / (lbl_805613C8 * temp_f2);
-            if (fn_80138BE4(temp_f1_2, temp_f2) != 0) {
+            if (fn_80138BE4(temp_f1_2, temp_f2))
                 var_f31 = -var_f31;
-            }
-            temp_f3_2 = *(float *)((char *)arg0 + 0xC);
-            temp_f2 = temp_f3_2 - *(float *)arg0;
+            temp_f2 = *(float *)((char *)arg0 + 0xC) - *(float *)arg0;
             temp_f1_2 = *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4);
-            if (fn_80138BE4(temp_f1_2, temp_f2) == 0) {
+            if (fn_80138BE4(temp_f1_2, temp_f2) == 0)
                 state = -2;
-            } else {
+            else
                 state = -3;
-            }
             lbl_8055E100 = state;
         }
     } else {
@@ -133,50 +122,50 @@ float fn_80138DF4(void *arg0) {
     return var_f31;
 }
 #pragma pop
-#pragma scheduling on
 void fn_80138F38(void *arg0) {
+    extern float lbl_805613B8;
+    extern float lbl_805613C0;
+    extern int lbl_8055E100;
+    extern int fn_80138C28(void*, float*, float*);
+    extern float fn_80138DF4(void*);
     float sp8;
-    struct {
-        int a;
-        int b;
-        int c;
-        float d;
-        float e;
-        float f;
-    } sp10;
+    union U { struct { int a; int b; int c; float d; float e; float f; } s; double _a; } sp10;
     register float x;
     register float y;
     register float ratio;
     register float square;
     register float product;
     register float value;
-
-    if (*(float *)((char *)arg0 + 0x10) > lbl_805613B8 &&
-        *(float *)((char *)arg0 + 0x14) < lbl_805613B8 &&
-        fn_80138C28(arg0, &sp8, 0)) {
-        x = *(float *)((char *)arg0 + 0x10);
-        y = *(float *)((char *)arg0 + 0x14);
-        ratio = -x / y;
-        if (ratio <= sp8) {
-            square = ratio * ratio;
-            product = ratio * x;
-            value = *(float *)((char *)arg0 + 0xC);
-            value += product;
-            value += (lbl_805613C0 * y) * square;
-            sp10.a = ((int *)arg0)[0];
-            sp10.b = ((int *)arg0)[1];
-            sp10.c = ((int *)arg0)[2];
-            sp10.d = value;
-            sp10.e = lbl_805613B8;
-            sp10.f = lbl_805613B8;
-            fn_80138DF4(&sp10);
-            lbl_8055E100 += 6;
-            return;
+    if (*(float*)((char*)arg0 + 0x10) > lbl_805613B8) {
+        if (*(float*)((char*)arg0 + 0x14) < lbl_805613B8) {
+            if (fn_80138C28(arg0, &sp8, 0)) {
+                x = *(float*)((char*)arg0 + 0x10);
+                y = *(float*)((char*)arg0 + 0x14);
+                ratio = -x / y;
+                if (ratio <= sp8) {
+                    square = ratio * ratio;
+                    product = ratio * x;
+                    value = *(float*)((char*)arg0 + 0xC);
+                    value += product;
+                    value += (lbl_805613C0 * y) * square;
+                    ((int*)&sp10)[0] = ((int*)arg0)[0];
+                    ((int*)&sp10)[1] = ((int*)arg0)[1];
+                    ((int*)&sp10)[2] = ((int*)arg0)[2];
+                    ((int*)&sp10)[3] = ((int*)arg0)[3];
+                    ((int*)&sp10)[4] = ((int*)arg0)[4];
+                    ((int*)&sp10)[5] = ((int*)arg0)[5];
+                    sp10.s.d = value;
+                    sp10.s.e = lbl_805613B8;
+                    sp10.s.f = lbl_805613B8;
+                    fn_80138DF4(&sp10);
+                    lbl_8055E100 += 6;
+                    return;
+                }
+            }
         }
     }
     fn_80138DF4(arg0);
 }
-
 void fn_80139030(void *arg0) {
     lbl_8055E100 = -6;
     fn_80138F38(arg0);
