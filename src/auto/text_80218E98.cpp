@@ -6096,25 +6096,25 @@ extern "C" void fn_802238D0(MenuSoundList *list, s32 mode) {
         list->dirty = 1;
 }
 #pragma pop
-extern "C" s32 fn_802239C8(void *arg0, s32 arg1) {
+extern "C" s32 fn_802239C8(void *object, s32 message) {
     if (*(u8 *)fn_80216708() == 0)
         goto fallback;
-    if (arg1 == 0x126)
+    if (message == 0x126)
         goto fallback;
-    if (arg1 < 0x126) {
-        if (arg1 < 0x125)
+    if (message < 0x126) {
+        if (message < 0x125)
             goto fallback;
         goto lower;
     }
-    if (arg1 >= 0x128)
+    if (message >= 0x128)
         goto fallback;
-    ((void (*)(void *))fn_802235B4)(arg0);
+    ((void (*)(void *))fn_802235B4)(object);
     return 1;
 lower:
-    ((void (*)(void *))fn_80223644)(arg0);
+    ((void (*)(void *))fn_80223644)(object);
     return 1;
 fallback:
-    return fn_802192A4(arg0, arg1);
+    return fn_802192A4(object, message);
 }
 
 extern "C" void fn_80223A58(void *arg0) {
