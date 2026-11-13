@@ -2272,19 +2272,26 @@ void* fn_802D2D14(void) {
 #define GX_XF_INDEX       lbl_8055FD8C
 
 #pragma dont_inline on
-void fn_802D2ED8(int arg0, int arg1) {
+void fn_802D2ED8(int light, int index) {
+    /* Transform one point light into the current view space and load it into GX
+     * position-matrix slot index*3.  `light` points at a light record (3x3
+     * rotation at +0x00, world position at +0x24).  Its position is transformed
+     * by GX_LIGHT_XF_MTX into matrix+0x24, its rotation multiplied by the same
+     * matrix into matrix, the result transposed (third row negated) into
+     * GX_POSMTX_SCRATCH, and that loaded as the light's position matrix.  Light 0
+     * also marks the XF state dirty and drops the applied-preset cache. */
     float matrix[12];
     int *base;
 
-    if (arg1 == 0) {
-        lbl_8055FD70 = 1;
-        lbl_8055FD8C = -1;
+    if (index == 0) {
+        GX_XF_DIRTY = 1;
+        GX_XF_INDEX = -1;
     }
-    base = lbl_804CA2D8;
-    fn_801BFD34((unsigned char *)matrix + 0x24, (unsigned char *)arg0 + 0x24, base);
-    fn_80015B20(matrix, (void *)arg0, base);
-    fn_802D0DD4(lbl_804C5650, matrix);
-    GXLoadPosMtxImm(lbl_804C5650, (arg1 * 4) - arg1);
+    base = GX_LIGHT_XF_MTX;
+    fn_801BFD34((unsigned char *)matrix + 0x24, (unsigned char *)light + 0x24, base);
+    fn_80015B20(matrix, (void *)light, base);
+    fn_802D0DD4(GX_POSMTX_SCRATCH, matrix);
+    GXLoadPosMtxImm(GX_POSMTX_SCRATCH, (index * 4) - index);
 }
 #pragma dont_inline off
 
