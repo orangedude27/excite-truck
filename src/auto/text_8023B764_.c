@@ -183,17 +183,18 @@ void fn_8023B9EC(s32 c0, s32 c1, s32 c2, s32 c3, s32 c4) {
 #pragma use_lmw_stmw reset
 #pragma scheduling on
 void fn_8023BB0C(void) {
-    s32 sp10, spC, sp8;
-    s32 temp_r31 = fn_802411CC();
-    s32 var_r30;
-    s32 temp_r29;
+    /* Refresh the cached per-driver state for every active driver slot. */
+    s32 outA, outC, outB;
+    s32 driverCount = fn_802411CC();
+    s32 driverIndex;
+    s32 driverId;
     fn_800167FC();
-    for (var_r30 = 0; var_r30 < temp_r31; var_r30++) {
-        temp_r29 = *(s32 *)((u8 *)fn_80016464(var_r30) + 4);
-        fn_802411D0(var_r30, &sp10, &sp8, &spC);
-        fn_80137C84(spC, var_r30);
-        fn_80016A44(var_r30);
-        fn_80016970(var_r30, temp_r29, sp10, sp8);
+    for (driverIndex = 0; driverIndex < driverCount; driverIndex++) {
+        driverId = *(s32 *)((u8 *)fn_80016464(driverIndex) + 4);
+        fn_802411D0(driverIndex, &outA, &outB, &outC);
+        fn_80137C84(outC, driverIndex);
+        fn_80016A44(driverIndex);
+        fn_80016970(driverIndex, driverId, outA, outB);
     }
 }
 
