@@ -1840,70 +1840,127 @@ void fn_801195D8(void *arg0) {
     }
 }
 
+#define STREAM_PLAYER_TYPES
+/* The pair of AX voices a stream is played through, plus the PCM ring buffers
+   they read. fn_8011943C sets both voices' AX state, fn_80119300 clears a range
+   of the buffers and fn_801199A4 re-applies their sample-range parameters.
+   The start/stop helpers (fn_80119498, fn_80119558, fn_801195A0) reach further
+   into this block, to +0x34, +0x38, +0x48 and +0x50: those are the owning
+   StreamPlayer's looping, paused, readPos and readPosTime, which the player
+   fields below alias. */
+typedef struct VoicePair {
+    s32 voice0;   /* 0x00 AX voice handle, left or mono */
+    s32 voice1;   /* 0x04 AX voice handle, right */
+    void *buf0;   /* 0x08 PCM buffer the voices read, left or mono */
+    void *buf1;   /* 0x0C PCM buffer, right */
+    char pad_10[8];
+    s32 length;   /* 0x18 ring size in bytes */
+} VoicePair;
+
+/* Streaming PCM player: fn_80119DD0 opens it and installs the callbacks below,
+   fn_801195D8 copies decoded samples into the voice buffers as a ring of
+   voices.length bytes, and bytesToPlay counts what is left to hand over. */
+typedef struct StreamPlayer {
+    void *tick;         /* 0x00 fn_80119824, called every frame while playing */
+    void *field_04;     /* 0x04 */
+    void *field_08;     /* 0x08 */
+    void *setVolume;    /* 0x0C fn_80119AB0 */
+    void *setPan;       /* 0x10 fn_80119B38 */
+    void *setPause;     /* 0x14 fn_80119CB0 */
+    void *setPlay;      /* 0x18 fn_80119C0C */
+    void *release;      /* 0x1C fn_80119D40 */
+    char pad_20[0x3C];
+    s32 resynced;       /* 0x5C the ring ran dry and was skipped over with silence */
+    char pad_60[4];
+    s32 playing;        /* 0x64 */
+    char pad_68[8];
+    s32 sampleRate;     /* 0x70 */
+    s32 field_74;       /* 0x74 */
+    s32 channels;       /* 0x78 1 = mono, 2 = stereo */
+    VoicePair voices;   /* 0x7C */
+    s32 channelBytes;   /* 0x98 one channel's share of the ring */
+    s32 blockBytes;     /* 0x9C 50 ms of audio, rounded up to 256 bytes */
+    s32 field_A0;       /* 0xA0 sample rate again */
+    s32 volume;         /* 0xA4 */
+    s32 pan0;           /* 0xA8 */
+    s32 pan1;           /* 0xAC */
+    s32 looping;        /* 0xB0 keep the voices running when the buffer runs dry */
+    s32 paused;         /* 0xB4 */
+    s32 writePos;       /* 0xB8 where the next decoded byte goes in the ring */
+    s32 bytesToPlay;    /* 0xBC bytes still to play before the stream ends */
+    s32 preFill;        /* 0xC0 bytesToPlay to arm the ring with on start */
+    s32 readPos;        /* 0xC4 voices' read position, as last sampled */
+    s32 resyncLimit;    /* 0xC8 90% of the ring: this much free skips ahead */
+    s32 readPosTime;    /* 0xCC ms at which readPos was last sampled */
+    s32 resyncInterval; /* 0xD0 ms between two silence-filling resyncs */
+} StreamPlayer;
+
+/* Keep the stream's PCM ring ahead of the AX voices: re-sample how far they
+ * have read, and while the ring has room either hand them the next block of
+ * decoded samples (fn_801195D8) or, once they are so far ahead that the
+ * decoder can never catch up, skip writePos forward over silence and mark the
+ * player as resynced.  Always returns 0. */
 s32 fn_80119824(void *arg0) {
-    s32 temp_r3;
-    s32 temp_r4;
-    u32 var_r4;
-    u32 temp_r0;
-    u32 temp_r3_2;
-    u32 temp_r3_3;
-    u32 temp_r4_3;
-    u32 var_r30;
-    if (*(s32 *)((u8 *)arg0 + 0xB4) != 0 || *(s32 *)((u8 *)arg0 + 0x64) == 0) {
+    StreamPlayer *player = (StreamPlayer *)arg0;
+    s32 now;
+    s32 sinceSample;
+    u32 readPos, writePos, ringSize, freeBytes, block;
+    if (player->paused != 0 || player->playing == 0) {
         return 0;
     }
-    if (*(s32 *)((u8 *)arg0 + 0xB0) == 0) {
+    if (player->looping == 0) {
         ((void (*)(void))fn_801195D8)();
         return 0;
     }
-    var_r30 = *(u32 *)((u8 *)arg0 + 0xC4);
-    if ((u32)(fn_80116D30() - *(s32 *)((u8 *)arg0 + 0xCC)) > 0xC) {
+    readPos = player->readPos;
+    if ((u32)(fn_80116D30() - player->readPosTime) > 0xC) {
     block_6:
-        var_r30 = fn_801194E4((u8 *)arg0 + 0x7C);
-        temp_r3 = fn_80116D30();
-        temp_r4 = temp_r3 - *(s32 *)((u8 *)arg0 + 0xCC);
-        *(u32 *)((u8 *)arg0 + 0xC4) = var_r30;
-        if ((u32)temp_r4 < *(u32 *)((u8 *)arg0 + 0xD0)) {
+        readPos = fn_801194E4(&player->voices);
+        now = fn_80116D30();
+        sinceSample = now - player->readPosTime;
+        player->readPos = readPos;
+        if ((u32)sinceSample < (u32)player->resyncInterval) {
             goto block_8;
         }
-        *(s32 *)((u8 *)arg0 + 0xCC) = temp_r3;
+        player->readPosTime = now;
         goto block_16;
     block_8:
-        *(s32 *)((u8 *)arg0 + 0xCC) = temp_r3;
+        player->readPosTime = now;
     }
-    temp_r3_2 = *(u32 *)((u8 *)arg0 + 0xB8);
-    if (var_r30 < temp_r3_2) {
-        var_r4 = var_r30 + *(u32 *)((u8 *)arg0 + 0x94) - temp_r3_2;
+    writePos = player->writePos;
+    if (readPos < writePos) {
+        freeBytes = readPos + player->voices.length - writePos;
     } else {
-        var_r4 = var_r30 - temp_r3_2;
+        freeBytes = readPos - writePos;
     }
-    temp_r3_3 = (var_r4 < 0x400) ? 0 : ((var_r4 - 0x400) & 0xFFFFFFFC);
-    if (temp_r3_3 >= *(u32 *)((u8 *)arg0 + 0x9C)) {
+    /* what fits before the read position, keeping a 1 kB safety margin */
+    block = (freeBytes < 0x400) ? 0 : ((freeBytes - 0x400) & 0xFFFFFFFC);
+    if (block >= (u32)player->blockBytes) {
         goto block_15;
     }
-    if (*(s32 *)((u8 *)arg0 + 0xBC) == 0) {
+    if (player->bytesToPlay == 0) {
         goto return_zero;
     }
-    if (temp_r3_3 == 0) {
+    if (block == 0) {
         goto return_zero;
     }
 block_15:
-    if (temp_r3_3 < *(u32 *)((u8 *)arg0 + 0xC8)) {
+    if (block < (u32)player->resyncLimit) {
         goto block_18;
     }
 block_16:
-    *(s32 *)((u8 *)arg0 + 0x5C) = 1;
-    fn_80119300((u8 *)arg0 + 0x7C, *(s32 *)((u8 *)arg0 + 0xB8), *(s32 *)((u8 *)arg0 + 0x9C) * 2);
-    temp_r4_3 = *(u32 *)((u8 *)arg0 + 0x94);
-    temp_r0 = *(u32 *)((u8 *)arg0 + 0xB8) + *(u32 *)((u8 *)arg0 + 0x9C) * 2;
-    *(u32 *)((u8 *)arg0 + 0xB8) = temp_r0;
-    if (temp_r0 >= temp_r4_3) {
-        *(u32 *)((u8 *)arg0 + 0xB8) = temp_r0 - temp_r4_3;
+    player->resynced = 1;
+    fn_80119300(&player->voices, player->writePos, player->blockBytes * 2);
+    ringSize = player->voices.length;
+    writePos = player->writePos + player->blockBytes * 2;
+    player->writePos = writePos;
+    if (writePos >= ringSize) {
+        player->writePos = writePos - ringSize;
     }
     goto block_6;
 block_18:
-    *(u32 *)((u8 *)arg0 + 0xBC) = temp_r3_3;
-    fn_801195D8(arg0);
+    player->bytesToPlay = block;
+    fn_801195D8(player);
 return_zero:
     return 0;
 }
@@ -4535,7 +4592,7 @@ void fn_8011D7F8(void *arg0, void *arg1) {
 
 void fn_8011D9E4(void *arg0, void *arg1) {
     u32 *bits;
-    u32 value, bitCount, count, code, bit, len, available;
+    u32 value, bitCount, available, count, code, len, bit;
     u8 *lookup, *table, *dst;
     s32 symbol;
     if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
