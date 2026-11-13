@@ -642,17 +642,18 @@ int fn_8029FE1C(int arg0) {
 }
 
 #pragma pop
-int fn_8029FE6C(const char *arg0) {
-    unsigned char *current = lbl_804B6E70;
-    int i = 0;
+int fn_8029FE6C(const char *name) {
+    /* Look up a 0x24-byte named entry in lbl_804B6E70 (count lbl_8055F81C) by case-insensitive name; return its field at +0x20, or -1 if not found. */
+    unsigned char *entry = lbl_804B6E70;
+    int index = 0;
     goto check;
 loop:
-    if (stricmp((const char *)current, arg0) == 0)
-        return *(int *)(lbl_804B6E70 + i * 0x24 + 0x20);
-    current += 0x24;
-    i++;
+    if (stricmp((const char *)entry, name) == 0)
+        return *(int *)(lbl_804B6E70 + index * 0x24 + 0x20);
+    entry += 0x24;
+    index++;
 check:
-    if (i < lbl_8055F81C) goto loop;
+    if (index < lbl_8055F81C) goto loop;
     return -1;
 }
 
