@@ -74,33 +74,34 @@ extern s32 lbl_8055B560;
 extern char lbl_8055B568;
 
 void fn_8020A550(void) {
-    char buf[64];
-    s32 var_r31;
-    s32 *var_r30;
-    s32 *var_r29;
-    s8 *var_r28;
-    s32 var_r27;
+    /* Unregister the music callback, release two music slots, reload their paths, and clear related flags. */
+    char pathBuffer[64];
+    s32 zeroValue;
+    s32 *slotPtr;
+    s32 *namePtr;
+    s8 *flagPtr;
+    s32 index;
 
     fn_80127D58(fn_8020A100);
-    var_r31 = 0;
-    lbl_8055EDD0 = var_r31;
-    var_r30 = lbl_804892C0;
-    var_r27 = 0;
-    var_r29 = &lbl_8055B560;
-    var_r28 = &lbl_8055EDD4;
+    zeroValue = 0;
+    lbl_8055EDD0 = zeroValue;
+    slotPtr = lbl_804892C0;
+    index = 0;
+    namePtr = &lbl_8055B560;
+    flagPtr = &lbl_8055EDD4;
     do {
-        if (*var_r30 != 0) {
-            fn_80207924((void *)*var_r30);
-            *var_r30 = var_r31;
+        if (*slotPtr != 0) {
+            fn_80207924((void *)*slotPtr);
+            *slotPtr = zeroValue;
         }
-        sprintf(buf, (char *)&lbl_8055B568, *var_r29);
-        fn_8012E498(buf);
-        var_r27 += 1;
-        *var_r28 = var_r31;
-        var_r30 = (s32 *)((s32)var_r30 + 8);
-        var_r29 = (s32 *)((s32)var_r29 + 4);
-        var_r28 = (s8 *)((s32)var_r28 + 1);
-    } while (var_r27 < 2);
+        sprintf(pathBuffer, (char *)&lbl_8055B568, *namePtr);
+        fn_8012E498(pathBuffer);
+        index += 1;
+        *flagPtr = zeroValue;
+        slotPtr = (s32 *)((s32)slotPtr + 8);
+        namePtr = (s32 *)((s32)namePtr + 4);
+        flagPtr = (s8 *)((s32)flagPtr + 1);
+    } while (index < 2);
 }
 
 f32 fn_8020A5F0(void) {
@@ -132,33 +133,35 @@ void fn_80209FFC(void) {
     fn_8020A5F8(value);
 }
 
+#pragma push
+#pragma processor 750
 #pragma opt_propagation off
 void fn_8020A100(void) {
     char buf[0x40];
-    u8 *obj;
-    s32 *name;
-    u8 *flag;
     s32 *slot;
+    u8 *flag;
+    s32 *name;
     s32 i;
     s32 diff;
-    s32 zero;
-    f32 scale;
+    u8 *obj;
     f32 one;
+    f32 scale;
     f32 t;
+    s32 zero;
     if (lbl_8055EDD0 != 0) {
         scale = lbl_80563294;
         diff = fn_802E2C20() - lbl_8055EDE8;
         if ((s32)lbl_8055EDE0 != lbl_8055EDE4) {
             if (diff >= 0x190 || diff < 0 || (s32)lbl_8055EDE0 == -1) {
-                lbl_8055EDE0 = (void *)lbl_8055EDE4;
+                lbl_8055EDE0 = (void *)(s32)*(volatile s32 *)&lbl_8055EDE4;
             } else {
                 t = lbl_80563294 < ((f32)diff / lbl_80563298 - lbl_8056329C) / lbl_80563290 ? lbl_80563294 : ((f32)diff / lbl_80563298 - lbl_8056329C) / lbl_80563290;
                 t = t > lbl_8056329C ? t : lbl_8056329C;
                 scale = lbl_80563294 + t * lbl_805632A0;
             }
         }
-        one = lbl_8056329C;
         slot = lbl_804892C0;
+        one = lbl_8056329C;
         i = 0;
         flag = (u8 *)&lbl_8055EDD4;
         name = &lbl_8055B560;
@@ -168,7 +171,7 @@ void fn_8020A100(void) {
                 sprintf(buf, &lbl_8055B568, *name);
                 if (fn_8012E938(buf) != 0) {
                     fn_8012E81C(buf);
-                    sprintf(buf, lbl_8033C2A8, *name, zero == 1 ? &lbl_8055B570 : &lbl_8055B574);
+                    sprintf(buf, lbl_8033C2A8, *name, 1 == zero ? &lbl_8055B570 : &lbl_8055B574);
                     slot[0] = (s32)fn_802078CC(buf, 0, slot[1], 0x70);
                     fn_802E30C8(lbl_8033C2B4, i, 0, buf, slot[0]);
                     *flag = 1;
@@ -189,7 +192,7 @@ void fn_8020A100(void) {
                     obj[0x6D] = 1;
                     *(f32 *)(obj + 0x68) = one;
                 }
-                if (i == (s32)lbl_8055EDE0 && lbl_8055EDDC != 0) {
+                if (i == (s32)lbl_8055EDE0 && (u8)lbl_8055EDDC != 0) {
                     obj[0x4A] = 0;
                     obj[0x4B] = 1;
                     obj[0x49] = 1;
@@ -206,6 +209,7 @@ void fn_8020A100(void) {
     }
 }
 #pragma opt_propagation reset
+#pragma pop
 void fn_8020A368(void) {
     s32* var_r31;
     s32 var_r30;
