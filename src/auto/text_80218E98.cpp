@@ -7822,19 +7822,20 @@ extern "C" void *fn_80227D00(void *arg0) {
     return arg0;
 }
 
-extern "C" void *fn_80227D64(void *arg0, s32 arg1) {
-    s32 ptr;
-    if (arg0) {
-        ptr = *(s32 *)((u8 *)arg0 + 0x244);
-        *(void ***)arg0 = lbl_8033DEAC;
-        if (ptr)
-            fn_80235380((void *)ptr);
-        *(s32 *)((u8 *)arg0 + 0x244) = 0;
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+/* Destructor-like cleanup: installs vtable, releases owned object at +0x244, runs base destructor, optionally frees self. */
+extern "C" void *fn_80227D64(void *self, s32 deleteFlag) {
+    s32 ownedObject;
+    if (self) {
+        ownedObject = *(s32 *)((u8 *)self + 0x244);
+        *(void ***)self = lbl_8033DEAC;
+        if (ownedObject)
+            fn_80235380((void *)ownedObject);
+        *(s32 *)((u8 *)self + 0x244) = 0;
+        fn_8021915C(self, 0);
+        if (deleteFlag > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void *fn_80227E84(void *self, s32 arg1, void *arg2, s32 arg3) {
