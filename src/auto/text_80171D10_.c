@@ -832,49 +832,53 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
     return arg0;
 }
 
-extern "C" void fn_80173424(Fn80173424Obj *o) {
-    Fn80173424Child *q;
-    o->f0 = 0;
-    o->f4 = -1.0f;
-    o->f8 = 1;
-    o->f9 = 0;
-    o->f10 = 0;
-    o->fF8 = 0;
-    o->fFC = 0;
-    o->f100 = 0;
-    o->f104 = 0;
-    if (o->fC != 0)
-        ((void (*)(int))fn_802AE0E0)(o->fC);
-    q = o->f14;
-    if (q != 0) {
-        q->f4A = 1;
-        q->f4C = 0;
+extern "C" void fn_80173424(CrushRoundState *round) {
+    /* Put the crush-mode round state (CrushMaster + 0x1AC) back to its idle
+       values: state 0, timer -1.0, counters cleared, every animation cue of the
+       round's DSA player deactivated and all six of its sounds stopped. */
+    Sound *sound;
+
+    round->state = 0;
+    round->time = -1.0f;
+    round->active = 1;
+    round->flag9 = 0;
+    round->flag10 = 0;
+    round->counters[0] = 0;
+    round->counters[1] = 0;
+    round->counters[2] = 0;
+    round->counters[3] = 0;
+    if (round->animPlayer != 0)
+        ((void (*)(void **))fn_802AE0E0)(round->animPlayer);
+    sound = round->sound14;
+    if (sound != 0) {
+        sound->stop = 1;
+        sound->stopOnce = 0;
     }
-    q = o->f18;
-    if (q != 0) {
-        q->f4A = 1;
-        q->f4C = 0;
+    sound = round->sound18;
+    if (sound != 0) {
+        sound->stop = 1;
+        sound->stopOnce = 0;
     }
-    q = o->f1C;
-    if (q != 0) {
-        q->f4A = 1;
-        q->f4C = 0;
+    sound = round->sound1C;
+    if (sound != 0) {
+        sound->stop = 1;
+        sound->stopOnce = 0;
     }
-    q = o->f24;
-    o->f20 = 0;
-    if (q != 0) {
-        q->f4A = 1;
-        q->f4C = 0;
+    sound = round->sound24;
+    round->flag20 = 0;
+    if (sound != 0) {
+        sound->stop = 1;
+        sound->stopOnce = 0;
     }
-    q = o->f28;
-    if (q != 0) {
-        q->f4A = 1;
-        q->f4C = 0;
+    sound = round->sound28;
+    if (sound != 0) {
+        sound->stop = 1;
+        sound->stopOnce = 0;
     }
-    q = o->f2C;
-    if (q != 0) {
-        q->f4A = 1;
-        q->f4C = 0;
+    sound = round->sound2C;
+    if (sound != 0) {
+        sound->stop = 1;
+        sound->stopOnce = 0;
     }
 }
 
