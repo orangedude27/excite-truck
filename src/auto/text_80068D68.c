@@ -5824,6 +5824,7 @@ void fn_80073EA4(void) {
 }
 
 s32 bta_dm_sm_execute(BT_HDR *p_msg) {
+    /* Executes up to two action handlers for the device-manager state machine based on the message event byte. */
     extern u8 lbl_802EEA38[];
     extern u8 lbl_802EEA6C[];
     typedef void (*tAction)(BT_HDR *);
