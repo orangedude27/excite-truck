@@ -4373,9 +4373,19 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     fn_8002F634(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
 }
 
-extern "C" void *fn_800F975C(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, void *a6) {
+extern "C" void *fn_800F975C(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, void *a6) { // v11
     if (a6 == 0) return 0;
-    return 0;
+    s32 var_r31 = 0;
+    if (a3 != 0) {
+        void **tbl = *(void ***)a3;
+        s32 tmp[12];
+        ((void(*)(void**, void*, s32, s32, s32, s32))((void**)(*tbl))[2])(tbl, tmp, a5, 0, *(s32*)(a3+0xC), 8);
+        var_r31 = tmp[0];
+    }
+    s32 d = a2 - var_r31;
+    s32 var_r30 = (d > 0x7F) ? 0x7F : (d & ~(d >> 31));
+    if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void*)a0, var_r30, (void*)a4) == 0) return 0;
+    return (void*)var_r30;
 }
 
 extern "C" void SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 count) {
@@ -6626,3 +6636,36 @@ extern "C" f32 lbl_805610C0;
 extern "C" f32 lbl_805610C4;
 extern "C" const char lbl_80326768[];
 extern "C" const char lbl_803269A0[];
+extern "C" const char lbl_80325870[];
+extern "C" const char lbl_80325894[];
+extern "C" const char lbl_803258A0[];
+extern "C" const char lbl_803258C4[];
+extern "C" const char lbl_803258D0[];
+extern "C" const char lbl_803258F4[];
+extern "C" const char lbl_80325900[];
+extern "C" const char lbl_80325924[];
+extern "C" const char lbl_80325DC0[];
+extern "C" const char lbl_80325DE4[];
+extern "C" const char lbl_80325DF0[];
+extern "C" const char lbl_80325E14[];
+extern "C" const char lbl_80325E20[];
+extern "C" const char lbl_80325E44[];
+extern "C" const char lbl_8032606C[];
+extern "C" const char lbl_80326094[];
+extern "C" const char lbl_803260AC[];
+extern "C" const char lbl_803260F0[];
+extern "C" u8 lbl_80326264[];
+extern "C" u8 lbl_80326288[];
+extern "C" u8 lbl_80326294[];
+extern "C" u8 lbl_803262B8[];
+extern "C" void *AllocImpl__Q44nw4r3snd6detail8PoolImplFv(void *);
+extern "C" void fn_800E9B74(void *, void *, s32, void *, s32);
+extern "C" void fn_800EC1A4(void *);
+extern "C" void *fn_800FDA20(void *, void *);
+extern "C" void InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator(void *, void **, void *);
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void *, s32 *);
+extern "C" u32 OSDisableInterrupts(void);
+extern "C" void OSRestoreInterrupts(u32);
+extern "C" void OSLockMutex(void *);
+extern "C" void OSUnlockMutex(void *);
