@@ -16,7 +16,9 @@ extern int fn_801D94DC(void *, void *, const char *, int);
 
 #define dtbNameKey lbl_8055AD90     /* "name": a DTB item's own name field */
 #define morphRegionKey lbl_803391EC /* "morph_region": the sub-table fn_801D94DC reads */
-#define dtbZeroWeight lbl_80562B2C  /* 0.0f: the weight every morph group starts at */
+#define dtbZeroWeight lbl_80562B2C   /* 0.0f: the weight every morph group starts at */
+#define morphUnitWeight lbl_80562B28 /* 1.0f: the weight fn_801D9120 splits over the groups */
+#define morphMinAlpha lbl_80562B30   /* 1/255: the smallest alpha a drawn variant gets */
 
 // State of the terrain morph / "wl model" system. fn_801D9284 builds all of it
 // at startup and fn_801D9828 releases it again.
