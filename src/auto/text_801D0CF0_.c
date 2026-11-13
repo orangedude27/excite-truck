@@ -19,18 +19,21 @@ void __AXDSPInitCallback_801D0CF0(void) {
 }
 
 #pragma cplusplus on
+/* Free every manager registered in the boot manager list (fn_801D0DDC appends,
+ * up to 16 fit in lbl_80438818): walk the list back to front and delete each
+ * object through its virtual destructor, then reset the count.  Run at the end
+ * of the game's global shutdown (fn_801791A8). */
 extern "C" void fn_801D0CFC(void) {
-    class CallbackObj_801D0CFC {
+    class Manager {
     public:
-        virtual void destroy(int);
+        virtual ~Manager();
     };
     int i;
+    Manager *manager;
 
     for (i = lbl_8055E8E8 - 1; i >= 0; i--) {
-        CallbackObj_801D0CFC *obj = (CallbackObj_801D0CFC *)lbl_80438818[i];
-        if (obj != 0) {
-            obj->destroy(1);
-        }
+        manager = (Manager *)lbl_80438818[i];
+        delete manager;
     }
     lbl_8055E8E8 = 0;
 }
