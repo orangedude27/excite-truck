@@ -11754,20 +11754,21 @@ void fn_800729C0(s16 arg0) {
     }
 }
 
-void bta_dm_inq_results_cb(u8 *arg0) {
-    volatile u8 local[0x108];
-    void *info;
+/* Report an inquiry result to the search callback and mirror the app's "name known" flag into the inquiry DB. */
+void bta_dm_inq_results_cb(u8 *p_inq) {
+    volatile u8 result[0x108];
+    void *p_inq_info;
 
-    fn_80070FA4((void *)local, arg0 + 2);
-    memcpy((void *)(local + 6), arg0 + 8, 3);
-    local[9] = arg0[0xE];
-    info = BTM_InqDbRead(arg0 + 2);
-    if (info != 0) {
-        local[10] = 0;
+    fn_80070FA4((void *)result, p_inq + 2);
+    memcpy((void *)(result + 6), p_inq + 8, 3);
+    result[9] = p_inq[0xE];
+    p_inq_info = BTM_InqDbRead(p_inq + 2);
+    if (p_inq_info != 0) {
+        result[10] = 0;
     }
-    ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(0, (void *)local);
-    if (info != 0) {
-        *((u8 *)info + 0x10) = local[10];
+    ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(0, (void *)result);
+    if (p_inq_info != 0) {
+        *((u8 *)p_inq_info + 0x10) = result[10];
     }
 }
 
