@@ -46,14 +46,11 @@ found:
 void fn_801D0650(void *arg0) {
     int offset;
     int i;
-    struct Obj {
-        void (**vtable)(void *, void *);
-    };
     i = 0;
     offset = 0;
     while (i < lbl_804386B4[0].count) {
         void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
-        ((struct Obj *)obj)->vtable[2](obj, arg0);
+        ((void (**)(void *, void *))(*(void ***)obj))[2](obj, arg0);
         offset += 4;
         i++;
     }
@@ -87,12 +84,14 @@ void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
         ok = 1;
     }
     if (ok != 0) {
-        int count = *(int *)((char *)arg2 + 0x1ec);
-        int i = 0;
-        int offset = 0;
-        DispatchList *list = lbl_804386B4;
-        while (i < list->count) {
-            void *obj = *(void **)((char *)list->items + offset);
+        int offset;
+        int count;
+        int i;
+        count = *(int *)((char *)arg2 + 0x1ec);
+        i = 0;
+        offset = 0;
+        while (i < lbl_804386B4[0].count) {
+            void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
             ((void (*)(void *, void *, int, void *))(*(void ***)obj)[4])(obj, arg0, count, arg3);
             offset += 4;
             i++;
@@ -103,8 +102,9 @@ void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
 static inline int DispatchList_Find2(void *obj) {
     DispatchList *l = lbl_8043870C;
     void **p = l->items;
+    int n = l->count;
     int i;
-    for (i = 0; i < l->count; i++) {
+    for (i = 0; i < n; i++) {
         if (*p == obj) return i;
         p++;
     }
@@ -133,16 +133,8 @@ void fn_801D0800(s32 arg0) {
 
 void fn_801D0824(void *arg0) {
     int index = DispatchList_Find2(arg0);
-    int last;
     if (index == -1) return;
-    if (index < 0) return;
-    if (index >= lbl_8043870C[0].count) return;
-    last = lbl_8043870C[0].count - 1;
-    if (index != last) {
-        void **items = lbl_8043870C[0].items;
-        items[index] = items[last];
-    }
-    lbl_8043870C[0].count = lbl_8043870C[0].count - 1;
+    DispatchList_RemoveAt2(index);
 }
 
 #pragma cplusplus on
