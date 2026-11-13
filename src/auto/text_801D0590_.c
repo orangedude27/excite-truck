@@ -178,6 +178,27 @@ void fn_801D0824(void *listener) {
 #pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
+extern "C" void fn_801D08C0(void *arg0) {
+    struct Dummy {
+        virtual void f0(void *);
+    };
+    int offset;
+    int i;
+    i = 0;
+    offset = 0;
+    while (i < lbl_8043870C[0].count) {
+        void *obj = *(void **)((char *)lbl_8043870C[0].items + offset);
+        ((Dummy *)obj)->f0(arg0);
+        offset += 4;
+        i++;
+    }
+}
+#pragma pop
+#pragma cplusplus reset
+
+#pragma cplusplus on
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_801D0934(void *arg0) {
     struct Dummy {
         virtual void f0();
