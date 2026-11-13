@@ -2,8 +2,8 @@
 
 extern void *fn_801284F8(u32, const void *);
 extern f32 lbl_8055E0A8;
-extern void *lbl_8042F758[];
-extern void *lbl_8055E0D4;
+extern void *lbl_8042F758[]; // 8 "AI::AICarInfo" slots: { s32 carIndex; u8 needsReset; }, built by fn_8013477C
+extern void *lbl_8055E0D4;   // global "Proxer" object (fn_80137884/fn_801368F8): +0 car count, +8 pair table, +C entry stride, +10 per-car entries, +14 time
 extern f32 lbl_80561304;
 extern void *lbl_8055E0B0;
 extern f32 lbl_80560108, lbl_8056010C;
