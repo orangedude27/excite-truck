@@ -760,6 +760,7 @@ extern "C" s32 fn_8013284C(void *arg0, s32 arg1) {
 #pragma small_data on
 #pragma cplusplus on
 extern "C" s32 fn_801328D4(void *arg0, s32 arg1) {
+    /* Look up "@<arg1>" in arg0: if present, fetch its value and resolve it through arg0->+0x18's virtual method; otherwise return 0. */
     class A {
     public:
         virtual void f0(); virtual s32 f1(char *); virtual void f2(); virtual s32 f3(char *);
