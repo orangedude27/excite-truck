@@ -5300,52 +5300,52 @@ enum { STRM_CODEC_ADPCM = 2 };
 
 #pragma use_lmw_stmw off
 
-extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 arg2) {
-    if (*(s32 *)arg0 == 0)
+extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 index) {
+    if (*(void **)arg0 == 0) /* DBAssert(mHeader != NULL) */
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326518, 0xAD, lbl_80326688);
-    u8 *head = (u8 *)*((void **)arg0 + 1);
-    u8 *base = head + 8;
-    if (head[9] != 0)
+    u8 *block = (u8 *)*((void **)arg0 + 1);
+    u8 *refBase = block + 8;
+    if (block[9] != 0) /* the stream-info ref has to be a plain address */
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598F8, 0x6F, lbl_80326738);
-    u8 *codec = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(base[0], *(u32 *)(base + 4), base);
-    if (*codec != 2)
+    u8 *codec = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(refBase[0], *(u32 *)(refBase + 4), refBase);
+    if (*codec != STRM_CODEC_ADPCM)
         return 0;
-    u8 *head2 = (u8 *)*((void **)arg0 + 1);
-    u8 *base2 = head2 + 8;
-    if (head2[0x19] != 0)
+    u8 *block2 = (u8 *)*((void **)arg0 + 1);
+    u8 *refBase2 = block2 + 8;
+    if (block2[0x19] != 0) /* the parameter-table ref, likewise */
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598E0, 0x6F, lbl_803266B4);
-    u8 *table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(head2[0x18], *(u32 *)(head2 + 0x1C), base2);
-    if (arg2 >= *table)
+    u8 *table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(block2[0x18], *(u32 *)(block2 + 0x1C), refBase2);
+    if (index >= *table) /* the table's first byte counts the streams */
         return 0;
-    arg2 *= 8;
-    head = (u8 *)*((void **)arg0 + 1);
-    base = head + 8;
-    if ((table + arg2)[5] != 0)
+    index *= 8; /* eight bytes per entry, holding a DataRef at +4 */
+    block = (u8 *)*((void **)arg0 + 1);
+    refBase = block + 8;
+    if ((table + index)[5] != 0) /* the entry's ref, likewise */
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598E8, 0x6F, lbl_8032670C);
-    u8 *entry = table + arg2;
-    u8 *ref2 = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[4], *(u32 *)(entry + 8), base);
-    head2 = (u8 *)*((void **)arg0 + 1);
-    base2 = head2 + 8;
-    if (ref2[1] != 0)
+    u8 *entry = table + index;
+    u8 *paramRef = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[4], *(u32 *)(entry + 8), refBase);
+    block2 = (u8 *)*((void **)arg0 + 1);
+    refBase2 = block2 + 8;
+    if (paramRef[1] != 0) /* the parameter ref the entry refers to, likewise */
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598F0, 0x6F, lbl_8032670C);
-    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref2[0], *(u32 *)(ref2 + 4), base2);
-    u16 *dst = (u16 *)arg1;
-    const u16 *src = (const u16 *)data;
-    u16 a, b;
-    a = src[0]; b = src[1]; dst[0] = a; dst[1] = b;
-    a = src[2]; b = src[3]; dst[2] = a; dst[3] = b;
-    a = src[4]; b = src[5]; dst[4] = a; dst[5] = b;
-    a = src[6]; b = src[7]; dst[6] = a; dst[7] = b;
-    a = src[8]; b = src[9]; dst[8] = a; dst[9] = b;
-    a = src[10]; b = src[11]; dst[10] = a; dst[11] = b;
-    a = src[12]; b = src[13]; dst[12] = a; dst[13] = b;
-    a = src[14]; b = src[15]; dst[14] = a; dst[15] = b;
-    a = src[16]; b = src[17]; dst[16] = a; dst[17] = b;
-    a = src[18]; b = src[19]; dst[18] = a; dst[19] = b;
-    a = src[20]; dst[20] = a;
-    b = src[21]; dst[21] = b;
-    a = src[22]; dst[22] = a;
-    b = src[23]; dst[23] = b;
+    void *param = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(paramRef[0], *(u32 *)(paramRef + 4), refBase2);
+    AdpcmParam *dst = (AdpcmParam *)arg1;
+    const AdpcmParam *src = (const AdpcmParam *)param;
+    u16 w0, w1;
+    w0 = src->data[0]; w1 = src->data[1]; dst->data[0] = w0; dst->data[1] = w1;
+    w0 = src->data[2]; w1 = src->data[3]; dst->data[2] = w0; dst->data[3] = w1;
+    w0 = src->data[4]; w1 = src->data[5]; dst->data[4] = w0; dst->data[5] = w1;
+    w0 = src->data[6]; w1 = src->data[7]; dst->data[6] = w0; dst->data[7] = w1;
+    w0 = src->data[8]; w1 = src->data[9]; dst->data[8] = w0; dst->data[9] = w1;
+    w0 = src->data[10]; w1 = src->data[11]; dst->data[10] = w0; dst->data[11] = w1;
+    w0 = src->data[12]; w1 = src->data[13]; dst->data[12] = w0; dst->data[13] = w1;
+    w0 = src->data[14]; w1 = src->data[15]; dst->data[14] = w0; dst->data[15] = w1;
+    w0 = src->data[16]; w1 = src->data[17]; dst->data[16] = w0; dst->data[17] = w1;
+    w0 = src->data[18]; w1 = src->data[19]; dst->data[18] = w0; dst->data[19] = w1;
+    w0 = src->data[20]; dst->data[20] = w0;
+    w1 = src->data[21]; dst->data[21] = w1;
+    w0 = src->data[22]; dst->data[22] = w0;
+    w1 = src->data[23]; dst->data[23] = w1;
     return 1;
 }
 #pragma use_lmw_stmw reset
