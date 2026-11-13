@@ -241,7 +241,7 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
 #pragma pop
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling off
 unsigned int fn_801720E0(unsigned int arg0) {
     return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) >> 1);
 }
