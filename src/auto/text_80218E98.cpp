@@ -7430,20 +7430,21 @@ extern "C" void *fn_80226CBC(void *arg0, void *arg1) {
 
 extern "C" { __declspec(section ".data") extern char lbl_8033E038; }
 extern "C" void fn_80235380(void *);
-extern "C" void *fn_80226F00(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8033E038;
-        if (*(u8 *)((u8 *)arg0 + 0x260) != 0)
-            fn_8022EE98(*(void **)((u8 *)arg0 + 0x25C));
-        void *old = *(void **)((u8 *)arg0 + 0x244);
+extern "C" void *fn_80226F00(void *self, s32 shouldDelete) {
+    /* Deleting destructor: restore vtable lbl_8033E038, release optional resource at +0x25C when flag +0x260 is set (fn_8022EE98), release object at +0x244 (fn_80235380) and clear it, run base destructor fn_8021915C, then free if shouldDelete > 0. */
+    if (self != 0) {
+        *(void **)self = &lbl_8033E038;
+        if (*(u8 *)((u8 *)self + 0x260) != 0)
+            fn_8022EE98(*(void **)((u8 *)self + 0x25C));
+        void *old = *(void **)((u8 *)self + 0x244);
         if (old != 0)
             fn_80235380(old);
-        *(volatile s32 *)((u8 *)arg0 + 0x244) = 0;
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        *(volatile s32 *)((u8 *)self + 0x244) = 0;
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_80226F94(void *arg0) {
