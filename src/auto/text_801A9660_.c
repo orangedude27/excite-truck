@@ -8,6 +8,9 @@ public:
     virtual void d3(void *, void *);
     virtual void v4(void *, void *);
 };
+struct Dummy_801ABFF8 {
+    virtual void f0(void *);
+};
 #pragma cplusplus off
 struct FnTable_801ADA9C { char pad[0x18]; void (*call)(void *, void *, void *); };
 struct Obj_801ADA9C { struct FnTable_801ADA9C *vtable; };
