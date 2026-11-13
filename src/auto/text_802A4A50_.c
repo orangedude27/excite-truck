@@ -219,17 +219,18 @@ extern "C" void fn_802A4ADC(void) {
 }
 #pragma cplusplus reset
 void fn_802A4B90(void) {
-    s32 value;
-    value = lbl_8055F898;
-    if (value != -1) { ((s32 (*)(s32))fn_802C6CF8)(value); lbl_8055F898 = -1; }
+    /* Release tracked resources/handles and reset their globals to inactive sentinels. */
+    s32 resource;
+    resource = lbl_8055F898;
+    if (resource != -1) { ((s32 (*)(s32))fn_802C6CF8)(resource); lbl_8055F898 = -1; }
     fn_802CAC54(lbl_8055F89C);
     fn_802A597C();
-    value = lbl_8055F894;
-    if (value != 0) { ((s32 (*)(s32))fn_8028E398)(value); lbl_8055F894 = 0; }
-    value = lbl_8055F888;
-    if (value != 0) { ((void (*)(s32, s32))fn_802A5B8C)(value, 1); lbl_8055F888 = 0; }
-    value = lbl_8055F88C;
-    if (value != 0) { fn_802A69D8((void *)value, 1); lbl_8055F88C = 0; }
+    resource = lbl_8055F894;
+    if (resource != 0) { ((s32 (*)(s32))fn_8028E398)(resource); lbl_8055F894 = 0; }
+    resource = lbl_8055F888;
+    if (resource != 0) { ((void (*)(s32, s32))fn_802A5B8C)(resource, 1); lbl_8055F888 = 0; }
+    resource = lbl_8055F88C;
+    if (resource != 0) { fn_802A69D8((void *)resource, 1); lbl_8055F88C = 0; }
 }
 
 void fn_802A4C20(void) {
@@ -1913,4 +1914,25 @@ struct Obj802A5878 {
     virtual const char *name();
     virtual Obj802A5878 *child(s32);
 };
+#pragma cplusplus reset
+
+/* Append a three-float value; read the entire input before writing its slot. */
+#pragma push
+#pragma dont_inline on
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_802A70E4(void *object, float *input) {
+    s32 index = *(s32 *)((u8 *)object + 4);
+    float *data = *(float **)object;
+    float z, y, x;
+    float *slot;
+    x = input[0]; y = input[1]; z = input[2];
+    data[index * 3] = x;
+    slot = data + index * 3;
+    slot[1] = y;
+    slot[2] = z;
+    ++*(s32 *)((u8 *)object + 4);
+}
+#pragma pop
+
 #pragma cplusplus reset
