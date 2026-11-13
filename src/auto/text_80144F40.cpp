@@ -355,6 +355,19 @@ extern "C" s32 fn_801454E8(void *arg0, const char *arg1) {
 #pragma dont_inline reset
 #pragma pop
 
+// One line of on-screen text given an explicit pixel size instead of a scale:
+// the 0x1C-byte entries fn_80146204 collects and fn_80145538 fills from the
+// level's "name", "x", "y", "elem_just", "wid", "hit" and "color" keys.
+struct TextSizeEntry80145538 {
+    s32 id;            /* +0x00 "name" */
+    f32 x;             /* +0x04 "x" */
+    f32 y;             /* +0x08 "y" */
+    s32 justification; /* +0x0C "elem_just": 0 auto, 1 right, 2 left, 3 centre; |0x20 = scale by aspect */
+    f32 width;         /* +0x10 "wid" */
+    f32 height;        /* +0x14 "hit" */
+    s32 color;         /* +0x18 "color", "#rrggbb" parsed by fn_801454E8 */
+};
+
 extern "C" void fn_80145538(void *arg0, void *arg1) {
     extern void fn_80145368(void *, void *);
     extern s32 fn_801454E8(void *, const char *);
@@ -1253,8 +1266,6 @@ extern "C" void fn_80146824(void *arg0) {
     last->f8 = second;
     last->fC = third;
 }
-#pragma dont_inline reset
-#pragma use_lmw_stmw reset
 extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
