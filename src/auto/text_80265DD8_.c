@@ -404,18 +404,20 @@ void *fn_80266120(void *arg0) {
     return arg0;
 }
 
-#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_80266150(void *arg0) {
-    int zero = 0;
-    float f0 = lbl_80563C2C;
+    int zero;
+    float f0;
     float f1;
+    zero = 0;
+    f0 = lbl_80563C2C;
     *(int *)((char *)arg0 + 4) = zero;
     *(int *)((char *)arg0 + 0) = zero;
     f1 = lbl_8055C4C0;
     *(float *)((char *)arg0 + 8) = f1;
     *(float *)((char *)arg0 + 0xC) = f0;
 }
-#pragma dont_inline reset
+#pragma scheduling on
 
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     float temp_f0;
