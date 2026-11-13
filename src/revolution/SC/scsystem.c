@@ -352,6 +352,7 @@ static void ReadCallbackFromReload(s32 result, NANDCommandBlock* block) {
                                              : NAND_RESULT_FATAL_ERROR);
 }
 
+/* NAND close callback for SYSCONF reload: on success continue reload, otherwise handle the error. */
 static void CloseCallbackFromReload(s32 result, NANDCommandBlock* block) {
 #pragma unused(block)
 
