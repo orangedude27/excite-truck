@@ -214,8 +214,9 @@ extern "C" s32 fn_802E36D8(s32 arg0) {
     return -1;
 }
 #pragma cplusplus on
-extern "C" void fn_802E3734(s32 *arg0) {
-    class Result {
+extern "C" void fn_802E3734(s32 *handlePtr) {
+    /* Close a file handle: look up its entry, destroy the associated object, clear state, and invalidate the handle. */
+    class ObjectOwner {
     public:
         virtual void a0();
         virtual void a1();
@@ -224,7 +225,7 @@ extern "C" void fn_802E3734(s32 *arg0) {
         virtual void a4();
         virtual void destroy(void *);
     };
-    class Entry {
+    class FileObject {
     public:
         virtual void a0();
         virtual void a1();
@@ -235,15 +236,15 @@ extern "C" void fn_802E3734(s32 *arg0) {
         virtual void a6();
         virtual void a7();
         virtual void a8();
-        virtual Result *get();
+        virtual ObjectOwner *getOwner();
     };
-    s32 obj = fn_802E33D8(*arg0, lbl_8034CFB4, 0xE4);
-    Entry *entry = *(Entry **)((unsigned char *)obj + 0x24);
-    Result *result = entry->get();
-    result->destroy(entry);
-    *(void **)((unsigned char *)obj + 0x24) = 0;
-    *((unsigned char *)obj + 0x20) = 0;
-    *arg0 = -1;
+    s32 fileEntry = fn_802E33D8(*handlePtr, lbl_8034CFB4, 0xE4);
+    FileObject *fileObject = *(FileObject **)((unsigned char *)fileEntry + 0x24);
+    ObjectOwner *owner = fileObject->getOwner();
+    owner->destroy(fileObject);
+    *(void **)((unsigned char *)fileEntry + 0x24) = 0;
+    *((unsigned char *)fileEntry + 0x20) = 0;
+    *handlePtr = -1;
 }
 extern "C" void fn_802E37C4(s32 arg0) {
     class Obj {
