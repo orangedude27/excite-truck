@@ -2197,6 +2197,17 @@ int fn_802837D4(int arg0, int arg1) {
     return arg0;
 }
 
+static inline int fn_80283814_find(void **p, void *value, int count) {
+    int i = 0;
+    for (; i < count; ++i) {
+        if (*p != value) goto increment;
+        return i;
+increment:
+        ++p;
+    }
+    return -1;
+}
+
 void *fn_80283814(void *arg0, int arg1) {
     void **p;
     int i;
