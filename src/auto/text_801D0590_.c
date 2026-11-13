@@ -2,6 +2,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* The game's two listener lists.  An object hands one of its sub-objects to
+   fn_801D0590 (lbl_804386B4) or fn_801D0800 (lbl_8043870C) to be called later,
+   and takes it back out with fn_801D05B4 / fn_801D0824 when it goes away; the
+   rest of this file is the loops that walk one list and call one of every
+   entry's virtual functions.  The order of the entries means nothing: removing
+   an entry just moves the last one into its slot. */
 typedef struct { void **items; int count; } DispatchList;
 #pragma push
 #pragma small_data off
