@@ -838,6 +838,7 @@ s32 ISFS_Seek(s32 fd, s32 offset, IPCSeekMode mode) {
 
 s32 ISFS_SeekAsync(s32 fd, s32 offset, IPCSeekMode mode,
                    FSAsyncCallback callback, void* callbackArg) {
+    /* Allocate a command block and start an asynchronous seek on an ISFS file. */
     FSCommandBlock* block;
 
     block = (FSCommandBlock*)iosAllocAligned(hId, sizeof(FSCommandBlock), 32);
