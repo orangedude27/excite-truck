@@ -29,7 +29,7 @@ extern void fn_8016CEFC(void *);
 extern void *fn_8016CF08(void *);
 extern void *fn_8016D024(void *);
 extern void fn_8016D278(void *);
-extern void fn_8016CE9C(void *, void **);
+extern void **fn_8016CE9C(void *, void **);
 extern void fn_8016A0B0(void);
 extern void fn_8016C328(void *);
 extern s32 fn_80207848(void *, s32);
@@ -506,21 +506,22 @@ int fn_8016C25C(int arg0, int arg1) {
     return arg0;
 }
 
-void *fn_8016C29C(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (*((unsigned char *)arg0 + 16) != 0) {
-            int temp = *(int *)arg0;
-            *((unsigned char *)arg0 + 16) = 0;
-            if (temp != -1) {
-                fn_802C6CF8(temp);
-                *(int *)arg0 = -1;
+/* Destroys the object: if active, releases its handle and resets fields, then optionally frees it. */
+void *fn_8016C29C(void *obj, int shouldDelete) {
+    if (obj != 0) {
+        if (*((unsigned char *)obj + 16) != 0) {
+            int handle = *(int *)obj;
+            *((unsigned char *)obj + 16) = 0;
+            if (handle != -1) {
+                fn_802C6CF8(handle);
+                *(int *)obj = -1;
             }
-            ((int *)arg0)[1] = 0;
-            ((int *)arg0)[2] = 0;
+            ((int *)obj)[1] = 0;
+            ((int *)obj)[2] = 0;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 #pragma cplusplus on
@@ -3058,3 +3059,19 @@ extern void *fn_802ADDD8(s32);
 extern void fn_8016EA9C(void *);
 extern void fn_8016E984(void *);
 extern s32 fn_80179650(void);
+
+/* Append one pointer, returning the slot that received it. */
+#pragma push
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" void **fn_8016CE9C(void *object, void **input) {
+    s32 index = *(s32 *)((u8 *)object + 4);
+    void *value = *input;
+    void **data = *(void ***)object;
+    *(s32 *)((u8 *)object + 4) = index + 1;
+    data[index] = value;
+    return data + index;
+}
+#pragma pop
+
+#pragma cplusplus reset
