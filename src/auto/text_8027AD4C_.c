@@ -1378,15 +1378,22 @@ long fn_8027CB20(void) { return 1; }
 
 #pragma cplusplus on
 extern "C" long fn_8027CA1C(void *arg0);
-extern "C" long fn_8027CB28(void *arg0) {
-    extern char lbl_80347A50[];
-    struct Obj {
-        virtual char *m0();
+/* Challenge-mode goal check for one "event_path" (the record fn_8027C26C finds by name):
+ * walks the path object's child nodes and, for every "event_goal" among them, looks the
+ * contest named by its "contest_name" attribute up in the contest-event table (lbl_8055F654)
+ * and asks fn_8027CA1C whether the saved grade for that contest reaches the goal's
+ * "passing_grade". Returns 0 as soon as one goal is still open, 1 once the whole path is
+ * cleared. */
+extern "C" long fn_8027CB28(void *recordPtr) {
+    /* A goal node: slot 0x8 gives its type name, slot 0x14 reads a string attribute. */
+    struct GoalObject {
+        virtual char *getTypeName();
         virtual void m1();
         virtual void m2();
-        virtual long m3(char *);
+        virtual char *getString(const char *name);
     };
-    struct Mgr {
+    /* The "event_path" object: slot 0x60 returns its index-th child, 0 past the last. */
+    struct PathObject {
         virtual void m0();
         virtual void m1();
         virtual void m2();
@@ -1409,17 +1416,19 @@ extern "C" long fn_8027CB28(void *arg0) {
         virtual void m19();
         virtual void m20();
         virtual void m21();
-        virtual Obj *m22(long);
+        virtual GoalObject *getChild(long index);
     };
-    Obj *o;
-    long i = 0;
-    while ((o = (*(Mgr **)((char *)arg0 + 8))->m22(i)) != 0) {
-        if (stricmp(o->m0(), lbl_80347A50) == 0) {
-            if (fn_8027CA1C(fn_8027C120(lbl_8055F654, o->m3(lbl_80347A5C))) == 0) {
+    struct EventPathRecord *record = (struct EventPathRecord *)recordPtr;
+    GoalObject *goal;
+    long index = 0;
+    while ((goal = ((PathObject *)record->pathObject)->getChild(index)) != 0) {
+        if (stricmp(goal->getTypeName(), OBJ_TYPE_EVENT_GOAL) == 0) {
+            if (fn_8027CA1C(fn_8027C120(lbl_8055F654,
+                                        (long)goal->getString(ATTR_CONTEST_NAME))) == 0) {
                 return 0;
             }
         }
-        i++;
+        index++;
     }
     return 1;
 }
