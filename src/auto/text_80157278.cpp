@@ -3994,28 +3994,15 @@ extern "C" void fn_8015E568(Unk801577F0V* container, s32 arg1, s32 arg2, s32 arg
     }
 }
 #pragma use_lmw_stmw reset
-extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
-    struct Entry {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void Call(s32);
-    };
+/* Hands the value to every bonus tracker this group owns: virtual slot 0x3C of the
+ * "arraytracker" group forwards it to slot 0x3C of each tracker in its array (the
+ * air tracker flushes the progress it built up there; most trackers ignore it). */
+extern "C" void fn_8015E5F4(ArrayTracker* group, s32 value) {
     s32 off = 0;
     s32 i = 0;
-    while (i < *(s32*)((u8*)arg0 + 8)) {
-        Entry* entry = *(Entry**)((u8*)*(void**)((u8*)arg0 + 4) + off);
-        entry->Call(arg1);
+    while (i < group->mCount) {
+        BonusTracker* tracker = *(BonusTracker**)((u8*)group->mTrackers + off);
+        tracker->v13(value);
         off += 4;
         i += 1;
     }
