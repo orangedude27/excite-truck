@@ -270,17 +270,18 @@ extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-extern "C" float fn_801452E0(void *arg0, const char *arg1) {
+extern "C" float fn_801452E0(void *propertySource, const char *propertyName) {
+    /* Get a property string and parse it as a float, or as a numerator/denominator fraction if it contains '/'. */
     extern char *strchr(const char *, int);
     extern double atof(const char *);
     class V { public: virtual void a(); virtual void b(); virtual void c(); virtual const char *get(const char *); };
-    double temp_f31;
-    const char *text = ((V *)arg0)->get(arg1);
-    if (strchr(text, '/') != 0) {
-        temp_f31 = atof(strchr(text, '/') + 1);
-        return (float)(atof(text) / temp_f31);
+    double denominator;
+    const char *valueStr = ((V *)propertySource)->get(propertyName);
+    if (strchr(valueStr, '/') != 0) {
+        denominator = atof(strchr(valueStr, '/') + 1);
+        return (float)(atof(valueStr) / denominator);
     }
-    return (float)atof(text);
+    return (float)atof(valueStr);
 }
 #pragma dont_inline reset
 #pragma pop
