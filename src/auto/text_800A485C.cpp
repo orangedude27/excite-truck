@@ -20722,14 +20722,16 @@ extern "C" s32 fn_800D3F94(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 #pragma opt_tail_call on
-extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
-    void *r31 = (void *)lbl_8055DDD4;
-    s32 r28 = arg2;
-    s32 r29 = arg1;
-    s32 r30 = arg0;
-    while (r31 != NULL) {
-        if (fn_800D3F94(r31, r30, r29, r28) != 0) return 1;
-        r31 = *(void **)((u8 *)r31 + 0xC);
+extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *unused3, void *unused4) {
+    void *node = (void *)lbl_8055DDD4;
+    s32 savedArg2 = arg2;
+    s32 savedArg1 = arg1;
+    s32 savedArg0 = arg0;
+
+    /* Search the linked list headed by lbl_8055DDD4 for an entry accepted by fn_800D3F94; return 1 if found. */
+    while (node != NULL) {
+        if (fn_800D3F94(node, savedArg0, savedArg1, savedArg2) != 0) return 1;
+        node = *(void **)((u8 *)node + 0xC);
     }
     return 0;
 }
