@@ -2650,6 +2650,7 @@ extern "C" s32 fn_8012E938(s32 arg0) {
     return fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0;
 }
 
+/* Ensures the resource named by arg0 is loaded via the external-TOC manager: locates its owning set/mount, then waits for that resource to become ready. */
 extern "C" void fn_8012E96C(s32 arg0) {
     s32 sp8;
     s32 result;
