@@ -24,6 +24,30 @@ typedef struct { EfVec a; EfVec b; } EfPair;
 typedef struct { int mode; char pad4[0x34]; unsigned char en38; char pad39[0x4B]; int v84; unsigned char en88; char pad89[3]; void *buf; int head; int tail; int cap; } EfObj;
 typedef struct { EfPair p; float v6; unsigned char c0, c1, c2; float f0; float f1; } EfEntry2;
 
+/* One of the nine emitter lists the effect sorter keeps at lbl_804B34B0
+ * (0x104 bytes each): up to 64 emitter pointers with the number held at
+ * +0x100.  fn_8028ED8C appends an emitter, fn_8028ED74 empties the list and
+ * fn_8028EDA8 drops one by identity. */
+typedef struct EfList {
+    void *item[64]; /* at 0x00 */
+    int count;      /* at 0x100 */
+} EfList;
+
+/* The two emitter fields the sorter below reads.  +0x44 is the emitter's
+ * priority (1..9, read from its parameter block with default 5) and picks the
+ * list it is filed in; +0xA4 is the texture it draws with, a handle into the
+ * 512 0x4C-byte texture slots (fn_802CAC28 takes it, fn_802CAC54 releases it). */
+typedef struct EfEmitter {
+    char pad_0[0x44];
+    int priority;   /* at 0x44 */
+    char pad_48[0x5C];
+    int texHandle;  /* at 0xA4 */
+} EfEmitter;
+
+/* fn_8028F040's "the two lists share no texture", which fn_8028F114 also takes
+ * as "no group to pin to the front / back of this run". */
+#define EF_NO_TEXTURE (-2)
+
 extern char lbl_803490D4[];
 extern int fn_80128668(void *);
 extern int lbl_8055C8E0;
@@ -152,6 +176,26 @@ void fn_8028E1A4(void) {
     lbl_8055F738 = fn_801E7E18();
     lbl_8055F73C = 1;
 }
+
+#pragma push
+#pragma small_data off
+void fn_8028E1D0(void) {
+    struct Table { int entries[64]; int count; } *base;
+    int *entries;
+    int i;
+    entries = (int *)&lbl_804B34B0;
+    base = (struct Table *)entries;
+    lbl_8055F73C = 0;
+    i = 0;
+    goto test;
+body:
+    fn_8028F8E0(*entries, lbl_8055F738);
+    entries++;
+    i++;
+test:
+    if (i < base->count) goto body;
+}
+#pragma pop
 
 #pragma push
 #pragma processor 750
