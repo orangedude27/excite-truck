@@ -22,6 +22,8 @@ extern char lbl_80340108[];
 extern char lbl_80340114[];
 #pragma scheduling invalid_target
 void *fn_8022D228(void *arg0, int arg1, int arg2, int arg3) {
+    /* Initialize a fixed-capacity string list: store capacity/count/maxLen and allocate
+     * the pointer table plus one (maxLen+1)-byte buffer per entry. */
     int offset;
     int i;
     void *result;
