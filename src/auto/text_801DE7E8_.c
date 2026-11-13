@@ -273,15 +273,15 @@ extern "C" void fn_801DEC18(void) {
         virtual Node *get(int);
     };
     float sp8;
-    char *base = lbl_803394B0;
+    register char *base = (char *)lbl_803394B0;
+    char *name;
     Handle *h;
     int n;
     Node *node;
     unsigned int j;
     void *obj;
-
     fn_801332D0(fn_8000DA10() + 0xC, (int *)(base + 0xC0), &lbl_8055E9DC);
-    char *name = base + 0xCC;
+    name = base + 0xCC;
     h = (Handle *)fn_80131810(name);
     lbl_8055E9E4 = (int)h;
     if (h != 0) {
@@ -469,9 +469,10 @@ int fn_801DF060(void) {
     return (int)(tmp >> 31);
 }
 
-int fn_801DF074(int arg0, int arg1) {
-    if ((unsigned int)(arg0 - 7) <= 1U && fn_801E85A4() == 1 && lbl_8055E9E8 == 0 && (((unsigned char *)lbl_804872B0)[arg0 * 0x1C] != 0 || !(lbl_8055E9DC & (1 << arg0)))) {
-        fn_801DE9F0(arg0, arg1);
+int fn_801DF074(int popupId, int arg1) {
+    /* Attempts to show popup 7 or 8 when allowed; delegates to fn_801DE9F0 and returns 1 on success. */
+    if ((unsigned int)(popupId - 7) <= 1U && fn_801E85A4() == 1 && lbl_8055E9E8 == 0 && (((unsigned char *)lbl_804872B0)[popupId * 0x1C] != 0 || !(lbl_8055E9DC & (1 << popupId)))) {
+        fn_801DE9F0(popupId, arg1);
         return 1;
     }
     return 0;
