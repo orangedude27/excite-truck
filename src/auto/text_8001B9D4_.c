@@ -469,24 +469,25 @@ s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
 #pragma dont_inline reset
 #pragma push
 #pragma use_lmw_stmw off
+/* Search a stat slot's record list for the record matching (key, name). */
 s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
     void *record;
     s32 offset;
-    s32 i;
-    void *entry;
-    i = 0;
+    s32 index;
+    void *slot;
+    index = 0;
     offset = 0;
     goto bottom;
 top:
-    record = (void *)(*(s32 *)entry + offset);
+    record = (void *)(*(s32 *)slot + offset);
     if (fn_8001C27C(record, arg1, arg2) != 0) {
         return (s32)record;
     }
     offset += 0x2C;
-    i++;
+    index++;
 bottom:
-    entry = lbl_80358658[arg0];
-    if (i < *(s32 *)((u8 *)entry + 4))
+    slot = lbl_80358658[arg0];
+    if (index < *(s32 *)((u8 *)slot + 4))
         goto top;
     return 0;
 }
