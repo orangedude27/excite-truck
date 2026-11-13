@@ -1184,6 +1184,7 @@ void *fn_801F7090(void *arg0) {
 
 extern void fn_801F639C(void *);
 extern void fn_801F6880(void *);
+/* Destroy each of the count-at-+0x120 entries (stride 0x48) in this array, clear the count, and optionally free the block. */
 FN_801F70D0_RETURN fn_801F70D0(void *arg0, int arg1) {
     void *entry;
     int i;
