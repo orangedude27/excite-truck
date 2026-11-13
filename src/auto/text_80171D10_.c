@@ -25,17 +25,6 @@ extern float PSQUATMultiply(void *, void *);
 extern void *fn_8017960C();
 extern void fn_802AE0E0();
 extern float lbl_80561A50;
-typedef struct { char pad[0x4A]; unsigned char f4A; char pad4B; unsigned char f4C; } Fn80173424Child;
-typedef struct {
-    int f0; float f4; unsigned char f8; unsigned char f9; char padA[2];
-    int fC; unsigned char f10; char pad11[3];
-    Fn80173424Child *f14; Fn80173424Child *f18; Fn80173424Child *f1C;
-    unsigned char f20; char pad21[3];
-    Fn80173424Child *f24; Fn80173424Child *f28; Fn80173424Child *f2C;
-    char pad30[0xF8 - 0x30];
-    int fF8; int fFC; int f100; int f104;
-} Fn80173424Obj;
-
 /* A Sound object (created by fn_80207848); only its two stop-request flags
    matter here: +0x4A latches the sound stopped, +0x4C asks for a one-shot
    stop that the sound's own update clears (fn_80206824). */
