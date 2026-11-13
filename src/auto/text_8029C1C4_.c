@@ -741,7 +741,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     scratch[1] = f0 + f5;
     scratch[2] = f4 + f8 * f7;
     fn_8014E740(scratch, *(float *)((char *)arg0 + 0x60), f1, f4, f0, f5, f6, f7, f8, f9, f10, f11, f12);
-    return (void *)arg0;
+    return arg0;
 }
 #pragma pop
 void *fn_8029D464(void *arg0,int arg1) {
@@ -1383,7 +1383,7 @@ void fn_8029E8E0(float *arg0, int arg1) {
     fn_802C8D74();
 }
 #pragma pop
-extern void fn_8029EC64(void *, int);
+extern void fn_8029EC64(void *, void *, int);
 extern float lbl_805646A8;
 #pragma scheduling on
 void fn_8029EA34(void *area, void **__restrict targetRef) {
