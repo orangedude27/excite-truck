@@ -489,23 +489,24 @@ extern "C" void fn_80211F4C(void) { fn_80211D24(1); }
 extern "C" int fn_80211F54(void) { return lbl_8055EF40 == 0; }
 
 extern "C" void fn_80211F64(void) {
-    float temp_f0;
-    float var_f3;
-    int temp_r31;
-    temp_r31 = fn_802E2C20();
+    /* Update a global delta-time value from the frame timer unless paused/disabled; always store the last tick. */
+    float scaledDelta;
+    float clampedDelta;
+    int currentTick;
+    currentTick = fn_802E2C20();
     if (fn_802ECC10() == 0) {
-        var_f3 = lbl_80563444;
-        temp_f0 = lbl_80563440 * (float)(temp_r31 - lbl_8055EF14);
-        if (var_f3 < temp_f0) {
-            var_f3 = var_f3;
+        clampedDelta = lbl_80563444;
+        scaledDelta = lbl_80563440 * (float)(currentTick - lbl_8055EF14);
+        if (clampedDelta < scaledDelta) {
+            clampedDelta = clampedDelta;
         } else {
-            var_f3 = temp_f0;
+            clampedDelta = scaledDelta;
         }
-        lbl_8055EF10 = var_f3;
+        lbl_8055EF10 = clampedDelta;
     } else {
         lbl_8055EF10 = lbl_80563434;
     }
-    lbl_8055EF14 = temp_r31;
+    lbl_8055EF14 = currentTick;
 }
 
 #pragma scheduling invalid_target
