@@ -2478,22 +2478,23 @@ done:
 
 #pragma push
 #pragma dont_inline on
-s32 fn_8011A870(void *arg0, s32 arg1) {
-    register volatile s32 *p = (volatile s32 *)arg0;
-    register volatile s32 *wait = (volatile s32 *)((u8 *)arg0 + 0x24);
+/* Set or clear the stream pause state, optionally waiting for or pumping pending reads. */
+s32 fn_8011A870(void *stream, s32 flags) {
+    register volatile s32 *p = (volatile s32 *)stream;
+    register volatile s32 *reading = (volatile s32 *)((u8 *)stream + 0x24);
     register s32 result;
-    if (arg1 & 1) {
+    if (flags & 1) {
         if (p[0x50 / 4] == 0)
             p[0x50 / 4] = 1;
-        if (arg1 & 0x80000000) {
+        if (flags & 0x80000000) {
             do {
-            } while (*wait != 0);
+            } while (*reading != 0);
         }
-    } else if (arg1 & 2) {
+    } else if (flags & 2) {
         if ((u32)p[0x50 / 4] == 1U)
             p[0x50 / 4] = 0;
-        if (arg1 & 0x80000000)
-            fn_8011A7CC(arg0);
+        if (flags & 0x80000000)
+            fn_8011A7CC(stream);
     }
     result = p[0x50 / 4];
     return result;
