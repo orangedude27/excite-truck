@@ -3504,6 +3504,9 @@ void fn_8005FCCC(u8 devHandle, u8 open) {
     WPADCommand queuedCommand ALIGN(8);
     WPADCommand readCommand ALIGN(8);
     WPADCB* p;
+    s8 windex;
+    s32 wlast;
+    s32 wmask;
 
     if (open) {
         DBPrintf_80068D68(messages + 0xCC);
@@ -3522,9 +3525,6 @@ void fn_8005FCCC(u8 devHandle, u8 open) {
             u32 addr = 0x1770;
             u16 len = 1;
             BOOL enabled;
-            s8 windex;
-            s32 wlast;
-            s32 wmask;
             readCommand.reportID = 0x17;
             readCommand.dataLength = 6;
             readCommand.cmdCB = fn_8005F3E8;
@@ -3565,9 +3565,6 @@ void fn_8005FCCC(u8 devHandle, u8 open) {
         chan = lbl_80390500[devHandle];
         lbl_80390500[devHandle] = -1;
         if (chan != -1) {
-            s32 wlast2;
-            s8 windex2;
-            s32 wmask2;
             p = lbl_8038F4F0[chan];
             *(s32*)((u8*)p + 0x7FC) = -1;
             if (*(WPADCallback*)((u8*)p + 0x7DC) != NULL) {
@@ -3607,10 +3604,10 @@ void fn_8005FCCC(u8 devHandle, u8 open) {
                             OSRestoreInterrupts(enabled);
                         } else {
                             memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.front], 0, sizeof(WPADCommand));
-                            windex2 = p->stdCmdQueue.front;
-                            wlast2 = p->stdCmdQueue.capacity - 1;
-                            wmask2 = ~(((s32)windex2 - wlast2) | (wlast2 - (s32)windex2)) >> 31;
-                            p->stdCmdQueue.front = (windex2 + 1) & ~wmask2;
+                            windex = p->stdCmdQueue.front;
+                            wlast = p->stdCmdQueue.capacity - 1;
+                            wmask = ~(((s32)windex - wlast) | (wlast - (s32)windex)) >> 31;
+                            p->stdCmdQueue.front = (windex + 1) & ~wmask;
                             OSRestoreInterrupts(enabled);
                         }
                     }
@@ -4761,63 +4758,96 @@ void fn_80063324(s32 arg0, WPADGameInfo *arg1) {
     (void)arg1;
 }
 
-// fn_80063564: WPADSetReportType - queues a SetDataReportMode command.
-// Functionally identical to WPADiSendSetReportType (line above) but placed at
-// a separate anonymous address by the original REXE01 build. The reference asm
-// (auto_03_8005D0DC_text.s, 0x80063564) expands the WPADCommand copy as inline
-// lfd/stfd pairs and inlines the queue-full check; MWCC emits memcpy/memset
-// library calls for this source shape. The 12-instruction delta (mine 132 vs
-// ref 120) is a source-shape gap from memcpy/queue-check inlining, not a
-// semantic difference. Marked FUZZY: same control flow, same behaviour, same
-// register choices for the queue advance.
+/* WPADiSendSetReportType with WPADiPushCommand inlined (the REXE01 build keeps
+ * both copies): fill a SetDataReportMode command for the requested data format
+ * - always continuous reporting - and append it to the command queue, copying
+ * it through the 8-byte aligned half of the frame.  Returns FALSE, leaving the
+ * queue untouched, when the queue holds capacity - 1 commands already. */
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
-    u8 *queue = (u8 *)pQueue;
-    u8 buf[0x60] ALIGN(8);
+    u8 frame[0x60] ALIGN(8);
+    WPADCommand* command = (WPADCommand*)(frame + 0x30);
     s8 diff;
     s8 index;
     BOOL innerEnabled;
     BOOL enabled;
     register s32 wrapMask;
-    int lastIndex;
-    *(u32*)&buf[0x30] = 0x12;
-    *(u16*)&buf[0x4A] = 2;
-    *(u8*)&buf[0x34] = 4;
-    *(u32*)&buf[0x5C] = (u32)pCallback;
+    s32 lastIndex;
+
+    command->reportID = RPTID_SET_DATA_REPORT_MODE;
+    command->dataLength = RPT12_SIZE;
+    command->dataBuf[RPT12_CONT_REPORT] = 4; // Always continuous reporting
+    command->cmdCB = pCallback;
+
     switch (format) {
-    case 0: *(u8*)&buf[0x35] = 0x30; break;
-    case 1: *(u8*)&buf[0x35] = 0x31; break;
-    case 2: *(u8*)&buf[0x35] = 0x33; break;
-    case 3: *(u8*)&buf[0x35] = 0x32; break;
-    case 4: *(u8*)&buf[0x35] = 0x35; break;
-    case 5: *(u8*)&buf[0x35] = 0x37; break;
-    case 6: *(u8*)&buf[0x35] = 0x32; break;
-    case 7: *(u8*)&buf[0x35] = 0x35; break;
-    case 8: *(u8*)&buf[0x35] = 0x37; break;
-    case 9: *(u8*)&buf[0x35] = 0x3e; break;
-    default: break;
+    case WPAD_FMT_CORE_BTN: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN;
+        break;
     }
-    *(double*)&buf[0] = *(double*)&buf[0x30];
-    *(double*)&buf[8] = *(double*)&buf[0x38];
-    *(double*)&buf[0x10] = *(double*)&buf[0x40];
-    *(double*)&buf[0x18] = *(double*)&buf[0x48];
-    *(double*)&buf[0x20] = *(double*)&buf[0x50];
-    *(double*)&buf[0x28] = *(double*)&buf[0x58];
+    case WPAD_FMT_CORE_BTN_ACC: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC;
+        break;
+    }
+    case WPAD_FMT_CORE_BTN_ACC_DPD: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD12;
+        break;
+    }
+    case WPAD_FMT_FS_BTN: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_EXT8;
+        break;
+    }
+    case WPAD_FMT_FS_BTN_ACC: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_EXT16;
+        break;
+    }
+    case WPAD_FMT_FS_BTN_ACC_DPD: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD10_EXT9;
+        break;
+    }
+    case WPAD_FMT_CLASSIC_BTN: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_EXT8;
+        break;
+    }
+    case WPAD_FMT_CLASSIC_BTN_ACC: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_EXT16;
+        break;
+    }
+    case WPAD_FMT_CLASSIC_BTN_ACC_DPD: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD10_EXT9;
+        break;
+    }
+    case WPAD_FMT_BTN_ACC_DPD_EXTENDED: {
+        command->dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD18_1;
+        break;
+    }
+    default:
+        break;
+    }
+
+    ((double*)frame)[0] = ((double*)command)[0];
+    ((double*)frame)[1] = ((double*)command)[1];
+    ((double*)frame)[2] = ((double*)command)[2];
+    ((double*)frame)[3] = ((double*)command)[3];
+    ((double*)frame)[4] = ((double*)command)[4];
+    ((double*)frame)[5] = ((double*)command)[5];
+
     enabled = OSDisableInterrupts();
     innerEnabled = OSDisableInterrupts();
-    diff = (s8)(queue[1] - queue[0]);
-    if (0 > diff)
-        diff = (s8)(diff + *(u32*)(queue + 8));
+    diff = pQueue->back - pQueue->front;
+    if (diff < 0) {
+        diff = (s8)(diff + pQueue->capacity);
+    }
     OSRestoreInterrupts(innerEnabled);
-    if (*(u32*)(queue + 8) - 1 == diff) {
+    if (pQueue->capacity - 1 == diff) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
-    memset(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, 0, 0x30);
-    memcpy(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, buf, 0x30);
-    index = (s8)queue[1];
-    lastIndex = *(u32*)(queue + 8) - 1;
+    memset(&pQueue->buffer[pQueue->back], 0, sizeof(WPADCommand));
+    memcpy(&pQueue->buffer[pQueue->back], frame, sizeof(WPADCommand));
+    /* the ring indices are bytes: read back as a byte and wrap it round */
+    index = (s8)(u8)pQueue->back;
+    lastIndex = pQueue->capacity - 1;
     wrapMask = ~((index - lastIndex) | (lastIndex - index)) >> 31;
-    queue[1] = (index + 1) & ~wrapMask;
+    pQueue->back = (index + 1) & ~wrapMask;
     OSRestoreInterrupts(enabled);
     return TRUE;
 }
