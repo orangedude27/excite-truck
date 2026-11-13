@@ -9,6 +9,7 @@
 static OSShutdownFunctionQueue ShutdownFunctionQueue;
 static void KillThreads(void);
 
+/* Insert a shutdown callback into the priority-ordered shutdown function queue. */
 void OSRegisterShutdownFunction(OSShutdownFunctionInfo* info) {
     OSShutdownFunctionInfo* it;
     OSShutdownFunctionInfo* prev;
