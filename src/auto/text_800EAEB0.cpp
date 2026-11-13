@@ -29,7 +29,18 @@ public:
     void *Alloc(unsigned long, void (*)(void *, unsigned long, void *), void *);
     void Destroy();
 };
-class EnvGenerator { public: void SetRelease(int); void SetDecay(int); void SetSustain(int); };
+class EnvGenerator {
+public:
+    void *unknown_0x00[2]; /* +0x00 generator state */
+    f32 decayTime;         /* +0x08 decay time, from SetDecay(0-0x7F) */
+    f32 releaseTime;       /* +0x0C release time, from SetRelease(0-0x7F) */
+    f32 attackTime;        /* +0x10 attack time, from SetAttack(0-0x7F) */
+    u8 sustain;            /* +0x14 sustain level, from SetSustain(0-0x7F) */
+
+    void SetRelease(int);
+    void SetDecay(int);
+    void SetSustain(int);
+};
 class PoolImpl { public: void DestroyImpl(void *, unsigned long); };
 class RemoteSpeakerManager { public: void Setup(); };
    }}}
@@ -1358,11 +1369,11 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     s32 v;
 
     if (track == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(str, 0x31, str + 0x18);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u8*)str + 0), 0x31, str + 0x18);
     }
     player = track->player;
     if (player == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(str, 0x33, str + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u8*)str + 0), 0x33, str + 0x40);
     }
     useArg = false;
     enabled = true;
@@ -1477,7 +1488,7 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
         case 0xf0:
             switch (cmd) {
             case 0xfe:
-                Panic__Q26nw4hbm2dbFPCciPCce(str, 0x105, str + 0x6c);
+                Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u8*)str + 0), 0x105, str + 0x6c);
                 break;
             case 0xff:
                 return 1;
@@ -1766,15 +1777,14 @@ extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSCo
 #pragma use_lmw_stmw off
 extern "C" void* fn_800EE5E8(void* arg0, void* arg1) {
     u8 first = ((volatile u8*)arg0)[1];
-    u8* file = lbl_80323840;
-    u8* state;
-    const s16* pcm;
+    const s16* pcm = (const s16*)arg1;
+    u8* state = (u8*)arg0;
     u32 outerLevel;
-    s32 active, startAlarm, repeatAlarm, encoded;
+    s32 startAlarm, repeatAlarm, active, encoded;
     u32 mode;
+    u32 i;
     u8 encodedBuffer[0x18];
-    pcm = (const s16*)arg1;
-    state = (u8*)arg0;
+    u8* file = lbl_80323840;
     if (first == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x101,
                                      (const char*)file + 0x38);
@@ -1789,21 +1799,18 @@ extern "C" void* fn_800EE5E8(void* arg0, void* arg1) {
                 if (state[3] != 0) {
                     u32* words = (u32*)pcm;
                     allZero = 1;
-                    {
-                        u32 i;
-                        for (i = 1; i <= 10; i += 9) {
-                            if (words[0] != 0) { allZero = 0; goto scanDone; }
-                            if (words[1] != 0) { allZero = 0; goto scanDone; }
-                            if (words[2] != 0) { allZero = 0; goto scanDone; }
-                            if (words[3] != 0) { allZero = 0; goto scanDone; }
-                            if (words[4] != 0) { allZero = 0; goto scanDone; }
-                            if (words[5] != 0) { allZero = 0; goto scanDone; }
-                            if (words[6] != 0) { allZero = 0; goto scanDone; }
-                            if (words[7] != 0) { allZero = 0; goto scanDone; }
-                            if (words[8] != 0) { allZero = 0; goto scanDone; }
-                            if (words[9] != 0) { allZero = 0; goto scanDone; }
-                            words += 10;
-                        }
+                    for (i = 0; i < 10; i += 9) {
+                        if (words[0] != 0) { allZero = 0; goto scanDone; }
+                        if (words[1] != 0) { allZero = 0; goto scanDone; }
+                        if (words[2] != 0) { allZero = 0; goto scanDone; }
+                        if (words[3] != 0) { allZero = 0; goto scanDone; }
+                        if (words[4] != 0) { allZero = 0; goto scanDone; }
+                        if (words[5] != 0) { allZero = 0; goto scanDone; }
+                        if (words[6] != 0) { allZero = 0; goto scanDone; }
+                        if (words[7] != 0) { allZero = 0; goto scanDone; }
+                        if (words[8] != 0) { allZero = 0; goto scanDone; }
+                        if (words[9] != 0) { allZero = 0; goto scanDone; }
+                        words += 10;
                     }
                 } else {
                     allZero = 1;
