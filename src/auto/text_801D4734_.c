@@ -1639,6 +1639,8 @@ extern "C" int fn_801D6948(void *out, void *object) {
         float x;
         float y;
         float z;
+        Vec3() {}
+        Vec3(float a, float b, float c) : x(a), y(b), z(c) {}
     };
     struct Dummy {
         virtual void v0();
@@ -1682,11 +1684,7 @@ extern "C" int fn_801D6948(void *out, void *object) {
         return 0;
     }
     {
-        Vec3 def;
-        def.x = lbl_80562ADC;
-        def.y = lbl_80562ADC;
-        def.z = lbl_80562ADC;
-        const Vec3 &v = obj->vector2(&lbl_8055ACD4, def);
+        Vec3 v = obj->vector2(&lbl_8055ACD4, Vec3(lbl_80562ADC, lbl_80562ADC, lbl_80562ADC));
         ((float *)out)[9] = v.x;
         ((float *)out)[10] = v.y;
         ((float *)out)[11] = v.z;
@@ -2479,6 +2477,7 @@ int fn_801D7924(int arg0, int arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Return 1 if arg0 matches any id in arg1[0..arg2): if arg0[1] is set use fn_801D9B28(container, id) lookup, else compare arg0[2] directly. */
 int fn_801D796C(void *arg0, int *arg1, int arg2) {
     int *entry;
     int idx;
