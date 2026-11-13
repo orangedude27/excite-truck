@@ -21154,7 +21154,8 @@ extern "C" s32 fn_800D5500(void *obj, const char *name) {
 
 #pragma push
 #pragma opt_common_subs off
-extern "C" void* fn_800D55B0(void *self, s32 arg1) {
+extern "C" void* fn_800D55B0(void *self, s32 shouldDelete) {
+    /* Scalar deleting destructor: reset vtable, clear/destroy embedded link lists, then optionally free. */
     if (self != NULL) {
         *(void **)self = lbl_8031F428;
         Clear__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 4);
@@ -21165,7 +21166,7 @@ extern "C" void* fn_800D55B0(void *self, s32 arg1) {
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u32 *)self + 1, 0);
         }
         fn_800DCE10(self, 0);
-        if (arg1 > 0) {
+        if (shouldDelete > 0) {
             ((void (*)(void *))fn_80128668)(self);
         }
     }
