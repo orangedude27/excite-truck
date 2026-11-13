@@ -5753,12 +5753,13 @@ extern "C" s32 fn_800ADD84(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, 
         temp_r9 = *(s32 *)((u8 *)arg0 + 0xC);
         var_r27 = var_r28;
         if (temp_r9 != 0) {
+            void *ctx = *(void **)((u8 *)arg0 + 0x34);
+            s32 base = *(s32 *)((u8 *)arg0 + 0x10);
             u32 *tbl = (u32 *)lbl_802EEF40;
-            s32 idx = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C);
             var_r29 = temp_r9;
             var_r28 = 0U;
-            var_r27 = (*(s32 *)((u8 *)arg0 + 0x10) + arg3) - arg1;
-            sp18 = *(s32 *)((u8 *)tbl + idx * 0x14 + 8);
+            var_r27 = (base + arg3) - arg1;
+            sp18 = tbl[*(s32 *)((u8 *)ctx + 0x1C) * 5 + 2];
             var_r26 = *(s32 *)((u8 *)arg0 + 0x10) + 1;
         }
     } else {
