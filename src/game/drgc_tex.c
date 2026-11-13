@@ -1172,9 +1172,10 @@ void *fn_802D8C00(void *arg0, void *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+/* Allocates and zero-initializes the texture-list block (450 entries of 0xF4 bytes). */
 void fn_802D8D1C(void) {
-    int offset;
-    int i;
+    int byteOffset;
+    int entryIndex;
 
     lbl_8055FE24 = 0;
     lbl_8055FE20 = 0;
@@ -1182,13 +1183,13 @@ void fn_802D8D1C(void) {
     lbl_8055FE18 = 0;
     lbl_8055FE28 = fn_8012850C((void *)0x1ACE8, &lbl_8034C5B8);
 
-    i = 0;
-    offset = 0;
+    entryIndex = 0;
+    byteOffset = 0;
     do {
-        memset((char *)lbl_8055FE28 + offset, 0, 0xF4);
-        i++;
-        offset += 0xF4;
-    } while (i < 0x1C2);
+        memset((char *)lbl_8055FE28 + byteOffset, 0, 0xF4);
+        entryIndex++;
+        byteOffset += 0xF4;
+    } while (entryIndex < 0x1C2);
 }
 #pragma pop
 
