@@ -397,7 +397,7 @@ long fn_8020FC6C(void) {
 
 #pragma push
 #pragma dont_inline on
-#pragma scheduling off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8020FCC4(void) {
     long result;
