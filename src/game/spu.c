@@ -569,27 +569,32 @@ int fn_802E58A0(void *arg0, int arg1) {
     return 1;
 }
 
-void fn_802E58B8(unsigned char *arg0) {
-    const unsigned char *src = arg0;
-    int count;
-    unsigned char *dst;
+/* Queue a resource directory to play: copy its name into the next slot of the
+ * sound-name queue (lbl_804FC558, count lbl_8055FF78), hand the name to the
+ * resource system, then walk the directory's loaded entries and allocate a
+ * voice object for every one of them (fn_802E589C), stopping at the first
+ * failure. fn_802E59BC is the same thing restricted to 'SFX0' entries. */
+void fn_802E58B8(unsigned char *dirName) {
+    const unsigned char *src = dirName;
+    int remaining;
+    unsigned char *slot;
     unsigned char c;
-    dst = lbl_804FC558 + (lbl_8055FF78++ << 5);
-    count = 0x20;
+    slot = lbl_804FC558 + (lbl_8055FF78++ << 5);
+    remaining = SFX_NAME_SLOT_SIZE;
     goto copy;
-count_check:
-    if (--count > 0)
+slot_check:
+    if (--remaining > 0)
         goto copy;
-    dst[-1] = 0;
+    slot[-1] = 0;
     goto done;
 copy:
     c = *src++;
-    *dst++ = c;
+    *slot++ = c;
     if ((signed char)c != 0)
-        goto count_check;
+        goto slot_check;
 done:
-    fn_8012BEF0(arg0);
-    fn_8012C41C((void (*)())fn_802E589C, 0, arg0);
+    fn_8012BEF0(dirName);
+    fn_8012C41C((void (*)())fn_802E589C, 0, dirName);
 }
 
 extern int sprintf(char *, const char *, ...);
