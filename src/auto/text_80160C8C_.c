@@ -417,27 +417,28 @@ extern "C" void fn_80160CF4(void) {
 
 #pragma pop
 
-void *fn_801612BC(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if ((u32)arg0 + 0xE0 != 0) {
-            if ((u32)arg0 + 0xE0 != 0) {
-                ((s32 *)arg0)[56] = 0;
-                ((s32 *)arg0)[57] = 0;
-                ((s32 *)arg0)[58] = 0;
+void *fn_801612BC(void *object, s32 deleting) {
+    /* Destroy/clear embedded subobjects at +0xE0 and +0x34, then optionally free. */
+    if (object != 0) {
+        if ((u32)object + 0xE0 != 0) {
+            if ((u32)object + 0xE0 != 0) {
+                ((s32 *)object)[56] = 0;
+                ((s32 *)object)[57] = 0;
+                ((s32 *)object)[58] = 0;
             }
         }
-        if (arg0 != 0) {
-            if ((u32)arg0 + 0x34 != 0) {
-                if ((u32)arg0 + 0x34 != 0) {
-                    ((s32 *)arg0)[13] = 0;
-                    ((s32 *)arg0)[14] = 0;
-                    ((s32 *)arg0)[15] = 0;
+        if (object != 0) {
+            if ((u32)object + 0x34 != 0) {
+                if ((u32)object + 0x34 != 0) {
+                    ((s32 *)object)[13] = 0;
+                    ((s32 *)object)[14] = 0;
+                    ((s32 *)object)[15] = 0;
                 }
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (deleting > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void *fn_80161340(void *arg0, s32 arg1) {
