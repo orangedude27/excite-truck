@@ -452,7 +452,8 @@ extern f32 lbl_8055E3C8;
 #pragma push
 #pragma processor 750
 void fn_80156960(void *arg0) {
-    s32 value;
+    /* Sample 8 values into the output buffer using modulo-indexed data and a base plus interpolated offset. */
+    s32 sampledValue;
     void *out = arg0;
     s32 count = 0;
     register f32 base = lbl_8055E3C8;
@@ -462,9 +463,9 @@ void fn_80156960(void *arg0) {
         s32 index = count % divisor;
         f32 angle1 = ((f32 *)arg0)[0xDC / 4];
         f32 angle2 = ((f32 *)arg0)[0xE0 / 4];
-        value = data[index * 2];
+        sampledValue = data[index * 2];
         ((f32 *)out)[0xE4 / 4] = base + fn_80129DC4(4, divisor, (s32)(long)data, angle1, angle2);
-        *(s32 *)((u8 *)out + 0xE8) = value;
+        *(s32 *)((u8 *)out + 0xE8) = sampledValue;
         out = (u8 *)out + 8;
         count++;
     } while ((u32)count < 8);
