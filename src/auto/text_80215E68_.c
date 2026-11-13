@@ -171,30 +171,43 @@ extern f32 lbl_80563478;
 #pragma push
 #pragma scheduling invalid_target
 #pragma fp_contract on
-s32 fn_802160AC(void) {
-    u8 b2[0x30];
-    s32 s31;
-    f32 v1;
-    f32 v2;
-    if (lbl_8055EF88 != 0)
-        s31 = fn_8021832C();
-    else
-        s31 = 0;
-    if (s31 == 0 && lbl_8055EF7C == 0)
-        goto done;
-    fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
-    fn_80230B5C(b2);
-    fn_802C8638(b2);
-    v1 = (f32)lbl_8055EF80;
-    v1 -= lbl_80563474;
-    v2 = (f32)lbl_8055EF84;
-    v2 = lbl_80563478 - v2;
-    if (s31 != 0)
-        fn_802C5310(s31, 0, v1, v2, lbl_80563458);
-    else
-        fn_802C5310(lbl_8055EF7C, 0, v1, v2, lbl_80563458);
-done:
-    ;
+s32 fn_802160AC(void)
+{
+  u8 scratch[0x30];
+  s32 temp_r31;
+  f32 a;
+  f32 *new_var;
+  f32 b;
+  if (lbl_8055EF88 != 0)
+  {
+    temp_r31 = fn_8021832C();
+  }
+  else
+  {
+    temp_r31 = 0;
+  }
+  if ((temp_r31 == 0) && (lbl_8055EF7C == 0))
+  {
+    goto done;
+  }
+  fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
+  fn_80230B5C(scratch);
+  fn_802C8638(scratch);
+  a = (f32) lbl_8055EF80;
+  a -= lbl_80563474;
+  b = (f32) lbl_8055EF84;
+  new_var = &a;
+  b = lbl_80563478 - b;
+  if (temp_r31 != 0)
+  {
+    fn_802C5310(temp_r31, 0, a, b, lbl_80563458);
+  }
+  else
+  {
+    fn_802C5310(lbl_8055EF7C, 0, *new_var, b, lbl_80563458);
+  }
+  done:
+  ;
 }
 #pragma pop
 void fn_80216194(void) {
@@ -208,7 +221,7 @@ void fn_80216194(void) {
 s32 fn_802161CC(s32 arg0) {
     s32 i;
     for (i = 0; i < 16; i++) {
-        u32 value = lbl_804908C8[i];
+        u32 value = *(lbl_804908C8 + i);
         if (value != 0 && (arg0 != 0 || value != (u32)lbl_8055EF88)) {
             fn_80218464();
         }
@@ -230,7 +243,6 @@ s32 fn_80216244(void) {
     f64 d;
     u32 raw;
     void (*callback)(void);
-
     p = lbl_804908C8;
     for (i = 0; i < 16; i++, p++) if (*p != 0) ((void (*)(void *))fn_802184D0)((void *)*p);
     callback = (void (*)(void))lbl_8055EF8C;
@@ -241,8 +253,8 @@ s32 fn_80216244(void) {
     p = lbl_804908C8;
     z = lbl_80563458;
     for (i = 0; i < 16; i++, p++) {
-        obj = (u8 *)*p;
-        if (obj != 0) {
+        if (*p != 0) {
+            obj = (u8 *)*p;
             fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
             fn_80230B5C(matrix);
             fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
@@ -300,8 +312,8 @@ s32 fn_802164D8(void) {
 #pragma dont_inline reset
 
 void fn_8021662C(void) {
-    s32 temp_r31;
-    temp_r31 = lbl_8055EF78;
+    /* Run one UI frame: process input, update active UI, and render if the frame state is unchanged. */
+    s32 savedFrameState = lbl_8055EF78;
     fn_80211F64();
     if (lbl_8055EF90 != NULL) lbl_8055EF90();
     fn_802164D8();
@@ -310,7 +322,7 @@ void fn_8021662C(void) {
     if (lbl_8055EF88 != 0) {
         fn_80218370(lbl_8055EF88);
     }
-    if (temp_r31 == (s32)lbl_8055EF78) {
+    if (savedFrameState == (s32)lbl_8055EF78) {
         if ((s32)lbl_8055EF70 == 0) fn_802166B8();
         fn_802E97B4();
     }
