@@ -253,20 +253,21 @@ extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
 
-void fn_8001FFD0(int arg0, int arg1, void *arg2, int arg3) {
+void fn_8001FFD0(int index, int formatId, void *buffer, int bufferSize) {
+    /* Format a 1-based index into the buffer, selecting a format string by ID from lbl_802FE138 offsets. */
     char *base = lbl_802FE138;
-    switch (arg1) {
+    switch (formatId) {
         case 0x180303:
-            ((void (*)(void *, int, char *, ...))fn_801345D8)(arg2, arg3, base + 0x98, arg0 + 1);
+            ((void (*)(void *, int, char *, ...))fn_801345D8)(buffer, bufferSize, base + 0x98, index + 1);
             return;
         case 0x180201:
-            ((void (*)(void *, int, char *, ...))fn_801345D8)(arg2, arg3, base + 0xAC, arg0 + 1);
+            ((void (*)(void *, int, char *, ...))fn_801345D8)(buffer, bufferSize, base + 0xAC, index + 1);
             return;
         case 0x180304:
-            ((void (*)(void *, int, char *, ...))fn_801345D8)(arg2, arg3, base + 0xC0, arg0 + 1);
+            ((void (*)(void *, int, char *, ...))fn_801345D8)(buffer, bufferSize, base + 0xC0, index + 1);
             return;
         default:
-            ((void (*)(void *, int, char *, ...))fn_801345D8)(arg2, arg3, base + 0xD4, arg0 + 1);
+            ((void (*)(void *, int, char *, ...))fn_801345D8)(buffer, bufferSize, base + 0xD4, index + 1);
             return;
     }
 }
@@ -729,37 +730,37 @@ int fn_800213DC(int arg0) {
     return r;
 }
 
-void fn_80021464(KArg *a, int arg1) {
-    int c;
-    int n, r, k, v, h, id;
-    int sp[6];
+void fn_80021464(void *a_, int arg1) {
+    KArg *a = (KArg *)a_;
     KArg *p;
+    int sp[6];
+    int c, n, rk, vhh;
     char *base = lbl_802FE138;
     lbl_8055D62C = 1;
     fn_8001FEE8();
     fn_800081BC(fn_80012820(a->f4) + 8);
     lbl_8055D660 = fn_80008188();
-    id = fn_80012910(a->f0);
-    lbl_8055D664 = a->obj->vt->f18(a->obj, base + 0x284, id);
+    vhh = fn_80012910(a->f0);
+    lbl_8055D664 = a->obj->vt->f18(a->obj, base + 0x284, vhh);
     lbl_8055D646 = a->obj->vt->f0C(a->obj, base + 0x294);
     if (lbl_8055D646 != 0) {
         lbl_8055D660 = fn_80131234(base + 0x2A0);
     }
     c = a->f8;
-    lbl_8055D66C = arg1;
     lbl_8055D668 = a->f0;
+    lbl_8055D66C = arg1;
     lbl_8055D647 = (c != 0x180302);
     p = fn_8001285C(a->f0);
     fn_80012820(p->f4);
     lbl_8035BAD8.f8 = p->fC;
-    v = p->obj->vt->f5C(p->obj, fn_80205268(base + 0x2B4, lbl_8055D66C, lbl_8055D668));
-    if (v != 0) {
-        fn_8001D884(sp, v);
-        r = fn_8027DED0();
-        if (r == -1) {
-            r = sp[5];
+    vhh = p->obj->vt->f5C(p->obj, fn_80205268(base + 0x2B4, lbl_8055D66C, lbl_8055D668));
+    if (vhh != 0) {
+        fn_8001D884(sp, vhh);
+        rk = fn_8027DED0();
+        if (rk == -1) {
+            rk = sp[5];
         }
-        lbl_8035BAD8.f4 = fn_8001DA48(sp, r);
+        lbl_8035BAD8.f4 = fn_8001DA48(sp, rk);
     }
     lbl_8035BAD8.f0 = fn_8014E7DC(lbl_8055D668, arg1);
     n = 0;
@@ -769,14 +770,14 @@ void fn_80021464(KArg *a, int arg1) {
         n++;
     }
     if (n == 0) n = 1;
-    k = 0;
+    rk = 0;
     do {
-        h = fn_80129D18(1, n);
-        if (h != lbl_80558DA4) break;
-        k++;
-    } while (k < 10);
-    lbl_80558DA4 = h;
-    fn_8001FFD0(h, c, lbl_8035BB18, 0x40);
+        vhh = fn_80129D18(1, n);
+        if (vhh != lbl_80558DA4) break;
+        rk++;
+    } while (rk < 10);
+    lbl_80558DA4 = vhh;
+    fn_8001FFD0(vhh, c, lbl_8035BB18, 0x40);
     lbl_8055D65C = fn_80131234(lbl_8035BB18);
 }
 
