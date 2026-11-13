@@ -1824,14 +1824,15 @@ void fn_801CEB94(void *arg0) {
     }
 }
 
-s32 fn_801CEBD8(void *arg0, f32 farg0) {
-    s32 temp = *(s32 *)arg0;
-    if (((s32 (*)(s32, f32))fn_8001BF34)(temp, farg0) == 0) goto fail;
-    fn_8001BF0C(temp, farg0);
-    if (*(s32 *)((char *)arg0 + 8) != 0 &&
-        ((s32 (*)(s32, f32))fn_8001BF34)(*(s32 *)((char *)arg0 + 8), farg0) == 0) goto fail;
-    if (*(s32 *)((char *)arg0 + 0xC) != 0 &&
-        ((s32 (*)(s32, f32))fn_8001BF34)(*(s32 *)((char *)arg0 + 0xC), farg0) == 0) goto fail;
+/* Check/apply a float value against up to three handles stored at +0x0, +0x8, +0xC: requires +0x0 to pass fn_8001BF34, applies fn_8001BF0C to it, and optional handles at +0x8/+0xC must also pass fn_8001BF34 when non-null. */
+s32 fn_801CEBD8(void *obj, f32 value) {
+    s32 primaryHandle = *(s32 *)obj;
+    if (((s32 (*)(s32, f32))fn_8001BF34)(primaryHandle, value) == 0) goto fail;
+    fn_8001BF0C(primaryHandle, value);
+    if (*(s32 *)((char *)obj + 8) != 0 &&
+        ((s32 (*)(s32, f32))fn_8001BF34)(*(s32 *)((char *)obj + 8), value) == 0) goto fail;
+    if (*(s32 *)((char *)obj + 0xC) != 0 &&
+        ((s32 (*)(s32, f32))fn_8001BF34)(*(s32 *)((char *)obj + 0xC), value) == 0) goto fail;
     return 1;
 fail:
     return 0;
