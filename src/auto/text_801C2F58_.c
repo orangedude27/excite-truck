@@ -1696,6 +1696,9 @@ void fn_801C7F64(void) {
     sMenuAction = fn_801C6CB0;
     sTextFieldFlag = 1;
 }
+
+#pragma push
+#pragma opt_propagation off
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
     char *base = (char *)&lbl_80437D88;
