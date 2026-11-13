@@ -2031,22 +2031,26 @@ extern "C" int fn_8029AEE8(void *);
 #pragma use_lmw_stmw off
 extern "C" int fn_8029BA0C(void *arg0) {
     char *entry = (char *)arg0;
-    int i = 0;
+    int trackIndex = 0;
     char *base = (char *)arg0;
-    int zero = 0;
-    int one = 1;
-    while (i < fn_80287B14()) {
-        void *info = fn_80288208(i);
-        if (*(int *)((char *)info + 0x24) > 0) {
-            *(int *)(entry + 4) = one;
+    int off = 0;
+    int waiting = 1;
+    /* Start the BackfireMan over for a new race: a track only waits for a
+     * backfire while it has notes to light one on (fn_80288208's note count at
+     * +0x24), the note each slot was holding is dropped, and the ExhaustTorchMan
+     * the BackfireMan drives is wiped clean. */
+    while (trackIndex < fn_80287B14()) {
+        struct Track *track = (struct Track *)fn_80288208(trackIndex);
+        if (track->noteCount > 0) {
+            ((struct BackfireSlot *)(entry + 4))->state = waiting;
         } else {
-            *(int *)(entry + 4) = zero;
+            ((struct BackfireSlot *)(entry + 4))->state = off;
         }
-        *(int *)(entry + 0x14) = zero;
+        ((struct BackfireSlot *)(entry + 4))->note = (void *)off;
         entry += 0x14;
-        i++;
+        trackIndex++;
     }
-    return fn_8029AEE8(*(void **)base);
+    return fn_8029AEE8(((struct BackfireMan *)base)->torches);
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_8029BA8C(void* arg0) {
