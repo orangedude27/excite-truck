@@ -270,6 +270,14 @@ void fn_8029C664(void) {
     }
 }
 
+#pragma cplusplus on
+extern "C" void *fn_80131810(void *);
+extern "C" void fn_80131818(void *);
+extern "C" void *fn_801284F8(int, void *);
+extern "C" void *fn_8029D148(void *, void *, float *, int);
+extern "C" void fn_802E317C(const char *, ...);
+#pragma cplusplus off
+
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
