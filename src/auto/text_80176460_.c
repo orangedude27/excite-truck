@@ -109,14 +109,25 @@ extern f32 lbl_8055E3D0;
 extern f32 lbl_80561B30;
 extern f32 lbl_80561B34;
 extern f32 lbl_80561B40;
+/* The phys-fader.  A physics mode change that is not applied at once first
+ * fades the game out: the request arms this block, fn_801771A8 and fn_801773E4
+ * move `alpha` towards 0xFF every tick, and once it has sat there for `hold`
+ * ticks the mode goes to FADE_MODE_DONE (or FADE_MODE_IDLE when fading back
+ * in) and `onDone` runs -- that is where the pending command is applied. */
 typedef struct FadeState {
-    s32 lastTime;
-    s32 lastTick;
-    s32 hold;
-    s32 mode;
-    void (*onDone)(void);
-    u8 alpha;
+    s32 lastTime;         /* 0x00: lbl_8055E3C4 of the last step of the ramp */
+    s32 lastTick;         /* 0x04: fn_802E2C20() the ramp last moved on */
+    s32 hold;             /* 0x08: ticks to sit at the end of the ramp */
+    s32 mode;             /* 0x0C: FADE_MODE_* state of the ramp */
+    void (*onDone)(void); /* 0x10: run when the ramp reaches its end */
+    u8 alpha;             /* 0x14: 0..0xFF position in the ramp */
 } FadeState;
+
+#define FADE_MODE_IDLE  0 /* nothing fading */
+#define FADE_MODE_IN    1 /* fading back in */
+#define FADE_MODE_OUT   2 /* fading out; the request is not applied yet */
+#define FADE_MODE_DONE  3 /* faded out, request applied */
+#define sFadeState      lbl_80430558 /* the module's one FadeState */
 extern void *fn_80176A1C(void);
 extern f32 fn_80176A2C(void);
 extern f32 lbl_80561B44;
