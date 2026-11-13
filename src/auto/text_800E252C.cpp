@@ -105,6 +105,13 @@ extern float lbl_80560F38;
 extern float lbl_80560F3C;
 extern float lbl_80560F40;
 extern float lbl_80560F58;
+extern float lbl_80560F50;
+extern float lbl_80560F54;
+extern float lbl_80560F7C;
+extern float lbl_80560F80;
+extern "C" float CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(float);
+extern "C" float CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(float);
+extern "C" float CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(float);
 extern "C" void fn_800339B0(void *, short *);
 extern "C" void fn_80033A34(void *, float);
 extern const char lbl_803227EC[];
@@ -539,10 +546,10 @@ extern f32 lbl_80560F24;
 #pragma push
 #pragma processor 750
 void *fn_800E279C(void *arg0) {
-    u8* p = (u8*)arg0;
-    LLTmp* l1 = (LLTmp*)(p + 8);
-    LLTmp* l2 = (LLTmp*)(p + 0x14);
-    LLTmp* l3 = (LLTmp*)(p + 0x20);
+    unsigned char* p = (unsigned char*)arg0;
+    void* l1 = (void*)(p + 8);
+    void* l2 = (void*)(p + 0x14);
+    void* l3 = (void*)(p + 0x20);
     *(volatile int*)(p + 0xC) = 0;
     *(volatile int*)(p + 0x10) = 0;
     *(volatile int*)(p + 0x18) = 0;
@@ -552,9 +559,9 @@ void *fn_800E279C(void *arg0) {
     *(int*)(p + 0) = 0;
     *(int*)(p + 4) = 0;
     *(int*)(p + 8) = 0;
-    l1->a = 0; l1->next = &l1->next; l1->prev = &l1->next;
-    l2->a = 0; l2->next = &l2->next; l2->prev = &l2->next;
-    l3->a = 0; l3->next = &l3->next; l3->prev = &l3->next;
+    *(int*)(p + 8 + 0) = 0; *(void**)(p + 8 + 4) = (void*)(p + 8 + 4); *(void**)(p + 8 + 8) = (void*)(p + 8 + 4);
+    *(int*)(p + 0x14 + 0) = 0; *(void**)(p + 0x14 + 4) = (void*)(p + 0x14 + 4); *(void**)(p + 0x14 + 8) = (void*)(p + 0x14 + 4);
+    *(int*)(p + 0x20 + 0) = 0; *(void**)(p + 0x20 + 4) = (void*)(p + 0x20 + 4); *(void**)(p + 0x20 + 8) = (void*)(p + 0x20 + 4);
     fn_8002F53C(p + 0x2C, &__ct__Q46nw4hbm3snd6detail7AxVoiceFv, &__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1B0, 0x40);
     float f = lbl_80560F20;
     p[0x6C30] = 0;
@@ -998,13 +1005,11 @@ extern const char lbl_80322130[];
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *fn_800E3954(char *self, int count, int columns, int priority, void (*callback)(void *, int, void *), void *callbackArg) {
-
     int stolen;
     register void *node;
     register void *voice;
     register void *oldVoice;
     unsigned int interruptState = OSDisableInterrupts();
-
     if (*(int *)((char *)self + 0x20) != 0) goto acquire_setup;
     stolen = 0;
     if (*(int *)((char *)self + 0x20) != 0) goto stolen_result;
@@ -1524,31 +1529,39 @@ extern const char lbl_803224E4[];
 extern const char lbl_803224C0[];
 #pragma use_lmw_stmw off
 extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *self, int count, int columns, int priority, void (*callback)(void *, int, void *), void *callbackArg) {
-    int buffers[8], cum3, cum1, cum2;
-    int valid, rows, ncols, total, made, result, remaining, i, j;
-    unsigned int bufferSize, interruptState, nextSize;
+    unsigned int interruptState;
+    int total;
+    const char *fileName = lbl_803221A8;
+    int buffers[8];
+    int valid, rows, ncols, made, result, remaining;
+    int j, i;
+    unsigned int bufferSize, nextSize;
     int *bufferOut, *bufferIn;
     char *voice, *row, *manager, *node, *sentinel;
-    const char *fileName = lbl_803221A8;
-    valid = 0; cum1 = 0; cum2 = 0; cum3 = 0;
+    valid = 0;
     if (count >= 1) {
         if (count <= 2) valid = 1;
-        if (valid == 0) cum1 = columns + 0; else cum1 = 1;
     }
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x124, fileName + 0x10, count, 1, 2);
-    if (count > 2) rows = 2; else if (count >= 1) rows = count; else rows = 1;
-    cum3 = count;
+    if (count > 2) rows = 2;
+    else {
+        rows = 1;
+        if (count >= 1) rows = count;
+    }
+    valid = 0;
     if (columns >= 1) {
         if (columns <= 4) valid = 1;
-        if (valid == 0) cum2 = 1; else cum2 = columns;
     }
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x127, fileName + 0x5C, columns, 1, 4);
-    if (columns > 4) ncols = 4; else if (columns >= 1) ncols = columns; else ncols = 1;
+    if (columns > 4) ncols = 4;
+    else {
+        ncols = 1;
+        if (columns >= 1) ncols = columns;
+    }
     interruptState = OSDisableInterrupts();
     bufferSize = 0x10;
     if (priority == 0xFF) bufferSize = 0x1F;
     if (*((unsigned char *)self + 0x11C) != 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x12E, fileName + 0xA8);
-    cum1 = ncols; cum2 = cum1 + cum3;
     total = rows * ncols;
     bufferOut = buffers;
     made = 0;
@@ -1648,8 +1661,7 @@ extern "C" void fn_800E5E74(void *, int, int, int, int, int, int);
 extern "C" void fn_800E68EC(void *, int, int, void *, int);
 extern "C" void fn_80033408(void *, int);
 extern double lbl_80560F48;
-#pragma fp_contract on
-#pragma peephole on
+#pragma fp_contract_aggressive on
 extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *arg0, const void *arg1) {
     unsigned char *self = (unsigned char *)arg0;
     unsigned char *entry;
@@ -1749,15 +1761,7 @@ extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveD
         int n;
         unsigned char *base;
         unsigned char *slot;
-        register unsigned int rateInt = *(unsigned int *)(self + 0x114);
-        union { double value; unsigned int words[2]; } conversion;
-        conversion.words[1] = rateInt;
-        conversion.words[0] = 0x43300000;
-        conversion.words[1] ^= 0x80000000;
-        register double converted = conversion.value;
-        register double bias = lbl_80560F48;
-        bias += 0;
-        float rate = *(float *)(self + 0x184) * (float)(converted - bias) / lbl_80560F40;
+        float rate = *(float *)(self + 0x184) * (float)*(unsigned long *)(self + 0x114) / lbl_80560F40;
         if (rate > lbl_80560F44) mixMode = 2;
         else if (rate > lbl_80560F38) mixMode = 3;
         else mixMode = 4;
@@ -3461,7 +3465,7 @@ extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int duratio
         unsigned char active;
     };
     BasicSoundFields* sound = (BasicSoundFields*)self;
-    if (sound->active == 0) {
+    if (0 == sound->active) {
         int current;
         int total;
         total = sound->total;
@@ -3503,8 +3507,8 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     float f31, f30, f28, f27, f26, f25, f24, f29;
     int voice, i, valid;
     float *aux;
-    char *pl;
     char *pl2;
+    char *pl;
     if (UF(unsigned char, 0x66) != 0 && p->p18() != 0) {
         int c = UF(int, 0x6C);
         if (c == 0) {
@@ -3538,9 +3542,10 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     }
     if (UF(UpdCbA *, 0x1C) != 0) UF(UpdCbA *, 0x1C)->a08(UF(int, 0x24), self);
     if (UF(UpdCbB *, 0x18) != 0) UF(UpdCbB *, 0x18)->b08((char *)self + 0x28, UF(int, 0x78), self, UF(int, 0x24), -1);
-    f31 = lbl_80560FB4 * UF(float, 0x8C);
-    pl2 = UF(char *, 0x14);
+    f31 = lbl_80560FB4;
+    f31 *= UF(float, 0x8C);
     pl = UF(char *, 0x10);
+    pl2 = UF(char *, 0x14);
     f31 *= *(float *)(pl + 0x28);
     if (pl2 != 0) f31 *= *(float *)(pl2 + 0x10);
     f31 *= UpdRamp((UpdRampFields *)((char *)self + 0x7C));
