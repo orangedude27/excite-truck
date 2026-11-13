@@ -177,16 +177,18 @@ void fn_8028E240(void) {
     fn_802C9A4C(temp_f31);
 }
 #pragma pop
-int fn_8028E2F8(int arg0, int arg1, int arg2) {
-    int result;
-    result = fn_801284F8(0xB0, &lbl_8055C8E0);
-    if (result != 0) {
-        result = ((int (*)(int, int, int))fn_8028F7AC)(result, arg0, arg2);
+int fn_8028E2F8(int initData, int postArg, int resourceId) {
+    /* Allocate a 0xB0-byte "partman" object, initialize it, register it in both lists, then run the post hook. */
+    int object;
+
+    object = fn_801284F8(0xB0, &lbl_8055C8E0);
+    if (object != 0) {
+        object = ((int (*)(int, int, int))fn_8028F7AC)(object, initData, resourceId);
     }
-    fn_8028ED8C(&lbl_804B35B4[0], result);
-    fn_8028ED8C(&lbl_804B34B0, result);
-    fn_8028F5A0(arg1, result);
-    return result;
+    fn_8028ED8C(&lbl_804B35B4[0], object);
+    fn_8028ED8C(&lbl_804B34B0, object);
+    fn_8028F5A0(postArg, object);
+    return object;
 }
 
 extern float fn_802C9A4C(float);
@@ -617,100 +619,11 @@ int fn_8028F0C0(int *arg0, int arg1, int arg2) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_8028F114(int *arg0, int arg1, int arg2) {
-    void *tmp[64];
-    register int n1 = 0;
-    register int n2 = 0;
-    register int n3 = 0;
+    void *tmp[64]; register int n1 = 0; register int n2 = 0; register int n3 = 0;
     memset(tmp, 0, 0x100);
-    if (arg1 != -2) {
-        int *src = arg0;
-        void **dst = tmp;
-        int i = 0;
-        goto first_test;
-    first_loop:
-        {
-            void *item = *(void **)src;
-            if (*(int *)((char *)item + 0xA4) == arg1) {
-                *dst++ = item;
-                n1++;
-            }
-        }
-        src++;
-        i++;
-    first_test:
-        if (i < *(int *)((char *)arg0 + 0x100))
-            goto first_loop;
-    }
-    if (arg2 != -2) {
-        int *src = arg0;
-        int i = 0;
-        goto second_test;
-    second_loop:
-        {
-            void *item = *(void **)src;
-            if (*(int *)((char *)item + 0xA4) == arg2) {
-                tmp[*(int *)((char *)arg0 + 0x100) - n2 - 1] = item;
-                n2++;
-            }
-        }
-        src++;
-        i++;
-    second_test:
-        if (i < *(int *)((char *)arg0 + 0x100))
-            goto second_loop;
-    }
-    {
-        int *src = arg0;
-        int i = 0;
-        goto outer_test;
-    outer_loop:
-        {
-            void *item = *(void **)src;
-            int id = *(int *)((char *)item + 0xA4);
-            if (id != arg1 && id != arg2) {
-                int *search = (int *)(tmp + n1);
-                int j = 0;
-                unsigned int equal = 0;
-            search_loop:
-                {
-                    void *q = *(void **)search;
-                    search++;
-                    j++;
-                    equal = (unsigned int)(*(int *)((char *)q + 0xA4) == id);
-                }
-                if (equal != 0)
-                    goto search_done;
-                if (j < n3)
-                    goto search_loop;
-            search_done:
-                if (equal == 0) {
-                    tmp[n1 + n3] = item;
-                    n3++;
-                    {
-                        int k = i + 1;
-                        void **dst = tmp + n1 + n3;
-                        int *siblings = arg0 + k;
-                        goto sibling_test;
-                    sibling_loop:
-                        if (*(int *)((char *)*(void **)siblings + 0xA4) == id) {
-                            *dst++ = *(void **)siblings;
-                            n3++;
-                        }
-                        siblings++;
-                        k++;
-                    sibling_test:
-                        if (k < *(int *)((char *)arg0 + 0x100))
-                            goto sibling_loop;
-                    }
-                }
-            }
-        }
-        src++;
-        i++;
-    outer_test:
-        if (i < *(int *)((char *)arg0 + 0x100))
-            goto outer_loop;
-    }
+    if (arg1 != -2) { int *src = arg0; void **dst = tmp; int i = 0; goto first_test; first_loop: { void *item = *(void **)src; if (*(int *)((char *)item + 0xA4) == arg1) { *dst++ = item; n1++; } } src++; i++; first_test: if (i < *(int *)((char *)arg0 + 0x100)) goto first_loop; }
+    if (arg2 != -2) { int *src = arg0; int i = 0; goto second_test; second_loop: { void *item = *(void **)src; if (*(int *)((char *)item + 0xA4) == arg2) { tmp[*(int *)((char *)arg0 + 0x100) - n2 - 1] = item; n2++; } } src++; i++; second_test: if (i < *(int *)((char *)arg0 + 0x100)) goto second_loop; }
+    { int *src = arg0; int i = 0; goto outer_test; outer_loop: { void *item = *(void **)src; int id = *(int *)((char *)item + 0xA4); if (id != arg1 && id != arg2) { int *search = (int *)(tmp + n1); int j = 0; int equal = 0; search_loop: { void *q = *(void **)search; search++; j++; equal = (*(int *)((char *)q + 0xA4) == id); } if (equal != 0) goto search_done; if (j < n3) goto search_loop; search_done: if (equal == 0) { tmp[n1 + n3] = item; n3++; { int k = i + 1; void **dst = tmp + n1 + n3; int *siblings = arg0 + k; goto sibling_test; sibling_loop: if (*(int *)((char *)*(void **)siblings + 0xA4) == id) { *dst++ = *(void **)siblings; n3++; } siblings++; k++; sibling_test: if (k < *(int *)((char *)arg0 + 0x100)) goto sibling_loop; } } } } src++; i++; outer_test: if (i < *(int *)((char *)arg0 + 0x100)) goto outer_loop; }
     memcpy(arg0, tmp, *(int *)((char *)arg0 + 0x100) * 4);
 }
 #pragma scheduling on
@@ -1218,63 +1131,61 @@ extern char lbl_80349024[];
 extern char lbl_80349078[];
 extern unsigned char lbl_8055F74C;
 void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
-    EfObj *o = (EfObj *)arg0;
-    EfEntry2 *d;
-    float *a = (float *)arg1;
-    EfEntry2 e;
-    int mode;
-    int idx;
+    char *o6 = (char *)arg0;
+    float *a6 = (float *)arg1;
+    EfEntry2 e6;
+    EfEntry2 *d6;
+    int m6;
     if (lbl_8055F73C == 0 && lbl_8055F74C == 0) {
         lbl_8055F74C = 1;
         fn_802E30C8(lbl_8055C918, lbl_80349024);
     }
-    mode = o->mode;
-    e.p.a.x = a[0];
-    e.p.a.y = a[1];
-    e.p.a.z = a[2];
-    e.p.b.x = arg2[0];
-    e.p.b.y = arg2[1];
-    e.p.b.z = arg2[2];
-    e.v6 = lbl_8055F738;
-    e.f1 = farg1;
-    switch (mode) {
+    e6.p.a.x = a6[0];
+    e6.p.a.y = a6[1];
+    e6.p.a.z = a6[2];
+    e6.p.b.x = arg2[0];
+    e6.p.b.y = arg2[1];
+    e6.p.b.z = arg2[2];
+    e6.v6 = lbl_8055F738;
+    e6.f1 = farg1;
+    m6 = *(int *)o6;
+    switch (m6) {
     case 0:
-        e.c0 = o->en38 ? fn_80287B5C(4) : 0;
+        e6.c0 = *(unsigned char *)(o6 + 0x38) ? fn_80287B5C(4) : 0;
         break;
     case 1:
-        e.c1 = o->en88 ? fn_80287B5C(o->v84) : 0;
+        e6.c1 = *(unsigned char *)(o6 + 0x88) ? fn_80287B5C(*(int *)(o6 + 0x84)) : 0;
         break;
     case 2:
-        e.c2 = o->en38 ? fn_80287B5C(0xff) : 0;
-        e.f0 = farg0;
+        e6.c2 = *(unsigned char *)(o6 + 0x38) ? fn_80287B5C(0xff) : 0;
+        e6.f0 = farg0;
         break;
     default:
         fn_802E317C(lbl_80349078);
         break;
     }
-    if (o->head < 0) {
-        d = (EfEntry2 *)o->buf;
-        d->p = e.p;
-        d->v6 = e.v6;
-        d->c0 = e.c0;
-        d->c1 = e.c1;
-        d->c2 = e.c2;
-        d->f0 = e.f0;
-        d->f1 = e.f1;
-        o->head = 0;
-        o->tail = 1;
+    if (*(int *)(o6 + 0x90) < 0) {
+        d6 = *(EfEntry2 **)(o6 + 0x8c);
+        d6->p = e6.p;
+        d6->v6 = e6.v6;
+        d6->c0 = e6.c0;
+        d6->c1 = e6.c1;
+        d6->c2 = e6.c2;
+        d6->f0 = e6.f0;
+        d6->f1 = e6.f1;
+        *(int *)(o6 + 0x90) = 0;
+        *(int *)(o6 + 0x94) = 1;
         return;
     }
-    idx = o->tail;
-    d = (EfEntry2 *)o->buf + idx;
-    d->p = e.p;
-    d->v6 = e.v6;
-    d->c0 = e.c0;
-    d->c1 = e.c1;
-    d->c2 = e.c2;
-    d->f0 = e.f0;
-    d->f1 = e.f1;
-    o->tail = (o->tail + 1) % o->cap;
+    d6 = *(EfEntry2 **)(o6 + 0x8c) + *(int *)(o6 + 0x94);
+    d6->p = e6.p;
+    d6->v6 = e6.v6;
+    d6->c0 = e6.c0;
+    d6->c1 = e6.c1;
+    d6->c2 = e6.c2;
+    d6->f0 = e6.f0;
+    d6->f1 = e6.f1;
+    *(int *)(o6 + 0x94) = (*(int *)(o6 + 0x94) + 1) % *(int *)(o6 + 0x98);
 }
 
 #pragma pop
