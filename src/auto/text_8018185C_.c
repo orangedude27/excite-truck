@@ -366,18 +366,22 @@ void fn_80181EAC(int arg0) {
 #pragma push
 #pragma small_data off
 void fn_80181F30(void) {
-    unsigned int bits = *(unsigned int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4);
-    unsigned int mode = (bits >> 19) & 1;
+    /* Reset vehicle/audio state, read AXFX LFO config mode, and initialize related subsystems. */
+    unsigned int lfoConfig = *(unsigned int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4);
+    unsigned int lfoMode = (lfoConfig >> 19) & 1;
+
     lbl_8055E4D0 = 0;
-    lbl_8055E4F4 = (unsigned char)mode;
-    ((void (*)(int, unsigned int))fn_801BD694)(8, mode);
+    lbl_8055E4F4 = (unsigned char)lfoMode;
+    ((void (*)(int, unsigned int))fn_801BD694)(8, lfoMode);
     fn_801AFC28();
     lbl_8055E4D4 = 1;
     fn_80181AFC();
+
     if (lbl_8055A3B6 != 0) {
         *(float *)&lbl_8055E4E0 = lbl_80561D34;
         *((float *)&lbl_8055E4E0 + 1) = lbl_80561CD8;
     }
+
     lbl_8055A3B6 = 0;
     fn_80204A1C(&lbl_80332478, &lbl_8055A3AC);
     lbl_8055E4F6 = 0;
