@@ -298,9 +298,9 @@ int fn_80270EC4(void *arg0, int arg1) {
     extern int lbl_8055F554;
     extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
     struct SortEntry entries[64];
-    register int flags = arg1;
-    register int count, byteOffset, i, category, groupOffset, one, zero;
     register char *name = lbl_80346B00;
+    register int flags = arg1;
+    register int category, groupOffset, one, zero, count, byteOffset, i;
     fn_80270C04(arg0, flags);
     if ((flags & 0x100) != 0) {
         category = 0;
@@ -333,14 +333,19 @@ int fn_80270EC4(void *arg0, int arg1) {
             if (count > 0) {
                 int j;
                 int last;
+                void *basePtr;
+                char *entriesPtr;
                 float threshold;
                 qsort(entries, count, 8, (int (*)(const void *, const void *))fn_80270D4C);
-                threshold = *(float *)((char *)*(void **)((char *)arg0 + 0x2C) + groupOffset + 8);
+                basePtr = *(void **)((char *)arg0 + 0x2C);
+                entriesPtr = (char *)entries;
                 last = count - 1;
+                threshold = *(float *)((char *)basePtr + groupOffset + 8);
                 for (j = 0; j < last; j++) {
                     fn_80270DB0(&entries[j], &entries[j + 1], threshold);
                 }
                 fn_80270DB0(&entries[last], &entries[0], threshold);
+                (void)entriesPtr;
             }
             category++;
             groupOffset += 4;
@@ -730,13 +735,13 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     float dy;
     float squareX;
     float squareY;
+    double tmpD;
     float distA;
     float distB;
     float mid;
-    register float argA = argA;
-    register float argB = argB;
-    register float argR = argR;
-
+    register float argA = a;
+    register float argB = b;
+    register float argR = radius;
     if (argA > argB) {
         float span = argB - (argA - period);
         if (span * span < lbl_8055F560) return argA;
@@ -744,11 +749,9 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
         float span = argB - argA;
         if (span * span < lbl_8055F560) return argA;
     }
-
     fn_80136468((void **)&resultA, arg0, argA);
-    node = resultA.node;
+    next = *(void **)((u8 *)(node = resultA.node) + 0x14);
     fraction = resultA.fraction;
-    next = *(void **)((u8 *)node + 0x14);
     x = *(float *)node + fraction * (*(float *)next - *(float *)node);
     y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)next + 4) - *(float *)((u8 *)node + 4));
     dx = x - *(float *)arg1;
@@ -759,13 +762,12 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     deltaA.x = dx;
     squareY = dy * dy;
     deltaA.y = dy;
-    distA = (float)__fabsf(argR - (squareX + squareY));
+    tmpD = __fabs((double)(argR - (squareX + squareY)));
+    distA = (float)tmpD;
     if (distA < lbl_8055F560) return argA;
-
     fn_80136468((void **)&resultB, arg0, argB);
-    node = resultB.node;
+    next = *(void **)((u8 *)(node = resultB.node) + 0x14);
     fraction = resultB.fraction;
-    next = *(void **)((u8 *)node + 0x14);
     x = *(float *)node + fraction * (*(float *)next - *(float *)node);
     y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)next + 4) - *(float *)((u8 *)node + 4));
     dx = x - *(float *)arg1;
@@ -776,9 +778,9 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     deltaB.x = dx;
     squareY = dy * dy;
     deltaB.y = dy;
-    distB = (float)__fabsf(argR - (squareX + squareY));
+    tmpD = __fabs((double)(argR - (squareX + squareY)));
+    distB = (float)tmpD;
     if (distB < lbl_8055F560) return argB;
-
     if (argA > argB) {
         mid = (argB + (argA - period)) * lbl_80563F40;
         if (mid < lbl_80563F48) mid += period;
@@ -1222,6 +1224,8 @@ void fn_802733F0(void) {
 }
 
 void fn_802733F4(void *arg0) {
+    /* Advance the region-group cursor for this event (if allowed) and mark
+     * the object when the group has multiple regions; always clear the gate. */
     unsigned char *rec;
     s32 idx;
     s32 v;
