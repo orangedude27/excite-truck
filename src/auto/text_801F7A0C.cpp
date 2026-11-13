@@ -935,16 +935,17 @@ extern "C" void fn_801F92A8(void) {
 
 #pragma scheduling invalid_target
 extern "C" void *fn_801F92AC(F92Obj *obj) {
-    f32 b = lbl_80563000;
-    f32 a = lbl_80562FF0;
+    /* Initialize an F92Obj with default fields, zeroed name buffers, and sentinel index. */
+    f32 defaultMin = lbl_80563000;
+    f32 defaultMax = lbl_80562FF0;
     obj->w108 = lbl_8033B468;
     obj->w78 = 0;
-    obj->f7c = a;
-    obj->f80 = a;
+    obj->f7c = defaultMax;
+    obj->f80 = defaultMax;
     obj->w104 = 0;
     obj->f24 = 0;
     obj->f20 = 0;
-    obj->f28 = b;
+    obj->f28 = defaultMin;
     obj->b60 = 1;
     memset(obj, 0x61, 0x20);
     memset((char *)obj + 0x61, 0x61, 0x10);
