@@ -23910,15 +23910,20 @@ done:
 #define PORT_FC_CREDIT          2       /* port_int.h: credit based flow control */
 
 extern char lbl_80319F28[];             /* "rfc_inc_credit:%d" */
+/* rfc_utils.c: a UIH frame brought `credit` flow-control credits for this
+ * port.  Add them to the port's TX credit count and, if sending had halted
+ * for want of credit, tell the application it may run again.  Only a
+ * credit-based multiplexer has credits to hand out, so any other flow control
+ * leaves the port alone. */
 void rfc_inc_credit(struct t_port_info *p_port, u8 credit) {
     u16 newCredit;
-    if ((*(u8 **)((u8 *)p_port + 0x6C))[0x72] != 2)
+    if ((*(u8 **)((u8 *)p_port + PORT_MCB))[RFC_MCB_FLOW] != PORT_FC_CREDIT)
         return;
-    newCredit = (*(u16 *)((u8 *)p_port + 0x98) += credit);
-    if (lbl_803C4828[0x414] >= 4)
-        fn_80070954(0x90003, lbl_80319F28, newCredit);
-    if (*((u8 *)p_port + 0x24) == 1)
-        PORT_FlowInd(*(void **)((u8 *)p_port + 0x6C), *((u8 *)p_port + 0xD), 1);
+    newCredit = (*(u16 *)((u8 *)p_port + PORT_CREDIT_TX) += credit);
+    if (rfc_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+        fn_80070954(TRACE_LAYER_RFCOMM | TRACE_TYPE_EVENT, lbl_80319F28, newCredit);
+    if (*((u8 *)p_port + PORT_TX_PEER_FC) == 1)
+        PORT_FlowInd(*(void **)((u8 *)p_port + PORT_MCB), *((u8 *)p_port + PORT_DLCI), 1);
 }
 
 void fn_8009578C(void *arg0) {
