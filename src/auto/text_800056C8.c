@@ -754,10 +754,9 @@ extern "C" s32 fn_80006408(void *arg0, s32 arg1, u32 arg2, u32 arg3) {
         virtual void v9();
         virtual s32 v10();
     };
+    void *obj;
     if ((((s32 *)lbl_8055D350)[8] & 4) != 0) {
-        u8 *base = (u8 *)lbl_8034EEB8;
-        s32 off = arg1 << 4;
-        void *obj = *(void **)(base + off + 0x18);
+        obj = *(void **)((u8 *)lbl_8034EEB8 + (arg1 << 4) + 0x18);
         if (((Obj *)obj)->v10() != 0) {
             return 1;
         }
@@ -1728,27 +1727,28 @@ void *fn_800079E4(void) {
 }
 
 #pragma cplusplus on
-extern "C" void *fn_800079F0(void *arg0, s32 arg1) {
+/* Destructor: install vtable, destroy owned child object, release two ref-counted resources, and optionally free this object. */
+extern "C" void *fn_800079F0(void *self, s32 deletingFlag) {
     class Entry {
     public:
         virtual void destroy(s32);
     };
-    void *entry;
-    if (arg0 != 0) {
-        entry = *(void **)((u8 *)arg0 + 0x1C);
-        *(void **)arg0 = (void *)lbl_802FB478;
-        if (entry != 0) {
-            if (entry != 0) {
-                ((Entry *)entry)->destroy(1);
+    void *child;
+    if (self != 0) {
+        child = *(void **)((u8 *)self + 0x1C);
+        *(void **)self = (void *)lbl_802FB478;
+        if (child != 0) {
+            if (child != 0) {
+                ((Entry *)child)->destroy(1);
             }
         }
-        fn_80235380(*(s32 *)((u8 *)arg0 + 0x18));
-        fn_80235380(*(s32 *)((u8 *)arg0 + 0x14));
-        if (arg1 > 0) {
-            ((s32 (*)(void *))fn_80128668)(arg0);
+        fn_80235380(*(s32 *)((u8 *)self + 0x18));
+        fn_80235380(*(s32 *)((u8 *)self + 0x14));
+        if (deletingFlag > 0) {
+            ((s32 (*)(void *))fn_80128668)(self);
         }
     }
-    return arg0;
+    return self;
 }
 #pragma cplusplus reset
 s32 fn_80007A84(s32 arg0, s32 arg1) {
