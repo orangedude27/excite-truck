@@ -20,25 +20,14 @@ static inline InitArrayB59D4 *initArrayB59D4(InitArrayB59D4 *a) {
 }
 /* Construct and register the two embedded arrays without defining their data. */
 #pragma push
-#pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma cplusplus on
 extern "C" void fn_802B59D4(void) {
     unsigned char *base = lbl_804BE448;
-    InitArrayB59D4 *first;
-    InitArrayB59D4 *second;
     fn_8000D838(lbl_8055F9E0);
-    first = (InitArrayB59D4 *)(base + 0xC);
-    first->data = first->storage;
-    first->capacity = 16;
-    first->count = 0;
-    __register_global_object(first, fn_802B5AC0, base);
-    second = (InitArrayB59D4 *)(base + 0x64);
-    second->data = second->storage;
-    second->capacity = 16;
-    second->count = 0;
-    __register_global_object(second, fn_802B5A68, base + 0x58);
+    __register_global_object(initArrayB59D4((InitArrayB59D4 *)(base + 0xC)), fn_802B5AC0, base);
+    __register_global_object(initArrayB59D4((InitArrayB59D4 *)(base + 0x64)), fn_802B5A68, base + 0x58);
 }
 #pragma pop
 
