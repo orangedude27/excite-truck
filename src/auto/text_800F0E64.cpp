@@ -200,6 +200,7 @@ extern "C" const char lbl_803244D4[];
   extern "C" u8 lbl_80326400[];
   extern "C" u8 lbl_8055DE60;
   extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void *, s32 *);
   extern "C" void *GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void);
   extern "C" s32 Shutdown__Q46nw4hbm3snd6detail11SoundThreadFv(void);
   extern "C" void *fn_800FE648(void);
