@@ -366,9 +366,9 @@ void fn_8000F884(void) {
     s32 id;
     s32 handle;
     s32 len;
-    s32 n;
-    u8 *p;
     f32 c;
+    u8 *p;
+    s32 n;
 
     ((void (*)(s32))fn_8000F188)((s32)(base + 0x1D0));
     ((void (*)(s32, s32))fn_8000F2A8)((s32)(base + 0x1E0), (s32)(base + 0x1F0));
@@ -453,11 +453,12 @@ extern "C" void fn_8000FB44(void) {
     struct Obj {
         virtual void v0(int);
     };
-    s32 value;
+    s32 handle;
 
-    value = lbl_80351738[0x14];
-    if (value != 0) {
-        ((void (*)(s32))fn_80235380)(value);
+    /* Release dash/UI resources (audio handle, font context, UI object) and shut down submodules. */
+    handle = lbl_80351738[0x14];
+    if (handle != 0) {
+        ((void (*)(s32))fn_80235380)(handle);
     }
     lbl_80351738[0x14] = 0;
     fn_802328D4(lbl_8055D494, lbl_80351738);
