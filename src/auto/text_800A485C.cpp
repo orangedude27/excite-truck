@@ -11661,7 +11661,17 @@ extern "C" s32 fn_800B878C(void *arg0, u8 *buf, s32 *type, s32 size) {
 #pragma push
 #pragma small_data off
 #pragma pop
-extern "C" s32 fn_800B8BE8(s32 arg0) { if (!arg0) return -0x14; if (!lbl_8055DD2C) { if (NANDInit()) return -0x15; if (NANDGetCurrentDir((char *)&lbl_80405D18)) return -0x15; ++lbl_8055DD2C; } fn_800A68DC(arg0); return 0; }
+extern "C" s32 fn_800B8BE8(s32 context) {
+    /* Initialize NAND once and capture the current directory, then register the given context; returns 0 on success or a negative error. */
+    if (!context) return -0x14;
+    if (!lbl_8055DD2C) {
+        if (NANDInit()) return -0x15;
+        if (NANDGetCurrentDir((char *)&lbl_80405D18)) return -0x15;
+        ++lbl_8055DD2C;
+    }
+    fn_800A68DC(context);
+    return 0;
+}
 
 extern "C" s32 fn_800B808C(s32, void *, s32);
 extern "C" unsigned char lbl_80405D58[];
