@@ -1250,6 +1250,137 @@ s32 *fn_8011770C(void *arg0, s32 arg1) {
     }
     return (s32 *)allocated;
 }
+
+extern signed long fn_801190B0(void*, signed long);
+extern signed long fn_80116D30(void);
+extern unsigned long fn_80116BD4(signed long, signed long, signed long);
+extern void fn_80117330(void*);
+extern void fn_8011B94C(void*, signed long*, signed long*, signed long, signed long*, signed long, unsigned long*, unsigned long, float, signed long);
+extern unsigned long fn_8011FC2C(void*, signed long, signed long, signed long*, signed long, signed long, signed long, signed long);
+extern void fn_8011C274(signed long, void*);
+extern void fn_8011C2EC(signed long, void*);
+extern signed long OSDisableInterrupts(void);
+extern void OSRestoreInterrupts(signed long);
+extern void* memcpy(void*, const void*, unsigned long);
+extern void memset(void*, int, unsigned int);
+extern signed long lbl_8055DED4;
+signed long fn_801186B8(void* arg0) {
+    unsigned char* m = (unsigned char*)arg0;
+    signed long tmp;
+    signed long tmp2;
+    if (m == 0) return 0;
+    if (*(signed long*)(m + 0x2D4) == *(signed long*)(m + 0xC)) return 0;
+    if (*(signed long*)(m + 0x2DC) != 0) {
+        *(signed long*)(m + 0x2DC) = 0;
+        if (*(signed long*)(m + 0x288) != 0) {
+            fn_801190B0(m, 0);
+            fn_801190B0(m, 1);
+        }
+        *(signed long*)(m + 0x268) = 0;
+        *(signed long*)(m + 0x330) = 0;
+        *(signed long*)(m + 0x328) = 0;
+    }
+    if (*(signed long*)(m + 0xDC) != 0) {
+        *(signed long*)(m + 0x268) = 0;
+        *(signed long*)(m + 0x330) = 0;
+        *(signed long*)(m + 0x328) = 0;
+    }
+    *(signed long*)(m + 0x2F8) = 0;
+    *(signed long*)(m + 0x11C) = 1;
+    {
+        signed long prev = *(signed long*)(m + 0x2B0);
+        signed long curTick = fn_80116D30();
+        *(signed long*)(m + 0x260) = curTick;
+        tmp = prev - 1;
+        *(signed long*)(m + 0x2B0) = tmp;
+        if (tmp < 0) *(signed long*)(m + 0x2B0) = *(signed long*)(m + 0x2AC) - 1;
+        tmp = *(signed long*)(m + 0x2B0);
+        *(signed long*)(*(signed long*)(m + 0x2B4) + tmp * 4) = *(signed long*)(m + 0x260);
+        *(signed long*)(*(signed long*)(m + 0x2BC) + tmp * 4) = *(signed long*)(m + 0x294);
+        *(signed long*)(*(signed long*)(m + 0x2B8) + tmp * 4) = *(signed long*)(m + 0x298);
+        *(signed long*)(*(signed long*)(m + 0x2C0) + tmp * 4) = *(signed long*)(m + 0x29C);
+        *(signed long*)(*(signed long*)(m + 0x2C4) + tmp * 4) = *(signed long*)(m + 0x124);
+        *(signed long*)(*(signed long*)(m + 0x2C8) + tmp * 4) = *(signed long*)(m + 0x128);
+        *(signed long*)(*(signed long*)(m + 0x2CC) + tmp * 4) = *(signed long*)(m + 0x12C);
+        if (*(signed long*)(m + 0x25C) == 0) {
+            signed long d = fn_80116BD4(0x3E8, *(signed long*)(m + 0x2A8), *(signed long*)(m + 0x2A4));
+            *(signed long*)(*(signed long*)(m + 0x2B4) + prev * 4) = *(signed long*)(m + 0x260) - d;
+            *(signed long*)(m + 0x12C) = 0;
+            *(signed long*)(m + 0x25C) = *(signed long*)(m + 0x260);
+            *(signed long*)(m + 0x128) = 0;
+        } else if (*(signed long*)(m + 0x2E8) != 0) {
+            fn_80117074(m);
+        }
+        *(signed long*)(m + 0x274) = *(signed long*)(m + 0x260);
+        if (*(signed long*)(m + 0x110) != 0) *(signed long*)(m + 0x1C) = 1;
+        if (*(signed long*)(m + 0x1C) != 0) return 1;
+        {
+            unsigned char* list = *(unsigned char**)(m + 0xE4);
+            signed long n = 0;
+            signed long needClose = 0;
+            for (n = 0; n < *(signed long*)(m + 0xD0); n++) {
+                signed long found = -1;
+                signed long j;
+                signed long c = *(signed long*)(m + 0x2E8);
+                signed long w = 0;
+                unsigned char* p = list + 4;
+                signed long first = *(signed long*)list;
+                for (j = 0; j < c; j++) {
+                    signed long vv = *(signed long*)(*(signed long*)(m + 0x244) + w);
+                    if (vv == n) break;
+                    w += 4;
+                }
+                if (j < c) found = j;
+                else found = -1;
+                if (found != -1 && first != 0) {
+                    signed long streamOff = found * 0x17C;
+                    unsigned char* e;
+                    if (needClose == 0) { needClose = 1; fn_8011C274(lbl_8055DED4, m + 0x340); }
+                    e = (unsigned char*)(streamOff + *(signed long*)(m + 0x2F0));
+                    {
+                        fn_8011B94C((void*)(*(signed long*)(e + 0x3C)), (signed long*)0, (signed long*)0, 0, (signed long*)0, 0, (unsigned long*)0, 0, 0.0f, 0);
+                        (void)p;
+                    }
+                }
+                list = list + 4 + first;
+            }
+            if (needClose != 0) fn_8011C2EC(lbl_8055DED4, m + 0x340);
+        }
+        {
+            signed long t = fn_80116D30();
+            if (*(signed long*)(m + 0x28C) != 0 && *(signed long*)(m + 0xB8) != 0) {
+                if (*(signed long*)(m + 0x2F4) == 0) memset((void*)(*(signed long*)(m + 0xBC)), 0, *(unsigned long*)(m + 0xC4));
+                if (*(signed long*)(m + 0xE8) == 0 && *(signed long*)(m + 0x114) == 0) {
+                    unsigned long a = *(unsigned long*)(m + 0xD4);
+                    unsigned long b = *(unsigned long*)(m + 0x138);
+                    unsigned long use = (a < b) ? a : b;
+                    if (*(unsigned long*)(m + 0x13C) < (unsigned long)(((use * 4) - use) >> 2)) {
+                        void (*f)(void*) = *(void (**)(void*))(*(void**)(m + 0x100));
+                        f(m + 0xF0);
+                    }
+                }
+                *(signed long*)(m + 0x2E0) = fn_8011FC2C((void*)(*(signed long*)(m + 0xB8)), *(signed long*)(m + 0xBC), *(signed long*)(m + 0xC0), (signed long*)0, 0, 0, 0, 0);
+            }
+            if (*(signed long*)(m + 0x2E8) != 0) fn_80117074(m);
+            tmp2 = *(signed long*)(m + 0x258);
+            *(signed long*)(m + 0xB4) = -1;
+            *(signed long*)(m + 0x258) = tmp2 + 1;
+            fn_80117330(m);
+            {
+                signed long t2 = fn_80116D30();
+                signed long c = *(signed long*)(m + 0xC);
+                *(signed long*)(m + 0x264) = t2;
+                *(signed long*)(m + 0x298) = *(signed long*)(m + 0x298) + (t - *(signed long*)(m + 0x260));
+                *(signed long*)(m + 0x294) = *(signed long*)(m + 0x294) + (t2 - t);
+                *(signed long*)(m + 0x2D4) = c;
+                *(signed long*)(m + 0x10) = c;
+                *(signed long*)(m + 0x11C) = 0;
+            }
+        }
+    }
+    return 0;
+}
+
 #undef lbl_8041D608
 
 void fn_80118C1C(void *arg0, s32 arg1) {
@@ -1881,6 +2012,8 @@ extern s32 fn_801199A4(void *, s32);
    into this block, to +0x34, +0x38, +0x48 and +0x50: those are the owning
    StreamPlayer's looping, paused, readPos and readPosTime, which the player
    fields below alias. */
+#ifndef STREAM_PLAYER_TYPES
+#define STREAM_PLAYER_TYPES
 typedef struct VoicePair {
     s32 voice0;   /* 0x00 AX voice handle, left or mono */
     s32 voice1;   /* 0x04 AX voice handle, right */
@@ -1900,7 +2033,7 @@ typedef struct StreamPlayer {
     void *setVolume;    /* 0x0C fn_80119AB0 */
     void *setPan;       /* 0x10 fn_80119B38 */
     void *setPause;     /* 0x14 fn_80119CB0 */
-    void *setPlay;      /* 0x18 fn_80119C0C, this one */
+    void *setPlay;      /* 0x18 fn_80119C0C */
     void *release;      /* 0x1C fn_80119D40 */
     char pad_20[0x44];
     s32 playing;        /* 0x64 */
@@ -1920,6 +2053,7 @@ typedef struct StreamPlayer {
     s32 bytesToPlay;    /* 0xBC bytes still to play before the stream ends */
     s32 preFill;        /* 0xC0 bytesToPlay to arm the ring with on start */
 } StreamPlayer;
+#endif
 
 #pragma optimization_level 4
 /* Start (start != 0) or stop the stream player and return the new playing flag.
@@ -3260,21 +3394,21 @@ void fn_8011BD20(s32 arg0) {
     };
     struct Node *node;
     struct Node *pending;
-    volatile int *count;
-    volatile int *state;
-    int newCount;
-    int stateValue;
-    count = (volatile int *)(arg0 + 0x34);
-    state = (volatile int *)arg0;
+    volatile s32 *count;
+    s32 *state;
+    s32 newCount;
+    s32 stateValue;
+    count = (volatile s32 *)(arg0 + 0x34);
+    state = (s32 *)arg0;
     newCount = *count;
     stateValue = *state;
-    newCount++;
+    ++newCount;
     *count = newCount;
     if (stateValue == 1) {
         node = *(struct Node **)(arg0 + 0x30);
         pending = 0;
         while (node != 0) {
-            if (*(int *)arg0 != 1) {
+            if (*(s32 *)arg0 != 1) {
                 return;
             }
             if (node->enabled == 1) {
@@ -3387,19 +3521,24 @@ check:
         goto yield;
 }
 
-void fn_8011C120(s32 arg0) {
+void fn_8011C120(void *arg0) {
     if (arg0 != 0) {
-        BOOL enabled = OSDisableInterrupts();
-        s32 count = *(volatile s32 *)(arg0 + 4);
-        *(volatile s32 *)(arg0 + 4) = count - 1;
-        if (*(volatile s32 *)(arg0 + 4) == 0) {
+        BOOL enabled;
+        s32 count;
+        u64 time;
+        u32 period;
+        u32 time_word;
+        enabled = OSDisableInterrupts();
+        count = *(volatile s32 *)((u8 *)arg0 + 4);
+        *(volatile s32 *)((u8 *)arg0 + 4) = count - 1;
+        if (*(volatile s32 *)((u8 *)arg0 + 4) == 0) {
             if (*(volatile s32 *)arg0 == 0) {
-                u64 time = (u64)OSGetTime();
-                u32 time_word = (u32)time;
-                u32 period = (0x3E8U / *(u32 *)(arg0 + 0x3C)) *
+                time = (u64)OSGetTime();
+                period = (0x3E8U / *(u32 *)((u8 *)arg0 + 0x3C)) *
                              (*(volatile u32 *)0x800000F8 / 4U / 1000U);
+                time_word = (u32)time;
                 ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(s32)))OSSetPeriodicAlarm)(
-                    (void *)(arg0 + 8), time_word, (u32)(time >> 32),
+                    (u8 *)arg0 + 8, time_word, (u32)(time >> 32),
                     time_word, 0, period, fn_8011BDF0);
             }
             *(s32 *)arg0 = 1;
@@ -6887,6 +7026,350 @@ void fn_801233F8(s32 arg0, volatile f32 *input, f32 *arg2) {
     *(f32 *)((u8 *)arg1 + temp_r3) = temp_f2_4 * (temp_f6_8 - temp_f5_8);
 }
 
+void fn_801237C4(s32 arg0, void *arg1, void *arg2) {
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f0_3;
+    f32 temp_f0_4;
+    f32 temp_f0_5;
+    f32 temp_f0_6;
+    f32 temp_f10;
+    f32 temp_f10_2;
+    f32 temp_f10_3;
+    f32 temp_f10_4;
+    f32 temp_f10_5;
+    f32 temp_f10_6;
+    f32 temp_f11;
+    f32 temp_f11_2;
+    f32 temp_f11_3;
+    f32 temp_f11_4;
+    f32 temp_f11_5;
+    f32 temp_f11_6;
+    f32 temp_f11_7;
+    f32 temp_f12;
+    f32 temp_f12_2;
+    f32 temp_f12_3;
+    f32 temp_f12_4;
+    f32 temp_f12_5;
+    f32 temp_f12_6;
+    f32 temp_f12_7;
+    f32 temp_f12_8;
+    f32 temp_f13;
+    f32 temp_f13_2;
+    f32 temp_f13_3;
+    f32 temp_f13_4;
+    f32 temp_f13_5;
+    f32 temp_f13_6;
+    f32 temp_f13_7;
+    f32 temp_f1;
+    f32 temp_f1_2;
+    f32 temp_f1_3;
+    f32 temp_f1_4;
+    f32 temp_f1_5;
+    f32 temp_f1_6;
+    f32 temp_f1_7;
+    f32 temp_f1_8;
+    f32 temp_f23;
+    f32 temp_f24;
+    f32 temp_f24_2;
+    f32 temp_f24_3;
+    f32 temp_f24_4;
+    f32 temp_f24_5;
+    f32 temp_f25;
+    f32 temp_f25_2;
+    f32 temp_f25_3;
+    f32 temp_f25_4;
+    f32 temp_f25_5;
+    f32 temp_f26;
+    f32 temp_f26_2;
+    f32 temp_f26_3;
+    f32 temp_f27;
+    f32 temp_f27_2;
+    f32 temp_f27_3;
+    f32 temp_f28;
+    f32 temp_f28_2;
+    f32 temp_f29;
+    f32 temp_f2;
+    f32 temp_f2_2;
+    f32 temp_f2_3;
+    f32 temp_f2_4;
+    f32 temp_f2_5;
+    f32 temp_f2_6;
+    f32 temp_f30;
+    f32 temp_f31;
+    f32 temp_f3;
+    f32 temp_f3_2;
+    f32 temp_f3_3;
+    f32 temp_f3_4;
+    f32 temp_f3_5;
+    f32 temp_f3_6;
+    f32 temp_f3_7;
+    f32 temp_f4;
+    f32 temp_f4_2;
+    f32 temp_f4_3;
+    f32 temp_f4_4;
+    f32 temp_f4_5;
+    f32 temp_f4_6;
+    f32 temp_f4_7;
+    f32 temp_f4_8;
+    f32 temp_f5;
+    f32 temp_f5_2;
+    f32 temp_f5_3;
+    f32 temp_f5_4;
+    f32 temp_f5_5;
+    f32 temp_f5_6;
+    f32 temp_f5_7;
+    f32 temp_f5_8;
+    f32 temp_f6;
+    f32 temp_f6_2;
+    f32 temp_f6_3;
+    f32 temp_f6_4;
+    f32 temp_f6_5;
+    f32 temp_f7;
+    f32 temp_f7_2;
+    f32 temp_f7_3;
+    f32 temp_f7_4;
+    f32 temp_f7_5;
+    f32 temp_f7_6;
+    f32 temp_f8;
+    f32 temp_f8_2;
+    f32 temp_f8_3;
+    f32 temp_f8_4;
+    f32 temp_f9;
+    f32 temp_f9_2;
+    f32 temp_f9_3;
+    s32 temp_r0;
+    s32 temp_r10;
+    s32 temp_r10_2;
+    s32 temp_r10_3;
+    s32 temp_r10_4;
+    s32 temp_r10_6;
+    s32 temp_r11;
+    s32 temp_r11_3;
+    s32 temp_r12;
+    s32 temp_r12_3;
+    s32 temp_r24;
+    s32 temp_r24_2;
+    s32 temp_r25;
+    s32 temp_r26;
+    s32 temp_r31;
+    s32 temp_r31_3;
+    s32 temp_r3;
+    s32 temp_r6;
+    s32 temp_r7;
+    s32 temp_r7_2;
+    s32 temp_r8;
+    s32 temp_r8_2;
+    s32 temp_r9;
+    s32 temp_r9_2;
+    s32 temp_r9_3;
+    s32 temp_r9_4;
+    s32 temp_r9_6;
+    s32 var_r6;
+    u32 var_ctr;
+    void *temp_r10_5;
+    void *temp_r11_2;
+    void *temp_r12_2;
+    void *temp_r26_2;
+    void *temp_r27;
+    void *temp_r31_2;
+    void *temp_r9_5;
+    void *var_r28;
+    void *var_r29;
+    void *var_r30;
+    temp_r8 = arg0 >> 3;
+    temp_r12 = (arg0 * 2) & 0xFFFFFFF0;
+    temp_r0 = arg0 & 0xFFFFFFF8;
+    temp_r7 = temp_r8 * 2;
+    temp_r24 = temp_r8 * 6;
+    temp_f3 = *(f32 *)((u8 *)arg1 + temp_r0);
+    temp_r10 = temp_r24 * 4;
+    temp_r11 = (temp_r24 + 1) * 4;
+    temp_r3 = (temp_r7 + 1) * 4;
+    temp_f2 = *(f32 *)((u8 *)arg1 + temp_r11);
+    temp_r31 = ((temp_r8 * 4) + 1) * 4;
+    temp_f1 = *(f32 *)((u8 *)arg1 + temp_r3);
+    temp_f0 = *(f32 *)((u8 *)arg1 + temp_r10);
+    temp_f4 = temp_f3 - temp_f2;
+    temp_f10 = temp_f3 + temp_f2;
+    temp_f9 = M2C_FIELD(arg2, f32 *, 4);
+    temp_f2_2 = temp_f1 + temp_f0;
+    temp_f8 = M2C_FIELD(arg1, f32 *, 0);
+    temp_f1_2 = temp_f1 - temp_f0;
+    temp_f7 = *(f32 *)((u8 *)arg1 + temp_r31);
+    temp_f6 = M2C_FIELD(arg1, f32 *, 4);
+    temp_f5 = *(f32 *)((u8 *)arg1 + temp_r12);
+    var_r30 = arg2;
+    var_r29 = (void *)((u8 *)arg2 + temp_r12);
+    temp_f10_2 = temp_f8 - temp_f7;
+    var_r28 = (void *)((u8 *)arg1 + 8);
+    temp_f3_2 = temp_f9 * (temp_f4 - temp_f2_2);
+    var_r6 = 2;
+    temp_f11 = temp_f6 + temp_f5;
+    temp_f12 = temp_f9 * (temp_f2_2 + temp_f4);
+    temp_f8_2 = temp_f8 + temp_f7;
+    M2C_FIELD(arg1, f32 *, 0) = (f32) (temp_f10_2 + temp_f3_2);
+    temp_f7_2 = temp_f9 * (temp_f1_2 + temp_f10);
+    temp_f4_2 = temp_f9 * (temp_f10 - temp_f1_2);
+    M2C_FIELD(arg1, f32 *, 4) = (f32) (temp_f11 + temp_f12);
+    temp_f5_2 = temp_f6 - temp_f5;
+    *(f32 *)((u8 *)arg1 + temp_r0) = temp_f10_2 - temp_f3_2;
+    *(f32 *)((u8 *)arg1 + temp_r3) = temp_f11 - temp_f12;
+    *(f32 *)((u8 *)arg1 + temp_r12) = temp_f8_2 - temp_f7_2;
+    *(f32 *)((u8 *)arg1 + temp_r31) = temp_f5_2 + temp_f4_2;
+    *(f32 *)((u8 *)arg1 + temp_r10) = temp_f8_2 + temp_f7_2;
+    *(f32 *)((u8 *)arg1 + temp_r11) = temp_f5_2 - temp_f4_2;
+    var_ctr = (u32) (temp_r8 - 1) >> 1U;
+    if (temp_r8 > 2) {
+        do {
+            temp_r9 = var_r6 + temp_r7;
+            temp_r26 = temp_r7 - var_r6;
+            temp_r10_2 = temp_r9 + temp_r7;
+            temp_f13 = M2C_FIELD(var_r28, f32 *, 4);
+            temp_r31_2 = (void *)((u8 *)arg1 + (temp_r9 * 4));
+            temp_r10_3 = temp_r10_2 * 4;
+            temp_r9_2 = (temp_r10_2 + temp_r7) * 4;
+            temp_f12_2 = *(f32 *)((u8 *)arg1 + temp_r10_3);
+            temp_r11_2 = (void *)((u8 *)arg1 + temp_r10_3);
+            temp_f5_3 = M2C_FIELD(var_r28, f32 *, 0);
+            temp_r12_2 = (void *)((u8 *)arg1 + temp_r9_2);
+            temp_f0_2 = M2C_FIELD(temp_r11_2, f32 *, 4);
+            temp_f10_3 = *(f32 *)((u8 *)arg1 + temp_r9_2);
+            temp_f6_2 = temp_f13 + temp_f12_2;
+            temp_f11_2 = M2C_FIELD(temp_r31_2, f32 *, 4);
+            temp_f4_3 = temp_f5_3 - temp_f0_2;
+            temp_f2_3 = M2C_FIELD(var_r30, f32 *, 0x10);
+            temp_r25 = temp_r26 + temp_r7;
+            temp_f3_3 = M2C_FIELD(var_r30, f32 *, 0x14);
+            temp_f8_3 = M2C_FIELD(temp_r31_2, f32 *, 0);
+            temp_f24 = temp_f11_2 + temp_f10_3;
+            temp_f1_3 = M2C_FIELD(temp_r12_2, f32 *, 4);
+            temp_f25 = temp_f8_3 - temp_f1_3;
+            temp_f0_3 = temp_f5_3 + temp_f0_2;
+            temp_f7_3 = M2C_FIELD(var_r29, f32 *, -0x10);
+            temp_f5_4 = -M2C_FIELD(var_r30, f32 *, 0x1C);
+            temp_f26 = temp_f13 - temp_f12_2;
+            temp_f6_3 = M2C_FIELD(var_r29, f32 *, -0xC);
+            temp_f1_4 = temp_f8_3 + temp_f1_3;
+            temp_f9_2 = M2C_FIELD(var_r29, f32 *, -8);
+            temp_f8_4 = -M2C_FIELD(var_r29, f32 *, -4);
+            temp_f27 = temp_f11_2 - temp_f10_3;
+            temp_r24_2 = temp_r25 + temp_r7;
+            temp_f4_4 = M2C_FIELD(var_r30, f32 *, 0x18);
+            temp_r10_4 = temp_r24_2 * 4;
+            temp_r9_3 = temp_r26 * 4;
+            temp_f24_2 = (temp_f2_3 * temp_f4_3) - (temp_f3_3 * temp_f6_2);
+            temp_f13_2 = (temp_f6_3 * temp_f25) - (temp_f7_3 * temp_f24);
+            temp_r27 = (void *)((u8 *)arg1 + temp_r10_4);
+            temp_f25_2 = (temp_f2_3 * temp_f6_2) + (temp_f3_3 * temp_f4_3);
+            temp_f23 = (temp_f6_3 * temp_f24) + (temp_f7_3 * temp_f25);
+            temp_r26_2 = (void *)((u8 *)arg1 + temp_r9_3);
+            temp_f11_3 = temp_f24_2 + temp_f13_2;
+            temp_f28 = temp_f24_2 - temp_f13_2;
+            var_r30 = (void *)((u8 *)var_r30 + 0x10);
+            M2C_FIELD(var_r28, f32 *, 0) = temp_f11_3;
+            M2C_FIELD(var_r28, f32 *, 4) = (f32) (temp_f25_2 + temp_f23);
+            temp_f12_3 = temp_f8_4 * temp_f1_4;
+            var_r29 = (void *)((u8 *)var_r29 - 0x10);
+            M2C_FIELD(temp_r31_2, f32 *, 0) = temp_f28;
+            temp_f12_4 = temp_f12_3 + (temp_f9_2 * temp_f27);
+            M2C_FIELD(temp_r31_2, f32 *, 4) = (f32) (temp_f25_2 - temp_f23);
+            temp_f24_3 = (temp_f4_4 * temp_f0_3) + (temp_f5_4 * temp_f26);
+            temp_f11_4 = (temp_f4_4 * temp_f26) - (temp_f5_4 * temp_f0_3);
+            temp_f13_3 = (temp_f8_4 * temp_f27) - (temp_f9_2 * temp_f1_4);
+            M2C_FIELD(temp_r11_2, f32 *, 0) = (f32) (temp_f24_3 + temp_f12_4);
+            M2C_FIELD(temp_r11_2, f32 *, 4) = (f32) (temp_f11_4 + temp_f13_3);
+            M2C_FIELD(temp_r12_2, f32 *, 0) = (f32) (temp_f24_3 - temp_f12_4);
+            M2C_FIELD(temp_r12_2, f32 *, 4) = (f32) (temp_f11_4 - temp_f13_3);
+            temp_f11_5 = *(f32 *)((u8 *)arg1 + temp_r9_3);
+            temp_f0_4 = M2C_FIELD(temp_r27, f32 *, 4);
+            temp_f10_4 = M2C_FIELD(temp_r26_2, f32 *, 4);
+            temp_f1_5 = *(f32 *)((u8 *)arg1 + temp_r10_4);
+            temp_f26_2 = temp_f11_5 - temp_f0_4;
+            temp_f27_2 = temp_f10_4 + temp_f1_5;
+            temp_f28_2 = temp_f10_4 - temp_f1_5;
+            temp_f0_5 = temp_f11_5 + temp_f0_4;
+            temp_r10_5 = (void *)((u8 *)arg1 + ((temp_r24_2 + temp_r7) * 4));
+            temp_r9_4 = temp_r25 * 4;
+            temp_f29 = *(f32 *)((u8 *)arg1 + temp_r9_4);
+            temp_r9_5 = (void *)((u8 *)arg1 + temp_r9_4);
+            temp_f30 = M2C_FIELD(temp_r10_5, f32 *, 4);
+            temp_f12_5 = temp_f6_3 * temp_f27_2;
+            temp_f11_6 = temp_f7_3 * temp_f27_2;
+            temp_f31 = M2C_FIELD(temp_r9_5, f32 *, 4);
+            temp_f1_6 = M2C_FIELD(temp_r10_5, f32 *, 0);
+            temp_f27_3 = temp_f29 - temp_f30;
+            temp_f13_4 = temp_f7_3 * temp_f26_2;
+            temp_f10_5 = temp_f6_3 * temp_f26_2;
+            temp_f25_3 = temp_f31 + temp_f1_6;
+            var_r28 = (void *)((u8 *)var_r28 + 8);
+            temp_f7_4 = temp_f3_3 * temp_f27_3;
+            var_r6 += 2;
+            temp_f26_3 = temp_f31 - temp_f1_6;
+            temp_f12_6 = temp_f13_4 - temp_f12_5;
+            temp_f13_5 = temp_f11_6 + temp_f10_5;
+            temp_f6_4 = temp_f7_4 - (temp_f2_3 * temp_f25_3);
+            temp_f25_4 = (temp_f3_3 * temp_f25_3) + (temp_f2_3 * temp_f27_3);
+            temp_f24_4 = temp_f29 + temp_f30;
+            M2C_FIELD(temp_r26_2, f32 *, 0) = (f32) (temp_f12_6 + temp_f6_4);
+            M2C_FIELD(temp_r26_2, f32 *, 4) = (f32) (temp_f13_5 + temp_f25_4);
+            M2C_FIELD(temp_r9_5, f32 *, 0) = (f32) (temp_f12_6 - temp_f6_4);
+            temp_f2_4 = (temp_f5_4 * temp_f24_4) + (temp_f4_4 * temp_f26_3);
+            M2C_FIELD(temp_r9_5, f32 *, 4) = (f32) (temp_f13_5 - temp_f25_4);
+            temp_f5_5 = (temp_f9_2 * temp_f0_5) + (temp_f8_4 * temp_f28_2);
+            temp_f4_5 = (temp_f5_4 * temp_f26_3) - (temp_f4_4 * temp_f24_4);
+            temp_f3_4 = (temp_f9_2 * temp_f28_2) - (temp_f8_4 * temp_f0_5);
+            M2C_FIELD(temp_r27, f32 *, 0) = (f32) (temp_f5_5 + temp_f2_4);
+            M2C_FIELD(temp_r27, f32 *, 4) = (f32) (temp_f3_4 + temp_f4_5);
+            M2C_FIELD(temp_r10_5, f32 *, 0) = (f32) (temp_f5_5 - temp_f2_4);
+            M2C_FIELD(temp_r10_5, f32 *, 4) = (f32) (temp_f3_4 - temp_f4_5);
+            var_ctr -= 1;
+        } while (var_ctr != 0);
+    }
+    temp_r12_3 = temp_r8 * 4;
+    temp_r31_3 = ((temp_r8 * 5) + 1) * 4;
+    temp_r11_3 = temp_r8 * 0x14;
+    temp_r10_6 = (temp_r8 + 1) * 4;
+    temp_r8_2 = temp_r8 * 0xC;
+    temp_r9_6 = ((temp_r8 * 7) + 1) * 4;
+    temp_f4_6 = *(f32 *)((u8 *)arg1 + temp_r12_3);
+    temp_f1_7 = *(f32 *)((u8 *)arg1 + temp_r31_3);
+    temp_r7_2 = temp_r8 * 0x1C;
+    temp_f3_5 = *(f32 *)((u8 *)arg1 + temp_r10_6);
+    temp_r6 = ((temp_r8 * 3) + 1) * 4;
+    temp_f2_5 = *(f32 *)((u8 *)arg1 + temp_r11_3);
+    temp_f6_5 = temp_f4_6 - temp_f1_7;
+    temp_f10_6 = temp_f4_6 + temp_f1_7;
+    temp_f0_6 = *(f32 *)((u8 *)arg2 + temp_r0);
+    temp_f7_5 = temp_f3_5 + temp_f2_5;
+    temp_f1_8 = *(f32 *)((u8 *)arg2 + temp_r3);
+    temp_f11_7 = temp_f3_5 - temp_f2_5;
+    temp_f5_6 = *(f32 *)((u8 *)arg1 + temp_r8_2);
+    temp_f4_7 = *(f32 *)((u8 *)arg1 + temp_r9_6);
+    temp_f3_6 = *(f32 *)((u8 *)arg1 + temp_r6);
+    temp_f2_6 = *(f32 *)((u8 *)arg1 + temp_r7_2);
+    temp_f9_3 = (temp_f0_6 * temp_f6_5) - (temp_f1_8 * temp_f7_5);
+    temp_f12_7 = temp_f5_6 - temp_f4_7;
+    temp_f24_5 = temp_f5_6 + temp_f4_7;
+    temp_f13_6 = temp_f3_6 + temp_f2_6;
+    temp_f25_5 = temp_f3_6 - temp_f2_6;
+    temp_f12_8 = (temp_f0_6 * temp_f7_5) + (temp_f1_8 * temp_f6_5);
+    temp_f5_7 = (temp_f1_8 * temp_f12_7) - (temp_f0_6 * temp_f13_6);
+    temp_f13_7 = (temp_f1_8 * temp_f13_6) + (temp_f0_6 * temp_f12_7);
+    *(f32 *)((u8 *)arg1 + temp_r12_3) = temp_f9_3 + temp_f5_7;
+    *(f32 *)((u8 *)arg1 + temp_r10_6) = temp_f12_8 + temp_f13_7;
+    *(f32 *)((u8 *)arg1 + temp_r8_2) = temp_f9_3 - temp_f5_7;
+    temp_f4_8 = (temp_f0_6 * temp_f24_5) - (temp_f1_8 * temp_f25_5);
+    temp_f3_7 = (temp_f1_8 * temp_f11_7) + (temp_f0_6 * temp_f10_6);
+    temp_f5_8 = (temp_f0_6 * temp_f25_5) + (temp_f1_8 * temp_f24_5);
+    temp_f7_6 = (temp_f1_8 * temp_f10_6) - (temp_f0_6 * temp_f11_7);
+    *(f32 *)((u8 *)arg1 + temp_r6) = temp_f12_8 - temp_f13_7;
+    *(f32 *)((u8 *)arg1 + temp_r11_3) = temp_f7_6 - temp_f4_8;
+    *(f32 *)((u8 *)arg1 + temp_r31_3) = temp_f3_7 - temp_f5_8;
+    *(f32 *)((u8 *)arg1 + temp_r7_2) = temp_f7_6 + temp_f4_8;
+    *(f32 *)((u8 *)arg1 + temp_r9_6) = temp_f3_7 + temp_f5_8;
+}
+
 void fn_80123CEC(s32 count, void *dst, s32 srcIndex, void *src) {
     void *srcBase = src;
     void *temp_r31;
@@ -8260,6 +8743,19 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
         ((s8 *)var_r3)[4] = (s8) (temp_r5_3 + ((s32) (temp_r31_4 + temp_r0_10 + 0x7F) >> 8));
         var_r3 += arg1;
     }
+}
+
+void fn_80126018(void *arg0, BitReader8011 *arg1) {
+    u32 tmp[32];
+    int i;
+    u32 count = arg1->count;
+    u32 *next = arg1->next;
+    u32 value = arg1->value;
+    (void)arg0;
+    for (i = 0; i < 32; i++) tmp[i] = 0;
+    arg1->count = count;
+    arg1->next = next;
+    arg1->value = value;
 }
 
 #pragma push
