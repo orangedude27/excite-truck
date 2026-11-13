@@ -310,17 +310,19 @@ f32 fn_801C3B6C(void) {
 }
 
 #pragma dont_inline fn_801C34CC
-s32 fn_801C3B7C(const void *arg0, const void *arg1) {
-    if (*(f32 *)arg1 < -1.0f) {
+/* qsort comparator for 0x30C-byte timeline entries: orders by time at +0
+ * (sentinel -1.0f sorts after valid times); ties (fn_801C34CC) by rank at +4. */
+s32 fn_801C3B7C(const void *leftEntry, const void *rightEntry) {
+    if (*(f32 *)rightEntry < -1.0f) {
         return -1;
     }
-    if (*(f32 *)arg0 < -1.0f) {
+    if (*(f32 *)leftEntry < -1.0f) {
         return 1;
     }
-    if (fn_801C34CC(*(f32 *)arg0, *(f32 *)arg1)) {
-        return *(s32 *)((char *)arg0 + 4) - *(s32 *)((char *)arg1 + 4);
+    if (fn_801C34CC(*(f32 *)leftEntry, *(f32 *)rightEntry)) {
+        return *(s32 *)((char *)leftEntry + 4) - *(s32 *)((char *)rightEntry + 4);
     }
-    if (*(f32 *)arg0 < *(f32 *)arg1) {
+    if (*(f32 *)leftEntry < *(f32 *)rightEntry) {
         return -1;
     }
     return 1;
