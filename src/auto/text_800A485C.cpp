@@ -18722,7 +18722,8 @@ check:
     }
 }
 
-extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(u8 *arg0) {
+// Draws every component managed by the homebutton GUI manager.
+extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(u8 *manager) {
     class ComponentDispatch {
     public:
         virtual void d0();
@@ -18731,21 +18732,21 @@ extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(u8 *arg0) {
         virtual void d3();
         virtual void draw();
     };
-    u8 *list = arg0 + 8;
-    s32 i = 0;
+    u8 *componentList = manager + 8;
+    s32 index = 0;
     goto check;
 loop:
     {
-        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(arg0 + 8, (u16)i);
-        ComponentDispatch *obj = *(ComponentDispatch **)((u8 *)entry + 4);
-        obj->draw();
-        i++;
+        void *listNode = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(manager + 8, (u16)index);
+        ComponentDispatch *component = *(ComponentDispatch **)((u8 *)listNode + 4);
+        component->draw();
+        index++;
     }
 check:
-    if (list == 0) {
+    if (componentList == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     }
-    if ((u32)i < *(u16 *)(arg0 + 0x10)) {
+    if ((u32)index < *(u16 *)(manager + 0x10)) {
         goto loop;
     }
 }
