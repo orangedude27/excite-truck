@@ -341,17 +341,18 @@ void *fn_8020FAF0(void) {
 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-int fn_8020FB80(void *arg0) {
-    int offset;
-    int i;
-    i = 0;
-    offset = 0;
-    while (i < lbl_804900AC.m_count) {
-        if (fn_8002B1D8(*(char **)((char *)lbl_804900AC.m_entries + offset), (char *)arg0, 0x3F) == 0) {
-            return i;
+/* Find the index of a track-music entry matching the given name, or -1 if not found. */
+int fn_8020FB80(void *name) {
+    int entryOffset;
+    int index;
+    index = 0;
+    entryOffset = 0;
+    while (index < lbl_804900AC.m_count) {
+        if (fn_8002B1D8(*(char **)((char *)lbl_804900AC.m_entries + entryOffset), (char *)name, 0x3F) == 0) {
+            return index;
         }
-        offset += 4;
-        i++;
+        entryOffset += 4;
+        index++;
     }
     return ((int (*)(int))fn_8020F3B4)(0);
 }
