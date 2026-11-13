@@ -975,13 +975,13 @@ void fn_801F3288(void *arg0) {
         *(float *)((char *)arg0 + 0x30) = *(float *)((char *)camera + 0x24);
         planes = *(void **)((char *)arg0 + 0x3C);
         *(float *)((char *)arg0 + 0x34) = *(float *)((char *)camera + 0x28);
-        planes = (char *)planes + 0x2C;
+        plane = (char *)planes + 0x2C;
         *(float *)((char *)arg0 + 0x38) = *(float *)((char *)camera + 0x2C);
         if (*(int *)((char *)arg0 + 8) == 1) {
             mask = 1;
             f30 = lbl_80562F64 * (lbl_80562F70 * fn_801E8738(-1));
             i = 0;
-            plane = planes;
+            planes = plane;
             do {
                 f31 = PSVECDotProduct((float *)((char *)camera + 0x18), (float *)plane);
                 if (f31 > (float)cos(f30 + *(float *)((char *)planes + 0xC))) {
