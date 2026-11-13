@@ -476,11 +476,22 @@ int fn_802ADCF8(int key) {
     }
 }
 
-void *fn_802ADDD8(void *arg0,int arg1) {
- int *obj; int data;
- obj=(int *)((void*(*)(int, void*))fn_801284F8)(0x10,&lbl_80349FA4);
- if(obj){data=(int)fn_8012850C(arg1*0x74,&lbl_8055CD70);obj[0]=data;obj[2]=arg1;obj[1]=0;obj[3]=data;}
- *(int **)arg0=obj; *(float *)((char *)arg0+4)=lbl_8055E3C8; return arg0;
+void *fn_802ADDD8(void *out, int count) {
+    int *obj;
+    int data;
+    /* Allocate a 0x10-byte header and a count*0x74 entry buffer (tags "anim_list"/"dsa_buf"),
+       store {buffer, 0, count, buffer} in the header, and write {header, 0.0f} to out. */
+    obj = (int *)((void *(*)(int, void *))fn_801284F8)(0x10, &lbl_80349FA4);
+    if (obj) {
+        data = (int)fn_8012850C(count * 0x74, &lbl_8055CD70);
+        obj[0] = data;
+        obj[2] = count;
+        obj[1] = 0;
+        obj[3] = data;
+    }
+    *(int **)out = obj;
+    *(float *)((char *)out + 4) = lbl_8055E3C8;
+    return out;
 }
 
 extern void fn_80128668(void *);
