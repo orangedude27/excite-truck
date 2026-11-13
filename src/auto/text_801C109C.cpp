@@ -953,31 +953,6 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         dst->z = z;
     }
 }
-static inline void Mtx43RowsMultVec(const float (*m)[3], const Vec3f *src, Vec3f *dst) {
-    if (dst == src) {
-        float x = src->z * m[2][0] + (src->x * m[0][0] + src->y * m[1][0]);
-        float y = src->z * m[2][1] + (src->x * m[0][1] + src->y * m[1][1]);
-        float z = src->z * m[2][2] + (src->x * m[0][2] + src->y * m[1][2]);
-        dst->x = x;
-        dst->y = y;
-        dst->z = z;
-    } else {
-        float x = src->z * m[2][0] + (src->x * m[0][0] + src->y * m[1][0]);
-        float y = src->z * m[2][1] + (src->x * m[0][1] + src->y * m[1][1]);
-        float z = src->z * m[2][2] + (src->x * m[0][2] + src->y * m[1][2]);
-        dst->x = x;
-        dst->y = y;
-        dst->z = z;
-    }
-    {
-        float x = dst->x + m[3][0];
-        float y = dst->y + m[3][1];
-        float z = dst->z + m[3][2];
-        dst->x = x;
-        dst->y = y;
-        dst->z = z;
-    }
-}
 #pragma push
 #pragma dont_inline off
 extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
