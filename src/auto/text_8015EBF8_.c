@@ -696,7 +696,7 @@ s32 fn_8015FAB8(s32 *arg0, s32 arg1, f32 arg2) {
 extern f32 lbl_80561810;
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_8015FB28(void *arg0, void *arg1) {
+void fn_8015FB28(void *arg0, void *arg1, void *arg2, int arg3) {
     volatile u32 *dst = (volatile u32 *)arg0;
     volatile u32 *src = (volatile u32 *)arg1;
     volatile f32 *dstFloat = (volatile f32 *)arg0;
