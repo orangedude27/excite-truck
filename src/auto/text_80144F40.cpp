@@ -1793,6 +1793,7 @@ extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f3
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
+    /* Lerp each byte of a packed 32-bit color value from arg0 toward arg1 by arg2. */
     s32 a = fn_801450A0(arg0 & 0xFF, arg1 & 0xFF, arg2);
     s32 b = fn_801450A0((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
     s32 c = fn_801450A0((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
