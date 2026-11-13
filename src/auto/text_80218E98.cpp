@@ -7274,16 +7274,21 @@ extern "C" void *fn_802269A8(void *obj, void *arg1) {
 }
 
 extern "C" void *fn_80226AD0(void *arg0, s32 arg1) {
+    /* Scalar deleting destructor for the lbl_8033E0BC class: release owned
+     * resources at +0x248/+0x244, run the base destructor, and optionally
+     * free storage. */
     if (arg0 != 0) {
-        void *ptr = *(void **)((u8 *)arg0 + 0x248);
+        void *resource248 = *(void **)((u8 *)arg0 + 0x248);
         *(void **)arg0 = lbl_8033E0BC;
-        if (ptr != 0)
-            fn_8022EE98(ptr);
+        if (resource248 != 0)
+            fn_8022EE98(resource248);
         *(void **)((u8 *)arg0 + 0x248) = 0;
-        void *p2 = *(void **)((u8 *)arg0 + 0x244);
-        if (p2 != 0)
-            fn_802C519C(p2);
+
+        void *resource244 = *(void **)((u8 *)arg0 + 0x244);
+        if (resource244 != 0)
+            fn_802C519C(resource244);
         *(volatile u32 *)((u8 *)arg0 + 0x244) = 0;
+
         register void *self = arg0;
         fn_8021915C(self, 0);
         if (arg1 > 0)
