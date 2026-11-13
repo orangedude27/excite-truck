@@ -2213,9 +2213,9 @@ increment:
         }
         i = -1;
 found:;
-        if (i != -1 && i >= 0 && i < (int)lbl_804B30D8[1]) {
-            if (i != (int)lbl_804B30D8[1] - 1)
-                ((void **)lbl_804B30D8[0])[i] = ((void **)lbl_804B30D8[0])[(int)lbl_804B30D8[1] - 1];
+        if (i != -1 && i >= 0 && i < *(volatile int *)&lbl_804B30D8[1]) {
+            if (i != *(volatile int *)&lbl_804B30D8[1] - 1)
+                ((void **)lbl_804B30D8[0])[i] = ((void **)lbl_804B30D8[0])[*(volatile int *)&lbl_804B30D8[1] - 1];
             lbl_804B30D8[1]--;
         }
         if (arg0 != 0) {
@@ -2283,7 +2283,6 @@ extern "C" int fn_802839D0(void) {
     return 0;
 }
 #pragma cplusplus reset
-#pragma always_inline on
 static inline int fn_80283A50_find(void **p, unsigned int value, int count) {
     int i = 0;
     for (; i < count; ++i) {
@@ -2294,7 +2293,6 @@ increment:
     }
     return -1;
 }
-#pragma always_inline off
 int fn_80283A50(void) {
     int i;
     i = fn_80283A50_find((void **)lbl_804B30D8[0], (unsigned int)lbl_8055F698, (int)lbl_804B30D8[1]);
