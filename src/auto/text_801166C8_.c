@@ -8159,21 +8159,22 @@ void fn_80126EF0(u8 *dstBlock, s32 dstPitch, s32 reader, s32 maxCoeffs, u8 *srcB
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-void fn_80127398(s32 arg0) {
-    void *var_r31;
-    void *var_r30;
-    s32 var_r29;
+void fn_80127398(s32 groupIndex) {
+    /* Invoke all callbacks in the selected callback group, if the group index is valid. */
+    void *group;
+    void *entry;
+    s32 i;
 
-    if (arg0 >= -1 && arg0 < 4) {
-        var_r31 = (u8 *)lbl_8041D728 + arg0 * 0x14 + 0x14;
+    if (groupIndex >= -1 && groupIndex < 4) {
+        group = (u8 *)lbl_8041D728 + groupIndex * 0x14 + 0x14;
     } else {
-        var_r31 = 0;
+        group = 0;
     }
-    if (var_r31 != 0) {
-        var_r30 = var_r31;
-        for (var_r29 = 0; var_r29 < *(s32 *)var_r31; var_r29++) {
-            ((void (*)(void))*(void **) ((u8 *)var_r30 + 4))();
-            var_r30 = (void *)((u32)var_r30 + 4);
+    if (group != 0) {
+        entry = group;
+        for (i = 0; i < *(s32 *)group; i++) {
+            ((void (*)(void))*(void **) ((u8 *)entry + 4))();
+            entry = (void *)((u32)entry + 4);
         }
     }
 }
