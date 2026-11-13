@@ -256,13 +256,14 @@ int fn_80133460(int arg0, int arg1, unsigned char arg2) {
     *(int *)sp8 = 1;
 }
 #pragma scheduling on
-void fn_801334F4(int arg0, int arg1, char *arg2, int arg3) {
+/* Copy a value's string (offset 0x14) for (groupId, valueId) into outBuf, or initialize it via fn_8013358C. */
+void fn_801334F4(int groupId, int valueId, char *outBuf, int outSize) {
     void *sp8;
-    if (fn_80133E10(&sp8, arg0, arg1) != 0) {
-        strncpy(arg2, (char *)sp8 + 0x14, arg3);
-        arg2[arg3 - 1] = 0;
+    if (fn_80133E10(&sp8, groupId, valueId) != 0) {
+        strncpy(outBuf, (char *)sp8 + 0x14, outSize);
+        outBuf[outSize - 1] = 0;
     } else {
-        fn_8013358C(arg0, arg1, arg2);
+        fn_8013358C(groupId, valueId, outBuf);
     }
 }
 
