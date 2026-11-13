@@ -33,16 +33,16 @@ extern void *lbl_8055F10C;
 extern s32 lbl_802FA040[];
 extern s32 lbl_804986F8[];
 extern s32 fn_802146BC(void *, s32, s32, s32);
-extern char lbl_8055BAC0[];
-extern char lbl_8055BABC[];
-extern char lbl_8055B860[];
-extern char lbl_8055BACC[];
-extern char lbl_8055BAD4[];
-extern char lbl_8055BADC[];
-extern char lbl_8055BAE8[];
-extern char lbl_8055BAF0[];
-extern char lbl_8055BAF8[];
-extern char lbl_8055BAB8[];
+__declspec(section ".sdata") extern char lbl_8055BAC0[];
+__declspec(section ".sdata") extern char lbl_8055BABC[];
+__declspec(section ".sdata") extern char lbl_8055B860[];
+__declspec(section ".sdata") extern char lbl_8055BACC[];
+__declspec(section ".sdata") extern char lbl_8055BAD4[];
+__declspec(section ".sdata") extern char lbl_8055BADC[];
+__declspec(section ".sdata") extern char lbl_8055BAE8[];
+__declspec(section ".sdata") extern char lbl_8055BAF0[];
+__declspec(section ".sdata") extern char lbl_8055BAF8[];
+__declspec(section ".sdata") extern char lbl_8055BAB8[];
 extern s32 fn_8023FCFC(void);
 extern s32 fn_8023D1C0(void);
 extern s32 fn_8023C958(void);
@@ -94,6 +94,55 @@ extern char lbl_80340C44[];
 extern char lbl_80340C24[];
 extern s32 lbl_8049870C[];
 void fn_80239AB8(void) { fn_80214CB4(lbl_8055BAC8); }
+
+void fn_80239AC0(void)
+{
+    s32 args[5];
+    s32 vals[80];
+    char *base = lbl_80340B58;
+    s32 *tbl = lbl_802FA040;
+    s32 *ext = lbl_804986F8;
+    s32 done = 0;
+    s32 r;
+    vals[0] = (s32)&lbl_8055BAC0; vals[1] = 8; vals[2] = (s32)fn_80239AB8; vals[3] = 0; vals[4] = 0;
+    vals[5] = (s32)&lbl_8055BABC; vals[6] = 8; vals[7] = (s32)fn_80239A94; vals[8] = 1; vals[9] = 0;
+    vals[10] = (s32)&lbl_8055B860; vals[11] = 6; vals[12] = 0; vals[13] = -1; vals[14] = 0x1b;
+    vals[15] = (s32)&lbl_8055BACC; vals[16] = 0; vals[17] = 0; vals[18] = 0; vals[19] = 0;
+    vals[20] = (s32)&lbl_8055BAD4; vals[21] = 0; vals[22] = 0; vals[23] = 8; vals[24] = 0;
+    vals[25] = (s32)(base + 0x2c); vals[26] = 0; vals[27] = 0; vals[28] = 3; vals[29] = 0;
+    vals[30] = (s32)&lbl_8055BADC; vals[31] = 0; vals[32] = 0; vals[33] = 0xa; vals[34] = 0;
+    vals[35] = (s32)(base + 0x38); vals[36] = 0; vals[37] = 0; vals[38] = 0xb; vals[39] = 0;
+    vals[40] = (s32)&lbl_8055BAE8; vals[41] = 0; vals[42] = 0; vals[43] = 0x10; vals[44] = 0;
+    vals[45] = (s32)(base + 0x44); vals[46] = 0; vals[47] = 0; vals[48] = 4; vals[49] = 0;
+    vals[50] = (s32)(base + 0x50); vals[51] = 0; vals[52] = 0; vals[53] = 5; vals[54] = 0;
+    vals[55] = (s32)(base + 0x60); vals[56] = 0; vals[57] = (s32)fn_802399DC; vals[58] = 6; vals[59] = 0;
+    vals[60] = (s32)&lbl_8055BAF0; vals[61] = 0; vals[62] = 0; vals[63] = 0xc; vals[64] = 0;
+    vals[65] = (s32)&lbl_8055BAF8; vals[66] = 0; vals[67] = 0; vals[68] = 0xd; vals[69] = 0;
+    vals[70] = (s32)&lbl_8055BAB8; vals[71] = 8; vals[72] = (s32)fn_80236914; vals[73] = 2; vals[74] = 0;
+    vals[75] = ext[0]; vals[76] = ext[1]; vals[77] = ext[2]; vals[78] = ext[3]; vals[79] = ext[4];
+    args[0] = tbl[0]; args[1] = (s32)vals; args[2] = tbl[2]; args[3] = tbl[3]; args[4] = tbl[4];
+    while (1) {
+        r = fn_802146BC(args, -999, -999, 1);
+        switch (r + 2) {
+        case 0: fn_8000DA10(); break;
+        case 1: fn_8023FCFC(); break;
+        case 2: fn_8023D1C0(); break;
+        case 3: fn_8023C958(); break;
+        case 4: fn_8000DA80(); done = 1; break;
+        case 5: fn_8023C94C(); break;
+        case 6: fn_802E4A10(); fn_8023D4B8(); break;
+        case 7: fn_8023C3D4(); break;
+        case 8: fn_80278A24(); break;
+        case 9: fn_802449A0(); break;
+        case 10: fn_8024C070(); break;
+        case 11: fn_8024C370(); break;
+        case 12: fn_80257284(); break;
+        case 13: done = 1; break;
+        default: fn_802E317C(base + 0x6c); break;
+        }
+        if (done) break;
+    }
+}
 
 #pragma push
 #pragma small_data off
