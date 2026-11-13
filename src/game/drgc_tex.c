@@ -902,14 +902,15 @@ void fn_802D9230(void *arg0) {
 extern void fn_802CFEEC(void);
 extern void fn_80128670(void *);
 extern unsigned int lbl_8055FD2C;
+/* Sets the active lightmap texture, validates it (no alpha channel or LUT), and loads it into GX texture slot 3. */
 void fn_802D92B8(void *arg0) {
-    char *obj;
+    char *texObj;
     lbl_8055FE20 = arg0;
     if (((unsigned char *)arg0)[0xCC]) fn_802E317C(lbl_8034C620, arg0);
     if (*(unsigned int *)((char *)arg0 + 0x70)) fn_802E317C(lbl_8034C650, arg0);
-    obj = (char *)arg0;
-    GXInitTexObjWrapMode(obj + 0x24, 0, 0);
-    GXLoadTexObj(obj + 0x24, 3);
+    texObj = (char *)arg0;
+    GXInitTexObjWrapMode(texObj + 0x24, 0, 0);
+    GXLoadTexObj(texObj + 0x24, 3);
 }
 
 /* Push a freshly created drgc texture out to memory so GX can read it: flush the
