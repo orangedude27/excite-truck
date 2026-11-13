@@ -239,6 +239,8 @@ extern "C" void fn_8002F634(void *, void *, s32, s32);
 extern f32 lbl_80560ED0;
 extern char lbl_803208D4[];
 extern void fn_800D2DD4(void);
+#pragma push
+#pragma processor 750
 extern "C" void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
     struct FontMetrics { virtual s32 method0(); virtual s32 method1(); };
     struct OwnedFont { virtual void destroy(s32); };
@@ -300,7 +302,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-#pragma scheduling reset
+#pragma pop
 
 extern "C" void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 index);
 extern "C" void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index);
@@ -327,16 +329,17 @@ void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u3
 }
 
 void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
+    /* Set a vertex color (0..3) on a TextBox by copying the RGBA bytes and forwarding to SetTextColor for the paired color slot. */
     if (index >= 4) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320570, 0x1de, lbl_80320688);
     }
-    u8 colorBytes[4];
-    const u8 *c = (const u8 *)color;
-    colorBytes[0] = c[0];
-    colorBytes[1] = c[1];
-    colorBytes[2] = c[2];
-    colorBytes[3] = c[3];
-    SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(this_ptr, index >> 1, colorBytes);
+    u8 vertexColor[4];
+    const u8 *sourceColor = (const u8 *)color;
+    vertexColor[0] = sourceColor[0];
+    vertexColor[1] = sourceColor[1];
+    vertexColor[2] = sourceColor[2];
+    vertexColor[3] = sourceColor[3];
+    SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(this_ptr, index >> 1, vertexColor);
 }
 
 void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
