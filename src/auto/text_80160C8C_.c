@@ -981,18 +981,20 @@ extern char lbl_8032F72C[];
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 s32 fn_80161D50(void) {
-    register s32 count;
+    /* Sum fn_8016208C over all items whose virtual test against "mandatory"
+     * (lbl_8032F72C) matches, iterating indices 0..fn_80161ECC()-1. */
+    register s32 itemCount;
     register s32 total;
-    register s32 i;
+    register s32 index;
     register void *item;
     s32 matched;
 
-    count = fn_80161ECC();
+    itemCount = fn_80161ECC();
     total = 0;
-    i = 0;
+    index = 0;
     goto test_loop;
 loop:
-    fn_80161E40(i);
+    fn_80161E40(index);
     item = fn_8001285C();
 #pragma cplusplus on
     matched = ((Dummy_80161D50 *)*(void **)((u8 *)item + 0x20))->test(lbl_8032F72C, 0);
@@ -1000,9 +1002,9 @@ loop:
     if (matched != 0) {
         total += fn_8016208C(*(s32 *)item);
     }
-    i += 1;
+    index += 1;
 test_loop:
-    if (i < count) {
+    if (index < itemCount) {
         goto loop;
     }
     return total;
@@ -2518,10 +2520,10 @@ struct Entry_8016464C {
 extern "C" void fn_8016464C(void *arg0) {
     State_8016464C *self = (State_8016464C *)arg0;
     char name[0x10];
-    s32 i;
+    Entry_8016464C *entry;
     s32 count;
     void *iterator;
-    Entry_8016464C *entry;
+    s32 i;
 
     self->entryCount = 0;
     iterator = fn_80131810(lbl_8032FB90);
@@ -2533,7 +2535,7 @@ extern "C" void fn_8016464C(void *arg0) {
 
     i = 0;
     while (i < count - 1) {
-        s32 n = self->entryCount;
+        unsigned long n = self->entryCount;
         s32 index = i + 1;
         self->entryCount = n + 1;
         entry = (Entry_8016464C *)self->entries + n;
@@ -2810,7 +2812,7 @@ void fn_80164D64(void *arg0, s32 arg1) {
     register f32 offset;
     register f32 scale;
     register f32 zero;
-    f32 factor;
+    f32 factor5;
     if (lbl_8055A0B4 <= fn_80161D50()) {
         if (lbl_8055A0B8 > fn_80161D50()) {
             if (*(u8 *)((u8 *)arg0 + 7) == 0) {
@@ -2835,8 +2837,8 @@ void fn_80164D64(void *arg0, s32 arg1) {
         work.tail[2] = word64;
         work.tail[3] = *(volatile u32 *)((u8 *)car + 0x68);
         ((f32 *)work.tail)[1] = zero;
-        factor = (f32)index;
-        ((f32 *)work.tail)[2] = offset + scale * factor;
+        factor5 = (f32)index;
+        ((f32 *)work.tail)[2] = offset + scale * factor5;
         ((f32 *)work.tail)[3] = zero;
         work.a[2] = work.a[1] = work.a[0] = zero;
         work.b[2] = work.b[1] = work.b[0] = zero;
