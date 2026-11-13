@@ -424,22 +424,24 @@ int fn_802461D0(int arg0, int arg1) {
 }
 
 void fn_80246210(void) {
-    int count;
-    int i;
-    int zero;
+    /* Reset the flag at +0x1E, then update slots 0..activeCount-1 and disable remaining slots up to 3,
+       finally apply the value at +0x10 from the same data block. */
+    int activeCount;
+    int index;
+    int zeroValue;
 
-    zero = 0;
-    *((char *)lbl_8055F244 + 0x1E) = (char)zero;
-    i = 0;
-    count = *(int *)((char *)*(void **)((char *)lbl_8055F244 + 0x20) + 0x14);
-    while (i < count) {
-        fn_80214AF0(i);
-        i++;
+    zeroValue = 0;
+    *((char *)lbl_8055F244 + 0x1E) = (char)zeroValue;
+    index = 0;
+    activeCount = *(int *)((char *)*(void **)((char *)lbl_8055F244 + 0x20) + 0x14);
+    while (index < activeCount) {
+        fn_80214AF0(index);
+        index++;
     }
-    while (count < 4) {
-        fn_80214B44(count);
-        fn_80214A9C(count);
-        count++;
+    while (activeCount < 4) {
+        fn_80214B44(activeCount);
+        fn_80214A9C(activeCount);
+        activeCount++;
     }
     fn_80214CB4(*(int *)((char *)*(void **)((char *)lbl_8055F244 + 0x20) + 0x10));
 }
@@ -477,10 +479,6 @@ extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
         virtual void f3();
     };
     struct Frame frame;
-    int firstLength;
-    int firstPointer;
-    int secondLength;
-    int secondPointer;
 
     if (*(unsigned char *)((char *)arg0 + 0x1D) == 0) {
         ((Dummy *)((char *)arg0 + 4))->f3();
@@ -491,20 +489,16 @@ extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
     frame.state.zero = 0;
     frame.state.result = fn_8023512C(&lbl_803430CC);
 
-    firstLength = strlen(*(char **)arg1);
-    firstPointer = *(int *)arg1;
-    frame.config[3] = firstLength;
+    frame.config[3] = strlen(*(char **)arg1);
     frame.config[0] = (unsigned int)&lbl_8055BE70;
+    frame.config[2] = *(int *)arg1;
     frame.config[1] = 3;
-    frame.config[2] = firstPointer;
     frame.config[4] = 0;
 
-    secondPointer = *(int *)((char *)arg1 + 4);
-    secondLength = strlen((char *)secondPointer);
+    frame.config[8] = strlen(*(char **)((char *)arg1 + 4));
     frame.config[5] = (unsigned int)&lbl_8055BE78;
+    frame.config[7] = *(int *)((char *)arg1 + 4);
     frame.config[6] = 3;
-    frame.config[7] = secondPointer;
-    frame.config[8] = secondLength;
     frame.config[9] = 0;
 
     frame.config[10] = (unsigned int)&lbl_803430D8;
@@ -518,6 +512,7 @@ extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
     frame.config[18] = lbl_80498890[3];
     frame.config[19] = lbl_80498890[4];
 
+    *(int *)((char *)arg0 + 0x24) = 0;
     frame.args[0] = lbl_802FA350[0];
     frame.args[1] = lbl_802FA350[1];
     frame.args[2] = lbl_802FA350[2];
@@ -525,7 +520,6 @@ extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
     frame.args[4] = lbl_802FA350[4];
     frame.args[1] = (unsigned int)&frame.config[0];
 
-    *(int *)((char *)arg0 + 0x24) = 0;
     fn_80216CA8(lbl_802FA350[4], lbl_802FA350[3], lbl_802FA350[2],
                 lbl_802FA350[0], lbl_802FA350, lbl_80498890[1],
                 lbl_80498890[0], 5);
