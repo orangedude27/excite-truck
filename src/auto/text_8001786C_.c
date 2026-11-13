@@ -165,22 +165,21 @@ extern s32 fn_80016508(void);
 extern void fn_80017AC8(void *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_80017A2C(void *arg0, s32 arg1) {
+void fn_80017A2C(void *list, s32 exclusionList) {
     s32 i = 0;
     while (i < fn_80016508()) {
-        void *obj = fn_80016464(i);
-        s32 field = *(s32 *)((char *)obj + 4);
-        if (fn_80017A20((void *)field, (s32 *)arg1) == 0) {
-            s32 n = *(s32 *)((char *)arg0 + 4);
-            void *items = *(void **)arg0;
-            *(s32 *)((char *)arg0 + 4) = n + 1;
-            ((s32 *)items)[n] = field;
+        DriverInfo *driver = (DriverInfo *)fn_80016464(i);
+        s32 driverNumber = driver->number;
+        if (fn_80017A20((void *)driverNumber, (s32 *)exclusionList) == 0) {
+            s32 count = *(s32 *)((char *)list + 4);
+            void *items = *(void **)list;
+            *(s32 *)((char *)list + 4) = count + 1;
+            ((s32 *)items)[count] = driverNumber;
         }
         i++;
     }
-    fn_80017AC8(arg0);
+    fn_80017AC8(list);
 }
-#pragma scheduling on
 void fn_80017AC8(void* arg0) {
     s32 offset = 0;
     s32 i = 0;
