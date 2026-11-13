@@ -637,11 +637,12 @@ void fn_8027B9EC(void *arg0) {
 
 #pragma cplusplus on
 extern "C" long fn_8027BA24(void *arg0) {
-    long i = 0;
-    while (i < ((Fn8027BA24List *)arg0)->count()) {
-        if (((Fn8027BA24List *)arg0)->item(i)->valid() == 0)
+    /* Return 1 if every item in the list reports valid, otherwise 0. */
+    long index = 0;
+    while (index < ((Fn8027BA24List *)arg0)->count()) {
+        if (((Fn8027BA24List *)arg0)->item(index)->valid() == 0)
             return 0;
-        i++;
+        index++;
     }
     return 1;
 }
