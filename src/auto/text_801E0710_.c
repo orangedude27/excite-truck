@@ -15,6 +15,7 @@ extern void *lbl_8055EA10;
 extern void *fn_8017960C();
 extern s32 fn_80139B70(s32, f32, f32);
 typedef struct Vec_801E1048 { f32 x, y, z; } Vec_801E1048;
+typedef struct { float x, y; } Vec2_801E;
 
 static inline void fn_801E1048_xf(const f32 *m, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
     if (src == dst) {
@@ -620,8 +621,7 @@ void fn_801E1384(s32 arg0, s32 arg1) {
             {
                 s32 height = *(volatile s32 *)((char *)desc + 0xC);
                 char *base = (char *)*(volatile s32 *)((char *)desc + 4);
-                s32 row = color * height;
-                record = base + row * 0x18;
+                record = base + (color * height * 0x18);
             }
             *(volatile s32 *)(record + 0xC) = left;
             vval = *(f32 *)(record + 0x14);
@@ -799,11 +799,14 @@ void fn_801E1710(void *arg0) {
     register f32 threshold;
     register f32 initialB;
     register f32 initialA;
-
+    register s32 c_ff7f;
+    register s32 c_ffff;
+    register s32 c_0;
+    register s32 c_neg100;
+    register s32 c_neg1;
     register u8 *base;
     register u8 *row;
     register s32 i;
-
     initialA = lbl_80562C78;
     base = (u8 *)arg0;
     initialB = lbl_80562C7C;
@@ -812,13 +815,17 @@ void fn_801E1710(void *arg0) {
     decrement = lbl_80562CA4;
     i = 0;
     reset = lbl_80562C8C;
-
+    c_neg1 = -1;
+    c_0 = 0;
+    c_ff7f = 0xFF7F0000;
+    c_ffff = 0xFFFF0000;
+    c_neg100 = -0x100;
     for (; i < fn_801E85A4(); base += 4, row += 0x18, i++) {
         s32 value = *(s32 *)(base + 0x6C);
         if (value != *(s32 *)(row + 0x0C)) {
-            *(u8 *)(row + 0x10) = 0;
-            *(s32 *)(row + 0x1C) = 0;
-            *(s32 *)(row + 0x20) = 0;
+            *(u8 *)(row + 0x10) = (u8)c_0;
+            *(s32 *)(row + 0x1C) = c_0;
+            *(s32 *)(row + 0x20) = c_0;
             *(f32 *)(row + 0x14) = initialA;
             *(f32 *)(row + 0x18) = initialB;
             *(s32 *)(row + 0x0C) = value;
@@ -842,14 +849,14 @@ void fn_801E1710(void *arg0) {
             }
             *(f32 *)(row + 0x14) = current2;
             if (*(f32 *)(row + 0x18) > initialB) {
-                *(s32 *)(row + 0x20) = -1;
-                *(s32 *)(row + 0x1C) = -0x100;
+                *(s32 *)(row + 0x1C) = c_neg100;
+                *(s32 *)(row + 0x20) = c_neg1;
             } else if (*(u8 *)(row + 0x10) != 0) {
-                *(s32 *)(row + 0x20) = -1;
-                *(s32 *)(row + 0x1C) = 0xFFFF0000;
+                *(s32 *)(row + 0x20) = c_neg1;
+                *(s32 *)(row + 0x1C) = c_ffff;
             } else {
-                *(s32 *)(row + 0x20) = 0xFF7F7F7F;
-                *(s32 *)(row + 0x1C) = 0;
+                *(s32 *)(row + 0x20) = c_ff7f + 0x7F7F;
+                *(s32 *)(row + 0x1C) = c_0;
             }
         }
     }
