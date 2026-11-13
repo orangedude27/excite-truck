@@ -313,21 +313,22 @@ void *fn_801B3B70(void *arg0) {
     return arg0;
 }
 #pragma scheduling reset
-void* fn_801B3BD4(void* arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        if (arg0 != NULL) {
-            void* prev = *(void**)((u8*)arg0 + 0x1C);
-            *(void**)arg0 = (void*)&lbl_80335DAC;
-            if (prev != NULL) {
-                if (prev != NULL)
-                    callPrevDtorCpp_801B3BD4(prev);
-                *(void**)((u8*)arg0 + 0x1C) = NULL;
+/* Destroys the object, releases its owned child at offset 0x1C, and optionally frees it. */
+void* fn_801B3BD4(void* obj, s32 shouldFree) {
+    if (obj != NULL) {
+        if (obj != NULL) {
+            void* ownedChild = *(void**)((u8*)obj + 0x1C);
+            *(void**)obj = (void*)&lbl_80335DAC;
+            if (ownedChild != NULL) {
+                if (ownedChild != NULL)
+                    callPrevDtorCpp_801B3BD4(ownedChild);
+                *(void**)((u8*)obj + 0x1C) = NULL;
             }
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldFree > 0)
+            fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 void fn_801B3C64(void* arg0) {
