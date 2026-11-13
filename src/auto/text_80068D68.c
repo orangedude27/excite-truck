@@ -20544,35 +20544,55 @@ void fn_8008EE40(void *arg0, void *arg1) {
     }
 }
 
+/* l2cu_process_our_cfg_req (l2c_utils.c): we are about to send the peer a "config
+   request" carrying p_cfg, so pick the options of interest out of it and save them
+   in the CCB: the MTU we ask for (capped at the largest SDU the stack reassembles),
+   the QOS block we will transmit with, and the flush timeout.  A flush timeout
+   shorter than the one the link uses becomes the link's, and the controller is told
+   about it in 0.625 ms units. */
 void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
-    struct Pair { u32 x; u32 y; };
-    u8 *ccb = p_ccb;
-    u8 *cfg = p_cfg;
-    u16 size;
-    void *buf;
+    tL2C_CCB_VIEW *ccb = (tL2C_CCB_VIEW *)p_ccb;
+    tL2CAP_CFG_INFO *cfg = (tL2CAP_CFG_INFO *)p_cfg;
+    tL2C_LCB_VIEW *p_lcb;
+    u16 hci_flush_to;
+    void *p_buf;
 
-    if (cfg[2] != 0) {
-        u16 requested = *(u16 *)(cfg + 4);
-        *(u16 *)(ccb + 0x38) = requested;
-        if (requested > 0x69B) {
-            *(u16 *)(cfg + 4) = 0x69B;
-            *(u16 *)(ccb + 0x38) = 0x69B;
+    /* Save the MTU we are using, capped at what this stack can receive */
+    if (cfg->mtu_present != 0) {
+        u16 requested = cfg->mtu;
+
+        ccb->our_mtu = requested;
+        if (requested > L2CAP_MTU_SIZE) {
+            cfg->mtu = L2CAP_MTU_SIZE;
+            ccb->our_mtu = L2CAP_MTU_SIZE;
         }
     }
-    if (cfg[6] != 0) {
-        *(struct Pair *)(ccb + 0x58) = *(struct Pair *)(cfg + 8);
-        *(struct Pair *)(ccb + 0x60) = *(struct Pair *)(cfg + 0x10);
-        *(struct Pair *)(ccb + 0x68) = *(struct Pair *)(cfg + 0x18);
+
+    /* Save the QOS settings we are using for transmit: the 24-byte flow spec,
+       copied three two-word steps at a time */
+    if (cfg->qos_present != 0) {
+        ccb->our_qos[0] = *(const tL2CAP_QOS_PART *)&cfg->qos;
+        ccb->our_qos[1] = *(const tL2CAP_QOS_PART *)((const u8 *)&cfg->qos + 8);
+        ccb->our_qos[2] = *(const tL2CAP_QOS_PART *)((const u8 *)&cfg->qos + 16);
     }
-    if (cfg[0x20] != 0 && *(u16 *)(cfg + 0x22) != 0) {
-        *(u16 *)(ccb + 0x3C) = *(u16 *)(cfg + 0x22);
-        ccb = *(u8 **)(ccb + 0x10);
-        if (*(u16 *)(cfg + 0x22) < *(u16 *)(ccb + 0x32)) {
-            *(u16 *)(ccb + 0x32) = *(u16 *)(cfg + 0x22);
-            if (*(u16 *)(cfg + 0x22) <= 0x4FF) {
-                size = (*(u16 *)(cfg + 0x22) * 8 + 3) / 5;
-                buf = GKI_getpoolbuf(2);
-                if (buf != NULL) fn_80085568(buf, *(u16 *)(ccb + 0x28), size);
+
+    /* Check the flush timeout.  If it is lower than the current one used on the
+       link, the controller has to flush with the shorter one */
+    if (cfg->flush_to_present != 0 && cfg->flush_to != 0) {
+        ccb->our_flush_to = cfg->flush_to;
+        p_lcb = ccb->p_lcb;
+
+        if (cfg->flush_to < p_lcb->link_flush_tout) {
+            p_lcb->link_flush_tout = cfg->flush_to;
+
+            /* Within the HCI command's range: convert the timeout to 0.625 ms
+               units, rounding up, and send it (fn_80085568 fills the command
+               buffer with HCI_Write_Auto_Flush_Timeout and sends it off) */
+            if (cfg->flush_to <= ((HCI_MAX_AUTO_FLUSH_TOUT * 5) / 8)) {
+                hci_flush_to = (cfg->flush_to * 8 + 3) / 5;
+                p_buf = GKI_getpoolbuf(GKI_POOL_ID_2);
+                if (p_buf != NULL)
+                    fn_80085568(p_buf, p_lcb->handle, hci_flush_to);
             }
         }
     }
