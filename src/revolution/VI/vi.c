@@ -1476,10 +1476,11 @@ s32 fn_8005B01C(void) {
     return 1;
 }
 
-void WaitMicroTime(s32 time) DECOMP_DONT_INLINE
+/* Busy-wait until at least `microseconds` have elapsed, measured from OS system time. */
+void WaitMicroTime(s32 microseconds) DECOMP_DONT_INLINE
 {
     OSTime start = __OSGetSystemTime();
-    while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < time) {
+    while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < microseconds) {
     }
 }
 
