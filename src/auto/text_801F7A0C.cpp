@@ -408,6 +408,7 @@ extern "C" void fn_801F7D10(void *arg0, void *arg1, void *arg2) {
 }
 #pragma scheduling on
 extern "C" void fn_801F7E20(void *arg0, void *arg1) {
+    /* Update the object's drop height from its linked state when active, then apply the "drop_height" override. */
     u8 *obj = (u8 *)arg1;
     f32 temp;
     f32 value;
