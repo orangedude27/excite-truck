@@ -158,20 +158,26 @@ extern "C" void fn_8000CEF0(void) {
 }
 #pragma cplusplus off
 void fn_8000D070(void) {
-    u8 *base;
+    /* Update active audio/UI state object if present, run init/update hooks, reset a flag, apply mixer volume, and enable some mode. */
+    u8 *state;
+
     if (lbl_8055D418 != NULL) {
-        f32 val = fn_80209028();
-        f32 *ptr = (f32*)((u8*)lbl_8055D418 + 8);
-        if (val != *ptr) {
-            *(u8*)((u8*)lbl_8055D418 + 0x4D) = 1;
-            *ptr = val;
+        f32 value = fn_80209028();
+        f32 *valuePtr = (f32 *)((u8 *)lbl_8055D418 + 8);
+        if (value != *valuePtr) {
+            *(u8 *)((u8 *)lbl_8055D418 + 0x4D) = 1;
+            *valuePtr = value;
         }
-        base = (u8*)lbl_8055D418;
-        base[0x49] = 1;
-        base[0x4B] = 0;
-        base[0x4A] = 0;
+        state = (u8 *)lbl_8055D418;
+        state[0x49] = 1;
+        state[0x4B] = 0;
+        state[0x4A] = 0;
     }
-    if (fn_80265D64() == 0) __AXDSPInitCallback_801769E0();
+
+    if (fn_80265D64() == 0) {
+        __AXDSPInitCallback_801769E0();
+    }
+
     fn_80206444();
     lbl_8055D400 = 0;
     ((void (*)(s32, f32))fn_80209190)(lbl_8055D410, lbl_80560234);
