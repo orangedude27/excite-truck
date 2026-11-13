@@ -795,15 +795,13 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
     s32 entry;
     s32 cur;
     u32 loc;
-    u8 *strings;
-    u8 *parents;
-    u8 *fst;
     u32 p1;
     u32 p2;
-    u8 *name1;
-    u8 *name2;
-    u8 *name3;
+    const char *name3;
+    const char *name2;
+    const char *name1;
     u32 offset;
+    u8 *fst;
 
     entry = DVDConvertPathToEntrynum(path);
     if (entry < 0) {
@@ -811,25 +809,22 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
         if (cur == 0) {
             loc = 0;
         } else {
-            fst = FstStart_8055D840;
-            strings = FstStringStart_8055D83C;
-            parents = fst + 4;
-            p1 = *(u32 *)(parents + cur * 12);
-            name1 = strings + (*(u32 *)(fst + cur * 12) & 0xFFFFFF);
+            name1 = entryName(cur);
+            p1 = entryParent(cur);
             if (p1 == 0) {
                 loc = 0;
             } else {
-                p2 = *(u32 *)(parents + p1 * 12);
-                name2 = strings + (*(u32 *)(fst + p1 * 12) & 0xFFFFFF);
+                name2 = entryName(p1);
+                p2 = entryParent(p1);
                 if (p2 == 0) {
                     loc = 0;
                 } else {
-                    name3 = strings + (*(u32 *)(fst + p2 * 12) & 0xFFFFFF);
-                    loc = appendPathPart(dir, DVDConvertEntrynumToPath(*(u32 *)(parents + p2 * 12), dir, 0x80), 0x80, (char *)name3);
+                    name3 = entryName(p2);
+                    loc = appendPathPart(dir, DVDConvertEntrynumToPath(entryParent(p2), dir, 0x80), 0x80, name3);
                 }
-                loc = appendPathPart(dir, loc, 0x80, (char *)name2);
+                loc = appendPathPart(dir, loc, 0x80, name2);
             }
-            loc = appendPathPart(dir, loc, 0x80, (char *)name1);
+            loc = appendPathPart(dir, loc, 0x80, name1);
         }
         if (loc == 0x80) {
             dir[0x7F] = '\0';
@@ -2698,6 +2693,10 @@ s32 DVDGetCommandBlockStatus(void *arg0) {
     return status;
 }
 
+/* Return the current DVD drive status: fatal error (-1), paused (8), idle (0)
+ * when nothing is executing or only the dummy block is active, otherwise the
+ * status of the currently executing command block. Checked with interrupts
+ * disabled. */
 s32 DVDGetDriveStatus(void) {
     s32 enabled;
     s32 state;
