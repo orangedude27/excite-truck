@@ -5670,6 +5670,88 @@ extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void
         self[0x52] = 1;
     }
 }
+
+extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void* arg0, s32 arg1) {
+    s32 sp1C;
+    void* sp18;
+    s32 sp10;
+    void* spC;
+    void* sp8;
+    s32 var_r10;
+    if (*(unsigned char*)((unsigned char*)arg0 + 0x53) == 0) return;
+    unsigned long irq = OSDisableInterrupts();
+    if (*(s32*)((unsigned char*)arg0 + 0x94) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C1C, 0x1F1, lbl_80326BF8);
+    }
+    s32 tmp28 = *(s32*)((unsigned char*)arg0 + 0x98);
+    if (tmp28 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BBC, 0x23D, lbl_80326B98);
+    }
+    unsigned char* nd = (unsigned char*)(tmp28 - 0x14);
+    if (nd == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BEC, 0x193, lbl_80326BC8);
+    }
+    sp1C = *(s32*)((unsigned char*)arg0 + 0x98);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((unsigned char*)arg0 + 0x94, &sp1C);
+    OSRestoreInterrupts(irq);
+    *(s32*)(nd + 8) = arg1;
+    *(s32*)(nd + 0x10) = *(s32*)((unsigned char*)arg0 + 0x70);
+    *(s32*)(nd + 0xC) = *(s32*)((unsigned char*)arg0 + 0x74);
+    s32 v30;
+    if (*(s32*)((unsigned char*)arg0 + 0x74) < *(s32*)((unsigned char*)arg0 + 0x28) - 1) {
+        v30 = *(s32*)((unsigned char*)arg0 + 0x2C);
+    } else {
+        v30 = *(s32*)((unsigned char*)arg0 + 0x3C);
+    }
+    unsigned short r6 = *(unsigned short*)((unsigned char*)arg0 + 0x18);
+    unsigned r27 = r6 + (*(s32*)((unsigned char*)arg0 + 0x4A0) * ((v30 + 0x1F) & ~31u));
+    s32 r26 = *(s32*)((unsigned char*)arg0 + 0x24) + (*(s32*)((unsigned char*)arg0 + 0x74) * (r6 + (*(s32*)((unsigned char*)arg0 + 0x2C) * *(unsigned char*)((unsigned char*)arg0 + 0x12))));
+    if (r27 > 0x4020) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x265, lbl_80326838);
+    }
+    if (nd == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
+    }
+    sp18 = (unsigned char*)arg0 + 0xA4;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)arg0 + 0xA0, &sp18, nd + 0x14);
+    var_r10 = 0;
+    if (*(s32*)((unsigned char*)arg0 + 0x70) == 0 && *(unsigned char*)((unsigned char*)arg0 + 0x10) == 2) {
+        var_r10 = 1;
+    }
+    sp8 = nd;
+    spC = arg0;
+    sp10 = *(s32*)((unsigned char*)arg0 + 0x434);
+    s32 res = ((s32(*)(void*, void*, unsigned, s32, s32, s32, unsigned short, s32))((void**)*(void***)((unsigned char*)arg0 + 0x430))[4])((void*)*(void**)((unsigned char*)arg0 + 0x430), lbl_80415080, r27, r26, *(s32*)((unsigned char*)arg0 + 0x4A0), v30, r6, var_r10);
+    if (res == 1) {
+        ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(arg0);
+    } else if (res == 0) {
+        ((void(*)(void*, s32))((void**)*(void**)nd)[2])(nd, 1);
+    }
+    s32 t = *(s32*)((unsigned char*)arg0 + 0x74) + 1;
+    *(s32*)((unsigned char*)arg0 + 0x74) = t;
+    if (t <= *(s32*)((unsigned char*)arg0 + 0x88)) goto lab70;
+    if (*(unsigned char*)((unsigned char*)arg0 + 0x11) != 0) {
+        *(s32*)((unsigned char*)arg0 + 0x74) = *(s32*)((unsigned char*)arg0 + 0x84);
+        goto lab70;
+    }
+    *(unsigned char*)((unsigned char*)arg0 + 0x53) = 1;
+    return;
+lab70:
+    t = *(s32*)((unsigned char*)arg0 + 0x70) + 1;
+    *(s32*)((unsigned char*)arg0 + 0x70) = t;
+    if (t < *(s32*)((unsigned char*)arg0 + 0x6C)) return;
+    s32 r5 = *(s32*)((unsigned char*)arg0 + 0x88);
+    s32 r4 = *(s32*)((unsigned char*)arg0 + 0x68);
+    *(s32*)((unsigned char*)arg0 + 0x70) = 0;
+    s32 v5 = r4 + 1;
+    s32 a = (r5 - *(s32*)((unsigned char*)arg0 + 0x74)) + 1;
+    s32 b = (r5 - *(s32*)((unsigned char*)arg0 + 0x84)) + 1;
+    if (((v5 - a) % b) != 0) {
+        v5 = r4;
+    }
+    *(s32*)((unsigned char*)arg0 + 0x6C) = v5;
+}
+
 #pragma pop
 extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" const char lbl_80326B68[];
@@ -5733,6 +5815,8 @@ extern "C" f32 fn_800FC640(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x460); }
 
 extern "C" const char lbl_803268AC[];
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC648(void *self, s32 bus, f32 value) {
+    /* Set the FX send amount for an aux bus (0 <= bus < 3) on this sequence
+     * player, updating the stored send level with interrupts disabled. */
     int valid = 0;
     if (bus >= 0 && bus < 3) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x309, lbl_803268AC, bus, 0, 3);
