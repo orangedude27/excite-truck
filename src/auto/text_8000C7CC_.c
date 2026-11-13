@@ -178,18 +178,19 @@ void fn_8000D070(void) {
 
 #pragma scheduling invalid_target
 void fn_8000D100(void) {
-    u8 *base;
+    /* Update the active UI/audio object, refresh mixer volume, then handle leave/escape flow. */
+    u8 *obj;
     if (lbl_8055D41C != NULL) {
-        f32 val = fn_80209028();
-        f32 *ptr = (f32*)((u8*)lbl_8055D41C + 8);
-        if (val != *ptr) {
+        f32 volume = fn_80209028();
+        f32 *volumePtr = (f32*)((u8*)lbl_8055D41C + 8);
+        if (volume != *volumePtr) {
             *(u8*)((u8*)lbl_8055D41C + 0x4D) = 1;
-            *ptr = val;
+            *volumePtr = volume;
         }
-        base = (u8*)lbl_8055D41C;
-        base[0x49] = 1;
-        base[0x4B] = 0;
-        base[0x4A] = 0;
+        obj = (u8*)lbl_8055D41C;
+        obj[0x49] = 1;
+        obj[0x4B] = 0;
+        obj[0x4A] = 0;
     }
     ((void (*)(s32, f32))fn_80209190)(lbl_8055D410, lbl_80560218);
     fn_80206454();
@@ -200,7 +201,6 @@ void fn_8000D100(void) {
     }
     fn_801769EC();
 }
-#pragma scheduling on
 void fn_8000D19C(void) {
     if (lbl_8055D407 != 0) {
         lbl_8055D420 = fn_8000CCB8();
