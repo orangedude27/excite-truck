@@ -301,8 +301,8 @@ void fn_802A4D08(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802A4E08(void) {
-    register s32 alpha;
-    register u32 slot;
+    s32 alpha;
+    u8 *slot;
     f32 value;
     f32 absolute;
     s32 scaled;
@@ -315,10 +315,9 @@ void fn_802A4E08(void) {
     f32 maximum;
     f32 clamp;
 
-    slot = fn_801E85B4() * 0xE0;
-    slot = (u32)fn_801E7E34() + slot;
+    slot = ((u8 (*)[0xE0])fn_801E7E34())[fn_801E85B4()];
 
-    value = *(f32 *)((u8 *)slot + 0xDC);
+    value = *(f32 *)(slot + 0xDC);
     absolute = (f32)__fabs((double)value);
     if (!(absolute <= *(f32 *)lbl_80558DC4)) {
         alpha = 0xFF;
@@ -335,14 +334,14 @@ void fn_802A4E08(void) {
         fn_802C9118();
     }
 
-    absolute = (f32)__fabs((double)*(f32 *)((u8 *)slot + 0xD8));
+    absolute = (f32)__fabs((double)*(f32 *)(slot + 0xD8));
     if (!(absolute <= *(f32 *)lbl_80558DC4) && lbl_8055F898 != -1) {
         camera = (void *)fn_802C86DC();
         matrix[9] = *(f32 *)((u8 *)camera + 0x24);
         matrix[10] = *(f32 *)((u8 *)camera + 0x28);
         matrix[11] = *(f32 *)((u8 *)camera + 0x2C);
 
-        angle = *(f32 *)((u8 *)slot + 0xE0);
+        angle = *(f32 *)(slot + 0xE0);
         cosine = (f32)cos((double)angle);
         sine = (f32)sin((double)angle);
 
@@ -357,7 +356,7 @@ void fn_802A4E08(void) {
         matrix[8] = cosine;
 
         maximum = lbl_8056485C;
-        clamp = lbl_80564860 * *(f32 *)((u8 *)slot + 0xD8);
+        clamp = lbl_80564860 * *(f32 *)(slot + 0xD8);
         maximum = (maximum < clamp) ? maximum : clamp;
         fn_802C9900(maximum);
         fn_802C744C(lbl_8055F898, matrix);
@@ -956,21 +955,21 @@ void fn_802A5FE4(void *arg0) {
 #pragma push
 #pragma processor 750
 void fn_802A6234(void *arg0) {
-    f32 temp_f30;
-    f32 temp_f31;
-    s32 var_r31 = (s32)arg0;
-    s32 var_r30 = 0;
+    /* Initialize 8 XYZ float triplets at offsets 0x5C.. with random values in [-0.1, 0.1]. */
+    f32 randomZ;
+    f32 randomY;
+    s32 entryPtr = (s32)arg0;
+    s32 index = 0;
     do {
-        temp_f30 = fn_80129DC4(0, lbl_80564894, lbl_80564898);
-        temp_f31 = fn_80129DC4(0, lbl_80564894, lbl_80564898);
-        *(f32 *)(var_r31 + 0x5C) = fn_80129DC4(0, lbl_80564894, lbl_80564898);
-        var_r30 += 1;
-        *(f32 *)(var_r31 + 0x60) = temp_f31;
-        *(f32 *)(var_r31 + 0x64) = temp_f30;
-        var_r31 += 0xC;
-    } while (var_r30 < 8);
+        randomZ = fn_80129DC4(0, lbl_80564894, lbl_80564898);
+        randomY = fn_80129DC4(0, lbl_80564894, lbl_80564898);
+        *(f32 *)(entryPtr + 0x5C) = fn_80129DC4(0, lbl_80564894, lbl_80564898);
+        index += 1;
+        *(f32 *)(entryPtr + 0x60) = randomY;
+        *(f32 *)(entryPtr + 0x64) = randomZ;
+        entryPtr += 0xC;
+    } while (index < 8);
 }
-
 extern double fn_8002EF30(f32);
 extern f32 fn_801E8738(s32);
 extern f32 fn_801E8874(s32);
@@ -1252,7 +1251,7 @@ void fn_802A6A7C(void *arg0) {
     f32 in[3];
     fn_802A6E34(obj);
     {
-        f32 x = lbl_80564858, y = lbl_8056485C, z = lbl_80564858;
+        f32 y = lbl_8056485C, x = lbl_80564858, z = lbl_80564858;
         in[0] = x; in[1] = y; in[2] = z;
         if (obj->axis == &in[0]) {
             f32 xy1 = y * m[1];
@@ -1535,7 +1534,7 @@ void fn_802A71C4(void *arg0) {
     f32 dt;
     f32 threshold;
     f32 speed;
-    register f32 scale;
+    f32 scale;
     f32 one;
     f32 curve;
     f32 a;
@@ -1564,10 +1563,10 @@ void fn_802A71C4(void *arg0) {
             factor = scale - a;
             x = *(volatile f32 *)(p + 0x38) * factor;
             y = *(volatile f32 *)(p + 0x3C) * factor;
-            ax = __fabsf(x);
             xStack = x;
-            ay = __fabsf(y);
             yStack = y;
+            ax = (f32)__fabs((double)x);
+            ay = (f32)__fabs((double)y);
             ax = one - ax;
             ay = one - ay;
             rx = fn_80287BC8(-ax, ax);
@@ -1661,9 +1660,7 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     }
     {
         s32 h = fn_802CAC28(obj->v3(&lbl_8055CC18), 0);
-        f32 inv = lbl_80564850 / *(f32 *)(arg0 + 8);
-        *(s32 *)(arg0 + 0x2C) = h;
-        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208(inv);
+        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208((*(s32 *)(arg0 + 0x2C) = h, lbl_80564850 / *(f32 *)(arg0 + 8)));
     }
     {
         const Vec3 &c = obj->get(&lbl_8055CC20);
@@ -1754,11 +1751,9 @@ void fn_802A775C(void *arg0) {
     f32 f29;
     f32 distSq;
     f32 one;
-    void *cam;
-
-    cam = (u8 *)fn_801E8718(0) + 0x24;
-    distSq = PSVECSquareDistance(cam, (u8 *)arg0 + 0xC);
-
+    void *cam2;
+    cam2 = (u8 *)fn_801E8718(0) + 0x24;
+    distSq = PSVECSquareDistance(cam2, (u8 *)arg0 + 0xC);
     if (distSq > *(f32 *)((u8 *)arg0 + 0x18) * *(f32 *)((u8 *)arg0 + 0x18)) {
         f32 t = fn_802A4AD4();
         f32 x = *(f32 *)((u8 *)arg0 + 0x20);
@@ -1772,7 +1767,6 @@ void fn_802A775C(void *arg0) {
         f32 sum;
         f32 len;
         f32 inv;
-
         sp10.x = x;
         tx = x * t;
         ty = y * t;
@@ -1783,7 +1777,6 @@ void fn_802A775C(void *arg0) {
         sp18[0] = tx;
         sp18[1] = ty;
         sp18[2] = tz;
-
         len = (f32)fn_8002F234(sum);
         one = lbl_8056485C;
         offset = 0;
@@ -1791,14 +1784,12 @@ void fn_802A775C(void *arg0) {
         inv = -*(f32 *)((u8 *)arg0 + 0x18) * (one / len);
         sp10.x *= inv;
         sp10.z *= inv;
-
         sp8.d = sp10.d;
         {
             f32 neg_x = -sp8.x;
             sp8.x = sp8.z;
             sp8.z = neg_x;
         }
-
         while (i < *(s32 *)((u8 *)arg0 + 4)) {
             f32 *pt = (f32 *)(*(u8 **)arg0 + offset);
             if (PSVECSquareDistance(pt, (u8 *)arg0 + 0xC) < *(f32 *)((u8 *)arg0 + 0x18) * *(f32 *)((u8 *)arg0 + 0x18)) {
@@ -1821,7 +1812,6 @@ void fn_802A775C(void *arg0) {
     } else {
         f29 = *(f32 *)((u8 *)arg0 + 0x38) * (lbl_8056485C - (f32)fn_8002F234(distSq) / *(f32 *)((u8 *)arg0 + 0x18));
     }
-
     if (((f32)__fabs(f29) <= *(f32 *)(void *)&lbl_80558DC4) != ((f32)__fabs(*(f32 *)((u8 *)arg0 + 0x3C)) <= *(f32 *)(void *)&lbl_80558DC4)) {
         fn_802C990C(*(s32 *)((u8 *)arg0 + 0x34));
     }
@@ -1847,35 +1837,28 @@ s32 fn_802A79CC(s32 arg0) {
     s32 alpha;
     s32 offset;
     s32 i;
-
-    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 0x24, object + 0xC);
+    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 36, object + 12);
     radiusScale = lbl_80564850;
-    alpha = 0xFF;
-    radius = *(f32 *)(object + 0x18);
+    alpha = 255;
+    radius = *(f32 *)(object + 24);
     delta = distance - (radiusScale * radius);
     scaled = lbl_805648D8 * (lbl_80564854 * delta);
     raw = (s32)scaled;
     magnitude = raw & ((-raw & ~raw) >> 31);
-    if (magnitude < 0xFF)
+    if (magnitude < 255)
         alpha = magnitude;
-
     if (alpha > 0) {
-        rate = fn_802C9A4C(*(f32 *)(object + 0x30));
-        fn_802C8BD0(*(s32 *)(object + 0x2C));
-
+        rate = fn_802C9A4C(*(f32 *)(object + 48));
+        fn_802C8BD0(*(s32 *)(object + 44));
         if (fn_802CE860(*(s32 *)(object + 4)) != 0) {
             u32 alphaWord = (u32)alpha ^ 0x80000000;
             u32 highWord = 0x43300000;
             volatile union {
                 double value;
-                struct {
-                    u32 high;
-                    u32 low;
-                } words;
+                struct { u32 high; u32 low; } words;
             } conversion;
-
             intBias = lbl_80564848;
-            radius = *(f32 *)(object + 0x18);
+            radius = *(f32 *)(object + 24);
             radiusSquared = radius * radius;
             conversion.words.low = alphaWord;
             conversion.words.high = highWord;
@@ -1884,11 +1867,10 @@ s32 fn_802A79CC(s32 arg0) {
             i = 0;
             offset = 0;
             goto check;
-
         loop:
             {
                 u8 *point = *(u8 **)object + offset;
-                f32 distSq = PSVECSquareDistance(point, object + 0xC);
+                f32 distSq = PSVECSquareDistance(point, object + 12);
                 f32 pointScale = pointScaleFactor * *(f32 *)(object + 8);
                 f32 pointX = *(f32 *)(point + 0);
                 f32 pointY = *(f32 *)(point + 4);
@@ -1901,9 +1883,8 @@ s32 fn_802A79CC(s32 arg0) {
                     raw = magnitude;
                 else
                     raw = alpha;
-                fn_802CE86C((void *)((raw << 24) | 0x00FFFFFF), i,
-                            pointScale, pointX, pointY, pointZ);
-                offset += 0xC;
+                fn_802CE86C((void *)((raw << 24) | 0x00FFFFFF), i, pointScale, pointX, pointY, pointZ);
+                offset += 12;
                 i++;
             }
         check:
@@ -1911,11 +1892,9 @@ s32 fn_802A79CC(s32 arg0) {
                 goto loop;
             fn_802CE868();
         }
-
         fn_802C8D74();
         fn_802C9A4C(rate);
     }
-
     fn_802D3D50();
 }
 #pragma scheduling on
