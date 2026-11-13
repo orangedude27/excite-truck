@@ -1800,31 +1800,32 @@ extern "C" void *fn_8021B1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 #pragma dont_inline reset
 
 extern "C" char lbl_8033F20C[];
-extern "C" void fn_8021B224(void *arg0) {
-    s32 temp_r0;
-    s32 temp_r4;
-    s32 temp_r0_2;
-    s32 temp_r4_2;
-    void *temp_r5;
-    void *temp_r5_2;
-    if (*(s32 *)((u8 *)arg0 + 0x254) == 1) {
-        temp_r5 = *(void **)((u8 *)arg0 + 0x258);
-        temp_r4 = *(s32 *)((u8 *)temp_r5 + 8) + 1;
-        *(s32 *)((u8 *)temp_r5 + 8) = temp_r4;
-        temp_r0 = *(s32 *)temp_r5 - *(s32 *)((u8 *)temp_r5 + 4);
-        if (temp_r4 > temp_r0)
-            *(s32 *)((u8 *)temp_r5 + 8) = temp_r0;
-        if (*(s32 *)((u8 *)temp_r5 + 8) < 0)
-            *(s32 *)((u8 *)temp_r5 + 8) = 0;
+/* Steps the state object's clamped index (+8) up or down by 1 based on the direction flag at +0x254. */
+extern "C" void fn_8021B224(void *obj) {
+    s32 limit;
+    s32 count;
+    s32 limit2;
+    s32 count2;
+    void *state;
+    void *state2;
+    if (*(s32 *)((u8 *)obj + 0x254) == 1) {
+        state = *(void **)((u8 *)obj + 0x258);
+        count = *(s32 *)((u8 *)state + 8) + 1;
+        *(s32 *)((u8 *)state + 8) = count;
+        limit = *(s32 *)state - *(s32 *)((u8 *)state + 4);
+        if (count > limit)
+            *(s32 *)((u8 *)state + 8) = limit;
+        if (*(s32 *)((u8 *)state + 8) < 0)
+            *(s32 *)((u8 *)state + 8) = 0;
     } else {
-        temp_r5_2 = *(void **)((u8 *)arg0 + 0x258);
-        temp_r4_2 = *(s32 *)((u8 *)temp_r5_2 + 8) - 1;
-        *(s32 *)((u8 *)temp_r5_2 + 8) = temp_r4_2;
-        temp_r0_2 = *(s32 *)temp_r5_2 - *(s32 *)((u8 *)temp_r5_2 + 4);
-        if (temp_r4_2 > temp_r0_2)
-            *(s32 *)((u8 *)temp_r5_2 + 8) = temp_r0_2;
-        if (*(s32 *)((u8 *)temp_r5_2 + 8) < 0)
-            *(s32 *)((u8 *)temp_r5_2 + 8) = 0;
+        state2 = *(void **)((u8 *)obj + 0x258);
+        count2 = *(s32 *)((u8 *)state2 + 8) - 1;
+        *(s32 *)((u8 *)state2 + 8) = count2;
+        limit2 = *(s32 *)state2 - *(s32 *)((u8 *)state2 + 4);
+        if (count2 > limit2)
+            *(s32 *)((u8 *)state2 + 8) = limit2;
+        if (*(s32 *)((u8 *)state2 + 8) < 0)
+            *(s32 *)((u8 *)state2 + 8) = 0;
     }
 }
 
