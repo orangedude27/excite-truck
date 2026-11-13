@@ -538,8 +538,8 @@ void fn_802443C0(void *arg0) {
     fn_802438EC(*(char **)((char *)arg0 + 0x18));
     str = *(char **)((char *)arg0 + 0x18);
     if (strlen(str) != 0) {
-        char *end = str;
-        end += strlen(str);
+        int len = strlen(str);
+        char *end = (char *)(len + (int)str);
         *(end - 1) = 0;
     }
     fn_80243938(*(char **)((char *)arg0 + 0x18), *(char **)((char *)arg0 + 0x1C));
