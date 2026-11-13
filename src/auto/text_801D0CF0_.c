@@ -1,19 +1,16 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* Manager list: the game's boot-time subsystem singletons register themselves
+ * with fn_801D0DDC (their constructors store the base vtable lbl_803381C0
+ * first) and drop out again in their destructors through fn_801D0DFC;
+ * lbl_8055E8E8 is the count and lbl_80438818 holds up to 16 of them.
+ * fn_801D0E0C..fn_801D0F38 call one virtual of every manager -- init (+0xC),
+ * reset (+0x10), update (+0x14) and exit (+0x18) -- and fn_801D0CFC deletes
+ * them all at shutdown.  The common base class keeps its virtual destructor
+ * at vtable +0x8 and has no data of its own beyond the vtable pointer. */
 extern int lbl_8055E8E8;
 extern void *lbl_80438818[];
-
-typedef struct CallbackVTable {
-    void *unk[3];
-    void (*callback12)(void *);
-    void *unk10[2];
-    void (*callback24)(void *);
-} CallbackVTable;
-
-typedef struct CallbackObject {
-    CallbackVTable *vtable;
-} CallbackObject;
 void __AXDSPInitCallback_801D0CF0(void) {
     lbl_8055E8E8 = 0;
 }
