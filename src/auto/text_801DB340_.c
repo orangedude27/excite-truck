@@ -282,15 +282,19 @@ int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *ar
     return 1;
 }
 #pragma pop
-int fn_801DC258(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, float farg1) {
-    extern int lbl_8055E990;
-    float *state = (float *)lbl_8055E990;
-    float temp_x, fx, temp_z, fz;
-    temp_x = (farg0 + state[0]) * state[2];
-    temp_z = (farg1 + state[1]) * state[3];
-    fx = floor(temp_x);
-    fz = floor(temp_z);
-    return fn_801DB74C((int)fx, (int)fz, (float *)arg0, (int *)arg1, arg2, arg3, temp_x - fx, temp_z - fz);
+/* Ground height at a world position: turns (world_x, world_z) into the ground
+ * descriptor's grid cells, and has fn_801DB74C bicubically interpolate the 4x4
+ * cells around the floor of that point with the fraction inside the cell.
+ * Also reports the terrain type and, when out_normal is set, the surface
+ * normal.  Returns 0 when no tile covers the position. */
+int fn_801DC258(float *out_height, int *out_type, void *unused, float *out_normal, float world_x, float world_z) {
+    GroundDesc *desc = (GroundDesc *)lbl_8055E990;
+    float cellX, floorX, cellZ, floorZ;
+    cellX = (world_x + desc->offsetX) * desc->scaleX;
+    cellZ = (world_z + desc->offsetZ) * desc->scaleZ;
+    floorX = floor(cellX);
+    floorZ = floor(cellZ);
+    return fn_801DB74C((int)floorX, (int)floorZ, out_height, out_type, unused, out_normal, cellX - floorX, cellZ - floorZ);
 }
 #pragma pop
 
