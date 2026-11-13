@@ -1091,8 +1091,8 @@ extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
     s32 idx = ((s32 *)arg0)[1];
     s32 *base = *(s32 **)arg0;
     ((s32 *)arg0)[1] = idx + 1;
-    idx[base] = val;
-    return &idx[base];
+    base[idx] = val;
+    return &base[idx];
 }
 
 extern "C" char lbl_8032F184[];
@@ -1684,8 +1684,9 @@ extern "C" void fn_80159724(void) {
 extern "C" f32 fn_80159728(void* arg0, void* arg1) {
  Fn8015889C* self = (Fn8015889C*)arg0;
  u8* p = (u8*)arg0;
- f32 result = lbl_80561754;
- if (lbl_80558DC4[0] >= (f32)__fabs(*(f32*)((u8*)arg1+0x2690)) && self->v37()) {
+ f32 result;
+ result = lbl_80561754;
+ if ((f32)__fabs(*(f32*)((u8*)arg1+0x2690)) <= lbl_80558DC4[0] && self->v37()) {
   if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c)) self->v32();
   f32 input = *(f32*)((u8*)arg1+0x25d4);
   f32 step = lbl_8056177C * input;
@@ -2786,6 +2787,23 @@ struct BonusDisplay {
     virtual void setProgress(s32 type);     // 0x20
     virtual void v7();                      // 0x24
     virtual void setState(s32 state);       // 0x28
+};
+
+// The per-course group of bonus trackers (allocation tag "arraytracker", built by
+// fn_801572A4 and kept at contest-entry+0x9F4).  It owns one tracker per bonus
+// category -- "air", "drift", "ccall", "360", "throw", "jmpcmb", "carhit",
+// "crash" and "ring" -- and implements the tracker interface itself by handing
+// every call to the trackers in its array (fn_8015E2C8, fn_8015E4CC, fn_8015E568,
+// fn_8015E5F4, fn_8015E674, fn_8015E778, fn_8015E80C, fn_8015EA24, fn_8015EB28).
+struct ArrayTracker {
+    void* mVtable;                        // 0x00 vtable of the group (lbl_8032EB0C variant)
+    BonusTracker** mTrackers;             // 0x04 array; == &mInlineTrackers while it fits
+    s32 mCount;                           // 0x08 trackers held
+    s32 mCapacity;                        // 0x0C 16 slots
+    BonusTracker* mInlineTrackers[0x10];  // 0x10 storage the array starts in
+    void* mCounterSound;                  // 0x50 "cntsound" holder: the counter.sfx / fcount.sfx sounds
+    u8 mActive;                           // 0x54 non-zero while the group takes part in scoring
+    s32 mCourse;                          // 0x58 course index, the row of BONUS_TYPE_SCALE it resets
 };
 
 // Globals the bonus trackers share.
@@ -4435,10 +4453,10 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
         sound[0x4C] = 0;
     }
 }
-#pragma scheduling off
-extern "C" int fn_80159708(void *q) {
-    float v = *(float *)((unsigned char *)q + 0x25Cu);
-    return (int)v;
+#pragma scheduling invalid_target
+extern "C" int fn_80159708(void *arg0) {
+    float f = ((float *)arg0)[0x25C / 4];
+    return (int)f;
 }
 class Fn8015E338Item {
 public:
