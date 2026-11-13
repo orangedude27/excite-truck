@@ -279,6 +279,7 @@ s32 NANDGetLength(NANDFileInfo* info, u32* length) {
     return nandConvertErrorCode(nandGetFileStatus(info->fd, length, NULL));
 }
 
+/* Asynchronously get the length of an open NAND file. */
 s32 NANDGetLengthAsync(NANDFileInfo* info, u32* lengthOut,
                        NANDAsyncCallback callback, NANDCommandBlock* block) {
     if (!nandIsInitialized()) {
