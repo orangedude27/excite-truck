@@ -1229,17 +1229,18 @@ extern "C" void fn_8013E3A8(void *arg0, void *arg1) {
 }
 #pragma push
 #pragma processor 750
-extern "C" void *fn_8013E6E4(void *arg0) {
-    fn_8001DAE0((u8 *)arg0 + 0x98, 1.0f);
-    fn_8001DAE0((u8 *)arg0 + 0xA0, 1.25f);
-    fn_8001DAE0((u8 *)arg0 + 0xA8, 1.25f);
-    fn_8001DAE0((u8 *)arg0 + 0xB0, 1.25f);
-    fn_8001DAE0((u8 *)arg0 + 0xB8, 1.65f);
-    fn_8001DAE0((u8 *)arg0 + 0xC0, 1.0f);
-    fn_8001DAE0((u8 *)arg0 + 0xC8, 0.5f);
-    fn_8001DAE0((u8 *)arg0 + 0xD0, 0.5f);
-    fn_8001DAE0((u8 *)arg0 + 0xD8, 0.5f);
-    return arg0;
+/* Initialize this object's float scale/weight fields (0x98..0xD8) to their default values. */
+extern "C" void *fn_8013E6E4(void *self) {
+    fn_8001DAE0((u8 *)self + 0x98, 1.0f);
+    fn_8001DAE0((u8 *)self + 0xA0, 1.25f);
+    fn_8001DAE0((u8 *)self + 0xA8, 1.25f);
+    fn_8001DAE0((u8 *)self + 0xB0, 1.25f);
+    fn_8001DAE0((u8 *)self + 0xB8, 1.65f);
+    fn_8001DAE0((u8 *)self + 0xC0, 1.0f);
+    fn_8001DAE0((u8 *)self + 0xC8, 0.5f);
+    fn_8001DAE0((u8 *)self + 0xD0, 0.5f);
+    fn_8001DAE0((u8 *)self + 0xD8, 0.5f);
+    return self;
 }
 #pragma pop
 extern "C" void fn_802C6CF8(s32);
@@ -1342,6 +1343,8 @@ extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
         *(s32 *)entry = 1;
 }
 
+#pragma push
+#pragma processor 750
 extern "C" void fn_8013EB30(void *arg0) {
     struct Vec3 {
         f32 x, y, z;
@@ -1356,16 +1359,15 @@ extern "C" void fn_8013EB30(void *arg0) {
         if (total - idx < 3) {
             Vec3 a, b;
             while (item[0x1E] != 0) {
-                item = NextPathNode(self, item);
+                item = NextPathNode1(self, item);
             }
             {
                 s32 n = idx + 1;
                 if (n < total) {
-                    s32 count = total - n;
                     s32 j;
                     for (j = n; j < total; j++) {
                         do {
-                            item = NextPathNode(self, item);
+                            item = NextPathNode1(self, item);
                         } while (item[0x1E] != 0);
                     }
                 }
@@ -1396,7 +1398,6 @@ extern "C" void fn_8013EB30(void *arg0) {
         }
     }
 }
-
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -1468,7 +1469,11 @@ extern "C" void fn_8013ED74(void *arg0) {
                     u8 *group = *(u8 **)(*(u8 **)(self + 0x64) + 4) + *(s32 *)(self + 0x68) * 0x14;
                     u8 *array = *(u8 **)(group + 4);
                     u8 *last = array + *(s32 *)group * 0x24 - 0x24;
-                    if (item != last) array = item + 0x24;
+                    if (item != last) goto do_add;
+                    goto done_add;
+do_add:
+                    array = item + 0x24;
+done_add:
                     item = array;
                 }
                 i++;
