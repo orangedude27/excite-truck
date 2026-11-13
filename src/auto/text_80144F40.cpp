@@ -2092,12 +2092,13 @@ extern "C" void fn_80148284(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void *fn_80148294(const char *arg0, void *arg1) {
+/* Find a 0x20-byte table entry by case-insensitively matching its name string. */
+extern "C" void *fn_80148294(const char *name, void *table) {
     s32 offset = 0;
     s32 i = 0;
-    while (i < *(s32 *)((u8 *)arg1 + 4)) {
-        if (stricmp(*(const char **)(*(u32 *)arg1 + offset), arg0) == 0) {
-            return (void *)(*(u32 *)arg1 + i * 0x20);
+    while (i < *(s32 *)((u8 *)table + 4)) {
+        if (stricmp(*(const char **)(*(u32 *)table + offset), name) == 0) {
+            return (void *)(*(u32 *)table + i * 0x20);
         }
         offset += 0x20;
         i++;
