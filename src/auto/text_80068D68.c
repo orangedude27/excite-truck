@@ -7714,24 +7714,25 @@ void btm_read_link_policy_complete(u8 *event) {
     }
 }
 
-void btm_read_remote_version_complete(u8 *arg0) {
+/* HCI Read Remote Version Information complete: records version, manufacturer and LMP subversion for the ACL entry. */
+void btm_read_remote_version_complete(u8 *p) {
     u8 status;
-    u8 *var_r6;
-    u16 var_r4;
-    s32 var_i;
+    u8 *p_acl;
+    u16 handle;
+    s32 i;
 
-    status = arg0[0];
-    var_r6 = lbl_803C0F78 + 0x34;
+    status = p[0];
+    p_acl = lbl_803C0F78 + 0x34;
     if (status != 0) {
         return;
     }
-    var_r4 = arg0[1];
-    var_r4 = (var_r4 + (arg0[2] << 8)) & 0xFFFF;
-    for (var_i = 0; var_i < 4; var_i++, var_r6 += 0x11C) {
-        if (var_r6[0x119] != 0 && *(u16 *)var_r6 == var_r4) {
-            var_r6[0x118] = arg0[3];
-            *(u16 *)(var_r6 + 0x10A) = arg0[4] + (arg0[5] << 8);
-            *(u16 *)(var_r6 + 0x10C) = arg0[6] + (arg0[7] << 8);
+    handle = p[1];
+    handle = (handle + (p[2] << 8)) & 0xFFFF;
+    for (i = 0; i < 4; i++, p_acl += 0x11C) {
+        if (p_acl[0x119] != 0 && *(u16 *)p_acl == handle) {
+            p_acl[0x118] = p[3];
+            *(u16 *)(p_acl + 0x10A) = p[4] + (p[5] << 8);
+            *(u16 *)(p_acl + 0x10C) = p[6] + (p[7] << 8);
             return;
         }
     }
