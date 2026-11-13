@@ -1352,30 +1352,36 @@ extern "C" int fn_800E4520(int arg0, int arg1) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
+extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int deleteFlags) {
+    // Destructor for nw4hbm::snd::detail::AxVoice: reset vtable, free 2x4 TRK buffers, optionally delete.
     if (this_ != 0) {
         *(void **)((char *)this_ + 8) = (void *)&lbl_80322498;
-        unsigned char *base;
-        unsigned char *slot;
-        int i;
-        int j;
-        base = (unsigned char *)this_;
-        i = 0;
-        while (i < 2) {
-            slot = base;
-            j = 0;
-            while (j < 4) {
-                void *buffer = *(void **)(slot + 0xC);
-                if (buffer != 0)
+
+        unsigned char *groupBase;
+        unsigned char *slotPtr;
+        int groupIndex;
+        int slotIndex;
+
+        groupBase = (unsigned char *)this_;
+        groupIndex = 0;
+        while (groupIndex < 2) {
+            slotPtr = groupBase;
+            slotIndex = 0;
+            while (slotIndex < 4) {
+                void *buffer = *(void **)(slotPtr + 0xC);
+                if (buffer != 0) {
                     TRKGetFreeBuffer(buffer);
-                slot += 4;
-                j++;
+                }
+                slotPtr += 4;
+                slotIndex++;
             }
-            base += 0x10;
-            i++;
+            groupBase += 0x10;
+            groupIndex++;
         }
-        if (arg1 > 0)
+
+        if (deleteFlags > 0) {
             fn_80128668(this_);
+        }
     }
     return this_;
 }
