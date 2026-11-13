@@ -2779,19 +2779,21 @@ void fn_802D3DAC(void) {
     GXInitVtxDescList(id);
     GXDisableBreakPt();
 }
-void fn_802D3DF8(int arg0, signed char arg1, float farg0, float farg1) {
-    float mtx[2][3];
+void fn_802D3DF8(int texObjBase, signed char scaleExp, float scaleS, float scaleT) {
+    /* Set indirect texture matrix 1 from scale factors and load tex object (+0x24) into map 2. */
+    float indMtx[2][3];
+
     lbl_804C5700[13] = 1;
-    GXLoadTexObj((char *)arg0 + 0x24, 2, lbl_804C5700);
-    *(int *)&mtx[0][0] = 0;
-    *(int *)&mtx[1][1] = 0;
-    *(int *)&mtx[0][1] = 0;
-    *(int *)&mtx[0][2] = 0;
-    *(int *)&mtx[1][0] = 0;
-    *(int *)&mtx[1][2] = 0;
-    mtx[0][0] = farg0;
-    mtx[1][1] = farg1;
-    GXSetIndTexMtx(1, mtx, arg1);
+    GXLoadTexObj((char *)texObjBase + 0x24, 2, lbl_804C5700);
+    *(int *)&indMtx[0][0] = 0;
+    *(int *)&indMtx[1][1] = 0;
+    *(int *)&indMtx[0][1] = 0;
+    *(int *)&indMtx[0][2] = 0;
+    *(int *)&indMtx[1][0] = 0;
+    *(int *)&indMtx[1][2] = 0;
+    indMtx[0][0] = scaleS;
+    indMtx[1][1] = scaleT;
+    GXSetIndTexMtx(1, indMtx, scaleExp);
 }
 
 extern unsigned long lbl_8055D0B8;
