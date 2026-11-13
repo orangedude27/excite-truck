@@ -567,8 +567,8 @@ extern int fn_802E582C(void);
 /* fn_8012C41C callback: for every loaded entry of a resource directory whose
  * data is tagged 'SFX0', allocate a voice object for it (fn_802E582C keeps the
  * resource's name in r3 for fn_802E5AE8); returning 0 stops the walk. */
-int fn_802E58A0(void *arg0, int arg1) {
-    if (arg1 == 0x53465830) return fn_802E582C();
+int fn_802E58A0(void *entry, int dataTag) {
+    if (dataTag == TAG_SFX0) return fn_802E582C();
     return 1;
 }
 
