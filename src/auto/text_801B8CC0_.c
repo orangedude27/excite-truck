@@ -57,17 +57,17 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
 static inline void transform_vec_scheduled(float *out, const float *m, float *in) {
     if (out == in) {
         float m3 = m[3];
-        float y = in[1];
         float m4 = m[4];
         float m5 = m[5];
         float m0 = m[0];
-        float x = in[0];
         float m1 = m[1];
         float m2 = m[2];
         float m6 = m[6];
-        float z = in[2];
         float m7 = m[7];
         float m8 = m[8];
+        float x = in[0];
+        float y = in[1];
+        float z = in[2];
         out[0] = z * m6 + (x * m0 + y * m3);
         out[1] = z * m7 + (x * m1 + y * m4);
         out[2] = z * m8 + (x * m2 + y * m5);
