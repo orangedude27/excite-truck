@@ -1416,15 +1416,16 @@ extern "C" void fn_8021A744(void *arg0) {
 }
 
 extern "C" int lbl_8033F324[];
-extern "C" void *fn_8021A77C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    fn_80222340(arg0, arg1, arg2, 0, 0, 0, arg5);
-    *(s32 *)((u8 *)arg0 + 0x254) = arg4;
-    *(void **)arg0 = lbl_8033F324;
-    *(s32 *)((u8 *)arg0 + 0x258) = arg3;
-    if (arg4 != 0) {
-        fn_80219440(arg0, 0, (void *)arg4, 4);
+/* Construct a cursor-bound icon widget (vtable lbl_8033F324) at (x, y), bound to *cursorPtr == cursorId. */
+extern "C" void *fn_8021A77C(void *self, s32 x, s32 y, s32 cursorId, s32 cursorPtr, s32 drawer) {
+    fn_80222340(self, x, y, 0, 0, 0, drawer);
+    *(s32 *)((u8 *)self + 0x254) = cursorPtr;
+    *(void **)self = lbl_8033F324;
+    *(s32 *)((u8 *)self + 0x258) = cursorId;
+    if (cursorPtr != 0) {
+        fn_80219440(self, 0, (void *)cursorPtr, 4);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
