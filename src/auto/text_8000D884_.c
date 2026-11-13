@@ -36,8 +36,8 @@ static inline void copyName(char *dst, const char *src) {
 }
 
 void fn_8000D884(int arg0, int arg1, int arg2, int arg3, int arg4) {
-    int count;
     int *entry;
+    int count;
     int newCount;
     count = lbl_8055D464;
     entry = (int *)(lbl_8034F650 + count * 0x18);
@@ -81,22 +81,22 @@ void fn_8000D94C(void) {
 #pragma push
 #pragma optimization_level 2
 #pragma scheduling invalid_target
-void fn_8000D984(int arg0) {
-    int *entry;
-    int *ptr;
+void fn_8000D984(int selectedIndex) {
+    int *record;
+    int *currentSlotPtr;
     int i;
 
     fn_8000DF2C(2);
-    ptr = lbl_8055D46C;
-    entry = (int *)lbl_8034F650;
-    *ptr = arg0;
+    currentSlotPtr = lbl_8055D46C;
+    record = (int *)lbl_8034F650;
+    *currentSlotPtr = selectedIndex;
     i = 0;
     goto check;
 loop:
-    ptr = lbl_8055D46C;
+    currentSlotPtr = lbl_8055D46C;
     i++;
-    *(int *)entry[2] = entry[3] * *ptr + (lbl_8055D468 + entry[5]);
-    entry += 6;
+    *(int *)record[2] = record[3] * *currentSlotPtr + (lbl_8055D468 + record[5]);
+    record += 6;
 check:
     if (i < lbl_8055D464) goto loop;
     fn_8000DF2C(3);
@@ -116,13 +116,10 @@ void fn_8000DA1C(const char *arg0) {
     base = (char *)lbl_8055D46C;
     *(int *)(base + *lbl_8055D46C * 0x18 + 4) = 2;
     base = (char *)lbl_8055D46C;
-    base += *lbl_8055D46C * 0x18;
+    base += (*lbl_8055D46C) * 0x18;
     dst = base + 8;
     n = 0x12;
-    if (n > 0) {
-        while (--n > 0) {
-        }
-    }
+    while (--n > 0) {}
     dst[-1] = 0;
     do {
         c = *arg0++;
