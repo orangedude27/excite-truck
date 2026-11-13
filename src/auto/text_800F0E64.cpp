@@ -836,11 +836,12 @@ extern "C" void fn_800F2084(void* arg0, f32 farg0) {
 }
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F20C4(void *self, int bus, float value) {
-    int valid = bus >= 0 && bus < 3;
-    if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x295, lbl_803244FC, bus, 0, 3);
-    int level = OSDisableInterrupts();
+    /* Set this sequence player's FX send level for the given aux bus (0-2) at +0x24, with range check, under interrupt-disabled section. */
+    int isValidBus = bus >= 0 && bus < 3;
+    if (!isValidBus) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x295, lbl_803244FC, bus, 0, 3);
+    int interruptLevel = OSDisableInterrupts();
     *(float *)((char *)self + bus * 4 + 0x24) = value;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F2160(void *self, int bus, float value) {
