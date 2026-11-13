@@ -244,7 +244,7 @@ extern "C" void fn_80165B78(void **arg0) {
     float value;
 
     obj = ((Dummy80165B78 *)arg0)->getObject(&lbl_8055A170);
-    value = obj->getFloat(strings);
+    value = obj->getFloat(strings + 0);
     *(float *)((char *)&lbl_8042FE38 + 0x28) = value;
     value = obj->getFloat(strings + 0x10);
     *(float *)((char *)&lbl_8042FE38 + 0x2c) = value;
@@ -254,7 +254,8 @@ extern "C" void fn_80165B78(void **arg0) {
     *(float *)((char *)&lbl_8042FE38 + 0x34) = value;
     value = obj->getFloatDefault(strings + 0x3C, lbl_805618A8);
     *(float *)((char *)&lbl_8042FE38 + 0x38) = value;
-    value = obj->getFloatDefault(strings + 0x50, *(float *)((char *)&lbl_8042FE38 + 0x2c));
+    float def2c = *(float *)((char *)&lbl_8042FE38 + 0x2c);
+    value = obj->getFloatDefault(strings + 0x50, def2c);
     *(float *)((char *)&lbl_8042FE38 + 0x30) = value;
     value = obj->getFloatDefault(strings + 0x60, lbl_805618AC);
     *(float *)((char *)&lbl_8042FE38 + 0x44) = value;
@@ -691,7 +692,7 @@ extern float lbl_8055E3C8, lbl_80561898, lbl_805618D0, lbl_805618E0, lbl_805618E
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void fn_80166A24(void) {
+void fn_80166A24(void) {
     int wasActive;
     int var_r27;
     int var_r28;
@@ -755,26 +756,17 @@ extern "C" void fn_80166A24(void) {
             if (fn_80166F78((float *)(temp_r31 + 0x1C))) {
                 firstValue = fn_801429D0(lbl_8056189C, *(float *)(((unsigned char *)var_r27) + 0x10) - previous);
                 ((void (*)(float *, float, float))fn_80166F3C)((float *)(temp_r31 + 0x1C), firstValue, previous + *(float *)(((unsigned char *)var_r27) + 0x10));
-                amount = fn_8014C8B4(*(float *)&lbl_8042FE38,
-                                     *(float *)(((unsigned char *)var_r27) + 4),
-                                     *(float *)(((unsigned char *)var_r27) + 0xC),
-                                     *(float *)(((unsigned char *)var_r27) + 8), delta);
-                active = time > *(float *)(((unsigned char *)var_r27) + 0x18) &&
-                         time < *(float *)(((unsigned char *)var_r27) + 0x1C);
+                amount = fn_8014C8B4(*(float *)&lbl_8042FE38, *(float *)(((unsigned char *)var_r27) + 4), *(float *)(((unsigned char *)var_r27) + 0xC), *(float *)(((unsigned char *)var_r27) + 8), delta);
+                active = (time > *(float *)(((unsigned char *)var_r27) + 0x18) && time < *(float *)(((unsigned char *)var_r27) + 0x1C));
                 temp_r31[5] = active;
                 if (active) {
-                    amount = fn_8014C8F8(*(float *)(((unsigned char *)var_r27) + 0x20),
-                                         *(float *)(((unsigned char *)var_r27) + 0x24));
+                    amount = fn_8014C8F8(*(float *)(((unsigned char *)var_r27) + 0x20), *(float *)(((unsigned char *)var_r27) + 0x24));
                 }
-                fn_80166E68((float *)(temp_r31 + 8),
-                            *(float *)(((unsigned char *)var_r27) + 0x54) +
-                            amount * lbl_8055E31C);
+                fn_80166E68((float *)(temp_r31 + 8), *(float *)(((unsigned char *)var_r27) + 0x54) + amount * lbl_8055E31C);
             }
 
             active = 0;
-            if (((unsigned char *)var_r27)[0x4C] != 0 &&
-                (delta < *(float *)&lbl_8042FE38 ||
-                 delta > *(float *)(((unsigned char *)var_r27) + 4))) {
+            if (((unsigned char *)var_r27)[0x4C] != 0 && (delta < *(float *)&lbl_8042FE38 || delta > *(float *)(((unsigned char *)var_r27) + 4))) {
                 active = 1;
             }
             if (active) {
@@ -782,8 +774,7 @@ extern "C" void fn_80166A24(void) {
             }
 
             active = delta > *(float *)(((unsigned char *)var_r27) + 0x2C);
-            if (delta > *(float *)(((unsigned char *)var_r27) + 0x28) &&
-                fn_80166F78((float *)(temp_r31 + 0x20))) {
+            if (delta > *(float *)(((unsigned char *)var_r27) + 0x28) && fn_80166F78((float *)(temp_r31 + 0x20))) {
                 if (active) {
                     ((Dummy8016707C *)fn_80156A40())->v5(*(int *)temp_r31, 1);
                 } else {
@@ -1130,8 +1121,16 @@ float fn_801673A4(int arg0, float *arg1) {
         lowValue = entry[0x34 / 4];
         c = lbl_805618D0;
         d = (lbl_8055E318 - startTime) / (endTime - startTime);
-        c = (c < d) ? d : c;
-        c = (c > lbl_8056189C) ? lbl_8056189C : c;
+        if (c < d) {
+            c = lbl_805618D0;
+        } else {
+            c = d;
+        }
+        if (c > lbl_8056189C) {
+            c = c;
+        } else {
+            c = lbl_8056189C;
+        }
         return lowValue + c * (highValue - lowValue);
     }
 
