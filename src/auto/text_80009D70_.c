@@ -271,6 +271,7 @@ void fn_8000AB44(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8000AB48(void* arg0, s32 arg1) {
+    /* Sets up per-entry UI/resource state from arg1, runs per-slot init callbacks, then loads overlays and initializes pre-race/track music for arg0. */
     char* p;
     s32 i;
     fn_8000A8C4();
