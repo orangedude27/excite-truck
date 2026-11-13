@@ -8598,26 +8598,27 @@ extern "C" void fn_80229640(void *arg0) {
     fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
 }
 
-extern "C" s32 fn_802296C0(void *arg0) {
+extern "C" s32 fn_802296C0(void *self) {
+    /* Return a player/archive state code based on flags and the linked player's f5() result. */
     class Obj5 {
     public:
         virtual s32 f0(); virtual s32 f1(); virtual s32 f2();
         virtual s32 f3(); virtual s32 f4(); virtual s32 f5();
     };
-    void *obj;
-    u32 result;
-    if ((u32)(*(s32 *)((u8 *)arg0 + 0x25C) + 0x20000) != 0xFB96U) {
-        if (*(u8 *)((u8 *)arg0 + 0x18) != 0)
-            result = (*(u8 *)((u8 *)arg0 + 0x254) != 0) + 2;
+    void *player;
+    u32 state;
+    if ((u32)(*(s32 *)((u8 *)self + 0x25C) + 0x20000) != 0xFB96U) {
+        if (*(u8 *)((u8 *)self + 0x18) != 0)
+            state = (*(u8 *)((u8 *)self + 0x254) != 0) + 2;
         else
-            result = 0;
+            state = 0;
     } else {
-        result = 1;
+        state = 1;
     }
-    obj = *(void **)((u8 *)arg0 + 0x244);
-    if (((Obj5 *)obj)->f5() == 3 && result == 3)
-        result = 1;
-    return result;
+    player = *(void **)((u8 *)self + 0x244);
+    if (((Obj5 *)player)->f5() == 3 && state == 3)
+        state = 1;
+    return state;
 }
 
 extern "C" void fn_802192AC(void *);
