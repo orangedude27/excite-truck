@@ -799,16 +799,17 @@ void *fn_8024B3E8(void *archiveList, void *archiveRoot, int unused) {
 }
 #pragma scheduling reset
 #pragma use_lmw_stmw reset
-void fn_8024B544(void *arg0, char *arg1) {
+/* Select the entry by name in this object's list, storing its index at +0x280 (or 0 if not found). */
+void fn_8024B544(void *obj, char *name) {
     register s32 offset;
     register s32 index;
-    *(s32 *)((char *)arg0 + 0x280) = 0;
-    if (arg1 != 0) {
+    *(s32 *)((char *)obj + 0x280) = 0;
+    if (name != 0) {
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)arg0 + 0x1C)) {
-            if (stricmp(*(char **)((char *)*(s32 **)((char *)arg0 + 0x18) + offset), arg1) == 0) {
-                *(s32 *)((char *)arg0 + 0x280) = index;
+        while (index < *(s32 *)((char *)obj + 0x1C)) {
+            if (stricmp(*(char **)((char *)*(s32 **)((char *)obj + 0x18) + offset), name) == 0) {
+                *(s32 *)((char *)obj + 0x280) = index;
             }
             offset += 8;
             index++;
