@@ -300,6 +300,7 @@ extern "C" void fn_801679F0(void) {
     f32 f0;
     f32 f1;
     f32 scale;
+
     base = (u8 *)lbl_80330000;
     object = (DummyItem *)*(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
     local.sp10 = (DummyParamLocal *)lbl_8033025C;
@@ -312,6 +313,7 @@ extern "C" void fn_801679F0(void) {
     local.sp40[1] = &local.sp14;
     local.sp40[2] = &local.sp10;
     local.sp40[3] = &local.spC;
+
     manager = fn_801284F8(0x1E15C, base + 0x1D8, &local.sp10, &local.sp14);
     if (manager) {
         *(void **)manager = (u8 *)manager + 0xC;
@@ -349,7 +351,7 @@ extern "C" void fn_801679F0(void) {
             i++;
             entry += 0x20;
         } while (5 > i);
-        *((u8 *)manager + 0x1E158) = (u8)zero;
+        *((u8 *)manager + 0x1E158) = zero;
     }
     lbl_8055E354 = (s32)manager;
     if (object->v1((const char *)base + 0x1E8) != 0) {
@@ -374,8 +376,8 @@ extern "C" void fn_801679F0(void) {
         item_body:
             slot = local.sp40;
             do {
-                s32 value2 = (s32)((DummyArg1 *)item)->getName();
-                if (((DummyParamLocal *)*slot)->check(value2) != 0) {
+                register value = (s32)((DummyArg1 *)item)->getName();
+                if (((DummyParamLocal *)*slot)->check(value) != 0) {
                     ((DummyParamLocal *)*slot)->apply(
                         item, (void *)lbl_8055E354, local.sp18);
                     break;
@@ -653,7 +655,6 @@ void fn_801683F4(void *arg0, s32 arg1) {
     extern f32 lbl_80561950;
     extern void *fn_8017960C(s32);
     extern f64 fn_8002F234(f32);
-
     s32 counts[7];
     s32 num;
     s32 i;
@@ -680,11 +681,9 @@ void fn_801683F4(void *arg0, s32 arg1) {
     f32 tx;
     f32 tz;
     f32 radius;
-
     memset(counts, 0, 0x18);
     object = fn_8017960C(arg1);
     indexEntry = (s32 *)((u8 *)lbl_80430260 + arg1 * 0x10);
-
     if (indexEntry[0] == lbl_8055E3C4 - 1) {
         num = 0;
         x = *(f32 *)((u8 *)object + 0x60);
@@ -722,7 +721,6 @@ void fn_801683F4(void *arg0, s32 arg1) {
                 *(f32 *)((u8 *)resource + 0x24) * *(f32 *)((u8 *)resource + 0x24)
               + *(f32 *)((u8 *)resource + 0x2C) * *(f32 *)((u8 *)resource + 0x2C));
         }
-
         i = 0;
         offset = 0;
         while (i < *(s32 *)((u8 *)(u32)lbl_8055E354 + 0x1D4D0)) {
@@ -770,7 +768,6 @@ void fn_801683F4(void *arg0, s32 arg1) {
             i++;
         }
     }
-
     *(f32 *)((u8 *)indexEntry + 4) = *(f32 *)((u8 *)object + 0x60);
     *(f32 *)((u8 *)indexEntry + 8) = *(f32 *)((u8 *)object + 0x64);
     *(f32 *)((u8 *)indexEntry + 0xC) = *(f32 *)((u8 *)object + 0x68);
@@ -827,7 +824,22 @@ s32 fn_80168944(s32 arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-extern char lbl_802F94B8[];
+/* Name patterns for path objects: name prefix, sscanf format for lane count/id, object type (6 ends the table). */
+struct DummyPattern {
+    const char *prefix;
+    const char *fmt;
+    s32 type;
+};
+struct DummyPatternTable {
+    DummyPattern p[6];
+};
+/* Per-lane object types used for the 5 lanes of a road path. */
+struct DummyLaneTypes {
+    s32 t[5];
+};
+extern DummyPatternTable lbl_802F94B8;
+extern DummyLaneTypes lbl_802F9500;
+extern "C" f32 lbl_80561928;
 extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 *arg3) {
     class DummyCheck {
     public:
@@ -879,7 +891,7 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
         virtual void v0();
         virtual s32 check(const char *name);
     };
-
+    register char *strBase = lbl_80330000;
     s32 *values;
     DummyEntry *entry;
     f32 *cursor;
@@ -896,19 +908,16 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     DummyVec2 p;
     s32 i;
     s32 j;
-
     if (((DummyCheck *)arg0)->check(arg1->getName()) == 0) {
-        fn_802E30C8(lbl_80330000 + 0x370, arg1->getName());
+        fn_802E30C8(strBase + 0x370, arg1->getName());
         return 0;
     }
-
     values = fn_801399FC(arg1);
     if (*values < 4 || *values > 4) {
-        fn_802E30C8(lbl_80330000 + 0x3A4, arg1->getName(), *values);
+        fn_802E30C8(strBase + 0x3A4, arg1->getName(), *values);
         fn_80128658(values);
         return 0;
     }
-
     cursor = (f32 *)values;
     diffs[0] = cursor[2] - cursor[4];
     diffs[1] = cursor[3] - cursor[5];
@@ -922,7 +931,6 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     diffs[6] = cursor[2] - cursor[8];
     diffs[7] = cursor[3] - cursor[9];
     dist[3] = (f32)fn_8002F234(diffs[6] * diffs[6] + diffs[7] * diffs[7]);
-
     off = (dist[0] + dist[2] <= dist[1] + dist[3]);
     total = lbl_80561938 * (dist[off] + dist[(off + 2) % 4]);
     outerCount = 1;
@@ -933,7 +941,7 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     }
     outerRem = total - (f32)outerCount * *arg3;
     selector = fn_80169928;
-    if (stricmp(arg1->getName(), lbl_80330000 + 0x3E0) == 0)
+    if (stricmp(arg1->getName(), strBase + 0x3E0) == 0)
         selector = fn_801698B8;
     entry = &arg2->entries[arg2->entryCount++];
     entry->byte1C = 1;
@@ -969,14 +977,12 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     entry->id = -1;
     entry->active = 1;
     arg2->flag1E158 = 1;
-
     outerStart = lbl_80561938 * outerRem;
     {
         f32 *pA0 = (f32 *)((u8 *)values + off * 8);
         f32 *pA1 = (f32 *)((u8 *)values + ((off + 1) % 4) * 8);
         f32 *pB0 = (f32 *)((u8 *)values + ((off + 3) % 4) * 8);
         f32 *pB1 = (f32 *)((u8 *)values + ((off + 2) % 4) * 8);
-
         for (i = 0; i <= outerCount; i++) {
             f32 u = (outerStart + (f32)i * *arg3) / total;
             a.x = pA0[2] + u * (pA1[2] - pA0[2]);
@@ -1131,12 +1137,12 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     entry = &arg2->entries[arg2->entryCount];
     arg2->entryCount = arg2->entryCount + 1;
     zero = lbl_80561924;
-    entry->byte1C = 0;
     entry->f8 = zero;
+    entry->byte1C = 0;
     entry->fC = zero;
-    entry->f10 = zero;
     entry->recordStart = arg2->recordCount;
     entry->recordCount = 0;
+    entry->f10 = zero;
     entry->byte1D = 0;
     entry->id = id;
     entry->active = 1;
@@ -1145,7 +1151,7 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     cursor = (f32 *)values;
     i = 0;
     for (; i < *values; i++) {
-        DummyRecord *rec = &arg2->records[arg2->recordCount++];
+        register DummyRecord *rec = &arg2->records[arg2->recordCount++];
         rec->obj = 0;
         rec->obj = (DummyRecordObj *)fn_80167874(type);
         rec->x = cursor[2];
@@ -1153,24 +1159,27 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         rec->z = cursor[3];
         rec->hit = zero;
         fn_801E9E30(0, &rec->x);
-        rec->y = rec->hit + (rec->y + rec->obj->f18);
+        {
+            f32 tmp = rec->y + rec->obj->f18;
+            rec->y = tmp + rec->hit;
+        }
         rec->flag = 0;
         fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
         (*(s32 *)((u8 *)fn_80167874(type) + 0x1C))++;
 
         if (arg2->flag1E158 != 0) {
             entry = &arg2->entries[arg2->entryCount - 1];
-            entry->recordCount++;
+            entry->recordCount += 1;
         } else {
             if (arg2->entryCount == 0 || arg2->entries[arg2->entryCount - 1].byte1C != 0) {
-                DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
-                newEntry->byte1C = 0;
-                newEntry->recordStart = arg2->recordCount - 1;
-                newEntry->recordCount = 0;
-                newEntry->byte1D = 0;
+                entry = &arg2->entries[arg2->entryCount++];
+                entry->byte1C = 0;
+                entry->recordStart = arg2->recordCount - 1;
+                entry->recordCount = 0;
+                entry->byte1D = 0;
             }
             entry = &arg2->entries[arg2->entryCount - 1];
-            entry->recordCount++;
+            entry->recordCount += 1;
         }
         cursor += 2;
     }
@@ -1196,18 +1205,15 @@ s32 fn_80169D64(s32 arg0, s32 arg1) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
-    int sp8 = -1;
-    DummyItem *item;
+    s32 sp8 = -1;
+    DummyItem *item = 0;
+    s32 id = 0;
     s32 i;
-    s32 id;
-    f32 zero;
-
+    f32 zero = lbl_80561924;
     sscanf(arg1->getName(), lbl_8055A1C0, &sp8);
     id = sp8;
-
     {
         DummyEntry *entry = &arg2->entries[arg2->entryCount++];
-        zero = lbl_80561924;
         entry->byte1C = 0;
         i = 0;
         entry->f8 = zero;
@@ -1220,13 +1226,14 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         entry->active = 1;
         arg2->flag1E158 = 1;
     }
-
-    for (; (item = arg1->getItem(i)) != 0; i++) {
+    for (; (item = arg1->getItem(i)) != 0; ++i) {
         f32 hit = item->getHit(lbl_8055A1C8);
         DummyVec2 loc = item->getLoc(lbl_8055A1CC);
         s32 count = arg2->recordCount;
         arg2->recordCount = count + 1;
-        DummyRecord *rec = &arg2->records[count];
+        u8 *rbase = (u8 *)arg2->records;
+        s32 roff = count * 24;
+        DummyRecord *rec = (DummyRecord *)(rbase + roff);
         rec->obj = 0;
         rec->obj = (DummyRecordObj *)fn_80167874(1);
         rec->x = loc.x;
@@ -1234,15 +1241,14 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         rec->z = loc.y;
         rec->hit = hit;
         fn_801E9E30(0, &rec->x);
-        rec->y = rec->y + rec->obj->f18 + rec->hit;
+        rec->y = (rec->y + rec->obj->f18) + rec->hit;
         rec->flag = 0;
         fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
         *(s32 *)((u8 *)fn_80167874(1) + 0x1C) += 1;
-
         if (arg2->flag1E158 != 0) {
             s32 last2 = arg2->entryCount - 1;
             u8 *base2 = (u8 *)arg2->entries;
-            u8 *e2 = base2 + last2 * 0x20;
+            u8 *e2 = base2 + last2 * 32;
             (*(s32 *)(e2 + 0x18))++;
         } else {
             s32 __c = arg2->entryCount;
@@ -1250,7 +1256,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
                 goto mkEntry;
             } else {
                 s32 __last = __c - 1;
-                volatile u8 *__e = (u8 *)arg2->entries + __last * 0x20 + 0x1C;
+                volatile u8 *__e = (u8 *)arg2->entries + __last * 32 + 0x1C;
                 if (*__e == 0) {
                     goto incEntry;
                 }
@@ -1267,12 +1273,11 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
             {
                 s32 last3 = arg2->entryCount - 1;
                 u8 *base3 = (u8 *)arg2->entries;
-                u8 *e3 = base3 + last3 * 0x20;
+                u8 *e3 = base3 + last3 * 32;
                 (*(s32 *)(e3 + 0x18))++;
             }
         }
     }
-
     arg2->flag1E158 = 0;
     return 1;
 }
