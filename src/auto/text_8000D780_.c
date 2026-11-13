@@ -4,9 +4,9 @@
 
 extern void fn_8000D838(void *);
 extern s32 lbl_8034F610[];
-extern struct { s32 a, b; u32 c, d; } lbl_8055D3F0;
-#define lbl_8055D3F8 (lbl_8055D3F0.c)
-#define lbl_8055D3FC (lbl_8055D3F0.d)
+extern s32 lbl_8055D3F0;
+extern u32 lbl_8055D3F8;
+extern u32 lbl_8055D3FC;
 
 void fn_8000D780(void) {
     s32 *p = lbl_8034F610;
