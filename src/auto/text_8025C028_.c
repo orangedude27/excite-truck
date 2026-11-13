@@ -28,6 +28,8 @@ extern void fn_8025A50C(void), fn_8025CE78(void), fn_8025E034(void);
 extern void* lbl_8055C390;
 extern void fn_80214CB4(void*);
 extern void* fn_80214D04(void);
+extern int lbl_8055F2E8;
+extern void *fn_801284F8(int, void *);
 extern char lbl_803453B8[];
 extern void fn_80235380(void*, void*);
 extern void fn_80128668(void*);
@@ -96,5 +98,65 @@ void fn_8025CC78(void* p, int arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_8025C054(void) {
+    Menu menu;
+    int running;
+
+    menu.entries[0].label = &lbl_8055BAC0;
+    menu.entries[0].type = 8;
+    menu.entries[0].value = (void *)fn_8025C04C;
+    menu.entries[0].flags = 0;
+    menu.entries[0].id = 0;
+
+    menu.entries[1].label = &lbl_8055BABC;
+    menu.entries[1].type = 8;
+    menu.entries[1].value = (void *)fn_8025C028;
+    menu.entries[1].flags = 1;
+    menu.entries[1].id = 0;
+
+    menu.entries[2].label = lbl_80345264;
+    menu.entries[2].type = 0;
+    menu.entries[2].value = 0;
+    menu.entries[2].flags = 0;
+    menu.entries[2].id = 0;
+
+    menu.entries[3].label = &lbl_8055C394;
+    menu.entries[3].type = 0;
+    menu.entries[3].value = 0;
+    menu.entries[3].flags = 1;
+    menu.entries[3].id = 0;
+
+    menu.entries[4].label = &lbl_8055C39C;
+    menu.entries[4].type = 0;
+    menu.entries[4].value = 0;
+    menu.entries[4].flags = 2;
+    menu.entries[4].id = 0;
+
+    menu.entries[5].label = &lbl_8055B860;
+    menu.entries[5].type = 6;
+    menu.entries[5].value = 0;
+    menu.entries[5].flags = -1;
+    menu.entries[5].id = 0x1B;
+
+    menu.footer = lbl_80498EB8;
+    menu.header = lbl_802FA650;
+    menu.header.v[1] = (int)menu.entries;
+
+    running = 1;
+    while (running) {
+        switch (fn_802146BC(menu.header.v, -999, -999, 1)) {
+        case 0:
+            fn_8025A50C();
+            break;
+        case 1:
+            fn_8025CE78();
+            break;
+        case 2:
+            fn_8025E034();
+            break;
+        default:
+            running = 0;
+            break;
+        }
+    }
 }
 #pragma pop
