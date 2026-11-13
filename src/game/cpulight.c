@@ -299,15 +299,16 @@ void fn_802DBA1C(unsigned char arg0) {
 #pragma dont_inline reset
 #pragma use_lmw_stmw on
 
-void fn_802DBBE4(int arg0, int arg1) {
-    if ((void *)lbl_8055FEA8 != (void *)arg0) {
-        lbl_8055FEA8 = (void *)arg0;
-        lbl_8055FEAC = (void *)arg1;
+void fn_802DBBE4(int positionArray, int vertexCount) {
+    /* Set GX position array (vertex desc/attr/array) if it changed and flush it. */
+    if ((void *)lbl_8055FEA8 != (void *)positionArray) {
+        lbl_8055FEA8 = (void *)positionArray;
+        lbl_8055FEAC = (void *)vertexCount;
         GXClearVtxDesc();
         GXSetVtxDesc(9, 3);
         GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-        GXSetArray(9, (void *)arg0, 0xC);
-        DCFlushRange((void *)arg0, arg1 * 0xC);
+        GXSetArray(9, (void *)positionArray, 0xC);
+        DCFlushRange((void *)positionArray, vertexCount * 0xC);
     }
 }
 
