@@ -1949,26 +1949,26 @@ s32 fn_80119C0C(StreamPlayer *arg0, s32 start) {
 exit:
     return self->playing;
 }
-s32 fn_80119CB0(void *arg0, s32 arg1) {
-    s32 *var_r3;
-    if (arg1 != 0) {
-        if (*(s32 *)((u8 *)arg0 + 0xb0) != 0) {
-            fn_801195A0((u8 *)arg0 + 0x7c);
+s32 fn_80119CB0(StreamPlayer *player, s32 pause) {
+    s32 *paused;
+    if (pause != 0) {
+        if (player->looping != 0) {
+            fn_801195A0(&player->voices);
         }
-        var_r3 = (s32 *)((u8 *)arg0 + 0xb4);
-        *(s32 *)((u8 *)arg0 + 0xb4) = 1;
+        paused = &player->paused;
+        player->paused = 1;
     } else {
-        if (*(s32 *)((u8 *)arg0 + 0xb0) == 0) {
-            if (*(s32 *)((u8 *)arg0 + 0xbc) == 0) {
-                fn_80119558((u8 *)arg0 + 0x7c);
+        if (player->looping == 0) {
+            if (player->bytesToPlay == 0) {
+                fn_80119558(&player->voices);
             }
         } else {
-            fn_80119498((u8 *)arg0 + 0x7c);
+            fn_80119498(&player->voices);
         }
-        var_r3 = (s32 *)((u8 *)arg0 + 0xb4);
-        *(s32 *)((u8 *)arg0 + 0xb4) = 0;
+        paused = &player->paused;
+        player->paused = 0;
     }
-    return *var_r3;
+    return *paused;
 }
 
 void fn_80119D40(void *arg0) {
