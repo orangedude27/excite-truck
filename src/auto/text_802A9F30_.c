@@ -443,6 +443,7 @@ void fn_802AA25C(void *arg0, void *arg1, float farg0) {
         *(float *)((char *)arg0 + 0xD0) = lbl_805649F0;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
