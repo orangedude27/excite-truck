@@ -25,6 +25,7 @@ void IPCiProfInit(void) {
     }
 }
 
+/* Track a queued IPC request: increment pending/unissued counters and record request info. */
 void IPCiProfQueueReq(IPCRequestEx* req, s32 fd) {
     IpcNumPendingReqs++;
     IpcNumUnIssuedReqs++;
