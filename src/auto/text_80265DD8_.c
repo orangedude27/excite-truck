@@ -1617,6 +1617,7 @@ void fn_80268D94(void) {
 }
 
 void fn_80268E00(void) {
+    /* Query the current position on resource lbl_80563C28, fall back to the object's context value at +0x1C when absent, forward it to fn_80268BD4 with lbl_80499950/lbl_80563C9C, then release and destroy the query object. */
     #pragma scheduling invalid_target
     struct Result {
         int value;
