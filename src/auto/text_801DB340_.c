@@ -54,7 +54,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
         return 0;
     }
     if (*(int *)((char *)lbl_8055E990 + 0x10) == 0) {
-        return fn_801DB348(x, y, out_h, out_type);
+        return fn_801DB348(x, y, out_h, out_type, arg4);
     }
     divX = x / 32;
     divY = y / 32;
