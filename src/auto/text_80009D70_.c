@@ -38,17 +38,14 @@ static inline void StoreEntry_80009DC8(ListEntry_80009DC8 *dst, ListEntry_80009D
 
 static inline void CopyStr_80009DC8(char *dst, const char *src, s32 n) {
     u8 c;
-    s32 more = 1;
-    while (more) {
-        c = *src++;
-        *dst++ = c;
-        more = 0;
-        if ((s8)c != 0) {
-            if (--n > 0) {
-                more = 1;
-            } else {
-                dst[-1] = 0;
-            }
+loop:
+    c = *src++;
+    *dst++ = c;
+    if ((s8)c != 0) {
+        if (--n <= 0) {
+            dst[-1] = 0;
+        } else {
+            goto loop;
         }
     }
 }
