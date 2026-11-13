@@ -11990,17 +11990,19 @@ int btm_num_sco_links_active(void) {
     return count;
 }
 
-BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR addr) {
-    int i;
-    u8 *link;
-    i = 0;
-    link = lbl_803C0F78 + 0x1854;
+BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR remoteBda) {
+    /* Return TRUE if a connected SCO link exists for the given BD address. */
+    int scoIndex;
+    u8 *scoLink;
+
+    scoIndex = 0;
+    scoLink = lbl_803C0F78 + 0x1854;
     do {
-        if (memcmp(link + 0x28, addr, 6) == 0 && *(UINT16 *)(link + 8) == 4)
+        if (memcmp(scoLink + 0x28, remoteBda, 6) == 0 && *(UINT16 *)(scoLink + 8) == 4)
             return TRUE;
-        i++;
-        link += 0x34;
-    } while ((unsigned)i < 3);
+        scoIndex++;
+        scoLink += 0x34;
+    } while ((unsigned)scoIndex < 3);
     return FALSE;
 }
 
