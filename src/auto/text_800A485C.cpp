@@ -7597,16 +7597,8 @@ extern "C" s32 fn_800B143C(void *arg0, s32 arg1, s32 arg2, void **arg3) {
                 if (found)
                     return 8;
             }
-            if ((f.flags4FC & 1) == 0)
-                goto after_create_flag;
-            if (option != 0)
-                goto check_create_flag;
-            if (arg2 & 4)
-                goto check_create_flag;
-            if (arg2 & 8)
+            if ((f.flags4FC & 1) && (option || (arg2 & 4) || (arg2 & 8)))
                 return 10;
-        check_create_flag:
-        after_create_flag:
             if (f.flags4FC & 0x10)
                 return 0x17;
             if (option) {
