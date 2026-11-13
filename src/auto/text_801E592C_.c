@@ -32,16 +32,20 @@ s32 fn_801E5990(void *arg0) {
     return ((s32 *)arg0)[2];
 }
 
-#pragma scheduling invalid_target
-void fn_801E5998(struct SrcHdr *src, void *dst, s32 *outCount) {
-    s32 count = src->count;
-    struct Rec14 *d = (struct Rec14 *)dst;
+#pragma scheduling on
+void fn_801E5998(void *src, void *dst, s32 *outCount) {
+    s32 count = ((s32 *)src)[2];
     s32 i;
     for (i = 0; i < count; i++) {
-        d[i] = src->data[i];
+        ((struct Rec14 *)dst)[i] = *(struct Rec14 *)((u8 *)src + i * 0x38 + 0x10);
     }
     *outCount = count;
 }
+
+void fn_801E5E24(void *arg0, void *arg1, s32 arg2, void *arg3, void *arg4) {
+    (void)arg0; (void)arg1; (void)arg2; (void)arg3; (void)arg4;
+}
+
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_8001BA68(void *);
 extern void fn_801BFE7C(void *, void *, void *);
@@ -49,7 +53,6 @@ extern void fn_801C0E60(void *, void *, void *);
 extern void fn_801C7254(void *, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_801E67B4(void *, void *, void *);
 extern void fn_802C7A38(s32, void *, s32);
-#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     s32 sp68[0x180];
@@ -62,8 +65,9 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     register s32 i;
     register s32 idx;
     register s32 count;
-    s32 *dst;
-    s32 *tail;
+    register s32 *base;
+    register s32 *dst;
+    register s32 *tail;
     s32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11;
     s32 b0, b1, b2, b3, b4, b5, b6, b7, b8;
 
@@ -101,13 +105,14 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
             sp14box.v[3]=b3; sp14box.v[4]=b4; sp14box.v[5]=b5;
             sp14box.v[6]=b6; sp14box.v[7]=b7; sp14box.v[8]=b8;
             fn_801C7254(sp14box.v, b7, b6, b5, b4, b3, b2, b1);
-            dst = &sp68[idx * 12];
+            base = &sp68[idx * 12];
+            dst = base;
             fn_80015B20(dst, sp38, sp14box.v);
             fn_8001BA68(sp8);
             fn_801E67B4(sp8, b + 9, dst);
-            tail = dst + 9;
+            tail = base + 9;
             fn_801C0E60(tail, b + 9, sp8);
-            dst += 9;
+            dst = base + 9;
             fn_801BFE7C(tail, dst, &sp38[9]);
             fn_801C0E60(tail, dst, b + 9);
         }
@@ -117,27 +122,30 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     }
     fn_802C7A38(0, sp68, temp);
 }
-#pragma use_lmw_stmw on
-#pragma scheduling on
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma fp_contract off
 void fn_801E67B4(void *arg0, void *arg1, void *arg2) {
     float *out = (float *)arg0;
     float *in = (float *)arg1;
     const float *m = (const float *)arg2;
 
     if (out == in) {
-        float m3 = m[3], m4 = m[4], m5 = m[5], m0 = m[0], m1 = m[1], m2 = m[2], m6 = m[6], m7 = m[7], m8 = m[8];
-        float x = in[0], y = in[1], z = in[2];
-        out[0] = y * m3 + x * m0 + z * m6;
-        out[1] = y * m4 + x * m1 + z * m7;
-        out[2] = y * m5 + x * m2 + z * m8;
+        float x, y, z;
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        m3 = m[3]; m4 = m[4]; m5 = m[5]; m0 = m[0]; m1 = m[1]; m2 = m[2]; m6 = m[6]; m7 = m[7]; m8 = m[8];
+        x = in[0]; y = in[1]; z = in[2];
+        out[0] = z * m6 + (x * m0 + y * m3);
+        out[1] = z * m7 + (x * m1 + y * m4);
+        out[2] = z * m8 + (x * m2 + y * m5);
     } else {
-        float m3 = m[3], m0 = m[0], m6 = m[6], m4 = m[4], m1 = m[1], m7 = m[7], m5 = m[5], m2 = m[2], m8 = m[8];
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        float y;
+        m3 = m[3]; m0 = m[0]; m6 = m[6]; m4 = m[4]; m1 = m[1]; m7 = m[7]; m5 = m[5]; m2 = m[2]; m8 = m[8];
         out[0] = in[2] * m6 + (in[0] * m0 + in[1] * m3);
-        out[1] = in[2] * m7 + (in[0] * m1 + in[1] * m4);
-        out[2] = in[2] * m8 + (in[0] * m2 + in[1] * m5);
+        y = in[1];
+        out[1] = in[2] * m7 + (in[0] * m1 + y * m4);
+        y = in[1];
+        out[2] = in[2] * m8 + (in[0] * m2 + y * m5);
     }
 }
-#pragma pop
+#pragma fp_contract on
