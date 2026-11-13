@@ -43,7 +43,7 @@ static inline void swap16(unsigned char *p) {
 extern float fn_801DB514(float grid[4][4], void *, float, float);
 
 static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *arg4) {
-    int tileX, tileZ, remX, remZ;
+    int divX, divY, tileX, tileZ, remX, remZ;
     char *node;
     char *layer;
     unsigned char *type_p;
@@ -56,19 +56,23 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     if (*(int *)((char *)lbl_8055E990 + 0x10) == 0) {
         return fn_801DB348(x, y, out_h, out_type);
     }
-    tileX = (x / 32) - lbl_8055E99C;
-    tileZ = (y / 32) - lbl_8055E9A0;
-    remX = x - (x / 32) * 32;
-    remZ = y - (y / 32) * 32;
-    if (tileX >= 0 && tileZ >= 0 && tileX < 0x60 && tileZ < 0x60) {
+    divX = x / 32;
+    divY = y / 32;
+    tileX = divX - lbl_8055E99C;
+    tileZ = divY - lbl_8055E9A0;
+    remX = x - divX * 32;
+    remZ = y - divY * 32;
+    if (tileX < 0 || tileZ < 0) {
+        node = 0;
+    } else if (tileX >= 0x60 || tileZ >= 0x60) {
+        node = 0;
+    } else {
         tile = ((unsigned short (*)[0x60])lbl_80442708)[tileX][tileZ];
         if (tile != 0xFFFF) {
             node = *(char **)((char *)lbl_8055E990 + 0x18) + tile * 0x894;
         } else {
             node = 0;
         }
-    } else {
-        node = 0;
     }
     if (node == 0) {
         return 0;
@@ -230,7 +234,8 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     ((float *)out)[2] = normal[2];
     return height;
 }
-#pragma pop
+#pragma push
+#pragma processor 750
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
     float grid[4][4];
     float sp8;
@@ -258,9 +263,7 @@ int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *ar
     }
     return 1;
 }
-
-#pragma push
-#pragma processor 750
+#pragma pop
 int fn_801DC258(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, float farg1) {
     extern int lbl_8055E990;
     float *state = (float *)lbl_8055E990;
