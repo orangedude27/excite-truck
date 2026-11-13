@@ -1798,6 +1798,24 @@ extern "C" void fn_80147ABC(void *arg0, void *arg1, const char *format, f64 valu
     fn_80147314(prefixBuffer, (const char *)&lbl_80559E1C, text);
 }
 
+/* --- a 2D icon style of the on-screen drawing code ------------------------ */
+/* 0x28 bytes.  fn_80147DC0 interpolates one of these toward another (every
+   field but the word at 0x00), and fn_801476D8 draws one: it maps the
+   position through the screen-edge placement modes fn_801451DC knows about
+   and hands the four corners of the box to the draw list. */
+struct DrawStyle80147BD0 {
+    u32 kind;      /* 0x00 copied as-is, never interpolated */
+    f32 x;         /* 0x04 */
+    f32 y;         /* 0x08 */
+    u32 mode;      /* 0x0C placement flags, read by fn_801451DC/fn_801452A0 */
+    f32 width;     /* 0x10 divided by the aspect ratio when mode & 0x20 */
+    f32 height;    /* 0x14 added to y for the far edge */
+    f32 corner_x0; /* 0x18 */
+    f32 corner_y0; /* 0x1C */
+    f32 corner_x1; /* 0x20 */
+    f32 corner_y1; /* 0x24 */
+};
+
 extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
     s32 temp[12];
     ((void (*)(void *, s32, s32))fn_80147DC0)((u32 *)temp, arg0, arg1);
