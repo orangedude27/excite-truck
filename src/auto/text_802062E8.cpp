@@ -784,11 +784,12 @@ extern "C" void *fn_802077A4(int arg0, int arg1, int arg2, int arg3) {
     return obj;
 }
 
-extern "C" void *fn_80207848(int arg0, int arg1) {
+/* Allocate and initialize a sound object; delete and return NULL if initialization produced no handle. */
+extern "C" void *fn_80207848(int soundId, int flags) {
     struct Callback { virtual ~Callback(); };
     void *obj = (void *)fn_801284F8(0x70, lbl_8055B4C8);
     if (obj != 0)
-        obj = fn_802072E4(obj, arg0, arg1);
+        obj = fn_802072E4(obj, soundId, flags);
     if (obj != 0 && *(int *)((char *)obj + 0xC) == 0) {
         delete (Callback *)obj;
         obj = 0;
