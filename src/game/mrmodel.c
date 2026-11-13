@@ -261,13 +261,14 @@ extern void fn_802C54D4(void);
 extern int lbl_804C1390[];
 #pragma dont_inline on
 #pragma dont_inline on
-void fn_802C5720(int arg0) {
+/* Refreshes model entries for a specific group (>0) or all groups, then notifies DB. */
+void fn_802C5720(int groupId) {
     int count;
     void **items;
     int i;
     fn_802C54D4();
-    if (arg0 > 0) {
-        void *entry = fn_802C54B4(arg0);
+    if (groupId > 0) {
+        void *entry = fn_802C54B4(groupId);
         items = *(void ***)entry;
         count = *(int *)((char *)entry + 4);
     } else {
