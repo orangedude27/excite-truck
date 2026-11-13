@@ -559,13 +559,15 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
         volatile s32 firstCount;
         u8 pad[0x84];
         void ** volatile items;
-        s32 itemCount;
-        s32 itemCapacity;
+        volatile s32 itemCount;
+        volatile s32 itemCapacity;
     };
     s32 i;
     s32 offset;
     s32 j;
     s32 offset2;
+    s32 zero = 0;
+    void *chk;
     if (arg0 != 0) {
         Obj *self = (Obj *)arg0;
         self->vtable = lbl_8032E424;
@@ -584,19 +586,20 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
             offset2 += 4;
             j++;
         }
-        self->itemCount = 0;
-        if ((s32)self + 0x90 != 0) {
-            if ((s32)self + 0x90 != 0) {
+        chk = (char *)self + 0x90;
+        self->itemCount = zero;
+        if (chk != 0) {
+            if (chk != 0) {
                 self->items = 0;
-                self->itemCount = 0;
-                self->itemCapacity = 0;
+                self->itemCount = zero;
+                self->itemCapacity = zero;
             }
         }
         if ((s32)self + 4 != 0) {
             if ((s32)self + 4 != 0) {
                 self->first = 0;
-                self->firstCount = 0;
-                *(s32 *)((char *)self + 0xC) = 0;
+                self->firstCount = zero;
+                *(s32 *)((char *)self + 0xC) = zero;
             }
         }
         if (arg1 > 0)
@@ -622,19 +625,18 @@ extern "C" f32 lbl_80561744;
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
-    s32 off = arg1 * 8;
-    f32 f31 = lbl_8055E3C8;
-    u8 *element = (u8 *)arg0 + off;
     void *self = arg0;
-
+    s32 off = arg1 * 8;
+    u8 *element = (u8 *)arg0 + off;
+    f32 f31 = lbl_8055E3C8;
     if (f31 >= *(f32 *)(element + 0xE4)) {
-        s32 val;
-        void *r29 = fn_8017960C(arg1);
+        void *r29v = fn_8017960C(arg1);
         s32 found;
+        s32 i;
         s32 offset;
-        for (val = 0, offset = 0; val < *(s32 *)((u8 *)self + 0x94); offset += 4, val++) {
-            f32 a = *(f32 *)((u8 *)r29 + 0x60);
-            f32 b = *(f32 *)((u8 *)r29 + 0x68);
+        for (i = 0, offset = 0; i < *(s32 *)((u8 *)self + 0x94); offset += 4, i++) {
+            f32 a = *(f32 *)((u8 *)r29v + 0x60);
+            f32 b = *(f32 *)((u8 *)r29v + 0x68);
             s32 elem = *(s32 *)(*(u8 **)((u8 *)self + 0x90) + offset);
             if (fn_80139B70(elem, a, b)) {
                 found = 1;
@@ -646,22 +648,21 @@ extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
         if (found) {
             s32 idx = fn_80129D90(4, 0, *(s32 *)((u8 *)self + 8));
             u32 *table = *(u32 **)((u8 *)self + 4);
-            val = *(s32 *)((u8 *)table + idx * 8);
-            if (val == 0) {
+            s32 tbl = *(s32 *)((u8 *)table + idx * 8);
+            if (tbl == 0) {
                 s32 next = idx + 1;
                 s32 divisor = *(s32 *)((u8 *)self + 8);
                 idx = next % divisor;
-                val = *(s32 *)((u8 *)table + idx * 8);
+                tbl = *(s32 *)((u8 *)table + idx * 8);
             }
             *(f32 *)(element + 0xE4) = f31 +
                 ((f32 (*)(s32, f32, f32))fn_80129DC4)(
                     4, *(f32 *)((u8 *)self + 0xDC), *(f32 *)((u8 *)self + 0xE0));
-            ((s32 *)self)[arg1 * 2 + 0x3A] = val;
+            ((s32 *)self)[arg1 * 2 + 0x3A] = tbl;
         } else {
             *(f32 *)(element + 0xE4) += lbl_80561740;
         }
     }
-
     if (fn_801B306C() > lbl_80561744) {
         return *(s32 *)((u8 *)self + 0xE8);
     }
@@ -751,6 +752,8 @@ extern "C" s32 fn_801B2F24(void);
 extern "C" void *fn_801B2ED0(s32);
 extern "C" f32 lbl_8055E3C8;
 #pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void fn_80156F6C(void *arg0) {
     struct Object {
@@ -768,7 +771,7 @@ extern "C" void fn_80156F6C(void *arg0) {
     threshold = lbl_80561744;
     out = base;
     i = 0;
-    u32 entries[7];
+    u32 entries[11];
     volatile s32 max;
     volatile s32 count;
     u32 * volatile values;
@@ -811,18 +814,20 @@ extern "C" void fn_80156F6C(void *arg0) {
     }
 }
 #pragma pop
-extern "C" void* fn_801570D0(void* arg0, s32 arg1) {
-    extern u8 lbl_8032E3F8[];
-    struct Obj { virtual void c(s32); };
-    if (arg0 != 0) {
-        Obj* obj = *(Obj**)((u8*)arg0 + 8);
-        *(u32*)arg0 = (u32)lbl_8032E3F8;
-        if (obj != 0) obj->c((s32)(volatile u8)1);
-        obj = *(Obj**)((u8*)arg0 + 4);
-        if (obj != 0) obj->c((s32)(volatile u8)1);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void* fn_801570D0(ebi::title::TBlackPlane* self, s32 deleteFlag) {
+    /* Deleting destructor of ebi::title::TBlackPlane: restore this class's vtable,
+     * destroy the two child planes (m_b at 0x8, then m_a at 0x4) through their
+     * virtual destructors, then free the object itself when deleteFlag > 0. */
+    struct Dtor { virtual void destroy(s32); };  // virtual destructor (vtable slot 0x8)
+    if (self != 0) {
+        Dtor* child = *(Dtor**)&self->m_b;
+        *(u32*)self = (u32)lbl_8032E3F8;  // TBlackPlane's vtable
+        if (child != 0) child->destroy((s32)(volatile u8)1);
+        child = *(Dtor**)&self->m_a;
+        if (child != 0) child->destroy((s32)(volatile u8)1);
+        if (deleteFlag > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_80157170(void* arg0) {
