@@ -4290,26 +4290,27 @@ extern "C" void* fn_80159340(void* arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void fn_801593F0(Unk801577F0* arg0) {
-    f32 b;
-    f32 a;
-    arg0->v31();
-    *(f32*)((u8*)arg0 + 0x25c) = lbl_80561754;
-    if (*(f32*)((u8*)arg0 + 0x260) > *(f32*)((u8*)arg0 + 0x24c)) {
-        s32 r3 = *(s32*)((u8*)arg0 + 0x268);
-        if (r3 != 0) {
-            fn_801CB750(r3, arg0->m4);
+/* Reset this object's state and notify/reset its linked object if present. */
+extern "C" void fn_801593F0(Unk801577F0* self) {
+    f32 initValue;
+    f32 resetValue;
+    self->v31();
+    *(f32*)((u8*)self + 0x25c) = lbl_80561754;
+    if (*(f32*)((u8*)self + 0x260) > *(f32*)((u8*)self + 0x24c)) {
+        s32 handle = *(s32*)((u8*)self + 0x268);
+        if (handle != 0) {
+            fn_801CB750(handle, self->m4);
         }
-        *(f32*)((u8*)arg0 + 0x260) = lbl_80561754;
+        *(f32*)((u8*)self + 0x260) = lbl_80561754;
     }
-    Unk801577F0* object = *(Unk801577F0**)((u8*)arg0 + 0x278);
-    a = lbl_80561754;
-    b = lbl_8056177C;
-    *(f32*)((u8*)arg0 + 0x264) = a;
-    *(f32*)((u8*)arg0 + 0x258) = b;
-    if (object != 0) {
-        *(u8*)((u8*)object + 0x4A) = 1;
-        *(u8*)((u8*)object + 0x4C) = 0;
+    Unk801577F0* linked = *(Unk801577F0**)((u8*)self + 0x278);
+    resetValue = lbl_80561754;
+    initValue = lbl_8056177C;
+    *(f32*)((u8*)self + 0x264) = resetValue;
+    *(f32*)((u8*)self + 0x258) = initValue;
+    if (linked != 0) {
+        *(u8*)((u8*)linked + 0x4A) = 1;
+        *(u8*)((u8*)linked + 0x4C) = 0;
     }
 }
 
