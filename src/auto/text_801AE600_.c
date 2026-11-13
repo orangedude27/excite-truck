@@ -333,11 +333,12 @@ int fn_801AEB58(const void *arg0, const void *arg1) {
 
 #pragma scheduling invalid_target
 void fn_801AEBD0(void) {
-    int value = lbl_8055E62C;
-    int count = lbl_80435780[0x3C0 / 4];
-    int i;
-    int share;
-    int remainder;
+    register int value = lbl_8055E62C;
+    register int count = lbl_80435780[0x3C0 / 4];
+    register int i;
+    register int share;
+    register int remainder;
+    register int offset;
 
     for (i = 0; i < count; i++) {
         short *item = (short *)(*lbl_8055E624 + i * 0x1C);
@@ -347,19 +348,15 @@ void fn_801AEBD0(void) {
     share = value / 3;
     remainder = value % 3;
 
-    {
-        register int *global = lbl_80435780;
-        int offset;
-        for (offset = 0, i = 0;
-             i < *(volatile int *)((char *)global + 0x3C0);
-             offset += 0x1C, i++) {
-            char *entry = (char *)*(volatile int *)lbl_8055E624 + offset;
-            short type = *(short *)(entry + 0xC);
-            if (type < 4) {
-                *(short *)(entry + 0x14) += share;
-                if (type == 1)
-                    *(short *)(entry + 0x14) += remainder;
-            }
+    for (offset = 0, i = 0;
+         i < *(volatile int *)((char *)lbl_80435780 + 0x3C0);
+         offset += 0x1C, i++) {
+        char *entry = (char *)*(volatile int *)lbl_8055E624 + offset;
+        short type = *(short *)(entry + 0xC);
+        if (type < 4) {
+            *(short *)(entry + 0x14) += share;
+            if (type == 1)
+                *(short *)(entry + 0x14) += remainder;
         }
     }
 }
@@ -393,19 +390,20 @@ extern int fn_801B2F24(void);
 extern int fn_801B3050(int);
 extern int fn_801B2ED4(void);
 extern void *memset(void *, int, unsigned int);
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 void fn_801AED74(void) {
     register int *base;
     register void *data;
     register int i;
     register int offset;
-    register int **table;
-    register int j;
-    register int *entry;
-    register int count;
-    register int byteOffset;
     register float value;
+    register int zero;
+    register int j;
+    register int count;
+    register int **table;
+    register int byteOffset;
+    register int *entry;
 
     if (*(unsigned char *)&lbl_8055E634 == 0) {
         base = lbl_8055E624;
@@ -426,53 +424,53 @@ void fn_801AED74(void) {
             offset += 0x1C;
         }
         table = (int **)lbl_8055E620;
-        for (j = 0; j != 6; j += 3) {
-            entry = table[0];
+        zero = 0;
+        for (j = 0; j < 8; j += 4) {
+            entry = table[j + 0];
             if (entry != 0) {
                 count = 0;
                 byteOffset = 0;
                 while (count < entry[1]) {
-                    *(short *)((char *)entry[0] + byteOffset + 6) = 0;
+                    *(short *)((char *)entry[0] + byteOffset + 6) = zero;
                     count++;
                     byteOffset += 8;
                 }
             }
-            entry = table[1];
+            entry = table[j + 1];
             if (entry != 0) {
                 count = 0;
                 byteOffset = 0;
                 while (count < entry[1]) {
-                    *(short *)((char *)entry[0] + byteOffset + 6) = 0;
+                    *(short *)((char *)entry[0] + byteOffset + 6) = zero;
                     count++;
                     byteOffset += 8;
                 }
             }
-            entry = table[2];
+            entry = table[j + 2];
             if (entry != 0) {
                 count = 0;
                 byteOffset = 0;
                 while (count < entry[1]) {
-                    *(short *)((char *)entry[0] + byteOffset + 6) = 0;
+                    *(short *)((char *)entry[0] + byteOffset + 6) = zero;
                     count++;
                     byteOffset += 8;
                 }
             }
-            entry = table[3];
+            entry = table[j + 3];
             if (entry != 0) {
                 count = 0;
                 byteOffset = 0;
                 while (count < entry[1]) {
-                    *(short *)((char *)entry[0] + byteOffset + 6) = 0;
+                    *(short *)((char *)entry[0] + byteOffset + 6) = zero;
                     count++;
                     byteOffset += 8;
                 }
             }
-            table += 4;
         }
     }
     lbl_8055E62C = fn_801B2ED4();
 }
-
+#pragma pop
 void fn_801AEF28(Src *arg0) {
     int *p;
     int *q;
@@ -599,16 +597,18 @@ void fn_801AF598(void) {
 
 #pragma scheduling invalid_target
 void fn_801AF65C(void) {
-    int *base = lbl_80435780;
-    int offset = 0;
-    int i = 0;
-    while (i < base[0x3C0 / 4]) {
-        char *entry = (char *)lbl_8055E624[0] + offset;
-        if (fn_801AE620(entry) && *fn_801EA9A0(i)) {
+    /* For each active/result entry, set the flag bit at +0xE when the entry and its indexed query both pass. */
+    int *tableBase = lbl_80435780;
+    int entryOffset = 0;
+    int index = 0;
+
+    while (index < tableBase[0x3C0 / 4]) {
+        char *entry = (char *)lbl_8055E624[0] + entryOffset;
+        if (fn_801AE620(entry) && *fn_801EA9A0(index)) {
             *(unsigned short *)(entry + 0xE) |= 2;
         }
-        offset += 0x1C;
-        i++;
+        entryOffset += 0x1C;
+        index++;
     }
 }
 extern int fn_801769B8(void);
@@ -626,72 +626,65 @@ extern void fn_801B3208(int, int, float);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_801AF6FC(void) {
-    register float *base = lbl_80435740;
+    register char *base = (char *)lbl_80435740;
     register int mode;
     register unsigned int notTwo;
     register float *value;
     register int dataIndex;
-    register int entryCount;
     register int entryOffset;
+    register int entryCount;
     register int rank;
     register int *sorted;
-    register int *finalSorted;
     register int finalIndex;
-    register volatile int *area = (volatile int *)((char *)base + 0x40);
+    register int *finalSorted;
     register int (*compare)(const void *, const void *);
-
     mode = fn_801769B8();
     notTwo = (unsigned int)((2 - mode) | (mode - 2)) >> 31;
     if (notTwo == 0) {
         fn_801AE928();
     }
     fn_801AF65C();
-
-    for (entryCount = 0, entryOffset = 0; entryCount < ((int *)lbl_8055E620)[8]; entryCount++, entryOffset += 4) {
-        int *entry = (int *)*(void **)((char *)lbl_8055E620 + entryOffset);
+    for (entryOffset = 0, entryCount = 0; entryCount < *(int *)((char *)lbl_8055E620 + 0x20); entryOffset += 4, entryCount++) {
+        int *entry = *(int **)((char *)lbl_8055E620 + entryOffset);
         if (entry != 0) {
             ((void (*)(int, int, int))fn_801AFAB0)(lbl_8055E628, entry[0], entry[1]);
         }
     }
-
     if (notTwo == 0) {
         ((void (*)(int, int, int))fn_801AFAB4)(lbl_8055E628, lbl_8055E624[0], lbl_8055E624[1]);
     }
-
     if (mode == 1) {
-        value = base;
-        for (dataIndex = 0; dataIndex < area[0x3c0 / 4]; dataIndex++, value += 2) {
+        char *tbl = base + 0x40;
+        value = (float *)base;
+        for (dataIndex = 0; dataIndex < *(int *)(tbl + 0x3C0); dataIndex++, value += 2) {
             value[0] = fn_801AE9E0(dataIndex, value + 1);
         }
     }
-
-    sorted = (int *)((char *)base + 0x408);
-    compare = fn_801AEAA4;
-    if (mode == 1) {
-        compare = fn_801AEB58;
+    {
+        char *tbl = base + 0x40;
+        sorted = (int *)(tbl + 0x3C8);
+        qsort(sorted, *(int *)(tbl + 0x3C0), 4, (mode == 1) ? fn_801AEB58 : fn_801AEAA4);
     }
-    qsort(sorted, area[0x3c0 / 4], 4, compare);
-
-    rank = 0;
-    sorted = (int *)((char *)base + 0x408);
-    for (; rank < area[0x3c0 / 4]; rank++, sorted++) {
-        int index = *sorted;
-        short rankValue = rank + 1;
-        *(short *)((char *)lbl_8055E624[0] + index * 0x1C + 0xC) = rankValue;
+    {
+        char *tbl = base + 0x40;
+        rank = 0;
+        sorted = (int *)(tbl + 0x3C8);
+        for (; rank < *(int *)(tbl + 0x3C0); rank++, sorted++) {
+            int index = *sorted;
+            short rankValue = rank + 1;
+            *(short *)((char *)lbl_8055E624[0] + index * 0x1C + 0xC) = rankValue;
+        }
     }
-
     fn_801AEBD0();
     fn_801AE628((int)fn_80137C4C());
-
     if (notTwo == 0) {
         ((void (*)(int, int, int))fn_801AFAB8)(lbl_8055E628, lbl_8055E624[0], lbl_8055E624[1]);
     }
-
     fn_801AE79C(mode);
-
     if (mode == 1) {
-        finalSorted = (int *)((char *)base + 0x408);
-        for (finalIndex = 0; finalIndex < area[0x3c0 / 4]; finalIndex++, finalSorted++) {
+        char *tbl = base + 0x40;
+        finalSorted = (int *)(tbl + 0x3C8);
+        for (finalIndex = 0; finalIndex < *(int *)(tbl + 0x3C0); finalSorted++, finalIndex++) {
             int index = *finalSorted;
             float itemValue = fn_801AF9EC(index, 0);
             fn_801B3208(index, finalIndex, itemValue);
