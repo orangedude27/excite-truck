@@ -5875,13 +5875,14 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
     OSRestoreInterrupts(token);
 }
 
-extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32 arg0, s32 arg1) {
-    s32 valid = 0;
-    if (arg1 >= 0 && arg1 < 4)
-        valid = 1;
-    if (valid == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x329, lbl_803268E4, arg1, 0, 4);
-    return *(f32 *)(arg0 + arg1 * 4 + 0x470);
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32 self, s32 auxBus) {
+    /* Get this sequence player's FX send level for an aux bus (0..3). */
+    s32 isValidBus = 0;
+    if (auxBus >= 0 && auxBus < 4)
+        isValidBus = 1;
+    if (isValidBus == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x329, lbl_803268E4, auxBus, 0, 4);
+    return *(f32 *)(self + auxBus * 4 + 0x470);
 }
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC8D8(void *self, s32 bus, f32 value) {
