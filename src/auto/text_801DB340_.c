@@ -22,7 +22,7 @@ extern int lbl_8055E99C;
 extern int lbl_8055E9A0;
 extern unsigned short lbl_80442708[];
 extern float lbl_804424B0[];
-extern int fn_801DB348(int, int, float *, int *);
+extern int fn_801DB348();
 extern float fn_801DB398(float grid[4][4], float, float);
 extern void *memset(void *, int, unsigned int);
 extern char lbl_803393B8[];
@@ -236,6 +236,7 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
 }
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
     float grid[4][4];
     float sp8;
