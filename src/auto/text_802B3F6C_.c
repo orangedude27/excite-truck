@@ -111,6 +111,8 @@ void fn_802B4004(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void *fn_802B4014(void *arg0) {
+    /* Find the first list element whose name matches lbl_8055CDF8 (via
+     * fn_802B3FC4) and whose check(&lbl_8055CE00 "rad") returns 1. */
     class Object {
     public:
         virtual void f0();
