@@ -126,6 +126,8 @@ extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
 #pragma small_data on
 extern "C" char lbl_8055B808[8];
+#define PATH_FORMAT_DIR_NAME lbl_8055B808  // "%s\\%.*s": a directory and a name cut at its '.'
+
 extern "C" const char lbl_8055B724[], lbl_8055B728[], lbl_8055B720[], lbl_8055B730[];
 extern "C" const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
 #pragma small_data off
@@ -420,9 +422,9 @@ extern "C" void fn_80211D24(int arg0) {
     int v;
     s32 *pp, *p;
     int j;
+    int flag;
     Obj **q;
     unsigned char *row;
-    int flag;
     int i;
     fn_802ECC18(0);
     flag = (arg0 == 0);
@@ -640,7 +642,7 @@ extern "C" s32 fn_80212338(void) { return 0; }
 
 #pragma dont_inline on
 extern "C" void fn_80212340(void *arg0) {
-    long first = *(long *)((char *)arg0 + 0x10);
+    s32 first = *(s32 *)((char *)arg0 + 0x10);
     s32 *p = (s32 *)arg0;
     if (first != 0) {
         fn_8022E4BC(first);
@@ -1886,7 +1888,7 @@ extern "C" void fn_80214D50(s32 arg0) {
 #pragma small_data on
 extern "C" s32 fn_80214E10(s32 arg0, s32 arg1, s32 arg2) {
     s32 stack[47];
-    s32 *ctx, *values, *stackBase;
+    s32 *ctx, *values;
     s32 state, zero;
     s32 context0, context2, context3, context4;
     s32 value0, value1, value2, value3, value4;
@@ -1901,27 +1903,26 @@ extern "C" s32 fn_80214E10(s32 arg0, s32 arg1, s32 arg2) {
 
     values = lbl_80490510;
     value0 = values[0];
-    ctx = lbl_802F9EB8;
-    context0 = ctx[0];
-    zero = 0;
     value1 = values[1];
     value2 = values[2];
     value3 = values[3];
     value4 = values[4];
+    ctx = lbl_802F9EB8;
+    context0 = *ctx;
     context2 = ctx[2];
     context3 = ctx[3];
     context4 = ctx[4];
+    zero = 0;
     labelD404 = (s32)lbl_8033D404;
     labelB820 = (s32)&lbl_8055B820;
     labelB824 = (s32)&lbl_8055B824;
     labelB830 = (s32)&lbl_8055B830;
     labelB860 = (s32)&lbl_8055B860;
-    stackBase = stack;
 
     stack[28] = labelD3F8;
     stack[6] = labelB820;
     stack[7] = 2;
-    stack[8] = (s32)stackBase;
+    stack[8] = (s32)&stack[0];
     stack[9] = zero;
     stack[10] = zero;
     stack[11] = labelB820;
@@ -1959,7 +1960,7 @@ extern "C" s32 fn_80214E10(s32 arg0, s32 arg1, s32 arg2) {
     stack[44] = value3;
     stack[45] = value4;
     stack[1] = context0;
-    stack[2] = (s32)(stackBase + 6);
+    stack[2] = (s32)&stack[6];
     stack[3] = context2;
     stack[4] = context3;
     stack[5] = context4;
