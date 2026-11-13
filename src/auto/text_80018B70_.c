@@ -507,7 +507,8 @@ s32 fn_800194CC(void) {
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-int fn_80018FB4(s32 arg0) {
+/* Look up the MAX_EXCITE_POINTS unlockable value in the unlockable table. */
+int fn_80018FB4(s32 unused) {
     register s32 offset;
     register const char *target;
     register s32 i;
