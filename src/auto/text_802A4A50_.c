@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
+typedef struct V3A70E4 { f32 x, y, z; } V3A70E4;
 extern f32 PSQUATMultiply(void *, void *);
 extern f32 PSVECDotProduct(f32 *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
@@ -1923,13 +1924,13 @@ struct Obj802A5878 {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_802A70E4(void *object, float *input) {
-    s32 index = *(s32 *)((u8 *)object + 4);
     float *data = *(float **)object;
+    s32 index = *(s32 *)((u8 *)object + 4);
     float z, y, x;
     float *slot;
     x = input[0]; y = input[1]; z = input[2];
-    data[index * 3] = x;
     slot = data + index * 3;
+    data[index * 3] = x;
     slot[1] = y;
     slot[2] = z;
     ++*(s32 *)((u8 *)object + 4);
