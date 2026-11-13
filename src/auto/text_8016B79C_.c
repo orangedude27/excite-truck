@@ -839,19 +839,20 @@ void fn_8016CDE0(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" s32 fn_8016CDF8(void *arg0, void *obj) {
+extern "C" s32 fn_8016CDF8(void *unused, void *namedObject) {
+    /* Counts sequential named entries by probing the object's lookup with a base name, then numbered names, until lookup fails. */
     struct Obj {
         virtual void v0();
         virtual int v1(char *);
     };
-    char sp8[0x1E];
-    s32 count = 0;
-    fn_801345D8(sp8, 0x1E, lbl_8033072C);
-    while (((Obj *)obj)->v1(sp8) != 0) {
-        count++;
-        fn_801345D8(sp8, 0x1E, lbl_803308A0, count);
+    char nameBuffer[0x1E];
+    s32 nameCount = 0;
+    fn_801345D8(nameBuffer, 0x1E, lbl_8033072C);
+    while (((Obj *)namedObject)->v1(nameBuffer) != 0) {
+        nameCount++;
+        fn_801345D8(nameBuffer, 0x1E, lbl_803308A0, nameCount);
     }
-    return count;
+    return nameCount;
 }
 #pragma cplusplus reset
 void fn_8016CE94(void *arg0, f32 arg1) {
