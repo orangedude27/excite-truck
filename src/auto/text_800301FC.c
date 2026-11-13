@@ -124,19 +124,21 @@ void TRKConstructEvent(void) {
 void TRKGetNextEvent(void *arg0, void *restoreContext) {
     u8 context[0x2D0];
     s32 value;
+    u32 addr;
+    void (*fn)(void);
     *(volatile u16 *)0xCC00500A = (*(volatile u16 *)0xCC00500A & ~0xA0) | 8;
     OSClearContext(context);
     OSSetCurrentContext(context);
-    if (lbl_8055D6E0 != 0) {
-        if (lbl_8055D6AC == 0) {
-            value = lbl_8055D6DC;
-            lbl_8055D6AC = 1;
-            if (value != 0)
-                TRKInitializeEventQueue();
-            else
-                ((void (*)(void))lbl_8055D6E0)();
-            lbl_8055D6AC = 0;
+    addr = (u32)lbl_8055D6E0;
+    if (addr != 0 && lbl_8055D6AC == 0) {
+        value = lbl_8055D6DC;
+        lbl_8055D6AC = 1;
+        if (value != 0) TRKInitializeEventQueue();
+        else {
+            fn = (void (*)(void))addr;
+            fn();
         }
+        lbl_8055D6AC = 0;
     }
     OSClearContext(context);
     OSSetCurrentContext(restoreContext);
@@ -159,17 +161,16 @@ extern s32 lbl_8055D6D0, lbl_8055D6D4;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void TRKInitializeNub(void) {
-    s64 duration = 0;
-    s64 now;
-    s64 start;
-    s64 elapsed;
-    s64 deadline;
-    u32 status;
-    u32 control;
+    s64 now = 0;
     s32 state = 0;
-
+    s64 duration = 0;
+    s64 start = 0;
+    s64 elapsed = 0;
+    s64 deadline = 0;
+    u32 status = 0;
+    u32 control = 0;
+    u32 tmp;
     goto continuation;
-
 measure:
     control = *(volatile u32 *)0xCD006C00;
     control = (control & ~0x20) | 0x20;
@@ -179,27 +180,28 @@ measure:
     control = *(volatile u32 *)0xCD006C00;
     *(volatile u32 *)0xCD006C00 = (control & ~1U) | 1U;
     do {
-        status = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
-        control = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
+        tmp = *(volatile u32 *)0xCD006C08;
+        status = tmp & 0x7FFFFFFFU;
+        tmp = *(volatile u32 *)0xCD006C08;
+        control = tmp & 0x7FFFFFFFU;
     } while (status == control);
-
     start = (s64)OSGetTime();
     control = *(volatile u32 *)0xCD006C00;
     *(volatile u32 *)0xCD006C00 = (control & ~2U) | 2U;
     control = *(volatile u32 *)0xCD006C00;
     *(volatile u32 *)0xCD006C00 = (control & ~1U) | 1U;
     do {
-        status = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
-        control = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
+        tmp = *(volatile u32 *)0xCD006C08;
+        status = tmp & 0x7FFFFFFFU;
+        tmp = *(volatile u32 *)0xCD006C08;
+        control = tmp & 0x7FFFFFFFU;
     } while (status == control);
-
     now = (s64)OSGetTime();
     control = *(volatile u32 *)0xCD006C00;
     elapsed = now - start;
     *(volatile u32 *)0xCD006C00 = control & ~2U;
     control = *(volatile u32 *)0xCD006C00;
     *(volatile u32 *)0xCD006C00 = control & ~1U;
-
     if (elapsed > (s64)((((u64)(u32)lbl_8055D6D0 << 32) | (u32)lbl_8055D6D4) -
                        (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4))) {
         duration = (s64)(((u64)(u32)lbl_8055D6C0 << 32) | (u32)lbl_8055D6C4);
@@ -215,7 +217,6 @@ measure:
         goto continuation;
     }
     state = 0;
-
 continuation:
     if (state == 0) {
         goto measure;
@@ -457,25 +458,27 @@ void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma use_lmw_stmw reset
 
 #pragma pop
-void TRKProcessInput(void *arg0, s32 arg1) {
-    s32 irq;
+/* Enqueue a TRK message buffer onto the specified input queue, updating the
+ * queue head/tail lists (lbl_8035BEA0/lbl_8035BF20) with interrupts disabled. */
+void TRKProcessInput(void *buffer, s32 queueId) {
+    s32 interrupts;
     s32 index;
-    void *node;
-    irq = OSDisableInterrupts();
-    TRKReleaseBuffer(arg0);
-    index = arg1 * 4;
-    node = *(void **)((u8 *)&lbl_8035BEA0 + index);
-    *(void **)arg0 = node;
-    *(void **)((u8 *)arg0 + 4) = 0;
-    if (node != 0) {
-        *(void **)((u8 *)*(void **)((u8 *)&lbl_8035BEA0 + index) + 4) = arg0;
-        *(void **)((u8 *)&lbl_8035BEA0 + index) = arg0;
+    void *head;
+    interrupts = OSDisableInterrupts();
+    TRKReleaseBuffer(buffer);
+    index = queueId * 4;
+    head = *(void **)((u8 *)&lbl_8035BEA0 + index);
+    *(void **)buffer = head;
+    *(void **)((u8 *)buffer + 4) = 0;
+    if (head != 0) {
+        *(void **)((u8 *)*(void **)((u8 *)&lbl_8035BEA0 + index) + 4) = buffer;
+        *(void **)((u8 *)&lbl_8035BEA0 + index) = buffer;
     } else {
-        *(void **)((u8 *)&lbl_8035BEA0 + index) = arg0;
-        *(void **)((u8 *)&lbl_8035BF20 + index) = arg0;
+        *(void **)((u8 *)&lbl_8035BEA0 + index) = buffer;
+        *(void **)((u8 *)&lbl_8035BF20 + index) = buffer;
     }
-    *(s32 *)((u8 *)arg0 + 0xC) = arg1;
-    OSRestoreInterrupts(irq);
+    *(s32 *)((u8 *)buffer + 0xC) = queueId;
+    OSRestoreInterrupts(interrupts);
 }
 
 void TRKGetInput(void) {
@@ -701,9 +704,9 @@ void InitMetroTRKCommTable(void) {
         ((TRKCommFn)lbl_8055D720)(e, lbl_8055D714);
         DCFlushRangeNoSync(e[0], 0x480);
     }
-    lbl_8055D6F8 = (lbl_8055D6F8 + 1) % 3;
-    lbl_8055D6F4 = (lbl_8055D6F4 + 1) % 3;
-    lbl_8055D6F0 = (lbl_8055D6F0 + 1) % 3;
+    lbl_8055D6F8 = ((u32)lbl_8055D6F8 + 1) % 3;
+    lbl_8055D6F4 = ((u32)lbl_8055D6F4 + 1) % 3;
+    lbl_8055D6F0 = ((u32)lbl_8055D6F0 + 1) % 3;
 }
 
 void AXRegisterAuxACallback(void *arg0, void *arg1) {
@@ -746,13 +749,17 @@ void *gdev_cc_initialize(void) {
     s32 next;
     s32 newOff;
     s32 oldOff;
+    void *newPtr;
+    void *oldPtr;
     old = lbl_8055D748;
     next = (old + 1) & 1;
     newOff = next * 0x300;
     lbl_8055D748 = next;
     oldOff = old * 0x300;
-    lbl_8055D744 = (u8 *)&lbl_8035E820 + newOff;
-    return (u8 *)&lbl_8035E820 + oldOff;
+    newPtr = (u8 *)&lbl_8035E820 + newOff;
+    lbl_8055D744 = newPtr;
+    oldPtr = (u8 *)&lbl_8035E820 + oldOff;
+    return oldPtr;
 }
 
 extern void DCFlushRange(void *, u32);
@@ -1097,10 +1104,8 @@ void CircleBufferInitialize(u32 arg0) {
     if (ring >= lbl_8055D758) ring = 0;
     if (lbl_8055D750 >= start && lbl_8055D750 < start + 0x12) lbl_8055D750 = ring;
     lbl_8055D754 = ring;
-    CircleBufferReadBytes((u32)(base + 0x5E0),
-        (u32)(base + 0x8E0 + lbl_8055D788 * 0x180),
-        ptrs);
-    lbl_8055D788++;
+    CircleBufferReadBytes((u32)(base + 0x5E0), (u32)(base + 0x8E0 + lbl_8055D788 * 0x180), ptrs);
+    ++lbl_8055D788;
     if (lbl_8055D75C == 1) lbl_8055D788 %= 3;
     else {
         lbl_8055D788 &= 1;
@@ -1110,7 +1115,7 @@ void CircleBufferInitialize(u32 arg0) {
     *(s32 *)(base + 0x30) = fn_800328E8();
     profile = __AXGetCurrentProfile();
     if (profile != 0) {
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < 7; ++i) {
             profile[0] = base[i * 8];
             profile[1] = base[i * 8 + 1];
             profile[2] = base[i * 8 + 2];
@@ -1213,21 +1218,22 @@ void fn_80032004(void) {
         void (*unk30)(void);
         void (*unk34)(void);
     } *task = (void *)lbl_8035FB80;
-    task->unk4 = 0;
-    lbl_8055D770 = 0;
+    u32 zero = 0;
+    task->unk4 = zero;
+    lbl_8055D770 = zero;
     task->unkC = lbl_802FFD60;
     task->unk10 = lbl_80558DE4;
-    task->unk14 = 0;
+    task->unk14 = zero;
     task->unk18 = lbl_8035FBD0;
     task->unk1C = 0x2000;
-    task->unk20 = 0;
+    task->unk20 = zero;
     task->unk24 = lbl_80558DE0;
     task->unk26 = lbl_80558DE2;
     task->unk28 = __AXDSPInitCallback_80031F90;
     task->unk2C = fn_80031F9C;
     task->unk30 = __AXDSPDoneCallback;
     task->unk34 = fn_80032000;
-    lbl_8055D76C = 0;
+    lbl_8055D76C = zero;
     OSInitThreadQueue(&lbl_8055D760);
     if (DSPReset() == 0) DSPInit();
     DSPAssertInt(lbl_8035FB80);
