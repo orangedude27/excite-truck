@@ -62,14 +62,15 @@ typedef struct { char *name; int state; } UnkStruct_8020A860;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void *fn_8020A6AC(void *arg0) {
+/* Find a 0x24-byte voice entry in lbl_804892D0 by name (case-insensitive); return its pointer or a default label. */
+void *fn_8020A6AC(void *name) {
     char *entry = lbl_804892D0;
-    int i = 0;
-    while (i < (int)lbl_8055EE08) {
-        if (stricmp((const char *)arg0, entry) == 0)
+    int index = 0;
+    while (index < (int)lbl_8055EE08) {
+        if (stricmp((const char *)name, entry) == 0)
             return entry;
         entry += 0x24;
-        i++;
+        index++;
     }
     return lbl_8033C338;
 }
