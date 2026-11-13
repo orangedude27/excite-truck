@@ -1378,6 +1378,7 @@ u32 VIGetNextField(void)
 
 u32 VIGetCurrentLine(void)
 {
+    /* Read current half-line under interrupt disable, wrap by timing nhlines, and return the line number. */
     u32 halfLine;
     VITiming *tm;
     BOOL enabled;
