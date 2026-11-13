@@ -1563,6 +1563,9 @@ void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
     *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (unsigned char)fmt);
 }
 #pragma pop
+// Push the vertex attribute table (VAT) to the command processor: every vertex
+// format whose bit is set in GXData's dirty byte gets its three VAT group
+// registers reloaded through the FIFO, and the dirty byte is cleared.
 void __GXSetVAT(void) {
     unsigned int *ptr;
     unsigned int *data;
@@ -1570,27 +1573,21 @@ void __GXSetVAT(void) {
     unsigned int mask;
 
     data = __GXData;
-    ptr = data;
+    ptr = data; // walks one word per format: format i's word is ptr[off / 4]
     i = 0;
-    mask = *(unsigned char *)((char *)data + 0x5FB);
+    mask = GX_VAT_DIRTY(data);
     do {
         if (mask & 1) {
-            *(volatile unsigned char *)0xCC008000 = 8;
-            *(volatile unsigned char *)0xCC008000 = i | 0x70;
-            *(volatile unsigned int *)0xCC008000 = ptr[0x1C / 4];
-            *(volatile unsigned char *)0xCC008000 = 8;
-            *(volatile unsigned char *)0xCC008000 = i | 0x80;
-            *(volatile unsigned int *)0xCC008000 = ptr[0x3C / 4];
-            *(volatile unsigned char *)0xCC008000 = 8;
-            *(volatile unsigned char *)0xCC008000 = i | 0x90;
-            *(volatile unsigned int *)0xCC008000 = ptr[0x5C / 4];
+            GX_CP_LOAD_REG(GX_CP_REG_VAT_GROUP0 | i, GX_VAT_WORD(ptr, 0x1C)); // vatA[i]
+            GX_CP_LOAD_REG(GX_CP_REG_VAT_GROUP1 | i, GX_VAT_WORD(ptr, 0x3C)); // vatB[i]
+            GX_CP_LOAD_REG(GX_CP_REG_VAT_GROUP2 | i, GX_VAT_WORD(ptr, 0x5C)); // vatC[i]
         }
         mask >>= 1;
         ptr++;
         i++;
     } while (mask);
-    *(volatile unsigned char *)0xCC008000 = 0;
-    *(unsigned char *)((char *)data + 0x5FB) = 0;
+    WGPIPE.c = GX_FIFO_CMD_NOOP;
+    GX_VAT_DIRTY(data) = 0;
 }
 
 void GXSetArray(s32 arg0, unsigned int arg1, unsigned int arg2) {
