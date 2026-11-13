@@ -1995,17 +1995,24 @@ extern "C" void fn_80147F30(s32 color, s32 param1, s32 layer,
     fn_80011630(color, param1, layer, transformedX, transformedY, z, scaleX,
                 scaleY, rot, param7, param8, param9, param10);
 }
-extern "C" void fn_80147FF0(void * __restrict arg0, s32 arg1) {
-    f32 temp_f31;
-    f32 temp_f30;
-    f32 v10 = *(f32 *)((u8 *)arg0 + 0x10);
-    s32 v0c = *(s32 *)((u8 *)arg0 + 0xC);
-    temp_f30 = fn_801452A0(v0c, v10);
-    temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    f32 x = *(f32 *)((u8 *)arg0 + 4);
-    s32 id = *(s32 *)((u8 *)arg0 + 0xC);
-    f32 temp_f1 = ((f32 (*)(s32, f32))fn_801451DC)(id, x);
-    fn_80011278(arg1, temp_f1, temp_f31, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
+/* Draw the 9-slice frame the style describes: fn_80011278 lays the default
+ * art set's nine pictures (four corners, four edges, centre) over the box,
+ * tinted with the packed colour `color`.  The width is unscaled by the
+ * aspect ratio when the style's 0x20 placement flag is set, and the position
+ * goes through the letterbox/widescreen transforms (fn_801451DC slides x
+ * toward the screen edge, fn_801452B4 flips y to the drawer's origin). */
+extern "C" void fn_80147FF0(void * __restrict arg0, s32 color) {
+    DrawStyle80147BD0 *style = (DrawStyle80147BD0 *)arg0;
+    f32 screenY;
+    f32 scaledWidth;
+    f32 width = style->width;
+    s32 mode = style->mode;
+    scaledWidth = fn_801452A0(mode, width);
+    screenY = fn_801452B4(style->y);
+    f32 x = style->x;
+    s32 placeMode = style->mode;
+    f32 screenX = ((f32 (*)(s32, f32))fn_801451DC)(placeMode, x);
+    fn_80011278(color, screenX, screenY, scaledWidth, style->height);
 }
 
 extern "C" void fn_80011280(s32, s32, f64, f64, f32, f32);
