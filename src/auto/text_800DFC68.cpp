@@ -299,6 +299,15 @@ extern "C" void SetAnimationEnable__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTra
 }
 #pragma use_lmw_stmw reset
 
+namespace nw4hbm { namespace lyt {
+    /* Picture pane: the last of its members are the four corner colors of the
+     * quad it draws, indexed by the vertex-color accessors below. */
+    struct Picture {
+        u8 unk_0[0xE4];
+        nw4hbm::ut::Color vtxColor[VERTEXCOLOR_NUM]; /* 0xE4 */
+    };
+} }
+
 /* Gets one of the picture's four vertex colors (0xE4-based variant), asserting the index is in range. */
 extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl_800E0238(unsigned char* out, const void* self, unsigned long idx) {
     if (idx >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0x168, lbl_80320C60);
