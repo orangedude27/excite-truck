@@ -3400,6 +3400,7 @@ void fn_8011C120(s32 arg0) {
 }
 
 #pragma dont_inline on
+/* Try to acquire a lock/state object: if valid and unlocked (state==1), set busy, increment the use count, and return whether it is now active. */
 u32 fn_8011C1E0(s32 arg0, void *arg1) {
     BOOL enabled;
     s32 temp_r4;
