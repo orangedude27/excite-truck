@@ -253,15 +253,16 @@ test:
 }
 
 void fn_8020268C(void) {
-    int saved;
-    unsigned int flags = *(unsigned int *)((char *)fn_801E87A8() + 16);
-    int arg = 2;
-    if ((flags >> 1) & 1) arg = 1;
-    saved = fn_802C9C58(arg);
-    if (lbl_8055ECCC != -1) { fn_802C7A44(); fn_802C7040(lbl_8055ECCC); fn_802C7A50(); }
+    /* Draw the two cached model handles (if set) in the mode selected by the current frame flags, restoring the previous draw mode. */
+    int savedMode;
+    unsigned int frameFlags = *(unsigned int *)((char *)fn_801E87A8() + 16);
+    int drawMode = 2;
+    if ((frameFlags >> 1) & 1) drawMode = 1;
+    savedMode = fn_802C9C58(drawMode);
+    if (sPrimaryModelHandle != -1) { fn_802C7A44(); fn_802C7040(sPrimaryModelHandle); fn_802C7A50(); }
     fn_802C9C58(0);
-    if (lbl_8055ECD0 != -1) { fn_802C7A44(); fn_802C7040(lbl_8055ECD0); fn_802C7A50(); }
-    fn_802C9C58(saved);
+    if (sSecondaryModelHandle != -1) { fn_802C7A44(); fn_802C7040(sSecondaryModelHandle); fn_802C7A50(); }
+    fn_802C9C58(savedMode);
 }
 
 #pragma scheduling invalid_target
