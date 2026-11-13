@@ -117,6 +117,7 @@ void fn_80177A18(void) {
     } while (var_r31 < 4);
 }
 
+/* Update sound/request state: clear pending state when conditions are met, run one-shot init on enter, and reset to idle. */
 void fn_80177A54(void) {
     if (lbl_8055E3C0 == 2 && fn_801CF064() != 0 && fn_8018FD38() != 0) {
         lbl_8055E3C0 = 0;
@@ -136,6 +137,96 @@ void fn_80177A54(void) {
     }
     lbl_8055E3C0 = 0;
 }
+
+void fn_80177AE4(int arg0, int arg1) {
+    extern unsigned char lbl_80433880[];
+    extern float lbl_80561B4C;
+    extern float lbl_8055E3C8;
+    unsigned char *base = lbl_80433880;
+    float f1 = *(float *)(base + 0x100);
+    float fsum = lbl_80561B4C + f1;
+    int i;
+    unsigned char *dst;
+    unsigned char *src;
+    (void)arg1;
+    if ((signed char)base[0] == 0) return;
+    if (lbl_8055E3C8 > fsum) return;
+    if (lbl_8055E3C8 < f1) return;
+    if (arg0 == 0) return;
+    if ((signed char)base[0x738] == 0) return;
+    dst = base - 1;
+    src = base + 0x107;
+    for (i = 0; i < 0x80; i++) {
+        unsigned char a = src[1];
+        unsigned char b = *(src += 2);
+        dst[1] = a;
+        *(dst += 2) = b;
+    }
+    *(float *)(base + 0x100) = *(float *)(base + 0x208);
+    *(int *)(base + 0x104) = *(int *)(base + 0x20C);
+    dst = base + 0x107;
+    src = base + 0x20F;
+    for (i = 0; i < 0x80; i++) {
+        unsigned char a = src[1];
+        unsigned char b = *(src += 2);
+        dst[1] = a;
+        *(dst += 2) = b;
+    }
+    *(float *)(base + 0x208) = *(float *)(base + 0x310);
+    *(int *)(base + 0x20C) = *(int *)(base + 0x314);
+    dst = base + 0x20F;
+    src = base + 0x317;
+    for (i = 0; i < 0x80; i++) {
+        unsigned char a = src[1];
+        unsigned char b = *(src += 2);
+        dst[1] = a;
+        *(dst += 2) = b;
+    }
+    *(float *)(base + 0x310) = *(float *)(base + 0x418);
+    *(int *)(base + 0x314) = *(int *)(base + 0x41C);
+    dst = base + 0x317;
+    src = base + 0x41F;
+    for (i = 0; i < 0x80; i++) {
+        unsigned char a = src[1];
+        unsigned char b = *(src += 2);
+        dst[1] = a;
+        *(dst += 2) = b;
+    }
+    *(float *)(base + 0x418) = *(float *)(base + 0x520);
+    *(int *)(base + 0x41C) = *(int *)(base + 0x524);
+    dst = base + 0x41F;
+    src = base + 0x527;
+    for (i = 0; i < 0x80; i++) {
+        unsigned char a = src[1];
+        unsigned char b = *(src += 2);
+        dst[1] = a;
+        *(dst += 2) = b;
+    }
+    *(float *)(base + 0x520) = *(float *)(base + 0x628);
+    *(int *)(base + 0x524) = *(int *)(base + 0x62C);
+    dst = base + 0x527;
+    src = base + 0x62F;
+    for (i = 0; i < 0x80; i++) {
+        unsigned char a = src[1];
+        unsigned char b = *(src += 2);
+        dst[1] = a;
+        *(dst += 2) = b;
+    }
+    *(float *)(base + 0x628) = *(float *)(base + 0x730);
+    *(int *)(base + 0x62C) = *(int *)(base + 0x734);
+    dst = base + 0x62F;
+    src = base + 0x737;
+    for (i = 0; i < 0x80; i++) {
+        unsigned char a = src[1];
+        unsigned char b = *(src += 2);
+        dst[1] = a;
+        *(dst += 2) = b;
+    }
+    *(float *)(base + 0x730) = *(float *)(base + 0x838);
+    *(int *)(base + 0x734) = *(int *)(base + 0x83C);
+    memset(base + 0x738, 0, 0x108);
+}
+
 #pragma dont_inline off
 
 #pragma cplusplus on
@@ -289,16 +380,14 @@ void fn_80177F40(void) {
     extern int lbl_8055E488;
     extern float lbl_80561B50, lbl_80561B54, lbl_80561B58, lbl_80561B5C;
     char *base = (char *)lbl_80430590;
+    unsigned active;
     unsigned char saved;
-    int active;
     unsigned char flag;
     int other;
-    int mask;
 
     fn_80176A6C();
     fn_80177A54();
-    mask = (int)(-(int)lbl_8055E3BD | lbl_8055E3BD) >> 31;
-    lbl_8055E458 = (void *)(((int)lbl_8055E458 + 1) & ~mask);
+    lbl_8055E458 = (void *)(((int)lbl_8055E458 + 1) & ~((int)(-(int)lbl_8055E3BD | lbl_8055E3BD) >> 31));
     fn_8026C014(1);
     lbl_8055E45D = lbl_8055E45C;
     lbl_8055E45F = lbl_8055E45E;
@@ -315,11 +404,11 @@ void fn_80177F40(void) {
     fn_801D2214();
     fn_8020C59C();
     fn_801DEFE0();
-    if (flag != 0) fn_801EA1F0();
+    if (flag) fn_801EA1F0();
     other = fn_801B526C();
     if (other != 0 || flag == 0) {
-        int i, off, zero, cur;
         float *src, *dst;
+        int i, off, zero, cur;
         float scale = lbl_80561B50;
         dst = (float *)(base + 0x170);
         src = (float *)(base + 0x44);
@@ -349,12 +438,12 @@ void fn_80177F40(void) {
         fn_80177EE4();
         fn_8017FF4C(lbl_80561B60);
         fn_801778C0();
-        if (other == 0) fn_801E22D0(base + 0x3B30, lbl_8055E468);
+        if (!other) fn_801E22D0(base + 0x3B30, lbl_8055E468);
         fn_80177E14();
-        i = 0;
         off = 0;
+        i = 0;
         zero = 0;
-        while (i < lbl_8055E438) {
+        while (lbl_8055E438 > i) {
             void **obj = *(void ***)((char *)lbl_8055E434 + off);
             char *r = ((char *(*)(void **))(*(char ***)obj)[0x3C / 4])(obj);
             if (r != 0) *(int *)(r + 0x1E4) = zero;
@@ -1359,21 +1448,20 @@ void *fn_80179824(void) {
     extern void fn_801E1EA4();
     extern void fn_80176C0C();
     extern int lbl_8055E440;
-    extern void *lbl_8055E444;
     extern float lbl_8055E460;
+    extern void *lbl_8055E444;
     extern float lbl_80561B6C;
     extern float lbl_8055E3C8;
     int *tbl = lbl_80430590;
-    char *p = (char *)lbl_8055E450;
+    register char *p = (char *)lbl_8055E450;
     char *arg = p + 0x2ee8;
     char *q;
     int *e;
-    int i, j, k;
-    float d;
+    int i, j;
     *(int *)(p + 0x398) = lbl_8055E448;
     *(int *)(p + 0x394) = lbl_8055E440;
-    *(int *)(p + 0x384) = tbl[0];
     *(int *)(p + 0x388) = tbl[1];
+    *(int *)(p + 0x384) = tbl[0];
     *(int *)(p + 0x38c) = tbl[2];
     *(int *)(p + 0x390) = tbl[3];
     if (fn_801CF050() == 0 || (int)fn_801781C0(fn_8026A368(0)) != 0 || fn_801B526C() != 0) {
@@ -1388,25 +1476,27 @@ void *fn_80179824(void) {
         e += 2;
     }
     fn_80206550((int)lbl_8055E444);
-    d = lbl_8055E460 - lbl_80561B6C;
-    *(float *)p = lbl_80561B60 * d + lbl_8055E3C8;
-    for (j = 0, k = 0; j < lbl_8055E438; j++, k += 4) {
-        void **o = *(void ***)((char *)lbl_8055E434 + k);
+    *(float *)p = lbl_80561B60 * (lbl_8055E460 - lbl_80561B6C) + lbl_8055E3C8;
+    for (i = 0, j = 0; i < lbl_8055E438; i++, j += 4) {
+        void **o = *(void ***)((char *)lbl_8055E434 + j);
         ((void (*)(void *, void *))(((void **)*o)[10]))(o, arg);
     }
     fn_801B2D28(p);
     fn_801CEEC8(p);
     fn_801B848C(p);
-    *(int *)(p + 0x57c) = tbl[12];
-    *(int *)(p + 0x580) = tbl[13];
-    *(float *)(p + 0x584) = ((float *)tbl)[14];
-    *(float *)(p + 0x588) = ((float *)tbl)[15];
-    *(float *)(p + 0x58c) = ((float *)tbl)[16];
+    {
+        int *t = tbl + 12;
+        *(int *)(p + 0x57c) = t[0];
+        *(int *)(p + 0x580) = t[1];
+        *(float *)(p + 0x584) = ((float *)t)[2];
+        *(float *)((unsigned short)p + 0x588) = ((float *)t)[3];
+        *(float *)(p + 0x58c) = ((float *)t)[4];
+    }
     fn_801E1EA4(p);
     {
         float *s = (float *)(tbl + 17);
-        float *dd = (float *)(p + 0xdb4);
-        for (i = 0; i < 75; i++) dd[i] = s[i];
+        float *d = (float *)(p + 0xdb4);
+        for (i = 0; i < 75; i++) d[i] = s[i];
     }
     fn_80176C0C(p + 0xee0, tbl + 0xb8);
     fn_80176C0C(p + 0x1ee4, tbl + 0x4b9);
@@ -1425,12 +1515,9 @@ void fn_80179AF4(void *arg0, int arg1) {
     extern float lbl_80561B6C;
     unsigned char *src = (unsigned char *)arg0;
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
-    float base;
-    float top;
-    float delta;
-    base = lbl_80561B6C;
-    top = lbl_8055E460;
-    delta = top - base;
+    float base = lbl_80561B6C;
+    float top = lbl_8055E460;
+    float delta = top - base;
     if ((float)__fabs((double)delta) <= *(float *)lbl_80558DC4) {
         struct WordPair *s = (struct WordPair *)(src + 0x70);
         struct WordPair *d = (struct WordPair *)dst;
