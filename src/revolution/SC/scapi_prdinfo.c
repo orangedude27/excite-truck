@@ -84,14 +84,15 @@ static inline BOOL SCGetProductAreaString(char* buf, u32 sz) {
     return __SCF1(lbl_805591E8, buf, sz);
 }
 
+/* Resolve the console's product area code by looking up the "AREA" string in the SC region table. */
 s8 SCGetProductArea(void) {
     s8 area;
     char name[4];
-    SCRegion* iter = (SCRegion*)lbl_8031B120;
+    SCRegion* region = (SCRegion*)lbl_8031B120;
 
     if (SCGetProductAreaString(name, sizeof(name))) {
-        for (; (area = iter->area) != -1; iter++) {
-            if (!strcmp(iter->name, name)) {
+        for (; (area = region->area) != -1; region++) {
+            if (!strcmp(region->name, name)) {
                 return area;
             }
         }
