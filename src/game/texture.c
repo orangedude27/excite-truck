@@ -278,14 +278,12 @@ int fn_802CA658(int arg0, int arg1) {
     signed char sp9 = 0;
     unsigned char sp8 = 0;
     int result;
-    register unsigned int check;
     result = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))fn_8012C370)(arg0, 0x54455820, &sp10, &spC, &sp9, &sp8);
     if (result != 0) {
         if ((result & 0x7F) != 0)
             fn_802E317C(lbl_8034B634, arg0, result);
-        check = sp10;
-        if (check != 0xF)
-            fn_802E317C(lbl_8034B658, arg0);
+        if (sp10 != 0xF)
+            fn_802E317C(lbl_8034B658, arg0, sp10);
         if (sp8 != 0)
             fn_802CA57C((void *)result, arg0, 0, arg1);
     }
@@ -1652,22 +1650,22 @@ char fn_802CC744(void) {
     return lbl_8055D07D;
 }
 
-#pragma scheduling invalid_target
+#pragma peephole off
 int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
-
+#pragma peephole reset
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802CC770(void) {
-int entry;
+char *entry;
 int slotOffset;
 int offset;
 int i;
 float f4C;
 float f40;
-double magic;
+float magic;
 float f50;
 i = 0;
 offset = 0;
@@ -1677,7 +1675,7 @@ f40 = lbl_80564F40;
 magic = lbl_80564F38;
 f50 = lbl_80564F50;
 do {
-entry = lbl_8055FCB0 + offset;
+entry = (char *)lbl_8055FCB0 + offset;
 if (*(int *)entry > 0 && *(int *)(entry + 0x3C) != 0) {
 if (*(int *)(entry + 0x48) > 0) {
 union { double value; unsigned int words[2]; } converted;
@@ -1689,7 +1687,7 @@ ret = fn_802CB3FC(i);
 converted.words[0] = 0x43300000;
 converted.words[1] = (ret * 2) ^ 0x80000000;
 number = converted.value;
-convertedFloat = (float)(number - magic);
+convertedFloat = (float)number - magic;
 value = convertedFloat * *(float *)(entry + 0x38);
 value = value - f40;
 {
