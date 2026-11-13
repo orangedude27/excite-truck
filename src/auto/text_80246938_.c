@@ -1385,21 +1385,25 @@ void fn_80248BD0(void *arg0) {
     *(float *)((char *)arg0 + 0x20) = lbl_805638CC;
 }
 #pragma scheduling on
-void fn_80248C0C(void *arg0) {
-    unsigned char res;
-    float *fp = (float *)((char *)arg0 + 0x20);
+void fn_80248C0C(void *obj) {
+    /* Update a countdown/timer object: read a ready flag from fn_802E8690(obj+0x18) into +0x1C.
+       When ready, reset timer at +0x20 to 2.0f and disable UI element 0x1E; otherwise decrement
+       the timer by frame delta and enable UI element 0x1E. If the timer goes below 0, trigger
+       fn_80221F94(obj, 0). */
+    unsigned char ready;
+    float *timer = (float *)((char *)obj + 0x20);
 
-    res = fn_802E8690(*(s32 *)((char *)arg0 + 0x18));
-    *(unsigned char *)((char *)arg0 + 0x1C) = res;
-    if (res != 0) {
-        *fp = lbl_805638CC;
+    ready = fn_802E8690(*(s32 *)((char *)obj + 0x18));
+    *(unsigned char *)((char *)obj + 0x1C) = ready;
+    if (ready != 0) {
+        *timer = lbl_805638CC;
         fn_80214A9C(0x1E);
     } else {
-        *fp -= fn_80214D48();
+        *timer -= fn_80214D48();
         fn_80214AF0(0x1E);
     }
-    if (*fp < lbl_80558DC4[0]) {
-        fn_80221F94(arg0, 0);
+    if (*timer < lbl_80558DC4[0]) {
+        fn_80221F94(obj, 0);
     }
 }
 
