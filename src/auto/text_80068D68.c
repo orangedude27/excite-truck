@@ -7291,20 +7291,24 @@ u8 bta_hh_find_cb(u8 *bd_addr) {
     return i;
 }
 
-void bta_hh_clean_up_kdev(void *arg0) {
+/* Clean up a BTA HID host device control block: clear its callback index in
+ * lbl_803C0D48 (+0x214 indexed by dev_cb+0x16), release the buffer slot at +4
+ * via fn_800716F0, zero the 0x20-byte block, then restore state (+0x12), set
+ * flags/state byte at +0x1C to 1, and mark index (+0x16) as 0xFF. */
+void bta_hh_clean_up_kdev(void *dev_cb) {
     u8 index;
     u8 state;
 
-    index = *((u8 *)arg0 + 0x16);
+    index = *((u8 *)dev_cb + 0x16);
     if (index != 0xFF) {
         *(u8 *)((u32)lbl_803C0D48 + (u32)index + 0x214) = 0x10;
     }
-    state = *((u8 *)arg0 + 0x12);
-    fn_800716F0((u8 *)arg0 + 4);
-    memset(arg0, 0, 0x20);
-    *((u8 *)arg0 + 0x12) = state;
-    *((u8 *)arg0 + 0x1C) = 1;
-    *((u8 *)arg0 + 0x16) = 0xFF;
+    state = *((u8 *)dev_cb + 0x12);
+    fn_800716F0((u8 *)dev_cb + 4);
+    memset(dev_cb, 0, 0x20);
+    *((u8 *)dev_cb + 0x12) = state;
+    *((u8 *)dev_cb + 0x1C) = 1;
+    *((u8 *)dev_cb + 0x16) = 0xFF;
 }
 
 extern u8 lbl_803C0F78[];
