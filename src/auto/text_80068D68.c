@@ -15111,14 +15111,15 @@ BOOLEAN btsnd_hcic_auth_request(UINT16 handle) {
     return TRUE;
 }
 
+/* Send HCI Set Connection Encryption command for the given connection handle. */
 BOOLEAN btsnd_hcic_set_conn_encrypt(UINT16 handle, BOOLEAN enable) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 6;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0x13; p[9] = 4; p[10] = 3;
-    p[11] = handle; p[12] = handle >> 8; p[13] = enable;
-    btu_hcif_send_cmd(p);
+    u8 *command_buffer = (u8 *)GKI_getpoolbuf(2);
+    if (command_buffer == NULL) return FALSE;
+    *(u16 *)(command_buffer + 2) = 6;
+    *(u16 *)(command_buffer + 4) = 0;
+    command_buffer[8] = 0x13; command_buffer[9] = 4; command_buffer[10] = 3;
+    command_buffer[11] = handle; command_buffer[12] = handle >> 8; command_buffer[13] = enable;
+    btu_hcif_send_cmd(command_buffer);
     return TRUE;
 }
 
