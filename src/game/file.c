@@ -275,6 +275,7 @@ extern "C" void fn_802E3804(s32 arg0, const char *arg1, s32 arg2) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 void fn_802E3898(s32 arg0, const char *arg1, s32 *arg2) {
+    /* Reads up to *arg2 bytes into arg1 from the file handle's stream, updating *arg2 with bytes read or a negative error. */
     class V {
     public:
         virtual s32 f0(const char *, s32);
