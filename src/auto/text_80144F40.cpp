@@ -1816,10 +1816,16 @@ struct DrawStyle80147BD0 {
     f32 corner_y1; /* 0x24 */
 };
 
-extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
-    s32 temp[12];
-    ((void (*)(void *, s32, s32))fn_80147DC0)((u32 *)temp, arg0, arg1);
-    fn_801476D8((u32 *)temp, fn_80147C50(arg2, arg3, arg5), arg4);
+/* Draws one icon whose style is part-way between two: fills a temporary style
+ * by interpolating the one at style toward the one at target by t (fn_80147DC0
+ * copies the word at 0x00 and lerps the rest), interpolates the packed colour
+ * from color toward targetColor by the same t, and draws the result into the
+ * draw list given by drawList. */
+extern "C" void fn_80147BD0(DrawStyle80147BD0 *style, DrawStyle80147BD0 *target,
+                            u32 color, u32 targetColor, s32 drawList, f32 t) {
+    s32 record[12]; /* the DrawStyle80147BD0 built above */
+    ((void (*)(void *, s32, s32))fn_80147DC0)((u32 *)record, (s32)style, (s32)target);
+    fn_801476D8((u32 *)record, fn_80147C50(color, targetColor, t), drawList);
 }
 
 #pragma push
