@@ -911,6 +911,15 @@ struct ContestEntry {
     char pad24[4];
 };
 
+/* One entry of the goal table the manager keeps at +0xAF0C (count +0xAF10, stride 0xC):
+ * fn_8027C2B8 fills it from an "event_path" object of the "ep_career.val" (type 0) or
+ * "ep_chal.val" (type 1) list, fn_8027C26C finds it again by name. */
+struct EventPathRecord {
+    /* 0x00 */ long goalType;    /* 0 = career, 1 = challenge: which checks to run */
+    /* 0x04 */ long bracketId;   /* the path object's "bracket_name" attribute */
+    /* 0x08 */ void *pathObject; /* the "event_path" scene object holding its goals */
+};
+
 #pragma cplusplus on
 /* Fills one contest-event record: keeps the event id, the parent record's field and
  * the scene object it was read from, reads that object's "contest_name" attribute,
