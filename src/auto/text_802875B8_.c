@@ -584,6 +584,7 @@ s32 fn_80288208(s32 arg0){return lbl_8055F6C0+arg0*0x28;}
 extern char lbl_80348A80[];
 extern void fn_8028829C(void);
 extern void fn_80288218(int);
+/* Allocates and initializes the global object pool at lbl_804B3150 for fn_801EA994() entries of 0x160 bytes each, constructing elements with fn_8028829C and zeroing the storage. */
 void fn_80288218(int arg0) {
     int count = fn_801EA994();
     int size = count * 0x160;
