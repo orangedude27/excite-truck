@@ -642,7 +642,6 @@ void fn_802D86BC(void *arg0, int arg1) {
     }
     fn_80128670(copy);
 }
-#pragma unroll reset
 
 #pragma push
 #pragma use_lmw_stmw off
