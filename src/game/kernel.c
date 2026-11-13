@@ -9,6 +9,7 @@ extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, f
 extern float lbl_805650F0;
 extern int lbl_804DB780[];
 extern void DCStoreRange(void *, int);
+extern void DCFlushRange(void *, int);
 extern char lbl_8034CD48[];
 extern char lbl_8034CD30[];
 extern void fn_802E317C(const char *, ...);
