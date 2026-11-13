@@ -563,9 +563,9 @@ int fn_801F0AA0(void) {
     lbl_8055EBEC = fn_8012850C(0x9C0, lbl_8033A4D4);
     lbl_8055EBF0 = 0;
     value = lbl_80562F2C;
-
     offset = 0;
     count = 0;
+
     for (i = 0; i < 4; i++) {
         p = (int *)(lbl_8055EBEC + offset);
         *(char *)p = 0;
@@ -891,30 +891,33 @@ float fn_801F159C(void **arg0) {
 
 #pragma push
 #pragma processor 750
-int fn_801F15A8(void **arg0, int arg1) {
+int fn_801F15A8(void **tablePtr, int point) {
+    /* Find the index of the first 0x18-byte entry in (*tablePtr) whose value at
+     * +0x38 exceeds squared distance from point (fn_802C88E8) scaled by
+     * fn_801E88F0(-1)^2; returns count-1 if none match. */
     float scale;
     float threshold;
-    int offset;
-    unsigned long base;
-    int count;
-    int i;
+    int entryOffset;
+    unsigned long tableBase;
+    int entryCount;
+    int index;
 
     scale = fn_801E88F0(-1);
     scale = scale * scale;
-    threshold = fn_802C88E8(arg1);
+    threshold = fn_802C88E8(point);
     threshold = threshold * scale;
 
-    base = (unsigned long)*arg0;
-    i = 0;
-    count = *(int *)(base + 0xE8);
-    offset = 0;
-    while (i < count) {
-        if (threshold < *(volatile float *)(base + offset + 0x38))
-            return i;
-        offset += 0x18;
-        i++;
+    tableBase = (unsigned long)*tablePtr;
+    index = 0;
+    entryCount = *(int *)(tableBase + 0xE8);
+    entryOffset = 0;
+    while (index < entryCount) {
+        if (threshold < *(volatile float *)(tableBase + entryOffset + 0x38))
+            return index;
+        entryOffset += 0x18;
+        index++;
     }
-    return count - 1;
+    return entryCount - 1;
 }
 
 #define wheelmod_spin_forward lbl_80562F18  /* .sdata2: 1.0f, the wheels that are not mirrored */
