@@ -366,6 +366,11 @@ u32 fn_802E8D84(void) { return 1; }
  * rmemcard_recover_space - asks for len bytes of free NAND space and keeps
  *                         running the module's recovery requests until it has
  *                         them.
+ * rmemcard_async_state - the async NAND machine's state word; >= 2 means it is
+ *                         still busy, which is what rmemcard_wait_async pumps.
+ * rmemcard_timeout_msg - "rmemcard: (%s) timeout while blocking (%d ms)", the
+ *                         line rmemcard_wait_async logs when a pump exceeds the
+ *                         0xFA0 ms budget.
  */
 #define rmemcard_current_path   lbl_80560030
 #define rmemcard_out_of_space   lbl_8055D255
