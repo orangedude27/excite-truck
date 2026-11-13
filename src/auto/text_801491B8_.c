@@ -3076,19 +3076,21 @@ extern "C" s32 fn_80153D00(s32 arg0, s32 arg1) {
 #pragma cplusplus reset
 f32 fn_8015454C(void) { if(fn_800167F4()==2)return lbl_80561714; return lbl_80561718; }
 
-void fn_80154580(s32 arg0, void *arg1) {
-    s32 *p;
+/* BetaRace: log and copy each car's race score into the results buffer. */
+void fn_80154580(s32 raceData, void *results) {
+    s32 *carEntry;
     s32 i;
-    s32 *q = (s32 *)arg1;
+    s32 *resultEntry = (s32 *)results;
+
     fn_801B8A7C();
     fn_802E30C8(lbl_8032E030);
-    p = (s32 *)(arg0 + 0x9E4);
+    carEntry = (s32 *)(raceData + 0x9E4);
     for (i = 0; i < lbl_8055E4D0; i++) {
-        s32 v = *(s32 *)((u8 *)p + 0x90);
-        *(s32 *)((u8 *)q + 0x18) = v;
-        fn_802E30C8(lbl_8032E048, i, v);
-        p = (s32 *)((u8 *)p + 0xC0);
-        q = (s32 *)((u8 *)q + 0x14);
+        s32 score = *(s32 *)((u8 *)carEntry + 0x90);
+        *(s32 *)((u8 *)resultEntry + 0x18) = score;
+        fn_802E30C8(lbl_8032E048, i, score);
+        carEntry = (s32 *)((u8 *)carEntry + 0xC0);
+        resultEntry = (s32 *)((u8 *)resultEntry + 0x14);
     }
 }
 
