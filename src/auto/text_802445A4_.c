@@ -3,8 +3,8 @@
 
 extern void fn_8000D838(void *);
 extern int lbl_8055F208;
-extern unsigned int lbl_8055F210;
-extern unsigned int lbl_8055F214;
+extern int lbl_8055F210;
+extern int lbl_8055F214;
 extern int lbl_80498848[];
 #pragma scheduling invalid_target
 void fn_802445A4(void) {
