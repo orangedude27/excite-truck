@@ -1867,28 +1867,31 @@ s32 fn_8014EFC0(s32 arg0, s32 arg1) {
 }
 
 extern s32 fn_8014F088(s32, s32);
-void *fn_8014F000(void *arg0, int arg1) {
+void *fn_8014F000(void *object, int deleteFlag) {
+    /* Destructor-like cleanup for an object with an embedded array at +0x10:
+     * destroy array elements via fn_8002F634(..., fn_8014F088, 0xF8, 0x10),
+     * clear the tracked fields at +4/+8/+C, and optionally free the object. */
     struct Local {
         int field_0;
         int field_4;
         int field_8;
         int field_C;
     };
-    struct Local *obj = (struct Local *)arg0;
-    if (arg0 != 0) {
-        if (&obj->field_4 != 0) {
-            fn_8002F634((char *)obj + 0x10, (void *)fn_8014F088, 0xF8, 0x10);
-            if (&obj->field_4 != 0) {
-                obj->field_4 = 0;
-                obj->field_8 = 0;
-                obj->field_C = 0;
+    struct Local *self = (struct Local *)object;
+    if (object != 0) {
+        if (&self->field_4 != 0) {
+            fn_8002F634((char *)self + 0x10, (void *)fn_8014F088, 0xF8, 0x10);
+            if (&self->field_4 != 0) {
+                self->field_4 = 0;
+                self->field_8 = 0;
+                self->field_C = 0;
             }
         }
-        if (arg1 > 0) {
-            ((void (*)(void *))fn_80128668)(obj);
+        if (deleteFlag > 0) {
+            ((void (*)(void *))fn_80128668)(self);
         }
     }
-    return obj;
+    return self;
 }
 
 s32 fn_8014F088(s32 arg0, s32 arg1) {
