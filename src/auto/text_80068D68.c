@@ -14932,13 +14932,20 @@ BOOLEAN btsnd_hcic_create_conn(BD_ADDR dest, UINT16 packet_types, UINT8 page_sca
 }
 
 BOOLEAN btsnd_hcic_disconnect(UINT16 handle, UINT8 reason) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 6;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 6; p[9] = 4; p[10] = 3;
-    p[11] = handle; p[12] = handle >> 8; p[13] = reason;
-    btu_hcif_send_cmd(p);
+    /* Sends HCI_Disconnect (opcode 0x0406) for the given connection handle. */
+    u8 *cmd = (u8 *)GKI_getpoolbuf(2);
+    if (cmd == NULL) {
+        return FALSE;
+    }
+    *(u16 *)(cmd + 2) = 6;
+    *(u16 *)(cmd + 4) = 0;
+    cmd[8] = 6;
+    cmd[9] = 4;
+    cmd[10] = 3;
+    cmd[11] = handle;
+    cmd[12] = handle >> 8;
+    cmd[13] = reason;
+    btu_hcif_send_cmd(cmd);
     return TRUE;
 }
 
