@@ -198,18 +198,19 @@ extern void fn_80128668(void *);
 extern void fn_80128670(int);
 extern void fn_801836E0(void *, int);
 extern void fn_80265D44(void);
-void *fn_801A669C(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = (char *)lbl_80333CB8;
+/* Destructor-like cleanup: installs vtable lbl_80333CB8, releases owned buffer at +0x2700, resets state, and optionally frees the object. */
+void *fn_801A669C(void *object, int shouldFree) {
+    if (object != 0) {
+        *(void **)object = (char *)lbl_80333CB8;
         fn_80265D44();
-        if (*(int *)((char *)arg0 + 0x2700) != 0)
-            fn_80128670(*(int *)((char *)arg0 + 0x2700) - 0x10);
-        *(int *)((char *)arg0 + 0x2700) = 0;
-        fn_801836E0(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (*(int *)((char *)object + 0x2700) != 0)
+            fn_80128670(*(int *)((char *)object + 0x2700) - 0x10);
+        *(int *)((char *)object + 0x2700) = 0;
+        fn_801836E0(object, 0);
+        if (shouldFree > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma dont_inline on
