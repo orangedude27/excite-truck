@@ -11278,16 +11278,17 @@ void bta_dm_search_start(void *arg0) {
                      (tBTM_CMPL_CB *)fn_80072A98);
 }
 
+/* Cancel an active device search: stop inquiry (and notify cancel) or, if not inquiring, cancel remote name lookup when discovery is idle. */
 void bta_dm_search_cancel(void) {
     BTM_ClearInqDb(0);
     if (((u16 (*)(void))fn_8007B340)() != 0) {
         BTM_CancelInquiry();
         ((void (*)(s32, s32))*(u32 *)lbl_803C0B98)(4, 0);
         {
-            void *buf = GKI_getbuf(0x110);
-            if (buf != 0) {
-                *(u16 *)buf = 0x207;
-                fn_80071450(buf);
+            void *msg = GKI_getbuf(0x110);
+            if (msg != 0) {
+                *(u16 *)msg = 0x207;
+                fn_80071450(msg);
             }
         }
     } else if (*(s32 *)(lbl_803C0B98 + 8) == 0) {
