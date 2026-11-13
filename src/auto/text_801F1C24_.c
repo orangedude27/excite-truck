@@ -1247,23 +1247,24 @@ void fn_801F3C04(void) {
     fn_802E317C(lbl_8033AB3C);
 }
 
-void fn_801F3C14(int unused, unsigned char *arg0) {
-    unsigned char *p = arg0 + 0x18;
-    int i;
-    for (i=0; i<3; i++, p+=0xC) {
-        unsigned char t;
-        t=p[0]; p[0]=p[3]; p[3]=t;
-        t=p[1]; p[1]=p[2]; p[2]=t;
-        t=p[4]; p[4]=p[7]; p[7]=t;
-        t=p[5]; p[5]=p[6]; p[6]=t;
-        t=p[8]; p[8]=p[0xB]; p[0xB]=t;
-        t=p[9]; p[9]=p[0xA]; p[0xA]=t;
+void fn_801F3C14(int unused, unsigned char *data) {
+    /* Byte-swap three 12-byte blocks at offset 0x18 and reverse the 4-byte value at offset 0x14. */
+    unsigned char *block = data + 0x18;
+    int blockIndex;
+    for (blockIndex = 0; blockIndex < 3; blockIndex++, block += 0xC) {
+        unsigned char temp;
+        temp = block[0]; block[0] = block[3]; block[3] = temp;
+        temp = block[1]; block[1] = block[2]; block[2] = temp;
+        temp = block[4]; block[4] = block[7]; block[7] = temp;
+        temp = block[5]; block[5] = block[6]; block[6] = temp;
+        temp = block[8]; block[8] = block[0xB]; block[0xB] = temp;
+        temp = block[9]; block[9] = block[0xA]; block[0xA] = temp;
     }
     {
-        unsigned char t=arg0[0x14];
-        unsigned char u=arg0[0x15];
-        arg0[0x14]=arg0[0x17]; arg0[0x17]=t;
-        arg0[0x15]=arg0[0x16]; arg0[0x16]=u;
+        unsigned char firstByte = data[0x14];
+        unsigned char secondByte = data[0x15];
+        data[0x14] = data[0x17]; data[0x17] = firstByte;
+        data[0x15] = data[0x16]; data[0x16] = secondByte;
     }
 }
 
