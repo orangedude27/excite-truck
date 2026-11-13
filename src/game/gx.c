@@ -1811,17 +1811,6 @@ extern int lbl_8055FDCC;
 extern float lbl_80564FD4;
 extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
-static void DefaultLight_802D18E8(void *light, float *dir, LightEntry_802D18E8 *e) {
-    unsigned int packed;
-    unsigned char rgba[4];
-    float s = e->scale;
-    rgba[0] = (unsigned char)(int)(s * (float)e->r);
-    rgba[1] = (unsigned char)(int)(s * (float)e->g);
-    rgba[2] = (unsigned char)(int)(s * (float)e->b);
-    rgba[3] = e->a;
-    packed = *(unsigned int *)rgba;
-    fn_802D17BC(light, dir, &e->x, (unsigned char *)&packed, lbl_80564FD4);
-}
 #pragma pop
 
 typedef struct Row3_802D18E8 {
@@ -1834,10 +1823,12 @@ typedef struct Entry_802D18E8 {
     float strength;
 } Entry_802D18E8;
 #pragma push
+#pragma use_lmw_stmw off
 #pragma optimization_level 3
 void fn_802D18E8(void) {
-    float *from = (float *)((unsigned char *)lbl_804C5650 + 0x40);
-    float *to = (float *)((unsigned char *)lbl_804C5650 + 0x70);
+    unsigned char *base = (unsigned char *)lbl_804C5650;
+    float *from = (float *)(base + 0x40);
+    float *to = (float *)(base + 0x70);
     unsigned char color[4];
     float direction[3];
     float mag;
@@ -1846,7 +1837,7 @@ void fn_802D18E8(void) {
     unsigned char *var_r29;
     unsigned char *var_r30;
     int var_r27;
-    unsigned char *base = (unsigned char *)lbl_804C5650;
+
     direction[0] = from[9] - to[9];
     direction[1] = from[10] - to[10];
     direction[2] = from[11] - to[11];
@@ -1857,6 +1848,7 @@ void fn_802D18E8(void) {
     direction[0] *= scale;
     direction[1] *= scale;
     direction[2] *= scale;
+
     if (lbl_8055FDC8 > 0) {
         var_r30 = (unsigned char *)base + 0x4A38;
         var_r29 = (unsigned char *)base + 0x4AC8;
@@ -1887,6 +1879,7 @@ void fn_802D18E8(void) {
         fn_802D17BC((unsigned char *)base + 0x4AC8, direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
         lbl_8055FDCC++;
     }
+
     var_r30 = (unsigned char *)base + 0x4AC8;
     var_r28 = 0;
     var_r29 = (unsigned char *)0;
