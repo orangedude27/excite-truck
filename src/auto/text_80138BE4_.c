@@ -1,6 +1,34 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* One body's motion along a single axis: where it is, how fast, and how that
+ * speed is changing. A MotionPair holds the two of them whose *relative* motion
+ * is the quadratic (target.position - self.position)
+ *                      + (target.velocity - self.velocity) * t
+ *                      + 0.5 * (target.acceleration - self.acceleration) * t * t
+ * whose zero crossing fn_80138C28 solves for (the AI uses it for a truck
+ * closing on the truck ahead: gap, speed and the speed controller's own rate). */
+typedef struct Motion1D {
+    /* 0x0 */ float position;
+    /* 0x4 */ float velocity;
+    /* 0x8 */ float acceleration;
+} Motion1D;
+
+typedef struct MotionPair {
+    /* 0x00 */ Motion1D self;
+    /* 0x0C */ Motion1D target;
+} MotionPair;
+
+#define motion_is_zero fn_80138BFC /* |x| <= 10 * 2^-24 */
+#define opposite_signs fn_80138BE4 /* arg0 * arg1 < 0 */
+#define motion_sqrt    fn_8002F234 /* MSL sqrt() */
+
+#define ZERO        lbl_805613B8 /* 0.0f */
+#define HALF        lbl_805613C0 /* 0.5f */
+#define FOUR        lbl_805613C4 /* 4.0f */
+#define TWO         lbl_805613C8 /* 2.0f */
+#define NO_CROSSING lbl_805613CC /* -1.0f: no crossing time ahead */
+
 extern int lbl_8055E100;
 extern float lbl_80558DC4[];
 extern float lbl_805613BC;
