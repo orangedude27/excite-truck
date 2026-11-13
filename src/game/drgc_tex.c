@@ -612,9 +612,8 @@ void fn_802D81C4(void *arg0, int arg1) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern char lbl_8034C5AC[];
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma unroll off
+#pragma opt_unroll_loops off
 void fn_802D86BC(void *arg0, int arg1) {
     void **data = *(void ***)((char *)arg0 + 0x2c);
     int width = *(int *)((char *)arg0 + 0x24);
@@ -645,7 +644,7 @@ void fn_802D86BC(void *arg0, int arg1) {
     }
     fn_80128670(copy);
 }
-#pragma pop
+#pragma unroll reset
 
 #pragma push
 #pragma use_lmw_stmw off
