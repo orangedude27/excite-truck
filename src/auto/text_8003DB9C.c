@@ -406,7 +406,8 @@ void GXCPInterruptHandler(short intr, void *ctx) {
     }
 }
 
-void GXInitFifoBase(void *arg0, void *arg1, u32 arg2) {
+void GXInitFifoBase(void *fifoObj, void *base, u32 size) {
+    /* Initialize a GX FIFO object's base/top pointers, watermarks, and read/write state. */
     struct Fifo {
         u8 *base;
         u8 *top;
@@ -417,21 +418,21 @@ void GXInitFifoBase(void *arg0, void *arg1, u32 arg2) {
         void *wr;
         s32 count;
     };
-    struct Fifo *fifo = (struct Fifo *)arg0;
-    s32 temp_r6 = (s32)arg2 - 0x4000;
-    s32 temp_r7 = (s32)((u32)arg1 + arg2) - 4;
-    s32 temp_r0 = (arg2 >> 1) & 0x7FFFFFE0;
+    struct Fifo *fifo = (struct Fifo *)fifoObj;
+    s32 hiWatermark = (s32)size - 0x4000;
+    s32 topPtr = (s32)((u32)base + size) - 4;
+    s32 loWatermark = (size >> 1) & 0x7FFFFFE0;
     s32 zero = 0;
 
-    fifo->base = (u8 *)arg1;
-    fifo->top = (u8 *)temp_r7;
-    fifo->size = arg2;
+    fifo->base = (u8 *)base;
+    fifo->top = (u8 *)topPtr;
+    fifo->size = size;
     fifo->count = zero;
-    fifo->hi = temp_r6;
-    fifo->lo = temp_r0;
+    fifo->hi = hiWatermark;
+    fifo->lo = loWatermark;
     OSDisableInterrupts();
-    fifo->rd = arg1;
-    fifo->wr = arg1;
+    fifo->rd = base;
+    fifo->wr = base;
     fifo->count = zero;
     if (fifo->count < 0) {
         fifo->count = fifo->size;
@@ -2744,13 +2745,11 @@ f32 GXGetYScaleFactor(u32 efbHeight, u32 xfbHeight) {
 extern f32 lbl_80560B40;
 unsigned int GXSetDispCopyYScale(f32 yScale) {
     unsigned int scale = (unsigned int)(lbl_80560B40 / yScale);
-    register unsigned int height = scale & 0x1FF;
     unsigned int width;
     unsigned int result;
     unsigned int value;
     unsigned int tmp;
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
+    unsigned int height;
     union {
         unsigned int value;
         struct {
@@ -2767,12 +2766,13 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
             unsigned int other : 10;
         } fields;
     } copyState;
+    height = scale & 0x1FF;
 
-    *fifo8 = 0x61;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
     packet.value = 0;
     packet.fields.scale = scale;
     packet.fields.tag = 0x4E;
-    *fifo = packet.value;
+    *(volatile unsigned int *)0xCC008000 = packet.value;
     ((volatile unsigned short *)__GXData)[1] = 0;
     tmp = (0x100 - height) | (height - 0x100);
     copyState.value = __GXData[0x23C / 4];
