@@ -34,33 +34,41 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
     register void *self = arg0;
     register const unsigned char *file = (const unsigned char *)arg1;
     register char *strings = lbl_803276F0;
+    register unsigned short temp_r0;
+    register unsigned short temp_r4;
+    register unsigned int var_r0;
     *(unsigned int *)self = 0;
     *(unsigned int *)((char *)self + 4) = 0;
     *(unsigned int *)((char *)self + 8) = 0;
     if (file == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803276F0, 0x59, strings + 0xB4);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803276F0, 89, strings + 180);
     if (*(const unsigned int *)file != 0x52575344)
         Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x37, strings + 0x10);
-    if (*(const unsigned int *)file != 0x52575344)
-        return 0;
-    if (*(const unsigned short *)(file + 6) < 0x100)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x3F, strings + 0x5C);
-    if (*(const unsigned short *)(file + 6) < 0x100)
-        return 0;
-    if (*(const unsigned short *)(file + 6) > 0x102) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803276F0, 0x45, strings + 0x5C);
-        unsigned int version = *(const unsigned short *)(file + 6);
-        unsigned int difference = 0x102u - version;
-        unsigned int mask = 0x102u | ~version;
-        if (((mask - (difference >> 1)) >> 31) == 0)
-            return self;
+    if (*(const unsigned int *)file != 0x52575344) {
+        var_r0 = 0;
+    } else {
+        if (*(const unsigned short *)(file + 6) < 0x100)
+            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x3F, strings + 0x5C);
+        temp_r0 = *(const unsigned short *)(file + 6);
+        if (temp_r0 < 0x100) {
+            var_r0 = 0;
+        } else {
+            if (temp_r0 > 0x102)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803276F0, 0x45, strings + 0x5C);
+            temp_r4 = *(const unsigned short *)(file + 6);
+            var_r0 = (unsigned int)((0x102 | ~temp_r4) - ((unsigned int)(0x102 - temp_r4) >> 1)) >> 31;
+        }
     }
-    *(const void **)self = (const void *)(file + 0);
+    if ((int)var_r0 == 0)
+        return self;
+    *(const void **)self = (const void *)file;
     *(void **)((char *)self + 4) = (void *)(*(const unsigned int *)(file + 0x10) + (unsigned int)file);
     if (**(const unsigned int **)((char *)self + 4) != 0x44415441)
         Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x62, strings + 0xE0);
-    const unsigned char *storedFile = (const unsigned char *)*(volatile void **)self;
-    *(void **)((char *)self + 8) = (void *)(*(const unsigned int *)(storedFile + 0x18) + (unsigned int)storedFile);
+    {
+        register const unsigned char *stored = (const unsigned char *)*(volatile void **)self;
+        *(void **)((char *)self + 8) = (void *)(*(const unsigned int *)(stored + 0x18) + (unsigned int)stored);
+    }
     if (**(const unsigned int **)((char *)self + 8) != 0x57415645)
         Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x66, strings + 0x138);
     return self;
@@ -476,12 +484,13 @@ extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus
     return *(float*)((char*)arg0 + arg1 * 4 + 0x6C);
 }
 
-extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_80100E3C(void* arg0, int arg1, float arg2) {
-    int valid = arg1 >= 0 && arg1 < 4;
-    if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x171, lbl_803279CC, arg1, 0, 4);
-    int level = OSDisableInterrupts();
-    *(float*)((char*)arg0 + arg1 * 4 + 0x7C) = arg2;
-    OSRestoreInterrupts(level);
+/* Set the third FX send value for an aux bus on the sequence player (index 0-3). */
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_80100E3C(void* seqPlayer, int auxBus, float send) {
+    int isValidBus = auxBus >= 0 && auxBus < 4;
+    if (!isValidBus) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x171, lbl_803279CC, auxBus, 0, 4);
+    int interruptLevel = OSDisableInterrupts();
+    *(float*)((char*)seqPlayer + auxBus * 4 + 0x7C) = send;
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100ED8(void* arg0, int arg1) {
@@ -560,11 +569,11 @@ extern "C" void fn_80101130(void) {
     char *node = *(char **)(list + 4);
     char *end = list + 4;
     while (node != end) {
-        register unsigned char *entry = (unsigned char *)node;
+        unsigned char *entry = (unsigned char *)node;
         node = *(char **)node;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327C7C, 0x23D, lbl_80327C58);
-        register unsigned char *track = entry - 0x14;
+        unsigned char *track = entry - 0x14;
         if (entry[9] == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x216, lbl_80327930 + 0x148);
         if (track[0x1F] == 0)
@@ -573,32 +582,32 @@ extern "C" void fn_80101130(void) {
             if (track[0x20] != 0 || track[0x21] != 0 ||
                 (track[0x1C] == 0 && ((unsigned char *)Instance__15EmissionManagerFv())[0x6C32] != 0))
                 goto update;
-            register int completed = 0;
+            int completed = 0;
             if (ParseNextTick__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(
                     track + 0x9C, *(int *)(track + 0x94), *(int *)(track + 0x98), 1) >= 0)
                 completed = 1;
             else
                 Close__Q46nw4hbm3snd6detail8WsdTrackFv(track + 0x9C);
-            if (completed != 0)
-                goto update;
-            int interruptState = OSDisableInterrupts();
-            if (track[0x1F] != 0) {
-                if (track == 0)
-                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CAC, 0x233, lbl_80327C88);
-                Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
-                    lbl_8041D4C4, track + 0x14);
+            if (completed == 0) {
+                int interruptState = OSDisableInterrupts();
+                if (track[0x1F] != 0) {
+                    if (track == 0)
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CAC, 0x233, lbl_80327C88);
+                    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
+                        lbl_8041D4C4, track + 0x14);
+                }
+                if (track[0x1D] != 0) {
+                    void *callback = track;
+                    if (track != 0)
+                        callback = track + 8;
+                    UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
+                        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), callback);
+                }
+                OSRestoreInterrupts(interruptState);
+                Close__Q46nw4hbm3snd6detail8WsdTrackFv(track + 0x9C);
+                track[0x1D] = 0;
+                goto next;
             }
-            if (track[0x1D] != 0) {
-                void *callback = track;
-                if (track != 0)
-                    callback = track + 8;
-                UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
-                    GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), callback);
-            }
-            OSRestoreInterrupts(interruptState);
-            Close__Q46nw4hbm3snd6detail8WsdTrackFv(track + 0x9C);
-            track[0x1D] = 0;
-            goto next;
         }
 update:
         UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(track + 0x9C);
