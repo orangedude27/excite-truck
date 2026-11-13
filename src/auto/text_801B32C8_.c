@@ -553,19 +553,20 @@ void fn_801B4204(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_801B42D0(void* arg0) {
-    u8* p = (u8*)arg0 + 0x2FC;
-    void* val = *(void**)lbl_802F9630;
-    f64 init = lbl_80562650;
+/* Initialize 16 sound/slot entries at +0x2FC and clear the count at +0x5BC. */
+void fn_801B42D0(void *owner) {
+    u8 *entry = (u8 *)owner + 0x2FC;
+    void *context = *(void **)lbl_802F9630;
+    f64 initialValue = lbl_80562650;
     s32 i;
     s32 zero = 0;
-    for (i = 0; i < 0x10; i++, p += 0x2C) {
-        *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
-        *(s32*)(p + 0x20) = 0;
-        *(s32*)(p + 0x24) = 0;
-        *(f32*)(p + 0x28) = init;
+    for (i = 0; i < 0x10; i++, entry += 0x2C) {
+        *(s32 *)(entry + 0x1C) = fn_802077A4(context, 5, entry + 0x10, entry + 4);
+        *(s32 *)(entry + 0x20) = 0;
+        *(s32 *)(entry + 0x24) = 0;
+        *(f32 *)(entry + 0x28) = initialValue;
     }
-    *(s32*)((u8*)arg0 + 0x5BC) = 0;
+    *(s32 *)((u8 *)owner + 0x5BC) = 0;
 }
 #pragma pop
 void fn_801B435C(void *arg0) {
