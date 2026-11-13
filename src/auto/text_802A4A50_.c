@@ -300,6 +300,29 @@ void fn_802A4D08(void) {
     }
 }
 
+/* One 0xE0-byte weather entry in the array owned by the weather object
+ * (fn_801E7E34() = the object, fn_801E85B4() = the entry being drawn).
+ * Only the snow fields this file reads are named. */
+typedef struct SnowLayer {
+    u8 pad_00[0xD8];
+    f32 modelFade; /* +0xD8 snow model fade-in, 0..1 */
+    f32 quadAlpha; /* +0xDC screen snow quad opacity, 0..1 */
+    f32 spinAngle; /* +0xE0 yaw of the snow model, radians (one float past the entry) */
+} SnowLayer;
+
+/* Constants of the snow pass; the game keeps the floats in the small-data pool. */
+#define SNOW_LAYER_SIZE 0xE0                   /* bytes per weather entry */
+#define FLOAT_EPSILON (*(f32 *)lbl_80558DC4)   /* 2^-15: |x| at or below this counts as zero */
+#define FADE_TO_ALPHA lbl_80564854             /* 255.0f: 0..1 fade -> 8-bit alpha */
+#define FLOAT_ZERO lbl_80564858                /* 0.0f */
+#define FLOAT_ONE lbl_8056485C                 /* 1.0f */
+#define FADE_TO_BRIGHTNESS lbl_80564860        /* 2.0f: snow fade -> model brightness */
+#define SNOW_TINT_RGB 0x00E6F0FF               /* pale blue snow tint; alpha is OR'd on top */
+#define RENDER_WIDTH lbl_8055CFF0              /* 640 */
+#define RENDER_HEIGHT lbl_8055CFF4             /* 480 */
+/* fn_802C9124 really takes UVs, then the screen rectangle and a packed RGBA colour. */
+typedef void DrawTexturedQuad(f32, f32, f32, f32, s32, s32, s32, s32, s32);
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
