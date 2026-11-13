@@ -109,11 +109,11 @@ void fn_801E797C(void) { fn_80206464(0); }
 #pragma scheduling invalid_target
 void fn_801E7984(long arg0) {
     /* Initialize the scene and its subsystems in the original call order. */
-    long sp8;
+    register char *base;
+    register char *strings;
     long start;
+    unsigned sp8;
     long *p;
-    char *base;
-    char *strings;
     strings = lbl_80339BA0; base = (char *)lbl_80487CE0;
     fn_801E78D8(arg0);
     start = fn_802E2C20();
@@ -126,8 +126,8 @@ void fn_801E7984(long arg0) {
     fn_80204460(); fn_80127464();
     lbl_8055EB0C = -1; lbl_8055EB04 = 0; lbl_8055EB1C = 0; lbl_8055EB20 = 0;
     memset(base, 0, 0x10);
-    p = (long *)(base + 0x10);
     p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0;
+    p = (long *)(base + 0x10);
     fn_801E89FC(); lbl_8055EB10 = 1;
     fn_80127464(); fn_801EA2E8();
     lbl_8055EB3C = fn_8012850C(0xb40, strings + 0x10);
@@ -274,7 +274,7 @@ extern "C" void fn_801E7C28(void *arg0) {
         fn_801EF184();
         fn_801EA318();
         fn_801EA1DC();
-        lbl_8055EB10 = 0;
+        ((char *)&lbl_8055EB10)[0] = 0;
         fn_8013A074();
         fn_8020449C();
         fn_802E3D00();
@@ -316,6 +316,80 @@ void* fn_801E7E34(void) {
 
 long fn_801E7E3C(void) {
     return (long)lbl_8055EB04 + 0x560;
+}
+
+extern void *fn_80176A70(void);
+extern void fn_80176BA8(void);
+extern void fn_80287974(void);
+extern void fn_8028797C(void);
+extern void fn_801EA400(void);
+extern void fn_801EF0AC(void *);
+extern void fn_801FA2C4(void);
+extern void fn_801F4DC4(void);
+extern void fn_80202924(void);
+extern void fn_80134994(void);
+extern void fn_8000D7FC(void);
+extern void fn_80202AD4(long);
+extern void fn_801EAB90(long, void *);
+extern long fn_801EA994(void);
+extern void fn_801EA9DC(long, void *);
+extern void *fn_801E87A8(void);
+extern void fn_801E8CE4(void);
+extern void fn_801E8A84(void);
+void fn_801E7E48(void) {
+    extern float lbl_80562DB8;
+    extern double lbl_80562DC8;
+    extern float lbl_8055EB28;
+    char *obj;
+    long long t0;
+    float f, g;
+    long i, j;
+    char *dst;
+    char *src;
+    t0 = ((long long (*)())fn_802E2C9C)();
+    obj = (char *)fn_80176A70();
+    f = *(float *)obj - lbl_8055EB18;
+    g = lbl_80562DB4;
+    if (g >= f) g = f;
+    f = g;
+    if (f <= lbl_80562DB8) f = lbl_80562DB8;
+    g = f;
+    if (g > lbl_80562DBC) g = lbl_80562DBC;
+    lbl_8055EB14 = g;
+    lbl_8055EB18 = *(float *)obj;
+    lbl_8055EB04 = (float *)obj;
+    if ((long)lbl_8055EB2C != *(long *)(obj + 0x394)) {
+        fn_802C2C60(0);
+        lbl_8055EB2C = (void *)*(long *)(obj + 0x394);
+    }
+    lbl_8055EB20 = 1;
+    dst = (char *)lbl_80487D00;
+    i = 0; j = 0;
+    while (i < (long)lbl_8055EB2C) {
+        src = (char *)lbl_8055EB04 + j;
+        if (*(long *)((char *)fn_801E87A8() + 0x10) & 2) {
+            *(float *)(src + 4) *= lbl_80562DC0;
+            *(float *)(src + 8) *= lbl_80562DC0;
+            *(float *)(src + 12) *= lbl_80562DC0;
+        }
+        j += 0xE0; i++;
+        *(long *)(dst + 0) = *(long *)(src + 4);
+        *(long *)(dst + 4) = *(long *)(src + 8);
+        *(long *)(dst + 8) = *(long *)(src + 12);
+        *(long *)(dst + 12) = *(long *)(src + 16);
+        *(long *)(dst + 16) = *(long *)(src + 20);
+        *(long *)(dst + 20) = *(long *)(src + 24);
+        *(long *)(dst + 24) = *(long *)(src + 28);
+        *(long *)(dst + 28) = *(long *)(src + 32);
+        *(long *)(dst + 32) = *(long *)(src + 36);
+        *(long *)(dst + 36) = *(long *)(src + 40);
+        *(long *)(dst + 40) = *(long *)(src + 44);
+        *(long *)(dst + 44) = *(long *)(src + 48);
+        *(long *)(dst + 52) = *(long *)(dst + 48);
+        *(long *)(dst + 48) = *(long *)(src + 108);
+        dst += 0x38;
+    }
+    (void)t0;
 }
 
 void fn_801E8144(void) {
@@ -470,18 +544,17 @@ extern "C" void fn_801E8410(void) {
         virtual void n0(); virtual void n1(); virtual void n2(); virtual void n3();
     };
     long a, b, c, d;
-    register long zero;
-    register long count;
+    long count;
     unsigned char *base;
     ((void (*)(void))fn_801E837C)();
     if (fn_801B89F8() != 0) {
         if (*(void * volatile *)&lbl_8055AF0C != 0) return;
-        zero = 0; a = zero; b = zero; c = lbl_8055CFF0; d = lbl_8055CFF4;
+        a = 0; b = 0; c = lbl_8055CFF0; d = lbl_8055CFF4;
         count = (long)(*(void * volatile *)&lbl_8055AF0C);
         count *= 0x38;
         base = lbl_80487D00 + count;
-        if (((int (*)(long, void *, void *, long))fn_801B89F8)(
-                c, (void *)0, lbl_80487D00, count) == 0) {
+        if (((int (*)(long, long, void *, long))fn_801B89F8)(
+                c, 0, lbl_80487D00, count) == 0) {
             fn_801E88B4(&a, &b, &c, &d,
                         (long)(*(void * volatile *)&lbl_8055AF0C));
         }
@@ -550,20 +623,21 @@ void fn_801E85CC(long arg0) {
 }
 
 void fn_801E85DC(long arg0) {
-    long var_r31;
-    long temp_r30;
-    long var_r29;
+    /* Select the next active car-manager entry from the given player's slot (defaulting to lbl_8055AF0C) and apply it. */
+    long idx;
+    long startIdx;
+    long playerId;
     long count;
-    var_r29 = arg0;
-    if (arg0 < 0) var_r29 = (long)lbl_8055AF0C;
-    var_r31 = fn_801E866C(var_r29);
-    temp_r30 = var_r31;
+    playerId = arg0;
+    if (arg0 < 0) playerId = (long)lbl_8055AF0C;
+    idx = fn_801E866C(playerId);
+    startIdx = idx;
 loop:
-    var_r31 = var_r31 + 1;
+    idx = idx + 1;
     count = fn_8026A2C8();
-    var_r31 = var_r31 % count;
-    if (*fn_801EA9A0(var_r31) == 0 && var_r31 != temp_r30) goto loop;
-    fn_8026A248(var_r31, var_r29);
+    idx = idx % count;
+    if (*fn_801EA9A0(idx) == 0 && idx != startIdx) goto loop;
+    fn_8026A248(idx, playerId);
 }
 
 long fn_801E866C(long arg0) {
@@ -756,17 +830,13 @@ void fn_801E89FC(void) {
 void fn_801E8A84(void) {
     extern float lbl_80562DE4, lbl_80562DE8;
     extern float lbl_80562DEC, lbl_80562DF0;
-    float amount;
-    float scale;
     float value;
-
+    float scale;
     lbl_804881D8[0] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
     lbl_804881D8[1] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
     lbl_804881D8[2] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-
     if (lbl_804881D8[1] > lbl_80562DDC) {
-        amount = lbl_804881D8[1] - lbl_80562DDC;
-        scale = amount * lbl_80562DB4;
+        scale = (lbl_804881D8[1] - lbl_80562DDC) * lbl_80562DB4;
         if (lbl_804881D8[0] > lbl_80562DBC)
             value = lbl_80562DD4;
         else
@@ -779,8 +849,7 @@ void fn_801E8A84(void) {
             value = lbl_80562DC0;
         lbl_804881D8[2] = lbl_804881D8[2] + scale * value;
     } else if (lbl_804881D8[1] < lbl_80562DD8) {
-        amount = lbl_80562DD8 - lbl_804881D8[1];
-        scale = amount * lbl_80562DB4;
+        scale = (lbl_80562DD8 - lbl_804881D8[1]) * lbl_80562DB4;
         if (lbl_804881D8[0] > lbl_80562DBC)
             value = lbl_80562DD4;
         else
@@ -793,13 +862,10 @@ void fn_801E8A84(void) {
             value = lbl_80562DC0;
         lbl_804881D8[2] = lbl_804881D8[2] + scale * value;
     }
-
     PSVECNormalize(lbl_804881D8, lbl_804881D8);
     value = lbl_804881D8[3] + fn_80129DC4(0, lbl_80562DEC, lbl_80562DF0);
-    if (value < lbl_80562DE0)
-        value = lbl_80562DE0;
-    if (value > lbl_80562DBC)
-        value = lbl_80562DBC;
+    value = (value < lbl_80562DE0) ? lbl_80562DE0 : value;
+    value = (value > lbl_80562DBC) ? lbl_80562DBC : value;
     lbl_804881D8[3] = value;
 }
 #pragma scheduling on
