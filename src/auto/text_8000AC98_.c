@@ -368,6 +368,7 @@ extern void fn_802C855C(void);
 extern void fn_802D08C4(int);
 extern void fn_802C2B48(void);
 void fn_8000B2AC(void) {
+    /* Main per-frame render/update step: prepares draw state, runs player updates with mode-specific callback, then finalizes rendering. */
     fn_802C8530();
     fn_801E81B8(1, fn_801DF060() != 0
         ? (void (*)(void *))fn_8000B288
