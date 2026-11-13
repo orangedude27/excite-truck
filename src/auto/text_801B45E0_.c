@@ -24,13 +24,17 @@ struct F801B4720 {
     virtual void f5(void) = 0;
     virtual void f6(void) = 0;
 };
+/* The VirtualMemory object (game/vmem.c, vtable lbl_8034D1D0) a replay queue
+ * keeps at its head to hold the recorded packet data. Slot 0xC hands out a
+ * pointer into its buffer for a data offset, 0x14 and 0x18 are empty stubs
+ * (fn_802E4D6C / fn_802E4D70) and 0x1C always answers yes (fn_802E4D74). */
 struct F801B4AC4 {
-    virtual void f0() = 0;
-    virtual void f1() = 0;
-    virtual void f2() = 0;
-    virtual void f3(int) = 0;
-    virtual void f4() = 0;
-    virtual void f5(int) = 0;
+    virtual void f0() = 0;      /* 0x8: destructor */
+    virtual void f1() = 0;      /* 0xC: data offset -> pointer in the buffer */
+    virtual void f2() = 0;      /* 0x10: buffer + data offset */
+    virtual void f3(int) = 0;   /* 0x14: stub */
+    virtual void f4() = 0;      /* 0x18: stub */
+    virtual void f5(int) = 0;   /* 0x1C: always 1 */
 };
 struct F801B50B4 {
     virtual void f0() = 0;
