@@ -20956,7 +20956,8 @@ void PORT_PortNegInd(void *arg0, u8 arg1, u8 *arg2, u16 arg3) {
             dst[0x55] = first; dst[0x56] = second;
             first = src[6]; second = src[7];
             dst[0x57] = first; dst[0x58] = second;
-            dst[0x59] = src[8];
+            first = src[8];
+            dst[0x59] = first;
             ((void (*)(void *, u16, void *, u16))fn_800937A0)(arg0, arg1, src, 0);
             return;
         }
@@ -20972,7 +20973,8 @@ void PORT_PortNegInd(void *arg0, u8 arg1, u8 *arg2, u16 arg3) {
     dst[0x55] = first; dst[0x56] = second;
     first = src[6]; second = src[7];
     dst[0x57] = first; dst[0x58] = second;
-    dst[0x59] = src[8];
+    first = src[8];
+    dst[0x59] = first;
     ((void (*)(void *, u16, void *, u16))fn_800937A0)(arg0, arg1, src, arg3);
 }
 
