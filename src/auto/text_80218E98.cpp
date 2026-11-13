@@ -6512,24 +6512,25 @@ extern "C" void fn_802245C8(IntensityFade *fade) {
 }
 #pragma pop
 extern "C" void fn_80224864(void *arg0) {
-    u8 temp_r6 = *(u8 *)((u8 *)arg0 + 0x260);
+    u8 wasActive = *(u8 *)((u8 *)arg0 + 0x260);
 
-    if (temp_r6 == 0) {
+    if (wasActive == 0) {
         if (*(s32 *)((u8 *)arg0 + 0x254) ==
             *(volatile s32 *)*(volatile s32 **)((u8 *)arg0 + 0x258)) {
             *(u8 *)((u8 *)arg0 + 0x261) = 0;
             *(u8 *)((u8 *)arg0 + 0x260) = 1;
-            goto after_conditions;
+            goto after_state_update;
         }
     }
-    if (temp_r6 != 0) {
+    if (wasActive != 0) {
         if (*(s32 *)((u8 *)arg0 + 0x254) !=
             *(volatile s32 *)*(volatile s32 **)((u8 *)arg0 + 0x258)) {
             *(u8 *)((u8 *)arg0 + 0x260) = 0;
             *(u8 *)((u8 *)arg0 + 0x261) = 1;
         }
     }
-after_conditions:
+after_state_update:
+    /* Sample current time and refresh cached value from +0x268. */
     *(f32 *)((u8 *)arg0 + 0x24C) = fn_8023659C();
     *(f32 *)((u8 *)arg0 + 0x26C) = *(f32 *)((u8 *)arg0 + 0x268);
 }
