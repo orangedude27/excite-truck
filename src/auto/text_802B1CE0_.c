@@ -20,7 +20,7 @@ public:
 extern void *fn_801284F8(int, const char *);
 extern void fn_801345D8(char *, int, const char *, ...);
 extern void fn_802B2C7C(void *);
-extern void fn_802B2384(void *, void **);
+extern void **fn_802B2384(void *, void **);
 extern void *fn_802B23A8(void *, void *, void *);
 extern int fn_802B2C44(void *);
 extern char lbl_8034A2C4[];
@@ -373,6 +373,18 @@ extern "C" void fn_802B224C(void *arg0) {
     *(int *)((char *)&lbl_804BE1FC + 4) = count + 1;
     items[count] = object;
 }
+
+int *fn_802B2384(int *arg0, int *arg1) {
+    unsigned long count = arg0[1];
+    int *base = (int *)arg0[0];
+    int val = *arg1;
+    int *entry;
+    arg0[1] = count + 1;
+    entry = base + count;
+    *entry = val;
+    return entry;
+}
+
 #pragma pop
 
 extern char lbl_8034A2E8[];
