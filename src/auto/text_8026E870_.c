@@ -259,7 +259,6 @@ extern "C" f32 fn_8026EB4C(void *arg0) {
         virtual void dummy1();
         virtual void *getMethod();
     };
-
     f32 temp_f31;
     f32 f30;
     f32 f1;
@@ -268,21 +267,18 @@ extern "C" f32 fn_8026EB4C(void *arg0) {
     f32 t;
     int c;
     int flag;
-
     char *sub = *(char **)((char *)arg0 + 0x140);
     f1 = !(*(f32 *)(sub + 0x258C) > lbl_80563E5C) ? lbl_8055F534 : lbl_8055F530;
     f30 = fn_8026EAEC(f1);
-
     f2 = lbl_8055F528;
     diff = lbl_8055F52C - f2;
     t = *(f32 *)((char *)arg0 + 0x13C);
     temp_f31 = fn_8026EAEC(f2 + t * diff);
-
     sub = *(char **)((char *)arg0 + 0x140);
     flag = 0;
     c = 1;
     int cond2 = *(f32 *)(sub + 0x258C) > lbl_80563E5C;
-    if (!cond2 && *(u8 *)(sub + 0x259C) == 0) {
+    if (!cond2 && *(u8 *)(sub + 9628) == 0) {
         c = 0;
     }
     if (c != 0) {
@@ -291,7 +287,6 @@ extern "C" f32 fn_8026EB4C(void *arg0) {
             flag = 1;
         }
     }
-
     if (*(s32 *)((char *)arg0 + 4) != *(s32 *)((char *)arg0 + 0x10)) {
         f30 = flag ? f30 : temp_f31;
     } else if (fn_801769F8() != 0 || fn_800216D0() != 0 || *(s32 *)(*(char **)((char *)arg0 + 0x140) + 0x2620) < 1) {
@@ -309,7 +304,6 @@ extern "C" f32 fn_8026EB4C(void *arg0) {
         f2 = *(f32 *)((char *)arg0 + 0x194);
         f30 = f2 + lbl_80563E64 * (temp_f31 - f2);
     }
-
 end:
     return f30;
 }
@@ -317,13 +311,16 @@ end:
 #pragma pop
 
 #pragma processor 750
-f32 fn_8026ECE4(void *arg0, f32 *arg1) {
+/* Compute the value from fn_8026EB4C for the given object and, when it exceeds
+   the threshold, scale the in/out scalar by the cosine ratio of the two values. */
+f32 fn_8026ECE4(void *object, f32 *scalar) {
     f32 denom;
     f32 value;
-    value = fn_8026EB4C(arg0);
+
+    value = fn_8026EB4C(object);
     if (value > lbl_8055F52C) {
         denom = (f32)cos((double)(lbl_8055F52C * lbl_80563E68));
-        *arg1 *= (f32)cos((double)(value * lbl_80563E68)) / denom;
+        *scalar *= (f32)cos((double)(value * lbl_80563E68)) / denom;
     }
     return value;
 }
@@ -341,16 +338,29 @@ void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
     f32 dy;
     f32 dz;
     volatile Vec delta;
+    f32 a;
+    f32 b;
 
     curve = entry[3];
     if (curve < lbl_80563E6C)
         curve = lbl_80563E6C;
     else if (curve > lbl_80563E30)
         curve = lbl_80563E30;
-    else if (curve > lbl_80563E78)
-        curve = (lbl_80563E70 * curve * curve * curve) + (lbl_80563E74 * curve * curve);
-    else
-        curve = (lbl_80563E70 * curve * curve * curve) - (lbl_80563E74 * curve * curve);
+    else if (curve > lbl_80563E78) {
+        a = lbl_80563E70 * curve;
+        b = lbl_80563E74 * curve;
+        a *= curve;
+        b *= curve;
+        a *= curve;
+        curve = a + b;
+    } else {
+        a = lbl_80563E70 * curve;
+        b = lbl_80563E74 * curve;
+        a *= curve;
+        b *= curve;
+        a *= curve;
+        curve = a - b;
+    }
 
     t = (entry[1] - lbl_80563E78) / lbl_80563E7C;
     if (t < lbl_80563E30)
@@ -375,10 +385,21 @@ void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
         curve2 = lbl_80563E6C;
     else if (curve2 > lbl_80563E30)
         curve2 = lbl_80563E30;
-    else if (curve2 > lbl_80563E78)
-        curve2 = (lbl_80563E70 * curve2 * curve2 * curve2) + (lbl_80563E74 * curve2 * curve2);
-    else
-        curve2 = (lbl_80563E70 * curve2 * curve2 * curve2) - (lbl_80563E74 * curve2 * curve2);
+    else if (curve2 > lbl_80563E78) {
+        a = lbl_80563E70 * curve2;
+        b = lbl_80563E74 * curve2;
+        a *= curve2;
+        b *= curve2;
+        a *= curve2;
+        curve2 = a + b;
+    } else {
+        a = lbl_80563E70 * curve2;
+        b = lbl_80563E74 * curve2;
+        a *= curve2;
+        b *= curve2;
+        a *= curve2;
+        curve2 = a - b;
+    }
 
     blend = lbl_80563E6C - lbl_80563E50 * curve2;
     arg1->x = arg2->x + delta.x * blend;
