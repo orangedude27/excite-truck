@@ -1823,7 +1823,7 @@ struct DrawStyle80147BD0 {
  * draw list given by drawList. */
 extern "C" void fn_80147BD0(DrawStyle80147BD0 *style, DrawStyle80147BD0 *target,
                             u32 color, u32 targetColor, s32 drawList, f32 t) {
-    s32 record[12]; /* the DrawStyle80147BD0 built above */
+    s32 record[12]; /* the style fn_80147DC0 fills in and fn_801476D8 draws */
     ((void (*)(void *, s32, s32))fn_80147DC0)((u32 *)record, (s32)style, (s32)target);
     fn_801476D8((u32 *)record, fn_80147C50(color, targetColor, t), drawList);
 }
