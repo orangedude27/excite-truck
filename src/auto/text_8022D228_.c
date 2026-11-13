@@ -20,20 +20,6 @@ extern float lbl_80558DC4[];
 extern void *fn_8012850C(int, const char *);
 extern char lbl_80340108[];
 extern char lbl_80340114[];
-typedef struct UITBRec {
-    void *data;
-    int count;
-    int unk8;
-    int unkC;
-    int unk10;
-    int total;
-    int *lens;
-    int *offs;
-    int unk20;
-    int unk24;
-    int magic;
-    int unk2C;
-} UITBRec;
 /* A "UITB" text table: rows x columns of strings packed into one character buffer,
    each cell holding one tag byte and then its text. Cells are written by fn_8022D894
    and read back by fn_8022D850. */
