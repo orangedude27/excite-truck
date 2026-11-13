@@ -125,22 +125,26 @@ void fn_802B0874(void) {
 
 #pragma push
 #pragma opt_common_subs off
-void fn_802B087C(void **arg0) {
-    void *ptr = *arg0;
-    if (ptr != 0) {
-        if (ptr != 0) {
-            fn_802AE64C(ptr);
-            if ((char *)ptr + 4 != 0) {
-                fn_8002F6AC(((int *)ptr)[4], (void (*)(void))fn_802B0808);
-                if ((char *)ptr + 4 != 0) {
-                    ((int *)ptr)[1] = 0;
-                    ((int *)ptr)[2] = 0;
-                    ((int *)ptr)[3] = 0;
+void fn_802B087C(void **objectPtr) {
+    /* Destructor for the pool-manager singleton (lbl_8055F9A0): free its data buffer
+     * (field[0], via fn_802AE64C), run __vec_delete over the entry array (field[4])
+     * using element destructor fn_802B0808, clear the bookkeeping fields [1..3],
+     * delete the object itself (__delete), and null the caller's pointer. */
+    void *obj = *objectPtr;
+    if (obj != 0) {
+        if (obj != 0) {
+            fn_802AE64C(obj);
+            if ((char *)obj + 4 != 0) {
+                fn_8002F6AC(((int *)obj)[4], (void (*)(void))fn_802B0808);
+                if ((char *)obj + 4 != 0) {
+                    ((int *)obj)[1] = 0;
+                    ((int *)obj)[2] = 0;
+                    ((int *)obj)[3] = 0;
                 }
             }
-            fn_80128668(ptr);
+            fn_80128668(obj);
         }
-        *arg0 = 0;
+        *objectPtr = 0;
     }
 }
 #pragma pop
@@ -473,9 +477,9 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
 #pragma use_lmw_stmw off
 #pragma opt_loop_invariants off
 void fn_802B14B4(void *arg0) {
-    int cache;
-    int obj;
     int i;
+    int obj;
+    int cache;
     int saved;
     int c;
     int *node;
@@ -486,25 +490,23 @@ void fn_802B14B4(void *arg0) {
     int k;
     int cacheCount;
     int *slot;
-    char *self;
 
-    self = (char *)arg0;
     fn_802B1BEC();
-    if (fn_802B1BE4(self + 0x318) > 0) {
-        fn_802B1B60(self);
+    if (fn_802B1BE4((char *)arg0 + 0x318) > 0) {
+        fn_802B1B60(arg0);
         saved = fn_802C2C00(0);
         if (lbl_8055FA59 != 0) {
-            fn_802C8BD0(*(int *)(self + 4));
+            fn_802C8BD0(*(int *)((char *)arg0 + 4));
         } else {
-            fn_802C28C0();
             fn_802C8BD0();
+            fn_802C28C0();
         }
         fn_802B05EC();
         fn_802DBF00();
-        for (i = 0; i < fn_802B1AF0(self + 0xC); i++) {
-            obj = fn_802B1B50((int *)(self + 0xC), i) + 4;
+        for (i = 0; i < fn_802B1AF0((char *)arg0 + 0xC); i++) {
+            obj = fn_802B1B50((int *)((char *)arg0 + 0xC), i) + 4;
             if (lbl_8055FA59 != 0) {
-                fn_802CADD0(*(int *)(fn_802B1B50((int *)(self + 0xC), i) + 0x7C), 1);
+                fn_802CADD0(*(int *)(fn_802B1B50((int *)((char *)arg0 + 0xC), i) + 0x7C), 1);
                 fn_802CADD0(__AXGetStackHead_802BC30C(i), 2);
             } else {
                 for (j = 0; j < fn_802B1B38((void *)obj); j++) {
@@ -512,11 +514,11 @@ void fn_802B14B4(void *arg0) {
                 }
                 fn_802CADD0(__AXGetStackHead_802BC30C(i), 3);
             }
-            cache = fn_802B1B28((int *)(self + 0x318), 0);
-            cacheCount = fn_802B1BE4(self + 0x318);
+            cache = fn_802B1B28((int *)((char *)arg0 + 0x318), 0);
+            cacheCount = fn_802B1BE4((char *)arg0 + 0x318);
             mask = 1 << i;
             idx = mask;
-            slot = (int *)(self + mask * 4 + 0x934);
+            slot = (int *)((char *)arg0 + mask * 4 + 0x934);
             for (; idx < 0x41; slot++, idx++) {
                 if ((idx & mask) && fn_802B1B18(slot) == 0) {
                     flag = (((mask - 1) & idx) == 0);
@@ -541,11 +543,11 @@ void fn_802B14B4(void *arg0) {
         fn_802DBF30();
         fn_802C8D74();
         fn_802C2C00(saved);
-        saved = fn_802B1BE4(self + 0x318);
-        fn_802BB0FC(fn_802B1B28((int *)(self + 0x318), 0), saved);
-        fn_802B1758(self);
-        saved = fn_802B1BE4(self + 0x318);
-        fn_802BB3B8(fn_802B1B28((int *)(self + 0x318), 0), saved);
+        saved = fn_802B1BE4((char *)arg0 + 0x318);
+        fn_802BB0FC(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), saved);
+        fn_802B1758(arg0);
+        saved = fn_802B1BE4((char *)arg0 + 0x318);
+        fn_802BB3B8(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), saved);
     }
 }
 extern float lbl_80564BB8, lbl_80564BD0, lbl_80564BD4, lbl_80564BD8;
