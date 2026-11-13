@@ -42,7 +42,11 @@ struct UiMenuGroup {
     void *widgets[1];  /* 0x30: widgetCount widget pointers */
     unsigned char gap1[0x3FC];
     int widgetCount;   /* 0x430 */
-    unsigned char gap2[0x14];
+    unsigned char gap2[4];
+    void (*afterUpdateCb)(void);      /* 0x438: run by fn_8021734C after updating every widget */
+    void (*beforeWidgetsCb)(void);    /* 0x43C: run by fn_802173F8 before its widget walk */
+    void (*notifyCb)(void *, void *); /* 0x440: fn_8021747C calls it with two arguments */
+    unsigned char gap3[4];
     void *hovered;     /* 0x448: widget the pointer is over (fn_80217734) */
     void *pressed;     /* 0x44C: widget the pointer went down on (fn_8021749C) */
     void *current;     /* 0x450: the widget the menu is on (fn_80218198) */
