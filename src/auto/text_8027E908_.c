@@ -1234,13 +1234,13 @@ extern "C" int fn_80280A38(void) {
             }
         }
     }
-    if (lbl_8055F68C == 0)
+    if (*(volatile int *)&lbl_8055F68C == 0)
         goto done;
 
     {
-        void *sel = (void *)lbl_8055F68C;
-        int count = lbl_804B3048.count;
+        void *sel = (void *)*(volatile int *)&lbl_8055F68C;
         void **items = lbl_804B3048.items;
+        int count = lbl_804B3048.count;
         for (j = 0; j < count; j++) {
             if (items[j] == sel)
                 goto found;
@@ -1248,26 +1248,24 @@ extern "C" int fn_80280A38(void) {
         j = -1;
 found:
         lbl_804B3068[0] = 0;
-        if (j < 0 || j >= lbl_804B3048.count)
+        if (j < 0 || j >= *(volatile int *)&lbl_804B3048.count)
             goto clear;
         item = items[j];
         lbl_8055F688 = (unsigned int)item;
-        if (item != 0) {
+        if (item != 0 && *(Object * volatile *)((char *)item + 0x60) != 0) {
             Object *o = *(Object **)((char *)item + 0x60);
-            if (o != 0) {
-                char *src = o->getText();
-                char *dst = (char *)lbl_804B3068;
-                int n = 100;
-                goto copy_test;
-                for (;;) {
-                    if (--n <= 0) {
-                        dst[-1] = 0;
-                        break;
-                    }
-copy_test:
-                    if ((*dst++ = *src++) == 0)
-                        break;
+            char *src = o->getText();
+            char *dst = (char *)lbl_804B3068;
+            int n = 100;
+            goto copy_test;
+            for (;;) {
+                if (--n <= 0) {
+                    dst[-1] = 0;
+                    break;
                 }
+copy_test:
+                if ((*dst++ = *src++) == 0)
+                    break;
             }
         }
     }
@@ -1279,99 +1277,93 @@ done:
 }
 #pragma scheduling on
 extern "C" int fn_80280C00(void) {
-    class Object {
-    public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual int getKey(); virtual const char *getText();
+    class Obj { public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual unsigned int getKey(); virtual const char *getText();
     };
     extern int lbl_8055F68C;
     extern int lbl_8055F690;
     extern unsigned char lbl_804B3068[];
-    register Object *object;
-    register void *selected;
-    register void *candidate;
-    register int offset;
-    register int i;
-    register int count;
-    register void **p;
-    register void **items;
+    int i;
+    void *item;
+    Obj *obj;
+    void *sel;
+    void **p;
+    void **items;
+    int index;
     const char *src;
     char *dst;
     int n;
 
     if (lbl_8055F688 == 0)
-        goto done;
-    if (*(Object * volatile *)((char *)lbl_8055F688 + 0x60) == 0)
-        goto done;
-    object = *(Object **)((char *)lbl_8055F688 + 0x60);
-    if (object->getKey() != 0)
-        goto done;
+        goto finish;
+    if (*(Obj * volatile *)((char *)lbl_8055F688 + 0x60) == 0)
+        goto finish;
+    obj = *(Obj **)((char *)lbl_8055F688 + 0x60);
+    if (obj->getKey() != 0)
+        goto finish;
 
     lbl_8055F68C = lbl_8055F688;
     if (lbl_8055F690 == 0) {
-        offset = 0;
-        i = 0;
-        goto first_scan;
-first_scan:
-        candidate = *(void **)((char *)lbl_804B3048.items + offset);
-        object = *(Object **)((char *)candidate + 0x60);
-        if (object != 0 && object->getKey() != 0) {
-            lbl_8055F690 = (int)candidate;
-        } else {
-            offset += 4;
-            i++;
-            count = *(volatile int *)((char *)&lbl_804B3048 + 4);
-            if (i < count)
-                goto first_scan;
+        for (i = 0; i < lbl_804B3048.count; i++) {
+            item = lbl_804B3048.items[i];
+            obj = *(Obj **)((char *)item + 0x60);
+            if (obj != 0 && obj->getKey() != 0) {
+                lbl_8055F690 = (int)item;
+                break;
+            }
         }
     }
-    if (lbl_8055F690 == 0)
-        goto done;
+    if (*(volatile int *)&lbl_8055F690 == 0)
+        goto finish;
 
     items = lbl_804B3048.items;
-    count = lbl_804B3048.count;
-    selected = (void *)*(volatile int *)&lbl_8055F690;
-    i = 0;
+    sel = (void *)*(volatile int *)&lbl_8055F690;
     p = items;
-    while (i < count) {
-        if (*p != selected)
-            goto search_next;
-        goto found;
-search_next:
-        p++;
-        i++;
-    }
-    i = -1;
-found:
-    lbl_804B3068[0] = 0;
-    if (i < 0)
-        goto clear;
-    if (i >= lbl_804B3048.count)
-        goto clear;
-    selected = items[i];
-    lbl_8055F688 = (unsigned int)selected;
-    if (selected != 0) {
-        object = *(Object **)((char *)selected + 0x60);
-        if (object != 0) {
-            src = object->getText();
-            dst = (char *)lbl_804B3068;
-            n = 100;
-            do {
-                char c = *src++;
-                *dst++ = c;
-                if ((signed char)c == 0)
-                    break;
-                n--;
-            } while (n > 0);
-            if (n == 0)
-                dst[-1] = 0;
+    index = 0;
+    while (index < lbl_804B3048.count) {
+        if (*p == sel) {
+            goto found;
+        } else {
+            p++;
+            index++;
         }
     }
-    goto done;
+    index = -1;
+found:
+    lbl_804B3068[0] = 0;
+    if (index < 0)
+        goto clear;
+    if (index >= *(volatile int *)((char *)&lbl_804B3048 + 4))
+        goto clear;
+    item = items[index];
+    lbl_8055F688 = (unsigned int)item;
+    if (item == 0)
+        goto finish;
+    if (*(Obj * volatile *)((char *)item + 0x60) == 0)
+        goto finish;
+    obj = *(Obj **)((char *)item + 0x60);
+    src = obj->getText();
+    dst = (char *)lbl_804B3068;
+    n = 100;
+    goto body;
+tail:
+    if (--n > 0)
+        goto body;
+    dst[-1] = 0;
+    goto finish;
+body:
+    {
+        char c = *src++;
+        *dst++ = c;
+        if ((signed char)c != 0)
+            goto tail;
+    }
+    goto finish;
 clear:
     lbl_8055F688 = 0;
-done:
+finish:
     return 0;
 }
 #pragma cplusplus reset
@@ -2203,28 +2195,31 @@ int fn_802837D4(int arg0, int arg1) {
     return arg0;
 }
 
-void *fn_80283938(void *arg0, int arg1) {
+/* Destroys this object: installs its vtable pair, clears the active state pointer, frees
+ * the owned field at +0x20, resets the embedded 3-word list at +0x40, and optionally
+ * frees the object itself when arg1 > 0. */
+void *fn_80283938(void *self, int shouldFree) {
     void *base;
     void *next;
-    void *field;
-    if (arg0 != 0) {
+    void *ownedField;
+    if (self != 0) {
         base = lbl_80348678;
         next = (char *)base + 0x50;
-        *(void **)arg0 = base;
-        *(void **)((char *)arg0 + 4) = next;
+        *(void **)self = base;
+        *(void **)((char *)self + 4) = next;
         lbl_8055F69C = 0;
-        field = *(void **)((char *)arg0 + 0x20);
-        if (field != 0) fn_80128668(field);
-        if ((unsigned int)arg0 + 0x40 != 0) {
-            if ((unsigned int)arg0 + 0x40 != 0) {
-                *(int *)((char *)arg0 + 0x40) = 0;
-                *(int *)((char *)arg0 + 0x44) = 0;
-                *(int *)((char *)arg0 + 0x48) = 0;
+        ownedField = *(void **)((char *)self + 0x20);
+        if (ownedField != 0) fn_80128668(ownedField);
+        if ((unsigned int)self + 0x40 != 0) {
+            if ((unsigned int)self + 0x40 != 0) {
+                *(int *)((char *)self + 0x40) = 0;
+                *(int *)((char *)self + 0x44) = 0;
+                *(int *)((char *)self + 0x48) = 0;
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldFree > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma cplusplus on
@@ -2296,6 +2291,7 @@ found:
 
 int fn_80283B58(void) {
     char *base = (char *)&lbl_804B2FF8;
+    struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
     int i;
     int idx;
     int count;
@@ -2304,8 +2300,8 @@ int fn_80283B58(void) {
     struct Fn80283E28Obj **p;
     struct Fn80283E28Obj *obj;
     idx = 0;
-    count = ((struct Fn80283E28List *)(base + 0xE0))->count;
-    items = *(struct Fn80283E28Obj ***)(base + 0xE0);
+    count = list->count;
+    items = list->items;
     value = (unsigned int)lbl_8055F698;
     p = items;
     for (; idx < count; ++idx) {
@@ -2322,12 +2318,12 @@ found:
             i++;
             if (i >= count) i = 0;
         } while (items[i]->sub == 0 && i != idx);
-        if (i >= 0 && i < ((struct Fn80283E28List *)(base + 0xE0))->count && items[i]->sub != 0) {
+        if (i >= 0 && i < list->count && items[i]->sub != 0) {
             lbl_8055F698 = (void *)items[i];
         } else {
             lbl_8055F698 = 0;
         }
-        if (i >= 0 && i < ((struct Fn80283E28List *)(base + 0xE0))->count && items[i]->sub != 0) {
+        if (i >= 0 && i < list->count && items[i]->sub != 0) {
             obj = items[i];
             if (obj != 0) {
                 char *s;
@@ -2722,33 +2718,38 @@ extern "C" void fn_80284760(void *arg0) {
         virtual const char *getName(int); virtual int getValue(int);
     };
     unsigned char *p = (unsigned char *)arg0;
+    int i;
     if (p[0x64] == 0) {
         p[0x18] = 1;
         *(int *)(p + 0x1c) = fn_80221EA8();
     }
     if (*(Widget **)(p + 0x60) != 0) {
+        int a = *(int *)(p + 4);
+        int b = *(int *)(p + 8);
+        float f;
         *(int *)(p + 0x20) = 0;
+        f = lbl_80564200;
         p[0x50] = 1;
-        *(int *)(p + 0x48) = *(int *)(p + 4);
-        *(int *)(p + 0x4c) = *(int *)(p + 8);
-        *(int *)(p + 0x6c) = *(int *)(p + 4);
-        *(float *)(p + 0x68) = lbl_80564200;
+        *(int *)(p + 0x48) = a;
+        *(int *)(p + 0x4c) = b;
+        *(int *)(p + 0x6c) = a;
+        *(float *)(p + 0x68) = f;
         if (*(Widget **)(p + 0x60) != 0) {
-            int sel, ok;
+            int sel;
             if ((*(Widget **)(p + 0x60))->isActive() != 0 && p[0xcc] == 0) {
                 fn_80236954(lbl_80348940);
                 fn_8027F204(lbl_80348940);
             }
-            ok = 0;
+            i = 0;
             sel = -(arg0 == (void *)lbl_8055F688);
             *(int *)(p + 0x70) = sel + 7;
             if ((*(Widget **)(p + 0x60))->ready(sel) != 0) {
                 if ((*(Widget **)(p + 0x60))->isActive() == 0 || fn_8023695C(lbl_80348940) != 0)
-                    ok = 1;
+                    i = 1;
             }
-            p[0xcd] = ok;
-            if (ok != 0) {
-                int i, active, n;
+            p[0xcd] = i;
+            if (i != 0) {
+                int active, n;
                 n = (*(Widget **)(p + 0x60))->count();
                 active = 0;
                 for (i = 0; i < n; i++) {
@@ -2761,12 +2762,13 @@ extern "C" void fn_80284760(void *arg0) {
             }
         }
         {
-            int i = (*(Widget **)(p + 0x60))->getId();
-            const char *name = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getName(i);
+            const char *name;
+            i = (*(Widget **)(p + 0x60))->getId();
+            name = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getName(i);
             if (name != 0) {
-                char *d = (char *)(p + 0x7e);
-                int n = 0x32;
                 unsigned char c;
+                int n = 0x32;
+                char *d = (char *)(p + 0x7e);
                 goto copy;
             check:
                 if (--n > 0) goto copy;
@@ -2831,7 +2833,7 @@ extern "C" void fn_802854E0(void *arg0) {
         else step = lbl_80564238;
         base=lbl_8056423C; one=lbl_80564240; zero=lbl_805641FC; half=lbl_80564228;
         for (q=p, i=0; i<(*(List **)(p+0x60))->count(); q+=4, i++) {
-            angle = base + step * ((float)i - (float)((*(List **)(p+0x60))->count()-1) * half);
+            angle = base + step * ((float)i - half * (float)((*(List **)(p+0x60))->count()-1));
             x = cx + radius * (float)cos(angle);
             y = cy + radius * (float)sin(angle);
             if ((*(List **)(p+0x60))->get(i)->active()) {
