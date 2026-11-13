@@ -364,19 +364,23 @@ void fn_80276BE4(void *arg0, void *arg1) {
     *(f32 *)arg1 = *(f32 *)(lbl_8049FE98 + 0x34);
 }
 
-void fn_80276CB0(void *arg0, int arg1) {
-    unsigned char *p;
+/* Points the current camera at the record named `name` - at the "rddefault"
+ * camera when the table holds no such record. With `blend` it starts a blend
+ * from the current camera into that one (blend record 0, mode 0x22, its own
+ * fov as the target scale); without, it copies the record over the current
+ * camera and cancels whatever blend record 0 was running. */
+void fn_80276CB0(char *name, int blend) {
+    struct CameraEntry *entry = (struct CameraEntry *)fn_80276A44(name);
 
-    p = (unsigned char *)fn_80276A44(arg0);
-    if (p == 0)
-        p = (unsigned char *)lbl_8055F598;
-    if (arg1 != 0) {
-        fn_80276098(lbl_8049FE98 + 4, p + 4,
-                    *(float *)(lbl_8049FE98 + 0x34), *(float *)(p + 0x34),
+    if (entry == 0)
+        entry = (struct CameraEntry *)pDefaultCamera;
+    if (blend != 0) {
+        fn_80276098(&currentCamera.rot[0][0], &entry->rot[0][0],
+                    currentCamera.fov, entry->fov,
                     lbl_8056404C, 0, 0x22);
     } else {
-        memcpy(lbl_8049FE98, p, 0x48);
-        *(unsigned char *)&lbl_8049FD58 = 0;
+        memcpy(&currentCamera, entry, sizeof(struct CameraEntry));
+        blendRecord0.active = 0;
     }
 }
 
