@@ -1557,28 +1557,33 @@ extern "C" s32 fn_8021AB88(void) { return 0; }
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" s32 fn_8021AB90(void *arg0, s32 arg1) {
+/* Cursor-icon widget message handler.  While the UI mode byte is set, the UP
+ * key steps the owning menu group's selection back to the previous widget and
+ * the DOWN key forward to the next; the RIGHT key, the key past DOWN and every
+ * other message (or the UI mode being clear) fall through to the base widget's
+ * handler.  Returns 1 when the key was used. */
+extern "C" s32 fn_8021AB90(void *widget, s32 message) {
     if (*(u8 *)fn_80216708() == 0)
         goto fallback;
-    if (arg1 == 0x127)
+    if (message == MENU_KEY_RIGHT)
         goto fallback;
-    if (arg1 >= 0x127)
+    if (message >= MENU_KEY_RIGHT)
         goto checkUpper;
-    if (arg1 < 0x126)
+    if (message < MENU_KEY_UP)
         goto fallback;
     goto callLower;
 checkUpper:
-    if (arg1 < 0x129)
+    if (message < MENU_KEY_DOWN + 1)
         goto callUpper;
     goto fallback;
 callLower:
-    fn_80217AC0(*(s32 *)((u8 *)arg0 + 0x2C));
+    SelectPrevWidget(*(s32 *)((u8 *)widget + 0x2C));
     return 1;
 callUpper:
-    fn_802179A0(*(s32 *)((u8 *)arg0 + 0x2C));
+    SelectNextWidget(*(s32 *)((u8 *)widget + 0x2C));
     return 1;
 fallback:
-    return fn_802192A4(arg0, arg1);
+    return BaseOnMessage(widget, message);
 }
 #pragma scheduling on
 #pragma pop
