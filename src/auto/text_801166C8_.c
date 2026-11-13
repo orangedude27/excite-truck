@@ -1949,6 +1949,10 @@ s32 fn_80119C0C(StreamPlayer *arg0, s32 start) {
 exit:
     return self->playing;
 }
+/* Pause (pause != 0) or resume the stream, and return the new paused flag.
+   Only a ring that is free-running on its own (looping) has its AX voices
+   stopped and restarted; resuming a stream whose data has all been handed to
+   the ring re-arms the voices at their current read position instead. */
 s32 fn_80119CB0(StreamPlayer *player, s32 pause) {
     s32 *paused;
     if (pause != 0) {
