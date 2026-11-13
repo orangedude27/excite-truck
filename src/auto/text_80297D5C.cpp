@@ -1063,8 +1063,8 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     if (count > 0) {
     char *cursor=(char*)out;
     for (int n=0; n<count; cursor+=0xc, n++) {
-       float product=m[3]*scale;
        float b=p[10], a=p[9], c=p[11];
+       float product=m[3]*scale;
        *(float *)(cursor+4)=a+product;
        *(float *)(cursor+8)=b+m[4]*scale;
        *(float *)(cursor+0xc)=c+m[5]*scale;
@@ -1889,6 +1889,25 @@ struct Note {
     Vec3f yAxis;    /* 0x0C */
     Vec3f zAxis;    /* 0x18 */
     Vec3f position; /* 0x24 */
+};
+
+/* One track's backfire.  The BackfireMan walks its slots with a 0x14 stride from
+ * the start of the object, so a slot begins four bytes into that stride (where
+ * the ExhaustTorchMan pointer sits for the first one). */
+struct BackfireSlot {
+    int state;      /* +0x00: 0 none, 1 waiting, 2 burning, 3 going out; bit 0x10 = do not repeat */
+    float rate;     /* +0x04: how long this backfire burns */
+    float timer;    /* +0x08: time left of it */
+    int sequence;   /* +0x0C: which note of the track comes next */
+    void *note;     /* +0x10: the note the backfire is lit on */
+};
+
+/* The "BackfireMan" object (lbl_8055F7D8, 0xA4 bytes, built by fn_8029B938): the
+ * "ExhaustTorchMan" it drives is at +0 and fn_80287B14() backfire slots follow
+ * from +4. */
+struct BackfireMan {
+    void *torches;              /* +0x00: the ExhaustTorchMan object */
+    struct BackfireSlot slot[1]; /* +0x04: one per track */
 };
 
 extern "C" void *fn_802C86DC(void);
