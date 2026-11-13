@@ -24733,16 +24733,18 @@ extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
     data->pos += count;
 }
 
-extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
-    if (arg2 == 1) {
-        *(s32 *)((u8 *)arg0 + 0) = arg1;
-        *(s32 *)((u8 *)arg0 + 4) = (s32)(arg1 + fn_800A4A8C(arg1));
-    } else if (arg2 == 2) {
-        *(s32 *)((u8 *)arg0 + 0) = arg1;
-        *(s32 *)((u8 *)arg0 + 4) = (s32)(arg1 + (fn_800A4B54(arg1) * 2));
+/* Initialize a path/string range object with begin/end pointers for a byte (1)
+ * or wide-char (2) string, and record the selected mode. Returns 0. */
+extern "C" s32 fn_800A4E80(void *rangeObj, s32 stringPtr, u32 mode) {
+    if (mode == 1) {
+        *(s32 *)((u8 *)rangeObj + 0) = stringPtr;
+        *(s32 *)((u8 *)rangeObj + 4) = (s32)(stringPtr + fn_800A4A8C(stringPtr));
+    } else if (mode == 2) {
+        *(s32 *)((u8 *)rangeObj + 0) = stringPtr;
+        *(s32 *)((u8 *)rangeObj + 4) = (s32)(stringPtr + (fn_800A4B54(stringPtr) * 2));
     }
-        *(u32 *)((u8 *)arg0 + 0xC) = arg2;
-      
+        *(u32 *)((u8 *)rangeObj + 0xC) = mode;
+
       return 0;
 }
 
