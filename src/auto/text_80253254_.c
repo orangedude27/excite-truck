@@ -419,6 +419,7 @@ extern "C" void fn_802E317C(const char *, ...);
 __declspec(section ".sdata") extern char lbl_8055C150[], lbl_8055C158[], lbl_8055C160[], lbl_8055C168[], lbl_8055C16C[];
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80253890(void *arg0, void *arg1) {
     struct Keys { int v[4]; };
     extern struct Keys lbl_802FA5A8;
