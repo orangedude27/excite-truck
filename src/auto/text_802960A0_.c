@@ -371,13 +371,14 @@ int fn_802969B4(unsigned int arg0, unsigned int arg1, float farg0) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling invalid_target
+// Linearly interpolates two packed RGBA colors, byte by byte, by blend factor arg2.
 int fn_80296A10(unsigned int arg0, unsigned int arg1, float arg2) {
-    int a = fn_802969B4(arg0 & 0xFF, arg1 & 0xFF, arg2);
-    int b = fn_802969B4((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
-    int c = fn_802969B4((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
-    int d = fn_802969B4(arg0 >> 24, arg1 >> 24, arg2);
-    int lo = (a & 0xFF) | ((b & 0xFF) << 8);
-    int hi = ((d & 0xFF) << 24) | ((c & 0xFF) << 16);
+    int byte0 = fn_802969B4(arg0 & 0xFF, arg1 & 0xFF, arg2);
+    int byte1 = fn_802969B4((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
+    int byte2 = fn_802969B4((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
+    int byte3 = fn_802969B4(arg0 >> 24, arg1 >> 24, arg2);
+    int lo = (byte0 & 0xFF) | ((byte1 & 0xFF) << 8);
+    int hi = ((byte3 & 0xFF) << 24) | ((byte2 & 0xFF) << 16);
     return lo | hi;
 }
 #pragma pop
