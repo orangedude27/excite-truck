@@ -1,4 +1,5 @@
 extern float lbl_80561CA0, lbl_80561CA4, lbl_80561CA8;
+extern void fn_8017D160(void *, unsigned char *, unsigned char *, int *, int *, float);
 extern float lbl_80561CB0, lbl_80561CB4, lbl_80561CB8, lbl_80561CBC;
 static inline void MultVecSR_inl(const float *m, const float *src, float *dst) {
     float x, y, z;
@@ -528,211 +529,7 @@ extern int fn_801BF1B8(int, int), fn_801CF064(void);
 extern void fn_8018F6F8(void *), fn_801B8100(void *, int, int), fn_8013605C(void *);
 extern void *fn_801B2ED0(int);
 extern void *memset(void *, int, unsigned long);
-void fn_801838C8(void *arg0) {
- char *p = (char *)arg0, *r, *q; float zero, one; int i; void *obj, *v, *path;
- *(float *)(p+0x5e4)=lbl_80561CAC;
- fn_8018BE54(p,lbl_80561CD0);
- one=lbl_80561CD0; zero=lbl_80561CAC;
- *(float *)(p+0x5ec)=zero; *(float *)(p+0x5f0)=one;
- *(float *)(p+0x26e4) = zero;
- *(float *)(p+0x26e8) = zero;
- *(float *)(p+0x26ec) = zero;
- *(float *)(p+0x26f0) = zero;
- *(float *)(p+0x26f4) = zero;
- *(float *)(p+0x26f8) = zero;
- *(float *)(p+0x26fc) = zero;
- fn_80189C64(p);
- *(int *)(p+0x24)=*(int *)(p+0x28); fn_8018B0D0(p,0);
- zero=lbl_80561CAC; one=lbl_80561CD0;
- *(volatile float *)(p+0x25e8) = zero;
- *(float *)(p+0x25d8) = zero;
- *(float *)(p+0x25d4) = zero;
- *(float *)(p+0x25d0) = zero;
- *(float *)(p+0x25cc) = zero;
- *(float *)(p+0x25ec) = zero;
- *(float *)(p+0x25e4) = zero;
- *(float *)(p+0x25e0) = zero;
- *(float *)(p+0x25dc) = zero;
- *(float *)(p+0x25e8)=one;
- *(float *)(p+0x25f8) = zero;
- *(float *)(p+0x25f4) = zero;
- *(float *)(p+0x25f0) = zero;
- *(float *)(p+0x25fc) = zero;
- *(float *)(p+0x2604) = zero;
- *(float *)(p+0x2600) = zero;
- *(float *)(p+0x2608) = zero;
- *(char *)(p+0x260c) = 0;
- *(char *)(p+0x260d) = 0;
- *(char *)(p+0x260e) = 0;
- *(float *)(p+0x2614) = zero;
- *(float *)(p+0x2618) = zero;
- *(float *)(p+0x2594) = zero;
- *(float *)(p+0x2598) = zero;
- *(float *)(p+0x261c) = zero;
- *(float *)(p+0x2588) = zero;
- *(float *)(p+0x2590) = zero;
- *(float *)(p+0x258c)=lbl_80561D90;
- *(char *)(p+0x259c) = 0;
- *(char *)(p+0x259d) = 0;
- *(float *)(p+0x25bc) = zero;
- *(float *)(p+0x25c4) = zero;
- *(float *)(p+0x25a0) = zero;
- *(float *)(p+0x25a4) = zero;
- *(float *)(p+0x25a8)=one; *(float *)(p+0x25ac)=zero;
- *(int *)(p+0x2620)=0;
- *(float *)(p+0x2654) = zero;
- *(float *)(p+0x2658) = zero;
- *(float *)(p+0x265c) = zero;
- *(float *)(p+0x2660) = zero;
- *(float *)(p+0x2664) = zero;
- *(float *)(p+0x2668) = zero;
- *(float *)(p+0x266c) = zero;
- *(float *)(p+0x2670) = zero;
- *(float *)(p+0x2674) = zero;
- *(int *)(p+0x2678)=0; *(int *)(p+0x267c)=0; *(float *)(p+0x2688)=zero;
- *(int *)(p+0x268c)=0;
- *(float *)(p+0x2690) = zero;
- *(float *)(p+0x2694) = zero;
- *(float *)(p+0x2698) = zero;
- *(float *)(p+0x269c) = zero;
- *(float *)(p+0x26a8) = zero;
- memset(p+0x26a0,0,8);
- zero=lbl_80561CAC;
- *(int *)(p+0x2648)=0; *(char *)(p+0x2624)=0; *(char *)(p+0x2625)=0; *(int *)(p+0x263c)=0; *(int *)(p+0x2638)=0;
- *(float *)(p+0x2628) = zero;
- *(float *)(p+0x262c) = zero;
- *(float *)(p+0x2630) = zero;
- *(float *)(p+0x2634) = zero;
- *(int *)(p+0x2644)=0; *(char *)(p+0x2640)=0; *(float *)(p+0x264c)=zero; *(float *)(p+0x2650)=zero; *(char *)(p+0x26ac)=0;
- fn_801BF1B8(*(int *)(p+0x1ec),0);
- zero=lbl_80561CAC; *(int *)(p+0x26b0)=-1;
- *(float *)(p+0x26b4)=zero; *(float *)(p+0x26b8)=zero; *(float *)(p+0x26bc)=zero;
- ((void (*)(int, void *))fn_801BDA74)(*(int *)(p+0x1ec),p+0x32c);
- zero=lbl_80561CAC; r=p+0x5fc; q=p;
- for (i=0;i<0xa2;i++) {
-   memset(r,0,12);
-   *(float *)(q+0x5fc)=zero; *(float *)(q+0x600)=zero; *(float *)(q+0x604)=zero;
-   *(float *)(q+0xd94)=zero; *(float *)(q+0xd98)=zero; *(float *)(q+0xd9c)=zero;
-   r+=12; q+=12;
- }
- zero=lbl_80561CAC; one=lbl_80561CD0; q=p+0x152c;
- for(i=0;i<9;i++) {
-   *(float *)(q+0x10)=zero; *(float *)(q+0xc)=zero; *(int *)(q+0x7c)=0; *(char *)(q+0x78)=0;
- *(float *)(q+0x18) = one;
- *(float *)(q+0x1c) = zero;
- *(float *)(q+0x20) = zero;
- *(float *)(q+0x24) = zero;
- *(float *)(q+0x28) = one;
- *(float *)(q+0x2c) = zero;
- *(float *)(q+0x30) = zero;
- *(float *)(q+0x34) = zero;
- *(float *)(q+0x38) = one;
- *(float *)(q+0x3c) = zero;
- *(float *)(q+0x40) = zero;
- *(float *)(q+0x44) = zero;
- *(float *)(q+0x48) = one;
- *(float *)(q+0x4c) = zero;
- *(float *)(q+0x50) = zero;
- *(float *)(q+0x54) = zero;
- *(float *)(q+0x58) = one;
- *(float *)(q+0x5c) = zero;
- *(float *)(q+0x60) = zero;
- *(float *)(q+0x64) = zero;
- *(float *)(q+0x68) = one;
- *(float *)(q+0x6c) = zero;
- *(float *)(q+0x70) = zero;
- *(float *)(q+0x74) = zero;
-   q+=0x80;
-   *(float *)(q+0x10)=zero; *(float *)(q+0xc)=zero; *(int *)(q+0x7c)=0; *(char *)(q+0x78)=0;
- *(float *)(q+0x18) = one;
- *(float *)(q+0x1c) = zero;
- *(float *)(q+0x20) = zero;
- *(float *)(q+0x24) = zero;
- *(float *)(q+0x28) = one;
- *(float *)(q+0x2c) = zero;
- *(float *)(q+0x30) = zero;
- *(float *)(q+0x34) = zero;
- *(float *)(q+0x38) = one;
- *(float *)(q+0x3c) = zero;
- *(float *)(q+0x40) = zero;
- *(float *)(q+0x44) = zero;
- *(float *)(q+0x48) = one;
- *(float *)(q+0x4c) = zero;
- *(float *)(q+0x50) = zero;
- *(float *)(q+0x54) = zero;
- *(float *)(q+0x58) = one;
- *(float *)(q+0x5c) = zero;
- *(float *)(q+0x60) = zero;
- *(float *)(q+0x64) = zero;
- *(float *)(q+0x68) = one;
- *(float *)(q+0x6c) = zero;
- *(float *)(q+0x70) = zero;
- *(float *)(q+0x74) = zero;
-   q+=0x80;
- }
- *(int *)(p+0x1e3c)=0; *(int *)(p+0x1e40)=0; q=p+0x23ac;
- for(i=0;i<2;i++) {
-   *(float *)(q+8)=zero; *(float *)(q+4)=zero; *(float *)q=zero;
- *(float *)(q+0x18) = zero;
- *(float *)(q+0x14) = zero;
- *(float *)(q+0x10) = zero;
- *(float *)(q+0x1c) = zero;
- *(float *)(q+0xc) = zero;
- *(char *)(q+0x20)=0;
- *(float *)(q+0x24) = zero;
- *(float *)(q+0x28) = zero;
- *(float *)(q+0x2c) = zero;
- *(float *)(q+0x30) = zero;
- *(float *)(q+0x34) = zero;
- *(float *)(q+0x38) = zero;
- *(float *)(q+0x44) = zero;
- *(float *)(q+0x48) = zero;
- *(float *)(q+0x4c) = zero;
- *(float *)(q+0x50) = zero;
- *(float *)(q+0x54) = zero;
- *(float *)(q+0x58) = zero;
- *(float *)(q+0x5c)=one; *(float *)(q+0x60)=zero; *(int *)(q+0x64)=0;
- *(float *)(q+0x68)=zero; *(char *)(q+0x6c)=0; *(int *)(q+0x70)=0;
-   q+=0x74;
-   *(float *)(q+8)=zero; *(float *)(q+4)=zero; *(float *)q=zero;
- *(float *)(q+0x18) = zero;
- *(float *)(q+0x14) = zero;
- *(float *)(q+0x10) = zero;
- *(float *)(q+0x1c) = zero;
- *(float *)(q+0xc) = zero;
- *(char *)(q+0x20)=0;
- *(float *)(q+0x24) = zero;
- *(float *)(q+0x28) = zero;
- *(float *)(q+0x2c) = zero;
- *(float *)(q+0x30) = zero;
- *(float *)(q+0x34) = zero;
- *(float *)(q+0x38) = zero;
- *(float *)(q+0x44) = zero;
- *(float *)(q+0x48) = zero;
- *(float *)(q+0x4c) = zero;
- *(float *)(q+0x50) = zero;
- *(float *)(q+0x54) = zero;
- *(float *)(q+0x58) = zero;
- *(float *)(q+0x5c)=one; *(float *)(q+0x60)=zero; *(int *)(q+0x64)=0;
- *(float *)(q+0x68)=zero; *(char *)(q+0x6c)=0; *(int *)(q+0x70)=0;
-   q+=0x74;
- }
- obj=fn_801B2ED0(*(int *)(p+0x1ec));
- v=(*(void *(**)(void *))(*(char **)obj+0x18))(obj);
- *(int *)((char *)v+0xc)=0;
- fn_801B8100(p+0x274,*(int *)(p+0x1ec),*(int *)(p+0x1f0));
- (*(void (**)(void *, void *))(*(char **)p+0x54))(p,p+0x274);
- fn_8013605C(v);
- if (fn_801CF064()==0) path=p+0x1e44; else path=p+0x20f8;
- fn_8018F2C0(p,path);
- obj=*(void **)(p+0x268);
- (*(void (**)(void *))(*(char **)obj+0x28))(obj);
- if (*fn_801E1F44()==1) fn_8018F6F8(p);
- *(float *)(p+0x26cc)=lbl_80561CD0; *(float *)(p+0x26d0)=lbl_80561CD0;
- *(int *)(p+0x26d4)=0; *(float *)(p+0x26d8)=lbl_80561D94; *(float *)(p+0x26dc)=lbl_80561D94; *(float *)(p+0x2684)=lbl_80561D98;
- obj=*(void **)(p+0x2584);
- (*(void (**)(void *))(*(char **)obj+0x10))(obj);
-}
+void fn_801838C8(void *arg0) { char *p = (char *)arg0, *r, *q; float zero, one; int i; void *obj, *v, *path; *(float *)(p+0x5e4)=lbl_80561CAC; fn_8018BE54(p,lbl_80561CD0); one=lbl_80561CD0; zero=lbl_80561CAC; *(float *)(p+0x5ec)=zero; *(float *)(p+0x5f0)=one; *(float *)(p+0x26e4) = zero; *(float *)(p+0x26e8) = zero; *(float *)(p+0x26ec) = zero; *(float *)(p+0x26f0) = zero; *(float *)(p+0x26f4) = zero; *(float *)(p+0x26f8) = zero; *(float *)(p+0x26fc) = zero; fn_80189C64(p); *(int *)(p+0x24)=*(int *)(p+0x28); fn_8018B0D0(p,0); zero=lbl_80561CAC; one=lbl_80561CD0; *(volatile float *)(p+0x25e8) = zero; *(float *)(p+0x25d8) = zero; *(float *)(p+0x25d4) = zero; *(float *)(p+0x25d0) = zero; *(float *)(p+0x25cc) = zero; *(float *)(p+0x25ec) = zero; *(float *)(p+0x25e4) = zero; *(float *)(p+0x25e0) = zero; *(float *)(p+0x25dc) = zero; *(float *)(p+0x25e8)=one; *(float *)(p+0x25f8) = zero; *(float *)(p+0x25f4) = zero; *(float *)(p+0x25f0) = zero; *(float *)(p+0x25fc) = zero; *(float *)(p+0x2604) = zero; *(float *)(p+0x2600) = zero; *(float *)(p+0x2608) = zero; *(char *)(p+0x260c) = 0; *(char *)(p+0x260d) = 0; *(char *)(p+0x260e) = 0; *(float *)(p+0x2614) = zero; *(float *)(p+0x2618) = zero; *(float *)(p+0x2594) = zero; *(float *)(p+0x2598) = zero; *(float *)(p+0x261c) = zero; *(float *)(p+0x2588) = zero; *(float *)(p+0x2590) = zero; *(float *)(p+0x258c)=lbl_80561D90; *(char *)(p+0x259c) = 0; *(char *)(p+0x259d) = 0; *(float *)(p+0x25bc) = zero; *(float *)(p+0x25c4) = zero; *(float *)(p+0x25a0) = zero; *(float *)(p+0x25a4) = zero; *(float *)(p+0x25a8)=one; *(float *)(p+0x25ac)=zero; *(int *)(p+0x2620)=0; *(float *)(p+0x2654) = zero; *(float *)(p+0x2658) = zero; *(float *)(p+0x265c) = zero; *(float *)(p+0x2660) = zero; *(float *)(p+0x2664) = zero; *(float *)(p+0x2668) = zero; *(float *)(p+0x266c) = zero; *(float *)(p+0x2670) = zero; *(float *)(p+0x2674) = zero; *(int *)(p+0x2678)=0; *(int *)(p+0x267c)=0; *(float *)(p+0x2688)=zero; *(int *)(p+0x268c)=0; *(float *)(p+0x2690) = zero; *(float *)(p+0x2694) = zero; *(float *)(p+0x2698) = zero; *(float *)(p+0x269c) = zero; *(float *)(p+0x26a8) = zero; memset(p+0x26a0,0,8); zero=lbl_80561CAC; *(int *)(p+0x2648)=0; *(char *)(p+0x2624)=0; *(char *)(p+0x2625)=0; *(int *)(p+0x263c)=0; *(int *)(p+0x2638)=0; *(float *)(p+0x2628) = zero; *(float *)(p+0x262c) = zero; *(float *)(p+0x2630) = zero; *(float *)(p+0x2634) = zero; *(int *)(p+0x2644)=0; *(char *)(p+0x2640)=0; *(float *)(p+0x264c)=zero; *(float *)(p+0x2650)=zero; *(char *)(p+0x26ac)=0; fn_801BF1B8(*(int *)(p+0x1ec),0); zero=lbl_80561CAC; *(int *)(p+0x26b0)=-1; *(float *)(p+0x26b4)=zero; *(float *)(p+0x26b8)=zero; *(float *)(p+0x26bc)=zero; ((void (*)(int, void *))fn_801BDA74)(*(int *)(p+0x1ec),p+0x32c); zero=lbl_80561CAC; r=p+0x5fc; q=p; for (i=0;i<0xa2;i++) { memset(r,0,12); *(float *)(q+0x5fc)=zero; *(float *)(q+0x600)=zero; *(float *)(q+0x604)=zero; *(float *)(q+0xd94)=zero; *(float *)(q+0xd98)=zero; *(float *)(q+0xd9c)=zero; r+=12; q+=12; } zero=lbl_80561CAC; one=lbl_80561CD0; q=p+0x152c; for(i=0;i<9;i++) { *(float *)(q+0x10)=zero; *(float *)(q+0xc)=zero; *(int *)(q+0x7c)=0; *(char *)(q+0x78)=0; *(float *)(q+0x18) = one; *(float *)(q+0x1c) = zero; *(float *)(q+0x20) = zero; *(float *)(q+0x24) = zero; *(float *)(q+0x28) = one; *(float *)(q+0x2c) = zero; *(float *)(q+0x30) = zero; *(float *)(q+0x34) = zero; *(float *)(q+0x38) = one; *(float *)(q+0x3c) = zero; *(float *)(q+0x40) = zero; *(float *)(q+0x44) = zero; *(float *)(q+0x48) = one; *(float *)(q+0x4c) = zero; *(float *)(q+0x50) = zero; *(float *)(q+0x54) = zero; *(float *)(q+0x58) = one; *(float *)(q+0x5c) = zero; *(float *)(q+0x60) = zero; *(float *)(q+0x64) = zero; *(float *)(q+0x68) = one; *(float *)(q+0x6c) = zero; *(float *)(q+0x70) = zero; *(float *)(q+0x74) = zero; q+=0x80; *(float *)(q+0x10)=zero; *(float *)(q+0xc)=zero; *(int *)(q+0x7c)=0; *(char *)(q+0x78)=0; *(float *)(q+0x18) = one; *(float *)(q+0x1c) = zero; *(float *)(q+0x20) = zero; *(float *)(q+0x24) = zero; *(float *)(q+0x28) = one; *(float *)(q+0x2c) = zero; *(float *)(q+0x30) = zero; *(float *)(q+0x34) = zero; *(float *)(q+0x38) = one; *(float *)(q+0x3c) = zero; *(float *)(q+0x40) = zero; *(float *)(q+0x44) = zero; *(float *)(q+0x48) = one; *(float *)(q+0x4c) = zero; *(float *)(q+0x50) = zero; *(float *)(q+0x54) = zero; *(float *)(q+0x58) = one; *(float *)(q+0x5c) = zero; *(float *)(q+0x60) = zero; *(float *)(q+0x64) = zero; *(float *)(q+0x68) = one; *(float *)(q+0x6c) = zero; *(float *)(q+0x70) = zero; *(float *)(q+0x74) = zero; q+=0x80; } *(int *)(p+0x1e3c)=0; *(int *)(p+0x1e40)=0; q=p+0x23ac; for(i=0;i<2;i++) { *(float *)(q+8)=zero; *(float *)(q+4)=zero; *(float *)q=zero; *(float *)(q+0x18) = zero; *(float *)(q+0x14) = zero; *(float *)(q+0x10) = zero; *(float *)(q+0x1c) = zero; *(float *)(q+0xc) = zero; *(char *)(q+0x20)=0; *(float *)(q+0x24) = zero; *(float *)(q+0x28) = zero; *(float *)(q+0x2c) = zero; *(float *)(q+0x30) = zero; *(float *)(q+0x34) = zero; *(float *)(q+0x38) = zero; *(float *)(q+0x44) = zero; *(float *)(q+0x48) = zero; *(float *)(q+0x4c) = zero; *(float *)(q+0x50) = zero; *(float *)(q+0x54) = zero; *(float *)(q+0x58) = zero; *(float *)(q+0x5c)=one; *(float *)(q+0x60)=zero; *(int *)(q+0x64)=0; *(float *)(q+0x68)=zero; *(char *)(q+0x6c)=0; *(int *)(q+0x70)=0; q+=0x74; *(float *)(q+8)=zero; *(float *)(q+4)=zero; *(float *)q=zero; *(float *)(q+0x18) = zero; *(float *)(q+0x14) = zero; *(float *)(q+0x10) = zero; *(float *)(q+0x1c) = zero; *(float *)(q+0xc) = zero; *(char *)(q+0x20)=0; *(float *)(q+0x24) = zero; *(float *)(q+0x28) = zero; *(float *)(q+0x2c) = zero; *(float *)(q+0x30) = zero; *(float *)(q+0x34) = zero; *(float *)(q+0x38) = zero; *(float *)(q+0x44) = zero; *(float *)(q+0x48) = zero; *(float *)(q+0x4c) = zero; *(float *)(q+0x50) = zero; *(float *)(q+0x54) = zero; *(float *)(q+0x58) = zero; *(float *)(q+0x5c)=one; *(float *)(q+0x60)=zero; *(int *)(q+0x64)=0; *(float *)(q+0x68)=zero; *(char *)(q+0x6c)=0; *(int *)(q+0x70)=0; q+=0x74; } obj=fn_801B2ED0(*(int *)(p+0x1ec)); v=(*(void *(**)(void *))(*(char **)obj+0x18))(obj); *(int *)((char *)v+0xc)=0; fn_801B8100(p+0x274,*(int *)(p+0x1ec),*(int *)(p+0x1f0)); (*(void (**)(void *, void *))(*(char **)p+0x54))(p,p+0x274); fn_8013605C(v); if (fn_801CF064()==0) path=p+0x1e44; else path=p+0x20f8; fn_8018F2C0(p,path); obj=*(void **)(p+0x268); (*(void (**)(void *))(*(char **)obj+0x28))(obj); if (*fn_801E1F44()==1) fn_8018F6F8(p); *(float *)(p+0x26cc)=lbl_80561CD0; *(float *)(p+0x26d0)=lbl_80561CD0; *(int *)(p+0x26d4)=0; *(float *)(p+0x26d8)=lbl_80561D94; *(float *)(p+0x26dc)=lbl_80561D94; *(float *)(p+0x2684)=lbl_80561D98; obj=*(void **)(p+0x2584); (*(void (**)(void *))(*(char **)obj+0x10))(obj); }
 #pragma pop
 
 /* Sync vehicle/replay state at 0x1E44 with the object at 0x328; when in mode 2 and not a PCAR record with flag 0x4 set, apply an adjustment and copy the state back. */
@@ -1273,6 +1070,7 @@ vel[5] = (c < d) ? c : d;
 }
 }
 }
+#pragma cplusplus off
 #pragma pop
 
 int fn_80188E24(void) { return 0; }
@@ -2517,17 +2315,16 @@ static inline float BA54_Clamp(float lo, float x) {
 }
 
 extern "C" int fn_8018BA54(void *arg0, void *arg1) {
+    register float var_f2;
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f3;
     float color, value3, second_offset, second_scale, scaled1, middle1, output1;
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
-    register float var_f2;
     float var_f3, var_f3_2, var_f4;
     float loop_y_scale, loop_x_scale, loop_x, loop_height_scale, loop_height;
     float loop_scale, loop_base, loop_max, loop_min;
     int i, var_r5;
     unsigned char *var_r3, *var_r4;
     void *obj, *ret;
-
     fn_8017D274();
     var_f2 = lbl_80561CD0;
     temp_f0 = (*(float *)((char *)arg0 + 0x25D0) - lbl_80561F58) / lbl_80561F5C;
@@ -2562,7 +2359,6 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     ret = ((BA54CallObj *)obj)->method4(color, lbl_80561CDC);
     *(int *)((char *)arg1 + 0x40) = ((int (*)(void *, void *))fn_801363A0)(ret, (char *)ret + 4);
     if (*(unsigned char *)((char *)arg1 + 0x3C) == 0) *(unsigned char *)((char *)arg1 + 0x3C) = 1;
-
     *(short *)((char *)arg1 + 0x3A) = *(int *)((char *)arg0 + 4);
     loop_min = lbl_80561CAC;
     loop_max = lbl_80561CD0;
