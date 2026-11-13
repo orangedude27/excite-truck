@@ -131,28 +131,31 @@ void *fn_801F1DE4(void) {
     return (void *)p;
 }
 #pragma scheduling on
+/* Allocates and initializes a 0x40-byte "Sky" object (vtable lbl_8033A928)
+ * with a 3x3 identity matrix (stored as 12 floats starting at +0x0C),
+ * flags at +0x08/+0x3C, and zeros elsewhere. */
 void fn_801F1E24(void) {
-    void *p = fn_801284F8(0x40, &lbl_8055B120);
-    if (p != 0) {
-        float f0;
-        float f1;
-        f1 = 1.0f;
-        *(void **)p = &lbl_8033A928;
-        f0 = 0.0f;
-        *(int *)((char *)p + 0x3C) = 0;
-        *(float *)((char *)p + 0xC) = f1;
-        *(float *)((char *)p + 0x10) = f0;
-        *(float *)((char *)p + 0x14) = f0;
-        *(float *)((char *)p + 0x18) = f0;
-        *(float *)((char *)p + 0x1C) = f1;
-        *(float *)((char *)p + 0x20) = f0;
-        *(float *)((char *)p + 0x24) = f0;
-        *(float *)((char *)p + 0x28) = f0;
-        *(float *)((char *)p + 0x2C) = f1;
-        *(float *)((char *)p + 0x30) = f0;
-        *(float *)((char *)p + 0x34) = f0;
-        *(float *)((char *)p + 0x38) = f0;
-        *(int *)((char *)p + 8) = 1;
+    void *object = fn_801284F8(0x40, &lbl_8055B120);
+    if (object != 0) {
+        float zero;
+        float one;
+        one = 1.0f;
+        *(void **)object = &lbl_8033A928;
+        zero = 0.0f;
+        *(int *)((char *)object + 0x3C) = 0;
+        *(float *)((char *)object + 0xC) = one;
+        *(float *)((char *)object + 0x10) = zero;
+        *(float *)((char *)object + 0x14) = zero;
+        *(float *)((char *)object + 0x18) = zero;
+        *(float *)((char *)object + 0x1C) = one;
+        *(float *)((char *)object + 0x20) = zero;
+        *(float *)((char *)object + 0x24) = zero;
+        *(float *)((char *)object + 0x28) = zero;
+        *(float *)((char *)object + 0x2C) = one;
+        *(float *)((char *)object + 0x30) = zero;
+        *(float *)((char *)object + 0x34) = zero;
+        *(float *)((char *)object + 0x38) = zero;
+        *(int *)((char *)object + 8) = 1;
     }
 }
 #pragma push
