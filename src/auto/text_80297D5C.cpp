@@ -1519,6 +1519,22 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
     }
 }
 
+static inline void XformMultVec(const float *m, const float *src, float *dst) {
+    if (dst == src) {
+        float x = src[0], y = src[1], z = src[2];
+        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
+        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+    dst[0] += m[9];
+    dst[1] += m[10];
+    dst[2] += m[11];
+}
+
 #pragma push
 #pragma scheduling reset
 extern "C" void fn_8029AAE0(int arg0, int arg1, void* arg2) {
@@ -1526,10 +1542,10 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void* arg2) {
     XformData *d = (XformData *)arg2;
     fn_80288208(arg1);
     if (out == d->v0) {
-        float m3 = d->m[3], y = d->v0[1], m0 = d->m[0], x = d->v0[0], m4 = d->m[4], m1 = d->m[1], m6 = d->m[6], z = d->v0[2], m5 = d->m[5], m2 = d->m[2], m7 = d->m[7], m8 = d->m[8];
-        out[0] = y * m3 + x * m0 + z * m6;
-        out[1] = y * m4 + x * m1 + z * m7;
-        out[2] = y * m5 + x * m2 + z * m8;
+        float m3 = d->m[3], x = d->v0[0], m0 = d->m[0], y = d->v0[1], m4 = d->m[4], m1 = d->m[1], m6 = d->m[6], z = d->v0[2], m7 = d->m[7], m2 = d->m[2], m5 = d->m[5], m8 = d->m[8];
+        out[0] = z * m6 + (x * m0 + y * m3);
+        out[1] = z * m7 + (x * m1 + y * m4);
+        out[2] = z * m8 + (x * m2 + y * m5);
     } else {
         {
             float m3 = d->m[3], m0 = d->m[0], m6 = d->m[6];
@@ -1557,10 +1573,10 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void* arg2) {
     }
     out += 3;
     if (out == d->v1) {
-        float m3 = d->m[3], y = d->v1[1], m0 = d->m[0], x = d->v1[0], m4 = d->m[4], m1 = d->m[1], m6 = d->m[6], z = d->v1[2], m5 = d->m[5], m2 = d->m[2], m7 = d->m[7], m8 = d->m[8];
-        out[0] = y * m3 + x * m0 + z * m6;
-        out[1] = y * m4 + x * m1 + z * m7;
-        out[2] = y * m5 + x * m2 + z * m8;
+        float m3 = d->m[3], x = d->v1[0], m0 = d->m[0], y = d->v1[1], m4 = d->m[4], m1 = d->m[1], m6 = d->m[6], z = d->v1[2], m7 = d->m[7], m2 = d->m[2], m5 = d->m[5], m8 = d->m[8];
+        out[0] = z * m6 + (x * m0 + y * m3);
+        out[1] = z * m7 + (x * m1 + y * m4);
+        out[2] = z * m8 + (x * m2 + y * m5);
     } else {
         {
             float m3 = d->m[3], m0 = d->m[0], m6 = d->m[6];
