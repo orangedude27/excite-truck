@@ -903,14 +903,20 @@ extern void fn_802D9230(void *);
 void fn_802D92B0(void) {
     fn_802D9230(lbl_8055FE1C);
 }
-void fn_802D9230(void *arg0) {
-    char *obj;
-    lbl_8055FE1C = arg0;
-    if (*(unsigned int *)((char *)arg0 + 0x70)) fn_802E317C(lbl_8034C5F0, arg0);
-    obj = (char *)arg0;
-    GXLoadTexObj(obj + 0x24, 2);
-    if (((unsigned char *)arg0)[0xCC]) GXLoadTexObj(obj + 0x78, 4);
-    lbl_804C5700[11] = ((unsigned char *)arg0)[0xCC];
+/* Bind a drgc texture record as the scene's environment map: remember it as the
+ * active envmap (fn_802D92B0 and the GX state reset re-apply it from there),
+ * complain if it carries CLUT data - an envmap may not be paletted - then load
+ * its primary GXTexObj into TEX2 and, for a format that ships one, its
+ * alpha-plane texture into TEX4, telling the render request block about that
+ * second stage. */
+void fn_802D9230(void *texRecord) {
+    DrTexRecord *tex;
+    lbl_8055FE1C = texRecord;
+    if (((DrTexRecord *)texRecord)->rgbClut != 0) fn_802E317C(lbl_8034C5F0, texRecord);
+    tex = (DrTexRecord *)texRecord;
+    GXLoadTexObj(tex->texObj, DRTEXMAP_ENV);
+    if (tex->hasAlphaTex != 0) GXLoadTexObj(tex->alphaTexObj, DRTEXMAP_ENV_ALPHA);
+    lbl_804C5700[DRREQ_ENV_ALPHA_TEX] = tex->hasAlphaTex;
 }
 
 extern void fn_802CFEEC(void);
