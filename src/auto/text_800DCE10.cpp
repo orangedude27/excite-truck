@@ -317,15 +317,16 @@ void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 inde
     GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(this_ptr, arg1, index >> 1);
 }
 
-void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index) {
-    if (index >= 2) {
+void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *outColor, const void *textBox, u32 colorIndex) {
+    /* Get one of the TextBox text colors (0 or 1) from +0xD8 by copying its 4 RGBA bytes into outColor. */
+    if (colorIndex >= 2) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320B8C, 0x5f, lbl_80320B5C);
     }
-    const u8 *base = (const u8 *)src + (index * 4);
-    ((u8 *)this_ptr)[0] = base[0xD8];
-    ((u8 *)this_ptr)[1] = base[0xD9];
-    ((u8 *)this_ptr)[2] = base[0xDA];
-    ((u8 *)this_ptr)[3] = base[0xDB];
+    const u8 *base = (const u8 *)textBox + (colorIndex * 4);
+    ((u8 *)outColor)[0] = base[0xD8];
+    ((u8 *)outColor)[1] = base[0xD9];
+    ((u8 *)outColor)[2] = base[0xDA];
+    ((u8 *)outColor)[3] = base[0xDB];
 }
 
 void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
