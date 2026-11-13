@@ -167,8 +167,7 @@ void fn_801EADD8(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801EAE68(void *arg0, void *arg1) {
-    s16 half;
-    s32 o, n, m, l, k, j, i, h, g, f, e, d, c, b, a;
+    s32 o, n, m, half, l, k, j, i, h, g, f, e, d, c, b, a;
     fn_801EABA8(arg0, arg1);
     a = *(volatile s32 *)((char *)arg1 + 0x00);
     b = *(volatile s32 *)((char *)arg1 + 0x04);
@@ -198,7 +197,7 @@ void fn_801EAE68(void *arg0, void *arg1) {
     *(s32 *)((char *)arg0 + 0x60) = j;
     *(s32 *)((char *)arg0 + 0x64) = k;
     *(s32 *)((char *)arg0 + 0x68) = l;
-    *(s16 *)((char *)arg0 + 0x6C) = half;
+    *(s16 *)((char *)arg0 + 0x6C) = (s16)half;
     *(s32 *)((char *)arg0 + 0x70) = m;
     *(s32 *)((char *)arg0 + 0x74) = n;
     *(s32 *)((char *)arg0 + 0x78) = o;
