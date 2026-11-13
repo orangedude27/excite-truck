@@ -2,6 +2,13 @@
 
 #include <types.h>
 #include <stdarg.h>
+extern f32 lbl_80561654, lbl_80561658, lbl_8056165C, lbl_80561660, lbl_80561664;
+extern f32 lbl_80561668, lbl_8056166C, lbl_80561670, lbl_80561674, lbl_80561678, lbl_8056167C;
+extern f32 lbl_80559EB8;
+extern void fn_801683F4(void *, s32);
+extern f32 fn_80141C9C(f32);
+extern s32 fn_80144C90(f32);
+extern void fn_80142B60(void *);
 extern void fn_802C744C(s32, f32 *);
 extern int fn_801476C4();
 extern u8 *__AXGetStackHead();
