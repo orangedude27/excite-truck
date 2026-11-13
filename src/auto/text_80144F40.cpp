@@ -898,7 +898,7 @@ extern "C" void *fn_80146204(void *collection, const char *wantedName, s32 unuse
             void *data = result->data;
             s32 offset = count * 0x1C;
             result->count = count + 1;
-            fn_80145538((char *)data + offset, item);
+            fn_80145538((TextSizeEntry80145538 *)((char *)data + offset), item);
         }
         i++;
     }
