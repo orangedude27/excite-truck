@@ -73,6 +73,7 @@ void fn_8027D264(void) {
     fn_8002F634(lbl_804A4380, fn_8027D280, 0x3B10, 4);
 }
 #pragma scheduling on
+/* Destroys two embedded element arrays (offset 0x2370, count 2, and base, count 3) and optionally frees the block. */
 void *fn_8027D280(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_8002F634((char *)arg0 + 0x2370, fn_8027D304, 0xBD0, 2);
