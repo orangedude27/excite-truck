@@ -505,6 +505,7 @@ extern "C" void fn_802A1DC0(void) {
 }
 
 #pragma scheduling invalid_target
+/* Initialize a terrain-object instance (vtable lbl_80349B78) and load its texture/config slots by querying key "texture" (lbl_8055CBB0). */
 extern "C" void *fn_802A1DF4(void *arg0, DummyReceiver_802A3314 *arg1) {
     register void *self = arg0;
     *(void **)self = lbl_80349B78;
