@@ -104,6 +104,7 @@ void OSSetAlarm(OSAlarm* alarm, s64 tick, OSAlarmHandler handler) {
     OSRestoreInterrupts(enabled);
 }
 
+/* Schedule a periodic alarm to first fire at `tick`, then repeat every `period` system ticks. */
 void OSSetPeriodicAlarm(OSAlarm* alarm, s64 tick, s64 period,
                         OSAlarmHandler handler) {
     BOOL enabled = OSDisableInterrupts();
