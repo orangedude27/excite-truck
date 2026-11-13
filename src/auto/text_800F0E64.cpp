@@ -4372,6 +4372,12 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     }
     fn_8002F634(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
 }
+
+extern "C" void *fn_800F975C(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, void *a6) {
+    if (a6 == 0) return 0;
+    return 0;
+}
+
 extern "C" void SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 count) {
     struct SoundNode {
         virtual void f0();
