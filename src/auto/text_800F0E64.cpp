@@ -6209,6 +6209,8 @@ extern "C" const char lbl_80326BBC[];
 extern "C" const char lbl_80326B98[];
 extern "C" const char lbl_80326BEC[];
 extern "C" const char lbl_80326BC8[];
+extern "C" const char lbl_80326838[];
+extern "C" u8 lbl_80415080[];
 #pragma scheduling on
 extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self) {
     class Manager {
