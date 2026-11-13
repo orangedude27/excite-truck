@@ -142,20 +142,25 @@ typedef struct {
     s32 cap;      // 0x14
 } ObjArray80430308;
 void *fn_8016B834(void *arg0, s32 arg1) {
+    /* Deleting destructor for the global container object at lbl_804302E0+0x28:
+       destroys its owned element array (element destructor fn_8016B550 via the
+       runtime array-delete fn_8002F6AC), clears the container fields, and frees
+       the object itself when arg1 > 0. */
     if (arg0 != 0) {
-        s32 value = *(s32 *)((u8 *)arg0 + 0x10);
-        if (value != 0) {
-            ((s32 (*)(s32, void *))fn_8002F6AC)(value, fn_8016B550);
-            *(s32 *)((u8 *)arg0 + 0x10) = 0;
-            *(s32 *)((u8 *)arg0 + 0x14) = 0;
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+        ObjArray80430308 *obj = (ObjArray80430308 *)arg0;
+        s32 ownedArray = (s32)obj->array;
+        if (ownedArray != 0) {
+            ((s32 (*)(s32, void *))fn_8002F6AC)(ownedArray, fn_8016B550);
+            obj->array = 0;
+            obj->cap = 0;
+            obj->data = 0;
+            obj->count = 0;
+            obj->limit = 0;
         }
         if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+            obj->data = 0;
+            obj->count = 0;
+            obj->limit = 0;
         }
         if (arg1 > 0) fn_80128668(arg0);
     }
