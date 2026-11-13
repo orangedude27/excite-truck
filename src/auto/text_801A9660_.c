@@ -1707,6 +1707,23 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
     *(f32 *)((char *)arg0 + 0x28) = distance;
 }
 
+/* A spring between a point of a rigid body (+0x34) and a target point: a fixed
+   world point (+0x00) when there is no second body (+0x0C == 0), or that body's
+   world position of +0x00.  fn_801AD0E0/fn_801AD148/fn_801AD28C set one up and
+   fn_801AD394 measures it and feeds the force it produces into the bodies. */
+typedef struct Spring {
+    Vec target;                 /* +0x00: point to pull the anchor towards */
+    void *other;                /* +0x0C: the body +0x00 is a point of, 0 for a fixed point */
+    Vec anchor;                 /* +0x10: point on `body`, in its own frame */
+    float strength;             /* +0x1C: force per unit of stretch */
+    float damping;              /* +0x20: force per unit of closing speed */
+    float range;                /* +0x24: how far past the rest length the spring still acts */
+    float restLength;           /* +0x28 */
+    float stretch;              /* +0x2C: out: how far past the rest length it is */
+    float flatDistance;         /* +0x30: out: the target-anchor distance ignoring height */
+    void *body;                 /* +0x34 */
+} Spring;
+
 #pragma scheduling invalid_target
 void fn_801AD394(void *arg0) {
     extern double fn_8002F234(float);
