@@ -447,28 +447,29 @@ void fn_80202AD4(float *arg0) {
 }
 #pragma pop
 int fn_80202B00(void) {
+    /* Count entries in the 16-byte table at lbl_8055ECC4 (count lbl_8055ECC0) whose field at +0xC passes fn_802CE850. */
     extern int lbl_8055ECC0;
     extern int lbl_8055ECC4;
     extern int fn_802CE850(int);
-    int offset;
-    int count;
-    int i;
+    int byteOffset;
+    int matchCount;
+    int index;
 
     if (lbl_8055ECC0 <= 0)
         goto return_zero;
-    count = 0;
-    i = 0;
-    offset = 0;
+    matchCount = 0;
+    index = 0;
+    byteOffset = 0;
     goto test;
 loop:
-    if (fn_802CE850(*(int *)((char *)lbl_8055ECC4 + offset + 12)) == 1)
-        count++;
-    offset += 16;
-    i++;
+    if (fn_802CE850(*(int *)((char *)lbl_8055ECC4 + byteOffset + 12)) == 1)
+        matchCount++;
+    byteOffset += 16;
+    index++;
 test:
-    if (i < lbl_8055ECC0)
+    if (index < lbl_8055ECC0)
         goto loop;
-    return count;
+    return matchCount;
 return_zero:
     return 0;
 }
