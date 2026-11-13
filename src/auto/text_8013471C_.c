@@ -410,14 +410,18 @@ s32 fn_80134D54(void) {
 #define LAYOUT_PAIR  lbl_8056010C /* per pair of AI cars */
 
 #pragma dont_inline on
+/* Fallback list length for fn_80134E00 (taken when the physics command carries flag 0x100):
+   LAYOUT_BASE + LAYOUT_EXTRA * fn_80134D54() + LAYOUT_PAIR * ((carCount + 1) / 2), i.e. one
+   share for the list itself plus one for every pair of AI cars.  fn_80134D54 always answers 0,
+   and the two integer->float conversions go through the 2^52 / 2^52+2^31 magic doubles. */
 f32 fn_80134D78(void) {
-    unsigned long temp_r3;
-    s32 half;
-    f32 value0;
-    value0 = (f32)((u32 (*)(void))fn_80134D54)();
-    temp_r3 = (s32)lbl_8055E0B0 + 1;
-    half = (s32)(((u32)temp_r3 >> 31) + temp_r3) >> 1;
-    return lbl_80561304 + (lbl_80560108 * value0) + ((f32)half * lbl_8056010C);
+    unsigned long countPlusOne;
+    s32 carPairs;
+    f32 extra;
+    extra = (f32)((u32 (*)(void))fn_80134D54)();
+    countPlusOne = AI_CAR_COUNT + 1;
+    carPairs = (s32)(((u32)countPlusOne >> 31) + countPlusOne) >> 1;
+    return LAYOUT_BASE + (LAYOUT_EXTRA * extra) + ((f32)carPairs * LAYOUT_PAIR);
 }
 #pragma dont_inline reset
 
