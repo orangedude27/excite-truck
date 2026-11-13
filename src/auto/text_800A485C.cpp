@@ -20248,9 +20248,9 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     idx = v / 5;
     off = rem * 6;
 
-    pal = (u32 *)(lbl_802F4958 + idx * 28);
+    pal = (u32 *)(lbl_802F4958 + (((idx << 3) - idx) << 2));
     if (arg2 < 100)
-        pal = (u32 *)(lbl_802F4858 + idx * 28);
+        pal = (u32 *)(lbl_802F4858 + (((idx << 3) - idx) << 2));
 
     width  = *(u16 *)((u8 *)lbl_80407BD8 + 8);
     height = *(u16 *)((u8 *)lbl_80407BD8 + 0xA);
@@ -20259,52 +20259,53 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
 
     dest = (u16 *)(lbl_80407BD8[0] + scaleY * arg1 * (u16)*(u16 *)((u8 *)lbl_80407BD8 + 0xC) * 2 + arg0 * scaleX * 2);
 
-    if (arg1 >= 0) {
-        if (arg0 >= 0) {
-            if (width > scaleX * (arg0 + 6)) {
-                if (height > scaleY * (arg1 + 7)) {
-                    be = lbl_80407BE8;
-                    n = scaleX * 6;
+    if (arg1 < 0)
+        return;
+    if (arg0 < 0)
+        return;
+    if (width <= scaleX * (arg0 + 6))
+        return;
+    if (height <= scaleY * (arg1 + 7))
+        return;
 
-                    for (i = 0; i < 7; i++) {
-                        u32 pat = *pal++ << off;
-                        s32 cnt;
-                        if (scaleX == 1) {
-                            pat = (pat >> 1) & 0x7E000000;
-                        } else {
-                            pat = ((lbl_8031EC40[(pat >> 26) & 0xC] << 4)
-                                 | lbl_8031EC40[(pat >> 24) & 0xC]
-                                 | (lbl_8031EC40[(pat >> 28) & 0xC] << 8)) << 19;
-                        }
-                        cnt = (n + 1) >> 1;
-                        if (n > 0) {
-                            do {
-                                u32 b30 = pat & 0x40000000;
-                                u32 b31 = pat & 0x80000000;
-                                u32 b29 = pat & 0x20000000;
-                                u32 b28 = pat & 0x10000000;
-                                u16 p0 = (u16)((b30 ? be[2] : 0)
-                                       | ((b30 ? be[4] : 0x40)
-                                       + ((b29 ? be[5] : 0x20) + (b31 ? be[5] : 0x20))));
-                                u16 p1;
-                                dest[0] = p0;
-                                if (scaleY > 1)
-                                    dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC)] = p0;
-                                p1 = (u16)((b29 ? be[2] : 0)
-                                       | ((b29 ? be[7] : 0x40)
-                                       + ((b28 ? be[8] : 0x20) + (b30 ? be[8] : 0x20))));
-                                dest[1] = p1;
-                                if (scaleY > 1)
-                                    dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC) + 1] = p1;
-                                pat <<= 2;
-                                dest += 2;
-                            } while (--cnt);
-                        }
-                        dest += *(u16 *)((u8 *)lbl_80407BD8 + 0xC) * scaleY - n;
-                    }
-                }
-            }
+    be = lbl_80407BE8;
+    n = scaleX * 6;
+
+    for (i = 0; i < 7; i++) {
+        u32 pat = *pal++ << off;
+        s32 cnt;
+        if (scaleX == 1) {
+            pat = (pat >> 1) & 0x7E000000;
+        } else {
+            pat = ((lbl_8031EC40[(pat >> 26) & 0xC] << 4)
+                 | lbl_8031EC40[(pat >> 24) & 0xC]
+                 | (lbl_8031EC40[(pat >> 28) & 0xC] << 8)) << 19;
         }
+        cnt = (n + 1) >> 1;
+        if (n > 0) {
+            do {
+                u32 b30 = pat & 0x40000000;
+                u32 b31 = pat & 0x80000000;
+                u32 b29 = pat & 0x20000000;
+                u32 b28 = pat & 0x10000000;
+                u16 p0 = (u16)((b30 ? be[2] : 0)
+                       | ((b30 ? be[4] : 0x40)
+                       + ((b29 ? be[5] : 0x20) + (b31 ? be[5] : 0x20))));
+                u16 p1;
+                dest[0] = p0;
+                if (scaleY > 1)
+                    dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC)] = p0;
+                p1 = (u16)((b29 ? be[2] : 0)
+                       | ((b29 ? be[7] : 0x40)
+                       + ((b28 ? be[8] : 0x20) + (b30 ? be[8] : 0x20))));
+                dest[1] = p1;
+                if (scaleY > 1)
+                    dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC) + 1] = p1;
+                pat <<= 2;
+                dest += 2;
+            } while (--cnt);
+        }
+        dest += *(u16 *)((u8 *)lbl_80407BD8 + 0xC) * scaleY - n;
     }
 }
 
@@ -25474,6 +25475,7 @@ extern "C" void fn_800D24D4(void *consoleHead, s32 charWriter)
 }
 
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int arg2, signed char arg3) {
+    /* Plays a sound file from the HomeButton ARC on a Wii Remote speaker: opens the file, caches its address/length/params in the per-remote slot. */
     void *r26 = arg0;
     long r27 = arg1;
     int r28 = arg2;
