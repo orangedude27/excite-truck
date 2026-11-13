@@ -154,10 +154,14 @@ extern char *strncpy(char *, const char *, unsigned long);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_801E4DBC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, const char *arg5, unsigned long arg6, const char *arg7) {
+/* Draw one line of a counted string -- text is not NUL-terminated, length bytes
+ * of it are copied into a local buffer and closed with a NUL -- through the
+ * formatted bitmap-font drawer fn_801E4BEC, which takes it as the argument of
+ * its only format, "%s".  font 0 makes that drawer fall back to drawing the
+ * plain string twice (shadow and foreground) instead of with glyphs. */
+void fn_801E4DBC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *text, unsigned long length) {
     char buf[0x100];
-    strncpy(buf, arg5, arg6);
-    buf[arg6] = 0;
-    ((void (*)(s32, s32, s32, s32, s32, const char *, ...))fn_801E4BEC)(arg0, arg1, arg2, arg3, arg4, (char *)&lbl_8055AEF0, buf);
+    strncpy(buf, text, length);
+    buf[length] = 0;
+    ((void (*)(s32, s32, s32, s32, s32, const char *, ...))fn_801E4BEC)(font, drawFlags, align, x, y, (char *)&STR_PERCENT_S, buf);
 }
-#pragma pop
