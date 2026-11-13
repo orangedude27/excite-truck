@@ -3041,7 +3041,7 @@ extern "C" void fn_801A1360(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void fn_801A13F4(void* arg0) {
+extern "C" void fn_801A13F4(void* self) {
     class Dispatch {
     public:
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -3051,17 +3051,18 @@ extern "C" void fn_801A13F4(void* arg0) {
         virtual void d16();
         virtual void Call();
     };
-    void* p = *(void**)((u8*)arg0 + 0x17C);
-    ((Dispatch*)p)->Call();
-    u8* entries = (u8*)arg0;
-    s32 i = 0;
+    /* Invoke Call() on the primary child (+0x17C) and on each entry in the child list (+0x24, count at +0x174). */
+    void* primary = *(void**)((u8*)self + 0x17C);
+    ((Dispatch*)primary)->Call();
+    u8* cursor = (u8*)self;
+    s32 index = 0;
     goto check;
 loop:
-    ((Dispatch*)*(void**)(entries + 0x24))->Call();
-    entries += 4;
-    i++;
+    ((Dispatch*)*(void**)(cursor + 0x24))->Call();
+    cursor += 4;
+    index++;
 check:
-    if (i < *(s32*)((u8*)arg0 + 0x174)) goto loop;
+    if (index < *(s32*)((u8*)self + 0x174)) goto loop;
 }
 
 extern "C" void fn_801A1474(void* self, f32 scale) {
