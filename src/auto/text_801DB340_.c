@@ -47,7 +47,8 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     char *node;
     char *layer;
     unsigned char *type_p;
-    int tile, next, sum;
+    unsigned short tile;
+    int next, sum;
     float h;
 
     if (x < 0 || y < 0) {
