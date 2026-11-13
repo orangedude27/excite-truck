@@ -599,6 +599,7 @@ void fn_8014ACD4(void) {
 
 #pragma cplusplus on
 extern "C" s32 fn_8014ACD8(void *arg0, s32 arg1) {
+    /* Return 1 when the racer for arg1 is active (state != 3, flags == 0) and arg0's float at +0x8D4 is not greater than at +0x8DC. */
     class Obj {
     public:
         virtual void *v0();
@@ -608,15 +609,15 @@ extern "C" s32 fn_8014ACD8(void *arg0, s32 arg1) {
         s32 state;
         u8 flags;
     };
-    Obj *obj = (Obj *)fn_801B2ED0(arg1);
-    obj = (Obj *)obj->v2();
+    Obj *racer = (Obj *)fn_801B2ED0(arg1);
+    racer = (Obj *)racer->v2();
     register s32 result = 0;
-    register s32 valid = 0;
-    if (obj->state != 3 && obj->flags == 0)
-        valid = 1;
-    if (valid != 0) {
-        s32 greater = *(f32 *)((u8 *)arg0 + 0x8D4) > *(f32 *)((u8 *)arg0 + 0x8DC);
-        if (greater == 0)
+    register s32 isActive = 0;
+    if (racer->state != 3 && racer->flags == 0)
+        isActive = 1;
+    if (isActive != 0) {
+        s32 isHigher = *(f32 *)((u8 *)arg0 + 0x8D4) > *(f32 *)((u8 *)arg0 + 0x8DC);
+        if (isHigher == 0)
             result = 1;
     }
     return result;
