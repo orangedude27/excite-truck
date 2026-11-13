@@ -430,15 +430,22 @@ void fn_801308F4(char *dst, int count, int value) {
     fn_8013072C(dst, count, value);
 }
 
-void fn_801308F8(char *dst, int count, int limit) {
+/* Write a score into a text buffer of `size` bytes.  A score under 1000 is
+ * spelled out as a comma-grouped number by fn_8013072C; one at or over that no
+ * longer fits the field, so the localized string of the "Locale:OUT_OF_BOUNDS_SCORE"
+ * key (lbl_8032B224) is copied in instead -- the current language's overflow
+ * text, or "???" (lbl_80559B00) when it has no entry for the key.  The copy
+ * stops at the string's NUL; a buffer too small for it gets its last byte
+ * turned into the NUL, so the text is cut short rather than running past it. */
+void fn_801308F8(char *dst, int size, int score) {
     char *src;
     unsigned char c;
-    if (limit < 1000)
-        goto fallback;
+    if (score < 1000)
+        goto formatNumber;
     src = (char *)fn_80131234(lbl_8032B224);
     goto copy;
-count_check:
-    if (--count > 0)
+size_check:
+    if (--size > 0)
         goto copy;
     dst[-1] = 0;
     goto done;
@@ -446,10 +453,10 @@ copy:
     c = *src++;
     *dst++ = c;
     if ((signed char)c != 0)
-        goto count_check;
+        goto size_check;
     goto done;
-fallback:
-    fn_8013072C(dst, count, limit);
+formatNumber:
+    fn_8013072C(dst, size, score);
 done:
     ;
 }
@@ -572,8 +579,7 @@ void fn_80130980(char *out, int size, int level, float t) {
     char *src;
     char *p;
     char c;
-    unsigned int i;
-
+    unsigned i;
     if (t == -lbl_80558DC0) {
         src = fn_80131234(lbl_8032B240);
         goto copy;
@@ -639,15 +645,14 @@ void fn_80130980(char *out, int size, int level, float t) {
         found = 0;
         for (i = 0; found == 0 && i < 13; i++) {
             if (*p == tbl.e[i].c) {
-                time_append(out, size, tbl.e[i].s);
+                time_append_sizefirst(out, size, tbl.e[i].s);
                 found = 1;
             }
         }
-        if (!found) {
-            tmp[0] = tmp[1] = 0;
+        if (found == 0) {
             *(short *)tmp = 0;
             tmp[0] = *p;
-            time_append(out, size, tmp);
+            time_append_sizefirst(out, size, tmp);
         }
     }
 }
