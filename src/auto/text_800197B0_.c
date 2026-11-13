@@ -36,10 +36,12 @@ void* fn_8001980C(void* arg0, s32 arg1) {
 
 #pragma scheduling on
 typedef s32 (*InitFn)(s32, s32, void *, s32, s32);
-#pragma processor 750
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80019864(void) {
-    fn_802E6BD8(0x52657030, 0, (void*)lbl_803582B0, 0xC, 0);
+    fn_802E6BD8(0x52657030, 0, (void *)lbl_803582B0, 0xC, 0);
 }
+#pragma scheduling reset
 void fn_80019884(void) {
     return;
 }
