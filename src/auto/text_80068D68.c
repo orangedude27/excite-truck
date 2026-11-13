@@ -21392,27 +21392,28 @@ void *port_find_mcb_dlci_port(void *mcb, u8 dlci) {
     return lbl_803C4828 + (index - 1) * 0xA4 + 0x68;
 }
 
-void *port_find_dlci_port(unsigned int arg0) {
-    u8 *entry;
-    u8 *base;
-    unsigned int odd;
-    unsigned int prev;
-    unsigned short i;
-    unsigned int dlci;
-    u8 *port;
-    odd = arg0 & 1;
-    prev = arg0 - 1;
-    base = (u8 *)&lbl_803C4828;
-    for (i = 0; i < 5; i++) {
-        entry = base + (i * 0xA4);
-        port = entry + 0x68;
-        if (*(u8 *)(entry + 0x69) == 0) continue;
-        if (*(unsigned int *)(port + 0x6C) != 0) continue;
-        dlci = *(u8 *)(port + 0xD);
-        if (dlci == arg0) return port;
-        if (odd != 0 && (int)dlci == (int)prev) {
-            *(u8 *)(port + 0xD) = dlci + 1;
-            return port;
+/* Finds the RFCOMM port for the given DLCI in rfc_cb (lbl_803C4828, 5 entries * 0xA4). If the DLCI is odd, accepts the matching even DLCI slot and bumps its DLCI by 1. */
+void *port_find_dlci_port(unsigned int dlci) {
+    u8 *cbEntry;
+    u8 *rfcCb;
+    unsigned int isOdd;
+    unsigned int prevDlci;
+    unsigned short index;
+    unsigned int entryDlci;
+    u8 *portEntry;
+    isOdd = dlci & 1;
+    prevDlci = dlci - 1;
+    rfcCb = (u8 *)&lbl_803C4828;
+    for (index = 0; index < 5; index++) {
+        cbEntry = rfcCb + (index * 0xA4);
+        portEntry = cbEntry + 0x68;
+        if (*(u8 *)(cbEntry + 0x69) == 0) continue;
+        if (*(unsigned int *)(portEntry + 0x6C) != 0) continue;
+        entryDlci = *(u8 *)(portEntry + 0xD);
+        if (entryDlci == dlci) return portEntry;
+        if (isOdd != 0 && (int)entryDlci == (int)prevDlci) {
+            *(u8 *)(portEntry + 0xD) = entryDlci + 1;
+            return portEntry;
         }
     }
     return 0;
