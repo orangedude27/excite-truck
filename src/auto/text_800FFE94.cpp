@@ -498,12 +498,13 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
     OSRestoreInterrupts(interruptLevel);
 }
 
-extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100ED8(void* arg0, int arg1) {
-    int valid = arg1 >= 0 && arg1 < 4;
-    if (!valid) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x178, lbl_803279CC, arg1, 0, 4);
+/* Get the third FX send level for an aux bus (0..3) on this sequence player. */
+extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100ED8(void* self, int auxBus) {
+    int isValidBus = auxBus >= 0 && auxBus < 4;
+    if (!isValidBus) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x178, lbl_803279CC, auxBus, 0, 4);
     }
-    return *(float*)((char*)arg0 + (arg1 * 4) + 0x7C);
+    return *(float*)((char*)self + (auxBus * 4) + 0x7C);
 }
 
 extern "C" void fn_80100F60(void* arg0, float arg1) {
