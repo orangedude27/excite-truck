@@ -2714,27 +2714,31 @@ extern "C" void fn_801A014C(void* arg0) {
 }
 
 extern s32 lbl_8055E3C4;  // current frame counter; fn_80176A34 sets it (and its seconds form lbl_8055E3C8) once per frame
-extern "C" void fn_801A0160(void* arg0) {
-    s32 value = lbl_8055E3C4;
-    if (value != *(s32*)((u8*)arg0 + 0x180)) {
-        *(s32*)((u8*)arg0 + 0x180) = value;
-        class Dummy {
+extern "C" void fn_801A0160(void* group) {
+    /* Tick the group's children once per frame.  The group keeps at +0x180 the
+     * frame counter (lbl_8055E3C4) it last ran on; on a new frame it stores the
+     * counter and calls the children's per-frame virtual (vtable slot 0xC) for
+     * every child pointer at +0x24 (count at +0x174). */
+    s32 frame = lbl_8055E3C4;
+    if (frame != *(s32*)((u8*)group + 0x180)) {
+        *(s32*)((u8*)group + 0x180) = frame;
+        class Child {
         public:
-            virtual void m0();
-            virtual void m1();
-            virtual void m2();
-            virtual void m3();
+            virtual void v08();
+            virtual void Tick();
+            virtual void v10();
+            virtual void v14();
         };
-        register u8* entry = (u8*)arg0;
-        register s32 i = 0;
+        register u8* cursor = (u8*)group;
+        register s32 index = 0;
         goto check;
     loop:
-        Dummy* item = *(Dummy**)(entry + 0x24);
-        item->m1();
-        entry += 4;
-        i++;
+        Child* child = *(Child**)(cursor + 0x24);
+        child->Tick();
+        cursor += 4;
+        index++;
     check:
-        if (i < *(s32*)((u8*)arg0 + 0x174))
+        if (index < *(s32*)((u8*)group + 0x174))
             goto loop;
     }
 }
