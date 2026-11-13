@@ -9195,6 +9195,7 @@ extern "C" int VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
 
 extern "C" s32 fn_800A4BF4(s32, u16 *, s16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *dst, s32 src, s32 unused) {
+    /* Converts a UTF-8/encoded path string to UTF-16 units by repeatedly invoking the character transform callback at lbl_803D2140+0x48. */
     s32 offset;
     s32 count;
     const char *source = (const char *)src;
@@ -13194,6 +13195,7 @@ extern "C" s32 fn_800BBCF4(void) {
 
 extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
     const char *str = lbl_8031B838;
+    s32 cmd = arg1;
     s32 r30 = 3;
     s32 field10 = dev->field10;
     s32 res;
@@ -13230,7 +13232,7 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                 lbl_8055DD6C = 0;
                 res = (s32)0xC1000000;
             } else {
-                switch (arg1) {
+                switch (cmd) {
                 case 9:
                 case 10:
                     r30 = 3;
@@ -13261,7 +13263,7 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                     goto end;
                 }
 
-                res = fn_800BB0A8(dev->fd, arg1, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
+                res = fn_800BB0A8(dev->fd, cmd, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
                 lbl_8055DD6C = 0;
             }
         }
@@ -19596,9 +19598,6 @@ extern "C" void fn_800D16C4() {
     register s32 i = 0;
     register s32 zero = 0;
     register s32 neg1 = -1;
-    u16 buf[0x28];
-    u8 enc[8];
-    u16 pad_extra[16];
     if (lbl_8055DDB0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0x3F, lbl_8031E974);
     }
@@ -19607,16 +19606,18 @@ extern "C" void fn_800D16C4() {
         if (*(u32*)(p + 0x50) != 0 && fn_80060C7C((void*)i) != 0) {
             s32 lr = OSDisableInterrupts();
             if (WPADCanSendStreamData(i) != 0) {
-                u32 count = 0x28;
+                u16 buf[0x28];
+                u32 enc;
+                s32 count = 0x28;
                 u32 avail = *(u32*)(p + 0x54) >> 1;
                 const s16* src = (const s16*)*(u32*)(p + 0x50);
                 s8 scale = (s8)p[0x5d];
                 u16* dst = buf;
-                if (avail <= 0x28) {
-                    count = avail;
+                if (avail <= (u32)0x28) {
+                    count = (s32)avail;
                 }
                 if (count != 0) {
-                    s32 q = (s32)(count >> 2);
+                    s32 q = (s32)((u32)count >> 2);
                     if (q != 0) {
                         do {
                             dst[0] = (u16)((src[0] * scale) / 10);
@@ -19636,7 +19637,7 @@ extern "C" void fn_800D16C4() {
                         }
                     }
                 }
-                if (avail <= 0x28) {
+                if (avail <= (u32)0x28) {
                     s32 pad = 0x28 - (s32)avail;
                     if (pad > 0) {
                         s32 q = (s32)((u32)pad >> 3);
@@ -19656,7 +19657,7 @@ extern "C" void fn_800D16C4() {
                         }
                     }
                 }
-                                    WENCGetEncodeData(p + 0x30, p[0x5c] == 0, (const s16*)buf, 0x28, &enc);
+                WENCGetEncodeData(p + 0x30, p[0x5c] == 0, (const s16*)buf, 0x28, &enc);
                 fn_80062278(i, &enc, 0x14);
                 p[0x5c] = 0;
                 p[0x5e] = 0;
