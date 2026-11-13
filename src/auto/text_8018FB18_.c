@@ -2532,6 +2532,7 @@ int fn_80192C68(void *arg0) {
 #pragma scheduling invalid_target
 extern f32 lbl_8056208C, lbl_80562090, lbl_805620AC;
 #pragma scheduling invalid_target
+/* Reads a packed byte at +6 in the object's linked data (+8), normalizes it to [0,1], and returns the scaled value. */
 f32 fn_80192C7C(void *arg0) {
     u8 byte = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 6);
     u8 raw;
