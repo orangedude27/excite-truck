@@ -7521,79 +7521,94 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 }
 
 extern "C" void fn_800B36C4(s32, s32, s32);
-extern "C" s32 fn_800B143C(void *arg0, s32 arg1, s32 arg2, void **arg3) {
+extern "C" s32 fn_800B143C(void *volume, s32 path, s32 mode, void **fileHandleOut) {
     struct LocalFrame {
-        u32 value8; u32 valueC; u8 pad10[8];
-        u8 path18[0x10]; u8 path28[0x10]; u8 pad38[0x38];
-        u8 temp70[0x70]; u8 unicodeE0[0x200]; u8 main2e0[0x21C];
-        u8 flags4FC; u8 pad4FD[5]; u16 name502; u16 name504; u16 name506;
-        u32 record508; void *context50C; u32 pad510; u32 output514;
-        u32 value518; u16 value51C;
-    } f;
+        u32 value8;
+        u32 valueC;
+        u8 pad10[8];
+        u8 pathDrive[0x10];
+        u8 pathDir[0x10];
+        u8 pad38[0x38];
+        u8 temp70[0x70];
+        u8 unicodeName[0x200];
+        u8 entryState[0x21C];
+        u8 flags4FC;
+        u8 pad4FD[5];
+        u16 name502;
+        u16 name504;
+        u16 name506;
+        u32 record508;
+        void *volumeCtx50C;
+        u32 pad510;
+        u32 output514;
+        u32 value518;
+        u16 value51C;
+    } frame;
     s32 status;
     s32 i;
     u8 *entry;
     u32 address;
-    void *opened;
+    void *openedStream;
     void *base;
-    u8 *slot;
-    void *object;
+    u8 *handleSlot;
+    void *fileObject;
 
-    *arg3 = 0;
-    status = ((s32 (*)(s32, s32, s32))fn_800B36C4)(arg1, (s32)f.path18, (s32)f.path28);
+    /* Open or create a file on a VFiPF volume and return an allocated file handle slot. */
+    *fileHandleOut = 0;
+    status = ((s32 (*)(s32, s32, s32))fn_800B36C4)(path, (s32)frame.pathDrive, (s32)frame.pathDir);
     if (status != 0)
         return 1;
     status = ((s32 (*)(s32, s32, s32, s32, s32))fn_800ACA44)(
-        (s32)f.temp70, (s32)f.main2e0, (s32)arg0, arg1, 1);
+        (s32)frame.temp70, (s32)frame.entryState, (s32)volume, path, 1);
     if (status != 0)
         return status;
-    if ((f.flags4FC & 0x10) == 0)
+    if ((frame.flags4FC & 0x10) == 0)
         return 1;
     {
-        u32 pathType = (u32)fn_800A4D44(f.path28);
+        u32 pathType = (u32)fn_800A4D44(frame.pathDir);
         if (pathType == 2U) {
-            s32 charCount = (u16)VFiPFSTR_StrNumChar((s32)f.path28, 1);
+            s32 charCount = (u16)VFiPFSTR_StrNumChar((s32)frame.pathDir, 1);
             if (charCount > 0xFF)
                 return 1;
-            VFiPFPATH_transformFromUnicodeToNormal((u16 *)f.unicodeE0,
-                (u16 *)fn_800A4D74(f.path28, 1));
+            VFiPFPATH_transformFromUnicodeToNormal((u16 *)frame.unicodeName,
+                (u16 *)fn_800A4D74(frame.pathDir, 1));
         }
     }
-    fn_800A4D4C(f.path28, f.unicodeE0);
+    fn_800A4D4C(frame.pathDir, frame.unicodeName);
 
-    if ((arg2 & 2) != 0) {
-        ((s32 (*)(void *, void *, s32, s32))fn_800AF530)(f.pad38, &f.valueC, (s32)f.context50C, (s32)&f.output514);
+    if ((mode & 2) != 0) {
+        ((s32 (*)(void *, void *, s32, s32))fn_800AF530)(frame.pad38, &frame.valueC, (s32)frame.volumeCtx50C, (s32)&frame.output514);
         status = ((s32 (*)(void *, void *, s32, void *, s32, s32))fn_800AABE0)(
-            f.pad38, f.main2e0, 0, f.path28, 0x7F, 0);
+            frame.pad38, frame.entryState, 0, frame.pathDir, 0x7F, 0);
         if (status != 0)
             return 3;
-        if ((arg2 & 8) && (f.flags4FC & 1))
+        if ((mode & 8) && (frame.flags4FC & 1))
             return 10;
-        if (f.flags4FC & 0x10)
+        if (frame.flags4FC & 0x10)
             return 0x17;
-        ((void (*)(u16 *, u32 *))fn_800AB2F4)(&f.name502, &f.value8);
+        ((void (*)(u16 *, u32 *))fn_800AB2F4)(&frame.name502, &frame.value8);
     } else {
-        status = ((s32 (*)(s32, void *, void *))fn_800B10E0)((s32)arg0, f.main2e0, f.path28);
+        status = ((s32 (*)(s32, void *, void *))fn_800B10E0)((s32)volume, frame.entryState, frame.pathDir);
         if (status == 8) {
-            if (arg2 & 0x10)
+            if (mode & 0x10)
                 return 8;
             register u8 *scan;
             register u32 compareValue;
             register u16 compareName;
-            register void *context;
+            register void *scanVolume;
             register u32 flags;
-            register s32 option;
-            option = arg2 & 1;
-            if (option) {
+            register s32 openExisting;
+            openExisting = mode & 1;
+            if (openExisting) {
                 s32 found;
-                context = f.context50C;
-                compareValue = f.value518;
-                scan = (u8 *)context + 0x40;
-                compareName = f.value51C;
+                scanVolume = frame.volumeCtx50C;
+                compareValue = frame.value518;
+                scan = (u8 *)scanVolume + 0x40;
+                compareName = frame.value51C;
                 for (i = 0; i < 5; i++, scan += 0x29C) {
                     flags = *(u32 *)scan;
                     if ((flags & 1) && (flags & 2) &&
-                        context == *(void **)(scan + 0x268) &&
+                        scanVolume == *(void **)(scan + 0x268) &&
                         compareValue == *(u32 *)(scan + 0x274) &&
                         compareName == *(u16 *)(scan + 0x278)) {
                         found = 1;
@@ -7605,71 +7620,71 @@ extern "C" s32 fn_800B143C(void *arg0, s32 arg1, s32 arg2, void **arg3) {
                 if (found)
                     return 8;
             }
-            if ((f.flags4FC & 1) && (option || (arg2 & 4) || (arg2 & 8)))
+            if ((frame.flags4FC & 1) && (openExisting || (mode & 4) || (mode & 8)))
                 return 10;
-            if (f.flags4FC & 0x10)
+            if (frame.flags4FC & 0x10)
                 return 0x17;
-            if (option) {
-                if (f.output514 >= 2 && f.output514 + 0x10000 != 0xFFFF && f.record508 != 0)
-                    ((s32 (*)(void *, u32, s32, u32))fn_800AE7A8)(f.temp70 + 8, f.output514, -1, f.record508);
-                f.output514 = 0;
-                f.record508 = 0;
-                ((void (*)(u16 *, u16 *))fn_800AB2F4)(&f.name506, &f.name504);
-                f.name502 = f.name506;
+            if (openExisting) {
+                if (frame.output514 >= 2 && frame.output514 + 0x10000 != 0xFFFF && frame.record508 != 0)
+                    ((s32 (*)(void *, u32, s32, u32))fn_800AE7A8)(frame.temp70 + 8, frame.output514, -1, frame.record508);
+                frame.output514 = 0;
+                frame.record508 = 0;
+                ((void (*)(u16 *, u16 *))fn_800AB2F4)(&frame.name506, &frame.name504);
+                frame.name502 = frame.name506;
             } else {
-                ((void (*)(u16 *, u32 *))fn_800AB2F4)(&f.name502, &f.value8);
+                ((void (*)(u16 *, u32 *))fn_800AB2F4)(&frame.name502, &frame.value8);
             }
         } else if (status != 0) {
             return status;
         }
     }
 
-    arg0 = f.context50C;
-    opened = ((void *(*)(void *, void *))fn_800B0F1C)(arg0, f.main2e0);
-    if (opened == 0)
+    volume = frame.volumeCtx50C;
+    openedStream = ((void *(*)(void *, void *))fn_800B0F1C)(volume, frame.entryState);
+    if (openedStream == 0)
         return 0x15;
-    entry = (u8 *)arg0;
+    entry = (u8 *)volume;
     for (i = 0; i < 5; entry += 0x30, i++) {
         if ((*(u32 *)(entry + 0xD4C) & 1) == 0) {
-            address = (u32)arg0 + i * 0x30;
-            slot = (u8 *)(address + 0xD4C);
+            address = (u32)volume + i * 0x30;
+            handleSlot = (u8 *)(address + 0xD4C);
             goto slot_found;
         }
     }
-    slot = 0;
+    handleSlot = 0;
 slot_found:
-    if (slot == 0)
+    if (handleSlot == 0)
         return 0x16;
-    *(void * volatile *)(slot + 8) = opened;
-    *(s32 *)(slot + 0) = 1;
-    *(s32 *)(slot + 4) = arg2;
-    *(s32 *)(slot + 0x18) = 0;
-    *(u16 *)(slot + 0x2C) = 0;
-    ((void (*)(void *))fn_800AF2B8)(slot + 0xC);
-    *(s32 *)(slot + 0x20) = -1;
-    *(s32 *)(slot + 0x1C) = 0;
-    if (slot == 0) {
-        object = 0;
+    *(void * volatile *)(handleSlot + 8) = openedStream;
+    *(s32 *)(handleSlot + 0) = 1;
+    *(s32 *)(handleSlot + 4) = mode;
+    *(s32 *)(handleSlot + 0x18) = 0;
+    *(u16 *)(handleSlot + 0x2C) = 0;
+    ((void (*)(void *))fn_800AF2B8)(handleSlot + 0xC);
+    *(s32 *)(handleSlot + 0x20) = -1;
+    *(s32 *)(handleSlot + 0x1C) = 0;
+    if (handleSlot == 0) {
+        fileObject = 0;
     } else {
-        object = *(void * volatile *)(slot + 8);
-        object = *(void **)((u8 *)object + 0x268);
+        fileObject = *(void * volatile *)(handleSlot + 8);
+        fileObject = *(void **)((u8 *)fileObject + 0x268);
     }
-    *(u32 *)(slot + 0x24) = (u32)(*(u32 *)(slot + 0x1C) >> *(u8 *)((u8 *)object + 0x20));
-    *(u16 *)(slot + 0x28) = (u16)(*(u32 *)(slot + 0x1C) & (*(u16 *)object - 1));
-    if (arg2 & 1)
-        *(u32 *)(*(void **)(slot + 8)) |= 4;
-    if (*(s32 *)(slot + 4) & 4) {
-        object = *(void **)(slot + 8);
-        *(u32 *)(slot + 0x1C) = *(u32 *)((u8 *)object + 0x264);
-        if (slot == 0)
-            object = 0;
+    *(u32 *)(handleSlot + 0x24) = (u32)(*(u32 *)(handleSlot + 0x1C) >> *(u8 *)((u8 *)fileObject + 0x20));
+    *(u16 *)(handleSlot + 0x28) = (u16)(*(u32 *)(handleSlot + 0x1C) & (*(u16 *)fileObject - 1));
+    if (mode & 1)
+        *(u32 *)(*(void **)(handleSlot + 8)) |= 4;
+    if (*(s32 *)(handleSlot + 4) & 4) {
+        fileObject = *(void **)(handleSlot + 8);
+        *(u32 *)(handleSlot + 0x1C) = *(u32 *)((u8 *)fileObject + 0x264);
+        if (handleSlot == 0)
+            fileObject = 0;
         else
-            object = *(void **)((u8 *)*(void * volatile *)(slot + 8) + 0x268);
-        *(u32 *)(slot + 0x24) = *(volatile u32 *)(slot + 0x1C) >> *(u8 *)((u8 *)object + 0x20);
-        *(u16 *)(slot + 0x28) = (u16)(*(volatile u32 *)(slot + 0x1C) & (*(u16 *)object - 1));
+            fileObject = *(void **)((u8 *)*(void * volatile *)(handleSlot + 8) + 0x268);
+        *(u32 *)(handleSlot + 0x24) = *(volatile u32 *)(handleSlot + 0x1C) >> *(u8 *)((u8 *)fileObject + 0x20);
+        *(u16 *)(handleSlot + 0x28) = (u16)(*(volatile u32 *)(handleSlot + 0x1C) & (*(u16 *)fileObject - 1));
     }
-    ++*(u16 *)((u8 *)opened + 0x298);
-    *arg3 = slot;
+    ++*(u16 *)((u8 *)openedStream + 0x298);
+    *fileHandleOut = handleSlot;
     return 0;
 }
 
