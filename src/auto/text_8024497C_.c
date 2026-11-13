@@ -42,8 +42,8 @@ void fn_802449A0(void) {
     int i;
     int zero = 0;
     char *base = lbl_80342E38;
-    int *tbl;
-    int *ext;
+    int *tbl = (int *)lbl_802FA338;
+    int *ext = (int *)lbl_80498878;
     f.p98 = lbl_80342ED8;
     f.spAC = zero;
     f.sp148 = fn_80232578(base + 0xC);
@@ -58,8 +58,6 @@ void fn_802449A0(void) {
         int *t = fn_80019054(i);
         fn_802E30C8(base + 0x68, i, t[0], t[1], t[2]);
     }
-    ext = (int *)lbl_80498878;
-    tbl = (int *)lbl_802FA338;
     f.one = 1;
     f.e[0].label = (int)(base + 0x80);
     f.e[0].type = 2;
@@ -103,16 +101,18 @@ void fn_802449A0(void) {
     fn_802C519C(f.sp14C);
     f.sp14C = zero;
 }
-void *fn_80244BD0(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_80342ED8;
-        fn_802328D4(*(s32 *)((char *)arg0 + 0xB0), lbl_80342ED8);
-        *(s32 *)((char *)arg0 + 0xB0) = 0;
-        fn_802C519C(*(s32 *)((char *)arg0 + 0xB4));
-        *(s32 *)((char *)arg0 + 0xB4) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destructor-like cleanup: reset vtable/handlers, release owned subobjects at
+ * +0xB0 and +0xB4, and free the object when freeFlag > 0. Returns the object. */
+void *fn_80244BD0(void *obj, s32 freeFlag) {
+    if (obj != 0) {
+        *(void **)obj = lbl_80342ED8;
+        fn_802328D4(*(s32 *)((char *)obj + 0xB0), lbl_80342ED8);
+        *(s32 *)((char *)obj + 0xB0) = 0;
+        fn_802C519C(*(s32 *)((char *)obj + 0xB4));
+        *(s32 *)((char *)obj + 0xB4) = 0;
+        if (freeFlag > 0) fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 void fn_8013C804(void);
@@ -143,19 +143,16 @@ s32 fn_80244C58(void *arg0, s32 arg1) {
     v = *f1c;
     limit = *(s32 *)((char *)arg0 + 0x18);
     r = v & ((-v & ~v) >> 31);
-    if (r < limit - 3) limit = r;
+    if (limit - 3 > r) limit = r;
     *f1c = limit;
     return 1;
 }
 
 void fn_80244D0C(void *arg0) {
-    s32 temp_r3;
-    s32 limit;
-    temp_r3 = fn_802E2C20();
-    limit = *(s32 *)((char *)arg0 + 0xA8) + 0xFA;
-    *(volatile s32 *)((char *)arg0 + 0xA0) = temp_r3 <= limit;
-    limit = *(s32 *)((char *)arg0 + 0xAC) + 0xFA;
-    *(volatile s32 *)((char *)arg0 + 0xA4) = temp_r3 <= limit;
+    int t = fn_802E2C20();
+    int *a = (int *)((char *)arg0 + 0xA0);
+    a[0] = t <= (int)a[2] + 0xFA;
+    a[1] = t <= (int)a[3] + 0xFA;
 }
 
 extern void fn_80230C30(float *, float *, int, int);
