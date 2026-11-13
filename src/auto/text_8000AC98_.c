@@ -109,6 +109,7 @@ extern int lbl_8055D3DC;
 extern int lbl_8055D3E4;
 extern char lbl_802FBC90[];
 void fn_8000ADE0(int arg0) {
+    /* Switch active state: save previous state for certain indices, run exit/enter callbacks from state table, and record current tick. */
     void (*callback)(void);
     if (arg0 != 1 && arg0 != 0x12 && arg0 != 0x18)
         lbl_8055D3DC = arg0;
