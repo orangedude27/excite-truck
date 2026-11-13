@@ -4042,16 +4042,36 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
     return 0;
 }
 
-extern "C" u8 fn_800AB2F4(void *arg0, void *arg1, s32 arg2) {
-    u8 scratch[0x20];
-    fn_800B78F4(scratch + 0x10, scratch);
-    *(s16 *)arg0 = (s16)(((*(s32 *)(scratch + 0x18) & 0x1F) |
-                           ((*(s32 *)(scratch + 0x14) << 5) & 0x1E0)) |
-                          (((*(s32 *)(scratch + 0x10) - 0x7BC) << 9) & 0xFE00));
-    *(s16 *)arg1 = (s16)((((*(s32 *)(scratch + 8) >> 1) & 0x1F) |
-                           ((*(s32 *)(scratch + 4) << 5) & 0x7E0)) |
-                          ((*(s32 *)scratch << 11) & 0xF800));
-    return (u8)*(s32 *)(scratch + 0xC);
+/* Pack the current date/time into FAT-style directory timestamp fields.
+ * *dateOut receives year/month/day packed into 16 bits, *timeOut receives
+ * hour/minute/second packed into 16 bits, and the current second is returned. */
+extern "C" u8 fn_800AB2F4(void *dateOut, void *timeOut, s32 unused) {
+    struct DateFields {
+        s32 year;
+        s32 month;
+        s32 day;
+    };
+    struct TimeFields {
+        s32 hour;
+        s32 minute;
+        s32 second;
+    };
+    struct CalendarFields {
+        TimeFields time;
+        s32 pad; /* scratch[0xC], returned as the current second */
+        DateFields date;
+    };
+    CalendarFields fields;
+
+    fn_800B78F4(&fields.date, &fields.time);
+
+    *(s16 *)dateOut = (s16)(((fields.date.day & 0x1F) |
+                             ((fields.date.month << 5) & 0x1E0)) |
+                            (((fields.date.year - 0x7BC) << 9) & 0xFE00));
+    *(s16 *)timeOut = (s16)((((fields.time.second >> 1) & 0x1F) |
+                             ((fields.time.minute << 5) & 0x7E0)) |
+                            ((fields.time.hour << 11) & 0xF800));
+    return (u8)fields.pad;
 }
 
 /* A sector transfer that came back with fewer bytes than was asked for; the
