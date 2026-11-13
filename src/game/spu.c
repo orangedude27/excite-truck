@@ -326,6 +326,7 @@ void fn_802E5478(void) {
     extern unsigned char lbl_804FC690[];
     extern char lbl_8055D1E0;
     extern char lbl_8055FFA5;
+    extern float lbl_804FC680[4];
     extern void fn_801282F4(void);
     extern void fn_801282EC(int);
     extern int fn_801284E8(char *, int);
@@ -348,7 +349,6 @@ void fn_802E5478(void) {
     int voice, tmp;
     char *buf;
     long long now;
-    float *p;
     float one;
 
     ((void (*)(char *, ...))fn_802E30C8)(msg + 0x1BC);
@@ -394,14 +394,13 @@ void fn_802E5478(void) {
     now = OSGetTime();
     OSSetPeriodicAlarm(lbl_804FC690, now, (unsigned int)(((*(unsigned int *)0x800000F8 >> 2) / 125000 * 0x65B9AB) / 8000), (void *)fn_802E52EC);
     one = lbl_80565128;
-    p = lbl_804FC680;
-    *p = one;
-    *++p = one;
-    *++p = one;
-    *++p = one;
+    lbl_804FC680[0] = one;
+    lbl_804FC680[1] = one;
+    lbl_804FC680[2] = one;
+    lbl_804FC680[3] = one;
     fn_802E2E0C((void *)fn_802E540C, &lbl_8055D1E0);
     lbl_8055FFA5 = 1;
-    fn_802E5438();
+    ((void (*)(void))fn_802E5438)();
 }
 
 /* One of the 32 voice channels of the pool at lbl_8055FF94 (0x580 bytes),
@@ -597,6 +596,9 @@ void fn_802E59BC(unsigned char *arg0) {
 
 extern void fn_802E5D5C(void *);
 void fn_802E5A54(void) {
+    /* Shut down SPU state: release each tracked object in lbl_8055FF9C
+     * (count lbl_8055FFA0) via fn_802E5D5C, then finalize each 0x20-byte entry
+     * in lbl_804FC558 (count lbl_8055FF78) via fn_8012BF24, clearing counts. */
     int i, j;
     unsigned char *ptr;
     for (i = 0; i < lbl_8055FFA0; i++) {
@@ -639,6 +641,7 @@ void *fn_802E5AE8(char *arg0) {
     struct Res *res;
     unsigned char *slot;
     unsigned char flag;
+    int tmp;
 
     found = fn_80029004(arg0, 0x2F);
     if (found != 0) name = found + 1;
@@ -674,7 +677,8 @@ void *fn_802E5AE8(char *arg0) {
     *(unsigned int *)(slot + 0xA0) = aligned;
     *(int *)(slot + 0x94) = 1;
     *(int *)(slot + 0x20) = 0;
-    flag = (res->unk9 == 1);
+    tmp = res->unk9;
+    flag = (tmp == 1);
     slot[0x24] = flag;
     slot[0x25] = (res->unk8 != 0);
     if (flag) memcpy(slot + 0x28, res->data, 0x60);
