@@ -715,25 +715,30 @@ void fn_802E95CC(int arg0, void **arg1) { void *obj=*arg1; *(int*)((char*)obj+0x
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-int fn_802E95E0(void *arg0, void (*callback)(void), int arg2) {
-    int base;
-    void *log_arg;
-    void (*loop_cb)(void);
-    log_arg = arg0;
-    loop_cb = callback;
-    base = fn_802E2C20();
+int fn_802E95E0(void *opName, void (*pump)(void), int unused) {
+    /* rmemcard_wait_async: pump the async NAND machine until it leaves its busy
+       states (rmemcard_async_state < 2), running pump() once per pass. Gives up
+       and returns 0 (after logging rmemcard_timeout_msg with opName and the
+       elapsed ms) if the wait runs past 0xFA0 ms or the clock goes backwards;
+       returns 1 once the machine is idle. */
+    int startMs;
+    void *name;
+    void (*pump_cb)(void);
+    name = opName;
+    pump_cb = pump;
+    startMs = fn_802E2C20();
     goto check;
 loop:
     {
-        int value = fn_802E2C20();
-        if (value < base || value > base + 0xFA0) {
-            fn_802E30C8(lbl_8034E024, log_arg, value - base);
+        int nowMs = fn_802E2C20();
+        if (nowMs < startMs || nowMs > startMs + 0xFA0) {
+            fn_802E30C8(rmemcard_timeout_msg, name, nowMs - startMs);
             return 0;
         }
-        loop_cb();
+        pump_cb();
     }
 check:
-    if (lbl_80507288 >= 2)
+    if (rmemcard_async_state >= 2)
         goto loop;
     return 1;
 }
