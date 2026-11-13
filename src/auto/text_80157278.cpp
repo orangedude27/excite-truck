@@ -2745,7 +2745,7 @@ struct BonusTracker {
     virtual void v10();
     virtual void v11();
     virtual void v12();
-    virtual void v13();
+    virtual void v13(s32);   // 0x3C what the group forwards (fn_8015E5F4); the air tracker flushes its progress here
     virtual void v14();
     virtual void v15();
     virtual void v16();
