@@ -42,7 +42,7 @@ static inline void DispatchList_RemoveAt1(int index) {
         void **items = lbl_804386B4[0].items;
         items[index] = items[last];
     }
-    lbl_804386B4[0].count = ((volatile DispatchList *)lbl_804386B4)->count - 1;
+    lbl_804386B4[0].count = lbl_804386B4[0].count - 1;
 }
 
 void fn_801D05B4(void *arg0) { int index = DispatchList_Find1(arg0); if (index == -1) return; DispatchList_RemoveAt1(index); }
