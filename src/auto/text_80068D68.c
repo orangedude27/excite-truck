@@ -7844,23 +7844,24 @@ found:
     return 0xFFFF;
 }
 
-void btm_process_clk_off_comp_evt(u16 arg0, u16 arg1) {
+/* Store the clock offset for the ACL connection matching the given HCI handle. */
+void btm_process_clk_off_comp_evt(u16 hci_handle, u16 clock_offset) {
     u8 *base;
-    u32 i;
+    u32 index;
 
     base = lbl_803C0F78;
-    i = 0;
-    if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == arg0) goto update;
-    i = 1;
-    if (base[0x269] != 0 && *(u16 *)(base + 0x150) == arg0) goto update;
-    i = 2;
-    if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == arg0) goto update;
-    i = 3;
-    if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == arg0) goto update;
-    i = 4;
+    index = 0;
+    if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == hci_handle) goto update;
+    index = 1;
+    if (base[0x269] != 0 && *(u16 *)(base + 0x150) == hci_handle) goto update;
+    index = 2;
+    if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == hci_handle) goto update;
+    index = 3;
+    if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == hci_handle) goto update;
+    index = 4;
 update:
-    if (i >= 4) return;
-    *(u16 *)(lbl_803C0F78 + i * 0x11C + 0x3A) = arg1;
+    if (index >= 4) return;
+    *(u16 *)(lbl_803C0F78 + index * 0x11C + 0x3A) = clock_offset;
 }
 
 void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) { /* w5 */
