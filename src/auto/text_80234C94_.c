@@ -118,14 +118,15 @@ void *fn_80234CEC(void *arg0, int arg1) {
 }
 
 #pragma scheduling invalid_target
-void fn_80234D44(int arg0) {
+void fn_80234D44(int value) {
+    /* Append a value to the singly linked gArt-tracker list, allocating an 8-byte node if needed. */
     int *node;
-    if (arg0 != 0) {
+    if (value != 0) {
         node = (int *)lbl_8055F084;
         if (node == 0) {
             node = fn_801284F8(8, lbl_80340670);
             lbl_8055F084 = node;
-            *node = arg0;
+            *node = value;
             node = (int *)lbl_8055F084;
             node[1] = 0;
         } else {
@@ -133,7 +134,7 @@ void fn_80234D44(int arg0) {
                 node = (int *)node[1];
             node[1] = (int)fn_801284F8(8, lbl_80340670);
             node = (int *)node[1];
-            node[0] = arg0;
+            node[0] = value;
             node[1] = 0;
         }
     }
@@ -356,37 +357,36 @@ void fn_802354A0(int arg0, int arg1, int arg2, float x, float y, float z, float 
     int handle;
     void *obj;
     int index;
-    float s;
-
+    float scale, one, diff;
+    volatile int is_close;
     if (arg1 < 0)
         return;
-
     node = fn_8023505C((void *)arg0, arg1);
     if (node == 0) {
         fn_802E30C8(lbl_80340808, arg1, arg0);
         return;
     }
-
     sy = dy;
     n3 = *((float *)node + 3);
     sx = dx;
     n2 = *((float *)node + 2);
     n1 = *((float *)node + 1);
     n0 = *(float *)node;
-
     handle = *(int *)((char *)arg0 + 0x84);
     obj = fn_8022EDC4();
     fn_802C8B98(handle, (int)obj);
     index = fn_80230B9C(arg2);
-
-    s = *(float *)((char *)obj + 0x38);
-    if (!((float)__fabs(s - lbl_805636B0) <= lbl_80558DC4)) {
+    scale = *(float *)((char *)obj + 0x38);
+    one = lbl_805636B0;
+    diff = scale - one;
+    if ((float)__fabs(diff) <= lbl_80558DC4) is_close = 1; else is_close = 0;
+    if (is_close == 0) {
+        float s = *(float *)((char *)obj + 0x38);
         sx = dx * s;
         sy = dy * s;
         x += lbl_805636B4 * (dx * (lbl_805636B0 - s));
         y -= lbl_805636B4 * (dy * (lbl_805636B0 - s));
     }
-
     t0 = fn_80230A68(index, x, y, z, n0, n1);
     frame.v[0].a = t0.a; frame.v[0].b = t0.b; frame.v[0].c = t0.c; frame.v[0].d = t0.d; frame.v[0].e = t0.e;
     t1 = fn_80230A68(index, x + sx, y, z, n2, n1);
@@ -395,9 +395,7 @@ void fn_802354A0(int arg0, int arg1, int arg2, float x, float y, float z, float 
     frame.v[2].a = t2.a; frame.v[2].b = t2.b; frame.v[2].c = t2.c; frame.v[2].d = t2.d; frame.v[2].e = t2.e;
     t3 = fn_80230A68(index, x + sx, y - sy, z, n2, n3);
     frame.v[3].a = t3.a; frame.v[3].b = t3.b; frame.v[3].c = t3.c; frame.v[3].d = t3.d; frame.v[3].e = t3.e;
-
     ids = *(Idx_80235CBC *)lbl_802FA008;
-
     fn_802C8DB8(frame.v, 4, ids.i, 6);
     fn_802C8D74();
 }
