@@ -980,7 +980,6 @@ extern "C" void fn_801ABC28(void *arg0) {
     register int t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     int flag;
     float scale, first;
-
     if (*(unsigned char *)(p + 0x222) != 0) {
         *(unsigned char *)(p + 0x1e9) = 0;
         fn_8017C7C8(arg0, work.second, work.first);
@@ -1005,21 +1004,22 @@ extern "C" void fn_801ABC28(void *arg0) {
         } else if (*(unsigned char *)(p + 0x221) == 0) {
             fn_8017B81C(arg0);
             {
-                float a, b, c, d, e, f;
-                float r0, r1, r2, r3, r4, r5, check;
+                float f, e, d, c, b, a;
+                float check, r5, r4, r3, r2, r1, r0;
+                float s;
                 a = *(volatile float *)(p + 0x118);
-                scale = *(volatile float *)&lbl_805624E4;
+                s = *(volatile float *)&lbl_805624E4;
                 b = *(volatile float *)(p + 0x11c);
-                r0 = a * scale;
+                r0 = a * s;
                 c = *(volatile float *)(p + 0x120);
-                r1 = b * scale;
+                r1 = b * s;
                 d = *(volatile float *)(p + 0x124);
-                r2 = c * scale;
+                r2 = c * s;
                 e = *(volatile float *)(p + 0x128);
-                r3 = d * scale;
+                r3 = d * s;
                 f = *(volatile float *)(p + 0x12c);
-                r4 = e * scale;
-                r5 = f * scale;
+                r4 = e * s;
+                r5 = f * s;
                 check = *(volatile float *)(p + 0x238);
                 *(float *)(p + 0x118) = r0;
                 *(float *)(p + 0x11c) = r1;
@@ -1417,12 +1417,11 @@ void fn_801AC544(void *arg0) {
                         points[npoints].b = one;
                         npoints++;
                     }
-                    { struct Link *link = &links[nlinks];
-                    link->a = npoints;
-                    link->b = npoints - 1;
-                    link->distance = zero;
-                    link->value = val;
-                    nlinks++; }
+                    links[nlinks].a = npoints;
+                    links[nlinks].b = npoints - 1;
+                    links[nlinks].distance = zero;
+                    links[nlinks].value = val;
+                    nlinks++;
                 }
             }
             anchors[nanchors].index = npoints;
@@ -1506,36 +1505,44 @@ static inline void transform_801ACB30(const float *m, const float *src, volatile
 }
 void fn_801ACB30(void *arg0, int arg1) {
     char *p = (char *)arg0;
-    char *out = (char *)(arg1 + *(int *)(p + 8));
-    float t = lbl_8055E460 - lbl_805624AC;
-    int i;
-    if (__fabsf(t) <= lbl_80558DC4) {
-        for (i = 0; i < 12; i++) *(int *)(out + i*4) = *(int *)(p + 0x70 + i*4);
+    float *out = (float *)(arg1 + *(int *)(p + 8));
+    register float t = lbl_8055E460 - lbl_805624AC;
+    int j, k;
+    if ((float)__fabs(t) <= lbl_80558DC4) {
+        out[0] = *(float *)(p + 0x70);
+        out[1] = *(float *)(p + 0x74);
+        out[2] = *(float *)(p + 0x78);
+        out[3] = *(float *)(p + 0x7C);
+        out[4] = *(float *)(p + 0x80);
+        out[5] = *(float *)(p + 0x84);
+        out[6] = *(float *)(p + 0x88);
+        out[7] = *(float *)(p + 0x8C);
+        out[8] = *(float *)(p + 0x90);
+        out[9] = *(float *)(p + 0x94);
+        out[10] = *(float *)(p + 0x98);
+        out[11] = *(float *)(p + 0x9C);
     } else {
-        for (i = 0; i < 12; i++) {
-            float a = *(float *)(p + 0x70 + i*4);
-            float b = *(float *)(p + 0xA0 + i*4);
-            *(float *)(out + i*4) = b + t * (a - b);
+        for (j = 0; j < 2; j++) {
+            float *a = (float *)(p + 0x70 + j * 0x18);
+            float *b = (float *)(p + 0xA0 + j * 0x18);
+            float *o = out + j * 6;
+            for (k = 0; k < 6; k++) o[k] = b[k] + t * (a[k] - b[k]);
         }
     }
-    *(short *)(out + 0x30) = *(short *)(p + 0x6C);
+    *(short *)(out + 12) = *(short *)(p + 0x6C);
     if (*(void **)(p + 0x23C)) {
         float *v = (float *)(p + 0x244);
-        float *q = (float *)(p + 0x244);
-        for (i = 0; i < 3; i++) {
-            float x = v[0] * *(float *)(p + 0x3C + i*4) +
-                      v[1] * *(float *)(p + 0x48 + i*4) +
-                      v[2] * *(float *)(p + 0x54 + i*4) +
-                      *(float *)(p + 0x60 + i*4);
-            *(float *)((char *)&t + i*4) = x;
+        float st[3];
+        for (j = 0; j < 3; j++) {
+            st[j] = v[0] * *(float *)(p + 0x3C + j*4) + v[1] * *(float *)(p + 0x48 + j*4) + v[2] * *(float *)(p + 0x54 + j*4) + *(float *)(p + 0x60 + j*4);
         }
-        for (i = 0; i < 3; i++) {
-            float x = q[0] * *(float *)((char *)*(void **)(p + 0x23C) + 0x3C + i*4) +
-                      q[1] * *(float *)((char *)*(void **)(p + 0x23C) + 0x48 + i*4) +
-                      q[2] * *(float *)((char *)*(void **)(p + 0x23C) + 0x54 + i*4) +
-                      *(float *)((char *)*(void **)(p + 0x23C) + 0x60 + i*4);
-            *(float *)(p + 0x8 + i*4) = x;
+        {
+            float *q = (float *)(*(char **)(p + 0x23C));
+            for (j = 0; j < 3; j++) {
+                ((float *)(p + 8))[j] = q[0] * *(float *)((char *)q + 0x3C + j*4) + q[1] * *(float *)((char *)q + 0x48 + j*4) + q[2] * *(float *)((char *)q + 0x54 + j*4) + *(float *)((char *)q + 0x60 + j*4);
+            }
         }
+        (void)st;
     }
 }
 
@@ -1714,13 +1721,13 @@ void fn_801AD394(void *arg0) {
     Vec pathPoint;
     Vec otherPoint;
     Vec residual;
-    register float length;
-    register float distance;
+    float length;
+    float thresh;
+    float distance;
     float factor;
     float t1;
     float t2;
-    register float base;
-    register float thresh;
+    float base;
     float sub;
 
     fn_8017AB84(*(void **)((u8 *)arg0 + 0x34), &transformed, (u8 *)arg0 + 0x10);
@@ -1913,12 +1920,16 @@ void fn_801AD750(void *arg0, void *arg1) {
 #pragma scheduling off
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
     void *obj;
-    if (arg3 >= 8)
+    void *tmp;
+    if (arg3 >= 8) {
         return;
-    if (arg0 == 0)
+    }
+    if (arg0 == 0) {
         return;
+    }
     obj = (char *)arg0 + 0x23C;
-    fn_801D0A24(obj, arg2);
+    tmp = arg2;
+    fn_801D0A24(obj, tmp);
 }
 #pragma scheduling on
 unsigned char fn_801AD860(void *arg0) {
