@@ -1743,8 +1743,10 @@ extern "C" void* fn_800EE4F0(void* arg0) {
     return arg0;
 }
 
-extern "C" void fn_800EE568(void* arg0) {
-    u8* p = (u8*)arg0;
+/* Reset a RemoteSpeakerManager speaker slot: cancel its alarms and clear its
+   state/flags and the 0x20-byte buffer at offset 9. */
+extern "C" void fn_800EE568(void *slot) {
+    u8 *p = (u8 *)slot;
     p[2] = 0; p[3] = 0;
     OSCancelAlarm(p + 0x38);
     p[7] = 0;
