@@ -970,13 +970,14 @@ extern "C" void fn_8029998C(void* arg0) {
 }
 
 extern "C" int fn_802E317C(const char *, ...);
-extern "C" unsigned int fn_80299A04(void *arg0, unsigned int arg1, float farg0) {
-    if (*(int *)((char *)arg0 + 0x138) >= 2) {
+/* Adds a ring-fire entry at slot index (count at +0x138, stride 0x9C), initializing it via fn_80299A88; warns and returns the previous count if the limit (2) is exceeded. */
+extern "C" unsigned int fn_80299A04(void *self, unsigned int arg, float value) {
+    if (*(int *)((char *)self + 0x138) >= 2) {
         fn_802E317C(lbl_803494D0);
     }
-    fn_80299A88(arg0, (char *)arg0 + *(unsigned int *)((char *)arg0 + 0x138) * 0x9C, arg1, farg0);
-    unsigned int count = *(unsigned int *)((char *)arg0 + 0x138);
-    *(unsigned int *)((char *)arg0 + 0x138) = count + 1;
+    fn_80299A88(self, (char *)self + *(unsigned int *)((char *)self + 0x138) * 0x9C, arg, value);
+    unsigned int count = *(unsigned int *)((char *)self + 0x138);
+    *(unsigned int *)((char *)self + 0x138) = count + 1;
     return count;
 }
 
