@@ -5,7 +5,6 @@
 
 /* Keys a menu item's handler sees.  The arrows are the Windows virtual-key
    codes with a 0x100 base; Return and Escape keep their plain codes. */
-#define MENU_KEY_ENUM_MOVED
 enum {
     MENU_KEY_RETURN = 0xD,
     MENU_KEY_ESCAPE = 0x1B,
