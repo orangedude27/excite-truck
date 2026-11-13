@@ -45,10 +45,10 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
         virtual char *f1();
     };
     int values[36];
+    register int handle;
     int now;
-    int length;
-    int handle;
     int i;
+    int length;
     int *base;
     void *second;
     Obj *object;
@@ -285,9 +285,6 @@ void fn_8023ED30(void) {
 }
 
 extern int lbl_802FA2BC[5];
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 #pragma cplusplus on
 int fn_8023EEF8(void) {
     struct Data { void *first; void *second; int zero[3]; int values[55]; };
@@ -358,7 +355,6 @@ int fn_8023EEF8(void) {
     return (((int (*)(void *,int,int,int))fn_802146BC)((void *)&data,-999,-999,1)+2)==0;
 }
 #pragma cplusplus reset
-#pragma pop
 
 #pragma use_lmw_stmw on
 extern unsigned char lbl_8055BD10;
@@ -374,9 +370,8 @@ int fn_8023F0E8(void) {
         void *first;
         void *second;
         int zero[3];
-        int values[55];
-    };
-    volatile struct Data data;
+        int values[59];
+    } data;
     data.values[7] = (int)fn_8023F9E8;
     data.values[0] = (int)&lbl_8055B860;
     data.values[5] = (int)&lbl_8055B860;
@@ -439,7 +434,7 @@ int fn_8023F0E8(void) {
     data.first = fn_8023E5A8();
     data.second = (void *)&data.values[0];
     return (((int (*)(void *, int, int, int, int, int, int, int))fn_802146BC)(
-                (void *)&data, -0x3E7, -0x3E7, 1,
+                &data, -0x3E7, -0x3E7, 1,
                 *(int *)(lbl_804987E0 + 0), 3, 4, 0) + 2) == 0;
 }
 
@@ -449,88 +444,87 @@ extern unsigned char lbl_8055BD20;
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_8023E5A8
 int fn_8023F2C4(void) {
-    struct { volatile int field[5]; } argBlock;
-    volatile struct { int field[55]; } table;
-    register int pC = (int)(lbl_80341CC8 + 0x3E8);
+    volatile int args[5];
+    volatile int values[55];
+    int pC = (int)(lbl_80341CC8 + 0x3E8);
     volatile int *config = (volatile int *)lbl_804987E0;
     volatile int *input = (volatile int *)lbl_802FA2D0;
-    int config0, config1, config2, config3, config4;
-    int arg0, arg1, arg2, arg3, arg4;
-    table.field[0] = (int)&lbl_8055B860;
-    table.field[5] = (int)&lbl_8055B860;
-    table.field[1] = 6;
-    table.field[6] = 6;
-    table.field[7] = (int)fn_8023F9E8;
-    table.field[3] = -2;
-    table.field[4] = 0xD;
-    table.field[2] = 0;
-    table.field[11] = 3;
-    table.field[8] = -1;
-    table.field[9] = 0x1B;
-    table.field[10] = (int)&lbl_8055BCA0;
-    table.field[12] = (int)(lbl_80341CC8+0x3F4);
-    table.field[13] = 4;
-    table.field[14] = 0;
-    table.field[16] = 3;
-    table.field[15] = (int)&lbl_8055BCD8;
-    table.field[17] = (int)(lbl_80341CC8+0x40C);
-    table.field[18] = 4;
-    table.field[19] = 0;
-    table.field[21] = 3;
-    table.field[20] = (int)&lbl_8055BCE0;
-    table.field[22] = (int)(lbl_80341CC8+0x428);
-    table.field[23] = 4;
-    table.field[24] = 0;
-    table.field[26] = 3;
-    table.field[25] = (int)&lbl_8055BCE8;
-    table.field[27] = (int)(lbl_80341CC8+0x238);
-    table.field[28] = 4;
-    table.field[29] = 0;
-    table.field[31] = 3;
-    table.field[30] = (int)&lbl_8055BCF0;
-    table.field[32] = (int)&lbl_8055BCB8;
-    table.field[33] = 4;
-    table.field[34] = 0;
-    table.field[36] = 3;
-    table.field[35] = (int)&lbl_8055BCF8;
-    table.field[37] = (int)&lbl_8055BCB8;
-    table.field[38] = 4;
-    table.field[39] = 0;
-    table.field[41] = 3;
+    register int config0, config1, config2, config3, config4;
+    register int arg0, arg1, arg2, arg3, arg4;
+    values[0] = (int)&lbl_8055B860;
+    values[5] = (int)&lbl_8055B860;
+    values[1] = 6;
+    values[6] = 6;
+    values[7] = (int)fn_8023F9E8;
+    values[3] = -2;
+    values[4] = 0xD;
+    values[2] = 0;
+    values[11] = 3;
+    values[8] = -1;
+    values[9] = 0x1B;
+    values[10] = (int)&lbl_8055BCA0;
+    values[12] = (int)(lbl_80341CC8+0x3F4);
+    values[13] = 4;
+    values[14] = 0;
+    values[16] = 3;
+    values[15] = (int)&lbl_8055BCD8;
+    values[17] = (int)(lbl_80341CC8+0x40C);
+    values[18] = 4;
+    values[19] = 0;
+    values[21] = 3;
+    values[20] = (int)&lbl_8055BCE0;
+    values[22] = (int)(lbl_80341CC8+0x428);
+    values[23] = 4;
+    values[24] = 0;
+    values[26] = 3;
+    values[25] = (int)&lbl_8055BCE8;
+    values[27] = (int)(lbl_80341CC8+0x238);
+    values[28] = 4;
+    values[29] = 0;
+    values[31] = 3;
+    values[30] = (int)&lbl_8055BCF0;
+    values[32] = (int)&lbl_8055BCB8;
+    values[33] = 4;
+    values[34] = 0;
+    values[36] = 3;
+    values[35] = (int)&lbl_8055BCF8;
+    values[37] = (int)&lbl_8055BCB8;
+    values[38] = 4;
+    values[39] = 0;
+    values[41] = 3;
     config0 = config[0];
+    arg0 = input[0];
     config1 = config[1];
     config2 = config[2];
     config3 = config[3];
     config4 = config[4];
-    arg0 = input[0];
     arg1 = input[1];
     arg2 = input[2];
     arg3 = input[3];
     arg4 = input[4];
-    table.field[40] = (int)&lbl_8055BD08;
-    table.field[42] = (int)&lbl_8055BD20;
-    table.field[43] = 4;
-    table.field[44] = 0;
-    table.field[46] = 3;
-    table.field[45] = (int)&lbl_8055BD00;
-    table.field[47] = (int)(lbl_80341CC8+0x3E8);
-    table.field[48] = 4;
-    table.field[49] = 0;
-    table.field[50] = config0;
-    table.field[51] = config1;
-    table.field[52] = config2;
-    table.field[53] = config3;
-    table.field[54] = config4;
-    lbl_8055F1C4 = 0;
-    argBlock.field[0] = arg0;
-    argBlock.field[1] = arg1;
-    argBlock.field[2] = arg2;
-    argBlock.field[3] = arg3;
-    argBlock.field[4] = arg4;
-    argBlock.field[0] = (int)((void *(*)(void *, int, int, int, int, int, int, int))fn_8023E5A8)(
+    values[40] = (int)&lbl_8055BD08;
+    values[42] = (int)&lbl_8055BD20;
+    values[43] = 4;
+    values[44] = 0;
+    values[46] = 3;
+    values[45] = (int)&lbl_8055BD00;
+    values[47] = pC;
+    values[48] = 4;
+    values[49] = 0;
+    values[50] = config0;
+    values[51] = config1;
+    values[52] = config2;
+    values[53] = config3;
+    values[54] = config4;
+    args[0] = arg0;
+    args[1] = arg1;
+    args[2] = arg2;
+    args[3] = arg3;
+    args[4] = arg4;
+    args[0] = (int)((void *(*)(void *, int, int, int, int, int, int, int))fn_8023E5A8)(
         (void *)pC, arg4, arg3, arg2, arg1, arg0, config4, config3);
-    argBlock.field[1] = (int)table.field;
-    return (((int (*)(void *, int, int, int))fn_802146BC)((void *)argBlock.field, -999, -999, 1) + 2) == 0;
+    args[1] = (int)values;
+    return (((int (*)(void *, int, int, int))fn_802146BC)((void *)args, -999, -999, 1) + 2) == 0;
 }
 
 extern unsigned char lbl_8055BD28;
@@ -811,14 +805,15 @@ int fn_8023F91C(int *arg0) {
     return 0;
 }
 
-int fn_8023F964(int *arg0) {
+/* Calls optional hook, tracks NAND availability, and returns whether NAND became unavailable (-2 result). */
+int fn_8023F964(int *resultCode) {
     if (lbl_8055F1C0 != 0) ((void (*)(void))lbl_8055F1C0)();
     if (fn_802E8D84() == 0) {
         lbl_8055F1C4 = 1;
         return 0;
     }
     if (lbl_8055F1C4 != 0 && fn_802E8D84() != 0) {
-        *arg0 = -2;
+        *resultCode = -2;
         return 1;
     }
     return 0;
