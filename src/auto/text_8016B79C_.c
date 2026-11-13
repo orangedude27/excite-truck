@@ -21,6 +21,7 @@ extern "C" int fn_8016C760(void *);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" f32 lbl_8056199C;
 #pragma cplusplus reset
+typedef struct PtrVec { void **data; s32 count; } PtrVec;
 extern s32 fn_801284F8(s32, const char *);
 extern char lbl_80330A90[];
 extern void fn_80144504(void **);
@@ -3068,10 +3069,10 @@ extern s32 fn_80179650(void);
 extern "C" void **fn_8016CE9C(void *object, void **input) {
     s32 index = *(s32 *)((u8 *)object + 4);
     void *value = *input;
-    void **data = *(void ***)object;
     *(s32 *)((u8 *)object + 4) = index + 1;
-    data[index] = value;
-    return data + index;
+    void **slot = *(void ***)object + index;
+    *slot = value;
+    return slot;
 }
 #pragma pop
 
