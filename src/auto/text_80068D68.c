@@ -9104,15 +9104,15 @@ s32 fn_8007A534(s32 arg0) {
    registered vendor-specific handler. */
 void btm_vendor_specific_evt(UINT8 *p, UINT8 evt_len) {
     u8 *btm = lbl_803C0F78;
-    void (*callback)(UINT8, UINT8 *);
-    if (*(UINT16 *)(btm + 0x63C) != 0x12 && *(UINT8 *)(btm + 0x27C0) >= 4) {
-        fn_8007093C(0xD0003, lbl_803161E0);
+    void (*p_vend_spec_cb)(UINT8, UINT8 *);
+    if (vsb_lmp_subversion(btm) != 0x12 && btm[0x27C0] >= BTM_TRACE_LEVEL_EVENT) {
+        fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, lbl_803161E0);
     }
-    callback = *(void (**)(UINT8, UINT8 *))(btm + 0x56C);
-    *(UINT32 *)(btm + 0x61C) = 0;
-    *(UINT8 *)(btm + 0x650) = 0;
-    if (callback != 0) {
-        callback(evt_len, p);
+    p_vend_spec_cb = vsb_p_vend_spec_cb(btm);
+    vsb_p_vsc_cback(btm) = 0;
+    vsb_vsc_busy(btm) = 0;
+    if (p_vend_spec_cb != 0) {
+        p_vend_spec_cb(evt_len, p);
     }
 }
 
