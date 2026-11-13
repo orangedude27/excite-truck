@@ -34,6 +34,29 @@ typedef struct UITBRec {
     int magic;
     int unk2C;
 } UITBRec;
+/* A "UITB" text table: rows x columns of strings packed into one character buffer,
+   each cell holding one tag byte and then its text. Built by UITable_init, cleared
+   by UITable_clear, cells written by fn_8022D894 and read back by fn_8022D850. */
+typedef struct UITable {
+    char *text;        /* 0x00 "UITable:buf": every cell's string */
+    int columns;       /* 0x04 */
+    int rowsUsed;      /* 0x08 highest row written + 1 */
+    int rows;          /* 0x0C capacity */
+    int rowsInit;      /* 0x10 capacity the text buffer was sized for */
+    int rowSize;       /* 0x14 bytes of text per row: sum of (column size + 1) */
+    int *columnSizes;  /* 0x18 "column_wids": string capacity of each column */
+    int *columnStarts; /* 0x1C "column_offs": where each column starts in a row */
+    int cursor;        /* 0x20 field_2C shared over the row count, see fn_8022D924 */
+    int updates;       /* 0x24 bumped by every change */
+    int magic;         /* 0x28 'UITB' */
+    int field_2C;      /* 0x2C -1 as built */
+} UITable;
+
+/* Allocation-tag strings held in the pool at lbl_80340108 ("StringList"). */
+#define UITAG_COLUMN_SIZES 0x38  /* "column_wids" */
+#define UITAG_COLUMN_STARTS 0x44 /* "column_offs" */
+#define UITAG_TEXT 0x50          /* "UITable:buf" */
+#define UITABLE_MAGIC 0x55495442 /* 'UITB' */
 #pragma scheduling invalid_target
 void *fn_8022D228(void *arg0, int arg1, int arg2, int arg3) {
     /* Initialize a fixed-capacity string list: store capacity/count/maxLen and allocate
