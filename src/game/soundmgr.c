@@ -144,7 +144,6 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
     unsigned long *source;
     float zero;
     float one;
-
     object = (struct SoundObject *)arg0;
     object->vtable = lbl_8033BEE8;
     fn_80207980((void *)&object->fieldC);
@@ -160,8 +159,8 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
     object->callback = arg1;
     memset(object->cleared5C, 0, 0x30);
     vector1 = lbl_804891F8;
-    object->field5 = 0;
     vector2 = lbl_80489228;
+    object->field5 = 0;
     zero = lbl_8056322C;
     one = lbl_80563228;
     vector1[1] = zero;
@@ -305,8 +304,7 @@ void fn_80207C80(void *arg0) {
     offset = 0;
     i = 0;
     while (i < object->count) {
-        fn_802067C8(*(int *)((char *)object->items + offset),
-                    object->field5c, object->field8c);
+        fn_802067C8(*(int *)((char *)object->items + offset), (void *)object->field5c, object->field8c);
         offset += 4;
         ++i;
     }
@@ -315,10 +313,9 @@ void fn_80207C80(void *arg0) {
     i = 0;
     offset = 0;
     while (i < object->count) {
-        fn_80206824(*(int *)((char *)object->items + offset),
-                    object->field5c, object->field8c);
+        fn_80206824(*(int *)((char *)object->items + offset), (void *)object->field5c, object->field8c);
         offset += 4;
-        i++;
+        ++i;
     }
     fn_8020815C(arg0);
     fn_80207E70(arg0);
@@ -360,6 +357,7 @@ extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
 #pragma cplusplus on
 extern "C" void fn_80207DE0(void* arg0) {
+    /* Clear/destroy all tracked item pointers at +0x94 (count at +0x114) via virtual f2(1). */
     class Item {
     public:
         virtual void f2(signed long);
@@ -415,16 +413,16 @@ extern "C" void fn_80207E70(void *arg0) {
 }
 
 void fn_80207F34(void *arg0) {
-    char *obj = (char *)arg0;
+    register char *obj = (char *)arg0;
     signed long idx = (signed long)fn_802090B4();
     SlotLimits *tbl = (SlotLimits *)lbl_802F9DC8;
     signed long rem = tbl[idx].total;
     signed long counts[9];
+    memset(counts, 0, 0x24);
     signed long sel[9];
     signed long row, j, take, done;
-    memset(counts, 0, 0x24);
-    if (rem > 0) {
-        char *rp = obj;
+    if (0 < rem) {
+        register char *rp = obj;
         for (row = 0; row < 9; row++) {
             counts[row] = 0;
             if (*(unsigned char *)(obj + 5) == 0 || row == 0) {
@@ -444,28 +442,28 @@ void fn_80207F34(void *arg0) {
         row = 0;
         while (rem > 0 && row < 9) {
             signed long c = counts[row];
-            if (c != 0) {
+            if (c) {
                 take = rem;
                 if (tbl[idx].lim[row] < rem) take = tbl[idx].lim[row];
-                if (c > take) {
-                    rem -= take;
+                if (take < c) {
                     done = 0;
-                    sel[row] = sel[row] + take;
+                    rem -= take;
                     counts[row] = counts[row] - sel[row];
+                    sel[row] = sel[row] + (unsigned)take;
                 } else {
                     sel[row] += c;
                     rem -= counts[row];
                     counts[row] = 0;
                 }
             }
-            row++;
+            ++row;
         }
     } while (done == 0 && rem > 0);
     {
         char *rp = obj + 0x14;
         for (row = 0; row < 9; row++) {
-            signed long n = *(signed long *)(rp + 4);
-            for (j = 0; j < n; j++) {
+            register signed long n = *(signed long *)(rp + 4);
+            for (j = 0; (int)j < n; j++) {
                 char *item = *(char **)(*(char **)rp + j * 4);
                 if (*(unsigned char *)(item + 0x18) != 0) {
                     if (sel[row] == 0) {
@@ -497,17 +495,13 @@ extern "C" signed long fn_8020815C(void *arg0) {
         virtual void f6();
         virtual signed long check();
     };
-    struct Lim5 {
-        signed long total;
-        char pad[0x28];
-    };
     register signed long offset;
     register signed long limit;
     register signed long matches;
     register signed long i;
     void *entry;
     void *owner;
-    limit = ((struct Lim5 *)lbl_802F9DC8)[(signed long)fn_802090B4()].total;
+    limit = *(signed long *)((char *)lbl_802F9DC8 + (signed long)fn_802090B4() * 0x2C);
     matches = 0;
     i = 0;
     offset = 0;
@@ -765,10 +759,10 @@ void fn_80208620(void* arg0, void* arg1) {
     typedef struct { int *ptr; int count; } Ent;
     typedef struct { char pad0[0xc]; int *base; int total; Ent ents[9]; } Hdr;
     Hdr *h = (Hdr*)arg0;
-    int idx = *(int*)((char*)arg1 + 0x44);
+    signed long idx = *(int*)((char*)arg1 + 0x44);
     int *found = 0;
-    int i;
-    int j;
+    signed long i;
+    signed long j;
     for (i = 0; i < h->ents[idx].count; i++) {
         if ((void*)h->ents[idx].ptr[i] == arg1) {
             found = &h->ents[idx].ptr[i];
@@ -779,10 +773,8 @@ void fn_80208620(void* arg0, void* arg1) {
         h->total -= 1;
         h->ents[idx].count -= 1;
         memmove(found, found + 1, (h->total - (found - h->base)) * 4);
-        j = idx + 1;
-        while (j < 9) {
+        for (j = idx + 1; j < 9; j++) {
             h->ents[j].ptr--;
-            j++;
         }
     } else {
         fn_802E317C(lbl_8033BE80, (char*)arg1 + 0x37);
