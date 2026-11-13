@@ -3,6 +3,14 @@ extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
 extern int fn_802E317C(const char *, ...);
+
+/* The particle types a table entry can name, in the order their codes go:
+ * 0 "Simple", 1 "Animated", 2 "Rotating".  A name outside the table is logged
+ * with particleTypeNotFound and comes back as PARTICLE_TYPE_UNKNOWN. */
+#define particleTypeNames     ((char **)&lbl_80348CF8)
+#define particleTypeNotFound  lbl_80348D28 /* "particle: could not find type '%s'" */
+#define PARTICLE_TYPE_COUNT   3
+#define PARTICLE_TYPE_UNKNOWN 3
 extern float fn_802C9A4C(float);
 extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
