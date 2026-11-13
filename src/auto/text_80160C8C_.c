@@ -2423,6 +2423,7 @@ extern "C" void fn_8026A2CC(int *, int, float);
 extern "C" void fn_8000C630(int, int);
 #pragma cplusplus on
 extern "C" void fn_80164480(void *arg0) {
+    /* If object is active, trigger event 0x15 or 0x20 based on elapsed time threshold. */
     int sp10[12];
     float sp8;
 
