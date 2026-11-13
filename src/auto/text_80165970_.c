@@ -1092,77 +1092,81 @@ typedef struct LfoEntry {
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
-float fn_801673A4(int arg0, float *arg1) {
-    void *base;
-    float *entry;
-    float t, factor, scale, startTime, endTime, lowValue, highValue;
-    float c, d, z, y, x, term1, term2, interpStart, interpEnd, fallbackValue;
+float fn_801673A4(int entryIndex, float *lfoOut) {
+    /* Sample automation entry `entryIndex` on the lbl_8055E318 clock: *lfoOut gets
+     * its triangle LFO, smoothed with smoothstep and scaled into [+0x48, +0x4C],
+     * and the return value is the entry's fade weight, interpolated from +0x34 to
+     * +0x38 across +0x3C..+0x40. Both are 0 while the automation list is off. */
+    void *holder;
+    LfoEntry *entry;
+    float ramp, shape, cycleFactor, fadeStart, fadeEnd, fadeFrom, fadeTo;
+    float mix, elapsed, phaseStart, period2, clock, term1, term2, lfoFrom, lfoTo, idleValue;
 
     if (((int (*)(void))fn_801667F0)()) {
-        base = *(void **)&lbl_8055E32C;
-        entry = (float *)((char *)*(void **)base + arg0 * 0x88);
-        scale = lbl_805618A0;
-        x = lbl_8055E318;
-        y = entry[0x50 / 4];
-        z = entry[0x54 / 4];
-        y = scale * y;
-        x -= z;
-        t = fn_8002EFB4(x, y, scale);
+        holder = *(void **)&lbl_8055E32C;
+        entry = (LfoEntry *)((char *)*(void **)holder + entryIndex * 0x88);
+        cycleFactor = CYCLE_FACTOR;
+        clock = lbl_8055E318;
+        period2 = entry->lfoPeriod;
+        phaseStart = entry->lfoPhase;
+        period2 = cycleFactor * period2;
+        clock -= phaseStart;
+        ramp = fn_8002EFB4(clock, period2, cycleFactor); /* fmod into one up/down cycle */
 
-        if (t > entry[0x50 / 4])
-            t = lbl_805618A0 * entry[0x50 / 4] - t;
-        t /= entry[0x50 / 4];
+        if (ramp > entry->lfoPeriod)
+            ramp = CYCLE_FACTOR * entry->lfoPeriod - ramp; /* second half ramps back down */
+        ramp /= entry->lfoPeriod;
 
-        factor = lbl_805618F4;
-        if (t < factor) {
-            factor = lbl_805618F4;
-        } else if (t > lbl_805618D0) {
-            factor = lbl_805618D0;
-        } else if (t > lbl_8056189C) {
-            term1 = lbl_805618F8 * t;
-            term2 = lbl_805618FC * t;
-            term1 *= t;
-            term2 *= t;
-            term1 = t * term1;
-            factor = term1 + term2;
+        shape = FLOAT_NEG_ONE;
+        if (ramp < shape) {
+            shape = FLOAT_NEG_ONE;
+        } else if (ramp > FLOAT_ONE) {
+            shape = FLOAT_ONE;
+        } else if (ramp > FLOAT_ZERO) {
+            term1 = SMOOTHSTEP_C1 * ramp;
+            term2 = SMOOTHSTEP_C2 * ramp;
+            term1 *= ramp;
+            term2 *= ramp;
+            term1 = ramp * term1;
+            shape = term1 + term2;
         } else {
-            term1 = lbl_805618F8 * t;
-            term2 = lbl_805618FC * t;
-            term1 *= t;
-            term2 *= t;
-            term1 = t * term1;
-            factor = term1 - term2;
+            term1 = SMOOTHSTEP_C1 * ramp;
+            term2 = SMOOTHSTEP_C2 * ramp;
+            term1 *= ramp;
+            term2 *= ramp;
+            term1 = ramp * term1;
+            shape = term1 - term2;
         }
 
-        interpEnd = entry[0x4C / 4];
-        interpStart = entry[0x48 / 4];
-        *arg1 = interpStart + factor * (interpEnd - interpStart);
+        lfoTo = entry->lfoMax;
+        lfoFrom = entry->lfoMin;
+        *lfoOut = lfoFrom + shape * (lfoTo - lfoFrom);
 
-        endTime = entry[0x40 / 4];
-        startTime = entry[0x3C / 4];
-        if ((float)__fabs(startTime - endTime) <= lbl_80558DC4)
-            return entry[0x34 / 4];
+        fadeEnd = entry->fadeEndTime;
+        fadeStart = entry->fadeStartTime;
+        if ((float)__fabs(fadeStart - fadeEnd) <= CLOCK_EPSILON)
+            return entry->fadeStartValue;
 
-        highValue = entry[0x38 / 4];
-        lowValue = entry[0x34 / 4];
-        c = lbl_805618D0;
-        d = (lbl_8055E318 - startTime) / (endTime - startTime);
-        if (c < d) {
-            c = lbl_805618D0;
+        fadeTo = entry->fadeEndValue;
+        fadeFrom = entry->fadeStartValue;
+        mix = FLOAT_ONE;
+        elapsed = (lbl_8055E318 - fadeStart) / (fadeEnd - fadeStart);
+        if (mix < elapsed) {
+            mix = FLOAT_ONE;
         } else {
-            c = d;
+            mix = elapsed;
         }
-        if (c > lbl_8056189C) {
-            c = c;
+        if (mix > FLOAT_ZERO) {
+            mix = mix;
         } else {
-            c = lbl_8056189C;
+            mix = FLOAT_ZERO;
         }
-        return lowValue + c * (highValue - lowValue);
+        return fadeFrom + mix * (fadeTo - fadeFrom);
     }
 
-    fallbackValue = lbl_8056189C;
-    *arg1 = fallbackValue;
-    return fallbackValue;
+    idleValue = FLOAT_ZERO;
+    *lfoOut = idleValue;
+    return idleValue;
 }
 #pragma pop
 unsigned char fn_80167544(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5D)); }
