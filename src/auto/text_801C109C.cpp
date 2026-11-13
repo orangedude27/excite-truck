@@ -927,11 +927,9 @@ extern "C" void fn_801E41D8(float *, float *, int, float);
 struct Vec3f { float x, y, z; };
 static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
     if (dst == src) {
-        Vec3f t;
-        t.x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
-        t.y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
-        t.z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
-        *dst = t;
+        dst->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        dst->y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        dst->z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
     } else {
         dst->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
         dst->y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
@@ -941,64 +939,20 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
     dst->y += m[10];
     dst->z += m[11];
 }
+#pragma push
+#pragma dont_inline off
 extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
-    char *base = (char *)arg0;
-    float *matrix = arg1;
-    int count = *(int *)(base + 0x18);
-    int i = 0;
-    int offset = 0;
-    int color;
-    volatile float inA[3];
-    volatile float inB[3];
-    volatile float outA[3];
-    volatile float outB[3];
-    register volatile float *pInA = inA;
-    register volatile float *pInB = inB;
-    register volatile float *pOutA = outA;
-    register volatile float *pOutB = outB;
-
-    color = lbl_8055E7C8;
-    goto check;
-loop:
-    {
-        int *indices = *(int **)(base + 0x48);
-        unsigned char *points = *(unsigned char **)(base + 0x24);
-        int first = *(int *)((char *)indices + offset);
-        int second = *(int *)((char *)indices + offset + 4);
-        *(volatile unsigned int *)&pInA[0] = *(unsigned int *)(points + first * 12);
-        *(volatile unsigned int *)&pInA[1] = *(unsigned int *)(points + first * 12 + 4);
-        *(volatile unsigned int *)&pInA[2] = *(unsigned int *)(points + first * 12 + 8);
-        *(volatile unsigned int *)&pInB[0] = *(unsigned int *)(points + second * 12);
-        *(volatile unsigned int *)&pInB[1] = *(unsigned int *)(points + second * 12 + 4);
-        *(volatile unsigned int *)&pInB[2] = *(unsigned int *)(points + second * 12 + 8);
-        if (pInA[2] == pInA[2]) {
-            pOutA[0] = pInA[2] * matrix[6] + (pInA[0] * matrix[0] + pInA[1] * matrix[3]);
-            pOutA[1] = pInA[2] * matrix[7] + (pInA[0] * matrix[1] + pInA[1] * matrix[4]);
-            pOutA[2] = pInA[2] * matrix[8] + (pInA[0] * matrix[2] + pInA[1] * matrix[5]);
-        } else {
-            pOutA[0] = pInA[2] * matrix[6] + (pInA[0] * matrix[0] + pInA[1] * matrix[3]);
-            pOutA[1] = pInA[2] * matrix[7] + (pInA[0] * matrix[1] + pInA[1] * matrix[4]);
-            pOutA[2] = pInA[2] * matrix[8] + (pInA[0] * matrix[2] + pInA[1] * matrix[5]);
-        }
-        pOutA[0] += matrix[9];
-        pOutA[1] += matrix[10];
-        pOutA[2] += matrix[11];
-        if (pOutB == pInB) {
-            pOutB[0] = pInB[2] * matrix[6] + (pInB[0] * matrix[0] + pInB[1] * matrix[3]);
-            pOutB[1] = pInB[2] * matrix[7] + (pInB[0] * matrix[1] + pInB[1] * matrix[4]);
-            pOutB[2] = pInB[2] * matrix[8] + (pInB[0] * matrix[2] + pInB[1] * matrix[5]);
-        } else {
-            pOutB[0] = pInB[2] * matrix[6] + (pInB[0] * matrix[0] + pInB[1] * matrix[3]);
-            pOutB[1] = pInB[2] * matrix[7] + (pInB[0] * matrix[1] + pInB[1] * matrix[4]);
-            pOutB[2] = pInB[2] * matrix[8] + (pInB[0] * matrix[2] + pInB[1] * matrix[5]);
-        }
-        pOutB[0] += matrix[9];
-        pOutB[1] += matrix[10];
-        pOutB[2] += matrix[11];
-        fn_801E41D8((float *)pOutA, (float *)pOutB, color, lbl_80562948);
-        offset += 0x14;
-        i++;
+    int count = *(int *)((char *)arg0 + 0x18);
+    int i;
+    for (i = 0; i < count; i++) {
+        int *indices = (int *)(*(char **)((char *)arg0 + 0x48) + i * 0x14);
+        Vec3f a = (*(Vec3f **)((char *)arg0 + 0x24))[indices[0]];
+        Vec3f b = (*(Vec3f **)((char *)arg0 + 0x24))[indices[1]];
+        Vec3f outB;
+        Vec3f outA;
+        Mtx43MultVec(arg1, &a, &outA);
+        Mtx43MultVec(arg1, &b, &outB);
+        fn_801E41D8(&outA.x, &outB.x, lbl_8055E7C8, lbl_80562948);
     }
-check:
-    if (i < count) goto loop;
 }
+#pragma pop
