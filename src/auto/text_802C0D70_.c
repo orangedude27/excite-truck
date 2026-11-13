@@ -84,6 +84,7 @@ void fn_802C0E68(int resourceId) {
 }
 #pragma scheduling on
 void fn_802C0F4C(void) {
+    /* Load the "sky.mod" resource and apply its sun direction (or defaults on failure). */
     extern char lbl_8055FB18[4];
     extern char lbl_8055CF98[4];
     extern int fn_8012C33C(char (*)[4]);
@@ -91,19 +92,19 @@ void fn_802C0F4C(void) {
     extern int fn_802C6DC4(char (*)[4], int, int);
     extern void fn_802C0E68(int);
     extern void fn_802C6B44(void);
-    void *file;
-    s32 result = -1;
+    void *resourceName;
+    s32 resourceId = -1;
 
     *(s32 *)lbl_8055FB18 = -1;
     if (fn_8012C33C(&lbl_8055CF98) != 0) {
-        file = &lbl_8055CF98;
-        result = fn_802B2C34((void *)fn_802C6B44, (char (*)[4])file);
-        if (result != 0) {
-            result = ((int (*)(char (*)[4], int, int, int))fn_802C6DC4)((char (*)[4])file, result, 0, 0);
+        resourceName = &lbl_8055CF98;
+        resourceId = fn_802B2C34((void *)fn_802C6B44, (char (*)[4])resourceName);
+        if (resourceId != 0) {
+            resourceId = ((int (*)(char (*)[4], int, int, int))fn_802C6DC4)((char (*)[4])resourceName, resourceId, 0, 0);
         } else {
-            result = -1;
+            resourceId = -1;
         }
-        *(s32 *)lbl_8055FB18 = result;
+        *(s32 *)lbl_8055FB18 = resourceId;
     }
     fn_802C0E68(*(s32 *)lbl_8055FB18);
 }
