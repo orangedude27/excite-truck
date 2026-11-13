@@ -2841,7 +2841,7 @@ extern "C" s32 fn_8015BCEC(void) { return 7; }
 extern "C" s32 lbl_8055A05C[];
 extern "C" s32 lbl_8055A05C[1];
 #pragma push
-#pragma processor 7400
+#pragma processor 750
 extern "C" void fn_8015BCF4(Unk801577F0* arg0, f32* arg1) {
  struct Obj {
  virtual void v0();
@@ -2881,9 +2881,10 @@ virtual s32 v29(); virtual void v30(); virtual s32 v31();
  virtual void v6(s32); virtual void v7(); virtual void v8(s32);
  };
  char buf[16];
+ f32 scale = fn_80204CFC(lbl_8032F39C);
  Obj* obj=(Obj*)arg0;
  f32 value;
- *arg1 *= fn_80204CFC(lbl_8032F39C);
+ *arg1 *= scale;
  *arg1 *= lbl_8042FD08[arg0->m4];
  if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0])) {
   (*(Adaptor**)((u8*)arg0+0x248))->v3((s32)lbl_8055A058, fn_8023139C(buf,16,(u32)*arg1));
