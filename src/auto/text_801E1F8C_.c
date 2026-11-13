@@ -106,8 +106,7 @@ void fn_801E2100(void *arg0, void *arg1) {
     int (*first)(int);
     first = *(int (**)(int))((char *)arg1 + 0x20);
     if (first == 0 || first(*(int *)((char *)arg0 + 0x20)) != 0) {
-        void *vtable = *(void **)arg0;
-        result = ((int (*)(void *, void *, void *, int, int *))*(void **)((char *)vtable + 0x18))(arg0, arg1, (char *)arg1 + 0xC, *(int *)((char *)arg1 + 0x18), &result);
+        result = ((struct Dummy_801E2100 *)arg0)->f6(arg1, (char *)arg1 + 0xC, *(int *)((char *)arg1 + 0x18), &result);
         if (result != 0)
             *((unsigned char *)arg1 + 0x1C) = 1;
     }
