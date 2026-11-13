@@ -245,6 +245,7 @@ void EXIClearInterrupts(EXIChannel chan, BOOL exi, BOOL tc, BOOL ext) {
     EXI_CHAN_PARAMS[chan].cpr = cpr;
 }
 
+/* Sets the EXI callback for a channel and updates its interrupt mask, returning the previous callback. */
 EXICallback EXISetExiCallback(EXIChannel chan, EXICallback callback) {
     EXIData* exi;
     EXICallback old;
