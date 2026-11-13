@@ -4531,7 +4531,9 @@ static inline void SoundPlayer_PushSoundList(s32 player, void *sound) {
 /* SoundPlayer: insert the sound into the priority-sorted list (+0xC, node at sound+0xC8). */
 static inline void SoundPlayer_InsertPriorityList(s32 player, void *sound) {
     void *it;
-    void *pos = *(void **)(player + 0x10);
+    struct { void *node; } iter;
+    void *&pos = iter.node;
+    pos = *(void **)(player + 0x10);
     while (pos != (void *)(player + 0x10)) {
         if (pos == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
