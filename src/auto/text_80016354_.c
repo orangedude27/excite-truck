@@ -26,15 +26,17 @@ extern void *lbl_8055D54C;
 extern void fn_80128670(void *);
 extern void fn_80131818(void);
 void fn_80016354(void) {
-    int i = 0;
-    lbl_8055D538 = (void *)fn_80131808((char *)lbl_802FCEA8 + 0xC);
-    lbl_8055D540 = (void *)fn_8012850C(0x11F8, (char *)lbl_802FCEA8 + 0x18);
-    lbl_8055D544 = (void *)fn_8012850C(0x20D0, (char *)lbl_802FCEA8 + 0x28);
+    int id = 0;
+    lbl_8055D538 = (void *)fn_80131808(&lbl_802FCEA8[0xC]);
+    lbl_8055D540 = (void *)fn_8012850C(0x11F8, &lbl_802FCEA8[0x18]);
+    lbl_8055D544 = (void *)fn_8012850C(0x20D0, &lbl_802FCEA8[0x28]);
     fn_80016C1C();
     lbl_8055D554 = 0;
-    for (i = 0; i < 4; i++) {
-        fn_8001766C(i);
-    }
+    id = 0;
+    do {
+        fn_8001766C(id);
+        id++;
+    } while (id < 4);
     fn_8000D884(0x44727672, 1, &lbl_8055D548, 0x960, fn_800177B8);
 }
 
@@ -143,18 +145,19 @@ int fn_80016604(const char *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void *fn_8001668C(const char *arg0, int arg1) {
+void *fn_8001668C(const char *name, int matchIndex) {
+    /* Find the Nth 0xA8-byte entry whose name at +0x2C matches (case-insensitive); returns base on miss. */
     int offset;
-    int count;
+    int matchCount;
     int index;
-    count = 0;
+    matchCount = 0;
     index = 0;
     offset = 0;
     while (index < (int)lbl_8055D550) {
-        if (stricmp((const char *)(lbl_8055D544 + offset + 0x2C), arg0) == 0) {
-            if (count == arg1)
+        if (stricmp((const char *)(lbl_8055D544 + offset + 0x2C), name) == 0) {
+            if (matchCount == matchIndex)
                 return lbl_8055D544 + index * 0xA8;
-            count++;
+            matchCount++;
         }
         offset += 0xA8;
         index++;
@@ -266,12 +269,10 @@ void fn_80016928(int arg0, int arg1) {
 void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
     struct E { char pad[0x4]; int id; char pad2[0x44]; int f4C; int f50; char rest[0x8]; };
     struct E *b = (struct E *)lbl_803577F0;
-    int idx = arg0;
-    int saved = arg3;
-    b[idx].id = arg1;
-    b[idx].f4C = *(int *)fn_80016544(arg2);
-    b[idx].f50 = saved;
-    *(int *)(lbl_80357960 + idx * 0xA8 + 4) = -1000;
+    b[arg0].id = arg1;
+    b[arg0].f4C = *(int *)fn_80016544(arg2);
+    b[arg0].f50 = arg3;
+    *(int *)(lbl_80357960 + arg0 * 0xA8 + 4) = -1000;
 }
 #pragma pop
 void fn_800169F8(const char *src, int index) { int count = 0x40; char *dst = (char *)(lbl_803577F0 + index * 0x5C + 8); while ((*dst++ = *src++) != 0) { if (--count <= 0) { dst[-1] = 0; return; } } }
@@ -413,7 +414,7 @@ extern int sscanf(const char *, const char *, ...);
 #pragma push
 #pragma processor gekko
 int fn_80016DD8(const char *arg0) {
-    unsigned int hex, blue, green, red;
+    unsigned int hex, red, green, blue;
     int c;
     int first = *(const unsigned char *)arg0;
     int result = 0xFF008040;
@@ -428,7 +429,7 @@ int fn_80016DD8(const char *arg0) {
     }
     if ((signed char)first >= '0' && (signed char)first <= '9' &&
         sscanf(arg0, lbl_802FCF04, &red, &green, &blue) == 3) {
-        result = ((red & 255) << 16) | ((green & 255) << 8) | (blue & 255) | 0xFF000000;
+        result = ((red << 16) & 0xFF0000) | ((green << 8) & 0xFF00) | (blue & 255) | 0xFF000000;
     }
 done:
     return result;
@@ -739,23 +740,22 @@ extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
 void fn_8001766C(int arg0) {
     unsigned char *base = lbl_803577F0;
-    int off5c = arg0 * 0x5c;
-    unsigned char *entry = base + off5c;
     int idx = arg0;
-    int off1 = 0x410 + idx * 8;
-    int off2 = 0x430 + idx * 0x68;
-    memset(entry, 0, 0x5c);
+    int off68 = idx * 0x68;
+    int off8 = idx * 8;
+    unsigned char *entry = base + idx * 0x5C;
+    memset(entry, 0, 0x5C);
     *(int *)(entry + 4) = -1000;
     ((void (*)(char *, int, const char *, ...))fn_801345D8)((char *)(entry + 8), 0x40, (const char *)lbl_802FD07C, idx + 1);
     *(int *)(entry + 0x48) = 1000;
-    base[off1] = 0;
-    base[off2] = 0;
+    base[0x410 + off8] = 0;
+    base[0x430 + off68] = 0;
 }
 #pragma scheduling on
 void fn_80017708(void *arg0, int arg1, void *arg2) {
-    register int temp_r4;
     int temp_r0;
     int temp_r0_2;
+    int temp_r4;
     int temp_r4_2;
     memset(arg2, 0, 0xC);
     temp_r4 = *(int *)((char *)arg0 + 0x94);
