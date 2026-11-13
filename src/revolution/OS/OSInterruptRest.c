@@ -263,11 +263,32 @@ u32 SetInterruptMask(u32 type, u32 mask) {
     }
 }
 
+/**
+ * @brief Mask (disable) the given interrupt sources, and hand back the mask
+ *        that was in effect before.
+ *
+ * @p userMask is a set of OSInterruptType bits as built by OS_INTR_MASK().
+ * The OS keeps two shadow copies of the interrupt mask in MEM1: the "previous"
+ * one is what the application as a whole has masked with this call and
+ * __OSUnmaskInterrupts(), the "current" one what the shorter-lived
+ * OSMaskInterrupts()/OSUnmaskInterrupts() have put on top of it.  A source
+ * reaches the CPU only while it is unmasked in *both*, which is exactly the
+ * set SetInterruptMask() is told to keep enabled below.
+ *
+ * With interrupts off, the new previous mask is stored, and every source this
+ * call newly masks -- one hardware group per pass, since SetInterruptMask()
+ * rewrites a whole group's register at a time -- is pushed to the hardware.
+ *
+ * @return the previous mask, which is what a caller hands back to
+ *         __OSUnmaskInterrupts() when it is done.
+ */
 u32 __OSMaskInterrupts(u32 userMask) {
     BOOL enabled = OSDisableInterrupts();
     u32 prevMask = *(u32*)OSPhysicalToCached(OS_PHYS_PREV_INTR_MASK);
     u32 currMask = *(u32*)OSPhysicalToCached(OS_PHYS_CURRENT_INTR_MASK);
 
+    /* the sources that were unmasked until now, so their hardware bit changes;
+     * the merged mask is the one the hardware has to end up with */
     u32 workMask = userMask & ~(prevMask | currMask);
     userMask = prevMask | userMask;
     *(u32*)OSPhysicalToCached(OS_PHYS_PREV_INTR_MASK) = userMask;
