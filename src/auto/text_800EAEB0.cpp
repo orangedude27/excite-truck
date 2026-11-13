@@ -2573,11 +2573,14 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
 }
 
 extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800EFE98(void* self, s32 bus) {
-    s32 valid = 0;
+    /* nw4hbm::snd::detail::SeqPlayer::GetFxSend(AuxBus) const: return FX send level for bus 0..3
+       (stored at self+0x74), panicking if out of range. Strings: lbl_80323B28="snd_SeqPlayer.cpp",
+       lbl_80323C74="remoteIndex is out of bounds...". */
+    s32 isValidBus = 0;
     if (bus >= 0 && bus < 4) {
-        valid = 1;
+        isValidBus = 1;
     }
-    if (valid == 0) {
+    if (isValidBus == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x1E7, (const char*)lbl_80323C74, bus, 0, 4);
     }
     return *(f32*)((u8*)self + (bus * 4) + 0x74);
