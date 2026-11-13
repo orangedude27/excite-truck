@@ -418,6 +418,12 @@ void fn_80176FC4(void) {
 }
 #pragma push
 #pragma opt_common_subs off
+/* Start the fade a physics mode change waits behind: arm the fader with
+ * fn_80176F28 as its done handler (that one applies the pending command and
+ * fades back in), ramp `alpha` up from 0 with 7 ticks held at the end, and
+ * ask the AX DSP for its init callback.  Already faded out there is nothing
+ * to wait for, so the command is applied at once.  fn_80176FC4 is the same
+ * request with a step of the ramp run right after it. */
 void fn_80177048(void) {
     if (*(s32 *)(sFadeState + 0xC) == FADE_MODE_DONE) {
         fn_80176F28();
