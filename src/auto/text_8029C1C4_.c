@@ -501,6 +501,7 @@ void fn_8029CD14(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma ppc_psq_save off
+#pragma use_lmw_stmw off
 void fn_8029CD48(void *arg0) {
     extern double fn_8002F234(float);
     extern float fn_80287BC8(float, float);
