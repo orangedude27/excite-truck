@@ -543,8 +543,10 @@ void fn_802B4CB4(void *owner) {
     }
 }
 #pragma pop
-void fn_802B4D40(void *arg0) {
-    void *p = *(void **)arg0;
+/* Destroy the object pointed to by *owner (freeing its buffer at offset 0xC,
+   clearing its first three fields, and freeing the object), then clear *owner. */
+void fn_802B4D40(void *owner) {
+    void *p = *(void **)owner;
     if (p != NULL) {
         if (p != NULL) {
             if (p != NULL) {
@@ -560,7 +562,7 @@ void fn_802B4D40(void *arg0) {
             }
             fn_80128668(p);
         }
-        *(void **)arg0 = NULL;
+        *(void **)owner = NULL;
     }
 }
 
