@@ -504,18 +504,19 @@ void fn_8028EE28(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling off
-int fn_8028EE34(void *arg0, int arg1, int *arg2) {
-    char *p;
-    int i;
-    p = (char *)arg0;
-    i = 0;
-    while (i < *(int *)((char *)arg0 + 0x600)) {
-        if (fn_8002B1D8(arg1, p, 15) == 0) {
-            *arg2 = i;
+/* Search a table of 0x18-byte entries for one whose name matches (first 15 bytes) and return its index. */
+int fn_8028EE34(void *table, int name, int *outIndex) {
+    char *entry;
+    int index;
+    entry = (char *)table;
+    index = 0;
+    while (index < *(int *)((char *)table + 0x600)) {
+        if (fn_8002B1D8(name, entry, 15) == 0) {
+            *outIndex = index;
             return 1;
         }
-        p += 0x18;
-        i++;
+        entry += 0x18;
+        index++;
     }
     return 0;
 }
