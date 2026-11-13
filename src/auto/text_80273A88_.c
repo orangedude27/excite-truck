@@ -26,6 +26,23 @@ extern char lbl_8049A2C8[];
 extern char lbl_8049F9D8[];
 extern int fn_80273B08(int, int);
 extern void fn_80273978(void);
+
+/* Camera-like object built by fn_80275938 and driven by fn_80275B00:
+ * +0x58 holds the 3x3 view matrix (three basis Vecs, built with PSVECCrossProduct /
+ * PSVECNormalize), +0x88 the eye offset from the target, +0xC0 the field of view in
+ * degrees (fn_80275B00 turns it into radians with lbl_80563FC0), +0x1B8/+0x1BC the
+ * orbit distance and azimuth the eye offset is rebuilt from, and +0x35C/+0x360 a
+ * saved field of view and view matrix that fn_80275FC0 copies back over the live ones. */
+typedef struct CamState {
+    /* 0x00 */ char pad000[0x58];
+    /* 0x58 */ float viewMatrix[12];
+    /* 0x88 */ char pad088[0x38];
+    /* 0xC0 */ float fov;
+    /* 0xC4 */ char pad0C4[0x298];
+    /* 0x35C */ float savedFov;
+    /* 0x360 */ float savedMatrix[12];
+} CamState;
+
 #pragma scheduling invalid_target
 void fn_80273A88(void) {
     fn_8002F634(lbl_8049F9D8, fn_80273978, 0x1C, 0x20);
