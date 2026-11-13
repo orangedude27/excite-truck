@@ -161,7 +161,18 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
 extern void fn_8013A2FC(void *, int);
 extern void fn_8013BD5C(void *, void *);
 extern const char lbl_8032C420[];
-void *fn_8013BE64(void *arg0, const char *arg1) {
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_8013BE64(void *arg0, const char *arg1) {
+    class Obj {
+      public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual int get(const char *);
+    };
     void *p;
     int n;
     char *dst;
@@ -183,11 +194,12 @@ copy:
     if ((signed char)c != 0)
         goto count_check;
 copied:
-    fn_8013A2FC((char *)p + 0x40, ((int (*)(void *, const char *))(*(void ***)arg0)[23])(arg0, lbl_8032C420));
+    fn_8013A2FC((char *)p + 0x40, ((Obj *)arg0)->get(lbl_8032C420));
     ((void (*)(void *, void *))fn_8013BD5C)((char *)p + 0x60, arg0);
     *(volatile int *)((char *)p + 0x74) = 0;
     return p;
 }
+#pragma pop
 
 void fn_8013BF3C(void) {
     ((void (*)(void))fn_8013BD30)();
