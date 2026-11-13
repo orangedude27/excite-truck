@@ -5921,9 +5921,12 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
 }
 
 extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FCA98(void *self, s32 bus) {
-    s32 valid = 0;
-    if (bus >= 0 && bus < 4) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x343, lbl_803268E4, bus, 0, 4);
+    /* Returns the FX send level for the given aux bus (0..AUX_BUS_COUNT-1). */
+    s32 isValidBus = 0;
+    if (bus >= 0 && bus < AUX_BUS_COUNT) isValidBus = 1;
+    if (isValidBus == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(SND_STRMPLAYER_CPP, 0x343, STR_REMOTE_OOB, bus, 0, AUX_BUS_COUNT);
+    }
     return *(f32 *)((u8 *)self + 0x490 + bus * 4);
 }
 
