@@ -3940,6 +3940,7 @@ void fn_80155F44(char *dst, const char *fmt, ...) {
     vsprintf(dst + 4, fmt, args);
 }
 
+/* Format a string into the buffer at arg0 + 0x54 using printf-style arguments. */
 void fn_80155FD4(void *arg0, const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
