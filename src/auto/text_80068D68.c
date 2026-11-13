@@ -22175,6 +22175,7 @@ void rfc_mx_conf_ind(void *p_mcb, void *p_data) {
     }
 }
 
+/* Dispatch an RFCOMM port event to the handler for the port's current RFC state. */
 void rfc_port_sm_execute(void *p_port, u16 event, void *p_data) {
     if (p_port == 0) {
         if (lbl_803C4828[0x414] >= 2)
