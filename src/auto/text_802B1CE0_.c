@@ -551,7 +551,7 @@ void fn_802B28BC(int *dst, int count) {
     }
 }
 
-void *fn_802B2934_temp(void *arg0, void **arg1) {
+void *fn_802B2934(void *arg0, void **arg1) {
     int index = ((int *)arg0)[1];
     void *value = *arg1;
     void **base = *(void ***)arg0;
