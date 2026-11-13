@@ -154,8 +154,26 @@ typedef struct DrTexRecord {
     unsigned char hasAlphaTex;/* at 0xCC: format ships the second texture */
     void *texelData;          /* at 0xD0: primary texture image */
     unsigned int texelSize;   /* at 0xD4: its size */
-    void *srcClut;            /* at 0xD8: source RGBA8888 palette the CLUTs come from */
-} DrTexRecord;
+         void *srcClut;            /* at 0xD8: source RGBA8888 palette the CLUTs come from */
+ } DrTexRecord;
+
+ /* The GX texture map the setters below bind a record's two GXTexObjs to
+  * (GXLoadTexObj's second argument): the base pass takes TEX0 and its alpha
+  * plane TEX1, the environment map TEX2 and its alpha plane TEX4, the lightmap
+  * TEX3 (which has no alpha plane - see DRTEXMAP_LIGHTMAP's check below). */
+ enum DrTexMap {
+     DRTEXMAP_BASE = 0,        /* fn_802D9160: base texture */
+     DRTEXMAP_BASE_ALPHA = 1,  /* fn_802D9160: its alpha plane */
+     DRTEXMAP_ENV = 2,         /* fn_802D9230: environment map */
+     DRTEXMAP_LIGHTMAP = 3,    /* fn_802D92B8: lightmap */
+     DRTEXMAP_ENV_ALPHA = 4    /* fn_802D9230: the envmap's alpha plane */
+ };
+
+ /* Byte 0x0B of the render request block lbl_804C5700 (the state the setters
+  * hand to the pipeline builder fn_802D2684/fn_802D2B0C, which keeps the last
+  * applied copy at lbl_804C9930): the texture bound as environment map ships a
+  * second, alpha-plane texture, so the pass needs its extra stage. */
+ #define DRREQ_ENV_ALPHA_TEX 0x0B
 
 #pragma dont_inline on
 void fn_802D768C(void *arg0) {
@@ -574,8 +592,7 @@ void fn_802D81C4(void *arg0, int arg1) {
     unsigned char *tmp;
     int n = (width * height) / 2;
     int i, x, y, halfw, size;
-
-    d = p;
+    d = p; // baseline
     if (n > 0) {
         for (i = 0; i < n; i++) {
             *d = (unsigned char)((*d >> 4) | (*d << 4));
@@ -616,12 +633,13 @@ void fn_802D86BC(void *arg0, int arg1) {
     void **data = *(void ***)((char *)arg0 + 0x2c);
     int width = *(int *)((char *)arg0 + 0x24);
     int height = *(int *)((char *)arg0 + 0x28);
-    unsigned char *palette = (unsigned char *)data[0];
     unsigned char *image = (unsigned char *)data[1];
+    unsigned char *palette = (unsigned char *)data[0];
     unsigned char *copy;
     unsigned char c;
-    int i, x, y, offset;
-    for (i = 0; i < 64; i++) {
+    int n = arg1 != 0 ? 64 : 64;
+    int x, y, offset;
+    do {
         c = palette[0]; palette[0] = palette[3]; palette[3] = c;
         c = palette[1]; palette[1] = palette[2]; palette[2] = c;
         c = palette[4]; palette[4] = palette[7]; palette[7] = c;
@@ -631,7 +649,7 @@ void fn_802D86BC(void *arg0, int arg1) {
         c = palette[12]; palette[12] = palette[15]; palette[15] = c;
         c = palette[13]; palette[13] = palette[14]; palette[14] = c;
         palette += 16;
-    }
+    } while (--n != 0);
     fn_801282EC(0x20);
     copy = (unsigned char *)fn_8012850C((void *)(width * height), lbl_8034C5AC);
     memcpy(copy, image, width * height);
