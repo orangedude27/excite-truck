@@ -8631,17 +8631,21 @@ extern "C" void fn_80229628(void *arg0) {
     ((VfObj *)arg0)->vf31();
 }
 
-extern "C" void fn_80229640(void *arg0) {
+extern "C" void fn_80229640(void *self) {
+    /* Update via vf31, clear busy flag (+0x254), and if enabled (+0x18) and the
+     * value at +0x25C is not the sentinel (value + 0x20000 == 0xFB96), invoke an
+     * optional callback at +0x258 (returning nonzero to proceed) then notify with
+     * fn_802168BC(+0x25C). */
     s32 (*callback)();
-    ((VfObj *)arg0)->vf31();
-    *(u8 *)((u8 *)arg0 + 0x254) = 0;
-    if (*(u8 *)((u8 *)arg0 + 0x18) == 0) return;
-    if ((u32)(*(s32 *)((u8 *)arg0 + 0x25C) + 0x20000) == 0xFB96) return;
-    callback = *(s32 (**)())((u8 *)arg0 + 0x258);
+    ((VfObj *)self)->vf31();
+    *(u8 *)((u8 *)self + 0x254) = 0;
+    if (*(u8 *)((u8 *)self + 0x18) == 0) return;
+    if ((u32)(*(s32 *)((u8 *)self + 0x25C) + 0x20000) == 0xFB96) return;
+    callback = *(s32 (**)())((u8 *)self + 0x258);
     if (callback != 0) {
         if (callback() == 0) return;
     }
-    fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+    fn_802168BC((void *)*(s32 *)((u8 *)self + 0x25C));
 }
 
 extern "C" s32 fn_802296C0(void *self) {
