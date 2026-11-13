@@ -1547,6 +1547,14 @@ extern "C" void fn_8021AA18(void *arg0) {
 
 extern "C" s32 fn_8021AB88(void) { return 0; }
 
+/* The cursor-icon widget's own key handling defers to its owning menu group
+ * (stored at widget+0x2C): step the selection back to the previous widget on UP
+ * and forward to the next on DOWN; every other message goes to the base
+ * widget's handler. */
+#define SelectPrevWidget fn_80217AC0
+#define SelectNextWidget fn_802179A0
+#define BaseOnMessage fn_802192A4
+
 #pragma push
 #pragma scheduling invalid_target
 extern "C" s32 fn_8021AB90(void *arg0, s32 arg1) {
