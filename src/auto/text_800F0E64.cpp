@@ -4446,6 +4446,15 @@ static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     void *&pos = iter.node;
     struct { u32 old; } lock;
     u32 &irq = lock.old;
+    {
+        s32 ok = 0;
+        if (priority >= 0 && priority <= 0x7F) {
+            ok = 1;
+        }
+        if (ok == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803260F0, 0x5C, lbl_803260AC, priority, 0, 0x7F);
+        }
+    }
     lock.old = OSDisableInterrupts();
     void *mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(pool);
     if (mem != 0) {
