@@ -252,22 +252,25 @@ int fn_80129D90(int, int, int);
 
 #pragma push
 #pragma opt_common_subs off
-void fn_802B2104(void **arg0) {
-    void *ptr = *arg0;
-    if (ptr != 0) {
-        if (ptr != 0) {
-            fn_802B218C(ptr);
-            if ((char *)ptr + 4 != 0) {
-                fn_8002F6AC(((int *)ptr)[4], (void (*)(void))fn_802B1F68);
-                if ((char *)ptr + 4 != 0) {
-                    ((int *)ptr)[1] = 0;
-                    ((int *)ptr)[2] = 0;
-                    ((int *)ptr)[3] = 0;
+void fn_802B2104(void **objectSlot) {
+    /* Destroy the object stored in *objectSlot and clear the slot. Frees the
+     * object's owned buffer, runs the element destructor over its pool, clears
+     * the object's bookkeeping fields, then deletes the object. */
+    void *object = *objectSlot;
+    if (object != 0) {
+        if (object != 0) {
+            fn_802B218C(object);
+            if ((char *)object + 4 != 0) {
+                fn_8002F6AC(((int *)object)[4], (void (*)(void))fn_802B1F68);
+                if ((char *)object + 4 != 0) {
+                    ((int *)object)[1] = 0;
+                    ((int *)object)[2] = 0;
+                    ((int *)object)[3] = 0;
                 }
             }
-            fn_80128668(ptr);
+            fn_80128668(object);
         }
-        *arg0 = 0;
+        *objectSlot = 0;
     }
 }
 #pragma pop
