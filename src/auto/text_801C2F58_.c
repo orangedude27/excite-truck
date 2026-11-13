@@ -3108,33 +3108,34 @@ void fn_801C6B70(void) {
     }
 }
 #pragma pop
-void fn_801C6AD0(s32 *arg0) {
-    f32 temp_f1;
-    f32 temp_f1_2;
-    f32 var_f0;
-    s32 temp_r0;
-    s32 var_r0;
-    s32 var_r3;
+/* When the debug overlay is active, clamps/raises the value toward 255 based on remaining time from fn_801C3B6C(). */
+void fn_801C6AD0(s32 *value) {
+    f32 currentTime;
+    f32 scaledTime;
+    f32 roundedValue;
+    s32 intValue;
+    s32 clampedValue;
+    s32 result;
 
     if ((u8)lbl_8055E7E2 != 0) {
-        temp_f1 = fn_801C3B6C();
-        if (temp_f1 < lbl_8056296C) {
-            var_r3 = *arg0;
-            temp_f1_2 = lbl_805629C8 * (lbl_8056296C - temp_f1);
-            if (temp_f1_2 < lbl_80562970) {
-                var_f0 = temp_f1_2 - lbl_80562974;
+        currentTime = fn_801C3B6C();
+        if (currentTime < lbl_8056296C) {
+            clampedValue = *value;
+            scaledTime = lbl_805629C8 * (lbl_8056296C - currentTime);
+            if (scaledTime < lbl_80562970) {
+                roundedValue = scaledTime - lbl_80562974;
             } else {
-                var_f0 = lbl_80562974 + temp_f1_2;
+                roundedValue = lbl_80562974 + scaledTime;
             }
-            temp_r0 = (s32)var_f0;
-            if (temp_r0 > var_r3) {
-                var_r3 = temp_r0;
+            intValue = (s32)roundedValue;
+            if (intValue > clampedValue) {
+                clampedValue = intValue;
             }
-            var_r0 = 0xFF;
-            if (var_r3 < 0xFF) {
-                var_r0 = var_r3;
+            result = 0xFF;
+            if (clampedValue < 0xFF) {
+                result = clampedValue;
             }
-            *arg0 = var_r0;
+            *value = result;
         }
     }
 }
