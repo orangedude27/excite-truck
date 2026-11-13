@@ -30,6 +30,33 @@ struct PathSpawnEntry {
     float maxDelay;        // +0x1C: timer range, high end
     float nextSpawn;       // +0x20: time the next prop is due
 };
+
+// One drone path segment of the larger "DroneManager" (name string
+// lbl_8033B86C); fn_801FCA54 builds one from a spawn record.
+struct DronePath {
+    char *name;        // +0x00: pool name, matched with stricmp
+    int unk04;         // +0x04: cleared
+    void *source;      // +0x08: object the segment hangs off (record +4)
+    float mtx[12];     // +0x0C: transform, starts as the identity
+    int index;         // +0x3C: -1 until the segment is placed
+};
+
+// The larger "DroneManager" fn_801FEEC0 builds: up to 64 drone path segments
+// from +4 with the count at +0x1004, and a table of up to 8 named pools at
+// +0x1008 (its own count at +0x4C0) that each file the segments under their
+// name (fn_801FF7D4). fn_801FF014 builds a smaller one: 32 segments of 0x70
+// bytes, count at +0xE04, pools at +0xE08 (the PathPoolTable above).
+struct DroneManager {
+    void *vtable;              // +0x000
+    struct DronePath path[64]; // +0x004
+    int pathCount;             // +0x1004: segments in use, limit 64
+};                             // +0x1008: the pool table follows
+
+#define DMGR_PATH_COUNT(m) (*(int *)((char *)(m) + 0x1004)) /* DroneManager::pathCount */
+#define DMGR_PATH(m, i)    ((char *)(m) + ((i) << 6) + 4)   /* &DroneManager::path[i] */
+#define DMGR_POOLS(m)      ((char *)(m) + 0x1008)           /* the manager's pool table */
+#define DMGR_PATH_MAX      0x40                             /* segments per manager */
+#define STR_PATH_DRONE_LIMIT lbl_8033B8C8 /* "path: exceeded total drone limit" */
 extern "C" void fn_801FEA28(void*);
 class SHMainMenu { public: ~SHMainMenu(); };
 extern "C" {
