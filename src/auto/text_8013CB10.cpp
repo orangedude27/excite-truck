@@ -1224,8 +1224,9 @@ extern "C" void fn_8013E3A8(void *arg0, void *arg1) {
 
     *(f32 *)(dst + 0x34) = fn_80204CFC((const char *)(base + 0x310));
     scale = fn_80204CFC((const char *)(base + 0x200));
+    f32 conv = (f32)*(s32 *)(dst + 0x2C);
     *(f32 *)(dst + 0x24) = lbl_805614F8;
-    *(s32 *)(dst + 0x2C) = (s32)((f32)*(s32 *)(dst + 0x2C) * scale);
+    *(s32 *)(dst + 0x2C) = (s32)(conv * scale);
 }
 #pragma push
 #pragma processor 750
@@ -3912,3 +3913,83 @@ extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
 #pragma pop
 // fn_80140B98 - quaternion-based vector transformation
 extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2);
+// Event dispatch and transition controls recovered from 0x801433A8.
+struct EventChild433A8 {
+    virtual void d0(); virtual void d1(); virtual void d2();
+    virtual void d3(); virtual void d4(); virtual void d5();
+    virtual void end(); virtual void d7(); virtual void start();
+};
+struct EventReceiver433A8 { virtual void unused0(); virtual void unused1(); virtual void unused2(); virtual void unused3(); virtual void unused4(); virtual void unused5(); virtual void unused6(); virtual void unused7(); virtual void unused8(); virtual void unused9(); virtual void unused10(); virtual void unused11(); virtual void unused12(); virtual void unused13(); virtual void unused14(); virtual void unused15(); virtual void unused16(); virtual void unused17(); virtual void unused18(); virtual void unused19(); virtual void unused20(); virtual void unused21(); virtual void unused22(); virtual void unused23(); virtual int active(); };
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" void fn_802AE118(int);
+extern "C" int lbl_8055E3C4;
+extern "C" __declspec(section ".sdata") char lbl_80559D88[];
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" int fn_801433A8(unsigned char *self, int unused, int event) {
+    const char *labels = (const char *)lbl_8032C530;
+    if (event == 0x73) {
+        int i = 0, offset = 0;
+        while (i < *(int *)(self + 0xC)) {
+            (*(EventChild433A8 **)((unsigned char *)*(void **)(self + 8) + offset))->start();
+            offset += 4;
+            ++i;
+        }
+    } else if (event == 0x65) {
+        int i = 0, offset = 0;
+        while (i < *(int *)(self + 0xC)) {
+            (*(EventChild433A8 **)((unsigned char *)*(void **)(self + 8) + offset))->end();
+            offset += 4;
+            ++i;
+        }
+    } else if (event == 9) {
+        *(int *)(self + 4) = (*(int *)(self + 4) + 1) % 2;
+    }
+    if (((EventReceiver433A8 *)self)->active() && event == 0x58)
+        self[0x294] = 1;
+    if (event == 0x72) {
+        unsigned char *object = fn_8017960C(0);
+        fn_802E30C8(labels + 0x750, lbl_8055E3C4);
+        fn_802E30C8(labels + 0x764);
+        fn_802E30C8(labels + 0x770, *(float *)(object + 0x64));
+        fn_802E30C8(labels + 0x780, *(float *)(object + 0x60), *(float *)(object + 0x68));
+        float direction[2];
+        direction[0] = *(float *)(object + 0x118);
+        direction[1] = *(float *)(object + 0x120);
+        unsigned char *vectors = *(unsigned char **)(*(unsigned char **)(*(unsigned char **)(self + 0x64) + 4) + 4);
+        float scale = lbl_80561498 * PSQUATMultiply(vectors, vectors + 0xC);
+        float y2 = direction[1] * direction[1];
+        float x2 = direction[0] * direction[0];
+        float length = (float)fn_8002F234(x2 + y2);
+        if (!((float)__fabs(length) <= lbl_80558DC4[0])) {
+            float ratio = scale / length;
+            direction[0] *= ratio;
+            direction[1] *= ratio;
+        }
+        fn_802E30C8(labels + 0x798, direction[0], direction[1]);
+        fn_802E30C8(lbl_80559D88);
+    }
+    if (event == 0x58) {
+        if (((EventReceiver433A8 *)self)->active()) {
+            if (*(int *)(self + 0x134) == 2) self[0x13D] = 1;
+        } else if (*(int *)(self + 0x134) != 0 && *(int *)(self + 0x134) == 1 && self[0x144] == 0) {
+            float time = *(float *)(self + 0x138);
+            if (time > lbl_805614A4 && lbl_8055E3C8 - time < lbl_805614AC) {
+                self[0x144] = 1;
+                if (*(int *)(self + 0x140)) fn_802AE118(*(int *)(self + 0x140));
+                unsigned char *child = *(unsigned char **)(self + 0x148);
+                if (child) { child[0x4A] = 1; child[0x4C] = 0; }
+                child = *(unsigned char **)(self + 0x14C);
+                if (child) { child[0x4A] = 1; child[0x4C] = 0; }
+                child = *(unsigned char **)(self + 0x15C);
+                if (child) { child[0x4A] = 1; child[0x4C] = 0; }
+                child = *(unsigned char **)(self + 0x160);
+                if (child) { child[0x4A] = 1; child[0x4C] = 0; }
+                self[0x13C] = 0;
+                *(float *)(self + 0x138) = lbl_8055E3C8 - lbl_805614AC;
+            }
+        }
+    }
+    return 0;
+}
+#pragma pop
