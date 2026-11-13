@@ -8547,15 +8547,16 @@ void btm_db_reset(void) {
     }
 }
 
-void BTM_DeviceReset(void (*arg0)(void *)) {
-    register u8 zero = 0;
+void BTM_DeviceReset(void (*pResetCback)(void *)) {
+    /* Resets the BTM device: tears down ACL/DB state, arms the reset timer, and issues HCI reset. */
+    register u8 zeroFlag = 0;
     if (*(u32 *)(lbl_803C0F78 + 0x58C) != 0 &&
-        *(u32 *)(lbl_803C0F78 + 0x58C) != (u32)arg0)
+        *(u32 *)(lbl_803C0F78 + 0x58C) != (u32)pResetCback)
         return;
     btm_acl_device_down();
     btm_db_reset();
-    *(volatile u32 *)(lbl_803C0F78 + 0x58C) = (u32)arg0;
-    *(volatile u8 *)(lbl_803C0F78 + 0x64E) = zero;
+    *(volatile u32 *)(lbl_803C0F78 + 0x58C) = (u32)pResetCback;
+    *(volatile u8 *)(lbl_803C0F78 + 0x64E) = zeroFlag;
     *(volatile u8 *)(lbl_803C0F78 + 0x64F) = 5;
     btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
     ((void (*)(void))btsnd_hcic_reset)();
