@@ -184,6 +184,26 @@ void fn_80260848(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
 
+/* --- one group row of the challenge-difficulty selector ------------------ */
+/* 0x2C bytes, allocated by fn_80260DC4 with the vtable named below: the item
+   rows (SelectorItem, below) have the same shape without the group number at
+   0x20.  Slot 0x8 of both vtables is the row's destructor, which the screen
+   loop's cleanup calls as destroy(1). */
+typedef struct {
+    void *vtable;      /* 0x00 the vtable above */
+    s32   base[4];     /* 0x04 widget base class */
+    s32   unused_0x14; /* 0x14 kept zero */
+    void *data;        /* 0x18 the data node this row shows */
+    u8    on_cursor;   /* 0x1C the cursor is on this row */
+    u8    dim;         /* 0x1D draw this row dimmed */
+    u8    expanded;    /* 0x1E this row's group is open */
+    u8    pad_0x1F;    /* 0x1F */
+    s32   group;       /* 0x20 which group of the data source this row shows */
+    void *art;         /* 0x24 gArt resource, from fn_8023512C */
+    void *font;        /* 0x28 gText font block, from fn_80232578 */
+} SelectorGroupRow;
+#define SELECTOR_GROUP_VTABLE lbl_80345E28
+
 #pragma push
 #pragma small_data off
 void *fn_80260854(void *arg0, s32 arg1) {
