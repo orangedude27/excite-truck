@@ -162,6 +162,7 @@ void fn_8020A8E8(void *arg0) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8020A978(void *arg0) {
+    /* Update voice sound mixer slots, clearing any active entries that are not in state 3, then tick the SPU. */
     class Dispatch {
     public:
         virtual void f0();
@@ -174,20 +175,20 @@ extern "C" void fn_8020A978(void *arg0) {
         virtual int state();
     };
     register int offset = 0;
-    register int count = 0;
-    Dispatch *object;
+    register int slotIndex = 0;
+    Dispatch *entry;
 
     do {
-        object = *(Dispatch **)((char *)*(void **)((char *)arg0 + 4) + offset);
-        if (object != 0) {
-            if (object->state() != 3) {
-                object = *(Dispatch **)((char *)*(void **)((char *)arg0 + 4) + offset);
-                object->clear();
+        entry = *(Dispatch **)((char *)*(void **)((char *)arg0 + 4) + offset);
+        if (entry != 0) {
+            if (entry->state() != 3) {
+                entry = *(Dispatch **)((char *)*(void **)((char *)arg0 + 4) + offset);
+                entry->clear();
             }
         }
-        count++;
+        slotIndex++;
         offset += 4;
-    } while (count < 0x200);
+    } while (slotIndex < 0x200);
     fn_802E6264();
 }
 #pragma cplusplus reset
@@ -313,15 +314,16 @@ void fn_8020AC20(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8020AC2C(void *arg0) {
- int i,j,mode,now; void *p,*handle; float volume,x,v,high,low;
+ float low, high, volume, x, v;
+ void *p; int i,j,mode,now; void *handle;
  lbl_8055B590=fn_80209028();
  lbl_8055B594=fn_802091CC();
  lbl_8055EDF8++;
  now=fn_802E2C20();
  lbl_8055EE00=now-(*(int *)((char *)(arg0)+(8)));
  if(lbl_8055EE00>200U) lbl_8055EE00=200;
- (*(int *)((char *)(arg0)+(8)))=now;
  high=lbl_805632B4; low=lbl_805632B0;
+ *(volatile int *)((char *)(arg0)+(8))=now;
  for(i=0;i<512;i++) {
  p=(*(void ** *)((char *)(arg0)+(4)))[i];
  if(p) {
