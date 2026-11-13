@@ -427,7 +427,9 @@ extern "C" void fn_802A1B20(void* arg0, s32 count) {
 }
 
 extern "C" s32 fn_802A1C30(void* arg0) {
-    struct TPlaneSubCall {
+    /* Dispatch to a plane-sub handler selected by arg0+0x2C; call slot 6 or 7 based on
+       whether the value at arg0+0x24 exceeds the threshold, then return 0x30. */
+    struct TPlaneSubHandler {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -437,12 +439,12 @@ extern "C" s32 fn_802A1C30(void* arg0) {
         virtual void v6(void*);
         virtual void v7(void*);
     };
-    s32 index = *(s32*)((char*)arg0 + 0x2C);
-    if (index >= 0 && index < 8) {
-        TPlaneSubCall* obj = (TPlaneSubCall*)lbl_804BCF88[index];
-        if (obj != 0) {
-            if (*(f32*)((char*)arg0 + 0x24) > lbl_80564728) obj->v6(arg0);
-            else obj->v7(arg0);
+    s32 handlerIndex = *(s32*)((char*)arg0 + 0x2C);
+    if (handlerIndex >= 0 && handlerIndex < 8) {
+        TPlaneSubHandler* handler = (TPlaneSubHandler*)lbl_804BCF88[handlerIndex];
+        if (handler != 0) {
+            if (*(f32*)((char*)arg0 + 0x24) > lbl_80564728) handler->v6(arg0);
+            else handler->v7(arg0);
         }
     }
     return 0x30;
