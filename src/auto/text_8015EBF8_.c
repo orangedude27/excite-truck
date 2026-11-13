@@ -1,4 +1,8 @@
 #include "math.h"
+typedef int M2C_UNK;
+#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
+#define M2C_ERROR(msg) ((void)0)
+#define M2C_BITWISE(t, v) (v)
 extern f32 lbl_805617D4;
 extern f64 fn_8002F234(f32, f32, f32);
 struct Hit { float x; s32 y; };
