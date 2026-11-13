@@ -24,11 +24,12 @@ void fn_8029EFBC(void) {
 }
 
 int fn_8029EFF0(int arg0) {
-    if (arg0 == -1) {
-        return 0;
-    }
-    if (arg0 == -2) {
-        return 0;
-    }
+    if (arg0 == -1)
+        goto ret0;
+    if (arg0 != -2)
+        goto ret1;
+ret0:
+    return 0;
+ret1:
     return 1;
 }
