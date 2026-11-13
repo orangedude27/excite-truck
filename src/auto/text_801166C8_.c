@@ -1882,7 +1882,11 @@ extern s32 fn_801199A4(void *, s32);
 
 /* The pair of AX voices a stream is played through, plus the PCM ring buffers
    they read. fn_8011943C sets both voices' AX state, fn_80119300 clears a range
-   of the buffers and fn_801199A4 re-applies their sample-range parameters. */
+   of the buffers and fn_801199A4 re-applies their sample-range parameters.
+   The start/stop helpers (fn_80119498, fn_80119558, fn_801195A0) reach further
+   into this block, to +0x34, +0x38, +0x48 and +0x50: those are the owning
+   StreamPlayer's looping, paused, readPos and readPosTime, which the player
+   fields below alias. */
 typedef struct VoicePair {
     s32 voice0;   /* 0x00 AX voice handle, left or mono */
     s32 voice1;   /* 0x04 AX voice handle, right */
