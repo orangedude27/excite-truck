@@ -363,60 +363,33 @@ void fn_8029C934(void) {
 void fn_8029C998(void) {
     typedef struct { float x, y, z; } Vec;
     typedef struct { float x, y; } Vec2;
-    typedef struct {
-        Vec pos;
-        Vec2 v1;
-        Vec2 v2;
-    } Params;
-    extern char lbl_80349560[];
-    extern int lbl_804B5030[];
-    extern int lbl_8055F7F4;
+    typedef struct { Vec pos; Vec2 v1; Vec2 v2; } Params;
+    struct Owner { virtual void m08(); virtual void *get(int); };
+    struct Item {
+        virtual void m08(); virtual void m0C(); virtual void m10(); virtual int getId(void *);
+        virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
+        virtual void m28(); virtual void m2C(); virtual void m30(); virtual Vec getVec(void *);
+        virtual void m38(); virtual Vec2 getVec2(void *);
+    };
+    extern char lbl_80349560[]; extern int lbl_804B5030[]; extern int lbl_8055F7F4;
     extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;
-    extern void *fn_80131810(void *);
-    extern void fn_80131818(void *);
-    extern int fn_801284F8(int, void *, float);
-    extern void *fn_8029E754(void *, void *, int);
+    extern void *fn_80131810(void *); extern void fn_80131818(void *);
+    extern int fn_801284F8(int, void *, float); extern void *fn_8029E754(void *, void *, int);
     extern void fn_802E317C(const char *, ...);
-
-    Vec2 t1;
-    Vec2 t2;
-    Vec temp;
-    Params params;
-    char *base;
-    int *dest;
-    void *owner;
-    int i;
-
-    base = lbl_80349560;
-    lbl_8055F7F4 = 0;
-    owner = fn_80131810(base + 0xEC);
+    Params params; int *dest; char *base; Owner *owner; int i; int idx;
+    base = lbl_80349560; lbl_8055F7F4 = 0; owner = (Owner *)fn_80131810(base + 0xEC);
     if (owner != 0) {
         dest = lbl_804B5030;
-        for (i = 0; (*(void *(**)(void *, int))(*(char **)owner + 0xC))(owner, i) != 0; i++) {
-            void *item;
-            int id;
-            void *res;
-
-            if (lbl_8055F7F4 >= 16) {
-                fn_802E317C(base + 0xF8, 16);
-            }
-            item = (*(void *(**)(void *, int))(*(char **)owner + 0xC))(owner, i);
-            id = (*(int (**)(void *, void *))(*(char **)item + 0x14))(item, base + 0xD0);
-            temp = (*(Vec (**)(void *, void *))(*(char **)item + 0x34))(item, &lbl_8055CAB4);
-            params.pos.x = temp.x;
-            params.pos.y = temp.y;
-            params.pos.z = temp.z;
-            t1 = (*(Vec2 (**)(void *, void *))(*(char **)item + 0x3C))(item, &lbl_8055CABC);
-            params.v1.x = t1.x;
-            params.v1.y = t1.y;
-            t2 = (*(Vec2 (**)(void *, void *))(*(char **)item + 0x3C))(item, &lbl_8055CAC4);
-            params.v2.x = t2.x;
-            params.v2.y = t2.y;
+        for (i = 0; owner->get(i) != 0; i++) {
+            Item *item; int id; void *res;
+            if (lbl_8055F7F4 >= 16) fn_802E317C(base + 0xF8, 16);
+            item = (Item *)owner->get(i); id = item->getId(base + 0xD0);
+            params.pos = item->getVec(&lbl_8055CAB4);
+            params.v1 = item->getVec2(&lbl_8055CABC);
+            params.v2 = item->getVec2(&lbl_8055CAC4);
             res = (void *)fn_801284F8(0x44, base + 0x11C, params.v2.x);
-            if (res != 0) {
-                res = fn_8029E754(res, &params, id);
-            }
-            dest[lbl_8055F7F4++] = (int)res;
+            if (res != 0) res = fn_8029E754(res, &params, id);
+            idx = lbl_8055F7F4; dest[idx] = (int)res; lbl_8055F7F4 = idx + 1;
         }
         fn_80131818(owner);
     }
@@ -524,8 +497,10 @@ void fn_8029CD14(void) {
     }
 }
 
-#pragma ppc_psq_save on
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
+#pragma ppc_psq_save off
 void fn_8029CD48(void *arg0) {
     extern double fn_8002F234(float);
     extern float fn_80287BC8(float, float);
@@ -835,6 +810,7 @@ void fn_8029D574(int arg0) {
     fn_8029DDB8(p);
 }
 #pragma pop
+void fn_8029D644(void *arg0);
 void fn_8029D644(void *arg0) {
     int i;
     int offset;
@@ -843,8 +819,7 @@ void fn_8029D644(void *arg0) {
     char *buffers[2];
     char **bufferTable;
     int mode;
-    GridRecord_8029D644 *rowOther;
-    GridRecord_8029D644 *rowSource;
+    GridRecord_8029D644 *row;
 
     i = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
     {
@@ -867,26 +842,26 @@ void fn_8029D644(void *arg0) {
             other = bufferTable[1 - (mode & 1)];
             for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++) {
                 fn_8029DB78(arg0, source + offset, i, mode);
-                rowOther = (GridRecord_8029D644 *)(other + offset);
+                row = (GridRecord_8029D644 *)(other + offset);
                 {
-                    float f1 = rowOther->f0;
+                    float f1 = row->f0;
                     unsigned int flag = (unsigned int)(i > 0);
-                    float f5 = rowOther->f14;
-                    float f4 = rowOther->f10;
-                    float f2 = rowOther->f4;
-                    float f3 = rowOther->f8;
-                    int field = rowOther->fieldC;
+                    float f5 = row->f14;
+                    float f4 = row->f10;
+                    float f2 = row->f4;
+                    float f3 = row->f8;
+                    int field = row->fieldC;
                     fn_802C8E00(field, flag, f1, f2, f3, f4, f5);
                 }
-                rowSource = (GridRecord_8029D644 *)(source + offset);
+                row = (GridRecord_8029D644 *)(source + offset);
                 {
-                    float f1 = rowSource->f0;
+                    float f1 = row->f0;
                     unsigned int flag = (unsigned int)(i > 0);
-                    float f5 = rowSource->f14;
-                    float f4 = rowSource->f10;
-                    float f2 = rowSource->f4;
-                    float f3 = rowSource->f8;
-                    int field = rowSource->fieldC;
+                    float f5 = row->f14;
+                    float f4 = row->f10;
+                    float f2 = row->f4;
+                    float f3 = row->f8;
+                    int field = row->fieldC;
                     fn_802C8E00(field, flag, f1, f2, f3, f4, f5);
                 }
             }
@@ -907,15 +882,18 @@ void fn_8029D7D0(int arg0, void **arg1) {
     char **st = (char **)arg1;
     char *info = st[0];
     float sp[3];
+    float r = *(float *)(o + 0x60);
     float dz = *(float *)(info + 0x2C) - *(float *)(o + 0x5C);
     float dx = *(float *)(info + 0x24) - *(float *)(o + 0x54);
-    float r = *(float *)(o + 0x60);
+    float r2 = r * r;
+    float dzSq = dz * dz;
+    float dxSq = dx * dx;
+    float dist = dxSq + dzSq;
     int off, i;
     unsigned idx;
     float *v;
     float *m;
-
-    if (dx * dx + dz * dz > r * r)
+    if (dist > r2)
         return;
     for (i = 0, off = 0; i < 4; i++, off += 0x3C) {
         if ((*(int *)(st[0] + off + 0x9C) & 8) == 0)
@@ -929,16 +907,19 @@ void fn_8029D7D0(int arg0, void **arg1) {
         float b = v[9];
         float a = v[8];
         float c = v[10];
-        float t0 = c * m[6] + (a * m[0] + b * m[3]);
-        float t1 = c * m[7] + (a * m[1] + b * m[4]);
-        float t2 = c * m[8] + (a * m[2] + b * m[5]);
+        float t0 = m[3] * b + m[0] * a;
+        float t1 = m[4] * b + m[1] * a;
+        float t2 = m[5] * b + m[2] * a;
+        t0 += m[6] * c;
+        t1 += m[7] * c;
+        t2 += m[8] * c;
         sp[0] = t0;
         sp[1] = t1;
         sp[2] = t2;
     } else {
-        sp[0] = v[10] * m[6] + (v[8] * m[0] + v[9] * m[3]);
-        sp[1] = v[10] * m[7] + (v[8] * m[1] + v[9] * m[4]);
-        sp[2] = v[10] * m[8] + (v[8] * m[2] + v[9] * m[5]);
+        sp[0] = m[3] * v[9] + m[0] * v[8] + m[6] * v[10];
+        sp[1] = m[4] * v[9] + m[1] * v[8] + m[7] * v[10];
+        sp[2] = m[5] * v[9] + m[2] * v[8] + m[8] * v[10];
     }
     sp[0] += m[9];
     sp[1] += m[10];
@@ -1021,7 +1002,6 @@ void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
     float h = lbl_8056468C * (*(float *)(p + 0x14) * (float)heights[x + z * *(int *)(p + 0xC)]);
     float len, scale, ysq;
     int lo, hi;
-
     out[2] = *(float *)(p + 0x40) + (float)x * *(float *)(p + 0x48) + (float)z * *(float *)(p + 0x50);
     out[1] = *(float *)(p + 0x3C) + h;
     out[0] = *(float *)(p + 0x38) + (float)x * *(float *)(p + 0x44) + (float)z * *(float *)(p + 0x4C);
@@ -1041,8 +1021,7 @@ void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
     out[5] = lbl_8056465C + proj[2] * scale;
     lo = *(unsigned char *)(p + 0x30);
     hi = *(unsigned char *)(p + 0x31);
-    *(int *)(out + 3) = *(int *)(p + 0x2C) |
-        ((lo + (int)((float)(hi - lo) * (lbl_80564658 - proj[1] * proj[1]))) << 24);
+    *(int *)(out + 3) = *(int *)(p + 0x2C) | ((lo + (int)((float)(hi - lo) * (lbl_80564658 - proj[1] * proj[1]))) << 24);
 }
 #pragma pop
 extern float lbl_8056462C, lbl_80564634, lbl_80564640, lbl_80564658, lbl_80564694, lbl_80564698;
@@ -1064,7 +1043,6 @@ void fn_8029DDB8(void *arg0) {
     int indexPlus;
     int indexMinus;
     int neighbors;
-    int converted;
     int value;
     float scale;
     float wave;
@@ -1084,8 +1062,7 @@ void fn_8029DDB8(void *arg0) {
         rowPlus = y + 1;
         rowMinus = y - 1;
         x = 1;
-        while (x < *(volatile int *)(base + 0xC) - 1) {
-            width = *(volatile int *)(base + 0xC);
+        while (x < (width = *(volatile int *)(base + 0xC)) - 1) {
             index = x + y * width;
             indexPlus = x + rowPlus * width;
             indexMinus = x + rowMinus * width;
@@ -1098,12 +1075,11 @@ void fn_8029DDB8(void *arg0) {
             result = result + waveSquared * (float)neighbors;
             result = result - (float)dst[index];
             result = center * result;
-            converted = (int)result;
             value = -32768;
-            if (converted > -32768) {
+            if ((int)result > -32768) {
                 value = 32767;
-                if (converted < 32767)
-                    value = converted;
+                if ((int)result < 32767)
+                    value = (int)result;
             }
             dst[index] = (short)value;
             ++x;
