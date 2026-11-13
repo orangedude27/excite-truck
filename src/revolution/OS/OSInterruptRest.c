@@ -280,6 +280,7 @@ u32 __OSMaskInterrupts(u32 userMask) {
     return prevMask;
 }
 
+/* Unmask interrupt bits in the previous interrupt mask, reapplying the effective mask while interrupts are disabled. */
 u32 __OSUnmaskInterrupts(u32 userMask) {
     BOOL enabled = OSDisableInterrupts();
     u32 prevMask = *(u32*)OSPhysicalToCached(OS_PHYS_PREV_INTR_MASK);
