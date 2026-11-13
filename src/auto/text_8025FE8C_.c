@@ -221,18 +221,23 @@ typedef struct {
 #define SELECTOR_ITEM_VTABLE lbl_80345EA0
 #pragma push
 #pragma small_data off
-void *fn_802608D4(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_80345EA0;
-        fn_80235380(*(s32 *)((u8 *)arg0 + 0x20), (s32 *)&lbl_80345EA0);
-        *(s32 *)((u8 *)arg0 + 0x20) = 0;
-        fn_802328D4(*(s32 *)((u8 *)arg0 + 0x24));
-        *(s32 *)((u8 *)arg0 + 0x24) = 0;
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+/* Deleting destructor of one challenge-selector item row -- slot 0x8 of its
+ * vtable, which the screen's cleanup loop calls as destroy(1).  It drops the
+ * two resources the row was built with (the gArt animation and the gText font)
+ * and then frees the row itself when the delete flag is set. */
+void *fn_802608D4(SelectorItem *item, s32 deleteFlag) {
+    if (item != 0) {
+        *(void **)item = &SELECTOR_ITEM_VTABLE;
+        /* fn_80235380 only reads its first argument; the vtable is what the
+         * store above leaves in the second register. */
+        fn_80235380((s32)item->art, (s32 *)&SELECTOR_ITEM_VTABLE);
+        item->art = 0;
+        fn_802328D4((s32)item->font);
+        item->font = 0;
+        if (deleteFlag > 0) ((void (*)(void *))fn_80128668)(item);
     }
-    return arg0;
+    return item;
 }
-
 extern void *lbl_8055F3E4;
 extern u8 lbl_8055F3E8;
 extern s32 lbl_802FA6C0[];
@@ -1245,7 +1250,7 @@ extern float lbl_80563B98;
 extern float lbl_80563B9C;
 extern float lbl_80563BA0;
 #pragma cplusplus on
-extern "C" void fn_802621F0(void *arg0) { struct Dummy { virtual void m0() = 0; virtual char *m1() = 0; virtual void m2() = 0; virtual char *m3() = 0; virtual void m4() = 0; virtual void m5() = 0; virtual void m6() = 0; virtual void m7() = 0; virtual s32 m8() = 0; virtual s32 m9() = 0; virtual s32 m10() = 0; virtual s32 m11() = 0; virtual void m12() = 0; virtual s32 m13() = 0; virtual void m14() = 0; virtual s32 m15() = 0; }; char text2[0x1E]; char text1[0x1E]; union { u8 alpha; volatile u8 enabled; } scratch; float width; float height; s32 output; float scale; s32 mode; s32 color2; s32 marker; Dummy *obj; char *name; if ((signed char)lbl_8055F3F4 == 0) { s32 initial = *(volatile s32 *)((u8 *)arg0 + 0x10); float initialFloat = (float)initial; lbl_8055F3F4 = 1; lbl_8055F3F0 = -initialFloat * lbl_80563B8C; } fn_80230C30(&width, &height, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8)); output = -1; mode = 0; marker = -1; { scratch.enabled = *(volatile u8 *)((u8 *)arg0 + 0x1C); color2 = -1; if (scratch.enabled != 0) { output = -1; mode = 1; marker = -1; color2 = -1; } else if (*(u8 *)((u8 *)arg0 + 0x1D) != 0) { output = -1; marker = -1; color2 = -1; } } fn_802354A0(*(void **)((u8 *)arg0 + 0x20), mode, color2, width, height, lbl_80563B90, (float)*(s32 *)((u8 *)arg0 + 0xC), (float)*(s32 *)((u8 *)arg0 + 0x10)); if (*(u8 *)((u8 *)arg0 + 0x1C) != 0 && lbl_8055F3EA == 0) { fn_80230F78(&scratch.alpha, &scale, (u32 *)&output, 0); { s32 xValue = *(volatile s32 *)((u8 *)arg0 + 0xC); s32 yValue = *(volatile s32 *)((u8 *)arg0 + 0x10); float xFloat = (float)xValue; float yFloat = (float)yValue; float xUnit = lbl_80563B8C * xFloat; float yUnit = lbl_80563B8C * yFloat; float xScaled = scale * xUnit; float yScaled = scale * yUnit; float ratio = lbl_80563B88 + scale; float right = ratio * yFloat; float bottom = ratio * xFloat; u32 packedColor = (u32)color2 & 0x0000FF00; packedColor |= (u32)scratch.alpha << 24; packedColor |= (u32)color2 & 0xFFFF; fn_802354A0(*(void **)((u8 *)arg0 + 0x20), mode, packedColor, width - yScaled, height + xScaled, lbl_80563B90, right, bottom); } } obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); fn_80232BA4(obj->m1(), *(s32 *)((u8 *)arg0 + 0x24), output, 0x11, lbl_80563B94 + width, height + lbl_8055F3F0, lbl_80563B98, lbl_80563B90, lbl_80563B88); obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); if (obj->m9() != -1) { obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); obj->m9(); name = (char *)__AXGetStackHead(); } else { name = &lbl_8055C428; } fn_80232BA4(name, *(s32 *)((u8 *)arg0 + 0x24), marker, 0x14, lbl_80563B9C + width, height + lbl_8055F3F0, lbl_80563B98, lbl_80563B90, lbl_80563B88); obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); fn_801308F4(text1, 0x1E, obj->m13()); obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); if (obj->m8() <= 0) { fn_801345D8(text2, 0x1E, &lbl_8055C42C, &text1[1]); } else { obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); fn_801308F4(text2, 0x1E, obj->m8()); fn_801345D8(text2, 0x1E, &lbl_8055C434, text2, &text1[1]); } fn_80232BA4(text2, *(s32 *)((u8 *)arg0 + 0x24), output, 0x12, lbl_80563BA0 + width, height + lbl_8055F3F0, lbl_80563B98, lbl_80563B90, lbl_80563B88); }
+extern "C" void fn_802621F0(void *arg0) { struct Dummy { virtual void m0() = 0; virtual char *m1() = 0; virtual void m2() = 0; virtual char *m3() = 0; virtual void m4() = 0; virtual void m5() = 0; virtual void m6() = 0; virtual void m7() = 0; virtual s32 m8() = 0; virtual s32 m9() = 0; virtual s32 m10() = 0; virtual s32 m11() = 0; virtual void m12() = 0; virtual s32 m13() = 0; virtual void m14() = 0; virtual s32 m15() = 0; }; char text2[0x1E]; char text1[0x1E]; u8 alpha; float width; float height; s32 output; float scale; s32 mode; s32 color2; s32 marker; Dummy *obj; char *name; if ((signed char)lbl_8055F3F4 == 0) { s32 initial = *(s32 *)((u8 *)arg0 + 0x10); float initialFloat = (float)initial; lbl_8055F3F4 = 1; lbl_8055F3F0 = -initialFloat * lbl_80563B8C; } fn_80230C30(&width, &height, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8)); output = -1; mode = 0; marker = -1; color2 = -1; if (*(u8 *)((u8 *)arg0 + 0x1C) != 0) { output = -1; mode = 1; marker = -1; color2 = -1; } else if (*(u8 *)((u8 *)arg0 + 0x1D) != 0) { output = -1; marker = -1; color2 = -1; } fn_802354A0(*(void **)((u8 *)arg0 + 0x20), mode, color2, width, height, lbl_80563B90, (float)*(s32 *)((u8 *)arg0 + 0xC), (float)*(s32 *)((u8 *)arg0 + 0x10)); if (*(u8 *)((u8 *)arg0 + 0x1C) != 0 && lbl_8055F3EA == 0) { fn_80230F78(&alpha, &scale, (u32 *)&output, 0); { s32 xValue = *(s32 *)((u8 *)arg0 + 0xC); s32 yValue = *(s32 *)((u8 *)arg0 + 0x10); float xFloat = (float)xValue; float yFloat = (float)yValue; float xUnit = lbl_80563B8C * xFloat; float yUnit = lbl_80563B8C * yFloat; float xScaled = scale * xUnit; float yScaled = scale * yUnit; float ratio = lbl_80563B88 + scale; float right = ratio * xFloat; float bottom = ratio * yFloat; u32 packedColor = ((u32)color2 & 0xFF00) | ((u32)alpha << 24) | ((u32)color2 & 0xFFFF); fn_802354A0(*(void **)((u8 *)arg0 + 0x20), mode, packedColor, width - xScaled, height + yScaled, lbl_80563B90, right, bottom); } } obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); fn_80232BA4(obj->m1(), *(s32 *)((u8 *)arg0 + 0x24), output, 0x11, lbl_80563B94 + width, height + lbl_8055F3F0, lbl_80563B98, lbl_80563B90, lbl_80563B88); obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); if (obj->m9() != -1) { obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); obj->m9(); name = (char *)__AXGetStackHead(); } else { name = &lbl_8055C428; } fn_80232BA4(name, *(s32 *)((u8 *)arg0 + 0x24), marker, 0x14, lbl_80563B9C + width, height + lbl_8055F3F0, lbl_80563B98, lbl_80563B90, lbl_80563B88); obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); fn_801308F4(text1, 0x1E, obj->m13()); obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); if (obj->m8() <= 0) { fn_801345D8(text2, 0x1E, &lbl_8055C42C, &text1[1]); } else { obj = (Dummy *)*(void **)((u8 *)arg0 + 0x18); fn_801308F4(text2, 0x1E, obj->m8()); fn_801345D8(text2, 0x1E, &lbl_8055C434, text2, &text1[1]); } fn_80232BA4(text2, *(s32 *)((u8 *)arg0 + 0x24), output, 0x12, lbl_80563BA0 + width, height + lbl_8055F3F0, lbl_80563B98, lbl_80563B90, lbl_80563B88); }
 #pragma cplusplus reset
 void fn_80262574(void) {
 }
