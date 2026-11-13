@@ -27,6 +27,13 @@ extern f64 sin(f32);
 extern void *lbl_803577E0[];
 extern u8 lbl_802FCBEC[], lbl_802FCBF8[], lbl_802FCBC8[];
 extern s32 fn_802C9A58(void);
+/* The race HUD ("RaceOverlay"): one object per screen, registered by
+ * fn_80014524 and cleared by fn_80014664. Its +0x50 is the "raceovr.val"
+ * layout (fn_80145E70) whose elements the lap readout looks up by name. */
+#define sRaceOverlays lbl_803577E0       /* RaceOverlay *, indexed by screen */
+#define MSG_LAP_BODY_0 lbl_802FCBEC      /* "lap_body_0" */
+#define MSG_LAP_BODY_1_WS lbl_802FCBF8   /* "lap_body_1_ws", the widescreen lap number */
+#define MSG_LAP_DENOMINATOR lbl_802FCBC8 /* "lap_denominator", the 4:3 lap number */
 extern void fn_80013BD0(void *, s32, s32, s32);
 typedef struct { void *vtable; s32 field4; } VtblObj;
 extern f32 lbl_80560360, lbl_80560368, lbl_8056036C, lbl_80560370, lbl_80560374, lbl_80560398;
@@ -1193,10 +1200,11 @@ extern void fn_80148134(f32*,f32*,s32,f32,f32);
 #pragma scheduling on
 extern "C" void fn_80015F30(void* arg0) {
  struct Desc { s32 a; f32 x,y; s32 d; f32 w,h; s32 g,k; };
+ struct Copy { s32 a,x,y,d; f32 w; s32 h,g,k; };
  class Obj { public:
  virtual void v0(); virtual Desc* get(void*); virtual void v2(); virtual Desc* find(void*);
  };
- struct Desc copy;
+ struct Copy copy;
  f32 x,y;
  f32 value;
  f32 low;
@@ -1205,8 +1213,10 @@ extern "C" void fn_80015F30(void* arg0) {
  u8* base=lbl_802FCB98;
  low=lbl_805603F8;
  high=lbl_805603FC;
- value=*(f32*)((u8*)*(void**)((u8*)lbl_8055D350+0x2c)+0x2a8);
- s32 positive=(f32)((f64(*)(void*,f32,f64))fn_8002EFB4)(*(void**)((u8*)lbl_8055D350+0x2c),*(f32*)((u8*)lbl_8055D350+0x10),period)>lbl_805603BC;
+ void* mgr=*(void**)((u8*)lbl_8055D350+0x2c);
+ f32 speed=*(f32*)((u8*)lbl_8055D350+0x10);
+ value=*(f32*)((u8*)mgr+0x2a8);
+ s32 positive=(f32)((f64(*)(void*,f32,f64))fn_8002EFB4)(mgr,speed,period)>lbl_805603BC;
  s32 flag=0;
  void* obj;
  struct Desc* desc;
@@ -1238,9 +1248,10 @@ extern "C" void fn_80015F30(void* arg0) {
   fn_80015770(arg0,x,y,desc->w,desc->h,high);
  }
  obj=*(void**)((u8*)arg0+0x50);
- desc=((Obj*)obj)->get(base+0x258);
- if(desc) {
- copy=*desc;
+ Copy* src=(Copy*)((Obj*)obj)->get(base+0x258);
+ if(src) {
+ copy.a=src->a; copy.x=src->x; copy.y=src->y; copy.d=src->d;
+ copy.w=src->w; copy.h=src->h; copy.g=src->g; copy.k=src->k;
  if(flag) copy.g=0x80FFFF00;
  ((void(*)(void*))fn_801476C4)(&copy);
  }
