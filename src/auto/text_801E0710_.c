@@ -488,12 +488,14 @@ void fn_801E0F78(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
 #pragma push
 #pragma scheduling off
 f32 fn_801E0FA4(f32 *arg0, f32 *arg1) {
-    f32 a = arg1[1];
-    f32 b = arg0[1];
-    f32 c = arg1[0];
-    f32 d = arg0[0];
-    f32 x = b * a;
-    f32 y = d * c;
+    f32 b, d, c, a;
+    f32 x, y;
+    a = arg1[1];
+    b = arg0[1];
+    c = arg1[0];
+    d = arg0[0];
+    x = b * a;
+    y = d * c;
     return y + x;
 }
 #pragma pop
