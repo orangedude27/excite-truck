@@ -6945,18 +6945,20 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
     }
 }
 
-void BTA_HhEnable(u8 arg0, void *arg1) {
-    u8 *buf;
+/* Enable the HID host: register the HH event handler and post the enable
+ * request with the security mask and application callback. */
+void BTA_HhEnable(u8 sec_mask, void *p_cback) {
+    u8 *p_msg;
     fn_8006EAD0();
     fn_8007143C(0x17, (u32)&lbl_80560D28);
     fn_8006EAD4();
-    buf = GKI_getbuf(0x34);
-    if (buf != 0) {
-        memset(buf, 0, 0x34);
-        *(u16 *)buf = 0x170C;
-        *(void **)(buf + 0x30) = arg1;
-        buf[8] = arg0;
-        fn_80071450(buf);
+    p_msg = GKI_getbuf(0x34);
+    if (p_msg != 0) {
+        memset(p_msg, 0, 0x34);
+        *(u16 *)p_msg = 0x170C;
+        *(void **)(p_msg + 0x30) = p_cback;
+        p_msg[8] = sec_mask;
+        fn_80071450(p_msg);
     }
 }
 
