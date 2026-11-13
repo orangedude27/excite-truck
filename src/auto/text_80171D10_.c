@@ -453,9 +453,8 @@ void fn_801345D8(void *, int, void *, float); /* extern */
 void fn_80175080(void **, int, int, char *, double, ...);
 void fn_80147230(void *, const char *, ...);
 int fn_801609C4(int);                               /* extern */
-void fn_802ADFF4(void *, void *);                      /* extern */
-void fn_802AE02C(void *, void *);                      /* extern */
-void fn_802AE0B8(void *, void *);                      /* extern */
+/* fn_802ADFF4/fn_802AE02C/fn_802AE0B8 (ArtAnimManager start/pause/resume) are
+   declared where they are used, with their real (manager, cue) signature. */
 void fn_802AE168(void *);                           /* extern */
 unsigned int strlen(const char *); /* extern */
 /* Copy a string into one of the overlay's fixed-size text cells; when the
