@@ -102,8 +102,12 @@ s32 fn_80243710(s32 arg0, s32 arg1) {
     return result;
 }
 
-__declspec(section ".sdata") extern s32 lbl_8055BE0C;
-__declspec(section ".sdata") extern s32 lbl_8055BE10;
+/* Menu cursor hold: the group/entry the cursor rested on when it last moved,
+ * -1/-1 when there is nothing to hold on to (kept by MenuList_MoveCursor). */
+__declspec(section ".sdata") extern s32 lbl_8055BE0C; /* s_cursorHoldGroup */
+__declspec(section ".sdata") extern s32 lbl_8055BE10; /* s_cursorHoldEntry */
+#define s_cursorHoldGroup lbl_8055BE0C
+#define s_cursorHoldEntry lbl_8055BE10
 extern s32 fn_80230E90(s32);
 extern s32 fn_80243528(s32, s32);
 extern s32 fn_8024360C(s32, s32);
