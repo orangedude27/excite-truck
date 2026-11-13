@@ -45,27 +45,28 @@ extern void fn_801F75A4();
 extern void *fn_801F69C8(void *);
 extern void *fn_801F6D20(void *);
 extern void *fn_801F7090(void *);
+/* Allocate and initialize the three global cloth system pools/buffers and clear their state pointers. */
 void fn_801F4CD8(void) {
-    char *data = lbl_8033AC68;
-    void *ptr;
+    char *poolData = lbl_8033AC68;
+    void *allocated;
 
-    ptr = fn_801284F8(0x904, data + 0x48);
-    if (ptr != 0) {
-        ptr = fn_801F69C8(ptr);
+    allocated = fn_801284F8(0x904, poolData + 0x48);
+    if (allocated != 0) {
+        allocated = fn_801F69C8(allocated);
     }
-    lbl_8055EC10 = ptr;
+    lbl_8055EC10 = allocated;
 
-    ptr = fn_801284F8(0x2A4, data + 0x5C);
-    if (ptr != 0) {
-        ptr = fn_801F6D20(ptr);
+    allocated = fn_801284F8(0x2A4, poolData + 0x5C);
+    if (allocated != 0) {
+        allocated = fn_801F6D20(allocated);
     }
-    lbl_8055EC14 = ptr;
+    lbl_8055EC14 = allocated;
 
-    ptr = fn_801284F8(0x124, data + 0x70);
-    if (ptr != 0) {
-        ptr = fn_801F7090(ptr);
+    allocated = fn_801284F8(0x124, poolData + 0x70);
+    if (allocated != 0) {
+        allocated = fn_801F7090(allocated);
     }
-    lbl_8055EC18 = ptr;
+    lbl_8055EC18 = allocated;
     lbl_8055EC1C = 0;
     lbl_8055EC20 = 0;
 }
