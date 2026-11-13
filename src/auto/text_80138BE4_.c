@@ -57,49 +57,49 @@ extern double fabs(double);
 extern double __fabs(double);
 #pragma push
 #pragma processor 750
-int fn_80138C28(void *rect, float *out_t, float *out_distance) {
-    float a;
-    float b;
-    float c;
-    float disc;
+int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
+    float quad;
+    float lin;
+    float con;
+    float discriminant;
     float roots[2];
     float term;
-    float left;
-    float right;
-    float diff;
-    float tmp;
+    float selfAccel;
+    float targetAccel;
+    float accelDelta;
+    float fourQuad;
     if (out_distance != 0)
-        *out_distance = lbl_805613B8;
-    left = *(float *)((char *)rect + 0x08);
-    right = *(float *)((char *)rect + 0x14);
-    diff = right - left;
-    a = diff * lbl_805613C0;
-    b = *(float *)((char *)rect + 0x10) - *(float *)((char *)rect + 0x04);
-    c = *(float *)((char *)rect + 0x0C) - *(float *)((char *)rect + 0x00);
-    if (fn_80138BFC(a) == 0) {
-        tmp = lbl_805613C4 * a;
-        disc = b * b - tmp * c;
-        if (disc >= lbl_805613B8) {
-            roots[0] = ((-b) + ((float)fn_8002F234(disc))) / (lbl_805613C8 * a);
-            roots[1] = ((-b) - ((float)fn_8002F234(disc))) / (lbl_805613C8 * a);
-            if (fn_80138BE4(roots[0], roots[1]) != 0) {
+        *out_distance = ZERO;
+    selfAccel = motion->self.acceleration;
+    targetAccel = motion->target.acceleration;
+    accelDelta = targetAccel - selfAccel;
+    quad = accelDelta * HALF;
+    lin = motion->target.velocity - motion->self.velocity;
+    con = motion->target.position - motion->self.position;
+    if (motion_is_zero(quad) == 0) {
+        fourQuad = FOUR * quad;
+        discriminant = lin * lin - fourQuad * con;
+        if (discriminant >= ZERO) {
+            roots[0] = ((-lin) + ((float)motion_sqrt(discriminant))) / (TWO * quad);
+            roots[1] = ((-lin) - ((float)motion_sqrt(discriminant))) / (TWO * quad);
+            if (opposite_signs(roots[0], roots[1]) != 0) {
                 float hi = roots[1];
                 float lo = roots[0];
-                *out_t = (lo > hi) ? (lo) : (hi);
-            } else if (roots[0] >= lbl_805613B8) {
+                *out_time = (lo > hi) ? (lo) : (hi);
+            } else if (roots[0] >= ZERO) {
                 float hi = roots[1];
                 float lo = roots[0];
-                *out_t = (lo < hi) ? (lo) : (hi);
+                *out_time = (lo < hi) ? (lo) : (hi);
             } else {
-                *out_t = lbl_805613CC;
+                *out_time = NO_CROSSING;
             }
-            if ((*out_t) >= lbl_805613B8)
+            if ((*out_time) >= ZERO)
                 return 1;
         } else if (out_distance != 0) {
-            term = ((-b) > lbl_805613B8) ? (-b) : (lbl_805613B8);
-            right = (float)__fabs((double)a);
-            term = (term + b) * (lbl_805613C8 * right);
-            *out_distance = ((term * term) - disc) / (lbl_805613C8 * c);
+            term = ((-lin) > ZERO) ? (-lin) : (ZERO);
+            targetAccel = (float)__fabs((double)quad);
+            term = (term + lin) * (TWO * targetAccel);
+            *out_distance = ((term * term) - discriminant) / (TWO * con);
         }
     }
     return 0;
