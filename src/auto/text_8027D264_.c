@@ -38,6 +38,16 @@ extern void fn_80012790(int);
 extern void fn_8027E0C8(void *, int);
 extern unsigned char lbl_8055F66C;
 extern void fn_8027B834(void);
+
+/* Game modes: ids of the entries in the mode-info table at lbl_802FC638
+ * (looked up by fn_800126CC; loaded by fn_80012790, unloaded by fn_80012794). */
+#define MODE_ARCADE    0x12F
+#define MODE_CAREER    0x130
+#define MODE_MULTI     0x131
+#define MODE_DEMO      0x132
+#define MODE_CHALLENGE 0x133
+#define MODE_NONE      0x134 /* no mode loaded; set by fn_80012794 (unload) */
+#define gModeSwitchBusy lbl_8055F66C /* set while a task runs under a switched mode */
 typedef struct Ent_8027DB40 { const char *name; int id; int val; } Ent_8027DB40;
 typedef struct VTbl_8027DB40 { void *s[3]; void (*add)(void *, int, int, int); } VTbl_8027DB40;
 typedef struct Obj_8027DB40 { VTbl_8027DB40 *vt; } Obj_8027DB40;
@@ -448,19 +458,17 @@ void fn_8027DAF4(void) {
 
 #pragma use_lmw_stmw off
 void *fn_8027DB40(int arg0) {
-    int flagA;
-    int bit2;
+    int flagA, bit1, bit2;
     int i;
+    int i2;
     int cnt;
-    Ent_8027DB40 *e;
-    int bit1Zero;
     int limit;
     int filtered;
-    int bit1;
-    Obj_8027DB40 *obj;
+    int bit1Zero;
+    Ent_8027DB40 *e;
     int *info;
+    Obj_8027DB40 *obj;
     int b, c;
-
     flagA = arg0 & 1;
     bit1 = (arg0 >> 1) & 1;
     bit2 = (arg0 >> 2) & 1;
@@ -487,9 +495,9 @@ void *fn_8027DB40(int arg0) {
         cnt++;
     }
     obj = (Obj_8027DB40 *)fn_8025007C(cnt);
-    bit1Zero = (bit1 == 0);
-    for (i = 0; i < fn_80019088(); i++) {
-        e = fn_80019054(i);
+    bit1Zero = (!bit1);
+    for (i2 = 0; i2 < fn_80019088(); i2++) {
+        e = fn_80019054(i2);
         if ((filtered == 0 || e->val <= limit) && e != 0 && stricmp(e->name, lbl_8055C794) == 0
             && fn_80016604(e->id) > 0) {
             info = fn_8001668C(e->id, 0);
