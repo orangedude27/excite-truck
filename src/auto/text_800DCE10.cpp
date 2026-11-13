@@ -30,7 +30,7 @@ extern f32 lbl_80560ED0;
 extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
 extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f32 arg4);
 #define PTRCHECK(p, line, off) { \
-    s16 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1; \
+    int c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1; \
     u32 hi = (u32)(p) & 0xFF000000; \
     if ((hi != 0x80000000U) && (((u32)(p) & 0xFF800000) != 0x81000000U)) c5 = 0; \
     if ((!c5) && (((u32)(p) & 0xF8000000) != 0x90000000U)) c4 = 0; \
@@ -125,9 +125,9 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     volatile f32 sp8;
     volatile f32 spc;
     u16 count;
-    s8 q;
+    u8 q;
     u8 rem;
-    s32 value;
+    u8 value;
     void *resource;
     const u8 *entry;
     void *font;
@@ -138,11 +138,9 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     fn_8002F53C(self + 0xD8, (void *)fn_800D7F6C, (void *)fn_800D2DD4, 4, 2);
 
     count = ((u32)*(const u16 *)(textBoxRes + 0x4C) >> 1) & 0xFFFF;
-    {
-        f32 zero = lbl_80560ED0;
-        *(f32 *)(self + 0xE4) = zero;
-        *(f32 *)(self + 0xE8) = zero;
-    }
+    f32 zero = lbl_80560ED0;
+    *(f32 *)(self + 0xE4) = zero;
+    *(f32 *)(self + 0xE8) = zero;
     if (count != 0) {
         count = (u16)(count - 1);
         q = self[0xFC] / 3;
@@ -152,15 +150,12 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
         *(u32 *)(self + 0xE0) = 0;
         value = q * 3 + 1;
         rem = value % 3;
-        {
-            f32 zero = lbl_80560ED0;
-            sp8 = zero;
-            spc = zero;
-            *(f32 *)(self + 0xE4) = zero;
-            *(f32 *)(self + 0xE8) = zero;
-            *(f32 *)(self + 0xEC) = zero;
-            *(f32 *)(self + 0xF0) = zero;
-        }
+        sp8 = zero;
+        spc = zero;
+        *(f32 *)(self + 0xE4) = zero;
+        *(f32 *)(self + 0xE8) = zero;
+        *(f32 *)(self + 0xEC) = zero;
+        *(f32 *)(self + 0xF0) = zero;
         *(u32 *)(self + 0xF4) = 0;
         self[0xFC] = (u8)(rem + 3);
         memset(self + 0xFD, 0, 1);
@@ -1168,86 +1163,83 @@ extern "C" unsigned long lbl_80559800;
 extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f32 arg4) {
     f32 out[4];
     u8 sp8;
-    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f31;
+    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
     f32 var_f1, var_f1_2, var_f1_3, var_f1_4;
     s32 temp_r31, var_r30 = arg3;
     u32 var_r29 = (u32)arg2;
     const char *msg = lbl_80320560;
-
     {
-        
-        s16 a0, a1, a2, a3, a4, a5;
-        a0 = 1; a1 = 1; a2 = 1; a3 = 1; a4 = 1; a5 = 1;
-        if (((u32)((((u32)arg1) & 0xFF000000) + 0x80000000) != 0U) && ((u32)(((u32)arg1 & 0xFF800000) + 0x7F000000) != 0U)) a5 = 0;
-        if ((!a5) && ((u32)(((u32)arg1 & 0xF8000000) + 0x70000000) != 0U)) a4 = 0;
-        if ((!a4) && ((u32)((((u32)arg1) & 0xFF000000) + 0x40000000) != 0U)) a3 = 0;
-        if ((!a3) && ((u32)(((u32)arg1 & 0xFF800000) + 0x3F000000) != 0U)) a2 = 0;
-        if ((!a2) && ((u32)(((u32)arg1 & 0xF8000000) + 0x30000000) != 0U)) a1 = 0;
-        if ((!a1) && ((u32)(((u32)arg1 & 0xFFFFC000) + 0x20000000) != 0U)) a0 = 0;
-        if (!a0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDA, msg + 0x194, arg1);
+        s32 a5 = 1, a4 = 1, a3 = 1, a2 = 1, a1 = 1, a0 = 1;
+        if ((((u32)arg1 & 0xFF000000) != 0x80000000) && (((u32)arg1 & 0xFF800000) != 0x81000000)) a5 = 0;
+        if ((a5 == 0) && (((u32)arg1 & 0xF8000000) != 0x90000000)) a4 = 0;
+        if ((a4 == 0) && (((u32)arg1 & 0xFF000000) != 0xC0000000)) a3 = 0;
+        if ((a3 == 0) && (((u32)arg1 & 0xFF800000) != 0xC1000000)) a2 = 0;
+        if ((a2 == 0) && (((u32)arg1 & 0xF8000000) != 0xD0000000)) a1 = 0;
+        if ((a1 == 0) && (((u32)arg1 & 0xFFFFC000) != 0xE0000000)) a0 = 0;
+        if (a0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDA, msg + 0x194, arg1);
     }
 {
-        s16 b0, b1, b2, b3, b4, b5;
-        b0 = 1; b1 = 1; b2 = 1; b3 = 1; b4 = 1; b5 = 1;
-        u32 temp_r10 = (u32)arg0 & 0xFF000000;
-        if (((u32)(temp_r10 + 0x80000000) != 0U) && ((u32)(((u32)arg0 & 0xFF800000) + 0x7F000000) != 0U)) b5 = 0;
-        if ((!b5) && ((u32)(((u32)arg0 & 0xF8000000) + 0x70000000) != 0U)) b4 = 0;
-        if ((!b4) && ((u32)(temp_r10 + 0x40000000) != 0U)) b3 = 0;
-        if ((!b3) && ((u32)(((u32)arg0 & 0xFF800000) + 0x3F000000) != 0U)) b2 = 0;
-        if ((!b2) && ((u32)(((u32)arg0 & 0xF8000000) + 0x30000000) != 0U)) b1 = 0;
-        if ((!b1) && ((u32)(((u32)arg0 & 0xFFFFC000) + 0x20000000) != 0U)) b0 = 0;
-        if (!b0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDB, msg + 0x240, arg0);
+        s32 b5 = 1, b4 = 1, b3 = 1, b2 = 1, b1 = 1, b0 = 1;
+        if ((((u32)arg0 & 0xFF000000) != 0x80000000) && (((u32)arg0 & 0xFF800000) != 0x81000000)) b5 = 0;
+        if ((b5 == 0) && (((u32)arg0 & 0xF8000000) != 0x90000000)) b4 = 0;
+        if ((b4 == 0) && (((u32)arg0 & 0xFF000000) != 0xC0000000)) b3 = 0;
+        if ((b3 == 0) && (((u32)arg0 & 0xFF800000) != 0xC1000000)) b2 = 0;
+        if ((b2 == 0) && (((u32)arg0 & 0xF8000000) != 0xD0000000)) b1 = 0;
+        if ((b1 == 0) && (((u32)arg0 & 0xFFFFC000) != 0xE0000000)) b0 = 0;
+        if (b0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDB, msg + 0x240, arg0);
     }
 {
-        s16 c0, c1, c2, c3, c4, c5;
-        c0 = 1; c1 = 1; c2 = 1; c3 = 1; c4 = 1; c5 = 1;
-        u32 temp_r10_2 = (u32)arg2 & 0xFF000000;
-        if (((u32)(temp_r10_2 + 0x80000000) != 0U) && ((u32)(((u32)arg2 & 0xFF800000) + 0x7F000000) != 0U)) c5 = 0;
-        if ((!c5) && ((u32)(((u32)arg2 & 0xF8000000) + 0x70000000) != 0U)) c4 = 0;
-        if ((!c4) && ((u32)(temp_r10_2 + 0x40000000) != 0U)) c3 = 0;
-        if ((!c3) && ((u32)(((u32)arg2 & 0xFF800000) + 0x3F000000) != 0U)) c2 = 0;
-        if ((!c2) && ((u32)(((u32)arg2 & 0xF8000000) + 0x30000000) != 0U)) c1 = 0;
-        if ((!c1) && ((u32)(((u32)arg2 & 0xFFFFC000) + 0x20000000) != 0U)) c0 = 0;
-        if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDC, msg + 0x1D0, arg2);
+        s32 c5 = 1, c4 = 1, c3 = 1, c2 = 1, c1 = 1, c0 = 1;
+        if ((((u32)arg2 & 0xFF000000) != 0x80000000) && (((u32)arg2 & 0xFF800000) != 0x81000000)) c5 = 0;
+        if ((c5 == 0) && (((u32)arg2 & 0xF8000000) != 0x90000000)) c4 = 0;
+        if ((c4 == 0) && (((u32)arg2 & 0xFF000000) != 0xC0000000)) c3 = 0;
+        if ((c3 == 0) && (((u32)arg2 & 0xFF800000) != 0xC1000000)) c2 = 0;
+        if ((c2 == 0) && (((u32)arg2 & 0xF8000000) != 0xD0000000)) c1 = 0;
+        if ((c1 == 0) && (((u32)arg2 & 0xFFFFC000) != 0xE0000000)) c0 = 0;
+        if (c0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDC, msg + 0x1D0, arg2);
     }
-
     if (var_r30 < 0) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDD, msg + 0x208, var_r30, 0);
     }
-    temp_f31 = lbl_80560ED0;
-    arg0[0] = temp_f31;
-    arg0[2] = temp_f31;
-    arg0[1] = temp_f31;
-    arg0[3] = temp_f31;
-    SetCursor__Q36nw4hbm2ut10CharWriterFff(arg1, temp_f31, temp_f31);
-    do {
-        out[0] = temp_f31;
-        out[1] = temp_f31;
-        out[2] = temp_f31;
-        out[3] = temp_f31;
-        temp_r31 = fn_800DDDF4(&out[0], arg1, (const u16 *)var_r29, var_r30, &sp8, arg4);
-        if (sp8 != 0) {
-            fn_800DDDF4(&out[0], arg1, (const u16 *)&lbl_80559800, 1, &sp8, arg4);
-        }
-        var_f1 = out[0];
-        temp_f0 = arg0[0];
-        var_r29 += temp_r31 * 2;
-        var_r30 -= temp_r31;
-        var_f1 = temp_f0 > var_f1 ? var_f1 : temp_f0;
-        arg0[0] = var_f1;
-        temp_f0_2 = arg0[1];
-        var_f1_2 = out[1];
-        var_f1_2 = temp_f0_2 > var_f1_2 ? var_f1_2 : temp_f0_2;
-        arg0[1] = var_f1_2;
-        temp_f0_3 = arg0[2];
-        var_f1_3 = out[2];
-        var_f1_3 = temp_f0_3 < var_f1_3 ? var_f1_3 : temp_f0_3;
-        arg0[2] = var_f1_3;
-        temp_f0_4 = arg0[3];
-        var_f1_4 = out[3];
-        var_f1_4 = temp_f0_4 < var_f1_4 ? var_f1_4 : temp_f0_4;
-        arg0[3] = var_f1_4;
-    } while (var_r30 > 0);
+    {
+        f32 preInit = lbl_80560ED0;
+        arg0[0] = preInit;
+        arg0[2] = preInit;
+        arg0[1] = preInit;
+        arg0[3] = preInit;
+        SetCursor__Q36nw4hbm2ut10CharWriterFff(arg1, preInit, preInit);
+    }
+    {
+        f32 loopInit = lbl_80560ED0;
+        do {
+            out[0] = loopInit;
+            out[1] = loopInit;
+            out[2] = loopInit;
+            out[3] = loopInit;
+            temp_r31 = fn_800DDDF4(&out[0], arg1, (const u16 *)var_r29, var_r30, &sp8, arg4);
+            if (sp8 != 0) {
+                fn_800DDDF4(&out[0], arg1, (const u16 *)&lbl_80559800, 1, &sp8, arg4);
+            }
+            var_f1 = out[0];
+            temp_f0 = arg0[0];
+            var_r29 += temp_r31 * 2;
+            var_r30 -= temp_r31;
+            var_f1 = temp_f0 > var_f1 ? var_f1 : temp_f0;
+            arg0[0] = var_f1;
+            temp_f0_2 = arg0[1];
+            var_f1_2 = out[1];
+            var_f1_2 = temp_f0_2 > var_f1_2 ? var_f1_2 : temp_f0_2;
+            arg0[1] = var_f1_2;
+            temp_f0_3 = arg0[2];
+            var_f1_3 = out[2];
+            var_f1_3 = temp_f0_3 < var_f1_3 ? var_f1_3 : temp_f0_3;
+            arg0[2] = var_f1_3;
+            temp_f0_4 = arg0[3];
+            var_f1_4 = out[3];
+            var_f1_4 = temp_f0_4 < var_f1_4 ? var_f1_4 : temp_f0_4;
+            arg0[3] = var_f1_4;
+        } while (var_r30 > 0);
+    }
 }
 
 extern "C" unsigned int* fn_800DFC54(void) {
