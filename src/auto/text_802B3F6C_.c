@@ -515,30 +515,31 @@ check_count:
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802B4CB4(void *arg0) {
+void fn_802B4CB4(void *owner) {
+    /* Free the 0x400-entry block owned by *owner, finalizing each entry if active. */
     unsigned int i;
-    char *q;
-    void *p;
+    char *entryPtr;
+    void *block;
 
-    p = *(void **)arg0;
-    if (p != 0) {
-        if (p != 0) {
-            if (*(unsigned char *)((char *)p + 0x2000) != 0) {
+    block = *(void **)owner;
+    if (block != 0) {
+        if (block != 0) {
+            if (*(unsigned char *)((char *)block + 0x2000) != 0) {
                 i = 0;
-                q = (char *)p;
+                entryPtr = (char *)block;
                 do {
                     int keep;
-                    fn_802B4D40(q);
+                    fn_802B4D40(entryPtr);
                     i += 1;
                     keep = i < 0x400;
-                    q += 8;
+                    entryPtr += 8;
                     if (!keep)
                         break;
                 } while (1);
             }
-            fn_80128668(p);
+            fn_80128668(block);
         }
-        *(void **)arg0 = 0;
+        *(void **)owner = 0;
     }
 }
 #pragma pop
