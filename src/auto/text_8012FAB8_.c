@@ -74,94 +74,57 @@ extern char *lbl_8055E050;
 extern int fn_8012BF24(void *);
 extern int stricmp(const char *, const char *);
 void fn_8012FAB8(void *arg0) {
-    char *srcBase;
-    char *dstBase;
-    srcBase = lbl_80423040 + 0x10000;
-    dstBase = lbl_8032B028;
-    {
-        int *e = (int *)(srcBase - 0x3C18);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xA0) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3C0C);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xB0) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3C00);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xC0) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3BF4);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xD0) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3BE8);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xE0) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3BDC);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0xF0) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3BD0);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x124) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3BC4);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x134) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3BB8);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x144) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3BAC);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x154) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3BA0);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x164) = (char *)e[1];
-    }
-    {
-        int *e = (int *)(srcBase - 0x3B94);
-        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
-            fn_80131318(e);
-        }
-        *(char **)(dstBase + 0x174) = (char *)e[1];
-    }
+    char *srcBase = lbl_80423040 + 0x10000;
+    char *dstBase = lbl_8032B028;
+    CacheEntry *e;
+    e = (CacheEntry *)(srcBase - 0x3C18);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0xA0) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3C0C);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0xB0) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3C00);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0xC0) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3BF4);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0xD0) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3BE8);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0xE0) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3BDC);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0xF0) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3BD0);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0x124) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3BC4);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0x134) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3BB8);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0x144) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3BAC);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0x154) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3BA0);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0x164) = e->value;
+    e = (CacheEntry *)(srcBase - 0x3B94);
+    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
+        fn_80131318((int *)e);
+    *(char **)(dstBase + 0x174) = e->value;
     if (arg0 != 0) {
         Obj *parent;
         int index;
@@ -823,27 +786,33 @@ extern int lbl_8055E044;
 extern char lbl_8032B328[];
 int fn_802E317C(const char *, ...);
 
-char *fn_8013126C(char *arg0, const char *arg1) {
-    const unsigned char *src = (const unsigned char *)arg1;
+/* LocaleUnXlator: copy the string src into dst and return dst, copying at most
+ * 0x12C bytes -- when the limit runs out the last byte written is replaced by
+ * the terminator.  The copy is dead code in this build: the function first
+ * panics with "LocaleUnXlator - really shouldn't use this in non-DEBUG mode"
+ * (fn_802E317C prints and exits), so reverse translation only exists in DEBUG. */
+char *fn_8013126C(char *dst, const char *src) {
+    const unsigned char *s = (const unsigned char *)src;
     int count;
-    char *dst;
+    char *out;
     unsigned char c;
+
     fn_802E317C(lbl_8032B328);
-    dst = arg0;
+    out = dst;
     count = 0x12c;
     goto copy;
 count_check:
     if (--count > 0)
         goto copy;
-    dst[-1] = 0;
+    out[-1] = 0;
     goto done;
 copy:
-    c = *src++;
-    *dst++ = c;
+    c = *s++;
+    *out++ = c;
     if ((signed char)c != 0)
         goto count_check;
 done:
-    return arg0;
+    return dst;
 }
 extern char lbl_80559B00[];
 extern char lbl_8032B224[];
