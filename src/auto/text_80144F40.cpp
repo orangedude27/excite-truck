@@ -2216,18 +2216,19 @@ extern "C" void fn_8014862C(void *arg0) {
     }
 }
 
-extern "C" void *fn_80148D74(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8032D1D8;
-        fn_80148DFC((u8 *)arg0 + 0x14);
-        fn_80148E6C((u8 *)arg0 + 0x10);
-        fn_80148EDC((u8 *)arg0 + 0xC);
-        if (*((u8 *)arg0 + 4) != 0)
-            deleteThreads__6SystemFv((u8 *)arg0 + 8);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+extern "C" void *fn_80148D74(void *object, s32 deleting) {
+    /* Destroy this object: reset vtable, tear down subobjects, delete threads if owned, and optionally free. */
+    if (object != 0) {
+        *(void **)object = &lbl_8032D1D8;
+        fn_80148DFC((u8 *)object + 0x14);
+        fn_80148E6C((u8 *)object + 0x10);
+        fn_80148EDC((u8 *)object + 0xC);
+        if (*((u8 *)object + 4) != 0)
+            deleteThreads__6SystemFv((u8 *)object + 8);
+        if (deleting > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_80148DFC(void *);
