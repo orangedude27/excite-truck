@@ -906,6 +906,7 @@ extern "C" u32 lbl_802F9BA0[8];
 extern u8 lbl_8055B2CC[];
 __declspec(section ".sdata") extern u8 lbl_8055B2CC[];
 extern "C" int fn_801F88F4(void *arg0) {
+    /* Return 1 if the node's "type" string matches an allowed type, otherwise 0. */
     class F88Node {
     public:
         virtual void v0();
@@ -913,16 +914,16 @@ extern "C" int fn_801F88F4(void *arg0) {
         virtual void v8();
         virtual char *v14(const char *, u32, u32);
     };
-    u32 table[3];
+    u32 allowedTypes[3];
     u32 *source = lbl_802F9B30;
-    table[0] = *source++;
-    table[1] = *source++;
-    table[2] = *source;
-    char *name = ((F88Node *)arg0)->v14((const char *)lbl_8055B2CC, table[1], table[0]);
-    u32 *entry = table;
-    while (*entry != 0) {
-        if (stricmp((const char *)*entry, name) == 0) return 1;
-        entry++;
+    allowedTypes[0] = *source++;
+    allowedTypes[1] = *source++;
+    allowedTypes[2] = *source;
+    char *typeName = ((F88Node *)arg0)->v14((const char *)lbl_8055B2CC, allowedTypes[1], allowedTypes[0]);
+    u32 *candidate = allowedTypes;
+    while (*candidate != 0) {
+        if (stricmp((const char *)*candidate, typeName) == 0) return 1;
+        candidate++;
     }
     return 0;
 }
