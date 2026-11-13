@@ -34,10 +34,11 @@ int fn_8024521C(void *arg0, int arg1) {
 extern char lbl_80342FC0[];
 extern float lbl_80563830;
 
-// The static description of the "mc_status" screen: its J3D layout name at
-// +0x00, the image to fetch at +0x60, the message printed when that image is
-// missing at +0x78 and the gText font file to load at +0xB4.
-// The text/menu drawing context fn_80245264 builds from it and fn_802452E4
+// lbl_80342FC0 is the static description of the "mc_status" screen: its J3D
+// layout name at +0x00, the image to fetch at +0x60, the message printed when
+// that image is missing at +0x78 and the gText font file to load at +0xB4.
+
+// The drawing context fn_80245264 builds from that block and fn_802452E4
 // releases; fn_80245360 draws a menu title, description and items through it.
 struct MenuTextContext {
     int unused0;    /* +0x00 */
