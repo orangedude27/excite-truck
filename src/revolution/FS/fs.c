@@ -917,6 +917,7 @@ s32 ISFS_Close(s32 fd) {
     return IOS_Close(fd);
 }
 
+/* Starts an asynchronous close for an ISFS file descriptor using a callback block. */
 s32 ISFS_CloseAsync(s32 fd, FSAsyncCallback callback, void* callbackArg) {
     FSCommandBlock* block;
 
