@@ -394,8 +394,7 @@ void fn_8013072C(char *arg0, int arg1, int arg2) {
         current = arg2 < 0 ? -arg2 : arg2;
         while (current > 0) {
             if (current >= 1000) {
-                int d1, d3;
-                register int d2;
+                int d1, d2, d3;
                 d1 = current % 10;
                 current /= 10;
                 d2 = current % 10;
@@ -500,6 +499,34 @@ static inline void time_append(char *dstp, int sizep, char *str) {
     }
 }
 
+static inline void time_append_sizefirst(char *dstp, int sizep, char *str) {
+    char *dst;
+    int size;
+    char *src;
+    char c;
+    size = sizep;
+    dst = dstp;
+    while (*dst != 0) {
+        size--;
+        dst++;
+    }
+    if (size > 0) {
+        src = str;
+        goto copy;
+    count_check:
+        if (--size > 0)
+            goto copy;
+        dst[-1] = 0;
+        goto done;
+    copy:
+        c = *src++;
+        *dst++ = c;
+        if (c != 0)
+            goto count_check;
+    done:;
+    }
+}
+
 static inline void time_append2(char *dstp, int sizep, char *str) {
     int size = sizep;
     char *dst = dstp;
@@ -541,11 +568,11 @@ void fn_80130980(char *out, int size, int level, float t) {
     char tmp[2];
     int mins, hundredths, tenths, secs, hours;
     int hasPrev;
+    int found;
     char *src;
     char *p;
     char c;
     unsigned int i;
-    int found;
 
     if (t == -lbl_80558DC0) {
         src = fn_80131234(lbl_8032B240);
