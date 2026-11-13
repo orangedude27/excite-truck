@@ -188,14 +188,16 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
 }
 
 #pragma dont_inline on
-void *fn_80276A44(void *arg) {
-    unsigned char *current = &lbl_8049FEE0;
+/* Find a camera/entry record by case-insensitively matching its name at offset
+ * 0x38 in a table of 0x48-byte entries; return the matching entry or 0. */
+void *fn_80276A44(void *name) {
+    unsigned char *entry = &lbl_8049FEE0;
     int i = 0;
     goto check;
 loop:
-    if (stricmp((const char *)current + 0x38, (const char *)arg) == 0)
+    if (stricmp((const char *)entry + 0x38, (const char *)name) == 0)
         return &lbl_8049FEE0 + i * 0x48;
-    current += 0x48;
+    entry += 0x48;
     i++;
 check:
     if (i < lbl_8055F5A0) goto loop;
