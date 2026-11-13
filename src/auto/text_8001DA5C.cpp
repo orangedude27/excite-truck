@@ -456,24 +456,25 @@ extern "C" void fn_8001E544(void* arg0) {
 extern char lbl_802FDC70[];
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void* fn_8001E5B0(void* arg0, s32 arg1) {
+extern "C" void* fn_8001E5B0(void* object, s32 deleteFlag) {
+    /* Destroys the owned object at +0x24, resets the vtable to lbl_802FDC70, and optionally frees this object. */
     class Entry {
     public:
         virtual void destroy(s32);
     };
-    void* entry;
+    void* owned;
 
-    if (arg0 != 0) {
-        entry = *(void**)((u8*)arg0 + 0x24);
-        *(void**)arg0 = (void*)lbl_802FDC70;
-        if (entry != 0) {
-            if (entry != 0)
-                ((Entry*)entry)->destroy(1);
+    if (object != 0) {
+        owned = *(void**)((u8*)object + 0x24);
+        *(void**)object = (void*)lbl_802FDC70;
+        if (owned != 0) {
+            if (owned != 0)
+                ((Entry*)owned)->destroy(1);
         }
-        if (arg1 > 0)
-            ((s32 (*)(void*))fn_80128668)(arg0);
+        if (deleteFlag > 0)
+            ((s32 (*)(void*))fn_80128668)(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" s32 __AXGetStackHead(s32, s32);
