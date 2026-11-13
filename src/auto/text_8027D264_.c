@@ -527,21 +527,26 @@ void *fn_8027DB40(int arg0) {
     }
     return obj;
 }
-void fn_8027DDCC(int arg0) {
-    int oldState;
-    int state;
-    lbl_8055F66C = 1;
-    oldState = fn_80012810();
-    if (oldState != 0x130) {
-        if (oldState != 0x134) fn_80012794();
-        fn_80012790(0x130);
+/* Runs fn_8027E0C8's task under "career" mode: switches the current game mode
+ * to career (loading it if a different one is active), invokes the task with
+ * fn_8027B834 as its data-block callback for the given screen, then restores
+ * the mode that was active on entry if the task left a different one. */
+void fn_8027DDCC(int screenIndex) {
+    int prevMode;
+    int currentMode;
+
+    gModeSwitchBusy = 1;
+    prevMode = fn_80012810();
+    if (prevMode != MODE_CAREER) {
+        if (prevMode != MODE_NONE) fn_80012794();
+        fn_80012790(MODE_CAREER);
     }
-    fn_8027E0C8(fn_8027B834, arg0);
-    lbl_8055F66C = 0;
-    state = fn_80012810();
-    if (oldState != state) {
-        if (state != 0x134) fn_80012794();
-        if (oldState != 0x134) fn_80012790(oldState);
+    fn_8027E0C8(fn_8027B834, screenIndex);
+    gModeSwitchBusy = 0;
+    currentMode = fn_80012810();
+    if (prevMode != currentMode) {
+        if (currentMode != MODE_NONE) fn_80012794();
+        if (prevMode != MODE_NONE) fn_80012790(prevMode);
     }
 }
 
