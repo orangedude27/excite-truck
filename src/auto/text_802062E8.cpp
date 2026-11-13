@@ -679,7 +679,8 @@ extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     *(float *)((char *)arg0 + 0x24) = value;
     return arg0;
 }
-extern "C" void fn_802073A4(void* arg0, int arg1, int arg2) {
+/* Updates queued mix dispatch state, then flushes two pending float commands (flags at +0x6C/+0x6D, values at +0x64/+0x68) to the owned object at +0x0C via vtable slots +0x3C/+0x40. */
+extern "C" void fn_802073A4(void *self, int arg1, int arg2) {
     class Dispatch {
     public:
         virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3();
@@ -689,17 +690,17 @@ extern "C" void fn_802073A4(void* arg0, int arg1, int arg2) {
         virtual void f0(float);
         virtual void f1(float);
     };
-    fn_80206B14(arg0, arg1, arg2);
-    unsigned char* p = (unsigned char*)arg0;
+    fn_80206B14(self, arg1, arg2);
+    unsigned char *p = (unsigned char *)self;
     if (p[0x6c] != 0) {
-        void* obj = *(void**)(p + 0x0c);
+        void *obj = *(void **)(p + 0x0c);
         p[0x6c] = 0;
-        ((Dispatch*)obj)->f0(*(float*)(p + 0x64));
+        ((Dispatch *)obj)->f0(*(float *)(p + 0x64));
     }
     if (p[0x6d] != 0) {
-        void* obj = *(void**)(p + 0x0c);
+        void *obj = *(void **)(p + 0x0c);
         p[0x6d] = 0;
-        ((Dispatch*)obj)->f1(*(float*)(p + 0x68));
+        ((Dispatch *)obj)->f1(*(float *)(p + 0x68));
     }
 }
 
