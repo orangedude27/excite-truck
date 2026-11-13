@@ -22,21 +22,22 @@ extern s32 fn_801284E8(s32, s32);
 extern void fn_8012A218(void *);
 extern char lbl_8032A5D8[];
 s32 fn_8012A17C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    u8 *base = (u8 *)arg0;
-    s32 temp_r0;
-    *(u8 *)(base + 4) = 1;
+    char *base = (char *)arg0;
+    s32 tmp;
+    int flag = (arg4 != 0);
+    *(char *)(base + 4) = 1;
     *(s32 *)(base + 0x14) = arg3;
     *(s32 *)(base + 0x18) = arg2;
-    *(u8 *)(base + 5) = (u8)(arg4 != 0);
+    *(char *)(base + 5) = (char)flag;
     *(s32 *)(base + 8) = arg1;
     if (arg4 == 0) {
         *(s32 *)(base + 0xC) = fn_801284E8(arg1, arg2 * arg3);
     } else {
         *(s32 *)(base + 0xC) = arg4;
     }
-    temp_r0 = *(s32 *)(base + 0xC);
-    if (temp_r0 != 0) {
-        *(s32 *)(base + 0x10) = temp_r0;
+    tmp = *(s32 *)(base + 0xC);
+    if (tmp != 0) {
+        *(s32 *)(base + 0x10) = tmp;
         fn_8012A218(base);
         return;
     }
@@ -69,6 +70,7 @@ void *fn_8012A260(void *arg0, s32 arg1) {
     return arg0;
 }
 
+/* Pop and return the next free element from a fixed-size object pool, panicking if the pool is empty when it requires elements. */
 int *fn_8012A2D8(void *arg0) {
     int *temp_r31 = *(int **)((char *)arg0 + 0x10);
     int *temp_r3;
