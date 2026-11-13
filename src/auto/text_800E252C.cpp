@@ -3240,10 +3240,12 @@ void *nw4hbm::snd::detail::BankFileReader::ReadWaveParam(WaveData *waveData, int
 extern void __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *);
 extern char lbl_80322880[];
 extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
+    /* Construct BasicSound: set vtable and initialize runtime fields to defaults. */
     float zeroFloat = lbl_80560FB0;
     void *vtable = &lbl_80322880;
     int zero = 0;
     int minusOne = -1;
+
     *(void **)arg0 = vtable;
     *(int *)((char *)arg0 + 4) = zero;
     *(int *)((char *)arg0 + 8) = zero;
