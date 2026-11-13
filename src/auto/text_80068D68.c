@@ -15417,6 +15417,7 @@ s32 btsnd_hcic_hold_mode_80084A34(u8 *p, u16 handle, u16 max_interval, u16 min_i
     return 1;
 }
 
+/* Build and send HCI_Exit_Park_Mode (0x0806) for the given connection handle. */
 s32 btsnd_hcic_exit_sniff_mode_80084AE8(u8 *p, u16 handle) {
     if (p == NULL) {
         p = GKI_getpoolbuf(2);
