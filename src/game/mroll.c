@@ -116,23 +116,26 @@ typedef struct MRollRecordOption {
 
 extern int fn_80128668(); /* free(): releases an allocation back to the primary/secondary buffer */
 #pragma cplusplus on
-extern "C" void *fn_80240830(void *arg0, s32 arg1) {
-    class Entry {
+/* Deleting destructor of a player's MRollRecordOption: installs this class's vtable,
+   deletes the record collection owned at +0x24 and, when deleteFlag > 0, frees the
+   object itself through the game's free(). */
+extern "C" void *fn_80240830(MRollRecordOption *self, s32 deleteFlag) {
+    class RecordCollection {
     public:
-        virtual void destroy(s32);
+        virtual void destroy(s32 deleteFlag); /* slot 0x8: its deleting destructor */
     };
-    void *prev;
-    if (arg0 != 0) {
-        prev = *(void **)((char *)arg0 + 0x24);
-        *(void **)((char *)arg0 + 0x0C) = lbl_80342618;
-        if (prev != 0) {
-            ((Entry *)prev)->destroy(1);
+    void *records;
+    if (self != 0) {
+        records = self->records;
+        self->vtable = lbl_80342618;
+        if (records != 0) {
+            ((RecordCollection *)records)->destroy(1);
         }
-        if (arg1 > 0) {
-            ((void (*)(void *))fn_80128668)(arg0);
+        if (deleteFlag > 0) {
+            ((void (*)(void *))fn_80128668)(self);
         }
     }
-    return arg0;
+    return self;
 }
 #pragma cplusplus reset
 extern char lbl_80342618[];
