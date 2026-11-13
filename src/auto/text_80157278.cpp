@@ -4214,7 +4214,8 @@ extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
 }
 
 #pragma scheduling invalid_target
-extern "C" s32 fn_8015EAA4(void *arg0) {
+extern "C" s32 fn_8015EAA4(void *container) {
+    /* Return 1 if any entry in the container reports true via vtable slot 0x38. */
     struct Entry {
         virtual void v0();
         virtual void v1();
@@ -4230,15 +4231,15 @@ extern "C" s32 fn_8015EAA4(void *arg0) {
         virtual void v11();
         virtual s32 v12();
     };
-    s32 var_r31 = 0;
-    s32 var_r30 = 0;
-    while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
-        Entry *obj = *(Entry **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
-        if (obj->v12() != 0) {
+    s32 offset = 0;
+    s32 index = 0;
+    while (index < *(s32 *)((char *)container + 8)) {
+        Entry *entry = *(Entry **)((char *)*(void **)((char *)container + 4) + offset);
+        if (entry->v12() != 0) {
             return 1;
         }
-        var_r31 += 4;
-        var_r30 += 1;
+        offset += 4;
+        index += 1;
     }
     return 0;
 }
@@ -4454,8 +4455,7 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
 }
 #pragma scheduling off
 extern "C" int fn_80159708(void *arg0) {
-    float v = *(float *)((char *)arg0 + 0x25C);
-    return (int)v;
+    return (int)*(float *)((char *)arg0 + 0x25C);
 }
 class Fn8015E338Item {
 public:
