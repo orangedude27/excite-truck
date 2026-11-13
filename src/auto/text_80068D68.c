@@ -637,6 +637,7 @@ extern char lbl_80318C08[];
 extern void l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_803130C8[];
 extern u8 lbl_80392960[];
+extern u8 lbl_8055DC11;
 extern u8 lbl_803934C0[];
 extern u8 lbl_8055DC48;
 extern u8 lbl_8055DC49;
