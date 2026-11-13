@@ -315,10 +315,12 @@ extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl_800E0238(unsigned char* o
     out[0] = p[0]; out[1] = p[1]; out[2] = p[2]; out[3] = p[3];
 }
 
-extern "C" void SetVtxColor__Q36nw4hbm3lyt7PictureFUlQ36nw4hbm2ut5Color_800E02C4(void* self, unsigned long idx, const unsigned char* color) {
-    if (idx >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0x173, lbl_80320C60);
-    unsigned char* p = (unsigned char*)((unsigned long)self + idx * 4 + 0xE4);
-    p[0] = color[0]; p[1] = color[1]; p[2] = color[2]; p[3] = color[3];
+/* nw4hbm::lyt::Picture::SetVtxColor(u32, const nw4hbm::ut::Color&): store one of
+ * the picture's four corner colors, asserting the index is in range. */
+extern "C" void SetVtxColor__Q36nw4hbm3lyt7PictureFUlQ36nw4hbm2ut5Color_800E02C4(nw4hbm::lyt::Picture* self, u32 idx, const nw4hbm::ut::Color* color) {
+    if (idx >= VERTEXCOLOR_NUM) Panic__Q26nw4hbm2dbFPCciPCce(sAssertFile_lyt_window, 0x173, sAssertIdxVtxColor);
+    nw4hbm::ut::Color* p = &self->vtxColor[idx];
+    p->b0 = color->b0; p->b1 = color->b1; p->b2 = color->b2; p->b3 = color->b3;
 }
 
 extern "C" unsigned char GetVtxColorElement__Q36nw4hbm3lyt7PictureCFUl_800E0350(void* self, unsigned long idx) {
