@@ -4472,6 +4472,7 @@ public:
 #pragma push
 #pragma scheduling on
 extern "C" void *fn_8015CE50(void *object, s32 deleting) {
+    /* Destructor: reset vtable, destroy owned child at +0x278, clear embedded list (+8/+C/+10), and optionally free. */
     struct Child { virtual void destroy(s32); };
     if (object) {
         Child *child = *(Child **)((u8 *)object + 0x278);
