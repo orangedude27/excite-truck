@@ -242,6 +242,7 @@ void fn_802E5264(int arg0, int arg1) {
     if (arg1 >= 0) fn_80060CC0(arg0, 1, (void (*)())fn_802E5248);
 }
 
+#ifndef SPK_STREAM_MOVED_UP
 /* One Wii remote speaker stream, 0x2C bytes per channel at lbl_804FC800;
  * fn_802E51D0 opens one (fn_802E5264 closes it again). */
 struct SpkStream {
@@ -250,6 +251,7 @@ struct SpkStream {
     int restart;             /* +0x24: encode the next frame from scratch */
     int unk_28;              /* +0x28: cleared when the stream is opened */
 };
+#endif
 
 extern int OSRestoreInterrupts(int);
 extern int WPADCanSendStreamData(int);
