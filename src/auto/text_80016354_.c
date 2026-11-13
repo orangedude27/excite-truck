@@ -134,10 +134,11 @@ void fn_800165DC(void) {
     fn_80016510(*(int *)((char *)((void *(*)())fn_80016474)() + 0x4C));
 }
 
-int fn_80016604(const char *arg0) {
+int fn_80016604(const char *name) {
+    /* Count entries in lbl_8055D544 (0xA8-byte stride) whose name at +0x2C matches (case-insensitive). */
     int offset = 0, count = 0, i = 0;
     while (i < (int)lbl_8055D550) {
-        if (stricmp((const char *)(lbl_8055D544 + offset + 0x2C), arg0) == 0)
+        if (stricmp((const char *)(lbl_8055D544 + offset + 0x2C), name) == 0)
             count++;
         offset += 0xA8;
         i++;
