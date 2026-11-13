@@ -15067,6 +15067,7 @@ BOOL btsnd_hcic_link_key_neg_reply_800840C8(BD_ADDR bd_addr) {
     return TRUE;
 }
 
+/* Build and send HCI Change_Connection_Packet_Type (opcode 0x040F, param size 4). */
 BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     u8 *p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
