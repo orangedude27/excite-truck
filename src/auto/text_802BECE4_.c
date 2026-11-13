@@ -478,7 +478,6 @@ void *fn_802BF780(void *arg0) {
     void *temp_r26_2;
     void *temp_r30;
     char *strings = lbl_8034ACA0;
-
     (*(char **)((char *)(arg0) + (0))) = lbl_8034AE40;
     (*(int *)((char *)(arg0) + (8))) = fn_802CB128(0x100, 0x100, 0, 0);
     temp_r26 = strings + 0xFC;
@@ -527,7 +526,7 @@ void *fn_802BF780(void *arg0) {
                 (*(float *)((char *)(var_r26) + (0x48))) = temp_f31;
                 var_r26 += 0x30;
             } while (var_r30 < 6);
-            one = lbl_80564D80; neg = lbl_80564DA8; zero = (float)lbl_80564D90;
+            one = lbl_80564D80; neg = lbl_80564DA8; zero = lbl_80564D90;
             (*(float *)((char *)(temp_r3) + (0x64))) = zero;
             (*(float *)((char *)(temp_r3) + (0x68))) = zero;
             (*(float *)((char *)(temp_r3) + (0x6C))) = neg;
@@ -666,14 +665,13 @@ extern "C" void *fn_802BFA58(void *object, int shouldDelete) {
 #pragma scheduling invalid_target
 extern "C" void fn_802BFB70(void *arg0, int arg1, float angle) {
     class Camera { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void unused(); virtual void e(void *, int, void *); };
-    /* Draw the six views and restore the previous render state. */
-    float transform[12], old2[12], old1[12], matrix[12];
     float rotation[3], viewport[4], direction[3], viewport0[4], initial[3], adjust[3], value;
+    float transform[12], old2[12], old1[12], matrix[12];
     char *obj = (char *)arg0;
-    char *views;
-    char *p;
-    int *handles;
     int i;
+    char *views;
+    int *handles;
+    char *p;
     float theta;
     *(float *)(obj + 0x14) = fn_801E85A4() == 2 ? lbl_80564DB4 : lbl_80564D80;
     views = *(char **)(obj + 4);
@@ -732,18 +730,16 @@ void fn_802BFE48(void *arg0, void *arg1, float arg2) {
         float vec[3];
         float x, y;
         float *mat = matbuf;
-        struct V *p = v;
         int i;
         x = lbl_80564DCC * arg2;
         y = lbl_80564DD0 * arg2;
         for (i = 0; i < 4; i++) {
-            p->x = (i & 1) ? x : -x;
-            p->y = (i & 2) ? x : -x;
-            p->z = y;
-            p->color = -1;
-            p->u = (i & 1) ? lbl_80564D80 : lbl_80564D90;
-            p->v = (i & 2) ? lbl_80564D80 : lbl_80564D90;
-            p++;
+            v[i].x = (i & 1) ? x : -x;
+            v[i].y = (i & 2) ? x : -x;
+            v[i].z = y;
+            v[i].color = -1;
+            v[i].u = (i & 1) ? lbl_80564D80 : lbl_80564D90;
+            v[i].v = (i & 2) ? lbl_80564D80 : lbl_80564D90;
         }
         mat[0] = lbl_80564D80; mat[1] = lbl_80564D90; mat[2] = lbl_80564D90; mat[3] = lbl_80564D90;
         mat[4] = lbl_80564D80; mat[5] = lbl_80564D90; mat[6] = lbl_80564D90; mat[7] = lbl_80564D90;
@@ -775,25 +771,25 @@ extern void *fn_802C0138(void *);
 extern char lbl_8034ADC8[];
 #pragma cplusplus on
 extern "C" int fn_802C00A4(void) {
-    class Obj {
+    /* Creates a water quad object and initializes it if valid */
+    class WaterQuad {
     public:
-        virtual void f0(int);
-        virtual void f1();
-        virtual void f2();
-        virtual int f3();
+        virtual void SetFlag(int);
+        virtual void fn_0x4();
+        virtual void fn_0x8();
+        virtual int GetState();
     };
     extern void *fn_801284F8(int, const char *);
     extern void *fn_802C0138(void *);
     extern char lbl_8034ADC8[];
-    void *raw = fn_801284F8(0x2c60, lbl_8034ADC8);
-    void *obj = raw;
+    WaterQuad *obj = (WaterQuad *)fn_801284F8(0x2c60, lbl_8034ADC8);
     if (obj != 0) {
-        obj = fn_802C0138(obj);
+        obj = (WaterQuad *)fn_802C0138(obj);
     }
     if (obj != 0) {
-        if (((Obj *)obj)->f3() == 0) {
+        if (obj->GetState() == 0) {
             if (obj != 0) {
-                ((Obj *)obj)->f0(1);
+                obj->SetFlag(1);
             }
             obj = 0;
         }
