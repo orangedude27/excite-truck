@@ -495,7 +495,6 @@ extern "C" void fn_80016ED4(void *carDefObj) {
     lbl_8055D54C = (void *)((int)lbl_8055D54C + 1);
 }
 
-#pragma dont_inline fn_80016DD8
 #pragma push
 #pragma cplusplus on
 #pragma use_lmw_stmw off
