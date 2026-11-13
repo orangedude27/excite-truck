@@ -2891,6 +2891,7 @@ void fn_801D825C(void *arg0) {
 
 #pragma cplusplus on
 extern "C" void fn_801D82A0(void *arg0) {
+    /* If this object is in running state and its scheduled time has elapsed, invoke the target callback with +1.0 or -1.0 based on a direction flag, then advance to finished state. */
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -2901,21 +2902,21 @@ extern "C" void fn_801D82A0(void *arg0) {
     extern float lbl_80562AE0;
     extern float lbl_80562AEC;
     register void *self = arg0;
-    int v40 = *(int *)((char *)self + 0x40);
-    int v34 = *(int *)((char *)self + 0x34);
-    int v30 = *(int *)((char *)self + 0x30);
-    int diff = lbl_8055E3C4 - (v34 + v30);
-    Dummy *p;
-    float f;
-    if (v40 == 2 && diff >= 0) {
-        p = *(Dummy **)((char *)self + 0x2C);
-        if (p != 0) {
+    int state = *(int *)((char *)self + 0x40);
+    int baseTime = *(int *)((char *)self + 0x34);
+    int delay = *(int *)((char *)self + 0x30);
+    int timeRemaining = lbl_8055E3C4 - (baseTime + delay);
+    Dummy *target;
+    float value;
+    if (state == 2 && timeRemaining >= 0) {
+        target = *(Dummy **)((char *)self + 0x2C);
+        if (target != 0) {
             if (*(int *)((char *)self + 0x38) == 0) {
-                f = lbl_80562AE0;
+                value = lbl_80562AE0;
             } else {
-                f = lbl_80562AEC;
+                value = lbl_80562AEC;
             }
-            p->v3(f);
+            target->v3(value);
         }
         *(int *)((char *)self + 0x40) = 3;
     }
