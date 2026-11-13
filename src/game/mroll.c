@@ -1729,6 +1729,7 @@ off_child_check:
 #pragma dont_inline reset
 #pragma scheduling on
 #pragma use_lmw_stmw reset
+#pragma use_lmw_stmw off
 #pragma optimize_for_size on
 #pragma cplusplus reset
 s32 fn_80242F68(void *arg0, s32 arg1) {
