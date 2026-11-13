@@ -126,15 +126,16 @@ extern "C" int fn_800FFC5C(int arg0, int arg1) {
     return arg0;
 }
 
-extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFC9C(int arg0, int arg1) {
+/* Set the channel priority on this wave sound (0..127) and forward to its sequence player. */
+extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFC9C(int self, int priority) {
     extern const char lbl_80327500[];
     extern const char lbl_803275A8[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
     extern void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(int, int);
-    int valid = 0;
-    if (arg1 >= 0 && arg1 <= 0x7F) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327500, 0x85, lbl_803275A8, arg1, 0, 0x7F);
-    SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(arg0 + 0xD8, arg1);
+    int isValid = 0;
+    if (priority >= 0 && priority <= 0x7F) isValid = 1;
+    if (isValid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327500, 0x85, lbl_803275A8, priority, 0, 0x7F);
+    SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(self + 0xD8, priority);
 }
 
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *, int);
@@ -146,32 +147,41 @@ extern "C" const char lbl_80325804[];
 extern "C" const char lbl_803257E0[];
 #pragma use_lmw_stmw off
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(void* arg0, int arg1) {
-    void* soundNode;
-    int priority;
-    void* list;
-    void* end;
-    void* cursor;
+    struct LinkListImpl {
+        void* unused;
+        void* head;
+    };
+    struct PriorityList {
+        void* unused;
+        LinkListImpl list;
+    };
+    register void* soundNode;
+    register int priority;
+    register PriorityList* list;
+    register void* end;
+    register void* cursor;
+    register int value;
 
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    priority = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
-    if (priority > 0x7f) {
+    value = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
+    if (value > 0x7f) {
         priority = 0x7f;
     } else {
-        priority &= ~(priority >> 31);
+        priority = value & ~(value >> 31);
     }
-    list = *(void**)((unsigned char*)arg0 + 0x1b0);
+    list = *(PriorityList**)((unsigned char*)arg0 + 0x1b0);
     if (arg0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
     }
     soundNode = (unsigned char*)arg0 + 0xb8;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, soundNode);
-    cursor = *(void**)((unsigned char*)list + 8);
-    end = (unsigned char*)list + 8;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&list->list, soundNode);
+    end = &list->list.head;
+    cursor = list->list.head;
     while (cursor != end) {
         if (cursor == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23d, lbl_803257E0);
         }
-        int value = *(unsigned char*)((unsigned char*)cursor - 0x44) + *(int*)((unsigned char*)cursor - 0x78);
+        value = *(unsigned char*)((unsigned char*)cursor - 0x44) + *(int*)((unsigned char*)cursor - 0x78);
         if (value > 0x7f) {
             value = 0x7f;
         } else {
@@ -186,7 +196,7 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(voi
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
     }
     void* node = cursor;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, &node, soundNode);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&list->list, &node, soundNode);
 }
 extern "C" int fn_800FFE54(void *arg0) {
     return *(int *)((char *)arg0 + 0x1AC) != 0;
