@@ -6973,18 +6973,19 @@ void BTA_HhOpen(const u8 *dev_bda, s8 proto_mode, s8 sec_mask) {
     }
 }
 
-void BTA_HhSendData(u8 arg0, void *arg1) {
-    u8 *buf = GKI_getbuf(0x14);
-    if (buf != 0) {
-        memset(buf, 0, 0x14);
-        *(u16 *)buf = 0x1708;
-        *(u16 *)(buf + 6) = arg0;
-        buf[8] = 0xA;
-        *(u16 *)(buf + 0xC) = 0;
-        buf[9] = 2;
-        *(void **)(buf + 0x10) = arg1;
-        buf[0xA] = 0;
-        fn_80071450(buf);
+/* Send an output report to a connected HID host device. */
+void BTA_HhSendData(u8 dev_handle, void *p_data) {
+    u8 *p_msg = GKI_getbuf(0x14);
+    if (p_msg != NULL) {
+        memset(p_msg, 0, 0x14);
+        *(u16 *)p_msg = 0x1708;
+        *(u16 *)(p_msg + 6) = dev_handle;
+        p_msg[8] = 0xA;
+        *(u16 *)(p_msg + 0xC) = 0;
+        p_msg[9] = 2;
+        *(void **)(p_msg + 0x10) = p_data;
+        p_msg[0xA] = 0;
+        fn_80071450(p_msg);
     }
 }
 
