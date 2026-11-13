@@ -1470,6 +1470,8 @@ extern void fn_801EF024(void *);
 extern void fn_80204020(void);
 extern void fn_80128668(void);
 extern void fn_80128670(void *);
+/* Shutdown/teardown: unregister callback, reset global handle/state slots,
+ * then clear/destroy the tracked subsystem collections and objects. */
 extern "C" void fn_801F9F08(void) {
     fn_801EF024((void *)fn_801F9CF8);
     fn_80204020();
