@@ -3356,8 +3356,8 @@ extern "C" void fn_8015CF00(Unk801577F0* arg0) {
                                        // the scale written to the dash sound, by the
                                        // number of events scored
 #define DASH_SCALE_LAST  4             // last index of DASH_SCALE
-#define BONUS_FULL       lbl_80561750  // .sdata2: 1.0f, the multiplier an event starts at
-#define BONUS_NONE       lbl_80561754  // .sdata2: 0.0f
+                                       // (BONUS_FULL and BONUS_NONE are defined
+                                       //  with the externs at the top of the file)
 #define BONUS_FRAME      lbl_8056177C  // .sdata2: 1/59.94 s, taken off the timer per frame
 #define BONUS_MIN_TIME   lbl_8056179C  // .sdata2: two frames, the least time left at rest
 
