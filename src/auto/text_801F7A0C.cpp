@@ -1566,6 +1566,9 @@ extern "C" void fn_801FA0B0(void **arg0) {
 }
 
 extern "C" void fn_801FA138(void **arg0) {
+    /* Destroy and free a linked list: for each node, delete its owned object
+     * at +0x10 via virtual next(1), clear the pointer, free the node, then
+     * clear the head. Nodes are linked through +0x14. */
     struct Item {
         virtual void next(s32);
     };
