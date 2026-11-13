@@ -3970,7 +3970,8 @@ extern "C" void fn_8015E4CC(Unk801577F0V* container, s32 param, f32 value) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" void fn_8015E568(Unk801577F0V* arg0, s32 arg1, s32 arg2, s32 arg3) {
+/* Dispatch a three-argument event to each child entry in this container when it is active. */
+extern "C" void fn_8015E568(Unk801577F0V* container, s32 arg1, s32 arg2, s32 arg3) {
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -3981,13 +3982,13 @@ extern "C" void fn_8015E568(Unk801577F0V* arg0, s32 arg1, s32 arg2, s32 arg3) {
         virtual void v6();
         virtual void Call(s32, s32, s32);
     };
-    if (arg0->m54 != 0) {
+    if (container->m54 != 0) {
         s32 offset;
         s32 i;
         i = 0;
         offset = 0;
-        while (i < *(s32*)((u8*)arg0 + 8)) {
-            void* item = *(void**)((u8*)*(void**)((u8*)arg0 + 4) + offset);
+        while (i < *(s32*)((u8*)container + 8)) {
+            void* item = *(void**)((u8*)*(void**)((u8*)container + 4) + offset);
             ((Dummy*)item)->Call(arg1, arg2, arg3);
             offset += 4;
             i++;
