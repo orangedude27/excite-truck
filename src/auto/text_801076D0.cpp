@@ -5598,9 +5598,13 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80111FD0(CharWriterSpaci
     return writer->charSpace;
 }
 
-extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(void *arg0) {
-    TWB_CHECK_THIS(arg0, 0x15A);
-    return *(s32 *)((char *)arg0 + 0x54);
+/* nw4hbm::ut::CharWriter::GetFont() const of the ut_TextWriterBase.cpp copy of the text
+   writer: after checking the writer pointer against the Wii's mapped memory windows it
+   returns the +0x54 glyph count the tab handling steps by -- not the font pointer, which
+   this copy keeps at +0x5C; the game's symbol table names both accessors GetFont. */
+extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(CharWriterTabCount *writer) {
+    TWB_CHECK_THIS(writer, 0x15A); // NW4HBM_ASSERT_VALID_PTR(this)
+    return writer->charsPerTab;
 }
 
 /* Sets the CharWriter's font pointer after validating both writer and font addresses. */
