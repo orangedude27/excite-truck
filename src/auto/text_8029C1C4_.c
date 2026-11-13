@@ -276,6 +276,7 @@ extern "C" void fn_80131818(void *);
 extern "C" void *fn_801284F8(int, void *);
 extern "C" void *fn_8029D148(void *, void *, float *, int);
 extern "C" void fn_802E317C(const char *, ...);
+extern "C" void *memset(void *, int, unsigned int);
 #pragma cplusplus off
 
 #pragma push
