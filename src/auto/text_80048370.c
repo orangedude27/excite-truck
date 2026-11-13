@@ -612,6 +612,7 @@ void MEMFreeToExpHeap(MEMiHeapHead* heap, void* memBlock) {
     UnlockHeap(heap);
 }
 
+/* Create a frame heap in [start, start + size), or NULL if the range is too small. */
 MEMiHeapHead* MEMCreateFrmHeapEx(void *start, u32 size, u16 opt) {
     u32 end = ((u32)size + (u32)start) & ~3;
     u32 base = ((u32)start + 3) & ~3;
