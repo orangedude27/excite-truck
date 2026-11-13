@@ -3933,6 +3933,7 @@ void *fn_80155E6C(void *arg0) {
     return 0;
 }
 
+/* Format a string into the buffer at dst + 4 using printf-style arguments. */
 void fn_80155F44(char *dst, const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
