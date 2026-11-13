@@ -4643,12 +4643,12 @@ extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
+    extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
     register u8 *iter;
-    s32 status;
+    register s32 status;
     s32 result;
     register s32 zero;
     s32 code;
-    u32 old;
     u32 sp8;
     u8 spC[13];
     u8 flags;
@@ -4732,11 +4732,11 @@ process:
     *arg3 = 1;
     return 0;
 advance:
-    old = *(u32 *)iter;
-    *(u32 *)iter = old + 1;
+    status = *(u32 *)iter;
+    *(u32 *)iter = status + 1;
     result = fn_800AB378((void *)iter, 0);
     if (result != 0) {
-        *(u32 *)iter = old;
+        *(u32 *)iter = status;
         fn_800AB378((void *)iter, 0);
     } else {
         if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
@@ -7416,9 +7416,9 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 parsed;
     s32 quotient;
     s32 remainder;
+    u8 *nextCluster;
     u8 initialCount;
     u32 loopCount;
-    u8 *nextCluster;
     s32 cluster;
     u16 next;
     u32 *flags;
@@ -7462,7 +7462,7 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     ent->f22C = arg0;
     ent->f21B = 0;
     ent->f21C = 0x20;
-    ent->f21D = ((u8 (*)(void *, void *, s32))fn_800AB2F4)(&ent->f220, &ent->f21E, 0);
+    ent->f21D = ((u8 (*)(void *, void *))fn_800AB2F4)(&ent->f220, &ent->f21E);
     ent->f222 = ent->f220;
     ent->f224 = ent->f21E;
     ent->f226 = ent->f220;
@@ -7484,8 +7484,8 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
         ent->count = initialCount;
         cluster = ent->cluster238;
         charCount = ((s32 (*)(u8 *))VFiPFENT_CalcCheckSum)((u8 *)arg1);
-        nextCluster = frame.prefix + 8;
         loopCount = initialCount;
+        nextCluster = frame.prefix + 8;
         while (loopCount >= 1) {
             VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)arg1, (u8)loopCount, (u8)charCount, loopCount == initialCount);
             result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
