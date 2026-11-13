@@ -1371,7 +1371,7 @@ void fn_8027CBF8(long unused, char *dst, long maxLen) {
     char *src;
     char ch;
     /* Copies a bounded string into dst, choosing source by fn_8027CB28() (lbl_80347B78 or lbl_80347C14). */
-    if (fn_8027CB28()) {
+    if (((long (*)(void))fn_8027CB28)()) {
         src = fn_80131234(lbl_80347B78);
         goto copy_a;
     check_a:
