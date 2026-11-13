@@ -64,22 +64,23 @@ void *fn_80016464(int arg0) {
 }
 
 #pragma scheduling invalid_target
-void *fn_80016474(int arg0) {
+void *fn_80016474(int id) {
+    /* Find 0x5C-byte entry by id at +0x04 in primary table, then fallback table; default to primary base. */
     unsigned char *entry;
     int i;
     for (i = 0, entry = lbl_803577F0; i < (int)lbl_8055D554; entry += 0x5C, i++) {
-        if (arg0 == *(int *)(entry + 4)) {
+        if (id == *(int *)(entry + 4)) {
             return lbl_803577F0 + i * 0x5C;
         }
     }
     {
-        unsigned char *e2;
-        unsigned char *b2;
+        unsigned char *fallbackEntry;
+        unsigned char *fallbackBase;
         int k = 0;
-        e2 = b2 = lbl_8055D540;
-        for (k = 0; k < (int)lbl_8055D54C; e2 += 0x5C, k++) {
-            if (arg0 == *(int *)(e2 + 4)) {
-                return b2 + k * 0x5C;
+        fallbackEntry = fallbackBase = lbl_8055D540;
+        for (k = 0; k < (int)lbl_8055D54C; fallbackEntry += 0x5C, k++) {
+            if (id == *(int *)(fallbackEntry + 4)) {
+                return fallbackBase + k * 0x5C;
             }
         }
         return lbl_803577F0;
