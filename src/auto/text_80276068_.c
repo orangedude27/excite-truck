@@ -380,15 +380,16 @@ void fn_80276CB0(void *arg0, int arg1) {
     }
 }
 
-void fn_80276D3C(int unused, int arg) {
-    unsigned char sp10[0x38];
-    float sp8;
-    unsigned char *p = (unsigned char *)fn_80276A44((void *)unused);
-    if (arg == 1) {
-        fn_8026A4A0(0, sp10, &sp8);
-        fn_80276098(sp10, p + 4, sp8, *(float *)(p + 0x34), lbl_80564060, 0, 0x22);
+void fn_80276D3C(int unused, int mode) {
+    /* Dispatch to either initialize/copy a 0x48-byte entry or apply a transformed setup. */
+    unsigned char transformParams[0x38];
+    float scale;
+    unsigned char *entry = (unsigned char *)fn_80276A44((void *)unused);
+    if (mode == 1) {
+        fn_8026A4A0(0, transformParams, &scale);
+        fn_80276098(transformParams, entry + 4, scale, *(float *)(entry + 0x34), lbl_80564060, 0, 0x22);
     } else {
-        memcpy(lbl_8049FE98, p, 0x48);
+        memcpy(lbl_8049FE98, entry, 0x48);
         *(unsigned char *)&lbl_8049FD58 = 0;
     }
 }
