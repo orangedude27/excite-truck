@@ -1190,10 +1190,11 @@ void fn_801C6CBC(void) {
 }
 #pragma inline auto
 void fn_801C6D00(void) {
+    /* Copy a 12-word matrix/state block and an associated value from one global location to another. */
     struct MtxCopy {
         s32 data[12];
     };
-    *(struct MtxCopy*)lbl_804381F0 = *(struct MtxCopy*)lbl_80499050;
+    *(struct MtxCopy *)lbl_804381F0 = *(struct MtxCopy *)lbl_80499050;
     lbl_8055E834 = lbl_8055F47C;
 }
 
