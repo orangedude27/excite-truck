@@ -53,7 +53,7 @@ extern float lbl_80564BB0;
 extern float fn_801EA0E8(float, float);
 extern unsigned int fn_802BBD38(short, short, float);
 struct ETConfigPaths;
-extern char lbl_8034A020[];
+static char lbl_8034A020[40] = "swlmap.tex\0\0water_layer\0crystal_mode";
 extern float lbl_804BE090[];
 extern float lbl_80564B40;
 extern float lbl_80564B44;
