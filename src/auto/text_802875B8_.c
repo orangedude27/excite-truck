@@ -319,11 +319,12 @@ extern "C" void fn_80287A34(void) {
     ((Dummy *)fn_801B83A0())->f16();
 }
 #pragma cplusplus off
-void fn_80287A6C(s32 arg0) {
-    if (arg0 == 1 && (u8)lbl_8055F6BC == 0) return;
-    fn_80294CC8(arg0); fn_801B8834(); fn_802A1584(); fn_8029C2D4();
-    fn_8028A9BC(arg0); fn_8028E240(arg0); fn_80288A1C(arg0); fn_802A17FC(arg0);
-    fn_80298124(arg0); fn_8029F300(); fn_802A7C68(); fn_802AB6D4();
+void fn_80287A6C(s32 mode) {
+    /* Dispatch a per-mode update/reset across subsystems; mode 1 is gated by lbl_8055F6BC. */
+    if (mode == 1 && (u8)lbl_8055F6BC == 0) return;
+    fn_80294CC8(mode); fn_801B8834(); fn_802A1584(); fn_8029C2D4();
+    fn_8028A9BC(mode); fn_8028E240(mode); fn_80288A1C(mode); fn_802A17FC(mode);
+    fn_80298124(mode); fn_8029F300(); fn_802A7C68(); fn_802AB6D4();
 }
 
 void fn_80287AF0(void* alarm) {
@@ -610,7 +611,7 @@ void fn_802882EC(void) {
     extern f32 lbl_80558DC4[];
     typedef struct { s32 v[9]; } Block9;
     typedef struct { s32 v[3]; } Block3;
-    s32 *table;
+    u8 **table;
     s32 i;
     u8 *out;
     f32 one;
@@ -619,15 +620,15 @@ void fn_802882EC(void) {
     out = *(u8 **)lbl_804B3150;
     one = lbl_80564260;
     lbl_804B3150[8] = 0;
-    table = lbl_80488648;
+    table = (u8 **)lbl_80488648;
     i = 0;
     while (i < *(s32 *)(lbl_804B3150 + 4)) {
-        u8 *obj = fn_801EA9CC(i);
-        u8 *state = *(u8 **)(obj + 8);
-        u8 *entry;
-        u8 *dst, *src;
-        s32 j, all, flags;
-        if ((unsigned)i < 8) entry = (u8 *)*table;
+        register u8 *obj = fn_801EA9CC(i);
+        register u8 *state = *(u8 **)(obj + 8);
+        register u8 *entry;
+        register u8 *dst, *src;
+        s32 all, j, flags;
+        if ((unsigned)i < 8) entry = *table;
         else entry = 0;
         *(Block9 *)out = *(Block9 *)(entry + 4);
         *(Block3 *)(out + 0x24) = *(Block3 *)(entry + 0x28);
@@ -635,7 +636,7 @@ void fn_802882EC(void) {
         *(f32 *)(out + 52) = *(f32 *)(state + 112);
         *(f32 *)(out + 56) = *(f32 *)(state + 116);
         *(f32 *)(out + 60) = *(f32 *)(state + 120);
-        if ((f32)__fabs(PSVECDotProduct(state + 0x70, state + 0x70)) > lbl_80558DC4[0]) {
+        if (!((f32)__fabs(PSVECDotProduct(state + 0x70, state + 0x70)) <= lbl_80558DC4[0])) {
             f32 scale = one / (f32)fn_8002F234(PSVECDotProduct(state + 0x70, state + 0x70));
             *(f32 *)(out + 64) = *(f32 *)(state + 112) * scale;
             *(f32 *)(out + 68) = *(f32 *)(state + 116) * scale;
