@@ -1739,93 +1739,96 @@ extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveD
      * coefficients out of the wave, hand the playback addresses to the AX voices,
      * reset the per-output volumes and the AX voice types, choose the mix rate
      * class from the playback rate, and ask for a full AX update. */
-    unsigned char *self = (unsigned char *)arg0;
+    AxVoice *voice = (AxVoice *)arg0;
     unsigned char *row;               /* channel row of the AX voice grid, stride 0x10 */
     const unsigned char *inst;        /* the wave's parameter block of this channel, stride 0x44 */
-    unsigned char *output;            /* channel's address + coefficients, stride 0x34 at +0x2C */
-    unsigned char *env;               /* envelope parameters of the channel (output + 4) */
-    unsigned char *mix;               /* mix levels of the channel (output + 0x30) */
+    unsigned char *output;            /* where the channel's address + coefficients go, stride 0x34 */
+    unsigned char *env;               /* &out->coef[0]: the channel's envelope parameters */
+    unsigned char *mix;               /* &out->coef[20]: the channel's mix levels */
     int channel;
-    const unsigned char *wave = (const unsigned char *)arg1;
-    int format;
-    if (wave[0] == 1) {
-        format = 10;                  /* 16-bit PCM */
+    const WaveData *wave = (const WaveData *)arg1;
+    AxVoiceFormat format;
+    if (wave->waveForm == 1) {
+        format = AX_FORMAT_PCM16;
     } else {
-        format = 0;                   /* DSP ADPCM */
-        if (wave[0] == 0) format = 25;   /* 8-bit PCM */
+        format = AX_FORMAT_ADPCM;
+        if (wave->waveForm == 0) format = AX_FORMAT_PCM8;
     }
-    *(int *)(self + 0x118) = format;
-    *(int *)(self + 0x114) = *(int *)(wave + 4);
-    row = self;
-    inst = wave;
-    output = self;
-    env = self + 0x30;
-    mix = self + 0x58;
+    voice->format = format;
+    voice->sampleRate = wave->sampleRate;
+    row = (unsigned char *)voice;
+    inst = (const unsigned char *)wave;
+    output = (unsigned char *)voice;
+    env = (unsigned char *)voice + 0x30;
+    mix = (unsigned char *)voice + 0x58;
     channel = 0;
-    while (channel < *(int *)(self + 0x104)) {   /* channelCount */
-        if (*(int *)(row + 0xC) != 0) {          /* the channel has an AX voice */
-            if (*(int *)(inst + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x1BC, lbl_803222A0);
-            *(int *)(output + 0x2C) = *(int *)(inst + 0x10);
-            *(unsigned short *)(output + 0x30) = *(unsigned short *)(inst + 0x24);
-            *(unsigned short *)(output + 0x32) = *(unsigned short *)(inst + 0x26);
-            *(unsigned short *)(output + 0x34) = *(unsigned short *)(inst + 0x28);
-            *(unsigned short *)(output + 0x36) = *(unsigned short *)(inst + 0x2A);
-            *(unsigned short *)(output + 0x38) = *(unsigned short *)(inst + 0x2C);
-            *(unsigned short *)(output + 0x3A) = *(unsigned short *)(inst + 0x2E);
-            *(unsigned short *)(output + 0x3C) = *(unsigned short *)(inst + 0x30);
-            *(unsigned short *)(output + 0x3E) = *(unsigned short *)(inst + 0x32);
-            *(unsigned short *)(output + 0x40) = *(unsigned short *)(inst + 0x34);
-            *(unsigned short *)(output + 0x42) = *(unsigned short *)(inst + 0x36);
-            *(unsigned short *)(output + 0x44) = *(unsigned short *)(inst + 0x38);
-            *(unsigned short *)(output + 0x46) = *(unsigned short *)(inst + 0x3A);
-            *(unsigned short *)(output + 0x48) = *(unsigned short *)(inst + 0x3C);
-            *(unsigned short *)(output + 0x4A) = *(unsigned short *)(inst + 0x3E);
-            *(unsigned short *)(output + 0x4C) = *(unsigned short *)(inst + 0x40);
-            *(unsigned short *)(output + 0x4E) = *(unsigned short *)(inst + 0x42);
-            *(unsigned short *)(output + 0x50) = *(unsigned short *)(inst + 0x44);
-            *(unsigned short *)(output + 0x52) = *(unsigned short *)(inst + 0x46);
-            *(unsigned short *)(output + 0x54) = *(unsigned short *)(inst + 0x48);
-            *(unsigned short *)(output + 0x56) = *(unsigned short *)(inst + 0x4A);
-            *(unsigned short *)(output + 0x58) = *(unsigned short *)(inst + 0x4C);
-            *(unsigned short *)(output + 0x5A) = *(unsigned short *)(inst + 0x4E);
-            *(unsigned short *)(output + 0x5C) = *(unsigned short *)(inst + 0x50);
-            *(unsigned short *)(output + 0x5E) = *(unsigned short *)(inst + 0x52);
-            fn_800E5E74(arg0, channel, wave[1] != 0, *(int *)(self + 0x118), *(int *)(inst + 0x10), *(int *)(wave + 8), *(int *)(wave + 0xC));
-            if (*(int *)(self + 0x118) == 0) {   /* only ADPCM waves carry envelope and mix data */
-                ((void (*)(void *, int, int, void *))fn_800E68EC)(arg0, channel, *(int *)(self + 0x118), env);
-                ((void (*)(void *, int, int, void *))fn_800E6A44)(arg0, channel, *(int *)(self + 0x118), mix);
+    while (channel < voice->channelCount) {
+        if (*(void **)(row + 0xC) != 0) {   /* the channel has an AX voice */
+            const WaveChannelParam *param = (const WaveChannelParam *)(inst + 0x10);
+            AxVoiceChannel *out = (AxVoiceChannel *)(output + 0x2C);
+            if (param->dataAddr == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x1BC, lbl_803222A0);
+            out->dataAddr = param->dataAddr;
+            out->coef[0] = param->coef[0];
+            out->coef[1] = param->coef[1];
+            out->coef[2] = param->coef[2];
+            out->coef[3] = param->coef[3];
+            out->coef[4] = param->coef[4];
+            out->coef[5] = param->coef[5];
+            out->coef[6] = param->coef[6];
+            out->coef[7] = param->coef[7];
+            out->coef[8] = param->coef[8];
+            out->coef[9] = param->coef[9];
+            out->coef[10] = param->coef[10];
+            out->coef[11] = param->coef[11];
+            out->coef[12] = param->coef[12];
+            out->coef[13] = param->coef[13];
+            out->coef[14] = param->coef[14];
+            out->coef[15] = param->coef[15];
+            out->coef[16] = param->coef[16];
+            out->coef[17] = param->coef[17];
+            out->coef[18] = param->coef[18];
+            out->coef[19] = param->coef[19];
+            out->coef[20] = param->coef[20];
+            out->coef[21] = param->coef[21];
+            out->coef[22] = param->coef[22];
+            out->coef[23] = param->coef[23];
+            fn_800E5E74(arg0, channel, wave->loop != 0, voice->format, (int)param->dataAddr, wave->loopStart, wave->loopEnd);
+            if (voice->format == AX_FORMAT_ADPCM) {   /* only ADPCM waves carry envelope and mix data */
+                ((void (*)(void *, int, int, void *))fn_800E68EC)(arg0, channel, voice->format, env);
+                ((void (*)(void *, int, int, void *))fn_800E6A44)(arg0, channel, voice->format, mix);
             }
         }
         row += 0x10; inst += 0x44; output += 0x34; env += 0x34; mix += 0x34; channel++;
     }
-    float zero0;
-    float zero1;
+    f32 zero0;
+    f32 zero1;
     zero1 = lbl_80560F38;             /* 1.0f */
     zero0 = lbl_80560F3C;             /* 0.0f */
-    unsigned char *out = self;
+    unsigned char *outRow = (unsigned char *)voice;
     int outIndex = 0;
-    while (outIndex < *(int *)(self + 0x108)) {  /* voiceOutCount */
-        *(float *)(out + 0x94) = zero1;          /* output volume */
+    while (outIndex < voice->voiceOutCount) {
+        AxVoiceOut *out = (AxVoiceOut *)(outRow + 0x94);
+        out->volume = zero1;
         outIndex++;
-        *(float *)(out + 0x98) = zero1;          /* output rate scale */
-        *(float *)(out + 0x9C) = zero0;
-        *(float *)(out + 0xA0) = zero0;
-        *(float *)(out + 0xA4) = zero0;
-        *(float *)(out + 0xA8) = zero0;
-        *(int *)(out + 0xAC) = 0;
-        out += 0x1C;
+        out->rateScale = zero1;
+        out->unk_08 = zero0;
+        out->unk_0C = zero0;
+        out->unk_10 = zero0;
+        out->unk_14 = zero0;
+        out->unk_18 = 0;
+        outRow += 0x1C;
     }
     {
         int channel2;
         int outIndex2;
         unsigned char *base;
         unsigned char *slot;
-        base = self; channel2 = 0;
-        while (channel2 < *(int *)(self + 0x104)) {
+        base = (unsigned char *)voice; channel2 = 0;
+        while (channel2 < voice->channelCount) {
             slot = base; outIndex2 = 0;
-            while (outIndex2 < *(int *)(self + 0x108)) {
-                void *voice = *(void **)(slot + 0xC);
-                if (voice != 0) ((void (*)(void *, int))fn_80033538)(voice, 0);   /* AX voice type 0 */
+            while (outIndex2 < voice->voiceOutCount) {
+                void *axVoice = *(void **)(slot + 0xC);
+                if (axVoice != 0) ((void (*)(void *, int))fn_80033538)(axVoice, 0);   /* AX voice type 0 */
                 slot += 4; outIndex2++;
             }
             base += 0x10; channel2++;
@@ -1837,27 +1840,27 @@ extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveD
         int outIndex2;
         unsigned char *base;
         unsigned char *slot;
-        /* how far the wave is played above its 32 kHz reference decides the mix rate class */
-        float rate = *(float *)(self + 0x184) * (float)*(int *)(self + 0x114) / lbl_80560F40;
+        /* how far the wave is played above its 32 kHz reference picks the mix rate class */
+        f32 rate = voice->playbackRate * (f32)voice->sampleRate / lbl_80560F40;
         if (rate > lbl_80560F44) mixMode = 2;      /* more than 4/3 of the reference */
         else if (rate > lbl_80560F38) mixMode = 3; /* up to twice */
         else mixMode = 4;
-        base = self; channel2 = 0;
-        while (channel2 < *(int *)(self + 0x104)) {
+        base = (unsigned char *)voice; channel2 = 0;
+        while (channel2 < voice->channelCount) {
             slot = base; outIndex2 = 0;
-            while (outIndex2 < *(int *)(self + 0x108)) {
-                void *voice = *(void **)(slot + 0xC);
-                if (voice != 0) fn_80033408(voice, mixMode);
+            while (outIndex2 < voice->voiceOutCount) {
+                void *axVoice = *(void **)(slot + 0xC);
+                if (axVoice != 0) fn_80033408(axVoice, mixMode);
                 slot += 4; outIndex2++;
             }
             base += 0x10; channel2++;
         }
     }
-    self[0x11F] = 0;   /* pause */
-    self[0x120] = 0;   /* paused */
-    self[0x11D] = 0;   /* started */
-    self[0x11E] = 0;   /* playing */
-    self[0x123] |= 0x70;   /* update the AX voices */
+    voice->pause = 0;
+    voice->paused = 0;
+    voice->started = 0;
+    voice->playing = 0;
+    voice->updateFlags |= 0x70;   /* the AX voices need a full update */
 }
 extern "C" void fn_800E519C(void *arg0) {
     unsigned int level = OSDisableInterrupts();
