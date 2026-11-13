@@ -1303,13 +1303,14 @@ extern "C" void fn_801F9A24(F92Node **arg0) {
 }
 
 #pragma dont_inline on
+/* Resolve a resource from arg0, and if it contains an "objects" child apply fn_801F9928 to it with arg1. */
 extern "C" void fn_801F9AA4(void *arg0, s32 arg1) {
-    F9Resource *obj = (F9Resource *)fn_80131810(arg0);
-    if (obj != 0) {
-        if (obj->s10(&lbl_8055B388) != 0) {
-            fn_801F9928(obj->s8(&lbl_8055B388), arg1);
+    F9Resource *resource = (F9Resource *)fn_80131810(arg0);
+    if (resource != 0) {
+        if (resource->s10(&lbl_8055B388) != 0) {
+            fn_801F9928(resource->s8(&lbl_8055B388), arg1);
         }
-        fn_80131818(obj);
+        fn_80131818(resource);
     }
 }
 /* Configure static objects/collections on startup from named resources under the "objects" group. */
