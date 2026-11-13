@@ -154,26 +154,26 @@ typedef struct DrTexRecord {
     unsigned char hasAlphaTex;/* at 0xCC: format ships the second texture */
     void *texelData;          /* at 0xD0: primary texture image */
     unsigned int texelSize;   /* at 0xD4: its size */
-         void *srcClut;            /* at 0xD8: source RGBA8888 palette the CLUTs come from */
- } DrTexRecord;
+        void *srcClut;            /* at 0xD8: source RGBA8888 palette the CLUTs come from */
+} DrTexRecord;
 
- /* The GX texture map the setters below bind a record's two GXTexObjs to
-  * (GXLoadTexObj's second argument): the base pass takes TEX0 and its alpha
-  * plane TEX1, the environment map TEX2 and its alpha plane TEX4, the lightmap
-  * TEX3 (which has no alpha plane - see DRTEXMAP_LIGHTMAP's check below). */
- enum DrTexMap {
-     DRTEXMAP_BASE = 0,        /* fn_802D9160: base texture */
-     DRTEXMAP_BASE_ALPHA = 1,  /* fn_802D9160: its alpha plane */
-     DRTEXMAP_ENV = 2,         /* fn_802D9230: environment map */
-     DRTEXMAP_LIGHTMAP = 3,    /* fn_802D92B8: lightmap */
-     DRTEXMAP_ENV_ALPHA = 4    /* fn_802D9230: the envmap's alpha plane */
- };
+/* The GX texture map the setters below bind a record's two GXTexObjs to
+ * (GXLoadTexObj's second argument): the base pass takes TEX0 and its alpha
+ * plane TEX1, the environment map TEX2 and its alpha plane TEX4, the lightmap
+ * TEX3, which is not allowed an alpha plane at all. */
+enum DrTexMap {
+    DRTEXMAP_BASE = 0,        /* fn_802D9160: base texture */
+    DRTEXMAP_BASE_ALPHA = 1,  /* fn_802D9160: its alpha plane */
+    DRTEXMAP_ENV = 2,         /* fn_802D9230: environment map */
+    DRTEXMAP_LIGHTMAP = 3,    /* fn_802D92B8: lightmap */
+    DRTEXMAP_ENV_ALPHA = 4    /* fn_802D9230: the envmap's alpha plane */
+};
 
- /* Byte 0x0B of the render request block lbl_804C5700 (the state the setters
-  * hand to the pipeline builder fn_802D2684/fn_802D2B0C, which keeps the last
-  * applied copy at lbl_804C9930): the texture bound as environment map ships a
-  * second, alpha-plane texture, so the pass needs its extra stage. */
- #define DRREQ_ENV_ALPHA_TEX 0x0B
+/* Byte 0x0B of the render request block lbl_804C5700 (the state the setters
+ * hand to the pipeline builder fn_802D2684/fn_802D2B0C, which keeps the last
+ * applied copy at lbl_804C9930): the texture bound as environment map ships a
+ * second, alpha-plane texture, so the pass needs its extra stage. */
+#define DRREQ_ENV_ALPHA_TEX 0x0B
 
 #pragma dont_inline on
 void fn_802D768C(void *arg0) {
