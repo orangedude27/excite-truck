@@ -864,17 +864,18 @@ f32 fn_80190B7C(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-f32 fn_80190C04(void *arg0) {
-    u8 raw = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 3);
-    f32 normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
-    f32 value;
+/* Read the byte at offset 3 of the buffer pointed to by arg0+8, normalize it from [0,255] to [0,1], and clamp to that range. */
+f32 fn_80190C04(void *container) {
+    u8 rawByte = *(u8 *)((u8 *)*(void **)((u8 *)container + 8) + 3);
+    f32 normalized = ((f32)rawByte - lbl_8056208C) / lbl_805620AC;
+    f32 clampedValue;
     if (lbl_80562090 < normalized) {
-        value = lbl_80562090;
+        clampedValue = lbl_80562090;
     } else {
-        value = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+        clampedValue = ((f32)rawByte - lbl_8056208C) / lbl_805620AC;
     }
-    value = value > lbl_8056208C ? value : lbl_8056208C;
-    return lbl_8056208C + value * lbl_80562090;
+    clampedValue = clampedValue > lbl_8056208C ? clampedValue : lbl_8056208C;
+    return lbl_8056208C + clampedValue * lbl_80562090;
 }
 #pragma scheduling on
 
