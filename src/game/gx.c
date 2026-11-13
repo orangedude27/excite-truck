@@ -2253,6 +2253,24 @@ void* fn_802D2D14(void) {
     return lbl_8055FD64;
 }
 
+/* Lighting transform state used by fn_802D2ED8 (driven by the CPU-light pass in
+ * cpulight.c).  A light record is a 3x3 rotation matrix at +0x00 followed by its
+ * world position at +0x24; records are 0x34 bytes apart.
+ *   GX_LIGHT_XF_MTX   3x4 matrix lights are transformed by (the current view
+ *                     transform, rebuilt by fn_802D2D1C from the camera at
+ *                     lbl_804C56C0); the light rotation and position are
+ *                     multiplied by it.
+ *   GX_POSMTX_SCRATCH scratch 3x4 matrix: the transformed light, transposed with
+ *                     its third row negated, is written here and handed to
+ *                     GXLoadPosMtxImm.
+ *   GX_XF_DIRTY       set whenever the XF/transform state changes; cleared when
+ *                     fn_802D1C04 next recomputes it.
+ *   GX_XF_INDEX       transform preset currently applied (-1 = none). */
+#define GX_LIGHT_XF_MTX   lbl_804CA2D8
+#define GX_POSMTX_SCRATCH lbl_804C5650
+#define GX_XF_DIRTY       lbl_8055FD70
+#define GX_XF_INDEX       lbl_8055FD8C
+
 #pragma dont_inline on
 void fn_802D2ED8(int arg0, int arg1) {
     float matrix[12];
