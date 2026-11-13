@@ -118,28 +118,29 @@ extern "C" void fn_801D06C4(void *arg0) {
 #pragma pop
 #pragma cplusplus reset
 #pragma cplusplus on
-extern "C" void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
-    struct Dummy {
+extern "C" void fn_801D0738(void *instance, Vec *position, VehicleObject *object,
+                            void *extra) {
+    struct Listener {
         virtual void f0();
         virtual void f1();
-        virtual void f2(void *, int, void *);
+        virtual void onSoevent(void *, int, void *);
     };
-    int type = *(int *)((char *)arg2 + 0x10);
-    int ok = 0;
-    if (type == 0x43415220 || type == 0x50434152 ||
-        type == 0x41434152 || type == 0x4e434152) {
-        ok = 1;
+    u32 fourcc = object->fourcc;
+    int isCar = 0;
+    if (fourcc == FOURCC_CAR || fourcc == FOURCC_PCAR ||
+        fourcc == FOURCC_ACAR || fourcc == FOURCC_NCAR) {
+        isCar = 1;
     }
-    if (ok != 0) {
+    if (isCar != 0) {
         int offset;
-        int count;
+        int recordIndex;
         int i;
-        count = *(int *)((char *)arg2 + 0x1ec);
+        recordIndex = object->recordIndex;
         i = 0;
         offset = 0;
         while (i < lbl_804386B4[0].count) {
             void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
-            ((Dummy *)obj)->f2(arg0, count, arg3);
+            ((Listener *)obj)->onSoevent(instance, recordIndex, extra);
             offset += 4;
             i++;
         }
