@@ -11546,73 +11546,79 @@ void bta_dm_disc_rmt_name(void *arg0) {
     ((void (*)(s32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
 }
 
-void bta_dm_sdp_result(u8 *arg0) {
-    u32 ok = 0;
-    u8 *msg;
-    u8 *state;
-    tSDP_DISC_REC *rec = 0;
-    u16 status = *(u16 *)(arg0 + 8);
+void bta_dm_sdp_result(u8 *p_data) {
+    u32 service_found = FALSE;
+    u8 *p_msg;
+    u8 *scb;
+    tSDP_DISC_REC *p_sdp_rec = 0;
+    u16 sdp_result = *(u16 *)(p_data + 8);
     u16 service;
-    u8 *name;
+    u8 *p_name;
 
-    if (status == 0 || status == 0xFFF0 || status == 0xFFF4) {
-        service = lbl_802EE990[lbl_803C0B98[0x70] - 1];
-        if (status == 0xFFF4 ||
-            (rec = SDP_FindServiceInDb(*(tSDP_DISCOVERY_DB **)(lbl_803C0B98 + 0x14), service, 0)) != 0) {
-            if (service == 0x1200) {
-                if (rec != 0 && ((void *(*)(void **, u16))fn_80095C64)((void **)rec, 0x8001) != 0)
-                    ok = 1;
+    if (sdp_result == SDP_SUCCESS || sdp_result == SDP_NO_RECS_MATCH || sdp_result == SDP_DB_FULL) {
+        service = bta_service_id_to_uuid_lkup_tbl[DM_SCB_SERVICE_INDEX - 1];
+        if (sdp_result == SDP_DB_FULL ||
+            (p_sdp_rec = SDP_FindServiceInDb(DM_SCB_P_SDP_DB, service, 0)) != 0) {
+            if (service == UUID_SERVCLASS_PNP_INFORMATION) {
+                /* a Plug and Play record only counts if our stack's version attribute is in it */
+                if (p_sdp_rec != 0 && ((void *(*)(void **, u16))fn_80095C64)((void **)p_sdp_rec, ATTR_ID_EXT_BRCM_VERSION) != 0)
+                    service_found = TRUE;
             } else {
-                ok = 1;
+                service_found = TRUE;
             }
-            if (ok != 0) {
-                *(u32 *)(lbl_803C0B98 + 0x10) |= 1 << (lbl_803C0B98[0x70] - 1);
+            if (service_found != FALSE) {
+                DM_SCB_SERVICES_FOUND |= BTA_SERVICE_ID_TO_SERVICE_MASK(DM_SCB_SERVICE_INDEX - 1);
             }
         }
-        state = lbl_803C0B98;
-        GKI_freebuf(*(void **)(state + 0x14));
-        *(void **)(state + 0x14) = 0;
-        if (*(u32 *)(state + 0xC) != 0) {
-            bta_dm_find_services(state + 0x1A);
+        scb = bta_dm_search_cb;
+        GKI_freebuf(*(void **)(scb + 0x14));
+        *(void **)(scb + 0x14) = 0;
+        if (*(u32 *)(scb + 0xC) != 0) {
+            /* services left to search for: start the next one on this device */
+            bta_dm_find_services(scb + 0x1A);
             return;
         }
-        BTM_SecDeleteRmtNameNotifyCallback(fn_80072AE4);
-        msg = GKI_getbuf(0x110);
-        if (msg != 0) {
-            *(u16 *)msg = 0x208;
-            msg[0x10C] = 0;
-            *(u32 *)(msg + 0x108) = *(u32 *)(state + 0x10);
-            fn_80070FA4(msg + 8, state + 0x1A);
-            name = state + 0x20;
-            if ((s8)state[0x20] == 0) {
-                u8 *read_name = (u8 *)BTM_SecReadDevName(state + 0x1A);
-                if (read_name != 0)
-                    name = read_name;
+        BTM_SecDeleteRmtNameNotifyCallback(bta_dm_service_search_remname_cback);
+        p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
+        if (p_msg != 0) {
+            DM_MSG_EVENT(p_msg) = BTA_DM_DISCOVERY_RESULT_EVT;
+            DM_MSG_STATUS(p_msg) = BTA_SUCCESS;
+            DM_MSG_SERVICES(p_msg) = *(u32 *)(scb + 0x10);
+            bdcpy(p_msg + 8, scb + 0x1A);
+            p_name = scb + 0x20;
+            if ((s8)scb[0x20] == 0) {
+                /* no name saved for the peer yet: ask BTM for the one it has */
+                u8 *p_rem_name = (u8 *)BTM_SecReadDevName(scb + 0x1A);
+                if (p_rem_name != 0)
+                    p_name = p_rem_name;
             }
-            strncpy((char *)msg + 0xE, (char *)name, 0x20);
-            fn_80071450(msg);
+            strncpy((char *)p_msg + 0xE, (char *)p_name, 0x20);
+            bta_sys_sendmsg(p_msg);
         }
     } else {
-        if (status == 0xFFF1 || (u16)(status + 10) <= 1)
-            lbl_803C0B98[0x78] = 0;
-        state = lbl_803C0B98;
-        GKI_freebuf(*(void **)(state + 0x14));
-        *(void **)(state + 0x14) = 0;
-        BTM_SecDeleteRmtNameNotifyCallback(fn_80072AE4);
-        name = GKI_getbuf(0x110);
-        if (name != 0) {
-            *(u16 *)name = 0x208;
-            name[0x10C] = 1;
-            *(u32 *)(name + 0x108) = *(u32 *)(state + 0x10);
-            fn_80070FA4(name + 8, state + 0x1A);
-            msg = state + 0x20;
-            if ((s8)state[0x20] == 0) {
-                u8 *read_name = (u8 *)BTM_SecReadDevName(state + 0x1A);
-                if (read_name != 0)
-                    msg = read_name;
+        /* the search could not be done at all: stop waiting for the link */
+        if (sdp_result == SDP_CONN_FAILED || (u16)(sdp_result + 10) <= 1) /* SDP_CONN_REJECTED or SDP_SECURITY_ERR */
+            DM_SCB_WAIT_LINK = FALSE;
+        scb = bta_dm_search_cb;
+        GKI_freebuf(*(void **)(scb + 0x14));
+        *(void **)(scb + 0x14) = 0;
+        BTM_SecDeleteRmtNameNotifyCallback(bta_dm_service_search_remname_cback);
+        /* this branch fills the two temporaries the other way round: p_name gets
+         * the message to send and p_msg the device name to put in it */
+        p_name = GKI_getbuf(BTA_DM_MSG_SIZE);
+        if (p_name != 0) {
+            DM_MSG_EVENT(p_name) = BTA_DM_DISCOVERY_RESULT_EVT;
+            DM_MSG_STATUS(p_name) = BTA_FAILURE;
+            DM_MSG_SERVICES(p_name) = *(u32 *)(scb + 0x10);
+            bdcpy(p_name + 8, scb + 0x1A);
+            p_msg = scb + 0x20;
+            if ((s8)scb[0x20] == 0) {
+                u8 *p_rem_name = (u8 *)BTM_SecReadDevName(scb + 0x1A);
+                if (p_rem_name != 0)
+                    p_msg = p_rem_name;
             }
-            strncpy((char *)name + 0xE, (char *)msg, 0x20);
-            fn_80071450(name);
+            strncpy((char *)p_name + 0xE, (char *)p_msg, 0x20);
+            bta_sys_sendmsg(p_name);
         }
     }
 }
