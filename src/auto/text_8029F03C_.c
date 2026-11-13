@@ -293,6 +293,7 @@ unsigned char fn_8029F510(unsigned char *arg0, int arg1) {
 #pragma scheduling invalid_target
 #pragma optimization_level 2
 extern "C" void fn_8029F534(void *arg0, unsigned char *arg1) {
+    /* Initialize output from config object: copy name, cache id, and "rotating" flag if valid. */
     class Obj {
     public:
         virtual void v0() = 0;
@@ -308,6 +309,7 @@ extern "C" void fn_8029F534(void *arg0, unsigned char *arg1) {
         virtual unsigned char getBool(const char *, int) = 0;
     };
     Obj *obj = (Obj *)arg1;
+
     if (((int (*)(unsigned char *, int))fn_8029F510)((unsigned char *)arg0, (int)arg1) != 0) {
         obj->set((const char *)&lbl_8034983C);
         *(int *)((char *)arg0 + 4) = fn_8028E3F4();
