@@ -419,14 +419,16 @@ extern "C" void fn_80100A48(void* arg0, float arg1) {
 
 extern "C" float fn_80100A88(void* arg0) { return *(float*)((char*)arg0 + 0x4C); }
 
-extern "C" void SetFxSend__Q46nw4hbm3snd6detail9WsdPlayerFQ36nw4hbm3snd6AuxBusf(void* arg0, int arg1, float arg2) {
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9WsdPlayerFQ36nw4hbm3snd6AuxBusf(void *arg0, int arg1, float arg2) {
+    /* Set FX send for the given aux bus (0..2) or panic if out of range. */
     extern char lbl_80327930[];
     extern char lbl_80327994[];
-    int valid = arg1 >= 0 && arg1 < 3;
-    if (!valid) {
+    int isValidBus = arg1 >= 0 && arg1 < 3;
+
+    if (!isValidBus) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x13F, lbl_80327994, arg1, 0, 3);
     }
-    *(float*)((char*)arg0 + arg1 * 4 + 0x50) = arg2;
+    *(float *)((char *)arg0 + arg1 * 4 + 0x50) = arg2;
 }
 
 extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100B24(void* arg0, int arg1) {
