@@ -6687,8 +6687,8 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
             *(u8 *)*(s32 *)((char *)arg3 + 8) =
                 (*(u8 *)*(s32 *)((char *)arg3 + 8) & 0xF0) | (u8)(arg2 >> 8);
         } else {
-            *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index + 1) =
-                (*(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index + 1) & 0xF0) | (u8)(arg2 >> 8);
+            *(u8 *)((u8 *)(index + 1 + *(s32 *)((char *)arg3 + 8))) =
+                (*(u8 *)((u8 *)(index + 1 + *(s32 *)((char *)arg3 + 8))) & 0xF0) | (u8)(arg2 >> 8);
         }
     }
     if (result != 0) oldResult = result;
@@ -12053,6 +12053,9 @@ fail:
 }
 
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+    s32 *p_out = arg4;
+    u8 *p_src = (u8 *)arg1;
+    u32 key = (u32)arg5;
     s32 status;
     u16 i;
     u32 filelen;
@@ -12067,8 +12070,8 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
 
     entry = 0;
     for (i = 0; i < 0x17; i++) {
-        if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg5) {
-            entry = lbl_80405D58 + i * 0xF0;
+        if (key == *(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0)) {
+            entry = lbl_80405D58 + (u32)(u16)i * 0xF0;
             break;
         }
     }
@@ -12096,14 +12099,14 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         remain = filelen - pos;
         done = 0;
         while (remain >= 0x200) {
-            VFipf_memcpy(buf, (u8 *)arg1 + done, 0x200);
+            VFipf_memcpy(buf, p_src + done, 0x200);
             r = NANDWrite(entry + 0x58, buf, 0x200);
             if (r < 0) return -0x16;
             remain -= r;
             done += r;
         }
         if (remain != 0) {
-            VFipf_memcpy(buf, (u8 *)arg1 + done, remain);
+            VFipf_memcpy(buf, p_src + done, remain);
             NANDWrite(entry + 0x58, buf, remain);
         }
         return -0x16;
@@ -12111,12 +12114,12 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
 
     done = 0;
     while (length >= 0x200) {
-        VFipf_memcpy(buf, (u8 *)arg1 + done, 0x200);
+        VFipf_memcpy(buf, p_src + done, 0x200);
         r = NANDWrite(entry + 0x58, buf, 0x200);
         if (r < 0) {
             for (i = 0; i < 0x17; i++) {
-                if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = r;
+                if (key == *(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0)) {
+                    *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
                     break;
                 }
             }
@@ -12126,25 +12129,25 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         done += r;
     }
     if (length != 0) {
-        VFipf_memcpy(buf, (u8 *)arg1 + done, length);
+        VFipf_memcpy(buf, p_src + done, length);
         r = NANDWrite(entry + 0x58, buf, length);
         if (r < 0) {
             for (i = 0; i < 0x17; i++) {
-                if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = r;
+                if (key == *(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0)) {
+                    *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
                     break;
                 }
             }
             return r;
         }
     }
-    *arg4 = arg0;
+    *p_out = arg0;
     return 0;
 
 fail:
     for (i = 0; i < 0x17; i++) {
-        if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg5) {
-            *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = r;
+        if (key == *(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0)) {
+            *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
             break;
         }
     }
@@ -15935,9 +15938,7 @@ extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
 #pragma push
 #pragma use_lmw_stmw on
 extern "C" void fn_800C0B68(Fn800C0B68Context *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
-    s16 var_r0, var_r3;
-    s16 var_r4;
-    s16 var_r5;
+    s16 var_r0, var_r3, var_r4, var_r5;
     s32 temp_r3;
     u32 temp_r5, temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
     u32 temp_r0, var_ctr, var_ctr_2, var_r3_2;
@@ -15975,8 +15976,8 @@ block_21:
                 var_ctr_2 = var_r3_2;
                 do {
                     var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
-                    var_r5_2 += 4;
-                } while (--var_ctr_2 != 0);
+                    var_r5_2 += 4; var_ctr_2 -= 1;
+                } while (var_ctr_2 != 0);
             }
         }
         return;
