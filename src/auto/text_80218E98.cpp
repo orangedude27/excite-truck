@@ -8003,7 +8003,21 @@ extern "C" void *fn_80228418(void *p, void *q, s32 a) {
     return p;
 }
 
-extern "C" void *fn_802284BC(void *p,s32 a){if(p){*(void**)p=lbl_8033DE28;fn_8023986C(*(s32*)((u8*)p+0x244));if(*(u8*)((u8*)p+0x248))fn_8023967C(*(s32*)((u8*)p+0x244),1);*(s32*)((u8*)p+0x244)=0;register void *q=p;fn_8021915C(q,0);if(a>0)fn_80128668(p);}return p;}
+/* Destructor-like teardown: release owned movie handle/resources, run base dtor, optionally free. */
+extern "C" void *fn_802284BC(void *obj, s32 shouldFree) {
+    if (obj) {
+        *(void **)obj = lbl_8033DE28;
+        fn_8023986C(*(s32 *)((u8 *)obj + 0x244));
+        if (*(u8 *)((u8 *)obj + 0x248))
+            fn_8023967C(*(s32 *)((u8 *)obj + 0x244), 1);
+        *(s32 *)((u8 *)obj + 0x244) = 0;
+        register void *self = obj;
+        fn_8021915C(self, 0);
+        if (shouldFree > 0)
+            fn_80128668(obj);
+    }
+    return obj;
+}
 
 extern "C" void fn_8022854C(void *p){fn_8023976C(*(s32*)((u8*)p+0x244));}
 
