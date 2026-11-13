@@ -406,6 +406,11 @@ s32 fn_801C3D5C(void) {
     return *(s32 *)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
 }
 
+void fn_801C3D88(void *arg0) {
+    memset((void *)lbl_8055E7F8, 0, 0xC300);
+    (void)arg0;
+}
+
 void fn_801C9834(void);
 void fn_801C4AD0(void) {
     lbl_8055E7E9 = 0;
@@ -517,6 +522,18 @@ void fn_801C4BAC(void) {
         memset((u8 *)state + 0xA8, zero, 0xA0);
         fn_8017960C(fn_80179630(0));
     }
+}
+
+void fn_801C4CE8(void) {
+    if (lbl_8055E7E1 != 0) {
+        __AXDSPInitCallback_801769E0();
+        lbl_8055E7E1 = 0;
+        if (lbl_8055E7E2 == 0) {
+            lbl_8055E7E3 = 0;
+            return;
+        }
+    }
+    fn_801C3B6C();
 }
 
 void fn_8018ADCC(void *, float);
@@ -1278,37 +1295,31 @@ void fn_801C7394(void) {
 }
 
 void fn_801C73DC(void) {
-    s32 count;
-    s32 current;
-    s32 index;
-    s32 previousOffset;
-    s32 currentOffset;
-    char *base;
-    s32 currentKey;
-    s32 previousKey;
-    count = lbl_8055E7F0;
-    current = lbl_8055E828;
-    index = current - 1;
-    if (count == 0)
-        goto done;
-    if (index < 0)
-        goto done;
-    if (count <= index)
-        goto done;
-    previousOffset = index * 0x30C;
-    currentOffset = current * 0x30C;
-    base = (char *)lbl_8055E7F8;
-    if (fn_801C34CC(*(f32 *)(base + currentOffset), *(f32 *)(base + previousOffset))) {
-        base = (char *)lbl_8055E7F8;
-        currentKey = *(s32 *)(base + currentOffset + 4);
-        previousKey = *(s32 *)(base + previousOffset + 4);
-        *(s32 *)(base + currentOffset + 4) = previousKey;
-        *(s32 *)(base + previousOffset + 4) = currentKey;
-        qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
-              (int (*)(const void *, const void *))fn_801C3B7C);
+    typedef struct TimelineEntry {
+        f32 time;
+        s32 rank;
+    } TimelineEntry;
+    register long selectedIndex = sTimelineSelection;
+    long prevIndex = selectedIndex - 1;
+    int entryCount = sTimelineCount;
+    if (entryCount) {
+        if (0 <= (int)prevIndex) {
+            if (prevIndex < entryCount) {
+                long prevOff = prevIndex * 0x30C;
+                long selectedOff = selectedIndex * 0x30C;
+                TimelineEntry *selected = (TimelineEntry *)((char *)(s32)sTimelineEntries + selectedOff);
+                TimelineEntry *prev = (TimelineEntry *)((char *)(s32)sTimelineEntries + prevOff);
+                if (fn_801C34CC(selected->time, prev->time)) {
+                    s32 *selectedRank = (s32 *)((char *)sTimelineEntries + selectedOff);
+                    s32 *prevRank = (s32 *)((char *)sTimelineEntries + prevOff);
+                    int swappedRank = selectedRank[1];
+                    selectedRank[1] = prevRank[1];
+                    prevRank[1] = swappedRank;
+                    qsort((void *)sTimelineEntries, (size_t)sTimelineCount, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
+                }
+            }
+        }
     }
-done:
-    ;
 }
 
 #pragma scheduling invalid_target
@@ -3047,6 +3058,11 @@ void fn_801CA5A8(void) {
                            y + lineHeight, lineHeight);
     }
 }
+
+void fn_801CA67C(void) {
+    fn_80238A20();
+}
+
 #pragma scheduling on
 extern char lbl_8055E7E0;
 extern char lbl_8055E7E1;
