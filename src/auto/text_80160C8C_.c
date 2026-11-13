@@ -1612,12 +1612,14 @@ extern "C" void fn_80162A14(void *arg0) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_80162BA8(void *arg0) {
-    u8 *self = (u8 *)arg0;
-    s32 i, j, offset;
+    s32 flag, off, i, j;
+    u32 offset;
     int *cars;
-    u8 *entry, *car, *flags, *ui;
+    u8 *entry, *car;
+    u8 *self = (u8 *)arg0;
+    u8 *flags, *ui;
     f32 threshold, one, epsilon;
-    s32 flag, off;
+    f32 velocity[2], length, scale;
     off = 0;
     for (s32 remaining = *(s32 *)(self + 0x574); remaining > 0; remaining--) {
         if (*(u8 *)(*(u8 **)(self + 0x570) + off + 8) == 0) {
@@ -1650,7 +1652,6 @@ done:
                     if (fn_80139B5C(car, *(s32 *)(entry + 0x34))) {
                         flags = entry + i;
                         if (!flags[0x3D]) {
-                            f32 velocity[2], length, scale;
                             velocity[0] = *(f32 *)(car + 0x118);
                             velocity[1] = *(f32 *)(car + 0x120);
                             length = velocity[0] * velocity[0] + velocity[1] * velocity[1];
@@ -1785,30 +1786,35 @@ done:
 
 #pragma processor 750
 #pragma cplusplus on
+/* Draws the countdown-timer HUD.  Once the seconds played have passed the object's own
+ * show delay (vtable slot 0x34) and the run has not ended (vtable slot 0x28): it draws
+ * the "timer_art" graphic with its animation resource, draws the "timer_title" caption,
+ * and writes the time left -- the target time at +0x84 minus the time run at +0x98 --
+ * into the "timer" text element.  Returns 0 so the HUD object stays on the draw list. */
 extern "C" s32 fn_801631E0(void *arg0) {
     class HudObject {
     public:
         virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
         virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
-        virtual s32 isOver();
+        virtual s32 isOver();   // vtable slot 0x28: the run has already ended
         virtual void m2C(); virtual void m30();
-        virtual f32 getDelay();
+        virtual f32 getDelay(); // vtable slot 0x34: seconds of play before the timer shows
     };
     class UiManager {
     public:
         virtual void m08();
-        virtual void *getText(const char *);
-        virtual void *getArt(const char *);
+        virtual void *getText(const char *); // vtable slot 0xC: named text element
+        virtual void *getArt(const char *);  // vtable slot 0x10: named graphic element
     };
     char timeStr[0x14];
     HudObject *obj = (HudObject *)arg0;
-    f32 playTime = lbl_8055E3C8;
+    f32 playTime = lbl_8055E3C8; // seconds played so far
     if (playTime > obj->getDelay()) {
         if (obj->isOver() == 0) {
-            fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getArt(lbl_8032FA38), -1, lbl_8055E2F8);
-            ((void (*)(void *))fn_801476C4)(((UiManager *)lbl_8055E2E0)->getText(lbl_8032FA44));
-            fn_80130980(timeStr, 0x14, 3, *(f32 *)((u8 *)arg0 + 0x84) - *(f32 *)((u8 *)arg0 + 0x98));
-            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, timeStr);
+            fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getArt(lbl_8032FA38), -1, lbl_8055E2F8); // "timer_art" + its anim resource
+            ((void (*)(void *))fn_801476C4)(((UiManager *)lbl_8055E2E0)->getText(lbl_8032FA44)); // "timer_title"
+            fn_80130980(timeStr, 0x14, 3, *(f32 *)((u8 *)arg0 + 0x84) - *(f32 *)((u8 *)arg0 + 0x98)); // time left, to tenths
+            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, timeStr); // "timer": "%s"
         }
     }
     return 0;
