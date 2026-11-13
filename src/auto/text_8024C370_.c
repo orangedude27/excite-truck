@@ -34,7 +34,8 @@ extern double lbl_80563938;
 
 #pragma push
 #pragma use_lmw_stmw off
-void *fn_8024C374(void *arg0, int arg1) {
+void *fn_8024C374(void *self, int freeSelf) {
+    /* Release owned sub-objects and optionally free this object. */
     struct Obj {
         char pad0[0x18];
         char field_18;
@@ -42,8 +43,9 @@ void *fn_8024C374(void *arg0, int arg1) {
         void *field_4C;
         char pad2[0x78 - 0x50];
         void *field_78;
-    } *obj = arg0;
-    if (arg0 != 0) {
+    } *obj = self;
+
+    if (self != 0) {
         if (&obj->field_78 != 0) {
             fn_802328D4(obj->field_78);
             obj->field_78 = 0;
@@ -52,10 +54,11 @@ void *fn_8024C374(void *arg0, int arg1) {
             fn_802328D4(obj->field_4C);
             obj->field_4C = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (freeSelf > 0) {
+            fn_80128668(self);
+        }
     }
-    return arg0;
+    return self;
 }
 #pragma pop
 void *fn_8024C3FC(void *arg0, int arg1) {
@@ -468,7 +471,6 @@ int fn_8024CC54(void *out, void *arg1, int arg2) {
     char *temp_r11 = base + 0x70;
     char *temp_r10 = base + 0xB8;
     int temp_r3;
-
     args[22] = (int)arg1;
     args[37] = (int)arg1;
     args[8] = 0;
@@ -559,7 +561,6 @@ int fn_8024CC54(void *out, void *arg1, int arg2) {
     args[3] = *(int *)((char *)lbl_802FA54C + 0xC);
     args[4] = *(int *)((char *)lbl_802FA54C + 0x10);
     args[1] = (int)(&args[5]);
-
     fn_8024CAAC(arg2);
     temp_r3 = fn_802146BC(&args[0], -0x3E7, -0x3E7, 1);
     if (temp_r3 == -1) {
