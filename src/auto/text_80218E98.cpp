@@ -1713,15 +1713,15 @@ extern "C" void fn_8021AE18(AnimClock_8021AE18 *clock) {
     }
 }
 #pragma pop
-extern "C" void *fn_8021AF0C(void *arg0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, f32 x, f32 y) {
-    fn_8021AC24(arg0, a1, a2, a6, a4);
-    *(s32 *)((u8 *)arg0 + 0x254) = a3;
-    *(void **)arg0 = lbl_8033F658;
-    *(f32 *)((u8 *)arg0 + 0x258) = x;
-    *(f32 *)((u8 *)arg0 + 0x25C) = y;
-    *(s32 *)((u8 *)arg0 + 0x260) = a4;
-    *(s32 *)((u8 *)arg0 + 0x264) = a5;
-    return arg0;
+extern "C" void *fn_8021AF0C(void *obj, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, f32 x, f32 y) {
+    fn_8021AC24(obj, a1, a2, a6, a4);
+    *(s32 *)((u8 *)obj + 0x254) = a3;
+    *(void **)obj = lbl_8033F658;
+    *(f32 *)((u8 *)obj + 0x258) = x;
+    *(f32 *)((u8 *)obj + 0x25C) = y;
+    *(s32 *)((u8 *)obj + 0x260) = a4;
+    *(s32 *)((u8 *)obj + 0x264) = a5;
+    return obj;
 }
 #pragma dont_inline reset
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, int arg1) {
