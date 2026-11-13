@@ -402,17 +402,13 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
         virtual void d1();
         virtual long callback();
     };
-    struct Entry {
-        long first;
-        long second;
-    };
     char buffer[0x410];
     register long *result;
     register char *messageBase;
     register char *globalBase;
     long selector = arg0;
     long index;
-    struct Entry *table;
+    long *table;
     char *base;
     register char *copy;
     register char *destination;
@@ -423,9 +419,9 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
     if (selector <= -2) {
         index = -2 - selector;
         if ((index >= 0) && (index < 3)) {
-            table = (struct Entry *)(globalBase + 0xA0);
-            if (table[index].first != 0) {
-                result = fn_802E9A3C(table[index].first, table[index].second);
+            table = (long *)(globalBase + 0xA0);
+            if (table[index * 2] != 0) {
+                result = fn_802E9A3C(table[index * 2], table[index * 2 + 1]);
             }
         }
         if (result != 0) {
@@ -818,26 +814,27 @@ extern long fn_8012C370(long, long, long *, long *, long, long);
 extern long fn_802E30C8(char *, long);
 #pragma push
 #pragma scheduling invalid_target
-void fn_802EC294(int index, int arg1) {
+/* Open MP3 resource by id and store handle in table slot. */
+void fn_802EC294(int index, int resourceId) {
     register long zero;
     register int offset;
-    long spC;
-    long sp8;
-    long temp_r3;
+    long handle;
+    long streamInfo;
+    long result;
     long *base = lbl_805076A0;
     long *slot;
 
     zero = 0;
     offset = index << 3;
     slot = (long *)((char *)base + offset);
-    spC = zero;
-    sp8 = zero;
-    temp_r3 = fn_8012C370(arg1, 0x4D4D5033, &spC, &sp8, 0, 0);
-    if (temp_r3 != 0) {
-        slot[0] = temp_r3;
-        slot[1] = sp8;
+    handle = zero;
+    streamInfo = zero;
+    result = fn_8012C370(resourceId, 0x4D4D5033, &handle, &streamInfo, 0, 0);
+    if (result != 0) {
+        slot[0] = result;
+        slot[1] = streamInfo;
     } else {
-        ((long (*)(char *, ...))fn_802E30C8)(lbl_8034E990, arg1);
+        ((long (*)(char *, ...))fn_802E30C8)(lbl_8034E990, resourceId);
     }
 }
 #pragma pop
