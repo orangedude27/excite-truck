@@ -1713,7 +1713,6 @@ struct AxVoice {
     /* 0x00 */ u32 pad_00[3];
     /* 0x0C */ void *axVoice[2][4];   /* the grid: a voice is 4 bytes, a channel row 0x10 */
     /* 0x2C */ AxVoiceChannel channel[2];
-    /* 0x68 */ u8 pad_68[0x2C];
     /* 0x94 */ AxVoiceOut out[4];
     /* 0x104 */ s32 channelCount;
     /* 0x108 */ s32 voiceOutCount;
