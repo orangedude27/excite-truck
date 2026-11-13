@@ -23292,7 +23292,18 @@ void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
-void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) { BT_HDR *p_buf; UINT8 *p_data; if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL) return; p_buf->offset = 12; p_data = (UINT8 *)(p_buf + 1) + p_buf->offset; *p_data++ = (UINT8)(0x61 | (arg1 ? 2 : 0)); *p_data = 1; p_buf->len = 2; rfc_send_buf_uih(arg0, 0, p_buf); }
+void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
+    /* Send an RFCOMM flow-control command (FCON), optionally as a response. */
+    BT_HDR *p_buf;
+    UINT8 *p_data;
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL) return;
+    p_buf->offset = 12;
+    p_data = (UINT8 *)(p_buf + 1) + p_buf->offset;
+    *p_data++ = (UINT8)(0x61 | (arg1 ? 2 : 0));
+    *p_data = 1;
+    p_buf->len = 2;
+    rfc_send_buf_uih(arg0, 0, p_buf);
+}
 
 void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
     BT_HDR *p_buf;
