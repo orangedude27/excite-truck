@@ -16,9 +16,7 @@ struct Dummy10688 {
     virtual void f1();
     virtual void f2();
     virtual void f3();
-    virtual void f4();
-    virtual void f5();
-    virtual void f6(void *, void *);
+    virtual void f4(void *, void *);
 };
 #pragma cplusplus off
 extern long lbl_8055EEE0;
