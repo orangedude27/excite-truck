@@ -16,30 +16,31 @@ int fn_8002AEE8(unsigned short* s) {
     return len;
 }
 
+/* Determine or set stream orientation: >0 wide, <0 byte, 0 query/error. */
 int fwide(void *stream, int mode)
 {
-    unsigned int flags;
-    unsigned int orient;
-    int m = mode;
-    if ((stream == 0) || ((flags = *(unsigned int *)((char *)stream + 4), (((flags >> 22) & 7) == 0)))) {
+    unsigned int file_modes;
+    unsigned int orientation;
+    int result = mode;
+    if ((stream == 0) || ((file_modes = *(unsigned int *)((char *)stream + 4), (((file_modes >> 22) & 7) == 0)))) {
         return 0;
     }
-    orient = (flags >> 20) & 3;
-    switch (orient) {
+    orientation = (file_modes >> 20) & 3;
+    switch (orientation) {
     case 0:
-        if (m > 0) {
+        if (result > 0) {
             ((FwideFlags *)((char *)stream + 4))->mode = 2;
-        } else if (m < 0) {
+        } else if (result < 0) {
             ((FwideFlags *)((char *)stream + 4))->mode = 1;
         }
         break;
     case 2:
-        m = 1;
+        result = 1;
         break;
     case 1:
-        m = -1;
+        result = -1;
         break;
     }
-    return m;
+    return result;
 }
 
