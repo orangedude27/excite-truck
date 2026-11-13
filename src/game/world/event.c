@@ -33,19 +33,18 @@ void fn_801EEFDC(int arg0, unsigned int arg1) {
 void fn_802E317C(const char *, ...);
 extern char lbl_8033A328[];
 #pragma scheduling invalid_target
-/* Removes handler arg0 from the registry (scanning every type's row); reports
- * "No handler ..." when it is not registered. */
-void fn_801EF024(unsigned int arg0) {
-    unsigned int *base = (unsigned int *)lbl_80488678;
-    unsigned int *p;
+/* Removes a handler from the event registry (18 event types x 4 slots); reports an error if not found. */
+void fn_801EF024(unsigned int handler) {
+    unsigned int *row = (unsigned int *)lbl_80488678;
+    unsigned int *slot;
     int found = 0;
     int i;
     int j;
 
-    for (i = 0; i < 18; i++, base += 4) {
-        p = base;
-        for (j = 0; j < 4; p++, j++) {
-            if (*p == arg0) {
+    for (i = 0; i < 18; i++, row += 4) {
+        slot = row;
+        for (j = 0; j < 4; slot++, j++) {
+            if (*slot == handler) {
                 *(volatile unsigned int *)((char *)lbl_80488678 + (i << 4) + (j << 2)) = 0;
                 found = 1;
                 goto done;
