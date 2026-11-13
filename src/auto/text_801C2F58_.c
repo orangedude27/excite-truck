@@ -16,6 +16,19 @@
 #define nth_string         fn_801C98F4  /* string blob, index -> index-th string */
 #define draw_entry_details fn_801CA1C4  /* entry, x, y, line advance */
 
+/* Text field the debug menu's "set ..." items read; the strings it copies into
+ * hold space-separated name lists, which fn_801C3954 turns into a player mask
+ * (the entry mask is mask(sWhoList) & ~mask(sWhoNotList)). */
+#define sInputLine     lbl_804380F0 /* 256-byte line the on-screen text field edits */
+#define sWhoList       lbl_80438280 /* names the entry applies to */
+#define sWhoNotList    lbl_80438380 /* names the entry skips */
+#define sMenuAction    lbl_8055E868 /* action run by the selected item; no-op when idle */
+#define sTextFieldFlag lbl_8055E83A /* text field in use: gates the (empty) fn_801C9830 draw */
+#define STR_EMPTY      lbl_8055AA44 /* "" - clears a text field */
+#define STR_NOBODY     lbl_8055A95C /* "nobody" - default for a name list */
+#define STR_ALL        lbl_8055A964 /* "all" - default for a name list */
+#define set_text_entry fn_801C957C  /* (1) clear the line and edit it, (0) close it */
+
 __declspec(section ".sdata") extern char lbl_8055AAF0[], lbl_8055AAF4[], lbl_8055AAF8[];
 extern void fn_802E3AD0(s32, const char *, ...);
 extern double fn_8002EFA8(double);
