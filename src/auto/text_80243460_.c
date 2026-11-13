@@ -4,6 +4,18 @@
 #include <string.h>
 extern void fn_80241354(void*);
 extern s32 lbl_803428B0[][16][3];
+/* One row of the menu table: one of 16 selectable items.
+ * field 0 is the item's label (a char *, 0 when unused), field 1 its width
+ * in grid cells and field 2 its kind (1 label, 2/5 text field, 3 back, 4 action). */
+typedef struct MenuTableEntry {
+    /* 0x00 */ char *label;
+    /* 0x04 */ s32 width;
+    /* 0x08 */ s32 kind;
+} MenuTableEntry;
+/* The whole menu table: 5 groups (pages) of 16 entries each. */
+typedef MenuTableEntry MenuTable[5][16];
+/* The table under its entry type. */
+#define MENU_TABLE (*(MenuTable *)lbl_803428B0)
 extern char lbl_80342CEC[];
 s32 fn_80243478(s32);
 extern s32 fn_80244558(void *);
