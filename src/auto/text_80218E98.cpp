@@ -3980,6 +3980,7 @@ extern "C" void fn_802E47E8(void);
 #pragma push
 #pragma small_data off
 extern "C" void *fn_8021F394(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    /* Initialize object, set vtable lbl_8033E8FC, store arg3/arg4, and prepare subdata. */
     ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0);
     *(s32 *)((u8 *)arg0 + 0x26C) = arg3;
     *(void **)arg0 = lbl_8033E8FC;
