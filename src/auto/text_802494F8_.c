@@ -859,36 +859,37 @@ void fn_8024B6A8(void) {
     fn_8024B260();
 }
 
+/* Cache the selected entry (from fn_80214D04): store its index, copy up to 0x32 chars of its name into the local buffer at +0x64, and cache its value pointer at +0x98. */
 void fn_8024B6AC(void *arg0) {
-    s32 index;
-    void **array;
-    char c;
-    char *src;
-    s32 count;
-    char *dst;
+    s32 selectedIndex;
+    void **entryArray;
+    char ch;
+    char *srcText;
+    s32 remaining;
+    char *dstText;
 
-    index = fn_80214D04();
-    *(s32 *)((char *)arg0 + 0x9C) = index;
-    array = *(void ***)((char *)arg0 + 0x18);
-    dst = (char *)arg0 + 0x64;
-    count = 0x32;
-    src = *(char **)((char *)array[index] + 0x10);
+    selectedIndex = fn_80214D04();
+    *(s32 *)((char *)arg0 + 0x9C) = selectedIndex;
+    entryArray = *(void ***)((char *)arg0 + 0x18);
+    dstText = (char *)arg0 + 0x64;
+    remaining = 0x32;
+    srcText = *(char **)((char *)entryArray[selectedIndex] + 0x10);
     goto copy;
 decrement:
-    count--;
-    if (count > 0)
+    remaining--;
+    if (remaining > 0)
         goto copy;
-    dst[-1] = 0;
+    dstText[-1] = 0;
     goto done;
 copy:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0)
+    ch = *srcText++;
+    *dstText++ = ch;
+    if ((signed char)ch != 0)
         goto decrement;
 done:
-    array = *(void ***)((char *)arg0 + 0x18);
-    index = *(s32 *)((char *)arg0 + 0x9C);
-    *(s32 *)((char *)arg0 + 0x98) = *(s32 *)array[index];
+    entryArray = *(void ***)((char *)arg0 + 0x18);
+    selectedIndex = *(s32 *)((char *)arg0 + 0x9C);
+    *(s32 *)((char *)arg0 + 0x98) = *(s32 *)entryArray[selectedIndex];
 }
 
 #pragma push
