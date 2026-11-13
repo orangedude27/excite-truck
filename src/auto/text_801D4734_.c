@@ -509,7 +509,8 @@ void fn_801D5010(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" int fn_801D5014(void *arg0, int arg1, int arg2, int arg3) {
+/* Returns nonzero if any element in the list accepts the given test arguments. */
+extern "C" int fn_801D5014(void *list, int arg1, int arg2, int arg3) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
@@ -521,13 +522,13 @@ extern "C" int fn_801D5014(void *arg0, int arg1, int arg2, int arg3) {
     };
     int offset;
     int i;
-    Dummy *obj;
+    Dummy *element;
 
     i = 0;
     offset = 0;
-    while (i < *(int *)((char *)arg0 + 0x34)) {
-        obj = *(Dummy **)(*(char **)((char *)arg0 + 0x30) + offset);
-        if (obj->test(arg1, arg2) != 0) {
+    while (i < *(int *)((char *)list + 0x34)) {
+        element = *(Dummy **)(*(char **)((char *)list + 0x30) + offset);
+        if (element->test(arg1, arg2) != 0) {
             return 1;
         }
         offset += 4;
