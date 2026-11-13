@@ -2302,31 +2302,32 @@ extern "C" s32 fn_801FBD0C(void *object) {
     return flags | 1;
 }
 
-extern "C" s32 fn_801FBD94(void *arg0) {
-    s32 result;
+extern "C" s32 fn_801FBD94(void *object) {
+    /* Check whether object faces the camera (dot of its vector vs camera-to-object < 0) and return flags. */
+    s32 isFacingCamera;
     s32 flags;
-    f32 cz;
-    f32 cy;
-    f32 cx;
-    f32 z;
-    f32 y;
-    f32 x;
-    f32 delta[3];
+    f32 cameraZ;
+    f32 cameraY;
+    f32 cameraX;
+    f32 objectZ;
+    f32 objectY;
+    f32 objectX;
+    f32 toObject[3];
     void *camera;
 
     camera = fn_802C86DC();
-    x = *(f32 *)((u8 *)arg0 + 0x24);
-    y = *(f32 *)((u8 *)arg0 + 0x28);
-    cx = *(f32 *)((u8 *)camera + 0x24);
-    z = *(f32 *)((u8 *)arg0 + 0x2C);
-    delta[0] = x - cx;
-    cy = *(f32 *)((u8 *)camera + 0x28);
-    delta[1] = y - cy;
-    cz = *(f32 *)((u8 *)camera + 0x2C);
-    delta[2] = z - cz;
-    result = PSVECDotProduct(delta, (const f32 *)arg0) < lbl_80562FF0;
+    objectX = *(f32 *)((u8 *)object + 0x24);
+    objectY = *(f32 *)((u8 *)object + 0x28);
+    cameraX = *(f32 *)((u8 *)camera + 0x24);
+    objectZ = *(f32 *)((u8 *)object + 0x2C);
+    toObject[0] = objectX - cameraX;
+    cameraY = *(f32 *)((u8 *)camera + 0x28);
+    toObject[1] = objectY - cameraY;
+    cameraZ = *(f32 *)((u8 *)camera + 0x2C);
+    toObject[2] = objectZ - cameraZ;
+    isFacingCamera = PSVECDotProduct(toObject, (const f32 *)object) < lbl_80562FF0;
     flags = 0x20;
-    if (result) flags = 0x10;
+    if (isFacingCamera) flags = 0x10;
     return flags | 1;
 }
 
