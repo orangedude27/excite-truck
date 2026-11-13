@@ -200,23 +200,24 @@ extern void fn_802E3F38(void *);
 extern char lbl_8034D0E4[];
 extern char lbl_8034D130[];
 #pragma small_data on
-void *fn_802E41C4(void *arg0, int arg1) {
-    void (*release)(void *);
-    if (arg0 != 0) {
-        if (*((unsigned char *)arg0 + 0x80) != 0) {
-            *(void **)arg0 = &lbl_8034D130;
+void *fn_802E41C4(void *file, int destroyFlag) {
+    /* Destructor for a DVD file object: close the open DVD handle if valid, report close failure, and optionally free the object. */
+    void (*releaseFn)(void *);
+    if (file != 0) {
+        if (*((unsigned char *)file + 0x80) != 0) {
+            *(void **)file = &lbl_8034D130;
         } else {
-            *(void **)arg0 = &lbl_8034D130;
+            *(void **)file = &lbl_8034D130;
         }
-        if (*((unsigned char *)arg0 + 0x80) != 0 && DVDClose((char *)arg0 + 4) == 0) {
-            fn_802E30C8((const char *)&lbl_8034D0E4, (char *)arg0 + 0x40);
+        if (*((unsigned char *)file + 0x80) != 0 && DVDClose((char *)file + 4) == 0) {
+            fn_802E30C8((const char *)&lbl_8034D0E4, (char *)file + 0x40);
         }
-        if (arg1 > 0) {
-            release = fn_802E3F38;
-            release(arg0);
+        if (destroyFlag > 0) {
+            releaseFn = fn_802E3F38;
+            releaseFn(file);
         }
     }
-    return arg0;
+    return file;
 }
 
 extern const char lbl_8034D104[];
