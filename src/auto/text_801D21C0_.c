@@ -24,12 +24,12 @@ extern u32 lbl_8055AC20;
 extern f32 lbl_80562A90;
 extern f32 lbl_80562A94;
 extern u8 lbl_803382A8[];
-extern u8 lbl_8055ABE8[];
-extern u8 lbl_8055ABF8[];
-extern u8 lbl_8055AC00[];
-extern u8 lbl_8055AC08[];
-extern u8 lbl_8055AC10[];
-extern u8 lbl_8055ABF0[];
+__declspec(section ".sdata") extern u8 lbl_8055ABE8[];
+__declspec(section ".sdata") extern u8 lbl_8055ABF8[];
+__declspec(section ".sdata") extern u8 lbl_8055AC00[];
+__declspec(section ".sdata") extern u8 lbl_8055AC08[];
+__declspec(section ".sdata") extern u8 lbl_8055AC10[];
+__declspec(section ".sdata") extern u8 lbl_8055ABF0[];
 extern void fn_801D334C(void *, void *);
 extern void fn_801D3610(void *, void *);
 extern s32 fn_802C6FC0(void *, s32, s32);
@@ -521,6 +521,9 @@ void fn_801D25BC(void *arg0, void *arg1) {
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801D26C8(void *arg0, void *arg1) {
     typedef struct ScnVtx {
         char pad0[8];
@@ -604,10 +607,7 @@ void fn_801D26C8(void *arg0, void *arg1) {
         *(int *)(self + 0x490) = 0;
     }
 }
-
-#pragma cplusplus reset
-#pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma pop
 /* Initializes the next event entry (stride 0x4C4 in lbl_80438958, indexed by lbl_8055E930) from a scene object: id, effect sub-object, and spawn sub-object. */
 extern "C" void fn_801D2A24(void *sceneObj_) {
     struct Dummy {
