@@ -419,16 +419,16 @@ void fn_80176FC4(void) {
 #pragma push
 #pragma opt_common_subs off
 void fn_80177048(void) {
-    if (*(s32 *)(lbl_80430558 + 0xC) == 3) {
+    if (*(s32 *)(sFadeState + 0xC) == FADE_MODE_DONE) {
         fn_80176F28();
         return;
     }
-    *(void **)(lbl_80430558 + 0x10) = (void *)fn_80176F28;
-    *(s32 *)(lbl_80430558 + 0xC) = 2;
-    *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176F28);
-    *(s32 *)lbl_80430558 = lbl_8055E3C4;
-    *(s32 *)(lbl_80430558 + 8) = 7;
-    *(u8 *)(lbl_80430558 + 0x14) = 0;
+    *(void **)(sFadeState + 0x10) = (void *)fn_80176F28;
+    *(s32 *)(sFadeState + 0xC) = FADE_MODE_OUT;
+    *(s32 *)(sFadeState + 4) = fn_802E2C20();
+    *(s32 *)sFadeState = lbl_8055E3C4;
+    *(s32 *)(sFadeState + 8) = 7;
+    *(u8 *)(sFadeState + 0x14) = 0;
     __AXDSPInitCallback_801769E0();
 }
 #pragma pop
