@@ -24,7 +24,15 @@ void fn_801A47C8(void);
 void fn_801A47FC(int);
 void fn_8015F670(int *, int);
 #pragma use_lmw_stmw off
-void fn_801E1F8C(void *arg0, void *arg1) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801E1F8C(void *arg0, void *arg1) {
+    class Obj {
+      public:
+        virtual void v0();
+        virtual void v1();
+        virtual void call(void *);
+    };
     int count0 = *(int *)((char *)arg0 + 0x24);
     int count1;
     void *item;
@@ -32,10 +40,9 @@ void fn_801E1F8C(void *arg0, void *arg1) {
     void **entry1;
     void **entry0;
     int i;
-    void *obj;
-
+    Obj *obj;
     if (count0 != 0) {
-        obj = count0 > 0 ? ((void **)arg0)[5] : 0;
+        obj = count0 > 0 ? (Obj *)((void **)arg0)[5] : (Obj *)0;
         if (*(int *)((char *)obj + 0x20) == 0x72) {
             count1 = *(int *)((char *)arg1 + 0x24);
             if (count1 != 0) {
@@ -45,7 +52,6 @@ void fn_801E1F8C(void *arg0, void *arg1) {
             }
         }
     }
-
     entry1 = (void **)arg1;
     i = 0;
     while (i < *(int *)((char *)arg1 + 0x24)) {
@@ -53,12 +59,11 @@ void fn_801E1F8C(void *arg0, void *arg1) {
             item = entry1[5];
         else
             item = 0;
-
         entry0 = (void **)arg0;
         j = 0;
         while (j < *(int *)((char *)arg0 + 0x24)) {
-            obj = entry0[5];
-            (*(void (**)(void *, void *))((*(void ***)obj) + 4))(obj, item);
+            obj = (Obj *)entry0[5];
+            obj->call(item);
             entry0++;
             j++;
         }
@@ -66,6 +71,7 @@ void fn_801E1F8C(void *arg0, void *arg1) {
         i++;
     }
 }
+#pragma pop
 #pragma scheduling invalid_target
 #pragma push
 #pragma cplusplus on
@@ -89,11 +95,10 @@ extern "C" void fn_801E2084(void *arg0, void *arg1) {
 void fn_801E2100(void *arg0, void *arg1) {
     int result;
     int (*first)(int);
-    int (*second)(void *, void *, void *, int, int *);
     first = *(int (**)(int))((char *)arg1 + 0x20);
     if (first == 0 || first(*(int *)((char *)arg0 + 0x20)) != 0) {
-        int arg4 = *(int *)((char *)arg1 + 0x18);
-        result = ((int (*)(void *, void *, void *, int, int *))(*(void ***)arg0)[3])(arg0, arg1, (char *)arg1 + 0xC, arg4, &result);
+        void *vtable = *(void **)arg0;
+        result = ((int (*)(void *, void *, void *, int, int *))*(void **)((char *)vtable + 0x18))(arg0, arg1, (char *)arg1 + 0xC, *(int *)((char *)arg1 + 0x18), &result);
         if (result != 0)
             *((unsigned char *)arg1 + 0x1C) = 1;
     }
@@ -146,6 +151,167 @@ void fn_801E2294(void) {
         ((void (*)(void *))fn_801A47C8)(lbl_8055EA40);
 }
 
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+#pragma auto_inline off
+#pragma cplusplus on
+extern "C" void fn_801E22D0(void **arg0, s32 arg1) {
+    class V1 {
+      public:
+        virtual s32 v0();
+        virtual s32 v1();
+    };
+    class V15 {
+      public:
+        virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
+        virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
+        virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
+        virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
+    };
+    void **slot;
+    s32 i;
+    void *grp;
+    s32 j;
+    void *it;
+    void *item;
+    void *g;
+    void **node;
+    void **cellp;
+    void *hits[5];
+    s32 cnt;
+    f32 scale;
+    s32 xi, zi;
+    s32 minX, maxX, minZ, maxZ;
+    s32 idx;
+    s32 i2, j2;
+    void *p;
+    for (i = 0; i < arg1; i++) {
+        grp = arg0[i];
+        slot = (void **)grp;
+        for (j = 0; j < *(s32 *)((char *)grp + 0x24); j++) {
+            if (j >= 0 && j < *(s32 *)((char *)grp + 0x24))
+                it = slot[5];
+            else
+                it = 0;
+            ((V1 *)it)->v1();
+            slot++;
+        }
+    }
+    scale = lbl_80562CD8;
+    for (i2 = 0; i2 < arg1; i2++) {
+        p = arg0[i2];
+        if (*(s32 *)((char *)p + 0x24) > 0) {
+            cnt = 5;
+            fn_801B619C(hits, &cnt, (f32 *)((char *)p + 0x60));
+            cellp = (void **)hits;
+            for (j2 = 0; j2 < cnt; cellp++, j2++) {
+                node = *(void ***) *cellp;
+                while (node != 0) {
+                    item = *node;
+                    if ((p < item) || (((V15 *)item)->v15() == 0))
+                        fn_801E1F8C(p, item);
+                    node = *(void ***)((char *)node + 4);
+                }
+            }
+            g = lbl_8055EA3C;
+            if (g != 0) {
+                minX = -0x2625A00;
+                maxX = 0x2625A00;
+                minZ = minX;
+                maxZ = maxX;
+                xi = (s32)(scale * ((f32 *)p)[24]);
+                zi = (s32)(scale * ((f32 *)p)[26]);
+                idx = 0;
+                for (;;) {
+                    u16 *range = (u16 *)((char *)*(void **)((char *)g + 0x10) + idx * 8);
+                    s32 end, k, midX, midZ;
+                    k = range[0];
+                    end = range[1];
+                    for (; k < end; k++) {
+                        u16 tri = *(u16 *)((char *)*(void **)((char *)g + 0x0C) + k * 2);
+                        void *tobj = *(void **)((char *)*(void **)((char *)g + 4) + tri * 4);
+                        if (*(u8 *)((char *)tobj + 0x40))
+                            fn_801E2084(*(void **)((char *)tobj + 0x3C), p);
+                    }
+                    if (range[2] == 0)
+                        break;
+                    {
+                        idx = range[2];
+                        midX = (minX + maxX) >> 1;
+                        midZ = (minZ + maxZ) >> 1;
+                        if (zi <= midZ) {
+                            maxZ = midZ;
+                            if (xi <= midX)
+                                maxX = midX;
+                            else {
+                                minX = midX;
+                                idx += 1;
+                            }
+                        } else {
+                            minZ = midZ;
+                            if (xi <= midX) {
+                                maxX = midX;
+                                idx += 2;
+                            } else {
+                                minX = midX;
+                                idx += 3;
+                            }
+                        }
+                    }
+                }
+            }
+            g = lbl_8055EA40;
+            if (g != 0) {
+                minX = -0x2625A00;
+                maxX = 0x2625A00;
+                minZ = minX;
+                maxZ = maxX;
+                xi = (s32)(scale * ((f32 *)p)[24]);
+                zi = (s32)(scale * ((f32 *)p)[26]);
+                idx = 0;
+                for (;;) {
+                    u16 *range = (u16 *)((char *)*(void **)((char *)g + 0x10) + idx * 8);
+                    s32 end, k, midX, midZ;
+                    k = range[0];
+                    end = range[1];
+                    for (; k < end; k++) {
+                        u16 tri = *(u16 *)((char *)*(void **)((char *)g + 0x0C) + k * 2);
+                        void *tobj = *(void **)((char *)*(void **)((char *)g + 4) + tri * 4);
+                        if (*(u8 *)((char *)tobj + 0x40))
+                            fn_801E2084(*(void **)((char *)tobj + 0x3C), p);
+                    }
+                    if (range[2] == 0)
+                        break;
+                    {
+                        idx = range[2];
+                        midX = (minX + maxX) >> 1;
+                        midZ = (minZ + maxZ) >> 1;
+                        if (zi <= midZ) {
+                            maxZ = midZ;
+                            if (xi <= midX)
+                                maxX = midX;
+                            else {
+                                minX = midX;
+                                idx += 1;
+                            }
+                        } else {
+                            minZ = midZ;
+                            if (xi <= midX) {
+                                maxX = midX;
+                                idx += 2;
+                            } else {
+                                minX = midX;
+                                idx += 3;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+#pragma pop
 extern double __fabs(double);
 #pragma scheduling invalid_target
 #pragma push
