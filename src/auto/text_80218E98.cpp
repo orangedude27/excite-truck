@@ -6155,19 +6155,21 @@ extern "C" void *fn_80223AB4(void *arg0, void *arg1, s32 arg2) {
 }
 #pragma pop
 extern "C" void *lbl_8033E3D4[];
-extern "C" void *fn_80223B94(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        void *ptr = *(void **)((u8 *)arg0 + 0x250);
-        *(void **)arg0 = lbl_8033E3D4;
-        if (ptr != 0)
-            fn_802C519C(ptr);
-        *(void **)((u8 *)arg0 + 0x250) = 0;
-        fn_8022EE98(*(void **)((u8 *)arg0 + 0x260));
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+/* Destructor-like cleanup: reset vtable, release owned resources/children, run
+ * base cleanup, and optionally delete the object. */
+extern "C" void *fn_80223B94(void *self, s32 deleting) {
+    if (self != 0) {
+        void *ownedPtr = *(void **)((u8 *)self + 0x250);
+        *(void **)self = lbl_8033E3D4;
+        if (ownedPtr != 0)
+            fn_802C519C(ownedPtr);
+        *(void **)((u8 *)self + 0x250) = 0;
+        fn_8022EE98(*(void **)((u8 *)self + 0x260));
+        fn_8021915C(self, 0);
+        if (deleting > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma processor 750
