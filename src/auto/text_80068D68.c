@@ -15400,19 +15400,20 @@ BOOLEAN btsnd_hcic_switch_role(BD_ADDR bd_addr, UINT8 role) {
     return TRUE;
 }
 
+/* Send HCI Write_Link_Policy_Settings command for a connection handle. */
 BOOLEAN btsnd_hcic_write_policy_set(UINT16 handle, UINT16 settings) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 7;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0xD;
-    p[9] = 8;
-    p[10] = 4;
-    p[11] = handle;
-    p[12] = handle >> 8;
-    p[13] = settings;
-    p[14] = settings >> 8;
-    btu_hcif_send_cmd(p);
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == NULL) return FALSE;
+    *(u16 *)(cmdBuf + 2) = 7;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 0xD;
+    cmdBuf[9] = 8;
+    cmdBuf[10] = 4;
+    cmdBuf[11] = handle;
+    cmdBuf[12] = handle >> 8;
+    cmdBuf[13] = settings;
+    cmdBuf[14] = settings >> 8;
+    btu_hcif_send_cmd(cmdBuf);
     return TRUE;
 }
 
@@ -18764,8 +18765,8 @@ s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
 
 extern char lbl_80318BE8[];
 void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
-    u8 *p_buf = (u8 *)arg2;
     u8 *p_lcb = (u8 *)arg0;
+    u8 *p_buf = (u8 *)arg2;
     register char *p_trace = lbl_80318BE8;
     register u8 *p_ccb;
     u8 mode;
