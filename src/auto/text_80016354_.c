@@ -496,6 +496,7 @@ extern "C" void fn_80016ED4(void *carDefObj) {
 
 #pragma push
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 extern char lbl_802FCEA8[];
 __declspec(section ".sdata") extern char lbl_80558C08[];
 __declspec(section ".sdata") extern char lbl_80558C10[];
@@ -522,11 +523,14 @@ extern "C" void fn_80017010(void *arg0) {
     char *entry;
     char *src;
     int c;
+    int flag;
     int v29, v30, v31;
     char *found;
     char *r26;
     int eidx, off;
     char *nameArg;
+    char *base;
+    base = lbl_802FCEA8;
     entry = (char *)lbl_8055D544 + (int)lbl_8055D550 * 0xA8;
     *(int *)entry = (int)lbl_8055D550;
     *(int *)(entry + 4) = (int)lbl_8055D550 | 0x40000000;
@@ -545,13 +549,18 @@ extern "C" void fn_80017010(void *arg0) {
         }
     }
     c = (signed char)*(unsigned char *)(entry + 0x2C);
+    flag = 0;
     if (c < 0 || c >= 0x100) {
+        flag = 1;
+    }
+    if (flag != 0) {
     } else {
-        c = lbl_802FE850.cmap->to_lower_table[c];
+        unsigned char *tbl = *(unsigned char **)((char *)lbl_802FE850.cmap + 0xC);
+        c = tbl[c];
         *(unsigned char *)(entry + 0x2C) = c;
     }
-    v29 = ((Interface *)arg0)->m10(lbl_802FCEA8 + 0x74, 0);
-    v30 = ((Interface *)arg0)->m10(lbl_802FCEA8 + 0x84, 0);
+    v29 = ((Interface *)arg0)->m10(base + 0x74, 0);
+    v30 = ((Interface *)arg0)->m10(base + 0x84, 0);
     v31 = ((Interface *)arg0)->m10(lbl_80558C10, 0);
     r26 = (char *)0;
     if (v29 != 0) {
@@ -584,16 +593,16 @@ extern "C" void fn_80017010(void *arg0) {
                     off += 0xA8;
                     eidx++;
                 }
-                if (*(int *)(entry + 8) == 0) fn_802E317C(lbl_802FCEA8 + 0x94, entry + 0x2C);
+                if (*(int *)(entry + 8) == 0) fn_802E317C(base + 0x94, entry + 0x2C);
             } else {
-                fn_802E317C(lbl_802FCEA8 + 0xC4, entry + 0x2C);
+                fn_802E317C(base + 0xC4, entry + 0x2C);
             }
         }
     } else {
         *(int *)(entry + 8) = *(int *)(entry + 4);
     }
     nameArg = r26 ? r26 : entry + 0x2C;
-    src = ((Interface *)arg0)->m4(lbl_802FCEA8 + 0xFC, nameArg);
+    src = ((Interface *)arg0)->m4(base + 0xFC, nameArg);
     {
         char *p = src;
         char *q = entry + 0xC;
@@ -608,7 +617,7 @@ extern "C" void fn_80017010(void *arg0) {
         }
     }
     {
-        char *p = lbl_802FCEA8 + 0x10C;
+        char *p = base + 0x10C;
         char *q = entry + 0x4C;
         int lim = 0x10;
         for (;;) {
@@ -622,7 +631,7 @@ extern "C" void fn_80017010(void *arg0) {
     }
     {
         char sp48[64];
-        fn_801345D8(sp48, 0x40, lbl_802FCEA8 + 0x118, (int)(entry + 0xC));
+        fn_801345D8(sp48, 0x40, base + 0x118, (int)(entry + 0xC));
         src = fn_80131234(sp48);
         char *p = src;
         char *q = entry + 0xC;
@@ -639,8 +648,8 @@ extern "C" void fn_80017010(void *arg0) {
     *(int *)(entry + 0x98) = 0;
     while (*(int *)(entry + 0x98) < 0xC) {
         char sp28[32];
-        fn_801345D8(sp28, 0x20, lbl_802FCEA8 + 0x124, *(int *)(entry + 0x98) + 1);
-        if (((Interface *)arg0)->m4(lbl_802FCEA8 + 0x124, sp28) != (char *)0) {
+        fn_801345D8(sp28, 0x20, base + 0x124, *(int *)(entry + 0x98) + 1);
+        if (((Interface *)arg0)->m4(base + 0x124, sp28) != (char *)0) {
             *(int *)(entry + 0x64 + *(int *)(entry + 0x98) * 4) = fn_80016DD8(sp28);
             *(int *)(entry + 0x98) = *(int *)(entry + 0x98) + 1;
             continue;
@@ -651,10 +660,10 @@ extern "C" void fn_80017010(void *arg0) {
         }
         break;
     }
-    *(int *)(entry + 0x94) = ((Interface *)arg0)->m6(lbl_802FCEA8 + 0x134, 0) - 1;
+    *(int *)(entry + 0x94) = ((Interface *)arg0)->m6(base + 0x134, 0) - 1;
     *(int *)(entry + 0x9C) = fn_8013C8E8(entry + 0x2C);
     *(int *)(entry + 0xA0) = 0;
-    if (((Interface *)arg0)->m10(lbl_802FCEA8 + 0x14C, 0) != 0) *(int *)(entry + 0xA0) |= 1;
+    if (((Interface *)arg0)->m10(base + 0x14C, 0) != 0) *(int *)(entry + 0xA0) |= 1;
     if (v29 != 0) *(int *)(entry + 0xA0) |= 2;
     if (v30 != 0) *(int *)(entry + 0xA0) |= 4;
     if (v31 != 0) *(int *)(entry + 0xA0) |= 8;
@@ -663,7 +672,7 @@ extern "C" void fn_80017010(void *arg0) {
     while (1) {
         char sp8[32];
         int count;
-        fn_801345D8(sp8, 0x20, lbl_802FCEA8 + 0x158, eidx + 1);
+        fn_801345D8(sp8, 0x20, base + 0x158, eidx + 1);
         count = ((Interface *)arg0)->m6(sp8, 0);
         if (count == 0) break;
         if (count >= 0) *(int *)(entry + 0xA4) |= (1 << count);
