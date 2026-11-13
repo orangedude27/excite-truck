@@ -5504,7 +5504,7 @@ extern "C" void fn_80222AFC(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4
     *arg6 = *arg4 + (s32) *(f32 *)((u8 *)arg0 + 0xC);
 }
 
-extern "C" s32 fn_80222B48(void *arg0, s32 unused1, s32 unused2, s32 arg1, s32 arg2) {
+extern "C" s32 fn_80222B48(void *self, s32 unused1, s32 unused2, s32 x, s32 y) {
     struct V {
         virtual void a0();
         virtual void a1();
@@ -5513,10 +5513,10 @@ extern "C" s32 fn_80222B48(void *arg0, s32 unused1, s32 unused2, s32 arg1, s32 a
     };
     s32 sp14, sp10, spC, sp8, result;
 
-    // Forward unused inputs and pass bounds in low-to-high order for the target registers.
-    ((V*)arg0)->Call(unused1, unused2, &sp8, &spC, &sp10, &sp14);
+    /* Query bounds via virtual call and return 1 if (x,y) is inside [left,right) x [top,bottom). */
+    ((V*)self)->Call(unused1, unused2, &sp8, &spC, &sp10, &sp14);
     result = 0;
-    if (arg1 >= sp8 && arg1 < sp10 && arg2 >= spC && arg2 < sp14) {
+    if (x >= sp8 && x < sp10 && y >= spC && y < sp14) {
         result = 1;
     }
     return result;
