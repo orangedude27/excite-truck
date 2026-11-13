@@ -4221,11 +4221,12 @@ extern "C" s32 fn_800F87E8(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x30); }
 
 extern "C" u8 fn_800F87F0(void *arg0) { return *(u8 *)((u8 *)arg0 + 0x2C); }
 
-extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(s32 arg0, s32 arg1) {
-    s32 valid = 0;
-    if (arg1 >= 0 && arg1 < 4) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x103, lbl_80325C8C, arg1, 0, 4);
-    return *(f32 *)((u8 *)(arg0 + arg1 * 4) + 0x38);
+/* Get the FX send level for an aux bus (0..3) on this sound player. */
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(s32 self, s32 auxBus) {
+    s32 isValidBus = 0;
+    if (auxBus >= 0 && auxBus < 4) isValidBus = 1;
+    if (isValidBus == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x103, lbl_80325C8C, auxBus, 0, 4);
+    return *(f32 *)((u8 *)(self + auxBus * 4) + 0x38);
 }
 
 void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *self, void *pSound) {
