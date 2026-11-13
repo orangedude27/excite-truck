@@ -255,6 +255,7 @@ void OSSetAlarmTag(OSAlarm* alarm, u32 tag) {
 }
 
 BOOL OnReset(BOOL final, u32 event) {
+    /* On final reset, cancel all non-DVD alarms still queued in AlarmQueue. */
     OSAlarm* iter;
     OSAlarm* next;
 
