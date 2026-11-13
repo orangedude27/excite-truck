@@ -107,10 +107,9 @@ void fn_802E3F38(void *arg0) {
     fn_802E317C(lbl_8034D054, arg0);
 }
 
-void *fn_802E3F94(void) {
-    void (*fn)(void *, int);
+#pragma cplusplus on
+extern "C" void *fn_802E3F94(void) {
     void *obj;
-
     obj = ((void *(*)(int, void *))fn_802E3EB0)(8, &lbl_8055D1B0);
     if (obj != 0) {
         *(void **)obj = &lbl_8034D098;
@@ -122,13 +121,11 @@ void *fn_802E3F94(void) {
         return obj;
     }
     if (obj != 0) {
-        fn = ((void (**)(void *, int))*(void **)obj)[2];
-        fn(obj, 1);
+        ((Dummy_802E4688 *)obj)->d0(1);
     }
     return 0;
 }
-
-#pragma scheduling on
+#pragma cplusplus reset
 int fn_802E4030(int arg0, int arg1) {
     void (*reset)(void);
     if (arg0 != 0 && arg1 > 0) {
