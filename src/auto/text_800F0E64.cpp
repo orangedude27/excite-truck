@@ -1703,8 +1703,8 @@ extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ
     {
         u32 off = arg1 * 8;
         ref = *(u8 **)((u8 *)arg0 + 0x28);
-        if (*((u8 *)table + off + 5) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
-        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)table + off + 4), *(u32 *)((u8 *)table + off + 8), ref);
+        if (((u8 *)table)[off + 5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
+        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(((u8 *)table)[off + 4], *(u32 *)&((u8 *)table)[off + 8], ref);
     }
     if (entry == 0) return 0;
     ref = *(u8 **)((u8 *)arg0 + 0x28);
@@ -1715,8 +1715,8 @@ extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ
     {
         u32 off = arg2 * 8;
         ref = *(u8 **)((u8 *)arg0 + 0x28);
-        if (*((u8 *)group + off + 5) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
-        table = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)group + off + 4), *(u32 *)((u8 *)group + off + 8), ref);
+        if (((u8 *)group)[off + 5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
+        table = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(((u8 *)group)[off + 4], *(u32 *)&((u8 *)group)[off + 8], ref);
     }
     if (table == 0) return 0;
     *(u32 *)arg3 = table[0];
@@ -4404,11 +4404,88 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     fn_8002F634(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
 }
 
+/* SoundInstanceManager::Alloc(priority): take a free sound from the pool, or evict the
+   lowest-priority active one (the list is sorted, front = lowest); inlined into fn_800F9200. */
+static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
+    void *sound;
+    void *it;
+    void *pos;
+    u32 irq = OSDisableInterrupts();
+    void *mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(pool);
+    if (mem != 0) {
+        sound = mem;
+        if (mem != 0) {
+            sound = fn_800FDA20(mem, pool);
+        }
+    } else {
+        u8 *node;
+        u8 *front;
+        if (*(s32 *)((u8 *)pool + 4) == 0) {
+            OSRestoreInterrupts(irq);
+            return 0;
+        }
+        if (*(s32 *)((u8 *)pool + 4) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325924, 0x1F1, lbl_80325900);
+        }
+        node = *(u8 **)((u8 *)pool + 8);
+        if (node == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+        }
+        front = node - 0xB8;
+        if (front == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258F4, 0x193, lbl_803258D0);
+        }
+        if (front == 0) {
+            OSRestoreInterrupts(irq);
+            return 0;
+        }
+        {
+            s32 c = *(u8 *)(front + 0x74) + *(s32 *)(front + 0x40);
+            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
+            if (priority < cc) {
+                OSRestoreInterrupts(irq);
+                return 0;
+            }
+        }
+        {
+            void **vt = *(void ***)front;
+            ((void (*)(void *, s32))vt[6])(front, 0);
+        }
+        mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(pool);
+        sound = mem;
+        if (mem == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326094, 0x72, lbl_8032606C);
+        }
+        if (sound != 0) {
+            sound = fn_800FDA20(sound, pool);
+        }
+    }
+    pos = *(void **)((u8 *)pool + 8);
+    while (pos != (void *)((u8 *)pool + 8)) {
+        if (pos == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+        }
+        {
+            s32 c = *(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78);
+            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
+            if (priority < cc) {
+                break;
+            }
+        }
+        pos = *(void **)pos;
+    }
+    if (sound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
+    }
+    it = pos;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)pool + 4, &it, (u8 *)sound + 0xB8);
+    OSRestoreInterrupts(irq);
+    return sound;
+}
+
 extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void *arg6) {
-    u8 *b0 = (u8 *)(u32)arg0;
-    u8 *b3 = (u8 *)(u32)arg3;
-    s32 sp10;
     void *sp14;
+    s32 sp10;
     void *spC;
     void *sp8;
     s32 sp18[7];
@@ -4428,19 +4505,15 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     }
     var_r31 = 0;
     if (arg3 != 0) {
-        void *obj = *(void **)b3;
+        void *obj = *(void **)arg3;
         void **vt = *(void ***)obj;
         void *(*f)(void *, void *, s32, s32, s32, s32) = (void *(*)(void *, void *, s32, s32, s32, s32))vt[2];
-        f(obj, (void *)sp18, arg5, 0, *(s32 *)(b3 + 0xC), 8);
+        f(obj, (void *)sp18, arg5, 0, *(s32 *)(arg3 + 0xC), 8);
         var_r31 = sp18[6];
     }
     t5 = arg2 - var_r31;
-    if (t5 > 0x7F) {
-        var_r30 = 0x7F;
-    } else {
-        var_r30 = t5 & ~(t5 >> 31);
-    }
-    if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)b0, var_r30, (void *)arg4) == 0) {
+    var_r30 = t5 > 0x7F ? 0x7F : (t5 < 0 ? 0 : t5);
+    if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, var_r30, (void *)arg4) == 0) {
         return 0;
     }
     t4 = 0;
@@ -4454,7 +4527,10 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     {
         void *t = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(arg6);
         if (t != 0) {
-            var_r29 = fn_800FDA20(t, arg6);
+            var_r29 = t;
+            if (t != 0) {
+                var_r29 = fn_800FDA20(t, arg6);
+            }
             goto block_36;
         }
     }
@@ -4464,6 +4540,9 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
         goto check;
     }
     {
+        if (*(s32 *)((u8 *)arg6 + 4) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325924, 0x1F1, lbl_80325900);
+        }
         temp_r19 = *(u8 **)((u8 *)arg6 + 8);
         if (temp_r19 == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
@@ -4479,12 +4558,7 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
         }
         {
             s32 c = *(u8 *)(temp_r19_2 + 0x74) + *(s32 *)(temp_r19_2 + 0x40);
-            s32 cc;
-            if (c > 0x7F) {
-                cc = 0x7F;
-            } else {
-                cc = c & ~(c >> 31);
-            }
+            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
             if (var_r30 < cc) {
                 OSRestoreInterrupts(irq);
                 var_r29 = 0;
@@ -4514,12 +4588,7 @@ block_36:
         }
         {
             s32 c = *(u8 *)((u8 *)var_r22 - 0x44) + *(s32 *)((u8 *)var_r22 - 0x78);
-            s32 cc;
-            if (c > 0x7F) {
-                cc = 0x7F;
-            } else {
-                cc = c & ~(c >> 31);
-            }
+            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
             if (var_r30 < cc) {
                 break;
             }
@@ -4527,7 +4596,7 @@ block_36:
         var_r22 = *(void **)var_r22;
     }
     if (var_r29 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262B8, 0x233, (const char *)lbl_80326294);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
     }
     sp14 = var_r22;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)arg6 + 4, &sp14, (u8 *)var_r29 + 0xB8);
@@ -4536,13 +4605,12 @@ check:
     if (var_r29 == 0) {
         return 0;
     }
-    if (*(s32 *)(b0 + 0x18) != 0) {
-        s32 idx = *(s32 *)(b0 + 0x1C);
-        if (idx == 0) {
+    if (*(s32 *)(arg0 + 0x18) != 0) {
+        if (*(s32 *)(arg0 + 0x18) == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E44, 0x1F1, lbl_80325E20);
         }
         {
-            s32 id2 = *(s32 *)(b0 + 0x1C);
+            s32 id2 = *(s32 *)(arg0 + 0x1C);
             if (id2 == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325DE4, 0x23D, lbl_80325DC0);
             }
@@ -4550,8 +4618,8 @@ check:
             if (temp_r19_3 == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E14, 0x193, lbl_80325DF0);
             }
-            sp10 = *(s32 *)(b0 + 0x1C);
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(b0 + 0x18, &sp10);
+            sp10 = *(s32 *)((u8 *)(arg0 + 0x18) + 4);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)(arg0 + 0x18), &sp10);
             *(void **)(temp_r19_3 + 0x34) = var_r29;
             {
                 u8 *nl = temp_r19_3 + 4;
@@ -4563,12 +4631,14 @@ check:
         }
     }
     if (arg3 != 0) {
-        void **pp = *(void ***)((u8 *)(u32)arg3 + 8);
-        s32 (*g)(void *, s32) = (s32 (*)(void *, s32))((void (**)(void *, s32))pp)[1];
-        s32 r = g((void *)pp, *(s32 *)((u8 *)(u32)arg3 + 0x10));
-        if (r != 0) {
-            memcpy((void *)r, (const void *)(u32)*(s32 *)((u8 *)(u32)arg3 + 0xC), (u32)*(s32 *)((u8 *)(u32)arg3 + 0x10));
-            fn_800E9B74(var_r29, *(void ***)b3, *(s32 *)(b3 + 4), *(void ***)((u8 *)b3 + 8), r);
+        if (arg3 != 0) {
+            void **pp = *(void ***)(arg3 + 8);
+            s32 (*g)(void *, s32) = (s32 (*)(void *, s32))((void (**)(void *, s32))*pp)[2];
+            s32 r = g((void *)pp, *(s32 *)(arg3 + 0x10));
+            if (r != 0) {
+                memcpy((void *)r, (const void *)*(s32 *)(arg3 + 0xC), (u32)*(s32 *)(arg3 + 0x10));
+                fn_800E9B74(var_r29, *(void ***)arg3, *(s32 *)(arg3 + 4), *(void ***)(arg3 + 8), r);
+            }
         }
     }
     *(u8 *)((u8 *)var_r29 + 0x74) = (u8)arg1;
@@ -4576,32 +4646,22 @@ check:
     if (var_r29 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262B8, 0x233, (const char *)lbl_80326294);
     }
-    spC = (u8 *)b0 + 4;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((void *)b0, &spC, (u8 *)var_r29 + 0xC0);
-    *(void **)((u8 *)var_r29 + 0x10) = (void *)b0;
+    spC = (void *)(arg0 + 4);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((void *)arg0, &spC, (u8 *)var_r29 + 0xC0);
+    *(s32 *)((u8 *)var_r29 + 0x10) = arg0;
     if (arg4 != 0) {
         InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound((void *)arg4, var_r29);
     }
-    var_r21 = *(void **)(b0 + 0x10);
-    while (var_r21 != (void *)(b0 + 0x10)) {
+    var_r21 = *(void **)(arg0 + 0x10);
+    while (var_r21 != (void *)(arg0 + 0x10)) {
         if (var_r21 == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
         }
         {
             s32 c = *(u8 *)((u8 *)var_r21 - 0x54) + *(s32 *)((u8 *)var_r21 - 0x88);
-            s32 cc;
+            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
             s32 d = *(u8 *)((u8 *)var_r29 + 0x74) + *(s32 *)((u8 *)var_r29 + 0x40);
-            s32 dc;
-            if (c > 0x7F) {
-                cc = 0x7F;
-            } else {
-                cc = c & ~(c >> 31);
-            }
-            if (d > 0x7F) {
-                dc = 0x7F;
-            } else {
-                dc = d & ~(d >> 31);
-            }
+            s32 dc = d > 0x7F ? 0x7F : (d < 0 ? 0 : d);
             if (dc < cc) {
                 break;
             }
@@ -4612,7 +4672,7 @@ check:
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
     }
     sp8 = var_r21;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)b0 + 0xC, &sp8, (u8 *)var_r29 + 0xC8);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)(arg0 + 0xC), &sp8, (u8 *)var_r29 + 0xC8);
     return var_r29;
 }
 
