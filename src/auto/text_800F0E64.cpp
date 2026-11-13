@@ -6385,6 +6385,8 @@ done:
 }
 
 extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlayerFbPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeaderPv(bool success, const void* header, void* player) {
+    /* Async callback after reading a stream header: set up the player on success,
+       otherwise force it to stop. */
     if (player == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x4E8, lbl_803269A0);
     }
