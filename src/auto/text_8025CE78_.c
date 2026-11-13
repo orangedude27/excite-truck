@@ -176,6 +176,35 @@ found:
 
   #pragma pop
 
+void fn_8025DDD0(void *arg0, int arg1) {
+    float spC, sp8, f25, f24, f26, f27, f28, f29;
+    char *base, *entry;
+    unsigned int col;
+    int b0, b1, b2, s0, s1, s2, color;
+    if (*(unsigned char *)((char *)arg0 + 0x20) != 0) {
+        fn_80230C30(&spC, &sp8, *(int *)((char *)arg0 + 4), *(int *)((char *)arg0 + 8));
+        f25 = (float)*(int *)((char *)arg0 + 0xC);
+        f24 = (float)*(int *)((char *)arg0 + 0x10);
+        fn_802354A0(*(int *)((char *)arg0 + 0x28), *(unsigned char *)((char *)arg0 + 0x2C), -1, spC - lbl_80563B58, lbl_80563B58 + sp8, lbl_80563B5C, lbl_80563B60 + f25, lbl_80563B60 + f24);
+        base = *(char **)((char *)arg0 + 0x18);
+        entry = base + *(int *)((char *)arg0 + 0x1C) * 0x38;
+        f26 = *(float *)(entry + 0x28);
+        f27 = *(float *)(entry + 0x2C);
+        f28 = *(float *)(entry + 0x30);
+        f29 = *(float *)(entry + 0x34);
+        col = *(unsigned int *)((char *)arg0 + 0x24);
+        fn_80231220(*(int *)(entry + 0x20), -1, spC, sp8, f25, f24, f26, f27, f28, f29);
+        b0 = col & 0xFF;
+        b1 = (col >> 8) & 0xFF;
+        b2 = (col >> 16) & 0xFF;
+        s0 = (b0 * 0xFE01) >> 16;
+        s1 = (b1 * 0xFE01) >> 16;
+        s2 = (b2 * 0xFE01) >> 16;
+        color = (int)(0xFF000000 | (s2 << 16) | (s1 << 8) | s0);
+        fn_80231220(*(int *)(entry + 0x24), color, spC, sp8, f25, f24, f26, f27, f28, f29);
+    }
+}
+
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8025DF80(void *arg0) {
