@@ -331,24 +331,25 @@ void fn_8023BEB8(s32 arg0, s32 arg1, s32 arg2) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8023BEC4(s32 arg0, s32 arg1) {
-    s32 temp_r31;
-    s32 var_r30;
-    s32 var_r29;
+/* Find the index whose entry (via fn_80012870) matches targetId by scanning downward from the count at offset 0x70, then pass context id, found index (-1 if none), and param to fn_8023BEB8. */
+void fn_8023BEC4(s32 targetId, s32 param) {
+    s32 contextId;
+    s32 foundIndex;
+    s32 index;
 
-    temp_r31 = *(s32 *)((u8 *)fn_8001285C() + 4);
-    var_r30 = -1;
-    var_r29 = *(s32 *)((u8 *)fn_80012820(temp_r31) + 0x70);
+    contextId = *(s32 *)((u8 *)fn_8001285C() + 4);
+    foundIndex = -1;
+    index = *(s32 *)((u8 *)fn_80012820(contextId) + 0x70);
     goto check;
 body:
-    if (arg0 == *fn_80012870(temp_r31, var_r29)) {
-        var_r30 = var_r29;
+    if (targetId == *fn_80012870(contextId, index)) {
+        foundIndex = index;
     }
 check:
-    if (var_r29-- > 0) {
+    if (index-- > 0) {
         goto body;
     }
-    fn_8023BEB8(temp_r31, var_r30, arg1);
+    fn_8023BEB8(contextId, foundIndex, param);
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
