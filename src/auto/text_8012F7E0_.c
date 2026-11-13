@@ -1,23 +1,26 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern volatile unsigned char lbl_805599E8;
-extern unsigned char lbl_80422F40[];
-extern signed char lbl_8032AFE0[];
+/* The game's base64 alphabet is "abcdefghijklmnopqrstuvwxyz"
+ * "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,." (lbl_8032AFE0, 64 characters).
+ * fn_8012F7E0 builds the reverse table once and hands out the 6-bit value of
+ * a character, 0xFF for one the alphabet does not hold. */
+extern volatile unsigned char lbl_805599E8; /* set until the table is built */
+extern unsigned char lbl_80422F40[];        /* character -> 6-bit value */
+extern signed char lbl_8032AFE0[];          /* the alphabet itself */
 extern int memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 unsigned char fn_8012F7E0(signed char arg0) {
-    register int initialized = lbl_805599E8;
     int i;
-    if (initialized != 0) {
+    if (lbl_805599E8 != 0) {
         lbl_805599E8 = 0;
         memset(lbl_80422F40, 0xFF, 0x100);
         for (i = 0; i < 64; i++) {
-            lbl_80422F40[lbl_8032AFE0[i]] = i;
+            lbl_80422F40[lbl_8032AFE0[i]] = (unsigned char)i;
         }
     }
-    return lbl_80422F40[arg0];
+    return lbl_80422F40[(int)arg0];
 }
 
 int fn_8012F968(unsigned char *arg0) {
