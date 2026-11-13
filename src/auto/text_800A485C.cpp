@@ -32,27 +32,6 @@ static inline s32 Fn800B25CCWide(u16 *w) {
     }
     return 0;
 }
-struct Fn800B10E0Ent {
-    u16 first;
-    u8 pad2[0x20A - 2];
-    u8 count;
-    u8 pad20B[3];
-    s8 name[13];
-    u8 f21B;
-    u8 f21C;
-    u8 f21D;
-    u16 f21E;
-    u16 f220;
-    u16 f222;
-    u16 f224;
-    u16 f226;
-    u32 f228;
-    void *f22C;
-    u32 f230;
-    u32 flag234;
-    u32 cluster238;
-    u16 off23C;
-};
 struct Fn800D3C44Str {
     char file[0x134];
     char msg134[0x80];
