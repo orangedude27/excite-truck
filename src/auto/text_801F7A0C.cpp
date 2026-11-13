@@ -963,6 +963,51 @@ extern "C" int fn_801F88F4(void *arg0) {
     return 0;
 }
 
+extern "C" void fn_801F8988(void *arg0, void *arg1) {
+    class Node {
+    public:
+        virtual void s8();
+        virtual void sC();
+        virtual void s10();
+        virtual const char *get14(const char *);
+        virtual void s18();
+        virtual void s1C();
+        virtual void s20();
+        virtual void s24();
+        virtual float get28(const char *);
+        virtual void s2C();
+    };
+    u32 *tbl = lbl_802F9B30;
+    const char *base = lbl_8033AF80;
+    u32 t0 = tbl[0];
+    u32 t1 = tbl[1];
+    u32 t2 = tbl[2];
+    (void)t0; (void)t1; (void)t2;
+    const char *typeName = ((Node *)arg1)->get14((const char *)lbl_8055B2CC);
+    (void)typeName;
+    int found = 0;
+    {
+        const char *arr[3];
+        arr[0] = (const char *)t0;
+        arr[1] = (const char *)t1;
+        arr[2] = (const char *)t2;
+        for (int i = 0; i < 3; i++) {
+            if (arr[i] == 0) { found = 0; break; }
+            if (stricmp(arr[i], typeName) == 0) { found = 1; break; }
+        }
+    }
+    unsigned char *out = (unsigned char *)arg0;
+    if (found == 0) {
+        *(u32 *)out = 0x4f425354;
+        *(int *)(out + 4) = 0x84;
+        *(int *)(out + 0x54) = 0;
+        *(float *)(out + 8) = 0.0f;
+    } else {
+        *(u32 *)out = 0;
+    }
+    (void)base;
+}
+
 extern "C" void fn_801F92A8(void) {
 
 }
@@ -2093,7 +2138,7 @@ extern "C" void fn_801FAAC4(char *dest, void *arg1) {
             d++;
         }
         if (n <= 0) {
-            return;
+            break;
         }
         goto body3;
         for (;;) {
@@ -2148,7 +2193,7 @@ extern "C" void fn_801FAAC4(char *dest, void *arg1) {
             d++;
         }
         if (n <= 0) {
-            return;
+            break;
         }
         goto body6;
         for (;;) {
@@ -2294,6 +2339,103 @@ extern "C" void fn_801FB354(void *arg0, void *arg1) {
 
 extern "C" void fn_801FB40C(void *arg0, s32 arg1, void *arg2) {
     fn_80204014(arg1, *(s32 *)((u8 *)arg2 + 0x34), *(s32 *)((u8 *)arg0 + 0x19C), arg0);
+}
+
+extern "C" void fn_801FB420(void *arg0, void *arg1) {
+    unsigned char *self = (unsigned char *)arg0;
+    unsigned char *par = (unsigned char *)arg1;
+    int flags = *(int *)(self + 0x190);
+    *(int *)(self + 0x188) = -1;
+    const char *base = lbl_8033AF80;
+    if ((flags & 4) != 0) {
+        void *o34 = *(void **)(par + 0x34);
+        if (o34 != 0) {
+            VT_C *vt = *(VT_C **)o34;
+            vt->fC(o34, lbl_8055B398);
+        }
+        int v15c = *(int *)(self + 0x15c);
+        int need = 0;
+        {
+            unsigned int t = (unsigned int)(v15c - 6);
+            if (t < 0x11 && (((1u << t) & 0x12319u) != 0)) need = 1;
+        }
+        if (need != 0) {
+            int cnt = lbl_8055EC78;
+            lbl_8055EC78 = cnt + 1;
+            void *r24 = 0;
+            int vv = *(int *)(self + 0x15c);
+            switch (vv) {
+            case 6: fn_801FC12C(self + 0x10c); r24 = 0; break;
+            case 9: fn_801FBF48(self + 0x10c); r24 = 0; break;
+            case 10: fn_801FBFE8(self + 0x10c); r24 = 0; break;
+            case 14: fn_801FC048(self + 0x10c); r24 = 0; break;
+            case 15: fn_801FC12C(self + 0x10c); r24 = 0; break;
+            case 19: fn_801FC048(self + 0x10c); r24 = 0; break;
+            case 22: fn_801FBEA8(self + 0x10c); r24 = 0; break;
+            default: fn_802E317C(base + 0x510); r24 = 0; break;
+            }
+            if (r24 != 0) {
+                void **vt = *(void ***)r24;
+                void (*fn)(void *, void *) = (void (*)(void *, void *))vt[0x10];
+                (void)fn;
+            }
+            {
+                void *a = lbl_8055EC74;
+                (void)a;
+                void *nn = fn_801FBE1C((void **)0, 0, 0, 0, 0, 0);
+                (void)nn;
+            }
+            {
+                unsigned char *obj = (unsigned char *)fn_801284F8(0x48, (void *)(base + 0x540));
+                (void)obj;
+            }
+        } else {
+            void *o2 = *(void **)(par + 0x34);
+            int r31 = -1;
+            if (o2 != 0) {
+                VT_20 *vt = *(VT_20 **)o2;
+                r31 = vt->f20(o2, lbl_8055B3A0, -1);
+            }
+            {
+                unsigned char *obj = (unsigned char *)fn_801284F8(0x48, (void *)(base + 0x540));
+                if (obj != 0) {
+                    int f = *(int *)(self + 0x190);
+                    void *fp = (void *)fn_801FBD04;
+                    if ((f & 0x20) == 0) {
+                        if ((f & 1) != 0) fp = (void *)fn_801FBD0C;
+                    } else fp = (void *)fn_801FBD94;
+                    int av = (int)fn_802C6FC0(self + 0x61, 0, 0);
+                    *(int *)obj = av;
+                    for (int i = 0; i < 12; i++) ((int *)(obj + 4))[i] = ((int *)par)[i];
+                    obj[0x41] = (unsigned char)(((unsigned int)f >> 9) & 1);
+                    *(int *)(obj + 0x34) = 0;
+                    *(void **)(obj + 0x38) = (void *)fp;
+                    *(int *)(obj + 0x3c) = r31;
+                }
+            }
+        }
+        if ((*(int *)(self + 0x190) & 0x80) == 0) {
+            fn_801FBCF4((void **)0, 0);
+        } else {
+            fn_801FBCF4((void **)0, 0);
+        }
+        if ((*(int *)(self + 0x190) & 2) != 0) fn_802981EC(par);
+        if ((*(int *)(self + 0x190) & 0x40) != 0) fn_801F4DD4(*(void **)(self + 0x194), par);
+    } else {
+        for (int i = 0; i < 12; i++) ((int *)(self + 0x124))[i] = ((int *)par)[i];
+        *(void **)(self + 0x18c) = *(void **)(par + 0x34);
+        {
+            unsigned char *obj = (unsigned char *)fn_801284F8(0x58, (void *)(base + 0x54c));
+            if (obj != 0) {
+                fn_801EAC44(obj, self + 0x10c, self + 0x61);
+                *(void **)obj = lbl_8033B588;
+                *(int *)(obj + 0x44) = -1;
+                *(float *)(obj + 0x48) = lbl_80562FF0;
+                *(float *)(obj + 0x4c) = lbl_80562FF0;
+            }
+            fn_801E87D4(obj);
+        }
+    }
 }
 
 extern "C" void fn_801FBCF4(void **arg0, void *arg1) {
