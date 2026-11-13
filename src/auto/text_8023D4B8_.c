@@ -482,6 +482,7 @@ void fn_8023E0DC(void *arg0, int arg1, int arg2) {
 }
 
 void fn_8023E16C(void *arg0, int arg1) {
+    /* Clear all entries in a table row by writing a 0 flag/value to each column slot. */
     int var_r31;
     if (arg1 < 0) {
         return;
