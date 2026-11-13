@@ -96,27 +96,28 @@ void* fn_80016508(void) {
 int fn_80016510(int arg0) { extern void *lbl_8055D550; if (arg0 < (int)lbl_8055D550) return (int)(lbl_8055D544 + arg0 * 0xA8); return (int)(lbl_80357960 + (arg0 - (int)lbl_8055D550) * 0xA8); }
 
 #pragma scheduling invalid_target
-void *fn_80016544(int arg0) {
+void *fn_80016544(int id) {
+    /* Find 0xA8-byte entry by id at +0x04 in primary table, then fallback table; default to fallback base. */
     unsigned char *entry;
     unsigned char *base;
     int i;
     int j;
     for (i = 0, entry = lbl_80357960; i < (int)lbl_8055D554; entry += 0xA8, i++) {
-        if (arg0 == *(int *)(entry + 4)) {
+        if (id == *(int *)(entry + 4)) {
             return lbl_80357960 + i * 0xA8;
         }
     }
     {
-        unsigned char *e2;
-        unsigned char *b2;
+        unsigned char *fallbackEntry;
+        unsigned char *fallbackBase;
         int k = 0;
-        e2 = b2 = lbl_8055D544;
-        for (k = 0; k < (int)lbl_8055D550; e2 += 0xA8, k++) {
-            if (arg0 == *(int *)(e2 + 4)) {
-                return b2 + k * 0xA8;
+        fallbackEntry = fallbackBase = lbl_8055D544;
+        for (k = 0; k < (int)lbl_8055D550; fallbackEntry += 0xA8, k++) {
+            if (id == *(int *)(fallbackEntry + 4)) {
+                return fallbackBase + k * 0xA8;
             }
         }
-        return b2;
+        return fallbackBase;
     }
 }
 #pragma scheduling on
