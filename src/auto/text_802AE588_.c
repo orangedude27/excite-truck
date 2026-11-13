@@ -254,12 +254,23 @@ int fn_802AE7AC(void) {
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
+/* Default start-up of the world grid / water subsystems, used when the 'FRAG'
+ * resource is missing (see fn_801EB9FC).  It remembers whether the "swlmap.tex"
+ * texture is in the archive (lbl_8055F980, read back by fn_802B05E4), builds the
+ * grid pyramid's per-level offsets and allocates its buffer (fn_802AE5E0),
+ * starts the subsystems, then takes the "water_layer" handle from the game
+ * config (lbl_8055CD78, -1 when there is none) and the "crystal_mode" flag
+ * (lbl_8055F981).  Last it lays out lbl_804BE090[1..7]: the running sum of the
+ * eight tile footings below, i.e. where each level starts in the tile list.
+ * The lbl_80564B40..lbl_80564B6C globals are the .sdata2 copies of the
+ * literals 10, 2, 4, 8, 16, 32, 3, 64, 128, 256, sqrt(2) and 0.5;
+ * lbl_80564AF0 is 2.0f, the world units per grid cell. */
 extern "C" void fn_802AE7F4(void) {
-    float values[8];
-    float total;
+    float footing[8];
+    float start;
     int i;
-    lbl_8055F980 = fn_8012C33C(lbl_8034A020);
-    fn_802AE5E0(0x400);
+    lbl_8055F980 = fn_8012C33C(lbl_8034A020); /* "swlmap.tex" present? */
+    fn_802AE5E0(0x400); /* grid pyramid over the 1024-unit world */
     fn_802BE7F8();
     fn_802B40F8();
     fn_802B0914();
@@ -272,37 +283,37 @@ extern "C" void fn_802AE7F4(void) {
     fn_802BDBA8();
     fn_802C2298();
     if ((unsigned char)lbl_8055F980 == 0)
-        fn_802BF350();
+        fn_802BF350(); /* no swlmap texture: fall back */
     fn_802B58E0();
     {
-        ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
-        lbl_8055CD78 = obj->lookup(lbl_8034A02C, -1);
+        ETConfigAccess *config = (ETConfigAccess *)fn_802B59CC();
+        lbl_8055CD78 = config->lookup(lbl_8034A02C, -1); /* "water_layer" */
     }
     {
-        ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
-        lbl_8055F981 = obj->status(lbl_8034A038, 0);
+        ETConfigAccess *config = (ETConfigAccess *)fn_802B59CC();
+        lbl_8055F981 = config->status(lbl_8034A038, 0); /* "crystal_mode" */
     }
-    values[0] = lbl_80564B40 * (lbl_80564B44 * lbl_80564AF0);
-    total = values[0];
-    values[1] = lbl_80564B48 * (lbl_80564B48 * lbl_80564AF0);
-    values[2] = lbl_80564B48 * (lbl_80564B4C * lbl_80564AF0);
-    values[3] = lbl_80564B40 * (lbl_80564B50 * lbl_80564AF0);
-    values[4] = lbl_80564B48 * (lbl_80564B54 * lbl_80564AF0);
-    values[5] = lbl_80564B58 * (lbl_80564B5C * lbl_80564AF0);
-    values[6] = lbl_80564B44 * (lbl_80564B60 * lbl_80564AF0);
-    values[7] = lbl_80564B64 * lbl_80564AF0;
+    footing[0] = lbl_80564B40 * (lbl_80564B44 * lbl_80564AF0);
+    start = footing[0];
+    footing[1] = lbl_80564B48 * (lbl_80564B48 * lbl_80564AF0);
+    footing[2] = lbl_80564B48 * (lbl_80564B4C * lbl_80564AF0);
+    footing[3] = lbl_80564B40 * (lbl_80564B50 * lbl_80564AF0);
+    footing[4] = lbl_80564B48 * (lbl_80564B54 * lbl_80564AF0);
+    footing[5] = lbl_80564B58 * (lbl_80564B5C * lbl_80564AF0);
+    footing[6] = lbl_80564B44 * (lbl_80564B60 * lbl_80564AF0);
+    footing[7] = lbl_80564B64 * lbl_80564AF0;
     {
-        int step = 2;
-        float *dst = &lbl_804BE090[1];
-        float *val = &values[1];
+        int tile = 2;
+        float *slot = &lbl_804BE090[1];
+        float *next = &footing[1];
         for (i = 0; i < 7; i++) {
-            float v = *val;
-            float next = (lbl_80564B68 * (lbl_80564B6C * lbl_80564AF0)) * (float)((step << 1) + step);
-            *dst = total;
-            total += (next > v) ? next : v;
-            step *= 2;
-            dst++;
-            val++;
+            float size = *next;
+            float diagonal = (lbl_80564B68 * (lbl_80564B6C * lbl_80564AF0)) * (float)((tile << 1) + tile);
+            *slot = start;
+            start += (diagonal > size) ? diagonal : size;
+            tile *= 2;
+            slot++;
+            next++;
         }
     }
     fn_802BEAB0();
