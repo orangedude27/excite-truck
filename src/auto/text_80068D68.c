@@ -2282,19 +2282,21 @@ s32 WUDStartFastSyncSimple(void) {
 
 extern char lbl_80313520[];
 extern void fn_80073CA8(void);
+/* Stop simple WUD sync: if the library is running, request a sync stop and clear the sync loop count. */
 s32 fn_8006AC4C(void) {
     s32 interrupts;
     s32 result;
-    register u8 *state;
+    register WUDSyncControlView *wudCb;
+
     DBPrintf_8006CFA8(lbl_80313520);
-    state = lbl_80392960;
+    wudCb = (WUDSyncControlView *)lbl_80392960;
     result = 0;
     interrupts = OSDisableInterrupts();
-    if ((s8)state[0x688] == 3) {
-        if (state[0xC] == 3)
+    if (wudCb->lib_status == 3) {
+        if (wudCb->sync_state == 3)
             fn_80073CA8();
         result = 1;
-        state[0x668] = 0;
+        wudCb->sync_loop_num = 0;
     }
     OSRestoreInterrupts(interrupts);
     return result;
