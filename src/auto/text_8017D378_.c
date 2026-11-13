@@ -120,10 +120,10 @@ extern "C" void fn_8017D404(float *pos, int target, float radius, float strength
     register void *result = fn_8017960C(arg2);
     register int i;
     float dist, rand, px, py, pz;
-    float zero;
-    float one;
+    register float zero;
+    register float factor;
     register float offset;
-    float factor;
+    register float one;
     count = 5;
     fn_801B619C(lists, &count, pos);
     one = lbl_80561BF4;
@@ -744,28 +744,28 @@ extern char lbl_80331DC0[];
 extern int lbl_8055A318;
 extern int lbl_8055A320;
 extern int lbl_8055A328;
-void fn_8017E96C(void *arg0, int **arg1, signed char *arg2) {
-    int state = *(int *)((char *)arg0 + 0x1F0);
+void fn_8017E96C(void *object, int **outText, signed char *outFlag) {
+    int state = *(int *)((char *)object + 0x1F0);
     switch (state) {
     case 0:
-        *arg1 = &lbl_8055A328;
-        *arg2 = 0;
+        *outText = &lbl_8055A328;
+        *outFlag = 0;
         return;
     case 3:
-        *arg1 = (int *)lbl_80331DC0;
-        *arg2 = 0;
+        *outText = (int *)lbl_80331DC0;
+        *outFlag = 0;
         return;
     case 1:
-        *arg1 = 0;
-        *arg2 = 0;
+        *outText = 0;
+        *outFlag = 0;
         return;
     case 2:
-        *arg1 = &lbl_8055A320;
-        *arg2 = 1;
+        *outText = &lbl_8055A320;
+        *outFlag = 1;
         return;
     default:
-        *arg1 = &lbl_8055A318;
-        *arg2 = 0;
+        *outText = &lbl_8055A318;
+        *outFlag = 0;
         return;
     }
 }
