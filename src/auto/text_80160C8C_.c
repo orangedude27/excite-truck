@@ -1071,13 +1071,14 @@ void fn_80161DE4(void) {
 }
 
 s32 fn_80161E40(s32 targetValue) {
-    /* Return the index of the first item whose object query for "tutorial" with -999 equals targetValue, or -1. */
+    /* Return the index of the first contest whose parameter table reads the
+     * "tutorial" element (default -999) as targetValue, or -1. */
     s32 index;
-    void *item;
+    struct ContestEntry *item;
     for (index = 0; index < fn_80012854(); index++) {
-        item = fn_8001285C(index);
+        item = (struct ContestEntry *)fn_8001285C(index);
 #pragma cplusplus on
-        if (((Obj_80161C94 *)*(void **)((char *)item + 0x20))->f6(lbl_8032F738, -999) == targetValue) {
+        if (((struct ContestParamTable *)item->table)->getInt(lbl_8032F738, -999) == targetValue) {
             return index;
         }
 #pragma cplusplus off
