@@ -19768,12 +19768,13 @@ void *l2cu_find_lcb_by_bd_addr(u8 *addr) {
     return 0;
 }
 
+/* Find an active L2CAP link control block by its HCI connection handle. */
 void *l2cu_find_lcb_by_handle(u16 handle) {
-    u8 *p = lbl_803C4040;
-    if (*(p += 8) != 0 && *(u16 *)(p + 0x28) == handle) return p;
-    if (*(p += 0x5C) != 0 && *(u16 *)(p + 0x28) == handle) return p;
-    if (*(p += 0x5C) != 0 && *(u16 *)(p + 0x28) == handle) return p;
-    if (*(p += 0x5C) != 0 && *(u16 *)(p + 0x28) == handle) return p;
+    u8 *lcb = lbl_803C4040;
+    if (*(lcb += 8) != 0 && *(u16 *)(lcb + 0x28) == handle) return lcb;
+    if (*(lcb += 0x5C) != 0 && *(u16 *)(lcb + 0x28) == handle) return lcb;
+    if (*(lcb += 0x5C) != 0 && *(u16 *)(lcb + 0x28) == handle) return lcb;
+    if (*(lcb += 0x5C) != 0 && *(u16 *)(lcb + 0x28) == handle) return lcb;
     return 0;
 }
 
