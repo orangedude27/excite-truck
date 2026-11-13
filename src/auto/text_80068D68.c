@@ -11126,18 +11126,21 @@ void bta_dm_bond(u8 *arg0)
     BTM_SecBond(arg0 + 8, arg0[0xE], arg0 + 0xF, sp8);
 }
 
-void bta_dm_pin_reply(u8 *arg0) {
-    u32 sp8[2];
-    void *ptr = (void *)fn_8008128C(arg0 + 8);
-    if (ptr != 0) {
-        memcpy(sp8, ptr, 8);
+void bta_dm_pin_reply(u8 *p_msg) {
+    /* Reply to a PIN code request using BTA DM message fields and the device's trusted mask. */
+    u32 trusted_mask[2];
+    void *p_trusted = (void *)fn_8008128C(p_msg + 8);
+
+    if (p_trusted != 0) {
+        memcpy(trusted_mask, p_trusted, 8);
     } else {
-        memset(sp8, 0, 8);
+        memset(trusted_mask, 0, 8);
     }
-    if (arg0[0xE]) {
-        BTM_PINCodeReply(arg0 + 8, 0, arg0[0xF], arg0 + 0x10, sp8);
+
+    if (p_msg[0xE]) {
+        BTM_PINCodeReply(p_msg + 8, 0, p_msg[0xF], p_msg + 0x10, trusted_mask);
     } else {
-        BTM_PINCodeReply(arg0 + 8, 0xB, 0, 0, sp8);
+        BTM_PINCodeReply(p_msg + 8, 0xB, 0, 0, trusted_mask);
     }
 }
 
