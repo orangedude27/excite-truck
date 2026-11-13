@@ -5,6 +5,10 @@ public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual void d6(); virtual int v9();
 };
+struct Dummy_80174794 {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual int f6(int);
+};
 #pragma cplusplus reset
 typedef struct { float pos[3]; int w; float a, b; } Elem_801720FC;
 typedef struct { float m[12]; float v[3]; } Fn8017431CCam;
