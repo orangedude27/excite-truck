@@ -254,24 +254,26 @@ public:
     virtual void d4(); virtual int f5(int);
 };
 #pragma cplusplus on
+/* Gate check: returns 1 when required mode flags are set or the current object's
+ * callback accepts; otherwise performs the fallback transition and returns 0. */
 extern "C" s32 fn_8024EC3C(void) {
     extern unsigned int lbl_8055F2EC;
     extern s32 fn_80129800(void *, int);
     extern s32 fn_802E4A10(void);
     extern void fn_80216D28(void);
     extern s32 fn_80214D50(s32);
-    s32 enabled = 0;
+    s32 flagsSatisfied = 0;
     if (fn_80129800((void *)fn_802E4A10(), 5) != 0) {
-        if (fn_80129800((void *)fn_802E4A10(), 6) != 0) enabled = 1;
+        if (fn_80129800((void *)fn_802E4A10(), 6) != 0) flagsSatisfied = 1;
     }
-    if (enabled == 0) {
-        u8 *base = (u8 *)lbl_8055F2EC;
-        void *obj = *(void **)(base + 0xD0);
-        s32 arg = *(s32 *)(base + 0x2C);
-        if (((Dummy_8024EC3C *)obj)->f5(arg) == 0) goto do_callback;
+    if (flagsSatisfied == 0) {
+        u8 *stateBase = (u8 *)lbl_8055F2EC;
+        void *targetObject = *(void **)(stateBase + 0xD0);
+        s32 callbackArg = *(s32 *)(stateBase + 0x2C);
+        if (((Dummy_8024EC3C *)targetObject)->f5(callbackArg) == 0) goto do_fallback;
     }
     return 1;
-do_callback:
+do_fallback:
     fn_80216D28();
     fn_80214D50(1);
     return 0;
@@ -2198,6 +2200,7 @@ extern "C" void fn_80251934(void *arg0) {
         outputOffset += 0xC;
         ++i;
     }
+
     {
         f32 limit;
         f32 speed;
@@ -2210,6 +2213,7 @@ extern "C" void fn_80251934(void *arg0) {
         f32 current;
         f32 scale;
         f32 diff;
+
         j = 0;
         offset = 0;
         limit = lbl_80563960;
@@ -2236,6 +2240,7 @@ extern "C" void fn_80251934(void *arg0) {
             }
         }
     }
+
     {
         Selector *selector = *(Selector **)((u8 *)arg0 + 0xD0);
         if (selector->check(*(s32 *)((u8 *)arg0 + 0x2C)) == 0)
@@ -2254,33 +2259,33 @@ extern "C" u32 lbl_8055CFF4;
 extern "C" const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
 extern "C" double __fabs(double);
 extern "C" void fn_80251B04(void *arg0) {
-    extern s32 lbl_8055CFF0;
-    extern u32 lbl_8055CFF4;
-    extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
+    extern int lbl_8055CFF0;
+    extern unsigned int lbl_8055CFF4;
+    extern const float lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
     extern double __fabs(double);
-    f32 temp_f3, temp_f10, f27, f26, f23;
-    s32 i;
-    s32 off;
-    temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
-    temp_f10 = (f32)((s32)(((u32)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
+    float temp_f3, temp_f10, f27, f26, f23;
+    int i;
+    int off;
+    temp_f3 = (lbl_80563990 * (float)lbl_8055CFF0) / lbl_80563994;
+    temp_f10 = (float)((int)(((unsigned int)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
     f27 = temp_f10 - lbl_8056398C;
-    fn_80231220(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4, lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0, lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964);
+    fn_80231220(*(int *)((char *)arg0 + 0x20), -1, lbl_8055CFF4, lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0, lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964);
     f26 = fn_80216CB4();
     f23 = lbl_80563960;
     i = 0;
     off = 0;
-    for (; i < *(s32 *)((char *)arg0 + 0x1C); i++, off += 0xC) {
+    for (; i < *(int *)((char *)arg0 + 0x1C); i++, off += 0xC) {
         char *p = *(char **)((char *)arg0 + 0x18) + off;
-        f32 a, b, c;
-        a = lbl_80563964 - (f32)__fabs(*(f32 *)(p + 8));
+        float a, b, c;
+        a = lbl_80563964 - (float)__fabs(*(float *)(p + 8));
         if (!(a < f26)) a = f26;
-        c = *(f32 *)((char *)arg0 + 0x28);
-        b = (f32)__fabs(c - (f32)i);
+        c = *(float *)((char *)arg0 + 0x28);
+        b = (float)__fabs(c - (float)i);
         if (lbl_80563964 < b) b = lbl_80563964;
         if (!(b > f23)) b = f23;
-        (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(arg0, i, *(s32 *)p, lbl_805639AC * ((f32)i - c) - lbl_805639B0, (f27 - lbl_80563980 * (lbl_805639A8 * (lbl_80563964 - a))) + lbl_805639B4 * a, lbl_805639AC, lbl_805639A8 * a + lbl_805639A4 * a, lbl_80563964 - b);
+        (*(void (**)(void *, int, int, float, float, float, float, float))(*(char **)arg0 + 0x60))(arg0, i, *(int *)p, lbl_805639AC * ((float)i - c) - lbl_805639B0, (f27 - lbl_80563980 * (lbl_805639A8 * (lbl_80563964 - a))) + lbl_805639B4 * a, lbl_805639AC, lbl_805639A8 * a + lbl_805639A4 * a, lbl_80563964 - b);
     }
-    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
+    fn_802354A0(*(int *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
 }
 
 #pragma scheduling on
