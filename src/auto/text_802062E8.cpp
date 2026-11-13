@@ -218,13 +218,14 @@ extern int lbl_802F9DA0[10];
 extern void* fn_80208D4C(void);
 extern void fn_80208D70(void);
 extern char lbl_8033BD30[];
-extern "C" void *fn_80206570(int index) {
-    struct Values {
-        int value[10];
+/* Returns the name for the given sound class index, or "<invalid>" if out of range. */
+extern "C" void *fn_80206570(int soundClass) {
+    struct SoundClassNameTable {
+        int name[10];
     };
-    struct Values values = *(struct Values *)&lbl_802F9DA0;
-    if (index < 10)
-        return (void *)values.value[index];
+    struct SoundClassNameTable table = *(struct SoundClassNameTable *)&lbl_802F9DA0;
+    if (soundClass < 10)
+        return (void *)table.name[soundClass];
     return lbl_8033BD30;
 }
 
@@ -328,7 +329,7 @@ extern "C" void fn_80206824(void *arg0, int arg1, int arg2) {
     struct Parent { virtual void f0(); virtual void f1(int, int); };
     extern int lbl_8055D430;
     u8 *self = (u8 *)arg0;
-#define CB (*(Callback **)(self + 0xC))
+#define CB (*(Callback **)(self + 12))
     int state = CB->f7();
     self[0x19] = 1;
     switch (state) {
@@ -344,19 +345,16 @@ extern "C" void fn_80206824(void *arg0, int arg1, int arg2) {
         break;
     case 3:
         if (self[0x49]) {
-            bool ok = false;
+            int ok = 0;
             if ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x200))
-                ok = true;
+                ok = 1;
             if (ok && *(int *)(self + 0x44) != 0)
                 goto skip;
-            {
-                u8 flag = self[0x4B];
-                self[0x49] = 0;
-                if (flag)
-                    CB->f5();
-                else
-                    CB->f4();
-            }
+            self[0x49] = 0;
+            if (self[0x4B])
+                CB->f5();
+            else
+                CB->f4();
         } else {
 skip:
             self[0x19] = 0;
@@ -553,48 +551,47 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
     float vec[3];
     register int i;
     register unsigned char *it;
-
     p[0x64] = 0;
     *(float *)(p + 0x68) = lbl_805631FC;
-    if (p[0x18]) {
+    if (p[0x18] != 0) {
         register float threshold = lbl_805631F8;
         register float margin = lbl_80563208;
         it = (unsigned char *)list;
-        for (i = 0; i < count; ++i, it += 0xC) {
-            register float *pos = *(float **)(p + 0x74);
+        for (i = 0; i < count; i++, it += 12) {
+            register float *pos = *(float **)(p + 116);
             register unsigned char *item = *(unsigned char **)(it + 4);
-            float dx = pos[0] - *(float *)(item + 0x24);
+            float dx = pos[0] - *(float *)(item + 36);
             vec[0] = dx;
-            float dy = pos[1] - *(float *)(item + 0x28);
+            float dy = pos[1] - *(float *)(item + 40);
             vec[1] = dy;
-            float dz = pos[2] - *(float *)(item + 0x2C);
+            float dz = pos[2] - *(float *)(item + 44);
             vec[2] = dz;
             float outX = dx * *(float *)item +
                          dy * *(float *)(item + 4) +
                          dz * *(float *)(item + 8);
-            float outY = dx * *(float *)(item + 0xC) +
-                         dy * *(float *)(item + 0x10) +
-                         dz * *(float *)(item + 0x14);
-            float outZ = dx * *(float *)(item + 0x18) +
-                         dy * *(float *)(item + 0x1C) +
-                         dz * *(float *)(item + 0x20);
+            float outY = dx * *(float *)(item + 12) +
+                         dy * *(float *)(item + 16) +
+                         dz * *(float *)(item + 20);
+            float outZ = dx * *(float *)(item + 24) +
+                         dy * *(float *)(item + 28) +
+                         dz * *(float *)(item + 32);
             vec[0] = outX;
             vec[1] = outY;
             vec[2] = outZ;
             float dot = PSVECDotProduct(vec, vec);
-            float radius = margin + *(float *)(p + 0x6C);
+            float radius = margin + *(float *)(p + 108);
             if (dot < radius * radius) {
                 float value = *(float *)(p + 8);
                 p[0x64] = 1;
                 if (value >= threshold) value = threshold;
-                value *= fn_80206CD0(vec, *(float *)(p + 0x6C));
-                if (*(float *)(p + 0x68) > value) {
+                value *= fn_80206CD0(vec, *(float *)(p + 108));
+                if (*(float *)(p + 104) > value) {
                 } else {
-                    *(float *)(p + 0x68) = value;
+                    *(float *)(p + 104) = value;
                 }
             }
         }
-        if (!p[0x64]) p[0x18] = 0;
+        if (!p[0x64]) p[24] = 0;
     }
 }
 #pragma processor gekko
