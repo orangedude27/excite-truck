@@ -77,19 +77,24 @@ void fn_80012478(void) {
 extern char lbl_80558AD0;
 #pragma push
 #pragma processor 750
-void fn_800124DC(const char *arg0, float farg0) {
-    register char *p = lbl_80351790;
+/* Start a progress message: copy its text into the ProgressMessage record, reset its
+ * accumulated progress, stamp the start time and mark it pending (lbl_80558AD0 = 1). */
+void fn_800124DC(const char *text, float target) {
+    register char *record = lbl_80351790;
     register int one = 1;
     register int zero = 0;
     lbl_80558AD0 = one;
-    strncpy(p + 1, arg0, 0x7f);
-    p[0x80] = zero;
-    *(float *)(p + 0x88) = farg0;
-    *(float *)(p + 0x84) = lbl_8056034C;
-    *(int *)(p + 0x8c) = fn_802E2C20();
-    p[0] = one;
+    strncpy(record + 1, text, 0x7f);
+    record[0x80] = zero;
+    ((ProgressMessage *)record)->target = target;
+    ((ProgressMessage *)record)->progress = lbl_8056034C;
+    ((ProgressMessage *)record)->startTime = fn_802E2C20();
+    record[0] = one;
 }
 #pragma pop
+#pragma pop
+#pragma push
+#pragma processor 750
 
 #pragma pop
 #pragma push
