@@ -185,25 +185,19 @@ void fn_800049C0(void) DECOMP_DONT_INLINE {
     struct NameTable { const char* names[10]; };
     struct { u32 date[6]; struct NameTable table; } local;
     int lang_result;
-    u32 a, b, c, d, e, f, g, h;
-
+    u16 aa, bb, cc, dd;
+    u32 e, f, g, h;
     local.table = *(const struct NameTable*)lbl_802ED680;
     fn_802E2CFC(&local);
-
-    a = *(u16*)((u8*)&local.date[1]);
-    b = *(u16*)((u8*)&local.date[2]);
-    c = *(u16*)((u8*)&local.date[1] + 2);
-    d = *(u16*)((u8*)&local.date[2] + 2);
-
-    e = a * 43200;
-    f = c * 3600;
-    g = b * 60;
-    h = d << 8;
-
-    fn_80129C80(6,
-        h & (d ^ f),
-        (d << 8) & (g ^ e));
-
+    aa = *(u16*)((u8*)&local.date[1]);
+    bb = *(u16*)((u8*)&local.date[2]);
+    cc = *(u16*)((u8*)&local.date[1] + 2);
+    dd = *(u16*)((u8*)&local.date[2] + 2);
+    e = aa * 43200;
+    f = cc * 3600;
+    g = bb * 60;
+    h = dd << 8;
+    fn_80129C80(6, h & (dd ^ f), (dd << 8) & (g ^ e));
     lang_result = fn_80129D18(6, 10);
     if (fn_80278A1C(lbl_802FAF24) != 0) {
         fn_80278A1C(local.table.names[lang_result]);
@@ -413,6 +407,7 @@ void fn_80004CB4(void) {
 }
 
 void fn_80004E20(void) {
+    /* Run the main application loop iteration, dispatching to the active game/menu mode. */
     fn_80265D48();
     fn_80129BD4();
     fn_80004B5C();
