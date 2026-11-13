@@ -663,8 +663,11 @@ void __DVDFSInit(void) {
 #pragma dont_inline off
 
 #pragma use_lmw_stmw off
+/* RVL SDK (dvdfs.c): resolve a path - relative to the current directory, or
+ * absolute after a leading '/' - into a DVD FST entry number, or -1 when no
+ * such file or folder exists. */
 s32 DVDConvertPathToEntrynum(const char *path) {
-    const DVDNode *nodes;
+    const DVDNode *fst;
     const char *name_end;
     u32 it;
     u32 anchor;
@@ -677,66 +680,84 @@ s32 DVDConvertPathToEntrynum(const char *path) {
     BOOL has_extension;
 
     backup_path = path;
-    it = lbl_8055D828;
+    it = lbl_8055D828; /* currentDirectory */
     for (;;) {
+        /* End of string -> return what we have */
         if (*path == '\0') return it;
+        /* Ignore initial slash: /Path/File vs Path/File */
         if (*path == '/') { it = 0; path++; continue; }
+        /* Handle special cases: -../-, -.., -./-, -. */
         if (path[0] == '.') {
             if (path[1] == '.') {
+                /* Seek to parent ../ */
                 if (path[2] == '/') {
                     it = ((DVDNode *)FstStart_8055D840)[it].folder.parent;
                     path += 3; continue;
                 }
+                /* Return parent folder immediately */
                 if (path[2] == '\0')
-                    return ((DVDNode *)FstStart_8055D840)[it].parent_or_offset;
+                    return ((DVDNode *)FstStart_8055D840)[it].folder.parent;
+                /* Malformed: fall through to the name check below */
                 goto check_format;
             }
+            /* "." directory does nothing */
             if (path[1] == '/') { path += 2; continue; }
+            /* Ignore trailing dot */
             if (path[1] == '\0') return it;
         }
 check_format:
         if (!__DVDLongFileNameFlag) {
-            has_extension = 0;
-            illegal_format = 0;
+            has_extension = FALSE;
+            illegal_format = FALSE;
             name_end = path;
             while (*name_end != '\0' && *name_end != '/') {
                 if (*name_end == '.') {
-                    if (name_end - path > 8 || has_extension == 1) {
-                        illegal_format = 1;
+                    /* 8.3 format limits file name to 8 characters. */
+                    if (name_end - path > 8 || has_extension == TRUE) {
+                        illegal_format = TRUE;
                         goto validate_format;
                     }
-                    has_extension = 1;
+                    has_extension = TRUE;
                     extension_start = name_end + 1;
-                } else if (*name_end == ' ') illegal_format = 1;
+                }
+                /* 8.3 format does not allow spaces in file name. */
+                else if (*name_end == ' ') illegal_format = TRUE;
                 name_end++;
             }
 validate_format:
-            if (has_extension == 1 && name_end - extension_start > 3)
-                illegal_format = 1;
-            if (illegal_format == 0)
+            if (has_extension == TRUE && name_end - extension_start > 3)
+                illegal_format = TRUE;
+            if (illegal_format == FALSE)
                 goto skip_panic;
+            /* OS_ASSERT(!illegal_format, "... doesn't match standard 8.3
+             * format ...", backup_path) at dvdfs.c line 0x1B9 */
             ((void (*)(const char *, s32, const char *, ...))OSPanic)(
                 lbl_80558DF8, 0x1B9, lbl_80301F70, backup_path);
 skip_panic:;
         } else {
+            /* The name is not special after all: isolate the current item of
+             * the path string, up to the next '/' or the terminator. */
             name_end = path;
             while (*name_end != '\0' && *name_end != '/') name_end++;
         }
+        /* Whether the name was delimited by a '/' rather than truncated. */
         name_delimited_by_slash = (*name_end == '\0') ? 0 : 1;
         name_length = name_end - path;
+        /* Traverse all children of the parent. */
         anchor = it + 1;
-        nodes = (const DVDNode *)FstStart_8055D840;
-        while (anchor < nodes[it].folder.sibling_next) {
+        fst = (const DVDNode *)FstStart_8055D840;
+        while (anchor < fst[it].folder.sibling_next) {
             while (TRUE) {
-                if ((nodes[anchor].packed_type_name & 0xFF000000) ||
-                    name_delimited_by_slash != 1) {
+                if (DVDNodeIsFolder(fst[anchor]) ||
+                    name_delimited_by_slash != TRUE) {
                     item_name = (const char *)FstStringStart_8055D83C +
-                                (nodes[anchor].packed_type_name & 0xFFFFFF);
+                                DVDNodeGetName(fst[anchor]);
+                    /* Advance to the next item in the path */
                     if (DVDPathSame(path, item_name) == TRUE)
                         goto descend;
                 }
-                if (nodes[anchor].packed_type_name & 0xFF000000) {
-                    anchor = nodes[anchor].sibling_or_size;
+                if (DVDNodeIsFolder(fst[anchor])) {
+                    anchor = fst[anchor].folder.sibling_next;
                     break;
                 }
                 anchor++;
@@ -745,6 +766,7 @@ skip_panic:;
         }
         return -1;
 descend:
+        /* If the path was truncated, there is nowhere else to go. */
         if (!name_delimited_by_slash) return anchor;
         it = anchor;
         path += name_length + 1;
