@@ -788,12 +788,13 @@ extern void *fn_8020A6AC(void *);
 #pragma dont_inline fn_8020A6AC
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8033C4F0[];
+/* Rebinds the voice sound's SPU resource by name, updating stored resource and lookup entry on success. */
 int fn_8020B874(void *object, void *name) {
     int result = 0;
-    void *created = fn_802E5AE8(name);
-    if (created != 0) {
+    void *newResource = fn_802E5AE8(name);
+    if (newResource != 0) {
         fn_802E5D5C(*(void **)((char *)object + 0x10));
-        *(void **)((char *)object + 0x10) = created;
+        *(void **)((char *)object + 0x10) = newResource;
         *(void **)((char *)object + 0x18) = fn_8020A6AC(name);
         result = 1;
     } else {
