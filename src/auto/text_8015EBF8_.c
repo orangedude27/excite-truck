@@ -294,28 +294,29 @@ report:
 #pragma inline_depth 0
 #pragma use_lmw_stmw off
 int fn_8015F148(void **arg0, int arg1) {
-    void **ptr = arg0;
-    int off;
-    int count = 0;
-    int i;
-    int *child;
-    int j;
-    int n = arg1;
-    void *item;
-    void *entry;
-    for (i = 0; i < n; i++) {
-        child = *(int **)ptr;
-        if (child != 0) {
-            for (j = 0, off = 0; j < child[0]; off += 4, j++) {
-                item = *(void **)((char *)((void **)child)[1] + off);
-                entry = *(void **)((char *)item + 0x3C);
-                if (fn_8015ECC0(entry))
-                    count++;
+    /* Count valid tube/track entries across the given node groups. */
+    void **groupPtr = arg0;
+    int childOffset;
+    int validCount = 0;
+    int groupIndex;
+    int *group;
+    int childIndex;
+    int groupCount = arg1;
+    void *node;
+    void *candidate;
+    for (groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+        group = *(int **)groupPtr;
+        if (group != 0) {
+            for (childIndex = 0, childOffset = 0; childIndex < group[0]; childOffset += 4, childIndex++) {
+                node = *(void **)((char *)((void **)group)[1] + childOffset);
+                candidate = *(void **)((char *)node + 0x3C);
+                if (fn_8015ECC0(candidate))
+                    validCount++;
             }
         }
-        ptr++;
+        groupPtr++;
     }
-    return count;
+    return validCount;
 }
 
 extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
