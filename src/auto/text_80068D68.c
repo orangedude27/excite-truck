@@ -20580,6 +20580,7 @@ void l2cu_create_conn_after_switch(void *arg0) {
     btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)arg0 + 0x10), 2, 0x3C);
 }
 
+/* Find an active link control block whose link state matches the given state. */
 void *l2cu_find_lcb_by_state(s32 state) {
     u8 *entry = lbl_803C4040;
     entry += 7;
