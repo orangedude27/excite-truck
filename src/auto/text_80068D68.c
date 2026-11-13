@@ -507,7 +507,9 @@ typedef struct {
     u8      remote_bd_addr[6]; /* +0x2A  the peer's Bluetooth address (BD_ADDR) */
     u8      link_role;      /* +0x30  master or slave */
     u8      id;             /* +0x31  identifier of the next command we send */
-    u8      pad_32[0xF];
+    u16     link_flush_tout;/* +0x32  flush timeout in use on this link, in the units the
+                               L2CAP flush_to option uses; HCI_INVALID_HANDLE when unset */
+    u8      pad_34[0xD];
     u8      is_congested;   /* +0x41  set while the link's transmit queue is at or over
                                its quota; channels answer L2CA_DataWrite with CONGESTED */
     u8      pad_42[0x12];
@@ -8203,25 +8205,22 @@ void btm_read_link_quality_complete(u8 *arg0) {
         u8 quality;
         u8 address[6];
     } result;
-
     u8 *control = lbl_803C0F78;
     Callback callback = *(Callback *)(control + 0x5FC);
     u8 *connection = control + 0x34;
     u8 logLevel;
     u8 high;
     u8 low;
-    u8 status;
+    u32 status;
     u16 handle;
     u8 i;
-
     fn_80070F90(control + 0x5C8);
     *(Callback *)(control + 0x5FC) = 0;
     if (callback == 0) {
         return;
     }
-
     status = arg0[0];
-    result.status = status;
+    result.status = (u8)status;
     if (status == 0) {
         result.result = 0;
         logLevel = control[0x27C0];
@@ -8232,7 +8231,6 @@ void btm_read_link_quality_complete(u8 *arg0) {
         if (logLevel >= 4) {
             ((void (*)(u32, void *))fn_8007096C)(0xD0003, lbl_80315FEC);
         }
-
         for (i = 0; i < 4; i++, connection += 0x11C) {
             if (connection[0x119] != 0 && handle == *(u16 *)connection) {
                 memcpy(result.address, connection + 8, 6);
@@ -8242,7 +8240,6 @@ void btm_read_link_quality_complete(u8 *arg0) {
     } else {
         result.result = 0xA;
     }
-
     callback(&result.result);
 }
 
@@ -16527,27 +16524,27 @@ u8 HID_HostOpenDev(u32 arg0) {
 }
 
 u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, BT_HDR *pbuf) {
-    char *messages = lbl_80317720;
+    struct Msgs { char m0; char _01[23]; char m1; char _19[23]; char m2; };
+    struct Msgs *messages = (struct Msgs *)lbl_80317720;
     u8 status = 0;
-
     if (lbl_803C3C38[0x400] == 0) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0);
+            fn_8007093C(0x1E0000, &messages->m0);
         status = 1;
     }
     if ((dev_handle > 0x10) ||
         (*((u8 *)lbl_803C3C38 + dev_handle * 0x34) == 0)) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0x18);
+            fn_8007093C(0x1E0000, &messages->m1);
         status = 5;
     }
     if (*((u8 *)lbl_803C3C38 + dev_handle * 0x34 + 0xA) != 1) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_80070954(0x1E0000, messages + 0x30, dev_handle);
+            fn_80070954(0x1E0000, &messages->m2, dev_handle);
         status = 4;
     }
     if (status != 0) {
-        if (pbuf != NULL)
+        if (pbuf != 0)
             GKI_freebuf(pbuf);
     } else {
         status = hidh_conn_snd_data(dev_handle, t_type, param, data, report_id, pbuf);
@@ -27778,7 +27775,7 @@ void fn_8006CAA8(u32 event, u8 *data) {
     u8 *pInfo;
     switch (event) {
     case 0:
-        DBPrintf_8006CFA8((char *)lbl_80313E90);
+        DBPrintf_8006CFA8((char *)strings);
         *(u32 *)(base + 0x6C0) |= 1;
         break;
     case 1:
@@ -27822,8 +27819,8 @@ void fn_8006CAA8(u32 event, u8 *data) {
             if (memcmp(data, lbl_803935C8 + 0x40, 6) == 0 && base[0xC] != 0 && lbl_803935C8[0x59] == 2) {
                 if (WUDiGetDevInfo(data) != 0 && data[6] == 12) {
                     fn_8006B598(data);
-                    base[0x665]--;
-                    base[0xC] = 0xFF;
+                    base[0x665] = (u8)(base[0x665] - (u8)1);
+                    base[0xC] = (u8)0xFF;
                 }
             }
         }
