@@ -167,8 +167,6 @@ struct EbiListItem {
 
 /* The live entries of that list: the list at lbl_804B2FF8+0xE0, entry pointers at
    +0x00 and the count at +0x04. */
-/* The live entries of that list: the list at lbl_804B2FF8+0xE0, entry pointers at
-   +0x00 and the count at +0x04. */
 #define EBI_ITEMS ((void **)lbl_804B30D8[0])
 #define EBI_ITEM_COUNT (lbl_804B30D8[1])
 
