@@ -4408,6 +4408,11 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
    lowest-priority active one (the list is sorted, front = lowest); inlined into fn_800F9200. */
 #pragma push
 #pragma always_inline on
+/* ut::Clamp(x, low, high) */
+static inline s32 ClampS32(s32 x, s32 low, s32 high) {
+    return x > high ? high : (x < low ? low : x);
+}
+
 static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     void *sound;
     void *it;
@@ -4564,7 +4569,6 @@ static inline void SoundPlayer_InsertPriorityList(s32 player, void *sound) {
 #pragma auto_inline off
 extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void *arg6) {
     s32 startOffset;
-    s32 prio;
     void *sound;
     if (arg6 == 0) {
         return 0;
@@ -4577,10 +4581,8 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
         ((void (*)(void *, void *, s32, s32, s32, s32))vt[2])(obj, (void *)info, arg5, 0, *(s32 *)(arg3 + 0xC), 8);
         startOffset = info[6];
     }
-    {
-        s32 p = arg2 - startOffset;
-        prio = p > 0x7F ? 0x7F : (p < 0 ? 0 : p);
-    }
+    s32 p = arg2 - startOffset;
+    s32 prio = p > 0x7F ? 0x7F : (p < 0 ? 0 : p);
     if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, prio, (void *)arg4) == 0) {
         return 0;
     }
