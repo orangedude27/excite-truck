@@ -220,7 +220,8 @@ void fn_80012984(int arg0) {
 extern "C" int fn_80019B3C(void);
 extern int lbl_80558AFC;
 extern "C" char *strstr(const char *, const char *);
-extern "C" int fn_80012AB4(void *arg0) {
+extern "C" int fn_80012AB4(void *object) {
+    /* Returns whether the given object matches the current mode (by "vr" string containing mode name), or 1 if forced. */
     struct Dummy {
         virtual int f0();
         virtual int f1();
@@ -228,22 +229,22 @@ extern "C" int fn_80012AB4(void *arg0) {
         virtual int f3();
         virtual const char *f4(const char *, int);
     };
-    void *entry;
-    char *needle;
-    int result;
-    const char *vr;
+    void *modeEntry;
+    char *modeName;
+    int isEnabled;
+    const char *valueStr;
     if (fn_80019B3C() != 0)
         return 1;
-    entry = fn_800126CC(lbl_80558AD8);
-    needle = *(char **)((char *)entry + 4);
-    result = *(unsigned char *)((char *)entry + 0x10);
-    vr = ((Dummy *)arg0)->f4((const char *)&lbl_80558AFC, 0);
-    if (vr != 0) {
-        result = 0;
-        if (strstr(vr, needle) != 0)
-            result = 1;
+    modeEntry = fn_800126CC(lbl_80558AD8);
+    modeName = *(char **)((char *)modeEntry + 4);
+    isEnabled = *(unsigned char *)((char *)modeEntry + 0x10);
+    valueStr = ((Dummy *)object)->f4((const char *)&lbl_80558AFC, 0);
+    if (valueStr != 0) {
+        isEnabled = 0;
+        if (strstr(valueStr, modeName) != 0)
+            isEnabled = 1;
     }
-    return result;
+    return isEnabled;
 }
 #pragma dont_inline reset
 #pragma cplusplus reset
