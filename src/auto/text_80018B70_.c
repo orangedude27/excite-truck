@@ -321,9 +321,12 @@ struct Dummy_80019534 {
     virtual void f3();
     virtual s32 f4(void *, s32);
 };
-#pragma scheduling on
 #pragma cplusplus on
+#pragma scheduling on
 extern "C" s32 fn_80019534(void) {
+    /* Return the "all_extremes_chassis" value from the "other_unlockables" group in the
+       global unlocks/properties manager (lbl_8055D58C). Keys: lbl_802FD3A0="other_unlockables",
+       lbl_802FD3B4="all_extremes_chassis". Returns 0 if unavailable. */
     if (lbl_8055D58C) {
         if (((Dummy_80019534 *)lbl_8055D58C)->f2(lbl_802FD3A0) != 0) {
             return ((Dummy_80019534 *)lbl_8055D58C)->f0(lbl_802FD3A0)->f4(lbl_802FD3B4, 0);
