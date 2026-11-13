@@ -25,15 +25,14 @@ void fn_80033538(void *arg0, short arg1) {
 
 void fn_80033584(void *arg0, void *arg1) {
     unsigned int flags = 0;
-    unsigned short *out = (unsigned short *)((char *)arg0 + 0x14C);
     unsigned short *in = (unsigned short *)arg1;
-    unsigned short *d;
-    unsigned short *s;
+    unsigned short *out = (unsigned short *)((char *)arg0 + 0x14C);
     unsigned short v;
     OSDisableInterrupts();
     v = in[0]; out[0] = v; if (v) flags |= 0x1;
-    d = out + 1;
-    s = in + 2;
+    {
+    unsigned short *d = out + 1;
+    unsigned short *s = in + 2;
     v = in[1]; d[0] = v; if (v) flags |= 0x5;
     v = s[0]; d[1] = v; if (v) flags |= 0x2;
     v = s[1]; d[2] = v; if (v) flags |= 0x6;
@@ -57,6 +56,7 @@ void fn_80033584(void *arg0, void *arg1) {
     v = s[19]; d[20] = v; if (v) flags |= 0x03000000;
     v = s[20]; d[21] = v; if (v) flags |= 0x20000000;
     v = s[21]; d[22] = v; if (v) flags |= 0x60000000;
+    }
     *(unsigned int *)((char *)arg0 + 0x144) = flags;
     *(unsigned int *)((char *)arg0 + 0x1C) |= 0x12;
     OSRestoreInterrupts(0);
@@ -115,6 +115,7 @@ void fn_8003381C(void *dest, void *src) {
 }
 
 void fn_80033918(void *arg0, void *arg1) {
+    /* Copy 10 words from arg1 to arg0+0x1C0 and set a flag, with interrupts disabled. */
     int state;
     state = OSDisableInterrupts();
     *(unsigned int *)((char *)arg0 + 0x1C0) = *(unsigned int *)arg1;
