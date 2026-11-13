@@ -20538,12 +20538,11 @@ void fn_8008EE40(void *arg0, void *arg1) {
 }
 
 void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
+    struct Pair { u32 x; u32 y; };
     u8 *ccb = p_ccb;
     u8 *cfg = p_cfg;
     u16 size;
     void *buf;
-    u32 second;
-    u32 first;
 
     if (cfg[2] != 0) {
         u16 requested = *(u16 *)(cfg + 4);
@@ -20554,18 +20553,9 @@ void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
         }
     }
     if (cfg[6] != 0) {
-        first = *(u32 *)(cfg + 8);
-        second = *(u32 *)(cfg + 0xC);
-        *(u32 *)(ccb + 0x58) = first;
-        *(u32 *)(ccb + 0x5C) = second;
-        first = *(u32 *)(cfg + 0x10);
-        second = *(u32 *)(cfg + 0x14);
-        *(u32 *)(ccb + 0x64) = second;
-        *(u32 *)(ccb + 0x60) = first;
-        first = *(u32 *)(cfg + 0x18);
-        second = *(u32 *)(cfg + 0x1C);
-        *(u32 *)(ccb + 0x6C) = second;
-        *(u32 *)(ccb + 0x68) = first;
+        *(struct Pair *)(ccb + 0x58) = *(struct Pair *)(cfg + 8);
+        *(struct Pair *)(ccb + 0x60) = *(struct Pair *)(cfg + 0x10);
+        *(struct Pair *)(ccb + 0x68) = *(struct Pair *)(cfg + 0x18);
     }
     if (cfg[0x20] != 0 && *(u16 *)(cfg + 0x22) != 0) {
         *(u16 *)(ccb + 0x3C) = *(u16 *)(cfg + 0x22);
