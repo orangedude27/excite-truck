@@ -270,24 +270,25 @@ void fn_802B111C(void *arg0) {
 #pragma scheduling on
 __declspec(section ".data") extern void *lbl_804BE104;
 #pragma use_lmw_stmw off
+/* Find an entry in lbl_804BE104 by case-insensitively matching name against its field at 0xa3c. */
 void *fn_802B1138(const char *name) {
-    int offset;
-    void *result;
-    int count;
-    result = 0;
-    count = 0;
-    offset = 0;
-    while (count < *(int *)((char *)&lbl_804BE104 + 4)) {
+    int entryOffset;
+    void *foundEntry;
+    int index;
+    foundEntry = 0;
+    index = 0;
+    entryOffset = 0;
+    while (index < *(int *)((char *)&lbl_804BE104 + 4)) {
         void **entries = *(void ***)&lbl_804BE104;
-        void *entry = *(void **)((char *)entries + offset);
+        void *entry = *(void **)((char *)entries + entryOffset);
         if (stricmp(name, *(const char **)((char *)entry + 0xa3c)) == 0) {
-            result = entry;
+            foundEntry = entry;
             break;
         }
-        offset += 4;
-        count += 1;
+        entryOffset += 4;
+        index += 1;
     }
-    return result;
+    return foundEntry;
 }
 #pragma optimize_for_size on
 #pragma dont_inline on
