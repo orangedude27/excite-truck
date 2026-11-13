@@ -224,6 +224,14 @@ extern "C" void OSInitMutex(void*);
 extern "C" const char lbl_80326768[];
 extern "C" const char lbl_803269A0[];
 extern "C" const char lbl_8032677C[];
+extern "C" const char lbl_80326C1C[];
+extern "C" const char lbl_80326BF8[];
+extern "C" const char lbl_80326BBC[];
+extern "C" const char lbl_80326B98[];
+extern "C" const char lbl_80326BEC[];
+extern "C" const char lbl_80326BC8[];
+extern "C" const char lbl_80326838[];
+extern "C" unsigned char lbl_80415080[];
 extern "C" void InitParam__Q46nw4hbm3snd6detail10StrmPlayerFi(void *, s32);
 extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlayerFbPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeaderPv(bool, const void *, void *);
 extern "C" const char lbl_80324B24[];
@@ -3649,15 +3657,10 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
     Frame f;
     typedef void (*Cb_t)(s32, void*, u32);
     typedef s32 (*Faf_t)(void*, void*, u32);
-    void* mutex;
-    void* gm;
-    void* m2;
-    s32 off;
-    s32 i;
     if (*(void**)((u8*)self + 0x10) != 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x6FD, lbl_80325520);
     }
-    mutex = *(void**)((u8*)self + 0x24);
+    void* mutex = *(void**)((u8*)self + 0x24);
     OSLockMutex(mutex);
     *(void**)((u8*)self + 0x10) = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void**)((u8*)self + 0x14), *(u32*)((u8*)self + 0x18), f.fileBuf, 0x200);
     OSUnlockMutex(mutex);
@@ -3676,7 +3679,7 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
             OSInitMutex(lbl_80412CA0);
             lbl_8055DE58 = 1;
         }
-        gm = lbl_80412CA0;
+        u8* gm = lbl_80412CA0;
         OSLockMutex(gm);
         f.stream = *(void**)((u8*)self + 0x10);
         NWC24Data_Init(&f.valid);
@@ -3688,14 +3691,16 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
             OSUnlockMutex(gm);
             return;
         }
-        m2 = *(void**)((u8*)self + 0x24);
+        void* m2 = *(void**)((u8*)self + 0x24);
         OSLockMutex(m2);
         ((ExecStream*)*(void**)((u8*)self + 0x10))->v4();
         *(void**)((u8*)self + 0x10) = 0;
         OSUnlockMutex(m2);
-        if (((u32)(-f.valid | f.valid) >> 31)) fn_800FAB98(&f.valid, f.header);
+        if ((((u32)(-f.valid | f.valid) >> 31) == 0)) {} else fn_800FAB98(&f.valid, f.header);
+        s32 off = 0;
+        s32 i = 0;
         for (off = 0, i = 0; i < f.header[2]; i++, off += 0x30) {
-            if (((u32)(-f.valid | f.valid) >> 31)) fn_800FACC0(&f.valid, (void*)((u8*)f.adpcm + off), i);
+            if ((((u32)(-f.valid | f.valid) >> 31) == 0)) {} else fn_800FACC0(&f.valid, (void*)((u8*)f.adpcm + off), i);
         }
         Cb_t cb2 = *(Cb_t*)((u8*)self + 0x1C);
         if (cb2 != 0) cb2(1, f.header, *(u32*)((u8*)self + 0x20));
