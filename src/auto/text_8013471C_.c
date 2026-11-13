@@ -402,6 +402,13 @@ s32 fn_80134D54(void) {
     return 0;
 }
 
+/* Number of AI cars in the fn_8013477C table (lbl_8042F758); kept in sync by fn_8013477C. */
+#define AI_CAR_COUNT ((s32)lbl_8055E0B0)
+/* Layout steps of fn_80134D78 / fn_80134DF8; every one of them holds 4.0f in this build. */
+#define LAYOUT_BASE  lbl_80561304 /* the list's own share */
+#define LAYOUT_EXTRA lbl_80560108 /* per unit answered by fn_80134D54 */
+#define LAYOUT_PAIR  lbl_8056010C /* per pair of AI cars */
+
 #pragma dont_inline on
 f32 fn_80134D78(void) {
     unsigned long temp_r3;
