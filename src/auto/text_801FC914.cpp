@@ -416,13 +416,12 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, float farg0) {
-    struct Vec3 { float x; float y; float z; };
-    Vec3 dA;
-    Vec3 dB;
-    Vec3 *a = (Vec3 *)arg3;
-    Vec3 *b = (Vec3 *)arg2;
+    Vec dA;
+    Vec dB;
+    Vec *a = (Vec *)arg3;
+    Vec *b = (Vec *)arg2;
     if (arg1 != 0) {
-        Vec3 *prev = (Vec3 *)arg1;
+        Vec *prev = (Vec *)arg1;
         dA.x = a->x - prev->x;
         dA.y = a->y - prev->y;
         dA.z = a->z - prev->z;
@@ -432,7 +431,7 @@ extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void
         dA.z = a->z - b->z;
     }
     if (arg4 != 0) {
-        Vec3 *next = (Vec3 *)arg4;
+        Vec *next = (Vec *)arg4;
         dB.x = next->x - b->x;
         dB.y = next->y - b->y;
         dB.z = next->z - b->z;
@@ -448,10 +447,10 @@ extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void
     float c30 = lbl_80563030;
     float c44 = lbl_80563044;
     float c40 = lbl_80563040;
-    register float f30 = c3c * f6;
+    float f30 = c3c * f6;
     float t = f10 - c38 * f6;
     float f8 = c40 * (farg0 + t);
-    register float f31 = c30 + (c38 * f10 - f30);
+    float f31 = c30 + (c38 * f10 - f30);
     float f7 = c40 * (f10 - f6);
     float f4 = c44 * f10 + f30;
     float px = b->x * f31 + dA.x * f8 + dB.x * f7;
@@ -570,8 +569,8 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     *(float*)((char*)arg0 + 0x2C) = r2;
 }
 
-#pragma paired off
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     char* obj = (char*)arg0;
     char** slot = *(char***)(obj + 4);
@@ -612,7 +611,7 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
         char* end_node = nodes + ((count + index + 1) % count) * 0x24;
         *(float*)(obj + 0x54) = *(float*)(end_node + 0x1C);
         *(float*)(obj + 0x58) = *(float*)(end_node + 0x20);
-        *(float*)(obj + 0x5C) = *(float*)(end_node + 0x24);
+        *(float *)(obj + 0x5C) = *(float*)(end_node + 0x24);
         *(float*)(obj + 0x60) = *(float*)(end_node + 0x28);
         *(float*)(obj + 0x68) = *(float*)(end_node + 0x2C);
     }
@@ -631,7 +630,7 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
     float result = begin + step * difference;
     *(float*)(obj + 0x6C) = result;
 }
-#pragma paired on
+#pragma pop
 
 #pragma scheduling on
 extern "C" void fn_801FD5E8(void* arg0, float farg0) {
@@ -785,7 +784,7 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         step -= one;
         *(float*)(obj + 0x40) = old_pos + delta;
 
-        node = GetTrackNodeLinear(*(char**)slot_ptr, *(int*)(obj + 0x3C));
+        node = GetTrackNodeLinear(*(char**)slot_ptr, next_idx);
 
         *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
         *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
@@ -857,8 +856,8 @@ extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     register unsigned char x7=p[0x34];
     p[0x2C]=x0; p[0x3B]=a; p[0x2D]=x1; p[0x3A]=b;
     p[0x2E]=x2; p[0x39]=c; p[0x2F]=x3; p[0x38]=d;
-    p[0x30]=x4; p[0x37]=e; p[0x31]=x5; p[0x36]=f;
     p[0x32]=x6; p[0x35]=g; p[0x33]=x7; p[0x34]=h;
+    p[0x30]=x4; p[0x37]=e; p[0x31]=x5; p[0x36]=f;
     for (int i=0; i<32; i++, q+=0x18) {
       unsigned char x;
       x=q[0];q[0]=q[3];q[3]=x; x=q[1];q[1]=q[2];q[2]=x;
@@ -981,7 +980,7 @@ extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
     t = p[0x33]; p[0x33] = p[0x34]; p[0x34] = t;
 
     ptr = p + 0x3c;
-    for (i = 1; i <= 0x48; i++) {
+    for (i = 0; i < 0x48; i++) {
         t = ptr[0]; ptr[0] = ptr[3]; ptr[3] = t;
         t = ptr[1]; ptr[1] = ptr[2]; ptr[2] = t;
         t = ptr[4]; ptr[4] = ptr[7]; ptr[7] = t;
@@ -1360,10 +1359,10 @@ extern "C" void fn_801FF16C(void *arg0) {
 extern "C" int fn_801FF1BC(void) { return 3; }
 
 extern "C" void fn_801FF1C4(void* arg0, int arg1, int arg2) {
+    /* Append a drone path segment if the object's drone list has room, else log limit overflow. */
     char* p = (char*)arg0;
     if (*(int*)(p + 0xE04) >= 0x20) {
-        const char* msg = lbl_8033B8C8;
-        fn_802E317C(msg);
+        fn_802E317C(&lbl_8033B8C8[0]);
     }
     fn_801FCF18(p + *(int*)(p + 0xE04) * 0x70 + 4, arg1, arg2);
     fn_801FF484(p + 0xE08, p + *(int*)(p + 0xE04) * 0x70 + 4);
