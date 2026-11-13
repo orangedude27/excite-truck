@@ -43,6 +43,7 @@ void fn_802E3090(void) {
     }
 }
 
+/* Variadic wrapper that forwards a formatted message to fn_802E3028 with flag 0. */
 void fn_802E30C8(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
