@@ -304,9 +304,9 @@ extern "C" int fn_8023DD80(void) {
         virtual void slot24(); virtual void slot25(); virtual void *query();
     };
     volatile int local[0x33];
-    register int zero = 0;
-    register char **table;
     register char *config;
+    register char **table;
+    register int zero = 0;
     int state;
     int query;
     int index;
@@ -323,12 +323,10 @@ extern "C" int fn_8023DD80(void) {
     volatile int *options;
     volatile int *defaults;
     Interface *object;
-
     if (lbl_8055F194 >= 0x11) {
         fn_8023DD4C();
         return 0;
     }
-
     state = (int)lbl_8055F19C;
     *(volatile char *)((char *)local + 0x1C) = zero;
     *(volatile int *)((char *)local + 0x14) = state;
@@ -339,10 +337,8 @@ extern "C" int fn_8023DD80(void) {
     fn_801A7974((char *)local + 0x10, (int)table[index * 2], query);
     fn_8023E440((char *)local + 0x38, (char *)local + 0x10);
     config = (char *)local + 0x38;
-
     *(volatile int *)((char *)local + 0x68) =
         (int)fn_8022D850(lbl_8055F190, lbl_8055F194, 0, 0);
-
     options = (volatile int *)lbl_802FA26C;
     arg0 = *options++;
     defaults = (volatile int *)lbl_804987B8;
@@ -354,7 +350,6 @@ extern "C" int fn_8023DD80(void) {
     arg2 = options[1];
     arg3 = options[2];
     option4 = options[3];
-
     *(volatile int *)((char *)local + 0x60) = (int)&lbl_8055BC88;
     *(volatile int *)((char *)local + 0x64) = 3;
     *(volatile int *)((char *)local + 0x6C) = zero;
@@ -379,13 +374,11 @@ extern "C" int fn_8023DD80(void) {
     *(volatile int *)((char *)local + 0xB8) = value2;
     *(volatile int *)((char *)local + 0xBC) = value3;
     *(volatile int *)((char *)local + 0xC0) = value4;
-
     *(volatile int *)((char *)local + 0x20) = arg0;
     *(volatile int *)((char *)local + 0x24) = (int)((char *)local + 0x60);
     *(volatile int *)((char *)local + 0x28) = arg2;
     *(volatile int *)((char *)local + 0x2C) = arg3;
     *(volatile int *)((char *)local + 0x30) = option4;
-
     result = fn_802146BC((int *)((char *)local + 0x20), -0x3E7, -0x3E7, 1,
         option4, arg3, arg2, arg0);
     if (result != -1) {
@@ -564,6 +557,7 @@ extern "C" void fn_8023E1FC(void *arg0) {
 #pragma pop
 
 void fn_8023E33C(void *arg0) {
+    /* Fill the object's 0x14-byte name buffer at +0x14 from its name index at +0x10, or copy a default empty string when the index is -1. */
     struct NameInfo {
         int unk0;
         int unk4;
