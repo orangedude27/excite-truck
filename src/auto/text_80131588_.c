@@ -54,9 +54,10 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
     Unk131588 *r;
     u8 *b;
     s32 i, j;
+    s32 off1, off2;
     u8 t;
 
-    r = fn_8012C370(0x56414C54, &type, 0, 0, &flag);
+    r = fn_8012C370(arg0, 0x56414C54, &type, 0, 0, &flag);
     if (r != NULL) {
         if (type == 0xB) {
             if (flag != 0 && r != NULL) {
@@ -67,27 +68,31 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
                 t = b[5]; b[5] = b[6]; b[6] = t;
                 t = b[8]; b[8] = b[0xB]; b[0xB] = t;
                 t = b[9]; b[9] = b[0xA]; b[0xA] = t;
-                for (i = 0; i < r->count; i++) {
-                    Unk131588Elem *e = &r->elems[i];
+                off1 = 0;
+                for (i = 0; i < r->count; i++, off1 += 0x1C) {
+                    Unk131588Elem *e = (Unk131588Elem *)((char *)r->elems + off1);
                     if (e != NULL) fn_80131960(e, r);
-                    r->elems[i].parent = r;
+                    ((Unk131588Elem *)((char *)r->elems + off1))->parent = r;
                 }
-                for (i = 0; i < r->count; i++) {
-                    char *s = r->elems[i].str;
+                off1 = 0;
+                for (i = 0; i < r->count; i++, off1 += 0x1C) {
+                    char *s = ((Unk131588Elem *)((char *)r->elems + off1))->str;
                     if (s != NULL && *s != 0) {
                         s32 found = 0;
-                        for (j = 0; j < r->count; j++) {
-                            if (stricmp(s, r->elems[j].name) == 0) {
+                        off2 = 0;
+                        for (j = 0; j < r->count; j++, off2 += 0x1C) {
+                            char *nm = ((Unk131588Elem *)((char *)r->elems + off2))->name;
+                            if (stricmp(s, nm) == 0) {
                                 if (i == j) fn_802E317C(lbl_8032B714, s);
                                 if (found) {
-                                    fn_802E317C(lbl_8032B6E4, ((char *(*)(void *))r->elems[i].vtable[2])(&r->elems[i]), s);
+                                    fn_802E317C(lbl_8032B6E4, ((char *(*)(void *))((Unk131588Elem *)((char *)r->elems + off1))->vtable[2])((Unk131588Elem *)((char *)r->elems + off1)), s);
                                 }
                                 found = 1;
-                                r->elems[i].link = &r->elems[j];
+                                ((Unk131588Elem *)((char *)r->elems + off1))->link = (Unk131588Elem *)((char *)r->elems + off2);
                             }
                         }
                         if (!found) {
-                            fn_802E317C(lbl_8032B6B8, ((char *(*)(void *))r->elems[i].vtable[2])(&r->elems[i]), s);
+                            fn_802E317C(lbl_8032B6B8, ((char *(*)(void *))((Unk131588Elem *)((char *)r->elems + off1))->vtable[2])((Unk131588Elem *)((char *)r->elems + off1)), s);
                         }
                     }
                 }
@@ -180,31 +185,50 @@ extern s32 fn_80131234(char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80131960(void *arg0, void *arg1) {
-    register u8 *obj = (u8 *)arg0;
-    register u8 *base = (u8 *)arg1;
-    register u8 t;
-    register s32 i, count;
-
-    t = obj[0x10]; obj[0x10] = obj[0x13]; obj[0x13] = t;
-    t = obj[0x11]; obj[0x11] = obj[0x12]; obj[0x12] = t;
-    t = obj[4]; obj[4] = obj[7]; obj[7] = t;
-    t = obj[5]; obj[5] = obj[6]; obj[6] = t;
-    t = obj[0xC]; obj[0xC] = obj[0xF]; obj[0xF] = t;
-    t = obj[0xD]; obj[0xD] = obj[0xE]; obj[0xE] = t;
-    t = obj[8]; obj[8] = obj[0xB]; obj[0xB] = t;
-    t = obj[9]; obj[9] = obj[0xA]; obj[0xA] = t;
-
+    u8 *obj = (u8 *)arg0;
+    u8 *base = (u8 *)arg1;
+    u8 t8, t10, t29, t25, t26, t31, t30, t24;
+    u8 t;
+    u32 v4, v8;
+    s32 i;
+    u32 off;
+    u8 one = 1;
+    t8 = obj[0x10];
+    t10 = obj[0x11];
+    obj[0x10] = obj[0x13];
+    t29 = obj[4];
+    obj[0x13] = t8;
+    t25 = obj[5];
+    obj[0x11] = obj[0x12];
+    t26 = obj[0xC];
+    obj[0x12] = t10;
+    t31 = obj[0xD];
+    obj[4] = obj[7];
+    obj[7] = t29;
+    t30 = obj[8];
+    obj[5] = obj[6];
+    t24 = obj[9];
+    obj[6] = t25;
+    v4 = *(u32 *)(obj + 4);
     *(u32 *)(obj + 0x14) = 0;
     *(void **)obj = lbl_8032B5E0;
     *(u32 *)(obj + 0x10) += (u32)base;
-    if (*(u32 *)(obj + 4) != 0)
-        *(u32 *)(obj + 4) += (u32)base;
-    if (*(u32 *)(obj + 8) != 0)
-        *(u32 *)(obj + 8) += (u32)base;
-
-    count = *(s32 *)(obj + 0xC);
-    for (i = 0; i < count; i++) {
-        register u8 *entry = (u8 *)(*(u32 *)(obj + 0x10) + i * 8);
+    obj[0xC] = obj[0xF];
+    obj[0xF] = t26;
+    obj[0xD] = obj[0xE];
+    obj[0xE] = t31;
+    obj[8] = obj[0xB];
+    obj[0xB] = t30;
+    obj[9] = obj[0xA];
+    obj[0xA] = t24;
+    if (v4 != 0)
+        *(u32 *)(obj + 4) = v4 + (u32)base;
+    v8 = *(u32 *)(obj + 8);
+    if (v8 != 0)
+        *(u32 *)(obj + 8) = v8 + (u32)base;
+    off = 0;
+    for (i = 0; i < *(s32 *)(obj + 0xC); i++, off += 8) {
+        u8 *entry = (u8 *)(*(u32 *)(obj + 0x10) + off);
         t = entry[0]; entry[0] = entry[3]; entry[3] = t;
         t = entry[1]; entry[1] = entry[2]; entry[2] = t;
         t = entry[4]; entry[4] = entry[7]; entry[7] = t;
@@ -214,12 +238,9 @@ void fn_80131960(void *arg0, void *arg1) {
         if ((s8)*(u8 *)(base + *(u32 *)(entry + 4)) == 0x7C)
             *(u32 *)(entry + 4) = (u32)fn_80131234((char *)(base + *(u32 *)(entry + 4)) + 1);
         else if ((s8)*(u8 *)(base + *(u32 *)(entry + 4)) == 0x7E)
-            *(u8 *)(base + *(u32 *)(entry + 4)) = 1;
+            *(u8 *)(base + *(u32 *)(entry + 4)) = one;
     }
 }
-#pragma scheduling on
-#pragma use_lmw_stmw reset
-
 s32 fn_80131B10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -627,13 +648,11 @@ extern "C" Vec2 fn_801324E0(void *node, s32 index) {
 }
 #pragma cplusplus off
 #pragma small_data off
-void fn_80132584(void *arg0, register void *arg1, const char *arg2) {
+void fn_80132584(void *arg0, void *arg1, const char *arg2) {
     typedef struct { float x, y, z; } Vec3;
     Vec3 v1, v2, v3, v4;
-    const char *value;
 
-    value = ((const char *(**)(void *, const char *))(*(void **)arg1))[5](arg1, arg2);
-    if (fn_8012F9E8(arg0, 0x30, value) != 0) {
+    if (fn_8012F9E8(arg0, 0x30, ((const char *(**)(void *, const char *))(*(void **)arg1))[5](arg1, arg2)) != 0) {
         u8 *p = (u8 *)arg0;
         int i;
         for (i = 0; i < 2; i++, p += 0x18) {
@@ -787,6 +806,7 @@ struct Unk80132AE4Value {
 
 #pragma cplusplus on
 extern "C" unsigned long long fn_80132A48(void *arg0, s32 arg1, void *arg2) {
+    /* Return a 64-bit value for a keyed element, or copy the fallback value when the element is unavailable. */
     class Dummy {
     public:
         virtual s32 f0(); virtual s32 f1(); virtual void f2(); virtual void f3();
@@ -794,16 +814,16 @@ extern "C" unsigned long long fn_80132A48(void *arg0, s32 arg1, void *arg2) {
         virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
         virtual void f12(); virtual unsigned long long f13(s32);
     };
-    unsigned long long tmp;
-    double res;
+    unsigned long long value;
+    double result;
     if (((Dummy*)arg0)->f1() != 0) {
-        tmp = ((Dummy*)arg0)->f13(arg1);
+        value = ((Dummy*)arg0)->f13(arg1);
     } else {
-        ((unsigned*) &tmp)[0] = ((unsigned*)arg2)[0];
-        ((unsigned*) &tmp)[1] = ((unsigned*)arg2)[1];
+        ((unsigned*) &value)[0] = ((unsigned*)arg2)[0];
+        ((unsigned*) &value)[1] = ((unsigned*)arg2)[1];
     }
-    res = *(double*)&tmp;
-    return *(unsigned long long*)&res;
+    result = *(double*)&value;
+    return *(unsigned long long*)&result;
 }
 #pragma cplusplus on
 extern "C" void fn_80132AE4(void *arg0, void *arg1, s32 arg2, void *arg3) {
