@@ -25503,6 +25503,7 @@ tCONN_CB *sdp_conn_originate(UINT8 *p_bd_addr) {
 }
 
 void sdp_disconnect(tCONN_CB *p_ccb, UINT16 reason) {
+    /* Disconnect an SDP connection: log if tracing, request L2CAP disconnect if not yet connected (storing reason), else invoke disconnect callback and free the control block. */
     extern u8 lbl_803C4C40[];
     extern char lbl_8031A344[];
     if (lbl_803C4C40[0x4630] >= 4) {
