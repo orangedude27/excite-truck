@@ -28,6 +28,9 @@ extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int * const __GXData;
+extern u8 FifoObj_8037BA40[];
+extern u8 GXShutdownFuncInfo_803036D0[];
+extern u32 GXTexRegionAddrTable_80303610[];
 typedef union { volatile unsigned char u8; volatile unsigned int u32; } GXCopyFifo;
 #define GXCopyWGFifo (*(GXCopyFifo *)0xCC008000)
 extern unsigned int lbl_8055D968;
@@ -385,6 +388,23 @@ void __GXInitRevisionBits(void) {
     }
 }
 
+void *GXInit(void *arg0, u32 arg1) {
+    extern s32 __GXVersion;
+    extern void OSRegisterVersion(s32);
+    extern u8 FifoObj_8037BA40[];
+    (void)arg0; (void)arg1;
+    OSRegisterVersion(__GXVersion);
+    {
+        u8 *gx = (u8 *)__GXData;
+        gx[0x5F8] = 0;
+        gx[0x5F9] = 1;
+        gx[0x5FA] = 1;
+        *(u32 *)(gx + 0x5E4) = 0;
+        *(u32 *)(gx + 0x5E8) = 0;
+    }
+    return FifoObj_8037BA40;
+}
+
 void GXCPInterruptHandler(short intr, void *ctx) {
     unsigned char sp[0x2c8];
     unsigned int *gx = __GXData;
@@ -402,8 +422,7 @@ void GXCPInterruptHandler(short intr, void *ctx) {
     if (((gx[2] >> 2) & 1) && (gx[3] & 1)) {
         lbl_8055D94C = (char *)lbl_8055D94C + 1;
         p = GXD;
-        gx[2] &= ~4;
-        gx[2] |= 8;
+        gx[2] = (gx[2] & ~4) | 8;
         *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
         p[4] = (p[4] | 1) & ~2;
         *(volatile unsigned short *)((char *)__cpReg + 4) = p[4];
@@ -514,7 +533,7 @@ void GXSetCPUFifo(void *arg0) {
     GXFifoObjInternal *fifo;
     GXFifoObjInternal *fifoElse;
     int intStatus;
-    unsigned int *gd;
+    register unsigned int *gd;
     unsigned int tmp;
 
     intStatus = OSDisableInterrupts();
@@ -1835,7 +1854,7 @@ void GXGetVtxAttrFmt(void) {
 #pragma use_lmw_stmw off
 extern char __GXIsGPFifoReady(void) __attribute__((noinline));
 void GXGetVtxAttrFmtv(void) {
-    unsigned int value, old;
+    unsigned int old, value;
     signed long long start, now;
     unsigned int *data = __GXData;
     if (*(unsigned char *)((char *)data + 0x5FA) &&
@@ -5333,6 +5352,7 @@ void GXSetGPMetric(unsigned int metric1, unsigned int metric2) {
 checkB1:
     if (old1 < 0x1B) goto doB1;
     goto doB2;
+    goto end1;
 doA:
     WGPIPE.c = 0x10;
     WGPIPE.i = 0x1006;
@@ -5356,6 +5376,7 @@ end1:;
 checkD:
         if (old2 < 0x11) goto doD;
         goto doCP;
+        goto end2;
 doC:
         WGPIPE.c = 0x61;
         WGPIPE.i = 0x67000000;
