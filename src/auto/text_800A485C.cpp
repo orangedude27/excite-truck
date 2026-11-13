@@ -11980,9 +11980,9 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         return -0x14;
     }
 
-    pos = arg2 * arg3;
     length = arg0 * arg3;
     filelen = *(u32 *)(entry + 0x54);
+    pos = arg2 * arg3;
 
     if (NANDGetLengthAsync(entry + 0x58, &cur) != 0 || cur != pos) {
         r = NANDSeek(entry + 0x58, (s32)pos, 0);
@@ -19029,23 +19029,24 @@ extern "C" void fn_800D0560(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma small_data on
-extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(u8 *arg0, void *arg1) {
-    register void *list = arg0 + 8;
-    u32 i = 0;
+extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(u8 *manager, void *pane) {
+    /* Return component id for matching pane entry in manager list, or 0 if not found (panics if list is null). */
+    register void *list = manager + 8;
+    u32 index = 0;
     goto check;
 loop:
     {
-        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(arg0 + 0x18, (u16)i);
-        if (*(void **)item == arg1) {
-            return *(s32 *)((u8 *)item + 4);
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(manager + 0x18, (u16)index);
+        if (*(void **)entry == pane) {
+            return *(s32 *)((u8 *)entry + 4);
         }
-        ++i;
+        ++index;
     }
 check:
     if (list == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     }
-    if (i < *(u16 *)(arg0 + 0x10)) {
+    if (index < *(u16 *)(manager + 0x10)) {
         goto loop;
     }
     return 0;
@@ -21355,8 +21356,8 @@ extern "C" void fn_800C7998(void *arg0) {
     };
     f32 rect[4];
     f32 temp_f31;
-    u8 *home = (u8 *)arg0;
     u8 *data = lbl_8031D840;
+    u8 *home = (u8 *)arg0;
     s32 zero = 0;
     s32 one = 1;
     s32 var_r30;
@@ -21407,7 +21408,7 @@ extern "C" void fn_800C7998(void *arg0) {
     child = home;
     childCount = 0;
     var_r30 = 0;
-    while (childCount < 4) {
+    for (; childCount < 4; childCount++, child += 4) {
         *(s32 *)(child + 0x54) = var_r30;
         fn_800D11E0(*(void **)(child + 0x254));
         fn_800D11CC(*(void **)(child + 0x254));
@@ -21417,8 +21418,6 @@ extern "C" void fn_800C7998(void *arg0) {
         fn_800D1300(*(void **)(child + 0x254));
         *(f32 *)(child + 0x1BC) = temp_f31;
         *(f32 *)(child + 0x1CC) = temp_f31;
-        childCount++;
-        child += 4;
     }
 
     layout = *(void **)(home + 0x1E0);
