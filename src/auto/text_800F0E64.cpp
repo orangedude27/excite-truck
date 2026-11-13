@@ -843,6 +843,7 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
 }
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F2160(void *self, int bus, float value) {
+    /* Set this sequence player's FX send level for an aux bus, with interrupt-safe update. */
     int valid = bus >= 0 && bus < 4;
     if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2A3, lbl_80324534, bus, 0, 4);
     int level = OSDisableInterrupts();
