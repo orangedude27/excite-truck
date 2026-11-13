@@ -12,8 +12,10 @@ extern int vprintf(const char*, va_list);
 OSErrorHandler __OSErrorTable[OS_ERR_MAX];
 u32 __OSFpscrEnableBits = FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE;
 
+/* Print a formatted message to the debug console (stdout). */
 DECL_WEAK void OSReport(const char* msg, ...) {
     va_list list;
+
     va_start(list, msg);
     vprintf(msg, list);
     va_end(list);
