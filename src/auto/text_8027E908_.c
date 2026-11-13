@@ -167,7 +167,7 @@ struct EbiListItem {
 
 /* The live entries of that list: the list at lbl_804B2FF8+0xE0, entry pointers at
    +0x00 and the count at +0x04. */
-#define EBI_ITEM_LIST ((struct Fn80283E28List *)lbl_804B30D8)
+#define EBI_ITEM_LIST ((volatile struct Fn80283E28List *)lbl_804B30D8)
 
 extern void *lbl_8055F680;
 #pragma dont_inline on
