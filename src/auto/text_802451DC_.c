@@ -51,22 +51,26 @@ struct MenuTextContext {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-int fn_80245264(void *arg0) {
-    char *base = lbl_80342FC0;
+/* Loads what the "mc_status" screen draws with into `context`: its image,
+   fetched by the name in the static description block (fn_802C5130 refuses
+   names over 15 characters, and the block's own message is printed when the
+   image is not there), then its gText font twice; the rest is cleared. */
+int fn_80245264(struct MenuTextContext *context) {
+    char *desc = lbl_80342FC0; /* the "mc_status.lyt" description block */
     int result;
     float value;
 
-    result = fn_802C5130(base + 0x60);
-    *(int *)((char *)arg0 + 4) = result;
+    result = fn_802C5130(desc + 0x60); /* the image's name */
+    context->image = result;
     if (result == 0) {
-        fn_802E30C8(base + 0x78);
+        fn_802E30C8(desc + 0x78); /* printed once when the image is missing */
     }
-    *(int *)((char *)arg0 + 8) = 0;
-    *(int *)((char *)arg0 + 0x10) = fn_80232578(base + 0xB4);
-    result = fn_80232578(base + 0xB4);
+    context->image2 = 0;
+    context->font2 = fn_80232578(desc + 0xB4); /* the font's .gtx name */
+    result = fn_80232578(desc + 0xB4);
     value = lbl_80563830;
-    *(int *)((char *)arg0 + 0xC) = result;
-    *(float *)((char *)arg0 + 0x14) = value;
+    context->font = result;
+    context->xOffset = value;
 }
 #pragma scheduling on
 #pragma pop
