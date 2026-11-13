@@ -2274,15 +2274,19 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail
         *(u32 *)(p + 0x9C + i * 4) = 0;
 }
 
-extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *this_, const void *data, s32 size) {
-    void *seqData = *(void **)((u8 *)this_ + 0x9C);
-    if (seqData == NULL) {
+extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *player, const void *seqData, s32 seqDataSize) {
+    /* Set the sequence data buffer for this player's first track. Panics if the track is missing. */
+    void *track = *(void **)((u8 *)player + 0x9C);
+
+    if (track == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0xE0, (const char *)lbl_80323B94);
     }
-    if (data != NULL) {
-        fn_800F1080(seqData, data, size);
+
+    if (seqData != NULL) {
+        fn_800F1080(track, seqData, seqDataSize);
     }
-    *(u8 *)((u8 *)this_ + 0x16) = 1;
+
+    *(u8 *)((u8 *)player + 0x16) = 1;
 }
 
 extern "C" int fn_800EF500(void* player) {
