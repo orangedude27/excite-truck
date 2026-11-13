@@ -1317,7 +1317,7 @@ extern "C" void fn_80173ACC(void *arg0) {
             char *r = p + fn_80179630(0) * 0x1C;
             int a = *(int *)(r + 0x94);
             int b = *(int *)(tbl + 0x14) * (*(int *)(r + 0x98) + *(int *)(r + 0x9C));
-            fn_8017272C(p + 0x1AC, a + b, b, a, *(int *)(tbl + 0x14));
+                          fn_8017272C((CrushRoundState *) (p + 0x1AC), a + b, b, a, *(int *)(tbl + 0x14));
         }
     }
 }
