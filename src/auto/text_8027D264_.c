@@ -109,7 +109,8 @@ void *fn_8027D304(void *arg0, int arg1) {
 }
 
 void fn_8027B288(void *);
-void *fn_8027D39C(void *arg0, int arg1) {
+/* Destructor-like: set vtable, tear down base/effects array at +0x18/+0x24, optionally delete, and return this. */
+void *fn_8027D39C(void *thisPtr, int deleteFlags) {
     struct Local {
         void *vtable;
         char pad[0x14];
@@ -117,8 +118,8 @@ void *fn_8027D39C(void *arg0, int arg1) {
         int field_1C;
         int field_20;
     };
-    struct Local *obj = (struct Local *)arg0;
-    if (arg0 != 0) {
+    struct Local *obj = (struct Local *)thisPtr;
+    if (thisPtr != 0) {
         obj->vtable = lbl_80347CC0;
         fn_8027B288(obj);
         if (&obj->field_18 != 0) {
@@ -129,7 +130,7 @@ void *fn_8027D39C(void *arg0, int arg1) {
                 obj->field_20 = 0;
             }
         }
-        if (arg1 > 0) {
+        if (deleteFlags > 0) {
             ((void (*)(void *))fn_80128668)(obj);
         }
     }
