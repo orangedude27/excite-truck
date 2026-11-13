@@ -918,7 +918,8 @@ s32 fn_80132D1C(void *table, char *name) {
     return 0;
 }
 #pragma cplusplus on
-extern "C" s32 fn_80132DA8(void *arg0) {
+extern "C" s32 fn_80132DA8(void *container) {
+    /* Compute a checksum over container items by summing each item's virtual hash result with a per-item salt. */
     class Item {
     public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
@@ -928,16 +929,16 @@ extern "C" s32 fn_80132DA8(void *arg0) {
         virtual void f20(); virtual void f21(); virtual void f22(); virtual s32 f23();
     };
     s32 offset = 0;
-    s32 sum = 0xFEEDFACE;
-    s32 i = 0;
-    while (i < *(s32 *)((u8 *)arg0 + 4)) {
-        char *item = (char *)*(void **)((u8 *)arg0 + 0xC) + offset;
-        sum += ((Item *)item)->f23();
-        sum += 0x123B;
+    s32 checksum = 0xFEEDFACE;
+    s32 index = 0;
+    while (index < *(s32 *)((u8 *)container + 4)) {
+        char *item = (char *)*(void **)((u8 *)container + 0xC) + offset;
+        checksum += ((Item *)item)->f23();
+        checksum += 0x123B;
         offset += 0x1C;
-        i++;
+        index++;
     }
-    return sum;
+    return checksum;
 }
 #pragma cplusplus off
 s32 fn_80132E34(s32 arg0, s32 arg1) {
