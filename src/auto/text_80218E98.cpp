@@ -6392,8 +6392,20 @@ extern "C" void *fn_802241C8(void *object, void *descriptor) {
     return object;
 }
 
-extern "C" void *fn_802242A4(void *arg0,s32 arg1) {
- s32 ptr; if(arg0){ ptr=*(s32 *)((u8 *)arg0+0x254); *(void ***)arg0=lbl_8033E2CC; if(ptr) fn_802C519C((void *)ptr); *(s32 *)((u8 *)arg0+0x254)=0; fn_8021915C(arg0,0); if(arg1>0) fn_80128668(arg0); } return arg0;
+/* Destructor for a UI image object: restores its vtable, releases the owned image resource, resets base state, and optionally deletes the object. */
+extern "C" void *fn_802242A4(void *self, s32 deleteFlag) {
+    s32 ownedResource;
+    if (self) {
+        ownedResource = *(s32 *)((u8 *)self + 0x254);
+        *(void ***)self = lbl_8033E2CC;
+        if (ownedResource)
+            fn_802C519C((void *)ownedResource);
+        *(s32 *)((u8 *)self + 0x254) = 0;
+        fn_8021915C(self, 0);
+        if (deleteFlag > 0)
+            fn_80128668(self);
+    }
+    return self;
 }
 
 extern "C" void fn_80224328(void *arg0) {
