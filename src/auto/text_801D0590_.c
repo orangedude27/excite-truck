@@ -151,8 +151,15 @@ void fn_801D0800(s32 arg0) {
     items[count] = arg0;
 }
 
-void fn_801D0824(void *arg0) {
-    int index = DispatchList_Find2(arg0);
+/* Take one listener out of the second listener list (lbl_8043870C), the
+ * counterpart of fn_801D0800, which appends to it.  Objects register the
+ * dispatch sub-object inside them (their +4, +0xC, +0x23C, ...) here so the
+ * walkers further down this file can call one of its virtual functions for
+ * every listener, and unregister it as they are destroyed: find it, then let
+ * the list's last entry move into the slot it frees.  A sub-object that is
+ * not in the list is left alone. */
+void fn_801D0824(void *listener) {
+    int index = DispatchList_Find2(listener);
     if (index == -1) return;
     DispatchList_RemoveAt2(index);
 }
