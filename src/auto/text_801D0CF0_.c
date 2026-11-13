@@ -11,6 +11,10 @@
  * at vtable +0x8 and has no data of its own beyond the vtable pointer. */
 extern int lbl_8055E8E8;
 extern void *lbl_80438818[];
+
+/* Empty the manager list.  The ROM symbol here reads __AXDSPInitCallback, but
+ * nothing about this list is audio/DSP related and the same name is attached
+ * to unrelated functions elsewhere, so treat it as misattributed. */
 void __AXDSPInitCallback_801D0CF0(void) {
     lbl_8055E8E8 = 0;
 }
