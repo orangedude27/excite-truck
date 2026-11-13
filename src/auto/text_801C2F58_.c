@@ -28,6 +28,7 @@
 #define STR_NOBODY     lbl_8055A95C /* "nobody" - default for a name list */
 #define STR_ALL        lbl_8055A964 /* "all" - default for a name list */
 #define set_text_entry fn_801C957C  /* (1) clear the line and edit it, (0) close it */
+#define menu_action_idle fn_801C6CB0 /* the menu's do-nothing action, back to it once an item ran */
 
 __declspec(section ".sdata") extern char lbl_8055AAF0[], lbl_8055AAF4[], lbl_8055AAF8[];
 extern void fn_802E3AD0(s32, const char *, ...);
@@ -537,30 +538,31 @@ void fn_801C56AC(void) {
     void *vobj;
     void *obj2;
     float buf[20];
-    float c6C;
-    float c70;
-    float c90;
-    float cB4;
-    float cAC;
-    float cB8;
     float c74;
-    float c78;
+    float c90;
+    float c6C;
+    float cB8;
+    float cAC;
+    float cB4;
+    float c70;
     float cBC;
+    float c78;
     float var_f23;
     if ((u8)lbl_8055E7E2 == 0) return;
     cfg = lbl_80437E30;
-    c6C = lbl_8056296C;
-    c70 = lbl_80562970;
-    c90 = lbl_80562990;
-    i = 0;
-    cB4 = lbl_805629B4;
-    cAC = lbl_805629AC;
-    cB8 = lbl_805629B8;
     c74 = lbl_80562974;
-    c78 = lbl_80562978;
+    c90 = lbl_80562990;
+    c6C = lbl_8056296C;
+    cB8 = lbl_805629B8;
+    cAC = lbl_805629AC;
+    cB4 = lbl_805629B4;
+    c70 = lbl_80562970;
     cBC = lbl_805629BC;
+    c78 = lbl_80562978;
+    i = 0;
     for (;;) {
         void **vtab;
+        s32 cfg4;
         obj = fn_8017960C(i);
         if (obj == 0) return;
         var_f23 = *(float *)(cfg + 8);
@@ -577,11 +579,12 @@ void fn_801C56AC(void) {
         if (*(s32 *)(cfg + 0) == 0) goto L2ac8;
         {
             s32 idx;
+            cfg4 = *(s32 *)(cfg + 4);
             idx = 1;
             buf[4] = c70;
             buf[5] = c70;
-            if (*(s32 *)(cfg + 4) > 1) {
-                idx = ((i + lbl_8055E804) - *(s32 *)(cfg + 4)) % lbl_8055E804;
+            if (cfg4 > 1) {
+                idx = ((i + lbl_8055E804) - cfg4) % lbl_8055E804;
             }
             obj2 = fn_8017960C(idx);
             if (*(s32 *)(cfg + 0) == 2) {
@@ -589,24 +592,25 @@ void fn_801C56AC(void) {
                 buf[5] = *(float *)(cfg + 0x10);
             } else if ((*(s32 *)(cfg + 0) == 1) || (*(s32 *)(cfg + 0) == 4)) {
                 float amount;
+                float k;
                 amount = *(float *)(cfg + 0x10);
                 if (cB4 > amount) amount = cB4;
                 fn_80135B9C(vobj, &buf[4], &buf[2], 0, 0, amount);
-                buf[4] = buf[4] + buf[2] * *(float *)(cfg + 0xC);
-                buf[5] = buf[5] + buf[3] * *(float *)(cfg + 0xC);
+                k = *(float *)(cfg + 0xC);
+                buf[4] = buf[4] + buf[2] * k;
+                buf[5] = buf[5] + buf[3] * k;
             } else {
-                float o60;
-                float o68;
-                float o44;
-                float o3c;
-                o60 = *(float *)((u8 *)obj2 + 0x60);
-                o68 = *(float *)((u8 *)obj2 + 0x68);
-                o44 = *(float *)((u8 *)obj + 0x44);
-                o3c = *(float *)((u8 *)obj + 0x3C);
+                float o60 = *(float *)((u8 *)obj2 + 0x60);
+                float o68 = *(float *)((u8 *)obj2 + 0x68);
+                float o44 = *(float *)((u8 *)obj + 0x44);
+                float o3c = *(float *)((u8 *)obj + 0x3C);
+                float k = *(float *)(cfg + 0xC);
+                buf[4] = o60;
+                buf[5] = o68;
                 buf[1] = o44;
                 buf[0] = o3c;
-                buf[4] = o60 + o3c * *(float *)(cfg + 0xC);
-                buf[5] = o68 + o44 * *(float *)(cfg + 0xC);
+                buf[4] = o60 + o3c * k;
+                buf[5] = o68 + o44 * k;
             }
             {
                 float vx;
@@ -623,8 +627,8 @@ void fn_801C56AC(void) {
                     float v;
                     dot = PSVECDotProduct((Vec *)&buf[11], (Vec *)((u8 *)obj + 0x3C));
                     v = cAC * dot + cB8 * (-*(float *)((u8 *)obj + 0x128));
-                    if (v > c6C) v = c6C;
-                    if (v < c90) v = c90;
+                    v = c6C < v ? c6C : v;
+                    v = v > c90 ? v : c90;
                     fn_8018ADAC(obj, v);
                 }
             }
@@ -648,12 +652,12 @@ void fn_801C56AC(void) {
                     t = fn_80139030(&buf[14], buf[16], *(float *)((u8 *)obj2 + 0x25D4));
                     f21 = t;
                     v0 = c78 * t;
-                    if (v0 > c6C) v0 = c6C;
-                    if (v0 < c70) v0 = c70;
+                    v0 = c6C < v0 ? c6C : v0;
+                    v0 = v0 > c70 ? v0 : c70;
                     fn_8018ADB4(obj, v0);
                     v1 = -f21;
-                    if (v1 > c6C) v1 = c6C;
-                    if (v1 < c70) v1 = c70;
+                    v1 = c6C < v1 ? c6C : v1;
+                    v1 = v1 > c70 ? v1 : c70;
                     fn_8018ADBC(obj, v1);
                     base = *(float *)((u8 *)obj2 + 0x25D4) + c74 * (*(float *)(cfg + 8) - *(float *)((u8 *)obj2 + 0x25D4));
                     if (var_f23 > c70) {
@@ -665,38 +669,46 @@ void fn_801C56AC(void) {
             }
         }
     L2ac8:
-        if (*(s32 *)(cfg + 0) == 5) {
-            fn_8018ADB4(obj, c6C);
-            fn_8018ADBC(obj, c70);
-            {
-                float x;
-                x = *(float *)(cfg + 0xC);
-                if (x > c6C) x = c6C;
-                if (x < c90) x = c90;
-                fn_8018ADAC(obj, x);
+        {
+            s32 _t = *(s32 *)(cfg + 0);
+            if (_t == 5) {
+                fn_8018ADB4(obj, lbl_8056296C);
+                fn_8018ADBC(obj, lbl_80562970);
+                {
+                    float x;
+                    x = *(float *)(cfg + 0xC);
+                    x = c6C < x ? c6C : x;
+                    x = x > c90 ? x : c90;
+                    fn_8018ADAC(obj, x);
+                }
+                goto LloopEnd;
             }
-            goto LloopEnd;
+            if (_t == 3) goto LloopEnd;
+            if (_t == 4) goto LloopEnd;
         }
-        if ((u32)(*(s32 *)(cfg + 0) - 3) <= 1U) goto LloopEnd;
-        if ((float)__fabs((f64)var_f23) > lbl_80558DC4[0]) {
+        {
             float o;
-            float a;
-            float b;
+            double fabs_tmp;
             o = *(float *)((u8 *)obj + 0x25D4);
-            a = c74 * (var_f23 - o);
-            if (a > c6C) a = c6C;
-            if (a < c70) a = c70;
-            fn_8018ADB4(obj, a);
-            b = c74 * (o - var_f23);
-            if (b > c6C) b = c6C;
-            if (b < c70) b = c70;
-            fn_8018ADBC(obj, b);
-        } else {
-            fn_8018ADB4(obj, c70);
-            fn_8018ADBC(obj, c6C);
-            fn_8018ADCC(obj, c70);
-            fn_8018ADC4(obj, c6C);
-            fn_8018ADEC(obj);
+            fabs_tmp = __fabs((double)var_f23);
+            if ((f32)fabs_tmp > lbl_80558DC4[0]) {
+                float a;
+                float b;
+                a = c74 * (var_f23 - o);
+                a = c6C < a ? c6C : a;
+                a = a > c70 ? a : c70;
+                fn_8018ADB4(obj, a);
+                b = c74 * (o - var_f23);
+                b = c6C < b ? c6C : b;
+                b = b > c70 ? b : c70;
+                fn_8018ADBC(obj, b);
+            } else {
+                fn_8018ADB4(obj, lbl_80562970);
+                fn_8018ADBC(obj, lbl_8056296C);
+                fn_8018ADCC(obj, lbl_80562970);
+                fn_8018ADC4(obj, lbl_8056296C);
+                fn_8018ADEC(obj);
+            }
         }
     LloopEnd:
         i += 1;
@@ -2703,11 +2715,20 @@ char *fn_801C98F4(char *p, s32 n) {
 #pragma push
 #pragma processor 750
 s32 fn_801C9920(s32 arg0, s32 arg1) {
-    s32 handle = arg1;
-    char *record = (char *)arg0;
     char *base = lbl_80336B00;
+    char *record = (char *)arg0;
+    s32 handle = arg1;
     f32 vec[3];
     f32 quat[4];
+    f32 trace;
+    f32 root;
+    s32 i;
+    s32 j;
+    s32 k;
+    f32 angle;
+    f32 sv;
+    f32 scale;
+    f32 *rot;
     fn_802E3AD0(handle, base + 0x9b0);
     fn_802E3AD0(handle, base + 0x9c0, *(f32 *)record);
     switch (*(u32 *)(record + 8)) {
@@ -2715,16 +2736,7 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         fn_802E3AD0(handle, base + 0x9cc);
         fn_802E3AD0(handle, base + 0x9dc, record + 0xC);
         break;
-    case 1: {
-        f32 trace;
-        f32 root;
-        s32 i;
-        s32 j;
-        s32 k;
-        f32 angle;
-        f32 sv;
-        f32 scale;
-        f32 *rot;
+    case 1:
         fn_802E3AD0(handle, base + 0x9e8);
         fn_802E3AD0(handle, base + 0x9f8, ((f32 (*)(f32))fn_801C34F4)(*(f32 *)(record + 0x54)));
         fn_802E3AD0(handle, base + 0xa08, *(f32 *)(record + 0xC), *(f32 *)(record + 0x10), *(f32 *)(record + 0x14));
@@ -2768,7 +2780,6 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         fn_802E3AD0(handle, base + 0xa70, *(f32 *)(record + 0x58) - *(f32 *)record);
         fn_802E3AD0(handle, base + 0xa84, *(u8 *)(record + 0x5C) ? lbl_8055AAF0 : lbl_8055AAF4);
         break;
-    }
     case 2:
         fn_802E3AD0(handle, base + 0xa98);
         break;
