@@ -168,16 +168,19 @@ extern "C" void fn_80013DF0(s32 arg0) {
 #pragma pop
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80013E1C(s32 arg0) {
-    class Obj {
+/* Look up the lap-number element of screen `screen`'s race HUD layout: the
+   widescreen body element when the display is in widescreen mode, the plain lap
+   denominator in 4:3. Returns the layout's 0x20-byte element entry, or 0. */
+extern "C" void *fn_80013E1C(s32 screen) {
+    class RaceOvrLayout {
     public:
-        virtual void v0();
-        virtual void v3(void *);
+        virtual void method0x8();              /* 0x8 */
+        virtual void *findElement(void *name); /* 0xC fn_80148284: stricmp over the element list */
     };
-    if (fn_802C9A58()) {
-        ((Obj *)*(void **)((u8 *)lbl_803577E0[arg0] + 0x50))->v3(lbl_802FCBF8);
+    if (fn_802C9A58() != 0) {
+        return ((RaceOvrLayout *)*(void **)((u8 *)sRaceOverlays[screen] + 0x50))->findElement(MSG_LAP_BODY_1_WS);
     } else {
-        ((Obj *)*(void **)((u8 *)lbl_803577E0[arg0] + 0x50))->v3(lbl_802FCBC8);
+        return ((RaceOvrLayout *)*(void **)((u8 *)sRaceOverlays[screen] + 0x50))->findElement(MSG_LAP_DENOMINATOR);
     }
 }
 #pragma pop
