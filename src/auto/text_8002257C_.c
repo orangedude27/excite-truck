@@ -6,21 +6,22 @@ extern unsigned char lbl_8035BB58[];
 extern void *memset(void *, int, unsigned int);
 extern void *fn_80022188(unsigned int, int);
 extern void *fn_80021D48(unsigned int, int);
-void *malloc(unsigned int arg0) {
-    void *base;
+/* Allocates from the game's heap, lazily initializing the global pool on first use. */
+void *malloc(unsigned int size) {
+    void *heapPool;
     void *result;
-    if (arg0 != 0) {
+    if (size != 0) {
         if (lbl_8055D678 == 0) {
             memset(lbl_8035BB58, 0, 0x34);
             lbl_8055D678 = 1;
         }
-        base = lbl_8035BB58;
-        if (arg0 > (unsigned int)-0x31) {
+        heapPool = lbl_8035BB58;
+        if (size > (unsigned int)-0x31) {
             result = 0;
-        } else if (arg0 <= 0x44) {
-            result = ((void *(*)(void *, unsigned int, int))fn_80022188)(base, arg0, 0);
+        } else if (size <= 0x44) {
+            result = ((void *(*)(void *, unsigned int, int))fn_80022188)(heapPool, size, 0);
         } else {
-            result = ((void *(*)(void *, unsigned int, int))fn_80021D48)(base, arg0, 0);
+            result = ((void *(*)(void *, unsigned int, int))fn_80021D48)(heapPool, size, 0);
         }
         return result;
     }
