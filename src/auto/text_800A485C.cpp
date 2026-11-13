@@ -18879,9 +18879,10 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
         virtual void v16(); virtual void v17();
         virtual void call(void *);
     };
-    unsigned p = *(volatile unsigned *)((u8 *)arg1 + 0x10);
-    *(volatile unsigned *) &lbl_8055DDA0 = 0;
-    ((Dispatch *)arg0)->call((u8 *)p + 0x10);
+    int zero = 0;
+    void *p = *(void **)((char *)arg1 + 0x10);
+    lbl_8055DDA0 = zero;
+    ((Dispatch *)arg0)->call((char *)p + 0x10);
 }
 
 extern "C" u8 lbl_8031E878[];
@@ -20815,6 +20816,7 @@ extern "C" void fn_800D4428(void *arg0) {
     *(s16 *)((u8 *)arg0 + 0x1C) = zero;
 }
 
+/* Destructor for nw4hbm::lyt::AnimTransformBasic: restores vtable, frees owned buffers at +0x18 and +0x14 via the layout allocator, and optionally deletes the object. */
 extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 deleting) {
     if (self != 0) {
         *(void **)self = lbl_8031F168;
