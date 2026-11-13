@@ -23788,16 +23788,22 @@ void *rfc_alloc_multiplexer_channel(u8 *addr, s8 is_initiator) {
     return 0;
 }
 
-void rfc_release_multiplexer_channel(void *arg0) {
-    u8 *channel = (u8 *)arg0;
-    void *buffer;
+/* Release an RFCOMM multiplexer control block: stop its timer, free queued
+ * command buffers, and clear the control block back to idle. */
+void rfc_release_multiplexer_channel(void *p_mcb) {
+    u8 *mcb = (u8 *)p_mcb;
+    void *p_buf;
+
     if (lbl_803C4828[0x414] >= 4)
         fn_8007093C(0x90003, lbl_80319EB0);
-    fn_80070F90(channel);
-    while ((buffer = GKI_dequeue((BUFFER_Q *)(channel + 0x18))) != 0)
-        GKI_freebuf(buffer);
-    memset(channel, 0, 0x78);
-    channel[0x6C] = 0;
+
+    fn_80070F90(mcb);
+
+    while ((p_buf = GKI_dequeue((BUFFER_Q *)(mcb + 0x18))) != 0)
+        GKI_freebuf(p_buf);
+
+    memset(mcb, 0, 0x78);
+    mcb[0x6C] = 0;
 }
 
 void rfc_timer_start(void *arg0, u16 arg1) {
