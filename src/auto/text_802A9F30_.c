@@ -205,11 +205,10 @@ void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
 
     if (arg0->active) {
         float max;
-        v = arg0->amount;
-        v += lbl_80564A08 * delta;
+        v = lbl_80564A08 * delta;
         max = lbl_805649FC;
         arg0->active = 0;
-        arg0->amount = v < max ? v : max;
+        arg0->amount = (v += arg0->amount) < max ? v : max;
     } else {
         v = arg0->amount - lbl_80564A08 * delta;
         arg0->amount = v > lbl_805649F0 ? v : lbl_805649F0;
@@ -295,7 +294,8 @@ void fn_802AAC80(void *arg0, void *arg1, float farg0) {
     if (state->m_flags & 8)
         object->m_value = lbl_805649F0;
 }
-#pragma pop
+#pragma push
+#pragma processor 750
 void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_802C8BD0(int);
     extern void fn_801E866C(int);
@@ -326,10 +326,7 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
             n = 0;
             if (i > 1) n = (0x10 - (i + 1)) / 2;
             temp_f2 = (float)n * lbl_80564A30;
-            temp_f0 = lbl_8055CC6C *
-                (temp_f2 * (lbl_80564A54 *
-                    (*(float *)((char *)arg1 + 0xCC) *
-                     *(float *)((char *)arg1 + 0xD0))));
+            temp_f0 = lbl_8055CC6C * (temp_f2 * (lbl_80564A54 * (*(float *)((char *)arg1 + 0xCC) * *(float *)((char *)arg1 + 0xD0))));
             if (temp_f0 < lbl_805649F0) temp_f0 -= lbl_805649F4;
             else temp_f0 += lbl_805649F4;
             alpha = (int)temp_f0;
@@ -347,7 +344,7 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     }
     fn_802C8D74();
 }
-
+#pragma pop
 void fn_802AAF00(int a, int b, int c) {}
 
 extern int lbl_8055CC64;
@@ -484,26 +481,28 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
 #pragma push
 #pragma processor 750
 void fn_802AB21C(void) {
+    typedef struct StuntStrings {
+        char name1[12];
+        char name2[12];
+        char name3[12];
+        char name4[16];
+    } StuntStrings;
     struct {
         Vec v[4];
         InitStruct s2;
         InitStruct s1;
     } frame;
-    const char *base;
+    const StuntStrings *base;
     void *buffer;
     int *r29;
     register int two;
     register int five;
     register float t31;
     float t13, t3, t2;
-
-    base = lbl_80349DC8;
-#pragma push
-#pragma opt_propagation off
-    buffer = fn_8012850C(0x850, base + 0);
-#pragma pop
+    base = (const StuntStrings *)lbl_80349DC8;
+    buffer = fn_8012850C(0x850, base->name1);
     lbl_8055F928 = (int)fn_8002F37C(buffer, fn_802AB500, 0, 0x108, 8);
-    r29 = (int *)fn_801284F8(8, base + 0xC);
+    r29 = (int *)fn_801284F8(8, base->name2);
     if (r29 != NULL) {
         fn_8028E61C(&frame.s1);
         t31 = lbl_80564A68 * lbl_80564A68;
@@ -512,41 +511,36 @@ void fn_802AB21C(void) {
         t13 = lbl_80564A80 * (lbl_80564A70 / t31);
         t3 = lbl_805649F4 * t13;
         t3 = t3 * t31;
-        t2 = lbl_80564A84 - t3;
-        t2 = t2 / lbl_80564A68;
         frame.s1.field_04 = 0x12C;
         frame.s1.field_08 = lbl_80564A68;
+        t2 = lbl_80564A84 - t3;
+        t2 = t2 / lbl_80564A68;
         frame.s1.field_0C = lbl_805649FC;
         frame.s1.field_00 = two;
         frame.s1.field_48 = lbl_805649F4;
         frame.s1.field_44 = five;
-
         frame.v[2].x = lbl_805649F0;
         frame.v[2].y = lbl_805649FC;
         frame.v[2].z = lbl_805649F0;
         frame.s1.vA.x = lbl_805649F0;
         frame.s1.vA.y = lbl_805649FC;
         frame.s1.vA.z = lbl_805649F0;
-
         frame.v[3].x = lbl_80564A6C;
         frame.v[3].y = lbl_805649FC;
         frame.v[3].z = lbl_80564A6C;
         frame.s1.vB.x = lbl_80564A6C;
         frame.s1.vB.y = lbl_805649FC;
         frame.s1.vB.z = lbl_80564A6C;
-
         frame.s1.vC.x = lbl_805649F0;
         frame.s1.vC.y = lbl_80564A70;
         frame.s1.vC.z = lbl_805649F0;
         frame.s1.field_34 = lbl_80564A74;
-
         frame.s1.field_60 = lbl_80564A78;
         frame.s1.field_68 = lbl_80564A78;
         frame.s1.field_70 = lbl_80564A78;
         frame.s1.field_64 = lbl_805649FC;
         frame.s1.field_6C = lbl_805649FC;
         frame.s1.field_74 = lbl_805649FC;
-
         frame.s1.field_58 = lbl_805649F0;
         frame.s1.field_5C = lbl_80564A7C;
         frame.s1.field_4C = t13;
@@ -554,9 +548,7 @@ void fn_802AB21C(void) {
         frame.s1.field_54 = lbl_80564A58;
         frame.s1.field_78 = lbl_805649F0;
         frame.s1.field_7C = lbl_80564A04;
-
         r29[0] = ((int (*)(void *, const void *, const void *))fn_8028E2F8)(&frame.s1, lbl_80349E24, lbl_80349E18);
-
         fn_8028E61C(&frame.s2);
         frame.s2.field_04 = 0x60;
         frame.s2.field_08 = lbl_805649F4;
@@ -564,47 +556,40 @@ void fn_802AB21C(void) {
         frame.s2.field_00 = two;
         frame.s2.field_48 = lbl_805649F4;
         frame.s2.field_44 = five;
-
         frame.v[0].x = lbl_805649F0;
         frame.v[0].y = lbl_805649F0;
         frame.v[0].z = lbl_805649F0;
         frame.s2.vA.x = lbl_805649F0;
         frame.s2.vA.y = lbl_805649F0;
         frame.s2.vA.z = lbl_805649F0;
-
         frame.v[1].x = lbl_805649FC;
         frame.v[1].y = lbl_805649FC;
         frame.v[1].z = lbl_805649FC;
         frame.s2.vB.x = lbl_805649FC;
         frame.s2.vB.y = lbl_805649FC;
         frame.s2.vB.z = lbl_805649FC;
-
         frame.s2.vC.x = lbl_805649F0;
         frame.s2.vC.y = lbl_80564A00;
         frame.s2.vC.z = lbl_805649F0;
         frame.s2.field_34 = lbl_80564A74;
-
         frame.s2.field_70 = lbl_80564A78;
         frame.s2.field_68 = lbl_80564A78;
         frame.s2.field_60 = lbl_80564A78;
         frame.s2.field_74 = lbl_80564A88;
         frame.s2.field_6C = lbl_80564A88;
         frame.s2.field_64 = lbl_80564A88;
-
         frame.s2.field_58 = lbl_80564A78;
         frame.s2.field_5C = lbl_80564A8C;
         frame.s2.field_50 = lbl_80564A8C;
         frame.s2.field_54 = lbl_80564A90;
         frame.s2.field_78 = lbl_80564A94;
         frame.s2.field_7C = lbl_805649FC;
-
         r29[1] = ((int (*)(void *, const void *, const void *))fn_8028E2F8)(&frame.s2, &lbl_8055CC80, lbl_80349E08);
     }
-
     lbl_8055F924 = r29;
     fn_802AB5B8();
-    lbl_8055CC60 = fn_802CAC28(base + 0x18, 0);
-    lbl_8055CC64 = fn_802CAC28(base + 0x24, 0);
+    lbl_8055CC60 = fn_802CAC28(base->name3, 0);
+    lbl_8055CC64 = fn_802CAC28(base->name4, 0);
     fn_801EEFDC(fn_802A9F30, 0xF);
     fn_801EEFDC(fn_802A9F90, 0x10);
     fn_801EEFDC(fn_802A9FB0, 0x11);
@@ -711,22 +696,25 @@ void fn_802AB6D0(void) {}
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802AB6D4(void) {
-    extern int fn_80287B14(void);
-    extern int fn_80287B24(int);
-    extern int fn_802C86DC(void);
-    extern void fn_802AAD5C(int, int, int);
-    extern void fn_802AAF00(int, int, int);
-    extern void fn_802AAF04(int, int, int);
-    extern int lbl_8055F928;
+    /* Draw pass for the stunt-car effect system: for each active object, render its
+       air-stream trail and entry-puff quads into the current draw list. Each object's
+       per-frame effect state lives in the entry at lbl_8055F928 + i*0x108. */
+    extern int fn_80287B14(void);              /* number of active objects */
+    extern int fn_80287B24(int);               /* object pointer by index (stride 0x160) */
+    extern int fn_802C86DC(void);              /* current draw list */
+    extern void fn_802AAD5C(int, int, int);    /* draw the air-stream trail (airstrm.tex) */
+    extern void fn_802AAF00(int, int, int);    /* reserved draw step (empty) */
+    extern void fn_802AAF04(int, int, int);    /* draw the entry-puff quads (entrypuff.tex) */
+    extern int lbl_8055F928;                   /* base of per-object effect entries (stride 0x108) */
     int count = fn_80287B14();
-    int obj = fn_802C86DC();
+    int drawList = fn_802C86DC();
     int i;
     for (i = 0; i < count; i++) {
-        int item = fn_80287B24(i);
-        int data = lbl_8055F928 + i * 0x108;
-        fn_802AAD5C(obj, data, item);
-        fn_802AAF00(obj, data, item);
-        fn_802AAF04(obj, data, item);
+        int object = fn_80287B24(i);
+        int entry = lbl_8055F928 + i * 0x108;
+        fn_802AAD5C(drawList, entry, object);
+        fn_802AAF00(drawList, entry, object);
+        fn_802AAF04(drawList, entry, object);
     }
 }
 
@@ -750,18 +738,23 @@ void fn_802AB770(int arg0) {
     extern void fn_802C2B78(float, float, float);
     char *state = (char *)(lbl_8055F928 + arg0 * 0x108);
     int obj = fn_80287B24(arg0);
-    unsigned char r, g, b;
     float delta = fn_801E7E24();
     float angle;
     float wave1;
     float wave2;
     int color;
     int lt;
+    unsigned char r, g, b;
     if (!((float)__fabs(delta) <= *(float *)(void *)&lbl_80558DC4)) {
+        int hi;
+        int lo;
         r = fn_80129D90(0, 0x8C, 0xFF) & 0xFF;
         g = fn_80129D90(0, 0xFA, 0xFF) & 0xFF;
         b = fn_80129D90(0, 0xF0, 0xFF);
-        *(int *)(state + 0xE8) = (0xFF000000 | (b << 16)) | ((g << 8) | r);
+        hi = (b << 16);
+        lo = (g << 8) | r;
+        hi |= 0xFF000000;
+        *(int *)(state + 0xE8) = lo | hi;
     }
     angle = *(float *)((char *)obj + 0x4C);
     if (lbl_8055F92C != 0) angle = lbl_80564A98;
@@ -807,33 +800,111 @@ extern float lbl_8055CC80;
 #pragma push
 #pragma processor 750
 void fn_802AB9E8(void) {
-    unsigned char sp[0x144]; void **p; float t31, t13, t3, t2; int two=2, five=5;
-    fn_8028DFFC(); p=(void **)fn_801284F8(8,lbl_80349DFC);
-    if(p) {
-        fn_8028E61C(&sp[0xC4]); t31=lbl_80564A68*lbl_80564A68; t13=lbl_80564A80*(lbl_80564A70/t31);
-        t3=lbl_805649F4*t13; t3=t3*t31; t2=lbl_80564A84-t3; t2=t2/lbl_80564A68;
-        *(int *)&sp[0xC4]=two; *(int *)&sp[0xC8]=0x12C; *(float *)&sp[0xCC]=lbl_80564A68; *(float *)&sp[0xD0]=lbl_805649FC;
-        *(int *)&sp[0x108]=five; *(float *)&sp[0x10C]=lbl_805649F4;
-        *(float *)&sp[0x20]=lbl_805649F0; *(float *)&sp[0x24]=lbl_805649FC; *(float *)&sp[0x28]=lbl_805649F0;
-        *(float *)&sp[0xD4]=lbl_805649F0; *(float *)&sp[0xD8]=lbl_805649FC; *(float *)&sp[0xDC]=lbl_805649F0;
-        *(float *)&sp[0x2C]=lbl_80564A6C; *(float *)&sp[0x30]=lbl_805649FC; *(float *)&sp[0x34]=lbl_80564A6C;
-        *(float *)&sp[0xE0]=lbl_80564A6C; *(float *)&sp[0xE4]=lbl_805649FC; *(float *)&sp[0xE8]=lbl_80564A6C;
-        *(float *)&sp[0xEC]=lbl_805649F0; *(float *)&sp[0xF0]=lbl_80564A70; *(float *)&sp[0xF4]=lbl_805649F0; *(float *)&sp[0xF8]=lbl_80564A74;
-        *(float *)&sp[0x124]=lbl_80564A78; *(float *)&sp[0x12C]=lbl_80564A78; *(float *)&sp[0x134]=lbl_80564A78;
-        *(float *)&sp[0x128]=lbl_805649FC; *(float *)&sp[0x130]=lbl_805649FC; *(float *)&sp[0x138]=lbl_805649FC;
-        *(float *)&sp[0x11C]=lbl_805649F0; *(float *)&sp[0x120]=lbl_80564A7C; *(float *)&sp[0x110]=t13; *(float *)&sp[0x114]=t2; *(float *)&sp[0x118]=lbl_80564A58;
-        *(float *)&sp[0x13C]=lbl_805649F0; *(float *)&sp[0x140]=lbl_80564A04;
-        p[0]=(void *)((int (*)(void *, const void *, const void *, float, float, float, float, float, float, float, float, float, float, float, float, float))fn_8028E2F8)(&sp[0xC4],lbl_80349E24,lbl_80349E18,lbl_80564A58,t2,t3,lbl_80564A7C,lbl_80564A78,lbl_80564A74,lbl_80564A70,lbl_80564A6C,lbl_805649F0,lbl_805649F4,lbl_805649FC,lbl_80564A68,t13);
-        fn_8028E61C(&sp[0x38]); *(int *)&sp[0x38]=two; *(int *)&sp[0x3C]=0x60; *(float *)&sp[0x40]=lbl_805649F4; *(float *)&sp[0x44]=lbl_805649FC;
-        *(float *)&sp[0x80]=lbl_805649F4; *(int *)&sp[0x7C]=five; *(float *)&sp[8]=lbl_805649F0; *(float *)&sp[0xC]=lbl_805649F0; *(float *)&sp[0x10]=lbl_805649F0;
-        *(float *)&sp[0x48]=lbl_805649F0; *(float *)&sp[0x4C]=lbl_805649F0; *(float *)&sp[0x50]=lbl_805649F0;
-        *(float *)&sp[0x14]=lbl_805649FC; *(float *)&sp[0x18]=lbl_805649FC; *(float *)&sp[0x1C]=lbl_805649FC; *(float *)&sp[0x54]=lbl_805649FC; *(float *)&sp[0x58]=lbl_805649FC; *(float *)&sp[0x5C]=lbl_805649FC;
-        *(float *)&sp[0x60]=lbl_805649F0; *(float *)&sp[0x64]=lbl_80564A00; *(float *)&sp[0x68]=lbl_805649F0; *(float *)&sp[0x6C]=lbl_80564A74;
-        *(float *)&sp[0xA8]=lbl_80564A78; *(float *)&sp[0xA0]=lbl_80564A78; *(float *)&sp[0x98]=lbl_80564A78; *(float *)&sp[0xAC]=lbl_80564A88; *(float *)&sp[0xA4]=lbl_80564A88; *(float *)&sp[0x9C]=lbl_80564A88;
-        *(float *)&sp[0x90]=lbl_80564A78; *(float *)&sp[0x94]=lbl_80564A8C; *(float *)&sp[0x88]=lbl_80564A8C; *(float *)&sp[0x8C]=lbl_80564A90; *(float *)&sp[0xB0]=lbl_80564A94; *(float *)&sp[0xB4]=lbl_805649FC;
-        p[1]=(void *)((int (*)(void *, const void *, const void *, float, float, float, float, float, float, float, float, float))fn_8028E2F8)(&sp[0x38],&lbl_8055CC80,lbl_80349E08,lbl_80564A90,lbl_80564A8C,lbl_80564A88,lbl_80564A78,lbl_80564A74,lbl_80564A00,lbl_805649F0,lbl_805649FC,lbl_805649F4);
+    struct {
+        Vec v[4];
+        InitStruct s2;
+        InitStruct s1;
+    } frame;
+    int *r29;
+    register int two;
+    register int five;
+    float t13;
+    register float t31;
+    float t3, t2;
+    extern void fn_8028DFFC(void);
+    extern void *fn_801284F8(int, const char *);
+    extern void fn_8028E61C(void *);
+    extern void fn_8028E024(void);
+    extern int fn_8028E2F8(void *, const void *, const void *, ...);
+    extern const char lbl_80349DFC[], lbl_80349E24[], lbl_80349E18[], lbl_80349E08[];
+    extern float lbl_8055CC80;
+    extern float lbl_805649F0, lbl_805649F4, lbl_805649FC, lbl_80564A00, lbl_80564A04, lbl_80564A58, lbl_80564A68, lbl_80564A6C, lbl_80564A70, lbl_80564A74, lbl_80564A78, lbl_80564A7C, lbl_80564A80, lbl_80564A84, lbl_80564A88, lbl_80564A8C, lbl_80564A90, lbl_80564A94;
+    extern void *lbl_8055F924;
+    fn_8028DFFC();
+    r29 = (int *)fn_801284F8(8, lbl_80349DFC);
+    if (r29 != NULL) {
+        fn_8028E61C(&frame.s1);
+        two = 2;
+        five = 5;
+        frame.s1.field_04 = 0x12C;
+        frame.s1.field_08 = lbl_80564A68;
+        frame.s1.field_0C = lbl_805649FC;
+        frame.s1.field_00 = two;
+        frame.s1.field_48 = lbl_805649F4;
+        frame.s1.field_44 = five;
+        frame.v[2].x = lbl_805649F0;
+        frame.v[2].y = lbl_805649FC;
+        frame.v[2].z = lbl_805649F0;
+        frame.s1.vA.x = lbl_805649F0;
+        frame.s1.vA.y = lbl_805649FC;
+        frame.s1.vA.z = lbl_805649F0;
+        frame.v[3].x = lbl_80564A6C;
+        frame.v[3].y = lbl_805649FC;
+        frame.v[3].z = lbl_80564A6C;
+        frame.s1.vB.x = lbl_80564A6C;
+        frame.s1.vB.y = lbl_805649FC;
+        frame.s1.vB.z = lbl_80564A6C;
+        frame.s1.vC.x = lbl_805649F0;
+        frame.s1.vC.y = lbl_80564A70;
+        frame.s1.vC.z = lbl_805649F0;
+        frame.s1.field_34 = lbl_80564A74;
+        frame.s1.field_60 = lbl_80564A78;
+        frame.s1.field_68 = lbl_80564A78;
+        frame.s1.field_70 = lbl_80564A78;
+        frame.s1.field_64 = lbl_805649FC;
+        frame.s1.field_6C = lbl_805649FC;
+        frame.s1.field_74 = lbl_805649FC;
+        frame.s1.field_58 = lbl_805649F0;
+        frame.s1.field_5C = lbl_80564A7C;
+        t31 = lbl_80564A68 * lbl_80564A68;
+        t13 = lbl_80564A80 * (lbl_80564A70 / t31);
+        t3 = (lbl_805649F4 * t13) * t31;
+        t2 = (lbl_80564A84 - t3) / lbl_80564A68;
+        frame.s1.field_4C = t13;
+        frame.s1.field_50 = t2;
+        frame.s1.field_54 = lbl_80564A58;
+        frame.s1.field_78 = lbl_805649F0;
+        frame.s1.field_7C = lbl_80564A04;
+        r29[0] = ((int (*)(void *, const void *, const void *))fn_8028E2F8)(&frame.s1, lbl_80349E24, lbl_80349E18);
+        fn_8028E61C(&frame.s2);
+        frame.s2.field_04 = 0x60;
+        frame.s2.field_08 = lbl_805649F4;
+        frame.s2.field_0C = lbl_805649FC;
+        frame.s2.field_00 = two;
+        frame.s2.field_48 = lbl_805649F4;
+        frame.s2.field_44 = five;
+        frame.v[0].x = lbl_805649F0;
+        frame.v[0].y = lbl_805649F0;
+        frame.v[0].z = lbl_805649F0;
+        frame.s2.vA.x = lbl_805649F0;
+        frame.s2.vA.y = lbl_805649F0;
+        frame.s2.vA.z = lbl_805649F0;
+        frame.v[1].x = lbl_805649FC;
+        frame.v[1].y = lbl_805649FC;
+        frame.v[1].z = lbl_805649FC;
+        frame.s2.vB.x = lbl_805649FC;
+        frame.s2.vB.y = lbl_805649FC;
+        frame.s2.vB.z = lbl_805649FC;
+        frame.s2.vC.x = lbl_805649F0;
+        frame.s2.vC.y = lbl_80564A00;
+        frame.s2.vC.z = lbl_805649F0;
+        frame.s2.field_34 = lbl_80564A74;
+        frame.s2.field_70 = lbl_80564A78;
+        frame.s2.field_68 = lbl_80564A78;
+        frame.s2.field_60 = lbl_80564A78;
+        frame.s2.field_74 = lbl_80564A88;
+        frame.s2.field_6C = lbl_80564A88;
+        frame.s2.field_64 = lbl_80564A88;
+        frame.s2.field_58 = lbl_80564A78;
+        frame.s2.field_5C = lbl_80564A8C;
+        frame.s2.field_50 = lbl_80564A8C;
+        frame.s2.field_54 = lbl_80564A90;
+        frame.s2.field_78 = lbl_80564A94;
+        frame.s2.field_7C = lbl_805649FC;
+        r29[1] = ((int (*)(void *, const void *, const void *))fn_8028E2F8)(&frame.s2, &lbl_8055CC80, lbl_80349E08);
     }
-    lbl_8055F924=p; fn_8028E024();
+    lbl_8055F924 = r29;
+    fn_8028E024();
 }
 #pragma pop
 void fn_802ABC2C(void) {
@@ -847,10 +918,8 @@ void fn_802ABC2C(void) {
     lbl_8055F924 = 0;
 }
 
-#pragma push
 #pragma processor 750
-#pragma scheduling on
-void fn_802ABC80(Vec *arg0, Vec *arg1, float farg0, float farg1, float farg2) {
+void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
     extern float lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_805649F0, lbl_805649FC;
@@ -859,20 +928,19 @@ void fn_802ABC80(Vec *arg0, Vec *arg1, float farg0, float farg1, float farg2) {
     Vec pos, callpos, dir, side, forward;
     float angle, scale;
     angle=fn_80287BC8(lbl_80564A48,lbl_80564A4C);
-    forward=arg0[0]; side=*(Vec*)((char*)arg0+0x18); pos=*(Vec*)((char*)arg0+0x24);
+    forward=*(Vec*)arg0; side=*(Vec*)((char*)arg0+0x18); pos=*(Vec*)((char*)arg0+0x24);
     scale=farg0*(float)cos(angle);
     pos.x+=forward.x*scale; pos.y+=forward.y*scale; pos.z+=forward.z*scale;
     scale=farg1*(float)sin(angle);
     pos.x+=side.x*scale; pos.y+=side.y*scale; pos.z+=side.z*scale;
     scale=fn_80287BC8(lbl_805649F0,lbl_80564A04*farg2);
-    pos.x+=arg0[1].x*scale;
-    pos.y+=arg0[1].y*scale;
-    pos.z+=arg0[1].z*scale;
-    dir=*arg1;
+    pos.x+=((float*)((char*)arg0+0xC))[0]*scale;
+    pos.y+=((float*)((char*)arg0+0xC))[1]*scale;
+    pos.z+=((float*)((char*)arg0+0xC))[2]*scale;
+    dir=*(Vec*)arg1;
     callpos=pos;
     fn_8028E590(*(int*)lbl_8055F924,&callpos,&dir,lbl_805649FC);
 }
-#pragma pop
 
 void fn_802ABE50(void) { fn_8028E240(0); }
 
@@ -880,12 +948,12 @@ void fn_802ABE50(void) { fn_8028E240(0); }
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802ABE58(volatile float *arg0, volatile float *arg1, volatile int *arg2, float delta) {
-    unsigned char red;
+void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float delta) {
     unsigned char green;
+    unsigned char red;
     unsigned char blue;
     unsigned int color;
-    unsigned int low;
+    unsigned low;
     float angle;
     float current;
     float magnitude;
@@ -916,7 +984,7 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, volatile int *arg2,
     magnitude = (float)fabs(delta);
     wave = lbl_805649F0;
     withinTolerance = magnitude <= *(float *)(void *)&lbl_80558DC4;
-    if (withinTolerance == 0)
+    if ((unsigned short)withinTolerance == 0)
         wave = lbl_80564A9C * (float)(int)fn_80287BC8(lbl_805649F0, lbl_805649FC);
 
     angleBelowLimit = angle < lbl_80564A00;
