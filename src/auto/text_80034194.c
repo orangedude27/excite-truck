@@ -82,6 +82,9 @@ typedef struct DVDNode {
     };
 } DVDNode;
 
+#define DVDNodeIsFolder(node) (((node).packed_type_name & 0xFF000000))
+#define DVDNodeGetName(node) ((node).packed_type_name & 0x00FFFFFF)
+
 static inline int DVDPathLower(int c) {
     return (c < 0 || c >= 256) ? c :
            (int)lbl_802FE850.cmap->to_lower_table[c];
@@ -1620,17 +1623,18 @@ extern void fn_80036D24(u32);
 extern void fn_800373E0(u32);
 extern int memcmp(const void *, const void *, u32);
 void fn_8003684C(void) {
-    register s32 enabled;
-    register u8 *idBase = lbl_80376A80;
-    register s32 zero = 0;
+    s32 zero;
+    u8 *idBase = lbl_80376A80;
+    s32 enabled;
     switch (lbl_8055D8BC) {
     case 3:
+        zero = 0;
         lbl_8055D87C = zero;
         if (DVDCompareDiskID(idBase + 0x80,
                 *(void **)(executing_8055D8C8 + 0x24)) != 0) {
             memcpy((void *)IDShouldBe_8055D8C4, idBase + 0x80, 0x20);
             *(s32 *)(executing_8055D8C8 + 0xC) = 1;
-            DCInvalidateRange(idBase, 0x20);
+            DCInvalidateRange((void *)((char *)idBase + 0), 0x20);
             lbl_8055D860 = zero;
             fn_8003BCDC(0);
             {
@@ -1667,6 +1671,7 @@ void fn_8003684C(void) {
         }
         break;
     default:
+        zero = 0;
         if (memcmp(idBase + 0x80, (void *)IDShouldBe_8055D8C4, 0x20) != 0) {
             {
         u32 tick, offset, next;
@@ -2506,8 +2511,7 @@ void fn_80038368(void *arg0) {
  command = *(int *)(p+8);
  switch (command) {
  case 2: case 3: case 5: case 13: case 14: case 15: case 16: case 34: case 37: {
-   int length = *(int *)(p+0x14);
-   int offset = *(int *)(p+0x10);
+   int length = *(int *)(p+0x14), offset = *(int *)(p+0x10);
    {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
