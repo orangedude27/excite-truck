@@ -81,14 +81,21 @@ extern "C" void fn_8022EA58(void *arg0) {
     }
 }
 #pragma cplusplus reset
-void fn_8022EAB8(void) {
-    if (!lbl_8055EFFC) {
-        void *p;
-        p = fn_801284F8(0x20, (void *)&lbl_80340290[0]);
-        lbl_8055F000 = (void **)(p ? fn_8012A13C(p, lbl_80340290, 0x20, 0x3c) : p);
+int fn_8022EAB8(void) {
+    void *value;
+    int ret;
+    if (lbl_8055EFFC == 0) {
+        value = fn_801284F8(0x20, lbl_80340290);
+        if (value != 0) {
+            value = fn_8012A13C(value, lbl_80340290, 0x20, 0x3c);
+        }
+        lbl_8055F000 = value;
     }
-    if (!fn_8012A2D8(lbl_8055F000)) return;
-    lbl_8055EFFC = 1 + lbl_8055EFFC;
+    ret = (int)fn_8012A2D8(lbl_8055F000);
+    if (ret != 0) {
+        lbl_8055EFFC += 1;
+    }
+    return ret;
 }
 
 #pragma dont_inline on
@@ -113,11 +120,11 @@ void fn_8022EB90(void) {
     *(s32 *)lbl_8055F004 = 0;
     ((s32 *)lbl_8055F004)[1] = *(s32 *)lbl_8055F004;
 }
-#pragma pop
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_8022EBF0(void) {
+    /* Shut down the node list: if any nodes remain, log, drain and free them, then free the list object. */
     void *node;
 
     if (((s32 *)lbl_8055F004)[1] != 0) {
@@ -196,39 +203,39 @@ s32 fn_8022EDC4(void) {
 
 #pragma push
 #pragma processor 750
-void *fn_8022EDE4(f32 *arg0, f32 farg0) {
-    s32 *dst = (s32 *)((void *(*)(int, void *))fn_8022EAB8)(0x3c, (void *)&lbl_80340344);
-    s32 *src = (s32 *)arg0;
-    s32 t0, t1;
-    f32 k;
-    t0 = src[0];
-    t1 = src[1];
-    dst[0] = t0;
-    t0 = src[2];
-    dst[1] = t1;
-    t1 = src[3];
-    dst[2] = t0;
-    t0 = src[4];
-    dst[3] = t1;
-    t1 = src[5];
-    dst[4] = t0;
-    t0 = src[6];
-    dst[5] = t1;
-    t1 = src[7];
-    dst[6] = t0;
-    t0 = src[8];
-    dst[7] = t1;
-    t1 = src[9];
-    dst[8] = t0;
-    t0 = src[10];
-    dst[9] = t1;
-    t1 = src[11];
-    dst[10] = t0;
+void *fn_8022EDE4(float *arg0, float farg0) {
+    int *dst = (int *)((void *(*)(int, void *))fn_8022EAB8)(0x3C, (void *)&lbl_80340344);
+    int *src = (int *)arg0;
+    int t0, t1;
+    float k;
+    t0 = src[1];
+    t1 = src[0];
+    dst[0] = t1;
+    t1 = src[2];
+    dst[1] = t0;
+    t0 = src[3];
+    dst[2] = t1;
+    t1 = src[4];
+    dst[3] = t0;
+    t0 = src[5];
+    dst[4] = t1;
+    t1 = src[6];
+    dst[5] = t0;
+    t0 = src[7];
+    dst[6] = t1;
+    t1 = src[8];
+    dst[7] = t0;
+    t0 = src[9];
+    dst[8] = t1;
+    t1 = src[10];
+    dst[9] = t0;
+    t0 = src[11];
+    dst[10] = t1;
     k = lbl_805635E0;
-    dst[11] = t1;
-    ((f32 *)dst)[12] = farg0;
-    ((f32 *)dst)[13] = k;
-    ((f32 *)dst)[14] = k;
+    dst[11] = t0;
+    ((float *)dst)[12] = farg0;
+    ((float *)dst)[13] = k;
+    ((float *)dst)[14] = k;
     return dst;
 }
 #pragma pop
@@ -260,9 +267,8 @@ void fn_8022EE9C(void) {
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
-void fn_8022EEF8(f32 *dst, f32 *left, f32 *right, s32 arg3) {
-    f32 temp_f1;
-    f32 temp_f24, temp_f25, temp_f26, temp_f27, temp_f28, temp_f29, temp_f30, temp_f31;
+void fn_8022EEF8(f32 *dst, f32 *left, f32 *right) {
+    f32 temp_f24, temp_f25, temp_f26, temp_f27, temp_f28, temp_f29, temp_f30, temp_f31, temp_f1;
 
     dst[12] = left[12] * right[12];
     dst[13] = left[13] * right[13];
