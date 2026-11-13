@@ -17420,17 +17420,21 @@ UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
 }
 
 void L2CA_Deregister(UINT16 psm) {
+    /* Deregister an L2CAP PSM: log API trace, release its RCB if found, else warn. */
     extern void *l2cu_find_rcb_by_psm(UINT16);
     extern void fn_8008EC30(void *);
-    void *rcb;
+    void *p_rcb;
+
     if (lbl_803C4040[0] >= 3) {
         fn_80070954(0x80002, lbl_80317CC8, psm);
     }
-    rcb = l2cu_find_rcb_by_psm(psm);
-    if (rcb != 0) {
-        fn_8008EC30(rcb);
+
+    p_rcb = l2cu_find_rcb_by_psm(psm);
+    if (p_rcb != 0) {
+        fn_8008EC30(p_rcb);
         return;
     }
+
     if (lbl_803C4040[0] >= 2) {
         fn_80070954(0x80001, lbl_80317CFC, psm);
     }
