@@ -1756,21 +1756,22 @@ int fn_801CE8CC(void) {
     return 0;
 }
 #pragma dont_inline reset
-void *fn_801CE9A0(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)((char *)arg0 + 4) = &lbl_80338024[0];
-        fn_801CEA28((char *)arg0 + 8);
-        fn_801CEA28((char *)arg0 + 0xC);
-        if (arg0 != 0) {
+/* Deleting destructor for an effect object: releases subobjects, runs base cleanup, and optionally frees storage. */
+void *fn_801CE9A0(void *self, s32 shouldDelete) {
+    if (self != 0) {
+        *(void **)((char *)self + 4) = &lbl_80338024[0];
+        fn_801CEA28((char *)self + 8);
+        fn_801CEA28((char *)self + 0xC);
+        if (self != 0) {
             void (*cleanup)(void *);
             cleanup = fn_801CBD04;
-            *(void **)((char *)arg0 + 4) = &lbl_80338038[0];
-            cleanup(arg0);
+            *(void **)((char *)self + 4) = &lbl_80338038[0];
+            cleanup(self);
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 void fn_801CEA28(void *arg0) {
     void *buf = *(void **)arg0;
