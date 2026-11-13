@@ -7462,6 +7462,33 @@ extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
 extern "C" s32 VFiPFPATH_parseShortName(void *, void *);
 
 extern "C" s32 fn_800B51FC(void *, s32);
+
+/* A file's entry as the file code holds it (0x240 bytes, VFiPFEntryCopy240
+ * copies one).  The FAT directory entry it stands for starts at +0x20E:
+ * fn_800AB0C0 lays these fields out in the 32 bytes that go to the directory,
+ * which is how they are named here. */
+struct VFiPFDirEntry {
+    u16 first;          /* 0x000 the name the entry was read with; 0: none */
+    u8 pad2[0x20A - 2];
+    u8 lfnCount;        /* 0x20A long-name entries the name needs */
+    u8 pad20B[3];
+    s8 shortName[13];   /* 0x20E entry bytes 0x00-0x0A, the 8.3 name */
+    u8 reserved21B;     /* 0x21B entry byte 0x0C; 0x18: the name is not all upper case */
+    u8 attrs;           /* 0x21C entry byte 0x0B, the VF_ATTR_* flags */
+    u8 createTenths;    /* 0x21D entry byte 0x0D, tenths of the create time */
+    u16 createTime;     /* 0x21E entry bytes 0x0E-0x0F */
+    u16 createDate;     /* 0x220 entry bytes 0x10-0x11 */
+    u16 accessDate;     /* 0x222 entry bytes 0x12-0x13 */
+    u16 writeTime;      /* 0x224 entry bytes 0x16-0x17 */
+    u16 writeDate;      /* 0x226 entry bytes 0x18-0x19 */
+    u32 size;           /* 0x228 entry bytes 0x1C-0x1F */
+    void *volume;       /* 0x22C the volume the entry is read and written through */
+    u32 pathLen;        /* 0x230 characters the path in front of the name takes */
+    u32 firstCluster;   /* 0x234 entry bytes 0x14-0x15 and 0x1A-0x1B; 1: no cluster yet */
+    u32 entrySector;    /* 0x238 sector of the directory the entry sits in */
+    u16 entrySectorOff; /* 0x23C where in that sector it sits */
+};
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
