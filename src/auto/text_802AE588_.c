@@ -230,9 +230,9 @@ void fn_802AE774(void) {
     fn_802BA004();
     if (((int (*)(void))fn_802B05E4)() == 0) {
         fn_802BA348();
-        fn_802C29A0();
-        fn_802BAE50();
     }
+    fn_802C29A0();
+    fn_802BAE50();
 }
 #pragma scheduling on
 int fn_802AE7AC(void) {
