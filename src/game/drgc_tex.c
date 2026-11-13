@@ -80,6 +80,9 @@ void fn_802D7564(void) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+/* Allocates a free texture-cache entry from the lbl_8055FE28 pool (0x1C2
+ * entries, 0xF4 bytes each). Marks the first unused entry (byte at +0x20 == 0)
+ * in-use and returns it, or logs an out-of-textures error and returns NULL. */
 void *fn_802D7600(void *arg0) {
     unsigned char *entry;
     int i;
