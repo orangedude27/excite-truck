@@ -2365,6 +2365,7 @@ extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void*, bool);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void*, void*);
 extern "C" void* Instance__15EmissionManagerFv(void);
 extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) {
+    /* Pause or unpause the sequence player: store the pause flag and pause all 16 track slots. */
     u32 level;
     int i;
     level = OSDisableInterrupts();
