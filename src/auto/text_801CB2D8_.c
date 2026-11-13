@@ -1802,21 +1802,22 @@ fail:
 }
 
 #pragma scheduling on
-void *fn_801CEB0C(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)((char *)arg0 + 4) = &lbl_80338010[0];
-        fn_801CEB94((char *)arg0 + 8);
-        fn_801CEB94((char *)arg0 + 0xC);
-        if (arg0 != 0) {
+/* Destroys an object: resets its vtable/owned fields and optionally frees it. */
+void *fn_801CEB0C(void *object, s32 freeFlag) {
+    if (object != 0) {
+        *(void **)((char *)object + 4) = &lbl_80338010[0];
+        fn_801CEB94((char *)object + 8);
+        fn_801CEB94((char *)object + 0xC);
+        if (object != 0) {
             void (*cleanup)(void *);
             cleanup = fn_801CBD04;
-            *(void **)((char *)arg0 + 4) = &lbl_80338038[0];
-            cleanup(arg0);
+            *(void **)((char *)object + 4) = &lbl_80338038[0];
+            cleanup(object);
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (freeFlag > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 void fn_801CEB94(void *arg0) {
     void *buf = *(void **)arg0;
