@@ -48,15 +48,20 @@ extern char lbl_8037B640[], lbl_80302368[];
 extern void fn_80039F3C(int);
 extern void fn_80039F68(int);
 extern void fn_80039FC4(int);
+
+#define sNandDvderrorCmdBlock lbl_8037B6D0
+#define sNandErrorReportCallback lbl_8055D8D0
+#define sNandDvderrorFileInfo lbl_8037B640
+#define sDvderrorPath lbl_80302368
 void fn_80039F3C(int arg0) { if (lbl_8055D8D0 != 0) { lbl_8055D8D0(arg0 == 0 ? 1 : 2, 0); } }
 
 void fn_80039F68(int arg0) { if (NANDCloseAsync(lbl_8037B640, fn_80039F3C, lbl_8037B6D0) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2, 0); }
 
 void fn_80039FC4(int arg0) {
- unsigned long base = (unsigned long)lbl_8037B640;
+ char *base = lbl_8037B640;
  if (arg0 == 0) {
-  if (NANDWriteAsync((void *)base, (void *)(base+0x160), 0x80, fn_80039F68, (void *)(base+0x90)) != 0 &&
-      NANDCloseAsync((void *)base, fn_80039F3C, (void *)(base+0x90)) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+  if (NANDWriteAsync(base, base+0x160, 0x80, fn_80039F68, base+0x90) != 0 &&
+      NANDCloseAsync(base, fn_80039F3C, base+0x90) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
  } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
 }
 
@@ -484,32 +489,22 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
     *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 32 + 4) = offset;
 
     ioVec = (IPCIOVector *)(base + 0xC0);
-
-    // Input vector 1: DI command
     ioVec[0].length = 32;
     ioVec[0].base = lbl_8055D8FC + lbl_8055D8E4 * 32;
-
-    // Input vector 2: eTicket
     ioVec[1].base = (void *)ticket;
     if (ticket == (void *)0) {
         ioVec[1].length = 0;
     } else {
         ioVec[1].length = 0x2A4;
     }
-
-    // Input vector 3: Shared certs
     ioVec[2].base = (void *)certs;
     if (certs == (void *)0) {
         ioVec[2].length = 0;
     } else {
         ioVec[2].length = certsSize;
     }
-
-    // Output vector 1: TMD
     ioVec[3].base = tmd;
     ioVec[3].length = 0x49E4;
-
-    // Output vector 2: Ticket error
     ioVec[4].base = base + 0x100;
     ioVec[4].length = 32;
 
