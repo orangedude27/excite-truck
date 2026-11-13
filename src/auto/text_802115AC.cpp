@@ -2408,21 +2408,22 @@ extern "C" void fn_80215828(void *self, void *arg1, void *arg2, void *arg3, void
     ((Obj *)self)->v2(arg1, arg2, arg3, arg6);
 }
 
-extern "C" s32 fn_8021583C(void *arg0, s32 unused1, s32 unused2, s32 arg1, s32 arg2) {
+extern "C" s32 fn_8021583C(void *self, s32 unused1, s32 unused2, s32 x, s32 y) {
+    /* Query bounds via virtual call and return 1 if (x,y) is inside [left,right) x [top,bottom). */
     struct Local {
         virtual void f0();
         virtual void f1();
         virtual void f2();
         virtual void call(s32, s32, s32*, s32*, s32*, s32*);
     };
-    s32 sp14;
-    s32 sp10;
-    s32 spC;
-    s32 sp8;
+    s32 left;
+    s32 top;
+    s32 right;
+    s32 bottom;
     s32 result;
-    ((Local*)arg0)->call(unused1, unused2, &sp14, &sp10, &spC, &sp8);
+    ((Local*)self)->call(unused1, unused2, &left, &top, &right, &bottom);
     result = 0;
-    if (arg1 >= sp14 && arg1 < spC && arg2 >= sp10 && arg2 < sp8)
+    if (x >= left && x < right && y >= top && y < bottom)
         result = 1;
     return result;
 }
