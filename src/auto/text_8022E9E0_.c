@@ -44,6 +44,19 @@ typedef struct ObjectPool {
     s32 live;             /* 0x1C elements handed out */
 } ObjectPool;             /* 0x20 bytes */
 
+/* One entry of the UI draw-context stack (pushed by fn_8022ED00, popped by
+ * fn_8022EDB8, current one from fn_8022EDC4); the game names the 0x3c-byte
+ * object "UIContext" (lbl_80340344) and allocates it from "UIContext::pool".
+ * The matrix is 3x3 row-major; composing two contexts (fn_8022EEF8) multiplies
+ * them (left * right), adds the offsets and multiplies the three factors. */
+typedef struct UIContext {
+    f32 mtx[3][3];    /* 0x00 rotation/scale */
+    f32 pos[3];       /* 0x24 x, y, z offset added to what is drawn */
+    f32 brightness;   /* 0x30 scales the colour's top byte (fn_80230B9C) */
+    f32 scale;        /* 0x34 scales the drawn size */
+    f32 rate;         /* 0x38 line/text width rate */
+} UIContext;          /* 0x3c bytes */
+
 #define STR_CNODE_POOL      lbl_80340280 /* "cnode::pool" */
 #define STR_UICONTEXT_POOL  lbl_80340290 /* "UIContext::pool" */
 #define sCNodePool          lbl_8055EFF8 /* ObjectPool of 8-byte cnodes */
