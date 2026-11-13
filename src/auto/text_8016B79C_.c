@@ -154,25 +154,26 @@ void *fn_8016B834(void *arg0, s32 arg1) {
 }
 
 extern void fn_8016AC24(void *);
-void *fn_8016B8CC(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        s32 value = *(s32 *)((u8 *)arg0 + 0x10);
-        if (value != 0) {
-            ((s32 (*)(s32, void *))fn_8002F6AC)(value, fn_8016AC24);
-            *(s32 *)((u8 *)arg0 + 0x10) = 0;
-            *(s32 *)((u8 *)arg0 + 0x14) = 0;
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+void *fn_8016B8CC(void *obj, s32 shouldDelete) {
+    /* Destroy/clear this object: run element destructor on owned array, reset fields, and optionally delete. */
+    if (obj != 0) {
+        s32 ownedArray = *(s32 *)((u8 *)obj + 0x10);
+        if (ownedArray != 0) {
+            ((s32 (*)(s32, void *))fn_8002F6AC)(ownedArray, fn_8016AC24);
+            *(s32 *)((u8 *)obj + 0x10) = 0;
+            *(s32 *)((u8 *)obj + 0x14) = 0;
+            *(s32 *)obj = 0;
+            *((s32 *)obj + 1) = 0;
+            *((s32 *)obj + 2) = 0;
         }
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+        if (obj != 0) {
+            *(s32 *)obj = 0;
+            *((s32 *)obj + 1) = 0;
+            *((s32 *)obj + 2) = 0;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 #pragma cplusplus on
