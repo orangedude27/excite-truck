@@ -249,17 +249,18 @@ void fn_80279F58(void *arg0, void *arg1) {
 #pragma cplusplus reset
 
 #pragma scheduling invalid_target
-void fn_8027A714(void *arg0, const char *arg1) {
-    char buf[0x100];
-    void *result;
+/* Load a car's physics.val resource by name and initialize the target with it. */
+void fn_8027A714(void *target, const char *carName) {
+    char path[0x100];
+    void *resource;
 
-    sprintf(buf, lbl_80347A08, arg1);
-    result = (void *)fn_80131808(buf);
-    if (result == 0) {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347A1C, buf);
+    sprintf(path, lbl_80347A08, carName);
+    resource = (void *)fn_80131808(path);
+    if (resource == 0) {
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347A1C, path);
     }
-    fn_80279F58(arg0, result);
-    fn_80131818(result);
+    fn_80279F58(target, resource);
+    fn_80131818(resource);
 }
 
 extern int strcmp(const char *, const char *);
