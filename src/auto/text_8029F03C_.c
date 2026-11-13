@@ -217,14 +217,15 @@ check:
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_8029F3BC(unsigned char *arg0) {
-    unsigned char *current = lbl_804B7770;
-    int i = 0;
-    while (i < lbl_804B9B7C[1]) {
-        if (stricmp((const char *)current, (const char *)arg0) == 0)
-            return *(int *)(lbl_804B7770 + i * 0x24 + 0x20);
-        current += 0x24;
-        i++;
+/* Look up a 0x24-byte name table entry by case-insensitive string and return its id at +0x20, or -1 if not found. */
+int fn_8029F3BC(unsigned char *name) {
+    unsigned char *entry = lbl_804B7770;
+    int index = 0;
+    while (index < lbl_804B9B7C[1]) {
+        if (stricmp((const char *)entry, (const char *)name) == 0)
+            return *(int *)(lbl_804B7770 + index * 0x24 + 0x20);
+        entry += 0x24;
+        index++;
     }
     return -1;
 }
@@ -859,13 +860,13 @@ extern "C" int fn_801E85A4(void);
 void fn_802A042C(void *arg0, Unk802A0794Params *arg1) {
     struct Entry { unsigned int words[12]; };
     struct Entry copy;
-    float vec[6];
     float bias, scale, upper, lower;
-    float radius2;
+    float vec[6];
     void *obj;
-    Unk802A0794Params *pos;
-    int i;
     int offset;
+    float radius2;
+    int i;
+    Unk802A0794Params *pos;
 
     lower = lbl_805646BC;
     obj = arg0;
@@ -875,11 +876,12 @@ void fn_802A042C(void *arg0, Unk802A0794Params *arg1) {
     bias = lbl_805646C8;
     i = 0;
     offset = 0;
+
     goto test;
 body:
     {
-        struct Entry *entry = (struct Entry *)fn_801E8718(i);
         float pointX, pointY, pointZ, dx, dy, dz, dot;
+        struct Entry *entry = (struct Entry *)fn_801E8718(i);
         float radius;
         copy = *entry;
         pointX = pos->values[0] + *(float *)((char *)obj + 0x30);
@@ -890,23 +892,23 @@ body:
         dy = pointY - *(float *)&copy.words[10];
         pointZ = pos->values[2] + *(float *)((char *)obj + 0x38);
         dz = pointZ - *(float *)&copy.words[11];
+        vec[5] = pointZ;
         vec[3] = pointX;
         vec[4] = pointY;
-        vec[5] = pointZ;
-        vec[0] = dx;
         vec[1] = dy;
+        vec[0] = dx;
         vec[2] = dz;
         dot = PSVECDotProduct(vec, vec);
         if (dot < radius2) {
             float amount = dot / radius2;
             float base;
-            float next;
+            register float next;
             int alpha;
-            unsigned int clamped;
+            int clamped;
             unsigned int *colors;
             unsigned int old;
-            unsigned int objectColor;
-            unsigned int output;
+            register unsigned int objectColor;
+            long output;
             if (amount < lower) amount = lower;
             if (amount > upper) amount = upper;
             base = scale * *(float *)((char *)obj + 0x48);
@@ -917,17 +919,18 @@ body:
             old = colors[offset / 4];
             alpha = (int)next + (int)(old >> 24);
             alpha = alpha & ((-alpha & ~alpha) >> 31);
-            clamped = 255U;
-            if (alpha < 255) clamped = (unsigned int)alpha;
+            clamped = 255;
+            if (255 > alpha) clamped = alpha;
             objectColor = *(unsigned int *)((char *)obj + 0x4C);
-            output = (objectColor & 0x00FF0000) | (clamped << 24) | (objectColor & 0x0000FFFF);
+            output = (objectColor & 0x00FF0000) | ((unsigned int)clamped << 24) | (objectColor & 0x0000FFFF);
             colors[offset / 4] = output;
         }
         offset += 4;
         i++;
     }
 test:
-    if (i < fn_801E85A4()) goto body;
+    if (i < fn_801E85A4())
+        goto body;
 }
 #pragma pop
 
