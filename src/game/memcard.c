@@ -78,6 +78,8 @@ loop_check:
 
 void fn_802E6CA4(void) {}
 
+#pragma push
+#pragma use_lmw_stmw off
 int fn_802E6CA8(void) {
     unsigned char *allocation;
     char *messages = lbl_8034D678;
@@ -208,7 +210,7 @@ second_check:
     }
     return 0;
 }
-
+#pragma pop
 extern char lbl_8034D6B8[];
 extern char lbl_8034D784[];
 #pragma push
@@ -283,6 +285,7 @@ int fn_802E7130(void) {
     return (total + 0x1FFF) & 0xFFFFE000;
 }
 
+/* Finds the index of a memcard record matching (arg0,arg1,arg2); logs and returns -1 on mismatch. */
 int fn_802E721C(unsigned int arg0, unsigned int arg1, int arg2) {
     unsigned char *entry = lbl_804FC8B0;
     int count = lbl_8055FFC0;
