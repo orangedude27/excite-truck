@@ -1172,20 +1172,22 @@ extern "C" void fn_8029A17C(void* arg0) {
 }
 
 extern "C" void fn_8029A4B4(void*, int);
-    extern "C" void fn_8029A208(void* arg0, int arg1, int arg2) {
-      int index;
-      unsigned char* entry;
-      if (arg2 != 0 && *(int*)((char*)arg0 + 0x40) == -1) {
-          fn_8029A4B4(arg0, arg1);
+extern "C" void fn_8029A208(void *arg0, int arg1, int arg2) {
+    int index;
+    unsigned char *entry;
+    /* If arg2 is set and slot +0x40 is free (-1), assign via fn_8029A4B4(arg0,arg1).
+       If arg2 is clear and arg1 matches +0x3C, release the active +0x40 slot in lbl_8055F7C0. */
+    if (arg2 != 0 && *(int *)((char *)arg0 + 0x40) == -1) {
+        fn_8029A4B4(arg0, arg1);
         return;
     }
-    if (arg2 == 0 && arg1 == *(int*)((char*)arg0 + 0x3C)) {
-          register int index2 = *(int*)((char*)arg0 + 0x40);
-          if (index2 != -1) {
-              entry = (unsigned char*)lbl_8055F7C0 + index2 * 0x2C;
-              if (entry[0x28] != 0)
-                  ((void (*)(void*, int))fn_8029840C)(lbl_8055F7C0, index2);
-            *(int*)((char*)arg0 + 0x40) = -1;
+    if (arg2 == 0 && arg1 == *(int *)((char *)arg0 + 0x3C)) {
+        register int activeSlot = *(int *)((char *)arg0 + 0x40);
+        if (activeSlot != -1) {
+            entry = (unsigned char *)lbl_8055F7C0 + activeSlot * 0x2C;
+            if (entry[0x28] != 0)
+                ((void (*)(void *, int))fn_8029840C)(lbl_8055F7C0, activeSlot);
+            *(int *)((char *)arg0 + 0x40) = -1;
         }
     }
 }
