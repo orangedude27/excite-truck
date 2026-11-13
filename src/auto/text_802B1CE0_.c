@@ -374,18 +374,19 @@ extern "C" void fn_802B224C(void *arg0) {
     items[count] = object;
 }
 
-int *fn_802B2384(int *arg0, int *arg1) {
-    unsigned long count = arg0[1];
-    int *base = (int *)arg0[0];
-    int val = *arg1;
+#pragma cplusplus off
+void **fn_802B2384(void *arg0, void **arg1) {
+    int *p = (int *)arg0;
+    unsigned long count;
+    int val;
     int *entry;
-    arg0[1] = count + 1;
-    entry = base + count;
+    count = p[1];
+    val = *(int *)arg1;
+    entry = (int *)((char *)p[0] + count * 4);
+    p[1] = count + 1;
     *entry = val;
-    return entry;
+    return (void **)entry;
 }
-
-#pragma pop
 
 extern char lbl_8034A2E8[];
 extern char lbl_8055CDD8;
@@ -550,6 +551,14 @@ void fn_802B28BC(int *dst, int count) {
     }
 }
 
+void *fn_802B2934_temp(void *arg0, void **arg1) {
+    int index = ((int *)arg0)[1];
+    void *value = *arg1;
+    void **base = *(void ***)arg0;
+    ((int *)arg0)[1] = index + 1;
+    base[index] = value;
+}
+
 extern void fn_802B2C34(void (*)(void *), void *);
 extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
 extern void fn_802C6B44(void *);
@@ -681,7 +690,7 @@ int fn_802B2E08(int arg0) {
     char *base, *obj, *transform;
     register float *entry;
     char *head;
-    float stack[24];
+    float stack[28];
     double conversion;
     float scaleX, scaleY, scaleZ, normal, vertical;
     float angle, cosine, sine, radial, radius, c, x, x2, yz, x3;
@@ -710,8 +719,11 @@ outer_body:
     head = *(char **)(obj + 0x10);
     if (head != 0) {
         if (*(unsigned char *)(obj + 0x2A0) != 0) {
+            double drad = normal;
+            double dvert = vertical;
             entry = (float *)(obj + 0x18);
-            radial = normal;
+            radial = (float)drad;
+            vertical = (float)dvert;
             j = 0;
             do {
                 radius = ((float (*)(int, float, float))fn_80129DC4)(
