@@ -479,17 +479,17 @@ have:
 #pragma scheduling invalid_target
 void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 sy, f32 sp) {
     f32 sp8;
-    f32 half;
+    register f32 half;
     f32 *out = &sp8;
     strlen(text);
     half = lbl_80563688;
     while (*text != 0) {
-        s32 skip;
+        register s32 skip;
         s32 flag;
         u8 c;
         u16 code;
         char *next;
-        s32 off;
+        int off;
         u8 *g;
 
         sp8 = w;
@@ -497,8 +497,8 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         if (*text == '\\') {
             s32 eo;
             s32 i;
-            i = 0;
             eo = 0;
+            i = 0;
             while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
                 Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
                 if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
@@ -520,19 +520,19 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
                     r->y = y + w + half * (r->w - w);
                     r->z = z;
                     r->flag = flag;
-                    if (out != 0) {
+                    if (out) {
                         *out = r->w2 + extra;
                     }
                     skip = strlen(e->name) + 1;
                     goto have;
                 }
                 eo += 0x1C;
-                i++;
+                ++i;
             }
         }
         skip = 0;
 have:
-        if (skip > 0) {
+        if (0 < skip) {
             text += skip;
             x += sp8;
             continue;
@@ -543,7 +543,7 @@ have:
             code = ((c & 0xF) << 12) | ((((u8 *)text)[1] & 0x3F) << 6) | (((u8 *)text)[2] & 0x3F);
         } else if ((c & 0xE0) == 0xC0) {
             next = text + 2;
-            code = ((c & 0x1F) << 6) | (((u8 *)text)[1] & 0x3F);
+            code = ((c & 0x1F) << 6) | (((u8 *)text)[1] & ~0xC0);
         } else {
             code = c & 0x7F;
             next = text + 1;
@@ -693,7 +693,8 @@ void fn_8023243C(void) {
     s32 offset = 0;
     s32 i = 0;
 
-    /* Release nonempty record resources and handles, then clear the active count. */
+    /* Release all active lbl_80497F14 records and clear the count. Each
+     * 0x1C-byte record stores a handle at +8 and a resource at +0xC. */
     while (i < *(s32 *)(lbl_80497F14 + 4)) {
         void *resource = *(void **)(*(u8 **)lbl_80497F14 + offset + 0xC);
         if (resource != 0) {
