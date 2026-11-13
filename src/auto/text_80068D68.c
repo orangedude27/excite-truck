@@ -23871,6 +23871,7 @@ void rfc_timer_stop(void *arg0) {
 }
 
 extern char lbl_80319EE0[];
+/* Start the RFCOMM port timer and optionally log the timeout value. */
 void rfc_port_timer_start(void *port, u16 timeout) {
     TIMER_LIST_ENT *portTimer = (TIMER_LIST_ENT *)((u8 *)port + 0x70);
     if (lbl_803C4828[0x414] >= 4) {
