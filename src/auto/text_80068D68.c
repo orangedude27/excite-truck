@@ -5764,14 +5764,15 @@ void BTA_DmSetVisibility(u8 arg0, u8 arg1) {
     }
 }
 
+/* Post a BTA DM search request (event 0x200): copy service mask, duration, and mode into a GKI buffer and send it. */
 void BTA_DmSearch(u8 *services, u32 duration, u32 mode) {
-    u8 *buf = GKI_getbuf(0x1C);
-    if (buf != 0) {
-        *(u16 *)buf = 0x200;
-        memcpy(buf + 8, services, 0xA);
-        *(u32 *)(buf + 0x14) = duration;
-        *(u32 *)(buf + 0x18) = mode;
-        fn_80071450(buf);
+    u8 *msg = GKI_getbuf(0x1C);
+    if (msg != 0) {
+        *(u16 *)msg = 0x200;
+        memcpy(msg + 8, services, 0xA);
+        *(u32 *)(msg + 0x14) = duration;
+        *(u32 *)(msg + 0x18) = mode;
+        fn_80071450(msg);
     }
 }
 
