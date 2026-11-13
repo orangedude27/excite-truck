@@ -525,6 +525,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     void *temp_r3;
     void *temp_r3_2;
     register void *temp_r3_3;
+
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
         if (temp_r3 != 0) {
@@ -538,11 +539,9 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
         }
         temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
         f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
-        f32 *pC = &spC;
-        f32 *p8 = &sp8;
         f32 value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
         s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
-        fn_80148134(pC, p8, valueC, value4, value8);
+        fn_80148134(&spC, &sp8, valueC, value4, value8);
         f32 firstValue = *(f32 *)((u8 *)temp_r3 + 0x10);
         f32 settingValue = *(f32 *)((u8 *)temp_r3_3 + 0x10);
         f32 delta = firstValue - lbl_80561844;
@@ -1176,6 +1175,20 @@ int fn_8016208C(void) {
     extern void *fn_8001285C();
     extern int stricmp(const char *, const char *);
     extern char lbl_8032F5DC[];
+#pragma cplusplus on
+    struct Tbl {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual void f20(); virtual void f21();
+        virtual void *get(int);
+    };
+    struct It {
+        virtual const char *name();
+    };
+#pragma cplusplus off
     void *mgr = fn_8001285C();
     int count = 0;
     int index = 0;
@@ -1184,14 +1197,13 @@ int fn_8016208C(void) {
 loop:
     obj = *(void **)((char *)mgr + 0x20);
     {
-        volatile void **vt = *(volatile void ***)obj;
         int cur = index++;
-        iter = ((void *(*)(void *, int))vt[0x60 / 4])(obj, cur);
+        iter = ((struct Tbl *)obj)->get(cur);
     }
     if (iter == 0)
         goto done;
     {
-        const char *name = ((const char *(*)(void *))(*(void ***)iter)[2])(iter);
+        const char *name = ((struct It *)iter)->name();
         if (stricmp(name, lbl_8032F5DC) == 0)
             count++;
     }
@@ -2588,8 +2600,8 @@ extern "C" void fn_8016464C(void *arg0) {
 
     i = 0;
     while (i < count - 1) {
-        unsigned long n = self->entryCount;
         s32 index = i + 1;
+        s32 n = self->entryCount;
         self->entryCount = n + 1;
         entry = (Entry_8016464C *)self->entries + n;
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, index);
