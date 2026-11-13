@@ -150,6 +150,7 @@ extern float lbl_80564F90;
 // 3x3 rotation followed by a translation.
 typedef struct { float m[9]; } Mtx33_802D1C04;
 typedef struct { Mtx33_802D1C04 r; Vec_802D1C04 t; } Xform_802D1C04;
+typedef struct { float m[2][4]; } Mtx24_802D1C04;
 static inline void mtx33Transpose_802D1C04(float *m) {
     float t;
     t = m[1]; m[1] = m[3]; m[3] = t;
