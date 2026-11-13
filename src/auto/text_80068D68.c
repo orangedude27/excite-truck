@@ -9091,6 +9091,17 @@ s32 fn_8007A534(s32 arg0) {
     return 0;
 }
 
+/* btm_cb (lbl_803C0F78) members the vendor-specific-event handler uses, kept as
+   byte offsets so the compiler still reuses one base register for them. */
+#define vsb_p_vend_spec_cb(b) (*(void (**)(UINT8, UINT8 *))((b) + 0x56C)) /* registered vendor-event handler */
+#define vsb_p_vsc_cback(b)    (*(UINT32 *)((b) + 0x61C))                  /* pending VSC command's callback */
+#define vsb_lmp_subversion(b) (*(UINT16 *)((b) + 0x63C))                  /* controller LMP subversion */
+#define vsb_vsc_busy(b)       ((b)[0x650])                                /* a VSC command awaits its event */
+
+/* Processes an HCI vendor-specific event: logs it (except on one controller
+   revision), clears the pending vendor-specific-command callback and busy flag -
+   some controllers never send command complete - then hands the event to the
+   registered vendor-specific handler. */
 void btm_vendor_specific_evt(UINT8 *p, UINT8 evt_len) {
     u8 *btm = lbl_803C0F78;
     void (*callback)(UINT8, UINT8 *);
@@ -18751,8 +18762,8 @@ s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
 
 extern char lbl_80318BE8[];
 void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
+    u8 *p_buf = (u8 *)arg2;
     u8 *p_lcb = (u8 *)arg0;
-    u8 *p_buf;
     register char *p_trace = lbl_80318BE8;
     register u8 *p_ccb;
     u8 mode;
@@ -18774,7 +18785,7 @@ void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
             p_lcb[0x41] = 1;
         }
         if (*(u16 *)(p_lcb + 0x4C) <= *(u16 *)(p_lcb + 0x3E)) {
-            *(u16 *)((u8 *)arg2 + 6) = 0;
+            *(u16 *)(p_buf + 6) = 0;
             GKI_enqueue((BUFFER_Q *)(p_lcb + 0x44), arg2);
         } else {
             GKI_freebuf(arg2);
@@ -18796,12 +18807,13 @@ void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
         u8 *global = lbl_803C4040;
         for (;;) {
             u8 *head = *(u8 **)(p_lcb + 0x44);
-            if (head != 0 && *(u16 *)(head + 6) == 0 && p_lcb[0x40] == 0) {
-                p_buf = (u8 *)GKI_dequeue((BUFFER_Q *)(p_lcb + 0x44));
-                if (p_buf != 0 && (u8)l2c_link_send_to_lower(arg0, p_buf) != 0 && *(u16 *)(global + 4) != 0 && *(u16 *)(p_lcb + 0x36) != 0)
-                    continue;
-            }
-            break;
+            if (head == 0 || *(u16 *)(head + 6) != 0 || p_lcb[0x40] != 0)
+                break;
+            p_buf = (u8 *)GKI_dequeue((BUFFER_Q *)(p_lcb + 0x44));
+            if (p_buf == 0 || (u8)l2c_link_send_to_lower(arg0, p_buf) == 0)
+                break;
+            if (*(u16 *)(global + 4) == 0 || *(u16 *)(p_lcb + 0x36) == 0)
+                break;
         }
     }
     if (p_lcb[0x40] != 0)
