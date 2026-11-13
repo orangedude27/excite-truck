@@ -40,6 +40,7 @@ extern void fn_801E7888(int);
 extern unsigned int lbl_804C1410[];
 extern unsigned int lbl_804C13E0[];
 extern char lbl_8055FC35;
+struct DlMtx34 { unsigned int w[12]; };
 extern float lbl_80564EF8, lbl_80564F00;
 extern void fn_802C7758(int);
 extern void fn_802C89E8(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
@@ -123,31 +124,29 @@ void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
 
+#pragma scheduling invalid_target
 void fn_802C83CC(void) {
     int ten = 10;
     float temp_f1 = (float)ten;
-
-    ((float *)lbl_804C1410)[0] = lbl_80564EF8;
-    ((float *)lbl_804C1410)[1] = lbl_80564F00;
-    ((float *)lbl_804C1410)[2] = lbl_80564F00;
-    ((float *)lbl_804C1410)[3] = lbl_80564F00;
-    ((float *)lbl_804C1410)[4] = lbl_80564EF8;
-    ((float *)lbl_804C1410)[5] = lbl_80564F00;
-    ((float *)lbl_804C1410)[6] = lbl_80564F00;
-    ((float *)lbl_804C1410)[7] = lbl_80564F00;
-    ((float *)lbl_804C1410)[8] = lbl_80564EF8;
-    ((float *)lbl_804C1410)[9] = lbl_80564F00;
-    ((float *)lbl_804C1410)[10] = lbl_80564F00;
-    ((float *)lbl_804C1410)[11] = lbl_80564F00;
-
+    float *dst = (float *)lbl_804C1410;
+    *dst++ = lbl_80564EF8;
+    *dst++ = lbl_80564F00;
+    *dst++ = lbl_80564F00;
+    *dst++ = lbl_80564F00;
+    *dst++ = lbl_80564EF8;
+    *dst++ = lbl_80564F00;
+    *dst++ = lbl_80564F00;
+    *dst++ = lbl_80564F00;
+    *dst++ = lbl_80564EF8;
+    *dst++ = lbl_80564F00;
+    *dst++ = lbl_80564F00;
+    *dst++ = lbl_80564F00;
     lbl_8055FC5C = 0;
     lbl_8055FC60 = 0;
     lbl_8055FC64 = (void *)ten;
     lbl_8055FC68 = (void *)ten;
     lbl_8055FC6C = temp_f1 / (float)ten;
-
-    fn_802C5F48(temp_f1, ten, (float *)lbl_804C1410,
-                lbl_80564F00, lbl_80564EF8);
+    fn_802C5F48(temp_f1, ten, (float *)lbl_804C1410, lbl_80564F00, lbl_80564EF8);
     lbl_8055FC34 = 0;
     fn_802C974C(lbl_80564EF8, lbl_80564F04, lbl_80564F08);
     lbl_8055FC70 = 0;
@@ -155,13 +154,12 @@ void fn_802C83CC(void) {
     ((void (*)(void))fn_802C7758)();
     fn_802C82C4(0);
     fn_802C9C58(0);
-
     if (fn_80133010() != 0) {
         fn_801332D0(1, lbl_8034B498, (int *)&lbl_8055FC90);
         lbl_8055D028 = fn_8013365C((int)&lbl_8055D02C, (int)fn_802C82C0);
     }
 }
-
+#pragma scheduling on
 extern int fn_80133010(void);
 extern void fn_801336E0(int, void (*)(void));
 extern void fn_802C6080(void);
@@ -444,6 +442,32 @@ void fn_802C8C04(int arg0) {
     ((void (*)(int))fn_802C8BD0)(arg0);
 }
 
+#pragma use_lmw_stmw off
+void fn_802C8CBC(int arg0) {
+    unsigned int sp8[12];
+    unsigned int v0 = lbl_804C1410[0];
+    unsigned int v1 = lbl_804C1410[1];
+    unsigned int v2 = lbl_804C1410[2];
+    unsigned int v3 = lbl_804C1410[3];
+    unsigned int v4 = lbl_804C1410[4];
+    unsigned int v5 = lbl_804C1410[5];
+    unsigned int v6 = lbl_804C1410[6];
+    unsigned int v7 = lbl_804C1410[7];
+    unsigned int v8 = lbl_804C1410[8];
+    unsigned int v9 = lbl_804C1410[9];
+    unsigned int v10 = lbl_804C1410[10];
+    unsigned int v11 = lbl_804C1410[11];
+    lbl_804C13E0[0] = v0;
+    lbl_804C13E0[1] = v1; lbl_804C13E0[2] = v2; lbl_804C13E0[3] = v3;
+    lbl_804C13E0[4] = v4; lbl_804C13E0[5] = v5; lbl_804C13E0[6] = v6;
+    lbl_804C13E0[7] = v7; lbl_804C13E0[8] = v8; lbl_804C13E0[9] = v9;
+    lbl_804C13E0[10] = v10; lbl_804C13E0[11] = v11;
+    lbl_8055FC35 = 1;
+    ((void (*)(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int))fn_802C88FC)(sp8, v11, v10, v9, v8, v7, v6, v5);
+    fn_802C8638(sp8);
+    ((void (*)(int))fn_802C8BD0)(arg0);
+}
+
 #pragma dont_inline on
 void fn_802C8D74(void) {
     lbl_8055FC70 = 1;
@@ -485,10 +509,9 @@ void fn_802C8E48(void) {
 void fn_802C8E70(float *arg0, float *arg1) {
     float *m = (float *)lbl_804C1410;
     float z, y, x;
-    float rx, ry, rz;
     float dx, dy, dz;
-    float limit, scale;
-    float sx, sy;
+    float rx, ry, rz, limit, scale;
+    float sy, sx, v1, v2;
 
     x = arg0[0];
     y = arg0[1];
@@ -514,11 +537,13 @@ void fn_802C8E70(float *arg0, float *arg1) {
     limit = (lbl_8055FC38 > rz) ? lbl_8055FC38 : rz;
 
     scale = lbl_80564EF8 / (lbl_8055FC44 * limit);
-    sx = lbl_80564EF8 + scale * arg1[0];
-    sy = lbl_80564EF8 + lbl_8055FC6C * (scale * -arg1[1]);
+    sy = scale * -arg1[1];
+    sx = scale * arg1[0];
+    v1 = lbl_80564EF8 + sx;
+    v2 = lbl_80564EF8 + lbl_8055FC6C * sy;
 
-    arg1[0] = (float)(int)lbl_8055FC5C + (lbl_80564F18 * (float)(int)lbl_8055FC64) * sx;
-    arg1[1] = (float)(int)lbl_8055FC60 + (lbl_80564F18 * (float)(int)lbl_8055FC68) * sy;
+    arg1[0] = (float)(int)lbl_8055FC5C + (lbl_80564F18 * (float)(int)lbl_8055FC64) * v1;
+    arg1[1] = (float)(int)lbl_8055FC60 + (lbl_80564F18 * (float)(int)lbl_8055FC68) * v2;
 }
 float fn_802C8FEC(void) { return lbl_8055FC6C; }
 
