@@ -5300,6 +5300,13 @@ enum { STRM_CODEC_ADPCM = 2 };
 
 #pragma use_lmw_stmw off
 
+/* nw4hbm::snd::detail::StrmFile (snd_StrmFile.cpp): copy the 0x30-byte ADPCM
+ * parameter block of stream `index` of an opened .strm file into `arg1`.  The
+ * HEAD block reaches the stream-info byte and the table of per-stream
+ * parameter refs through Util::DataRefs, which the library requires to be
+ * plain addresses (the DBAssert(ref.dataType == 0) checks below).  Nothing is
+ * copied, and 0 is returned, when the file's codec is not the ADPCM one or the
+ * index is past the end of the table. */
 extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 index) {
     if (*(void **)arg0 == 0) /* DBAssert(mHeader != NULL) */
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326518, 0xAD, lbl_80326688);
