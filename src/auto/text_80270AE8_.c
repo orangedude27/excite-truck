@@ -30,6 +30,19 @@ struct Parser2 {
     virtual void m9();
     virtual int getFlag(const char *, int);
 };
+struct Parser72028 {
+    virtual void _00();
+    virtual int has(const char *);
+    virtual int enumerate(int, char **, int *);
+    virtual const char *getString(const char *);
+    virtual void _10();
+    virtual int getCount(const char *);
+    virtual int getOption(const char *, int);
+    virtual float getFloat(const char *);
+    virtual float getFloatDef(const char *, float);
+    virtual void _24();
+    virtual int getFlag(const char *, int);
+};
 struct Manager {
     virtual void v0() = 0;
     virtual void v1() = 0;
@@ -1372,17 +1385,11 @@ void fn_80273604(void *arg0, s32 arg1) {
     extern u8 lbl_80346BA0[];
     extern char lbl_80347310[];
     extern float lbl_80563F48, lbl_80563F4C, lbl_80563F50, lbl_80563F9C;
-    register u8 *table;
-    register s32 start;
-    register s32 count;
-    register u8 *state;
-    register s32 kind;
+    u8 *table;
+    u8 *state;
     table = (u8 *)&lbl_8049A258 + arg1 * 0x14;
-    start = *(s32 *)(table + 4);
-    count = *(s32 *)(table + 0xC);
-    state = lbl_80346BA0 + (start + count) * 0x28;
-    kind = *(s32 *)state;
-    switch (kind) {
+    state = lbl_80346BA0 + ((*(s32 *)(table + 4) + *(s32 *)(table + 0xC))) * 0x28;
+    switch (*(s32 *)state) {
     case 0x22: {
         struct Scratch { float vec[3]; float pad; float matrix[9]; float pos[3]; } scratch;
         float scale = lbl_80563F4C;
@@ -1447,25 +1454,24 @@ void fn_80273604(void *arg0, s32 arg1) {
         s32 other = fn_80273494(*(s32 *)((u8 *)arg0 + 4));
         if (other != 6 && other != 0 && other != arg1) {
             u8 *otherTable = (u8 *)&lbl_8049A258 + other * 0x14;
-            s32 otherStart = *(s32 *)(otherTable + 4);
-            s32 otherCount = *(s32 *)(otherTable + 0xC);
-            u8 *otherState = lbl_80346BA0 + (otherStart + otherCount) * 0x28;
-            fn_802704D0(*(s32 *)state, *(s32 *)otherState, arg0, otherStart);
+            u8 *otherState = lbl_80346BA0 + ((*(s32 *)(otherTable + 4) + *(s32 *)(otherTable + 0xC))) * 0x28;
+            fn_802704D0(*(s32 *)state, *(s32 *)otherState, arg0, *(s32 *)(otherTable + 4));
         } else {
             s32 wrap = *(s32 *)(table + 8);
-            s32 index = start + ((wrap + count - 1) % wrap);
+            s32 start2 = *(s32 *)(table + 4);
+            s32 count2 = *(s32 *)(table + 0xC);
+            s32 index = start2 + ((wrap + count2 - 1) % wrap);
             u8 *prevState = lbl_80346BA0 + index * 0x28;
-            fn_802704D0(*(s32 *)state, *(s32 *)prevState, arg0, start, wrap);
+            fn_802704D0(*(s32 *)state, *(s32 *)prevState, arg0, start2, wrap);
         }
         return;
     }
     default:
-        fn_802E30C8(lbl_80347310, kind);
+        fn_802E30C8(lbl_80347310, *(s32 *)state);
         fn_802704D4(4, arg0);
         return;
     }
 }
-#pragma scheduling on
 extern int fn_80128668(void);
 int fn_80273978(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
