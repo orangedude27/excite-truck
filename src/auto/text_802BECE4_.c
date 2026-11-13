@@ -348,18 +348,19 @@ int fn_802BF4F0(void) {
 
 #pragma cplusplus on
 extern "C" void fn_802BF508(void) {
-    class Dummy {
+    /* If the current slot has an object and the feature flag is set, invoke its virtual callback with a temporary context override, then run common post-processing. */
+    class SlotObject {
     public:
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
+        virtual void dtor0();
+        virtual void dtor1();
+        virtual void onUpdate();
     };
-    int index = fn_801E85B4();
-    if (lbl_804C07F0[index] != 0 && lbl_8055CF70 != 0) {
-        int saved = fn_802C2C00(0);
-        Dummy *obj = (Dummy *)lbl_804C07F0[index];
-        obj->f2();
-        fn_802C2C00(saved);
+    int slotIndex = fn_801E85B4();
+    if (lbl_804C07F0[slotIndex] != 0 && lbl_8055CF70 != 0) {
+        int previousState = fn_802C2C00(0);
+        SlotObject *slotObject = (SlotObject *)lbl_804C07F0[slotIndex];
+        slotObject->onUpdate();
+        fn_802C2C00(previousState);
     }
     fn_802BF160();
 }
