@@ -2197,6 +2197,40 @@ int fn_802837D4(int arg0, int arg1) {
     return arg0;
 }
 
+void *fn_80283814(void *arg0, int arg1) {
+    void **p;
+    int i;
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80348738;
+        if (lbl_8055F698 == arg0) lbl_8055F698 = 0;
+        p = (void **)lbl_804B30D8[0];
+        i = 0;
+        for (; i < (int)lbl_804B30D8[1]; ++i) {
+            if (*p != arg0) goto increment;
+            goto found;
+increment:
+            ++p;
+        }
+        i = -1;
+found:;
+        if (i != -1 && i >= 0 && i < (int)lbl_804B30D8[1]) {
+            if (i != (int)lbl_804B30D8[1] - 1)
+                ((void **)lbl_804B30D8[0])[i] = ((void **)lbl_804B30D8[0])[(int)lbl_804B30D8[1] - 1];
+            lbl_804B30D8[1]--;
+        }
+        if (arg0 != 0) {
+            *((unsigned char *)arg0 + 0x18) = 0;
+            *((unsigned char *)arg0 + 0x50) = 0;
+            *((unsigned char *)arg0 + 0x5C) = 0;
+            *(int *)((char *)arg0 + 0x24) = 1;
+            *(int *)((char *)arg0 + 0x20) = 0;
+            *((unsigned char *)arg0 + 0x44) = 0;
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 /* Destroys this object: installs its vtable pair, clears the active state pointer, frees
  * the owned field at +0x20, resets the embedded 3-word list at +0x40, and optionally
  * frees the object itself when arg1 > 0. */
@@ -2249,6 +2283,7 @@ extern "C" int fn_802839D0(void) {
     return 0;
 }
 #pragma cplusplus reset
+#pragma always_inline on
 static inline int fn_80283A50_find(void **p, unsigned int value, int count) {
     int i = 0;
     for (; i < count; ++i) {
@@ -2259,6 +2294,7 @@ increment:
     }
     return -1;
 }
+#pragma always_inline off
 int fn_80283A50(void) {
     int i;
     i = fn_80283A50_find((void **)lbl_804B30D8[0], (unsigned int)lbl_8055F698, (int)lbl_804B30D8[1]);
