@@ -904,15 +904,16 @@ s32 fn_80132C74(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_80132D1C(void *arg0, char *arg1) {
-    s32 offset = 0;
-    s32 i = 0;
-    while (i < *(s32 *)((u8 *)arg0 + 4)) {
-        char *s = *(char **)((u8 *)arg0 + 0xC) + offset;
-        if (stricmp(*(char **)(s + 4), arg1) == 0)
+s32 fn_80132D1C(void *table, char *name) {
+    /* Return 1 if table contains an entry whose name matches (case-insensitively), else 0. Entries are 0x1C bytes; name pointer is at +4. */
+    s32 byteOffset = 0;
+    s32 index = 0;
+    while (index < *(s32 *)((u8 *)table + 4)) {
+        char *entry = *(char **)((u8 *)table + 0xC) + byteOffset;
+        if (stricmp(*(char **)(entry + 4), name) == 0)
             return 1;
-        offset += 0x1C;
-        i++;
+        byteOffset += 0x1C;
+        index++;
     }
     return 0;
 }
