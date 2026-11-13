@@ -926,7 +926,7 @@ int fn_80247C18() {
  b = fn_8027DE68(2); missing = (b == 0);
  flag = missing && lbl_8055F26C >= 2; entry = &frame.entries[frame.count++]; entry->id = 11; entry->enabled = flag;
  flag = missing && lbl_8055F26C >= 3; entry = &frame.entries[frame.count++]; entry->id = 12; entry->enabled = flag;
- entry = &frame.entries[frame.count++]; entry->id = 13; entry->enabled = b;
+ entry = &frame.entries[frame.count++]; entry->id = 13; entry->enabled = (int)b;
  b = fn_8027B9EC(1);
  flag = b == 0 && lbl_8055BEA8 >= 5; entry = &frame.entries[frame.count++]; entry->id = 14; entry->enabled = flag;
  entry = &frame.entries[frame.count++]; entry->id = 15; entry->enabled = b;
@@ -942,8 +942,8 @@ int fn_80247C18() {
  frame.items[5] = (s32)&lbl_8055BAC0;
  frame.items[6] = 8;
  frame.items[7] = (s32)fn_8024768C;
- frame.items[8] = 0;
  frame.items[9] = 0;
+ frame.items[8] = 0;
  frame.items[10] = (s32)&lbl_8055BABC;
  frame.items[11] = 8;
  frame.items[12] = (s32)fn_80247768;
@@ -969,8 +969,8 @@ int fn_80247C18() {
  frame.items[32] = 0;
  frame.items[33] = 3;
  frame.items[34] = 0;
- frame.items[35] = (s32)(base + 0x2f8);
  frame.items[36] = 0;
+ frame.items[35] = (s32)(base + 0x2f8);
  frame.items[37] = 0;
  frame.items[38] = 6;
  frame.items[39] = 0;
@@ -999,8 +999,8 @@ int fn_80247C18() {
  frame.items[62] = 0;
  frame.items[63] = 11;
  frame.items[64] = 0;
- frame.items[65] = (s32)&lbl_8055BEE8;
  frame.items[66] = 0;
+ frame.items[65] = (s32)&lbl_8055BEE8;
  frame.items[67] = 0;
  frame.items[68] = 16;
  frame.items[69] = 0;
@@ -1021,7 +1021,7 @@ int fn_80247C18() {
      frame.args[0] = table[1]; frame.args[1] = (s32)frame.items;
      result = ((s32 (*)(void *, s32, s32, s32))fn_802146BC)(frame.args, -999, -999, 1);
    }
-   if (result == 3) {
+   if ((int)result == 3) {
       if (((s32 (*)(void))fn_802478A4)() != -1) { lbl_8055F270 = 1; frame.entries = 0; frame.count = 0; frame.capacity = 0; return result; }
       lbl_8055F270 = 0;
    } else if (result == 6) {
@@ -1666,6 +1666,19 @@ s32 fn_80249334(void *menu, s32 input) {
     }
     return 0;
 }
+
+/* One entry of the UI group list fn_802493E8 walks. */
+typedef struct UIGroupEntry {
+    s32 groupId;           /* 0x00: group handed to UIShowGroup/UIHideGroup */
+    unsigned char shown;   /* 0x04: non-zero shows the group, zero hides it */
+} UIGroupEntry;            /* 8 bytes */
+
+/* Head of such a list, as kept by the menu object fn_802493E8 is called with. */
+typedef struct UIGroupList {
+    char pad00[0x18];
+    UIGroupEntry *entries; /* 0x18 */
+    s32 count;             /* 0x1C */
+} UIGroupList;
 
 #pragma push
 #pragma optimization_level 3
