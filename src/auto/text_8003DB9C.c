@@ -562,12 +562,15 @@ typedef struct GPFifoCopy {
     unsigned int w0, w1, w2, w3, w4, w5, w6, w7, w8;
 } GPFifoCopy;
 void GXSetGPFifo(unsigned int *fifo) {
-    int intStatus;
+    unsigned int *dst;
+    unsigned int a, b;
     unsigned int tmp;
+    int intStatus;
 
     intStatus = OSDisableInterrupts();
 
-    tmp = __GXData[2] & ~1u;
+    tmp = __GXData[2];
+    tmp = tmp & 0xFFFFFFFEu;
     __GXData[2] = tmp;
     __cpReg[1] = tmp;
     tmp = __GXData[2] & 0xFFFFFFF3u;
@@ -586,15 +589,24 @@ void GXSetGPFifo(unsigned int *fifo) {
         return;
     }
 
-    ((unsigned int *)lbl_8037C0C0)[0] = fifo[0];
-    ((unsigned int *)lbl_8037C0C0)[1] = fifo[1];
-    ((unsigned int *)lbl_8037C0C0)[2] = fifo[2];
-    ((unsigned int *)lbl_8037C0C0)[3] = fifo[3];
-    ((unsigned int *)lbl_8037C0C0)[4] = fifo[4];
-    ((unsigned int *)lbl_8037C0C0)[5] = fifo[5];
-    ((unsigned int *)lbl_8037C0C0)[6] = fifo[6];
-    ((unsigned int *)lbl_8037C0C0)[7] = fifo[7];
-    ((unsigned int *)lbl_8037C0C0)[8] = fifo[8];
+    dst = (unsigned int *)lbl_8037C0C0;
+    a = fifo[0];
+    b = fifo[1];
+    dst[0] = a;
+    dst[1] = b;
+    a = fifo[2];
+    b = fifo[3];
+    dst[2] = a;
+    dst[3] = b;
+    a = fifo[4];
+    b = fifo[5];
+    dst[4] = a;
+    dst[5] = b;
+    a = fifo[6];
+    b = fifo[7];
+    dst[6] = a;
+    dst[7] = b;
+    dst[8] = fifo[8];
     lbl_8055D949 = 1;
     ((unsigned char *)lbl_8037C0C0)[0x22] = 1;
 
@@ -799,35 +811,36 @@ unsigned int GXSetBreakPtCallback(unsigned int value) {
     return old;
 }
 
+// Enable breakpoint for trace capture at the given address
 void GXEnableBreakPt(u32 address) {
     s32 interruptState = OSDisableInterrupts();
     s32 value;
     s32 cleared;
     u32 addressField;
-    unsigned char *data;
+    unsigned char *gxData;
 
-    data = (unsigned char *)__GXData;
+    gxData = (unsigned char *)__GXData;
     addressField = (address >> 16) & 0x3FFF;
-    value = *(u32 *)(data + 8);
+    value = *(u32 *)(gxData + 8);
     cleared = __rlwinm(value, 0, 0, 30);
-    *(u32 *)(data + 8) = cleared;
+    *(u32 *)(gxData + 8) = cleared;
     *(volatile s16 *)((u8 *)__cpReg + 2) = (s16)cleared;
     *(volatile s16 *)((u8 *)__cpReg + 0x3C) = (s16)address;
     *(volatile s16 *)((u8 *)__cpReg + 0x3E) = (s16)addressField;
 
-    value = *(u32 *)(data + 8);
+    value = *(u32 *)(gxData + 8);
     value = __rlwinm(value, 0, 31, 29);
     cleared = __rlwinm(value, 0, 27, 25);
-    *(u32 *)(data + 8) = cleared;
+    *(u32 *)(gxData + 8) = cleared;
     *(volatile s16 *)((u8 *)__cpReg + 2) = (s16)cleared;
 
-    value = *(u32 *)(data + 8) | 0x22;
-    *(u32 *)(data + 8) = value;
+    value = *(u32 *)(gxData + 8) | 0x22;
+    *(u32 *)(gxData + 8) = value;
     *(volatile s16 *)((u8 *)__cpReg + 2) = (s16)value;
 
     lbl_8055D950 = address;
-    value = *(u32 *)(data + 8) | 1;
-    *(u32 *)(data + 8) = value;
+    value = *(u32 *)(gxData + 8) | 1;
+    *(u32 *)(gxData + 8) = value;
     *(volatile s16 *)((u8 *)__cpReg + 2) = (s16)value;
 
     ((void (*)(s32))OSRestoreInterrupts)(interruptState);
