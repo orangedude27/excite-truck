@@ -1212,10 +1212,11 @@ void fn_801C7290(void) {
 
 extern char lbl_80336EE8[];
 void fn_801C72F0(void) {
-    void *ptr = fn_801C3C80();
-    ((s32 *)ptr)[2] = 7;
-    strncpy((char *)ptr + 0x10C, lbl_804380F0, 0x1FF);
-    sprintf(lbl_80437FC0, lbl_80336EE8, (double)((f32 *)ptr)[0]);
+    /* Initializes a race/event text entry (type 7), copies its label, formats a timestamp message, sorts the entry table, and refreshes display state. */
+    void *entry = fn_801C3C80();
+    ((s32 *)entry)[2] = 7;
+    strncpy((char *)entry + 0x10C, lbl_804380F0, 0x1FF);
+    sprintf(lbl_80437FC0, lbl_80336EE8, (double)((f32 *)entry)[0]);
     qsort((void *)(s32)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
     fn_801C957C(0);
 }
