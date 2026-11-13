@@ -174,18 +174,19 @@ void fn_802AA100(void *arg0, void *arg1, void *arg2, void *arg3) {
 }
 #pragma opt_propagation reset
 #pragma pop
-void fn_802AA1D0(unsigned int arg0) {
+void fn_802AA1D0(unsigned int index) {
+    /* Compute and store X/Y/Z extents (max-min) for the object associated with this index. */
     extern int lbl_8055F928;
     extern int lbl_80488648[];
     extern int fn_801EE0C8(int);
     extern void fn_802C77F0(int, float *);
-    float sp[8];
-    int *p = (int *)(lbl_8055F928 + arg0 * 0x108);
-    int v = fn_801EE0C8(arg0 < 8 ? lbl_80488648[arg0] : 0);
-    fn_802C77F0(v, sp);
-    *(float *)((char *)p + 0xF8) = sp[1] - sp[0];
-    *(float *)((char *)p + 0x100) = sp[3] - sp[2];
-    *(float *)((char *)p + 0xFC) = sp[5] - sp[4];
+    float bounds[8];
+    int *entry = (int *)(lbl_8055F928 + index * 0x108);
+    int sourceObject = fn_801EE0C8(index < 8 ? lbl_80488648[index] : 0);
+    fn_802C77F0(sourceObject, bounds);
+    *(float *)((char *)entry + 0xF8) = bounds[1] - bounds[0];
+    *(float *)((char *)entry + 0x100) = bounds[3] - bounds[2];
+    *(float *)((char *)entry + 0xFC) = bounds[5] - bounds[4];
 }
 
 void fn_802AA25C(void *arg0, void *arg1, float farg0) {
