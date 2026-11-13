@@ -21,10 +21,8 @@ extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
 #define btsnd_hcic_sniff_mode btsnd_hcic_sniff_mode_api
 #define btsnd_hcic_accept_esco_conn btsnd_hcic_accept_esco_conn_api
 #define btsnd_hcic_set_event_filter btsnd_hcic_set_event_filter_4arg
-#define btsnd_hcic_write_auto_flush_tout btsnd_hcic_write_auto_flush_tout_buf
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #undef btsnd_hcic_set_event_filter
-#undef btsnd_hcic_write_auto_flush_tout
 extern BOOLEAN btsnd_hcic_set_event_filter(void *, UINT8, UINT8, UINT8 *, UINT8);
 #undef btsnd_hcic_accept_esco_conn
 #undef btsnd_hcic_sniff_mode
