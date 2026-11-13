@@ -2205,12 +2205,13 @@ extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
 #pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*, void*, u32);
 #pragma dont_inline on
-extern "C" void fn_800D9CBC(void* arg0, u32 arg1, void* arg2) {
+extern "C" void fn_800D9CBC(void* material, u32 texMapIndex, void* tplPalette) {
+    /* Initializes a material's GXTexObj from a TPL palette entry, asserting the texture map index is valid. */
     extern const char lbl_8031F990[];
     extern const char lbl_8031FDE8[];
-    if (arg1 >= (*(u32*)((u8*)arg0 + 0x50) >> 28))
+    if (texMapIndex >= (*(u32*)((u8*)material + 0x50) >> 28))
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3f2, lbl_8031FDE8);
-    InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl((u8*)*(void**)((u8*)arg0 + 0x58) + ((arg1 & 0xff) << 5), arg2, 0);
+    InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl((u8*)*(void**)((u8*)material + 0x58) + ((texMapIndex & 0xff) << 5), tplPalette, 0);
 }
 #pragma dont_inline reset
 
