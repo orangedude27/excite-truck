@@ -1,3 +1,4 @@
+void fn_802BD814(void);
 #include "revolution/MTX/mtxtypes.h"
 extern int lbl_8034AC48, lbl_8055FAA8, lbl_8055FAAC;
 extern void fn_802C126C(void);
@@ -65,21 +66,22 @@ short fn_802BC424(int arg0) {
     return mask + 1;
 }
 
-void fn_802BC44C(void *arg0) {
+/* Initialize and link each 16-byte entry in a table. */
+void fn_802BC44C(void *table) {
     char *entry;
     int offset;
-    int i;
+    int index;
 
     offset = 0;
-    i = 0;
+    index = 0;
     goto check;
 loop:
-    entry = *(char **)arg0 + offset;
+    entry = *(char **)table + offset;
     fn_802BC3E0(*(short *)(entry + 4), *(short *)(entry + 6), fn_802BC424(*(short *)(entry + 4)), entry);
     offset += 0x10;
-    i++;
+    index++;
 check:
-    if (i < *(int *)((char *)arg0 + 4)) goto loop;
+    if (index < *(int *)((char *)table + 4)) goto loop;
 }
 
 void *fn_802BC4D4(void *arg0) {
@@ -1127,3 +1129,142 @@ void fn_802BE244(void) {
 }
 
 void *fn_801284F8(int, int);
+
+/* Two draw passes at 0x802BD814. Layouts below follow the indexed load strides:
+ * 0x60 per entry, 0x10 per group, 0x44 per instance. */
+typedef struct { unsigned char pad[0x28]; float height; } DrawAnchorBD814;
+typedef struct {
+    unsigned char pad0[0xC];
+    float transform[9];
+    float position[3];
+    DrawAnchorBD814 *anchor;
+    float heightOffset;
+} DrawInstanceBD814;
+typedef struct { DrawInstanceBD814 *data; int count; } DrawInstancesBD814;
+typedef struct { int pad[2]; short count, first; float time; } DrawGroupBD814;
+typedef struct { DrawGroupBD814 *data; int count; } DrawGroupsBD814;
+typedef struct {
+    DrawInstancesBD814 *instances;
+    DrawGroupsBD814 *firstPass, *secondPass;
+} DrawDataBD814;
+typedef struct {
+    int pad0[3];
+    int firstHandle, firstState, firstCost;
+    int pad18;
+    int secondHandle, secondState, secondCost;
+    unsigned char pad28[0x30];
+    DrawDataBD814 *data;
+    int pad5C;
+} DrawEntryBD814;
+typedef struct { DrawEntryBD814 *data; int count; } DrawEntriesBD814;
+extern float lbl_80564D30, lbl_80564D34, lbl_80564D38;
+extern float lbl_80564D3C, lbl_80564D40, lbl_80564D44, lbl_80564D48;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
+#pragma cplusplus on
+extern "C" void fn_802BD814(void) {
+    float constant18 = lbl_80564D18;
+    float constant14 = lbl_80564D14;
+    float constant40 = lbl_80564D40;
+    float constant44 = lbl_80564D44;
+    float constant48 = lbl_80564D48;
+    float constant30 = lbl_80564D30;
+    float constant3C = lbl_80564D3C;
+    float constant34 = lbl_80564D34;
+    float constant38 = lbl_80564D38;
+    float matrix[9];
+    float transform[12];
+    DrawEntriesBD814 *entries = (DrawEntriesBD814 *)&lbl_804C00D4;
+    int entryIndex;
+    lbl_8055FAAC = 0;
+    lbl_8055FAA8 = 0;
+    for (entryIndex = 0; entryIndex < entries->count; ++entryIndex) {
+        DrawEntryBD814 *entry = &entries->data[entryIndex];
+        DrawDataBD814 *data = entry->data;
+        DrawGroupsBD814 *groups;
+        DrawInstancesBD814 *instances;
+        int groupIndex;
+        if (!data) continue;
+        groups = data->firstPass;
+        instances = data->instances;
+        fn_802C28C0();
+        fn_802C8BD0();
+        fn_802DC71C(entry->firstHandle, entry->firstState);
+        for (groupIndex = 0; groupIndex < groups->count; ++groupIndex) {
+            DrawGroupBD814 *group = &groups->data[groupIndex];
+            float t = (group->time - constant34) / constant38;
+            float alpha;
+            if (constant18 < t) t = constant18;
+            t = t > constant14 ? t : constant14;
+            alpha = constant14 + t * constant18;
+            if (group->time >= constant14 && alpha > constant3C) {
+                int index;
+                int handle = entry->firstHandle;
+                int cost = entry->firstCost;
+                for (index = group->first; index < group->first + group->count; ++index) {
+                    DrawInstanceBD814 *instance = &instances->data[index];
+                    if (instance->anchor && instance->position[1] > constant40)
+                        instance->position[1] = instance->anchor->height + instance->heightOffset;
+                    fn_802DCAE4(handle, instance->transform, alpha);
+                    ++lbl_8055FAA8;
+                    lbl_8055FAAC += cost;
+                }
+                group->time = constant30;
+            }
+        }
+        fn_802DC8B4();
+        fn_802C8D74();
+        groups = entry->data->secondPass;
+        instances = entry->data->instances;
+        if (entry->secondCost <= 10) {
+            fn_802C28C0();
+            fn_802C8BD0();
+            fn_802DC71C(entry->secondHandle, entry->secondState);
+            fn_801F1C24(matrix);
+            for (groupIndex = 0; groupIndex < groups->count; ++groupIndex) {
+                DrawGroupBD814 *group = &groups->data[groupIndex];
+                if (group->time >= constant14) {
+                    float t = (group->time - constant44) / constant48;
+                    float alpha;
+                    if (constant18 < t) t = constant18;
+                    t = t > constant14 ? t : constant14;
+                    alpha = constant18 + t * constant30;
+                    if (alpha > constant3C) {
+                        int index;
+                        int handle = entry->secondHandle;
+                        int cost = entry->secondCost;
+                        for (index = group->first; index < group->first + group->count; ++index) {
+                            DrawInstanceBD814 *instance = &instances->data[index];
+                            float scale;
+                            if (instance->anchor && instance->position[1] > constant40)
+                                instance->position[1] = instance->anchor->height + instance->heightOffset;
+                            scale = instance->transform[4];
+                            transform[9] = instance->position[0];
+                            transform[10] = instance->position[1];
+                            transform[11] = instance->position[2];
+                            transform[0] = matrix[0] * scale;
+                            transform[1] = matrix[1] * scale;
+                            transform[2] = matrix[2] * scale;
+                            transform[3] = matrix[3] * scale;
+                            transform[4] = matrix[4] * scale;
+                            transform[5] = matrix[5] * scale;
+                            transform[6] = matrix[6] * scale;
+                            transform[7] = matrix[7] * scale;
+                            transform[8] = matrix[8] * scale;
+                            fn_802DCAE4(handle, transform, alpha);
+                            ++lbl_8055FAA8;
+                            lbl_8055FAAC += cost;
+                        }
+                    }
+                    group->time = constant30;
+                }
+            }
+            fn_802DC8B4();
+            fn_802C8D74();
+        }
+    }
+}
+#pragma pop
+
+#pragma cplusplus reset
