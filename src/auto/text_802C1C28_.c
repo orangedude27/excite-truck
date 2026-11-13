@@ -24,6 +24,7 @@ void fn_802C1C2C(void) {}
 
 void fn_802C1C30(void) {}
 
+#pragma push
 void fn_802C1C34(void *arg0, void *obj, int slot) {
     typedef struct { int v[9]; } Block9;
     typedef struct { float v[3]; } Vec3;
@@ -57,24 +58,25 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
             entry[0] = index;
             *(Block9 *)(entry+2) = *(Block9 *)data;
             *(Vec3 *)(entry+11) = *(Vec3 *)(data+9);
-            entry[17] = *(int *)&lbl_8055FB38;
+            ((float *)entry)[17] = lbl_8055FB38;
             axis[0] = lbl_80564E54;
             axis[1] = lbl_80564E50;
             axis[2] = lbl_80564E50;
-            *(Vec3 *)(entry+14) = *(Vec3 *)axis;
+            ((float *)entry)[14] = axis[0]; ((float *)entry)[15] = axis[1]; ((float *)entry)[16] = axis[2];
         }
         if (info[15] > 0) {
+            float one = lbl_80564E54, zero = lbl_80564E50, bias = lbl_80564E80;
             for (i=0; i<info[15]; i++) {
                 effect = ((void **)info[13])[i];
-                *(Vec3 *)pos = *(Vec3 *)(data+9);
+                pos[0] = ((float *)data)[9]; pos[1] = ((float *)data)[10]; pos[2] = ((float *)data)[11];
                 pos[0] += fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
                 pos[2] += fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
                 pos[1] += ((float *)info)[11];
-                mat[0]=lbl_80564E54; mat[1]=lbl_80564E50; mat[2]=lbl_80564E50;
-                mat[3]=lbl_80564E50; mat[4]=lbl_80564E54; mat[5]=lbl_80564E50;
-                mat[6]=lbl_80564E50; mat[7]=lbl_80564E50; mat[8]=lbl_80564E54;
+                mat[0]=one; mat[1]=zero; mat[2]=zero;
+                mat[3]=zero; mat[4]=one; mat[5]=zero;
+                mat[6]=zero; mat[7]=zero; mat[8]=one;
                 x = fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
-                y = lbl_80564E80 + fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
+                y = bias + fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
                 vel[0] = fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
                 vel[1]=y; vel[2]=x;
                 x = fn_80129DC4(4, lbl_80564E84, lbl_80564E88);
@@ -88,8 +90,7 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
     *(int *)recent = index;
     lbl_804C1050[slot*2+1] = lbl_8055FB38;
 }
-
-#pragma dont_inline on
+#pragma pop
 void fn_802C1F80(int arg0) {}
 
 #pragma dont_inline on
