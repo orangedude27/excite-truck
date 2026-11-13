@@ -289,45 +289,33 @@ void fn_8028D4FC(void) {
 #pragma scheduling on
 void fn_8028D58C(void *arg0) {
     unsigned int count;
-    unsigned int iterations;
-    unsigned int i;
-    unsigned int marker;
     int startIndex;
-    int normalized;
     unsigned char *base;
     unsigned char *end;
     unsigned char *start;
-    unsigned char *current;
     unsigned char *dst;
+    unsigned char *current;
+    int normalized;
     count = *(unsigned int *)((char *)arg0 + 4);
-    startIndex = count - *(unsigned int *)((char *)arg0 + 8) + 2;
+    startIndex = (int)count - *(int *)((char *)arg0 + 8) + 2;
     startIndex = startIndex & ((-startIndex & ~startIndex) >> 31);
     base = *(unsigned char **)arg0;
     end = base + count * 0x28;
-    start = base + startIndex * 0x28;
-    iterations = (unsigned int)(end + 0x27 - start) / 0x28;
-    current = start;
-    i = iterations;
-    while (i != 0) {
-        i--;
-        marker = 0;
+    start = base + (unsigned int)startIndex * 0x28;
+    for (current = start; current < end; current += 0x28) {
+        unsigned int marker = 0;
         if (current > start && current[0x26] != 0 &&
             (*(unsigned short *)(current + 0x24) >= 0x100 ||
              *(unsigned short *)(current - 4) >= 0x100 ||
              current + 0x28 >= end ||
-             (current[0x4E] != 0 && *(unsigned short *)(current + 0x4C) >= 0x100)))
+             (current[0x4E] != 0 && *(unsigned short *)(current + 0x4C) >= 0x100))) {
             marker = 1;
-        current[0x26] = marker;
-        current += 0x28;
+        }
+        current[0x26] = (unsigned char)marker;
     }
-    current = start;
-    iterations = (unsigned int)(end + 0x27 - current) / 0x28;
-    dst = (unsigned char *)*(volatile unsigned int *)arg0;
-    i = iterations;
-    while (i != 0) {
-        i--;
-        if (current[0x26] != 0 ||
-            (current + 0x28 < end && current[0x4E] != 0)) {
+    dst = *(unsigned char * volatile *)arg0;
+    for (current = start; current < end; current += 0x28) {
+        if (current[0x26] != 0 || (current + 0x28 < end && current[0x4E] != 0)) {
             *(float *)(dst + 0x00) = *(float *)(current + 0x00);
             *(float *)(dst + 0x04) = *(float *)(current + 0x04);
             *(float *)(dst + 0x08) = *(float *)(current + 0x08);
@@ -339,20 +327,19 @@ void fn_8028D58C(void *arg0) {
             *(float *)(dst + 0x20) = *(float *)(current + 0x20);
             normalized = *(unsigned short *)(current + 0x24) - 0x80;
             normalized = normalized & ((-normalized & ~normalized) >> 31);
-            *(unsigned short *)(dst + 0x24) = normalized;
+            *(unsigned short *)(dst + 0x24) = (unsigned short)normalized;
             dst[0x26] = current[0x26];
             dst += 0x28;
         }
-        current += 0x28;
     }
-    *(unsigned int *)((char *)arg0 + 4) =
-        (dst - (unsigned char *)*(volatile unsigned int *)arg0) / 0x28;
+    *(int *)((char *)arg0 + 4) = (dst - *(unsigned char * volatile *)arg0) / 0x28;
 }
 
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_8028D728(void) {
+    /* Recompute totals for each group entry by compacting/updating its items. */
     typedef struct { unsigned char pad[0x14]; int *items; int total; } Entry;
     Entry *entry = (Entry *)&lbl_804B3400;
     int i, j;
