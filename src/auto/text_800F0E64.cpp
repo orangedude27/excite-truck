@@ -862,11 +862,12 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
     OSRestoreInterrupts(interruptLevel);
 }
 
-extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void *self, s32 index) {
-    s32 valid = 0;
-    if (index >= 0 && index <= 0x10) valid = 1;
-    if (!valid) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324390, 0x2EB, (const char *)lbl_803245B8, index, 0, 0x10);
-    if (index < 0x10) return (s16*)((u8 *)self + 0x94 + index * 2);
+/* Return pointer to SeqTrack variable (0-15) or null for 16; panics if index is out of [0,16]. */
+extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void *track, s32 varNo) {
+    s32 isValid = 0;
+    if (varNo >= 0 && varNo <= 0x10) isValid = 1;
+    if (!isValid) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324390, 0x2EB, (const char *)lbl_803245B8, varNo, 0, 0x10);
+    if (varNo < 0x10) return (s16*)((u8 *)track + 0x94 + varNo * 2);
     return (s16*)0;
 }
 
