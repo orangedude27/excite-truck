@@ -75,8 +75,9 @@ extern "C" int fn_8015ED54(void **node) {
 #pragma pop
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_8015ED90(void **arg0) {
-    class Object {
+/* Count how many children of a node have the target name (via fn_8015ED18). */
+extern "C" int fn_8015ED90(void **node) {
+    class Node {
     public:
         virtual void unused01();
         virtual void unused02();
@@ -103,10 +104,10 @@ extern "C" int fn_8015ED90(void **arg0) {
         virtual void **get_child(int);
     };
     int count = 0;
-    int i;
+    int index;
     void **child;
-    if (arg0 != 0) {
-        for (i = 0; (child = ((Object *)arg0)->get_child(i)) != 0; i++) {
+    if (node != 0) {
+        for (index = 0; (child = ((Node *)node)->get_child(index)) != 0; index++) {
             if (fn_8015ED18(child))
                 count++;
         }
