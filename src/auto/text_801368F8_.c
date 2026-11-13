@@ -72,22 +72,23 @@ void fn_801369EC(void *arg0) {
 }
 
 #pragma dont_inline on
-s32 fn_80136A18(s32 arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (*(s32 *)(arg0 + 0x10) != 0) {
-            fn_80128658(*(s32 *)(arg0 + 0x10));
-            *(s32 *)(arg0 + 0x10) = 0;
+s32 fn_80136A18(s32 self, s32 deleteFlag) {
+    /* Destroy owned buffers/state for the object, clear the global active pointer, and optionally free the object. */
+    if (self != 0) {
+        if (*(s32 *)(self + 0x10) != 0) {
+            fn_80128658(*(s32 *)(self + 0x10));
+            *(s32 *)(self + 0x10) = 0;
         }
-        if (*(s32 *)(arg0 + 8) != 0) {
-            if (*(s32 *)(arg0 + 8) != 0)
-                fn_80128670(*(s32 *)(arg0 + 8) - 0x10);
-            *(s32 *)(arg0 + 8) = 0;
+        if (*(s32 *)(self + 8) != 0) {
+            if (*(s32 *)(self + 8) != 0)
+                fn_80128670(*(s32 *)(self + 8) - 0x10);
+            *(s32 *)(self + 8) = 0;
         }
         lbl_8055E0D0 = 0;
-        if (arg1 > 0)
-            fn_80128668((void *)arg0);
+        if (deleteFlag > 0)
+            fn_80128668((void *)self);
     }
-    return arg0;
+    return self;
 }
 
 void fn_80136AA8(void *g) {
