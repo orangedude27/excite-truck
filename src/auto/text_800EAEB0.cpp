@@ -198,27 +198,29 @@ extern "C" void fn_800EAEB0(void) {
 }
 
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void) {
-    u32 level;
-    void* ptr;
-    s8 tmp;
-    
-    level = OSDisableInterrupts();
-    tmp = (s8)lbl_8055DE30;
-    if (tmp != 0) {
+    /* Return the singleton DisposeCallbackManager instance, initializing it once
+     * under interrupt-disable and registering its destructor for global cleanup. */
+    u32 interruptLevel;
+    void* sentinel;
+    s8 isInitialized;
+
+    interruptLevel = OSDisableInterrupts();
+    isInitialized = (s8)lbl_8055DE30;
+    if (isInitialized != 0) {
         goto skip_init;
     }
-    
-    ptr = &lbl_8041279C[4];
+
+    sentinel = &lbl_8041279C[4];
     *(u32*)&lbl_8041279C[4] = 0;
     *(u32*)&lbl_8041279C[8] = 0;
     *(u32*)&lbl_8041279C[0] = 0;
-    *(void**)&lbl_8041279C[4] = ptr;
-    *(void**)&lbl_8041279C[8] = ptr;
+    *(void**)&lbl_8041279C[4] = sentinel;
+    *(void**)&lbl_8041279C[8] = sentinel;
     __register_global_object(&lbl_8041279C, (void*)&__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54, &lbl_80412790);
     lbl_8055DE30 = 1;
-    
+
 skip_init:
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(interruptLevel);
     return &lbl_8041279C;
 }
 
