@@ -4159,33 +4159,17 @@ extern "C" s32 fn_8015E910(void *arg0, s32 arg1) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_8015E9A4(void *arg0, s32 arg1) {
-    struct Entry {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void Call(s32);
-    };
-    s32 var_r31 = 0;
-    s32 var_r30 = 0;
-    while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
-        Entry *obj = *(Entry **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
-        obj->Call(arg1);
-        var_r31 += 4;
-        var_r30 += 1;
+/* Hands the bonus display to every tracker this group owns: virtual slot 0x48 of
+ * the "arraytracker" group calls slot 0x48 of each tracker in its array, which
+ * writes that tracker's line into the popup the display hands out (fn_8015DD9C). */
+extern "C" void fn_8015E9A4(ArrayTracker* group, void* display) {
+    s32 off = 0;
+    s32 i = 0;
+    while (i < group->mCount) {
+        BonusTracker* tracker = *(BonusTracker**)((u8*)group->mTrackers + off);
+        tracker->drawToDisplay(display);
+        off += 4;
+        i += 1;
     }
 }
 extern "C" void fn_8015EA24(void *container, s32 arg) {
