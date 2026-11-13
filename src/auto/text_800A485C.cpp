@@ -18547,27 +18547,28 @@ extern "C" void *__dt__Q310homebutton3gui7ManagerFv(void *arg0, s32 arg1) {
 }
 
 void homebutton::gui::Manager::init() {
+    /* Initialize every managed GUI component in the list. */
     class ComponentDispatch {
     public:
         virtual void d0();
         virtual void init();
     };
-    u8 *th = (u8 *)this;
-    u8 *list = th + 8;
+    u8 *manager = (u8 *)this;
+    u8 *componentList = manager + 8;
     s32 index = 0;
     goto check;
 loop:
     {
-        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(th + 8, (u16)index);
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(manager + 8, (u16)index);
         ComponentDispatch *component = *(ComponentDispatch **)((u8 *)entry + 4);
         component->init();
         index++;
     }
 check:
-    if (list == 0) {
+    if (componentList == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     }
-    if ((u32)index < *(u16 *)(th + 0x10)) {
+    if ((u32)index < *(u16 *)(manager + 0x10)) {
         goto loop;
     }
 }
