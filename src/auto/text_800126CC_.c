@@ -104,14 +104,13 @@ extern int lbl_8055D514;
 void fn_80012794(void) {
     void **p;
     void **base = (void **)&lbl_8035183C[0];
-    int i;
-    i = 0;
+    int i = 0;
     p = base;
     lbl_80558AD8 = 0x134;
     while (i < *(int *)((char *)base + 0x80)) {
         fn_80131818(*p);
-        ++p;
-        ++i;
+        p++;
+        i++;
     }
     *(int *)((char *)base + 0x80) = 0;
     lbl_8055D500 = 0;
@@ -127,19 +126,20 @@ char *fn_80012820(int arg0) DECOMP_DONT_INLINE {
     return &lbl_803551E0[(-1 - arg0) * 0x88];
 }
 #pragma scheduling invalid_target
-void *fn_80012870(int arg0, int arg1) {
-    unsigned char *p = (unsigned char *)lbl_80352AD0;
-    int j = 0;
-    unsigned int i = 0;
+/* Find the nth active contest entry for an event id in the contest table. */
+void *fn_80012870(int eventId, int contestIndex) {
+    unsigned char *entryPtr = (unsigned char *)lbl_80352AD0;
+    int matchCount = 0;
+    unsigned int entryIndex = 0;
     int count = lbl_8055D508;
-    for (; count > 0; count--, p += 0x28, i++) {
-        if (arg0 == *(int *)(p + 4) && p[0x24] != 0) {
-            if (j == arg1)
-                return &lbl_80352AD0[i * 0x28];
-            j++;
+    for (; count > 0; count--, entryPtr += 0x28, entryIndex++) {
+        if (eventId == *(int *)(entryPtr + 4) && entryPtr[0x24] != 0) {
+            if (matchCount == contestIndex)
+                return &lbl_80352AD0[entryIndex * 0x28];
+            matchCount++;
         }
     }
-    fn_802E317C(lbl_802FC700, arg0, arg1);
+    fn_802E317C(lbl_802FC700, eventId, contestIndex);
     return 0;
 }
 #pragma scheduling on
