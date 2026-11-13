@@ -270,6 +270,7 @@ static s32 nandGetFileStatus(s32 fd, u32* lengthOut, u32* positionOut) {
     return result;
 }
 
+/* Get the length of an open NAND file. */
 s32 NANDGetLength(NANDFileInfo* info, u32* length) {
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
