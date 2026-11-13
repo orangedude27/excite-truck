@@ -108,8 +108,9 @@ void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
 static inline int DispatchList_Find2(void *obj) {
     DispatchList *l = lbl_8043870C;
     void **p = l->items;
+    int n = *(volatile int *)&l->count;
     int i = 0;
-    for (; i < l->count; i++) {
+    for (; i < n; i++) {
         if (*p == obj) return i;
         p++;
     }
@@ -121,7 +122,7 @@ static inline void DispatchList_RemoveAt2(int index) {
     int last;
     if (index < 0) return;
     l = lbl_8043870C;
-    if (index >= *(volatile int *)&l->count) return;
+    if (index >= l->count) return;
     last = l->count - 1;
     if (index != last) {
         void **items = lbl_8043870C[0].items;
