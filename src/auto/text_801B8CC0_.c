@@ -75,9 +75,10 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
         float m3 = m[3];
         float m0 = m[0];
         float m6 = m[6];
-        float y = in[1];
-        float x = in[0];
-        float z = in[2];
+        float z, y, x;
+        y = in[1];
+        x = in[0];
+        z = in[2];
         out[0] = z * m6 + (x * m0 + y * m3);
         {
             float m4 = m[4];
