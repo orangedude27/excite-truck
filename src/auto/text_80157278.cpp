@@ -38,6 +38,7 @@ extern "C" f32 fn_80204CFC(const char*);
 extern "C" void* fn_8023139C(void*,s32,u32);
 extern "C" void* fn_8017960C(s32);
 struct Item38 { u8 pad[0x14]; s32 val; u8 pad2[0x20]; };
+struct Word4 { s32 v; };
 
 struct Fn80157CF0Obj {
     void* vtable;
@@ -4414,10 +4415,9 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
     }
 }
 #pragma push
-#pragma processor 750
+#pragma scheduling off
 extern "C" int fn_80159708(void *arg0) {
-    double d = (double)(*(float *)((char *)arg0 + 0x25C));
-    return (int)d;
+    return (int)(*(float *)((char *)arg0 + 0x25C));
 }
 #pragma pop
 class Fn8015E338Item {
