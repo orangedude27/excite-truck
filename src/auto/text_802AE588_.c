@@ -188,19 +188,16 @@ void fn_802AE690(void *arg0) {
     lbl_8055F988 = result;
 }
 
-#pragma scheduling on
-float fn_802AE6E0(void *arg0, void *arg1) {
-    float y0 = *(float *)((char *)arg0 + 8);
-    float y1 = *(float *)((char *)arg1 + 8);
-    float x0 = *(float *)arg0;
-    float x1 = *(float *)arg1;
-    float dy = y0 - y1;
-    float dx = x0 - x1;
-    float dy2 = dy * dy;
-    float dx2 = dx * dx;
-    return (float)fn_8002F234(dx2 + dy2, dy, y0);
+#pragma scheduling invalid_target
+float fn_802AE6E0(const void *arg0, const void *arg1) {
+    const float *a0 = (const float *)arg0;
+    const float *a1 = (const float *)arg1;
+    float dz = a0[2] - a1[2];
+    float dx = a0[0] - a1[0];
+    float dz2 = dz*dz;
+    float dx2 = dx*dx;
+    return (float)((double (*)(double))fn_8002F234)(dx2 + dz2);
 }
-#pragma scheduling off
 extern void fn_802C7A44(void);
 extern float lbl_80564B3C;
 extern void fn_802C9648(float);
