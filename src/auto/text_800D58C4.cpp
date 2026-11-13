@@ -453,8 +453,8 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned 
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *pos_, const void *size_, unsigned char count, const void *tex_, const void *col_) {
     const float *pos = (const float *)pos_;
     const float *size = (const float *)size_;
-    const float *tex = (const float *)tex_;
     const unsigned int *col = (const unsigned int *)col_;
+    const float *tex = (const float *)tex_;
     GXBegin((GXPrimitive)0x80, (GXVtxFmt)0, (u16)4);
     *(volatile float *)0xCC008000 = pos[0];
     *(volatile float *)0xCC008000 = pos[1];
@@ -947,7 +947,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
 #pragma dont_inline on
 s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *arg2) {
     ResBlockSetTmp blockSet;
-    unsigned int count;
+    s32 count;
     s32 depth;
     s32 groupCreated;
     void *currentParent, *lastPane, *pane, *container, *rootPane, *groupResult;
@@ -975,7 +975,7 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
     currentParent = 0;
     lastPane = 0;
     block = (const u8 *)arg1 + *(const u16 *)((const u8 *)arg1 + 0xC);
-    while ((s32)count < *(const u16 *)((const u8 *)arg1 + 0xE)) {
+    while (count < *(const u16 *)((const u8 *)arg1 + 0xE)) {
         tag = *(const u32 *)block;
         switch (tag) {
         case 0x6C797431:
@@ -1957,7 +1957,7 @@ extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, 
             cnt->ind = cap->ind;
             {
                 u8 *b = MatFlagBase_800D8B28((u8 *)self);
-                MatSRT_800D8B28 *p = (MatSRT_800D8B28 *)(b + (cap->h + cap->i + cap->f + cap->j + cap->k + cap->e) * 4);
+                MatSRT_800D8B28 *p = (MatSRT_800D8B28 *)(b + cap->h * 4 + cap->i * 4 + cap->f * 4 + cap->j * 4 + cap->k * 4 + cap->e * 4);
                 u32 num = cnt->ind;
                 for (u32 n = 0; n < num; n++) MatInitSRT_800D8B28(&p[n]);
             }
@@ -1972,17 +1972,17 @@ extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, 
             }
             cnt->f = cap->f;
             if (cnt->f) {
-                u8 *q = MatFlagBase_800D8B28((u8 *)self) + (cap->i + cap->h) * 4;
+                u8 *q = MatFlagBase_800D8B28((u8 *)self) + cap->i * 4 + cap->h * 4;
                 q[0] = 0xE4; q[1] = 0xC0; q[2] = 0xD5; q[3] = 0xEA;
             }
             cnt->j = cap->j;
             if (cnt->j) {
-                u8 *q = MatFlagBase_800D8B28((u8 *)self) + (cap->f + cap->i + cap->h) * 4;
+                u8 *q = MatFlagBase_800D8B28((u8 *)self) + cap->f * 4 + cap->i * 4 + cap->h * 4;
                 q[0] = 0x77; q[1] = 0; q[2] = 0; q[3] = 0;
             }
             cnt->k = cap->k;
             if (cnt->k) {
-                u8 *q = MatFlagBase_800D8B28((u8 *)self) + (cap->j + cap->f + cap->i + cap->h) * 4;
+                u8 *q = MatFlagBase_800D8B28((u8 *)self) + cap->j * 4 + cap->f * 4 + cap->i * 4 + cap->h * 4;
                 q[0] = 1; q[1] = 4; q[2] = 5; q[3] = 0xF;
             }
         }
@@ -1998,12 +1998,13 @@ extern "C" s32 fn_800D9330(void *arg0) {
 }
 
 extern "C" s32 fn_800D9344(void *arg0) {
-    volatile s32 *p = (volatile s32 *)((char *)arg0 + 0x4C);
-    s32 x = *p;
-    s32 y = *(volatile s32 *)((char *)arg0 + 0x58);
-    s32 n = (x >> 0x18) & 0xF;
-    s32 b = (x >> 0x17) & 0x1E0;
-    return b + (y + n * 20);
+    volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
+    u32 x = *p;
+    s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
+    u32 n = (x >> 0x18) & 0xF;
+    u32 b = (x >> 0x17) & 0x1E0;
+    s32 t = y + n * 0x14;
+    return t + b;
 }
 
 extern "C" s32 fn_800D9364(void *arg0) {
