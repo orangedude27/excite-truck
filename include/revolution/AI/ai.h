@@ -15,6 +15,9 @@ typedef enum {
     AI_DSP_48KHZ,
 } AIDSPSampleRate;
 
+// The AI DMA engine counts a transfer's length in 32-byte blocks.
+#define AI_DMA_BLOCK_SIZE 32
+
 AIDMACallback AIRegisterDMACallback(AIDMACallback callback);
 void AIInitDMA(void* buffer, u32 length);
 void AIStartDMA(void);
