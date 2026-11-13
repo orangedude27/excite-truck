@@ -5723,6 +5723,32 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
 extern "C" s32 VFiPFFAT_ReadClusterPage(void *, u32, s32, s32 *, s32 *, void *);
 extern "C" s32 VFiPFFAT_WriteCluster(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800AE7A8(void *, s32, s32, s32);
+/* Follow a file's cluster chain to one of its clusters, and give the file more
+ * clusters when its chain ends before there (what would be
+ * VFiPFFAT_FollowClusterChain).
+ *
+ * clusterIndex is which cluster of the chain is wanted.  mode says what to do
+ * when the chain ends short of it: 0 answers with the end of the chain, 1 takes
+ * on one more cluster and 2 the clustersNeeded run of them.  The walk starts at
+ * the cluster the stream last stopped at when that sits at or before the wanted
+ * position, and at the file's first cluster otherwise; a run the volume only just
+ * handed out (VF_CHAIN_RUN_CLUSTER) starts it at the end of that run instead,
+ * whose length the chain is known to cover.
+ *
+ * Following entries reads them through one FAT page of the cache, held for the
+ * whole walk: fn_800A8D08 claims the page and fn_800ACA5C reads the FAT sector
+ * its entries live in.  An entry that is neither a cluster of the heap nor an
+ * end-of-chain value means the FAT is broken (VF_ERR_BROKEN_FAT).  What is left
+ * of the walk when the chain ends is how many clusters the file is short, and
+ * fn_800ADA24 takes that many on and links them: the first of them becomes the
+ * file's first cluster when it had none and goes into the FAT entry of the
+ * cluster before it otherwise, and a run that cannot be finished is handed back
+ * to the volume (fn_800AE7A8).
+ *
+ * The cluster the position lands on comes back in outCluster and the first
+ * cluster of a run taken on for it in outNewCluster; both stay -1 when the file
+ * already reached that far.
+ */
 extern "C" s32 fn_800ADD84(void *walk, s32 clusterIndex, s32 mode, s32 clustersNeeded, u32 *outNewCluster, s32 *outCluster) {
     s32 next;
     s32 cachedCluster;
