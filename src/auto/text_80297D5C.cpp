@@ -382,33 +382,38 @@ extern "C" double fabs(double);
 extern int lbl_8055CA70;
 extern int lbl_8055CA7C;
 extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, void* arg4, void* ctx) {
-    Vec3f* out = (Vec3f*)arg1;
-    Vec3f* base = (Vec3f*)arg2;
-    Vec3f* d1 = (Vec3f*)arg3;
-    Vec3f* d2 = (Vec3f*)arg4;
-    Vec3f p0, p1, p2, e1, e2;
-    p0 = *base;
-    p1.x = p0.x + d1->x; p1.y = p0.y + d1->y; p1.z = p0.z + d1->z;
-    p2.x = p0.x + d2->x; p2.y = p0.y + d2->y; p2.z = p0.z + d2->z;
+    float* out = (float*)arg1;
+    float* base = (float*)arg2;
+    float* d1 = (float*)arg3;
+    float* d2 = (float*)arg4;
+    float p0[3];
+    float p1[3];
+    float p2[3];
+    float e1[3];
+    float e2[3];
+    float l2;
+    p0[0] = base[0]; p0[1] = base[1]; p0[2] = base[2];
+    p1[0] = p0[0] + d1[0]; p1[1] = p0[1] + d1[1]; p1[2] = p0[2] + d1[2];
+    p2[0] = p0[0] + d2[0]; p2[1] = p0[1] + d2[1]; p2[2] = p0[2] + d2[2];
     fn_801E9DD4(lbl_8055CA70, lbl_8055CA7C);
-    if (fn_801E9E30(ctx, &p0.x) == 0 || fn_801E9E30(ctx, &p1.x) == 0 || fn_801E9E30(ctx, &p2.x) == 0) {
+    if (fn_801E9E30(ctx, p0) == 0 || fn_801E9E30(ctx, p1) == 0 || fn_801E9E30(ctx, p2) == 0) {
         fn_801E9DD8();
         return 0;
     }
     fn_801E9DD8();
-    e1.x = p1.x - p0.x; e1.y = p1.y - p0.y; e1.z = p1.z - p0.z;
-    e2.x = p2.x - p0.x; e2.y = p2.y - p0.y; e2.z = p2.z - p0.z;
-    if ((float)fabs(PSVECDotProduct(&e1.x, &e1.x)) <= lbl_80558DC4 || (float)fabs(PSVECDotProduct(&e2.x, &e2.x)) <= lbl_80558DC4) {
+    e1[0] = p1[0] - p0[0]; e1[1] = p1[1] - p0[1]; e1[2] = p1[2] - p0[2];
+    e2[0] = p2[0] - p0[0]; e2[1] = p2[1] - p0[1]; e2[2] = p2[2] - p0[2];
+    if ((float)fabs(PSVECDotProduct(e1, e1)) <= lbl_80558DC4 || (float)fabs(PSVECDotProduct(e2, e2)) <= lbl_80558DC4) {
         return 0;
     }
-    out[0] = p0;
-    float l2 = PSVECDotProduct(&e2.x, &e2.x);
-    if (PSVECDotProduct(&e1.x, &e1.x) > l2) {
-        out[1] = e1;
-        out[2] = e2;
+    out[0] = p0[0]; out[1] = p0[1]; out[2] = p0[2];
+    l2 = PSVECDotProduct(e2, e2);
+    if (PSVECDotProduct(e1, e1) > l2) {
+        out[3] = e1[0]; out[4] = e1[1]; out[5] = e1[2];
+        out[6] = e2[0]; out[7] = e2[1]; out[8] = e2[2];
     } else {
-        out[1] = e2;
-        out[2] = e1;
+        out[3] = e2[0]; out[4] = e2[1]; out[5] = e2[2];
+        out[6] = e1[0]; out[7] = e1[1]; out[8] = e1[2];
     }
     return 1;
 }
@@ -536,22 +541,24 @@ static inline void XformRot3(const float *m, const float *src, float *dst) {
         dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
 }
+#pragma push
+#pragma processor 750
 extern "C" void fn_80298BBC(void *arg0) {
-    float v[3];
+    float v[0x3];
     float now;
     float threshold;
     float reset;
     int offset;
     int i;
     now = fn_801E7E18();
-    reset = lbl_805645B8;
     threshold = lbl_8056459C;
+    reset = lbl_805645B8;
     i = 0;
     offset = 0;
     goto test;
     do {
         char *items = *(char **)arg0;
-        if (*(float *)(items + offset + 0x1C) > threshold) {
+        if (*(float *)(items + offset + 28) > threshold) {
             const float *m = (const float *)fn_80287B24(i);
             float *p = (float *)(*(char **)arg0 + offset);
             XformRot3(m, p, v);
@@ -560,39 +567,30 @@ extern "C" void fn_80298BBC(void *arg0) {
             v[2] += m[11];
             p = (float *)(*(char **)arg0 + offset);
             if (fn_8029771C(*(void **)((char *)arg0 + 8), v, p, now - p[7]) == 0) {
-                *(float *)(*(char **)arg0 + offset + 0x1C) = reset;
+                *(float *)(*(char **)arg0 + offset + 28) = reset;
             }
         }
-        offset += 0x20;
-        i++;
+        offset += 32;
+        i += 1;
 test:;
     } while (i < fn_80287B14());
 }
-  
+#pragma pop
 extern "C" void fn_80298DE0(void *arg0, void *arg1, int arg2) {
-    int idx = (int)arg1;
-    int off = idx << 5;
+    int off = (int)arg1 << 5;
     char *e1 = *(char **)arg0 + off;
-    if (arg2 != (int)(unsigned char)e1[0x19]) {
+    if ((unsigned)arg2 != (unsigned)(unsigned char)e1[0x19]) {
         if (arg2 != 0) {
             float now = fn_801E7E18();
             char *e2 = *(char **)arg0 + off;
             *(float *)(e2 + 0x1C) = now;
-            void *mat = ((void *(*)(int, void *))fn_80287B24)(idx, (void *)e2);
+            void *mat = ((void *(*)(int, void *))fn_80287B24)((int)arg1, (void *)e2);
             char *e3 = *(char **)arg0 + off;
             float tmp[3];
-            if ((void *)tmp == (void *)e3) {
-                tmp[0] = *(float *)(e3 + 0) * *(float *)((char *)mat + 0) + *(float *)(e3 + 4) * *(float *)((char *)mat + 12) + *(float *)(e3 + 8) * *(float *)((char *)mat + 24);
-                tmp[1] = *(float *)(e3 + 0) * *(float *)((char *)mat + 4) + *(float *)(e3 + 4) * *(float *)((char *)mat + 16) + *(float *)(e3 + 8) * *(float *)((char *)mat + 28);
-                tmp[2] = *(float *)(e3 + 0) * *(float *)((char *)mat + 8) + *(float *)(e3 + 4) * *(float *)((char *)mat + 20) + *(float *)(e3 + 8) * *(float *)((char *)mat + 32);
-            } else {
-                tmp[0] = *(float *)(e3 + 0) * *(float *)((char *)mat + 0) + *(float *)(e3 + 4) * *(float *)((char *)mat + 12) + *(float *)(e3 + 8) * *(float *)((char *)mat + 24);
-                tmp[1] = *(float *)(e3 + 0) * *(float *)((char *)mat + 4) + *(float *)(e3 + 4) * *(float *)((char *)mat + 16) + *(float *)(e3 + 8) * *(float *)((char *)mat + 28);
-                tmp[2] = *(float *)(e3 + 0) * *(float *)((char *)mat + 8) + *(float *)(e3 + 4) * *(float *)((char *)mat + 20) + *(float *)(e3 + 8) * *(float *)((char *)mat + 32);
-            }
-            tmp[0] += *(float *)((char *)mat + 36);
-            tmp[1] += *(float *)((char *)mat + 40);
-            tmp[2] += *(float *)((char *)mat + 44);
+            XformRot3((const float *)mat, (const float *)e3, tmp);
+            tmp[0] += ((float *)mat)[9];
+            tmp[1] += ((float *)mat)[10];
+            tmp[2] += ((float *)mat)[11];
         }
         char *e4 = *(char **)arg0 + off;
         e4[0x19] = (char)arg2;
@@ -938,17 +936,18 @@ extern "C" void fn_802C8E48(void);
 extern "C" void fn_802C8D74(void);
 extern "C" void* fn_80299FA8(void*, void*);
 #pragma scheduling invalid_target
-extern "C" void* fn_802998F4(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        void* p = arg0;
-        int i = 0;
-        for (; i < *(int*)((char*)arg0 + 0x138); p = (char*)p + 0x9c, i++) {
-            fn_80299FA8(arg0, p);
+extern "C" void *fn_802998F4(void *container, int freeStorage) {
+    /* Destroy each owned 0x9C-byte entry (count at +0x138), reset count, and optionally free storage. */
+    if (container != 0) {
+        void *entry = container;
+        int index = 0;
+        for (; index < *(int *)((char *)container + 0x138); entry = (char *)entry + 0x9C, index++) {
+            fn_80299FA8(container, entry);
         }
-        *(int*)((char*)arg0 + 0x138) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+        *(int *)((char *)container + 0x138) = 0;
+        if (freeStorage > 0) fn_80128668(container);
     }
-    return arg0;
+    return container;
 }
 #pragma scheduling on
 extern "C" void fn_80299988(void) {
@@ -2347,48 +2346,92 @@ extern "C" float lbl_805645E8;
 extern "C" void* fn_8029A6F4(void*);
 extern "C" void* fn_801E87A8(void);
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void* fn_802988A4(void* arg0) {
-    int count = fn_80287B14();
-    void* tmp = fn_8012850C((count << 5) + 0x10, &lbl_803494A4);
+    struct Local {
+        volatile float sp8;
+        volatile float spC;
+        volatile float sp10;
+        volatile int sp14;
+        volatile int sp18;
+        volatile int sp1C;
+        volatile float sp20;
+        volatile float sp24;
+        volatile float sp28;
+        volatile float sp2C;
+        volatile float sp30;
+        volatile float sp34;
+    } frame;
+    int i;
+    int count;
+    int off;
+    int* srcPtr;
+    float f31v;
+    float f30v;
+    void* tmp;
+    void* info;
+    count = fn_80287B14();
+    tmp = fn_8012850C((count << 5) + 0x10, &lbl_803494A4);
     *(void**)arg0 = fn_8002F37C(tmp, (void(*)())&fn_80298A48, 0, 0x20, count);
-    float f30 = lbl_8056459C;
-    float f31 = lbl_805645B8;
-    int i = 0;
-    int off = 0;
-    float sp8, spC, sp10, sp14, sp18, sp1C, sp20, sp24, sp28, sp2C, sp30, sp34;
-    for (i = 0, off = 0; i < count; i++, off += 0x20) {
-        void* info = fn_80288208(i);
+    f30v = lbl_8056459C;
+    f31v = lbl_805645B8;
+    srcPtr = (int*)(void*)&frame.sp14;
+    i = 0;
+    off = 0;
+    goto test;
+loop:
+    {
+        int tSp10;
+        int tSpC;
+        int tSp8;
+        float t2C;
+        float t30;
+        float t34;
+        info = fn_80288208(i);
         if (fn_80287E20(info, (const char*)&lbl_8055CA90) != 0) {
-            ((void(*)(void*, void*, int, int))fn_80287ED0)(&sp2C, info, (int)&lbl_8055CA90, (int)&lbl_8055CA98);
-            char* dest = (char*)*(void**)arg0 + off;
-            sp8 = f30;
-            *(float*)dest = sp2C;
-            spC = f30;
-            *(float*)(dest + 4) = sp30;
-            sp10 = f30;
-            *(float*)(dest + 8) = sp34;
-            sp14 = sp8;
-            sp18 = spC;
-            sp1C = sp10;
-            ((void(*)(void*, void*, int, int, void*))fn_80287F90)(&sp20, info, (int)&lbl_8055CA90, (int)&lbl_8055CA9C, &sp14);
-            char* dest2 = (char*)*(void**)arg0 + off;
-            *(float*)(dest2 + 0xC) = sp20;
-            *(float*)(dest2 + 0x10) = sp24;
-            *(float*)(dest2 + 0x14) = sp28;
-            *(char*)(dest2 + 0x18) = 1;
+            ((void(*)(void*, void*, int, int))fn_80287ED0)((void*)&frame.sp2C, info, (int)&lbl_8055CA90, (int)&lbl_8055CA98);
+            {
+                char* dest = (char*)*(void**)arg0 + off;
+                t2C = frame.sp2C;
+                frame.sp8 = f30v;
+                *(float*)dest = t2C;
+                tSp8 = *(volatile int*)(volatile void*)&frame.sp8;
+                t30 = frame.sp30;
+                frame.spC = f30v;
+                *(float*)(dest + 4) = t30;
+                tSpC = *(volatile int*)(volatile void*)&frame.spC;
+                t34 = frame.sp34;
+                frame.sp10 = f30v;
+                *(float*)(dest + 8) = t34;
+                tSp10 = *(volatile int*)(volatile void*)&frame.sp10;
+                frame.sp14 = tSp8;
+                frame.sp18 = tSpC;
+                frame.sp1C = tSp10;
+            }
+            ((void(*)(void*, void*, int, int, void*))fn_80287F90)((void*)&frame.sp20, info, (int)&lbl_8055CA90, (int)&lbl_8055CA9C, srcPtr);
+            {
+                char* d = (char*)*(void**)arg0 + off;
+                *(float*)(d + 0xC) = frame.sp20;
+                *(float*)(d + 0x10) = frame.sp24;
+                *(float*)(d + 0x14) = frame.sp28;
+            }
+            *(char*)((char*)*(void**)arg0 + off + 0x18) = 1;
         } else {
-            char* dest = (char*)*(void**)arg0 + off;
-            *(char*)(dest + 0x18) = 0;
+            *(char*)((char*)*(void**)arg0 + off + 0x18) = 0;
         }
-        {
-            char* dest3 = (char*)*(void**)arg0 + off;
-            *(char*)(dest3 + 0x19) = 0;
-            *(float*)(dest3 + 0x1C) = f31;
-        }
+        *(char*)((char*)*(void**)arg0 + off + 0x19) = 0;
+        *(float*)((char*)*(void**)arg0 + off + 0x1C) = f31v;
     }
+    i++;
+    off += 0x20;
+test:
+    if (i < count) goto loop;
     fn_802991BC(arg0);
     *(void**)((char*)arg0 + 8) = fn_802974CC((char*)&lbl_803494B8);
     return arg0;
 }
+#pragma pop
 extern "C" void fn_80287B38(void*);
 extern "C" char lbl_80349408[];
