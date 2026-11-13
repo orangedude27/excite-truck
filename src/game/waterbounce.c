@@ -268,12 +268,13 @@ extern "C" void *fn_8020E288(CarSound *snd, s32 deleteMemory) {
 extern "C" s32 fn_80009C84();
 extern "C" void fn_80206750(s32, s32, s32);
 extern "C" void fn_8020F15C(void *arg0) {
-    void *p = *(void **)((char *)arg0 + 4);
-    int value = *(int *)((char *)p + 0x1EC);
+    /* Propagate a state value to up to three child handlers, choosing mode 2 or 0 based on fn_80009C84. */
+    void *state = *(void **)((char *)arg0 + 4);
+    int value = *(int *)((char *)state + 0x1EC);
     int mode;
-    int t = fn_80009C84();
+    int flag = fn_80009C84();
     mode = 2;
-    if (t != 0)
+    if (flag != 0)
         mode = 0;
     if (*(int *)((char *)arg0 + 0x48) != 0)
         fn_80206750(*(int *)((char *)arg0 + 0x48), value, mode);
