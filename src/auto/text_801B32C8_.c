@@ -346,19 +346,21 @@ void fn_801B3C64(void* arg0) {
 typedef void (*Vfn2)(void*, s32);
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void *fn_801B3C98(void *arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        void *prev = *(void **)((u8 *)arg0 + 0x1C);
-        *(void **)arg0 = (void *)&lbl_80335DAC;
-        if (prev != NULL) {
-            if (prev != NULL)
-                ((VTable_801B3C98 *)prev)->destroy(1);
-            *(void **)((u8 *)arg0 + 0x1C) = NULL;
+extern "C" void *fn_801B3C98(void *self, s32 shouldDelete) {
+    /* Destructor-like cleanup: install vtable, destroy owned object at +0x1C, and
+       optionally free the object when shouldDelete > 0. */
+    if (self != NULL) {
+        void *owned = *(void **)((u8 *)self + 0x1C);
+        *(void **)self = (void *)&lbl_80335DAC;
+        if (owned != NULL) {
+            if (owned != NULL)
+                ((VTable_801B3C98 *)owned)->destroy(1);
+            *(void **)((u8 *)self + 0x1C) = NULL;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 #pragma cplusplus reset
 #pragma scheduling on
