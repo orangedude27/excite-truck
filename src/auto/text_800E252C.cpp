@@ -2874,18 +2874,19 @@ extern "C" int GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hb
     return result;
 }
 
-extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(unsigned int arg0, int arg1) {
-    int result = 0;
-    switch (arg1) {
+extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(unsigned int byteCount, int format) {
+    /* Convert a byte count to a sample count for an AxVoice format (0: ADPCM, 10: 16-bit, 25: 8-bit); panic on unknown format. */
+    int sampleCount = 0;
+    switch (format) {
     case 0:
-        result = (arg0 >> 3) * 14;
-        if ((arg0 & 7) != 0) result += (((int)(arg0 & 7) - 1) * 2);
+        sampleCount = (byteCount >> 3) * 14;
+        if ((byteCount & 7) != 0) sampleCount += (((int)(byteCount & 7) - 1) * 2);
         break;
-    case 25: result = arg0; break;
-    case 10: result = arg0 >> 1; break;
+    case 25: sampleCount = byteCount; break;
+    case 10: sampleCount = byteCount >> 1; break;
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x5A4, lbl_80322438); break;
     }
-    return result;
+    return sampleCount;
 }
 
 extern float lbl_80560F38, lbl_80560F3C, lbl_80560F54, lbl_80560F60, lbl_80560F64, lbl_80560F68, lbl_80560F6C, lbl_80560F70, lbl_80560F74, lbl_80560F78;
