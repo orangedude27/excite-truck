@@ -220,7 +220,6 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     float k;
     int r;
     int i;
-
     L.v1[0] = lbl_80561A44;
     L.v1[1] = lbl_80561A50;
     L.v1[2] = lbl_80561A44;
@@ -452,21 +451,22 @@ extern float lbl_80561A54;
     int temp_r0;
     int var_r28;
     int var_r6;
+    unsigned char *var_r4;
     int var_r5;
     unsigned char *var_r6_2;
-    unsigned char *var_r4;
+    unsigned char *var_r4_2;
     long var_r5_2;
     unsigned char *var_r6_3;
-    unsigned char *var_r4_2;
+    unsigned char *var_r4_3;
     long var_r5_3;
     unsigned char *var_r6_4;
-    unsigned char *var_r4_3;
     unsigned char *var_r3;
-    void *temp_r3_9;
+    int var_r5_4;
     unsigned char *var_r6_5;
+    unsigned char *var_r4_4;
     int var_r5_5;
     unsigned char *var_r6_6;
-    unsigned char *var_r4_4;
+    void *temp_r3_9;
     int temp_r3;
     int temp_r3_2;
     int temp_r3_3;
@@ -477,7 +477,7 @@ extern float lbl_80561A54;
     void *temp_r3_6;
     void *temp_r3_7;
     void *temp_r3_8;
-    int var_r5_4;
+    int mgr8;
 
     if ((int) (*(void **)((char *)(arg0) + (0xC))) != 0) {
         fn_801308F4((char *)(unsigned char *)arg0 + 0x30, 0x14, arg2);
@@ -502,22 +502,26 @@ extern float lbl_80561A54;
             var_r6_2 = (unsigned char *)arg0 + 0x9E;
             var_r4 = &lbl_8055A2A4;
             var_r5 = 0x14;
+            goto copy1;
             for (;;) {
                 if (--var_r5 <= 0) {
-                    (*(signed char *)((char *)var_r6_2 - 1)) = 0;
+                    var_r6_2[-1] = 0;
+                    break;
                 }
-                temp_r3 = *var_r4++;
+            copy1: temp_r3 = *var_r4++;
                 *var_r6_2++ = temp_r3;
                 if ((signed char)temp_r3 == 0) break;
             }
             var_r6_3 = (unsigned char *)arg0 + 0x58;
             var_r4_2 = &lbl_8055A2A4;
             var_r5_2 = 0x14;
+            goto copy2;
             for (;;) {
                 if (--var_r5_2 <= 0) {
-                    (*(signed char *)((char *)var_r6_3 - 1)) = 0;
+                    var_r6_3[-1] = 0;
+                    break;
                 }
-                temp_r3_2 = *var_r4_2++;
+            copy2: temp_r3_2 = *var_r4_2++;
                 *var_r6_3++ = temp_r3_2;
                 if ((signed char)temp_r3_2 == 0) break;
             }
@@ -527,17 +531,20 @@ extern float lbl_80561A54;
                 lbl_8055E3AC = 1;
             }
             fn_80130980((unsigned char *)arg0 + 0x9E, 0x14, 2, (float) var_r28);
-            if ((unsigned int) (*(unsigned int *)((char *)(&lbl_804303B8) + (8))) != (unsigned int) lbl_8055E044) {
+            mgr8 = (*(int *)((char *)(&lbl_804303B8) + 8));
+            if ((unsigned int)mgr8 != (unsigned int) lbl_8055E044) {
                 fn_80131318();
             }
             var_r4_3 = (*(unsigned char **)((char *)(&lbl_804303B8) + (4)));
             var_r6_4 = (unsigned char *)arg0 + 0x58;
             var_r5_3 = 0x14;
+            goto copy3;
             for (;;) {
                 if (--var_r5_3 <= 0) {
-                    (*(signed char *)((char *)var_r6_4 - 1)) = 0;
+                    var_r6_4[-1] = 0;
+                    break;
                 }
-                temp_r3_3 = *var_r4_3++;
+            copy3: temp_r3_3 = *var_r4_3++;
                 *var_r6_4++ = temp_r3_3;
                 if ((signed char)temp_r3_3 == 0) break;
             }
@@ -548,11 +555,13 @@ extern float lbl_80561A54;
             var_r3 = __AXGetStackHead();
             var_r6_5 = (unsigned char *)arg0 + 0x80;
             var_r5_4 = 0xA;
+            goto copy4;
             for (;;) {
                 if (--var_r5_4 <= 0) {
-                    (*(signed char *)((char *)var_r6_5 - 1)) = 0;
+                    var_r6_5[-1] = 0;
+                    break;
                 }
-                temp_r4 = *var_r3++;
+            copy4: temp_r4 = *var_r3++;
                 *var_r6_5++ = temp_r4;
                 if ((signed char)temp_r4 == 0) break;
             }
@@ -560,11 +569,13 @@ extern float lbl_80561A54;
             var_r6_6 = (unsigned char *)arg0 + 0x80;
             var_r4_4 = &lbl_8055A2A8;
             var_r5_5 = 0xA;
+            goto copy5;
             for (;;) {
                 if (--var_r5_5 <= 0) {
-                    (*(signed char *)((char *)var_r6_6 - 1)) = 0;
+                    var_r6_6[-1] = 0;
+                    break;
                 }
-                temp_r3_4 = *var_r4_4++;
+            copy5: temp_r3_4 = *var_r4_4++;
                 *var_r6_6++ = temp_r3_4;
                 if ((signed char)temp_r3_4 == 0) break;
             }
@@ -573,7 +584,7 @@ extern float lbl_80561A54;
             (*(signed char *)((char *)(arg0) + (8))) = 0;
         }
         temp_r0 = (*(int *)((char *)(arg0) + (0)));
-        switch (temp_r0) {                          /* irregular */
+        switch (temp_r0) {
         case 4:
             break;
         case 0:
@@ -794,9 +805,8 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
 
 extern "C" void fn_80173424(Fn80173424Obj *o) {
     Fn80173424Child *q;
-    float one = lbl_80561A50;
     o->f0 = 0;
-    o->f4 = one;
+    o->f4 = -1.0f;
     o->f8 = 1;
     o->f9 = 0;
     o->f10 = 0;
@@ -854,100 +864,6 @@ extern float lbl_80561AB4;
 void fn_8017353C(unsigned char *arg0, void *arg_sp0) {
     union Word { int i; void *p; } stack[94];
     extern char lbl_80330F48[];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     char *var_r4;
     int temp_r0;
     int temp_r0_2;
@@ -986,13 +902,12 @@ void fn_8017353C(unsigned char *arg0, void *arg_sp0) {
     void *temp_r27;
     void *temp_r28;
     void *temp_r29;
-
     var_ctr = 0x18;
     var_r4 = (char *)&stack[45].i;
     do {
-        *(int *)((char *)(var_r4) + (4)) = 0;
+        ((int *)var_r4)[1] = 0;
+        ((int *)var_r4)[2] = 0;
         var_r4 += 8;
-        *(int *)((char *)(var_r4) + (8)) = 0;
         var_ctr -= 1;
     } while (var_ctr != 0);
     temp_r0 = (int)(arg0 + 0xF8);
@@ -1237,21 +1152,22 @@ int fn_80173A84(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80173ACC(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_80173ACC(void *arg0) {
     extern float lbl_8043038C[];
     extern char lbl_80330F48[];
     extern unsigned char lbl_8055A2A4;
     extern float lbl_80561A44, lbl_80561AB8, lbl_80561ABC, lbl_8055E3C8;
     extern float lbl_80558DC4[];
-    int i, n;
-    char *e;
-    char *base = lbl_80330F48;
+    struct Dummy { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual int f7(); };
     char *tbl;
-    float one = lbl_8055E3C8;
+    char *e;
+    int i, n;
+    char *base = lbl_80330F48;
     float zero, big;
+    float one = lbl_8055E3C8;
     float x;
     char *p = (char *)arg0;
-
     if (*(unsigned char *)(p + 0x2B8) == 0 && fn_801B306C() < lbl_80561AB8) {
         *(unsigned char *)(p + 0x2B8) = 1;
         if (*(int *)(p + 0x2B4) != 0 && fn_80161C38() == 0 && fn_80179650() == 1 && fn_80009C84() == 0) {
@@ -1276,7 +1192,7 @@ void fn_80173ACC(void *arg0) {
             *(float *)((char *)fn_8017960C(i) + 0x25A0) = big;
         }
     }
-    if ((*(int (**)(void *))(*(char **)p + 0x24))(p) == 0) {
+    if (((Dummy *)p)->f7() == 0) {
         n = 0;
         e = p;
         for (i = 0; i < *(int *)(p + 0x170); i++, e += 0x1C) {
@@ -1349,8 +1265,6 @@ void fn_80173ACC(void *arg0) {
         }
     }
 }
-#pragma use_lmw_stmw reset
-#pragma processor reset
 #pragma pop
 extern float lbl_80561A50, lbl_80561AC0;
 extern void *memset(void *, int, unsigned long);
@@ -1469,100 +1383,7 @@ int fn_80174314(void) {
     return 8;
 }
 
-void fn_8017431C(int arg0, int arg1) {
-    extern int fn_802B04D4(float *);
-    extern float fn_801DCF48(void *, float, float);
-    extern void fn_8018AF04();
-    extern void fn_801E9DC4(short *);
-    extern void fn_801B7C8C(void *, void *, float *);
-    extern void PSVECNormalize(float *, float *);
-    extern float lbl_80561A44, lbl_80561A74, lbl_80561AB0, lbl_80561AC4, lbl_80561ACC, lbl_80561AD0, lbl_80561AD4;
-    Fn8017431CFrame2 cam;
-    float tgt[3];
-    float dir[3];
-    float sp38[2];
-    float sp30[2];
-    float sp28[2];
-    float sp20[2];
-    unsigned long long ret;
-    Fn8017431CV2 pv;
-    float sp8[2];
-    char *obj;
-    float *p;
-    int inside;
-    float dx, dz, dist;
-    if (*(unsigned char *)(arg0 + arg1 * 0x1C + 0x90) != 0) {
-        obj = (char *)fn_8017960C(arg1);
-        fn_8018AF04();
-        cam.mark = -1;
-        fn_801E9DC4(&cam.mark);
-        cam.zero = 0;
-        p = (float *)(obj + 0x60);
-        cam.m = *(Fn8017431CM9 *)(obj + 0x3C);
-        cam.pos = *(Fn8017431CV3 *)(obj + 0x60);
-        cam.v.a[0] = lbl_80561A44;
-        cam.v.a[1] = lbl_80561A44;
-        cam.v.a[2] = lbl_80561A44;
-        sp38[0] = p[0];
-        sp38[1] = p[2];
-        if (fn_802B04D4(p) != 0 || fn_80171E3C(sp38) == 0) {
-            sp8[0] = p[0];
-            sp8[1] = p[2];
-            ret = fn_80171FF0(sp8, 99, lbl_80561AC4, lbl_80561AC8);
-            *(double *)&pv = *(double *)&ret;
-            tgt[1] = lbl_80561A44;
-            tgt[0] = pv.a;
-            tgt[2] = pv.b;
-            tgt[1] = fn_801DCF48(0, tgt[0], tgt[2]);
-            inside = 0;
-            if (fn_802B04D4(p) != 0 && fn_80171DE4(sp38) == 0) inside = 1;
-            if (inside != 0) {
-                float s = lbl_80561A74;
-                float k = lbl_80561A40 / s;
-                dir[1] = (tgt[1] - p[1]) * k + lbl_80561ACC * s;
-                dir[0] = (tgt[0] - p[0]) * k;
-                dir[2] = (tgt[2] - p[2]) * k;
-                cam.pos.a[0] = p[0];
-                cam.pos.a[1] = p[1];
-                cam.pos.a[2] = p[2];
-                cam.m.a[3] = lbl_80561A44; cam.m.a[4] = lbl_80561A40; cam.m.a[5] = lbl_80561A44;
-                cam.m.a[6] = dir[0]; cam.m.a[7] = lbl_80561A44; cam.m.a[8] = dir[2];
-                PSVECNormalize(&cam.m.a[6], &cam.m.a[6]);
-                cam.m.a[0] = cam.m.a[8];
-                cam.m.a[1] = lbl_80561A44;
-                cam.m.a[2] = -cam.m.a[6];
-                cam.v.a[0] = dir[0];
-                cam.v.a[1] = dir[1];
-                cam.v.a[2] = dir[2];
-            } else {
-                dx = tgt[0] - sp38[0];
-                dz = tgt[2] - sp38[1];
-                sp30[0] = tgt[0]; sp30[1] = tgt[2];
-                sp28[0] = dx; sp28[1] = dz;
-                dist = (float)fn_8002F234(dx * dx + dz * dz);
-                if (lbl_80561AD0 > dist) dist = lbl_80561AD0;
-                dist = lbl_80561A40 / dist;
-                sp28[0] = sp28[0] * dist;
-                sp28[1] = sp28[1] * dist;
-                fn_801B7C8C(&cam, sp30, sp28);
-                cam.pos.a[2] = cam.pos.a[2] + lbl_80561A3C;
-                cam.v.a[0] = cam.m.a[6] * lbl_80561AD4;
-                cam.v.a[1] = cam.m.a[7] * lbl_80561AD4;
-                cam.v.a[2] = cam.m.a[8] * lbl_80561AD4;
-            }
-        } else if (*(float *)(obj + 0x4C) < lbl_80561AB0) {
-            sp20[0] = *(float *)(obj + 0x54);
-            sp20[1] = *(float *)(obj + 0x5C);
-            dist = (float)fn_8002F234(sp20[0] * sp20[0] + sp20[1] * sp20[1]);
-            if (lbl_80561AD0 > dist) dist = lbl_80561AD0;
-            dist = lbl_80561A40 / dist;
-            sp20[0] = sp20[0] * dist;
-            sp20[1] = sp20[1] * dist;
-            fn_801B7C8C(&cam, sp38, sp20);
-        }
-        (*(void (**)(void *, void *))(*(char **)obj + 0x54))(obj, &cam);
-    }
-}
+void fn_8017431C(int arg0, int arg1) { extern int fn_802B04D4(float *); extern float fn_801DCF48(void *, float, float); extern void fn_8018AF04(); extern void fn_801E9DC4(short *); extern void fn_801B7C8C(void *, void *, float *); extern void PSVECNormalize(float *, float *); extern float lbl_80561A44, lbl_80561A74, lbl_80561AB0, lbl_80561AC4, lbl_80561ACC, lbl_80561AD0, lbl_80561AD4; Fn8017431CFrame2 cam; float tgt[3]; float dir[3]; float sp38[2]; float sp30[2]; float sp28[2]; float sp20[2]; unsigned long long ret; Fn8017431CV2 pv; float sp8[2]; char *obj; float *p; int inside; float dx, dz, dist; if (*(unsigned char *)(arg0 + arg1 * 0x1C + 0x90) != 0) { obj = (char *)fn_8017960C(arg1); fn_8018AF04(); cam.mark = -1; fn_801E9DC4(&cam.mark); cam.zero = 0; p = (float *)(obj + 0x60); cam.m = *(Fn8017431CM9 *)(obj + 0x3C); cam.pos = *(Fn8017431CV3 *)(obj + 0x60); cam.v.a[0] = lbl_80561A44; cam.v.a[1] = lbl_80561A44; cam.v.a[2] = lbl_80561A44; sp38[0] = p[0]; sp38[1] = p[2]; if (fn_802B04D4(p) != 0 || fn_80171E3C(sp38) == 0) { sp8[0] = p[0]; sp8[1] = p[2]; ret = fn_80171FF0(sp8, 99, lbl_80561AC4, lbl_80561AC8); *(double *)&pv = *(double *)&ret; tgt[1] = lbl_80561A44; tgt[0] = pv.a; tgt[2] = pv.b; tgt[1] = fn_801DCF48(0, tgt[0], tgt[2]); inside = 0; if (fn_802B04D4(p) != 0 && fn_80171DE4(sp38) == 0) inside = 1; if (inside != 0) { float s = lbl_80561A74; float k = lbl_80561A40 / s; dir[1] = (tgt[1] - p[1]) * k + lbl_80561ACC * s; dir[0] = (tgt[0] - p[0]) * k; dir[2] = (tgt[2] - p[2]) * k; cam.pos.a[0] = p[0]; cam.pos.a[1] = p[1]; cam.pos.a[2] = p[2]; cam.m.a[3] = lbl_80561A44; cam.m.a[4] = lbl_80561A40; cam.m.a[5] = lbl_80561A44; cam.m.a[6] = dir[0]; cam.m.a[7] = lbl_80561A44; cam.m.a[8] = dir[2]; PSVECNormalize(&cam.m.a[6], &cam.m.a[6]); cam.m.a[0] = cam.m.a[8]; cam.m.a[1] = lbl_80561A44; cam.m.a[2] = -cam.m.a[6]; cam.v.a[0] = dir[0]; cam.v.a[1] = dir[1]; cam.v.a[2] = dir[2]; } else { dx = tgt[0] - sp38[0]; dz = tgt[2] - sp38[1]; sp30[0] = tgt[0]; sp30[1] = tgt[2]; sp28[0] = dx; sp28[1] = dz; dist = (float)fn_8002F234(dx * dx + dz * dz); if (lbl_80561AD0 > dist) dist = lbl_80561AD0; dist = lbl_80561A40 / dist; sp28[0] = sp28[0] * dist; sp28[1] = sp28[1] * dist; fn_801B7C8C(&cam, sp30, sp28); cam.pos.a[2] = cam.pos.a[2] + lbl_80561A3C; cam.v.a[0] = cam.m.a[6] * lbl_80561AD4; cam.v.a[1] = cam.m.a[7] * lbl_80561AD4; cam.v.a[2] = cam.m.a[8] * lbl_80561AD4; } } else if (*(float *)(obj + 0x4C) < lbl_80561AB0) { sp20[0] = *(float *)(obj + 0x54); sp20[1] = *(float *)(obj + 0x5C); dist = (float)fn_8002F234(sp20[0] * sp20[0] + sp20[1] * sp20[1]); if (lbl_80561AD0 > dist) dist = lbl_80561AD0; dist = lbl_80561A40 / dist; sp20[0] = sp20[0] * dist; sp20[1] = sp20[1] * dist; fn_801B7C8C(&cam, sp38, sp20); } (*(void (**)(void *, void *))(*(char **)obj + 0x54))(obj, &cam); } }
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
@@ -1887,7 +1708,7 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
- struct Manager *mgr; void *one, *two; void *panel, *detail;
+ struct Manager *mgr; void *one, *two, *panel, *detail;
  float a, time, limit,b,c,d,e, t, blend, value;
  char *base = lbl_80330F48;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
@@ -2358,3 +2179,122 @@ void fn_80176040(char *self, int a, int b) {
 
 void fn_80176400(void) {
 }
+
+/* Configuration setup at 0x80173058. Vtable offsets and the 64-bit pair return
+ * follow the original loads/calls; the pair is returned in r3:r4, not f1:f2. */
+typedef union { unsigned long long bits; float value[2]; } ConfigPair73058;
+#pragma cplusplus on
+struct Config73058 {
+virtual void pad0();
+virtual int contains(const char *);
+virtual void pad2();
+virtual void pad3();
+virtual void pad4();
+virtual void pad5();
+virtual int integer(const char *, int);
+virtual void pad7();
+virtual float number(const char *, float);
+virtual void pad9();
+virtual unsigned char boolean(const char *, int);
+virtual void pad11();
+virtual void pad12();
+virtual unsigned long long pair(const char *);
+virtual void pad14();
+virtual void pad15();
+virtual void pad16();
+virtual void pad17();
+virtual void pad18();
+virtual void pad19();
+virtual void pad20();
+virtual Config73058 *section(const char *);
+};
+#pragma cplusplus reset
+extern void *fn_8000AC38(void);
+extern int fn_80145E70(const char *);
+extern int fn_801EA994(void);
+extern char *fn_80204EA0(const char *);
+extern void *fn_801284F8(unsigned int, void *);
+extern void *fn_802ADDD8(void *, int);
+extern void *memset(void *, int, unsigned long);
+extern void fn_802E30C8(void *, ...);
+extern char lbl_80330F48[];
+__declspec(section ".sdata") extern char lbl_8055A2B0[], lbl_8055A2B8[], lbl_8055A2C0[];
+extern float lbl_8043038C[];
+extern float lbl_80561A94, lbl_80561A98, lbl_80561A9C, lbl_80561AA0;
+extern float lbl_80561AA4, lbl_80561AA8, lbl_80561AAC, lbl_80561AB0;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
+#pragma cplusplus on
+extern "C" void fn_80173058(unsigned char *self) {
+    const char *labels = lbl_80330F48;
+    char key[0x20];
+    float initial;
+    ConfigPair73058 pair;
+    unsigned char *entry;
+    unsigned char *record;
+    int i;
+    Config73058 *config, *root;
+    char *name;
+    void *object;
+    *(int *)(self + 0x1A8) = fn_80145E70(labels + 0x1FC);
+    *(int *)(self + 0x170) = fn_801EA994();
+    record = self;
+    initial = lbl_80561A50;
+    entry = self + 0x90;
+    for (i = 0; i < *(int *)(self + 0x170); record += 0x1C, entry += 0x1C, ++i) {
+        record[0x91] = fn_80171EC0(i);
+        record[0x90] = 1;
+        *(float *)(record + 0xA8) = initial;
+        *(int *)(record + 0x9C) = 0;
+        *(int *)(record + 0x98) = 0;
+        *(int *)(record + 0x94) = 0;
+        memset(entry + 0x10, 0, 8);
+    }
+    name = fn_80204EA0(labels + 0x20C);
+    root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
+    config = root->section( name);
+    *(float *)(self + 0x1A4) = config->number( lbl_8055A2B0, lbl_80561A94);
+    lbl_8043038C[0] = lbl_80561A98 * config->number( labels + 0x218, lbl_80561A9C);
+    lbl_8043038C[1] = lbl_80561A98 * config->number( labels + 0x224, lbl_80561AA0);
+    lbl_8043038C[2] = config->number( labels + 0x230, lbl_80561AA4);
+    lbl_8043038C[3] = config->number( labels + 0x240, lbl_80561AA8);
+    ((unsigned char *)lbl_8043038C)[0x10] = config->boolean( labels + 0x250, 0);
+    ((unsigned char *)lbl_8043038C)[0x11] = config->boolean( labels + 0x264, 0);
+    *(int *)((unsigned char *)lbl_8043038C + 0x14) = config->integer( labels + 0x278, 10);
+    ((unsigned char *)lbl_8043038C)[0x18] = config->boolean( labels + 0x288, 0);
+    lbl_8043038C[7] = config->number( labels + 0x2A0, lbl_80561A38);
+    lbl_8043038C[8] = config->number( labels + 0x2AC, lbl_80561AAC);
+    lbl_8043038C[9] = config->number( labels + 0x2B8, lbl_80561A40);
+    lbl_8043038C[10] = config->number( labels + 0x2C8, lbl_80561AB0);
+    *(int *)(self + 8) = 0;
+    root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
+    config = root->section( lbl_8055A2B8);
+    if (config) {
+        i = 0;
+        for (;;) {
+            ((void (*)(void *, int, const char *, ...))fn_801345D8)(key, 0x20, lbl_8055A2C0, i);
+            if (!config->contains( key) || *(int *)(self + 8) + 1 > *(int *)(self + 0xC)) break;
+            pair.bits = config->pair( key);
+            {
+                int index = *(int *)(self + 8);
+                float *data = *(float **)(self + 4);
+                ++i;
+                *(int *)(self + 8) = index + 1;
+                data[index * 2] = pair.value[0];
+                data[index * 2 + 1] = pair.value[1];
+            }
+        }
+    }
+    object = fn_801284F8(8, (void *)(labels + 0x2DC));
+    if (object) object = fn_802ADDD8(object, 1);
+    *(void **)(self + 0x1B8) = object;
+    ((void (*)(void *))fn_8017353C)(self + 0x1AC);
+    ((void (*)(void *))fn_80173424)(self + 0x1AC);
+    fn_802E30C8((void *)(labels + 0x2F0), *(float *)(self + 0x1A4),
+        lbl_8043038C[0] / lbl_80561A98, lbl_8043038C[1] / lbl_80561A98,
+        lbl_8043038C[2], lbl_8043038C[3]);
+}
+#pragma pop
+
+#pragma cplusplus reset
