@@ -3713,6 +3713,9 @@ void fn_8006E6E4(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
+/* Advance a timer list by num_units_since_last_update ticks and return how many
+ * of its timers expired. Entries hold ticks relative to the entry before them,
+ * so the elapsed ticks are walked down the list. Not for time-critical use. */
 UINT16 GKI_update_timer_list(TIMER_LIST_Q *p_timer_listq, INT32 num_units_since_last_update) {
     TIMER_LIST_ENT *p_tle;
     UINT16 num_time_out = 0;
@@ -3721,17 +3724,23 @@ UINT16 GKI_update_timer_list(TIMER_LIST_Q *p_timer_listq, INT32 num_units_since_
 
     p_tle = p_timer_listq->p_first;
 
+    /* First, get the guys who have previously timed out.
+     * The tick value of these timers should always be '0'. */
     while (p_tle && p_tle->ticks <= 0) {
         num_time_out++;
         p_tle = p_tle->p_next;
     }
 
+    /* Timer entry tick values are relative to the preceding entry */
     rem_ticks = num_units_since_last_update;
 
+    /* Now, adjust remaining timer entries */
     while (p_tle != NULL && rem_ticks > 0) {
         temp_ticks = p_tle->ticks;
         p_tle->ticks -= rem_ticks;
 
+        /* See if this timer has just timed out. Setting the ticks to '0' keeps
+         * the code that assumes a '0' or nonzero value working as coded. */
         if (p_tle->ticks <= 0) {
             p_tle->ticks = 0;
             num_time_out++;
@@ -3744,6 +3753,8 @@ UINT16 GKI_update_timer_list(TIMER_LIST_Q *p_timer_listq, INT32 num_units_since_
     if (p_timer_listq->last_ticks > 0) {
         p_timer_listq->last_ticks -= num_units_since_last_update;
 
+        /* Once the last timer has expired, last_ticks goes to 0 so the other
+         * list update functions calculate correctly. */
         if (p_timer_listq->last_ticks < 0)
             p_timer_listq->last_ticks = 0;
     }
@@ -9664,13 +9675,14 @@ tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
 }
 
 tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
-    u8 *base;
+    u8 *base = lbl_803C0F78;
     u16 i;
     u8 *entry;
     tBTM_INQ_DB_CHANGE_CB *callback;
-    if (lbl_803C0F78[0x1848] != 0 || lbl_803C0F78[0x16AE] != 0 || lbl_803C0F78[0x1844] != 0)
+
+    if (base[0x1848] != 0 || base[0x16AE] != 0 || base[0x1844] != 0)
         return BTM_BUSY;
-    base = lbl_803C0F78;
+
     for (i = 0, entry = base + 0x16E4; i < 0xC; i++, entry += 0x1C) {
         if (entry[0x1A] != 0 && (p_bda == NULL || memcmp(entry + 0xA, p_bda, BD_ADDR_LEN) == 0)) {
             entry[0x1A] = FALSE;
