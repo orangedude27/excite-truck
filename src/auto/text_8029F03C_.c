@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-struct Fn8029Pair { float x, y; };
+struct Fn8029Pair { float x, y; } __attribute__((aligned(8)));
 struct Fn8029Vec { float x, y, z; };
 extern float lbl_805646B8;
 extern float lbl_805646BC;
@@ -366,7 +366,7 @@ extern "C" void fn_8029F658(void *arg0) {
         virtual void v3();
         virtual void v4();
         virtual int getId(const char *);
-        virtual int getProp(const char *, int, int);
+        virtual int getProp(const char *, int);
         virtual void v7();
         virtual float getFloat(float, const char *);
         virtual void v9();
@@ -398,8 +398,8 @@ extern "C" void fn_8029F658(void *arg0) {
     Fn8029Pair out4;
     Fn8029Pair out5;
     const char *str;
-    unsigned char *dst;
     char *src;
+    unsigned char *dst;
     int n;
     unsigned char c;
     int packed;
@@ -466,16 +466,15 @@ done:
     rPart = (int)(lbl_805646C0 * v2.x);
     gPart = (int)(lbl_805646C0 * v2.y);
     bPart = (int)(lbl_805646C0 * v2.z);
-    packed = (rPart << 16) | (gPart << 8) | bPart;
-    packed |= 0xFF000000;
+    packed = 0xFF000000 | ((rPart & 0xFF) << 16) | ((gPart & 0xFF) << 8) | (bPart & 0xFF);
     *(int *)(record + 0x4C) = packed;
-    *(int *)(record + 0x50) = obj->getProp(lbl_8055CB38, 1, packed);
+    *(int *)(record + 0x50) = obj->getProp(lbl_8055CB38, 1);
     v3 = obj->getVec(lbl_8055CB40, defaultVec);
     *(float *)(record + 0x54) = v3.x;
     *(float *)(record + 0x58) = v3.y;
     *(float *)(record + 0x5C) = v3.z;
-    fn_8029F534(record + 0x60, (unsigned char *)(long)obj->getSub(&table[0x74]));
-    fn_8029F5C8(record + 0x6C, (unsigned char *)(long)obj->getSub(lbl_8055CB48));
+    fn_8029F534(record + 0x60, (unsigned char *)obj->getSub(&table[0x74]));
+    fn_8029F5C8(record + 0x6C, (unsigned char *)obj->getSub(lbl_8055CB48));
     lbl_8055F81C++;
 }
 #pragma dont_inline reset
