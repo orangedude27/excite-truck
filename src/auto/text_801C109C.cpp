@@ -937,9 +937,9 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         float sx = src->x;
         float sy = src->y;
         float sz = src->z;
-        float x = sz * m[6] + (sy * m[3] + sx * m[0]);
-        float y = sz * m[7] + (sy * m[4] + sx * m[1]);
-        float z = sz * m[8] + (sy * m[5] + sx * m[2]);
+        float x = sz * m[6] + (sx * m[0] + sy * m[3]);
+        float y = sz * m[7] + (sx * m[1] + sy * m[4]);
+        float z = sz * m[8] + (sx * m[2] + sy * m[5]);
         dst->x = x;
         dst->y = y;
         dst->z = z;
