@@ -4408,6 +4408,19 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
    lowest-priority active one (the list is sorted, front = lowest); inlined into fn_800F9200. */
 #pragma push
 #pragma always_inline on
+/* Ambient priority from the optional ambient-arg info (arg3 of fn_800F9200): 0 when absent. */
+static inline s32 AmbientInfo_GetPriority(s32 ambientInfo, s32 soundId) {
+    s32 priority = 0;
+    if (ambientInfo != 0) {
+        s32 info[7];
+        void *obj = *(void **)ambientInfo;
+        void **vt = *(void ***)obj;
+        ((void (*)(void *, void *, s32, s32, s32, s32))vt[2])(obj, (void *)info, soundId, 0, *(s32 *)(ambientInfo + 0xC), 8);
+        priority = info[6];
+    }
+    return priority;
+}
+
 /* ut::Clamp(x, low, high) */
 static inline s32 ClampS32(s32 x, s32 low, s32 high) {
     return x > high ? high : (x < low ? low : x);
@@ -4618,15 +4631,6 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     prio = ClampS32(arg2 - startOffset, 0, 0x7F);
     if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, prio, (void *)arg4) == 0) {
         return 0;
-    }
-    {
-        s32 ok = 0;
-        if (prio >= 0 && prio <= 0x7F) {
-            ok = 1;
-        }
-        if (ok == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803260F0, 0x5C, lbl_803260AC, prio, 0, 0x7F);
-        }
     }
     sound = SoundInstanceManager_Alloc(arg6, prio);
     if (sound == 0) {
