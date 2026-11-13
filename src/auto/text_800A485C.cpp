@@ -7492,115 +7492,138 @@ struct VFiPFDirEntry {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+/* Create the directory entry of a new file and write it into its directory.
+ *
+ * `entry` is the entry object of the directory the file goes into: it says which
+ * volume that is and which sector of it is being written at, and it is filled in
+ * with the new file's entry - its 8.3 name, an archive attribute, the current
+ * date and time as its create, access and write stamps, no size and (on FAT32)
+ * the mark for a file that has no cluster of its own yet.  `name` is the name to
+ * create; it is parsed into the 8.3 name the entry holds, one that parses is
+ * changed until it clashes with no entry there (VFiPFENT_AdjustSFN) and the name
+ * is stored on the entry in the form it came in.
+ *
+ * A name that needs long-name entries has room looked for in the directory for
+ * those plus the short-name one (fn_800AAC08); the entries then go in 0x20 bytes
+ * at a time, moving to the next sector of the directory once the offset runs
+ * past a sector.  A name that needs none has room looked for for its single
+ * entry (fn_800AAED8).  fn_800AB0C0 writes the short-name entry itself, last.
+ *
+ * The frame's scratch bytes hold, in order: where in the directory the run of
+ * free entries was found (+0x00), how many bytes the last write moved (+0x04),
+ * the first and last sector of that run (+0x08), the long-name entry being built
+ * (+0x20) and the directory being written into (+0x40, 0x38 bytes).
+ */
+extern "C" s32 fn_800B10E0(void *volume, void *entry, s32 name, s32 unused) {
     VFiPFEntryLocalFrame frame;
-    s32 charCount;
+    s32 nameChars;
     s32 result;
-    s32 parsed;
-    s32 quotient;
-    s32 remainder;
-    u8 *nextCluster;
-    u8 initialCount;
-    u32 loopCount;
-    s32 cluster;
-    u16 next;
-    u32 *flags;
-    Fn800B10E0Ent *ent = (Fn800B10E0Ent *)arg1;
+    s32 shortName;
+    s32 wholeEntries;
+    s32 restChars;
+    u8 *runSector;
+    u8 lfnEntries;
+    u32 entryIndex;
+    s32 sector;
+    u16 nextOff;
+    u32 *nameFlags;
+    VFiPFDirEntry *ent = (VFiPFDirEntry *)entry;
 
-    frame.copied = *(VFiPFEntryCopy240 *)arg1;
-    charCount = (u16)VFiPFSTR_StrNumChar(arg2, 1);
-    if ((u32)charCount + *(u32 *)((u8 *)&frame.copied + 0x230) > 0x103U) {
-        return 1;
+    frame.copied = *(VFiPFEntryCopy240 *)entry;
+    nameChars = (u16)VFiPFSTR_StrNumChar(name, 1);
+    if ((u32)nameChars + *(u32 *)((u8 *)&frame.copied + 0x230) > 0x103U) {
+        return VF_ERR_NAME_NOT_ALLOWED; /* name and directory path fill a whole path */
     }
-    if ((s32)charCount > 0xFF) {
-        return 1;
+    if ((s32)nameChars > 0xFF) {
+        return VF_ERR_NAME_NOT_ALLOWED;
     }
     ((s32 (*)(void *, void *, s32, s32))fn_800AF530)(frame.prefix + 0x40, frame.prefix + 0x10, *(s32 *)((u8 *)&frame.copied + 0x22C), (s32)((u8 *)&frame.copied + 0x234));
-    if (*(s32 *)((u8 *)arg0 + 0x161C) >= 5) {
-        return 0x15;
+    if (VF_VOL_OPEN_FILES(volume) >= 5) {
+        return 0x15; /* the volume has no open stream left for another file */
     }
-    parsed = VFiPFPATH_parseShortName(ent->name, (void *)arg2);
-    if (parsed != 0 && ent->name[0] == 0) {
-        return 1;
+    shortName = VFiPFPATH_parseShortName(ent->shortName, (void *)name);
+    if (shortName != 0 && ent->shortName[0] == 0) {
+        return VF_ERR_NAME_NOT_ALLOWED;
     }
-    if (parsed != 0) {
-        result = VFiPFENT_AdjustSFN(&frame.copied, ent->name);
+    if (shortName != 0) {
+        result = VFiPFENT_AdjustSFN(&frame.copied, ent->shortName);
         if (result != 0) {
             return result;
         }
-        if ((u32)fn_800A4D44((void *)arg2) == 1U) {
-            ((s32 (*)(void *, s32))VFiPFPATH_transformInUnicode)(arg1, fn_800A4D74((void *)arg2, 1));
+        if ((u32)fn_800A4D44((void *)name) == 1U) {
+            ((s32 (*)(void *, s32))VFiPFPATH_transformInUnicode)(entry, fn_800A4D74((void *)name, 1));
         } else {
-            ((void (*)(void *, void *))fn_800A4B78)(arg1, (void *)(u32)fn_800A4D74((void *)arg2, 1));
+            ((void (*)(void *, void *))fn_800A4B78)(entry, (void *)(u32)fn_800A4D74((void *)name, 1));
         }
     } else {
-        ent->first = 0;
+        ent->first = 0; /* nothing was parsed out of the name */
     }
-    if (*(s32 *)((u8 *)arg0 + 0x1C) == 2) {
-        ent->flag234 = 1;
+    if (VF_VOL_FAT_TYPE((u8 *)volume) == VF_FAT_TYPE_32) {
+        ent->firstCluster = 1;
     } else {
-        ent->flag234 = 0;
+        ent->firstCluster = 0;
     }
-    ent->f228 = 0;
-    ent->f22C = arg0;
-    ent->f21B = 0;
-    ent->f21C = 0x20;
-    ent->f21D = ((u8 (*)(void *, void *))fn_800AB2F4)(&ent->f220, &ent->f21E);
-    ent->f222 = ent->f220;
-    ent->f224 = ent->f21E;
-    ent->f226 = ent->f220;
+    ent->size = 0;
+    ent->volume = volume;
+    ent->reserved21B = 0;
+    ent->attrs = 0x20; /* archive */
+    ent->createTenths = ((u8 (*)(void *, void *))fn_800AB2F4)(&ent->createDate, &ent->createTime);
+    ent->accessDate = ent->createDate;
+    ent->writeTime = ent->createTime;
+    ent->writeDate = ent->createDate;
 
-    if (ent->first != 0 && (ent->f21B & 0x18) == 0) {
-        quotient = (s32)charCount / 13;
-        remainder = (s32)charCount % 13;
-        initialCount = (u8)(quotient + (remainder != 0));
+    if (ent->first != 0 && (ent->reserved21B & 0x18) == 0) {
+        /* 13 characters of the name go into each long-name entry */
+        wholeEntries = (s32)nameChars / 13;
+        restChars = (s32)nameChars % 13;
+        lfnEntries = (u8)(wholeEntries + (restChars != 0));
         result = ((s32 (*)(void *, u8, void *, s32 *, s32, s32 *, s32))fn_800AAC08)(
-            arg1, (u8)(initialCount + 1), frame.prefix + 0x40, (s32 *)(frame.prefix + 8), arg2,
-            (s32 *)frame.prefix, quotient);
+            entry, (u8)(lfnEntries + 1), frame.prefix + 0x40, (s32 *)(frame.prefix + 8), name,
+            (s32 *)frame.prefix, wholeEntries);
         if (result != 0) {
             return result;
         }
-        flags = (u32 *)lbl_803D2140;
-        if ((flags[0x60 / 4] & 2) == 2) {
-            fn_800B51FC(ent->name, *(s32 *)frame.prefix);
+        nameFlags = (u32 *)lbl_803D2140;
+        if ((nameFlags[0x60 / 4] & VF_NAME_UNICODE) == VF_NAME_UNICODE) {
+            fn_800B51FC(ent->shortName, *(s32 *)frame.prefix); /* the 8.3 name takes the place in the directory */
         }
-        ent->count = initialCount;
-        cluster = ent->cluster238;
-        charCount = ((s32 (*)(u8 *))VFiPFENT_CalcCheckSum)((u8 *)arg1);
-        loopCount = initialCount;
-        nextCluster = frame.prefix + 8;
-        while (loopCount >= 1) {
-            VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)arg1, (u8)loopCount, (u8)charCount, loopCount == initialCount);
+        ent->lfnCount = lfnEntries;
+        sector = ent->entrySector;
+        nameChars = ((s32 (*)(u8 *))VFiPFENT_CalcCheckSum)((u8 *)entry); /* the checksum the entries carry, in the count's variable */
+        entryIndex = lfnEntries;
+        runSector = frame.prefix + 8;
+        while (entryIndex >= 1) {
+            VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)entry, (u8)entryIndex, (u8)nameChars, entryIndex == lfnEntries);
             result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
-                (s32)arg0, frame.prefix + 0x20, cluster, ent->off23C, 0x20,
+                (s32)volume, frame.prefix + 0x20, sector, ent->entrySectorOff, 0x20,
                 (u32 *)(frame.prefix + 4), 0);
             if (result != 0) {
                 return result;
             }
             if (*(u32 *)(frame.prefix + 4) != 0x20U) {
-                return 0x11;
+                return VF_ERR_SHORT_TRANSFER;
             }
-            next = ent->off23C + 0x20;
-            ent->off23C = next;
-            if (next >= *(u16 *)arg0) {
-                ent->off23C = 0;
-                cluster = *(s32 *)nextCluster;
-                nextCluster += 4;
+            nextOff = ent->entrySectorOff + 0x20;
+            ent->entrySectorOff = nextOff;
+            if (nextOff >= VF_VOL_SECTOR_SIZE(volume)) { /* the entry goes on in the directory's next sector */
+                ent->entrySectorOff = 0;
+                sector = *(s32 *)runSector;
+                runSector += 4;
             }
-            loopCount--;
+            entryIndex--;
         }
-        ent->cluster238 = cluster;
+        ent->entrySector = sector;
     } else {
         result = ((s32 (*)(void *, u32, void *, s32 *, s32))fn_800AAED8)(
-            arg1, 1, frame.prefix + 0x40, (s32 *)(frame.prefix + 8), arg2);
+            entry, 1, frame.prefix + 0x40, (s32 *)(frame.prefix + 8), name);
         if (result != 0) {
             return result;
         }
     }
-    if (ent->flag234 == 1) {
-        ent->flag234 = 0;
+    if (ent->firstCluster == 1) {
+        ent->firstCluster = 0; /* the entry is written with no cluster of its own */
     }
-    return fn_800AB0C0((u8 *)arg1, 1);
+    return fn_800AB0C0((u8 *)entry, 1);
 }
 
 extern "C" void fn_800B36C4(s32, s32, s32);
