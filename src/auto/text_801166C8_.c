@@ -1840,7 +1840,6 @@ void fn_801195D8(void *arg0) {
     }
 }
 
-#define STREAM_PLAYER_TYPES
 /* The pair of AX voices a stream is played through, plus the PCM ring buffers
    they read. fn_8011943C sets both voices' AX state, fn_80119300 clears a range
    of the buffers and fn_801199A4 re-applies their sample-range parameters.
