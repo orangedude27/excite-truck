@@ -337,20 +337,21 @@ extern "C" void* fn_80279004(s32 name, s32 arg1) {
 }
 #pragma cplusplus reset
 
-void* fn_80279254(s32 arg0, s32 arg1) {
-    Node_80279254* var_r31 = lbl_8055F5F0;
+/* Find a loaded car resource by name, incrementing its refcount; load/create it if missing. */
+void* fn_80279254(s32 name, s32 arg1) {
+    CarResourceNode* node = gCarResourceList;
 
-    while (var_r31 != NULL) {
-        if (stricmp(var_r31->name, (char*)arg0) == 0) {
-            var_r31->count = var_r31->count + 1;
+    while (node != NULL) {
+        if (stricmp(node->name, (char*)name) == 0) {
+            node->count = node->count + 1;
             break;
         }
-        var_r31 = var_r31->next;
+        node = node->next;
     }
-    if (var_r31 == NULL) {
-        var_r31 = fn_80279004(arg0, arg1);
+    if (node == NULL) {
+        node = fn_80279004(name, arg1);
     }
-    return var_r31;
+    return node;
 }
 
 void fn_80131818(void*);
