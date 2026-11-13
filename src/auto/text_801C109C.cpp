@@ -927,16 +927,16 @@ extern "C" void fn_801E41D8(float *, float *, int, float);
 struct Vec3f { float x, y, z; };
 static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
     if (dst == src) {
-        float x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
-        float y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
-        float z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+        float x = src->x * m[0] + src->y * m[3] + src->z * m[6];
+        float y = src->x * m[1] + src->y * m[4] + src->z * m[7];
+        float z = src->x * m[2] + src->y * m[5] + src->z * m[8];
         dst->x = x;
         dst->y = y;
         dst->z = z;
     } else {
-        float x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
-        float y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
-        float z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+        float x = src->x * m[0] + src->y * m[3] + src->z * m[6];
+        float y = src->x * m[1] + src->y * m[4] + src->z * m[7];
+        float z = src->x * m[2] + src->y * m[5] + src->z * m[8];
         dst->x = x;
         dst->y = y;
         dst->z = z;
