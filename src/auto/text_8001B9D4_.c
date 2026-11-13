@@ -989,11 +989,12 @@ int fn_8001CF8C(arg0, arg1, arg2, arg3, arg4)
 s32 arg0, arg1, arg2, arg3;
 double arg4;
 {
-    s32 count = fn_8001D25C(arg1);
-    void *result;
-    if (count != 0) {
-        result = fn_8001C540(arg0, count, arg2, 1);
-        return ((int (*)(void *, s32, s32, double))fn_8001CED4)(result, arg1, arg3, arg4);
+    /* Look up a contest StatRecord for contest arg1 in slot arg0/id arg2, then return fn_8001CED4's insert/rank index for key arg3 and score arg4 (5 when the contest has no record). */
+    s32 contestRecordIndex = fn_8001D25C(arg1);
+    void *statRecord;
+    if (contestRecordIndex != 0) {
+        statRecord = fn_8001C540(arg0, contestRecordIndex, arg2, 1);
+        return ((int (*)(void *, s32, s32, double))fn_8001CED4)(statRecord, arg1, arg3, arg4);
     }
     return 5;
 }
