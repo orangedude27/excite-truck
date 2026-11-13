@@ -196,18 +196,19 @@ extern void fn_8028C92C(void *);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_8028A89C(void) {
+    /* Update global effect objects and each active slot in the 8-entry table (v1). */
     class Dummy { public: virtual void v0(); virtual void v1(); };
     fn_8028BC88(lbl_8055F6F0);
     fn_8028BC88(lbl_8055F6F4);
     fn_8028C92C((void *)lbl_8055F6F8);
     ((Dummy *)lbl_8055F6FC)->v1();
-    void **p = (void **)lbl_804B3238;
+    void **slot = (void **)lbl_804B3238;
     s32 i = 0;
     do {
-        void *obj = *p;
+        void *obj = *slot;
         if (obj) ((Dummy *)obj)->v1();
         i++;
-        p = (void **)((u8 *)p + 0x10);
+        slot = (void **)((u8 *)slot + 0x10);
     } while (i < 8);
 }
 
