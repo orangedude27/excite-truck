@@ -2263,6 +2263,7 @@ s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
 
 extern char lbl_803134F0[];
 extern s32 StartSyncDevice(u8, s8, BOOL);
+/* Start a simple fast sync; if it cannot start, invoke the sync-simple callback with failure status. */
 s32 WUDStartFastSyncSimple(void) {
     s32 started;
     BOOL interrupts;
