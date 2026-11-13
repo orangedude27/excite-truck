@@ -1150,41 +1150,21 @@ extern "C" void fn_800D6CA0(s32, s32);
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
-    StateNode_800D6CA0 *type;
     StateNode_800D6CA0 *n1, *n2, *n3;
     u8 *p1, *p2, *p3;
-    bool found;
-    type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1();
-    found = false;
-    while (type) {
-        if (type == sentinel) { found = true; break; }
-        type = type->next;
-    }
-    { u8 *cast = found ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+    { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), sentinel) ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
     n1 = *(StateNode_800D6CA0 **)(self + 0x14);
     while (n1 != (StateNode_800D6CA0 *)(self + 0x14)) {
         if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         p1 = (u8 *)n1 - 4;
         if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-        type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1();
-        found = false;
-        while (type) {
-            if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
-            type = type->next;
-        }
-        { u8 *cast = found ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+        { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
         n2 = *(StateNode_800D6CA0 **)(p1 + 0x14);
         while (n2 != (StateNode_800D6CA0 *)(p1 + 0x14)) {
             if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             p2 = (u8 *)n2 - 4;
             if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-            type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1();
-            found = false;
-            while (type) {
-                if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
-                type = type->next;
-            }
-            { u8 *cast = found ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+            { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
             n3 = *(StateNode_800D6CA0 **)(p2 + 0x14);
             while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
                 if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
@@ -3644,18 +3624,24 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
     }
 }
 #pragma pop
-extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void* self, void* link) {
-    extern const char lbl_8031FF90[];
-    extern const char lbl_803200F8[];
-    extern const char lbl_8031FF54[];
-    extern const char lbl_8031FF30[];
-    register void* iterator;
-    void* slot;
-    if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x289, lbl_803200F8);
-    iterator = (char*)self + 0x20;
-    if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
-    slot = iterator;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self + 0x1c, &slot, link);
+extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void* pane, void* animLink) {
+    // Append an AnimationLink to the pane's animation-link list (+0x1C), inserting before end (+0x20).
+    extern const char lbl_8031FF90[]; /* "lyt_pane.cpp" */
+    extern const char lbl_803200F8[]; /* "NW4HBM:Pointer must not be NULL (pAnimationLink)" */
+    extern const char lbl_8031FF54[]; /* "LinkList.h" */
+    extern const char lbl_8031FF30[]; /* "NW4HBM:Pointer must not be NULL (p)" */
+    register void* endIter;
+    void* iterSlot;
+
+    if (!animLink) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x289, lbl_803200F8);
+    }
+    endIter = (char*)pane + 0x20;
+    if (!animLink) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
+    }
+    iterSlot = endIter;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)pane + 0x1C, &iterSlot, animLink);
 }
 
 extern "C" void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
