@@ -5723,143 +5723,149 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
 extern "C" s32 VFiPFFAT_ReadClusterPage(void *, u32, s32, s32 *, s32 *, void *);
 extern "C" s32 VFiPFFAT_WriteCluster(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800AE7A8(void *, s32, s32, s32);
-extern "C" s32 fn_800ADD84(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
-    s32 sp18;
-    s32 sp14;
-    s32 sp10;
-    s32 spC;
-    void *sp8;
-    s32 temp_r0;
-    s32 temp_r10;
-    s32 temp_r3;
-    s32 temp_r3_2;
-    s32 temp_r3_3;
-    s32 temp_r3_4;
-    s32 temp_r3_5;
-    s32 temp_r7;
-    s32 temp_r9;
-    u32 *tableEntry;
-    u32 temp_r31;
-    u32 temp_r30;
-    s32 var_r29;
-    u32 var_r28;
-    u32 var_r27;
-    s32 var_r26;
-    s32 *var_r25;
+extern "C" s32 fn_800ADD84(void *walk, s32 clusterIndex, s32 mode, s32 clustersNeeded, u32 *outNewCluster, s32 *outCluster) {
+    s32 next;
+    s32 cachedCluster;
+    s32 pageIndex;
+    s32 cacheState;
+    void *page;
+    s32 cachedPos;
+    s32 fatType;
+    s32 linkResult;
+    s32 readResult;
+    s32 sectorResult;
+    s32 pageResult;
+    s32 allocResult;
+    s32 cachedPosAgain;
+    s32 runCluster;
+    u32 *fatLimits;
+    u32 firstReserved;
+    u32 firstEndCluster;
+    s32 cluster;
+    u32 steps;
+    u32 stepsLeft;
+    s32 chainPos;
+    s32 *startCluster;
 
-    temp_r10 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C);
-    *arg5 = -1;
-    *arg4 = -1;
-    temp_r31 = ((volatile u32 *)lbl_802EEF40)[temp_r10 * 5];
-    temp_r0 = *(volatile s32 *)((u8 *)arg0 + 0x14);
-    tableEntry = ((u32 *)lbl_802EEF40) + temp_r10 * 5;
-    temp_r30 = tableEntry[1];
-    if ((temp_r0 != 0) && ((u32)temp_r0 <= (u32)arg1)) {
-        var_r25 = &sp14;
-        sp14 = *(s32 *)((u8 *)arg0 + 0x18);
-        temp_r7 = *(s32 *)((u8 *)arg0 + 0x14);
-        var_r28 = (u32)arg1 - temp_r7;
-        var_r26 = temp_r7 + 1;
+    fatType = VF_VOL_FAT_TYPE(VF_CHAIN_VOLUME((u8 *)walk));
+    *outCluster = -1;
+    *outNewCluster = -1;
+    firstReserved = VF_FAT_FIRST_RESERVED(fatType);
+    cachedPos = *(volatile s32 *)((u8 *)walk + 0x14); /* VF_CHAIN_CACHE_POS, read a second time below */
+    fatLimits = ((u32 *)lbl_802EEF40) + fatType * 5;
+    firstEndCluster = fatLimits[1];
+    if ((cachedPos != 0) && ((u32)cachedPos <= (u32)clusterIndex)) {
+        /* the stream stopped at a cluster at or before the position: walk from there */
+        startCluster = &cachedCluster;
+        cachedCluster = VF_CHAIN_CACHE_CLUSTER((u8 *)walk);
+        cachedPosAgain = VF_CHAIN_CACHE_POS((u8 *)walk);
+        steps = (u32)clusterIndex - cachedPosAgain;
+        chainPos = cachedPosAgain + 1;
     } else {
-        var_r25 = *(s32 **)((u8 *)arg0 + 8);
-        var_r28 = (u32)arg1;
-        var_r26 = 1;
+        startCluster = VF_CHAIN_FIRST_CLUSTER((u8 *)walk);
+        steps = (u32)clusterIndex;
+        chainPos = 1;
     }
-    var_r29 = *var_r25;
-    sp18 = var_r29;
-    if ((u32)arg2 == 2U) {
-        if (((s32)var_r28 != 0) && (arg3 != 0)) {
-            var_r28 = (var_r28 + arg3) - 1;
+    cluster = *startCluster;
+    next = cluster;
+    if ((u32)mode == 2U) {
+        /* the file is to be given a run of clusters: the walk ends short of the
+         * position by that many entries, unless the chain is known to run on */
+        if (((s32)steps != 0) && (clustersNeeded != 0)) {
+            steps = (steps + clustersNeeded) - 1;
         } else {
-            var_r28 = (u32)arg3;
+            steps = (u32)clustersNeeded;
         }
-        temp_r9 = *(s32 *)((u8 *)arg0 + 0xC);
-        var_r27 = var_r28;
-        if (temp_r9 != 0) {
-            void *ctx = *(void **)((u8 *)arg0 + 0x34);
-            s32 base = *(s32 *)((u8 *)arg0 + 0x10);
-            u32 *tbl = (u32 *)lbl_802EEF40;
-            var_r29 = temp_r9;
-            var_r28 = 0U;
-            var_r27 = (base + arg3) - arg1;
-            sp18 = tbl[*(s32 *)((u8 *)ctx + 0x1C) * 5 + 2];
-            var_r26 = *(s32 *)((u8 *)arg0 + 0x10) + 1;
+        runCluster = VF_CHAIN_RUN_CLUSTER((u8 *)walk);
+        stepsLeft = steps;
+        if (runCluster != 0) {
+            void *volume = VF_CHAIN_VOLUME((u8 *)walk);
+            s32 runPos = VF_CHAIN_RUN_POS((u8 *)walk);
+            u32 *limits = (u32 *)lbl_802EEF40;
+            cluster = runCluster;
+            steps = 0U;
+            stepsLeft = (runPos + clustersNeeded) - clusterIndex;
+            next = limits[VF_VOL_FAT_TYPE((u8 *)volume) * 5 + 2];
+            chainPos = VF_CHAIN_RUN_POS((u8 *)walk) + 1;
         }
     } else {
-        if (((u32)arg2 == 1U) && (var_r29 == 0)) {
-            var_r28 += 1;
+        if (((u32)mode == 1U) && (cluster == 0)) {
+            steps += 1; /* a file with no cluster at all is one entry short already */
         }
-        var_r27 = var_r28;
+        stepsLeft = steps;
     }
-    if ((s32)var_r28 != 0) {
-        temp_r3_4 = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8D08)(
-            *(void **)((u8 *)arg0 + 0x34), -1, &sp8, &sp10);
-        if (temp_r3_4 != 0) {
-            return temp_r3_4;
+    if ((s32)steps != 0) {
+        /* follow the chain entry by entry, over one FAT page of the cache */
+        pageResult = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8D08)(
+            VF_CHAIN_VOLUME((u8 *)walk), -1, &page, &pageIndex);
+        if (pageResult != 0) {
+            return pageResult;
         }
-        temp_r3_3 = fn_800ACA5C(*(void **)((u8 *)arg0 + 0x34), sp8, var_r29);
-        if (temp_r3_3 != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
-            return temp_r3_3;
+        sectorResult = fn_800ACA5C(VF_CHAIN_VOLUME((u8 *)walk), page, cluster);
+        if (sectorResult != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(VF_CHAIN_VOLUME((u8 *)walk), page);
+            return sectorResult;
         }
-        *(s16 *)((u8 *)sp8 + 2) = 0;
-        spC = 1;
-        while (var_r28-- != 0 && (u32)var_r29 < temp_r31) {
-            if (var_r29 != 0) {
-                temp_r3_2 = VFiPFFAT_ReadClusterPage(arg0, (u32)var_r29, var_r26, &sp18, &spC, sp8);
-                if ((temp_r3_2 != 0) && ((u32)(sp18 + 0x10000) != 0xFFFFU)) {
-                    VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
-                    return temp_r3_2;
+        *(s16 *)((u8 *)page + 2) = 0; /* nothing of the file's is written into it */
+        cacheState = 1;
+        while (steps-- != 0 && (u32)cluster < firstReserved) {
+            if (cluster != 0) {
+                readResult = VFiPFFAT_ReadClusterPage(walk, (u32)cluster, chainPos, &next, &cacheState, page);
+                if ((readResult != 0) && ((u32)(next + 0x10000) != 0xFFFFU)) {
+                    VFiPFCACHE_FreeFATPage_800A8E10(VF_CHAIN_VOLUME((u8 *)walk), page);
+                    return readResult;
                 }
             } else {
-                var_r26 -= 1;
-                sp18 = *(s32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C) * 0x14 + 8);
+                /* the file has no cluster here: the chain ends in front of it */
+                chainPos -= 1;
+                next = VF_FAT_END_OF_CHAIN(VF_VOL_FAT_TYPE(VF_CHAIN_VOLUME((u8 *)walk)));
             }
-            if ((((u32)sp18 < 2U) ||
-                 ((u32)sp18 >= (u32)(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2))) &&
-                ((u32)sp18 < temp_r30)) {
-                VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
-                return 0xE;
+            if ((((u32)next < 2U) ||
+                 ((u32)next >= (u32)(VF_VOL_CLUSTER_COUNT(VF_CHAIN_VOLUME((u8 *)walk)) + 2))) &&
+                ((u32)next < firstEndCluster)) {
+                VFiPFCACHE_FreeFATPage_800A8E10(VF_CHAIN_VOLUME((u8 *)walk), page);
+                return VF_ERR_BROKEN_FAT;
             }
-            if (!(((s32)arg2 == 0) || ((u32)sp18 < temp_r30)))
+            if (!(((s32)mode == 0) || ((u32)next < firstEndCluster)))
                 break;
-            var_r29 = sp18;
-            var_r26 += 1;
+            cluster = next;
+            chainPos += 1;
         }
-        var_r27 = var_r28;
-        VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
+        stepsLeft = steps; /* what the chain fell short by is the file's shortage */
+        VFiPFCACHE_FreeFATPage_800A8E10(VF_CHAIN_VOLUME((u8 *)walk), page);
     }
-    if (((s32)arg2 != 0) && ((u32)sp18 >= temp_r30)) {
-        *arg4 = 0;
-        temp_r3_5 = ((s32 (*)(void *, s32, u32, u32 *, s32 *, s32))fn_800ADA24)(
-            arg0, var_r27 + 1, var_r26, arg4, &sp18, 0);
-        arg2 = temp_r3_5;
-        if (temp_r3_5 != 0) {
-            if ((u32)(*arg4 + 0x10000) != 0xFFFFU) {
-                ((s32 (*)(void *, s32, s32, s32))fn_800AE7A8)(arg0, *arg4, var_r26, -1);
+    if (((s32)mode != 0) && ((u32)next >= firstEndCluster)) {
+        /* the chain ends before the position: take clusters on for the file */
+        *outNewCluster = 0;
+        allocResult = ((s32 (*)(void *, s32, u32, u32 *, s32 *, s32))fn_800ADA24)(
+            walk, stepsLeft + 1, chainPos, outNewCluster, &next, 0);
+        mode = allocResult;
+        if (allocResult != 0) {
+            if ((u32)(*outNewCluster + 0x10000) != 0xFFFFU) {
+                ((s32 (*)(void *, s32, s32, s32))fn_800AE7A8)(walk, *outNewCluster, chainPos, -1);
             }
-            *arg4 = -1;
-            sp18 = -1;
+            *outNewCluster = -1;
+            next = -1;
         } else {
-            arg2 = 0;
+            mode = 0;
         }
-        if (arg2 != 0) {
-            return arg2;
+        if (mode != 0) {
+            return mode;
         }
-        if ((u32)(sp18 + 0x10000) == 0xFFFFU) {
-            return 6;
+        if ((u32)(next + 0x10000) == 0xFFFFU) {
+            return VF_ERR_CHAIN_SHORT;
         }
-        if ((s32)*var_r25 == 0) {
-            *var_r25 = *arg4;
+        if ((s32)*startCluster == 0) {
+            *startCluster = *outNewCluster; /* the run starts the file */
         } else {
-            temp_r3 = VFiPFFAT_WriteCluster(arg0, var_r29, var_r26 - 1, *arg4, 1);
-            if (temp_r3 != 0) {
-                return temp_r3;
+            linkResult = VFiPFFAT_WriteCluster(walk, cluster, chainPos - 1, *outNewCluster, 1);
+            if (linkResult != 0) {
+                return linkResult;
             }
         }
-        var_r29 = sp18;
+        cluster = next;
     }
-    *arg5 = var_r29;
+    *outCluster = cluster;
     return 0;
 }
 
