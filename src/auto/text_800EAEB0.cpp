@@ -478,7 +478,8 @@ extern "C" void Update__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *arg0, s32 arg
 }
 
 extern u8 lbl_80322BD4[];
-extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *self, int attack) {
+/* Set the envelope generator's attack time index (0-127), panicking if out of range. */
+extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *env, int attack) {
     int valid = 0;
     if (attack >= 0 && attack <= 0x7F) {
         valid = 1;
@@ -489,7 +490,7 @@ extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *self, int 
                                      (const char *)lbl_80322BD4,
                                      attack, 0, 0x7F);
     }
-    *(f32 *)((u8 *)self + 0x10) =
+    *(f32 *)((u8 *)env + 0x10) =
         *(f32 *)(lbl_802F4B90 + (attack << 2));
 }
 
