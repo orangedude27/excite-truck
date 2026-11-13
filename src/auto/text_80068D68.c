@@ -11343,6 +11343,7 @@ void bta_dm_discover(void *data) {
 #define DM_SCB_SERVICES                         (*(u32 *)(bta_dm_search_cb + 8))
 #define DM_SCB_SERVICES_TO_SEARCH               (*(u32 *)(bta_dm_search_cb + 0xC))
 #define DM_SCB_SERVICES_FOUND                   (*(u32 *)(bta_dm_search_cb + 0x10))
+#define DM_SCB_P_SDP_DB                         (*(tSDP_DISCOVERY_DB **)(bta_dm_search_cb + 0x14))
 #define DM_SCB_PEER_BDADDR                      (bta_dm_search_cb + 0x1A)
 #define DM_SCB_PEER_NAME                        (bta_dm_search_cb + 0x20)
 #define DM_SCB_SDP_DB_TIMER                     (bta_dm_search_cb + 0x58)
