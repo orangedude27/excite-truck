@@ -1,5 +1,9 @@
 extern float lbl_80561CA0, lbl_80561CA4, lbl_80561CA8;
 extern void fn_8017D160(void *, unsigned char *, unsigned char *, int *, int *, float);
+extern float lbl_80561F54, lbl_80561F58, lbl_80561F5C, lbl_80561F60;
+extern float lbl_80561F64, lbl_80561F68, lbl_80561F6C;
+extern float lbl_80561D28, lbl_80561D34;
+extern float lbl_80561E60, lbl_80561EE4;
 extern float lbl_80561CB0, lbl_80561CB4, lbl_80561CB8, lbl_80561CBC;
 static inline void MultVecSR_inl(const float *m, const float *src, float *dst) {
     float x, y, z;
