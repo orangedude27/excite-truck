@@ -39,6 +39,23 @@ void **fn_802B59CC(void);
 extern char lbl_8034A078[];
 extern char lbl_8034A0B4[], lbl_8034A0C4[];
 extern int lbl_8055F998, lbl_8055F99C;
+extern void fn_8002F53C(void *, void *, void *, int, int);
+extern void fn_801345D8(char *, int, char *, ...);
+extern void fn_802E317C(char *, ...);
+extern int fn_802CAF8C(void);
+extern void *memset(void *, int, int);
+extern char lbl_8055CDA8[];
+extern char lbl_8055CD90[];
+extern char lbl_8055CD98[];
+extern char lbl_8055CDA0[];
+extern char lbl_8055CDB0[];
+extern float lbl_80564BC0;
+extern float lbl_80564BC4;
+extern float lbl_80564BC8;
+extern float lbl_80564BCC;
+void fn_802B111C(void *);
+void fn_802B110C(void (*)(void *), void *);
+extern char fn_802B05E4(void);
 void fn_802B8AE0(void *, void *);
 void fn_802B0710(void);
 int fn_802B0628(int arg0) {
@@ -243,6 +260,11 @@ void *fn_802B0AC0(void *arg0, int arg1) {
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+void fn_802B0B20(void *arg0, void *arg1) {
+    int *tbl = (int *)&lbl_804BE104;
+    tbl[1]++;
 }
 
 extern void *lbl_804BE104;
@@ -573,7 +595,7 @@ void fn_802B1758(void *arg0) {
     void *cache;
     int state;
     int i;
-    int offset;
+    unsigned offset;
     int sign;
     register float radius;
     float *point;
@@ -597,14 +619,14 @@ void fn_802B1758(void *arg0) {
         cache = *(void **)((char *)arg0 + 0x318);
         cacheCount = *(int *)((char *)arg0 + 0x31C);
         node = *(void **)((char *)arg0 + 0x934);
-        while (node != 0) {
+        while (node) {
             fn_802DC464(cache, cacheCount, *(void **)node, *(int *)((char *)node + 4));
             node = *(void **)((char *)node + 0xC);
         }
         i = 0;
         offset = 0;
         while (i < *(int *)((char *)arg0 + 0x328)) {
-            char *entry = (char *)*(void **)((char *)arg0 + 0x324) + offset;
+            register char *entry = (char *)*(void **)((char *)arg0 + 0x324) + offset;
             setupA[2] = *(float *)(entry + 4);
             fn_802DA704(1, setupA, 1);
             fn_802DAA18();
@@ -632,8 +654,11 @@ void fn_802B1758(void *arg0) {
             fn_802C8BD0();
             fn_802DC3C0(state);
 
-            radius = lbl_80564BD4 * lbl_80564BB8 * lbl_80564BE4;
-            radius = lbl_80564BE0 + radius;
+            {
+                float t = lbl_80564BD4 * lbl_80564BB8;
+                radius = t * lbl_80564BE4;
+                radius = lbl_80564BE0 + radius;
+            }
             point = lbl_804BE190;
             for (i = 0; i < 4; i++) {
                 sign = (i & 1) ? -1 : 1;
@@ -661,8 +686,8 @@ void fn_802B1758(void *arg0) {
                 point += 3;
             }
 
-            values[0] = lbl_802FAAB0[0];
             values[1] = lbl_802FAAB0[1];
+            values[0] = lbl_802FAAB0[0];
             values[2] = lbl_802FAAB0[2];
             values[3] = lbl_802FAAB0[3];
             values[4] = lbl_802FAAB0[4];
