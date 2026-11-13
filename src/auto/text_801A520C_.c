@@ -116,7 +116,8 @@ extern "C" void fn_801A5258(void *self, void *initData) {
     *(unsigned char *)((char *)self + 0x2710) = 0;
 }
 #pragma cplusplus on
-extern "C" void fn_801A5300(void *arg0, void **arg1) {
+/* Replace the subobject at +0x270C: detach the old one, attach the new one to this owner, and notify it. */
+extern "C" void fn_801A5300(void *self, void **newSubobject) {
     class Obj {
     public:
         virtual void f0();
@@ -129,14 +130,14 @@ extern "C" void fn_801A5300(void *arg0, void **arg1) {
         virtual void f9();
         virtual void f10();
     };
-    Obj *old = *(Obj **)((char *)arg0 + 0x270C);
-    if (old != 0) {
-        old->f10();
+    Obj *oldSubobject = *(Obj **)((char *)self + 0x270C);
+    if (oldSubobject != 0) {
+        oldSubobject->f10();
     }
-    *(void **)((char *)arg0 + 0x270C) = (void *)arg1;
-    if (arg1 != 0) {
-        ((Obj *)arg1)->f2(arg0);
-        ((Obj *)*(void **)((char *)arg0 + 0x270C))->f9();
+    *(void **)((char *)self + 0x270C) = (void *)newSubobject;
+    if (newSubobject != 0) {
+        ((Obj *)newSubobject)->f2(self);
+        ((Obj *)*(void **)((char *)self + 0x270C))->f9();
     }
 }
 #pragma cplusplus on
