@@ -102,28 +102,28 @@ char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
 
 extern void fn_8022D76C(void *);
 #pragma scheduling invalid_target
-void *fn_8022D458(void *arg0, int arg1, int arg2, void **arg3) {
+void *fn_8022D458(UITBRec *arg0, int arg1, int arg2, const int *__restrict arg3) {
     char *base;
     int size;
     int i;
     base = lbl_80340108;
     size = arg2 * 4;
-    *(int *)((char *)arg0 + 0xC) = arg1;
-    *(int *)((char *)arg0 + 8) = 0;
-    *(int *)((char *)arg0 + 4) = arg2;
-    *(void **)((char *)arg0 + 0x18) = fn_8012850C(size, base + 0x38);
-    *(void **)((char *)arg0 + 0x1C) = fn_8012850C(size, base + 0x44);
-    *(int *)((char *)arg0 + 0x10) = arg1;
-    *(int *)((char *)arg0 + 0x2C) = -1;
-    *(int *)((char *)arg0 + 0x24) = 0;
-    *(int *)((char *)arg0 + 0x28) = 0x55495442;
-    *(int *)((char *)arg0 + 0x14) = 0;
+    arg0->unkC = arg1;
+    arg0->unk8 = 0;
+    arg0->count = arg2;
+    arg0->lens = fn_8012850C(size, base + 0x38);
+    arg0->offs = fn_8012850C(size, base + 0x44);
+    arg0->unk10 = arg1;
+    arg0->unk2C = -1;
+    arg0->unk24 = 0;
+    arg0->magic = 0x55495442;
+    arg0->total = 0;
     for (i = 0; i < arg2; i++) {
-        ((int *)(*(int *)((char *)arg0 + 0x18)))[i] = (int)arg3[i];
-        ((int *)(*(int *)((char *)arg0 + 0x1C)))[i] = *(int *)((char *)arg0 + 0x14);
-        *(int *)((char *)arg0 + 0x14) += ((int *)(*(int *)((char *)arg0 + 0x18)))[i] + 1;
+        arg0->lens[i] = arg3[i];
+        arg0->offs[i] = arg0->total;
+        arg0->total += arg0->lens[i] + 1;
     }
-    *(void **)arg0 = fn_8012850C(arg1 * *(int *)((char *)arg0 + 0x14), base + 0x50);
+    arg0->data = fn_8012850C(arg1 * arg0->total, base + 0x50);
     fn_8022D76C(arg0);
     return arg0;
 }
