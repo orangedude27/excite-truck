@@ -574,6 +574,9 @@ typedef struct t_l2c_ccb_view {
     u16             our_mtu;      /* +0x38  MTU our configuration asked for (l2cu_process_our_cfg_req) */
     u16             peer_mtu;     /* +0x3A  MTU the peer's configuration allows us to send
                                      (l2cu_process_peer_cfg_req, clamped to 0x69B) */
+    u16             our_flush_to; /* +0x3C  flush timeout our configuration asks for */
+    u8              pad_3E[0x1A];
+    tL2CAP_QOS_PART our_qos[3];   /* +0x58  the FLOW_SPEC our configuration sends */
 } tL2C_CCB_VIEW;
 
 /* Events l2c_csm_execute() (fn_80089E40) feeds the state handlers. This stack
