@@ -9394,14 +9394,15 @@ result:
 
 extern void fn_80085DF4(void *, UINT8);
 extern u8 fn_80079514(void);
-tBTM_STATUS BTM_SetInquiryMode(UINT8 arg0) {
-    void *buf;
-    if (arg0 != 0 && arg0 != 1) return BTM_ILLEGAL_VALUE;
+tBTM_STATUS BTM_SetInquiryMode(UINT8 mode) {
+    /* Set HCI inquiry mode (standard/extended) if supported and controller is ready. */
+    void *cmdBuf;
+    if (mode != 0 && mode != 1) return BTM_ILLEGAL_VALUE;
     if (!(lbl_803C0F78[0x643] & 0x40)) return BTM_MODE_UNSUPPORTED;
     if (!fn_80079514()) return BTM_WRONG_MODE;
-    buf = GKI_getpoolbuf(2);
-    if (buf == 0) goto fail;
-    fn_80085DF4(buf, arg0);
+    cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == 0) goto fail;
+    fn_80085DF4(cmdBuf, mode);
     goto done;
 fail:
     return BTM_NO_RESOURCES;
