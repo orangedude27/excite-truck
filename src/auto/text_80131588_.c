@@ -720,39 +720,42 @@ extern "C" float fn_8013278C(void *arg0, s32 arg1) {
 #pragma cplusplus off
 
 #pragma cplusplus on
-extern "C" s32 fn_8013284C(void *arg0, s32 arg1) {
-    class Obj2 {
+extern "C" s32 fn_8013284C(void *container, s32 symbolIndex) {
+    /* Look up the Nth name in the container that starts with '@' and invoke it via
+     * the handler at +0x18; if not found (and no match), fall back to calling the
+     * default handler at +0x14's slot 22 (or return 0 if absent). */
+    class DefaultHandler {
     public:
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
-        virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
-        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14();
-        virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-        virtual void f20(); virtual void f21(); virtual s32 f22();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+        virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
+        virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
+        virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual s32 defaultAction();
     };
-    class Obj {
+    class SymbolHandler {
     public:
-        virtual s32 f0(void*);
+        virtual s32 invoke(void *);
     };
-    s32 count = *(s32*)((char*)arg0 + 0xC);
-    s32 off;
-    s32 i;
-    i = 0;
-    off = 0;
-    while (i < count) {
-        char *name = *(char**)(*(char**)((char*)arg0 + 0x10) + off);
+    s32 count = *(s32*)((char*)container + 0xC);
+    s32 nameOffset;
+    s32 index;
+    index = 0;
+    nameOffset = 0;
+    while (index < count) {
+        char *name = *(char**)(*(char**)((char*)container + 0x10) + nameOffset);
         if (*name == '@') {
-            if (arg1-- == 0) {
-                void *obj = *(void**)((char*)arg0 + 0x18);
-                return ((Obj*)obj)->f0(*(void**)(*(char**)((char*)arg0 + 0x10) + i * 8 + 4));
+            if (symbolIndex-- == 0) {
+                void *handler = *(void**)((char*)container + 0x18);
+                return ((SymbolHandler*)handler)->invoke(*(void**)(*(char**)((char*)container + 0x10) + index * 8 + 4));
             }
         }
-        off += 8;
-        i++;
+        nameOffset += 8;
+        index++;
     }
     {
-        void *obj = *(void**)((char*)arg0 + 0x14);
-        if (obj != 0) {
-            return ((Obj2*)obj)->f22();
+        void *handler = *(void**)((char*)container + 0x14);
+        if (handler != 0) {
+            return ((DefaultHandler*)handler)->defaultAction();
         }
     }
     return 0;
