@@ -11823,15 +11823,16 @@ void bta_dm_remname_cback(u8 *p_remote_name) {
     }
 }
 
-void bta_dm_disc_remname_cback(u8 *arg0) {
-    void *buf;
-    fn_8007148C((s32)(lbl_803C0B98 + 0x58));
-    buf = GKI_getbuf(0x110);
-    if (buf != 0) {
-        fn_80070FA4((u8 *)buf + 8, lbl_803C0B98 + 0x1A);
-        strncpy((char *)buf + 0xE, (char *)arg0 + 4, 0x20);
-        *(u16 *)buf = 0x204;
-        fn_80071450(buf);
+void bta_dm_disc_remname_cback(u8 *p_remote_name) {
+    /* Sends the discovery remote-name result to the BTA task (BTA_DM_REMT_NAME_EVT). */
+    void *msg;
+    bta_sys_stop_timer((s32)(bta_dm_search_cb + 0x58));
+    msg = GKI_getbuf(0x110);
+    if (msg != 0) {
+        bdcpy((u8 *)msg + 8, DM_SCB_PEER_BDADDR);
+        strncpy((char *)msg + 0xE, (char *)p_remote_name + 4, 0x20);
+        *(u16 *)msg = 0x204;
+        bta_sys_sendmsg(msg);
     }
 }
 
