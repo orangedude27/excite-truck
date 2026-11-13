@@ -15394,22 +15394,28 @@ BOOLEAN btsnd_hcic_sniff_mode(BT_HDR *p_buf, s16 handle, s16 max_sniff_period, s
     return TRUE;
 }
 
-s32 btsnd_hcic_exit_sniff_mode(void *arg0, u16 arg1) {
-    u8 *p = (u8 *)arg0;
-    if (p == NULL) {
-        p = GKI_getpoolbuf(2);
-        if (p == NULL)
-            return 0;
+/* Build and send an HCI Exit_Sniff_Mode command (Link Policy opcode 0x0804) for
+ * one ACL link, the game's two-argument form of the SDK's
+ * btsnd_hcic_exit_sniff_mode(handle): the packet is built in the command buffer
+ * the caller hands in -- NULL means allocate one from the HCI command pool --
+ * as a BT_HDR, the 3-byte HCI preamble (opcode little-endian, then the parameter
+ * length) and the connection handle, also little-endian. */
+s32 btsnd_hcic_exit_sniff_mode(void *p_buf, u16 handle) {
+    u8 *pp = (u8 *)p_buf;
+    if (pp == NULL) {
+        pp = GKI_getpoolbuf(BTM_CMD_POOL_ID);
+        if (pp == NULL)
+            return FALSE;
     }
-    *(u16 *)(p + 2) = 5;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 4;
-    p[9] = 8;
-    p[10] = 2;
-    p[11] = arg1;
-    p[12] = arg1 >> 8;
-    btu_hcif_send_cmd(p);
-    return 1;
+    ((BT_HDR *)pp)->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_CMD_HANDLE;
+    ((BT_HDR *)pp)->offset = 0;
+    pp[8]  = (u8)HCI_EXIT_SNIFF_MODE;
+    pp[9]  = (u8)(HCI_EXIT_SNIFF_MODE >> 8);
+    pp[10] = HCIC_PARAM_SIZE_CMD_HANDLE;
+    pp[11] = handle;
+    pp[12] = handle >> 8;
+    btu_hcif_send_cmd(pp);
+    return TRUE;
 }
 
 /* Build and send HCI Hold_Mode command (OGF 0x08, OCF 0x0001) for handle with max/min intervals; allocates pool buffer if needed. */
