@@ -55,28 +55,60 @@ extern "C" s32 Prepare__Q46nw4hbm3snd6detail9StrmSoundFPQ46nw4hbm3snd6detail14St
     ((V*)self)->u();
     return Prepare__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail14StrmBufferPoolQ56nw4hbm3snd6detail10StrmPlayer15StartOffsetTypeliPQ56nw4hbm3snd6detail10StrmPlayer12StrmCallbackUl((u8*)self + 0xD8, pool, start, arg3, arg4, arg5, arg6);
 }
-#pragma pop
-extern "C" void* __dt__Q46nw4hbm3snd6detail9StrmSoundFv(void* arg0, s32 arg1) {
-    void* temp_r3;
-    void* temp_r3_2;
 
-    if (arg0 != NULL) {
-        if ((u8*)arg0 + 0xD8 != NULL) {
-            fn_8002F634((u8*)arg0 + 0x184, &fn_800FB374, 0x1C, 0x20);
-            temp_r3 = (u8*)arg0 + 0x178;
-            if (temp_r3 != NULL) {
-                __dt__Q46nw4hbm2ut6detail12LinkListImplFv(temp_r3, 0);
+extern "C" void Shutdown__Q46nw4hbm3snd6detail9StrmSoundFv(void *self) {
+    extern void Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(void*);
+    extern int OSDisableInterrupts(void);
+    extern void OSRestoreInterrupts(int);
+    extern void fn_800EC848(void*, void*);
+    extern char lbl_80326DF0[];
+    extern char lbl_80326DC8[];
+    extern char lbl_80325894[];
+    extern char lbl_80325870[];
+    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
+    struct V { virtual void a(); virtual void b(int); };
+    void *pool4;
+    int save4;
+    Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(self);
+    pool4 = *(void **)((char *)self + 0x5F8);
+    if (self == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326DF0, 0x86, lbl_80326DC8);
+    save4 = OSDisableInterrupts();
+    if (*(int *)((char *)pool4 + 4) == 0) {
+        OSRestoreInterrupts(save4);
+        return;
+    }
+    if (self == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)pool4 + 4, (char *)self + 0xB8);
+    ((V *)self)->b(-1);
+    fn_800EC848(pool4, self);
+    OSRestoreInterrupts(save4);
+}
+
+#pragma pop
+/* Destructor for nw4hbm::snd::detail::StrmSound: destroy embedded player/list members, then optionally free. */
+extern "C" void* __dt__Q46nw4hbm3snd6detail9StrmSoundFv(void* self, s32 deleteFlag) {
+    void* linkList1;
+    void* linkList2;
+
+    if (self != NULL) {
+        if ((u8*)self + 0xD8 != NULL) {
+            fn_8002F634((u8*)self + 0x184, &fn_800FB374, 0x1C, 0x20);
+            linkList1 = (u8*)self + 0x178;
+            if (linkList1 != NULL) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv(linkList1, 0);
             }
-            temp_r3_2 = (u8*)arg0 + 0x16C;
-            if (temp_r3_2 != NULL) {
-                __dt__Q46nw4hbm2ut6detail12LinkListImplFv(temp_r3_2, 0);
+            linkList2 = (u8*)self + 0x16C;
+            if (linkList2 != NULL) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv(linkList2, 0);
             }
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (deleteFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
@@ -87,6 +119,8 @@ extern "C" char lbl_80325870[];
 extern "C" char lbl_80325894[];
 extern "C" char lbl_803258A0[];
 extern "C" char lbl_803258C4[];
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9StrmSoundFi_800FDCB8(void* arg0, int arg1) {
     struct LinkListImpl {
         void* unused;
@@ -102,14 +136,9 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9StrmSoundFi_800FDCB8(voi
     void* end;
     void* cursor;
     int value;
-
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
     value = *(u8*)((u8*)arg0 + 0x74) + *(s32*)((u8*)arg0 + 0x40);
-    if (value > 0x7f) {
-        priority = 0x7f;
-    } else {
-        priority = value & ~(value >> 31);
-    }
+    priority = (value <= 0x7f) ? (value & ~(value >> 31)) : 0x7f;
     list = *(PriorityList**)((u8*)arg0 + 0x5f8);
     if (arg0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
@@ -123,11 +152,7 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9StrmSoundFi_800FDCB8(voi
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23d, lbl_803258A0);
         }
         value = *(u8*)((u8*)cursor - 0x44) + *(s32*)((u8*)cursor - 0x78);
-        if (value > 0x7f) {
-            value = 0x7f;
-        } else {
-            value &= ~(value >> 31);
-        }
+        value = (value <= 0x7f) ? (value & ~(value >> 31)) : 0x7f;
         if (priority < value) {
             break;
         }
@@ -139,7 +164,7 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9StrmSoundFi_800FDCB8(voi
     void* node = cursor;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&list->list, &node, soundNode);
 }
-
+#pragma pop
 extern "C" s32 fn_800FDDE8(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x5F4) != 0;
 }
