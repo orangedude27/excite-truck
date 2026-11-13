@@ -393,6 +393,7 @@ extern "C" void AnimateSelf__Q36nw4hbm3lyt6WindowFUl(void* self, unsigned long a
     }
 }
 
+/* Unbind an animation transform from this window and from each of its child panes, then from the base pane. */
 extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
     int offset = 0, count = 0;
     while (count < *((unsigned char*)self + 0x100)) {
