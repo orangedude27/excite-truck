@@ -1463,12 +1463,13 @@ extern "C" void fn_8021A8A8(void *arg0) {
 }
 
 extern "C" void fn_8021A910(void *arg0, s32 arg1) {
-    s32 temp_r6 = *(s32 *)((u8 *)arg0 + 0x258);
-    if (*(s32 *)*(s32 **)((u8 *)arg0 + 0x254) == temp_r6) {
-        fn_80218968(*(s32 *)((u8 *)arg0 + 0x2C), temp_r6,
+    /* Apply a fade-in or fade-out to the sound slots for the object's current sound ID, then perform a final virtual callback. */
+    s32 soundId = *(s32 *)((u8 *)arg0 + 0x258);
+    if (*(s32 *)*(s32 **)((u8 *)arg0 + 0x254) == soundId) {
+        fn_80218968(*(s32 *)((u8 *)arg0 + 0x2C), soundId,
                     arg1 == 2 ? lbl_805634A8 : lbl_805634E8);
     } else {
-        fn_8021889C(*(s32 *)((u8 *)arg0 + 0x2C), temp_r6,
+        fn_8021889C(*(s32 *)((u8 *)arg0 + 0x2C), soundId,
                     arg1 == 2 ? lbl_805634A8 : lbl_805634E8);
     }
     ((VfObj *)arg0)->vf31();
