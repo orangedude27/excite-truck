@@ -223,14 +223,15 @@ void *fn_80260854(SelectorGroupRow *row, s32 deleteFlag) {
     }
     return row;
 }
+#pragma pop
 extern s32 fn_80128668(void);
 extern s32 fn_802328D4(s32);
 extern s32 fn_80235380(s32, s32 *);
 /* --- one item row of the challenge-difficulty selector ------------------- */
 /* 0x28 bytes, allocated by fn_80261C68 with the vtable named below; the group
-   rows (vtable lbl_80345E28) have the same shape plus their index at 0x20.
-   Slot 0x8 of both vtables is the destructor fn_80260854/fn_802608D4, which
-   the screen's cleanup loop calls as destroy(1). */
+   rows (SelectorGroupRow, above) have the same shape plus their group number
+   at 0x20.  Slot 0x8 of both vtables is the destructor fn_80260854/fn_802608D4,
+   which the screen's cleanup loop calls as destroy(1). */
 typedef struct {
     void *vtable;      /* 0x00 the vtable above */
     s32   base[4];     /* 0x04 widget base class */
