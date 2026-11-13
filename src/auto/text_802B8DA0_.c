@@ -1382,17 +1382,18 @@ float fn_802BAD90(float farg0) {
 
 #pragma cplusplus on
 extern "C" void fn_802BAE30(void *);
+/* Allocates and initializes a pool of 0x44-byte entries (count arg0), storing the pool pointer in lbl_8055FA7C. */
 extern "C" void fn_802BAD9C(s32 arg0) {
-    void *entry = fn_801284F8(0x10, lbl_8034A9F4);
-    if (entry != 0) {
+    void *pool = fn_801284F8(0x10, lbl_8034A9F4);
+    if (pool != 0) {
         void *buffer = ((void *(*)(int, void *))fn_8012850C)(arg0 * 0x44 + 0x10, lbl_8034A9F4);
         void *items = fn_8002F37C(buffer, fn_802BAE30, 0, 0x44, arg0);
-        *(void **)entry = items;
-        *(s32 *)((char *)entry + 8) = arg0;
-        *(s32 *)((char *)entry + 4) = 0;
-        *(void **)((char *)entry + 0xC) = items;
+        *(void **)pool = items;
+        *(s32 *)((char *)pool + 8) = arg0;
+        *(s32 *)((char *)pool + 4) = 0;
+        *(void **)((char *)pool + 0xC) = items;
     }
-    lbl_8055FA7C = entry;
+    lbl_8055FA7C = pool;
 }
 #pragma cplusplus reset
 
@@ -1524,19 +1525,18 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802BB0FC(int a, int b) {
-    /* Traverse pending render batches, draw them, and clear their lists. */
-    RenderList *list = (RenderList *)lbl_804BFFF4;
-    RenderBatch *batch;
-    RenderNode *node;
+    int off, i;
     RenderEntry *entry;
+    RenderNode *node;
+    RenderBatch *batch;
+    int j, v;
     u16 **items;
-    int i, j, v;
     RenderMatrix matrix;
-    for (i = 0; i < list->count; i++) {
-        entry = list->items[i];
+    for (i = 0, off = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
+        entry = *(RenderEntry **)(*(char **)lbl_804BFFF4 + off);
         if (entry->kind != 999) continue;
         node = entry->nodes;
-        if (!node) continue;
+        if (node == 0) continue;
         if (entry->state == -2) goto clear_nodes;
         switch (node->type) { case 0: case 1: {
             fn_802C8BD0(); fn_802DC130();
