@@ -3342,6 +3342,10 @@ void GKI_enqueue_head(BUFFER_Q *p_q, void *p_buf) {
     fn_8006EB88();
 }
 
+/* Remove and return the first buffer from a GKI queue. Disables interrupts while
+ * relinking; returns NULL if the queue is empty or p_q is NULL. The returned
+ * pointer is the buffer payload (just past the BUFFER_HDR_T), whose header is
+ * unlinked and marked BUF_STATUS_UNLINKED. */
 void *GKI_dequeue(BUFFER_Q *p_q) {
     BUFFER_HDR_T *p_hdr;
 
