@@ -23871,13 +23871,13 @@ void rfc_timer_stop(void *arg0) {
 }
 
 extern char lbl_80319EE0[];
-void rfc_port_timer_start(void *arg0, u16 arg1) {
-    TIMER_LIST_ENT *timer = (TIMER_LIST_ENT *)((u8 *)arg0 + 0x70);
+void rfc_port_timer_start(void *port, u16 timeout) {
+    TIMER_LIST_ENT *portTimer = (TIMER_LIST_ENT *)((u8 *)port + 0x70);
     if (lbl_803C4828[0x414] >= 4) {
-        fn_80070954(0x90003, lbl_80319EE0, arg1);
+        fn_80070954(0x90003, lbl_80319EE0, timeout);
     }
-    *(void **)((u8 *)timer + 0x10) = arg0;
-    btu_start_timer(timer, 0xC, arg1);
+    *(void **)((u8 *)portTimer + 0x10) = port;
+    btu_start_timer(portTimer, 0xC, timeout);
 }
 
 extern char lbl_80319F04[];
