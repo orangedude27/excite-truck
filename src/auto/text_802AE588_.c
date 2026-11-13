@@ -358,6 +358,7 @@ extern int lbl_8055F978;
 void fn_802AEAA8(void) { fn_802BDC3C(); }
 
 #pragma dont_inline fn_802AEAAC
+/* Initialize or refresh global UI/view state from the config object at lbl_8055F970 and dispatch per-slot and final setup calls. */
 void fn_802AEAAC(void) {
     int offset;
     int i;
