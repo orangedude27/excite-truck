@@ -627,22 +627,28 @@ test:
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-int fn_8028F040(int *arg0, int *arg1, int arg2) {
+/* The first texture the two emitter lists have in common: for every emitter of
+ * `listA` whose texture is not `excludeTexId` (the one the previous list
+ * already carried over), look for an emitter of `listB` drawn with the same
+ * texture.  fn_8028F0C0 calls it on a list and the next non-empty one, and
+ * fn_8028F2EC uses the handle it returns to keep that texture together across
+ * the two runs; EF_NO_TEXTURE means the lists share no texture. */
+int fn_8028F040(int *listA, int *listB, int excludeTexId) {
     int outerCount;
     int outerIndex;
-    void *item;
+    EfEmitter *item;
     int innerCount;
     int i;
-    int id;
-    void **cursor;
+    int texId;
+    EfEmitter **cursor;
     int found;
-    int other;
-    outerCount = arg0[64];
+    int otherTexId;
+    outerCount = ((EfList *)listA)->count;
     for (outerIndex = 0; outerIndex < outerCount; outerIndex++) {
-        id = *(int *)((char *)*arg0 + 0xA4);
-        if (id != arg2) {
-            innerCount = arg1[64];
-            cursor = (void **)arg1;
+        texId = ((EfEmitter *)*listA)->texHandle;
+        if (texId != excludeTexId) {
+            innerCount = ((EfList *)listB)->count;
+            cursor = (EfEmitter **)listB;
             found = 0;
             i = 0;
             goto inner_check;
@@ -650,15 +656,15 @@ inner_body:
             item = *cursor;
             cursor++;
             i++;
-            other = *(int *)((char *)item + 0xA4);
-            found = (id == other);
+            otherTexId = item->texHandle;
+            found = (texId == otherTexId);
 inner_check:
             if (found == 0 && i < innerCount) goto inner_body;
-            if (found != 0) return id;
+            if (found != 0) return texId;
         }
-        arg0++;
+        listA++;
     }
-    return -2;
+    return EF_NO_TEXTURE;
 }
 #pragma pop
 int fn_8028F0C0(int *arg0, int arg1, int arg2) {
