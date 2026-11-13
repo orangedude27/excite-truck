@@ -92,9 +92,6 @@ void fn_800124DC(const char *text, float target) {
     record[0] = one;
 }
 #pragma pop
-#pragma pop
-#pragma push
-#pragma processor 750
 
 #pragma pop
 #pragma push
