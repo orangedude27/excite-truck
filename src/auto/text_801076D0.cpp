@@ -1328,17 +1328,18 @@ void nw4hbm::ut::detail::ResFontBase::GetGlyphFromIndex(nw4hbm::ut::Glyph* glyph
     }
     u8 *info=*(u8**)((char*)this+0x14);
     u8 *font=*(u8**)(info+8);
-    u32 columns=*(u16*)(font+0xc), rows=*(u16*)(font+0xe);
-    register u32 cellw=font[0]+1, cellh=font[1]+1;
-    register u32 sheet=index/(columns*rows);
-    u32 rem=index%(columns*rows);
+    u16 columns=*(u16*)(font+0xc);
+    u16 rows=*(u16*)(font+0xe);
+    u32 cellw=(u32)font[0]+1, cellh=(u32)font[1]+1;
+    u32 sheet=(u32)index/(columns*rows);
+    u32 rem=(u32)index%(columns*rows);
     u32 row=rem/columns;
     u32 col=rem%columns;
     u32 x=col*cellw;
     u32 y=row*cellh;
     *(u32*)glyph=*(u32*)(font+0x14)+sheet*(*(u32*)(font+4));
     {
-        register u32 a, b;
+        u32 a, b;
         register int valid = 0;
         if (top == 0x80000000U ||
             (a = (u32)this & 0xFF800000U) == 0x81000000U ||
@@ -4194,21 +4195,21 @@ extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     volatile f32 sp14, sp10, spC, sp8;
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f31;
     f32 var_f1, var_f1_2, var_f1_3, var_f1_4;
-    s32 temp_r10, temp_r10_2, temp_r11, temp_r3;
-    s32 var_r10, var_r29, var_r30;
-    s32 var_r4, var_r4_2, var_r5, var_r5_2, var_r5_3;
-    s32 var_r6, var_r6_2, var_r6_3, var_r7, var_r7_2, var_r7_3;
-    s32 var_r8, var_r8_2, var_r8_3, var_r9, var_r9_2, var_r9_3;
+    s32 var_r29, var_r30;
+    s32 var_r5, var_r5_2, var_r5_3, var_r6, var_r6_2, var_r6_3;
+    s32 var_r7, var_r7_2, var_r7_3, var_r8, var_r8_2, var_r8_3;
+    s32 var_r9, var_r9_2, var_r9_3, var_r10, var_r4, var_r4_2;
+    s32 temp_r11, temp_r10, temp_r10_2, temp_r3;
     const char *base = lbl_80329530;
     temp_r11 = arg0 & 0xFF000000;
     var_r29 = arg2;
     var_r30 = arg3;
-    var_r10 = 1;
-    var_r9 = 1;
-    var_r8 = 1;
-    var_r7 = 1;
-    var_r6 = 1;
     var_r5 = 1;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    var_r10 = 1;
     if (((u32)temp_r11 != 0x80000000U) &&
         ((arg0 & 0xFF800000U) != 0x81000000U)) var_r10 = 0;
     if ((var_r10 == 0) && ((arg0 & 0xF8000000U) != 0x90000000U)) var_r9 = 0;
@@ -4244,8 +4245,8 @@ extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if ((var_r9_3 == 0) && ((var_r29 & 0xF8000000U) != 0x90000000U)) var_r8_3 = 0;
     if ((var_r8_3 == 0) && ((u32)temp_r10_2 != 0xC0000000U)) var_r7_3 = 0;
     if ((var_r7_3 == 0) && ((var_r29 & 0xFF800000U) != 0xC1000000U)) var_r6_3 = 0;
-    if ((var_r6_3 == 0) && ((var_r29 & 0xF8000000U) != 0xD0000000U)) var_r5_3 = 0;
-    if ((var_r5_3 == 0) && ((var_r29 & 0xFFFFC000U) != 0xE0000000U)) var_r4_2 = 0;
+    if ((!var_r6_3) && ((var_r29 & 0xF8000000U) != 0xD0000000U)) var_r5_3 = 0;
+    if ((!var_r5_3) && ((var_r29 & 0xFFFFC000U) != 0xE0000000U)) var_r4_2 = 0;
     if (var_r4_2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F4, base + 0x130, var_r29);
     if (var_r30 < 0)
         Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F5, base + 0x168, var_r30, 0);
@@ -5475,21 +5476,46 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* arg0, 
 }
 
 extern "C" f32 fn_80111C10(s32 arg0) {
-    s32 temp_r11;
     s32 var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
+    u32 temp_r11;
     s32 var_r30, font;
-    temp_r11 = arg0 & 0xFF000000;
-    if ((u32)(temp_r11 + 0x80000000) < 1U && (u32)((arg0 & 0xFF800000) + 0x7F000000) < 1U) var_r10 = 0;
-    if (var_r10 == 0 && (u32)((arg0 & 0xF8000000) + 0x70000000) < 1U) var_r9 = 0;
-    if (var_r9 == 0 && (u32)(temp_r11 + 0x40000000) < 1U) var_r8 = 0;
-    if (var_r8 == 0 && (u32)((arg0 & 0xFF800000) + 0x3F000000) < 1U) var_r7 = 0;
-    if (var_r7 == 0 && (u32)((arg0 & 0xF8000000) + 0x30000000) < 1U) var_r6 = 0;
-    if (var_r6 == 0 && (u32)((arg0 & 0xFFFFC000) + 0x20000000) < 1U) var_r5 = 0;
+    temp_r11 = (u32)(arg0 & 0xFF000000);
+    if (temp_r11 == 0x80000000 || ((u32)(arg0 & 0xFF800000)) == 0x81000000) var_r10 = 0;
+    if (var_r10 != 0) goto chk9;
+    if (((u32)(arg0 & 0xF8000000)) == 0x90000000) goto set9;
+    goto chk9;
+set9:
+    var_r9 = 0;
+chk9:
+    if (var_r9 != 0) goto chk8;
+    if (temp_r11 == 0xC0000000) goto set8;
+    goto chk8;
+set8:
+    var_r8 = 0;
+chk8:
+    if (var_r8 != 0) goto chk7;
+    if (((u32)(arg0 & 0xFF800000)) == 0xC1000000) goto set7;
+    goto chk7;
+set7:
+    var_r7 = 0;
+chk7:
+    if (var_r7 != 0) goto chk6;
+    if (((u32)(arg0 & 0xF8000000)) == 0xD0000000) goto set6;
+    goto chk6;
+set6:
+    var_r6 = 0;
+chk6:
+    if (var_r6 != 0) goto chk5;
+    if (((u32)(arg0 & 0xFFFFC000)) == 0xE0000000) goto set5;
+    goto chk5;
+set5:
+    var_r5 = 0;
+chk5:
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0xF1, lbl_80329578, arg0);
     font = GetFont__Q36nw4hbm2ut10CharWriterCFv(arg0);
     if (font) {
         struct V { virtual int a0()=0; virtual int a1()=0; virtual int a2()=0; virtual int a3()=0; virtual int a4()=0; virtual int a5()=0; virtual int a6()=0; virtual int a7()=0; virtual int a8()=0; virtual int a9()=0; virtual int a10()=0; virtual int a11()=0; virtual int a12()=0; };
-        var_r30 = ((V*)font)->a12();
+        var_r30 = ((V*)font)->a11();
     } else var_r30 = 0;
     return *(f32*)(arg0 + 0x50) + (f32)var_r30 * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0);
 }
@@ -5522,6 +5548,17 @@ extern "C" f32 fn_80111C10(s32 arg0) {
 struct CharWriterSpacing {
     unsigned char pad[0x4C];
     float charSpace;
+};
+
+/* The +0x54 word of the same copy: a count of glyphs, 4 as the constructor fn_80111B64
+ * leaves it.  The layout code (fn_8010D4B0, fn_8010E3BC) multiplies it by the glyph
+ * advance -- the fixed width when IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv is set, the
+ * glyph's own width otherwise -- and jumps the cursor to the next multiple of that, so it
+ * is the distance between the tab stops a printed tab advances to.  The font pointer is a
+ * different field, the word at +0x5C (SetFont/GetFont__..._80112200/_80112410). */
+struct CharWriterTabCount {
+    unsigned char pad[0x54];
+    int charsPerTab;
 };
 
 /* nw4hbm::ut::CharWriter::SetCursorX(f32) (ut_TextWriterBase.cpp): put the
@@ -5625,30 +5662,29 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
         u32 word5C;
     };
     register const char *file = lbl_80329530;
+    register s32 r5 = 1;
     register s32 r6 = 1;
     register s32 r7 = 1;
-    register s32 r5 = 1;
     register s32 r8 = 1;
     register s32 r9 = 1;
     register s32 r10 = 1;
     register u32 hi0 = (u32)arg0 & 0xFF000000U;
-    if (((u32)(hi0 + 0x80000000U) >= 1U) &&
-        ((u32)(((u32)arg0 & 0xFF800000U) + 0x7F000000U) >= 1U)) {
+    if ((hi0 != 0x80000000U) && (((u32)arg0 & 0xFF800000U) != 0x81000000U)) {
         r10 = 0;
     }
-    if ((r10 == 0) && ((u32)(((u32)arg0 & 0xF8000000U) + 0x70000000U) >= 1U)) {
+    if ((r10 == 0) && (((u32)arg0 & 0xF8000000U) != 0x90000000U)) {
         r9 = 0;
     }
-    if ((r9 == 0) && ((u32)(hi0 + 0x40000000U) >= 1U)) {
+    if ((r9 == 0) && (hi0 != 0xC0000000U)) {
         r8 = 0;
     }
-    if ((r8 == 0) && ((u32)(((u32)arg0 & 0xFF800000U) + 0x3F000000U) >= 1U)) {
+    if ((r8 == 0) && (((u32)arg0 & 0xFF800000U) != 0xC1000000U)) {
         r7 = 0;
     }
-    if ((r7 == 0) && ((u32)(((u32)arg0 & 0xF8000000U) + 0x30000000U) >= 1U)) {
+    if ((r7 == 0) && (((u32)arg0 & 0xF8000000U) != 0xD0000000U)) {
         r6 = 0;
     }
-    if ((r6 == 0) && ((u32)(((u32)arg0 & 0xFFFFC000U) + 0x20000000U) >= 1U)) {
+    if ((r6 == 0) && (((u32)arg0 & 0xFFFFC000U) != 0xE0000000U)) {
         r5 = 0;
     }
     if (r5 == 0) {
@@ -5662,23 +5698,22 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
     register s32 r8_2 = 1;
     register s32 r9_2 = 1;
     register u32 hi1 = (u32)arg1 & 0xFF000000U;
-    if (((u32)(hi1 + 0x80000000U) >= 1U) &&
-        ((u32)(((u32)arg1 & 0xFF800000U) + 0x7F000000U) >= 1U)) {
+    if ((hi1 != 0x80000000U) && (((u32)arg1 & 0xFF800000U) != 0x81000000U)) {
         r9_2 = 0;
     }
-    if ((r9_2 == 0) && ((u32)(((u32)arg1 & 0xF8000000U) + 0x70000000U) >= 1U)) {
+    if ((r9_2 == 0) && (((u32)arg1 & 0xF8000000U) != 0x90000000U)) {
         r8_2 = 0;
     }
-    if ((r8_2 == 0) && ((u32)(hi1 + 0x40000000U) >= 1U)) {
+    if ((r8_2 == 0) && (hi1 != 0xC0000000U)) {
         r7_2 = 0;
     }
-    if ((r7_2 == 0) && ((u32)(((u32)arg1 & 0xFF800000U) + 0x3F000000U) >= 1U)) {
+    if ((r7_2 == 0) && (((u32)arg1 & 0xFF800000U) != 0xC1000000U)) {
         r6_2 = 0;
     }
-    if ((r6_2 == 0) && ((u32)(((u32)arg1 & 0xF8000000U) + 0x30000000U) >= 1U)) {
+    if ((r6_2 == 0) && (((u32)arg1 & 0xF8000000U) != 0xD0000000U)) {
         r5_2 = 0;
     }
-    if ((r5_2 == 0) && ((u32)(((u32)arg1 & 0xFFFFC000U) + 0x20000000U) >= 1U)) {
+    if ((r5_2 == 0) && (((u32)arg1 & 0xFFFFC000U) != 0xE0000000U)) {
         r4 = 0;
     }
     if (r4 == 0) {
@@ -5723,17 +5758,17 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
     copy.prefix[30] = source->prefix[30];
     copy.prefix[31] = source->prefix[31];
     copy.word20 = source->word20;
-    u32 pair24 = source->word24;
     u32 pair28 = source->word28;
+    u32 pair24 = source->word24;
     copy.word24 = pair24;
     copy.word28 = pair28;
-    u32 pair2C = source->word2C;
     u32 pair30 = source->word30;
+    u32 pair2C = source->word2C;
     copy.word2C = pair2C;
     copy.word30 = pair30;
     copy.word34 = source->word34;
-    u32 pair38 = source->word38;
     u32 pair3C = source->word3C;
+    u32 pair38 = source->word38;
     copy.word38 = pair38;
     copy.word3C = pair3C;
     copy.bytes40[0] = source->bytes40[0];
@@ -5783,6 +5818,7 @@ extern "C" f32 fn_80112960(u8 *arg0, u8 *arg1) {
         u32 word58;
         u32 word5C;
     };
+    register u32 hi0 = (u32)arg0 & 0xFF000000U;
     register const char *file = lbl_80329530;
     register s32 r5 = 1;
     register s32 r6 = 1;
@@ -5790,7 +5826,6 @@ extern "C" f32 fn_80112960(u8 *arg0, u8 *arg1) {
     register s32 r8 = 1;
     register s32 r9 = 1;
     register s32 r10 = 1;
-    register u32 hi0 = (u32)arg0 & 0xFF000000U;
     if ((hi0 != 0x80000000U) &&
         (((u32)arg0 & 0xFF800000U) != 0x81000000U)) {
         r10 = 0;
@@ -5813,14 +5848,13 @@ extern "C" f32 fn_80112960(u8 *arg0, u8 *arg1) {
     if (r5 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2DD, file + 0x48, arg0);
     }
-
+    register u32 hi1 = (u32)arg1 & 0xFF000000U;
     register s32 r4 = 1;
     register s32 r5_2 = 1;
     register s32 r6_2 = 1;
     register s32 r7_2 = 1;
     register s32 r8_2 = 1;
     register s32 r9_2 = 1;
-    register u32 hi1 = (u32)arg1 & 0xFF000000U;
     if ((hi1 != 0x80000000U) &&
         (((u32)arg1 & 0xFF800000U) != 0x81000000U)) {
         r9_2 = 0;
@@ -5844,28 +5878,27 @@ extern "C" f32 fn_80112960(u8 *arg0, u8 *arg1) {
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2DE, file + 0x130, arg1);
     }
     const s32 arg2 = fn_8002AEE8((s32)arg1);
-    int valid0 = !((((u32)arg0 & 0xff000000U) != 0x80000000U) &&
-        (((u32)arg0 & 0xff800000U) != 0x81000000U) &&
-        (((u32)arg0 & 0xf8000000U) != 0x90000000U) &&
-        (((u32)arg0 & 0xff000000U) != 0xc0000000U) &&
-        (((u32)arg0 & 0xff800000U) != 0xc1000000U) &&
-        (((u32)arg0 & 0xf8000000U) != 0xd0000000U) &&
-        (((u32)arg0 & 0xffffc000U) != 0xe0000000U));
+    int valid0 = (((u32)arg0 & 0xFF000000U) == 0x80000000U) ||
+        (((u32)arg0 & 0xFF800000U) == 0x81000000U) ||
+        (((u32)arg0 & 0xF8000000U) == 0x90000000U) ||
+        (((u32)arg0 & 0xFF000000U) == 0xC0000000U) ||
+        (((u32)arg0 & 0xFF800000U) == 0xC1000000U) ||
+        (((u32)arg0 & 0xF8000000U) == 0xD0000000U) ||
+        (((u32)arg0 & 0xFFFFC000U) == 0xE0000000U);
     if (!valid0)
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2c1, file + 0x48, arg0);
-    int valid1 = !((((u32)arg1 & 0xff000000U) != 0x80000000U) &&
-        (((u32)arg1 & 0xff800000U) != 0x81000000U) &&
-        (((u32)arg1 & 0xf8000000U) != 0x90000000U) &&
-        (((u32)arg1 & 0xff000000U) != 0xc0000000U) &&
-        (((u32)arg1 & 0xff800000U) != 0xc1000000U) &&
-        (((u32)arg1 & 0xf8000000U) != 0xd0000000U) &&
-        (((u32)arg1 & 0xffffc000U) != 0xe0000000U));
+    int valid1 = (((u32)arg1 & 0xFF000000U) == 0x80000000U) ||
+        (((u32)arg1 & 0xFF800000U) == 0x81000000U) ||
+        (((u32)arg1 & 0xF8000000U) == 0x90000000U) ||
+        (((u32)arg1 & 0xFF000000U) == 0xC0000000U) ||
+        (((u32)arg1 & 0xFF800000U) == 0xC1000000U) ||
+        (((u32)arg1 & 0xF8000000U) == 0xD0000000U) ||
+        (((u32)arg1 & 0xFFFFC000U) == 0xE0000000U);
     if (!valid1)
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2c2, file + 0x130, arg1);
     if (arg2 < 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C3, file + 0x168, arg2, 0);
     }
-
     WriterCopy *source = (WriterCopy *)arg0;
     WriterCopy copy;
     copy.prefix[0] = source->prefix[0];
@@ -5901,19 +5934,19 @@ extern "C" f32 fn_80112960(u8 *arg0, u8 *arg1) {
     copy.prefix[30] = source->prefix[30];
     copy.prefix[31] = source->prefix[31];
     copy.word20 = source->word20;
-    u32 pair24 = source->word24;
-    u32 pair28 = source->word28;
-    copy.word24 = pair24;
-    copy.word28 = pair28;
-    u32 pair2C = source->word2C;
-    u32 pair30 = source->word30;
-    copy.word2C = pair2C;
-    copy.word30 = pair30;
+    s32 pair28 = (s32)source->word28;
+    s32 pair24 = (s32)source->word24;
+    copy.word24 = (u32)pair24;
+    copy.word28 = (u32)pair28;
+    s32 pair30 = (s32)source->word30;
+    s32 pair2C = (s32)source->word2C;
+    copy.word2C = (u32)pair2C;
+    copy.word30 = (u32)pair30;
     copy.word34 = source->word34;
-    u32 pair38 = source->word38;
-    u32 pair3C = source->word3C;
-    copy.word38 = pair38;
-    copy.word3C = pair3C;
+    s32 pair3C = (s32)source->word3C;
+    s32 pair38 = (s32)source->word38;
+    copy.word38 = (u32)pair38;
+    copy.word3C = (u32)pair3C;
     copy.bytes40[0] = source->bytes40[0];
     copy.bytes40[1] = source->bytes40[1];
     copy.bytes40[2] = source->bytes40[2];
@@ -6500,7 +6533,7 @@ extern "C" void fn_80113F08(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F4, base + 0x130, var_r29);
     if (var_r30 < 0)
         Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F5, base + 0x168, var_r30, 0);
-    register f32 zero = 0.0f;
+    register f32 zero = lbl_80561178;
     rect[0] = zero;
     rect[2] = zero;
     rect[1] = zero;
