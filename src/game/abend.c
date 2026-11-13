@@ -71,14 +71,15 @@ void fn_802E3150(void *arg0) {
 }
 #pragma scheduling on
 #pragma dont_inline reset
-void fn_802E317C(int a0, ...) {
+/* Report a fatal "PANIC" with a formatted message, then print "ABEND" and halt. */
+void fn_802E317C(int fmt, ...) {
     va_list args;
 
     /* Fix note: start the variadic list after its sole fixed argument. */
-    va_start(args, a0);
-    fn_802E3028((const char *)a0, args, (int)&lbl_8055D190);
+    va_start(args, fmt);
+    fn_802E3028((const char *)fmt, args, (int)&sPanicPrefix);
     va_end(args);
-    fn_802E3150(&lbl_8055D198);
+    fn_802E3150(&sPanicLabel);
     exit(-1);
 }
 
