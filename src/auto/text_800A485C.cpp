@@ -19909,7 +19909,7 @@ extern "C" void fn_800D1C48(s32 speakerIndex, s32 action) {
 }
 
 extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *remoteSpk, s32 chan) {
-    /* Connect a Wii Remote speaker channel for the Home Button RemoteSpk manager. */
+    /* Connect the Wii Remote speaker on the given channel via WPAD and initialize its RemoteSpk slot. */
     if (((u8 *)remoteSpk)[0x1EC] != 0) {
         fn_80060CC0((void *)chan, WPAD_SPEAKER_ON, (u32)&fn_800D1B1C);
         void *slot = (u8 *)remoteSpk + (chan * 0x68) + 0x30;
