@@ -469,15 +469,16 @@ void *fn_8023E078(void *arg0, int arg1) {
     return arg0;
 }
 
-void fn_8023E0DC(void *arg0, int arg1, int arg2) {
-    int var_r31;
-    if (arg1 < 0)
+void fn_8023E0DC(void *table, int row, int arg2) {
+    /* Set all entries in a table row by writing a 1 flag/value to each column slot. */
+    int col;
+    if (row < 0)
         return;
-    if (arg1 >= *(int *)((char *)arg0 + 8))
+    if (row >= *(int *)((char *)table + 8))
         return;
-    var_r31 = *(int *)((char *)arg0 + 4);
-    while (var_r31-- > 0) {
-        fn_8022D894(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 1);
+    col = *(int *)((char *)table + 4);
+    while (col-- > 0) {
+        fn_8022D894(table, row, col, fn_8022D850(table, row, col, 0), 1);
     }
 }
 
