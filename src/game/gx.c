@@ -635,6 +635,8 @@ extern int lbl_8055FE20;
 extern float lbl_80564F90;
 extern float lbl_80564F98;
 extern float lbl_80564F9C;
+#pragma dont_inline fn_802CF5D4
+#pragma dont_inline fn_802CF104
 void fn_802CF850(void) {
     extern int lbl_804C5650[];
     extern void *lbl_8055FD64;
