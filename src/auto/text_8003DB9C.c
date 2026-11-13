@@ -5281,26 +5281,29 @@ void GXSetClipMode(s32 arg0) {
     *(unsigned short *)((char *)__GXData + 2) = 1;
 }
 
-void __GXSetMatrixIndex(s32 arg0) {
-    unsigned int *data;
-    if (arg0 < 5) {
+void __GXSetMatrixIndex(s32 index) {
+    unsigned int *gxData;
+    /* Write the current position/normal or texture matrix index to the GX FIFO/BP regs
+       (index < 5 selects matIdx 0x30/reg 0x1018 via GXData+0x80, else 0x40/0x1019 via +0x84)
+       and mark GX state dirty. */
+    if (index < 5) {
         *(volatile unsigned char *)0xCC008000 = 8;
         *(volatile unsigned char *)0xCC008000 = 0x30;
-        data = __GXData;
-        *(volatile unsigned int *)0xCC008000 = data[0x80 / 4];
+        gxData = __GXData;
+        *(volatile unsigned int *)0xCC008000 = gxData[0x80 / 4];
         *(volatile unsigned char *)0xCC008000 = 0x10;
         *(volatile unsigned int *)0xCC008000 = 0x1018;
-        *(volatile unsigned int *)0xCC008000 = data[0x80 / 4];
+        *(volatile unsigned int *)0xCC008000 = gxData[0x80 / 4];
     } else {
         *(volatile unsigned char *)0xCC008000 = 8;
         *(volatile unsigned char *)0xCC008000 = 0x40;
-        data = __GXData;
-        *(volatile unsigned int *)0xCC008000 = data[0x84 / 4];
+        gxData = __GXData;
+        *(volatile unsigned int *)0xCC008000 = gxData[0x84 / 4];
         *(volatile unsigned char *)0xCC008000 = 0x10;
         *(volatile unsigned int *)0xCC008000 = 0x1019;
-        *(volatile unsigned int *)0xCC008000 = data[0x84 / 4];
+        *(volatile unsigned int *)0xCC008000 = gxData[0x84 / 4];
     }
-    *(unsigned short *)((char *)data + 2) = 1;
+    *(unsigned short *)((char *)gxData + 2) = 1;
 }
 
 void GXSetGPMetric(unsigned int metric1, unsigned int metric2) {
