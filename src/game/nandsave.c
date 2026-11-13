@@ -381,6 +381,8 @@ u32 fn_802E8D84(void) { return 1; }
 #define rmemcard_test_banner_ok fn_802E8A18
 #define rmemcard_file_exists    fn_802E8AE8
 #define rmemcard_recover_space  fn_802E8920
+#define rmemcard_async_state    lbl_80507288
+#define rmemcard_timeout_msg    lbl_8034E024
 #define RMEMCARD_ASYNC_BUFFER_SIZE 0x55730
 
 #pragma use_lmw_stmw off
