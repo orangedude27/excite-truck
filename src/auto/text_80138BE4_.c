@@ -154,7 +154,6 @@ void fn_80138F38(void *arg0) {
     extern float lbl_805613B8;
     extern float lbl_805613C0;
     extern int lbl_8055E100;
-    extern int fn_80138C28(void*, float*, float*);
     extern float fn_80138DF4(void*);
     float sp8;
     union U { struct { int a; int b; int c; float d; float e; float f; } s; double _a; } sp10;
