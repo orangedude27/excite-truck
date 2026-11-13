@@ -189,6 +189,7 @@ void fn_8001FD7C(void) {
 }
 #pragma scheduling on
 
+/* Tear down UI resources: clear init state, release four texture handles (set to -2) and free font/resource handles. */
 void fn_8001FE20(void) {
     lbl_8055D62C = 0;
     fn_802CAC54(lbl_80558D84);
