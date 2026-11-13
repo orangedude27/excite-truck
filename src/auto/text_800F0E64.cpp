@@ -854,11 +854,12 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
 }
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F21FC(void *self, int bus, float value) {
-    int valid = bus >= 0 && bus < 4;
-    if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2B0, lbl_80324534, bus, 0, 4);
-    int level = OSDisableInterrupts();
+    /* Set this sequence player's FX send level for the given remote index (0-3) at +0x40, with range check, under interrupt-disabled section. */
+    int isValidBus = bus >= 0 && bus < 4;
+    if (!isValidBus) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2B0, lbl_80324534, bus, 0, 4);
+    int interruptLevel = OSDisableInterrupts();
     *(float *)((char *)self + bus * 4 + 0x40) = value;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void *self, s32 index) {
