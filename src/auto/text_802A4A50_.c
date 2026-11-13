@@ -173,18 +173,19 @@ s32 fn_802C90F0(s32);
 void fn_802C9118(void);
 void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
 
+/* Return frame delta time in seconds: when the timer mode flag is set, use the millisecond timer delta capped at 0.05s, otherwise return the fixed timestep. */
 f32 fn_802A4A50(void) {
-    f32 value;
-    s32 now;
-    s32 delta;
+    f32 clampedDelta;
+    s32 nowMs;
+    s32 deltaMs;
     if (fn_800216F4() != 0) {
-        now = fn_802E2C20();
-        delta = now - lbl_8055F8A4;
-        value = lbl_80564844;
-        lbl_8055F8A4 = now;
-        if ((f32)delta / lbl_80564840 < value)
-            return (f32)delta / lbl_80564840;
-        return value;
+        nowMs = fn_802E2C20();
+        deltaMs = nowMs - lbl_8055F8A4;
+        clampedDelta = lbl_80564844;
+        lbl_8055F8A4 = nowMs;
+        if ((f32)deltaMs / lbl_80564840 < clampedDelta)
+            return (f32)deltaMs / lbl_80564840;
+        return clampedDelta;
     }
     return fn_801E7E24();
 }
