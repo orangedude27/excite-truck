@@ -8459,17 +8459,18 @@ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
     return 0;
 }
 
+/* Look up a security device record by Bluetooth device address. */
 tBTM_SEC_DEV_REC *btm_find_dev(BD_ADDR bd_addr) {
-    u8 *entry;
+    u8 *p_dev_rec;
     s32 i;
-    entry = lbl_803C0F78 + 0x1F30;
+    p_dev_rec = lbl_803C0F78 + 0x1F30;
     i = 0;
     do {
-        if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0) {
-            return (tBTM_SEC_DEV_REC *)entry;
+        if ((p_dev_rec[0x76] & 0x80) && memcmp(p_dev_rec + 0x1C, bd_addr, 6) == 0) {
+            return (tBTM_SEC_DEV_REC *)p_dev_rec;
         }
         i++;
-        entry += 0x88;
+        p_dev_rec += 0x88;
     } while (i < 16);
     return 0;
 }
@@ -28034,8 +28035,8 @@ void fn_8006BAA4(u32 arg0) {
 
 void fn_8006BAD8(u32 event, u8 *data)
 {
-    u8 *strings = lbl_803130C8;
     u8 *base = lbl_80392960;
+    u8 *strings = lbl_803130C8;
     u8 *wcb = base;
     u8 *work;
     u8 *pInfo;
@@ -28107,6 +28108,7 @@ void fn_8006BAD8(u32 event, u8 *data)
         break;
     }
     case 5: {
+        char *msg;
         DBPrintf_8006CFA8((char *)strings + 0x82c);
         DBPrintf_8006CFA8((char *)strings + 0x840, data[0], data[1], data[2], data[3], data[4], data[5]);
         pInfo = WUDiGetDevInfo(data);
@@ -28118,12 +28120,13 @@ void fn_8006BAD8(u32 event, u8 *data)
         OSRestoreInterrupts(intr);
         if (pInfo == 0 || linked == 4) {
             btm_remove_acl(data);
+            msg = (char *)strings + 0x8a0;
             if (pInfo == 0)
-                DBPrintf_8006CFA8((char *)strings + 0x86c, (char *)strings + 0x894, data[0], data[1], data[2], data[3], data[4], data[5]);
-            else
-                DBPrintf_8006CFA8((char *)strings + 0x86c, (char *)strings + 0x8a0, data[0], data[1], data[2], data[3], data[4], data[5]);
+                msg = (char *)strings + 0x894;
+            DBPrintf_8006CFA8((char *)strings + 0x86c, msg, data[0], data[1], data[2], data[3], data[4], data[5]);
             break;
         }
+        msg = 0;
         if (pInfo[0x59] == 2)
             pInfo[0x59] = 12;
         else
@@ -28140,10 +28143,12 @@ void fn_8006BAD8(u32 event, u8 *data)
             pInfo[0x59] = 1;
             wcb[0x665]--;
             if (memcmp(base + 0xC68 + 0x40, data, 6) == 0) {
+                u8 *scbase;
                 wcb[0xC] = 0xFF;
                 if (data[6] == 0x15) {
+                    scbase = base + 0x6F8;
                     for (i = 0; i < 4; i++) {
-                        u8 *entry = base + 0x6F8 + (i + 10) * 0x46 + 1;
+                        u8 *entry = scbase + (i + 10) * 0x46 + 1;
                         if (memcmp(entry, data, 6) == 0) {
                             memset(entry, 0, 0x46);
                             lbl_8055DC11 = 1;
