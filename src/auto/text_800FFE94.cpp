@@ -212,41 +212,42 @@ extern "C" void* __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void* arg0) {
     return arg0;
 }
 
-extern "C" void InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void* arg0, int arg1, const void* arg2, unsigned long arg3) {
-    float f0 = lbl_80561124;
-    float f1 = lbl_80561120;
-    *((char*)arg0 + 0x1E) = 0;
-    *((char*)arg0 + 0x1F) = 0;
-    *((char*)arg0 + 0x20) = 0;
-    *((char*)arg0 + 0x21) = 0;
-    *((char*)arg0 + 0x1C) = 0;
-    *(float*)((char*)arg0 + 0x24) = f1;
-    *(float*)((char*)arg0 + 0x3C) = f1;
-    *(float*)((char*)arg0 + 0x28) = f0;
-    *(float*)((char*)arg0 + 0x2C) = f0;
-    *(float*)((char*)arg0 + 0x34) = f0;
-    *(float*)((char*)arg0 + 0x38) = f0;
-    *(float*)((char*)arg0 + 0x30) = f1;
-    *(float*)((char*)arg0 + 0x40) = f0;
-    *(int*)((char*)arg0 + 0x44) = 1;
-    *(float*)((char*)arg0 + 0x48) = f1;
-    *(float*)((char*)arg0 + 0x4C) = f0;
-    *(float*)((char*)arg0 + 0x50) = f0;
-    *(float*)((char*)arg0 + 0x54) = f0;
-    *(float*)((char*)arg0 + 0x58) = f0;
-    *(float*)((char*)arg0 + 0x6C) = f0;
-    *(float*)((char*)arg0 + 0x7C) = f0;
-    *(float*)((char*)arg0 + 0x70) = f0;
-    *(float*)((char*)arg0 + 0x80) = f0;
-    *(float*)((char*)arg0 + 0x74) = f0;
-    *(float*)((char*)arg0 + 0x84) = f0;
-    *(float*)((char*)arg0 + 0x78) = f0;
-    *(float*)((char*)arg0 + 0x88) = f0;
-    *(int*)((char*)arg0 + 0xD0) = 0;
-    *(int*)((char*)arg0 + 0x8C) = arg1;
-    *((char*)arg0 + 0x90) = 0x40;
-    *(const void**)((char*)arg0 + 0x94) = arg2;
-    *(unsigned long*)((char*)arg0 + 0x98) = arg3;
+extern "C" void InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void* player, int trackCount, const void* callback, unsigned long userData) {
+    /* Initialize WSD player runtime parameters/tracks/callback state to defaults. */
+    float zero = lbl_80561124;
+    float one = lbl_80561120;
+    *((char*)player + 0x1E) = 0;
+    *((char*)player + 0x1F) = 0;
+    *((char*)player + 0x20) = 0;
+    *((char*)player + 0x21) = 0;
+    *((char*)player + 0x1C) = 0;
+    *(float*)((char*)player + 0x24) = one;
+    *(float*)((char*)player + 0x3C) = one;
+    *(float*)((char*)player + 0x28) = zero;
+    *(float*)((char*)player + 0x2C) = zero;
+    *(float*)((char*)player + 0x34) = zero;
+    *(float*)((char*)player + 0x38) = zero;
+    *(float*)((char*)player + 0x30) = one;
+    *(float*)((char*)player + 0x40) = zero;
+    *(int*)((char*)player + 0x44) = 1;
+    *(float*)((char*)player + 0x48) = one;
+    *(float*)((char*)player + 0x4C) = zero;
+    *(float*)((char*)player + 0x50) = zero;
+    *(float*)((char*)player + 0x54) = zero;
+    *(float*)((char*)player + 0x58) = zero;
+    *(float*)((char*)player + 0x6C) = zero;
+    *(float*)((char*)player + 0x7C) = zero;
+    *(float*)((char*)player + 0x70) = zero;
+    *(float*)((char*)player + 0x80) = zero;
+    *(float*)((char*)player + 0x74) = zero;
+    *(float*)((char*)player + 0x84) = zero;
+    *(float*)((char*)player + 0x78) = zero;
+    *(float*)((char*)player + 0x88) = zero;
+    *(int*)((char*)player + 0xD0) = 0;
+    *(int*)((char*)player + 0x8C) = trackCount;
+    *((char*)player + 0x90) = 0x40;
+    *(const void**)((char*)player + 0x94) = callback;
+    *(unsigned long*)((char*)player + 0x98) = userData;
 }
 
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
