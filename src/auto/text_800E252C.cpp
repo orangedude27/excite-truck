@@ -2535,24 +2535,25 @@ extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int
 #pragma use_lmw_stmw off
 extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7AxVoice9VoiceType(void *self, unsigned int type) {
     {
-        int j;
-        int i;
-        unsigned char *base;
-        unsigned char *slot;
-        base = (unsigned char *)self;
-        i = 0;
-        while (i < *(int *)((unsigned char *)self + 0x104)) {
-            slot = base;
-            j = 0;
-            while (j < *(int *)((unsigned char *)self + 0x108)) {
-                void *voice = *(void **)(slot + 0xC);
+        int channelIndex;
+        int groupIndex;
+        unsigned char *groupPtr;
+        unsigned char *slotPtr;
+        /* Set the voice type on every AX voice in the (rowCount@0x104, colCount@0x108) voice grid. */
+        groupPtr = (unsigned char *)self;
+        groupIndex = 0;
+        while (groupIndex < *(int *)((unsigned char *)self + 0x104)) {
+            slotPtr = groupPtr;
+            channelIndex = 0;
+            while (channelIndex < *(int *)((unsigned char *)self + 0x108)) {
+                void *voice = *(void **)(slotPtr + 0xC);
                 if (voice != 0)
                     ((void (*)(void *, int))fn_80033538)(voice, (unsigned short)type);
-                slot += 4;
-                j++;
+                slotPtr += 4;
+                channelIndex++;
             }
-            base += 0x10;
-            i++;
+            groupPtr += 0x10;
+            groupIndex++;
         }
     }
 }
