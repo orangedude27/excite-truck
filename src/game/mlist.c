@@ -106,8 +106,9 @@ extern "C" int fn_802CCDC4(void ***arg0, void ***arg1) {
         virtual void v1();
         virtual int v2();
     };
+    Local *obj0 = (Local *)*arg0;
     Local *obj1 = (Local *)*arg1;
-    int first = ((Local *)*arg0)->v2();
+    int first = obj0->v2();
     return first - obj1->v2();
 }
 #pragma cplusplus reset
@@ -122,7 +123,6 @@ extern char lbl_8034BBC0[];
 void fn_802CCE24(void *arg0) {
     union SwapTemp { unsigned int word[3]; unsigned short half[6]; };
     union SwapTemp saved;
-
     {
         int var_r27;
         int var_r28;
@@ -142,110 +142,45 @@ loop_2_test:
         int (*compare)(const void *, const void *) = (int (*)(const void *, const void *))fn_802CCD0C;
         qsort(*(void **)((char *)arg0 + 0x34), *(int *)((char *)arg0 + 0x30), 0x1C, compare);
     }
-
     {
-        int var_r3;
-        register int var_r4;
-        int var_r11;
-        int temp_r7;
-        register unsigned int temp_r29_2;
-        unsigned char *temp_r5;
-        register unsigned char *temp_r30;
-        register unsigned char *var_r12;
-        unsigned char *temp_r28;
-        register int var_r27_2;
-        unsigned int var_ctr;
-        var_r3 = 0;
-    var_r11 = 0;
-    goto loop_11_test;
+        int var_r3 = 0;
+        int var_r11 = 0;
+        goto loop_11_test;
 loop_11_body:
-    {
-        var_r4 = 0;
-        temp_r5 = *(unsigned char **)((char *)arg0 + 0x34) + var_r11;
-        temp_r7 = *(int *)(temp_r5 + 0x14);
-        temp_r29_2 = *(int *)(temp_r5 + 0x18) - temp_r7;
-        temp_r30 = *(unsigned char **)((char *)arg0 + 0x2C) + temp_r7 * 0xC;
-        var_r27_2 = (int)((temp_r29_2 >> 31) + temp_r29_2) >> 1;
-        var_r12 = temp_r30;
-        if (var_r27_2 > 0) {
-            var_ctr = (unsigned int)var_r27_2 >> 1;
-            for (; var_ctr != 0; var_ctr--) {
-                    int back = temp_r29_2 - var_r4;
-                    unsigned char *other;
-                    saved.word[0] = *(unsigned int *)var_r12;
-                    saved.word[1] = *(unsigned int *)(var_r12 + 4);
-                    saved.word[2] = *(unsigned int *)(var_r12 + 8);
-                    other = temp_r30 + back * 0xC;
-                    *(unsigned short *)var_r12 = *(unsigned short *)(other - 0xC);
-                    *(unsigned short *)(var_r12 + 2) = *(unsigned short *)(other - 0xA);
-                    *(unsigned short *)(var_r12 + 4) = *(unsigned short *)(other - 8);
-                    *(unsigned short *)(var_r12 + 6) = *(unsigned short *)(other - 6);
-                    *(unsigned int *)(var_r12 + 8) = *(unsigned int *)(other - 4);
-                    *(unsigned short *)(other - 0xC) = saved.half[0];
-                    *(unsigned short *)(other - 0xA) = saved.half[1];
-                    *(unsigned short *)(other - 8) = saved.half[2];
-                    *(unsigned short *)(other - 6) = saved.half[3];
-                    *(unsigned int *)(other - 4) = saved.word[2];
-                    var_r4++;
-
-                    back = (temp_r29_2 - var_r4) * 0xC;
-                    other = temp_r30 + back;
-                    saved.word[0] = *(unsigned int *)(var_r12 + 0xC);
-                    saved.word[1] = *(unsigned int *)(var_r12 + 0x10);
-                    saved.word[2] = *(unsigned int *)(var_r12 + 0x14);
-                    *(unsigned short *)(var_r12 + 0xC) = *(unsigned short *)(other - 0xC);
-                    *(unsigned short *)(var_r12 + 0xE) = *(unsigned short *)(other - 0xA);
-                    *(unsigned short *)(var_r12 + 0x10) = *(unsigned short *)(other - 8);
-                    *(unsigned short *)(var_r12 + 0x12) = *(unsigned short *)(other - 6);
-                    *(unsigned int *)(var_r12 + 0x14) = *(unsigned int *)(other - 4);
-                    *(unsigned short *)(other - 0xC) = saved.half[0];
-                    *(unsigned short *)(other - 0xA) = saved.half[1];
-                    *(unsigned short *)(other - 8) = saved.half[2];
-                    *(unsigned short *)(other - 6) = saved.half[3];
-                    *(unsigned int *)(other - 4) = saved.word[2];
-                    var_r4++;
-                    var_r12 += 0x18;
-                }
-                var_r27_2 &= 1;
-            if (var_r27_2 != 0) {
-block_8:
-                var_ctr = var_r27_2;
-                do {
-                    int back = temp_r29_2 - var_r4;
-                    unsigned char *other;
-                    saved.word[0] = *(unsigned int *)var_r12;
-                    saved.word[1] = *(unsigned int *)(var_r12 + 4);
-                    saved.word[2] = *(unsigned int *)(var_r12 + 8);
-                    back *= 0xC;
-                    other = temp_r30 + back;
-                    *(unsigned short *)var_r12 = *(unsigned short *)(other - 0xC);
-                    *(unsigned short *)(var_r12 + 2) = *(unsigned short *)(other - 0xA);
-                    *(unsigned short *)(var_r12 + 4) = *(unsigned short *)(other - 8);
-                    *(unsigned short *)(var_r12 + 6) = *(unsigned short *)(other - 6);
-                    *(unsigned int *)(var_r12 + 8) = *(unsigned int *)(other - 4);
-                    *(unsigned short *)(other - 0xC) = saved.half[0];
-                    *(unsigned short *)(other - 0xA) = saved.half[1];
-                    *(unsigned short *)(other - 8) = saved.half[2];
-                    *(unsigned short *)(other - 6) = saved.half[3];
-                    *(unsigned int *)(other - 4) = saved.word[2];
-                    var_r4++;
-                    var_r12 += 0xC;
-                    var_ctr--;
-                } while (var_ctr != 0);
+        {
+            int var_r4 = 0;
+            unsigned char *temp_r5 = *(unsigned char **)((char *)arg0 + 0x34) + var_r11;
+            int temp_r7 = *(int *)(temp_r5 + 0x14);
+            int temp_len = *(int *)(temp_r5 + 0x18) - temp_r7;
+            unsigned char *temp_r30 = *(unsigned char **)((char *)arg0 + 0x2C) + temp_r7 * 0xC;
+            int half = temp_len / 2;
+            unsigned char *dst = temp_r30;
+            for (var_r4 = 0; var_r4 < half; var_r4++) {
+                unsigned char *other = temp_r30 + (temp_len - var_r4) * 0xC;
+                saved.word[0] = *(unsigned int *)dst;
+                saved.word[1] = *(unsigned int *)(dst + 4);
+                saved.word[2] = *(unsigned int *)(dst + 8);
+                *(unsigned short *)dst = *(unsigned short *)(other - 0xC);
+                *(unsigned short *)(dst + 2) = *(unsigned short *)(other - 0xA);
+                *(unsigned short *)(dst + 4) = *(unsigned short *)(other - 8);
+                *(unsigned short *)(dst + 6) = *(unsigned short *)(other - 6);
+                *(unsigned int *)(dst + 8) = *(unsigned int *)(other - 4);
+                *(unsigned short *)(other - 0xC) = saved.half[0];
+                *(unsigned short *)(other - 0xA) = saved.half[1];
+                *(unsigned short *)(other - 8) = saved.half[2];
+                *(unsigned short *)(other - 6) = saved.half[3];
+                *(unsigned int *)(other - 4) = saved.word[2];
+                dst += 0xC;
             }
+            var_r11 += 0x1C;
+            var_r3++;
         }
-        var_r11 += 0x1C;
-        var_r3++;
-    }
 loop_11_test:
-    if (var_r3 < *(int *)((char *)arg0 + 0x30)) goto loop_11_body;
+        if (var_r3 < *(int *)((char *)arg0 + 0x30)) goto loop_11_body;
     }
-
     qsort(*(void **)((char *)arg0 + 0x90), *(unsigned int *)((char *)arg0 + 0x88), 4,
           (int (*)(const void *, const void *))fn_802CCDC4);
     memset((char *)arg0 + 0x38, 0, 0x50);
-
-
     {
         int var_r26 = 0;
         int var_r25 = 0;
@@ -264,7 +199,7 @@ loop_11_test:
             *(int *)(var_r28 + 0x44) = 0;
             goto loop_21_test;
 loop_21_body:
-            object = *(void **)(*(void ***)((char *)arg0 + 0x90) + var_r27);
+            object = *(void **)((char *)*(void ***)((char *)arg0 + 0x90) + var_r27);
             value = ((int (*)(void *))((int (**)(void *))*(void **)object)[4])(object);
             if (var_r26 == value) {
                 *(int *)(var_r28 + 0x40) = var_r25;
@@ -277,7 +212,7 @@ loop_21_body:
             var_r25++;
             goto loop_21_test;
 loop_23_body:
-            object = *(void **)(*(void ***)((char *)arg0 + 0x90) + var_r27_4);
+            object = *(void **)((char *)*(void ***)((char *)arg0 + 0x90) + var_r27_4);
             value = ((int (*)(void *))((int (**)(void *))*(void **)object)[4])(object);
             if (var_r26 != value) goto loop_23_end;
             var_r27_4 += 4;
@@ -293,7 +228,6 @@ loop_21_test:
             var_r28 += 0x10;
         } while (var_r26 < 5);
     }
-
     {
         int index = 0;
         int recordOffset = 0;
@@ -363,12 +297,9 @@ extern "C" void fn_802CD254(void *list) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802CD320(void *arg0, int arg1) {
-    unsigned int count;
-    int *items;
-    count = *(unsigned int *)((char *)arg0 + 0x88);
-    items = *(int **)((char *)arg0 + 0x90);
-    items[count] = arg1;
-    *(unsigned int *)((char *)arg0 + 0x88) = count + 1;
+    int *countPtr = (int *)((char *)arg0 + 0x88);
+    int **itemsPtr = (int **)((char *)arg0 + 0x90);
+    (*itemsPtr)[(*countPtr)++] = arg1;
 }
 #pragma pop
 void fn_802CD33C(void *arg0, int arg1, int arg2) {
@@ -505,23 +436,23 @@ void fn_802CDB5C(int arg0) {
         float matrix[12];
     } work;
     char *context;
-    unsigned char *table;
-    int outerIndex;
-    int lastEntry;
-    int recordId;
-    int started;
-    int itemCount;
-    struct Item *item;
-    int cursor;
-    int callbackCount;
-    int itemIndex;
-    int outerEnd;
-    char *itemBase;
-    char *record;
     char *config;
-    int itemStart;
-    int handle;
-    int i;
+    char *record;
+    struct Item *item;
+    char *itemBase;
+    unsigned char *table;
+    signed long outerIndex;
+    signed long outerEnd;
+    signed long recordId;
+    signed long itemStart;
+    signed long itemCount;
+    signed long itemIndex;
+    signed long started;
+    signed long callbackCount;
+    signed long lastEntry;
+    signed long handle;
+    signed long i;
+    signed long cursor;
     void *object;
     void **objects;
     int a, b, c, d, e, f, g, h;
@@ -635,48 +566,121 @@ void fn_802CDDC8(void *arg0, int arg1) {
     volatile unsigned char *base = (volatile unsigned char *)arg0;
     volatile unsigned char *rec;
     unsigned char t;
-    unsigned char tmp[12];
     int i;
     int index;
     int offset;
-    tmp[0] = base[0]; tmp[1] = base[3]; tmp[2] = base[1]; tmp[3] = base[2];
-    tmp[4] = base[4]; tmp[5] = base[7]; tmp[6] = base[5]; tmp[7] = base[6];
-    tmp[8] = base[8]; tmp[9] = base[0xB]; tmp[10] = base[9]; tmp[11] = base[0xA];
-    base[0] = tmp[1]; base[3] = tmp[0]; base[1] = tmp[3]; base[2] = tmp[2];
-    base[4] = tmp[5]; base[7] = tmp[4]; base[5] = tmp[7]; base[6] = tmp[6];
-    base[8] = tmp[9]; base[0xB] = tmp[8]; base[9] = tmp[11]; base[0xA] = tmp[10];
-    t = base[0x10]; base[0x10] = base[0x13]; base[0x13] = t;
-    t = base[0x11]; base[0x11] = base[0x12]; base[0x12] = t;
-    t = base[0x14]; base[0x14] = base[0x17]; base[0x17] = t;
-    t = base[0x15]; base[0x15] = base[0x16]; base[0x16] = t;
-    t = base[0x18]; base[0x18] = base[0x1b]; base[0x1b] = t;
-    t = base[0x19]; base[0x19] = base[0x1a]; base[0x1a] = t;
-    t = base[0x1c]; base[0x1c] = base[0x1f]; base[0x1f] = t;
-    t = base[0x1d]; base[0x1d] = base[0x1e]; base[0x1e] = t;
-    t = base[0x20]; base[0x20] = base[0x23]; base[0x23] = t;
-    t = base[0x21]; base[0x21] = base[0x22]; base[0x22] = t;
-    t = base[0x24]; base[0x24] = base[0x27]; base[0x27] = t;
-    t = base[0x25]; base[0x25] = base[0x26]; base[0x26] = t;
-    t = base[0x28]; base[0x28] = base[0x2b]; base[0x2b] = t;
-    t = base[0x29]; base[0x29] = base[0x2a]; base[0x2a] = t;
-    t = base[0x2c]; base[0x2c] = base[0x2f]; base[0x2f] = t;
-    t = base[0x2d]; base[0x2d] = base[0x2e]; base[0x2e] = t;
-    t = base[0x30]; base[0x30] = base[0x33]; base[0x33] = t;
-    t = base[0x31]; base[0x31] = base[0x32]; base[0x32] = t;
-    t = base[0x34]; base[0x34] = base[0x37]; base[0x37] = t;
-    t = base[0x35]; base[0x35] = base[0x36]; base[0x36] = t;
+    {
+        unsigned char a6;
+        unsigned char a10;
+        unsigned char a0;
+        unsigned char a1;
+        unsigned char a2;
+        unsigned char a3;
+        unsigned char a4;
+        unsigned char a5;
+        unsigned char a7;
+        unsigned char a8;
+        unsigned char a9;
+        unsigned char a11;
+        a0 = base[0]; a1 = base[3]; a2 = base[1]; a3 = base[2];
+        a4 = base[4]; a5 = base[7]; a6 = base[5]; a7 = base[6];
+        a8 = base[8]; a9 = base[0xB]; a10 = base[9]; a11 = base[0xA];
+        base[0] = a1; base[3] = a0; base[1] = a3; base[2] = a2;
+        base[4] = a5; base[7] = a4; base[5] = a7; base[6] = a6;
+        base[8] = a9; base[0xB] = a8; base[9] = a11; base[0xA] = a10;
+    }
+        t = base[0x10];
+        base[0x10] = base[0x13];
+        base[0x13] = t;
+        t = base[0x11];
+        base[0x11] = base[0x12];
+        base[0x12] = t;
+        t = base[0x14];
+        base[0x14] = base[0x17];
+        base[0x17] = t;
+        t = base[0x15];
+        base[0x15] = base[0x16];
+        base[0x16] = t;
+        t = base[0x18];
+        base[0x18] = base[0x1b];
+        base[0x1b] = t;
+        t = base[0x19];
+        base[0x19] = base[0x1a];
+        base[0x1a] = t;
+        t = base[0x1c];
+        base[0x1c] = base[0x1f];
+        base[0x1f] = t;
+        t = base[0x1d];
+        base[0x1d] = base[0x1e];
+        base[0x1e] = t;
+        t = base[0x20];
+        base[0x20] = base[0x23];
+        base[0x23] = t;
+        t = base[0x21];
+        base[0x21] = base[0x22];
+        base[0x22] = t;
+        t = base[0x24];
+        base[0x24] = base[0x27];
+        base[0x27] = t;
+        t = base[0x25];
+        base[0x25] = base[0x26];
+        base[0x26] = t;
+        t = base[0x28];
+        base[0x28] = base[0x2b];
+        base[0x2b] = t;
+        t = base[0x29];
+        base[0x29] = base[0x2a];
+        base[0x2a] = t;
+        t = base[0x2c];
+        base[0x2c] = base[0x2f];
+        base[0x2f] = t;
+        t = base[0x2d];
+        base[0x2d] = base[0x2e];
+        base[0x2e] = t;
+        t = base[0x30];
+        base[0x30] = base[0x33];
+        base[0x33] = t;
+        t = base[0x31];
+        base[0x31] = base[0x32];
+        base[0x32] = t;
+        t = base[0x34];
+        base[0x34] = base[0x37];
+        base[0x37] = t;
+        t = base[0x35];
+        base[0x35] = base[0x36];
+        base[0x36] = t;
     rec = base + 0x38;
     for (i = 4; i != 0; --i) {
-        t = rec[0x0]; rec[0x0] = rec[0x3]; rec[0x3] = t;
-        t = rec[0x1]; rec[0x1] = rec[0x2]; rec[0x2] = t;
-        t = rec[0x4]; rec[0x4] = rec[0x7]; rec[0x7] = t;
-        t = rec[0x5]; rec[0x5] = rec[0x6]; rec[0x6] = t;
-        t = rec[0x8]; rec[0x8] = rec[0xb]; rec[0xb] = t;
-        t = rec[0x9]; rec[0x9] = rec[0xa]; rec[0xa] = t;
-        t = rec[0xc]; rec[0xc] = rec[0xf]; rec[0xf] = t;
-        t = rec[0xd]; rec[0xd] = rec[0xe]; rec[0xe] = t;
-        t = rec[0x10]; rec[0x10] = rec[0x13]; rec[0x13] = t;
-        t = rec[0x11]; rec[0x11] = rec[0x12]; rec[0x12] = t;
+        t = rec[0x0];
+        rec[0x0] = rec[0x3];
+        rec[0x3] = t;
+        t = rec[0x1];
+        rec[0x1] = rec[0x2];
+        rec[0x2] = t;
+        t = rec[0x4];
+        rec[0x4] = rec[0x7];
+        rec[0x7] = t;
+        t = rec[0x5];
+        rec[0x5] = rec[0x6];
+        rec[0x6] = t;
+        t = rec[0x8];
+        rec[0x8] = rec[0xb];
+        rec[0xb] = t;
+        t = rec[0x9];
+        rec[0x9] = rec[0xa];
+        rec[0xa] = t;
+        t = rec[0xc];
+        rec[0xc] = rec[0xf];
+        rec[0xf] = t;
+        t = rec[0xd];
+        rec[0xd] = rec[0xe];
+        rec[0xe] = t;
+        t = rec[0x10];
+        rec[0x10] = rec[0x13];
+        rec[0x13] = t;
+        t = rec[0x11];
+        rec[0x11] = rec[0x12];
+        rec[0x12] = t;
         rec += 0x14;
     }
     t = base[0x88]; base[0x88] = base[0x8b]; base[0x8b] = t;
@@ -689,36 +693,66 @@ void fn_802CDDC8(void *arg0, int arg1) {
     fn_802CE278((int *)(base + 0x1C), arg1);
     fn_802CE290((int *)(base + 0x24), arg1);
     fn_802CE2A8((int *)(base + 0x2C), arg1);
-    index = 0; offset = 0;
+    index = 0;
+    offset = 0;
     while (index < *(volatile int *)(base + 0x28)) {
         rec = *(volatile unsigned char **)(base + 0x2C) + offset;
-        t = rec[0x0]; rec[0x0] = rec[0x1]; rec[0x1] = t;
-        t = rec[0x2]; rec[0x2] = rec[0x3]; rec[0x3] = t;
-        t = rec[0x4]; rec[0x4] = rec[0x5]; rec[0x5] = t;
-        t = rec[0x6]; rec[0x6] = rec[0x7]; rec[0x7] = t;
-        t = rec[0x8]; rec[0x8] = rec[0xb]; rec[0xb] = t;
-        t = rec[0x9]; rec[0x9] = rec[0xa]; rec[0xa] = t;
+        t = rec[0x0];
+        rec[0x0] = rec[0x1];
+        rec[0x1] = t;
+        t = rec[0x2];
+        rec[0x2] = rec[0x3];
+        rec[0x3] = t;
+        t = rec[0x4];
+        rec[0x4] = rec[0x5];
+        rec[0x5] = t;
+        t = rec[0x6];
+        rec[0x6] = rec[0x7];
+        rec[0x7] = t;
+        t = rec[0x8];
+        rec[0x8] = rec[0xb];
+        rec[0xb] = t;
+        t = rec[0x9];
+        rec[0x9] = rec[0xa];
+        rec[0xa] = t;
         fn_802CE2C0((int *)(rec + 8), arg1);
-        offset += 0xC; index++;
+        offset += 0xC;
+        index++;
     }
     fn_802CE2D8((int *)(base + 0x34), arg1);
-    index = 0; offset = 0;
+    index = 0;
+    offset = 0;
     while (index < *(volatile int *)(base + 0x30)) {
         rec = *(volatile unsigned char **)(base + 0x34) + offset;
-        t = rec[0x14]; rec[0x14] = rec[0x17]; rec[0x17] = t;
-        t = rec[0x15]; rec[0x15] = rec[0x16]; rec[0x16] = t;
-        t = rec[0x18]; rec[0x18] = rec[0x1b]; rec[0x1b] = t;
-        t = rec[0x19]; rec[0x19] = rec[0x1a]; rec[0x1a] = t;
+        t = rec[0x14];
+        rec[0x14] = rec[0x17];
+        rec[0x17] = t;
+        t = rec[0x15];
+        rec[0x15] = rec[0x16];
+        rec[0x16] = t;
+        t = rec[0x18];
+        rec[0x18] = rec[0x1b];
+        rec[0x1b] = t;
+        t = rec[0x19];
+        rec[0x19] = rec[0x1a];
+        rec[0x1a] = t;
         *(volatile int *)(rec + 0x10) = -2;
-        offset += 0x1C; index++;
+        offset += 0x1C;
+        index++;
     }
     fn_802CE2F0((int *)(base + 0x90), arg1);
-    index = 0; offset = 0;
+    index = 0;
+    offset = 0;
     while (index < *(volatile int *)(base + 0x88)) {
         rec = *(volatile unsigned char **)(base + 0x90) + offset;
-        t = rec[0x0]; rec[0x0] = rec[0x3]; rec[0x3] = t;
-        t = rec[0x1]; rec[0x1] = rec[0x2]; rec[0x2] = t;
-        offset += 4; index++;
+        t = rec[0x0];
+        rec[0x0] = rec[0x3];
+        rec[0x3] = t;
+        t = rec[0x1];
+        rec[0x1] = rec[0x2];
+        rec[0x2] = t;
+        offset += 4;
+        index++;
     }
     *(volatile int *)(base + 8) |= 1;
 }
