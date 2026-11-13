@@ -41,7 +41,7 @@ extern char lbl_80347C14[];
 extern char lbl_80347C38[];
 extern char lbl_80347C70[];
 extern char *fn_80131234(char *);
-long fn_8027CB28();
+long fn_8027CB28(void *);
 extern long lbl_8055F654;
 long fn_8027C1C8(void *, const char *);
 void *fn_8027C258(void *, long);
