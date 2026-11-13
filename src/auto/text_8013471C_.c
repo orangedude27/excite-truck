@@ -324,7 +324,7 @@ float fn_80134B58(s32 arg0, float arg1)
 }
 #pragma push
 #pragma cplusplus on
-extern "C" s32 fn_80134B9C(s32 arg0, s32 arg1) {
+extern "C" s32 fn_80134B9C(s32 key, s32 defaultValue) {
     struct Dummy {
         virtual s32 f0();
         virtual s32 f1(s32);
@@ -332,10 +332,11 @@ extern "C" s32 fn_80134B9C(s32 arg0, s32 arg1) {
         virtual s32 f3(s32);
     };
     s32 result;
-    if (lbl_8055E0AC != 0 && ((Dummy *)lbl_8055E0AC)->f1(arg0) != 0) {
-        result = ((Dummy *)lbl_8055E0AC)->f3(arg0);
+    /* Look up key via global interface lbl_8055E0AC (f1 tests, f3 retrieves); return defaultValue if unavailable. */
+    if (lbl_8055E0AC != 0 && ((Dummy *)lbl_8055E0AC)->f1(key) != 0) {
+        result = ((Dummy *)lbl_8055E0AC)->f3(key);
     } else {
-        result = arg1;
+        result = defaultValue;
     }
     return result;
 }
