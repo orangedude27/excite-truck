@@ -121,11 +121,13 @@ extern double fn_8002F234(float);
 extern void fn_8012F57C(float *, float *, float *, float);
 extern f32 lbl_8056296C, lbl_80562974;
 #pragma scheduling invalid_target
-f32 fn_801C2F58(s32 arg0, f32 arg1) {
+f32 fn_801C2F58(s32 count, f32 factor) {
+    // Return factor^count for non-negative count (accumulates from 1.0f).
     f32 result = lbl_8056296C;
     s32 i;
-    for (i = 0; i < arg0; i++) {
-        result *= arg1;
+
+    for (i = 0; i < count; i++) {
+        result *= factor;
     }
     return result;
 }
