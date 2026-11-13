@@ -934,9 +934,12 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         dst->y = y;
         dst->z = z;
     } else {
-        dst->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
-        dst->y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
-        dst->z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+        float x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        float y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        float z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+        dst->x = x;
+        dst->y = y;
+        dst->z = z;
     }
     dst->x += m[9];
     dst->y += m[10];
@@ -946,16 +949,21 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
 #pragma dont_inline off
 extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
     int count = *(int *)((char *)arg0 + 0x18);
-    int i;
-    for (i = 0; i < count; i++) {
-        int *indices = (int *)(*(char **)((char *)arg0 + 0x48) + i * 0x14);
-        Vec3f a = (*(Vec3f **)((char *)arg0 + 0x24))[indices[0]];
-        Vec3f b = (*(Vec3f **)((char *)arg0 + 0x24))[indices[1]];
-        Vec3f outB;
-        Vec3f outA;
-        Mtx43MultVec(arg1, &a, &outA);
-        Mtx43MultVec(arg1, &b, &outB);
-        fn_801E41D8(&outA.x, &outB.x, lbl_8055E7C8, lbl_80562948);
+    int i = 0;
+    if (count > 0) {
+        int color = lbl_8055E7C8;
+        for (; i < count; i++) {
+            int *indices = (int *)(*(char **)((char *)arg0 + 0x48) + i * 0x14);
+            int ia = indices[0];
+            int ib = indices[1];
+            Vec3f a = (*(Vec3f **)((char *)arg0 + 0x24))[ia];
+            Vec3f b = (*(Vec3f **)((char *)arg0 + 0x24))[ib];
+            Vec3f outA;
+            Vec3f outB;
+            Mtx43MultVec(arg1, &a, &outA);
+            Mtx43MultVec(arg1, &b, &outB);
+            fn_801E41D8(&outA.x, &outB.x, color, lbl_80562948);
+        }
     }
 }
 #pragma pop
