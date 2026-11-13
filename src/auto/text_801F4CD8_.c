@@ -1080,19 +1080,19 @@ void *fn_801F6D20(void *arg0) {
     return arg0;
 }
 
-void *fn_801F6D60(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        void *entry = arg0;
-        int i = 0;
-        for (; i < *(int *)((char *)arg0 + 0x2A0); entry = (char *)entry + 0x54, i++) {
+void *fn_801F6D60(void *object, int shouldFree) {
+    if (object != 0) {
+        void *entry = object;
+        int index = 0;
+        for (; index < *(int *)((char *)object + 0x2A0); entry = (char *)entry + 0x54, index++) {
             fn_801F639C(entry);
         }
-        *(int *)((char *)arg0 + 0x2A0) = 0;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        *(int *)((char *)object + 0x2A0) = 0;
+        if (shouldFree > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
@@ -1375,7 +1375,6 @@ void fn_801F7400(void *out, void *base, void *obj) {
     int c10, c14, c18, c1C;
     float a20, a24, b20, b24, c20, c24;
     float sumX, sumY, sum0, sum1, sum2;
-
     indexA = *(volatile int *)((char *)base + 0x60);
     indexB = *(volatile int *)((char *)base + 0x5C);
     indexC = *(volatile int *)((char *)base + 0x58);
@@ -1485,29 +1484,34 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
 
 #pragma scheduling invalid_target
 void fn_801F76F8(void *arg0, unsigned char *p) {
-    unsigned char a,b,c,d,e,f,g,h;
+    unsigned int a0, b0, a1, b1, a2, b2, a3, b3;
+    unsigned int a4, b4, a5, b5, a6, b6, a7, b7;
     int i;
     unsigned char *q;
-
-    a=p[0x2c]; b=p[0x2d]; c=p[0x2e]; d=p[0x2f];
-    e=p[0x30]; f=p[0x31]; g=p[0x32]; h=p[0x33];
-    p[0x2c]=p[0x3b]; p[0x3b]=a; p[0x2d]=p[0x3a]; p[0x3a]=b;
-    p[0x2e]=p[0x39]; p[0x39]=c; p[0x2f]=p[0x38]; p[0x38]=d;
-    p[0x30]=p[0x37]; p[0x37]=e; p[0x31]=p[0x36]; p[0x36]=f;
-    p[0x32]=p[0x35]; p[0x35]=g; p[0x33]=p[0x34]; p[0x34]=h;
+    unsigned char c0, d0, c1, d1, c2, d2;
+    a0=p[0x2c]; b0=p[0x3b]; a1=p[0x2d]; b1=p[0x3a];
+    a2=p[0x2e]; b2=p[0x39]; a3=p[0x2f]; b3=p[0x38];
+    a4=p[0x30]; b4=p[0x37]; a5=p[0x31]; b5=p[0x36];
+    a6=p[0x32]; b6=p[0x35]; a7=p[0x33]; b7=p[0x34];
+    p[0x2c]=(unsigned char)b0; p[0x3b]=(unsigned char)a0; p[0x2d]=(unsigned char)b1; p[0x3a]=(unsigned char)a1;
+    p[0x2e]=(unsigned char)b2; p[0x39]=(unsigned char)a2; p[0x2f]=(unsigned char)b3; p[0x38]=(unsigned char)a3;
+    p[0x30]=(unsigned char)b4; p[0x37]=(unsigned char)a4; p[0x31]=(unsigned char)b5; p[0x36]=(unsigned char)a5;
+    p[0x32]=(unsigned char)b6; p[0x35]=(unsigned char)a6; p[0x33]=(unsigned char)b7; p[0x34]=(unsigned char)a7;
     q = p + 0x3c;
     for (i = 0; i < 3; i++, q += 0x18) {
-        a=q[0]; q[0]=q[3]; q[3]=a; a=q[1]; q[1]=q[2]; q[2]=a;
-        a=q[4]; q[4]=q[7]; q[7]=a; a=q[5]; q[5]=q[6]; q[6]=a;
-        a=q[8]; q[8]=q[0xb]; q[0xb]=a; a=q[9]; q[9]=q[0xa]; q[0xa]=a;
-        a=q[0xc]; q[0xc]=q[0xf]; q[0xf]=a; a=q[0xd]; q[0xd]=q[0xe]; q[0xe]=a;
-        a=q[0x10]; q[0x10]=q[0x13]; q[0x13]=a; a=q[0x11]; q[0x11]=q[0x12]; q[0x12]=a;
-        a=q[0x14]; q[0x14]=q[0x17]; q[0x17]=a; a=q[0x15]; q[0x15]=q[0x16]; q[0x16]=a;
+        c0=q[0]; q[0]=q[3]; q[3]=c0; c1=q[1]; q[1]=q[2]; q[2]=c1;
+        c2=q[4]; q[4]=q[7]; q[7]=c2; d0=q[5]; q[5]=q[6]; q[6]=d0;
+        d1=q[8]; q[8]=q[0xb]; q[0xb]=d1; d2=q[9]; q[9]=q[0xa]; q[0xa]=d2;
+        c0=q[0xc]; q[0xc]=q[0xf]; q[0xf]=c0; c1=q[0xd]; q[0xd]=q[0xe]; q[0xe]=c1;
+        c2=q[0x10]; q[0x10]=q[0x13]; q[0x13]=c2; d0=q[0x11]; q[0x11]=q[0x12]; q[0x12]=d0;
+        d1=q[0x14]; q[0x14]=q[0x17]; q[0x17]=d1; d2=q[0x15]; q[0x15]=q[0x16]; q[0x16]=d2;
     }
-    a=p[0x84]; b=p[0x85]; c=p[0x86]; d=p[0x87]; e=p[0x88]; f=p[0x89];
-    p[0x84]=p[0x8f]; p[0x8f]=a; p[0x85]=p[0x8e]; p[0x8e]=b;
-    p[0x86]=p[0x8d]; p[0x8d]=c; p[0x87]=p[0x8c]; p[0x8c]=d;
-    p[0x88]=p[0x8b]; p[0x8b]=e; p[0x89]=p[0x8a]; p[0x8a]=f;
+    a0=p[0x84]; b0=p[0x8f]; a1=p[0x85]; b1=p[0x8e];
+    a2=p[0x86]; b2=p[0x8d]; a3=p[0x87]; b3=p[0x8c];
+    a4=p[0x88]; b4=p[0x8b]; a5=p[0x89]; b7=p[0x8a];
+    p[0x84]=(unsigned char)b0; p[0x8f]=(unsigned char)a0; p[0x85]=(unsigned char)b1; p[0x8e]=(unsigned char)a1;
+    p[0x86]=(unsigned char)b2; p[0x8d]=(unsigned char)a2; p[0x87]=(unsigned char)b3; p[0x8c]=(unsigned char)a3;
+    p[0x88]=(unsigned char)b4; p[0x8b]=(unsigned char)a4; p[0x89]=(unsigned char)b7; p[0x8a]=(unsigned char)a5;
 }
 #pragma scheduling on
 void fn_801F78D8(void) {
