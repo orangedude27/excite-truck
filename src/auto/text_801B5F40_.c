@@ -109,14 +109,14 @@ extern float lbl_805626B8;
 static inline s32 GridCell(f32 v) {
     s32 i;
     v += lbl_805626B4;
-    i = (s32)(v / lbl_805626B0);
+    i = __OSf32tos32_801B619C(v / lbl_805626B0);
     if (i < 0)
         i = 0;
     else if (i >= 0x64)
         i = 0x63;
     return i;
 }
-#pragma scheduling invalid_target
+#pragma peephole off
 void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
     s32 x0 = GridCell(arg2[0] - lbl_805626B8);
     s32 x1 = GridCell(lbl_805626B8 + arg2[0]);
@@ -146,7 +146,7 @@ void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
         arg0[(*arg1)++] = lbl_8055E714;
     }
 }
-#pragma scheduling on
+#pragma peephole reset
 extern void *fn_801B5F40(void);
 extern void __AXPushCallbackStack(void *);
 extern char lbl_80335F20[];
