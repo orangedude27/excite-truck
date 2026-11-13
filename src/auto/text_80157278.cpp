@@ -1184,6 +1184,7 @@ extern "C" void fn_801584C4(void **arg0) {
 }
 
 #pragma use_lmw_stmw off
+/* Notify every registered listener in lbl_8042FD34 by calling vtable slot 0 (+0x8). */
 extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2) {
     struct Dummy {
         virtual void f0(s32, s32, s32);
@@ -4455,8 +4456,9 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
     }
 }
 #pragma scheduling off
-extern "C" int fn_80159708(void *arg0) {
-    return (int)*(float *)((char *)arg0 + 0x25C);
+extern "C" int fn_80159708(void *q) {
+    float v = *(float *)((unsigned char *)q + 0x25Cu);
+    return (int)v;
 }
 class Fn8015E338Item {
 public:
