@@ -3988,8 +3988,9 @@ s32 fn_8014F0C8(s32 arg0, s32 arg1) {
 }
 
 s32 fn_8014F088(s32 arg0, s32 arg1);
-void fn_8014F108(void *arg0) {
-    void *base = arg0;
+/* Initialize two art-anim manager slots and load the bonanza config. */
+void fn_8014F108(void *owner) {
+    void *base = owner;
     void *entry = base;
     u8 *member = (u8 *)base + 0x454;
     u32 i = 0;
