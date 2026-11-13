@@ -11439,7 +11439,7 @@ void bta_dm_inq_cmpl(void *p_data) {
 
                 } else {
                     if (BTM_CB_PAGE_TIMEOUT < 0x7530)
-                        bta_sys_start_timer((s32)DM_SCB_SDP_DB_TIMER, BTA_DM_SDP_RESULT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
+                        bta_sys_start_timer((s32)DM_SCB_SDP_DB_TIMER, BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
                     if (BTM_ReadRemoteDeviceName(INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO), (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
                         bta_sys_stop_timer((s32)DM_SCB_SDP_DB_TIMER);
                         peer_addr = INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO);
