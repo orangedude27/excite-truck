@@ -125,28 +125,32 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
 }
 
 #pragma fp_contract off
-void fn_801E67B4(void *arg0, void *arg1, void *arg2) {
-    float *out = (float *)arg0;
-    float *in = (float *)arg1;
-    const float *m = (const float *)arg2;
+/* Mtx3MultVec: transform the vector in by the 3x3 matrix m (three rows of three
+   floats, out = in * m) and store the result in out.  When out and in are the
+   same vector the source is read into registers first, so it is safe to
+   transform in place. */
+void fn_801E67B4(void *argOut, void *argIn, void *argMtx) {
+    float *out = (float *)argOut;
+    float *in = (float *)argIn;
+    const float *m = (const float *)argMtx;
 
     if (out == in) {
         float x, y, z;
-        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
-        m3 = m[3]; m4 = m[4]; m5 = m[5]; m0 = m[0]; m1 = m[1]; m2 = m[2]; m6 = m[6]; m7 = m[7]; m8 = m[8];
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
         x = in[0]; y = in[1]; z = in[2];
-        out[0] = z * m6 + (x * m0 + y * m3);
-        out[1] = z * m7 + (x * m1 + y * m4);
-        out[2] = z * m8 + (x * m2 + y * m5);
+        out[0] = z * m20 + (x * m00 + y * m10);
+        out[1] = z * m21 + (x * m01 + y * m11);
+        out[2] = z * m22 + (x * m02 + y * m12);
     } else {
-        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
         float y;
-        m3 = m[3]; m0 = m[0]; m6 = m[6]; m4 = m[4]; m1 = m[1]; m7 = m[7]; m5 = m[5]; m2 = m[2]; m8 = m[8];
-        out[0] = in[2] * m6 + (in[0] * m0 + in[1] * m3);
+        m10 = m[3]; m00 = m[0]; m20 = m[6]; m11 = m[4]; m01 = m[1]; m21 = m[7]; m12 = m[5]; m02 = m[2]; m22 = m[8];
+        out[0] = in[2] * m20 + (in[0] * m00 + in[1] * m10);
         y = in[1];
-        out[1] = in[2] * m7 + (in[0] * m1 + y * m4);
+        out[1] = in[2] * m21 + (in[0] * m01 + y * m11);
         y = in[1];
-        out[2] = in[2] * m8 + (in[0] * m2 + y * m5);
+        out[2] = in[2] * m22 + (in[0] * m02 + y * m12);
     }
 }
 #pragma fp_contract on
