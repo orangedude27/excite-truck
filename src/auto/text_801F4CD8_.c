@@ -107,16 +107,17 @@ extern char lbl_8033AD08[];
 extern int stricmp(const char *, const char *);
 extern void fn_8012F9E8(void *, void *, void *);
 extern void fn_80128670(int);
-int fn_801F4E44(const char *arg0) {
-    unsigned int i;
-    i = 0;
-    while (5 > i) {
-        if (stricmp(arg0, lbl_8033AC9C[i]) == 0) {
-            return i + 1;
+/* Look up an anchor style name in lbl_8033AC9C (5 entries); return 1-based index on match, or 0 after logging "mesh: invalid anchor style %s". */
+int fn_801F4E44(const char *styleName) {
+    unsigned int index;
+    index = 0;
+    while (5 > index) {
+        if (stricmp(styleName, lbl_8033AC9C[index]) == 0) {
+            return index + 1;
         }
-        i++;
+        index++;
     }
-    fn_802E317C(lbl_8033AD08, arg0);
+    fn_802E317C(lbl_8033AD08, styleName);
     return 0;
 }
 
