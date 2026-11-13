@@ -478,18 +478,21 @@ extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void* arg0, i
 }
 #pragma pop
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void *arg0, u8 arg1) {
-    u32 token = OSDisableInterrupts();
+    /* Pause or unpause all active AxVoices on the track's channel list, with interrupts disabled. */
+    u32 interrupts = OSDisableInterrupts();
     u8 *track = (u8 *)arg0;
     void *channel = *(void **)(track + 0xB8);
+
     while (channel != 0) {
-        u8 *p = (u8 *)channel;
-        if (p[0x3A] != 0 && arg1 != (p[0x39] != 0)) {
-            p[0x39] = arg1;
-            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(p + 0xE0), arg1);
+        u8 *channelBytes = (u8 *)channel;
+        if (channelBytes[0x3A] != 0 && arg1 != (channelBytes[0x39] != 0)) {
+            channelBytes[0x39] = arg1;
+            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(channelBytes + 0xE0), arg1);
         }
-        channel = *(void **)(p + 0xE4);
+        channel = *(void **)(channelBytes + 0xE4);
     }
-    OSRestoreInterrupts(token);
+
+    OSRestoreInterrupts(interrupts);
 }
 
 extern "C" const char lbl_80324728[];
