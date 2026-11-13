@@ -221,6 +221,26 @@ struct CameraEntry {
     char name[16];         /* fn_80276A44 looks records up by this name */
 };
 
+/* One running blend between two cameras, of the four at lbl_8049FD58 (0x50
+ * bytes each, all cleared by fn_80276B8C and started by fn_80276098). The
+ * camera setters here only ever use the first one. */
+struct CameraBlend {
+    unsigned char active;  /* fn_80276098 sets it; a snap-to-camera clears it */
+    float quatFrom[4];     /* 0x04: rotation taken from the first camera */
+    float quatTo[4];       /* 0x14: rotation taken from the second camera */
+    float posFrom[3];      /* 0x24 */
+    float posTo[3];        /* 0x30 */
+    float fovFrom;         /* 0x3C */
+    float fovTo;           /* 0x40 */
+    float unk_44;
+    float unk_48;
+    int mode;              /* 0x4C: 0x22 for the camera setters here */
+};
+
+#define currentCamera (*(struct CameraEntry *)&lbl_8049FE98) /* camera in use */
+#define blendRecord0 (*(struct CameraBlend *)&lbl_8049FD58)  /* the one blend */
+#define pDefaultCamera lbl_8055F598 /* the record of the camera "rddefault" */
+
 #pragma cplusplus on
 /* Adds a record for a camera object to the table of CameraEntry records at
  * lbl_8049FEE0 (lbl_8055F5A0 of them): takes the camera's "name" parameter,
