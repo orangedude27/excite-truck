@@ -4206,14 +4206,15 @@ extern "C" void fn_8015E9A4(void *arg0, s32 arg1) {
         var_r30 += 1;
     }
 }
-extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
-    s32 var_r31 = 0;
-    s32 var_r30 = 0;
-    while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
-        Unk8015EA24V *obj = *(Unk8015EA24V **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
-        obj->v6(arg1);
-        var_r31 += 4;
-        var_r30 += 1;
+extern "C" void fn_8015EA24(void *container, s32 arg) {
+    s32 offset = 0;
+    s32 index = 0;
+    /* Dispatch virtual slot v6 to each entry in the container's array (+4 array ptr, +8 count). */
+    while (index < *(s32 *)((char *)container + 8)) {
+        Unk8015EA24V *entry = *(Unk8015EA24V **)((char *)*(void **)((char *)container + 4) + offset);
+        entry->v6(arg);
+        offset += 4;
+        index += 1;
     }
 }
 
