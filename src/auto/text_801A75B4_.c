@@ -35,6 +35,20 @@ extern int fn_80129AE8(void *, int);
 extern void *memset(void *, int, unsigned int);
 extern int fn_801A8E38();
 
+/* Input binding table (built by fn_801A7628): 0x18-byte entries mapping a
+ * control's display name to the key/action bound to it. */
+typedef struct InputBinding {
+    const char *name;      /* +0x00 display name, e.g. "Joy AX+" */
+    const char *id;        /* +0x04 internal id, e.g. "JoyAXPlus" */
+    int type;              /* +0x08 binding type (1..6) */
+    int value;             /* +0x0C bound key code */
+    int unk10;             /* +0x10 */
+    unsigned char enabled; /* +0x14 enabled flag (0 = active) */
+    char pad15[3];         /* +0x15 */
+} InputBinding;
+#define gInputBindingTable lbl_8055E5CC /* InputBinding*: table base */
+#define gInputBindingCount lbl_8055E5D0 /* int: number of entries (0x7A) */
+
 extern char lbl_8055E5C8;
 #pragma push
 #pragma scheduling invalid_target
@@ -57,8 +71,6 @@ extern char lbl_8055E5D4;
 void fn_801A7628(void) {
     extern const char **lbl_8055E5CC;
     extern int lbl_8055E5D0;
-    const char **table;
-    int count;
     if ((signed char)lbl_8055E5D4 == 0) {
         *(char *)(lbl_803342D0 + 0x6E8) = fn_802E47F8(0x1E);
         *(char *)(lbl_803342D0 + 0x700) = fn_802E47F8(0x30);
@@ -100,10 +112,8 @@ void fn_801A7628(void) {
         *(char *)(lbl_803342D0 + 0xA60) = fn_802E47F8(0xD);
         lbl_8055E5D4 = 1;
     }
-    table = (const char **)lbl_803342D0;
-    count = 0x7A;
-    lbl_8055E5CC = table;
-    lbl_8055E5D0 = count;
+    lbl_8055E5D0 = 0x7A;
+    lbl_8055E5CC = (const char **)lbl_803342D0;
 }
 
 #pragma push
@@ -115,10 +125,10 @@ void fn_801A7844(int arg0) {
     int spC;
     unsigned int sp8;
     int a;
+    unsigned char *dest;
     int b;
     float x;
     float y;
-
     if (arg0 != 0) {
         entry = (char *)lbl_80435050;
         i = 0;
@@ -130,15 +140,16 @@ void fn_801A7844(int arg0) {
         } while (i < 4);
     }
     fn_80127A84(&sp10, &spC, &sp8);
-    a = lbl_8055CFF0 / 2;
-    b = lbl_8055CFF4 / 2;
+    a = (int)lbl_8055CFF0 / 2;
+    dest = lbl_80435370;
+    b = (int)lbl_8055CFF4 / 2;
     x = (float)(sp10 - a) / (float)a;
     y = (float)(spC - b) / (float)b;
-    lbl_80435370[8] = sp8 & 1;
-    lbl_80435370[9] = (sp8 >> 1) & 1;
-    lbl_80435370[10] = (sp8 >> 2) & 1;
+    dest[8] = sp8 & 1;
+    dest[9] = (sp8 >> 1) & 1;
+    dest[10] = (sp8 >> 2) & 1;
     *(float *)&lbl_80435370[0] = x;
-    *(float *)&lbl_80435370[4] = y;
+    *(float *)&dest[4] = y;
 }
 #pragma pop
 extern void fn_801334F4(int, int, int *, int);
@@ -175,21 +186,24 @@ void fn_801A7A08(const char *arg0, int arg1, int arg2) {
 extern float lbl_80562458;
 void fn_801A7A5C(void) {
     int i, j;
+    float v;
     Rec_801A7A5C* src;
     Rec_801A7A5C* dst;
+    v = lbl_80562458;
     {
         Tail_801A7A5C* t = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
-        t->x = lbl_80562458;
-        t->y = lbl_80562458;
+        *(float *)((unsigned char *)lbl_80435050 + 0x320) = v;
+        t->y = v;
         t->c = 0;
         t->b = 0;
         t->a = 0;
         ((void (*)(int, void *))fn_801A7844)(1, t);
     }
     fn_801A7844(1);
-    src = (Rec_801A7A5C*)lbl_80435050;
     dst = (Rec_801A7A5C*)(lbl_80435050 + 100);
-    for (i = 0; i < 4; i++) {
+    src = (Rec_801A7A5C*)lbl_80435050;
+    i = 4;
+    do {
         for (j = 0; j < 8; j++) dst->f[j] = src->f[j];
         for (j = 0; j < 8; j++) dst->b[j] = src->b[j];
         for (j = 0; j < 8; j++) dst->b[8 + j] = src->b[8 + j];
@@ -199,15 +213,16 @@ void fn_801A7A5C(void) {
         dst->c = src->c;
         src++;
         dst++;
-    }
+        i--;
+    } while (i != 0);
     {
         Tail_801A7A5C* u = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
-        Tail_801A7A5C* v = (Tail_801A7A5C*)(lbl_80435050 + 0xCB);
-        v->x = u->x;
-        v->y = u->y;
-        v->a = u->a;
-        v->b = u->b;
-        v->c = u->c;
+        Tail_801A7A5C* vv = (Tail_801A7A5C*)(lbl_80435050 + 0xCB);
+        vv->x = u->x;
+        vv->y = u->y;
+        vv->a = u->a;
+        vv->b = u->b;
+        vv->c = u->c;
     }
 }
 
