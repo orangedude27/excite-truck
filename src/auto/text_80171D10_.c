@@ -35,6 +35,35 @@ typedef struct {
     char pad30[0xF8 - 0x30];
     int fF8; int fFC; int f100; int f104;
 } Fn80173424Obj;
+
+/* A Sound object (created by fn_80207848); only its two stop-request flags
+   matter here: +0x4A latches the sound stopped, +0x4C asks for a one-shot
+   stop that the sound's own update clears (fn_80206824). */
+typedef struct Sound {
+    char pad[0x4A];
+    unsigned char stop;
+    char pad4B;
+    unsigned char stopOnce;
+} Sound;
+
+/* Crush-mode round state, embedded in the "crushmaster" object (fn_80172C28)
+   at +0x1AC and built by fn_8017353C. */
+typedef struct CrushRoundState {
+    int state;                  /* +0x00: 0 idle, 1 running, 2 ended, 4 scored */
+    float time;                 /* +0x04: game time the round began, -1.0 unused */
+    unsigned char active;       /* +0x08 */
+    unsigned char flag9;        /* +0x09 */
+    char padA[2];
+    void **animPlayer;          /* +0x0C: DSA player holding the round's cues */
+    unsigned char flag10;       /* +0x10 */
+    char pad11[3];
+    Sound *sound14; Sound *sound18; Sound *sound1C;
+    unsigned char flag20;       /* +0x20 */
+    char pad21[3];
+    Sound *sound24; Sound *sound28; Sound *sound2C;
+    char pad30[0xF8 - 0x30];    /* +0x30: overlay text fields and counters */
+    int counters[4];            /* +0xF8 */
+} CrushRoundState;
 extern double fn_8002F234(float), cos(double), sin(double);
 extern float fn_80129DC4(int,float,float);
 extern unsigned long long fn_80171FF0(void *,int,float,float);
@@ -1500,7 +1529,6 @@ void fn_80174918(void *arg0, int arg1) {
     extern char lbl_8055A2E4[];
     extern const char lbl_8055A2EC[];
     extern float lbl_80561AD8, lbl_80561AC8, lbl_80561A74, lbl_80561A54, lbl_80561A44, lbl_80561A40, lbl_80561A50, lbl_80561A3C, lbl_80561ADC;
-
     int idx = fn_801E866C(arg1);
     int flag = 1;
     int k;
@@ -1514,10 +1542,8 @@ void fn_80174918(void *arg0, int arg1) {
     float y;
     float val;
     int ok;
-
     if (*(unsigned char *)((unsigned char *)lbl_8043038C + 0x10) == 0 && fn_80171D38(arg1) == 0)
         flag = 0;
-
     if (*(void **)((unsigned char *)arg0 + 0x1A8) != 0) {
         if (flag != 0) {
             void *tmp = *(void **)((unsigned char *)arg0 + 0x1A8);
