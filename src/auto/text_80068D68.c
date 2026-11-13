@@ -859,6 +859,7 @@ typedef struct {
 } AXFX_REVERBHI_EXP_FREE_VIEW;
 
 extern u8 lbl_803C0F78[];
+extern u8 lbl_80316320[];
 extern char lbl_803164B8[];
 __declspec(section ".sdata") extern u8 lbl_80560D30[];
 __declspec(section ".sdata") extern u8 lbl_80560D34[];
@@ -8629,8 +8630,8 @@ void btm_dev_timeout(struct _tle *arg0) {
             return;
         case 1: {
             void *buf;
-            lbl_803C0F78[0x64E] = 2;
             lbl_803C0F78[0x64F] = 4;
+            lbl_803C0F78[0x64E] = 2;
             btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 1);
             buf = GKI_getpoolbuf(2);
             if (buf != NULL) {
