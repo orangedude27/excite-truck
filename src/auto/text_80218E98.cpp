@@ -757,24 +757,25 @@ extern "C" void fn_80219044(void *obj) {
 #pragma dont_inline on
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void *fn_8021915C(void *arg0, u32 arg1) {
+/* Destructor: install vtable, release each owned subobject, and optionally free this object. */
+extern "C" void *fn_8021915C(void *self, u32 deletingFlag) {
     u8 *entry;
     s32 i;
 
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033FB38;
-        entry = (u8 *)arg0;
+    if (self != 0) {
+        *(void **)self = lbl_8033FB38;
+        entry = (u8 *)self;
         i = 0;
-        while (i < *(s32 *)((u8 *)arg0 + 0x230)) {
+        while (i < *(s32 *)((u8 *)self + 0x230)) {
             fn_80128670(*(s32 *)(entry + 0x3C));
             entry += 0x10;
             i++;
         }
-        if ((s32)arg1 > 0) {
-            fn_80128668(arg0);
+        if ((s32)deletingFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
 #pragma pop
 #pragma dont_inline off
