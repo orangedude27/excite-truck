@@ -2226,6 +2226,9 @@ void *fn_80283938(void *self, int shouldFree) {
 
 #pragma cplusplus on
 extern "C" int fn_802839D0(void) {
+    /* If the active UI/context object is valid, invoke its vtable slots at
+     * +0x24 (next) and +0x20 (get, with lbl_8055F698 as arg), then pass the
+     * results to fn_8025C204(result, value). Otherwise fall back to fn_80216D28. */
     class Object {
     public:
         virtual void v0(); virtual void v1(); virtual void v2();
