@@ -450,6 +450,54 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned 
     for (int i = 0; i < texCoordCount; i++) GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)(i + 0xD), (GXCompCnt)1, (GXCompType)4, (u8)0);
 }
 
+extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *pos_, const void *size_, unsigned char count, const void *tex_, const void *col_) {
+    const float *pos = (const float *)pos_;
+    const float *size = (const float *)size_;
+    const float *tex = (const float *)tex_;
+    const unsigned int *col = (const unsigned int *)col_;
+    GXBegin((GXPrimitive)0x80, (GXVtxFmt)0, (u16)4);
+    *(volatile float *)0xCC008000 = pos[0];
+    *(volatile float *)0xCC008000 = pos[1];
+    if (col != 0) *(volatile unsigned int *)0xCC008000 = col[0];
+    {
+        const float *p = tex;
+        for (int i = 0; i < count; i++, p += 8) {
+            *(volatile float *)0xCC008000 = p[0];
+            *(volatile float *)0xCC008000 = p[1];
+        }
+    }
+    *(volatile float *)0xCC008000 = pos[0] + size[0];
+    *(volatile float *)0xCC008000 = pos[1];
+    if (col != 0) *(volatile unsigned int *)0xCC008000 = col[1];
+    {
+        const float *p = (const float *)((const char *)tex + 8);
+        for (int i = 0; i < count; i++, p += 8) {
+            *(volatile float *)0xCC008000 = p[0];
+            *(volatile float *)0xCC008000 = p[1];
+        }
+    }
+    *(volatile float *)0xCC008000 = pos[0] + size[0];
+    *(volatile float *)0xCC008000 = pos[1] + size[1];
+    if (col != 0) *(volatile unsigned int *)0xCC008000 = col[3];
+    {
+        const float *p = (const float *)((const char *)tex + 0x18);
+        for (int i = 0; i < count; i++, p += 8) {
+            *(volatile float *)0xCC008000 = p[0];
+            *(volatile float *)0xCC008000 = p[1];
+        }
+    }
+    *(volatile float *)0xCC008000 = pos[0];
+    *(volatile float *)0xCC008000 = pos[1] + size[1];
+    if (col != 0) *(volatile unsigned int *)0xCC008000 = col[2];
+    {
+        const float *p = (const float *)((const char *)tex + 0x10);
+        for (int i = 0; i < count; i++, p += 8) {
+            *(volatile float *)0xCC008000 = p[0];
+            *(volatile float *)0xCC008000 = p[1];
+        }
+    }
+}
+
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void*, const void*, u8, const void*, const void*, u8);
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void*, void*, u8);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *, const void *, u8, const void *, const void *);
@@ -3507,12 +3555,13 @@ extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long fla
     if (obj) obj->call();
 }
 
-extern "C" void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
+extern "C" void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* pane, void* animTransform, bool bRecursive) {
+    /* Bind an animation transform to this pane, panicking if the transform pointer is null. */
     extern const char lbl_8031FF90[];
     extern const char lbl_803200C8[];
-    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(void*, bool); };
-    if (!transform) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x254, lbl_803200C8);
-    ((Obj*)transform)->v2(self, flag);
+    struct AnimTransform { virtual void v0(); virtual void v1(); virtual void Bind(void*, bool); };
+    if (!animTransform) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x254, lbl_803200C8);
+    ((AnimTransform*)animTransform)->Bind(pane, bRecursive);
 }
 
 struct PaneLinkNode {
