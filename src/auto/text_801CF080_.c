@@ -256,69 +256,74 @@ f32 fn_801CF778(const float *point, const float *origin, const float *dir) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
-    f32 *nrm;
-    s32 off;
-    s32 toff;
-    f32 *edge;
+/* Ray-cast a mesh (MeshRayCast): for every node whose bounding sphere the ray
+ * passes through, intersect the ray with each triangle plane and keep the hits
+ * that are inside all three edge planes.  Returns 1, shortens *ioDist to the
+ * distance of the closest such hit and writes the plane normal of the triangle
+ * it hit to normalOut; returns 0 when the ray misses the mesh. */
+s32 fn_801CF828(Mesh *mesh, Vec *origin, Vec *dir, f32 *ioDist, Vec *normalOut) {
+    Vec *nrm;
+    s32 nodeOff;
+    s32 triOff;
+    Vec *edge;
     s32 hit;
     s32 n;
-    u8 *node;
+    MeshNode *node;
     s32 t;
-    u8 *tri;
+    MeshTri *tri;
     f32 zero = lbl_80562A38;
     f32 eps = lbl_80562A3C;
     hit = 0;
-    for (n = 0, off = 0; n < *(s32 *)(arg0 + 4); off += 0x18, n++) {
-        f32 r2;
-        node = *(u8 **)arg0 + off;
-        r2 = *(f32 *)(node + 0xC) * *(f32 *)(node + 0xC);
-        if (fn_801CF778((f32 *)node, origin, dir) > r2) {
+    for (n = 0, nodeOff = 0; n < mesh->nodeCount; nodeOff += 0x18, n++) {
+        f32 radiusSq;
+        node = (MeshNode *)((u8 *)mesh->nodes + nodeOff);
+        radiusSq = node->radius * node->radius;
+        if (fn_801CF778((f32 *)&node->center, (f32 *)origin, (f32 *)dir) > radiusSq) {
             continue;
         }
-        t = *(s32 *)(node + 0x10);
-        toff = t * 0x3C;
-        for (; t < *(s32 *)(node + 0x14); toff += 0x3C, t++) {
-            f32 d;
-            f32 den;
-            f32 u;
-            tri = *(u8 **)(arg0 + 0x10) + toff;
-            nrm = (f32 *)(tri + 8);
-            d = *(f32 *)(tri + 0x14);
-            den = PSVECDotProduct(dir, nrm);
-            if ((f32)fabs(den) < eps) {
+        t = node->triStart;
+        triOff = t * 0x3C;
+        for (; t < node->triEnd; triOff += 0x3C, t++) {
+            f32 planeDist;
+            f32 denom;
+            f32 dist;
+            tri = (MeshTri *)((u8 *)mesh->tris + triOff);
+            nrm = &tri->normal;
+            planeDist = tri->planeDist;
+            denom = PSVECDotProduct((f32 *)dir, (f32 *)nrm);
+            if ((f32)fabs(denom) < eps) {
                 continue;
             }
-            u = (d - PSVECDotProduct(origin, nrm)) / den;
-            if (u >= zero && u < *dist) {
-                f32 pt[3];
-                Vec801CF v;
-                Vec801CF diff;
-                s16 *ip = (s16 *)tri;
+            dist = (planeDist - PSVECDotProduct((f32 *)origin, (f32 *)nrm)) / denom;
+            if (dist >= zero && dist < *ioDist) {
+                Vec point;
+                Vec vert;
+                Vec toPoint;
+                s16 *vidx = (s16 *)tri; /* vidx[1]..vidx[3] are tri->vidx[0..2] */
                 s32 inside;
                 s32 k;
-                edge = (f32 *)(tri + 0x18);
+                edge = tri->edgeNormal;
                 inside = 1;
-                pt[0] = origin[0] + dir[0] * u;
-                pt[1] = origin[1] + dir[1] * u;
-                pt[2] = origin[2] + dir[2] * u;
+                point.x = origin->x + dir->x * dist;
+                point.y = origin->y + dir->y * dist;
+                point.z = origin->z + dir->z * dist;
                 for (k = 0; k < 3; k++) {
-                    v = *(Vec801CF *)(*(u8 **)(arg0 + 8) + ip[1] * 0xC);
-                    diff.x = pt[0] - v.x;
-                    diff.y = pt[1] - v.y;
-                    diff.z = pt[2] - v.z;
-                    if (PSVECDotProduct((f32 *)&diff, edge) > lbl_80558DC4[0]) {
+                    vert = mesh->verts[vidx[1]];
+                    toPoint.x = point.x - vert.x;
+                    toPoint.y = point.y - vert.y;
+                    toPoint.z = point.z - vert.z;
+                    if (PSVECDotProduct((f32 *)&toPoint, (f32 *)edge) > lbl_80558DC4[0]) {
                         inside = 0;
                     }
-                    ip++;
-                    edge += 3;
+                    vidx++;
+                    edge++;
                 }
                 if (inside) {
-                    *dist = u;
+                    *ioDist = dist;
                     hit = 1;
-                    out[0] = nrm[0];
-                    out[1] = nrm[1];
-                    out[2] = nrm[2];
+                    normalOut->x = nrm->x;
+                    normalOut->y = nrm->y;
+                    normalOut->z = nrm->z;
                 }
             }
         }
