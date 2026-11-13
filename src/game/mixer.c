@@ -354,16 +354,19 @@ void *fn_802090D4(int arg0)
 #pragma push
 #pragma inline_depth(0)
 #pragma scheduling invalid_target
-void fn_80209110(void **arg0) {
-    if (*arg0 != 0) {
-        *(int *)((char *)*arg0 + 4) = 0;
-        while (*(int *)(lbl_80489258 + 0x40) > 0) {
-            if (*(int *)(lbl_80489258 + *(int *)(lbl_80489258 + 0x40) * 8 - 4) != 0)
+/* Releases a volume handle: frees its slot (dropping free slots from the end
+ * of the table), recomputes the master volume and clears the caller's pointer
+ * so releasing it twice does nothing. */
+void fn_80209110(void **handle) {
+    if (*handle != 0) {
+        ((struct MixerVolumeHandle *)*handle)->name = 0;
+        while (MIXER_VOLUME_HANDLE_COUNT > 0) {
+            if (MIXER_VOLUME_HANDLES[MIXER_VOLUME_HANDLE_COUNT - 1].name != 0)
                 break;
-            *(int *)(lbl_80489258 + 0x40) = *(int *)(lbl_80489258 + 0x40) - 1;
+            MIXER_VOLUME_HANDLE_COUNT = MIXER_VOLUME_HANDLE_COUNT - 1;
         }
         ((void (*)(void))fn_80208A50)();
-        *arg0 = 0;
+        *handle = 0;
     }
 }
 #pragma scheduling on
