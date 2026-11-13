@@ -681,12 +681,11 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
     u32 maxDiff;
     s32 index;
     s32 allOdd;
-
     maxDiff = 0;
     index = 0;
     allOdd = 1;
-    value = values;
     base = values + offset;
+    value = values;
     byteOffset = 0;
     for (i = 0; i < count - offset; i++) {
         diff = base[byteOffset / 4] - *value;
@@ -1744,7 +1743,7 @@ void fn_80119288(void* arg0, f32 arg1) {
         ((void (*)(void*, s32, s32, s32))fn_80119218)(first, *(s32*)((u8*)saved + 0xA4), 0, *(s32*)((u8*)saved + 0xAC));
 }
 #pragma pop
-extern void AXSetVoiceState(s32);
+extern void AXSetVoiceState(void *, s32);
 s32 fn_8011943C(void *arg0, s32 arg1) {
     s32 temp_r0;
     s32 temp_r3;
@@ -2401,18 +2400,15 @@ typedef struct DvdStream {
 #pragma push
 #pragma scheduling on
 #pragma dont_inline on
-void fn_8011A330(void* arg0) {
-    s32 status;
-    s32* p1 = (s32*)((u8*)arg0 + 0xC4);
-    DVDCommandBlock* blk = (DVDCommandBlock*)((u8*)arg0 + 0x54);
-    s32* p2 = (s32*)((u8*)arg0 + 0x24);
-    *p1 = 1;
-    DVDCancel(blk);
+void fn_8011A330(register void* arg0) {
+    register s32 status;
+    *(s32*)((u8*)arg0 + 0xC4) = 1;
+    DVDCancel((DVDCommandBlock*)((u8*)arg0 + 0x54));
     do {
         status = DVDGetDriveStatus();
     } while (status == 2 || status == 1);
-    *p1 = 0;
-    *p2 = 0;
+    *(s32*)((u8*)arg0 + 0xC4) = 0;
+    *(s32*)((u8*)arg0 + 0x24) = 0;
 }
 #pragma dont_inline reset
 #pragma pop
