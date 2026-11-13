@@ -1,4 +1,15 @@
   #include <types.h>
+extern "C" u8 lbl_805591F8[];
+extern "C" u8 lbl_805591FC[];
+extern "C" u8 lbl_80559200[];
+extern "C" u8 lbl_80559204[];
+extern "C" s32 fn_800B6200(void *, void *);
+extern "C" void fn_800B3330(void *, s32, s32);
+extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
+extern "C" s32 fn_800AF4F0(void *, s32);
+extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
+extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *);
+extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *);
 extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 OSInitSemaphore(void *, s32);
 extern "C" const char lbl_8031B1E4[];
@@ -1593,15 +1604,14 @@ extern "C" s32 fn_800A6B74(void *arg0) {
     u32 B[4];
     u32 A[4];
     u8 buf[0x200] __attribute__((aligned(32)));
+    u32 mode;
     s32 result;
-    s32 count;
     s32 i;
     s32 j;
-    u32 mode;
+    s32 count;
     u32 a;
     u32 b;
     u8 *p;
-
     count = 0;
     *(u32 *)((u8 *)arg0 + 0xC) = 0;
     mode = *(u32 *)((u8 *)arg0 + 8);
@@ -1613,14 +1623,14 @@ extern "C" s32 fn_800A6B74(void *arg0) {
     fn_800A68F0(buf, *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18), &flag);
     if (flag != 0) {
         p = buf;
-        A[0] = p[0x1C6] + (p[0x1C7] << 8) + (p[0x1C8] << 16) + (p[0x1C9] << 24);
-        B[0] = p[0x1CA] + (p[0x1CB] << 8) + (p[0x1CC] << 16) + (p[0x1CD] << 24);
-        A[1] = p[0x1D6] + (p[0x1D7] << 8) + (p[0x1D8] << 16) + (p[0x1D9] << 24);
-        B[1] = p[0x1DA] + (p[0x1DB] << 8) + (p[0x1DC] << 16) + (p[0x1DD] << 24);
-        A[2] = p[0x1E6] + (p[0x1E7] << 8) + (p[0x1E8] << 16) + (p[0x1E9] << 24);
-        B[2] = p[0x1EA] + (p[0x1EB] << 8) + (p[0x1EC] << 16) + (p[0x1ED] << 24);
-        A[3] = p[0x1F6] + (p[0x1F7] << 8) + (p[0x1F8] << 16) + (p[0x1F9] << 24);
-        B[3] = p[0x1FA] + (p[0x1FB] << 8) + (p[0x1FC] << 16) + (p[0x1FD] << 24);
+        A[0] = (p[0x1C8] << 16) + p[0x1C6] + (p[0x1C9] << 24) + (p[0x1C7] << 8);
+        B[0] = (p[0x1CC] << 16) + p[0x1CA] + (p[0x1CD] << 24) + (p[0x1CB] << 8);
+        A[1] = (p[0x1D8] << 16) + p[0x1D6] + (p[0x1D9] << 24) + (p[0x1D7] << 8);
+        B[1] = (p[0x1DC] << 16) + p[0x1DA] + (p[0x1DD] << 24) + (p[0x1DB] << 8);
+        A[2] = (p[0x1E8] << 16) + p[0x1E6] + (p[0x1E9] << 24) + (p[0x1E7] << 8);
+        B[2] = (p[0x1EC] << 16) + p[0x1EA] + (p[0x1ED] << 24) + (p[0x1EB] << 8);
+        A[3] = (p[0x1F8] << 16) + p[0x1F6] + (p[0x1F9] << 24) + (p[0x1F7] << 8);
+        B[3] = (p[0x1FC] << 16) + p[0x1FA] + (p[0x1FD] << 24) + (p[0x1FB] << 8);
         i = 0;
         do {
             a = A[i];
@@ -3120,7 +3130,7 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
         u32 remainder = first % size;
         s32 steps = *(s32 *)(context + 0x14);
         s32 sign = -((s32)remainder) | (s32)remainder;
-        aligned = first + (u32)((size - remainder) & (sign >> 31));
+        aligned = first + (u32)((sign >> 31) & (s32)(size - remainder));
         if (steps != 0) { range = (u32)(steps + 1) * size; goto finish; }
         if (first != 0) {
             error = fn_800AF2CC(context + 4, count, first, (s32 *)&local.sp10, &local.spC, (s32)context);
@@ -4603,9 +4613,9 @@ extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 
     extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
     register u8 *iter;
     register s32 status;
-    s32 result;
+    register s32 result;
     register s32 zero;
-    s32 code;
+    register s32 code;
     u32 sp8;
     u8 spC[13];
     u8 flags;
@@ -4946,7 +4956,7 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     void *sp10;
     s32 spC;
     u32 sp8;
-    s32 base;
+    u32 base;
     s32 i;
     s32 ret;
 
@@ -4958,7 +4968,7 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     for (i = 0; (u32)i < *((u8 *)arg0 + 6); i++) {
         if (fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), base + i,
                         0, *(u16 *)arg0, &sp8, 1) != 0 ||
-            (*(u16 *)arg0 == sp8 ? 0 : 1))
+            *(u16 *)arg0 != sp8)
             break;
         fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
         if (fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), base + i,
@@ -8377,6 +8387,8 @@ u16 fn_800B25CC(void *arg0, s32 arg1) {
     s32 var_r0;
     u32 var_r3;
     u32 var_r3_2;
+    u32 var_r3_3;
+    u32 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -8446,223 +8458,84 @@ block_27:
         }
     } else {
         M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *) &(*(u16 *)(work + 4)), &(*(u16 *)work), (s32 *)lbl_803D2140);
-        if (Fn800B25CCWide2((u16 *)work) == 1U) {
+        if (((*(u16 *)work) >= 0xFF41U) && ((*(u16 *)work) <= 0xFF5AU)) {
+            var_r3_3 = 1U;
+            (*(u16 *)work) -= 0x20;
+        } else {
+            var_r3_3 = 0U;
+        }
+        if (var_r3_3 == 1U) {
+            M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
+            var_r3_4 = 1U;
+        } else {
+            var_r3_4 = 0U;
+        }
+        if (var_r3_4 == 1U) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
     return (*(u16 *)(work + 4));
 }
 
-extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 c0, s32 *arg1, u16 tok, s32 *arg3, s32 arg4) {
-main_loop:
-    if (tok == 0) {
-        return c0 == 0;
+extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 arg0, s32 *arg1, u16 arg2, s32 *arg3, s32 arg4) {
+    u16 c0 = arg0;
+    s32 *pat = arg1;
+    u16 tok = arg2;
+    s32 *file = arg3;
+    s32 flag = arg4;
+    u8 *tbl = (u8 *)lbl_803D2140;
+    u16 fwA;
+    u16 fwB;
+loop_top:
+    if (tok == 0) return c0 == 0;
+    if (tok == 63) {
+        if (c0 == 0) return 0;
+        goto adv_both;
     }
-    switch (tok) {
-    case 0x3F:
-        if (c0 == 0) {
-            return 0;
-        }
-        goto block_69;
-    case 0x2A:
-        tok = fn_800B25CC(arg3, arg4);
-        goto loop_9;
-    default:
-        if (c0 != tok) {
-            return 0;
-        }
-        goto block_69;
-    }
-block_69:
-    if (*(volatile s32 *)((u8 *)arg1 + 8) != 0) {
-        u32 idx = *(volatile u16 *)((u8 *)arg1 + 0xC);
-        if (idx > 0x20A) {
-            c0 = 0;
-        } else {
-            s32 f0 = 0;
-            s32 *data = (s32 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
-            u32 ch = *(u16 *)((u8 *)data + idx);
-            *(volatile u16 *)((u8 *)arg1 + 0xC) = idx + 2;
-            if ((ch >= 0x61) && (ch <= 0x7A)) {
-                f0 = 1;
-            }
-            if (f0 != 0) {
-                ch -= 0x20;
-            }
-            c0 = (u16)ch;
-            s32 f1 = 0;
-            u16 t = (u16)(c0 - 0x20);
-            if ((c0 >= 0xFF41) && (c0 <= 0xFF5A)) {
-                f1 = 1;
-            }
-            if (f1 != 0) {
-                c0 = t;
-            }
-        }
-    } else {
-        u32 idx = *(volatile u16 *)((u8 *)arg1 + 0xC);
-        if (idx >= 0xC) {
-            c0 = 0;
-        } else {
-            *(volatile u16 *)((u8 *)arg1 + 0xC) = idx + 1;
-            u8 *data = (u8 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
-            s32 ch = (s8)data[idx];
-            if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)ch, 1) != 0) {
-                u32 idx2 = *(volatile u16 *)((u8 *)arg1 + 0xC);
-                *(volatile u16 *)((u8 *)arg1 + 0xC) = idx2 + 1;
-                u8 *data2 = (u8 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
-                ch = (ch << 8) + data2[idx2];
-            }
-            s32 f0 = 0;
-            if (((u16)ch >= 0x61) && ((u16)ch <= 0x7A)) {
-                f0 = 1;
-            }
-            if (f0 != 0) {
-                c0 = (u16)((u16)ch - 0x20);
+    if (tok == 42) {
+        tok = fn_800B25CC(file, flag);
+    star_loop:
+        if (tok == 42) { tok = fn_800B25CC(file, flag); goto star_loop; }
+        if (tok == 63) { tok = fn_800B25CC(file, flag); goto star_loop; }
+        if (tok == 0) return 1;
+    match_loop:
+        if (c0 == 0) return 0;
+        if (c0 == tok) {
+            s32 sp_file[4];
+            s32 sp_pat[4];
+            sp_pat[0]=pat[0]; sp_pat[1]=pat[1]; sp_pat[2]=pat[2]; sp_pat[3]=pat[3];
+            sp_file[0]=file[0]; sp_file[1]=file[1]; sp_file[2]=file[2]; sp_file[3]=file[3];
+            u16 nc = 0;
+            if (sp_pat[2] != 0) {
+                u16 idx=(u16)sp_pat[3];
+                if (idx<=522u) {
+                    s32 f=0; u16 ch=*(u16*)((u8*)sp_pat[0]+idx); sp_pat[3]=(s16)(idx+2);
+                    if (ch>=97u&&ch<=122u) f=1; if (f!=0) ch-=32; nc=ch;
+                    u32 g=0; if (nc>=65345u&&nc<=65374u){g=1;fwA=nc-32;} if (g==1u) nc=fwA;
+                }
             } else {
-                c0 = (u16)ch;
+                u16 idx=(u16)sp_pat[3];
+                if (idx<12u) {
+                    sp_pat[3]=(s16)(idx+1); s8 ch=*(s8*)((u8*)sp_pat[0]+idx);
+                    if (((s32(**)(s8,s32))((u8*)tbl+84))[0](ch,1)!=0){u16 i2=(u16)sp_pat[3];sp_pat[3]=(s16)(i2+1);ch=(s8)(u16)(((ch<<8)&0xFF00)+*(u8*)((u8*)sp_pat[0]+i2));}
+                    s32 f=0; if ((u16)ch>=97u&&(u16)ch<=122u) f=1; u16 cc=(u16)ch; if (f!=0) cc-=32; nc=cc;
+                }
             }
+            u16 ntok=fn_800B25CC(sp_file,flag);
+            if (VFiPFPATH_DoMatchFileNameWithPattern(nc,sp_pat,ntok,sp_file,flag)!=0) return 1;
+            goto adv_pat;
         }
+    adv_pat:
+        if (pat[2]!=0){u16 idx=(u16)pat[3]; if(idx>522u)c0=0; else{s32 f=0;u16 ch=*(u16*)((u8*)pat[0]+idx);pat[3]=(s16)(idx+2);if(ch>=97u&&ch<=122u)f=1;if(f!=0)ch-=32;c0=ch;u32 g=0;if(c0>=65345u&&c0<=65374u){g=1;fwB=c0-32;}if(g==1u)c0=fwB;}}
+        else{u16 idx=(u16)pat[3]; if(idx>=12u)c0=0; else{pat[3]=(s16)(idx+1);s8 ch=*(s8*)((u8*)pat[0]+idx);if(((s32(**)(s8,s32))((u8*)tbl+84))[0](ch,1)!=0){u16 i2=(u16)pat[3];pat[3]=(s16)(i2+1);ch=(s8)(u16)(((ch<<8)&0xFF00)+*(u8*)((u8*)pat[0]+i2));}s32 f=0;if((u16)ch>=97u&&(u16)ch<=122u)f=1;u16 cc=(u16)ch;if(f!=0)cc-=32;c0=cc;}}
+        goto match_loop;
     }
-    tok = fn_800B25CC(arg3, arg4);
-    goto main_loop;
-loop_9:
-    if (tok == 0x2A) {
-        tok = fn_800B25CC(arg3, arg4);
-        goto loop_9;
-    }
-    if (tok == 0x3F) {
-        goto block_8;
-    }
-    if (tok == 0) {
-        return 1;
-    }
-    goto loop_65;
-block_8:
-    tok = fn_800B25CC(arg3, arg4);
-    goto loop_9;
-loop_65:
-    if (c0 == 0) {
-        return 0;
-    }
-    if (c0 == tok) {
-        volatile s32 pat_copy[4];
-        volatile s32 file_copy[4];
-        pat_copy[0] = arg1[0];
-        pat_copy[1] = arg1[1];
-        pat_copy[2] = arg1[2];
-        pat_copy[3] = arg1[3];
-        file_copy[0] = arg3[0];
-        file_copy[1] = arg3[1];
-        file_copy[2] = arg3[2];
-        file_copy[3] = arg3[3];
-        if (*(volatile s32 *)((u8 *)pat_copy + 8) != 0) {
-            u32 idx = *(volatile u16 *)((u8 *)pat_copy + 0xC);
-            if (idx > 0x20A) {
-                c0 = 0;
-            } else {
-                s32 f0 = 0;
-                s32 *data = (s32 *)(void *)(*(volatile void **)((u8 *)pat_copy + 0));
-                u32 ch = *(u16 *)((u8 *)data + idx);
-                *(volatile u16 *)((u8 *)pat_copy + 0xC) = idx + 2;
-                if ((ch >= 0x61) && (ch <= 0x7A)) {
-                    f0 = 1;
-                }
-                if (f0 != 0) {
-                    ch -= 0x20;
-                }
-                c0 = (u16)ch;
-                s32 f1 = 0;
-                u16 t = (u16)(c0 - 0x20);
-                if ((c0 >= 0xFF41) && (c0 <= 0xFF5A)) {
-                    f1 = 1;
-                }
-                if (f1 != 0) {
-                    c0 = t;
-                }
-            }
-        } else {
-            u32 idx = *(volatile u16 *)((u8 *)pat_copy + 0xC);
-            if (idx >= 0xC) {
-                c0 = 0;
-            } else {
-                *(volatile u16 *)((u8 *)pat_copy + 0xC) = idx + 1;
-                u8 *data = (u8 *)(void *)(*(volatile void **)((u8 *)pat_copy + 0));
-                s32 ch = (s8)data[idx];
-                if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)ch, 1) != 0) {
-                    u32 idx2 = *(volatile u16 *)((u8 *)pat_copy + 0xC);
-                    *(volatile u16 *)((u8 *)pat_copy + 0xC) = idx2 + 1;
-                    u8 *data2 = (u8 *)(void *)(*(volatile void **)((u8 *)pat_copy + 0));
-                    ch = (ch << 8) + data2[idx2];
-                }
-                s32 f0 = 0;
-                if (((u16)ch >= 0x61) && ((u16)ch <= 0x7A)) {
-                    f0 = 1;
-                }
-                if (f0 != 0) {
-                    c0 = (u16)((u16)ch - 0x20);
-                } else {
-                    c0 = (u16)ch;
-                }
-            }
-        }
-        tok = fn_800B25CC((s32 *)file_copy, arg4);
-        if (VFiPFPATH_DoMatchFileNameWithPattern(c0, (s32 *)pat_copy, tok, (s32 *)file_copy, arg4) != 0) {
-            return 1;
-        }
-    }
-block_41:
-    if (*(volatile s32 *)((u8 *)arg1 + 8) != 0) {
-        u32 idx = *(volatile u16 *)((u8 *)arg1 + 0xC);
-        if (idx > 0x20A) {
-            c0 = 0;
-        } else {
-            s32 f0 = 0;
-            s32 *data = (s32 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
-            u32 ch = *(u16 *)((u8 *)data + idx);
-            *(volatile u16 *)((u8 *)arg1 + 0xC) = idx + 2;
-            if ((ch >= 0x61) && (ch <= 0x7A)) {
-                f0 = 1;
-            }
-            if (f0 != 0) {
-                ch -= 0x20;
-            }
-            c0 = (u16)ch;
-            s32 f1 = 0;
-            u16 t = (u16)(c0 - 0x20);
-            if ((c0 >= 0xFF41) && (c0 <= 0xFF5A)) {
-                f1 = 1;
-            }
-            if (f1 != 0) {
-                c0 = t;
-            }
-        }
-    } else {
-        u32 idx = *(volatile u16 *)((u8 *)arg1 + 0xC);
-        if (idx >= 0xC) {
-            c0 = 0;
-        } else {
-            *(volatile u16 *)((u8 *)arg1 + 0xC) = idx + 1;
-            u8 *data = (u8 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
-            s32 ch = (s8)data[idx];
-            if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)ch, 1) != 0) {
-                u32 idx2 = *(volatile u16 *)((u8 *)arg1 + 0xC);
-                *(volatile u16 *)((u8 *)arg1 + 0xC) = idx2 + 1;
-                u8 *data2 = (u8 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
-                ch = (ch << 8) + data2[idx2];
-            }
-            s32 f0 = 0;
-            if (((u16)ch >= 0x61) && ((u16)ch <= 0x7A)) {
-                f0 = 1;
-            }
-            if (f0 != 0) {
-                c0 = (u16)((u16)ch - 0x20);
-            } else {
-                c0 = (u16)ch;
-            }
-        }
-    }
-    goto loop_65;
+    if (c0!=tok) return 0;
+adv_both:
+    if (pat[2]!=0){u16 idx=(u16)pat[3]; if(idx>522u)c0=0; else{s32 f=0;u16 ch=*(u16*)((u8*)pat[0]+idx);pat[3]=(s16)(idx+2);if(ch>=97u&&ch<=122u)f=1;if(f!=0)ch-=32;c0=ch;u32 g=0;if(c0>=65345u&&c0<=65374u){g=1;fwA=c0-32;}if(g==1u)c0=fwA;}}
+    else{u16 idx=(u16)pat[3]; if(idx>=12u)c0=0; else{pat[3]=(s16)(idx+1);s8 ch=*(s8*)((u8*)pat[0]+idx);if(((s32(**)(s8,s32))((u8*)tbl+84))[0](ch,1)!=0){u16 i2=(u16)pat[3];pat[3]=(s16)(i2+1);ch=(s8)(u16)(((ch<<8)&0xFF00)+*(u8*)((u8*)pat[0]+i2));}s32 f=0;if((u16)ch>=97u&&(u16)ch<=122u)f=1;u16 cc=(u16)ch;if(f!=0)cc-=32;c0=cc;}}
+    tok=fn_800B25CC(file,flag);
+    goto loop_top;
 }
 
 extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
@@ -9748,7 +9621,7 @@ extern "C" const u8 lbl_80560D9C;
 extern "C" const u8 lbl_80560D9D;
 #pragma push
 #pragma scheduling on
-extern "C" s32 fn_800B5070(s32 arg0, s32 *out) { /* a5 */
+extern "C" s32 fn_800B5070(s32 arg0, s32 *out) {
     volatile u8 sp9;
     volatile u8 sp8;
     s32 result;
@@ -9772,7 +9645,7 @@ extern "C" s32 fn_800B5070(s32 arg0, s32 *out) { /* a5 */
             if (value < 0 || value > 9) break;
             acc *= 10;
             offset += 2;
-            index++;
+            ++index;
             acc += value;
         }
         if ((s16)index == 8) {
@@ -10610,10 +10483,10 @@ s32 fn_800B6928(s8 arg0) {
         s32 result;
         u8 pad1F84[8];
         u16 flags;
-        u8 pad1F8E[0x1FC8 - 0x1F8E];
     };
     u8 *base;
     u8 *successBase;
+    u32 record;
     s16 index = fn_800A485C(arg0) - 0x41;
     Entry *entry;
     u16 flags;
@@ -10629,7 +10502,8 @@ s32 fn_800B6928(s8 arg0) {
     } else {
         fn_800B783C(base + 0x64);
     }
-    entry = (Entry *)(base + 0xA0) + index;
+    record = (u32)base + index * 0x1FC8;
+    entry = (Entry *)(record + 0xA0);
     flags = entry->flags;
     if (flags & 8) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
@@ -11787,7 +11661,7 @@ extern "C" s32 fn_800B8BE8(s32 context) {
 extern "C" s32 fn_800B808C(s32, void *, s32);
 extern "C" unsigned char lbl_80405D58[];
 #pragma dont_inline on
-extern "C" s32 fn_800B8C74(s32 arg0) { /* z5 */
+extern "C" s32 fn_800B8C74(s32 arg0) {
     u8 *found;
     u16 i;
     u8 *cur;
@@ -11802,8 +11676,8 @@ extern "C" s32 fn_800B8C74(s32 arg0) { /* z5 */
         cur = lbl_80405D58 + i * 0xF0;
         if (*(u32 *)cur == (u32)arg0) { entry = cur; break; }
     }
-    if ((((s32)~((i - 0x17) | (0x17 - i)) >> 31) & -0x16) == 0) {
-        if (*(u32 *)(entry + 0xE4) & 2) {
+    if (!(-0x16 & ((s32)~((i - 0x17) | (0x17 - i)) >> 31))) {
+        if (*(s32 *)(entry + 0xE4) & 2) {
             fn_800B8048(lbl_8055DD30);
             return -21;
         }
@@ -13323,12 +13197,12 @@ extern "C" s32 fn_800BBCF4(void) {
 }
 
 extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
+    // prologue mr order quirk: target mr r26,r4 then mr r25,r3
     const char *str = lbl_8031B838;
     s32 cmd = arg1;
     s32 r30 = 3;
     s32 field10 = dev->field10;
     s32 res;
-
     if (lbl_80559248 < 0) {
         res = (s32)0xC1000000;
     } else if (dev->state == 0) {
@@ -13341,7 +13215,6 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
         } else {
             lbl_8055DD6C = 1;
             OSUnlockMutex(lbl_80407560);
-
             if (dev->state == 1) {
                 s32 sp18[6];
                 res = fn_800BB0A8(dev->fd, 7, 3, 2, 0, 0, 0, 0, 0, (s32)sp18, 0, 0);
@@ -13356,7 +13229,6 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                     goto end;
                 }
             }
-
             if (arg2 == 0 || arg3 == 0) {
                 lbl_8055DD6C = 0;
                 res = (s32)0xC1000000;
@@ -13366,12 +13238,10 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                 case 10:
                     r30 = 3;
                     break;
-
                 case 0x33:
                     res = fn_800BC2EC(dev, arg2);
                     lbl_8055DD6C = 0;
                     goto end;
-
                 case 0x29:
                     res = 0;
                     if (arg2 != 0) {
@@ -13384,20 +13254,17 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                     }
                     lbl_8055DD6C = 0;
                     goto end;
-
                 case 3:
                     res = 0;
                     *arg2 = dev->field10;
                     lbl_8055DD6C = 0;
                     goto end;
                 }
-
                 res = fn_800BB0A8(dev->fd, cmd, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
                 lbl_8055DD6C = 0;
             }
         }
     }
-
 end:
     if (res != 0) {
         OSReport(str + 0x36C, str + 0x5A0, res);
@@ -16362,12 +16229,11 @@ extern "C" void fn_800C2090(volatile s32 *output, const volatile s32 *left, cons
 }
 
 extern s32 lbl_8031D5E0[];
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" void fn_800C21D8(s32* arg0, s32* arg1) {
     s32* coeff = lbl_8031D5E0;
-    s32* p = (s32*)((u32)arg0 + 72);
-    s32* q = (s32*)((u32)arg1 + 72);
+    s32* p = arg0 + 18;
+    s32* q = arg1 + 18;
     s32 c0, c1, value;
     c0 = *coeff++;
     value = p[-18];
@@ -16460,7 +16326,7 @@ extern "C" void fn_800C21D8(s32* arg0, s32* arg1) {
     p[8] = (s32)(((s64)value * c0) >> 20);
     q[-8] = (s32)(((s64)value * c1) >> 20);
 }
-#pragma pop
+#pragma scheduling on
 extern "C" s32 lbl_8031D670[];
 extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     s32 *t = (s32 *)lbl_8031D670;
@@ -16783,24 +16649,59 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
     s32 n = arg2;
     s32 i;
     for (i = 0; i < 15; i++) {
-        s64 a = (s64)win[n & 0x3FF] * c[0] + (s64)win[(n + 0x3E0) & 0x3FF] * c[8]
-              + (s64)win[(n + 0x60) & 0x3FF] * c[1] + (s64)win[(n + 0x380) & 0x3FF] * -c[9]
-              + (s64)win[(n + 0x80) & 0x3FF] * c[2] + (s64)win[(n + 0x360) & 0x3FF] * c[10]
-              + (s64)win[(n + 0xE0) & 0x3FF] * c[3] + (s64)win[(n + 0x300) & 0x3FF] * -c[11]
-              + (s64)win[(n + 0x100) & 0x3FF] * c[4] + (s64)win[(n + 0x2E0) & 0x3FF] * c[12]
-              + (s64)win[(n + 0x160) & 0x3FF] * c[5] + (s64)win[(n + 0x280) & 0x3FF] * -c[13]
-              + (s64)win[(n + 0x180) & 0x3FF] * c[6] + (s64)win[(n + 0x260) & 0x3FF] * c[14]
-              + (s64)win[(n + 0x1E0) & 0x3FF] * c[7] + (s64)win[(n + 0x200) & 0x3FF] * -c[15];
-        s64 b = (s64)win[n & 0x3FF] * c[8] + (s64)win[(n + 0x3E0) & 0x3FF] * -c[0]
-              + (s64)win[(n + 0x60) & 0x3FF] * c[9] + (s64)win[(n + 0x380) & 0x3FF] * c[1]
-              + (s64)win[(n + 0x80) & 0x3FF] * c[10] + (s64)win[(n + 0x360) & 0x3FF] * -c[2]
-              + (s64)win[(n + 0xE0) & 0x3FF] * c[11] + (s64)win[(n + 0x300) & 0x3FF] * c[3]
-              + (s64)win[(n + 0x100) & 0x3FF] * c[12] + (s64)win[(n + 0x2E0) & 0x3FF] * -c[4]
-              + (s64)win[(n + 0x160) & 0x3FF] * c[13] + (s64)win[(n + 0x280) & 0x3FF] * c[5]
-              + (s64)win[(n + 0x180) & 0x3FF] * c[14] + (s64)win[(n + 0x260) & 0x3FF] * -c[6]
-              + (s64)win[(n + 0x1E0) & 0x3FF] * c[15] + (s64)win[(n + 0x200) & 0x3FF] * c[7];
-        s32 r1 = (s32)(a >> 25);
-        s32 r2 = (s32)(b >> 25);
+        s32 s0 = win[n & 0x3FF];
+        s32 s3e0 = win[(n + 0x3E0) & 0x3FF];
+        s32 s60 = win[(n + 0x60) & 0x3FF];
+        s32 s380 = win[(n + 0x380) & 0x3FF];
+        s32 s80 = win[(n + 0x80) & 0x3FF];
+        s32 s360 = win[(n + 0x360) & 0x3FF];
+        s32 se0 = win[(n + 0xE0) & 0x3FF];
+        s32 s300 = win[(n + 0x300) & 0x3FF];
+        s32 s100 = win[(n + 0x100) & 0x3FF];
+        s32 s2e0 = win[(n + 0x2E0) & 0x3FF];
+        s32 s160 = win[(n + 0x160) & 0x3FF];
+        s32 s280 = win[(n + 0x280) & 0x3FF];
+        s32 s180 = win[(n + 0x180) & 0x3FF];
+        s32 s260 = win[(n + 0x260) & 0x3FF];
+        s32 s1e0 = win[(n + 0x1E0) & 0x3FF];
+        s32 s200 = win[(n + 0x200) & 0x3FF];
+        s64 a = 0;
+        s64 b = 0;
+        s32 r1, r2;
+        a += (s64)s0 * c[0];
+        a += (s64)s3e0 * c[8];
+        a += (s64)s60 * c[1];
+        a += (s64)s380 * -c[9];
+        a += (s64)s80 * c[2];
+        a += (s64)s360 * c[10];
+        a += (s64)se0 * c[3];
+        a += (s64)s300 * -c[11];
+        a += (s64)s100 * c[4];
+        a += (s64)s2e0 * c[12];
+        a += (s64)s160 * c[5];
+        a += (s64)s280 * -c[13];
+        a += (s64)s180 * c[6];
+        a += (s64)s260 * c[14];
+        a += (s64)s1e0 * c[7];
+        a += (s64)s200 * -c[15];
+        b += (s64)s0 * c[8];
+        b += (s64)s3e0 * -c[0];
+        b += (s64)s60 * c[9];
+        b += (s64)s380 * c[1];
+        b += (s64)s80 * c[10];
+        b += (s64)s360 * -c[2];
+        b += (s64)se0 * c[11];
+        b += (s64)s300 * c[3];
+        b += (s64)s100 * c[12];
+        b += (s64)s2e0 * -c[4];
+        b += (s64)s160 * c[13];
+        b += (s64)s280 * c[5];
+        b += (s64)s180 * c[14];
+        b += (s64)s260 * -c[6];
+        b += (s64)s1e0 * c[15];
+        b += (s64)s200 * c[7];
+        r1 = (s32)(a >> 25);
+        r2 = (s32)(b >> 25);
         if ((r1 >> 31) != (r1 >> 15)) {
             r1 = (r1 >> 31) ^ 0x7FFF;
         }
@@ -16809,7 +16710,7 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
         }
         if (arg4 == 0) {
             out[2 * i] = r1;
-            out[0x3C - 2 * i] = r2;
+            out[0x1E - i] = r2;
         } else {
             out[i] = r1;
             out[0x1E - i] = r2;
@@ -17142,17 +17043,17 @@ extern "C" void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
     }
 }
 
-void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) { /* q4 */
+void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
     s32 i;
     for (i = 0; i < 2; i++) {
-        s32 s, d;
+        s32 s, d, a, b;
         s = arg0[0] + arg1[0]; d = arg0[0] - arg1[0]; arg0[0] = s; arg1[0] = (s32)(((s64)d * arg2[0]) >> 24);
         s = arg0[1] + arg1[1]; d = arg0[1] - arg1[1]; arg0[1] = s; arg1[1] = (s32)(((s64)d * arg2[1]) >> 24);
         s = arg0[2] + arg1[2]; d = arg0[2] - arg1[2]; arg0[2] = s; arg1[2] = (s32)(((s64)d * arg2[2]) >> 24);
         s = arg0[3] + arg1[3]; d = arg0[3] - arg1[3]; arg0[3] = s; arg1[3] = (s32)(((s64)d * arg2[3]) >> 24);
         s = arg0[4] + arg1[4]; d = arg0[4] - arg1[4]; arg0[4] = s; arg1[4] = (s32)(((s64)d * arg2[4]) >> 24);
         s = arg0[5] + arg1[5]; d = arg0[5] - arg1[5]; arg0[5] = s; arg1[5] = (s32)(((s64)d * arg2[5]) >> 24);
-        { s32 a, b; b = arg1[6]; a = arg0[6]; s = a + b; d = a - b; arg0[6] = s; arg1[6] = (s32)(((s64)d * arg2[6]) >> 24); }
+        b = arg1[6]; a = arg0[6]; s = a + b; d = a - b; arg0[6] = s; arg1[6] = (s32)(((s64)d * arg2[6]) >> 24);
         s = arg0[7] + arg1[7]; d = arg0[7] - arg1[7]; arg0[7] = s; arg1[7] = (s32)(((s64)d * arg2[7]) >> 24);
         arg0 += 16;
         arg1 += 16;
@@ -17323,7 +17224,7 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
         p5 = (s32 *)((u8 *)arg3 + 0x1B00);
         k = 6;
         do {
-            a = p5[0]; done += 8; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
+            a = p5[0]; done = 0; b = p7[0]; p5[0] = a + b; p7[0] = a - b;
             a = p5[1]; b = p7[1]; p5[1] = a + b; p7[1] = a - b;
             a = p5[2]; b = p7[2]; p5[2] = a + b; p7[2] = a - b;
             a = p5[3]; b = p7[3]; p5[3] = a + b; p7[3] = a - b;
@@ -18496,6 +18397,7 @@ extern "C" s32 fn_800D014C(s32 arg0, s32 arg1) {
 }
 
 extern "C" u32 lbl_8055DDA0;
+#pragma scheduling off
 extern "C" void fn_800D018C(void *arg0, void *arg1) {
     class Dispatch {
     public:
@@ -18506,12 +18408,11 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
         virtual void v16(); virtual void v17();
         virtual void call(void *);
     };
-    int zero = 0;
-    void *p = *(void **)((char *)arg1 + 0x10);
-    lbl_8055DDA0 = zero;
-    ((Dispatch *)arg0)->call((char *)p + 0x10);
+    lbl_8055DDA0 = 0;
+    void *p = *(void **)((u8 *)arg1 + 0x10);
+    ((Dispatch *)arg0)->call((u8 *)p + 0x10);
 }
-
+#pragma scheduling on
 extern "C" u8 lbl_8031E878[];
 extern "C" u8 lbl_8031E780[];
 extern "C" const char lbl_8031E8FC[];
@@ -20048,6 +19949,7 @@ extern "C" u8 fn_800D3840(s32 arg0) {
     u32 end;
     s32 temp_r4;
     u32 temp_r5;
+
     temp_r5 = (u32)arg0 & 0x7FFFFFFF;
     var_r29 = temp_r5 - lbl_805597E8;
     if (temp_r5 >= lbl_8055DDD0)
@@ -20056,8 +19958,10 @@ extern "C" u8 fn_800D3840(s32 arg0) {
         temp_r4 = temp_r5 & 0xFFFFFFE0;
         lbl_805597E8 = temp_r4;
         var_r29 = temp_r5 - temp_r4;
-        end = lbl_8055DDD0;
-        var_r31 = ((u32)(temp_r4 + 0x200) >= end) ? (s32)((end - temp_r4 + 0x1F) & 0xFFFFFFE0) : 0x200;
+        var_r31 = 0x200;
+        end = *(volatile u32 *)&lbl_8055DDD0;
+        if ((u32)(temp_r4 + 0x200) >= end)
+            var_r31 = (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
         temp_r28 = OSEnableInterrupts();
         temp_r31 = DVDReadAsyncPrio((void *)lbl_80407E00, (void *)lbl_80407C00, var_r31,
                                     lbl_805597E8, 0, 2);
@@ -22113,9 +22017,9 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     void *obj;
-    s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
-    u8 *rec = self + n * 0x18;
-    s32 i, index;
+    register s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
+    register u8 *rec = self + n * 0x18;
+    register s32 i, index;
     for (i = 0; i < 4; i++) {
         u8 *pane;
         if (i < rec[0x16C]) {
@@ -24074,6 +23978,7 @@ extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void);
 extern "C" void fn_800FA350(void);
 extern "C" void fn_800CF170(void *arg0) {
     class HandleDispatch { public: virtual void stop2(s32); };
+    struct StopVT { u8 pad[8]; void (*stop)(void *, s32); };
     if (*(void **)((u8 *)arg0 + 0x5C4) != 0) {
         fn_800EB36C(*(void **)((u8 *)arg0 + 0x5C4));
         ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5C4))->stop2(-1);
@@ -24093,8 +23998,8 @@ extern "C" void fn_800CF170(void *arg0) {
     if (*(void **)((u8 *)arg0 + 0x5C0) != 0) {
         ((void (*)(void *))Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv)(*(void **)((u8 *)arg0 + 0x5C0));
         void *player = *(void **)((u8 *)arg0 + 0x5C0);
-        void *vt = *(void **)((u8 *)player + 8);
-        ((void (*)(void *, s32))*(void **)((u8 *)vt + 8))(player, -1);
+        StopVT *vt = *(StopVT **)((u8 *)player + 8);
+        vt->stop(player, -1);
     }
     if (*(void **)((u8 *)arg0 + 0x5D4) != 0)
         if (*(void **)((u8 *)arg0 + 0x5D4) != 0)
@@ -25284,7 +25189,9 @@ extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         else if (arg9 != 0) *(s32 *)arg9 = *(s32 *)lbl_8055DD74;
     }
 done:
-    if (arg10 == 0 || res == 0 || buf == 0) goto skip;
+    if (arg10 == 0) goto skip;
+    if (res == 0) goto skip;
+    if (buf == 0) goto skip;
     iosFree(lbl_80559248, buf);
 skip:
     return res;
