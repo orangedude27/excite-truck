@@ -25,6 +25,13 @@ struct CacheHdr1624 {
     u16 extra;
 };
 typedef u16 *Fn800A4B78Ret;
+static inline s32 Fn800B25CCWide(u16 *w) {
+    if (*w >= 0xFF41U && *w <= 0xFF5AU) {
+        *w -= 0x20;
+        return 1;
+    }
+    return 0;
+}
 struct Fn800B10E0Ent {
     u16 first;
     u8 pad2[0x20A - 2];
@@ -8269,7 +8276,6 @@ u16 fn_800B25CC(void *arg0, s32 arg1) {
     u32 var_r3;
     u32 var_r3_2;
     u32 var_r3_3;
-    u32 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -8347,11 +8353,11 @@ block_27:
         }
         if (var_r3_3 == 1U) {
             M2C_FIELD(&lbl_803D2140, void (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
-            var_r3_4 = 1U;
+            var_r3_3 = 1U;
         } else {
-            var_r3_4 = 0U;
+            var_r3_3 = 0U;
         }
-        if (var_r3_4 == 1U) {
+        if (var_r3_3 == 1U) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
