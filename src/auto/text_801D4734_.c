@@ -1261,6 +1261,7 @@ extern "C" void fn_801D6080(void *arg0) {
         virtual void f8();
         virtual void f9();
     };
+    /* When playing and its delay has elapsed, notify each element then finish. */
     if (p[2] == 2 && lbl_8055E3C4 - p[0x1B] >= p[0x1A]) {
         count = 0;
         offset = 0;
