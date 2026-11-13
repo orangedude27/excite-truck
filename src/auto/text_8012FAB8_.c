@@ -783,7 +783,10 @@ void fn_80131368(char *arg0) {
 }
 #pragma scheduling on
 extern int lbl_8055E044;
+/* "LocaleUnXlator - really shouldn't use this in non-DEBUG mode" */
 extern char lbl_8032B328[];
+/* panic(): prints "PANIC: " + fmt (fn_802E3028), reports "PANIC" and exit(-1);
+ * matched in src/game/abend.c as fn_802E317C. */
 int fn_802E317C(const char *, ...);
 
 /* LocaleUnXlator: copy the string src into dst and return dst, copying at most
