@@ -54,24 +54,25 @@ extern void GXInitTlutObj(void *, void *, int, unsigned short);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D7564(void) {
-    int offset;
-    int i;
-    unsigned char *entry;
-    unsigned short t;
+    /* Debug-dumps active drgc texture table entries, printing index, entry, and S/T wrap modes. */
+    int byteOffset;
+    int index;
+    unsigned char *texEntry;
+    unsigned short wrapT;
 
     fn_802E30C8(lbl_8034C460);
-    i = 0;
-    offset = 0;
+    index = 0;
+    byteOffset = 0;
     do {
-        entry = (unsigned char *)lbl_8055FE28 + offset;
-        if (entry[0x20] != 0) {
-            t = GXGetTexObjWrapT(entry + 0x24) & 0xFFFF;
-            fn_802E30C8(lbl_8034C47C, i, entry,
-                        (unsigned short)GXGetTexObjWrapS(entry + 0x24), t);
+        texEntry = (unsigned char *)lbl_8055FE28 + byteOffset;
+        if (texEntry[0x20] != 0) {
+            wrapT = GXGetTexObjWrapT(texEntry + 0x24) & 0xFFFF;
+            fn_802E30C8(lbl_8034C47C, index, texEntry,
+                        (unsigned short)GXGetTexObjWrapS(texEntry + 0x24), wrapT);
         }
-        i++;
-        offset += 0xF4;
-    } while (i < 0x1C2);
+        index++;
+        byteOffset += 0xF4;
+    } while (index < 0x1C2);
 }
 #pragma pop
 
@@ -254,9 +255,11 @@ void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
     int i;
     for (i = 0; i < n; i++) {
         union Pixel p;
+        int r, g, b, a;
         p.word = src[i];
-        rgb[i] = (unsigned short)(((p.c[0] & 0xF8) << 8) | ((p.c[1] & 0xFC) << 3) | ((p.c[2] & 0xF8) >> 3));
-        alpha[i] = (unsigned short)(p.c[3] << 8);
+        r = p.c[0]; g = p.c[1]; b = p.c[2]; a = p.c[3];
+        rgb[i] = (unsigned short)(((r << 8) & 0xF800) | ((g << 3) & 0x7E0) | ((b & 0xF8) >> 3));
+        alpha[i] = (unsigned short)(a << 8);
     }
 }
 #pragma pop
