@@ -4789,20 +4789,21 @@ void* fn_8011FF24(void) {
     return lbl_8055DEF0;
 }
 
-void *fn_8011FF2C(s32 arg0) {
-    u32 aligned = (arg0 + 0x1F) & ~0x1F;
-    void *res = fn_8011FFC4((s32)lbl_8055DEF0 + aligned);
+void *fn_8011FF2C(s32 baseSize) {
+    /* Allocate a 32-byte-aligned block and assign sub-allocations into registered pointers. */
+    u32 alignedSize = (baseSize + 0x1F) & ~0x1F;
+    void *block = fn_8011FFC4((s32)lbl_8055DEF0 + alignedSize);
     lbl_8055DEF0 = 0;
-    if (res != NULL) {
+    if (block != NULL) {
         u32 i;
-        u8 *ptr = (u8*)res + aligned;
+        u8 *ptr = (u8*)block + alignedSize;
         for (i = 0; i < lbl_8055DEF4; i++) {
             *(void**)lbl_80559948[i] = ptr;
             ptr += lbl_8055994C[i];
         }
     }
     lbl_8055DEF4 = 0;
-    return res;
+    return block;
 }
 
 void AXFXSetHooks_8011FFB8(void *arg0, void *arg1) {
