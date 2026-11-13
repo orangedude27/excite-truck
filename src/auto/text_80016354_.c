@@ -506,7 +506,8 @@ extern char *fn_80029004(char *, int);
 extern char *fn_80131234(char *);
 extern int fn_80016DD8(const char *);
 extern int fn_8013C8E8(char *);
-extern void fn_802E317C(char *, char *);
+extern void fn_802E317C(const char *, ...);
+extern void fn_801345D8(char *, int, const char *, ...);
 extern "C" void fn_80017010(void *arg0) {
     struct Interface {
         virtual void m0();
@@ -529,7 +530,6 @@ extern "C" void fn_80017010(void *arg0) {
     char *found;
     char *r26;
     int eidx, off;
-    char *nameArg;
     char *base;
     base = lbl_802FCEA8;
     entry = (char *)lbl_8055D544 + (int)lbl_8055D550 * 0xA8;
@@ -602,8 +602,7 @@ extern "C" void fn_80017010(void *arg0) {
     } else {
         *(int *)(entry + 8) = *(int *)(entry + 4);
     }
-    nameArg = r26 ? r26 : entry + 0x2C;
-    src = ((Interface *)arg0)->m4(base + 0xFC, nameArg);
+    src = ((Interface *)arg0)->m4(base + 0xFC, r26 ? r26 : entry + 0x2C);
     {
         char *p = src;
         char *q = entry + 0xC;
