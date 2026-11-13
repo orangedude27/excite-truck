@@ -958,6 +958,40 @@ extern float lbl_80562F64, lbl_80562F70;
 extern double cos(double);
 extern float fn_801E8738(int);
 extern void fn_802C70AC(int, void *, int, int);
+
+/* One of the 32 direction planes of the sky dome: the normal and the angle
+ * around it the plane covers. */
+struct SkyPlane {
+    float normal[3];
+    float angle;
+};
+
+/* The resource a Sky draws: the model to draw (+0x04) and the 32 direction
+ * planes at +0x2C, which fn_801F31E8 byte-swaps after loading. */
+struct SkyResource {
+    int unk_00;
+    int model;
+    int pad_08[9];
+    struct SkyPlane planes[32];
+};
+
+/* The sky: a 3x4 matrix (rotation at +0x0C, position at +0x30, which is kept on
+ * the camera) and the resource to draw. */
+struct Sky {
+    void *vtable;
+    int planeCount;               /* planes the camera looks along */
+    int mode;                     /* 1 tests every plane, anything else takes all */
+    float matrix[12];
+    struct SkyResource *resource;
+};
+
+/* The 3x4 camera matrix of fn_802C86DC: three basis columns, then the position. */
+struct Camera {
+    float basis[6];
+    float viewAxis[3];            /* the axis the camera looks along */
+    float position[3];
+};
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
