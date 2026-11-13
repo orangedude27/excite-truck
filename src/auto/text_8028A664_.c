@@ -536,9 +536,8 @@ void fn_8028B3CC(void) {
     extern void fn_8028E61C(void *);
     extern s32 fn_8028E2F8(void *, void *, void *);
     union { s32 i[36]; f32 f[36]; } cfg;
-    s32 enabled = 0;
     char *name = lbl_80348C10;
-    if ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) enabled = 1;
+    s32 enabled = ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) ? 1 : 0;
     if (enabled) {
         fn_8028E61C(&cfg);
         cfg.i[1] = 0x80;
@@ -564,7 +563,9 @@ void fn_8028B3CC(void) {
         cfg.f[25] = lbl_8056432C;
         cfg.f[29] = lbl_8056434C;
         lbl_8055F704 = fn_8028E2F8(&cfg, lbl_80348C1C, name);
-    } else lbl_8055F704 = 0;
+    } else {
+        lbl_8055F704 = 0;
+    }
 }
 #pragma pop
 extern s32 lbl_8055F704;
