@@ -64,8 +64,15 @@ typedef enum {
 #define DSP_CSR_HALT (1 << 2)
 #define DSP_CSR_PIINT (1 << 1)
 
+// AI_DMA_START_H - AI DMA start address, upper part (buffer address bits 16-28)
+#define DSP_AI_DMA_START_H_ADDR 0x1FFF
+
+// AI_DMA_START_L - AI DMA start address, lower part (buffer address bits 5-15)
+#define DSP_AI_DMA_START_L_ADDR 0xFFE0
+
 // AI_DMA_CSR - AI DMA Control Status Register
 #define DSP_AI_DMA_CSR_PLAY (1 << 15)
+#define DSP_AI_DMA_CSR_LEN 0x7FFF  //!< transfer length, counted in 32-byte blocks
 
 #ifdef __cplusplus
 }
