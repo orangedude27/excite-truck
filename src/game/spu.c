@@ -542,6 +542,10 @@ int fn_802E582C(void) {
 #pragma dont_inline reset
 
 #pragma dont_inline fn_802E582C
+/* fn_8012C41C callback used by fn_802E58B8: allocate a voice object for every
+ * loaded entry of the directory whatever its type (r3 still carries the entry's
+ * name into fn_802E5AE8). The tail call hands fn_802E582C's result back to
+ * fn_8012C41C, so the walk stops at the first entry that cannot be allocated. */
 void fn_802E589C(void) {
     fn_802E582C();
 }
