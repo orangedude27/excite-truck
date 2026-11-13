@@ -276,16 +276,14 @@ void fn_8029C664(void) {
 void fn_8029C73C(void) {
     typedef struct { float x, y, z; } Vec;
     typedef struct { float x, y; } Vec2;
-    typedef struct {
-        Vec pos;
-        Vec2 v1;
-        Vec2 v2;
-    } Params;
-    typedef struct {
-        Vec temp;
-        Params params;
-        unsigned char init[0x20];
-    } Frame;
+    typedef struct { Vec pos; Vec2 v1; Vec2 v2; } Params;
+    struct Owner { virtual void m08(); virtual void *get(int); };
+    struct Item {
+        virtual void m08(); virtual void m0C(); virtual void m10(); virtual int getId(void *);
+        virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
+        virtual void m28(); virtual void m2C(); virtual void m30(); virtual Vec getVec(void *);
+        virtual void m38(); virtual Vec2 getVec2(void *);
+    };
     extern char lbl_80349560[];
     extern int lbl_804B5010[];
     extern int lbl_8055F7F0;
@@ -297,48 +295,43 @@ void fn_8029C73C(void) {
     extern void *fn_8029D148(void *, void *, float *, int);
     extern void fn_802E317C(const char *, ...);
     extern void *memset(void *, int, unsigned int);
-    Vec2 t1;
-    Vec2 t2;
-    Frame frame;
+    unsigned char init[0x20];
+    Params params;
     char *base;
-    void *owner;
+    Owner *owner;
     int i;
     base = lbl_80349560;
     lbl_8055F7F0 = 0;
-    owner = fn_80131810(base + 0xA4);
+    owner = (Owner *)fn_80131810(base + 0xA4);
     if (owner != 0) {
-        memset(frame.init, 0, 0x20);
-        *(float *)(frame.init + 0) = lbl_8056464C;
-        *(float *)(frame.init + 4) = lbl_80564628;
-        *(float *)(frame.init + 8) = lbl_80564628;
-        *(float *)(frame.init + 12) = lbl_80564650;
-        *(float *)(frame.init + 16) = lbl_80564630;
-        *(float *)(frame.init + 20) = lbl_80564630;
-        *(int *)(frame.init + 24) = -1;
-        frame.init[28] = 0x20;
-        frame.init[29] = 0xE4;
-        for (i = 0; (*(void *(**)(void *, int))(*(char **)owner + 0xC))(owner, i) != 0; i++) {
-            void *item;
+        memset(init, 0, 0x20);
+        *(float *)(init + 0) = lbl_8056464C;
+        *(float *)(init + 4) = lbl_80564628;
+        *(float *)(init + 8) = lbl_80564628;
+        *(float *)(init + 12) = lbl_80564650;
+        *(float *)(init + 16) = lbl_80564630;
+        *(float *)(init + 20) = lbl_80564630;
+        *(int *)(init + 24) = -1;
+        init[28] = 0x20;
+        init[29] = 0xE4;
+        for (i = 0; owner->get(i) != 0; i++) {
+            Item *item;
             int id;
             void *res;
+            int idx;
             if (lbl_8055F7F0 >= 8)
                 fn_802E317C(base + 0xB0, 8);
-            item = (*(void *(**)(void *, int))(*(char **)owner + 0xC))(owner, i);
-            id = (*(int (**)(void *, void *))(*(char **)item + 0x14))(item, base + 0xD0);
-            frame.temp = (*(Vec (**)(void *, void *))(*(char **)item + 0x34))(item, &lbl_8055CAB4);
-            frame.params.pos.x = frame.temp.x;
-            frame.params.pos.y = frame.temp.y;
-            frame.params.pos.z = frame.temp.z;
-            t1 = (*(Vec2 (**)(void *, void *))(*(char **)item + 0x3C))(item, &lbl_8055CABC);
-            frame.params.v1.x = t1.x;
-            frame.params.v1.y = t1.y;
-            t2 = (*(Vec2 (**)(void *, void *))(*(char **)item + 0x3C))(item, &lbl_8055CAC4);
-            frame.params.v2.x = t2.x;
-            frame.params.v2.y = t2.y;
+            item = (Item *)owner->get(i);
+            id = item->getId(base + 0xD0);
+            params.pos = item->getVec(&lbl_8055CAB4);
+            params.v1 = item->getVec2(&lbl_8055CABC);
+            params.v2 = item->getVec2(&lbl_8055CAC4);
             res = fn_801284F8(0x78, base + 0xE0);
             if (res != 0)
-                res = fn_8029D148(res, frame.init, (float *)&frame.params, id);
-            lbl_804B5010[lbl_8055F7F0++] = (int)res;
+                res = fn_8029D148(res, init, (float *)&params, id);
+            idx = lbl_8055F7F0;
+            lbl_804B5010[idx] = (int)res;
+            lbl_8055F7F0 = idx + 1;
         }
         fn_80131818(owner);
     }
@@ -1451,6 +1444,45 @@ int fn_8029EB54(void *arg0, void *arg1) {
     }
     if (inside && b[1]<a[1]-lbl_80564634) result=1;
     return result;
+}
+
+void fn_8029EC64(void *area, void *arg1, int arg2) {
+    float sp1C, sp18, sp14, sp10, spC, sp8;
+    float temp_f0, temp_f0_2, temp_f1, temp_f2, temp_f3, temp_f6, temp_f7;
+    float var_f1, var_f31, var_f5;
+    unsigned char *temp_r31, *temp_r5;
+    temp_r5 = (unsigned char *)arg1 + arg2 * 0x3C;
+    temp_r31 = temp_r5 + 0x70;
+    if ((unsigned char *)&sp14 == temp_r31) {
+        temp_f6 = *(float *)(temp_r31 + 4); temp_f0 = *(float *)(temp_r31); temp_f7 = *(float *)(temp_r31 + 8);
+        sp14 = temp_f7 * *(float *)((unsigned char *)arg1 + 0x18) + (temp_f0 * *(float *)arg1 + temp_f6 * *(float *)((unsigned char *)arg1 + 0xC));
+        sp18 = temp_f7 * *(float *)((unsigned char *)arg1 + 0x1C) + (temp_f0 * *(float *)((unsigned char *)arg1 + 4) + temp_f6 * *(float *)((unsigned char *)arg1 + 0x10));
+        sp1C = temp_f7 * *(float *)((unsigned char *)arg1 + 0x20) + (temp_f0 * *(float *)((unsigned char *)arg1 + 8) + temp_f6 * *(float *)((unsigned char *)arg1 + 0x14));
+    } else {
+        sp14 = *(float *)(temp_r31 + 8) * *(float *)((unsigned char *)arg1 + 0x18) + (*(float *)temp_r31 * *(float *)arg1 + *(float *)(temp_r31 + 4) * *(float *)((unsigned char *)arg1 + 0xC));
+        sp18 = *(float *)(temp_r31 + 8) * *(float *)((unsigned char *)arg1 + 0x1C) + (*(float *)temp_r31 * *(float *)((unsigned char *)arg1 + 4) + *(float *)(temp_r31 + 4) * *(float *)((unsigned char *)arg1 + 0x10));
+        sp1C = *(float *)(temp_r31 + 8) * *(float *)((unsigned char *)arg1 + 0x20) + (*(float *)temp_r31 * *(float *)((unsigned char *)arg1 + 8) + *(float *)(temp_r31 + 4) * *(float *)((unsigned char *)arg1 + 0x14));
+    }
+    temp_f2 = sp18; temp_f1 = sp1C;
+    sp14 += *(float *)((unsigned char *)arg1 + 0x24);
+    sp18 = temp_f2 + *(float *)((unsigned char *)arg1 + 0x28);
+    sp1C = temp_f1 + *(float *)((unsigned char *)arg1 + 0x2C);
+    if (fn_8029EB54(area, &sp14)) {
+        sp18 += lbl_8056465C;
+        var_f1 = (*(float *)temp_r31 > lbl_80564628) ? lbl_80564658 : lbl_80564660;
+        var_f5 = lbl_80564668;
+        temp_f3 = lbl_80564664 + lbl_80564634 * (*(float *)((unsigned char *)arg1 + 0x50) * var_f1);
+        sp8 = *(float *)((unsigned char *)arg1 + 0x34) + *(float *)arg1 * temp_f3;
+        spC = *(float *)((unsigned char *)arg1 + 0x38) + *(float *)((unsigned char *)arg1 + 4) * temp_f3;
+        sp10 = *(float *)((unsigned char *)arg1 + 0x3C) + *(float *)((unsigned char *)arg1 + 8) * temp_f3;
+        temp_f0_2 = lbl_80564664 + lbl_80564634 * *(float *)((unsigned char *)arg1 + 0x50);
+        if (var_f5 >= temp_f0_2) var_f5 = temp_f0_2;
+        sp8 += *(float *)((unsigned char *)arg1 + 0xC) * var_f5;
+        spC += *(float *)((unsigned char *)arg1 + 0x10) * var_f5;
+        sp10 += *(float *)((unsigned char *)arg1 + 0x14) * var_f5;
+        var_f31 = (*(float *)temp_r31 > lbl_80564628) ? lbl_80564658 : lbl_80564660;
+        fn_8028E590(lbl_8055F7F8, &sp14, &sp8, -var_f31 * fn_80287BC8(lbl_80564628, lbl_80564674));
+    }
 }
 
 int fn_8029EF1C(void) {
