@@ -74,26 +74,28 @@ void fn_80273B48(void) {
 }
 
 #pragma scheduling invalid_target
+/* Applies a conditional Y-axis rotation to this object's local transform when it has a linked object. */
 void fn_80273B4C(void *arg0) {
     extern void fn_80015A20(void *, float *, float, float);
     extern void fn_80015B20(void *, void *, void *);
     extern float lbl_80563FA8, lbl_80563FAC, lbl_80563FB0, lbl_80563FB4;
-    void *temp_r4 = *(void **)((char *)arg0 + 0x140);
-    char out[0x24];
-    float vec[3];
-    float var_f1;
-    float product;
-    void *temp_r3;
-    if (temp_r4 != 0) {
-        if (*(unsigned char *)((char *)temp_r4 + 0x260C) != 0) var_f1 = lbl_80563FA8;
-        else var_f1 = lbl_80563FAC;
-        vec[0] = lbl_80563FB0;
-        product = lbl_80563FB0 * lbl_80563FB4;
-        vec[1] = product * var_f1;
-        vec[2] = lbl_80563FB0;
-        fn_80015A20(out, vec, var_f1, lbl_80563FB0);
-        temp_r3 = (char *)arg0 + 0x58;
-        fn_80015B20(temp_r3, out, temp_r3);
+    void *linkedObj = *(void **)((char *)arg0 + 0x140);
+    char rotationMatrix[0x24];
+    float angles[3];
+    float yAngle;
+    float scaledZero;
+    void *transform;
+
+    if (linkedObj != 0) {
+        if (*(unsigned char *)((char *)linkedObj + 0x260C) != 0) yAngle = lbl_80563FA8;
+        else yAngle = lbl_80563FAC;
+        angles[0] = lbl_80563FB0;
+        scaledZero = lbl_80563FB0 * lbl_80563FB4;
+        angles[1] = scaledZero * yAngle;
+        angles[2] = lbl_80563FB0;
+        fn_80015A20(rotationMatrix, angles, yAngle, lbl_80563FB0);
+        transform = (char *)arg0 + 0x58;
+        fn_80015B20(transform, rotationMatrix, transform);
     }
 }
 
