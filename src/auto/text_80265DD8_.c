@@ -404,7 +404,7 @@ void *fn_80266120(void *arg0) {
     return arg0;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_80266150(void *arg0) {
     int zero;
     float f0;
