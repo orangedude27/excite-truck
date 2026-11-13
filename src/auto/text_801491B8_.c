@@ -4,6 +4,7 @@
 #include <stdarg.h>
 extern f32 lbl_80561654, lbl_80561658, lbl_8056165C, lbl_80561660, lbl_80561664;
 extern f32 lbl_80561668, lbl_8056166C, lbl_80561670, lbl_80561674, lbl_80561678, lbl_8056167C;
+extern f32 lbl_80561648, lbl_8056164C, lbl_80561650;
 extern f32 lbl_80559EB8;
 extern void fn_801683F4(void *, s32);
 extern f32 fn_80141C9C(f32);
