@@ -245,6 +245,7 @@ extern "C" void fn_80297FA4(void) {
     fn_80298A4C(lbl_8055F7C8, 1); lbl_8055F7C8 = 0;
 }
 
+/* Tick/update several global subsystems (driving their per-frame handlers) and, if allocated, run cleanup handlers on the remaining subsystem objects. */
 extern "C" void fn_802980A0(void) {
     fn_80298AD8(lbl_8055F7C8);
     fn_8029BA0C(lbl_8055F7D8);
