@@ -856,16 +856,18 @@ extern "C" void fn_80299544(void* arg0) {
     }
 }
 #pragma scheduling on
-extern "C" void fn_80299628(void* arg0) {
-    fn_802C8BD0(*(int*)((char*)arg0 + 0x100));
+extern "C" void fn_80299628(void *arg0) {
+    /* Bind draw state for arg0+0x100, then (if draw-list mode 0x14 is active) draw each of the 4
+       0x40-byte slots whose +0x34 value is set, finalize drawing, and tear down draw state. */
+    fn_802C8BD0(*(int *)((char *)arg0 + 0x100));
     if (fn_802C8DBC(0x14) != 0) {
-        void* p = arg0;
-        int i = 0;
+        void *slotPtr = arg0;
+        int slotIndex = 0;
         do {
-            if (*(int*)((char*)p + 0x34) != 0) fn_80299830(arg0, i);
-            p = (char*)p + 0x40;
-            i++;
-        } while (i < 4);
+            if (*(int *)((char *)slotPtr + 0x34) != 0) fn_80299830(arg0, slotIndex);
+            slotPtr = (char *)slotPtr + 0x40;
+            slotIndex++;
+        } while (slotIndex < 4);
         fn_802C8E48();
     }
     fn_802C8D74();
