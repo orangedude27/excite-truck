@@ -1408,12 +1408,16 @@ extern "C" void fn_801FF260(void *arg0) {
 #pragma pop
 extern "C" int fn_801FF2B0(void) { return 3; }
 
-extern "C" void fn_801FF2B8(void* arg0, int arg1, int arg2) {
- char* p = (char*)arg0;
- if (*(int*)(p + 0x1004) >= 0x40) fn_802E317C(&lbl_8033B8C8[0]);
- fn_801FCA54(p + (*(int*)(p + 0x1004) << 6) + 4, arg1, arg2);
- fn_801FF7D4(p + 0x1008, p + (*(int*)(p + 0x1004) << 6) + 4);
- ++*(int*)(p + 0x1004);
+extern "C" void fn_801FF2B8(void* manager, int record, int name) {
+ // Append a drone path segment to a DroneManager: build the next segment of its
+ // list from the spawn record, file it under its name in the manager's pool
+ // table, and count it.  Past 64 segments the game logs the limit overflow and
+ // writes the segment anyway.
+ char* mgr = (char*)manager;
+ if (DMGR_PATH_COUNT(mgr) >= DMGR_PATH_MAX) fn_802E317C(STR_PATH_DRONE_LIMIT);
+ fn_801FCA54(DMGR_PATH(mgr, DMGR_PATH_COUNT(mgr)), record, name);
+ fn_801FF7D4(DMGR_POOLS(mgr), DMGR_PATH(mgr, DMGR_PATH_COUNT(mgr)));
+ ++DMGR_PATH_COUNT(mgr);
 }
 
 extern "C" void fn_801FF354(void* arg0) {
