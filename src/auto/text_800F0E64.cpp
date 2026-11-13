@@ -28,6 +28,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
+extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external);
 extern "C" void* AllocImpl__Q44nw4r3snd6detail8PoolImplFv(void*);
 extern "C" void* fn_800FFA10(void*, void*);
 extern "C" void fn_800EC1A4(void*);
