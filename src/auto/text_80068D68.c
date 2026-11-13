@@ -8984,6 +8984,7 @@ tBTM_STATUS BTM_SetLocalDeviceName(char *p_name) {
     return 3;
 }
 
+/* HCI Read Local Name complete: stops the reply timer and invokes the saved callback with the name or NULL. */
 void btm_read_local_name_complete(UINT8 *p, UINT16 evt_len) {
     tBTM_CMPL_CB *callback = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5A8);
     fn_80070F90(lbl_803C0F78 + 0x590);
