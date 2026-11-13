@@ -101,6 +101,17 @@ s32 fn_8023512C(void);
 void fn_802E3AD0(s32, const char *, ...);
 }
 
+/* Table of the collection items whose name matched, as built by
+   fn_80145FEC()/fn_801460F8()/fn_80146204()/fn_80146310(): the items live in a
+   block that fn_8002F37C() lays out 0x10 bytes behind data (its header), so
+   releasing a table frees data - 0x10 and then the table itself. */
+struct NamedItemTable80145FEC {
+    void *data;
+    s32 count;
+    s32 size;
+    void *end; /* == data as built; what releases the item block */
+};
+
 extern "C" f32 lbl_805615F0;
 extern "C" f32 lbl_8055D020;
 extern "C" s32 fn_80144F40(const char *arg0, void *arg1) {
@@ -2254,9 +2265,89 @@ extern "C" void fn_80148610(void *arg0) {
 
 extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
 
+extern "C" s32 fn_80127A50(void *);
+extern "C" void fn_80010B80(s32, f32, f32, f32, f32);
+extern "C" f32 lbl_80558DC4;
 extern "C" void fn_8014862C(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 4) == 0) {
-        return;
+    struct Table { void *data; s32 count; s32 cap; void *end; };
+    struct Cur { void *cur; void *sel; u8 flag; u8 p1[3]; f32 x10; f32 y14; u8 p2[8]; struct Table *tab; };
+    struct Obj { u8 pad[4]; u8 en; u8 p[39]; struct Table *t2c; struct Table *t34; u8 q[8]; struct Cur *cur; };
+    struct Obj *obj = (struct Obj *)arg0;
+    if (obj->en == 0) return;
+    f32 eps = lbl_80558DC4;
+    f32 base = lbl_80561608;
+    (void)base;
+    while (fn_80127A50(arg0) != 0) {
+        struct Cur *cur = obj->cur;
+        u8 sbuf[0x40]; FloatPair80145A24 pp = fn_80145A24((void *)sbuf);
+        f32 px = pp.first; f32 py = pp.second;
+        if (cur->cur != 0) {
+            if ((((s32 *)sbuf)[9] & 1) != 0) {
+                f32 dx = px - cur->x10;
+                f32 dy = py - cur->y14;
+                float adx = dx < 0 ? -dx : dx;
+                float ady = dy < 0 ? -dy : dy;
+                cur->x10 = dx; cur->y14 = dy;
+                if (adx > eps || ady > eps) cur->flag = 1;
+                void *o = cur->cur;
+                void **vt = *(void ***)o;
+                void (*fn)(void *, f32 *, void *) = (void (*)(void *, f32 *, void *))vt[2];
+                f32 tmp[2]; tmp[0]=dx; tmp[1]=dy;
+                fn(o, tmp, *(void **)((u8 *)o + 0x10));
+            } else {
+                if (cur->flag == 0 && ((s32 *)sbuf)[0] == 1) {
+                    void *o2 = cur->cur;
+                    void **vt2 = *(void ***)o2;
+                    void (*fn2)(void *) = (void (*)(void *))vt2[5];
+                    fn2(o2);
+                }
+                cur->cur = 0;
+            }
+        } else {
+            struct Table *t = cur->tab;
+            void *cand[10]; s32 nc = 0;
+            for (s32 i = 0; i < t->count; i++) {
+                u8 *e = (u8 *)t->data + i * 0x18;
+                if (*(s32 *)(e + 0x14) == 0) continue;
+                u8 *pr = *(u8 **)(e + 0x10);
+                if (pr == 0) continue;
+                f32 x0 = *(f32 *)(e + 0) + *(f32 *)(pr + 4);
+                if (!(px == x0)) {
+                    if (!(px >= x0)) continue;
+                    if (!(px < (*(f32 *)(e + 8) + x0))) continue;
+                    f32 y0 = *(f32 *)(e + 4) + *(f32 *)(pr + 8);
+                    if (!(py == y0)) {
+                        if (!(py >= y0)) continue;
+                        if (!(py < (*(f32 *)(e + 0xC) + y0))) continue;
+                        if (nc < 10) cand[nc++] = e;
+                    }
+                }
+            }
+            void *pick = nc >= 1 ? cand[0] : 0;
+            cur->sel = pick;
+            if (pick != 0 && *(s32 *)((u8 *)pick + 0x14) != 0 && ((s32 *)sbuf)[0] == 0) {
+                cur->cur = pick; cur->flag = 0;
+            }
+        }
+        cur->x10 = px; cur->y14 = py;
+    }
+    {
+        struct Cur *cur = obj->cur;
+        struct Table *t = cur->tab;
+        for (s32 i = 0; i < t->count; i++) {
+            u8 *e = (u8 *)t->data + i * 0x18;
+            void *o10 = *(void **)(e + 0x10);
+            if (o10 != 0) {
+                f32 y = fn_801452B4(*(f32 *)((u8 *)o10 + 8) + *(f32 *)(e + 4));
+                u8 *o10b = *(u8 **)(e + 0x10);
+                f32 x = fn_801451DC(4, *(f32 *)(o10b + 4) + *(f32 *)(e + 0));
+                fn_80010B80(1, y, x, *(f32 *)(e + 8), *(f32 *)(e + 0xC));
+            } else {
+                f32 y2 = fn_801452B4(*(f32 *)(e + 4));
+                f32 x2 = fn_801451DC(4, *(f32 *)(e + 0));
+                fn_80010B80(1, y2, x2, *(f32 *)(e + 8), *(f32 *)(e + 0xC));
+            }
+        }
     }
 }
 
