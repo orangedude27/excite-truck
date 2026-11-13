@@ -5428,20 +5428,21 @@ static UINT8 bta_dm_new_link_key_cback(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_
     return 1;
 }
 
+/* BTM authentication-complete callback: on failure, notify BTA with an AUTH_CMPL event. */
 static UINT8 bta_dm_authentication_complete_cback(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, int result) {
-    u8 sec_event[0x110];
-    void (*callback)(int, void *);
+    u8 auth_cmpl_event[0x110];
+    void (*sec_callback)(int, void *);
 
     #pragma unused(dev_class)
     if (result != 0) {
-        fn_80070FA4(sec_event, bd_addr);
-        memcpy(sec_event + 6, bd_name, 0x1F);
-        sec_event[0x25] = 0;
-        sec_event[0x10F] = 0;
-        sec_event[0xFE] = 0;
-        callback = *(void (**)(int, void *))(lbl_803C0C14 + 0x50);
-        if (callback != NULL)
-            callback(3, sec_event);
+        fn_80070FA4(auth_cmpl_event, bd_addr);
+        memcpy(auth_cmpl_event + 6, bd_name, 0x1F);
+        auth_cmpl_event[0x25] = 0;
+        auth_cmpl_event[0x10F] = 0;
+        auth_cmpl_event[0xFE] = 0;
+        sec_callback = *(void (**)(int, void *))(lbl_803C0C14 + 0x50);
+        if (sec_callback != NULL)
+            sec_callback(3, auth_cmpl_event);
     }
     return 0;
 }
