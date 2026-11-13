@@ -327,60 +327,64 @@ typedef void DrawTexturedQuad(f32, f32, f32, f32, s32, s32, s32, s32, s32);
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802A4E08(void) {
+    /* Draw the snow weather pass for the entry being rendered: a full-screen
+     * snowquad.tex quad tinted pale blue with the entry's +0xDC alpha, then the
+     * snow model (lbl_8055F898) centred on the camera, spun about Y by the +0xE0
+     * angle and lit by min(1, 2 * the +0xD8 fade). */
     register s32 alpha;
-    u8 *slot;
-    s32 off;
-    f32 value;
-    f32 absolute;
-    s32 scaled;
-    s32 nonnegative;
-    void *camera;
-    f32 matrix[12];
+    SnowLayer *layer;
+    s32 layerOff;
+    f32 quadAlpha;
+    f32 magnitude;
+    s32 scaledAlpha;
+    s32 clampedAlpha;
+    const f32 *viewMtx;
+    f32 modelMtx[12];
     f32 angle;
     f32 cosine;
     f32 sine;
-    f32 maximum;
-    f32 clamp;
-    off = fn_801E85B4() * 0xE0;
-    slot = (u8 *)fn_801E7E34() + off;
-    value = *(f32 *)(slot + 0xDC);
-    absolute = (f32)__fabs((double)value);
-    if (!(absolute <= *(f32 *)lbl_80558DC4)) {
+    f32 brightness;
+    f32 fadeBrightness;
+    layerOff = fn_801E85B4() * SNOW_LAYER_SIZE;
+    layer = (SnowLayer *)((u8 *)fn_801E7E34() + layerOff);
+    quadAlpha = layer->quadAlpha;
+    magnitude = (f32)__fabs((double)quadAlpha);
+    if (!(magnitude <= FLOAT_EPSILON)) {
         alpha = 0xFF;
-        scaled = (s32)(lbl_80564854 * value);
-        nonnegative = scaled & ((-scaled & ~scaled) >> 31);
-        if (nonnegative < 0xFF)
-            alpha = nonnegative;
-        fn_802C90F0(lbl_8055F89C);
-        ((void (*)(f32, f32, f32, f32, s32, s32, s32, s32, s32))fn_802C9124)(
-            lbl_80564858, lbl_80564858, lbl_8056485C, lbl_8056485C,
-            0, 0, lbl_8055CFF0, lbl_8055CFF4,
-            (alpha << 24) | 0x00E6F0FF);
+        scaledAlpha = (s32)(FADE_TO_ALPHA * quadAlpha);
+        clampedAlpha = scaledAlpha & ((-scaledAlpha & ~scaledAlpha) >> 31);
+        if (clampedAlpha < 0xFF)
+            alpha = clampedAlpha;
+        fn_802C90F0(lbl_8055F89C); /* start a 2D batch on the snowquad.tex texture */
+        ((DrawTexturedQuad *)fn_802C9124)(
+            FLOAT_ZERO, FLOAT_ZERO, FLOAT_ONE, FLOAT_ONE,
+            0, 0, RENDER_WIDTH, RENDER_HEIGHT,
+            (alpha << 24) | SNOW_TINT_RGB);
         fn_802C9118();
     }
-    absolute = (f32)__fabs((double)*(f32 *)(slot + 0xD8));
-    if (!(absolute <= *(f32 *)lbl_80558DC4) && lbl_8055F898 != -1) {
-        camera = (void *)fn_802C86DC();
-        matrix[9] = *(f32 *)((u8 *)camera + 0x24);
-        matrix[10] = *(f32 *)((u8 *)camera + 0x28);
-        matrix[11] = *(f32 *)((u8 *)camera + 0x2C);
-        angle = *(f32 *)(slot + 0xE0);
+    magnitude = (f32)__fabs((double)layer->modelFade);
+    if (!(magnitude <= FLOAT_EPSILON) && lbl_8055F898 != -1) {
+        viewMtx = (const f32 *)fn_802C86DC();
+        modelMtx[9] = viewMtx[9];
+        modelMtx[10] = viewMtx[10];
+        modelMtx[11] = viewMtx[11];
+        angle = layer->spinAngle;
         cosine = (f32)cos((double)angle);
         sine = (f32)sin((double)angle);
-        matrix[0] = cosine;
-        matrix[1] = lbl_80564858;
-        matrix[2] = -sine;
-        matrix[3] = lbl_80564858;
-        matrix[4] = lbl_8056485C;
-        matrix[5] = lbl_80564858;
-        matrix[6] = sine;
-        matrix[7] = lbl_80564858;
-        matrix[8] = cosine;
-        maximum = lbl_8056485C;
-        clamp = lbl_80564860 * *(f32 *)(slot + 0xD8);
-        maximum = (maximum < clamp) ? maximum : clamp;
-        fn_802C9900(maximum);
-        fn_802C744C(lbl_8055F898, matrix);
+        modelMtx[0] = cosine;
+        modelMtx[1] = FLOAT_ZERO;
+        modelMtx[2] = -sine;
+        modelMtx[3] = FLOAT_ZERO;
+        modelMtx[4] = FLOAT_ONE;
+        modelMtx[5] = FLOAT_ZERO;
+        modelMtx[6] = sine;
+        modelMtx[7] = FLOAT_ZERO;
+        modelMtx[8] = cosine;
+        brightness = FLOAT_ONE;
+        fadeBrightness = FADE_TO_BRIGHTNESS * layer->modelFade;
+        brightness = (brightness < fadeBrightness) ? brightness : fadeBrightness;
+        fn_802C9900(brightness); /* model brightness */
+        fn_802C744C(lbl_8055F898, modelMtx);
         fn_802C9904();
     }
 }
