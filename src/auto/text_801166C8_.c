@@ -1842,14 +1842,15 @@ s32 fn_801199A4(void *obj, s32 useMidpointLimit) {
     }
 }
 
+/* Converts a volume value in 0..0x7FFF to the voice parameter scale and applies it. */
 void fn_80119AB0(void *arg0, s32 arg1) {
     s32 value = arg1;
-    f32 temp;
+    f32 scaled;
     if (value < 0) value = 0;
     if (value > 0x7fff) value = 0x7fff;
-    temp = (f32) fn_8002EFBC((f32)value, lbl_80561198);
-    *(s32 *)((u8 *)arg0 + 0xa4) = (s32)(lbl_805611A0 * temp);
-    fn_80119288(arg0, temp);
+    scaled = (f32) fn_8002EFBC((f32)value, lbl_80561198);
+    *(s32 *)((u8 *)arg0 + 0xa4) = (s32)(lbl_805611A0 * scaled);
+    fn_80119288(arg0, scaled);
 }
 
 extern f32 lbl_805611B0;
