@@ -1404,6 +1404,10 @@ extern "C" void fn_8002F6AC(void *, void (*)(void));
 extern "C" void fn_80139E18(void *);
 #pragma cplusplus on
 extern "C" void fn_801B228C(void) {
+    /* Shut down the deity/AI truck subsystem: destroy the 0x80-byte slot pool
+     * (lbl_8055E684) with fn_801B2118, clear the slot base/count, destroy the
+     * primary init object (lbl_8055E68C) via its deleting virtual method, then
+     * release the two loaded resource containers (lbl_8055E66C, lbl_8055E670). */
     fn_8002F6AC(lbl_8055E684, (void (*)(void))fn_801B2118);
     lbl_8055E684 = 0;
     lbl_8055E678 = 0;
