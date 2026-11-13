@@ -25483,6 +25483,7 @@ void Warning(const char* file, int line, const char* msg, ...);
 }
 }
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
+    /* Variadic nw4hbm::db::Panic entry point: forward the va_list to the core panic implementation. */
     va_list vlist;
     va_start(vlist, msg);
     ((void (*)(const char *, s32, const char *, va_list))fn_800D2098)(file, line, msg, vlist);
