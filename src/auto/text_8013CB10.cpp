@@ -1166,6 +1166,11 @@ struct TimeBonusParams {
 };
 
 #pragma scheduling invalid_target
+// Fill the game's one TimeBonusParams block from the zone's attribute set
+// (the "zoneconf.val" document the caller opened): every field is looked up
+// by name with the default used when the key - or the whole set - is absent,
+// then the two table-only values are read through fn_80204CFC and the time
+// bonus is scaled by the table's global factor.
 extern "C" void fn_8013E3A8(void *params, void *attrs) {
     TimeBonusParams *p = (TimeBonusParams *)params;
     const char *keys = (const char *)lbl_8032C530;
