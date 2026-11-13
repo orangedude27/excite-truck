@@ -10333,8 +10333,9 @@ extern "C" s32 fn_800B63FC(void) {
 }
 
 extern "C" s32 fn_800A485C(s32);
-extern "C" void *fn_800B65A0(s8 arg0) {
-    s16 index = (s16)(fn_800A485C(arg0) - 0x41);
+extern "C" void *fn_800B65A0(s8 driveLetter) {
+    /* Returns the volume slot for a drive letter, or NULL if out of range. */
+    s16 index = (s16)(fn_800A485C(driveLetter) - 0x41);
     fn_800B77C0((void *)(lbl_803D2140 + 0x19));
     if (index < 0 || index >= 0x1A) {
         fn_800B783C((void *)(lbl_803D2140 + 0x19));
