@@ -288,11 +288,12 @@ void fn_802BCA8C(void *arg0, void *arg1, struct Arg2 *arg2) {
     char sp28[0x38];
     int value;
     void *result;
-
+    float scale;
     fn_802BC588((char *)arg0 + 0xC, sp28, arg0, arg1, arg2);
     value = fn_802C1500((char *)arg0 + 0xC, arg2->val28);
     if (*(unsigned char *)&lbl_8055FAB0 != 0) {
-        result = fn_801FA8E0(fn_802BC9B0(&arg2->curve, arg2->type2c, *(volatile float *)((char *)arg1 + 0x10)), sp28, value);
+        scale = *(volatile float *)((char *)arg1 + 0x10);
+        result = fn_801FA8E0(fn_802BC9B0(&arg2->curve, arg2->type2c, scale), sp28, value);
         *(void **)((char *)arg0 + 0x3C) = result;
         *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg0 + 0x34) - *(float *)((char *)result + 0x28);
         if (arg2->flag30 != 0 && arg2->type2c != 0x74) {
@@ -300,7 +301,6 @@ void fn_802BCA8C(void *arg0, void *arg1, struct Arg2 *arg2) {
             float f2 = arg2->curve.f7;
             float f0;
             int r9, r8, r7, r6, r5, r0;
-
             curveData.f6 = f3;
             f0 = f3 + lbl_80564D28;
             f2 += lbl_80564D24;
@@ -318,7 +318,8 @@ void fn_802BCA8C(void *arg0, void *arg1, struct Arg2 *arg2) {
             curveData.w5 = r0;
             curveData.f7 = f2;
             curveData.f6 = f0;
-            fn_801FA8E0(fn_802BC9B0(&curveData, 0x3EB, *(volatile float *)((char *)arg1 + 0x10)), sp28, value);
+            scale = *(volatile float *)((char *)arg1 + 0x10);
+            fn_801FA8E0(fn_802BC9B0(&curveData, 0x3EB, scale), sp28, value);
         }
     } else {
         *(void **)((char *)arg0 + 0x3C) = 0;
@@ -502,32 +503,34 @@ int fn_802BD0C8(void *arg0) {
 
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
-void fn_802BD0F4(void *arg0) {
+void fn_802BD0F4(void *owner) {
+    /* Refresh each list entry's computed value from its position/radius via fn_802BA580. */
     char *entry;
-    char *entries;
-    void *array;
+    char *list;
+    void *container;
     int offset;
     int count;
-    int i;
-    float pos[2];
-    if (*(int *)((char *)arg0 + 4) != 0 && (array = *(void **)((char *)arg0 + 0x58)) != 0) {
-        entries = *(char **)array;
-        count = *(int *)(entries + 4);
-        i = 0;
+    int index;
+    float position[2];
+
+    if (*(int *)((char *)owner + 4) != 0 && (container = *(void **)((char *)owner + 0x58)) != 0) {
+        list = *(char **)container;
+        count = *(int *)(list + 4);
+        index = 0;
         offset = 0;
-        while (i < count) {
-            int a;
-            float f;
-            array = *(void **)((char *)arg0 + 0x58);
-            entries = *(char **)array;
-            entry = *(char **)entries + offset;
-            pos[0] = *(float *)(entry + 0x30);
-            pos[1] = *(float *)(entry + 0x38);
-            f = *(float *)(entry + 0x1c);
-            a = *(int *)((char *)arg0 + 4);
-            *(int *)(entry + 4) = fn_802BA580(a, pos, f);
+        while (index < count) {
+            int context;
+            float radius;
+            container = *(void **)((char *)owner + 0x58);
+            list = *(char **)container;
+            entry = *(char **)list + offset;
+            position[0] = *(float *)(entry + 0x30);
+            position[1] = *(float *)(entry + 0x38);
+            radius = *(float *)(entry + 0x1c);
+            context = *(int *)((char *)owner + 4);
+            *(int *)(entry + 4) = fn_802BA580(context, position, radius);
             offset += 0x44;
-            i++;
+            index++;
         }
     }
 }
@@ -551,8 +554,7 @@ void *fn_802BD194(void *arg0, const char *arg1) {
 }
 
 #pragma push
-#pragma ppc_psq_save off
-#pragma scheduling invalid_target
+#pragma processor 750
 int fn_802BD210(void *arg0) {
     #pragma unused(arg0)
     extern void *fn_8012C370(void *, unsigned int, unsigned int *, int, int, unsigned char *);
@@ -562,9 +564,9 @@ int fn_802BD210(void *arg0) {
     extern void fn_802BD4DC(void *, int);
     extern void fn_80127464(void);
     register char *strings = (char *)&lbl_8034AB38;
-    volatile unsigned int spC = 0;
+    unsigned int spC = 0;
     unsigned char sp8;
-    void *object = fn_8012C370(strings + 0x8C, 0x544C5354, (unsigned int *)&spC, 0, 0, &sp8);
+    void *object = fn_8012C370(strings + 0x8C, 0x544C5354, &spC, 0, 0, &sp8);
     lbl_8055FAB8 = (int)object;
     if (object != 0) {
         if (spC == 2) {
@@ -676,12 +678,11 @@ void fn_802BD4DC(void *arg0, int arg1) {
     char *entry;
     int offset;
     unsigned int i;
-    unsigned char b6, b2, b3, b0, b1, b4, b5, b7;
+    unsigned char b6, b2, b3, b0, b1, b4, b5;
     b4 = p[4];
-    b7 = p[7];
     b5 = p[5];
     b6 = p[6];
-    p[4] = b7;
+    p[4] = p[7];
     b0 = p[0];
     b3 = p[3];
     p[7] = b4;
@@ -717,18 +718,18 @@ void fn_802BD5B0(void *arg0, int arg1) {
     extern float lbl_80564D30;
     unsigned char *p = arg0;
     unsigned char *entry;
+    register unsigned char tmp;
+    float zero;
     int offset;
     unsigned int i;
-    float zero;
     unsigned char b6, b2, b3, b0, b1, b4, b5;
     b4 = p[4]; b5 = p[5]; b6 = p[6];
     p[4] = p[7]; b0 = p[0]; b3 = p[3]; p[7] = b4;
     b1 = p[1]; b2 = p[2]; p[5] = b6; p[6] = b5;
     p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
     *(int *)(p + 4) = fn_802BD694(*(int *)(p + 4), arg1);
-    i = 0; zero = lbl_80564D30; offset = 0;
+    zero = lbl_80564D30; i = 0; offset = 0;
     while (i < *(unsigned int *)p) {
-        unsigned char tmp;
         entry = *(unsigned char **)(p + 4) + offset;
         tmp = entry[4]; entry[4] = entry[5]; entry[5] = tmp;
         tmp = entry[6]; entry[6] = entry[7]; entry[7] = tmp;
@@ -752,8 +753,8 @@ void fn_802BD69C(void *arg0, int arg1) {
     unsigned int i;
     int offset;
     unsigned char b5, b4, b1, b0, b3, b2, b6, b7;
-    b4=p[4]; b5=p[5]; b6=p[6];
-    p[4]=p[7]; b0=p[0]; b3=p[3]; p[7]=b4;
+    b4=p[4]; b7=p[7]; b5=p[5]; b6=p[6];
+    p[4]=b7; b0=p[0]; b3=p[3]; p[7]=b4;
     b1=p[1]; b2=p[2]; p[5]=b6; p[6]=b5;
     p[0]=b3; p[3]=b0; p[1]=b2; p[2]=b1;
     *(int *)(p+4)=fn_802BD80C(*(int *)(p+4),arg1);
@@ -920,26 +921,28 @@ void fn_802DCAE4(int, float *, float);
 void fn_802DC8B4(void);
 void fn_802C8D74(void);
 void fn_802DBECC(void);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802BDD8C(float arg0) {
-    float mtx[9];
     float out[12];
+    float mtx[9];
     int i, j;
     fn_802DBE4C();
     if (fn_8020403C() != 0) {
         float one = lbl_80564D18;
         float lim = lbl_80564D14;
+        float sq, den;
         float half = lbl_80564D4C;
-        int *g = (int *)&lbl_804C00D4;
         lbl_8055FAAC = 0;
         lbl_8055FAA8 = 0;
-        for (i = 0; i < g[1]; i++) {
-            char *e = (char *)g[0] + i * 0x60;
+        for (i = 0; i < *(int *)((char *)&lbl_804C00D4 + 4); i++) {
+            char *e = *(char **)&lbl_804C00D4 + i * 0x60;
             int *obj = *(int **)(e + 0x58);
             if (obj != 0) {
                 int *data = (int *)obj[1];
                 int *pts = (int *)obj[0];
                 if (*(int *)(e + 0x24) <= 10) {
-                    float sq, den;
                     char *cam;
                     fn_802C28C0();
                     fn_802C8BD0();
@@ -950,22 +953,42 @@ void fn_802BDD8C(float arg0) {
                     cam = fn_801E8718(-1) + 0x24;
                     for (j = 0; j < data[1]; j++) {
                         char *r = (char *)data[0] + j * 0x10;
-                        if (*(float *)(r + 0xc) >= lim) {
-                            short idx = *(short *)(r + 0xa);
-                            int h = *(int *)(e + 0x1c);
-                            for (; idx < *(short *)(r + 0xa) + *(short *)(r + 8); idx++) {
-                                char *p = (char *)pts[0] + idx * 0x44;
-                                float d = PSVECSquareDistance(p + 0x30, cam);
-                                if (d <= sq) {
-                                    float f = (sq - d) / den;
-                                    float s = *(float *)(p + 0x1c);
-                                    int k;
-                                    if (one < f) f = one;
-                                    for (k = 0; k < 9; k++) out[k] = mtx[k] * s;
-                                    out[9] = *(float *)(p + 0x30);
-                                    out[10] = *(float *)(p + 0x34);
-                                    out[11] = *(float *)(p + 0x38);
-                                    fn_802DCAE4(h, out, f);
+                        {
+                            int cond = (*(float *)(r + 0xc) >= lim);
+                            if (cond) {
+                                int idx = *(short *)(r + 0xa);
+                                int h = *(int *)(e + 0x1c);
+                                for (; idx < *(short *)(r + 0xa) + *(short *)(r + 8); idx++) {
+                                    char *p = (char *)pts[0] + idx * 0x44;
+                                    float d = PSVECSquareDistance(p + 0x30, cam);
+                                    if (d <= sq) {
+                                        float f = (sq - d) / den;
+                                        float s = *(float *)(p + 0x1c);
+                                        float m0, m1, m2, m3, m4, m5, m6, m7, m8;
+                                        if (one < f) f = one;
+                                        m0 = mtx[0] * s;
+                                        m1 = mtx[1] * s;
+                                        m2 = mtx[2] * s;
+                                        m3 = mtx[3] * s;
+                                        m4 = mtx[4] * s;
+                                        m5 = mtx[5] * s;
+                                        m6 = mtx[6] * s;
+                                        m7 = mtx[7] * s;
+                                        m8 = mtx[8] * s;
+                                        out[0] = m0;
+                                        out[1] = m1;
+                                        out[2] = m2;
+                                        out[3] = m3;
+                                        out[4] = m4;
+                                        out[5] = m5;
+                                        out[6] = m6;
+                                        out[7] = m7;
+                                        out[8] = m8;
+                                        out[9] = *(float *)(p + 0x30);
+                                        out[10] = *(float *)(p + 0x34);
+                                        out[11] = *(float *)(p + 0x38);
+                                        fn_802DCAE4(h, out, f);
+                                    }
                                 }
                             }
                         }
@@ -978,7 +1001,7 @@ void fn_802BDD8C(float arg0) {
         fn_802DBECC();
     }
 }
-
+#pragma pop
 void fn_802BDFBC(void *arg0, int arg1, float farg0) {
     float value = farg0;
     void *node;
@@ -1031,6 +1054,9 @@ void *fn_802BE008(void *arg0) {
 extern void *fn_802BE008(void *);
 extern void *fn_802BE844(short, short, short);
 extern float lbl_80564D10, lbl_80564D2C;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, float)) {
     float worldZ, worldX, scale, weight;
     register float normZ;
@@ -1038,10 +1064,8 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
     int coordX, coordZ, baseX, baseZ;
     int zCell, xCell, zOffset, xOffset;
     void *cell, *node, *obj, *map, *mesh;
-    int ix;
-    short iz;
+    short ix, iz;
     float dx, dz;
-
     worldX = *(volatile float *)arg0;
     scale = lbl_80564D10;
     xOffset = -0x80;
@@ -1049,16 +1073,12 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
     normX = worldX / scale;
     weight = lbl_80564D2C;
     normZ = worldZ / scale;
-    coordX = (short)(int)normX;
     coordZ = (short)(int)normZ;
+    coordX = (short)(int)normX;
     baseX = (short)((coordX / 0x80) * 0x80 + 0x40);
     baseZ = (short)((coordZ / 0x80) * 0x80 + 0x40);
-
-    for (xCell = baseX - 0x80; xOffset <= 0x80;
-         xOffset += 0x80, xCell += 0x80) {
-        for (zOffset = -0x80, zCell = baseZ - 0x80;
-             zOffset <= 0x80;
-             zOffset += 0x80, zCell += 0x80) {
+    for (xCell = baseX - 0x80; xOffset <= 0x80; xOffset += 0x80, xCell += 0x80) {
+        for (zOffset = -0x80, zCell = baseZ - 0x80; zOffset <= 0x80; zOffset += 0x80, zCell += 0x80) {
             cell = fn_802BE844((short)xCell, (short)zCell, 0x40);
             node = *(void **)((char *)cell + 4);
             while (node != 0) {
@@ -1068,20 +1088,16 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
                     mesh = *(void **)((char *)obj + 0x18);
                     ix = *(short *)((char *)node + 0xA);
                     iz = *(short *)((char *)node + 8);
-                    dx = *(float *)((char *)mesh + 0x30) -
-                         *(float *)((char *)mesh + 0x2C);
-                    dz = *(float *)((char *)mesh + 0x38) -
-                         *(float *)((char *)mesh + 0x34);
-                    arg1(*(int *)((char *)obj + 0x20),
-                         *(int *)*(void **)map + ix * 0x44 + 0x30,
-                         0x44, iz, dx * weight, dz, dx);
+                    dx = *(float *)((char *)mesh + 0x30) - *(float *)((char *)mesh + 0x2C);
+                    dz = *(float *)((char *)mesh + 0x38) - *(float *)((char *)mesh + 0x34);
+                    arg1(*(int *)((char *)obj + 0x20), *(int *)*(void **)map + ix * 0x44 + 0x30, 0x44, iz, dx * weight, dz, dx);
                 }
                 node = *(void **)node;
             }
         }
     }
 }
-
+#pragma pop
 extern int lbl_804C00D4;
 #pragma push
 #pragma use_lmw_stmw off
