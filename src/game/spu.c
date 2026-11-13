@@ -560,26 +560,27 @@ int fn_802E58A0(void *arg0, int arg1) {
 }
 
 void fn_802E58B8(unsigned char *arg0) {
-       int index;
-       char *src;
-       unsigned char *dst;
-       register volatile unsigned short count = 0x20;
-       char value;
-       index = lbl_8055FF78;
-       *(volatile int *)&lbl_8055FF78 = index + 1;
-       dst = lbl_804FC558 + (index << 5);
-       src = (char *)arg0;
-       do {
-           count--;
-       } while (count != 0);
-       dst[-1] = 0;
-       do {
-           value = *src++;
-           *dst++ = (unsigned char)value;
-       } while (value != 0);
-       fn_8012BEF0(arg0);
-       fn_8012C41C(fn_802E589C, 0, arg0);
-   }
+    const unsigned char *src = arg0;
+    int count;
+    unsigned char *dst;
+    unsigned char c;
+    dst = lbl_804FC558 + (lbl_8055FF78++ << 5);
+    count = 0x20;
+    goto copy;
+count_check:
+    if (--count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+done:
+    fn_8012BEF0(arg0);
+    fn_8012C41C((void (*)())fn_802E589C, 0, arg0);
+}
 
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
