@@ -1425,9 +1425,9 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
             fn_802168EC(arg0, results[i], *(s32 *)((char *)arg1 + 0x88));
         }
     }
-    *(s32 *)&lbl_8055EF38 = -1;
+        *(s32 *)&lbl_8055EF38 = -1;
 }
-
+#pragma dont_inline on
 void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     void *node;
     void *top;
