@@ -130,46 +130,24 @@ static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst)
 }
 static inline void VecMtxMult_802A53B0(const f32 *m, const f32 *src, f32 *dst) {
     if (src == dst) {
-        f32 y, m3, y3, m4, y4, m0, x, m1, x0, m2, x1, m6, x2, m5, y5, s0, s1, s2, z, m7, m8, o0, o1, o2;
-        y = src[1];
-        m3 = m[3];
-        y3 = y * m3;
-        m4 = m[4];
-        y4 = y * m4;
-        m0 = m[0];
-        x = src[0];
-        m1 = m[1];
-        x0 = x * m0;
-        m2 = m[2];
-        x1 = x * m1;
-        m6 = m[6];
-        x2 = x * m2;
-        m5 = m[5];
-        y5 = y * m5;
-        s0 = x0 + y3;
-        s1 = x1 + y4;
-        s2 = x2 + y5;
-        z = src[2];
-        m7 = m[7];
-        m8 = m[8];
-        o0 = z * m6 + s0;
-        o1 = z * m7 + s1;
-        o2 = z * m8 + s2;
+        f32 x = src[0], y = src[1], z = src[2];
+        f32 y3 = y * m[3];
+        f32 y4 = y * m[4];
+        f32 x0 = x * m[0];
+        f32 x1 = x * m[1];
+        f32 x2 = x * m[2];
+        f32 y5 = y * m[5];
+        f32 s0 = x0 + y3;
+        f32 s1 = x1 + y4;
+        f32 s2 = x2 + y5;
+        f32 o0 = z * m[6] + s0;
+        f32 o1 = z * m[7] + s1;
+        f32 o2 = z * m[8] + s2;
         dst[0] = o0; dst[1] = o1; dst[2] = o2;
     } else {
-        f32 y3, x0, z6, y4, x1, z7, y5, x2, z8;
-        y3 = src[1] * m[3];
-        x0 = src[0] * m[0];
-        z6 = src[2] * m[6];
-        dst[0] = (x0 + y3) + z6;
-        y4 = src[1] * m[4];
-        x1 = src[0] * m[1];
-        z7 = src[2] * m[7];
-        dst[1] = (x1 + y4) + z7;
-        y5 = src[1] * m[5];
-        x2 = src[0] * m[2];
-        z8 = src[2] * m[8];
-        dst[2] = (x2 + y5) + z8;
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
 }
 extern f32 __fabsf(f32);
