@@ -1884,6 +1884,7 @@ extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *fn_801FA8E0(s32 arg0, s32 arg1, s32 arg2) {
+    /* Allocates a StaticObject node, constructs it, pushes it onto the global list, and returns its payload pointer. */
     s32 id = lbl_8055EC78++;
     void **list;
     void *context;
