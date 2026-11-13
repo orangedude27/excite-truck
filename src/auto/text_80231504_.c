@@ -196,11 +196,11 @@ s32 fn_80231504(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_8023150C(const char *arg0) {
+s32 fn_8023150C(const char *name) {
     s32 offset = 0;
     s32 i = 0;
     while (i < *(s32 *)(lbl_8055F068 + 0x168)) {
-        if (stricmp((const char *)(*(void **)(lbl_8055F068 + offset + 4)), arg0) == 0) {
+        if (stricmp((const char *)(*(void **)(lbl_8055F068 + offset + 4)), name) == 0) {
             return i;
         }
         offset += 0xC;
