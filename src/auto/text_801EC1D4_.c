@@ -104,14 +104,14 @@ extern "C" void fn_801EC214(void *out, void *obj, int arg2, char *name, int arg4
         fn_801345D8(buf, 0x20, lbl_8055AFD4, name, *(int *)((char *)out + 0x4C) + 1);
         if (!((Unk_801EEA64Iface *)obj)->mC(buf))
             break;
-        entry = (float *)((char *)out + *(int *)((char *)out + 0x4C) * 8) + 3;
+        entry = (float *)((char *)out + *(int *)((char *)out + 0x4C) * 8 + 0xC);
         c = zero;
         d = zero;
         if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(buf), base + 0x10, entry, &c, &d) != 3)
             fn_802E317C(base + 0x1C, buf);
         nd = -(d - b);
         entry[1] = (float)fn_8002EFB0(c - a, nd);
-        entry[0] = entry[0] * scale + f2;
+        entry[0] = f2 + entry[0] * scale;
         *(int *)((char *)out + 0x4C) = *(int *)((char *)out + 0x4C) + 1;
     }
     if (*(int *)((char *)out + 0x4C) < 2)
@@ -251,7 +251,6 @@ extern void fn_801EE0E0(void *, char *, int, int, char *);
 void *fn_801EC750(char *a0, char *a1, char *a2) {
     char sp48[0x40];
     char sp8[0x40];
-    int idx;
     char c;
     char *src;
     int n;
@@ -262,6 +261,7 @@ void *fn_801EC750(char *a0, char *a1, char *a2) {
     char *dst2;
     int var;
     int t;
+    int idx;
 
     fn_801EAB2C();
     *(int *)(a0 + 0x18C) = 0;
@@ -477,9 +477,10 @@ void fn_801ECCE0(long arg0, long arg1) {
     int i, j, n;
     int s50, s94;
     unsigned who;
+    register long key = arg1;
     if (*(int *)(arg0 + 0x40) != 0) return;
     for (i = 0; lbl_80488648[i] != 0 && i < 8; i++) {
-        if ((unsigned)arg1 != fn_801ECC8C(lbl_80488648[i])) fn_801ECB80((void *)lbl_80488648[i]);
+        if ((unsigned)key != fn_801ECC8C(lbl_80488648[i])) fn_801ECB80((void *)lbl_80488648[i]);
     }
     idx = fn_801E866C(-1);
     if (idx < 8) sel = (void *)lbl_80488648[idx];
@@ -497,7 +498,7 @@ void fn_801ECCE0(long arg0, long arg1) {
     for (j = 0; j < n; j++) {
         item = list[j];
         who = fn_801ECC8C((long)item);
-        if (who != (unsigned)arg1) {
+        if (who != (unsigned)key) {
             if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
             fn_801ECF58(item);
             if (who != 0) fn_802AB994();
@@ -506,7 +507,7 @@ void fn_801ECCE0(long arg0, long arg1) {
     for (j = 0; j < n; j++) {
         item = list[j];
         who = fn_801ECC8C((long)item);
-        if (who != (unsigned)arg1) {
+        if (who != (unsigned)key) {
             if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
             fn_801ECFE0(item);
             if (who != 0) fn_802AB994();
@@ -515,14 +516,14 @@ void fn_801ECCE0(long arg0, long arg1) {
     for (j = 0; j < n; j++) {
         item = list[j];
         who = fn_801ECC8C((long)item);
-        if (who != (unsigned)arg1) {
+        if (who != (unsigned)key) {
             if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
             fn_801ED2D0(item);
             if (who != 0) fn_802AB994();
         }
     }
     who = fn_801ECC8C((long)sel);
-    if (who != (unsigned)arg1) {
+    if (who != (unsigned)key) {
         if (who != 0) fn_802AB770(*(int *)((char *)sel + 0x40));
         fn_801ED354(sel);
         if (who != 0) fn_802AB994();
@@ -533,23 +534,25 @@ void fn_801ECCE0(long arg0, long arg1) {
 }
 #pragma dont_inline reset
 void fn_801ECF58(void *arg0) {
-    long flag;
+    long useAltFlag;
+    char *entryBase;
+    long ownerPtr;
+    long entryIndex;
     char *entry;
-    long owner;
-    long idx;
-    char *b;
+    /* If object+0x184 is set, compute a flag from the indexed entry (+0x170/+0x3F8) and owner
+       state (+0x3C, bit 0x100 at +0x2C0 clear => flag 1), run fn_801ECC70, then call fn_80201018. */
     if (*(long *)((char *)arg0 + 0x184) != 0) {
-        flag = 0;
-        idx = *(long *)((char *)arg0 + 0x3F8);
-        b = *(char **)((char *)arg0 + 0x170);
-        entry = b + idx * 8;
+        useAltFlag = 0;
+        entryIndex = *(long *)((char *)arg0 + 0x3F8);
+        entryBase = *(char **)((char *)arg0 + 0x170);
+        entry = entryBase + entryIndex * 8;
         if (*(unsigned char *)(entry + 5) != 0) {
-            owner = *(long *)((char *)arg0 + 0x3C);
-            if ((*(long *)(owner + 0x2C0) & 0x100) == 0)
-                flag = 1;
+            ownerPtr = *(long *)((char *)arg0 + 0x3C);
+            if ((*(long *)(ownerPtr + 0x2C0) & 0x100) == 0)
+                useAltFlag = 1;
         }
         fn_801ECC70(arg0);
-        fn_80201018(*(long *)((char *)arg0 + 0x184), *(void **)((char *)arg0 + 0x3C), flag);
+        fn_80201018(*(long *)((char *)arg0 + 0x184), *(void **)((char *)arg0 + 0x3C), useAltFlag);
     }
 }
 
@@ -564,16 +567,16 @@ void fn_801ECFE0(void *arg0) {
     extern float lbl_80562E94, lbl_80562E98;
     extern unsigned char lbl_8055E614;
     extern long lbl_8055EBC0;
-    char *self = arg0;
     Unk_801ECFE0 first, second;
     long params[2];
-    long *entry;
-    long i, j, offset, mask, handle, flag, cached;
-    char *part, *data;
     float scale;
-          if (!(*(float *)(*(char **)(self+0x3C)+0x22C) < lbl_80562E94)) {
-          fn_801ECC70(self);
-          flag = (*(unsigned long *)((char *)fn_801E87A8()+0x10) >> 1) & 1;
+    long *entry;
+    long cached, offset, flag, i, mask, handle, j;
+    char *part;
+    char *self = arg0;
+    if (!(*(float *)(*(char **)(self+0x3C)+0x22C) < lbl_80562E94)) {
+        fn_801ECC70(self);
+        flag = (*(unsigned long *)((char *)fn_801E87A8()+0x10) >> 1) & 1;
         entry = (long *)(self+0x154);
         cached = lbl_8055EBC0;
         scale = lbl_80562E98;
@@ -584,10 +587,9 @@ void fn_801ECFE0(void *arg0) {
             if ((float)__fabs((double)*(float *)(*(char **)(self+0x3C)+0x28C)) <= *(float *)&lbl_80558DC4)
                 fn_802DAC54();
             handle = fn_802C7A40(1, *(char **)(self+0x3C)+(entry[0]+1)*12+0x2E0, entry[1]-entry[0], 1, params, 2);
-            for (j=0, offset=0; j<*(long *)(*(char **)(self+0x3C)+0xA78); j++, offset+=0x34) {
-                data = *(char **)(self+0x3C)+offset;
-                part = data+0xA7C;
-                if (*(long *)(data+0xAAC) & mask) {
+            for (j=0, offset=0; j<*(long *)(*(char **)(self+0x3C)+0xA78); offset+=0x34, j++) {
+                part = *(char **)(self+0x3C)+offset+0xA7C;
+                if (*(long *)(part+0x30) & mask) {
                     if (flag) {
                         first = *(Unk_801ECFE0 *)part;
                         first.values[0] *= scale;
@@ -650,19 +652,17 @@ void fn_801ED354(void *arg0) {
     if (fn_801E8954(-1) != 0) {
         fn_801ECF58(arg0);
         fn_801ECFE0(arg0);
-        if (*(unsigned char *)((char *)*(void **)((char *)arg0 + 0x170) +
-                               *(long *)((char *)arg0 + 0x3F8) * 8 + 4) != 0) {
+        if (*(unsigned char *)((char *)*(void **)((char *)arg0 + 0x170) + *(int *)((char *)arg0 + 0x3F8) * 8 + 4) != 0) {
             long i;
             long offset;
-            long current;
+            char *current;
             char *p;
-            current = (long)arg0;
+            current = (char *)arg0;
             i = 0;
             offset = 0;
             do {
                 p = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
-                fn_801F131C(*(void **)(current + 0x4D4), 1, p,
-                            *(float *)(p + 0xB0));
+                fn_801F131C(*(void **)(current + 0x4D4), 1, p, *(float *)(p + 0xB0));
                 i++;
                 offset += 0x6C;
                 current += 4;
@@ -672,16 +672,15 @@ void fn_801ED354(void *arg0) {
         fn_801ECC70(arg0);
         {
             long i;
-            long current;
+            char *current;
             long offset;
             char *p;
-            current = (long)arg0;
+            current = (char *)arg0;
             i = 0;
             offset = 0;
             do {
                 p = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
-                fn_801F1378(*(void **)(current + 0x4D4), p,
-                            *(float *)(p + 0xB0));
+                fn_801F1378(*(void **)(current + 0x4D4), p, *(float *)(p + 0xB0));
                 i++;
                 offset += 0x6C;
                 current += 4;
@@ -915,7 +914,6 @@ void fn_801EDF18(void* arg0) {
     long index, result, firstValue, secondValue;
     short entry;
     int i;
-
     temp_f31 = fn_801E88F0(-1);
     temp_f31 *= temp_f31;
     factor = fn_802C88E8((void*)((long)arg0 + 0x28));
@@ -926,7 +924,6 @@ void fn_801EDF18(void* arg0) {
     if (*(long*)((char*)arg0 + 0x40) != fn_801E866C(-1)) goto process;
     if (fn_801E89A4(-1) != 0) goto process;
     return;
-
 process:
     firstValue = *(volatile long*)((char*)arg0 + 0x28);
     secondValue = *(volatile long*)((char*)arg0 + 0x2C);
@@ -942,7 +939,7 @@ process:
         dot = -PSVECDotProduct(vector, fn_802C9A40());
         limit = lbl_80562E9C;
         var_f29 = *(float*)((char*)arg0 + 0x2C) - settings.second.value;
-        if (limit > dot) limit = dot;
+        limit = limit > dot ? dot : limit;
         var_f30 = lbl_80562E90 / limit;
     } else {
         var_f29 = lbl_80562E88;
@@ -991,12 +988,7 @@ void fn_801EE974(void *arg0, void *arg1) {
     entries = arg0;
     i = 0;
     do {
-        flag = 0;
-        if (i == 0) goto enabled;
-        if (i != 1) goto checked;
-    enabled:
-        flag = 1;
-    checked:
+        flag = (i == 0 || i == 1) ? 1 : 0;
         if (flag) {
             object = *(void **)(*(char **)((char *)arg0 + 0x188) + 0x2134);
             method = *(void *(**)(void *, void *))((char *)*(void **)object + 8);
@@ -1076,13 +1068,11 @@ extern "C" void fn_801EECAC(long arg0, long arg1) {
     extern float lbl_80562ED0;
     extern float lbl_80562ED4;
     struct Property {
-        virtual void *get(int);
+        virtual int get(int);
     };
-    char *stringBase = lbl_8033A060;
-    void *value;
+    int value;
     void *object;
     long next;
-    int count;
 
     next = arg1 + *(long *)((char *)arg0 + 0x34);
     *(long *)((char *)arg0 + 0x3C) = next;
@@ -1090,32 +1080,31 @@ extern "C" void fn_801EECAC(long arg0, long arg1) {
 
     object = *(void **)((char *)*(void **)((char *)arg0 + 0x188) + 0x2134);
     value = ((Property *)object)->get((int)&lbl_8055B090);
-    count = *(int *)((char *)arg0 + 0x178);
 
-    fn_801EC214((void *)(arg0 + 0x384), value,
-                count, stringBase + 0x1E4,
+    fn_801EC214((void *)(arg0 + 0x384), (void *)value,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x1E4,
                 (int)&lbl_8055B088, lbl_80562E90, lbl_80562E88);
-    fn_801EC214((void *)(arg0 + 0x18C), value,
-                *(int *)((char *)arg0 + 0x178), stringBase + 0x1F0,
+    fn_801EC214((void *)(arg0 + 0x18C), (void *)value,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x1F0,
                 *(int *)((char *)arg0 + 0x3C) + 0x4C, lbl_80562ECC, lbl_80562E88);
-    fn_801EC59C((void *)(arg0 + 0x3D8), value,
-                (int)(stringBase + 0x1FC),
+    fn_801EC59C((void *)(arg0 + 0x3D8), (void *)value,
+                (int)(lbl_8033A060 + 0x1FC),
                 *(int *)((char *)arg0 + 0x3C) + 0x4C,
                 lbl_80562ECC, lbl_80562E88);
-    fn_801EC214((void *)(arg0 + 0x1E0), value,
-                *(int *)((char *)arg0 + 0x178), stringBase + 0x20C,
+    fn_801EC214((void *)(arg0 + 0x1E0), (void *)value,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x20C,
                 *(int *)((char *)arg0 + 0x3C) + 0x34, lbl_80562E90, lbl_80562E88);
-    fn_801EC214((void *)(arg0 + 0x234), value,
-                *(int *)((char *)arg0 + 0x178), stringBase + 0x218,
+    fn_801EC214((void *)(arg0 + 0x234), (void *)value,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x218,
                 *(int *)((char *)arg0 + 0x3C) + 0x2B0, lbl_80562E90, lbl_80562E88);
-    fn_801EC214((void *)(arg0 + 0x288), value,
-                *(int *)((char *)arg0 + 0x178), stringBase + 0x22C,
+    fn_801EC214((void *)(arg0 + 0x288), (void *)value,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x22C,
                 *(int *)((char *)arg0 + 0x3C) + 0x2AC, lbl_80562ED0, lbl_80562ED4);
-    fn_801EC214((void *)(arg0 + 0x2DC), value,
-                *(int *)((char *)arg0 + 0x178), stringBase + 0x23C,
+    fn_801EC214((void *)(arg0 + 0x2DC), (void *)value,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x23C,
                 *(int *)((char *)arg0 + 0x3C) + 0x2A0, lbl_80562ED0, lbl_80562ED4);
-    fn_801EC214((void *)(arg0 + 0x330), value,
-                *(int *)((char *)arg0 + 0x178), stringBase + 0x250,
+    fn_801EC214((void *)(arg0 + 0x330), (void *)value,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x250,
                 *(int *)((char *)arg0 + 0x3C) + 0x2B8, lbl_80562E90, lbl_80562E88);
 }
 #pragma cplusplus reset
