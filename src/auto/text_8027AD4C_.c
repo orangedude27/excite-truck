@@ -888,6 +888,10 @@ void fn_8027BF38(void) {
 #define ATTR_NAME ((const char *)&lbl_8055C758)         /* "name" */
 #define ATTR_NAME_DEFAULT ((const char *)&lbl_8055C770) /* "" */
 
+extern char lbl_80347A50[];
+/* Type name of the goal nodes inside an "event_path" object. */
+#define OBJ_TYPE_EVENT_GOAL ((const char *)&lbl_80347A50) /* "event_goal" */
+
 /* One contest event in the arrays fn_8027C2B8 builds (stride 0x14);
  * fn_8027C120 searches them by contestName. */
 struct ContestEvent {
