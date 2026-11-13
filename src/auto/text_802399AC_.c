@@ -30,6 +30,33 @@ extern s32 fn_80239E5C(void *, s32);
 extern s32 lbl_8055BB00;
 extern s32 lbl_8055F110;
 extern void *lbl_8055F10C;
+extern s32 lbl_802FA040[];
+extern char lbl_8055BAC0[];
+extern char lbl_8055BABC[];
+extern char lbl_8055B860[];
+extern char lbl_8055BACC[];
+extern char lbl_8055BAD4[];
+extern char lbl_8055BADC[];
+extern char lbl_8055BAE8[];
+extern char lbl_8055BAF0[];
+extern char lbl_8055BAF8[];
+extern char lbl_8055BAB8[];
+extern s32 fn_8023FCFC(void);
+extern s32 fn_8023D1C0(void);
+extern s32 fn_8023C958(void);
+extern s32 fn_8000DA80(void);
+extern s32 fn_8023C94C(void);
+extern s32 fn_802E4A10(void);
+extern s32 fn_8023D4B8(void);
+extern s32 fn_8023C3D4(void);
+extern s32 fn_80278A24(void);
+extern s32 fn_802449A0(void);
+extern s32 fn_8024C070(void);
+extern s32 fn_8024C370(void);
+extern s32 fn_80257284(void);
+extern s32 fn_802399DC(s32);
+extern void fn_80236914(void);
+extern s32 fn_802E317C(const char *, ...);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -157,20 +184,20 @@ void fn_80239F74(void) {
     s32 a, b, c;
     g[5] = fn_802C83C4();
     g[6] = g[5];
-    a = fn_80131234(&lbl_80340B58);
-    b = fn_80131234(&lbl_80340C24);
+    a = fn_80131234(lbl_80340B58 + 0x134);
+    b = fn_80131234(lbl_80340B58 + 0x120);
     fn_8023AB78(buf0, (s32)(g + 5), b, a, 0);
     g[7] = fn_802090CC();
     g[8] = g[7];
-    a = fn_80131234(&lbl_80340C44);
-    b = fn_80131234(&lbl_80340C24);
-    c = fn_80131234(&lbl_80340B58);
+    a = fn_80131234(lbl_80340B58 + 0x164);
+    b = fn_80131234(lbl_80340B58 + 0x154);
+    c = fn_80131234(lbl_80340B58 + 0x148);
     fn_8023AA2C(buf1, (s32)(g + 7), c, b, a, 0);
     g[11] = fn_80210570();
     g[12] = g[11];
-    a = fn_80131234(&lbl_80340C44);
-    b = fn_80131234(&lbl_80340C24);
-    c = fn_80131234(&lbl_80340B58);
+    a = fn_80131234(lbl_80340B58 + 0x1B0);
+    b = fn_80131234(lbl_80340B58 + 0x198);
+    c = fn_80131234(lbl_80340B58 + 0x180);
     fn_8023A8D8(buf2, (s32)(g + 11), c, b, a, 0);
     while (1) {
         s32 r = fn_802146BC(buf3, -999, -999, 1);
@@ -525,14 +552,15 @@ void fn_8023AFD0(void *arg0) {
     s32 temp_r3;
     s32 sp8;
     float factor;
-    temp_r28 = *(s32 *)((char *)arg0 + 0x10);
-    temp_r29 = *(s32 *)((char *)arg0 + 0xC);
-    temp_r30 = *(s32 *)((char *)arg0 + 8);
-    temp_r31 = *(s32 *)((char *)arg0 + 4);
+    void *p = arg0;
+    temp_r28 = *(s32 *)((char *)p + 0x10);
+    temp_r29 = *(s32 *)((char *)p + 12);
+    temp_r30 = *(s32 *)((char *)p + 8);
+    temp_r31 = *(s32 *)((char *)p + 4);
     temp_r3 = fn_80131234(&lbl_8034127C[0]);
     sp8 = 0;
     factor = lbl_80563730;
-    fn_8022BAD0(0xCB, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)arg0 + 0x1C), sp8, factor);
+    fn_8022BAD0(0xCB, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)p + 0x1C), sp8, factor);
 }
 #pragma pop
 
@@ -774,25 +802,23 @@ void fn_8023B400(void) {}
 
 s32 fn_8023B404(void) { return 0; }
 
-#pragma push
 #pragma scheduling off
 void fn_8023B40C(void *arg0) {
-    s32 state;
-    void *obj;
-    s32 result;
-    register s32 (**method)(void *, s32);
-
-    state = fn_802104D0();
-    if ((unsigned int)state == 1) {
+    s32 s;
+    void *o;
+    s32 r;
+    s32 (**m)(void *, s32);
+    s = fn_802104D0();
+    if ((unsigned int)s == 1) {
         fn_80214B94(3);
     } else {
-        obj = *(void **)((char *)arg0 + 0x1C);
-        method = (s32 (**)(void *, s32))*(void **)((char *)obj + 0xC);
-        method[13](obj, 0);
+        o = *(void **)((char *)arg0 + 0x1C);
+        m = (s32 (**)(void *, s32))*(void **)((char *)o + 0xC);
+        m[13](o, 0);
         if (fn_80214D04() == 2) fn_80214CB4((void *)1);
         fn_80214B44(3);
     }
-    if (state == 0) {
+    if (s == 0) {
         *(s32 *)((char *)arg0 + 0x18) = 4;
     } else {
         switch (fn_80214D04()) {
@@ -804,15 +830,14 @@ void fn_8023B40C(void *arg0) {
             break;
         }
     }
-    if (*(unsigned char *)((char *)arg0 + 0x20) != (unsigned int)state && state != 0) {
-        result = fn_80210570();
-        obj = *(void **)((char *)arg0 + 0x1C);
-        method = (s32 (**)(void *, s32))*(void **)((char *)obj + 0xC);
-        method[13](obj, result);
-        *(unsigned char *)((char *)arg0 + 0x20) = state;
+    if (*(unsigned char *)((char *)arg0 + 0x20) != (unsigned int)s && s != 0) {
+        r = fn_80210570();
+        o = *(void **)((char *)arg0 + 0x1C);
+        m = (s32 (**)(void *, s32))*(void **)((char *)o + 0xC);
+        m[13](o, r);
+        *(unsigned char *)((char *)arg0 + 0x20) = s;
     }
 }
-#pragma pop
 extern s32 lbl_80341228[];
 #pragma pop
 #pragma push
