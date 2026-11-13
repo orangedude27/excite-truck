@@ -1363,6 +1363,55 @@ long fn_8027CAB4(void *arg0) {
 
 long fn_8027CB20(void) { return 1; }
 
+#pragma cplusplus on
+extern "C" long fn_8027CA1C(void *arg0);
+extern "C" long fn_8027CB28(void *arg0) {
+    extern char lbl_80347A50[];
+    struct Obj {
+        virtual char *m0();
+        virtual void m1();
+        virtual void m2();
+        virtual long m3(char *);
+    };
+    struct Mgr {
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual void m5();
+        virtual void m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual void m10();
+        virtual void m11();
+        virtual void m12();
+        virtual void m13();
+        virtual void m14();
+        virtual void m15();
+        virtual void m16();
+        virtual void m17();
+        virtual void m18();
+        virtual void m19();
+        virtual void m20();
+        virtual void m21();
+        virtual Obj *m22(long);
+    };
+    Obj *o;
+    long i = 0;
+    while ((o = (*(Mgr **)((char *)arg0 + 8))->m22(i)) != 0) {
+        if (stricmp(o->m0(), lbl_80347A50) == 0) {
+            if (fn_8027CA1C(fn_8027C120(lbl_8055F654, o->m3(lbl_80347A5C))) == 0) {
+                return 0;
+            }
+        }
+        i++;
+    }
+    return 1;
+}
+#pragma cplusplus reset
+
 long fn_8027CBF0(void) { return 1; }
 
 #pragma push
