@@ -237,23 +237,24 @@ extern f32 lbl_80563238;
 extern f32 lbl_80563258;
 extern f32 lbl_8055B4FC;
 void fn_80209904(void) {
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 var_f2;
-    f32 var_f2_2;
-    s32 var_r31;
-    var_r31 = 0;
+    /* Update lbl_8055EDB8 by stepping toward 0.0 when active conditions hold, else toward 0.63. */
+    f32 decreasedValue;
+    f32 increasedValue;
+    f32 clampedDown;
+    f32 clampedUp;
+    s32 shouldDecrease;
+    shouldDecrease = 0;
     if ((fn_800216D0() != 0) || (fn_801B89F8() != 0)) {
-        var_r31 = 1;
+        shouldDecrease = 1;
     }
-    if (var_r31 != 0) {
-        temp_f0 = lbl_8055EDB8 - lbl_80563258;
-        var_f2 = lbl_80563238 > temp_f0 ? lbl_80563238 : temp_f0;
-        lbl_8055EDB8 = var_f2;
+    if (shouldDecrease != 0) {
+        decreasedValue = lbl_8055EDB8 - lbl_80563258;
+        clampedDown = lbl_80563238 > decreasedValue ? lbl_80563238 : decreasedValue;
+        lbl_8055EDB8 = clampedDown;
     } else {
-        temp_f0_2 = lbl_80563258 + lbl_8055EDB8;
-        var_f2_2 = lbl_8055B4FC < temp_f0_2 ? lbl_8055B4FC : temp_f0_2;
-        lbl_8055EDB8 = var_f2_2;
+        increasedValue = lbl_80563258 + lbl_8055EDB8;
+        clampedUp = lbl_8055B4FC < increasedValue ? lbl_8055B4FC : increasedValue;
+        lbl_8055EDB8 = clampedUp;
     }
 }
 
