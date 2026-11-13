@@ -5760,6 +5760,7 @@ extern "C" s32 fn_800FC7AC(void *arg0) {
 
 extern "C" const char lbl_803268E4[];
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC7B4(void *self, s32 bus, f32 value) {
+    /* Set this sequence player's FX send level for an aux bus, with interrupt-safe update. */
     int valid = 0;
     if (bus >= 0 && bus < 4) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x322, lbl_803268E4, bus, 0, 4);
