@@ -545,19 +545,20 @@ after_copy:
     *counter = count + 1;
 }
 
-int fn_80292FB4(unsigned char *arg0, void *arg1) {
+int fn_80292FB4(unsigned char *bucket, void *system) {
     register unsigned char *entry;
     register int i;
     int count;
-    int value;
-    entry = arg0;
+    int refCount;
+    /* Decrement the refcount for a system in the bucket; returns 1 when it reaches 0, or panics if not found. */
+    entry = bucket;
     i = 0;
-    count = *(int *)(arg0 + 0x180);
+    count = *(int *)(bucket + 0x180);
     for (; i < count; entry += 0x18, i++) {
-        if (*(void **)(entry + 0x10) == arg1) {
-            value = *(int *)(arg0 + i * 0x18 + 0x14) - 1;
-            *(int *)(arg0 + i * 0x18 + 0x14) = value;
-            return value == 0;
+        if (*(void **)(entry + 0x10) == system) {
+            refCount = *(int *)(bucket + i * 0x18 + 0x14) - 1;
+            *(int *)(bucket + i * 0x18 + 0x14) = refCount;
+            return refCount == 0;
         }
     }
     fn_802E317C(lbl_80349224);
@@ -722,8 +723,8 @@ cont:
  * was found for at -1.  The car one takes no instance and remaps no texture;
  * fn_80293CD0 and fn_80294530 do the "ter" and "wood" ones. */
 int fn_80293374(void *object, void *modelBase) {
-    char name[0x20];
     int count;
+    char name[0x20];
     ChunkSys *chunkSys = (ChunkSys *)object;
     chunkSys->modelCount = 0;
     goto check;
