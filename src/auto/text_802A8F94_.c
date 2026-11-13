@@ -146,21 +146,21 @@ void fn_802A92CC(void) {
     f32 value1;
     f32 value0;
     u8 result;
-    register s32 *entry;
+    s32 *entry;
     u32 i;
 
     result = (u8)fn_802A9048();
     lbl_8055F8F0 = result;
     if (result != 0) {
         fn_802A1120(&lbl_8055F8F8, &lbl_8055F908);
-        value0 = lbl_8055F908;
-        value1 = *(((volatile f32 *)&lbl_8055F908) + 1);
+        value0 = *(volatile f32 *)&lbl_8055F908;
+        value1 = *((volatile f32 *)&lbl_8055F908 + 1);
         *(volatile f32 *)&lbl_8055F900 = value0;
-        *(((volatile f32 *)&lbl_8055F900) + 1) = value1;
         entry = (s32 *)lbl_804BD740;
+        *((volatile f32 *)&lbl_8055F900 + 1) = value1;
         i = 0;
         *(volatile f32 *)&lbl_8055F900 = value1;
-        *(((volatile f32 *)&lbl_8055F900) + 1) = -value0;
+        *((volatile f32 *)&lbl_8055F900 + 1) = -value0;
         do {
             if (fn_8012C33C(entry[0]) != 0)
                 entry[1] = fn_802C6FC0(entry[0], 0, 0);
@@ -178,20 +178,21 @@ void fn_802A92CC(void) {
 
 #pragma scheduling invalid_target
 void fn_802A93A4(void) {
-    s32 *p;
-    s32 value;
+    /* Release all four active model-slot references and clear the cached texture id. */
+    s32 *slot;
+    s32 ref;
     u32 i;
     if (lbl_8055F8F0 != 0) {
-        p = (s32 *)lbl_804BD740;
+        slot = (s32 *)lbl_804BD740;
         i = 0;
         do {
-            value = p[1];
-            if (value != -1) {
-                fn_802C6CF8(value);
-                p[1] = -1;
+            ref = slot[1];
+            if (ref != -1) {
+                fn_802C6CF8(ref);
+                slot[1] = -1;
             }
             i++;
-            p += 2;
+            slot += 2;
         } while (i < 4);
         fn_802CAC54(lbl_8055CC58);
         lbl_8055CC58 = -2;
@@ -208,21 +209,19 @@ extern f32 fn_801E7E24(void);
 extern void *fn_801E7E3C(void *);
 extern void fn_802C744C(s32, void *);
 void fn_802A9428(void) {
-    volatile u8 enabled = lbl_8055F8F0;
-    register char *base = lbl_804BD6F8;
+    s32 selected;
+    s32 kind;
+    s32 index;
+    char *base;
     char *entries;
-    register s32 index;
-    register s32 kind;
     s32 value;
     s32 *entry;
     s32 *current;
-    register s32 selected;
     f32 elapsed;
-
+    base = lbl_804BD6F8;
     entries = base + 0x98;
-    if (enabled == 0)
+    if (lbl_8055F8F0 == 0)
         return;
-
     selected = -1;
     index = fn_801E85B4();
     kind = fn_801E866C(-1);
@@ -243,14 +242,12 @@ void fn_802A9428(void) {
         elapsed = fn_801E7E24();
         *(f32 *)(entry + 3) -= elapsed;
     }
-
     current = (s32 *)fn_801E7E3C(entry);
     index = entry[1];
     if (lbl_8055F8F1 == 0 && index >= current[2])
         selected = 3;
-    else if ((u32)(index + 1) < 4)
+    else if ((u32)(index + 1) < 4U)
         selected = index;
-
     if (selected >= 0) {
         s32 *slot = (s32 *)(base + 0x48 + selected * 8);
         if (slot[1] != -1)
