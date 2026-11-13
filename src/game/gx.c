@@ -1948,7 +1948,7 @@ void fn_802D1B58(void) {
 
 extern int PSMTXTranspose(void *, void *);
 extern int PSMTXScale(void *, float, float, float);
-extern int PSMTXRotRad(void *, float, float);
+extern int PSMTXRotRad(void *, float, float, float);
 extern int PSMTXConcat(void *, void *, void *);
 extern int GXSetCurrentMtx(int);
 extern int GXLoadNrmMtxImm(void *, int);
