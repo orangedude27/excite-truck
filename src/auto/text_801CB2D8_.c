@@ -1292,13 +1292,15 @@ done:
     return;
 }
 
-void fn_801CD730(s32 *arg0, s32 *arg1) {
+/* Outputs two cached state values from lbl_8055E884 (+0x2AC, +0x2B0) into the
+ * provided pointers, or 0/-1 when the current context is unavailable. */
+void fn_801CD730(s32 *outValue0, s32 *outValue1) {
     if (fn_801CE898() != 0) {
-        if (arg0 != 0) *arg0 = 0;
-        if (arg1 != 0) *arg1 = -1;
+        if (outValue0 != 0) *outValue0 = 0;
+        if (outValue1 != 0) *outValue1 = -1;
     } else {
-        if (arg0 != 0) *arg0 = *(s32 *)((u8 *)lbl_8055E884 + 0x2AC);
-        if (arg1 != 0) *arg1 = *(s32 *)((u8 *)lbl_8055E884 + 0x2B0);
+        if (outValue0 != 0) *outValue0 = *(s32 *)((u8 *)lbl_8055E884 + 0x2AC);
+        if (outValue1 != 0) *outValue1 = *(s32 *)((u8 *)lbl_8055E884 + 0x2B0);
     }
 }
 
