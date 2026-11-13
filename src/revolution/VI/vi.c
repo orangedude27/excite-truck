@@ -2739,17 +2739,18 @@ void __VISetTrapFilter(void)
 
 void __VISetRGBOverDrive(void)
 {
-    u8 data[2];
+    /* Configure AVE RGB overdrive via I2C register 0x0A. */
+    u8 cmd[2];
 
     if ((s32)lbl_8055DBF0 == 3) {
-        data[0] = 10;
-        data[1] = (lbl_8055DBE4 * 2) | 1;
-        __VISendI2CData(0xE0, data, 2);
+        cmd[0] = 10;
+        cmd[1] = (lbl_8055DBE4 * 2) | 1;
+        __VISendI2CData(0xE0, cmd, 2);
         WaitMicroTime(2);
     } else {
-        data[0] = 10;
-        data[1] = 0;
-        __VISendI2CData(0xE0, data, 2);
+        cmd[0] = 10;
+        cmd[1] = 0;
+        __VISendI2CData(0xE0, cmd, 2);
         WaitMicroTime(2);
     }
 }
