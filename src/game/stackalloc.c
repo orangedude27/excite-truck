@@ -113,13 +113,13 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2) {
 #pragma push
 void fn_802D9DE4(int arg0, void *arg1, int arg2) {
     unsigned int *src, *dest;
-    int i = 0, n, safe, ctr2; unsigned int ctr;
+    int i = 0, n, ctr, safe;
     unsigned int t0, t1;
     if (arg2 > 0) {
         n = arg2 - 8;
         if (arg2 > 8) {
             safe = 0;
-            if (arg2 >= 0 && arg2 <= 0x7ffffffe) safe = 1;
+            if ((arg2 >= 0) && (arg2 <= 0x7ffffffe)) safe = 1;
             if (safe) {
                 ctr = (unsigned int)(n + 7) >> 3;
                 src = (unsigned int *)arg1;
@@ -320,11 +320,10 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
                     i += 8;
                     src += 96;
                     dest += 96;
-                ctr -= 1;
-                } while (ctr != 0);
+                } while (--ctr);
             }
         }
-        ctr2 = arg2 - i;
+        ctr = arg2 - i;
         src = (unsigned int *)arg1 + i * 12;
         dest = (unsigned int *)((char *)lbl_804DAC48 + arg0 * 0x30) + i * 12;
         if (i < arg2) do {
@@ -353,8 +352,7 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
             dest[10] = t0;
             dest[11] = t1;
             src += 12; dest += 12;
-        ctr2 -= 1;
-        } while (ctr2 != 0);
+        } while (--ctr);
     }
 }
 #pragma pop
@@ -676,51 +674,52 @@ void *fn_802DA704(int owner, void *data, int count) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802DA80C(int owner, void *data, int count) {
+    void *record;
     volatile unsigned char *state;
-    unsigned char saved;
-    unsigned char *base;
-    int bytes;
+    int savedInitialized;
+    unsigned char *blockBase;
+    int payloadBytes;
     int used;
-    int size;
-    int aligned;
-    int position;
-    int updated;
-    void *result;
+    int recordSize;
+    int roundedSize;
+    int alignedSize;
+    unsigned int blockOffset;
+    int newUsed;
+
     state = (volatile unsigned char *)lbl_8055FE5C;
-    bytes = count * 0x30;
-    saved = state[0x25];
+    payloadBytes = count * 0x30;
+    savedInitialized = state[0x25];
     state[0x25] = 0;
-    size = bytes + 0x18;
+    recordSize = payloadBytes + 0x18;
+    roundedSize = recordSize + 3;
     used = *(volatile int *)(state + 0x10);
-    aligned = (size + 3) & ~3;
-    if (aligned + used + 8 > *(volatile int *)(state + 0x0C)) {
-        int limit = *(volatile int *)(state + 0x0C);
-        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), size, limit / 1024);
-        result = 0;
+    alignedSize = roundedSize & ~3;
+    if (alignedSize + used + 8 > *(volatile int *)(state + 0x0C)) {
+        int capacity = *(volatile int *)(state + 0x0C);
+        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), recordSize, capacity / 1024);
+        record = 0;
     } else {
-        position = *(volatile int *)(state + 0x10);
-        base = (unsigned char *)position;
-        position = *(unsigned int *)(state + 4);
-        base += position;
-        *(int *)base = 1;
-        result = base + 4;
-        position = *(unsigned int *)(state + 4);
+        blockOffset = *(unsigned int *)(state + 4);
+        blockBase = (unsigned char *)*(volatile int *)(state + 0x10);
+        blockBase += blockOffset;
+        *(int *)blockBase = 1;
+        record = blockBase + 4;
+        blockOffset = *(unsigned int *)(state + 4);
         used = *(volatile int *)(state + 0x10);
-        used += position;
-        position = used + aligned;
-        *(int *)(position + 4) = aligned;
-        updated = aligned + *(volatile int *)(state + 0x10);
-        updated += 8;
-        *(volatile int *)(state + 0x10) = updated;
+        used = blockOffset + used;
+        blockOffset = used + alignedSize;
+        *(int *)(blockOffset + 4) = alignedSize;
+        newUsed = alignedSize + *(volatile int *)(state + 0x10);
+        *(volatile int *)(state + 0x10) = newUsed + 8;
     }
-    *(int *)((char *)result + 0) = 7;
-    *(int *)((char *)result + 4) = owner;
-    *(int *)((char *)result + 8) = count;
-    *(int *)((char *)result + 0x0C) = 1;
-    *(int *)((char *)result + 0x14) = 0;
-    *((unsigned char *)result + 0x10) = saved;
-    memcpy((char *)result + 0x18, data, bytes);
-    return result;
+    *(int *)((char *)record + 0) = 7;
+    *(int *)((char *)record + 4) = owner;
+    *(int *)((char *)record + 8) = count;
+    *(int *)((char *)record + 0x0C) = 1;
+    *(int *)((char *)record + 0x14) = 0;
+    *(unsigned char *)((char *)record + 0x10) = (unsigned char)savedInitialized;
+    memcpy((char *)record + 0x18, data, payloadBytes);
+    return record;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
@@ -797,14 +796,13 @@ void fn_802DAA18(void *arg0) {
     extern void fn_802E317C(char *, ...);
     extern int memcpy(void *, const void *, unsigned int);
     unsigned char sp8[0x3C0];
-    void *var_r31 = arg0;
+    register void *var_r31 = arg0;
     struct DaaContext *ctx = (struct DaaContext *)lbl_8055FE5C;
     struct DaaRecord *entry;
     struct DaaRecord *var_r29;
     char *format;
     void *name;
     int size;
-
     lbl_8055FE60 = var_r31;
     if (var_r31 == 0) {
         entry = (struct DaaRecord *)ctx->current;
