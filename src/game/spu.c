@@ -546,14 +546,20 @@ void fn_802E589C(void) {
     fn_802E582C();
 }
 
-extern unsigned char lbl_804FC558[];
-extern int lbl_8055FF78;
-extern int lbl_8055FFA0;
-extern int *lbl_8055FF9C;
+/* One slot of the sound-name queue lbl_804FC558 (8 slots, count lbl_8055FF78),
+ * which holds the resource-directory names currently being played. */
+#define SFX_NAME_SLOT_SIZE 0x20
+extern unsigned char lbl_804FC558[]; /* sound-name queue: 0x20-byte NUL-terminated names */
+extern int lbl_8055FF78;             /* sound-name queue: names in use */
+extern int lbl_8055FFA0;             /* voice table lbl_8055FF9C: entries in use */
+extern int *lbl_8055FF9C;            /* voice objects allocated by fn_802E5AE8 */
 extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern int fn_802E582C(void);
 #pragma dont_inline fn_802E582C
+/* fn_8012C41C callback: for every loaded entry of a resource directory whose
+ * data is tagged 'SFX0', allocate a voice object for it (fn_802E582C keeps the
+ * resource's name in r3 for fn_802E5AE8); returning 0 stops the walk. */
 int fn_802E58A0(void *arg0, int arg1) {
     if (arg1 == 0x53465830) return fn_802E582C();
     return 1;
