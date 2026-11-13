@@ -3850,28 +3850,30 @@ extern char lbl_803337C8;
 extern void fn_801E3FC8(s32, s32, s32, f32);
 extern s32 lbl_8055E598;
 __declspec(section ".data") extern char lbl_803337C8;
-extern "C" void* fn_801A2CC0(void* arg0, s32 arg1, s32 arg2) {
-    u8 temp_r6;
-    u8 temp_r7;
-    u8 temp_r8;
-    u8 temp_r9;
+extern "C" void* fn_801A2CC0(void* object, s32 arg1, s32 swapBytes) {
+    /* Initialize object (via fn_8019ECC4), set its vtable, and optionally byte-swap the two 4-byte fields at +0x24 and +0x28. */
+    u8 byte24;
+    u8 byte28;
+    u8 byte25;
+    u8 byte29;
+
     fn_8019ECC4();
-    *(void**)arg0 = &lbl_803337C8;
-    if (arg2 != 0) {
-        temp_r6 = *(u8*)((u8*)arg0 + 0x24);
-        temp_r8 = *(u8*)((u8*)arg0 + 0x25);
-        temp_r7 = *(u8*)((u8*)arg0 + 0x28);
-        temp_r9 = *(u8*)((u8*)arg0 + 0x29);
-        *(u8*)((u8*)arg0 + 0x24) = *(u8*)((u8*)arg0 + 0x27);
-        *(u8*)((u8*)arg0 + 0x27) = temp_r6;
-        *(u8*)((u8*)arg0 + 0x25) = *(u8*)((u8*)arg0 + 0x26);
-        *(u8*)((u8*)arg0 + 0x26) = temp_r8;
-        *(u8*)((u8*)arg0 + 0x28) = *(u8*)((u8*)arg0 + 0x2B);
-        *(u8*)((u8*)arg0 + 0x2B) = temp_r7;
-        *(u8*)((u8*)arg0 + 0x29) = *(u8*)((u8*)arg0 + 0x2A);
-        *(u8*)((u8*)arg0 + 0x2A) = temp_r9;
+    *(void**)object = &lbl_803337C8;
+    if (swapBytes != 0) {
+        byte24 = *(u8*)((u8*)object + 0x24);
+        byte25 = *(u8*)((u8*)object + 0x25);
+        byte28 = *(u8*)((u8*)object + 0x28);
+        byte29 = *(u8*)((u8*)object + 0x29);
+        *(u8*)((u8*)object + 0x24) = *(u8*)((u8*)object + 0x27);
+        *(u8*)((u8*)object + 0x27) = byte24;
+        *(u8*)((u8*)object + 0x25) = *(u8*)((u8*)object + 0x26);
+        *(u8*)((u8*)object + 0x26) = byte25;
+        *(u8*)((u8*)object + 0x28) = *(u8*)((u8*)object + 0x2B);
+        *(u8*)((u8*)object + 0x2B) = byte28;
+        *(u8*)((u8*)object + 0x29) = *(u8*)((u8*)object + 0x2A);
+        *(u8*)((u8*)object + 0x2A) = byte29;
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_801A2D50(s32 arg0, void *arg1) {
