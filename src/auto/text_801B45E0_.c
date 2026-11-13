@@ -265,6 +265,16 @@ extern void fn_801B4C9C(int, int);
 extern void fn_801B4C58();
 extern void fn_801B4C60();
 extern float fn_801B4D10(int, int);
+
+/* One slot of the FramePool ring the replay queue records into (the
+ * "FramePool::mFrames" array, fn_801B479C gives the slot of an index): the
+ * tick the packet belongs to (-1 while the slot is free) and the offset of
+ * its recorded data in the queue's VirtualMemory pool. */
+struct ReplayFrame {
+    /* 0x0 */ int tick;
+    /* 0x4 */ int unk4;
+    /* 0x8 */ int dataOfs;
+};
 #pragma use_lmw_stmw off
 int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
     int index;
@@ -367,7 +377,7 @@ int fn_801B4D80(void *arg0, int p1, int p2, float arg3) {
     float a,b,c,d,e,f,t;
     unsigned short x;
     x=*(unsigned short *)((char *)arg2+6);
-    { int word=*(int *)arg1; *(int *)arg0=word; }
+    *(int *)arg0=*(int *)arg1;
     *(int *)((char *)arg0+4)=*((unsigned char *)arg1+4);
     a=lbl_80562668 > ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
     a=a < lbl_80562674 ? a : lbl_80562674;
@@ -424,7 +434,8 @@ extern "C" void fn_801B50B4(void **arg0, int arg1) {
         goto done;
     if (fn_801B4B44((char *)state) != 0)
         goto state_ready;
-    goto done;
+    else
+        goto done;
 
 state_ready:
     if (fn_801B49D4(lbl_8055E6D8, (void **)&buffer, (void **)&offset, &rate, lbl_8055E3C4) != 0) {
