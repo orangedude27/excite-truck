@@ -450,16 +450,17 @@ u32 SISetXY(u32 lines, u32 times) {
 }
 
 static void AlarmHandler(OSAlarm* alarm, OSContext* ctx) {
-    s32 chan;
-    SIPacket* packet;
+    /* If a deferred SI transfer for this alarm's channel is ready, start it. */
+    s32 channel;
+    SIPacket* pendingPacket;
 
-    chan = alarm - Alarm;
-    packet = &Packet[chan];
+    channel = alarm - Alarm;
+    pendingPacket = &Packet[channel];
 
-    if (packet->chan != SI_CHAN_NONE) {
-        if (__SITransfer(packet->chan, packet->outAddr, packet->outSize,
-                         packet->inAddr, packet->inSize, packet->callback)) {
-            packet->chan = SI_CHAN_NONE;
+    if (pendingPacket->chan != SI_CHAN_NONE) {
+        if (__SITransfer(pendingPacket->chan, pendingPacket->outAddr, pendingPacket->outSize,
+                         pendingPacket->inAddr, pendingPacket->inSize, pendingPacket->callback)) {
+            pendingPacket->chan = SI_CHAN_NONE;
         }
     }
 }
