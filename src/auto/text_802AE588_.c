@@ -315,9 +315,8 @@ extern "C" void fn_802AE7F4(void) {
 void fn_802AE9D0(void) {
     lbl_8055CD78 = (void *)-1;
     fn_802C10C4();
-    if (((int (*)(void))fn_802B05E4)() != 0)
-        goto done;
-    fn_802BF40C();
+    if (((int (*)(void))fn_802B05E4)() == 0)
+        fn_802BF40C();
     fn_802C2410();
     fn_802BDC60();
     fn_802B9D08();
@@ -331,7 +330,6 @@ void fn_802AE9D0(void) {
     fn_802BBCC4();
     fn_802BE840();
     ((void (*)(void))fn_802AE644)();
-done:
     lbl_8055F970 = 0;
 }
 #pragma scheduling invalid_target
