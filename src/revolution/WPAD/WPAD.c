@@ -6249,6 +6249,83 @@ void fn_80067ECC(s32 chan, void* data) {
 // fn_800684CC: WPAD data processing
 void fn_800684CC(void) { /* stub */ }
 
+void fn_800684D0(s32 chan) {
+    WPADCB *cb;
+    u8 seed[10];
+    u8 tmp;
+    u32 a, b;
+    int i;
+    u32 v0, v1, v2;
+    u32 s0, s1, s2, s3;
+    u8 *dst;
+    int en;
+    u8 *p;
+    cb = lbl_8038F4F0[chan];
+    lbl_8055DC2B = (u8)(OSGetTick() >> 8);
+    lbl_8055DC2A = (u8)((OSGetTick() >> 16) & 0x3F);
+    tmp = (u8)((OSGetTick() >> 24) & 0x4C);
+    a = (u32)lbl_8055DC2B * (u32)lbl_8055DC2A;
+    lbl_8055DC28 = 0xFF;
+    lbl_8055DC29 = tmp;
+    b = (tmp + a) % 255;
+    a = (tmp + a) % 255 % 7;
+    v0 = a * 6;
+    for (i = 0; i < 2; i++) {
+        if (i == 0) dst = &seed[0]; else dst = &seed[5];
+        s0 = (tmp + b * lbl_8055DC2A) % 255;
+        dst[0] = lbl_803127C8[s0];
+        s1 = (tmp + s0 * lbl_8055DC2A) % 255;
+        dst[1] = lbl_803127C8[s1];
+        s2 = (tmp + s1 * lbl_8055DC2A) % 255;
+        dst[2] = lbl_803127C8[s2];
+        s3 = (tmp + s2 * lbl_8055DC2A) % 255;
+        dst[3] = lbl_803127C8[s3];
+        b = (tmp + s3 * lbl_8055DC2A) % 255;
+        dst[4] = lbl_803127C8[b];
+    }
+    lbl_8055DC2B = (u8)b;
+    en = OSDisableInterrupts();
+    p = (u8 *)cb;
+    p[0x854] = seed[9];
+    p[0x855] = seed[8];
+    p[0x856] = seed[7];
+    p[0x857] = seed[6];
+    p[0x858] = seed[5];
+    p[0x859] = seed[4];
+    p[0x85A] = seed[3];
+    p[0x85B] = seed[2];
+    p[0x85C] = seed[1];
+    p[0x85D] = seed[0];
+    {
+        u8 b0 = lbl_803127C8[seed[2]];
+        u8 b1 = lbl_803127C8[seed[0]];
+        u8 b2 = lbl_803127C8[seed[5]];
+        u8 b3 = lbl_803127C8[seed[4]];
+        u8 b4 = lbl_803127C8[seed[7]];
+        u8 b5 = lbl_803127C8[seed[3]];
+        u8 b6 = lbl_803127C8[seed[1]];
+        u8 b7 = lbl_803127C8[seed[6]];
+        u8 t0, t1, t2, t3, t4, t5;
+        (void)b0; (void)b1; (void)b2; (void)b3; (void)b4; (void)b5; (void)b6; (void)b7;
+        (void)v0; (void)v1; (void)v2; (void)s0; (void)s1; (void)s2; (void)s3; (void)tmp; (void)a; (void)b;
+        t0 = b0 ^ b1;
+        t1 = b2 ^ b3;
+        t2 = b4 ^ b5;
+        t3 = b6 ^ b7;
+        t4 = t0 ^ t1;
+        t5 = t2 ^ t3;
+        p[0x85E] = t4;
+        p[0x85F] = t5;
+        p[0x860] = t0;
+        p[0x861] = t1;
+        p[0x862] = t2;
+        p[0x863] = t3;
+    }
+    memcpy(p + 0x864, seed, 8);
+    memcpy(p + 0x86C, seed, 8);
+    OSRestoreInterrupts(en);
+}
+
 void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* base = (u8*)cb;
@@ -6272,6 +6349,12 @@ u16 _WUDGetNotAckedSize(s8 handle) {
     return 0;
 }
 u8 _WUDGetLinkNumber(void) { return 0; }
+static void __a1_22_ack_clear_a(WPADCB *pCB) {
+    pCB->readCB = 0;
+}
+static void __a1_22_ack_clear_b(WPADCB *pCB) {
+    *(u32 *)((u8 *)pCB + 0x7FC) = 0;
+}
 void __a1_22_ack(u8 chan, u8* pReport)
 {
     const char* strBase = (const char*)lbl_80312338;
