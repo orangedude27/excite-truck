@@ -619,22 +619,23 @@ void fn_801ECFE0(void *arg0) {
 }
 #pragma pop
 
-  void fn_801ED2D0(void *arg0) {
-      long offset;
-      char *current;
-      long flag;
-      long i;
-      char *p;
-  
-      ((void (*)(void))fn_801ECC70)();
-    flag = *(long *)((char *)arg0 + 0x40) == fn_801E866C(-1);
+/* Updates 4 per-slot records for this object when the owner's selected entry matches the current one. */
+void fn_801ED2D0(void *arg0) {
+    long offset;
+    char *current;
+    long flagIsCurrent;
+    long i;
+    char *recordPtr;
+
+    ((void (*)(void))fn_801ECC70)();
+    flagIsCurrent = *(long *)((char *)arg0 + 0x40) == fn_801E866C(-1);
     i = 0;
     current = (char *)arg0;
     offset = 0;
     do {
-        p = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
-        fn_801F131C(*(void **)(current + 0x4D4), flag, p,
-                    *(float *)(p + 0xB0));
+        recordPtr = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
+        fn_801F131C(*(void **)(current + 0x4D4), flagIsCurrent, recordPtr,
+                    *(float *)(recordPtr + 0xB0));
         i++;
         offset += 0x6C;
         current += 4;
