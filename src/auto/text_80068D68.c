@@ -1972,19 +1972,20 @@ void fn_8006A39C(u32 r3, u32 r4)
     OSSwitchFiberEx(r3, r4, 0, 0, fn_8006A300, (u8*)&lbl_80393680 + 0x1000);
 }
 
+/* WUD substate 0x11: persist BT device info to SC when ready, advancing state 1 -> 2. */
 void fn_8006A3BC(void)
 {
-    volatile u8 *base = lbl_80392960;
-    u8 state = base[0x11];
-    switch (state) {
+    volatile u8 *wudCb = lbl_80392960;
+    u8 substate = wudCb[0x11];
+    switch (substate) {
     case 1:
         if (SCCheckStatus() == 0 && SCSetBtDeviceInfoArray(lbl_80393058) != 0) {
             SCFlushAsync(fn_80068F28);
-            state = 2;
+            substate = 2;
         } else {
-            state = 1;
+            substate = 1;
         }
-        base[0x11] = state;
+        wudCb[0x11] = substate;
         break;
     case 2:
         break;
