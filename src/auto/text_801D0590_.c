@@ -18,27 +18,34 @@ void fn_801D0590(void* arg0) {
     items[count] = arg0;
 }
 
-void fn_801D05B4(void *arg0) {
-    void **p = lbl_804386B4[0].items;
-    int index = 0;
-    int i;
-    int last;
-    for (i = 0; i < lbl_804386B4[0].count; i++) {
-        if (*p == arg0) goto found;
+static inline int DispatchList_Find1(void *obj) {
+    DispatchList *l = lbl_804386B4;
+    int i = 0;
+    void **p = l->items;
+    for (; i < l->count; i++) {
+        if (*p == obj) return i;
         p++;
-        index++;
     }
-    index = -1;
-found:
-    if (index == -1) return;
+    return -1;
+}
+
+static inline void DispatchList_RemoveAt1(int index) {
+    int last;
+    DispatchList *l = lbl_804386B4;
     if (index < 0) return;
-    if (index >= lbl_804386B4[0].count) return;
-    last = lbl_804386B4[0].count - 1;
+    if (index >= l->count) return;
+    last = l->count - 1;
     if (index != last) {
         void **items = lbl_804386B4[0].items;
         items[index] = items[last];
     }
     lbl_804386B4[0].count = lbl_804386B4[0].count - 1;
+}
+
+void fn_801D05B4(void *arg0) {
+    int index = DispatchList_Find1(arg0);
+    if (index == -1) return;
+    DispatchList_RemoveAt1(index);
 }
 
 #pragma push
