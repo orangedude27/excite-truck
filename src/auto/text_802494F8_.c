@@ -200,28 +200,25 @@ extern char lbl_80343E7C[];
 #pragma scheduling invalid_target
 void fn_8024A304(void *arg0, void **arg1, int arg2, int arg3) {
     extern unsigned char lbl_8055F290;
-    int zero = 0;
     register void *object;
     register void **list;
     register int index;
     (void)arg3;
     *(int *)((char *)arg0 + 0x1C) = arg2;
     object = arg0;
-    *(int *)((char *)object + 0x10) = zero;
+    *(int *)((char *)object + 0x10) = 0;
     list = arg1;
-    index = zero;
-    *(int *)((char *)object + 0x14) = zero;
+    index = 0;
+    *(int *)((char *)object + 0x14) = 0;
     {
         register void *record;
         register int offset;
         register int archiveIndex;
         register int archiveCount;
-        offset = zero;
+        offset = 0;
         goto outer_check;
 outer_body:
-        if (stricmp((char *)fn_800081BC(
-                        *(void **)((char *)*(void **)*list + offset)),
-                    *(char **)((char *)object + 0x1C)) == 0) {
+        if (stricmp((char *)fn_800081BC(*(void **)((char *)*(void **)*list + offset)), *(char **)((char *)object + 0x1C)) == 0) {
             void *header = *list;
             int itemCount = *(int *)((char *)object + 0x14);
             char *array = *(char **)header;
@@ -231,52 +228,36 @@ outer_body:
                 char *item = (char *)object + itemCount * 0xC;
                 *(int *)(item + 0x20) = *(int *)((char *)record + 4);
             }
-            archiveCount = *(int *)((char *)fn_80012820(
-                             *(int *)((char *)record + 4)) + 0x70);
-            for (archiveIndex = 0; archiveIndex < archiveCount;
-                 archiveIndex++) {
-                if (record != (void *)fn_80012870(
-                        *(int *)((char *)record + 4), archiveIndex))
-                    continue;
-                break;
+            archiveCount = *(int *)((char *)fn_80012820(*(int *)((char *)record + 4)) + 0x70);
+            for (archiveIndex = 0; archiveIndex < archiveCount; archiveIndex++) {
+                if (record == (void *)fn_80012870(*(int *)((char *)record + 4), archiveIndex))
+                    break;
             }
             if (archiveIndex >= archiveCount)
                 archiveIndex = -1;
-            *(int *)((char *)object +
-                     *(int *)((char *)object + 0x14) * 0xC + 0x24) =
-                archiveIndex;
+            *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x24) = archiveIndex;
             {
                 int tableIndex = 0;
                 int tableOffset = 0;
                 void *table = lbl_8055F28C;
                 int tableCount = *(int *)((char *)table + 4);
-                for (; tableIndex < tableCount;
-                     tableIndex++, tableOffset += 0x18) {
-                    if (*(int *)(*(char **)table + tableOffset) !=
-                        *(int *)record)
+                for (; tableIndex < tableCount; tableIndex++, tableOffset += 0x18) {
+                    if (*(int *)(*(char **)table + tableOffset) != *(int *)record)
                         continue;
                     goto table_found;
                 }
                 tableIndex = -1;
 table_found:
                 if (lbl_8055F290 != 0 && tableIndex >= 0) {
-                    *(int *)((char *)object +
-                             *(int *)((char *)object + 0x14) * 0xC + 0x28) =
-                        *(int *)(*(char **)table + tableIndex * 0x18 + 4);
+                    *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x28) = *(int *)(*(char **)table + tableIndex * 0x18 + 4);
                 } else {
                     int key = fn_80012910(*(int *)record);
-                    void *dispatchObject =
-                        *(void **)((char *)record + 0x20);
-                    int (*method)(void *, char *, int) =
-                        (int (*)(void *, char *, int))
-                        (*(void ***)dispatchObject)[6];
-                    *(int *)((char *)object +
-                             *(int *)((char *)object + 0x14) * 0xC + 0x28) =
-                        method(dispatchObject, lbl_80343E7C, key);
+                    void *dispatchObject = *(void **)((char *)record + 0x20);
+                    int (*method)(void *, char *, int) = (int (*)(void *, char *, int))(*(void ***)dispatchObject)[6];
+                    *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x28) = method(dispatchObject, lbl_80343E7C, key);
                 }
             }
-            *(int *)((char *)object + 0x14) =
-                *(int *)((char *)object + 0x14) + 1;
+            *(int *)((char *)object + 0x14) = *(int *)((char *)object + 0x14) + 1;
         }
         offset += 8;
         index += 1;
@@ -324,19 +305,16 @@ s32 fn_8024A4CC(s32 *arg0, s32 *arg1, s32 *arg2) {
     register s32 count;
     void *record;
     s32 result;
-
     *arg0 = -1;
     *arg1 = 0;
     *arg2 = 0;
     fn_801332D0(0, lbl_8055BF14, arg0);
     fn_801332D0(0, lbl_8055BF10, arg1);
-
     *(volatile s32 *)&buffer.count = 0;
     *(volatile void **)&buffer.data = buffer.bytes;
     *(volatile s32 *)&buffer.size = 0x80;
     fn_8027BCD0(&buffer);
     key = -1;
-
     index = *arg0;
     if (index >= 0 && index < fn_80012818()) {
         record = (void *)fn_80012820(index);
@@ -347,11 +325,12 @@ s32 fn_8024A4CC(s32 *arg0, s32 *arg1, s32 *arg2) {
             i = 0;
             targetKey = *(s32 *)record;
             entry = (s32 *)buffer.data;
-            while (i < count) {
-                if (*entry == targetKey)
-                    goto found_entry;
+            for (; i < count; i++) {
+                if (*entry != targetKey)
+                    goto scan_increment;
+                goto found_entry;
+scan_increment:
                 entry = (s32 *)((u8 *)entry + 0x18);
-                i++;
             }
             i = -1;
 found_entry:
@@ -359,7 +338,6 @@ found_entry:
                 key = targetKey;
         }
     }
-
     if (((s32 (*)(s32 *, s32 **))fn_8024B070)(&key, (s32 **)&buffer.data)) {
         *arg0 = *(s32 *)((u8 *)fn_8001285C(key) + 4);
         *arg1 = -1;
@@ -680,32 +658,29 @@ void fn_8024B260(arg0)
 void *arg0;
 {
     s32 selected;
-    char *search;
+    s32 one;
     s32 i;
     s32 offset;
-    s32 one;
-    s32 zero;
+    char *search;
     void *list;
     u8 *entry;
     u8 *record;
     u8 **strings;
-
+    s32 zero;
     selected = fn_80214D04();
     *(s32 *)((u8 *)arg0 + 0x280) = selected;
     strings = *(u8 ***)((u8 *)arg0 + 0x18);
     search = (char *)strings[selected * 2];
     memset((u8 *)arg0 + 0x78, 0, 0x208);
-
     one = 1;
-    *(s32 *)((u8 *)arg0 + 0xDC) = one;
     i = 0;
+    *(s32 *)((u8 *)arg0 + 0xDC) = one;
     offset = 0;
     *(s32 *)((u8 *)arg0 + 0x144) = one;
     zero = 0;
     *(s32 *)((u8 *)arg0 + 0x1AC) = one;
     *(s32 *)((u8 *)arg0 + 0x214) = one;
     *(s32 *)((u8 *)arg0 + 0x27C) = one;
-
     goto check_loop;
 loop_body:
     entry = *(u8 **)list + offset;
@@ -713,8 +688,8 @@ loop_body:
         record = (u8 *)arg0 + *(s32 *)(entry + 8) * 0x68 + 0x78;
         {
             char *src = *(char **)(entry + 4);
-            char *dst = (char *)record;
             s32 remaining = 0x32;
+            char *dst = (char *)record;
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
                     dst[-1] = zero;
@@ -724,8 +699,8 @@ loop_body:
         }
         if (entry[0x14] != 0) {
             char *src = *(char **)(entry + 0x10);
-            char *dst = (char *)(record + 0x32);
             s32 remaining = 0x32;
+            char *dst = (char *)(record + 0x32);
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
                     dst[-1] = zero;
@@ -735,8 +710,8 @@ loop_body:
             *(s32 *)(record + 0x64) = one;
         } else {
             char *src = (char *)fn_80131234(lbl_80343B54);
-            char *dst = (char *)(record + 0x32);
             s32 remaining = 0x32;
+            char *dst = (char *)(record + 0x32);
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
                     dst[-1] = zero;
@@ -747,7 +722,7 @@ loop_body:
         }
     }
     offset += 0x18;
-    i += 1;
+    i++;
 check_loop:
     list = *(void **)((u8 *)arg0 + 0x74);
     if (i < *(s32 *)((u8 *)list + 4)) {
@@ -1001,6 +976,8 @@ s32 fn_8024B8D4(s32 arg0) {
     return arg0 + 0x98;
 }
 
+/* Refreshes per-entry UI state: notifies the handler for the selected entry (0x9C),
+   marks active entries with flag 0x14 clear, and marks inactive slots beyond 0x1C. */
 void fn_8024B8DC(void *arg0) {
     int offset;
     int index;
