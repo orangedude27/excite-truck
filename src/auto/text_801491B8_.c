@@ -3834,10 +3834,11 @@ void fn_80155AF0(void *arg0, void *arg1) {
 u32 fn_80155C88(void) { return 1; }
 
 extern int vsprintf(char *, const char *, va_list);
-void fn_80155C90(void *arg0, const char *fmt, ...) {
-    va_list ap;
-    va_start(ap, fmt);
-    vsprintf((char *)arg0 + 0x14, fmt, ap);
+/* Format a string into this object's text buffer at offset 0x14. */
+void fn_80155C90(void *obj, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    vsprintf((char *)obj + 0x14, fmt, args);
 }
 
 void fn_80155D20(void *arg0, const char *fmt, ...) {
