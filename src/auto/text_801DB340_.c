@@ -100,6 +100,8 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
 
 void fn_801DB340(int arg0) { fn_801DB13C(arg0 - 4); }
 
+#pragma auto_inline off
+#pragma dont_inline on
 int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
     int width, height;
     float *data;
@@ -585,7 +587,6 @@ extern double fabs(double);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 float fn_801DCF48(void *arg0, float farg0, float farg1) {
     extern float lbl_80562B84;
     extern float lbl_80562BBC;
@@ -599,7 +600,6 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
     unsigned short *tileMap;
     unsigned short sample00, sample01, sample10;
     void *tileBase;
-
     if (*(int *)(state + 0x10) == 0) {
         sp8 = lbl_80562B84;
         if (((int (*)(float *, int, int, void *))fn_801DC258)(&sp8, 0, 0, arg0) == 0) {
@@ -623,11 +623,10 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
     if (z < lbl_80562B84) roundedZ = z - lbl_80562B64;
     else roundedZ = lbl_80562B64 + z;
     iz = (int)roundedZ;
-
-    quotientX = ix / (int)32;
+    quotientX = ix / 32;
     tileX = quotientX - lbl_8055E99C;
     remX = ix - quotientX * 32;
-    quotientZ = iz / (int)32;
+    quotientZ = iz / 32;
     remZ = iz - quotientZ * 32;
     tileZ = quotientZ - lbl_8055E9A0;
     if (tileX < 0 || tileZ < 0) {
@@ -654,7 +653,6 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
         var_f31 = lbl_80562B84;
         goto done;
     }
-
     if (arg0 != 0) {
         deltaZ = remZ << 1;
         next = *(int *)(node + 0x890);
@@ -707,8 +705,7 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
             layer = (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810;
             do {
                 weight = lbl_804424B0[*(int *)(layer + 0x808)];
-                var_f31 += weight * (*(float *)(layer + 0) +
-                    *(float *)(layer + 4) * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
+                var_f31 += weight * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
                 next = *(int *)(layer + 0x80C);
                 layer = next >= 0 ? (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810 : 0;
             } while (layer != 0);
@@ -735,7 +732,7 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
     slot = lbl_80446F18 + depth * 0x20;
     *(float **)slot = value;
     before = ((float (*)(float,float))fn_801DCF0C)(x,z);
-    for (i=0; i!=72; i+=8) {
+    for (i=0; i<72; i+=8) {
       saved[i+0] = lbl_804424B0[i+0]; lbl_804424B0[i+0] = lbl_80562B84;
       saved[i+1] = lbl_804424B0[i+1]; lbl_804424B0[i+1] = lbl_80562B84;
       saved[i+2] = lbl_804424B0[i+2]; lbl_804424B0[i+2] = lbl_80562B84;
