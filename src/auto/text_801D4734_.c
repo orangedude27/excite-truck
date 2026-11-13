@@ -3318,37 +3318,38 @@ void fn_801D8938(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801D893C(void *arg0, unsigned int arg1) {
+extern "C" void fn_801D893C(void *list, unsigned int id) {
     int count;
-    int offset;
-    unsigned char *item;
+    int byteOffset;
+    unsigned char *entry;
     unsigned char *base;
-    int i;
+    int index;
 
-    i = 0;
-    offset = 0;
+    /* Remove the 12-byte entry whose first word matches id from the list at +0x24/+0x28 by swapping in the last entry. */
+    index = 0;
+    byteOffset = 0;
     goto test;
 loop:
-    base = *(unsigned char **)((unsigned char *)arg0 + 0x24);
-    item = base + offset;
-    if (*(unsigned int *)item == arg1) {
-        if (i >= 0) {
-            count = *(volatile int *)((unsigned char *)arg0 + 0x28);
-            if (i < count) {
-                int last = count - 1;
-                if (i != last) {
-                    *(unsigned int *)item = *(unsigned int *)(base + last * 0xC);
-                    *(unsigned int *)(item + 4) = *(unsigned int *)(base + last * 0xC + 4);
-                    *(unsigned int *)(item + 8) = *(unsigned int *)(base + last * 0xC + 8);
+    base = *(unsigned char **)((unsigned char *)list + 0x24);
+    entry = base + byteOffset;
+    if (*(unsigned int *)entry == id) {
+        if (index >= 0) {
+            count = *(volatile int *)((unsigned char *)list + 0x28);
+            if (index < count) {
+                int lastIndex = count - 1;
+                if (index != lastIndex) {
+                    *(unsigned int *)entry = *(unsigned int *)(base + lastIndex * 0xC);
+                    *(unsigned int *)(entry + 4) = *(unsigned int *)(base + lastIndex * 0xC + 4);
+                    *(unsigned int *)(entry + 8) = *(unsigned int *)(base + lastIndex * 0xC + 8);
                 }
-                *(int *)((unsigned char *)arg0 + 0x28) = *(int *)((unsigned char *)arg0 + 0x28) - 1;
+                *(int *)((unsigned char *)list + 0x28) = *(int *)((unsigned char *)list + 0x28) - 1;
             }
         }
     }
-    offset += 0xC;
-    i++;
+    byteOffset += 0xC;
+    index++;
 test:
-    if (i < *(int *)((unsigned char *)arg0 + 0x28)) {
+    if (index < *(int *)((unsigned char *)list + 0x28)) {
         goto loop;
     }
 }
