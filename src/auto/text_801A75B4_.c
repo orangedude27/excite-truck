@@ -155,20 +155,21 @@ void fn_801A7844(int arg0) {
 extern void fn_801334F4(int, int, int *, int);
 #pragma push
 #pragma scheduling invalid_target
-void fn_801A7974(const char *arg0, int arg1, int arg2) {
-    F801A9050Zero temp;
+/* Resolve an input-binding name via config lookup and copy the matching binding record to outBinding. */
+void fn_801A7974(const char *outBinding, int valueId, int groupId) {
+    F801A9050Zero bindingName;
 
-    temp.words[0] = 0;
-    temp.words[1] = 0;
-    temp.words[2] = 0;
-    temp.words[3] = 0;
-    temp.words[4] = 0;
-    temp.words[5] = 0;
-    temp.words[6] = 0;
-    temp.words[7] = 0;
-    fn_801A90A4((char *)&temp, 0x20, arg0);
-    fn_801334F4(arg2, arg1, temp.words, 0x20);
-    fn_801A9110((void *)arg0, (const char *)&temp);
+    bindingName.words[0] = 0;
+    bindingName.words[1] = 0;
+    bindingName.words[2] = 0;
+    bindingName.words[3] = 0;
+    bindingName.words[4] = 0;
+    bindingName.words[5] = 0;
+    bindingName.words[6] = 0;
+    bindingName.words[7] = 0;
+    fn_801A90A4((char *)&bindingName, 0x20, outBinding);
+    fn_801334F4(groupId, valueId, bindingName.words, 0x20);
+    fn_801A9110((void *)outBinding, (const char *)&bindingName);
 }
 #pragma scheduling on
 #pragma pop
