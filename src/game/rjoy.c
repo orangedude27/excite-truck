@@ -140,17 +140,19 @@ extern int lbl_80507258[], lbl_8056000C;
 extern int fn_80128658(int, int *);
 #pragma push
 #pragma scheduling invalid_target
+/* Removes a value from the lbl_80507258 array by swapping in the last element,
+ * notifies fn_80128658 of the removal, and returns 1. */
 int fn_802E7A70(unsigned int value) {
-    int found;
-    int *p;
+    int foundIndex;
+    int *entry;
     int i;
-    int removed;
-    for (found = -1, p = lbl_80507258, i = 0; i < lbl_8056000C; p++, i++)
-        if ((unsigned int)*p == value) found = i;
+    int removedValue;
+    for (foundIndex = -1, entry = lbl_80507258, i = 0; i < lbl_8056000C; entry++, i++)
+        if ((unsigned int)*entry == value) foundIndex = i;
     lbl_8056000C--;
-    removed = lbl_80507258[lbl_8056000C];
-    lbl_80507258[found] = removed;
-    ((void (*)(unsigned int, int))fn_80128658)(value, removed);
+    removedValue = lbl_80507258[lbl_8056000C];
+    lbl_80507258[foundIndex] = removedValue;
+    ((void (*)(unsigned int, int))fn_80128658)(value, removedValue);
     return 1;
 }
 #pragma pop
@@ -338,13 +340,13 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     else if (var_f31 < lbl_80565188) var_f31 += lbl_80565184;
     var_f1 = lbl_80565160;
     temp_f0 = lbl_8056518C * in->acc.z;
-    if (var_f1 >= temp_f0) var_f1 = temp_f0;
-    if (var_f1 <= lbl_8056517C) var_f1 = lbl_8056517C;
+    var_f1 = (temp_f0 < var_f1) ? temp_f0 : var_f1;
+    var_f1 = (var_f1 > lbl_8056517C) ? var_f1 : lbl_8056517C;
     var_f1 = fn_802E78A4(var_f1);
     var_f4 = lbl_80565160;
     temp_f0_2 = lbl_80565190 * ((lbl_80565194 * var_f31) / lbl_80565180);
-    if (var_f4 >= temp_f0_2) var_f4 = temp_f0_2;
-    if (var_f4 <= lbl_8056517C) var_f4 = lbl_8056517C;
+    var_f4 = (temp_f0_2 < var_f4) ? temp_f0_2 : var_f4;
+    var_f4 = (var_f4 > lbl_8056517C) ? var_f4 : lbl_8056517C;
     vectorX = lbl_80565198 * -in->acc.z;
     vectorY = lbl_80565198 * in->acc.y;
     vectorZ = lbl_80565198 * -in->acc.x;
