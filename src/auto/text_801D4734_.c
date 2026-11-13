@@ -766,6 +766,7 @@ extern float lbl_80562B08;
 #pragma push
 #pragma scheduling invalid_target
 void fn_801D5488(void) {
+    /* Ticks down the global effect timer at lbl_804422F0+4; while positive, clamps/updates the active value and state flags, otherwise marks inactive. */
     extern char lbl_804422F0[];
     extern float lbl_80562ADC;
     extern float lbl_80562AE0;
