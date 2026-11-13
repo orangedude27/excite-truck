@@ -1149,12 +1149,19 @@ void fn_8024BBF4(void *arg0) {
   
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_8024BCC0(void *arg0) {
+/* Virtual method (reached through the thunk at fn_8024BDF4, which shifts `this` by -0x18).
+ * Asks the contest selector held at +0x30 for the current (event, contest) selection, looks
+ * that contest record up with fn_80012870, keeps the record's id at +0x34 and copies the
+ * record's parameter block (record+0x20) "friendly_name" string (lbl_80343E60) into the
+ * 100-byte name buffer at +0x38, truncating it to fit. With no selector (+0x30 == 0) the id
+ * becomes -1 and the name is cleared. */
+extern "C" void fn_8024BCC0(void *self) {
     class Base {
     public:
         char pad[0xC];
     };
-    class Dummy : public Base {
+    /* contest selector: vtable+0x38 = getSelection(&eventId, &contestIndex) */
+    class Selector : public Base {
     public:
         virtual void v0();
         virtual void v1();
@@ -1168,33 +1175,34 @@ extern "C" void fn_8024BCC0(void *arg0) {
         virtual void v9();
         virtual void v10();
         virtual void v11();
-        virtual void v12(s32 *, s32 *);
+        virtual void getSelection(s32 *eventId, s32 *contestIndex);
     };
-    class Obj {
+    /* contest record's parameter block: vtable+0x14 = get(name) -> string value */
+    class Params {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual char *get(const char *);
+        virtual char *get(const char *name);
     };
-    s32 spC, sp8;
+    s32 contestIndex, eventId;
     unsigned char *src;
     unsigned char c;
-    s32 count;
+    s32 remaining;
     unsigned char *dst;
-    void *obj = *(void **)((char *)arg0 + 0x30);
-    if (obj != 0) {
-        ((Dummy *)obj)->v12(&sp8, &spC);
-        void *result = (void *)fn_80012870(sp8, spC);
-        *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
-        Obj *o = *(Obj **)((char *)result + 0x20);
-        src = (unsigned char *)o->get(lbl_80343E60);
-        count = 0x64;
-        dst = (unsigned char *)arg0 + 0x38;
+    void *selector = *(void **)((char *)self + 0x30);
+    if (selector != 0) {
+        ((Selector *)selector)->getSelection(&eventId, &contestIndex);
+        void *contest = (void *)fn_80012870(eventId, contestIndex);
+        *(s32 *)((char *)self + 0x34) = *(s32 *)contest;
+        Params *params = *(Params **)((char *)contest + 0x20);
+        src = (unsigned char *)params->get(lbl_80343E60); /* "friendly_name" */
+        remaining = 0x64;
+        dst = (unsigned char *)self + 0x38;
         goto copy;
-    check_count:
-        count--;
-        if (count > 0)
+    check_remaining:
+        remaining--;
+        if (remaining > 0)
             goto copy;
         dst[-1] = 0;
         return;
@@ -1202,11 +1210,11 @@ extern "C" void fn_8024BCC0(void *arg0) {
         c = *src++;
         *dst++ = c;
         if ((signed char)c != 0)
-            goto check_count;
+            goto check_remaining;
         return;
     }
-    *(s32 *)((char *)arg0 + 0x34) = -1;
-    *(char *)((char *)arg0 + 0x38) = 0;
+    *(s32 *)((char *)self + 0x34) = -1;
+    *(char *)((char *)self + 0x38) = 0;
 }
 #pragma scheduling on
 #pragma cplusplus off
