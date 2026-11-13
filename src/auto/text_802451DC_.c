@@ -16,6 +16,14 @@ extern void fn_802E30C8(const char *, ...);
 extern int fn_802328D4(void *);
 extern int fn_802451DC(void *, int);
 extern int fn_8024521C(void *, int);
+extern int fn_80216CA8();
+extern int fn_802146BC(int *, int, int, int);
+extern int strlen(const char *);
+__declspec(section ".sdata") extern void *lbl_8055BE68;
+__declspec(section ".sdata") extern void *lbl_8055BAC0;
+extern char lbl_80343148[];
+extern int lbl_802FA364[5];
+extern void fn_80246210(void);
 int fn_802451DC(void *arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668(arg0);
     return (int)arg0;
@@ -434,6 +442,31 @@ extern "C" void fn_80245D2C(void *arg0) {
     }
     fn_80214D50(4);
 }
+
+void fn_80245D74(void *arg0, void *arg1, int arg2) {
+    int i, count, *src, *dst;
+    int slots[4][2];
+    (void)arg2;
+    if (*(unsigned char *)((char *)arg0 + 0x1D) == 0) {
+        void **vtable = *(void ***)arg0;
+        ((void (*)(void *))vtable[4])((char *)arg0 + 4);
+        return;
+    }
+    count = *(int *)((char *)arg1 + 0x14);
+    *(void **)((char *)arg0 + 0x20) = arg1;
+    i = 0;
+    if (count > 0) {
+        src = (int *)((char *)arg1 + 0x18);
+        dst = &slots[0][0];
+        while (i < count) {
+            dst[0] = src[0]; dst[1] = src[1];
+            src += 2; dst += 2; i++;
+        }
+    }
+    while (i < 4) { slots[i][0] = 0; slots[i][1] = 0; i++; }
+    *(void **)((char *)arg0 + 0x20) = 0;
+}
+
 #pragma cplusplus reset
 int fn_802461D0(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
