@@ -342,16 +342,17 @@ void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32
     SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(this_ptr, index >> 1, vertexColor);
 }
 
+/* Set one of the TextBox text colors (0 or 1) at +0xD8 by copying the 4 RGBA bytes from the given color. */
 void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
     if (index >= 2) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320BC8, 0x60, lbl_80320B98);
     }
-    const u8 *c = (const u8 *)color;
-    u8 *base = (u8 *)this_ptr + (index * 4);
-    base[0xD8] = c[0];
-    base[0xD9] = c[1];
-    base[0xDA] = c[2];
-    base[0xDB] = c[3];
+    const u8 *src = (const u8 *)color;
+    u8 *dst = (u8 *)this_ptr + (index * 4);
+    dst[0xD8] = src[0];
+    dst[0xD9] = src[1];
+    dst[0xDA] = src[2];
+    dst[0xDB] = src[3];
 }
 
 extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, u32 index) {
