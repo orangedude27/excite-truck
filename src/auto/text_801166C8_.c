@@ -3971,19 +3971,20 @@ void fn_8011CD78(void* arg0, void* arg1) {
 }
 
 #pragma pop
-void fn_8011CD90(s32 arg0, s32 arg1, s32 arg2) {
-    s32 a = arg2;
-    register s32 b = arg2 + 0x100;
-    s32 c = arg2 + 0x140;
+/* Decodes 16 entries into workBuffer slices via fn_8011C4A0, decodes one final entry into objectBase fields, and clears the work-buffer flag at +0x180. */
+void fn_8011CD90(s32 objectBase, s32 bitReader, s32 workBuffer) {
+    s32 outputPtr = workBuffer;
+    register s32 secondTablePtr = workBuffer + 0x100;
+    s32 firstTablePtr = workBuffer + 0x140;
     u32 i;
     for (i = 0; i < 0x10; i++) {
-        fn_8011C4A0(arg1, c, b, a);
-        a += 0x10;
-        b += 4;
-        c += 4;
+        fn_8011C4A0(bitReader, firstTablePtr, secondTablePtr, outputPtr);
+        outputPtr += 0x10;
+        secondTablePtr += 4;
+        firstTablePtr += 4;
     }
-    fn_8011C4A0(arg1, arg0 + 0x24, arg0 + 0x20, arg0 + 0x10);
-    *(s32 *)(arg2 + 0x180) = 0;
+    fn_8011C4A0(bitReader, objectBase + 0x24, objectBase + 0x20, objectBase + 0x10);
+    *(s32 *)(workBuffer + 0x180) = 0;
 }
 
 const u8 lbl_80561208[] = {0x04, 0x08, 0x0C, 0x20};
