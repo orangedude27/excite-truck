@@ -292,9 +292,15 @@ void fn_80265E2C(void) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void fn_80265EC4(void *arg0, int arg1, int arg2) {
-    struct Record { float first; float second; int duration; };
-    int *state = (int *)arg0;
+/* Advances a camera's random-path cursor by the time since the last call and
+ * leaves the point it lands on in path->x and path->y.  Time spent past the
+ * current point's duration steps the walk on to the next point of the ring, and
+ * the step from it to the next is eased by the smoothstep 3*t*t - 2*t*t*t of
+ * their fraction (odd about zero, so a negative fraction - time having run
+ * backwards - leans back towards the previous point).  A non-zero paused only
+ * re-syncs the clock, so time spent paused never moves the walk. */
+void fn_80265EC4(NoiseWalk *path, int time, int paused) {
+    volatile NoiseWalk *walk = (volatile NoiseWalk *)path; /* re-read each pass */
     int index;
     int elapsed;
     int duration;
@@ -302,64 +308,62 @@ void fn_80265EC4(void *arg0, int arg1, int arg2) {
     int updatedElapsed;
     float ratio;
     float weight;
-    struct Record *current;
-    struct Record *next;
-    float a;
-    float b;
-    float c;
-    if (arg2 != 0) {
-        state[2] = arg1;
+    NoisePoint *current;
+    NoisePoint *next;
+    float cube;   /* -2 * ratio, then -2 * ratio * ratio */
+    float square; /* 3 * ratio, then 3 * ratio * ratio */
+    float cubic;  /* ratio * cube */
+    if (paused != 0) {
+        path->lastTime = time;
         return;
     }
-    state[1] = state[1] + (arg1 - state[2]);
-    state[2] = arg1;
+    path->elapsed = path->elapsed + (time - path->lastTime);
+    path->lastTime = time;
     goto check;
 advance:
-    index = *(volatile int *)arg0;
-    elapsed = *(volatile int *)((char *)arg0 + 4);
-    nextIndex = (index + 1) % 100;
+    index = walk->index;
+    elapsed = walk->elapsed;
+    nextIndex = (index + 1) % NOISE_POINT_COUNT;
     updatedElapsed = elapsed - duration;
-    *(volatile int *)((char *)arg0 + 4) = updatedElapsed;
-    *(volatile int *)arg0 = nextIndex;
+    walk->elapsed = updatedElapsed;
+    walk->index = nextIndex;
 check:
-    index = *(volatile int *)arg0;
-    elapsed = *(volatile int *)((char *)arg0 + 4);
-    duration = ((struct Record *)lbl_804999A0)[index].duration;
+    index = walk->index;
+    elapsed = walk->elapsed;
+    duration = sNoisePoints[index].duration;
     if (elapsed > duration) {
         goto advance;
     }
     ratio = (float)elapsed / (float)duration;
-    if (ratio < lbl_80563C28) {
-        weight = lbl_80563C28;
+    if (ratio < FLOAT_MINUS_ONE) {
+        weight = FLOAT_MINUS_ONE;
         goto weight_done;
     }
-    if (ratio > lbl_80563C2C) {
-        weight = lbl_80563C2C;
-    } else if (ratio > lbl_80563C20) {
-        a = lbl_80563C30 * ratio;
-        b = lbl_80563C34 * ratio;
-        a *= ratio;
-        b *= ratio;
-        c = ratio * a;
-        weight = c + b;
+    if (ratio > FLOAT_ONE) {
+        weight = FLOAT_ONE;
+    } else if (ratio > FLOAT_ZERO) {
+        cube = FLOAT_MINUS_TWO * ratio;
+        square = FLOAT_THREE * ratio;
+        cube *= ratio;
+        square *= ratio;
+        cubic = ratio * cube;
+        weight = cubic + square;
     } else {
-        a = lbl_80563C30 * ratio;
-        b = lbl_80563C34 * ratio;
-        a *= ratio;
-        b *= ratio;
-        c = ratio * a;
-        weight = c - b;
+        cube = FLOAT_MINUS_TWO * ratio;
+        square = FLOAT_THREE * ratio;
+        cube *= ratio;
+        square *= ratio;
+        cubic = ratio * cube;
+        weight = cubic - square;
     }
 weight_done:
-    *(float *)((char *)arg0 + 0xC) = weight;
-    index = *(volatile int *)((char *)arg0 + 0);
-    nextIndex = (index + 1) % 100;
-    current = &((struct Record *)lbl_804999A0)[index];
-    next = &((struct Record *)lbl_804999A0)[nextIndex];
-    *(float *)((char *)arg0 + 0x10) =
-        current->first + (float)(double)weight * (next->first - current->first);
-    *(float *)((char *)arg0 + 0x14) =
-        current->second + (float)(double)weight * (next->second - current->second);
+    path->weight = weight;
+    index = walk->index;
+    nextIndex = (index + 1) % NOISE_POINT_COUNT;
+    current = &sNoisePoints[index];
+    next = &sNoisePoints[nextIndex];
+    path->x = current->x + (float)(double)weight * (next->x - current->x);
+    path->y = current->y + (float)(double)weight * (next->y - current->y);
 }
 #pragma scheduling on
 void fn_80266070(void *arg0, void *arg1, void *arg2, void *arg3) {
