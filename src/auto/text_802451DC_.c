@@ -24,6 +24,9 @@ __declspec(section ".sdata") extern void *lbl_8055BAC0;
 extern char lbl_80343148[];
 extern int lbl_802FA364[5];
 extern void fn_80246210(void);
+__declspec(section ".sdata") extern void *lbl_8055BE70;
+__declspec(section ".sdata") extern void *lbl_8055BE78;
+extern int lbl_80498890[5];
 int fn_802451DC(void *arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668(arg0);
     return (int)arg0;
