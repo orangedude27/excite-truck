@@ -20661,6 +20661,7 @@ void PORT_StartCnf(void *mux_id, u16 status) {
 }
 
 void PORT_StartInd(void *arg0) {
+    /* RFCOMM port indication: trace and answer start request based on port/MCB slot availability. */
     extern char lbl_803192B0[];
     extern void fn_8007093C(u32, void *);
     extern void fn_800934D8(void *, s16);
