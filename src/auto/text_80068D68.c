@@ -11351,6 +11351,16 @@ void bta_dm_discover(void *data) {
 #define DM_SCB_WAIT_LINK                        (bta_dm_search_cb[0x78])
 #define DM_SCB_LINK_TOUT_PENDING                (bta_dm_search_cb[0x79])
 
+/* bta_service_id_to_uuid_lkup_tbl (SDK bta_dm_int.c): the service class UUID to
+ * look for in the SDP database, one per (1-based) service index. */
+#define bta_service_id_to_uuid_lkup_tbl         lbl_802EE990
+
+/* BTA_SERVICE_ID_TO_SERVICE_MASK (SDK bta_api.h): the bit a service index sets
+ * in bta_dm_search_cb.services_found. */
+#ifndef BTA_SERVICE_ID_TO_SERVICE_MASK
+#define BTA_SERVICE_ID_TO_SERVICE_MASK(id)      (1 << (id))
+#endif
+
 /* tBTM_INQ_INFO of this revision: the peer's address, and the flag saying
  * whether its remote name is already known. */
 #define INQ_INFO_BD_ADDR(p)                     ((u8 *)(p) + 2)
