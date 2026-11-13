@@ -3076,17 +3076,18 @@ extern "C" void fn_8021D618(void) {
     ((void (*)(void))fn_8021D61C)();
 }
 
-extern "C" void fn_8021D61C(void *arg0) {
-    s32 index = *(s32 *)*(s32 **)((u8 *)arg0 + 0x254);
-    if (index >= 0 && index < *(s32 *)((u8 *)arg0 + 0x258)) {
-        strcpy((char *)arg0 + 0x268,
-               *(char **)(*(s32 *)((u8 *)arg0 + 0x2B8) + index * 4));
+extern "C" void fn_8021D61C(void *self) {
+    /* Copies the currently selected option string into self+0x268 (or "???" if out of range), refreshes layout, and sets a dirty flag. */
+    s32 index = *(s32 *)*(s32 **)((u8 *)self + 0x254);
+    if (index >= 0 && index < *(s32 *)((u8 *)self + 0x258)) {
+        strcpy((char *)self + 0x268,
+               *(char **)(*(s32 *)((u8 *)self + 0x2B8) + index * 4));
     } else {
-        strcpy((char *)arg0 + 0x268, (char *)&lbl_8055B87C);
+        strcpy((char *)self + 0x268, (char *)&lbl_8055B87C);
     }
-    fn_80219718(arg0);
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    fn_80219718(self);
+    if (*(u8 *)((u8 *)self + 0x1A) != 0)
+        *(u8 *)((u8 *)self + 0x234) = 1;
 }
 
 extern "C" void *fn_8021D6A0(void *self, s32 arg1, s32 arg2, s32 arg3, u8 *arg4,
