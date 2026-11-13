@@ -409,6 +409,16 @@ static void nandReadDirCallback(s32 result, void* arg) {
     block->callback(nandConvertErrorCode(result), block);
 }
 
+/**
+ * Copy the NAND library's current directory into @p out (the SDK's
+ * NANDGetCurrentDir()). The path is the absolute one kept in s_currentDir by
+ * nandOnShutdown() and nandReadDirCallback(); the caller's buffer must be big
+ * enough for a whole FS_MAX_PATH string. Interrupts are off only for the copy,
+ * so a concurrent directory change can never be seen half-written.
+ *
+ * @return NAND_RESULT_OK, or NAND_RESULT_FATAL_ERROR when NAND is not
+ *         initialized.
+ */
 s32 NANDGetCurrentDir(char* out) {
     BOOL enabled;
 
