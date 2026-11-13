@@ -456,22 +456,23 @@ void fn_80193A38(void *arg0) {
     *(int *)((unsigned char *)obj + 0x24) = *(int *)((unsigned char *)obj + 0x28);
 }
 
-void *fn_80193A50(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        int v = *(int *)((char *)arg0 + 0x290);
-        if (v != -1000) {
-            ((int *)lbl_804349C0)[v] = 0;
+void *fn_80193A50(void *player, int freeFlag) {
+    /* Destructor-like cleanup for a player/track object: unregisters its slot, decrements active count, releases subobjects, and optionally frees. */
+    if (player != 0) {
+        int slotIndex = *(int *)((char *)player + 0x290);
+        if (slotIndex != -1000) {
+            ((int *)lbl_804349C0)[slotIndex] = 0;
         }
         lbl_8055E550 -= 1;
-        if ((int)arg0 + 0x168 != 0) {
-            fn_8013530C((char *)arg0 + 0x19C, -1);
-            fn_8013530C((char *)arg0 + 0x168, -1);
+        if ((int)player + 0x168 != 0) {
+            fn_8013530C((char *)player + 0x19C, -1);
+            fn_8013530C((char *)player + 0x168, -1);
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (freeFlag > 0) {
+            fn_80128668(player);
         }
     }
-    return arg0;
+    return player;
 }
 
 #pragma cplusplus on
