@@ -698,7 +698,7 @@ check_format:
             name_end = path;
             while (*name_end != '\0' && *name_end != '/') {
                 if (*name_end == '.') {
-                    if (name_end - path > 8 || has_extension != 0) {
+                    if (name_end - path > 8 || has_extension == 1) {
                         illegal_format = 1;
                         goto validate_format;
                     }
@@ -708,7 +708,7 @@ check_format:
                 name_end++;
             }
 validate_format:
-            if (has_extension != 0 && name_end - extension_start > 3)
+            if (has_extension == 1 && name_end - extension_start > 3)
                 illegal_format = 1;
             if (illegal_format == 0)
                 goto skip_panic;
@@ -726,7 +726,7 @@ skip_panic:;
         while (anchor < nodes[it].folder.sibling_next) {
             while (TRUE) {
                 if ((nodes[anchor].packed_type_name & 0xFF000000) ||
-                    name_delimited_by_slash == 0) {
+                    name_delimited_by_slash != 1) {
                     item_name = (const char *)FstStringStart_8055D83C +
                                 (nodes[anchor].packed_type_name & 0xFFFFFF);
                     if (DVDPathSame(path, item_name) == TRUE)
