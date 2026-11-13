@@ -1333,7 +1333,6 @@ s32 nw4hbm::snd::detail::SoundArchiveFileReader::GetSoundType(u32 soundId) const
     default: return 0;
     }
 }
-#pragma push
 #pragma use_lmw_stmw off
 BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hbm::snd::SoundArchive::SoundInfo *info) const {
     register void *archive = *(void **)((u8 *)this + 0x28);
@@ -1363,7 +1362,7 @@ BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hb
     {
         register u32 tmp = soundIndex << 3;
         archive = *(void **)((u8 *)this + 0x28);
-        entry = (void *)((u8 *)archive + *(u32 *)(base + tmp + 8));
+        entry = (void *)(*(u32 *)(base + tmp + 8) + (u32)archive);
     }
 finish:
     if (entry == 0)
@@ -1374,7 +1373,6 @@ finish:
     *(u32 *)((u8 *)outInfo + 0xC) = *((u8 *)entry + 0x14);
     return 1;
 }
-#pragma pop
 extern "C" s32 ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(void *reader, u32 soundId, void *seqSoundInfo) {
     extern const char lbl_80324BD4[]; /* "NW4HBM:Failed assertion ref.dataType == 1" */
     extern char lbl_80559878;        /* "Util.h" */
@@ -5274,11 +5272,33 @@ extern "C" const char lbl_8032670C[];
 extern "C" char lbl_805598E0;
 extern "C" char lbl_805598E8;
 extern "C" char lbl_805598F0;
+/* nw4hbm::snd::detail::Util::DataRef: how a sound file's blocks point at their
+ * data.  The RefType byte says how the id is to be read; the library only ever
+ * accepts dataType 0, a plain address (DBAssert(ref.dataType == 0)). */
+struct DataRef {
+    u8 type;
+    u8 dataType;
+    u8 pad[2];
+    u32 refID;
+};
+
+/* nw4hbm::snd::detail::StrmFile, as this unit uses it: the header the file was
+ * opened with (asserted to be there) and the HEAD block, whose DataRefs at
+ * +0x08 (stream info) and +0x18 (ADPCM parameter table) reach its data. */
+struct StrmFile {
+    void *mHeader;
+    void *mHeadBlock;
+};
+
+/* One stream's ADPCM parameters, the block copied out per stream. */
 struct AdpcmParam {
     u16 data[24];
 };
+
+/* the stream-info block's codec byte: 2 is the ADPCM codec */
+enum { STRM_CODEC_ADPCM = 2 };
+
 #pragma use_lmw_stmw off
-struct fn_800FACC0_Data { u16 v[24]; };
 
 extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 arg2) {
     if (*(s32 *)arg0 == 0)
