@@ -220,17 +220,18 @@ void fn_801332D0(int arg0, int arg1, int *arg2) {
 }
 #pragma scheduling on
 __declspec(section ".sdata") extern const char lbl_80559B60[];
-int fn_80133348(int arg0, int arg1, int arg2) {
-    char *sp8;
-    char *p;
-    fn_80133E10((void **)&sp8, arg0, arg1);
-    *(int *)(sp8 + 0xC) = arg2;
-    *(float *)(sp8 + 0x10) = (float)arg2;
-    *(unsigned char *)(sp8 + 8) = arg2 != 0;
-    sprintf(sp8 + 0x14, lbl_80559B60, arg2);
-    p = sp8;
-    *(int *)p = 2;
-    return (int)p;
+/* Set an option's value as an integer, updating its cached typed fields and text form. */
+int fn_80133348(int section, int key, int value) {
+    char *entryData;
+    char *result;
+    fn_80133E10((void **)&entryData, section, key);
+    *(int *)(entryData + 0xC) = value;
+    *(float *)(entryData + 0x10) = (float)value;
+    *(unsigned char *)(entryData + 8) = value != 0;
+    sprintf(entryData + 0x14, lbl_80559B60, value);
+    result = entryData;
+    *(int *)result = 2;
+    return (int)result;
 }
 
 #pragma scheduling invalid_target
