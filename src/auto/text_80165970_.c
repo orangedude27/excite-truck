@@ -308,22 +308,22 @@ extern "C" void fn_80165B78(void **arg0) {
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_80165FAC(void) {
-    /* Load the orbit config/value table, resolve its selected subtable, and populate orbit parameters. */
+    /* Load the orbit value file, resolve the active orbit subtable, then load its parameters. */
     class Obj {
     public:
         virtual void **method(int) = 0;
     };
-    Obj *orbitVal;
-    int subtableId;
-    void **subtable;
+    Obj *orbitValueFile;
+    int orbitSubtableId;
+    void **orbitSubtable;
 
-    orbitVal = (Obj *)fn_80131808(lbl_8032FCC0 + 0x1C0);
-    subtableId = fn_80204EA0(lbl_8032FCC0 + 0x1CC);
-    fn_802E30C8(lbl_8032FCC0 + 0x1D8, subtableId);
-    subtable = orbitVal->method(subtableId);
+    orbitValueFile = (Obj *)fn_80131808(lbl_8032FCC0 + 0x1C0);
+    orbitSubtableId = fn_80204EA0(lbl_8032FCC0 + 0x1CC);
+    fn_802E30C8(lbl_8032FCC0 + 0x1D8, orbitSubtableId);
+    orbitSubtable = orbitValueFile->method(orbitSubtableId);
     ((void (*)(void))fn_80165A30)();
-    fn_80165B78(subtable);
-    fn_80131818(orbitVal);
+    fn_80165B78(orbitSubtable);
+    fn_80131818(orbitValueFile);
 }
 #pragma cplusplus reset
 #pragma pop
