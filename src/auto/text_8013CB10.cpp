@@ -1173,11 +1173,11 @@ extern "C" void fn_8013E3A8(void *params, void *attrs) {
     f32 floatValue;
     f32 scale;
 
-    /* number of path nodes to the finish */
     if (attrs) intValue = ((TDispatchStringInt20 *)attrs)->v20(keys + 0x210, 0x19);
     else intValue = 0x19;
     p->i0C = intValue;
 
+    /* path nodes left to the finish */
     if (attrs) intValue = ((TDispatchStringInt20 *)attrs)->v20(keys + 0x220, 0xA);
     else intValue = 0xA;
     p->nodeCount = intValue;
