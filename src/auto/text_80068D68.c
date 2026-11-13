@@ -13905,25 +13905,27 @@ void btu_hcif_connection_comp_evt(u8 *p_event) {
     }
 }
 
+/* Process HCI Connection Request event: extract BD_ADDR, device class and link
+ * type, then route ACL requests to security manager and SCO requests to SCO. */
 void btu_hcif_connection_request_evt(u8 *event) {
-    u8 bda[6];
+    u8 bd_addr[6];
     u8 dev_class[3];
     u8 link_type;
 
-    bda[5] = event[0];
-    bda[4] = event[1];
-    bda[3] = event[2];
-    bda[2] = event[3];
-    bda[1] = event[4];
-    bda[0] = event[5];
+    bd_addr[5] = event[0];
+    bd_addr[4] = event[1];
+    bd_addr[3] = event[2];
+    bd_addr[2] = event[3];
+    bd_addr[1] = event[4];
+    bd_addr[0] = event[5];
     dev_class[2] = event[6];
     dev_class[1] = event[7];
     dev_class[0] = event[8];
     link_type = event[9];
     if (link_type == 1) {
-        btm_sec_conn_req(bda, dev_class);
+        btm_sec_conn_req(bd_addr, dev_class);
     } else {
-        btm_sco_conn_req(bda, dev_class, link_type);
+        btm_sco_conn_req(bd_addr, dev_class, link_type);
     }
 }
 
