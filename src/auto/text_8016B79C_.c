@@ -140,14 +140,14 @@ typedef struct {
     s32 pad0c;    // 0xc
     void *array;  // 0x10 owned array of elements
     s32 cap;      // 0x14
-} ObjArray80430308;
+} ObjArray;
 void *fn_8016B834(void *arg0, s32 arg1) {
     /* Deleting destructor for the global container object at lbl_804302E0+0x28:
        destroys its owned element array (element destructor fn_8016B550 via the
        runtime array-delete fn_8002F6AC), clears the container fields, and frees
        the object itself when arg1 > 0. */
     if (arg0 != 0) {
-        ObjArray80430308 *obj = (ObjArray80430308 *)arg0;
+        ObjArray *obj = (ObjArray *)arg0;
         s32 ownedArray = (s32)obj->array;
         if (ownedArray != 0) {
             ((s32 (*)(s32, void *))fn_8002F6AC)(ownedArray, fn_8016B550);
