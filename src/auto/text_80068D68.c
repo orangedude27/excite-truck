@@ -19111,13 +19111,14 @@ have_buf:
     return TRUE;
 }
 
-void l2c_link_role_changed(u8 *bd_addr, u8 new_role) {
-    u8 *p_lcb, *entry;
+/* Update the stored L2CAP link role for a peer and resume pending connections after role switch. */
+void l2c_link_role_changed(u8 *bdAddr, u8 newRole) {
+    u8 *linkCtrlBlock, *controlBlock;
     s32 i;
-    p_lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
-    if (p_lcb != 0) p_lcb[0x30] = new_role;
-    for (i = 0, entry = lbl_803C4040 + 8; i < 4; i++, entry += 0x5C)
-        if (entry[0] != 0 && *(s32 *)(entry + 4) == 2) l2cu_create_conn_after_switch(entry);
+    linkCtrlBlock = l2cu_find_lcb_by_bd_addr(bdAddr);
+    if (linkCtrlBlock != 0) linkCtrlBlock[0x30] = newRole;
+    for (i = 0, controlBlock = lbl_803C4040 + 8; i < 4; i++, controlBlock += 0x5C)
+        if (controlBlock[0] != 0 && *(s32 *)(controlBlock + 4) == 2) l2cu_create_conn_after_switch(controlBlock);
 }
 
 void l2c_link_role_change_failed(void) {
