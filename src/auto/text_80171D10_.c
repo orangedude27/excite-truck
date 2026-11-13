@@ -470,32 +470,6 @@ unsigned int strlen(const char *); /* extern */
         if ((signed char)c_ == 0) break; \
     } } while (0)
 #define COPY_STR20(dst, src) COPY_STRN(dst, src, 0x14)
-/* The same copy as fn_8017272C writes it: the room left is only tested once a
-   byte has been copied, so the first byte always lands.  The label argument
-   only serves to keep the `goto` of each expansion distinct. */
-#define COPY_TEXT(label, dst, src, size) do { \
-    unsigned char *d_ = (unsigned char *)(dst); \
-    const unsigned char *s_ = (const unsigned char *)(src); \
-    int n_ = (size); int c_; \
-    goto label##_; \
-    for (;;) { \
-        if (--n_ <= 0) { *(signed char *)(d_ - 1) = 0; } \
-    label##_: \
-        c_ = *s_++; \
-        *d_++ = c_; \
-        if ((signed char)c_ == 0) break; \
-    } } while (0)
-/* Ask a sound to play once: +0x49 requests the play from its update, +0x4B
-   picks the play-once mode and +0x4A withdraws any stop request. */
-#define PLAY_SOUND(sound) do { Sound *snd_ = (sound); \
-    if (snd_ != 0) { \
-        snd_->play = 1; snd_->loop = 0; snd_->stop = 0; \
-    } } while (0)
-/* The same, but leaving a sound that is already running alone. */
-#define PLAY_SOUND_IF_IDLE(sound) do { Sound *snd_ = (sound); \
-    if (snd_ != 0 && snd_->active == 0) { \
-        snd_->play = 1; snd_->loop = 0; snd_->stop = 0; \
-    } } while (0)
 extern void *fn_80131234(const char *);
 extern float fn_8001DAE8(void *);
 extern float fn_801B306C(void);
