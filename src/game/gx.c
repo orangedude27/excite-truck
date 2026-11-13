@@ -1944,7 +1944,6 @@ light_test:
 #pragma push
 #pragma scheduling invalid_target
 /* Loads a texture matrix (GX_TEXMTX0) using the negated Y-column components from lbl_804C5690. */
-#pragma auto_inline off
 void fn_802D1B58(void) {
     int texMtx[8];
     float *srcMtx = (float *)lbl_804C5690;
