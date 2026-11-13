@@ -2826,9 +2826,9 @@ extern "C" s32 fn_800A8D08(s32 arg0, void **arg1, s32 *arg2, s32 arg3, s32 *arg4
     return result & ((s32)(-result | result) >> 31);
 }
 
-extern "C" void VFiPFCACHE_FreeFATPage(void *arg0, void *arg1) {
-    u8 *page = (u8 *)arg1;
-    void *head = *(void **)((u8 *)arg0 + 0x1630);
+extern "C" void VFiPFCACHE_FreeFATPage(void *cache, void *pagePtr) {
+    u8 *page = (u8 *)pagePtr;
+    void *head = *(void **)((u8 *)cache + 0x1630);
     void *nextHead;
     void *tail;
     if (head == 0)
@@ -2838,21 +2838,21 @@ extern "C" void VFiPFCACHE_FreeFATPage(void *arg0, void *arg1) {
     *(u32 *)(page + 0x10) = 0;
     *(u32 *)(page + 0x18) = -1;
     *(u32 *)(page + 0x1C) = 0;
-    head = *(void **)((u8 *)arg0 + 0x1630);
-    if (arg1 == head) {
-        *(void **)((u8 *)arg0 + 0x1630) = *(void **)(page + 0x20);
+    head = *(void **)((u8 *)cache + 0x1630);
+    if (pagePtr == head) {
+        *(void **)((u8 *)cache + 0x1630) = *(void **)(page + 0x20);
         return;
     }
-    if (arg1 == *(void **)((u8 *)head + 0x24))
+    if (pagePtr == *(void **)((u8 *)head + 0x24))
         return;
     *(void **)(*(u8 **)(page + 0x24) + 0x20) = *(void **)(page + 0x20);
     *(void **)(*(u8 **)(page + 0x20) + 0x24) = *(void **)(page + 0x24);
-    nextHead = *(void **)((u8 *)arg0 + 0x1630);
+    nextHead = *(void **)((u8 *)cache + 0x1630);
     *(void **)(page + 0x20) = nextHead;
-    tail = *(void **)((u8 *)arg0 + 0x1630);
+    tail = *(void **)((u8 *)cache + 0x1630);
     *(void **)(page + 0x24) = *(void **)((u8 *)tail + 0x24);
-    *(void **)((u8 *)nextHead + 0x24) = arg1;
-    *(void **)(*(u8 **)(page + 0x24) + 0x20) = arg1;
+    *(void **)((u8 *)nextHead + 0x24) = pagePtr;
+    *(void **)(*(u8 **)(page + 0x24) + 0x20) = pagePtr;
 }
 
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *arg0, void *arg1) {
