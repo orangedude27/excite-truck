@@ -1245,22 +1245,32 @@ void* fn_8024859C(void *arg0, s32 arg1) {
     return arg0;
 }
 #pragma scheduling on
+/* Secret key-code check: copies the trigger sequence stored in .rodata (device 1
+ * key codes 0x126, 0x128, 0x125, 0x127, then the 0 terminator) and asks the
+ * debug input history (fn_802E499C, filled by fn_802E4800) whether those keys
+ * were the last ones entered.  If they were, the music is silenced -
+ * fn_80246CAC scales its argument by the volume saved when the demo mode
+ * started, so 0.0 is silence - and the pre-race music hook is called.
+ * Always returns 0. */
 s32 fn_802485FC(void) {
-    unsigned short args[5];
-    unsigned short *p = lbl_802FA48C;
+#define keySequence lbl_802FA48C /* the key codes that trigger this */
+#define silenceVolume lbl_805638B0 /* 0.0f */
+    unsigned short sequence[5];
+    unsigned short *next = keySequence;
 
-    args[0] = *p++;
-    args[1] = *p++;
-    args[2] = *p++;
-    args[3] = *p++;
-    args[4] = *p++;
-    if (fn_802E499C(args, args[3], args[2], args[1], args[0]) != 0) {
-        fn_80246CAC(lbl_805638B0);
+    sequence[0] = *next++;
+    sequence[1] = *next++;
+    sequence[2] = *next++;
+    sequence[3] = *next++;
+    sequence[4] = *next++;
+    if (fn_802E499C(sequence, sequence[3], sequence[2], sequence[1], sequence[0]) != 0) {
+        fn_80246CAC(silenceVolume);
         fn_8020C918(1);
     }
+#undef keySequence
+#undef silenceVolume
     return 0;
 }
-
 extern s32 fn_8020A640(void);
 extern s32 lbl_802FA498[5];
 extern void fn_8020A600(void);
