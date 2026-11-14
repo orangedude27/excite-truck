@@ -68,16 +68,18 @@ typedef struct UIContext {
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma scheduling invalid_target
-void *fn_8022E9E0(int arg0, void *arg1) {
-    void *value;
-    (void)arg0;
-    (void)arg1;
+void *fn_8022E9E0(int unused0, void *unused1) {
+    /* Lazily allocate/initialize the "cnode::pool" (0x20 bytes, 8 entries) and
+       bump its live-use count when pool acquisition succeeds. */
+    void *pool;
+    (void)unused0;
+    (void)unused1;
     if (lbl_8055EFF4 == 0) {
-        value = fn_801284F8(0x20, lbl_80340280);
-        if (value != 0) {
-            value = fn_8012A13C(value, lbl_80340280, 0x20, 8);
+        pool = fn_801284F8(0x20, lbl_80340280);
+        if (pool != 0) {
+            pool = fn_8012A13C(pool, lbl_80340280, 0x20, 8);
         }
-        lbl_8055EFF8 = value;
+        lbl_8055EFF8 = pool;
     }
     if (fn_8012A2D8(lbl_8055EFF8) != 0) {
         lbl_8055EFF4 += 1;
