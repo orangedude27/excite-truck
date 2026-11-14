@@ -630,12 +630,7 @@ _end:
 }
 
 void fn_8005E298(void) {
-    f64 rmb0, rmb1, rmb2, rmb3, rmb4, rmb5;
-    f64 rmbC0, rmbC1, rmbC2, rmbC3, rmbC4, rmbC5;
-    f64 std0, std1, std2, std3, std4, std5;
-    f64 stdC0, stdC1, stdC2, stdC3, stdC4, stdC5;
-    f64 ext0, ext1, ext2, ext3, ext4, ext5;
-    f64 extC0, extC1, extC2, extC3, extC4, extC5;
+    WPADManageFrame frame;
     s32 temp_r25;
     s32 temp_r25_2;
     s32 temp_r30_2;
@@ -690,13 +685,18 @@ void fn_8005E298(void) {
                         OSRestoreInterrupts(temp_r25);
                         var_r0 = 0;
                     } else {
-                        memcpy(&ext0, (void *)(*(s32*)((u8*)temp_r30 + 0x5F0) + ((s8)*(u8*)((u8*)temp_r30 + 0x5EC) * 0x30)), 0x30);
+                        memcpy(&frame.ext, (void *)(*(s32*)((u8*)temp_r30 + 0x5F0) + ((s8)*(u8*)((u8*)temp_r30 + 0x5EC) * 0x30)), 0x30);
                         OSRestoreInterrupts(temp_r25);
                         var_r0 = 1;
                     }
                     if (var_r0 != 0) {
-                        extC0 = ext0; extC1 = ext1; extC2 = ext2; extC3 = ext3; extC4 = ext4; extC5 = ext5;
-                        if (fn_8005D234(var_r26, (WPADGameInfo*)&extC0) == 0) {
+                        frame.extCopy.d[0] = frame.ext.d[0];
+                        frame.extCopy.d[1] = frame.ext.d[1];
+                        frame.extCopy.d[2] = frame.ext.d[2];
+                        frame.extCopy.d[3] = frame.ext.d[3];
+                        frame.extCopy.d[4] = frame.ext.d[4];
+                        frame.extCopy.d[5] = frame.ext.d[5];
+                        if (fn_8005D234(var_r26, (WPADGameInfo*)&frame.extCopy) == 0) {
                             temp_r25_2 = OSDisableInterrupts();
                             OSDisableInterrupts();
                             var_r29_2 = *(u8*)((u8*)temp_r30 + 0x5ED) - *(u8*)((u8*)temp_r30 + 0x5EC);
@@ -740,13 +740,18 @@ block_18:
                     OSRestoreInterrupts(temp_r30_2);
                     var_r0_2 = 0;
                 } else {
-                    memcpy(&std0, (void *)(*(s32*)((u8*)temp_r29 + 0x164) + ((s8)*(u8*)((u8*)temp_r29 + 0x160) * 0x30)), 0x30);
+                    memcpy(&frame.std, (void *)(*(s32*)((u8*)temp_r29 + 0x164) + ((s8)*(u8*)((u8*)temp_r29 + 0x160) * 0x30)), 0x30);
                     OSRestoreInterrupts(temp_r30_2);
                     var_r0_2 = 1;
                 }
                 if (var_r0_2 != 0) {
-                    stdC0 = std0; stdC1 = std1; stdC2 = std2; stdC3 = std3; stdC4 = std4; stdC5 = std5;
-                    if (fn_8005D234(var_r26, (WPADGameInfo*)&stdC0) == 0) {
+                    frame.stdCopy.d[0] = frame.std.d[0];
+                    frame.stdCopy.d[1] = frame.std.d[1];
+                    frame.stdCopy.d[2] = frame.std.d[2];
+                    frame.stdCopy.d[3] = frame.std.d[3];
+                    frame.stdCopy.d[4] = frame.std.d[4];
+                    frame.stdCopy.d[5] = frame.std.d[5];
+                    if (fn_8005D234(var_r26, (WPADGameInfo*)&frame.stdCopy) == 0) {
                         temp_r30_3 = OSDisableInterrupts();
                         OSDisableInterrupts();
                         var_r22_2 = *(u8*)((u8*)temp_r29 + 0x161) - *(u8*)((u8*)temp_r29 + 0x160);
@@ -776,32 +781,38 @@ block_18:
 block_33:
                 var_r0_3 = 0;
             }
+            var_r25 |= var_r0_3;
             temp_r29_2 = *var_r28;
             if (*(s32*)((u8*)temp_r29_2 + 0x7FC) != -1) {
-                if ((s32) (var_r25 | var_r0_3) != 1) {
+                if (var_r25 != 1) {
                     OSDisableInterrupts();
                     var_r22_3 = *(u8*)((u8*)temp_r29_2 + 0x161) - *(u8*)((u8*)temp_r29_2 + 0x160);
                     if (var_r22_3 < 0) {
                         var_r22_3 += *(s32*)((u8*)temp_r29_2 + 0x168);
                     }
                     OSRestoreInterrupts(0);
-                    if (var_r22_3 > 0) {
-                        goto block_39;
+                    if (var_r22_3 <= 0) {
+                        *(s32*)((u8*)*var_r28 + 0x810) = 0;
+                        if (*var_r27 == 5) {
+                            *(u16*)((u8*)&frame.rmb + 0x1A) = 1;
+                            temp_r5_3 = *var_r28;
+                            *(void**)((u8*)&frame.rmb + 0x2C) = NULL;
+                            *(s32*)((u8*)temp_r5_3 + 0x810) = 0;
+                            *(u32*)&frame.rmb = 0x10;
+                            *(u8*)((u8*)&frame.rmb + 4) = 0;
+                            frame.rmbCopy.d[0] = frame.rmb.d[0];
+                            frame.rmbCopy.d[1] = frame.rmb.d[1];
+                            frame.rmbCopy.d[2] = frame.rmb.d[2];
+                            frame.rmbCopy.d[3] = frame.rmb.d[3];
+                            frame.rmbCopy.d[4] = frame.rmb.d[4];
+                            frame.rmbCopy.d[5] = frame.rmb.d[5];
+                            fn_80063324(var_r26, (WPADGameInfo*)&frame.rmbCopy);
+                        }
+                        goto block_done;
                     }
-                    if ((u8) *var_r27 == 5) {
-                        *(u16*)((u8*)&rmb0 + 0x1A) = 1;
-                        temp_r5_3 = *var_r28;
-                        *(void**)((u8*)&rmb0 + 0x2C) = NULL;
-                        *(s32*)((u8*)temp_r5_3 + 0x810) = 0;
-                        *(u32*)&rmb0 = 0x10;
-                        *(u8*)((u8*)&rmb0 + 4) = 0;
-                        rmbC0 = rmb0; rmbC1 = rmb1; rmbC2 = rmb2; rmbC3 = rmb3; rmbC4 = rmb4; rmbC5 = rmb5;
-                        fn_80063324(var_r26, (WPADGameInfo*)&rmbC0);
-                    }
-                } else {
-block_39:
-                    *(s32*)((u8*)*var_r28 + 0x810) = 0;
                 }
+                *(s32*)((u8*)*var_r28 + 0x810) = 0;
+block_done:
                 if (*(s32*)((u8*)*var_r28 + 0x810) != 0) {
                     var_r0_4 = *var_r27 + 1;
                 } else {
@@ -819,7 +830,7 @@ block_39:
             var_r27 += 1;
             var_r28 += 1;
         } while (var_r26 < 4);
-        if ((u16) lbl_8055DBFE == 0xEA60) {
+        if (lbl_8055DBFE == 60000) {
             DCInvalidateRange((void *)0x800031A2, 1);
             DBPrintf_80068D68(lbl_80312140, *(u8 *)0x800031A2);
             if ((s8) lbl_8055DC04 != (s32) *(u8 *)0x800031A2) {
@@ -1583,6 +1594,7 @@ static void WPADiConnCallback(UINT8 devHandle, u8 open) {
     }
 }
 
+/* HID receive callback: resolve device handle to port and dispatch report parsing. */
 static void WPADiRecvCallback(UINT8 devHandle, UINT8* pReport, UINT16 len) {
     s32 result;
     u8 port = _dev_handle_index[devHandle];
