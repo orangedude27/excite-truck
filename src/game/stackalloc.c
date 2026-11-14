@@ -692,9 +692,14 @@ void *fn_802DA704(int owner, void *data, int count) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void *fn_802DA80C(int owner, void *data, int count) {
-    void *record;
-    volatile unsigned char *state;
+/* Queues a StackAlloc write of `count` 3x4 bone matrices (0x30 bytes each)
+   taken from `data`, starting at element `index` of the shared matrix table
+   lbl_804DAC48.  Returns the record, or 0 when the "BoneHandleAlloc" arena has
+   no room; fn_802DAA18 applies it later through the copyMtx callback
+   (elemType 1). */
+struct StackAllocRecord *fn_802DA80C(int index, void *data, int count) {
+    struct StackAllocRecord *record;
+    volatile struct StackAlloc *alloc;
     int savedInitialized;
     unsigned char *blockBase;
     int payloadBytes;
@@ -705,43 +710,44 @@ void *fn_802DA80C(int owner, void *data, int count) {
     unsigned int blockOffset;
     int newUsed;
 
-    state = (volatile unsigned char *)lbl_8055FE5C;
+    alloc = (volatile struct StackAlloc *)lbl_8055FE5C;
     payloadBytes = count * 0x30;
-    savedInitialized = state[0x25];
-    state[0x25] = 0;
+    savedInitialized = alloc->initialized;
+    alloc->initialized = 0;
     recordSize = payloadBytes + 0x18;
     roundedSize = recordSize + 3;
-    used = *(volatile int *)(state + 0x10);
+    used = alloc->used;
     alignedSize = roundedSize & ~3;
-    if (alignedSize + used + 8 > *(volatile int *)(state + 0x0C)) {
-        int capacity = *(volatile int *)(state + 0x0C);
-        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), recordSize, capacity / 1024);
+    if (alignedSize + used + 8 > alloc->capacity) {
+        int capacity = alloc->capacity;
+        fn_802E317C(lbl_80346798, alloc->name, recordSize, capacity / 1024);
         record = 0;
     } else {
-        blockOffset = *(unsigned int *)(state + 4);
-        blockBase = (unsigned char *)*(volatile int *)(state + 0x10);
+        blockOffset = (unsigned int)alloc->buffer;
+        blockBase = (unsigned char *)alloc->used;
         blockBase += blockOffset;
         *(int *)blockBase = 1;
-        record = blockBase + 4;
-        blockOffset = *(unsigned int *)(state + 4);
-        used = *(volatile int *)(state + 0x10);
+        record = (struct StackAllocRecord *)(blockBase + 4);
+        blockOffset = (unsigned int)alloc->buffer;
+        used = alloc->used;
         used = blockOffset + used;
         blockOffset = used + alignedSize;
         *(int *)(blockOffset + 4) = alignedSize;
-        newUsed = alignedSize + *(volatile int *)(state + 0x10);
-        *(volatile int *)(state + 0x10) = newUsed + 8;
+        newUsed = alignedSize + alloc->used;
+        alloc->used = newUsed + 8;
     }
-    *(int *)((char *)record + 0) = 7;
-    *(int *)((char *)record + 4) = owner;
-    *(int *)((char *)record + 8) = count;
-    *(int *)((char *)record + 0x0C) = 1;
-    *(int *)((char *)record + 0x14) = 0;
-    *(unsigned char *)((char *)record + 0x10) = (unsigned char)savedInitialized;
-    memcpy((char *)record + 0x18, data, payloadBytes);
+    record->kind = 7;
+    record->index = index;
+    record->count = count;
+    record->elemType = 1;
+    record->next = 0;
+    record->status = (unsigned char)savedInitialized;
+    memcpy(record->data, data, payloadBytes);
     return record;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
+#pragma scheduling on
 
 extern float lbl_80565030;
 extern void fn_802E317C(char *, ...);
