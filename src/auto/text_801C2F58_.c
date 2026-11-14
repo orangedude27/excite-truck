@@ -2536,18 +2536,19 @@ void fn_801C855C(void) {
 }
 
 void fn_801C9444(void) {
-    s32 zero = 0;
-    s32 off = 0;
-    s32 i = 0;
-    u8 *base;
+    /* Free 0x21 entries (stride 0x10) from the table at lbl_8055E86C, clear each slot, then free and clear the table pointer. */
+    s32 zeroValue = 0;
+    s32 entryOffset = 0;
+    s32 index = 0;
+    u8 *table;
     do {
-        base = lbl_8055E86C;
-        fn_80128670(*(s32 *)(base + off));
-        base = lbl_8055E86C;
-        i++;
-        *(s32 *)(base + off) = zero;
-        off += 0x10;
-    } while (i < 0x21);
+        table = lbl_8055E86C;
+        fn_80128670(*(s32 *)(table + entryOffset));
+        table = lbl_8055E86C;
+        index++;
+        *(s32 *)(table + entryOffset) = zeroValue;
+        entryOffset += 0x10;
+    } while (index < 0x21);
     fn_80128670((s32)lbl_8055E86C);
     lbl_8055E86C = 0;
 }
