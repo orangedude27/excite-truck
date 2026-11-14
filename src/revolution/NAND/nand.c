@@ -124,6 +124,9 @@ s32 NANDRead(NANDFileInfo* info, void* buf, u32 len) {
     return nandConvertErrorCode(ISFS_Read(info->fd, buf, len));
 }
 
+/* Asynchronous NANDRead(): reads len bytes from the open file into buf. The
+ * caller's callback is stashed in the command block so nandCallback() can hand
+ * the ISFS result back to it, converted to a NAND result. */
 s32 NANDReadAsync(NANDFileInfo* info, void* buf, u32 len,
                   NANDAsyncCallback callback, NANDCommandBlock* block) {
     if (!nandIsInitialized()) {
