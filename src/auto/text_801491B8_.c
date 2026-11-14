@@ -874,16 +874,17 @@ u8 fn_8014AEE8(void *arg0) {
     return ((u8 *)arg0)[4];
 }
 
-void fn_8014AEF0(void *arg0) {
-    f32 step;
-    if (*((u8 *)arg0 + 4) != 0) {
+/* If active, advance the timer at offset 0xC by lbl_80561650 scaled by fn_80176A2C() when fn_80176A1C() == 2, otherwise by lbl_8056164C. */
+void fn_8014AEF0(void *object) {
+    f32 deltaScale;
+    if (*((u8 *)object + 4) != 0) {
         s32 state = fn_80176A1C() - 2;
         if (((u32)__cntlzw((u32)state) >> 5) != 0) {
-            step = fn_80176A2C();
+            deltaScale = fn_80176A2C();
         } else {
-            step = lbl_8056164C;
+            deltaScale = lbl_8056164C;
         }
-        *(f32 *)((u8 *)arg0 + 0xC) += lbl_80561650 * step;
+        *(f32 *)((u8 *)object + 0xC) += lbl_80561650 * deltaScale;
     }
 }
 
