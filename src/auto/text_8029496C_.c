@@ -473,21 +473,24 @@ void fn_80294ED4(void) {
         } while (var_r15_2 < fn_80287B14());
     fn_802C8D74();
 }
-#pragma optimization_level 3
-void fn_80295C70(void *arg0, int arg1, float *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
+#pragma push
+#pragma processor gekko
+#pragma optimization_level 4
+#pragma scheduling invalid_target
+void fn_80295C70(void *arg0, int arg1, const float *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
     struct Entry { int value; float a,b,c,d,e; unsigned char flags[3]; int tail; };
-    struct Obj { unsigned char pad[0x180]; int count; };
-    struct Obj *obj = arg0;
+    struct Obj { struct Entry entries[12]; int count; };
+    struct Obj *obj = (struct Obj *)arg0;
+    float z, y, x;
     unsigned char flag0 = arg3 >> 16;
     unsigned char flag1 = arg3 >> 8;
-    float x = arg2[0];
-    struct Entry *entry = (struct Entry *)((char *)obj + (obj->count << 5));
-    float y;
-    float z;
+    struct Entry *entry;
+    entry = &obj->entries[obj->count];
     entry->value = arg1;
+    x = arg2[0];
     y = arg2[1];
-    entry->a = x;
     z = arg2[2];
+    entry->a = x;
     entry->b = y;
     entry->c = z;
     entry->d = farg1;
@@ -498,6 +501,7 @@ void fn_80295C70(void *arg0, int arg1, float *arg2, unsigned int arg3, int arg4,
     entry->tail = arg4;
     obj->count++;
 }
+#pragma pop
 void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *pos, float size) {
     Vec80295 col;
     int id;
@@ -505,13 +509,7 @@ void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *p
     int extra;
     float base, sx, sy;
     void *obj;
-    int t0, t1, t2;
-    t0 = *(int *)((char *)input + 0);
-    t1 = *(int *)((char *)input + 4);
-    t2 = *(int *)((char *)input + 8);
-    *(int *)((char *)&col + 0) = t0;
-    *(int *)((char *)&col + 4) = t1;
-    *(int *)((char *)&col + 8) = t2;
+    col = *input;
     if (fn_80288070(a,b,&id)) {
         if (fn_80287E20(a,b)) {
             Vec80295 result, def;
