@@ -775,14 +775,22 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(void* arg0, void* arg1) {
-    extern const char lbl_8031F658[];
-    extern const char lbl_8031F634[];
-    register void* iterator = (u8*)arg0 + 4;
-    void* slot;
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F658, 0x233, lbl_8031F634);
-    slot = iterator;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(arg0, &slot, (u8*)arg1 + 4);
+extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(void* groupContainer, void* group) {
+    // nw4hbm::lyt::GroupContainer::AppendGroup(Group*): append a Group to this
+    // container's intrusive group list (the ut::detail::LinkListImpl at +0x0),
+    // inserting at its end() sentinel (+0x4). The node linked in is the Group's
+    // own link node at +0x4.
+    extern const char lbl_8031F658[]; /* "LinkList.h" */
+    extern const char lbl_8031F634[]; /* "NW4HBM:Pointer must not be NULL (p)" */
+    register void* endIter;
+    void* iterSlot;
+
+    endIter = (char*)groupContainer + 4;
+    if (!group) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F658, 0x233, lbl_8031F634);
+    }
+    iterSlot = endIter;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(groupContainer, &iterSlot, (char*)group + 4);
 }
 
 extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, const char* arg1) {
