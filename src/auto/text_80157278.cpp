@@ -2341,6 +2341,7 @@ extern "C" s32 fn_8015ADA4(void) {
 }
 
 extern "C" void* fn_8015ADAC(void* arg0, s32 arg1) {
+    /* Clear the object's fields at +8/+C/+10 and, when requested, free it. */
     if (arg0 != 0) {
         if (arg0 != 0) {
             if (arg0 != 0) {
