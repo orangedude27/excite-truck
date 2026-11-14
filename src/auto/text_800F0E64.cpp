@@ -143,6 +143,9 @@ struct DummyWorkerLink { void *next; void *prev; };
 struct DummyWorkerCallbackC : DummyWorkerLink { virtual void f0(); virtual void Call(); };
 struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void f1(); virtual void Call(); };
 #pragma cplusplus reset
+#pragma push
+#pragma always_inline on
+#pragma dont_inline off
 static inline bool StrmLoadTypeMatches(void **type, const void *wanted) {
     while (type != 0) {
         if (type == wanted) return true;
