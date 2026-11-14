@@ -344,8 +344,8 @@ extern "C" void fn_802B224C(void *arg0) {
     int index;
     void *child;
     void *item;
-    unsigned int count;
-    void **items;
+    int count;
+    void *items;
     Obj *self = (Obj *)arg0;
     count = *(int *)((char *)&lbl_804BE1FC + 4);
     if ((int)(count + 1) > *(int *)((char *)&lbl_804BE1FC + 8))
@@ -368,10 +368,10 @@ extern "C" void fn_802B224C(void *arg0) {
         } while (1);
         *(void **)((char *)object + 0x24) = self->v3((const char *)&lbl_8055CDD0);
     }
+    items = *(void **)&lbl_804BE1FC;
     count = *(int *)((char *)&lbl_804BE1FC + 4);
-    items = *(void ***)&lbl_804BE1FC;
     *(int *)((char *)&lbl_804BE1FC + 4) = count + 1;
-    items[count] = object;
+    ((void **)items)[count] = object;
 }
 
 #pragma cplusplus off
@@ -500,63 +500,87 @@ void fn_802B2504(int *dst, int count) {
 void fn_802B28BC(int *, int);
 void *memset(void *, int, unsigned int);
 void fn_802B257C(void *arg0) {
-    int count;
+    int count = *(int *)((char *)arg0 + 0x40C);
+    int **list = *(int ***)((char *)arg0 + 0x408);
     int total = 0;
-    int i = 0;
-    count = *(int *)((char *)arg0 + 0x40C);
-    while (i < count) {
-        int *entry = (int *)((char *)*(int *)((char *)arg0 + 0x408) + i * 0x20);
-        total += *(int *)entry[0];
-        total += *(int *)entry[1];
-        total += *(int *)entry[2];
-        total += *(int *)entry[3];
-        total += *(int *)entry[4];
-        total += *(int *)entry[5];
-        total += *(int *)entry[6];
-        total += *(int *)entry[7];
-        i++;
+    int i;
+    for (i = 0; i < count; i++) {
+        total += *list[i];
     }
-    {
-        int index = 0;
+    if (total > 0x80) {
+        int idx = fn_80129D90(0, 0, count);
         while (total > 0x80) {
-            int *item = (int *)((int *)*(int **)((char *)arg0 + 0x408))[index];
-            if (*item > 0) { (*item)--; total--; }
-            index++;
-            if (index >= count) index = 0;
+            int *p = list[idx];
+            if (*p > 0) {
+                *p = *p - 1;
+                total--;
+            }
+            idx = (idx + 1) % count;
         }
     }
+    memset((char *)arg0 + 0x208, 0, 0x200);
     {
-        int *out = (int *)((char *)arg0 + 0x208);
-        memset(out, 0, 0x200);
+        int remain = 0x80 - total;
+        int dbl = remain * 2;
+        int pos = 0;
+        int k;
+        for (k = 0; k < count; k++) {
+            int *obj = list[k];
+            int lim = dbl / count;
+            if (lim > remain)
+                lim = remain;
+            if (lim > 0) {
+                int n = ((int *)((char *)arg0 + 8))[k & 0x7F] % lim;
+                int j;
+                for (j = 0; j < n; j++) {
+                    ((void **)((char *)arg0 + 0x208))[pos++] = 0;
+                }
+                remain -= n;
+            }
+            {
+                int c = *obj;
+                int j;
+                for (j = 0; j < c; j++) {
+                    ((void **)((char *)arg0 + 0x208))[pos++] = obj;
+                }
+            }
+        }
     }
-    if (*(unsigned char *)((char *)arg0 + 4) == 0) fn_802B28BC((int *)((char *)arg0 + 0x208), 0x80);
+    if (*(unsigned char *)((char *)arg0 + 4) == 0)
+        fn_802B28BC((int *)((char *)arg0 + 0x208), 0x80);
 }
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802B28BC(int *dst, int count) {
+/* ShuffleSpawnList: Fisher-Yates shuffle of the emitter spawn list -- every
+   entry but the last is swapped with one drawn at random from the entries after
+   it, so the weighted list built by fn_802B257C comes out in random order.
+   `entries` holds `count` 4-byte pointers; `bytePos` walks them in bytes. */
+void fn_802B28BC(int *entries, int count) {
+#define RandomIntInRange fn_80129D90 /* random int in [min, max) of RNG slot 0 */
     int limit;
-    int offset;
+    int bytePos;
     int i;
     i = 0;
     limit = count - 1;
-    offset = 0;
+    bytePos = 0;
     while (i < limit) {
-        int j = fn_80129D90(0, i + 1, count);
-        int tmp = dst[offset / 4];
-        dst[offset / 4] = dst[j];
-        dst[j] = tmp;
+        int swapWith = RandomIntInRange(0, i + 1, count);
+        int saved = entries[bytePos / 4];
+        entries[bytePos / 4] = entries[swapWith];
+        entries[swapWith] = saved;
         i++;
-        offset += 4;
+        bytePos += 4;
     }
+#undef RandomIntInRange
 }
-
 void *fn_802B2934(void *arg0, void **arg1) {
-    int index = ((int *)arg0)[1];
+    struct PtrVec { void **data; int count; } *vec = arg0;
     void *value = *arg1;
-    void **base = *(void ***)arg0;
-    ((int *)arg0)[1] = index + 1;
-    base[index] = value;
+    int index = vec->count++;
+    void **slot = &vec->data[index];
+    *slot = value;
+    return slot;
 }
 
 extern void fn_802B2C34(void (*)(void *), void *);
@@ -907,6 +931,15 @@ check:
     }
 }
 
+int fn_802B3340(int arg) {
+    char *p = (char *)arg;
+    if (((unsigned char *)p)[5] != ((unsigned char *)p)[4]) {
+        fn_802B257C(p);
+    }
+    ((unsigned char *)p)[5] = ((unsigned char *)p)[4];
+    return arg;
+}
+
 void *fn_802B3DA4(void *arg0, int arg1, int arg2) {
     void *result = 0;
     if (arg2 >= 0 && arg2 < ((int *)arg0)[1]) {
@@ -942,7 +975,7 @@ void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
     Node802B3E00 *tail = queue->tail;
     Pool802B3E00 *pool = (Pool802B3E00 *)lbl_8055F9BC;
     Entry802B3E00 *out = 0;
-    int index; void *data; Node802B3E00 *node;
+    char *data; int index; Node802B3E00 *node;
     if (tail == 0 || tail->count + 1 > tail->capacity) {
         Node802B3E00 *newNode = 0;
         if (pool->used + 1 <= pool->capacity) {
@@ -953,13 +986,13 @@ void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
             if (queue->head == 0) queue->head = newNode;
             { Node802B3E00 *prev = queue->tail; if (prev != 0) prev->next = newNode; }
             queue->tail = newNode; newNode->next = 0;
-            node = queue->tail; index = node->count; data = node->data;
-            out = (Entry802B3E00 *)((char *)data + index * 0x14);
+            node = queue->tail; index = node->count; data = (char *)node->data;
+            out = (Entry802B3E00 *)(data + index * 0x14);
             node->count = index + 1;
         }
     } else {
-        index = tail->count; data = tail->data;
-        out = (Entry802B3E00 *)((char *)data + index * 0x14);
+        index = tail->count; data = (char *)tail->data;
+        out = (Entry802B3E00 *)(data + index * 0x14);
         tail->count = index + 1;
     }
     if (out != 0) {
