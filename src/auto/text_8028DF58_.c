@@ -604,26 +604,29 @@ int fn_8028EF44(void *arg0, unsigned int arg1) {
 #pragma scheduling invalid_target
 #pragma scheduling on
 #pragma dont_inline on
-void fn_8028EFC4(int arg0, int *arg1) {
+/* Split an emitter list into its priority buckets: every emitter of `srcList`
+ * is appended to the EfList at buckets + (priority - 1) * 0x104, the emitter's
+ * priority (+0x44) being 1..9.  fn_8028F2EC does this before grouping each
+ * bucket by texture, so emitters sharing a texture end up drawn together. */
+void fn_8028EFC4(int buckets, int *srcList) {
     int *base;
     int *cursor;
     int i;
     int item;
-    int n;
-    base = arg1;
+    int priority;
+    base = srcList;
     cursor = base;
     i = 0;
     goto test;
 body:
     item = *cursor;
-    n = *(int *)((char *)item + 0x44);
-    ((void (*)(void *, int))fn_8028ED8C)((char *)arg0 + (n - 1) * 0x104, item);
+    priority = *(int *)((char *)item + 0x44);
+    fn_8028ED8C((char *)buckets + (priority - 1) * 0x104, item);
     cursor++;
     i++;
 test:
     if (i < *(int *)((char *)base + 0x100)) goto body;
 }
-
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
