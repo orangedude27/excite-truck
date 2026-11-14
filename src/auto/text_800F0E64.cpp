@@ -4703,7 +4703,22 @@ static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
             sound = fn_800FDA20(sound, pool);
         }
     }
-    SoundInstanceManager_InsertPriorityList(pool, sound, priority);
+    pos = *(void **)((u8 *)pool + 8);
+    end_iter = LinkList_GetEndIter((u8 *)pool + 4);
+    while (pos != end_iter.node) {
+        if (pos == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+        }
+        if (priority < ClampS32(*(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78), 0, 0x7F)) {
+            break;
+        }
+        pos = *(void **)pos;
+    }
+    if (sound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
+    }
+    it = pos;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)pool + 4, &it, (u8 *)sound + 0xB8);
     OSRestoreInterrupts(irq);
     return sound;
 }
