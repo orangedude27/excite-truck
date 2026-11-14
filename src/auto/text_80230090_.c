@@ -418,9 +418,10 @@ s32 fn_80230B9C(u32 arg0) {
 }
 #pragma dont_inline reset
 #pragma scheduling on
-void fn_80230C30(float *arg0, float *arg1, s32 arg2, s32 arg3) {
-    *arg0 = (float)(arg2 - (s32)lbl_8055FB9C / 2);
-    *arg1 = (float)((s32)lbl_8055FBA0 / 2 - arg3);
+void fn_80230C30(float *outX, float *outY, s32 screenX, s32 screenY) {
+    /* Convert screen-space coordinates to coordinates centered at the screen middle. */
+    *outX = (float)(screenX - (s32)lbl_8055FB9C / 2);
+    *outY = (float)((s32)lbl_8055FBA0 / 2 - screenY);
 }
 
 /* Shift both values by whole multiples of step so they lie within [min, max] when
