@@ -277,18 +277,22 @@ void fn_802C3320(s32 x, s32 y, u32 packedValue) {
 
 #pragma push
 #pragma inline_depth(0)
-void fn_802C33A8(s32 arg0, s32 arg1, u32 arg2) {
+/* Paint one pixel of the current canvas (lbl_8055FC00) at (x, y), when that
+ * point lies inside the canvas' clip rectangle. The colour is an RGB565 value
+ * carried in the high half of packedColor - the same half fn_802C3320 stores on
+ * the 16-bit canvases; it is widened to the 4-byte pixel format 5 keeps, each
+ * component shifted up into its own byte under a fully opaque alpha. */
+void fn_802C33A8(s32 x, s32 y, u32 packedColor) {
     u32 *pixel;
-    u32 value;
-    if (fn_802C3130((void *)lbl_8055FC00, arg0, arg1) != 0) {
-        pixel = (u32 *)fn_802C3060((void *)lbl_8055FC00, arg0, arg1);
-        value = ((arg2 >> 8) & 0x00F80000) | 0xFF000000;
-        value = (value & ~0x0000FC00) | ((arg2 >> 11) & 0x0000FC00);
-        value = (value & ~0x000000F8) | ((arg2 >> 13) & 0x000000F8);
-        *pixel = value;
+    u32 rgba;
+    if (fn_802C3130((void *)lbl_8055FC00, x, y) != 0) {
+        pixel = (u32 *)fn_802C3060((void *)lbl_8055FC00, x, y);
+        rgba = ((packedColor >> 8) & 0x00F80000) | 0xFF000000; /* red, and the opaque alpha */
+        rgba = (rgba & ~0x0000FC00) | ((packedColor >> 11) & 0x0000FC00); /* green */
+        rgba = (rgba & ~0x000000F8) | ((packedColor >> 13) & 0x000000F8); /* blue */
+        *pixel = rgba;
     }
 }
-
 void fn_802C3424(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u32 arg4) {
     s8 mode = *(s8 *)lbl_8055FC00;
     s32 flag = 0;
