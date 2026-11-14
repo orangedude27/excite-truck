@@ -335,6 +335,8 @@ extern "C" void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
     }
 }
 #pragma pop
+/* Copies the first `count` links of an object list, starting at `link`,
+ * into the array `out` (the list fn_801B5D10 counts). */
 void fn_801B5BDC(void **out, s32 count, void *link) {
     void **dst = out;
     struct ObjectLink *node = link;
