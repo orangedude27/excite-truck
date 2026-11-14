@@ -11994,21 +11994,22 @@ void bta_dm_disc_remname_cback(u8 *p_remote_name) {
 }
 
 void bta_sys_disable(void) {
-    void **pp_module;
-    void *p_module;
-    void *p_fn;
-    s32 i;
+    /* Invoke the disable callback for each registered BTA system module, if present. */
+    void **moduleSlot;
+    void *module;
+    void *disableCallback;
+    s32 index;
 
-    pp_module = (void **)&lbl_803C0AD8;
-    for (i = 0; i < 0x1A; i++) {
-        p_module = *pp_module;
-        if (p_module != NULL) {
-            p_fn = *(void **)((u8 *)p_module + 4);
-            if (p_fn != NULL) {
-                ((void (*)(void))p_fn)();
+    moduleSlot = (void **)&lbl_803C0AD8;
+    for (index = 0; index < 0x1A; index++) {
+        module = *moduleSlot;
+        if (module != NULL) {
+            disableCallback = *(void **)((u8 *)module + 4);
+            if (disableCallback != NULL) {
+                ((void (*)(void))disableCallback)();
             }
         }
-        pp_module++;
+        moduleSlot++;
     }
 }
 
