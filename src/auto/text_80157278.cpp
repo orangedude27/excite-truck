@@ -1326,24 +1326,29 @@ extern "C" void fn_801587CC(void* arg0) {
     }
 }
 
-extern "C" void fn_80158824(Unk801577F0* arg0) {
-    f32 zero = lbl_80561754;
+/* Reset the frame-driven player (a Fn8015889C): clears the head of each of its
+ * mCount 0x38-byte records -- the three counters at +0x0/+0x4/+0x8 and the
+ * value at +0xC -- then drops the three progress counters and the elapsed-time
+ * counter and lets the player refresh itself through vtable slot 0x84. */
+extern "C" void fn_80158824(Unk801577F0* player) {
+    f32 fzero = lbl_80561754; // 0.0f
     s32 i = 0;
     s32 offset = 0;
-    s32 value = 0;
-    for (; i < arg0->mCount; i++) {
-        *(s32*)(arg0->mData + offset) = value;
-        *(s32*)(arg0->mData + offset + 4) = value;
-        *(s32*)(arg0->mData + offset + 8) = value;
-        *(f32*)(arg0->mData + offset + 0xC) = zero;
+    s32 zero = 0;
+    for (; i < player->mCount; i++) {
+        *(s32*)(player->mData + offset) = zero;
+        *(s32*)(player->mData + offset + 4) = zero;
+        *(s32*)(player->mData + offset + 8) = zero;
+        *(f32*)(player->mData + offset + 0xC) = fzero;
         offset += 0x38;
     }
-    f32 zero2 = lbl_80561754;
-    *(f32*)((u8*)arg0 + 0x25C) = zero2;
-    *(f32*)((u8*)arg0 + 0x260) = zero2;
-    *(f32*)((u8*)arg0 + 0x258) = zero2;
-    *(f32*)((u8*)arg0 + 0x264) = zero2;
-    arg0->v31();
+    f32 reset = lbl_80561754; // reloaded: the four counters below are floats
+    Fn8015889C* self = (Fn8015889C*)player;
+    self->mProgress25C = reset; // main progress counter
+    self->mProgress260 = reset; // progress of the instance at 0x268
+    self->mTime258 = reset;     // seconds since the last reset
+    self->mProgress264 = reset; // second progress counter
+    player->v31();              // slot 0x84, the player's own refresh hook
 }
 
 extern "C" f32 lbl_8056177C;
