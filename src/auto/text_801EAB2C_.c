@@ -104,12 +104,15 @@ s16 fn_801EAC3C(void* arg0) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void* fn_801EAC44(void* this_, s32 arg1, s32 arg2) {
-    fn_801EAB2C(this_);
-    *(u32*)this_ = (u32)lbl_80339E3C;
-    *(s32*)((u8*)this_ + 0x3C) = fn_802C6FC0(arg2, 0, 0);
-    fn_801EAB80(this_, arg1);
-    return this_;
+/* Initialize a SeqHeap object: run base init, install the SeqHeap vtable, allocate its heap buffer, bind the associated sequence id, and return the object. */
+void* fn_801EAC44(void* object, s32 sequenceId, s32 heapSize) {
+#define SeqHeapVTable lbl_80339E3C
+    fn_801EAB2C(object);
+    *(u32*)object = (u32)SeqHeapVTable;
+    *(s32*)((u8*)object + 0x3C) = fn_802C6FC0(heapSize, 0, 0);
+    fn_801EAB80(object, sequenceId);
+    return object;
+#undef SeqHeapVTable
 }
 #pragma scheduling on
 #pragma dont_inline off
