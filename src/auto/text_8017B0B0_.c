@@ -1085,13 +1085,27 @@ void fn_8017CFFC(void *obj, u32 *matrix, f32 *vecA, f32 *vecB, u32 unused) {
 extern unsigned int fn_801B60F4(void *, float);
 extern void fn_801B6428(unsigned int, void *);
 extern void fn_801B63E0(unsigned int, void *);
-void fn_8017D0C8(void *arg0) {
-    unsigned int next = fn_801B60F4((char *)arg0 + 0x60, *(float *)((char *)arg0 + 0x2C));
-    unsigned int old = *(unsigned int *)((char *)arg0 + 0x184);
-    if (next != old) {
-        if (old != 0) fn_801B6428(old, arg0);
-        *(unsigned int *)((char *)arg0 + 0x184) = next;
-        if (next != 0) fn_801B63E0(next, arg0);
+/* Relinks this phob (physics object) in the world's phoblist grid: asks which
+ * list covers it now - the 100x100 grid of 20-unit XZ cells for its world
+ * position (+0x60) and bounding radius (+0x2C), or the single bigphoblist for
+ * a phob too big for a cell - and, if that is not the list it is already in
+ * (+0x184), unlinks it from the old list and pushes it onto the new one. */
+void fn_8017D0C8(void *phob) {
+    struct MutablePhob {
+        float _0x0[11];
+        float boundRadius;  /* at 0x2C: bounding radius */
+        float _0x30[12];
+        float position[3];  /* at 0x60: world X, Y, Z (matrix translation) */
+        char _0x6C[0x118];
+        void *phobList;     /* at 0x184: phoblist this phob is linked into */
+    };
+    struct MutablePhob *self = (struct MutablePhob *)phob;
+    unsigned int list = fn_801B60F4(self->position, self->boundRadius);
+    unsigned int oldList = *(unsigned int *)((char *)phob + 0x184);
+    if (list != oldList) {
+        if (oldList != 0) fn_801B6428(oldList, phob);
+        *(unsigned int *)((char *)phob + 0x184) = list;
+        if (list != 0) fn_801B63E0(list, phob);
     }
 }
 
