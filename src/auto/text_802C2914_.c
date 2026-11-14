@@ -12,18 +12,19 @@ void fn_802C2914(void *arg0) {
     lbl_8055FB80 = arg0;
 }
 
-int fn_802C2930(void *arg0, int arg1) {
-    void *node;
+int fn_802C2930(void *node, int shouldFree) {
+    /* Unlink `node` from the lbl_8055FB80 list if present; optionally free it; return the original pointer. */
+    void *cur;
     void **link;
-    if (arg0 != 0) {
+    if (node != 0) {
         link = (void **)&lbl_8055FB80;
-        while ((node = *link) != 0) {
-            if (node == arg0) { *link = *(void **)node; break; }
-            link = (void **)node;
+        while ((cur = *link) != 0) {
+            if (cur == node) { *link = *(void **)cur; break; }
+            link = (void **)cur;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldFree > 0) fn_80128668(node);
     }
-    return (int)arg0;
+    return (int)node;
 }
 
 #pragma cplusplus on
