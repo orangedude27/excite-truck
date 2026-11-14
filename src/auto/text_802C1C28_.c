@@ -51,9 +51,8 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
     }
     if (((float *)data)[10] < lbl_80564E70) return;
     recent = &lbl_804C1050[slot * 2];
-    if (index != *(int *)recent || lbl_8055FB38 - recent[1] > lbl_80564E78) {
+    if (index != *(int *)&lbl_804C1050[slot * 2] || lbl_8055FB38 - recent[1] > lbl_80564E78) {
         if (*((unsigned char *)info + 0x28)) {
-            float axis[3];
             entry = fn_802C120C();
             entry[1] = (int)data;
             list[index] = 0;
@@ -61,10 +60,9 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
             *(Block9 *)(entry+2) = *(Block9 *)data;
             *(Vec3 *)(entry+11) = *(Vec3 *)(data+9);
             ((float *)entry)[17] = lbl_8055FB38;
-            axis[0] = lbl_80564E54;
-            axis[1] = lbl_80564E50;
-            axis[2] = lbl_80564E50;
-            ((float *)entry)[14] = axis[0]; ((float *)entry)[15] = axis[1]; ((float *)entry)[16] = axis[2];
+            ((float *)entry)[14] = lbl_80564E54;
+            ((float *)entry)[15] = lbl_80564E50;
+            ((float *)entry)[16] = lbl_80564E50;
         }
         if (info[15] > 0) {
             float one = lbl_80564E54, zero = lbl_80564E50, bias = lbl_80564E80;
@@ -171,10 +169,11 @@ void fn_802C2064(int arg0) { fn_802C1F88(arg0 - 4); }
 void fn_802C1F8C();
 void fn_802C206C(int arg0) { fn_802C1F8C(arg0 - 4); }
 
-int fn_802C2074(void *arg0) {
+/* Returns a handle for the given resource path if valid and initialized, or -2 on failure. */
+int fn_802C2074(void *path) {
     int valid = 0;
-    if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28((int)arg0, 0);
+    if (path != 0 && fn_8012C33C() != 0) valid = 1;
+    if (valid != 0) return fn_802CAC28((int)path, 0);
     return -2;
 }
 
