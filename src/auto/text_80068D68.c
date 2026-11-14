@@ -12068,17 +12068,19 @@ void btm_esco_proc_conn_chg(UINT8 status, UINT16 handle, UINT8 tx_interval, UINT
     }
 }
 
+/* Returns TRUE if the given HCI SCO handle belongs to a SCO connection currently
+ * in the active (state 4) slot among the control block's SCO entries. */
 BOOLEAN btm_is_sco_active(UINT16 handle) {
-    u8 *base;
-    base = lbl_803C0F78;
-    if (handle == *(UINT16 *)(base + 0x185e) &&
-        *(UINT16 *)(base + 0x185c) == 4)
+    u8 *controlBlock;
+    controlBlock = lbl_803C0F78;
+    if (handle == *(UINT16 *)(controlBlock + 0x185e) &&
+        *(UINT16 *)(controlBlock + 0x185c) == 4)
         return TRUE;
-    if (handle == *(UINT16 *)(base + 0x1892) &&
-        *(UINT16 *)(base + 0x1890) == 4)
+    if (handle == *(UINT16 *)(controlBlock + 0x1892) &&
+        *(UINT16 *)(controlBlock + 0x1890) == 4)
         return TRUE;
-    if (handle == *(UINT16 *)(base + 0x18c6) &&
-        *(UINT16 *)(base + 0x18c4) == 4)
+    if (handle == *(UINT16 *)(controlBlock + 0x18c6) &&
+        *(UINT16 *)(controlBlock + 0x18c4) == 4)
         return TRUE;
     return FALSE;
 }
