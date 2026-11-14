@@ -16354,18 +16354,21 @@ extern u8 lbl_803C3C38[];
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
 extern u8 hidh_conn_initiate();
-u8 HID_HostRegister(void *arg0) {
-    u8 result;
-    if (lbl_803C3C38[0x400] != 0)
-        return 2;
-    if (arg0 == 0)
-        return 5;
-    result = hidh_conn_reg();
-    if (result != 0)
-        return result;
-    *(void **)(lbl_803C3C38 + 0x340) = arg0;
-    lbl_803C3C38[0x400] = 1;
-    return 0;
+/* Registers the application's HID host callback (hh_cb.callback) and registers
+   the HID host L2CAP channels via hidh_conn_reg(), setting hh_cb.reg_flag. */
+tHID_STATUS HID_HostRegister(void *dev_cback) {
+    tHID_STATUS st;
+
+    if (lbl_803C3C38[0x400] != FALSE)
+        return HID_ERR_ALREADY_REGISTERED;
+    if (dev_cback == NULL)
+        return HID_ERR_INVALID_PARAM;
+    st = hidh_conn_reg();
+    if (st != HID_SUCCESS)
+        return st;
+    hh_cb_callback = (tHID_HOST_DEV_CALLBACK)dev_cback;
+    lbl_803C3C38[0x400] = TRUE;
+    return HID_SUCCESS;
 }
 
 #pragma push
