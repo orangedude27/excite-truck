@@ -80,6 +80,7 @@ void OSUnlockMutex(OSMutex* mutex) {
 }
 
 void __OSUnlockAllMutex(OSThread* thread) {
+    /* Unlock every mutex owned by the thread, clearing each lock and waking any waiters. */
     OSMutex* mutex;
     while ((mutex = thread->mutexQueue.head) != NULL) {
         OSMutex* next = mutex->next;
@@ -94,7 +95,8 @@ void __OSUnlockAllMutex(OSThread* thread) {
         mutex->thread = NULL;
         OSWakeupThread(&mutex->queue);
     }
-};
+}
+;
 
 /* Non-blocking version of OSLockMutex(): takes the mutex when it is free (or already owned by the
  * current thread) and links it onto that thread's owned-mutex queue, but returns FALSE instead of
