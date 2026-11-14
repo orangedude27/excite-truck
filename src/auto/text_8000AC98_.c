@@ -1248,17 +1248,18 @@ int fn_80011A2C(void);
 int fn_802C9904(void);
 extern int lbl_80558A48;
 extern float lbl_805601F8, lbl_80560200, lbl_80560208, lbl_8056020C;
-void fn_8000C630(int arg0, int arg1) {
+void fn_8000C630(int value, int playerIndex) {
+    /* Set the queued one-shot override for one player, or for all four when index is -1. */
     int i;
-    if (arg1 == -1) {
+    if (playerIndex == -1) {
         i = 0;
         do {
-            ((int (*)(int, int))fn_8000C630)(arg0, i);
+            ((int (*)(int, int))fn_8000C630)(value, i);
             i++;
         } while (i < 4);
         return;
     }
-    *(int *)((char *)&lbl_8034F5B8 + arg1 * 8 + 4) = arg0;
+    *(int *)((char *)&lbl_8034F5B8 + playerIndex * 8 + 4) = value;
 }
 
 int *fn_8000C69C(void) {
