@@ -418,17 +418,18 @@ void fn_802C89E8(unsigned int *arg0, unsigned int arg1, unsigned int arg2, unsig
     ((float *)arg0)[11] = var_f2;
     ((float *)arg0)[9] = scale * (float)x + (float)width;
 }
-void fn_802C8B08(unsigned int *arg0) {
+void fn_802C8B08(unsigned int *dst) {
+    /* Copy the current 0x30-byte block at lbl_804C1410 (as 4 pairs plus a 0x10-byte tail) to dst. */
     struct Pair { unsigned int first; unsigned int second; };
     struct Tail { unsigned int first; struct Pair pair; unsigned int last; };
-    struct Pair *dst = (struct Pair *)arg0;
-    struct Pair *src = (struct Pair *)lbl_804C1410;
-    struct Tail *dstTail = (struct Tail *)((char *)arg0 + 0x20);
+    struct Pair *dstPairs = (struct Pair *)dst;
+    struct Pair *srcPairs = (struct Pair *)lbl_804C1410;
+    struct Tail *dstTail = (struct Tail *)((char *)dst + 0x20);
     struct Tail *srcTail = (struct Tail *)((char *)lbl_804C1410 + 0x20);
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
-    dst[3] = src[3];
+    dstPairs[0] = srcPairs[0];
+    dstPairs[1] = srcPairs[1];
+    dstPairs[2] = srcPairs[2];
+    dstPairs[3] = srcPairs[3];
     dstTail->first = srcTail->first;
     dstTail->pair = srcTail->pair;
     dstTail->last = srcTail->last;
