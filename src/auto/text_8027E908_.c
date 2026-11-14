@@ -3536,20 +3536,33 @@ extern "C" void *fn_8028732C(void *arg0, int arg1) {
 void fn_80287360(void) {
 }
 
-int fn_80287364(void* arg0) {
-    int i;
-    void* item;
-
-    for (i = 0; i < ((int (*)(void*))(*(void***)arg0)[6])(arg0); i++) {
-        item = ((void* (*)(void*, int))(*(void***)arg0)[7])(arg0, i);
-        if (((int (*)(void))(*(void***)item)[16])() == 0) {
+#pragma cplusplus on
+extern "C" int fn_80287364(void *arg0) {
+    class List {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual long count();
+        virtual void *item(long);
+    };
+    class Item {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13();
+        virtual long valid();
+    };
+    long index = 0;
+    while (index < ((List *)arg0)->count()) {
+        if (((Item *)((List *)arg0)->item(index))->valid() == 0)
             return 0;
-        }
+        index++;
     }
     return 1;
 }
-
-#pragma cplusplus on
 extern "C" void fn_802873F8(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v7();
 }
