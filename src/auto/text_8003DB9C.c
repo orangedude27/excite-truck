@@ -300,17 +300,17 @@ int __GXShutdown(int shutdown) {
         }
 
         now = OSGetTime();
+        {
+        unsigned int high2, first2, low2;
         mem = (volatile unsigned short *)__memReg;
-        high = mem[0x4E / 2];
+        high2 = mem[0x4E / 2];
         do {
-            firstHigh = high;
-            low = mem[0x50 / 2];
-            high = mem[0x4E / 2];
-        } while (high != firstHigh);
-        current = (high << 16) | low;
-        oldLow = *(volatile unsigned int *)&lbl_8055D93C;
-        oldHigh = *(volatile unsigned int *)&lbl_8055D938;
-        previous = ((unsigned long long)oldHigh << 32) | oldLow;
+            first2 = high2;
+            low2 = mem[0x50 / 2];
+            high2 = mem[0x4E / 2];
+        } while (high2 != first2);
+        current = (high2 << 16) | low2;
+        previous = *(volatile unsigned long long *)&lbl_8055D938;
         if ((signed long long)((unsigned long long)now - previous) < 10) {
             return 0;
         }
@@ -319,6 +319,8 @@ int __GXShutdown(int shutdown) {
             lbl_8055D930 = current;
             lbl_8055D93C = (unsigned int)now;
             return 0;
+        }
+        goto done;
         }
     }
 
@@ -338,6 +340,7 @@ int __GXShutdown(int shutdown) {
     __cpReg[2] = 3;
     *((volatile unsigned char *)__GXData + 0x5FA) = 1;
     GXGetVtxAttrFmt();
+done:
     return 1;
 }
 
