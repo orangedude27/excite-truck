@@ -3297,10 +3297,12 @@ extern "C" int fn_802868D4(void *object) {
 extern "C" void fn_8028693C(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v15();
 }
-#pragma cplusplus off
-typedef unsigned int (*GetFn)(void *);
-typedef int (*CmpFn)(void *);
 #pragma cplusplus on
+/* TPlaneSub predicate: reads the class's two int-returning virtuals on the same
+ * plane - v17 (vtable+0x4c) first, then v8 (vtable+0x28) - and reports whether
+ * the first has come down to or below the second.  fn_802868D4 is the same test
+ * with v13 (vtable+0x3c) in place of v17.
+ * (Proposed name: TPlaneSub_isBelowLimit) */
 extern "C" int fn_80286950(ebi::title::TPlaneSub* plane) {
     int value17 = plane->v17();
     return value17 <= plane->v8();
