@@ -75,6 +75,7 @@ extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
 void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed);
 void fn_80063324(s32 chan, WPADGameInfo *info);
+s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo);
 
 typedef struct WPADCB_8011_View {
     u8 _unk0[0x7F8];
