@@ -5979,6 +5979,7 @@ BOOLEAN bta_dm_search_sm_execute(BT_HDR *p_msg) {
 }
 
 void fn_8007403C(void) {
+    /* Clear the BTA DM power-management state and, if PM is configured, register the PM callbacks. */
     memset(lbl_803C0D18, 0, 0x2E);
     if (lbl_80559018[1] != 0) {
         fn_80071098((s32)bta_dm_pm_cback);
