@@ -256,8 +256,6 @@ RgbaColor fn_801720E0(RgbaColor color) {
     return ((color >> 1) & 0x7F7F7F) | (color & 0xFF000000);
 }
 #pragma pop
-#pragma push
-#pragma processor 750
 
 #pragma push
 #pragma processor 750
