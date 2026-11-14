@@ -1051,11 +1051,12 @@ void fn_80006B18(void *arg0) {
 #pragma pop
 
 #pragma scheduling invalid_target
+/* If the "reset" input flag is set, draw "Press <button> to RESET" on screen. */
 void fn_80006D30(void) {
-    char sp8[0x48];
+    char message[0x48];
     if (((s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x2C) + 0x2C0))[0] & 0x10) {
-        sprintf(sp8, (const char *)lbl_802FB2A0, lbl_80558928);
-        ((void (*)(s32, s32, const char *, char *, f32, f32, f32, ...))fn_80010074)(-1, 0x14, (const char *)&lbl_80558948, sp8, lbl_80560134, lbl_8056011C, lbl_80560190);
+        sprintf(message, (const char *)lbl_802FB2A0, lbl_80558928);
+        ((void (*)(s32, s32, const char *, char *, f32, f32, f32, ...))fn_80010074)(-1, 0x14, (const char *)&lbl_80558948, message, lbl_80560134, lbl_8056011C, lbl_80560190);
     }
 }
 #pragma scheduling on
