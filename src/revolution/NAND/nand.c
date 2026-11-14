@@ -38,13 +38,20 @@ s32 nandCreate(const char* path, u8 perm, u8 attr,
     }
 }
 
+/* Synchronously create a NAND file at the given path. perm is a NANDPermission
+ * bit set and attr the file's attribute (the value NANDGetStatus later reports
+ * in NANDStatus.attr); nandCreate() builds the absolute path, splits perm and
+ * hands the create to ISFS. With no command block, async FALSE and priv FALSE
+ * the call blocks and a private path (nand:/sys/) is refused, and the IPC
+ * result is converted to a NAND result. */
 s32 NANDCreate(const char* path, u8 perm, u8 attr) {
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
     }
 
-    return nandConvertErrorCode(
-        nandCreate(path, perm, attr, NULL, FALSE, FALSE));
+    return nandConvertErrorCode(nandCreate(path, perm, attr, /* block */ NULL,
+                                           /* async */ FALSE,
+                                           /* priv */ FALSE));
 }
 
 /* Asynchronous NANDCreate(): hand the new file off to ISFS and report the
