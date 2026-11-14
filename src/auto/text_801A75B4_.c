@@ -1012,13 +1012,14 @@ void fn_801A9050(void *arg0, int arg1) {
         arg0, name, table, 0, zero);
 }
 
-void fn_801A90A4(char *arg0, int arg1, const char *arg2) {
-    const char **entry = (const char **)fn_801A9234(arg2);
+/* Copies the display name of the input binding matching keySpec into outName, truncating to maxLen and always NUL-terminating. */
+void fn_801A90A4(char *outName, int maxLen, const char *keySpec) {
+    const InputBinding *entry = (const InputBinding *)fn_801A9234(keySpec);
     if (entry != 0)
-        strncpy(arg0, *entry, arg1);
+        strncpy(outName, entry->name, maxLen);
     else
-        arg0[0] = 0;
-    arg0[arg1 - 1] = 0;
+        outName[0] = 0;
+    outName[maxLen - 1] = 0;
 }
 
 #pragma push
