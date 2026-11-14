@@ -217,44 +217,31 @@ void fn_802AA25C(void *arg0, void *arg1, float farg0) {
     float sp4C, sp48, sp44, sp40, sp3C, sp38, sp34, sp30, sp2C, sp28, sp24, sp20;
     float sp1C, sp18, sp14;
     long sp10, spC, sp8;
-    float temp_f26, temp_f27, temp_f28, temp_f29, temp_f31;
-    float temp_f30;
+    float temp_f26, temp_f27, temp_f31;
     long var_r25, var_r28, var_r31;
     float *var_r26, *var_r27;
     void *temp_r25;
-    float var_f4, var_f3, var_f3_2, var_f1, var_f0;
     float var_f29;
     *(float *)((char *)arg0 + 0xC0) = (float)fn_8002EFB4(*(float *)((char *)arg0 + 0xC0) + (lbl_80564A08 * farg0), lbl_80564A10);
     if (*(float *)((char *)arg0 + 0xD4) >= lbl_80564A18 && *(float *)((char *)arg0 + 0xD8) == lbl_805649F0 && *(unsigned char *)((char *)arg0 + 0xC4) != 0) {
+        float var_f4;
+        float var_f3;
         *(unsigned char *)((char *)arg0 + 0xC4) = 0;
         var_f4 = *(float *)((char *)arg0 + 0xC8) + (lbl_80564A04 * farg0);
-        if (var_f4 < lbl_805649FC) {
-        } else {
-            var_f4 = lbl_805649FC;
-        }
+        if (var_f4 >= lbl_805649FC) var_f4 = lbl_805649FC;
         var_f3 = lbl_805649FC;
         *(float *)((char *)arg0 + 0xC8) = var_f4;
-        if (var_f3 < (*(float *)((char *)arg0 + 0xD4) - lbl_80564A18) / lbl_80564A1C) {
-        } else {
-            var_f3 = (*(float *)((char *)arg0 + 0xD4) - lbl_80564A18) / lbl_80564A1C;
-        }
-        if (var_f3 > lbl_805649F0) {
-        } else {
-            var_f3 = lbl_805649F0;
-        }
+        if (var_f3 >= (*(float *)((char *)arg0 + 0xD4) - lbl_80564A18) / lbl_80564A1C) var_f3 = (*(float *)((char *)arg0 + 0xD4) - lbl_80564A18) / lbl_80564A1C;
+        if (var_f3 <= lbl_805649F0) var_f3 = lbl_805649F0;
         *(float *)((char *)arg0 + 0xCC) = lbl_805649F0 + (var_f3 * (var_f4 - lbl_805649F0));
     } else {
+        float var_f3_2;
+        float var_f1;
         var_f3_2 = *(float *)((char *)arg0 + 0xC8) - (lbl_80564A20 * farg0);
-        if (var_f3_2 > lbl_805649F0) {
-        } else {
-            var_f3_2 = lbl_805649F0;
-        }
+        if (var_f3_2 <= lbl_805649F0) var_f3_2 = lbl_805649F0;
         *(float *)((char *)arg0 + 0xC8) = var_f3_2;
         var_f1 = *(float *)((char *)arg0 + 0xCC) - (lbl_80564A20 * farg0);
-        if (var_f1 > lbl_805649F0) {
-        } else {
-            var_f1 = lbl_805649F0;
-        }
+        if (var_f1 <= lbl_805649F0) var_f1 = lbl_805649F0;
         *(float *)((char *)arg0 + 0xCC) = var_f1;
     }
     if (*(unsigned char *)((char *)arg1 + 0x118) != 0) {
@@ -309,13 +296,11 @@ void fn_802AA25C(void *arg0, void *arg1, float farg0) {
         fn_802AA100(&v5C, (char *)arg1 + 0x40, arg1, (char *)arg1 + 0x18);
         if (PSVECDotProduct(&v5C, &v5C) > lbl_80564A28) {
             float dot;
+            float var_f0;
             PSVECNormalize(&v5C, &v5C);
             dot = PSVECDotProduct(&v5C, (char *)arg1 + 0x18);
             var_f0 = lbl_805649F0;
-            if (var_f0 > dot) {
-            } else {
-                var_f0 = dot;
-            }
+            if (var_f0 <= dot) var_f0 = dot;
             *(float *)((char *)arg0 + 0xD0) = var_f0;
             var_f29 = lbl_80564A2C;
             PSVECCrossProduct(&v5C, (char *)arg1 + 0xC, &v50);
@@ -344,9 +329,7 @@ void fn_802AA25C(void *arg0, void *arg1, float farg0) {
                 UnkAAF04Conversion conv;
                 float t28;
                 float temp_f1;
-                long i10 = *(long *)((char *)arg1 + 0x34);
-                long i9 = *(long *)((char *)arg1 + 0x38);
-                long i8 = *(long *)((char *)arg1 + 0x3C);
+                float temp_f29 = (float)fabs(farg0);
                 *(float *)((char *)arg0 + 0) = sp68 + *(float *)((char *)arg1 + 0x24);
                 *(float *)((char *)arg0 + 4) = sp6C + *(float *)((char *)arg1 + 0x28);
                 temp_f31 = lbl_80564A30;
@@ -426,13 +409,13 @@ void fn_802AA25C(void *arg0, void *arg1, float farg0) {
                         sp20 = c6 + (*(float *)((char *)arg1 + 0xC) * temp_f26);
                         sp24 = c4 + (*(float *)((char *)arg1 + 0x10) * temp_f26);
                         sp28 = c5 + (*(float *)((char *)arg1 + 0x14) * temp_f26);
-                        sp8 = i10;
-                        spC = i9;
-                        sp10 = i8;
+                        sp8 = *(long *)((char *)arg1 + 0x34);
+                        spC = *(long *)((char *)arg1 + 0x38);
+                        sp10 = *(long *)((char *)arg1 + 0x3C);
                         sp14 = sp20;
                         sp18 = sp24;
                         sp1C = sp28;
-                        fn_8028E584(*(long *)((char *)lbl_8055F924 + 4), &sp14, &sp8, sp24, sp20, i8, i9, i10, c4, c6, *(float *)((char *)arg1 + 0xC) * temp_f26, c4, c5, c6, b4, b8);
+                        fn_8028E584(*(long *)((char *)lbl_8055F924 + 4), &sp14, &sp8, sp24, sp20, *(long *)((char *)arg1 + 0x3C), *(long *)((char *)arg1 + 0x38), *(long *)((char *)arg1 + 0x34), c4, c6, *(float *)((char *)arg1 + 0xC) * temp_f26, c4, c5, c6, b4, b8);
                     }
                     var_r31 += 1;
                     var_r28 += 0x18;
@@ -456,41 +439,34 @@ void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
     float depth = lbl_805649F4 * arg0->depth;
     float height = lbl_805649F4 * arg0->height;
     float v, angle, scale;
-
     if (arg0->active) {
-        float max;
-        v = lbl_80564A08 * delta;
-        max = lbl_805649FC;
+        float max = lbl_805649FC;
+        v = arg0->amount;
+        v += lbl_80564A08 * delta;
         arg0->active = 0;
-        arg0->amount = (v += arg0->amount) < max ? v : max;
+        arg0->amount = v < max ? v : max;
     } else {
         v = arg0->amount - lbl_80564A08 * delta;
         arg0->amount = v > lbl_805649F0 ? v : lbl_805649F0;
     }
-
     if ((float)fabs(delta) <= *(float *)lbl_80558DC4) return;
     if (!(fn_80287BC8(lbl_805649F0, lbl_805649FC) < arg0->amount)) return;
-
     angle = fn_80287BC8(lbl_80564A48, lbl_80564A4C);
     forward = *(Vec *)arg1;
     side = *(Vec *)((char *)arg1 + 0x18);
     pos = *(Vec *)((char *)arg1 + 0x24);
-
     scale = width * (float)cos(angle);
     pos.x += forward.x * scale;
     pos.y += forward.y * scale;
     pos.z += forward.z * scale;
-
     scale = depth * (float)sin(angle);
     pos.x += side.x * scale;
     pos.y += side.y * scale;
     pos.z += side.z * scale;
-
     scale = fn_80287BC8(lbl_805649F0, lbl_80564A04 * height);
     pos.x += *(float *)((char *)arg1 + 0xC) * scale;
     pos.y += *(float *)((char *)arg1 + 0x10) * scale;
     pos.z += *(float *)((char *)arg1 + 0x14) * scale;
-
     dir = *(Vec *)((char *)arg1 + 0x34);
     if (*(float *)((char *)arg1 + 0x4C) >= lbl_80564A50 - *(float *)lbl_80558DC4) {
         calldir = dir;
@@ -1256,11 +1232,36 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     *arg1 = result;
 }
 
-void fn_802ABFF8(int arg0, float farg0) {
-    lbl_8055F92D = fn_802C2C00(1);
-    lbl_804BD7B0[0] = fn_802C990C(arg0);
-    fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
-    fn_802C2B78(farg0, lbl_80564AAC + farg0, lbl_805649FC);
+/* Begin a tinted draw of the vehicle: stash the state fn_802AC070 has to put
+ * back, then tint the model with `tint` (0xRRGGBB) and switch the global scale
+ * on, ramping it from `scale` up to `scale` + 1000.0 at rate 1.0.
+ *   savedDrawState[0]    model colour that was in effect
+ *   savedDrawState[1..3] global scale (start, end, rate) in effect
+ * The same slot is used by fn_802AB770 (the wave draw) and restored by
+ * fn_802AC070, so only one tinted draw may be open at a time. */
+void fn_802ABFF8(int tint, float scale) {
+#define savedDrawState lbl_804BD7B0   /* the single restore slot, see fn_802AC070 */
+#define savedScaleOn lbl_8055F92D     /* global-scale on/off flag that was set */
+#define Scale_SetOn fn_802C2C00       /* turn the global scale on/off, old state */
+#define Color_Set fn_802C990C         /* model colour, old colour */
+#define Scale_Get fn_802C2BB8         /* reads back (start, end, rate) */
+#define Scale_Set fn_802C2B78         /* sets (start, end, rate) */
+#define TINT_SCALE_RANGE lbl_80564AAC /* 1000.0f: how far above scale it ramps */
+#define TINT_SCALE_RATE lbl_805649FC  /* 1.0f */
+
+    savedScaleOn = Scale_SetOn(1);
+    savedDrawState[0] = Color_Set(tint);
+    Scale_Get(&savedDrawState[1], &savedDrawState[2], &savedDrawState[3]);
+    Scale_Set(scale, TINT_SCALE_RANGE + scale, TINT_SCALE_RATE);
+
+#undef savedDrawState
+#undef savedScaleOn
+#undef Scale_SetOn
+#undef Color_Set
+#undef Scale_Get
+#undef Scale_Set
+#undef TINT_SCALE_RANGE
+#undef TINT_SCALE_RATE
 }
 
 void fn_802AC070(void) {
