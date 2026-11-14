@@ -273,28 +273,34 @@ static void SIInterruptHandler(s16 intr, OSContext* ctx) {
 }
 
 #pragma dont_inline on
+/* Turn the SI RDST (controller polling) interrupt on or off and return whether
+ * it was already enabled. Enabling also clears the per-channel vcount stamps
+ * the polling interrupt uses to tell fresh input from stale; the write to
+ * SICOMCSR always acknowledges a pending transfer-complete interrupt and stops
+ * any transfer still running. Interrupts stay disabled across the
+ * read-modify-write of the register. */
 BOOL SIEnablePollingInterrupt(BOOL enable) {
-    BOOL enabled;
-    BOOL old;
-    u32* vcount;
+    BOOL enabled;    /* interrupt state before it was disabled */
+    BOOL wasEnabled; /* RDSTINTMSK as found in SICOMCSR */
+    u32* pVcount;
     u32 csr;
 
     enabled = OSDisableInterrupts();
     csr = SI_HW_REGS[SI_SICOMSCR];
-    old = (csr >> 27) & 1;
+    wasEnabled = (csr & SI_SICOMCSR_RDSTINTMSK) != 0;
     if (enable) {
-        vcount = InputBufferVcount;
-        *vcount++ = 0;
-        *vcount++ = 0;
-        *vcount++ = 0;
-        *vcount = 0;
+        pVcount = InputBufferVcount;
+        *pVcount++ = 0;
+        *pVcount++ = 0;
+        *pVcount++ = 0;
+        *pVcount = 0;
         csr |= SI_SICOMCSR_RDSTINTMSK;
     } else {
         csr &= ~SI_SICOMCSR_RDSTINTMSK;
     }
     SI_HW_REGS[SI_SICOMSCR] = csr & ~(SI_SICOMCSR_TCINT | SI_SICOMCSR_TSTART);
     OSRestoreInterrupts(enabled);
-    return old;
+    return wasEnabled;
 }
 #pragma dont_inline off
 
