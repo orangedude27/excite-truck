@@ -5030,6 +5030,7 @@ extern "C" void fn_801D0650(void);
 extern s32 lbl_8055E5A0;
 extern void fn_801CFF14(void);
 extern s32 fn_801CF828(s32, s32, s32, s32, s32);
+/* Test the global object for a hit with the given parameters; on hit, store result code 0x6E and return 1. */
 extern "C" s32 fn_801A4E88(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if ((lbl_8055E5A0 != 0) && (fn_801CF828(lbl_8055E5A0, arg0, arg1, arg2, arg3) != 0)) {
         *arg4 = 0x6E;
