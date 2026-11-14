@@ -25308,15 +25308,18 @@ zero: return 0;
 }
 
 extern "C" s32 fn_800A7484(void *, s32, u32, s32, s32, s32);
-extern "C" s32 fn_800A58E0(void *arg0, s32 a, s32 b, s32 c, s32 d) {
+/* Write sectors through the secondary device op (fn_800A7484); on result 21,
+ * cache the device's status value into the global state and the context, and
+ * report 0x1000, otherwise map 0/other results to 0/-1. */
+extern "C" s32 fn_800A58E0(void *ctx, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 result;
     s32 value;
-    result = ((s32 (*)(void *, s32, s32, s32, u16, s32))fn_800A7484)(*(void **)((u8 *)arg0 + 0x1FBC), a, b, c, *(u16 *)arg0, d);
+    result = ((s32 (*)(void *, s32, s32, s32, u16, s32))fn_800A7484)(*(void **)((u8 *)ctx + 0x1FBC), arg1, arg2, arg3, *(u16 *)ctx, arg4);
     if (result == 0) goto zero;
     if (result != 21) goto fail;
-    value = ((s32 (* volatile)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
+    value = ((s32 (* volatile)(void *))fn_800A71D8)(*(void **)((u8 *)ctx + 0x1FBC));
     *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
-    *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+    *(s32 *)((u8 *)ctx + 0x1F84) = value;
     return 0x1000;
 fail: return -1;
 zero: return 0;
