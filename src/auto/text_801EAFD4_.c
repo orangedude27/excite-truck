@@ -656,11 +656,11 @@ extern "C" void fn_801EBCAC(void) {
         virtual void v5();
     };
     if (lbl_8055EBA0 != 0) {
-        s32 *p = lbl_804885E8;
-        u32 i = 0;
-        for (; i < 0x18; i++, p++) {
-            Entry *obj = (Entry *)*p;
-            obj->v5();
+        s32 *entryPtr = lbl_804885E8;
+        u32 index = 0;
+        for (; index < 0x18; index++, entryPtr++) {
+            Entry *entry = (Entry *)*entryPtr;
+            entry->v5();
         }
     }
 }
