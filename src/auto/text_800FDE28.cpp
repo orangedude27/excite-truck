@@ -614,15 +614,18 @@ extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
 }
 
 extern "C" s32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
-    f32 v;
+    // Convert a normalized LPF parameter in [0.0, 1.0] to an AX low-pass cutoff frequency.
+    f32 clamped;
+
     if (value > 1.0f) {
-        v = 1.0f;
+        clamped = 1.0f;
     } else if (value < lbl_805610E8) {
-        v = lbl_805610E8;
+        clamped = lbl_805610E8;
     } else {
-        v = value;
+        clamped = value;
     }
-    return (s32)(lbl_805610F0 * fn_8002EFBC(lbl_805610F8, lbl_80561100 * ((double)v - lbl_80561108)));
+
+    return (s32)(lbl_805610F0 * fn_8002EFBC(lbl_805610F8, lbl_80561100 * ((double)clamped - lbl_80561108)));
 }
 
 u32 fn_800FEB9C(void) {
