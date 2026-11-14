@@ -147,21 +147,34 @@ void fn_801E21B4(void* hi) {
 }
 
 #pragma scheduling invalid_target
+/* Submits the two active collision-group resources for processing and marks the
+ * collision system as initialized. */
 void fn_801E21BC(void) {
-    int values[2];
-    int *var_r31;
-    u32 var_r30;
-    var_r31 = values;
-    var_r30 = 0U;
-    lbl_8055EA38 = 1;
-    values[0] = (int)lbl_8055EA3C;
-    values[1] = (int)lbl_8055EA40;
+#define gCollisionGroupsReady lbl_8055EA38
+#define gPrimaryCollisionGroup lbl_8055EA3C
+#define gSecondaryCollisionGroup lbl_8055EA40
+#define CollisionGroup_prepare fn_801A47FC
+#define CollisionSystem_commit fn_8015F670
+    int resourceHandles[2];
+    int *resourceCursor;
+    u32 index;
+
+    resourceCursor = resourceHandles;
+    index = 0U;
+    gCollisionGroupsReady = 1;
+    resourceHandles[0] = (int)gPrimaryCollisionGroup;
+    resourceHandles[1] = (int)gSecondaryCollisionGroup;
     do {
-        fn_801A47FC(*var_r31);
-        var_r30 += 1;
-        var_r31++;
-    } while (var_r30 < 2U);
-    fn_8015F670(values, 2);
+        CollisionGroup_prepare(*resourceCursor);
+        index += 1;
+        resourceCursor++;
+    } while (index < 2U);
+    CollisionSystem_commit(resourceHandles, 2);
+#undef gCollisionGroupsReady
+#undef gPrimaryCollisionGroup
+#undef gSecondaryCollisionGroup
+#undef CollisionGroup_prepare
+#undef CollisionSystem_commit
 }
 void fn_801E222C(void) {
     lbl_8055EA38 = 0;
