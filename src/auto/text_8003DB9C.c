@@ -5675,29 +5675,30 @@ void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 f
     __GXData[0x5FC / 4] |= 0x10000000;
 }
 
-void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    unsigned int *data = __GXData;
-    s32 left = arg0 + 0x156;
-    s32 top = arg1 + 0x156;
-    s32 tmpBottom = top + arg3;
-    s32 tmpRight = left + arg2;
-    s32 bottom = tmpBottom - 1;
-    s32 right = tmpRight - 1;
+/* Set the scissor rectangle (left, top, width, height) in screen coordinates, writing the packed scissor registers to the FIFO and clearing the dirty state. */
+void GXSetScissor(s32 left, s32 top, s32 width, s32 height) {
+    unsigned int *gxData = __GXData;
+    s32 scissorLeft = left + 0x156;
+    s32 scissorTop = top + 0x156;
+    s32 tmpBottom = scissorTop + height;
+    s32 tmpRight = scissorLeft + width;
+    s32 scissorBottom = tmpBottom - 1;
+    s32 scissorRight = tmpRight - 1;
     unsigned int tl;
     unsigned int br;
-    tl = data[0x148 / 4];
-    tl = __rlwimi(tl, top, 0, 21, 31);
-    tl = __rlwimi(tl, left, 12, 9, 19);
-    data[0x148 / 4] = tl;
-    br = data[0x14C / 4];
-    br = __rlwimi(br, bottom, 0, 21, 31);
-    br = __rlwimi(br, right, 12, 9, 19);
-    data[0x14C / 4] = br;
+    tl = gxData[0x148 / 4];
+    tl = __rlwimi(tl, scissorTop, 0, 21, 31);
+    tl = __rlwimi(tl, scissorLeft, 12, 9, 19);
+    gxData[0x148 / 4] = tl;
+    br = gxData[0x14C / 4];
+    br = __rlwimi(br, scissorBottom, 0, 21, 31);
+    br = __rlwimi(br, scissorRight, 12, 9, 19);
+    gxData[0x14C / 4] = br;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x148 / 4];
+    *(volatile unsigned int *)0xCC008000 = gxData[0x148 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x14C / 4];
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = gxData[0x14C / 4];
+    *(volatile unsigned short *)((char *)gxData + 2) = 0;
 }
 
 void GXSetScissorBoxOffset(s32 x, s32 y) { union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = ((u32)(x + 0x156)) >> 1; *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = ((u32)(y + 0x156)) >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
