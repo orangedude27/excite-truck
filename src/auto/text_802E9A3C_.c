@@ -120,6 +120,7 @@ void *fn_802E9B54(Mp3Stream *stream, long deleteFlag) {
     }
     return stream;
 }
+
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_802E9BCC(void *arg0) {
