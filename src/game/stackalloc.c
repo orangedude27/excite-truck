@@ -24,6 +24,38 @@ extern float lbl_80565038;
 extern float lbl_8056503C;
 extern void *fn_802DA704(int, void *, int);
 extern void fn_802DAA18(void *);
+
+// One StackAlloc instance, "BoneHandleAlloc" (lbl_8055FE5C), over a 0x19000
+// byte arena named "StackAlloc::buf".  It bump-allocates records that queue a
+// write into one of the shared bone tables; fn_802DAA18 applies the current
+// record through the copy callback selected by its elemType.
+struct StackAlloc {
+    /* 0x00 */ void *vtable;    // lbl_8034C8E8, destructor at +8
+    /* 0x04 */ unsigned char *buffer; // arena base
+    /* 0x08 */ void *name;      // "BoneHandleAlloc"
+    /* 0x0C */ int capacity;    // arena size
+    /* 0x10 */ int used;        // bytes of the arena taken so far
+    /* 0x14 */ void *copyVec3;  // fn_802D9C5C: write 12-byte elements
+    /* 0x18 */ void *copyMtx;   // fn_802D9DE4: write 0x30-byte 3x4 matrices
+    /* 0x1C */ void *copyInt;   // fn_802DA1F4: write 4-byte elements
+    /* 0x20 */ void *current;   // record being applied, -1 when none
+    /* 0x24 */ unsigned char status;
+    /* 0x25 */ unsigned char initialized;
+};
+
+// A queued write, as handed out by the allocators below.  The arena block
+// around it is [u32 1][this record, alignedSize bytes][u32 alignedSize].
+struct StackAllocRecord {
+    /* 0x00 */ int kind;        // 7 for the records queued here
+    /* 0x04 */ int index;       // first element to write in the table
+    /* 0x08 */ int count;       // number of elements in data[]
+    /* 0x0C */ int elemType;    // 0 = Vec3 (copyVec3), 1 = matrix (copyMtx)
+    /* 0x10 */ unsigned char status; // StackAlloc::status to restore
+    /* 0x11 */ unsigned char pad_11[3];
+    /* 0x14 */ void *next;      // companion 4-byte write {index, count, data}, or 0
+    /* 0x18 */ unsigned char data[0x3C0];
+};
+
 #pragma scheduling off
 extern void fn_80128668(void *);
 extern void fn_80128670(int);
