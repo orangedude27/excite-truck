@@ -156,18 +156,25 @@ extern "C" void fn_802E34DC(void) {
 extern char lbl_8034CF80[];
 #pragma scheduling invalid_target
 void fn_802E3550(void) {
+#define sOpenFileTable lbl_804DB810
+#define sFileStillInUseMsg lbl_8034CF80
+#define FilePanic fn_802E317C
+    /* Scan the fixed 16-entry open-file table and report any entries still marked in use. */
     char *entry;
     s32 i;
 
-    entry = lbl_804DB810;
+    entry = sOpenFileTable;
     i = 0;
     do {
         if (((unsigned char *)entry)[0x20] != 0) {
-            fn_802E317C(lbl_8034CF80, (s32)entry);
+            FilePanic(sFileStillInUseMsg, (s32)entry);
         }
         i++;
         entry += 0x28;
     } while (i < 16);
+#undef sOpenFileTable
+#undef sFileStillInUseMsg
+#undef FilePanic
 }
 #pragma scheduling on
 extern char lbl_8034CF98[];
