@@ -384,17 +384,18 @@ void *fn_80287C30(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-void *fn_80287C80(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (*(s32 *)arg0 != 0) {
-            fn_80131818(*(s32 *)arg0);
-            *(s32 *)arg0 = 0;
+/* If the object is non-null, release its owned resource handle at offset 0, clear it, and optionally free the object when arg1 > 0. */
+void *fn_80287C80(void *object, s32 shouldFree) {
+    if (object != 0) {
+        if (*(s32 *)object != 0) {
+            fn_80131818(*(s32 *)object);
+            *(s32 *)object = 0;
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (shouldFree > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 #pragma dont_inline on
