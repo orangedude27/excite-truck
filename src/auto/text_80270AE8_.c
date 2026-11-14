@@ -1252,8 +1252,8 @@ clear:
     lbl_8055F558 = 0;
 }
 
-void fn_80273490(void) {
-    fn_80271624();
+void fn_80273490(int mode, void *obj) {
+    fn_80271624(mode, obj);
 }
 
 #pragma dont_inline on
