@@ -5025,24 +5025,25 @@ extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd
     sound->playerHeap = 0;
 }
 
-extern "C" void* detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(void* this_, void* pHandle, unsigned long id, void* pAmbient, void* pPlayer, void* pInfo) {
-    struct Base {
+extern "C" void* detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(void* startable, void* soundHandle, unsigned long soundId, void* ambientArgInfo, void* externalPlayer, void* startInfo) {
+    /* Starts a sound via the startable; on failure, if the handle holds a sound, attaches it and returns null. */
+    struct StartableVTable {
         virtual void d0();
         virtual void* Start(void*, unsigned long, void*, void*, int, void*);
     };
-    struct Sound {
+    struct SoundVTable {
         virtual void d0();
         virtual void d1();
         virtual void d2();
         virtual void Attach();
     };
-    void* sound = ((Base*)this_)->Start(pHandle, id, pAmbient, pPlayer, 0, pInfo);
-    if (sound) {
-        return sound;
+    void* startedSound = ((StartableVTable*)startable)->Start(soundHandle, soundId, ambientArgInfo, externalPlayer, 0, startInfo);
+    if (startedSound) {
+        return startedSound;
     }
-    void* h = *(void**)pHandle;
-    if (h) {
-        ((Sound*)h)->Attach();
+    void* handleSound = *(void**)soundHandle;
+    if (handleSound) {
+        ((SoundVTable*)handleSound)->Attach();
     }
     return 0;
 }
