@@ -4556,13 +4556,27 @@ alloc_done:
 #pragma push
 #pragma always_inline on
 /* Ambient priority from the optional ambient-arg info (arg3 of fn_800F9200): 0 when absent. */
+/* The ambient-arg callbacks and the sound itself are called through real vtables
+   (first virtual at +8, after the RTTI/offset header). */
+struct AmbientParamUpdateCallback {
+    virtual void detail_Update(void *param, s32 soundId, s32 unk, s32 arg, s32 flags);
+};
+struct AmbientArgAllocaterCallback {
+    virtual void *detail_AllocAmbientArg(s32 size);
+};
+struct BasicSoundVirtuals {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void Stop(s32 fadeFrames);
+};
+
 static inline s32 AmbientInfo_GetPriority(s32 ambientInfo, s32 soundId) {
     s32 priority = 0;
     if (ambientInfo != 0) {
         s32 info[7];
-        void *obj = *(void **)ambientInfo;
-        void **vt = *(void ***)obj;
-        ((void (*)(void *, void *, s32, s32, s32, s32))vt[2])(obj, (void *)info, soundId, 0, *(s32 *)(ambientInfo + 0xC), 8);
+        (*(AmbientParamUpdateCallback **)ambientInfo)->detail_Update((void *)info, soundId, 0, *(s32 *)(ambientInfo + 0xC), 8);
         priority = info[6];
     }
     return priority;
