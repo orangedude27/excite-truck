@@ -663,15 +663,15 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
     register s32 offset;
     register const u8 *items;
     register s32 index;
-    GroupListNode *head = (GroupListNode *)&group->children.first;
+    const void *head = (const u8 *)self + 0x10;
     *(volatile u32 *)&group->children.first = 0;
     *(volatile u32 *)&group->children.last = 0;
     group->vtable = lbl_8031F628;
     group->unk4 = 0;
     group->unk8 = 0;
     group->children.count = 0;
-    *(volatile GroupListNode **)&group->children.first = head;
-    *(volatile GroupListNode **)&group->children.last = head;
+    *(volatile const void **)&group->children.first = head;
+    *(volatile const void **)&group->children.last = head;
     *(volatile u8 *)((u8 *)self + 0x28) = 0;
     memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
     items = (const u8 *)resource + 0x1C;
@@ -3484,13 +3484,18 @@ extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, vo
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
 extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void*, void*, void*);
 extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
-extern "C" void DrawSelf__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, void* info) {
-    if (*(s32*)((u8*)self + 0xC) != 0 && ((*(u8*)((u8*)info + 0x50) >> 3) & 1)) {
-        ((DrawSelfVirt_800D58C4*)self)->v22();
-        u32 color = 0xFF00FF;
-        GetVtxPosResult pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
-        ((void (*)(void*, void*, void*))DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color)(&pos, (u8*)self + 0x4C, &color);
+/* nw4hbm::lyt::Pane::DrawSelf: when debug draw mode is enabled on a non-root pane, load its matrix and draw a green wireframe outline around its bounds. */
+extern "C" void DrawSelf__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* pane, void* drawInfo) {
+#define Pane_GetVtxPos GetVtxPos__Q34nw4r3lyt4PaneCFv
+#define detail_DrawLine DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color
+    if (*(s32*)((u8*)pane + 0xC) != 0 && ((*(u8*)((u8*)drawInfo + 0x50) >> 3) & 1)) {
+        ((DrawSelfVirt_800D58C4*)pane)->v22();
+        u32 debugColor = 0x00FF00FF;
+        GetVtxPosResult vtxPos = Pane_GetVtxPos(pane);
+        ((void (*)(void*, void*, void*))detail_DrawLine)(&vtxPos, (u8*)pane + 0x4C, &debugColor);
     }
+#undef detail_DrawLine
+#undef Pane_GetVtxPos
 }
 
 extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void *self, u32 flags) {
