@@ -782,6 +782,11 @@ static inline void *AllocAligned80(void *owner, s32 size) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling on
+/* The inline helpers above must be inlined into fn_8012B6FC only. */
+#pragma push
+#pragma dont_inline off
+#pragma auto_inline off
+
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     u8 *entry;
     void *object;
@@ -833,6 +838,8 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     flags = *(u32 *)(entry + 0x34);
     return (flags >> 3) & 1;
 }
+
+#pragma pop
 #pragma scheduling invalid_target
 extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 sp8;
