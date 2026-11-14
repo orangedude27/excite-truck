@@ -265,7 +265,7 @@ void fn_80243A38(void *arg0) {
         fn_802E30C8(globalBase + 0x3D8);
     fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
 
-    base = (s32 *)((u8 *)globalBase + 0);
+    base = (s32 *)&globalBase[0];
     group = 0;
     do {
         entry = base;
@@ -574,16 +574,21 @@ copy3_done:;
 #pragma pop
 
 extern void fn_80243938(char *, char *);
+/* Finalizes a menu text field: strips a trailing '_' marker, removes the last character, and appends the '_' placeholder suffix. */
 void fn_802443C0(void *arg0) {
-    char *str;
-    fn_802438EC(*(char **)((char *)arg0 + 0x18));
-    str = *(char **)((char *)arg0 + 0x18);
-    if (strlen(str) != 0) {
-        int len = strlen(str);
-        char *end = (char *)(len + (int)str);
+#define MenuList_TrimTrailingMarker fn_802438EC
+#define MenuList_AppendPlaceholderSuffix fn_80243938
+    char *text;
+    MenuList_TrimTrailingMarker(*(char **)((char *)arg0 + 0x18));
+    text = *(char **)((char *)arg0 + 0x18);
+    if (strlen(text) != 0) {
+        int length = strlen(text);
+        char *end = (char *)(length + (int)text);
         *(end - 1) = 0;
     }
-    fn_80243938(*(char **)((char *)arg0 + 0x18), *(char **)((char *)arg0 + 0x1C));
+    MenuList_AppendPlaceholderSuffix(*(char **)((char *)arg0 + 0x18), *(char **)((char *)arg0 + 0x1C));
+#undef MenuList_TrimTrailingMarker
+#undef MenuList_AppendPlaceholderSuffix
 }
 
 void fn_8024442C(void *arg0) {
