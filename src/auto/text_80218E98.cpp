@@ -1861,14 +1861,21 @@ extern "C" void fn_8021B224(void *obj) {
 }
 
 #pragma dont_inline fn_80219568
-extern "C" void *fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, s32 arg6) {
-    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, arg6, arg4, 0, 0);
-    *(s32 *)((u8 *)arg0 + 0x254) = (s32)arg3;
-    *(void **)arg0 = lbl_8033F20C;
-    strcpy((char *)arg0 + 0x268, arg3);
-    *(s32 *)((u8 *)arg0 + 0x264) = arg5;
-    fn_80219718(arg0);
-    return arg0;
+/* Constructs a dynamic text label widget: initializes the base label at (x, y), binds the watched string pointer (+0x254) and caches its initial text (+0x268), stores the state pointer (+0x264), and computes the text bounds. */
+extern "C" void *fn_8021B2B0(void *widget, s32 x, s32 y, const char *textPtr, s32 fontId, s32 statePtr, s32 align) {
+#define UILabel_InitBase fn_80219568
+#define UILabel_UpdateBounds fn_80219718
+#define gDynamicLabelVtable lbl_8033F20C
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))UILabel_InitBase)(widget, x, y, align, fontId, 0, 0);
+    *(s32 *)((u8 *)widget + 0x254) = (s32)textPtr;
+    *(void **)widget = gDynamicLabelVtable;
+    strcpy((char *)widget + 0x268, textPtr);
+    *(s32 *)((u8 *)widget + 0x264) = statePtr;
+    UILabel_UpdateBounds(widget);
+    return widget;
+#undef gDynamicLabelVtable
+#undef UILabel_UpdateBounds
+#undef UILabel_InitBase
 }
 extern "C" int strcmp(const char *, const char *);
 extern "C" void fn_8021B32C(void *arg0) {
