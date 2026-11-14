@@ -286,6 +286,10 @@ extern "C" void fn_8012A80C(s32 arg0) {
 }
 
 #pragma scheduling reset
+enum { RST0_HEADER_SIZE = 0x34 };
+#define File_readExact      fn_802E39D0
+#define Rst0Header_byteSwap fn_8012A80C
+#define Rst0Header_validate fn_8012A6C8
 extern "C" s32 fn_8012A388(void *);
 extern "C" s32 fn_802E7544(s32);
 extern "C" void fn_802E7548(s32);
@@ -372,15 +376,21 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     char sp10[128];
     s32 spC;
     u8 sp8;
-    s32 var_r25, var_r5, var_r5_2;
+    register u8 *messages = (u8 *)lbl_8032A630;
+    char *var_r4;
+    s32 var_r5;
+    char *var_r6;
+    char *var_r4_2;
+    s32 var_r5_2;
+    char *var_r6_2;
+    s32 var_r25;
     u32 var_r24, var_r26;
-    char *var_r4, *var_r4_2, *var_r6, *var_r6_2;
     u8 temp_r3, temp_r3_2;
     u8 temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r4_5;
     u8 temp_r4_6, temp_r4_7, temp_r4_8, temp_r4_9, temp_r4_10;
     u32 temp_r4_11;
-    u8 *temp_r3_3, *temp_r26, *var_r25_2, *var_r31;
-    u8 *messages = (u8 *)lbl_8032A630;
+    u8 *temp_r3_3;
+    u8 *temp_r26, *var_r25_2, *var_r31;
     if (lbl_8055DFFC == 0) fn_802E317C((const char *)(messages + 0x1D0), arg0);
     var_r4 = (char *)arg0; var_r6 = sp10; var_r5 = 0x80;
     goto loop_5_copy;
@@ -745,24 +755,25 @@ extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
 #pragma dont_inline on
 #pragma scheduling on
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
-    s32 size2;
     u8 *entry;
     u8 *header;
     void *object;
     s32 handle;
-    s32 startTime;
+    register s32 startTime;
+    register s32 allocSize;
     u32 flags;
-    const char *strings;
+    register const char *strings;
     s32 size;
+
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
     strings = lbl_8032A630;
     if (!(flags & 8)) {
-        size2 = (size = *(s32 *)(entry + 0x28)) + 0x80;
+        allocSize = (size = *(s32 *)(entry + 0x28)) + 0x80;
         ((void (*)(s32))fn_801282F4)(size);
         size = 0x80;
         fn_801282EC(size);
-        object = ((void *(*)(void *, s32))fn_801284F0)(entry, size2);
+        object = ((void *(*)(void *, s32))fn_801284F0)(entry, allocSize);
         if (object != 0) {
             startTime = fn_802E2C20();
             handle = ((s32 (*)(void *))fn_802E36D8)((u8 *)arg0 + 0x20);
@@ -794,7 +805,6 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     flags = *(u32 *)(entry + 0x34);
     return (flags >> 3) & 1;
 }
-
 #pragma scheduling invalid_target
 extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 sp8;
@@ -876,9 +886,9 @@ extern "C" void fn_8012BA1C(void *arg0) {
     const char *strings = lbl_8032A630;
     s32 offset, i;
     s32 j, offset2;
-    register s32 value;
-    register u8 *entry;
-    register u32 flags;
+    u8 *entry;
+    s32 value;
+    u32 flags;
     i = 0;
     offset = 0;
     while (i < *(s32 *)((char *)arg0 + 0x88)) {
@@ -1081,10 +1091,10 @@ extern "C" u8 lbl_805599D8;
 #pragma scheduling invalid_target
 #pragma cplusplus reset
 extern "C" void fn_8012BF28(void) {
-    s32 paths[3], header[5], inner, size;
-    s32 *pathPtr, *table;
-    u32 i;
     s32 handle;
+    s32 *pathPtr, *table;
+    s32 paths[3], header[5], inner, size;
+    u32 i;
     char filename[128], name[128];
     char *src_a1;
     s32 rem_s1;
@@ -1266,7 +1276,7 @@ extern "C" void fn_8012CC20(void) {
 extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
     u8 *self = (u8 *)arg0;
     s32 sum, count, value, result, temp, handle, size, done;
-    u32 *record;
+    s32 *record;
     u8 *destination, *source, byte;
     void *parser;
     u8 parseBuffer[0x40];
@@ -1317,11 +1327,11 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         index = 0;
         goto record_check_two;
     record_body_two:
-        record = (u32 *)(*(s32 *)(self + 0x64) + index);
+        record = (s32 *)(*(s32 *)(self + 0x64) + index);
         if (record[0x34 / 4] & 4)
             fn_802E317C(lbl_8032AE20);
         count++;
-        record = (u32 *)(*(s32 *)(self + 0x64) + index);
+        record = (s32 *)(*(s32 *)(self + 0x64) + index);
         index += 0x44;
         record[0x34 / 4] &= ~0xF;
     record_check_two:
@@ -1344,11 +1354,11 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         index = 0;
         goto record_check_three;
     record_body_three:
-        record = (u32 *)(*(s32 *)(self + 0x64) + index);
+        record = (s32 *)(*(s32 *)(self + 0x64) + index);
         if (record[0x34 / 4] & 4)
             fn_802E317C(lbl_8032AE20);
         count++;
-        record = (u32 *)(*(s32 *)(self + 0x64) + index);
+        record = (s32 *)(*(s32 *)(self + 0x64) + index);
         index += 0x44;
         record[0x34 / 4] &= ~0xF;
     record_check_three:
@@ -1441,7 +1451,7 @@ func_exit:
 
 extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
     s32 done = 0;
-    u8 *parser;
+    s32 temp;
     u8 *self = (u8 *)arg0;
     u8 byte;
     u8 *source;
@@ -1452,8 +1462,9 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
     u8 *destination2;
     u8 parseBuffer[0x40];
     s32 size;
-    s32 temp;
-
+    u8 *parser;
+    s32 value;
+    s32 handle;
     do {
         parser = ((u8 *(*)(void *, void *, s32))fn_8012B314)((void *)arg1, parseBuffer,
                                                               *(s32 *)(self + 0xBC));
@@ -1462,11 +1473,11 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
         done = 0;
         temp = ((s32 (*)(void *, s32 *))fn_8012AC28)(parser, &size);
         if (temp != -1) {
-            s32 value = *(s32 *)(self + 0xCC);
+            value = *(s32 *)(self + 0xCC);
             *(s32 *)(self + 0xC0) = value;
             if (value > *(s32 *)(self + 0xC0))
                 goto parse_next;
-            s32 handle = ((s32 (*)(s32, void *))fn_802E748C)(temp, *(void **)(self + 0xC8));
+            handle = ((s32 (*)(s32, void *))fn_802E748C)(temp, *(void **)(self + 0xC8));
             *(s32 *)(self + 0xB4) = handle;
             if (handle != -1) {
                 *(s32 *)(self + 0xB8) = 2;
@@ -1512,7 +1523,8 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
                 *(u8 *)(self + 0xB0) = 1;
                 *(s32 *)(self + 0x68) = 0;
                 *(u8 *)(self + 0xB1) = 0;
-                *(s32 *)self = fn_802E2C20() + *(s32 *)(self + 0xC0) / 3000 + 0x1F4;
+                s32 base = fn_802E2C20();
+                *(s32 *)self = (base + *(s32 *)(self + 0xC0) / 3000 + 0x1F4);
             }
         }
     parse_next:
@@ -1715,7 +1727,7 @@ extern "C" void fn_8012D3D8(s32 arg0) {
 extern "C" void fn_8012D40C(s32 arg0) {
     u8 *self = (u8 *)arg0;
     s32 *object = (s32 *)self;
-    s32 state, value, result, count, index, limit, done;
+    s32 state, value, result, index, count, done, limit;
     s32 temp, handle, size;
     s32 *record;
     u8 *data, *source, *destination, byte;
@@ -1748,14 +1760,17 @@ extern "C" void fn_8012D40C(s32 arg0) {
         }
         if (object[0x78 / 4] & 1) {
             s32 off = object[0x84 / 4];
-            s32 arg2val = object[0xC0 / 4] - off;
+            u8 *base = *(u8 **)(self + 0xC8);
+            s32 avail = object[0xC0 / 4] - off;
+            u8 *ptr = base + off;
             object[0x64 / 4] = 0;
-            result = fn_8012ACA0(self + 4, (u8 *)*(void **)(self + 0xC8) + off, arg2val);
+            result = fn_8012ACA0(self + 4, ptr, avail);
         } else {
             s32 off = object[0x84 / 4];
-            s32 arg2val = object[0xC0 / 4] - off;
-            object[0x64 / 4] = (s32)((u8 *)*(void **)(self + 0xC8) + off);
-            result = fn_8012AA60(self + 4, arg2val, off);
+            u8 *base = *(u8 **)(self + 0xC8);
+            s32 avail = object[0xC0 / 4] - off;
+            object[0x64 / 4] = (s32)(base + off);
+            result = fn_8012AA60(self + 4, avail, off);
         }
         if (result != 0) {
             ((void (*)(void *))fn_8012B328)(self + 4);
@@ -1821,16 +1836,16 @@ extern "C" void fn_8012D40C(s32 arg0) {
     object[0xB8 / 4] = 1;
     ((void (*)(void *))fn_8012B324)(self + 0x24);
     object[0xBC / 4]++;
-    done = 0;
-    while (!done) {
+    do {
         parser = ((u8 *(*)(void *, void *, s32))fn_8012B314)(self + 4, parseBuffer, object[0xBC / 4]);
         if (!parser)
             return;
-        temp = ((s32 (*)(s32, s32 *))fn_8012AC28)((s32)parser, &size);
+        done = 0;
+        temp = ((s32 (*)(void *, s32 *))fn_8012AC28)(parser, &size);
         if (temp != -1) {
             value = object[0xCC / 4];
             object[0xC0 / 4] = value;
-            if (value > value)
+            if (value > object[0xC0 / 4])
                 goto parse_next;
             handle = ((s32 (*)(s32, void *))fn_802E748C)(temp, *(void **)(self + 0xC8));
             object[0xB4 / 4] = handle;
@@ -1883,7 +1898,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
         }
     parse_next:
         object[0xBC / 4]++;
-    }
+    } while (!done);
 }
 #pragma scheduling on
 #pragma dont_inline reset
@@ -3160,27 +3175,27 @@ extern "C" void fn_8012C720(void *request, s32 buffer, s32 size, s32 fileOffset)
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012C7FC(void *arg0, s32 *arg1) {
-    char *entry;
+    void *entry;
     s32 result = 0;
     s32 temp;
-    temp = *(s32 *)((char *)arg0 + 0xC);
+    temp = *(s32 *)((char *)arg0 + 12);
     if (temp != -1 && fn_802E7544(temp)) {
-        fn_802E7548(*(s32 *)((char *)arg0 + 0xC));
-        *(s32 *)((char *)arg0 + 0xC) = -1;
+        fn_802E7548(*(s32 *)((char *)arg0 + 12));
+        *(s32 *)((char *)arg0 + 12) = -1;
     }
-    temp = *(s32 *)((char *)arg0 + 0xC);
-    if (temp == -1 && *(s32 *)((char *)arg0 + 0x10)) {
-        entry = *(char **)((char *)arg0 + 4);
-        if (*(s32 *)((char *)arg0 + 0x14) < *(s32 *)(entry + 0x28) ||
-            *(u32 *)(entry + 0x30) == ((u32 (*)(void))fn_80132E7C)()) {
-            result = *(s32 *)((char *)arg0 + 0x10);
-            if (arg1) *arg1 = *(s32 *)(entry + 0x28);
+    temp = *(s32 *)((char *)arg0 + 12);
+    if (temp == -1 && *(s32 *)((char *)arg0 + 16)) {
+        entry = *(void **)((char *)arg0 + 4);
+        if (*(s32 *)((char *)arg0 + 20) < *(s32 *)((char *)entry + 40) ||
+            *(u32 *)((char *)entry + 48) == ((u32 (*)(void))fn_80132E7C)()) {
+            result = *(s32 *)((char *)arg0 + 16);
+            if (arg1) *arg1 = *(s32 *)((char *)entry + 40);
         } else {
             fn_802E30C8(lbl_8032AC68, entry);
-            fn_8012C720(arg0, *(s32 *)((char *)arg0 + 0x10) -
-                ((*(s32 *)((char *)*(void **)((char *)arg0 + 4) + 0x2C) +
-                  *(s32 *)((char *)*(void **)((char *)arg0 + 8) + 0x80)) & 0x7FF),
-                *(s32 *)((char *)arg0 + 0x14), 0);
+            fn_8012C720(arg0, *(s32 *)((char *)arg0 + 16) -
+                ((*(s32 *)((char *)*(void **)((char *)arg0 + 4) + 44) +
+                  *(s32 *)((char *)*(void **)((char *)arg0 + 8) + 128)) & 2047),
+                *(s32 *)((char *)arg0 + 20), 0);
         }
     }
     return result;
@@ -3215,11 +3230,13 @@ extern "C" void fn_8012C958(void *arg0) {
 extern "C" void fn_8012C9C8(void) {
     if (lbl_8055E00C == 0) {
         void *p = fn_801284F8(0x20, lbl_8032AC88);
-        if (p) p = fn_8012A13C(p, lbl_8032AC88, 0x20, 0xD0);
+        if (p != 0)
+            p = fn_8012A13C(p, lbl_8032AC88, 0x20, 0xD0);
         lbl_8055E010 = (void **)p;
     }
     if (fn_8012A2D8(lbl_8055E010) != 0) {
-        lbl_8055E00C = lbl_8055E00C + 1;
+        register s32 c = lbl_8055E00C;
+        lbl_8055E00C = c + 1;
     }
 }
   
