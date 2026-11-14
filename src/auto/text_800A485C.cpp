@@ -6728,20 +6728,23 @@ extern "C" s32 fn_800AF2CC(void *fatFile, u32 startCluster, s32 length, s32 *clu
     return 0;
 }
 
-extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, s32 arg1, s32 *arg2) {
+extern "C" s32 VFiPFFAT_TraceClustersChain(void *volume, s32 cluster, s32 *outEntry) {
+    /* Reads the FAT entry for `cluster` into `*outEntry` according to the volume's FAT type
+     * at +0x1C (0 = FAT12 via fn_800AF5A0, 1 = FAT16 via fn_800AFE14, 2 = FAT32 via fn_800B0258),
+     * or sets `*outEntry = -1` and returns error 0xF for an invalid FAT type. */
     s32 result;
-    switch (*(s32 *)((u8 *)arg0 + 0x1C)) {
+    switch (*(s32 *)((u8 *)volume + 0x1C)) {
     case 0:
-        result = ((s32 (*)(void *, u16))fn_800AF5A0)(arg0, (u16)arg1);
+        result = ((s32 (*)(void *, u16))fn_800AF5A0)(volume, (u16)cluster);
         break;
     case 1:
-        result = ((s32 (*)(void *, s32, s32 *))fn_800AFE14)(arg0, arg1, arg2);
+        result = ((s32 (*)(void *, s32, s32 *))fn_800AFE14)(volume, cluster, outEntry);
         break;
     case 2:
-        result = ((s32 (*)(void *, s32, s32 *))fn_800B0258)(arg0, arg1, arg2);
+        result = ((s32 (*)(void *, s32, s32 *))fn_800B0258)(volume, cluster, outEntry);
         break;
     default:
-        *arg2 = -1;
+        *outEntry = -1;
         result = 0xF;
         break;
     }
