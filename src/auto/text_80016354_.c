@@ -232,12 +232,13 @@ void fn_8001683C(void *arg0, int arg1) {
 #pragma pop
 extern unsigned char *lbl_8055D540;
 extern unsigned char *lbl_8055D544;
-void fn_800168B0(int arg0, int arg1) {
+/* Set the vehicle override for all base driver entries with the given driver number, then the first matching dynamic entry. */
+void fn_800168B0(int driverNumber, int vehicleOverride) {
     int i;
     unsigned char *p;
     for (i = 0, p = lbl_803577F0; i < (int)lbl_8055D554; i++, p += 0x5C) {
-        if (arg0 == *(int *)(p + 4))
-            *(int *)(p + 0x50) = arg1;
+        if (driverNumber == *(int *)(p + 4))
+            *(int *)(p + 0x50) = vehicleOverride;
     }
     {
         unsigned char *entry;
@@ -245,8 +246,8 @@ void fn_800168B0(int arg0, int arg1) {
         int j = 0;
         entry = base = lbl_8055D540;
         for (j = 0; j < (int)lbl_8055D54C; entry += 0x5C, j++) {
-            if (arg0 == *(int *)(entry + 4)) {
-                *(int *)(base + j * 0x5C + 0x50) = arg1;
+            if (driverNumber == *(int *)(entry + 4)) {
+                *(int *)(base + j * 0x5C + 0x50) = vehicleOverride;
                 return;
             }
         }
@@ -522,15 +523,14 @@ extern "C" void fn_80017010(void *arg0) {
         virtual void m9();
         virtual int m10(const char *, int);
     };
+    char *base;
     char *entry;
     char *src;
-    int c;
-    int flag;
     int v29, v30, v31;
-    char *found;
     char *r26;
     int eidx, off;
-    char *base;
+    int c;
+    int flag;
     base = lbl_802FCEA8;
     entry = (char *)lbl_8055D544 + (int)lbl_8055D550 * 0xA8;
     *(int *)entry = (int)lbl_8055D550;
@@ -579,9 +579,9 @@ extern "C" void fn_80017010(void *arg0) {
                     if (lim <= 0) { *(q - 1) = 0; break; }
                 } else break;
             }
-            found = fn_80029004(sp88, 0x5F);
-            if (found != (char *)0) {
-                *found = 0;
+            src = fn_80029004(sp88, 0x5F);
+            if (src != (char *)0) {
+                *src = 0;
                 eidx = 0;
                 off = 0;
                 while (eidx < (int)lbl_8055D550) {
