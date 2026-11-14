@@ -239,17 +239,18 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
     }
 }
 #pragma scheduling on
-void *fn_801B591C(void *arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        s32 temp = *(s32 *)((u8 *)arg0 + 8);
-        if (temp != 0) {
-            ((void (*)(void *, void *(*)(void *, s32)))fn_8002F6AC)((void *)temp, fn_801B591C);
+void *fn_801B591C(void *self, s32 deleteFlag) {
+    /* Recursively destroy the child array stored at offset 8, then optionally free this node. */
+    if (self != NULL) {
+        s32 child = *(s32 *)((u8 *)self + 8);
+        if (child != 0) {
+            ((void (*)(void *, void *(*)(void *, s32)))fn_8002F6AC)((void *)child, fn_801B591C);
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (deleteFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern s32 lbl_8055E6E8;
@@ -314,7 +315,8 @@ extern "C" void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
         virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
         virtual void m12(float *, float *);
     };
-    f32 out[6];
+    f32 outA[3];
+    f32 outB[3];
     f32 base;
     void **item;
     s32 i;
@@ -325,12 +327,12 @@ extern "C" void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
     for (i = 0; i < arg2; i++) {
         obj = *item;
         obj = *(void **)((u8 *)obj + 0x3C);
-        ((V *)obj)->m12(&out[3], &out[0]);
-        lbl_80435EB8[1] = out[5] - base;
-        lbl_80435EB8[0] = out[3] - base;
-        lbl_80435EB8[2] = base + out[0];
-        lbl_80435EB8[3] = base + out[2];
-        fn_801B561C(*item, i, arg0, 0, lbl_805626A4, lbl_805626A4, lbl_805626A8, lbl_805626A8, base + out[0], out[5] - base);
+        ((V *)obj)->m12(outA, outB);
+        lbl_80435EB8[1] = outA[2] - base;
+        lbl_80435EB8[0] = outA[0] - base;
+        lbl_80435EB8[2] = base + outB[0];
+        lbl_80435EB8[3] = base + outB[2];
+        fn_801B561C(*item, i, arg0, 0, lbl_805626A4, lbl_805626A4, lbl_805626A8, lbl_805626A8, base + outB[0], outA[2] - base);
         item++;
     }
 }
