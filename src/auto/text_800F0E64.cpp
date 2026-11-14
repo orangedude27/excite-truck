@@ -1629,15 +1629,16 @@ extern "C" const char lbl_80324CDC[];
 extern "C" char lbl_805598A8;
 extern "C" const char lbl_80324D08[];
 extern "C" char lbl_805598B0;
-extern "C" s32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(void *arg0) {
-    void *data = *(void **)((char *)arg0 + 0x28);
-    void *p;
-    if (*((u8 *)data + 0x11) != 0)
+/* Returns the number of players described in the sound archive, or 0 if none. */
+extern "C" s32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(void *reader) {
+    void *fileInfo = *(void **)((char *)reader + 0x28);
+    void *playerInfo;
+    if (*((u8 *)fileInfo + 0x11) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A8, 0x6f, lbl_80324CDC);
-    p = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)data + 0x10), *(u32 *)((char *)data + 0x14), data);
-    if (p == 0)
+    playerInfo = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)fileInfo + 0x10), *(u32 *)((char *)fileInfo + 0x14), fileInfo);
+    if (playerInfo == 0)
         return 0;
-    return *(s32 *)p;
+    return *(s32 *)playerInfo;
 }
 
 /* Return the number of groups in the sound archive file (table count minus one). */
