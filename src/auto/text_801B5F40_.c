@@ -110,11 +110,11 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
 }
 
 #pragma sym off
-void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
-    s32 x0 = GridCell(arg2[0] - lbl_805626B8);
-    s32 x1 = GridCell(lbl_805626B8 + arg2[0]);
-    s32 y0 = GridCell(arg2[2] - lbl_805626B8);
-    s32 y1 = GridCell(lbl_805626B8 + arg2[2]);
+void fn_801B619C(u32 *arg0, s32 *arg1, const f32 *arg2) {
+    s32 x0 = GridCell(arg2[0] - 9.599999f);
+    s32 x1 = GridCell(9.599999f + arg2[0]);
+    s32 y0 = GridCell(arg2[2] - 9.599999f);
+    s32 y1 = GridCell(9.599999f + arg2[2]);
     if (x0 != x1) {
         if (y0 != y1) {
             *arg1 = 4;
