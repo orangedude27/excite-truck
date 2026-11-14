@@ -431,9 +431,9 @@ void fn_801B916C(void *arg0) {
 #pragma cplusplus off
 void *fn_801B9274(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        u32 index = *(u32 *)((char *)arg0 + 0x2700);
+        s32 index = *(s32 *)((char *)arg0 + 0x2700);
+        lbl_80436D28[index] = 0;
         lbl_8055E774--;
-        ((u32 *)lbl_80436D28)[index] = 0;
         fn_801836E0(arg0, 0);
         if (arg1 > 0) {
             fn_80128668(arg0);
