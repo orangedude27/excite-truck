@@ -1722,15 +1722,18 @@ void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
 
-void fn_80119218(void *arg0, s16 arg1, s16 arg2, s16 arg3) {
-    void *temp_r31 = (u8*)arg0 + 0x14C;
-    memset(temp_r31, 0, 0x30);
-    *(s16*)temp_r31 = arg2;
-    *(s16*)((u8*)temp_r31 + 4) = arg3;
-    *(s16*)((u8*)arg0 + 0x1AC) = arg1;
-    *(s16*)((u8*)arg0 + 0x1AE) = 0;
-    *(s32*)((u8*)arg0 + 0x144) = 3;
-    *(s32*)((u8*)arg0 + 0x1C) |= 0x212;
+/* Initializes the object's 0x30-byte parameter/state block at +0x14C: clears it,
+ * stores arg2/arg3 as 16-bit values at +0x14C/+0x150, sets +0x1AC/+0x1AE and
+ * mode/state at +0x144 to 3, and sets flags 0x212 in the bitfield at +0x1C. */
+void fn_80119218(void *object, s16 arg1, s16 arg2, s16 arg3) {
+    void *stateBlock = (u8*)object + 0x14C;
+    memset(stateBlock, 0, 0x30);
+    *(s16*)stateBlock = arg2;
+    *(s16*)((u8*)stateBlock + 4) = arg3;
+    *(s16*)((u8*)object + 0x1AC) = arg1;
+    *(s16*)((u8*)object + 0x1AE) = 0;
+    *(s32*)((u8*)object + 0x144) = 3;
+    *(s32*)((u8*)object + 0x1C) |= 0x212;
 }
 
 #pragma push
