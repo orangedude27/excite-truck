@@ -18916,15 +18916,16 @@ BOOLEAN l2c_link_hci_disc_comp(UINT16 handle, UINT8 reason) {
 }
 
 extern void *l2cu_find_lcb_by_handle(u16 handle);
+/* Handle an HCI QoS violation event by notifying channels on the link. */
 s32 l2c_link_hci_qos_violation(u16 handle) {
-    void *lcb = l2cu_find_lcb_by_handle(handle);
-    void *ccb;
-    if (lcb == 0) return 0;
-    ccb = *(void **)((u8 *)lcb + 8);
-    while (ccb != 0) {
-        if (*(void **)((u8 *)*(void **)((u8 *)ccb + 0x30) + 0x20) != 0)
-            fn_80089E40(ccb, 6, 0);
-        ccb = *(void **)((u8 *)ccb + 8);
+    void *p_lcb = l2cu_find_lcb_by_handle(handle);
+    void *p_ccb;
+    if (p_lcb == 0) return 0;
+    p_ccb = *(void **)((u8 *)p_lcb + 8);
+    while (p_ccb != 0) {
+        if (*(void **)((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x20) != 0)
+            fn_80089E40(p_ccb, 6, 0);
+        p_ccb = *(void **)((u8 *)p_ccb + 8);
     }
     return 1;
 }
