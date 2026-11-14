@@ -74,18 +74,20 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
 }
 static inline void transform_vec_scheduled(float *out, const float *m, float *in) {
     if (out == in) {
-        float m3 = m[3];
-        float m4 = m[4];
-        float m5 = m[5];
-        float m0 = m[0];
-        float m1 = m[1];
-        float m2 = m[2];
-        float m6 = m[6];
-        float m7 = m[7];
-        float m8 = m[8];
-        float x = in[0];
-        float y = in[1];
-        float z = in[2];
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        float x, y, z;
+        m3 = m[3];
+        m4 = m[4];
+        m5 = m[5];
+        m0 = m[0];
+        m1 = m[1];
+        m2 = m[2];
+        m6 = m[6];
+        m7 = m[7];
+        m8 = m[8];
+        x = in[0];
+        y = in[1];
+        z = in[2];
         out[0] = z * m6 + (x * m0 + y * m3);
         out[1] = z * m7 + (x * m1 + y * m4);
         out[2] = z * m8 + (x * m2 + y * m5);
@@ -454,11 +456,9 @@ void fn_801B949C(void *arg0) {
     float *src;
     float x, y, z;
     unsigned char flag;
-
     *(unsigned char *)((char *)arg0 + 0x275c) = 0;
     *(float *)((char *)arg0 + 0x2758) = lbl_80562750;
     fn_8018381C(arg0);
-
     sp8[0] = *(float *)((char *)arg0 + 0x2748) - *(float *)((char *)arg0 + 0x273c);
     sp8[1] = *(float *)((char *)arg0 + 0x274c) - *(float *)((char *)arg0 + 0x2740);
     sp8[2] = *(float *)((char *)arg0 + 0x2750) - *(float *)((char *)arg0 + 0x2744);
@@ -469,7 +469,6 @@ void fn_801B949C(void *arg0) {
     if (flag != 0) {
         sp8[2] -= lbl_80562754;
     }
-
     sp6c = -1;
     matrix = *(float **)((char *)arg0 + 0x2754);
     dst = sp50;
@@ -487,11 +486,9 @@ void fn_801B949C(void *arg0) {
         dst[1] = sp8[0] * matrix[0x74 / 4] + sp8[1] * matrix[0x80 / 4] + sp8[2] * matrix[0x8c / 4];
         dst[2] = sp8[0] * matrix[0x78 / 4] + sp8[1] * matrix[0x84 / 4] + sp8[2] * matrix[0x90 / 4];
     }
-
     sp50[0] += matrix[0x94 / 4];
     sp50[1] += matrix[0x98 / 4];
     sp50[2] += matrix[0x9c / 4];
-
     sp2c[0] = ((unsigned int *)matrix)[0x70 / 4];
     sp2c[1] = ((unsigned int *)matrix)[0x74 / 4];
     sp2c[2] = ((unsigned int *)matrix)[0x78 / 4];
@@ -516,7 +513,6 @@ void fn_801B949C(void *arg0) {
         VFunc method = (VFunc)*(void **)((char *)vtable + 0x54);
         method(arg0, (float *)sp2c, matrix, factorY, factorX);
     }
-
     *(void **)((char *)arg0 + 0x2738) = arg0;
     if (*(unsigned char *)((char *)arg0 + 0x275d) == 0) {
         sp14[0] = *(float *)((char *)arg0 + 0x273c) + *(float *)((char *)arg0 + 0x30);
@@ -531,7 +527,45 @@ void fn_801B949C(void *arg0) {
     }
 }
 
-void fn_801B97D8(void *arg0) {
-    (void)arg0;
+#pragma cplusplus on
+extern "C" void fn_801B97D8(void *arg0) {
+    struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(unsigned int *, void *); };
+    struct Work { float f08[3]; float f14[3]; float f20[3]; float f2C[3]; float f38[3]; float f44[3]; float f50[3]; float f5C[3]; float f68[3]; Vec copy[3]; float f98[3]; float fA4[3]; int fB0; short fB4; short pad; int fB8; int fBC; int fC0; float fC4[6]; };
+    union { double align; struct Work w; } frame;
+    void *obj = arg0;
+    void *mtx = *(void **)((char *)obj + 0x2754);
+    float t4 = *(float *)((char *)obj + 0x128) - *(float *)((char *)mtx + 0x128);
+    float t5 = *(float *)((char *)obj + 0x124) - *(float *)((char *)mtx + 0x124);
+    float t3v = *(float *)((char *)obj + 0x12C);
+    float f1s = t4 * lbl_8056277C;
+    float t2 = t3v - *(float *)((char *)mtx + 0x12C);
+    frame.w.f5C[0] = t5;
+    frame.w.f5C[1] = t4;
+    frame.w.f5C[2] = t2;
+    frame.w.f68[1] = f1s;
+    frame.w.f68[2] = lbl_80562750;
+    frame.w.f68[0] = lbl_80562750;
+    fn_8017B4AC(obj, frame.w.f68);
+    if (*(unsigned char *)((char *)obj + 0x275D) == 0) {
+        float v;
+        if (*(unsigned char *)((char *)obj + 0x275C) != 0) v = lbl_80562780;
+        else v = lbl_80562750;
+        fn_8018ADA4(obj, v);
+    } else {
+        void *m2 = *(void **)((char *)obj + 0x2754);
+        float d7 = *(float *)((char *)m2 + 0x60) - *(float *)((char *)obj + 0x60);
+        float d10 = *(float *)((char *)m2 + 0x64) - *(float *)((char *)obj + 0x64);
+        float d9 = *(float *)((char *)m2 + 0x68) - *(float *)((char *)obj + 0x68);
+        float a0 = *(float *)((char *)obj + 0x118) - *(float *)((char *)m2 + 0x118);
+        float a1 = *(float *)((char *)obj + 0x11C) - *(float *)((char *)m2 + 0x11C);
+        float a2 = *(float *)((char *)obj + 0x120) - *(float *)((char *)m2 + 0x120);
+        frame.w.f44[0] = a0;
+        frame.w.f44[1] = a1;
+        frame.w.f44[2] = a2;
+        frame.w.f50[0] = d7;
+        frame.w.f50[1] = d10;
+        frame.w.f50[2] = d9;
+        fn_8018ADA4(obj, lbl_80562780);
+    }
+    ((void (*)(void *))fn_80189C64)(obj);
 }
-
