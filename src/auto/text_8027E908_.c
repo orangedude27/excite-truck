@@ -2384,10 +2384,11 @@ increment:
     }
     return -1;
 }
+/* Return 1 if lbl_8055F698 is present in the lbl_804B30D8 entry list, otherwise run fallback and return 0. */
 int fn_80283A50(void) {
-    int i;
-    i = fn_80283A50_find((void **)lbl_804B30D8[0], (unsigned int)lbl_8055F698, (int)lbl_804B30D8[1]);
-    if (i >= 0) return 1;
+    int index;
+    index = fn_80283A50_find((void **)lbl_804B30D8[0], (unsigned int)lbl_8055F698, (int)lbl_804B30D8[1]);
+    if (index >= 0) return 1;
     fn_80216D28();
     return 0;
 }
