@@ -687,12 +687,13 @@ check:
 }
 #pragma scheduling on
 s32 fn_802476FC(void) {
-    register s32 flag = 0;
-    UnkFunc fn;
-    if (fn_802411D4() != 0 && lbl_8055F26C > 0) flag = 1;
-    if (flag) fn = fn_80214B44;
-    else fn = fn_80214B94;
-    return (fn(4), 0);
+    /* Enable menu item 4 when multiplayer is allowed and a menu is selected; otherwise disable it. */
+    register s32 hasMultiplayerMenu = 0;
+    UnkFunc setItemState;
+    if (fn_802411D4() != 0 && lbl_8055F26C > 0) hasMultiplayerMenu = 1;
+    if (hasMultiplayerMenu) setItemState = fn_80214B44;
+    else setItemState = fn_80214B94;
+    return (setItemState(4), 0);
 }
 
 extern s32 lbl_8055BEA8;
