@@ -12,6 +12,7 @@ u8 SCGetAspectRatio(void) {
     return item;
 }
 
+/* Return the saved horizontal display offset, clamped to [-32, 32] and rounded down to even. */
 s8 SCGetDisplayOffsetH(void) {
     s8 item;
 
