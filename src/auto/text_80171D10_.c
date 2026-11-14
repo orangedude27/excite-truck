@@ -1495,21 +1495,24 @@ extern "C" void fn_801746D0(int *arg0, int *arg1, int arg2) {
     }
 }
 #pragma cplusplus reset
-void fn_80174794(void **arg0) {
+/* When the race timer is below zero (lbl_80561A44) and not paused, draws the
+   target marker (fn_8017248C) above every active opponent car (all slots except
+   the local player's car from fn_801E866C(-1) that pass virtual check f6). */
+void fn_80174794(void **crushMaster) {
     extern float fn_801B306C(void);
     extern int fn_800216D0(void);
     extern int fn_801EA994(void);
     extern int fn_801E866C(int);
     extern void fn_8017248C(int);
     extern float lbl_80561A44;
-    int count;
-    int i;
+    int carCount;
+    int carIdx;
     if (fn_801B306C() < lbl_80561A44 && fn_800216D0() == 0) {
-        count = fn_801EA994();
-        for (i = 0; i < count; i++) {
-            if (i != fn_801E866C(-1) &&
-                ((struct Dummy_80174794 *)arg0)->f6(i) != 0) {
-                fn_8017248C(i);
+        carCount = fn_801EA994();
+        for (carIdx = 0; carIdx < carCount; carIdx++) {
+            if (carIdx != fn_801E866C(-1) &&
+                ((struct Dummy_80174794 *)crushMaster)->f6(carIdx) != 0) {
+                fn_8017248C(carIdx);
             }
         }
     }
