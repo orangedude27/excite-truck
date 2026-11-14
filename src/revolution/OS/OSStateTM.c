@@ -157,6 +157,7 @@ void __OSShutdownToSBY(void) {
 #undef in_args
 }
 
+/* Reboot the system via STM: blank the display, issue the hot-reset ioctl, and halt. */
 void __OSHotReset(void) {
     VI_HW_REGS[VI_DCR] = 0;
 
