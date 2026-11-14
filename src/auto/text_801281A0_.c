@@ -340,8 +340,9 @@ void fn_80128658(s32 arg0) {
 
 void fn_80128660(s32 arg0) { fn_80128584(arg0, 2); }
 
-void fn_80128668(s32 arg0) {
-    fn_80128584(arg0, 3);
+/* Frees an object using allocator mode 3. */
+void fn_80128668(s32 object) {
+    fn_80128584(object, 3);
 }
 
 void fn_80128670(s32 arg0) {
