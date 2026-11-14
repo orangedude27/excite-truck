@@ -767,6 +767,24 @@ typedef struct {
     UINT16              transaction_id;                           /* 0x470 */
 } tCONN_CB_ATTR_VIEW;
 typedef struct { UINT8 pad[0x24]; UINT16 list_len; UINT8 list_data[1]; } tSDP_CCB_RAW_LIST_VIEW;
+/* tCONN_CB as this build lays it out (see tCONN_CB_ATTR_VIEW): the response list
+   is stored inline at 0x26, which makes a CCB 0x478 bytes.  Everything up to the
+   list sits where sdpint.h puts it. */
+typedef struct {
+    UINT8            con_state;                               /* 0x00 */
+    UINT8            con_flags;                               /* 0x01 */
+    BD_ADDR          device_address;                          /* 0x02 */
+    TIMER_LIST_ENT   timer_entry;                             /* 0x08 */
+    UINT16           rem_mtu_size;                            /* 0x20 */
+    UINT16           connection_id;                           /* 0x22 */
+    UINT16           list_len;                                /* 0x24 */
+    UINT8            rsp_list[SDP_BUILD_MAX_LIST_BYTE_COUNT]; /* 0x26 */
+    UINT8            pad_0x40E[0x6A];                         /* 0x40E */
+} tCONN_CB_BUILD_VIEW;                                        /* 0x478 */
+
+/* sdp_cb.ccb[]: the SDP_MAX_CONNECTIONS connection control blocks, after the
+   control block's tL2CAP_CFG_INFO. */
+#define sdp_cb_ccb    ((tCONN_CB_BUILD_VIEW *)(lbl_803C4C40 + 0x3C))
 extern char lbl_80317A54[];
 extern char lbl_80317A80[];
 #include "revolution/BTE/stack/include/wbt_api.h"
