@@ -18,12 +18,40 @@ extern void fn_802D362C(int);
 extern void fn_802D3304(void);
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 extern void fn_802C87B4(int, int, int, int);
+/* Fixed-size object pool (constructed by fn_8012A13C/fn_8012A17C, popped by
+ * fn_8012A2D8, pushed back by fn_8012A364): `count` elements of `stride`
+ * bytes carved out of one block and threaded into a free list at +0x10. */
+struct ObjectPool {
+    void *vtbl;           /* 0x00 */
+    char warnWhenEmpty;   /* 0x04 warn when the pool runs dry */
+    char ownsBlock;       /* 0x05 */
+    const char *name;     /* 0x08 pool name, used by the out-of-memory message */
+    void *block;          /* 0x0C */
+    void *free;           /* 0x10 free list head */
+    int stride;           /* 0x14 element size */
+    int count;            /* 0x18 capacity */
+    int live;             /* 0x1C elements handed out */
+};                        /* 0x20 bytes */
+
+#define DRAWLIST_POOL_CAPACITY  0x10 /* DrawListWrappers the pool holds */
+#define DRAWLIST_WRAPPER_SIZE   0x18 /* bytes per DrawListWrapper */
+
+#define STR_DRAWLIST_POOL   lbl_8034B514 /* "DrawListWrapper::pool" */
+#define STR_MR_DRAWLIST     lbl_8034B52C /* "mrDrawList" */
+#define sDrawListPool       lbl_8055FC9C /* the ObjectPool of DrawListWrappers */
+#define sDrawListLiveCount  lbl_8055FC98 /* DrawListWrappers handed out */
+
+#define NamedAlloc  fn_801284F8 /* void *(int size, const char *name) */
+#define Pool_Init   fn_8012A13C /* (void *pool, const char *name, int count, int stride) */
+#define Pool_Alloc  fn_8012A2D8 /* void *(void *pool): pop one element */
+#define Pool_Free   fn_8012A364 /* (void *pool, void *element): push one back */
+
 extern int lbl_8055FC98;
 extern void *lbl_8055FC9C;
 extern char lbl_8034B514[];
 extern void *fn_801284F8(int, const char *);
 extern void *fn_8012A13C(void *, const char *, int, int);
-extern int fn_8012A2D8(void *);
+extern void *fn_8012A2D8(void *);
 extern int lbl_8055CFF4;
 extern float lbl_80564F18;
 extern double lbl_80564F10;
