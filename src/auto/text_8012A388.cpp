@@ -772,14 +772,14 @@ extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
 #pragma scheduling on
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     u8 *entry;
-    u8 *header;
     void *object;
+    u8 *header;
     s32 handle;
-    register s32 startTime;
-    register s32 allocSize;
-    u32 flags;
     register const char *strings;
+    s32 startTime;
+    u32 flags;
     s32 size;
+    s32 allocSize;
 
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
@@ -1130,8 +1130,8 @@ extern "C" void fn_8012BF28(void) {
     pathPtr = paths; i = 0;
     do {
         s32 opened = fn_802E3BB4(*pathPtr, filename, 0x80);
+        handle = opened;
         if ((u32)(opened + 0x10000) != 0xFFFF) {
-            handle = opened;
             do {
                 *fn_80029004(filename, '.') = 0;
                 dst_s1 = filename; rem_s1 = 0x80; goto scan_test_1;
@@ -2298,10 +2298,13 @@ extern "C" void fn_8012DFCC(Unk8012DFCCList *arg0, Unk8012DFCCNode *arg1) {
     arg1->next = 0;
 }
 
-extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
-    const unsigned char *src = (const unsigned char *)arg1;
+/* Initializes an object with the given path (copied, up to 0x40 chars, into +0xC),
+   starts a read request for that path via fn_8012CAA0 (stored at +0x4C), and
+   marks the object ready (+8 = 1). */
+extern "C" void fn_8012DFE8(void *obj, const char *path, s32 size) {
+    const unsigned char *src = (const unsigned char *)path;
     int count = 0x40;
-    char *dst = (char *)arg0 + 0xc;
+    char *dst = (char *)obj + 0xc;
     unsigned char c;
     goto copy;
 count_check:
@@ -2315,8 +2318,8 @@ copy:
     if ((signed char)c != 0)
         goto count_check;
 done:
-    *(s32 *)((u8 *)arg0 + 0x4c) = fn_8012CAA0(arg2, (void *)arg1);
-    *(s32 *)((u8 *)arg0 + 8) = 1;
+    *(s32 *)((u8 *)obj + 0x4c) = fn_8012CAA0(size, (void *)path);
+    *(s32 *)((u8 *)obj + 8) = 1;
 }
 
 extern "C" void *fn_8012E060(void *arg0, const char *arg1) {
