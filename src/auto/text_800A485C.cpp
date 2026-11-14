@@ -560,7 +560,6 @@ extern "C" s32 fn_800A5990(s32);
 extern "C" s32 fn_800A59CC(s32);
 extern "C" s32 fn_800A71A0(s32 *);
 extern "C" void fn_800B7E18(u32);
-extern "C" void fn_800B7E38(u8);
   extern "C" Unk800B7E18Callback lbl_8055DD40;
   extern "C" Unk800B7E18Callback lbl_8055DD44;
   extern "C" s32 fn_800BA3F4(Unk800B7E18Callback, Unk800B7E18Callback);
