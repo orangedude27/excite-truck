@@ -66,6 +66,22 @@ void fn_8024DADC(void) {
     fn_8024739C();
 }
 
+unsigned int fn_8024DAE0(int *arg0, int arg1, int arg2, void **arg3, int arg4, int arg5) {
+    extern int fn_8000DA10(void);
+    extern unsigned char lbl_80498C30[];
+    int v = fn_8000DA10();
+    if (*(int *)(lbl_80498C30 + 0x18) != v) {
+        int *p = (int *)(lbl_80498C30 + 0x18);
+        p[4] = 0; p[2] = 0; p[5] = 2; p[3] = 2;
+        p[8] = 0; p[6] = 0; p[9] = 2; p[7] = 2;
+        p[12] = 0; p[10] = 0; p[13] = 2; p[11] = 2;
+        p[16] = 0; p[14] = 0; p[17] = 2; p[15] = 2;
+        *(int *)(lbl_80498C30 + 0x18) = v;
+    }
+    (void)arg0; (void)arg1; (void)arg2; (void)arg3; (void)arg4; (void)arg5;
+    return 0;
+}
+
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
@@ -1967,7 +1983,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
         s32 positive = selected > 0 ? selected : 0;
         s32 which = 1;
         char *item;
-        f32 v1, u1, v0, u0, sx, sy, px, py;
+        f32 v1, u1, v0, u0;
         u32 mask;
         volatile u32 mixed;
         s32 red, green, blue, ma, mr, mg, mb;
@@ -1977,8 +1993,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
         v0 = *(f32 *)(item + 0x2C);
         u1 = *(f32 *)(item + 0x30);
         v1 = *(f32 *)(item + 0x34);
-        mask = 0xFFFFFFFF;
-        if (disabled) mask = 0xFF000000;
+        mask = disabled ? 0xFF000000 : 0xFFFFFFFF;
         ma = 255;
         mr = ((disabled ? 0xFF000000U : 0xFFFFFFFFU) >> 16) & 0xff;
         mg = ((disabled ? 0xFF000000U : 0xFFFFFFFFU) >> 8) & 0xff;
@@ -2021,19 +2036,18 @@ extern "C" void fn_801345D8(void *, s32, void *, ...);
 #pragma push
 #pragma optimize_for_size off
 #pragma scheduling invalid_target
-extern "C" s32 fn_8025157C(char *arg0, s32 arg1) {
-    u8 *source, *dest;
-    s32 count;
-    s32 index, newIndex, context;
-    u8 ch;
-
+extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
     switch (arg1) {
     case 0x125: {
-        
-        index = *(s32 *)(arg0 + 0x2C);
-        if (index <= 0)
+        u8 ch;
+        u8 *source;
+        s32 count;
+        u8 *dest;
+        s32 newIndex, index, context;
+
+        if (*(s32 *)(arg0 + 0x2C) <= 0)
             goto done_prev;
-        newIndex = index - 1;
+        newIndex = *(s32 *)(arg0 + 0x2C) - 1;
         *(s32 *)(arg0 + 0x2C) = newIndex;
 
         context = fn_8001668C((s32)(arg0 + 0x60), 0);
@@ -2063,13 +2077,13 @@ extern "C" s32 fn_8025157C(char *arg0, s32 arg1) {
                          *(s32 *)(arg0 + 0x2C) * 0x14 + 0x10);
         source = *(u8 **)(arg0 + 0x4C);
         fn_80255918(source,
-                     index ? index :
+                     index != 0 ? index :
                      *(s32 *)((u8 *)newIndex + context * 4 + 0x64));
 
         fn_801345D8(arg0 + 0xE0, 0x100, lbl_8034287C,
                     *(s32 *)(arg0 + 0x2C) + 1);
         source = fn_80131234(arg0 + 0xE0);
-        dest = (u8 *)(arg0 + 0xE0);
+        dest = arg0 + 0xE0;
         count = 0x100;
         goto copy_loop_1;
     copy_count_1:
@@ -2083,6 +2097,8 @@ extern "C" s32 fn_8025157C(char *arg0, s32 arg1) {
         *dest++ = ch;
         if ((signed char)ch != 0)
             goto copy_count_1;
+        else
+            goto copy_done_1;
     copy_done_1:;
 
     done_prev:
@@ -2091,11 +2107,15 @@ extern "C" s32 fn_8025157C(char *arg0, s32 arg1) {
         return 1;
     }
     case 0x127: {
-        
-        index = *(s32 *)(arg0 + 0x2C);
-        if (index >= *(s32 *)(arg0 + 0x1C) - 1)
+        u8 ch;
+        u8 *source;
+        s32 count;
+        u8 *dest;
+        s32 newIndex, index, context;
+
+        if (*(s32 *)(arg0 + 0x2C) >= *(s32 *)(arg0 + 0x1C) - 1)
             goto done_next;
-        newIndex = index + 1;
+        newIndex = *(s32 *)(arg0 + 0x2C) + 1;
         *(s32 *)(arg0 + 0x2C) = newIndex;
 
         context = fn_8001668C((s32)(arg0 + 0x60), 0);
@@ -2125,13 +2145,13 @@ extern "C" s32 fn_8025157C(char *arg0, s32 arg1) {
                          *(s32 *)(arg0 + 0x2C) * 0x14 + 0x10);
         source = *(u8 **)(arg0 + 0x4C);
         fn_80255918(source,
-                     index ? index :
+                     index != 0 ? index :
                      *(s32 *)((u8 *)newIndex + context * 4 + 0x64));
 
         fn_801345D8(arg0 + 0xE0, 0x100, lbl_8034287C,
                     *(s32 *)(arg0 + 0x2C) + 1);
         source = fn_80131234(arg0 + 0xE0);
-        dest = (u8 *)(arg0 + 0xE0);
+        dest = arg0 + 0xE0;
         count = 0x100;
         goto copy_loop_2;
     copy_count_2:
@@ -2145,6 +2165,8 @@ extern "C" s32 fn_8025157C(char *arg0, s32 arg1) {
         *dest++ = ch;
         if ((signed char)ch != 0)
             goto copy_count_2;
+        else
+            goto copy_done_2;
     copy_done_2:;
 
     done_next:
@@ -2618,21 +2640,28 @@ s32 fn_80252238(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma opt_common_subs off
-void *fn_802522A8(void *arg0, s32 arg1) {
+void *fn_802522A8(void *arg0, s32 deleteFlags) {
+    struct ChassisList {
+        void *vptr;
+        void *records;
+        s32 count;
+        s32 capacity;
+        void *allocation;
+    } *list = arg0;
+
     if (arg0 != 0) {
-        if ((char *)arg0 + 4 != 0) {
-            fn_80128670(*(s32 *)((char *)arg0 + 0x10));
-            if ((char *)arg0 + 4 != 0) {
-                *(s32 *)((char *)arg0 + 4) = 0;
-                *(s32 *)((char *)arg0 + 8) = 0;
-                *(s32 *)((char *)arg0 + 0xC) = 0;
+        if (&list->records != 0) {
+            fn_80128670((s32)list->allocation);
+            if (&list->records != 0) {
+                list->records = 0;
+                list->count = 0;
+                list->capacity = 0;
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (deleteFlags > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
 void fn_80252320(void *arg0, u8 *arg1, signed char arg2, int arg3) {
     register s32 index;
     u8 *record;
