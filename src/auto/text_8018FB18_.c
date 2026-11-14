@@ -1241,27 +1241,30 @@ extern "C" void fn_80191084(int hybridDriver, int newDriver) {
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
 #pragma cplusplus on
-extern "C" s32 fn_80191108(void *arg0, s32 arg1) {
-    class Object1 {
+extern "C" s32 fn_80191108(void *container, s32 offset) {
+    /* Query two child objects (at +0xC and +0x8) via virtual slot 4: add the first
+     * result to offset for the second call, and return the sum of both results. */
+    class ChildAt0C {
     public:
         virtual s32 f0();
         virtual s32 f1();
         virtual s32 f2();
         virtual s32 f3();
-        virtual s32 method();
+        virtual s32 queryValue();
     };
-    class Object2 {
+    class ChildAt8 {
     public:
         virtual s32 f0();
         virtual s32 f1();
         virtual s32 f2();
         virtual s32 f3();
-        virtual s32 method(s32);
+        virtual s32 queryValue(s32);
     };
-    Object1 *obj1 = *(Object1 **)((u8 *)arg0 + 0xC);
-    s32 result = obj1->method();
-    Object2 *obj2 = *(Object2 **)((u8 *)arg0 + 8);
-    return result + obj2->method(arg1 + result);
+
+    ChildAt0C *childAt0C = *(ChildAt0C **)((u8 *)container + 0xC);
+    s32 result = childAt0C->queryValue();
+    ChildAt8 *childAt8 = *(ChildAt8 **)((u8 *)container + 8);
+    return result + childAt8->queryValue(offset + result);
 }
 
 #pragma cplusplus on
