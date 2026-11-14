@@ -669,14 +669,17 @@ extern "C" s32 fn_80218F34(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void *fn_80218F80(void *arg0, void *arg1) {
+    /* Constructs an object: installs vtable lbl_8033FB38, initializes its bounds
+     * from arg1 (x, y, w, h, flags), sets field +0x23C from fn_8021525C(), and
+     * clears field +0x240. */
     *(void **)arg0 = lbl_8033FB38;
-    register void *temp_r7 = arg1;
-    s32 temp_r5 = *(s32 *)((u8 *)arg1 + 0xC);
-    s32 temp_r4 = *(s32 *)((u8 *)arg1 + 8);
-    fn_80218FEC(arg0, temp_r4, temp_r5,
-                temp_r4 + *(s32 *)((u8 *)temp_r7 + 0x14),
-                temp_r5 + *(s32 *)((u8 *)temp_r7 + 0x18),
-                *(s32 *)((u8 *)temp_r7 + 0x10));
+    register void *bounds = arg1;
+    s32 y = *(s32 *)((u8 *)arg1 + 0xC);
+    s32 x = *(s32 *)((u8 *)arg1 + 8);
+    fn_80218FEC(arg0, x, y,
+                x + *(s32 *)((u8 *)bounds + 0x14),
+                y + *(s32 *)((u8 *)bounds + 0x18),
+                *(s32 *)((u8 *)bounds + 0x10));
     *(void **)((u8 *)arg0 + 0x23C) = fn_8021525C();
     *(s32 *)((u8 *)arg0 + 0x240) = 0;
     return arg0;
