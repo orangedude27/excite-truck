@@ -24,6 +24,8 @@ extern unsigned long long __div2i(unsigned long long, unsigned long long);
 typedef unsigned long long u64;
 extern u64 fn_802E2C9C(void);
 extern u64 OSGetTime(void);
+/* The Revolution OS calendar (OSCalendarTime) OSTicksToCalendarTime() fills;
+ * months count from 0 and the microsecond field is not read here. */
 struct OSTimeCalendar {
     int sec;
     int min;
