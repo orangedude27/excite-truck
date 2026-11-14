@@ -40,6 +40,7 @@ void __AXDepopFadeMain(s32* all, s32* value, s16* depop) {
     }
 }
 
+/* Steps remote depop fade per remote frame, clamping the per-frame delta and writing the output delta. */
 void __AXDepopFadeRmt(s32* all, s32* value, s16* depop) {
     if (*all / AX_SAMPLES_PER_FRAME_RMT != 0) {
         s32 avg = *all / AX_SAMPLES_PER_FRAME_RMT;
