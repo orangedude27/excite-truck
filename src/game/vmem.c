@@ -58,6 +58,8 @@ void fn_802E4CDC(void) {
 extern void fn_80128668(void *);
 extern void fn_80128670(int);
 void *fn_802E4CE0(void *arg0, int arg1) {
+    /* Destroying destructor for VirtualMemory (vtable lbl_8034D1D0): free the
+       backing buffer at +4, clear buffer and size, and delete if arg1 > 0. */
     if (arg0 != 0) {
         *(char **)arg0 = lbl_8034D1D0;
         fn_80128670(*(int *)((char *)arg0 + 4));
