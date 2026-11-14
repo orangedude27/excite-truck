@@ -1350,15 +1350,13 @@ extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Fram
     *(f32*)((char*)out + 12) = sp2C;
 }
 #pragma pop
-extern "C" int GetFrameMaterial__Q36nw4hbm3lyt6WindowCFUl(void* self, unsigned int index) {
-    extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
-    extern const char lbl_80320C14[];
-    extern const char lbl_80320CC8[];
-    if (index >= 8) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0x292, lbl_80320CC8);
-    if (index >= *((unsigned char*)self + 0x100)) return 0;
-    return *(int*)(*(unsigned char**)((unsigned char*)self + 0xFC) + index * 8 + 4);
+/* nw4hbm::lyt::Window::GetFrameMaterial(u32) const: the material this window draws
+ * one of its frame pieces with, or NULL when it has none at that index. */
+extern "C" nw4hbm::lyt::Material* GetFrameMaterial__Q36nw4hbm3lyt6WindowCFUl(const nw4hbm::lyt::Window* window, u32 frameIdx) {
+    if (frameIdx >= WINDOWFRAME_MAX) Panic__Q26nw4hbm2dbFPCciPCce(sAssertFile_lyt_window, 0x292, sAssertFrameIdxLtMax);
+    if (frameIdx >= window->materialCount) return NULL;
+    return window->materials[frameIdx].material;
 }
-
 extern "C" void fn_800E2508(void* self) {
     struct VTable23 {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
