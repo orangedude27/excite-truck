@@ -1604,22 +1604,29 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
     return 0;
 }
 #pragma pop
-extern "C" void fn_801590A8(void* arg0) {
-    f32 f0;
-    f32 f1;
-    ((Unk801577F0*)arg0)->v31();
-    *(f32*)((char*)arg0 + 0x25c) = lbl_80561754;
-    if (*(f32*)((char*)arg0 + 0x260) > *(f32*)((char*)arg0 + 0x24c)) {
-        s32 object = *(s32*)((char*)arg0 + 0x268);
-        if (object != 0) {
-            fn_801CB750(object, *(s32*)((char*)arg0 + 4));
+/* One frame of a bonus tracker, with nothing emitted: it runs the update at
+   vtable+0x84, clears the main progress (0x25C) and the second counter (0x264)
+   and moves the time (0x258) on by one frame.  Once the progress counted for
+   the instance at 0x268 (0x260) has passed the level at 0x24C, that instance is
+   told about this tracker through fn_801CB750 and its progress is cleared -
+   the step fn_80158D0C takes on its own, plus the counters fn_80158D60 would
+   have reset after emitting. */
+extern "C" void fn_801590A8(void* self) {
+    f32 frameTime;
+    f32 zero;
+    ((Unk801577F0*)self)->v31();
+    ((Fn8015889C*)self)->mProgress25C = BONUS_NONE;
+    if (((Fn8015889C*)self)->mProgress260 > ((Fn8015889C*)self)->mLevel24C) {
+        s32 instance = ((Fn8015889C*)self)->mInstance268;
+        if (instance != 0) {
+            fn_801CB750(instance, ((Fn8015889C*)self)->m4);
         }
-        *(f32*)((char*)arg0 + 0x260) = lbl_80561754;
+        ((Fn8015889C*)self)->mProgress260 = BONUS_NONE;
     }
-    f1 = lbl_80561754;
-    f0 = lbl_8056177C;
-    *(f32*)((char*)arg0 + 0x264) = f1;
-    *(f32*)((char*)arg0 + 0x258) = f0;
+    zero = BONUS_NONE;
+    frameTime = FRAME_TIME;
+    ((Fn8015889C*)self)->mProgress264 = zero;
+    ((Fn8015889C*)self)->mTime258 = frameTime;
 }
 
 #pragma push
