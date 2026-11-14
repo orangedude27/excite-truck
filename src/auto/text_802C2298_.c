@@ -75,6 +75,7 @@ extern "C" void fn_802C2298(void) {
 #pragma cplusplus reset
 #pragma scheduling on
 
+/* mrModelUnload every boat model the loader put on the list, then empty the list. */
 void fn_802C2410(void) {
     struct BoatModel {
         int modelId;        /* handle mrModelUnload releases */
