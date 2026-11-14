@@ -11425,7 +11425,7 @@ extern "C" s32 fn_800B7CE8(s32 arg0) {
     return 0;
 }
 
-extern "C" void fn_800B7E38(u8);
+extern "C" void fn_800B7E38(u32);
 extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callback arg2) {
     s32 result;
     switch (arg0) {
@@ -11444,9 +11444,9 @@ extern "C" void fn_800B7E18(u32 arg0) {
     if (lbl_80405D00[0]) lbl_80405D00[0]((u8)arg0);
 }
 
-extern "C" void fn_800B7E38(u8 arg0) {
+extern "C" void fn_800B7E38(u32 arg0) {
     if (lbl_80405D00[1] != 0)
-        lbl_80405D00[1](arg0);
+        lbl_80405D00[1]((u8)arg0);
 }
 
 #pragma dont_inline on
