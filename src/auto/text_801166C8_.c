@@ -3381,6 +3381,7 @@ s32 fn_8011BC4C(void *arg0, void *arg1) {
     return 0;
 }
 
+/* Inserts `node` into a singly-linked list at *head sorted by descending key at offset 8 (next pointer at offset 4). */
 void fn_8011BCAC(void **head, void *node) {
     u32 key;
     void *cur = *head;
