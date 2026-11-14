@@ -535,15 +535,16 @@ void fn_80241010(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(s32 *)((u8 *)arg0 + 0x20) = arg3;
 }
 
-void *fn_80241024(void *arg0) {
-    fn_8002F53C((u8 *)arg0 + 0x2C, fn_80241098, fn_80240928, 0x28, 5);
-    memset(arg0, 0, 0x2C);
-    *(u8 *)((u8 *)arg0 + 0xF4) = 0;
-    *(u8 *)((u8 *)arg0 + 0x158) = 0;
-    *(u8 *)((u8 *)arg0 + 0x1BC) = 0;
-    *(u8 *)((u8 *)arg0 + 0x220) = 0;
-    *(u8 *)((u8 *)arg0 + 0x284) = 0;
-    return arg0;
+/* Initializes a container: constructs 5 0x28-byte elements at offset 0x2C and clears the header and per-element flag bytes. */
+void *fn_80241024(void *container) {
+    fn_8002F53C((u8 *)container + 0x2C, fn_80241098, fn_80240928, 0x28, 5);
+    memset(container, 0, 0x2C);
+    *(u8 *)((u8 *)container + 0xF4) = 0;
+    *(u8 *)((u8 *)container + 0x158) = 0;
+    *(u8 *)((u8 *)container + 0x1BC) = 0;
+    *(u8 *)((u8 *)container + 0x220) = 0;
+    *(u8 *)((u8 *)container + 0x284) = 0;
+    return container;
 }
 
 void *fn_80241098(void *arg0) {
