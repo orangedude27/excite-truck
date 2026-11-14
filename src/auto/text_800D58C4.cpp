@@ -168,11 +168,9 @@ extern "C" s32 fn_800D4428(void);
 int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
 struct AlphaColor { u8 r, g, b, a; };
-struct FindLinkDispatch_800D9524 {
-    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-    virtual void v4(); virtual void v5();
-    virtual void* find(void* anim);
-};
+/* Pane+0x28 is the pane's nw4hbm::lyt::Material: Pane::FindMaterialByName compares
+ * the name at +4 and returns this very pointer. Its animation virtuals (find link
+ * +0x20, enable +0x1C, update +0x28) are declared where each caller uses them. */
 struct ResBlockSetTmp { u32 a, b, c, d; };
 namespace nw4hbm { namespace lyt {
 namespace res { struct Picture; struct TextBox; struct Window; }
