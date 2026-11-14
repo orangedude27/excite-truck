@@ -1294,11 +1294,14 @@ void fn_801C7394(void) {
     }
 }
 
+/* Move the debug timeline selection up one entry.  When the selected entry and
+ * the preceding one share the same time (fn_801C34CC), swaps their tie-breaking
+ * ranks at +0x4 and re-sorts sTimelineEntries. */
 void fn_801C73DC(void) {
     typedef struct TimelineEntry {
-        f32 time;
-        s32 rank;
-    } TimelineEntry;
+        f32 time; /* +0x0: sort key of the entry */
+        s32 rank; /* +0x4: order among entries sharing the time */
+    } TimelineEntry; /* one 0x30C-byte entry of sTimelineEntries */
     register long selectedIndex = sTimelineSelection;
     long prevIndex = selectedIndex - 1;
     int entryCount = sTimelineCount;
@@ -1310,6 +1313,7 @@ void fn_801C73DC(void) {
                 TimelineEntry *selected = (TimelineEntry *)((char *)(s32)sTimelineEntries + selectedOff);
                 TimelineEntry *prev = (TimelineEntry *)((char *)(s32)sTimelineEntries + prevOff);
                 if (fn_801C34CC(selected->time, prev->time)) {
+                    /* both entry addresses are rebuilt here to trade their rank words */
                     s32 *selectedRank = (s32 *)((char *)sTimelineEntries + selectedOff);
                     s32 *prevRank = (s32 *)((char *)sTimelineEntries + prevOff);
                     int swappedRank = selectedRank[1];
