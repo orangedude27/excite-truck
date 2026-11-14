@@ -342,16 +342,24 @@ done2:
     } while (index < 4);
 }
 
-void fn_8000DF2C(int arg0) {
+void fn_8000DF2C(int event) {
+    /* Notify every registered callback of event, passing the current context
+       (*lbl_8055D46C) and the event id. Callbacks are in lbl_8034F628. */
+#define callbackTable lbl_8034F628
+#define callbackCount lbl_8055D460
+#define currentContextPtr lbl_8055D46C
     unsigned int *entry;
     int i;
     i = 0;
-    entry = lbl_8034F628;
-    while (i < lbl_8055D460) {
-        ((void (*)(int, int))*entry)(*lbl_8055D46C, arg0);
+    entry = callbackTable;
+    while (i < callbackCount) {
+        ((void (*)(int, int))*entry)(*currentContextPtr, event);
         entry++;
         i++;
     }
+#undef callbackTable
+#undef callbackCount
+#undef currentContextPtr
 }
 
 #pragma scheduling on
