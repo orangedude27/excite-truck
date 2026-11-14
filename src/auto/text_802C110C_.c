@@ -574,6 +574,8 @@ void fn_802C1A08(void) {}
  * lbl_80564E70  -2000.0f: a tree whose Y is under it has been cut
  * lbl_80564E74  -9000.0f: how far below a cut tree is dropped
  */
+#ifndef TREEHIT_STRUCTS
+#define TREEHIT_STRUCTS
 struct TreeClass {
     int firstTree;     /* 0x00 this class's tree indices, -1 until it has one */
     int lastTree;      /* 0x04 */
@@ -601,6 +603,7 @@ struct TreeHitRecord {
     f32 axis[3];       /* 0x38 the axis it is being swung about */
     f32 time;          /* 0x44 when it was hit */
 };                     /* 0x48 */
+#endif
 
 struct TreeHitEvent {  /* the 0x20-byte payload of efx event 10, fn_801796EC */
     f32 pos[3];        /* 0x00 where the tree was hit */
