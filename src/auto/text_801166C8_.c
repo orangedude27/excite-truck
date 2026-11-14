@@ -3522,18 +3522,21 @@ s32 fn_8011BFFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return result | temp;
 }
 
-u32 fn_8011C06C(void *arg0) {
+/* Increments a refcounted object's use count under disabled interrupts.
+ * If state is 1 (idle), transitions it to 2 (in-use). Returns 1 when state is 1, else 0.
+ * Returns 1 for a NULL object. */
+u32 fn_8011C06C(void *obj) {
     s32 oldInterrupts;
-    s32 value;
-    if (arg0 != NULL) {
+    s32 state;
+    if (obj != NULL) {
         oldInterrupts = OSDisableInterrupts();
-        if (*(s32 *)arg0 == 1)
-            *(s32 *)arg0 = 2;
-        value = *(s32 *)((char *)arg0 + 4);
-        *(s32 *)((char *)arg0 + 4) = value + 1;
+        if (*(s32 *)obj == 1)
+            *(s32 *)obj = 2;
+        state = *(s32 *)((char *)obj + 4);
+        *(s32 *)((char *)obj + 4) = state + 1;
         OSRestoreInterrupts(oldInterrupts);
-        value = *(s32 *)arg0;
-        return (u32)((1 - value) | (value - 1)) >> 31;
+        state = *(s32 *)obj;
+        return (u32)((1 - state) | (state - 1)) >> 31;
     }
     return 1;
 }
