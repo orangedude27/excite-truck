@@ -101,6 +101,13 @@ void fn_8022F248(void) {
     strcpy(lbl_80497E3C + 0x3c, &lbl_8055B988);
 }
 
+/* Background-quad (gBack) shutdown cleanup: if the list still holds quads when
+ * the overlay system is torn down, report the leak and deallocate them -
+ * fn_8022F824 copies the quad in as the current one, releases its texture,
+ * unlinks its node and frees the quad.  The list head is read once before the
+ * loop and the loop's test variable is cleared in the body, so only the first
+ * node is deallocated and the head is left on the node after it.
+ * (Proposed name: DeallocateRemainingBackgrounds) */
 void fn_8022F294(void) {
     QuadNode *remaining;
     QuadNode *node;
