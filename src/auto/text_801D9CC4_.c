@@ -89,6 +89,7 @@ void fn_801D9F84(void *arg0, int *arg1) {
 }
 #pragma scheduling on
 #pragma use_lmw_stmw off
+/* Return 1 if any 0x18-byte entry (name at +4) in the table pointed to by *arg0 matches arg1. */
 int fn_801D9FC4(char **arg0, const char *arg1) {
     register int offset;
     register int count;
@@ -201,10 +202,9 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
     register float *values;
     register float *next;
     register float *current;
-    register float value;
-    float nv;
-    register float difference;
-    register float numerator;
+    float value;
+    float difference;
+    float numerator;
     obj = *(void **)((char *)arg0 + 4);
     if (obj != 0) {
         max = *(int *)((char *)obj + 0x10) - 2;
@@ -217,8 +217,11 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
         next = values + (index + 1) * 8;
         current = values + index * 8;
         value = *(float *)((char *)arg0 + 0xC);
-        nv = *next;
-        value = (value < nv) ? nv : value;
+        if (value < *next) {
+            value = *next;
+        } else {
+            value = value;
+        }
         difference = *next - *current;
         difference = (difference > lbl_80562B3C) ? difference : lbl_80562B3C;
         numerator = value - *current;
