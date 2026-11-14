@@ -74,6 +74,7 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
 void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed);
+typedef struct { f64 d[6]; } Cmd64;
 void fn_80063324(s32 chan, WPADGameInfo *info);
 s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo);
 
@@ -620,8 +621,251 @@ _end:
     _restgpr_25();
 }
 
-void fn_8005E298(void)
-{
+void fn_8005E298(void) {
+    f64 sp120;
+    f64 sp118;
+    f64 sp110;
+    f64 sp108;
+    f64 sp100;
+    f64 spF8;
+    f64 spC8;
+    f64 spC0;
+    f64 spB8;
+    f64 spB0;
+    f64 spA8;
+    f64 spA0;
+    f64 sp98;
+    f64 sp68;
+    f64 sp60;
+    f64 sp58;
+    f64 sp50;
+    f64 sp48;
+    f64 sp40;
+    f64 sp38;
+    s32 sp34;
+    s16 sp22;
+    s8 spC;
+    s32 sp8;
+    f64 temp_f2;
+    f64 temp_f5;
+    s32 temp_r25;
+    s32 temp_r25_2;
+    s32 temp_r30_2;
+    s32 temp_r30_3;
+    s32 temp_r4;
+    s32 temp_r4_2;
+    s32 temp_r4_3;
+    s32 temp_r4_4;
+    s32 temp_r5;
+    s32 temp_r5_2;
+    s32 var_r0;
+    s32 var_r0_2;
+    s32 var_r0_3;
+    s32 var_r25;
+    s32 var_r26;
+    s8 var_r22;
+    s8 var_r22_2;
+    s8 var_r22_3;
+    s8 var_r29;
+    s8 var_r29_2;
+    u8 *var_r27;
+    u8 temp_r0;
+    u8 temp_r0_2;
+    u8 temp_r3;
+    u8 temp_r3_2;
+    u8 var_r0_4;
+    u8 var_r0_5;
+    u8 var_r3;
+    WPADCB **var_r28;
+    WPADCB *temp_r29;
+    WPADCB *temp_r29_2;
+    WPADCB *temp_r30;
+    WPADCB *temp_r5_3;
+
+    if (fn_8006A940() == 3) {
+        var_r26 = 0;
+        var_r28 = _wpdcb;
+        var_r27 = lbl_8055DC00;
+        do {
+            var_r25 = 0;
+            if ((u8) lbl_8055DBFD == 5) {
+                temp_r30 = *var_r28;
+                if ((*(s32*)((u8*)temp_r30 + 0x818) != 0) && (*(s32*)((u8*)temp_r30 + 0x780) != 0)) {
+                    temp_r25 = OSDisableInterrupts();
+                    OSDisableInterrupts();
+                    var_r29 = *(u8*)((u8*)temp_r30 + 0x5ED) - *(u8*)((u8*)temp_r30 + 0x5EC);
+                    if (var_r29 < 0) {
+                        var_r29 += *(s32*)((u8*)temp_r30 + 0x5F4);
+                    }
+                    OSRestoreInterrupts(0);
+                    if (var_r29 == 0) {
+                        OSRestoreInterrupts(temp_r25);
+                        var_r0 = 0;
+                    } else {
+                        memcpy(&spC8, (void *)(*(s32*)((u8*)temp_r30 + 0x5F0) + ((s8)*(u8*)((u8*)temp_r30 + 0x5EC) * 0x30)), 0x30);
+                        OSRestoreInterrupts(temp_r25);
+                        var_r0 = 1;
+                    }
+                    if ((var_r0 != 0) && (spF8 = spC8, sp100 = *(f64*)((u8*)&spC8 + 8), sp108 = *(f64*)((u8*)&spC8 + 16), sp110 = *(f64*)((u8*)&spC8 + 24), sp118 = *(f64*)((u8*)&spC8 + 32), sp120 = *(f64*)((u8*)&spC8 + 40), ((fn_8005D234(var_r26, (WPADGameInfo*)&spF8) == 0) != 0))) {
+                        temp_r25_2 = OSDisableInterrupts();
+                        OSDisableInterrupts();
+                        var_r29_2 = *(u8*)((u8*)temp_r30 + 0x5ED) - *(u8*)((u8*)temp_r30 + 0x5EC);
+                        if (var_r29_2 < 0) {
+                            var_r29_2 += *(s32*)((u8*)temp_r30 + 0x5F4);
+                        }
+                        OSRestoreInterrupts(0);
+                        if (var_r29_2 == 0) {
+                            OSRestoreInterrupts(temp_r25_2);
+                        } else {
+                            memset((void *)(*(s32*)((u8*)temp_r30 + 0x5F0) + ((s8)*(u8*)((u8*)temp_r30 + 0x5EC) * 0x30)), 0, 0x30);
+                            temp_r0 = *(u8*)((u8*)temp_r30 + 0x5EC);
+                            temp_r4 = *(s32*)((u8*)temp_r30 + 0x5F4) - 1;
+                            temp_r5 = (s8) temp_r0 - temp_r4;
+                            temp_r4_2 = (s32) ~(temp_r5 | (temp_r4 - (s8) temp_r0)) >> 0x1F;
+                            *(u8*)((u8*)temp_r30 + 0x5EC) = (u8) (((s8) temp_r0 + 1) & ~temp_r4_2);
+                            OSRestoreInterrupts(temp_r25_2);
+                        }
+                        var_r25 = 1;
+                    } else {
+                        goto block_18;
+                    }
+                } else {
+block_18:
+                    var_r25 = 0;
+                }
+            }
+            temp_r29 = *var_r28;
+            if (*(s32*)((u8*)temp_r29 + 0x818) != 0) {
+                temp_r30_2 = OSDisableInterrupts();
+                OSDisableInterrupts();
+                var_r22 = *(u8*)((u8*)temp_r29 + 0x161) - *(u8*)((u8*)temp_r29 + 0x160);
+                if (var_r22 < 0) {
+                    var_r22 += *(s32*)((u8*)temp_r29 + 0x168);
+                }
+                OSRestoreInterrupts(0);
+                if (var_r22 == 0) {
+                    OSRestoreInterrupts(temp_r30_2);
+                    var_r0_2 = 0;
+                } else {
+                    memcpy(&sp68, (void *)(*(s32*)((u8*)temp_r29 + 0x164) + ((s8)*(u8*)((u8*)temp_r29 + 0x160) * 0x30)), 0x30);
+                    OSRestoreInterrupts(temp_r30_2);
+                    var_r0_2 = 1;
+                }
+                if ((var_r0_2 != 0) && (sp98 = sp68, spA0 = *(f64*)((u8*)&sp68 + 8), spA8 = *(f64*)((u8*)&sp68 + 16), spB0 = *(f64*)((u8*)&sp68 + 24), spB8 = *(f64*)((u8*)&sp68 + 32), spC0 = *(f64*)((u8*)&sp68 + 40), ((fn_8005D234(var_r26, (WPADGameInfo*)&sp98) == 0) != 0))) {
+                    temp_r30_3 = OSDisableInterrupts();
+                    OSDisableInterrupts();
+                    var_r22_2 = *(u8*)((u8*)temp_r29 + 0x161) - *(u8*)((u8*)temp_r29 + 0x160);
+                    if (var_r22_2 < 0) {
+                        var_r22_2 += *(s32*)((u8*)temp_r29 + 0x168);
+                    }
+                    OSRestoreInterrupts(0);
+                    if (var_r22_2 == 0) {
+                        OSRestoreInterrupts(temp_r30_3);
+                    } else {
+                        memset((void *)(*(s32*)((u8*)temp_r29 + 0x164) + ((s8)*(u8*)((u8*)temp_r29 + 0x160) * 0x30)), 0, 0x30);
+                        temp_r0_2 = *(u8*)((u8*)temp_r29 + 0x160);
+                        temp_r4_3 = *(s32*)((u8*)temp_r29 + 0x168) - 1;
+                        temp_r5_2 = (s8) temp_r0_2 - temp_r4_3;
+                        temp_r4_4 = (s32) ~(temp_r5_2 | (temp_r4_3 - (s8) temp_r0_2)) >> 0x1F;
+                        *(u8*)((u8*)temp_r29 + 0x160) = (u8) (((s8) temp_r0_2 + 1) & ~temp_r4_4);
+                        OSRestoreInterrupts(temp_r30_3);
+                    }
+                    var_r0_3 = 1;
+                } else {
+                    goto block_33;
+                }
+            } else {
+block_33:
+                var_r0_3 = 0;
+            }
+            temp_r29_2 = *var_r28;
+            if (*(s32*)((u8*)temp_r29_2 + 0x7FC) != -1) {
+                if ((s32) (var_r25 | var_r0_3) != 1) {
+                    OSDisableInterrupts();
+                    var_r22_3 = *(u8*)((u8*)temp_r29_2 + 0x161) - *(u8*)((u8*)temp_r29_2 + 0x160);
+                    if (var_r22_3 < 0) {
+                        var_r22_3 += *(s32*)((u8*)temp_r29_2 + 0x168);
+                    }
+                    OSRestoreInterrupts(0);
+                    if (var_r22_3 > 0) {
+                        goto block_39;
+                    }
+                    if ((u8) *var_r27 == 5) {
+                        sp22 = 1;
+                        temp_r5_3 = *var_r28;
+                        sp34 = 0;
+                        *(s32*)((u8*)temp_r5_3 + 0x810) = 0;
+                        sp8 = 0x10;
+                        spC = 0;
+                        sp40 = *(f64*)((u8*)&sp8 + 8);
+                        sp38 = *(f64*)&sp8;
+                        sp48 = *(f64*)((u8*)&sp8 + 16);
+                        sp50 = *(f64*)((u8*)&sp8 + 24);
+                        sp58 = *(f64*)((u8*)&sp8 + 32);
+                        sp60 = *(f64*)((u8*)&sp8 + 40);
+                        fn_80063324(var_r26, (WPADGameInfo*)&sp38);
+                    }
+                } else {
+block_39:
+                    *(s32*)((u8*)*var_r28 + 0x810) = 0;
+                }
+                if (*(s32*)((u8*)*var_r28 + 0x810) != 0) {
+                    var_r0_4 = *var_r27 + 1;
+                } else {
+                    var_r0_4 = 0;
+                }
+                *var_r27 = var_r0_4;
+            }
+            if ((u8) lbl_8055DBFC == 5) {
+                fn_8005E09C(var_r26);
+            }
+            if ((u16) lbl_8055DBFA == 0xA) {
+                WPADiRadioSensitivity(var_r26);
+            }
+            var_r26 += 1;
+            var_r27 += 1;
+            var_r28 += 1;
+        } while (var_r26 < 4);
+        if ((u16) lbl_8055DBFE == 0xEA60) {
+            DCInvalidateRange((void *)0x800031A2, 1);
+            DBPrintf_80068D68(lbl_80312140, *(u8 *)0x800031A2);
+            if ((s8) lbl_8055DC04 != (s32) *(u8 *)0x800031A2) {
+                OSDisableInterrupts();
+                lbl_8055DC04 = *(u8 *)0x800031A2;
+                OSRestoreInterrupts(0);
+                WUDSetDisableChannel((s8) lbl_8055DC04);
+            }
+        }
+        lbl_8055DBFA = (lbl_8055DBFA + 1) & ~((s32) ~((lbl_8055DBFA - 0xA) | (0xA - lbl_8055DBFA)) >> 0x1F);
+        lbl_8055DBFC = (lbl_8055DBFC + 1) & ~((s32) ~((lbl_8055DBFC - 5) | (5 - lbl_8055DBFC)) >> 0x1F);
+        lbl_8055DBFD = (lbl_8055DBFD + 1) & ~((s32) ~((lbl_8055DBFD - 5) | (5 - lbl_8055DBFD)) >> 0x1F);
+        lbl_8055DBFE = (lbl_8055DBFE + 1) & ~((s32) ~((lbl_8055DBFE - 0xEA60) | (0xEA60 - lbl_8055DBFE)) >> 0x1F);
+        if (((s32) lbl_8055DC11 != 0) && (SCCheckStatus() == 0) && (SCSetBtDeviceInfoArray(&_scArray) == 1)) {
+            SCFlushAsync(0);
+            lbl_8055DC11 = 0;
+        }
+        if (((s32) lbl_8055DC06 != 0) && (SCCheckStatus() == 0)) {
+            var_r0_5 = SCGetBtDpdSensibility();
+            if (var_r0_5 < 1U) {
+                var_r0_5 = 1;
+            }
+            if (var_r0_5 > 5U) {
+                var_r0_5 = 5;
+            }
+            lbl_8055DC19 = var_r0_5;
+            temp_r3 = SCGetWpadSensorBarPosition();
+            lbl_8055DC18 = (temp_r3 - 1) == 0;
+            temp_r3_2 = SCGetWpadMotorMode();
+            lbl_8055DC14 = (void*)((temp_r3_2 - 1) == 0);
+            var_r3 = SCGetWpadSpeakerVolume();
+            if (var_r3 > 0x7FU) {
+                var_r3 = 0x7F;
+            }
+            lbl_8055DC12 = var_r3;
+            lbl_8055DC06 = 0;
+        }
+        BTA_HhGetAclQueueInfo();
+    }
 }
 
 static void CheckButtonCombination(s32 chan) {
