@@ -249,19 +249,26 @@ extern "C" void fn_801D0934(void *arg0) {
 #pragma cplusplus reset
 
 #pragma cplusplus on
-extern "C" void fn_801D09A8(void *arg0, void *arg1) {
-    struct Dummy {
+/* Notify every listener in the second listener list (lbl_8043870C): call virtual
+ * slot 2 of each entry's dispatch sub-object with the notifier's own sub-object
+ * and the vehicle's slot in the per-object table.  fn_801AD7C4 does this for a
+ * truck whose scene-object tag is one of the four soevent vehicles, passing its
+ * own +0x23C sub-object and the object's record index (+0x1EC).  This is the
+ * third of the four walkers of this list -- fn_801D08C0, fn_801D0934, this one
+ * and fn_801D0A24 run virtual slots 0, 1, 2 and 3 of every entry. */
+extern "C" void fn_801D09A8(void *notifier, void *eventData) {
+    struct Listener {
         virtual void f0();
         virtual void f1();
-        virtual void f2(void *, void *);
+        virtual void onEvent(void *, void *);
     };
     int offset;
     int i;
     i = 0;
     offset = 0;
     while (i < lbl_8043870C[0].count) {
-        void *obj = *(void **)((char *)lbl_8043870C[0].items + offset);
-        ((Dummy *)obj)->f2(arg0, arg1);
+        void *listener = *(void **)((char *)lbl_8043870C[0].items + offset);
+        ((Listener *)listener)->onEvent(notifier, eventData);
         offset += 4;
         i++;
     }
