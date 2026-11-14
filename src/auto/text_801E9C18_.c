@@ -14,6 +14,7 @@ extern int lbl_8055EB00;
 extern float lbl_80562E24;
 #pragma scheduling invalid_target
 void fn_801E9C18(void) {
+    /* Initializes the subsystem state: clears/reset state, sets default parameters, creates 4 fixed-size entries in the pool, and initializes the related object. */
     fn_8000D838(&lbl_8055EAF0);
     lbl_8055EAF8 = 0xFFFF0000;
     lbl_8055EAFC = lbl_80562E24;
