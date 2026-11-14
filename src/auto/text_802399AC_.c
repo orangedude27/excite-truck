@@ -693,6 +693,7 @@ void fn_8023B0BC(void *arg0) {
     fn_8022BAD0(0xC9, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
+
 #pragma push
 #pragma cplusplus on
 extern "C" s32 fn_80214D04(void);
