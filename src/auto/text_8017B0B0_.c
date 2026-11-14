@@ -1093,18 +1093,18 @@ extern void fn_801B63E0(unsigned int, void *);
 void fn_8017D0C8(void *phob) {
     struct MutablePhob {
         float _0x0[11];
-        float boundRadius;  /* at 0x2C: bounding radius */
+        float boundRadius;    /* at 0x2C: bounding radius */
         float _0x30[12];
-        float position[3];  /* at 0x60: world X, Y, Z (matrix translation) */
+        float position[3];    /* at 0x60: world X, Y, Z (matrix translation) */
         char _0x6C[0x118];
-        void *phobList;     /* at 0x184: phoblist this phob is linked into */
+        unsigned int phobList; /* at 0x184: phoblist head this phob is in */
     };
     struct MutablePhob *self = (struct MutablePhob *)phob;
     unsigned int list = fn_801B60F4(self->position, self->boundRadius);
-    unsigned int oldList = *(unsigned int *)((char *)phob + 0x184);
+    unsigned int oldList = self->phobList;
     if (list != oldList) {
         if (oldList != 0) fn_801B6428(oldList, phob);
-        *(unsigned int *)((char *)phob + 0x184) = list;
+        self->phobList = list;
         if (list != 0) fn_801B63E0(list, phob);
     }
 }
