@@ -2416,16 +2416,18 @@ extern "C" void fn_80148DFC(void *arg0) {
 
 extern "C" void fn_80148E6C(void *);
 extern "C" void fn_80148E6C(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != NULL) {
-        if (p != NULL) {
-            fn_80128670(((s32 *)p)[3]);
-            if (p != NULL) {
-                ((s32 *)p)[0] = 0;
-                ((s32 *)p)[1] = 0;
-                ((s32 *)p)[2] = 0;
+    /* Release the object stored at *arg0: free its resource handle, clear its
+       header fields, free the object, and null the slot. */
+    void *object = *(void **)arg0;
+    if (object != NULL) {
+        if (object != NULL) {
+            fn_80128670(((s32 *)object)[3]);
+            if (object != NULL) {
+                ((s32 *)object)[0] = 0;
+                ((s32 *)object)[1] = 0;
+                ((s32 *)object)[2] = 0;
             }
-            fn_80128668(p);
+            fn_80128668(object);
         }
         *(void **)arg0 = NULL;
     }
