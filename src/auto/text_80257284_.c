@@ -50,7 +50,7 @@ public:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80257284(void) {
-    // Fix note: keep the record label live while loading the two menu tables, matching target register pressure.
+    // Fix note: set descriptor fields in target order and keep the global menu table addresses explicit.
     typedef struct { int v[5]; } Header;
     typedef struct { int label; int type; int value; int flags; int id; } Entry;
     typedef struct { Header header; Entry entries[9]; int object[0x74]; } Frame;
@@ -103,7 +103,6 @@ void fn_80257284(void) {
     result = fn_8000DB34();
     frame.entries[5].value = result;
 
-    arg_label = (int)&lbl_80344CD4;
     table = (int *)((char *)&lbl_802FA5E0 - 4);
     frame.header.v[0] = *++table;
     frame.header.v[1] = (int)frame.entries;
@@ -111,6 +110,7 @@ void fn_80257284(void) {
     frame.header.v[3] = table[3];
     frame.header.v[4] = table[4];
 
+    arg_label = (int)&lbl_80344CD4;
     number = 3;
     six = 6;
     setting = (int)&lbl_8055B860;
@@ -159,8 +159,39 @@ void *fn_80257470(void *arg0) {
 }
 #pragma scheduling on
 
-int fn_802574E0(int arg0, int arg1) { int temp_r3; if (arg0 != 0) { temp_r3 = arg0 + 0x18C; if (temp_r3 != 0) fn_8022D7C4(temp_r3, 0); fn_8022D7C4(arg0 + 0x54, -1); fn_8022D7C4(arg0 + 0x1C, -1); if (arg1 > 0) fn_80128668(arg0); } return arg0; }
+/* Destructor of the profile/record selector the menu of fn_80257284 builds on
+   its stack (vtable lbl_80344CF0): clear the three UITables the object owns -
+   the profile list, the records of the profile selected in it, and the
+   seven-row value list of the record selected there - and free the object
+   itself only when the deleting flag is set (the caller above passes -1, it
+   sits on the stack). */
+int fn_802574E0(int self, int deletingFlag) {
+    /* The object's three UITables, by offset; fn_80257470 builds them. */
+    enum {
+        PROFILE_TABLE = 0x1C, /* the profiles by name (fn_80257558) */
+        RECORD_TABLE = 0x54,  /* the records of the selected profile */
+        VALUE_TABLE = 0x18C   /* the selected record's seven values (fn_80257A8C) */
+    };
+    int valueTable;
+    #define Table_dtor     fn_8022D7C4
+    #define Mem_freeObject fn_80128668
 
+    if (self != 0) {
+        valueTable = self + VALUE_TABLE;
+        if (valueTable != 0) {
+            Table_dtor(valueTable, 0);
+        }
+        Table_dtor(self + RECORD_TABLE, -1);
+        Table_dtor(self + PROFILE_TABLE, -1);
+        if (deletingFlag > 0) {
+            Mem_freeObject(self);
+        }
+    }
+
+    #undef Table_dtor
+    #undef Mem_freeObject
+    return self;
+}
 #pragma cplusplus on
 extern "C" void fn_80257558(void *arg0, void *arg1) {
     int outer;
@@ -171,7 +202,6 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
     int count;
     void *entry;
     char *candidate;
-
     *(int *)((char *)arg0 + 0x18) = 0;
     outer = 0;
     while (outer < fn_80012818()) {
