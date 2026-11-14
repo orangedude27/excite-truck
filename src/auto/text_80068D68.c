@@ -15894,7 +15894,9 @@ s32 btsnd_hcic_inq_cancel_80085850(void) {
     return 1;
 }
 
-s32 btsnd_hcic_auth_request_800858B0(u16 arg0) {
+/* Builds and sends an HCI_Get_Link_Quality command (opcode 0x1403,
+   btsnd_hcic_get_link_quality) for the given ACL connection handle. */
+s32 btsnd_hcic_auth_request_800858B0(u16 handle) {
     u8 *p = GKI_getpoolbuf(2);
     if (p == 0) return 0;
     *(s16 *)(p + 2) = 5;
@@ -15902,8 +15904,8 @@ s32 btsnd_hcic_auth_request_800858B0(u16 arg0) {
     p[8] = 3;
     p[9] = 0x14;
     p[10] = 2;
-    p[11] = (u8)arg0;
-    p[12] = (u8)(arg0 >> 8);
+    p[11] = (u8)handle;
+    p[12] = (u8)(handle >> 8);
     btu_hcif_send_cmd();
     return 1;
 }
