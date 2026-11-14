@@ -1120,15 +1120,15 @@ extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
 
 extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     const char *msg = lbl_80320560;
-    f32 savedY;
-    u16 *buf;
-    s32 len;
-    SoundEntry60 tmp;
     f64 posD;
+    u16 *buf;
+    int len;
+    register SoundEntry60 tmp;
+    f32 savedY;
     u64 raw;
     f32 fa, fb;
     s32 sel;
-    f32 z = lbl_80560ED0;
+    register f32 z = lbl_80560ED0;
 
     arg0[0] = z;
     arg0[1] = z;
@@ -1161,10 +1161,10 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     ((u8 *)&tmp)[28] = ((u8 *)arg2)[28]; ((u8 *)&tmp)[29] = ((u8 *)arg2)[29];
     ((u8 *)&tmp)[30] = ((u8 *)arg2)[30]; ((u8 *)&tmp)[31] = ((u8 *)arg2)[31];
     tmp.w[0] = ((s32 *)arg2)[8];
-    { s32 t0 = ((s32 *)arg2)[9]; s32 t1 = ((s32 *)arg2)[10]; tmp.w[1] = t0; tmp.w[2] = t1; }
-    { s32 t0 = ((s32 *)arg2)[11]; s32 t1 = ((s32 *)arg2)[12]; tmp.w[3] = t0; tmp.w[4] = t1; }
+    { s32 u1 = ((s32 *)arg2)[10]; s32 u0 = ((s32 *)arg2)[9]; tmp.w[2] = u1; tmp.w[1] = u0; }
+    { s32 u1 = ((s32 *)arg2)[12]; s32 u0 = ((s32 *)arg2)[11]; tmp.w[4] = u1; tmp.w[3] = u0; }
     tmp.w[5] = ((s32 *)arg2)[13];
-    { s32 t0 = ((s32 *)arg2)[14]; s32 t1 = ((s32 *)arg2)[15]; tmp.w[6] = t0; tmp.w[7] = t1; }
+    { s32 u1 = ((s32 *)arg2)[15]; s32 u0 = ((s32 *)arg2)[14]; tmp.w[7] = u1; tmp.w[6] = u0; }
     tmp.c[0] = ((u8 *)arg2)[0x40]; tmp.c[1] = ((u8 *)arg2)[0x41];
     tmp.c[2] = ((u8 *)arg2)[0x42]; tmp.c[3] = ((u8 *)arg2)[0x43];
     tmp.f0 = ((f32 *)arg2)[0x11]; tmp.i0 = ((s32 *)arg2)[0x12];
@@ -1190,10 +1190,10 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
         f32 w = arg0[2] - arg0[0];
         f32 ny = ((f32 *)&posD)[1] + (*(f32 *)(arg1 + 0x50) - h) * fb;
         f32 nx = ((f32 *)&posD)[0] + (*(f32 *)(arg1 + 0x4C) - w) * fa;
-        arg0[1] = ny;
         arg0[0] = nx;
-        arg0[3] = ny + h;
+        arg0[1] = ny;
         arg0[2] = nx + w;
+        arg0[3] = ny + h;
     }
 }
 
@@ -1209,34 +1209,40 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
     u32 var_r29 = (u32)arg2;
     const char *msg = lbl_80320560;
     {
-        s32 a5 = 1, a4 = 1, a3 = 1, a2 = 1, a1 = 1, a0 = 1;
-        if ((((u32)arg1 & 0xFF000000) != 0x80000000) && (((u32)arg1 & 0xFF800000) != 0x81000000)) a5 = 0;
-        if ((a5 == 0) && (((u32)arg1 & 0xF8000000) != 0x90000000)) a4 = 0;
-        if ((a4 == 0) && (((u32)arg1 & 0xFF000000) != 0xC0000000)) a3 = 0;
-        if ((a3 == 0) && (((u32)arg1 & 0xFF800000) != 0xC1000000)) a2 = 0;
-        if ((a2 == 0) && (((u32)arg1 & 0xF8000000) != 0xD0000000)) a1 = 0;
-        if ((a1 == 0) && (((u32)arg1 & 0xFFFFC000) != 0xE0000000)) a0 = 0;
-        if (a0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDA, msg + 0x194, arg1);
+        u32 p = (u32)arg1;
+        s32 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1;
+        u32 hi = p & 0xFF000000;
+        if ((hi != 0x80000000U) && ((p & 0xFF800000) != 0x81000000U)) c5 = 0;
+        if ((!c5) && ((p & 0xF8000000) != 0x90000000U)) c4 = 0;
+        if ((!c4) && (hi != 0xC0000000U)) c3 = 0;
+        if ((!c3) && ((p & 0xFF800000) != 0xC1000000U)) c2 = 0;
+        if ((!c2) && ((p & 0xF8000000) != 0xD0000000U)) c1 = 0;
+        if ((!c1) && ((p & 0xFFFFC000) != 0xE0000000U)) c0 = 0;
+        if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDA, msg + 0x194, arg1);
     }
-{
-        s32 b5 = 1, b4 = 1, b3 = 1, b2 = 1, b1 = 1, b0 = 1;
-        if ((((u32)arg0 & 0xFF000000) != 0x80000000) && (((u32)arg0 & 0xFF800000) != 0x81000000)) b5 = 0;
-        if ((b5 == 0) && (((u32)arg0 & 0xF8000000) != 0x90000000)) b4 = 0;
-        if ((b4 == 0) && (((u32)arg0 & 0xFF000000) != 0xC0000000)) b3 = 0;
-        if ((b3 == 0) && (((u32)arg0 & 0xFF800000) != 0xC1000000)) b2 = 0;
-        if ((b2 == 0) && (((u32)arg0 & 0xF8000000) != 0xD0000000)) b1 = 0;
-        if ((b1 == 0) && (((u32)arg0 & 0xFFFFC000) != 0xE0000000)) b0 = 0;
-        if (b0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDB, msg + 0x240, arg0);
+    {
+        u32 p = (u32)arg0;
+        s32 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1;
+        u32 hi = p & 0xFF000000;
+        if ((hi != 0x80000000U) && ((p & 0xFF800000) != 0x81000000U)) c5 = 0;
+        if ((!c5) && ((p & 0xF8000000) != 0x90000000U)) c4 = 0;
+        if ((!c4) && (hi != 0xC0000000U)) c3 = 0;
+        if ((!c3) && ((p & 0xFF800000) != 0xC1000000U)) c2 = 0;
+        if ((!c2) && ((p & 0xF8000000) != 0xD0000000U)) c1 = 0;
+        if ((!c1) && ((p & 0xFFFFC000) != 0xE0000000U)) c0 = 0;
+        if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDB, msg + 0x240, arg0);
     }
-{
-        s32 c5 = 1, c4 = 1, c3 = 1, c2 = 1, c1 = 1, c0 = 1;
-        if ((((u32)arg2 & 0xFF000000) != 0x80000000) && (((u32)arg2 & 0xFF800000) != 0x81000000)) c5 = 0;
-        if ((c5 == 0) && (((u32)arg2 & 0xF8000000) != 0x90000000)) c4 = 0;
-        if ((c4 == 0) && (((u32)arg2 & 0xFF000000) != 0xC0000000)) c3 = 0;
-        if ((c3 == 0) && (((u32)arg2 & 0xFF800000) != 0xC1000000)) c2 = 0;
-        if ((c2 == 0) && (((u32)arg2 & 0xF8000000) != 0xD0000000)) c1 = 0;
-        if ((c1 == 0) && (((u32)arg2 & 0xFFFFC000) != 0xE0000000)) c0 = 0;
-        if (c0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDC, msg + 0x1D0, arg2);
+    {
+        u32 p = (u32)arg2;
+        s32 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1;
+        u32 hi = p & 0xFF000000;
+        if ((hi != 0x80000000U) && ((p & 0xFF800000) != 0x81000000U)) c5 = 0;
+        if ((!c5) && ((p & 0xF8000000) != 0x90000000U)) c4 = 0;
+        if ((!c4) && (hi != 0xC0000000U)) c3 = 0;
+        if ((!c3) && ((p & 0xFF800000) != 0xC1000000U)) c2 = 0;
+        if ((!c2) && ((p & 0xF8000000) != 0xD0000000U)) c1 = 0;
+        if ((!c1) && ((p & 0xFFFFC000) != 0xE0000000U)) c0 = 0;
+        if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDC, msg + 0x1D0, arg2);
     }
     if (var_r30 < 0) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDD, msg + 0x208, var_r30, 0);
