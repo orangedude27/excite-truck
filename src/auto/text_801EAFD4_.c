@@ -645,6 +645,7 @@ void fn_801EBC70(void) {
 }
 
 #pragma cplusplus on
+/* If the global subsystem object exists, invoke virtual method v5() on each of the 24 entries in lbl_804885E8. */
 extern "C" void fn_801EBCAC(void) {
     class Entry {
     public:
