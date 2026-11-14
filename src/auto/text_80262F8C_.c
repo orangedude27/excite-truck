@@ -138,16 +138,18 @@ extern f32 lbl_80563BE8;
 extern f32 lbl_80563BEC;
 extern s32 fn_802E2C20(void);
 extern s32 fn_802E8528(s32, f32, f32);
-void *fn_80263740(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(const u8 **)arg0 = lbl_80346120;
-            fn_802328D4(*(s32 *)((u8 *)arg0 + 0x18));
-            *(s32 *)((u8 *)arg0 + 0x18) = 0;
+/* Destroys this object: installs its vtable, releases the owned resource at +0x18,
+ * clears it, and optionally deletes the object; returns this. */
+void *fn_80263740(void *this, s32 deleting) {
+    if (this != 0) {
+        if (this != 0) {
+            *(const u8 **)this = lbl_80346120;
+            fn_802328D4(*(s32 *)((u8 *)this + 0x18));
+            *(s32 *)((u8 *)this + 0x18) = 0;
         }
-        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+        if (deleting > 0) ((s32 (*)(void *))fn_80128668)(this);
     }
-    return arg0;
+    return this;
 }
 
 void *fn_802637B0(void *arg0, s32 arg1) {
