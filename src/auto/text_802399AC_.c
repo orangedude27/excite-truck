@@ -649,7 +649,8 @@ void fn_8023B050(void) {}
 #pragma push
 #pragma cplusplus on
 extern "C" s32 fn_80214D04(void);
-extern "C" void fn_8023B054(void *arg0) {
+/* Updates this object's mode flag from the current device state unless the global handler reports busy. */
+extern "C" void fn_8023B054(void *obj) {
     struct Dummy {
         virtual s32 f0();
         virtual s32 f1();
@@ -678,10 +679,10 @@ extern "C" void fn_8023B054(void *arg0) {
     if (((Dummy *)lbl_8055F10C)->f22() == 0) {
         switch (fn_80214D04()) {
         case 1:
-            *(s32 *)((char *)arg0 + 0x18) = 1;
+            *(s32 *)((char *)obj + 0x18) = 1;
             break;
         default:
-            *(s32 *)((char *)arg0 + 0x18) = 0;
+            *(s32 *)((char *)obj + 0x18) = 0;
             break;
         }
     }
