@@ -32,6 +32,22 @@ static u8 lbl_80558FCA = 0xFF;
 static u32 lbl_80558FCC = 0xFF;
 static u8 lbl_80558FD0[8] = { 0xFF };
 
+// VBI signalling bytes the SDK keeps a copy of, and pushes to the GPU over I2C
+// (slave 0xE0) from the retrace interrupt when their bit in the pending-write
+// mask lbl_8055DBE0 is set: CGMS (packet 5), WSS (packet 8), closed caption
+// (packet 0x7A).
+#define CGMS_W lbl_80558FC0 // CGMS widescreen system, 2 bits
+#define CGMS_B lbl_80558FC1 // CGMS broadcast flag, 4 bits
+#define CGMS_O lbl_80558FC2 // CGMS content source/type, 8 bits
+#define WSS_P lbl_80558FC3  // WSS picture format
+#define WSS_A lbl_80558FC4  // WSS active format
+#define WSS_S lbl_80558FC5  // WSS 35mm letterbox
+#define WSS_C lbl_80558FC6  // WSS colour format
+#define CC0 lbl_80558FC7    // closed caption bytes 0-3, 7 bits each
+#define CC1 lbl_80558FC8
+#define CC2 lbl_80558FC9
+#define CC3 lbl_80558FCA
+
 #define viI2cSdaNonInverted (lbl_80558FB8[0])
 
 // Forward declarations
