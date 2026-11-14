@@ -17012,8 +17012,8 @@ extern "C" const s8 lbl_802F44D8[];
 #pragma push
 #pragma use_lmw_stmw on
 extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16 *prev, s16 *out2, s16 frameBits, s16 index, s16 *keep, s8 pass, u8 row, s16 *outA, s16 *outB, s16 *outC, s16 *outD, s16 *outE) {
+#define ROWS ((s16 (*)[3])out2)
     Fn800C08A8Context *ctx = (Fn800C08A8Context *)arg0;
-    s16 (*rows)[3] = (s16 (*)[3])out2;
     s32 i;
     s32 j;
     s32 k;
@@ -17030,16 +17030,13 @@ extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16
     s32 half;
     s32 rem;
     s8 m;
-    s8 e1;
-    s8 e2;
-    s8 e3;
-    s8 e4;
+    s8 end;
 
     if (*(s32 *)((u8 *)arg0 + 4) == 0) {
-        ctx->bitIndex = ctx->limit;
-        ctx->limit += frameBits;
         bitsA = lbl_802F44C8[index];
         bitsB = lbl_802F44D8[index];
+        ctx->bitIndex = ctx->limit;
+        ctx->limit += frameBits;
         *outA = 0;
         if (flags & 7) {
             if (flags & 6) {
@@ -17094,27 +17091,27 @@ extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16
             for (i = 0; i < 8; i++) {
                 out[i] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
             }
-            for (j = 3; j < 6; j++) {
-                for (k = 0; k < 3; k++) {
-                    rows[j][k] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
+            for (k = 3; k < 6; k++) {
+                for (j = 0; j < 3; j++) {
+                    ROWS[k][j] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
                 }
             }
-            for (j = 6; j < 12; j++) {
-                for (k = 0; k < 3; k++) {
-                    rows[j][k] = fn_800BDEB4(data, bitsB, &ctx->bitIndex);
+            for (k = 6; k < 12; k++) {
+                for (j = 0; j < 3; j++) {
+                    ROWS[k][j] = fn_800BDEB4(data, bitsB, &ctx->bitIndex);
                 }
             }
         } else if (flags & 0x10) {
             *outB = 8;
             *outC = 0x24;
-            for (j = 0; j < 6; j++) {
-                for (k = 0; k < 3; k++) {
-                    rows[j][k] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
+            for (k = 0; k < 6; k++) {
+                for (j = 0; j < 3; j++) {
+                    ROWS[k][j] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
                 }
             }
-            for (j = 6; j < 12; j++) {
-                for (k = 0; k < 3; k++) {
-                    rows[j][k] = fn_800BDEB4(data, bitsB, &ctx->bitIndex);
+            for (k = 6; k < 12; k++) {
+                for (j = 0; j < 3; j++) {
+                    ROWS[k][j] = fn_800BDEB4(data, bitsB, &ctx->bitIndex);
                 }
             }
         }
@@ -17215,7 +17212,7 @@ extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16
                 }
             }
             if (half >= 180 && half < 244) {
-                b0 = ((half - 180) >> 4) & 3;
+                b0 = ((half - 180) & 0x30) >> 4;
                 b1 = ((half - 180) & 0xF) >> 2;
                 b2 = (half - 180) & 3;
                 b3 = 0;
@@ -17265,12 +17262,12 @@ extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16
                 }
             }
         }
-        for (i = 0; i < 21; i++) {
-            out[i] = 0;
+        for (m = 0; m < 21; m++) {
+            out[m] = 0;
         }
-        for (j = 0; j < 12; j++) {
+        for (m = 0; m < 12; m++) {
             for (k = 0; k < 3; k++) {
-                rows[j][k] = 0;
+                ROWS[m][k] = 0;
             }
         }
         ctx->bitIndex = ctx->limit;
@@ -17283,55 +17280,55 @@ extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16
                 for (i = 0; i < 6; i++) {
                     out[i] = fn_800BDEB4(data, b0, &ctx->bitIndex);
                 }
-                e1 = (n0 - 6) / 3 + 3;
-                for (m = 3; m < e1; m++) {
+                end = (n0 - 6) / 3 + 3;
+                for (m = 3; m < end; m++) {
                     for (k = 0; k < 3; k++) {
-                        rows[m][k] = fn_800BDEB4(data, b0, &ctx->bitIndex);
+                        ROWS[m][k] = fn_800BDEB4(data, b0, &ctx->bitIndex);
                     }
                 }
-                e2 = (n0 - 6 + n1) / 3 + 3;
-                for (m = e1; m < e2; m++) {
+                end = (n0 - 6 + n1) / 3 + 3;
+                for (m = (n0 - 6) / 3 + 3; m < end; m++) {
                     for (k = 0; k < 3; k++) {
-                        rows[m][k] = fn_800BDEB4(data, b1, &ctx->bitIndex);
+                        ROWS[m][k] = fn_800BDEB4(data, b1, &ctx->bitIndex);
                     }
                 }
-                e3 = (n2 + (n0 - 6 + n1)) / 3 + 3;
-                for (m = e2; m < e3; m++) {
+                end = (n0 - 6 + n1 + n2) / 3 + 3;
+                for (m = (n0 - 6 + n1) / 3 + 3; m < end; m++) {
                     for (k = 0; k < 3; k++) {
-                        rows[m][k] = fn_800BDEB4(data, b2, &ctx->bitIndex);
+                        ROWS[m][k] = fn_800BDEB4(data, b2, &ctx->bitIndex);
                     }
                 }
-                e4 = (n3 + (n2 + (n0 - 6 + n1))) / 3 + 3;
-                for (m = e3; m < e4; m++) {
+                end = (n0 - 6 + n1 + n2 + n3) / 3 + 3;
+                for (m = (n0 - 6 + n1 + n2) / 3 + 3; m < end; m++) {
                     for (k = 0; k < 3; k++) {
-                        rows[m][k] = fn_800BDEB4(data, b3, &ctx->bitIndex);
+                        ROWS[m][k] = fn_800BDEB4(data, b3, &ctx->bitIndex);
                     }
                 }
             } else {
                 *outB = 8;
                 *outC = 0x24;
-                e1 = n0 / 3;
-                for (m = 0; m < e1; m++) {
+                end = n0 / 3;
+                for (m = 0; m < end; m++) {
                     for (k = 0; k < 3; k++) {
-                        rows[m][k] = fn_800BDEB4(data, b0, &ctx->bitIndex);
+                        ROWS[m][k] = fn_800BDEB4(data, b0, &ctx->bitIndex);
                     }
                 }
-                e2 = (n0 + n1) / 3;
-                for (m = e1; m < e2; m++) {
+                end = (n0 + n1) / 3;
+                for (m = n0 / 3; m < end; m++) {
                     for (k = 0; k < 3; k++) {
-                        rows[m][k] = fn_800BDEB4(data, b1, &ctx->bitIndex);
+                        ROWS[m][k] = fn_800BDEB4(data, b1, &ctx->bitIndex);
                     }
                 }
-                e3 = (n2 + (n0 + n1)) / 3;
-                for (m = e2; m < e3; m++) {
+                end = (n0 + n1 + n2) / 3;
+                for (m = (n0 + n1) / 3; m < end; m++) {
                     for (k = 0; k < 3; k++) {
-                        rows[m][k] = fn_800BDEB4(data, b2, &ctx->bitIndex);
+                        ROWS[m][k] = fn_800BDEB4(data, b2, &ctx->bitIndex);
                     }
                 }
-                e4 = (n3 + (n2 + (n0 + n1))) / 3;
-                for (m = e3; m < e4; m++) {
+                end = (n0 + n1 + n2 + n3) / 3;
+                for (m = (n0 + n1 + n2) / 3; m < end; m++) {
                     for (k = 0; k < 3; k++) {
-                        rows[m][k] = fn_800BDEB4(data, b3, &ctx->bitIndex);
+                        ROWS[m][k] = fn_800BDEB4(data, b3, &ctx->bitIndex);
                     }
                 }
             }
@@ -17343,21 +17340,23 @@ extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16
             for (m = 0; m < n0; m++) {
                 out[m] = fn_800BDEB4(data, b0, &ctx->bitIndex);
             }
-            e1 = n0 + n1;
-            for (m = n0; m < e1; m++) {
+            end = n0 + n1;
+            for (m = n0; m < end; m++) {
                 out[m] = fn_800BDEB4(data, b1, &ctx->bitIndex);
             }
-            e2 = e1 + n2;
-            for (m = e1; m < e2; m++) {
-                out[m] = fn_800BDEB4(data, b2, &ctx->bitIndex);
+            end = n0 + n1;
+            m = end + n2;
+            for (; end < m; end++) {
+                out[end] = fn_800BDEB4(data, b2, &ctx->bitIndex);
             }
-            e3 = n2 + (n0 + n1);
-            e4 = e3 + n3;
-            for (m = e3; m < e4; m++) {
+            m = n0 + n1 + n2;
+            end = m + n3;
+            for (; m < end; m++) {
                 out[m] = fn_800BDEB4(data, b3, &ctx->bitIndex);
             }
         }
     }
+#undef ROWS
 }
 #pragma pop
 
