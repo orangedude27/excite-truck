@@ -409,14 +409,18 @@ void fn_8017F718(void *arg0) {
     }
 #pragma pop
     fn_802E8524(v->flag5C, v->axStackHead);
-    keys1[0] = *lbl_802F9530;
-    keys1[1] = *(lbl_802F9530 + 1);
-    keys1[2] = *(lbl_802F9530 + 2);
-    keys1[3] = *(lbl_802F9530 + 3);
-    keys2[0] = *lbl_802F9540;
-    keys2[1] = *(lbl_802F9540 + 1);
-    keys2[2] = *(lbl_802F9540 + 2);
-    keys2[3] = *(lbl_802F9540 + 3);
+    {
+        register int *p1 = lbl_802F9530;
+        register int *p2 = lbl_802F9540;
+        keys1[0] = *p1++;
+        keys1[1] = *p1++;
+        keys1[2] = *p1++;
+        keys1[3] = *p1;
+        keys2[0] = *p2++;
+        keys2[1] = *p2++;
+        keys2[2] = *p2++;
+        keys2[3] = *p2;
+    }
     slot = (int *)((char *)v + 0x2CC);
     for (i = 0; i < 4; i++, slot += 4) {
         fn_801A7DFC(keys1[i], keys2[i], v->soundId);
@@ -544,6 +548,330 @@ int fn_8017FEE4(void *arg0) {
     return result;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void fn_8017FF4C(f32 dt) {
+    struct {
+        u8 pad00[0x50];
+        u32 flags;
+        u8 pad54[0x1C];
+    } info;
+    u8 flagB;
+    u8 flagA;
+    struct Di718 **ptr;
+    struct Di718 *v;
+    s32 i;
+
+    if ((u8)lbl_8055E4B8 == 0) {
+        return;
+    }
+    if (fn_801769F8() == 0 && fn_801B526C() == 0) {
+        f32 k78;
+        f32 k70;
+        f32 k6C;
+        f32 k64;
+        f32 k68;
+        f32 k5C;
+        f32 minusOne;
+        f32 one;
+        f32 zero;
+        f32 k50;
+        f32 k54;
+        fn_801A7844(1);
+        zero = lbl_80561C4C;
+        k70 = lbl_80561C70;
+        k6C = lbl_80561C6C;
+        k68 = lbl_80561C68;
+        k64 = lbl_80561C64;
+        k5C = lbl_80561C5C;
+        k54 = lbl_80561C54;
+        k50 = lbl_80561C50;
+        one = lbl_80561C48;
+        minusOne = lbl_80561C58;
+        k78 = lbl_80561C78;
+        ptr = (struct Di718 **)lbl_804348D8;
+        for (i = 0; i < 4; i++, ptr++) {
+            s32 pad;
+            struct Di718Slot *slot;
+            struct Di718Slot *slot2;
+            s32 gear;
+            struct Di718Slot *gearSlot;
+
+            v = *ptr;
+            if (v == NULL) {
+                continue;
+            }
+            if (v->axStackHead != __AXGetStackHead_80137CFC(v->index)) {
+                fn_802E30C8(lbl_80332280, v->index);
+                fn_8017F718(v);
+            }
+            flagA = v->pad345[0];
+            flagB = v->pad345[1];
+            v->flag342 = 0;
+            v->flag343 = 0;
+            pad = v->slot[2].value;
+            if (fn_802E85B0(pad) == 4) {
+                v->flag343 = 1;
+                flagA = 0;
+                flagB = 0;
+            }
+            if (fn_801298E8(&info, pad) != 0) {
+                if (info.flags & 2) {
+                    v->flag343 = 1;
+                    flagA = 0;
+                    flagB = 0;
+                }
+                if (info.flags & 8) {
+                    v->flag342 = 1;
+                    v->flag343 = 1;
+                }
+            }
+
+            if (v->flag340 || fn_801A8EE4(&v->slot[0]) || fn_801A8EE4(&v->slot[1])) {
+                f32 base = k54 * v->level2C[2];
+                f32 rate = k50 * base;
+                f32 fast = rate + base;
+                if (v->pad0C[0] > zero) {
+                    v->pad0C[0] = fn_801429D0(v->pad0C[0] - rate * dt, zero);
+                }
+                if (v->pad0C[0] < zero) {
+                    v->pad0C[0] = fn_801429E0(v->pad0C[0] + rate * dt, zero);
+                }
+                if (fn_801A8E38(&v->slot[0])) {
+                    v->pad0C[0] -= fast * dt;
+                }
+                if (fn_801A8E38(&v->slot[1])) {
+                    v->pad0C[0] += fast * dt;
+                }
+                if (v->pad0C[0] > one) {
+                    v->pad0C[0] = one;
+                }
+                if (v->pad0C[0] < minusOne) {
+                    v->pad0C[0] = minusOne;
+                }
+            } else {
+                f32 old = v->pad0C[0];
+                f32 right = fn_801A7F98(&v->slot[1]);
+                f32 left = fn_801A7F98(&v->slot[0]);
+                f32 x = -left + right;
+                if (v->flag344) {
+                    v->pad0C[0] = fn_8017EB80(x, v->level2C[0], v->level2C[1]);
+                } else if (!v->flag343) {
+                    v->pad0C[0] = fn_8017EB80(x, v->level2C[0], v->level2C[1]);
+                    v->pad0C[0] *= (one + v->pad60 * fn_8017F70C(v->pad0C[0])) - v->pad60;
+                    v->pad0C[0] *= (one + v->pad64 * fn_8017F70C(v->pad0C[0])) - v->pad64;
+                } else {
+                    v->pad0C[0] = x;
+                    if (v->flag342) {
+                        v->pad0C[0] *= k5C;
+                    }
+                }
+                if ((u8)lbl_8055E4B9 != 0) {
+                    v->pad0C[0] = fn_80144C80(v->pad0C[0], old, lbl_80561C60);
+                }
+            }
+
+            {
+                f32 base = k54 * v->level2C[2];
+                f32 rate = k50 * base;
+                f32 fast = rate + base;
+                if (v->pad0C[1] > zero) {
+                    v->pad0C[1] = fn_801429D0(v->pad0C[1] - rate * dt, zero);
+                }
+                if (v->pad0C[1] < zero) {
+                    v->pad0C[1] = fn_801429E0(v->pad0C[1] + rate * dt, zero);
+                }
+                if (fn_801A8E38(&v->slot[18])) {
+                    v->pad0C[1] -= fast * dt;
+                }
+                if (fn_801A8E38(&v->slot[19])) {
+                    v->pad0C[1] += fast * dt;
+                }
+                if (v->pad0C[1] > one) {
+                    v->pad0C[1] = one;
+                }
+                if (v->pad0C[1] < minusOne) {
+                    v->pad0C[1] = minusOne;
+                }
+            }
+
+            slot = &v->slot[2];
+            if (!fn_801A8F10(slot)) {
+                slot = &v->slot[5];
+            } else if (flagA && fn_801A8F10(&v->slot[5])) {
+                slot = &v->slot[5];
+            }
+            if (v->flag340 || flagA || fn_801A8EE4(slot)) {
+                f32 down;
+                f32 up;
+                up = k64 * v->level2C[5];
+                down = k5C * up;
+                if (fn_801A8E38(slot)) {
+                    v->pad0C[5] = fn_801429E0(v->pad0C[5] + up * dt, lbl_80561C48);
+                } else {
+                    v->pad0C[5] = fn_801429D0(v->pad0C[5] - down * dt, lbl_80561C4C);
+                }
+            } else {
+                v->pad0C[5] = fn_8017EB80(fn_801A7F98(slot), v->level2C[3], v->level2C[4]);
+            }
+
+            if (v->flag340 || fn_801A8EE4(&v->slot[7])) {
+                f32 down;
+                f32 up;
+                up = k64 * v->level2C[5];
+                down = k5C * up;
+                if (fn_801A8E38(&v->slot[7])) {
+                    v->pad0C[6] = fn_801429E0(v->pad0C[6] + up * dt, lbl_80561C48);
+                } else {
+                    v->pad0C[6] = fn_801429D0(v->pad0C[6] - down * dt, lbl_80561C4C);
+                }
+            } else {
+                v->pad0C[6] = fn_8017EB80(fn_801A7F98(&v->slot[7]), v->level2C[3], v->level2C[4]);
+            }
+
+            slot2 = &v->slot[3];
+            if (!fn_801A8F10(slot2)) {
+                slot2 = &v->slot[6];
+            } else if (flagB && fn_801A8F10(&v->slot[6])) {
+                slot2 = &v->slot[6];
+            }
+            if (v->flag340 || flagB || fn_801A8EE4(slot2)) {
+                f32 up = k68 * v->level2C[8];
+                f32 down = k64 * v->level2C[8];
+                if (v->pad0C[2] > zero) {
+                    v->pad0C[2] = fn_801429D0(v->pad0C[2] - down * dt, zero);
+                }
+                if (fn_801A8E38(slot2)) {
+                    v->pad0C[2] += up * dt;
+                }
+                if (v->pad0C[2] > one) {
+                    v->pad0C[2] = one;
+                }
+            } else {
+                v->pad0C[2] = fn_8017EB80(fn_801A7F98(slot2), v->level2C[6], v->level2C[7]);
+            }
+
+            if (v->flag340 || fn_801A8EE4(&v->slot[8])) {
+                f32 up = k68 * v->level2C[8];
+                f32 down = k64 * v->level2C[8];
+                if (v->pad0C[3] > zero) {
+                    v->pad0C[3] = fn_801429D0(v->pad0C[3] - down * dt, zero);
+                }
+                if (fn_801A8E38(&v->slot[8])) {
+                    v->pad0C[3] += up * dt;
+                }
+                if (v->pad0C[3] > one) {
+                    v->pad0C[3] = one;
+                }
+            } else {
+                v->pad0C[3] = fn_8017EB80(fn_801A7F98(&v->slot[8]), v->level2C[6], v->level2C[7]);
+            }
+
+            v->pad0C[7] = fn_801A7F98(&v->slot[4]);
+            if (!v->flag341) {
+                v->flag5A = fn_801A8E38(&v->slot[9]) || fn_801A8E38(&v->slot[10]);
+            }
+
+            if (fn_801A8EE4(&v->slot[15])) {
+                if (fn_801A8E38(&v->slot[15])) {
+                    v->pad0C[4] += k6C * dt;
+                } else if (v->pad0C[4] > zero) {
+                    v->pad0C[4] = fn_801429D0(v->pad0C[4] - k70 * dt, zero);
+                }
+                if (v->pad0C[4] > one) {
+                    v->pad0C[4] = one;
+                }
+            } else {
+                v->pad0C[4] = fn_801A7F98(&v->slot[15]);
+            }
+
+            v->flag5B = fn_801A8E38(&v->slot[16]);
+            v->flag58 = fn_801A8E38(&v->slot[11]) || fn_801A8E38(&v->slot[12]);
+            v->flag5D = fn_801A8E68(&v->slot[2]);
+            if (fn_80179300() < 40) {
+                v->flag58 = 0;
+            }
+            v->flag68 = fn_801A8E38(&v->slot[17]);
+
+            {
+                f32 left = fn_801A7F98(&v->slot[20]);
+                f32 x = fn_8017EB80(-left + fn_801A7F98(&v->slot[21]), lbl_80561C60, lbl_80561C74);
+                f32 step = k78 * dt;
+                v->pad30C[8] += fn_8014C8F8(x - v->pad30C[8], -step, step);
+            }
+
+            v->flag338 = fn_801A8E38(&v->slot[22]);
+            if (fn_801A8E38(&v->slot[33])) {
+                v->flag338 = 1;
+            }
+            {
+                f32 neg = fn_801A7F98(&v->slot[34]);
+                *(f32 *)&v->pad330[0] = fn_801A7F98(&v->slot[35]) - neg;
+            }
+            {
+                f32 neg = fn_801A7F98(&v->slot[36]);
+                *(f32 *)&v->pad330[4] = fn_801A7F98(&v->slot[37]) - neg;
+            }
+
+            if (!v->flag341) {
+                if (fn_801A8E38(&v->slot[13])) {
+                    if (!v->flag59) {
+                        if (v->pad50[0] < v->pad50[1]) {
+                            v->pad50[0]++;
+                        }
+                        v->flag59 = 1;
+                    }
+                } else if (fn_801A8E38(&v->slot[14])) {
+                    if (!v->flag59) {
+                        if (v->pad50[0] > -1) {
+                            v->pad50[0]--;
+                        }
+                        v->flag59 = 1;
+                    }
+                } else {
+                    v->flag59 = 0;
+                }
+            } else {
+                v->flag59 = 0;
+                v->pad50[0] = 0;
+                slot = &v->slot[23];
+                for (gear = 0; gear < v->pad50[1]; gear++, slot++) {
+                    if (fn_801A8E38(slot)) {
+                        v->pad50[0] = gear + 1;
+                    }
+                }
+                if (fn_801A8E38(&v->slot[29])) {
+                    v->pad50[0] = -1;
+                }
+            }
+            fn_8017F628(v);
+        }
+    } else {
+        struct Di718 **ptr2;
+        s32 j;
+        dt = lbl_80561C4C;
+        ptr2 = (struct Di718 **)lbl_804348D8;
+        for (j = 0; j < 4; j++, ptr2++) {
+            v = *ptr2;
+            if (v != NULL) {
+                v->pad30C[6] = dt;
+                v->pad30C[7] = dt;
+                v->pad30C[2] = dt;
+                v->pad30C[1] = dt;
+                v->pad30C[0] = dt;
+                v->pad30C[5] = dt;
+                v->pad30C[4] = dt;
+                v->pad30C[3] = dt;
+                if (v->axStackHead >= 0) {
+                    ((void (*)(s32))fn_802E8518)(v->axStackHead);
+                }
+            }
+        }
+    }
+}
+#pragma pop
 extern float lbl_80561C7C;
 extern float lbl_80561C80;
 extern float lbl_80561C84;
@@ -628,149 +956,237 @@ extern void fn_801A7974(void *, const char *, int);
 extern void fn_801A7DFC(int, int, int);
 extern void fn_801A9110(void *, const char *);
 extern int sprintf(char *, const char *, ...);
+#pragma push
+#pragma processor 750
 void fn_801808DC(void) {
     char name[64];
     unsigned char flag;
     int keys1[4];
     int keys2[4];
-    int i;
-    int count;
-    void *obj;
-    void **table;
     int *slot;
+    int i;
+    int j;
+    int count;
+    struct Di718 *v;
+    float f90;
+    float f8C;
+    float f88;
+    float f84;
+    float f48;
+    float f80;
+    float f7C;
+    float f4C;
+    Unk8017Object **table;
+    int *keyBase1;
+    int *keyBase2;
     fn_801333E8(8, lbl_80331E58, &lbl_8055E4B9);
     lbl_8055E4B8 = 1;
-    for (count = 0, table = (void **)lbl_804348D8; count < 4; count++, table++) {
-        obj = *table;
-        if (obj != 0) {
-            *(int *)((char *)obj + 8) = __AXGetStackHead_80137CFC(*(int *)((char *)obj + 4));
-            *(float *)((char *)obj + 0x2C) = lbl_80561C7C;
-            *(float *)((char *)obj + 0x38) = lbl_80561C7C;
-            *(float *)((char *)obj + 0x44) = lbl_80561C80;
-            *(float *)((char *)obj + 0x34) = lbl_80561C48;
-            *(float *)((char *)obj + 0x40) = lbl_80561C84;
-            *(float *)((char *)obj + 0x4C) = lbl_80561C88;
-            *(float *)((char *)obj + 0x30) = lbl_80561C8C;
-            *(float *)((char *)obj + 0x3C) = lbl_80561C90;
-            *(float *)((char *)obj + 0x48) = lbl_80561C8C;
-            *(unsigned char *)((char *)obj + 0x340) = 0;
-            *(unsigned char *)((char *)obj + 0x341) = 0;
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332270, (char *)obj + 0x2C);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332258, (char *)obj + 0x38);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332248, (char *)obj + 0x44);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332238, (char *)obj + 0x30);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332220, (char *)obj + 0x3C);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332210, (char *)obj + 0x48);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332200, (char *)obj + 0x34);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_803321F0, (char *)obj + 0x40);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_803321E4, (char *)obj + 0x4C);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_803321D0, (char *)obj + 0x60);
-            *(unsigned char *)((char *)obj + 0x5C) = 1;
-            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_803321C4, (char *)obj + 0x340);
-            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_803321B8, (char *)obj + 0x341);
-            *(unsigned char *)((char *)obj + 0x5E) = 1;
-            *(float *)((char *)obj + 0x64) = fn_8014C8F8(*(float *)((char *)obj + 0x60) - lbl_80561C48, lbl_80561C4C, lbl_80561C48);
-            *(float *)((char *)obj + 0x60) = fn_8014C8F8(*(float *)((char *)obj + 0x60), lbl_80561C4C, lbl_80561C48);
-            *(float *)((char *)obj + 0x34) = fn_801429D0(*(float *)((char *)obj + 0x34), lbl_80561C94);
-            *(float *)((char *)obj + 0x40) = fn_801429D0(*(float *)((char *)obj + 0x40), lbl_80561C94);
-            *(float *)((char *)obj + 0x4C) = fn_801429D0(*(float *)((char *)obj + 0x4C), lbl_80561C94);
-            if (((int (*)(void *))(*(void ***)obj)[23])(obj) != 0) {
-                *(float *)((char *)obj + 0x60) = lbl_80561C4C;
+    f48 = lbl_80561C48;
+    f7C = lbl_80561C7C;
+    f80 = lbl_80561C80;
+    f84 = lbl_80561C84;
+    f88 = lbl_80561C88;
+    f8C = lbl_80561C8C;
+    f90 = lbl_80561C90;
+    f4C = lbl_80561C4C;
+    keyBase1 = lbl_802F9530;
+    keyBase2 = lbl_802F9540;
+    for (count = 0, table = lbl_804348D8; count < 4; count++, table++) {
+        float value;
+        float value2;
+        v = (struct Di718 *)*table;
+        if (v == 0) continue;
+        v->axStackHead = __AXGetStackHead_80137CFC(v->index);
+        v->level2C[0] = f7C;
+        v->level2C[3] = f7C;
+        v->level2C[6] = f80;
+        v->level2C[2] = f48;
+        v->level2C[5] = f84;
+        v->level2C[8] = f88;
+        v->level2C[1] = f8C;
+        v->level2C[4] = f90;
+        v->level2C[7] = f8C;
+        v->flag340 = 0;
+        v->flag341 = 0;
+        fn_801331C4(v->soundId, lbl_80332270, (char *)v + 0x2C);
+        fn_801331C4(v->soundId, lbl_80332258, (char *)v + 0x38);
+        fn_801331C4(v->soundId, lbl_80332248, (char *)v + 0x44);
+        fn_801331C4(v->soundId, lbl_80332238, (char *)v + 0x30);
+        fn_801331C4(v->soundId, lbl_80332220, (char *)v + 0x3C);
+        fn_801331C4(v->soundId, lbl_80332210, (char *)v + 0x48);
+        fn_801331C4(v->soundId, lbl_80332200, (char *)v + 0x34);
+        fn_801331C4(v->soundId, lbl_803321F0, (char *)v + 0x40);
+        fn_801331C4(v->soundId, lbl_803321E4, (char *)v + 0x4C);
+        fn_801331C4(v->soundId, lbl_803321D0, (char *)v + 0x60);
+        v->flag5C = 1;
+        fn_801333E8(v->soundId, lbl_803321C4, (char *)v + 0x340);
+        fn_801333E8(v->soundId, lbl_803321B8, &v->flag341);
+        v->flag5E = 1;
+        value = f48;
+        value = value < (v->pad60 - f48) ? value : (v->pad60 - f48);
+        value = value > f4C ? value : f4C;
+        value2 = f48;
+        v->pad64 = value;
+        value2 = value2 < v->pad60 ? value2 : v->pad60;
+        value2 = value2 > f4C ? value2 : f4C;
+        value = v->level2C[2];
+        v->pad60 = value2;
+        value = value > lbl_80561C94 ? value : lbl_80561C94;
+        value2 = v->level2C[5];
+        v->level2C[2] = value;
+        value2 = value2 > lbl_80561C94 ? value2 : lbl_80561C94;
+        value = v->level2C[8];
+        v->level2C[5] = value2;
+        value = value > lbl_80561C94 ? value : lbl_80561C94;
+        v->level2C[8] = value;
+#pragma push
+#pragma cplusplus on
+#pragma paired_single off
+        {
+            class Callback {
+            public:
+                virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+                virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+                virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+                virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+                virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+                virtual void f20(); virtual int f21();
+            };
+            if (((Callback *)v)->f21() != 0) {
+                v->pad60 = f4C;
             }
-            fn_802E8524(*(unsigned char *)((char *)obj + 0x5C), *(int *)((char *)obj + 8));
-            keys1[0] = lbl_802F9530[0];
-            keys1[1] = lbl_802F9530[1];
-            keys1[2] = lbl_802F9530[2];
-            keys1[3] = lbl_802F9530[3];
-            keys2[0] = lbl_802F9540[0];
-            keys2[1] = lbl_802F9540[1];
-            keys2[2] = lbl_802F9540[2];
-            keys2[3] = lbl_802F9540[3];
-            slot = (int *)((char *)obj + 0x2CC);
-            for (i = 0; i < 4; i++, slot += 4) {
-                fn_801A7DFC(keys1[i], keys2[i], *(int *)((char *)obj + 0x34C));
-                fn_801A7974((char *)slot, (const char *)keys1[i], *(int *)((char *)obj + 0x34C));
-            }
-            fn_801A7974((char *)obj + 0x6C, lbl_803321AC, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x7C, lbl_803321A0, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x18C, lbl_80332194, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x19C, lbl_80332184, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x8C, lbl_80332178, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x9C, lbl_8055A398, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0xBC, lbl_80332168, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0xCC, lbl_8033215C, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0xDC, lbl_80332150, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0xEC, lbl_80332144, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x24C, lbl_8055A390, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x25C, lbl_80332138, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x26C, lbl_8033212C, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x27C, lbl_8033211C, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0xAC, lbl_8055A388, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0xFC, lbl_8055A380, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x10C, lbl_80332110, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x15C, lbl_8055A378, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x13C, lbl_8055A370, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x14C, lbl_80332104, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x16C, lbl_8055A368, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x17C, lbl_8055A360, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x11C, lbl_8055A358, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x12C, lbl_8055A350, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x1AC, lbl_803320F8, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x1BC, lbl_803320EC, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x1CC, lbl_803320E0, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x28C, lbl_803320D4, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x29C, lbl_803320C8, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x2AC, lbl_803320BC, *(int *)((char *)obj + 0x34C));
-            fn_801A7974((char *)obj + 0x2BC, lbl_803320B0, *(int *)((char *)obj + 0x34C));
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_8033209C, &lbl_8055A330);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_8033208C, &lbl_8055A334);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332078, &lbl_8055A338);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332064, &lbl_8055A33C);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332050, &lbl_8055A340);
-            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_8033203C, &lbl_8055A344);
-            *(unsigned char *)((char *)obj + 0x341) = 0;
-            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_80332030, (char *)obj + 0x341);
-            *(unsigned char *)((char *)obj + 0x346) = 0;
-            *(unsigned char *)((char *)obj + 0x345) = 1;
-            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_80332020, (char *)obj + 0x346);
-            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_80332008, (char *)obj + 0x345);
-            flag = 0;
-            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_80331FFC, &flag);
-            if (flag != 0) {
-                fn_802E30C8(lbl_80331FF0);
-                *(unsigned char *)((char *)obj + 0x346) = 0;
-                *(unsigned char *)((char *)obj + 0x345) = 0;
-            }
-            fn_801A9110((char *)obj + 0x1DC, lbl_80331FE4);
-            fn_801A9110((char *)obj + 0x1EC, lbl_80331FD8);
-            fn_801A9110((char *)obj + 0x1FC, lbl_80331FCC);
-            fn_801A9110((char *)obj + 0x20C, lbl_80331FC0);
-            fn_801A9110((char *)obj + 0x21C, lbl_80331FB4);
-            fn_801A9110((char *)obj + 0x22C, lbl_80331FA8);
-            fn_801A9110((char *)obj + 0x23C, lbl_80331F9C);
-            slot = (int *)((char *)obj + 0x1DC);
-            for (i = 0; i < 6; i++, slot += 4) {
-                sprintf(name, lbl_80331F90, i + 1);
-                fn_801A7974((char *)slot, name, *(int *)((char *)obj + 0x34C));
-            }
-            fn_801A7974((char *)obj + 0x23C, lbl_80331F80, *(int *)((char *)obj + 0x34C));
-            {
-                int head = *(int *)((char *)obj + 8);
-                int *p = (int *)((char *)obj + 0x70);
-                *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4;
-            }
-            *(unsigned char *)((char *)obj + 0x344) = 0;
+        }
+#pragma pop
+        fn_802E8524(v->flag5C, v->axStackHead);
+        {
+            register int *p1 = keyBase1;
+            register int *p2 = keyBase2;
+            keys1[0] = *p1++;
+            keys1[1] = *p1++;
+            keys1[2] = *p1++;
+            keys1[3] = *p1;
+            keys2[0] = *p2++;
+            keys2[1] = *p2++;
+            keys2[2] = *p2++;
+            keys2[3] = *p2;
+        }
+        slot = (int *)((char *)v + 0x2CC);
+        for (i = 0; i < 4; i++, slot += 4) {
+            fn_801A7DFC(keys1[i], keys2[i], v->soundId);
+            fn_801A7974((char *)slot, (const char *)keys1[i], v->soundId);
+        }
+        fn_801A7974((char *)v + 0x6C, lbl_803321AC, v->soundId);
+        fn_801A7974((char *)v + 0x7C, lbl_803321A0, v->soundId);
+        fn_801A7974((char *)v + 0x18C, lbl_80332194, v->soundId);
+        fn_801A7974((char *)v + 0x19C, lbl_80332184, v->soundId);
+        fn_801A7974((char *)v + 0x8C, lbl_80332178, v->soundId);
+        fn_801A7974((char *)v + 0x9C, lbl_8055A398, v->soundId);
+        fn_801A7974((char *)v + 0xBC, lbl_80332168, v->soundId);
+        fn_801A7974((char *)v + 0xCC, lbl_8033215C, v->soundId);
+        fn_801A7974((char *)v + 0xDC, lbl_80332150, v->soundId);
+        fn_801A7974((char *)v + 0xEC, lbl_80332144, v->soundId);
+        fn_801A7974((char *)v + 0x24C, lbl_8055A390, v->soundId);
+        fn_801A7974((char *)v + 0x25C, lbl_80332138, v->soundId);
+        fn_801A7974((char *)v + 0x26C, lbl_8033212C, v->soundId);
+        fn_801A7974((char *)v + 0x27C, lbl_8033211C, v->soundId);
+        fn_801A7974((char *)v + 0xAC, lbl_8055A388, v->soundId);
+        fn_801A7974((char *)v + 0xFC, lbl_8055A380, v->soundId);
+        fn_801A7974((char *)v + 0x10C, lbl_80332110, v->soundId);
+        fn_801A7974((char *)v + 0x15C, lbl_8055A378, v->soundId);
+        fn_801A7974((char *)v + 0x13C, lbl_8055A370, v->soundId);
+        fn_801A7974((char *)v + 0x14C, lbl_80332104, v->soundId);
+        fn_801A7974((char *)v + 0x16C, lbl_8055A368, v->soundId);
+        fn_801A7974((char *)v + 0x17C, lbl_8055A360, v->soundId);
+        fn_801A7974((char *)v + 0x11C, lbl_8055A358, v->soundId);
+        fn_801A7974((char *)v + 0x12C, lbl_8055A350, v->soundId);
+        fn_801A7974((char *)v + 0x1AC, lbl_803320F8, v->soundId);
+        fn_801A7974((char *)v + 0x1BC, lbl_803320EC, v->soundId);
+        fn_801A7974((char *)v + 0x1CC, lbl_803320E0, v->soundId);
+        fn_801A7974((char *)v + 0x28C, lbl_803320D4, v->soundId);
+        fn_801A7974((char *)v + 0x29C, lbl_803320C8, v->soundId);
+        fn_801A7974((char *)v + 0x2AC, lbl_803320BC, v->soundId);
+        fn_801A7974((char *)v + 0x2BC, lbl_803320B0, v->soundId);
+        fn_801331C4(v->soundId, lbl_8033209C, &lbl_8055A330);
+        fn_801331C4(v->soundId, lbl_8033208C, &lbl_8055A334);
+        fn_801331C4(v->soundId, lbl_80332078, &lbl_8055A338);
+        fn_801331C4(v->soundId, lbl_80332064, &lbl_8055A33C);
+        fn_801331C4(v->soundId, lbl_80332050, &lbl_8055A340);
+        fn_801331C4(v->soundId, lbl_8033203C, &lbl_8055A344);
+        v->flag341 = 0;
+        fn_801333E8(v->soundId, lbl_80332030, (char *)v + 0x341);
+        v->pad345[1] = 0;
+        v->pad345[0] = 1;
+        fn_801333E8(v->soundId, lbl_80332020, (char *)v + 0x346);
+        fn_801333E8(v->soundId, lbl_80332008, (char *)v + 0x345);
+        flag = 0;
+        fn_801333E8(v->soundId, lbl_80331FFC, &flag);
+        if (flag != 0) {
+            fn_802E30C8(lbl_80331FF0);
+            v->pad345[1] = 0;
+            v->pad345[0] = 0;
+        }
+        fn_801A9110(&v->slot[23], lbl_80331FE4);
+        fn_801A9110(&v->slot[24], lbl_80331FD8);
+        fn_801A9110(&v->slot[25], lbl_80331FCC);
+        fn_801A9110(&v->slot[26], lbl_80331FC0);
+        fn_801A9110(&v->slot[27], lbl_80331FB4);
+        fn_801A9110(&v->slot[28], lbl_80331FA8);
+        fn_801A9110(&v->slot[29], lbl_80331F9C);
+        slot = (int *)((char *)v + 0x1DC);
+        for (j = 0; j < 6; j++, slot += 4) {
+            sprintf(name, lbl_80331F90, j + 1);
+            fn_801A7974((char *)slot, name, v->soundId);
+        }
+        fn_801A7974((char *)v + 0x23C, lbl_80331F80, v->soundId);
+        {
+            int head = v->axStackHead;
+            v->flag344 = 0;
+            v->slot[0].value = head;
+            v->slot[1].value = head;
+            v->slot[18].value = head;
+            v->slot[19].value = head;
+            v->slot[2].value = head;
+            v->slot[3].value = head;
+            v->slot[4].value = head;
+            v->slot[7].value = head;
+            v->slot[8].value = head;
+            v->slot[5].value = head;
+            v->slot[6].value = head;
+            v->slot[9].value = head;
+            v->slot[10].value = head;
+            v->slot[13].value = head;
+            v->slot[14].value = head;
+            v->slot[15].value = head;
+            v->slot[11].value = head;
+            v->slot[12].value = head;
+            v->slot[17].value = head;
+            v->slot[30].value = head;
+            v->slot[31].value = head;
+            v->slot[32].value = head;
+            v->slot[33].value = head;
+            v->slot[16].value = head;
+            v->slot[20].value = head;
+            v->slot[21].value = head;
+            v->slot[22].value = head;
+            v->slot[34].value = head;
+            v->slot[35].value = head;
+            v->slot[36].value = head;
+            v->slot[37].value = head;
+            v->slot[38].value = head;
+            v->slot[39].value = head;
+            v->slot[40].value = head;
+            v->slot[41].value = head;
             {
                 char buf[96];
-                if (fn_801298E8(buf, *(int *)((char *)obj + 8)) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
-                    *(unsigned char *)((char *)obj + 0x344) = 1;
-                    *(unsigned char *)((char *)obj + 0x344) = 1;
+                if (fn_801298E8(buf, head) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
+                    *(volatile unsigned char *)((char *)v + 0x344) = 1;
+                    *(volatile unsigned char *)((char *)v + 0x344) = 1u;
                 }
             }
         }
     }
 }
-
+#pragma pop
 /* One of the sound-player slots a DriverInterface owns from 0x6C on;
  * fn_80181418 resets one (its id and its "in use" byte), fn_8017F718 gives
  * each of them a name and the sound it plays. */
