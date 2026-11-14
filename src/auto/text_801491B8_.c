@@ -2192,6 +2192,7 @@ void fn_80150B60(void *object) {
     }
     master->preraceSfxStarted = 0;
 }
+
 void fn_80150BDC(void *arg0) {
     float a = lbl_80561648;
     float b = lbl_80561650;
