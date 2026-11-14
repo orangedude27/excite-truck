@@ -4094,6 +4094,30 @@ extern "C" void fn_801A7844(s32);
 extern "C" s32 fn_801A7C8C(s32);
 extern "C" void fn_801A7E54(void *, s32, s32);
 extern "C" void fn_802E47E8(void);
+/* A control the player can bind: which kind of input, from which of the four
+   devices, and which key, button or axis of it.  The input-binding helpers of
+   the text_801A75B4 unit look a descriptor like this up in the binding table,
+   and write one when a bound control is triggered; the recovered prototypes
+   above pass it as an int. */
+typedef struct KeyBinding {
+    s32 type;   /* 0x00 1 keyboard key, 2 pad axis, 3 pad byte, 4 pad button
+                   mask, 5 pointer axis, 6 pointer button */
+    s32 device; /* 0x04 device, 0..3 */
+    s32 value;  /* 0x08 key code, or axis/button number */
+    u8 flag;    /* 0x0C cleared by the poller */
+} KeyBinding;
+/* What the key-binding field of fn_8021F394 keeps while its dialog is open:
+   the name the field shows, and the descriptor of the control that name was
+   resolved from. */
+typedef struct KeyPrompt {
+    char name[0x18];     /* 0x00 display name of the bound control */
+    KeyBinding *binding; /* 0x18 the control that name names */
+} KeyPrompt;
+#define gKeyPrompt       lbl_80490934 /* the KeyPrompt record above */
+#define Input_Update     fn_801A7844  /* re-read the devices (1: reset them) and the pointer */
+#define Input_NextKey    fn_801A7C8C  /* next triggered control -> its descriptor */
+#define Input_KeyName    fn_801A7E54  /* descriptor -> display name */
+#define KeyHistory_Clear fn_802E47E8  /* drop the typed-key history */
 #pragma push
 #pragma small_data off
 extern "C" void *fn_8021F394(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
