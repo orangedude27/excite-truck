@@ -55,6 +55,9 @@ extern const char* lbl_8055DC0C;
 extern u8 lbl_8055DC10;
 extern u8 lbl_8055DC18;
 extern const char* lbl_80558FD8;
+extern u8 lbl_8055DC12;
+extern u8 lbl_8055DC19;
+extern const char lbl_80312140[];
 extern const char lbl_80312158[];
 
 // BTA_HhClose from BTE
@@ -6381,8 +6384,8 @@ void __a1_22_ack(u8 chan, u8* pReport)
         WPADCallback callback = pCB->readCB;
         if (callback) {
             callback(chan, status);
-            *(u32*)((u8*)pCB + 0x7DC) = 0;
-            *(u32*)((u8*)pCB + 0x7FC) = 0;
+            pCB->readCB = 0;
+            *(volatile u32*)((u8*)pCB + 0x7FC) = 0;
         }
     } else {
         DBPrintf_80068D68(strBase + 0x44C);
