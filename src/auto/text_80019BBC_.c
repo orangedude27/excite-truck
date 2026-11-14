@@ -20,9 +20,6 @@ extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, f
 extern void fn_802354A0(void *, int, int, float, float, float, float, float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
-static inline float interpolate_component(float start, float end, float weight) {
-    return start + weight * end;
-}
 extern float lbl_8056041C;
 #pragma small_data off
 extern char lbl_803582C0[];
