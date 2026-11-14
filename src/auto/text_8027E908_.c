@@ -3270,7 +3270,8 @@ extern "C" void fn_802868C0(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v13();
 }
 #pragma cplusplus on
-extern "C" int fn_802868D4(void *arg0) {
+extern "C" int fn_802868D4(void *object) {
+    /* Returns nonzero if the object's virtual method at slot 13 returns a value <= the value returned by the virtual method at slot 8. */
     class Dummy {
     public:
         virtual void v0();
@@ -3288,9 +3289,9 @@ extern "C" int fn_802868D4(void *arg0) {
         virtual void v12();
         virtual int v13();
     };
-    Dummy *o = (Dummy *)arg0;
-    int a = o->v13();
-    return a <= o->v8();
+    Dummy *o = (Dummy *)object;
+    int value13 = o->v13();
+    return value13 <= o->v8();
 }
 #pragma cplusplus reset
 extern "C" void fn_8028693C(void* arg0) {
