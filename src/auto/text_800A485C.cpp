@@ -3496,18 +3496,21 @@ candidateCheck:
 extern "C" s32 fn_800B3A70(void *buf, void *short_name, s32 flags);
 extern "C" void fn_800B3BEC(u8 *buf, u8 *src, u8 flags);
 extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
-    u8 buf[13];
+    /* Compute the checksum byte for a VF file entry from its short name at offset 0x20E. */
+    #define VFiPFPATH_FormatShortName fn_800B3A70
+    u8 shortName[13];
     u32 sum;
     u32 next;
     u16 i;
 
-    fn_800B3A70(buf, &p_ent[0x20E], 0);
+    VFiPFPATH_FormatShortName(shortName, &p_ent[0x20E], 0);
     sum = 0;
     for (i = 0; i < 0xB; i++) {
-        next = ((sum & 0xFE) >> 1) + ((sum & 1) ? 0x80 : 0) + buf[i];
+        next = ((sum & 0xFE) >> 1) + ((sum & 1) ? 0x80 : 0) + shortName[i];
         sum = next & 0xFF;
     }
     return (u8)sum;
+    #undef VFiPFPATH_FormatShortName
 }
 
 #pragma push
