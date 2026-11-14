@@ -288,14 +288,15 @@ extern "C" s32 fn_80149274(Dummy_80149274 *arg0) {
     return arg0->d2() & 0xFF7F7F7F;
 }
 #pragma cplusplus off
+/* Adjusts the byte field at offset 0x18 of an indexed sub-object by a delta and clamps it to [0, 255]. */
 void fn_801492AC(void *arg0, f32 *arg1, s32 arg2) {
     u8 *obj = (u8 *)(arg2 + ((s32 *)arg0)[1]);
-    f32 f2 = lbl_80561628;
-    f32 b = *arg1;
-    f32 v = b + (f32)obj[0x18];
-    f2 = (f2 < v) ? f2 : v;
-    f2 = (f2 > lbl_805615D4) ? f2 : lbl_805615D4;
-    obj[0x18] = (u8)(s32)f2;
+    f32 clampedValue = lbl_80561628;
+    f32 delta = *arg1;
+    f32 newValue = delta + (f32)obj[0x18];
+    clampedValue = (clampedValue < newValue) ? clampedValue : newValue;
+    clampedValue = (clampedValue > lbl_805615D4) ? clampedValue : lbl_805615D4;
+    obj[0x18] = (u8)(s32)clampedValue;
 }
 
 extern s32 lbl_802F93E0[];
