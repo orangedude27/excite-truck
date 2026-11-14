@@ -433,10 +433,11 @@ extern "C" int fn_801C1C1C(void *arg0) {
     return result;
 }
 
-extern "C" void fn_801C1C7C(int arg0) {
-    if (arg0 != 0) {
-        __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(arg0, 0);
-        fn_80128668(arg0);
+/* Destroys a J2DAnmTexPatternTIMGPointer object and frees its storage. */
+extern "C" void fn_801C1C7C(int object) {
+    if (object != 0) {
+        __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(object, 0);
+        fn_80128668(object);
     }
 }
 
