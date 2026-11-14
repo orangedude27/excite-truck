@@ -465,13 +465,14 @@ void fn_8013B6C0(int *arg0, float *arg1, int arg2) {
 }
 
 #pragma dont_inline on
-float fn_8013B744(int arg0) {
-    float v;
+float fn_8013B744(int index) {
+    /* Return a per-index scale: if lbl_8055E161 is set, compute 1.0 - 0.01*index, otherwise read the table entry's value and scale it. */
+    float value;
     if ((unsigned char)lbl_8055E161 != 0) {
-        return lbl_80561440 - lbl_80561460 * (float)arg0;
+        return lbl_80561440 - lbl_80561460 * (float)index;
     }
-    v = *(float *)((char *)fn_8013B578(arg0) + 4);
-    return v * lbl_80559C98;
+    value = *(float *)((char *)fn_8013B578(index) + 4);
+    return value * lbl_80559C98;
 }
 #pragma dont_inline reset
 
