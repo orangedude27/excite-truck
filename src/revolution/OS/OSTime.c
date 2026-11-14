@@ -46,6 +46,11 @@ asm u32 OSGetTick(void){
 }
 
 s64 __OSGetSystemTime(void) {
+    /* Current time in ticks on the system timebase: the CPU timebase plus the
+     * boot-time offset the system software left at OS_SYSTEM_TIME (0x800030D8),
+     * so the count runs from power-on rather than from this title's OSInit.
+     * Interrupts are held off while that 64-bit offset is read and added, so it
+     * cannot be updated underneath the addition. */
     BOOL enabled = OSDisableInterrupts();
     s64 time = OSGetTime() + OS_SYSTEM_TIME;
     OSRestoreInterrupts(enabled);
