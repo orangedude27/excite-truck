@@ -15169,13 +15169,25 @@ BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     return TRUE;
 }
 
+/* Build and send an HCI Authentication_Requested command for the given
+ * connection handle. Returns FALSE if no HCI command buffer is available. */
 BOOLEAN btsnd_hcic_auth_request(UINT16 handle) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 5;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0x11; p[9] = 4; p[10] = 2;
-    p[11] = handle; p[12] = handle >> 8;
+    BT_HDR *p;
+    UINT8 *pp;
+
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_CMD_HANDLE)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_CMD_HANDLE;
+    p->offset = 0;
+
+    UINT16_TO_STREAM(pp, HCI_AUTHENTICATION_REQUESTED);
+    UINT8_TO_STREAM(pp, HCIC_PARAM_SIZE_CMD_HANDLE);
+
+    UINT16_TO_STREAM(pp, handle);
+
     btu_hcif_send_cmd(p);
     return TRUE;
 }
