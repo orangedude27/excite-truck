@@ -3522,6 +3522,8 @@ s32 fn_8011BF4C(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 s32 fn_8011BFFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    /* Combines two fn_8011BF4C results into a 2-bit status: bit 0 from
+       (arg0, arg1, arg4) and bit 1 from (arg2, arg3, arg4). */
     s32 temp = fn_8011BF4C(arg2, arg3, arg4) << 1;
     s32 result = fn_8011BF4C(arg0, arg1, arg4);
     return result | temp;
