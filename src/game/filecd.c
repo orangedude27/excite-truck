@@ -69,6 +69,9 @@ extern unsigned int lbl_8055FF38;
 extern unsigned int lbl_8055D1B0;
 extern char lbl_8034D074[];
 extern char lbl_8034D098[];
+#define fileCdPoolName lbl_8055D1B0      /* "fds": the tag on this TU's one FileCd object */
+#define fileCdMsgDvdStarted lbl_8034D074 /* "filecd: started DVD services" */
+#define FileCdVTable lbl_8034D098        /* FileCd's vtable */
 extern void DVDInit(void);
 extern void OSReport(const char *, ...);
 extern unsigned char lbl_804FBAA0[0x10 * 0x91];
