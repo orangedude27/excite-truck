@@ -237,21 +237,30 @@ void fn_8023DB68(void) {
 
 #pragma scheduling invalid_target
 void fn_8023DBCC(void) {
+#define g_savedHeadCount lbl_8055BC54
+#define g_savedHeads lbl_804987D0
+#define PrepareHeadRestore fn_80137C78
+#define RestoreHead fn_80137C84
     long *dst;
     long i;
 
-    fn_80137C78(lbl_8055BC54);
-    dst = &lbl_804987D0[0];
+    /* Restore all saved per-slot heads, then mark the saved-head list as empty. */
+    PrepareHeadRestore(g_savedHeadCount);
+    dst = &g_savedHeads[0];
     i = 0;
     goto check;
 loop:
-    fn_80137C84(*dst, i);
+    RestoreHead(*dst, i);
     dst++;
     i++;
 check:
-    if (i < lbl_8055BC54)
+    if (i < g_savedHeadCount)
         goto loop;
-    lbl_8055BC54 = -1;
+    g_savedHeadCount = -1;
+#undef g_savedHeadCount
+#undef g_savedHeads
+#undef PrepareHeadRestore
+#undef RestoreHead
 }
 #pragma scheduling on
 char *fn_8023DC38(char *controlName) {
