@@ -856,15 +856,16 @@ fetch:
 }
 
 extern void fn_801D52A4();
+/* Calls fn_801D52A4 for each element in the global list at lbl_804423A4. */
 int fn_801D56C0(void *alarm) {
     int offset;
-    int i;
+    int index;
     offset = 0;
-    i = 0;
-    while (i < lbl_804423A4[1]) {
+    index = 0;
+    while (index < lbl_804423A4[1]) {
         fn_801D52A4(*(int *)((char *)lbl_804423A4[0] + offset));
         offset += 4;
-        i += 1;
+        index += 1;
     }
 }
 
