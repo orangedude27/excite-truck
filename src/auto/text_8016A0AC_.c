@@ -103,30 +103,25 @@ void fn_8016A0D4(void) {
     for (i = 0; i < lbl_80430340.unk_0x4; i++) {
         ((u8 *)lbl_80430340.unk_0x0)[i * 0x2C + 0x28] = 0;
     }
-
     {
         register s32 *recordCount;
         register u8 *entry;
         register s32 recordOffset;
         register s32 count;
-        register u8 clear;
         register f32 value1;
         register f32 value2;
-
         value2 = lbl_80561958;
         value1 = lbl_8056195C;
-        clear = 0;
         recordCount = (s32 *)(lbl_80430318 + 4);
         count = 0;
         recordOffset = 0;
-
         goto check_second;
     second_loop:
         count++;
         entry = (u8 *)(*(s32 *)lbl_80430318) + recordOffset;
-        entry[0x3C] = clear;
+        entry[0x3C] = 0;
         recordOffset += 0x48;
-        entry[0x3D] = clear;
+        entry[0x3D] = 0;
         *(f32 *)(entry + 0x40) = value2;
         *(f32 *)(entry + 0x44) = value1;
     check_second:
@@ -389,10 +384,8 @@ s32 fn_8016A8F8(void* alarm) {
     s32 cur;
     s32 i;
     s32 var24;
-
     obj = *(void**)((char*)fn_8000AC38() + 0x20);
     lbl_8055E364 = ((s32(*)(void*, void*, s32))((*(void***)obj)[0xC]))(obj, &lbl_80330460, 0);
-
     if (lbl_804302F0.ptr10 != 0) {
         fn_8002F6AC(lbl_804302F0.ptr10, fn_8016AC24);
         lbl_804302F0.ptr10 = 0;
@@ -407,7 +400,6 @@ s32 fn_8016A8F8(void* alarm) {
     lbl_804302F0.limit = lbl_804302F0.cap;
     lbl_804302F0.count = 0;
     var24 = 1;
-
     while (lbl_804302F0.count + 1 <= lbl_804302F0.limit && var24 < 0x64) {
         cur = lbl_804302F0.count;
         entry = &lbl_804302F0.data[cur];
@@ -453,30 +445,33 @@ s32 fn_8016A8F8(void* alarm) {
 #pragma use_lmw_stmw on
 void fn_8016AC18(u8* arg0) { *arg0 = 0; }
 
-void* fn_8016AC24(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (*(u8*)arg0 != 0) {
-            fn_802C6CF8(*(void**)((u8*)arg0 + 0x20));
-            *(u8*)arg0 = 0;
+/* Destroy/cleanup helper: if the object is live, release its owned resource at +0x20 and mark it dead, then optionally free the object. */
+void* fn_8016AC24(void* self, s32 shouldDelete) {
+    if (self != 0) {
+        if (*(u8*)self != 0) {
+            fn_802C6CF8(*(void**)((u8*)self + 0x20));
+            *(u8*)self = 0;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 s32 fn_8016AC90(s32 unused) {
     typedef struct AEntry { u8 flag; u8 pad1[3]; void *ptr4; void *ptr8; float data[11]; u8 b3c; u8 b3d; u8 pad3e[2]; float f40; float f44; } AEntry;
     typedef struct BEntry { u8 flag; char name[31]; s32 first; s32 count; u8 last; } BEntry;
-    Ctr804302F0 *aMgr;
-    Ctr804302F0 *bMgr;
-    void *obj;
-    void *cfg;
-    void *iter;
-    void *item;
-    void *sub;
-    s32 i;
-    s32 j;
-    s32 k2;
+    register Ctr804302F0 *aMgr;
+    register Ctr804302F0 *bMgr;
+    register void *obj;
+    register void *cfg;
+    register void *iter;
+    register void *item;
+    register void *sub;
+    register s32 i;
+    register s32 j;
+    register s32 k2;
     AEntry *aEnt;
     BEntry *bEnt;
     float floats[12];
@@ -484,8 +479,8 @@ s32 fn_8016AC90(s32 unused) {
     float v2[3];
     float limit;
     float base;
-    aMgr = (Ctr804302F0 *)&lbl_80430318;
-    bMgr = (Ctr804302F0 *)&lbl_80430340;
+    aMgr = (Ctr804302F0 *)(lbl_804302E0 + 0x38);
+    bMgr = (Ctr804302F0 *)(lbl_804302E0 + 0x60);
     if (aMgr->ptr10 != 0) {
         fn_8002F6AC(aMgr->ptr10, fn_8016B550);
         aMgr->ptr10 = 0;
@@ -567,13 +562,13 @@ s32 fn_8016AC90(s32 unused) {
                                         aEnt->data[10] = floats[10];
                                         {
                                             s32 found = -1;
-                                            s32 ctr = ((Ctr804302F0 *)&lbl_804302F0)->count;
+                                            s32 ctr = ((Ctr804302F0 *)(lbl_804302E0 + 0x10))->count;
                                             AEntry *p2;
-                                            for (p2 = (AEntry *)((Ctr804302F0 *)&lbl_804302F0)->data; ctr > 0; p2++, ctr--) {
-                                                if (p2->ptr4 == aEnt->ptr4) { found = (s32)(p2 - (AEntry *)((Ctr804302F0 *)&lbl_804302F0)->data); break; }
+                                            for (p2 = (AEntry *)((Ctr804302F0 *)(lbl_804302E0 + 0x10))->data; ctr > 0; p2++, ctr--) {
+                                                if (p2->ptr4 == aEnt->ptr4) { found = (s32)(p2 - (AEntry *)((Ctr804302F0 *)(lbl_804302E0 + 0x10))->data); break; }
                                             }
                                             if (found >= 0) {
-                                                aEnt->ptr8 = &((AEntry *)((Ctr804302F0 *)&lbl_804302F0)->data)[found];
+                                                aEnt->ptr8 = &((AEntry *)((Ctr804302F0 *)(lbl_804302E0 + 0x10))->data)[found];
                                                 aEnt->b3c = 0;
                                                 aEnt->f44 = base;
                                                 aEnt->flag = 1;
@@ -631,7 +626,7 @@ s32 fn_8016AC90(s32 unused) {
     fn_802E30C8(&lbl_80330460[0x64]);
     return 0;
 }
-
+#pragma pop
 void fn_8016B4F0(u8* arg0) { *arg0 = 0; }
 
 u8* fn_8016B4FC(u8* arg0, s32 arg1) { if(arg0) { *arg0=0; if(arg1>0) fn_80128668(arg0); } return arg0; }
