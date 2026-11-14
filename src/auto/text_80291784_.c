@@ -164,15 +164,17 @@ finish:
 #pragma cplusplus reset
 
 #pragma scheduling invalid_target
-void fn_802919AC(void *arg0) {
-    void *saved = arg0;
-    void *cursor = saved;
-    int i = 0;
-    while (i < *((int *)((char *)saved + 0x120))) {
-        fn_802CAC54(*((int *)((char *)cursor + 0xC)));
-        *((int *)((char *)cursor + 0xC)) = -1;
-        cursor = (char *)cursor + 0x24;
-        i++;
+/* Release texture references for each entry in the list and mark slots as invalid. */
+void fn_802919AC(void *list) {
+    void *base = list;
+    void *entry = base;
+    int index = 0;
+
+    while (index < *((int *)((char *)base + 0x120))) {
+        fn_802CAC54(*((int *)((char *)entry + 0xC)));
+        *((int *)((char *)entry + 0xC)) = -1;
+        entry = (char *)entry + 0x24;
+        index++;
     }
 }
 #pragma push
@@ -361,10 +363,8 @@ void fn_80291E64(void *arg0) {
         scale = (float)i * step + *(float *)(ent + 0x20) * k;
         if (one < scale)
             scale = one;
-        if (scale > zero) {
-        } else {
+        if (scale < zero)
             scale = zero;
-        }
         v[0] = s[0] + scale * sx;
         v[1] = s[1] + scale * sy;
         v[2] = s[2] + scale * sz;
@@ -438,13 +438,14 @@ void fn_802921F4(void) {
 void fn_8029222C(void) {
     register int *base;
     register char *p;
-    register int count;
     register char zero;
+    register int count;
+
     if (lbl_8055F75C == 0) return;
     p = (char *)&lbl_804B3EC0;
+    zero = 0;
     base = (int *)p;
     count = 0;
-    zero = 0;
     goto check;
 loop:
     p[0x14] = zero;
