@@ -21,6 +21,10 @@ extern f32 fn_801C3B6C(void);
 #define nth_string         fn_801C98F4  /* string blob, index -> index-th string */
 #define draw_entry_details fn_801CA1C4  /* entry, x, y, line advance */
 
+#define FLOAT_TEN lbl_80562978 /* 10.0f: squared it is the 1/100 quantum
+                                * fn_801C3450 truncates to, and a 10-unit
+                                * threshold in fn_801C6B70 */
+
 /* Text field the debug menu's "set ..." items read; the strings it copies into
  * hold space-separated name lists, which fn_801C3954 turns into a player mask
  * (the entry mask is mask(sWhoList) & ~mask(sWhoNotList)). */
