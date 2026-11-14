@@ -3254,7 +3254,13 @@ int fn_80165848(int arg0, int arg1, int arg2, int arg3, int arg4, int *arg5) {
 #pragma dont_inline off
 
 #pragma cplusplus on
-extern "C" int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
+extern "C" int fn_80165894(s32 unused0, s32 unused1, float *outValue, s32 index) {
+    /* If the slot at index is active, writes a default value and dispatches to
+     * a cached object's virtual method (slot 12). Always returns 0. */
+#define cacheSlotActive lbl_804348E8
+#define cacheTableBase lbl_8042FDEC
+#define cacheObjectIndex lbl_8055E304
+#define cacheDefaultValue lbl_80561848
     struct CacheObject {
         virtual void f0();
         virtual void f1();
@@ -3270,11 +3276,15 @@ extern "C" int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
         virtual void f11();
         virtual void invoke(float *, s32);
     };
-    if (lbl_804348E8[arg3]) {
-        *arg2 = lbl_80561848;
-        ((CacheObject **)(*(char **)lbl_8042FDEC))[lbl_8055E304]->invoke(arg2, arg3);
+    if (cacheSlotActive[index]) {
+        *outValue = cacheDefaultValue;
+        ((CacheObject **)(*(char **)cacheTableBase))[cacheObjectIndex]->invoke(outValue, index);
     }
     return 0;
+#undef cacheSlotActive
+#undef cacheTableBase
+#undef cacheObjectIndex
+#undef cacheDefaultValue
 }
 #pragma cplusplus off
 int fn_80165900(void) { return 1; }
