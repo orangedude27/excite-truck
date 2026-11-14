@@ -34,6 +34,17 @@ typedef struct RenderNode { RenderBatch *batches; int count; int type; u8 enable
 typedef struct RenderEntry { void *name; int state; int kind; RenderNode *nodes; } RenderEntry;
 typedef struct RenderList { RenderEntry **items; int count; } RenderList;
 typedef struct RenderMatrix { int words[8]; } RenderMatrix;
+/* Pool of 0x44-byte tree-shadow-list entries ("treeshdwlst", global lbl_8055FA7C),
+ * allocated by fn_802BAD9C and destroyed by fn_802B9DD0. */
+typedef struct TreeShadowListPool {
+    int items;     /* 0x00: base of 0x44-byte entry array */
+    int usedCount; /* 0x04: number of entries allocated so far */
+    int capacity;  /* 0x08: total entry capacity */
+    int itemArray; /* 0x0C: __construct_new_array pointer (cookie at itemArray - 0x10) */
+} TreeShadowListPool;
+#define gTreeShadowListPool lbl_8055FA7C
+#define Mem_freeObject      fn_80128668
+#define Mem_freeArray       fn_80128670
 extern int lbl_802FAB40[];
 extern void fn_802C21B8(void), fn_802C28C0(void), fn_802C8BD0(void), fn_802C8D74(void), fn_802DC130(void), fn_802DC134(void), fn_802DC278(void), fn_802DC27C(void);
 extern void fn_802CADD0(int,int), fn_802D3D94(int,void*,...);
@@ -1373,15 +1384,16 @@ found:
 #pragma processor 750
 void fn_802BAD0C(void *arg0, float angle) {
     float c;
-    float x;
+    register float x;
     float s;
     float y;
-    x = *(float *)((char *)arg0 + 0);
+    float *p = (float *)arg0;
+    x = p[0];
     c = (float)cos(angle);
     s = (float)sin(angle);
-    y = *(float *)((char *)arg0 + 4);
-    *(float *)((char *)arg0 + 4) = y * c + x * s;
-    *(float *)((char *)arg0 + 0) = *(float *)((char *)arg0 + 0) * c - y * s;
+    y = p[1];
+    p[0] = p[0] * c - y * s;
+    p[1] = x * s + y * c;
 }
 #pragma pop
 int fn_80128668(void *);
