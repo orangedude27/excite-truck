@@ -794,32 +794,48 @@ extern "C" void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
         p->call(arg0, arg1, arg2);
     }
 }
+#pragma cplusplus on
+/* Draw the screen the challenge sub-task manager is showing.  Its current
+ * sub-task (lbl_8055E300: the level-select menu at index 0 of the list at
+ * lbl_8042FDEC, or one of the "StuntChallenge" tutorial screens made from that
+ * configuration's "challenge" nodes) says with slot 0x24 whether its challenge
+ * is over and its "finish_delay" has run out; the manager then draws the
+ * results view (slot 0x48) instead of the running one (slot 0x44).  What the
+ * draw method returns comes back; with no current sub-task nothing is drawn
+ * and 0 comes back. */
 extern "C" s32 fn_80161A70(void) {
-    struct Dummy {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void f6();
-        virtual s32 f7();
-        virtual s32 f8();
-        virtual s32 f9();
-        virtual s32 f10();
-        virtual void f11();
-        virtual void f12();
-        virtual void f13();
-        virtual void f14();
-        virtual s32 f15(s32);
-        virtual s32 f16(s32);
+    /* A sub-task of the manager.  The level-select menu (vtable lbl_8032F790)
+     * and a tutorial screen (vtable lbl_8032F858) share this layout; MWCC
+     * leaves the first two vtable slots to the class's destructors, so the
+     * first method declared here is the one at vtable+0x08 (the destructor
+     * fn_80162938). */
+    struct ChallengeSubTask {
+        virtual void m08();
+        virtual void m0C();
+        virtual void m10();
+        virtual void m14();
+        virtual void m18();
+        virtual void m1C();
+        virtual void m20();  /* fn_80162A14: reset */
+        virtual s32 isOver();  /* fn_80162FE8: over, and its finish delay past */
+        virtual void m28();
+        virtual void m2C();
+        virtual void m30();
+        virtual void m34();
+        virtual void m38();
+        virtual void m3C();
+        virtual void m40();  /* fn_8016306C: dispatch(action, index, ...) */
+        virtual s32 draw(s32);  /* the running view: timer / level list */
+        virtual s32 drawResults(s32);  /* the results banner; the menu draws nothing */
     };
-    if (lbl_8055E300 != 0) {
-        if (((Dummy *)lbl_8055E300)->f7() != 0) {
-            return ((Dummy *)lbl_8055E300)->f16(0);
+#define current_subtask lbl_8055E300
+    if (current_subtask != 0) {
+        if (((ChallengeSubTask *)current_subtask)->isOver() != 0) {
+            return ((ChallengeSubTask *)current_subtask)->drawResults(0);
         }
-        return ((Dummy *)lbl_8055E300)->f15(0);
+        return ((ChallengeSubTask *)current_subtask)->draw(0);
     }
+#undef current_subtask
     return 0;
 }
 extern "C" void fn_80161AEC(void) {
