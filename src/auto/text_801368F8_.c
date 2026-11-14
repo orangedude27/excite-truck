@@ -3,6 +3,52 @@
 
 typedef signed int s32;
 typedef float f32;
+typedef signed char s8;
+typedef unsigned char u8;
+
+/* The "proxer" (lbl_8055E0D0 / lbl_8055E0D4): the pairwise proximity table of
+ * the racing cars. One ProxPair record per unordered pair of cars, plus one
+ * ProxRow per car; every row carries three planes of carCount ProxPair
+ * pointers, so a car can look up its relation to any other car (its own
+ * entries stay 0). */
+typedef struct ProxPair {
+    s8 near;                    /* +0x00 the two cars are within the radius */
+    u8 pad01[3];
+    f32 time;                   /* +0x04 seconds until the two would meet */
+    u8 hitA;                    /* +0x08 car A (+0x0C) is about to be hit */
+    u8 pad09[3];
+    s32 indexA;                 /* +0x0C the pair's lower car index */
+    u8 hitB;                    /* +0x10 car B (+0x14) is about to be hit */
+    u8 pad11[3];
+    s32 indexB;                 /* +0x14 the pair's higher car index */
+    f32 distSq;                 /* +0x18 dx * dx + dz * dz */
+    f32 dx;                     /* +0x1C B's x minus A's */
+    f32 dz;                     /* +0x20 B's z minus A's */
+    f32 dSpeed;                 /* +0x24 B's speed minus A's */
+    f32 dVelocity;              /* +0x28 B's forward velocity minus A's */
+} ProxPair;                     /* 0x2C bytes */
+
+typedef struct ProxRow {
+    f32 x;                      /* +0x00 */
+    f32 z;                      /* +0x04 */
+    f32 speed;                  /* +0x08 */
+    f32 velocity;               /* +0x0C */
+    u8 pad10[4];
+    u8 flag14;                  /* +0x14 */
+    u8 active;                  /* +0x15 this car's row is filled in */
+    u8 state;                   /* +0x16 the car's state bits */
+    u8 pad17;
+    ProxPair *relations[1];     /* +0x18 plane 0; 3 planes of carCount follow */
+} ProxRow;                      /* 0x18 + 12 * carCount bytes */
+
+typedef struct Proxer {
+    s32 carCount;               /* +0x00 how many cars the table covers */
+    s32 sortIndex;              /* +0x04 car the last sort (fn_801376A8) was for */
+    ProxPair *pairs;            /* +0x08 carCount * (carCount - 1) / 2 records */
+    s32 rowStride;              /* +0x0C bytes per row: 0x18 + 12 * carCount */
+    ProxRow *rows;              /* +0x10 one row per car */
+    f32 time;                   /* +0x14 time the table was built */
+} Proxer;                       /* 0x18 bytes */
 #define F(p,o) (*(f32 *)((char *)(p)+(o)))
 #define I(p,o) (*(s32 *)((char *)(p)+(o)))
 #define B(p,o) (*(unsigned char *)((char *)(p)+(o)))
@@ -207,8 +253,9 @@ void fn_80136EA4(void *arg0, s32 arg1) {
     s32 *source;
     s32 stride;
     s32 index;
-    s32 base;
+    s32 *base;
     s32 destination;
+    s32 tmp;
 
     source = lbl_8032BEB4;
     values[0] = *source++;
@@ -216,11 +263,12 @@ void fn_80136EA4(void *arg0, s32 arg1) {
     values[2] = *source++;
     stride = *(s32 *)((char *)arg0 + 0xC);
     index = *(s32 *)arg0;
-    base = *(s32 *)((char *)arg0 + 0x10);
-    destination = base + arg1 * stride;
+    tmp = arg1 * stride;
+    base = *(s32 **)((char *)arg0 + 0x10);
+    destination = (s32)base + tmp;
     destination += index * 8;
     destination += 0x18;
-    fn_801376A8((s32)arg0, (s32 *)destination, (s32)values, arg1, (s32 *)base);
+    fn_801376A8((s32)arg0, (s32 *)destination, (s32)values, arg1, base);
 }
 
 extern void *fn_801B2ED0(int);
