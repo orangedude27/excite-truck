@@ -192,7 +192,7 @@ void fn_802BBBC8(void) {
     extern char lbl_8034AAB8[];
     extern char lbl_8034AAC4[];
     extern void fn_801345D8(char *, int, char *, ...);
-    extern int fn_802E317C(char *, ...);
+    extern void fn_802E317C(char *, ...);
     extern int fn_802CA294(void);
     extern signed char fn_802B05E4(void);
     char sp10[0x20];
@@ -202,7 +202,7 @@ void fn_802BBBC8(void) {
     register int var_r25;
     register signed char *colors;
     int temp_r3;
-    register int var_r3;
+    int var_r3;
 
     args[0] = lbl_80564CF8;
     var_r27 = lbl_804C0098;
@@ -210,14 +210,14 @@ void fn_802BBBC8(void) {
     args[1] = lbl_80564CFC;
     var_r25 = 0;
     colors = &lbl_8055CF30;
-    do {
+    for (; var_r25 < 6;) {
         fn_801345D8(sp10, 0x20, lbl_8034AAB8, args[var_r25 / 3], colors[var_r25 % 3]);
         temp_r3 = fn_802BB87C((int)sp10);
         *var_r27 = temp_r3;
         if (temp_r3 == -2) {
             fn_802E317C(lbl_8034AAC4, var_r25);
         }
-        if (*var_r27 == -2) {
+        if (*(volatile int *)var_r27 == -2) {
             var_r3 = 0;
         } else {
             var_r3 = fn_802CA294();
@@ -226,7 +226,7 @@ void fn_802BBBC8(void) {
         *var_r26 = var_r3;
         var_r27++;
         var_r26++;
-    } while (var_r25 < 6);
+    }
     lbl_8055FA90 = fn_802B05E4();
 }
 #pragma pop
@@ -234,18 +234,19 @@ void fn_802BBBC8(void) {
 #pragma scheduling invalid_target
 #pragma inline_depth(0)
 void fn_802BBCC4(void) {
+    /* Release up to 6 tracked resource handles in lbl_804C0098 and clear their corresponding flags in lbl_804C00B0. */
     extern int lbl_804C0098[];
     extern int lbl_804C00B0[];
-    int *var_r30 = lbl_804C0098;
-    int *var_r29 = lbl_804C00B0;
-    int var_r28 = 0;
+    int *handle = lbl_804C0098;
+    int *flag = lbl_804C00B0;
+    int i = 0;
     do {
-        fn_802BB8E4(var_r30);
-        var_r28 += 1;
-        *var_r29 = 0;
-        var_r30++;
-        var_r29++;
-    } while (var_r28 < 6);
+        fn_802BB8E4(handle);
+        i += 1;
+        *flag = 0;
+        handle++;
+        flag++;
+    } while (i < 6);
 }
 
 #pragma push
@@ -477,14 +478,20 @@ int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
                 d = sp8;
                 s = sp10;
                 for (i = 0; i < 3; i++) {
-                    a = (float)s[0];
-                    b = (float)d[0];
+                    double ds0, dd0, ds1, dd1;
+                    int hi = 0x43300000;
+                    ((int *)&ds0)[0] = hi; ((int *)&ds0)[1] = s[0];
+                    a = (float)(ds0 - lbl_80564D08);
+                    ((int *)&dd0)[0] = hi; ((int *)&dd0)[1] = d[0];
+                    b = (float)(dd0 - lbl_80564D08);
                     f = a + farg0 * (b - a);
                     if (f < lbl_80564D00) f = f - lbl_80564D04;
                     else f = lbl_80564D04 + f;
                     d[0] = (unsigned char)(int)f;
-                    a = (float)s[1];
-                    b = (float)d[1];
+                    ((int *)&ds1)[0] = hi; ((int *)&ds1)[1] = s[1];
+                    a = (float)(ds1 - lbl_80564D08);
+                    ((int *)&dd1)[0] = hi; ((int *)&dd1)[1] = d[1];
+                    b = (float)(dd1 - lbl_80564D08);
                     f = a + farg0 * (b - a);
                     if (f < lbl_80564D00) f = f - lbl_80564D04;
                     else f = lbl_80564D04 + f;
