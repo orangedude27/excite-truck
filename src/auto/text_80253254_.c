@@ -23,6 +23,7 @@ extern void fn_80015B20(void *, void *, void *);
 extern float fn_8023659C(void);
 
 extern void *lbl_80498E08[];
+extern float lbl_80498E18[3];
 extern s32 lbl_8055F33C;
 extern s32 fn_8012D838(s32);
 extern void fn_8012D8A8(s32);
