@@ -483,6 +483,7 @@ void fn_801D4F9C(void) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801D4FA0(void *arg0) {
+    /* Call virtual method v8 on each entry in the object's pointer array at +0x30 (count at +0x34). */
     struct E {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
