@@ -163,9 +163,10 @@ void fn_80234DE4(unsigned int artId) {
     fn_80128668(node);
 }
 
-void *fn_80234E88(const char *arg0) {
+/* Find a linked list node by case-insensitive name and return its stored pointer, or 0 if not found. */
+void *fn_80234E88(const char *name) {
     void *node = lbl_8055F084;
-    while (node != 0 && stricmp(arg0, *(const char **)node) != 0)
+    while (node != 0 && stricmp(name, *(const char **)node) != 0)
         node = *(void **)((char *)node + 4);
     if (node == 0)
         return 0;
