@@ -52,16 +52,17 @@ typedef struct InputBinding {
 extern char lbl_8055E5C8;
 #pragma push
 #pragma scheduling invalid_target
-const char **fn_801A75B4(const char *arg0) {
+/* Find the named entry in the global table (0x15 entries of 8 bytes), case-insensitively. */
+const char **fn_801A75B4(const char *name) {
     const char **entry = (const char **)lbl_802F9588;
-    int i = 0;
+    int index = 0;
 
     do {
-        if (stricmp(*entry, arg0) == 0)
+        if (stricmp(*entry, name) == 0)
             return entry;
-        i++;
+        index++;
         entry = (const char **)((char *)entry + 8);
-    } while (i < 0x15);
+    } while (index < 0x15);
     return 0;
 }
 #pragma pop
