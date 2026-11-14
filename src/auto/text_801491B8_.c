@@ -2156,6 +2156,11 @@ s32 fn_8014F088(s32, s32);
 #pragma push
 #pragma scheduling off
 #pragma peephole off
+/* Betamaster reset (vtable slot +0x10 of the "betamaster" object whose
+ * vtable is lbl_8032D970, built by fn_8014DE50): clears the per-car coin
+ * records when the coin_file feature is present, resets the growcoin /
+ * MechaSimpleArray tables, stops the "prerace.sfx" sound and clears the
+ * flag saying that sound has been started. */
 void fn_80150B60(void *object) {
     /* One of the game's Sound objects (created by fn_80207848, pool tag
      * "Sound"); its update fn_80206824 stops the sound when +0x4A is set. */
@@ -2192,7 +2197,6 @@ void fn_80150B60(void *object) {
     }
     master->preraceSfxStarted = 0;
 }
-
 void fn_80150BDC(void *arg0) {
     float a = lbl_80561648;
     float b = lbl_80561650;
