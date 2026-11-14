@@ -11477,12 +11477,14 @@ extern "C" s32 fn_800B7CE8(s32 arg0) {
 }
 
 extern "C" void fn_800B7E38(u32);
-extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callback arg2) {
+/* Install status callback handlers for the requested subsystem and return 0 on
+ * success or -1 on failure; returns -2 for an unknown subsystem id. */
+extern "C" s32 fn_800B7DB0(s32 subsystemId, Unk800B7E18Callback callback0, Unk800B7E18Callback callback1) {
     s32 result;
-    switch (arg0) {
+    switch (subsystemId) {
     case 0:
-        lbl_80405D00[0] = arg1;
-        lbl_80405D00[1] = arg2;
+        lbl_80405D00[0] = callback0;
+        lbl_80405D00[1] = callback1;
         result = fn_800BA3F4((Unk800B7E18Callback)fn_800B7E18, (Unk800B7E18Callback)fn_800B7E38);
         break;
     default:
