@@ -19516,13 +19516,14 @@ extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32 chan, s
     if (extensionCallback != 0) extensionCallback(chan, status);
 }
 
+/* OSAlarm callback: play stop sound on the controller if active, then clear its pending flag. */
 extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *alarm, OSContext *) {
-    void *entry;
-    void *sound;
-    entry = lbl_80407780[(s32)OSGetAlarmUserData(alarm)];
-    sound = *(void **)entry;
-    if (fn_80060C7C(sound) != 0) fn_80060CC0(sound, 3, 0);
-    *((u8 *)entry + 0x41) = 0;
+    void *controllerEntry;
+    void *soundHandle;
+    controllerEntry = lbl_80407780[(s32)OSGetAlarmUserData(alarm)];
+    soundHandle = *(void **)controllerEntry;
+    if (fn_80060C7C(soundHandle) != 0) fn_80060CC0(soundHandle, 3, 0);
+    *((u8 *)controllerEntry + 0x41) = 0;
 }
 
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
