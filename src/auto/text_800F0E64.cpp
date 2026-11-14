@@ -3896,10 +3896,12 @@ extern "C" int fn_800FD810(void *, int);
 extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void *, int, u16 *);
 extern "C" u8 lbl_8055DE98;
 extern "C" const char lbl_80325624[];
-#pragma cplusplus on
-#pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma push
+#pragma dont_inline off
+#pragma always_inline on
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(void *arg0) {
+    register void *temp_r29;
+    register void *temp_r30;
     s16 sp8;
     u8 padding[6];
     u8 sp10[0x200];
@@ -3907,9 +3909,7 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(v
     s32 temp_r25;
     s32 temp_r26;
     register s32 temp_r27;
-    register void *temp_r29;
     register s32 temp_r29_2;
-    register void *temp_r30;
     register s32 temp_r30_2;
     register s32 temp_r5;
     u8 *temp_r6;
@@ -3956,16 +3956,7 @@ fail_6f1c:
         }
         goto done;
 success_6f5c:
-        temp_r29 = M2C_FIELD(arg0, void ***, 0x14);
-        temp_r30 = (void *)&lbl_8055DE98;
-        var_r3 = (void **)((DummyStrmLoadCallback *)temp_r29)->f2();
-        while (var_r3 != 0) {
-            if (var_r3 == (void **)temp_r30) { var_r0 = 1; goto scan_done; }
-            var_r3 = (void **)*var_r3;
-        }
-        var_r0 = 0;
-scan_done:
-        if (var_r0 != 0) { } else { temp_r29 = 0; }
+        temp_r29 = StrmLoadDynamicCast(M2C_FIELD(arg0, void ***, 0x14), &lbl_8055DE98);
         if (temp_r29 != 0) {
             M2C_FIELD(temp_r29, s32 *, 0x68) = 1;
         }
@@ -4022,9 +4013,7 @@ scan_done:
 done:;
     }
 }
-#pragma scheduling on
-#pragma use_lmw_stmw on
-#pragma cplusplus reset
+#pragma pop
 
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_800F7FEC(void* task) {
     class BasicSound {
