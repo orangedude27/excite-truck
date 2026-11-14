@@ -656,19 +656,34 @@ s32 fn_8024762C(void) {
 }
 
 #pragma scheduling invalid_target
+/* Selects the current menu entry's default item, enables each selectable child
+ * item (count from the menu config table at gMenuConfigTable[menuIndex].count),
+ * then moves focus to item 0x14. */
 void fn_8024768C(void) {
-    s32 i;
+#define gSelectedMenuItem lbl_8055BEAC
+#define gMenuConfigTable lbl_802FA3B4
+#define gCurrentMenuIndex lbl_8055F26C
+#define UI_SetSelectedItem fn_80214CB4
+#define UI_EnableItem fn_80214B44
+#define UI_FocusItem fn_80214A9C
+    s32 itemIndex;
 
-    fn_80214CB4((s32)lbl_8055BEAC);
-    i = 1;
+    UI_SetSelectedItem((s32)gSelectedMenuItem);
+    itemIndex = 1;
     goto check;
 loop:
-    fn_80214B44(i);
-    i += 1;
+    UI_EnableItem(itemIndex);
+    itemIndex += 1;
 check:
-    if (i < *(s32 *)((char *)lbl_802FA3B4 + lbl_8055F26C * 0xC + 8))
+    if (itemIndex < *(s32 *)((char *)gMenuConfigTable + gCurrentMenuIndex * 0xC + 8))
         goto loop;
-    fn_80214A9C(0x14);
+    UI_FocusItem(0x14);
+#undef gSelectedMenuItem
+#undef gMenuConfigTable
+#undef gCurrentMenuIndex
+#undef UI_SetSelectedItem
+#undef UI_EnableItem
+#undef UI_FocusItem
 }
 #pragma scheduling on
 s32 fn_802476FC(void) {
@@ -1499,10 +1514,9 @@ void fn_80248E30(void *arg0) {
     extern void fn_8020A634(void);
     extern s32 fn_8020A640(void);
     extern void fn_80221F94(void *, s32);
-    s32 now;
+    register s32 now;
     s32 duration;
-    s32 elapsed;
-    s32 state;
+    register s32 elapsed;
     float factor;
     float value;
 
@@ -1527,8 +1541,7 @@ void fn_80248E30(void *arg0) {
 
     if (now > *(s32 *)((char *)arg0 + 0x1C) +
               *(s32 *)((char *)arg0 + 0x20)) {
-        state = *(s32 *)((char *)arg0 + 0x18);
-        switch (state) {
+        switch (*(s32 *)((char *)arg0 + 0x18)) {
         case 1: fn_80221F94(arg0, -0xEA); break;
         case 4: fn_80221F94(arg0, -1); break;
         case 2: fn_80221F94(arg0, -2); break;
