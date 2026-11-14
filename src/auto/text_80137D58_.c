@@ -88,31 +88,32 @@ void fn_80137F30(void *arg0) {
 }
 #pragma dont_inline reset
 
-void fn_80137F74(void *arg0) {
-    unsigned char a0;
-    unsigned char a4;
-    unsigned char a8;
-    unsigned char a1;
-    unsigned char a5;
-    unsigned char a9;
-    a0 = ((unsigned char *)arg0)[0];
-    a1 = ((unsigned char *)arg0)[1];
-    a4 = ((unsigned char *)arg0)[4];
-    a5 = ((unsigned char *)arg0)[5];
-    a8 = ((unsigned char *)arg0)[8];
-    a9 = ((unsigned char *)arg0)[9];
-    ((unsigned char *)arg0)[0] = ((unsigned char *)arg0)[3];
-    ((unsigned char *)arg0)[3] = a0;
-    ((unsigned char *)arg0)[1] = ((unsigned char *)arg0)[2];
-    ((unsigned char *)arg0)[2] = a1;
-    ((unsigned char *)arg0)[4] = ((unsigned char *)arg0)[7];
-    ((unsigned char *)arg0)[7] = a4;
-    ((unsigned char *)arg0)[5] = ((unsigned char *)arg0)[6];
-    ((unsigned char *)arg0)[6] = a5;
-    ((unsigned char *)arg0)[8] = ((unsigned char *)arg0)[0xb];
-    ((unsigned char *)arg0)[0xb] = a8;
-    ((unsigned char *)arg0)[9] = ((unsigned char *)arg0)[0xa];
-    ((unsigned char *)arg0)[0xa] = a9;
+void fn_80137F74(void *data) {
+    /* Byte-swaps three consecutive 32-bit words (12 bytes) in place. */
+    unsigned char byte0;
+    unsigned char byte4;
+    unsigned char byte8;
+    unsigned char byte1;
+    unsigned char byte5;
+    unsigned char byte9;
+    byte0 = ((unsigned char *)data)[0];
+    byte1 = ((unsigned char *)data)[1];
+    byte4 = ((unsigned char *)data)[4];
+    byte5 = ((unsigned char *)data)[5];
+    byte8 = ((unsigned char *)data)[8];
+    byte9 = ((unsigned char *)data)[9];
+    ((unsigned char *)data)[0] = ((unsigned char *)data)[3];
+    ((unsigned char *)data)[3] = byte0;
+    ((unsigned char *)data)[1] = ((unsigned char *)data)[2];
+    ((unsigned char *)data)[2] = byte1;
+    ((unsigned char *)data)[4] = ((unsigned char *)data)[7];
+    ((unsigned char *)data)[7] = byte4;
+    ((unsigned char *)data)[5] = ((unsigned char *)data)[6];
+    ((unsigned char *)data)[6] = byte5;
+    ((unsigned char *)data)[8] = ((unsigned char *)data)[0xb];
+    ((unsigned char *)data)[0xb] = byte8;
+    ((unsigned char *)data)[9] = ((unsigned char *)data)[0xa];
+    ((unsigned char *)data)[0xa] = byte9;
 }
 
 /* Byte-swaps a 6-byte header region at +0x8..+0x13 and then swaps 8-byte records at +0x14 (count from *(int*)(base+8)). */
@@ -228,7 +229,7 @@ void fn_801381B4(void *arg0) {
     unsigned char *r;
     unsigned char *node;
     unsigned char t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
-    int i, mode, found;
+    int mode, found, i, i0, i1;
     t0 = v[0]; t3 = v[3]; t1 = v[1]; t2 = v[2]; t4 = v[4]; t7 = v[7]; t5 = v[5]; t6 = v[6];
     v[0] = t3; v[3] = t0; v[1] = t2; v[2] = t1; v[4] = t7; v[7] = t4; v[5] = t6; v[6] = t5;
     t0 = v[8]; t1 = v[0xb]; v[8] = t1; v[0xb] = t0;
@@ -243,15 +244,13 @@ void fn_801381B4(void *arg0) {
     v[0x14] = t1; v[0x17] = t0; v[0x15] = t3; v[0x16] = t2;
     v[0x18] = t5; v[0x1b] = t4; v[0x19] = t7; v[0x1a] = t6;
     v[0x2c] = t9; v[0x2f] = t8; v[0x2d] = t11; v[0x2e] = t10;
-    i = 0;
-    while (i < *(int *)(base + 0x2c)) {
+    for (i0 = 0; i0 < *(int *)(base + 0x2c); i0++) {
         t0 = p[0]; t1 = p[3]; p[0] = t1; p[3] = t0;
         t0 = p[1]; t1 = p[2]; p[1] = t1; p[2] = t0;
         p += 4;
-        i++;
     }
     r = base;
-    for (i = 0; i < *(int *)(base + 0x2c); i++) {
+    for (i1 = 0; i1 < *(int *)(base + 0x2c); i1++) {
         unsigned char *t = base + *(int *)(r + 0x30);
         r += 4;
         t0 = t[0]; t1 = t[3]; t[0] = t1; t[3] = t0;
@@ -261,8 +260,7 @@ void fn_801381B4(void *arg0) {
     fn_80138434(base + 0x1C);
     fn_80138434(base + 0x20);
     fn_80137D58(*(void **)(base + 0x1C), (int)base);
-    mode = 0;
-    do {
+    for (mode = 0; mode < 3; mode++) {
         found = 0;
         node = *(unsigned char **)(*(unsigned char **)(base + 0x1C) + 0x14);
         while (node != *(unsigned char **)(base + 0x1C)) {
@@ -274,8 +272,7 @@ void fn_801381B4(void *arg0) {
             }
             node = *(unsigned char **)(node + 0x14);
         }
-        mode++;
-    } while (mode < 3);
+    }
     node = *(unsigned char **)(base + 0x20);
     if (node != 0) {
         do {
@@ -514,18 +511,18 @@ void *fn_80138968(int arg0) {
         ok = 0;
         if (local.valid != 0) {
             if (local.size == 0x1E) {
-                unsigned int a = ((unsigned int *)obj)[1];
-                unsigned int b = ((unsigned int *)obj)[0];
-                local.wa = a;
-                local.wb = b;
+                unsigned int a = ((unsigned int *)obj)[0];
+                unsigned int b = ((unsigned int *)obj)[1];
+                local.wa = b;
+                local.wb = a;
                 if (local.b2) {
                     unsigned char *p = (unsigned char *)&local.wa;
                     unsigned char *q = (unsigned char *)&local.wb;
-                    unsigned char t;
-                    t = p[0]; p[0] = p[3]; p[3] = t;
-                    t = p[1]; p[1] = p[2]; p[2] = t;
-                    t = q[0]; q[0] = q[3]; q[3] = t;
-                    t = q[1]; q[1] = q[2]; q[2] = t;
+                    unsigned char t1, t3, t2, t4;
+                    t1 = p[0]; p[0] = p[3]; p[3] = t1;
+                    t2 = p[1]; p[1] = p[2]; p[2] = t2;
+                    t3 = q[0]; q[0] = q[3]; q[3] = t3;
+                    t4 = q[1]; q[1] = q[2]; q[2] = t4;
                 }
                 if (local.wa == 0x3C && local.wb == 0x30) {
                     if (local.b2) {
