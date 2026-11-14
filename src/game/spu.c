@@ -540,15 +540,23 @@ void fn_802E5828(void) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
+/* Allocates the next voice/sample object and stores it in the sound-name slot
+ * table; returns 1 on success, 0 if the table is full or allocation failed. */
 int fn_802E582C(void) {
-    if (lbl_8055FFA0 < 0x100) {
-        lbl_8055FF9C[lbl_8055FFA0] = (int)fn_802E5AE8();
-        if (lbl_8055FF9C[lbl_8055FFA0] == 0)
+#define gSoundSlotTable lbl_8055FF9C
+#define gSoundSlotCount lbl_8055FFA0
+#define Spu_allocVoiceObject fn_802E5AE8
+    if (gSoundSlotCount < 0x100) {
+        gSoundSlotTable[gSoundSlotCount] = (int)Spu_allocVoiceObject();
+        if (gSoundSlotTable[gSoundSlotCount] == 0)
             return 0;
-        lbl_8055FFA0 = lbl_8055FFA0 + 1;
+        gSoundSlotCount = gSoundSlotCount + 1;
         return 1;
     }
     return 0;
+#undef gSoundSlotTable
+#undef gSoundSlotCount
+#undef Spu_allocVoiceObject
 }
 #pragma scheduling on
 #pragma dont_inline reset
