@@ -329,18 +329,23 @@ extern "C" s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
     return answer;
 }
 #pragma pop
-void *fn_80297814(void *arg0, s32 arg1) {
-    s32 value;
-    if (arg0 != 0) {
-        value = *(s32 *)((u8 *)arg0 + 4);
-        *(void **)arg0 = &lbl_803493C0;
-        if (value != 0) fn_80296D28(value);
-        *(s32 *)((u8 *)arg0 + 4) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
-    }
-    return arg0;
-}
+/* Deleting destructor of a FlipBookElem -- slot 0x8 of its vtable, which
+ * fn_802971B0 calls as destroy(1) when the element fails its validity check.
+ * It installs the destructor's vtable, releases the "FlipBook" keyframe
+ * collection the element plays, and frees the element itself when the delete
+ * flag says the caller allocated it. */
+void *fn_80297814(FlipBookElem *elem, s32 deleteFlag) {
+    s32 book;
 
+    if (elem != 0) {
+        book = elem->book;
+        elem->vtable = &FlipBookElem_vtable;
+        if (book != 0) FlipBook_release(book);
+        elem->book = 0;
+        if (deleteFlag > 0) Mem_freeObject(elem);
+    }
+    return elem;
+}
 s32 fn_8029788C(void *arg0) {
     s32 val = *(s32 *)((u8 *)arg0 + 4);
     s32 neg = -val;
