@@ -2739,6 +2739,7 @@ extern "C" void *fn_8021CAD4(void *self, s32 deletingFlag) {
     #undef Image_release
     return self;
 }
+
 #pragma scheduling on
 extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     struct First {
