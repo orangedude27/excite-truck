@@ -10,6 +10,7 @@ void OSInitSemaphore(OSSemaphore* sem, s32 count) {
 }
 
 s32 OSWaitSemaphore(OSSemaphore* sem) {
+    /* Decrement the semaphore, sleeping the current thread until its count is positive. */
     BOOL enabled;
     s32 count;
 
