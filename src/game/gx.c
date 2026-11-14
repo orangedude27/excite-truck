@@ -1077,19 +1077,20 @@ void fn_802CFFAC(int arg0, int arg1, int arg2) {
     lbl_804C97B0[0x1C] = 1;
     spA = (unsigned char)(packed >> 8);
 }
-void fn_802D0014(float a, float b, float c) {
+void fn_802D0014(float startValue, float endValue, float delta) {
+    /* Sets up a float interpolation in the GX state block: stores start/end-step values and marks it active when |delta| exceeds the threshold. */
     extern unsigned char lbl_804C97B0[];
     extern char lbl_80558DC4[];
-    float magnitude = (float)__fabs((double)c);
-    ((float *)lbl_804C97B0)[2] = a;
+    float magnitude = (float)__fabs((double)delta);
+    ((float *)lbl_804C97B0)[2] = startValue;
     if (!(magnitude <= *(float *)lbl_80558DC4)) {
         lbl_804C97B0[0] = 1;
-        ((float *)lbl_804C97B0)[3] = a + ((b - a) / c);
+        ((float *)lbl_804C97B0)[3] = startValue + ((endValue - startValue) / delta);
     } else {
-        ((float *)lbl_804C97B0)[3] = b;
+        ((float *)lbl_804C97B0)[3] = endValue;
         lbl_804C97B0[0] = 0;
     }
-    ((float *)lbl_804C97B0)[4] = c;
+    ((float *)lbl_804C97B0)[4] = delta;
     lbl_804C97B0[0x1C] = 1;
 }
 #pragma push
