@@ -443,9 +443,9 @@ s32 fn_8001C0EC(void *arg0, s32 arg1) {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, logValue, mode2);
     }
 compare_a:
-    return value < arg1;
+    return (mode2, value < arg1);
 compare_b:
-    return arg1 < value;
+    return (mode2, arg1 < value);
 return_one:
     return 1;
 }
@@ -918,22 +918,40 @@ void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma use_lmw_stmw off
-s32 fn_8001CDB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 *entry;
+/* Reads one of a stat record's three counters: finds the record filed under (key, name) in a
+ * stat slot's record list and returns that counter's saved value, or the caller's default when
+ * the slot holds no such record or the counter has never been written. */
+s32 fn_8001CDB8(s32 slot, s32 key, s32 name, s32 counterIdx, s32 defaultValue) {
+    /* One of the record's counters; the flag says the counter holds a value, and fn_8001C35C
+     * clears all three when it adds a record. */
+    struct StatCounter {
+        s32 value; /* +0x08 + i * 0xC: the saved value */
+        s32 spare; /* +0x0C + i * 0xC */
+        u8 set;    /* +0x10 + i * 0xC */
+    };
+    /* A record of a stat slot's list, 0x2C bytes; fn_8001C2CC searches the list by key and
+     * name for it. */
+    struct StatCountedRecord {
+        u32 key;                        /* +0x00: what the record is filed under */
+        char *name;                     /* +0x04: its name, into the slot's string archive */
+        struct StatCounter counters[3]; /* +0x08: the three counters */
+    };
+    struct StatCountedRecord *record;
+    struct StatCounter *counter;
 
-    fn_8001C4DC();
-    entry = ((s32 *(*)(s32, s32, s32))fn_8001C2CC)(arg0, arg1, arg2);
-    if (entry == 0) {
+    fn_8001C4DC(); /* the stat code's lock hook, an empty stub in this build */
+    record = ((struct StatCountedRecord *(*)(s32, s32, s32))fn_8001C2CC)(slot, key, name);
+    if (record == 0) {
         goto fallback;
     }
-    entry = (s32 *)((u8 *)entry + arg3 * 0xC);
-    if (*(u8 *)((u8 *)entry + 0x10) != 0) {
+    counter = &record->counters[counterIdx];
+    if (counter->set != 0) {
         goto result;
     }
 fallback:
-    return arg4;
+    return defaultValue;
 result:
-    return entry[2];
+    return counter->value;
 }
 #pragma use_lmw_stmw reset
 s32 fn_8001CE34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
