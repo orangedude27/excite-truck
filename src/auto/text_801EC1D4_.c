@@ -654,7 +654,7 @@ void fn_801ED354(void *arg0) {
         fn_801ECF58(arg0);
         fn_801ECFE0(arg0);
         if (*(unsigned char *)((char *)*(void **)((char *)arg0 + 0x170) + *(int *)((char *)arg0 + 0x3F8) * 8 + 4) != 0) {
-            long i;
+            int i;
             long offset;
             char *current;
             char *p;
@@ -741,13 +741,16 @@ void fn_801ED694(long arg0) {
     fn_801ECCE0(arg0, 0);
 }
 
-void fn_801ED69C(void *arg0) {
-    void *ptr;
-    if (*(long *)((char *)arg0 + 0x40) == fn_801E866C(-1) &&
+/* If this vehicle is the active camera target and the interior view flag is set,
+   applies the vehicle's draw scale (+0x2CC), renders the interior parts via
+   fn_801ED718, and restores the previous draw scale. */
+void fn_801ED69C(void *vehicleRender) {
+    void *owner;
+    if (*(long *)((char *)vehicleRender + 0x40) == fn_801E866C(-1) &&
         fn_801E89C8(-1) != 0) {
-        ptr = *(void **)((char *)arg0 + 0x3C);
-        lbl_80488668[2] = fn_802C99E8(ptr, *(float *)((char *)ptr + 0x2CC));
-        fn_802C99E8(((void *(*)(void *))fn_801ED718)(arg0), lbl_80488668[2]);
+        owner = *(void **)((char *)vehicleRender + 0x3C);
+        lbl_80488668[2] = fn_802C99E8(owner, *(float *)((char *)owner + 0x2CC));
+        fn_802C99E8(((void *(*)(void *))fn_801ED718)(vehicleRender), lbl_80488668[2]);
     }
 }
 
@@ -989,7 +992,12 @@ void fn_801EE974(void *arg0, void *arg1) {
     entries = arg0;
     i = 0;
     do {
-        flag = (i == 0 || i == 1) ? 1 : 0;
+        flag = 0;
+        if (i == 0) goto enabled;
+        if (i != 1) goto checked;
+    enabled:
+        flag = 1;
+    checked:
         if (flag) {
             object = *(void **)(*(char **)((char *)arg0 + 0x188) + 0x2134);
             method = *(void *(**)(void *, void *))((char *)*(void **)object + 8);
