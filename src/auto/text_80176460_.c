@@ -914,6 +914,7 @@ extern s32 lbl_8055E400;
 extern s32 lbl_80430570[];
 void fn_80177658(void *arg0) {
     s32 i;
+    /* Invoke the given callback for each registered handle in the list. */
     for (i = 0; i < lbl_8055E400; i++) {
         ((void (*)(s32))arg0)(lbl_80430570[i]);
     }
