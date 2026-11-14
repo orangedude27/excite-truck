@@ -4734,10 +4734,11 @@ static inline void SoundPlayer_AttachPlayerHeap(s32 player, void *sound) {
 /* SoundPlayer: append the sound to the player's sound list (+0x0, node at sound+0xC0). */
 static inline void SoundPlayer_PushSoundList(s32 player, void *sound) {
     void *it;
+    void *end = (void *)(player + 4);
     if (sound == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262B8, 0x233, (const char *)lbl_80326294);
     }
-    it = (void *)(player + 4);
+    it = end;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((void *)player, &it, (u8 *)sound + 0xC0);
 }
 
