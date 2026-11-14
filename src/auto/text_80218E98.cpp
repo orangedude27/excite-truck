@@ -891,24 +891,24 @@ extern "C" void fn_80219358(void *arg0, f32 value) {
 }
 #pragma scheduling on
 #pragma pop
-extern "C" void fn_802193C8(void *arg0, f32 value) {
+extern "C" void fn_802193C8(void *obj, f32 value) {
     const f32 threshold = 0.1f;
     if (value < threshold) {
-        u8 enabled = *(u8 *)((u8 *)arg0 + 0x1A);
+        u8 enabled = *(u8 *)((u8 *)obj + 0x1A);
         if (enabled == 0)
             return;
         if (enabled != 0)
-            *(u8 *)((u8 *)arg0 + 0x234) = 1;
-        *(u8 *)((u8 *)arg0 + 0x1A) = 0;
+            *(u8 *)((u8 *)obj + 0x234) = 1;
+        *(u8 *)((u8 *)obj + 0x1A) = 0;
         return;
     }
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
-        if (*(f32 *)((u8 *)arg0 + 0x1C) < lbl_805634B4) {
-            *(f32 *)((u8 *)arg0 + 0x1C) = lbl_805634A4;
-            *(f32 *)((u8 *)arg0 + 0x24) = lbl_805634A4 / MAX(value, threshold);
+    if (*(u8 *)((u8 *)obj + 0x1A) != 0) {
+        if (*(f32 *)((u8 *)obj + 0x1C) < lbl_805634B4) {
+            *(f32 *)((u8 *)obj + 0x1C) = lbl_805634A4;
+            *(f32 *)((u8 *)obj + 0x24) = lbl_805634A4 / MAX(value, threshold);
         }
     }
-    *(f32 *)((u8 *)arg0 + 0x20) = lbl_805634A0;
+    *(f32 *)((u8 *)obj + 0x20) = lbl_805634A0;
 }
 
 #pragma dont_inline on
