@@ -9,6 +9,20 @@ extern void fn_80129C64(int);
 #define DebugPrintf fn_802E30C8
 #define sSeedLogFormat lbl_8032A5C0    /* "seed[%d]: %d, %d" */
 #define gRngStateBuffer lbl_804223F8   /* array of 0x19C-byte RNG state entries */
+#define Rng_NextFloat fn_8012A080      /* next [0,1) float drawn from a state block */
+
+/* One RNG state block (RNG_STATE_SIZE bytes): a table of 97 floats in [0,1)
+   walked by two cursors 64 apart, whose differences (wrapped back into [0,1))
+   feed a second subtract-with-borrow stage. */
+typedef struct RngState {
+    unsigned char initialized; /* 0x000: set once the table has been filled */
+    float table[97];           /* 0x004: [0,1) values, indexed by the cursors */
+    float acc;                 /* 0x188: second stage's running value */
+    float lag;                 /* 0x18C: value subtracted from acc */
+    float wrap;                /* 0x190: 0.99999994, added when a difference is negative */
+    int index0;                /* 0x194: table cursor, wraps back to 96 */
+    int index1;                /* 0x198: table cursor, wraps back to 96 */
+} RngState;
 
 void fn_80129C24(void) {
     int i = 0;
