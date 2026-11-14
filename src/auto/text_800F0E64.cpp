@@ -4055,14 +4055,18 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_
 extern "C" u8 lbl_80325BE8[];
 extern "C" u8 lbl_80325BB8[];
 #pragma push
+#pragma small_data off
+#pragma push
 #pragma dont_inline on
 #pragma small_data off
 u32 nw4hbm::snd::SoundArchivePlayer::detail_ConvertLabelStringToSoundId(const char *label) {
+    /* Convert a sound label string to its sound ID via the attached sound archive loader. */
     if (*(u32 *)((u8 *)this + 0x10) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325BE8, 0x163, (const char *)lbl_80325BB8);
     }
     return (u32)fn_800F27D4(*(void **)((u8 *)this + 0x10), (s32)label);
 }
+#pragma pop
 #pragma pop
 extern "C" void *__dt__Q36nw4hbm3snd9SoundHeapFv(void*, int);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8114(void *arg0, int arg1) {
