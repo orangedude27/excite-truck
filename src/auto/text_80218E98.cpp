@@ -9330,14 +9330,21 @@ extern "C" void *fn_8022A124(void *self, s32 deletingFlag) {
 extern "C" s32 fn_8012C33C(void *);
 extern "C" s32 fn_802C6FC0(void *, s32, s32);
 extern "C" void fn_8022A19C(void *arg0, void *arg1) {
-    s32 temp_r0 = *(s32 *)((u8 *)arg0 + 4);
-    if (temp_r0 != -1) {
-        fn_802C6CF8(temp_r0);
+#define MrModel_ReleaseHandle fn_802C6CF8
+#define MrModel_LoadHandle fn_802C6FC0
+#define Resource_Exists fn_8012C33C
+    /* Reload the model-view's mrModel handle from a resource path when the resource exists. */
+    s32 modelHandle = *(s32 *)((u8 *)arg0 + 4);
+    if (modelHandle != -1) {
+        MrModel_ReleaseHandle(modelHandle);
         *(s32 *)((u8 *)arg0 + 4) = -1;
     }
-    if (fn_8012C33C(arg1) != 0) {
-        *(s32 *)((u8 *)arg0 + 4) = fn_802C6FC0(arg1, 0, 0);
+    if (Resource_Exists(arg1) != 0) {
+        *(s32 *)((u8 *)arg0 + 4) = MrModel_LoadHandle(arg1, 0, 0);
     }
+#undef MrModel_ReleaseHandle
+#undef MrModel_LoadHandle
+#undef Resource_Exists
 }
 
 extern "C" void *fn_802C86DC(void);
