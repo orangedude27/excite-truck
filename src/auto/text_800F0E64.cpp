@@ -1634,16 +1634,17 @@ extern "C" s32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(v
     return *(s32 *)p;
 }
 
-extern "C" s32 GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(void *this_) {
- void *pData;
- void *p;
- pData = *(void**)((u8*)this_ + 0x28);
- if (((u8*)pData)[0x21] != 0) {
+/* Return the number of groups in the sound archive file (table count minus one). */
+extern "C" s32 GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(void *reader) {
+ void *archiveData;
+ void *groupTable;
+ archiveData = *(void**)((u8*)reader + 0x28);
+ if (((u8*)archiveData)[0x21] != 0) {
    Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A0, 0x6F, lbl_80324CB0);
  }
- p = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(((u8*)pData)[0x20], *(u32*)((u8*)pData + 0x24), pData);
- if (p == 0) return 0;
- return *(s32*)p - 1;
+ groupTable = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(((u8*)archiveData)[0x20], *(u32*)((u8*)archiveData + 0x24), archiveData);
+ if (groupTable == 0) return 0;
+ return *(s32*)groupTable - 1;
 }
 
 extern "C" const char lbl_80559898;
