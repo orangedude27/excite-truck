@@ -149,6 +149,10 @@ void fn_800339B0(void *arg0, void *arg1) {
 
 extern float lbl_80560AE8;
 extern unsigned int __cvt_fp2unsigned(float);
+/* AXSetVoiceTempo: store the voice's playback ratio (tempo) as 16.16 fixed point
+   in its parameter block's SRC ratio halves, and flag the tempo so the mixer
+   re-applies it; the block is shared with the audio thread, so interrupts are
+   disabled for the whole update. */
 void fn_80033A34(void *paramBlock, float tempo) {
     struct AXPB {
         char header[0x1C];      /* voice state, sample address, ... */
