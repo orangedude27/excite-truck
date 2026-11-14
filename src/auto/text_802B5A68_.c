@@ -204,14 +204,15 @@ void fn_802B5CCC(void) {
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
-s32 fn_802B5D2C(const char *arg0, s32 arg1) {
-    char buf[0x40];
-    s32 out;
-    ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(buf, 0x40, lbl_8055CE38, arg0);
-    if (sscanf((const char *)arg1, buf, &out) != 1) {
-        out = -1;
+/* Formats a "%s:%%d" pattern for the given name and parses one integer from the input string, or -1 on failure. */
+s32 fn_802B5D2C(const char *name, s32 input) {
+    char formatBuf[0x40];
+    s32 value;
+    ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(formatBuf, 0x40, lbl_8055CE38, name);
+    if (sscanf((const char *)input, formatBuf, &value) != 1) {
+        value = -1;
     }
-    return out;
+    return value;
 }
 #pragma pop
 
