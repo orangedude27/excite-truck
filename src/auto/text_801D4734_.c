@@ -1884,9 +1884,12 @@ int fn_801D6EDC(int arg0) {
     return ((int *)arg0)[1];
 }
 
-#pragma push
 #pragma scheduling invalid_target
-int fn_801D6EE4(void *arg0) {
+/* Triggers a Text_ASE action-sequence element when ready (state == 1): copies its
+   duration (+8), start timestamp (lbl_8055E3C8), 64-byte title (+0xC) and 64-byte
+   body text (+0x4C) into the global display buffer (lbl_80442310), and advances
+   its state to 3. */
+int fn_801D6EE4(void *textElem) {
     extern char lbl_80442310[];
     extern float lbl_8055E3C8;
     register unsigned char c1;
@@ -1897,19 +1900,19 @@ int fn_801D6EE4(void *arg0) {
     register unsigned char *src2;
     register int count2;
     register unsigned char *dst2;
-    register char *base;
-    float t0;
-    float t1;
-    if (*(int *)((char *)arg0 + 4) != 1) {
+    register char *displayBuf;
+    float duration;
+    float startTime;
+    if (*(int *)((char *)textElem + 4) != 1) {
         goto fail;
     }
-    base = lbl_80442310;
-    t0 = *(float *)((char *)arg0 + 8);
-    t1 = lbl_8055E3C8;
-    *(float *)(base + 4) = t0;
-    *(float *)base = t1;
-    src1 = (unsigned char *)arg0 + 0xC;
-    dst1 = (unsigned char *)base + 0x48;
+    displayBuf = lbl_80442310;
+    duration = *(float *)((char *)textElem + 8);
+    startTime = lbl_8055E3C8;
+    *(float *)(displayBuf + 4) = duration;
+    *(float *)displayBuf = startTime;
+    src1 = (unsigned char *)textElem + 0xC;
+    dst1 = (unsigned char *)displayBuf + 0x48;
     count1 = 0x40;
     goto copy_first;
 first_count:
@@ -1925,7 +1928,7 @@ copy_first:
         goto first_count;
     }
 first_done:
-    src2 = (unsigned char *)arg0 + 0x4C;
+    src2 = (unsigned char *)textElem + 0x4C;
     dst2 = (unsigned char *)lbl_80442310 + 8;
     count2 = 0x40;
     goto copy_second;
@@ -1942,12 +1945,12 @@ copy_second:
         goto second_count;
     }
 second_done:
-    *(int *)((char *)arg0 + 4) = 3;
+    *(int *)((char *)textElem + 4) = 3;
     return 1;
 fail:
     return 0;
 }
-#pragma pop
+#pragma scheduling reset
 
 void fn_801D6FA0(int arg0) {
     if (((int *)arg0)[1] != 0) {
