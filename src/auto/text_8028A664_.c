@@ -437,31 +437,42 @@ extern "C" void fn_8028ABE8(void *arg0) {
 #pragma pop
 
 #pragma cplusplus on
+/* Shutdown: walks the 8 effect-spawn groups kept at lbl_804B3238 (one 0x10-byte slot
+ * per group type: the object pointer at +0x00, then its parameters), deletes each live
+ * object through its virtual destructor and clears the slot, so the update and spawn
+ * passes (fn_8028A89C, fn_8028ADF4, ...) stop seeing them. */
 extern "C" void fn_8028AD78(void) {
-    struct Dummy {
-        virtual void f0(s32);
+    struct Slot {
+        void *object;   /* +0x00 the group's object, 0 when the slot is free */
+        u8 params[0xC]; /* +0x04 its parameters (spawn scale, chance, flag) */
     };
-    register u8 *slot;
-    register s32 i;
-    register s32 zero = 0;
-    slot = (u8 *)lbl_804B3238;
-    i = 0;
+    class Dummy {
+        public:
+            virtual void dtor(s32 deleteFlag); /* vtable+0x08: the deleting destructor */
+    };
+    register struct Slot *slot;
+    register s32 index;
+    register s32 nullPtr = 0;
+    slot = (struct Slot *)lbl_804B3238;
+    index = 0;
     goto loop;
 loop:
     {
-        void *p = *(void **)slot;
-        if (p == 0) goto next;
-        if (p == 0) goto clear;
-        ((Dummy *)p)->f0(1);
+        void *object = slot->object;
+        if (object == 0) goto next;
+        if (object == 0) goto clear; /* delete's own null check */
+        ((Dummy *)object)->dtor(1);
 clear:
-        *(void **)slot = (void *)zero;
+        slot->object = (void *)nullPtr;
 next:
-        i++;
-        slot += 0x10;
-        if (i < 8) goto loop;
+        index++;
+        slot++;
+        if (index < 8) goto loop;
     }
 }
 #pragma cplusplus reset
+#pragma push
+#pragma use_lmw_stmw off
 
 #pragma push
 #pragma use_lmw_stmw off
