@@ -444,24 +444,13 @@ void fn_802C8C04(int arg0) {
 
 #pragma use_lmw_stmw off
 void fn_802C8CBC(int arg0) {
+    struct DlMtx34 *src = (struct DlMtx34 *)lbl_804C1410;
+    struct DlMtx34 *dst = (struct DlMtx34 *)lbl_804C13E0;
     unsigned int sp8[12];
-    unsigned int v0 = lbl_804C1410[0];
-    unsigned int v1 = lbl_804C1410[1];
-    unsigned int v2 = lbl_804C1410[2];
-    unsigned int v3 = lbl_804C1410[3];
-    unsigned int v4 = lbl_804C1410[4];
-    unsigned int v5 = lbl_804C1410[5];
-    unsigned int v6 = lbl_804C1410[6];
-    unsigned int v7 = lbl_804C1410[7];
-    unsigned int v8 = lbl_804C1410[8];
-    unsigned int v9 = lbl_804C1410[9];
-    unsigned int v10 = lbl_804C1410[10];
-    unsigned int v11 = lbl_804C1410[11];
-    lbl_804C13E0[0] = v0;
-    lbl_804C13E0[1] = v1; lbl_804C13E0[2] = v2; lbl_804C13E0[3] = v3;
-    lbl_804C13E0[4] = v4; lbl_804C13E0[5] = v5; lbl_804C13E0[6] = v6;
-    lbl_804C13E0[7] = v7; lbl_804C13E0[8] = v8; lbl_804C13E0[9] = v9;
-    lbl_804C13E0[10] = v10; lbl_804C13E0[11] = v11;
+    unsigned int v11, v10, v9, v8, v7, v6, v5;
+    v5 = src->w[5]; v6 = src->w[6]; v7 = src->w[7]; v8 = src->w[8];
+    v9 = src->w[9]; v10 = src->w[10]; v11 = src->w[11];
+    *dst = *src;
     lbl_8055FC35 = 1;
     ((void (*)(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int))fn_802C88FC)(sp8, v11, v10, v9, v8, v7, v6, v5);
     fn_802C8638(sp8);
@@ -582,10 +571,12 @@ void fn_802C90F0(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802C9294(int arg0, unsigned int arg1) {
+void fn_802C9294(int arg0, int arg1) {
+    int isOne;
     if (arg0 != -1 && arg0 != -2) {
-        lbl_8055FC75 = arg1 == 1;
         lbl_8055FC74 = 1;
+        isOne = (arg1 == 1);
+        lbl_8055FC75 = isOne;
     } else {
         lbl_8055FC74 = 0;
         lbl_8055FC75 = 0;
@@ -1044,18 +1035,8 @@ void *fn_802C9D10(int arg0, void *arg1) {
     }
 }
 
-extern int lbl_8055FC98;
-extern void *lbl_8055FC9C;
-extern int lbl_8055FC84;
-extern float lbl_80564F00;
-extern char lbl_8034B514[];
 extern int fn_8012A364(void *, int);
 extern void *fn_801E7840(int);
-extern void *fn_801284F8(int, const char *);
-extern void *fn_8012A13C(void *, const char *, int, int);
-extern int fn_8012A2D8(void *);
-extern void fn_802D362C(int);
-extern void fn_802D3304(void);
 #pragma dont_inline on
 #pragma push
 #pragma cplusplus on
