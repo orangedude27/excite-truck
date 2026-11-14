@@ -594,8 +594,9 @@ void fn_8017FF4C(f32 dt) {
         ptr = (struct Di718 **)lbl_804348D8;
         for (i = 0; i < 4; i++, ptr++) {
             s32 pad;
-            s32 gear;
             struct Di718Slot *slot;
+            struct Di718Slot *gearSlot;
+            s32 gear;
 
             v = *ptr;
             if (v == NULL) {
@@ -834,9 +835,9 @@ void fn_8017FF4C(f32 dt) {
             } else {
                 v->flag59 = 0;
                 v->pad50[0] = 0;
-                slot = &v->slot[23];
-                for (gear = 0; gear < v->pad50[1]; slot++, gear++) {
-                    if (fn_801A8E38(slot)) {
+                gearSlot = &v->slot[23];
+                for (gear = 0; gear < v->pad50[1]; gearSlot++, gear++) {
+                    if (fn_801A8E38(gearSlot)) {
                         v->pad50[0] = gear + 1;
                     }
                 }
