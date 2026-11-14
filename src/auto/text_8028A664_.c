@@ -471,8 +471,6 @@ next:
     }
 }
 #pragma cplusplus reset
-#pragma push
-#pragma use_lmw_stmw off
 
 #pragma push
 #pragma use_lmw_stmw off
