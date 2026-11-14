@@ -58,18 +58,42 @@ void fn_8012A218(void *arg0) {
     l->head = 0;
 }
 #pragma pop
-void *fn_8012A260(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(int **)arg0 = (int *)lbl_8032A620;
-        if (*((u8 *)arg0 + 5) == 0) {
-            fn_80128658(*(int *)((char *)arg0 + 0xc));
-        }
-        *(int *)((char *)arg0 + 0xc) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
-    }
-    return arg0;
-}
+/* Destructor of the fixed-size block pool (built by fn_8012A13C/fn_8012A17C, which
+ * allocate `count` blocks of `blockSize` bytes and thread them into a free list;
+ * one instance is the "Joint Pool").  Restores this class's vtable, releases the
+ * block buffer unless the caller supplied it, clears the pointer and, when `flag`
+ * is set, releases the pool object itself. */
+void *fn_8012A260(void *this_, s32 flag) {
+    struct Pool {
+        void **vtable;      /* +0x00 */
+        u8 panicWhenEmpty;  /* +0x04: panic instead of returning 0 when exhausted */
+        u8 userBuffer;      /* +0x05: buffer came from the caller, so don't free it */
+        const char *name;   /* +0x08 */
+        void *buffer;       /* +0x0C: storage for the blocks */
+        void *freeList;     /* +0x10: next free block */
+        s32 blockSize;      /* +0x14 */
+        s32 count;          /* +0x18 */
+        s32 usedCount;      /* +0x1C */
+    };
+#define poolVtable lbl_8032A620 /* this class's vtable */
+#define freeBuffer fn_80128658  /* MemFree(ptr, 1) */
+#define freePool fn_80128668    /* MemFree(ptr, 3) */
 
+    if (this_ != 0) {
+        struct Pool *pool = (struct Pool *)this_;
+        pool->vtable = (void **)poolVtable;
+        if (pool->userBuffer == 0) {
+            freeBuffer((s32)pool->buffer);
+        }
+        pool->buffer = 0;
+        if (flag > 0) freePool(this_);
+    }
+
+#undef poolVtable
+#undef freeBuffer
+#undef freePool
+    return this_;
+}
 /* Pop and return the next free element from a fixed-size object pool, panicking if the pool is empty when it requires elements. */
 int *fn_8012A2D8(void *arg0) {
     int *temp_r31 = *(int **)((char *)arg0 + 0x10);
