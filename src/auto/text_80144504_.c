@@ -3,12 +3,13 @@
 
 #include <types.h>
 
-extern f32 lbl_805615B8;
-extern f32 lbl_805615BC;
-extern f32 lbl_805615C0;
-extern f32 lbl_805615C4;
-extern f32 lbl_805615C8;
-extern f32 lbl_805615CC;
+// This file's float constants, all in .sdata2 (read_data shows their values).
+extern f32 lbl_805615B8;  //  1.0f
+extern f32 lbl_805615BC;  //  0.0f
+extern f32 lbl_805615C0;  //  0.5f
+extern f32 lbl_805615C4;  //  3.0f
+extern f32 lbl_805615C8;  // -1.0f
+extern f32 lbl_805615CC;  // -2.0f
 
 extern double cos(double);
 extern double sin(double);
