@@ -182,39 +182,40 @@ void fn_8029C450(void *arg0, int arg1) {
     extern int lbl_8055F7F0, lbl_8055F7F4;
     extern int lbl_804B5010[], lbl_804B5030[];
     extern float lbl_80558DC4, lbl_80564638, lbl_8056463C;
-    float f31;
-    float tmp;
-    float f30;
-    void **p;
-    int outer;
-    int inner1;
-    int inner2;
-    f30 = lbl_80564638;
-    tmp = fn_801E7E24();
-    if (!((float)__fabs((double)tmp) <= lbl_80558DC4)) {
-        f31 = lbl_8056463C;
-        outer = 0;
-        p = (void **)arg0;
-        while (outer < arg1) {
-            if (((float *)p)[2] < f30 &&
-                ((float *)p[0])[0x50 / 4] > f31 &&
-                ((unsigned char *)p)[0xC] != 0) {
-                inner1 = 0;
-                while (inner1 < lbl_8055F7F0) {
-                    fn_8029D7D0(lbl_804B5010[inner1], p);
-                    inner1++;
+    float minSpeed;    /* lbl_8056463C = 2.5 */
+    float frameTime;
+    float maxDistance; /* lbl_80564638 = 2500.0 */
+    NearObject *record;
+    int numObjects;
+    int pool;
+    int shallow;
+
+    maxDistance = lbl_80564638;
+    frameTime = fn_801E7E24();
+    if (!((float)__fabs((double)frameTime) <= lbl_80558DC4)) {
+        minSpeed = lbl_8056463C;
+        numObjects = 0;
+        record = (NearObject *)arg0;
+        while (numObjects < arg1) {
+            if (record->distance < maxDistance &&
+                *(float *)((char *)record->object + 0x50) > minSpeed &&
+                record->flag != 0) {
+                pool = 0;
+                while (pool < lbl_8055F7F0) {
+                    fn_8029D7D0(lbl_804B5010[pool], (void **)record);
+                    pool++;
                 }
-                inner2 = 0;
-                while (inner2 < lbl_8055F7F4) {
-                    fn_8029EA34((void *)lbl_804B5030[inner2], p);
-                    inner2++;
+                shallow = 0;
+                while (shallow < lbl_8055F7F4) {
+                    fn_8029EA34((void *)lbl_804B5030[shallow], (void **)record);
+                    shallow++;
                 }
                 if (fn_802BF4F0() != 0) {
-                    fn_8029CD48(p[0]);
+                    fn_8029CD48(record->object);
                 }
             }
-            p = (void **)((char *)p + 0x10);
-            outer++;
+            record++;
+            numObjects++;
         }
     }
 }
