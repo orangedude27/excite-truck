@@ -9376,13 +9376,17 @@ void fn_8007ABE8(void *arg0) {
 #define BTM_DISC_DB_SIZE   0xFA0                   /* its size */
 #define btm_cb_p_disc_db   (*(tSDP_DISCOVERY_DB **)(lbl_803C0F78 + 0x1678))
 
+/* Set the session up for a fresh search: point the control block at the SDP
+ * database inside it, clear the whole block, mark the session up and say what
+ * it is looking for - the public browse group - and hand the database to SDP,
+ * which will keep only the records of that class. */
 void btm_discovery_db_init(void) {
-    *(u8 **)(lbl_803C0F78 + 0x1678) = lbl_803C0F78 + 0x6D4;
-    memset(lbl_803C0F78 + 0x658, 0, 0x1020);
-    *(u16 *)(lbl_803C0F78 + 0x670) = 1;
-    *(u16 *)(lbl_803C0F78 + 0x674) = 2;
-    *(u16 *)(lbl_803C0F78 + 0x678) = 0x1002;
-    SDP_InitDiscoveryDb(*(tSDP_DISCOVERY_DB **)(lbl_803C0F78 + 0x1678), 0xFA0, 1, (tSDP_UUID *)(lbl_803C0F78 + 0x674), 0, 0);
+    btm_cb_p_disc_db = btm_cb_disc_db;
+    memset(btm_cb_disc, 0, BTM_DISC_CB_SIZE);
+    btm_cb_disc_active = 1;
+    btm_cb_disc_uuid.len = LEN_UUID_16;
+    btm_cb_disc_uuid.uu.uuid16 = UUID_SERVCLASS_PUBLIC_BROWSE_GROUP;
+    SDP_InitDiscoveryDb(btm_cb_p_disc_db, BTM_DISC_DB_SIZE, 1, &btm_cb_disc_uuid, 0, 0);
 }
 
 void btm_discovery_db_reset(void)
