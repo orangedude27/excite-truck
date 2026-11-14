@@ -542,7 +542,8 @@ void fn_80130980(char *out, int size, int level, float t) {
     char *src;
     char *p;
     char c;
-    unsigned i;
+    unsigned int i;
+
     if (t == -lbl_80558DC0) {
         src = fn_80131234(lbl_8032B240);
         goto copy;
@@ -612,7 +613,8 @@ void fn_80130980(char *out, int size, int level, float t) {
                 found = 1;
             }
         }
-        if (found == 0) {
+        if (!found) {
+            tmp[0] = tmp[1] = 0;
             *(short *)tmp = 0;
             tmp[0] = *p;
             time_append_sizefirst(out, size, tmp);
@@ -656,11 +658,15 @@ int fn_80130FE0(int arg0) {
     }
 }
 #pragma scheduling on
-void fn_801310B4(void *arg0, void *arg1, int arg2) {
-    int result = fn_80130FE0(arg2);
-    fn_801345D8(arg0, arg1, &lbl_80559AF8, arg2, result + 1);
+/* Format an ordinal ("21st", "3rd", ...) into buffer: "%d%s" of the number and
+   the localized ordinal suffix fn_80130FE0 gives for it.  That function's
+   strings carry the digit first ("21st"), so +1 skips down to the suffix. */
+void fn_801310B4(char *buffer, int bufferSize, int number) {
+#define ordinalFormat (&lbl_80559AF8)
+    char *suffix = (char *)fn_80130FE0(number);
+    fn_801345D8(buffer, bufferSize, ordinalFormat, number, suffix + 1);
+#undef ordinalFormat
 }
-
 extern void *fn_8012C370(const char *, unsigned int, unsigned int *, int *, int, void **);
 extern void fn_8012C4D8(void *);
 extern void fn_8012BEF0(void *);
