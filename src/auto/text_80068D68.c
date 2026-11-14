@@ -5179,6 +5179,7 @@ void btu_task_msg_handler(void) {
     btu_task_is_idle = 1;
 }
 
+/* (Re)starts a BTU timer entry on the main BTU timer queue with the given event and tick count. */
 void btu_start_timer(void *p_tle, UINT16 event, UINT32 timeout) {
     GKI_remove_from_timer_list((TIMER_LIST_Q *)&lbl_803C0A50[0x40], (TIMER_LIST_ENT *)p_tle);
     ((TIMER_LIST_ENT *)p_tle)->event = event;
