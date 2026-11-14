@@ -341,11 +341,17 @@ extern "C" s32 fn_8012AB34(s32 fileHandle, s32 headerBuffer, s32 fileName, s32 e
     return isValid;
 }
 
+/* OpenCheckRst0 - open `name` through the engine file API (src/game/file.c) and make sure the
+ * file behind that name is really the one it claims to be: read its 0x34-byte RST0 header into
+ * headerBuffer, byte-swap it and check it against the name and the size the file API reports
+ * for the open file (fn_8012AB34).  A file whose header does not check out is closed again and
+ * handed back as -1; otherwise the handle comes back still open with its header in hand. */
 extern "C" s32 fn_8012ABB0(const char *name, void *headerBuffer) {
-    #define File_open       fn_802E36D8
-    #define File_size       fn_802E37C4
-    #define File_close      fn_802E3734
-    #define Rst0_readHeader fn_8012AB34
+    /* The engine file API, as this open-check-and-maybe-close sequence uses it. */
+    #define File_open       fn_802E36D8  /* open `name`: file handle, or -1 */
+    #define File_size       fn_802E37C4  /* size of the file the handle has open */
+    #define File_close      fn_802E3734  /* close it; the handle goes back to -1 */
+    #define Rst0_readHeader fn_8012AB34  /* read the RST0 header and validate it */
     s32 handle = ((s32 (*)(const char *))File_open)(name);
     if (handle != -1 && Rst0_readHeader(handle, (s32)headerBuffer, (s32)name, ((s32 (*)(s32))File_size)(handle)) == 0) {
         File_close(&handle);
