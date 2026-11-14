@@ -87,6 +87,18 @@ void fn_801B60A8(void) {
     if (lbl_8055E70C != 0) fn_80128670(lbl_8055E70C - 0x10);
 }
 
+extern float lbl_805626B8;
+static inline s32 GridCell(f32 v) {
+    s32 i;
+    v += lbl_805626B4;
+    i = (s32)(v / lbl_805626B0);
+    if (i < 0)
+        i = 0;
+    else if (i >= 0x64)
+        i = 0x63;
+    return i;
+}
+
 s32 fn_801B60F4(void *arg0, f32 arg1) {
     s32 x;
     s32 y;
@@ -105,18 +117,7 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
     return lbl_8055E70C + ((x + y * 0x64) * 4);
 }
 
-extern float lbl_805626B8;
-static inline s32 GridCell(f32 v) {
-    s32 i;
-    v += lbl_805626B4;
-    i = (s32)(v / lbl_805626B0);
-    if (i < 0)
-        i = 0;
-    else if (i >= 0x64)
-        i = 0x63;
-    return i;
-}
-#pragma peephole off
+#pragma sym off
 void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
     s32 x0 = GridCell(arg2[0] - lbl_805626B8);
     s32 x1 = GridCell(lbl_805626B8 + arg2[0]);
@@ -146,7 +147,7 @@ void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
         arg0[(*arg1)++] = lbl_8055E714;
     }
 }
-#pragma peephole reset
+#pragma sym on
 extern void *fn_801B5F40(void);
 extern void __AXPushCallbackStack(void *);
 extern char lbl_80335F20[];
