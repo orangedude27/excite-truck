@@ -411,12 +411,12 @@ extern "C" void fn_801C1BA0(void) {
 }
 
 extern "C" int fn_801C1BA4(int arg0, int arg1, int arg2) {
-    int result;
-    result = fn_801284F8(0x70, &lbl_8055A950);
-    if (result != 0) {
-        fn_801C109C(result, arg0, arg1, arg2, 0);
+    /* Allocate a 0x70-byte object using the shared tag and initialize it with the given parameters. */
+    int obj = fn_801284F8(0x70, &lbl_8055A950);
+    if (obj != 0) {
+        fn_801C109C(obj, arg0, arg1, arg2, 0);
     }
-    return result;
+    return obj;
 }
 
 extern "C" int fn_801C109C(int, int, int, int);
@@ -871,8 +871,7 @@ extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int a
             if (!(fn_8017F70C(v2C[2]) < f24))
                 continue;
             if (fn_8017F70C(v38[0]) > f25 + f22) {
-                if (v2C[0] >= f26)
-                    f22 = -f22;
+                f22 = (v2C[0] >= f26) ? -f22 : f22;
                 v2C[0] = f22;
             }
             if (fn_8017F70C(v38[1]) >= f25 + f23) {
