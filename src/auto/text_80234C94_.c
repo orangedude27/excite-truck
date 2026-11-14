@@ -604,19 +604,20 @@ float fn_80235EF0(int resourceSet, int index) {
 #pragma dont_inline reset
 extern const char lbl_80340878[];
 #pragma dont_inline on
-float fn_80235F64(int arg0, int arg1) {
+float fn_80235F64(int resourceSet, int index) {
+    /* Return the float height at +0x10 for the looked-up art node, or 0.0f if missing. */
     void *node;
 
-    if (arg0 == 0)
+    if (resourceSet == 0)
         return lbl_805636B8;
-    node = fn_8023505C((void *)arg0, arg1);
+    node = fn_8023505C((void *)resourceSet, index);
     if (node == 0) {
-        fn_802E30C8(lbl_80340878, arg0, arg1);
+        fn_802E30C8(lbl_80340878, resourceSet, index);
         return lbl_805636B8;
     }
     return *(float *)((char *)node + 0x10);
 }
-
+#pragma dont_inline reset
 int fn_80235FD8(void *arg0) {
     void *p;
     int count;
