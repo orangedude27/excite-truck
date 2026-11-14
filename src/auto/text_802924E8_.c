@@ -424,8 +424,8 @@ void fn_80292CD8(void *arg0, int arg1, unsigned char *arg2) {
     register char *dst;
     register int count2;
     char *dst2;
-    register int offset = arg1;
-    register int cursor = (int)arg2;
+    int offset = arg1;
+    int cursor = (int)arg2;
     list = fn_802C6B44();
     memset(temp, 0, 0x2C);
     dst = temp + 0x14;
@@ -533,35 +533,38 @@ int fn_80292EC0(void *cache, const char *name, s32 *outIndex, s32 unused) {
     return 0;
 }
 #pragma pop
-void fn_80292F40(void *arg0, void *arg1, const char *arg2) {
-    volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0x180);
-    s32 count;
-    s32 left;
+/* Adds a named entry to a table: copies up to 16 bytes of the name into the
+ * next 0x18-byte slot (count at offset 0x180), stores the associated pointer
+ * and sets the slot flag to 1, then increments the count. */
+void fn_80292F40(void *table, void *object, const char *name) {
+    volatile s32 *countPtr = (volatile s32 *)((u8 *)table + 0x180);
+    s32 slotIndex;
+    s32 charsLeft;
     char *dst;
     unsigned char c;
-    count = *counter;
-    left = 0x10;
-    dst = (char *)arg0 + count * 0x18;
+    slotIndex = *countPtr;
+    charsLeft = 0x10;
+    dst = (char *)table + slotIndex * 0x18;
     goto copy_byte;
 check_limit:
-    if (--left > 0) {
+    if (--charsLeft > 0) {
         goto copy_byte;
     }
     dst[-1] = 0;
     goto after_copy;
 copy_byte:
-    c = (unsigned char)*arg2++;
+    c = (unsigned char)*name++;
     *dst++ = (char)c;
     if ((signed char)c != 0) {
         goto check_limit;
     }
 after_copy:
-    count = *counter;
-    *(void **)((char *)arg0 + count * 0x18 + 0x10) = arg1;
-    count = *counter;
-    *(s32 *)((char *)arg0 + count * 0x18 + 0x14) = 1;
-    count = *counter;
-    *counter = count + 1;
+    slotIndex = *countPtr;
+    *(void **)((char *)table + slotIndex * 0x18 + 0x10) = object;
+    slotIndex = *countPtr;
+    *(s32 *)((char *)table + slotIndex * 0x18 + 0x14) = 1;
+    slotIndex = *countPtr;
+    *countPtr = slotIndex + 1;
 }
 
 int fn_80292FB4(unsigned char *bucket, void *system) {
@@ -600,13 +603,15 @@ extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
         virtual void v7();
         virtual float value(const char *);
     };
+    float v;
     *(void **)arg0 = lbl_80349294;
     fn_80293374(arg0, (void *)arg2);
     fn_802935A0(arg0);
-    *(float *)((char *)arg0 + 4) = lbl_805644D4;
+    v = lbl_805644D4;
+    *(float *)((char *)arg0 + 4) = v;
     if (arg1) {
-        *(float *)((char *)arg0 + 4) =
-            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
+        v = ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
+        *(float *)((char *)arg0 + 4) = v;
     }
     *(int *)((char *)arg0 + 0x2FAC) = 0;
     return arg0;
@@ -835,9 +840,10 @@ void fn_802936C4(void *arg0) {
         short idx;
         unsigned char p[2];
         int mode;
-        /* 0x48 */ unsigned char flag;
-        /* 0x49 */ unsigned char type;
-        /* 0x4a */ unsigned char b4a;
+        unsigned char type;
+        unsigned char b49;
+        unsigned char b4a;
+        unsigned char pad[1];
     };
     struct Tpl {
         unsigned int pad[4];
@@ -1007,7 +1013,7 @@ write_out:
         out->age = ageDt;
         out->idx = entry;
         out->mode = mode;
-        out->flag = cur->flag;
+        out->b40 = cur->b40;
         out->type = type;
         out->b4a = cur->b4a;
         out++;
@@ -1038,11 +1044,9 @@ extern "C" void *fn_80293A00(void *arg0, void *arg1, int arg2, int arg3, int arg
         virtual void v7();
         virtual float value(const char *);
     };
-    register float f1reg;
     *(void **)arg0 = lbl_80349278;
     fn_80293CD0(arg0, arg2, arg3, arg4);
-    f1reg = lbl_8056450C;
-    *(float *)((char *)arg0 + 4) = f1reg;
+    *(float *)((char *)arg0 + 4) = lbl_8056450C;
     if (arg1 != 0) {
         *(float *)((char *)arg0 + 4) =
             ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
@@ -1198,6 +1202,201 @@ void fn_80293EB0(void* arg0) {
         cursor += 4;
         i++;
     }
+}
+
+void fn_80293F20(void *arg0) {
+    struct Rec {
+        unsigned int copy[9];
+        float x, y, z;
+        float vx, vy, vz;
+        float age;
+        short idx;
+        short pad42;
+        int mode;
+        unsigned char b48;
+        unsigned char type;
+        unsigned char pad4A[2];
+    };
+    struct Tpl {
+        unsigned int pad[4];
+        unsigned int copy[9];
+    };
+    extern void fn_801E9DD4(void *, void *, float, float);
+    extern void fn_801E9DD8(void);
+    extern int fn_80292BA8(float *, float *, float *, float *);
+    extern int fn_801E9E78();
+    extern float lbl_805644D4;
+    extern float lbl_805644D8;
+    extern float lbl_805644F8;
+    extern float lbl_805644FC;
+    extern float lbl_80564500;
+    extern float lbl_80564504;
+    extern float lbl_80564508;
+    extern void *lbl_8055C958;
+    extern void *lbl_8055C964;
+    extern unsigned char lbl_804B4030[];
+    float dt;
+    float scale;
+    float tmp_vx;
+    float tmp_vy;
+    float tmp_vz;
+    float tmp_nx;
+    float tmp_ny;
+    float tmp_nz;
+    float tmp_vx2;
+    float tmp_vy2;
+    float tmp_vz2;
+    float outer;
+    float two;
+    float zeroF;
+    float oneF;
+    float gravF;
+    float smallF;
+    float dt2;
+    struct Rec *cur;
+    struct Rec *out;
+    struct Tpl *src;
+    int iter;
+    int kept;
+    int mode;
+    unsigned char type;
+    float ageDt;
+    float tmp[13];
+    short entry;
+    int zeroI;
+    int r0;
+    dt = fn_801E7E24(arg0);
+    scale = lbl_805644F8 * dt;
+    fn_801E9DD4(lbl_8055C958, lbl_8055C964, scale, lbl_805644F8);
+    scale = lbl_805644D4 - scale;
+    zeroF = lbl_805644D8;
+    oneF = lbl_805644D4;
+    gravF = lbl_80564500;
+    smallF = lbl_80564508;
+    dt2 = lbl_805644F8;
+    two = lbl_80564504;
+    outer = lbl_805644FC;
+    cur = (struct Rec *)((unsigned char *)arg0 + 0x2C);
+    out = cur;
+    iter = 0;
+    kept = 0;
+    goto check_loop;
+body:
+    {
+        float age;
+        age = cur->age;
+        if (age < zeroF) goto next;
+        if (age >= outer) goto next;
+do_work:
+        ageDt = age + dt;
+        tmp_vx = cur->vx * scale;
+        tmp_vy = cur->vy * scale;
+        tmp_vz = cur->vz * scale;
+        tmp_vy = tmp_vy - (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        tmp_nx = cur->x + tmp_vx * dt;
+        tmp_ny = cur->y + tmp_vy * dt;
+        tmp_nz = cur->z + tmp_vz * dt;
+        mode = cur->mode;
+        type = cur->type;
+        tmp[0] = tmp_vx;
+        tmp[1] = tmp_vy;
+        tmp[2] = tmp_vz;
+        tmp[3] = tmp_nx;
+        tmp[4] = tmp_ny;
+        tmp[5] = tmp_nz;
+        tmp_vx2 = cur->vx * scale;
+        tmp[6] = tmp_vx2;
+        tmp_vy2 = cur->vy * scale;
+        tmp_vy2 = tmp_vy2 - (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        tmp[7] = tmp_vy2;
+        tmp_vz2 = cur->vz * scale;
+        tmp[8] = tmp_vz2;
+        entry = cur->idx;
+        if (mode == 2) {
+            tmp[9] = tmp[0] * dt;
+            tmp[10] = tmp[6] * dt;
+            tmp[11] = tmp[8] * dt;
+            tmp[3] = tmp[3] + tmp[9];
+            tmp[4] = tmp[4] + tmp[10];
+            tmp[5] = tmp[5] + tmp[11];
+            tmp[10] = zeroF;
+            tmp[11] = zeroF;
+            zeroI = 0;
+            if (((int (*)(short *, float *, float *, int *, float, float, float, float, float, float, float))fn_801E9E78)(&entry, tmp + 3, tmp + 9, &zeroI, tmp[4], tmp[3], tmp[11], tmp[10], tmp[9], tmp[7], tmp[6]) != 0) {
+                if (fn_80292BA8(tmp + 3, tmp + 6, tmp, tmp + 9) != 0) {
+                    type = (unsigned char)((int (*)(int))fn_80287B5C)(6);
+                    if (tmp[7] < dt2) {
+                        ageDt = zeroF;
+                        mode = 1;
+                    }
+                }
+            } else {
+                mode = 3;
+            }
+            goto write_out;
+        }
+        if (mode == 3) {
+            tmp[3] = tmp[3] + tmp[0] * dt;
+            tmp[4] = tmp[4] + tmp[6] * dt;
+            tmp[5] = tmp[5] + tmp[8] * dt;
+            goto write_out;
+        }
+        if (ageDt < two) {
+            if (ageDt > zeroF) tmp[4] = tmp[4] - smallF * dt;
+            tmp[6] = zeroF;
+            tmp[7] = zeroF;
+            tmp[8] = zeroF;
+        }
+write_out:
+        out->x = tmp[3];
+        out->y = tmp[4];
+        out->z = tmp[5];
+        r0 = 0;
+        if (mode == 2) r0 = 1;
+        if (mode == 3) r0 = 1;
+        if (r0 != 0)
+            src = (struct Tpl *)(lbl_804B4030 + type * 0x34);
+        else
+            src = (struct Tpl *)cur;
+        kept++;
+        {
+            unsigned int a, b;
+            a = src->copy[0];
+            b = src->copy[1];
+            out->copy[0] = a;
+            out->copy[1] = b;
+            a = src->copy[2];
+            out->copy[2] = a;
+            a = src->copy[3];
+            b = src->copy[4];
+            out->copy[3] = a;
+            out->copy[4] = b;
+            a = src->copy[5];
+            out->copy[5] = a;
+            a = src->copy[6];
+            b = src->copy[7];
+            out->copy[6] = a;
+            out->copy[7] = b;
+            a = src->copy[8];
+            out->copy[8] = a;
+        }
+        out->vx = tmp[6];
+        out->vy = tmp[7];
+        out->vz = tmp[8];
+        out->age = ageDt;
+        out->idx = entry;
+        out->mode = mode;
+        out->b48 = cur->b48;
+        out->type = type;
+        out++;
+    }
+next:
+    iter++;
+    cur++;
+check_loop:
+    if (iter < *(int *)((unsigned char *)arg0 + 0x4C2C)) goto body;
+    *(int *)((unsigned char *)arg0 + 0x4C2C) = kept;
+    fn_801E9DD8();
 }
 
 #pragma cplusplus on
@@ -1382,57 +1581,80 @@ void fn_80294710(void* arg0) {
 extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D8;
 extern unsigned char lbl_804B4030[];
 #pragma scheduling invalid_target
-void fn_80294780(void *arg0) {
-    struct W3 { unsigned int a, b, c; };
-    struct Particle {
-        struct W3 copy[3];
-        float x, y, z;
-        float vx, vy, vz;
-        float age;
-        unsigned char flag;
-        unsigned char type;
-        unsigned char pad[2];
-    };
-    struct ParticleTemplate {
-        unsigned int pad[4];
-        struct W3 copy[3];
-    };
-    struct { float x, y, z; } v;
-    register struct ParticleTemplate *src;
-    register struct Particle *cur;
-    register struct Particle *out;
-    register int i;
-    float dt = fn_801E7E24(arg0);
-    float gravity = lbl_80564500;
-    float maxAge = lbl_805644FC;
-    float minAge = lbl_805644D8;
-    float scale = lbl_805644D4 - lbl_80564510 * dt;
-    cur = (struct Particle *)((unsigned char *)arg0 + 0x2C);
-    out = cur;
-    for (i = 0; i < *(int *)((unsigned char *)arg0 + 0x222C); ++i, ++cur) {
-        if (cur->age < minAge) continue;
-        if (cur->age >= maxAge) continue;
-        v.x = cur->vx * scale;
-        v.y = cur->vy * scale;
-        v.z = cur->vz * scale;
-        v.y -= (gravity * dt) * *(float *)((unsigned char *)arg0 + 4);
-        out->x = cur->x + v.x * dt;
-        out->y = cur->y + v.y * dt;
-        out->z = cur->z + v.z * dt;
-        src = (struct ParticleTemplate *)(lbl_804B4030 + cur->type * 0x34);
-        out->copy[0] = src->copy[0];
-        out->copy[1] = src->copy[1];
-        out->copy[2] = src->copy[2];
-        out->vx = v.x;
-        out->vy = v.y;
-        out->vz = v.z;
-        out->age = cur->age + dt;
-        out->flag = cur->flag;
-        out->type = cur->type;
-        ++out;
+void fn_80294780(void *arg0)
+{
+  struct W3
+  {
+    unsigned int a;
+    unsigned int b;
+    unsigned int c;
+  };
+  struct Particle
+  {
+    struct W3 copy[3];
+    float x;
+    float y;
+    float z;
+    float vx;
+    float vy;
+    float vz;
+    float age;
+    unsigned char flag;
+    unsigned char type;
+    unsigned char pad[2];
+  };
+  struct ParticleTemplate
+  {
+    unsigned int pad[4];
+    struct W3 copy[3];
+  };
+  struct
+  {
+    float x;
+    float y;
+    float z;
+  } v;
+  register struct ParticleTemplate *src;
+  register struct Particle *cur;
+  register struct Particle *out;
+  register int i;
+  float dt = fn_801E7E24(arg0);
+  float gravity = lbl_80564500;
+  float maxAge = lbl_805644FC;
+  float minAge = lbl_805644D8;
+  float scale = (lbl_805644D4 - (lbl_80564510 * dt));
+  cur = (struct Particle *)(((unsigned char *)arg0) + 0x2C);
+  out = cur;
+  for (i = 0; i < (*((int *)(((unsigned char *)arg0) + 0x222C))); ++i, ++cur)
+  {
+    if (cur->age < minAge)
+    {
+      continue;
     }
-    *(int *)((unsigned char *)arg0 + 0x222C) =
-        ((int)out - ((int)arg0 + 0x2C)) / 0x44;
+    if (cur->age >= maxAge)
+    {
+      continue;
+    }
+    v.y = cur->vy * scale;
+    v.z = cur->vz * scale;
+    v.x = cur->vx * scale;
+    v.y -= (gravity * dt) * (*((float *)(((unsigned char *)arg0) + 4)));
+    out->x = cur->x + (v.x * dt);
+    out->y = cur->y + (v.y * dt);
+    out->z = cur->z + (v.z * dt);
+    src = (struct ParticleTemplate *)(lbl_804B4030 + (cur->type * 0x34));
+    out->copy[0] = src->copy[0];
+    out->copy[1] = src->copy[1];
+    out->copy[2] = src->copy[2];
+    out->vx = v.x;
+    out->vy = v.y;
+    out->vz = v.z;
+    out->age = cur->age + dt;
+    out->flag = cur->flag;
+    out->type = cur->type;
+    ++out;
+  }
+  *((int *)(((unsigned char *)arg0) + 0x222C)) = (((int)out) - (((int)arg0) + 0x2C)) / 0x44;
 }
 
   #pragma scheduling on
