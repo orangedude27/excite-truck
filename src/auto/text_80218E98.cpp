@@ -2708,6 +2708,9 @@ extern "C" void *fn_8021CA0C(void *obj, s32 x, s32 y, s32 w, s32 h, void *resour
 
 extern "C" void fn_802C519C(void *);
 extern "C" s32 fn_80128668(void *);
+/* Deleting destructor of the slider/tab widget fn_8021CA0C builds: restore its vtable,
+ * release the two images it loaded, run the base Widget destructor and, when the deleting
+ * flag is set (scalar deleting destructor), free the object itself. */
 extern "C" void *fn_8021CAD4(void *self, s32 deletingFlag) {
     /* The slider/tab widget fn_8021CA0C builds into a 0x25C-byte UI node. */
     struct SliderWidget {
