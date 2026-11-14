@@ -2418,15 +2418,28 @@ void fn_8000EF74(s32 arg0) {
 }
 
 #pragma dont_inline reset
+/* Initialize UI font/text handles and scaling: cache the default font handle and its scaled metric, store the computed scale factor, and load the big text texture. */
 void fn_8000F0E4(void) {
-    s32 val;
-    f32 f1;
+#define defaultUiFontHandle   lbl_8055D490
+#define uiTextScaleMetric     lbl_80558A90
+#define uiScaleFactor         lbl_8055D49C
+#define bigTextTextureHandle  lbl_8055D498
+#define uiTextScaleMultiplier lbl_805602C8
+#define bigTextTextureName    lbl_802FC414
+    s32 fontHandle;
+    f32 fontSize;
 
-    val = fn_8023441C();
-    lbl_8055D490 = val;
-    f1 = (f32)fn_80232B70(val);
-    lbl_80558A90 = (s32)(lbl_805602C8 * f1);
-    *(f32 *)&lbl_8055D49C = fn_80011EDC();
-    lbl_8055D498 = fn_80232578((s32)lbl_802FC414);
+    fontHandle = fn_8023441C();
+    defaultUiFontHandle = fontHandle;
+    fontSize = (f32)fn_80232B70(fontHandle);
+    uiTextScaleMetric = (s32)(uiTextScaleMultiplier * fontSize);
+    *(f32 *)&uiScaleFactor = fn_80011EDC();
+    bigTextTextureHandle = fn_80232578((s32)bigTextTextureName);
+#undef bigTextTextureName
+#undef uiTextScaleMultiplier
+#undef bigTextTextureHandle
+#undef uiScaleFactor
+#undef uiTextScaleMetric
+#undef defaultUiFontHandle
 }
 
