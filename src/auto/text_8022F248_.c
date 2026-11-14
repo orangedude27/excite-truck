@@ -107,10 +107,13 @@ void fn_8022F294(void) {
 
 #pragma scheduling on
 
-void *fn_8022F2FC(char *arg0) {
+/* Find and return the overlay-quad list node whose quad's texture name matches
+   the given name (case-insensitive), or NULL if none is found.
+   (Proposed name: FindOverlayQuadByName) */
+void *fn_8022F2FC(char *name) {
     void *node = lbl_8055F014;
     while (node != 0) {
-        if (stricmp((char *)*(void **)node + 0x3c, arg0) == 0) return node;
+        if (stricmp((char *)*(void **)node + 0x3c, name) == 0) return node;
         node = *(void **)((char *)node + 8);
     }
     return 0;
