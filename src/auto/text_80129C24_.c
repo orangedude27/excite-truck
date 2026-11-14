@@ -65,13 +65,15 @@ void fn_80129C80(int slotIndex, int seedA, int seedB) {
     InitRngState((char *)gRngStateBuffer + slotIndex * RNG_STATE_SIZE, value0, value1);
 }
 
-int fn_80129D18(int arg0, int arg1) {
-    int value = (int)((float)arg1 * fn_8012A080(lbl_804223F8 + arg0 * 0x19C));
-    if (value < arg1 - 1)
+/* Draw a random integer in [0, range) from RNG slot `slot`: scale that slot's
+   next [0,1) float by `range`, clamped so rounding can never reach `range`. */
+int fn_80129D18(int slot, int range) {
+    RngState *state = (RngState *)(gRngStateBuffer + slot * RNG_STATE_SIZE);
+    int value = (int)((float)range * Rng_NextFloat(state));
+    if (value < range - 1)
         return value;
-    return arg1 - 1;
+    return range - 1;
 }
-
 #pragma dont_inline on
 int fn_80129D90(int unused, int arg0, int arg1) {
     return arg0 + fn_80129D18(unused, arg1 - arg0);
