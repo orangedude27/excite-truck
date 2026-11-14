@@ -99,14 +99,17 @@ static inline s32 GridCell(f32 v) {
     return i;
 }
 
-s32 fn_801B60F4(void *arg0, f32 arg1) {
-    s32 x;
-    s32 y;
-    if (arg1 > 20.0f)
+/* Returns the PhobList head for an object at pos with bounding radius: objects
+   larger than one 20-unit grid cell go into the global bigphoblist (lbl_8055E714),
+   and smaller ones go into the 100x100 XZ cell grid (lbl_8055E70C). */
+s32 fn_801B60F4(void *pos, f32 radius) {
+    s32 cellX;
+    s32 cellZ;
+    if (radius > 20.0f)
         return lbl_8055E714;
-    x = GridCell(((f32 *)arg0)[0]);
-    y = GridCell(((f32 *)arg0)[2]);
-    return lbl_8055E70C + ((x + y * 0x64) * 4);
+    cellX = GridCell(((f32 *)pos)[0]);
+    cellZ = GridCell(((f32 *)pos)[2]);
+    return lbl_8055E70C + ((cellX + cellZ * 0x64) * 4);
 }
 
 #pragma sym off
