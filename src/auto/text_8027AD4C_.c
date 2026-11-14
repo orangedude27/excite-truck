@@ -603,14 +603,26 @@ void fn_8027B8C0(void* alarm) {
 }
 
 #pragma dont_inline on
-long fn_8027B8E4(void *arg0, long arg1) {
-    long temp_r31;
-    long temp_r30;
-    temp_r31 = fn_8000DA10();
-    fn_8000D984(arg1);
-    temp_r30 = fn_8027BAB8(fn_8027B834(arg0));
-    fn_8000D984(temp_r31);
-    return temp_r30;
+/* Returns 1 when every entry of player `player`'s primary group list
+ * `groupIndex` (0-2) reports valid, else 0. The list address is resolved
+ * against the *current* player, so this temporarily makes `player` current,
+ * runs the check, and then restores the previously current player. */
+long fn_8027B8E4(void *groupIndex, long player) {
+#define CurrentPlayer fn_8000DA10
+#define SetCurrentPlayer fn_8000D984
+#define CurrentPlayerGroupList fn_8027B834
+#define AreAllEntriesValid fn_8027BAB8
+    long savedPlayer;
+    long allValid;
+    savedPlayer = CurrentPlayer();
+    SetCurrentPlayer(player);
+    allValid = AreAllEntriesValid(CurrentPlayerGroupList(groupIndex));
+    SetCurrentPlayer(savedPlayer);
+#undef CurrentPlayer
+#undef SetCurrentPlayer
+#undef CurrentPlayerGroupList
+#undef AreAllEntriesValid
+    return allValid;
 }
 #pragma dont_inline reset
 
