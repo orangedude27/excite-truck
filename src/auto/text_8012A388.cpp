@@ -766,6 +766,11 @@ extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
     return result;
 }
 
+/* Base of this file's pooled string literals. */
+static inline const char *GetStringBase(void) {
+    return lbl_8032A630;
+}
+
 /* Entry `index` of the 0x44-byte table at +0x60. */
 static inline u8 *GetEntry(void *self, s32 index) {
     return (u8 *)*(void **)((u8 *)self + 0x60) + index * 0x44;
