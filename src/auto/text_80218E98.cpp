@@ -8972,6 +8972,9 @@ extern "C" s32 fn_80229B70(void *arg0) {
 extern "C" char lbl_8033EFF4[];
 extern "C" s32 fn_801E4A2C(s32, const char *);
 extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80229B78(void *arg0, s32 arg1) {
+    /* Deleting destructor for the object using vtable lbl_8033EFF4: reset the
+       vtable, release the resource handle at +0x348 (fn_801E4A2C), run the base
+       destructor (fn_8021915C), and delete if arg1 > 0. */
     if (arg0 != 0) {
         *(void **)arg0 = lbl_8033EFF4;
         fn_801E4A2C(*(s32 *)((u8 *)arg0 + 0x348), lbl_8033EFF4);
