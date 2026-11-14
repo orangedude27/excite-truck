@@ -595,16 +595,17 @@ extern "C" void InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46n
 }
 
 extern "C" void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(
-    void* this_, void* pSound) {
-    if (pSound == NULL) {
+    void* player, void* sound) {
+    /* Remove a sound from an external sound player's sound list and clear its external-player link. */
+    if (sound == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322D24, 0x233,
                                      (const char*)lbl_80322D00);
     }
 
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
-        this_, &((u8*)pSound)[0xD0]);
+        player, &((u8*)sound)[0xD0]);
 
-    ((s32*)pSound)[0x14 / 4] = 0;
+    ((s32*)sound)[0x14 / 4] = 0;
 }
 
 extern const char lbl_80322CD0[];
