@@ -812,21 +812,28 @@ void *MEMAdjustFrmHeap(MEMiHeapHead *heap, void *newHead) {
     }
 }
 
+/* Counts the free blocks of a unit heap: with the heap locked, walks the chain of
+   same-sized free blocks that starts just past the base heap head and returns how
+   many there are.
+   NOTE: the symbol map lists 0x80049850 as MEMResizeForMBlockFrmHeap, but this is
+   really MEMCountFreeBlockForUnitHeap - its only caller (src/auto/text_800FDE28.cpp:128)
+   panics with the NW4HBM string "Failed assertion MEMCountFreeBlockForUnitHeap(
+   mHeapHandle, ... )". The frame-heap routine of the map's name, in
+   src/revolution/MEM/mem_frameHeap.c:243, is a different function entirely. */
 u32 MEMResizeForMBlockFrmHeap(MEMiHeapHead *heap, void *memBlock, u32 size) {
-    void *state;
+    MEMUnitHeapFreeBlock *freeBlock;
     u32 count = 0;
     #pragma unused(memBlock)
     #pragma unused(size)
     LockHeap(heap);
-    state = *(void **)((u8 *)heap + 0x3C);
-    while (state != 0) {
-        state = *(void **)state;
+    freeBlock = ((MEMiUnitHeapHead *)(heap + 1))->freeBlock;
+    while (freeBlock != 0) {
+        freeBlock = freeBlock->next;
         count++;
     }
     UnlockHeap(heap);
     return count;
 }
-
 #pragma dont_inline MEMAllocFromExpHeapEx
 static void* AllocatorAllocForExpHeap_(MEMAllocator* allocator, u32 size) {
     return MEMAllocFromExpHeapEx(allocator->heap, size, allocator->heapParam1);
