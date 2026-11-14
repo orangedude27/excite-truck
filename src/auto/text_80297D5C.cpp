@@ -367,6 +367,7 @@ extern "C" void fn_8029840C(void *arg0, int arg1) {
 extern "C" int fn_802984D0(void*, void*, void*, void*, void*, void*);
 extern "C" void fn_802994C0(void*, unsigned int);
 extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
+/* Build an item from the base entry at index and, if validation succeeds, register it. */
 extern "C" void fn_80298458(int arg0, int arg1, void* arg2, void* arg3, void* arg4, short arg5) {
     short value = arg5;
     int item = arg0 + arg1 * 0x2c;
@@ -1576,15 +1577,15 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
     float o0 = out[0];
     float t0 = d->t[0];
     float k = lbl_80564598;
-    out[0] = t0 + o0;
+    out[0] = o0 + t0;
     float o1 = out[1];
     float t1 = d->t[1];
-    float s1 = t1 + o1;
+    float s1 = o1 + t1;
     out[1] = s1;
-    float y1 = k + s1;
+    float y1 = s1 + k;
     float o2 = out[2];
     float t2 = d->t[2];
-    out[2] = t2 + o2;
+    out[2] = o2 + t2;
     out[1] = y1;
   }
   out += 3;
@@ -1634,15 +1635,15 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
     float o0 = out[0];
     float t0 = d->t[0];
     float k = lbl_80564598;
-    out[0] = t0 + o0;
+    out[0] = o0 + t0;
     float o1 = out[1];
     float t1 = d->t[1];
-    float s1 = t1 + o1;
+    float s1 = o1 + t1;
     out[1] = s1;
-    float y1 = k + s1;
+    float y1 = s1 + k;
     float o2 = out[2];
     float t2 = d->t[2];
-    out[2] = t2 + o2;
+    out[2] = o2 + t2;
     out[1] = y1;
   }
 }
