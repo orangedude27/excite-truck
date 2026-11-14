@@ -80,6 +80,8 @@ extern "C" void *fn_8012A13C(void *, void *, int, int);
 extern "C" int fn_8012A2D8(void*);
 extern "C" float PSVECMag(void*);
 
+/* How many entries the sound-group table below is searched through; the scene
+ * setup hands it its object count (fn_80206464). */
 extern void *lbl_8055ED88;
 extern "C" void fn_8020A400(void);
 extern "C" void fn_80208D80(int);
