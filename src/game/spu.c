@@ -860,12 +860,15 @@ void *fn_802E6058(void *arg0) {
 }
 #pragma scheduling on
 void fn_802E6138(void *arg0) {
+    /* Release an SPU voice channel: if it was still marked playing, log the
+       channel and sample; drop the sample's active-channel count, clear the
+       channel's in-use flag, and decrement the global active voice count. */
     if (((unsigned char *)arg0)[0x23] != 0) {
         fn_802E317C(lbl_8034D5B0, *(int *)arg0, *(void **)((char *)arg0 + 0x1C));
     }
     {
-        void *temp_r4 = *(void **)((char *)arg0 + 0x1C);
-        *(int *)((char *)temp_r4 + 0x98) -= 1;
+        void *sample = *(void **)((char *)arg0 + 0x1C);
+        *(int *)((char *)sample + SPU_SAMPLE_ACTIVE_CHANNELS_OFFSET) -= 1;
     }
     ((unsigned char *)arg0)[0x20] = 0;
     lbl_8055FF98 -= 1;
