@@ -465,30 +465,32 @@ extern "C" void fn_800180FC(void *arg0, s32 arg1) {
 #pragma cplusplus reset
 
 #pragma cplusplus reset
-void fn_800182A0(void* arg0, void* arg1) {
-    s32 index;
+/* Append all driver and vehicle number pairs from src into dst, growing each
+ * half's count as entries are added. */
+void fn_800182A0(void* dst, void* srcList) {
+    s32 dstIndex;
     s32 value;
     s32* src;
     s32 i;
-    s32 index2;
+    s32 dstIndex2;
     s32 value2;
     s32* src2;
     s32 i2;
-    src = (s32*)arg1;
-    for (i = 0; i < *(s32*)arg1; i++) {
-        index = *(s32*)arg0;
+    src = (s32*)srcList;
+    for (i = 0; i < *(s32*)srcList; i++) {
+        dstIndex = *(s32*)dst;
         value = *(s32*)((char*)src + 4);
         src++;
-        *(s32*)((char*)arg0 + index * 4 + 4) = value;
-        *(s32*)arg0 = index + 1;
+        *(s32*)((char*)dst + dstIndex * 4 + 4) = value;
+        *(s32*)dst = dstIndex + 1;
     }
-    src2 = (s32*)arg1;
-    for (i2 = 0; i2 < *(s32*)((char*)arg1 + 0x24); i2++) {
-        index2 = *(s32*)((char*)arg0 + 0x24);
+    src2 = (s32*)srcList;
+    for (i2 = 0; i2 < *(s32*)((char*)srcList + 0x24); i2++) {
+        dstIndex2 = *(s32*)((char*)dst + 0x24);
         value2 = *(s32*)((char*)src2 + 0x28);
         src2++;
-        *(s32*)((char*)arg0 + index2 * 4 + 0x28) = value2;
-        *(s32*)((char*)arg0 + 0x24) = index2 + 1;
+        *(s32*)((char*)dst + dstIndex2 * 4 + 0x28) = value2;
+        *(s32*)((char*)dst + 0x24) = dstIndex2 + 1;
     }
 }
 
@@ -587,27 +589,25 @@ void fn_800187F8(void) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_80017D5C(void* arg0) {
-    s32 offset = 0;
-    s32 i = 0;
     extern s32 fn_80129D18(s32);
+    register s32* arr = (s32*)arg0;
+    register s32 offset = 0;
+    register s32 i = 0;
+    register s32 left;
+    register s32* items;
     goto check;
 loop:
     {
-        s32 left;
-        s32 right;
-        s32* items;
-        s32 index;
-        index = fn_80129D18(1);
-        items = *(s32**)arg0;
-        i++;
+        s32 index = fn_80129D18(1);
+        items = (s32*)arr[0];
         left = *(s32*)((char*)items + offset);
-        right = items[index];
-        *(s32*)((char*)items + offset) = right;
+        i++;
+        *(s32*)((char*)items + offset) = items[index];
         offset += 4;
         items[index] = left;
+        left = arr[1];
     }
 check:
-    { s32 count = *(s32*)((char*)arg0 + 4);
-      if (i < count) goto loop; }
+    if (i < left) goto loop;
 }
 #pragma pop
