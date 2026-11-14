@@ -622,13 +622,14 @@ done:
 
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
-void fn_802E5950(int arg0, int arg1) {
-    char buffer[0x108];
+/* Builds a SPU resource path from a directory and name, logs it, and warns if it cannot be cached. */
+void fn_802E5950(int dirName, int fileName) {
+    char path[0x108];
 
-    sprintf(buffer, lbl_8055D1E4, arg0, arg1);
-    ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D490, buffer);
-    if (((int (*)(char *))fn_802E582C)(buffer) == 0) {
-        ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D4A0, buffer);
+    sprintf(path, lbl_8055D1E4, dirName, fileName);
+    ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D490, path);
+    if (((int (*)(char *))fn_802E582C)(path) == 0) {
+        ((void (*)(char *, char *, ...))fn_802E30C8)(lbl_8034D4A0, path);
     }
 }
 #pragma scheduling on
