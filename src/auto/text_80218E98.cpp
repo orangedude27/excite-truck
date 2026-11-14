@@ -4650,17 +4650,39 @@ extern "C" void *fn_80220778(void *self, s32 x, s32 y, s32 width, s32 height, s3
 }
 
 extern "C" void *lbl_8033E668[];
-extern "C" void *fn_80220874(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033E668;
-        fn_802C519C(*(void **)((u8 *)arg0 + 0x248));
-        fn_802C519C(*(void **)((u8 *)arg0 + 0x24C));
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+/* Deleting destructor of the slider bar widget fn_80220778 builds (vtable
+ * lbl_8033E668): restore its vtable, release the two slider images it loaded,
+ * run the base Widget destructor and, when the deleting flag is set (scalar
+ * deleting destructor), free the object itself. */
+extern "C" void *fn_80220874(void *self, s32 deletingFlag) {
+    /* The slider bar fn_80220778 builds into a 0x264-byte UI node: the groove
+       (slider1.img) drawn full size with a fill (slider2.img) scaled to
+       *value between minValue and maxValue (fn_80220C54). */
+    struct SliderBarWidget {
+        void *vtable;     /* +0x000 */
+        u8 widget[0x240]; /* +0x004 base Widget state */
+        s32 *value;       /* +0x244 index the slider moves */
+        void *trackImage; /* +0x248 slider1.img */
+        void *barImage;   /* +0x24C slider2.img */
+        s32 minValue;     /* +0x250 lowest index */
+        s32 maxValue;     /* +0x254 one past the highest */
+    };
+    #define SliderBar_vtable lbl_8033E668
+    #define Image_release    fn_802C519C
+
+    if (self != NULL) {
+        ((SliderBarWidget *)self)->vtable = SliderBar_vtable;
+        Image_release(((SliderBarWidget *)self)->trackImage);
+        Image_release(((SliderBarWidget *)self)->barImage);
+        Widget_dtor(self, 0);
+        if (deletingFlag > 0) {
+            Mem_freeObject(self);
         }
     }
-    return arg0;
+
+    #undef SliderBar_vtable
+    #undef Image_release
+    return self;
 }
 
 extern "C" void fn_802208EC(void *arg0) {
