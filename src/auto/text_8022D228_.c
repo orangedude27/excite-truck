@@ -148,14 +148,15 @@ void fn_8022D76C(void *arg0) {
     *(int *)((char *)arg0 + 0x24) += 1;
 }
 
-void *fn_8022D7C4(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_80128670(*(int *)((char *)arg0 + 0x18));
-        fn_80128670(*(int *)((char *)arg0 + 0x1C));
-        fn_80128670(*(int *)arg0);
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+/* Destroy table buffers and optionally free the table object. */
+void *fn_8022D7C4(void *table, int shouldFree) {
+    if (table != 0) {
+        fn_80128670(*(int *)((char *)table + 0x18));
+        fn_80128670(*(int *)((char *)table + 0x1C));
+        fn_80128670(*(int *)table);
+        if (shouldFree > 0) ((void (*)(void *))fn_80128668)(table);
     }
-    return arg0;
+    return table;
 }
 
 #pragma push
