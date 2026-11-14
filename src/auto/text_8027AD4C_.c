@@ -1573,6 +1573,7 @@ long fn_8027CF3C(long name) {
         return 1;
     }
 }
+
 #pragma cplusplus on
 extern "C" long fn_8027CFB4(long arg0) {
     /* Looks up the grade-table entry for the current context and returns the
