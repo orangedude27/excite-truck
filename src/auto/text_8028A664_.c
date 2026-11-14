@@ -869,16 +869,25 @@ void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
 void fn_8028BC18(void) {
 }
 
+/* Destructor for the 0x1C-byte texture/pool object: releases its texture handle,
+ * frees the backing pool block, and optionally frees the object itself. */
 s32 fn_8028BC1C(s32 arg0, s32 arg1) {
-    extern void fn_802CAC54(s32);
-    extern void fn_80128670(s32);
-    s32 temp;
+#define TextureRelease fn_802CAC54
+#define MemFreeArray  fn_80128670
+#define MemFreeObject fn_80128668
+    extern void TextureRelease(s32);
+    extern void MemFreeArray(s32);
+    s32 pool;
+
     if (arg0 != 0) {
-        fn_802CAC54(((s32 *)arg0)[5]);
-        temp = *(s32 *)arg0;
-        if (temp != 0) fn_80128670(temp - 0x10);
-        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)((void *)arg0);
+        TextureRelease(((s32 *)arg0)[5]);
+        pool = *(s32 *)arg0;
+        if (pool != 0) MemFreeArray(pool - 0x10);
+        if (arg1 > 0) ((s32 (*)(void *))MemFreeObject)((void *)arg0);
     }
+#undef TextureRelease
+#undef MemFreeArray
+#undef MemFreeObject
     return arg0;
 }
 
