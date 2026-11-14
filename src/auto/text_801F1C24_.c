@@ -86,6 +86,7 @@ int *fn_801F1CE8(int arg0) {
 }
 
 int fn_801F1CF0(int arg0) {
+    /* Return whether the vector from the camera to this object (+0x24) points against the object's direction (+0x18). */
     float delta[3];
     void *camera;
     float cz, cy, cx, z, y, x;
