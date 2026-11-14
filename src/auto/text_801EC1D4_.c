@@ -911,18 +911,6 @@ void fn_801F13F4(long, float, float);
 #pragma processor 750
 #pragma optimization_level 3
 #pragma scheduling invalid_target
-#pragma push
-#pragma always_inline on
-#pragma dont_inline off
-static inline float ClampRenderDot(float dot, float limit) {
-    return limit > dot ? dot : limit;
-}
-static inline int ShouldRenderVehicleEffect(void *object) {
-    if (*(long *)((char *)object + 0x40) != fn_801E866C(-1)) return 1;
-    if (fn_801E89A4(-1) != 0) return 1;
-    return 0;
-}
-#pragma pop
 void fn_801EDF18(void* arg0) {
     struct Settings { long first; union { long bits; float value; } second; long third; } settings;
     float temp_f31, var_f30, var_f29, limit, dot, factor;
