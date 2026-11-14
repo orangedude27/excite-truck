@@ -206,19 +206,20 @@ void fn_802532BC(void *arg0) {
     *(float *)((char *)arg0 + 0x594) = lbl_80563A04;
 }
 
-void *fn_8025343C(void *arg0) {
+/* Initializes a wheel buffer object: sets up base state, captures a timing value, and creates front/rear wheel buffers. */
+void *fn_8025343C(void *obj) {
     extern void fn_802532BC(void *);
     extern float fn_8023659C(void);
     extern int fn_801F0008(void);
     extern int fn_801284E8(char *, int);
     extern char lbl_803447C0[], lbl_803447CC[];
-    fn_802532BC(arg0);
-    *(float *)((u8 *)arg0 + 4) = fn_8023659C();
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
-    *(s32 *)((u8 *)arg0 + 0x20) = fn_801284E8(lbl_803447C0, fn_801F0008());
-    *(s32 *)((u8 *)arg0 + 0x24) = fn_801284E8(lbl_803447CC, fn_801F0008());
-    return arg0;
+    fn_802532BC(obj);
+    *(float *)((u8 *)obj + 4) = fn_8023659C();
+    *(s32 *)((u8 *)obj + 0xC) = 0;
+    *(s32 *)((u8 *)obj + 8) = 0;
+    *(s32 *)((u8 *)obj + 0x20) = fn_801284E8(lbl_803447C0, fn_801F0008());
+    *(s32 *)((u8 *)obj + 0x24) = fn_801284E8(lbl_803447CC, fn_801F0008());
+    return obj;
 }
 
 void *__dt__Q210JASDrumSet5TPercFv_802534B0(void *arg0, s32 arg1) {
@@ -1080,10 +1081,14 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
     extern int __cntlzw(unsigned int);
     extern void *memmove(void *, const void *, unsigned long);
     extern void fn_802E317C(const char *, ...);
-    void **slot;
+    register void **slot;
     register void *obj;
-    s32 index;
-    u8 *cursor;
+    register s32 index;
+    register u8 *cursor;
+    void **slot2;
+    void *obj2;
+    s32 index2;
+    u8 *cursor2;
     (void)arg2;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80344B98;
@@ -1093,7 +1098,7 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
 
         cursor = (u8 *)lbl_80498E08;
         index = 0;
-        while (lbl_8055F33C > index) {
+        while (index < lbl_8055F33C) {
             if (((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*(void **)cursor + 0x20))) >> 5)) {
                 slot = &lbl_80498E08[index];
                 obj = *slot;
@@ -1105,28 +1110,28 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
                 memmove(slot, slot + 1, (lbl_8055F33C - index) * 4);
                 goto second_pass;
             }
+            index += 1;
             cursor += 4;
-            ++index;
         }
         fn_802E317C(lbl_803449D4);
 
     second_pass:
-        cursor = (u8 *)lbl_80498E08;
-        index = 0;
-        while (index < lbl_8055F33C) {
-            if (((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*(void **)cursor + 0x20))) >> 5)) {
-                slot = &lbl_80498E08[index];
-                obj = *slot;
-                if (obj) {
-                    fn_8012D8A8(*(s32 *)((u8 *)obj + 0x20));
-                    ((s32 (*)(void *))fn_80128668)(obj);
+        cursor2 = (u8 *)lbl_80498E08;
+        index2 = 0;
+        while (index2 < lbl_8055F33C) {
+            if (((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*(void **)cursor2 + 0x20))) >> 5)) {
+                slot2 = &lbl_80498E08[index2];
+                obj2 = *slot2;
+                if (obj2) {
+                    fn_8012D8A8(*(s32 *)((u8 *)obj2 + 0x20));
+                    ((s32 (*)(void *))fn_80128668)(obj2);
                 }
                 lbl_8055F33C -= 1;
-                memmove(slot, slot + 1, (lbl_8055F33C - index) * 4);
+                memmove(slot2, slot2 + 1, (lbl_8055F33C - index2) * 4);
                 goto finish;
             }
-            index += 1;
-            cursor += 4;
+            index2 += 1;
+            cursor2 += 4;
         }
         fn_802E317C(lbl_803449D4);
 
@@ -1301,12 +1306,14 @@ void fn_80255B5C(void *arg0) {
     extern s32 lbl_8055F33C;
     extern void *lbl_80498E08[];
     extern void fn_8012D3D8(s32);
-    Obj78 *obj78 = (Obj78 *)arg0;
     extern void fn_80252C78(void);
     extern int stricmp(const char *, const char *);
+
+    Obj78 *obj78 = (Obj78 *)arg0;
     Obj58 *obj58 = (Obj58 *)arg0;
-    StringEntry **entries;
+    register StringEntry **entries;
     register int i;
+
     fn_80253824(*(void **)((char *)arg0 + 8));
     if (obj78->name78[0] != 0) {
         entries = (StringEntry **)lbl_80498E08;
@@ -1314,9 +1321,9 @@ void fn_80255B5C(void *arg0) {
         goto scan78_test;
 scan78:
         if (stricmp((*entries)->name, obj78->name78) == 0) {
-            StringEntry *entry = ((StringEntry **)lbl_80498E08)[i];
-            char *dst = entry->name;
+            register StringEntry *entry = ((StringEntry **)lbl_80498E08)[i];
             if (--entry->refCount == 0) {
+                char *dst = entry->name;
                 char ch;
                 char *src;
                 s32 count;
@@ -1349,9 +1356,9 @@ scan78_test:
         goto scan58_test;
 scan58:
         if (stricmp((*entries)->name, obj58->name58) == 0) {
-            StringEntry *entry = ((StringEntry **)lbl_80498E08)[i];
-            char *dst = entry->name;
+            register StringEntry *entry = ((StringEntry **)lbl_80498E08)[i];
             if (--entry->refCount == 0) {
+                char *dst = entry->name;
                 char ch;
                 char *src;
                 s32 count;
