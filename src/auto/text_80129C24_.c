@@ -74,6 +74,7 @@ int fn_80129D18(int slot, int range) {
         return value;
     return range - 1;
 }
+
 #pragma dont_inline on
 int fn_80129D90(int unused, int arg0, int arg1) {
     return arg0 + fn_80129D18(unused, arg1 - arg0);
