@@ -4817,22 +4817,23 @@ extern "C" void fn_801A47C8(void* arg0) {
     }
 }
 #pragma pop
-extern "C" void fn_801A47FC(void* arg0) {
-    register s32* r29 = (s32*)arg0;
-    if (r29 == 0) {
+extern "C" void fn_801A47FC(void* group) {
+    /* Iterates a group's entries and calls fn_801A49E8 on each, if the group is non-null. */
+    register s32* groupData = (s32*)group;
+    if (groupData == 0) {
         return;
     }
-    register s32 r30;
-    register s32 r31;
-    r31 = 0;
-    r30 = 0;
+    register s32 counter;
+    register s32 byteOffset;
+    byteOffset = 0;
+    counter = 0;
     goto check;
 loop:
-    fn_801A49E8((void*)(*(s32*)((u8*)r29[1] + r30)));
-    r30 += 4;
-    r31++;
+    fn_801A49E8((void*)(*(s32*)((u8*)groupData[1] + counter)));
+    counter += 4;
+    byteOffset++;
 check:
-    if (r31 < r29[0]) goto loop;
+    if (byteOffset < groupData[0]) goto loop;
 }
 
 #pragma opt_tail_call on
