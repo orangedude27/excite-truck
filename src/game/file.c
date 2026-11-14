@@ -55,11 +55,14 @@ s32 fn_802E3270(s32 arg0) {
 }
 
 #pragma dont_inline on
-s32 fn_802E32C4(s32 arg0) {
-    if (arg0 != 0 && fn_802E321C((const char *)arg0) != 0 && lbl_8055FF20 != 0) {
+/* Returns the file system handle for the given path: DVD (lbl_8055FF20) for
+   paths matching the disc prefix, memory (lbl_8055FF24) for paths matching the
+   memory prefix, or 0 if no matching file system is available. */
+s32 fn_802E32C4(s32 path) {
+    if (path != 0 && fn_802E321C((const char *)path) != 0 && lbl_8055FF20 != 0) {
         return lbl_8055FF20;
     }
-    if (arg0 != 0 && fn_802E3270(arg0) != 0 && (s32)lbl_8055FF24 != 0) {
+    if (path != 0 && fn_802E3270(path) != 0 && (s32)lbl_8055FF24 != 0) {
         return (s32)lbl_8055FF24;
     }
     return 0;
