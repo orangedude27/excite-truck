@@ -63,8 +63,8 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
     register int value = arg0;
     register int category = arg2;
     register char *record;
-    register unsigned char *dst;
     register unsigned char *src;
+    register char *dst;
     char *space;
     unsigned int zero[3];
     int count;
@@ -73,30 +73,26 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
     char *text;
     unsigned char c;
     float result;
-
     space = (char *)lbl_8055E984;
     i = *(int *)(space + 0x5808);
     entryAddress = (int)space + i * 0x2C;
     *(int *)(space + 0x5808) = i + 1;
     record = (char *)(entryAddress + 8);
-
     count = 0x10;
-    dst = (unsigned char *)record;
     src = name;
-    while (--count > 0) {
+    dst = record;
+    for (; --count > 0;) {
     }
     dst[-1] = 0;
     do {
         c = *src++;
         *dst++ = c;
     } while ((signed char)c != 0);
-
     *(int *)(record + 0x20) = value;
     if (fn_801284F8(0x10, &lbl_8055ADA0) != 0)
         *(int *)(record + 0x28) = (int)fn_801D9F28();
     *(int *)(record + 0x24) = fn_801D9CC4(category);
     fn_801D9F84(*(int *)(record + 0x28), *(int *)(record + 0x24));
-
     record[0x19] = 0;
     i = 0;
     for (;;) {
@@ -138,6 +134,7 @@ void *fn_801DA8C8(const char *arg0, const char *arg1) {
     const char *text;
     char *entry;
     char *result;
+    int off;
     int count;
     int i;
     int matchAll;
@@ -145,17 +142,19 @@ void *fn_801DA8C8(const char *arg0, const char *arg1) {
     space = lbl_8055E984;
     name = arg0;
     text = arg1;
+    off = 0;
     count = 0;
     result = 0;
     matchAll = strcmp(name, lbl_8055ADB0) == 0;
-    entry = (char *)space + 8;
+    entry = (char *)lbl_8055E984 + 8;
     for (i = 0; i < *(int *)((char *)space + 0x5808); i++) {
         if (matchAll == 0) {
             if (strcmp(entry, name) != 0) goto next;
         }
         if (fn_801D9FC4((char **)*(void **)((char *)entry + 0x28), text) != 0) {
-            stack[count] = entry;
+            *(char **)((char *)stack + off) = entry;
             count++;
+            off += 4;
         }
     next:
         entry += 0x2C;
@@ -163,33 +162,27 @@ void *fn_801DA8C8(const char *arg0, const char *arg1) {
     if (count > 0) {
         char *dst;
         int len;
-
+        unsigned char c;
+        unsigned char *src;
         result = fn_801284F8(0x20, lbl_80339240);
         if (result != 0) {
-            signed char c;
-
             *(void **)result = lbl_80339288;
-            *(int *)((char *)result + 0xC) = count;
             dst = (char *)result + 0x10;
             len = 0x10;
-            for (;;) {
-                c = *text;
-                text += 1;
-                *dst = c;
-                dst += 1;
-                if (c == 0)
-                    break;
-                if (--len <= 0) {
-                    *(dst - 1) = 0;
-                    break;
-                }
+            *(int *)((char *)result + 0xC) = count;
+            for (; --len > 0;) {
             }
+            dst[-1] = 0;
+            src = (unsigned char *)text;
+            do {
+                c = *src++;
+                *dst++ = c;
+            } while ((signed char)c != 0);
             *(int *)((char *)result + 8) = 0;
             *(void **)((char *)result + 4) = (void *)fn_8012850C(*(int *)((char *)result + 0xC) * 4, lbl_8033924C);
             for (i = 0; i < count; i++) {
                 void **arr;
                 int pos;
-
                 arr = *(void ***)((char *)result + 4);
                 pos = *(int *)((char *)result + 8);
                 *(void **)((char *)arr + pos * 4) = stack[i];
@@ -294,13 +287,17 @@ int fn_801DAD7C(void *arg0) {
 }
 #pragma scheduling on
 void fn_801DADBC(void *arg0) {
-    int i;
-    int offset;
+    int i = 0;
+    int offset = 0;
     void **items;
-    for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 8); i++, offset += 4) {
-        items = *(void ***)((char *)arg0 + 4);
-        fn_801DA198(*(int *)((char *)items[offset / 4] + 0x28), lbl_80562B54);
-    }
+    goto check;
+loop:
+    items = *(void ***)((char *)arg0 + 4);
+    fn_801DA198(*(int *)((char *)items[offset / 4] + 0x28), lbl_80562B54);
+    offset += 4;
+    i += 1;
+check:
+    if (i < *(int *)((char *)arg0 + 8)) goto loop;
 }
 #pragma scheduling reset
 extern void fn_801D9F44(void *, int);
@@ -340,10 +337,11 @@ void fn_801DAEF8(void) {
 
 }
 
-void fn_801DAEFC(void *arg0) {
-    unsigned char *entry = (unsigned char *)arg0 + 8;
-    int i;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x5808); i++) {
+/* Copies each entry's pending flag to its active flag and resets its timer. */
+void fn_801DAEFC(void *container) {
+    unsigned char *entry = (unsigned char *)container + 8;
+    int index;
+    for (index = 0; index < *(int *)((char *)container + 0x5808); index++) {
         unsigned char flag = *(volatile unsigned char *)(entry + 0x19);
         float value = *(volatile float *)&lbl_80562B54;
         *(volatile unsigned char *)(entry + 0x18) = flag;
@@ -422,17 +420,15 @@ extern char lbl_8055ADB8;
 int fn_801DB13C(void *arg0, const char *arg1) {
     char key[64];
     char text[64];
-    const char *input = arg1;
     char *messageBase = lbl_80339240;
     char *entry;
     int matchAll;
     int found;
     int i;
     int one;
-    int limit;
-    register float value;
+    float value;
 
-    if (sscanf(input, &lbl_8055ADB8, key, text) == 2) {
+    if (sscanf(arg1, &lbl_8055ADB8, key, text) == 2) {
         matchAll = strcmp(key, (const char *)&lbl_8055ADB0) == 0;
         value = lbl_80562B50;
         entry = (char *)arg0 + 8;
@@ -449,13 +445,12 @@ int fn_801DB13C(void *arg0, const char *arg1) {
             }
             entry += 0x2C;
             i++;
-            limit = *(volatile int *)((char *)arg0 + 0x5808);
-        } while (i < limit);
+        } while (i < *(int *)((char *)arg0 + 0x5808));
         if (found != 0)
             DBPrintf_8013B490(messageBase + 0x110, key, text);
         else
             DBPrintf_8013B490(messageBase + 0x12C, key, text);
-    } else if (sscanf(input, &lbl_8055ADB4, text) == 1) {
+    } else if (sscanf(arg1, &lbl_8055ADB4, text) == 1) {
         matchAll = strcmp((const char *)&lbl_8055ADB0, (const char *)&lbl_8055ADB0) == 0;
         value = lbl_80562B50;
         entry = (char *)arg0 + 8;
@@ -472,8 +467,7 @@ int fn_801DB13C(void *arg0, const char *arg1) {
             }
             entry += 0x2C;
             i++;
-            limit = *(volatile int *)((char *)arg0 + 0x5808);
-        } while (i < limit);
+        } while (i < *(int *)((char *)arg0 + 0x5808));
         if (found != 0)
             DBPrintf_8013B490(messageBase + 0x148, text);
         else
