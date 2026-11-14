@@ -402,6 +402,9 @@ static s32 nandGetStatus(const char* path, NANDStatus* status,
     }
 }
 
+/* Complete an async NANDGetStatus: on success copy the attributes and the
+ * packed permission bits into the caller's NANDStatus, then deliver the
+ * converted result through the command block's callback. */
 static void nandGetStatusCallback(s32 result, void* arg) {
     NANDCommandBlock* block = (NANDCommandBlock*)arg;
     NANDStatus* status;
