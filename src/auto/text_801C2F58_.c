@@ -1623,6 +1623,7 @@ void fn_801C7AC4(void) {
     if (lbl_80438280[0] == 0) strcpy(lbl_80438280, lbl_8055A95C);
 }
 void fn_801C7B28(void) {
+    /* Save the current console input line, clear it, default the saved line to "nobody" if empty, and reset the menu action state. */
     strcpy(lbl_80438380, lbl_804380F0);
     strcpy(lbl_804380F0, lbl_8055AA44);
     if (lbl_80438380[0] == 0)
