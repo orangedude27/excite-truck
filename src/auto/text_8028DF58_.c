@@ -776,20 +776,20 @@ void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0
 #pragma pop
 extern char lbl_80348F9C[];
 #pragma scheduling invalid_target
-int fn_8028F534(int arg0) {
-    int shift;
+int fn_8028F534(int bitValue) {
+    /* Map a single-bit mask at position 0,2,4,6 to the corresponding 1,2,4,8 bit. */
+    int bitShift;
     int index;
     index = 0;
-    shift = 0;
-    for (; index < 4; shift += 2, index++) {
-        if (arg0 == (1 << shift)) {
+    bitShift = 0;
+    for (; index < 4; bitShift += 2, index++) {
+        if (bitValue == (1 << bitShift)) {
             return 1 << index;
         }
     }
-    fn_802E317C(lbl_80348F9C, arg0);
+    fn_802E317C(lbl_80348F9C, bitValue);
     return 0;
 }
-#pragma scheduling on
 void fn_8028F5A0(int arg0, int arg1) {
 }
 
