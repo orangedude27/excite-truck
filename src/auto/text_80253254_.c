@@ -12,6 +12,7 @@ __declspec(section ".sdata") extern char lbl_8055C1A0[];
 __declspec(section ".sdata") extern char lbl_8055C1A8[];
 __declspec(section ".sdata") extern char lbl_8055C1B0[];
 __declspec(section ".sdata") extern char lbl_8055C1B8[];
+__declspec(section ".sdata") extern u8 lbl_8055F330;
 extern void fn_80253824(void *);
 extern s32 fn_80128668(void);
 extern char lbl_80344B98[];
@@ -439,13 +440,14 @@ void fn_80253890(void *arg0, void *arg1) {
         virtual void v2C();
         virtual void v30();
         virtual void v34();
-        virtual Vec3 getVec(const char *, Vec3);
+        virtual Vec3 getVec(const char *, const Vec3 &);
     };
     char cfgPath[0x100];
     Res *manager;
+    char *labels;
     Res *res;
-    char *labels = lbl_803447C0;
 
+    labels = lbl_803447C0;
     if (*(int *)((char *)arg0 + 0x28) != -1) return;
     fn_801345D8(cfgPath, 0x100, labels + 0x50, arg1);
     manager = (Res *)fn_80131810(cfgPath);
@@ -485,9 +487,8 @@ void fn_80253890(void *arg0, void *arg1) {
         def.z = zero;
         res = manager->get(lbl_8055C160);
         for (i = 0; i < *(int *)((char *)arg0 + 0x34); i++) {
-            Vec3 d = def;
             fn_801345D8(name, 0x20, lbl_8055C168, i);
-            ((Obj *)arg0)->points[i] = res->getVec(name, d);
+            ((Obj *)arg0)->points[i] = res->getVec(name, Vec3(def));
         }
     } else {
         memset((char *)arg0 + 0x3C, 0x3C0, 0);
@@ -495,10 +496,10 @@ void fn_80253890(void *arg0, void *arg1) {
     {
         Keys keys = lbl_802FA5A8;
         if (manager->exists(lbl_8055C16C)) {
+            Res *keyRes = manager->get(lbl_8055C16C);
             int i;
-            res = manager->get(lbl_8055C16C);
             for (i = 0; i < 4; i++)
-                res->setKey(keys.v[i], -1);
+                keyRes->setKey(keys.v[i], -1);
         }
     }
     ((void (*)(void *))fn_80131818)(manager);
