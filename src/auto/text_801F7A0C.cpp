@@ -1474,7 +1474,6 @@ extern "C" void fn_801F9BE8(void) {
 }
 #pragma scheduling on
 
-#pragma scheduling on
 /* EventSetStaticGobActive - event-handler registry (src/game/world/event.c) callback for
  * event type 0xC, registered by fn_801F9E04.  The script hands over a payload record;
  * binary-search the GOB id table fn_801F9BE8 built for the GOB id it names and, on a hit,
