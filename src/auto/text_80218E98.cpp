@@ -9155,17 +9155,28 @@ extern "C" s32 fn_80229F60(void *arg0) {
     return result;
 }
 
-extern "C" void *fn_80229F78(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033E878;
-        fn_802C519C(*(void **)((u8 *)arg0 + 0x25C));
-        fn_802C519C(*(void **)((u8 *)arg0 + 0x260));
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+/* Deleting destructor of the horizontal slider widget fn_8021F678 builds
+ * (vtable lbl_8033E878): restore the widget's own vtable, release the two
+ * images it loaded -- the track (slider1.img) at +0x25C and the fill
+ * (slider2.img) at +0x260 -- run the base Widget destructor, and free the
+ * widget when deletingFlag > 0. */
+extern "C" void *fn_80229F78(void *self, s32 deletingFlag) {
+    #define Slider_vtable lbl_8033E878
+    #define Image_release fn_802C519C
+
+    if (self != NULL) {
+        *(void **)self = Slider_vtable;
+        Image_release((void *)((SliderWidget *)self)->trackImg);
+        Image_release((void *)((SliderWidget *)self)->fillImg);
+        Widget_dtor(self, 0);
+        if (deletingFlag > 0) {
+            Mem_freeObject(self);
         }
     }
-    return arg0;
+
+    #undef Slider_vtable
+    #undef Image_release
+    return self;
 }
 
 extern "C" void *lbl_8033E878[];
