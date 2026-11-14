@@ -338,13 +338,14 @@ void fn_8000B150(void *arg0) {
         entry += 0x14;
     }
 }
-int fn_8000B210(void *arg0) {
+/* Call the current handler at lbl_8055D3D0, saving and restoring state via fn_80231504 when fn_8000AD2C indicates it is needed. */
+int fn_8000B210(void *unused) {
     extern int fn_80231504(int);
     if (*(void **)lbl_8055D3D0 != 0) {
         if (((int (*)(void))fn_8000AD2C)() != 0) {
-            int saved = fn_80231504(0);
-            ((int (*)())*(void **)lbl_8055D3D0)(saved, lbl_8055D3D0);
-            return fn_80231504(saved);
+            int savedState = fn_80231504(0);
+            ((int (*)())*(void **)lbl_8055D3D0)(savedState, lbl_8055D3D0);
+            return fn_80231504(savedState);
         }
         return ((int (*)())*(void **)lbl_8055D3D0)(lbl_8055D3D0);
     }
@@ -1003,8 +1004,8 @@ void fn_8000C0E8(void *arg0) {
     struct Tail { int a, b, c, d; };
     struct Context { struct Header header; struct Payload payload; struct Tail tail; int last; } local;
     unsigned char *src = (unsigned char *)arg0;
-    unsigned char *out;
     unsigned char *rec;
+    unsigned char *out;
     int i;
     unsigned char a, b;
 
@@ -1203,14 +1204,14 @@ void fn_8000C0E8(void *arg0) {
             b = rec[0x7f];
             out[0x7e] = a;
             out[0x7f] = b;
-            a = rec[0x80];
-            b = rec[0x81];
-            out[0x80] = a;
-            out[0x81] = b;
-            a = rec[0x82];
-            b = rec[0x83];
-            out[0x82] = a;
-            out[0x83] = b;
+            b = rec[0x80];
+            a = rec[0x81];
+            out[0x80] = b;
+            out[0x81] = a;
+            b = rec[0x82];
+            a = rec[0x83];
+            out[0x82] = b;
+            out[0x83] = a;
             *(unsigned int *)(out + 0x84) = *(unsigned int *)(rec + 0x84);
             *(unsigned int *)(out + 0x88) = *(unsigned int *)(rec + 0x88);
             *(unsigned int *)(out + 0x8C) = *(unsigned int *)(rec + 0x8C);
