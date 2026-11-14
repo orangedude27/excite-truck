@@ -33,12 +33,13 @@ void *fn_8017B0B0(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-void fn_8017B0F8(void *arg0, float *arg1) {
+/* Initializes this object: runs base init, clears state fields, applies config values at offsets +8/+C/+10/+14, then resets runtime data. */
+void fn_8017B0F8(void *self, float *config) {
     fn_80179D94();
-    *(int *)((char *)arg0 + 0xD0) = 0;
-    fn_8017B2D0(arg0, arg1[2], arg1[3], arg1[4], arg1[5]);
-    *(int *)((char *)arg0 + 0x184) = 0;
-    fn_8017B198(arg0);
+    *(int *)((char *)self + 0xD0) = 0;
+    fn_8017B2D0(self, config[2], config[3], config[4], config[5]);
+    *(int *)((char *)self + 0x184) = 0;
+    fn_8017B198(self);
 }
 #pragma scheduling on
 void fn_8017B164(void *arg0) {
