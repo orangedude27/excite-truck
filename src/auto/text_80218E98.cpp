@@ -6284,15 +6284,18 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 #pragma pop
-extern "C" void* fn_80223FAC(void* arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        s32 temp = *(s32*)((u8*)arg0 + 0x254);
-        *(void**)arg0 = lbl_8033E350;
-        if (temp != 0) fn_802ECFF4(temp);
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* MovieWidget deleting destructor: restore MovieWidget's vtable, destroy any
+ * active movie handle at +0x254, run the base Widget destructor, and free the
+ * widget when deletingFlag > 0. */
+extern "C" void* fn_80223FAC(void* self, s32 deletingFlag) {
+    if (self != NULL) {
+        s32 movieHandle = ((MovieWidgetLayout*)self)->movieHandle;
+        ((MovieWidgetLayout*)self)->vtable = MovieWidget_vtable;
+        if (movieHandle != 0) Movie_destroy(movieHandle);
+        Widget_dtor(self, 0);
+        if (deletingFlag > 0) Mem_freeObject(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" const char lbl_8033DA90[];
