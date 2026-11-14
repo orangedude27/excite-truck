@@ -83,6 +83,13 @@ extern int fn_8016C25C(int, int);
 extern f32 lbl_80561984;
 extern int fn_8000DA10();
 typedef struct { s32 w[12]; } Blk8016C768;
+// A fixed array of same-sized entries, built by fn_8016CD68/fn_8016C768: the
+// entries come from fn_8012850C(count * entrySize + 0x10) and the runtime's
+// array constructor fn_8002F37C, which returns the first entry (0x10 past the
+// array header it keeps there).  data/data2 both hold that pointer, count is
+// how many entries there are and index is the next entry to hand out;
+// fn_8016CD4C/fn_8016C55C return entry index and advance it, fn_8016C760 reads
+// the index back as how many entries were filled in.
 typedef struct { s32 data; s32 index; s32 count; s32 data2; } List8016C768;
 #define VT(obj, off) (*(void ***)(obj))[(off) / 4]
 #define VFN(obj, off, ret, args) ((ret (*) args)VT(obj, off))
