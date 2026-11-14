@@ -218,12 +218,27 @@ void fn_802E9CF0(void) {
 
 #pragma dont_inline on
 void fn_802E9DDC(void) {
-    if (fn_800B7E5C((signed char)lbl_805076B8[8], 1) != 0) {
-        ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E3E0);
+    /* Report SD card unmount/detach failures for the active card slot. */
+    #define sFAUnmountFailMsg lbl_8034E3E0
+    #define sFADetachFailMsg lbl_8034E3F0
+    #define gCardStatus lbl_805076B8
+    #define CardCheckUnmountError fn_800B7E5C
+    #define CardCheckDetachError fn_800B7B34
+    #define AbendReport fn_802E30C8
+    #define PanicAbort fn_802E317C
+    if (CardCheckUnmountError((signed char)gCardStatus[8], 1) != 0) {
+        ((long (*)(char *, ...))AbendReport)((char *)&sFAUnmountFailMsg);
     }
-    if (fn_800B7B34((signed char)*(lbl_805076B8 + 8)) != 0) {
-        fn_802E317C((const char *)&lbl_8034E3F0);
+    if (CardCheckDetachError((signed char)*(gCardStatus + 8)) != 0) {
+        PanicAbort((const char *)&sFADetachFailMsg);
     }
+    #undef sFAUnmountFailMsg
+    #undef sFADetachFailMsg
+    #undef gCardStatus
+    #undef CardCheckUnmountError
+    #undef CardCheckDetachError
+    #undef AbendReport
+    #undef PanicAbort
 }
 #pragma dont_inline reset
 
