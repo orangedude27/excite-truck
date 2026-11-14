@@ -29,7 +29,10 @@ namespace nw4hbm { namespace lyt {
         u8 alpha;      /* 0xCE: pane alpha, passed to DrawQuad */
         u8 flags;      /* 0xCF: bit 0 keeps the children from being animated */
         u8 unk_D0[0x2C];
-        void* materials;    /* 0xFC: count entries of {u8 flag, Material*} frame materials */
+        /* One border piece of the window's frame: how its material is used and
+         * the material itself (padded to a word pair, the game steps entries by 8). */
+        struct Frame { u8 type; Material* material; };
+        Frame* materials;   /* 0xFC: materialCount frame materials */
         u8 materialCount;   /* 0x100: number of frame materials */
         void* FindMaterialByName(const char*, bool);
         void* FindAnimationLink(AnimTransform*);
