@@ -191,6 +191,8 @@ typedef struct Cell_801E0890 {
     s32 id;
     f32 u, v;
 } Cell_801E0890;
+/* One boost area (0x1C bytes): the outline quad and the nu x nv grid of cells
+ * subdividing it, both allocated by fn_801E0890 and released by fn_801E07E8. */
 typedef struct Rec_801E0890 {
     Poly_801E0890 *quad;
     Cell_801E0890 *cells;
