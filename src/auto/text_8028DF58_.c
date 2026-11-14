@@ -522,13 +522,14 @@ extern char lbl_80348F4C[];
   #pragma push
   #pragma scheduling invalid_target
   #pragma scheduling on
-int fn_8028EDA8(unsigned int *arg0, unsigned int arg1) {
-    unsigned int *base = arg0;
-    int count = *(int *)((char *)arg0 + 0x100);
-    int i = 0;
-    for (; i < count; base++, i++) {
-        if (*base == arg1) {
-            arg0[i] = 0;
+/* Remove the given emitter from the list by clearing its slot; warn and return 0 if not found. */
+int fn_8028EDA8(unsigned int *list, unsigned int emitter) {
+    unsigned int *entry = list;
+    int count = *(int *)((char *)list + 0x100);
+    int index = 0;
+    for (; index < count; entry++, index++) {
+        if (*entry == emitter) {
+            list[index] = 0;
             return 1;
         }
     }
@@ -1094,6 +1095,7 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     int f4;
     int f0;
     float a0;
+    int result;
 
     f8 = src->f8;
     dst = (struct Data *)arg0;
@@ -1172,13 +1174,11 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     dst->f89 = f89;
     dst->a0 = a0;
     switch (f0) {
-    case 1: {
-        int result = fn_8028F534(f84);
-        float converted = (float)result;
-        dst->ac = lbl_80564424 / converted;
+    case 1:
+        result = fn_8028F534(f84);
+        dst->ac = lbl_80564424 / (float)result;
         dst->a8 = result;
         break;
-    }
     default:
         break;
     }
