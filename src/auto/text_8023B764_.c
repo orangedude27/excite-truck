@@ -307,14 +307,15 @@ check:
 }
 
 #pragma dont_inline on
-void fn_8023BE38(int ignored, int flag) {
+void fn_8023BE38(int unused, int runMultiplayerLoop) {
+    /* Run the truck-selection flow, then either the multiplayer event loop or a polling loop until selection completes. */
     fn_80012794();
     fn_80012790(0x130);
     fn_802411C8();
-    if (flag != 0) {
+    if (runMultiplayerLoop != 0) {
         fn_8023BBA8();
     } else {
-        while (fn_8023FF1C(flag) != 1) {
+        while (fn_8023FF1C(runMultiplayerLoop) != 1) {
             fn_8023BB0C();
             fn_8023B5E0();
         }
