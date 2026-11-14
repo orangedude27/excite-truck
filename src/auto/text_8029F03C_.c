@@ -167,9 +167,9 @@ void fn_8029F188(void) {
             dy = *(float *)(object + 0x64) - *(float *)(entry + 8);
             *(float *)(entry + 0x14) = dy;
             dz = *(float *)(object + 0x68) - *(float *)(entry + 0xc);
-            *(float *)(entry + 0x10) = *(float *)(entry + 0x1c) + dx * scale;
-            *(float *)(entry + 0x14) = *(float *)(entry + 0x20) + dy * scale;
-            *(float *)(entry + 0x18) = *(float *)(entry + 0x24) + dz * scale;
+            *(float *)(entry + 0x10) = dx * scale + *(float *)(entry + 0x1c);
+            *(float *)(entry + 0x14) = dy * scale + *(float *)(entry + 0x20);
+            *(float *)(entry + 0x18) = dz * scale + *(float *)(entry + 0x24);
             *(float *)(entry + 4) = *(float *)(object + 0x60);
             *(float *)(entry + 8) = *(float *)(object + 0x64);
             *(float *)(entry + 0xc) = *(float *)(object + 0x68);
@@ -386,10 +386,15 @@ extern "C" void fn_8029F658(void *arg0) {
     char *table;
     unsigned char *record;
     Obj *obj;
+    unsigned char c;
+    int n;
+    unsigned char *dst;
+    char *src;
+    const char *str;
     Fn8029Vec defaultVec;
-    Fn8029Vec defaultVec2;
     Fn8029Vec v1;
     Fn8029Vec v2;
+    Fn8029Vec v2copy;
     Fn8029Vec v3;
     Fn8029Pair pairDefault;
     Fn8029Pair out1;
@@ -397,24 +402,20 @@ extern "C" void fn_8029F658(void *arg0) {
     Fn8029Pair out3;
     Fn8029Pair out4;
     Fn8029Pair out5;
-    const char *str;
-    char *src;
-    unsigned char *dst;
-    int n;
-    unsigned char c;
+    Fn8029Vec defaultVec2;
     int packed;
     int rPart;
     int gPart;
     int bPart;
 
     table = lbl_80349810;
-    record = lbl_804B5070 + lbl_8055F81C * 0x78;
-    obj = (Obj *)arg0;
     defaultVec.x = lbl_805646B4;
     defaultVec.y = lbl_805646B4;
     defaultVec.z = lbl_805646B4;
     pairDefault.x = lbl_805646B4;
     pairDefault.y = lbl_805646B4;
+    record = lbl_804B5070 + lbl_8055F81C * 0x78;
+    obj = (Obj *)arg0;
     *(int *)record = obj->getId(lbl_8055CAF0);
     str = obj->name();
     src = (char *)str + strlen(&table[0x44]);
@@ -463,9 +464,10 @@ done:
     defaultVec2.y = lbl_805646BC;
     defaultVec2.z = lbl_805646BC;
     v2 = obj->getVec(&table[0x68], defaultVec2);
-    rPart = (int)(lbl_805646C0 * v2.x);
-    gPart = (int)(lbl_805646C0 * v2.y);
-    bPart = (int)(lbl_805646C0 * v2.z);
+    v2copy = v2;
+    rPart = (int)(lbl_805646C0 * v2copy.x);
+    gPart = (int)(lbl_805646C0 * v2copy.y);
+    bPart = (int)(lbl_805646C0 * v2copy.z);
     packed = 0xFF000000 | ((rPart & 0xFF) << 16) | ((gPart & 0xFF) << 8) | (bPart & 0xFF);
     *(int *)(record + 0x4C) = packed;
     *(int *)(record + 0x50) = obj->getProp(lbl_8055CB38, 1);
@@ -981,23 +983,24 @@ int fn_802A0620(Unk802A0794Params *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
-int fn_802A0720(int *arg0, int arg1) {
+/* For each registered 0x34-byte entry whose id matches arg0[0], dispatch fn_802A0794 on it. */
+int fn_802A0720(int *requestId, int unused) {
     int offset;
-    int i;
-    i = 0;
+    int index;
+    index = 0;
     offset = 0;
     goto check;
 loop:
     {
         int *base = (int *)lbl_804B9B7C[0];
         unsigned char *entry = (unsigned char *)base + offset;
-        if (*(int *)entry == *arg0)
+        if (*(int *)entry == *requestId)
             fn_802A0794(entry);
     }
     offset += 0x34;
-    i++;
+    index++;
 check:
-    if (i < lbl_804B9B7C[1])
+    if (index < lbl_804B9B7C[1])
         goto loop;
     return 4;
 }
