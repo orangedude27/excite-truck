@@ -597,81 +597,63 @@ void fn_801B92F0(void *arg0, int arg1) {
 }
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" void fn_801B949C(void *arg0) {
-    struct Dummy {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18();
-        virtual void v19(unsigned int *, void *);
-    };
-    struct ObjectLayout {
-        char pad[0x2748];
-        Vec position;
-    };
-    void *obj = arg0;
-    struct Work {
-        Vec copy[3];
-        float output[3];
-        float fx, fy, fz;
-        int zero;
-        short h;
-    } w;
-    float sp20[3];
-    float sp14[3];
-    float input[3];
-    float temp_f3;
-    float dot;
-    *(unsigned char *)((char *)obj + 0x275c) = 0;
-    *(float *)((char *)obj + 0x2758) = 0.0f;
-    fn_8018381C(obj);
-    input[0] = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
-    input[1] = *(float *)((char *)obj + 0x274c) - *(float *)((char *)obj + 0x2740);
-    input[2] = *(float *)((char *)obj + 0x2750) - *(float *)((char *)obj + 0x2744);
-    input[0] -= *(float *)((char *)obj + 0x30);
-    input[1] -= *(float *)((char *)obj + 0x34);
-    input[2] -= *(float *)((char *)obj + 0x38);
-    if (*(unsigned char *)((char *)obj + 0x275d) != 0) {
-        input[2] -= lbl_80562754;
+extern "C" void fn_801B949C(struct TrlrCar *car) {
+    struct CarPose pose;
+    f32 towedAnchor[3];
+    f32 anchor[3];
+    f32 offset[3];
+    f32 anchorZ;
+    f32 forwardSpeed;
+    car->flag275C = 0;
+    car->unk2758 = 0.0f;
+    fn_8018381C(car); /* back to the pose saved at +0x274, with the motion cleared */
+    offset[0] = car->carPos.x - car->anchorPos.x;
+    offset[1] = car->carPos.y - car->anchorPos.y;
+    offset[2] = car->carPos.z - car->anchorPos.z;
+    offset[0] -= car->localPoint.x;
+    offset[1] -= car->localPoint.y;
+    offset[2] -= car->localPoint.z;
+    if (car->towed != 0) {
+        offset[2] -= lbl_80562754; /* 2.0f */
     }
-    w.h = -1;
+    pose.heading = -1;
     {
-        char *matrix = *(char **)((char *)obj + 0x2754);
-        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), input);
-        w.output[0] += *(float *)(matrix + 0x94);
-        w.output[1] += *(float *)(matrix + 0x98);
-        w.output[2] += *(float *)(matrix + 0x9c);
+        struct PlayerCar *player = car->player;
+        transform_vec_scheduled(pose.position, (const float *)player->trailerAxes, offset);
+        pose.position[0] += player->trailerPos.x;
+        pose.position[1] += player->trailerPos.y;
+        pose.position[2] += player->trailerPos.z;
     }
     {
-        Vec *matrix = (Vec *)((char *)*(void **)((char *)obj + 0x2754) + 0x70);
-        w.copy[0] = matrix[0];
-        w.copy[1] = matrix[1];
-        w.copy[2] = matrix[2];
+        Vec *axes = car->player->trailerAxes;
+        pose.axes[0] = axes[0];
+        pose.axes[1] = axes[1];
+        pose.axes[2] = axes[2];
     }
-    dot = PSVECDotProduct((float *)((char *)*(void **)((char *)obj + 0x2754) + 0x118), (float *)((char *)obj + 0x54));
-    w.zero = 0;
-    w.fx = w.copy[2].x * dot;
-    w.fy = w.copy[2].y * dot;
-    w.fz = w.copy[2].z * dot;
+    forwardSpeed = PSVECDotProduct(&car->player->velocity.x, &car->facing.x);
+    pose.flag = 0;
+    pose.velocity[0] = pose.axes[2].x * forwardSpeed;
+    pose.velocity[1] = pose.axes[2].y * forwardSpeed;
+    pose.velocity[2] = pose.axes[2].z * forwardSpeed;
     {
-        void *matrix = *(void **)((char *)obj + 0x2754);
-        w.h = *(short *)((char *)matrix + 0x6c);
-        ((struct Dummy *)obj)->v19((unsigned int *)w.copy, matrix);
+        struct PlayerCar *player = car->player;
+        pose.heading = player->heading;
+        ((struct TrlrCarVf *)car)->setPose(&pose, player);
     }
-    *(void **)((char *)obj + 0x2738) = obj;
-    if (*(unsigned char *)((char *)obj + 0x275d) == 0) {
-        sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
-        sp14[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
-        temp_f3 = *(float *)((char *)obj + 0x2744);
-        sp14[2] = temp_f3 + *(float *)((char *)obj + 0x38);
-        fn_801AD148((char *)obj + 0x2704, sp14, *(void **)((char *)obj + 0x2754), lbl_80562758, lbl_8056275C, temp_f3);
+    car->spring.body = car;
+    if (car->towed == 0) {
+        anchor[0] = car->anchorPos.x + car->localPoint.x;
+        anchor[1] = car->anchorPos.y + car->localPoint.y;
+        anchorZ = car->anchorPos.z;
+        anchor[2] = anchorZ + car->localPoint.z;
+        fn_801AD148(&car->spring, anchor, car->player, lbl_80562758, lbl_8056275C, anchorZ);
     } else {
-        sp20[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
-        sp20[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
-        temp_f3 = *(float *)((char *)obj + 0x2744);
-        sp20[2] = temp_f3 + *(float *)((char *)obj + 0x38);
-        fn_801AD28C((char *)obj + 0x2704, sp20, *(void **)((char *)obj + 0x2754), &((struct ObjectLayout *)obj)->position, lbl_80562758, lbl_80562760, temp_f3);
+        towedAnchor[0] = car->anchorPos.x + car->localPoint.x;
+        towedAnchor[1] = car->anchorPos.y + car->localPoint.y;
+        anchorZ = car->anchorPos.z;
+        towedAnchor[2] = anchorZ + car->localPoint.z;
+        fn_801AD28C(&car->spring, towedAnchor, car->player, &car->carPos, lbl_80562758,
+                    lbl_80562760, anchorZ);
     }
 }
 #pragma cplusplus reset
