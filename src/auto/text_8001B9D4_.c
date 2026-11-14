@@ -450,12 +450,15 @@ return_one:
     return 1;
 }
 #pragma dont_inline reset
-s32 fn_8001C200(const char *arg0, const char *arg1) {
-    s32 result = 0;
-    if (stricmp(arg0, arg1) == 0 || stricmp(arg0, &lbl_80558C90) == 0 || stricmp(arg1, &lbl_80558C90) == 0) {
-        result = 1;
+/* Stats_nameMatches: return 1 if two stat record names match case-insensitively or if either name is the "*" wildcard (lbl_80558C90). */
+s32 fn_8001C200(const char *nameA, const char *nameB) {
+#define sWildcardName lbl_80558C90
+    s32 isMatch = 0;
+    if (stricmp(nameA, nameB) == 0 || stricmp(nameA, &sWildcardName) == 0 || stricmp(nameB, &sWildcardName) == 0) {
+        isMatch = 1;
     }
-    return result;
+    return isMatch;
+#undef sWildcardName
 }
 #pragma dont_inline on
 s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
