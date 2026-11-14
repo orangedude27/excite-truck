@@ -60,6 +60,10 @@ s32 NANDCreateAsync(const char* path, u8 perm, u8 attr,
         nandCreate(path, perm, attr, block, TRUE, FALSE));
 }
 
+/* Privileged twin of NANDCreateAsync(): creates a file the same way but with
+ * priv set, so a private path (nand:/sys/) is accepted instead of rejected.
+ * The caller's callback is stashed in the command block and the ISFS result is
+ * converted to a NAND result. */
 s32 NANDPrivateCreateAsync(const char* path, u8 perm, u8 attr,
                            NANDAsyncCallback callback,
                            NANDCommandBlock* block) {
