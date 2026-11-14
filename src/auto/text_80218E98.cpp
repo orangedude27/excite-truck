@@ -9147,6 +9147,11 @@ extern "C" void fn_8022A034(void *arg0) {
 }
 
 extern "C" void *lbl_8033E770[];
+/* Scroll bar widget deleting destructor (vtable lbl_8033E770, widget built by
+ * fn_80220E48): restore the widget's own vtable, release the two images it
+ * loaded -- the bar (vscroll/hscroll.img) at +0x248 and the thumb
+ * (vthumb/hthumb.img) at +0x24C -- run the base Widget destructor, and free the
+ * widget when deletingFlag > 0. */
 extern "C" void *fn_8022A054(void *self, s32 deletingFlag) {
     /* the scroll bar widget built by fn_80220E48; mode 0 is the vertical bar */
     struct ScrollBarWidget {
