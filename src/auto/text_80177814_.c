@@ -602,8 +602,9 @@ extern "C" void **fn_801783A8(int *arg0, int arg1) {
 
 #pragma dont_inline off
 
-void fn_801784AC(void) {
-    fn_801E2640(&lbl_804340C0[0], &lbl_8055E468);
+extern int fn_801E2640(void *, void *, void *, int, void *, void *, void *, int, int);
+int fn_801784AC(void *a0, void *a1, void *a2, int a3, void *a4, void *a5, int a6) {
+    return fn_801E2640(a0, a1, a2, a3, a4, a5, &lbl_804340C0[0], lbl_8055E468, a6);
 }
 
 extern float lbl_80561B64;
