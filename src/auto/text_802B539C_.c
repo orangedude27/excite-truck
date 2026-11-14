@@ -41,10 +41,12 @@ __declspec(section ".data") extern struct UMatList lbl_804BE4AC;
 __declspec(section ".data") extern struct UMatList lbl_804BE454;
 void* fn_802B59A4(unsigned int);
 
-int fn_802B539C(int arg0) {
-    int valid = 0;
-    if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28(arg0, 0);
+int fn_802B539C(int handle) {
+    // If the handle is non-null and the NAND subsystem is available, close it via the texture manager; otherwise return an error.
+    int isValid = 0;
+
+    if (handle != 0 && fn_8012C33C() != 0) isValid = 1;
+    if (isValid != 0) return fn_802CAC28(handle, 0);
     return -2;
 }
 
@@ -190,39 +192,36 @@ extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
     register void *name;
     register int i;
     register Manager *manager;
-    register void *loopItem;
+    register void *item;
     register int result;
-
     manager = (Manager *)arg1;
     labels = lbl_8034A510;
     *(void **)arg0 = manager->getName(lbl_8055CE18);
-    loopItem = manager->getLarge(labels + 0x40);
-    fn_802B0B20(manager, loopItem);
+    item = manager->getLarge(labels + 0x40);
+    fn_802B0B20(manager, item);
     fn_802B224C(manager);
     *(void **)((char *)arg0 + 4) = fn_802B1138(*(const char **)arg0);
     *(int *)((char *)arg0 + 8) = fn_802B2C98(*(char **)arg0);
     name = manager->getNamed(labels + 0x54, (void *)lbl_8055CE20);
-
     entry = (char *)arg0;
     i = 0;
     do {
         fn_801345D8(nameBuffer, 0x20, labels + 0x60, i + 1);
-        loopItem = manager->getNamed(nameBuffer, name);
-        *(void **)(entry + 0xC) = loopItem;
-        result = fn_802B110C((int (*)(int))fn_802B539C, (int)loopItem);
+        item = manager->getNamed(nameBuffer, name);
+        *(void **)(entry + 0xC) = item;
+        result = fn_802B110C((int (*)(int))fn_802B539C, (int)item);
         *(int *)(entry + 0x10) = result;
         i++;
         entry += 8;
     } while (i < 4);
-
-    i = (int)manager->getNamed(labels + 0x6C, 0);
-    if (i != 0) {
-        result = fn_802B2C34(fn_802C6B44, (void *)i);
+    item = manager->getNamed(labels + 0x6C, 0);
+    if (item != 0) {
+        result = fn_802B2C34(fn_802C6B44, item);
     } else {
         result = 0;
     }
     if (result != 0) {
-        *(int *)((char *)arg0 + 0x2C) = fn_802C6DC4((void *)i, result, 0, 0);
+        *(int *)((char *)arg0 + 0x2C) = fn_802C6DC4(item, result, 0, 0);
     } else {
         *(int *)((char *)arg0 + 0x2C) = -1;
     }
