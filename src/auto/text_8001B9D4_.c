@@ -1336,18 +1336,22 @@ extern void fn_802E30C8(const char *, ...);
 extern const char lbl_802FDB04[];
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_8001D728(s32 arg0, s32 arg1) {
-    switch (arg1) {
+/* Stats_onIdentityEvent: identity callback (registered via fn_8000DBC8) that zeroes a player slot's statistics buffer and record count when event 0 (cleared) arrives. */
+void fn_8001D728(s32 slot, s32 event) {
+#define Debug_printf fn_802E30C8
+#define sStatsIdentityClearedFmt lbl_802FDB04
+    switch (event) {
     case 0:
-        fn_802E30C8(lbl_802FDB04, arg0);
-        memset(lbl_8055D5CC + arg0 * 0xDAC4, 0, 0xDAC4);
-        ((s32 *)lbl_80358658[arg0])[1] = 0;
+        Debug_printf(sStatsIdentityClearedFmt, slot);
+        memset(STAT_BUFFER + slot * STAT_SLOT_SIZE, 0, STAT_SLOT_SIZE);
+        STAT_SLOTS[slot]->recordCount = 0;
         break;
     default:
         break;
     }
+#undef sStatsIdentityClearedFmt
+#undef Debug_printf
 }
-#pragma scheduling reset
 void fn_8001D7A4(void) {
 
 }
