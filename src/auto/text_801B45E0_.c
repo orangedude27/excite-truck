@@ -361,15 +361,25 @@ void fn_801B4C60(int arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_801B4C9C(int arg0, int arg1) {
+    /* Advance a cursor over the queue at arg0 to reach position arg1: count
+       how many 6-byte steps lie between arg1 and the queue base (fn_801B4B9C),
+       seed from the start index (fn_801B47AC of the subobject at +4), then step
+       forward that many times with fn_801B47BC. */
+#define QueueBase fn_801B4B9C
+#define QueueStart fn_801B47AC
+#define QueueStep fn_801B47BC
     int count;
     int value;
 
-    count = arg1 - ((int (*)(int))fn_801B4B9C)(arg0);
-    value = fn_801B47AC(arg0 + 4);
+    count = arg1 - ((int (*)(int))QueueBase)(arg0);
+    value = QueueStart(arg0 + 4);
     count /= 6;
     while (count-- != 0) {
-        value = fn_801B47BC(arg0 + 4, value);
+        value = QueueStep(arg0 + 4, value);
     }
+#undef QueueBase
+#undef QueueStart
+#undef QueueStep
 }
 #pragma pop
 extern float lbl_80562660;
@@ -438,13 +448,10 @@ extern "C" void fn_801B50B4(void **arg0, int arg1) {
     int i;
 
     if (state == 0)
-        goto done;
-    if (fn_801B4B44((char *)state) != 0)
-        goto state_ready;
-    else
-        goto done;
+        return;
+    if (fn_801B4B44((char *)state) == 0)
+        return;
 
-state_ready:
     if (fn_801B49D4(lbl_8055E6D8, (void **)&buffer, (void **)&offset, &rate, lbl_8055E3C4) != 0) {
         int length;
         int extra;
@@ -487,9 +494,6 @@ state_ready:
 
     if (fn_801B4C1C((int)lbl_8055E6D8, lbl_8055E3C4) != 0)
         __AXDSPInitCallback_801769E0();
-
-done:
-    ;
 }
 #pragma cplusplus off
 #pragma pop
