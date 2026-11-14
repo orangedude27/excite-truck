@@ -1366,8 +1366,10 @@ extern "C" void fn_802422DC(void *arg0, s32 arg1) {
     }
 }
 #pragma cplusplus on
-extern "C" s32 fn_802426C0(void *arg0) {
-    struct Obj {
+/* Returns the item at the object's current index (+0x28) from the collection at
+   +0x24, or 0 if the index is negative or out of range. */
+extern "C" s32 fn_802426C0(void *self) {
+    struct Collection {
         virtual s32 f0() = 0;
         virtual s32 f1() = 0;
         virtual s32 f2() = 0;
@@ -1375,13 +1377,13 @@ extern "C" s32 fn_802426C0(void *arg0) {
         virtual s32 f4() = 0;
         virtual s32 getItem(s32) = 0;
     };
-    s32 index = *(s32 *)((u8 *)arg0 + 0x28);
-    Obj *object;
+    s32 index = *(s32 *)((u8 *)self + 0x28);
+    Collection *collection;
     if (index >= 0) {
-        object = *(Obj **)((u8 *)arg0 + 0x24);
-        if (index < object->getCount()) {
-            object = *(Obj **)((u8 *)arg0 + 0x24);
-            return object->getItem(index);
+        collection = *(Collection **)((u8 *)self + 0x24);
+        if (index < collection->getCount()) {
+            collection = *(Collection **)((u8 *)self + 0x24);
+            return collection->getItem(index);
         }
     }
     return 0;
