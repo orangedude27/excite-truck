@@ -1133,41 +1133,42 @@ void fn_8016D294(s32 unused, s32 kind, s32 setIndex) {
     }
 }
 
+/* Count gem records in all ring sets that are not yet built (record+0xC == 0). */
 s32 fn_8016D544(void *arg0) {
-    void **items;
-    s32 found;
-    s32 outerCount;
-    s32 outerOffset;
-    s32 innerOffset;
-    s32 *list;
-    s32 outerIndex;
+    void **setEntries;
+    s32 unbuiltCount;
+    s32 setCount;
+    s32 setOffset;
+    s32 gemOffset;
+    s32 *setList;
+    s32 setIndex;
     s32 total;
-    s32 innerCount;
-    s32 innerIndex;
-    list = *(s32 **)((u8 *)arg0 + 0x18);
+    s32 gemCount;
+    s32 gemIndex;
+    setList = *(s32 **)((u8 *)arg0 + 0x18);
     total = 0;
-    outerIndex = 0;
-    outerCount = *(s32 *)((u8 *)list + 4);
-    outerOffset = 0;
+    setIndex = 0;
+    setCount = *(s32 *)((u8 *)setList + 4);
+    setOffset = 0;
     goto outerTest;
 outerBody:
-    items = *(void ***)list;
-    found = 0;
-    innerOffset = 0;
+    setEntries = *(void ***)setList;
+    unbuiltCount = 0;
+    gemOffset = 0;
     {
-        void *entry = *(void **)((u8 *)items + outerOffset);
-        innerCount = *(s32 *)((u8 *)entry + 4);
+        void *setEntry = *(void **)((u8 *)setEntries + setOffset);
+        gemCount = *(s32 *)((u8 *)setEntry + 4);
     }
-    for (innerIndex = 0; innerIndex < innerCount; innerIndex++, innerOffset += 0x44) {
-        volatile void *entry2 = *(volatile void **)((u8 *)items + outerOffset);
-        void *data = *(void **)(void *)entry2;
-        if (*(s32 *)((u8 *)data + innerOffset + 0xC) == 0) found++;
+    for (gemIndex = 0; gemIndex < gemCount; gemIndex++, gemOffset += 0x44) {
+        volatile void *setEntrySlot = *(volatile void **)((u8 *)setEntries + setOffset);
+        void *gemData = *(void **)(void *)setEntrySlot;
+        if (*(s32 *)((u8 *)gemData + gemOffset + 0xC) == 0) unbuiltCount++;
     }
-    total += found;
-    outerOffset += 0x14;
-    outerIndex++;
+    total += unbuiltCount;
+    setOffset += 0x14;
+    setIndex++;
 outerTest:
-    if (outerIndex < outerCount) goto outerBody;
+    if (setIndex < setCount) goto outerBody;
     return total;
 }
 
