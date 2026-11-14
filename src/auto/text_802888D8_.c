@@ -658,13 +658,14 @@ int fn_80289558(int arg0, int arg1)
   }
 }
 
+/* Initialize an 0xA0-byte table of 0x14-byte entries by clearing it and copying field 0x24 from each item returned by fn_80288208() for fn_80287B14() items. */
 int fn_8028967C(int arg0) {
-    int i;
-    int *p = (int *)arg0;
-    memset(p, 0, 0xA0);
-    for (i = 0; i < fn_80287B14(); i++) {
-        p[2] = *(int *)((char *)fn_80288208(i) + 0x24);
-        p += 5;
+    int index;
+    int *entry = (int *)arg0;
+    memset(entry, 0, 0xA0);
+    for (index = 0; index < fn_80287B14(); index++) {
+        entry[2] = *(int *)((char *)fn_80288208(index) + 0x24);
+        entry += 5;
     }
 }
 
