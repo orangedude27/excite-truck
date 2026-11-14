@@ -61,17 +61,18 @@ void *fn_8024C374(void *self, int freeSelf) {
     return self;
 }
 #pragma pop
-void *fn_8024C3FC(void *arg0, int arg1) {
-    struct Local { char pad[0x34]; void *field_34; } *obj = arg0;
-    if (arg0 != 0) {
-        if (&obj->field_34 != 0) {
-            fn_802328D4(obj->field_34);
-            obj->field_34 = 0;
+void *fn_8024C3FC(void *object, int deleteFlag) {
+    /* Deleting-destructor-like helper: releases the owned object at +0x34 when present, frees this object if requested, and returns it. */
+    struct Local { char pad[0x34]; void *owned; } *obj = object;
+    if (object != 0) {
+        if (&obj->owned != 0) {
+            fn_802328D4(obj->owned);
+            obj->owned = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deleteFlag > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
