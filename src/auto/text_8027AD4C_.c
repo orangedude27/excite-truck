@@ -1631,7 +1631,6 @@ extern "C" long fn_8027D0E0(long bracketName) {
         return 1;
     }
 }
-#pragma opt_propagation off
 void fn_8027C8B8(long, char *, long);
 #pragma opt_propagation off
 extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
