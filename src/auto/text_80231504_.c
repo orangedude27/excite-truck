@@ -1719,20 +1719,23 @@ void fn_802344CC(s32 text, s32 fontSet, s32 color, s32 fontId, f32 x, f32 y, f32
 }
 #pragma dont_inline off
 #pragma pop
+/* Returns the total number of characters in all queued string entries
+ * (each entry is 0x58 bytes, string at offset 0; count at lbl_8055F058+4,
+ * entries base at lbl_8055F06C). */
 s32 fn_80234654(void) {
-    char *str;
-    s32 count;
-    s32 total;
+    char *entryString;
+    s32 entryCount;
+    s32 totalChars;
     s32 i;
-    total = 0;
+    totalChars = 0;
     i = 0;
-    str = (char *)lbl_8055F06C;
-    count = *(s32 *)((u8 *)&lbl_8055F058 + 4);
-    for (; i < count; i++) {
-        total += strlen(str);
-        str += 0x58;
+    entryString = (char *)lbl_8055F06C;
+    entryCount = *(s32 *)((u8 *)&lbl_8055F058 + 4);
+    for (; i < entryCount; i++) {
+        totalChars += strlen(entryString);
+        entryString += 0x58;
     }
-    return total;
+    return totalChars;
 }
 
 extern s32 fn_8002B1D8(const char *, const char *, s32);
