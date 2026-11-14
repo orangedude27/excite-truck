@@ -26295,17 +26295,26 @@ tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16 handle) {
     return NULL;
 }
 
+/* sdpu_allocate_ccb: take the first free (SDP_STATE_IDLE) SDP connection control
+   block out of sdp_cb.ccb[], clear it and make its timer entry point back at the
+   CCB, so a timeout finds the connection again.  NULL when all
+   SDP_MAX_CONNECTIONS blocks are in use. */
 tCONN_CB *sdpu_allocate_ccb(void) {
     UINT16 xx;
-    u8 *p_ccb;
+    tCONN_CB_BUILD_VIEW *p_ccb;
 
-    for (xx = 0, p_ccb = lbl_803C4C40 + 0x3C; xx < SDP_MAX_CONNECTIONS; xx++, p_ccb += 0x478) {
-        if (p_ccb[0] == SDP_STATE_IDLE) {
-            memset(p_ccb, 0, 0x478);
-            *(u32 *)(p_ccb + 0x18) = (u32)p_ccb;
+    /* Look through each connection control block for a free one */
+    for (xx = 0, p_ccb = sdp_cb_ccb; xx < SDP_MAX_CONNECTIONS; xx++, p_ccb++) {
+        if (p_ccb->con_state == SDP_STATE_IDLE) {
+            memset(p_ccb, 0, sizeof(tCONN_CB_BUILD_VIEW));
+
+            p_ccb->timer_entry.param = (TIMER_PARAM_TYPE)p_ccb;
+
             return (tCONN_CB *)p_ccb;
         }
     }
+
+    /* If here, no free CCB found */
     return NULL;
 }
 
