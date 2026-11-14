@@ -549,24 +549,24 @@ void fn_802BD0F4(void *owner) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void *fn_802BD194(void *arg0, const char *arg1) {
+/* Find a tree by name in the loaded tree list: its entries are TREE_ENTRY_SIZE
+   bytes each and start with the tree's name. Returns the entry, or 0 when the
+   list holds no tree of that name. */
+void *fn_802BD194(void *treeList, const char *name) {
     unsigned int offset;
-    unsigned int count = *(unsigned int *)arg0;
-    char *base;
-    unsigned int i = 0;
+    unsigned int entryCount = ((struct TreeList *)treeList)->entryCount;
+    char *entries;
+    unsigned int index = 0;
     offset = 0;
-    while (i < count) {
-        base = *(char **)((char *)arg0 + 4);
-        if (strcmp(base + offset, arg1) == 0)
-            return base + i * 0x38;
-        offset += 0x38;
-        i++;
+    while (index < entryCount) {
+        entries = ((struct TreeList *)treeList)->entries;
+        if (strcmp(entries + offset, name) == 0)
+            return entries + index * TREE_ENTRY_SIZE;
+        offset += TREE_ENTRY_SIZE;
+        index++;
     }
     return 0;
 }
-
-#pragma push
-#pragma processor 750
 int fn_802BD210(void *arg0) {
     #pragma unused(arg0)
     extern void *fn_8012C370(void *, unsigned int, unsigned int *, int, int, unsigned char *);
