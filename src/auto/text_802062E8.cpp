@@ -345,10 +345,10 @@ extern "C" void fn_80206824(void *arg0, int arg1, int arg2) {
         }
         break;
     case 3:
-        if (self[0x49]) {
-            int ok = 0;
+        if (self[0x49] != 0) {
+            bool ok = false;
             if ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x200))
-                ok = 1;
+                ok = true;
             if (ok && *(int *)(self + 0x44) != 0)
                 goto skip;
             self[0x49] = 0;
@@ -429,6 +429,8 @@ struct Sound3D {
     unsigned char unused2cDirty; /* at 0x34 */
     unsigned char unused30Dirty; /* at 0x35 */
     unsigned char unused34Dirty; /* at 0x36 */
+    char pad37[0x4F - 0x37];
+    unsigned char auxFlagsDirty; /* at 0x4F set with auxFlags, flushed by fn_80206B14 */
 };
 
 extern "C" void fn_80206A5C(void* arg0) {
@@ -600,6 +602,92 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
         if (!p[0x64]) p[24] = 0;
     }
 }
+
+extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
+    struct Hnd {
+        virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3();
+        virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7();
+        virtual void p8(); virtual void p9();
+        virtual void s30(float); virtual void s34(float); virtual int r38();
+        virtual void s3c(float); virtual void s40(float);
+        virtual void q15(); virtual void q16(); virtual void q17(); virtual void q18();
+        virtual void f54(int, int);
+    };
+    struct Obj {
+        virtual void p0(); virtual void p1();
+        virtual void upd(void*, int);
+    };
+    unsigned char *obj = (unsigned char *)arg0;
+    if (obj[0x64] == 0) return;
+    unsigned char *p = (unsigned char *)arg1;
+    int count = arg2;
+    if ((*(Hnd **)(obj + 0xC))->r38() != 0) {
+        fn_80206B14(arg0, (int)arg1, arg2);
+        (*(Hnd **)(obj + 0xC))->f54(*(int *)(obj + 0x70), *(int *)(obj + 0x74));
+        return;
+    }
+    ((Obj *)arg0)->upd(arg1, arg2);
+    (*(Hnd **)(obj + 0xC))->s34(*(float *)(obj + 0x68));
+    if (obj[0x19] == 0) return;
+    float f28 = lbl_805631FC;
+    float f30 = lbl_805631F8;
+    float f27 = lbl_805631FC;
+    float f31 = lbl_80563210;
+    float f26 = lbl_805631FC;
+    float f23 = lbl_80563214;
+    float f25 = lbl_805631FC;
+    float f29 = lbl_8056320C;
+    int idx = 0;
+    while (idx < count) {
+        float vec[3];
+        float btmp[3];
+        float vec2[3];
+        int itmp[3];
+        float *p74 = *(float **)(obj + 0x74);
+        itmp[0] = (*(int **)(p + 4))[9];
+        itmp[1] = (*(int **)(p + 4))[10];
+        itmp[2] = (*(int **)(p + 4))[11];
+        ((int*)btmp)[0] = (*(int **)(p + 8))[0];
+        ((int*)btmp)[1] = (*(int **)(p + 8))[1];
+        ((int*)btmp)[2] = (*(int **)(p + 8))[2];
+        vec[0] = p74[0] - *(float*)&itmp[2 - 2];
+        vec[1] = p74[1] - *(float*)&itmp[2 - 1];
+        vec[2] = p74[2] - *(float*)&itmp[2];
+        float mag = PSVECMag(vec);
+        if (mag > f29) {
+            float inv = f30 / mag;
+            vec[0] *= inv; vec[1] *= inv; vec[2] *= inv;
+            f28 += inv;
+            float d1 = PSVECDotProduct(vec, *(int **)(p + 4));
+            if (mag < f31) d1 *= mag / f31;
+            f27 += d1 * inv;
+            float d2 = PSVECDotProduct(vec, (void *)((char *)*(int **)(p + 4) + 0x18));
+            if (mag < f31) d2 = f30 + ((mag / f31) * (d2 - f30));
+            f26 += d2 * inv;
+            vec2[0] = (*(float **)(obj + 0x70))[0] - btmp[0];
+            vec2[1] = (*(float **)(obj + 0x70))[1] - btmp[1];
+            vec2[2] = (*(float **)(obj + 0x70))[2] - btmp[2];
+            float d3 = PSVECDotProduct(vec2, vec);
+            f25 += (f23 / (f23 + d3)) * inv;
+        }
+        p += 12;
+        idx++;
+    }
+    if (f28 <= lbl_80563218) f28 = lbl_80563218;
+    float inv2 = lbl_805631F8 / f28;
+    (*(Hnd **)(obj + 0xC))->s30(*(float *)(obj + 4) * (f25 * inv2));
+    float v27 = f27 * inv2;
+    float c1 = lbl_805631F8;
+    if (c1 >= v27) c1 = v27;
+    if (c1 <= lbl_8056321C) c1 = lbl_8056321C;
+    (*(Hnd **)(obj + 0xC))->s3c(c1);
+    float v26 = f26 * inv2;
+    float c2 = lbl_805631F8;
+    if (c2 >= v26) c2 = v26;
+    if (c2 <= lbl_8056321C) c2 = lbl_8056321C;
+    (*(Hnd **)(obj + 0xC))->s40(c2);
+}
+
 #pragma processor gekko
 #pragma use_lmw_stmw reset
 #pragma scheduling on
