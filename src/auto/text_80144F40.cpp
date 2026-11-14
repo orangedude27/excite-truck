@@ -430,18 +430,29 @@ extern "C" s32 fn_801455B8(void *arg0, void *arg1) {
     return 0;
 }
 
-extern "C" void fn_80145670(void *arg0, void *arg1) {
-    class V {
+extern "C" void fn_80145670(void *outEntry, void *propertySource) {
+    /* One 0xC-byte entry of a level's "gart_set" table (fn_80146310 collects the
+       items named "gart_set", fn_8014595C dumps each as "\t%s %s"). */
+    struct GArtSetEntry {
+        const char *name;         /* +0x00 "name" */
+        const char *resourceName; /* +0x04 "resource_name" */
+        void *resource;           /* +0x08 gArt resource, refcounted by fn_8023512C */
+    };
+    class PropertySet {
     public:
         virtual void f0();
         virtual void f1();
         virtual void f2();
-        virtual s32 get(const char *);
+        virtual const char *getString(const char *); /* vtable slot 0x14: string property */
     };
-    V *obj = (V *)arg1;
-    ((s32 *)arg0)[0] = obj->get((const char *)&lbl_80559DD0);
-    ((s32 *)arg0)[1] = obj->get((const char *)&lbl_8032CF48);
-    ((s32 *)arg0)[2] = fn_8023512C();
+    /* FillGArtSetEntry: one "gart_set" entry from a level element - its "name" and
+       "resource_name" strings and the gArt resource loaded for that name (the name
+       is still in r3 for fn_8023512C, which looks a resource up by name). */
+    GArtSetEntry *entry = (GArtSetEntry *)outEntry;
+    PropertySet *props = (PropertySet *)propertySource;
+    entry->name = props->getString(lbl_80559DD0);
+    entry->resourceName = props->getString(lbl_8032CF48);
+    entry->resource = (void *)fn_8023512C();
 }
 
 extern "C" s32 fn_8013126C(void *, s32);
