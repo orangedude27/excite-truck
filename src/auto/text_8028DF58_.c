@@ -860,15 +860,16 @@ int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
 #pragma pop
 void fn_8028F854(void) {}
 
-int fn_8028F858(int arg0, int arg1) {
-    int value;
-    if (arg0 != 0) {
-        fn_802CAC54(*(int *)(arg0 + 0xA4));
-        value = *(int *)(arg0 + 0x8C);
-        if (value != 0) fn_80128670(value - 0x10);
-        if (arg1 > 0) fn_80128668((void *)arg0);
+/* Destroys an object: releases its subobject, frees its buffer, and optionally deletes it. */
+int fn_8028F858(int object, int shouldDelete) {
+    int buffer;
+    if (object != 0) {
+        fn_802CAC54(*(int *)(object + 0xA4));
+        buffer = *(int *)(object + 0x8C);
+        if (buffer != 0) fn_80128670(buffer - 0x10);
+        if (shouldDelete > 0) fn_80128668((void *)object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_8028F8C4(int arg0) {
