@@ -3921,16 +3921,17 @@ extern "C" void fn_8015E238(Unk801577F0V* arg0) {
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
-extern "C" void fn_8015E2C8(void *arg0) {
+extern "C" void fn_8015E2C8(ArrayTracker *group) {
+    /* Forward the call to each tracker in the group's array (vtable slot 2). */
     struct Entry {
         virtual void v0();
         virtual void v1();
         virtual void v2();
     };
     int i;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x8); i++) {
-        Entry *entry = *(Entry **)((char *)*(void **)((char *)arg0 + 0x4) + i * 0x4);
-        entry->v2();
+    for (i = 0; i < *(int *)((char *)group + 0x8); i++) {
+        Entry *tracker = *(Entry **)((char *)*(void **)((char *)group + 0x4) + i * 0x4);
+        tracker->v2();
     }
 }
 
