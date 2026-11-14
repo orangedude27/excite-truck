@@ -3047,6 +3047,7 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13Animati
     iterSlot = endIter;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)material + 0x18, &iterSlot, animLink);
 }
+
 extern "C" void fn_800DB1E0(char* arg0) {
     fn_800D4F98(arg0 + 0x18);
 }
