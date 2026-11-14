@@ -185,7 +185,7 @@ extern "C" void fn_801B826C(void *arg0) {
     int value;
     void *object;
     void *manager;
-    value = *(int *)((char *)arg0 + 0x3E8);
+    value = *(volatile int *)((char *)arg0 + 0x3E8);
     lbl_8055E74C = value;
     if (value & 0x200) {
         lbl_8055E744 = (void *)fn_801B81E0(arg0);
@@ -353,6 +353,8 @@ extern "C" void fn_801B8610(void *a, void *b) {
 }
 #pragma cplusplus on
 extern "C" int fn_801B8630(int arg0, int arg1, int arg2) {
+    /* Forwards three arguments to vtable slot 0xA0 of the global UI/game object
+     * (lbl_8055E744), returning 1 immediately if fn_80161BDC indicates blocked. */
     struct Dummy_801B8630 {
         virtual void d0();
         virtual void d1();
