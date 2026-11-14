@@ -157,6 +157,7 @@ static inline void *StrmLoadDynamicCast(void *object, const void *wanted) {
     if (StrmLoadTypeMatches((void **)((DummyStrmLoadCallback *)object)->f2(), wanted)) return object;
     return 0;
 }
+#pragma pop
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
 
