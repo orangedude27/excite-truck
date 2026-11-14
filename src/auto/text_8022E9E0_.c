@@ -193,14 +193,16 @@ void fn_8022ED00(void) {
 
 #pragma dont_inline on
 void fn_8022ED50(s32 arg0) {
-    void *node;
-    node = fn_8022EC7C();
-    if (node == 0) {
+    /* Detach the tail node's predecessor from the list in lbl_8055F004, then release arg0. */
+    void *prevNode;
+
+    prevNode = fn_8022EC7C();
+    if (prevNode == 0) {
         ((s32 *)lbl_8055F004)[1] = 0;
         ((s32 *)lbl_8055F004)[0] = ((s32 *)lbl_8055F004)[1];
     } else {
-        ((s32 *)node)[1] = 0;
-        ((s32 *)lbl_8055F004)[1] = (s32)node;
+        ((s32 *)prevNode)[1] = 0;
+        ((s32 *)lbl_8055F004)[1] = (s32)prevNode;
     }
     fn_8022EA58((void *)arg0);
 }
