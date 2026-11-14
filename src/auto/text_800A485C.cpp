@@ -25299,6 +25299,9 @@ zero: return 0;
 extern "C" s32 fn_800A71A0(s32 *);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
+/* Read from the volume's device and, on a 0x15 (partial/OK) result, record the
+ * device status in the global at lbl_803D2140+0x44 and in the volume at 0x1F84.
+ * Returns 0x1000 on that result, -1 on other non-zero results, or 0 on zero. */
 extern "C" s32 fn_800A586C(void *arg0, s32 a, s32 b, s32 c, s32 d) {
     s32 result;
     s32 value;
