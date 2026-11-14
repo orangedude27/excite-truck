@@ -519,16 +519,17 @@ void fn_802DA2F4(void) {
 }
 
 #pragma scheduling on
-void *fn_802DA450(void *arg0, int arg1) {
-    if (arg0) {
-        *(void **)arg0 = lbl_8034C8E8;
-        fn_80128670(*(int *)((char *)arg0 + 4));
-        if (arg0)
-            *(int *)((char *)arg0 + 4) = 0;
-        if (arg1 > 0)
-            fn_80128668(arg0);
+/* Destructor-like cleanup for the stack allocator object: installs its vtable, frees the owned buffer, and optionally deletes the object. */
+void *fn_802DA450(void *object, int shouldDelete) {
+    if (object) {
+        *(void **)object = lbl_8034C8E8;
+        fn_80128670(*(int *)((char *)object + 4));
+        if (object)
+            *(int *)((char *)object + 4) = 0;
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 void fn_802DA4C4(void) {
     void *p = lbl_8055FE5C;
