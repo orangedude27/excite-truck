@@ -454,6 +454,7 @@ void fn_801770C8(void) {
 }
 
 void fn_80177138(void) {
+    /* Configure fade state for callback fn_80176E4C (mode 2, type 7, timing from lbl_8055E3C4). */
     *(void **)(lbl_80430558 + 0x10) = fn_80176E4C;
     *(s32 *)(lbl_80430558 + 0xC) = 2;
     *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176E4C);
