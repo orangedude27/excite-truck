@@ -786,9 +786,15 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     return arg0;
 }
 #pragma pop
-void *fn_8029D464(void *arg0,int arg1) {
- if(arg0) { fn_802CAC54(*(int *)((unsigned char *)arg0+0x74)); fn_80128670(*(int *)((unsigned char *)arg0+0x70)); fn_80128670(*(int *)arg0); if(arg1>0) fn_80128668(arg0); }
- return arg0;
+void *fn_8029D464(void *self, int deleteSelf) {
+    /* Release owned allocations/buffers held by self (+0x74 via fn_802CAC54, +0x70 and +0x00 via fn_80128670); if deleteSelf > 0 also free self. */
+    if (self) {
+        fn_802CAC54(*(int *)((char *)self + 0x74));
+        fn_80128670(*(int *)((char *)self + 0x70));
+        fn_80128670(*(int *)self);
+        if (deleteSelf > 0) fn_80128668(self);
+    }
+    return self;
 }
 
 extern float fn_801E88F0(int);
