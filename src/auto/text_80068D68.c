@@ -21638,21 +21638,25 @@ void *port_find_dlci_port(unsigned int dlci) {
     return 0;
 }
 
-int port_flow_control_user(void *arg0) {
-    void *temp_r4;
-    unsigned char var_r5 = 0;
-    if (*((unsigned char *)arg0 + 0x24) != 0) goto set1;
-    temp_r4 = *(void **)((char *)arg0 + 0x6c);
-    if (temp_r4 == 0) goto set1;
-    if (*((unsigned char *)temp_r4 + 0x71) == 0) goto set1;
-    if (*(unsigned int *)((char *)arg0 + 0x28) > 0x1f40) goto set1;
-    if (*(unsigned short *)((char *)arg0 + 0x20) <= 0x10) goto done;
+/* Updates whether TX flow control is applied to the user: set when peer/MCB is
+ * not ready or TX queues are over high-water marks, and reports FC/FCS events
+ * on transitions. */
+int port_flow_control_user(void *port) {
+    void *peerMcb;
+    unsigned char flowControlled = 0;
+
+    if (*((unsigned char *)port + 0x24) != 0) goto set1;
+    peerMcb = *(void **)((char *)port + 0x6c);
+    if (peerMcb == 0) goto set1;
+    if (*((unsigned char *)peerMcb + 0x71) == 0) goto set1;
+    if (*(unsigned int *)((char *)port + 0x28) > 0x1f40) goto set1;
+    if (*(unsigned short *)((char *)port + 0x20) <= 0x10) goto done;
 set1:
-    var_r5 = 1;
+    flowControlled = 1;
 done:
-    if (*((unsigned char *)arg0 + 0x25) == var_r5) return 0;
-    *((unsigned char *)arg0 + 0x25) = var_r5;
-    if (var_r5 != 0) return 0x10000;
+    if (*((unsigned char *)port + 0x25) == flowControlled) return 0;
+    *((unsigned char *)port + 0x25) = flowControlled;
+    if (flowControlled != 0) return 0x10000;
     return 0x30000;
 }
 
