@@ -1617,9 +1617,12 @@ extern "C" void fn_801FF994(void* arg0, void* arg1) {
 #pragma dont_inline reset
 extern "C" void* fn_8002F634(void*, void*, int, int);
 #pragma dont_inline on
+/* Destroy SHMainMenu: tear down the subobject at offset 0xE08, then destroy the
+ * 0x20 inline elements at offset 4 (0x70 bytes each) using fn_801FCED8 as the
+ * element destructor (fn_8002F634 runs the destructor over the array). */
 SHMainMenu::~SHMainMenu() {
-    fn_801FF364((char*)this + 0xE08, -1);
-    fn_8002F634((char*)this + 4, (void*)fn_801FCED8, 0x70, 0x20);
+    fn_801FF364((char *)this + 0xE08, -1);
+    fn_8002F634((char *)this + 4, (void *)fn_801FCED8, 0x70, 0x20);
 }
 #pragma dont_inline on
 /* Deleting destructor for SHMainMenu: destroys the subobject at offset 0x1008,
