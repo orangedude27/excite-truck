@@ -252,8 +252,8 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
    Elem_801720FC's colour field).  Shifting the whole word right would drop each
    channel's low bit into the channel below it, so the 0x7F7F7F mask removes the
    bits that crossed; the alpha byte at the top is passed through untouched. */
-int fn_801720E0(int color) {
-    return (((unsigned int)color >> 1) & 0x7F7F7F) | ((unsigned int)color & 0xFF000000);
+RgbaColor fn_801720E0(RgbaColor color) {
+    return ((color >> 1) & 0x7F7F7F) | (color & 0xFF000000);
 }
 #pragma pop
 #pragma push
