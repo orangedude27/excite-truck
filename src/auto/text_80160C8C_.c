@@ -805,10 +805,10 @@ extern "C" void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
  * and 0 comes back. */
 extern "C" s32 fn_80161A70(void) {
     /* A sub-task of the manager.  The level-select menu (vtable lbl_8032F790)
-     * and a tutorial screen (vtable lbl_8032F858) share this layout; MWCC
-     * leaves the first two vtable slots to the class's destructors, so the
-     * first method declared here is the one at vtable+0x08 (the destructor
-     * fn_80162938). */
+     * and a tutorial screen (vtable lbl_8032F858) share this layout.  MWCC puts
+     * two empty words (offset-to-top and type info, both null with RTTI off) in
+     * front of the method table, so the first method declared here is the one
+     * at vtable+0x08 -- the destructor fn_80162938. */
     struct ChallengeSubTask {
         virtual void m08();
         virtual void m0C();
