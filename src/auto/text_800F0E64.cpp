@@ -143,6 +143,17 @@ struct DummyWorkerLink { void *next; void *prev; };
 struct DummyWorkerCallbackC : DummyWorkerLink { virtual void f0(); virtual void Call(); };
 struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void f1(); virtual void Call(); };
 #pragma cplusplus reset
+static inline bool StrmLoadTypeMatches(void **type, const void *wanted) {
+    while (type != 0) {
+        if (type == wanted) return true;
+        type = (void **)*type;
+    }
+    return false;
+}
+static inline void *StrmLoadDynamicCast(void *object, const void *wanted) {
+    if (StrmLoadTypeMatches((void **)((DummyStrmLoadCallback *)object)->f2(), wanted)) return object;
+    return 0;
+}
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
 
@@ -3943,24 +3954,13 @@ success_6f5c:
         temp_r29 = M2C_FIELD(arg0, void ***, 0x14);
         temp_r30 = (void *)&lbl_8055DE98;
         var_r3 = (void **)((DummyStrmLoadCallback *)temp_r29)->f2();
-        goto loop_11_check;
-loop_11_check:
-        if (var_r3 == (void **)temp_r30) {
-            var_r0 = 1;
-        } else {
+        while (var_r3 != 0) {
+            if (var_r3 == (void **)temp_r30) { var_r0 = 1; goto scan_done; }
             var_r3 = (void **)*var_r3;
-            if (var_r3 != 0) {
-                goto loop_11_check;
-            }
-            var_r0 = 0;
         }
-        if (var_r0 == 0) {
-            goto loop_11_done;
-        }
-        goto loop_11_clear;
-loop_11_clear:
-        temp_r29 = 0;
-loop_11_done:
+        var_r0 = 0;
+scan_done:
+        if (var_r0 != 0) { } else { temp_r29 = 0; }
         if (temp_r29 != 0) {
             M2C_FIELD(temp_r29, s32 *, 0x68) = 1;
         }
