@@ -4318,12 +4318,13 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
     return *(f32 *)((u8 *)(self + auxBus * 4) + 0x38);
 }
 
-void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *self, void *pSound) {
-    if (pSound == 0) {
+/* Remove a BasicSound from the SoundPlayer's sound list and clear its owning player pointer. */
+void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *player, void *sound) {
+    if (sound == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262B8, 0x233, (const char *)lbl_80326294);
     }
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(self, (u8 *)pSound + 0xC0);
-    *(u32 *)((u8 *)pSound + 0x10) = 0;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(player, (u8 *)sound + 0xC0);
+    *(u32 *)((u8 *)sound + 0x10) = 0;
 }
 
 #pragma use_lmw_stmw off
