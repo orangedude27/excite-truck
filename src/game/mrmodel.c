@@ -498,7 +498,7 @@ void fn_802C5BA0(int *arg0) {
 
 #pragma scheduling invalid_target
 u16 fn_802C5BEC(int arg0, int arg1) {
-    return ((int (*)(int, int))fn_802C5A50)(5, 0x64) + ((unsigned int)((arg0 * 2) & 0xFFFE)) + (arg1 & 0xFFFF);
+    return ((arg0 * 2) & 0xFFFE) + ((int (*)(int, int))fn_802C5A50)(5, 0x64) + (arg1 & 0xFFFF);
 }
 #pragma scheduling on
 extern int fn_802CAC28(void *, int);
@@ -563,14 +563,16 @@ void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3) {
     *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(index, value, result);
 }
 
-void fn_802C5DF0(void *arg0, void *arg1) {
+/* Iterate over all 0x10-byte GroupEntry records in a model's GroupList and
+ * invoke callback with each group's id (+0x0C). */
+void fn_802C5DF0(void *groupList, void *callback) {
     int offset = 0;
     int index = 0;
-    while (index < *(int *)arg0) {
-        void *table = *(void **)((char *)arg0 + 4);
-        int value = *(int *)((char *)table + offset + 0xC);
-        ((void (*)(int))arg1)(value);
-        offset += 0x10;
+    while (index < ((struct GroupList *)groupList)->count) {
+        void *items = ((struct GroupList *)groupList)->items;
+        int groupId = ((struct GroupEntry *)((char *)items + offset))->id;
+        ((void (*)(int))callback)(groupId);
+        offset += sizeof(struct GroupEntry);
         index += 1;
     }
 }
@@ -768,6 +770,21 @@ void fn_802C6080(void) {
     *(void **)(base + 0x64 + 8) = 0;
     *(int *)(base + 0x64 + 4) = 0;
 }
+
+void fn_802C61BC(void *arg0, int arg1) {
+    unsigned char *p = (unsigned char *)arg0;
+    (void)arg1;
+    if (p == 0) return;
+    if (*(unsigned short *)p >= 0x3E80) return;
+    if (*(unsigned short *)(p + 0x10) < 0x3E80) return;
+    {
+        unsigned char a = p[0xE];
+        unsigned char b = p[0xD];
+        p[0xD] = a;
+        p[0xE] = b;
+    }
+}
+
 void fn_802C6A84(s32 *arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
@@ -1338,64 +1355,108 @@ s32 fn_802C7830(char *arg0, s32 is_digit, signed char c) {
 }
 
 #pragma scheduling on
-void fn_802C7888(void *src, s32 count) {
-    for (; count > 0; count--) {
-        volatile u8 *source = (volatile u8 *)src;
-        volatile u8 *dest;
-        s32 index;
-        s32 *key = *(s32 **)((u8 *)src + 0x28);
-        register u8 a, b;
-        u32 word, word2, word3;
-        if (key != 0) *key = -1;
-        index = lbl_804C13B4[0];
-        if (index < lbl_804C13B4[1]) {
-            s32 offset = index * 0x2C;
-            unsigned char *base = (unsigned char *)(unsigned long)lbl_804C13B4[2];
-            lbl_804C13B4[0] = index + 1;
-            dest = (volatile u8 *)(base + offset);
-        } else dest = 0;
-        a = source[0]; b = source[1]; dest[0] = a;
-        a = source[2]; dest[1] = b;
-        b = source[3]; dest[2] = a;
-        a = source[4]; dest[3] = b;
-        b = source[5]; dest[4] = a;
-        a = source[6]; dest[5] = b;
-        b = source[7]; dest[6] = a;
-        a = source[8]; dest[7] = b;
-        b = source[9]; dest[8] = a;
-        a = source[10]; dest[9] = b;
-        b = source[11]; dest[10] = a;
-        a = source[12]; dest[11] = b;
-        b = source[13]; dest[12] = a;
-        a = source[14]; dest[13] = b;
-        b = source[15];
-        dest[14] = a;
-        word = *(volatile u32 *)(source + 0x10);
-        dest[15] = b;
-        b = source[0x14];
-        *(volatile u32 *)(dest + 0x10) = word;
-        a = source[0x15]; dest[0x14] = b;
-        b = source[0x16]; dest[0x15] = a;
-        a = source[0x17]; dest[0x16] = b;
-        b = source[0x18]; dest[0x17] = a;
-        a = source[0x19]; dest[0x18] = b;
-        b = source[0x1A]; dest[0x19] = a;
-        a = source[0x1B]; dest[0x1A] = b;
-        b = source[0x1C]; dest[0x1B] = a;
-        a = source[0x1D]; dest[0x1C] = b;
-        b = source[0x1E]; dest[0x1D] = a;
-        a = source[0x1F]; dest[0x1E] = b;
-        b = source[0x20]; dest[0x1F] = a;
-        a = source[0x21]; dest[0x20] = b;
-        b = source[0x22]; dest[0x21] = a;
-        a = source[0x23]; dest[0x22] = b;
-        word2 = *(volatile u32 *)(source + 0x24);
-        dest[0x23] = a;
-        word3 = *(volatile u32 *)(source + 0x28);
-        src = (u8 *)src + 0x2C;
-        *(volatile u32 *)(dest + 0x24) = word2;
-        *(volatile u32 *)(dest + 0x28) = word3;
+void fn_802C7888(void *src, s32 count)
+{
+  for (; count > 0; count--)
+  {
+    volatile u8 *source = (volatile u8 *) src;
+    volatile u8 *dest;
+    s32 index;
+    s32 *key = *((s32 **) (((u8 *) src) + 0x28));
+    u8 a;
+    u8 b;
+    u32 word;
+    u32 word2;
+    u32 word3;
+    if (key != 0)
+    {
+      *key = -1;
     }
+    index = lbl_804C13B4[0];
+    if (index < lbl_804C13B4[1])
+    {
+      s32 offset = index * 0x2C;
+      unsigned char *base = (unsigned char *) ((unsigned long) lbl_804C13B4[2]);
+      lbl_804C13B4[0] = index + 1;
+      dest = (volatile u8 *) (base + offset);
+    }
+    else
+    {
+      dest = 0;
+    }
+    a = source[0];
+    b = source[1];
+    dest[0] = a;
+    a = source[2];
+    dest[1] = b;
+    b = source[3];
+    dest[2] = a;
+    a = source[4];
+    dest[3] = b;
+    b = source[5];
+    dest[4] = a;
+    a = source[6];
+    dest[5] = b;
+    b = source[7];
+    dest[6] = a;
+    a = source[8];
+    dest[7] = b;
+    b = source[9];
+    dest[8] = a;
+    a = source[10];
+    dest[9] = b;
+    b = source[11];
+    dest[10] = a;
+    a = source[12];
+    dest[11] = b;
+    b = source[13];
+    dest[12] = a;
+    a = source[14];
+    dest[13] = b;
+    b = source[15];
+    dest[14] = a;
+    word = (*(source + 0x10)) & 0xFFu;
+    dest[15] = b;
+    b = source[0x14];
+    *((volatile u32 *) (dest + 0x10)) = word;
+    a = source[0x15];
+    dest[0x14] = b;
+    b = source[0x16];
+    dest[0x15] = a;
+    a = source[0x17];
+    dest[0x16] = b;
+    b = source[0x18];
+    dest[0x17] = a;
+    a = source[0x19];
+    dest[0x18] = b;
+    b = source[0x1A];
+    dest[0x19] = a;
+    a = source[0x1B];
+    dest[0x1A] = b;
+    b = source[0x1C];
+    dest[0x1B] = a;
+    a = source[0x1D];
+    dest[0x1C] = b;
+    b = source[0x1E];
+    dest[0x1D] = a;
+    a = source[0x1F];
+    dest[0x1E] = b;
+    b = source[0x20];
+    dest[0x1F] = a;
+    a = source[0x21];
+    dest[0x20] = b;
+    b = source[0x22];
+    dest[0x21] = a;
+    a = source[0x23];
+    dest[0x22] = b;
+    word2 = *((volatile u32 *) (source + 0x24));
+    dest[0x23] = a;
+    word3 = *((volatile u32 *) (source + 0x28));
+    src = ((u8 *) src) + 0x2C;
+    *((volatile u32 *) (dest + 0x24)) = word2;
+    *((volatile u32 *) (dest + 0x28)) = word3;
+  }
+
 }
 extern int lbl_804C13B4[];
 extern void fn_802C7A00(void);
@@ -1536,9 +1597,179 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     }
 }
 
-void fn_802C7D54(int p1, float *p2, int p3) { }
-
-#pragma scheduling on
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline fn_802C53C4
+extern signed char lbl_8055FC20;
+extern int fn_802C9C58(int);
+extern void *fn_802C86DC(void);
+extern float PSQUATMultiply(void *, void *);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline fn_802C53C4
+void fn_802C7D54(int arg0, float *arg1, int arg2, float fa, float fb, float fc) {
+    struct ModelInstance *instance;
+    unsigned char entryStatus;
+    int j;
+    struct ElementList *inner_info;
+    int offset;
+    int nodeSlotOffset;
+    int inner_offset;
+    struct GroupList *groups;
+    int i;
+    struct GroupEntry *entry;
+    struct {
+        unsigned char status;
+        unsigned char pad[3];
+        float scalar;
+        float vec2[3];
+        float vec1[3];
+    } local;
+    void *instance2;
+    void *r21;
+    int r20;
+    float *rot;
+    float *out;
+    float *input;
+    float savedScalar;
+    int savedCull;
+    int savedMask;
+    float *groupOut;
+    r21 = ((void *(*)(float, float, float))fn_802C7A3C)(fa, fb, fc);
+    savedCull = fn_802C9C58(arg2);
+    savedMask = lbl_8055D008;
+    lbl_8055D008 = 8;
+    instance2 = fn_802C5390(arg0);
+    instance = (struct ModelInstance *)instance2;
+    rot = (float *)((char *)*(void **)((char *)instance2 + 4) + 0x20);
+    out = local.vec1;
+    input = (float *)arg1;
+    groupOut = local.vec2;
+    if (out == rot) {
+        float y0 = input[3] * rot[1];
+        float y1 = input[4] * rot[1];
+        float x0 = input[0] * rot[0];
+        float x1 = input[1] * rot[0];
+        float x2 = input[2] * rot[0];
+        float y2 = input[5] * rot[1];
+        float z0 = input[6] * rot[2];
+        float z1 = input[7] * rot[2];
+        float z2 = input[8] * rot[2];
+        out[0] = (x0 + y0) + z0;
+        out[1] = (x1 + y1) + z1;
+        out[2] = (x2 + y2) + z2;
+    } else {
+        out[0] = (input[3] * rot[1] + input[0] * rot[0]) + input[6] * rot[2];
+        out[1] = (input[4] * rot[1] + input[1] * rot[0]) + input[7] * rot[2];
+        out[2] = (input[5] * rot[1] + input[2] * rot[0]) + input[8] * rot[2];
+    }
+    {
+        float tx = out[0] + input[9];
+        float ty = out[1] + input[10];
+        float tz = out[2] + input[11];
+        out[0] = tx;
+        out[1] = ty;
+        out[2] = tz;
+    }
+    if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1]) == 0) {
+        lbl_8055D008 = savedMask;
+        fn_802C9C58(savedCull);
+        return;
+    }
+    r20 = fn_802D0514(arg1);
+    if ((unsigned char)lbl_8055FC20 == 0) {
+        fn_802C543C();
+    }
+    groups = instance->groups;
+    nodeSlotOffset = instance->nodeSlot << 2;
+    for (i = 0, offset = 0; i < groups->count; offset += 0x10, i++) {
+        int bitIndex;
+        int ok;
+        char *posBase;
+        entry = (struct GroupEntry *)(groups->items + offset);
+        bitIndex = entry->bitIndex;
+        if (lbl_8055D008 & (1 << bitIndex)) {
+            entryStatus = local.status;
+            posBase = instance->groupPositions;
+            if (posBase == 0) {
+                ok = 1;
+            } else {
+                float *grot = (float *)(posBase + offset);
+                if (groupOut == grot) {
+                    float y0 = input[3] * grot[1];
+                    float y1 = input[4] * grot[1];
+                    float x0 = input[0] * grot[0];
+                    float x1 = input[1] * grot[0];
+                    float x2 = input[2] * grot[0];
+                    float y2 = input[5] * grot[1];
+                    float z0 = input[6] * grot[2];
+                    float z1 = input[7] * grot[2];
+                    float z2 = input[8] * grot[2];
+                    groupOut[0] = (x0 + y0) + z0;
+                    groupOut[1] = (x1 + y1) + z1;
+                    groupOut[2] = (x2 + y2) + z2;
+                } else {
+                    groupOut[0] = (input[3] * grot[1] + input[0] * grot[0]) + input[6] * grot[2];
+                    groupOut[1] = (input[4] * grot[1] + input[1] * grot[0]) + input[7] * grot[2];
+                    groupOut[2] = (input[5] * grot[1] + input[2] * grot[0]) + input[8] * grot[2];
+                }
+                {
+                    float tx = groupOut[0] + input[9];
+                    float ty = groupOut[1] + input[10];
+                    float tz = groupOut[2] + input[11];
+                    groupOut[0] = tx;
+                    groupOut[1] = ty;
+                    groupOut[2] = tz;
+                }
+                {
+                    float dist = PSQUATMultiply(groupOut, (char *)fn_802C86DC() + 0x24);
+                    float tol = *(float *)(posBase + offset + 12);
+                    ok = (dist - tol) < fc;
+                }
+            }
+            if (ok == 0)
+                continue;
+            savedScalar = local.scalar;
+            inner_info = entry->elements;
+            for (j = 0, inner_offset = 0; j < inner_info->count; inner_offset += 4, j++) {
+                int valid = 0;
+                struct ModelElement *elem = (struct ModelElement *)*(void **)(inner_info->items + inner_offset);
+                unsigned int type = elem->type;
+                if (type < 13) {
+                    int skip;
+                    valid = 1;
+                    switch (type) {
+                    case 4:
+                    case 6:
+                    case 9:
+                    case 11:
+                        skip = 1;
+                        break;
+                    default:
+                        skip = 0;
+                        break;
+                    }
+                    if (skip) valid = 0;
+                }
+                if (valid) {
+                    void *node = *(void **)(nodeSlotOffset + (int)elem + 0x14);
+                    void *r4;
+                    fn_802C53C4(entry, node, r20, (int)r21, entryStatus);
+                    r4 = ((void *(*)(void *))fn_802C57B0)((void *)entry->id);
+                    fn_802CC550(*(int *)node, r4, savedScalar, *(float *)((char *)r4 + 0x18));
+                }
+            }
+        }
+    }
+    if ((unsigned char)lbl_8055FC20 == 0) {
+        fn_802C5720(-1);
+    }
+    lbl_8055D008 = savedMask;
+    fn_802C9C58(savedCull);
+}
+#pragma pop
 void fn_802C8218(s32 arg0) {
     s32 var_r0;
 
