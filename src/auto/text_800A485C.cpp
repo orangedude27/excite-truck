@@ -18468,17 +18468,17 @@ extern "C" void *fn_800C6A1C(void *homeButton, s32 flag) {
     return homeButton;
 }
 
-extern "C" void* __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_, s32 flag) {
-    if (this_) {
-        if ((u8*)this_ + 0x24 != 0) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8*)this_ + 0x24, 0);
+extern "C" void* __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* self, s32 deleteFlag) {
+    if (self) {
+        if ((u8*)self + 0x24 != 0) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8*)self + 0x24, 0);
         }
-        fn_800DCE10(this_, 0);
-        if (flag > 0) {
-            ((void (*)(void*))fn_80128668)(this_);
+        fn_800DCE10(self, 0);
+        if (deleteFlag > 0) {
+            ((void (*)(void*))fn_80128668)(self);
         }
     }
-    return this_;
+    return self;
 }
 
 extern "C" void fn_800C7774(unsigned char *);
