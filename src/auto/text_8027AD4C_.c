@@ -293,17 +293,23 @@ unsigned char fn_8027B280(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
 
-void fn_8027B288(void *arg0) {
-    long offset = 0, i = 0;
+/* Resets all entries in a container's object array and clears its count/state
+ * fields. */
+void fn_8027B288(void *container) {
+#define Entry_reset fn_8027AF94
+    long entryOffset = 0;
+    long entryIndex = 0;
+
     goto test;
 body:
-    fn_8027AF94((char *)*(void **)((char *)arg0 + 0x18) + offset);
-    offset += 0x3C;
-    i++;
+    Entry_reset((char *)*(void **)((char *)container + 0x18) + entryOffset);
+    entryOffset += 0x3C;
+    entryIndex++;
 test:
-    if (i < *(long *)((char *)arg0 + 0x1C)) goto body;
-    *(long *)((char *)arg0 + 0x1C) = 0;
-    *(long *)((char *)arg0 + 0x10) = 0;
+    if (entryIndex < *(long *)((char *)container + 0x1C)) goto body;
+    *(long *)((char *)container + 0x1C) = 0;
+    *(long *)((char *)container + 0x10) = 0;
+#undef Entry_reset
 }
 
 #pragma cplusplus on
