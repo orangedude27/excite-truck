@@ -5711,6 +5711,9 @@ extern "C" void *fn_80222BDC(void *arg0, void *arg1, s32 arg2) {
 }
 
 extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void *arg0, s32 arg1) {
+    /* Deleting destructor for the object using vtable lbl_8033E560: reset the
+       vtable, destroy the owned object at +0x248 (fn_802328D4), run the base
+       destructor (fn_8021915C), and delete if arg1 > 0. */
     if (arg0 != 0) {
         *(void **)arg0 = lbl_8033E560;
         fn_802328D4((void *)*(s32 *)((u8 *)arg0 + 0x248));
