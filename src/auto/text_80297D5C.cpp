@@ -2082,15 +2082,18 @@ extern "C" void fn_8029BEF8(void *);
 extern "C" int fn_8029C190(void*);
 extern "C" int fn_801EEFDC(void*, int);
 
-void* fn_8029B9A4(void* arg0, int arg1) {
-    if (arg0 != 0) {
+/* Destroy the BackfireMan object: unregister the per-frame backfire callback,
+   delete the owned ExhaustTorchMan at offset 0, then free this object when the
+   deleting-destructor flag is set. */
+void* fn_8029B9A4(void* this_, int deletingFlag) {
+    if (this_ != 0) {
         fn_801EF024((void*)fn_8029BFF8);
-        ((void (*)(void*, int))__dt__Q210JASDrumSet5TPercFv_8029AE88)(*(void**)arg0, 1);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        ((void (*)(void*, int))__dt__Q210JASDrumSet5TPercFv_8029AE88)(*(void**)this_, 1);
+        if (deletingFlag > 0) {
+            fn_80128668(this_);
         }
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" int fn_8029AEE8(void *);
