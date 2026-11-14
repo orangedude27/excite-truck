@@ -416,6 +416,7 @@ extern "C" s32 fn_802E3BB4(s32 arg0, s32 arg1, s32 arg2) {
         virtual s32 v2(s32, s32, s32);
     };
 
+    /* Call file-subsystem vtable slot 2 with (arg0, arg1, arg2); return -1 if unavailable. */
     s32 obj = ((s32 (*)(void))fn_802E339C)();
     s32 result;
     if (obj != 0) {
