@@ -47,6 +47,8 @@ s32 NANDCreate(const char* path, u8 perm, u8 attr) {
         nandCreate(path, perm, attr, NULL, FALSE, FALSE));
 }
 
+/* Asynchronous NANDCreate(): hand the new file off to ISFS and report the
+ * result, once the create finishes, through the caller's callback. */
 s32 NANDCreateAsync(const char* path, u8 perm, u8 attr,
                     NANDAsyncCallback callback, NANDCommandBlock* block) {
     if (!nandIsInitialized()) {
