@@ -1162,14 +1162,16 @@ long fn_8027C4B4(long arg0, long arg1) {
     }
     return arg0;
 }
-void fn_8027C59C(long arg0) {
-    long value;
+/* Acquire the shared EventPathOracle (contest/event path table), creating and
+ * initializing it on first use and tracking active users with a refcount. */
+void fn_8027C59C(long context) {
+    long oracle;
 
     if (lbl_8055F654 == 0) {
-        value = fn_801284F8(0xB020, lbl_80347B68);
-        if (value != 0)
-            value = ((long (*)(long, long))fn_8027C41C)(value, arg0);
-        lbl_8055F654 = value;
+        oracle = fn_801284F8(0xB020, lbl_80347B68);
+        if (oracle != 0)
+            oracle = ((long (*)(long, long))fn_8027C41C)(oracle, context);
+        lbl_8055F654 = oracle;
         lbl_8055F658 = 1;
     } else {
         lbl_8055F658 += 1;
