@@ -223,81 +223,141 @@ extern "C" void *fn_801B8D80(void) {
     }
     return object;
 }
-extern "C" void fn_801B8E28(int arg0) {
-    struct Dummy {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18();
-        virtual void v19(unsigned int *, void *);
+/* Per-frame update of the trailer car of player `playerIndex`.
+
+   A "trlr_car" trails one of the eight players (its +0x2754).  This carries
+   the offset between the trailer's point in the level (+0x273C) and the
+   player's (+0x2748), less the body's own reference point (+0x30), into the
+   trailer frame the player carries at +0x70, and hands what comes out - that
+   frame, the world position in it, and the player's speed along the frame's
+   facing axis - to the trailer itself at vtable+0x54 (fn_80189CB4 installs it
+   as the trailer's pose, velocity and heading).  The spring at +0x2704 that
+   pulls the trailer along is then re-aimed at the same point, with the longer
+   range of lbl_80562760 while the trailer hangs from the player (+0x275D). */
+extern "C" void fn_801B8E28(int playerIndex) {
+    /* What ties a body's point to a target point; see the Spring note in
+       src/auto/text_801A9660_.c, whose fn_801AD0E0/fn_801AD148/fn_801AD28C
+       set one up and fn_801AD394 measures it and applies the force. */
+    struct Spring {
+        Vec target;       /* 0x00 the point the anchor is pulled towards */
+        void *other;      /* 0x0C the body the target is a point of, 0 for a fixed point */
+        Vec anchor;       /* 0x10 the point on `body`, in its own frame */
+        f32 strength;     /* 0x1C force per unit of stretch */
+        f32 damping;      /* 0x20 */
+        f32 range;        /* 0x24 how far past the rest length it still pulls */
+        f32 restLength;   /* 0x28 */
+        f32 stretch;      /* 0x2C */
+        f32 flatDistance; /* 0x30 */
+        void *body;       /* 0x34 the body the anchor rides on */
     };
-    struct ObjectLayout {
-        char pad[0x2748];
-        Vec position;
+    /* One of the eight players: the table lbl_80430830, handed out by
+       fn_8017960C.  A moving body whose pose is three axes and a position
+       (fn_8017AB84 transforms by them), plus the frame its trailer hangs from
+       and the way it is pointing. */
+    struct PlayerCar {
+        char pad0[0x3C];
+        Vec axes[3];          /* 0x3C the body's world frame */
+        Vec position;         /* 0x60 */
+        s16 heading;          /* 0x6C */
+        u8 pad6E[2];
+        Vec trailerAxes[3];   /* 0x70 the frame the trailer is placed in */
+        Vec trailerPos;       /* 0x94 */
+        char padA0[0x118 - 0xA0];
+        Vec velocity;         /* 0x118 */
     };
-    void *obj = lbl_80436D28[arg0];
-    struct Work {
-        Vec copy[3];
-        float output[3];
-        float fx, fy, fz;
-        int zero;
-        short h;
-    } w;
-    float sp20[3];
-    float sp14[3];
-    float input[3];
-    float temp_f3;
-    float dot;
-    ((void (*)(void *))fn_80189C64)(obj);
-    input[0] = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
-    input[1] = *(float *)((char *)obj + 0x274c) - *(float *)((char *)obj + 0x2740);
-    input[2] = *(float *)((char *)obj + 0x2750) - *(float *)((char *)obj + 0x2744);
-    input[0] -= *(float *)((char *)obj + 0x30);
-    input[1] -= *(float *)((char *)obj + 0x34);
-    input[2] -= *(float *)((char *)obj + 0x38);
-    if (*(unsigned char *)((char *)obj + 0x275d) != 0) {
-        input[2] -= lbl_80562754;
+    /* A trailer car: the "trlr_car" (alloc tag lbl_803369C0, vtable
+       lbl_803369D0) of one player index, kept in lbl_80436D28. */
+    struct TrlrCar {
+        void *vtable;             /* 0x00 */
+        char pad4[0x2C];
+        Vec localPoint;           /* 0x30 a point of the body, in its own frame */
+        char pad3C[0x18];
+        Vec facing;               /* 0x54 the body's facing axis, its frame's third axis */
+        char pad60[0x2700 - 0x60];
+        s32 index;                /* 0x2700 */
+        struct Spring spring;     /* 0x2704 what pulls the trailer along */
+        Vec anchorPos;            /* 0x273C the trailer's point in the level */
+        Vec carPos;               /* 0x2748 the player's point in the level */
+        struct PlayerCar *player; /* 0x2754 the player this trailer trails */
+        f32 unk2758;              /* 0x2758 */
+        u8 flag275C;              /* 0x275C */
+        u8 towed;                 /* 0x275D while set, the trailer hangs from the player */
+    };
+    /* The pose fn_80189CB4 (vtable+0x54) installs into a trailer car. */
+    struct CarPose {
+        Vec axes[3];      /* 0x00 the frame to place the trailer in */
+        f32 position[3];  /* 0x24 where it goes, in the world */
+        f32 velocity[3];  /* 0x30 how it travels along that frame */
+        s32 flag;         /* 0x3C handed on to fn_801B30C0 */
+        s16 heading;      /* 0x40 the way the player points */
+    };
+    /* A trailer car's own vtable: two leading destructor slots, so the pose
+       setter is the twentieth declared method, at +0x54. */
+    struct TrlrCarVf {
+        virtual void unk0(); virtual void unk1(); virtual void unk2(); virtual void unk3();
+        virtual void unk4(); virtual void unk5(); virtual void unk6(); virtual void unk7();
+        virtual void unk8(); virtual void unk9(); virtual void unk10(); virtual void unk11();
+        virtual void unk12(); virtual void unk13(); virtual void unk14(); virtual void unk15();
+        virtual void unk16(); virtual void unk17(); virtual void unk18();
+        virtual void setPose(struct CarPose *pose, struct PlayerCar *player);
+    };
+    struct TrlrCar *car = (struct TrlrCar *)lbl_80436D28[playerIndex];
+    struct CarPose pose;
+    f32 towedAnchor[3];
+    f32 anchor[3];
+    f32 offset[3];
+    f32 anchorZ;
+    f32 forwardSpeed;
+    ((void (*)(void *))fn_80189C64)(car); /* drop its pending flag and zero +0x26A8 */
+    offset[0] = car->carPos.x - car->anchorPos.x;
+    offset[1] = car->carPos.y - car->anchorPos.y;
+    offset[2] = car->carPos.z - car->anchorPos.z;
+    offset[0] -= car->localPoint.x;
+    offset[1] -= car->localPoint.y;
+    offset[2] -= car->localPoint.z;
+    if (car->towed != 0) {
+        offset[2] -= lbl_80562754; /* 2.0f */
     }
-    w.h = -1;
+    pose.heading = -1;
     {
-        char *matrix = *(char **)((char *)obj + 0x2754);
-        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), input);
-        w.output[0] += *(float *)(matrix + 0x94);
-        w.output[1] += *(float *)(matrix + 0x98);
-        w.output[2] += *(float *)(matrix + 0x9c);
+        struct PlayerCar *player = car->player;
+        transform_vec_scheduled(pose.position, (const float *)player->trailerAxes, offset);
+        pose.position[0] += player->trailerPos.x;
+        pose.position[1] += player->trailerPos.y;
+        pose.position[2] += player->trailerPos.z;
     }
     {
-        Vec *matrix = (Vec *)((char *)*(void **)((char *)obj + 0x2754) + 0x70);
-        w.copy[0] = matrix[0];
-        w.copy[1] = matrix[1];
-        w.copy[2] = matrix[2];
+        Vec *axes = car->player->trailerAxes;
+        pose.axes[0] = axes[0];
+        pose.axes[1] = axes[1];
+        pose.axes[2] = axes[2];
     }
-    dot = PSVECDotProduct((float *)((char *)*(void **)((char *)obj + 0x2754) + 0x118), (float *)((char *)obj + 0x54));
-    w.zero = 0;
-    w.fx = w.copy[2].x * dot;
-    w.fy = w.copy[2].y * dot;
-    w.fz = w.copy[2].z * dot;
+    forwardSpeed = PSVECDotProduct(&car->player->velocity.x, &car->facing.x);
+    pose.flag = 0;
+    pose.velocity[0] = pose.axes[2].x * forwardSpeed;
+    pose.velocity[1] = pose.axes[2].y * forwardSpeed;
+    pose.velocity[2] = pose.axes[2].z * forwardSpeed;
     {
-        void *matrix = *(void **)((char *)obj + 0x2754);
-        w.h = *(short *)((char *)matrix + 0x6c);
-        ((struct Dummy *)obj)->v19((unsigned int *)w.copy, matrix);
+        struct PlayerCar *player = car->player;
+        pose.heading = player->heading;
+        ((struct TrlrCarVf *)car)->setPose(&pose, player);
     }
-    *(void **)((char *)obj + 0x2738) = obj;
-    if (*(unsigned char *)((char *)obj + 0x275d) == 0) {
-        sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
-        sp14[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
-        temp_f3 = *(float *)((char *)obj + 0x2744);
-        sp14[2] = temp_f3 + *(float *)((char *)obj + 0x38);
-        fn_801AD148((char *)obj + 0x2704, sp14, *(void **)((char *)obj + 0x2754), lbl_80562758, lbl_8056275C, temp_f3);
+    car->spring.body = car;
+    if (car->towed == 0) {
+        anchor[0] = car->anchorPos.x + car->localPoint.x;
+        anchor[1] = car->anchorPos.y + car->localPoint.y;
+        anchorZ = car->anchorPos.z;
+        anchor[2] = anchorZ + car->localPoint.z;
+        fn_801AD148(&car->spring, anchor, car->player, lbl_80562758, lbl_8056275C, anchorZ);
     } else {
-        sp20[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
-        sp20[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
-        temp_f3 = *(float *)((char *)obj + 0x2744);
-        sp20[2] = temp_f3 + *(float *)((char *)obj + 0x38);
-        fn_801AD28C((char *)obj + 0x2704, sp20, *(void **)((char *)obj + 0x2754), &((struct ObjectLayout *)obj)->position, lbl_80562758, lbl_80562760, temp_f3);
+        towedAnchor[0] = car->anchorPos.x + car->localPoint.x;
+        towedAnchor[1] = car->anchorPos.y + car->localPoint.y;
+        anchorZ = car->anchorPos.z;
+        towedAnchor[2] = anchorZ + car->localPoint.z;
+        fn_801AD28C(&car->spring, towedAnchor, car->player, &car->carPos, lbl_80562758,
+                    lbl_80562760, anchorZ);
     }
-    fn_8018A08C((void *)obj);
+    fn_8018A08C(car); /* stamp it with the shared value of lbl_8055E3C8 */
 }
 #pragma cplusplus reset
 void fn_801B916C(void *arg0) {
