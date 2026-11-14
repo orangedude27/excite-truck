@@ -4588,10 +4588,12 @@ static inline void SoundInstanceManager_InsertPriorityList(void *pool, void *sou
 static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     void *sound;
     void *it;
-    struct { void *node; } iter;
-    void *&pos = iter.node;
     struct { u32 old; } lock;
     u32 &irq = lock.old;
+    struct { void *node; } iter;
+    void *&pos = iter.node;
+    struct { void *node; } end_iter;
+    void *&end = end_iter.node;
     {
         s32 ok = 0;
         if (priority >= 0 && priority <= 0x7F) {
@@ -4651,13 +4653,16 @@ static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
             sound = fn_800FDA20(sound, pool);
         }
     }
-    for (pos = *(void **)((u8 *)pool + 8); pos != (void *)((u8 *)pool + 8); pos = *(void **)pos) {
+    pos = *(void **)((u8 *)pool + 8);
+    end = (void *)((u8 *)pool + 8);
+    while (pos != end) {
         if (pos == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
         }
         if (priority < ClampS32(*(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78), 0, 0x7F)) {
             break;
         }
+        pos = *(void **)pos;
     }
     if (sound == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
