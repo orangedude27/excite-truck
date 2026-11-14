@@ -15265,17 +15265,18 @@ s32 btsnd_hcic_auth_request_800844F4(u16 arg0) {
     btu_hcif_send_cmd(buf); return 1;
 }
 
+/* btsnd_hcic_read_clock_off: build and send HCI Read_Clock_Offset (opcode 0x041F) for connection handle. */
 s32 btsnd_hcic_auth_request_80084570(u16 handle) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL) return 0;
-    *(u16 *)(p + 2) = 5;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0x1F;
-    p[9] = 4;
-    p[10] = 2;
-    p[11] = handle;
-    p[12] = handle >> 8;
-    btu_hcif_send_cmd(p);
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == NULL) return 0;
+    *(u16 *)(cmdBuf + 2) = 5;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 0x1F;
+    cmdBuf[9] = 4;
+    cmdBuf[10] = 2;
+    cmdBuf[11] = handle;
+    cmdBuf[12] = handle >> 8;
+    btu_hcif_send_cmd(cmdBuf);
     return 1;
 }
 
