@@ -2037,17 +2037,17 @@ extern "C" void *fn_8021B8AC(void *arg0, s32 arg1) {
 
 #pragma dont_inline reset
 extern "C" void fn_8021B944(void *arg0) {
-    u8 sp8[0x40];
+    /* If this object has a local UI transform, push it onto the draw-context stack, draw, then restore. */
+    u8 localContext[0x40];
     if (*(void **)((u8 *)arg0 + 0x370) != 0) {
-        fn_8022EEF8(sp8, (s32)*(void **)((u8 *)arg0 + 0x370), fn_8022EDC4());
-        fn_8022ED00(sp8);
+        fn_8022EEF8(localContext, (s32)*(void **)((u8 *)arg0 + 0x370), fn_8022EDC4());
+        fn_8022ED00(localContext);
     }
     fn_80219660(arg0);
     if (*(void **)((u8 *)arg0 + 0x370) != 0) {
         fn_8022EDB8();
     }
 }
-
 extern "C" void fn_8021BA64(void *, s32, s32, s32, s32, void *, s32, s32, s32, s32, s32, s32, s32);
 
 #pragma push
