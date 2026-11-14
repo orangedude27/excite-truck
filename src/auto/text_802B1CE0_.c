@@ -675,17 +675,17 @@ void fn_802B2C34(void (*fn)(void *), void *arg) {
 }
 #pragma scheduling invalid_target
 void fn_802B2D94(int *arg0) {
-    int *object = arg0;
+    int *container = arg0;
     int i;
     lbl_8055F9B4 = 0;
     lbl_8055F9B0 = 0;
     i = 0;
     goto check;
 loop:
-    fn_802B2E08(*fn_802B320C(object, i));
+    fn_802B2E08(*fn_802B320C(container, i));
     i++;
 check:
-    if (i < fn_802B2E00(object)) {
+    if (i < fn_802B2E00(container)) {
         goto loop;
     }
 }
