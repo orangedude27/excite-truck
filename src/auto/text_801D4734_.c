@@ -937,23 +937,26 @@ int fn_801D57F0(void *alarm) {
 extern int strcmp(const char *, const char *);
 #pragma push
 #pragma use_lmw_stmw off
-void *fn_801D5860(const char *arg0) {
-    void **entries;
+/* Searches the global ActionSequence list (lbl_804423A4) for an entry whose name field (+0x08) matches name, returning the ActionSequence or 0 if not found. */
+void *fn_801D5860(const char *name) {
+#define gActionSequenceList lbl_804423A4
+    void **sequences;
     int count;
     int i;
-    char *entry;
-    entries = (void **)lbl_804423A4[0];
-    count = lbl_804423A4[1];
+    char *seq;
+    sequences = (void **)gActionSequenceList[0];
+    count = gActionSequenceList[1];
     i = 0;
     while (i < count) {
-        entry = (char *)*entries;
-        if (strcmp(entry + 8, arg0) == 0) {
-            return entry;
+        seq = (char *)*sequences;
+        if (strcmp(seq + 8, name) == 0) {
+            return seq;
         }
-        entries++;
+        sequences++;
         i++;
     }
     return 0;
+#undef gActionSequenceList
 }
 #pragma pop
 extern float lbl_80562B00;
