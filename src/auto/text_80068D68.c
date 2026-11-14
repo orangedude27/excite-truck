@@ -9363,8 +9363,8 @@ void fn_8007ABE8(void *arg0) {
 
 /* btm_cb's service-discovery session, the 0x1020 bytes at btm_cb + 0x658: a
  * GKI timer entry first (the search timeout, taken off the BTU timer list when
- * the session is reset), then the state and the two UUIDs a search asks for,
- * the completion callback at +0x78, and the SDP database the records are
+ * the session is reset), then a state word and the one UUID a search filters
+ * on, the completion callback at +0x78, and the SDP database the records are
  * collected into from +0x7C to the end of the block.  The byte at its very end
  * says a search is running; the pointer to the database sits just past the
  * block, at btm_cb + 0x1678. */
