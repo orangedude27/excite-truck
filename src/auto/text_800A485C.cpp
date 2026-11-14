@@ -833,7 +833,7 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void*);
 extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void*);
 extern "C" void updateSound__Q210homebutton10ControllerFv(void*);
 extern "C" void* fn_800C6914(void*, void* = 0);
-#define RET_800C6A1C void
+#define RET_800C6A1C void*
 extern "C" RET_800C6A1C fn_800C6A1C(void*, s32);
 extern "C" void fn_800C6CE8(void*);
 extern "C" void fn_800C7998(void*);
