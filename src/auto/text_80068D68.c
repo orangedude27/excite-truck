@@ -15257,12 +15257,26 @@ s32 btsnd_hcic_auth_request_80084478(u16 arg0) {
     btu_hcif_send_cmd(buf); return 1;
 }
 
-s32 btsnd_hcic_auth_request_800844F4(u16 arg0) {
-    u8 *buf = (u8 *)GKI_getpoolbuf(2);
-    if (buf == 0) return 0;
-    *(u16 *)(buf + 2) = 5; *(u16 *)(buf + 4) = 0;
-    buf[8]=0x1D; buf[9]=4; buf[10]=2; buf[11]=(u8)arg0; buf[12]=(u8)(arg0>>8);
-    btu_hcif_send_cmd(buf); return 1;
+/* btsnd_hcic_rmt_ver_req: build and send HCI Read_Remote_Version_Information (opcode 0x041D) for connection handle. */
+s32 btsnd_hcic_auth_request_800844F4(u16 handle) {
+    BT_HDR *p;
+    UINT8 *pp;
+
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_CMD_HANDLE)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_CMD_HANDLE;
+    p->offset = 0;
+
+    UINT16_TO_STREAM (pp, HCI_READ_RMT_VERSION_INFO);
+    UINT8_TO_STREAM  (pp, HCIC_PARAM_SIZE_CMD_HANDLE);
+
+    UINT16_TO_STREAM (pp, handle);
+
+    btu_hcif_send_cmd(p);
+    return TRUE;
 }
 
 /* btsnd_hcic_read_clock_off: build and send HCI Read_Clock_Offset (opcode 0x041F) for connection handle. */
