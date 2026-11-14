@@ -398,16 +398,18 @@ extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const 
 #pragma unroll reset
 #pragma optimize_for_size reset
 
-extern "C" int IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(unsigned int *color, unsigned char alpha) {
+/* Return nonzero if vertex colors need modulation: alpha is not fully opaque, or
+   any of the four vertex color words differs from the opaque-white sentinel. */
+extern "C" int IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(unsigned int *vertexColors, unsigned char alpha) {
     if (alpha != 0xff) return 1;
-    if (color == 0) goto no;
-    if ((color[0] + 0x10000) != 0xffff) goto yes;
-    if ((color[1] + 0x10000) != 0xffff) goto yes;
-    if ((color[2] + 0x10000) != 0xffff) goto yes;
-    if ((color[3] + 0x10000) == 0xffff) goto no;
-yes:
+    if (vertexColors == 0) goto noModulation;
+    if ((vertexColors[0] + 0x10000) != 0xffff) goto needsModulation;
+    if ((vertexColors[1] + 0x10000) != 0xffff) goto needsModulation;
+    if ((vertexColors[2] + 0x10000) != 0xffff) goto needsModulation;
+    if ((vertexColors[3] + 0x10000) == 0xffff) goto noModulation;
+needsModulation:
     return 1;
-no:
+noModulation:
     return 0;
 }
 
