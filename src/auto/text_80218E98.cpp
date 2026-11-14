@@ -6157,6 +6157,8 @@ extern "C" void fn_8022375C(void) {
 }
 
 extern "C" s32 fn_80223760(void *arg0, s32 arg1) {
+    /* Handles left/right key input for this menu item unless it is disabled;
+       returns 1 if the key was handled. */
     if (*(u8 *)((u8 *)arg0 + 0x41C) != 0)
         return 0;
     switch (arg1) {
