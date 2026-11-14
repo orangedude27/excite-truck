@@ -679,8 +679,8 @@ extern "C" void fn_802B6804(void) {
     };
     typedef struct {
         void *name;
-        s32 value;
         s32 timeBits;
+        s32 value;
         s32 unkC;
         f32 time10;
         s32 unk14;
@@ -745,7 +745,7 @@ loop_body:
     first.unk1C = *(volatile const s32 *)(source + 0x1C);
     *(f32 *)((u8 *)&first + 8) = timeA + step * (f32)i;
 
-    if (lbl_8055FA30 != 0)
+    if (lbl_8055FA30)
         selected = item->current;
     else
         selected = *item->currentPtr;
@@ -830,61 +830,66 @@ __declspec(section ".sdata") extern const char lbl_8055CE98[];
 #pragma small_data off
 #pragma use_lmw_stmw off
 void fn_802B6AC0(void) {
-    struct Texture { s32 width; s32 height; u32 *pixels; };
-    struct Entry { char name[0x20]; s32 width; s32 height; u8 pixels[1]; };
+    struct Texture { u32 width; u32 height; u32 *pixels; };
+    struct Entry { char name[0x20]; u32 width; u32 height; u8 pixels[1]; };
     struct Scratch { char path[0x20]; char formatBuffer[0x40]; char imageBuffer[0x40]; } scratch;
-    s32 *state;
+    s32 val;
+    float seconds;
+    s32 below;
     s32 zero;
-    register s32 result;
+    s32 *state;
+    s32 result;
     s32 mode;
-    s32 index;
-    s32 row;
-    s32 column;
-    s32 height;
-    s32 width;
+    s32 myindex;
+    u32 row;
+    u32 column;
+    u32 height;
+    u32 width;
     u32 color;
     u32 component;
     u32 pixel;
     s32 exists;
     char *entryName;
-    register struct Entry *entry;
+    struct Entry *entry;
     struct Texture *texture;
-    float seconds;
-    s32 val;
-
+    char *suffix;
     val = fn_802E2C20();
     seconds = (float)val / lbl_80564C70;
-    if (!(seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) >= lbl_8055FA18))
+    below = seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) < lbl_8055FA18;
+    if (below)
         return;
     val = fn_802E2C20();
     state = (s32 *)&lbl_804BE7D8;
     zero = 0;
-    state[1] = zero;
     seconds = (float)val / lbl_80564C70;
+    state[1] = zero;
     *(float *)((u8 *)&lbl_8055FA18) = seconds;
     mode = fn_802B6A70(lbl_8055FA38);
     ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(scratch.imageBuffer, 0x40, lbl_8055CE88, mode);
     result = fn_802E3BB4(scratch.imageBuffer, scratch.path, 0x20);
     if ((u32)result + 0x10000U != 0xFFFFU) {
-        register char *suffix = (char *)lbl_8055CE98;
+        suffix = (char *)lbl_8055CE98;
         do {
-            index = state[1];
-            entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8 + index * 0x128);
-            state[1] = index + 1;
+            myindex = state[1];
+            entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8 + myindex * 0x128);
+            state[1] = myindex + 1;
             {
                 s32 remaining = 0x20;
                 char *dst = entry->name;
                 char *src = scratch.path;
-                do {
-                    char c = *src++;
-                    *dst++ = c;
-                    if ((signed char)c != 0) {
-                        remaining--;
-                        if (remaining > 0) continue;
-                        dst[-1] = 0;
-                    }
-                    break;
-                } while (1);
+                char c;
+                goto copy;
+                dec:
+                if (--remaining <= 0) {
+                    dst[-1] = 0;
+                    goto done;
+                }
+                copy:
+                c = *src++;
+                *dst++ = c;
+                if ((signed char)c != 0)
+                    goto dec;
+                done:;
             }
             if (strchr(entry->name, '.') != 0)
                 *strchr(entry->name, '.') = 0;
@@ -900,13 +905,12 @@ void fn_802B6AC0(void) {
                 height = texture->height;
                 entry->height = height;
                 if ((u32)(width * height) > 0x100U) {
-                    width = (u32)width > 0x10U ? 0x10 : width;
+                    width = width > 0x10U ? 0x10 : width;
                     entry->width = width;
-                    height = (u32)height > 0x10U ? 0x10 : height;
-                    entry->height = height;
+                    entry->height = entry->height > 0x10U ? 0x10 : entry->height;
                 }
                 {
-                    s32 byteOffset = 0;
+                    u32 byteOffset = 0;
                     for (row = 0; row < entry->width; row++, byteOffset += 4) {
                         for (column = 0; column < entry->height; column++) {
                             pixel = *(u32 *)((u8 *)texture->pixels + byteOffset +
@@ -933,16 +937,20 @@ void fn_802B6AC0(void) {
                     entryName++;
                 }
                 if (remaining > 0) {
-                    do {
-                        char c = *suffix++;
-                        *entryName++ = c;
-                        if ((signed char)c != 0) {
-                            remaining--;
-                            if (remaining > 0) continue;
-                            entryName[-1] = 0;
-                        }
-                        break;
-                    } while (1);
+                    char *src = suffix;
+                    char c2;
+                    goto copy2;
+                    dec2:
+                    if (--remaining <= 0) {
+                        entryName[-1] = 0;
+                        goto done2;
+                    }
+                    copy2:
+                    c2 = *src++;
+                    *entryName++ = c2;
+                    if ((signed char)c2 != 0)
+                        goto dec2;
+                    done2:;
                 }
             }
         } while ((state[1] + 1 <= state[2]) &&
@@ -1039,8 +1047,8 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
 
                     if ((remX != 0) || (remY != 0)) {
                         u32 imageWidth = *(u32 *)((u8 *)arg1 + 0x20);
-                        u32 x1 = blockX + 1;
                         u32 nextX = imageWidth - 1;
+                        u32 x1 = blockX + 1;
                         u32 nextY;
                         u32 y1;
                         u32 nextRowOffset;
@@ -1059,7 +1067,7 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
                             f32 fx = (f32)remX / (f32)scale;
                             u32 c00 = *((u8 *)arg1 + 0x28 + blockX + rowOffset);
                             u32 c10 = *((u8 *)arg1 + 0x28 + nextX + rowOffset);
-                            u32 c01 = *((u8 *)arg1 + 0x28 + blockX + nextRowOffset);
+                            int c01 = *((u8 *)arg1 + 0x28 + blockX + nextRowOffset);
                             u32 c11 = *((u8 *)arg1 + 0x28 + nextX + nextRowOffset);
                             f32 top = (f32)c00 + fx * ((f32)c10 - (f32)c00);
                             f32 bottom = (f32)c01 + fx * ((f32)c11 - (f32)c01);
@@ -1331,15 +1339,16 @@ extern "C" void fn_802B7918(void) {
         s32 unk18;
         s32 unk1C;
     } Record;
-    Dummy *obj = (Dummy *)lbl_8055FA48;
+    s32 i;
+    char *base;
+    s32 offset;
+    s32 count;
+    Dummy *obj;
     void *result;
     volatile const u8 *source;
     f32 step;
     f32 elapsed;
     s32 early;
-    s32 count;
-    s32 i;
-    s32 offset;
     s32 unknown;
     s32 value;
     s32 index;
@@ -1347,9 +1356,10 @@ extern "C" void fn_802B7918(void) {
     Record record;
     char buf[0x20];
 
-    result = obj->get(lbl_8034A598 + 0x2A0);
+    base = lbl_8034A598;
+    obj = (Dummy *)lbl_8055FA48;
+    result = obj->get(base + 0x2A0);
     step = *(f32 *)((u8 *)result + 0x14);
-    char *base = lbl_8034A598;
     obj = (Dummy *)lbl_8055FA48;
     result = obj->call(base + 0x2AC);
     source = (const u8 *)result;
@@ -1366,7 +1376,6 @@ extern "C" void fn_802B7918(void) {
     obj = (Dummy *)lbl_8055FA48;
     result = obj->call(base + 0xC8);
     fn_802B6568(result, lbl_8055CEA8);
-
     elapsed = (f32)fn_802E2C20() / lbl_80564C70 -
               ((f32 *)&lbl_8055FA10)[1];
     early = elapsed < lbl_8055FA10;
@@ -1407,38 +1416,10 @@ extern "C" s32 fn_802B1C14(s32);
 extern "C" s32 fn_802B1C1C(s32, s32);
 __declspec(section ".sdata") extern const char lbl_8055CEB0[];
 s32 fn_802B7B08(void) {
-    class Dummy {
-    public:
-        virtual void v0();
-        virtual void *call(const char *);
-        virtual void v2();
-        virtual void *get(const char *);
-    };
-    typedef struct {
-        void *name;
-        s32 value;
-        s32 unk8;
-        s32 unkC;
-        f32 time;
-        s32 unk14;
-        s32 unk18;
-        s32 unk1C;
-    } Record;
-    char *base = lbl_8034A598;
-    Dummy *obj = (Dummy *)lbl_8055FA48;
-    void *result;
-    const u8 *source;
-    f32 step;
-    f32 elapsed;
-    s32 early;
-    s32 index;
-    s32 count;
-    s32 i;
-    s32 unknown;
-    s32 value;
-    Record record;
-    char buf[0x20];
-
+    class Dummy { public: virtual void v0(); virtual void *call(const char *); virtual void v2(); virtual void *get(const char *); };
+    typedef struct { void *name; s32 value; s32 unk8; s32 unkC; f32 time; s32 unk14; s32 unk18; s32 unk1C; } Record;
+    char *base; Dummy *obj; void *result; const u8 *source; f32 step; f32 elapsed; s32 early; s32 index; s32 count; s32 i; s32 value; s32 unknown; Record record; char buf[0x20];
+    base = lbl_8034A598; obj = (Dummy *)lbl_8055FA48;
     result = obj->get(base + 0x2A0);
     step = *(f32 *)((u8 *)result + 0x14);
     obj = (Dummy *)lbl_8055FA48;
@@ -1448,18 +1429,15 @@ s32 fn_802B7B08(void) {
     result = obj->call(base + 0x2DC);
     source = (const u8 *)result;
     record.name = *(void **)(source + 0);
-    unknown = *(s32 *)(source + 8);
     value = *(s32 *)(source + 4);
-    record.value = value;
-    record.unk8 = unknown;
+    unknown = *(s32 *)(source + 8);
+    record.value = value; record.unk8 = unknown;
     record.unkC = *(s32 *)(source + 0xC);
     record.time = *(f32 *)(source + 0x10);
     record.unk14 = *(s32 *)(source + 0x14);
     record.unk18 = *(s32 *)(source + 0x18);
     record.unk1C = *(s32 *)(source + 0x1C);
-
-    elapsed = (f32)fn_802E2C20() / lbl_80564C70 -
-              ((f32 *)&lbl_8055FA08)[1];
+    elapsed = (f32)fn_802E2C20() / lbl_80564C70 - ((f32 *)&lbl_8055FA08)[1];
     early = elapsed < lbl_8055FA08;
     if (early != 0) {
         void *task = ((void *(*)(void))fn_802B5B6C)();
@@ -1468,21 +1446,16 @@ s32 fn_802B7B08(void) {
         if (count > 0) {
             i = 0;
             while (i < fn_802B1C14(index)) {
-                ((void (*)(void *, s32, const char *, ...))fn_801345D8)(
-                    buf, 0x20, base + 0x2E8, i);
+                ((void (*)(void *, s32, const char *, ...))fn_801345D8)(buf, 0x20, base + 0x2E8, i);
                 record.name = buf;
-                fn_802B6568(&record, lbl_8055CE70,
-                            fn_802B1C1C(index, i));
+                fn_802B6568(&record, lbl_8055CE70, fn_802B1C1C(index, i));
                 *(f32 *)((u8 *)&record + 8) += step;
                 i++;
             }
-        } else {
-            fn_80147230(&record, base + 0x2F4);
-        }
+        } else { fn_80147230(&record, base + 0x2F4); }
     } else {
         void *task = ((void *(*)(void))fn_802B5B6C)();
-        fn_80147230(&record, lbl_8055CE70,
-                    fn_802B1C1C(*(s32 *)((u8 *)task + 4), lbl_8055FA28));
+        fn_80147230(&record, lbl_8055CE70, fn_802B1C1C(*(s32 *)((u8 *)task + 4), lbl_8055FA28));
     }
 }
 
@@ -1527,21 +1500,21 @@ extern "C" void fn_802B7D4C(void) {
     s32 *entry;
 
     if (lbl_8055FA40 == 6) {
-
         fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x32C);
         return;
     }
     object = ((void *(*)(void))fn_802B5B6C)();
-    workspace[1] = 0;
-    workspace[2] = 16;
-    state = 0;
-    workspace[0] = (s32)&workspace[3];
+    {
+        s32 *p = &workspace[3];
+        workspace[1] = 0;
+        state = 0;
+        workspace[2] = 16;
+        workspace[0] = (s32)p;
+    }
     fn_802B321C((s32)workspace, (void **)&state, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
     status = base + 0x338;
     if (*state != 0) status = lbl_8055CEB8;
-
     fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x118), lbl_8055CE70, status);
-
     object = ((Dummy *)lbl_8055FA48)->call(base + 0x344);
     first.name = *(void **)object;
     ((s32 *)&first)[1] = ((s32 *)object)[1];
@@ -1551,7 +1524,6 @@ extern "C" void fn_802B7D4C(void) {
     first.unk14 = ((s32 *)object)[5];
     first.unk18 = ((s32 *)object)[6];
     first.unk1C = ((s32 *)object)[7];
-
     object = ((Dummy *)lbl_8055FA48)->call(base + 0x354);
     second.name = *(void **)object;
     ((s32 *)&second)[1] = ((s32 *)object)[1];
@@ -1561,7 +1533,6 @@ extern "C" void fn_802B7D4C(void) {
     second.unk14 = ((s32 *)object)[5];
     second.unk18 = ((s32 *)object)[6];
     second.unk1C = ((s32 *)object)[7];
-
     step = *(f32 *)((u8 *)((Dummy *)lbl_8055FA48)->get(base + 0x238) + 0x14);
     i = 0;
     offset = 0;
@@ -1590,15 +1561,11 @@ extern "C" void fn_802B7D4C(void) {
     }
     if (fn_802B5B74(selected)) {
         fn_802B67C8((s32)(base + 0x36C));
-
         fn_801476C4(((Dummy *)lbl_8055FA48)->call(base + 0x378));
         fn_801473F8(lbl_8055FA48, base + 0x384, lbl_8055CE70, selected[0]);
-
         fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x390), lbl_8055CEC0, ((f32 *)selected[2])[0]);
-
         fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x3A0), lbl_8055CEC0, ((f32 *)selected[2])[1]);
     }
-
     fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x3B0, lbl_8055FA40 + 1);
     workspace[0] = 0;
     workspace[1] = 0;
@@ -1673,7 +1640,8 @@ s32 fn_802B825C(s32 arg0) {
         value = values[1];
         next = values[0] + fn_802B822C(arg0);
         value = value < next ? value : next;
-        value = value > lbl_80564C98 ? lbl_80564C98 : value;
+        if (value > lbl_80564C98) value = lbl_80564C98;
+        else value = value;
         if (value != values[0]) {
             values[0] = value;
             changed = 1;
@@ -1793,15 +1761,16 @@ s32 fn_802B8510(s32 arg0) {
     }
 }
 #pragma pop
-void fn_802B8624(void *arg0) {
+/* Apply a 5-word UI configuration to the global UI state, recompute layout, apply changes, and refresh. */ 
+void fn_802B8624(void *config) {
     #pragma small_data off
     lbl_804BFF80[0] = 8;
-    if (arg0 != 0) {
-        lbl_804BFF80[0] = *(s32 *)arg0;
-        lbl_804BFF80[1] = ((s32 *)arg0)[1];
-        lbl_804BFF80[2] = ((s32 *)arg0)[2];
-        lbl_804BFF80[3] = ((s32 *)arg0)[3];
-        lbl_804BFF80[4] = ((s32 *)arg0)[4];
+    if (config != 0) {
+        lbl_804BFF80[0] = *(s32 *)config;
+        lbl_804BFF80[1] = ((s32 *)config)[1];
+        lbl_804BFF80[2] = ((s32 *)config)[2];
+        lbl_804BFF80[3] = ((s32 *)config)[3];
+        lbl_804BFF80[4] = ((s32 *)config)[4];
         fn_802B84E4(lbl_804BFF80);
         fn_802B83CC();
         fn_802B8510(lbl_804BFF80[0]);
@@ -1983,70 +1952,79 @@ extern "C" s32 fn_802B8998(s32 inputId) {
 #pragma pop
 void fn_802B8AE0(const char *arg0, s32 arg1) {
     struct Local { char name[32]; volatile s32 savedArg; volatile s32 zero; } local;
-    register volatile u8 *src;
-    register char * volatile *basep;
-    register volatile s32 *countp;
-    char *dst, *base;
-    register s32 count;
+    s32 count;
+    u32 baseAddr;
+    s32 off;
+    char *dst2;
+    char *cdst;
+    u32 *basep;
+    volatile s32 *countp;
+    volatile u8 *src;
+    s32 n;
+    char c;
     u8 b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11;
     u8 b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23;
     u8 b24, b25, b26, b27, b28, b29, b30, b31;
     if (fn_802B05E4() != 0) return;
-    dst = local.name;
-    dst[-1] = 0;
-    do {
-        char c = *arg0++;
-        *dst++ = c;
-    } while ((signed char)dst[-1] != 0);
-
+    cdst = local.name;
+    n = 0x20;
+    goto Lcopy;
+Ltest:
+    if (--n > 0) goto Lcopy;
+    cdst[-1] = 0;
+    goto Ldone;
+Lcopy:
+    c = *arg0++;
+    *cdst++ = c;
+    if ((signed char)c != 0) goto Ltest;
+Ldone:
     src = (volatile u8 *)local.name;
     b0 = src[0];
-
-    basep = (char * volatile *)(void *)&lbl_804BFA70;
+    basep = (u32 *)(void *)&lbl_804BFA70;
     countp = (volatile s32 *)((u8 *)&lbl_804BFA70 + 4);
-    base = *basep;
+    baseAddr = *basep;
     count = *countp;
     b1 = src[1];
+    off = count * 0x28;
     b2 = src[2];
     b3 = src[3];
     b4 = src[4];
     *countp = count + 1;
     b5 = src[5];
-    dst = base + count * 0x28;
-
-    dst[0] = b0;
-    b6 = src[6]; dst[1] = b1;
-    b7 = src[7]; dst[2] = b2;
-    b8 = src[8]; dst[3] = b3;
-    b9 = src[9]; dst[4] = b4;
-    b10 = src[10]; dst[5] = b5;
-    b11 = src[11]; dst[6] = b6;
-    b12 = src[12]; dst[7] = b7;
-    b13 = src[13]; dst[8] = b8;
-    b14 = src[14]; dst[9] = b9;
-    b15 = src[15]; dst[10] = b10;
-    b16 = src[16]; dst[11] = b11;
-    b17 = src[17]; dst[12] = b12;
-    b18 = src[18]; dst[13] = b13;
-    b19 = src[19]; dst[14] = b14;
-    b20 = src[20]; dst[15] = b15;
-    b21 = src[21]; dst[16] = b16;
-    b22 = src[22]; dst[17] = b17;
-    b23 = src[23]; dst[18] = b18;
-    b24 = src[24]; dst[19] = b19;
-    b25 = src[25]; dst[20] = b20;
-    b26 = src[26]; dst[21] = b21;
-    b27 = src[27]; dst[22] = b22;
-    b28 = src[28]; dst[23] = b23;
-    b29 = src[29]; dst[24] = b24;
-    b30 = src[30]; dst[25] = b25;
-    b31 = src[31]; dst[26] = b26;
-    dst[27] = b27; dst[28] = b28; dst[29] = b29;
-    dst[30] = b30; dst[31] = b31;
-    *(s32 *)(dst + 0x20) = arg1;
+    dst2 = (char *)(baseAddr + off);
+    dst2[0] = b0;
+    b6 = src[6]; dst2[1] = b1;
+    b7 = src[7]; dst2[2] = b2;
+    b8 = src[8]; dst2[3] = b3;
+    b9 = src[9]; dst2[4] = b4;
+    b10 = src[10]; dst2[5] = b5;
+    b11 = src[11]; dst2[6] = b6;
+    b12 = src[12]; dst2[7] = b7;
+    b13 = src[13]; dst2[8] = b8;
+    b14 = src[14]; dst2[9] = b9;
+    b15 = src[15]; dst2[10] = b10;
+    b16 = src[16]; dst2[11] = b11;
+    b17 = src[17]; dst2[12] = b12;
+    b18 = src[18]; dst2[13] = b13;
+    b19 = src[19]; dst2[14] = b14;
+    b20 = src[20]; dst2[15] = b15;
+    b21 = src[21]; dst2[16] = b16;
+    b22 = src[22]; dst2[17] = b17;
+    b23 = src[23]; dst2[18] = b18;
+    b24 = src[24]; dst2[19] = b19;
+    b25 = src[25]; dst2[20] = b20;
+    b26 = src[26]; dst2[21] = b21;
+    b27 = src[27]; dst2[22] = b22;
+    b28 = src[28]; dst2[23] = b23;
+    b29 = src[29]; dst2[24] = b24;
+    b30 = src[30]; dst2[25] = b25;
+    b31 = src[31]; dst2[26] = b26;
+    dst2[27] = b27; dst2[28] = b28; dst2[29] = b29;
+    dst2[30] = b30; dst2[31] = b31;
+    *(s32 *)(dst2 + 0x20) = arg1;
     local.savedArg = arg1;
     local.zero = 0;
-    *(s32 *)(dst + 0x24) = 0;
+    *(s32 *)(dst2 + 0x24) = 0;
 }
 #pragma small_data on
 extern s32 lbl_8055CEA0;
