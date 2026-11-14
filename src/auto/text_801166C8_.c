@@ -1735,16 +1735,28 @@ void fn_80119218(void *arg0, s16 arg1, s16 arg2, s16 arg3) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80119288(void* arg0, f32 arg1) {
-    void* saved = arg0;
-    void* first = *(void**)((u8*)saved + 0x7C);
-    if (first != 0) {
-        s32 mode = *(s32*)((u8*)saved + 0x78);
-        ((void (*)(void*, s32, s32, s32))fn_80119218)(first, *(s32*)((u8*)saved + 0xA4), *(s32*)((u8*)saved + 0xA8), (mode == 1) ? *(s32*)((u8*)saved + 0xAC) : 0);
+void fn_80119288(void *arg0, f32 arg1) {
+    /* Apply configured output parameters to the primary and secondary sub-objects, if present. */
+    void *object = arg0;
+    void *subObject = *(void **)((u8 *)object + 0x7C);
+
+    if (subObject != 0) {
+        s32 mode = *(s32 *)((u8 *)object + 0x78);
+        ((void (*)(void *, s32, s32, s32))fn_80119218)(
+            subObject,
+            *(s32 *)((u8 *)object + 0xA4),
+            *(s32 *)((u8 *)object + 0xA8),
+            (mode == 1) ? *(s32 *)((u8 *)object + 0xAC) : 0);
     }
-    first = *(void**)((u8*)saved + 0x80);
-    if (first != 0)
-        ((void (*)(void*, s32, s32, s32))fn_80119218)(first, *(s32*)((u8*)saved + 0xA4), 0, *(s32*)((u8*)saved + 0xAC));
+
+    subObject = *(void **)((u8 *)object + 0x80);
+    if (subObject != 0) {
+        ((void (*)(void *, s32, s32, s32))fn_80119218)(
+            subObject,
+            *(s32 *)((u8 *)object + 0xA4),
+            0,
+            *(s32 *)((u8 *)object + 0xAC));
+    }
 }
 #pragma pop
 extern void AXSetVoiceState(void *, s32);
