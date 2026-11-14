@@ -1952,19 +1952,20 @@ void fn_80196328(void *arg0) {
   }
 
 #pragma dont_inline on
-void fn_801963A0(void *arg0) {
+void fn_801963A0(void *state) {
+    /* Trigger one state step, accumulate a scaled delta, notify, then run update helpers. */
     void *obj;
     float value;
     float delta;
-    ((void (*)(void *, int))fn_801961F8)(arg0, 0);
-    obj = *(void **)((char *)arg0 + 0x294);
+    ((void (*)(void *, int))fn_801961F8)(state, 0);
+    obj = *(void **)((char *)state + 0x294);
     value = *(float *)((char *)obj + 0x25D4);
     delta = lbl_8056223C * value;
     lbl_8055E57C += delta;
-    ((void (*)(int, int, int, float, float))fn_80136E8C)(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 1, delta, value);
-    fn_801958C4(arg0);
-    fn_801959AC(arg0);
-    fn_80195CA8(arg0);
+    ((void (*)(int, int, int, float, float))fn_80136E8C)(lbl_8055E0D0, *(int *)((char *)state + 0x290), 1, delta, value);
+    fn_801958C4(state);
+    fn_801959AC(state);
+    fn_80195CA8(state);
 }
 #pragma dont_inline reset
   void fn_80196414(void *arg0) {
