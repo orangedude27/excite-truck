@@ -416,13 +416,14 @@ extern "C" float fn_8013B590(void) {
 extern "C" float fn_80129DC4(int, float, float);
 extern float lbl_80561458;
 extern float lbl_8056145C;
-#pragma dont_inline fn_8013B578
 #pragma push
 #pragma processor 750
-float fn_8013B5DC(int arg0, int arg1) {
- void *p = ((void *(*)(int))fn_8013B578)(arg0);
- float t = ((float (*)(int))fn_8013B590)(arg0) / *(float *)((char *)p + 4);
- return t + t * fn_80129DC4(arg1, lbl_80561458, lbl_8056145C);
+/* Compute a randomized scaled timing value for an entry: its base value divided
+ * by the entry's scale, plus a small random fraction of that base. */
+float fn_8013B5DC(int entryIndex, int randomState) {
+ void *entry = ((void *(*)(int))fn_8013B578)(entryIndex);
+ float base = ((float (*)(int))fn_8013B590)(entryIndex) / *(float *)((char *)entry + 4);
+ return base + base * fn_80129DC4(randomState, lbl_80561458, lbl_8056145C);
 }
 #pragma pop
 
