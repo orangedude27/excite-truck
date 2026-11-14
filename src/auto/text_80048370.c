@@ -949,12 +949,14 @@ void PSMTXConcatArray(const float a[3][4], const float b[3][4], float c[3][4], u
     }
 }
 
-u32 PSMTXInverse(Mtx m, char axis, f32 rad) {
+/* Builds a rotation matrix about one coordinate axis: axis is 'X', 'Y' or 'Z' (either
+ * case) and rad the angle in radians.  The sine and cosine are taken here;
+ * PSMTXInvXpose fills the matrix from them. */
+u32 PSMTXInverse(Mtx mtx, char axis, f32 rad) {
     f32 sinA = sinf(rad);
     f32 cosA = cosf(rad);
-    return PSMTXInvXpose(m, axis, sinA, cosA);
+    return PSMTXInvXpose(mtx, axis, sinA, cosA);
 }
-
 #pragma push
 #pragma paired on
 #pragma paired_single on
