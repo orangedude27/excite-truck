@@ -801,13 +801,15 @@ BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) {
     return (BOOL)state;
 }
 
-void *MEMAdjustFrmHeap(MEMiHeapHead *heap, void *newHead) {
+/* Record a free-to point in the frame heap head so later frees can restore to it. */
+void *MEMAdjustFrmHeap(MEMiHeapHead *heap, void *state) {
     MEMiFrmHeapHead *frm;
-    if (newHead != 0) {
+
+    if (state != 0) {
         LockHeap(heap);
         frm = (MEMiFrmHeapHead *)(heap + 1);
-        *(void **)newHead = frm->head;
-        frm->head = (u8 *)newHead;
+        *(void **)state = frm->head;
+        frm->head = (u8 *)state;
         UnlockHeap(heap);
     }
 }
