@@ -126,6 +126,7 @@ void fn_80236848(void) {
     QueueNode_80236848 *end = (QueueNode_80236848 *)lbl_8055F0C0;
     QueueNode_80236848 *node = (QueueNode_80236848 *)lbl_8055F0BC;
 
+    /* Remove and destroy the queue's tail node (or the only node), updating head/tail links. */
     if (node == end) {
         fn_80237D00(end);
         lbl_8055F0BC = 0;
