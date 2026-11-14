@@ -282,61 +282,83 @@ extern "C" void *memset(void *, int, unsigned int);
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Builds the 3D water pools ("water iface"): opens the "water3d.val" parameter
+   file and makes one 0x78-byte water pool per entry -- up to the eight the
+   lbl_804B5010 list holds -- from the entry's origin/right/up rectangle, its
+   texture index and the default simulation values below. */
 void fn_8029C73C(void) {
     typedef struct { float x, y, z; } Vec;
     typedef struct { float x, y; } Vec2;
-    typedef struct { Vec pos; Vec2 v1; Vec2 v2; } Params;
-    struct Owner { virtual void m08(); virtual void *get(int); };
-    struct Item {
-        virtual void m08(); virtual void m0C(); virtual void m10(); virtual int getId(void *);
+    /* the pool's rectangle: one corner and its two edge vectors */
+    typedef struct { Vec origin; Vec2 right; Vec2 up; } PoolParams;
+    /* a VALT parameter file: fn_80131810 opens one by name and fn_80131818
+       closes it again; its entries are asked for until one comes back NULL */
+    struct ValtFile { virtual void m08(); virtual void *getEntry(int i); };
+    /* one entry of it, whose values are looked up by the key they are named with */
+    struct ValtEntry {
+        virtual void m08(); virtual void m0C(); virtual void m10(); virtual int getInt(void *key);
         virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
-        virtual void m28(); virtual void m2C(); virtual void m30(); virtual Vec getVec(void *);
-        virtual void m38(); virtual Vec2 getVec2(void *);
+        virtual void m28(); virtual void m2C(); virtual void m30(); virtual Vec getVec3(void *key);
+        virtual void m38(); virtual Vec2 getVec2(void *key);
     };
-    extern char lbl_80349560[];
-    extern int lbl_804B5010[];
-    extern int lbl_8055F7F0;
-    extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;
+    /* the values every new pool starts with; fn_8029D148 copies them into it */
+    struct PoolDefaults {
+        float f00;                    /* +0x00  0.25 */
+        float f04;                    /* +0x04  0 */
+        float f08;                    /* +0x08  0 */
+        float f0C;                    /* +0x0C  0.9875 */
+        float f10;                    /* +0x10  0.05 */
+        float f14;                    /* +0x14  0.05 */
+        int texture;                  /* +0x18  -1: the entry's texture_name is used */
+        unsigned char byte1C;         /* +0x1C  0x20 */
+        unsigned char byte1D;         /* +0x1D  0xE4 */
+        unsigned char pad1E[2];
+    };
+    extern char lbl_80349560[];       /* the module's strings, by the offsets below */
+    extern int lbl_804B5010[];        /* the water pools */
+    extern int lbl_8055F7F0;          /* how many pools there are */
+    extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;   /* "origin", "right", "up" */
     extern float lbl_80564628, lbl_80564630, lbl_8056464C, lbl_80564650;
-    unsigned char init[0x20];
-    Params params;
+    PoolDefaults init;
+    PoolParams params;
     char *base;
-    Owner *owner;
+    ValtFile *valt;
     int i;
+
     base = lbl_80349560;
     lbl_8055F7F0 = 0;
-    owner = (Owner *)fn_80131810(base + 0xA4);
-    if (owner != 0) {
-        memset(init, 0, 0x20);
-        *(float *)(init + 0) = lbl_8056464C;
-        *(float *)(init + 4) = lbl_80564628;
-        *(float *)(init + 8) = lbl_80564628;
-        *(float *)(init + 12) = lbl_80564650;
-        *(float *)(init + 16) = lbl_80564630;
-        *(float *)(init + 20) = lbl_80564630;
-        *(int *)(init + 24) = -1;
-        init[28] = 0x20;
-        init[29] = 0xE4;
-        for (i = 0; owner->get(i) != 0; i++) {
-            Item *item;
-            int id;
-            void *res;
+    valt = (ValtFile *)fn_80131810(base + 0xA4);   /* "water3d.val" */
+    if (valt != 0) {
+        memset(&init, 0, 0x20);
+        init.f00 = lbl_8056464C;
+        init.f04 = lbl_80564628;
+        init.f08 = lbl_80564628;
+        init.f0C = lbl_80564650;
+        init.f10 = lbl_80564630;
+        init.f14 = lbl_80564630;
+        init.texture = -1;
+        init.byte1C = 0x20;
+        init.byte1D = 0xE4;
+        for (i = 0; valt->getEntry(i) != 0; i++) {
+            ValtEntry *entry;
+            int texture;
+            void *pool;
             int idx;
             if (lbl_8055F7F0 >= 8)
-                fn_802E317C(base + 0xB0, 8);
-            item = (Item *)owner->get(i);
-            id = item->getId(base + 0xD0);
-            params.pos = item->getVec(&lbl_8055CAB4);
-            params.v1 = item->getVec2(&lbl_8055CABC);
-            params.v2 = item->getVec2(&lbl_8055CAC4);
-            res = fn_801284F8(0x78, base + 0xE0);
-            if (res != 0)
-                res = fn_8029D148(res, init, (float *)&params, id);
+                fn_802E317C(base + 0xB0, 8);      /* "water: exceeded pool limit (%d)" */
+            entry = (ValtEntry *)valt->getEntry(i);
+            texture = entry->getInt(base + 0xD0); /* "texture_name" */
+            params.origin = entry->getVec3(&lbl_8055CAB4);
+            params.right = entry->getVec2(&lbl_8055CABC);
+            params.up = entry->getVec2(&lbl_8055CAC4);
+            pool = fn_801284F8(0x78, base + 0xE0);    /* "water pool" */
+            if (pool != 0)
+                pool = fn_8029D148(pool, &init, (float *)&params, texture);
             idx = lbl_8055F7F0;
-            lbl_804B5010[idx] = (int)res;
+            lbl_804B5010[idx] = (int)pool;
             lbl_8055F7F0 = idx + 1;
         }
-        fn_80131818(owner);
+        fn_80131818(valt);
     }
 }
 #pragma pop
