@@ -5613,13 +5613,14 @@ void bta_dm_rssi_cback(unsigned char *p_data) {
     }
 }
 
-void bta_dm_link_quality_cback(unsigned char *arg) {
-    unsigned char sp[9];
-    if (arg[0] == 0) {
-        fn_80070FA4(sp, arg + 3);
-        sp[6] = 2;
-        sp[8] = arg[2];
-        ((void (**)(int, void *)) (lbl_803C0C14 + 0x50))[0](7, sp);
+/* BTM link quality read callback: on success, report BD_ADDR and link quality to the DM callback. */
+void bta_dm_link_quality_cback(unsigned char *p_result) {
+    unsigned char event[9];
+    if (p_result[0] == 0) {
+        fn_80070FA4(event, p_result + 3);
+        event[6] = 2;
+        event[8] = p_result[2];
+        ((void (**)(int, void *)) (lbl_803C0C14 + 0x50))[0](7, event);
     }
 }
 
