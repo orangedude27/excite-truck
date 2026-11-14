@@ -588,14 +588,15 @@ void fn_80235CBC(ArtSet *artSet, int pictureIndex, int rgba, float x, float y, f
     fn_802C8D74();
 }
 #pragma pop
-float fn_80235EF0(int arg0, int arg1) {
+float fn_80235EF0(int resourceSet, int index) {
+    /* Return the float value at +0x14 for the looked-up node, or 0.0f if missing. */
     void *node;
 
-    if (arg0 == 0)
+    if (resourceSet == 0)
         return lbl_805636B8;
-    node = fn_8023505C((void *)arg0, arg1);
+    node = fn_8023505C((void *)resourceSet, index);
     if (node == 0) {
-        fn_802E30C8(lbl_80340834, arg0, arg1);
+        fn_802E30C8(lbl_80340834, resourceSet, index);
         return lbl_805636B8;
     }
     return *(float *)((char *)node + 0x14);
