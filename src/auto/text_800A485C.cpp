@@ -9326,15 +9326,18 @@ extension:
     *(u8 *)((s32)longName + index)=0;
 }
 
-extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *arg0) {
-    s32 i = 0;
+/* Return the display length of an 8.3 short filename, skipping trailing
+ * spaces in the name/ext fields and counting the dot when an extension is
+ * present. */
+extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *shortName) {
+    s32 index = 0;
     s32 length = 0;
-    while (arg0[i] != 0) {
-        if (i == 8 && (arg0[i] != 0x20 || arg0[i + 1] != 0x20 || arg0[i + 2] != 0x20))
+    while (shortName[index] != 0) {
+        if (index == 8 && (shortName[index] != ' ' || shortName[index + 1] != ' ' || shortName[index + 2] != ' '))
             length++;
-        if (arg0[i] != 0x20)
+        if (shortName[index] != ' ')
             length++;
-        i++;
+        index++;
     }
     return length;
 }
