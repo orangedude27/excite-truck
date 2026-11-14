@@ -913,28 +913,29 @@ void fn_802C6CF8(int arg0) {
     fn_802C6C20(temp_r31);
 }
 
-s32 fn_802C6D5C(void *arg0) {
-    s32 outer_offset;
-    s32 outer_count;
-    s32 inner_offset;
-    s32 outer_index;
-    char *entry;
-    s32 inner_count;
-    s32 inner_index;
-    outer_count = *(s32 *)((char *)arg0 + 8);
-    outer_index = 0;
-    outer_offset = 0;
-    while (outer_index < outer_count) {
-        entry = *(char **)(*(char **)((char *)arg0 + 0xC) + outer_offset);
-        inner_count = *(s32 *)entry;
-        for (inner_index = 0, inner_offset = 0; inner_index < inner_count; inner_index++, inner_offset += 4) {
-            char *item = *(char **)(*(char **)(entry + 4) + inner_offset);
-            if (*(s32 *)item != 0) {
+s32 fn_802C6D5C(void *container) {
+    /* Returns 1 if any nested item in the two-level container has a non-zero first field, else 0. */
+    s32 outerOffset;
+    s32 outerCount;
+    s32 innerOffset;
+    s32 outerIndex;
+    char *outerEntry;
+    s32 innerCount;
+    s32 innerIndex;
+    outerCount = *(s32 *)((char *)container + 8);
+    outerIndex = 0;
+    outerOffset = 0;
+    while (outerIndex < outerCount) {
+        outerEntry = *(char **)(*(char **)((char *)container + 0xC) + outerOffset);
+        innerCount = *(s32 *)outerEntry;
+        for (innerIndex = 0, innerOffset = 0; innerIndex < innerCount; innerIndex++, innerOffset += 4) {
+            char *innerItem = *(char **)(*(char **)(outerEntry + 4) + innerOffset);
+            if (*(s32 *)innerItem != 0) {
                 return 1;
             }
         }
-        outer_offset += 4;
-        outer_index++;
+        outerOffset += 4;
+        outerIndex++;
     }
     return 0;
 }
