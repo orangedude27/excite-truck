@@ -177,10 +177,14 @@ void fn_801C2FF4(float *out, float *a, float *b, float weight) {
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
-f32 fn_801C3450(f32 arg0) {
-    f32 denom = fn_801C2F58(2, lbl_80562978);
-    f32 value = (f32)(s32)(arg0 * fn_801C2F58(2, lbl_80562978));
-    return value / denom;
+/* Truncate a value to two decimal places: scale it by 10*10 (the powf-like
+ * fn_801C2F58(n, x) is x to the n), cut it to a whole number toward zero and
+ * scale it back, so the debug overlay's "%.2f" fields never show a digit that
+ * only came from float noise. */
+f32 fn_801C3450(f32 value) {
+    f32 scale = fn_801C2F58(2, FLOAT_TEN);
+    f32 rounded = (f32)(s32)(value * fn_801C2F58(2, FLOAT_TEN));
+    return rounded / scale;
 }
 #pragma pop
 #pragma dont_inline reset
