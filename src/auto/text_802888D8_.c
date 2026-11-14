@@ -186,14 +186,15 @@ int fn_8028A330(int *, int);
 int fn_80287B14(void);
 int fn_8028E398(int);
 int fn_80128668(void *);
-void *fn_80288B88(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8028E398(*(int *)((char *)arg0 + 0x68));
-        fn_8028E398(*(int *)((char *)arg0 + 0x64));
-        fn_8028E398(*(int *)((char *)arg0 + 0x60));
-        if (arg1 > 0) fn_80128668(arg0);
+/* Releases the three owned objects at +0x60/+0x64/+0x68 and optionally frees this object (arg1 > 0). */
+void *fn_80288B88(void *object, int shouldFree) {
+    if (object != 0) {
+        fn_8028E398(*(int *)((char *)object + 0x68));
+        fn_8028E398(*(int *)((char *)object + 0x64));
+        fn_8028E398(*(int *)((char *)object + 0x60));
+        if (shouldFree > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
