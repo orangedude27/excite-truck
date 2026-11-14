@@ -21325,7 +21325,8 @@ void PORT_LineStatusInd(void *mcb, u8 dlci, u8 line_status) {
 }
 
 extern char lbl_80319454[];
-void PORT_DlcReleaseInd(void *arg0, u8 arg1) {
+/* Handles DLC release indication by resolving the port and notifying RFC that it closed. */
+void PORT_DlcReleaseInd(void *p_data, u8 id) {
     void *port;
     void *(*find_mcb)(void) = (void *(*)(void))port_find_mcb_dlci_port;
 
