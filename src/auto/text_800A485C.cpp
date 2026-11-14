@@ -8140,6 +8140,13 @@ extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *volume) {
  * waiter when the count reaches zero. */
 #define VFiPFLOCK_Acquire           fn_800B77C0
 #define VFiPFLOCK_Release           fn_800B783C
+#define VFiPFTHREAD_GetCurrentThread(outThread) ((s32 (*)(u32 *))fn_800B7EAC)(outThread)
+
+enum {
+    PF_LOCK_COUNT_OFFSET = 0x04,
+    PF_LOCK_SEM_OFFSET   = 0x08,
+    PF_LOCK_OWNER_OFFSET = 0x0C
+};
 
 #ifndef VF_LAST_ERROR
 #define VF_LAST_ERROR               (*(s32 *)((u8 *)lbl_803D2140 + 0x40))
@@ -18656,7 +18663,21 @@ extern "C" s32 fn_800D014C(s32 arg0, s32 arg1) {
 extern "C" u32 lbl_8055DDA0;
 #pragma push
 #pragma scheduling off
-extern "C" void fn_800D018C(void *arg0, void *arg1) { class Dispatch { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void call(void *); }; int zero = 0; void *p = *(void **)((char *)arg1 + 0x10); lbl_8055DDA0 = zero; ((Dispatch *)arg0)->call((char *)p + 0x10); }
+extern "C" void fn_800D018C(void *arg0, void *arg1) {
+    class Dispatch {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17();
+        virtual void call(void *);
+    };
+    int zero = 0;
+    void *p = *(void **)((u8 *)arg1 + 0x10);
+    lbl_8055DDA0 = zero;
+    ((Dispatch *)arg0)->call((u8 *)p + 0x10);
+}
 #pragma pop
 extern "C" u8 lbl_8031E878[];
 extern "C" u8 lbl_8031E780[];
