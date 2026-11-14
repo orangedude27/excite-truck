@@ -177,8 +177,9 @@ second:
 
 #pragma push
 #pragma cplusplus on
+/* Applies pending audio/video option changes, commits display and sound modes, and shows or hides UI group 0x1E based on the Erase Data widget state. */
 extern "C" s32 fn_80239EF0(void) {
-    class Obj {
+    class UIOptionsWidget {
     public:
         virtual s32 f0(s32 *);
         virtual s32 f1(s32 *);
@@ -202,17 +203,27 @@ extern "C" s32 fn_80239EF0(void) {
         virtual s32 f19(s32 *);
         virtual s32 f20(s32 *);
         virtual s32 f21(s32 *);
-        virtual s32 f22(s32 *);
+        virtual s32 isSelected(s32 *);
     };
-    fn_80239E5C(lbl_8049870C, 0);
-    lbl_8049870C[1] = lbl_8049870C[0];
-    lbl_8049870C[3] = lbl_8049870C[2];
-    if (((Obj *)lbl_8055F10C)->f22(lbl_8049870C) != 0) {
-        fn_80214AF0(0x1E);
+#define gOptionsState lbl_8049870C
+#define gEraseDataWidget lbl_8055F10C
+#define UIOptions_ApplyAudioVideo fn_80239E5C
+#define UIShowGroup fn_80214AF0
+#define UIHideGroup fn_80214A9C
+    UIOptions_ApplyAudioVideo(gOptionsState, 0);
+    gOptionsState[1] = gOptionsState[0];
+    gOptionsState[3] = gOptionsState[2];
+    if (((UIOptionsWidget *)gEraseDataWidget)->isSelected(gOptionsState) != 0) {
+        UIShowGroup(0x1E);
     } else {
-        fn_80214A9C(0x1E);
+        UIHideGroup(0x1E);
     }
     return 0;
+#undef UIHideGroup
+#undef UIShowGroup
+#undef UIOptions_ApplyAudioVideo
+#undef gEraseDataWidget
+#undef gOptionsState
 }
 #pragma cplusplus reset
 #pragma pop
