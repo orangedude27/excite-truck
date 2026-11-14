@@ -1271,6 +1271,7 @@ s32 fn_802485FC(void) {
 #undef silenceVolume
     return 0;
 }
+
 extern s32 fn_8020A640(void);
 extern s32 lbl_802FA498[5];
 extern void fn_8020A600(void);
