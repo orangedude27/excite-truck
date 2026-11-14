@@ -1120,6 +1120,7 @@ int fn_802B2C98(char *name) {
 }
 #pragma scheduling on
 #pragma pop
+/* Resets per-entry state for all entries in every group of the container and clears the pool's active count and global flag. */
 void fn_802B2D24(void *arg0) {
     int i = 0;
     int j;
