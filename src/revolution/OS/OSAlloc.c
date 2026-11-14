@@ -152,6 +152,7 @@ s32 OSSetCurrentHeap(s32 handle) {
     return old;
 }
 
+/* Initialize the heap allocator over [start,end) with the given number of heap descriptors. */
 void* OSInitAlloc(void* start, void* end, s32 numHeaps) {
     u32 headerSize;
     int i;
