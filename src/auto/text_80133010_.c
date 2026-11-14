@@ -252,7 +252,7 @@ void fn_801333E8(int section, int key, unsigned char *value) {
         fn_80133460(section, key, *value);
     }
 }
-#pragma scheduling invalid_target
+
 __declspec(section ".sdata") extern const char lbl_80559B64[];
 __declspec(section ".sdata") extern const char lbl_80559B68[];
 #pragma scheduling invalid_target
