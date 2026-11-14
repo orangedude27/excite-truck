@@ -1265,20 +1265,23 @@ extern "C" s32 fn_80158618(const char* name) {
     }
 }
 
-extern "C" void* fn_8015868C(void* arg0, s32 arg1) {
- if (arg0 != 0) {
- if (arg0 != 0) {
- if ((u32)arg0 + 8 != 0) {
- if ((u32)arg0 + 8 != 0) {
- if ((u32)arg0 + 8 != 0) {
- *(u32*)((char*)arg0 + 8) = 0;
- *(u32*)((char*)arg0 + 0xC) = 0;
- *(u32*)((char*)arg0 + 0x10) = 0;
- }}}
- }
- if (arg1 > 0) fn_80128668(arg0);
- }
- return arg0;
+extern "C" void* fn_8015868C(void* self, s32 shouldDelete) {
+    // Destroy/clear an embedded object: zero its pointer/count fields, then optionally free it.
+    if (self != 0) {
+        if (self != 0) {
+            if ((u32)self + 8 != 0) {
+                if ((u32)self + 8 != 0) {
+                    if ((u32)self + 8 != 0) {
+                        *(u32*)((char*)self + 8) = 0;
+                        *(u32*)((char*)self + 0xC) = 0;
+                        *(u32*)((char*)self + 0x10) = 0;
+                    }
+                }
+            }
+        }
+        if (shouldDelete > 0) fn_80128668(self);
+    }
+    return self;
 }
 
 extern "C" s32 stricmp(const char *, const char *);
