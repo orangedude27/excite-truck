@@ -285,6 +285,13 @@ extern "C" void fn_800FE1D0(void) {
     } while (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv((void *)0) != 0);
 }
 
+/* Run one queued sound task: take the first task of the highest-priority
+   non-empty queue (high, then mid, then low), remember it as the current task
+   and run it through its vtable, then rewind the frame heap to the mark taken
+   before the task was allocated - everything a task allocates comes from that
+   heap.  Returns 0 when every queue was empty.
+   The queue checks are nw4hbm::ut::LinkListImpl's inlined Front()/Erase()
+   (LinkList.h: !IsEmpty(), "Pointer must not be NULL (p)"). */
 extern "C" s32 ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0) {
     typedef nw4hbm::snd::detail::Task Task;
     typedef nw4hbm::snd::detail::TaskManager TaskManager;
