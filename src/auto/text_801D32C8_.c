@@ -119,8 +119,7 @@ extern "C" void fn_801D334C(void *arg0, void *arg1) {
     f32 mz;
     f32 temp_f2;
     int mode;
-
-    data->max_life = obj->getFloat(base + 0x0);
+    data->max_life = obj->getFloat(&base[0]);
     data->mass = obj->getFloat((const char *)&lbl_8055AC30);
     data->mx = obj->getFloat((const char *)&lbl_8055AC38);
     data->my = obj->getFloat((const char *)&lbl_8055AC3C);
@@ -285,19 +284,22 @@ int fn_801D37C4(const char *typeName) {
 }
 
 #pragma scheduling invalid_target
-void *fn_801D3894(void *arg0, int arg1) {
-    if (arg0 != 0) {
+/* Destructor for a mut_phob physics object (vtable lbl_80338400): resets its
+   child count (+0x28) and fields at +0x24/+0x2C, invokes the base destructor
+   fn_80179EE8, and optionally frees the object. */
+void *fn_801D3894(void *thisPtr, int shouldFree) {
+    if (thisPtr != 0) {
         float zero = lbl_80562AB8;
-        *(int *)((char *)arg0 + 0x28) = 0;
-        *(char **)arg0 = (char *)lbl_80338400;
-        *(int *)((char *)arg0 + 0x24) = 0;
-        *(float *)((char *)arg0 + 0x2C) = zero;
-        if (arg0 != 0)
-            ((void (*)(void *, int))fn_80179EE8)(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        *(int *)((char *)thisPtr + 0x28) = 0;
+        *(char **)thisPtr = (char *)lbl_80338400;
+        *(int *)((char *)thisPtr + 0x24) = 0;
+        *(float *)((char *)thisPtr + 0x2C) = zero;
+        if (thisPtr != 0)
+            ((void (*)(void *, int))fn_80179EE8)(thisPtr, 0);
+        if (shouldFree > 0)
+            fn_80128668(thisPtr);
     }
-    return arg0;
+    return thisPtr;
 }
 #pragma scheduling on
 extern void fn_8017B0F8(void);
@@ -496,6 +498,7 @@ extern float lbl_80562AC0;
 void fn_801D3BF0(void *arg0) {
     float temp_f31;
     float a, b, c, d, e, f;
+    float s;
     volatile int reserve[2];
     temp_f31 = lbl_8055E3C8;
     if (*(int *)((char *)arg0 + 0x230) == 2) {
@@ -505,14 +508,16 @@ void fn_801D3BF0(void *arg0) {
     }
     if (temp_f31 < *(float *)((char *)arg0 + 0x224) + *(float *)((char *)arg0 + 0x234)) {
         fn_8017B81C();
-        a = *(float *)((char *)arg0 + 0x118) * lbl_80562AC0;
-        b = *(float *)((char *)arg0 + 0x11C) * lbl_80562AC0;
-        c = *(float *)((char *)arg0 + 0x120) * lbl_80562AC0;
-        d = *(float *)((char *)arg0 + 0x124) * lbl_80562AC0;
-        e = *(float *)((char *)arg0 + 0x128) * lbl_80562AC0;
-        f = *(float *)((char *)arg0 + 0x12C) * lbl_80562AC0;
+        a = *(float *)((char *)arg0 + 0x118);
+        s = lbl_80562AC0;
+        a = a * s;
+        b = *(float *)((char *)arg0 + 0x11C) * s;
         *(float *)((char *)arg0 + 0x118) = a;
         *(float *)((char *)arg0 + 0x11C) = b;
+        c = *(float *)((char *)arg0 + 0x120) * s;
+        d = *(float *)((char *)arg0 + 0x124) * s;
+        e = *(float *)((char *)arg0 + 0x128) * s;
+        f = *(float *)((char *)arg0 + 0x12C) * s;
         *(float *)((char *)arg0 + 0x120) = c;
         *(float *)((char *)arg0 + 0x124) = d;
         *(float *)((char *)arg0 + 0x128) = e;
@@ -723,13 +728,13 @@ int fn_801D411C(void *arg0) {
         fn_801A4868(*(void **)(p + 0x228), 1);
     }
     {
-        register float neg;
+        register float neg1000;
         register float one;
         register float zero;
         zero = lbl_80562AB8;
         one = lbl_80562AAC;
         *(volatile float *)(p + 0x220) = zero;
-        neg = lbl_80562ABC;
+        neg1000 = lbl_80562ABC;
         *(volatile float *)(p + 0x118) = zero;
         *(volatile float *)(p + 0x11C) = zero;
         *(volatile float *)(p + 0x120) = zero;
@@ -758,7 +763,7 @@ int fn_801D411C(void *arg0) {
         *(volatile float *)(p + 0x210) = zero;
         *(volatile float *)(p + 0x214) = one;
         *(volatile float *)(p + 0x218) = zero;
-        *(volatile float *)(p + 0x21C) = neg;
+        *(volatile float *)(p + 0x21C) = neg1000;
         *(volatile float *)(p + 0x220) = zero;
         *(volatile float *)&spc = zero;
         *(volatile float *)&sp10 = zero;
@@ -793,24 +798,21 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
     unsigned char *self = (unsigned char *)arg0;
     const unsigned char *src = (const unsigned char *)arg1;
     float size;
-    float zero;
-    int mode;
+    float zero = lbl_80562AB8;
+    int mode = *(int *)(src + 0x28);
     volatile float sp10;
     volatile float spc;
     volatile float sp8;
     void *resource;
-
-    zero = lbl_80562AB8;
-    mode = *(int *)(src + 0x28);
     sp8 = zero;
     spc = zero;
     sp10 = zero;
     switch (mode) {
     case 0: {
+        size = *(float *)(src + 0x2C);
         unsigned char *p;
         float posx;
         float posy;
-        size = *(float *)(src + 0x2C);
         *(unsigned int *)(self + 0x23C) = 0x53504852;
         *(float *)(self + 0x240) = size;
         resource = *(void **)(self + 0x244);
@@ -925,7 +927,6 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         fn_802E317C(lbl_8033837C, mode);
         break;
     }
-
     resource = *(void **)(self + 0x244);
     {
         struct Resource {
