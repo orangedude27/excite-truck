@@ -7,7 +7,6 @@
 #include "revolution/KPAD/__KPAD.h"
 #include "revolution/OS/OSInterrupt.h"
 #include "revolution/MTX/mtx.h"
-#undef PSMTXInverse
 #include "revolution/MTX/mtxtypes.h"
 
 extern f32 lbl_80560C48;
