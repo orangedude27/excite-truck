@@ -1198,12 +1198,13 @@ extern char lbl_80348C34[];
 extern char lbl_80348C40[];
 extern f64 lbl_805643C8;
 extern void fn_8028C8BC(void);
+/* Destroys an owned effect object: releases its texture handle at +0xC, frees its owned buffer stored at +0 (allocated with a 0x10-byte header, so freed at pointer-0x10), and deletes the object itself when shouldDelete > 0. */
 void *fn_8028C8C0(void *arg0, s32 arg1) {
-    s32 temp;
+    s32 ownedBuffer;
     if (arg0 != 0) {
         fn_802CAC54(((s32 *)arg0)[3]);
-        temp = *(s32 *)arg0;
-        if (temp != 0) fn_80128670(temp - 0x10);
+        ownedBuffer = *(s32 *)arg0;
+        if (ownedBuffer != 0) fn_80128670(ownedBuffer - 0x10);
         if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
