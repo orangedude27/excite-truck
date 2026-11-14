@@ -176,6 +176,7 @@ void fn_801E21BC(void) {
 #undef CollisionGroup_prepare
 #undef CollisionSystem_commit
 }
+/* Clears collision-group readiness and tears down both active collision groups (vtable slot at +0x14), then clears their pointers. */
 void fn_801E222C(void) {
     lbl_8055EA38 = 0;
     if (lbl_8055EA3C != 0) {
