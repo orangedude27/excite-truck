@@ -169,6 +169,8 @@ s32 fn_80239DE4(void) {
 #undef gOptionsState
     return 1;
 }
+#pragma pop
+#pragma dont_inline on
 s32 fn_80239E5C(void *arg0, s32 arg1) {
     s32 *p = (s32 *)arg0;
     fn_80209030(*(float *)((char *)arg0 + 0x14));
