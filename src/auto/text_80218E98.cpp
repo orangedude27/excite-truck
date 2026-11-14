@@ -4314,22 +4314,25 @@ extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
 }
 #pragma scheduling on
 #pragma pop
-extern "C" s32 fn_8021FBC4(void *arg0, s32 arg1, s32 arg2) {
-    s32 temp_r6;
-    s32 var_r7 = 0;
-    s32 var_r8 = 0;
-    s32 var_r9 = 0;
-    temp_r6 = *(s32 *)((u8 *)arg0 + 0x264);
-    if ((arg1 >= temp_r6 - 0x14) && (arg1 < temp_r6 + *(s32 *)((u8 *)arg0 + 0x26C) + 0x14)) {
-        var_r9 = 1;
+/* Returns whether cursor position (x, y) lies within the slider track's
+   bounding box expanded by SLIDER_HIT_MARGIN (20 pixels) on each side. */
+extern "C" s32 fn_8021FBC4(void *widget, s32 x, s32 y) {
+    SliderWidget *slider = (SliderWidget *)widget;
+    s32 trackX;
+    s32 insideAll = 0;
+    s32 insideTop = 0;
+    s32 insideX = 0;
+    trackX = slider->trackX;
+    if ((x >= trackX - SLIDER_HIT_MARGIN) && (x < trackX + slider->trackWidth + SLIDER_HIT_MARGIN)) {
+        insideX = 1;
     }
-    if ((var_r9 != 0) && (arg2 >= *(s32 *)((u8 *)arg0 + 0x268) - 0x14)) {
-        var_r8 = 1;
+    if ((insideX != 0) && (y >= slider->trackY - SLIDER_HIT_MARGIN)) {
+        insideTop = 1;
     }
-    if ((var_r8 != 0) && (arg2 < *(s32 *)((u8 *)arg0 + 0x268) + *(s32 *)((u8 *)arg0 + 0x270) + 0x14)) {
-        var_r7 = 1;
+    if ((insideTop != 0) && (y < slider->trackY + slider->trackHeight + SLIDER_HIT_MARGIN)) {
+        insideAll = 1;
     }
-    return var_r7;
+    return insideAll;
 }
 
 extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
