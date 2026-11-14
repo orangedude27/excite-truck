@@ -1153,19 +1153,22 @@ extern "C" void fn_80146730(void *slot) {
     }
 }
 
-extern "C" void fn_801467AC(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != 0) {
-        if (p != 0) {
-            fn_8002F6AC(((s32 *)p)[3], (void *)__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C);
-            if (p != 0) {
-                ((s32 *)p)[0] = 0;
-                ((s32 *)p)[1] = 0;
-                ((s32 *)p)[2] = 0;
+/* Releases an array-holding object stored in *slot: destroys its array at +0xC
+   with __dt__24J3DUMtxAnmCacheTableBaseFv_8014641C via fn_8002F6AC, clears the
+   object's fields, frees the object, and leaves the slot empty. */
+extern "C" void fn_801467AC(void *slot) {
+    void *object = *(void **)slot;
+    if (object != 0) {
+        if (object != 0) {
+            fn_8002F6AC(((s32 *)object)[3], (void *)__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C);
+            if (object != 0) {
+                ((s32 *)object)[0] = 0;
+                ((s32 *)object)[1] = 0;
+                ((s32 *)object)[2] = 0;
             }
-            fn_80128668(p);
+            fn_80128668(object);
         }
-        *(void **)arg0 = 0;
+        *(void **)slot = 0;
     }
 }
 
