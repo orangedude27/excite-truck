@@ -498,16 +498,17 @@ s32 fn_80019438(void) {
 }
 
 s32 fn_800194CC(void) {
-    s32 var_r31;
+    /* Returns nonzero if the subsystem is busy or a pending operation/state requires attention. */
+    s32 result;
     if ((s32)(u8)lbl_8055D588 != 0) {
-        var_r31 = 1;
+        result = 1;
     } else {
-        var_r31 = 0;
+        result = 0;
         if ((fn_80019430() != 0) || (fn_800194C8() != 0) || (fn_80019604() != 0)) {
-            var_r31 = 1;
+            result = 1;
         }
     }
-    return var_r31;
+    return result;
 }
 
 #pragma push
