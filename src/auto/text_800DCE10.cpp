@@ -42,6 +42,11 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
 struct Vec2f { f32 x, y; };
 struct CWBuf { u8 b[0x60]; };
 extern "C" unsigned long lbl_80559800;
+/* nw4hbm::ut::Rect, as the text helpers pass it around: left, top, right, bottom. */
+struct Rect { f32 left, top, right, bottom; };
+
+#define FLOAT_ZERO      lbl_80560ED0  /* the 0.0f these helpers share */
+#define LINE_BREAK_CODE lbl_80559800  /* wchar_t 0x0a00: TextBox's line break */
 extern "C" s32 fn_800DDDF4(f32 *arg0_ptr, void *arg1_ptr, const u16 *arg2_ptr, s32 arg3, u8 *arg4, f32 farg0);
 struct SoundEntry60 {
     u8 b[32];
