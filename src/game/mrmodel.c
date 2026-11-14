@@ -1031,6 +1031,12 @@ void fn_802C6FB4(void *arg0) {
     ((void (*)(void *, void *))fn_802C5DF0)(arg0, fn_802D6C44);
 }
 
+#define DrawList_isOutsideScene fn_802C90E0
+#define Abend_warn(fmt, arg) ((int (*)(const char *, ...))fn_802E30C8)(fmt, arg)
+#define sModelLoadInSceneFmt lbl_8034B3DC
+#define mrModelLoadResource fn_802C6B44
+#define mrModelCreateInstance fn_802C6DC4
+
 void fn_802C6FC0(void *arg0, int arg1, int arg2) {
     if (fn_802C90E0() == 0) {
         ((int (*)(const char *, ...))fn_802E30C8)(lbl_8034B3DC, arg0);
