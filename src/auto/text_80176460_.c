@@ -800,16 +800,19 @@ void fn_80176DE0(void) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-// fn_80176E4C matches with invalid_target scheduling for the address setup order.
+/* Rearm the fade state after applying the pending physics command:
+ * bump the transition counter, tell the DSP the transition is through,
+ * then start fading back in from black with a short hold (next step 50 ms /
+ * 3 frames out) and no completion callback. */
 void fn_80176E4C(void) {
     fn_80179308();
     fn_801769EC();
-    *(s32 *)(lbl_80430558 + 0xC) = 1;
-    *(s32 *)(lbl_80430558 + 0x10) = 0;
-    *(s32 *)(lbl_80430558 + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
-    *(s32 *)lbl_80430558 = lbl_8055E3C4 + 3;
-    *(s32 *)(lbl_80430558 + 8) = 0;
-    *(u8 *)(lbl_80430558 + 0x14) = 0;
+    *(s32 *)(sFadeState + 0xC) = FADE_MODE_IN;
+    *(s32 *)(sFadeState + 0x10) = 0;
+    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
+    *(s32 *)sFadeState = lbl_8055E3C4 + 3;
+    *(s32 *)(sFadeState + 8) = 0;
+    *(u8 *)(sFadeState + 0x14) = 0;
 }
 
 void fn_80176EC0(void) {
