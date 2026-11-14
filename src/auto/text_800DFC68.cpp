@@ -345,14 +345,14 @@ extern "C" unsigned char GetVtxColorElement__Q36nw4hbm3lyt7PictureCFUl_800E0350(
     return p[lo + 0xE4];
 }
 
-extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc_800E03BC(void* this_, unsigned long idx, unsigned char color) {
-    extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
-    extern const char lbl_803204B0[];
-    extern const char lbl_80320474[];
-    if (idx >= 0x10) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803204B0, 0xD4, lbl_80320474);
-    unsigned long hi = idx & ~3UL;
-    unsigned long lo = idx & 3;
-    unsigned char* p = (unsigned char*)((unsigned long)this_ + hi);
+/* nw4hbm::lyt::Picture::SetVtxColorElement(u32, u8): store one channel of the
+ * picture's corner colors -- the four Color members at 0xE4 seen as the 16
+ * bytes an animation target indexes -- asserting the index is in range. */
+extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc_800E03BC(nw4hbm::lyt::Picture* self, u32 idx, u8 color) {
+    if (idx >= ANIMTARGET_VERTEXCOLOR_MAX) Panic__Q26nw4hbm2dbFPCciPCce(sAssertFile_common, 0xD4, sAssertIdxAnimTargetVtxColor);
+    u32 hi = idx & ~3;
+    u32 lo = idx & 3;
+    u8* p = (u8*)((u32)self + hi);
     p[lo + 0xE4] = color;
 }
 
