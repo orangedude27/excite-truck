@@ -1210,19 +1210,23 @@ extern "C" void fn_801F96B8(void *node) {
 }
 
 #pragma dont_inline on
-extern "C" void *fn_801F96C8(void *node) {
-    void *list = lbl_8055EC38;
-    while (list != NULL) {
-        if (stricmp((char *)node, (char *)list) == 0) {
+extern "C" void *fn_801F96C8(void *name) {
+    /* Look up a named item in the linked list at lbl_8055EC38 (next at +0x20);
+       if not found, register the name via fn_801F96A8 and create/append one. */
+#define namedListHead lbl_8055EC38
+    void *node = namedListHead;
+    while (node != NULL) {
+        if (stricmp((char *)name, (char *)node) == 0) {
             break;
         }
-        list = *(void **)((char *)list + 0x20);
+        node = *(void **)((char *)node + 0x20);
     }
-    if (list == NULL) {
-        fn_801F96A8(node);
-        list = ((void *(*)(void))fn_801F93FC)();
+    if (node == NULL) {
+        fn_801F96A8(name);
+        node = ((void *(*)(void))fn_801F93FC)();
     }
-    return list;
+    return node;
+#undef namedListHead
 }
 #pragma dont_inline reset
 extern "C" void fn_801BFD34(void *, void *, void *);
