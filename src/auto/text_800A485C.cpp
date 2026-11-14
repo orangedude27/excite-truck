@@ -833,7 +833,8 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void*);
 extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void*);
 extern "C" void updateSound__Q210homebutton10ControllerFv(void*);
 extern "C" void* fn_800C6914(void*, void* = 0);
-extern "C" void fn_800C6A1C(void*, s32);
+#define RET_800C6A1C void
+extern "C" RET_800C6A1C fn_800C6A1C(void*, s32);
 extern "C" void fn_800C6CE8(void*);
 extern "C" void fn_800C7998(void*);
 extern "C" s32 fn_800B23F8(s32, s32, s32, s32);
@@ -6955,8 +6956,8 @@ extern "C" s32 fn_800AFBA8(void *arg0, u16 arg1, u32 *result, void *page) {
     u8 *pg=(u8*)page;
     u32 sector;
     u32 copy;
-    s32 status;
     u32 offset;
+    s32 status;
     offset=(u16)(arg1+((u32)arg1>>1));
     sector=(u16)(*(u32*)(ctx+0x28)+(offset>>*(u8*)(ctx+0x20)));
     copy=1;
@@ -6984,9 +6985,8 @@ retry:
         if(offset==mask) {
             *result=(*(u8**)(pg+8))[offset];
             if(*(u16*)(pg+2)==1) {
-                u16 i;
-                for(i=0;i<*(u8*)(ctx+0x22);i++)
-                    fn_800B5618(arg0,*(void**)(pg+8),*(u32*)(pg+0x18)+i**(u32*)(ctx+0xc),0,*(u16*)ctx);
+                for(status=0;(u16)status<*(u8*)(ctx+0x22);status++)
+                    fn_800B5618(arg0,*(void**)(pg+8),*(u32*)(pg+0x18)+(u16)status**(u32*)(ctx+0xc),0,*(u16*)ctx);
             }
             status=fn_800B5260(arg0,*(void**)(pg+8),sector+1,0,*(u16*)ctx);
             if(status) goto retry;
@@ -7263,25 +7263,27 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
             s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
                 *(u32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC),
                 0, *(u16 *)obj);
-            if (r != 0 && saved == 0) saved = r;
+            if (r && !saved) saved = r;
         }
         result = fn_800B5260(arg0, *(void **)(ctx + 8), block, 0, *(u16 *)obj);
-        if (result != 0) return result;
+        if (result) return result;
         *(u32 *)(ctx + 0x18) = block;
     }
-    u32 data = *(u32 *)(*(u8 **)(ctx + 8) + offset);
-    u32 swapped = (__rlwinm(data, 8, 8, 15) | 0);
-    swapped = __rlwimi(swapped, data, 24, 0, 7);
-    u32 lower = __rlwinm(data, 24, 16, 23);
-    lower = __rlwimi(lower, data, 8, 24, 31);
-    data = (swapped | lower) & 0xF0000000;
-    data = __rlwimi(data, arg2, 0, 4, 31);
+    u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
+    u32 data = *(u32 *)(buffer + offset);
     u32 upper = __rlwinm(data, 8, 8, 15);
-    lower = __rlwinm(data, 24, 16, 23);
+    u32 lower = __rlwinm(data, 24, 16, 23);
     upper = __rlwimi(upper, data, 24, 0, 7);
     lower = __rlwimi(lower, data, 8, 24, 31);
-    *(u32 *)(*(u8 **)(ctx + 8) + offset) = upper | lower;
-    if (result != 0) saved = result;
+    u32 swapped = upper | lower;
+    swapped &= 0xF0000000;
+    swapped = __rlwimi(swapped, arg2, 0, 4, 31);
+    upper = __rlwinm(swapped, 8, 8, 15);
+    lower = __rlwinm(swapped, 24, 16, 23);
+    upper = __rlwimi(upper, swapped, 24, 0, 7);
+    lower = __rlwimi(lower, swapped, 8, 24, 31);
+    *(u32 *)(buffer + offset) = upper | lower;
+    if (result) saved = result;
     return saved;
 }
 
@@ -11808,7 +11810,7 @@ extern "C" s32 fn_800B878C(void *arg0, u8 *buf, s32 *type, s32 size) {
     if(aligned){buf[0x11]=0x80;buf[0x12]=0;}else *(u16*)(buf+0x12)=0x8000;
     buf[0x15]=0xF0;
     if(n<0x10000) {
-      if((u32)(buf+0x13)&1){buf[0x13]=n;buf[0x14]=n>>8;}else __sthbrx((u16)n, buf+0x14, 0);
+      if((u32)(buf+0x13)&1){buf[0x13]=n;buf[0x14]=n>>8;}else __sthbrx(n, buf+0x14, 0);
       if((u32)(buf+0x20)&3){buf[0x20]=0;buf[0x21]=0;buf[0x22]=0;buf[0x23]=0;}else *(u32*)(buf+0x20)=0;
     } else {
       if((u32)(buf+0x13)&1){buf[0x13]=0;buf[0x14]=0;}else *(u16*)(buf+0x14)=0;
@@ -11827,7 +11829,7 @@ extern "C" s32 fn_800B878C(void *arg0, u8 *buf, s32 *type, s32 size) {
       if((u32)(buf+0x43)&3){buf[0x43]=0x34;buf[0x44]=0x12;buf[0x45]=0;buf[0x46]=0;}else *(u32*)(buf+0x4C)=0x34120000;
     }else{
       if(aligned){buf[0x11]=0x80;buf[0x12]=0;}else *(u16*)(buf+0x12)=0x8000;
-      if((u32)(buf+0x16)&1){buf[0x16]=clusters;buf[0x17]=clusters>>8;}else __sthbrx((u16)clusters, buf+0x16, 0);
+      if((u32)(buf+0x16)&1){buf[0x16]=clusters;buf[0x17]=clusters>>8;}else __sthbrx(clusters, buf+0x16, 0);
       buf[0x25]=0;buf[0x26]=0x29;
       if((u32)(buf+0x27)&3){buf[0x27]=0x34;buf[0x28]=0x12;buf[0x29]=0;buf[0x2A]=0;}else *(u32*)(buf+0x30)=0x34120000;
     }
@@ -14369,15 +14371,12 @@ extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
     register s32 bitsInByte;
     register u32 position;
     register s32 startBit;
-    register u32 nextPosition;
     register s32 piece;
-
     if (remaining == 0)
         return 0;
     position = *bitOffset;
-    nextPosition = position + remaining;
     startBit = position & 7;
-    *bitOffset = nextPosition;
+    *bitOffset = position + remaining;
     byteIndex = (position >> 3) & 0x1FFF;
     bitsInByte = 8 - startBit;
     while (remaining > 0) {
@@ -18601,23 +18600,10 @@ extern "C" s32 fn_800D014C(s32 arg0, s32 arg1) {
 }
 
 extern "C" u32 lbl_8055DDA0;
+#pragma push
 #pragma scheduling off
-extern "C" void fn_800D018C(void *arg0, void *arg1) {
-    class Dispatch {
-    public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17();
-        virtual void call(void *);
-    };
-    int zero = 0;
-    void *p = *(void **)((char *)arg1 + 0x10);
-    lbl_8055DDA0 = zero;
-    ((Dispatch *)arg0)->call((char *)p + 0x10);
-}
-#pragma scheduling on
+extern "C" void fn_800D018C(void *arg0, void *arg1) { class Dispatch { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void call(void *); }; int zero = 0; void *p = *(void **)((char *)arg1 + 0x10); lbl_8055DDA0 = zero; ((Dispatch *)arg0)->call((char *)p + 0x10); }
+#pragma pop
 extern "C" u8 lbl_8031E878[];
 extern "C" u8 lbl_8031E780[];
 extern "C" const char lbl_8031E8FC[];
@@ -19489,10 +19475,11 @@ extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
     if (self[0x1EC] != 0) {
         OSCreateAlarm((OSAlarm *)(self + 0x1A0));
         OSTime time = OSGetTime();
+        u32 interval, period, q;
         u32 ticks = *(volatile u32 *)0x800000F8;
-        u32 q = (ticks >> 2) / 125000U;
-        u32 period = q * 0x0065B9AB;
-        u32 interval = period / 8000U;
+        q = (ticks >> 2) / 125000U;
+        period = q * 0x0065B9ABU;
+        interval = period / 8000U;
         ((void (*)(void *, u32, u32, u32, u32, u32, void *))OSSetPeriodicAlarm)(
             self + 0x1A0, q, (u32)(time >> 32), (u32)time, 0, interval, (void *)&fn_800D16C4);
     }
@@ -19682,7 +19669,7 @@ extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
     u32 temp_r28;
     u32 var_r27;
     s32 var_r0;
-    fn_800D1EC4(&messages->header[0]);
+    fn_800D1EC4(0 + messages->header);
     fn_800D1EC4(messages->summary);
     var_r27 = 0;
 loop_1:
@@ -20645,32 +20632,22 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     }
 }
 
-void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
-    u8 *paneCopy = (u8 *)pane;
-    u8 *offsets = (u8 *)*(void **)((u8 *)this + 0xC);
-    u16 i = 0;
-    bool bindCopy = bind;
+void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
+    register u8 *self = (u8 *)this;
+    register u8 *offsets = (u8 *)*(void **)(self + 0xC);
     offsets += *(s32 *)(offsets + 0x10);
-    while (i < *(u16 *)(*(u8 **)((u8 *)this + 0xC) + 0xE)) {
-        u8 *entry = *(u8 **)((u8 *)this + 0xC) + *(s32 *)(offsets + i * 4);
-        void *boundObject;
-        if (entry[0x15] == 0) {
-            boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindPane(entry, bindCopy);
-            if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10;
-                *(void **)(link + 8) = (u8 *)this;
-                *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10);
-            }
-        } else {
-            boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindMaterial(entry, bindCopy);
-            if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10;
-                *(void **)(link + 8) = (u8 *)this;
+    register u16 i = 0;
+    register u8 *materialPtr = (u8 *)material;
+    while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
+        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
+        if (entry[0x15] == 1) {
+            if (((s32 (*)(void *, void *))fn_800D58F0)(materialPtr + 4, entry) != 0) {
+                register int off = i * 0x10;
+                u8 *link = (u8 *)*(void **)(self + 0x18) + off;
+                *(void **)(link + 8) = self;
                 *(u16 *)(link + 0xC) = i;
                 AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10);
+                    materialPtr, (u8 *)*(void **)(self + 0x18) + off);
             }
         }
         i++;
@@ -23293,6 +23270,11 @@ found_entry_8:;
             fn_800D155C(pane);
         }
     }
+}
+
+void homebutton::HomeButton::startLeftEvent(const char *name) {
+    int paneNo = getPaneNo(name);
+    (void)paneNo;
 }
 
 extern "C" s32 getPaneNo__Q210homebutton10HomeButtonFPCc(void *, const char *);
