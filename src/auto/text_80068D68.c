@@ -9162,18 +9162,23 @@ tBTM_STATUS BTM_VendorSpecificCommand(UINT16 opcode, UINT8 param_len, UINT8 *p_p
     return 3;
 }
 
+/* Completes a vendor-specific HCI command: saves and clears the pending VSC
+   completion callback and busy flag, then if one was registered delivers the
+   opcode, parameter length, and parameter bytes to it. */
 void btm_vsc_complete(UINT8 *p, UINT16 cc_opcode, UINT16 evt_len, tBTM_CMPL_CB *p_vsc_cplt_cback) {
-    u8 packet[0x108];
-    u8 *src = p;
-    u8 *out = packet + 4;
-    tBTM_CMPL_CB *callback = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x61C);
+    u8 param_buf[0x108];
+    u8 *param_ptr = p;
+    u8 *param_dst = param_buf + 4;
+    tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x61C);
+
     lbl_803C0F78[0x650] = 0;
     *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x61C) = NULL;
-    if (callback != NULL) {
-        *(u16 *)(packet + 0) = cc_opcode;
-        *(u16 *)(packet + 2) = evt_len;
-        memcpy(out, src, evt_len);
-        callback(packet);
+
+    if (p_cb != NULL) {
+        *(u16 *)(param_buf + 0) = cc_opcode;
+        *(u16 *)(param_buf + 2) = evt_len;
+        memcpy(param_dst, param_ptr, evt_len);
+        p_cb(param_buf);
     }
 }
 
