@@ -464,6 +464,8 @@ int fn_8000B42C(int arg0) {
 
 #pragma scheduling invalid_target
 int fn_8000B53C(int arg0) {
+    /* Set audio state to 0x12 and install/update AXFX hooks based on lbl_8055D3EC;
+       returns 1 if arg0 is 1, else 0. */
     ((void (*)(int))fn_8000ADE0)(0x12);
     AXFXSetHooks_8020DE10((void (*)(void))fn_8000B5A8, lbl_8055D3EC ? (int)fn_8000B3B4 : 0, lbl_8055D3EC);
     if (arg0 == 1) return 1;
