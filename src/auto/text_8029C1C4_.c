@@ -65,6 +65,8 @@ extern float fn_802C88E8(void *);
 extern int fn_802C9640(void *);
 
 void fn_8029C1C4(void) {
+    /* Reset per-frame water state, run water subsystem updates, and register the
+       water callback if splashes or any pool/shallow-water entries are active. */
     lbl_8055F7FC = 0;
     fn_8029C570(); fn_8029C73C(); fn_8029C998(); fn_8029CBA0(); fn_8029C664();
     if (fn_802BF4F0() == 0 && lbl_8055F7F0 <= 0 && lbl_8055F7F4 <= 0) return;
