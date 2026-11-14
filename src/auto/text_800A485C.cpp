@@ -5008,6 +5008,8 @@ block_21:
  * sector once.
  * ------------------------------------------------------------------- */
 #define VFiPFCACHE_ClaimPage       fn_800A8D08   /* a page of the volume's cache; -1: claimed for nobody */
+#define VFiPFCACHE_ReadPage        fn_800B5260   /* bytes of a volume's cached sector into memory */
+#define VFiPFCACHE_WritePage       fn_800B5618   /* memory into bytes of a volume's cached sector */
 #define VFiPFFAT_ReadClusterSector fn_800ACA5C   /* read the FAT sector holding a cluster into a page */
 #define VFiPFFAT_GetEntry12        fn_800AFBA8   /* FAT12: the 12-bit entry of a cluster */
 #define VFiPFFAT_GetEntry16        fn_800B00E8   /* FAT16: the 16-bit entry of a cluster */
