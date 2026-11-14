@@ -1380,6 +1380,7 @@ void fn_8016DA0C(void *arg0) {
     M2C_FIELD(arg0, s8 *, 0xA8) = 0;
 }
 #pragma use_lmw_stmw on
+/* Returns the point value for a ring challenge spec (0->5, 1->10, 2->15); panics on unknown. */
 s32 fn_8016DD98(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
     switch (value) {
