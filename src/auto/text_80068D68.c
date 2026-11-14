@@ -11250,16 +11250,17 @@ void fn_800719B8(void *arg0) {
     BTM_SetConnectability(((u8 *)arg0)[9], 0, 0);
 }
 
-void bta_dm_bond(u8 *arg0)
+void bta_dm_bond(u8 *p_data)
 {
-    u32 sp8[2];
-    void *ptr = (void *)fn_8008128C(arg0 + 8);
-    if (ptr != 0) {
-        memcpy(sp8, ptr, 8);
+    /* Start bonding with the device in the message, supplying its stored link key if present. */
+    u32 linkKey[2];
+    void *p_key = (void *)fn_8008128C(p_data + 8);
+    if (p_key != 0) {
+        memcpy(linkKey, p_key, 8);
     } else {
-        memset(sp8, 0, 8);
+        memset(linkKey, 0, 8);
     }
-    BTM_SecBond(arg0 + 8, arg0[0xE], arg0 + 0xF, sp8);
+    BTM_SecBond(p_data + 8, p_data[0xE], p_data + 0xF, linkKey);
 }
 
 void bta_dm_pin_reply(u8 *p_msg) {
