@@ -7,11 +7,24 @@ __declspec(section ".sdata") extern char *lbl_8055CA38[];
 extern char lbl_80349384[];
 extern int stricmp(const char *, const char *);
 extern int fn_802E317C(char *, ...);
-extern s32 fn_80296D28(s32);
+extern s32 fn_80296D28(s32 flipBook); /* FlipBook_release: drop one reference */
 extern s32 fn_80128668(void *);
 extern s32 fn_8002F6AC(s32, void *);
 void *fn_80297654(void *, s32);
 extern char lbl_803493C0[];
+/* FlipBookElem -- the 8-byte element fn_802971B0 builds for a "FlipBookElem"
+ * scene node (that string is its allocation tag).  Its vtable lbl_803493C0:
+ *   0x08 fn_80297814 destructor   0x0C fn_8029788C isValid
+ *   0x10 fn_802978A8 duration     0x14 fn_802978A0 play(position, time)
+ * Its only member is the named "FlipBook" keyframe collection fn_80296B10
+ * hands out (refcount at +0x28, next link at +0x20, entries at +0x24). */
+typedef struct {
+    void *vtable; /* 0x00 lbl_803493C0 */
+    s32 book;     /* 0x04 FlipBook *collection, from fn_80296B10 */
+} FlipBookElem;
+#define FlipBookElem_vtable lbl_803493C0
+#define FlipBook_release    fn_80296D28
+#define Mem_freeObject      fn_80128668
 extern float lbl_80564578;
 
 extern void *fn_801284F8(s32, const char *);
