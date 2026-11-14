@@ -23174,14 +23174,17 @@ void RFCOMM_DlcEstablishReq(void *arg0, u8 arg1) {
     }
 }
 
-void RFCOMM_DlcEstablishRsp(void *arg0, u8 arg1, s32 arg2, u16 arg3) {
-    u16 sp8 = arg3;
-    void *port = port_find_mcb_dlci_port(arg0, arg1);
-    if (*((u8 *)arg0 + 0x6C) != 5 && sp8 == 0) {
-        PORT_DlcReleaseInd(arg0, arg1);
+/* Respond to a DLC establishment indication: release the DLC if the multiplexer
+ * is not connected and the result is success, otherwise run the port state machine. */
+void RFCOMM_DlcEstablishRsp(void *p_mcb, u8 dlci, s32 mtu, u16 result) {
+    u16 resultParam = result;
+    void *p_port = port_find_mcb_dlci_port(p_mcb, dlci);
+
+    if (*((u8 *)p_mcb + 0x6C) != 5 && resultParam == 0) {
+        PORT_DlcReleaseInd(p_mcb, dlci);
         return;
     }
-    rfc_port_sm_execute(port, 0xB, &sp8);
+    rfc_port_sm_execute(p_port, 0xB, &resultParam);
 }
 
 void RFCOMM_ParNegReq(void *mcb, s32 dlci, s32 mtu) {
