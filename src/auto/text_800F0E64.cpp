@@ -4646,8 +4646,7 @@ static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     u32 &irq = lock.old;
     struct { void *node; } iter;
     void *&pos = iter.node;
-    struct { void *node; } end_iter;
-    void *&end = end_iter.node;
+    LinkListIter end_iter;
     {
         s32 ok = 0;
         if (priority >= 0 && priority <= 0x7F) {
