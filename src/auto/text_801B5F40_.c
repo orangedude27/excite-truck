@@ -90,8 +90,8 @@ void fn_801B60A8(void) {
 extern float lbl_805626B8;
 static inline s32 GridCell(f32 v) {
     s32 i;
-    v += lbl_805626B4;
-    i = (s32)(v / lbl_805626B0);
+    v += 1000.0f;
+    i = (s32)(v / 20.0f);
     if (i < 0)
         i = 0;
     else if (i >= 0x64)
@@ -104,16 +104,8 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
     s32 y;
     if (arg1 > lbl_805626B0)
         return lbl_8055E714;
-    x = (s32)((*(f32 *)arg0 + lbl_805626B4) / lbl_805626B0);
-    if (x < 0)
-        x = 0;
-    else if (x >= 0x64)
-        x = 0x63;
-    y = (s32)((*(f32 *)((u8 *)arg0 + 8) + lbl_805626B4) / lbl_805626B0);
-    if (y < 0)
-        y = 0;
-    else if (y >= 0x64)
-        y = 0x63;
+    x = GridCell(((f32 *)arg0)[0]);
+    y = GridCell(((f32 *)arg0)[2]);
     return lbl_8055E70C + ((x + y * 0x64) * 4);
 }
 
