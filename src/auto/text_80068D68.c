@@ -21678,23 +21678,25 @@ done:
     return 0x30000;
 }
 
-int port_get_signal_changes(void *arg0, int arg1, int arg2) {
-    int changed = arg2 ^ arg1;
+/* Map modem-signal bit changes (old vs new) to the RFCOMM port event/signal bits
+   the port is interested in (port->ev_mask at +0x88) and return the masked result. */
+int port_get_signal_changes(void *port, int oldSignals, int newSignals) {
+    int changed = newSignals ^ oldSignals;
     int signals = 0;
     if (changed & 1) {
         signals |= 0x10;
-        if (arg2 & 1) signals |= 0x800;
+        if (newSignals & 1) signals |= 0x800;
     }
     if (changed & 2) {
         signals |= 8;
-        if (arg2 & 2) signals |= 0x400;
+        if (newSignals & 2) signals |= 0x400;
     }
     if (changed & 4) signals |= 0x100;
     if (changed & 8) {
         signals |= 0x20;
-        if (arg2 & 8) signals |= 0x1000;
+        if (newSignals & 8) signals |= 0x1000;
     }
-    return *((int *)((char *)arg0 + 0x88)) & signals;
+    return *((int *)((char *)port + 0x88)) & signals;
 }
 
 extern void RFCOMM_ConnectInd(BD_ADDR, UINT16, UINT16, UINT8);
