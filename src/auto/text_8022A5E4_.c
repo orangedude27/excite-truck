@@ -1229,12 +1229,13 @@ void *fn_8022CA2C(int arg0) {
     return lbl_80490968 + arg0 * 0x74;
 }
 
-float fn_8022CA40(void *arg0) {
-    if (*(float *)((char *)arg0 + 0x34) < 1.0f)
+/* Returns 1.0 if the stored value is below 1.0, otherwise scales it by the byte count from the related object. */
+float fn_8022CA40(void *obj) {
+    if (*(float *)((char *)obj + 0x34) < 1.0f)
         return 1.0f;
     else {
-        int value = fn_80232B70(*(int *)((char *)arg0 + 8));
-        return *(float *)((char *)arg0 + 0x34) / (float)value;
+        int count = fn_80232B70(*(int *)((char *)obj + 8));
+        return *(float *)((char *)obj + 0x34) / (float)count;
     }
 }
 
