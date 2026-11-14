@@ -1119,19 +1119,20 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
 extern int lbl_804C00D4;
 #pragma push
 #pragma use_lmw_stmw off
+/* Sum fn_802BD0C8 over each 0x60-byte entry in the list at lbl_804C00D4. */
 int fn_802BE1D8(void) {
-    int offset;
-    int sum;
-    int i;
-    sum = 0;
-    i = 0;
-    offset = 0;
-    while (i < *(int *)((char *)&lbl_804C00D4 + 4)) {
-        sum += fn_802BD0C8(*(char **)&lbl_804C00D4 + offset);
-        offset += 0x60;
-        i++;
+    int entryOffset;
+    int total;
+    int index;
+    total = 0;
+    index = 0;
+    entryOffset = 0;
+    while (index < *(int *)((char *)&lbl_804C00D4 + 4)) {
+        total += fn_802BD0C8(*(char **)&lbl_804C00D4 + entryOffset);
+        entryOffset += 0x60;
+        index++;
     }
-    return sum;
+    return total;
 }
 #pragma pop
 /* Calls fn_802BD0F4 for each 0x60-byte entry in the global list at lbl_804C00D4. */
