@@ -84,47 +84,50 @@ extern void fn_801B916C();
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_801CEEC8(void *arg0) {
-    register float temp_f31;
-    register char *var_r30;
-    register int var_r31;
-    register char *var_r29;
-    register char *var_r28;
-    register int var_r27;
-    register int var_r26;
-    temp_f31 = lbl_80562A20;
-    var_r30 = (char *)arg0 + 4;
-    var_r27 = 0;
-    var_r31 = 0;
+/* Populate the 4 damage-car slots (+0x74, stride 0x18) of each 0xE0-byte record in manager
+ * from the dmg_car_info table (lbl_8055E890) and the referenced car object (fn_8017960C),
+ * then invoke fn_801B916C. */
+void fn_801CEEC8(void *manager) {
+    register float zeroFloat;
+    register char *record;
+    register int zeroInt;
+    register char *srcSlot;
+    register char *dstSlot;
+    register int recordIndex;
+    register int slotIndex;
+    zeroFloat = lbl_80562A20;
+    record = (char *)manager + 4;
+    recordIndex = 0;
+    zeroInt = 0;
     goto outer_check;
 outer_body:
-    var_r28 = var_r30 + 0x74;
-    var_r26 = 0;
-    var_r29 = (char *)lbl_8055E890 + *(int *)(var_r30 + 0x60) * 0x30;
+    dstSlot = record + 0x74;
+    slotIndex = 0;
+    srcSlot = (char *)lbl_8055E890 + *(int *)(record + 0x60) * 0x30;
     do {
-        register int temp_r3;
-        temp_r3 = *(int *)var_r29;
-        *(int *)var_r28 = temp_r3;
-        *(float *)(var_r28 + 4) = *(float *)(var_r29 + 4);
-        *(float *)(var_r28 + 0x10) = *(float *)(var_r29 + 8);
-        if (temp_r3 >= 0) {
-            temp_r3 = (int)fn_8017960C(temp_r3);
-            *(float *)(var_r28 + 8) = *(float *)((char *)temp_r3 + 0x2690);
-            *(float *)(var_r28 + 0xc) = *(float *)((char *)temp_r3 + 0x2694);
-            *(int *)(var_r28 + 0x14) = *(int *)((char *)temp_r3 + 0x268c);
+        register int carOrObj;
+        carOrObj = *(int *)srcSlot;
+        *(int *)dstSlot = carOrObj;
+        *(float *)(dstSlot + 4) = *(float *)(srcSlot + 4);
+        *(float *)(dstSlot + 0x10) = *(float *)(srcSlot + 8);
+        if (carOrObj >= 0) {
+            carOrObj = (int)fn_8017960C(carOrObj);
+            *(float *)(dstSlot + 8) = *(float *)((char *)carOrObj + 0x2690);
+            *(float *)(dstSlot + 0xc) = *(float *)((char *)carOrObj + 0x2694);
+            *(int *)(dstSlot + 0x14) = *(int *)((char *)carOrObj + 0x268c);
         } else {
-            *(float *)(var_r28 + 8) = temp_f31;
-            *(int *)(var_r28 + 0x14) = var_r31;
+            *(float *)(dstSlot + 8) = zeroFloat;
+            *(int *)(dstSlot + 0x14) = zeroInt;
         }
-        var_r26++;
-        var_r29 += 0xc;
-        var_r28 += 0x18;
-    } while (var_r26 < 4);
-    var_r30 += 0xe0;
-    var_r27++;
+        slotIndex++;
+        srcSlot += 0xc;
+        dstSlot += 0x18;
+    } while (slotIndex < 4);
+    record += 0xe0;
+    recordIndex++;
 outer_check:
-    if (var_r27 < *(int *)((char *)arg0 + 0x394))
+    if (recordIndex < *(int *)((char *)manager + 0x394))
         goto outer_body;
-    fn_801B916C(arg0);
+    fn_801B916C(manager);
 }
 #pragma pop
