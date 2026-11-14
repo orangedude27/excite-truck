@@ -125,14 +125,17 @@ void fn_80137B20(void) {
     fn_80137B0C((void *)0);
 }
 void fn_80137BE4(void) {
-    void **p = lbl_8042F788;
-    int i = 0;
+    // Free and clear a fixed table of four heap-allocated pointers, then mark it uninitialized.
+    void **slot = lbl_8042F788;
+    int index = 0;
+
     do {
-        fn_80128668(*p);
-        i++;
-        *p = 0;
-        p++;
-    } while (i < 4);
+        fn_80128668(*slot);
+        index++;
+        *slot = 0;
+        slot++;
+    } while (index < 4);
+
     lbl_8055E0E0 = 0;
 }
 
