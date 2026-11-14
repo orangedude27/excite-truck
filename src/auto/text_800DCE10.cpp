@@ -362,10 +362,10 @@ extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, u32 
     if (index >= 0x10) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320570, 0x1e6, lbl_803206B8);
     }
-    u32 part1 = (index >> 1) & 0x7FFFFFFC;
-    u32 part2 = index & 3;
-    u8 *base = (u8 *)this_ptr + part1;
-    return base[part2 + 0xD8];
+    u32 wordOffset = (index >> 1) & 0x7FFFFFFC;
+    u32 byteOffset = index & 3;
+    u8 *base = (u8 *)this_ptr + wordOffset;
+    return base[byteOffset + 0xD8];
 }
 
 /* nw4hbm::lyt::TextBox::SetVtxColorElement(u32 idx, u8 color): store one color
