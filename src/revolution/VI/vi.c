@@ -1283,6 +1283,7 @@ void VIFlush(void)
 
 void VISetNextFrameBuffer(void *fb)
 {
+    /* Set the framebuffer to display next and recompute the top/bottom field buffer addresses. */
     BOOL enabled;
 
     enabled = OSDisableInterrupts();
