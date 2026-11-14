@@ -37,6 +37,36 @@ struct LevelObject {
     virtual int getInt(const char *, int);
 };
 #pragma cplusplus reset
+
+#define TREEHIT_STRUCTS
+struct TreeClass {
+    int firstTree;     /* 0x00 this class's tree indices, -1 until it has one */
+    int lastTree;      /* 0x04 */
+    char name[0x20];   /* 0x08 the "drop_model" object's name */
+    u8 wobbles;        /* 0x28 clear when the model has "no_wobble" */
+    u8 pad29[3];       /* 0x29 */
+    f32 dropHeight;    /* 0x2C how far above the tree its drops spawn */
+    void *modelObject; /* 0x30 the level's tree object */
+    void **drops;      /* 0x34 the drop models, added by fn_802C1F8C */
+    int dropCount;     /* 0x38 how many the model asks for */
+    int dropsAdded;    /* 0x3C how many have been added */
+    int eventId[8];    /* 0x40 "efx_event_id%d" per slot, -1 when it has none */
+};                     /* 0x60 */
+
+struct TreeObject {
+    f32 matrix[9];     /* 0x00 rotation, swung about the hit axis by fn_802C173C */
+    f32 pos[3];        /* 0x24 Y goes 9000 below the ground once the tree is cut */
+};
+
+struct TreeHitRecord {
+    int treeIndex;     /* 0x00 the tree this hit is waiting for */
+    struct TreeObject *tree; /* 0x04 0 once fn_802C1180 gave the pose back */
+    f32 matrix[9];     /* 0x08 the pose to give it */
+    f32 pos[3];        /* 0x2C */
+    f32 axis[3];       /* 0x38 the axis it is being swung about */
+    f32 time;          /* 0x44 when it was hit */
+};                     /* 0x48 */
+
 #pragma scheduling invalid_target
 void *fn_802C110C(int arg0) {
     char *entry = lbl_804C0810;
