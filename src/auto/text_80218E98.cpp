@@ -5568,12 +5568,14 @@ extern "C" void *fn_80222718(void *arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_80222788(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    f32 spC;
-    f32 sp8;
+    /* If the object has an associated handle, convert (arg1,arg2) and forward the result with a constant scale. */
+    f32 outX;
+    f32 outY;
+
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
-        f32 temp_f31 = lbl_805634A8;
-        fn_80230C30(&spC, &sp8, arg1, arg2);
-        fn_802353F4(*(s32 *)((u8 *)arg0 + 4), arg4, spC, sp8, temp_f31);
+        f32 scale = lbl_805634A8;
+        fn_80230C30(&outX, &outY, arg1, arg2);
+        fn_802353F4(*(s32 *)((u8 *)arg0 + 4), arg4, outX, outY, scale);
     }
 }
 #pragma pop
