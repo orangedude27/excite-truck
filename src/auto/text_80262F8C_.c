@@ -171,19 +171,23 @@ void fn_80263820(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80263848(void *arg0, s32 arg1) {
-    s32 temp_r28;
-    s32 temp_r29;
-    s32 temp_r30;
-    s32 temp_r31;
-    s32 temp_r3;
-    void *p = arg0;
-    temp_r28 = *(s32 *)((char *)p + 0x10);
-    temp_r29 = *(s32 *)((char *)p + 0xC);
-    temp_r30 = *(s32 *)((char *)p + 8);
-    temp_r31 = *(s32 *)((char *)p + 4);
-    temp_r3 = ((s32 (*)(const u8 *))fn_80131234)(lbl_80346324);
-    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(0x12, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)p + 0x18), 0, 1.0f);
+/* Draws this options-menu row's caption: looks up the localized string
+ * "UIOptions:DECIDE" by name and draws it with the text renderer (style 0x12)
+ * at the row's rectangle (+0x04 x, +0x08 y, +0x0C/+0x10 size), page index +0x18. */
+void fn_80263848(void *widget, s32 arg1) {
+    s32 param5;
+    s32 height;
+    s32 y;
+    s32 x;
+    s32 labelText;
+    void *p = widget;
+
+    param5 = *(s32 *)((char *)p + 0x10);
+    height = *(s32 *)((char *)p + 0xC);
+    y = *(s32 *)((char *)p + 8);
+    x = *(s32 *)((char *)p + 4);
+    labelText = fn_80131234(lbl_80346324);
+    fn_8022BAD0(0x12, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
 void fn_802638C4(void) {}
