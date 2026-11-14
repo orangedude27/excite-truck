@@ -174,33 +174,35 @@ void fn_8029C450(void *arg0, int arg1) {
     float tmp;
     float f30;
     void **p;
-    int i, n;
+    int outer;
+    int inner1;
+    int inner2;
     f30 = lbl_80564638;
     tmp = fn_801E7E24();
     if (!((float)__fabs((double)tmp) <= lbl_80558DC4)) {
         f31 = lbl_8056463C;
-        i = 0;
+        outer = 0;
         p = (void **)arg0;
-        while (i < arg1) {
+        while (outer < arg1) {
             if (((float *)p)[2] < f30 &&
                 ((float *)p[0])[0x50 / 4] > f31 &&
                 ((unsigned char *)p)[0xC] != 0) {
-                n = 0;
-                while (n < lbl_8055F7F0) {
-                    fn_8029D7D0(lbl_804B5010[n], p);
-                    n++;
+                inner1 = 0;
+                while (inner1 < lbl_8055F7F0) {
+                    fn_8029D7D0(lbl_804B5010[inner1], p);
+                    inner1++;
                 }
-                n = 0;
-                while (n < lbl_8055F7F4) {
-                    fn_8029EA34((void *)lbl_804B5030[n], p);
-                    n++;
+                inner2 = 0;
+                while (inner2 < lbl_8055F7F4) {
+                    fn_8029EA34((void *)lbl_804B5030[inner2], p);
+                    inner2++;
                 }
                 if (fn_802BF4F0() != 0) {
                     fn_8029CD48(p[0]);
                 }
             }
             p = (void **)((char *)p + 0x10);
-            i++;
+            outer++;
         }
     }
 }
