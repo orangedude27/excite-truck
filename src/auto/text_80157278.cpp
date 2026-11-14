@@ -166,6 +166,15 @@ public:
  virtual f32 v18(s32); virtual void a19(); virtual void a20(); virtual s32 v21(); virtual void a22(); virtual void a23(); virtual void a24(); virtual void a25(); virtual void a26(); virtual void a27(); virtual void a28(); virtual void a29(); virtual void a30(); virtual void v31(); virtual void v32(); virtual void v33(f32*); virtual void a34(); virtual void a35(); virtual void a36(); virtual s32 v37();
  s32 m4; u8 pad[0x24c]; f32 m254; s32 m258; f32 m25c; s32 m260; s32 m264;
 };
+// A frame-driven "player" over a list of records: mData (0x08) holds mCount
+// (0x0C) records of 0x38 bytes, starting 0x14 into the object (10 at most;
+// fn_8015783C builds one).  Each record starts with three s32 counters
+// (+0x00, +0x04, +0x08), an f32 at +0x0C and the f32 value fn_801589A8 reads
+// at +0x10.  The tail holds the progress a record must pass to play (0x24C),
+// the gain applied to its value (0x250), seconds since the last reset (0x258),
+// the three progress counters advanced by speed * one frame (0x25C, 0x260,
+// 0x264), the instance 0x260 counts for (0x268), an object to stop (0x26C)
+// and the flags set by fn_80158A74 / fn_80158B0C (0x270..0x273).
 class Unk801577F0 {
 public:
     virtual void v0();
