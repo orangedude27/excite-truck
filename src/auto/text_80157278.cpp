@@ -2945,6 +2945,7 @@ extern "C" void fn_8015BCF4(Unk801577F0* arg0, f32* arg1) {
 
 extern "C" s32 fn_8015C074(void) { return 0; }
 
+/* Destroys an object: clears its embedded list header fields and optionally frees it (operator delete). */
 extern "C" void* fn_8015C07C(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
