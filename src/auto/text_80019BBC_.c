@@ -606,6 +606,14 @@ static inline float lerpf(float a, float b, float t) {
     return a + t * (b - a);
 }
 
+/* 2D linear interpolation from a to b. */
+static inline void lerp2f(float *out, const float *a, const float *b, float t) {
+    float dx = b[0] - a[0];
+    float dy = b[1] - a[1];
+    out[0] = a[0] + t * dx;
+    out[1] = a[1] + t * dy;
+}
+
 extern void fn_801352B8(void *);
 extern int fn_80135D60(void *, int);
 extern void fn_8013530C(void *, int);
