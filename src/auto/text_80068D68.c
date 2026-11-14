@@ -27062,6 +27062,7 @@ s32 IUSB_ReadIntrMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
 
 s32 IUSB_ReadBlkMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
                          void (*callback)(void), void* callbackArg) {
+    /* Asynchronously read a USB bulk message into buffer (invalidated before transfer). */
     DCInvalidateRange(buffer, length);
     return __IntrBlkMsgInt(fd, endpoint, length, buffer, USB_IOCTLV_BLKMSG,
                            callback, callbackArg, TRUE);
