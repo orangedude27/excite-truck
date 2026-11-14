@@ -101,19 +101,18 @@ extern "C" long *fn_802E9A6C(long arg0) {
 }
 #pragma cplusplus reset
 #pragma pop
-void *fn_802E9B54(void *arg0, long arg1) {
-    long *p = (long *)arg0;
-    long value;
-    if (p != 0) {
-        value = p[1];
-        p[0] = (long)&lbl_8034E9B0;
-        if (value != 0) {
-            fn_800B7BDC(value);
-            p[1] = 0;
+void *fn_802E9B54(Mp3Stream *stream, long deleteFlag) {
+    long file;
+    if (stream != 0) {
+        file = stream->file;
+        stream->vtable = &mp3StreamFile_vtable;
+        if (file != 0) {
+            VFCloseFile(file);
+            stream->file = 0;
         }
-        if (arg1 > 0) lbl_80560060 = 0;
+        if (deleteFlag > 0) mp3StreamOpen = 0;
     }
-    return arg0;
+    return stream;
 }
 
 #pragma push
