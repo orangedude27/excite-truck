@@ -414,7 +414,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
 #pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma cplusplus on
-extern "C" void fn_80190184(void *arg0, void *arg1) {
+extern "C" void fn_80190184(void *target, void *source) {
     struct Dummy0 {
         virtual void v0();
         virtual void v1();
@@ -425,15 +425,16 @@ extern "C" void fn_80190184(void *arg0, void *arg1) {
         virtual void v1();
         virtual void v2(void *);
     };
-    Dummy0 *obj;
-    Dummy1 *obj2;
+    Dummy0 *childA;
+    Dummy1 *childB;
 
-    *(void **)((char *)arg0 + 0x20) = arg1;
-    *(s32 *)((char *)arg0 + 0x1C) = *(s32 *)((char *)arg1 + 0x1EC);
-    obj = *(Dummy0 **)((char *)arg0 + 8);
-    obj->v2();
-    obj2 = *(Dummy1 **)((char *)arg0 + 0xC);
-    obj2->v2(arg1);
+    /* Stores the source on the target, copies its cached value, and notifies both children. */
+    *(void **)((char *)target + 0x20) = source;
+    *(s32 *)((char *)target + 0x1C) = *(s32 *)((char *)source + 0x1EC);
+    childA = *(Dummy0 **)((char *)target + 8);
+    childA->v2();
+    childB = *(Dummy1 **)((char *)target + 0xC);
+    childB->v2(source);
 }
 
 extern "C" int fn_801B526C(void);
