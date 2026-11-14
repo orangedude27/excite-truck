@@ -294,6 +294,8 @@ extern "C" void fn_801B841C(void) {
         virtual void d6();
         virtual int d7();
     };
+
+    /* Run the global object's per-frame update, then advance or reset its timer. */
     ((Dummy *)lbl_8055E744)->d1();
     fn_80161A18();
     if (((Dummy *)lbl_8055E744)->d7() != 0)
