@@ -13420,15 +13420,17 @@ void btm_sec_link_key_request(BD_ADDR bd_addr) {
 }
 
 extern u8 lbl_80317008[];
+/* Handles PIN code request timeout: logs at high trace levels, clears the pending
+ * request state and peer address, then sends a link key negative reply. */
 void btm_sec_pin_code_request_timeout(void) {
-    u8 *base = lbl_803C0F78;
+    u8 *btmCb = lbl_803C0F78;
 
-    if (base[0x27C0] >= 4) {
+    if (btmCb[0x27C0] >= 4) {
         fn_8007093C(0xD0003, lbl_80317008);
     }
-    *(u32 *)(base + 0x194C) = 0;
+    *(u32 *)(btmCb + 0x194C) = 0;
     memset(lbl_803C0F78 + 0x1954, 0xFF, 6);
-    btsnd_hcic_link_key_neg_reply_800840C8(base + 0x27B4);
+    btsnd_hcic_link_key_neg_reply_800840C8(btmCb + 0x27B4);
 }
 
 void btm_sec_pin_code_request(UINT8 *p_bda) {
