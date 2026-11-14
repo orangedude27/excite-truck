@@ -93,9 +93,15 @@ extern unsigned int lbl_8055FF40;
 extern void fn_802E317C(void *, ...);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034D198[];
+// The FileCd object is this TU's one static block (lbl_8055FF38): the "allocator"
+// always hands out that block, the requested size and tag only say what was asked.
 unsigned int *fn_802E3EB0(void) { return &lbl_8055FF38; }
 
+// ... and giving it back is nothing at all.
 void fn_802E3EB8(void) {}
+
+#define FileCd_alloc fn_802E3EB0 /* the one static FileCd block */
+#define FileCd_free fn_802E3EB8  /* which is never returned to it */
 
 #pragma scheduling invalid_target
 void *fn_802E3EBC(void) {
