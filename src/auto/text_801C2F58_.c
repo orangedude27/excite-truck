@@ -360,6 +360,9 @@ s32 fn_801C3B7C(const void *leftEntry, const void *rightEntry) {
 
 #pragma push
 #pragma scheduling on
+/* Removes the timeline entry at the given index: clears it, marks its time as
+ * the -999 sentinel so qsort moves it past valid entries, re-sorts, then
+ * decrements the entry count. */
 void fn_801C3C14(s32 arg0) {
     s32 offset = arg0 * 0x30C;
     memset((void *)(lbl_8055E7F8 + offset), 0, 0x30C);
