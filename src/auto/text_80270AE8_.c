@@ -525,16 +525,20 @@ extern "C" void fn_802712F8(void *arg0) {
     extern void fn_80277828(void);
     extern void fn_802E30C8(const char *, ...);
     extern int stricmp(const char *, const char *);
+    register char *tableA;
+    register char *tableB;
+    register Iterator *iterator;
+    register Item *item;
+    register int index;
     register char *strings = lbl_80346B00;
     lbl_8055F550 = 0;
     lbl_8055F548 = 0;
     fn_80277740();
     if (fn_8012C33C(arg0) != 0) {
-        register Iterator *iterator = (Iterator *)fn_80131808(arg0);
-        register char *tableA = lbl_8049A2C8;
-        register char *tableB = lbl_8049EDC8;
-        register Item *item;
-        register int index = 0;
+        iterator = (Iterator *)fn_80131808(arg0);
+        tableA = lbl_8049A2C8;
+        tableB = lbl_8049EDC8;
+        index = 0;
         while ((item = iterator->next(index)) != 0) {
             if (stricmp(item->getName(), lbl_8055C5A0) == 0) {
                 if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0)
@@ -549,10 +553,13 @@ extern "C" void fn_802712F8(void *arg0) {
         }
         fn_80131818(iterator);
     } else if (fn_8012C33C(strings + 0x334) != 0) {
-        register Iterator *iterator = (Iterator *)fn_80131808(strings + 0x334);
-        register char *tableA = lbl_8049A2C8;
+        register Iterator *iterator;
         register Item *item;
-        register int index = 0;
+        register int index;
+        register char *tableA;
+        iterator = (Iterator *)fn_80131808(strings + 0x334);
+        tableA = lbl_8049A2C8;
+        index = 0;
         while ((item = iterator->next(index)) != 0) {
             if (stricmp(item->getName(), lbl_8055C5A0) == 0) {
                 if (lbl_8055F548 < 0xC8) {
