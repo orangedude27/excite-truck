@@ -693,6 +693,8 @@ extern "C" void fn_8029FEF8(void) {
 #pragma cplusplus off
 #pragma pop
 void fn_8029FFBC(void) {
+    /* For each active entry in the lbl_804B5070 table, destroy the objects at
+     * offsets 0x64 and 0x70 if present (0x78-byte entries). */
     unsigned char *current = lbl_804B5070;
     int i = 0;
     int temp;
