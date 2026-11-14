@@ -59,10 +59,11 @@ void fn_802DB2D4(void) {
     GXSetAlphaCompare(4, ((unsigned char *)lbl_804DB468[0])[0xE4], 1, 0, 0);
 }
 
-void fn_802DB304(void *arg0, int arg1) {
-    void **dst = (void **)arg0;
+void fn_802DB304(void *dest, int mode) {
+    /* Copy 1, 2, or 3 texture object pointers from lbl_804DB468 into dest based on mode (0, 2, or 1). */
+    void **dst = (void **)dest;
 
-    switch (arg1) {
+    switch (mode) {
     case 0:
         dst[0] = lbl_804DB468[0];
         return;
