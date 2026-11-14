@@ -1128,13 +1128,26 @@ void fn_80068E08(s32 arg0) {
 }
 
 extern char lbl_803131C4[];
-void SyncFlushCallback(s32 arg0) {
-    DBPrintf_8006CFA8(lbl_803131C4, arg0, lbl_80392960[0xC]);
-    if (lbl_80392960[0xC] != 0) {
-        if (arg0 == 0)
-            lbl_80392960[0xC] = 0x17;
+/* WUD's completion hook for the asynchronous SCFlush that starts the Bluetooth
+ * stack shutdown: it prints the flush status together with the sync state it
+ * was running under, and once the sync state machine has left WUD_STATE_START
+ * records whether the flush went through.  Same code as the SDK's
+ * SyncFlushCallback in src/revolution/WUD/WUD.c, which this unit duplicates. */
+void SyncFlushCallback(s32 status) {
+    /* include/revolution/WUD/WUDInternal.h's WUDState / WUDSyncState and
+     * revolution/SC.h's SCStatus, spelled out here because this unit includes
+     * none of those headers. */
+    enum { WUD_STATE_START = 0, WUD_STATE_ERROR = 0xFF };
+    enum { WUD_STATE_SYNC_COMPLETE = 23 };
+    enum { SC_STATUS_OK = 0 };
+
+    DBPrintf_8006CFA8(lbl_803131C4 /* "SyncFlushCallback() : %d, Sync: %d\n" */, status,
+                      lbl_80392960[0xC] /* _wcb.syncState */);
+    if (lbl_80392960[0xC] != WUD_STATE_START) {
+        if (status == SC_STATUS_OK)
+            lbl_80392960[0xC] = WUD_STATE_SYNC_COMPLETE;
         else
-            lbl_80392960[0xC] = 0xFF;
+            lbl_80392960[0xC] = WUD_STATE_ERROR;
     }
 }
 
