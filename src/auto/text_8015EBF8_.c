@@ -696,13 +696,14 @@ void fn_8015F92C(float *arg0, float farg0) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_8015FA44(void *arg0, s32 arg1, f32 arg2) {
+/* Finds the next entry index > arg1 in a 0x40-element array of 8-byte records {f32 value, s32 type} whose value is > threshold, stopping at type 1 or returning a type-2 candidate; returns -1 if none. */
+s32 fn_8015FA44(void *records, s32 startIndex, f32 threshold) {
     s32 result = -1;
     s32 i;
-    if (((s32 *)((char *)arg0 + arg1 * 8))[1] != 1) {
-        for (i = arg1 + 1; i < 0x40; i++) {
-            void *p = (char *)arg0 + i * 8;
-            if (*(f32 *)p > arg2) {
+    if (((s32 *)((char *)records + startIndex * 8))[1] != 1) {
+        for (i = startIndex + 1; i < 0x40; i++) {
+            void *p = (char *)records + i * 8;
+            if (*(f32 *)p > threshold) {
                 result = i;
                 break;
             }
