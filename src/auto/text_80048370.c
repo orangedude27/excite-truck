@@ -885,6 +885,7 @@ void MEMInitList(MEMList* list, u16 offset) {
     list->length = 0;
 }
 
+/* Appends an object to a MEMList, updating the embedded link at the list's link offset. */
 void MEMAppendListObject(MEMList* list, void* object) {
     if (list->head == 0) {
         MEMLink* link = (MEMLink*)((u8*)object + list->offset);
