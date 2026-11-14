@@ -438,6 +438,9 @@ void fn_80177048(void) {
     __AXDSPInitCallback_801769E0();
 }
 #pragma pop
+/* Initializes the fade/state block in lbl_80430558 for a fade-out using fn_80176DD4
+ * as completion callback: sets callback/time/state fields, latches time values,
+ * clears alpha, then marks fade active. */
 void fn_801770C8(void) {
     *(void **)(lbl_80430558 + 0x10) = fn_80176DD4;
     *(s32 *)(lbl_80430558 + 0xC) = 2;
