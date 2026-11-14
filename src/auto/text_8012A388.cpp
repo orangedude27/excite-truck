@@ -487,6 +487,8 @@ loop_37_done:
     return var_r25;
 }
 
+#pragma push
+#pragma processor 750
 extern "C" void *fn_8012AFE0(void *arg0, void *arg1) {
     u32 buf[13];
     s32 handle;
@@ -580,12 +582,12 @@ done2:
                     n = 0;
                     while (var_r31 < *(s32 *)(p + 0x88)) {
                         u8 *e = (u8 *)*(void **)(p + 0x60) + n;
-                        u32 fl = *(u32 *)(e + 0x34);
-                        if (fl & 4) fn_802E317C(lbl_8032AE20);
+                        if (*(u32 *)(e + 0x34) & 4) fn_802E317C(lbl_8032AE20, e);
                         var_r31 += 1;
                         e = (u8 *)*(void **)(p + 0x60) + n;
+                        u32 fl = *(u32 *)(e + 0x34);
                         n += 0x44;
-                        *(u32 *)(e + 0x34) = *(u32 *)(e + 0x34) & ~0xF;
+                        *(u32 *)(e + 0x34) = fl & ~0xF;
                     }
                     if (*(s32 *)(p + 0x64) != 0) fn_8012C4D8(*(void **)(p + 0x64));
                     if (*(s32 *)(p + 0xA0) != 0) fn_80128660(*(s32 *)(p + 0xA0));
@@ -599,7 +601,6 @@ done2:
     }
     return p;
 }
-
 #pragma pop
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" s32 lbl_80559984;
@@ -839,14 +840,14 @@ static inline s32 LoadEntryData(void *arg0, s32 arg1, const char *strings) {
 
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     u8 *entry;
-    void *object;
     u8 *header;
+    void *object;
     s32 handle;
-    register const char *strings;
     s32 startTime;
-    u32 flags;
-    s32 size;
     s32 allocSize;
+    u32 flags;
+    const char *strings;
+    s32 size;
 
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
