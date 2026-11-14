@@ -170,10 +170,11 @@ int fn_802E7A70(unsigned int value) {
     return 1;
 }
 #pragma pop
-int fn_802E7AF4(int arg0, int arg1) {
-    if (arg0 == 1) {
+int fn_802E7AF4(int eventType, int shutdownMode) {
+    /* On event type 1, trigger a WPAD shutdown/reconnect sequence and wait until the shutdown completes. */
+    if (eventType == 1) {
         fn_80128684();
-        if (arg1 != 2) {
+        if (shutdownMode != 2) {
             fn_8005EE20();
         } else {
             fn_8005ED8C();
