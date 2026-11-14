@@ -964,14 +964,15 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     }
 }
 
-extern "C" void *fn_80219568(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    fn_80218F34(arg0, arg1, arg2, arg1 + arg5, arg2 + arg6, arg3);
-    *(s32 *)((u8 *)arg0 + 0x244) = 0;
-    *(void **)arg0 = lbl_8033FA28;
-    *(s32 *)((u8 *)arg0 + 0x248) = 0;
-    *(s32 *)((u8 *)arg0 + 0x24C) = arg3;
-    *(s32 *)((u8 *)arg0 + 0x250) = arg4;
-    return arg0;
+extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 width, s32 height, s32 arg7) {
+    /* Initialize a menu text widget: set up base bounds, vtable, and fields at 0x244-0x250. */
+    fn_80218F34(obj, x, y, x + width, y + height, arg3);
+    *(s32 *)((u8 *)obj + 0x244) = 0;
+    *(void **)obj = lbl_8033FA28;
+    *(s32 *)((u8 *)obj + 0x248) = 0;
+    *(s32 *)((u8 *)obj + 0x24C) = arg3;
+    *(s32 *)((u8 *)obj + 0x250) = arg4;
+    return obj;
 }
 
 /* Draw this menu text widget (its draw method, vtable slot 0x24 of the widget
