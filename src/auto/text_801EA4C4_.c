@@ -4,6 +4,40 @@
 typedef int s32;
 typedef unsigned char u8;
 typedef float f32;
+
+/* CarMgr keeps its per-level car table in a heap block tagged "CarMgr::info"
+   (lbl_8055EB78, 0x608 bytes, fn_801EA4C4): eight CarMgrEntry records and then
+   the counts and the slot table at 0x5E0.  The car type stored at +0x44 is one
+   of the five values CarTypeIsReal (fn_802794AC) knows about; they spell 'P'
+   to 'T'. */
+enum CarType {
+    CAR_TYPE_P = 0x50, /* a real car */
+    CAR_TYPE_Q = 0x51, /* a real car */
+    CAR_TYPE_R = 0x52, /* real only while fn_80265D7C agrees */
+    CAR_TYPE_S = 0x53, /* real while bit 0 of the car info's +0x10 is set */
+    CAR_TYPE_T = 0x54  /* never a real car */
+};
+
+/* One car of the table.  fn_801EA59C installs a car from its definition (the
+   word at +0x00 of it is the CarType, the 0x74 bytes after it are copied in
+   whole), fn_801EA9DC refreshes 0x0C-0x40 from the live object every frame. */
+struct CarMgrEntry {
+    u8 active;                /* 0x00 whether this car is in play at all */
+    u8 pad1[3];
+    s32 index;                /* 0x04 this record's number in the table */
+    s32 unk08;                /* 0x08 fn_801EAB10 writes it */
+    char live[0x44 - 0x0C];   /* 0x0C state refreshed by fn_801EA9DC */
+    s32 carType;              /* 0x44 one of enum CarType */
+    char definition[0xBC - 0x48]; /* 0x48 the car definition copied in */
+};                            /* 0xBC */
+
+/* The table's header, sitting right after the eight records. */
+struct CarMgrTail {
+    s32 entryCount; /* 0x5E0 highest record used + 1 */
+    s32 realCount;  /* 0x5E4 highest record whose car type is real, + 1 */
+    s32 slots[8];   /* 0x5E8 slot -> record; fn_801EA4C4 seeds it with 0..7 */
+};                  /* 0x5E0, 0x28 bytes; the block ends at 0x608 */
+
 extern s32 lbl_8055EB78;
 extern s32 lbl_8055EB7C;
 extern char lbl_80339E08[];
@@ -40,7 +74,6 @@ void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
     s32 version;
     s32 allow;
     u8 active;
-
     entry = (u8 *)(*(s32 *)&lbl_8055EB78 + arg0 * 0xBC);
     version = *(s32 *)arg2;
     *(s32 *)(entry + 0x44) = version;
@@ -145,28 +178,17 @@ void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
     *(s32 *)(entry + 0xb0) = *(s32 *)((u8 *)arg2 + 0x6c);
     entry[0xB4] = ((u8 *)arg2)[0x70];
     *(s32 *)(entry + 0xB8) = *(s32 *)((u8 *)arg2 + 0x74);
-
     active = 1;
     if (version != 0x50) {
         allow = 0;
-        if (version == 0x52 && fn_80265D7C() != 0) {
-            allow = 1;
-        }
+        if (version == 0x52 && fn_80265D7C() != 0) allow = 1;
         if (allow == 0) active = 0;
     }
-
     entry[0] = active;
     *(s32 *)(entry + 8) = arg1;
     *(s32 *)(entry + 4) = arg0;
-
-    if (arg0 >= *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E0)) {
-        *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E0) = arg0 + 1;
-    }
-
-    if (fn_802794AC(*(s32 *)arg2, 0) != 0
-        && arg0 >= *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4)) {
-        *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4) = arg0 + 1;
-    }
+    if (arg0 >= *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E0)) *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E0) = arg0 + 1;
+    if (fn_802794AC(*(s32 *)arg2, 0) != 0 && arg0 >= *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4)) *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4) = arg0 + 1;
 }
 
 s32 fn_801EA994(void) {
