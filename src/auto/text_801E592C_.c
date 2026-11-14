@@ -29,8 +29,8 @@ s32 *fn_801E592C(void) {
     return NULL;
 }
 #pragma scheduling on
+/* No-op placeholder. */
 void fn_801E598C(void) {
-
 }
 
 s32 fn_801E5990(void *arg0) {
@@ -47,8 +47,113 @@ void fn_801E5998(void *src, void *dst, s32 *outCount) {
     *outCount = count;
 }
 
-void fn_801E5E24(void *arg0, void *arg1, s32 arg2, void *arg3, void *arg4) {
-    (void)arg0; (void)arg1; (void)arg2; (void)arg3; (void)arg4;
+s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
+    float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+    float qx, qy, qz, qw;
+    float xx2, yy2, zz2, wx2, wy2, wz2, xy2, xz2, yz2;
+    float a00, a01, a02, a10, a11, a12, a20, a21, a22;
+    float b00, b01, b02;
+    float c00, c01, c02, c10, c11, c12, c20, c21, c22;
+    float t0, t1, t2;
+    float s0, s1, s2;
+    float v0, v1, v2;
+    float bufA[384];
+    float bufB[384];
+    float tmpM[12];
+    float tmpV[12];
+    float tmpR[12];
+    s32 i;
+    s32 idx;
+    s32 *pBase = (s32 *)arg0;
+    float *curQ = (float *)arg1;
+    s32 count = arg2;
+    float *pOut = (float *)arg3;
+    float *curRec = (float *)(arg0 + 0x10);
+    float *curDst = bufB;
+    for (i = 0; i < count; i++) {
+        qx = curQ[4];
+        qy = curQ[5];
+        qz = curQ[6];
+        qw = curQ[7];
+        xx2 = qx * (qx + qx);
+        yy2 = qy * (qy + qy);
+        zz2 = qz * (qz + qz);
+        xy2 = qx * (qy + qy);
+        xz2 = qx * (qz + qz);
+        yz2 = qy * (qz + qz);
+        wx2 = qw * (qx + qx);
+        wy2 = qw * (qy + qy);
+        wz2 = qw * (qz + qz);
+        m00 = 1.0f - (yy2 + zz2);
+        m01 = xy2 - wz2;
+        m02 = xz2 + wy2;
+        m10 = xy2 + wz2;
+        m11 = 1.0f - (xx2 + zz2);
+        m12 = yz2 - wx2;
+        m20 = xz2 - wy2;
+        m21 = yz2 + wx2;
+        m22 = 1.0f - (xx2 + yy2);
+        idx = ((s32 *)curRec)[12];
+        a00 = curRec[0]; a01 = curRec[1]; a02 = curRec[2];
+        a10 = curRec[3]; a11 = curRec[4]; a12 = curRec[5];
+        a20 = curRec[6]; a21 = curRec[7]; a22 = curRec[8];
+        b00 = curRec[9]; b01 = curRec[10]; b02 = curRec[11];
+        if (idx < 1) {
+            c00 = 1.0f; c01 = 0.0f; c02 = 0.0f;
+            c10 = 0.0f; c11 = 1.0f; c12 = 0.0f;
+            c20 = 0.0f; c21 = 0.0f; c22 = 1.0f;
+        } else {
+            float *src = (float *)((u8 *)bufB + idx * 0x30);
+            c00 = src[0]; c01 = src[1]; c02 = src[2];
+            c10 = src[3]; c11 = src[4]; c12 = src[5];
+            c20 = src[6]; c21 = src[7]; c22 = src[8];
+        }
+        t0 = fn_80144514(m00, a00, m01, a10, m02, a20);
+        t1 = fn_80144514(m00, a01, m01, a11, m02, a21);
+        t2 = fn_80144514(m00, a02, m01, a12, m02, a22);
+        s0 = fn_80144514(m10, a00, m11, a10, m12, a20);
+        s1 = fn_80144514(m10, a01, m11, a11, m12, a21);
+        s2 = fn_80144514(m10, a02, m11, a12, m12, a22);
+        v0 = fn_80144514(m20, a00, m21, a10, m22, a20);
+        v1 = fn_80144514(m20, a01, m21, a11, m22, a21);
+        v2 = fn_80144514(m20, a02, m21, a12, m22, a22);
+        tmpR[0] = t0; tmpR[1] = s0; tmpR[2] = v0;
+        tmpR[3] = t1; tmpR[4] = s1; tmpR[5] = v1;
+        tmpR[6] = t2; tmpR[7] = s2; tmpR[8] = v2;
+        tmpV[0] = (b02 * v2) + ((b00 * t0) + (b01 * s0));
+        tmpV[1] = (b02 * s2) + ((b00 * t1) + (b01 * s1));
+        tmpV[2] = (b02 * v2) + ((b00 * v0) + (b01 * v1));
+        tmpV[0] *= -1.0f; tmpV[1] *= -1.0f; tmpV[2] *= -1.0f;
+        fn_801BFD34(tmpM, tmpV, tmpR);
+        fn_80015B20(tmpV, tmpR, tmpR);
+        fn_801BFD34((void *)((u8 *)curDst + 0x24), tmpM, tmpR);
+        fn_80015B20(curDst, tmpV, tmpR);
+        curRec += 14;
+        curQ += 4;
+        curDst += 12;
+    }
+    if (pOut != 0) {
+        for (i = 0; i < 12; i++) ((s32 *)pOut)[i] = ((s32 *)bufB)[i];
+    }
+    {
+        s32 n = pBase[3];
+        float *src = bufB;
+        s32 k;
+        s32 base = arg0;
+        for (k = 0; k < count; k++) {
+            s32 id = *(s32 *)(base + 0x44);
+            if (id >= 0) {
+                float *dst = (float *)((u8 *)bufA + id * 0x30);
+                dst[0]=src[0]; dst[1]=src[1]; dst[2]=src[2]; dst[3]=src[3];
+                dst[4]=src[4]; dst[5]=src[5]; dst[6]=src[6]; dst[7]=src[7];
+                dst[8]=src[8]; dst[9]=src[9]; dst[10]=src[10]; dst[11]=src[11];
+            }
+            base += 0x38;
+            src += 12;
+        }
+        fn_802C7A38(0, bufA, n);
+    }
+    return 0;
 }
 
 extern void fn_80015B20(void *, void *, void *);
