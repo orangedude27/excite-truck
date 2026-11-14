@@ -694,16 +694,17 @@ int fn_80178678(void *stream, void **outObject, int expectedType) {
 }
 #pragma pop
 
-long fn_8017873C(long *arg0, long arg1, long arg2, long arg3, long arg4) {
-    if ((unsigned long)(arg3 + *arg0 + 1) < 0x1000) {
+long fn_8017873C(long *buffer, long tag, long data, long length, long arg4) {
+    /* Append a tagged payload to a growable buffer if there is space. */
+    if ((unsigned long)(length + *buffer + 1) < 0x1000) {
         long result;
-        *(unsigned char *)((char *)arg0 + *arg0 + 4) = arg1;
-        memcpy((char *)arg0 + *arg0 + 5, (void *)arg2, arg3);
-        result = arg3 + *arg0;
-        *arg0 = result + 1;
+        *(unsigned char *)((char *)buffer + *buffer + 4) = tag;
+        memcpy((char *)buffer + *buffer + 5, (void *)data, length);
+        result = length + *buffer;
+        *buffer = result + 1;
         return result;
     }
-    return (long)arg0;
+    return (long)buffer;
 }
 
 #pragma push
