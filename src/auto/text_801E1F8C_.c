@@ -100,19 +100,23 @@ extern "C" void fn_801E1F8C(void *group, void *other) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_801E2084(void *arg0, void *arg1) {
-    class Obj {
+/* Hand `object` to every solid of the collision group `group`: its solids are an
+ * array at +0x14 with their count at +0x24, and each one's collide method
+ * (vtable +0x10) is called with `object`.  The one-sided form of fn_801E1F8C,
+ * which hands every solid of one group to every solid of another. */
+extern "C" void fn_801E2084(void *object, void *group) {
+    class Solid {
       public:
         virtual void v0();
         virtual void v1();
-        virtual void call(void *);
+        virtual void collide(void *other);  /* vtable +0x10 */
     };
-    int i = 0;
-    void **entry = (void **)arg1;
-    while (i < *(int *)((char *)arg1 + 0x24)) {
-        Obj *obj = *(Obj **)((char *)entry + 0x14);
-        obj->call(arg0);
-        entry++;
+    s32 i = 0;
+    void **slot = (void **)group;
+    while (i < ((struct SolidGroup *)group)->solidCount) {
+        Solid *solid = *(Solid **)((char *)slot + 0x14);
+        solid->collide(object);
+        slot++;
         i++;
     }
 }
