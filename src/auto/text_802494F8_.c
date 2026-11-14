@@ -118,6 +118,17 @@ void fn_80249744(void) {
     fn_80214CB4(lbl_8055BF34);
 }
 
+#pragma push
+#pragma dont_inline on
+s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
+    if (arg3 != 0 && fn_802411D4() == 0) {
+        return 0;
+    }
+    lbl_8055F290 = (unsigned char)arg3;
+    return 0;
+}
+#pragma pop
+
 void fn_8022D7C4(void *, unsigned int);
 void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110(void *this_, s32 flag) {
     if (this_) {
@@ -734,6 +745,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     return 0;
 }
 #pragma pop
+
 #pragma use_lmw_stmw on
 void *fn_8024AFF8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
