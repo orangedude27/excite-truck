@@ -353,7 +353,6 @@ void fn_80058A60(s16 intr, OSContext *context) {
     void *temp_r3_8;
     void *temp_r3_9;
     void *temp_r6_3;
-
     temp_r3 = *(u16 *)0xCC002030;
     var_r6 = 0;
     if (temp_r3 & 0x8000) {
@@ -453,19 +452,19 @@ block_28:
     }
     lbl_80558F9C = temp_r26_2;
     intr1 = OSDisableInterrupts();
-    switch (CurrTvMode) {                  /* switch 1 */
-    case 0:                                         /* switch 1 */
-    case 3:                                         /* switch 1 */
-    case 6:                                         /* switch 1 */
-    case 7:                                         /* switch 1 */
+    switch (CurrTvMode) {
+    case 0:
+    case 3:
+    case 6:
+    case 7:
         var_r29 = 0;
         break;
-    case 1:                                         /* switch 1 */
-    case 4:                                         /* switch 1 */
+    case 1:
+    case 4:
         var_r29 = 1;
         break;
-    case 2:                                         /* switch 1 */
-    case 5:                                         /* switch 1 */
+    case 2:
+    case 5:
         var_r29 = CurrTvMode;
         break;
     }
@@ -491,26 +490,26 @@ block_28:
 loop_79:
         if ((s32) lbl_8055DBE0 != 0) {
             temp_r26_3 = 1 << (0x1F - __cntlzw(lbl_8055DBE0));
-            switch (temp_r26_3) {                   /* switch 2; irregular */
-            case 0x1:                               /* switch 2 */
+            switch (temp_r26_3) {
+            case 0x1:
                 __VISetCGMS();
                 break;
-            case 0x2:                               /* switch 2 */
+            case 0x2:
                 __VISetWSS();
                 break;
-            case 0x4:                               /* switch 2 */
+            case 0x4:
                 __VISetClosedCaption();
                 break;
-            case 0x8:                               /* switch 2 */
+            case 0x8:
                 __VISetMacrovision();
                 break;
-            case 0x10:                              /* switch 2 */
+            case 0x10:
                 fn_8005CB70();
                 break;
-            case 0x20:                              /* switch 2 */
+            case 0x20:
                 __VISetTrapFilter();
                 break;
-            case 0x40:                              /* switch 2 */
+            case 0x40:
                 __VISetRGBOverDrive();
                 break;
             }
@@ -905,6 +904,11 @@ void fn_80059AD8(SomeVIStruct* HorVer, u32* tfbb, u32* bfbb, u32* rtfbb, u32* rb
     }
 }
 
+/* Recomputes the vertical porch/blanking shadow registers (0 and 6-9) for the
+   picture window at dispPosY with dispSizeY active lines, from the current
+   timing's odd/even porch values (equ: equalizing pulses, acv: total active
+   lines). With black set the picture window is collapsed to zero height, so the
+   display shows black while keeping the same TV timing. */
 void fn_80059D90(s32 dispPosY, s32 dispSizeY, u8 equ, s32 acv, s32 prbOdd, s32 prbEven, s32 psbOdd, s32 psbEven, BOOL black)
 {
     BOOL b = black;
@@ -1096,52 +1100,38 @@ static void setHorizontalRegs(VITiming *tm, u16 dispPosX, u16 dispSizeX)
     MARK_CHANGED(4);
 }
 
+extern char lbl_803116F0[];
 void VIConfigure(const GXRenderModeObj *rm)
 {
+    char *msgBase = lbl_803116F0;
     VITiming *tm;
     u32 reg;
     int enabled;
     u32 newNonInter;
-    u32 tvInBootrom;
+    s32 tvInBootrom;
     u32 tvInGame;
-
-#if DEBUG
-    ASSERTMSGLINEV(0x601, (rm->viHeight & 1) == 0,
-        "VIConfigure(): Odd number(%d) is specified to viHeight\n",
-        rm->viHeight);
-
-    if (rm->xfbMode == VI_XFBMODE_DF || rm->tvInfo == VI_TVMODE_NTSC_PROG) {
-        ASSERTMSGLINEV(0x607, rm->xfbHeight == rm->viHeight,
-            "VIConfigure(): xfbHeight(%d) is not equal to viHeight(%d) when DF XFB mode or progressive mode is specified\n",
-            rm->xfbHeight, rm->viHeight);
-    }
-    if (rm->xfbMode == VI_XFBMODE_SF && rm->tvInfo != VI_TVMODE_NTSC_PROG) {
-        ASSERTMSGLINEV(0x60E, rm->viHeight == rm->xfbHeight * 2,
-            "VIConfigure(): xfbHeight(%d) is not as twice as viHeight(%d) when SF XFB mode is specified\n",
-            rm->xfbHeight, rm->viHeight);
-    }
-#endif
-
+    u16 hct;
+    u16 vct;
+    u16 borrow;
+    u16 bbVal;
     enabled = OSDisableInterrupts();
     newNonInter = rm->tvInfo & 3;
     if (HorVer.nonInter != newNonInter) {
         HorVer.nonInter = newNonInter;
         lbl_8055DB60 = 1;
     }
-
-    tvInBootrom = *(u32*)0x800000CC;
+    tvInBootrom = *(s32*)0x800000CC;
     tvInGame = (u32)rm->tvInfo >> 2;
     if (tvInGame == 4 && lbl_8055DB90 == 0) {
         lbl_8055DB90 = 1;
-        OSReport("***************************************\n");
-        OSReport(" ! ! ! C A U T I O N ! ! !             \n");
-        OSReport("This TV format \"DEBUG_PAL\" is only for \n");
-        OSReport("temporary solution until PAL DAC board \n");
-        OSReport("is available. Please do NOT use this   \n");
-        OSReport("mode in real games!!!                  \n");
-        OSReport("***************************************\n");
+        OSReport(msgBase + 0x2ec);
+        OSReport(msgBase + 0x318);
+        OSReport(msgBase + 0x344);
+        OSReport(msgBase + 0x370);
+        OSReport(msgBase + 0x39c);
+        OSReport(msgBase + 0x3c8);
+        OSReport(msgBase + 0x2ec);
     }
-
     switch (tvInBootrom) {
     case 0:
     case 2:
@@ -1156,47 +1146,50 @@ void VIConfigure(const GXRenderModeObj *rm)
             break;
         }
     default:
-        OSPanic(lbl_80558FAC, 0x9A1, "VIConfigure(): Tried to change mode from (%d) to (%d), which is forbidden\n", tvInBootrom, tvInGame);
+        OSPanic(lbl_80558FAC, 0x9A1, msgBase + 0x3f4, tvInBootrom, tvInGame);
         break;
     }
-
     if (tvInGame == 0 || tvInGame == 2) {
         HorVer.tv = tvInBootrom;
     } else {
         HorVer.tv = tvInGame;
     }
-
     HorVer.DispPosX = rm->viXOrigin;
-    if (HorVer.nonInter == 1) {
-        HorVer.DispPosY = (u16)(rm->viYOrigin * 2);
-    } else {
-        HorVer.DispPosY = rm->viYOrigin;
-    }
+    HorVer.DispPosY = (HorVer.nonInter == 1) ? (u16)(rm->viYOrigin * 2) : rm->viYOrigin;
     HorVer.DispSizeX = rm->viWidth;
-    HorVer.PanSizeX = rm->fbWidth;
-    HorVer.PanSizeY = rm->xfbHeight;
-    HorVer.FBMode = rm->xfbMode;
-    HorVer.PanPosX = 0;
-    HorVer.PanPosY = 0;
     HorVer.FBSizeX = rm->fbWidth;
     HorVer.FBSizeY = rm->xfbHeight;
+    HorVer.FBMode = rm->xfbMode;
+    HorVer.PanSizeX = rm->fbWidth;
+    HorVer.PanSizeY = rm->xfbHeight;
+    HorVer.PanPosX = 0;
+    HorVer.PanPosY = 0;
     HorVer.DispSizeY = HorVer.PanSizeY;
     if (HorVer.nonInter == 2 || HorVer.nonInter == 3) {
     } else if (HorVer.FBMode == VI_XFBMODE_SF) {
         HorVer.DispSizeY = (u16)(HorVer.PanSizeY * 2);
     }
-
     HorVer.threeD = (HorVer.nonInter == 3);
     tm = (VITiming*)fn_80059234(HorVer.tv * 4 + HorVer.nonInter);
     HorVer.timing = tm;
     AdjustPosition(tm->acv);
-    setInterruptRegs(tm);
-
+    vct = tm->nhlines / 2;
+    borrow = tm->nhlines % 2;
+    if (borrow != 0) {
+        hct = tm->hlw;
+    } else {
+        hct = 0;
+    }
+    vct++;
+    hct++;
+    shdwRegs[25] = (u16)(u32)hct;
+    MARK_CHANGED(25);
+    shdwRegs[24] = vct | 0x1000;
+    MARK_CHANGED(24);
     {
         u32 var_r5_2;
         u16 var_r10;
         u16 var_r9;
-
         if (HorVer.nonInter == 2 || HorVer.nonInter == 3) {
             var_r5_2 = (shdwRegs[1] & ~4) | 4;
             var_r10 = (shdwRegs[54] & ~1) | 1;
@@ -1213,10 +1206,20 @@ void VIConfigure(const GXRenderModeObj *rm)
         MARK_CHANGED(54);
         shdwRegs[54] = var_r10;
     }
-
     setScalingRegs(HorVer.PanSizeX, HorVer.DispSizeX, HorVer.threeD);
     setHorizontalRegs(tm, HorVer.AdjustedDispPosX, HorVer.DispSizeX);
-    setBBIntervalRegs(tm);
+    bbVal = tm->bs1 | (tm->be1 << 5);
+    shdwRegs[11] = bbVal;
+    MARK_CHANGED(11);
+    bbVal = tm->bs3 | (tm->be3 << 5);
+    shdwRegs[10] = bbVal;
+    MARK_CHANGED(10);
+    bbVal = tm->bs2 | (tm->be2 << 5);
+    shdwRegs[13] = bbVal;
+    MARK_CHANGED(13);
+    bbVal = tm->bs4 | (tm->be4 << 5);
+    shdwRegs[12] = bbVal;
+    MARK_CHANGED(12);
     setPicConfig(HorVer.FBSizeX, HorVer.FBMode, HorVer.PanPosX, HorVer.PanSizeX, &HorVer.wordPerLine, &HorVer.std, &HorVer.wpl, &HorVer.xof);
     if (FBSet != 0) {
         fn_80059AD8(&HorVer, &HorVer.tfbb, &HorVer.bfbb, &HorVer.rtfbb, &HorVer.rbfbb);
@@ -2771,27 +2774,14 @@ void __VISetRevolutionModeSimple(void)
 {
     u8 a[2], b[2], c[2], d[3], e[2], f[3], g[3], h[5], j[2], k[2];
     volatile u8 i[27];
-    volatile u8 *src;
-    u32 t7;
-    u32 t6;
-    u32 t5;
-    u32 t4;
-    u32 t3;
-    u32 t2;
-    u32 t1;
-    u32 t0;
-    u8 t8;
-    u8 t9;
-    u32 value = 1;
-
-    a[0]=0x6a; a[1]=value; __VISendI2CData(0xe0,a,2); WaitMicroTime(2);
-    b[0]=0x65; b[1]=value; __VISendI2CData(0xe0,b,2); WaitMicroTime(2);
+    a[0]=0x6a; a[1]=1; __VISendI2CData(0xe0,a,2); WaitMicroTime(2);
+    b[0]=0x65; b[1]=1; __VISendI2CData(0xe0,b,2); WaitMicroTime(2);
     __VISetYUVSEL((u8)fn_8005AD9C());
-    value=0; c[0]=value; c[1]=value; __VISendI2CData(0xe0,c,2); WaitMicroTime(2);
+    c[0]=0; c[1]=0; __VISendI2CData(0xe0,c,2); WaitMicroTime(2);
     d[0]=0x71; d[1]=0x8e; d[2]=0x8e; __VISendI2CData(0xe0,d,3); WaitMicroTime(2);
     e[0]=2; e[1]=7; __VISendI2CData(0xe0,e,2); WaitMicroTime(2);
-    lbl_80558FC0=value; lbl_80558FC1=value; lbl_80558FC2=value;
-    f[0]=5; f[1]=value; f[2]=value; __VISendI2CData(0xe0,f,3); WaitMicroTime(2);
+    lbl_80558FC0=0; lbl_80558FC1=0; lbl_80558FC2=0;
+    f[0]=5; f[1]=0; f[2]=0; __VISendI2CData(0xe0,f,3); WaitMicroTime(2);
     if (lbl_80558FC3 || lbl_80558FC4 || lbl_80558FC5 || lbl_80558FC6) {
       lbl_80558FC3=0; lbl_80558FC4=0; lbl_80558FC5=0; lbl_80558FC6=0; lbl_8055DBE0 |= 2;
     }
@@ -2803,51 +2793,43 @@ void __VISetRevolutionModeSimple(void)
     }
     h[0]=0x7a; h[1]=lbl_80558FC7&127; h[2]=lbl_80558FC8&127; h[3]=lbl_80558FC9&127; h[4]=lbl_80558FCA&127;
     __VISendI2CData(0xe0,h,5); WaitMicroTime(2);
-
-    value = 0x40;
-    src = lbl_8038F490;
-    t0 = src[0];
-    t1 = src[1];
-    t2 = src[2];
-    t3 = src[3];
-    t4 = src[4];
-    t5 = src[5];
-    t6 = src[6];
-    t7 = src[7];
-
-    i[1] = t0; t0 = src[8];
-    i[2] = t1; t1 = src[9];
-    i[3] = t2; t2 = src[10];
-    i[4] = t3; t3 = src[11];
-    i[5] = t4; t4 = src[12];
-    i[6] = t5; t5 = src[13];
-    i[7] = t6; t6 = src[14];
-    i[8] = t7; t7 = src[15];
-
-    i[9] = t0; t0 = src[16];
-    i[10] = t1; t1 = src[17];
-    i[11] = t2; t2 = src[18];
-    i[12] = t3; t3 = src[19];
-    i[13] = t4; t4 = src[20];
-    i[14] = t5; t5 = src[21];
-    i[15] = t6; t6 = src[22];
-    i[16] = t7; t7 = src[23];
-
-    t8 = src[24];
-    t9 = src[25];
-    i[0] = value;
-
-    i[17] = t0;
-    i[18] = t1;
-    i[19] = t2;
-    i[20] = t3;
-    i[21] = t4;
-    i[22] = t5;
-    i[23] = t6;
-    i[24] = t7;
-    i[25] = t8;
-    i[26] = t9;
-
+    { volatile u8 *src = lbl_8038F490; u8 t7,t6,t5,t4,t3,t2,t1,t0; u8 t8,t9;
+t0=src[0];
+t1=src[1];
+t2=src[2];
+t3=src[3];
+t4=src[4];
+t5=src[5];
+t6=src[6];
+t7=src[7];
+i[1]=t0; t0=src[8];
+i[2]=t1; t1=src[9];
+i[3]=t2; t2=src[10];
+i[4]=t3; t3=src[11];
+i[5]=t4; t4=src[12];
+i[6]=t5; t5=src[13];
+i[7]=t6; t6=src[14];
+i[8]=t7; t7=src[15];
+i[9]=t0; t0=src[16];
+i[10]=t1; t1=src[17];
+i[11]=t2; t2=src[18];
+i[12]=t3; t3=src[19];
+i[13]=t4; t4=src[20];
+i[14]=t5; t5=src[21];
+i[15]=t6; t6=src[22];
+i[16]=t7; t7=src[23];
+t8=src[24]; t9=src[25]; i[0]=0x40;
+i[17]=t0;
+i[18]=t1;
+i[19]=t2;
+i[20]=t3;
+i[21]=t4;
+i[22]=t5;
+i[23]=t6;
+i[24]=t7;
+i[25]=t8;
+i[26]=t9;
+    }
     __VISendI2CData(0xe0,(u8*)i,27); WaitMicroTime(2);
     if ((s32)lbl_8055DBE4 != 1) { lbl_8055DBE4=1; lbl_8055DBE0 |= 0x40; }
     if ((s32)lbl_8055DBF0 == 3) { j[0]=10; j[1]=(lbl_8055DBE4<<1)|1; __VISendI2CData(0xe0,j,2); WaitMicroTime(2); }
