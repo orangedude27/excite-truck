@@ -891,7 +891,9 @@ extern char lbl_80347A50[];
 /* One contest event in the arrays fn_8027C2B8 builds (stride 0x14);
  * fn_8027C120 searches them by contestName. */
 struct ContestEvent {
-    /* 0x00 */ long eventId;
+    /* 0x00 */ long eventId;    /* the "event-path type" the queries below switch on; fn_8027C2B8
+                                 * stores the same value EventPathRecord::goalType holds:
+                                 * 0 = career (ep_career.val), 1 = challenge (ep_chal.val) */
     /* 0x04 */ long contestId;    /* index in the contest table, from its name */
     /* 0x08 */ long parentField;
     /* 0x0C */ char *contestName; /* the object's "contest_name" attribute */
