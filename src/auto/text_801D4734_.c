@@ -874,20 +874,20 @@ int fn_801D56C0(void *alarm) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma cplusplus on
-/* Calls virtual slot v4 on each entry in the container's list at +0x30 (count at +0x34). */
+/* Iterates the container's entry list (items at +0x30, count at +0x34) and invokes virtual slot v4 on each entry. */
 extern "C" void fn_801D4F2C(void *container) {
     struct Entry {
         virtual void v0();
         virtual void v1();
         virtual void v4();
     };
-    int offset = 0;
-    int index = 0;
-    while (index < *(int *)((char *)container + 0x34)) {
-        Entry *entry = *(Entry **)((char *)*(void **)((char *)container + 0x30) + offset);
+    int byteOffset = 0;
+    int entryIndex = 0;
+    while (entryIndex < *(int *)((char *)container + 0x34)) {
+        Entry *entry = *(Entry **)((char *)*(void **)((char *)container + 0x30) + byteOffset);
         entry->v4();
-        offset += 4;
-        index += 1;
+        byteOffset += 4;
+        entryIndex += 1;
     }
 }
 #pragma cplusplus reset
