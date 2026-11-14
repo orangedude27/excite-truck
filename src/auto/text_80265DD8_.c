@@ -2178,7 +2178,8 @@ void fn_8026A394(void *arg0) {
 #pragma scheduling on
 void fn_8026A4A0(int cameraIndex, int *outTransform, float *outFov) {
     struct WordPair { int a; int b; };
-    struct WordPair *src = (struct WordPair *)&((Camera *)sCameras)[cameraIndex].transform;
+    Camera *cam = (Camera *)sCameras + cameraIndex;
+    struct WordPair *src = (struct WordPair *)&cam->transform;
     struct WordPair *dst = (struct WordPair *)outTransform;
     int *srcWords = (int *)src;
     dst[0] = src[0];
@@ -2188,7 +2189,7 @@ void fn_8026A4A0(int cameraIndex, int *outTransform, float *outFov) {
     outTransform[8] = srcWords[8];
     *(struct WordPair *)(outTransform + 9) = *(struct WordPair *)(srcWords + 9);
     outTransform[11] = srcWords[11];
-    *outFov = ((Camera *)((char *)src - 0x58))->fov;
+    *outFov = cam->fov;
 }
 extern float lbl_8055F484;
 extern float lbl_80563C6C;
