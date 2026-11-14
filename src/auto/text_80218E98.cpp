@@ -792,6 +792,16 @@ extern "C" void *fn_8021915C(void *self, u32 deletingFlag) {
 #pragma pop
 #pragma dont_inline off
 
+struct MovieWidgetLayout {
+    void *vtable;    /* 0x000 */
+    u8 pad_004[0x250];
+    s32 movieHandle; /* 0x254 active movie handle opened by fn_802ECF08 */
+};
+#define MovieWidget_vtable lbl_8033E350
+#define Movie_destroy      fn_802ECFF4
+#define Widget_dtor        fn_8021915C
+#define Mem_freeObject     fn_80128668
+
 extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r0;
     s32 temp_r3;
