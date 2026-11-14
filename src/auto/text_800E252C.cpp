@@ -3334,7 +3334,7 @@ extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3sn
     extern const char lbl_80322760[];
     extern const char lbl_80559830;
     extern float lbl_80560FA8;
-    const char *base = lbl_803224F0;
+    register const char *base = lbl_803224F0;
     char *ref;
     char *entry;
     unsigned int address;
@@ -3934,11 +3934,12 @@ extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, floa
     sound->elapsed = 0;
 }
 
-extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
-    if (!(vol >= 0.0f)) {
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *sound, float volume) {
+    /* Sets the initial volume at +0x98, asserting that volume is non-negative. */
+    if (!(volume >= 0.0f)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x234, lbl_80322858);
     }
-    *(float *)((char *)this_ + 0x98) = vol;
+    *(float *)((char *)sound + 0x98) = volume;
 }
 
 #pragma push
