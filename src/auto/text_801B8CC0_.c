@@ -427,6 +427,11 @@ void fn_801B916C(void *arg0) {
     }
 }
 
+/* A trailer car's destructor (its vtable lbl_803369D0, slot +0xC): the car is
+   taken out of the trailer table at its own index (+0x2700) and the number of
+   cars drops by one; the car object it is built on is destroyed without being
+   freed here, and called as the deleting destructor (flag > 0) the car's own
+   memory is freed too. */
 #pragma scheduling invalid_target
 #pragma cplusplus off
 void *fn_801B9274(struct TrlrCar *car, s32 deleteFlag) {
