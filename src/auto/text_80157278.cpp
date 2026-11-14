@@ -3118,17 +3118,18 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
 
 #pragma scheduling on
 extern f32 lbl_80561760;
-extern "C" void fn_8015C564(void* arg0, void* arg1, s32 arg2, f32 arg3) {
-    if (*(s32*)((u8*)arg0 + 0x270) == *(s32*)((u8*)arg1 + 0x1ec)) {
-        if (arg2 == 7 || arg2 == 9) {
-            *(f32*)((u8*)arg0 + 0x278) = arg3;
-            if (arg2 == 7) {
-                f64 d = arg3;
+extern "C" void fn_8015C564(void* controller, void* vehicle, s32 messageId, f32 value) {
+    /* Forward a matched vehicle message value to the controller, converting type 7 into an integer offset. */
+    if (*(s32*)((u8*)controller + 0x270) == *(s32*)((u8*)vehicle + 0x1ec)) {
+        if (messageId == 7 || messageId == 9) {
+            *(f32*)((u8*)controller + 0x278) = value;
+            if (messageId == 7) {
+                f64 d = value;
                 f32 value = (f32)d;
                 f32 offset;
                 if (value < lbl_80561754) offset = value - lbl_80561760;
                 else offset = lbl_80561760 + value;
-                *(s32*)((u8*)arg0 + 0x274) = (s32)offset;
+                *(s32*)((u8*)controller + 0x274) = (s32)offset;
             }
         }
     }
