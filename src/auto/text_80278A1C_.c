@@ -360,25 +360,26 @@ void fn_802792E4(s32 arg0) {
     fn_80279254(arg0, 0);
 }
 #pragma dont_inline off
-void fn_802792EC(void* arg0) {
-    Node_80279254* node3 = arg0;
-    s32 temp_r0;
+/* Release a reference to a loaded car resource node; when its reference count
+ * reaches zero, unlink it from gCarResourceList and free its model file and memory. */
+void fn_802792EC(void* resource) {
+    CarResourceNode* node = resource;
+    s32 refCount;
 
-    temp_r0 = node3->count - 1;
-    node3->count = temp_r0;
-    if (temp_r0 == 0) {
-        Node_80279254* temp_r5;
-        Node_80279254** var_r4 = (Node_80279254**)&lbl_8055F5F0;
-        while ((temp_r5 = *var_r4) != NULL) {
-            if (temp_r5 == node3) {
-                *var_r4 = temp_r5->next;
+    refCount = node->count - 1;
+    node->count = refCount;
+    if (refCount == 0) {
+        CarResourceNode* curr;
+        CarResourceNode** link = (CarResourceNode**)&gCarResourceList;
+        while ((curr = *link) != NULL) {
+            if (curr == node) {
+                *link = curr->next;
                 break;
             }
-            var_r4 = &temp_r5->next;
+            link = &curr->next;
         }
-        fn_80131818(*(void**)((u8*)arg0 + 0x2438));
-        fn_80128670(*(s32*)((u8*)arg0 + 0x20EC));
-        fn_80128668(arg0);
+        ResourceFile_release(((CarResourceNode*)resource)->modelFile);
+        Mem_freeArray(((CarResourceNode*)resource)->boneConnections);
+        Mem_freeObject(resource);
     }
 }
-
