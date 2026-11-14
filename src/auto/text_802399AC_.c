@@ -146,17 +146,29 @@ void fn_80239AC0(void)
 
 #pragma push
 #pragma small_data off
+/* Asks the player to confirm a change of the track-music setting.
+ *
+ * gOptionsState[6] is the music-slot state fn_80210570() read for the settings
+ * screen and [7] the copy taken with it (fn_80239F74); while they differ and at
+ * least one song is available (fn_802104D0), the "confirm change" message box is
+ * put up from its heading and body texts, and what it answers is returned.
+ * Nothing to confirm: 1. */
 s32 fn_80239DE4(void) {
-    s32 *p = (s32 *)lbl_8049870C;
-    if (p[6] != p[7] && fn_802104D0()) {
-        s32 temp = fn_80131234(lbl_80340C44);
-        s32 arg = fn_80131234(lbl_80340C24);
-        return fn_8021521C(arg, temp, 0);
+#define gOptionsState lbl_8049870C /* settings screen state, see fn_80239F74 */
+#define MessageLookup fn_80131234  /* message id of a "Group:NAME" text */
+#define ConfirmDialog fn_8021521C  /* message box: heading, body, flag */
+    s32 *state = (s32 *)gOptionsState;
+    if (state[6] != state[7] && fn_802104D0()) {
+        s32 bodyMsg = fn_80131234(lbl_80340C44); /* TrackMusic:CONFIRM_CHANGE_BODY */
+        s32 headMsg = fn_80131234(lbl_80340C24); /* TrackMusic:CONFIRM_CHANGE_HEAD */
+        return ConfirmDialog(headMsg, bodyMsg, 0);
     }
+
+#undef ConfirmDialog
+#undef MessageLookup
+#undef gOptionsState
     return 1;
 }
-#pragma pop
-#pragma dont_inline on
 s32 fn_80239E5C(void *arg0, s32 arg1) {
     s32 *p = (s32 *)arg0;
     fn_80209030(*(float *)((char *)arg0 + 0x14));
