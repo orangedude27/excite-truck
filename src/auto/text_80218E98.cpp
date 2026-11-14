@@ -8255,14 +8255,15 @@ extern "C" s32 fn_8022882C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void *fn_8022886C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
- fn_80218F80();
- *(s32 *)((u8 *)arg0 + 0x244) = arg3;
- *(s32 *)arg0 = (s32)lbl_8033DD20;
- *(s32 *)((u8 *)arg0 + 0x268) = arg2;
- *(u8 *)((u8 *)arg0 + 0x26C) = 0;
- memset((u8 *)arg0 + 0x248, 0, 0x20);
- return arg0;
+extern "C" void *fn_8022886C(void *textBox, s32 unused, s32 modelView, s32 field244) {
+    /* Initialize a J2DTextBox-derived widget with its model view and default state. */
+    fn_80218F80();
+    *(s32 *)((u8 *)textBox + 0x244) = field244;
+    *(s32 *)textBox = (s32)lbl_8033DD20;
+    *(s32 *)((u8 *)textBox + 0x268) = modelView;
+    *(u8 *)((u8 *)textBox + 0x26C) = 0;
+    memset((u8 *)textBox + 0x248, 0, 0x20);
+    return textBox;
 }
 
 extern "C" void *__dt__10J2DTextBoxFv(void *self, s32 shouldDelete) {
