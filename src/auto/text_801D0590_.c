@@ -229,10 +229,12 @@ extern "C" void fn_801D08C0(void *notifier) {
 #pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_801D0934(void *arg0) {
-    struct Dummy {
+/* Notify every listener in the second listener list (lbl_8043870C): call virtual
+ * slot 1 of each entry's dispatch sub-object with the notifier's sub-object. */
+extern "C" void fn_801D0934(void *notifier) {
+    struct Listener {
         virtual void f0();
-        virtual void f1(void *);
+        virtual void notify(void *);
     };
     int offset;
     int i;
@@ -240,7 +242,7 @@ extern "C" void fn_801D0934(void *arg0) {
     offset = 0;
     while (i < lbl_8043870C[0].count) {
         void *obj = *(void **)((char *)lbl_8043870C[0].items + offset);
-        ((Dummy *)obj)->f1(arg0);
+        ((Listener *)obj)->notify(notifier);
         offset += 4;
         i++;
     }
