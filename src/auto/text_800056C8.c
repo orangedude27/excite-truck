@@ -161,25 +161,25 @@ void fn_800056E0(s32 arg0) {
 }
 
 #pragma pop
-void fn_80005740(s32 arg0) {
-    u32 *base;
-    void *temp;
-    s32 val_2c;
-    
-    base = (u32 *)lbl_8034EE84;
-    base[0x1C / 4] = arg0;
-    base[0x24 / 4] = (u32)fn_801E866C();
-    temp = fn_801EA9A0();
-    base[0x28 / 4] = (u32)temp;
-    val_2c = ((s32 *)temp)[2];
-    base[0x2C / 4] = val_2c;
-    base[0x30 / 4] = (u32)((u8 *)temp + 0xC);
-    base[0x20 / 4] = (u32)fn_801B84D8(arg0, val_2c);
-    if (fn_80005564() != 0) {
-        fn_801B8570((s32)base[0x24 / 4]);
+/* Session_selectPlayer: bind the active player index, car slot, car entry pointers, and HUD flags in gSessionState, and update the arena car state when the arena overlay is active. */
+void fn_80005740(s32 playerIdx) {
+    u32 *sessionWords;
+    void *carEntry;
+    s32 carId;
+
+    sessionWords = (u32 *)gSessionState;
+    sessionWords[SESSION_CUR_PLAYER_WORD] = playerIdx;
+    sessionWords[SESSION_CAR_SLOT_WORD] = (u32)Player_getCarSlot();
+    carEntry = Car_getEntry();
+    sessionWords[SESSION_CAR_ENTRY_WORD] = (u32)carEntry;
+    carId = ((s32 *)carEntry)[2];
+    sessionWords[SESSION_CAR_ID_WORD] = carId;
+    sessionWords[SESSION_CAR_DATA_WORD] = (u32)((u8 *)carEntry + CAR_ENTRY_DATA_OFFSET);
+    sessionWords[SESSION_PLAYER_FLAGS_WORD] = (u32)Hud_queryPlayerFlags(playerIdx, carId);
+    if (OverlayMgr_hasArenaOverlay() != 0) {
+        Hud_checkArenaCar((s32)sessionWords[SESSION_CAR_SLOT_WORD]);
     }
 }
-
 #pragma push
 #pragma dont_inline on
 void fn_800057BC(void) {
