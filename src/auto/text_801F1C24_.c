@@ -1681,15 +1681,20 @@ check:
 
 #pragma scheduling invalid_target
 __declspec(section ".sdata") extern unsigned char lbl_8055B140[];
-void fn_801F44DC(void *unused, int arg1, int arg2, int arg3) {
-    int v = arg2 + 0x2C;
-    void *p = fn_801284F8(0xC, lbl_8055B140);
-    if (p != 0) {
-        *(void **)p = (void *)lbl_8033AA48;
-        *(int *)((char *)p + 4) = v;
-        *(int *)((char *)p + 8) = arg3;
+/* Allocate and initialize a small 0xC-byte object (vtable lbl_8033AA48, fields +4 and +8) and register it via fn_802CD320 for the given target. */
+void fn_801F44DC(void *unused, int target, int baseValue, int param) {
+#define mlftoTag      lbl_8055B140
+#define mlftoVTable   lbl_8033AA48
+    int adjustedValue = baseValue + 0x2C;
+    void *object = fn_801284F8(0xC, mlftoTag);
+    if (object != 0) {
+        *(void **)object = (void *)mlftoVTable;
+        *(int *)((char *)object + 4) = adjustedValue;
+        *(int *)((char *)object + 8) = param;
     }
-    fn_802CD320(arg1, p);
+    fn_802CD320(target, object);
+#undef mlftoVTable
+#undef mlftoTag
 }
 void fn_801F4550(void) {
 
