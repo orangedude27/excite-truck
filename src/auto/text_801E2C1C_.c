@@ -202,17 +202,16 @@ extern char lbl_803398E4[];
 void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2) {
     struct Pair { s32 x[2]; };
     char path[0x28];
-    register char *result;
+    s32 *result;
     s32 *source;
-    f32 other;
-    f32 one;
     f32 *matrix;
+    f32 other, one;
 
-    result = (char *)fn_8012A2D8(lbl_8055EA50);
-    matrix = (f32 *)(result + 8);
+    result = (s32 *)fn_8012A2D8(lbl_8055EA50);
+    result[1] = 0;
+    result[0] = -1;
+    matrix = (f32 *)(result + 2);
     one = lbl_80562CE8;
-    *(s32 *)(result + 4) = 0;
-    *(s32 *)result = -1;
     other = lbl_80562CEC;
     matrix[0] = one;
     matrix[1] = other;
@@ -244,20 +243,20 @@ void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2) {
 
     source = (s32 *)fn_801E2DEC(arg0, arg1, (s32)path);
     if (source != 0) {
-        ((struct Pair *)(result + 0x38))[0] = ((struct Pair *)(source + 8))[0];
-        ((struct Pair *)(result + 0x38))[1] = ((struct Pair *)(source + 8))[1];
-        ((struct Pair *)(result + 0x38))[2] = ((struct Pair *)(source + 8))[2];
-        ((struct Pair *)(result + 0x38))[3] = ((struct Pair *)(source + 8))[3];
-        *(s32 *)(result + 0x58) = source[16];
-        ((struct Pair *)(result + 0x5C))[0] = ((struct Pair *)(source + 17))[0];
-        *(s32 *)(result + 0x64) = source[19];
+        ((struct Pair *)(result + 14))[0] = ((struct Pair *)(source + 8))[0];
+        ((struct Pair *)(result + 14))[1] = ((struct Pair *)(source + 8))[1];
+        ((struct Pair *)(result + 14))[2] = ((struct Pair *)(source + 8))[2];
+        ((struct Pair *)(result + 14))[3] = ((struct Pair *)(source + 8))[3];
+        result[22] = source[16];
+        ((struct Pair *)(result + 23))[0] = ((struct Pair *)(source + 17))[0];
+        result[25] = source[19];
 
         if (path[0] != 0 && strchr(path, '.') != 0) {
             if (fn_8012C33C(path) != 0) {
                 if (arg2 >= 0)
-                    *(s32 *)result = fn_802C6FC0(path, arg2, 0);
+                    result[0] = fn_802C6FC0(path, arg2, 0);
                 else
-                    *(s32 *)result = fn_802C6FC0(path, 0, 0);
+                    result[0] = fn_802C6FC0(path, 0, 0);
             } else {
                 fn_802E30C8(lbl_803398E4, arg1, path);
             }
@@ -275,12 +274,13 @@ s32 fn_801E320C(s32 arg0, s32 arg1) {
     return fn_801E2DEC(arg0, arg1, 0) != 0;
 }
 
-void fn_801E323C(s32 *arg0) {
-    s32 value = *arg0;
-    if (value != -1) {
-        fn_802C6CF8(value);
+/* Releases the referenced resource if present, then returns the handle object to its pool. */
+void fn_801E323C(s32 *handle) {
+    s32 resource = *handle;
+    if (resource != -1) {
+        fn_802C6CF8(resource);
     }
-    fn_8012A364((s32)lbl_8055EA50, arg0);
+    fn_8012A364((s32)lbl_8055EA50, handle);
 }
 
 #pragma scheduling invalid_target
@@ -295,8 +295,9 @@ void fn_801E3284(void *out, void *in, s32 arg2) {
         s32 sp5c[3];
         s32 sp68[12];
     } local;
-    if (*(void **)((u8 *)in + 4) != 0) {
-        fn_801E3284(local.sp68, *(void **)((u8 *)in + 4), arg2);
+    void *next = *(void **)((u8 *)in + 4);
+    if (next != 0) {
+        fn_801E3284(local.sp68, next, arg2);
     } else {
         s32 *src = (s32 *)arg2;
         register s32 a11;
