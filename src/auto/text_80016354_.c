@@ -40,6 +40,9 @@ void fn_80016354(void) {
     fn_8000D884(0x44727672, 1, &lbl_8055D548, 0x960, fn_800177B8);
 }
 
+/* Resets/tears down the global object state used by this subsystem: clears
+ * counters/handles, frees the primary buffers (lbl_8055D544, lbl_8055D540),
+ * and destroys the two auxiliary objects (lbl_8055D538, lbl_8055D53C) if set. */
 void fn_800163F0(void) {
     extern void *lbl_8055D538;
     extern void *lbl_8055D53C;
