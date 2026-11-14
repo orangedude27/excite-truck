@@ -183,27 +183,30 @@ extern char lbl_8034AF14[];
 extern int lbl_8055FB28;
 #pragma push
 #pragma cplusplus on
-struct Dummy_802C143C { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual int get(char *, int); };
-#pragma cplusplus on
 #pragma use_lmw_stmw off
-extern "C" int fn_802C143C(void *arg0) {
-    char buf[0x20];
+/* Add a tree class (struct TreeClass below, the lbl_804C0810 table) for one of
+   the level's tree objects and return its index; lbl_8055FB28 counts the
+   classes.  The class has no trees yet (-1) and wobbles until fn_802C1550 reads
+   the object's parameters, and its eight "efx_event_id%d" effect events are
+   looked up here - the object answers -1 for the ones its model does not have. */
+extern "C" int fn_802C143C(void *modelObject) {
+    char paramName[0x20];
     int index;
     int *entry;
     u32 i;
     int next;
     index = lbl_8055FB28;
     entry = (int *)((char *)&lbl_804C0810 + index * 0x60);
-    entry[0] = -1;
+    entry[0] = -1;                      /* TreeClass::firstTree */
     next = index + 1;
     lbl_8055FB28 = next;
-    *((u8 *)entry + 0x28) = 1;
-    entry[0x30 / 4] = (int)arg0;
+    *((u8 *)entry + 0x28) = 1;          /* TreeClass::wobbles */
+    entry[0x30 / 4] = (int)modelObject; /* TreeClass::modelObject */
     i = 0;
     do {
-        if (arg0 != NULL) {
-            fn_801345D8(buf, 0x20, lbl_8034AF14, i + 1);
-            entry[0x40 / 4] = ((Dummy_802C143C *)arg0)->get(buf, -1);
+        if (modelObject != NULL) {
+            fn_801345D8(paramName, 0x20, lbl_8034AF14, i + 1); /* "efx_event_id%d" */
+            entry[0x40 / 4] = ((LevelObject *)modelObject)->getInt(paramName, -1);
         } else {
             entry[0x40 / 4] = -1;
         }
