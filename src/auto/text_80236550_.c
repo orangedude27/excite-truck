@@ -36,19 +36,32 @@ void fn_80236600(void) {
     lbl_8055F0A0 = 1;
 }
 
+/* Unpause/update the timer accumulator: when the paused flag is set, fold elapsed time since pause into the base and clamp it above 1, then refresh timing state. */
 void fn_8023660C(void) {
-    int temp;
+#define timerActiveFlag lbl_8055BA00
+#define timerPausedFlag lbl_8055F0A0
+#define timeBase lbl_8055F094
+#define pauseTime lbl_8055F09C
+#define GetCurrentTimeMs fn_802E2C20
+#define UpdateTimerState fn_80236674
+    int adjustedTime;
 
-    lbl_8055BA00 = 0;
-    if (lbl_8055F0A0 != 0) {
-        temp = 1;
-        temp = fn_802E2C20() - lbl_8055F09C;
-        temp += lbl_8055F094;
-        temp -= 0x10;
-        if (temp > 1) lbl_8055F094 = temp; else lbl_8055F094 = 1;
-        lbl_8055F0A0 = 0;
+    timerActiveFlag = 0;
+    if (timerPausedFlag != 0) {
+        adjustedTime = 1;
+        adjustedTime = GetCurrentTimeMs() - pauseTime;
+        adjustedTime += timeBase;
+        adjustedTime -= 0x10;
+        if (adjustedTime > 1) timeBase = adjustedTime; else timeBase = 1;
+        timerPausedFlag = 0;
     }
-    fn_80236674();
+    UpdateTimerState();
+#undef timerActiveFlag
+#undef timerPausedFlag
+#undef timeBase
+#undef pauseTime
+#undef GetCurrentTimeMs
+#undef UpdateTimerState
 }
 
 int fn_802ECC10(void);
