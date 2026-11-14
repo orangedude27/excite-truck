@@ -245,19 +245,20 @@ void fn_8027847C(void *arg0) {
 #pragma pop
 
 #pragma pop
-void fn_80278778(char *arg0) {
+/* Copies a movie name into the pending buffer, or reports if recording is active. */
+void fn_80278778(char *name) {
     int remaining;
-    char *destination;
+    char *dst;
     if ((unsigned char)lbl_8055F5B8 != 0) {
         fn_802E30C8(lbl_80347660);
         return;
     }
-    destination = lbl_804A15D0;
+    dst = lbl_804A15D0;
     remaining = 0x100;
-    while ((*destination++ = *arg0++) != '\0') {
+    while ((*dst++ = *name++) != '\0') {
         if (--remaining > 0)
             continue;
-        destination[-1] = '\0';
+        dst[-1] = '\0';
         break;
     }
     lbl_8055F5B9 = 1;
