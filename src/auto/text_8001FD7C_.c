@@ -449,18 +449,17 @@ int fn_80020434(void* arg0, float* arg1) {
     s32 temp_r6;
     s32 temp_r0;
     void* temp_r28;
-
-    mat[1] = lbl_805604B4;
     mat[0] = lbl_805604B8;
-    mat[3] = lbl_805604B4;
+    mat[1] = lbl_805604B4;
     mat[2] = lbl_805604B4;
+    mat[3] = lbl_805604B4;
     mat[4] = lbl_805604B8;
     mat[5] = lbl_805604B4;
-    mat[7] = lbl_805604B4;
     mat[6] = lbl_805604B4;
+    mat[7] = lbl_805604B4;
     mat[8] = lbl_805604B8;
-    mat[10] = lbl_805604B4;
     mat[9] = lbl_805604B4;
+    mat[10] = lbl_805604B4;
     mat[11] = lbl_805604B4;
     fn_802A1120(out1, out2, lbl_805604B8);
     mat[9] = out1[0];
@@ -627,6 +626,12 @@ loop_body:
         goto count_check;
     }
 }
+
+void fn_800209A0(int arg0, float arg1) {
+    (void)arg0;
+    (void)arg1;
+}
+
 #pragma pop
 
 extern int fn_80020184(void);
@@ -832,18 +837,24 @@ int fn_800216FC(void) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 int fn_8002173C(void) {
+    /* If an audio DSP request is pending, process it (state 2/1 run their handlers), finalize, and report handled. */
     extern void fn_80230B38_0(void);
-    char sp8[0x38];
+    char buffer[0x38];
+
     if (lbl_8055D62C != 0) {
-        fn_80230B5C(sp8);
-        fn_80230AD8(sp8);
+        fn_80230B5C(buffer);
+        fn_80230AD8(buffer);
         switch (lbl_8055D62C) {
-        case 2: fn_800216C8(); break;
-        case 1: fn_80021680(); break;
+        case 2:
+            fn_800216C8();
+            break;
+        case 1:
+            fn_80021680();
+            break;
         }
         {
-            void (*f)(void) = (void (*)(void))fn_80230B38;
-            f();
+            void (*finalize)(void) = (void (*)(void))fn_80230B38;
+            finalize();
         }
         return 1;
     }
