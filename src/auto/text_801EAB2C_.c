@@ -164,45 +164,46 @@ void fn_801EADD8(void *arg0) {
     fn_802C70AC(*(s32 *)((char *)arg0 + 0x70), (char *)arg0 + 4, value, *(s32 *)((char *)arg0 + 0x74));
 }
 
-#pragma push
 #pragma use_lmw_stmw off
-void fn_801EAE68(void *arg0, void *arg1) {
-    s32 o, n, m, half, l, k, j, i, h, g, f, e, d, c, b, a;
-    fn_801EABA8(arg0, arg1);
-    a = *(volatile s32 *)((char *)arg1 + 0x00);
-    b = *(volatile s32 *)((char *)arg1 + 0x04);
-    c = *(volatile s32 *)((char *)arg1 + 0x08);
-    d = *(volatile s32 *)((char *)arg1 + 0x0C);
-    e = *(volatile s32 *)((char *)arg1 + 0x10);
-    f = *(volatile s32 *)((char *)arg1 + 0x14);
-    g = *(volatile s32 *)((char *)arg1 + 0x18);
-    h = *(volatile s32 *)((char *)arg1 + 0x1C);
-    i = *(volatile s32 *)((char *)arg1 + 0x20);
-    j = *(volatile s32 *)((char *)arg1 + 0x24);
-    k = *(volatile s32 *)((char *)arg1 + 0x28);
-    l = *(volatile s32 *)((char *)arg1 + 0x2C);
-    half = *(volatile s16 *)((char *)arg1 + 0x30);
-    m = *(volatile s32 *)((char *)arg1 + 0x34);
-    n = *(volatile s32 *)((char *)arg1 + 0x38);
-    o = *(volatile s32 *)((char *)arg1 + 0x3C);
-    *(s32 *)((char *)arg0 + 0x54) = g;
-    *(s32 *)((char *)arg0 + 0x3C) = a;
-    *(s32 *)((char *)arg0 + 0x40) = b;
-    *(s32 *)((char *)arg0 + 0x44) = c;
-    *(s32 *)((char *)arg0 + 0x48) = d;
-    *(s32 *)((char *)arg0 + 0x4C) = e;
-    *(s32 *)((char *)arg0 + 0x50) = f;
-    *(s32 *)((char *)arg0 + 0x58) = h;
-    *(s32 *)((char *)arg0 + 0x5C) = i;
-    *(s32 *)((char *)arg0 + 0x60) = j;
-    *(s32 *)((char *)arg0 + 0x64) = k;
-    *(s32 *)((char *)arg0 + 0x68) = l;
-    *(s16 *)((char *)arg0 + 0x6C) = (s16)half;
-    *(s32 *)((char *)arg0 + 0x70) = m;
-    *(s32 *)((char *)arg0 + 0x74) = n;
-    *(s32 *)((char *)arg0 + 0x78) = o;
+/* Copies a model/command descriptor (src, 0x40 bytes) into both the base transform
+   region (via fn_801EABA8) and the cached descriptor slot at dst + 0x3C..0x78. */
+void fn_801EAE68(void *dst, void *src) {
+    s32 w3C, w38, w34, half30, w2C, w28, w24, w20, w1C, w18, w14, w10, w0C, w08, w04, w00;
+    fn_801EABA8(dst, src);
+    w00 = *(volatile s32 *)((char *)src + 0x00);
+    w04 = *(volatile s32 *)((char *)src + 0x04);
+    w08 = *(volatile s32 *)((char *)src + 0x08);
+    w0C = *(volatile s32 *)((char *)src + 0x0C);
+    w10 = *(volatile s32 *)((char *)src + 0x10);
+    w14 = *(volatile s32 *)((char *)src + 0x14);
+    w18 = *(volatile s32 *)((char *)src + 0x18);
+    w1C = *(volatile s32 *)((char *)src + 0x1C);
+    w20 = *(volatile s32 *)((char *)src + 0x20);
+    w24 = *(volatile s32 *)((char *)src + 0x24);
+    w28 = *(volatile s32 *)((char *)src + 0x28);
+    w2C = *(volatile s32 *)((char *)src + 0x2C);
+    half30 = *(volatile s16 *)((char *)src + 0x30);
+    w34 = *(volatile s32 *)((char *)src + 0x34);
+    w38 = *(volatile s32 *)((char *)src + 0x38);
+    w3C = *(volatile s32 *)((char *)src + 0x3C);
+    *(s32 *)((char *)dst + 0x54) = w18;
+    *(s32 *)((char *)dst + 0x3C) = w00;
+    *(s32 *)((char *)dst + 0x40) = w04;
+    *(s32 *)((char *)dst + 0x44) = w08;
+    *(s32 *)((char *)dst + 0x48) = w0C;
+    *(s32 *)((char *)dst + 0x4C) = w10;
+    *(s32 *)((char *)dst + 0x50) = w14;
+    *(s32 *)((char *)dst + 0x58) = w1C;
+    *(s32 *)((char *)dst + 0x5C) = w20;
+    *(s32 *)((char *)dst + 0x60) = w24;
+    *(s32 *)((char *)dst + 0x64) = w28;
+    *(s32 *)((char *)dst + 0x68) = w2C;
+    *(s16 *)((char *)dst + 0x6C) = (s16)half30;
+    *(s32 *)((char *)dst + 0x70) = w34;
+    *(s32 *)((char *)dst + 0x74) = w38;
+    *(s32 *)((char *)dst + 0x78) = w3C;
 }
-#pragma pop
+#pragma use_lmw_stmw on
 s32 fn_801EAF20(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
