@@ -60,6 +60,29 @@ extern "C" static inline void *callGetCamera(void *manager) {
 extern void fn_80271624(int, void *);
 extern int stricmp(const char *, const char *);
 extern char *lbl_80346B54[];
+#define sCamTypeNames lbl_80346B54
+
+enum CamType {
+    CAM_TYPE_FIXED = 0,
+    CAM_TYPE_PAN = 1,
+    CAM_TYPE_ZOOM = 2,
+    CAM_TYPE_CLOSEUP = 3,
+    CAM_TYPE_CHASE = 4,
+    CAM_TYPE_IN_CAR = 5,
+    CAM_TYPE_TWIRL = 6,
+    CAM_TYPE_WHEEL = 7,
+    CAM_TYPE_REV_WHEEL = 8,
+    CAM_TYPE_BUTT = 9,
+    CAM_TYPE_HELI = 10,
+    CAM_TYPE_MAX = 11,
+    CAM_TYPE_R_FIXED = 12,
+    CAM_TYPE_S_PAN = 13,
+    CAM_TYPE_S_ZOOM = 14,
+    CAM_TYPE_S_CLOSEUP = 15,
+    CAM_TYPE_HOOD = 16,
+    CAM_TYPE_FLYCAM = 17,
+    CAM_TYPE_COUNT = 18
+};
 extern float lbl_80563F48;
 extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
