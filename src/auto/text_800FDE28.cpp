@@ -286,83 +286,82 @@ extern "C" void fn_800FE1D0(void) {
 }
 
 extern "C" s32 ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0) {
-    struct Iterator { void *node; };
+    typedef nw4hbm::snd::detail::Task Task;
+    typedef nw4hbm::snd::detail::TaskManager TaskManager;
+    struct Iterator { void *node; };  /* ut::detail::LinkListImpl::Iterator */
     typedef void (*EraseFn)(void *, struct Iterator);
-    struct Task {
-        virtual void dummy();
-        virtual void run();
-    };
     u32 level;
-    u8 *self = (u8 *)arg0;
+    TaskManager *mgr = (TaskManager *)arg0;
     void *task;
-    OSLockMutex(self);
+
+    OSLockMutex(mgr);
     level = OSDisableInterrupts();
-    if (*(s32 *)(self + 0x38) == 0) {
+    if (mgr->list[TaskManager::TaskPriorityHigh].size == 0) {
         OSRestoreInterrupts(level);
         task = 0;
     } else {
         struct Iterator it;
-        if (*(s32 *)(self + 0x38) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
-        task = *(void **)(self + 0x3C);
+        if (mgr->list[TaskManager::TaskPriorityHigh].size == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
+        task = mgr->list[TaskManager::TaskPriorityHigh].next;
         if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F38, 0x23D, (const char *)lbl_80326F14);
-        task = (u8 *)task - 4;
+        task = (u8 *)task - 4;  /* the queue node sits at Task+4 */
         if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F68, 0x193, (const char *)lbl_80326F44);
-        it.node = *(void **)(self + 0x3C);
-        ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(self + 0x38, it);
+        it.node = mgr->list[TaskManager::TaskPriorityHigh].next;
+        ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)((void *)&mgr->list[TaskManager::TaskPriorityHigh], it);
         OSRestoreInterrupts(level);
     }
-    *(void **)(self + 0x1C) = task;
+    mgr->task = (Task *)task;
     if (task == 0) {
         level = OSDisableInterrupts();
-        if (*(s32 *)(self + 0x2C) == 0) {
+        if (mgr->list[TaskManager::TaskPriorityMid].size == 0) {
             OSRestoreInterrupts(level);
             task = 0;
         } else {
             struct Iterator it;
-            if (*(s32 *)(self + 0x2C) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
-            task = *(void **)(self + 0x30);
+            if (mgr->list[TaskManager::TaskPriorityMid].size == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
+            task = mgr->list[TaskManager::TaskPriorityMid].next;
             if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F38, 0x23D, (const char *)lbl_80326F14);
             task = (u8 *)task - 4;
             if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F68, 0x193, (const char *)lbl_80326F44);
-            it.node = *(void **)(self + 0x30);
-            ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(self + 0x2C, it);
+            it.node = mgr->list[TaskManager::TaskPriorityMid].next;
+            ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)((void *)&mgr->list[TaskManager::TaskPriorityMid], it);
             OSRestoreInterrupts(level);
         }
-        *(void **)(self + 0x1C) = task;
+        mgr->task = (Task *)task;
         if (task == 0) {
             level = OSDisableInterrupts();
-            if (*(s32 *)(self + 0x20) == 0) {
+            if (mgr->list[TaskManager::TaskPriorityLow].size == 0) {
                 OSRestoreInterrupts(level);
                 task = 0;
             } else {
                 struct Iterator it;
-                if (*(s32 *)(self + 0x20) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
-                task = *(void **)(self + 0x24);
+                if (mgr->list[TaskManager::TaskPriorityLow].size == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
+                task = mgr->list[TaskManager::TaskPriorityLow].next;
                 if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F38, 0x23D, (const char *)lbl_80326F14);
                 task = (u8 *)task - 4;
                 if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F68, 0x193, (const char *)lbl_80326F44);
-                it.node = *(void **)(self + 0x24);
-                ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(self + 0x20, it);
+                it.node = mgr->list[TaskManager::TaskPriorityLow].next;
+                ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)((void *)&mgr->list[TaskManager::TaskPriorityLow], it);
                 OSRestoreInterrupts(level);
             }
-            *(void **)(self + 0x1C) = task;
+            mgr->task = (Task *)task;
             if (task == 0) {
-                OSUnlockMutex(self);
+                OSUnlockMutex(mgr);
                 return 0;
             }
         }
     }
     {
-        Task *node = *(Task **)(self + 0x1C);
-        node->run();
+        Task *running = mgr->task;
+        running->Execute();
     }
-    task = *(void **)(self + 0x1C);
-    if (*(void **)(self + 0x18) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x5D, (const char *)lbl_80326E70);
+    task = mgr->task;
+    if (mgr->heap == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x5D, (const char *)lbl_80326E70);
     level = OSDisableInterrupts();
-    MEMAdjustFrmHeap(*(void **)(self + 0x18), task);
+    MEMAdjustFrmHeap(mgr->heap, task);  /* free what the task allocated */
     OSRestoreInterrupts(level);
-    *(void **)(self + 0x1C) = 0;
-    OSUnlockMutex(self);
+    mgr->task = 0;
+    OSUnlockMutex(mgr);
     return 1;
 }
 
