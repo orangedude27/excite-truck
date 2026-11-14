@@ -267,21 +267,24 @@ s32 fn_8023150C(const char *name) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_8023158C(void *arg0, const char *arg1) {
+/* File a freshly loaded 'GETX' font block in the gText block cache: append a
+ * slot for it and file it under a new 0x40-byte copy of the file name it was
+ * loaded from, with a use count of 1 (fn_802315FC takes it back again). */
+void fn_8023158C(GTexBlock *block, const char *name) {
     u8 *base;
     s32 count;
     s32 offset;
-    u8 *entry;
+    GTexCacheEntry *entry;
 
-    base = lbl_8055F068;
-    count = *(s32 *)(base + 0x168);
-    offset = count * 0xC;
-    *(s32 *)(base + 0x168) = count + 1;
-    entry = base + offset;
-    *(void **)(base + offset) = arg0;
-    *(s32 *)(entry + 8) = 1;
-    *(char **)(entry + 4) = fn_8012850C(0x40, lbl_80340440);
-    strcpy(*(char **)(entry + 4), arg1);
+    base = gTexBlockTable;
+    count = ((GTexCache *)base)->count;
+    offset = count * sizeof(GTexCacheEntry);
+    ((GTexCache *)base)->count = count + 1;
+    entry = (GTexCacheEntry *)(base + offset);
+    *(GTexBlock **)(base + offset) = block; /* the new slot, addressed off the table */
+    entry->useCount = 1;
+    entry->name = fn_8012850C(GTEX_NAME_LEN, gTexFontNameTag);
+    strcpy(entry->name, name);
 }
 #pragma pop
 
