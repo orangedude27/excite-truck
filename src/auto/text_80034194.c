@@ -283,18 +283,20 @@ void* DSPReset(void) {
     return lbl_8055D808;
 }
 
-void *DSPAssertInt(void *arg0) {
-    s32 enabled;
+/* Insert a DSP task into the queue, clear its state and mark it active,
+ * then boot it if it is now the first task. */
+void *DSPAssertInt(void *task) {
+    s32 interrupts;
 
-    enabled = OSDisableInterrupts();
-    __DSP_insert_task(arg0);
-    *(s32 *)arg0 = 0;
-    *(s32 *)((u8 *)arg0 + 8) = 1;
-    OSRestoreInterrupts(enabled);
-    if (arg0 == lbl_8055D820) {
-        __DSP_boot_task(arg0);
+    interrupts = OSDisableInterrupts();
+    __DSP_insert_task(task);
+    *(s32 *)task = 0;
+    *(s32 *)((u8 *)task + 8) = 1;
+    OSRestoreInterrupts(interrupts);
+    if (task == lbl_8055D820) {
+        __DSP_boot_task(task);
     }
-    return arg0;
+    return task;
 }
 
 void *__DSPHandler(void *arg0) {
@@ -553,6 +555,7 @@ void __DSP_boot_task(void *arg0) {
     volatile u32 mail;
     u32 *task = (u32 *)arg0;
     const char *fmt = lbl_80301E30;
+    const char *fmt0 = fmt + (fmt - fmt);
     while (DSPCheckMailFromDSP() == 0) {}
     mail = DSPReadMailFromDSP();
     DSPSendMailToDSP(0x80F3A001);
@@ -575,7 +578,7 @@ void __DSP_boot_task(void *arg0) {
     while (DSPCheckMailToDSP() != 0) {}
     DSPSendMailToDSP(*(u16 *)((u8 *)arg0 + 0x24));
     while (DSPCheckMailToDSP() != 0) {}
-    DBPrintf_800343C8(((char (*)[0x20])fmt)[0], arg0);
+    DBPrintf_800343C8(fmt0, arg0);
     DBPrintf_800343C8(fmt + 0x20, task[3]);
     DBPrintf_800343C8(fmt + 0x50, task[5]);
     DBPrintf_800343C8(fmt + 0x80, task[4]);
@@ -828,7 +831,7 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
     u32 p2;
     const char *name3;
     const char *name2;
-    const char *name1;
+    unsigned char *name1;
     u32 offset;
     u8 *fst;
 
@@ -838,7 +841,7 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
         if (cur == 0) {
             loc = 0;
         } else {
-            name1 = entryName(cur);
+            name1 = (unsigned char *)entryName(cur);
             p1 = entryParent(cur);
             if (p1 == 0) {
                 loc = 0;
@@ -851,9 +854,9 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
                     name3 = entryName(p2);
                     loc = appendPathPart(dir, DVDConvertEntrynumToPath(entryParent(p2), dir, 0x80), 0x80, name3);
                 }
-                loc = appendPathPart(dir, loc, 0x80, name2);
+                loc = appendPathPart(dir, loc, 0x80, (const char *)name2);
             }
-            loc = appendPathPart(dir, loc, 0x80, name1);
+            loc = appendPathPart(dir, loc, 0x80, (const char *)name1);
         }
         if (loc == 0x80) {
             dir[0x7F] = '\0';
@@ -1328,7 +1331,7 @@ void fn_80035E6C(u32 arg0) {
     u32 status;
     s32 code;
     s32 handled;
-    void *block;
+    char *block;
     void (*callback)(s32, void *);
     register u32 kind = arg0;
     u8 *info;
@@ -1381,12 +1384,12 @@ void fn_80035E6C(u32 arg0) {
     }
 
     if (lbl_8055D858 != 0) {
-        block = (void *)executing_8055D8C8;
+        block = (char *)executing_8055D8C8;
         lbl_8055D85C = code;
         lbl_8055D858 = 0;
         executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        *(s32 *)((char *)block + 0xC) = 0xA;
-        callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
+        *(s32 *)(block + 0xC) = 0xA;
+        callback = *(void (**)(s32, void *))(block + 0x28);
         if (callback != 0)
             callback(-3, block);
         if (lbl_8055D8B8 != 0)
@@ -1795,13 +1798,13 @@ extern void fn_8003801C(void);
 extern void DVDLowOpenPartition(u32, u32, u32, u32, void *, void (*)(u32));
 #pragma dont_inline on
 void fn_80036D24(u32 arg0) {
-    u8 *base = lbl_80376A80;
+    register u8 *base = lbl_80376A80;
     register u8 *logBase;
     register u32 *limit;
-    register u8 *entry;
+    register u32 *entry;
     register u32 *freeEntry;
     s32 enabled;
-    s16 index;
+    s32 index;
     register s32 signedIndex;
     s32 value;
     s32 oldBlock;
@@ -1824,19 +1827,19 @@ void fn_80036D24(u32 arg0) {
     }
 
     if (arg0 & 1) {
-        entry = base + 0xC0;
+        entry = (u32 *)(base + 0xC0);
         *(volatile s32 *)&lbl_8055D860 = 0;
         index = 0;
         freeEntry = 0;
         limit = *(u32 * volatile *)&lbl_8055D89C;
-        *(volatile u8 **)&lbl_8055D898 = entry;
+        *(volatile u8 **)&lbl_8055D898 = (u8 *)entry;
         *(u32 * volatile *)&lbl_8055D894 = 0;
         while ((u32)(s16)index < *limit) {
-            if (*(u32 *)(entry + 4) == 0) {
-                freeEntry = (u32 *)entry;
-                *(u32 * volatile *)&lbl_8055D894 = (u32 *)entry;
+            if (entry[1] == 0) {
+                freeEntry = entry;
+                *(u32 * volatile *)&lbl_8055D894 = entry;
             }
-            entry += 8;
+            entry += 2;
             index++;
             *(volatile u8 **)&lbl_8055D898 = (u8 *)entry;
         }
@@ -2421,8 +2424,9 @@ extern void *__DVDPopWaitingQueue(void);
 
 extern s32 lbl_8055D8B4, lbl_8055D878;
 void fn_80038040(void) {
-    void (*callback)(s32);
-    void *temp_r3, *temp_r4, *temp_r5;
+    void *temp_r3;
+    void *temp_r4;
+    void (*callback)(s32, void *);
     if (__DVDCheckWaitingQueue() == 0) {
         executing_8055D8C8 = 0;
         return;
@@ -2436,11 +2440,10 @@ void fn_80038040(void) {
     executing_8055D8C8 = (s32)temp_r3;
     if (FatalErrorFlag_8055D854 != 0) {
         *(s32 *)((u8 *)temp_r3 + 0xC) = -1;
-        temp_r5 = (void *)DummyCommandBlock_80376AA0;
         temp_r4 = (void *)executing_8055D8C8;
-        executing_8055D8C8 = (s32)temp_r5;
-        callback = *(void (**)(s32))((u8 *)temp_r4 + 0x28);
-        if (callback != 0) callback(-1);
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        callback = *(void (**)(s32, void *))((u8 *)temp_r4 + 0x28);
+        if (callback != 0) callback(-1, temp_r4);
         fn_80038040();
         return;
     }
@@ -2450,38 +2453,66 @@ void fn_80038040(void) {
         ((u32)*(volatile s32 *)&lbl_8055D8BC == 0x23U)) lbl_8055D85C = 0;
     if (*(volatile s32 *)&lbl_8055D85C != 0) {
         switch (*(volatile s32 *)&lbl_8055D85C) {
-        case 2:
+        case 2: {
+            s32 tick;
             *(s32 *)((u8 *)temp_r3 + 0xC) = 0xB;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-                s32 tick;
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
                 tick = OSGetTick();
-                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, tick, 0,
-                    ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
+                {
+                    u32 base = 0x80000000;
+                    u32 multHi = 0x10620000;
+                    u32 clock = *(volatile u32 *)(base + 0xF8);
+                    void (*fn)(void) = fn_8003801C;
+                    u32 mult = multHi + 0x4DD3;
+                    u32 interval = ((clock >> 2) / 1000) * 0x64;
+                    OSSetPeriodicAlarm(lbl_80376AD0, mult, 0, tick, 0, interval, fn);
+                }
             }
             break;
-        case 3:
+        }
+        case 3: {
+            s32 tick;
             *(s32 *)((u8 *)temp_r3 + 0xC) = 4;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
-                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
-                    ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
+                tick = OSGetTick();
+                {
+                    u32 base = 0x80000000;
+                    u32 multHi = 0x10620000;
+                    u32 clock = *(volatile u32 *)(base + 0xF8);
+                    void (*fn)(void) = fn_8003801C;
+                    u32 mult = multHi + 0x4DD3;
+                    u32 interval = ((clock >> 2) / 1000) * 0x64;
+                    OSSetPeriodicAlarm(lbl_80376AD0, mult, 0, tick, 0, interval, fn);
+                }
             }
             break;
-        case 4:
+        }
+        case 4: {
+            s32 tick;
             *(s32 *)((u8 *)temp_r3 + 0xC) = 5;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
-                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
-                    ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
+                tick = OSGetTick();
+                {
+                    u32 base = 0x80000000;
+                    u32 multHi = 0x10620000;
+                    u32 clock = *(volatile u32 *)(base + 0xF8);
+                    void (*fn)(void) = fn_8003801C;
+                    u32 mult = multHi + 0x4DD3;
+                    u32 interval = ((clock >> 2) / 1000) * 0x64;
+                    OSSetPeriodicAlarm(lbl_80376AD0, mult, 0, tick, 0, interval, fn);
+                }
             }
             break;
+        }
         case 5:
             *(s32 *)((u8 *)temp_r3 + 0xC) = 3;
             fn_8003773C();
@@ -2490,8 +2521,6 @@ void fn_80038040(void) {
         case 6:
         case 7:
             fn_8003A1A0(lbl_8055D8B4, fn_80035C64);
-            break;
-        default:
             break;
         }
         lbl_8055D85C = 0;
@@ -2628,10 +2657,10 @@ void fn_80038368(void *arg0) {
 }
 
 void fn_80038870(void) {
-    s32 interrupts;
-    interrupts = OSDisableInterrupts();
-    OSRestoreInterrupts(interrupts);
-    fn_80038040();
+s32 interrupts;
+interrupts = OSDisableInterrupts();
+OSRestoreInterrupts(interrupts);
+fn_80038040();
 }
 
 #pragma pop
@@ -2940,7 +2969,6 @@ s32 fn_80039840(void) {
     s32 tempInterrupts;
     s32 savedInterrupts;
     void *active;
-
     savedInterrupts = OSDisableInterrupts();
     lbl_8055D864 = 0;
     tempInterrupts = OSDisableInterrupts();
@@ -2958,8 +2986,7 @@ queue_check:
     if (active != 0)
         goto queue_call;
     if (executing_8055D8C8 != 0) {
-        result = fn_80039424((void *)executing_8055D8C8,
-                             (void (*)(s32, void *))cbForCancel);
+        result = fn_80039424((void *)executing_8055D8C8, (void (*)(s32, void *))cbForCancel);
     } else {
         result = 1;
         if (&cbForCancel != 0) {
@@ -3078,7 +3105,6 @@ void __DVDPrepareReset(void) {
     void *active;
     s32 oldInterrupts;
     s32 one = 1;
-
     OSDisableInterrupts();
     lbl_8055D890 = 0;
     oldInterrupts = OSDisableInterrupts();
