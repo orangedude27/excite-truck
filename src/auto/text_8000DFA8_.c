@@ -156,27 +156,38 @@ void fn_8000F1E0(void) {
 
 #pragma push
 #pragma cplusplus on
+/* Shut the 3-2-1 countdown down: drop the file handle fn_8000F1E0 opened
+ * (fn_80235380 releases a refcounted file handle) and destroy the two Sound
+ * objects it made from "321low.sfx" and "321high.sfx".  Each destroy is the
+ * virtual destructor (vtable slot 0x8) called with the delete flag, behind
+ * the usual double null check. */
 extern "C" void fn_8000F22C(void) {
-    struct D { virtual void m2(int); };
-    void *p;
-    if (lbl_8055D4BC != 0) {
-        fn_80235380(lbl_8055D4BC);
+    struct Sound { virtual void destroy(int); };
+#define countdownFileHandle lbl_8055D4BC
+#define lowSound lbl_8055D4B4
+#define highSound lbl_8055D4B8
+    void *sound;
+    if (countdownFileHandle != 0) {
+        fn_80235380(countdownFileHandle);
     }
-    lbl_8055D4BC = 0;
-    p = lbl_8055D4B4;
-    if (p != 0) {
-        volatile void *q = p;
-        if (q != 0) {
-            ((D *)p)->m2(1);
+    countdownFileHandle = 0;
+    sound = lowSound;
+    if (sound != 0) {
+        volatile void *soundCheck = sound;
+        if (soundCheck != 0) {
+            ((Sound *)sound)->destroy(1);
         }
     }
-    p = lbl_8055D4B8;
-    if (p != 0) {
-        volatile void *q = p;
-        if (q != 0) {
-            ((D *)p)->m2(1);
+    sound = highSound;
+    if (sound != 0) {
+        volatile void *soundCheck = sound;
+        if (soundCheck != 0) {
+            ((Sound *)sound)->destroy(1);
         }
     }
+#undef countdownFileHandle
+#undef lowSound
+#undef highSound
 }
 #pragma pop
 #pragma cplusplus reset
