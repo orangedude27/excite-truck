@@ -916,6 +916,7 @@ extern "C" s32 fn_8001CB8C(s32 flags, const char *name, void *outValue) {
 #pragma cplusplus reset
 #pragma scheduling on
 #pragma dont_inline reset
+/* Ensures an entry exists for the given key: looks it up, and creates it if not found. */
 void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
     fn_8001C4D8();
     if (((s32 (*)(s32, s32, s32))fn_8001C2CC)(arg0, arg1, arg2) == 0) {
