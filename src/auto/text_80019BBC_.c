@@ -55,6 +55,7 @@ void fn_80019BBC(void) {
 
 #pragma cplusplus on
 extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
+    /* Query a virtual object for a float value by index, or return the fallback if it reports not ready. */
     struct Dummy {
         virtual int f0();
         virtual int f1();
@@ -649,11 +650,13 @@ void fn_8001B478(int arg0, float farg0) {
         if ((i % 4) == 0) {
             float *s = (float *)head;
             float *e = *(float **)((char *)head + 0x14);
-            a[0] = s[2] + (e[2] - s[2]) * t;
-            a[1] = s[3] + (e[3] - s[3]) * t;
-            ratio2 = a[0]*a[0] + a[1]*a[1];
+            float d2 = e[2] - s[2];
+            float d3 = e[3] - s[3];
+            a[0] = s[2] + t * d2;
+            a[1] = s[3] + t * d3;
             a[2] = s[0] + t * (e[0] - s[0]);
             a[3] = s[1] + t * (e[1] - s[1]);
+            ratio2 = a[0] * a[0] + a[1] * a[1];
             inv = x / (float)fn_8002F234(ratio2);
             ratio2 = a[0] * inv;
             a[0] = a[1] * inv;
@@ -674,7 +677,6 @@ void fn_8001B478(int arg0, float farg0) {
     fn_802C8E48();
     fn_8013530C(sp20, -1);
 }
-
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
