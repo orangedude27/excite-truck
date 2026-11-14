@@ -136,7 +136,7 @@ void fn_8013477C(void *arg0) {
     value = fn_80134B58((s32)(strings + 0x0C), lbl_805612F0);
     lbl_8055E0A0 = value;
     if (value < lbl_805612F4) {
-        temp = lbl_805612E8 * fn_80134B58((s32)(strings + 12 - 12), lbl_805612EC);
+        temp = lbl_805612E8 * fn_80134B58((s32)(strings + 0), lbl_805612EC);
         lbl_8055E0A0 = fn_8013672C() - temp;
     }
     f1 = fn_80134B58((s32)(strings + 0x1C), lbl_805612FC);
@@ -474,80 +474,82 @@ void *fn_80134E90(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void *fn_80134EC8(s32 arg0)
+extern "C" void *fn_80134EC8(s32 arenaType)
 {
-    struct Dummy {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void f6();
-        virtual void f7();
-        virtual void f8();
-        virtual void f9();
-        virtual void f10();
-        virtual void f11();
-        virtual void f12();
-        virtual void f13();
-        virtual void f14();
-        virtual void f15();
-        virtual void f16();
-        virtual void f17();
-        virtual void f18();
-        virtual void f19();
-        virtual void f20();
-        virtual void f21();
-        virtual void f22();
-        virtual void f23();
-        virtual void f24();
-        virtual void f25();
-        virtual void f26();
-        virtual void f27();
-        virtual void f28();
-        virtual void f29();
-        virtual void f30();
-        virtual void f31();
-        virtual void f32();
-        virtual void f33();
-        virtual void f34();
-        virtual void f35();
-        virtual void f36();
-        virtual void f37();
-        virtual void f38();
-        virtual void f39();
-        virtual void f40();
-        virtual void f41();
-        virtual void f42();
-        virtual void f43();
-        virtual void f44();
-        virtual void f45();
-        virtual void f46();
-        virtual void f47();
-        virtual void f48();
-        virtual void f49();
-        virtual void f50();
-        virtual void f51();
-        virtual void f52();
-        virtual void f53();
-        virtual void f54();
-        virtual void f55();
-        virtual void f56();
-        virtual s32 f57();
+    /* Get an arena/driver object for arenaType: query current provider's slot 57,
+       return its result if nonzero; otherwise handle 0x180201 or warn and return default. */
+    struct ArenaProviderVTable {
+        virtual void vfunc0();
+        virtual void vfunc1();
+        virtual void vfunc2();
+        virtual void vfunc3();
+        virtual void vfunc4();
+        virtual void vfunc5();
+        virtual void vfunc6();
+        virtual void vfunc7();
+        virtual void vfunc8();
+        virtual void vfunc9();
+        virtual void vfunc10();
+        virtual void vfunc11();
+        virtual void vfunc12();
+        virtual void vfunc13();
+        virtual void vfunc14();
+        virtual void vfunc15();
+        virtual void vfunc16();
+        virtual void vfunc17();
+        virtual void vfunc18();
+        virtual void vfunc19();
+        virtual void vfunc20();
+        virtual void vfunc21();
+        virtual void vfunc22();
+        virtual void vfunc23();
+        virtual void vfunc24();
+        virtual void vfunc25();
+        virtual void vfunc26();
+        virtual void vfunc27();
+        virtual void vfunc28();
+        virtual void vfunc29();
+        virtual void vfunc30();
+        virtual void vfunc31();
+        virtual void vfunc32();
+        virtual void vfunc33();
+        virtual void vfunc34();
+        virtual void vfunc35();
+        virtual void vfunc36();
+        virtual void vfunc37();
+        virtual void vfunc38();
+        virtual void vfunc39();
+        virtual void vfunc40();
+        virtual void vfunc41();
+        virtual void vfunc42();
+        virtual void vfunc43();
+        virtual void vfunc44();
+        virtual void vfunc45();
+        virtual void vfunc46();
+        virtual void vfunc47();
+        virtual void vfunc48();
+        virtual void vfunc49();
+        virtual void vfunc50();
+        virtual void vfunc51();
+        virtual void vfunc52();
+        virtual void vfunc53();
+        virtual void vfunc54();
+        virtual void vfunc55();
+        virtual void vfunc56();
+        virtual s32 GetArenaDriver();
     };
-    void *obj = fn_801B83A0();
-    s32 result = ((Dummy *)obj)->f57();
-    if (result == 0) {
-        switch (arg0) {
+    void *provider = fn_801B83A0();
+    s32 driver = ((ArenaProviderVTable *)provider)->GetArenaDriver();
+    if (driver == 0) {
+        switch (arenaType) {
         case 0x180201:
             return fn_80134E90();
         default:
-            fn_802E30C8(lbl_8032BC5C, (void *)arg0);
+            fn_802E30C8(lbl_8032BC5C, (void *)arenaType);
             return fn_80134FF8();
         }
     }
-    return (void *)result;
+    return (void *)driver;
 }
 #pragma cplusplus reset
 #pragma pop
