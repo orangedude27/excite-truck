@@ -135,19 +135,34 @@ void fn_8020A860(UnkStruct_8020A860 *arg0) {
 
 #pragma scheduling invalid_target
 int fn_8020A878(void *arg0) {
-    void *buffer;
-    if (fn_80019B60() != 0)
-        lbl_8055B598 = lbl_805632B0;
-    else
-        lbl_8055B598 = lbl_805632B4;
-    lbl_8055EE04 = arg0;
-    buffer = fn_8012850C(0x800, lbl_8033C37C);
-    *(void **)((char *)arg0 + 4) = buffer;
-    memset(buffer, 0, 0x800);
+    // Initialize voice mixer: pick scale, store mixer instance, allocate/clear 0x800-byte work buffer, then start mixer init.
+    void *workBuffer;
+
+    #define gVoiceScale lbl_8055B598
+    #define gVoiceScaleAltA lbl_805632B0
+    #define gVoiceScaleAltB lbl_805632B4
+    #define gActiveVoiceMixer lbl_8055EE04
+    #define kVoiceWorkBufferSize 0x800
+
+    if (fn_80019B60() != 0) {
+        gVoiceScale = gVoiceScaleAltA;
+    } else {
+        gVoiceScale = gVoiceScaleAltB;
+    }
+    gActiveVoiceMixer = arg0;
+    workBuffer = fn_8012850C(kVoiceWorkBufferSize, lbl_8033C37C);
+    *(void **)((char *)arg0 + 4) = workBuffer;
+    memset(workBuffer, 0, kVoiceWorkBufferSize);
     fn_802E6B04();
     return 1;
-}
 
+    #undef gVoiceScale
+    #undef gVoiceScaleAltA
+    #undef gVoiceScaleAltB
+    #undef gActiveVoiceMixer
+    #undef kVoiceWorkBufferSize
+}
+#pragma scheduling on
 void fn_8020A8E8(void *arg0) {
     int off;
     int i;
