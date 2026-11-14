@@ -846,16 +846,18 @@ void fn_802B9E4C(void* poolSlot) {
 }
 
 void fn_802B9EC8(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != 0) {
-        if (p != 0) {
-            fn_80128670(((s32 *)p)[3]);
-            if (p != 0) {
-                ((s32 *)p)[0] = 0;
-                ((s32 *)p)[1] = 0;
-                ((s32 *)p)[2] = 0;
+    /* Destroys the object stored at *arg0: frees its owned array field,
+       clears its first three words, frees the object, and clears the slot. */
+    void *object = *(void **)arg0;
+    if (object != 0) {
+        if (object != 0) {
+            fn_80128670(((s32 *)object)[3]);
+            if (object != 0) {
+                ((s32 *)object)[0] = 0;
+                ((s32 *)object)[1] = 0;
+                ((s32 *)object)[2] = 0;
             }
-            fn_80128668(p);
+            fn_80128668(object);
         }
         *(void **)arg0 = 0;
     }
