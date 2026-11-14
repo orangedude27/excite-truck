@@ -107,6 +107,7 @@ void fn_802888D8(void) {
 }
 
 void fn_80288988(void) {
+    /* Destroy the global smoke/effect subsystem managers and clear their pointers. */
     fn_80289EE0((void *)lbl_8055F6E4, 1);
     lbl_8055F6E4 = 0;
     __dt__12PhysicsWorldFv_80289C20(lbl_8055F6E0, 1);
