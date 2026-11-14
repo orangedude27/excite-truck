@@ -341,19 +341,21 @@ int fn_8022DC68(void *arg0, int arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void *fn_8022DCC4(void *arg0, char **arg1, int arg2, int arg3) {
-    char **var_r31 = arg1;
-    char *var_r30 = (char *)arg0;
-    int var_r29 = 0;
-    while (var_r29 < arg2) {
-        strcpy(var_r30, *var_r31);
-        var_r31++;
-        var_r30 += 0x10;
-        var_r29++;
+/* Initializes a table of 0x10-byte string slots by copying `count` names from
+ * `names`, then stores the count at +0x40 and `extra` at +0x44. Returns `dest`. */
+void *fn_8022DCC4(void *dest, char **names, int count, int extra) {
+    char **namePtr = names;
+    char *slot = (char *)dest;
+    int index = 0;
+    while (index < count) {
+        strcpy(slot, *namePtr);
+        namePtr++;
+        slot += 0x10;
+        index++;
     }
-    *(int *)((char *)arg0 + 0x40) = arg2;
-    *(int *)((char *)arg0 + 0x44) = arg3;
-    return arg0;
+    *(int *)((char *)dest + 0x40) = count;
+    *(int *)((char *)dest + 0x44) = extra;
+    return dest;
 }
 #pragma pop
 void *fn_8022DD38(void *arg0, int arg1) {
