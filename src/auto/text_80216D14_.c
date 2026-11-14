@@ -1073,11 +1073,13 @@ struct Dummy80218464 {
 struct VTab80218464 { void *pad[32]; void (*f32)(void *); };
 struct VObj80218464 { struct VTab80218464 *vt; };
 #pragma cplusplus on
-extern "C" void fn_80218464(void *arg0) {
+extern "C" void fn_80218464(void *group) {
+    /* Calls virtual slot 0x80 on each object pointer in the array at offset 0x30
+     * of the group (count stored at offset 0x430). */
     char *cursor;
     int i = 0;
     char *base;
-    base = (char *)arg0;
+    base = (char *)group;
     cursor = base;
     while (i < *(int *)(base + 0x430)) {
         Dummy80218464 *obj = *(Dummy80218464 **)(cursor + 0x30);
