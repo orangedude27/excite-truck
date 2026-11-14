@@ -838,17 +838,24 @@ void fn_8016CD28(void *arg0) {
 
 s32 fn_8016CD4C(void *arg0) { s32 *base=*(s32 **)arg0; s32 index=((s32 *)arg0)[1]; ((s32 *)arg0)[1]=index+1; return (s32)base+index*0x14; }
 
-void *fn_8016CD68(void *arg0, s32 arg1, s32 arg2) {
+/* Builds an "rc_object_files" set: allocates count entries of 0x14 bytes behind
+ * the runtime's 0x10-byte array header and has the array constructor
+ * fn_8002F37C build each one with fn_8016CDE0 (fn_8016C168 is what takes an
+ * entry apart again), then points the 0x10-byte container fn_801284F8 just
+ * allocated at them: data/data2 the entries, count how many there are and
+ * index the next one fn_8016CD4C hands out. */
+void *fn_8016CD68(void *container, s32 count, s32 allocName) {
+    List8016C768 *list = (List8016C768 *)container;
     s32 temp;
-    s32 size = arg1 * 0x14;
-    void *buffer = (void *)fn_8012850C(size + 0x10, arg2);
+    s32 size = count * 0x14;
+    void *buffer = (void *)fn_8012850C(size + 0x10, allocName);
     temp = ((s32 (*)(void *, void *, void *, s32, s32))fn_8002F37C)(
-        buffer, fn_8016CDE0, fn_8016C168, 0x14, arg1);
-    ((s32 *)arg0)[0] = temp;
-    ((s32 *)arg0)[3] = temp;
-    ((s32 *)arg0)[2] = arg1;
-    ((s32 *)arg0)[1] = 0;
-    return arg0;
+        buffer, fn_8016CDE0, fn_8016C168, 0x14, count);
+    list->data = temp;
+    list->data2 = temp;
+    list->count = count;
+    list->index = 0;
+    return container;
 }
 
 void fn_8016CDE0(void *arg0) {
