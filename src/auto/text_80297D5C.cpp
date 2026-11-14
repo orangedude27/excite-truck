@@ -323,17 +323,18 @@ extern "C" void fn_802981F8(void* self) {
     extern "C" void fn_80299628(void*);
 extern void* lbl_8055F7D8;
 extern "C" void fn_8029871C(void*, void*, float);
-extern "C" void fn_802982C0(void *arg0) {
-    float temp_f31 = fn_801E7E24();
-    void *var_r31 = arg0;
-    int var_r30 = 0;
+extern "C" void fn_802982C0(void *slotPool) {
+    /* Updates each active (+0x28 != 0) 0x2C-byte slot in the 4-slot pool for the current frame delta time. */
+    float deltaTime = fn_801E7E24();
+    void *slot = slotPool;
+    int i = 0;
     do {
-        if (*(unsigned char *)((char *)var_r31 + 0x28) != 0) {
-            fn_8029871C(arg0, var_r31, temp_f31);
+        if (*(unsigned char *)((char *)slot + 0x28) != 0) {
+            fn_8029871C(slotPool, slot, deltaTime);
         }
-        var_r30 += 1;
-        var_r31 = (char *)var_r31 + 0x2c;
-    } while (var_r30 < 4);
+        i += 1;
+        slot = (char *)slot + 0x2c;
+    } while (i < 4);
 }
 
 extern "C" void *fn_80298868(void *);
@@ -1464,55 +1465,42 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
     void* var_r28 = (char*)arg0 + (var_r4 * 0x2C);
     float abs_f3 = fabsf(var_f1);
     float temp_f1 = abs_f3;
-    
     if (temp_f1 != lbl_80558DC4) {
         *(unsigned char*)((char*)var_r28 + 0x28) = 0;
         *(float*)((char*)var_r28 + 0x24) = lbl_8056459C;
     }
-    
     if ((*(unsigned char*)((char*)var_r28 + 0x28) != 0) || (*(float*)((char*)var_r28 + 0x24) > lbl_8056459C)) {
         if (var_f2 < lbl_80564610) {
             fn_8029AAE0((int)arg0, arg1, arg2);
-            
             float* var_f0 = (float*)((char*)arg2 + 0x50);
             int var_i = 1;
             int temp_i = (int)(farg0 * (*var_f0));
             if (temp_i > 1) {
                 var_i = temp_i;
             }
-            
             int var_r30 = 4;
             if (var_i < 4) {
                 var_r30 = var_i;
             }
-            
             float temp_f25 = lbl_80564614;
             int var_r26 = 0;
-            
             while (var_r26 < var_r30) {
                 float* base = (float*)((char*)var_r28 + (var_r26 * 0x10));
                 float* var_f27 = (float*)((char*)arg2 + 0x34);
                 float diff = (float)(-var_r26) * (farg0 / (float)var_r30);
-                
                 float f3 = var_f27[2] * diff;
                 float f2 = var_f27[0] * diff;
                 float f1 = var_f27[1] * diff;
-                
                 float f0 = temp_f25 * (diff * diff);
                 f0 = f1 + f0;
-                
                 float f26 = f2 + f0;
-                
                 float sp8 = base[0] + f2;
                 float sp12 = base[1] + f26;
                 float sp16 = base[2] + f3;
-                
                 fn_8028E584(*(void**)((char*)arg0 + 0x160), arg2, &sp8, farg0);
-                
                 var_r26++;
             }
         }
-        
         *(unsigned char*)((char*)var_r28 + 0x28) = 0;
         float val = *(float*)((char*)var_r28 + 0x24) - farg0;
         *(float*)((char*)var_r28 + 0x24) = val;
@@ -1578,16 +1566,15 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
     float o0 = out[0];
     float t0 = d->t[0];
     float k = lbl_80564598;
-    float r0 = o0 + t0;
-    out[0] = r0;
+    out[0] = t0 + o0;
     float o1 = out[1];
     float t1 = d->t[1];
-    float s1 = o1 + t1;
+    float s1 = t1 + o1;
     out[1] = s1;
-    float y1 = s1 + k;
+    float y1 = k + s1;
     float o2 = out[2];
     float t2 = d->t[2];
-    out[2] = o2 + t2;
+    out[2] = t2 + o2;
     out[1] = y1;
   }
   out += 3;
@@ -1637,16 +1624,15 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
     float o0 = out[0];
     float t0 = d->t[0];
     float k = lbl_80564598;
-    float r0 = o0 + t0;
-    out[0] = r0;
+    out[0] = t0 + o0;
     float o1 = out[1];
     float t1 = d->t[1];
-    float s1 = o1 + t1;
+    float s1 = t1 + o1;
     out[1] = s1;
-    float y1 = s1 + k;
+    float y1 = k + s1;
     float o2 = out[2];
     float t2 = d->t[2];
-    out[2] = o2 + t2;
+    out[2] = t2 + o2;
     out[1] = y1;
   }
 }
@@ -1736,13 +1722,13 @@ extern "C" int fn_8029AF24(int arg0) {
         float ratio = (float)(-value) / lbl_80564618;
         float temp_f31 = ((float (*)(float))fn_802C9A4C)(ratio);
         fn_802C8BD0(*(int *)((char *)obj + 0x1E8));
-        if (fn_802C8DBC(total * 4) != 0) {
+        if (fn_802C8DBC(total * 4)) {
             fn_8029B6E4(obj);
             fn_802C8E48();
             fn_802C8D74();
         }
         fn_802C8BD0(*(int *)((char *)obj + 0x1E4));
-        if (fn_802C8DBC(total * 8) != 0) {
+        if (fn_802C8DBC(total * 8)) {
             fn_8029B824(obj);
             fn_802C8E48();
             fn_802C8D74();
