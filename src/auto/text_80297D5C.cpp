@@ -518,20 +518,21 @@ extern "C" void fn_80298AD8(void* arg0) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_80298B48(void* arg0) {
-    int offset = 0;
-    int i = 0;
-    while (i < fn_80287B14()) {
-        char* entry = (char*)*(void**)arg0 + offset;
+/* Applies per-entry processing (fn_80298FBC) to each 0x20-byte entry in the
+ * container's array whose active flag at offset 0x19 is set. */
+extern "C" void fn_80298B48(void* container) {
+    int byteOffset = 0;
+    int entryIndex = 0;
+    while (entryIndex < fn_80287B14()) {
+        char* entry = (char*)*(void**)container + byteOffset;
         if ((unsigned char)entry[0x19] != 0) {
-            fn_80298FBC(arg0, entry);
+            fn_80298FBC(container, entry);
         }
-        offset += 0x20;
-        i++;
+        byteOffset += 0x20;
+        entryIndex++;
     }
 }
 #pragma scheduling on
-#pragma ppc_psq_save off
 static inline void XformRot3(const float *m, const float *src, float *dst) {
     if (dst == src) {
         float x = src[0], y = src[1], z = src[2];
