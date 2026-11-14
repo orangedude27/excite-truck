@@ -1505,7 +1505,8 @@ extern "C" void *fn_8021D044(void *, s32, s32, s32, const char *, s32, s32, s32,
 extern "C" s32 fn_8022A86C(void *);
 extern "C" void fn_8021818C(s32);
 extern "C" void fn_80218198(s32, void *);
-extern "C" void fn_8021A8A8(void *arg0) {
+/* Notify this widget of a state change, clear its bound value, and if its cursor still selects it, mark this widget as the current selection. */
+extern "C" void fn_8021A8A8(void *widget) {
     struct Dispatch {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
@@ -1516,10 +1517,10 @@ extern "C" void fn_8021A8A8(void *arg0) {
         virtual void d24(); virtual void d25(); virtual void d26();
         virtual void call(s32, s32);
     };
-    ((Dispatch *)arg0)->call(2, 0);
-    fn_8021818C(*(s32 *)((u8 *)arg0 + 0x2C));
-    if (*(s32 *)*(s32 **)((u8 *)arg0 + 0x254) == *(s32 *)((u8 *)arg0 + 0x258))
-        fn_80218198(*(s32 *)((u8 *)arg0 + 0x2C), arg0);
+    ((Dispatch *)widget)->call(2, 0);
+    fn_8021818C(*(s32 *)((u8 *)widget + 0x2C));
+    if (*(s32 *)*(s32 **)((u8 *)widget + 0x254) == *(s32 *)((u8 *)widget + 0x258))
+        fn_80218198(*(s32 *)((u8 *)widget + 0x2C), widget);
 }
 
 extern "C" void fn_8021A910(void *arg0, s32 arg1) {
