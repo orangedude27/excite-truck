@@ -249,7 +249,7 @@ extern "C" void fn_801B8E28(int arg0) {
     float input[3];
     float temp_f3;
     float dot;
-    fn_80189C64(obj, lbl_80436D28);
+    ((void (*)(void *))fn_80189C64)(obj);
     input[0] = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
     input[1] = *(float *)((char *)obj + 0x274c) - *(float *)((char *)obj + 0x2740);
     input[2] = *(float *)((char *)obj + 0x2750) - *(float *)((char *)obj + 0x2744);
