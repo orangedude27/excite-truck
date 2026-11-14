@@ -50,6 +50,15 @@ extern char lbl_8034D528[];
 extern void fn_80128670(int);
 extern void fn_8012C4D8(void);
 extern void fn_8012BF24(void *);
+#define sSampleStillInUseFmt lbl_8034D528
+#define Abend_panic fn_802E317C
+#define Resource_release(res) ((void (*)(void *))fn_8012C4D8)(res)
+
+enum {
+    SPU_SAMPLE_REF_COUNT_OFFSET       = 0x94,
+    SPU_SAMPLE_ACTIVE_CHANNELS_OFFSET = 0x98,
+    SPU_SAMPLE_RESOURCE_OFFSET        = 0xAC
+};
 #define VU8(o) (*(unsigned char *)(v + (o)))
 #define VF(o) (*(float *)(v + (o)))
 #define VI(o) (*(int *)(v + (o)))
@@ -686,8 +695,7 @@ void *fn_802E5AE8(char *arg0) {
     struct Res *res;
     unsigned char *slot;
     unsigned char flag;
-    int tmp;
-
+    unsigned char tmp9;
     found = fn_80029004(arg0, 0x2F);
     if (found != 0) name = found + 1;
     else name = arg0;
@@ -722,8 +730,8 @@ void *fn_802E5AE8(char *arg0) {
     *(unsigned int *)(slot + 0xA0) = aligned;
     *(int *)(slot + 0x94) = 1;
     *(int *)(slot + 0x20) = 0;
-    tmp = res->unk9;
-    flag = (tmp == 1);
+    tmp9 = res->unk9;
+    flag = (tmp9 == 1);
     slot[0x24] = flag;
     slot[0x25] = (res->unk8 != 0);
     if (flag) memcpy(slot + 0x28, res->data, 0x60);
