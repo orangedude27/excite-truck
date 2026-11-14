@@ -8,6 +8,14 @@ typedef struct E2640Scratch { s32 count; f32 dot; } E2640Scratch;
 
 typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
 typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
+/* A collision group: solidCount solid pointers in an array that starts at +0x14
+   (the walkers below step a one-word cursor over it, so slot[5] is the first
+   solid); fn_801E1F8C pairs two groups up, fn_801E2084 hands one object to
+   every solid of a group. */
+struct SolidGroup {
+    u8 pad_0[0x24];
+    s32 solidCount;
+};
 #pragma cplusplus on
 struct Dummy_801E2100 {
     virtual void f0();
