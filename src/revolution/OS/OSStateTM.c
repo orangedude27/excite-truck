@@ -29,9 +29,10 @@ static OSStateCallback PowerCallback;
 static BOOL StmVdInUse;
 
 static BOOL StmEhRegistered;
-static BOOL StmEhDesc;
 
-static BOOL StmImDesc;
+static s32 StmEhDesc;  // "/dev/stm/eventhook" handle
+
+static s32 StmImDesc;  // "/dev/stm/immediate" handle
 
 static BOOL StmReady;
 static BOOL ResetDown;
