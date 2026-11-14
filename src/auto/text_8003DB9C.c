@@ -5375,12 +5375,13 @@ void GXSetFieldMask(s32 even, s32 odd) {
 }
 
 void GXSetFieldMode(s32 mode, s32 field) {
-    unsigned int *data = __GXData;
-    unsigned int value = data[0x7C / 4];
+    /* Update the field-mode bit in GX state, flush texture state, then send the mode command. */
+    unsigned int *gx = __GXData;
+    unsigned int value = gx[0x7C / 4];
     value = __rlwimi(value, field, 22, 9, 9);
-    data[0x7C / 4] = value;
+    gx[0x7C / 4] = value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x7C / 4];
+    *(volatile unsigned int *)0xCC008000 = gx[0x7C / 4];
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = mode | 0x68000000;
