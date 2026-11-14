@@ -7109,13 +7109,14 @@ void BTA_HhAddDev(const u8 *bda, tBTA_HH_ATTR_MASK attr_mask, u8 sub_class,
     }
 }
 
-void BTA_HhRemoveDev(u8 arg0) {
+/* Queue a remove-device maintenance request for a HID host device. */
+void BTA_HhRemoveDev(u8 dev_handle) {
     void *buf = GKI_getbuf(0x1C);
     if (buf != 0) {
         memset(buf, 0, 0x1C);
         *(u16 *)buf = 0x170A;
         *(u16 *)((u8 *)buf + 0x10) = 0xC;
-        *(u16 *)((u8 *)buf + 6) = arg0;
+        *(u16 *)((u8 *)buf + 6) = dev_handle;
         fn_80071450(buf);
     }
 }
