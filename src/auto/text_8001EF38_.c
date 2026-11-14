@@ -422,10 +422,13 @@ int fn_8001F7E4(s32 arg0, s32 arg1) {
 }
 #pragma scheduling on
 extern char lbl_802FE0A0[];
-s32 fn_8001F89C(s32 arg0, s32 arg1) {
-    if (arg1 >= 0 && (u32)arg1 < 4) {
-        return *(s32 *)(lbl_8035A718 + arg0 * 4)
-             + *(s32 *)(lbl_80358698 + arg1 * 0x820 + arg0 * 4);
+extern char lbl_80358698[];
+extern char lbl_8035A718[];
+s32 fn_8001F89C(s32 counterId, s32 profileIndex) {
+    /* Return the stored achievements value for a counter in the given profile block. */
+    if (profileIndex >= 0 && (u32)profileIndex < 4) {
+        return *(s32 *)(lbl_8035A718 + counterId * 4)
+             + *(s32 *)(lbl_80358698 + profileIndex * 0x820 + counterId * 4);
     }
     fn_802E30C8(lbl_802FE0A0);
     return 0;
