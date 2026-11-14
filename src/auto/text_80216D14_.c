@@ -909,15 +909,17 @@ void fn_802180E0(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x498) = *(int *)((char *)arg0 + 0x4A0 + arg1 * 8);
 }
 
+/* Finds the index of the selected menu entry (+0x498) in the 8-byte entry table
+ * starting at +0x4A0 (count at +0x494); logs and returns 0 if not found. */
 int fn_80218120(void *arg0) {
     extern char lbl_8033D860[];
     extern void fn_802E30C8(const char *, ...);
     char *base = (char *)arg0;
-    char *p = (char *)arg0;
+    char *entry = (char *)arg0;
     int i;
     int count = *(int *)(base + 0x494);
-    for (i = 0; i < count; p += 8, i++) {
-        if (*(int *)(base + 0x498) == *(int *)(p + 0x4A0)) return i;
+    for (i = 0; i < count; entry += 8, i++) {
+        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) return i;
     }
     fn_802E30C8(lbl_8033D860);
     return 0;
