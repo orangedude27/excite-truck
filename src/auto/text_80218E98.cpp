@@ -802,15 +802,16 @@ struct MovieWidgetLayout {
 #define Widget_dtor        fn_8021915C
 #define Mem_freeObject     fn_80128668
 
-extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_802191F0(void *widget, s32 left, s32 top) {
+    /* Move the widget to (left, top), updating its right/bottom edges from its width and current height. */
     s32 temp_r0;
     s32 temp_r3;
-    temp_r3 = arg1 + ((VfObj *)arg0)->vf28();
-    *(s32 *)((u8 *)arg0 + 4) = arg1;
-    temp_r0 = arg2 + (*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
-    *(s32 *)((u8 *)arg0 + 0xC) = temp_r3;
-    *(s32 *)((u8 *)arg0 + 8) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x10) = temp_r0;
+    temp_r3 = left + ((VfObj *)widget)->vf28();
+    *(s32 *)((u8 *)widget + 4) = left;
+    temp_r0 = top + (*(s32 *)((u8 *)widget + 0x10) - *(s32 *)((u8 *)widget + 8));
+    *(s32 *)((u8 *)widget + 0xC) = temp_r3;
+    *(s32 *)((u8 *)widget + 8) = top;
+    *(s32 *)((u8 *)widget + 0x10) = temp_r0;
 }
 
 #pragma scheduling invalid_target
