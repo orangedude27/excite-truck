@@ -430,8 +430,9 @@ extern int fn_80004D64(void *);
 extern int fn_802E2A5C(void);
 extern void fn_80004E20(void);
 extern void fn_802E2B34(void);
+/* Shut down engine/kernel subsystems in reverse startup order; unregisters the stack-overrun check. */
 void fn_802E2B34(void) {
-    fn_80127D58((void *)fn_802E2A1C);
+    fn_80127D58((void *)fn_802E2A1C); /* unregister stack check callback */
     fn_802E29AC();
     fn_802EC7AC();
     fn_802CFBA8();
