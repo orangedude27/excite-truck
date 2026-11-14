@@ -97,6 +97,21 @@ static void* MEMGetHeapEndAddress(const MEMiHeapHead* heap) {
     return heap->end;
 }
 
+// Unit heap (the game's OS library carries no mem_unitHeap.h).  Like the frame
+// heap, its own head sits in the allocation right after the base MEMiHeapHead,
+// i.e. at (MEMiHeapHead*)heap + 1 == (u8*)heap + 0x3C.  Every free block of a
+// unit heap is the same fixed size, so a free block needs no header of its own:
+// its first word is the pointer to the next free block.
+typedef struct MEMUnitHeapFreeBlock {
+    struct MEMUnitHeapFreeBlock* next;  // at 0x0
+} MEMUnitHeapFreeBlock;
+
+// Placed in heap after base heap head
+typedef struct MEMiUnitHeapHead {
+    MEMUnitHeapFreeBlock* freeBlock;  // at 0x0
+    u32 blockSize;                    // at 0x4
+} MEMiUnitHeapHead;
+
 #ifdef __cplusplus
 }
 #endif
