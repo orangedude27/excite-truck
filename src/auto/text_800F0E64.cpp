@@ -189,6 +189,17 @@ extern "C" const char lbl_80326384[];
 extern "C" const char lbl_80326378[];
 extern "C" const char lbl_80326354[];
 extern "C" const char lbl_80325C18[];
+#define BasicSound_IsAttachedGeneralHandle fn_800E9B88
+#define BasicSound_DetachGeneralHandle     fn_800E9B9C
+#define SND_SOUNDHANDLE_CPP                lbl_80325C00 /* "snd_SoundHandle.cpp" */
+#define SND_HANDLE_PTR_SOUND_MSG           lbl_80325C18 /* "NW4HBM:Pointer must not be NULL (sound)" */
+// Prefix of nw4hbm::snd::detail::BasicSound accessed by nw4hbm::snd::SoundHandle.
+struct SoundHandleBasicSoundLayout {
+    void *vtable;             /* 0x00 */
+    void *playerHeap;         /* 0x04 */
+    void **generalHandle;     /* 0x08 attached general SoundHandle (mGeneralHandle) */
+    void **tempGeneralHandle; /* 0x0C attached temporary SoundHandle (mTempGeneralHandle) */
+};
 extern "C" const char lbl_80325C64[];
 extern "C" const char lbl_80325C8C[];
 extern "C" f32 lbl_805610BC;
@@ -4760,7 +4771,10 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
         ((void (*)(void *, void *, s32, s32, s32, s32))vt[2])(obj, (void *)info, arg5, 0, *(s32 *)(arg3 + 0xC), 8);
         startOffset = info[6];
     }
-    prio = ClampS32(arg2 - startOffset, 0, 0x7F);
+    {
+        s32 diff = arg2 - startOffset;
+        prio = (diff > 0x7F) ? 0x7F : (diff < 0 ? 0 : diff);
+    }
     if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, prio, (void *)arg4) == 0) {
         return 0;
     }
