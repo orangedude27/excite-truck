@@ -1063,12 +1063,13 @@ extern f32 lbl_80564894, lbl_80564898;
 f32 fn_802A4AD4(void);
 f32 fn_80287BC8(f32, f32);
 extern f32 lbl_805648A4, lbl_805648A8;
-void fn_802A6408(void *arg0) {
+void fn_802A6408(void *self) {
+    /* If fn_802A4AD4 returns non-zero, randomize this object's X/Z offsets (+0x14, +0x18) in [lbl_805648A4, lbl_805648A8]. */
     f32 value = ((f32 (*)(void))fn_802A4AD4)();
     f32 abs = (f32)__fabs((double)value);
     if (!(abs <= *(f32 *)(void *)&lbl_80558DC4)) {
-        *(f32 *)((u8 *)arg0 + 0x14) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
-        *(f32 *)((u8 *)arg0 + 0x18) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
+        *(f32 *)((u8 *)self + 0x14) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
+        *(f32 *)((u8 *)self + 0x18) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
     }
 }
 
