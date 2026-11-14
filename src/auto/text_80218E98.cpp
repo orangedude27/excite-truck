@@ -973,12 +973,21 @@ extern "C" void *fn_80219568(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     return arg0;
 }
 
-extern "C" void fn_802195DC(void *arg0, s32 arg1) {
-    fn_802C3034(arg1);
-    VfObj *obj = (VfObj *)arg0;
-    s32 a = obj->vf31();
-    s32 b = obj->vf32();
-    fn_8022B91C(*(s32 *)((u8 *)arg0 + 0x250), *(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 0x248), b, a);
+/* Draw this menu text widget (its draw method, vtable slot 0x24 of the widget
+ * vtables lbl_8033F768 and lbl_8033FA28): first make arg1 the canvas drawing
+ * happens on -- fn_802C3034 swaps it into gxcanvas' current-canvas global
+ * lbl_8055FC00 -- then hand the text drawer fn_8022B91C the widget's +0x250
+ * field (an argument the drawer no longer uses), its own offsets +0x244 and
+ * +0x248, the string vf32() (vtable 0x88) answers with, and the draw style
+ * vf31() (vtable 0x84) answers with: bit 0 marks the entry the menu cursor
+ * stands on and bit 1 the UI mode, which pick the drawer's colour and offset
+ * pair. */
+extern "C" void fn_802195DC(void *widget, s32 canvas) {
+    fn_802C3034(canvas);
+    VfObj *obj = (VfObj *)widget;
+    s32 style = obj->vf31();
+    s32 text = obj->vf32();
+    fn_8022B91C(*(s32 *)((u8 *)widget + 0x250), *(s32 *)((u8 *)widget + 0x244), *(s32 *)((u8 *)widget + 0x248), text, style);
 }
 
 extern "C" s32 fn_80219658(void) { return 0; }
