@@ -337,24 +337,26 @@ extern void fn_802C21C0(void);
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_802B5F24(s32 arg0) {
+    /* Collect up to 10 non-null items from the current source object and add each to arg0. */
     class V {
     public:
         virtual void a();
         virtual s32 b(s32);
     };
-    s32 i;
-    s32 result;
-    V *object;
+    s32 count;
+    s32 item;
+    V *source;
+
     fn_80128684();
-    i = 0;
+    count = 0;
     do {
-        object = (V *)fn_80156A40();
-        result = object->b(0);
-        if (result == 0)
+        source = (V *)fn_80156A40();
+        item = source->b(0);
+        if (item == 0)
             break;
-        fn_802A7BDC(arg0, result);
-        i++;
-    } while (i < 10);
+        fn_802A7BDC(arg0, item);
+        count++;
+    } while (count < 10);
     fn_80128678();
 }
 #pragma cplusplus reset
