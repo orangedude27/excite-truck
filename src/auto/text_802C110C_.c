@@ -68,17 +68,27 @@ struct TreeHitRecord {
 };                     /* 0x48 */
 
 #pragma scheduling invalid_target
-void *fn_802C110C(int arg0) {
-    char *entry = lbl_804C0810;
-    int count = lbl_8055FB28;
+void *fn_802C110C(int treeIndex) {
+    /* Look up the tree class (0x60-byte TreeClass in lbl_804C0810) whose
+       [firstTree, lastTree] range contains treeIndex. Panics if none matches. */
+#define treeClassTable lbl_804C0810
+#define treeClassCount lbl_8055FB28
+#define Panic fn_802E317C
+#define sTreeClassNotFoundFmt lbl_8034AED0
+    char *entry = treeClassTable;
+    int count = treeClassCount;
     for (; count > 0; --count, entry += 0x60) {
-        if (arg0 < *(int *)entry)
+        if (treeIndex < *(int *)entry)
             continue;
-        if (arg0 <= *(int *)(entry + 4))
+        if (treeIndex <= *(int *)(entry + 4))
             return entry;
     }
-    ((int (*)(const char *, ...))fn_802E317C)(lbl_8034AED0, arg0);
+    ((int (*)(const char *, ...))Panic)(sTreeClassNotFoundFmt, treeIndex);
     return 0;
+#undef treeClassTable
+#undef treeClassCount
+#undef Panic
+#undef sTreeClassNotFoundFmt
 }
 #pragma scheduling on
 void fn_802C1180(void *node) {
