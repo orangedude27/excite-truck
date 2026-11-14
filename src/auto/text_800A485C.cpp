@@ -17978,6 +17978,17 @@ extern "C" void *fn_800C6914(void *obj, void *owner) {
 
 extern "C" void *fn_800D0F1C(void *, s32);
 extern "C" s32 fn_800D67B8(s32, s32);
+/* Resources owned by the home-button controller (fn_800C6A1C).  This ABI puts
+   the first declared virtual at vtable +0x8 with four bytes per slot, so a
+   one-method class reaches the resource's deleting destructor, which the game
+   calls with -1 ("destroy the object and free its memory"). */
+class HomeButtonResource { public: virtual void deleteThis(s32); };
+/* Same, for the resource at HomeButton+0x264: its vtable pointer sits at +0x1F0
+   inside the object instead of at +0x0. */
+class HomeButtonResource1F0 : public Pad1F0_800C6A1C { public: virtual void deleteThis(s32); };
+/* The sound control at HomeButton+0x1F8; its deleting destructor is the sixth
+   declared virtual, vtable +0x1c. */
+class HomeButtonSoundControl { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void deleteThis(s32); };
 extern "C" void *fn_800C6A1C(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     s32 i;
