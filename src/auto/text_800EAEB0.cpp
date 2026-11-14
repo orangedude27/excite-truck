@@ -1703,17 +1703,20 @@ extern "C" s32 fn_800EE2F4(s32 arg0, s32 arg1) {
 }
 
 extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *);
-extern "C" void *AllocTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm3snd6detail9SeqPlayer(void *arg0, void *arg1) {
+extern "C" void *__ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *);
+/* Allocates a track from this allocator's pool, constructs it as an MmlSeqTrack,
+ * and links it to the given sequence player and this allocator's MML parser. */
+extern "C" void *AllocTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm3snd6detail9SeqPlayer(void *allocator, void *player) {
     extern void *AllocImpl__Q44nw4r3snd6detail8PoolImplFv(void *);
-    void *track = AllocImpl__Q44nw4r3snd6detail8PoolImplFv((u8 *)arg0 + 8);
+    void *track = AllocImpl__Q44nw4r3snd6detail8PoolImplFv((u8 *)allocator + 8);
     if (track == 0) {
         track = 0;
     } else if (track != 0) {
         track = __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(track);
     }
     if (track != 0) {
-        *(void **)((u8 *)track + 0xB4) = arg1;
-        *(void **)((u8 *)track + 0xBC) = *(void **)((u8 *)arg0 + 4);
+        *(void **)((u8 *)track + 0xB4) = player;
+        *(void **)((u8 *)track + 0xBC) = *(void **)((u8 *)allocator + 4);
     }
     return track;
 }
