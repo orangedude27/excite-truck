@@ -423,6 +423,7 @@ extern "C" void fn_801B86A4(void *arg0) {
     ((Dummy_801B8318 *)lbl_8055E744)->f41(arg0);
 }
 #pragma cplusplus on
+/* Forward to a virtual handler, scale the float at +0x50 by lbl_8055A910, then call fn_8027DED8 with the original value. */
 extern "C" void fn_801B86BC(int arg0, void *arg1) {
     extern float lbl_8055A910;
     extern void fn_8027DED8(int, void *, float);
