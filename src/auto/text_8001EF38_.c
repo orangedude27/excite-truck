@@ -19,9 +19,9 @@ typedef struct SrcCoef {
     void* unkC;
 } SrcCoef;
 
-/* One row of a lifetime counter's threshold list, read off a "threshholds"
- * archive node by fn_8001EFF0: the value the counter has to reach and the
- * model name ("model_name") that goes with it. */
+/* One row of a lifetime counter's threshold list, read off one "level" child
+ * node of the ACHV archive by fn_8001EFF0: the value the counter has to reach
+ * and the model name that goes with it. */
 typedef struct AchThreshold {
     s32 threshold; /* "threshhold" attribute */
     s32 model;     /* "model_name" attribute */
