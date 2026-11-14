@@ -99,6 +99,7 @@ extern "C" int fn_8013A760(unkVtable **table, int elementSuffix) {
 #pragma cplusplus reset
 #pragma push
 #pragma scheduling invalid_target
+/* Try three name variants derived from arg1 and report via fn_8013A660 for each. */
 void fn_8013A7E8(unkVtable **arg0, char *arg1, char *arg2) {
     char buffer[0x20];
     int i = 0;
