@@ -4603,21 +4603,21 @@ extern "C" s32 fn_800AB378(void *, s32);
 extern s32 fn_800B5324(void *, void *, u32, u32, u32 *, u32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
-    u32 one = 1;
     u32 sp8;
     s32 var_r31;
     s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
-    u8 temp_r7;
     void *temp_r5;
+    int temp_r7;
+
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
     temp_r30 = *(s32 *)arg0;
     *(void **)((u8 *)arg0 + 4) = temp_r5;
-    temp_r7 = *(u8 *)((u8 *)temp_r5 + 0x20) - 5;
+    temp_r7 = (u8)(*(u8 *)((u8 *)temp_r5 + 0x20) - 5);
     *(s32 *)arg0 = arg1;
-    *(u8 *)((u8 *)arg0 + 0x6C) = temp_r7;
-    *(u16 *)((u8 *)arg0 + 0x4A) = (one << temp_r7) - 1;
+    *(u8 *)((u8 *)arg0 + 0x6C) = (u8)temp_r7;
+    *(u16 *)((u8 *)arg0 + 0x4A) = (u16)((1 << temp_r7) - 1);
     *(s32 *)((u8 *)arg0 + 0x40) = -1;
     temp_r3 = ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
     var_r31 = temp_r3;
@@ -25248,21 +25248,25 @@ extern "C" s32 fn_800A5530(void *object) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
+/* Polls the volume's device via fn_800A7568 (arg==1 -> force-complete flag);
+   on result 21 reads the device status, stores it in the global at +0x44 and
+   the volume at +0x1F84, and returns 0x1000; returns -1 on other errors, 0 if
+   the device is not ready. */
+extern "C" s32 fn_800A5788(void *volume, s32 arg) {
     s32 result;
-    s32 value;
-    result = fn_800A7568(*(void **)((u8 *)arg0 + 0x1FBC), (arg1 - 1) == 0);
+    s32 status;
+    result = fn_800A7568(*(void **)((u8 *)volume + 0x1FBC), (arg - 1) == 0);
     if (result == 0)
-        goto zero;
+        goto notReady;
     if (result != 21)
         goto fail;
-    value = ((s32 (*)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
-    *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
-    *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+    status = ((s32 (*)(void *))fn_800A71D8)(*(void **)((u8 *)volume + 0x1FBC));
+    *(s32 *)((u8 *)lbl_803D2140 + 0x44) = status;
+    *(s32 *)((u8 *)volume + 0x1F84) = status;
     return 0x1000;
 fail:
     return -1;
-zero:
+notReady:
     return 0;
 }
 #pragma dont_inline reset
