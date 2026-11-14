@@ -833,12 +833,12 @@ __declspec(section ".rodata") extern char lbl_8033BD90;
 extern char lbl_8033BD78;
 #pragma dont_inline on
 __declspec(section ".rodata") extern char lbl_8033BD78;
-extern "C" void *fn_80207428(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    void *self = arg0;
+extern "C" void *fn_80207428(void *object, int arg1, int arg2, int soundIndex, int enableAux) {
+    void *self = object;
     fn_802072E4(self, arg1, arg2);
-    *(int *)((char *)self + 0x10) = arg3;
+    *(int *)((char *)self + 0x10) = soundIndex;
     *(void **)self = &lbl_8033BD78;
-    fn_80206750(self, arg3, arg4);
+    fn_80206750(self, soundIndex, enableAux);
     return self;
 }
 
