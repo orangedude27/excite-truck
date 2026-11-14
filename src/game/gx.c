@@ -935,16 +935,17 @@ extern void fn_802CF850(void);
 #pragma push
 #pragma dont_inline on
 void fn_802CFD74(void) {
+    /* (Re)initialize the GX FIFO from the CPU FIFO and reconfigure video/GX state. */
     extern int lbl_8055FD6C;
     extern void *lbl_8055FD64;
-    char sp8[0x80];
-    int temp_r31;
-    int temp_r30;
-    GXGetCPUFifo(sp8);
-    temp_r31 = GXGetFifoBase(sp8);
-    temp_r30 = GXGetFifoSize(sp8);
+    char fifoInfo[0x80];
+    int fifoBase;
+    int fifoSize;
+    GXGetCPUFifo(fifoInfo);
+    fifoBase = GXGetFifoBase(fifoInfo);
+    fifoSize = GXGetFifoSize(fifoInfo);
     GXGetVtxAttrFmtv();
-    lbl_8055FD6C = GXInit(temp_r31, temp_r30);
+    lbl_8055FD6C = GXInit(fifoBase, fifoSize);
     fn_802CF850();
     VIConfigure(lbl_8055FD64);
 }
