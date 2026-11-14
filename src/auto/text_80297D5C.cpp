@@ -696,19 +696,20 @@ extern "C" void fn_802991BC(void *out) {
     *(void **)((char *)out + 4) = fn_8028E2F8(&effectDesc.x18, lbl_803494C4, lbl_8055CA80);
 }
 
-extern "C" void* fn_802992C4(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        *(int*)((char*)arg0 + 0x34) = 0;
-        *(int*)((char*)arg0 + 0x74) = 0;
-        *(int*)((char*)arg0 + 0xB4) = 0;
-        *(int*)((char*)arg0 + 0xF4) = 0;
-        fn_802CAC54(*(int*)((char*)arg0 + 0x100));
-        *(int*)((char*)arg0 + 0x100) = -1;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+extern "C" void* fn_802992C4(void* obj, int freeFlag) {
+    if (obj != 0) {
+        /* Clear four effect/state slots, release tracked resource, then optionally free the object. */
+        *(int*)((char*)obj + 0x34) = 0;
+        *(int*)((char*)obj + 0x74) = 0;
+        *(int*)((char*)obj + 0xB4) = 0;
+        *(int*)((char*)obj + 0xF4) = 0;
+        fn_802CAC54(*(int*)((char*)obj + 0x100));
+        *(int*)((char*)obj + 0x100) = -1;
+        if (freeFlag > 0) {
+            fn_80128668(obj);
         }
     }
-    return arg0;
+    return obj;
 }
 
 extern float fn_801E7E18(int);
