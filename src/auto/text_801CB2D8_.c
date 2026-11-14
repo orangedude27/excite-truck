@@ -206,6 +206,7 @@ done:
     return;
 }
 
+/* If not blocked by fn_80019BA8, forwards the call to fn_801CD130 when fn_80161C38() returns 0. */
 void fn_801CB750(int arg0, int arg1, f32 farg0) {
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
