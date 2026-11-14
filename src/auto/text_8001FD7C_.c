@@ -328,13 +328,15 @@ void fn_8002017C(void) {
 }
 
 int fn_80020184(void) {
-    s32 temp_r3;
-    u32 temp_r3_2;
+    /* Return a fade alpha (0xFF down to 0x00) based on time since lbl_8055D63C,
+       starting 0x12C ticks after it and ramping over ~1000 ticks. */
+    s32 clamped;
+    u32 scaled;
 
-    temp_r3_2 = (((fn_802E2C20() - lbl_8055D63C) - 0x12C) << 8) / 1000;
-    temp_r3 = temp_r3_2 & ((s32) (-(s32) temp_r3_2 & ~temp_r3_2) >> 0x1F);
-    temp_r3 = (temp_r3 < 0xFF) ? temp_r3 : 0xFF;
-    return 0xFF - temp_r3;
+    scaled = (((fn_802E2C20() - lbl_8055D63C) - 0x12C) << 8) / 1000;
+    clamped = scaled & ((s32) (-(s32) scaled & ~scaled) >> 0x1F);
+    clamped = (clamped < 0xFF) ? clamped : 0xFF;
+    return 0xFF - clamped;
 }
 
 /* Names and messages the tips loader uses; they sit in .data right after this
