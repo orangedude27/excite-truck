@@ -1369,13 +1369,14 @@ extern "C" long fn_8027CA1C(void *arg0) {
     return v;
 }
 #pragma cplusplus off
-long fn_8027CAB4(void *arg0) {
+/* Return 1 if the looked-up event entry exists and its field at +8 is zero, else 0. */
+long fn_8027CAB4(void *event) {
     long value;
     void *result;
     long flag;
 
     value = fn_8027D1F4();
-    result = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), value, 0);
+    result = fn_8001BB58(fn_8000DA10(), *(long *)((char *)event + 4), value, 0);
     flag = 0;
     if (result != 0 && *(long *)((char *)result + 8) == 0) {
         flag = 1;
