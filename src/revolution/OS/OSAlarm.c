@@ -95,6 +95,7 @@ static void InsertAlarm(OSAlarm* alarm, s64 end, OSAlarmHandler handler) {
     }
 }
 
+/* Schedule a one-shot alarm to fire `tick` time units from now. */
 void OSSetAlarm(OSAlarm* alarm, s64 tick, OSAlarmHandler handler) {
     BOOL enabled = OSDisableInterrupts();
 
