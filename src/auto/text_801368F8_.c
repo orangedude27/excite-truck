@@ -58,7 +58,7 @@ extern s32 lbl_80559BF8;
 extern void fn_80136AA8(void*);
 extern s32 fn_80136A18(s32, s32);
 extern s32 fn_801284F8(s32, s32*);
-  extern s32 fn_801368F8(s32, s32);
+/* fn_801368F8 (the proxer constructor) is defined below with its real types. */
 extern f32 lbl_80561368;
 extern f32 lbl_8056136C;
 extern f32 lbl_80561370;
