@@ -493,16 +493,18 @@ int fn_80133AD8(int arg0) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
-int fn_80133B24(char *arg0) {
-    int i = 0;
+/* Looks up an options section name (case-insensitively) among the 17 known section names (0..16),
+ * or logs "Can't get section for %s" (lbl_8032B9FC) and returns 0x12 if not found. */
+int fn_80133B24(char *sectionName) {
+    int sectionIndex = 0;
 
     do {
-        if (stricmp(arg0, (char *)fn_80133AD8(i)) == 0) {
-            return i;
+        if (stricmp(sectionName, (char *)fn_80133AD8(sectionIndex)) == 0) {
+            return sectionIndex;
         }
-        i++;
-    } while (i < 0x11);
-    fn_802E30C8(lbl_8032B9FC, arg0);
+        sectionIndex++;
+    } while (sectionIndex < 0x11);
+    fn_802E30C8(lbl_8032B9FC, sectionName);
     return 0x12;
 }
 #pragma dont_inline reset
