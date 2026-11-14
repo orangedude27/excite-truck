@@ -27066,6 +27066,7 @@ s32 IUSB_ReadBlkMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
 
 s32 IUSB_WriteBlkMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
                          void (*callback)(void), void* callbackArg) {
+    /* Asynchronously write a USB bulk message: flush the buffer to memory, then submit the transfer. */
     DCFlushRange(buffer, length);
     return __IntrBlkMsgInt(fd, endpoint, length, buffer, USB_IOCTLV_BLKMSG,
                            callback, callbackArg, TRUE);
