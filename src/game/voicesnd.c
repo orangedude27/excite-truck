@@ -91,20 +91,23 @@ void* fn_8020A76C(void) {
 void *fn_8020A774(int arg0) { return lbl_804892D0 + arg0 * 0x24; }
 
 int fn_8020A788(void) {
-    void *value;
-    int ret;
+    /* Lazily create/initialize the shared voice-sound pool object, then increment the active-use count on success. */
+    void *voicePool;
+    int initialized;
+
     if (lbl_8055EE0C == 0) {
-        value = (void *)fn_801284F8(0x20, lbl_8033C368);
-        if (value != 0) {
-            value = ((void *(*)(void *, void *, int, int))fn_8012A13C)(value, lbl_8033C368, 0x200, 0x54);
+        voicePool = (void *)fn_801284F8(0x20, lbl_8033C368);
+        if (voicePool != 0) {
+            voicePool = ((void *(*)(void *, void *, int, int))fn_8012A13C)(voicePool, lbl_8033C368, 0x200, 0x54);
         }
-        lbl_8055EE10 = value;
+        lbl_8055EE10 = voicePool;
     }
-    ret = fn_8012A2D8(lbl_8055EE10);
-    if (ret != 0) {
+
+    initialized = fn_8012A2D8(lbl_8055EE10);
+    if (initialized != 0) {
         lbl_8055EE0C += 1;
     }
-    return ret;
+    return initialized;
 }
 
 #pragma push
