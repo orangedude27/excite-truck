@@ -1544,8 +1544,9 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
     float m6 = d->m[6];
     float z = d->v0[2];
     float m7 = d->m[7];
-    float m2 = d->m[2];
-    float m5 = d->m[5];
+    float m2, m5;
+    m5 = d->m[5];
+    m2 = d->m[2];
     float m8 = d->m[8];
     out[0] = (z * m6) + ((x * m0) + (y * m3));
     out[1] = (z * m7) + ((x * m1) + (y * m4));
@@ -1555,16 +1556,18 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
   {
     nv6 = d->m[6];
     {
-      float m3 = d->m[3];
-      float m0 = d->m[0];
-      float m6 = nv6;
+      float m6, m0, m3;
+      m3 = d->m[3];
+      m0 = d->m[0];
+      m6 = nv6;
       out[0] = (d->v0[2] * m6) + ((d->v0[0] * m0) + (d->v0[1] * m3));
     }
     new_var2 = d->m[7];
     {
-      float m4 = d->m[4];
-      float m1 = d->m[1];
-      float m7 = new_var2;
+      float m7, m1, m4;
+      m4 = d->m[4];
+      m1 = d->m[1];
+      m7 = new_var2;
       out[1] = (d->v0[2] * m7) + ((d->v0[0] * m1) + (d->v0[1] * m4));
       if (1)
       {
@@ -1572,25 +1575,29 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
     }
     nv8 = d->m[8];
     {
-      float m5 = d->m[5];
-      float m2 = d->m[2];
-      float m8 = nv8;
+      float m8, m2, m5;
+      m5 = d->m[5];
+      m2 = d->m[2];
+      m8 = nv8;
       out[2] = (d->v0[2] * m8) + ((d->v0[0] * m2) + (d->v0[1] * m5));
     }
   }
   {
-    float o0 = out[0];
-    float t0 = d->t[0];
-    float k = lbl_80564598;
-    out[0] = o0 + t0;
-    float o1 = out[1];
-    float t1 = d->t[1];
-    float s1 = o1 + t1;
+    float k, y1, s2, s1, s0, t2, t1, t0, o2, o1, o0;
+    o0 = out[0];
+    t0 = d->t[0];
+    k = lbl_80564598;
+    s0 = o0 + t0;
+    out[0] = s0;
+    o1 = out[1];
+    t1 = d->t[1];
+    s1 = o1 + t1;
     out[1] = s1;
-    float y1 = s1 + k;
-    float o2 = out[2];
-    float t2 = d->t[2];
-    out[2] = o2 + t2;
+    y1 = s1 + k;
+    o2 = out[2];
+    t2 = d->t[2];
+    s2 = o2 + t2;
+    out[2] = s2;
     out[1] = y1;
   }
   out += 3;
@@ -1605,8 +1612,9 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
     float m6 = d->m[6];
     float z = d->v1[2];
     float m7 = d->m[7];
-    float m2 = d->m[2];
-    float m5 = d->m[5];
+    float m2, m5;
+    m5 = d->m[5];
+    m2 = d->m[2];
     float m8 = d->m[8];
     out[0] = (z * m6) + ((x * m0) + (y * m3));
     out[1] = (z * m7) + ((x * m1) + (y * m4));
@@ -1616,39 +1624,45 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
   {
     nw6 = d->m[6];
     {
-      float m3 = d->m[3];
-      float m0 = d->m[0];
-      float m6 = nw6;
+      float m6, m0, m3;
+      m3 = d->m[3];
+      m0 = d->m[0];
+      m6 = nw6;
       out[0] = (d->v1[2] * m6) + ((d->v1[0] * m0) + (d->v1[1] * m3));
     }
     new_var = d->m[7];
     {
-      float m4 = d->m[4];
-      float m1 = d->m[1];
-      float m7 = new_var;
+      float m7, m1, m4;
+      m4 = d->m[4];
+      m1 = d->m[1];
+      m7 = new_var;
       out[1] = (d->v1[2] * m7) + ((d->v1[0] * m1) + (d->v1[1] * m4));
     }
     nw8 = d->m[8];
     {
-      float m5 = d->m[5];
-      float m2 = d->m[2];
-      float m8 = nw8;
+      float m8, m2, m5;
+      m5 = d->m[5];
+      m2 = d->m[2];
+      m8 = nw8;
       out[2] = (d->v1[2] * m8) + ((d->v1[0] * m2) + (d->v1[1] * m5));
     }
   }
   {
-    float o0 = out[0];
-    float t0 = d->t[0];
-    float k = lbl_80564598;
-    out[0] = o0 + t0;
-    float o1 = out[1];
-    float t1 = d->t[1];
-    float s1 = o1 + t1;
+    float k, y1, s2, s1, s0, t2, t1, t0, o2, o1, o0;
+    o0 = out[0];
+    t0 = d->t[0];
+    k = lbl_80564598;
+    s0 = o0 + t0;
+    out[0] = s0;
+    o1 = out[1];
+    t1 = d->t[1];
+    s1 = o1 + t1;
     out[1] = s1;
-    float y1 = s1 + k;
-    float o2 = out[2];
-    float t2 = d->t[2];
-    out[2] = o2 + t2;
+    y1 = s1 + k;
+    o2 = out[2];
+    t2 = d->t[2];
+    s2 = o2 + t2;
+    out[2] = s2;
     out[1] = y1;
   }
 }
