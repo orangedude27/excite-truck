@@ -884,11 +884,13 @@ long fn_802EC370(void *arg0) {
     return ((long *)arg0)[3];
 }
 
-int fn_802EC378(void *arg0, void *arg1, int arg2) {
-    int pos = *(int *)((char *)arg0 + 8);
-    if (pos >= 0 && pos + arg2 <= *(int *)((char *)arg0 + 0xC)) {
-        memcpy(arg1, (char *)*(char **)((char *)arg0 + 4) + pos, arg2);
-        *(int *)((char *)arg0 + 8) = *(int *)((char *)arg0 + 8) + arg2;
+/* Reads count bytes from the stream's buffer at its current position (+8) into
+   dst and advances the position, if the read fits within the buffer limit (+C). */
+int fn_802EC378(void *stream, void *dst, int count) {
+    int pos = *(int *)((char *)stream + 8);
+    if (pos >= 0 && pos + count <= *(int *)((char *)stream + 0xC)) {
+        memcpy(dst, (char *)*(char **)((char *)stream + 4) + pos, count);
+        *(int *)((char *)stream + 8) = *(int *)((char *)stream + 8) + count;
         return 1;
     }
     return 0;
