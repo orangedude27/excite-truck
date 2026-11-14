@@ -192,7 +192,8 @@ void fn_801CB6B4(void) {
     }
 }
 
-void fn_801CB6E4(int arg0, int arg1, int arg2) {
+/* Dispatches an event through fn_801CCDAC when not in a blocked state. */
+void fn_801CB6E4(int eventId, int contextId, int param) {
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
     case 0:
@@ -201,7 +202,7 @@ void fn_801CB6E4(int arg0, int arg1, int arg2) {
         goto done;
     }
 action:
-    fn_801CCDAC(arg0, arg1, arg2);
+    fn_801CCDAC(eventId, contextId, param);
 done:
     return;
 }
