@@ -388,21 +388,382 @@ void __GXInitRevisionBits(void) {
     }
 }
 
-void *GXInit(void *arg0, u32 arg1) {
+void GXSetMisc(s32, u32);
+void __GXFifoInit(void);
+void GXInitFifoBase(void *, void *, u32);
+void GXSetCPUFifo(void *);
+void GXSetGPFifo(unsigned int *);
+void OSRegisterShutdownFunction(void *);
+void __GXPEInit(void);
+u32 PPCMfhid2(void);
+void PPCMtwpar(u32);
+void PPCMthid2(u32);
+void __GXFlushTextureState(void);
+void __GXInitRevisionBits(void);
+void GXInitTexCacheRegion(void *, signed char, unsigned int, int, unsigned int, int);
+void GXInitTlutRegion(unsigned int *, int, int);
+void __GXSetIndirectMask(s32);
+void __GXSetTmemConfig(s32);
+void __GXInitGX(void);
+void OSRegisterVersion(s32);
+void *GXInit(void *arg0, unsigned int arg1) {
+    static int shutdownRegistered = 0;
+    unsigned int hid;
+    unsigned int *p;
+    unsigned int *q;
+    int i;
+    unsigned int v10;
+    unsigned int tmp;
     extern s32 __GXVersion;
-    extern void OSRegisterVersion(s32);
-    extern u8 FifoObj_8037BA40[];
-    (void)arg0; (void)arg1;
+    extern unsigned int * const __GXData;
     OSRegisterVersion(__GXVersion);
     {
-        u8 *gx = (u8 *)__GXData;
-        gx[0x5F8] = 0;
-        gx[0x5F9] = 1;
-        gx[0x5FA] = 1;
-        *(u32 *)(gx + 0x5E4) = 0;
-        *(u32 *)(gx + 0x5E8) = 0;
+        unsigned int *gx = __GXData;
+        ((unsigned char *)gx)[0x5F8] = 0;
+        ((unsigned char *)gx)[0x5F9] = 1;
+        ((unsigned char *)gx)[0x5FA] = 1;
+        gx[0x5E4/4] = 0;
+        gx[0x5E8/4] = 0;
     }
-    return FifoObj_8037BA40;
+    GXSetMisc(1, 0);
+    __cpReg = (unsigned short *)0xCC000000;
+    __piReg = (unsigned int *)0xCC003000;
+    __peReg = (unsigned short *)0xCC001000;
+    __memReg = (unsigned int *)0xCC004000;
+    __GXFifoInit();
+    GXInitFifoBase(&FifoObj_8037BA40, arg0, arg1);
+    GXSetCPUFifo(&FifoObj_8037BA40);
+    GXSetGPFifo((unsigned int *)&FifoObj_8037BA40);
+    if (shutdownRegistered == 0) {
+        OSRegisterShutdownFunction(&GXShutdownFuncInfo_803036D0);
+        shutdownRegistered = 1;
+    }
+    __GXPEInit();
+    hid = PPCMfhid2();
+    PPCMtwpar(0x0C008000);
+    PPCMthid2(hid | 0x40000000);
+    p = *(unsigned int * volatile *)&__GXData;
+    p[0x254/4] = 0;
+    p[0x174/4] = __rlwimi(0xFF, 0x0F, 24, 0, 7);
+    p[0x7C/4] = __rlwimi(0, 0x22, 24, 0, 7);
+    v10 = 0xC0;
+    q = p;
+    {
+        unsigned int n = 0;
+        for (i = 0; i < 8; i++) {
+            unsigned int idx = n >> 1;
+            unsigned int off = ((n << 1) & 0xFFFFFFFC);
+            unsigned int *r27 = (unsigned int *)((unsigned char *)p + off);
+            unsigned int r11 = v10 + 1;
+            q[0x180/4] = 0;
+            q[0x1C0/4] = 0;
+            r27[0x150/4] = 0;
+            q[0x5A4/4] = 0xFF;
+            n++;
+            q[0x180/4] = __rlwimi(q[0x180/4], v10, 24, 0, 7);
+            q[0x1C0/4] = __rlwimi(q[0x1C0/4], r11, 24, 0, 7);
+            r11 = v10 + 3;
+            v10 = v10 + 2;
+            r27[0x200/4] = __rlwimi(r27[0x200/4], idx + 0xF6, 24, 0, 7);
+            r27[0x150/4] = __rlwimi(r27[0x150/4], idx + 0x28, 24, 0, 7);
+            {
+                unsigned int idx2 = n >> 1;
+                unsigned int off2 = ((n << 1) & 0xFFFFFFFC);
+                unsigned int *r272 = (unsigned int *)((unsigned char *)p + off2);
+                n++;
+                q[0x184/4] = 0;
+                q[0x1C4/4] = 0;
+                r272[0x150/4] = 0;
+                q[0x5A8/4] = 0xFF;
+                q[0x184/4] = __rlwimi(q[0x184/4], v10, 24, 0, 7);
+                q[0x1C4/4] = __rlwimi(q[0x1C4/4], r11, 24, 0, 7);
+                v10 = v10 + 2;
+                q += 2;
+                r272[0x200/4] = __rlwimi(r272[0x200/4], idx2 + 0xF6, 24, 0, 7);
+                r272[0x150/4] = __rlwimi(r272[0x150/4], idx2 + 0x28, 24, 0, 7);
+            }
+        }
+    }
+    {
+        unsigned int *gx2 = __GXData;
+        gx2[0x170/4] = __rlwimi(0, 0x27, 24, 0, 7);
+        {
+            unsigned int val = 0x30;
+            unsigned int *r3 = p;
+            for (i = 0; i < 2; i++) {
+                r3[0x108/4] = __rlwimi(0, val, 24, 0, 7);
+                r3[0x128/4] = __rlwimi(0, val+1, 24, 0, 7);
+                r3[0x10C/4] = __rlwimi(0, val+2, 24, 0, 7);
+                r3[0x12C/4] = __rlwimi(0, val+3, 24, 0, 7);
+                r3[0x110/4] = __rlwimi(0, val+4, 24, 0, 7);
+                r3[0x130/4] = __rlwimi(0, val+5, 24, 0, 7);
+                r3[0x114/4] = __rlwimi(0, val+6, 24, 0, 7);
+                r3[0x134/4] = __rlwimi(0, val+7, 24, 0, 7);
+                val += 8;
+                r3 += 4;
+            }
+        }
+        p = __GXData;
+        p[0x148/4] = __rlwimi(p[0x148/4], 0x20, 24, 0, 7);
+        p[0x14C/4] = __rlwimi(p[0x14C/4], 0x21, 24, 0, 7);
+        p[0x220/4] = __rlwimi(p[0x220/4], 0x41, 24, 0, 7);
+        p[0x224/4] = __rlwimi(p[0x224/4], 0x42, 24, 0, 7);
+        p[0x228/4] = __rlwimi(p[0x228/4], 0x40, 24, 0, 7);
+        p[0x22C/4] = __rlwimi(p[0x22C/4], 0x43, 24, 0, 7);
+        p[0x24C/4] &= 0xFFFFFE7F;
+        ((float *)p)[0x560/4] = 16777215.0f;
+        ((float *)p)[0x55C/4] = 0.0f;
+        p[0x5FC/4] = 0;
+        ((unsigned char *)p)[0x5FB] = 0;
+        tmp = *(unsigned int *)0x800000F8 / 500;
+        __GXFlushTextureState();
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = ((tmp >> 11) | 0x69000400);
+        __GXFlushTextureState();
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = ((tmp / 4224) | 0x46000200);
+        __GXInitRevisionBits();
+        {
+            unsigned char *r29 = (unsigned char *)p + 0x258;
+            unsigned char *r27b = (unsigned char *)p + 0x2D8;
+            unsigned char *r30 = (unsigned char *)p + 0x358;
+            u32 *tbl = GXTexRegionAddrTable_80303610;
+            int n = 0;
+            for (n = 0; n < 8; n++) {
+                GXInitTexCacheRegion(r29, 0, tbl[0], 0, tbl[8], 0);
+                GXInitTexCacheRegion(r27b, 0, tbl[16], 0, tbl[24], 0);
+                GXInitTexCacheRegion(r30, 1, tbl[32], 0, tbl[40], 0);
+                r29 += 0x10; r27b += 0x10; r30 += 0x10; tbl += 1;
+            }
+        }
+        {
+            unsigned char *base = (unsigned char *)__GXData + 0x3D8;
+            unsigned int addr = 0xC0000;
+            int n;
+            for (n = 0; n < 16; n++) {
+                GXInitTlutRegion((unsigned int *)base, addr, 0x10);
+                base += 0x10; addr += 0x2000;
+            }
+        }
+        {
+            unsigned char *base = (unsigned char *)__GXData + 0x3D8;
+            unsigned int addr = 0xE0000;
+            int n;
+            for (n = 0; n < 4; n++) {
+                GXInitTlutRegion((unsigned int *)(base + (n+16)*0x10), addr, 0x40);
+                addr += 0x8000;
+            }
+        }
+        __cpReg[3] = 0;
+        gx2 = __GXData;
+        gx2[0x5F4/4] &= 0xFFFFFF0F;
+        *(volatile unsigned char *)0xCC008000 = 8;
+        *(volatile unsigned char *)0xCC008000 = 0x20;
+        *(volatile unsigned int *)0xCC008000 = gx2[0x5F4/4];
+        *(volatile unsigned char *)0xCC008000 = 0x10;
+        *(volatile unsigned int *)0xCC008000 = 0x1006;
+        *(volatile unsigned int *)0xCC008000 = 0;
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = 0x23000000;
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = 0x24000000;
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = 0x67000000;
+        __GXSetIndirectMask(0);
+        __GXSetTmemConfig(2);
+        __GXInitGX();
+        return &FifoObj_8037BA40;
+    }
+}
+
+int VIGetTvFormat(void);
+extern unsigned char lbl_803034A0[];
+extern unsigned char lbl_803038D8[];
+extern unsigned char lbl_80303950[];
+extern unsigned char lbl_8030398C[];
+extern unsigned char lbl_803039C8[];
+extern unsigned char lbl_80560B24;
+extern unsigned char lbl_80560B25;
+extern unsigned char lbl_80560B26;
+extern unsigned char lbl_80560B27;
+extern unsigned char lbl_80560B28;
+extern unsigned char lbl_80560B29;
+extern unsigned char lbl_80560B2A;
+extern unsigned char lbl_80560B2B;
+extern float lbl_80560B2C;
+extern float lbl_80560B30;
+void GXClearVtxDesc(void);
+void GXInvalidateVtxCache(void);
+void GXSetNumTexGens(unsigned int value);
+void GXSetArray(s32 arg0, unsigned int arg1, unsigned int arg2);
+void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list);
+void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned int nrm, unsigned int normalize, int postmtx);
+void GXSetLineWidth(s32 width, s32 format);
+void GXSetPointSize(s32 size, s32 format);
+void GXEnableTexOffsets(s32 texMap, s32 line, s32 point);
+void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id);
+void GXLoadNrmMtxImm(const f32 mtx[3][4], u32 id);
+void GXSetCurrentMtx(s32 arg0);
+void GXLoadTexMtxImm(const f32 *mtx, u32 id, s32 type);
+void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 farZ);
+void GXSetProjectionv(float *arg0);
+void GXSetCoPlanar(s32 enable);
+void GXSetCullMode(unsigned int mode);
+void GXSetClipMode(s32 arg0);
+void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+void GXSetScissorBoxOffset(s32 x, s32 y);
+void GXSetNumChans(s32 num);
+void GXSetChanAmbColor_Internal(s32 type, void *color);
+void GXSetChanMatColor_Internal(s32 type, void *color);
+void GXInvalidateTexAll(void);
+void *GXSetTexRegionCallback(void *callback);
+void *GXSetTlutRegionCallback(void *callback);
+void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap);
+void GXLoadTexObj(void *arg0, unsigned int arg1);
+void GXSetTevOrder(int stage, int texCoord, int texMap, int color);
+void GXSetNumTevStages(u8 count);
+void GXSetTevOp(int stage, int mode);
+void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1);
+void GXSetZTexture(s32 op, s32 format, s32 bias);
+void GXSetTevKColorSel(s32 arg0, s32 arg1);
+void GXSetTevKAlphaSel(s32 arg0, s32 arg1);
+void GXSetTevSwapMode(s32 arg0, s32 arg1, s32 arg2);
+void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2);
+void GXSetTevDirect(int arg0);
+void GXSetNumIndStages(unsigned int value);
+void GXSetIndTexCoordScale(s32 stage, s32 scaleS, s32 scaleT);
+void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far);
+void GXSetFogRangeAdj(int adjEnable, u16 center, const u16 *rangeAdjTable);
+void GXSetBlendMode(s32 type, s32 src, s32 dst, s32 op);
+void GXSetColorUpdate(s32 enable);
+void GXSetAlphaUpdate(s32 enable);
+void GXSetZMode(s32 enable, s32 func, s32 update);
+void GXSetZCompLoc(s32 enable);
+void GXSetDither(s32 enable);
+void GXSetDstAlpha(s32 enable, s32 alpha);
+void GXSetPixelFmt(s32 pixelFmt, s32 zFmt);
+void GXSetFieldMask(s32 even, s32 odd);
+void GXSetFieldMode(s32 mode, s32 field);
+void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height);
+void GXSetDispCopyDst(s32 value);
+unsigned int GXSetDispCopyYScale(f32 yScale);
+void GXSetCopyClamp(s32 value);
+void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3);
+void GXSetDispCopyGamma(s32 arg0);
+void GXSetDispCopyFrame2Field(s32 value);
+void GXClearBoundingBox(void);
+void GXInitLightAttnK(s32 arg0);
+void GXGetPointSize(s32 arg0);
+void GXInitLightDistAttn(unsigned int arg0);
+void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+void GXGetCullMode(s32 arg0, u8 arg1);
+void GXGetLineWidth(s32 arg0);
+void GXInitLightSpot(s32 arg0, s32 arg1);
+void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z);
+void GXSetGPMetric(unsigned int metric1, unsigned int metric2);
+void GXClearGPMetric(void);
+void GXSetCopyClear(unsigned char *color, unsigned int depth);
+void __GXInitGX(void) {
+    unsigned char c0, c1, c2, c3, c4, c5, c6, c7;
+    unsigned int clearColor;
+    unsigned int matColor;
+    unsigned char *mode;
+    int tv;
+    int i;
+    f32 mtx[3][4];
+    unsigned int texObj[8];
+    int ambBlack = 0;
+    GXColor fogColor;
+    c0 = lbl_80560B24; c1 = lbl_80560B25; c2 = lbl_80560B26; c3 = lbl_80560B27;
+    c4 = lbl_80560B28; c5 = lbl_80560B29; c6 = lbl_80560B2A; c7 = lbl_80560B2B;
+    tv = VIGetTvFormat();
+    if (tv == 0) mode = lbl_803038D8;
+    else if (tv == 1) mode = lbl_8030398C;
+    else if (tv == 5) mode = lbl_803039C8;
+    else if (tv == 2) mode = lbl_80303950;
+    else mode = lbl_803038D8;
+    clearColor = ((unsigned int)c0 << 24) | ((unsigned int)c1 << 16) | ((unsigned int)c2 << 8) | (unsigned int)c3;
+    matColor = ((unsigned int)c4 << 24) | ((unsigned int)c5 << 16) | ((unsigned int)c6 << 8) | (unsigned int)c7;
+    GXSetCopyClear((unsigned char*)&clearColor, 0xFFFFFF);
+    for (i = 0; i < 8; i++) GXSetTexCoordGen2(i, 1, 4+i, 0x3C, 0, 0x7D);
+    GXSetNumTexGens(1);
+    GXClearVtxDesc();
+    GXInvalidateVtxCache();
+    for (i = 9; i <= 0x18; i++) GXSetArray(i, (unsigned int)__GXData, 0);
+    for (i = 0; i < 8; i++) GXSetVtxAttrFmtv(i, (const GXVtxAttrFmtList*)&lbl_803034A0[0x80]);
+    GXSetLineWidth(6, 0);
+    GXSetPointSize(6, 0);
+    for (i = 0; i < 8; i++) GXEnableTexOffsets(i, 0, 0);
+    mtx[0][0]=0.0f; mtx[0][1]=lbl_80560B2C; mtx[0][2]=0.0f; mtx[0][3]=0.0f;
+    mtx[1][0]=0.0f; mtx[1][1]=lbl_80560B2C; mtx[1][2]=0.0f; mtx[1][3]=0.0f;
+    mtx[2][0]=0.0f; mtx[2][1]=0.0f; mtx[2][2]=lbl_80560B2C; mtx[2][3]=0.0f;
+    GXLoadPosMtxImm(mtx, 0);
+    GXLoadNrmMtxImm(mtx, 0);
+    GXSetCurrentMtx(0);
+    GXLoadTexMtxImm((const f32*)mtx, 0x3C, 0);
+    GXLoadTexMtxImm((const f32*)mtx, 0x7D, 0);
+    GXSetViewport(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+    GXSetProjectionv((float*)&lbl_803034A0[0x150]);
+    GXSetCoPlanar(0);
+    GXSetCullMode(2);
+    GXSetClipMode(0);
+    GXSetScissor(0, 0, 0, 0);
+    GXSetScissorBoxOffset(0, 0);
+    GXSetNumChans(0);
+    GXSetChanAmbColor_Internal(4, &ambBlack);
+    GXSetChanMatColor_Internal(4, &matColor);
+    GXSetChanAmbColor_Internal(5, &ambBlack);
+    GXSetChanMatColor_Internal(5, &matColor);
+    GXInvalidateTexAll();
+    GXSetTexRegionCallback((void*)__GXDefaultTexRegionCallback);
+    GXSetTlutRegionCallback((void*)__GXDefaultTlutRegionCallback);
+    GXInitTexObj(texObj, &lbl_803034A0[0x60], 4, 4, 3, 0, 0, 0);
+    for (i = 0; i < 8; i++) GXLoadTexObj(texObj, i);
+    for (i = 0; i < 8; i++) GXSetTevOrder(i, i, i, 4);
+    for (i = 8; i < 16; i++) GXSetTevOrder(i, 0xFF, 0xFF, 0xFF);
+    GXSetNumTevStages(1);
+    GXSetTevOp(0, 3);
+    GXSetAlphaCompare(7, 0, 0, 7, 0);
+    GXSetZTexture(0, 0x11, 0);
+    for (i = 0; i < 16; i++) { GXSetTevKColorSel(i, 6); GXSetTevKAlphaSel(i, 0); GXSetTevSwapMode(i, 0, 0); }
+    GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+    GXSetTevSwapModeTable(1, 0, 0, 0, 3);
+    GXSetTevSwapModeTable(2, 1, 1, 1, 3);
+    GXSetTevSwapModeTable(3, 2, 2, 2, 3);
+    for (i = 0; i < 16; i++) GXSetTevDirect(i);
+    GXSetNumIndStages(0);
+    for (i = 0; i < 4; i++) GXSetIndTexCoordScale(i, 0, 0);
+    fogColor.r = 0; fogColor.g = 0; fogColor.b = 0; fogColor.a = 0;
+    GXSetFog(0, fogColor, 0.0f, 1.0f, 0.0f, 1.0f);
+    GXSetFogRangeAdj(0, 0, 0);
+    GXSetBlendMode(0, 4, 5, 0);
+    GXSetColorUpdate(1);
+    GXSetAlphaUpdate(1);
+    GXSetZMode(1, 3, 1);
+    GXSetZCompLoc(1);
+    GXSetDither(1);
+    GXSetDstAlpha(0, 0);
+    GXSetPixelFmt(0, 0);
+    GXSetFieldMask(1, 1);
+    GXSetFieldMode(0, 0);
+    GXSetDispCopySrc(0, 0, 0, 0);
+    GXSetDispCopyDst(0);
+    GXSetDispCopyYScale(1.0f);
+    GXSetCopyClamp(3);
+    GXSetCopyFilter(0, mode, 1, mode);
+    GXSetDispCopyGamma(0);
+    GXSetDispCopyFrame2Field(0);
+    GXClearBoundingBox();
+    GXInitLightAttnK(1);
+    GXGetPointSize(1);
+    GXInitLightDistAttn(0);
+    GXInitLightAttnA(0, 0, 1, 0xF);
+    GXGetCullMode(7, 0);
+    GXGetLineWidth(1);
+    GXInitLightSpot(0, 0);
+    GXGetLightPos(1, 7, 1);
+    GXSetGPMetric(0x23, 0x16);
+    GXClearGPMetric();
 }
 
 void GXCPInterruptHandler(short intr, void *ctx) {
@@ -903,15 +1264,40 @@ void GXDisableBreakPt(void) {
 
 extern GXFifoIntrHandler __OSSetInterruptHandler(int, GXFifoIntrHandler);
 extern unsigned int __OSUnmaskInterrupts(unsigned int);
+/* RVL SDK GXFifo.c __GXFifoInit(), called from GXInit: hooks the CP (FIFO)
+ * interrupt onto GXCPInterruptHandler and unmasks it, remembers the thread GX
+ * runs on so the break-point handler can wake or suspend it, and clears the
+ * CPU (read) and GP (write) FIFO objects along with their busy/ready flags. */
 void __GXFifoInit(void) {
-    __OSSetInterruptHandler(0x11, (GXFifoIntrHandler)GXCPInterruptHandler);
-    __OSUnmaskInterrupts(0x4000);
-    lbl_8055D95C = OSGetCurrentThread();
-    lbl_8055D958 = 0;
-    memset(lbl_8037C0E4, 0, 0x24);
-    memset(lbl_8037C0C0, 0, 0x24);
-    lbl_8055D948 = 0;
-    lbl_8055D949 = 0;
+    /* revolution/OS/OSInterrupt.h, not included by this file */
+    #define OS_INTR_PI_CP       0x11
+    #define OS_INTR_MASK(intr)  (1 << (31 - (intr)))
+    #define GX_FIFO_OBJ_SIZE    0x24                            /* sizeof(GXFifoObjInternal) */
+    #define CpuFifo             lbl_8037C0E4                    /* __Fifo:  CPU -> GX read FIFO */
+    #define GpFifo              lbl_8037C0C0                    /* __Fifo1: GX write FIFO */
+    #define CpuFifoBusy         lbl_8055D948                    /* __FifoBusy */
+    #define GpFifoReady         lbl_8055D949                    /* __FifoIdle */
+    #define GxFifoSuspend       lbl_8055D958                    /* __GXFifoSuspend */
+    #define GxFifoBreakThread   lbl_8055D95C                    /* __GXFifoBreakPtr */
+
+    __OSSetInterruptHandler(OS_INTR_PI_CP, (GXFifoIntrHandler)GXCPInterruptHandler);
+    __OSUnmaskInterrupts(OS_INTR_MASK(OS_INTR_PI_CP));
+    GxFifoBreakThread = OSGetCurrentThread();
+    GxFifoSuspend = 0;
+    memset(CpuFifo, 0, GX_FIFO_OBJ_SIZE);
+    memset(GpFifo, 0, GX_FIFO_OBJ_SIZE);
+    CpuFifoBusy = 0;
+    GpFifoReady = 0;
+
+    #undef OS_INTR_PI_CP
+    #undef OS_INTR_MASK
+    #undef GX_FIFO_OBJ_SIZE
+    #undef CpuFifo
+    #undef GpFifo
+    #undef CpuFifoBusy
+    #undef GpFifoReady
+    #undef GxFifoSuspend
+    #undef GxFifoBreakThread
 }
 
 void __GXCleanGPFifo(void) {
@@ -2237,11 +2623,12 @@ void __GXSetDirtyState(void) {
     unsigned int *data = __GXData;
     unsigned int dirty = data[0x5FC / 4];
     unsigned int r4;
-    u8 *ptr1;
-    unsigned int count1;
     unsigned int reg;
+    unsigned int count1;
+    u8 *ptr1;
+    u32 count2;
     u8 *ptr2;
-    unsigned int count2;
+    unsigned int reg2;
 
     if (dirty & 1) {
         __GXSetSUTexRegs();
@@ -2298,15 +2685,16 @@ void __GXSetDirtyState(void) {
                 WGPIPE.i = val;
             }
             ptr1 = (u8*)data;
-            count1 = (count1 >> 12) & 0xF;
+            count1 >>= 12;
+            count1 &= 0xF;
             while (count1) {
                 if (count1 & 1) {
                     WGPIPE.c = 0x10;
                     WGPIPE.i = reg;
                     WGPIPE.i = *(u32*)(ptr1 + 0xB8);
                 }
-                ptr1 += 4;
                 count1 >>= 1;
+                ptr1 += 4;
                 reg += 1;
             }
         }
@@ -2320,9 +2708,10 @@ void __GXSetDirtyState(void) {
                 WGPIPE.i = val;
             }
             ptr2 = (u8*)data;
-            count2 = (count2 >> 16) & 0xFF;
+            count2 >>= 16;
+            count2 &= 0xFF;
             while (count2 != 0) {
-                unsigned int reg2 = reg + 0x10;
+                reg2 = reg + 0x10;
                 if (count2 & 1) {
                     WGPIPE.c = 0x10;
                     WGPIPE.i = reg;
@@ -3947,8 +4336,9 @@ void __GXSetSUTexRegs(void) {
             if ((gx[0x5E4 / 4] & (1 << coord)) == 0) __SetSURegs(map, coord);
         }
         g2 = GXD;
+        i = 0;
         tr = (char *)g2 + 0x150;
-        for (i = 0; i < limit; i++) {
+        for (; i < limit; i++) {
             off = (i & ~1) << 1;
             map = g2[0x5A4 / 4 + i] & ~0x100;
             if (i & 1) coord = (*(unsigned int *)(tr + off) >> 15) & 7;
@@ -3963,8 +4353,8 @@ void __GXSetTmemConfig(s32 arg0) {
     volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
     if (arg0 == 1) goto case1;
-    if (arg0 < 1) goto default_case;
-    goto compare3;
+    if (arg0 >= 1) goto compare3;
+    goto default_case;
 compare3:
     if (arg0 >= 3) goto default_case;
     *fifo8 = 0x61;
