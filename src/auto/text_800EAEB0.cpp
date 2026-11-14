@@ -1781,6 +1781,51 @@ extern "C" void fn_800EE47C(void* arg0) {
     fn_800F27AC(arg0);
 }
 
+/* The OSAlarms of a speaker slot, field for field as
+ * include/revolution/OS/OSAlarm.h declares it. That header is not included
+ * here: this unit declares OSCreateAlarm/OSSetAlarmUserData/... on void *,
+ * and C++ would not take the same extern "C" name with two signatures.
+ * The guard is the header's, so including it here later still works. */
+#ifndef RVL_SDK_OS_ALARM_H
+#define RVL_SDK_OS_ALARM_H
+typedef struct OSAlarm OSAlarm;
+typedef struct OSContext OSContext;
+typedef void (*OSAlarmHandler)(OSAlarm* alarm, OSContext* ctx);
+typedef struct OSAlarm {
+    OSAlarmHandler handler; /* +0x00 NULL while the alarm is not queued */
+    u32 tag;                /* +0x04 */
+    s64 end;                /* +0x08 system time the alarm fires */
+    OSAlarm* prev;          /* +0x10 */
+    OSAlarm* next;          /* +0x14 */
+    s64 period;             /* +0x18 0 for a one-shot alarm */
+    s64 start;              /* +0x20 */
+    void* userData;         /* +0x28 the speaker slot, set by Init below */
+} OSAlarm;
+#endif
+
+/* One Wii remote speaker slot (nw4r::snd::RemoteSpeaker; the unit's strings
+ * name it snd_RemoteSpeaker.cpp). The RemoteSpeakerManager singleton owns
+ * four of these 0xA0-byte slots, one per WPAD channel, from its +0x38. */
+struct RemoteSpeaker {
+    u8 byte_00;             /* +0x00 cleared by Init */
+    u8 available;           /* +0x01 IsAvailable(): the slot is streaming */
+    u8 sentLastFrame;       /* +0x02 Send() sent data on the previous frame */
+    u8 stopOnSilence;       /* +0x03 stop once the samples are all zero */
+    u8 byte_04;             /* +0x04 */
+    u8 restartEncoder;      /* +0x05 the next Send() starts the stream over */
+    u8 timeLimitReached;    /* +0x06 the remote played over 8 minutes */
+    u8 startAlarmQueued;    /* +0x07 the play-time alarm is queued */
+    u8 intervalAlarmQueued; /* +0x08 the interval alarm is queued */
+    u8 encoder[0x20];       /* +0x09 WENCInfo ADPCM encoder state */
+    u8 pad_29[3];           /* +0x29 */
+    s32 wpadChannel;        /* +0x2C WPAD channel this slot streams to */
+    u32 word_30;            /* +0x30 */
+    u8 pad_34[4];           /* +0x34 */
+    OSAlarm startAlarm;     /* +0x38 fires when the play time runs out */
+    OSAlarm intervalAlarm;  /* +0x68 fires while the remote stops answering */
+    s64 startTime;          /* +0x98 system time the stream started */
+};
+
 extern "C" void OSCreateAlarm(void*);
 extern "C" void OSSetAlarmUserData(void*, void*);
 extern "C" void* memset(void*, int, u32);
