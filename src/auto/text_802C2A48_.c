@@ -33,16 +33,43 @@ void fn_802C2A48(int arg0) {
 #pragma dont_inline reset
 
 void fn_802C2AA8(void) {
-    fn_802C2A48(2);
-    fn_802CF5F8(*(int *)((char *)fn_802CE344(2) + 0x10));
-    fn_802CA0E4();
-    lbl_8055FBA8 = 0;
-    fn_801E2F00();
-    fn_802C83CC();
-    fn_802C990C(0xFF00FF00);
-    fn_802C2B78(lbl_80564ED8, lbl_80564EDC, lbl_80564ED8);
-    fn_802C2C00(1);
-    fn_801E6978();
+#define MenuVideoSelectMode fn_802C2A48
+#define GetVideoModeInfo fn_802CE344
+#define SetVideoParam fn_802CF5F8
+#define InitTextureState fn_802CA0E4
+#define gMenuSceneFlag lbl_8055FBA8
+#define InitSomeStateA fn_801E2F00
+#define InitSomeStateB fn_802C83CC
+#define SetDrawColor fn_802C990C
+#define SetViewFloats fn_802C2B78
+#define gZeroFloat lbl_80564ED8
+#define gOneFloat lbl_80564EDC
+#define SetViewEnable fn_802C2C00
+#define FinalizeSceneInit fn_801E6978
+    /* Initialize menu/scene video mode 2 and reset related render/state flags. */
+    MenuVideoSelectMode(2);
+    SetVideoParam(*(int *)((char *)GetVideoModeInfo(2) + 0x10));
+    InitTextureState();
+    gMenuSceneFlag = 0;
+    InitSomeStateA();
+    InitSomeStateB();
+    SetDrawColor(0xFF00FF00);
+    SetViewFloats(gZeroFloat, gOneFloat, gZeroFloat);
+    SetViewEnable(1);
+    FinalizeSceneInit();
+#undef MenuVideoSelectMode
+#undef GetVideoModeInfo
+#undef SetVideoParam
+#undef InitTextureState
+#undef gMenuSceneFlag
+#undef InitSomeStateA
+#undef InitSomeStateB
+#undef SetDrawColor
+#undef SetViewFloats
+#undef gZeroFloat
+#undef gOneFloat
+#undef SetViewEnable
+#undef FinalizeSceneInit
 }
 
 void fn_802C2B18(void) {
