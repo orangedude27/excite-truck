@@ -99,7 +99,8 @@ extern "C" void fn_801D0650(void *arg0) {
 #pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_801D06C4(void *arg0) {
+extern "C" void fn_801D06C4(void *listener) {
+    /* Call virtual slot 1 on every listener in the first dispatch list (lbl_804386B4). */
     struct Dummy {
         virtual void f0();
         virtual void f1(void *);
@@ -110,7 +111,7 @@ extern "C" void fn_801D06C4(void *arg0) {
     offset = 0;
     while (i < lbl_804386B4[0].count) {
         void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
-        ((Dummy *)obj)->f1(arg0);
+        ((Dummy *)obj)->f1(listener);
         offset += 4;
         i++;
     }
