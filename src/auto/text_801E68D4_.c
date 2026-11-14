@@ -55,18 +55,20 @@ void fn_801E6924(s32 arg0) {
 #pragma scheduling reset
 
 extern char lbl_80339A20[0x40];
+/* Allocate 8 resource buffers (0x4000 bytes each) into lbl_80487CC0 and clear
+ * their corresponding in-use flags in lbl_8055EAC8. */
 void fn_801E6978(void) {
-    volatile s32 *var_r30 = lbl_80487CC0;
-    volatile s8 *var_r29 = lbl_8055EAC8;
-    s32 var_r28 = 0;
+    volatile s32 *bufferSlot = lbl_80487CC0;
+    volatile s8 *inUseFlag = lbl_8055EAC8;
+    s32 index = 0;
 
     do {
-        *var_r30 = fn_8012EC90(0x4000);
-        var_r28 += 1;
-        *var_r29 = 0;
-        var_r30 += 1;
-        var_r29 += 1;
-    } while (var_r28 < 8);
+        *bufferSlot = fn_8012EC90(0x4000);
+        index += 1;
+        *inUseFlag = 0;
+        bufferSlot += 1;
+        inUseFlag += 1;
+    } while (index < 8);
 }
 
 #pragma scheduling invalid_target
@@ -348,13 +350,13 @@ void fn_801E6E9C(AnimPlayer *obj, float dt) {
         if (obj->stream != 0) {
             fn_8012EE80(obj->stream);
         }
-        cScale = lbl_80562D8C;
-        cBase = lbl_80562D88;
-        cMul = lbl_80562D90;
-        cDiv = lbl_80562D80;
-        cTScale = lbl_80562D84;
-        cZero = lbl_80562D78;
         cOne = lbl_80562D7C;
+        cZero = lbl_80562D78;
+        cTScale = lbl_80562D84;
+        cDiv = lbl_80562D80;
+        cMul = lbl_80562D90;
+        cBase = lbl_80562D88;
+        cScale = lbl_80562D8C;
         while (obj->frame < data->count) {
             if (obj->cached != obj->frame) {
                 if (obj->frame < data->inlineCount) {
