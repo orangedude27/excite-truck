@@ -396,6 +396,9 @@ int fn_802E4440(void *arg0, void *arg1, int arg2) {
 }
 #pragma pop
 int fn_802E45AC(void *arg0, void *arg1, int arg2) {
+    /* Starts an async DVD read from the file node's current cursor into arg1
+     * for arg2 bytes (priority 2), reports on failure, advances the cursor,
+     * and returns 1. */
     int result;
     result = DVDReadAsyncPrio((char *)arg0 + 4, arg1, arg2, *(int *)((char *)arg0 + 0x88), 0, 2);
     if (result <= 0) {
