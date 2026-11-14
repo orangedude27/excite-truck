@@ -236,16 +236,16 @@ void fn_801B4820(int unused, int *arg0, int *arg1, unsigned int arg2) {
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_801B4904(int arg0) {
-    int spC;
-    int sp8;
+int fn_801B4904(int self) {
+    int base;
+    int offset;
     int size;
-    ((void (*)(void *))fn_801B45E0)((void *)(arg0 + 4));
-    size = ((int (*)(int))fn_801B4818)(arg0);
-    ((void (*)(int, int *, int *, int))fn_801B4820)(arg0, &spC, &sp8, size);
-    ((void (*)(void *, int, int))fn_801B46BC)((void *)(arg0 + 4), sp8, spC);
-    *(char *)arg0 = 0;
-    return arg0;
+    ((void (*)(void *))fn_801B45E0)((void *)(self + 4));
+    size = ((int (*)(int))fn_801B4818)(self);
+    ((void (*)(int, int *, int *, int))fn_801B4820)(self, &base, &offset, size);
+    ((void (*)(void *, int, int))fn_801B46BC)((void *)(self + 4), offset, base);
+    *(char *)self = 0;
+    return self;
 }
 #pragma pop
 int __dt__15shdStateMachineFv_801B496C(int arg0, int arg1) {
