@@ -836,9 +836,9 @@ void fn_8017FF4C(f32 dt) {
             } else {
                 v->flag59 = 0;
                 v->pad50[0] = 0;
-                slot = &v->slot[23];
-                for (gear = 0; gear < v->pad50[1]; gear++, slot++) {
-                    if (fn_801A8E38(slot)) {
+                gearSlot = &v->slot[23];
+                for (gear = 0; gear < v->pad50[1]; gear++, gearSlot++) {
+                    if (fn_801A8E38(gearSlot)) {
                         v->pad50[0] = gear + 1;
                     }
                 }
