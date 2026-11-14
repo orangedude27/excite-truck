@@ -3029,16 +3029,24 @@ extern "C" void fn_800DB098(void* arg0, void* arg1) {
     }
 }
 #pragma pop
-extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void* arg0, void* arg1) {
-    extern const char lbl_8031FF54[];
-    extern const char lbl_8031FF30[];
-    register void* iterator = (u8*)arg0 + 0x1C;
-    void* slot;
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
-    slot = iterator;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)arg0 + 0x18, &slot, arg1);
-}
+extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void* material, void* animLink) {
+    // nw4hbm::lyt::Material::AddAnimationLink(AnimationLink*): append an
+    // AnimationLink to the material's animation-link list, the
+    // ut::detail::LinkListImpl at +0x18, inserting at its end() sentinel
+    // (+0x1C).  An AnimationLink is its own ut::LinkNode, so it is linked in
+    // as it stands; the link's AnimTransform at +8 is what
+    // Material::FindAnimationLink (fn_800DB1E0) later searches the list by.
+    extern const char lbl_8031FF54[]; /* "LinkList.h" */
+    extern const char lbl_8031FF30[]; /* "NW4HBM:Pointer must not be NULL (p)" */
+    register void* endIter = (char*)material + 0x1C;
+    void* iterSlot;
 
+    if (animLink == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
+    }
+    iterSlot = endIter;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)material + 0x18, &iterSlot, animLink);
+}
 extern "C" void fn_800DB1E0(char* arg0) {
     fn_800D4F98(arg0 + 0x18);
 }
