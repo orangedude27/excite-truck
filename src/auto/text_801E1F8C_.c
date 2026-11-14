@@ -35,48 +35,56 @@ void fn_8015F670(int *, int);
 #pragma use_lmw_stmw off
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_801E1F8C(void *arg0, void *arg1) {
-    class Obj {
+extern "C" void fn_801E1F8C(void *group, void *other) {
+    /* Broadphase pair test: hand every solid of `other` to every solid of
+     * `group` (their collide method, vtable +0x10).  Two groups whose first
+     * solid is of collision type 'r' are left alone -- that type does not
+     * collide with itself.  A group is a solid list at +0x14 with its count
+     * at +0x24; the loops below walk the list with a one-word cursor, so
+     * entry[5] is the cursor's solid. */
+    class Solid {
       public:
         virtual void v0();
         virtual void v1();
-        virtual void call(void *);
+        virtual void collide(void *other);  /* vtable +0x10 */
+        char pad_4[0x1C];
+        s32 type;                           /* +0x20 collision type */
     };
-    int count0 = *(int *)((char *)arg0 + 0x24);
-    int count1;
-    void *item;
-    int j;
-    void **entry1;
-    void **entry0;
-    int i;
-    Obj *obj;
-    if (count0 != 0) {
-        obj = count0 > 0 ? (Obj *)((void **)arg0)[5] : (Obj *)0;
-        if (*(int *)((char *)obj + 0x20) == 0x72) {
-            count1 = *(int *)((char *)arg1 + 0x24);
-            if (count1 != 0) {
-                item = count1 > 0 ? ((void **)arg1)[5] : 0;
-                if (*(int *)((char *)item + 0x20) == 0x72)
+    s32 count = *(s32 *)((char *)group + 0x24);
+    s32 otherCount;
+    void *otherSolid;
+    s32 j;
+    void **otherSlot;
+    void **slot;
+    s32 i;
+    Solid *solid;
+    if (count != 0) {
+        solid = count > 0 ? (Solid *)((void **)group)[5] : (Solid *)0;
+        if (solid->type == 0x72 /* 'r' */) {
+            otherCount = *(s32 *)((char *)other + 0x24);
+            if (otherCount != 0) {
+                otherSolid = otherCount > 0 ? ((void **)other)[5] : 0;
+                if (((Solid *)otherSolid)->type == 0x72 /* 'r' */)
                     return;
             }
         }
     }
-    entry1 = (void **)arg1;
+    otherSlot = (void **)other;
     i = 0;
-    while (i < *(int *)((char *)arg1 + 0x24)) {
-        if (i >= 0 && i < *(int *)((char *)arg1 + 0x24))
-            item = entry1[5];
+    while (i < *(s32 *)((char *)other + 0x24)) {
+        if (i >= 0 && i < *(s32 *)((char *)other + 0x24))
+            otherSolid = otherSlot[5];
         else
-            item = 0;
-        entry0 = (void **)arg0;
+            otherSolid = 0;
+        slot = (void **)group;
         j = 0;
-        while (j < *(int *)((char *)arg0 + 0x24)) {
-            obj = (Obj *)entry0[5];
-            obj->call(item);
-            entry0++;
+        while (j < *(s32 *)((char *)group + 0x24)) {
+            solid = (Solid *)slot[5];
+            solid->collide(otherSolid);
+            slot++;
             j++;
         }
-        entry1++;
+        otherSlot++;
         i++;
     }
 }
