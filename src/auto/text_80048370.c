@@ -904,6 +904,7 @@ void MEMAppendListObject(MEMList* list, void* object) {
     }
 }
 
+/* Remove an object from an intrusive doubly-linked list, updating head/tail and list length. */
 void MEMRemoveListObject(MEMList* list, void* object) {
     MEMLink* link = (MEMLink*)((u8*)object + list->offset);
     if (link->prev == 0) {
