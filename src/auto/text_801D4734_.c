@@ -3297,8 +3297,9 @@ extern "C" void fn_801D88AC(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801D88BC(void *arg0) {
-    struct Entry {
+/* Resets a SurfaceChange_ASE action (state +0x18 = 1) and clears the override (-1) on each registered target in +0x24. */
+extern "C" void fn_801D88BC(void *surfaceChange) {
+    struct SurfaceTarget {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -3307,13 +3308,13 @@ extern "C" void fn_801D88BC(void *arg0) {
         virtual void v5();
         virtual void v6();
         virtual void v7();
-        virtual void dispatch(int);
+        virtual void setOverride(int value);
     };
     int i;
-    *(int *)((char *)arg0 + 0x18) = 1;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x28); i++) {
-        Entry *entry = *(Entry **)((char *)*(void **)((char *)arg0 + 0x24) + i * 0xC);
-        entry->dispatch(-1);
+    *(int *)((char *)surfaceChange + 0x18) = 1;
+    for (i = 0; i < *(int *)((char *)surfaceChange + 0x28); i++) {
+        SurfaceTarget *target = *(SurfaceTarget **)((char *)*(void **)((char *)surfaceChange + 0x24) + i * 0xC);
+        target->setOverride(-1);
     }
 }
 #pragma pop
