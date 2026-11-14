@@ -322,12 +322,13 @@ extern float fn_8022CA40(void *);
 extern float lbl_8056358C;
 #pragma push
 #pragma processor 750
-float fn_8022AAA8(void *unused, char *arg1) {
-    void *p = fn_8022CA2C();
-    if (*(int *)((char *)p + 8) != 0) {
-        float scale = fn_8022CA40(p);
-        float result = ((float (*)(void *, char *, float))fn_8023293C)(*(void **)((char *)p + 8), arg1, lbl_80563588);
-        return result * scale;
+float fn_8022AAA8(void *unused, char *text) {
+    /* Return the measured text width for the current style, scaled by that style's size factor, or 0 if no font is set. */
+    void *style = fn_8022CA2C();
+    if (*(int *)((char *)style + 8) != 0) {
+        float scale = fn_8022CA40(style);
+        float width = ((float (*)(void *, char *, float))fn_8023293C)(*(void **)((char *)style + 8), text, lbl_80563588);
+        return width * scale;
     }
     return lbl_8056358C;
 }
