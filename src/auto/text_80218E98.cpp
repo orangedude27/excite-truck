@@ -2708,18 +2708,34 @@ extern "C" void *fn_8021CA0C(void *obj, s32 x, s32 y, s32 w, s32 h, void *resour
 
 extern "C" void fn_802C519C(void *);
 extern "C" s32 fn_80128668(void *);
-extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033ED44;
-        fn_802C519C(*(void **)((u8 *)arg0 + 0x24C));
-        fn_802C519C(*(void **)((u8 *)arg0 + 0x250));
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
-    }
-    return arg0;
-}
+extern "C" void *fn_8021CAD4(void *self, s32 deletingFlag) {
+    /* The slider/tab widget fn_8021CA0C builds into a 0x25C-byte UI node. */
+    struct SliderWidget {
+        void *vtable;      /* +0x000 */
+        u8 widget[0x240];  /* +0x004 base Widget state */
+        u8 flag;           /* +0x244 cleared by fn_8021CA0C */
+        u8 pad_0x245[3];   /* +0x245 */
+        void *resource;    /* +0x248 image resource the widget size comes from */
+        void *sliderImage; /* +0x24C HGSlider.img */
+        void *tabImage;    /* +0x250 HGTab.img */
+    };
+    #define Slider_vtable lbl_8033ED44
+    #define Image_release fn_802C519C
 
+    if (self != NULL) {
+        ((SliderWidget *)self)->vtable = Slider_vtable;
+        Image_release(((SliderWidget *)self)->sliderImage);
+        Image_release(((SliderWidget *)self)->tabImage);
+        Widget_dtor(self, 0);
+        if (deletingFlag > 0) {
+            Mem_freeObject(self);
+        }
+    }
+
+    #undef Slider_vtable
+    #undef Image_release
+    return self;
+}
 #pragma scheduling on
 extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     struct First {
