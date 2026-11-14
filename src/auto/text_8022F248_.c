@@ -102,17 +102,17 @@ void fn_8022F248(void) {
 }
 
 void fn_8022F294(void) {
-    void *var_r0;
-    void *var_r31;
+    QuadNode *remaining;
+    QuadNode *node;
     if (fn_80230020() != 0) {
-        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80340394);
-        var_r0 = lbl_8055F014;
-        var_r31 = var_r0;
-        while (var_r0 != 0) {
-            fn_8022F824(*(void **)var_r31);
-            var_r31 = *(void **)((char *)var_r31 + 8);
-            var_r0 = 0;
-            lbl_8055F014 = var_r31;
+        ((void (*)(const char *, ...))fn_802E30C8)(gBackLeakMsg);
+        remaining = gBackQuadList;
+        node = remaining;
+        while (remaining != 0) {
+            fn_8022F824(node->payload);
+            node = node->next;
+            remaining = 0;
+            gBackQuadList = node;
         }
     }
 }
