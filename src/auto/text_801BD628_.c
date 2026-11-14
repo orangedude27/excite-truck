@@ -17,6 +17,18 @@ extern int lbl_8055E798;
 extern int lbl_8055E79C;
 extern int lbl_8055E794, lbl_8055E78C, lbl_8055E790, lbl_8055E7A0, lbl_8055E7A4;
 extern int fn_80128670(int);
+
+/* The per-vehicle simulation pools built by fn_801BD694 (8 vehicles): one block
+ * per list from the ring-buffer allocator, every list indexed by slot.  The
+ * names are the game's own allocation tags ("masslist", "cslist", ...). */
+#define massList      lbl_8055E794 /* 0xB0-byte body record per slot (pose, mass) */
+#define csList        lbl_8055E798 /* 0x1F0-byte orientation record per slot */
+#define ccList        lbl_8055E79C /* 0x190-byte wheel record per slot */
+#define cxList        lbl_8055E7A4 /* 0x14 bytes per slot */
+#define aList         lbl_8055E7A0 /* one "leave this slot alone" flag byte per slot */
+#define poolCapacity  lbl_8055E790 /* slots the pools were sized for */
+#define poolIndex     lbl_8055E78C /* next free slot */
+#define Mem_Free      fn_80128670  /* frees a block; the data sits 0x10 above its header */
 int fn_801BD628(float *arg0) {
     int result = 0;
     if (arg0[0] >= lbl_80562844 && arg0[0] <= lbl_80562848 &&
@@ -104,10 +116,9 @@ void fn_801BD808(void) {
     float *o29;
     void *o28;
     void *o27;
-    float q[7][4];
-    float m[4][4];
-    float buf[0x50];
+    struct { float q[7][4]; float m[4][4]; float buf[78]; } tmp;
     float z, s, c;
+    float z2, one;
     o30 = (float *)(lbl_8055E794 + idx * 0xB0);
     lbl_8055E78C = idx + 1;
     o29 = (float *)(lbl_8055E798 + idx * 0x1F0);
@@ -119,34 +130,51 @@ void fn_801BD808(void) {
     memset(o27, 0, 0x14);
     fn_801E9DC4(o27);
     z = lbl_80562838;
-    o30[0] = z; o30[1] = lbl_8056284C; o30[2] = z; o30[3] = m[3][3];
-    o30[0x14] = z; o30[0x15] = z; o30[0x16] = z; o30[0x17] = m[2][3];
-    o30[0x18] = z; o30[0x19] = z; o30[0x1a] = lbl_80562850; o30[0x1b] = m[1][3];
-    o30[0x28] = z; o30[0x29] = z; o30[0x2a] = z;
-    m[3][0] = z; m[3][1] = lbl_8056284C; m[3][2] = z;
-    m[2][0] = z; m[2][1] = z; m[2][2] = z;
-    m[1][0] = z; m[1][1] = z; m[1][2] = lbl_80562850;
-    m[0][0] = z; m[0][1] = z; m[0][2] = z;
-    o30[0x2b] = m[0][3];
-    c = (float)cos(lbl_80562854 * z);
-    s = (float)sin(lbl_80562854 * z);
-    o30[0x10] = lbl_80562838; o30[0x11] = lbl_80562838; o30[0x12] = s; o30[0x13] = c;
-    o30[4] = lbl_8056283C; o30[5] = lbl_80562838; o30[6] = lbl_80562838; o30[7] = q[5][3];
-    o30[8] = lbl_80562838; o30[9] = lbl_8056283C; o30[10] = lbl_80562838; o30[11] = q[4][3];
-    o30[12] = lbl_80562838; o30[13] = lbl_80562838; o30[14] = lbl_8056283C; o30[15] = q[3][3];
-    o29[0x64] = lbl_80562838; o29[0x65] = lbl_80562838; o29[0x66] = lbl_80562838; o29[0x67] = lbl_80562838;
-    o29[0x68] = lbl_80562838; o29[0x69] = lbl_80562838; o29[0x6a] = lbl_80562838; o29[0x6b] = lbl_80562838;
-    o29[0xc] = lbl_80562838; o29[0xd] = lbl_80562838; o29[0xe] = lbl_80562838;
-    q[6][0] = lbl_80562838; q[6][1] = lbl_80562838; q[6][2] = s; q[6][3] = c;
-    q[5][0] = lbl_8056283C; q[5][1] = lbl_80562838; q[5][2] = lbl_80562838;
-    q[4][0] = lbl_80562838; q[4][1] = lbl_8056283C; q[4][2] = lbl_80562838;
-    q[3][0] = lbl_80562838; q[3][1] = lbl_80562838; q[3][2] = lbl_8056283C;
-    q[2][0] = lbl_80562838; q[2][1] = lbl_80562838; q[2][2] = lbl_80562838; q[2][3] = lbl_80562838;
-    q[1][0] = lbl_80562838; q[1][1] = lbl_80562838; q[1][2] = lbl_80562838; q[1][3] = lbl_80562838;
-    q[0][0] = lbl_80562838; q[0][1] = lbl_80562838; q[0][2] = lbl_80562838; q[0][3] = lbl_80562838;
-    o29[0xf] = lbl_80562838;
-    ((void (*)(void *, float, float, float, float, float))fn_801BDA70)(buf, q[4][3], q[5][3], lbl_8056283C, lbl_80562838, s);
-    ((void (*)(int, void *))fn_801BDA74)(idx, buf);
+    {
+        float two, eps, hz, m33, m23, m13, m03;
+        two = lbl_8056284C;
+        o30[0] = z;
+        eps = lbl_80562850;
+        o30[1] = two;
+        hz = lbl_80562854 * z;
+        o30[2] = z;
+        m33 = tmp.m[3][3];
+        o30[3] = m33;
+        o30[0x14] = z;
+        m23 = tmp.m[2][3];
+        o30[0x15] = z; o30[0x16] = z; o30[0x17] = m23;
+        m13 = tmp.m[1][3];
+        o30[0x18] = z; o30[0x19] = z; o30[0x1a] = eps;
+        m03 = tmp.m[0][3];
+        o30[0x1b] = m13;
+        o30[0x28] = z; o30[0x29] = z; o30[0x2a] = z;
+        tmp.m[3][0] = z; tmp.m[3][1] = two; tmp.m[3][2] = z;
+        tmp.m[2][0] = z; tmp.m[2][1] = z; tmp.m[2][2] = z;
+        tmp.m[1][0] = z; tmp.m[1][1] = z; tmp.m[1][2] = eps;
+        tmp.m[0][0] = z; tmp.m[0][1] = z; tmp.m[0][2] = z;
+        o30[0x2b] = m03;
+        c = (float)cos(hz);
+        s = (float)sin(lbl_80562854 * z);
+    }
+    z2 = lbl_80562838;
+    one = lbl_8056283C;
+    o30[0x10] = z2; o30[0x11] = z2; o30[0x12] = s; o30[0x13] = c;
+    o30[4] = one; o30[5] = z2; o30[6] = z2; o30[7] = tmp.q[5][3];
+    o30[8] = z2; o30[9] = one; o30[10] = z2; o30[11] = tmp.q[4][3];
+    o30[12] = z2; o30[13] = z2; o30[14] = one; o30[15] = tmp.q[3][3];
+    o29[0x64] = z2; o29[0x65] = z2; o29[0x66] = z2; o29[0x67] = z2;
+    o29[0x68] = z2; o29[0x69] = z2; o29[0x6a] = z2; o29[0x6b] = z2;
+    o29[0xc] = z2; o29[0xd] = z2; o29[0xe] = z2;
+    tmp.q[6][0] = z2; tmp.q[6][1] = z2; tmp.q[6][2] = s; tmp.q[6][3] = c;
+    tmp.q[5][0] = one; tmp.q[5][1] = z2; tmp.q[5][2] = z2;
+    tmp.q[4][0] = z2; tmp.q[4][1] = one; tmp.q[4][2] = z2;
+    tmp.q[3][0] = z2; tmp.q[3][1] = z2; tmp.q[3][2] = one;
+    tmp.q[2][0] = z2; tmp.q[2][1] = z2; tmp.q[2][2] = z2; tmp.q[2][3] = z2;
+    tmp.q[1][0] = z2; tmp.q[1][1] = z2; tmp.q[1][2] = z2; tmp.q[1][3] = z2;
+    tmp.q[0][0] = z2; tmp.q[0][1] = z2; tmp.q[0][2] = z2; tmp.q[0][3] = z2;
+    o29[0xf] = z2;
+    ((void (*)())fn_801BDA70)(tmp.buf);
+    ((void (*)(int, void *))fn_801BDA74)(idx, tmp.buf);
 }
 #pragma pop
 void fn_801BDA70(void) {
@@ -287,28 +315,33 @@ extern signed char lbl_8055E7A8;
 void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     extern int lbl_8055E794;
     struct V4 { float x, y, z, w; };
-    float out[4], t, q;
+    float out[4], t, q, inv;
     struct V4 pos, quat, la, lb;
     int i, j, k;
     float *dst = (float *)(lbl_8055E794 + index * 0xB0);
-    float *v = (float *)m;
     t = m[0][0] + m[1][1] + m[2][2];
-    pos.x = v[9]; pos.y = v[10]; pos.z = v[11];
-    dst[0] = pos.x; dst[1] = pos.y; dst[2] = pos.z; dst[3] = pos.w;
+    pos.x = m[3][0]; pos.y = m[3][1]; pos.z = m[3][2];
+    dst[0] = pos.x;
+    dst[1] = pos.y;
+    dst[2] = pos.z;
+    dst[3] = pos.w;
     if (t > lbl_80562838) {
         q = fn_8002F234(lbl_8056283C + t);
+        inv = lbl_80562854 / q;
         out[3] = lbl_80562854 * q;
-        out[0] = lbl_80562854 / q * (m[1][2] - m[2][1]);
-        out[1] = lbl_80562854 / q * (m[2][0] - m[0][2]);
-        out[2] = lbl_80562854 / q * (m[0][1] - m[1][0]);
+        out[0] = inv * (m[1][2] - m[2][1]);
+        out[1] = inv * (m[2][0] - m[0][2]);
+        out[2] = inv * (m[0][1] - m[1][0]);
     } else {
+        float *o = out;
         i = 0; if (m[1][1] > m[0][0]) i = 1; if (m[2][2] > m[i][i]) i = 2;
         j = (i + 1) % 3; k = (j + 1) % 3;
-        q = fn_8002F234(lbl_8056283C + m[i][i] - (m[j][j] + m[k][k]));
-        out[i] = lbl_80562854 * q;
-        out[3] = lbl_80562854 / q * (m[j][k] - m[k][j]);
-        out[j] = lbl_80562854 / q * (m[i][j] + m[j][i]);
-        out[k] = lbl_80562854 / q * (m[i][k] + m[k][i]);
+        q = fn_8002F234(lbl_8056283C + m[i][i] - (m[k][k] + m[j][j]));
+        inv = lbl_80562854 / q;
+        o[i] = lbl_80562854 * q;
+        o[3] = inv * (m[j][k] - m[k][j]);
+        o[j] = inv * (m[i][j] + m[j][i]);
+        o[k] = inv * (m[i][k] + m[k][i]);
     }
     quat.x = -out[0]; quat.y = -out[1]; quat.z = -out[2]; quat.w = out[3];
     la.x = a[0]; la.y = a[1]; la.z = a[2];
@@ -458,11 +491,11 @@ void GXInitLightAttnA_801BF188(void *arg0, float farg0, float farg1, float farg2
 void fn_801BF198(void *arg0, void *arg1);
 void fn_801BF0C4(void *arg0, void *arg1, int arg2);
 void fn_801BEDD4(void) {
-    int i = 0;
     char tmp90[16], tmp80[16], tmp70[16], tmp60[16], tmp50[16], tmp40[16];
     float v30[3], v24[3], m2[3], m1[3];
     int sp8;
-    while (i < lbl_8055E78C) {
+    int i;
+    for (i = 0; i < lbl_8055E78C; i++) {
         char *p3, *p4, *p5;
         memcpy(lbl_80436D48, (char *)lbl_8055E794 + i * 0xB0, 0xB0);
         memcpy(lbl_80436D48 + 0xB0, (char *)lbl_8055E798 + i * 0x1F0, 0x1F0);
@@ -507,7 +540,6 @@ void fn_801BEDD4(void) {
                 j++; a += 0x10; pq += 4; b += 0x10; c += 0x10;
             } while (j < 4);
         }
-        i++;
     }
 }
 
