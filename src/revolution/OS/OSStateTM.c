@@ -227,15 +227,20 @@ s32 __OSSetIdleLEDMode(u32 mode) {
 #undef in_args
 }
 
+/* Un-register the STM state-event hook: asks the STM firmware, over the
+   immediate device, to stop sending reset/power state events. Returns
+   IPC_RESULT_OK when no hook was registered, STM_ERR_NOT_READY when the STM
+   devices are not open, and otherwise the ioctl result; the registered flag is
+   cleared only once the firmware accepted the request. */
 s32 __OSUnRegisterStateEvent(void) {
     IPCResult result;
 
     if (!StmEhRegistered) {
-        return 0;
+        return IPC_RESULT_OK;
     }
 
     if (!StmReady) {
-        return -6;
+        return STM_ERR_NOT_READY;
     }
 
     result = IOS_Ioctl(StmImDesc, STM_IOCTL_UNREG_STM_EVENT, StmImInBuf,
