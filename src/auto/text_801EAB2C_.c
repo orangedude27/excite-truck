@@ -141,6 +141,9 @@ void fn_801EAD5C(void* arg0) {
 }
 
 #pragma dont_inline on
+/* Constructs an object: runs base initialization, installs vtable lbl_80339E18,
+ * initializes the embedded subobject at +0x34, clears the 0x40-byte payload at
+ * +0x3C, and marks the handle at +0x70 as invalid (-1). */
 void *fn_801EAD6C(void *arg0, s32 arg1) {
     fn_801EAB2C(arg0);
     *(void **)arg0 = lbl_80339E18;
