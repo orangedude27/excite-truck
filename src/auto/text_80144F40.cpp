@@ -2407,12 +2407,15 @@ extern "C" void *fn_80148D74(void *object, s32 deleting) {
 
 extern "C" void fn_80148DFC(void *);
 extern "C" void fn_80148DFC(void *slot) {
-    /* ReleaseItemTable: frees the item table an object holds in the slot it is
-     * given (the member at +0x14 of the "baseline" object fn_80146C2C builds, as
-     * torn down by its destructor fn_80148D74).  Unlike the tables released by
-     * fn_80146638(), this one's record array comes straight from fn_8012850C(), so
-     * "end" is the block itself and is freed as-is; the table block itself comes
-     * from fn_801284F8().  The slot is left empty. */
+    /* ReleaseItemTable: tears down the item table an object holds in the slot it
+     * is given -- the member at +0x14 of the "baseline" object fn_80146C2C builds
+     * (its "box_cmd" table), released by that object's destructor fn_80148D74.
+     * The record array is the table's "end" field: unlike the tables released by
+     * fn_80146638(), it was allocated whole by fn_8012850C() instead of being
+     * carved out of a block with a 0x10-byte header, so it is freed as it stands
+     * (fn_80128670 frees an array block).  The table's header is then cleared and
+     * the table block itself (from fn_801284F8) is freed (fn_80128668 frees an
+     * object block), leaving the slot empty. */
     NamedItemTable80145FEC *table = *(NamedItemTable80145FEC **)slot;
     if (table != NULL) {
         if (table != NULL) {
