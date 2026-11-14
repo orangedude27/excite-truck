@@ -4462,24 +4462,25 @@ done:
 }
 
 #pragma dont_inline GXSetTevIndirect
-void GXSetTevIndirect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, u8 arg8, s32 arg9) {
+/* Configures indirect texturing for a TEV stage by writing its indirect control register. */
+void GXSetTevIndirect(s32 tevStage, s32 indStage, s32 format, s32 biasSel, s32 matrixSel, s32 wrapS, s32 wrapT, s32 addPrev, u8 utcLod, s32 alphaSel) {
     u32 cmd = 0;
-    u32 opcode = arg0 + 0x10;
-    unsigned int *data;
-    cmd = __rlwimi(cmd, arg1, 0, 30, 31);
-    cmd = __rlwimi(cmd, arg2, 2, 28, 29);
+    u32 opcode = tevStage + 0x10;
+    unsigned int *gxData;
+    cmd = __rlwimi(cmd, indStage, 0, 30, 31);
+    cmd = __rlwimi(cmd, format, 2, 28, 29);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    cmd = __rlwimi(cmd, arg3, 4, 25, 27);
-    cmd = __rlwimi(cmd, arg9, 7, 23, 24);
-    data = __GXData;
-    cmd = __rlwimi(cmd, arg4, 9, 19, 22);
-    cmd = __rlwimi(cmd, arg5, 13, 16, 18);
-    cmd = __rlwimi(cmd, arg6, 16, 13, 15);
-    cmd = __rlwimi(cmd, arg8, 19, 12, 12);
-    cmd = __rlwimi(cmd, arg7, 20, 11, 11);
+    cmd = __rlwimi(cmd, biasSel, 4, 25, 27);
+    cmd = __rlwimi(cmd, alphaSel, 7, 23, 24);
+    gxData = __GXData;
+    cmd = __rlwimi(cmd, matrixSel, 9, 19, 22);
+    cmd = __rlwimi(cmd, wrapS, 13, 16, 18);
+    cmd = __rlwimi(cmd, wrapT, 16, 13, 15);
+    cmd = __rlwimi(cmd, utcLod, 19, 12, 12);
+    cmd = __rlwimi(cmd, addPrev, 20, 11, 11);
     cmd = __rlwimi(cmd, opcode, 24, 0, 7);
     *(volatile unsigned int *)0xCC008000 = cmd;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(unsigned short *)((char *)gxData + 2) = 0;
 }
 
 void GXSetIndTexMtx(s32 type, f32 *matrix, s32 scale) {
