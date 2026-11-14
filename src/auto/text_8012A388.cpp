@@ -330,13 +330,15 @@ extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
     return result;
 }
 #pragma pop
-extern "C" s32 fn_8012AB34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 result = 0;
-    if (((s32 (*)(s32, s32, s32))fn_802E39D0)(arg0, arg1, 0x34) != 0) {
-        fn_8012A80C(arg1);
-        result = fn_8012A6C8(arg1, arg2, arg3);
+/* Read a 0x34-byte RST0 header from fileHandle into headerBuffer, byte-swap
+ * its fields in place, and validate the header against fileName and expectedField. */
+extern "C" s32 fn_8012AB34(s32 fileHandle, s32 headerBuffer, s32 fileName, s32 expectedField) {
+    s32 isValid = 0;
+    if (((s32 (*)(s32, s32, s32))File_readExact)(fileHandle, headerBuffer, RST0_HEADER_SIZE) != 0) {
+        Rst0Header_byteSwap(headerBuffer);
+        isValid = Rst0Header_validate(headerBuffer, fileName, expectedField);
     }
-    return result;
+    return isValid;
 }
 
 extern "C" s32 fn_8012ABB0(s32 arg0, s32 arg1) {
