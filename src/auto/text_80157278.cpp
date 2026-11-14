@@ -1278,24 +1278,26 @@ extern "C" void* fn_8015868C(void* arg0, s32 arg1) {
 }
 
 extern "C" s32 stricmp(const char *, const char *);
-extern "C" void* fn_801586F4(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            if (arg0 != 0) {
-                if ((u32)arg0 + 8 != 0) {
-                    if ((u32)arg0 + 8 != 0) {
-                        if ((u32)arg0 + 8 != 0) {
-                            *(u32*)((u8*)arg0 + 8) = 0;
-                            *(u32*)((u8*)arg0 + 0xC) = 0;
-                            *(u32*)((u8*)arg0 + 0x10) = 0;
+extern "C" void* fn_801586F4(void* object, s32 shouldDelete) {
+    /* Destructor-like cleanup: clear three u32 fields at +0x8/+0xC/+0x10
+       when present, then optionally free the object (delete flag > 0). */
+    if (object != 0) {
+        if (object != 0) {
+            if (object != 0) {
+                if ((u32)object + 8 != 0) {
+                    if ((u32)object + 8 != 0) {
+                        if ((u32)object + 8 != 0) {
+                            *(u32*)((u8*)object + 8) = 0;
+                            *(u32*)((u8*)object + 0xC) = 0;
+                            *(u32*)((u8*)object + 0x10) = 0;
                         }
                     }
                 }
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 /* Destructor-like cleanup for an object with three u32 fields at offsets 0x8, 0xC, 0x10: clears them if present, and frees the object when shouldDelete > 0. */
