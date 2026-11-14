@@ -1293,8 +1293,11 @@ extern "C" void fn_80191178(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
 
-extern "C" s32 fn_80191240(void *arg0, s32 arg1) {
-    class Object1 {
+extern "C" s32 fn_80191240(void *owner, s32 baseOffset) {
+    /* Query two child objects (at +0xC and +0x8) via virtual slot +0x20 to accumulate a size/offset; the second receives the running total, and the original base offset is removed from the final result. */
+#define childAt0C ownerField0C
+#define childAt8  ownerField8
+    class ChildAt0C {
     public:
         virtual s32 f0();
         virtual s32 f1();
@@ -1302,9 +1305,9 @@ extern "C" s32 fn_80191240(void *arg0, s32 arg1) {
         virtual s32 f3();
         virtual s32 f4();
         virtual s32 f5();
-        virtual s32 method();
+        virtual s32 getSize();
     };
-    class Object2 {
+    class ChildAt8 {
     public:
         virtual s32 f0();
         virtual s32 f1();
@@ -1312,13 +1315,15 @@ extern "C" s32 fn_80191240(void *arg0, s32 arg1) {
         virtual s32 f3();
         virtual s32 f4();
         virtual s32 f5();
-        virtual s32 method(s32);
+        virtual s32 getSize(s32);
     };
-    Object1 *obj1 = *(Object1 **)((u8 *)arg0 + 0xC);
-    s32 result = arg1 + obj1->method();
-    Object2 *obj2 = *(Object2 **)((u8 *)arg0 + 8);
-    result += obj2->method(result);
-    return result - arg1;
+    ChildAt0C *childAt0C = *(ChildAt0C **)((u8 *)owner + 0xC);
+    s32 totalSize = baseOffset + childAt0C->getSize();
+    ChildAt8 *childAt8 = *(ChildAt8 **)((u8 *)owner + 8);
+    totalSize += childAt8->getSize(totalSize);
+    return totalSize - baseOffset;
+#undef childAt8
+#undef childAt0C
 }
 
 #pragma cplusplus reset
