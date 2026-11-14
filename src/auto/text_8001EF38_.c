@@ -474,21 +474,22 @@ no_coef:
     return 0;
 }
 #pragma scheduling on
-s32 fn_8001FA20(s32 arg0, s32 arg1) {
-    s32 *q;
-    s32 data;
-    if (arg0 < 0) goto no_coef;
-    if ((u32)arg0 >= 8) goto no_coef;
-    q = lbl_802FDF30[arg0].unkC;
-    if (q == 0) goto no_coef;
-    data = q[0];
-    if (data == 0) goto invalid;
-    if (q[1] < arg1) goto invalid;
-    if (arg1 > 0) goto get_value;
+/* Get the threshold value for a lifetime counter level (1-based); returns -1 if invalid, 0 if counter unavailable. */
+s32 fn_8001FA20(s32 counter, s32 level) {
+    s32 *list;
+    s32 rows;
+    if (counter < 0) goto no_coef;
+    if ((u32)counter >= 8) goto no_coef;
+    list = lbl_802FDF30[counter].unkC;
+    if (list == 0) goto no_coef;
+    rows = list[0];
+    if (rows == 0) goto invalid;
+    if (list[1] < level) goto invalid;
+    if (level > 0) goto get_value;
 invalid:
     return -1;
 get_value:
-    return *(s32 *)(data + ((arg1 - 1) * 8));
+    return *(s32 *)(rows + ((level - 1) * 8));
 no_coef:
     return 0;
 }
