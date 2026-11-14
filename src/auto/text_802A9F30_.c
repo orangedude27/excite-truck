@@ -869,6 +869,7 @@ void fn_802AB504(void) {
 }
 
 #pragma dont_inline on
+/* Initialize all 8 entries in the per-object effect state table (0x108 bytes each). */
 void fn_802AB5B8(void) {
     extern int lbl_8055F928;
     int offset = 0;
