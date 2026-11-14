@@ -625,7 +625,7 @@ body:
     cursor++;
     i++;
 test:
-    if (i < *(int *)((char *)base + 0x100)) goto body;
+    if (i < ((EfList *)base)->count) goto body;
 }
 #pragma push
 #pragma scheduling invalid_target
