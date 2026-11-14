@@ -1745,6 +1745,8 @@ WPADSamplingCallback WPADSetSamplingCallback(s32 chan,
 
 WPADSamplingCallback WPADSetSamplingCallback_800603D0(s32 chan,
                                                      WPADSamplingCallback pCallback) {
+    /* Set the WPAD sampling callback at offset 0x7E0 for the given channel and
+       return the previous callback. Interrupts are disabled during the swap. */
     WPADCB* p;
     BOOL enabled;
     WPADSamplingCallback pOldCallback;
