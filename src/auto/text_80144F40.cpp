@@ -2484,6 +2484,22 @@ extern "C" void deleteThreads__6SystemFv(void *arg0) {
 #pragma push
 #pragma scheduling on
 #pragma dont_inline on
+#pragma push
+#pragma always_inline on
+#pragma dont_inline off
+static inline void ApplyPendingStrings(void *object) {
+    u8 *self = (u8 *)object;
+    register s32 offset = 0;
+    register s32 i = 0;
+    while (i < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
+        u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
+        fn_801473F8(*(void **)(self + 8), *(u32 *)entry, (const char *)&lbl_80559E1C, *(u32 *)(entry + 4));
+        offset += 8;
+        i++;
+    }
+}
+#pragma pop
+
 extern "C" void fn_80148FA4(void *object, void *unused) {
     struct VTable {
         virtual void v0();
@@ -2493,42 +2509,45 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
         virtual void *v4(u32);
     };
     u8 *self = (u8 *)object;
+    register s32 secondOffset, secondIndex;
+    s32 firstOffset;
+    u8 *entry;
+    s32 firstIndex;
     #pragma unused(unused)
     if (*(VTable **)(self + 8) != 0) {
         {
-            u8 *entry;
-            s32 offset, i;
-            i = 0;
-            offset = 0;
-            while (i < *(s32 *)(*(u8 **)(self + 0x14) + 4)) {
-                entry = *(u8 **)(*(u8 **)(self + 0x14)) + offset;
+
+            firstIndex = 0;
+            firstOffset = 0;
+            while (firstIndex < *(s32 *)(*(u8 **)(self + 0x14) + 4)) {
+                entry = *(u8 **)(*(u8 **)(self + 0x14)) + firstOffset;
                 void *result = (*(VTable **)(self + 8))->v4(*(u32 *)(entry + 4));
                 s32 found = (*(VTable **)(self + 8))->v3(*(u32 *)entry);
                 if (found != 0 && result != 0)
                     fn_80148070((void *)found, *(s32 *)(entry + 8), (s32)result);
-                offset += 0xC;
-                i++;
+                firstOffset += 0xC;
+                firstIndex++;
             }
         }
         {
-            register s32 i = 0;
-            register s32 offset = 0;
-            while (i < *(s32 *)(*(u8 **)(self + 0x10) + 4)) {
-                u8 *entry = *(u8 **)(*(u8 **)(self + 0x10)) + offset;
+            secondIndex = 0;
+            secondOffset = 0;
+            while (secondIndex < *(s32 *)(*(u8 **)(self + 0x10) + 4)) {
+                u8 *entry = *(u8 **)(*(u8 **)(self + 0x10)) + secondOffset;
                 fn_8014784C(*(VTable **)(self + 8), *(u32 *)entry, *(u32 *)(entry + 4), *(u32 *)(entry + 8));
-                offset += 0xC;
-                i++;
+                secondOffset += 0xC;
+                secondIndex++;
             }
         }
         {
-            register s32 i = 0;
-            register s32 offset = 0;
-            while (i < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
-                u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + offset;
+            register s32 secondIndex = 0;
+            register s32 secondOffset = 0;
+            while (secondIndex < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
+                u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + secondOffset;
                 const char *format = (const char *)&lbl_80559E1C;
                 fn_801473F8(*(VTable **)(self + 8), *(u32 *)entry, format, *(u32 *)(entry + 4));
-                offset += 8;
-                i++;
+                secondOffset += 8;
+                secondIndex++;
             }
         }
     }
