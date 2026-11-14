@@ -87,6 +87,7 @@ char fn_80278358(void) {
 
 extern char lbl_8055F5C9;
 extern const char lbl_803475D8[];
+extern double lbl_805640B0;
 #pragma push
 #pragma scheduling invalid_target
 void fn_80278360(void *arg0) {
@@ -215,14 +216,19 @@ void fn_8027847C(void *arg0) {
             lbl_8055F5BA=0;
             fn_802E30C8(base+0x90);
         }
-        if (*(unsigned char *)&lbl_8055F5BA && lbl_8055E3C4!=lbl_8055F5C4) {
-            lbl_8055F5C4=lbl_8055E3C4;
-            frame=lbl_8055E3C4-lbl_8055F5C0;
-            if (frame>=0 && frame<=lbl_8055F5BC-lbl_8055F5C0 && lbl_8055F5C0<=lbl_8055F5BC && frame%2==0) {
-                fn_802E30C8(base+0xa8,frame);
-                fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
-                fn_802D08B4(2,2,1);
-                fn_802D07E4(buffer,1);
+        if (*(unsigned char *)&lbl_8055F5BA) {
+            int now2 = lbl_8055E3C4;
+            int tmp = lbl_8055F5C4;
+            if (now2 != tmp) {
+                tmp = lbl_8055F5C0;
+                lbl_8055F5C4 = now2;
+                frame = now2 - tmp;
+                if (frame >= 0 && frame <= lbl_8055F5BC - tmp && tmp <= lbl_8055F5BC && frame % 2 == 0) {
+                    fn_802E30C8(base+0xa8,frame);
+                    fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
+                    fn_802D08B4(2,2,1);
+                    fn_802D07E4(buffer,1);
+                }
             }
         }
     } else {
@@ -306,10 +312,22 @@ void fn_8027889C(float arg0) {
     }
     lbl_8055F5C0 = (int)result;
 }
+
+extern float lbl_805640B8, lbl_805640BC;
+void fn_802788E0(float farg0) {
+    float q = farg0 / lbl_805640B8;
+    float v;
+    if (q < lbl_805640A8)
+        v = q - lbl_805640BC;
+    else
+        v = lbl_805640BC + q;
+    lbl_8055F5BC = (int)v;
+}
+
 #pragma scheduling on
 int fn_80278924(float *arg0, float *arg1) {
-    float scale = lbl_805640B8;
     int result = 0;
+    float scale = lbl_805640B8;
     *arg0 = scale * (float)lbl_8055F5C0;
     *arg1 = scale * (float)lbl_8055F5BC;
     if (lbl_8055F5C0 >= 0 && lbl_8055F5BC >= lbl_8055F5C0) result = 1;
