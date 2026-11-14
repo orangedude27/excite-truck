@@ -15821,16 +15821,17 @@ BOOL btsnd_hcic_write_pin_type_8008543C(u32 pin_type) {
     return TRUE;
 }
 
+/* HCI command (opcode 0x0C22): write PIN type with a single-byte parameter. */
 BOOL btsnd_hcic_write_pin_type_800854B0(u32 pin_type) {
-    u8 *buf = GKI_getpoolbuf(2);
-    if (buf == NULL) return FALSE;
-    *(u16 *)(buf + 2) = 4;
-    *(u16 *)(buf + 4) = 0;
-    buf[8] = 0x22;
-    buf[9] = 0xC;
-    buf[10] = 1;
-    buf[11] = pin_type;
-    btu_hcif_send_cmd(buf);
+    u8 *p_buf = GKI_getpoolbuf(2);
+    if (p_buf == NULL) return FALSE;
+    *(u16 *)(p_buf + 2) = 4;
+    *(u16 *)(p_buf + 4) = 0;
+    p_buf[8] = 0x22;
+    p_buf[9] = 0xC;
+    p_buf[10] = 1;
+    p_buf[11] = pin_type;
+    btu_hcif_send_cmd(p_buf);
     return TRUE;
 }
 
