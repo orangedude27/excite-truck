@@ -2176,6 +2176,8 @@ void fn_8026A394(void *arg0) {
 }
 
 #pragma scheduling on
+/* Copies camera `cameraIndex`'s current transform (3x3 rotation + position,
+ * 12 words) to `outTransform` and its field of view to `outFov`. */
 void fn_8026A4A0(int cameraIndex, int *outTransform, float *outFov) {
     struct WordPair { int a; int b; };
     Camera *cam = (Camera *)sCameras + cameraIndex;
