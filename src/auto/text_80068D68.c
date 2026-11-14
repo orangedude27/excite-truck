@@ -27051,6 +27051,8 @@ done:
     return ret;
 }
 
+/* Asynchronously reads a USB interrupt message: invalidate the receive buffer
+ * so device-written data can be seen, then submit the transfer. */
 s32 IUSB_ReadIntrMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
                            void (*callback)(void), void* callbackArg) {
     DCInvalidateRange(buffer, length);
