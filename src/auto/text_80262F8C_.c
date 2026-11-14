@@ -152,14 +152,15 @@ void *fn_80263740(void *this, s32 deleting) {
     return this;
 }
 
-void *fn_802637B0(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(const u8 **)arg0 = lbl_80346120;
-        fn_802328D4(*(s32 *)((u8 *)arg0 + 0x18));
-        *(s32 *)((u8 *)arg0 + 0x18) = 0;
-        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+/* Destroying destructor: reset vtable, release owned resource at +0x18, and optionally delete. */
+void *fn_802637B0(void *obj, s32 doDelete) {
+    if (obj != 0) {
+        *(const u8 **)obj = lbl_80346120;
+        fn_802328D4(*(s32 *)((u8 *)obj + 0x18));
+        *(s32 *)((u8 *)obj + 0x18) = 0;
+        if (doDelete > 0) ((s32 (*)(void *))fn_80128668)(obj);
     }
-    return arg0;
+    return obj;
 }
 
 void fn_8026381C(void) {}
