@@ -649,15 +649,17 @@ void fn_801785A4(void **arg0) {
     }
 }
 
-int fn_80178604(void *arg0) {
-    int result = 0;
-    unsigned int magic = *(unsigned int *)arg0;
+/* Classifies a sound archive/header buffer: returns 0 for known archive magics
+ * (CAR, PCAR, ACAR, NCAR), 2 for an OBST header with field 0x50 == 0x14, else 1. */
+int fn_80178604(void *header) {
+    int isKnownArchive = 0;
+    unsigned int magic = *(unsigned int *)header;
     if (magic == 0x43415220 || magic == 0x50434152 ||
         magic == 0x41434152 || magic == 0x4e434152) {
-        result = 1;
+        isKnownArchive = 1;
     }
-    if (result != 0) return 0;
-    if (magic == 0x4f425354 && *(int *)((char *)arg0 + 0x50) == 0x14) return 2;
+    if (isKnownArchive != 0) return 0;
+    if (magic == 0x4f425354 && *(int *)((char *)header + 0x50) == 0x14) return 2;
     return 1;
 }
 
