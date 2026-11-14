@@ -310,11 +310,13 @@ extern "C" void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *t
 extern "C" void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
 
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *) __attribute__((noreturn));
-void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 index) {
-    if (index >= 4) {
+extern "C" void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *textBox, void *outColor, u32 vertexIndex) {
+    /* Get a TextBox vertex color by mapping vertex index (0..3) to text color
+       index (0..1) and delegating to GetTextColor; panics if vertexIndex >= 4. */
+    if (vertexIndex >= 4) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320570, 0x1d3, lbl_80320688);
     }
-    GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(this_ptr, arg1, index >> 1);
+    GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(textBox, outColor, vertexIndex >> 1);
 }
 
 void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *outColor, const void *textBox, u32 colorIndex) {
