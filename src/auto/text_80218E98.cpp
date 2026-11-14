@@ -5562,15 +5562,18 @@ extern "C" void *fn_802226D4(void *arg0, s32 arg1) {
 
 void fn_80235380(int);
 extern "C" char lbl_8033F9BC[];
-extern "C" void *fn_80222718(void *arg0, s32 arg1) {
-    s32 old;
-    if (arg0 != 0) {
-        old = *(s32 *)((char *)arg0 + 4);
-        *(char **)arg0 = lbl_8033F9BC;
-        if (old != 0) fn_80235380(old);
-        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+/* Destructor-like cleanup: saves the owned resource handle at +4, resets the
+ * vtable to lbl_8033F9BC, releases the previous handle via fn_80235380 if set,
+ * and optionally frees the object when deleting > 0. */
+extern "C" void *fn_80222718(void *object, s32 deleting) {
+    s32 ownedHandle;
+    if (object != 0) {
+        ownedHandle = *(s32 *)((char *)object + 4);
+        *(char **)object = lbl_8033F9BC;
+        if (ownedHandle != 0) fn_80235380(ownedHandle);
+        if (deleting > 0) ((s32 (*)(void *))fn_80128668)(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
