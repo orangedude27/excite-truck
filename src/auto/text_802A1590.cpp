@@ -924,16 +924,17 @@ extern "C" void *fn_802A2EEC(void *effectGroup, DummyReceiver_802A3314 *receiver
     return effectGroup;
 }
 #pragma pop
-extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = lbl_80349B50;
-        fn_8028E398(*(void**)((char*)arg0 + 8));
-        fn_8028E398(*(void**)((char*)arg0 + 4));
-        if (arg1 > 0) {
-            ((s32 (*)(void*))fn_80128668)(arg0);
+/* Destroys the object, releasing two owned subobjects and optionally deleting storage. */
+extern "C" void* __dt__8JUTVideoFv(void* thisPtr, s32 shouldDelete) {
+    if (thisPtr != 0) {
+        *(void**)thisPtr = lbl_80349B50;
+        fn_8028E398(*(void**)((char*)thisPtr + 8));
+        fn_8028E398(*(void**)((char*)thisPtr + 4));
+        if (shouldDelete > 0) {
+            ((s32 (*)(void*))fn_80128668)(thisPtr);
         }
     }
-    return arg0;
+    return thisPtr;
 }
 
 extern "C" f32 lbl_805647E0, lbl_805647E4;
