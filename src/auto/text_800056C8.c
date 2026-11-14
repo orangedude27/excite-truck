@@ -361,17 +361,20 @@ extern "C" void fn_80005B74(void) {
         }
     }
 }
+/* Hud_UpdateFrameDelta: sample the frame timer, compute delta seconds since the
+ * last HUD tick (clamped to >= 0), store it in lbl_8055D34C, and save the
+ * current tick in lbl_8055D348. lbl_80560124 is 1000.0f (ticks-per-second). */
 void fn_80005C20(void) {
-    f32 temp_f0;
-    f32 var_f3;
-    s32 temp_r3;
+    f32 deltaSeconds;
+    f32 clampedDeltaSeconds;
+    s32 currentTickMs;
 
-    temp_r3 = fn_802E2C20();
-    var_f3 = lbl_8056011C;
-    temp_f0 = (f32)(temp_r3 - lbl_8055D348) / lbl_80560124;
-    var_f3 = (var_f3 > temp_f0) ? var_f3 : temp_f0;
-    lbl_8055D34C = var_f3;
-    lbl_8055D348 = temp_r3;
+    currentTickMs = fn_802E2C20();
+    clampedDeltaSeconds = lbl_8056011C;
+    deltaSeconds = (f32)(currentTickMs - lbl_8055D348) / lbl_80560124;
+    clampedDeltaSeconds = (clampedDeltaSeconds > deltaSeconds) ? clampedDeltaSeconds : deltaSeconds;
+    lbl_8055D34C = clampedDeltaSeconds;
+    lbl_8055D348 = currentTickMs;
 }
 
 #pragma pop
