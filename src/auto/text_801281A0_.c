@@ -350,17 +350,19 @@ void fn_80128670(s32 arg0) {
 }
 
 #pragma scheduling invalid_target
-void fn_801286A0(void *arg0, s32 arg1) {
-    s32 *base = (s32 *)arg0;
-    s32 aligned = arg1 & ~0x3F;
-    s32 offset;
+void fn_801286A0(void *block, s32 size) {
+    /* Shrink a primary-heap block by a 64-byte-aligned amount and stamp a "STKA" marker at its new end. */
+    s32 *header = (s32 *)block;
+    s32 alignedSize = size & ~0x3F;
+    s32 markerOffset;
     u32 magic;
-    base[-6] -= aligned;
-    base[-5] -= aligned;
-    ((s32 *)lbl_8041E140)[1] -= aligned;
-    offset = ((s32 (*)(s32, s32))fn_801281F4)(base[-5], 4);
+
+    header[-6] -= alignedSize;
+    header[-5] -= alignedSize;
+    ((s32 *)lbl_8041E140)[1] -= alignedSize;
+    markerOffset = ((s32 (*)(s32, s32))fn_801281F4)(header[-5], 4);
     magic = 0x53544B41;
-    *(u32 *)((u8 *)base + offset) = magic;
+    *(u32 *)((u8 *)header + markerOffset) = magic;
 }
 #pragma scheduling on
 /* Initializes a memory-region descriptor; when a base address is provided logs its range, otherwise aborts if a nonzero size was requested. */
