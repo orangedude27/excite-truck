@@ -1556,20 +1556,23 @@ long fn_8027CEC4(long arg0) {
     }
 }
 
+/* EventPath query for a contest name: looks the contest up in the manager's contest-event
+ * array and asks the handler for its event-path type (0 = career, 1 = challenge) whether
+ * the contest has a save record whose grade is still zero.  fn_8027AD4C stores the answer
+ * at +0x12 of the "event_goal" object it is reading. */
 long fn_8027CF3C(long name) {
     struct ContestEvent *event = (struct ContestEvent *)fn_8027C120(lbl_8055F654, name);
-    long eventId = event->eventId;
-    switch (eventId) {
+    long pathType = event->eventId;
+    switch (pathType) {
     case 0:
         return fn_8027C71C(event);
     case 1:
         return fn_8027CAB4(event);
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, name, eventId);
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, name, pathType);
         return 1;
     }
 }
-
 #pragma cplusplus on
 extern "C" long fn_8027CFB4(long arg0) {
     /* Looks up the grade-table entry for the current context and returns the
