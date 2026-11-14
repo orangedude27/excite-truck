@@ -760,7 +760,7 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     mode = *(int *)((char *)arg0 + 0xc);
     mode = mode == 0 || mode == 2;
     if (out == &point) {
-        y = point.y; z = point.z; x = point.x;
+        y = point.y; x = point.x; z = point.z;
         d=y*m[3]; e=y*m[4];
         a=x*m[0]; b=x*m[1]; c=x*m[2]; f=y*m[5];
         g=z*m[6]; h=z*m[7]; i=z*m[8];
@@ -1016,12 +1016,18 @@ int fn_801F1848(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
-void fn_801F1878(void *arg0) {
-    int index = fn_801F196C(*(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
-    if (lbl_80488798[index] != 0) {
-        fn_802E317C(lbl_8033A544, *(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
+void fn_801F1878(void *entry) {
+    /* Register a wheel entry in the (car, wheel) slot table, warning if the slot is already occupied. */
+    int slotIndex = fn_801F196C(*(int *)((char *)entry + 8), *(int *)((char *)entry + 0xC));
+
+    if (lbl_80488798[slotIndex] != 0) {
+        fn_802E317C(
+            lbl_8033A544,
+            *(int *)((char *)entry + 8),
+            *(int *)((char *)entry + 0xC));
     }
-    lbl_80488798[index] = (int)arg0;
+
+    lbl_80488798[slotIndex] = (int)entry;
 }
 
 #pragma push
