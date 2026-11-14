@@ -5602,13 +5602,14 @@ void fn_80073464(void) {
     ((void (**)(int, int)) (lbl_803C0C14 + 0x50))[0](1, 0);
 }
 
-void bta_dm_rssi_cback(unsigned char *arg) {
-    unsigned char sp[8];
-    if (arg[0] == 0) {
-        fn_80070FA4(sp, arg + 3);
-        sp[6] = 1;
-        sp[7] = arg[2];
-        ((void (**)(int, void *)) (lbl_803C0C14 + 0x50))[0](7, sp);
+/* BTM RSSI read callback: on success, report BD_ADDR and RSSI to the DM callback. */
+void bta_dm_rssi_cback(unsigned char *p_data) {
+    unsigned char event[8];
+    if (p_data[0] == 0) {
+        fn_80070FA4(event, p_data + 3);
+        event[6] = 1;
+        event[7] = p_data[2];
+        ((void (**)(int, void *)) (lbl_803C0C14 + 0x50))[0](7, event);
     }
 }
 
