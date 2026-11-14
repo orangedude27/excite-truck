@@ -142,21 +142,25 @@ void fn_80279848(void) {
 }
 
 #pragma scheduling invalid_target
-void *fn_80279874(s32 arg0) {
-    char *entry;
-    char *base;
+void *fn_80279874(s32 vehicleId) {
+    /* CarStateFind(): look a vehicle up in the carstate table (the "cs_block"
+       allocation of lbl_8055F61C entries at lbl_8055F618) by its number and
+       return its entry, or NULL once the game has complained that the vehicle
+       is not in the table. */
+    CarStateEntry *entry;
+    CarStateEntry *base;
     s32 count;
     s32 i;
 
     i = 0;
     count = lbl_8055F61C;
-    base = (char *)lbl_8055F618;
+    base = (CarStateEntry *)lbl_8055F618;
     entry = base;
-    for (; i < count; entry += 0x2B8, ++i) {
-        if (arg0 == *(s32 *)entry)
-            return base + i * 0x2B8;
+    for (; i < count; entry++, ++i) {
+        if (vehicleId == entry->vehicleId)
+            return base + i;
     }
-    fn_802E30C8(lbl_80347824, arg0);
+    fn_802E30C8(lbl_80347824, vehicleId);   /* "carstate: can't find vehicle #%d" */
     return 0;
 }
 #pragma scheduling reset
