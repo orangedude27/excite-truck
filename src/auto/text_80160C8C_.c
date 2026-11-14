@@ -28,6 +28,19 @@
         virtual void f22();
         virtual void f23();
         virtual void f24(s32);
+        virtual void f25();
+        virtual void f26();
+        virtual void f27();
+        virtual void f28();
+        virtual void f29();
+        virtual void f30();
+        virtual void f31();
+        virtual void f32();
+        virtual void f33();
+        virtual void f34();
+        virtual void f35();
+        virtual void f36();
+        virtual void f37(s32, s32);
     };
 
 struct Dummy_80161D50 {
@@ -1705,35 +1718,9 @@ extern "C" void fn_80162A14(void *arg0) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_80162BA8(void *arg0) {
-    struct State {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void f6();
-        virtual void f7();
-        virtual void f8();
-        virtual s32 f9();
-        virtual s32 f10();
-        virtual void f11();
-        virtual void f12();
-        virtual void f13();
-        virtual void f14();
-        virtual void f15();
-        virtual void f16();
-        virtual void f17();
-        virtual void f18();
-        virtual void f19();
-        virtual void f20();
-        virtual void f21();
-        virtual void f22();
-        virtual void f23();
-        virtual void f24(s32);
-    };
-    s32 flag, off, i, j, offset;
+    s32 flag, off, i, j;
     int *cars;
+    s32 offset;
     u8 *entry, *car;
     u8 *self = (u8 *)arg0;
     u8 *flags, *ui;
@@ -1753,13 +1740,13 @@ done:
         *(f32 *)(self + 0x5B4) += lbl_80561858;
         self[0x9C] = 1;
         if (self[0x5B0] != 0 && *(s32 *)(self + 0x574) > 0) {
-            ((State *)self)->f24(1);
+            ((State_80162BA8 *)self)->f24(1);
         }
     } else {
         self[0x9C] = 0;
     }
     if (fn_801C5B60() == 0) fn_801DF074(8, 0);
-    if (((State *)self)->f9() == 0) {
+    if (((State_80162BA8 *)self)->f9() == 0) {
         one = lbl_80561840; threshold = lbl_80561854; epsilon = lbl_80561850;
         for (i = 0, cars = lbl_804348E8; i < fn_801B2F24(); i++, cars++) {
             car = (u8 *)*cars;
@@ -1800,9 +1787,9 @@ done:
         }
         *(f32 *)(self + 0x98) += lbl_80561858;
         if (*(f32 *)(self + 0x98) >= *(f32 *)(self + 0x84))
-            ((State *)self)->f24(3);
+            ((State_80162BA8 *)self)->f24(3);
         if (*(s32 *)(self + 0x94) >= *(s32 *)(self + 0x80) && self[0x9C]) {
-            ((State *)self)->f24(1);
+            ((State_80162BA8 *)self)->f24(1);
             self[0x88] = 1;
         }
     } else {
@@ -1815,7 +1802,7 @@ done:
         }
         *(f32 *)(self + 0x8C) += lbl_80561858;
         if (self[0x90]) {
-            if (((State *)self)->f10() && lbl_8055E304 == fn_80160CE4()) {
+            if (((State_80162BA8 *)self)->f10() && lbl_8055E304 == fn_80160CE4()) {
                 s32 tmp = lbl_8055A0B8;
                 lbl_8055E2DC = 1;
                 lbl_8055A0B4 = tmp;
@@ -1826,7 +1813,7 @@ done:
         }
     }
     if (flag == 0 && *(s32 *)(self + 0x94) >= *(s32 *)(self + 0x80)) {
-        ((State *)self)->f24(4);
+        ((State_80162BA8 *)self)->f24(4);
     }
 }
 #pragma pop
