@@ -348,13 +348,15 @@ extern "C" u32 fn_801F7A0C(void) { return 1; }
 extern "C" void PSVECCrossProduct(const f32 *, f32 *);
 extern "C" f32 PSVECDotProduct(const f32 *, const f32 *);
 extern const f32 lbl_80562FF4;
-extern "C" void fn_801F7A14(void *arg0) {
+/* Ensures the 3x3 basis described by the first three vectors has consistent
+ * handedness: if (v0 x v1) · v2 is negative, negates v0. */
+extern "C" void fn_801F7A14(void *basis) {
     f32 cross[3];
-    ((void (*)(void *, void *, void *))PSVECCrossProduct)(arg0, (u8 *)arg0 + 0xC, cross);
-    if (PSVECDotProduct(cross, (f32 *)((u8 *)arg0 + 0x18)) < lbl_80562FF0) {
-        ((f32 *)arg0)[0] *= lbl_80562FF4;
-        ((f32 *)arg0)[1] *= lbl_80562FF4;
-        ((f32 *)arg0)[2] *= lbl_80562FF4;
+    ((void (*)(void *, void *, void *))PSVECCrossProduct)(basis, (u8 *)basis + 0xC, cross);
+    if (PSVECDotProduct(cross, (f32 *)((u8 *)basis + 0x18)) < lbl_80562FF0) {
+        ((f32 *)basis)[0] *= lbl_80562FF4;
+        ((f32 *)basis)[1] *= lbl_80562FF4;
+        ((f32 *)basis)[2] *= lbl_80562FF4;
     }
 }
 
