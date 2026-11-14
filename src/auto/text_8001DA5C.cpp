@@ -435,35 +435,36 @@ skip_p2:
 extern "C" f32 fn_8001DA5C(s32);
 extern f32 lbl_80560490;
 #pragma scheduling off
-extern "C" void fn_8001E544(void* arg0) {
-    f32 b;
-    f32 a;
-    a = lbl_80560490;
-    b = lbl_80560474;
-    ((f32*)arg0)[1] = a;
-    ((f32*)arg0)[2] = b;
-    ((f32*)arg0)[3] = b;
-    ((f32*)arg0)[4] = a;
-    ((f32*)arg0)[5] = b;
-    ((f32*)arg0)[6] = b;
-    ((f32*)arg0)[7] = a;
-    ((f32*)arg0)[8] = b;
-    ((f32*)arg0)[9] = b;
-    ((f32*)arg0)[10] = a;
-    ((f32*)arg0)[11] = b;
-    ((f32*)arg0)[12] = b;
-    ((f32*)arg0)[13] = a;
-    ((f32*)arg0)[14] = b;
-    ((f32*)arg0)[15] = b;
-    ((f32*)arg0)[16] = a;
-    ((f32*)arg0)[17] = b;
-    ((f32*)arg0)[18] = b;
-    ((f32*)arg0)[19] = a;
-    ((f32*)arg0)[20] = b;
-    ((f32*)arg0)[21] = b;
-    ((f32*)arg0)[22] = a;
-    ((f32*)arg0)[23] = b;
-    ((f32*)arg0)[24] = b;
+/* Initializes eight 3-float overlay slots (indices 1-24) to (sentinel, zero, zero). */
+extern "C" void fn_8001E544(void* overlay) {
+    f32 zeroValue;
+    f32 sentinelValue;
+    sentinelValue = lbl_80560490;
+    zeroValue = lbl_80560474;
+    ((f32*)overlay)[1] = sentinelValue;
+    ((f32*)overlay)[2] = zeroValue;
+    ((f32*)overlay)[3] = zeroValue;
+    ((f32*)overlay)[4] = sentinelValue;
+    ((f32*)overlay)[5] = zeroValue;
+    ((f32*)overlay)[6] = zeroValue;
+    ((f32*)overlay)[7] = sentinelValue;
+    ((f32*)overlay)[8] = zeroValue;
+    ((f32*)overlay)[9] = zeroValue;
+    ((f32*)overlay)[10] = sentinelValue;
+    ((f32*)overlay)[11] = zeroValue;
+    ((f32*)overlay)[12] = zeroValue;
+    ((f32*)overlay)[13] = sentinelValue;
+    ((f32*)overlay)[14] = zeroValue;
+    ((f32*)overlay)[15] = zeroValue;
+    ((f32*)overlay)[16] = sentinelValue;
+    ((f32*)overlay)[17] = zeroValue;
+    ((f32*)overlay)[18] = zeroValue;
+    ((f32*)overlay)[19] = sentinelValue;
+    ((f32*)overlay)[20] = zeroValue;
+    ((f32*)overlay)[21] = zeroValue;
+    ((f32*)overlay)[22] = sentinelValue;
+    ((f32*)overlay)[23] = zeroValue;
+    ((f32*)overlay)[24] = zeroValue;
 }
 #pragma scheduling on
 extern char lbl_802FDC70[];
