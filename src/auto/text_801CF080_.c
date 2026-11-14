@@ -415,18 +415,19 @@ check3:
 extern s32 fn_8012C370(s32, s32 *, s32, s32, u8 *);
 extern void fn_801CFA48(void *);
 #pragma scheduling invalid_target
-void *fn_801CFEAC(void *arg0) {
-    s32 spC;
-    u8 sp8;
-    void *res;
+/* Load a 'PMsh' mesh resource via fn_8012C370 and byte-swap its header/arrays in place if a swap is requested. */
+void *fn_801CFEAC(void *path) {
+    s32 outValue;
+    u8 needsSwap;
+    void *mesh;
 
-    spC = 1;
-    sp8 = 0;
-    res = ((void *(*)(void *, s32, s32 *, s32, s32, u8 *))fn_8012C370)(arg0, 0x504D7368, &spC, 0, 0, &sp8);
-    if (sp8 != 0) {
-        fn_801CFA48(res);
+    outValue = 1;
+    needsSwap = 0;
+    mesh = ((void *(*)(void *, s32, s32 *, s32, s32, u8 *))fn_8012C370)(path, 0x504D7368, &outValue, 0, 0, &needsSwap);
+    if (needsSwap != 0) {
+        fn_801CFA48(mesh);
     }
-    return res;
+    return mesh;
 }
 #pragma scheduling on
 void fn_801CFF14(void) {
