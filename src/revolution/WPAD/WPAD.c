@@ -65,6 +65,7 @@ extern void BTA_HhClose(u8 devHandle);
 
 // fn_8005B00C
 extern s32 fn_8005B00C(void);
+extern s32 fn_8006A940(void);
 extern void fn_800684D0(s32 chan);
 
 // Helper function declarations for fn_8005E09C
