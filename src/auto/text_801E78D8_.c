@@ -213,6 +213,7 @@ extern "C" void fn_801E7C28(void *arg0) {
     extern float lbl_80562DB0;
     extern float *lbl_8055EB04;
     extern char lbl_8055EB10;
+    extern char lbl_8055EB11;
     extern char lbl_8055EB12;
     extern char lbl_8055EB20;
     extern void *lbl_8055EB30;
@@ -275,7 +276,7 @@ extern "C" void fn_801E7C28(void *arg0) {
         fn_801EF184();
         fn_801EA318();
         fn_801EA1DC();
-        ((char *)&lbl_8055EB10)[0] = 0;
+        { int z = 0; lbl_8055EB10 = (char)z; }
         fn_8013A074();
         fn_8020449C();
         fn_802E3D00();
@@ -401,7 +402,8 @@ extern void fn_80287AF0(void *);
 extern void fn_801FA550(void);
 #pragma cplusplus on
 extern "C" void fn_801E8148(void) {
-    class Dummy_801E8148 {
+    /* Call virtual method 2 on each object in the global object table, then run cleanup. */
+    class VObj_801E8148 {
     public:
         virtual void m0();
         virtual void m1();
@@ -409,16 +411,16 @@ extern "C" void fn_801E8148(void) {
         virtual void m3();
         virtual void m4();
     };
-    long index;
+    long offset;
     long i;
-    Dummy_801E8148 *obj;
+    VObj_801E8148 *obj;
 
-    index = 0;
+    offset = 0;
     i = 0;
     while (i < lbl_8055EB34) {
-        obj = (Dummy_801E8148 *)*(long *)((char *)lbl_8055EB3C + index);
+        obj = (VObj_801E8148 *)*(long *)((char *)lbl_8055EB3C + offset);
         obj->m2();
-        index += 4;
+        offset += 4;
         i++;
     }
     fn_80287AF0(0);
@@ -545,43 +547,69 @@ extern "C" void fn_801E8410(void) {
         virtual void n0(); virtual void n1(); virtual void n2(); virtual void n3();
     };
     long a, b, c, d;
-    long count;
+    register long zero;
+    register long count;
     unsigned char *base;
     ((void (*)(void))fn_801E837C)();
     if (fn_801B89F8() != 0) {
         if (*(void * volatile *)&lbl_8055AF0C != 0) return;
-        a = 0; b = 0; c = lbl_8055CFF0; d = lbl_8055CFF4;
+        zero = 0;
+        a = zero;
+        b = zero;
+        c = lbl_8055CFF0;
+        d = lbl_8055CFF4;
         count = (long)(*(void * volatile *)&lbl_8055AF0C);
         count *= 0x38;
         base = lbl_80487D00 + count;
         if (((int (*)(long, long, void *, long))fn_801B89F8)(
-                c, 0, lbl_80487D00, count) == 0) {
+                c, zero, lbl_80487D00, count) == 0) {
             fn_801E88B4(&a, &b, &c, &d,
                         (long)(*(void * volatile *)&lbl_8055AF0C));
         }
-        fn_802C87B4(a, b, c, d); fn_802C8638(base); fn_801E8854(-1);
+        fn_802C87B4(a, b, c, d);
+        fn_802C8638(base);
+        fn_801E8854(-1);
         fn_802C2C64((long)(*(void * volatile *)&lbl_8055AF0C));
         fn_801EA404(base, 0);
     }
-    fn_80203EC0(); fn_802C7A44(); ((void (*)(void))fn_801E8148)();
-    fn_802C7A50(); fn_802C7AD4(); fn_801FA618();
+    fn_80203EC0();
+    fn_802C7A44();
+    ((void (*)(void))fn_801E8148)();
+    fn_802C7A50();
+    fn_802C7AD4();
+    fn_801FA618();
     {
-        long index; long i; Dispatch24 *obj;
-        index = (long)lbl_80488648; i = 0;
+        long index;
+        long i;
+        Dispatch24 *obj;
+        index = (long)lbl_80488648;
+        i = 0;
         do {
             obj = (unsigned long)i < 8 ? *(Dispatch24 **)index : 0;
             if (obj != 0) obj->m7();
-            i++; index += 4;
+            i++;
+            index += 4;
         } while (i < 8);
     }
-    fn_802BF508(); fn_802C2488(); fn_802B0254(); fn_802B0218();
-    fn_80203EF4(); fn_80203EC4(); fn_80287A6C(0); fn_801E95DC();
+    fn_802BF508();
+    fn_802C2488();
+    fn_802B0254();
+    fn_802B0218();
+    fn_80203EF4();
+    fn_80203EC4();
+    fn_80287A6C(0);
+    fn_801E95DC();
     {
-        long i; long index; Dispatch14 *obj2;
-        i = 0; index = 0;
+        long i;
+        long index;
+        Dispatch14 *obj2;
+        i = 0;
+        index = 0;
         while (i < lbl_8055EB34) {
             obj2 = (Dispatch14 *)*(long *)((char *)lbl_8055EB3C + index);
-            obj2->n3(); index += 4; i++;
+            obj2->n3();
+            index += 4;
+            i++;
         }
     }
 }
