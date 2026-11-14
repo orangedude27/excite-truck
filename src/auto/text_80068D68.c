@@ -4198,19 +4198,22 @@ void fn_8006F18C(u8 arg0, u8 arg1, u16 arg2) {
     *(u16 *)&cb->pad[0x12] = arg2;
 }
 
-BOOL hcisu_h2_open(tHCI_CFG *p_cfg) {
-    tUUSB uusb;
+/* Open the HCI USB (H2) transport: populate a UUSB descriptor from HCI config, set
+   the control block state to open (2), register the device and open it with the
+   HCI receive callback. */
+BOOL hcisu_h2_open(tHCI_CFG *pHciConfig) {
+    tUUSB usbDevice;
     BOOL result = TRUE;
 
-    uusb.at_0x0B = 0;
-    uusb.at_0x04 = p_cfg->at_0x00;
-    uusb.at_0x06 = p_cfg->at_0x02;
-    uusb.at_0x08 = hcisu_h2_cb.at_0x1F;
+    usbDevice.at_0x0B = 0;
+    usbDevice.at_0x04 = pHciConfig->at_0x00;
+    usbDevice.at_0x06 = pHciConfig->at_0x02;
+    usbDevice.at_0x08 = hcisu_h2_cb.at_0x1F;
 
     hcisu_h2_cb.at_0x1E = 2;
 
-    UUSB_Register(&uusb);
-    UUSB_Open(&uusb, fn_8006EC24);
+    UUSB_Register(&usbDevice);
+    UUSB_Open(&usbDevice, fn_8006EC24);
 
     return result;
 }
