@@ -181,6 +181,7 @@ extern int fn_801345D8(char *, int, const char *, ...);
 extern char lbl_8034AF14[];
 
 extern int lbl_8055FB28;
+#pragma scheduling on
 #pragma push
 #pragma cplusplus on
 #pragma use_lmw_stmw off
