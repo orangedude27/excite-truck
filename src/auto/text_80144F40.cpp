@@ -1072,19 +1072,20 @@ extern "C" void fn_80146584(void *arg0) {
         *(void **)arg0 = NULL;
     }
 }
-extern "C" void fn_801465C8(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != NULL) {
-        if (p != NULL) {
-            fn_80128670(((s32 *)p)[3]);
-            if (p != NULL) {
-                ((s32 *)p)[0] = 0;
-                ((s32 *)p)[1] = 0;
-                ((s32 *)p)[2] = 0;
+extern "C" void fn_801465C8(void *slot) {
+    /* Free and clear the heap object stored in *slot (frees its field at +0xC, resets fields, frees it). */
+    void *obj = *(void **)slot;
+    if (obj != NULL) {
+        if (obj != NULL) {
+            fn_80128670(((s32 *)obj)[3]);
+            if (obj != NULL) {
+                ((s32 *)obj)[0] = 0;
+                ((s32 *)obj)[1] = 0;
+                ((s32 *)obj)[2] = 0;
             }
-            fn_80128668(p);
+            fn_80128668(obj);
         }
-        *(void **)arg0 = NULL;
+        *(void **)slot = NULL;
     }
 }
 
