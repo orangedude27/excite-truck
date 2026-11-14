@@ -2657,18 +2657,24 @@ void fn_801D7E3C(int arg0) {
 
 extern void fn_801D9AB8(void *, float);
 extern void fn_80178DBC(int, float);
+/* Restores an audio/parameter binding to its saved base value if the slot is active,
+ * not already applied, and has a value to restore. */
 void fn_801D7E54(void *arg0) {
-    void *temp;
-    float f;
+#define ApplyGroupWeight fn_801D9AB8
+#define SetAudioParam fn_80178DBC
+    void *targetGroup;
+    float baseValue;
     if (*(int *)((char *)arg0 + 0x28) != 0) {
         if (*(int *)((char *)arg0 + 0x10) == 0) {
-            temp = *(void **)((char *)arg0 + 4);
-            f = *(float *)((char *)arg0 + 0x14);
-            if (temp != 0) fn_801D9AB8(temp, f);
-            else fn_80178DBC(*(int *)((char *)arg0 + 8), f);
+            targetGroup = *(void **)((char *)arg0 + 4);
+            baseValue = *(float *)((char *)arg0 + 0x14);
+            if (targetGroup != 0) ApplyGroupWeight(targetGroup, baseValue);
+            else SetAudioParam(*(int *)((char *)arg0 + 8), baseValue);
         }
         *(int *)((char *)arg0 + 0x28) = 1;
     }
+#undef ApplyGroupWeight
+#undef SetAudioParam
 }
 
 #pragma cplusplus on
