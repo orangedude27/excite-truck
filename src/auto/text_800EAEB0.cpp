@@ -1634,6 +1634,11 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
 
 #pragma push
 #pragma dont_inline on
+/* nw4hbm::snd::detail::MmlSeqTrack::MmlSeqTrack(): builds one MML sequence
+ * track.  The SeqTrack base part comes first (base vtable, the parameter block
+ * at +0x68, no owning player), SeqTrack::InitParam() resets every track
+ * parameter, and the MmlSeqTrack vtable goes in last together with the flags a
+ * freshly allocated track starts with. */
 extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *this_) {
     /* parameter block a SeqTrack keeps at +0x68 */
     struct SeqParam {
