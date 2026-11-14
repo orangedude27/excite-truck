@@ -778,19 +778,20 @@ loop_test:
 
 #pragma cplusplus on
 extern "C" void fn_802B69FC(void) {
+    /* Configure two UI elements via the global manager using offsets from a string/data base. */
     class Dummy_802B69FC {
     public:
         virtual void m0();
         virtual Dummy_802B69FC *m1(void *);
     };
     char *base = lbl_8034A598;
-    Dummy_802B69FC *obj = (Dummy_802B69FC *)lbl_8055FA48;
+    Dummy_802B69FC *manager = (Dummy_802B69FC *)lbl_8055FA48;
 
-    obj = obj->m1(base + 0x134);
-    fn_802B6568(obj, base + 0x244);
-    obj = (Dummy_802B69FC *)lbl_8055FA48;
-    obj = obj->m1(base + 0x160);
-    fn_802B6568(obj, base + 0x258);
+    manager = manager->m1(base + 0x134);
+    fn_802B6568(manager, base + 0x244);
+    manager = (Dummy_802B69FC *)lbl_8055FA48;
+    manager = manager->m1(base + 0x160);
+    fn_802B6568(manager, base + 0x258);
 }
 #pragma cplusplus reset
 
