@@ -405,18 +405,7 @@ void *fn_80266120(void *arg0) {
 }
 
 #pragma scheduling off
-void fn_80266150(void *arg0) {
-    int zero;
-    float f0;
-    float f1;
-    zero = 0;
-    f0 = lbl_80563C2C;
-    *(int *)((char *)arg0 + 4) = zero;
-    *(int *)((char *)arg0 + 0) = zero;
-    f1 = lbl_8055C4C0;
-    *(float *)((char *)arg0 + 8) = f1;
-    *(float *)((char *)arg0 + 0xC) = f0;
-}
+void fn_80266150(void *arg0) { int zero; float f0; float f1; zero = 0; f0 = lbl_80563C2C; *(int *)((char *)arg0 + 4) = zero; *(int *)((char *)arg0 + 0) = zero; f1 = lbl_8055C4C0; *(float *)((char *)arg0 + 8) = f1; *(float *)((char *)arg0 + 0xC) = f0; }
 #pragma scheduling on
 
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
@@ -2187,19 +2176,19 @@ void fn_8026A394(void *arg0) {
 }
 
 #pragma scheduling on
-void fn_8026A4A0(int arg0, int *arg1, float *arg2) {
-    struct Pair { int a; int b; };
-    struct Pair *src = (struct Pair *)((char *)lbl_80499080 + arg0 * 0x228 + 0x58);
-    struct Pair *dst = (struct Pair *)arg1;
-    int *srcInt = (int *)src;
+void fn_8026A4A0(int cameraIndex, int *outTransform, float *outFov) {
+    struct WordPair { int a; int b; };
+    struct WordPair *src = (struct WordPair *)&((Camera *)sCameras)[cameraIndex].transform;
+    struct WordPair *dst = (struct WordPair *)outTransform;
+    int *srcWords = (int *)src;
     dst[0] = src[0];
     dst[1] = src[1];
     dst[2] = src[2];
     dst[3] = src[3];
-    arg1[8] = srcInt[8];
-    *(struct Pair *)(arg1 + 9) = *(struct Pair *)(srcInt + 9);
-    arg1[11] = srcInt[11];
-    *arg2 = *(float *)((char *)src + 0x64);
+    outTransform[8] = srcWords[8];
+    *(struct WordPair *)(outTransform + 9) = *(struct WordPair *)(srcWords + 9);
+    outTransform[11] = srcWords[11];
+    *outFov = ((Camera *)((char *)src - 0x58))->fov;
 }
 extern float lbl_8055F484;
 extern float lbl_80563C6C;
