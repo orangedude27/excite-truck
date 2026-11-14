@@ -1832,18 +1832,26 @@ extern "C" void* memset(void*, int, u32);
 extern u8 lbl_80323770[];
 extern u8 lbl_80323790[];
 #pragma dont_inline on
-extern "C" void* fn_800EE4F0(void* arg0) {
+/* nw4r::snd::RemoteSpeaker::Init(): clear one speaker slot's state and create
+ * the two OSAlarms it streams with, each tagged with the slot itself as user
+ * data so their handlers (fn_800EE910, IntervalAlarmHandler) find it back. */
+extern "C" void* fn_800EE4F0(void* self) {
+    RemoteSpeaker* speaker = (RemoteSpeaker*)self;
 
-    u8* p = (u8*)arg0;
-    p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0; p[4] = 0; p[5] = 0; p[6] = 0;
-    *(u32*)(p + 0x30) = 0;
-    OSCreateAlarm(p + 0x38);
-    OSSetAlarmUserData(p + 0x38, arg0);
-    OSCreateAlarm(p + 0x68);
-    OSSetAlarmUserData(p + 0x68, arg0);
-    return arg0;
+    speaker->byte_00 = 0;
+    speaker->available = 0;
+    speaker->sentLastFrame = 0;
+    speaker->stopOnSilence = 0;
+    speaker->byte_04 = 0;
+    speaker->restartEncoder = 0;
+    speaker->timeLimitReached = 0;
+    speaker->word_30 = 0;
+    OSCreateAlarm(&speaker->startAlarm);
+    OSSetAlarmUserData(&speaker->startAlarm, self);
+    OSCreateAlarm(&speaker->intervalAlarm);
+    OSSetAlarmUserData(&speaker->intervalAlarm, self);
+    return self;
 }
-
 /* Reset a RemoteSpeakerManager speaker slot: cancel its alarms and clear its
    state/flags and the 0x20-byte buffer at offset 9. */
 extern "C" void fn_800EE568(void *slot) {
