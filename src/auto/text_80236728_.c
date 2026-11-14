@@ -668,23 +668,26 @@ void fn_802379EC(void *arg0) {
 void fn_80237A04(void) {
 }
 
-void *fn_80237A08(void *arg0, int arg1) {
-    struct Object { int field0; int field4; int field8; };
-    struct Object *object = (struct Object *)arg0;
-    if (arg0 != 0) {
-        int value = object->field4;
-        if (value == 0) goto reset;
-        if (value == 0) goto reset;
-        fn_80128670(value - 0x10);
+/* Destructor for an AnimEntry (0xC bytes): frees its keyframe array allocation
+   (at keys - 0x10) if allocated, resets its fields, and optionally frees the
+   entry itself. */
+void *fn_80237A08(void *thisPtr, int freeFlag) {
+    struct AnimEntryRaw { int object; int keys; int keyCount; };
+    struct AnimEntryRaw *entry = (struct AnimEntryRaw *)thisPtr;
+    if (thisPtr != 0) {
+        int keys = entry->keys;
+        if (keys == 0) goto reset;
+        if (keys == 0) goto reset;
+        fn_80128670(keys - 0x10);
     reset:
-        object->field0 = -1;
-        object->field8 = 0;
-        object->field4 = 0;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        entry->object = -1;
+        entry->keyCount = 0;
+        entry->keys = 0;
+        if (freeFlag > 0) {
+            fn_80128668(thisPtr);
         }
     }
-    return arg0;
+    return thisPtr;
 }
 
 void fn_80237A84(void *arg0) {
@@ -1024,10 +1027,10 @@ void fn_802383FC(TrailMgr *mgr) {
     extern void fn_8022EE98(void *);
     extern void fn_80214C54(void *, void *);
     extern float lbl_805636E0, lbl_805636E4, lbl_805636E8;
-    register float f29 = fn_8023659C();
-    register float f30 = lbl_805636E0;
-    register float f31 = lbl_805636E4;
-    register float f27 = lbl_805636E8;
+    float f29 = fn_8023659C();
+    float f30 = lbl_805636E0;
+    float f31 = lbl_805636E4;
+    float f27 = lbl_805636E8;
     int i;
     int off;
     for (i = 0, off = 0; i < mgr->count; i++, off += 0x34) {
