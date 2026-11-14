@@ -318,15 +318,16 @@ void fn_801C3A3C(s32 target, f32 yOffset, f32 zRotation) {
 }
 #pragma push
 #pragma processor 750
-void fn_801C3AF8(s32 arg0, s32 arg1, f32 arg2) {
-    f32 values[2];
+/* Builds a 2D direction vector (sin(angle), cos(angle)) and passes it to fn_801B7C8C. */
+void fn_801C3AF8(s32 arg0, s32 arg1, f32 angle) {
+    f32 direction[2];
     f32 cosine;
     f32 sine;
-    cosine = (f32)((f64 (*)(f32))cos)(arg2);
-    sine = (f32)((f64 (*)(f32))sin)(arg2);
-    values[0] = sine;
-    values[1] = cosine;
-    fn_801B7C8C(arg0, arg1, &values[0]);
+    cosine = (f32)((f64 (*)(f32))cos)(angle);
+    sine = (f32)((f64 (*)(f32))sin)(angle);
+    direction[0] = sine;
+    direction[1] = cosine;
+    fn_801B7C8C(arg0, arg1, &direction[0]);
 }
 #pragma pop
 s32 *__AXFXGetLfoSinTable_801769CC(void);
