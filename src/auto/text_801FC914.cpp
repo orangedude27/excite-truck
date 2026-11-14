@@ -1031,14 +1031,15 @@ extern "C" void fn_801FE708(void *container, void *entry) {
 #undef hermitePathLimitMsg
 }
 
-extern "C" void fn_801FE77C(void* arg0) {
-    char* item = (char*)arg0 + 4;
-    int i = 0;
-    while (i < *(int*)((char*)arg0 + 0x94)) {
-        if (*(unsigned short*)(item + 0x14) == 0)
-            fn_801FEDA4(item);
-        item += 0x24;
-        ++i;
+extern "C" void fn_801FE77C(void* container) {
+    /* Update unspawned path-spawn entries in a container by spawning their pool objects. */
+    char* entry = (char*)container + 4;
+    int index = 0;
+    while (index < *(int*)((char*)container + 0x94)) {
+        if (*(unsigned short*)(entry + 0x14) == 0)
+            fn_801FEDA4(entry);
+        entry += 0x24;
+        ++index;
     }
 }
 
