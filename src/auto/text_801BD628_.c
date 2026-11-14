@@ -82,23 +82,29 @@ void fn_801BD78C(void) {
 
 }
 
+/* Releases the per-vehicle simulation pools fn_801BD694 allocated: the mass, cs
+ * and cc lists were carved out of allocator blocks whose header sits 0x10 below
+ * the data, while the cx and a lists are plain buffers.  Clears the mass list
+ * pointer, the slot index and the pool capacity. */
 void fn_801BD790(void) {
-    if (lbl_8055E794 != 0) {
-        fn_80128670(lbl_8055E794 - 0x10);
+    if (massList != 0) {
+        Mem_Free(massList - 0x10);
     }
-    if (lbl_8055E798 != 0) {
-        fn_80128670(lbl_8055E798 - 0x10);
+    if (csList != 0) {
+        Mem_Free(csList - 0x10);
     }
-    if (lbl_8055E79C != 0) {
-        fn_80128670(lbl_8055E79C - 0x10);
+    if (ccList != 0) {
+        Mem_Free(ccList - 0x10);
     }
-    fn_80128670(lbl_8055E7A4);
-    fn_80128670(lbl_8055E7A0);
-    lbl_8055E794 = 0;
-    lbl_8055E78C = 0;
-    lbl_8055E790 = 0;
+    Mem_Free(cxList);
+    Mem_Free(aList);
+    massList = 0;
+    poolIndex = 0;
+    poolCapacity = 0;
 }
-
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern void *memset(void *, int, unsigned long);
 extern double cos(double);
 extern double sin(double);
