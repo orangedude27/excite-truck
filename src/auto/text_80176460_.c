@@ -794,13 +794,14 @@ void fn_80176DD4(void) {
     lbl_8055E3D4 = 1;
 }
 
+/* Arms a fade-in without applying a pending physics command, starting the ramp from black on the next step. */
 void fn_80176DE0(void) {
-    *(s32 *)(lbl_80430558 + 0xC) = 1;
-    *(s32 *)(lbl_80430558 + 0x10) = 0;
-    *(s32 *)(lbl_80430558 + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
-    *(s32 *)lbl_80430558 = lbl_8055E3C4 + 3;
-    *(s32 *)(lbl_80430558 + 8) = 0;
-    *(u8 *)(lbl_80430558 + 0x14) = 0;
+    *(s32 *)(sFadeState + 0xC) = FADE_MODE_IN;
+    *(s32 *)(sFadeState + 0x10) = 0;
+    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
+    *(s32 *)sFadeState = lbl_8055E3C4 + 3;
+    *(s32 *)(sFadeState + 8) = 0;
+    *(u8 *)(sFadeState + 0x14) = 0;
 }
 
 #pragma dont_inline on
