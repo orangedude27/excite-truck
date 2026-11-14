@@ -1298,24 +1298,25 @@ extern "C" void* fn_801586F4(void* arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void* fn_80158760(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            if (arg0 != 0) {
-                if ((u32)arg0 + 8 != 0) {
-                    if ((u32)arg0 + 8 != 0) {
-                        if ((u32)arg0 + 8 != 0) {
-                            *(u32*)((u8*)arg0 + 8) = 0;
-                            *(u32*)((u8*)arg0 + 0xC) = 0;
-                            *(u32*)((u8*)arg0 + 0x10) = 0;
+/* Destructor-like cleanup for an object with three u32 fields at offsets 0x8, 0xC, 0x10: clears them if present, and frees the object when shouldDelete > 0. */
+extern "C" void* fn_80158760(void* self, s32 shouldDelete) {
+    if (self != 0) {
+        if (self != 0) {
+            if (self != 0) {
+                if ((u32)self + 8 != 0) {
+                    if ((u32)self + 8 != 0) {
+                        if ((u32)self + 8 != 0) {
+                            *(u32*)((u8*)self + 8) = 0;
+                            *(u32*)((u8*)self + 0xC) = 0;
+                            *(u32*)((u8*)self + 0x10) = 0;
                         }
                     }
                 }
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_801587CC(void* arg0) {
