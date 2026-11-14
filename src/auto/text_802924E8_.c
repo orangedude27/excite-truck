@@ -1572,15 +1572,20 @@ padding:
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80294710(void* arg0) {
-    u8 *cursor = (u8*)arg0;
-    s32 i = 0;
-    while (i < *(s32*)((u8*)arg0 + 0x28)) {
-        fn_802C6CF8(*(s32*)(cursor + 8));
-        *(s32*)(cursor + 8) = -1;
+/* Releases every loaded model handle in the object's model table, setting each
+ * slot back to -1. */
+void fn_80294710(void *object) {
+#define ModelTable_releaseHandle fn_802C6CF8
+    u8 *cursor = (u8 *)object;
+    s32 index = 0;
+
+    while (index < *(s32 *)((u8 *)object + 0x28)) {
+        ModelTable_releaseHandle(*(s32 *)(cursor + 8));
+        *(s32 *)(cursor + 8) = -1;
         cursor += 4;
-        i++;
+        index++;
     }
+#undef ModelTable_releaseHandle
 }
 #pragma pop
 extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D8;
