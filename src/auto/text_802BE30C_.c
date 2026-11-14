@@ -72,15 +72,14 @@ void fn_802BE38C(void) {
     u8 *p;
     u32 i;
     s32 j;
-
     name = (u32)lbl_8034AC68;
     fn_8012E96C(name);
     lbl_8055FACC = 0;
-    buf = (void *)fn_8012C370(name, 0x46494E46, (s32)&size, (s32)&length, 0, (s32)&flag);
-    if (buf != NULL) {
+    buf = (void *)fn_8012C370(name, 0x46494E46, (s32)&size, (s32)&length, (s32)0, (s32)&flag);
+    if (buf != ((void *)0)) {
         if (size == 2) {
             data = (u32 *)buf;
-            if (flag != 0) {
+            if (flag != (u8)0) {
                 p = (u8 *)buf;
                 for (i = 0; i < (length >> 2); i++) {
                     u8 t = p[0];
@@ -179,18 +178,20 @@ void fn_802BE7F8(void) {
 #pragma scheduling on
 void fn_802BE840(void) { fn_802BE72C(); }
 
-void *fn_802BE844(s32 arg0, s32 arg1, s32 arg2) {
-    if (arg0 < -0x200 || arg0 >= 0x200 || arg1 < -0x200 || arg1 >= 0x200)
+/* Returns a pointer to the cell entry for (x, y) in the grid for the given cell size, or a fallback entry if out of range. */
+void *fn_802BE844(s32 x, s32 y, s32 cellSize) {
+    if (x < -0x200 || x >= 0x200 || y < -0x200 || y >= 0x200)
         return &lbl_804C07E4;
-    return (char *)lbl_804C06E0[arg2] + fn_802BE7C4(arg0, arg1, arg2) * 0xC;
+    return (char *)lbl_804C06E0[cellSize] + fn_802BE7C4(x, y, cellSize) * 0xC;
 }
 
 extern s32 fn_802BBD38(s16, s16, s32);
 #pragma use_lmw_stmw off
 void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
+    typedef union { u32 raw; struct { u32 hi : 23; u32 best : 3; u32 lo : 6; } b; } Cell;
+    s32 flags;
     s32 counts[6];
     s32 *countPtr;
-    s32 flags;
     s16 x;
     s16 y;
     s32 i;
@@ -199,7 +200,7 @@ void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
     s32 xOffset;
     s32 yOffset;
     s32 best;
-    void *entry;
+    Cell *entry;
 
     flags = 0;
     memset(counts, 0, 0x18);
@@ -246,12 +247,10 @@ void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
         best = 4;
     if (countPtr[best] < countPtr[5])
         best = 5;
-    entry = fn_802BE844(arg0, arg1, arg2);
-    value = *(u32 *)((char *)entry + 8);
-    value = (value & ~0x3fU) | flags;
-    value &= ~0x1c0U;
-    value |= best << 6;
-    *(u32 *)((char *)entry + 8) = value;
+    entry = (Cell *)((char *)fn_802BE844(arg0, arg1, arg2) + 8);
+    entry->raw = (entry->raw & ~0x3fU) | flags;
+    entry->raw &= ~0x1c0U;
+    entry->b.best = best;
 }
 #pragma use_lmw_stmw off
 void fn_802BEAB0(void) {
