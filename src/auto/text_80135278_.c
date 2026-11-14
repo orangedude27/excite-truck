@@ -339,6 +339,86 @@ loop_start:
 done:
     return;
 }
+
+s32 fn_801357A4(Unk_80135278 *self, float *point) {
+    extern double fn_8002F234(float);
+    extern float lbl_80561334;
+    extern float lbl_80561338;
+    s32 result, count;
+    char *node;
+    float t, d, inv, dx, dy, x, y;
+    if (fn_801355B8((void *)self, (void *)point, (void *)&self->unk_4, (void *)&self->unk_8) == 0) {
+        node = (char *)self->unk_4;
+        result = 2;
+        t = self->unk_8;
+        self->unk_20 = *(float *)(node) + t * (*(float *)(*(char **)(node+0x14)) - *(float *)(node));
+        self->unk_24 = *(float *)(node+4) + t * (*(float *)(*(char **)(node+0x14)+4) - *(float *)(node+4));
+        self->unk_10 = *(float *)(node+8) + t * (*(float *)(*(char **)(node+0x14)+8) - *(float *)(node+8));
+        self->unk_14 = *(float *)(node+12) + t * (*(float *)(*(char **)(node+0x14)+12) - *(float *)(node+12));
+        inv = lbl_80561324 / (float)fn_8002F234(self->unk_10*self->unk_10 + self->unk_14*self->unk_14);
+        dx = point[0]-self->unk_20;
+        dy = point[1]-self->unk_24;
+        x = self->unk_10*inv;
+        y = self->unk_14*inv;
+        self->unk_10=x; self->unk_14=y;
+        self->unk_18=dx; self->unk_1c=dy;
+        self->unk_28 = (float)__fabs(dy*x + -dx*y) > lbl_80561334 + *(float *)((char *)self->unk_4+0x28)*lbl_80561338;
+        d=(x*dx+y*dy)/ *(float *)(node+0x18);
+        if (t+d > lbl_80561324) {
+            t=lbl_80561320;
+            count=1000;
+            do {
+                result=2;
+                node=*(char **)(node+0x14);
+                if (*(s32 *)(node+0x10)==0) result=0;
+                self->unk_20=*(float *)node;
+                dx=point[0]-self->unk_20;
+                self->unk_24=*(float *)(node+4);
+                dy=point[1]-self->unk_24;
+                self->unk_10=*(float *)(node+8);
+                self->unk_14=*(float *)(node+12);
+                self->unk_18=dx; self->unk_1c=dy;
+                d=(self->unk_10*dx+self->unk_14*dy)/ *(float *)(node+0x18);
+                if (d < lbl_80561324) {
+                    if (!(t>d)) t=d;
+                    break;
+                }
+            } while (--count > 0);
+        } else {
+            t+=d;
+            if (t < lbl_80561320) {
+                result=3; count=10;
+                if (*(u8 *)(node+0x34)==0) {
+                    while(t < lbl_80561320) {
+                        char *data=(char *)self->unk_2c;
+                        t+=lbl_80561324;
+                        if (node != *(char **)(data+0x1c)) node-=0x3c;
+                        else {
+                            result=1;
+                            node=*(char **)(data+0x1c)+(*(unsigned long *)(data+0x18)>>16)*0x3c-0x3c;
+                        }
+                        if (--count==0) { t=lbl_80561320; break; }
+                    }
+                } else t=lbl_80561320;
+            }
+        }
+        self->unk_4=(s32)node;
+        self->unk_8=t;
+        return result;
+    }
+    node=(char *)self->unk_4;
+    t=self->unk_8;
+    self->unk_20=*(float *)node+t*(*(float *)(*(char **)(node+0x14))-*(float *)node);
+    self->unk_24=*(float *)(node+4)+t*(*(float *)(*(char **)(node+0x14)+4)-*(float *)(node+4));
+    self->unk_10=*(float *)(node+8)+t*(*(float *)(*(char **)(node+0x14)+8)-*(float *)(node+8));
+    self->unk_14=*(float *)(node+12)+t*(*(float *)(*(char **)(node+0x14)+12)-*(float *)(node+12));
+    inv=lbl_80561324/(float)fn_8002F234(self->unk_10*self->unk_10+self->unk_14*self->unk_14);
+    self->unk_10*=inv; self->unk_14*=inv;
+    self->unk_18=point[0]-self->unk_20;
+    self->unk_1c=point[1]-self->unk_24;
+    return 2;
+}
+
 #pragma scheduling invalid_target
 void fn_80135B24(void *arg0, void *arg1, float farg0) {
     register void *entry;
@@ -604,7 +684,6 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     float value;
     float edge;
     float delta;
-
     if (*(void **)(self + 0x2C) == 0) {
         return 2;
     }
@@ -619,7 +698,6 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
         end = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
         start = (end + (start - base)) % end;
     }
-
     if (status == 0) {
         char *head = *(char **)(self + 4);
         if (arg2 != 0) {
@@ -646,7 +724,6 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
         *(float *)arg2 = lbl_80561340 * (lbl_80561324 - (total / (length + *(float *)(self + 8))));
         }
     }
-
     {
         char *saved = *(char **)(self + 0x5C);
         if (saved != 0 && (status == 2 || status == 0)) {
@@ -674,15 +751,11 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     }
     *(char **)(self + 0x5C) = *(char **)(self + 4);
     fn_80136714(arg0);
-
     {
         old48 = *(float *)(self + 0x48);
         old40 = *(float *)(self + 0x40);
-        *(float *)(self + 0x48) = *(float *)(*(char **)(self + 4) + 0x1C) +
-                                  *(float *)(*(char **)(self + 4) + 0x18) * *(float *)(self + 8);
-    *(float *)(self + 0x40) = *(float *)(self + 0x14) * *(float *)(self + 0x18) +
-                              -*(float *)(self + 0x10) * *(float *)(self + 0x1C);
-
+        *(float *)(self + 0x48) = *(float *)(*(char **)(self + 4) + 0x1C) + *(float *)(*(char **)(self + 4) + 0x18) * *(float *)(self + 8);
+        *(float *)(self + 0x40) = *(float *)(self + 0x14) * *(float *)(self + 0x18) + -*(float *)(self + 0x10) * *(float *)(self + 0x1C);
         keep = 1;
         if (!changed) {
             if (*(unsigned char *)(*(char **)(self + 4) + 0x35) == *(unsigned char *)(locals.node + 0x35) &&
@@ -693,8 +766,7 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     if (!keep) {
         value = *(float *)(self + 0x48) - old48;
         *(float *)(self + 0x4C) = value;
-        edge = *(float *)(*(char **)(self + 0x2C) +
-                          *(unsigned char *)(*(char **)(self + 4) + 0x34) * 4 + 8);
+        edge = *(float *)(*(char **)(self + 0x2C) + *(unsigned char *)(*(char **)(self + 4) + 0x34) * 4 + 8);
         if (value < -edge * lbl_80561338) {
             *(float *)(self + 0x4C) = value + edge;
         }
@@ -892,21 +964,28 @@ void fn_80136768(void) {
     fn_801569FC();
 }
 
-void *fn_8013676C(void *arg0, s32 arg1) {
-    struct Local { char pad[0x50]; void *field_50; } *obj = arg0;
-    if (arg0 != 0) {
-        if (&obj->field_50 != 0) {
-            if (obj->field_50 != 0) {
-                fn_80128670((s32)obj->field_50);
+/* Destructor for a dlatlong CenterLine tracker: frees the per-segment times array at +0x50, runs the base CenterLine destructor, and frees the object when deleteFlag > 0. */
+void *fn_8013676C(void *self, s32 deleteFlag) {
+#define Mem_Free fn_80128670
+#define CenterLine_Destroy fn_8013530C
+#define OperatorDelete fn_80128668
+    struct DLatLongTracker { char pad[0x50]; void *times; } *tracker = self;
+    if (self != 0) {
+        if (&tracker->times != 0) {
+            if (tracker->times != 0) {
+                Mem_Free((s32)tracker->times);
             }
-            obj->field_50 = 0;
+            tracker->times = 0;
         }
-        fn_8013530C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        CenterLine_Destroy(self, 0);
+        if (deleteFlag > 0) {
+            OperatorDelete(self);
         }
     }
-    return arg0;
+    return self;
+#undef OperatorDelete
+#undef CenterLine_Destroy
+#undef Mem_Free
 }
 
 #pragma cplusplus on
