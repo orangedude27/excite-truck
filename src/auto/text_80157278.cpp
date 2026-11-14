@@ -91,7 +91,8 @@ public:
   f32 mTime258;      // seconds since the last reset (one frame per update)
   f32 mProgress25C;  // main progress counter
   f32 mProgress260;  // progress of the instance held at 0x268
-  f32 mProgress264;  // second progress counter
+     f32 mProgress264;  // second progress counter
+   s32 mInstance268;  // 0x268: the instance whose progress 0x260 counts, 0 for none
 };
 
 
