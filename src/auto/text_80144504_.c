@@ -131,28 +131,42 @@ void fn_80144B54(void *dst, void *src) {
     ((s32 *)dst)[11] = l;
 }
 
-f32 fn_80144BD8(f32 farg0) {
-    f32 c4, cc;
-    if (farg0 < lbl_805615C8) return lbl_805615C8;
-    if (farg0 > lbl_805615B8) return lbl_805615B8;
-    if (farg0 > lbl_805615BC) {
-        c4 = lbl_805615C4;
-        cc = lbl_805615CC;
-        cc *= farg0;
-        c4 *= farg0;
-        cc *= farg0;
-        c4 *= farg0;
-        farg0 *= cc;
-        return farg0 + c4;
+/* Odd smoothstep: clamps x to [-1,1] and returns sign(x) * (3x^2 - 2x^3), the
+ * S-curve that eases a signed blend factor between -1 and 1.  Callers hand the
+ * result to fn_80144C80(), which lerps between two values by it.
+ * (The curve is built as x*(-2x^2) +/- 3x^2 so both halves share one shape.) */
+f32 fn_80144BD8(f32 x) {
+#define SM_MINUS_ONE lbl_805615C8 /* -1.0f: lower clamp */
+#define SM_ONE       lbl_805615B8 /*  1.0f: upper clamp */
+#define SM_ZERO      lbl_805615BC /*  0.0f: which half of the curve */
+#define SM_THREE     lbl_805615C4 /*  3.0f */
+#define SM_MINUS_TWO lbl_805615CC /* -2.0f */
+    f32 sq, cu; /* 3x^2 and -2x^2, built up below */
+    if (x < SM_MINUS_ONE) return SM_MINUS_ONE;
+    if (x > SM_ONE) return SM_ONE;
+    if (x > SM_ZERO) {
+        sq = SM_THREE;
+        cu = SM_MINUS_TWO;
+        cu *= x;
+        sq *= x;
+        cu *= x;
+        sq *= x;
+        x *= cu;
+        return x + sq;
     }
-    c4 = lbl_805615C4;
-    cc = lbl_805615CC;
-    cc *= farg0;
-    c4 *= farg0;
-    cc *= farg0;
-    c4 *= farg0;
-    farg0 *= cc;
-    return farg0 - c4;
+    sq = SM_THREE;
+    cu = SM_MINUS_TWO;
+    cu *= x;
+    sq *= x;
+    cu *= x;
+    sq *= x;
+    x *= cu;
+    return x - sq;
+#undef SM_MINUS_ONE
+#undef SM_ONE
+#undef SM_ZERO
+#undef SM_THREE
+#undef SM_MINUS_TWO
 }
 
 void fn_80144C54(void *arg0) {
