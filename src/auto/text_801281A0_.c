@@ -303,6 +303,9 @@ void fn_80129218(void) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
+/* Pad a ring buffer's allocation so the next block starts 0x40-byte aligned:
+ * if (used + 0x40) is not aligned to the buffer size, allocate a padding block
+ * through the ring's alloc vfunc and clear the flag byte at offset -0x1C. */
 extern "C" void fn_8012921C(void *arg0, s32 arg1) {
     struct Ring {
         virtual void d0();
