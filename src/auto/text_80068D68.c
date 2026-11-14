@@ -19254,32 +19254,35 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     return p_return_buf;
 }
 
+/* Returns TRUE when there is no partial L2CAP RX packet, or the buffered packet is complete; clears the pending RX buffer when complete. */
 BOOL l2cap_link_chk_pkt_end(void) {
-    u8 *p_lcb = *(u8 **)(lbl_803C4040 + 0x7BC);
-    u8 *p_buf;
-    u8 *p_data;
-    u16 offset;
-    u16 len;
-    u8 hi;
-    u8 lo;
-    u16 l2cap_len;
-    if (p_lcb == 0)
+    u8 *lcb = *(u8 **)(lbl_803C4040 + 0x7BC);
+    u8 *buf;
+    u8 *payload;
+    u16 dataOffset;
+    u16 packetLen;
+    u8 l2capLenHi;
+    u8 l2capLenLo;
+    u16 l2capLen;
+
+    if (lcb == 0)
         goto empty;
-    p_buf = *(u8 **)(p_lcb + 0x50);
-    if (p_buf != 0)
+    buf = *(u8 **)(lcb + 0x50);
+    if (buf != 0)
         goto have_buf;
 empty:
     return TRUE;
+
 have_buf:
-    offset = *(u16 *)(p_buf + 4);
-    len = *(u16 *)(p_buf + 2);
-    p_data = p_buf + offset;
-    hi = p_data[0x0D];
-    lo = p_data[0x0C];
-    l2cap_len = (u16)(lo + (hi << 8));
-    if (l2cap_len > len - 8)
+    dataOffset = *(u16 *)(buf + 4);
+    packetLen = *(u16 *)(buf + 2);
+    payload = buf + dataOffset;
+    l2capLenHi = payload[0x0D];
+    l2capLenLo = payload[0x0C];
+    l2capLen = (u16)(l2capLenLo + (l2capLenHi << 8));
+    if (l2capLen > packetLen - 8)
         return FALSE;
-    *(u8 **)(p_lcb + 0x50) = 0;
+    *(u8 **)(lcb + 0x50) = 0;
     return TRUE;
 }
 
