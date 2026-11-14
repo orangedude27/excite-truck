@@ -1769,6 +1769,11 @@ extern "C" s32 fn_800EE43C(s32 arg0, s32 arg1) {
 #pragma small_data off
 #pragma pop
 extern "C" void fn_800EE47C(void* arg0) {
+    /* Close the NAND file handle (at +0x14C) if open (+0x1D8), warn on NANDClose failure, then reset object state. */
+    #define nandFileOpenFlag byteAt(arg0, 0x1D8)
+    #define nandFileInfoPtr ((u8*)arg0 + 0x14C)
+    #define kNandSoundArchiveCpp lbl_803237D0
+    #define kFailedCloseMcsMsg lbl_803237EC
     s32 result;
     if (((u8*)arg0)[0x1D8] != 0) {
         result = NANDClose((u8*)arg0 + 0x14C);
@@ -1779,6 +1784,10 @@ extern "C" void fn_800EE47C(void* arg0) {
         ((u8*)arg0)[0x1D8] = 0;
     }
     fn_800F27AC(arg0);
+    #undef nandFileOpenFlag
+    #undef nandFileInfoPtr
+    #undef kNandSoundArchiveCpp
+    #undef kFailedCloseMcsMsg
 }
 
 /* The OSAlarms of a speaker slot, field for field as
