@@ -369,18 +369,18 @@ extern "C" void fn_802E3A14(s32 arg0, s32 arg1) {
     ((Obj *)entry)->v8(arg1);
 }
 #pragma cplusplus on
-extern "C" s32 fn_802E3A64(s32 arg0, s32 arg1, s32 arg2) {
+/* Write `size` bytes from `buffer` via the file object's vtable method; return 1 if all bytes were written. */
+extern "C" s32 fn_802E3A64(s32 fileHandle, s32 buffer, s32 size) {
     class Obj {
     public:
         virtual void v0();
         virtual s32 v1(s32, s32);
     };
-    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1c3);
-    s32 entry = *(s32 *)(obj + 0x24);
-    s32 result = ((Obj *)entry)->v1(arg1, arg2);
-    return arg2 == result;
+    s32 fileObject = fn_802E33D8(fileHandle, lbl_8034CFB4, 0x1c3);
+    s32 entry = *(s32 *)(fileObject + 0x24);
+    s32 bytesWritten = ((Obj *)entry)->v1(buffer, size);
+    return size == bytesWritten;
 }
-
 extern int vsprintf(char *, const char *, va_list);
 extern "C" int vsprintf(char *, const char *, va_list);
 #pragma scheduling invalid_target
