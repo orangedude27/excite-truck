@@ -173,6 +173,15 @@ typedef struct NearObject {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+/* Per-frame water callback: fn_8029C1C4 registers it with fn_80287B38 and
+   fn_802887EC runs it over the sorted list of objects near the players
+   (arg0 = the NearObject array, arg1 = its count).  Every object that is
+   close enough (distance < 2500.0), moving fast enough (speed at +0x50 > 2.5)
+   and still flagged is reported to each 3D water pool (lbl_804B5010,
+   lbl_8055F7F0 of them) and to each shallow water area (lbl_804B5030,
+   lbl_8055F7F4 of them); when the splash effect system is up (fn_802BF4F0)
+   splash particles are also emitted from the object (fn_8029CD48).
+   Nothing happens while the frame time is zero (game standing still). */
 void fn_8029C450(void *arg0, int arg1) {
     extern float fn_801E7E24(void);
     extern void fn_8029D7D0(int, void **);
@@ -192,7 +201,7 @@ void fn_8029C450(void *arg0, int arg1) {
 
     maxDistance = lbl_80564638;
     frameTime = fn_801E7E24();
-    if (!((float)__fabs((double)frameTime) <= lbl_80558DC4)) {
+    if (!((float)__fabs((double)frameTime) <= lbl_80558DC4)) {  /* 1.19e-7 */
         minSpeed = lbl_8056463C;
         numObjects = 0;
         record = (NearObject *)arg0;
