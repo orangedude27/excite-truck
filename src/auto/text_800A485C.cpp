@@ -7239,27 +7239,32 @@ retryCheck:
     goto loop;
 }
 
-extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2) {
-    u8 *obj = (u8 *)arg0;
-    u32 sp8;
-    u32 scaled = (u32)arg1 << 2;
-    u32 block = (u16)(*(u32 *)(obj + 0x28) + (scaled >> obj[0x20]));
-    u16 index = (u16)(scaled & (*(u16 *)obj - 1));
-    u16 i;
+/* VFiPFFAT_SetEntry32NoPage: writes `value`, a 28-bit cluster number, into the
+ * FAT entry of `cluster` of `volume` with no page held for the FAT sector.
+ * The entry is read back first so the four reserved high bits are kept; the
+ * new word, in the FAT's little-endian form, then goes into every FAT copy the
+ * volume keeps, and the first error met is handed back (0 when all took it). */
+extern "C" s32 fn_800B037C(void *volume, s32 cluster, s32 value) {
+    u8 *vol = (u8 *)volume;
+    u32 entry;
+    u32 entryByte = (u32)cluster << 2;
+    u32 sector = (u16)(VF_VOL_FAT_FIRST_SECTOR(vol) + (entryByte >> VF_VOL_SECTOR_SHIFT(vol)));
+    u16 offset = (u16)(entryByte & (VF_VOL_SECTOR_SIZE(vol) - 1));
+    u16 copy;
     s32 saved;
-    s32 result = fn_800B5260(arg0, &sp8, block, index, 4);
+    s32 result = VFiPFCACHE_ReadPage(volume, &entry, sector, offset, 4);
     if (result != 0)
         return result;
     saved = 0;
-    sp8 = (sp8 >> 24) | ((sp8 >> 8) & 0x0000FF00) | ((sp8 << 8) & 0x00FF0000) | (sp8 << 24);
-    sp8 &= 0xF0000000;
-    sp8 |= (u32)(arg2 & 0x0FFFFFFF);
-    sp8 = (sp8 >> 24) | ((sp8 >> 8) & 0x0000FF00) | ((sp8 << 8) & 0x00FF0000) | (sp8 << 24);
-    for (i = 0; i < obj[0x22]; i++) {
-        result = fn_800B5618(arg0, &sp8, block, index, 4);
+    entry = VF_SWAP32(entry);
+    entry &= VF_FAT32_RESERVED_MASK;
+    entry |= (u32)(value & VF_FAT32_CLUSTER_MASK);
+    entry = VF_SWAP32(entry);
+    for (copy = 0; copy < VF_VOL_FAT_COUNT(vol); copy++) {
+        result = VFiPFCACHE_WritePage(volume, &entry, sector, offset, 4);
         if (result != 0 && saved == 0)
             saved = result;
-        block += *(u32 *)(obj + 0xC);
+        sector += VF_VOL_FAT_SECTOR_STEP(vol);
     }
     return saved;
 }
