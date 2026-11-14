@@ -567,6 +567,9 @@ void *fn_802BD194(void *treeList, const char *name) {
     }
     return 0;
 }
+
+#pragma push
+#pragma processor 750
 int fn_802BD210(void *arg0) {
     #pragma unused(arg0)
     extern void *fn_8012C370(void *, unsigned int, unsigned int *, int, int, unsigned char *);
