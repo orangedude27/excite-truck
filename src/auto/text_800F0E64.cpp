@@ -415,6 +415,10 @@ extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *track) {
 }
 
 extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
+    /* Tick the length of each channel attached to this SeqTrack (list at +0xB8,
+       next at +0xE4): decrement the note length at +0xD4 and release the channel
+       when it reaches 0, and advance the channel timer (fn_800EA880, +1) while
+       the flag at +0x3C is clear. */
     extern void Release__Q46nw4hbm3snd6detail7ChannelFv(void *);
     extern void fn_800EA880(void *, int);
     void *channel = *(void **)((char *)arg0 + 0xB8);
