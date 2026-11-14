@@ -1086,18 +1086,20 @@ float fn_801948B0(void *arg0, int arg1, float arg2) {
 #pragma pop
 
 #pragma scheduling invalid_target
+/* Linearly interpolate between 3D points a and b by t, writing result to out. 
+   X/Y are copied through a volatile double pair to preserve the original store/load pattern. */
 void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
-    volatile double pair;
-    float temp[2];
-    float dy = b[1] - a[1];
-    float dx = b[0] - a[0];
-    float ty = a[1] + t * dy;
-    float tx = a[0] + t * dx;
-    temp[1] = ty;
-    temp[0] = tx;
-    pair = *(double *)temp;
-    out[0] = ((float *)&pair)[0];
-    out[1] = ((float *)&pair)[1];
+    volatile double xyPair;
+    float xyTemp[2];
+    float deltaY = b[1] - a[1];
+    float deltaX = b[0] - a[0];
+    float interpY = a[1] + t * deltaY;
+    float interpX = a[0] + t * deltaX;
+    xyTemp[1] = interpY;
+    xyTemp[0] = interpX;
+    xyPair = *(double *)xyTemp;
+    out[0] = ((float *)&xyPair)[0];
+    out[1] = ((float *)&xyPair)[1];
     out[2] = a[2] + t * (b[2] - a[2]);
 }
 #pragma scheduling on
