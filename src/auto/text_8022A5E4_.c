@@ -216,21 +216,36 @@ void fn_8022A858(int arg0) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-int fn_8022A86C(int arg0) {
+/* Allocate a UI text style.
+ *
+ * Walks the 0x100 style records of the style table (0x74 bytes each, see
+ * struct UIStyle below; fn_8022CA2C(n) is the address of the n-th) and takes
+ * the first free one -- a record whose inUse byte at +0x00 is 0 -- fills it
+ * from the caller's 0x58-byte parameter block through fn_8022A858 ->
+ * fn_8022CAA8 (the block travels in r4) and returns its index.  With every
+ * slot taken it reports "UIStyle: too many styles" and returns -1. */
+int fn_8022A86C(void *params) {
     extern int fn_802E317C(const char *, ...);
-    unsigned char *p = (unsigned char *)lbl_80490968;
-    int i = 0;
+    #define StyleTable      lbl_80490968 /* the 0x100 UI text styles */
+    #define UI_STYLE_COUNT  0x100
+    #define TooManyStyles   lbl_8033FBE8 /* "UIStyle: too many styles" */
+
+    unsigned char *entry = (unsigned char *)StyleTable;
+    int index = 0;
     int count;
 
-    for (count = 0x100; count != 0; count--) {
-        if (*p == 0) {
-            fn_8022A858(i);
-            return i;
+    for (count = UI_STYLE_COUNT; count != 0; count--) {
+        if (*entry == 0) { /* this style is free */
+            ((void (*)(int, void *))fn_8022A858)(index, params);
+            return index;
         }
-        p += 0x74;
-        i++;
+        entry += 0x74;
+        index++;
     }
-    fn_802E317C(lbl_8033FBE8, arg0);
+    fn_802E317C(TooManyStyles, params);
+    #undef StyleTable
+    #undef UI_STYLE_COUNT
+    #undef TooManyStyles
     return -1;
 }
 #pragma scheduling invalid_target
