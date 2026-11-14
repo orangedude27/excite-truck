@@ -257,6 +257,7 @@ loop_test:
 extern char lbl_803315E8[];
 extern s32 fn_80209110(s32 *);
 void fn_801766C4(void) {
+    /* Pump the physics/scene state machine until it reaches state 8, then release lbl_8055E3F0. */
     s32 i = 0;
     lbl_8055E3F4 = 7;
     goto check_state;
