@@ -209,11 +209,42 @@ extern u8 lbl_80326FC8[];
 #pragma small_data off
 #pragma pop
 namespace nw4hbm {
+namespace ut {
+namespace detail {
+/* LinkList.h: a doubly-linked list with an embedded sentinel node.  A queued
+   object holds its node inside itself (here at object+4). */
+struct LinkListImpl {
+    s32 size;    /* +0x00 number of nodes; the list is empty when zero */
+    void *next;  /* +0x04 sentinel's next: the first node */
+    void *prev;  /* +0x08 sentinel's prev: the last node */
+};
+}  // namespace detail
+}  // namespace ut
+
 namespace snd {
 namespace detail {
-struct Task;
+/* A unit of work the sound thread runs (snd_TaskManager.cpp).  Its list node
+   is at +0x04 and its task ID at +0x0C; the vtable starts with the destructor
+   slots, the scalar deleting destructor being at +0x08. */
+struct Task {
+    virtual void Destroy(); /* +0x08 scalar deleting destructor */
+    virtual void Execute(); /* +0x0C run the task */
+    virtual void Cancel();  /* +0x10 cancel it (TaskManager::CancelByTaskId) */
+};
+
+/* snd_TaskManager.cpp: three priority queues of tasks and the frame heap a
+   running task allocates from, drained one task at a time by the sound
+   thread.  fn_800FDE60() builds the one instance of it. */
 struct TaskManager {
-    enum TaskPriority { TaskPriority0 = 0 };
+    enum TaskPriority {
+        TaskPriorityLow = 0,  /* drained last */
+        TaskPriorityMid = 1,
+        TaskPriorityHigh = 2  /* drained first */
+    };
+    u8 lock[0x18];                    /* +0x00 ut::Lock, held while a task runs */
+    void *heap;                       /* +0x18 MEM frame heap tasks allocate from */
+    Task *task;                       /* +0x1C task currently being executed */
+    ut::detail::LinkListImpl list[3]; /* +0x20 queued tasks, one list per priority */
     inline void *GetTaskListBase(TaskPriority priority) {
         return (u8 *)this + priority * 0xC;
     }
