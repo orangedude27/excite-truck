@@ -9361,6 +9361,22 @@ void fn_8007ABE8(void *arg0) {
         callback(arg0);
 }
 
+/* btm_cb's service-discovery session, the 0x1020 bytes at btm_cb + 0x658: a
+ * GKI timer entry first (the search timeout, taken off the BTU timer list when
+ * the session is reset), then the state and the two UUIDs a search asks for,
+ * the completion callback at +0x78, and the SDP database the records are
+ * collected into from +0x7C to the end of the block.  The byte at its very end
+ * says a search is running; the pointer to the database sits just past the
+ * block, at btm_cb + 0x1678. */
+#define btm_cb_disc        (lbl_803C0F78 + 0x658)  /* the session block */
+#define BTM_DISC_CB_SIZE   0x1020                  /* its size */
+#define btm_cb_disc_active (*(u16 *)(lbl_803C0F78 + 0x670)) /* session up with its database */
+#define btm_cb_disc_uuid   (*(tSDP_UUID *)(lbl_803C0F78 + 0x674)) /* service class to search for */
+#define btm_cb_disc_browse (*(u16 *)(lbl_803C0F78 + 0x678))      /* next in the list: 0x1002, the public browse root */
+#define btm_cb_disc_db     ((tSDP_DISCOVERY_DB *)(lbl_803C0F78 + 0x6D4)) /* the database itself */
+#define BTM_DISC_DB_SIZE   0xFA0                   /* its size */
+#define btm_cb_p_disc_db   (*(tSDP_DISCOVERY_DB **)(lbl_803C0F78 + 0x1678))
+
 void btm_discovery_db_init(void) {
     *(u8 **)(lbl_803C0F78 + 0x1678) = lbl_803C0F78 + 0x6D4;
     memset(lbl_803C0F78 + 0x658, 0, 0x1020);
