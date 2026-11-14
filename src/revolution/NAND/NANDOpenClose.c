@@ -52,6 +52,8 @@ s32 NANDOpen(const char* path, NANDFileInfo* info, u8 mode) {
     return nandConvertErrorCode(result);
 }
 
+/* Asynchronous NANDOpen(): hand the open off to ISFS and report the result,
+ * and the new descriptor in info->fd, through the caller's callback. */
 s32 NANDOpenAsync(const char* path, NANDFileInfo* info, u8 mode,
                   NANDAsyncCallback callback, NANDCommandBlock* block) {
     if (!nandIsInitialized()) {
