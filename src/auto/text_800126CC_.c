@@ -525,13 +525,14 @@ extern "C" void fn_8001335C(int a0, int arg1) {
 #pragma cplusplus reset
 
 #pragma cplusplus on
-extern "C" void fn_800135AC(char *arg0, void *arg1, char *arg2) {
-    struct Dummy {
+extern "C" void fn_800135AC(char *fieldName, void *fieldChecker, char *ownerName) {
+    /* Reports an error if the checker accepts fieldName: ownerName should not have that field. */
+    struct FieldCheckerVTable {
         virtual int f0();
-        virtual int f1(char *);
+        virtual int Matches(char *);
     };
-    if (((Dummy *)arg1)->f1(arg0) != 0)
-        fn_802E317C(lbl_802FCB50, arg2, arg0);
+    if (((FieldCheckerVTable *)fieldChecker)->Matches(fieldName) != 0)
+        fn_802E317C(lbl_802FCB50, ownerName, fieldName);
 }
 #pragma cplusplus reset
 extern char lbl_802FCB74[];
