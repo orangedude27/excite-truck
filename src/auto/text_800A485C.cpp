@@ -17979,7 +17979,7 @@ extern "C" void *fn_800C6914(void *obj, void *owner) {
 
 extern "C" void *fn_800D0F1C(void *, s32);
 extern "C" s32 fn_800D67B8(s32, s32);
-extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
+extern "C" RET_800C6A1C fn_800C6A1C(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     s32 i;
     u8 *q;
