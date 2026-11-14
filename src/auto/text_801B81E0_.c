@@ -212,6 +212,9 @@ extern "C" void fn_801B8318(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f59();
 }
 #pragma cplusplus on
+/* Shut down the current object: notify the system, invoke its vfunc (slot f0)
+ * with 1 if present, then clear the global pointer and reset the float array at
+ * lbl_80436D08 to lbl_80562744. */
 extern "C" void fn_801B832C(void) {
     extern void fn_801616FC(void);
     extern float lbl_80436D08[];
