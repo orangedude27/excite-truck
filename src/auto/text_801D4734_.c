@@ -924,6 +924,7 @@ check:
 extern "C" void fn_801D4FA0(void *);
 #pragma cplusplus reset
 int fn_801D57F0(void *alarm) {
+    /* Call fn_801D4FA0 for each entry in the global object list at lbl_804423A4. */
     int offset;
     int i;
     offset = 0;
