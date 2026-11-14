@@ -92,6 +92,7 @@ void fn_801F4DCC(void) {
 
 #pragma scheduling invalid_target
 void fn_801F4DD4(void *arg0, void *arg1) {
+    /* Register the current mesh table (fn_802AE414) into lbl_8055EC18 via fn_801F7280; log if missing. */
     void *temp_r3;
     temp_r3 = fn_802AE414();
     if (temp_r3 == 0) {
