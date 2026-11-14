@@ -276,6 +276,7 @@ void fn_801EAA94(s32 index, s32 carType) {
     }
     entry->active = active;
 }
+
 void fn_801EAB10(s32 arg0, s32 arg1) {
     *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78 + arg0 * 0xBC) + 8) = arg1;
 }
