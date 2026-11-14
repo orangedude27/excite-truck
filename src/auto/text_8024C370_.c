@@ -203,13 +203,14 @@ void fn_8024C628(void) {
     }
 }
 #pragma scheduling on
+/* Returns 1 if no slot is active or the user confirms profile creation (Profile:TITLE with Profile:CONFIRM_CREATE), 0 otherwise. */
 int fn_8024C6F4(void) {
-    int first;
-    int result = 0;
-    if (((int (*)())fn_8000DBAC)() == 0 || ((int (*)(int, int, int))fn_80215214)(fn_80131234(lbl_80343F68), (first = fn_80131234(lbl_80343F78)), 0) != 0) {
-        result = 1;
+    int confirmId;
+    int needsCreate = 0;
+    if (((int (*)())fn_8000DBAC)() == 0 || ((int (*)(int, int, int))fn_80215214)(fn_80131234(lbl_80343F68), (confirmId = fn_80131234(lbl_80343F78)), 0) != 0) {
+        needsCreate = 1;
     }
-    return result;
+    return needsCreate;
 }
 
 extern int fn_802146BC(int *, int, int, int);
@@ -241,8 +242,8 @@ unsigned int fn_8024C768(void) {
     char *temp_r6;
     char *temp_r7;
     char *temp_r8;
-    register char *base;
-    register int *table;
+    char *base;
+    int *table;
 
     base = lbl_804989E8;
     table = (int *)base;
@@ -769,14 +770,14 @@ extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 int fn_8024D394(void *arg0, int arg1) {
     char *base = lbl_80343F00;
-
     switch (arg1) {
     case 0x113: {
         unsigned char *toggle = (unsigned char *)arg0 + 0x6C;
         char *text;
         char *dst;
         int count;
-        *toggle = (unsigned char)((unsigned int)__cntlzw((unsigned int)*toggle) >> 5);
+        int tmp = (unsigned)__cntlzw(*toggle) >> 5;
+        *toggle = tmp;
         text = base + 0x38;
         if (*toggle != 0)
             text = base + 0x20;
