@@ -5981,9 +5981,8 @@ extern "C" void *fn_80223208(void *self, unsigned int deletingFlag) {
     #undef HeapFree
     return self;
 }
+
 #pragma pop
-#pragma push
-#pragma processor 750
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 
 extern "C" s32 fn_802236C8(void *, s32);
