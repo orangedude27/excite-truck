@@ -31,12 +31,26 @@ void fn_802AE328(void) {
     lbl_8055F958 = 1;
 }
 
-#pragma scheduling reset
+#pragma scheduling on
 void fn_802AE374(void) {
     lbl_8055F958 = 0;
     lbl_8055F959 = 1;
     lbl_804BD8CC[1] = 0;
 }
+void fn_802AE394(void) {
+    int *global = (int *)&lbl_804BD8CC;
+    int offset = 0;
+    int i = 0;
+    while (i < global[1]) {
+        fn_80131818((void *)(*(int *)((char *)global[0] + offset)));
+        offset += 4;
+        i += 1;
+    }
+    global[1] = 0;
+    lbl_8055F958 = 0;
+    lbl_8055F959 = 0;
+}
+
 int fn_802AE414(void *arg0) {
     extern u8 lbl_8055F958;
     extern int lbl_804BD8CC[3];
@@ -69,14 +83,21 @@ extern u8 lbl_8055F958;
 extern u8 lbl_8055F959;
 extern void fn_802AE328(void);
 #pragma scheduling invalid_target
-s32 fn_802AE4C8(s32 arg0) {
-    if ((s32)lbl_8055F958 == 0)
-        fn_802AE328();
-    if (arg0 >= 0) {
-        s32 count = lbl_804BD8CC[1];
-        if (arg0 < count)
-            return ((s32 *)lbl_804BD8CC[0])[arg0];
+/* Return the entry at the given index from the global object list, initializing the list on first use. */
+s32 fn_802AE4C8(s32 index) {
+#define objectListInitialized lbl_8055F958
+#define objectList lbl_804BD8CC
+#define InitObjectList fn_802AE328
+    if ((s32)objectListInitialized == 0)
+        InitObjectList();
+    if (index >= 0) {
+        s32 count = objectList[1];
+        if (index < count)
+            return ((s32 *)objectList[0])[index];
     }
     return 0;
+#undef objectListInitialized
+#undef objectList
+#undef InitObjectList
 }
 #pragma scheduling on
