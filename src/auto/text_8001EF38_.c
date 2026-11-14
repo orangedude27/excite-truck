@@ -274,12 +274,13 @@ s32 fn_8001F388(s32 arg) {
     return ((s32*)__AXFXGetSrcCoef(arg))[2];
 }
 
-s32 fn_8001F3AC(s32 a, s32 b) {
-    s32 *q = *(s32 **)((s32 *)__AXFXGetSrcCoef(a) + 3);
-    if (q == 0) goto null_result;
-    if (b <= 0) goto bad_index;
-    if (b > q[1]) goto bad_index;
-    return ((s32 *)(q[0] + ((b - 1) * 8)))[1];
+/* Returns the second field of the (index - 1)'th 8-byte entry in the source-coefficient table for the given coef set, or 0 if missing/out of range. */
+s32 fn_8001F3AC(s32 coefSet, s32 index) {
+    s32 *coefData = *(s32 **)((s32 *)__AXFXGetSrcCoef(coefSet) + 3);
+    if (coefData == 0) goto null_result;
+    if (index <= 0) goto bad_index;
+    if (index > coefData[1]) goto bad_index;
+    return ((s32 *)(coefData[0] + ((index - 1) * 8)))[1];
 bad_index:
     return 0;
 null_result:
