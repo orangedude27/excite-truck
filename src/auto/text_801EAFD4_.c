@@ -54,14 +54,12 @@ s32 fn_801EAFD4(void *arg0) {
 }
 #pragma dont_inline off
 
-#pragma push
-#pragma scheduling invalid_target
-s32 fn_801EB000(s32 *arg0, void *arg1) {
+#pragma cplusplus on
+void fn_801EB000(s32 *arg0, void *arg1) {
     s32 *item;
     s32 *node;
     s32 *child;
     s32 i;
-
     node = arg0;
     while (node != 0) {
         if (node[0] & 0x100) {
@@ -91,8 +89,7 @@ s32 fn_801EB000(s32 *arg0, void *arg1) {
         node = (s32 *)node[1];
     }
 }
-#pragma scheduling on
-#pragma pop
+#pragma cplusplus reset
 s32 fn_801EB0E8(void) { return 0; }
 
 #pragma dont_inline on
@@ -600,6 +597,7 @@ extern void fn_802AE9D0(void);
 extern void fn_802AEA44(void);
 extern void fn_802C6CF8(s32);
 extern void fn_802CCE24(s32);
+/* Shut down the EB context: stop its sound handles, tear down and free the active object if present, otherwise run fallback cleanup. */
 void fn_801EBBB4(void) {
     fn_802C6CF8(lbl_8055AFBC);
     lbl_8055AFBC = -1;
