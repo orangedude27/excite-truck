@@ -1820,14 +1820,17 @@ void fn_801C81B8(void) {
     if (lbl_804384A8[0] == 0) strcpy(lbl_804384A8, lbl_8055A964);
 }
 
+/* Menu item "EXCEPT?" (id 0x1A): copy the name list typed into the console input
+ * line into sInterludeWhoNotList, defaulting to "nobody" when left empty, clear
+ * the input line, and return the menu to its idle state. */
 void fn_801C821C(void) {
-    strcpy(lbl_804385A8, lbl_804380F0);
-    strcpy(lbl_804380F0, lbl_8055AA44);
-    if (lbl_804385A8[0] == 0)
-        strcpy(lbl_804385A8, lbl_8055A95C);
-    lbl_8055E83A = 0;
-    lbl_8055E868 = fn_801C6CB0;
-    lbl_8055E83C = 0;
+    strcpy(sInterludeWhoNotList, sInputLine);
+    strcpy(sInputLine, STR_EMPTY);
+    if (sInterludeWhoNotList[0] == 0)
+        strcpy(sInterludeWhoNotList, STR_NOBODY);
+    sTextFieldFlag = 0;
+    sMenuAction = menu_action_idle;
+    sInterludeMenuFlag = 0;
 }
 #pragma push
 #pragma scheduling on
