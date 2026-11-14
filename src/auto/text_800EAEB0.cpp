@@ -2525,10 +2525,11 @@ void nw4hbm::snd::detail::SeqPlayer::SetVolume(float volume) {
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* self, float volume) {
+    /* Sets the sequence player's pitch (offset 0x34), asserting it is non-negative. */
     if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x164, (const char*)lbl_80323C14);
-    unsigned int level = OSDisableInterrupts();
+    unsigned int interruptLevel = OSDisableInterrupts();
     *(float*)((unsigned char*)self + 0x34) = volume;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" void fn_800EF878(void* arg0, f32 farg0) {
