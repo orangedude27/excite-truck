@@ -1037,11 +1037,12 @@ void fn_802C6FB4(void *arg0) {
 #define mrModelLoadResource fn_802C6B44
 #define mrModelCreateInstance fn_802C6DC4
 
-void fn_802C6FC0(void *arg0, int arg1, int arg2) {
-    if (fn_802C90E0() == 0) {
-        ((int (*)(const char *, ...))fn_802E30C8)(lbl_8034B3DC, arg0);
+/* mrModelLoad: load a MODL resource by path (warning if called during an active scene render pass) and create its model instance. */
+void fn_802C6FC0(void *modelPath, int variantIdx, int flags) {
+    if (DrawList_isOutsideScene() == 0) {
+        Abend_warn(sModelLoadInSceneFmt, modelPath);
     }
-    fn_802C6DC4((int)arg0, fn_802C6B44((int)arg0), arg1, arg2);
+    mrModelCreateInstance((int)modelPath, mrModelLoadResource((int)modelPath), variantIdx, flags);
 }
 
 void fn_802C703C(int arg0) {
