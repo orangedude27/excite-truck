@@ -17989,55 +17989,77 @@ class HomeButtonResource1F0 : public Pad1F0_800C6A1C { public: virtual void dele
 /* The sound control at HomeButton+0x1F8; its deleting destructor is the sixth
    declared virtual, vtable +0x1c. */
 class HomeButtonSoundControl { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void deleteThis(s32); };
-extern "C" void *fn_800C6A1C(void *arg0, s32 arg1) {
-    u8 *self = (u8 *)arg0;
-    s32 i;
-    u8 *q;
-    if (arg0 != 0) {
-        ((Freeable800C6A1C *)*(void **)(self + 0x1F4))->free(-1);
+/*
+ * Deleting destructor of the home-button overlay controller: the 0x758-byte
+ * singleton in lbl_8055DD98 that fn_800C64F4 builds.  Every resource it owns is
+ * destroyed through its own deleting destructor and then handed back to the
+ * home-button heap lbl_80559708:
+ *
+ *   +0x1F4, +0x1E0   single resources (+0x1E0 is the pane accessor)
+ *   +0x1E4[4]        the four group accessors, only when the init block pointed
+ *                    to by +0x4 has no layout flag (its +0x20 is 0)
+ *   +0x268[]         the panes, *(s32 *)(self + 0xC) of them
+ *   +0x3C0[0xF]      and two fixed-size arrays of resources,
+ *   +0x298[0x4A]     the second the larger of the two
+ *   +0x1FC           a plain buffer, freed without a destructor
+ *   +0x1F8           the sound control updateTrigPane() plays through
+ *   +0x254[4]        resources released by fn_800D0F1C
+ *   +0x264           a resource whose vtable pointer sits at +0x1F0; cleared after
+ *   +0xA4, +0xA8     two more plain buffers
+ *   +0x200           a sub-object embedded in this one, destroyed by fn_800D67B8
+ *
+ * `flag` is the C++ deleting-destructor flag: with flag > 0 the controller
+ * itself goes through operator delete (fn_80128668) at the end.
+ */
+extern "C" void *fn_800C6A1C(void *homeButton, s32 flag) {
+    u8 *self = (u8 *)homeButton;
+    s32 index;
+    u8 *slot;
+    if (homeButton != 0) {
+        ((HomeButtonResource *)*(void **)(self + 0x1F4))->deleteThis(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1F4));
-        ((Freeable800C6A1C *)*(void **)(self + 0x1E0))->free(-1);
+        ((HomeButtonResource *)*(void **)(self + 0x1E0))->deleteThis(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1E0));
         if (*(s32 *)((u8 *)*(void **)(self + 4) + 0x20) == 0) {
-            q = self;
-            for (i = 0; i < 4; q += 4, i++) {
-                ((Freeable800C6A1C *)*(void **)(q + 0x1E4))->free(-1);
-                MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x1E4));
+            slot = self;
+            for (index = 0; index < 4; slot += 4, index++) {
+                ((HomeButtonResource *)*(void **)(slot + 0x1E4))->deleteThis(-1);
+                MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x1E4));
             }
         }
-        q = self;
-        for (i = 0; i < *(s32 *)(self + 0xC); q += 4, i++) {
-            ((Freeable800C6A1C *)*(void **)(q + 0x268))->free(-1);
-            MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x268));
+        slot = self;
+        for (index = 0; index < *(s32 *)(self + 0xC); slot += 4, index++) {
+            ((HomeButtonResource *)*(void **)(slot + 0x268))->deleteThis(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x268));
         }
-        q = self;
-        for (i = 0; i < 0xF; i++, q += 4) {
-            ((Freeable800C6A1C *)*(void **)(q + 0x3C0))->free(-1);
-            MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x3C0));
+        slot = self;
+        for (index = 0; index < 0xF; index++, slot += 4) {
+            ((HomeButtonResource *)*(void **)(slot + 0x3C0))->deleteThis(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x3C0));
         }
-        q = self;
-        for (i = 0; i < 0x4A; i++, q += 4) {
-            ((Freeable800C6A1C *)*(void **)(q + 0x298))->free(-1);
-            MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x298));
+        slot = self;
+        for (index = 0; index < 0x4A; index++, slot += 4) {
+            ((HomeButtonResource *)*(void **)(slot + 0x298))->deleteThis(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x298));
         }
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1FC));
-        ((Freeable28_800C6A1C *)*(void **)(self + 0x1F8))->free(-1);
+        ((HomeButtonSoundControl *)*(void **)(self + 0x1F8))->deleteThis(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1F8));
-        q = self;
-        for (i = 0; i < 4; i++, q += 4) {
-            fn_800D0F1C(*(void **)(q + 0x254), -1);
-            MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x254));
+        slot = self;
+        for (index = 0; index < 4; index++, slot += 4) {
+            fn_800D0F1C(*(void **)(slot + 0x254), -1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x254));
         }
-        ((Freeable1F0_800C6A1C *)*(void **)(self + 0x264))->free(-1);
+        ((HomeButtonResource1F0 *)*(void **)(self + 0x264))->deleteThis(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x264));
         *(void **)(self + 0x264) = 0;
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0xA4));
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0xA8));
         fn_800D67B8((s32)(self + 0x200), -1);
-        if (arg1 > 0)
-            ((void (*)(void *))fn_80128668)(arg0);
+        if (flag > 0)
+            ((void (*)(void *))fn_80128668)(homeButton);
     }
-    return arg0;
+    return homeButton;
 }
 
 extern "C" void* __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_, s32 flag) {
