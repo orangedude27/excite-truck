@@ -76,37 +76,42 @@ extern void fn_802E3804(s32, s32, s32);
 extern void fn_802E3734(s32 *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
+/* Returns the per-language homeBtn_*.arc filename from the homebutton2 string table for the language index at lbl_80558860+0x1C, resetting out-of-range values to 0 (Japanese). */
 void *fn_802EC598(void) {
-    s32 index = *(s32 *)(lbl_80558860 + 0x1c);
-    char *base = lbl_8034E9E0;
-    switch (index) {
+#define gHomeBtn2Resources lbl_80558860
+#define gHomeBtn2Strings lbl_8034E9E0
+    s32 language = *(s32 *)(gHomeBtn2Resources + 0x1c);
+    char *strBase = gHomeBtn2Strings;
+    switch (language) {
     default:
-        *(s32 *)(lbl_80558860 + 0x1c) = 0;
-    case 0: return base + 0x34;
-    case 1: return base + 0x40;
-    case 2: return base + 0x50;
-    case 3: return base + 0x60;
-    case 4: return base + 0x70;
-    case 5: return base + 0x80;
-    case 6: return base + 0x90;
+        *(s32 *)(gHomeBtn2Resources + 0x1c) = 0;
+    case 0: return strBase + 0x34; /* "homeBtn.arc" */
+    case 1: return strBase + 0x40; /* "homeBtn_ENG.arc" */
+    case 2: return strBase + 0x50; /* "homeBtn_GER.arc" */
+    case 3: return strBase + 0x60; /* "homeBtn_FRA.arc" */
+    case 4: return strBase + 0x70; /* "homeBtn_SPA.arc" */
+    case 5: return strBase + 0x80; /* "homeBtn_ITA.arc" */
+    case 6: return strBase + 0x90; /* "homeBtn_NED.arc" */
     }
+#undef gHomeBtn2Strings
+#undef gHomeBtn2Resources
 }
 #pragma dont_inline off
 
 #pragma scheduling invalid_target
 void fn_802EC614(void) {
     // Fix note: initialize the controller flags and configuration, then allocate and register the menu resources in target order.
-    char *info;
-    register s32 zero = 0;
-    register char *base = lbl_8034E9E0;
+    u8 zero = 0;
+    char *base = lbl_8034E9E0;
     s32 *config;
+    char *info;
     void *buffer;
 
     lbl_805600E9 = zero;
     lbl_805600EA = zero;
     OSInitFastCast();
 
-    config = (s32 *)((char *)lbl_80558898 + (base - base));
+    config = lbl_80558898;
     config[3] = zero;
     ((f32 *)config)[1] = lbl_805651E0;
     ((f32 *)config)[2] = lbl_805651E0;
@@ -119,7 +124,7 @@ void fn_802EC614(void) {
     ((f32 *)config)[13] = lbl_805651E0;
     ((f32 *)config)[14] = lbl_805651E0;
     config[15] = zero;
-    fn_801282EC((s32)((base + 0x20) - base));
+    fn_801282EC(0x20);
 
     info = lbl_80558860;
     buffer = (void *)fn_8012850C(0x80000, (void *)&lbl_8055D2F0);
