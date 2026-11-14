@@ -357,6 +357,9 @@ void TRKReleaseBuffer(void *buffer) {
 extern void fn_80033148(void *);
 #pragma push
 #pragma scheduling on
+/* Really AX's AXFreeVoice (AXAlloc.c): takes a voice off its priority stack,
+ * asks for a depop if it was still playing, resets its parameter block and
+ * pushes it onto the free stack (priority 0). */
 void TRKGetFreeBuffer(void *voice) {
 #define __AXRemoveFromStack TRKReleaseBuffer
 #define __AXSetPBDefault    fn_80033148
