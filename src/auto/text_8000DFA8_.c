@@ -972,30 +972,31 @@ void fn_80010B7C(void) {
     fn_802C8D74();
 }
 
-void fn_80010B80(s32 arg0, float arg1, float arg2, float arg3, float arg4) {
-    volatile s32 spill_arg0_a;
-    volatile s32 spill_arg0_b;
-    volatile float spill_arg4;
-    volatile float spill_arg3;
-    volatile float spill_arg2;
-    volatile float spill_arg1;
+/* Buffer a colored quad entry (left, top, width, height, color) if the queue has space. */
+void fn_80010B80(s32 color, float left, float top, float width, float height) {
+    volatile s32 spill_color_a;
+    volatile s32 spill_color_b;
+    volatile float spill_height;
+    volatile float spill_width;
+    volatile float spill_top;
+    volatile float spill_left;
     register s32 index;
     index = lbl_8055D4A8;
-    spill_arg1 = arg1;
-    spill_arg2 = arg2;
-    spill_arg3 = arg3;
-    spill_arg4 = arg4;
-    spill_arg0_b = arg0;
-    spill_arg0_a = arg0;
+    spill_left = left;
+    spill_top = top;
+    spill_width = width;
+    spill_height = height;
+    spill_color_b = color;
+    spill_color_a = color;
     if (index < 0x100) {
         Unk0x18 *entry = &lbl_8034F6B0[index];
-        entry->unk_0x00 = (float)(double)arg1;
-        entry->unk_0x04 = (float)(double)arg2;
-        entry->unk_0x08 = (float)(double)arg3;
-        entry->unk_0x0C = (float)(double)arg4;
-        entry->unk_0x10 = arg0;
+        entry->unk_0x00 = (float)(double)left;
+        entry->unk_0x04 = (float)(double)top;
+        entry->unk_0x08 = (float)(double)width;
+        entry->unk_0x0C = (float)(double)height;
+        entry->unk_0x10 = color;
         lbl_8055D4A8 = index + 1;
-        entry->unk_0x14 = arg0;
+        entry->unk_0x14 = color;
     }
 }
 
