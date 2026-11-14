@@ -1918,10 +1918,11 @@ extern "C" void fn_8012D40C(s32 arg0) {
 }
 #pragma scheduling on
 #pragma dont_inline reset
-extern "C" s32 fn_8012D838(s32 arg0) {
+extern "C" s32 fn_8012D838(s32 obj) {
+    /* Refresh state if needed, then map the object's state (+0xB8) to a simple status code. */
     s32 state;
-    fn_8012D40C(arg0);
-    state = *(s32 *)((u8 *)arg0 + 0xB8);
+    fn_8012D40C(obj);
+    state = *(s32 *)((u8 *)obj + 0xB8);
     switch (state) {
     case 1:
         return 0;
