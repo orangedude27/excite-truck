@@ -161,12 +161,13 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
 
 #pragma pop
 void fn_801E2F00(void) {
-    void *p = fn_801284F8(0x20, lbl_803398D8);
-    if (p != 0) {
-        ((void (*)(void *, void *, s32, s32))fn_8012A13C)(p, lbl_803398D8, 0x128, 0x68);
-        *(void **)p = lbl_80339904;
+    /* Allocate and initialize the global "Joint Pool" object and store it in lbl_8055EA50. */
+    void *jointPool = fn_801284F8(0x20, lbl_803398D8);
+    if (jointPool != 0) {
+        ((void (*)(void *, void *, s32, s32))fn_8012A13C)(jointPool, lbl_803398D8, 0x128, 0x68);
+        *(void **)jointPool = lbl_80339904;
     }
-    lbl_8055EA50 = p;
+    lbl_8055EA50 = jointPool;
 }
 
 #pragma push
