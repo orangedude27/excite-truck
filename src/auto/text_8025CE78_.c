@@ -101,7 +101,7 @@ extern char *fn_80008188(void *);
 extern char *fn_801345D8(char *, int, const char *, ...);
 extern int stricmp(const char *, const char *);
 static inline int FindRecord8025(const char *name, char *table) {
-    int index, offset;
+    int offset, index;
     for (index = 0, offset = 0; index < *(int *)(table + 4); offset += 0x38, index++) {
         if (stricmp(*(char **)table + offset, name) == 0) return index;
     }
@@ -173,8 +173,7 @@ copy2:      *dst++=*src++; } while(dst[-1]);
         cat=record.category;
         obj[0x438]=*(char *)&record.flags;
         details=(char *)fn_80016510(record.id);
-        table=*(char **)(obj+0x424);
-        index=FindRecord8025(details+0x2c,table);
+        index=FindRecord8025(details+0x2c,*(char **)(obj+0x424));
         *(int *)(obj+0x428)=index;
         *(int *)(obj+0x430)=*(int *)(details+cat*4+0x64);
         obj[0x42c]=1;
