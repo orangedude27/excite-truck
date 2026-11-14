@@ -1080,6 +1080,7 @@ extern "C" s32 fn_80219958(void *arg0, s32 arg1) {
 }
 #pragma dont_inline reset
 extern "C" void *fn_8021995C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    /* Initialize a UI object: set up base layout, store arg5 at 0x254, install vtable lbl_8033F4B8, and optionally attach data when arg5 is nonzero. */
     fn_80222340(arg0, arg1, arg2, arg3, 0, 0, arg4);
     *(s32 *)((u8 *)arg0 + 0x254) = arg5;
     *(void **)arg0 = lbl_8033F4B8;
