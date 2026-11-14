@@ -290,23 +290,41 @@ extern "C" void *fn_802066C8(void *object, u32 shouldFree) {
 }
 #pragma dont_inline reset
 
-extern "C" void fn_80206750(void *arg0, int arg1, int arg2) {
-    int count = (int)(long)lbl_8055ED88;
-    int found = -1;
+/* Sound3D::setAuxGroup -- set the effect-send (aux) flags of a Sound3D from the
+ * scene object it belongs to.  The scene setup (fn_801E78D8) fills the four
+ * group slots with the index of each group's scene object, so the slot holding
+ * `soundIndex` -- the index the sound was made for, which fn_80207428 keeps at
+ * +0x10 -- is the group the sound plays in, and that slot's bit becomes its aux
+ * flags.  A sound in no group, or one with `enable` 0, gets its flags cleared.
+ * Either way the dirty flag goes up, so the next update (fn_80206B14) hands the
+ * flags to the VoiceSnd, which passes them to the mixer.
+ */
+extern "C" void fn_80206750(void *sound, int soundIndex, int enable) {
+    /* The two Sound3D fields written here; the class is laid out below. */
+    #define auxFlags (*(int *)((char *)sound + 0x14))
+    #define auxFlagsDirty (*(unsigned char *)((char *)sound + 0x4F))
+    #define soundGroupTable lbl_804891E8
+    #define soundGroupCount lbl_8055ED88
+    int count = (int)(long)soundGroupCount;
+    int group = -1;
     int i = 0;
     for (; i < count; i++) {
-        if (arg1 == lbl_804891E8[i]) {
-            found = i;
+        if (soundIndex == soundGroupTable[i]) {
+            group = i;
             break;
         }
     }
-    if (found >= 0 && arg2) {
-        *(unsigned char *)((char *)arg0 + 0x4F) = 1;
-        *(int *)((char *)arg0 + 0x14) = 1 << found;
+    if (group >= 0 && enable) {
+        auxFlagsDirty = 1;
+        auxFlags = 1 << group;
     } else {
-        *(int *)((char *)arg0 + 0x14) = 0;
-        *(unsigned char *)((char *)arg0 + 0x4F) = 1;
+        auxFlags = 0;
+        auxFlagsDirty = 1;
     }
+    #undef auxFlags
+    #undef auxFlagsDirty
+    #undef soundGroupTable
+    #undef soundGroupCount
 }
 
 #pragma scheduling invalid_target
