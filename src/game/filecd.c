@@ -43,6 +43,26 @@ public:
 };
 #pragma cplusplus reset
 #pragma pop
+// The DVD file system itself: the one 8-byte "fds" object this TU hands out and
+// file.c keeps as its disc file layer.  It starts the Nintendo DVD services and
+// hands out FileDisk nodes; anything that would write to the disc is refused.
+// Same ABI note as FileDisk: the first declared method is slot 0x8.
+#pragma push
+#pragma cplusplus on
+class FileCd {
+public:
+    virtual void release(int destroyFlag);              // 0x08 fn_802E4030
+    virtual int create(void *owner, char *path);        // 0x0C fn_802E4070: "create not supported"
+    virtual void *open(void *owner, char *path);        // 0x10 fn_802E40A0
+    virtual int openWritable(void *owner, char *path);  // 0x14 fn_802E4250: "open writable not supported"
+    virtual int openAtEnd(void *owner, char *path);     // 0x18 fn_802E4280: opens, then seeks to the end
+    virtual void close(void *file);                     // 0x1C fn_802E4408: releases the node
+    virtual void report(void);                          // 0x20 fn_802E442C: OSReport("%s") with no argument
+    virtual int flush(void);                            // 0x24 fn_802E33D0: nothing to flush on a disc
+    unsigned char started; // 0x04 set once DVDInit() has started the DVD services
+};
+#pragma cplusplus reset
+#pragma pop
 typedef struct VObj { struct VObjVt { int pad[8]; void (*fn)(struct VObj *, int); } *vt; char pad[0x84]; int off; } VObj;
 typedef struct VtObj88 { struct VtObj88Vt { int pad[8]; void (*fn)(struct VtObj88 *, int); } *vt; char pad[0x84]; int off; } VtObj88;
 extern unsigned int lbl_8055FF38;
@@ -77,7 +97,7 @@ void fn_802E3EB8(void) {}
 #pragma scheduling invalid_target
 void *fn_802E3EBC(void) {
     unsigned char *p;
-    register int i;
+    int i;
     p = lbl_804FBAA0;
     for (i = 0; i < 0x10; i++) {
         if (*p == 0) {
