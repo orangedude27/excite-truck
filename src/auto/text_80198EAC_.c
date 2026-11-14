@@ -19,6 +19,7 @@ extern int lbl_8055E53C;
 
 #pragma scheduling invalid_target
 void fn_80198EAC(void) {
+    /* Initializes global sound-table/category state and registers the CategoryMgr global object for destruction at shutdown. */
     fn_8000D838(&lbl_8055E530);
     lbl_8055E538 = 0xFFFF0000;
     lbl_8055E53C = 0xFFFF0000;
