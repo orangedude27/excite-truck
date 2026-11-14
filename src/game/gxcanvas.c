@@ -25,7 +25,10 @@ void fn_802C5024(s32, s32, s32, s32);
 
 extern void fn_8012C4D8(void);
 
-extern s32 lbl_8055FC00;
+extern s32 lbl_8055FC00; /* the canvas the gxCanvas* routines below draw on:
+                          * {s8 format; u8 flags; void *pixels; s32 width, height,
+                          *  rowBytes; s32 minX, minY, maxX, maxY;} — format 3 is
+                          * 16-bit, 5 and 6 are 4-byte pixels (see fn_802C2CE8) */
 extern void fn_802C3754(s32, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_802DB2C8(void);
 extern void fn_802C3478(s32, s32, s32, s32, u32);
@@ -48,11 +51,10 @@ void fn_802C2CDC(void *arg0, s32 arg1, s32 arg2) {
 }
 
 void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
-    int prod = arg1 * arg2;
-    int c82 = 0x82;
+    u32 prod = (u32)arg1 * (u32)arg2;
     *(s8 *)arg0 = arg3;
-    ((u8 *)arg0)[1] = c82;
-    *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, prod * ((arg3 == 5) ? 4 : 2));
+    ((u8 *)arg0)[1] = 0x82;
+    *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, (s32)(prod * (u32)((arg3 == 5) ? 4 : 2)));
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 0xC) = arg2;
     *(s32 *)((u8 *)arg0 + 0x10) = arg1 * ((arg3 == 5) ? 4 : 2);
@@ -480,15 +482,15 @@ extern const char lbl_8034B0B8[];
 #pragma use_lmw_stmw off
 #pragma processor 750
 void fn_802C3918(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    u16 *var_r30, *var_r30_2, *var_r30_3, *var_r30_4;
+    u16 *var_r3, *var_r3_2, *var_r3_3, *var_r3_4;
     s32 sp1C, sp18, sp14, sp10, spC, sp8;
     s32 temp_r0, temp_r29, temp_r31;
     s32 temp_r4, temp_r5, temp_r6, temp_r0_4, temp_r4_4;
     s32 var_r4, var_r4_2, var_r7;
-    u16 *var_r30, *var_r30_2, *var_r30_3, *var_r30_4;
-    u16 *var_r3, *var_r3_2, *var_r3_3, *var_r3_4;
-    u16 temp_r0_2, temp_r7, temp_r7_2, temp_r8;
+    register u16 temp_r0_2;
+    u16 temp_r7, temp_r7_2, temp_r8;
     s8 temp_r4_2, temp_r5_2;
-
     sp8 = arg1;
     spC = arg2;
     sp10 = arg6;
@@ -522,7 +524,6 @@ loop_copy:
             temp_r0 = sp18 - 1;
             sp18 = temp_r0;
         } while (temp_r0 > 0);
-
         temp_r5_2 = *(s8 *)arg5;
         temp_r4_2 = *(s8 *)arg0;
         if (temp_r4_2 != temp_r5_2) {
@@ -544,8 +545,8 @@ loop_10:
                     temp_r7 = *var_r30_2;
                     var_r4_2--;
                     var_r30_2++;
-                    temp_r0_2 = (temp_r7 >> 1) & 0x7FE0;
-                    temp_r0_2 |= temp_r7 & 0x1F;
+                    temp_r0_2 = (u16)__rlwinm(temp_r7, 31, 17, 26);
+                    temp_r0_2 = (u16)__rlwimi(temp_r0_2, temp_r7, 0, 27, 31);
                     *var_r3_2 = temp_r0_2;
                     var_r3_2++;
                     if (var_r4_2 > 0)
@@ -575,11 +576,12 @@ loop_17:
                     temp_r8 = *var_r30_3;
                     var_r7--;
                     var_r30_3++;
-                    temp_r0_4 = ((s32)temp_r8 * 2) & 0x400;
-                    temp_r4_4 = ((s32)temp_r8 * 2) & 0xFFC0;
-                    temp_r4_4 |= temp_r8 & 0x1F;
-                    temp_r0_4 = (temp_r4_4 | (temp_r0_4 >> 5));
-                    *var_r3_3 = temp_r0_4;
+                    temp_r0_4 = __rlwinm(temp_r8, 1, 21, 21);
+                    temp_r4_4 = __rlwinm(temp_r8, 1, 16, 25);
+                    temp_r4_4 = __rlwimi(temp_r4_4, temp_r8, 0, 27, 31);
+                    temp_r0_4 = temp_r0_4 >> 5;
+                    temp_r0_4 = temp_r4_4 | temp_r0_4;
+                    *var_r3_3 = (u16)temp_r0_4;
                     var_r3_3++;
                     if (var_r7 > 0)
                         goto loop_17;
@@ -608,9 +610,9 @@ loop_24:
                     temp_r7_2 = *var_r30_4;
                     var_r4--;
                     var_r30_4++;
-                    temp_r0_2 = ((temp_r7_2 & 0xF) << 1);
-                    temp_r0_2 |= (temp_r7_2 << 3) & 0x780;
-                    temp_r0_2 |= (temp_r7_2 << 4) & 0xF000;
+                    temp_r0_2 = (u16)__rlwinm(temp_r7_2, 1, 27, 30);
+                    temp_r0_2 = (u16)__rlwimi(temp_r0_2, temp_r7_2, 3, 21, 24);
+                    temp_r0_2 = (u16)__rlwimi(temp_r0_2, temp_r7_2, 4, 16, 19);
                     *var_r3_4 = temp_r0_2;
                     var_r3_4++;
                     if (var_r4 > 0)
@@ -678,7 +680,7 @@ void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     s32 sp1C, sp18, sp14, sp10, spC, sp8;
     u16 *src;
     s32 *dst;
-    s32 srcRemain, dstRemain, dstSkip, srcSkip, i;
+    s32 i, srcRemain, dstRemain, srcSkip, dstSkip;
     u8 format;
     sp8 = arg1;
     spC = arg2;
