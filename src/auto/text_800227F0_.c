@@ -9,6 +9,7 @@ typedef struct FileNode {
 extern FileNode __files;
 extern int fflush(FileNode*);
 
+/* Flush all open file streams; returns -1 if any flush fails. */
 int __flush_all(void) {
     int result = 0;
     FileNode* file = &__files;
