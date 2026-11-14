@@ -349,9 +349,9 @@ void fn_80193604(void *arg0, void *arg1, void *unused, int arg2, void *arg3) {
         x = ((unsigned int *)arg1)[0];
         y = ((unsigned int *)arg1)[1];
         z = ((unsigned int *)arg1)[2];
-        ((unsigned int *)&normal)[0] = x;
-        ((unsigned int *)&normal)[1] = y;
         ((unsigned int *)&normal)[2] = z;
+        ((unsigned int *)&normal)[1] = y;
+        ((unsigned int *)&normal)[0] = x;
         value = PSVECMag(&normal);
         scale = lbl_80562148 > value ? lbl_80562148 : value;
         scale = lbl_80562140 / scale;
@@ -764,13 +764,10 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADAC(void *, float);
 #pragma scheduling invalid_target
 void fn_80194170(void *arg0, float arg1) {
-    double value;
-    float f;
-    value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
+    double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
     value = value > lbl_80562144 ? value : lbl_80562144;
-    f = (float)value;
-    *(float *)((char *)arg0 + 0x240) = value;
-    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), f);
+    *(float *)((char *)arg0 + 0x240) = (float)value;
+    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
 }
 #pragma scheduling invalid_target
 void fn_801941A8(void *arg0, float arg1) {
@@ -822,11 +819,9 @@ void fn_801941A8(void *arg0, float arg1) {
 #pragma scheduling on
 void fn_801942B8(void *arg0, float arg1) {
     double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
-    float f;
     value = value > lbl_80562144 ? value : lbl_80562144;
-    f = value;
-    *(float *)((char *)arg0 + 0x244) = value;
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), f);
+    *(float *)((char *)arg0 + 0x244) = (float)value;
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), (float)value);
 }
 
 void fn_801942F0(void *arg0, int arg1) {
@@ -894,40 +889,43 @@ extern unsigned int lbl_8055E540;
 extern float lbl_805621A4;
 extern char lbl_803332CC[];
 #pragma dont_inline on
-#pragma push
 #pragma cplusplus on
-extern "C" void fn_801944C0(void *arg0) {
-    class Obj {
+/* Updates active state (+0x2A6) from the sub-object at +0x288: when active, latches
+   the start timestamp (+0x1EC) from current time (+0x26C), runs the mode-dependent
+   action (lbl_8055E540: reset vehicle at +0x294, trigger disabled state, or set
+   flag +0x2A5), and notifies the controller at +0x28C; when inactive, resets +0x1EC to -1.0f. */
+extern "C" void fn_801944C0(void *driver) {
+    class Controller {
       public:
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-        virtual void d8(); virtual void d9(); virtual void v12(int);
+        virtual void d8(); virtual void d9(); virtual void notifyState(int);
     };
-    void *obj;
-    obj = *(void **)((char *)arg0 + 0x288);
-    *(u8 *)((char *)arg0 + 0x2A6) = *(u8 *)((char *)obj + 0x28);
-    if (*(u8 *)((char *)arg0 + 0x2A6)) {
-        if (*(float *)((char *)arg0 + 0x1EC) < lbl_80562144)
-            *(float *)((char *)arg0 + 0x1EC) = *(float *)((char *)arg0 + 0x26C);
+    void *sub;
+    sub = *(void **)((char *)driver + 0x288);
+    *(u8 *)((char *)driver + 0x2A6) = *(u8 *)((char *)sub + 0x28);
+    if (*(u8 *)((char *)driver + 0x2A6)) {
+        if (*(float *)((char *)driver + 0x1EC) < lbl_80562144)
+            *(float *)((char *)driver + 0x1EC) = *(float *)((char *)driver + 0x26C);
         switch (lbl_8055E540) {
         case 2:
-            fn_8018AF04(*(void **)((char *)arg0 + 0x294));
+            fn_8018AF04(*(void **)((char *)driver + 0x294));
             break;
         case 1:
-            if ((*(int *)((char *)arg0 + 0x2D0) & 0x200) == 0)
-                ((void (*)(void *, const char *))fn_801945F8)(arg0, lbl_803332CC);
+            if ((*(int *)((char *)driver + 0x2D0) & 0x200) == 0)
+                ((void (*)(void *, const char *))fn_801945F8)(driver, lbl_803332CC);
             break;
         case 0:
-            fn_80193CD4(arg0);
+            fn_80193CD4(driver);
             break;
         }
-        obj = *(void **)((char *)arg0 + 0x28C);
-        ((Obj *)obj)->v12(-1);
+        sub = *(void **)((char *)driver + 0x28C);
+        ((Controller *)sub)->notifyState(-1);
     } else {
-        *(float *)((char *)arg0 + 0x1EC) = lbl_805621A4;
+        *(float *)((char *)driver + 0x1EC) = lbl_805621A4;
     }
 }
-#pragma pop
+#pragma cplusplus reset
 #pragma dont_inline off
 void fn_80194590(void *arg0) {
     int v;
