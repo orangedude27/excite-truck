@@ -11214,11 +11214,15 @@ extern "C" void fn_800B75EC(OSAlarm *alarm, OSContext *ctx) {
 
 extern "C" s32 fn_800A4E80(void *, s32, u32);
 extern "C" s32 fn_800A9A4C(void *, s32, s32);
-extern "C" void fn_800B7610(void *arg0, s32 arg1, s32 arg2) {
-    s32 local;
-    s32 result = fn_800A4E80(&local, (s32)arg0, 1);
+/* Opens a file/path handle with fn_800A4E80 (mode 1) and, on success, performs
+ * an additional setup/operation via fn_800A9A4C on the local handle; on failure
+ * stores the error code in lbl_803D2140's field at offset 0x40, then finalizes
+ * via fn_800B73BC. */
+extern "C" void fn_800B7610(void *path, s32 arg1, s32 arg2) {
+    s32 handle;
+    s32 result = fn_800A4E80(&handle, (s32)path, 1);
     if (result == 0) {
-        fn_800A9A4C(&local, arg1, arg2);
+        fn_800A9A4C(&handle, arg1, arg2);
     } else {
         M2C_FIELD(lbl_803D2140, s32 *, 0x40) = result;
     }
