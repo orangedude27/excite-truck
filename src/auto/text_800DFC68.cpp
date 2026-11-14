@@ -18,6 +18,7 @@ namespace lyt {
 }
 namespace nw4hbm { namespace lyt {
     struct AnimTransform;   /* one running animation; panes and materials hold links to it */
+    class Material;
     struct Window {
         struct Link { Link* next; Link* prev; };
         u8 unk_0[0x14];
