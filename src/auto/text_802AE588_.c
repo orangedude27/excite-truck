@@ -320,6 +320,7 @@ extern "C" void fn_802AE7F4(void) {
 #pragma cplusplus reset
 
 #pragma scheduling invalid_target
+/* Run the shutdown/cleanup sequence for the UI/view subsystems and clear their global state. */
 void fn_802AE9D0(void) {
     lbl_8055CD78 = (void *)-1;
     fn_802C10C4();
