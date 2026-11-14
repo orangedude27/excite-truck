@@ -25289,17 +25289,24 @@ notReady:
 }
 #pragma dont_inline reset
 extern "C" s32 fn_800A5800(void *arg0, s32 arg1) {
-    s32 result;
-    s32 value;
-    result = fn_800A7338(*(void **)((u8 *)arg0 + 0x1FBC), arg1);
-    if (result == 0) goto zero;
-    if (result != 21) goto fail;
-    value = ((s32 (*)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
-    *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
-    *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+#define gParserContext lbl_803D2140
+#define ParserStep fn_800A7338
+#define GetParsedValue fn_800A71D8
+    /* Queries parser state for arg1; on command 21 caches the parsed value in the global context and object, returning 0x1000. */
+    s32 parseResult;
+    s32 parsedValue;
+    parseResult = ParserStep(*(void **)((u8 *)arg0 + 0x1FBC), arg1);
+    if (parseResult == 0) goto zero;
+    if (parseResult != 21) goto fail;
+    parsedValue = ((s32 (*)(void *))GetParsedValue)(*(void **)((u8 *)arg0 + 0x1FBC));
+    *(s32 *)((u8 *)gParserContext + 0x44) = parsedValue;
+    *(s32 *)((u8 *)arg0 + 0x1F84) = parsedValue;
     return 0x1000;
 fail: return -1;
 zero: return 0;
+#undef gParserContext
+#undef ParserStep
+#undef GetParsedValue
 }
 
 extern "C" s32 fn_800A71A0(s32 *);
