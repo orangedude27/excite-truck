@@ -1845,12 +1845,14 @@ setflag:
     return 0;
 }
 
-extern "C" s32 fn_800A7338(void *arg0, s32 arg1) {
-    s32 result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+/* Bind the object to its underlying device handle, then perform a control step
+   on it; return 0 on success or a negative-clamped nonzero status. */
+extern "C" s32 fn_800A7338(void *object, s32 param) {
+    s32 result = fn_800A625C(*(void **)((u8 *)object + 4), (s32)object);
     if (result != 0) {
         return result;
     }
-    result = fn_800A6480(*(void **)((u8 *)arg0 + 4), arg1);
+    result = fn_800A6480(*(void **)((u8 *)object + 4), param);
     return result & ((s32)(-result | result) >> 31);
 }
 
