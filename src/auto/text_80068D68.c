@@ -5526,14 +5526,15 @@ void bta_dm_signal_strength_timer_cback(void *timerEnt) {
     }
 }
 
-void bta_dm_acl_change_cback(u8 *bd_addr, s32 arg1, s32 arg2, s32 arg3, u8 event)
+/* Callback from BTM when an ACL connection changes; posts BTA_DM_ACL_CHANGE_EVT. */
+void bta_dm_acl_change_cback(u8 *bd_addr, s32 unused1, s32 unused2, s32 unused3, u8 is_new)
 {
-    BT_HDR *buf = GKI_getbuf(0x12);
-    if (buf != NULL) {
-        fn_80070FA4((u8 *)buf + 0xB, bd_addr);
-        ((u8 *)buf)[0xA] = event;
-        buf->event = 0x105;
-        fn_80071450(buf);
+    BT_HDR *p_msg = GKI_getbuf(0x12);
+    if (p_msg != NULL) {
+        fn_80070FA4((u8 *)p_msg + 0xB, bd_addr);
+        ((u8 *)p_msg)[0xA] = is_new;
+        p_msg->event = 0x105;
+        fn_80071450(p_msg);
     }
 }
 
