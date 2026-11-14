@@ -10,13 +10,16 @@ extern s32 fn_8012850C(s32, s32 *);
 
 extern char lbl_8032AFB8[];
 extern char lbl_8032AFD4[];
-void *fn_8012F31C(s32 arg0) {
-    void *result = fn_801284F8(8, lbl_8032AFB8);
-    if (result != 0) {
-        ((s32 *)result)[1] = arg0;
-        ((s32 *)result)[0] = fn_8012850C(arg0, (s32 *)lbl_8032AFD4);
+/* Allocate an 8-byte MemStream object tagged "MemStream" (proposed name:
+   MemStream_Create): store the requested buffer size at +4 and allocate the
+   backing buffer (tagged "MemStream") at +0. Returns NULL on allocation failure. */
+void *fn_8012F31C(s32 bufferSize) {
+    void *stream = fn_801284F8(8, lbl_8032AFB8);
+    if (stream != 0) {
+        ((s32 *)stream)[1] = bufferSize;
+        ((s32 *)stream)[0] = fn_8012850C(bufferSize, (s32 *)lbl_8032AFD4);
     }
-    return result;
+    return stream;
 }
 
 #pragma scheduling invalid_target
