@@ -5713,6 +5713,7 @@ void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused)
     u8 i;
     u8 j;
     u8 *config;
+    u8 value;
 
     if (status != 0) return;
 
@@ -5723,8 +5724,9 @@ void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused)
             for (j = 1; j <= config[1]; j++) {
                 if ((addr == config[((u32)j << 2) - (u32)j + 1] || config[((u32)j << 2) - (u32)j + 1] == 0xFF) &&
                     addr_type == config[((u32)j << 2) - (u32)j]) {
-                    if (config[((u32)j << 2) - (u32)j + 2] > lbl_803C0C14[(u32)i * 0xB + 7])
-                        lbl_803C0C14[(u32)i * 0xB + 7] = config[((u32)j << 2) - (u32)j + 2];
+                    value = config[((u32)j << 2) - (u32)j + 2];
+                    if (value > lbl_803C0C14[(u32)i * 0xB + 7])
+                        lbl_803C0C14[(u32)i * 0xB + 7] = value;
                     return;
                 }
             }
