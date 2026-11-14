@@ -44,7 +44,9 @@ s32 fn_802E46F0(void) {
     u32 mode;
     char buffer[0x20];
     volatile u16 *p;
-    u16 a, b, c;
+    u16 a;
+    u16 b;
+    u16 c;
     fn_802E4A2C();
     raw = lbl_8055FF50;
     mask = (u32)raw & 0xFFFF0FFF;
@@ -62,9 +64,7 @@ s32 fn_802E46F0(void) {
     mode = (u16)mask;
     if (mode == 0x17A)
         goto special;
-    if (mode != 0x17B)
-        goto done;
-    if (lbl_8055FF60 != 0x112)
+    if (mode != 0x17B || lbl_8055FF60 != 0x112)
         goto done;
 special:
     sprintf(buffer, lbl_8034D1C0, lbl_8055FF64);
@@ -111,7 +111,7 @@ void fn_802E4800(u16 arg0) {
     }
     history[31] = arg0 & 0xFFF;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; (unsigned short)i < 4; i++) {
         if (*p == 0) {
             ((volatile u16 *)&lbl_8055FF50)[i] = arg0;
             return;
@@ -131,25 +131,28 @@ void fn_802E4800(u16 arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_802E499C(u16 *str) {
-    s32 len;
-    u16 *p;
-    u16 *q;
-    u16 a;
-    u16 b;
-    len = 0;
-    p = str;
-    while (*p != 0) { len++; p++; }
-    q = lbl_804FC418 + (0x20 - len);
-    while (len > 0) {
-        a = *str;
-        b = *q;
-        if (b != a && a != 0xFFFF) return 0;
-        str++;
-        q++;
-        len--;
+/* Check whether a 16-bit key sequence matches the end of the 32-entry input history (right-aligned by sequence length); 0xFFFF entries in the sequence act as wildcards. */
+s32 fn_802E499C(u16 *sequence) {
+#define inputHistoryBuffer lbl_804FC418
+    s32 length;
+    u16 *scan;
+    u16 *history;
+    u16 sequenceValue;
+    u16 historyValue;
+    length = 0;
+    scan = sequence;
+    while (*scan != 0) { length++; scan++; }
+    history = inputHistoryBuffer + (0x20 - length);
+    while (length > 0) {
+        sequenceValue = *sequence;
+        historyValue = *history;
+        if (historyValue != sequenceValue && sequenceValue != 0xFFFF) return 0;
+        sequence++;
+        history++;
+        length--;
     }
     return 1;
+#undef inputHistoryBuffer
 }
 #pragma pop
 s32 fn_802E4A10(void) { return (lbl_8055FF5A >> 12) & 0xF; }
