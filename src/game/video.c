@@ -70,27 +70,46 @@ typedef struct SimpleHeap {
 } SimpleHeap;
 
 void fn_802DEAC4(void) {
-    register u32 x = 1;
-    GXSetTexCoordGen2(0, x, 0, 0x21, 0, 0x7D);
-    GXSetTexCoordGen2(1, x, 0, 0x24, 0, 0x7D);
-    GXSetTexCoordGen2(2, x, 0, 0x27, 0, 0x7D);
-    GXSetTexCoordGen2(3, x, 0, 0x1E, 0, 0x7D);
+    GXSetTexCoordGen2(0, 1, 0, 33, 0, 125);
+    GXSetTexCoordGen2(1, 1, 0, 36, 0, 125);
+    GXSetTexCoordGen2(2, 1, 0, 39, 0, 125);
+    GXSetTexCoordGen2(3, 1, 0, 30, 0, 125);
     GXSetNumTexGens(4);
-    GXSetTevOrder(0, 3, 1, 0xFF);
-    GXSetTevOrder(1, 0, 2, 0xFF);
-    GXSetTevOrder(2, 0, 3, 0xFF);
-    GXSetTevOrder(3, 2, 0, 0xFF);
-    GXSetTevOrder(4, 1, 4, 0xFF);
-    GXSetTevSwapMode(0, 0, 0); GXSetTevSwapMode(1, 0, 0); GXSetTevSwapMode(2, 0, 0); GXSetTevSwapMode(3, 0, 0); GXSetTevSwapMode(4, 0, 0);
-    GXSetTevColorIn(0, 8, 0xF, 0xF, 0xF); GXSetTevColorOp(0, 0, 0, 0, 1, 0); GXSetTevAlphaIn(0, 7, 7, 7, 7); GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(1, 8, 0xF, 0xF, 0xF); GXSetTevColorOp(1, 0, 0, 0, 1, 1); GXSetTevAlphaIn(1, 7, 7, 7, 0); GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(2, 0, 2, 9, 0xF); GXSetTevColorOp(2, 0, 0, 0, 1, 0); GXSetTevAlphaIn(2, 7, 7, 7, 0); GXSetTevAlphaOp(2, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(3, 0xF, 0, 8, 0xF); GXSetTevColorOp(3, 0, 0, 0, 1, 0); GXSetTevAlphaIn(3, 7, 7, 7, 0); GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(4, 0xF, 0xF, 0xF, 0); GXSetTevColorOp(4, 0, 0, 0, 1, 0); GXSetTevAlphaIn(4, 4, 7, 7, 7); GXSetTevAlphaOp(4, 0, 0, 0, 1, 0);
+    GXSetTevOrder(0, 3, 1, 255);
+    GXSetTevOrder(1, 0, 2, 255);
+    GXSetTevOrder(2, 0, 3, 255);
+    GXSetTevOrder(3, 2, 0, 255);
+    GXSetTevOrder(4, 1, 4, 255);
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevSwapMode(1, 0, 0);
+    GXSetTevSwapMode(2, 0, 0);
+    GXSetTevSwapMode(3, 0, 0);
+    GXSetTevSwapMode(4, 0, 0);
+    GXSetTevColorIn(0, 8, 15, 15, 15);
+    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(0, 7, 7, 7, 7);
+    GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+    GXSetTevColorIn(1, 8, 15, 15, 15);
+    GXSetTevColorOp(1, 0, 0, 0, 1, 1);
+    GXSetTevAlphaIn(1, 7, 7, 7, 0);
+    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
+    GXSetTevColorIn(2, 0, 2, 9, 15);
+    GXSetTevColorOp(2, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(2, 7, 7, 7, 0);
+    GXSetTevAlphaOp(2, 0, 0, 0, 1, 0);
+    GXSetTevColorIn(3, 15, 0, 8, 15);
+    GXSetTevColorOp(3, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(3, 7, 7, 7, 0);
+    GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
+    GXSetTevColorIn(4, 15, 15, 15, 0);
+    GXSetTevColorOp(4, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(4, 4, 7, 7, 7);
+    GXSetTevAlphaOp(4, 0, 0, 0, 1, 0);
     GXSetNumTevStages(5);
 }
 
 #pragma scheduling invalid_target
+/* Resets TEV swap modes for stages 0-4 to the identity ras/tex swap selectors. */
 void fn_802DEE1C(void) {
     GXSetTevSwapMode(0, 0, 0);
     GXSetTevSwapMode(1, 0, 0);
