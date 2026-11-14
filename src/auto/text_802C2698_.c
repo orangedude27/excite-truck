@@ -37,21 +37,23 @@ void *fn_802C2698(void *arg0, s32 arg1) {
     return arg0;
 }
 
+/* Prepare the level's swlmap light map: load "swlmap.tex" from the archive when
+ * the disc has it, and otherwise make a 512x512 render target to draw it into. */
 void fn_802C26F0(void) {
-    char *ptr = lbl_8034AFF8;
-    s32 result;
-    s32 result2;
+    char *name = sSwlMapName;
+    s32 fileSlot;
+    s32 targetSlot;
 
-    if (fn_8012C33C(ptr) != 0)
-        result = fn_802CAC28(ptr, 0);
+    if (ResFindFile(name) != 0)
+        fileSlot = TextureLoad(name, 0);
     else
-        result = -2;
-    lbl_8055FB70 = result;
-    if (result == -2)
-        result2 = fn_802CB128(0x200, 0x200, 0, 1);
+        fileSlot = NO_TEXTURE_SLOT;
+    sSwlMapFileSlot = fileSlot;
+    if (fileSlot == NO_TEXTURE_SLOT)
+        targetSlot = RenderTargetCreate(0x200, 0x200, 0, 1);
     else
-        result2 = -2;
-    lbl_8055FB6C = result2;
+        targetSlot = NO_TEXTURE_SLOT;
+    sSwlMapTargetSlot = targetSlot;
 }
 
 extern s32 fn_801D9B58(void);
