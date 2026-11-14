@@ -37,10 +37,11 @@ void* fn_8015EBF8(void* arg0, s32 arg1) {
 }
 
 #pragma dont_inline on
-void fn_8015EC50(unsigned short *arg0, void *arg1) {
-    int value;
-    fn_80136594(&value, arg1, (char *)arg0 + 4);
-    *arg0 = (value - ((int *)((void **)arg1)[11])[7]) / 60;
+/* Convert a sample offset from a stream position into frames (1/60 s) relative to the stream base. */
+void fn_8015EC50(unsigned short *out, void *stream) {
+    int sample;
+    fn_80136594(&sample, stream, (char *)out + 4);
+    *out = (sample - ((int *)((void **)stream)[11])[7]) / 60;
 }
 
 int fn_8015ECC0(void *arg0) {
