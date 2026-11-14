@@ -46,6 +46,15 @@ typedef struct OverlayQuad {
     f32 driftLimit;   /* 0xB0: drift clamp (0x805635F0 = 4.5f) */
 } OverlayQuad;
 
+/* One node of the background-quad list whose head is lbl_8055F014; the allocator
+ * tag lbl_803403CC names these "gBack tracker".  fn_8022F364 links a node in at
+ * the end, fn_8022F77C unlinks one by payload and frees it. */
+typedef struct QuadNode {
+    void *payload;         /* 0x00: the OverlayQuad this node tracks */
+    s32 refCount;          /* 0x04: 1 while the node is on the list */
+    struct QuadNode *next; /* 0x08: next node, 0 at the end of the list */
+} QuadNode;
+
 /* The 24-byte GX FIFO vertex fn_802D68C4 pushes: position, RGBA8 color and one
  * S/T pair.  The game copies these word by word - x and y travel as a single
  * double, z as a raw word - so the fields are declared the way they travel. */
