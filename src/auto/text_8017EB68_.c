@@ -594,10 +594,8 @@ void fn_8017FF4C(f32 dt) {
         ptr = (struct Di718 **)lbl_804348D8;
         for (i = 0; i < 4; i++, ptr++) {
             s32 pad;
-            struct Di718Slot *slot;
-            struct Di718Slot *slot2;
             s32 gear;
-            struct Di718Slot *gearSlot;
+            struct Di718Slot *slot;
 
             v = *ptr;
             if (v == NULL) {
@@ -731,26 +729,26 @@ void fn_8017FF4C(f32 dt) {
                 v->pad0C[6] = fn_8017EB80(fn_801A7F98(&v->slot[7]), v->level2C[3], v->level2C[4]);
             }
 
-            slot2 = &v->slot[3];
-            if (!fn_801A8F10(slot2)) {
-                slot2 = &v->slot[6];
+            slot = &v->slot[3];
+            if (!fn_801A8F10(slot)) {
+                slot = &v->slot[6];
             } else if (flagB && fn_801A8F10(&v->slot[6])) {
-                slot2 = &v->slot[6];
+                slot = &v->slot[6];
             }
-            if (v->flag340 || flagB || fn_801A8EE4(slot2)) {
+            if (v->flag340 || flagB || fn_801A8EE4(slot)) {
                 f32 up = k68 * v->level2C[8];
                 f32 down = k64 * v->level2C[8];
                 if (v->pad0C[2] > zero) {
                     v->pad0C[2] = fn_801429D0(v->pad0C[2] - down * dt, zero);
                 }
-                if (fn_801A8E38(slot2)) {
+                if (fn_801A8E38(slot)) {
                     v->pad0C[2] += up * dt;
                 }
                 if (v->pad0C[2] > one) {
                     v->pad0C[2] = one;
                 }
             } else {
-                v->pad0C[2] = fn_8017EB80(fn_801A7F98(slot2), v->level2C[6], v->level2C[7]);
+                v->pad0C[2] = fn_8017EB80(fn_801A7F98(slot), v->level2C[6], v->level2C[7]);
             }
 
             if (v->flag340 || fn_801A8EE4(&v->slot[8])) {
@@ -836,9 +834,9 @@ void fn_8017FF4C(f32 dt) {
             } else {
                 v->flag59 = 0;
                 v->pad50[0] = 0;
-                gearSlot = &v->slot[23];
-                for (gear = 0; gear < v->pad50[1]; gear++, gearSlot++) {
-                    if (fn_801A8E38(gearSlot)) {
+                slot = &v->slot[23];
+                for (gear = 0; gear < v->pad50[1]; slot++, gear++) {
+                    if (fn_801A8E38(slot)) {
                         v->pad50[0] = gear + 1;
                     }
                 }
