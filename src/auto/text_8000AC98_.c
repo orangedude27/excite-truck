@@ -388,6 +388,7 @@ void fn_8000B2AC(void) {
 
 #pragma cplusplus on
 extern "C" int fn_8000B33C(void *object, int argument, int fallback) {
+    /* Return a virtual-method result from the object when available, otherwise use the fallback value. */
     struct Dummy {
         virtual int f0();
         virtual int f1();
