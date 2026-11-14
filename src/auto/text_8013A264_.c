@@ -89,11 +89,11 @@ f32 fn_80134B58(f32 *, f32);
 #pragma push
 #pragma scheduling invalid_target
 void *fn_8013A264(void *arg0) {
-    f32 *p = lbl_8032C118;
-    *(f32 *)((u8 *)arg0 + 0xC) = fn_80134B58(p, *(volatile f32 *)&lbl_80561418);
-    *(f32 *)((u8 *)arg0 + 8) = fn_80134B58(p + 4, *(volatile f32 *)&lbl_80561418);
-    *(f32 *)((u8 *)arg0 + 0x10) = fn_80134B58(p + 8, *(volatile f32 *)&lbl_80561418);
-    *(f32 *)((u8 *)arg0 + 0x18) = fn_80134B58(&lbl_80559C60, *(volatile f32 *)&lbl_8056141C);
+    u8 *base = (u8 *)lbl_8032C118;
+    *(f32 *)((u8 *)arg0 + 0xC) = fn_80134B58((f32 *)(base + 0), lbl_80561418);
+    *(f32 *)((u8 *)arg0 + 8) = fn_80134B58((f32 *)(base + 0x10), lbl_80561418);
+    *(f32 *)((u8 *)arg0 + 0x10) = fn_80134B58((f32 *)(base + 0x20), lbl_80561418);
+    *(f32 *)((u8 *)arg0 + 0x18) = fn_80134B58(&lbl_80559C60, lbl_8056141C);
     *(f32 *)((u8 *)arg0 + 0x14) = lbl_80561418;
     *(f32 *)((u8 *)arg0 + 0x1C) = lbl_80561418;
     *(f32 *)((u8 *)arg0 + 4) = lbl_80561420;
@@ -114,13 +114,11 @@ extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i
         f32 min;
         f32 max;
         struct Entry *entry;
-
         max = lbl_80561424;
         i = 0;
         min = lbl_80561428;
         step = lbl_8056142C;
-
-        for (; (entry = container->GetEntry(i)) != 0; i++) {
+        for (; (entry = container->GetEntry(i)) != 0; ++i) {
             if (stricmp(entry->GetName(), base + 0x34) == 0) {
                 node = (Node604 *)fn_801284F8(0x28, base + 0x40);
                 node->lo = entry->GetFloat(&lbl_80559C68);
@@ -134,12 +132,10 @@ extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i
                 node->f20 = entry->GetFloatDef(base + 0x58, config->f1C);
                 node->next = config->head;
                 config->head = node;
-
                 if (node->lo > node->hi) {
                     Node604 *copy = (Node604 *)fn_801284F8(0x28, base + 0x40);
-                    if (copy != 0) {
+                    if (copy != 0)
                         *copy = *node;
-                    }
                     node->hi = max;
                     copy->lo = min;
                     copy->f8 = step;
@@ -148,22 +144,22 @@ extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i
                 }
             }
         }
-
         fn_802E30C8(base + 0x68, i, (i != 1) ? &lbl_80559C90 : &lbl_80559C94);
     }
 }
 #pragma cplusplus reset
 #pragma pop
 
-void **fn_8013A598(void **arg0, s32 arg1) {
-    if (arg0 != 0) {
-        while (*arg0 != 0) {
-            *arg0 = *(void **)((u8 *)*arg0 + 0x24);
+/* Free a singly-linked list (next at +0x24) whose head pointer is stored at *listHead, then optionally free the head storage. */
+void **fn_8013A598(void **listHead, s32 doDelete) {
+    if (listHead != 0) {
+        while (*listHead != 0) {
+            *listHead = *(void **)((u8 *)*listHead + 0x24);
             fn_80128668();
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (doDelete > 0) fn_80128668(listHead);
     }
-    return arg0;
+    return listHead;
 }
 
 void *fn_8013A604(void **arg0, f32 value) {
