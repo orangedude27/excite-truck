@@ -6637,6 +6637,8 @@ extern "C" void *fn_802244C8(void *self, s32 shouldDelete) {
 }
 
 extern "C" void fn_8022455C(void *arg0) {
+    /* Register the widget's notify slot (key 0x254) in its table and save its previous 4-byte value
+       as a "WidgetNotify::old_data" record (tag 0) so the change can be observed/notified. */
     void *result = (void *)fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x254), arg0);
     *(void **)((u8 *)arg0 + 0x258) = result;
     fn_80219440(arg0, 0, result, 4);
