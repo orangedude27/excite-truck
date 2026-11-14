@@ -1713,15 +1713,16 @@ extern void fn_802A70E4(void *, float *);
 extern s32 fn_802CAC54(s32);
 extern s32 fn_80128670(s32);
 extern s32 fn_80128668(void *);
-void *fn_802A7614(void *arg0, s32 arg1) {
-    s32 temp;
-    if (arg0 != 0) {
-        fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x2C));
-        temp = *(s32 *)arg0;
-        if (temp != 0) fn_80128670(temp - 0x10);
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destructor-like cleanup: release texture ref at +0x2C, free array block at *obj-0x10 if set, and free object if doDelete > 0. */
+void *fn_802A7614(void *obj, s32 doDelete) {
+    s32 allocPtr;
+    if (obj != 0) {
+        fn_802CAC54(*(s32 *)((u8 *)obj + 0x2C));
+        allocPtr = *(s32 *)obj;
+        if (allocPtr != 0) fn_80128670(allocPtr - 0x10);
+        if (doDelete > 0) fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 extern f32 lbl_80564858, lbl_805648C8;
