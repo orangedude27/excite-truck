@@ -167,6 +167,58 @@ void fn_801E2294(void) {
         ((void (*)(void *))fn_801A47C8)(lbl_8055EA40);
 }
 
+/* Descends one quadtree (lbl_8055EA3C / lbl_8055EA40) towards p's x/z cell and
+   tests p against every enabled entry of each node on the way down. */
+static inline void QueryTree(void *g, void *p, f32 scale) {
+    if (g != 0) {
+        s32 minX, maxX, minZ, maxZ;
+        s32 xi, zi;
+        s32 idx;
+        minX = -0x2625A00;
+        maxX = 0x2625A00;
+        minZ = minX;
+        maxZ = maxX;
+        xi = (s32)(scale * ((f32 *)p)[24]);
+        zi = (s32)(scale * ((f32 *)p)[26]);
+        idx = 0;
+        for (;;) {
+            u16 *range = (u16 *)((char *)*(void **)((char *)g + 0x10) + idx * 8);
+            s32 end, k, midX, midZ;
+            k = range[0];
+            end = range[1];
+            for (; k < end; k++) {
+                u16 tri = *(u16 *)((char *)*(void **)((char *)g + 0x0C) + k * 2);
+                void *tobj = *(void **)((char *)*(void **)((char *)g + 4) + tri * 4);
+                if (*(u8 *)((char *)tobj + 0x40))
+                    fn_801E2084(*(void **)((char *)tobj + 0x3C), p);
+            }
+            if (range[2] == 0)
+                break;
+            idx = range[2];
+            midX = (minX + maxX) >> 1;
+            midZ = (minZ + maxZ) >> 1;
+            if (zi <= midZ) {
+                maxZ = midZ;
+                if (xi <= midX)
+                    maxX = midX;
+                else {
+                    minX = midX;
+                    idx += 1;
+                }
+            } else {
+                minZ = midZ;
+                if (xi <= midX) {
+                    maxX = midX;
+                    idx += 2;
+                } else {
+                    minX = midX;
+                    idx += 3;
+                }
+            }
+        }
+    }
+}
+
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
