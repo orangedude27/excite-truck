@@ -1070,6 +1070,7 @@ extern "C" void fn_800DEFD8(void *this_ptr) {
 
 #pragma optimization_level 2
 extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const wchar_t *str, u32 len) {
+    /* Set the text box string, computing its wide-character length for the virtual setter. */
     class TextBox {
     public:
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
@@ -1081,10 +1082,9 @@ extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const wch
         virtual void m24(); virtual void m25();
         virtual void setString(const wchar_t *, u32, u32);
     };
-    u32 wlen = fn_8002AEE8((const u16 *)str);
-    ((TextBox *)this_ptr)->setString(str, len, (u32)(u16)wlen);
+    u32 stringLength = fn_8002AEE8((const u16 *)str);
+    ((TextBox *)this_ptr)->setString(str, len, (u32)(u16)stringLength);
 }
-#pragma use_lmw_stmw off
 extern "C" u16 SetString__Q36nw4hbm3lyt7TextBoxFPCwUsUs(void *this_ptr, const u16 *str, u16 offset, u16 len) {
     const char *msg = lbl_80320560;
     u16 count;
