@@ -717,6 +717,15 @@ extern "C" void fn_802A2120(void* arg0, void* arg1, s32 arg2) {
         }
     }
 }
+
+extern "C" void fn_802A2434(void *arg0, void *arg1) {
+    (void)arg0; (void)arg1;
+    volatile float a = lbl_80564734;
+    volatile float b = lbl_80564744;
+    volatile float c = a + b;
+    (void)c;
+}
+
 #pragma pop
 extern "C" f32 lbl_80558DC4;
 extern "C" f32 lbl_80564730;
@@ -906,12 +915,13 @@ extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void *fn_802A2EEC(void *arg0, DummyReceiver_802A3314 *arg1) {
-    *(void **)arg0 = lbl_80349B50;
-    s32 result = arg1->v3(&lbl_8055CBB0);
-    fn_802A30BC(arg0, result);
-    fn_802A31DC(arg0, result);
-    return arg0;
+extern "C" void *fn_802A2EEC(void *effectGroup, DummyReceiver_802A3314 *receiver) {
+    /* Initialize effect group vtable then create small/large trail smoke effects using receiver-provided resource. */
+    *(void **)effectGroup = lbl_80349B50;
+    s32 effectRes = receiver->v3(&lbl_8055CBB0);
+    fn_802A30BC(effectGroup, effectRes);
+    fn_802A31DC(effectGroup, effectRes);
+    return effectGroup;
 }
 #pragma pop
 extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
@@ -1397,6 +1407,41 @@ extern "C" void fn_802A3DFC(void *arg0) {
     } while (i < ((s32 (*)(void))fn_80287B14)());
 }
 
+extern "C" void fn_802A3E58(void *arg0, void *arg1, int arg2) {
+    f32 v[3], w[3];
+    f32 s, t, k;
+    unsigned char *obj = *(unsigned char **)arg1;
+    unsigned char *p = obj + arg2 * 0x3C;
+    f32 tmp;
+    if (*(f32 *)((char *)arg1 + 8) > lbl_8056476C) return;
+    tmp = *(f32 *)(p + 0x94);
+    if (tmp * tmp < lbl_80564758) return;
+    {
+        f32 sx, sz;
+        if (*(f32 *)(p + 0x70) > lbl_80564744) sx = lbl_80564730; else sx = lbl_8056475C;
+        if (*(f32 *)(p + 0x94) > lbl_80564744) sz = lbl_80564730; else sz = lbl_8056475C;
+        f32 z = *(f32 *)(p + 0x78) - lbl_80564760 * sz;
+        f32 y = lbl_80564740 + *(f32 *)(p + 0x74);
+        f32 x = *(f32 *)(p + 0x70);
+        v[0] = x; v[1] = y; v[2] = z;
+        MtxMultVecLocal(*(unsigned char **)arg1, v, v);
+        obj = *(unsigned char **)arg1;
+        v[0] += *(f32 *)(obj + 0x24); v[1] += *(f32 *)(obj + 0x28); v[2] += *(f32 *)(obj + 0x2C);
+        obj = *(unsigned char **)arg1;
+        k = lbl_805647A4;
+        s = lbl_80564764 + lbl_8056481C * (sx * *(f32 *)(obj + 0x50));
+        w[0] = *(f32 *)(obj + 0x34) + *(f32 *)obj * s;
+        w[1] = *(f32 *)(obj + 0x38) + *(f32 *)(obj + 4) * s;
+        w[2] = *(f32 *)(obj + 0x3C) + *(f32 *)(obj + 8) * s;
+        t = lbl_80564764 + lbl_8056482C * *(f32 *)(obj + 0x50);
+        if (k >= t) k = t;
+        w[0] += *(f32 *)(obj + 0xC) * k;
+        w[1] += *(f32 *)(obj + 0x10) * k;
+        w[2] += *(f32 *)(obj + 0x14) * k;
+        fn_8028E590(*(int *)((char *)arg0 + 4), v, w, -sx * fn_80287BC8(lbl_80564744, lbl_8056477C));
+    }
+}
+
 extern "C" f32 lbl_80564834;
 #pragma scheduling invalid_target
 extern "C" void fn_802A4118(void *arg0, void *arg1) {
@@ -1677,8 +1722,8 @@ extern "C" void fn_802A4658(s32 arg0) {
 extern "C" s32 fn_802A47A8(void *arg0) {
     char *obj = (char *)arg0;
     s32 offset, i, alphaInt, alpha;
-    register f32 now;
-    register f32 limit;
+    f32 limit;
+    f32 now;
     f32 saved, v, high, t, low;
 
     if (*(s32 *)(obj + 4) >= 1) {
