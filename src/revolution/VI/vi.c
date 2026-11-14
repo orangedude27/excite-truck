@@ -1742,14 +1742,17 @@ void __VISetCGMS(void)
     WaitMicroTime(2);
 }
 
+/* Sends the WSS (wide screen signalling) I2C packet built from the stored WSS
+ * bytes; run from the retrace interrupt when the WSS bit of the pending-write
+ * mask is set. */
 void __VISetWSS(void)
 {
     u8 data[3];
 
-    data[0] = 8;
-    data[1] = ((lbl_80558FC4 & 0xF) << 4) | (lbl_80558FC3 & 0xF);
-    data[2] = ((lbl_80558FC6 & 7) << 3) | (lbl_80558FC5 & 7);
-    __VISendI2CData(0xE0, data, 3);
+    data[0] = 8;                                    // WSS packet
+    data[1] = ((WSS_A & 0xF) << 4) | (WSS_P & 0xF); // active format | picture format
+    data[2] = ((WSS_C & 7) << 3) | (WSS_S & 7);     // colour format | 35mm letterbox
+    __VISendI2CData(0xE0, data, 3);                 // GPU I2C slave
     WaitMicroTime(2);
 }
 
