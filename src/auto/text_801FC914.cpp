@@ -1422,14 +1422,15 @@ extern "C" void* fn_801FF364(void* arg0, int arg1) {
  return arg0;
 }
 
-extern "C" void fn_801FF3AC(void* arg0, float arg1) {
- char* entry = (char*)arg0;
- int i = 0;
- while (i < *(int*)((char*)arg0 + 0x2C0)) {
-  fn_801FF5D4(arg0, entry, arg1);
-  entry += 0x58;
-  ++i;
- }
+extern "C" void fn_801FF3AC(void* container, float arg) {
+    /* Update each of the container's 0x58-sized entries (count at +0x2C0). */
+    char* entry = (char*)container;
+    int i = 0;
+    while (i < *(int*)((char*)container + 0x2C0)) {
+        fn_801FF5D4(container, entry, arg);
+        entry += 0x58;
+        ++i;
+    }
 }
 
 extern "C" void fn_801FF644(void*, void*);
