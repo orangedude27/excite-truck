@@ -166,17 +166,27 @@ extern char lbl_80342618[];
 extern char lbl_803426B0[];
 extern s32 lbl_8055F1F4;
 extern s32 fn_80235380(s32, s32);
-void *fn_802408B0(void *arg0, s32 arg1) {
-    s32 temp_r4;
-    if (arg0 != 0) {
-        *(void **)((char *)arg0 + 0xC) = lbl_803426B0;
-        *(void **)((char *)arg0 + 0x10) = lbl_803426B0 + 0x18;
-        temp_r4 = lbl_8055F1F4;
-        lbl_8055F1F4 = temp_r4 - 1;
-        fn_80235380(*(s32 *)((char *)arg0 + 0x44), temp_r4);
-        if (arg1 > 0) fn_80128668(arg0);
+/* Deleting destructor of a player's MRollCarIcon (the "caricona.art" car icon of
+   the roll screen): installs this class's two vtables, hands the id it was given
+   back to the next-id counter, releases the car-icon resource owned at +0x44
+   and, when deleteFlag > 0, frees the object itself through the game's free(). */
+void *fn_802408B0(MRollCarIcon *self, s32 deleteFlag) {
+#define CarIcon_vtable lbl_803426B0 /* this class's vtable; the secondary base's is at +0x18 */
+#define sNextCarIconId lbl_8055F1F4 /* next id handed out by fn_802410F8 */
+#define Resource_release fn_80235380 /* drops one reference on a loaded resource */
+    s32 lastId;
+    if (self != 0) {
+        self->vtable = CarIcon_vtable;
+        self->secondaryVtable = CarIcon_vtable + 0x18;
+        lastId = sNextCarIconId;
+        sNextCarIconId = lastId - 1;
+        Resource_release(self->carIconResource, lastId);
+        if (deleteFlag > 0) fn_80128668(self); /* free() */
     }
-    return arg0;
+    return self;
+#undef CarIcon_vtable
+#undef sNextCarIconId
+#undef Resource_release
 }
 
 extern char lbl_80342734[];
