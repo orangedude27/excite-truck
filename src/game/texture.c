@@ -153,19 +153,28 @@ int fn_802CA2A8(void *arg0, int arg1, int arg2) {
     return (int)name;
 }
 
-int fn_802CA380(int arg0) {
-    char sp10[0x20];
-    int sp8;
-    int result;
-    int temp;
-    result = 0;
-    fn_802CA2A8(sp10, 0x20, arg0);
-    temp = fn_8012C5B8(sp10, 0x54455820, &sp8);
-    if (temp != 0) {
-        result = fn_8012C6F0();
-        fn_8012C958(temp);
+int fn_802CA380(int textureName) {
+    /* Get the size of the "TEX " resource for the named texture, or 0 if absent. */
+#define BuildTextureArchiveName fn_802CA2A8
+#define OpenResource fn_8012C5B8
+#define GetResourceSize fn_8012C6F0
+#define CloseResource fn_8012C958
+    char archiveName[0x20];
+    int resourceHandleOut;
+    int resourceSize;
+    int resourceHandle;
+    resourceSize = 0;
+    BuildTextureArchiveName(archiveName, 0x20, textureName);
+    resourceHandle = OpenResource(archiveName, 0x54455820, &resourceHandleOut);
+    if (resourceHandle != 0) {
+        resourceSize = GetResourceSize();
+        CloseResource(resourceHandle);
     }
-    return result;
+    return resourceSize;
+#undef BuildTextureArchiveName
+#undef OpenResource
+#undef GetResourceSize
+#undef CloseResource
 }
 
 #pragma use_lmw_stmw off
@@ -1155,7 +1164,7 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
 }
 
 #pragma scheduling invalid_target
-int fn_802CBBE8(register int **link, register int *target, register int *current) { register int removed = 0; goto advance; check: if (current == target) { register int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; goto done; } advance: link = (int **)((char *)current + 0x14); current = *link; if (current != 0) goto check; done: if (removed == 0) fn_802E317C(lbl_8034BA04); }
+int fn_802CBBE8(int **link, int *target, int *current) { int removed = 0; goto advance; check: if (current == target) { int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; goto done; } advance: link = (int **)((char *)current + 0x14); current = *link; if (current != 0) goto check; done: if (removed == 0) fn_802E317C(lbl_8034BA04); }
 
 #pragma use_lmw_stmw off
 extern void fn_8012C720(void *, int, int, int);
