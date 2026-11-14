@@ -361,17 +361,30 @@ extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, u32 
     return base[part2 + 0xD8];
 }
 
-extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7TextBoxFUlUc(void *this_ptr, u32 index, u8 color) {
+/* nw4hbm::lyt::TextBox::SetVtxColorElement(u32 idx, u8 color): store one color
+ * channel of one of the vertex colors an animation may target. A TextBox has
+ * no vertex colors of its own: it animates through its two text colors at
+ * +0xD8, each an RGBA Color, and an animation target numbers their 8 bytes
+ * (element idx is byte idx & 3 of the color at (idx >> 3) * 4), asserting the
+ * index is in range. */
+extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7TextBoxFUlUc(void *self, u32 idx, u8 color) {
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
-    extern const char lbl_80320570[];
-    extern const char lbl_803206B8[];
-    if (index >= 0x10) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1ee, lbl_803206B8);
+    #define sAssertFile_lyt_textBox lbl_80320570 /* __FILE__ of these asserts: "lyt_textBox.cpp" */
+    #define sAssertIdxAnimTargetVtxColor lbl_803206B8 /* "NW4HBM:Failed assertion idx < ANIMTARGET_VERTEXCOLOR_MAX" */
+    /* the TextBox's text colors seen as the single bytes an animation target
+     * indexes; the library asserts against 16 of them */
+    enum { ANIMTARGET_VERTEXCOLOR_MAX = 16 };
+
+    if (idx >= ANIMTARGET_VERTEXCOLOR_MAX) {
+        Panic__Q26nw4hbm2dbFPCciPCce(sAssertFile_lyt_textBox, 0x1ee, sAssertIdxAnimTargetVtxColor);
     }
-    u32 part1 = (index >> 1) & 0x7FFFFFFC;
-    u32 part2 = index & 3;
-    u8 *base = (u8 *)this_ptr + part1;
-    base[part2 + 0xD8] = color;
+    u32 colorOff = (idx >> 1) & 0x7FFFFFFC; /* (idx >> 3) * 4: the color's slot */
+    u32 channel = idx & 3;
+    u8 *base = (u8 *)self + colorOff;
+    base[channel + 0xD8] = color;
+
+    #undef sAssertFile_lyt_textBox
+    #undef sAssertIdxAnimTargetVtxColor
 }
 
 extern "C" void fn_80111B64(void *);
@@ -1109,11 +1122,12 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     const char *msg = lbl_80320560;
     f32 savedY;
     u16 *buf;
-    u16 len;
+    s32 len;
     SoundEntry60 tmp;
+    f64 posD;
     u64 raw;
-    Vec2f p;
     f32 fa, fb;
+    s32 sel;
     f32 z = lbl_80560ED0;
 
     arg0[0] = z;
@@ -1127,20 +1141,46 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     PTRCHECK(arg2, 0x137, 0x194)
     PTRCHECK(arg0, 0x138, 0x240)
     PTRCHECK(buf, 0x139, 0x1D0)
-    if ((s32)len < 0) {
-        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x13A, msg + 0x208, (s32)len, 0);
+    if (len < 0) {
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x13A, msg + 0x208, len, 0);
     }
-    tmp = *(SoundEntry60 *)arg2;
+    ((u8 *)&tmp)[0] = ((u8 *)arg2)[0]; ((u8 *)&tmp)[1] = ((u8 *)arg2)[1];
+    ((u8 *)&tmp)[2] = ((u8 *)arg2)[2]; ((u8 *)&tmp)[3] = ((u8 *)arg2)[3];
+    ((u8 *)&tmp)[4] = ((u8 *)arg2)[4]; ((u8 *)&tmp)[5] = ((u8 *)arg2)[5];
+    ((u8 *)&tmp)[6] = ((u8 *)arg2)[6]; ((u8 *)&tmp)[7] = ((u8 *)arg2)[7];
+    ((u8 *)&tmp)[8] = ((u8 *)arg2)[8]; ((u8 *)&tmp)[9] = ((u8 *)arg2)[9];
+    ((u8 *)&tmp)[10] = ((u8 *)arg2)[10]; ((u8 *)&tmp)[11] = ((u8 *)arg2)[11];
+    ((u8 *)&tmp)[12] = ((u8 *)arg2)[12]; ((u8 *)&tmp)[13] = ((u8 *)arg2)[13];
+    ((u8 *)&tmp)[14] = ((u8 *)arg2)[14]; ((u8 *)&tmp)[15] = ((u8 *)arg2)[15];
+    ((u8 *)&tmp)[16] = ((u8 *)arg2)[16]; ((u8 *)&tmp)[17] = ((u8 *)arg2)[17];
+    ((u8 *)&tmp)[18] = ((u8 *)arg2)[18]; ((u8 *)&tmp)[19] = ((u8 *)arg2)[19];
+    ((u8 *)&tmp)[20] = ((u8 *)arg2)[20]; ((u8 *)&tmp)[21] = ((u8 *)arg2)[21];
+    ((u8 *)&tmp)[22] = ((u8 *)arg2)[22]; ((u8 *)&tmp)[23] = ((u8 *)arg2)[23];
+    ((u8 *)&tmp)[24] = ((u8 *)arg2)[24]; ((u8 *)&tmp)[25] = ((u8 *)arg2)[25];
+    ((u8 *)&tmp)[26] = ((u8 *)arg2)[26]; ((u8 *)&tmp)[27] = ((u8 *)arg2)[27];
+    ((u8 *)&tmp)[28] = ((u8 *)arg2)[28]; ((u8 *)&tmp)[29] = ((u8 *)arg2)[29];
+    ((u8 *)&tmp)[30] = ((u8 *)arg2)[30]; ((u8 *)&tmp)[31] = ((u8 *)arg2)[31];
+    tmp.w[0] = ((s32 *)arg2)[8];
+    { s32 t0 = ((s32 *)arg2)[9]; s32 t1 = ((s32 *)arg2)[10]; tmp.w[1] = t0; tmp.w[2] = t1; }
+    { s32 t0 = ((s32 *)arg2)[11]; s32 t1 = ((s32 *)arg2)[12]; tmp.w[3] = t0; tmp.w[4] = t1; }
+    tmp.w[5] = ((s32 *)arg2)[13];
+    { s32 t0 = ((s32 *)arg2)[14]; s32 t1 = ((s32 *)arg2)[15]; tmp.w[6] = t0; tmp.w[7] = t1; }
+    tmp.c[0] = ((u8 *)arg2)[0x40]; tmp.c[1] = ((u8 *)arg2)[0x41];
+    tmp.c[2] = ((u8 *)arg2)[0x42]; tmp.c[3] = ((u8 *)arg2)[0x43];
+    tmp.f0 = ((f32 *)arg2)[0x11]; tmp.i0 = ((s32 *)arg2)[0x12];
+    tmp.f1 = ((f32 *)arg2)[0x13]; tmp.f2 = ((f32 *)arg2)[0x14];
+    tmp.i1 = ((s32 *)arg2)[0x15]; tmp.i2 = ((s32 *)arg2)[0x16]; tmp.i3 = ((s32 *)arg2)[0x17];
     fn_800DF81C(arg0, &tmp, buf, len, savedY);
     __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(&tmp, -1);
     raw = GetVtxPos__Q34nw4r3lyt4PaneCFv(arg1);
-    p = *(Vec2f *)&raw;
-    switch ((u8)(arg1[0xFC] % 3)) {
+    posD = *(f64 *)&raw;
+    sel = arg1[0xFC];
+    switch ((u8)(sel % 3)) {
     case 0: default: fa = lbl_80560ED0; break;
     case 1: fa = lbl_80560EE0; break;
     case 2: fa = lbl_80560EE4; break;
     }
-    switch ((u8)(arg1[0xFC] / 3)) {
+    switch ((u8)(sel / 3)) {
     case 0: default: fb = lbl_80560ED0; break;
     case 1: fb = lbl_80560EE0; break;
     case 2: fb = lbl_80560EE4; break;
@@ -1148,8 +1188,8 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     {
         f32 h = arg0[3] - arg0[1];
         f32 w = arg0[2] - arg0[0];
-        f32 ny = p.y + (*(f32 *)(arg1 + 0x50) - h) * fb;
-        f32 nx = p.x + (*(f32 *)(arg1 + 0x4C) - w) * fa;
+        f32 ny = ((f32 *)&posD)[1] + (*(f32 *)(arg1 + 0x50) - h) * fb;
+        f32 nx = ((f32 *)&posD)[0] + (*(f32 *)(arg1 + 0x4C) - w) * fa;
         arg0[1] = ny;
         arg0[0] = nx;
         arg0[3] = ny + h;
