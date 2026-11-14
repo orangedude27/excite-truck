@@ -4149,6 +4149,8 @@ extern "C" void fn_800F83D0(void* arg0) {
 }
 
 extern "C" void* fn_800F83D8(void* arg0, unsigned long arg1) {
+    /* Allocate `arg1` bytes from this SoundHeap's frame heap (at +0x1C) under
+       the mutex (at +0x04), registering the SoundHeap dispose callback. */
     void* mutex = (u8*)arg0 + 4;
     OSLockMutex(mutex);
     void* result = Alloc__Q46nw4hbm3snd6detail9FrameHeapFUlPFPvUlPv_vPv(
