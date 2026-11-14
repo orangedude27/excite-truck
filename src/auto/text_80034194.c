@@ -777,15 +777,16 @@ descend:
     }
 }
 BOOL DVDFastOpen(s32 entrynum, void *info) {
-    u32 temp_r7;
+    /* Open a DVD file by FST entry number, populating start offset, length, and zeroed state fields. */
+    u32 entryOffset;
 
     if ((entrynum < 0) ||
         ((u32)entrynum >= MaxEntryNum_8055D838) ||
-        ((*(u32 *)(FstStart_8055D840 + (temp_r7 = (u32)entrynum * 0xC)) & 0xFF000000) != 0)) {
+        ((*(u32 *)(FstStart_8055D840 + (entryOffset = (u32)entrynum * 0xC)) & 0xFF000000) != 0)) {
         return FALSE;
     }
-    *(u32 *)((u8 *)info + 0x30) = *(u32 *)(FstStart_8055D840 + temp_r7 + 4) >> __DVDLayoutFormat;
-    *(u32 *)((u8 *)info + 0x34) = *(u32 *)(FstStart_8055D840 + temp_r7 + 8);
+    *(u32 *)((u8 *)info + 0x30) = *(u32 *)(FstStart_8055D840 + entryOffset + 4) >> __DVDLayoutFormat;
+    *(u32 *)((u8 *)info + 0x34) = *(u32 *)(FstStart_8055D840 + entryOffset + 8);
     *(u32 *)((u8 *)info + 0x38) = 0;
     *(u32 *)((u8 *)info + 0x0C) = 0;
     return TRUE;
