@@ -1143,30 +1143,31 @@ extern "C" void fn_80299FE0(void *unused, void *arg1, float unusedTime) {
         *(float *)((char *)arg1 + 0x98) = time + lbl_80564594;
     }
 }
-extern "C" void fn_8029A114(void* arg0) {
-    float value0 = lbl_8056459C;
-    float value1 = lbl_80564590;
-    volatile float temp[3];
-    *(volatile float *)((char *)arg0 + 4) = value0;
-    *(volatile float *)((char *)arg0 + 0) = value1;
-    *(volatile float *)((char *)arg0 + 8) = value0;
-    *(volatile float *)((char *)arg0 + 0xC) = value0;
-    *(volatile float *)((char *)arg0 + 0x10) = value1;
-    *(volatile float *)((char *)arg0 + 0x14) = value0;
-    *(volatile float *)((char *)arg0 + 0x18) = value0;
-    *(volatile float *)((char *)arg0 + 0x1C) = value0;
-    *(volatile float *)((char *)arg0 + 0x20) = value1;
-    *(volatile float *)((char *)arg0 + 0x24) = value0;
-    *(volatile float *)((char *)arg0 + 0x28) = value0;
-    *(volatile float *)((char *)arg0 + 0x2C) = value0;
-    temp[0] = value0;
-    temp[1] = value0;
-    temp[2] = value0;
-    *(volatile float *)((char *)arg0 + 0x30) = value0;
-    *(volatile float *)((char *)arg0 + 0x34) = value0;
-    *(volatile float *)((char *)arg0 + 0x38) = value0;
-    *(volatile int *)((char *)arg0 + 0x3C) = -1;
-    *(volatile int *)((char *)arg0 + 0x40) = -1;
+/* Initialize a 0x44-byte transform/state block to identity-like floats and invalid indices (-1). */
+extern "C" void fn_8029A114(void* state) {
+    float zero = lbl_8056459C;
+    float one = lbl_80564590;
+    volatile float scratch[3];
+    *(volatile float *)((char *)state + 4) = zero;
+    *(volatile float *)((char *)state + 0) = one;
+    *(volatile float *)((char *)state + 8) = zero;
+    *(volatile float *)((char *)state + 0xC) = zero;
+    *(volatile float *)((char *)state + 0x10) = one;
+    *(volatile float *)((char *)state + 0x14) = zero;
+    *(volatile float *)((char *)state + 0x18) = zero;
+    *(volatile float *)((char *)state + 0x1C) = zero;
+    *(volatile float *)((char *)state + 0x20) = one;
+    *(volatile float *)((char *)state + 0x24) = zero;
+    *(volatile float *)((char *)state + 0x28) = zero;
+    *(volatile float *)((char *)state + 0x2C) = zero;
+    scratch[0] = zero;
+    scratch[1] = zero;
+    scratch[2] = zero;
+    *(volatile float *)((char *)state + 0x30) = zero;
+    *(volatile float *)((char *)state + 0x34) = zero;
+    *(volatile float *)((char *)state + 0x38) = zero;
+    *(volatile int *)((char *)state + 0x3C) = -1;
+    *(volatile int *)((char *)state + 0x40) = -1;
 }
 
 extern "C" int fn_8029A290(void*, void*);
