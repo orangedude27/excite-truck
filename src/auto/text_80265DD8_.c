@@ -1669,6 +1669,8 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     PSVECCrossProduct((char *)out + 0xC, (char *)out + 0x18, out);
 }
 #pragma pop
+/* Initialize a temporary object, apply fn_80268BD4 using lbl_80499920 and the context value at +0x1C
+   with constant parameters lbl_80563C20/lbl_80563C98, then release its resource and destroy the object. */
 void fn_80268D94(void) {
     struct Object {
         char pad2c[0x2C];
