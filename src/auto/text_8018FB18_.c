@@ -209,12 +209,13 @@ void fn_8018FC38(void) {
 }
 #pragma use_lmw_stmw reset
 void fn_8018FCC4(void) {
+    /* Release each tracked object slot (count from fn_80137C74) and clear the slot table. */
     s32 count = fn_80137C74();
-    register s32 *p = (s32 *)lbl_804349B0;
-    register s32 i;
-    for (i = 0; i < count; p++, i++) {
-        fn_80128670(*p);
-        *p = 0;
+    register s32 *slot = (s32 *)lbl_804349B0;
+    register s32 index;
+    for (index = 0; index < count; slot++, index++) {
+        fn_80128670(*slot);
+        *slot = 0;
     }
 }
 #pragma scheduling on
