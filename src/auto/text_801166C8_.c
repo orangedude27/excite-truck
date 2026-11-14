@@ -5580,11 +5580,12 @@ void fn_80121BB0(void *arg0) {
     p[8] = a; p[9] = c; p[12] = e; p[13] = g;
 }
 
+/* Reorder 16 floats at arg0+0x08..0x3C: permute the 8 (re,im) pairs by index 6,2,4,0,5,1,3. */
 void fn_80121BF4(void *arg0) {
     f32 temp_8, temp_C, temp_10, temp_14, temp_18, temp_1C;
     f32 temp_20, temp_24, temp_28, temp_2C, temp_30, temp_34;
     f32 temp_38, temp_3C;
-    
+
     temp_8 = *(f32 *)((u8 *)arg0 + 8);
     temp_C = *(f32 *)((u8 *)arg0 + 0xc);
     temp_10 = *(f32 *)((u8 *)arg0 + 0x10);
@@ -5599,7 +5600,7 @@ void fn_80121BF4(void *arg0) {
     temp_34 = *(f32 *)((u8 *)arg0 + 0x34);
     temp_38 = *(f32 *)((u8 *)arg0 + 0x38);
     temp_3C = *(f32 *)((u8 *)arg0 + 0x3c);
-    
+
     *(f32 *)((u8 *)arg0 + 8) = temp_38;
     *(f32 *)((u8 *)arg0 + 0xc) = temp_3C;
     *(f32 *)((u8 *)arg0 + 0x10) = temp_18;
