@@ -3583,11 +3583,13 @@ u32 fn_8011C1E0(s32 arg0, void *arg1) {
 }
 #pragma dont_inline reset
 
-void fn_8011C274(s32 arg0, void *arg1) {
-    if (arg0 != 0 && arg1 != 0 &&
-        *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
-        *(s32 *)((u8 *)arg1 + 0x14) != 0) {
-        while (fn_8011C1E0(arg0, arg1) == 0) {
+/* Spins until the lock at lockObj (+0xC state, +0x10 count, +0x14/+0x18 guards)
+   can be acquired via fn_8011C1E0, yielding the thread between attempts. */
+void fn_8011C274(s32 lockTick, void *lockObj) {
+    if (lockTick != 0 && lockObj != 0 &&
+        *(s32 *)((u8 *)lockObj + 0x18) != 0 &&
+        *(s32 *)((u8 *)lockObj + 0x14) != 0) {
+        while (fn_8011C1E0(lockTick, lockObj) == 0) {
             OSYieldThread();
         }
     }
