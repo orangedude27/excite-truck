@@ -775,21 +775,39 @@ void fn_801A7444(void *arg0) {
 }
 
 #pragma scheduling reset
-void fn_801A7530(void *arg0, void *arg1) {
-    typedef struct { int first; int second; } Pair;
-    float zero;
-    float *v;
-    if (*(int *)((char *)arg0 + 0x2610) == 0 || *(unsigned char *)((char *)arg0 + 0x2741) != 0) {
-        zero = lbl_8056242C;
-        *(float *)((char *)arg1 + 4) = zero;
-        *(float *)((char *)arg1 + 8) = zero;
-        *(float *)((char *)arg1 + 0xC) = zero;
-        *(float *)arg1 = zero;
-    } else {
-        v = fn_80265D98();
-        *(float *)arg1 = *v;
-        *(Pair *)((char *)arg1 + 4) = *(Pair *)((char *)v + 4);
-        *(int *)((char *)arg1 + 0xC) = *(int *)((char *)v + 0xC);
-    }
-}
+/* Blend parameters of the camera's move-following update.
+ *
+ * The camera (the object fn_801A6484 builds) is updated with four blend
+ * parameters that fn_801A7444 reads back from here, the first of them the
+ * factor between the camera's own pose and the pose the move record hands
+ * back.  When the camera has no move to follow - the game state at 0x2610 is
+ * 0, or the move has just ended (the flag at 0x2741) - it is blended all the
+ * way over, so all four come out 1.0; otherwise they are the four floats
+ * getMoveBlendParams() points at (a stub returning null in this build). */
+void fn_801A7530(void *camera, void *blendParams) {
+    /* Two words moved as one aggregate: that is what makes the compiler pair
+     * the loads and stores below as the original does
+     * (lwz r4,4 / lwz r0,8 / stw r4,4 / stw r0,8). */
+    typedef struct { int first; int second; } WordPair;
+    /* Names for the symbols this file declares by their original labels. */
+#define one_f              lbl_8056242C /* 1.0f */
+#define getMoveBlendParams fn_80265D98
+    float one;
+    float *src;
 
+    if (*(int *)((char *)camera + 0x2610) == 0 ||
+        *(unsigned char *)((char *)camera + 0x2741) != 0) {
+        one = one_f;
+        *(float *)((char *)blendParams + 4) = one;
+        *(float *)((char *)blendParams + 8) = one;
+        *(float *)((char *)blendParams + 0xC) = one;
+        *(float *)blendParams = one;
+    } else {
+        src = getMoveBlendParams();
+        *(float *)blendParams = *src;
+        *(WordPair *)((char *)blendParams + 4) = *(WordPair *)((char *)src + 4);
+        *(int *)((char *)blendParams + 0xC) = *(int *)((char *)src + 0xC);
+    }
+#undef one_f
+#undef getMoveBlendParams
+}
