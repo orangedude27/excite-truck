@@ -601,6 +601,11 @@ void fn_8001B450(int arg0) {
     *(int *)&lbl_803583C8[arg0 * 0x14 + 4] = -1;
 }
 
+/* Linear interpolation from a to b. */
+static inline float lerpf(float a, float b, float t) {
+    return a + t * (b - a);
+}
+
 extern void fn_801352B8(void *);
 extern int fn_80135D60(void *, int);
 extern void fn_8013530C(void *, int);
