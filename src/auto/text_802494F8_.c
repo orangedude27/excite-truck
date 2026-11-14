@@ -747,23 +747,42 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
 #pragma pop
 
 #pragma use_lmw_stmw on
-void *fn_8024AFF8(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        fn_80236074((char *)arg0 + 0x4C, -1);
-        if ((unsigned int)arg0 + 0x18 != 0) {
-            if ((unsigned int)arg0 + 0x18 != 0) {
-                *(s32 *)((char *)arg0 + 0x18) = 0;
-                *(s32 *)((char *)arg0 + 0x1C) = 0;
-                *(s32 *)((char *)arg0 + 0x20) = 0;
+/* Destructor of the sound-archive selector object: tears down the embedded
+ * nw4hbm::snd::MemorySoundArchive at +0x4C (flag -1: the archive itself is a
+ * member, so it is not freed), drops the entry-array descriptor at +0x18
+ * (array pointer, count and capacity), and frees the object itself only when
+ * deleteFlag > 0 (the scalar-deleting-destructor case). */
+void *fn_8024AFF8(void *object, s32 deleteFlag) {
+    struct ArchiveSelector {
+        void* vtable;                // at 0x00
+        s32 field_4;                 // at 0x04
+        s32 field_8;                 // at 0x08
+        s32 field_C;                 // at 0x0C
+        s32 field_10;                // at 0x10
+        s32 field_14;                // at 0x14
+        void** entries;              // at 0x18: matching sound entries
+        s32 entryCount;              // at 0x1C
+        s32 entryCapacity;           // at 0x20: 10 while the inline array is used
+        char inlineEntries[0x28];    // at 0x24: first entries live here
+        s32 soundArchive;            // at 0x4C: nw4hbm::snd::MemorySoundArchive
+    };
+    struct ArchiveSelector* self = (struct ArchiveSelector*)object;
+
+    if (object != 0) {
+        fn_80236074(&self->soundArchive, -1);
+        if (&self->entries != 0) {
+            if (&self->entries != 0) {
+                self->entries = 0;
+                self->entryCount = 0;
+                self->entryCapacity = 0;
             }
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (deleteFlag > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
-
 extern s32 fn_80215228(void);
 extern s32 fn_8024A6EC(s32 *, void *);
 extern s32 fn_8024ACB4(s32 *, s32, void *);
