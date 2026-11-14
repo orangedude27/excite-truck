@@ -253,6 +253,15 @@ extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7PictureCFUl(void* this_,
     return p[lo + 0xD4];
 }
 
+namespace nw4hbm { namespace lyt {
+    /* Picture pane: the last of its members are the four corner colors of the
+     * quad it draws, indexed by the vertex-color accessors below. */
+    struct Picture {
+        u8 unk_0[0xD4];
+        Color vtxColor[VERTEXCOLOR_NUM]; /* 0xD4 */
+    };
+} }
+
 extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(void* this_,
                                                                u32 idx,
                                                                u8 color) {
