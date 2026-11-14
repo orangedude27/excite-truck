@@ -612,16 +612,16 @@ void fn_8028EFC4(int buckets, int *srcList) {
     int *base;
     int *cursor;
     int i;
-    int item;
+    EfEmitter *item;
     int priority;
     base = srcList;
     cursor = base;
     i = 0;
     goto test;
 body:
-    item = *cursor;
-    priority = *(int *)((char *)item + 0x44);
-    fn_8028ED8C((char *)buckets + (priority - 1) * 0x104, item);
+    item = (EfEmitter *)*cursor;
+    priority = item->priority;
+    fn_8028ED8C((char *)buckets + (priority - 1) * sizeof(EfList), (int)item);
     cursor++;
     i++;
 test:
