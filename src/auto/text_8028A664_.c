@@ -289,18 +289,28 @@ void fn_8028A9BC(void) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_8028A9F4(void) {
-    class Dummy { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); };
-    ((Dummy *)lbl_8055F6FC)->v3();
-    void **p = (void **)lbl_804B3238;
-    s32 i = 0;
-    do {
-        void *obj = *p;
-        if (obj) ((Dummy *)obj)->v3();
-        i++;
-        p = (void **)((u8 *)p + 0x10);
-    } while (i < 8);
-}
+    /* Invoke virtual method v3 on the global effect object and on each active entry in the 8-slot table. */
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+    };
 
+    ((Dummy *)lbl_8055F6FC)->v3();
+
+    void **slot = (void **)lbl_804B3238;
+    s32 slotIndex = 0;
+    do {
+        void *entry = *slot;
+        if (entry) {
+            ((Dummy *)entry)->v3();
+        }
+        slotIndex++;
+        slot = (void **)((u8 *)slot + 0x10);
+    } while (slotIndex < 8);
+}
 void fn_8028AA6C(void *pos, s32 sequence, f32 unused) {
     /* Append an explosion spawn entry (time, world position, sequence) to the FX spawn queue at lbl_804B32B8 if there is space. */
     if (sequence != 0 && (u32)lbl_804B32B8[0x50] < 0x10U) {
