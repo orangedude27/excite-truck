@@ -166,27 +166,31 @@ void fn_80137FF0(void *arg0) {
     }
 }
 
-void fn_801380DC(void *arg0) {
-    unsigned char *base = (unsigned char *)arg0;
-    unsigned char a = base[8];
-    unsigned char *p = base + 12;
-    unsigned char b = base[9];
+void fn_801380DC(void *extRecord) {
+    /* idealres ext type 3: byte-swap a square-matrix extension record in
+       place.  The 32-bit side length at +0x8 is swapped first (so the loop
+       bound is read in this machine's byte order), then each of the
+       size*size 32-bit entries of the matrix at +0xC is swapped. */
+    unsigned char *record = (unsigned char *)extRecord;
+    unsigned char t0 = record[8];
+    unsigned char *entry = record + 0xC;
+    unsigned char t1 = record[9];
     int i;
-    unsigned char c;
-    base[8] = base[11];
-    base[11] = a;
-    base[9] = base[10];
-    base[10] = b;
-    for (i = 0; i < *(int *)(base + 8) * *(int *)(base + 8); i++) {
-        a = p[0];
-        c = p[3];
-        p[0] = c;
-        p[3] = a;
-        a = p[1];
-        c = p[2];
-        p[1] = c;
-        p[2] = a;
-        p += 4;
+    unsigned char t2;
+    record[8] = record[11];
+    record[11] = t0;
+    record[9] = record[10];
+    record[10] = t1;
+    for (i = 0; i < *(int *)(record + 8) * *(int *)(record + 8); i++) {
+        t0 = entry[0];
+        t2 = entry[3];
+        entry[0] = t2;
+        entry[3] = t0;
+        t0 = entry[1];
+        t2 = entry[2];
+        entry[1] = t2;
+        entry[2] = t0;
+        entry += 4;
     }
 }
 
