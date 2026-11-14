@@ -991,6 +991,7 @@ void fn_801F17C8(int unused) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Panic if any of the 64 wheel-module slots in lbl_80488798 are still allocated. */
 int fn_801F17DC(void *arg0) {
     int *entry = lbl_80488798;
     int i = 0;
