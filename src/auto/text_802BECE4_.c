@@ -77,14 +77,15 @@ int fn_802BECE4(const char *str, int defaultValue) {
     return value;
 }
 #pragma scheduling on
-void fn_802BED90(float *arg0) {
-    float mag = PSVECMag(arg0);
+void fn_802BED90(float *vec) {
+    /* Normalize a 3D vector to unit length, clamping very small magnitudes to avoid division by zero. */
+    float mag = PSVECMag(vec);
     float scale;
     mag = lbl_80564D7C > mag ? lbl_80564D7C : mag;
     scale = lbl_80564D80 / mag;
-    arg0[0] *= scale;
-    arg0[1] *= scale;
-    arg0[2] *= scale;
+    vec[0] *= scale;
+    vec[1] *= scale;
+    vec[2] *= scale;
 }
 
 #pragma scheduling invalid_target
