@@ -114,17 +114,25 @@ struct NamedItemTable80145FEC {
 
 extern "C" f32 lbl_805615F0;
 extern "C" f32 lbl_8055D020;
-extern "C" s32 fn_80144F40(const char *arg0, void *arg1) {
+extern "C" s32 fn_80144F40(const char *text, void *table) {
+    /* Returns the bitwise OR of each table entry's flags whose pattern string
+       appears anywhere in text. The table is terminated by an entry with a
+       null pattern pointer. */
     extern char *strstr(const char *, const char *);
-    struct Entry { const char *text; s32 flags; };
-    Entry *entry = (Entry *)arg1;
-    s32 result = 0;
-    while (entry->text != 0) {
-        if (strstr(arg0, entry->text) != 0)
-            result |= entry->flags;
+    struct StringFlagEntry {
+        const char *pattern;
+        s32 flags;
+    };
+    StringFlagEntry *entry = (StringFlagEntry *)table;
+    s32 matchedFlags = 0;
+
+    while (entry->pattern != 0) {
+        if (strstr(text, entry->pattern) != 0) {
+            matchedFlags |= entry->flags;
+        }
         entry++;
     }
-    return result;
+    return matchedFlags;
 }
 
 extern "C" u8 lbl_80559DCC;
