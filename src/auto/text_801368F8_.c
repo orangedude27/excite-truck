@@ -80,33 +80,38 @@ extern void *memset(void *, s32, s32);
 extern float fn_8013672C(void);
 extern void fn_801369EC(void *);
 #pragma scheduling invalid_target
-s32 fn_801368F8(s32 arg0, s32 arg1) {
-    s32 pairs;
-    s32 count;
-    s32 stride;
-    s32 size;
-    s32 data;
-    s32 buf;
-    s32 m;
-    s32 u;
-    m = arg1 * (arg1 - 1);
-    u = (s32)(((unsigned)m) >> 31);
-    pairs = (u + m) >> 1;
-    *(s32 *)arg0 = arg1;
-    count = (pairs > 1) ? pairs : 1;
-    *(s32 *)(arg0 + 8) = fn_8002F37C(fn_8012850C(count * 0x2C + 0x10, (s32)lbl_8032BE98), (s32)&fn_801369EC, 0, 0x2C, count);
-    stride = arg1 * 4 - arg1;
-    size = stride * 4 + 0x18;
-    *(s32 *)(arg0 + 0xC) = size;
-    data = arg1 * size;
-    buf = fn_801284E8((s32)lbl_8032BEA8, data);
-    *(s32 *)(arg0 + 0x10) = buf;
-    if (buf != 0 && *(s32 *)(arg0 + 8) != 0) {
-        memset((void *)buf, 0, data);
-        fn_80136AA8((void *)arg0);
+/* Builds the proximity table ("proxer") for carCount cars: one ProxPair record
+ * per unordered pair of cars, cleared and constructed by fn_801369EC, plus a
+ * carCount-row table whose rows hold three planes of pair pointers, which
+ * fn_80136AA8 links up (a car's own entries stay 0). Returns the table, or the
+ * half-built one if either allocation failed. */
+Proxer *fn_801368F8(Proxer *proxer, s32 carCount) {
+    s32 pairCount;
+    s32 allocCount;
+    s32 rowStride;
+    s32 rowSize;
+    s32 tableSize;
+    ProxRow *rows;
+    s32 product;
+    s32 sign;
+    product = carCount * (carCount - 1);
+    sign = (s32)(((unsigned)product) >> 31);
+    pairCount = (sign + product) >> 1; /* product / 2, rounded down */
+    proxer->carCount = carCount;
+    allocCount = (pairCount > 1) ? pairCount : 1;
+    proxer->pairs = (ProxPair *)fn_8002F37C(fn_8012850C(allocCount * sizeof(ProxPair) + 0x10, (s32)lbl_8032BE98), (s32)&fn_801369EC, 0, sizeof(ProxPair), allocCount);
+    rowStride = carCount * 4 - carCount; /* the row's three pointer planes */
+    rowSize = rowStride * 4 + 0x18;
+    proxer->rowStride = rowSize;
+    tableSize = carCount * rowSize;
+    rows = (ProxRow *)fn_801284E8((s32)lbl_8032BEA8, tableSize);
+    proxer->rows = rows;
+    if (rows != 0 && proxer->pairs != 0) {
+        memset(rows, 0, tableSize);
+        fn_80136AA8(proxer);
     }
-    *(f32 *)(arg0 + 0x14) = fn_8013672C();
-    return arg0;
+    proxer->time = fn_8013672C();
+    return proxer;
 }
 void fn_801369EC(void *arg0) {
     f32 value = lbl_80561368;
