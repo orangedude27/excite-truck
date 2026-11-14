@@ -124,6 +124,22 @@ typedef struct SessionState { /* lbl_8034EE84, what lbl_8055D350 points at */
 
 #define OVERLAY_MGR ((OverlayManager *)lbl_8034EEB8)
 #define SESSION     ((SessionState *)lbl_8055D350)
+#define gSessionState lbl_8034EE84
+#define Player_getCarSlot fn_801E866C
+#define Car_getEntry fn_801EA9A0
+#define Hud_queryPlayerFlags fn_801B84D8
+#define OverlayMgr_hasArenaOverlay fn_80005564
+#define Hud_checkArenaCar fn_801B8570
+
+enum {
+    SESSION_CUR_PLAYER_WORD   = 0x1C / 4,
+    SESSION_PLAYER_FLAGS_WORD = 0x20 / 4,
+    SESSION_CAR_SLOT_WORD     = 0x24 / 4,
+    SESSION_CAR_ENTRY_WORD    = 0x28 / 4,
+    SESSION_CAR_ID_WORD       = 0x2C / 4,
+    SESSION_CAR_DATA_WORD     = 0x30 / 4,
+    CAR_ENTRY_DATA_OFFSET     = 0x0C
+};
 
 #pragma scheduling invalid_target
 #pragma push
@@ -393,12 +409,12 @@ extern "C" void fn_80005C88(void) {
     u8 *strings = lbl_802FB0C8;
     u32 *config = (u32 *)manager[2];
     s32 flag = (config[1] >> 9) & 1;
+    s32 zero = 0;
     u8 *state;
+    void *object;
     u8 *entry;
     s32 count;
     s32 i;
-    void *object;
-
     if (flag != 0) {
         object = fn_801284F8(4, (const char *)(strings + 0xB0));
         if (object != 0) {
@@ -411,11 +427,9 @@ extern "C" void fn_80005C88(void) {
         if (object != 0) *(void **)object = lbl_802FB4B0;
         *(void **)((u8 *)lbl_8034EEB8 + 0xC) = object;
     }
-
     object = fn_801284F8(4, (const char *)(strings + 0xD4));
     if (object != 0) *(void **)object = lbl_802FB358;
     *(void **)lbl_8034EEB8 = object;
-
     if (fn_801B8914() != 0) {
         object = fn_801284F8(8, (const char *)(strings + 0xE8));
         if (object != 0) {
@@ -428,7 +442,6 @@ extern "C" void fn_80005C88(void) {
     } else {
         *(void **)((u8 *)lbl_8034EEB8 + 4) = 0;
     }
-
     if (flag != 0) {
         object = fn_801284F8(4, (const char *)(strings + 0xF8));
         if (object != 0) *(void **)object = lbl_802FB408;
@@ -436,37 +449,33 @@ extern "C" void fn_80005C88(void) {
         object = 0;
     }
     *(void **)((u8 *)lbl_8034EEB8 + 0x50) = object;
-
     object = fn_801284F8(4, (const char *)(strings + 0x108));
     if (object != 0) *(void **)object = lbl_802FB440;
     state = (u8 *)lbl_8034EEB8;
     *(void **)(state + 0x54) = object;
-
     manager = (u32 *)lbl_8055D350;
     count = manager[5];
     entry = state;
-    for (i = 0; (u32)i < 4U; i++, entry += 0x10) {
-        *(s32 *)(entry + 0x10) = 0;
-        *(s32 *)(entry + 0x14) = 0;
+    for (i = zero; (u32)i < 4U; i++, entry += 0x10) {
+        *(s32 *)(entry + 0x10) = zero;
+        *(s32 *)(entry + 0x14) = zero;
         if (i < count) {
             object = fn_801284F8(0x54, (const char *)(strings + 0x118));
             if (object != 0) object = fn_80014524(object, i);
             *(void **)(entry + 0x18) = object;
         } else {
-            *(void **)(entry + 0x18) = 0;
+            *(void **)(entry + 0x18) = (void *)zero;
         }
         if (flag != 0) object = *(void **)(state + 0x50);
         else object = *(void **)(entry + 0x18);
         *(void **)(entry + 0x1C) = object;
     }
-
     object = fn_801284F8(0x1C, (const char *)(strings + 0x128));
     if (object != 0) {
         *(void **)object = lbl_802FB520;
         ((Dummy *)object)->v5();
     }
     *(void **)((u8 *)lbl_8034EEB8 + 0x58) = object;
-
     if (fn_801B8900() != 0) {
         object = fn_801284F8(8, (const char *)(strings + 0x138));
         if (object != 0) {
@@ -477,7 +486,6 @@ extern "C" void fn_80005C88(void) {
     } else {
         *(void **)((u8 *)lbl_8034EEB8 + 8) = 0;
     }
-
     object = lbl_8055D344;
     if (object != 0) {
         ((Dummy *)object)->v1();
@@ -493,7 +501,7 @@ extern "C" void fn_80005C88(void) {
         }
         *(void **)((u8 *)lbl_8034EEB8 + 0x5C) = object;
     }
-    *(s32 *)((u8 *)lbl_8034EEB8 + 0x60) = 0;
+    *(s32 *)((u8 *)lbl_8034EEB8 + 0x60) = zero;
 }
 #pragma pop
 #pragma scheduling on
@@ -870,6 +878,7 @@ extern "C" void fn_800066B4(void *arg0) {
     struct Table { u32 words[12]; };
     struct Item { u32 first[4]; f32 four; u32 rest[3]; };
     struct Out { u32 first[4]; f32 four, five; u32 color; };
+    register u32 dummy;
     u8 *base = lbl_802FB0C8;
     void *obj;
     u32 table[12];
@@ -880,6 +889,7 @@ extern "C" void fn_800066B4(void *arg0) {
     u8 alpha;
     void *(*get)(void *, s32);
     void *(*get2)(void *, s32, s32);
+    (void)dummy;
     fn_8027AA48();
     fn_80011E70();
     fn_80011E90();
