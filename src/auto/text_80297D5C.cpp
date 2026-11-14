@@ -505,6 +505,7 @@ extern "C" void* fn_80298A4C(void* self, int shouldDelete) {
 }
 
 extern "C" void fn_80298AD8(void* arg0) {
+    /* Clear byte 0x19 in each 0x20-byte entry of the table pointed to by *arg0. */
     int offset = 0;
     int i = 0;
     while (i < fn_80287B14()) {
