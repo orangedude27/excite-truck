@@ -1347,27 +1347,23 @@ void nw4hbm::ut::detail::ResFontBase::GetGlyphFromIndex(nw4hbm::ut::Glyph* glyph
     }
     u8 *info=*(u8**)((char*)this+0x14);
     u8 *font=*(u8**)(info+8);
-    u16 columns=*(u16*)(font+0xc);
-    u16 rows=*(u16*)(font+0xe);
-    u32 cellw=(u32)font[0]+1, cellh=(u32)font[1]+1;
-    u32 sheet=(u32)index/(columns*rows);
-    u32 rem=(u32)index%(columns*rows);
+    u32 columns=*(u16*)(font+0xc), rows=*(u16*)(font+0xe);
+    u32 cellw=font[0]+1, cellh=font[1]+1;
+    u32 sheet=index/(columns*rows);
+    u32 rem=index%(columns*rows);
     u32 row=rem/columns;
     u32 col=rem%columns;
     u32 x=col*cellw;
     u32 y=row*cellh;
     *(u32*)glyph=*(u32*)(font+0x14)+sheet*(*(u32*)(font+4));
     {
-        u32 a, b;
-        register int valid = 0;
-        if (top == 0x80000000U ||
-            (a = (u32)this & 0xFF800000U) == 0x81000000U ||
-            (b = (u32)this & 0xF8000000U) == 0x90000000U ||
+        register int valid = (top == 0x80000000U ||
+            ((u32)this & 0xFF800000U) == 0x81000000U ||
+            ((u32)this & 0xF8000000U) == 0x90000000U ||
             top == 0xC0000000U ||
-            a == 0xC1000000U ||
-            b == 0xD0000000U ||
-            ((u32)this & 0xFFFFC000U) == 0xE0000000U)
-            valid = 1;
+            ((u32)this & 0xFF800000U) == 0xC1000000U ||
+            ((u32)this & 0xF8000000U) == 0xD0000000U ||
+            ((u32)this & 0xFFFFC000U) == 0xE0000000U);
         if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x267, file + 0xF0, this);
     }
     {
