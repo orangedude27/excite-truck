@@ -2156,23 +2156,42 @@ s32 fn_8014F088(s32, s32);
 #pragma push
 #pragma scheduling off
 #pragma peephole off
-void fn_80150B60(void *arg0) {
-    u8 *p;
-    fn_8016783C(arg0);
-    if (((u8 *)arg0)[0x8F4] != 0) {
-        memset((char *)arg0 + 0x8F8, 0, 0xE0);
+void fn_80150B60(void *object) {
+    /* One of the game's Sound objects (created by fn_80207848, pool tag
+     * "Sound"); its update fn_80206824 stops the sound when +0x4A is set. */
+    struct Sound {
+        char pad_0[0x4A];
+        u8 stopRequested; /* +0x4A */
+        char pad_4B[1];
+        u8 stopWhenDone;  /* +0x4C */
+    };
+    /* The bet/race manager, 0xFE8 bytes allocated as "betamaster". */
+    struct BetaMaster {
+        char pad_0[0x44C];
+        struct Sound *preraceSfx; /* +0x44C: "prerace.sfx" */
+        u8 preraceSfxStarted;     /* +0x450 */
+        char pad_451[0x8F4 - 0x451];
+        u8 coinEnabled;           /* +0x8F4: set when coin_file exists */
+        char pad_8F5[3];
+        u8 coinRecords[0xE0];     /* +0x8F8: 8 x 0x1C, one record per car */
+    };
+    struct BetaMaster *master = (struct BetaMaster *)object;
+    struct Sound *preraceSfx;
+
+    fn_8016783C(object);
+    if (master->coinEnabled != 0) {
+        memset(master->coinRecords, 0, sizeof(master->coinRecords));
         fn_801688FC(1);
         fn_80168020();
     }
     fn_8016A0D4();
-    p = *(u8 **)((u8 *)arg0 + 0x44C);
-    if (p != 0) {
-        p[0x4A] = 1;
-        p[0x4C] = 0;
+    preraceSfx = master->preraceSfx;
+    if (preraceSfx != 0) {
+        preraceSfx->stopRequested = 1;
+        preraceSfx->stopWhenDone = 0;
     }
-    ((u8 *)arg0)[0x450] = 0;
+    master->preraceSfxStarted = 0;
 }
-
 void fn_80150BDC(void *arg0) {
     float a = lbl_80561648;
     float b = lbl_80561650;
