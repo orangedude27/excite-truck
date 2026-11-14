@@ -1024,12 +1024,13 @@ check:
 }
 #pragma pop
 
-void fn_801F6B98(void *arg0) {
+void fn_801F6B98(void *container) {
+    /* Draw each active cloth entry in the container's 0x48-byte entry array. */
     void *entry;
     int i;
     i = 0;
-    entry = arg0;
-    while (i < *(int *)((char *)arg0 + 0x900)) {
+    entry = container;
+    while (i < *(int *)((char *)container + 0x900)) {
         if (*(unsigned char *)((char *)entry + 0x38) != 0) {
             fn_801F6880(entry);
         }
