@@ -191,10 +191,11 @@ void fn_801D597C(void *, int);
 int fn_801D5A68(void *);
 #pragma push
 #pragma scheduling invalid_target
-void fn_801D488C(int arg0, int arg1, int arg2, float *arg3) {
-    fn_801D597C((void *)arg0, arg1);
-    if (arg2 != 0 && fn_801D5A68((void *)arg0) != 0) {
-        fn_801D5454((void *)arg0, (void *)arg3);
+/* Applies a state change to a registered handle and, when requested and active, updates its position. */
+void fn_801D488C(int handle, int state, int updatePosition, float *position) {
+    fn_801D597C((void *)handle, state);
+    if (updatePosition != 0 && fn_801D5A68((void *)handle) != 0) {
+        fn_801D5454((void *)handle, (void *)position);
     }
 }
 #pragma pop
