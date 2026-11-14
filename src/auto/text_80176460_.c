@@ -721,20 +721,19 @@ s32 *fn_80176C0C(register s32 *arg0, s32 *arg1) {
 }
 #pragma scheduling on
 #pragma dont_inline on
+/* Promotes the pending PhysicsCommand (sPendingCommand / lbl_804303D4) into the active command slot (lbl_804303C8), resets the pending command to PHYS_MODE_NONE, runs physics world reset (fn_80179320), and advances the physics state machine (lbl_8055E3F4) to state 3. */
 void fn_80176C4C(void) {
-    if (*(volatile s32 *)lbl_804303D4 != 4) {
-        ((s32 *)lbl_804303C8)[0] = *(s32 *)lbl_804303D4;
-        ((s32 *)lbl_804303C8)[1] = ((s32 *)lbl_804303D4)[1];
-        ((u8 *)lbl_804303C8)[8] = ((u8 *)lbl_804303D4)[8];
-        *(s32 *)lbl_804303D4 = 4;
-        ((s32 *)lbl_804303D4)[1] = 0;
-        memset(lbl_804303D4 + 2, 0, 1);
+    if (*(volatile s32 *)sPendingCommand != PHYS_MODE_NONE) {
+        ((s32 *)lbl_804303C8)[0] = *(s32 *)sPendingCommand;
+        ((s32 *)lbl_804303C8)[1] = ((s32 *)sPendingCommand)[1];
+        ((u8 *)lbl_804303C8)[8] = ((u8 *)sPendingCommand)[8];
+        *(s32 *)sPendingCommand = PHYS_MODE_NONE;
+        ((s32 *)sPendingCommand)[1] = 0;
+        memset(sPendingCommand + 2, 0, 1);
     }
     fn_80179320();
     lbl_8055E3F4 = 3;
 }
-
-#pragma dont_inline fn_80176C4C
 /* Updates the physics/system state each tick: consumes a pending command (if set), dispatches the current state (lbl_8055E3F4) to its handler(s), logs unknown states, and applies deferred flags. */
 void fn_80176CC8(void) {
     fn_802E4C14(1);
