@@ -766,6 +766,13 @@ extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
     return result;
 }
 
+/* Allocate `size` bytes for `owner`, aligned to 0x80. */
+static inline void *AllocAligned80(void *owner, s32 size) {
+    fn_801282F4();
+    fn_801282EC(0x80);
+    return ((void *(*)(void *, s32))fn_801284F0)(owner, size);
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
