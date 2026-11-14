@@ -11,6 +11,9 @@ typedef enum {
     STM_IOCTL_SET_IDLE_LED_MODE = 0x6002,
 } OSStateTMIoctl;
 
+/* Error the STM helpers return when the STM devices were never opened. */
+#define STM_ERR_NOT_READY (-6)
+
 static u8 StmEhInBuf[32] ALIGN(32);
 static u8 StmEhOutBuf[32] ALIGN(32);
 
