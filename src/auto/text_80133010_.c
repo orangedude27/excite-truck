@@ -174,6 +174,7 @@ void fn_80133144(void) {
     lbl_8055E07C = 0;
 }
 
+/* Get a float option value by section/key; on miss, write the provided default via fn_8013323C. */
 void fn_801331C4(int arg0,int arg1,float *arg2) {
  void *sp8;
  int ok;
