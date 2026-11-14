@@ -480,6 +480,9 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
 int fn_80129D90(int, int, int);
 #pragma push
 #pragma use_lmw_stmw off
+/* Shuffle an integer array in place (Fisher-Yates): swap each element except the
+ * last with one drawn at random from the elements after it. `offset` walks the
+ * array in bytes. */
 void fn_802B2504(int *dst, int count) {
     int limit;
     int offset;
@@ -488,10 +491,10 @@ void fn_802B2504(int *dst, int count) {
     limit = count - 1;
     offset = 0;
     while (i < limit) {
-        int j = fn_80129D90(0, i + 1, count);
-        int tmp = dst[offset / 4];
-        dst[offset / 4] = dst[j];
-        dst[j] = tmp;
+        int swapIndex = fn_80129D90(0, i + 1, count);
+        int saved = dst[offset / 4];
+        dst[offset / 4] = dst[swapIndex];
+        dst[swapIndex] = saved;
         i++;
         offset += 4;
     }
