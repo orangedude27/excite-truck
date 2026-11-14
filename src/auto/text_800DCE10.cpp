@@ -1205,91 +1205,67 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
 extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
 extern "C" s32 fn_800DDDF4(f32 *, void *, const u16 *, s32, u8 *, f32);
 extern "C" unsigned long lbl_80559800;
-extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f32 arg4) {
-    f32 out[4];
-    u8 sp8;
-    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
-    f32 var_f1, var_f1_2, var_f1_3, var_f1_4;
-    s32 temp_r31, var_r30 = arg3;
-    u32 var_r29 = (u32)arg2;
+/* lyt_textBox.cpp:218 - measure a whole (multi-line) string.
+ * Puts the text writer's cursor back at the origin, lays `length` characters of
+ * `str` out a line at a time with fn_800DDDF4 - which stops at the first
+ * character that would pass `maxWidth` and reports whether the line wrapped -
+ * and grows `rect` (left, top, right, bottom) into the box around every line:
+ * left and top keep the smallest, right and bottom the largest value seen.
+ * A wrapped line has the line-break code measured too, so the drop to the next
+ * line is part of the box. */
+extern "C" void fn_800DF81C(f32 *rect, void *textWriter, const u16 *str, s32 length, f32 maxWidth) {
+    f32 lineRect[4];
+    u8 wrapped;
+    f32 curLeft, curTop, curRight, curBottom;
+    f32 lineLeft, lineTop, lineRight, lineBottom;
+    s32 consumed, remaining = length;
+    const u16 *cursor = str;
     const char *msg = lbl_80320560;
-    {
-        u32 p = (u32)arg1;
-        s32 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1;
-        u32 hi = p & 0xFF000000;
-        if ((hi != 0x80000000U) && ((p & 0xFF800000) != 0x81000000U)) c5 = 0;
-        if ((!c5) && ((p & 0xF8000000) != 0x90000000U)) c4 = 0;
-        if ((!c4) && (hi != 0xC0000000U)) c3 = 0;
-        if ((!c3) && ((p & 0xFF800000) != 0xC1000000U)) c2 = 0;
-        if ((!c2) && ((p & 0xF8000000) != 0xD0000000U)) c1 = 0;
-        if ((!c1) && ((p & 0xFFFFC000) != 0xE0000000U)) c0 = 0;
-        if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDA, msg + 0x194, arg1);
+
+    PTRCHECK(textWriter, 0xDA, 0x194)
+    PTRCHECK(rect, 0xDB, 0x240)
+    PTRCHECK(str, 0xDC, 0x1D0)
+    if (remaining < 0) {
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDD, msg + 0x208, remaining, 0);
     }
     {
-        u32 p = (u32)arg0;
-        s32 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1;
-        u32 hi = p & 0xFF000000;
-        if ((hi != 0x80000000U) && ((p & 0xFF800000) != 0x81000000U)) c5 = 0;
-        if ((!c5) && ((p & 0xF8000000) != 0x90000000U)) c4 = 0;
-        if ((!c4) && (hi != 0xC0000000U)) c3 = 0;
-        if ((!c3) && ((p & 0xFF800000) != 0xC1000000U)) c2 = 0;
-        if ((!c2) && ((p & 0xF8000000) != 0xD0000000U)) c1 = 0;
-        if ((!c1) && ((p & 0xFFFFC000) != 0xE0000000U)) c0 = 0;
-        if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDB, msg + 0x240, arg0);
+        f32 zero = FLOAT_ZERO;
+        rect[0] = zero;
+        rect[2] = zero;
+        rect[1] = zero;
+        rect[3] = zero;
+        SetCursor__Q36nw4hbm2ut10CharWriterFff(textWriter, zero, zero);
     }
     {
-        u32 p = (u32)arg2;
-        s32 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1;
-        u32 hi = p & 0xFF000000;
-        if ((hi != 0x80000000U) && ((p & 0xFF800000) != 0x81000000U)) c5 = 0;
-        if ((!c5) && ((p & 0xF8000000) != 0x90000000U)) c4 = 0;
-        if ((!c4) && (hi != 0xC0000000U)) c3 = 0;
-        if ((!c3) && ((p & 0xFF800000) != 0xC1000000U)) c2 = 0;
-        if ((!c2) && ((p & 0xF8000000) != 0xD0000000U)) c1 = 0;
-        if ((!c1) && ((p & 0xFFFFC000) != 0xE0000000U)) c0 = 0;
-        if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDC, msg + 0x1D0, arg2);
-    }
-    if (var_r30 < 0) {
-        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDD, msg + 0x208, var_r30, 0);
-    }
-    {
-        f32 preInit = lbl_80560ED0;
-        arg0[0] = preInit;
-        arg0[2] = preInit;
-        arg0[1] = preInit;
-        arg0[3] = preInit;
-        SetCursor__Q36nw4hbm2ut10CharWriterFff(arg1, preInit, preInit);
-    }
-    {
-        f32 loopInit = lbl_80560ED0;
+        f32 zero = FLOAT_ZERO;
         do {
-            out[0] = loopInit;
-            out[1] = loopInit;
-            out[2] = loopInit;
-            out[3] = loopInit;
-            temp_r31 = fn_800DDDF4(&out[0], arg1, (const u16 *)var_r29, var_r30, &sp8, arg4);
-            if (sp8 != 0) {
-                fn_800DDDF4(&out[0], arg1, (const u16 *)&lbl_80559800, 1, &sp8, arg4);
+            lineRect[0] = zero;
+            lineRect[1] = zero;
+            lineRect[2] = zero;
+            lineRect[3] = zero;
+            consumed = fn_800DDDF4(&lineRect[0], textWriter, cursor, remaining, &wrapped, maxWidth);
+            if (wrapped != 0) {
+                fn_800DDDF4(&lineRect[0], textWriter, (const u16 *)&LINE_BREAK_CODE, 1, &wrapped, maxWidth);
             }
-            var_f1 = out[0];
-            temp_f0 = arg0[0];
-            var_r29 += temp_r31 * 2;
-            var_r30 -= temp_r31;
-            var_f1 = temp_f0 > var_f1 ? var_f1 : temp_f0;
-            arg0[0] = var_f1;
-            temp_f0_2 = arg0[1];
-            var_f1_2 = out[1];
-            var_f1_2 = temp_f0_2 > var_f1_2 ? var_f1_2 : temp_f0_2;
-            arg0[1] = var_f1_2;
-            temp_f0_3 = arg0[2];
-            var_f1_3 = out[2];
-            var_f1_3 = temp_f0_3 < var_f1_3 ? var_f1_3 : temp_f0_3;
-            arg0[2] = var_f1_3;
-            temp_f0_4 = arg0[3];
-            var_f1_4 = out[3];
-            var_f1_4 = temp_f0_4 < var_f1_4 ? var_f1_4 : temp_f0_4;
-            arg0[3] = var_f1_4;
-        } while (var_r30 > 0);
+            lineLeft = lineRect[0];
+            curLeft = rect[0];
+            cursor += consumed;
+            remaining -= consumed;
+            lineLeft = curLeft > lineLeft ? lineLeft : curLeft;
+            rect[0] = lineLeft;
+            curTop = rect[1];
+            lineTop = lineRect[1];
+            lineTop = curTop > lineTop ? lineTop : curTop;
+            rect[1] = lineTop;
+            curRight = rect[2];
+            lineRight = lineRect[2];
+            lineRight = curRight < lineRight ? lineRight : curRight;
+            rect[2] = lineRight;
+            curBottom = rect[3];
+            lineBottom = lineRect[3];
+            lineBottom = curBottom < lineBottom ? lineBottom : curBottom;
+            rect[3] = lineBottom;
+        } while (remaining > 0);
     }
 }
 
