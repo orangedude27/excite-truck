@@ -56,10 +56,7 @@ extern "C" void fn_802C2298(void) {
             *(int *)record = fn_802C6FC0(
                 (int)((Entry *)entry)->create((void *)&lbl_8055CFE0, temp_r5, *(void **)lbl_804C109C),
                 0, 0);
-            {
-                void (*fill)(float *, void *, void *) = (void (*)(float *, void *, void *))(*(void **)((char *)*(void **)entry + 0x34));
-                fill(values, entry, (void *)&lbl_8055CFE8);
-            }
+            ((void (*)(float *, void *, void *))((void **)*(void **)entry)[13])(values, entry, (void *)&lbl_8055CFE8);
             value0 = values[0];
             arg1 = lbl_80564E90;
             ((float *)record)[1] = value0;
@@ -79,10 +76,157 @@ extern "C" void fn_802C2298(void) {
 #pragma scheduling on
 
 void fn_802C2410(void) {
+    struct BoatModel {
+        int modelId;        /* handle mrModelUnload releases */
+        float position[3];  /* where the boat sits on the stage */
+        float angle;        /* its heading, spun by fn_802C2488 */
+    };
+    struct BoatModelList {
+        struct BoatModel *models; /* 32 records, inline behind this header */
+        int count;
+        int capacity;
+    };
+    #define boatModels    ((struct BoatModelList *)lbl_804C109C)
+    #define mrModelUnload fn_802C6CF8
+
     int i = 0;
-    while (i < *(int *)((char *)lbl_804C109C + 4)) {
-        fn_802C6CF8(*(void **)((char *)lbl_804C109C[0] + i * 0x14));
+    while (i < boatModels->count) {
+        mrModelUnload((void *)boatModels->models[i].modelId);
         i++;
     }
-    *(int *)((char *)lbl_804C109C + 4) = 0;
+    boatModels->count = 0;
+
+    #undef mrModelUnload
+    #undef boatModels
 }
+
+extern double sin(float);
+extern void fn_80015A20(void *, float *);
+extern void fn_80015B20(void *, void *, void *);
+extern void fn_802C744C(int, float *, float, float, float, float, float);
+extern float lbl_8055E3C8;
+extern float lbl_80564E98;
+extern float lbl_80564E9C;
+extern float lbl_80564EA0;
+extern float lbl_80564EA8;
+extern float lbl_80564EA4;
+extern float lbl_80564EAC;
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+#pragma processor 750
+void fn_802C2488(void) {
+    struct Scratch {
+        float args[3];
+        float rotation[3];
+        int key;
+        unsigned int values[3];
+        float angle;
+        float rotationMatrix[9];
+        float matrix[12];
+    };
+    volatile struct Scratch scratch;
+    register int offset;
+    register int index = 0;
+    register unsigned char *record;
+    register float c31;
+    register float c30;
+    register float c29;
+    register float c28;
+    register float c27;
+    register float c26;
+    register float c25;
+    register float sine;
+    float angle;
+    float theta;
+    float angleSine;
+    float y;
+    float z;
+    float w;
+    float sum9;
+    float sum10;
+    float sum11;
+    float lift;
+    float result1;
+    float result2;
+    float result3;
+    int tmpKey;
+    float tmpAngle;
+    unsigned int tmpV0, tmpV1, tmpV2;
+    float sineArg;
+    if (*(int *)((char *)lbl_804C109C + 4) <= 0)
+        return;
+    c26 = lbl_80564E98;
+    offset = 0;
+    c27 = lbl_80564E90;
+    c28 = lbl_80564E9C;
+    c29 = lbl_80564EA0;
+    c30 = lbl_80564EA8;
+    c31 = lbl_80564EA4;
+    c25 = lbl_80564EAC;
+    goto check_count;
+loop:
+    record = (unsigned char *)lbl_804C109C[0] + offset;
+    tmpKey = *(int *)record;
+    tmpAngle = *(float *)(record + 0x10);
+    tmpV0 = *(unsigned int *)(record + 4);
+    tmpV1 = *(unsigned int *)(record + 8);
+    tmpV2 = *(unsigned int *)(record + 0xC);
+    scratch.key = tmpKey;
+    angle = tmpAngle;
+    sineArg = c28 * (angle + lbl_8055E3C8);
+    scratch.values[0] = tmpV0;
+    scratch.values[1] = tmpV1;
+    scratch.values[2] = tmpV2;
+    scratch.angle = angle;
+    scratch.matrix[0] = c26;
+    scratch.matrix[1] = c27;
+    scratch.matrix[2] = c27;
+    scratch.matrix[3] = c27;
+    scratch.matrix[4] = c26;
+    scratch.matrix[5] = c27;
+    scratch.matrix[6] = c27;
+    scratch.matrix[7] = c27;
+    scratch.matrix[8] = c26;
+    scratch.matrix[9] = c27;
+    scratch.matrix[10] = c27;
+    scratch.matrix[11] = c27;
+    sine = (float)sin(sineArg);
+    theta = lbl_8055E3C8 + scratch.angle;
+    theta = c28 * theta;
+    theta = c29 * theta;
+    angleSine = (float)sin(theta);
+    angleSine = c30 * angleSine;
+    angleSine = c31 * angleSine;
+    scratch.rotation[1] = c27;
+    scratch.rotation[0] = angleSine;
+    scratch.rotation[2] = angleSine;
+    fn_80015A20((void *)scratch.rotationMatrix, (float *)scratch.rotation);
+    fn_80015B20((void *)scratch.matrix, (void *)scratch.rotationMatrix, (void *)scratch.matrix);
+    sum9 = scratch.matrix[9];
+    y = *(float *)&scratch.values[0];
+    sum9 = sum9 + y;
+    lift = c29 + c25 * sine;
+    sum10 = scratch.matrix[10];
+    z = *(float *)&scratch.values[1];
+    sum10 = sum10 + z;
+    sum11 = scratch.matrix[11];
+    w = *(float *)&scratch.values[2];
+    sum11 = sum11 + w;
+    result1 = sum10 + lift;
+    result2 = sum9 + c27;
+    result3 = sum11 + c27;
+    scratch.args[0] = c27;
+    scratch.args[1] = lift;
+    scratch.args[2] = c27;
+    scratch.matrix[9] = result2;
+    scratch.matrix[10] = result1;
+    scratch.matrix[11] = result3;
+    fn_802C744C(scratch.key, (float *)scratch.matrix,
+                result1, result2, lift, sum10, sum9);
+    offset += 0x14;
+    index++;
+check_count:
+    if (index < *(int *)((char *)lbl_804C109C + 4))
+        goto loop;
+}
+#pragma scheduling on
