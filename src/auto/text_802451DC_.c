@@ -136,18 +136,23 @@ struct Menu {
     struct MenuItem items[1];
 };
 
-void fn_802452E4(void *arg0) {
-    void *value;
-    value = *(void **)((char *)arg0 + 4);
-    if (value) fn_802C519C(value);
-    value = *(void **)((char *)arg0 + 8);
-    *(int *)((char *)arg0 + 4) = 0;
-    if (value) fn_802C519C(value);
-    *(int *)((char *)arg0 + 8) = 0;
-    fn_802328D4(*(void **)((char *)arg0 + 0xC));
-    fn_802328D4(*(void **)((char *)arg0 + 0x10));
-    *(int *)((char *)arg0 + 0xC) = 0;
-    *(int *)((char *)arg0 + 0x10) = 0;
+/* MenuTextContext_release: release the layout images and gText font handles held by a menu drawing context and clear their slots. */
+void fn_802452E4(struct MenuTextContext *context) {
+#define Image_release fn_802C519C
+#define GText_releaseFont fn_802328D4
+    void *image;
+    image = (void *)context->image;
+    if (image) Image_release(image);
+    image = (void *)context->image2;
+    context->image = 0;
+    if (image) Image_release(image);
+    context->image2 = 0;
+    GText_releaseFont((void *)context->font);
+    GText_releaseFont((void *)context->font2);
+    context->font = 0;
+    context->font2 = 0;
+#undef GText_releaseFont
+#undef Image_release
 }
 
 #pragma push
@@ -446,27 +451,160 @@ extern "C" void fn_80245D2C(void *arg0) {
     fn_80214D50(4);
 }
 
-void fn_80245D74(void *arg0, void *arg1, int arg2) {
-    int i, count, *src, *dst;
-    int slots[4][2];
+extern "C" void fn_80245D74(void *arg0, void *arg1, int arg2) {
+    struct State {
+        void *p1C;
+        int pad20;
+        int pad24;
+        int pad28;
+        int pad2C;
+        int i30;
+        unsigned char c34;
+        unsigned char c35;
+        char pad36;
+        char pad37;
+    };
+    struct Frame {
+        unsigned int args[5];
+        struct State state;
+        int buf[8];
+        unsigned int cfg[65];
+    };
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+    };
+    struct Frame frame;
+    int *s;
+    int *d;
+    int count;
+    int i;
+    char *name1;
+    char *name2;
+    int len1;
+    int len2;
+    int has8;
     (void)arg2;
     if (*(unsigned char *)((char *)arg0 + 0x1D) == 0) {
-        void **vtable = *(void ***)arg0;
-        ((void (*)(void *))vtable[4])((char *)arg0 + 4);
+        ((struct Dummy *)((char *)arg0 + 4))->f2();
         return;
     }
-    count = *(int *)((char *)arg1 + 0x14);
+    s = (int *)arg1;
+    d = &frame.buf[0];
+    count = s[5];
     *(void **)((char *)arg0 + 0x20) = arg1;
     i = 0;
     if (count > 0) {
-        src = (int *)((char *)arg1 + 0x18);
-        dst = &slots[0][0];
         while (i < count) {
-            dst[0] = src[0]; dst[1] = src[1];
-            src += 2; dst += 2; i++;
+            d[0] = s[6];
+            d[1] = s[7];
+            s += 2;
+            d += 2;
+            i++;
         }
     }
-    while (i < 4) { slots[i][0] = 0; slots[i][1] = 0; i++; }
+    while (i < 4) {
+        d[0] = 0;
+        d[1] = 0;
+        d += 2;
+        i++;
+    }
+    frame.state.c34 = 1;
+    frame.state.p1C = (void *)lbl_80343148;
+    frame.state.i30 = 0;
+    frame.state.c35 = 1;
+    has8 = ((int *)arg1)[2];
+    if (has8 != 0) {
+        frame.state.c35 = 0;
+    }
+    frame.cfg[2] = (unsigned int)&frame.state.p1C;
+    frame.cfg[3] = 0;
+    frame.cfg[1] = 5;
+    frame.cfg[0] = (unsigned int)&lbl_8055BE68;
+    frame.cfg[4] = 0;
+    frame.cfg[6] = 8;
+    frame.cfg[5] = (unsigned int)&lbl_8055BAC0;
+    frame.cfg[7] = (unsigned int)&fn_80246210;
+    frame.cfg[8] = 0;
+    frame.cfg[9] = 0;
+    name1 = *(char **)arg1;
+    len1 = strlen(name1);
+    frame.cfg[13] = (unsigned int)len1;
+    frame.cfg[11] = 3;
+    frame.cfg[10] = (unsigned int)&lbl_8055BE70;
+    frame.cfg[12] = (unsigned int)name1;
+    frame.cfg[14] = 0;
+    name2 = *(char **)((char *)arg1 + 4);
+    len2 = strlen(name2);
+    frame.cfg[18] = (unsigned int)len2;
+    frame.cfg[15] = (unsigned int)&lbl_8055BE78;
+    frame.cfg[16] = 3;
+    frame.cfg[17] = (unsigned int)name2;
+    frame.cfg[19] = 0;
+    frame.cfg[20] = (unsigned int)(lbl_80342FC0 + 0xDC);
+    frame.cfg[21] = 0;
+    frame.cfg[22] = 0;
+    frame.cfg[23] = (unsigned int)frame.buf[1];
+    frame.cfg[24] = 0;
+    frame.cfg[25] = (unsigned int)(lbl_80342FC0 + 0xDC);
+    frame.cfg[26] = 3;
+    frame.cfg[27] = (unsigned int)frame.buf[0];
+    frame.cfg[28] = 0;
+    frame.cfg[29] = 0;
+    frame.cfg[30] = (unsigned int)(lbl_80342FC0 + 0xE8);
+    frame.cfg[31] = 0;
+    frame.cfg[32] = 0;
+    frame.cfg[33] = (unsigned int)frame.buf[3];
+    frame.cfg[34] = 0;
+    frame.cfg[35] = (unsigned int)(lbl_80342FC0 + 0xE8);
+    frame.cfg[36] = 3;
+    frame.cfg[37] = (unsigned int)frame.buf[2];
+    frame.cfg[38] = 0;
+    frame.cfg[39] = 0;
+    frame.cfg[40] = (unsigned int)(lbl_80342FC0 + 0xF4);
+    frame.cfg[41] = 0;
+    frame.cfg[42] = 0;
+    frame.cfg[43] = (unsigned int)frame.buf[5];
+    frame.cfg[44] = 0;
+    frame.cfg[45] = (unsigned int)(lbl_80342FC0 + 0xF4);
+    frame.cfg[46] = 3;
+    frame.cfg[47] = (unsigned int)frame.buf[4];
+    frame.cfg[48] = 0;
+    frame.cfg[49] = 0;
+    frame.cfg[50] = (unsigned int)(lbl_80342FC0 + 0x100);
+    frame.cfg[51] = 0;
+    frame.cfg[52] = 0;
+    frame.cfg[53] = (unsigned int)frame.buf[7];
+    frame.cfg[54] = 0;
+    frame.cfg[55] = (unsigned int)(lbl_80342FC0 + 0x100);
+    frame.cfg[56] = 3;
+    frame.cfg[57] = (unsigned int)frame.buf[6];
+    frame.cfg[58] = 0;
+    frame.cfg[59] = 0;
+    frame.cfg[60] = (unsigned int)lbl_80498890[0];
+    frame.cfg[61] = (unsigned int)lbl_80498890[1];
+    frame.cfg[62] = (unsigned int)lbl_80498890[2];
+    frame.cfg[63] = (unsigned int)lbl_80498890[3];
+    frame.cfg[64] = (unsigned int)lbl_80498890[4];
+    frame.args[0] = (unsigned int)lbl_802FA364[0];
+    frame.args[1] = (unsigned int)lbl_802FA364[1];
+    frame.args[2] = (unsigned int)lbl_802FA364[2];
+    frame.args[3] = (unsigned int)lbl_802FA364[3];
+    frame.args[4] = (unsigned int)lbl_802FA364[4];
+    if (has8 == 0) {
+        frame.args[0] = (unsigned int)(lbl_80342FC0 + 0xCC);
+    } else {
+        frame.args[0] = (unsigned int)has8;
+    }
+    frame.args[1] = (unsigned int)&frame.cfg[0];
+    fn_80216CA8();
+    if (has8 != 0) {
+        fn_80214D50(5);
+    }
+    fn_802146BC((int *)frame.args, -999, -999, 1);
     *(void **)((char *)arg0 + 0x20) = 0;
 }
 
