@@ -1129,31 +1129,35 @@ int fn_8014C9CC(void *arg0) {
     return ((int *)arg0)[1];
 }
 
-void fn_8014C9D4(void *arg0, void *arg1, s32 arg2) {
+/* Copy a linked node's pair of values (at +0x11C/+0x120) into a record: store
+ * the container and the selected next node (arg2 == 0 -> container->next0, else
+ * container->next1), and copy that node's values, or clear them if there is no
+ * next node. */
+void fn_8014C9D4(void *dst, void *container, s32 useSecond) {
     void *next;
 
-    ((void **)arg0)[0] = arg1;
-    if (arg2 == 0) {
-        next = ((void **)arg1)[0];
-        ((void **)arg0)[1] = next;
+    ((void **)dst)[0] = container;
+    if (useSecond == 0) {
+        next = ((void **)container)[0];
+        ((void **)dst)[1] = next;
         if (next != 0) {
-            *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)next + 0x11C);
-            *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)next + 0x120);
+            *(s32 *)((u8 *)dst + 8) = *(s32 *)((u8 *)next + 0x11C);
+            *(s32 *)((u8 *)dst + 0xC) = *(s32 *)((u8 *)next + 0x120);
             return;
         }
-        *(s32 *)((u8 *)arg0 + 0xC) = 0;
-        *(s32 *)((u8 *)arg0 + 8) = 0;
+        *(s32 *)((u8 *)dst + 0xC) = 0;
+        *(s32 *)((u8 *)dst + 8) = 0;
         return;
     }
-    next = ((void **)arg1)[1];
-    ((void **)arg0)[1] = next;
+    next = ((void **)container)[1];
+    ((void **)dst)[1] = next;
     if (next != 0) {
-        *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)next + 0x11C);
-        *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)next + 0x120);
+        *(s32 *)((u8 *)dst + 8) = *(s32 *)((u8 *)next + 0x11C);
+        *(s32 *)((u8 *)dst + 0xC) = *(s32 *)((u8 *)next + 0x120);
         return;
     }
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
+    *(s32 *)((u8 *)dst + 0xC) = 0;
+    *(s32 *)((u8 *)dst + 8) = 0;
 }
 
 s32 fn_8014CA48(s32 arg0, s32 arg1, s32 arg2) {
@@ -2252,26 +2256,12 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         virtual void m1();
         virtual void m2();
     };
-    struct Node {
-        u8 pad0[4];
-        u8 flag;
-        u8 pad1[0x117];
-        struct Node *prev;
-        struct Node *next;
-    };
-    struct Owner {
-        u8 pad[0x1244];
-        struct Node *first;
-        struct Node *tail;
-        struct Node *last;
-        struct Node *end;
-    };
     u8 *entry;
-    struct Owner *owner;
-    struct Node *cur;
-    struct Node *next;
-    s32 linkAddr;
-    struct Node *link;
+    u8 *owner;
+    u8 *cur;
+    u8 *next;
+    u8 *link;
+    u8 *obj;
     f32 factor;
     f32 delta;
     f32 zero;
@@ -2286,37 +2276,37 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         *(volatile f32 *)(entry + 0x3C) = delta;
         *(f32 *)(entry + 0x1C) = factor * *(f32 *)(entry + 0x1C);
         *(s32 *)(entry + 0xA4) = zeroInt;
-        owner = *(struct Owner **)(entry + 8);
-        cur = owner->last;
-        next = cur != 0 ? cur->prev : 0;
+        owner = *(u8 **)(entry + 8);
+        cur = *(u8 **)(owner + 0x124C);
+        next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
         while (cur != 0) {
-            if (cur->flag != 0) {
-                linkAddr = (s32)cur->next;
-                link = (struct Node *)linkAddr;
+            if (*(u8 *)(cur + 4) != 0) {
+                link = *(u8 **)(cur + 0x120);
                 if (link != 0)
-                    link->prev = cur->prev;
+                    *(u8 **)(link + 0x11C) = *(u8 **)(cur + 0x11C);
                 else
-                    owner->last = cur->prev;
-                link = cur->prev;
+                    *(u8 **)(owner + 0x124C) = *(u8 **)(cur + 0x11C);
+                link = *(u8 **)(cur + 0x11C);
                 if (link != 0)
-                    link->next = cur->next;
+                    *(u8 **)(link + 0x120) = *(u8 **)(cur + 0x120);
                 else
-                    owner->end = cur->next;
-                cur->next = 0;
-                cur->prev = 0;
-                cur->next = owner->tail;
-                link = owner->tail;
+                    *(u8 **)(owner + 0x1250) = *(u8 **)(cur + 0x120);
+                *(u8 **)(cur + 0x120) = 0;
+                *(u8 **)(cur + 0x11C) = 0;
+                *(u8 **)(cur + 0x120) = *(u8 **)(owner + 0x1248);
+                link = *(u8 **)(owner + 0x1248);
                 if (link != 0)
-                    link->prev = cur;
-                owner->tail = cur;
-                if (owner->first == 0)
-                    owner->first = cur;
+                    *(u8 **)(link + 0x11C) = cur;
+                *(u8 **)(owner + 0x1248) = cur;
+                if (*(u8 **)(owner + 0x1244) == 0)
+                    *(u8 **)(owner + 0x1244) = cur;
             }
             cur = next;
-            next = cur != 0 ? cur->prev : 0;
+            next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
         }
         *(f32 *)(entry + 0x14) += delta;
-        ((VNode *)*(void **)(entry + 0x10))->m2();
+        obj = *(u8 **)(entry + 0x10);
+        ((VNode *)obj)->m2();
         if (*(s32 *)(entry + 0x34) > 1)
             *(f32 *)(entry + 0x40) = lbl_80561688;
         count = *(s32 *)(entry + 0x34) - 1;
