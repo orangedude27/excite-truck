@@ -2640,25 +2640,28 @@ s32 fn_80252238(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma opt_common_subs off
+// ChassisList's deleting destructor (vtable lbl_80344384 slot 0, allocation tag "ChassisList").
+// Releases the chassis record array and, when deleteFlags > 0, the list object itself.
 void *fn_802522A8(void *arg0, s32 deleteFlags) {
+    // ChassisList, 0x20 bytes; built by fn_8025007C().
     struct ChassisList {
-        void *vptr;
-        void *records;
-        s32 count;
-        s32 capacity;
-        void *allocation;
+        void *vptr;       // +0x00 vtable lbl_80344384
+        void *records;    // +0x04 chassis records, 0x48 bytes each
+        s32 count;        // +0x08 records in use
+        s32 capacity;     // +0x0C records allocated
+        void *allocation; // +0x10 the block the records were allocated in
     } *list = arg0;
 
     if (arg0 != 0) {
         if (&list->records != 0) {
-            fn_80128670((s32)list->allocation);
+            fn_80128670((s32)list->allocation); // MemFree(block, "new[]")
             if (&list->records != 0) {
                 list->records = 0;
                 list->count = 0;
                 list->capacity = 0;
             }
         }
-        if (deleteFlags > 0) fn_80128668(arg0);
+        if (deleteFlags > 0) fn_80128668(arg0); // MemFree(object, "new")
     }
     return arg0;
 }
