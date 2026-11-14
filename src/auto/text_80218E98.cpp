@@ -9147,17 +9147,32 @@ extern "C" void fn_8022A034(void *arg0) {
 }
 
 extern "C" void *lbl_8033E770[];
-extern "C" void *fn_8022A054(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033E770;
-        fn_802C519C(*(void **)((u8 *)arg0 + 0x248));
-        fn_802C519C(*(void **)((u8 *)arg0 + 0x24C));
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+extern "C" void *fn_8022A054(void *self, s32 deletingFlag) {
+    /* the scroll bar widget built by fn_80220E48; mode 0 is the vertical bar */
+    struct ScrollBarWidget {
+        void *vtable;     /* +0x00 */
+        u8 widget[0x240]; /* +0x04 base Widget state */
+        u8 enabled;       /* +0x244 set by fn_80229FF0, cleared by fn_8022A008 */
+        u8 pad_0x245[3];  /* +0x245 */
+        void *barImage;   /* +0x248 vscroll.img (mode 0) or hscroll.img (mode 1) */
+        void *thumbImage; /* +0x24C vthumb.img (mode 0) or hthumb.img (mode 1) */
+    };
+    #define ScrollBar_vtable lbl_8033E770
+    #define Image_release    fn_802C519C
+
+    if (self != NULL) {
+        ((ScrollBarWidget *)self)->vtable = ScrollBar_vtable;
+        Image_release(((ScrollBarWidget *)self)->barImage);
+        Image_release(((ScrollBarWidget *)self)->thumbImage);
+        Widget_dtor(self, 0);
+        if (deletingFlag > 0) {
+            Mem_freeObject(self);
         }
     }
-    return arg0;
+
+    #undef ScrollBar_vtable
+    #undef Image_release
+    return self;
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8022A0CC(void *arg0, int arg1) {
