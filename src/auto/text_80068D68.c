@@ -15249,12 +15249,30 @@ s32 btsnd_hcic_link_key_neg_reply_800843D8(BD_ADDR bd_addr) {
     return TRUE;
 }
 
-s32 btsnd_hcic_auth_request_80084478(u16 arg0) {
-    u8 *buf = (u8 *)GKI_getpoolbuf(2);
-    if (buf == 0) return 0;
-    *(u16 *)(buf + 2) = 5; *(u16 *)(buf + 4) = 0;
-    buf[8]=0x1B; buf[9]=4; buf[10]=2; buf[11]=(u8)arg0; buf[12]=(u8)(arg0>>8);
-    btu_hcif_send_cmd(buf); return 1;
+/* btsnd_hcic_rmt_features_req - the draft's name is a misnomer: this is not the
+   Authentication_Requested command (that is btsnd_hcic_auth_request above, opcode
+   0x0411). Build and send HCI Read_Remote_Features (opcode 0x041B) for connection
+   handle, asking the controller for the peer device's feature mask.
+   Returns FALSE when the HCI command pool has no buffer left. */
+s32 btsnd_hcic_auth_request_80084478(u16 handle) {
+    BT_HDR *p;
+    UINT8 *pp;
+
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_CMD_HANDLE)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_CMD_HANDLE;
+    p->offset = 0;
+
+    UINT16_TO_STREAM (pp, HCI_READ_RMT_FEATURES);
+    UINT8_TO_STREAM  (pp, HCIC_PARAM_SIZE_CMD_HANDLE);
+
+    UINT16_TO_STREAM (pp, handle);
+
+    btu_hcif_send_cmd(p);
+    return TRUE;
 }
 
 /* btsnd_hcic_rmt_ver_req: build and send HCI Read_Remote_Version_Information (opcode 0x041D) for connection handle. */
