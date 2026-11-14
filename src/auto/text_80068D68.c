@@ -15940,16 +15940,27 @@ s32 btsnd_hcic_auth_request_800858B0(u16 handle) {
     return 1;
 }
 
+/* btsnd_hcic_read_rssi: build and send HCI Read_RSSI (opcode 0x1405) for ACL
+   connection handle, asking the controller for that link's signal strength;
+   the reply is handled by the Read_RSSI command-complete handler.
+   Returns FALSE when the HCI command pool has no buffer left. */
 BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 5;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 5;
-    p[9] = 0x14;
-    p[10] = 2;
-    p[11] = handle;
-    p[12] = handle >> 8;
+    BT_HDR *p;
+    UINT8 *pp;
+
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_CMD_HANDLE)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_CMD_HANDLE;
+    p->offset = 0;
+
+    UINT16_TO_STREAM (pp, HCI_READ_RSSI);
+    UINT8_TO_STREAM  (pp, HCIC_PARAM_SIZE_CMD_HANDLE);
+
+    UINT16_TO_STREAM (pp, handle);
+
     btu_hcif_send_cmd(p);
     return TRUE;
 }
