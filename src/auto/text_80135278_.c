@@ -994,10 +994,15 @@ extern "C" void fn_801367E8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
         virtual s32 f0();
         virtual s32 f1();
     };
-    s32 r = ((Dummy *)arg0)->f1();
-    if (r == 1) {
-        fn_801353C8((Unk_80135278 *)arg0, arg2, arg3, 0);
+#define GetObjectType f1
+#define InitPathFollower fn_801353C8
+    /* Calls a virtual type/getter on arg0; if it reports type 1, initializes the path follower state. */
+    s32 objectType = ((Dummy *)arg0)->GetObjectType();
+    if (objectType == 1) {
+        InitPathFollower((Unk_80135278 *)arg0, arg2, arg3, 0);
     }
+#undef GetObjectType
+#undef InitPathFollower
 }
 #pragma cplusplus on
 extern "C" void fn_80136854(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
