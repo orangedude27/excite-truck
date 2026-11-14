@@ -130,22 +130,24 @@ void fn_802E3498(void) {
 
 extern void fn_802E3550(void);
 #pragma cplusplus on
+/* Shut down file subsystems: close remaining open files, then destroy the
+   primary (lbl_8055FF18) and secondary (lbl_8055FF1C) file-system objects. */
 extern "C" void fn_802E34DC(void) {
-    class Obj {
+    class FileSystem {
     public:
-        virtual void v0(s32);
+        virtual void destroy(s32);
     };
-    s32 obj;
+    s32 fileSystem;
     fn_802E3550();
-    obj = lbl_8055FF18;
-    if (obj != 0) {
-        ((Obj *)obj)->v0(1);
+    fileSystem = lbl_8055FF18;
+    if (fileSystem != 0) {
+        ((FileSystem *)fileSystem)->destroy(1);
     }
     lbl_8055FF18 = 0;
-    obj = lbl_8055FF1C;
-    if (obj != 0) {
-        if (obj != 0) {
-            ((Obj *)obj)->v0(1);
+    fileSystem = lbl_8055FF1C;
+    if (fileSystem != 0) {
+        if (fileSystem != 0) {
+            ((FileSystem *)fileSystem)->destroy(1);
         }
         lbl_8055FF1C = 0;
     }
