@@ -816,15 +816,15 @@ void fn_802DAA18(void *arg0) {
     extern int memcpy(void *, const void *, unsigned int);
     unsigned char sp8[0x3C0];
     register void *var_r31 = arg0;
-    struct DaaContext *ctx = (struct DaaContext *)lbl_8055FE5C;
-    struct DaaRecord *entry;
-    struct DaaRecord *var_r29;
+    struct StackAlloc *ctx = (struct StackAlloc *)lbl_8055FE5C;
+    struct StackAllocRecord *entry;
+    struct StackAllocRecord *var_r29;
     char *format;
     void *name;
     int size;
     lbl_8055FE60 = var_r31;
     if (var_r31 == 0) {
-        entry = (struct DaaRecord *)ctx->current;
+        entry = (struct StackAllocRecord *)ctx->current;
         if ((unsigned int)entry + 0x10000 == 0xFFFF) {
             memset(sp8, 0, 0x3C0);
             ctx->initialized = 0;
@@ -836,16 +836,16 @@ void fn_802DAA18(void *arg0) {
                 fn_802E317C(format, name, 0x3D8, size / 0x400);
                 var_r29 = 0;
             } else {
-                var_r29 = (struct DaaRecord *)(ctx->buffer + ctx->used);
+                var_r29 = (struct StackAllocRecord *)(ctx->buffer + ctx->used);
                 *(int *)var_r29 = (int)var_r31;
-                var_r29 = (struct DaaRecord *)((unsigned char *)var_r29 + 4);
+                var_r29 = (struct StackAllocRecord *)((unsigned char *)var_r29 + 4);
                 *(int *)(ctx->buffer + ctx->used + 0x3DC) = 0x3D8;
                 ctx->used += 0x3E0;
             }
             var_r29->kind = 7;
-            var_r29->unk_4 = 0;
-            var_r29->capacity = 0x50;
-            var_r29->kind2 = 0;
+            var_r29->index = 0;
+            var_r29->count = 0x50;
+            var_r29->elemType = 0;
             var_r29->next = 0;
             var_r29->status = (unsigned char)var_r31;
             memcpy(var_r29->data, sp8, 0x3C0);
@@ -853,17 +853,17 @@ void fn_802DAA18(void *arg0) {
         }
     }
     var_r31 = ctx->current;
-    entry = (struct DaaRecord *)var_r31;
-    if (entry->kind2 == 0) {
-        ((void (*)(void *, void *, int))ctx->callback0)(
-            *(void **)((unsigned char *)entry + 4), entry->data, entry->capacity);
+    entry = (struct StackAllocRecord *)var_r31;
+    if (entry->elemType == 0) {
+        ((void (*)(void *, void *, int))ctx->copyVec3)(
+            *(void **)((unsigned char *)entry + 4), entry->data, entry->count);
     } else {
-        ((void (*)(void *, void *, int))ctx->callback1)(
-            *(void **)((unsigned char *)entry + 4), entry->data, entry->capacity);
+        ((void (*)(void *, void *, int))ctx->copyMtx)(
+            *(void **)((unsigned char *)entry + 4), entry->data, entry->count);
     }
-    var_r29 = (struct DaaRecord *)entry->next;
+    var_r29 = (struct StackAllocRecord *)entry->next;
     if (var_r29 != 0) {
-        ((void (*)(void *, void *, int))ctx->callback2)(
+        ((void (*)(void *, void *, int))ctx->copyInt)(
             *(void **)var_r29, (unsigned char *)var_r29 + 8, *(int *)((unsigned char *)var_r29 + 4));
     }
     ctx->status = entry->status;
