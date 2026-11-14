@@ -647,14 +647,18 @@ extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
 extern unsigned int lbl_8055FEBC;
 extern unsigned int lbl_8055FEBC;
+/* CpuLightSampleTexelPair: sample two adjacent 16-bit texels from the CPU-light texture at (x,y) in texel units, returning (texel[x,y+1] | texel[x,y] << 16). gCpuLightTexBase (lbl_8055FEBC) is the GX texture data base cached by fn_802DC62C. */
 int fn_802DC6AC(int a, unsigned int b) {
+#define gCpuLightTexBase lbl_8055FEBC
     int row = a / 4;
     int col = (int)b / 4;
     int x = a % 4;
     int y = (int)b % 4;
     int index = ((x + (y << 2)) << 4) / 8;
-    char *tile = (char *)lbl_8055FEBC + (row + (col << 7)) * 64 + index;
-    return *(unsigned short *)(tile + 32) | ((unsigned int)*(unsigned short *)tile << 16);
+    char *tile = (char *)gCpuLightTexBase + (row + (col << 7)) * 64 + index;
+    int result = *(unsigned short *)(tile + 32) | ((unsigned int)*(unsigned short *)tile << 16);
+#undef gCpuLightTexBase
+    return result;
 }
 
 extern void fn_802CADD0(int, int);
