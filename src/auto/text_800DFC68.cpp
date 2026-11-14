@@ -1357,6 +1357,7 @@ extern "C" nw4hbm::lyt::Material* GetFrameMaterial__Q36nw4hbm3lyt6WindowCFUl(con
     if (frameIdx >= window->materialCount) return NULL;
     return window->materials[frameIdx].material;
 }
+
 extern "C" void fn_800E2508(void* self) {
     struct VTable23 {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
