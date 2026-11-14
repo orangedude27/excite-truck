@@ -4636,8 +4636,6 @@ static inline void SoundInstanceManager_InsertPriorityList(void *pool, void *sou
 /* ut::LinkList iterator (list = { size, node }): GetEndIter() is the list's own node. */
 struct LinkListIter {
     void *node;
-    bool operator!=(const LinkListIter &rhs) const { return node != rhs.node; }
-    LinkListIter &operator++() { node = *(void **)node; return *this; }
 };
 /* End of the SoundInstanceManager's priority list (list at +0x4, its node at +0x8). */
 static inline LinkListIter SoundInstanceManager_GetPriorityListEnd(void *pool) {
@@ -4804,31 +4802,139 @@ static inline void SoundPlayer_InsertPriorityList(s32 player, void *sound) {
 #pragma dont_inline off
 #pragma auto_inline off
 extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void *arg6) {
-    void *sound;
-    s32 prio;
     s32 startOffset;
+    s32 prio;
+    void *sound;
 
     if (arg6 == 0) {
         return 0;
     }
-    startOffset = 0;
-    if (arg3 != 0) {
-        s32 info[7];
-        (*(AmbientParamUpdateCallback **)arg3)->detail_Update((void *)info, arg5, 0, *(s32 *)(arg3 + 0xC), 8);
-        startOffset = info[6];
-    }
-    {
-        s32 diff = arg2 - startOffset;
-        prio = (diff > 0x7F) ? 0x7F : (diff < 0 ? 0 : diff);
-    }
+    startOffset = AmbientInfo_GetPriority(arg3, arg5);
+    prio = ClampS32(arg2 - startOffset, 0, 127);
     if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, prio, (void *)arg4) == 0) {
         return 0;
     }
-    sound = SoundInstanceManager_Alloc(arg6, prio);
+    {
+
+    sound = 0;
+    void *it;
+    struct { u32 old; } lock;
+    u32 &irq = lock.old;
+    struct { void *node; } iter;
+    void *&pos = iter.node;
+    
+    {
+        s32 ok = 0;
+        if (prio >= 0 && prio <= 0x7F) {
+            ok = 1;
+        }
+        if (ok == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803260F0, 0x5C, lbl_803260AC, prio, 0, 0x7F);
+        }
+    }
+    lock.old = OSDisableInterrupts();
+    void *mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(arg6);
+    if (mem != 0) {
+        sound = mem;
+        if (mem != 0) {
+            sound = fn_800FDA20(mem, arg6);
+        }
+    } else {
+        u8 *frontNode;
+        u8 *front;
+        if (*(s32 *)((u8 *)arg6 + 4) == 0) {
+            OSRestoreInterrupts(irq);
+            sound = 0;
+            goto allocation_done;
+        }
+        if (*(s32 *)((u8 *)arg6 + 4) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325924, 0x1F1, lbl_80325900);
+        }
+        frontNode = *(u8 **)((u8 *)arg6 + 8);
+        if (frontNode == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+        }
+        front = frontNode - 0xB8;
+        if (front == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258F4, 0x193, lbl_803258D0);
+        }
+        if (front == 0) {
+            OSRestoreInterrupts(irq);
+            sound = 0;
+            goto allocation_done;
+        }
+        {
+            s32 c = *(u8 *)(front + 0x74) + *(s32 *)(front + 0x40);
+            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
+            if (prio < cc) {
+                OSRestoreInterrupts(irq);
+            sound = 0;
+            goto allocation_done;
+            }
+        }
+        ((BasicSoundVirtuals *)front)->Stop(0);
+        mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(arg6);
+        sound = mem;
+        if (mem == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326094, 0x72, lbl_8032606C);
+        }
+        if (sound != 0) {
+            sound = fn_800FDA20(sound, arg6);
+        }
+    }
+    pos = *(void **)((u8 *)arg6 + 8);
+    arg2 = (u32)arg6 + 8;
+    while ((u32)pos != (u32)arg2) {
+        if (pos == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+        }
+        if (prio < ClampS32(*(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78), 0, 0x7F)) {
+            break;
+        }
+        pos = *(void **)pos;
+    }
+    if (sound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
+    }
+    it = pos;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)arg6 + 4, &it, (u8 *)sound + 0xB8);
+    OSRestoreInterrupts(irq);
+
+    }
+allocation_done:
     if (sound == 0) {
         return 0;
     }
-    SoundPlayer_AttachPlayerHeap(arg0, sound);
+    {
+
+    if (*(s32 *)(arg0 + 0x18) != 0) {
+        u8 *heap;
+        
+        s32 it;
+        if (*(s32 *)(arg0 + 0x18) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E44, 0x1F1, lbl_80325E20);
+        }
+        arg2 = *(s32 *)(arg0 + 0x1C);
+        if (arg2 == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325DE4, 0x23D, lbl_80325DC0);
+        }
+        heap = (u8 *)(arg2 - 0x2C);
+        if (heap == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E14, 0x193, lbl_80325DF0);
+        }
+        it = *(s32 *)((u8 *)(arg0 + 0x18) + 4);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)(arg0 + 0x18), &it);
+        *(void **)(heap + 0x34) = sound;
+        {
+            u8 *mutex = heap + 4;
+            *(void **)((u8 *)sound + 4) = (void *)heap;
+            OSLockMutex((void *)mutex);
+            fn_800EC1A4((void *)(heap + 0x1C));
+            OSUnlockMutex((void *)mutex);
+        }
+    }
+
+}
     if (arg3 != 0) {
         if (arg3 != 0) {
             void *r = (*(AmbientArgAllocaterCallback **)(arg3 + 8))->detail_AllocAmbientArg(*(s32 *)(arg3 + 0x10));
@@ -6315,10 +6421,10 @@ extern "C" u8 lbl_8041506C[];
 #pragma use_lmw_stmw off
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
     void* pHead = *(void**)&lbl_8041506C[0x04];
-    void* pList = &lbl_8041506C[0x04];
+    void* pList = (void *)((u32)lbl_8041506C + 4);
     void* p;
 
-    while (pHead != pList) {
+    while (pList != pHead) {
         p = pHead;
         pHead = *(void**)pHead;
         if (p == 0) {
