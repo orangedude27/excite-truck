@@ -11261,23 +11261,24 @@ extern "C" void fn_800B777C(void *arg0) {
     }
 }
 
-extern "C" s32 fn_800B77C0(void *arg0) {
-    u32 thread;
-    s32 count;
+/* VFiPFLOCK_Acquire: acquire a recursive PF lock, waiting on its semaphore if unheld or held by another thread, and return the previous recursion count. */
+extern "C" s32 fn_800B77C0(void *lock) {
+    u32 curThread;
+    s32 prevCount;
 
-    if (*(s32 *)((u8 *)arg0 + 4) == 0) {
-        fn_800B8004(*(s32 *)((u8 *)arg0 + 8));
-        ((s32 (*)(u32 *))fn_800B7EAC)((u32 *)((u8 *)arg0 + 0xC));
+    if (*(s32 *)((u8 *)lock + PF_LOCK_COUNT_OFFSET) == 0) {
+        VFSemaphoreWait(*(s32 *)((u8 *)lock + PF_LOCK_SEM_OFFSET));
+        VFiPFTHREAD_GetCurrentThread((u32 *)((u8 *)lock + PF_LOCK_OWNER_OFFSET));
     } else {
-        ((s32 (*)(u32 *))fn_800B7EAC)(&thread);
-        if (*(u32 *)((u8 *)arg0 + 0xC) != thread) {
-            fn_800B8004(*(s32 *)((u8 *)arg0 + 8));
-            *(u32 *)((u8 *)arg0 + 0xC) = thread;
+        VFiPFTHREAD_GetCurrentThread(&curThread);
+        if (*(u32 *)((u8 *)lock + PF_LOCK_OWNER_OFFSET) != curThread) {
+            VFSemaphoreWait(*(s32 *)((u8 *)lock + PF_LOCK_SEM_OFFSET));
+            *(u32 *)((u8 *)lock + PF_LOCK_OWNER_OFFSET) = curThread;
         }
     }
-    count = *(s32 *)((u8 *)arg0 + 4);
-    *(s32 *)((u8 *)arg0 + 4) = count + 1;
-    return count;
+    prevCount = *(s32 *)((u8 *)lock + PF_LOCK_COUNT_OFFSET);
+    *(s32 *)((u8 *)lock + PF_LOCK_COUNT_OFFSET) = prevCount + 1;
+    return prevCount;
 }
 
 extern "C" void fn_800B783C(void *arg0) {
