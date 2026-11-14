@@ -540,20 +540,21 @@ extern int fn_8012C33C(void);
 extern int fn_80131808(int);
 extern void fn_8001335C(int, int);
 #pragma scheduling invalid_target
-void fn_80013618(int arg0) {
+/* Registers an object: if enabled, stores its resolved handle in the global table and initializes it. */
+void fn_80013618(int object) {
     int count;
-    int result;
-    int *base;
-    if (arg0 == 0)
+    int handle;
+    int *table;
+    if (object == 0)
         return;
     if (fn_8012C33C() == 0)
         return;
-    result = fn_80131808(arg0);
-    base = (int *)lbl_8035183C;
-    count = base[0x20];
-    base[count] = result;
-    base[0x20] = count + 1;
-    fn_8001335C(result, arg0);
+    handle = fn_80131808(object);
+    table = (int *)lbl_8035183C;
+    count = table[0x20];
+    table[count] = handle;
+    table[0x20] = count + 1;
+    fn_8001335C(handle, object);
 }
 
 #pragma scheduling on
