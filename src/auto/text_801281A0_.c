@@ -523,13 +523,10 @@ void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
     base = arg1 - 0x40;
     text = lbl_8032A000;
     magic = *(u32 *)base;
-
     if (magic != 0x53544B41)
         ((s32 (*)(void *, ...))fn_802E317C)(text + 0x228, base);
-
     if (*(u32 *)(arg1 + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(arg1 - 0x14), 4)) != 0x53544B41)
         ((s32 (*)(void *, ...))fn_802E317C)(text + 0x244, base + 4);
-
     p = arg1 + *(s32 *)(base + 0x2C);
     while (p < arg1 + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(base + 0x2C), 4)) {
         if (*p != 0xE3)
@@ -537,7 +534,6 @@ void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
                 text + 0x278, p, p - (arg1 + *(s32 *)(base + 0x2C)), base + 4, *p, 0xE3);
         p++;
     }
-
     if (*(u32 *)(base + 0x3C) != 0x53544B41)
         ((s32 (*)(void *, ...))fn_802E317C)(text + 0x2C8, base + 4, *(u32 *)(base + 0x3C));
     if (base[0x24] == 0)
@@ -547,7 +543,6 @@ void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
         u32 oldname = ((u32 (*)(s32))fn_801281A0)(*(s32 *)(base + 0x30));
         ((s32 (*)(void *, ...))fn_802E317C)(text + 0x31C, base + 4, oldname, newname);
     }
-
     base[0x24] = 0;
     goto check;
 loop:
@@ -561,9 +556,11 @@ check:
         goto loop;
 done:
     if (tmp != 0) {
-        s32 b = *(s32 *)((u8 *)arg0 + 0xC);
-        u32 v = *(u32 *)(tmp + 0x28);
-        *(u32 *)((u8 *)arg0 + 4) = v + ((u32)tmp - (u32)b) + 0x40;
+        struct Arg { char pad[0xC]; unsigned int b; };
+        struct Tmp { char pad[0x28]; unsigned int v; };
+        unsigned int b = ((struct Arg *)arg0)->b;
+        unsigned int v = ((struct Tmp *)tmp)->v;
+        *(unsigned int *)((u8 *)arg0 + 4) = v + ((unsigned int)tmp - b) + 0x40;
     } else
         *(u32 *)((u8 *)arg0 + 4) = 0;
 }
@@ -572,11 +569,10 @@ extern char lbl_80559970, lbl_80559974;
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80128C5C(void *arg0, int arg1, int arg2) {
-    struct Hdr { int u0; int lim; int u8; char *base; };
     register char *text = lbl_8032A000;
     int used;
     int count;
-    int offset;
+    register int offset;
     int equal;
     int useAlt;
     void *message;
@@ -588,7 +584,7 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
         goto check;
     loop:
         {
-            char *record = ((struct Hdr *)arg0)->base + offset;
+            char *record = *(char **)((char *)arg0 + 0xC) + offset;
             if (*(unsigned int *)record != 0x53544B41)
                 ((void (*)(void *, ...))fn_802E317C)(text + 0x380, record);
             equal = !strcmp(record + 4, text + 0x5C);
@@ -608,12 +604,12 @@ void fn_80128C5C(void *arg0, int arg1, int arg2) {
                 fn_802E2D74(1);
         }
     check:
-        if (offset < ((struct Hdr *)arg0)->lim)
+        if (offset < *(int *)((char *)arg0 + 4))
             goto loop;
         fn_802E30C8(text + 0x3B4,
-                    (void *)(((struct Hdr *)arg0)->lim / 1024),
+                    (void *)(*(int *)((char *)arg0 + 4) / 1024),
                     (void *)(*(int *)((char *)arg0 + 8) / 1024),
-                    (void *)((*(int *)((char *)arg0 + 8) - ((struct Hdr *)arg0)->lim) / 1024),
+                    (void *)((*(int *)((char *)arg0 + 8) - *(int *)((char *)arg0 + 4)) / 1024),
                     (void *)(used / 1024));
         ((void (*)(void *, ...))fn_802E30C8)(text + 0x3E8, (void *)count);
         ((void (*)(void *, ...))fn_802E30C8)(text + 0x3F8);
@@ -664,15 +660,20 @@ void fn_80128ED8(void *arg0, s32 arg1, s32 arg2) {
 
 #pragma cplusplus on
 extern "C" void fn_80128EF0(void *arg0, s32 arg1) {
-    s32 temp_r31;
-    s32 temp_r30;
-    u32 var_r6;
-    temp_r30 = *(s32 *)((u8 *)arg0 + 8);
-    var_r6 = arg1 - (temp_r30 & (arg1 - 1));
-    if (var_r6 < 0x30U) var_r6 += arg1;
-    temp_r31 = *(s32 *)((u8 *)arg0 + 4);
-    ((Dummy80128EF0 *)arg0)->d2(var_r6 - 0x30, &lbl_8032A05C, 3);
-    *(u32 *)(temp_r31 + temp_r30) = 0x06630216;
+    /* Advance the buffer cursor to the next aligned boundary, reserve space via the virtual callback, and write a block tag. */
+    s32 basePtr;
+    s32 cursor;
+    u32 alignedOffset;
+
+    cursor = *(s32 *)((u8 *)arg0 + 8);
+    alignedOffset = arg1 - (cursor & (arg1 - 1));
+    if (alignedOffset < 0x30U) {
+        alignedOffset += arg1;
+    }
+
+    basePtr = *(s32 *)((u8 *)arg0 + 4);
+    ((Dummy80128EF0 *)arg0)->d2(alignedOffset - 0x30, &lbl_8032A05C, 3);
+    *(u32 *)(basePtr + cursor) = 0x06630216;
 }
 #pragma cplusplus off
 void fn_80128F68(void *arg0) {
