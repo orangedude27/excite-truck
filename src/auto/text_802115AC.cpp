@@ -1429,8 +1429,8 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
 #pragma dont_inline on
 #pragma small_data on
 void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    register u8 *base = lbl_8033CAE8;
     void *head = *(void **)((u8 *)arg1 + 4);
+    register u8 *base = lbl_8033CAE8;
     void *node;
     void *top;
     u8 *it;
@@ -2648,8 +2648,9 @@ extern "C" void fn_80215C18(void *arg0) {
     fn_80214CB4(*(u8 *)((char *)arg0 + 0x18) == 0);
 }
 
-extern "C" s32 fn_80215C28(s32 arg0, s32 arg1) {
-    switch (arg1) {
+extern "C" s32 fn_80215C28(s32 unused, s32 command) {
+    /* Handle menu/UI command codes 0x125-0x128; returns 1 if handled, 0 otherwise. */
+    switch (command) {
     case 0x125:
         fn_80214CB4(0);
         fn_80230E90(0);
