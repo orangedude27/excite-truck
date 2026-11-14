@@ -177,6 +177,7 @@ u32 fn_800080D8(void) {
 }
 
 #pragma dont_inline on
+/* Returns the index of the named entry in the lbl_8034EF38 table, or -1 if not found. */
 s32 fn_800080E8(arg0)
 const char* arg0;
 {
