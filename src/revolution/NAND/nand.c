@@ -146,6 +146,9 @@ s32 NANDWrite(NANDFileInfo* info, const void* buf, u32 len) {
     return nandConvertErrorCode(ISFS_Write(info->fd, buf, len));
 }
 
+/* Asynchronous NANDWrite(): queue a write of len bytes from buf into the open
+ * file. The caller's callback is stashed in the command block so nandCallback()
+ * can hand the ISFS result back to it, converted to a NAND result. */
 s32 NANDWriteAsync(NANDFileInfo* info, const void* buf, u32 len,
                    NANDAsyncCallback callback, NANDCommandBlock* block) {
     if (!nandIsInitialized()) {
