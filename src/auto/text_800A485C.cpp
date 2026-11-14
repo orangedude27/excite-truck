@@ -14440,7 +14440,7 @@ extern "C" u32 fn_800C0E7C(void *, void *, void *, void *, s32 *, void *); /* ex
 extern "C" void fn_800C18A0(void *input, void *output);
 extern "C" void fn_800C2590(s32 *a0, s32 *a1, s32 *a2, s32 *a3);
 extern "C" void fn_800C280C(s32 *a0, s32 *a1, s32 *a2, s32 *a3);
-extern "C" u32 fn_800C3DA0(void *, void *, s32, s16 *, s16 *, s16 *, s16, s16); /* extern */
+extern "C" void fn_800C3DA0(void *, const u8 *, s32, s16 *, s16 *, s16 *, s16, s16, s16 *, s8, u8, s16 *, s16 *, s16 *, s16 *, s16 *);
 extern "C" u32 lbl_80560DA0;
 extern "C" u32 lbl_80560DA8;
 extern "C" s32 fn_800C0440(void *, s32, void *, s32, s32, s32, s32, s16, s32, s16 *, s16 *);
