@@ -20,6 +20,7 @@ extern "C" f32 lbl_80561750, lbl_80561754, lbl_8056177C, lbl_80561788, lbl_80561
 // The bonus trackers' two shared multipliers, used from the first reset below.
 #define BONUS_FULL  lbl_80561750 // .sdata2: 1.0f, the multiplier an event starts at
 #define BONUS_NONE  lbl_80561754 // .sdata2: 0.0f
+#define FRAME_TIME  lbl_8056177C // .sdata2: 0.0166834f, one 60 Hz frame
 class Fn8015B404Obj {
 public:
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -3908,9 +3909,12 @@ extern "C" s32 fn_80161C4C(void);
 #pragma use_lmw_stmw off
 #pragma processor 750
 extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
+    struct P { void *q; void *r; int f8; int fC; };
     f32 sum = lbl_80561754;
     s32 off = 0;
     s32 i = 0;
+    struct P *p;
+    void *q;
     if (*(u8*)((u8*)arg0 + 0x54) != 0 && fn_801B2F2C(*(s32*)((u8*)arg1 + 0x1EC)) == 0 && fn_801B8570(*(s32*)((u8*)arg1 + 0x1EC)) != 0 && fn_80161BB8() == 0 && fn_80161C4C() != 0) {
         for (i = 0, off = 0; i < *(s32*)((u8*)arg0 + 8); off += 4, i++) {
             if ((f32)__fabs((f64)*(f32*)((u8*)arg1 + 0x2690)) <= lbl_80558DC4[0] ||
@@ -3920,27 +3924,27 @@ extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
             }
         }
     }
-    void* p = *(void**)((u8*)arg0 + 0x50);
-    void* q = *(void**)p;
+    p = *(struct P**)((u8*)arg0 + 0x50);
+    q = p->q;
     if (q != 0) {
-        if (*(s32*)((u8*)p + 8) == 0) {
+        if (p->f8 == 0) {
             *(u8*)((u8*)q + 0x4A) = 0;
             *(u8*)((u8*)q + 0x4B) = 1;
             *(u8*)((u8*)q + 0x49) = 1;
         } else {
-            void* r = *(void**)((u8*)p + 4);
-            if (r != 0 && *(s32*)((u8*)p + 0xC) == 0) {
+            void* r = p->r;
+            if (r != 0 && p->fC == 0) {
                 *(u8*)((u8*)r + 0x49) = 1;
                 *(u8*)((u8*)r + 0x4B) = 0;
                 *(u8*)((u8*)r + 0x4A) = 0;
             }
-            q = *(void**)p;
+            q = p->q;
             *(u8*)((u8*)q + 0x4A) = 1;
             *(u8*)((u8*)q + 0x4C) = 0;
         }
     }
-    *(s32*)((u8*)p + 0xC) = *(s32*)((u8*)p + 8);
-    *(s32*)((u8*)p + 8) = 1;
+    p->fC = p->f8;
+    p->f8 = 1;
     return sum;
 }
 #pragma pop
