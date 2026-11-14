@@ -44,19 +44,6 @@ extern "C" void* fn_8017960C(s32);
 struct Item38 { u8 pad[0x14]; s32 val; u8 pad2[0x20]; };
 struct Word4 { s32 v; };
 
-struct InlineArray80158280 {
-    s32* data;
-    s32 count;
-    s32 capacity;
-    inline s32* push_back(s32 val) {
-        s32 idx = count;
-        s32* base = data;
-        count = idx + 1;
-        base[idx] = val;
-        return &base[idx];
-    }
-};
-
 struct Fn80157CF0Obj {
     void* vtable;
     s32 unk4;
