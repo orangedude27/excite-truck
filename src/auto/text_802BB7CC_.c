@@ -31,10 +31,10 @@ void* fn_802BB824(void* arg0, int arg1) {
 
 #pragma push
 #pragma dont_inline on
-int fn_802BB87C(int arg0) {
-    int valid = 0;
-    if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28(arg0, 0);
+int fn_802BB87C(int path) {
+    int isReady = 0;
+    if (path != 0 && fn_8012C33C() != 0) isReady = 1;
+    if (isReady != 0) return fn_802CAC28(path, 0);
     return -2;
 }
 #pragma pop
