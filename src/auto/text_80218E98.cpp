@@ -3198,14 +3198,15 @@ extern "C" void *fn_8021D6A0(void *self, s32 arg1, s32 arg2, s32 arg3, u8 *arg4,
     return self;
 }
 
-extern "C" void *__dt__Q34Game10MemoryCard8ResourceFv(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033EB14;
-        fn_8022A8E4(*(s32 *)((u8 *)arg0 + 0x2C4));
-        fn_8021D300(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q34Game10MemoryCard8ResourceFv(void *self, s32 shouldDelete) {
+    /* Deleting destructor: restore the vtable, release the resource slot at +0x2C4, run the base destructor, and optionally delete. */
+    if (self != 0) {
+        *(void **)self = lbl_8033EB14;
+        fn_8022A8E4(*(s32 *)((u8 *)self + 0x2C4));
+        fn_8021D300(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void *fn_8021D7C8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
