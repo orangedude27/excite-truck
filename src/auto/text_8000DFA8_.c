@@ -914,6 +914,7 @@ f32 fn_800109A0(s32 arg0) {
 }
 
 #pragma dont_inline fn_800109E4
+/* Sets up and draws an axis-aligned colored quad using the same color for all corners. */
 void fn_800109E4(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     f32 sp8;
     f32 spC;
