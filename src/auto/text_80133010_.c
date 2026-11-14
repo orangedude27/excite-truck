@@ -240,14 +240,19 @@ int fn_80133348(int section, int key, int value) {
 }
 
 #pragma scheduling invalid_target
-void fn_801333E8(int arg0, int arg1, unsigned char *arg2) {
-    void *sp8;
-    if (fn_80133E10(&sp8, arg0, arg1) != 0) {
-        *arg2 = *(unsigned char *)((char *)sp8 + 8);
+/* Reads an option (section, key) as a true/false value: fn_80133E10 looks the
+ * option up and adds it when it is missing, so an option that is not in the
+ * table yet takes the caller's *value as its default (through fn_80133460,
+ * which also writes its int/float/text readings) instead of reading back 0. */
+void fn_801333E8(int section, int key, unsigned char *value) {
+    OptionEntry *entry;
+    if (fn_80133E10((void **)&entry, section, key) != 0) {
+        *value = entry->boolValue;
     } else {
-        fn_80133460(arg0, arg1, *arg2);
+        fn_80133460(section, key, *value);
     }
 }
+#pragma scheduling invalid_target
 __declspec(section ".sdata") extern const char lbl_80559B64[];
 __declspec(section ".sdata") extern const char lbl_80559B68[];
 #pragma scheduling invalid_target
