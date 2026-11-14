@@ -791,20 +791,22 @@ void fn_802EC138(void) {
     lbl_805600D0 = 1;
 }
 
+/* Clear the sound/music state flags and reset each of the two sound handles to
+   the default volume. */
 void fn_802EC158(void) {
-    int *ptr;
-    int i;
+    int *handle;
+    int index;
 
     lbl_805600D0 = 0;
     lbl_805600D1 = 0;
-    ptr = &lbl_80560090;
-    i = 0;
+    handle = &lbl_80560090;
+    index = 0;
     do {
-        fn_802E622C(*ptr, lbl_805651C4);
-        fn_802E61E4(*ptr, lbl_805651C4);
-        i++;
-        ptr++;
-    } while (i < 2);
+        fn_802E622C(*handle, lbl_805651C4);
+        fn_802E61E4(*handle, lbl_805651C4);
+        index++;
+        handle++;
+    } while (index < 2);
 }
 
 #pragma push
