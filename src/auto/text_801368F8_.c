@@ -171,16 +171,17 @@ void fn_80136AA8(void *g) {
 
 #pragma dont_inline reset
 
-void fn_80136CB8(void *arg0, s32 arg1) {
-    s32 base;
-    f32 value;
-    fn_80136D20(arg0, arg1);
-    value = lbl_80561368;
-    base = *(s32 *)((char *)arg0 + 0x10) + arg1 * *(s32 *)((char *)arg0 + 0xC);
-    *(f32 *)((char *)base + 8) = value;
-    *(f32 *)((char *)base + 0xC) = value;
-    base = *(s32 *)((char *)arg0 + 0x10) + arg1 * *(s32 *)((char *)arg0 + 0xC);
-    *(f32 *)((char *)base + 0x10) = value;
+/* Update an entry and clear its smoothed vector fields to zero. */
+void fn_80136CB8(void *table, s32 index) {
+    s32 entryBase;
+    f32 zeroValue;
+    fn_80136D20(table, index);
+    zeroValue = lbl_80561368;
+    entryBase = *(s32 *)((char *)table + 0x10) + index * *(s32 *)((char *)table + 0xC);
+    *(f32 *)((char *)entryBase + 8) = zeroValue;
+    *(f32 *)((char *)entryBase + 0xC) = zeroValue;
+    entryBase = *(s32 *)((char *)table + 0x10) + index * *(s32 *)((char *)table + 0xC);
+    *(f32 *)((char *)entryBase + 0x10) = zeroValue;
 }
 
 #pragma push
