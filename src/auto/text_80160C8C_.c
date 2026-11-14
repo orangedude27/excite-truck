@@ -2450,38 +2450,40 @@ extern "C" void fn_80163F7C(void *arg0) {
 }
 #pragma scheduling on
 #pragma cplusplus off
-int fn_801643C8(void *arg0) {
+int fn_801643C8(void *self) {
+    /* Free each 0x48-byte entry's point table (+0x34) in the array at +0xE0
+     * (count at +0xE4), destroy the sub-object at +0xDC if present, and release
+     * the texture (+0xD0) and model (+0xA0) handles. */
     extern void fn_80128658(int);
     extern void fn_802CAC54(int);
     extern void fn_802C6CF8(int);
 #pragma cplusplus on
-    struct Obj {
+    struct DeletableObject {
         virtual void destroy(int);
     };
 #pragma cplusplus off
-    int a = 0;
-    int b = 0;
+    int entryOffset = 0;
+    int entryIndex = 0;
     void *obj;
-    while (b < *((int *)((char *)arg0 + 0xE4))) {
-        int v;
-        int *p;
-        obj = *((void **)((char *)arg0 + 0xE0));
-        p = (int *)((char *)obj + a);
-        v = p[0x34 / 4];
-        if (v != 0) {
-            fn_80128658(v);
+    while (entryIndex < *((int *)((char *)self + 0xE4))) {
+        int pointTable;
+        int *entryWords;
+        obj = *((void **)((char *)self + 0xE0));
+        entryWords = (int *)((char *)obj + entryOffset);
+        pointTable = entryWords[0x34 / 4];
+        if (pointTable != 0) {
+            fn_80128658(pointTable);
         }
-        a += 0x48;
-        b += 1;
+        entryOffset += 0x48;
+        entryIndex += 1;
     }
-    obj = *((void **)((char *)arg0 + 0xDC));
+    obj = *((void **)((char *)self + 0xDC));
     if (obj != 0) {
-        ((struct Obj *)obj)->destroy(1);
+        ((struct DeletableObject *)obj)->destroy(1);
     }
-    fn_802CAC54(*((int *)((char *)arg0 + 0xD0)));
-    fn_802C6CF8(*((int *)((char *)arg0 + 0xA0)));
+    fn_802CAC54(*((int *)((char *)self + 0xD0)));
+    fn_802C6CF8(*((int *)((char *)self + 0xA0)));
 }
-
 int fn_80164468(void *arg0) {
     return *((float *)((char *)arg0 + 0x8C)) < lbl_8056185C;
 }
