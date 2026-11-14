@@ -148,10 +148,28 @@ void *__dt__Q34nw4r2ef6EffectFv_8027D434(void *arg0, int arg1) {
     return arg0;
 }
 
-void *fn_8027D494(void *arg0) {
-    fn_8002F53C(arg0, fn_8027D504, fn_8027D304, 0xBD0, 3);
-    fn_8002F53C((char *)arg0 + 0x2370, fn_8027D504, fn_8027D304, 0xBD0, 2);
-    return arg0;
+void *fn_8027D494(void *playerBlock) {
+    /* Constructor of one player's 0x3B10-byte block in the global list array
+     * lbl_804A4380 (4 blocks; the selected player's is at
+     * lbl_804A4380 + fn_8000DA10() * 0x3B10): builds the block's 3 main lists at
+     * +0 and its 2 secondary lists at +0x2370 -- five 0xBD0-byte lists in all.
+     * Each list is built by fn_8027D504 (a header plus 6 inline 0x1F4-byte
+     * entries, each holding 6 items) and destroyed by fn_8027D304.  The static
+     * initializer fn_8027D204 runs this over the 4 blocks through fn_8002F53C,
+     * the runtime's "construct an array of objects" helper; fn_8027D280 is this
+     * block's matching destructor. */
+#define ConstructArray fn_8002F53C /* runtime/array.s: ctor(elem, 1) per element */
+#define ListCtor fn_8027D504
+#define ListDtor fn_8027D304
+#define LIST_SIZE 0xBD0 /* one list: header + 6 entries of 0x1F4 + tail */
+    ConstructArray(playerBlock, ListCtor, ListDtor, LIST_SIZE, 3);
+    ConstructArray((char *)playerBlock + 0x2370 /* past the 3 main lists */,
+                   ListCtor, ListDtor, LIST_SIZE, 2);
+#undef ConstructArray
+#undef ListCtor
+#undef ListDtor
+#undef LIST_SIZE
+    return playerBlock;
 }
 
 void *fn_8027D5B8(void *);
