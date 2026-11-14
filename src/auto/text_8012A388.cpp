@@ -341,13 +341,21 @@ extern "C" s32 fn_8012AB34(s32 fileHandle, s32 headerBuffer, s32 fileName, s32 e
     return isValid;
 }
 
-extern "C" s32 fn_8012ABB0(s32 arg0, s32 arg1) {
-    s32 sp8 = fn_802E36D8();
-    if (sp8 != -1 && fn_8012AB34(sp8, arg1, arg0, fn_802E37C4()) == 0) {
-        fn_802E3734(&sp8);
-        sp8 = -1;
+extern "C" s32 fn_8012ABB0(const char *name, void *headerBuffer) {
+    #define File_open       fn_802E36D8
+    #define File_size       fn_802E37C4
+    #define File_close      fn_802E3734
+    #define Rst0_readHeader fn_8012AB34
+    s32 handle = ((s32 (*)(const char *))File_open)(name);
+    if (handle != -1 && Rst0_readHeader(handle, (s32)headerBuffer, (s32)name, ((s32 (*)(s32))File_size)(handle)) == 0) {
+        File_close(&handle);
+        handle = -1;
     }
-    return sp8;
+    #undef File_open
+    #undef File_size
+    #undef File_close
+    #undef Rst0_readHeader
+    return handle;
 }
 
 extern "C" s32 fn_8012AC28(s32 arg0, s32 arg1) {
