@@ -167,7 +167,6 @@ extern f32 lbl_80563684;
 extern f32 lbl_80563688;
 extern f32 lbl_8056368C;
 extern const f64 lbl_80563698;
-typedef union { f64 value; u32 words[2]; } TextUnsignedConversion;
 extern f32 fn_8023400C(s32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 fn_802C8DBC(s32);
@@ -1652,9 +1651,13 @@ void fn_8023423C(s32 arg0, s32 arg1) {
         *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= (f32)font[6] * speed;
     } else if (arg1 & 0x10) {
         {
-            u32 height = font[4];
-            f32 delta = (f32)height * speed;
-            *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= delta * lbl_80563688;
+            register u32 height;
+            u8 *verticalBase;
+            f32 delta;
+            height = font[4];
+            delta = (f32)height * speed;
+            verticalBase = (u8 *)lbl_8055F06C;
+            *(f32 *)(verticalBase + offset + 0x44) -= delta * lbl_80563688;
         }
     }
 }
