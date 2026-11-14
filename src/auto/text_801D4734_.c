@@ -1889,10 +1889,14 @@ int fn_801D6EDC(int arg0) {
 int fn_801D6EE4(void *arg0) {
     extern char lbl_80442310[];
     extern float lbl_8055E3C8;
-    register unsigned char c;
-    register unsigned char *src;
-    register unsigned char *dst;
-    register int count;
+    register unsigned char c1;
+    register unsigned char *src1;
+    register unsigned char *dst1;
+    register int count1;
+    register unsigned char c2;
+    register unsigned char *src2;
+    register int count2;
+    register unsigned char *dst2;
     register char *base;
     float t0;
     float t1;
@@ -1904,37 +1908,37 @@ int fn_801D6EE4(void *arg0) {
     t1 = lbl_8055E3C8;
     *(float *)(base + 4) = t0;
     *(float *)base = t1;
-    src = (unsigned char *)arg0 + 0xC;
-    dst = (unsigned char *)base + 0x48;
-    count = 0x40;
+    src1 = (unsigned char *)arg0 + 0xC;
+    dst1 = (unsigned char *)base + 0x48;
+    count1 = 0x40;
     goto copy_first;
 first_count:
-    if (--count > 0) {
+    if (--count1 > 0) {
         goto copy_first;
     }
-    dst[-1] = 0;
+    dst1[-1] = 0;
     goto first_done;
 copy_first:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0) {
+    c1 = *src1++;
+    *dst1++ = c1;
+    if ((signed char)c1 != 0) {
         goto first_count;
     }
 first_done:
-    src = (unsigned char *)arg0 + 0x4C;
-    dst = (unsigned char *)lbl_80442310 + 8;
-    count = 0x40;
+    src2 = (unsigned char *)arg0 + 0x4C;
+    dst2 = (unsigned char *)lbl_80442310 + 8;
+    count2 = 0x40;
     goto copy_second;
 second_count:
-    if (--count > 0) {
+    if (--count2 > 0) {
         goto copy_second;
     }
-    dst[-1] = 0;
+    dst2[-1] = 0;
     goto second_done;
 copy_second:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0) {
+    c2 = *src2++;
+    *dst2++ = c2;
+    if ((signed char)c2 != 0) {
         goto second_count;
     }
 second_done:
@@ -3228,8 +3232,8 @@ extern "C" void fn_801D875C(void *arg0) {
     };
     int count, offset;
     float time;
-    Dummy *item;
     char *entry;
+    Dummy *item;
     if (*(int *)((char *)arg0 + 0x18) != 2) return;
     time = lbl_8055E3C8;
     if (*(int *)((char *)arg0 + 0x20) == 0) {
