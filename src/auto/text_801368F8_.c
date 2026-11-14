@@ -71,10 +71,10 @@ extern s32 fn_802C6C34(s32);
 extern void *fn_801B2ED0(s32);
 #pragma push
 #pragma scheduling invalid_target
-extern s32 lbl_8032BE98[];
-extern s32 lbl_8032BEA8[];
-extern s32 fn_8012850C(s32, s32);
-extern s32 fn_801284E8(s32, s32);
+extern const char lbl_8032BE98[];   /* allocation tag: "proxer delta." */
+extern const char lbl_8032BEA8[];   /* allocation tag: "proxer tab" */
+extern void *fn_8012850C(s32 size, const char *tag);
+extern void *fn_801284E8(const char *tag, s32 size);
 extern s32 fn_8002F37C();
 extern void *memset(void *, s32, s32);
 extern float fn_8013672C(void);
@@ -99,12 +99,12 @@ Proxer *fn_801368F8(Proxer *proxer, s32 carCount) {
     pairCount = (sign + product) >> 1; /* product / 2, rounded down */
     proxer->carCount = carCount;
     allocCount = (pairCount > 1) ? pairCount : 1;
-    proxer->pairs = (ProxPair *)fn_8002F37C(fn_8012850C(allocCount * sizeof(ProxPair) + 0x10, (s32)lbl_8032BE98), (s32)&fn_801369EC, 0, sizeof(ProxPair), allocCount);
+    proxer->pairs = (ProxPair *)fn_8002F37C(fn_8012850C(allocCount * sizeof(ProxPair) + 0x10, lbl_8032BE98), (s32)&fn_801369EC, 0, sizeof(ProxPair), allocCount);
     rowStride = carCount * 4 - carCount; /* the row's three pointer planes */
     rowSize = rowStride * 4 + 0x18;
     proxer->rowStride = rowSize;
     tableSize = carCount * rowSize;
-    rows = (ProxRow *)fn_801284E8((s32)lbl_8032BEA8, tableSize);
+    rows = (ProxRow *)fn_801284E8(lbl_8032BEA8, tableSize);
     proxer->rows = rows;
     if (rows != 0 && proxer->pairs != 0) {
         memset(rows, 0, tableSize);
