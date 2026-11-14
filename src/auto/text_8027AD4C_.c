@@ -1229,13 +1229,14 @@ extern "C" long fn_8027C650(void *contest) {
     return 0;
 }
 #pragma cplusplus reset
-long fn_8027C71C(void *arg0) {
-    long value;
+/* Return 1 if the looked-up event record exists and its status field at +8 is zero, otherwise 0. */
+long fn_8027C71C(void *event) {
+    long contextValue;
     void *result;
     long flag;
 
-    value = fn_8027D1F4();
-    result = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), value, 0);
+    contextValue = fn_8027D1F4();
+    result = fn_8001BB58(fn_8000DA10(), *(long *)((char *)event + 4), contextValue, 0);
     flag = 0;
     if (result != 0 && *(long *)((char *)result + 8) == 0) {
         flag = 1;
