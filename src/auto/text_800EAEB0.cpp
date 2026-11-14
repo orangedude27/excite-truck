@@ -69,6 +69,15 @@ extern "C" s32 fn_800F1080(void*, const void*, s32);
 extern u8 lbl_80322D24[];
 extern u8 lbl_80322D00[];
 #pragma pop
+#define sLinkListHeaderFile lbl_80322D24
+#define sLinkListNullPtrMsg lbl_80322D00
+
+enum {
+    LINK_LIST_SENTINEL_OFFSET = 0x04,
+    LINK_LIST_PUSH_BACK_LINE = 0x233,
+    BASIC_SOUND_EXT_PLAYER_OFFSET = 0x14,
+    BASIC_SOUND_EXT_PLAYER_LINK_OFFSET = 0xD0
+};
 
 #pragma push
 #pragma small_data off
