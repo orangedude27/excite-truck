@@ -16,6 +16,11 @@ extern float lbl_80563B58, lbl_80563B5C, lbl_80563B60;
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
+extern int fn_80012810(void);
+void fn_8025CE78(void) {
+    fn_80012810();
+}
+
 void *fn_8025D96C(void *arg0, int arg1)
 {
   char *new_var2;
@@ -95,13 +100,20 @@ extern void fn_8001BD54(void *, void *);
 extern char *fn_80008188(void *);
 extern char *fn_801345D8(char *, int, const char *, ...);
 extern int stricmp(const char *, const char *);
+static inline int FindRecord8025(char *table, const char *name) {
+    int index, offset;
+    for (index = 0, offset = 0; index < *(int *)(table + 4); offset += 0x38, index++) {
+        if (stricmp(*(char **)table + offset, name) == 0) return index;
+    }
+    return -1;
+}
 extern char lbl_8055C3E4, lbl_8055C3E8, lbl_8055C3EC, lbl_8055C3F8;
 extern char lbl_803456A4[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_8025DAEC(void *arg0, int arg1) {
+extern "C" void fn_8025DAEC(void *arg0, void *arg1) {
     struct Source {
         virtual void s2();
         virtual int has(const char *);
@@ -114,17 +126,17 @@ extern "C" void fn_8025DAEC(void *arg0, int arg1) {
     char *obj=(char *)arg0;
     for (j=0;j<3;j++) {
         for(i=0;i<fn_80012854();i++) {
-            fn_8001BC38(current,fn_8000DA10(),(void *)arg1,i,j);
+            fn_8001BC38(current,fn_8000DA10(),arg1,i,j);
             if (fn_8001BCF0(current)) {
                 if(best_i<0) { best_i=i; best_j=j; }
                 else {
-                    fn_8001BC38(best,fn_8000DA10(),(void *)arg1,best_i,best_j);
+                    fn_8001BC38(best,fn_8000DA10(),arg1,best_i,best_j);
                     if(fn_8001BD6C(current,best)) { best_i=i; best_j=j; }
                 }
             }
         }
     }
-    *(int *)obj=fn_8001BA6C((void *)arg1);
+    *(int *)obj=fn_8001BA6C(arg1);
     if(best_i<0) {
         const char *src=&lbl_8055C3E4;
         int n=0x14;
@@ -140,20 +152,20 @@ copy2:      *dst++=*src++; } while(dst[-1]);
         best_j=0;
         *(char **)(obj+0x18)=&lbl_8055C3E4;
     } else {
-        char *entry;
+        
         char *value;
         char *details;
         char *table;
         int index, offset;
         int cat;
-        fn_8001BC38(selected,fn_8000DA10(),(void *)arg1,best_i,best_j);
+        fn_8001BC38(selected,fn_8000DA10(),arg1,best_i,best_j);
         fn_8001BD38(selected,obj+4,0x14);
-        entry=(char *)fn_8001285C(best_i);
-        if((*(Source **)(entry+0x20))->has(&lbl_8055C3EC))
-            *(char **)(obj+0x18)=fn_80008188((*(Source **)(entry+0x20))->get(&lbl_8055C3EC));
+        arg1=fn_8001285C(best_i);
+        if((*(Source **)((char *)arg1+0x20))->has(&lbl_8055C3EC))
+            *(char **)(obj+0x18)=fn_80008188((*(Source **)((char *)arg1+0x20))->get(&lbl_8055C3EC));
         else
-            *(char **)(obj+0x18)=fn_80008188((void *)(fn_80012820(*(void **)(entry+4))+8));
-        value=(*(Source **)(entry+0x20))->get(lbl_803456A4);
+            *(char **)(obj+0x18)=fn_80008188((void *)(fn_80012820(*(void **)((char *)arg1+4))+8));
+        value=(*(Source **)((char *)arg1+0x20))->get(lbl_803456A4);
         *(char **)(obj+0x1c)=value;
         fn_801345D8(obj+0x20,0x3e8,&lbl_8055C3F8,*(char **)(obj+0x18),value+1);
         fn_8001BD54(&result,selected);
