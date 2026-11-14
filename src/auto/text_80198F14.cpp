@@ -3037,15 +3037,16 @@ extern "C" s32 fn_801A1148(void *arg0, const f32 *vec, s32 arg2, f32 *arg3, s32 
 }
 #pragma pop
 #pragma scheduling on
-extern "C" void fn_801A1250(void* arg0) {
-    VTab1250** entries = (VTab1250**)arg0;
-    s32 i = 0;
-    while (i < *(s32*)((u8*)arg0 + 0x174)) {
-        entries[9]->v08();
-        entries++;
-        i++;
+/* Call v08 on each child in the list (count at +0x174), then mark the active index at +0x180 as none. */
+extern "C" void fn_801A1250(void *container) {
+    VTab1250 **childEntries = (VTab1250 **)container;
+    s32 childIndex = 0;
+    while (childIndex < *(s32 *)((u8 *)container + 0x174)) {
+        childEntries[9]->v08();
+        childEntries++;
+        childIndex++;
     }
-    *(s32*)((u8*)arg0 + 0x180) = -1;
+    *(s32 *)((u8 *)container + 0x180) = -1;
 }
 
 /* Store value at +0x1C, notify the primary child at +0x17C, then broadcast the value
