@@ -6317,9 +6317,11 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
 }
 
 static inline s32 FlushFatPageCopies(u8 *ctx, void *pg) {
-    s32 acc = 0;
-    s32 pos = *(s32 *)((u8 *)pg + 0x18);
     u16 i;
+    s32 pos;
+    s32 acc;
+    acc = 0;
+    pos = *(s32 *)((u8 *)pg + 0x18);
     for (i = 0; i < *(u8 *)(ctx + 0x22); i++) {
         s32 e = fn_800B5618(ctx, *(void **)((u8 *)pg + 8), pos, 0, *(u16 *)ctx);
         if (e != 0 && acc == 0) acc = e;
@@ -6387,20 +6389,16 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
             return err;
         }
         if (next == 0) {
-            s32 acc = 0;
-            s32 pos;
-            u16 i;
-            void *pg;
-            pg = page;
-            pos = *(s32 *)((u8 *)pg + 0x18);
-            for (i = 0; i < *(u8 *)(ctx + 0x22); i++) {
-                s32 e = fn_800B5618(ctx, *(void **)((u8 *)pg + 8), pos, 0, *(u16 *)ctx);
-                if (e != 0 && acc == 0) {
-                    acc = e;
+            err = 0;
+            arg2 = (s32)page;
+            arg0 = (void *)*(s32 *)((u8 *)arg2 + 0x18);
+            for (cur = 0; (u16)cur < *(u8 *)(ctx + 0x22); cur++) {
+                s32 e = fn_800B5618(ctx, *(void **)((u8 *)arg2 + 8), (u32)arg0, 0, *(u16 *)ctx);
+                if (e != 0 && err == 0) {
+                    err = e;
                 }
-                pos += *(s32 *)(ctx + 0xC);
+                arg0 = (u8 *)arg0 + *(s32 *)(ctx + 0xC);
             }
-            err = acc;
             if (err != 0) {
                 VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
                 return err;
@@ -6444,19 +6442,16 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         cur = next;
     }
     {
-        s32 acc = 0;
-        s32 pos;
-        void *pg;
-        pg = page;
-        pos = *(s32 *)((u8 *)pg + 0x18);
+        err = 0;
+        arg2 = (s32)page;
+        arg0 = (void *)*(s32 *)((u8 *)arg2 + 0x18);
         for (cur = 0; (u16)cur < *(u8 *)(ctx + 0x22); cur++) {
-            s32 e = fn_800B5618(ctx, *(void **)((u8 *)pg + 8), pos, 0, *(u16 *)ctx);
-            if (e != 0 && acc == 0) {
-                acc = e;
+            s32 e = fn_800B5618(ctx, *(void **)((u8 *)arg2 + 8), (u32)arg0, 0, *(u16 *)ctx);
+            if (e != 0 && err == 0) {
+                err = e;
             }
-            pos += *(s32 *)(ctx + 0xC);
+            arg0 = (u8 *)arg0 + *(s32 *)(ctx + 0xC);
         }
-        err = acc;
         if (err != 0) {
             VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
             return err;
