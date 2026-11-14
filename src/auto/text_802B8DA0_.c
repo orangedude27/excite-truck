@@ -43,6 +43,15 @@ typedef struct TreeShadowListPool {
     int itemArray; /* 0x0C: __construct_new_array pointer (cookie at itemArray - 0x10) */
 } TreeShadowListPool;
 #define gTreeShadowListPool lbl_8055FA7C
+/* Pool of 0x54-byte "roadobject[]" records (global lbl_8055FA78), built by
+ * fn_802BA348, filled by fn_802BA010 and destroyed by fn_802B9E4C. */
+typedef struct RoadObjectPool {
+    int items;     /* 0x00: base of the 0x54-byte record array */
+    int usedCount; /* 0x04: number of records handed out so far */
+    int capacity;  /* 0x08: total record capacity */
+    int itemArray; /* 0x0C: the array itself (cookie at itemArray - 0x10) */
+} RoadObjectPool;
+#define gRoadObjectPool lbl_8055FA78
 #define Mem_freeObject      fn_80128668
 #define Mem_freeArray       fn_80128670
 extern int lbl_802FAB40[];
