@@ -157,6 +157,15 @@ void *fn_802408B0(void *arg0, s32 arg1) {
 
 extern char lbl_80342734[];
 extern s32 fn_802328D4(s32, s32);
+#define sMRollStatLabelVtable lbl_80342734
+#define Font_release fn_802328D4
+#define Memory_free fn_80128668
+
+enum {
+    MROLL_STAT_FONT_OFFSET      = 0x18,
+    MROLL_STAT_FLAG_OFFSET      = 0x20,
+    MROLL_STAT_VALUE_PTR_OFFSET = 0x24
+};
 void *fn_80240928(void *arg0, s32 arg1) {
     s32 zero = 0;
     if (arg0 != 0) {
@@ -1735,5 +1744,196 @@ off_child_check:
 s32 fn_80242F68(void *arg0, s32 arg1) {
     u8 *base = (u8 *)arg0;
     s32 channel = fn_802E4A10();
-    return channel;
+    s32 active;
+    s32 selected;
+    s32 i;
+    u8 *slot;
+    s32 state0;
+    s32 pp;
+    s32 eq;
+    s32 cond;
+    s32 modeA, modeB, mode;
+    s32 cntSel;
+    if (channel >= 2) return 0;
+    slot = base + channel * 0x20;
+    state0 = *(s32 *)(slot + 0x34);
+    pp = **(s32 **)(*(u8 **)(slot + 0x18) + 0x34);
+    eq = ((pp - channel) == 0);
+    cond = 0;
+    if (state0 > 1 && eq != 0) cond = 1;
+    active = (cond != 0 ? channel : -1);
+    selected = (*(s32 *)(slot + 0x34) == 1 ? channel : -1);
+    if (arg1 == 0x1B) {
+        if (active >= 0) {
+            slot = base + active * 0x20;
+            *(s32 *)(slot + 0x34) -= 1;
+            if (*(s32 *)(slot + 0x34) == 1) {
+                if (active == 0) {
+                    lbl_8055F1FC = 1;
+                    lbl_8055F200 = 0;
+                } else {
+                    fn_80216D28();
+                    fn_80214D50(1);
+                }
+                *(s32 *)(slot + 0x34) = 2;
+            }
+            {
+                u8 *obj = *(u8 **)(slot + 0x18);
+                u8 *cur = obj;
+                *(s32 *)(obj + 0x30) = (*(s32 *)(slot + 0x34) != 2);
+                i = 0;
+                goto upd_check0;
+upd_body0:
+                {
+                    s32 v = **(s32 **)(obj + 0x34);
+                    s32 sel = (*(u8 *)(obj + 0x38) != 0 && i == *(s32 *)(obj + 0x30)) ? 1 : 0;
+                    void *e = *(void **)(cur + 0x18);
+                    cur += 4; i++;
+                    *(u8 *)e = (u8)sel;
+                    *(s32 *)((u8 *)e + 4) = v;
+                }
+upd_check0:
+                if (i < *(s32 *)(obj + 0x2C)) goto upd_body0;
+            }
+        } else {
+            lbl_8055F1FC = 1;
+            lbl_8055F200 = 0;
+        }
+        return 1;
+    }
+    if (arg1 < 0x1B) {
+        if (arg1 != 0xD) return 0;
+        {
+            s32 v0;
+            v0 = *(s32 *)((u8 *)arg0 + 0x34);
+            cntSel = 0;
+            mode = 0;
+            if (v0 <= 1) goto mode_a_ok;
+            if (v0 == 4) goto mode_a_ok;
+            mode = 0;
+            goto mode_done;
+mode_a_ok:
+            if (v0 == 4) cntSel = 1;
+            modeB = *(s32 *)((u8 *)arg0 + 0x54);
+            if (modeB <= 1) goto mode_b_ok;
+            if (modeB == 4) goto mode_b_ok;
+            mode = 0;
+            goto mode_done;
+mode_b_ok:
+            if (modeB == 4) cntSel++;
+            mode = cntSel >= 2;
+mode_done:;
+            if (mode != 0) {
+                if (channel == 0) {
+                    lbl_8055F1FC = 1;
+                    lbl_8055F200 = 2;
+                } else {
+                    fn_80216D28();
+                    fn_80214D50(1);
+                }
+                return 1;
+            }
+        }
+        if (active >= 0) {
+            slot = base + active * 0x20;
+            if (*(s32 *)(slot + 0x34) > 1) {
+                u8 *obj = *(u8 **)(slot + 0x18);
+                if (*(u8 *)(obj + 0x38)) {
+                    {
+                        u8 *cur2 = obj;
+                        s32 idx = 0;
+                        s32 done = 0;
+                        while (idx < *(s32 *)(obj + 0x2C)) {
+                            u8 *ee = *(u8 **)(cur2 + 0x18);
+                            s32 (*fn)(void *) = ((s32 (**)(void *))(*(void **)((u8 *)ee + 0xC)))[5];
+                            if (fn((void *)ee) == 0) { done = *(u8 *)(obj + 0x38); goto scan_done; }
+                            cur2 += 4; idx++;
+                        }
+                        done = *(u8 *)(obj + 0x38);
+scan_done:
+                        if (done != 0) {
+                            s32 ns = *(s32 *)(slot + 0x34) + 1;
+                            u8 *cur3 = obj;
+                            *(s32 *)(slot + 0x34) = ns;
+                            *(s32 *)(obj + 0x30) = (ns != 2);
+                            i = 0;
+                            goto upd_check1;
+upd_body1:
+                            {
+                                s32 v = **(s32 **)(obj + 0x34);
+                                s32 sel = (*(u8 *)(obj + 0x38) != 0 && i == *(s32 *)(obj + 0x30)) ? 1 : 0;
+                                void *e = *(void **)(cur3 + 0x18);
+                                cur3 += 4; i++;
+                                *(u8 *)e = (u8)sel;
+                                *(s32 *)((u8 *)e + 4) = v;
+                            }
+upd_check1:
+                            if (i < *(s32 *)(obj + 0x2C)) goto upd_body1;
+                        }
+                    }
+                }
+            }
+        } else if (selected >= 0) {
+            s32 off = selected << 5;
+            u8 *obj = *(u8 **)((u8 *)arg0 + off + 0x18);
+            u8 *dst;
+            u8 *src;
+            s32 n;
+            signed char c;
+            **(s32 **)(obj + 0x34) = channel;
+            *(s32 *)(*(u8 **)(obj + 0x28) + 0xD8) = **(s32 **)(obj + 0x34);
+            if (**(s32 **)(obj + 0x34) < 0) {
+                src = (u8 *)&lbl_8055BD60;
+                dst = obj + 0x39;
+                n = 0x20;
+                goto copy_check0;
+copy_loop0:
+                --n;
+                if (n > 0) goto copy_check0;
+                dst[-1] = 0;
+                goto copy_done0;
+copy_check0:
+                c = *src++;
+                *dst++ = (u8)c;
+                if (c != 0) goto copy_loop0;
+copy_done0:;
+            } else {
+                src = fn_802E85B8(**(s32 **)(obj + 0x34));
+                dst = obj + 0x39;
+                n = 0x20;
+                goto copy_check1;
+copy_loop1:
+                --n;
+                if (n > 0) goto copy_check1;
+                dst[-1] = 0;
+                goto copy_done1;
+copy_check1:
+                c = *src++;
+                *dst++ = (u8)c;
+                if (c != 0) goto copy_loop1;
+copy_done1:;
+            }
+            {
+                u8 *cur4 = obj;
+                i = 0;
+                goto upd_check2;
+upd_body2:
+                {
+                    s32 v = **(s32 **)(obj + 0x34);
+                    s32 sel = (*(u8 *)(obj + 0x38) != 0 && i == *(s32 *)(obj + 0x30)) ? 1 : 0;
+                    void *e = *(void **)(cur4 + 0x18);
+                    cur4 += 4; i++;
+                    *(u8 *)e = (u8)sel;
+                    *(s32 *)((u8 *)e + 4) = v;
+                }
+upd_check2:
+                if (i < *(s32 *)(obj + 0x2C)) goto upd_body2;
+            }
+            *(s32 *)((u8 *)arg0 + off + 0x34) = 2;
+        }
+        return 1;
+    } else {
+        if (arg1 == 0x6F) return 1;
+        return 0;
+    }
 }
