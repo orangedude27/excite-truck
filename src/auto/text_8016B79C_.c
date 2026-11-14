@@ -2071,13 +2071,15 @@ void fn_8016FD60(void *arg0, void *arg1) {
     *((s32 *)arg0 + 6) = g;
 }
 
-void fn_8016FD9C(const f32 *arg0, void *arg1) {
-    char sp8[0x20];
-    f32 input = *arg0;
-    f32 value = (0.0f > input) ? 0.0f : input;
-    fn_80130978(sp8, 0x20, value);
-    fn_8014784C(arg1, lbl_80330B7C, lbl_80330B8C, 0);
-    fn_801475D0(arg1, (const char *)&lbl_8055A248, (const char *)&lbl_8055A268, sp8);
+/* Clamp the stopwatch time at *timeSeconds to >= 0, format it to tenths of a second,
+ * bind "stop_watch_art" to "stop_watch_artset", and update the "timer" UI text element. */
+void fn_8016FD9C(const f32 *timeSeconds, void *uiElement) {
+    char formattedTime[0x20];
+    f32 rawTime = *timeSeconds;
+    f32 clampedTime = (0.0f > rawTime) ? 0.0f : rawTime;
+    fn_80130978(formattedTime, 0x20, clampedTime);
+    fn_8014784C(uiElement, lbl_80330B7C, lbl_80330B8C, 0);
+    fn_801475D0(uiElement, (const char *)&lbl_8055A248, (const char *)&lbl_8055A268, formattedTime);
 }
 #pragma cplusplus on
 extern "C" void fn_8016FE1C(void *arg0) {
