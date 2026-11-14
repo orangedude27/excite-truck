@@ -67,6 +67,13 @@ extern "C" const char lbl_80320CC8[];
 #define sAssertFrameIdxLtMax lbl_80320CC8 /* "NW4HBM:Failed assertion frameIdx < WINDOWFRAME_MAX" */
 enum { WINDOWFRAME_MAX = 8 };  /* border materials one window frame can carry */
 enum { VERTEXCOLOR_NUM = 4 };  /* corner colors a pane's vertex array carries */
+extern "C" const char lbl_803204B0[];
+extern "C" const char lbl_80320474[];
+#define sAssertFile_common lbl_803204B0 /* __FILE__ of the vertex-color element asserts */
+#define sAssertIdxAnimTargetVtxColor lbl_80320474 /* "NW4HBM:Failed assertion idx < ANIMTARGET_VERTEXCOLOR_MAX" */
+/* the four corner colors seen as their 4x4 bytes, which is how an animation
+ * target addresses a single channel of one */
+enum { ANIMTARGET_VERTEXCOLOR_MAX = VERTEXCOLOR_NUM * 4 };
 extern void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void*, void*);
 extern "C" const char lbl_8031E8FC[];
 extern "C" const char lbl_8031E8D8[];
