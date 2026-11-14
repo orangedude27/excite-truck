@@ -480,7 +480,40 @@ void fn_8015F558(void) {
 
 void fn_8015F584(int *arg0) { void *p=*(void **)arg0; if(p) { if(p) { fn_80128670(((s32 *)p)[3]); if(p) { ((s32*)p)[0]=0; ((s32*)p)[1]=0; ((s32*)p)[2]=0; } fn_80128668(p); } *(void **)arg0=0; } }
 
-void fn_8015F5F4(int *arg0) { void *p=*(void **)arg0; if(p) { if(p) { s32 x=((s32*)p)[3]; if(x) fn_80128670(x-0x10); if(p) { ((s32*)p)[0]=0; ((s32*)p)[1]=0; ((s32*)p)[2]=0; } fn_80128668(p); } *(void **)arg0=0; } }
+/* Frees the entry record `slot` points at - the module's global one,
+   lbl_8055E29C, that fn_8015F670 builds: first the entry array the record owns
+   (whose block starts 0x10 before the pointer kept at +0x0C), then the record
+   itself, and clears the slot. */
+void fn_8015F5F4(int *slot) {
+    #define Mem_freeArray  fn_80128670   /* free what fn_8012850C allocated */
+    #define Mem_freeObject fn_80128668   /* free what fn_801284F8 allocated */
+    /* A record of 0x10-byte entries; +0x0C is the array's own pointer, the
+       block behind it holding the allocator's cookie 0x10 bytes earlier. */
+    struct EntryRecord {
+        int items;     /* 0x00: base of the entry array */
+        int usedCount; /* 0x04: entries filled so far */
+        int capacity;  /* 0x08: entries the array holds */
+        int itemArray; /* 0x0C: the array (cookie at itemArray - 0x10) */
+    };
+    struct EntryRecord *record = *(struct EntryRecord **)slot;
+    if (record != 0) {
+        if (record != 0) {
+            int itemArray = record->itemArray;
+            if (itemArray != 0) {
+                Mem_freeArray(itemArray - 0x10);
+            }
+            if (record != 0) {
+                record->items = 0;
+                record->usedCount = 0;
+                record->capacity = 0;
+            }
+            Mem_freeObject(record);
+        }
+        *(void **)slot = 0;
+    }
+    #undef Mem_freeArray
+    #undef Mem_freeObject
+}
 
 extern void *fn_80178C9C(void);
 extern void **fn_80131810(const char *);
@@ -767,6 +800,15 @@ void fn_8015FB28(void *arg0, void *arg1, void *arg2, int arg3) {
     dstFloat[10] = newY;
     dstFloat[11] = newZ;
 }
+
+s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
+    (void)arg0; (void)arg1; (void)arg2; (void)arg3;
+    if (lbl_8055E2A0 != 0) {
+        return 1;
+    }
+    return 0;
+}
+
 #pragma processor reset
 #pragma use_lmw_stmw reset
 extern f32 lbl_805617D4;
