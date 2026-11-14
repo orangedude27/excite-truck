@@ -1257,20 +1257,41 @@ void *fn_801AC2C8(void *arg0, int arg1) {
     return arg0;
 }
 
-void *fn_801AC330(void *arg0) {
-    fn_801A9700(arg0);
-    *(void **)arg0 = &lbl_80335808;
-    if (*(volatile int *)&lbl_8055E5EC == 0) {
-        lbl_8055E5F0 = 0;
+/* FencePost_construct - the "fencepst" fence post's constructor.  Builds the obstacle base it
+ * shares with the other obstacles (fn_801A9700), installs this class's vtable, takes the next
+ * free slot in the level's post table and clears the post's rope point index; the first post
+ * of a level also drops the rope solver the fence is built from (fn_801AC508 makes it). */
+void *fn_801AC330(void *object) {
+    /* A fence post past the obstacle base every obstacle starts with. */
+    struct FencePost {
+        void *vtable;   /* 0x000 this class's vtable, lbl_80335808 */
+        u8 pad[0x24C];
+        s32 index;      /* 0x250 this post's slot in the level's post table */
+        s32 pointIndex; /* 0x254 the post's first rope point, -1 until the rope is built */
+    };
+    struct FencePost *post = (struct FencePost *)object;
+    /* The module's globals: the posts placed in the level, how many there are, and the rope
+     * solver ("ppsys") the fence strung between them is simulated by. */
+#define fencePostTable lbl_80435628
+#define fencePostCount lbl_8055E5EC
+#define fenceRope lbl_8055E5F0
+
+    fn_801A9700(object);
+    post->vtable = &lbl_80335808;
+    if (*(volatile int *)&fencePostCount == 0) {
+        fenceRope = 0;
     }
     {
-        int count = *(volatile int *)&lbl_8055E5EC;
-        *(int *)((char *)arg0 + 0x250) = count;
-        *(volatile int *)&lbl_8055E5EC = count + 1;
+        s32 count = *(volatile int *)&fencePostCount;
+        post->index = count;
+        *(volatile int *)&fencePostCount = count + 1;
     }
-    lbl_80435628[*(int *)((char *)arg0 + 0x250)] = arg0;
-    *(int *)((char *)arg0 + 0x254) = -1;
-    return arg0;
+    fencePostTable[post->index] = object;
+    post->pointIndex = -1;
+#undef fencePostTable
+#undef fencePostCount
+#undef fenceRope
+    return object;
 }
 
 extern void fn_801C1C7C(void);
