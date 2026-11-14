@@ -473,11 +473,30 @@ extern float lbl_80561D7C, lbl_80561D80, lbl_80561D84, lbl_80561D88, lbl_80561D8
 extern char lbl_803325A0[], lbl_8055A3E8[8], lbl_8055A3F0[8];
 #pragma push
 #pragma processor 750
-void fn_80182DF4(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_80182DF4(void *arg0) {
     struct PushNode { void *next; float values[9]; };
-#define SELF ((unsigned char *)arg0)
-#define SELFPOS ((V3 *)(SELF + 0x30))
-    float minX, maxX, minY, maxY, minZ, maxZ;
+    struct Truck {
+        char pad0[0x10];
+        unsigned int tag;
+        char pad14[0x1C];
+        V3 pos;
+        char frame[0x94];
+        void *pushNodes;
+        char padD4[0x114];
+        unsigned char unk1E8;
+        char pad1E9[7];
+        int unk1F0;
+        char pad1F4[0x74];
+        CollisionGroupObj *group;
+        char pad26C[0x330];
+        void *model;
+        char pad5A0[0x1C];
+        float rearZ;
+    };
+#define self ((Truck *)arg0)
+    float minX = lbl_80561CAC, maxX = lbl_80561CAC, minY = lbl_80561CAC;
+    float maxY = lbl_80561CAC, minZ = lbl_80561CAC, maxZ = lbl_80561CAC;
     V3 pos;
     V3 sizeB, sizeA, sizeC;
     V3 center;
@@ -490,146 +509,144 @@ void fn_80182DF4(void *arg0) {
     float f28 = lbl_80561CDC / f29;
     void *handle;
     float *v;
-    struct PushNode *node;
+    PushNode *node;
     void *obj;
     void *obj2;
     float z27, y26, x25, x24, y23, hy, hz, z20, y19, x18, z17, y16, x15, z14;
+    float x, y, z, m, half, zero, off;
 
-    minX = lbl_80561CAC;
-    maxX = lbl_80561CAC;
-    minY = lbl_80561CAC;
-    maxY = lbl_80561CAC;
-    minZ = lbl_80561CAC;
-    maxZ = lbl_80561CAC;
-    fn_802C7760(*(void **)(SELF + 0x59C), &minX, &maxX, &minY, &maxY, &minZ, &maxZ);
-    handle = fn_801E3004(*(void **)(SELF + 0x59C), lbl_8055A3E8, -1);
+    fn_802C7760(self->model, &minX, &maxX, &minY, &maxY, &minZ, &maxZ);
+    handle = fn_801E3004(self->model, lbl_8055A3E8, -1);
     if (handle != 0) {
         v = fn_801E3630(handle);
         nodeA.z = v[2];
         nodeA.x = v[0];
-        nodeA.y = lbl_80561D70 + (maxY + SELFPOS->y);
-        node = (struct PushNode *)fn_801AE180();
-        {
-            float x = nodeA.x, y = nodeA.y, z = nodeA.z;
-            float m = lbl_80561CD8 * mass, half = lbl_80561CDC, zero = lbl_80561CAC;
-            node->values[0] = x; node->values[1] = y; node->values[2] = z;
-            node->values[3] = m;
-            node->values[4] = half;
-            node->values[6] = zero; node->values[7] = zero; node->values[8] = zero;
-            node->values[5] = zero;
-        }
-        node->next = *(void **)(SELF + 0xD0); *(void **)(SELF + 0xD0) = node;
+        nodeA.y = lbl_80561D70 + (maxY + self->pos.y);
+        node = (PushNode *)fn_801AE180();
+        node->values[0] = nodeA.x;
+        m = lbl_80561CD8 * mass;
+        node->values[1] = nodeA.y;
+        half = lbl_80561CDC;
+        node->values[2] = nodeA.z;
+        zero = lbl_80561CAC;
+        node->values[3] = m;
+        off = lbl_80561D70;
+        node->values[4] = half;
+        node->values[6] = zero; node->values[7] = zero; node->values[8] = zero;
+        node->values[5] = zero;
+        node->next = self->pushNodes; self->pushNodes = node;
         nodeB.z = v[2];
+        nodeB.y = off + (maxY + self->pos.y);
         nodeB.x = -v[0];
-        nodeB.y = lbl_80561D70 + (maxY + SELFPOS->y);
-        node = (struct PushNode *)fn_801AE180();
-        {
-            float x = nodeB.x, y = nodeB.y, z = nodeB.z;
-            float m = lbl_80561CD8 * mass, half = lbl_80561CDC, zero = lbl_80561CAC;
-            node->values[0] = x; node->values[1] = y; node->values[2] = z;
-            node->values[3] = m;
-            node->values[4] = half;
-            node->values[6] = zero; node->values[7] = zero; node->values[8] = zero;
-            node->values[5] = zero;
-        }
-        node->next = *(void **)(SELF + 0xD0); *(void **)(SELF + 0xD0) = node;
+        node = (PushNode *)fn_801AE180();
+        node->values[0] = nodeB.x;
+        m = lbl_80561CD8 * mass;
+        node->values[1] = nodeB.y;
+        half = lbl_80561CDC;
+        node->values[2] = nodeB.z;
+        zero = lbl_80561CAC;
+        node->values[3] = m;
+        node->values[4] = half;
+        node->values[6] = zero; node->values[7] = zero; node->values[8] = zero;
+        node->values[5] = zero;
+        node->next = self->pushNodes; self->pushNodes = node;
         fn_801E323C(handle);
     }
     minY = minY > lbl_80561D40 ? minY : lbl_80561D40;
-    pos = *SELFPOS;
+    pos = self->pos;
     minX += pos.x;
     maxX += pos.x;
     minY += pos.y;
     maxY += pos.y;
     minZ += pos.z;
     maxZ += pos.z;
-    if (*(int *)(SELF + 0x1F0) == 0x54 && !(*(int *)((char *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x1000)) {
+    if (self->unk1F0 == 0x54 && !(*(int *)((char *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x1000)) {
         maxZ -= lbl_80561D74;
     }
-    *(float *)(SELF + 0x5BC) = maxZ;
+    self->rearZ = maxZ;
     obj = fn_801284F8(0x184, lbl_803325A0);
     if (obj != 0) {
-        obj = fn_8019FFD8(obj, SELF + 0x3C, arg0);
+        obj = fn_8019FFD8(obj, self->frame, self);
     }
-    *(void **)(SELF + 0x268) = obj;
+    self->group = (CollisionGroupObj *)obj;
 
     sizeB.x = lbl_80561D84; sizeB.y = lbl_80561D00; sizeB.z = lbl_80561CD0;
     sizeA.x = lbl_80561D84; sizeA.y = lbl_80561D00; sizeA.z = lbl_80561CD0;
     sizeC.x = lbl_80561D84; sizeC.y = lbl_80561D00; sizeC.z = lbl_80561CD0;
 
-    z27 = maxZ - lbl_80561D78;
-    y26 = lbl_80561D78 + minY;
     x25 = maxX - lbl_80561D78;
+    y26 = lbl_80561D78 + minY;
+    z27 = maxZ - lbl_80561D78;
     x24 = lbl_80561D7C * x25;
     y23 = lbl_80561D80 + minY;
     hy = lbl_80561CDC * (maxY - minY);
     hz = lbl_80561CDC * (minZ + maxZ);
-    z20 = lbl_80561CDC * (z27 + hz);
-    y19 = minY + hy;
     x18 = maxX - hy;
-    z17 = lbl_80561D88 + minZ;
-    y16 = lbl_80561D88 + minY;
+    y19 = minY + hy;
+    z20 = lbl_80561CDC * (z27 + hz);
     x15 = maxX - lbl_80561D88;
+    y16 = lbl_80561D88 + minY;
+    z17 = lbl_80561D88 + minZ;
     z14 = lbl_80561CDC * (z17 + hz);
 
     q0.x = -x24; q0.y = lbl_80561D8C + y23; q0.z = z27;
-    d0.x = q0.x - SELFPOS->x; d0.y = q0.y - SELFPOS->y; d0.z = q0.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d0, &sizeA, lbl_80561D80, mass, f30, f29, f28);
+    d0.x = q0.x - self->pos.x; d0.y = q0.y - self->pos.y; d0.z = q0.z - self->pos.z;
+    fn_801A0258(self->group, &d0, &sizeA, lbl_80561D80, mass, f30, f29, f28);
     q1.x = lbl_80561CAC; q1.y = lbl_80561D8C + y23; q1.z = z27;
-    d1.x = q1.x - SELFPOS->x; d1.y = q1.y - SELFPOS->y; d1.z = q1.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d1, &sizeA, lbl_80561D80, mass, f30, f29, f28);
+    d1.x = q1.x - self->pos.x; d1.y = q1.y - self->pos.y; d1.z = q1.z - self->pos.z;
+    fn_801A0258(self->group, &d1, &sizeA, lbl_80561D80, mass, f30, f29, f28);
     q2.x = x24; q2.y = lbl_80561D8C + y23; q2.z = z27;
-    d2.x = q2.x - SELFPOS->x; d2.y = q2.y - SELFPOS->y; d2.z = q2.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d2, &sizeA, lbl_80561D80, mass, f30, f29, f28);
+    d2.x = q2.x - self->pos.x; d2.y = q2.y - self->pos.y; d2.z = q2.z - self->pos.z;
+    fn_801A0258(self->group, &d2, &sizeA, lbl_80561D80, mass, f30, f29, f28);
     q3.x = -x25; q3.y = lbl_80561D8C + y26; q3.z = z20;
-    d3.x = q3.x - SELFPOS->x; d3.y = q3.y - SELFPOS->y; d3.z = q3.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d3, &sizeA, lbl_80561D78, mass, f30, f29, f28);
+    d3.x = q3.x - self->pos.x; d3.y = q3.y - self->pos.y; d3.z = q3.z - self->pos.z;
+    fn_801A0258(self->group, &d3, &sizeA, lbl_80561D78, mass, f30, f29, f28);
     q4.x = x25; q4.y = lbl_80561D8C + y26; q4.z = z20;
-    d4.x = q4.x - SELFPOS->x; d4.y = q4.y - SELFPOS->y; d4.z = q4.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d4, &sizeA, lbl_80561D78, mass, f30, f29, f28);
+    d4.x = q4.x - self->pos.x; d4.y = q4.y - self->pos.y; d4.z = q4.z - self->pos.z;
+    fn_801A0258(self->group, &d4, &sizeA, lbl_80561D78, mass, f30, f29, f28);
     q5.x = lbl_80561D7C * -x18; q5.y = lbl_80561D8C + y19; q5.z = hz;
-    d5.x = q5.x - SELFPOS->x; d5.y = q5.y - SELFPOS->y; d5.z = q5.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d5, &sizeB, hy, mass, f30, f29, f28);
+    d5.x = q5.x - self->pos.x; d5.y = q5.y - self->pos.y; d5.z = q5.z - self->pos.z;
+    fn_801A0258(self->group, &d5, &sizeB, hy, mass, f30, f29, f28);
     q6.x = lbl_80561D7C * x18; q6.y = lbl_80561D8C + y19; q6.z = hz;
-    d6.x = q6.x - SELFPOS->x; d6.y = q6.y - SELFPOS->y; d6.z = q6.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d6, &sizeB, hy, mass, f30, f29, f28);
+    d6.x = q6.x - self->pos.x; d6.y = q6.y - self->pos.y; d6.z = q6.z - self->pos.z;
+    fn_801A0258(self->group, &d6, &sizeB, hy, mass, f30, f29, f28);
     q7.x = -x15; q7.y = lbl_80561D8C + y16; q7.z = z14;
-    d7.x = q7.x - SELFPOS->x; d7.y = q7.y - SELFPOS->y; d7.z = q7.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d7, &sizeC, lbl_80561D88, mass, f30, f29, f28);
+    d7.x = q7.x - self->pos.x; d7.y = q7.y - self->pos.y; d7.z = q7.z - self->pos.z;
+    fn_801A0258(self->group, &d7, &sizeC, lbl_80561D88, mass, f30, f29, f28);
     q8.x = x15; q8.y = lbl_80561D8C + y16; q8.z = z14;
-    d8.x = q8.x - SELFPOS->x; d8.y = q8.y - SELFPOS->y; d8.z = q8.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d8, &sizeC, lbl_80561D88, mass, f30, f29, f28);
+    d8.x = q8.x - self->pos.x; d8.y = q8.y - self->pos.y; d8.z = q8.z - self->pos.z;
+    fn_801A0258(self->group, &d8, &sizeC, lbl_80561D88, mass, f30, f29, f28);
     q9.x = -x15; q9.y = lbl_80561D8C + y16; q9.z = z17;
-    d9.x = q9.x - SELFPOS->x; d9.y = q9.y - SELFPOS->y; d9.z = q9.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d9, &sizeC, lbl_80561D88, mass, f30, f29, f28);
+    d9.x = q9.x - self->pos.x; d9.y = q9.y - self->pos.y; d9.z = q9.z - self->pos.z;
+    fn_801A0258(self->group, &d9, &sizeC, lbl_80561D88, mass, f30, f29, f28);
     q10.x = lbl_80561CAC; q10.y = lbl_80561D8C + y16; q10.z = z17;
-    d10.x = q10.x - SELFPOS->x; d10.y = q10.y - SELFPOS->y; d10.z = q10.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d10, &sizeC, lbl_80561D88, mass, f30, f29, f28);
+    d10.x = q10.x - self->pos.x; d10.y = q10.y - self->pos.y; d10.z = q10.z - self->pos.z;
+    fn_801A0258(self->group, &d10, &sizeC, lbl_80561D88, mass, f30, f29, f28);
     q11.x = x15; q11.y = lbl_80561D8C + y16; q11.z = z17;
-    d11.x = q11.x - SELFPOS->x; d11.y = q11.y - SELFPOS->y; d11.z = q11.z - SELFPOS->z;
-    fn_801A0258(*(void **)(SELF + 0x268), &d11, &sizeC, lbl_80561D88, mass, f30, f29, f28);
+    d11.x = q11.x - self->pos.x; d11.y = q11.y - self->pos.y; d11.z = q11.z - self->pos.z;
+    fn_801A0258(self->group, &d11, &sizeC, lbl_80561D88, mass, f30, f29, f28);
 
     center.z = lbl_80561CDC * (maxZ + minZ);
     center.y = lbl_80561CDC * (maxY + minY);
     center.x = lbl_80561CDC * (maxX + minX);
     obj2 = fn_801284F8(0x74, lbl_8055A3F0);
     if (obj2 != 0) {
-        obj2 = fn_801A2354(obj2, SELF + 0x3C, &center, arg0, lbl_80561CF8 * mass, f30,
+        obj2 = fn_801A2354(obj2, self->frame, &center, self, lbl_80561CF8 * mass, f30,
                            lbl_80561CDC * (maxX - minX), lbl_80561CDC * (maxY - minY),
                            lbl_80561CDC * (maxZ - minZ));
     }
-    fn_801A0444(*(void **)(SELF + 0x268), obj2);
-    fn_80179F94(arg0, *(void **)(SELF + 0x268));
-    *(unsigned char *)(SELF + 0x1E8) = 1;
-    (*(void (***)(void *, int))*(void **)(SELF + 0x268))[0x10](*(void **)(SELF + 0x268), 0x6D);
-    if (*(unsigned int *)(SELF + 0x10) == 0x50434152) {
-        (*(void (***)(void *, int))*(void **)(SELF + 0x268))[0x11](*(void **)(SELF + 0x268), 1);
+    fn_801A0444(self->group, obj2);
+    fn_80179F94(self, self->group);
+    self->unk1E8 = 1;
+    self->group->method14(0x6D);
+    if (self->tag == 'PCAR') {
+        self->group->method15(1);
     } else {
-        (*(void (***)(void *, int))*(void **)(SELF + 0x268))[0x11](*(void **)(SELF + 0x268), 6);
+        self->group->method15(6);
     }
-#undef SELF
-#undef SELFPOS
+#undef self
 }
+#pragma cplusplus reset
 #pragma pop
 void fn_801836DC(void) {
 
@@ -1829,13 +1846,16 @@ void fn_8018A08C(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-void fn_8018A098(void *arg0, float arg1) {
-    float temp_f3;
-    *((unsigned char *)arg0 + 0x259d) = 1;
-    temp_f3 = *(float *)((unsigned char *)arg0 + 0x2cc) * fn_80181AEC();
-    *(float *)((unsigned char *)arg0 + 0x258c) =
-        *(float *)((unsigned char *)arg0 + 0x3a0) *
-        (temp_f3 + arg1 * (lbl_80434930[0] - temp_f3));
+/* Mark this object dirty and update its scaled value at +0x258C by blending a base factor with the given interpolation factor. */
+void fn_8018A098(void *object, float blendFactor) {
+#define interpolatedValue lbl_80434930
+    float baseValue;
+    *((unsigned char *)object + 0x259d) = 1;
+    baseValue = *(float *)((unsigned char *)object + 0x2cc) * fn_80181AEC();
+    *(float *)((unsigned char *)object + 0x258c) =
+        *(float *)((unsigned char *)object + 0x3a0) *
+        (baseValue + blendFactor * (interpolatedValue[0] - baseValue));
+#undef interpolatedValue
 }
 #pragma dont_inline reset
 #pragma pop
