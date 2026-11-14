@@ -19,6 +19,21 @@ typedef struct SrcCoef {
     void* unkC;
 } SrcCoef;
 
+/* One row of a lifetime counter's threshold list, read off a "threshholds"
+ * archive node by fn_8001EFF0: the value the counter has to reach and the
+ * model name ("model_name") that goes with it. */
+typedef struct AchThreshold {
+    s32 threshold; /* "threshhold" attribute */
+    s32 model;     /* "model_name" attribute */
+} AchThreshold;    /* 8 bytes; the rows are kept in rising order */
+
+/* What SrcCoef.unkC points at: the rows fn_8001EFF0 allocated for one
+ * counter, and how many of them there are. */
+typedef struct AchThresholdList {
+    AchThreshold* rows; /* at 0x00, count * 8 bytes */
+    s32 count;          /* at 0x04 */
+} AchThresholdList;
+
 /* Achievements module (registered as the 'ACHV' archive block).
  * Statistics live in ACH_BLOCK_SIZE-byte blocks: ACH_COUNTER_COUNT lifetime
  * counters at the head, then ACH_ENTRY_COUNT named per-object entries.
@@ -166,15 +181,14 @@ void fn_8001EFCC(void* alarm) {
 #pragma scheduling invalid_target
 void fn_8001EFF0(void) {
     char* base = lbl_802FDE68;
-    SrcCoef* p;
+    VObj* child;
     u32 n;
+    SrcCoef* p;
     s32 i;
     s32 j;
     s32 idx;
     VObj* obj;
-    VObj* child;
     s32* res;
-
     p = (SrcCoef*)(base + 0xC8);
     n = 0;
     do {
@@ -275,14 +289,13 @@ null_result:
 s32 fn_8001F41C(const char* arg) {
     SrcCoef* p = lbl_802FDF30;
     u32 idx = 0;
-    while (idx < 8) {
+    for (;;) {
         if (stricmp((const char*)p->unk0, arg) == 0) {
             return idx;
         }
-#pragma scheduling off
         idx++;
+        if (idx >= 8) break;
         p++;
-#pragma scheduling on
     }
     return -1;
 }
@@ -393,7 +406,6 @@ void fn_8001F76C(void) {
 int fn_8001F7E4(s32 arg0, s32 arg1) {
     s32 limit;
     s32 adjusted;
-    s32 *dst;
 
     if (fn_8001FD24()) {
         if (arg0 == 0 && *(u8 *)&lbl_8055D614 != 0) {
@@ -404,8 +416,7 @@ int fn_8001F7E4(s32 arg0, s32 arg1) {
             fn_802E30C8(lbl_802FE060, arg1, adjusted);
             arg1 = adjusted;
         }
-        dst = (s32 *)(lbl_8035AF38 + arg0 * 4);
-        *dst = *dst + arg1;
+        *(s32 *)(lbl_8035AF38 + (arg0 << 2)) += arg1;
     }
 }
 #pragma scheduling on
@@ -428,7 +439,7 @@ void fn_8001F908(void *arg0) {
     } else {
         p[1] = 0;
     }
-    p[2] = p[1] + tbl[0x820 + p[0]] + tbl[0xA29 + p[0]];
+    p[2] = p[1] + tbl[0x820 + p[0]] + tbl[0xA28 + p[0]];
 }
 
 #pragma scheduling invalid_target
