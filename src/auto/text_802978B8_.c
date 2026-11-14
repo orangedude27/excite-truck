@@ -142,23 +142,27 @@ extern void *fn_8012850C(int, const char *);
 extern void *fn_8002F37C(void (*)(void), int, int, int);
 void fn_80297A80(void) {}
 
+/* Release every static shadow's model instance, hand the "static shadows" block
+   back to the heap and leave the list empty. */
 void fn_80297A84(void) {
     int offset = 0;
     int i = 0;
     goto test;
 loop:
-    fn_802C6CF8(*(void **)((char *)lbl_8055F7A8 + offset));
-    offset += 0x40;
+    Model_releaseInstance(((StaticShadow *)((char *)gStaticShadowRecords + offset))->model);
+    offset += sizeof(StaticShadow);
     i++;
 test:
-    if (i < lbl_8055F7AC)
+    if (i < gStaticShadowCount)
         goto loop;
-    if (lbl_8055F7A8 != 0)
-        fn_80128670((char *)lbl_8055F7A8 - 0x10);
-    lbl_8055F7A8 = 0;
-    lbl_8055F7AC = 0;
+    if (gStaticShadowRecords != 0)
+        Mem_freeArray((char *)gStaticShadowRecords - 0x10);
+    gStaticShadowRecords = 0;
+    gStaticShadowCount = 0;
 }
-
+#pragma paired_single off
+#pragma push
+#pragma processor 750
 extern void *fn_802C86DC(void);
 extern float fn_801E88F0(int);
 extern double fn_8002F234(void);
