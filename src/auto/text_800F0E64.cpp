@@ -4302,9 +4302,10 @@ void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
     }
 }
 #pragma use_lmw_stmw reset
-extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *arg0, f32 farg0) {
-    if (!(farg0 >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
-    *(f32 *)((u8 *)arg0 + 0x28) = farg0;
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *sound, f32 volume) {
+    /* Sets the sound's initial volume (offset 0x28), asserting it is non-negative. */
+    if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
+    *(f32 *)((u8 *)sound + 0x28) = volume;
 }
 #pragma pop
 extern "C" s32 fn_800F87E8(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x30); }
