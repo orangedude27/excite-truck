@@ -651,15 +651,16 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
 
 extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, u8);
 extern "C" void fn_800EAD00(void *);
-extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
-    u32 token = OSDisableInterrupts();
-    void *channel = *(void **)((char *)arg0 + 0xB8);
+/* Free all channels attached to this sequence track. */
+extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *track) {
+    u32 interruptState = OSDisableInterrupts();
+    void *channel = *(void **)((char *)track + 0xB8);
     while (channel) {
         fn_800EAD00(channel);
         channel = *(void **)((char *)channel + 0xE4);
     }
-    *(void **)((char *)arg0 + 0xB8) = 0;
-    OSRestoreInterrupts(token);
+    *(void **)((char *)track + 0xB8) = 0;
+    OSRestoreInterrupts(interruptState);
 }
 
 #pragma push
