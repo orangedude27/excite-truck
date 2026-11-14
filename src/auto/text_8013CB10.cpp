@@ -3888,6 +3888,7 @@ extern "C" u32 fn_8014435C(void) { return 1; }
 extern "C" s32 fn_80144364(void) { return 0; }
 
 extern "C" s32 fn_8014436C(TObj20 *arg0, s32 arg1) {
+    /* Return 1 if the global flag from fn_801B8514 is set and the object's v20 callback returns 0. */
     s32 result = 0;
     if (fn_801B8514() != 0 && arg0->v20(arg1) == 0)
         result = 1;
