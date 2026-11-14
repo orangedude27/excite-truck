@@ -50,16 +50,17 @@ s32 fn_8023B764(s32 arg0, s32 arg1) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_8023B77C(void) {
-    s32 var_r31;
-    s32 var_r30;
+    /* Compute a horizontal scissor/rect region and submit it; values depend on fn_802C9A58(). */
+    s32 left;
+    s32 right;
 
-    var_r31 = 0x129;
-    var_r30 = 0x18D;
+    left = 0x129;
+    right = 0x18D;
     if (fn_802C9A58() == 0) {
-        var_r31 = 0x136;
-        var_r30 = 0x1BC;
+        left = 0x136;
+        right = 0x1BC;
     }
-    fn_802CED50((var_r31 * 0x280) / 512, 0x188, ((var_r30 - var_r31) * 0x280) / 512, 0x1F);
+    fn_802CED50((left * 0x280) / 512, 0x188, ((right - left) * 0x280) / 512, 0x1F);
 }
 #pragma scheduling on
 #pragma dont_inline reset
