@@ -4227,7 +4227,7 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         head = (char *)arg0 + 4;
         it = *(void **)head;
-        while (it != head) {
+        for (; it != head; ) {
             node = it;
             it = *(void **)it;
             if (node == 0)
@@ -4245,6 +4245,7 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+#pragma use_lmw_stmw reset
 void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
     struct Dummy {
         virtual ~Dummy();
@@ -4778,7 +4779,9 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     s32 startOffset;
     s32 prio;
     void *sound;
-    if (arg6 == 0) {
+    void *pool = arg6;
+
+    if (pool == 0) {
         return 0;
     }
     startOffset = 0;
@@ -4796,7 +4799,7 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, prio, (void *)arg4) == 0) {
         return 0;
     }
-    sound = SoundInstanceManager_Alloc(arg6, prio);
+    sound = SoundInstanceManager_Alloc(pool, prio);
     if (sound == 0) {
         return 0;
     }
@@ -5421,12 +5424,13 @@ extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
 }
 
 extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *self, void *ptr) __attribute__((noinline)) {
-    u32 state = OSDisableInterrupts();
-    u32 idx = ((u8 *)ptr - (u8 *)*(void **)self) / *(u32 *)((u8 *)self + 8);
-    u8 *block = (u8 *)self + (idx >> 3);
-    *(u8 *)(block + 0x14) &= ~(1 << (idx & 7));
+    /* Return one stream buffer block to the pool's allocation bitmap. */
+    u32 savedInterruptState = OSDisableInterrupts();
+    u32 blockIndex = ((u8 *)ptr - (u8 *)*(void **)self) / *(u32 *)((u8 *)self + 8);
+    u8 *bitmapByte = (u8 *)self + (blockIndex >> 3);
+    *(u8 *)(bitmapByte + 0x14) &= ~(1 << (blockIndex & 7));
     *(s32 *)((u8 *)self + 0x10) -= 1;
-    OSRestoreInterrupts(state);
+    OSRestoreInterrupts(savedInterruptState);
 }
 
 extern "C" void NWC24Data_Init(void* arg0) {
@@ -6285,24 +6289,18 @@ extern "C" u8 lbl_8041506C[];
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
-    struct LinkNode {
-        LinkNode *next;
-        LinkNode *prev;
-    };
-    struct LinkList {
-        int count;
-        LinkNode head;
-    };
-    LinkList *list = (LinkList *)lbl_8041506C;
-    LinkNode *it = list->head.next;
-    LinkNode *end = &list->head;
-    while (it != end) {
-        LinkNode *cur = it;
-        it = it->next;
-        if (!cur) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326B8C, 0x23D, (const char *)lbl_80326B68);
+    void* pHead = *(void**)&lbl_8041506C[0x04];
+    void* pList = &lbl_8041506C[0x04];
+    void* p;
+
+    while (pHead != pList) {
+        p = pHead;
+        pHead = *(void**)pHead;
+        if (p == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
+                                         (const char*)lbl_80326B68);
         }
-        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)cur - 8);
+        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)p)[-0x08]);
     }
 }
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void) {
@@ -6835,12 +6833,13 @@ extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *player, 
     return 1;
 }
 
-#pragma dont_inline on
 #pragma use_lmw_stmw off
+#pragma dont_inline on
 void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
-    register BOOL irqState = OSDisableInterrupts();
+    BOOL irqState = OSDisableInterrupts();
     u8 *player = (u8 *)self;
     s32 index = 0;
+
     while (index < *(s32 *)((u8 *)self + 0x4A0)) {
         void *buffer = *(void **)(player + 0x4A8);
         if (buffer != 0) {
@@ -6851,6 +6850,7 @@ void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
         player += 0x38;
         index += 1;
     }
+
     *(s32 *)((u8 *)self + 0x4A0) = 0;
     if (*(void **)((u8 *)self + 0x438) != 0) {
         Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((u8 *)self + 0x438));
