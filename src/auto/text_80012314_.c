@@ -13,6 +13,7 @@ extern s32 lbl_8035172C[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma scheduling invalid_target
+/* Initializes global UI color/state values and registers the associated global object. */
 void fn_80012314(void) {
     fn_8000D838(&lbl_8055D478);
     lbl_8055D484 = 0x64FFFFFF;
