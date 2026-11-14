@@ -889,31 +889,32 @@ s32 fn_8014AF58(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
-void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
+/* Initializes an iterator over a container's first (useSecond==0) or second child list entry, caching fields at offsets 0x11C and 0x120 from the selected node. */
+void fn_8014AF60(void *dst, void *container, s32 useSecond) {
     void *next;
 
-    ((void **)arg0)[0] = arg1;
-    if (arg2 == 0) {
-        next = ((void **)arg1)[0];
-        ((void **)arg0)[1] = next;
+    ((void **)dst)[0] = container;
+    if (useSecond == 0) {
+        next = ((void **)container)[0];
+        ((void **)dst)[1] = next;
         if (next != 0) {
-            *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)next + 0x11C);
-            *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)next + 0x120);
+            *(s32 *)((u8 *)dst + 8) = *(s32 *)((u8 *)next + 0x11C);
+            *(s32 *)((u8 *)dst + 0xC) = *(s32 *)((u8 *)next + 0x120);
             return;
         }
-        *(s32 *)((u8 *)arg0 + 0xC) = 0;
-        *(s32 *)((u8 *)arg0 + 8) = 0;
+        *(s32 *)((u8 *)dst + 0xC) = 0;
+        *(s32 *)((u8 *)dst + 8) = 0;
         return;
     }
-    next = ((void **)arg1)[1];
-    ((void **)arg0)[1] = next;
+    next = ((void **)container)[1];
+    ((void **)dst)[1] = next;
     if (next != 0) {
-        *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)next + 0x11C);
-        *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)next + 0x120);
+        *(s32 *)((u8 *)dst + 8) = *(s32 *)((u8 *)next + 0x11C);
+        *(s32 *)((u8 *)dst + 0xC) = *(s32 *)((u8 *)next + 0x120);
         return;
     }
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
+    *(s32 *)((u8 *)dst + 0xC) = 0;
+    *(s32 *)((u8 *)dst + 8) = 0;
 }
 
 extern u8 lbl_8042FC70[];
