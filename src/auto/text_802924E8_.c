@@ -1459,15 +1459,17 @@ void fn_80294348(void* arg0) {
 
 #pragma scheduling invalid_target
 void fn_80294398(void *arg0) {
+    /* For each active record, dispatch it with fn_802C744C using the per-record slot byte
+     * to select the base object pointer from the container. */
     u8 *record = (u8 *)arg0 + 0x2C;
-    s32 i = 0;
+    s32 index = 0;
     goto check;
 body:
     fn_802C744C(*(void **)((u8 *)arg0 + (*(u8 *)(record + 0x40) * 4) + 8), record);
     record += 0x44;
-    i++;
+    index++;
 check:
-    if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
+    if (index < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
 }
 #pragma scheduling on
 extern int fn_80287B5C(int, void *, float, float, float);
