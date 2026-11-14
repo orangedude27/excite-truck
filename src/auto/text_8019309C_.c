@@ -842,6 +842,10 @@ static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
     float n = -ay;
     return ax * bx + by * n;
 }
+static inline float Cross2DVector_80194324(const float *a, const float *b) {
+    float n = -a[0];
+    return a[1] * b[0] + n * b[1];
+}
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
 extern "C" void *fn_801B83A0(void);
