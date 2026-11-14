@@ -212,6 +212,7 @@ extern "C" void fn_80292698(void) {
 }
 
 extern "C" void fn_80292864(void) {
+    /* Call virtual method 3 on the object stored in each 0x18-byte entry of the global object list. */
     class Dummy_80292864 {
     public:
         virtual void m0();
