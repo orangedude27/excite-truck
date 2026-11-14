@@ -14,13 +14,19 @@ extern char* strncpy(char*, const char*, unsigned long);
 void* fn_80279004(s32, s32);
 
 typedef struct Node_80279254 {
-    u8 pad0[0x243C];
-    char name[0x20];
-    s32 count; /* refCount */
-    struct Node_80279254* next;
+    u8 pad0[0x20EC];
+    s32 boneConnections;        /* 0x20EC allocated bone-connection array */
+    u8 pad20F0[0x348];
+    void* modelFile;            /* 0x2438 loaded car resource file handle */
+    char name[0x20];            /* 0x243C resource name */
+    s32 count;                  /* 0x245C reference count */
+    struct Node_80279254* next; /* 0x2460 next node in gCarResourceList */
 } Node_80279254;
 typedef Node_80279254 CarResourceNode;
-#define gCarResourceList lbl_8055F5F0 /* head of loaded car resource list */
+#define gCarResourceList     lbl_8055F5F0 /* head of loaded car resource list */
+#define ResourceFile_release fn_80131818
+#define Mem_freeArray        fn_80128670
+#define Mem_freeObject       fn_80128668
 
 extern void* fn_801284F8(s32, const char*);
 extern s32 fn_8012C33C(char*);
@@ -169,7 +175,6 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
         car->unk4 = 0;
         i = 1;
         elem->id = 1;
-
         for (; i < 0xA2; i++, elem++) {
             sprintf(boneName, lbl_8055C678, i);
             if (!file->hasRes(boneName)) {
@@ -191,7 +196,6 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 elem->v1.x *= scale;
                 elem->v1.y *= scale;
                 elem->v1.z *= scale;
-
                 v2 = res2->getVec(base->travel_max);
                 elem->v2.x = v2.x;
                 elem->v2.y = v2.y;
@@ -199,7 +203,6 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 elem->v2.x *= scale;
                 elem->v2.y *= scale;
                 elem->v2.z *= scale;
-
                 v3 = res2->getVec(base->link_center);
                 elem->v3.x = v3.x;
                 elem->v3.y = v3.y;
@@ -207,7 +210,6 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 elem->v3.x *= scale;
                 elem->v3.y *= scale;
                 elem->v3.z *= scale;
-
                 elem->b30 = res->getByte(base->is_welded, 0);
                 elem->f2C = res->getFloat(base->weakness);
                 f32 def = lbl_805640D0;
@@ -217,7 +219,6 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 fn_80278A28(elem);
             }
         }
-
         car->count20F0 = 0;
         i = 0;
         while ((res = file->getChild(i++)) != NULL) {
@@ -225,10 +226,8 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 car->count20F0 += 1;
             }
         }
-
         car->items20EC = fn_8012850C(car->count20F0 * 0x14, base->bone_conn);
         car->count20F0 = 0;
-
         i = 0;
         Entry20EC* entry;
         Res_80279004* child;
@@ -250,7 +249,6 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 }
             }
         }
-
         const char* const* tbl = lbl_802FA838;
         keys = *(struct Keys*)tbl;
         const char** key_ptr = keys.k;
