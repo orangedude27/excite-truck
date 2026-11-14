@@ -337,6 +337,7 @@ extern "C" void SetVtxColor__Q36nw4hbm3lyt7PictureFUlQ36nw4hbm2ut5Color_800E02C4
     p->b0 = color->b0; p->b1 = color->b1; p->b2 = color->b2; p->b3 = color->b3;
 }
 
+/* nw4hbm::lyt::Picture::GetVtxColorElement(u32): return one byte of the picture's 16 vertex-color bytes (4 colors x 4 channels at 0xE4), asserting the index is in range. */
 extern "C" unsigned char GetVtxColorElement__Q36nw4hbm3lyt7PictureCFUl_800E0350(void* self, unsigned long idx) {
     if (idx >= 0x10) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803204F8, 0xC7, lbl_803204BC);
     unsigned long hi = idx & ~3UL;
