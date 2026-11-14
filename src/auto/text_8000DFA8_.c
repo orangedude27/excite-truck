@@ -96,8 +96,8 @@ typedef struct UnkF22CVtable {
 struct UnkF22C {
     UnkF22CVtable *vtable;
 };
-extern UnkF22C *lbl_8055D4B4;
-extern UnkF22C *lbl_8055D4B8;
+extern UnkF22C *lbl_8055D4B4; /* Sound for "321low.sfx" (each countdown step) */
+extern UnkF22C *lbl_8055D4B8; /* Sound for "321high.sfx" ("GO!") */
   extern void fn_802328D4();
   extern char lbl_802FC414[];
 extern s32 fn_80232578(s32);
