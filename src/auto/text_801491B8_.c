@@ -605,6 +605,126 @@ f32 fn_80149F00(void *arg0, void *arg1) {
     return f0;
 }
 
+void fn_80149F2C(void *arg0, void *arg1, void *arg2) {
+    u8 *base = (u8 *)arg0;
+    void *list1 = arg1;
+    void *list2 = arg2;
+    double d68 = 0, d70 = 0, d78 = 0;
+    double c50 = 0, c58 = 0, c60 = 0;
+    int count;
+    int r3fill;
+    u8 *p68;
+    u8 *r20;
+    u8 *r30;
+    f32 f0;
+    p68 = *(u8 **)(base + 0x68);
+    r20 = p68 + 0x8F4;
+    count = 0;
+    r3fill = 0;
+    if (*(u8 *)(p68 + 0x8F4) != 0) {
+        u8 *e = r20 + (*(s32 *)base) * 0x1C;
+        if (*(u8 *)(e + 4) != 0) {
+            r30 = e + 4;
+            fn_801683F4(&d68, *(s32 *)base);
+            c50 = d68; c58 = d70; c60 = d78;
+            f0 = *(f32 *)(r30 + 8);
+            if (f0 > lbl_80561648) *(f32 *)(r30 + 8) = f0 - lbl_80561650;
+            f0 = *(f32 *)(r30 + 0xC);
+            if (f0 > lbl_80561648) *(f32 *)(r30 + 0xC) = f0 - lbl_80561650;
+            f0 = *(f32 *)(r30 + 0x10);
+            if (f0 > lbl_80561648) *(f32 *)(r30 + 8 + 8) = f0 - lbl_80561650;
+            f0 = *(f32 *)(r30 + 8 + 0xC);
+            if (f0 > lbl_80561648) *(f32 *)(r30 + 8 + 0xC) = f0 - lbl_80561650;
+            count = ((int *)&c50)[1];
+            *(s32 *)(r30 + 4) += count * (*(s32 *)(r20 + 0xE8));
+            if (count > 0) {
+                int n = count;
+                int idx = *(s32 *)(r30 + 0x18);
+                while (n-- > 0) {
+                    *(f32 *)(r30 + idx * 4 + 8) = lbl_80561654;
+                    idx = (idx + 1) & 3;
+                    *(s32 *)(r30 + 0x18) = idx;
+                    r3fill++;
+                }
+            }
+        }
+    }
+    {
+        u8 it[0x20];
+        u8 *r24 = *(u8 **)(base + 8);
+        f32 f30 = lbl_80561648;
+        fn_8014AF60(it, r24 + 0x124C, 0);
+        while (fn_8014ADD0(it) != 0) {
+            fn_8014AF58(it);
+            fn_8014AEF0(it);
+            fn_8014AF58(it);
+            if (fn_8014AEE8(it) == 0) {
+                fn_8014AF58(it);
+                if (fn_8014AEE0(it) != 0) {
+                    fn_8014AF58(it);
+                    fn_8014AED8(it);
+                    {
+                        f32 v = fn_80141C9C(fn_8014AED8(it));
+                        fn_8014AF58(it);
+                        (void)v;
+                        if (*(s32 *)(r24 + 0x1254) == 0) {
+                            fn_8017960C(*(s32 *)(r24 + 0x1268));
+                            fn_8014AEC8(it);
+                            if (fn_80141F7C(fn_8014AEC8(it)) == 0) {
+                                fn_8014AF58(it);
+                                if (fn_8014AEC0(it) == 0xD) {
+                                    *(u8 *)(r24 + 0x1260) = 0;
+                                    *(s32 *)(r24 + 0x1254) = fn_8014AEB8(it);
+                                    fn_8014AED8(it);
+                                    if (fn_80144C90(fn_8014AED8(it)) == 5 && *(s32 *)(r24 + 0x125C) != 0) fn_80142B60((void *)1);
+                                    fn_8014AE60(it);
+                                    fn_8014AE54(*(void **)(r24 + 0x1254));
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    fn_8014AE60(it);
+                    fn_8014AE1C(r24 + 0x1244, (void *)fn_8014AEB8(it));
+                }
+            }
+            fn_8014ADD8(it);
+        }
+        if (*(s32 *)(r24 + 0x1254) != 0) {
+            fn_8014AD74(r24);
+            if (*(u8 *)(r24 + 0x1260) == 0 && fn_8014AD6C(r24) > lbl_80561658) {
+                *(u8 *)(r24 + 0x1260) = 1;
+                if (*(s32 *)(r24 + 0x1258) != 0) fn_80142B60((void *)1);
+            }
+            if (fn_8014AD6C(r24) > lbl_8056165C) {
+                f30 = (f32)fn_8014AD64(r24);
+                fn_8014AE1C(r24 + 0x1244, *(void **)(r24 + 0x1254));
+                *(s32 *)(r24 + 0x1254) = 0;
+            }
+        }
+        *(f32 *)(base + 0x14) += f30 + (f32)count;
+    }
+    {
+        f32 v;
+        v = *(f32 *)(base + 0x40) - lbl_80561650;
+        if (v < lbl_80561648) v = lbl_80561648;
+        *(f32 *)(base + 0x40) = v;
+        v = *(f32 *)(base + 0x44) - lbl_80561650;
+        if (v < lbl_80561648) v = lbl_80561648;
+        *(f32 *)(base + 0x44) = v;
+        v = *(f32 *)(base + 0x48) - lbl_80561650;
+        if (v < lbl_80561648) v = lbl_80561648;
+        *(f32 *)(base + 0x48) = v;
+        v = *(f32 *)(base + 0x4C) - lbl_80561650;
+        if (v < lbl_80561648) v = lbl_80561648;
+        *(f32 *)(base + 0x4C) = v;
+        v = *(f32 *)(base + 0x50) - lbl_80561650;
+        if (v < lbl_80561648) v = lbl_80561648;
+        *(f32 *)(base + 0x50) = v;
+    }
+    (void)list1; (void)list2; (void)r3fill;
+}
+
 s32 fn_8014ACBC(void) { return 0; }
 
 s32 fn_8014ACC4(void) { return 0; }
@@ -1414,20 +1534,31 @@ extern void fn_80128670(long);
 #pragma cplusplus on
 extern "C" void fn_80128670(s32);
 extern "C" void fn_80128668(void *);
-extern "C" void *fn_8014E154(void *arg0, s32 arg1) {
-    struct Obj { char pad[0x6C]; void *f6C; char pad2[4]; void *f74; void *f78; };
-    struct Obj *obj = (struct Obj *)arg0;
-    if (arg0 != 0) {
-        if (&obj->f6C != 0 && &obj->f74 != 0 && obj->f74 != 0) {
-            fn_80128670((s32)obj->f74);
-            obj->f74 = 0;
-            obj->f78 = 0;
+extern "C" void *fn_8014E154(void *object, s32 shouldFree) {
+    /* One of the 8 per-car race entries the betarace manager builds at
+     * +0x9E4 (fn_8014DE50).  fn_8014E1D0 loads its place-bonus item list
+     * (place_bonus.val) into items/itemCount with fn_8012850C. */
+    struct RaceEntry {
+        char pad[0x6C];
+        void *field_6C;
+        char pad2[4];
+        void **items;
+        s32 itemCount;
+    };
+    struct RaceEntry *entry = (struct RaceEntry *)object;
+    if (object != 0) {
+        /* Drop the bonus item list the entry owns (the two address tests are
+         * the original's; only the pointer at 0x74 decides anything). */
+        if (&entry->field_6C != 0 && &entry->items != 0 && entry->items != 0) {
+            fn_80128670((s32)entry->items);
+            entry->items = 0;
+            entry->itemCount = 0;
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (shouldFree > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 #pragma cplusplus reset
 
@@ -2321,10 +2452,10 @@ extern "C" void fn_80151B48(void *arg0) {
     };
     void *self = arg0;
     s32 addr;
-    s32 flag;
     register void *entry;
     void *p;
     void *obj;
+    s32 flag = 0;
     s32 index;
     s32 i;
     f32 f;
@@ -2350,8 +2481,7 @@ extern "C" void fn_80151B48(void *arg0) {
             f = ((f32 (*)(void))fn_80149650)();
             obj = fn_801538E4(entry);
             p = fn_801538E4(entry);
-            fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f);
-            fn_80151C98(entry, (s32)obj);
+            fn_80151C98(entry, fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f));
         }
         index += 4;
         i += 1;
