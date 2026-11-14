@@ -1134,13 +1134,14 @@ int fn_802BE1D8(void) {
     return sum;
 }
 #pragma pop
+/* Calls fn_802BD0F4 for each 0x60-byte entry in the global list at lbl_804C00D4. */
 void fn_802BE244(void) {
-    int offset = 0;
-    int i = 0;
-    while (i < *(int *)((char *)&lbl_804C00D4 + 4)) {
-        fn_802BD0F4(*(char **)&lbl_804C00D4 + offset);
-        offset += 0x60;
-        i++;
+    int entryOffset = 0;
+    int index = 0;
+    while (index < *(int *)((char *)&lbl_804C00D4 + 4)) {
+        fn_802BD0F4(*(char **)&lbl_804C00D4 + entryOffset);
+        entryOffset += 0x60;
+        index++;
     }
 }
 
