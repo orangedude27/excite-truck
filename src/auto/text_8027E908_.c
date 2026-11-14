@@ -3301,9 +3301,9 @@ extern "C" void fn_8028693C(void* arg0) {
 typedef unsigned int (*GetFn)(void *);
 typedef int (*CmpFn)(void *);
 #pragma cplusplus on
-extern "C" int fn_80286950(ebi::title::TPlaneSub* arg0) {
-    int a = arg0->v17();
-    return a <= arg0->v8();
+extern "C" int fn_80286950(ebi::title::TPlaneSub* plane) {
+    int value17 = plane->v17();
+    return value17 <= plane->v8();
 }
 extern "C" void fn_802869B8(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v17();
