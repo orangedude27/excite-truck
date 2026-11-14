@@ -429,17 +429,21 @@ void fn_801B916C(void *arg0) {
 
 #pragma scheduling invalid_target
 #pragma cplusplus off
-void *fn_801B9274(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        s32 index = *(s32 *)((char *)arg0 + 0x2700);
-        lbl_80436D28[index] = 0;
-        lbl_8055E774--;
-        fn_801836E0(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+void *fn_801B9274(struct TrlrCar *car, s32 deleteFlag) {
+#define trlrCars lbl_80436D28     /* the trailer cars, by index */
+#define trlrCarCount lbl_8055E774 /* how many there are */
+    if (car != 0) {
+        s32 index = car->index;
+        trlrCars[index] = 0;
+        trlrCarCount--;
+        fn_801836E0(car, 0); /* the car object underneath, not freed here */
+        if (deleteFlag > 0) {
+            fn_80128668(car); /* operator delete */
         }
     }
-    return arg0;
+#undef trlrCars
+#undef trlrCarCount
+    return car;
 }
 #pragma cplusplus reset
 #pragma scheduling on
