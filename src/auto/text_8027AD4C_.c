@@ -803,16 +803,18 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
                 char *rec;
                 long flag;
                 for (idx = 0, off = 0; idx < *(long *)((int)a0 + 4); off += 0x18, idx++) {
-                    if (*(long *)(*(char **)a0 + off) == key)
-                        goto found;
+                    long elem = *(long *)(*(char **)a0 + off);
+                    if (elem != key)
+                        continue;
+                    goto found;
                 }
                 idx = -1;
             found:
                 if (idx == -1) {
-                    long cnt = *(long *)(a0 + 4);
-                    long baseAddr = *(long *)a0;
-                    rec = (char *)(baseAddr + cnt * 0x18);
-                    *(long *)(a0 + 4) = cnt + 1;
+                    long *pCnt = (long *)(a0 + 4);
+                    long cnt = *pCnt;
+                    rec = *(char **)a0 + cnt * 0x18;
+                    *pCnt = cnt + 1;
                     *(long *)(rec + 0) = obj->m6();
                     *(long *)(rec + 4) = entry->m1();
                     *(long *)(rec + 8) = j;
@@ -1530,19 +1532,20 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
 }
 
 #pragma scheduling invalid_target
-long fn_8027CE4C(long arg0) {
-    long value = *fn_8027C120(lbl_8055F654, arg0);
-    switch (value) {
+long fn_8027CE4C(long contestName) {
+    /* Look up contestName in the event-path table and dispatch by its path type:
+       0 -> career handler, 1 -> challenge handler; unknown types are reported and treated as handled. */
+    long pathType = *fn_8027C120(lbl_8055F654, contestName);
+    switch (pathType) {
     case 0:
         return ((long (*)(void))fn_8027C8B0)();
     case 1:
         return ((long (*)(void))fn_8027CB20)();
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, arg0, value);
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, contestName, pathType);
         return 1;
     }
 }
-
 /* EventPath query for a contest name: finds the contest in the manager's contest-event
  * array (lbl_8055F654, see fn_8027C120) and asks the handler for that record's
  * event-path type (0 = career, 1 = challenge) whether the contest's save record has
