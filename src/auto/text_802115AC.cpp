@@ -2378,15 +2378,16 @@ int fn_802C4EE4(int);
 int fn_802C4EFC(int);
 extern "C" char lbl_8033D504[];
 extern "C" s32 fn_802C2FC4(s32);
-extern "C" void *fn_80215738(void *arg0, s32 arg1) {
-    s32 old;
-    if (arg0 != 0) {
-        old = *(s32 *)((char *)arg0 + 4);
-        *(char **)arg0 = lbl_8033D504;
-        if (old != 0) fn_802C2FC4(old);
-        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+extern "C" /* Deleting destructor: installs lbl_8033D504 vtable, releases the owned handle at +4 via fn_802C2FC4, and optionally frees the object. */
+void *fn_80215738(void *object, s32 deleteFlag) {
+    s32 ownedHandle;
+    if (object != 0) {
+        ownedHandle = *(s32 *)((char *)object + 4);
+        *(char **)object = lbl_8033D504;
+        if (ownedHandle != 0) fn_802C2FC4(ownedHandle);
+        if (deleteFlag > 0) ((s32 (*)(void *))fn_80128668)(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_802157A8(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
