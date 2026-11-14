@@ -3537,7 +3537,9 @@ void fn_80287360(void) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_80287364(void *arg0) {
+/* Return 1 if every item in `list` passes its virtual readiness check (vtable
+ * slot 0x40), or 0 on the first item that returns 0. */
+extern "C" int fn_80287364(void *list) {
     class List {
     public:
         virtual void v0();
@@ -3553,11 +3555,11 @@ extern "C" int fn_80287364(void *arg0) {
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13();
-        virtual long valid();
+        virtual long isReady();
     };
     long index = 0;
-    while (index < ((List *)arg0)->count()) {
-        if (((Item *)((List *)arg0)->item(index))->valid() == 0)
+    while (index < ((List *)list)->count()) {
+        if (((Item *)((List *)list)->item(index))->isReady() == 0)
             return 0;
         index++;
     }
