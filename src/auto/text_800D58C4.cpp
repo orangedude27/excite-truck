@@ -3709,13 +3709,26 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLi
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)pane + 0x1C, &iterSlot, animLink);
 }
 
-extern "C" void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
-    void* p = ((void*(*)(void*))fn_800D4F98)((u8*)self + 0x1C);
-    if (p != 0) return p;
-    FindLinkDispatch_800D9524* obj = *(FindLinkDispatch_800D9524**)((u8*)self + 0x28);
-    if (obj != 0) {
-        void* q = obj->find(anim);
-        if (q != 0) return q;
+extern "C" void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, void* pAnimTransform) {
+    /* nw4hbm::lyt::Pane::FindAnimationLink(AnimTransform*): the AnimationLink that
+     * binds this pane to a running animation. Searched first in the pane's own
+     * animation-link list (Pane+0x1C, entries keyed by their AnimTransform at +8),
+     * then in the pane's material (Pane+0x28); NULL when the pane is not bound. */
+    struct Material {
+        virtual void unknown0x08();
+        virtual void unknown0x0C();
+        virtual void unknown0x10();
+        virtual void unknown0x14();
+        virtual void unknown0x18();
+        virtual void unknown0x1C();
+        virtual void* FindAnimationLink(void* pAnimTransform);
+    };
+    void* link = ((void*(*)(void*, void*))fn_800D4F98)((u8*)pane + 0x1C, pAnimTransform);
+    if (link != 0) return link;
+    Material* material = *(Material**)((u8*)pane + 0x28);
+    if (material != 0) {
+        void* materialLink = material->FindAnimationLink(pAnimTransform);
+        if (materialLink != 0) return materialLink;
     }
     return 0;
 }
