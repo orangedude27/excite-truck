@@ -73,6 +73,10 @@ u8 SCGetScreenSaverMode(void) {
 }
 
 u8 SCGetSoundMode(void) {
+    /* Read the audio output mode from the System Configuration's IPL sound
+       mode item (SC_ITEM_IPL_SND, id 0xC), defaulting to stereo when the item
+       is missing and falling back to stereo for any value that is not one of
+       the SCSoundMode values (mono / stereo / surround). */
     u8 item;
 
     if (!SCFindU8Item(&item, SC_ITEM_IPL_SND)) {
