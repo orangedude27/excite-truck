@@ -706,6 +706,7 @@ void fn_8023243C(void) {
     *(s32 *)(lbl_80497F14 + 4) = 0;
 }
 
+#ifndef GTEX_DECLS_AT_TOP /* the live copy is at the top of the file */
 /* Readable aliases; the game's own symbols keep their placeholder names. */
 #define gTexBlockTable lbl_8055F068 /* the cache of loaded font blocks, see GTexCache below */
 #define gTexMessages lbl_80340440   /* gText's block of message strings */
@@ -755,6 +756,7 @@ typedef struct GTexCache {
     /* 0x000 */ GTexCacheEntry entries[GTEX_CACHE_MAX];
     /* 0x168 */ s32 count;
 } GTexCache;
+#endif
 
 extern char lbl_803404FC[];
 extern void fn_802CB228(s32 resourceIndex);
