@@ -1797,14 +1797,17 @@ extern "C" void fn_8021AFF4(void *arg0) {
 #pragma scheduling on
 extern "C" char lbl_8033F5D0[];
 #pragma dont_inline on
-extern "C" void *fn_8021B0CC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
-    fn_8021AC24(arg0, arg1, arg2, arg7, arg4);
-    *(void **)arg0 = lbl_8033F5D0;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg3;
-    *(s32 *)((u8 *)arg0 + 0x258) = arg4;
-    *(s32 *)((u8 *)arg0 + 0x25C) = arg5;
-    *(s32 *)((u8 *)arg0 + 0x260) = arg6;
-    return arg0;
+/* Initialize a UI object that steps/clamps an integer value: set up the base
+   widget state, install this type's vtable, and store the value pointer, range
+   bounds, and step amount. */
+extern "C" void *fn_8021B0CC(void *obj, s32 x, s32 y, s32 valuePtr, s32 rangeMin, s32 rangeMax, s32 step, s32 resourceId, s32 unused) {
+    fn_8021AC24(obj, x, y, resourceId, rangeMin);
+    *(void **)obj = lbl_8033F5D0;
+    *(s32 *)((u8 *)obj + 0x254) = valuePtr;
+    *(s32 *)((u8 *)obj + 0x258) = rangeMin;
+    *(s32 *)((u8 *)obj + 0x25C) = rangeMax;
+    *(s32 *)((u8 *)obj + 0x260) = step;
+    return obj;
 }
 #pragma push
 #pragma scheduling invalid_target
