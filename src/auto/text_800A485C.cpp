@@ -6316,6 +6316,18 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
     return 0;
 }
 
+static inline s32 FlushFatPageCopies(u8 *ctx, void *pg) {
+    s32 acc = 0;
+    s32 pos = *(s32 *)((u8 *)pg + 0x18);
+    u16 i;
+    for (i = 0; i < *(u8 *)(ctx + 0x22); i++) {
+        s32 e = fn_800B5618(ctx, *(void **)((u8 *)pg + 8), pos, 0, *(u16 *)ctx);
+        if (e != 0 && acc == 0) acc = e;
+        pos += *(s32 *)(ctx + 0xC);
+    }
+    return acc;
+}
+
 extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 *ctx = (u8 *)*(void **)((u8 *)arg0 + 0x34);
     s32 next;
@@ -6348,7 +6360,7 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
     *(s16 *)((u8 *)page + 2) = 1;
     next = cur;
-    while ((u32)next < limit) {
+    while ((u32)cur < limit) {
         s32 type;
         void *pp;
         if (arg3 != 0 && remain == 0) {
@@ -6380,9 +6392,8 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
             u16 i;
             void *pg;
             pg = page;
-            i = 0;
             pos = *(s32 *)((u8 *)pg + 0x18);
-            for (; i < *(u8 *)(ctx + 0x22); i++) {
+            for (i = 0; i < *(u8 *)(ctx + 0x22); i++) {
                 s32 e = fn_800B5618(ctx, *(void **)((u8 *)pg + 8), pos, 0, *(u16 *)ctx);
                 if (e != 0 && acc == 0) {
                     acc = e;
@@ -6425,7 +6436,7 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
             return err;
         }
         if (arg3 != 0 && remain != 0) {
-            remain = (u32)remain >= (u32)clusterSize ? remain - clusterSize : 0;
+            remain = (u32)clusterSize >= (u32)remain ? 0 : remain - clusterSize;
         }
         if ((u32)(*(s32 *)(ctx + 0x38) + 0x10000) != 0xFFFFU) {
             *(s32 *)(ctx + 0x38) = *(s32 *)(ctx + 0x38) + 1;
@@ -6438,7 +6449,6 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         void *pg;
         pg = page;
         pos = *(s32 *)((u8 *)pg + 0x18);
-        err = 0;
         for (cur = 0; (u16)cur < *(u8 *)(ctx + 0x22); cur++) {
             s32 e = fn_800B5618(ctx, *(void **)((u8 *)pg + 8), pos, 0, *(u16 *)ctx);
             if (e != 0 && acc == 0) {
@@ -16771,6 +16781,7 @@ extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
     s32 coefficient;
     s32 result;
     s32 negative;
+    s32 sample;
     s64 product;
     s64 second;
 
@@ -16781,11 +16792,11 @@ extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
     value = in[4]; out[4] = value; negOut[-4] = zero;
     value = in[5]; out[5] = value; negOut[-5] = zero;
 
-    value = in[6];
+    sample = in[6];
     coefficient = *k++;
-    product = (s64)value * coefficient;
+    product = (s64)sample * coefficient;
     coefficient = *k++;
-    second = (s64)value * coefficient;
+    second = (s64)sample * coefficient;
     result = (s32)(product >> 20);
     negative = (s32)(second >> 20);
     out[6] = result;
