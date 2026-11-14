@@ -155,20 +155,23 @@ void *fn_8027D494(void *arg0) {
 }
 
 void *fn_8027D5B8(void *);
+/* Construct an object with vtable lbl_80347CA8 and a 6-element inline array of
+ * 0x1F4-byte entries at offset 0x14 (constructed with fn_8027D5B8, destroyed
+ * with fn_8027D39C). */
 void *fn_8027D504(void *arg0) {
-    struct Local {
-        void *field_00;
-        int field_04;
-        void *field_08;
-        int field_0C;
-        int field_10;
+    struct Object {
+        void *vtable;
+        int count;
+        void *arrayBase;
+        int arrayUsed;
+        int arrayCapacity;
     };
-    struct Local *obj = (struct Local *)arg0;
-    obj->field_00 = lbl_80347CA8;
-    obj->field_04 = 0;
-    obj->field_0C = 0;
-    obj->field_08 = (char *)arg0 + (unsigned short)0x14;
-    obj->field_10 = 6;
+    struct Object *obj = (struct Object *)arg0;
+    obj->vtable = lbl_80347CA8;
+    obj->count = 0;
+    obj->arrayUsed = 0;
+    obj->arrayBase = (char *)arg0 + (unsigned short)0x14;
+    obj->arrayCapacity = 6;
     fn_8002F53C((char *)arg0 + 0x14, fn_8027D5B8, fn_8027D39C, 0x1F4, 6);
     return arg0;
 }
