@@ -146,6 +146,7 @@ s32 NANDReadAsync(NANDFileInfo* info, void* buf, u32 len,
 }
 
 s32 NANDWrite(NANDFileInfo* info, const void* buf, u32 len) {
+    // Write data to an open NAND file, returning a converted NAND result code.
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
     }
