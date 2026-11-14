@@ -868,27 +868,28 @@ extern f32 lbl_805634B0;
 extern f32 lbl_805634B4;
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_80219358(void *arg0, f32 value) {
+extern "C" void fn_80219358(void *obj, f32 value) {
+    /* Update fade flags/timers based on a threshold: mark active when below it, otherwise initialize/reset fade timing. */
     register f32 threshold = lbl_805634B0;
     if (value < threshold) {
-        if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        if (*(u8 *)((u8 *)obj + 0x1A) != 0)
             return;
-        *(u8 *)((u8 *)arg0 + 0x1A) = 1;
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+        *(u8 *)((u8 *)obj + 0x1A) = 1;
+        *(u8 *)((u8 *)obj + 0x234) = 1;
         return;
     }
-    if (*(u8 *)((u8 *)arg0 + 0x1A) == 0) {
-        if (*(f32 *)((u8 *)arg0 + 0x20) < lbl_805634B4) {
+    if (*(u8 *)((u8 *)obj + 0x1A) == 0) {
+        if (*(f32 *)((u8 *)obj + 0x20) < lbl_805634B4) {
             f32 divisor;
-            *(f32 *)((u8 *)arg0 + 0x20) = lbl_805634A4;
+            *(f32 *)((u8 *)obj + 0x20) = lbl_805634A4;
             if (value > threshold)
                 divisor = value;
             else
                 divisor = threshold;
-            *(f32 *)((u8 *)arg0 + 0x28) = lbl_805634A4 / divisor;
+            *(f32 *)((u8 *)obj + 0x28) = lbl_805634A4 / divisor;
         }
     }
-    *(f32 *)((u8 *)arg0 + 0x1C) = lbl_805634A0;
+    *(f32 *)((u8 *)obj + 0x1C) = lbl_805634A0;
 }
 #pragma scheduling on
 #pragma pop
