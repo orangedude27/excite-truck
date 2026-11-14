@@ -945,17 +945,17 @@ extern "C" void fn_80271624(int mode, void *arg1)
     }
 }
 #pragma cplusplus reset
-int fn_80271FAC(const char *arg0) {
-    char **entry = lbl_80346B54;
-    int i = 0;
+/* CameraType_fromName: look up a camera mode index by its name string, returning CAM_TYPE_MAX (11) if not found. */
+int fn_80271FAC(const char *typeName) {
+    char **nameEntry = sCamTypeNames;
+    int typeIdx = 0;
     do {
-        if ((i != 11) && (stricmp(arg0, *entry) == 0)) return i;
-        ++i;
-        ++entry;
-    } while (i < 18);
-    return 11;
+        if ((typeIdx != CAM_TYPE_MAX) && (stricmp(typeName, *nameEntry) == 0)) return typeIdx;
+        ++typeIdx;
+        ++nameEntry;
+    } while (typeIdx < CAM_TYPE_COUNT);
+    return CAM_TYPE_MAX;
 }
-
 #pragma cplusplus on
 extern "C" void fn_80272354(void *);
 extern "C" unsigned char fn_80008050(int);
