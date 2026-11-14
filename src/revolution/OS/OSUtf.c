@@ -3034,6 +3034,9 @@ static wchar_t UcsFF[256] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
     0x0000, 0x0000, 0x0000, 0x0000};
 
+/* One row per high byte of a Unicode code point, holding the SJIS code of each
+ * character in that block (0 when the SJIS font has no glyph for it); NULL for
+ * the blocks it covers entirely. Indexed by OSUTF32toSJIS. */
 static wchar_t* UcsSjisTable[256] = {
     Ucs00, NULL,  NULL,  Ucs03, Ucs04, NULL,  NULL,  NULL,  NULL,  NULL,  NULL,
     NULL,  NULL,  NULL,  NULL,  NULL,  NULL,  NULL,  NULL,  NULL,  NULL,  NULL,
