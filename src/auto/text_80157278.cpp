@@ -3331,9 +3331,11 @@ extern "C" void fn_8015CDD8(void) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_8015CDDC(Unk801577F0 *arg0, void *arg1, s32 arg2, f32 farg0) {
-    if (*(s32 *)((u8 *)arg0 + 0x24C) == *(s32 *)((u8 *)arg1 + 0x1EC) && arg2 == arg0->v35()) {
-        arg0->m250 = farg0;
+extern "C" void fn_8015CDDC(Unk801577F0 *player, void *context, s32 id, f32 gain) {
+    /* If this context's id matches the player's pending id (+0x24C) and the
+       requested id matches the player's v35() state, store the gain at +0x250. */
+    if (*(s32 *)((u8 *)player + 0x24C) == *(s32 *)((u8 *)context + 0x1EC) && id == player->v35()) {
+        player->m250 = gain;
     }
 }
 #pragma scheduling on
