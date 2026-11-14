@@ -4089,15 +4089,18 @@ extern "C" void fn_800F823C(s32 arg0, s32 arg1) {
     __dt__Q36nw4hbm3snd18SoundArchivePlayerFv((void *)(arg0 - 0xC), arg1);
 }
 
-extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **arg0, void *arg1) {
-    if (arg1 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325C00, 0x55, lbl_80325C18);
+/* nw4hbm::snd::SoundHandle::detail_AttachSound(detail::BasicSound*):
+ * Attach a BasicSound to this SoundHandle, detaching any general handle
+ * currently attached to the sound and linking this handle as its new general handle. */
+extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **handle, void *sound) {
+    if (sound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(SND_SOUNDHANDLE_CPP, 0x55, SND_HANDLE_PTR_SOUND_MSG);
     }
-    *arg0 = arg1;
-    if (fn_800E9B88(arg1) != 0) {
-        fn_800E9B9C(*arg0);
+    *handle = sound;
+    if (BasicSound_IsAttachedGeneralHandle(sound) != 0) {
+        BasicSound_DetachGeneralHandle(*handle);
     }
-    *(void **)((u8 *)*arg0 + 8) = arg0;
+    ((SoundHandleBasicSoundLayout *)*handle)->generalHandle = handle;
 }
 
 void DetachSound__Q34nw4r3snd11SoundHandleFv(void **arg0) {
