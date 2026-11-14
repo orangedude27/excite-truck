@@ -2062,10 +2062,11 @@ extern "C" void fn_801B30E0(s32 index) {
 
 #pragma push
 #pragma processor 750
-void fn_801B3208(s32 arg0, s32 arg1, f32 farg0) {
-    ((void (*)(const char *, ...))fn_802E317C)(lbl_80335BD8, arg0, arg1, farg0);
-    *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x6C) = arg1;
-    *(f32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x24) = farg0;
+/* Log deity-stuff qualify info for entryIndex and store id/float into the entry table at lbl_8055E684. */
+void fn_801B3208(s32 entryIndex, s32 id, f32 qualifyValue) {
+    ((void (*)(const char *, ...))fn_802E317C)(lbl_80335BD8, entryIndex, id, qualifyValue);
+    *(s32 *)((u8 *)lbl_8055E684 + (entryIndex << 7) + 0x6C) = id;
+    *(f32 *)((u8 *)lbl_8055E684 + (entryIndex << 7) + 0x24) = qualifyValue;
 }
 #pragma pop
 s32 fn_801B327C(void) { return 0; }
