@@ -2329,8 +2329,9 @@ f32 fn_8000EDC0(s32 arg0) {
     }
 }
 
-s32 fn_8000EE54(s32 arg0) {
-    switch (arg0) {
+/* Get the center-item color value for a DCIT menu item kind; invalid kinds log and return -1. */
+s32 fn_8000EE54(s32 itemKind) {
+    switch (itemKind) {
     case 12:
         return -0x5400;
     case 13:
@@ -2338,7 +2339,7 @@ s32 fn_8000EE54(s32 arg0) {
     case 14:
         return -0x5400;
     default:
-        fn_802E317C(lbl_802FC3DC, arg0);
+        fn_802E317C(lbl_802FC3DC, itemKind);
     case 11:
         return -1;
     }
