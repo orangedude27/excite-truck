@@ -1162,7 +1162,6 @@ void fn_802CA008(void *arg0) {
     }
 }
 
-extern void *fn_802C9D10(int, void *);
 extern void *fn_802C9DE8(void *, int);
 extern char lbl_8034B52C[];
 void fn_802CA04C(int arg0) {
