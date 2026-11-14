@@ -518,16 +518,19 @@ extern "C" void fn_80206BF4(void) {
 }
 
 #pragma dont_inline on
-extern "C" void *fn_80206BF8(int arg0, void *arg1) {
-    void *value;
-    (void)arg0;
-    (void)arg1;
+/* Lazily allocates/initializes the Sound3D pool (lbl_8055ED90, tag lbl_8033BD3C
+   "Sound3D::pool") on first use, then takes an object from it via fn_8012A2D8
+   and increments the use count lbl_8055ED8C on success. */
+extern "C" void *fn_80206BF8(int unused0, void *unused1) {
+    void *pool;
+    (void)unused0;
+    (void)unused1;
     if (lbl_8055ED8C == 0) {
-        value = (void *)fn_801284F8(0x20, lbl_8033BD3C);
-        if (value != 0) {
-            value = fn_8012A13C(value, lbl_8033BD3C, 0xC0, 0x78);
+        pool = (void *)fn_801284F8(0x20, lbl_8033BD3C);
+        if (pool != 0) {
+            pool = fn_8012A13C(pool, lbl_8033BD3C, 0xC0, 0x78);
         }
-        lbl_8055ED90 = value;
+        lbl_8055ED90 = pool;
     }
     if (fn_8012A2D8(lbl_8055ED90) != 0) {
         lbl_8055ED8C += 1;
