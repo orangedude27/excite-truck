@@ -141,15 +141,16 @@ void *fn_802CE630(void *arg0, const char *arg1, int arg2) {
     return ret;
 }
 #pragma pop
-void fn_802CE6C0(void *arg0) {
-    if (*(int *)((char *)arg0 + 0x38) == 2 && *(int *)((char *)arg0 + 0x38) == 2) {
-        fn_802C6FB4(*(int *)((char *)arg0 + 0x30));
-        fn_802C703C(*(int *)((char *)arg0 + 0x34));
-        *(volatile int *)((char *)arg0 + 0x34) = -1;
-        *(volatile int *)((char *)arg0 + 0x30) = 0;
-        *(volatile int *)((char *)arg0 + 0x38) = 3;
+void fn_802CE6C0(void *slot) {
+    /* Release a loaded modpool slot (state 2): destroy its model/handle, mark state 3, and clear the in-use flag. */
+    if (*(int *)((char *)slot + 0x38) == 2 && *(int *)((char *)slot + 0x38) == 2) {
+        fn_802C6FB4(*(int *)((char *)slot + 0x30));
+        fn_802C703C(*(int *)((char *)slot + 0x34));
+        *(volatile int *)((char *)slot + 0x34) = -1;
+        *(volatile int *)((char *)slot + 0x30) = 0;
+        *(volatile int *)((char *)slot + 0x38) = 3;
     }
-    *(unsigned char *)arg0 = 0;
+    *(unsigned char *)slot = 0;
 }
 
 int fn_802CE728(void *arg0) {
@@ -164,22 +165,27 @@ extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
 #pragma push
 #pragma scheduling invalid_target
 void fn_802CE744(void *arg0) {
-    char *manager;
-    char *entry;
-    int value;
+    void *resource = *(void **)((char *)arg0 + 4);
+    int value = *(int *)((char *)resource + 0x10);
     int result;
     int sp8;
-    manager = (char *)arg0;
-    entry = *(char **)(manager + 4);
-    value = *(int *)(entry + 0x10);
-    *(int *)(manager + 0x3C) = value;
-    *(int *)(entry + 0x10) = value + 1;
-    if (*(int *)(manager + 0x38) == 0) {
+
+    *(int *)((char *)arg0 + 0x3C) = value;
+    *(int *)((char *)resource + 0x10) = value + 1;
+    if (*(int *)((char *)arg0 + 0x38) == 0) {
         sp8 = 0;
-        result = fn_80134424(*(int *)(entry + 4), manager + 8, 0x4D4F444C, &sp8, (void *)fn_802CE7D4, manager, 0, -1);
+        result = fn_80134424(
+            *(int *)((char *)resource + 4),
+            (char *)arg0 + 8,
+            0x4D4F444C,
+            &sp8,
+            (void *)fn_802CE7D4,
+            arg0,
+            0,
+            -1);
         if (result >= 0) {
-            *(int *)(manager + 0x2C) = result;
-            *(int *)(manager + 0x38) = 1;
+            *(int *)((char *)arg0 + 0x2C) = result;
+            *(int *)((char *)arg0 + 0x38) = 1;
         }
     }
 }
