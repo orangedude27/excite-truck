@@ -2252,18 +2252,22 @@ extern "C" void *fn_8021BD98(void *object, s32 x, s32 y, void *value, const char
 }
 
 #pragma dont_inline on
-extern "C" void fn_8021BE48(void *arg0) {
-    f32 value = *(f32 *)*(void **)((u8 *)arg0 + 0x25C);
-    volatile char *buf = (char *)arg0 + 0x264;
+/* Format the text readout widget's display string from its watched value
+ * (value = *ptr@0x25C, formatted as offset@0x258 + value*scale@0x254 using
+ * format@0x260 into buffer@0x264), normalize the buffer, refresh layout, and
+ * mark it dirty if active (flag@0x1A / dirty@0x234). */
+extern "C" void fn_8021BE48(void *widget) {
+    f32 value = *(f32 *)*(void **)((u8 *)widget + 0x25C);
+    volatile char *buf = (char *)widget + 0x264;
     sprintf((char *)buf,
-            *(const char **)((u8 *)arg0 + 0x260),
-            *(f32 *)((u8 *)arg0 + 0x258) +
-                value * *(f32 *)((u8 *)arg0 + 0x254),
+            *(const char **)((u8 *)widget + 0x260),
+            *(f32 *)((u8 *)widget + 0x258) +
+                value * *(f32 *)((u8 *)widget + 0x254),
             value);
-    fn_80130568((char *)arg0 + 0x264);
-    fn_80219718(arg0);
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    fn_80130568((char *)widget + 0x264);
+    fn_80219718(widget);
+    if (*(u8 *)((u8 *)widget + 0x1A) != 0)
+        *(u8 *)((u8 *)widget + 0x234) = 1;
 }
 #pragma dont_inline reset
 
