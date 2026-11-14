@@ -156,7 +156,7 @@ void fn_80270B74(void) {
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-void fn_80270C04(void *arg0, unsigned int arg1) {
+void fn_80270C04(void *arg0, int arg1) {
     extern char lbl_80346B00[];
     extern char lbl_8049EDC8[];
     extern char lbl_8049F9D8[];
@@ -169,7 +169,7 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
     register unsigned char flag;
 
     fn_80270B74();
-    if (0 == lbl_8055F550)
+    if (lbl_8055F550 == 0)
         return;
     flag = (arg1 >> 8) & 1;
     lbl_8055F564 = flag;
@@ -177,13 +177,13 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
     record = lbl_8049EDC8;
     table = lbl_8049F9D8;
     arg1 = 0;
-    while ((int)arg1 < lbl_8055F550) {
+    while (arg1 < lbl_8055F550) {
         char *slot;
         DBPrintf_80270B00(name + 0x1F8, arg1);
         DBPrintf_80270B00(name + 0x208);
         *(char **)(table + lbl_8055F554 * 0x1C) = record;
         slot = table + lbl_8055F554 * 0x1C;
-        if (flag)
+        if (flag != 0)
             fn_80272738(slot, arg0);
         record += 0x60;
         arg1++;
@@ -192,7 +192,7 @@ void fn_80270C04(void *arg0, unsigned int arg1) {
     if (lbl_8055F554 == 0) {
         DBPrintf_80270B00(name + 0x224);
         *(int *)lbl_8049F9D8 = (int)lbl_8049EDC8;
-        if (flag)
+        if (flag != 0)
             fn_80272738(lbl_8049F9D8, arg0);
         lbl_8055F554 = 1;
     }
@@ -381,7 +381,8 @@ int fn_80270EC4(void *arg0, int arg1) {
     }
 }
 
-int fn_802710A0(void *arg0, int arg1) {
+#pragma cplusplus on
+extern "C" int fn_802710A0(void *arg0, int arg1) {
     struct { void *first; float second; int third; } sp18;
     struct { void *first; float second; int third; } spC;
     float sp8;
@@ -394,19 +395,15 @@ int fn_802710A0(void *arg0, int arg1) {
     int var_r27;
     int var_r26;
     int i;
-
     var_f30 = lbl_80563F44;
     var_f29 = var_f30;
     var_r29 = 0;
     var_r28 = 0;
     var_r27 = -1;
     var_r26 = -1;
-
     if (lbl_8055F564 != 0) {
-        void *manager = *(void **)((char *)arg0 + 0x270);
-        void **vtable = *(void ***)manager;
         float *dest;
-        p = ((void *(*)(void *))vtable[6])(manager);
+        p = (*(Manager **)((char *)arg0 + 0x270))->getCamera();
         dest = &lbl_8055F568;
         if (fn_801B526C() != 0) {
             fn_80136414(&sp18, p, *(int *)((char *)arg0 + 0x2678));
@@ -417,7 +414,6 @@ int fn_802710A0(void *arg0, int arg1) {
             *dest = *(float *)((char *)spC.first + 0x1C) + *(float *)((char *)spC.first + 0x18) * spC.second;
         }
     }
-
     f31_val = lbl_80563F48;
     p = lbl_8049F9D8;
     for (i = 0; i < lbl_8055F554; p = (char *)p + 0x1C, i++) {
@@ -438,12 +434,10 @@ int fn_802710A0(void *arg0, int arg1) {
             }
         }
     }
-
     if (var_r29 == 0) {
         var_r29 = var_r28;
         var_r27 = var_r26;
     }
-
     if (var_r29 == 0) {
         if (arg1 != -1) {
             if (lbl_8055F559 == 0) {
@@ -458,12 +452,14 @@ int fn_802710A0(void *arg0, int arg1) {
         }
         return -1;
     }
-
     return ((unsigned int)*(char **)((char *)lbl_8049F9D8 + var_r27 * 0x1C) - (unsigned int)lbl_8049EDC8) / 96U;
 }
-
+#pragma cplusplus reset
 #pragma push
 #pragma small_data on
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
 extern const char lbl_8055C5A0[];
 #pragma push
 #pragma cplusplus on
@@ -615,12 +611,12 @@ extern "C" char lbl_80346B00[];
 extern "C" char lbl_8055C5A4[];
 extern "C" char lbl_8055C5AC[];
 extern "C" char lbl_8055C5B4[];
-extern "C" int fn_80272028(void *arg0, Parser *arg1, int arg_sp0) {
+extern "C" int fn_80272028(void *arg0, Parser72028 *arg1, int arg_sp0) {
     char *path;
     int hash;
-    char buffer[0x30];
+    char buffer[0x10];
     char *name;
-    Parser *parser;
+    Parser72028 *parser;
     void *output;
     int index;
     int count;
@@ -628,42 +624,34 @@ extern "C" int fn_80272028(void *arg0, Parser *arg1, int arg_sp0) {
     name = lbl_80346B00;
     parser = arg1;
     output = arg0;
-
-    #pragma unused(arg_sp0)
     fn_80272354(arg0);
-
     if (parser->has(name + 0x424) == 0) {
         DBPrintf_80270B00(name + 0x430, name + 0x424);
         return 0;
     }
     *(float *)output = parser->getFloat(name + 0x424);
-
     if (parser->has(name + 0x464) == 0) {
         DBPrintf_80270B00(name + 0x430, name + 0x464);
         return 0;
     }
     *(float *)((char *)output + 4) = parser->getFloat(name + 0x464);
-
     if (parser->has(name + 0x470) == 0) {
         DBPrintf_80270B00(name + 0x430, name + 0x470);
         return 0;
     }
     *(float *)((char *)output + 8) = parser->getFloat(name + 0x470);
-
     if (parser->has(lbl_8055C5A4) == 0) {
         DBPrintf_80270B00(name + 0x430, lbl_8055C5A4);
         return 0;
     }
     *(float *)((char *)output + 0xC) = parser->getFloat(lbl_8055C5A4);
     *(int *)((char *)output + 0x5C) = parser->getOption(lbl_8055C5AC, 2);
-
     index = 0;
     for (;;) {
         if (parser->enumerate(index, &path, &hash) == 0) {
             break;
         }
-        if (strncmp(path, lbl_8055C5B4, 5) == 0 &&
-            path[5] != '_') {
+        if (strncmp(path, lbl_8055C5B4, 5) == 0 && path[5] != '_') {
             bit = fn_80008050(hash);
             if (bit < 0x20) {
                 *(int *)((char *)output + 0x10) |= 1 << bit;
@@ -673,22 +661,19 @@ extern "C" int fn_80272028(void *arg0, Parser *arg1, int arg_sp0) {
         }
         index++;
     }
-
     if (parser->has(name + 0x47C) == 0) {
         DBPrintf_80270B00(name + 0x430, name + 0x47C);
         return 0;
     }
     count = parser->getCount(name + 0x47C);
     *(int *)((char *)output + 0x58) = count;
-
     for (index = 0; index < count; index++) {
         sprintf(buffer, name + 0x48C, index);
         if (parser->has(buffer) == 0) {
             DBPrintf_80270B00(name + 0x430, buffer);
             return 0;
         }
-        *(int *)((char *)output + 0x18 + index * 4) =
-            parser->getCount(buffer);
+        *(int *)((char *)output + 0x18 + index * 4) = parser->getCount(buffer);
     }
     return 1;
 }
