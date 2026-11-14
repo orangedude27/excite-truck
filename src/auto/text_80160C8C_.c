@@ -1178,44 +1178,31 @@ extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 int fn_8016208C(void) {
-    extern void *fn_8001285C();
+    /* Count how many "challenge" elements ("challenge", lbl_8032F5DC) appear in
+     * the contest parameter table returned by fn_8001285C (taking the contest
+     * index left in r3 by the preceding fn_80161E40 call). */
     extern int stricmp(const char *, const char *);
-    extern char lbl_8032F5DC[];
-#pragma cplusplus on
-    struct Tbl {
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
-        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
-        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-        virtual void f20(); virtual void f21();
-        virtual void *get(int);
-    };
-    struct It {
-        virtual const char *name();
-    };
-#pragma cplusplus off
-    void *mgr = fn_8001285C();
-    int count = 0;
+    struct ContestEntry *contest = (struct ContestEntry *)fn_8001285C();
+    int challengeCount = 0;
     int index = 0;
-    void *obj;
-    void *iter;
+    struct ContestParamTable *table;
+    struct ContestParamElement *element;
 loop:
-    obj = *(void **)((char *)mgr + 0x20);
+    table = (struct ContestParamTable *)contest->table;
     {
         int cur = index++;
-        iter = ((struct Tbl *)obj)->get(cur);
+        element = table->getElement(cur);
     }
-    if (iter == 0)
+    if (element == 0)
         goto done;
     {
-        const char *name = ((struct It *)iter)->name();
-        if (stricmp(name, lbl_8032F5DC) == 0)
-            count++;
+        const char *elementName = element->getName();
+        if (stricmp(elementName, challenge_element) == 0)
+            challengeCount++;
     }
     goto loop;
 done:
-    return count;
+    return challengeCount;
 }
 #pragma pop
 s32 fn_8016212C(s32 arg0) {
