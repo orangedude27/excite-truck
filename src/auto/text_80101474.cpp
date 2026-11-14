@@ -230,35 +230,35 @@ extern "C" const char lbl_80327D00[];
 #pragma optimization_level 3
 #pragma use_lmw_stmw off
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void *arg0, int arg1) {
-    struct WsdH { char pad[0x30]; void *first; };
     UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(arg0);
-    register int interrupts = OSDisableInterrupts();
+    unsigned long interrupts = (unsigned long)OSDisableInterrupts();
     fn_800E402C(Instance__15EmissionManagerFv());
-    register void *channel = ((struct WsdH *)arg0)->first;
+    unsigned char *channel = *(unsigned char **)((unsigned char *)arg0 + 0x30);
     while (channel != 0) {
-        if (*(unsigned char *)((char *)channel + 0x3A) != 0) {
+        if (channel[0x3A] != 0) {
             if (arg1 >= 0) {
                 ((0 <= arg1) && (arg1 <= 0x7F)) ? (void)0 : Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0xA0, lbl_80327D00, arg1, 0, 0x7F);
-                SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, (unsigned char)arg1);
+                SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(channel + 8, (unsigned char)arg1);
             }
             Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
         }
-        channel = *(void **)((char *)channel + 0xE4);
+        channel = *(unsigned char **)(channel + 0xE4);
     }
     fn_800E4064(Instance__15EmissionManagerFv());
-    OSRestoreInterrupts(interrupts);
+    OSRestoreInterrupts((int)interrupts);
 }
 #pragma pop
+/* Pause or unpause all active AxVoices on the WsdTrack's channel list. */
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char arg1) {
     unsigned char *track = (unsigned char *)arg0;
     void *channel = *(void **)(track + 0x30);
     while (channel != 0) {
-        unsigned char *p = (unsigned char *)channel;
-        if (p[0x3A] != 0 && arg1 != (p[0x39] != 0)) {
-            p[0x39] = arg1;
+        unsigned char *channelBytes = (unsigned char *)channel;
+        if (channelBytes[0x3A] != 0 && arg1 != (channelBytes[0x39] != 0)) {
+            channelBytes[0x39] = arg1;
             Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(int *)((char *)channel + 0xE0), arg1);
         }
-        channel = *(void **)(p + 0xE4);
+        channel = *(void **)(channelBytes + 0xE4);
     }
 }
 
@@ -277,7 +277,7 @@ extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *arg0) {
     WsdPlayerIface *pl = *(WsdPlayerIface **)(self + 0x2C);
     f29 *= *(float *)((unsigned char *)pl + 0x30);
     f29 += pl->m4C();
-    unsigned char b2 = self[0x25];
+    register unsigned char b2 = self[0x25];
     float f28 = lbl_8056112C;
     if (b2 <= 1) f28 += (float)((int)b2 + 1) / lbl_80561130;
     else f28 += (float)b2 / lbl_80561130;
@@ -333,7 +333,7 @@ extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *arg0) {
         *(int *)(ch + 0x5C) = (*(WsdPlayerIface **)(self + 0x2C))->m7C();
         *(float *)(ch + 0x60) = (*(WsdPlayerIface **)(self + 0x2C))->m80();
         *(float *)(ch + 0x64) = f24;
-        *(float *)(ch + 0x68) = a0;
+        *(float *)(ch + 0x68) = (unsigned)a0;
         *(float *)(ch + 0x6C) = a1;
         *(float *)(ch + 0x70) = a2;
         unsigned char *p = ch;
@@ -483,7 +483,7 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
     if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
     if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4C,base+0x18,arg0);
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x4C,base+0x18,arg0);
     int g=1,h=1;
     unsigned int v=*(unsigned int *)arg0;
     int i=1,j=1,k=1,l=1;
@@ -494,9 +494,9 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
     if(i==0&&(v&0xF8000000U)!=0x90000000U+0x40000000U)h=0;
     if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4D,base+0x50);
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x4D,base+0x50);
     unsigned char * volatile *pp=(unsigned char * volatile *)arg0;
-    if((**pp&0xC0)==0x80)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4F,base+0x8C);
+    if((**pp&0xC0)==0x80)Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x4F,base+0x8C);
     unsigned char *ptr=*pp;
     unsigned char first=*ptr;
     if(!(first&0x80)){*pp=*pp+1;return first;}
@@ -505,7 +505,7 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
         *pp=*pp+2;
         return r;
     }
-    if((first&0xF0)!=0xE0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x64,base+0xC4);
+    if((first&0xF0)!=0xE0)Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x64,base+0xC4);
     unsigned char *q=*pp;
     unsigned char *n=*pp+3;
     unsigned int r=((q[0]&0x1F)<<12)|((q[1]&0x3F)<<6)|(q[2]&0x3F);
@@ -524,7 +524,6 @@ extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void
     if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
     if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x81, file + 0x18, arg0);
-
     int f4 = 1, f5 = 1;
     unsigned int value = *(unsigned int *)arg0;
     int f7 = 1, f8 = 1, f9 = 1, f10 = 1;
@@ -536,14 +535,14 @@ extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void
     if (f7 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
     if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x82, file + 0x50);
-
-    unsigned int align = *(unsigned int *)arg0;
-    if (align & 1) {
+    r6 = *(unsigned int *)arg0;
+    if (r6 & 1) {
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x83, file + 0xFC);
     }
-
-    unsigned short ch = **(const unsigned short **)arg0;
-    *(const unsigned short **)arg0 = (const unsigned short *)(*(const char **)arg0 + 2);
+    unsigned int v2 = *(unsigned int *)arg0;
+    unsigned short *p = *(unsigned short **)arg0;
+    unsigned short ch = *p;
+    *(unsigned int *)arg0 = v2 + 2;
     return ch;
 }
 
@@ -583,7 +582,6 @@ static inline bool IsSJISLeadByte(unsigned char c) {
 
 extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
     const char *file = lbl_80328030;
-    const char *name = file;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)arg0 & 0xFF000000U;
     if (top != 0x80000000U && ((unsigned int)arg0 & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -592,8 +590,7 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(name, 0xB4, file + 0x18, arg0);
-
+    if (r5 == 0) { void *s = arg0; Panic__Q26nw4hbm2dbFPCciPCce(file, 0xB4, file + 0x18, s); }
     int f4 = 1, f5 = 1;
     unsigned int value = *(unsigned int *)arg0;
     int f7 = 1, f8 = 1, f9 = 1, f10 = 1;
@@ -604,8 +601,7 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if (f8 == 0 && (value & 0xFF800000U) != 0xC1000000U) f7 = 0;
     if (f7 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(name, 0xB5, file + 0x50);
-
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xB5, file + 0x50);
     const unsigned char *s = *(const unsigned char **)arg0;
     unsigned char c = *s;
     if (IsSJISLeadByte(c)) {
@@ -622,7 +618,7 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
 nw4hbm::ut::CharWriter::CharWriter() {
     unsigned char *self = (unsigned char *)this;
     unsigned char *source1, *source2, *source3;
-    nw4hbm::ut::Color colorB, white, colorA;
+    nw4hbm::ut::Color colorA, colorB, white;
     unsigned int addr = (unsigned int)this;
     int r9 = 1, r10 = 1, r11 = 1, r12 = 1, r30 = 1, r29 = 1;
     unsigned int top = addr & 0xFF000000U;
@@ -661,8 +657,9 @@ nw4hbm::ut::CharWriter::CharWriter() {
     if (*(int *)(self + 0x20) == 0) source3 = self + 0x18; else source3 = self + 0x1C;
     self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
     {
+        int b0 = self[0xB];
         int alpha = *(volatile unsigned char *)(self + 0x42);
-        int product_b = self[0xB] * alpha, product_f = self[0xF] * alpha;
+        int product_b = b0 * alpha, product_f = self[0xF] * alpha;
         int product_13 = self[0x13] * alpha, product_17 = source3[3] * alpha;
         self[0xB] = product_b / 255; self[0xF] = product_f / 255;
         self[0x13] = product_13 / 255; self[0x17] = product_17 / 255;
@@ -1041,24 +1038,22 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
 void nw4hbm::ut::CharWriter::SetGradationMode(GradationMode mode) {
     const char *base = lbl_80328178;
     unsigned int top = (unsigned int)this & 0xFF000000U;
-    unsigned int addr = (unsigned int)this;
     unsigned char *self = (unsigned char *)this;
-    int m = (int)mode;
     int a = 1, b = 1, c = 1, d = 1, e = 1, f = 1;
-    if (top != 0x80000000U && (addr & 0xFF800000U) != 0x81000000U) f = 0;
-    if (f == 0 && (addr & 0xF8000000U) != 0x90000000U) e = 0;
+    if (top != 0x80000000U && ((unsigned int)this & 0xFF800000U) != 0x81000000U) f = 0;
+    if (f == 0 && ((unsigned int)this & 0xF8000000U) != 0x90000000U) e = 0;
     if (e == 0 && top != 0xC0000000U) d = 0;
-    if (d == 0 && (addr & 0xFF800000U) != 0xC1000000U) c = 0;
-    if (c == 0 && (addr & 0xF8000000U) != 0xD0000000U) b = 0;
-    if (b == 0 && (addr & 0xFFFFC000U) != 0xE0000000U) a = 0;
-    if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x163, base + 0x14, self);
+    if (d == 0 && ((unsigned int)this & 0xFF800000U) != 0xC1000000U) c = 0;
+    if (c == 0 && ((unsigned int)this & 0xF8000000U) != 0xD0000000U) b = 0;
+    if (b == 0 && ((unsigned int)this & 0xFFFFC000U) != 0xE0000000U) a = 0;
+    if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x163, &base[0x14], self);
     int v = 0;
-    if (m >= 0 && m <= 2) v = 1;
-    if (v == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x164, base + 0xb8, m, 0, 2);
-    *(int *)(self + 0x20) = m;
+    if ((int)mode >= 0 && (int)mode <= 2) v = 1;
+    if (v == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x164, &base[0xb8], (int)mode, 0, 2);
+    *(int *)(self + 0x20) = (int)mode;
     int valid = 0;
-    if (top == 0x80000000U && (addr & 0xFF800000U) == 0x81000000U && (addr & 0xF8000000U) == 0x90000000U && top == 0xC0000000U && (addr & 0xFF800000U) == 0xC1000000U && (addr & 0xF8000000U) == 0xD0000000U && (addr & 0xFFFFC000U) == 0xE0000000U) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x4DA, base + 0x14, self);
+    if (top == 0x80000000U || ((unsigned int)self & 0xFF800000U) == 0x81000000U || ((unsigned int)self & 0xF8000000U) == 0x90000000U || top == 0xC0000000U || ((unsigned int)self & 0xFF800000U) == 0xC1000000U || ((unsigned int)self & 0xF8000000U) == 0xD0000000U || ((unsigned int)self & 0xFFFFC000U) == 0xE0000000U) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x4DA, &base[0x14], self);
     self[8] = self[0x18]; self[9] = self[0x19]; self[0xA] = self[0x1A]; self[0xB] = self[0x1B];
     unsigned char *source1, *source2, *source3;
     if (*(int *)(self + 0x20) != 1) source1 = self + 0x18; else source1 = self + 0x1C;
@@ -1067,11 +1062,15 @@ void nw4hbm::ut::CharWriter::SetGradationMode(GradationMode mode) {
     self[0x10] = source2[0]; self[0x11] = source2[1]; self[0x12] = source2[2]; self[0x13] = source2[3];
     if (*(int *)(self + 0x20) == 0) source3 = self + 0x18; else source3 = self + 0x1C;
     self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
+    unsigned char bv = self[0x0B];
+    unsigned char fv = self[0x0F];
+    unsigned char v13 = self[0x13];
+    unsigned char v17 = source3[3];
     int alpha = *(volatile unsigned char *)(self + 0x42);
-    int product_b = self[0xB] * alpha, product_f = self[0xF] * alpha;
-    int product_13 = self[0x13] * alpha, product_17 = source3[3] * alpha;
-    self[0xB] = product_b / 255; self[0xF] = product_f / 255;
-    self[0x13] = product_13 / 255; self[0x17] = product_17 / 255;
+    self[0x0B] = (bv * alpha) / 255;
+    self[0x0F] = (fv * alpha) / 255;
+    self[0x13] = (v13 * alpha) / 255;
+    self[0x17] = (v17 * alpha) / 255;
 }
 
 void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
@@ -1080,6 +1079,10 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned char *self = (unsigned char *)this;
     unsigned char *source3, *source1, *source2;
+    unsigned int temp_r30;
+    unsigned int temp_r3;
+    unsigned int temp_r4;
+    int var_r5_2;
     if (top != 0x80000000U && (address & 0xFF800000U) != 0x81000000U)
         r10 = 0;
     if (r10 == 0 && (address & 0xF8000000U) != 0x90000000U)
@@ -1098,16 +1101,18 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
     self[0x19] = color.g;
     self[0x1A] = color.b;
     self[0x1B] = color.a;
-    r5 = 0;
-    if (top == 0x80000000U ||
-        (address & 0xFF800000U) == 0x81000000U ||
-        (address & 0xF8000000U) == 0x90000000U ||
-        top == 0xC0000000U ||
-        (address & 0xFF800000U) == 0xC1000000U ||
-        (address & 0xF8000000U) == 0xD0000000U ||
-        (address & 0xFFFFC000U) == 0xE0000000U)
-        r5 = 1;
-    if (r5 == 0)
+    temp_r30 = top;
+    var_r5_2 = 0;
+    if (temp_r30 == 0x80000000U ||
+        (temp_r4 = address & 0xFF800000U) == 0x81000000U ||
+        (temp_r3 = address & 0xF8000000U) == 0x90000000U ||
+        temp_r30 == 0xC0000000U ||
+        temp_r4 == 0xC1000000U ||
+        temp_r3 == 0xD0000000U ||
+        (address & 0xFFFFC000U) == 0xE0000000U) {
+        var_r5_2 = 1;
+    }
+    if (var_r5_2 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x4DA, lbl_8032818C, this);
     self[8] = self[0x18];
     self[9] = self[0x19];
@@ -1133,15 +1138,22 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
         source3 = self + 0x18;
     else
         source3 = self + 0x1C;
-    self[0x14] = source3[0];
-    self[0x15] = source3[1];
-    self[0x16] = source3[2];
     {
+        unsigned char s0 = source3[0];
+        unsigned char b0 = self[0xB];
+        self[0x14] = s0;
         int alpha = *(volatile unsigned char *)(self + 0x42);
-        int product_b = self[0xB] * alpha;
-        int product_f = self[0xF] * alpha;
-        int product_13 = self[0x13] * alpha;
-        int product_17 = source3[3] * alpha;
+        unsigned char s1 = source3[1];
+        unsigned char f0 = self[0xF];
+        int product_b = b0 * alpha;
+        self[0x15] = s1;
+        unsigned char s2 = source3[2];
+        unsigned char v13 = self[0x13];
+        int product_f = f0 * alpha;
+        self[0x16] = s2;
+        unsigned char s3 = source3[3];
+        int product_13 = v13 * alpha;
+        int product_17 = s3 * alpha;
         self[0xB] = product_b / 255;
         self[0xF] = product_f / 255;
         self[0x13] = product_13 / 255;
@@ -1188,8 +1200,15 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(void *arg0) {
 }
 
 void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
+    struct WriterMsgs {
+        char file[0x14];
+        char msg14[0xE0];
+        char msgF4[0x38];
+        char msg12C[0x54];
+        char msg180[0x40];
+    };
     float x = farg0, y = farg1;
-    const char *base = lbl_80328178;
+    const WriterMsgs *msgs = (const WriterMsgs *)lbl_80328178;
     register unsigned int top = (unsigned int)this & 0xFF000000U;
     register int r5, r6, r7, r8, r9, r10;
     r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1; r10 = 1;
@@ -1200,8 +1219,7 @@ void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
     if (r8 == 0 && ((unsigned int)this & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)this & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)this & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x22F, base + 0x14, this);
-
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x22F, msgs->msg14, this);
     {
     register int r4 = 1, r5b = 1;
     register unsigned int fontAddress = *(unsigned int *)((unsigned char *)this + 0x48);
@@ -1214,20 +1232,18 @@ void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
     if (r8b == 0 && (fontAddress & 0xFF800000U) != 0xC1000000U) r7b = 0;
     if (r7b == 0 && (fontAddress & 0xF8000000U) != 0xD0000000U) r5b = 0;
     if (r5b == 0 && (fontAddress & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x230, base + 0xF4);
-
+    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x230, msgs->msgF4);
     }
     if (((FontForWidth *)*(void **)((char *)this + 0x48))->v1() < 1) {
         int width = ((FontForWidth *)*(void **)((char *)this + 0x48))->v1();
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x231, base + 0x12C, width, 1);
+        Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x231, msgs->msg12C, width, 1);
     }
     if (((FontForWidth *)*(void **)((char *)this + 0x48))->v2() < 1) {
         int height = ((FontForWidth *)*(void **)((char *)this + 0x48))->v2();
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x232, base + 0x180, height, 1);
+        Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x232, msgs->msg180, height, 1);
     }
     y /= (float)((FontForWidth *)*(void **)((char *)this + 0x48))->v2();
     x /= (float)((FontForWidth *)*(void **)((char *)this + 0x48))->v1();
-
     r6 = 0;
     if (top == 0x80000000U ||
         ((unsigned int)this & 0xFF800000U) == 0x81000000U ||
@@ -1236,7 +1252,7 @@ void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
         ((unsigned int)this & 0xFF800000U) == 0xC1000000U ||
         ((unsigned int)this & 0xF8000000U) == 0xD0000000U ||
         ((unsigned int)this & 0xFFFFC000U) == 0xE0000000U) r6 = 1;
-    if (r6 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1E7, base + 0x14, this);
+    if (r6 == 0) Panic__Q26nw4hbm2dbFPCciPCce(msgs->file, 0x1E7, msgs->msg14, this);
     *(float *)((char *)this + 0x24) = x;
     *(float *)((char *)this + 0x28) = y;
 }
@@ -1250,7 +1266,6 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     };
     const char *base = lbl_80328178;
     void *self = arg0;
-
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)self & 0xFF000000U;
     if (top != 0x80000000U && ((unsigned int)self & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -1263,7 +1278,6 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
         void *s = self;
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0x259, base + 0x14, s);
     }
-
     {
         int f4 = 1, f5 = 1;
         void *font = *(void **)((char *)self + 0x48);
@@ -1275,12 +1289,8 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
         if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
         if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
         if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-        if (f4 == 0) {
-            void *msg = (void *)(base + 0xF4);
-            Panic__Q26nw4hbm2dbFPCciPCce(base, 0x25A, (const char *)msg);
-        }
+        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x25A, base + 0xF4);
     }
-
     const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
     int width = f->GetWidth();
     return *(float *)((char *)self + 0x24) * (float)width;
@@ -1295,7 +1305,6 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) 
     };
     const char *base = lbl_80328178;
     void *self = arg0;
-
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)self & 0xFF000000U;
     if (top != 0x80000000U && ((unsigned int)self & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -1306,9 +1315,8 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) 
     if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
     if (r5 == 0) {
         void *s = self;
-        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x26A, &base[0x14], s);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x26A, base + 0x14, s);
     }
-
     {
         int f4 = 1, f5 = 1;
         void *font = *(void **)((char *)self + 0x48);
@@ -1320,9 +1328,8 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) 
         if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
         if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
         if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x26B, &base[0xF4]);
+        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x26B, base + 0xF4);
     }
-
     const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
     int width = f->GetWidth();
     return *(float *)((char *)self + 0x28) * (float)width;
@@ -1345,7 +1352,10 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) 
     if (r8 == 0 && ((unsigned int)self & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)self & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x27B, base + 0x14, self);
+    if (r5 == 0) {
+        void *tmp = self;
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x27B, base + 0x14, tmp);
+    }
     {
         int f4 = 1, f5 = 1;
         void *font = *(void **)((char *)self + 0x48);
@@ -1400,32 +1410,33 @@ extern "C" double lbl_80561158;
 extern "C" float lbl_80561160;
 float nw4hbm::ut::CharWriter::Print(unsigned short character) {
     const char *base = lbl_80328178;
-    register unsigned int top = (unsigned int)this & 0xFF000000U;
+    unsigned int thisVal = (unsigned int)this;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-    unsigned int fontAddress;
+    unsigned int top = thisVal & 0xFF000000U;
+    int fontAddress;
     unsigned char glyph[0x18];
     float advance;
     float xOffset;
-    if (top != 0x80000000U && ((unsigned int)this & 0xFF800000U) != 0x81000000U) r10 = 0;
-    if (r10 == 0 && ((unsigned int)this & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (top != 0x80000000U && (thisVal & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && (thisVal & 0xF8000000U) != 0x90000000U) r9 = 0;
     if (r9 == 0 && top != 0xC0000000U) r8 = 0;
-    if (r8 == 0 && ((unsigned int)this & 0xFF800000U) != 0xC1000000U) r7 = 0;
-    if (r7 == 0 && ((unsigned int)this & 0xF8000000U) != 0xD0000000U) r6 = 0;
-    if (r6 == 0 && ((unsigned int)this & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x328, base + 0x14, this);
-    fontAddress = *(unsigned int *)((unsigned char *)this + 0x48);
-    top = fontAddress & 0xFF000000U;
+    if (r8 == 0 && (thisVal & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && (thisVal & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && (thisVal & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x328, base + 0x14, this);
+    fontAddress = *(int *)((unsigned char *)this + 0x48);
     {
         int r4 = 1, r5b = 1, r7b = 1, r8b = 1, r9b = 1, r10b = 1;
-        if (top != 0x80000000U && (fontAddress & 0xFF800000U) != 0x81000000U) r10b = 0;
-        if (r10b == 0 && (fontAddress & 0xF8000000U) != 0x90000000U) r9b = 0;
-        if (r9b == 0 && top != 0xC0000000U) r8b = 0;
-        if (r8b == 0 && (fontAddress & 0xFF800000U) != 0xC1000000U) r7b = 0;
-        if (r7b == 0 && (fontAddress & 0xF8000000U) != 0xD0000000U) r5b = 0;
-        if (r5b == 0 && (fontAddress & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-        if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x329, base + 0xF4);
+        unsigned int top2 = (unsigned int)fontAddress & 0xFF000000U;
+        if (top2 != 0x80000000U && ((unsigned int)fontAddress & 0xFF800000U) != 0x81000000U) r10b = 0;
+        if (r10b == 0 && ((unsigned int)fontAddress & 0xF8000000U) != 0x90000000U) r9b = 0;
+        if (r9b == 0 && top2 != 0xC0000000U) r8b = 0;
+        if (r8b == 0 && ((unsigned int)fontAddress & 0xFF800000U) != 0xC1000000U) r7b = 0;
+        if (r7b == 0 && ((unsigned int)fontAddress & 0xF8000000U) != 0xD0000000U) r5b = 0;
+        if (r5b == 0 && ((unsigned int)fontAddress & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
+        if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x329, base + 0xF4);
     }
-    if (character == 0xFFFF) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x32A, base + 0x1D0);
+    if (character == 0xFFFF) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x32A, base + 0x1D0);
     ((PrintFont *)*(void **)((unsigned char *)this + 0x48))->GetGlyph(glyph, character);
     if (*(unsigned char *)((unsigned char *)this + 0x43) != 0) {
         float scale = *(float *)((unsigned char *)this + 0x24);
@@ -1511,7 +1522,7 @@ extern "C" void GXLoadTexObj(void *, int);
 #pragma processor gekko
 void nw4hbm::ut::CharWriter::PrintGlyph(float x, float y, float z, const Glyph &glyph) {
     struct TexCache { int a; unsigned int b; int c, d; };
-    const char *base = lbl_80328178;
+    char *base = (char *)lbl_80328178;
     unsigned int top0 = (unsigned int)this & 0xFF000000U;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     if (top0 != 0x80000000U && ((unsigned int)this & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -1554,8 +1565,8 @@ void nw4hbm::ut::CharWriter::PrintGlyph(float x, float y, float z, const Glyph &
     if (ok1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x4A9, base + 0x210, g);
     TexCache tex;
     TexCache *cache = (TexCache *)lbl_8041D4E0;
-    tex.a = 0; tex.b = *(unsigned int *)g; tex.c = *(int *)(self + 0x38); tex.d = *(int *)(self + 0x3C);
     int diff = 0;
+    tex.a = 0; tex.b = *(unsigned int *)g; tex.c = *(int *)(self + 0x38); tex.d = *(int *)(self + 0x3C);
     if (tex.a != cache->a || tex.b != cache->b || tex.c != cache->c || tex.d != cache->d) diff = 1;
     if (diff != 0) {
         unsigned char obj[0x20];
