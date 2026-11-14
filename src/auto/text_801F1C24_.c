@@ -1717,16 +1717,23 @@ int fn_801F45D4(int arg0, int arg1) {
 
 #pragma push
 #pragma small_data off
-void *fn_801F4614(void *arg0, int arg1) {
+void *fn_801F4614(void *object, int shouldDelete) {
+    /* Destructor-like cleanup: restore the base vtable, free the owned buffer if present, and optionally delete the object. */
     extern int fn_80128670(int);
-    int temp_r5;
-    if (arg0 != 0) {
-        temp_r5 = *(int *)((char *)arg0 + 4);
-        *(void **)arg0 = &lbl_8033AA90;
-        if (temp_r5 != 0) fn_80128670(temp_r5 - 0x10);
-        if (arg1 > 0) ((int (*)(void *))fn_80128668)(arg0);
+#define vtable lbl_8033AA90
+#define FreeArray fn_80128670
+#define DeleteObject fn_80128668
+    int ownedBuffer;
+    if (object != 0) {
+        ownedBuffer = *(int *)((char *)object + 4);
+        *(void **)object = &vtable;
+        if (ownedBuffer != 0) FreeArray(ownedBuffer - 0x10);
+        if (shouldDelete > 0) ((int (*)(void *))DeleteObject)(object);
     }
-    return arg0;
+    return object;
+#undef vtable
+#undef FreeArray
+#undef DeleteObject
 }
 
 extern double sin(double);
