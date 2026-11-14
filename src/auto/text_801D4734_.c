@@ -843,10 +843,12 @@ fetch:
 #pragma pop
 
               extern int lbl_804423A4[];
-    #pragma scheduling invalid_target
-        int fn_801D5650(void *alarm) {
+#pragma scheduling invalid_target
+                int fn_801D5650(void *alarm) {
+    /* Tick every action sequence in the global list (lbl_804423A4). */
     int offset;
     int i;
+
     offset = 0;
     i = 0;
     while (i < lbl_804423A4[1]) {
@@ -855,7 +857,6 @@ fetch:
         i += 1;
     }
 }
-
 extern void fn_801D52A4();
 /* Calls fn_801D52A4 for each element in the global list at lbl_804423A4. */
 int fn_801D56C0(void *alarm) {
