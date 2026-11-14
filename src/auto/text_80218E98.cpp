@@ -8679,19 +8679,20 @@ extern "C" void fn_80229790(void *arg0) {
 }
 
 #pragma scheduling on
-extern "C" void fn_802297D0(void *arg0) {
+extern "C" void fn_802297D0(void *self) {
+    /* If active/busy flags (+0x257, +0x254, +0x18) are set and the optional callback at +0x258
+     * allows it, notifies via fn_802168BC with the status value at +0x25C, then updates tracked slots via fn_802192AC. */
     s32 (*callback)(s32);
-    if (*(u8 *)((u8 *)arg0 + 0x257) != 0 &&
-        *(u8 *)((u8 *)arg0 + 0x254) != 0 &&
-        *(u8 *)((u8 *)arg0 + 0x18) != 0) {
-        callback = *(s32 (**)(s32))((u8 *)arg0 + 0x258);
-        if (callback == 0 || callback(*(s32 *)((u8 *)arg0 + 0x25C)) != 0) {
-            fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+    if (*(u8 *)((u8 *)self + 0x257) != 0 &&
+        *(u8 *)((u8 *)self + 0x254) != 0 &&
+        *(u8 *)((u8 *)self + 0x18) != 0) {
+        callback = *(s32 (**)(s32))((u8 *)self + 0x258);
+        if (callback == 0 || callback(*(s32 *)((u8 *)self + 0x25C)) != 0) {
+            fn_802168BC((void *)*(s32 *)((u8 *)self + 0x25C));
         }
     }
-    fn_802192AC(arg0);
+    fn_802192AC(self);
 }
-#pragma scheduling invalid_target
 extern "C" void fn_8022984C(void *arg0) {
     u8 *p = *(u8 **)((u8 *)arg0 + 0x254);
     *p = (u8)((s8)(*p == 0));
