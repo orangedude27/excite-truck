@@ -443,28 +443,32 @@ void fn_8001F908(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_8001F9A4(s32 arg0, s32 arg1) {
-    volatile s32 *temp_r5;
-    s32 *var_r6;
-    s32 temp_r0;
-    s32 var_ctr;
-    s32 var_r3;
-    if (arg0 < 0) goto no_coef;
-    if ((u32)arg0 >= 8) goto no_coef;
-    temp_r5 = (volatile s32 *)lbl_802FDF30[arg0].unkC;
-    if (temp_r5 == 0) goto no_coef;
-    var_r6 = (s32 *)temp_r5[0];
-    if (var_r6 != 0) goto have_data;
+/* How many of a lifetime counter's levels `value` reaches: walks the counter's
+ * threshold rows in rising order and stops at the first one above it, so the
+ * result is the number of levels earned (all of them when none is above).
+ * Counter indices run 0..7; 0 for a bad index or a counter with no rows. */
+s32 fn_8001F9A4(s32 counter, s32 value) {
+    volatile AchThresholdList* list;
+    AchThreshold* row;
+    s32 count;
+    s32 n;
+    s32 levels;
+    if (counter < 0) goto no_coef;
+    if ((u32)counter >= 8) goto no_coef;
+    list = (volatile AchThresholdList*)lbl_802FDF30[counter].unkC;
+    if (list == 0) goto no_coef;
+    row = list->rows;
+    if (row != 0) goto have_data;
     return 0;
 have_data:
-    temp_r0 = temp_r5[1];
-    var_r3 = 0;
-    for (var_ctr = temp_r0; var_ctr > 0; var_ctr--) {
-        if (var_r6[0] > arg1) return var_r3;
-        var_r6 += 2;
-        var_r3++;
+    count = list->count;
+    levels = 0;
+    for (n = count; n > 0; n--) {
+        if (row->threshold > value) return levels;
+        row++;
+        levels++;
     }
-    return temp_r5[1];
+    return list->count;
 no_coef:
     return 0;
 }
