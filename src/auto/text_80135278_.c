@@ -1005,9 +1005,8 @@ extern "C" void fn_80136854(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
         virtual s32 f0();
         virtual s32 f1();
     };
-    s32 r = ((Dummy *)arg0)->f1();
-    if (r == 1) {
+    s32 type = ((Dummy *)arg0)->f1();
+    if (type == 1) {
         fn_80135F64((int)arg0, arg2, arg3, 1, 0);
     }
 }
-#pragma cplusplus reset
