@@ -2598,6 +2598,8 @@ extern "C" S28_80142118 fn_80142118(S28_80142118 arg0) {
 
 extern "C" s32 fn_80142154(void *arg0) {
     s32 result = 0;
+    /* Advance to the next zone/item group if one remains: bump the current index, refresh its timer
+       and cached value, and report success. */
     if (*(s32 *)((u8 *)arg0 + 0x68) < *(s32 *)(*(s32 **)((u8 *)arg0 + 0x64)) - 1) {
         *(s32 *)((u8 *)arg0 + 0x68) += 1;
         *(f32 *)((u8 *)arg0 + 0x70) = fn_8001DAE8((u8 *)arg0 + 0x6C);
