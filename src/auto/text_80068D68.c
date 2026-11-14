@@ -21581,20 +21581,22 @@ extern void fn_800911DC(void);
 extern void RFCOMM_DisconnectInd(u16, s32);
 extern void RFCOMM_BufDataInd(u32, BT_HDR *);
 extern void RFCOMM_CongestionStatusInd(UINT16, BOOLEAN);
+/* Called during RFCOMM task startup to register RFCOMM's L2CAP callbacks
+   (at rfc_cb.rfc.reg_info, i.e. lbl_803C4828 + 0x14) with L2CA_Register. */
 void rfcomm_l2cap_if_init(void) {
-    tL2CAP_APPL_INFO *info = (tL2CAP_APPL_INFO *)(lbl_803C4828 + 0x14);
+    tL2CAP_APPL_INFO *p_l2c = (tL2CAP_APPL_INFO *)(lbl_803C4828 + 0x14);
 
-    info->pL2CA_ConnectInd_Cb = RFCOMM_ConnectInd;
-    info->pL2CA_ConnectCfm_Cb = (tL2CA_CONNECT_CFM_CB *)RFCOMM_ConnectCnf;
-    info->pL2CA_ConnectPnd_Cb = 0;
-    info->pL2CA_ConfigInd_Cb = (tL2CA_CONFIG_IND_CB *)RFCOMM_ConfigInd;
-    info->pL2CA_ConfigCfm_Cb = (tL2CA_CONFIG_CFM_CB *)RFCOMM_ConfigCnf_800910D4;
-    info->pL2CA_DisconnectInd_Cb = (tL2CA_DISCONNECT_IND_CB *)RFCOMM_DisconnectInd;
-    info->pL2CA_DisconnectCfm_Cb = 0;
-    info->pL2CA_QoSViolationInd_Cb = (tL2CA_QOS_VIOLATION_IND_CB *)fn_800911DC;
-    info->pL2CA_DataInd_Cb = (tL2CA_DATA_IND_CB *)RFCOMM_BufDataInd;
-    info->pL2CA_CongestionStatus_Cb = RFCOMM_CongestionStatusInd;
-    L2CA_Register(3, info);
+    p_l2c->pL2CA_ConnectInd_Cb = RFCOMM_ConnectInd;
+    p_l2c->pL2CA_ConnectCfm_Cb = (tL2CA_CONNECT_CFM_CB *)RFCOMM_ConnectCnf;
+    p_l2c->pL2CA_ConnectPnd_Cb = NULL;
+    p_l2c->pL2CA_ConfigInd_Cb = (tL2CA_CONFIG_IND_CB *)RFCOMM_ConfigInd;
+    p_l2c->pL2CA_ConfigCfm_Cb = (tL2CA_CONFIG_CFM_CB *)RFCOMM_ConfigCnf_800910D4;
+    p_l2c->pL2CA_DisconnectInd_Cb = (tL2CA_DISCONNECT_IND_CB *)RFCOMM_DisconnectInd;
+    p_l2c->pL2CA_DisconnectCfm_Cb = NULL;
+    p_l2c->pL2CA_QoSViolationInd_Cb = (tL2CA_QOS_VIOLATION_IND_CB *)fn_800911DC;
+    p_l2c->pL2CA_DataInd_Cb = (tL2CA_DATA_IND_CB *)RFCOMM_BufDataInd;
+    p_l2c->pL2CA_CongestionStatus_Cb = RFCOMM_CongestionStatusInd;
+    L2CA_Register(BT_PSM_RFCOMM, p_l2c);
 }
 
 void *rfc_alloc_multiplexer_channel(u8 *, s8);
