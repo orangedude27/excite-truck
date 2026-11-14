@@ -228,18 +228,18 @@ int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int para
 extern void fn_802D8DCC(void *, int);
 #pragma scheduling invalid_target
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
-    char sp8[0x34];
     volatile unsigned char *base = (volatile unsigned char *)arg0;
-    unsigned char t14 = 0;
-    unsigned char t17 = 0;
-    unsigned char t15 = 0;
-    unsigned char t16 = 0;
-    unsigned char t0 = 0;
-    unsigned char t1 = 0;
-    unsigned char t2 = 0;
-    unsigned char t3 = 0;
-    unsigned char tC = 0;
-    unsigned char tD = 0;
+    unsigned char t14;
+    unsigned char t17;
+    unsigned char t15;
+    unsigned char t16;
+    unsigned char t0;
+    unsigned char t1;
+    unsigned char t2;
+    unsigned char t3;
+    unsigned char tC;
+    unsigned char tD;
+    char sp8[0x34];
     if ((base[5] & 0x80) == 0) {
         t14 = base[0x14];
         t17 = base[0x17];
@@ -272,22 +272,25 @@ extern char lbl_8034B634[];
 extern char lbl_8034B658[];
 extern void fn_802CA57C(void *, int, int, int);
 #pragma scheduling invalid_target
-int fn_802CA658(int arg0, int arg1) {
-    unsigned int sp10;
-    int spC;
-    signed char sp9 = 0;
-    unsigned char sp8 = 0;
-    int result;
-    result = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))fn_8012C370)(arg0, 0x54455820, &sp10, &spC, &sp9, &sp8);
-    if (result != 0) {
-        if ((result & 0x7F) != 0)
-            fn_802E317C(lbl_8034B634, arg0, result);
-        if (sp10 != 0xF)
-            fn_802E317C(lbl_8034B658, arg0, sp10);
-        if (sp8 != 0)
-            fn_802CA57C((void *)result, arg0, 0, arg1);
+/* Loads a "TEX " texture resource by path (texturePath), verifies 128-byte alignment
+   and version 15 (0xF), and endian-swaps/initializes the loaded header when newly
+   loaded (swapEndian != 0). */
+int fn_802CA658(int texturePath, int flags) {
+    unsigned int version;
+    int dataSize;
+    signed char isNew = 0;
+    unsigned char swapEndian = 0;
+    int texData;
+    texData = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))fn_8012C370)(texturePath, 0x54455820, &version, &dataSize, &isNew, &swapEndian);
+    if (texData != 0) {
+        if ((texData & 0x7F) != 0)
+            fn_802E317C(lbl_8034B634, texturePath, texData);
+        if (version != 0xF)
+            fn_802E317C(lbl_8034B658, texturePath, version);
+        if (swapEndian != 0)
+            fn_802CA57C((void *)texData, texturePath, 0, flags);
     }
-    return result;
+    return texData;
 }
 #pragma scheduling on
 /* Return the GX texture format name string for a texture format id. */
@@ -939,8 +942,8 @@ extern char lbl_8034BBA8[];
 extern char lbl_8055D098;
 #pragma use_lmw_stmw off
 void fn_802CB6B4(void) {
-    register unsigned int total;
     register void *manager;
+    register unsigned int total;
     register void *record;
     register void *root = *(void **)lbl_8055FCBC;
     register unsigned int secondTotal;
@@ -1219,16 +1222,13 @@ void fn_802CBD7C(register void **link, void *target, void *current) {
     while (current != 0) {
         if (current == target) {
             void *next = *(void **)((char *)target + 0x10);
-            *link = next;
+            *(void * volatile *)link = next;
             *(void **)((char *)target + 0x10) = 0;
             removed = 1;
             break;
         }
-        {
-            void * volatile *next_link = (void * volatile *)((char *)current + 0x10);
-            link = (void **)next_link;
-            current = *next_link;
-        }
+        link = (void **)((char *)current + 0x10);
+        current = *(void * volatile *)link;
     }
     if (removed == 0)
         fn_802E317C(lbl_8034BA04);
