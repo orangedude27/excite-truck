@@ -1301,6 +1301,9 @@ void fn_802B016C(void) {
 }
 
 #pragma dont_inline on
+/* Performs a timed/flagged scene/state transition sequence: brackets work with
+ * begin/end helpers, chooses a mode from bit 1 of fn_801E87A8()->+0x10, toggles
+ * fn_802C9C58 around fn_802B14B4, then runs finalization/update calls. */
 void fn_802B01A8(void) {
     long temp;
     long value;
