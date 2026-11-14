@@ -271,24 +271,25 @@ extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackMa
     OSRestoreInterrupts(savedInterruptState);
 }
 
+/* nw4hbm::snd::detail::DisposeCallbackManager::UnregisterDisposeCallback: remove a dispose callback node from mCallbackList (+0x0) with interrupts disabled. */
 extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
     void* this_, void* pCallback) {
-    u32 level;
-    void* pThis;
-    void* pCb;
+    u32 savedInterruptState;
+    void* manager;
+    void* callbackNode;
 
-    pThis = this_;
-    pCb = pCallback;
-    level = OSDisableInterrupts();
+    manager = this_;
+    callbackNode = pCallback;
+    savedInterruptState = OSDisableInterrupts();
 
-    if (pCb == NULL) {
+    if (callbackNode == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B74, 0x233,
                                      (const char*)lbl_80322B50);
     }
 
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(pThis, pCb);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(manager, callbackNode);
 
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(savedInterruptState);
 }
 
 #pragma push
@@ -1526,7 +1527,7 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     return 0;
 }
 
-void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg, s32 arg2) const { (void)track; (void)command; (void)arg; (void)arg2; }
+void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg, s32 arg2) const { if (track == 0) return; if (command == 0x81) return; }
 
 #pragma use_lmw_stmw reset
 
@@ -2202,27 +2203,33 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
     register void *player = self;
     register int index;
     register u32 temp;
+
     if (player != 0) {
         u8 initialized = *((u8 *)player + 0x15);
         register void *vtable = lbl_80323E98;
         register void *vtable2 = (u8 *)vtable + 0x98;
         *(void **)player = vtable;
         *(void **)((u8 *)player + 0x10) = vtable2;
+
         if (initialized != 0) {
             temp = OSDisableInterrupts();
             if (*((u8 *)player + 0x17) != 0) {
                 if (player == 0)
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233, (const char *)lbl_80324030);
-                Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void *)lbl_80412A6C, (u8 *)player + 0x100);
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233,
+                                                  (const char *)lbl_80324030);
+                Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
+                    (void *)lbl_80412A6C, (u8 *)player + 0x100);
             }
             if (*((u8 *)player + 0x15) != 0) {
                 index = (s32)player;
                 if (index != 0)
                     index += 8;
                 void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-                UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)index);
+                UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
+                    manager, (void *)index);
             }
             OSRestoreInterrupts(temp);
+
             register void *entry = player;
             index = 0;
             temp = 0;
@@ -2231,7 +2238,8 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
                 if (index >= 0 && index < 16)
                     valid = 1;
                 if (valid == 0)
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x2FD, (const char *)lbl_80323B3C, index, 0, 16);
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x2FD,
+                                                  (const char *)lbl_80323B3C, index, 0, 16);
                 void *track;
                 if (index > 15)
                     track = (void *)temp;
@@ -2248,6 +2256,7 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
             } while (index < 16);
             *((u8 *)player + 0x15) = 0;
         }
+
         if (flag > 0)
             fn_80128668(player);
     }
@@ -2333,9 +2342,9 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
         virtual void unused1();
         virtual void RemoveTrack(void*);
     };
-    void* player = self;
-    s32 state;
-    u32 level;
+    register void* player = self;
+    register s32 state;
+    register u32 level;
     if (*(u8*)((u8*)player + 0x15) == 0) return;
     level = OSDisableInterrupts();
     if (*(u8*)((u8*)player + 0x17) != 0) {
@@ -2351,10 +2360,10 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
     }
     OSRestoreInterrupts(level);
     state = 0;
-    u8* entry = (u8*)player;
-    s32 zero = 0;
+    register u8* entry = (u8*)player;
+    register s32 zero = 0;
     s32 valid;
-    void* seq;
+    register void* seq;
     do {
         valid = 0;
         if (state >= 0 && state < 16) valid = 1;
