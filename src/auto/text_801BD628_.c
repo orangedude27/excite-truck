@@ -30,6 +30,8 @@ extern int fn_80128670(int);
 #define poolIndex     lbl_8055E78C /* next free slot */
 #define Mem_Free      fn_80128670  /* frees a block; the data sits 0x10 above its header */
 int fn_801BD628(float *arg0) {
+    /* Return 1 if all three components are within the finite bounds
+       [-100000, 100000], else 0. */
     int result = 0;
     if (arg0[0] >= lbl_80562844 && arg0[0] <= lbl_80562848 &&
         arg0[1] >= lbl_80562844 && arg0[1] <= lbl_80562848 &&
