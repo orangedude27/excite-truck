@@ -2406,19 +2406,25 @@ extern "C" void *fn_80148D74(void *object, s32 deleting) {
 }
 
 extern "C" void fn_80148DFC(void *);
-extern "C" void fn_80148DFC(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != NULL) {
-        if (p != NULL) {
-            fn_80128670(((s32 *)p)[3]);
-            if (p != NULL) {
-                ((s32 *)p)[0] = 0;
-                ((s32 *)p)[1] = 0;
-                ((s32 *)p)[2] = 0;
+extern "C" void fn_80148DFC(void *slot) {
+    /* ReleaseItemTable: frees the item table an object holds in the slot it is
+     * given (the member at +0x14 of the "baseline" object fn_80146C2C builds, as
+     * torn down by its destructor fn_80148D74).  Unlike the tables released by
+     * fn_80146638(), this one's record array comes straight from fn_8012850C(), so
+     * "end" is the block itself and is freed as-is; the table block itself comes
+     * from fn_801284F8().  The slot is left empty. */
+    NamedItemTable80145FEC *table = *(NamedItemTable80145FEC **)slot;
+    if (table != NULL) {
+        if (table != NULL) {
+            fn_80128670((s32)table->end);
+            if (table != NULL) {
+                table->data = NULL;
+                table->count = 0;
+                table->size = 0;
             }
-            fn_80128668(p);
+            fn_80128668(table);
         }
-        *(void **)arg0 = NULL;
+        *(void **)slot = NULL;
     }
 }
 
