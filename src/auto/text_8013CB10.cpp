@@ -29,6 +29,9 @@ struct SubArray8013D2C4 {
         arr[idx] = w;
     }
 };
+/* Circular queue of 12-byte records (ZoneMaster::rb, ZoneMaster+0xC0): the
+ * read index is `tail`, the write index `head`, and both wrap at `cap`.
+ * fn_80141EB0 pops the oldest record, fn_80141F28 looks `n` records ahead. */
 struct RingBuf8013D2C4 {
     void *ptr;
     s32 cap;
