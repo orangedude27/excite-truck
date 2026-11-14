@@ -14,6 +14,14 @@ extern void fn_802E30C8(const char *, ...);
 extern char lbl_80347818[];
 extern char lbl_80347824[];
 extern void *memset(void *, int, u32);
+
+/* One vehicle's entry in the carstate table (the "cs_block" allocation this file
+   keeps in lbl_8055F618, lbl_8055F61C entries): the vehicle number it belongs to
+   and the state block that follows it, which fn_802795E8() initializes. */
+typedef struct {
+    s32             vehicleId;      /* 0x000: vehicle number */
+    unsigned char   state[0x2B4];   /* 0x004: the state block */
+} CarStateEntry;                    /* 0x2B8 */
 void fn_802795E8(arg0)
 void *arg0;
 {
@@ -22,7 +30,7 @@ void *arg0;
     register int offset asm("r4");
     register int count asm("r0");
     f32 value;
-
+    int idx;
     memset(arg0, 0, 0x2B4);
     value = lbl_805640F0;
     *(s32 *)((char *)arg0 + 0x298) = 0;
@@ -82,7 +90,8 @@ void *arg0;
         offset += 0x10;
     }
     *(f32 *)((char *)arg0 + 0x294) = value;
-    p = (unsigned char *)arg0 + (offset << 2);
+    idx = offset * 4;
+    p = (unsigned char *)arg0 + idx;
     p[0] = 0x80;
     p[1] = 0x80;
     p[2] = 0x80;
@@ -117,22 +126,14 @@ void fn_802797A8(s32 *arg0, s32 arg1) {
     s32 offset;
     s32 i;
     char *entry;
-    s32 value;
-
     lbl_8055F61C = arg1;
     lbl_8055F618 = fn_8012850C(arg1 * 0x2B8, lbl_80347818);
-    i = 0;
-    offset = 0;
-    while (i < lbl_8055F61C) {
+    for (i = 0, offset = 0; i < lbl_8055F61C; i++, offset += 0x2B8, arg0++) {
         entry = (char *)lbl_8055F618 + offset;
         memset(entry, 0, 0x2B8);
-        value = *arg0;
-        i++;
-        offset += 0x2B8;
-        *(s32 *)entry = value;
-        arg0++;
+        *(s32 *)entry = *arg0;
     }
-    fn_802795E8();
+    fn_8027974C();
 }
 #pragma scheduling reset
 void fn_80279848(void) {
@@ -188,22 +189,25 @@ unsigned char fn_802798F0(u32 arg0, u32 arg1, f32 farg0) {
 
 extern unsigned char fn_802798F0(unsigned int, unsigned int, float);
 extern float lbl_80564100, lbl_80564104;
-#pragma dont_inline on
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802799EC(void *arg0, float amount) {
     unsigned char *p;
     unsigned char *base;
     int i;
     float end;
     float current;
+    float a;
     float remaining;
     float selected;
     float limit;
     register float factor;
-
     base = (unsigned char *)arg0 + 4;
     end = *(float *)((unsigned char *)arg0 + 0x294);
     current = *(float *)((unsigned char *)arg0 + 0x298);
-    remaining = end - amount;
+    a = amount;
+    remaining = end - a;
     selected = current;
     if (current > remaining) {
         selected = current;
@@ -215,11 +219,9 @@ void fn_802799EC(void *arg0, float amount) {
     } else {
         limit = end;
     }
-
     factor = lbl_80564104 - selected / limit;
     *(float *)(base + 0x290) = selected;
     *(int *)(base + 0x298) = 0;
-
     p = base;
     for (i = 0; i < 0xA4; ++i, p += 4) {
         p[0] = fn_802798F0(p[0], 0x80, factor);
@@ -227,7 +229,6 @@ void fn_802799EC(void *arg0, float amount) {
         p[2] = fn_802798F0(p[2], 0x80, factor);
         p[3] = fn_802798F0(p[3], 0, factor);
     }
-
     base[0x2A0] = 0;
     base[0x2A1] = 0;
     base[0x2A2] = 0;
@@ -247,6 +248,7 @@ void fn_802799EC(void *arg0, float amount) {
     base[0x2B0] = 0;
     base[0x2B1] = 0;
 }
+#pragma pop
 void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     unsigned char *target = arg1 - 1;
     unsigned char *source = arg0 + 3;
