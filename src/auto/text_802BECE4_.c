@@ -369,16 +369,17 @@ extern "C" void fn_802BF508(void) {
 float fn_802BF590(void) { return lbl_8055FAF4; }
 
 #pragma cplusplus on
-extern "C" void fn_802BF598(int arg0, float farg0) {
+/* Invoke virtual method 1 on the current slot's object, if one is present. */
+extern "C" void fn_802BF598(int param, float value) {
     class Dummy {
     public:
         virtual void f0();
         virtual void f1(int, float);
     };
-    int index = fn_801E85B4();
-    Dummy *obj = (Dummy *)lbl_804C07F0[index];
-    if (obj != 0) {
-        obj->f1(arg0, farg0);
+    int slotIndex = fn_801E85B4();
+    Dummy *slotObject = (Dummy *)lbl_804C07F0[slotIndex];
+    if (slotObject != 0) {
+        slotObject->f1(param, value);
     }
 }
 
