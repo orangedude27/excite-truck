@@ -1051,6 +1051,8 @@ void *fn_80289EE0(void *arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 int fn_80289F54(int arg0) {
+    /* Clears field 0x64 in each 0x68-byte entry of the table pointed to by
+     * arg0, for the number of entries returned by fn_80287B14(). */
     int offset = 0;
     int i = 0;
     while (i < fn_80287B14()) {
