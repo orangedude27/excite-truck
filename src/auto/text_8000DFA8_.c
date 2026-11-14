@@ -2062,17 +2062,17 @@ s32 fn_8000E2D8(s32 arg0) {
     }
 }
 
-s32 fn_8000E338(s32 arg0) {
-    s32 var_r3;
-    if (arg0 <= 0xF) {
-        if ((f32)((f64 (*)(f32, f64))fn_8002EFB4)(
-                ((f32 (*)(void))fn_801E7E18)(), lbl_80560278) > lbl_8056025C)
-            return -1;
+/* HudBar_getColorForPercent: choose the ARGB fill color for a HUD percentage bar (blinking white/red at <=15%, red at <=40%, amber at <=70%, green above 70%). */
+s32 fn_8000E338(s32 percent) {
+    s32 barColor;
+    if (percent <= BAR_BLINK_MAX_PCT) {
+        if ((f32)Math_fmod(Game_getTimeSec(), sBlinkPeriodSec) > sBlinkHalfDuty)
+            return BAR_COLOR_WHITE;
     }
-    if (arg0 <= 0x28) return 0xFFF70000;
-    var_r3 = 0xFF278F27;
-    if (arg0 <= 0x46) var_r3 = 0xFFE5A703;
-    return var_r3;
+    if (percent <= BAR_LOW_MAX_PCT) return BAR_COLOR_RED;
+    barColor = BAR_COLOR_GREEN;
+    if (percent <= BAR_MID_MAX_PCT) barColor = BAR_COLOR_AMBER;
+    return barColor;
 }
 
 void fn_8000E3B4(s32 arg0) {
