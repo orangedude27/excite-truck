@@ -1474,24 +1474,37 @@ extern "C" void fn_801F9BE8(void) {
 }
 #pragma scheduling on
 
-extern "C" s32 fn_801F9CF8(void *arg0) {
+#pragma scheduling on
+/* EventSetStaticGobActive - event-handler registry (src/game/world/event.c) callback for
+ * event type 0xC, registered by fn_801F9E04.  The script hands over a payload record;
+ * binary-search the GOB id table fn_801F9BE8 built for the GOB id it names and, on a hit,
+ * write the record's byte into that GOB's +0x40 active flag (fn_801FA6B8 only draws a GOB
+ * with the flag set, and fn_801FA1D4 starts every GOB with it set).  Always reports the
+ * 8 payload bytes as consumed. */
+extern "C" s32 fn_801F9CF8(void *payload) {
+    /* The event record: a GOB id and the flag value to give it. */
+    struct GobFlagEvent {
+        s32 gobId;  /* +0x00 GOB id to look up */
+        u8 flag;    /* +0x04 value for that GOB's +0x40 active flag */
+    };
+    GobFlagEvent *event = (GobFlagEvent *)payload;
+
     if (lbl_8055EC54 != 0) {
         s32 low = 0;
         s32 high = lbl_8055EC58 - 1;
         while (low <= high) {
             s32 mid = (low + high) / 2;
-            void *node = lbl_8055EC54[mid];
-            if (*(s32 *)arg0 > *(s32 *)((u8 *)node + 0x3C)) low = mid + 1;
-            else if (*(s32 *)arg0 < *(s32 *)((u8 *)node + 0x3C)) high = mid - 1;
+            StaticGob *node = ((StaticGob **)lbl_8055EC54)[mid];
+            if (event->gobId > node->gobId) low = mid + 1;
+            else if (event->gobId < node->gobId) high = mid - 1;
             else {
-                *((u8 *)node + 0x40) = *((u8 *)arg0 + 4);
+                node->flag40 = event->flag;
                 return 8;
             }
         }
     }
     return 8;
 }
-
 extern "C" void *fn_80016544(s32);
 extern "C" s32 fn_801F9D70(void *arg0) {
     /* Scan the 0x78-byte item list at arg0+0x20 (count at +0x3c0): if any item has type 0x50, require flag bit 4 in fn_80016544(item[+0x6c])+0xa0 and return 1 only when all such items satisfy it. */
