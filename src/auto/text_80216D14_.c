@@ -678,21 +678,28 @@ int fn_80217BC8(int *arg0, int *arg1) {
 }
 
 #pragma scheduling invalid_target
-void *fn_80217BD8(void *arg0, int arg1, int arg2) {
+void *fn_80217BD8(void *arg0, int key, int value) {
+    /* Append a (key, value) pair to the sorted table at +0x4A0, keep it
+       ordered by key, update the cached head at +0x498, and return &head. */
+#define pairCount  0x494
+#define headValue  0x498
+#define pairArray  0x4A0
     char *base = (char *)arg0;
     int cnt;
-    *(int *)(base + *(int *)(base + 0x494) * 8 + 0x4A0) = arg1;
-    *(int *)(base + *(int *)(base + 0x494) * 8 + 0x4A4) = arg2;
-    cnt = *(int *)(base + 0x494) + 1;
-    *(int *)(base + 0x494) = cnt;
-    qsort(base + 0x4A0, cnt, 8, fn_80217BC8);
-    *(int *)(base + 0x498) = *(int *)(base + 0x4A0);
-    return base + 0x498;
+    *(int *)(base + *(int *)(base + pairCount) * 8 + pairArray) = key;
+    *(int *)(base + *(int *)(base + pairCount) * 8 + pairArray + 4) = value;
+    cnt = *(int *)(base + pairCount) + 1;
+    *(int *)(base + pairCount) = cnt;
+    qsort(base + pairArray, cnt, 8, fn_80217BC8);
+    *(int *)(base + headValue) = *(int *)(base + pairArray);
+    return base + headValue;
+#undef pairCount
+#undef headValue
+#undef pairArray
 }
 #pragma scheduling on
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
 void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
