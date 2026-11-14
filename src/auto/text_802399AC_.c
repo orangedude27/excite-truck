@@ -583,18 +583,19 @@ void fn_8023AEEC(void *arg0) {
 }
 
 s32 fn_80230E90(s32);
-void fn_8023AEF8(void *arg0) {
+/* If the current mode (fn_80214D04) being 4 differs from the stored flag, updates the flag and sets state at offset 0x1C accordingly. */
+void fn_8023AEF8(void *obj) {
     unsigned int temp_r31;
 
     temp_r31 = fn_80214D04() == 4;
-    if (*((unsigned char *)arg0 + 0x20) != temp_r31) {
+    if (*((unsigned char *)obj + 0x20) != temp_r31) {
         fn_80230E90(0);
         if (temp_r31 != 0) {
-            *(s32 *)((char *)arg0 + 0x1C) = 1;
+            *(s32 *)((char *)obj + 0x1C) = 1;
         } else {
-            *(s32 *)((char *)arg0 + 0x1C) = 0;
+            *(s32 *)((char *)obj + 0x1C) = 0;
         }
-        *((unsigned char *)arg0 + 0x20) = temp_r31;
+        *((unsigned char *)obj + 0x20) = temp_r31;
     }
 }
 
