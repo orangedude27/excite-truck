@@ -267,20 +267,21 @@ extern "C" void fn_801D09A8(void *arg0, void *arg1) {
     }
 }
 #pragma cplusplus on
-extern "C" void fn_801D0A24(void *arg0, void *arg1) {
-    struct Dummy {
+/* Notify every listener in the second listener list (lbl_8043870C): call virtual slot 3 on each entry's dispatch sub-object with the notifier and event data. */
+extern "C" void fn_801D0A24(void *notifier, void *eventData) {
+    struct Listener {
         virtual void f0();
         virtual void f1();
         virtual void f2();
-        virtual void f3(void *, void *);
+        virtual void notifyEvent(void *, void *);
     };
     int offset;
     int i;
     i = 0;
     offset = 0;
     while (i < lbl_8043870C[0].count) {
-        void *obj = *(void **)((char *)lbl_8043870C[0].items + offset);
-        ((Dummy *)obj)->f3(arg0, arg1);
+        void *listener = *(void **)((char *)lbl_8043870C[0].items + offset);
+        ((Listener *)listener)->notifyEvent(notifier, eventData);
         offset += 4;
         i++;
     }
