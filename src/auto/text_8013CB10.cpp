@@ -1160,19 +1160,21 @@ extern "C" void fn_8013E338(void) {
 
 }
 
-extern "C" void *fn_8013E33C(void *arg0, s32 arg1) {
-    void *field;
-    if (arg0 != 0) {
-        field = *(void **)((u8 *)arg0 + 4);
-        if (field != 0) {
-            fn_80128670((s32)field - 0x10);
+extern "C" void *fn_8013E33C(void *object, s32 deleteFlag) {
+    /* Destroying destructor for a path/group object: free its owned buffer at +4
+     * (allocated with a 0x10-byte header) and optionally delete the object. */
+    void *buffer;
+    if (object != 0) {
+        buffer = *(void **)((u8 *)object + 4);
+        if (buffer != 0) {
+            fn_80128670((s32)buffer - 0x10);
         }
-        *(void **)((u8 *)arg0 + 4) = 0;
-        if (arg1 > 0) {
-            ((void (*)(void *))fn_80128668)(arg0);
+        *(void **)((u8 *)object + 4) = 0;
+        if (deleteFlag > 0) {
+            ((void (*)(void *))fn_80128668)(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 /* The game's one global time-bonus / race-rule block (the .bss block
