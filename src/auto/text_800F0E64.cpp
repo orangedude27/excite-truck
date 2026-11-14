@@ -4633,9 +4633,10 @@ static inline void SoundInstanceManager_InsertPriorityList(void *pool, void *sou
 struct LinkListIter {
     void *node;
 };
-static inline LinkListIter LinkList_GetEndIter(void *list) {
+/* End of the SoundInstanceManager's priority list (list at +0x4, its node at +0x8). */
+static inline LinkListIter SoundInstanceManager_GetPriorityListEnd(void *pool) {
     LinkListIter iter;
-    iter.node = (u8 *)list + 4;
+    iter.node = (u8 *)pool + 8;
     return iter;
 }
 
