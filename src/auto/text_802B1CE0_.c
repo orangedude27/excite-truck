@@ -68,10 +68,12 @@ void *fn_802B1CE0(void *arg0, int arg1) {
     return arg0;
 }
 
-int fn_802B1D38(int arg0) {
-    int valid = 0;
-    if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28(arg0, 0);
+int fn_802B1D38(int handle) {
+    // If the handle is non-null and the NAND subsystem is available, close it via the texture manager; otherwise return an error.
+    int isValid = 0;
+
+    if (handle != 0 && fn_8012C33C() != 0) isValid = 1;
+    if (isValid != 0) return fn_802CAC28(handle, 0);
     return -2;
 }
 
