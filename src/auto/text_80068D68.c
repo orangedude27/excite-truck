@@ -14393,31 +14393,10 @@ void btu_hcif_link_key_notification_evt(u8 *p, u16 evt_len) {
     BD_ADDR bda;
     LINK_KEY key;
     u8 key_type;
-
-    bda[5] = p[0];
-    bda[4] = p[1];
-    bda[3] = p[2];
-    bda[2] = p[3];
-    bda[1] = p[4];
-    bda[0] = p[5];
-    key[15] = p[6];
-    key[14] = p[7];
-    key[13] = p[8];
-    key[12] = p[9];
-    key[11] = p[10];
-    key[10] = p[11];
-    key[9] = p[12];
-    key[8] = p[13];
-    key[7] = p[14];
-    key[6] = p[15];
-    key[5] = p[16];
-    key[4] = p[17];
-    key[3] = p[18];
-    key[2] = p[19];
-    key[1] = p[20];
-    key[0] = p[21];
-    key_type = p[22];
-    btm_sec_link_key_notification(bda, key, key_type);
+    { register int i; register u8 *dst = bda + 5; for (i=0;i<6;i++) *dst-- = *p++; }
+    { register int i; register u8 *dst = key + 15; for (i=0;i<16;i++) *dst-- = *p++; }
+    key_type = *p++;
+    btm_sec_link_key_notification(bda,key,key_type);
 }
 
 void fn_8008251C(void) {
@@ -21751,9 +21730,11 @@ void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
     fn_800916F4(mcb, 0xA, (s16 *)&local_id);
 }
 
+#pragma push
+#pragma opt_propagation off
 void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
     s32 index = (s32)arg0 - 0x40;
-    char *trace_msg = lbl_803196B8;
+    char (*trace_msg)[0x1C] = (char (*)[0x1C])lbl_803196B8;
     u16 lcid = arg0;
     void *port;
     u16 port_lcid;
@@ -21761,7 +21742,7 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
 
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, trace_msg + 0, lcid);
+            fn_80070954(0x90000, trace_msg[0], lcid);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -21769,20 +21750,20 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
             port_lcid = *(u16 *)((u8 *)port + 0x68);
             if (port_lcid != lcid) {
                 if (lbl_803C4828[0x414] >= 2)
-                    fn_8007096C(0x90001, trace_msg + 0x1C, lcid, port_lcid);
+                    fn_8007096C(0x90001, trace_msg[1], lcid, port_lcid);
                 port = NULL;
             }
         }
     }
     if (port == NULL) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, trace_msg + 0x54, lcid);
+            fn_80070954(0x90000, (char *)trace_msg + 0x54, lcid);
     } else {
         *(u16 *)((u8 *)port + 0x68) = lcid;
         fn_800916F4(port, 9, &status);
     }
 }
-
+#pragma pop
 void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
     s32 index = arg0 - 0x40;
     char *msg = lbl_803196B8;
