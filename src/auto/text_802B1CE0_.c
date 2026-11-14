@@ -574,6 +574,7 @@ void fn_802B28BC(int *entries, int count) {
     }
 #undef RandomIntInRange
 }
+
 void *fn_802B2934(void *arg0, void **arg1) {
     struct PtrVec { void **data; int count; } *vec = arg0;
     void *value = *arg1;
