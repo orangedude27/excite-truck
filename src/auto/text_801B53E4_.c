@@ -174,12 +174,12 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
     f32 r[16];
     u8 hit[4];
     s32 count;
+    s32 last;
     s32 i;
-    f32 h, mx, my, size;
+    f32 mx, my, size, h;
     s32 *node;
     s32 off;
-    s32 cnt;
-    s32 pool;
+    char *pool;
     s32 *p2 = (s32 *)arg2;
 
     h = lbl_80562698;
@@ -190,13 +190,13 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
     r[4] = mx; r[5] = y0; r[6] = x1; r[7] = my;
     r[8] = x0; r[9] = my; r[10] = mx; r[11] = y1;
     r[12] = mx; r[13] = my; r[14] = x1; r[15] = y1;
-    off = -1;
+    last = -1;
     *(s32 *)hit = 0;
     for (i = 0; i < 4; i++) {
         if (lbl_80435EB8[0] < r[i * 4 + 2] && lbl_80435EB8[2] > r[i * 4 + 0]
             && lbl_80435EB8[1] < r[i * 4 + 3] && lbl_80435EB8[3] > r[i * 4 + 1]) {
             hit[i] = 1;
-            off = i;
+            last = i;
             count++;
         }
     }
@@ -208,18 +208,17 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
         if (p2[2] == 0) {
             p2[2] = (s32)fn_8002F37C(fn_8012850C(0x40, lbl_80335EB4), fn_801B5984, fn_801B591C, 0xC, 4);
         }
-        ((Rec)fn_801B561C)(arg0, arg1, (char *)p2[2] + off * 0xC, arg3 + 1,
-                           r[off * 4], r[off * 4 + 1], r[off * 4 + 2], r[off * 4 + 3]);
+        ((Rec)fn_801B561C)(arg0, arg1, (char *)p2[2] + last * 0xC, arg3 + 1,
+                           r[last * 4], r[last * 4 + 1], r[last * 4 + 2], r[last * 4 + 3]);
         return;
     }
     size = x1 - x0;
     h = y1 - y0;
     size = size > h ? size : h;
     if (size < lbl_8056269C) {
-        cnt = lbl_8055E6F0;
-        pool = (s32)lbl_8055E6F4;
-        off = cnt * 0xC;
-        lbl_8055E6F0 = cnt + 1;
+        off = lbl_8055E6F0 * 0xC;
+        lbl_8055E6F0++;
+        pool = (char *)lbl_8055E6F4;
         node = (s32 *)(pool + off);
         *(s32 *)(pool + off) = (s32)arg0;
         node[1] = arg1;
@@ -336,15 +335,14 @@ extern "C" void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
     }
 }
 #pragma pop
-void fn_801B5BDC(void **arg0, s32 arg1, void *arg2) {
-    void **dst = arg0;
-    void *node = arg2;
-    for (; arg1 > 0; arg1--) {
+void fn_801B5BDC(void **out, s32 count, void *link) {
+    void **dst = out;
+    struct ObjectLink *node = link;
+    for (; count > 0; count--) {
         *dst++ = node;
-        node = *(void **)((u8 *)node + 0x44);
+        node = node->next;
     }
 }
-
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801B5C58(void *container) {
@@ -418,7 +416,6 @@ void *fn_801B5D30(s32 *arg0) {
     s32 *obj;
     void *p;
     void *q;
-
     fn_801B5AE4();
     fn_801B54B0(*arg0);
     count = fn_801B5D10((void *)*arg0);
