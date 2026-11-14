@@ -1737,6 +1737,7 @@ void __VISetWSS(void)
     WaitMicroTime(2);
 }
 
+/* Sends the closed-caption I2C packet from the stored caption data bytes. */
 void __VISetClosedCaption(void)
 {
     u8 data[5];
