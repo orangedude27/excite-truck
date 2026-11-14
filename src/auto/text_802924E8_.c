@@ -1080,6 +1080,8 @@ void fn_80293AF4(void* arg0) {
 }
 
 void fn_80293B44(void *arg0) {
+    /* For each active terrain-effect record, dispatch it with fn_802C744C
+     * using the per-record slot byte to select the base object pointer. */
     u8 *record = (u8 *)arg0 + 0x2C;
     s32 i = 0;
     goto check;
