@@ -746,16 +746,19 @@ void *fn_802E5AE8(char *arg0) {
 }
 
 #pragma pop
-void fn_802E5D5C(void *arg0) {
-    if (*(int *)((char *)arg0 + 0x94) == 1 && *(int *)((char *)arg0 + 0x98) > 0) {
-        fn_802E317C(lbl_8034D528, arg0, *(int *)((char *)arg0 + 0x98));
+/* SpuSample_release: decrement a sample's reference count, panicking if the last reference is dropped while channels still use it, and free its loaded SFX0 resource when the count reaches zero. */
+void fn_802E5D5C(void *sample) {
+    if (*(int *)((char *)sample + SPU_SAMPLE_REF_COUNT_OFFSET) == 1 &&
+        *(int *)((char *)sample + SPU_SAMPLE_ACTIVE_CHANNELS_OFFSET) > 0) {
+        Abend_panic(sSampleStillInUseFmt, sample,
+                    *(int *)((char *)sample + SPU_SAMPLE_ACTIVE_CHANNELS_OFFSET));
     }
-    if ((*(int *)((char *)arg0 + 0x94) -= 1) == 0 && *(int *)((char *)arg0 + 0xAC) != 0) {
-        ((void (*)(void *))fn_8012C4D8)(*(void **)((char *)arg0 + 0xAC));
-        *(int *)((char *)arg0 + 0xAC) = 0;
+    if ((*(int *)((char *)sample + SPU_SAMPLE_REF_COUNT_OFFSET) -= 1) == 0 &&
+        *(int *)((char *)sample + SPU_SAMPLE_RESOURCE_OFFSET) != 0) {
+        Resource_release(*(void **)((char *)sample + SPU_SAMPLE_RESOURCE_OFFSET));
+        *(int *)((char *)sample + SPU_SAMPLE_RESOURCE_OFFSET) = 0;
     }
 }
-
 #pragma ppc_psq_save reset
 extern void *lbl_8055FF90;
 extern float lbl_80565128, lbl_80565148;
