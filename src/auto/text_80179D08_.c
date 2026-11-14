@@ -205,21 +205,23 @@ extern "C" void *fn_80179EE8(void *obj, s32 shouldFree) {
 #pragma push
 #pragma scheduling off
 #pragma cplusplus on
-extern "C" void fn_80179F94(void *arg0, void *arg1) {
+extern "C" void fn_80179F94(void *container, void *child) {
+    /* Append a child to the container's list, call its measure callback (vslot 0x3C), and track the maximum result. */
     s32 count;
     void *slot;
     f32 value;
     f32 old;
-    count = *(s32 *)((u8 *)arg0 + 0x24);
-    slot = (u8 *)arg0 + count * 4;
-    *(void **)((u8 *)slot + 0x14) = arg1;
+
+    count = *(s32 *)((u8 *)container + 0x24);
+    slot = (u8 *)container + count * 4;
+    *(void **)((u8 *)slot + 0x14) = child;
     count++;
-    *(s32 *)((u8 *)arg0 + 0x24) = count;
-    *(s32 *)((u8 *)arg0 + 0x28) = count;
-    value = ((Fn80179F94Dummy *)arg1)->m13(arg1, slot, count - 1);
-    old = *(f32 *)((u8 *)arg0 + 0x2C);
+    *(s32 *)((u8 *)container + 0x24) = count;
+    *(s32 *)((u8 *)container + 0x28) = count;
+    value = ((Fn80179F94Dummy *)child)->m13(child, slot, count - 1);
+    old = *(f32 *)((u8 *)container + 0x2C);
     old = old > value ? old : value;
-    *(f32 *)((u8 *)arg0 + 0x2C) = old;
+    *(f32 *)((u8 *)container + 0x2C) = old;
 }
 #pragma cplusplus reset
 #pragma pop
@@ -310,17 +312,20 @@ void fn_8017A800(void) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma dont_inline on
 s32 fn_8017A804(void *arg0, void *arg1) {
     f32 v[3], q[4];
     f32 *qp;
     f32 (*m)[3] = (f32 (*)[3])((u8 *)arg0 + 0x3C);
     f32 trace, t, scale, angle, si, x, y, z;
-    s32 i, j, k, pad;
+    f32 c0 = lbl_80561B7C;
+    s32 i, j, k, dummy;
+    dummy = 0;
     *(f32 *)((u8 *)arg1+8)=*(f32 *)((u8 *)arg0+0x60);
     *(f32 *)((u8 *)arg1+12)=*(f32 *)((u8 *)arg0+0x64);
     *(f32 *)((u8 *)arg1+16)=*(f32 *)((u8 *)arg0+0x68);
     trace=m[2][2]+(m[0][0]+m[1][1]);
-    if(trace>lbl_80561B7C){
+    if(trace>c0){
         t=(f32)((double (*)(float))fn_8002F234)(lbl_80561B78+trace);
         scale=lbl_80561B98/t;
         q[3]=lbl_80561B98*t;
@@ -329,9 +334,9 @@ s32 fn_8017A804(void *arg0, void *arg1) {
         q[2]=scale*(m[0][1]-m[1][0]);
     }else{
         qp = q;
-        i=0;
-        if(m[1][1]>m[0][0])i=1;
-        if(m[2][2]>m[i][i])i=2;
+        i=dummy;
+        if(*(volatile f32 *)&m[1][1]>*(volatile f32 *)&m[0][0])i=1;
+        if(*(volatile f32 *)&m[2][2]>*(volatile f32 *)&m[i][i])i=2;
         j=(i+1)%3; k=(j+1)%3;
         t=(f32)((double (*)(float))fn_8002F234)(lbl_80561B78+(m[i][i]-(m[j][j]+m[k][k])));
         scale=lbl_80561B98/t;
@@ -358,7 +363,7 @@ s32 fn_8017A804(void *arg0, void *arg1) {
     z=lbl_80561B78<z?lbl_80561B78:z;
     z=z>lbl_80561B7C?z:lbl_80561B7C;
     ((s16*)arg1)[2]=(s16)(lbl_80561B98+(lbl_80561B7C+z*lbl_80561B80));
-    return 20;
+    return 20 + (dummy - dummy);
 }
 #pragma pop
 
@@ -424,7 +429,6 @@ void fn_8017AD08(void *dst, void *src) {
     unsigned char *srcBytes = (unsigned char *)src;
     unsigned char *dstBytes = (unsigned char *)dst;
     void *obj;
-    int first, second;
     int zero = 0;
     int box = 0x424F5820;
     float x, y, z;
@@ -432,58 +436,41 @@ void fn_8017AD08(void *dst, void *src) {
 
     ((void (*)(void *))fn_80179D94)(dst);
 
-    first = *(int *)(srcBytes + 8);
-    second = *(int *)(srcBytes + 0xC);
-    *(int *)(dstBytes + 0x3C) = first;
-    *(int *)(dstBytes + 0x40) = second;
-    first = *(int *)(srcBytes + 0x10);
-    second = *(int *)(srcBytes + 0x14);
-    *(int *)(dstBytes + 0x44) = first;
-    *(int *)(dstBytes + 0x48) = second;
-    first = *(int *)(srcBytes + 0x18);
-    second = *(int *)(srcBytes + 0x1C);
-    *(int *)(dstBytes + 0x4C) = first;
-    *(int *)(dstBytes + 0x50) = second;
-    first = *(int *)(srcBytes + 0x20);
-    second = *(int *)(srcBytes + 0x24);
-    *(int *)(dstBytes + 0x54) = first;
-    *(int *)(dstBytes + 0x58) = second;
+    *(Pair8 *)(dstBytes + 0x3C) = *(Pair8 *)(srcBytes + 8);
+    *(Pair8 *)(dstBytes + 0x44) = *(Pair8 *)(srcBytes + 0x10);
+    *(Pair8 *)(dstBytes + 0x4C) = *(Pair8 *)(srcBytes + 0x18);
+    *(Pair8 *)(dstBytes + 0x54) = *(Pair8 *)(srcBytes + 0x20);
     *(int *)(dstBytes + 0x5C) = *(int *)(srcBytes + 0x28);
-    first = *(int *)(srcBytes + 0x2C);
-    second = *(int *)(srcBytes + 0x30);
-    *(int *)(dstBytes + 0x60) = first;
-    *(int *)(dstBytes + 0x64) = second;
+    *(Pair8 *)(dstBytes + 0x60) = *(Pair8 *)(srcBytes + 0x2C);
     *(int *)(dstBytes + 0x68) = *(int *)(srcBytes + 0x34);
 
     fn_8017A580(dst);
-    if (*(int *)(srcBytes + 0x38) == 0) {
-        obj = fn_801284F8(0x38, (void *)lbl_80331BF8);
-        if (obj != 0) {
-            z = *(float *)(srcBytes + 0x44);
-            vtable = lbl_80333B98;
-            y = *(float *)(srcBytes + 0x40);
-            x = *(float *)(srcBytes + 0x3C);
-            *(void **)obj = (void *)vtable;
-            *(void **)((unsigned char *)obj + 0xC) = dstBytes + 0x3C;
-            *(float *)((unsigned char *)obj + 0x10) = lbl_80561BA0;
-            *(float *)((unsigned char *)obj + 0x14) = lbl_80561BA4;
-            *(int *)((unsigned char *)obj + 0x18) = box;
-            *(int *)((unsigned char *)obj + 0x20) = 100;
-            *(int *)((unsigned char *)obj + 4) = zero;
-            *(int *)((unsigned char *)obj + 8) = zero;
-            *(int *)((unsigned char *)obj + 0x1C) = zero;
-            *(void **)obj = (void *)lbl_803338C0;
-            *(float *)((unsigned char *)obj + 0x24) = x;
-            *(float *)((unsigned char *)obj + 0x28) = y;
-            *(float *)((unsigned char *)obj + 0x2C) = z;
-            *(int *)((unsigned char *)obj + 0x34) = zero;
-            *(float *)((unsigned char *)obj + 0x30) = lbl_80561BA4 +
-                (float)((double (*)(float))fn_8002F234)(x * x + y * y + z * z);
-            fn_80179F94(dst, obj);
-            return;
-        }
+    if (*(int *)(srcBytes + 0x38) == 0 &&
+        (obj = fn_801284F8(0x38, (void *)lbl_80331BF8)) != 0) {
+        z = *(float *)(srcBytes + 0x44);
+        vtable = lbl_80333B98;
+        y = *(float *)(srcBytes + 0x40);
+        x = *(float *)(srcBytes + 0x3C);
+        *(void **)obj = (void *)vtable;
+        *(void **)((unsigned char *)obj + 0xC) = dstBytes + 0x3C;
+        *(float *)((unsigned char *)obj + 0x10) = lbl_80561BA0;
+        *(float *)((unsigned char *)obj + 0x14) = lbl_80561BA4;
+        *(int *)((unsigned char *)obj + 0x18) = box;
+        *(int *)((unsigned char *)obj + 0x20) = 100;
+        *(int *)((unsigned char *)obj + 4) = zero;
+        *(int *)((unsigned char *)obj + 8) = zero;
+        *(int *)((unsigned char *)obj + 0x1C) = zero;
+        *(void **)obj = (void *)lbl_803338C0;
+        *(float *)((unsigned char *)obj + 0x24) = x;
+        *(float *)((unsigned char *)obj + 0x28) = y;
+        *(float *)((unsigned char *)obj + 0x2C) = z;
+        *(int *)((unsigned char *)obj + 0x34) = zero;
+        *(float *)((unsigned char *)obj + 0x30) = lbl_80561BA4 +
+            (float)((double (*)(float))fn_8002F234)(x * x + y * y + z * z);
+        fn_80179F94(dst, obj);
+    } else {
+        fn_802E30C8(lbl_80331C04);
     }
-    fn_802E30C8(lbl_80331C04);
 }
 
 extern void PSVECCrossProduct(float *, float *, float *);
@@ -497,7 +484,7 @@ void fn_8017AE94(void *arg0, float *arg1, float *arg2, float farg0) {
     float *b = arg2;
     struct Temps { float sp8[3]; float sp14[3]; float sp20[3]; } temp;
     register int i;
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 2; ++i) {
         float vb0, va0, vb1, d0, va1, vb2, d1, va2, p0, vb3;
         float p1, d2, va3, v0, vb4, d3, p2, va4, d4, vb5;
         float va5, p3, v1, d5, p4, p5, v2, v3, v4, v5;
