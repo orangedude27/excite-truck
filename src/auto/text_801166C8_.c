@@ -1781,17 +1781,18 @@ s32 fn_801194D0(void* arg0) {
  return *(u16*)((u8*)arg0+0x1be) + (*(u16*)((u8*)arg0+0x1bc)<<16);
 }
 
-s32 fn_801194E4(void *arg0) {
+s32 fn_801194E4(void *voiceState) {
+    /* Sample the voice read position until two samples are within 0x400, then derive the adjusted byte offset. */
     s32 first;
     s32 current;
     s32 result;
     do {
-        first = fn_801194D0(*(void **)arg0);
-        fn_801194D0(*(void **)arg0);
-        result = fn_801194D0(*(void **)arg0);
+        first = fn_801194D0(*(void **)voiceState);
+        fn_801194D0(*(void **)voiceState);
+        result = fn_801194D0(*(void **)voiceState);
     } while ((u32)(result - first) >= 0x400);
-    current = result * 2 - *(s32 *)((u8 *)arg0 + 0x10);
-    if (*(s32 *)((u8 *)arg0 + 4) != 0)
+    current = result * 2 - *(s32 *)((u8 *)voiceState + 0x10);
+    if (*(s32 *)((u8 *)voiceState + 4) != 0)
         current *= 2;
     return current;
 }
