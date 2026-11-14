@@ -11494,21 +11494,26 @@ extern "C" s32 fn_800B7E5C(s8 arg0) {
     return result;
 }
 
-extern "C" s32 fn_800B7EAC(s32 *arg0) {
-    s32 thread;
+/* pfk_get_task_id: store the current OSThread handle in *outTaskId, or return an error code (-2 if null, -3 if no current thread). */
+extern "C" s32 fn_800B7EAC(s32 *outTaskId) {
+#define sErrInvalidParam lbl_8031B190
+#define sInfoFailedGetCurrentThread lbl_8031B1C0
+    s32 currentThread;
 
-    if (arg0 == 0) {
-        OSReport(lbl_8031B190);
+    if (outTaskId == 0) {
+        OSReport(sErrInvalidParam);
         return -2;
     }
-    thread = (s32)OSGetCurrentThread();
-    if (thread == 0) {
-        OSReport(lbl_8031B1C0);
-        *arg0 = 0;
+    currentThread = (s32)OSGetCurrentThread();
+    if (currentThread == 0) {
+        OSReport(sInfoFailedGetCurrentThread);
+        *outTaskId = 0;
         return -3;
     }
-    *arg0 = thread;
+    *outTaskId = currentThread;
     return 0;
+#undef sInfoFailedGetCurrentThread
+#undef sErrInvalidParam
 }
 
 extern "C" s32 fn_800B7F28(void *arg0) {
