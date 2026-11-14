@@ -110,33 +110,42 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
 }
 
 #pragma sym off
-void fn_801B619C(u32 *arg0, s32 *arg1, const f32 *arg2) {
-    s32 x0 = GridCell(arg2[0] - 9.599999f);
-    s32 x1 = GridCell(9.599999f + arg2[0]);
-    s32 y0 = GridCell(arg2[2] - 9.599999f);
-    s32 y1 = GridCell(9.599999f + arg2[2]);
-    if (x0 != x1) {
-        if (y0 != y1) {
-            *arg1 = 4;
-            arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
-            arg0[1] = lbl_8055E70C + ((x1 + y0 * 100) * 4);
-            arg0[2] = lbl_8055E70C + ((x0 + y1 * 100) * 4);
-            arg0[3] = lbl_8055E70C + ((x1 + y1 * 100) * 4);
+/*
+ * PhobList gather: collects the phob (physics object) lists to test against a
+ * point. The world's XZ plane is a 100x100 grid of 20-unit cells starting at
+ * -1000 (lbl_8055E70C, "phoblist": one list head per cell). Returns in outLists
+ * the cells touched by a 9.6-unit box around pos (1, 2 or 4 of them), followed
+ * by the "bigphoblist" (lbl_8055E714) of objects too large for a cell;
+ * *outCount receives how many lists were written.
+ */
+void fn_801B619C(u32 *outLists, s32 *outCount, const f32 *pos) {
+    s32 minX = GridCell(pos[0] - 9.599999f);
+    s32 maxX = GridCell(9.599999f + pos[0]);
+    s32 minZ = GridCell(pos[2] - 9.599999f);
+    s32 maxZ = GridCell(9.599999f + pos[2]);
+    if (minX != maxX) {
+        if (minZ != maxZ) {
+            *outCount = 4;
+            outLists[0] = lbl_8055E70C + ((minX + minZ * 100) * 4);
+            outLists[1] = lbl_8055E70C + ((maxX + minZ * 100) * 4);
+            outLists[2] = lbl_8055E70C + ((minX + maxZ * 100) * 4);
+            outLists[3] = lbl_8055E70C + ((maxX + maxZ * 100) * 4);
         } else {
-            *arg1 = 2;
-            arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
-            arg0[1] = lbl_8055E70C + ((x1 + y0 * 100) * 4);
+            *outCount = 2;
+            outLists[0] = lbl_8055E70C + ((minX + minZ * 100) * 4);
+            outLists[1] = lbl_8055E70C + ((maxX + minZ * 100) * 4);
         }
-    } else if (y0 != y1) {
-        *arg1 = 2;
-        arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
-        arg0[1] = lbl_8055E70C + ((x0 + y1 * 100) * 4);
+    } else if (minZ != maxZ) {
+        *outCount = 2;
+        outLists[0] = lbl_8055E70C + ((minX + minZ * 100) * 4);
+        outLists[1] = lbl_8055E70C + ((minX + maxZ * 100) * 4);
     } else {
-        *arg1 = 1;
-        arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
+        *outCount = 1;
+        outLists[0] = lbl_8055E70C + ((minX + minZ * 100) * 4);
     }
     {
-        arg0[(*arg1)++] = lbl_8055E714;
+        /* Big phobs are always tested. */
+        outLists[(*outCount)++] = lbl_8055E714;
     }
 }
 #pragma sym on
