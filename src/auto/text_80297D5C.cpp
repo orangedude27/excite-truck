@@ -960,13 +960,23 @@ extern "C" void *fn_802998F4(void *container, int freeStorage) {
 extern "C" void fn_80299988(void) {
 }
 
-extern "C" void fn_8029998C(void* arg0) {
-    float temp = fn_801E7E18();
-    void* entry = arg0;
+/* UpdateRingFires: advance every ring fire of a set (the one at lbl_8055F7CC,
+   built by fn_80299A04) with the current global time; fn_80299FE0 animates one
+   ring, growing its vertex ring until it times out. */
+extern "C" void fn_8029998C(void *ringFireSet) {
+    /* A ring-fire set: up to 2 rings of 0x9C bytes each, with the number in use
+       stored right behind them (fn_80299A04 warns past 2). */
+    struct RingFireSet {
+        char ring[2][0x9C];
+        s32 count; /* +0x138 */
+    };
+    float time = fn_801E7E18();
+    void *entry = ringFireSet;
     int i = 0;
-    while (i < *(int*)((char*)arg0 + 0x138)) {
-        fn_80299FE0(arg0, entry, temp);
-        entry = (char*)entry + 0x9C;
+    RingFireSet *set = (RingFireSet *)ringFireSet;
+    while (i < set->count) {
+        fn_80299FE0(ringFireSet, entry, time);
+        entry = (char *)entry + 0x9C;
         i++;
     }
 }
