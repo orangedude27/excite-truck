@@ -239,23 +239,39 @@ void* fn_801B83A0(void) {
 
 #pragma cplusplus on
 extern "C" void fn_801B83A8(void) {
-    extern float lbl_80436D08[];
-    extern char lbl_8055E748;
-    extern float lbl_8055E750;
-    extern float lbl_80562744;
-    extern void fn_801619A8(void);
-    ((Dummy_801B8318 *)lbl_8055E744)->f2();
-    lbl_80436D08[0] = lbl_80562744;
-    lbl_8055E748 = 0;
-    lbl_80436D08[1] = lbl_80562744;
-    lbl_80436D08[2] = lbl_80562744;
-    lbl_80436D08[3] = lbl_80562744;
-    lbl_80436D08[4] = lbl_80562744;
-    lbl_80436D08[5] = lbl_80562744;
-    lbl_80436D08[6] = lbl_80562744;
-    lbl_80436D08[7] = lbl_80562744;
-    fn_801619A8();
-    lbl_8055E750 = lbl_80562744;
+    /* Reset the global object's state via its vtable, clear the shared float array and status flag,
+     * run the global update step, and reset the associated timer to zero. */
+    #define gGlobalObject lbl_8055E744
+    #define gSharedFloats lbl_80436D08
+    #define gStatusFlag lbl_8055E748
+    #define gTimer lbl_8055E750
+    #define gZeroFloat lbl_80562744
+    #define RunGlobalUpdate fn_801619A8
+
+    extern float gSharedFloats[];
+    extern char gStatusFlag;
+    extern float gTimer;
+    extern float gZeroFloat;
+    extern void RunGlobalUpdate(void);
+    ((Dummy_801B8318 *)gGlobalObject)->f2();
+    gSharedFloats[0] = gZeroFloat;
+    gStatusFlag = 0;
+    gSharedFloats[1] = gZeroFloat;
+    gSharedFloats[2] = gZeroFloat;
+    gSharedFloats[3] = gZeroFloat;
+    gSharedFloats[4] = gZeroFloat;
+    gSharedFloats[5] = gZeroFloat;
+    gSharedFloats[6] = gZeroFloat;
+    gSharedFloats[7] = gZeroFloat;
+    RunGlobalUpdate();
+    gTimer = gZeroFloat;
+
+    #undef gGlobalObject
+    #undef gSharedFloats
+    #undef gStatusFlag
+    #undef gTimer
+    #undef gZeroFloat
+    #undef RunGlobalUpdate
 }
 #pragma cplusplus off
 void fn_801B8418(void) {
