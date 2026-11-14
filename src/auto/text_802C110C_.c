@@ -175,30 +175,34 @@ copied_string:
 
 #pragma scheduling invalid_target
 void fn_802C13A4(void) {
-    char *entry;
-    int address_check;
-    char *base;
-    int i;
-    int value;
+    /* Shut down the treehit subsystem (counterpart to fn_802C126C): unregister
+     * the listener object lbl_8055FB40 (and its second base subobject at +4)
+     * from both dispatch lists, free each TreeClass's drop-model array (+0x34)
+     * across lbl_804C0810, free the tree list lbl_8055FB30, and clear the counts. */
+    char *classEntry;
+    int listenerCheck;
+    char *listenerSubobject;
+    int classIndex;
+    int dropsBuffer;
 
     fn_801D05B4(&lbl_8055FB40);
-    address_check = (int)&lbl_8055FB40;
-    base = (char *)&lbl_8055FB40;
-    if (address_check != 0)
-        base += 4;
-    fn_801D0824(base);
+    listenerCheck = (int)&lbl_8055FB40;
+    listenerSubobject = (char *)&lbl_8055FB40;
+    if (listenerCheck != 0)
+        listenerSubobject += 4;
+    fn_801D0824(listenerSubobject);
 
-    entry = lbl_804C0810;
-    i = 0;
+    classEntry = lbl_804C0810;
+    classIndex = 0;
     goto check;
 loop:
-    value = *(int *)(entry + 0x34);
-    if (value != 0)
-        fn_80128670(value);
-    entry += 0x60;
-    i += 1;
+    dropsBuffer = *(int *)(classEntry + 0x34);
+    if (dropsBuffer != 0)
+        fn_80128670(dropsBuffer);
+    classEntry += sizeof(struct TreeClass);
+    classIndex += 1;
 check:
-    if (i < lbl_8055FB28)
+    if (classIndex < lbl_8055FB28)
         goto loop;
 
     fn_80128670(lbl_8055FB30);
@@ -206,7 +210,6 @@ check:
     lbl_8055FB2C = 0;
     lbl_8055FB28 = 0;
 }
-#pragma scheduling on
 extern int fn_801345D8(char *, int, const char *, ...);
 extern char lbl_8034AF14[];
 
