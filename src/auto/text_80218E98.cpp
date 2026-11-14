@@ -9230,21 +9230,39 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8022A0CC(void *arg0, 
     return arg0;
 }
 
-extern "C" void *fn_8022A124(void *arg0, s32 arg1) {
-    s32 temp_r0;
+/* Deleting destructor of the spinning 3D model view a text widget builds in
+ * fn_802286E4 (vtable lbl_8033DCF8): restore the object's own vtable, release
+ * the mrModel instance it holds at +0x04, and free the object itself when
+ * deletingFlag > 0. */
+extern "C" void *fn_8022A124(void *self, s32 deletingFlag) {
+    /* the model view allocated by fn_802286E4, owned by its widget at +0x268 */
+    struct ModelView {
+        void *vtable;   /* +0x00 */
+        s32 modelId;    /* +0x04 mrModel instance id, -1 when none */
+        f32 matrix[12]; /* +0x08 3x4 transform plus translation */
+        f32 spinAngle;  /* +0x38 advanced by spinSpeed every frame */
+        f32 spinSpeed;  /* +0x3C */
+    };
+    #define ModelView_vtable       lbl_8033DCF8
+    #define mrModelReleaseInstance fn_802C6CF8
 
-    if (arg0 != 0) {
-        temp_r0 = *(s32 *)((u8 *)arg0 + 4);
-        *(void **)arg0 = lbl_8033DCF8;
-        if (temp_r0 != -1) {
-            fn_802C6CF8(temp_r0);
-            *(s32 *)((u8 *)arg0 + 4) = -1;
+    s32 modelId;
+
+    if (self != NULL) {
+        modelId = ((ModelView *)self)->modelId;
+        ((ModelView *)self)->vtable = ModelView_vtable;
+        if (modelId != -1) {
+            mrModelReleaseInstance(modelId);
+            ((ModelView *)self)->modelId = -1;
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (deletingFlag > 0) {
+            Mem_freeObject(self);
         }
     }
-    return arg0;
+
+    #undef ModelView_vtable
+    #undef mrModelReleaseInstance
+    return self;
 }
 
 extern "C" s32 fn_8012C33C(void *);
