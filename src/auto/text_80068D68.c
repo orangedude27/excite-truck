@@ -15808,16 +15808,17 @@ void fn_800853F8(u8 *arg0, u16 arg1, u16 arg2) {
     btu_hcif_send_cmd(arg0);
 }
 
-BOOL btsnd_hcic_write_pin_type_8008543C(u32 pin_type) {
-    u8 *buf = GKI_getpoolbuf(2);
-    if (buf == NULL) return FALSE;
-    *(u16 *)(buf + 2) = 4;
-    *(u16 *)(buf + 4) = 0;
-    buf[8] = 0x20;
-    buf[9] = 0xC;
-    buf[10] = 1;
-    buf[11] = pin_type;
-    btu_hcif_send_cmd(buf);
+BOOL btsnd_hcic_write_pin_type_8008543C(u32 pinType) {
+    /* Build and send HCI Write PIN Type command (opcode 0x0C20) with a 1-byte parameter. */
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == NULL) return FALSE;
+    *(u16 *)(cmdBuf + 2) = 4;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 0x20;
+    cmdBuf[9] = 0xC;
+    cmdBuf[10] = 1;
+    cmdBuf[11] = pinType;
+    btu_hcif_send_cmd(cmdBuf);
     return TRUE;
 }
 
