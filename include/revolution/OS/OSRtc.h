@@ -19,7 +19,7 @@ typedef struct OSSram {
 
 typedef struct OSSramEx {
     char UNK_0x0[0x1C];
-    u16 wirelessPadId[4]; // at 0x1C
+    u16 wirelessPadId[4]; // at 0x1C; wireless controller ID, one per pad channel
     char UNK_0x38[0x3C - 0x38];
     u16 gbs; // at 0x3C
     char UNK_0x3E[0x40 - 0x3E];
