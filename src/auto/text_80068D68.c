@@ -15681,12 +15681,13 @@ BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_typ
 }
 
 BOOLEAN btsnd_hcic_write_pin_type(UINT8 type) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 4;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0xA; p[9] = 0xC; p[10] = 1; p[11] = type;
-    btu_hcif_send_cmd(p);
+    /* Send HCI Write_PIN_Type (0x0C0A) with the specified PIN type. */
+    u8 *cmd = GKI_getpoolbuf(2);
+    if (cmd == NULL) return FALSE;
+    *(u16 *)(cmd + 2) = 4;
+    *(u16 *)(cmd + 4) = 0;
+    cmd[8] = 0xA; cmd[9] = 0xC; cmd[10] = 1; cmd[11] = type;
+    btu_hcif_send_cmd(cmd);
     return TRUE;
 }
 
