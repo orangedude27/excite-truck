@@ -16094,6 +16094,7 @@ void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, vo
 
 extern void hidd_proc_repage_timeout(void);
 void HID_DevInit(void) {
+    /* Initialize HID device control block: clear state, set defaults, and install the repage timeout handler. */
     memset(&lbl_803C3AF0[0], 0, 0x144);
     lbl_803C3AF0[0xCA] = 1;
     *(u16*)&lbl_803C3AF0[0xCC] = 0x40;
