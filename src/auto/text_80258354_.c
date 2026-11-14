@@ -19,20 +19,52 @@ __declspec(section ".sdata") extern char lbl_8055C258[];
 extern float lbl_80563AC8;
 extern int fn_80232578(void *); /* gText: font handle for a font name (used by fn_8025861C) */
 #pragma scheduling invalid_target
-void fn_80258354(void) {
-    void *p = fn_801284F8(0x1328, lbl_80344D88);
-    if (p != 0) {
-        *(void **)p = &lbl_80344D98;
-        *(void **)((char *)p + 4) = (char *)p + 0x10;
-        *(int *)((char *)p + 0xC) = 0x20;
-        *(int *)((char *)p + 8) = 0;
-        *(void **)((char *)p + 0x910) = (char *)p + 0x91C;
-        *(int *)((char *)p + 0x918) = 0x20;
-        *(int *)((char *)p + 0x914) = 0;
-        *(void **)((char *)p + 0xD9C) = (char *)p + 0xDA8;
-        *(int *)((char *)p + 0xDA4) = 0x20;
-        *(int *)((char *)p + 0xDA0) = 0;
+/* UIObjects_Create: allocate the UI object manager and start its three fixed
+ * tables.  Each is a {array, count, capacity} header whose array points at the
+ * 0x20 entries kept inline right behind it:
+ *   +0x010 objects: 0x48-byte UIObjectEntry (fn_80258550 adds one)
+ *   +0x91C texts:   {char name[0x20]; UITextObject *text} (fn_8025861C adds one)
+ *   +0xDA8 sounds:  {char name[0x20]; void *sound; char flags; float scale}
+ *                   (fn_802586F0 adds one)
+ * fn_802583CC (vtable +8) releases what the tables hold and clears the counts.
+ * The block is tagged "UIObjects_impl"; callers keep what it returns. */
+void *fn_80258354(void) {
+#define Allocate fn_801284F8            /* size, tag -> new block named for the tag */
+#define sUIObjectsImplName lbl_80344D88 /* "UIObjects_impl" */
+#define UIObjectsVTable lbl_80344D98    /* this class's vtable */
+    struct UIObjects {
+        void *vtable;                   /* +0x000 */
+        void *objects;                  /* +0x004 table of 0x48-byte entries */
+        int objectCount;                /* +0x008 */
+        int objectCapacity;             /* +0x00C: 0x20 */
+        char objectEntries[0x20][0x48]; /* +0x010 */
+        void *texts;                    /* +0x910 table of 0x24-byte entries */
+        int textCount;                  /* +0x914 */
+        int textCapacity;               /* +0x918: 0x20 */
+        char textEntries[0x20][0x24];   /* +0x91C */
+        void *sounds;                   /* +0xD9C table of 0x2C-byte entries */
+        int soundCount;                 /* +0xDA0 */
+        int soundCapacity;              /* +0xDA4: 0x20 */
+        char soundEntries[0x20][0x2C];  /* +0xDA8 */
+    };                                  /* == 0x1328 */
+    struct UIObjects *mgr = (struct UIObjects *)Allocate(sizeof(struct UIObjects),
+                                                         sUIObjectsImplName);
+    if (mgr != 0) {
+        mgr->vtable = &UIObjectsVTable;
+        mgr->objects = mgr->objectEntries;
+        mgr->objectCapacity = 0x20;
+        mgr->objectCount = 0;
+        mgr->texts = mgr->textEntries;
+        mgr->textCapacity = 0x20;
+        mgr->textCount = 0;
+        mgr->sounds = mgr->soundEntries;
+        mgr->soundCapacity = 0x20;
+        mgr->soundCount = 0;
     }
+    return mgr;
+#undef Allocate
+#undef sUIObjectsImplName
+#undef UIObjectsVTable
 }
 #pragma scheduling on
 
