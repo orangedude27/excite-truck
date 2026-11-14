@@ -138,16 +138,23 @@ void fn_802DB58C(void) {
     GXLoadTexMtxImm((float *)texMtx, 0x1e, 1);
 }
 #pragma scheduling on
+/* Load texture matrix 0x1E (GX_MTX2x4) from the lbl_802FACF8 template (translation 0.5, 0.5), setting X/Y scale to lbl_8055D148 (1.0f). */
 void fn_802DB620(void) {
-    int m[8];
-    int *p = (int *)lbl_802FACF8;
-    m[0] = p[0]; m[1] = p[1]; m[2] = p[2]; m[3] = p[3];
-    m[4] = p[4]; m[5] = p[5]; m[6] = p[6]; m[7] = p[7];
-    *(float *)&m[0] = lbl_8055D148;
-    *(float *)&m[6] = lbl_8055D148;
-    GXLoadTexMtxImm((float *)m, 0x1e, 1);
-}
+    int texMtx[8];
+    int *texMtxTemplate = (int *)lbl_802FACF8;
 
+    texMtx[0] = texMtxTemplate[0];
+    texMtx[1] = texMtxTemplate[1];
+    texMtx[2] = texMtxTemplate[2];
+    texMtx[3] = texMtxTemplate[3];
+    texMtx[4] = texMtxTemplate[4];
+    texMtx[5] = texMtxTemplate[5];
+    texMtx[6] = texMtxTemplate[6];
+    texMtx[7] = texMtxTemplate[7];
+    *(float *)&texMtx[0] = lbl_8055D148;
+    *(float *)&texMtx[6] = lbl_8055D148;
+    GXLoadTexMtxImm((float *)texMtx, 0x1e, 1);
+}
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 int fn_802DB69C(void **arg0, int arg1) {
@@ -574,16 +581,15 @@ void fn_802DC464(int arg0, int arg1, unsigned short *__restrict list, int size) 
     float field;
     float value;
     float rounded;
-    long raw;
-    long mask;
-    long clipped;
+    int raw;
+    int mask;
+    int clipped;
     long alpha;
     GXColor color;
     int n;
     int i;
     unsigned short val;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
-
     fn_802DBBE4(arg0, arg1);
     field = ((float *)lbl_804DB068)[5];
     value = lbl_80565040 * field;
@@ -985,32 +991,21 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
     int exp;
     float p;
     fn_802DCAE4_GXColor col;
-
     lbl_8055D148 = farg1;
     fn_802DBD88();
-    if (arg2 != -2) {
-        fn_802CADD0(arg2, 1);
-    }
+    if (arg2 != -2) fn_802CADD0(arg2, 1);
     fn_802DB778(2);
     if (arg1 != -2) {
         lbl_8055FEC0 = 1;
         farg0 = lbl_80565050 * farg0;
         diff = (float)fn_8002F208(lbl_80565058) - (float)fn_8002F208(farg0);
         c = (float)ceil(lbl_80565060 + (float)__fabs(diff));
-        if (diff > lbl_80565048) {
-            factor = lbl_80565064;
-        } else {
-            factor = lbl_80565068;
-        }
+        if (diff > lbl_80565048) factor = lbl_80565064; else factor = lbl_80565068;
         r0 = -0x2E;
         r3 = (int)(factor * c);
-        if (r3 > -0x2E) {
-            r0 = r3;
-        }
+        if (r3 > -0x2E) r0 = r3;
         exp = 0x11;
-        if (r0 < 0x11) {
-            exp = r0;
-        }
+        if (r0 < 0x11) exp = r0;
         p = (float)fn_8002EFBC(lbl_80565070, (float)exp);
         farg0 *= lbl_80565078;
         farg0 /= p;
@@ -1028,10 +1023,7 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
     GXSetVtxAttrFmt(0, 9, 1, 4, 0);
     GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
     GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
-    col.r = 0xC0;
-    col.g = 0xC0;
-    col.b = 0xC0;
-    col.a = 0x14;
+    col.r = 0xC0; col.g = 0xC0; col.b = 0xC0; col.a = 0x14;
     GXSetTevColor(2, col);
 }
 
