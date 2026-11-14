@@ -128,7 +128,9 @@ s32 fn_8015621C(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
-s32 fn_80156248(void *arg0, s32 arg1) {
+/* Format the track data file path ("%strack.ild") for the current line base
+ * name into the output buffer and return the buffer. */
+s32 fn_80156248(void *outBuffer, s32 bufferSize) {
     struct Obj {
         virtual void v0();
         virtual void v1();
@@ -136,10 +138,10 @@ s32 fn_80156248(void *arg0, s32 arg1) {
         virtual void v3();
         virtual char *m4(const char *, const char *);
     };
-    Obj *obj = (Obj *)fn_8015621C();
-    char *result = obj->m4((const char *)lbl_8032E238, (const char *)&lbl_80559FC0);
-    fn_801345D8((s32)arg0, arg1, lbl_8032E248, result);
-    return (s32)arg0;
+    Obj *textManager = (Obj *)fn_8015621C();
+    char *lineBaseName = textManager->m4((const char *)lbl_8032E238, (const char *)&lbl_80559FC0);
+    fn_801345D8((s32)outBuffer, bufferSize, lbl_8032E248, lineBaseName);
+    return (s32)outBuffer;
 }
 #pragma dont_inline off
 #pragma pop
@@ -567,8 +569,6 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
     s32 offset;
     s32 j;
     s32 offset2;
-    s32 zero = 0;
-    void *chk;
     if (arg0 != 0) {
         Obj *self = (Obj *)arg0;
         self->vtable = lbl_8032E424;
@@ -587,20 +587,22 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
             offset2 += 4;
             j++;
         }
-        chk = (char *)self + 0x90;
-        self->itemCount = zero;
-        if (chk != 0) {
-            if (chk != 0) {
-                self->items = 0;
-                self->itemCount = zero;
-                self->itemCapacity = zero;
+        {
+            s32 zero = 0;
+            self->itemCount = zero;
+            if ((s32)self + 0x90 != 0) {
+                if ((s32)self + 0x90 != 0) {
+                    self->items = 0;
+                    self->itemCount = zero;
+                    self->itemCapacity = zero;
+                }
             }
-        }
-        if ((s32)self + 4 != 0) {
             if ((s32)self + 4 != 0) {
-                self->first = 0;
-                self->firstCount = zero;
-                *(s32 *)((char *)self + 0xC) = zero;
+                if ((s32)self + 4 != 0) {
+                    self->first = 0;
+                    self->firstCount = 0;
+                    *(s32 *)((char *)self + 0xC) = 0;
+                }
             }
         }
         if (arg1 > 0)
