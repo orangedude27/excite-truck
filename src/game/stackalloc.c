@@ -556,20 +556,7 @@ void fn_802DA52C(void) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int arg5) {
-    struct DaaContext {
-        int unk_0;
-        unsigned char *buffer;
-        void *name;
-        int capacity;
-        int used;
-        void *callback0;
-        void *callback1;
-        void *callback2;
-        void *current;
-        unsigned char status;
-        unsigned char initialized;
-    };
-    volatile struct DaaContext *ctx;
+    volatile struct StackAlloc *ctx;
     register int count1 = arg5;
     register int count2 = arg2;
     int bytes1;
@@ -586,7 +573,7 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
     unsigned char saved;
     unsigned char *record2;
 
-    ctx = (volatile struct DaaContext *)lbl_8055FE5C;
+    ctx = (volatile struct StackAlloc *)lbl_8055FE5C;
     bytes1 = count1 * 4;
     size1 = bytes1 + 8;
     aligned1 = (size1 + 3) & ~3;
