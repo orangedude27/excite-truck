@@ -3324,15 +3324,16 @@ class Fn86A34Draw { public:
 extern "C" int fn_80214AF0(int);
 extern "C" int fn_80131234(int);
 #pragma cplusplus off
-int fn_802869CC(void *arg0, int arg1) {
-    void *p;
-    int d;
-    switch (arg1) {
+/* Handles control request 13 by storing the span length of the linked object as a float. */
+int fn_802869CC(void *obj, int request) {
+    void *span;
+    int length;
+    switch (request) {
     case 13:
-        p = *(void **)((char *)arg0 + 0x20);
-        if (p != 0 && *(unsigned char *)((char *)arg0 + 0x29) == 0) {
-            d = *(int *)((char *)p + 4) - *(int *)p;
-            *(float *)((char *)p + 0x10) = (float)d;
+        span = *(void **)((char *)obj + 0x20);
+        if (span != 0 && *(unsigned char *)((char *)obj + 0x29) == 0) {
+            length = *(int *)((char *)span + 4) - *(int *)span;
+            *(float *)((char *)span + 0x10) = (float)length;
             return 1;
         }
         break;
