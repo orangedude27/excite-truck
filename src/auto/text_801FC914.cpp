@@ -1592,17 +1592,17 @@ extern "C" void fn_801FF8DC(void *arg0, void *dest, int src) {
 }
 
 extern "C" void fn_801FF924(void* arg0, void* arg1, float farg0) {
-    char* p;
-    int i;
-    i = 0;
-    p = (char*)arg1;
+    /* For each pointer in the object's list at arg1+0x50 (count at arg1+0x94),
+     * call fn_801FCAAC with the pointer and farg0. */
+    char* entry = (char*)arg1;
+    int index = 0;
     goto check;
 body:
-    fn_801FCAAC(*(void**)(p + 0x50), farg0);
-    p += 4;
-    i++;
+    fn_801FCAAC(*(void**)(entry + 0x50), farg0);
+    entry += 4;
+    index++;
 check:
-    if (i < *(int*)((char*)arg1 + 0x94))
+    if (index < *(int*)((char*)arg1 + 0x94))
         goto body;
 }
 
