@@ -11256,18 +11256,19 @@ extern "C" s32 fn_800B76E8(s8 arg0) {
     return ((s32 (*)(void))fn_800B73E4)();
 }
 
-extern "C" void fn_800B7710(void *arg0) {
+extern "C" void fn_800B7710(void *state) {
+    /* Lazily initialize a counter/semaphore state block on first use. */
     extern s32 fn_800B7F28(void *);
     struct Args { s32 a; s32 b; void *c; } args;
 
-    if (*(s32 *)arg0 == 0) {
+    if (*(s32 *)state == 0) {
         args.a = 1;
         args.b = 1;
-        args.c = (u8 *)arg0 + 0x10;
-        *(s32 *)((u8 *)arg0 + 8) = fn_800B7F28(&args);
-        *(s32 *)((u8 *)arg0 + 4) = 0;
-        *(s32 *)((u8 *)arg0 + 0xC) = 0;
-        *(s32 *)arg0 = 1;
+        args.c = (u8 *)state + 0x10;
+        *(s32 *)((u8 *)state + 8) = fn_800B7F28(&args);
+        *(s32 *)((u8 *)state + 4) = 0;
+        *(s32 *)((u8 *)state + 0xC) = 0;
+        *(s32 *)state = 1;
     }
 }
 
