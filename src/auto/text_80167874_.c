@@ -455,43 +455,42 @@ extern "C" void fn_80167EEC(void) {
     s32 *global;
     s32 i;
     u8 *manager = (u8 *)(u32)lbl_8055E354;
-    if (manager == 0) {
-        return;
-    }
-    global = (s32 *)lbl_80330020;
-    global[7] = 0;
-    global[15] = 0;
-    global[23] = 0;
-    global[31] = 0;
-    global[39] = 0;
-    i = *(s32 *)(manager + 4);
-    while (i-- > 0) {
-        *(s32 *)(*(u32 *)manager + i * 0x18) = 0;
-    }
-    *(s32 *)(manager + 4) = 0;
-    *(s32 *)(manager + 0x1D4D0) = 0;
-    *(u8 *)(manager + 0x1E158) = 0;
-    entry = (u8 *)lbl_80330020;
-    i = 0;
-    for (; i < 5; i++, entry += 0x20) {
-        if (*(s32 *)(entry + 0x10) != -1) {
-            fn_802C6CF8(*(s32 *)(entry + 0x10));
-            *(s32 *)(entry + 0x10) = -1;
-        }
-    }
-    if ((manager + 0x1D4CC) != 0 && (manager + 0x1D4CC) != 0) {
-        *(s32 *)(manager + 0x1D4CC) = 0;
-        *(s32 *)(manager + 0x1D4D0) = 0;
-        *(s32 *)(manager + 0x1D4D4) = 0;
-    }
     if (manager != 0) {
-        fn_8002F634(manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
-        if (manager != 0) {
-            *(s32 *)(manager + 0) = 0;
-            *(s32 *)(manager + 4) = 0;
-            *(s32 *)(manager + 8) = 0;
+        global = (s32 *)lbl_80330020;
+        global[7] = 0;
+        global[15] = 0;
+        global[23] = 0;
+        global[31] = 0;
+        global[39] = 0;
+        i = *(s32 *)(manager + 4);
+        while (i-- > 0) {
+            *(s32 *)(*(u32 *)manager + i * 0x18) = 0;
         }
-        ((s32 (*)(void *))fn_80128668)(manager);
+        *(s32 *)(manager + 4) = 0;
+        *(s32 *)(manager + 0x1D4D0) = 0;
+        *(u8 *)(manager + 0x1E158) = 0;
+        entry = (u8 *)lbl_80330020;
+        i = 0;
+        for (; i < 5; i++, entry += 0x20) {
+            if (*(s32 *)(entry + 0x10) != -1) {
+                fn_802C6CF8(*(s32 *)(entry + 0x10));
+                *(s32 *)(entry + 0x10) = -1;
+            }
+        }
+        if ((manager + 0x1D4CC) != 0 && (manager + 0x1D4CC) != 0) {
+            *(s32 *)(manager + 0x1D4CC) = 0;
+            *(s32 *)(manager + 0x1D4D0) = 0;
+            *(s32 *)(manager + 0x1D4D4) = 0;
+        }
+        if (manager != 0) {
+            fn_8002F634(manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
+            if (manager != 0) {
+                *(s32 *)(manager + 0) = 0;
+                *(s32 *)(manager + 4) = 0;
+                *(s32 *)(manager + 8) = 0;
+            }
+            ((s32 (*)(void *))fn_80128668)(manager);
+        }
     }
 }
 #pragma cplusplus reset
@@ -510,8 +509,6 @@ void fn_80168020(void) {
 first_body:
     {
         register u8 *object;
-        register f32 h;
-        register f32 z;
         register f32 y;
 
         record = (u8 *)(u32)*(u32 *)manager + offset;
@@ -520,9 +517,7 @@ first_body:
         i += 1;
         y = *(f32 *)(record + 8);
         offset += 0x18;
-        h = *(f32 *)(object + 0x18);
-        z = *(f32 *)(record + 0x10);
-        *(f32 *)(record + 8) = y + h + z;
+        *(f32 *)(record + 8) = *(f32 *)(record + 0x10) + (y + *(f32 *)(object + 0x18));
         *(u8 *)(record + 0x14) = zero;
     }
 first_check:
@@ -845,28 +840,210 @@ extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     class DummyCheck {
     public:
         virtual void v0();
-        virtual void v1();
         virtual s32 check(const char *name);
     };
-
+    register char *strBase = lbl_80330000;
+    DummyPatternTable pats;
+    DummyLaneTypes laneTypes;
+    DummyVec2 dir;
+    DummyVec2 normal;
+    DummyVec2 base;
+    DummyVec2 p;
+    DummyVec2 d0;
+    union { unsigned long long u; f32 f[2]; } center;
+    DummyVec2 d;
+    DummyVec2 d1;
+    DummyVec2 dc;
     s32 *values;
+    s32 isRoad;
+    s32 laneCount;
+    s32 laneId;
+    s32 type;
+    DummyPattern *pat;
+    DummyVec2 *pts;
+    f32 total;
+    s32 i;
+    s32 n;
+    s32 segCount;
+    f32 step;
+    s32 id;
+    DummyEntry *entry;
+    f32 zero;
+    f32 half;
+    f32 one;
+    f32 pos;
+    s32 seg;
+    s32 last;
+    f32 t;
+    f32 len;
+    s32 j;
+    s32 sel;
 
     if (((DummyCheck *)arg0)->check(arg1->getName()) == 0) {
-        fn_802E30C8(lbl_80330000 + 0x298, arg1->getName());
+        fn_802E30C8(strBase + 0x298, arg1->getName());
         return 0;
     }
-
     values = fn_801399FC(arg1);
     if (*values < 2) {
-        fn_802E30C8(lbl_80330000 + 0x2D0, arg1->getName());
+        fn_802E30C8(strBase + 0x2D0, arg1->getName());
         fn_80128658(values);
         return 0;
     }
+    isRoad = stricmp(arg1->getName(), strBase + 0x314) == 0;
+    laneCount = 1;
+    laneId = -1;
+    type = 6;
+    if (isRoad) {
+        laneCount = 5;
+    } else {
+        pats = lbl_802F94B8;
+        pat = pats.p;
+        while (pat->type != 6) {
+            const char *prefix = pat->prefix;
+            s32 plen = strlen(prefix);
+            if (fn_8002B1D8((s32)arg1->getName(), (s32 *)prefix, plen) == 0)
+                break;
+            pat++;
+        }
+        if (pat == 0) {
+            fn_802E30C8(strBase + 0x328, arg1->getName());
+            type = 1;
+        } else {
+            sscanf(arg1->getName(), pat->fmt, &laneCount, &laneId);
+            type = pat->type;
+        }
+    }
 
-    /* TODO: reconstruct full path/record generation from target asm */
-    (void)arg2;
-    (void)arg3;
-    (void)lbl_802F94B8;
+    total = lbl_80561924;
+    pts = (DummyVec2 *)(values + 2);
+    n = *values;
+    for (i = 1; i < n; i++) {
+        d0.y = pts[1].y - pts[0].y;
+        d0.x = pts[1].x - pts[0].x;
+        total += (f32)fn_8002F234(d0.x * d0.x + d0.y * d0.y);
+        pts++;
+    }
+    segCount = 1;
+    {
+        s32 tmp = (s32)(total / arg3[1]);
+        if (tmp > 1)
+            segCount = tmp;
+    }
+    id = laneId;
+    step = total / (f32)segCount;
+
+    entry = &arg2->entries[arg2->entryCount++];
+    if (values != 0) {
+        s32 k;
+        f32 *cur;
+        f32 z1;
+        entry->byte1C = 1;
+        center.u = fn_80139C5C(values);
+        z1 = lbl_80561924;
+        entry->f8 = center.f[0];
+        entry->fC = center.f[1];
+        entry->f10 = z1;
+        cur = (f32 *)values;
+        for (k = 0; k < *values; k++) {
+            f32 d2;
+            dc.y = entry->fC - cur[3];
+            dc.x = entry->f8 - cur[2];
+            d2 = dc.x * dc.x + dc.y * dc.y;
+            entry->f10 = entry->f10 > d2 ? entry->f10 : d2;
+            cur += 2;
+        }
+        entry->f10 = lbl_80561950 * (f32)fn_8002F234(entry->f10);
+    } else {
+        f32 z0;
+        entry->byte1C = 0;
+        z0 = lbl_80561924;
+        entry->f8 = z0;
+        entry->fC = z0;
+        entry->f10 = z0;
+    }
+    entry->recordStart = arg2->recordCount;
+    entry->recordCount = 0;
+    pos = lbl_80561924;
+    zero = pos;
+    half = lbl_80561938;
+    one = lbl_80561928;
+    entry->byte1D = 0;
+    entry->id = id;
+    entry->active = 1;
+    arg2->flag1E158 = 1;
+
+    laneTypes = lbl_802F9500;
+    seg = 1;
+    pts = (DummyVec2 *)(values + 2);
+    for (i = 0; i <= segCount; i++) {
+        last = *values - 1;
+        while (seg < last && (d.y = pts[1].y - pts[0].y, d.x = pts[1].x - pts[0].x,
+                              len = (f32)fn_8002F234(d.x * d.x + d.y * d.y), len < pos)) {
+            pos -= len;
+            pts++;
+            seg++;
+        }
+        d1.y = pts[1].y - pts[0].y;
+        d1.x = pts[1].x - pts[0].x;
+        t = pos / (f32)fn_8002F234(d1.x * d1.x + d1.y * d1.y);
+        if (one < t)
+            t = one;
+        dir.x = pts[1].x - pts[0].x;
+        dir.y = pts[1].y - pts[0].y;
+        *(f64 *)&normal = *(f64 *)&dir;
+        {
+            f64 tmp = normal.x;
+            f32 inv;
+            normal.x = normal.y;
+            normal.y = -tmp;
+            inv = one / (f32)fn_8002F234(normal.x * normal.x + normal.y * normal.y);
+            normal.x *= inv;
+            normal.y *= inv;
+        }
+        base.x = pts[0].x + dir.x * t;
+        base.y = pts[0].y + dir.y * t;
+        for (j = 0; j < laneCount; j++) {
+            DummyRecord *rec;
+            f32 off = arg3[2] * (half + ((f32)j - half * (f32)laneCount));
+            p.x = base.x + normal.x * off;
+            p.y = base.y + normal.y * off;
+            if (isRoad)
+                sel = laneTypes.t[j];
+            else
+                sel = type;
+            rec = &arg2->records[arg2->recordCount++];
+            rec->obj = 0;
+            rec->obj = (DummyRecordObj *)fn_80167874(sel);
+            rec->x = p.x;
+            rec->y = zero;
+            rec->z = p.y;
+            rec->hit = zero;
+            fn_801E9E30(0, &rec->x);
+            {
+                f32 tmp = rec->y + rec->obj->f18;
+                rec->y = tmp + rec->hit;
+            }
+            rec->flag = 0;
+            fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
+            (*(s32 *)((u8 *)fn_80167874(sel) + 0x1C))++;
+            if (arg2->flag1E158 != 0) {
+                entry = &arg2->entries[arg2->entryCount - 1];
+                entry->recordCount += 1;
+            } else {
+                if (arg2->entryCount == 0 || (entry = &arg2->entries[arg2->entryCount - 1], entry->byte1C != 0)) {
+                    entry = &arg2->entries[arg2->entryCount++];
+                    entry->byte1C = 0;
+                    entry->recordStart = arg2->recordCount - 1;
+                    entry->recordCount = 0;
+                    entry->byte1D = 0;
+                }
+                entry = &arg2->entries[arg2->entryCount - 1];
+                entry->recordCount += 1;
+            }
+        }
+        pos += step;
+    }
+    arg2->flag1E158 = 0;
     fn_80128658(values);
     return 1;
 }
@@ -1078,12 +1255,13 @@ s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 extern s32 lbl_8055A198;
 extern s32 lbl_8055A1A0;
-s32 fn_80169978(s32 arg0, s32 arg1) {
-    s32 r = 0;
-    if (fn_8002B1D8(arg1, &lbl_8055A198, 4) == 0 || fn_8002B1D8(arg1, &lbl_8055A1A0, 4) == 0) {
-        r = 1;
+/* Returns 1 if the given name matches "star" or "coin", 0 otherwise. */
+s32 fn_80169978(s32 unused, s32 name) {
+    s32 matches = 0;
+    if (fn_8002B1D8(name, &lbl_8055A198, 4) == 0 || fn_8002B1D8(name, &lbl_8055A1A0, 4) == 0) {
+        matches = 1;
     }
-    return r;
+    return matches;
 }
 
 #pragma push
