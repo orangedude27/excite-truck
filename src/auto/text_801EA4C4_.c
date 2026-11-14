@@ -257,21 +257,25 @@ void fn_801EA9DC(s32 arg0, void *arg1) {
     *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + (index << 2) + 0x5E8) = arg0;
 }
 #pragma scheduling on
-void fn_801EAA94(s32 arg0, s32 arg1) {
-    u8 flag;
-    s32 result;
-    u8 *entry;
-    flag = 1;
-    entry = (u8 *)lbl_8055EB78 + arg0 * 0xBC;
-    *(s32 *)(entry + 0x44) = arg1;
-    if (arg1 != 0x50) {
-        result = 0;
-        if (arg1 == 0x52 && ((s32 (*)(s32))fn_80265D7C)(arg0) != 0) result = 1;
-        if (result == 0) flag = 0;
+/* CarMgr::info: give record `index` the car type `carType` and say whether that
+   type puts the car in play at all.  A 'P' car is always in play; an 'R' car
+   only while fn_80265D7C agrees (it is a stub that always says no in this
+   build, and takes the record's index); any other type leaves the record
+   inactive.  fn_801EA59C does the same for a whole car definition. */
+void fn_801EAA94(s32 index, s32 carType) {
+    u8 active;
+    s32 allowed;
+    struct CarMgrEntry *entry;
+    active = 1;
+    entry = (struct CarMgrEntry *)(lbl_8055EB78 + index * sizeof(struct CarMgrEntry));
+    entry->carType = carType;
+    if (carType != CAR_TYPE_P) {
+        allowed = 0;
+        if (carType == CAR_TYPE_R && ((s32 (*)(s32))fn_80265D7C)(index) != 0) allowed = 1;
+        if (allowed == 0) active = 0;
     }
-    *entry = flag;
+    entry->active = active;
 }
-
 void fn_801EAB10(s32 arg0, s32 arg1) {
     *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78 + arg0 * 0xBC) + 8) = arg1;
 }
