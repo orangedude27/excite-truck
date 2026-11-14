@@ -17979,7 +17979,7 @@ extern "C" void *fn_800C6914(void *obj, void *owner) {
 
 extern "C" void *fn_800D0F1C(void *, s32);
 extern "C" s32 fn_800D67B8(s32, s32);
-extern "C" RET_800C6A1C fn_800C6A1C(void *arg0, s32 arg1) {
+extern "C" void *fn_800C6A1C(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     s32 i;
     u8 *q;
@@ -17990,7 +17990,7 @@ extern "C" RET_800C6A1C fn_800C6A1C(void *arg0, s32 arg1) {
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1E0));
         if (*(s32 *)((u8 *)*(void **)(self + 4) + 0x20) == 0) {
             q = self;
-            for (i = 0; i < 4; i++, q += 4) {
+            for (i = 0; i < 4; q += 4, i++) {
                 ((Freeable800C6A1C *)*(void **)(q + 0x1E4))->free(-1);
                 MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x1E4));
             }
@@ -18027,6 +18027,7 @@ extern "C" RET_800C6A1C fn_800C6A1C(void *arg0, s32 arg1) {
         if (arg1 > 0)
             ((void (*)(void *))fn_80128668)(arg0);
     }
+    return arg0;
 }
 
 extern "C" void* __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_, s32 flag) {
