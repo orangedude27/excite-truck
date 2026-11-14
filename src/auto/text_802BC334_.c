@@ -488,17 +488,20 @@ check:
     }
 }
 #pragma pop
-void fn_802BCFB0(int *arg0) {
-    int temp_r31;
-    temp_r31 = *arg0;
-    if (temp_r31 != 0) {
-        if (temp_r31 != 0) {
-            fn_802BD018((char *)temp_r31 + 8);
-            fn_802BD018((char *)temp_r31 + 4);
-            fn_802BD070((void *)temp_r31);
-            fn_80128668((void *)temp_r31);
+/* Release and clear the object pointer stored at *slot: if non-null, destroy
+ * the subobjects held at +8 and +4, run fn_802BD070 on the object, free it
+ * with fn_80128668, and set *slot to null. */
+void fn_802BCFB0(int *slot) {
+    int object;
+    object = *slot;
+    if (object != 0) {
+        if (object != 0) {
+            fn_802BD018((char *)object + 8);
+            fn_802BD018((char *)object + 4);
+            fn_802BD070((void *)object);
+            fn_80128668((void *)object);
         }
-        *arg0 = 0;
+        *slot = 0;
     }
 }
 
