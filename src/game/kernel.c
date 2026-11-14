@@ -138,20 +138,23 @@ unsigned int fn_802E1960(unsigned int arg0) {
 }
 
 #pragma use_lmw_stmw off
-int fn_802E1980(int image, void *texObj, void *outWidth, void *outHeight, unsigned int size) {
-    unsigned char buf[0x800];
+/* Builds a 4-row IA8 lookup texture (width rounded up to a power of two for size),
+   tiles and flushes its image data into imagePtr, initializes texObj, and returns
+   the 128-byte-aligned byte size. */
+int fn_802E1980(int imagePtr, void *texObj, void *outWidth, void *outHeight, unsigned int size) {
+    unsigned char linearBuf[0x800];
     int width;
-    int bytes;
+    int alignedBytes;
 
     width = fn_802E1960(size);
     *(int *)outWidth = width;
     *(int *)outHeight = 4;
-    bytes = fn_802E1954(width << 3);
-    fn_802E1780(buf, size, width);
-    fn_802E1804((void *)image, buf, width, 4, 2);
-    DCFlushRange((void *)image, bytes);
-    fn_802E18D4(width, 4, 3, 1, texObj, image);
-    return bytes;
+    alignedBytes = fn_802E1954(width << 3);
+    fn_802E1780(linearBuf, size, width);
+    fn_802E1804((void *)imagePtr, linearBuf, width, 4, 2);
+    DCFlushRange((void *)imagePtr, alignedBytes);
+    fn_802E18D4(width, 4, 3, 1, texObj, imagePtr);
+    return alignedBytes;
 }
 #pragma use_lmw_stmw reset
 void fn_802E1A38(void *arg0, int arg1) {
@@ -241,6 +244,16 @@ fail:
     fn_802E1728(arg0);
     return 0;
 }
+
+void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, float f1, float f2, float f3, float f4) {
+    (void)arg1; (void)arg2; (void)f0; (void)f1; (void)f2; (void)f3;
+    if (f4 == lbl_805650F0) {
+        *(int *)arg0 = 1;
+    } else {
+        *(int *)arg0 = 0;
+    }
+}
+
 #pragma pop
 
 void fn_802E27A0(void *arg0) {
@@ -265,13 +278,15 @@ void fn_802E27F0(void) {
     int size;
     register int count;
     register int i;
+    int n;
 
     lbl_804DB780[0] = 0x7400;
     heap[1] = local;
     size = lbl_804DB780[0];
     fn_802E30C8(lbl_8034CD00, size / 1024, local);
     count = lbl_804DB780[0] / 4;
-    for (i = 0; i < count; i++) {
+    n = count;
+    for (i = 0; i < n; i++) {
         (*(int **)((char *)lbl_804DB780 + 4))[-i] = 0x53FFEEDD;
     }
     *(int **)((char *)lbl_804DB780 + 8) =
@@ -483,16 +498,10 @@ extern unsigned long long __div2i(unsigned long long, unsigned long long);
 #pragma scheduling invalid_target
 unsigned long long fn_802E2C9C(void) {
     unsigned long long now = OSGetTime();
-    unsigned long long start;
-    start = (unsigned long long)(unsigned int)lbl_8055FEF8;
-    start <<= 32;
-    start |= lbl_8055FEFC;
-    {
-        unsigned long long elapsed = now - start;
-        unsigned int busClock = *(volatile unsigned int *)0x800000F8;
-        unsigned int scale = (busClock >> 2) / 125000;
-        return __div2i(elapsed << 3, scale);
-    }
+    unsigned long long elapsed = now - *(unsigned long long *)&lbl_8055FEF8;
+    unsigned int busClock = *(volatile unsigned int *)0x800000F8;
+    unsigned int scale = (busClock >> 2) / 125000;
+    return __div2i(elapsed << 3, scale);
 }
 #pragma scheduling on
 void fn_802E2CFC(void *arg0) {
