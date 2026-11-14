@@ -13,8 +13,12 @@ void PSMTXCopy(const Mtx, Mtx);
 void PSMTXConcat(const Mtx, const Mtx, Mtx);
 void PSMTXConcatArray(const Mtx, const Mtx, Mtx, u32);
 void PSMTXTranspose(const Mtx, Mtx);
-u32 PSMTXInverse(const Mtx, Mtx);
-u32 PSMTXInvXpose(Mtx, s32, f64, f64);
+/* This build's matrix library carries SDK names that sit on other routines: what is
+ * called PSMTXInverse here builds a rotation matrix about one coordinate axis, and
+ * PSMTXInvXpose fills one from a sine and cosine already computed (the SDK's
+ * PSMTXRotRad and PSMTXRotTrig, whose names this build uses for two other routines). */
+u32 PSMTXInverse(Mtx mtx, char axis, f32 rad);
+u32 PSMTXInvXpose(Mtx mtx, s32 axis, f64 sinA, f64 cosA);
 void PSMTXRotRad(Mtx, f32, f32, f32);
 void PSMTXRotTrig(Mtx, Mtx, f32, f32, f32);
 void PSMTXRotAxisRad(Mtx, const Vec*, f32);
