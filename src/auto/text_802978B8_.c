@@ -18,6 +18,23 @@ extern void fn_80297AFC(void);
 extern void fn_802C9CE0(void);
 extern void fn_802E30C8(void *, ...);
 
+#define gStaticShadowRecords lbl_8055F7A8 /* the "static shadows" heap block */
+#define gStaticShadowCount   lbl_8055F7AC /* entries in use, of the 0x80 allocated */
+#define Model_releaseInstance fn_802C6CF8 /* mrmodel: drop one model instance */
+#define Mem_freeArray        fn_80128670  /* free a block fn_8012850C allocated */
+
+/* One entry of the static-shadow list (fn_80297C3C appends, fn_80297AFC draws,
+ * fn_80297A84 releases): the mrmodel instance made from the caller's model, the
+ * group mask and 4x3 matrix (3x3 rotation, then the world position at +0x2C)
+ * it is drawn with, and the two floats of the per-frame cull. */
+typedef struct StaticShadow {
+    void *model;       /* +0x00 mrmodel instance; fn_802C6CF8 releases it */
+    int groupMask;     /* +0x04 which of the instance's groups to draw */
+    float matrix[12];  /* +0x08 rotation at +0x00, position at +0x2C */
+    float fade;        /* +0x38 value used when the camera is out of range */
+    float range;       /* +0x3C cull radius, stretched by the truck's speed */
+} StaticShadow;
+
 typedef struct Obj Obj;
 typedef void (*ObjMethod)(Obj *);
 typedef struct {
@@ -153,48 +170,49 @@ extern float lbl_80564588;
 extern char lbl_80558DC4[];
 #pragma paired_single off
 extern double __fabs(double);
+#pragma push
+#pragma processor 750
 void fn_80297AFC(void) {
     int cameraPosition[3];
     void *camera;
     int offset;
     int i;
     char *record;
-    float maximum;
-    float minimum;
-    float divisor;
     float speed;
-    float now;
-    float current;
+    float minimum;
+    float maximum;
+    float divisor;
     float value;
 
     camera = fn_802C86DC();
-    cameraPosition[0] = *(volatile int *)((char *)camera + 0x24);
+    cameraPosition[0] = *(int *)((char *)camera + 0x24);
     i = 0;
-    cameraPosition[1] = *(volatile int *)((char *)camera + 0x28);
+    cameraPosition[1] = *(int *)((char *)camera + 0x28);
     offset = 0;
     maximum = lbl_80564584;
     minimum = lbl_80564580;
     divisor = lbl_80564588;
-    cameraPosition[2] = *(volatile int *)((char *)camera + 0x2C);
+    cameraPosition[2] = *(int *)((char *)camera + 0x2C);
 
     for (; i < lbl_8055F7AC; offset += 0x40, i++) {
+        float cur;
+        float tmp;
         record = (char *)lbl_8055F7A8 + offset;
         speed = fn_801E88F0(-1);
         speed = speed * speed;
         if (PSVECSquareDistance(cameraPosition, record + 0x2C) * speed >
             *(float *)(record + 0x3C) * *(float *)(record + 0x3C)) {
-            now = (float)fn_8002F234();
-            current = *(float *)(record + 0x38);
-            value = now - *(float *)(record + 0x3C);
-            value = value - maximum;
-            value = value / divisor;
+            tmp = (float)fn_8002F234();
+            cur = *(float *)(record + 0x38);
+            value = tmp - *(float *)(record + 0x3C);
+            value = (value - maximum) / divisor;
             if (value < minimum) {
                 value = minimum;
             }
             if (value > maximum) {
                 value = maximum;
             }
-            value = current + value * (maximum - current);
+            value = cur + value * (maximum - cur);
         } else {
             value = *(float *)(record + 0x38);
         }
@@ -204,22 +222,20 @@ void fn_80297AFC(void) {
         }
     }
 }
+#pragma pop
 extern void *fn_802C6FC0(void *, int, int);
 void fn_80297C3C(void *unused, void *arg1, int arg2, float farg0, float farg1) {
     register int count;
     register unsigned int *record;
     register unsigned int *source;
-    register unsigned int temp_r3;
     register unsigned int temp_r0;
-
+    register unsigned int temp_r3;
     count = lbl_8055F7AC;
     if (count >= 0x80)
         return;
-
     record = (unsigned int *)lbl_8055F7A8 + count * 0x10;
     source = (unsigned int *)arg1;
-    temp_r3 = (unsigned int)fn_802C6FC0(unused, 0, 0);
-    record[0] = temp_r3;
+    record[0] = (unsigned int)fn_802C6FC0(unused, 0, 0);
     temp_r3 = source[0];
     record[1] = (unsigned int)arg2;
     temp_r0 = source[1];
@@ -243,10 +259,10 @@ void fn_80297C3C(void *unused, void *arg1, int arg2, float farg0, float farg1) {
     temp_r3 = source[10];
     record[11] = temp_r0;
     temp_r0 = source[11];
-    record[12] = temp_r3;
     record[13] = temp_r0;
+    record[12] = temp_r3;
     *(float *)&record[14] = farg0;
     *(float *)&record[15] = farg1;
-    lbl_8055F7AC++;
+    lbl_8055F7AC += 1;
 }
 
