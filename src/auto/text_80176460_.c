@@ -830,15 +830,23 @@ void fn_80176F24(void) {
     fn_80176EC0();
 }
 
+/* Fade-out done handler (armed by fn_80177048 / fn_80176FC4 as the fader's
+ * onDone): takes the pending PhysicsCommand over into the active slot and
+ * starts the physics tick it was waiting for (fn_80176EC0), tells the AX DSP
+ * the transition is through (fn_801769EC), and re-arms the fader to fade back
+ * in -- FADE_MODE_IN with the ramp restarted at 0, no done handler and nothing
+ * held at the end, its next step 50 ms / 3 frames out so the screen stays
+ * black for a moment.  fn_80176DE0 arms the same fade-in without applying a
+ * command first. */
 void fn_80176F28(void) {
     fn_80176EC0();
     fn_801769EC();
-    *(s32 *)(lbl_80430558 + 0xC) = 1;
-    *(s32 *)(lbl_80430558 + 0x10) = 0;
-    *(s32 *)(lbl_80430558 + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
-    *(s32 *)lbl_80430558 = lbl_8055E3C4 + 3;
-    *(s32 *)(lbl_80430558 + 8) = 0;
-    *(u8 *)(lbl_80430558 + 0x14) = 0;
+    *(s32 *)(sFadeState + 0xC) = FADE_MODE_IN;
+    *(s32 *)(sFadeState + 0x10) = 0;
+    *(s32 *)(sFadeState + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
+    *(s32 *)sFadeState = lbl_8055E3C4 + 3;
+    *(s32 *)(sFadeState + 8) = 0;
+    *(u8 *)(sFadeState + 0x14) = 0;
 }
 
 void fn_801775EC(void) {
