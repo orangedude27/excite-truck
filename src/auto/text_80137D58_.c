@@ -201,19 +201,22 @@ void fn_802E317C(char *, ...);
 #pragma dont_inline fn_80137FF0
 #pragma dont_inline fn_801380DC
 void fn_80138144(void *arg0) {
-    unsigned char a = *((unsigned char *)arg0);
-    unsigned char b = *((unsigned char *)arg0 + 1);
+    /* Byte-swap the 4-byte type field at the start of an "idealres" record,
+       then dispatch to the type-specific endian-fix routine; panic on an
+       unhandled ext type. */
+    unsigned char byte0 = *((unsigned char *)arg0);
+    unsigned char byte1 = *((unsigned char *)arg0 + 1);
     *((unsigned char *)arg0) = *((unsigned char *)arg0 + 3);
-    *((unsigned char *)arg0 + 3) = a;
+    *((unsigned char *)arg0 + 3) = byte0;
     *((unsigned char *)arg0 + 1) = *((unsigned char *)arg0 + 2);
-    *((unsigned char *)arg0 + 2) = b;
+    *((unsigned char *)arg0 + 2) = byte1;
     {
-        int mode = *(int *)arg0;
-        switch (mode) {
-        case 0: ((void (*)(void *, int))fn_80137F30)(arg0, mode); break;
-        case 1: ((void (*)(void *, int))fn_80137F74)((char *)arg0 + 8, mode); break;
-        case 2: ((void (*)(void *, int))fn_80137FF0)(arg0, mode); break;
-        case 3: ((void (*)(void *, int))fn_801380DC)(arg0, mode); break;
+        int type = *(int *)arg0;
+        switch (type) {
+        case 0: ((void (*)(void *, int))fn_80137F30)(arg0, type); break;
+        case 1: ((void (*)(void *, int))fn_80137F74)((char *)arg0 + 8, type); break;
+        case 2: ((void (*)(void *, int))fn_80137FF0)(arg0, type); break;
+        case 3: ((void (*)(void *, int))fn_801380DC)(arg0, type); break;
         default: fn_802E317C(lbl_8032BF00); break;
         }
     }
