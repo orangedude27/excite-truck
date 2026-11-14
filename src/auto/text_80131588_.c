@@ -569,7 +569,7 @@ extern "C" s32 fn_80132220(void **arg0) {
     };
     char *value = ((Dummy *)arg0)->v3();
     s32 result = 0;
-    if (stricmp(value, lbl_80559B10) != 0 && stricmp(value, lbl_80559B18) == 0)
+    if (0 != stricmp(value, lbl_80559B18) && 0 == stricmp(value, lbl_80559B10))
         result = 1;
     return result;
 }
@@ -588,7 +588,7 @@ s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
         index++;
     }
     fn_802E317C(lbl_8032B790, value, arg1,
-        ((char *(*)(void *))(*(void ***)((char *)*(void **)arg0 + 8)))(arg0));
+        ((char *(*)(void *))((void **)*(void **)arg0)[2])(arg0));
     return -1;
 }
 #pragma processor 750
@@ -839,43 +839,46 @@ extern "C" void fn_80132AE4(void *arg0, void *arg1, s32 arg2, void *arg3) {
     typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
     Value value;
     Value *source = (Value *)arg3;
-    if (((A *)arg1)->f1(arg2)) {
+    if (((A *)arg1)->f1(arg2) != 0) {
         ((void (**)(Value *, void *, s32))(*(void ***)arg1))[17](&value, arg1, arg2);
         source = &value;
     }
-    ((Value *)arg0)->matrix = source->matrix;
-    ((Value *)arg0)->vector = source->vector;
+    ((Value *)arg0)->matrix = (*source).matrix;
+    ((Value *)arg0)->vector = (*source).vector;
 }
 #pragma cplusplus off
 typedef float f32;
 typedef signed long s32;
 #pragma cplusplus on
-extern "C" f32 fn_80132BD0(void *arg0, s32 arg1, f32 farg0) {
-    class Dummy {
+/* ValueTable real32 accessor: returns the float value the table holds for `key`,
+ * or the caller's default when the table has no such entry.
+ * ValueTable's vtable is dispatched through here: hasEntry at +0x0C, getReal32 at +0x4C. */
+extern "C" f32 fn_80132BD0(void *table, s32 key, f32 defaultValue) {
+    class ValueTable {
     public:
-        virtual int v0();
-        virtual int v1();
-        virtual int v2();
-        virtual int v3();
-        virtual int v4();
-        virtual int v5();
-        virtual int v6();
-        virtual int v7();
-        virtual int v8();
-        virtual int v9();
-        virtual int v10();
-        virtual int v11();
-        virtual int v12();
-        virtual int v13();
-        virtual int v14();
-        virtual int v15();
-        virtual int v16();
-        virtual float v17(s32);
+        virtual void unknown0x08();
+        virtual s32 hasEntry(s32 key);
+        virtual void unknown0x10();
+        virtual void unknown0x14();
+        virtual void unknown0x18();
+        virtual void unknown0x1C();
+        virtual void unknown0x20();
+        virtual void unknown0x24();
+        virtual void unknown0x28();
+        virtual void unknown0x2C();
+        virtual void unknown0x30();
+        virtual void unknown0x34();
+        virtual void unknown0x38();
+        virtual void unknown0x3C();
+        virtual void unknown0x40();
+        virtual void unknown0x44();
+        virtual void unknown0x48();
+        virtual f32 getReal32(s32 key);
     };
-    if (((Dummy *)arg0)->v1() != 0) {
-        return ((Dummy *)arg0)->v17(arg1);
+    if (((ValueTable *)table)->hasEntry(key) != 0) {
+        return ((ValueTable *)table)->getReal32(key);
     }
-    return farg0;
+    return defaultValue;
 }
 #pragma cplusplus reset
 
@@ -890,13 +893,13 @@ s32 fn_80132C50(void* arg0, s32 arg1) {
 #pragma push
 #pragma scheduling invalid_target
 s32 fn_80132C74(void *arg0, s32 arg1) {
-    register s32 offset = 0;
-    register s32 i = 0;
-    while (i < *(s32 *)((u8 *)arg0 + 4)) {
-        register char *s;
-        s = *(char **)((u8 *)arg0 + 0xC) + offset;
-        if (stricmp(*(char **)(s + 4), (char *)arg1) == 0)
-            return (s32)(*(char **)((u8 *)arg0 + 0xC) + i * 0x1C);
+    Unk131588 *t = (Unk131588 *)arg0;
+    s32 offset = 0;
+    s32 i = 0;
+    while (i < t->count) {
+        Unk131588Elem *e = (Unk131588Elem *)((char *)t->elems + offset);
+        if (stricmp(e->name, (char *)arg1) == 0)
+            return (s32)((char *)t->elems + i * 0x1C);
         offset += 0x1C;
         i++;
     }
