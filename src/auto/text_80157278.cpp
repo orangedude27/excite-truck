@@ -4251,6 +4251,8 @@ extern "C" s32 fn_8015EAA4(void *container) {
 
 #pragma scheduling on
 extern "C" void fn_8015EB28(void *arg0) {
+    /* Calls dispatch() (vtable slot 4) on each entry in the container's
+     * array (entries at arg0+0x4, count at arg0+0x8). */
     struct Entry {
         virtual void v0();
         virtual void v1();
