@@ -1344,17 +1344,28 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 #pragma cplusplus off
-void fn_8014DB94(void *arg0) {
+/* Latches the active/replay flag, refreshes the sub-object at +0x6C from the owner's +0x68 state, then applies a clamped time offset to the object at +0x00. */
+void fn_8014DB94(void *owner) {
+#define ownerFlagsA0      0xA0
+#define ownerSubObject6C  0x6C
+#define ownerState68      0x68
+#define stateTime8D4      0x8D4
+#define stateTime8DC      0x8DC
     f32 f0;
     f32 f2;
-    void *obj;
-    *(u8 *)((u8 *)arg0 + 0xA0) = 1;
-    fn_80149CEC((u8 *)arg0 + 0x6C, arg0);
-    obj = *(void **)((u8 *)arg0 + 0x68);
+    void *state;
+    *(u8 *)((u8 *)owner + ownerFlagsA0) = 1;
+    fn_80149CEC((u8 *)owner + ownerSubObject6C, owner);
+    state = *(void **)((u8 *)owner + ownerState68);
     f2 = lbl_80561648;
-    f0 = *(f32 *)((u8 *)obj + 0x8DC) - *(f32 *)((u8 *)obj + 0x8D4);
+    f0 = *(f32 *)((u8 *)state + stateTime8DC) - *(f32 *)((u8 *)state + stateTime8D4);
     if (f2 > f0) f2 = f2; else f2 = f0;
-    fn_801CB648(*(void **)arg0, 0, *(f32 *)((u8 *)obj + 0x8DC) - f2);
+    fn_801CB648(*(void **)owner, 0, *(f32 *)((u8 *)state + stateTime8DC) - f2);
+#undef stateTime8DC
+#undef stateTime8D4
+#undef ownerState68
+#undef ownerSubObject6C
+#undef ownerFlagsA0
 }
 
 extern int fn_801CB648();
