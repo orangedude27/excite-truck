@@ -95,16 +95,18 @@ void *fn_802B51E4(int arg0, int arg1) {
     *(void **)(result + 8) = result + 0xC;
     return result;
 }
-void *fn_802B5240(void *arg0) {
-    int spC;
-    int sp8;
-    void *result = 0;
-    if (fn_802B4FD0(arg0, &spC, &sp8) != 0) {
-        result = fn_802B51E4(spC, sp8);
-        fn_802B50E8((int)arg0, *(int *)((char *)result + 8),
-                    *(int *)result * *(int *)((char *)result + 4));
+void *fn_802B5240(void *path) {
+    /* Open a 2D image (TGA-like) at path, allocate a width/height/pixels buffer,
+       read its pixel data into it, and return the buffer (or NULL on failure). */
+    int width;
+    int height;
+    void *image = 0;
+    if (fn_802B4FD0(path, &width, &height) != 0) {
+        image = fn_802B51E4(width, height);
+        fn_802B50E8((int)path, *(int *)((char *)image + 8),
+                    *(int *)image * *(int *)((char *)image + 4));
     }
-    return result;
+    return image;
 }
 #pragma scheduling on
 void fn_802B52B4(void *arg0) {
