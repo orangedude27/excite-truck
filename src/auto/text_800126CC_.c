@@ -452,18 +452,21 @@ copy_done:
 }
 
 #pragma cplusplus on
+/* Value lookup through a virtual interface (same shape as fn_80004FCC): when the
+   object's +0xC predicate passes, return what its +0x1C method gives for
+   `argument`; otherwise return the caller's `fallback`. */
 extern "C" int fn_800132E4(void *object, int argument, int fallback) {
-    struct Dummy {
-        virtual int f0();
-        virtual int f1();
-        virtual int f2();
-        virtual int f3();
-        virtual int f4();
-        virtual int f5(int);
+    struct VirtualObject {
+        virtual int _08();
+        virtual int isReady();
+        virtual int _10();
+        virtual int _14();
+        virtual int _18();
+        virtual int getValue(int index);
     };
     int result;
-    if (((Dummy *)object)->f1()) {
-        result = ((Dummy *)object)->f5(argument);
+    if (((VirtualObject *)object)->isReady()) {
+        result = ((VirtualObject *)object)->getValue(argument);
     } else {
         result = fallback;
     }
@@ -487,10 +490,10 @@ extern "C" void fn_8001335C(int a0, int arg1) {
         virtual char *get(char *);
         virtual void set(char *, int);
     };
+    char *base = lbl_802FC610;
     Dummy *arg0 = (Dummy *)a0;
     Dummy *obj;
     int i;
-    char *base = lbl_802FC610;
     if (arg0 != 0) {
         for (i = 0; (obj = (Dummy *)arg0->child(i)) != 0; i++) {
             if (stricmp(obj->name(), lbl_80558B68) == 0) {
@@ -578,6 +581,16 @@ int fn_800136FC(void *arg0, void *arg1) {
         return ((int *)arg0)[0x1B] - ((int *)arg1)[0x1B];
     }
     return a - b;
+}
+
+void fn_80013724(void) { // v9
+    if (lbl_80558AD8 == 0x133) {
+        qsort(lbl_80351828 + 0x98, (int)lbl_8055D504, 0x84, (void*)fn_80013680);
+        qsort(lbl_80351828 + 0x39B8, lbl_8055D518, 0x88, (void*)fn_80013680);
+    } else if (lbl_80558AD8 == 0x130) {
+        qsort(lbl_80351828 + 0x98, (int)lbl_8055D504, 0x84, (void*)fn_800136FC);
+        qsort(lbl_80351828 + 0x39B8, lbl_8055D518, 0x88, (void*)fn_800136FC);
+    }
 }
 
 extern int lbl_8055D518;
