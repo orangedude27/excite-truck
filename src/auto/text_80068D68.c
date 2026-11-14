@@ -14499,6 +14499,7 @@ typedef struct {
 } GapTraceStrings;
 extern void gap_connect_cfm(u32, s32), gap_config_ind(u16, void *), gap_config_cfm(u32, u16 *), gap_disconnect_ind(u16, BOOLEAN), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
 void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status);
+/* Registers GAP's L2CAP application callbacks in the GAP control block (lbl_803C3740). */
 void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
  *(void **)(lbl_803C3740+0x88)=gap_connect_cfm;
