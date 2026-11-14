@@ -167,6 +167,7 @@ extern f32 lbl_80563684;
 extern f32 lbl_80563688;
 extern f32 lbl_8056368C;
 extern const f64 lbl_80563698;
+typedef union { f64 value; u32 words[2]; } TextUnsignedConversion;
 extern f32 fn_8023400C(s32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 fn_802C8DBC(s32);
@@ -1608,15 +1609,19 @@ char_test:
 #pragma scheduling invalid_target
 void fn_8023423C(s32 arg0, s32 arg1) {
     register unsigned int offset = arg0 * 0x58;
-    u8 *base = (u8 *)lbl_8055F06C;
-    u8 *record = base + offset;
     u8 *font = (u8 *)lbl_8055F058;
     register u16 codepoint;
+    u8 *record;
     u8 first;
+    u8 *base = (u8 *)lbl_8055F06C;
     u8 *table;
     u8 *metrics;
-    f32 speed = *(f32 *)(record + 0x50);
-    register f32 scale = *(f32 *)(record + 0x54);
+    f32 speed;
+    f32 glyphRate;
+    register f32 scale;
+    record = base + offset;
+    speed = *(f32 *)(record + 0x50);
+    scale = *(f32 *)(record + 0x54);
 
     if (arg1 & 1) {
         first = record[0];
@@ -1630,13 +1635,15 @@ void fn_8023423C(s32 arg0, s32 arg1) {
         table = *(u8 **)(font + 0x10);
         metrics = table + codepoint * 0x1C;
         {
-            f32 glyphRate = *(volatile f32 *)metrics;
+            glyphRate = *(volatile f32 *)metrics;
             *(volatile f32 *)((s32)base + offset + 0x40) -= scale * glyphRate;
         }
     } else if (arg1 & 2) {
         *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= fn_8023400C(arg0);
     } else if (arg1 & 4) {
-        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= fn_8023400C(arg0) * lbl_80563688;
+        f32 advance = fn_8023400C(arg0);
+        advance *= lbl_80563688;
+        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= advance;
     }
 
     if (arg1 & 8) {
@@ -1645,8 +1652,9 @@ void fn_8023423C(s32 arg0, s32 arg1) {
         *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= (f32)font[6] * speed;
     } else if (arg1 & 0x10) {
         {
-            f32 delta = (f32)font[4] * speed;
-            *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= lbl_80563688 * delta;
+            u32 height = font[4];
+            f32 delta = (f32)height * speed;
+            *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= delta * lbl_80563688;
         }
     }
 }
