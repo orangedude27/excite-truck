@@ -68,7 +68,6 @@ extern f32 fn_80235F64(s32, s32);
 
 /* ---- gText: the 'GETX' font texture blocks and the cache they are held in ----
  * Readable aliases; the game's own symbols keep their placeholder names. */
-#define GTEX_DECLS_AT_TOP 1          /* this copy of the gText declarations is the live one */
 #define gTexBlockTable lbl_8055F068  /* the cache of loaded font blocks, see GTexCache below */
 #define gTexMessages lbl_80340440    /* gText's block of message strings */
 #define gTexFontNameTag lbl_80340440 /* its first string, "font name": tag the name copies are allocated under */
