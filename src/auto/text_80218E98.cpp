@@ -3029,16 +3029,22 @@ extern "C" s32 fn_8021D1F0(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void *fn_8021D300(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033EBA0;
-        fn_80128670(*(s32 *)((u8 *)arg0 + 0x2B8));
-        if (arg0 != 0)
-            fn_8021915C(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+/* Destructor of the option widget fn_8021D044 builds (its vtable lbl_8033EBA0):
+ * hand the object back its base-widget vtable, free the table of option strings
+ * it was given at +0x2B8, run the base Widget destructor and then free the
+ * object itself when shouldDelete > 0.  The derived-class part is already gone
+ * by here, which is why the base destructor is called with 0 and the freeing is
+ * done by hand. */
+extern "C" void *fn_8021D300(void *self, s32 shouldDelete) {
+    if (self != 0) {
+        *(void **)self = lbl_8033EBA0; /* back to the base widget's vtable */
+        fn_80128670(*(s32 *)((u8 *)self + 0x2B8)); /* the option strings */
+        if (self != 0)
+            Widget_dtor(self, 0);
+        if (shouldDelete > 0)
+            Mem_freeObject(self);
     }
-    return arg0;
+    return self;
 }
 
 /* The option widget built by fn_8021D044 (vtable lbl_8033EBA0): a base widget
