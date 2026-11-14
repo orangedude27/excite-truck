@@ -27,8 +27,9 @@ extern void fn_8012C4D8(void);
 
 extern s32 lbl_8055FC00; /* the canvas the gxCanvas* routines below draw on:
                           * {s8 format; u8 flags; void *pixels; s32 width, height,
-                          *  rowBytes; s32 minX, minY, maxX, maxY;} — format 3 is
-                          * 16-bit, 5 and 6 are 4-byte pixels (see fn_802C2CE8) */
+                           *  rowBytes; s32 minX, minY, maxX, maxY;} — format 5 keeps 4-byte pixels
+ *  (rowBytes = width * 4), every other format 2-byte ones; +0x14..+0x20 is
+ *  the clip rectangle fn_802C3130/fn_802C307C test against */
 extern void fn_802C3754(s32, s32, s32, s32, s32, s32, s32, s32);
 extern void fn_802DB2C8(void);
 extern void fn_802C3478(s32, s32, s32, s32, u32);
