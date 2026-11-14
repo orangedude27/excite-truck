@@ -454,97 +454,85 @@ void fn_801B92F0(void *arg0, int arg1) {
     *(float *)((unsigned char *)arg0 + 0x274c) = out1 + lbl_80562778;
 }
 #pragma scheduling on
-void fn_801B949C(void *arg0) {
-    short sp6c;
-    int sp68;
-    float sp64;
-    float sp60;
-    float sp5c;
-    unsigned int sp2c[9];
-    float sp8[3];
-    float sp50[3];
-    float sp14[3];
+#pragma cplusplus on
+extern "C" void fn_801B949C(void *arg0) {
+    struct Dummy {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18();
+        virtual void v19(unsigned int *, void *);
+    };
+    struct ObjectLayout {
+        char pad[0x2748];
+        Vec position;
+    };
+    void *obj = arg0;
+    struct Work {
+        Vec copy[3];
+        float output[3];
+        float fx, fy, fz;
+        int zero;
+        short h;
+    } w;
     float sp20[3];
+    float sp14[3];
+    float input[3];
+    float temp_f3;
     float dot;
-    float factorX;
-    float factorY;
-    float factorZ;
-    float *matrix;
-    float *dst;
-    float *src;
-    float x, y, z;
-    unsigned char flag;
-    *(unsigned char *)((char *)arg0 + 0x275c) = 0;
-    *(float *)((char *)arg0 + 0x2758) = lbl_80562750;
-    fn_8018381C(arg0);
-    sp8[0] = *(float *)((char *)arg0 + 0x2748) - *(float *)((char *)arg0 + 0x273c);
-    sp8[1] = *(float *)((char *)arg0 + 0x274c) - *(float *)((char *)arg0 + 0x2740);
-    sp8[2] = *(float *)((char *)arg0 + 0x2750) - *(float *)((char *)arg0 + 0x2744);
-    sp8[0] -= *(float *)((char *)arg0 + 0x30);
-    sp8[1] -= *(float *)((char *)arg0 + 0x34);
-    sp8[2] -= *(float *)((char *)arg0 + 0x38);
-    flag = *(unsigned char *)((char *)arg0 + 0x275d);
-    if (flag != 0) {
-        sp8[2] -= lbl_80562754;
+    *(unsigned char *)((char *)obj + 0x275c) = 0;
+    *(float *)((char *)obj + 0x2758) = 0.0f;
+    fn_8018381C(obj);
+    input[0] = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
+    input[1] = *(float *)((char *)obj + 0x274c) - *(float *)((char *)obj + 0x2740);
+    input[2] = *(float *)((char *)obj + 0x2750) - *(float *)((char *)obj + 0x2744);
+    input[0] -= *(float *)((char *)obj + 0x30);
+    input[1] -= *(float *)((char *)obj + 0x34);
+    input[2] -= *(float *)((char *)obj + 0x38);
+    if (*(unsigned char *)((char *)obj + 0x275d) != 0) {
+        input[2] -= lbl_80562754;
     }
-    sp6c = -1;
-    matrix = *(float **)((char *)arg0 + 0x2754);
-    dst = sp50;
-    src = sp8;
-    if (dst == src) {
-        x = sp8[0] * matrix[0x70 / 4] + sp8[1] * matrix[0x7c / 4];
-        y = sp8[0] * matrix[0x74 / 4] + sp8[1] * matrix[0x80 / 4];
-        z = sp8[0] * matrix[0x78 / 4] + sp8[1] * matrix[0x84 / 4];
-        x += sp8[2] * matrix[0x88 / 4];
-        y += sp8[2] * matrix[0x8c / 4];
-        z += sp8[2] * matrix[0x90 / 4];
-        dst[0] = x; dst[1] = y; dst[2] = z;
-    } else {
-        dst[0] = sp8[0] * matrix[0x70 / 4] + sp8[1] * matrix[0x7c / 4] + sp8[2] * matrix[0x88 / 4];
-        dst[1] = sp8[0] * matrix[0x74 / 4] + sp8[1] * matrix[0x80 / 4] + sp8[2] * matrix[0x8c / 4];
-        dst[2] = sp8[0] * matrix[0x78 / 4] + sp8[1] * matrix[0x84 / 4] + sp8[2] * matrix[0x90 / 4];
-    }
-    sp50[0] += matrix[0x94 / 4];
-    sp50[1] += matrix[0x98 / 4];
-    sp50[2] += matrix[0x9c / 4];
-    sp2c[0] = ((unsigned int *)matrix)[0x70 / 4];
-    sp2c[1] = ((unsigned int *)matrix)[0x74 / 4];
-    sp2c[2] = ((unsigned int *)matrix)[0x78 / 4];
-    sp2c[3] = ((unsigned int *)matrix)[0x7c / 4];
-    sp2c[4] = ((unsigned int *)matrix)[0x80 / 4];
-    sp2c[5] = ((unsigned int *)matrix)[0x84 / 4];
-    sp2c[6] = ((unsigned int *)matrix)[0x88 / 4];
-    sp2c[7] = ((unsigned int *)matrix)[0x8c / 4];
-    sp2c[8] = ((unsigned int *)matrix)[0x90 / 4];
-    dot = PSVECDotProduct((float *)((char *)matrix + 0x118), (float *)((char *)arg0 + 0x54));
-    factorX = ((float *)((char *)matrix + 0x88))[0] * dot;
-    sp68 = 0;
-    factorY = ((float *)((char *)matrix + 0x8c))[0] * dot;
-    sp5c = factorX;
-    sp60 = factorY;
-    factorZ = ((float *)((char *)matrix + 0x90))[0] * dot;
-    sp64 = factorZ;
-    sp6c = *(short *)((char *)matrix + 0x6c);
+    w.h = -1;
     {
-        typedef void (*VFunc)(void *, float *, void *, float, float);
-        void **vtable = *(void ***)arg0;
-        VFunc method = (VFunc)*(void **)((char *)vtable + 0x54);
-        method(arg0, (float *)sp2c, matrix, factorY, factorX);
+        char *matrix = *(char **)((char *)obj + 0x2754);
+        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), input);
+        w.output[0] += *(float *)(matrix + 0x94);
+        w.output[1] += *(float *)(matrix + 0x98);
+        w.output[2] += *(float *)(matrix + 0x9c);
     }
-    *(void **)((char *)arg0 + 0x2738) = arg0;
-    if (*(unsigned char *)((char *)arg0 + 0x275d) == 0) {
-        sp14[0] = *(float *)((char *)arg0 + 0x273c) + *(float *)((char *)arg0 + 0x30);
-        sp14[1] = *(float *)((char *)arg0 + 0x2740) + *(float *)((char *)arg0 + 0x34);
-        sp14[2] = *(float *)((char *)arg0 + 0x2744) + *(float *)((char *)arg0 + 0x38);
-        fn_801AD148((char *)arg0 + 0x2704, sp14, matrix, lbl_80562758, lbl_8056275C, *(float *)((char *)arg0 + 0x2744));
+    {
+        Vec *matrix = (Vec *)((char *)*(void **)((char *)obj + 0x2754) + 0x70);
+        w.copy[0] = matrix[0];
+        w.copy[1] = matrix[1];
+        w.copy[2] = matrix[2];
+    }
+    dot = PSVECDotProduct((float *)((char *)*(void **)((char *)obj + 0x2754) + 0x118), (float *)((char *)obj + 0x54));
+    w.zero = 0;
+    w.fx = w.copy[2].x * dot;
+    w.fy = w.copy[2].y * dot;
+    w.fz = w.copy[2].z * dot;
+    {
+        void *matrix = *(void **)((char *)obj + 0x2754);
+        w.h = *(short *)((char *)matrix + 0x6c);
+        ((struct Dummy *)obj)->v19((unsigned int *)w.copy, matrix);
+    }
+    *(void **)((char *)obj + 0x2738) = obj;
+    if (*(unsigned char *)((char *)obj + 0x275d) == 0) {
+        sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
+        sp14[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
+        temp_f3 = *(float *)((char *)obj + 0x2744);
+        sp14[2] = temp_f3 + *(float *)((char *)obj + 0x38);
+        fn_801AD148((char *)obj + 0x2704, sp14, *(void **)((char *)obj + 0x2754), lbl_80562758, lbl_8056275C, temp_f3);
     } else {
-        sp20[0] = *(float *)((char *)arg0 + 0x273c) + *(float *)((char *)arg0 + 0x30);
-        sp20[1] = *(float *)((char *)arg0 + 0x2740) + *(float *)((char *)arg0 + 0x34);
-        sp20[2] = *(float *)((char *)arg0 + 0x2744) + *(float *)((char *)arg0 + 0x38);
-        fn_801AD28C((char *)arg0 + 0x2704, sp20, matrix, (char *)arg0 + 0x2748, lbl_80562758, lbl_80562760, *(float *)((char *)arg0 + 0x2744));
+        sp20[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
+        sp20[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
+        temp_f3 = *(float *)((char *)obj + 0x2744);
+        sp20[2] = temp_f3 + *(float *)((char *)obj + 0x38);
+        fn_801AD28C((char *)obj + 0x2704, sp20, *(void **)((char *)obj + 0x2754), &((struct ObjectLayout *)obj)->position, lbl_80562758, lbl_80562760, temp_f3);
     }
 }
-
+#pragma cplusplus reset
 #pragma cplusplus on
 extern "C" void fn_801B97D8(void *arg0) {
     struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(unsigned int *, void *); };
