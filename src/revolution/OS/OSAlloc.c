@@ -175,6 +175,7 @@ void* OSInitAlloc(void* start, void* end, s32 numHeaps) {
     return ArenaStart;
 }
 
+/* Creates a heap over [start, end) and returns its handle, or -1 if none is free. */
 s32 OSCreateHeap(void* start, void* end) {
     s32 handle;
 
