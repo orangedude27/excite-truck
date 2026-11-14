@@ -7236,10 +7236,10 @@ extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2) {
     if (result != 0)
         return result;
     saved = 0;
-    sp8 = (sp8 << 24) | ((sp8 >> 8) & 0x0000FF00) | ((sp8 << 8) & 0x00FF0000) | (sp8 >> 24);
+    sp8 = (sp8 >> 24) | ((sp8 >> 8) & 0x0000FF00) | ((sp8 << 8) & 0x00FF0000) | (sp8 << 24);
     sp8 &= 0xF0000000;
     sp8 |= (u32)(arg2 & 0x0FFFFFFF);
-    sp8 = (sp8 << 24) | ((sp8 >> 8) & 0x0000FF00) | ((sp8 << 8) & 0x00FF0000) | (sp8 >> 24);
+    sp8 = (sp8 >> 24) | ((sp8 >> 8) & 0x0000FF00) | ((sp8 << 8) & 0x00FF0000) | (sp8 << 24);
     for (i = 0; i < obj[0x22]; i++) {
         result = fn_800B5618(arg0, &sp8, block, index, 4);
         if (result != 0 && saved == 0)
