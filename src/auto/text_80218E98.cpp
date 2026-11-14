@@ -5958,20 +5958,32 @@ next:
     return (void *)obj;
 }
 
-extern "C" void *fn_80223208(void *arg0, unsigned int arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033E4DC;
-        fn_802328D4(*(void **)((u8 *)arg0 + 0x3FC));
-        *(s32 *)((u8 *)arg0 + 0x3FC) = 0;
-        fn_8021915C(arg0, 0);
-        if ((s32)arg1 > 0) {
-            fn_80128668(arg0);
+/* Deleting destructor of the gText text widget built by fn_802230A4: releases
+ * the "uifnt.gtx" font block the widget holds at +0x3FC, runs the widget base
+ * destructor and frees the object when called through delete. */
+extern "C" void *fn_80223208(void *self, unsigned int deletingFlag) {
+    #define TextWidgetVTable lbl_8033E4DC /* this widget's vtable */
+    #define ReleaseFontBlock fn_802328D4  /* gText: drop a loaded font block */
+    #define WidgetBaseDtor fn_8021915C    /* the widget base class destructor */
+    #define HeapFree fn_80128668          /* operator delete */
+    if (self != 0) {
+        *(void **)self = TextWidgetVTable;
+        ReleaseFontBlock(*(void **)((u8 *)self + 0x3FC)); // the loaded font block
+        *(s32 *)((u8 *)self + 0x3FC) = 0;
+        WidgetBaseDtor(self, 0);
+        if ((s32)deletingFlag > 0) {
+            HeapFree(self);
         }
     }
-    return arg0;
+    #undef TextWidgetVTable
+    #undef ReleaseFontBlock
+    #undef WidgetBaseDtor
+    #undef HeapFree
+    return self;
 }
-
 #pragma pop
+#pragma push
+#pragma processor 750
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 
 extern "C" s32 fn_802236C8(void *, s32);
