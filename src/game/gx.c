@@ -1011,15 +1011,16 @@ extern unsigned long lbl_8055FD44;
 extern unsigned long lbl_8055FDAC;
 extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
+#pragma scheduling off
 void fn_802CFF10(void) {
-    int zero = 0;
-    lbl_8055FD44 = zero;
+    lbl_8055FD44 = 0;
     fn_802CF5D0();
     fn_802D0C98();
     fn_802D0BD8();
-    lbl_8055FDAC = zero;
-    lbl_8055FE39 = zero;
+    lbl_8055FDAC = 0;
+    lbl_8055FE39 = 0;
 }
+#pragma scheduling on
 extern void *lbl_8055FD20;
 #pragma push
 #pragma dont_inline on
@@ -2363,6 +2364,105 @@ void fn_802D2AC4(void) {
     fn_802DFAF4();
 }
 
+void fn_802D2B0C(void) {
+    extern unsigned char lbl_804C9930[];
+    extern unsigned short lbl_8055FD0C;
+    extern int memcmp(const void *, const void *, unsigned long);
+    extern void fn_802DF21C(void);
+    extern void fn_802DF2F0(void);
+    extern void fn_802E09EC(void);
+    extern void fn_802E0B68(void);
+    extern void fn_802DF300(void);
+    extern void fn_802DF46C(void);
+    extern void fn_802DEFA0(void);
+    extern void fn_802DF1B4(void);
+    extern void fn_802D18E8(void);
+    extern void fn_802DF994(void);
+    extern void fn_802D2AC4(void);
+    extern void fn_802DF6D0(void);
+    extern void fn_802DF938(void);
+    extern void fn_802DF4A8(void);
+    extern void fn_802DF684(void);
+    extern void fn_802D1C04(void);
+    int diff;
+    register int zero = 0;
+    int t4;
+    unsigned char t8, t9, tA, tB, tC, tD;
+    if (*(unsigned char *)&lbl_8055FDB4 == 0) {
+        diff = memcmp(lbl_804C9930, lbl_804C5700, 0x10);
+        if (((unsigned int)(unsigned int)(0 - diff | diff) >> 31) != 0) {
+            if (lbl_8055FD80 != 0) {
+                lbl_8055FD80();
+                lbl_8055FD80 = 0;
+            }
+            switch (*(int *)(lbl_804C5700 + 4)) {
+            case 1:
+                lbl_8055FD70 = 1;
+                fn_802DF21C();
+                lbl_8055FD80 = fn_802DF2F0;
+                break;
+            case 5:
+                lbl_8055FD70 = 1;
+                fn_802E09EC();
+                lbl_8055FD80 = fn_802E0B68;
+                break;
+            case 2:
+                lbl_8055FD70 = 1;
+                if (lbl_804C5700[0xA] != 0) {
+                    fn_802DF300();
+                    lbl_8055FD80 = fn_802DF46C;
+                } else {
+                    fn_802DEFA0();
+                    lbl_8055FD80 = fn_802DF1B4;
+                }
+                break;
+            case 4:
+                fn_802D18E8();
+                fn_802DF994();
+                lbl_8055FD80 = fn_802D2AC4;
+                lbl_8055FD70 = 1;
+                break;
+            case 3:
+                if (lbl_8055FD86 == lbl_8055FD0C) {
+                    fn_802D2684();
+                } else {
+                    if (lbl_804C5700[8] != 0) {
+                        fn_802DF6D0();
+                        lbl_8055FD80 = fn_802DF938;
+                    } else {
+                        fn_802DF4A8();
+                        lbl_8055FD80 = fn_802DF684;
+                    }
+                    lbl_8055FD70 = 1;
+                }
+                break;
+            case 0:
+                fn_802D2684();
+                break;
+            default:
+                break;
+            }
+            t4 = *(int *)(lbl_804C5700 + 4);
+            t8 = lbl_804C5700[8];
+            t9 = lbl_804C5700[9];
+            tA = lbl_804C5700[0xA];
+            tB = lbl_804C5700[0xB];
+            tC = lbl_804C5700[0xC];
+            tD = lbl_804C5700[0xD];
+            lbl_804C5700[0] = (unsigned char)zero;
+            lbl_804C9930[0] = (unsigned char)zero;
+            *(int *)(lbl_804C9930 + 4) = t4;
+            lbl_804C9930[8] = t8;
+            lbl_804C9930[9] = t9;
+            lbl_804C9930[0xA] = tA;
+            lbl_804C9930[0xB] = tB;
+            lbl_804C9930[0xC] = tC;
+            lbl_804C9930[0xD] = tD;
+        }
+    }
+    fn_802D1C04();
+}
+
 #pragma small_data off
 extern char lbl_804C97D0;
 #pragma small_data off
@@ -2435,15 +2535,25 @@ int fn_802D2F78(int *arg0, int *arg1) {
     return data[1];
 }
 
+/* Show the frame the game just drew into the EFB copy buffer: mark the buffer
+ * free again, push it out of the cache, hand it to the video interface and
+ * wait one retrace for it to appear.  Pairs with fn_802D2F78, which hands out
+ * that buffer (and sets the in-use flag this clears) so the on-screen message
+ * box can be drawn straight into it.
+ *
+ * The block GX_XFB_BLOCK (lbl_804C9760) holds:
+ *   [0] base of the allocated buffer   [3] height in rows
+ *   [1] buffer drawn into and shown    [4] bytes per pixel (2)
+ *   [2] width in pixels                [0x14] in-use flag, as a byte */
 void fn_802D2FD8(void) {
-    ((unsigned char *)lbl_804C9760)[0x14] = 0;
-    DCFlushRange((void *)lbl_804C9760[1],
-        (unsigned long)(lbl_804C9760[4] * (lbl_804C9760[2] * lbl_804C9760[3])));
-    VISetNextFrameBuffer((void *)lbl_804C9760[1]);
+    ((unsigned char *)GX_XFB_BLOCK)[0x14] = 0;
+    DCFlushRange((void *)GX_XFB_BLOCK[1],
+        (unsigned long)(GX_XFB_BLOCK[4] * (GX_XFB_BLOCK[2] * GX_XFB_BLOCK[3])));
+    VISetNextFrameBuffer((void *)GX_XFB_BLOCK[1]);
     VIFlush();
     VIWaitForRetrace();
     VISetBlack(0);
-    lbl_804C9760[1] = lbl_804C9760[0];
+    GX_XFB_BLOCK[1] = GX_XFB_BLOCK[0];
 }
 
 void fn_802D3050(int arg0) {
