@@ -4492,14 +4492,15 @@ extern "C" void *fn_8021FF34(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 far
     return arg0;
 }
 extern "C" u8 lbl_8033E7F4[];
-extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_8022003C(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = lbl_8033E7F4;
-        fn_802C519C(*(void**)((u8*)arg0 + 0x254));
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destroys a Game::MemoryCard::Resource instance and optionally frees its storage. */
+extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_8022003C(void* self, s32 shouldDelete) {
+    if (self != 0) {
+        *(void**)self = lbl_8033E7F4;
+        fn_802C519C(*(void**)((u8*)self + 0x254));
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" s32 fn_80211660(s32);
