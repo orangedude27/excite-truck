@@ -102,14 +102,13 @@ void fn_801D32DC(void) {
 int fn_801D36E8(void);
 void fn_801D3FA4();
 #pragma use_lmw_stmw off
-int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-    int result;
+int fn_801D32E0(int configName, int typeId, int position, int orientation, int spawnParams, int initData) {
+    int object;
 
-    result = fn_801D36E8();
-    fn_801D3FA4(result, arg0, arg1, arg2, arg3, arg4, arg5);
-    return result;
+    object = fn_801D36E8();
+    fn_801D3FA4(object, configName, typeId, position, orientation, spawnParams, initData);
+    return object;
 }
-
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801D334C(void *arg0, void *arg1) {
