@@ -760,57 +760,6 @@ void fn_8023243C(void) {
     *(s32 *)(lbl_80497F14 + 4) = 0;
 }
 
-#ifndef GTEX_DECLS_AT_TOP /* the live copy is at the top of the file */
-/* Readable aliases; the game's own symbols keep their placeholder names. */
-#define gTexBlockTable lbl_8055F068 /* the cache of loaded font blocks, see GTexCache below */
-#define gTexMessages lbl_80340440   /* gText's block of message strings */
-#define gTexExtension lbl_8055B9D4  /* ".tex" */
-#define GETX_FOURCC 0x47544558      /* 'GETX': the fourcc of a font texture block */
-
-/* Messages inside the string block at lbl_80340440. */
-enum {
-    GTEX_MSG_BAD_VERSION = 0xE4,    /* gText: Font "%s" has bad version %d */
-    GTEX_MSG_NULL_FONT = 0x108,     /* gText: Null font %s! */
-    GTEX_MSG_NO_BLOCK = 0x144,      /* gText: Failed to extract texture with font- returning NULL font. */
-    GTEX_MSG_NAME_TOO_LONG = 0x15C, /* gText: Texture name %s is longer than %d, it's %d */
-    GTEX_MSG_NO_RESOURCE = 0x190    /* the texture could not be registered */
-};
-
-/* Its own symbol inside that string block. */
-#define gTexMsgFontGone lbl_803404FC /* gText: font %s gone but not forgotten */
-
-/* A loaded 'GETX' font block, as handed back by the archive manager.
- * records and texture are stored in the file as offsets from the block and are
- * turned into pointers the first time the block is loaded (see swap below). */
-typedef struct GTexBlock {
-    /* 0x00 */ s32 resourceIndex;          /* texture index in the gTex resource table */
-    /* 0x04 */ s32 unk04;
-    /* 0x08 */ struct GTexBlock *outline;  /* the "_ol_<name>" variant, 0 when there is none */
-    /* 0x0C */ u16 recordCount;            /* 0x1C-byte records at records[] */
-    /* 0x0E */ u16 unk0E;
-    /* 0x10 */ s32 records;
-    /* 0x14 */ s32 unk14;
-    /* 0x18 */ s32 texture;                /* the pixels registered as the resource */
-} GTexBlock;
-
-/* One slot of the font block cache: the loaded block, the name it is filed
- * under (a 0x40-byte copy of the file name) and how many hold it -
- * fn_8023158C adds to the count and fn_802315FC takes back, releasing the
- * block once the count is gone. */
-typedef struct GTexCacheEntry {
-    /* 0x00 */ GTexBlock *block;
-    /* 0x04 */ char *name;
-    /* 0x08 */ s32 useCount;
-} GTexCacheEntry;
-
-/* The cache is one 0x16C-byte allocation (fn_802321D8): its slots, then the
- * number of them in use where the next slot would start. */
-#define GTEX_CACHE_MAX 30
-typedef struct GTexCache {
-    /* 0x000 */ GTexCacheEntry entries[GTEX_CACHE_MAX];
-    /* 0x168 */ s32 count;
-} GTexCache;
-#endif
 
 extern char lbl_803404FC[];
 extern void fn_802CB228(s32 resourceIndex);
