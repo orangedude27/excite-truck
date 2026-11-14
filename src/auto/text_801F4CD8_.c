@@ -623,8 +623,8 @@ void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
     float var_f1, var_f1_2, var_f1_3, var_f1_4;
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
-    float var_f29, var_f28, var_f27, var_f26, temp_f0_5, var_f1_5;
     int temp_r0, temp_r0_2, temp_r0_3, temp_r0_4;
+    float var_f29, var_f28, var_f27, var_f26, temp_f0_5, var_f1_5;
     int var_r0, var_r0_2, var_r0_3, var_r0_4, var_r3, var_r3_2, var_r3_3, var_r3_4;
     var_f31 = PSQUATMultiply((void *)(arg1 + 0x30), (void *)(arg1 + 0x48));
     temp_f1 = PSQUATMultiply((void *)arg1, (void *)(arg1 + 0x18));
@@ -636,30 +636,30 @@ void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         *(int *)((char *)arg0 + 0x2C) = 2;
         *(int *)((char *)arg0 + 0x30) = 2;
     } else if (!(arg4 & 1)) {
-        var_r3 = 2;
+        register var_r3 = 2;
         temp_r0 = (int)(var_f31 * *(float *)(arg1 + 0x60));
-        if (temp_r0 > 2) var_r3 = temp_r0;
+        if (2 < temp_r0) var_r3 = temp_r0;
         var_r0 = 8;
-        if (var_r3 < 8) var_r0 = var_r3;
+        if (8 > var_r3) var_r0 = var_r3;
         var_r3_2 = 2;
         temp_r0_2 = (int)(var_f30 * *(float *)(arg1 + 0x64));
-        if (temp_r0_2 > 2) var_r3_2 = temp_r0_2;
         var_r0_2 = 4;
-        if (var_r3_2 < 4) var_r0_2 = var_r3_2;
+        if (temp_r0_2 > 2) var_r3_2 = temp_r0_2;
         *(int *)((char *)arg0 + 0x2C) = var_r0;
+        if (var_r3_2 < 4) var_r0_2 = var_r3_2;
         *(int *)((char *)arg0 + 0x30) = var_r0_2;
     } else {
         var_r3_3 = 2;
         temp_r0_3 = (int)(lbl_80562FD0 * (var_f31 * *(float *)(arg1 + 0x60)));
         if (temp_r0_3 > 2) var_r3_3 = temp_r0_3;
         var_r0_3 = 8;
-        if (var_r3_3 < 8) var_r0_3 = var_r3_3;
+        if (8 > var_r3_3) var_r0_3 = var_r3_3;
         var_r3_4 = 2;
         temp_r0_4 = (int)(lbl_80562FD0 * (var_f30 * *(float *)(arg1 + 0x64)));
-        if (temp_r0_4 > 2) var_r3_4 = temp_r0_4;
+        if (2 < temp_r0_4) var_r3_4 = temp_r0_4;
         var_r0_4 = 4;
-        if (var_r3_4 < 4) var_r0_4 = var_r3_4;
         *(int *)((char *)arg0 + 0x2C) = var_r0_3;
+        if (var_r3_4 < 4) var_r0_4 = var_r3_4;
         *(int *)((char *)arg0 + 0x30) = var_r0_4;
     }
     temp_f0 = *(float *)(arg1 + 0x58); var_f1 = *(float *)(arg1 + 0x40);
@@ -995,7 +995,6 @@ void fn_801F6A98(void *arg0, int arg1) {
     int enabled;
     void *entry;
     int i;
-
     enabled = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
     entry = arg0;
     i = 0;
@@ -1005,19 +1004,18 @@ loop:
         float c, b, a;
         scale = *(float *)((char *)entry + 0x40);
         offset = *(float *)((char *)entry + 0x3C);
-        fn_801E8C84(&sp[0]);
+        fn_801E8C84(sp);
         a = sp[0] * scale;
         b = sp[1] * scale;
         c = sp[2] * scale;
         sp[3] = a;
         sp[4] = b - offset;
         sp[5] = c;
-        fn_801F63F0(entry, &sp[3], *(float *)((char *)entry + 0x44));
+        fn_801F63F0(entry, sp + 3, *(float *)((char *)entry + 0x44));
     }
     fn_801F65D0(entry);
     fn_801F6728(entry);
-    *(unsigned char *)((char *)entry + 0x38) =
-        fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
+    *(unsigned char *)((char *)entry + 0x38) = fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
     entry = (char *)entry + 0x48;
     i++;
 check:
@@ -1108,14 +1106,14 @@ void *fn_801F6D60(void *object, int shouldFree) {
 void fn_801F6DF0(void *arg0, int arg1) {
     extern float lbl_80558DC4;
     float sp[96];
-    int enabled8;
+    int enabled4;
     void *entry;
     int i;
-    enabled8 = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
+    enabled4 = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
     entry = arg0;
     for (i = 0; i < *(int *)((char *)arg0 + 0x2A0); entry = (char *)entry + 0x54, i++) {
-        if (enabled8) {
-            fn_801F6778(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), *(float *)((char *)entry + 0x3C), *(float *)((char *)entry + 0x40));
+        if (enabled4 != 0) {
+            ((void (*)(float *, int, float *, float, float))fn_801F6778)(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), *(float *)((char *)entry + 0x3C), *(float *)((char *)entry + 0x40));
             fn_801F64E4(entry, &sp[0], *(float *)((char *)entry + 0x44));
         }
         fn_801F65D0(entry);
@@ -1305,17 +1303,20 @@ extern void fn_801F6DF0();
 void fn_801F73F0(void) { fn_801F6DF0(lbl_8055EC14); }
 
 #pragma dont_inline on
-void fn_801F6EC0(void *arg0) {
-    void *p;
-    void *q;
+/* Draws every entry of a list of 0x54-byte grid meshes (count at +0x2A0)
+ * whose visibility flag at +0x38 is set, with fn_801F6880. The two cursors
+ * walk the same entries; the original kept them apart. */
+void fn_801F6EC0(void *list) {
+    void *flagCursor;
+    void *entry;
     int i;
     i = 0;
-    p = arg0;
-    q = arg0;
-    while (i < *(int *)((char *)arg0 + 0x2A0)) {
-        if (*(unsigned char *)((char *)p + 0x38) != 0) fn_801F6880(q);
-        p = (char *)p + 0x54;
-        q = (char *)q + 0x54;
+    flagCursor = list;
+    entry = list;
+    while (i < *(int *)((char *)list + 0x2A0)) {
+        if (*(unsigned char *)((char *)flagCursor + 0x38) != 0) fn_801F6880(entry);
+        flagCursor = (char *)flagCursor + 0x54;
+        entry = (char *)entry + 0x54;
         i++;
     }
 }
