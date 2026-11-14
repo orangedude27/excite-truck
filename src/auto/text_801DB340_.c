@@ -299,6 +299,7 @@ int fn_801DC258(float *out_height, int *out_type, void *unused, float *out_norma
 #pragma pop
 
 #pragma use_lmw_stmw off
+#pragma opt_unroll_loops off
 void fn_801DC32C(void *base) {
     unsigned char *arg0 = base;
     int i, j, k;
@@ -308,11 +309,10 @@ void fn_801DC32C(void *base) {
     unsigned char *q;
 
     p = arg0;
-    i = 13;
-    do {
+    for (i = 0; i < 13; i++) {
         swap32(p);
         p += 4;
-    } while (--i);
+    }
     *(int *)(arg0 + 0x18) += (int)arg0;
     *(int *)(arg0 + 0x20) += (int)arg0;
     *(int *)(arg0 + 0x28) += (int)arg0;
@@ -388,6 +388,7 @@ void fn_801DC32C(void *base) {
         swap32(p + 12);
     }
 }
+#pragma opt_unroll_loops reset
 extern void *fn_8012E96C(const char *);
 extern void *fn_8012C370(const char *, u32, s32 *, void *, void *, u8 *);
 extern void fn_802E317C(const char *, ...);
@@ -505,6 +506,7 @@ void fn_801DCD24(void) {
 }
 
 #pragma scheduling invalid_target
+/* Initialize ground/terrain data: load track.gnd when arg0 is 0, otherwise generate terrain; set update callback and flags. */
 void fn_801DCD28(int arg0) {
     lbl_8055E998 = 0;
     if (arg0 == 0) {
