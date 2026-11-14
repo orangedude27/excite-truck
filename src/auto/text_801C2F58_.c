@@ -2577,13 +2577,16 @@ extern void fn_80176610(void);
 extern void __AXDSPInitCallback_801769E0(void);
 #pragma push
 #pragma processor 750
+/* Advance game time by a short fixed step (lbl_805629AC seconds, ~0.1s) by
+   running the simulation tick loop until the global time reaches the target,
+   then fire the AX DSP init callback. (Proposed name: fast_forward_time) */
 void fn_801C9514(void) {
-    f32 end;
-    f32 start;
-    start = lbl_8055E3C8;
+    f32 targetTime;
+    f32 startTime;
+    startTime = lbl_8055E3C8;
     fn_801769EC();
-    end = lbl_805629AC + start;
-    while (lbl_8055E3C8 < end && lbl_8055E3C8 >= start) {
+    targetTime = lbl_805629AC + startTime;
+    while (lbl_8055E3C8 < targetTime && lbl_8055E3C8 >= startTime) {
         fn_80176610();
     }
     __AXDSPInitCallback_801769E0();
