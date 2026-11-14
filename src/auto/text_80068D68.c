@@ -2226,18 +2226,19 @@ u8 fn_8006A97C(void)
 
 void WUDSetSniffMode(BD_ADDR addr, s32 interval)
 {
-    u8 *pm_ids = lbl_80392960;
-    tBTM_PM_PWR_MD block;
+    /* Set a device's Bluetooth power mode: sniff at the given interval, or active when interval is non-positive. */
+    u8 *pmState = lbl_80392960;
+    tBTM_PM_PWR_MD powerMode;
     if (interval > 0) {
-        block.mode = BTM_PM_MD_SNIFF;
+        powerMode.mode = BTM_PM_MD_SNIFF;
     } else {
-        block.mode = BTM_PM_MD_ACTIVE;
+        powerMode.mode = BTM_PM_MD_ACTIVE;
     }
-    block.max = interval;
-    block.min = interval;
-    block.attempt = 1;
-    block.timeout = 0;
-    BTM_SetPowerMode(pm_ids[0x68A], addr, &block);
+    powerMode.max = interval;
+    powerMode.min = interval;
+    powerMode.attempt = 1;
+    powerMode.timeout = 0;
+    BTM_SetPowerMode(pmState[0x68A], addr, &powerMode);
 }
 
 extern char lbl_803134A0[];
