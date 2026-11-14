@@ -576,40 +576,47 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma processor gekko
+/* Create the built-in paint-splat emitter ("paint splat", drawn with
+ * splash.tex) and keep its handle in lbl_8055F704, or clear that handle when
+ * the particle subsystem is switched off (bit 0 and bit 3 of the subsystem
+ * flags lbl_8055D430).  Unlike the other emitters, whose settings come from a
+ * parameter file (fn_8028E654), the splats get fixed defaults written here:
+ * 128 splats of 0.5 s, spawning in a 5.0 box and fading out from an opaque
+ * cyan. */
 void fn_8028B3CC(void) {
     extern s32 lbl_8055D430, lbl_8055F704;
     extern char lbl_80348C10[], lbl_80348C1C[];
     extern f32 lbl_8056432C, lbl_80564328, lbl_80564330, lbl_80564364, lbl_80564368, lbl_8056436C, lbl_80564370, lbl_8056434C;
     extern void fn_8028E61C(void *);
     extern s32 fn_8028E2F8(void *, void *, void *);
-    union { s32 i[36]; f32 f[36]; } cfg;
-    char *name = lbl_80348C10;
+    struct EfSettings cfg;
+    char *texture = lbl_80348C10;
     s32 enabled = ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) ? 1 : 0;
     if (enabled) {
         fn_8028E61C(&cfg);
-        cfg.i[1] = 0x80;
-        cfg.f[2] = lbl_80564328;
-        cfg.f[3] = lbl_8056432C;
-        cfg.i[0] = 0;
-        cfg.f[4] = lbl_80564364;
-        cfg.f[5] = lbl_80564364;
-        cfg.f[6] = lbl_80564364;
-        cfg.f[7] = lbl_80564368;
-        cfg.f[8] = lbl_80564368;
-        cfg.f[9] = lbl_80564368;
-        cfg.f[12] = lbl_80564328;
-        cfg.i[17] = 5;
-        cfg.f[20] = lbl_80564330;
-        cfg.f[21] = lbl_8056432C;
-        cfg.f[22] = lbl_8056436C;
-        cfg.f[23] = lbl_80564370;
-        cfg.f[28] = lbl_8056434C;
-        cfg.f[26] = lbl_8056434C;
-        cfg.f[24] = lbl_8056434C;
-        cfg.f[27] = lbl_8056432C;
-        cfg.f[25] = lbl_8056432C;
-        cfg.f[29] = lbl_8056434C;
-        lbl_8055F704 = fn_8028E2F8(&cfg, lbl_80348C1C, name);
+        cfg.maxEntries = 0x80;
+        cfg.life = lbl_80564328;
+        cfg.phaseStep = lbl_8056432C;
+        cfg.type = 0;
+        cfg.spawnRadiusX = lbl_80564364;
+        cfg.spawnHeight = lbl_80564364;
+        cfg.spawnRadiusZ = lbl_80564364;
+        cfg.spreadX = lbl_80564368;
+        cfg.spreadY = lbl_80564368;
+        cfg.spreadZ = lbl_80564368;
+        cfg.gravity = lbl_80564328;
+        cfg.priority = 5;
+        cfg.sizeSpeed = lbl_80564330;
+        cfg.size = lbl_8056432C;
+        cfg.alphaFade = lbl_8056436C;
+        cfg.alpha = lbl_80564370;
+        cfg.redFade = lbl_8056434C;
+        cfg.greenFade = lbl_8056434C;
+        cfg.blueFade = lbl_8056434C;
+        cfg.green = lbl_8056432C;
+        cfg.blue = lbl_8056432C;
+        cfg.red = lbl_8056434C;
+        lbl_8055F704 = fn_8028E2F8(&cfg, lbl_80348C1C, texture);
     } else {
         lbl_8055F704 = 0;
     }
