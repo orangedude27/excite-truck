@@ -365,6 +365,7 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023A7D8(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma small_data off
+/* Destructor-like cleanup: installs vtable, releases owned resources, optionally deletes the object. */
 void *fn_8023A83C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(s32 **)arg0 = &lbl_80341108;
