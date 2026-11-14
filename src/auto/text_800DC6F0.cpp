@@ -16,6 +16,13 @@ extern u8 lbl_80320320[];
 extern u8 lbl_803203D8[];
 #pragma pop
 
+#define sAssertFile_common lbl_803204B0 /* __FILE__ of the vertex-color element asserts */
+#define sAssertIdxAnimTargetVtxColor lbl_80320474 /* "NW4HBM:Failed assertion idx < ANIMTARGET_VERTEXCOLOR_MAX" */
+enum { VERTEXCOLOR_NUM = 4 }; /* corner colors a pane's vertex array carries */
+/* the four corner colors seen as their 4x4 bytes, which is how an animation
+ * target addresses a single channel of one */
+enum { ANIMTARGET_VERTEXCOLOR_MAX = VERTEXCOLOR_NUM * 4 };
+
 extern u32 lbl_8055DE00;
 
 struct VEC2 { u32 x; u32 y; };
