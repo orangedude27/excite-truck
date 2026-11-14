@@ -673,6 +673,7 @@ u32 SIEnablePolling(u32 chan) {
 #pragma dont_inline reset
 #pragma dont_inline on
 u32 SIDisablePolling(u32 chan) {
+    /* Disable polling for the given channel mask and return the updated poll value. */
     BOOL enabled;
     u32 poll;
 
