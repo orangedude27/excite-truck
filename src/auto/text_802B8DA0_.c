@@ -824,22 +824,24 @@ void fn_802B9DD0(void* poolSlot) {
     }
 }
 
-void fn_802B9E4C(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != 0) {
-        if (p != 0) {
-            int x = ((int *)p)[3];
-            if (x != 0) {
-                fn_80128670(x - 0x10);
+/* Destroy the roadobject[] record pool (*poolSlot, e.g. gRoadObjectPool),
+ * freeing its 0x10-byte-cookie-prefixed record array and the pool header itself. */
+void fn_802B9E4C(void* poolSlot) {
+    RoadObjectPool* pool = *(RoadObjectPool**)poolSlot;
+    if (pool != NULL) {
+        if (pool != NULL) {
+            int itemArray = pool->itemArray;
+            if (itemArray != 0) {
+                Mem_freeArray(itemArray - 0x10);
             }
-            if (p != 0) {
-                ((int *)p)[0] = 0;
-                ((int *)p)[1] = 0;
-                ((int *)p)[2] = 0;
+            if (pool != NULL) {
+                pool->items = 0;
+                pool->usedCount = 0;
+                pool->capacity = 0;
             }
-            fn_80128668(p);
+            Mem_freeObject(pool);
         }
-        *(void **)arg0 = 0;
+        *(void**)poolSlot = NULL;
     }
 }
 
