@@ -1616,10 +1616,11 @@ void fn_80204020(void);
 void fn_80128670(void);
 void fn_801F9A24(void *);
 void fn_801FA138(void *);
-extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **arg0) {
+/* Clears a linked list of texture name connections, releasing each node's texture and freeing the node. */
+extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **head) {
     void *node;
     void *next;
-    node = *arg0;
+    node = *head;
     while (node != 0) {
         next = *(void **)((char *)node + 0x44);
         if (node != 0) {
@@ -1628,7 +1629,7 @@ extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **arg0) {
         }
         node = next;
     }
-    *arg0 = 0;
+    *head = 0;
 }
 
 extern "C" void fn_801FA010(void **listHead) {
