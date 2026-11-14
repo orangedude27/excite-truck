@@ -2434,19 +2434,22 @@ extern "C" void fn_80148E6C(void *arg0) {
 }
 
 extern "C" void fn_80148EDC(void *);
-extern "C" void fn_80148EDC(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != NULL) {
-        if (p != NULL) {
-            fn_80128670(((s32 *)p)[3]);
-            if (p != NULL) {
-                ((s32 *)p)[0] = 0;
-                ((s32 *)p)[1] = 0;
-                ((s32 *)p)[2] = 0;
+/* Releases and destroys the heap-allocated object stored at *slot: frees its
+ * owned buffer at field index 3, clears fields 0-2, frees the object itself,
+ * then clears the slot to NULL. */
+extern "C" void fn_80148EDC(void *slot) {
+    void *object = *(void **)slot;
+    if (object != NULL) {
+        if (object != NULL) {
+            fn_80128670(((s32 *)object)[3]);
+            if (object != NULL) {
+                ((s32 *)object)[0] = 0;
+                ((s32 *)object)[1] = 0;
+                ((s32 *)object)[2] = 0;
             }
-            fn_80128668(p);
+            fn_80128668(object);
         }
-        *(void **)arg0 = NULL;
+        *(void **)slot = NULL;
     }
 }
 
