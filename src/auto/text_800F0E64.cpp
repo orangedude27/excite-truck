@@ -154,7 +154,8 @@ static inline bool StrmLoadTypeMatches(void **type, const void *wanted) {
     return false;
 }
 static inline void *StrmLoadDynamicCast(void *object, const void *wanted) {
-    if (StrmLoadTypeMatches((void **)((DummyStrmLoadCallback *)object)->f2(), wanted)) return object;
+    register const void *marker = wanted;
+    if (StrmLoadTypeMatches((void **)((DummyStrmLoadCallback *)object)->f2(), marker)) return object;
     return 0;
 }
 #pragma pop
