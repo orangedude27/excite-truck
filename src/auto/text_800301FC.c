@@ -294,49 +294,21 @@ void TRKAppendBuffer_ui32(void) {
 }
 
 void TRKAppendBuffer1_ui64(void) {
-    u32 *a;
-    u32 *b;
-    s32 count;
+    u32 *a = lbl_8035BF20;
+    u32 *b = (u32 *)lbl_8035BEA0;
+    s32 i = 2;
     lbl_8055D6E8 = 0;
-    a = lbl_8035BF20;
-    b = (u32 *)lbl_8035BEA0;
-    count = 2;
     do {
-        *(u32 *)((u8 *)a + 0x00) = 0;
-        *(u32 *)((u8 *)b + 0x00) = 0;
-        *(u32 *)((u8 *)a + 0x04) = 0;
-        *(u32 *)((u8 *)b + 0x04) = 0;
-        *(u32 *)((u8 *)a + 0x08) = 0;
-        *(u32 *)((u8 *)b + 0x08) = 0;
-        *(u32 *)((u8 *)a + 0x0C) = 0;
-        *(u32 *)((u8 *)b + 0x0C) = 0;
-        *(u32 *)((u8 *)a + 0x10) = 0;
-        *(u32 *)((u8 *)b + 0x10) = 0;
-        *(u32 *)((u8 *)a + 0x14) = 0;
-        *(u32 *)((u8 *)b + 0x14) = 0;
-        *(u32 *)((u8 *)a + 0x18) = 0;
-        *(u32 *)((u8 *)b + 0x18) = 0;
-        *(u32 *)((u8 *)a + 0x1C) = 0;
-        *(u32 *)((u8 *)b + 0x1C) = 0;
-        *(u32 *)((u8 *)a + 0x20) = 0;
-        *(u32 *)((u8 *)b + 0x20) = 0;
-        *(u32 *)((u8 *)a + 0x24) = 0;
-        *(u32 *)((u8 *)b + 0x24) = 0;
-        *(u32 *)((u8 *)a + 0x28) = 0;
-        *(u32 *)((u8 *)b + 0x28) = 0;
-        *(u32 *)((u8 *)a + 0x2C) = 0;
-        *(u32 *)((u8 *)b + 0x2C) = 0;
-        *(u32 *)((u8 *)a + 0x30) = 0;
-        *(u32 *)((u8 *)b + 0x30) = 0;
-        *(u32 *)((u8 *)a + 0x34) = 0;
-        *(u32 *)((u8 *)b + 0x34) = 0;
-        *(u32 *)((u8 *)a + 0x38) = 0;
-        *(u32 *)((u8 *)b + 0x38) = 0;
-        *(u32 *)((u8 *)a + 0x3C) = 0;
-        a += 16;
-        *(u32 *)((u8 *)b + 0x3C) = 0;
-        b += 16;
-    } while (--count);
+        a[0] = 0; b[0] = 0; a[1] = 0; b[1] = 0;
+        a[2] = 0; b[2] = 0; a[3] = 0; b[3] = 0;
+        a[4] = 0; b[4] = 0; a[5] = 0; b[5] = 0;
+        a[6] = 0; b[6] = 0; a[7] = 0; b[7] = 0;
+        a[8] = 0; b[8] = 0; a[9] = 0; b[9] = 0;
+        a[10] = 0; b[10] = 0; a[11] = 0; b[11] = 0;
+        a[12] = 0; b[12] = 0; a[13] = 0; b[13] = 0;
+        a[14] = 0; b[14] = 0; a[15] = 0; b[15] = 0;
+        a += 16; b += 16;
+    } while (--i);
 }
 
 #pragma pop
@@ -385,23 +357,37 @@ void TRKReleaseBuffer(void *buffer) {
 extern void fn_80033148(void *);
 #pragma push
 #pragma scheduling on
-void TRKGetFreeBuffer(void *arg0) {
+void TRKGetFreeBuffer(void *voice) {
+#define __AXRemoveFromStack TRKReleaseBuffer
+#define __AXSetPBDefault    fn_80033148
+#define __AXStackHead       lbl_8035BEA0 /* AXVPB *[32], one list per priority */
+    struct AXVPB {
+        struct AXVPB *next;  /* 0x00 */
+        struct AXVPB *prev;  /* 0x04 */
+        struct AXVPB *next1; /* 0x08 */
+        u32 priority;        /* 0x0C */
+        u8 pad10[0x10];
+        u32 depop;           /* 0x20 */
+        u8 pad24[0x124];
+        u16 state;           /* 0x148: pb.state, 1 = running */
+    } *vpb = voice;
     s32 level = OSDisableInterrupts();
-    TRKReleaseBuffer(arg0);
-    if (*(u16 *)((u8 *)arg0 + 0x148) == 1) {
-        *(u32 *)((u8 *)arg0 + 0x20) = 1;
+    __AXRemoveFromStack(voice);
+    if (vpb->state == 1) {
+        vpb->depop = 1;
     }
-    fn_80033148(arg0);
+    __AXSetPBDefault(voice);
     {
-        void *head = (void *)lbl_8035BEA0[0];
-        *(void **)arg0 = head;
-        lbl_8035BEA0[0] = (s32)arg0;
+        void *head = (void *)__AXStackHead[0];
+        vpb->next = head;
+        __AXStackHead[0] = (s32)voice;
     }
-    *(u32 *)((u8 *)arg0 + 0xC) = 0;
+    vpb->priority = 0;
     OSRestoreInterrupts(level);
+#undef __AXStackHead
+#undef __AXSetPBDefault
+#undef __AXRemoveFromStack
 }
-
-#pragma use_lmw_stmw off
 void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern s32 OSDisableInterrupts(void);
     extern void OSRestoreInterrupts(s32);
