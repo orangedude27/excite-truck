@@ -715,14 +715,15 @@ s32 fn_8015FA44(void *records, s32 startIndex, f32 threshold) {
     return result;
 }
 #pragma scheduling on
-s32 fn_8015FAB8(s32 *arg0, s32 arg1, f32 arg2) {
+/* Finds the previous entry index < startIndex in an array of 8-byte records {f32 value, s32 type} whose value is > threshold, stopping at type 2 or returning a type-1 candidate; returns -1 if none. */
+s32 fn_8015FAB8(s32 *records, s32 startIndex, f32 threshold) {
     s32 result = -1;
     s32 i;
-    if (arg0[arg1 * 2 + 1] != 2) {
-        for (i = arg1 - 1; i >= 0; i--) {
-            if (*(f32 *)&arg0[i * 2] > arg2) { result = i; break; }
-            if (arg0[i * 2 + 1] == 2) break;
-            if (arg0[i * 2 + 1] == 1) result = i;
+    if (records[startIndex * 2 + 1] != 2) {
+        for (i = startIndex - 1; i >= 0; i--) {
+            if (*(f32 *)&records[i * 2] > threshold) { result = i; break; }
+            if (records[i * 2 + 1] == 2) break;
+            if (records[i * 2 + 1] == 1) result = i;
         }
     }
     return result;
