@@ -77,6 +77,9 @@ const u8* OSUTF8to32(const u8* utf8, u32* utf32) {
     return utf8;
 }
 
+/* Decode one UTF-16 code unit or surrogate pair into a Unicode code point.
+ * Advances past the consumed code unit(s), stores the code point in *utf32,
+ * and returns the new position, or NULL for an invalid surrogate sequence. */
 const wchar_t* OSUTF16to32(const wchar_t* utf16, u32* utf32) {
     wchar_t hi, lo;
     u32 full;
