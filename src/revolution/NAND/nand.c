@@ -123,6 +123,7 @@ s32 NANDPrivateDeleteAsync(const char* path, NANDAsyncCallback callback,
     return nandConvertErrorCode(ISFS_DeleteAsync(absPath, nandCallback, block));
 }
 
+/* Synchronously read len bytes from an open NAND file into buf. */
 s32 NANDRead(NANDFileInfo* info, void* buf, u32 len) {
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
