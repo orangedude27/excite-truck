@@ -437,16 +437,20 @@ extern void fn_80193D30(void *);
 extern void fn_801942F0(void *, int);
 extern int fn_802E30C8(const char *, ...);
 extern char lbl_80333198[];
-void fn_801939C8(void *arg0) {
-    void *obj;
-    if (*(unsigned char *)((unsigned char *)arg0 + 0x2A4)) {
-        fn_802E30C8(lbl_80333198, *(int *)((unsigned char *)arg0 + 0x290));
+/* Connects/activates this AI driver for its vehicle: if already connected, logs an
+ * error with the car index; otherwise marks it connected, copies the vehicle's
+ * initial value at +0x5B0 into +0x24C, forces the vehicle enable state, and resets
+ * driver state. */
+void fn_801939C8(void *driver) {
+    void *vehicle;
+    if (*(unsigned char *)((unsigned char *)driver + 0x2A4)) {
+        fn_802E30C8(lbl_80333198, *(int *)((unsigned char *)driver + 0x290));
     } else {
-        obj = *(void **)((unsigned char *)arg0 + 0x294);
-        *(unsigned char *)((unsigned char *)arg0 + 0x2A4) = 1;
-        *(float *)((unsigned char *)arg0 + 0x24C) = *(float *)((unsigned char *)obj + 0x5B0);
-        fn_801942F0(arg0, 1);
-        fn_80193D30(arg0);
+        vehicle = *(void **)((unsigned char *)driver + 0x294);
+        *(unsigned char *)((unsigned char *)driver + 0x2A4) = 1;
+        *(float *)((unsigned char *)driver + 0x24C) = *(float *)((unsigned char *)vehicle + 0x5B0);
+        fn_801942F0(driver, 1);
+        fn_80193D30(driver);
     }
 }
 
