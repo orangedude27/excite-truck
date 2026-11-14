@@ -136,9 +136,12 @@ void* OSAllocFromHeap(s32 handle, s32 size) {
     return (u8*)cell + sizeof(OSHeapCell);
 }
 
-void OSFreeToHeap(s32 handle, void* p) {
+/* Return a block allocated from a heap: unlink its cell from the heap's used
+   list and re-insert it into the address-sorted free list, coalescing with any
+   adjacent free cells. */
+void OSFreeToHeap(s32 handle, void* block) {
     OSHeapDescriptor* hd = &HeapArray[handle];
-    OSHeapCell* cell = (OSHeapCell*)((u8*)p - sizeof(OSHeapCell));
+    OSHeapCell* cell = (OSHeapCell*)((u8*)block - sizeof(OSHeapCell));
     hd->usedList = DLExtract(hd->usedList, cell);
     hd->freeList = DLInsert(hd->freeList, cell);
 }
