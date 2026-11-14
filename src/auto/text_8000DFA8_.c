@@ -82,7 +82,11 @@ extern s32 fn_8023512C();
 extern void fn_80235380();
 __declspec(section ".data") extern s32 lbl_80350F88;
 __declspec(section ".data") extern s32 lbl_80351214;
+/* 3-2-1 countdown state: file handle opened by fn_8000F1E0 and released by
+ * fn_8000F22C (fn_80235380 drops one reference to it). */
 extern s32 lbl_8055D4BC;
+/* Any object whose vtable begins with the two destructor slots; the first
+ * declared method therefore sits at vtable+0x8. */
 typedef struct UnkF22C UnkF22C;
 typedef struct UnkF22CVtable {
     void *unk_0x0;
