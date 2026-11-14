@@ -117,20 +117,28 @@ extern "C" void fn_802E9BCC(void *arg0) {
 #pragma pop
 #pragma push
 #pragma scheduling invalid_target
-void *fn_802E9BEC(long arg0) {
-    char *base = (char *)&lbl_8034E260;
-    switch (arg0) {
-    case 0: return &lbl_8055D278;
-    case 8: return base + 0x2C;
-    case 14: return base + 0x38;
-    case 15: return base + 0x44;
-    case 16: return base + 0x50;
-    case 17: return base + 0x5C;
-    case 18: return base + 0x6C;
-    case 19: return base + 0x7C;
-    case -10: return base + 0x88;
-    default: return &lbl_8055D280;
+/* Returns the name of an MP3 decoder error code, for log messages
+ * ("NO_ERR", "SYNC_ERR", ... or "???" for codes it doesn't know). */
+void *fn_802E9BEC(long errorCode) {
+#define mp3Strings   lbl_8034E260 /* the mp3 module's string block */
+#define strNoError   lbl_8055D278 /* "NO_ERR" */
+#define strUnknown   lbl_8055D280 /* "???" */
+    char *strings = (char *)&mp3Strings;
+    switch (errorCode) {
+    case 0: return &strNoError;
+    case 8: return strings + 0x2C;   /* "SYNC_ERR" */
+    case 14: return strings + 0x38;  /* "LAYER_ERR" */
+    case 15: return strings + 0x44;  /* "BITRATE_ERR" */
+    case 16: return strings + 0x50;  /* "SFREQ_ERR" */
+    case 17: return strings + 0x5C;  /* "BLOCKTYPE_ERR" */
+    case 18: return strings + 0x6C;  /* "TABLE_SEL_ERR" */
+    case 19: return strings + 0x7C;  /* "LENGTH_ERR" */
+    case -10: return strings + 0x88; /* "BYTES_DISC_ERR" */
+    default: return &strUnknown;
     }
+#undef strUnknown
+#undef strNoError
+#undef mp3Strings
 }
 #pragma scheduling on
 #pragma pop
@@ -476,6 +484,7 @@ int fn_802EAA58(int *arg0, int arg1) {
     int channelOk;
     int channels;
     int valid;
+    int rateOk;
     int result;
     int rate;
     int size;
@@ -491,12 +500,9 @@ int fn_802EAA58(int *arg0, int arg1) {
     channelOk = 1;
     if (channels != 1 && channels != 2) channelOk = 0;
     if (channelOk) {
-        int rateOk;
         rate = arg0[1];
         rateOk = 0;
-        if (rate >= 8000) {
-            if (rate <= 60000) rateOk = 1;
-        }
+        if (rate >= 8000 && rate <= 60000) rateOk = 1;
         if (rateOk) valid = 1;
     }
     if (valid) {
@@ -508,26 +514,30 @@ int fn_802EAA58(int *arg0, int arg1) {
     return result;
 }
 
+void fn_802EAB28(void) {
+    extern long lbl_8034E260;
+    extern int OSReport(const char *, ...);
+    OSReport((char *)&lbl_8034E260 + 0x2F4);
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 extern int lbl_805600B0;
 extern int lbl_805600C0;
 extern int lbl_8055D26C;
 extern void *memset(void *, int, int);
-#pragma push
 #pragma use_lmw_stmw off
 int fn_802EB7D4(void *arg0, int arg1, int arg2, int arg_sp0) {
     int idx = arg2 * 4;
     int elem = lbl_8055D26C;
-    int b8 = lbl_805600B8;
-    if (*(int *)((char *)&lbl_805600B0 + idx) == b8) {
+    if (*(int *)((char *)&lbl_805600B0 + idx) == lbl_805600B8) {
         memset(arg0, 0, arg1);
         *(int *)((char *)&lbl_805600C0 + idx) = *(int *)((char *)&lbl_805600C0 + idx) + 1;
         return arg1;
     }
-    if (*(int *)((char *)&lbl_805600B0 + idx) < b8) {
+    if (*(int *)((char *)&lbl_805600B0 + idx) < lbl_805600B8) {
         int bytes = arg1 * elem;
-        int rem = b8 - *(int *)((char *)&lbl_805600B0 + idx);
+        int rem = lbl_805600B8 - *(int *)((char *)&lbl_805600B0 + idx);
         int avail = bytes < rem ? bytes : rem;
         if (avail < bytes && *(int *)((char *)&lbl_805600C0 + idx) != 0) {
             memset(arg0, 0, arg1);
@@ -581,21 +591,18 @@ int fn_802EB7D4(void *arg0, int arg1, int arg2, int arg_sp0) {
         }
     }
 }
-#pragma pop
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_802EBD40(void) {
     extern void OSSleepTicks(unsigned long long);
     char *base = (char *)&lbl_8034E260;
-    register unsigned int *tb;
-    register unsigned int multiplier;
-    register int elapsed;
+    unsigned int *tb;
+    int elapsed;
     unsigned int clock;
     lbl_80560062 = 0;
     ((void (*)(char *, ...))fn_802E30C8)(base + 0x65C);
     elapsed = 0;
-    multiplier = 0x10624DD3;
     tb = (unsigned int *)0x80000000;
     while ((unsigned char)lbl_80560063 == 0) {
         clock = tb[0x3E] >> 2;
@@ -785,9 +792,9 @@ extern void OSSleepTicks(unsigned long long);
 #pragma push
 #pragma dont_inline on
 void fn_802EC1E4(void) {
+    register unsigned int *timebase;
     register int start;
     register unsigned int multiplier;
-    register unsigned int *timebase;
     unsigned int clock;
     int current;
     fn_802EC1D8();
@@ -801,7 +808,7 @@ void fn_802EC1E4(void) {
             ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E980);
             break;
         }
-        clock = timebase[0x3E] >> 2;
+        clock = *(volatile unsigned int *)((char *)timebase + 0xF8) >> 2;
         ((void (*)(int, int))OSSleepTicks)(0, (clock / 1000) + ((clock / 250) & 0x0FFFFFFC));
     }
 }
