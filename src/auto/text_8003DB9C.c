@@ -5446,19 +5446,22 @@ u32 GXEndDisplayList(void) {
     return 0;
 }
 #pragma optimize_for_size reset
-void GXCallDisplayList(unsigned int arg0, unsigned int arg1) {
-    volatile unsigned int *data = __GXData;
-    unsigned int saved0 = arg0;
-    unsigned int saved1 = arg1;
-    if (data[0x5FC / 4] != 0) {
+/* Issues a GX display list call to the graphics FIFO: flushes dirty state and
+ * pending primitive data as needed, then writes opcode 0x40 with the list
+ * address and byte size. */
+void GXCallDisplayList(unsigned int listAddr, unsigned int byteSize) {
+    volatile unsigned int *gxData = __GXData;
+    unsigned int savedListAddr = listAddr;
+    unsigned int savedByteSize = byteSize;
+    if (gxData[0x5FC / 4] != 0) {
         __GXSetDirtyState();
     }
-    if (data[0] == 0) {
+    if (gxData[0] == 0) {
         __GXSendFlushPrim();
     }
     *(volatile unsigned char *)0xCC008000 = 0x40;
-    *(volatile unsigned int *)0xCC008000 = saved0;
-    *(volatile unsigned int *)0xCC008000 = saved1;
+    *(volatile unsigned int *)0xCC008000 = savedListAddr;
+    *(volatile unsigned int *)0xCC008000 = savedByteSize;
 }
 
 extern float lbl_80560BC8;
