@@ -443,6 +443,7 @@ void fn_80004EC0(const char* source) {
 
 #pragma cplusplus on
 extern "C" u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
+    /* Query a virtual object: if it reports ready, return its value for the argument, otherwise return the fallback. */
     struct Dummy {
         virtual s32 f0();
         virtual s32 f1();
