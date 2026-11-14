@@ -1,6 +1,7 @@
 #include <revolution/AX.h>
 #include <revolution/OS.h>
 
+/* Set a voice's playback state, syncing it and marking depop when stopping. */
 void AXSetVoiceState(AXVPB* vpb, u16 state) {
     BOOL enabled = OSDisableInterrupts();
 
