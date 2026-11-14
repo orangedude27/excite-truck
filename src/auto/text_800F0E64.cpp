@@ -804,11 +804,12 @@ extern "C" void fn_800F1E50(void *arg0, f32 value) {
     OSRestoreInterrupts(token);
 }
 
-extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(void* self, float volume) {
-    if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324390, 0x25b, (const char*)lbl_803244D4);
-    unsigned int level = OSDisableInterrupts();
-    *(float*)((unsigned char*)self + 0xC) = volume;
-    OSRestoreInterrupts(level);
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(void *self, float volume) {
+    /* Validate and store the sequence player volume at offset 0xC under interrupt disable. */
+    if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324390, 0x25b, (const char *)lbl_803244D4);
+    unsigned int interruptLevel = OSDisableInterrupts();
+    *(float *)((unsigned char *)self + 0xC) = volume;
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" void fn_800F1F04(void* arg0, f32 farg0) {
