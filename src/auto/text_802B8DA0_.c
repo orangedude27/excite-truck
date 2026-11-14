@@ -794,22 +794,24 @@ void fn_802B9D08(void) {
     fn_802B9F38(&lbl_8055FA74);
 }
 #pragma pop
-void fn_802B9DD0(void* arg0) {
-    void* p = *(void**)arg0;
-    if (p != NULL) {
-        if (p != NULL) {
-            int x = ((int*)p)[3];
-            if (x != 0) {
-                fn_80128670(x - 0x10);
+/* Destroy the tree-shadow-list entry pool (*poolSlot, e.g. gTreeShadowListPool),
+ * freeing its 0x10-byte-cookie-prefixed entry array and the pool header itself. */
+void fn_802B9DD0(void* poolSlot) {
+    TreeShadowListPool* pool = *(TreeShadowListPool**)poolSlot;
+    if (pool != NULL) {
+        if (pool != NULL) {
+            int itemArray = pool->itemArray;
+            if (itemArray != 0) {
+                Mem_freeArray(itemArray - 0x10);
             }
-            if (p != NULL) {
-                ((int*)p)[0] = 0;
-                ((int*)p)[1] = 0;
-                ((int*)p)[2] = 0;
+            if (pool != NULL) {
+                pool->items = 0;
+                pool->usedCount = 0;
+                pool->capacity = 0;
             }
-            fn_80128668(p);
+            Mem_freeObject(pool);
         }
-        *(void**)arg0 = NULL;
+        *(void**)poolSlot = NULL;
     }
 }
 
