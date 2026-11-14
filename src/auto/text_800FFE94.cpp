@@ -198,18 +198,20 @@ extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3s
     return ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(sp8, arg2, arg3);
 }
 #pragma scheduling on
-extern "C" void* __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void* arg0) {
-    *(int*)((char*)arg0 + 4) = -1;
-    *(int*)((char*)arg0 + 8) = 0;
-    *(int*)((char*)arg0 + 0xC) = 0;
-    *(void**)arg0 = lbl_80327AF4;
-    *(void**)((char*)arg0 + 0x10) = lbl_80327AF4 + 0x98;
-    *(int*)((char*)arg0 + 0x14) = 0;
-    *(int*)((char*)arg0 + 0x18) = 0;
-    *((char*)arg0 + 0x1D) = 0;
-    fn_800EC890((char*)arg0 + 0xA8);
-    *(int*)((char*)arg0 + 0xC8) = 0;
-    return arg0;
+extern "C" void* __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void* this_) {
+    /* nw4hbm::snd::detail::WsdPlayer constructor: initializes player state,
+       installs the primary and secondary vtables, and sets up the subobject at +0xA8. */
+    *(int*)((char*)this_ + 4) = -1;
+    *(int*)((char*)this_ + 8) = 0;
+    *(int*)((char*)this_ + 0xC) = 0;
+    *(void**)this_ = lbl_80327AF4;
+    *(void**)((char*)this_ + 0x10) = lbl_80327AF4 + 0x98;
+    *(int*)((char*)this_ + 0x14) = 0;
+    *(int*)((char*)this_ + 0x18) = 0;
+    *((char*)this_ + 0x1D) = 0;
+    fn_800EC890((char*)this_ + 0xA8);
+    *(int*)((char*)this_ + 0xC8) = 0;
+    return this_;
 }
 
 extern "C" void InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void* player, int trackCount, const void* callback, unsigned long userData) {
