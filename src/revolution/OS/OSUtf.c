@@ -105,21 +105,25 @@ const wchar_t* OSUTF16to32(const wchar_t* utf16, u32* utf32) {
     return utf16;
 }
 
+/* Converts one Unicode (UTF-32) code point to the code of the ANSI font, or 0
+ * when that character has no place in it. */
 u8 OSUTF32toANSI(u32 utf32) {
     int i;
 
-    if (utf32 > 0xFF) {
+    if (utf32 > ANSI_CODE_MAX) {
         return 0;
     }
 
-    if (utf32 < 0x80 || utf32 > 0x9F) {
+    /* ASCII and Latin-1 keep their own value; only the C1 slot needs a map. */
+    if (utf32 < ANSI_EXT_FIRST || utf32 > ANSI_EXT_LAST) {
         return utf32 & 0xFF;
     }
 
-    if (utf32 >= 0x152 && utf32 <= 0x2122) {
+    /* The Windows-1252 punctuation: the index in the table is its ANSI code. */
+    if (utf32 >= ANSI_EXT_UCS_MIN && utf32 <= ANSI_EXT_UCS_MAX) {
         for (i = 0; i < ARRAY_SIZE(UcsAnsiTable); i++) {
             if (UcsAnsiTable[i] == utf32) {
-                return i + 0x80 & 0xFF;
+                return i + ANSI_EXT_FIRST & 0xFF;
             }
         }
     }
