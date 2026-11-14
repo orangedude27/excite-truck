@@ -179,16 +179,19 @@ int fn_8027D578(int arg0, int arg1) {
 }
 
 #pragma scheduling invalid_target
-void *fn_8027D5B8(void *arg0) {
-    int *temp_r6;
-    *(void **)arg0 = lbl_80347CC0;
-    temp_r6 = (int *)((char *)arg0 + 0x24);
-    *(int **)((char *)arg0 + 0x18) = temp_r6;
-    *(int *)((char *)arg0 + 0x20) = 6;
-    *(int *)((char *)arg0 + 0x1C) = 0;
-    fn_8002F53C(temp_r6, fn_8027D674, __dt__Q34nw4r2ef6EffectFv_8027D434, 0x3C, 6);
-    *(char *)((char *)arg0 + 4) = 0;
-    return arg0;
+/* Default constructor for a 0x1F4-byte container entry (vtable lbl_80347CC0):
+   initializes its 6-slot embedded array of 0x3C-byte elements at +0x24 and
+   clears its active flag at +0x04. */
+void *fn_8027D5B8(void *thisPtr) {
+    int *elements;
+    *(void **)thisPtr = lbl_80347CC0;
+    elements = (int *)((char *)thisPtr + 0x24);
+    *(int **)((char *)thisPtr + 0x18) = elements;
+    *(int *)((char *)thisPtr + 0x20) = 6;
+    *(int *)((char *)thisPtr + 0x1C) = 0;
+    fn_8002F53C(elements, fn_8027D674, __dt__Q34nw4r2ef6EffectFv_8027D434, 0x3C, 6);
+    *(char *)((char *)thisPtr + 4) = 0;
+    return thisPtr;
 }
 #pragma scheduling on
 int fn_8027D634(int arg0, int arg1) {
@@ -249,11 +252,12 @@ extern "C" void fn_8027D7B8(void *arg0) {
     fn_80007F90(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
 
-#pragma scheduling invalid_target
-extern "C" void fn_8027D7E4(void *arg0) {
-    fn_80007FF0(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
+#pragma push
+#pragma optimization_level 1
+extern "C" void fn_8027D7E4(int *arg0) {
+    fn_80007FF0(*(int *)((char *)fn_8001285C(arg0[3]) + 8));
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_8027D810(void *arg0) {
     class Obj {
     public:
