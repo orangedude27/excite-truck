@@ -1487,6 +1487,8 @@ extern "C" void fn_801FF58C(void* unused, char* dst, const char* src) {
 }
 
 void fn_801FF5D4(void* arg0, void* arg1, float farg0) {
+    /* Calls fn_801FCF74 for each in-use entry (count at arg1+0x54) in the
+     * array of object pointers starting at arg1+0x30, passing farg0. */
     char *entry = (char *)arg1;
     int i = 0;
     while (i < *(int *)((char *)arg1 + 0x54)) {
