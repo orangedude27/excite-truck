@@ -102,7 +102,7 @@ static inline s32 GridCell(f32 v) {
 s32 fn_801B60F4(void *arg0, f32 arg1) {
     s32 x;
     s32 y;
-    if (arg1 > lbl_805626B0)
+    if (arg1 > 20.0f)
         return lbl_8055E714;
     x = GridCell(((f32 *)arg0)[0]);
     y = GridCell(((f32 *)arg0)[2]);
