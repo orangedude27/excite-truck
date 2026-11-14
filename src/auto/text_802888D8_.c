@@ -207,24 +207,23 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
     float *matrix;
     float *vector;
     float p0, p1, p2, p3, p4, p5, p6, p7, p8;
-    float v1;
+    float v1a;
     float v0;
     float v2;
     float t2;
     float t1;
-
     if (arg2 == 2) {
         matrix = (float *)fn_80287B24(arg1);
         vector = (float *)((char *)arg0 + (arg1 * 0xC));
         if (&frame[6] == vector) {
-            v1 = vector[1];
-            p3 = matrix[3] * v1;
-            p4 = matrix[4] * v1;
+            v1a = vector[1];
+            p3 = matrix[3] * v1a;
+            p4 = matrix[4] * v1a;
             v0 = vector[0];
             p0 = matrix[0] * v0;
             p1 = matrix[1] * v0;
             p2 = matrix[2] * v0;
-            p5 = matrix[5] * v1;
+            p5 = matrix[5] * v1a;
             v2 = vector[2];
             p6 = matrix[6] * v2;
             p7 = matrix[7] * v2;
@@ -247,14 +246,14 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
         matrix = (float *)fn_80287B24(arg1);
         vector = (float *)((char *)arg0 + (arg1 * 0xC));
         if (&frame[3] == vector) {
-            v1 = vector[1];
-            p3 = matrix[3] * v1;
-            p4 = matrix[4] * v1;
+            v1a = vector[1];
+            p3 = matrix[3] * v1a;
+            p4 = matrix[4] * v1a;
             v0 = vector[0];
             p0 = matrix[0] * v0;
             p1 = matrix[1] * v0;
             p2 = matrix[2] * v0;
-            p5 = matrix[5] * v1;
+            p5 = matrix[5] * v1a;
             v2 = vector[2];
             p6 = matrix[6] * v2;
             p7 = matrix[7] * v2;
@@ -277,14 +276,14 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
         matrix = (float *)fn_80287B24(arg1);
         vector = (float *)((char *)arg0 + (arg1 * 0xC));
         if (&frame[0] == vector) {
-            v1 = vector[1];
-            p3 = matrix[3] * v1;
-            p4 = matrix[4] * v1;
+            v1a = vector[1];
+            p3 = matrix[3] * v1a;
+            p4 = matrix[4] * v1a;
             v0 = vector[0];
             p0 = matrix[0] * v0;
             p1 = matrix[1] * v0;
             p2 = matrix[2] * v0;
-            p5 = matrix[5] * v1;
+            p5 = matrix[5] * v1a;
             v2 = vector[2];
             p6 = matrix[6] * v2;
             p7 = matrix[7] * v2;
@@ -613,34 +612,48 @@ int fn_80289554(int arg0) {
 extern float lbl_80564284, lbl_8056428C, lbl_805642B0, lbl_805642C0, lbl_805642F0;
 extern int lbl_802FA978[];
 extern void fn_802898CC(void *, int, int, int);
-int fn_80289558(int arg0, int arg1) {
-    float *e = (float *)(arg0 + arg1 * 0x14);
-    int *ei = (int *)(arg0 + arg1 * 0x14);
-    if (ei[2] >= 1) {
-        if (e[3] > lbl_805642F0 && e[0] >= lbl_8056428C) {
-            float b;
-            float c3;
-            float t;
-            float c0;
-            fn_802898CC((void *)arg0, *(int *)(arg0 + 0xA4), arg1, ei[4]);
-            e[0] -= lbl_8056428C;
-            b = lbl_805642B0;
-            c3 = e[3];
-            t = b * c3;
-            c0 = lbl_805642C0;
-            e[0] += t;
-            e[3] *= c0;
-        } else {
-            if (e[0] >= lbl_8056428C) {
-                unsigned nv = (unsigned)(ei[1] + 1);
-                ei[1] = (int)nv;
-                if (nv >= 8) ei[1] = 0;
-                fn_802898CC((void *)arg0, *(int *)(arg0 + 0xA0), arg1, lbl_802FA978[ei[1]] % ei[2]);
-                e[0] -= lbl_8056428C;
-            }
-            e[0] += lbl_80564284;
-        }
+int fn_80289558(int arg0, int arg1)
+{
+  float *e;
+  int *ei = (int *) (arg0 + (arg1 * 0x14));
+  float new_var;
+  if (ei[2] >= 1)
+  {
+    if ((e[3] > lbl_805642F0) && (e[0] >= lbl_8056428C))
+    {
+      float e0;
+      float b;
+      float c3;
+      float t;
+      float c0;
+      fn_802898CC((void *) arg0, *((int *) (arg0 + 0xA4)), arg1, ei[4]);
+      e[0] = e[0] - lbl_8056428C;
+      e = (float *) (arg0 + (arg1 * 0x14));
+      e0 = *((volatile float *) (&e[0]));
+      b = lbl_805642B0;
+      new_var = e[3];
+      c3 = new_var;
+      t = b * c3;
+      c0 = lbl_805642C0;
+      e[0] = e0 + t;
+      e[3] *= c0;
     }
+    else
+    {
+      if (e[0] >= lbl_8056428C)
+      {
+        unsigned nv = (unsigned) (ei[1] + 1);
+        ei[1] = (int) nv;
+        if (nv >= 8)
+        {
+          ei[1] = 0;
+        }
+        fn_802898CC((void *) arg0, *((int *) (arg0 + 0xA0)), arg1, lbl_802FA978[ei[1]] % ei[2]);
+        e[0] = e[0] - lbl_8056428C;
+      }
+      e[0] = e[0] + lbl_80564284;
+    }
+  }
 }
 
 int fn_8028967C(int arg0) {
@@ -741,6 +754,7 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     extern void *fn_80287B24(int);
     extern int fn_80288208(int);
     extern int fn_80288060(int, int);
+    extern float lbl_805642FC;
     float sp14[3];
     float sp8[3];
     float *vec;
@@ -748,7 +762,6 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     float a;
     float b;
     float c;
-
     vec = (float *)fn_80287B24(arg1);
     mat = (float *)fn_80288060(fn_80288208(arg1), arg2);
     if ((float *)((char *)mat + 0x24) == sp14) {
@@ -773,9 +786,9 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
         float r0 = m2 * x6;
         float r1 = m2 * x7;
         float r2 = m2 * x8;
-        sp14[0] = (p0 + q0) + r0;
-        sp14[1] = (p1 + q1) + r1;
-        sp14[2] = (p2 + q2) + r2;
+        sp14[0] = r0 + (p0 + q0);
+        sp14[1] = r1 + (p1 + q1);
+        sp14[2] = r2 + (p2 + q2);
     } else {
         sp14[0] = (*(float *)((char *)mat + 0x2C) * vec[6]) + ((*(float *)((char *)mat + 0x24) * vec[0]) + (*(float *)((char *)mat + 0x28) * vec[3]));
         sp14[1] = (*(float *)((char *)mat + 0x2C) * vec[7]) + ((*(float *)((char *)mat + 0x24) * vec[1]) + (*(float *)((char *)mat + 0x28) * vec[4]));
@@ -784,7 +797,6 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     sp14[0] += *(float *)((char *)vec + 0x24);
     sp14[1] += *(float *)((char *)vec + 0x28);
     sp14[2] += *(float *)((char *)vec + 0x2C);
-
     if ((float *)((char *)mat + 0xC) == sp8) {
         float m1 = *(float *)((char *)mat + 0x10);
         float m0 = *(float *)((char *)mat + 0xC);
@@ -807,15 +819,14 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
         float r0 = m2 * x6;
         float r1 = m2 * x7;
         float r2 = m2 * x8;
-        sp8[0] = (p0 + q0) + r0;
-        sp8[1] = (p1 + q1) + r1;
-        sp8[2] = (p2 + q2) + r2;
+        sp8[0] = r0 + (p0 + q0);
+        sp8[1] = r1 + (p1 + q1);
+        sp8[2] = r2 + (p2 + q2);
     } else {
         sp8[0] = (*(float *)((char *)mat + 0x14) * vec[6]) + ((*(float *)((char *)mat + 0xC) * vec[0]) + (*(float *)((char *)mat + 0x10) * vec[3]));
         sp8[1] = (*(float *)((char *)mat + 0x14) * vec[7]) + ((*(float *)((char *)mat + 0xC) * vec[1]) + (*(float *)((char *)mat + 0x10) * vec[4]));
         sp8[2] = (*(float *)((char *)mat + 0x14) * vec[8]) + ((*(float *)((char *)mat + 0xC) * vec[2]) + (*(float *)((char *)mat + 0x10) * vec[5]));
     }
-
     a = sp8[0] * lbl_805642FC;
     b = sp8[1] * lbl_805642FC;
     c = sp8[2] * lbl_805642FC;
@@ -1023,6 +1034,7 @@ int fn_80289EA0(int arg0) {
     return arg0;
 }
 
+/* Destroy a two-field object: free its buffer (stored as ptr+0x10), tear down the sub-object at +4, and optionally delete self. */
 void *fn_80289EE0(void *arg0, int arg1) {
     if (arg0 != 0) {
         int temp = *(int *)arg0;
@@ -1050,9 +1062,11 @@ int fn_80289F54(int arg0) {
 #pragma scheduling invalid_target
 void fn_80289FC4(int **arg0, int arg1, int arg2) {
     char *temp = (char *)*arg0 + arg1 * 0x68;
-    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 && *(long *)(temp + 0x60) > 0L) {
+    register int count;
+    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 &&
+        (count = *(int *)(temp + 0x60)) > 0) {
         int index = fn_80287B5C();
-        *(void **)(temp + 0x64) = (void *)(temp + index * 0x18);
+        *(void **)(temp + 0x64) = temp + index * 0x18;
         fn_8028A330((int *)arg0, arg1);
     } else if (arg2 != 3 && *(void **)(temp + 0x64) != 0) {
         *(void **)(temp + 0x64) = 0;
@@ -1177,25 +1191,21 @@ int fn_8028A1A4(int out) {
         virtual void v21() = 0;
         virtual Item *item(int) = 0;
     };
-
-    int count = fn_80287B14();
-    char *offset;
+    int count;
     char *obj;
-    int i;
+    int offset;
+    unsigned int i;
     char *entry;
     Object *castObj;
     int j;
     Item *item;
-
+    count = fn_80287B14();
     *(void **)out = fn_8002F37C(
         (int)fn_8012850C(count * 0x68 + 0x10, lbl_80348B7C, count * 0x68),
         fn_8028A32C, 0, 0x68, count);
-
-    i = 0;
-    offset = 0;
-    while (i < fn_80287B14()) {
-        obj = (char *)fn_80288208(i);
-        entry = (char *)*(void **)out + (int)offset;
+    for (i = 0, offset = 0; (int)i < fn_80287B14(); offset += 0x68, i++) {
+        obj = (char *)fn_80288208((int)i);
+        entry = (char *)*(void **)out + offset;
         if (fn_80287E20((Object *)obj, lbl_80348B8C)) {
             castObj = (Object *)fn_80287E80((int)obj, lbl_80348B8C);
             *(int *)(entry + 0x60) = castObj->count(&lbl_8055C890);
@@ -1214,8 +1224,6 @@ int fn_8028A1A4(int out) {
         } else {
             *(int *)(entry + 0x60) = 0;
         }
-        offset += 0x68;
-        i++;
     }
 }
 #pragma scheduling on
