@@ -1824,6 +1824,8 @@ extern "C" void fn_80214B94(s32 arg0) {
 }
 
 extern "C" void fn_80214BE4(s32 arg0, s32 arg1, s32 arg2) {
+    /* Forwards (arg0,arg1,arg2) to the active UI window object via
+     * fn_802168E0, or reports "no active window" if none is set. */
     s32 obj = fn_802168E4();
     if (obj != 0) {
         ((void (*)(s32, s32, s32, s32))fn_802168E0)(obj, arg0, arg1, arg2);
