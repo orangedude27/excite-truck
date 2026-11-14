@@ -1008,24 +1008,26 @@ void fn_80194624(void *arg0) {
     *(float *)(p + 0x2F4) = a + c * (b - a);
 }
 
-void fn_80194844(void *arg0) {
+/* Initializes per-run state from the linked context and resets runtime timers/flags. */
+void fn_80194844(void *obj) {
     extern void fn_801958D8();
     extern void fn_80195F6C(void *, void *);
     extern void fn_80194624(void *);
     extern float lbl_8055E3C8;
     extern float lbl_80562144;
-    void *t;
-    float tmp;
+    void *context;
+    float zero;
+
     fn_801958D8();
-    t = *(void **)((char *)arg0 + 0x294);
-    *(unsigned char *)((char *)arg0 + 0x250) = 0;
-    *(float *)((char *)arg0 + 0x270) = *(float *)((char *)t + 0x25D4);
-    *(float *)((char *)arg0 + 0x26C) = lbl_8055E3C8;
-    fn_80195F6C(arg0, t);
-    fn_80194624(arg0);
-    tmp = lbl_80562144;
-    *(unsigned char *)((char *)arg0 + 0x14) = 0;
-    *(float *)((char *)arg0 + 8) = tmp;
+    context = *(void **)((char *)obj + 0x294);
+    *(unsigned char *)((char *)obj + 0x250) = 0;
+    *(float *)((char *)obj + 0x270) = *(float *)((char *)context + 0x25D4);
+    *(float *)((char *)obj + 0x26C) = lbl_8055E3C8;
+    fn_80195F6C(obj, context);
+    fn_80194624(obj);
+    zero = lbl_80562144;
+    *(unsigned char *)((char *)obj + 0x14) = 0;
+    *(float *)((char *)obj + 8) = zero;
 }
 
 extern float fn_801673A4(int, float *);
