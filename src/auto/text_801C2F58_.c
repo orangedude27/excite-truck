@@ -2586,19 +2586,20 @@ void fn_801C9514(void) {
     __AXDSPInitCallback_801769E0();
 }
 
-int fn_801C957C(arg0)
-int arg0;
+/* Opens (nonzero) or closes (zero) the debug text entry: clears the input line and marks the
+ * selected character slot active, or marks it inactive, and records the active state. */
+int fn_801C957C(int enabled)
 {
     u8 *table;
-    if (arg0 != 0) {
+    if (enabled != 0) {
         strcpy(lbl_804380F0, lbl_8055AA44);
-        table = (u8*)lbl_80337474;
+        table = (u8 *)lbl_80337474;
         table[lbl_8055E824] = 0x1E;
     } else {
-        table = (u8*)lbl_80337474;
+        table = (u8 *)lbl_80337474;
         table[lbl_8055E824] = 0xFF;
     }
-    lbl_8055E838 = arg0;
+    lbl_8055E838 = enabled;
     return (int)table;
 }
 
