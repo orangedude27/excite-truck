@@ -17007,6 +17007,360 @@ extern "C" void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
+extern "C" const s8 lbl_802F44C8[];
+extern "C" const s8 lbl_802F44D8[];
+#pragma push
+#pragma use_lmw_stmw on
+extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16 *prev, s16 *out2, s16 frameBits, s16 index, s16 *keep, s8 pass, u8 row, s16 *outA, s16 *outB, s16 *outC, s16 *outD, s16 *outE) {
+    Fn800C08A8Context *ctx = (Fn800C08A8Context *)arg0;
+    s16 (*rows)[3] = (s16 (*)[3])out2;
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 bitsA;
+    s32 bitsB;
+    s16 b0;
+    s16 b1;
+    s16 b2;
+    s16 b3;
+    s8 n0;
+    s8 n1;
+    s8 n2;
+    s8 n3;
+    s32 half;
+    s32 rem;
+    s8 m;
+    s8 e1;
+    s8 e2;
+    s8 e3;
+    s8 e4;
+
+    if (*(s32 *)((u8 *)arg0 + 4) == 0) {
+        ctx->bitIndex = ctx->limit;
+        ctx->limit += frameBits;
+        bitsA = lbl_802F44C8[index];
+        bitsB = lbl_802F44D8[index];
+        *outA = 0;
+        if (flags & 7) {
+            if (flags & 6) {
+                *outB = 7;
+                *outC = 0x24;
+            }
+            if (keep[0] == 0 || pass == 0) {
+                for (i = 0; i < 6; i++) {
+                    out[i] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
+                }
+            }
+            if (keep[1] == 0 || pass == 0) {
+                for (i = 6; i < 11; i++) {
+                    out[i] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
+                }
+            }
+            if (keep[2] == 0 || pass == 0) {
+                for (i = 11; i < 16; i++) {
+                    out[i] = fn_800BDEB4(data, bitsB, &ctx->bitIndex);
+                }
+            }
+            if (keep[3] == 0 || pass == 0) {
+                for (i = 16; i < 21; i++) {
+                    out[i] = fn_800BDEB4(data, bitsB, &ctx->bitIndex);
+                }
+            }
+            if (pass == 1) {
+                if (keep[0] == 1) {
+                    for (i = 0; i < 6; i++) {
+                        out[i] = prev[i];
+                    }
+                }
+                if (keep[1] == 1) {
+                    for (i = 6; i < 11; i++) {
+                        out[i] = prev[i];
+                    }
+                }
+                if (keep[2] == 1) {
+                    for (i = 11; i < 16; i++) {
+                        out[i] = prev[i];
+                    }
+                }
+                if (keep[3] == 1) {
+                    for (i = 16; i < 21; i++) {
+                        out[i] = prev[i];
+                    }
+                }
+            }
+        } else if (flags & 8) {
+            *outB = 7;
+            *outC = 0x24;
+            for (i = 0; i < 8; i++) {
+                out[i] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
+            }
+            for (j = 3; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
+                    rows[j][k] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
+                }
+            }
+            for (j = 6; j < 12; j++) {
+                for (k = 0; k < 3; k++) {
+                    rows[j][k] = fn_800BDEB4(data, bitsB, &ctx->bitIndex);
+                }
+            }
+        } else if (flags & 0x10) {
+            *outB = 8;
+            *outC = 0x24;
+            for (j = 0; j < 6; j++) {
+                for (k = 0; k < 3; k++) {
+                    rows[j][k] = fn_800BDEB4(data, bitsA, &ctx->bitIndex);
+                }
+            }
+            for (j = 6; j < 12; j++) {
+                for (k = 0; k < 3; k++) {
+                    rows[j][k] = fn_800BDEB4(data, bitsB, &ctx->bitIndex);
+                }
+            }
+        }
+    }
+    if (*(s32 *)((u8 *)arg0 + 4) == 1) {
+        if ((*(s16 *)((u8 *)arg0 + 0x1E) != 1 && *(s16 *)((u8 *)arg0 + 0x1E) != 3) || (s32)row != 1) {
+            if (index < 400) {
+                b0 = (index >> 4) / 5;
+                b1 = (index >> 4) % 5;
+                b2 = (index & 0xF) >> 2;
+                b3 = index & 3;
+                *outD = 0;
+                if (flags & 0x18) {
+                    n0 = 6;
+                    n1 = 9;
+                    n2 = 9;
+                    n3 = 9;
+                    if (flags & 0x10) {
+                        n0 = 9;
+                    }
+                } else {
+                    n0 = 6;
+                    n1 = 5;
+                    n2 = 5;
+                    n3 = 5;
+                }
+            }
+            if (index >= 400 && index < 500) {
+                b0 = ((index - 400) >> 2) / 5;
+                b1 = ((index - 400) >> 2) % 5;
+                b2 = (index - 400) & 3;
+                b3 = 0;
+                *outD = 0;
+                if (flags & 0x18) {
+                    n0 = 6;
+                    n1 = 9;
+                    n2 = 12;
+                    n3 = 6;
+                    if (flags & 0x10) {
+                        n0 = 9;
+                    }
+                } else {
+                    n0 = 6;
+                    n1 = 5;
+                    n2 = 7;
+                    n3 = 3;
+                }
+            }
+            if (index >= 500 && index < 512) {
+                b0 = (index - 500) / 3;
+                b1 = (index - 500) % 3;
+                b2 = 0;
+                b3 = 0;
+                *outD = 1;
+                if (flags & 0x18) {
+                    n0 = 15;
+                    n1 = 18;
+                    n2 = 0;
+                    n3 = 0;
+                    if (flags & 0x10) {
+                        n0 = 18;
+                    }
+                } else {
+                    n0 = 11;
+                    n1 = 10;
+                    n2 = 0;
+                    n3 = 0;
+                }
+            }
+        }
+        if ((*(s16 *)((u8 *)arg0 + 0x1E) == 1 || *(s16 *)((u8 *)arg0 + 0x1E) == 3) && (s32)row == 1) {
+            half = index >> 1;
+            *outE = index & 1;
+            if (half < 180) {
+                b0 = half / 36;
+                rem = half % 36;
+                b1 = rem / 6;
+                b2 = rem % 6;
+                b3 = 0;
+                *outD = 0;
+                if (flags & 0x18) {
+                    if (flags & 8) {
+                        n0 = 6;
+                        n1 = 15;
+                        n2 = 12;
+                        n3 = 0;
+                    } else {
+                        n0 = 12;
+                        n1 = 12;
+                        n2 = 12;
+                        n3 = 0;
+                    }
+                } else {
+                    n0 = 7;
+                    n1 = 7;
+                    n2 = 7;
+                    n3 = 0;
+                }
+            }
+            if (half >= 180 && half < 244) {
+                b0 = ((half - 180) >> 4) & 3;
+                b1 = ((half - 180) & 0xF) >> 2;
+                b2 = (half - 180) & 3;
+                b3 = 0;
+                *outD = 0;
+                if (flags & 0x18) {
+                    if (flags & 8) {
+                        n0 = 6;
+                        n1 = 12;
+                        n2 = 9;
+                        n3 = 6;
+                    } else {
+                        n0 = 12;
+                        n1 = 9;
+                        n2 = 9;
+                        n3 = 6;
+                    }
+                } else {
+                    n0 = 6;
+                    n1 = 6;
+                    n2 = 6;
+                    n3 = 3;
+                }
+            }
+            if (half >= 244 && half <= 255) {
+                b0 = (half - 244) / 3;
+                b1 = (half - 244) % 3;
+                b2 = 0;
+                b3 = 0;
+                *outD = 0;
+                if (flags & 0x18) {
+                    if (flags & 8) {
+                        n0 = 6;
+                        n1 = 18;
+                        n2 = 9;
+                        n3 = 0;
+                    } else {
+                        n0 = 15;
+                        n1 = 12;
+                        n2 = 9;
+                        n3 = 0;
+                    }
+                } else {
+                    n0 = 8;
+                    n1 = 8;
+                    n2 = 5;
+                    n3 = 0;
+                }
+            }
+        }
+        for (i = 0; i < 21; i++) {
+            out[i] = 0;
+        }
+        for (j = 0; j < 12; j++) {
+            for (k = 0; k < 3; k++) {
+                rows[j][k] = 0;
+            }
+        }
+        ctx->bitIndex = ctx->limit;
+        ctx->limit += frameBits;
+        *outA = 0;
+        if (flags & 0x18) {
+            if (flags & 8) {
+                *outB = 7;
+                *outC = 0x24;
+                for (i = 0; i < 6; i++) {
+                    out[i] = fn_800BDEB4(data, b0, &ctx->bitIndex);
+                }
+                e1 = (n0 - 6) / 3 + 3;
+                for (m = 3; m < e1; m++) {
+                    for (k = 0; k < 3; k++) {
+                        rows[m][k] = fn_800BDEB4(data, b0, &ctx->bitIndex);
+                    }
+                }
+                e2 = (n0 - 6 + n1) / 3 + 3;
+                for (m = e1; m < e2; m++) {
+                    for (k = 0; k < 3; k++) {
+                        rows[m][k] = fn_800BDEB4(data, b1, &ctx->bitIndex);
+                    }
+                }
+                e3 = (n2 + (n0 - 6 + n1)) / 3 + 3;
+                for (m = e2; m < e3; m++) {
+                    for (k = 0; k < 3; k++) {
+                        rows[m][k] = fn_800BDEB4(data, b2, &ctx->bitIndex);
+                    }
+                }
+                e4 = (n3 + (n2 + (n0 - 6 + n1))) / 3 + 3;
+                for (m = e3; m < e4; m++) {
+                    for (k = 0; k < 3; k++) {
+                        rows[m][k] = fn_800BDEB4(data, b3, &ctx->bitIndex);
+                    }
+                }
+            } else {
+                *outB = 8;
+                *outC = 0x24;
+                e1 = n0 / 3;
+                for (m = 0; m < e1; m++) {
+                    for (k = 0; k < 3; k++) {
+                        rows[m][k] = fn_800BDEB4(data, b0, &ctx->bitIndex);
+                    }
+                }
+                e2 = (n0 + n1) / 3;
+                for (m = e1; m < e2; m++) {
+                    for (k = 0; k < 3; k++) {
+                        rows[m][k] = fn_800BDEB4(data, b1, &ctx->bitIndex);
+                    }
+                }
+                e3 = (n2 + (n0 + n1)) / 3;
+                for (m = e2; m < e3; m++) {
+                    for (k = 0; k < 3; k++) {
+                        rows[m][k] = fn_800BDEB4(data, b2, &ctx->bitIndex);
+                    }
+                }
+                e4 = (n3 + (n2 + (n0 + n1))) / 3;
+                for (m = e3; m < e4; m++) {
+                    for (k = 0; k < 3; k++) {
+                        rows[m][k] = fn_800BDEB4(data, b3, &ctx->bitIndex);
+                    }
+                }
+            }
+        } else {
+            if (flags & 6) {
+                *outB = 7;
+                *outC = 0x24;
+            }
+            for (m = 0; m < n0; m++) {
+                out[m] = fn_800BDEB4(data, b0, &ctx->bitIndex);
+            }
+            e1 = n0 + n1;
+            for (m = n0; m < e1; m++) {
+                out[m] = fn_800BDEB4(data, b1, &ctx->bitIndex);
+            }
+            e2 = e1 + n2;
+            for (m = e1; m < e2; m++) {
+                out[m] = fn_800BDEB4(data, b2, &ctx->bitIndex);
+            }
+            e3 = n2 + (n0 + n1);
+            e4 = e3 + n3;
+            for (m = e3; m < e4; m++) {
+                out[m] = fn_800BDEB4(data, b3, &ctx->bitIndex);
+            }
+        }
+    }
+}
+#pragma pop
+
 void fn_800C4B5C(s32 arg0, s32 arg1) {
     u32 temp_r0;
     s32 temp_r5;
