@@ -262,17 +262,19 @@ namespace nw4hbm { namespace lyt {
     };
 } }
 
-extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(void* this_,
-                                                               u32 idx,
-                                                               u8 color) {
-    if (idx >= 0x10) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803204B0, 0xD4,
-                                     (const char*)lbl_80320474);
+/* nw4hbm::lyt::Picture::SetVtxColorElement(u32, u8): store one channel of the
+ * picture's corner colors -- the four Color members at 0xD4 seen as the 16 bytes
+ * an animation target indexes them by -- asserting the index is in range. */
+extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(
+    nw4hbm::lyt::Picture* self, u32 idx, u8 color) {
+    if (idx >= ANIMTARGET_VERTEXCOLOR_MAX) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)sAssertFile_common, 0xD4,
+                                     (const char*)sAssertIdxAnimTargetVtxColor);
     }
 
     u32 hi = idx & ~3;
     u32 lo = idx & 3;
-    u8* p = (u8*)((u32)this_ + hi);
+    u8* p = (u8*)((u32)self + hi);
     p[lo + 0xD4] = color;
 }
 
