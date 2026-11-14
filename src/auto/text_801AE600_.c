@@ -112,11 +112,10 @@ void fn_801AE628(int arg0) {
         int indices[8];
         int max_val;
     } data;
-    register int i;
     register int offset;
+    register int i;
     register char *entry;
     register int k;
-
     data.max_val = -1;
     data.count = 0;
     for (i = 0, offset = 0; i < lbl_80435780[0x3C0 / 4]; offset += 0x1C, i++) {
@@ -131,18 +130,22 @@ void fn_801AE628(int arg0) {
             }
         }
     }
-
-    for (offset = 0, i = 0; i < lbl_80435780[0x3C0 / 4]; i++, offset += 0x1C) {
-        entry = (char *)*lbl_8055E624 + offset;
-        if (fn_801AE620(entry) != 0) {
-            *(short *)(entry + 0x10) = fn_801AE610(arg0, *(short *)(entry + 0xC));
-            *(short *)(entry + 0x12) = 0;
-            if (*(short *)(entry + 0x14) != 0) {
-                *(short *)(entry + 0x12) += 5;
-            }
-            for (k = 0; k < data.count; k++) {
-                if (i == data.indices[k]) {
-                    *(short *)(entry + 0x12) += 5;
+    {
+        char *e2;
+        unsigned int off;
+        int j;
+        for (j = 0, off = 0; j < lbl_80435780[0x3C0 / 4]; off += 0x1C, j++) {
+            e2 = (char *)*lbl_8055E624 + off;
+            if (fn_801AE620(e2) != 0) {
+                *(short *)(e2 + 0x10) = fn_801AE610(arg0, *(short *)(e2 + 0xC));
+                *(short *)(e2 + 0x12) = 0;
+                if (*(short *)(e2 + 0x14) != 0) {
+                    *(short *)(e2 + 0x12) += 5;
+                }
+                for (k = 0; k < data.count; k++) {
+                    if (j == data.indices[k]) {
+                        *(short *)(e2 + 0x12) += 5;
+                    }
                 }
             }
         }
@@ -315,19 +318,20 @@ int fn_801AEAA4(const void *left, const void *right) {
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-int fn_801AEB58(const void *arg0, const void *arg1) {
-    float f31;
-    float f1;
-    float f2;
-    int temp = *(const int *)arg1;
-    f31 = fn_801AF9EC(*(const int *)arg0, 0);
-    f1 = fn_801AF9EC(temp, 0);
-    f2 = f1;
-    if (f31 < lbl_8056255C)
-        f31 = lbl_80562570;
-    if (f1 < lbl_8056255C)
-        f2 = lbl_80562570;
-    return fn_801AEA64(f31, f2);
+/* Compare two entry IDs by their scores (from fn_801AF9EC), treating values below 1.0 as a sentinel (10000.0). */
+int fn_801AEB58(const void *a, const void *b) {
+    float scoreA;
+    float scoreB;
+    float adjustedB;
+    int idB = *(const int *)b;
+    scoreA = fn_801AF9EC(*(const int *)a, 0);
+    scoreB = fn_801AF9EC(idB, 0);
+    adjustedB = scoreB;
+    if (scoreA < lbl_8056255C)
+        scoreA = lbl_80562570;
+    if (scoreB < lbl_8056255C)
+        adjustedB = lbl_80562570;
+    return fn_801AEA64(scoreA, adjustedB);
 }
 #pragma dont_inline reset
 #pragma pop
