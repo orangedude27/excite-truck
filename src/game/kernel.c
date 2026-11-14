@@ -506,19 +506,24 @@ unsigned long long fn_802E2C9C(void) {
     return __div2i(elapsed << 3, scale);
 }
 #pragma scheduling on
+/* Store the console's real date and time (RTC ticks from OSGetTime(), broken
+ * out by OSTicksToCalendarTime()) into the halfword-packed calendar struct
+ * fn_802E2A5C logs "date:" and "time:" from at start-up.  The month is kept
+ * 1-12 here, unlike the OS calendar's 0-11. */
 void fn_802E2CFC(void *arg0) {
     struct OSTimeCalendar calendar;
-    OSTicksToCalendarTime(OSGetTime(), &calendar);
-    *(short *)((char *)arg0 + 0xA) = (short)calendar.sec;
-    *(short *)((char *)arg0 + 0x8) = (short)calendar.min;
-    *(short *)((char *)arg0 + 0x6) = (short)calendar.hour;
-    *(short *)((char *)arg0 + 0x4) = (short)calendar.mday;
-    *(short *)((char *)arg0 + 0x2) = (short)(calendar.month + 1);
-    *(short *)((char *)arg0 + 0x0) = (short)calendar.year;
-    *(int *)((char *)arg0 + 0x10) = calendar.wday;
-    *(int *)((char *)arg0 + 0xC) = calendar.msec;
-}
+    struct StartupCalendar *now = (struct StartupCalendar *)arg0;
 
+    OSTicksToCalendarTime(OSGetTime(), &calendar);
+    now->second = (short)calendar.sec;
+    now->minute = (short)calendar.min;
+    now->hour = (short)calendar.hour;
+    now->day = (short)calendar.mday;
+    now->month = (short)(calendar.month + 1);
+    now->year = (short)calendar.year;
+    now->weekDay = calendar.wday;
+    now->msec = calendar.msec;
+}
 #pragma scheduling invalid_target
 u64 fn_802E2D74(int arg0) {
     long long limit = (long long)arg0 * 1000;
