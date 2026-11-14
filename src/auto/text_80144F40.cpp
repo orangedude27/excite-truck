@@ -637,17 +637,20 @@ extern "C" void fn_80145B50(void *arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+/* Renders formatted text for a UI/text entry: computes screen-space Y via
+ * fn_801452B4 and screen-space X via fn_801451DC from the entry fields, then
+ * passes stored color, font, format arg, alpha, screen X, and screen Y to
+ * fn_8000FF88 to format and draw the text. */
 extern "C" void fn_80145B94(void * __restrict arg0, u32 arg1) {
-    f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    f32 input = *(f32 *)((u8 *)arg0 + 4);
-    s32 id = *(s32 *)((u8 *)arg0 + 0xC);
-    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(id, input);
-    f32 last = *(f32 *)((u8 *)arg0 + 0x10);
-    s32 b = *(s32 *)((u8 *)arg0 + 0x14);
-    s32 a = *(s32 *)((u8 *)arg0 + 0x18);
-    ((void (*)(s32, s32, s32, ...))fn_8000FF88)(a, b, (s32)arg1, last, value, scale);
+    f32 screenY = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 logicalX = *(f32 *)((u8 *)arg0 + 4);
+    s32 justification = *(s32 *)((u8 *)arg0 + 0xC);
+    f32 screenX = ((f32 (*)(s32, f32))fn_801451DC)(justification, logicalX);
+    f32 alpha = *(f32 *)((u8 *)arg0 + 0x10);
+    s32 fontId = *(s32 *)((u8 *)arg0 + 0x14);
+    s32 color = *(s32 *)((u8 *)arg0 + 0x18);
+    ((void (*)(s32, s32, s32, ...))fn_8000FF88)(color, fontId, (s32)arg1, alpha, screenX, screenY);
 }
-
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
