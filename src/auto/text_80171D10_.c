@@ -446,17 +446,18 @@ int fn_80172624(void *arg0, int arg1) {
     return result;
 }
 
-void *fn_801726C4(void *arg0) {
+/* Allocate and initialize a 0x12C-byte object with vtable, runtime value, and owner pointer. */
+void *fn_801726C4(void *owner) {
     extern void *fn_801284F8(unsigned int, void *);
     extern char lbl_80330F48[];
     extern char lbl_80330FE8[];
-    void *result = fn_801284F8(0x12C, lbl_80330F48);
-    if (result != 0) {
-        *(void **)result = lbl_80330FE8;
-        *(int *)((char *)result + 0x124) = fn_801EA994();
-        *(void **)((char *)result + 0x128) = arg0;
+    void *object = fn_801284F8(0x12C, lbl_80330F48);
+    if (object != 0) {
+        *(void **)object = lbl_80330FE8;
+        *(int *)((char *)object + 0x124) = fn_801EA994();
+        *(void **)((char *)object + 0x128) = owner;
     }
-    return result;
+    return object;
 }
 
 unsigned char *__AXGetStackHead();                             /* extern */
