@@ -150,12 +150,25 @@ void fn_80257284(void) {
 
 #pragma scheduling invalid_target
 void *fn_80257470(void *arg0) {
-    *(int *)arg0 = (int)&lbl_80344CF0;
+    /* Initialize the object's vtable and sub-tables at +0x1C, +0x54, and +0x18C. */
+    #define kVTable lbl_80344CF0
+    #define kSubTableSizesA lbl_80563AA8
+    #define kSubTableSizesB lbl_80563AB0
+    #define InitSubTable fn_8022D458
+    #define InitValueTable fn_80257B7C
+
+    *(int *)arg0 = (int)&kVTable;
     *(int *)((char *)arg0 + 0x14) = 0;
-    ((void (*)(int, int, int, int *))fn_8022D458)((int)((char *)arg0 + 0x1C), 0x28, 2, &lbl_80563AA8);
-    ((void (*)(int, int, int, int *))fn_8022D458)((int)((char *)arg0 + 0x54), 0x40, 2, &lbl_80563AB0);
-    fn_80257B7C((int)((char *)arg0 + 0x18C));
+    ((void (*)(int, int, int, int *))InitSubTable)((int)((char *)arg0 + 0x1C), 0x28, 2, &kSubTableSizesA);
+    ((void (*)(int, int, int, int *))InitSubTable)((int)((char *)arg0 + 0x54), 0x40, 2, &kSubTableSizesB);
+    InitValueTable((int)((char *)arg0 + 0x18C));
     return arg0;
+
+    #undef kVTable
+    #undef kSubTableSizesA
+    #undef kSubTableSizesB
+    #undef InitSubTable
+    #undef InitValueTable
 }
 #pragma scheduling on
 
