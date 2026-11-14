@@ -10,7 +10,12 @@ struct Dummy_80174794 {
     virtual void f4(); virtual void f5(); virtual int f6(int);
 };
 #pragma cplusplus reset
-typedef struct { float pos[3]; int w; float a, b; } Elem_801720FC;
+/* A colour as the CPU keeps it: 0xAARRGGBB.  The FIFO writer (fn_802D68C4)
+   rotates it left 8 to put GX's R,G,B,A byte order on the bus. */
+typedef unsigned int RgbaColor;
+/* A vertex for the indexed-triangle writer fn_802C8DB8: position (pos),
+   colour (w) and one texture coordinate (a = S, b = T). */
+typedef struct { float pos[3]; RgbaColor w; float a, b; } Elem_801720FC;
 typedef struct { float m[12]; float v[3]; } Fn8017431CCam;
 typedef union { unsigned long long ull; float f[2]; } Fn8017431CPair;
 typedef struct { float a[9]; } Fn8017431CM9;
