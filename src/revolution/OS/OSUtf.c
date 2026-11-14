@@ -3,6 +3,17 @@
 extern wchar_t UcsAnsiTable[32];
 extern wchar_t* UcsSjisTable[256];
 
+/* Codes of the ANSI font: every Latin-1 code point is its own code, except the
+ * C1 slot 0x80-0x9F, which holds the Windows-1252 punctuation of UcsAnsiTable. */
+#define ANSI_CODE_MAX 0xFF  /* largest code point the ANSI font can draw */
+#define ANSI_EXT_FIRST \
+    0x80 /* first code point taken from UcsAnsiTable, and its first index */
+#define ANSI_EXT_LAST 0x9F /* last code point taken from UcsAnsiTable */
+/* Smallest and largest Unicode value UcsAnsiTable holds; a code point outside
+ * this range can never be found in it. */
+#define ANSI_EXT_UCS_MIN 0x152
+#define ANSI_EXT_UCS_MAX 0x2122
+
 /* Decodes one UTF-8 code point into utf32, validating continuation bytes and
  * overlong/surrogate encodings; returns pointer after the sequence or NULL. */
 const u8* OSUTF8to32(const u8* utf8, u32* utf32) {
