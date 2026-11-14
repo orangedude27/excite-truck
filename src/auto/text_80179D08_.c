@@ -94,7 +94,9 @@ void fn_80179D8C(void *arg0, s32 arg1) {
     ((s32 *)arg0)[2] = arg1;
 }
 
+/* Initializes an object state block from a source descriptor: stores source pointer/id, clears counters/flags, sets float fields to defaults (0 or 1), and initializes a subobject at +0x6C. */
 void fn_80179D94(void *arg0, void *arg1) {
+#define InitSubObject_0x6C fn_801E9DC4
     f32 b;
     f32 a;
     s32 zero;
@@ -122,7 +124,8 @@ void fn_80179D94(void *arg0, void *arg1) {
     *(f32 *)((u8 *)arg0 + 0x60) = a;
     *(f32 *)((u8 *)arg0 + 0x64) = a;
     *(f32 *)((u8 *)arg0 + 0x68) = a;
-    fn_801E9DC4((u8 *)arg0 + 0x6C);
+    InitSubObject_0x6C((u8 *)arg0 + 0x6C);
+#undef InitSubObject_0x6C
 }
 
 #pragma cplusplus on
