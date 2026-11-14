@@ -262,16 +262,17 @@ s32 fn_802315FC(s32 arg0) {
     return 0;
 }
 #pragma scheduling invalid_target
-s32 fn_802316A4(void *arg0) {
+/* Finds the texture/font block in the global texture block table by pointer and releases it (decrements its refcount), logging a warning if not found. */
+s32 fn_802316A4(void *block) {
     u8 *entry = lbl_8055F068;
-    s32 i = 0;
+    s32 index = 0;
     s32 count = *(s32 *)(lbl_8055F068 + 0x168);
-    while (i < count) {
-        if (*(void **)entry == arg0) return fn_802315FC(i);
+    while (index < count) {
+        if (*(void **)entry == block) return fn_802315FC(index);
         entry += 0xC;
-        i++;
+        index++;
     }
-    ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034044C, arg0);
+    ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034044C, block);
     return 0;
 }
 #pragma scheduling on
