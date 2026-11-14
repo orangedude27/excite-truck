@@ -2006,9 +2006,10 @@ int fn_8019643C(int arg0) {
       extern int fn_801B2F24(void);
     extern void fn_801B2F40(int);
     extern int fn_8019643C();
-    int fn_80196468(int arg0) {
+/* Iterate entries from startIndex to end and return 1 if any checked entry matches the target type. */
+int fn_80196468(int startIndex) {
       int end = fn_801B2F24();
-      int i = arg0;
+      int i = startIndex;
       while (i <= end) {
           fn_801B2F40(i - 1);
           if (fn_8019643C() != 0) return 1;
