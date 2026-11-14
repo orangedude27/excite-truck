@@ -37,6 +37,88 @@ extern int lbl_8055E774;
 extern float lbl_80562764;
 extern void* lbl_80436D28[];
 
+/* The trailer cars.  One "trlr_car" (alloc tag lbl_803369C0, vtable
+   lbl_803369D0, 0x2760 bytes) per player index, kept in lbl_80436D28 next to
+   the player it trails (lbl_80430830, handed out by fn_8017960C).
+   fn_801B8E28 places one every frame and fn_801B949C (vtable+0x10) resets it;
+   both hand the pose they work out to fn_80189CB4 at vtable+0x54. */
+
+#pragma push
+#pragma cplusplus on
+
+/* What ties a body's point to a target point; see the Spring note in
+   src/auto/text_801A9660_.c, whose fn_801AD0E0/fn_801AD148/fn_801AD28C set one
+   up and fn_801AD394 measures it and applies the force it gives. */
+struct Spring {
+    Vec target;       /* 0x00 the point the anchor is pulled towards */
+    void *other;      /* 0x0C the body the target is a point of, 0 for a fixed point */
+    Vec anchor;       /* 0x10 the point on `body`, in its own frame */
+    f32 strength;     /* 0x1C force per unit of stretch */
+    f32 damping;      /* 0x20 */
+    f32 range;        /* 0x24 how far past the rest length it still pulls */
+    f32 restLength;   /* 0x28 */
+    f32 stretch;      /* 0x2C */
+    f32 flatDistance; /* 0x30 */
+    void *body;       /* 0x34 the body the anchor rides on */
+};                    /* 0x38 */
+
+/* One of the eight players: a moving body whose pose is three axes and a
+   position (fn_8017AB84 transforms a point by them; see the RigidBody note in
+   src/auto/text_8017B0B0_.c), plus the frame its trailer hangs from and the
+   way it is pointing. */
+struct PlayerCar {
+    char pad0[0x3C];
+    Vec axes[3];          /* 0x3C the body's world frame */
+    Vec position;         /* 0x60 */
+    s16 heading;          /* 0x6C */
+    u8 pad6E[2];
+    Vec trailerAxes[3];   /* 0x70 the frame the trailer is placed in */
+    Vec trailerPos;       /* 0x94 */
+    char padA0[0x118 - 0xA0];
+    Vec velocity;         /* 0x118 */
+};
+
+struct TrlrCar {
+    void *vtable;             /* 0x00 */
+    char pad4[0x2C];
+    Vec localPoint;           /* 0x30 a point of the body, in its own frame */
+    char pad3C[0x18];
+    Vec facing;               /* 0x54 the body's facing axis, its frame's third axis */
+    char pad60[0x2700 - 0x60];
+    s32 index;                /* 0x2700 */
+    struct Spring spring;     /* 0x2704 what pulls the trailer along */
+    Vec anchorPos;            /* 0x273C the trailer's point in the level */
+    Vec carPos;               /* 0x2748 the player's point in the level */
+    struct PlayerCar *player; /* 0x2754 the player this trailer trails */
+    f32 unk2758;              /* 0x2758 zeroed when the car is reset */
+    u8 flag275C;              /* 0x275C fn_801B97D8 turns it into a fn_8018ADA4 value */
+    u8 towed;                 /* 0x275D while set, the trailer hangs from the player */
+};
+
+/* The pose fn_80189CB4 (vtable+0x54) installs into a trailer car: it becomes
+   the car's world pose (+0x3C, +0x60), its velocity (+0x118) and its heading
+   (+0x6C). */
+struct CarPose {
+    Vec axes[3];      /* 0x00 the frame to place the trailer in */
+    f32 position[3];  /* 0x24 where it goes, in the world */
+    f32 velocity[3];  /* 0x30 how it travels along that frame */
+    s32 flag;         /* 0x3C handed on to fn_801B30C0 */
+    s16 heading;      /* 0x40 the way the player points */
+};                    /* 0x44 */
+
+/* A trailer car's own vtable: two leading destructor slots, so the pose setter
+   is the twentieth declared method, at +0x54. */
+struct TrlrCarVf {
+    virtual void unk0(); virtual void unk1(); virtual void unk2(); virtual void unk3();
+    virtual void unk4(); virtual void unk5(); virtual void unk6(); virtual void unk7();
+    virtual void unk8(); virtual void unk9(); virtual void unk10(); virtual void unk11();
+    virtual void unk12(); virtual void unk13(); virtual void unk14(); virtual void unk15();
+    virtual void unk16(); virtual void unk17(); virtual void unk18();
+    virtual void setPose(struct CarPose *pose, struct PlayerCar *player);
+};
+
+#pragma pop
+
 static inline void transform_vec(float *out, const float *m, volatile float *in) {
     if (out == in) {
         register float x = in[0];
