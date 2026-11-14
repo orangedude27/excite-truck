@@ -400,15 +400,16 @@ extern "C" void fn_801F0000(s32);
 extern "C" void fn_80253C48(void *);
 extern "C" void fn_802532BC(void *);
 #pragma dont_inline on
-extern "C" void fn_80253824(void *arg0) {
-    if (*(u8 *)arg0 != 0) {
-        *(u8 *)arg0 = 0;
-        fn_802C6CF8(*(s32 *)((u8 *)arg0 + 0x10));
-        fn_802C6CF8(*(s32 *)((u8 *)arg0 + 0x14));
-        fn_801F0000(*(s32 *)((u8 *)arg0 + 0x18));
-        fn_801F0000(*(s32 *)((u8 *)arg0 + 0x1C));
-        fn_80253C48(arg0);
-        fn_802532BC(arg0);
+/* If active, clear the object and release its resources/handles, then run teardown helpers. */
+extern "C" void fn_80253824(void *object) {
+    if (*(u8 *)object != 0) {
+        *(u8 *)object = 0;
+        fn_802C6CF8(*(s32 *)((u8 *)object + 0x10));
+        fn_802C6CF8(*(s32 *)((u8 *)object + 0x14));
+        fn_801F0000(*(s32 *)((u8 *)object + 0x18));
+        fn_801F0000(*(s32 *)((u8 *)object + 0x1C));
+        fn_80253C48(object);
+        fn_802532BC(object);
     }
 }
 #pragma dont_inline reset
