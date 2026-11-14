@@ -19293,11 +19293,12 @@ void l2c_link_role_changed(u8 *bdAddr, u8 newRole) {
         if (controlBlock[0] != 0 && *(s32 *)(controlBlock + 4) == 2) l2cu_create_conn_after_switch(controlBlock);
 }
 
+/* After a role switch failure, retry connection establishment for each in-use LCB that is waiting for the role switch to complete. */
 void l2c_link_role_change_failed(void) {
-    u8 *entry;
+    u8 *lcb;
     s32 i;
-    for (i = 0, entry = lbl_803C4040 + 8; i < 4; i++, entry += 0x5C)
-        if (entry[0] != 0 && *(s32 *)(entry + 4) == 2) l2cu_create_conn_after_switch(entry);
+    for (i = 0, lcb = lbl_803C4040 + 8; i < 4; i++, lcb += 0x5C)
+        if (lcb[0] != 0 && *(s32 *)(lcb + 4) == 2) l2cu_create_conn_after_switch(lcb);
 }
 
 extern char lbl_80318E20[];
