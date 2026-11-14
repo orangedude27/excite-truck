@@ -1296,6 +1296,10 @@ VITVFormat fn_8005AB88(void) {
     return lbl_8055DB94;
 }
 
+/* Shows black on the screen (black TRUE) or the picture again (FALSE): records
+   the flag in the VI state and recomputes the vertical registers, which collapse
+   the active picture window to zero height so the display goes black without
+   changing the TV timing. */
 void VISetBlack(BOOL black)
 {
     BOOL enabled;
@@ -1304,6 +1308,7 @@ void VISetBlack(BOOL black)
     enabled = OSDisableInterrupts();
     HorVer.black = black;
     tm = HorVer.timing;
+    // setVerticalRegs(): rebuild the vertical porch/blanking registers for the new black state.
     fn_80059D90(HorVer.AdjustedDispPosY, HorVer.DispSizeY, tm->equ, tm->acv, tm->prbOdd, tm->prbEven, tm->psbOdd, tm->psbEven, HorVer.black);
     OSRestoreInterrupts(enabled);
 }
