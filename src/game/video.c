@@ -169,11 +169,12 @@ void fn_802DEFA0(void) {
 }
 
 #pragma scheduling invalid_target
+/* Configure TEV swap mode table/stages, run shared GX state update, and reset indirect/direct TEV state. */
 void fn_802DF1B4(void) {
-    register u32 stage = 1;
-    register u32 zero = 0;
-    register u32 last = 3;
-    GXSetTevSwapModeTable(stage, zero, zero, zero, last);
+    register u32 swapTable = 1;
+    register u32 colorSel = 0;
+    register u32 alphaSel = 3;
+    GXSetTevSwapModeTable(swapTable, colorSel, colorSel, colorSel, alphaSel);
     GXSetTevSwapMode(0, 0, 0);
     GXSetTevSwapMode(1, 0, 0);
     fn_802D3144();
