@@ -108,11 +108,18 @@ f32 fn_8020A5F0(void) {
     return lbl_8055EDD8;
 }
 
-s32 fn_80128670(s32);
-s32 fn_801336E0(s32, void*);
-void fn_8020A634(void);
-void fn_80209FFC(void);
-extern s32 lbl_8055B550;
+s32 fn_80128670(s32);               /* free an allocation made by fn_8012850C */
+s32 fn_801336E0(s32, void*);        /* unregister callback arg1 under handle arg0 */
+void fn_8020A634(void);             /* clear the "music: play!" flag */
+void fn_80209FFC(void);             /* "Music" volume callback */
+extern s32 lbl_8055B550;            /* handle of the volume callback, -1 when none */
+
+/* One of the two music channels of lbl_804892C0: the Sound object playing
+ * from buffer, a 0x70-byte allocation tagged "mus_buf". */
+typedef struct MusicSlot {
+    s32 sound;   /* +0x00 Sound object, 0 while nothing is loaded */
+    s32 buffer;  /* +0x04 stream buffer the sound plays from */
+} MusicSlot;
 
 extern char lbl_8055B578;
 extern char lbl_8055B580;
@@ -122,7 +129,7 @@ s32 fn_8012850C(s32, void*);
 s32 fn_8013323C(s32, void*, f32);
 s32 fn_8013365C(void*, void*);
 s32 fn_8000DBC8(void*);
-extern u8 fn_8020A03C[];
+extern void fn_8020A03C(s32, s32);
 extern void fn_801331C4(int, void *, f32 *);
 #pragma dont_inline on
 void fn_80209FFC(void) {
@@ -291,3 +298,29 @@ void fn_8020A47C(void) {
     fn_8012E81C(local.songNameBuf);
 }
 
+
+extern const char lbl_8033C288[];
+/* Music event 3 exports the local volume, 1/2 import it, and 0 applies default. */
+#pragma cplusplus on
+extern "C" void fn_8020A03C(s32 object, s32 event) {
+    register f32 volume = lbl_80563290;
+    switch (event) {
+    case 3:
+        fn_801331C4(object + 0xC, (void *)lbl_8033C288, &volume);
+        fn_8013323C(4, (void *)lbl_8033C278, volume);
+        fn_8020A5F8(volume);
+        break;
+    case 1:
+    case 2:
+        fn_801331C4(4, (void *)lbl_8033C278, &volume);
+        fn_8013323C(object + 0xC, (void *)lbl_8033C288, volume);
+        break;
+    case 0:
+        fn_8013323C(4, (void *)lbl_8033C278, volume);
+        fn_8020A5F8(volume);
+        break;
+    }
+}
+#pragma cplusplus reset
+
+#pragma cplusplus reset
