@@ -245,17 +245,20 @@ struct SpkStream {
 #define spuStreams            ((struct SpkStream *)lbl_804FC800)
 
 #pragma scheduling invalid_target
-void fn_802E51D0(int arg0, int arg1) {
-    unsigned char *entry;
-    if (arg1 != 0) {
+void fn_802E51D0(int channel, int result) {
+    /* On success, mark the SPU stream channel ready and log its availability. */
+    unsigned char *streamEntry;
+
+    if (result != 0) {
         return;
     }
-    lbl_804FC800[arg0 * 0x2C] = 1;
-    entry = lbl_804FC800 + arg0 * 0x2C;
-    *(int *)(entry + 0x24) = 1;
-    *(int *)(entry + 0x28) = 0;
-    memset(entry + 1, 0, 0x20);
-    ((void (*)(char *, int, ...))fn_802E30C8)(lbl_8034D384, arg0);
+
+    lbl_804FC800[channel * 0x2C] = 1;
+    streamEntry = lbl_804FC800 + channel * 0x2C;
+    *(int *)(streamEntry + 0x24) = 1;
+    *(int *)(streamEntry + 0x28) = 0;
+    memset(streamEntry + 1, 0, 0x20);
+    ((void (*)(char *, int, ...))fn_802E30C8)(lbl_8034D384, channel);
 }
 #pragma scheduling on
 void fn_802E5248(int arg0, int arg1) {
