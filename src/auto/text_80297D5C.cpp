@@ -2065,6 +2065,7 @@ extern "C" void fn_8029B824(void *arg0) {
     }
 }
 #pragma pop
+/* Allocates and constructs the BackfireMan (0x1FC bytes, tagged "ExhaustTorchMan"): initializes its ExhaustTorchMan, stores it, registers fn_8029BFF8 on event slot 4, resets per-track backfire state, and returns the BackfireMan. */
 extern "C" void* fn_8029B938(void* arg0) {
     int result = fn_801284F8(0x1FC, lbl_80349550);
     if (result != 0) {
