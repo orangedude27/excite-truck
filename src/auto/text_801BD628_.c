@@ -102,9 +102,7 @@ void fn_801BD790(void) {
     poolIndex = 0;
     poolCapacity = 0;
 }
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
+
 extern void *memset(void *, int, unsigned long);
 extern double cos(double);
 extern double sin(double);
