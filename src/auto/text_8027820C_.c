@@ -281,6 +281,9 @@ int fn_802787FC(void) {
 }
 
 int fn_80278820(void) {
+    /* If the current scene/object from fn_802678E4(0) is type 0x19, flag lbl_8055F5B9
+       is set, and lbl_8055E3C4 < lbl_8055F5C0, return 1. Otherwise return 0 when
+       lbl_8055F5BA is set, else return flag lbl_8055F5C8. */
     if (((int *)fn_802678E4(0))[4] == 0x19 && (unsigned char)lbl_8055F5B9 != 0 && lbl_8055E3C4 < lbl_8055F5C0) {
         return 1;
     }
