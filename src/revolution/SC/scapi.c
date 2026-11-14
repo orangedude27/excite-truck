@@ -94,6 +94,8 @@ BOOL SCSetBtDeviceInfoArray(const SCBtDeviceInfoArray* info) {
 }
 
 u32 SCGetBtDpdSensibility(void) {
+    /* Get the Bluetooth DPD (pointer) sensitivity from system config (item 0x16),
+       defaulting to 5 and clamping the result to the range [1, 5]. */
     u32 item;
 
     if (!SCFindU32Item(&item, SC_ITEM_BT_SENS)) {
