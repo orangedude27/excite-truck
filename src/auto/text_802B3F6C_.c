@@ -219,8 +219,8 @@ void fn_802B40F8(void) {
             grid[3] = (int)p;
         }
         GRID = grid;
-        f29 = lbl_80564C30;
         sub = fn_802B4014(list);
+        f29 = lbl_80564C30;
         f30 = lbl_80564C40;
         f31 = lbl_80564C44;
         f28 = lbl_80564C48;
@@ -372,20 +372,22 @@ extern float lbl_80564C40;
 extern float lbl_80564C44;
 extern unsigned short lbl_80564C38, lbl_80564C3A, lbl_80564C3C, lbl_80564C3E;
 extern float lbl_802FAAD0[];
+#pragma push
+#pragma processor 750
 void *fn_802B47A0(void *arg0, int *arg1, void *arg2, int arg3, int **arg4) {
     int sp[4];
     unsigned short sel[4];
     float quad[4];
     float st[2];
     int *out = (int *)arg0;
-    int a, b, cnt, n, lane, tries, k;
+    int a, cnt, n, lane, tries, k;
+    int t1;
     float f28, f27, f29, f30, f25, f26;
+    float *tab = lbl_802FAAD0;
     int (**vt)(void *, void *) = *(int (***)(void *, void *))arg2;
-
     a = vt[7](arg2, lbl_8034A4A0);
-    n = arg3 * (arg3 * a) / 10;
-    b = (*(int (***)(void *, void *))arg2)[7](arg2, lbl_8034A4AC);
-    cnt = fn_80129D90(0, n, arg3 * (arg3 * b) / 10 + 1);
+    t1 = arg3 * a;
+    cnt = fn_80129D90(0, (arg3 * t1) / 10, (arg3 * (arg3 * (*(int (***)(void *, void *))arg2)[7](arg2, lbl_8034A4AC))) / 10 + 1);
     fn_8012850C(cnt * 0x24 + 0x10, lbl_8055CE08);
     out[0] = (int)fn_8002F37C(fn_802B4BD8, 0, 0x24, cnt);
     out[3] = out[0];
@@ -419,12 +421,12 @@ void *fn_802B47A0(void *arg0, int *arg1, void *arg2, int arg3, int **arg4) {
         s = *(unsigned short *)(src + 0xa);
         x = *(float *)src * f28 * f29;
         y = *(float *)(src + 4) * f28 * f29;
-        nx = f30 + ((float *)lbl_802FAAD0)[8 + s * 2] * x + ((float *)lbl_802FAAD0)[8 + ((s + 1) & 3) * 2] * y;
-        ny = f30 + ((float *)lbl_802FAAD0)[9 + s * 2] * x + ((float *)lbl_802FAAD0)[9 + ((s + 1) & 3) * 2] * y;
+        nx = f30 + tab[8 + s * 2] * x + tab[8 + ((s + 1) & 3) * 2] * y;
+        ny = f30 + tab[9 + s * 2] * x + tab[9 + ((s + 1) & 3) * 2] * y;
         quad[0] = nx;
         quad[1] = ny;
-        ex = nx + f28 * (float)((int *)lbl_802FAAD0)[lane];
-        ey = ny + f28 * (float)((int *)lbl_802FAAD0)[4 + lane];
+        ex = nx + f28 * (float)tab[lane];
+        ey = ny + f28 * (float)tab[4 + lane];
         quad[2] = ex;
         quad[3] = ey;
         d0 = ex - f25;
@@ -443,8 +445,8 @@ void *fn_802B47A0(void *arg0, int *arg1, void *arg2, int arg3, int **arg4) {
         s = sel[code];
         *(unsigned short *)(dst + 0xa) = s;
         sp[lane] += 1;
-        *(float *)dst = ((float *)lbl_802FAAD0)[8 + s * 2] * u + ((float *)lbl_802FAAD0)[9 + s * 2] * v;
-        *(float *)(dst + 4) = ((float *)lbl_802FAAD0)[8 + ((s + 1) & 3) * 2] * u + ((float *)lbl_802FAAD0)[9 + ((s + 1) & 3) * 2] * v;
+        *(float *)dst = tab[8 + s * 2] * u + tab[9 + s * 2] * v;
+        *(float *)(dst + 4) = tab[8 + ((s + 1) & 3) * 2] * u + tab[9 + ((s + 1) & 3) * 2] * v;
     }
     *arg4[0] = sp[0];
     *arg4[1] = sp[1];
@@ -452,8 +454,7 @@ void *fn_802B47A0(void *arg0, int *arg1, void *arg2, int arg3, int **arg4) {
     *arg4[3] = sp[3];
     return arg0;
 }
-
-#pragma scheduling on
+#pragma pop
 int fn_802B4BC0(int arg0, int arg1, int arg2) {
     return arg0 + (((arg1 & 0x1F) + ((arg2 << 5) & 0x3E0)) << 3);
 }
@@ -567,16 +568,18 @@ void fn_802B4D40(void *owner) {
 }
 
 void fn_802B4DC0(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p != NULL) {
-        if (p != NULL) {
-            fn_80128670(((int *)p)[3]);
-            if (p != NULL) {
-                ((int *)p)[0] = 0;
-                ((int *)p)[1] = 0;
-                ((int *)p)[2] = 0;
+    /* Destroys the object stored at *arg0: frees its owned buffer, clears its
+       first three fields, frees the object, and clears the slot. */
+    void *object = *(void **)arg0;
+    if (object != NULL) {
+        if (object != NULL) {
+            fn_80128670(((int *)object)[3]);
+            if (object != NULL) {
+                ((int *)object)[0] = 0;
+                ((int *)object)[1] = 0;
+                ((int *)object)[2] = 0;
             }
-            fn_80128668(p);
+            fn_80128668(object);
         }
         *(void **)arg0 = NULL;
     }
