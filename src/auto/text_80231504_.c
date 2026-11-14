@@ -902,7 +902,7 @@ s32 fn_80232578(const char *name) {
     }
     ((GTexBlock *)data)->resourceIndex = index;
     ((GTexBlock *)data)->outline = (GTexBlock *)fn_80231730((s32)name);
-    fn_8023158C(data, name);
+    fn_8023158C((GTexBlock *)data, name);
     return (s32)data;
 }
 
