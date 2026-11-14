@@ -1543,15 +1543,26 @@ long fn_8027CE4C(long arg0) {
     }
 }
 
-long fn_8027CEC4(long arg0) {
-    long value = *fn_8027C120(lbl_8055F654, arg0);
-    switch (value) {
+/* EventPath query for a contest name: finds the contest in the manager's contest-event
+ * array (lbl_8055F654, see fn_8027C120) and asks the handler for that record's
+ * event-path type (0 = career, 1 = challenge) whether the contest's save record has
+ * reached its passing grade -- the career handler (fn_8027C650) compares it with the
+ * grade the grade table demands, the challenge handler (fn_8027CA1C) with the grade
+ * named by the contest object's "passing_grade" attribute.  fn_8027AD4C stores the
+ * answer at +0x10 of the "event_goal" object it is reading; an unknown type is
+ * reported and counted as passed.  The record pointer is still in r3 when the
+ * handler is called, which is why the call is written as taking no argument. */
+long fn_8027CEC4(long contestName) {
+    struct ContestEvent *event = (struct ContestEvent *)fn_8027C120(lbl_8055F654, contestName);
+    long pathType = event->eventId;
+    switch (pathType) {
     case 0:
         return ((long (*)(void))fn_8027C650)();
     case 1:
         return ((long (*)(void))fn_8027CA1C)();
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, arg0, value);
+        /* "eventpath: contest %s has unknown event-path type %d" */
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, contestName, pathType);
         return 1;
     }
 }
