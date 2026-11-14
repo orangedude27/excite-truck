@@ -4629,6 +4629,16 @@ static inline void SoundInstanceManager_InsertPriorityList(void *pool, void *sou
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)pool + 4, &it, (u8 *)sound + 0xB8);
 }
 
+/* ut::LinkList iterator (list = { size, node }): GetEndIter() is the list's own node. */
+struct LinkListIter {
+    void *node;
+};
+static inline LinkListIter LinkList_GetEndIter(void *list) {
+    LinkListIter iter;
+    iter.node = (u8 *)list + 4;
+    return iter;
+}
+
 static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
     void *sound;
     void *it;
