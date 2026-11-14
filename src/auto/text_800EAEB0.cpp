@@ -1634,21 +1634,52 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
 
 #pragma push
 #pragma dont_inline on
-extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *arg0) {
-    extern u8 lbl_80323258[];
-    extern u8 lbl_80323760[];
+extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *this_) {
+    /* parameter block a SeqTrack keeps at +0x68 */
+    struct SeqParam {
+        f32 unknown_0x00; /* +0x00, from lbl_80561018 */
+        f32 unknown_0x04; /* +0x04, from lbl_8056101C */
+        s32 unknown_0x08; /* +0x08, cleared */
+        u8 ready;         /* +0x0C, set to 1 */
+    };
+    /* nw4hbm::snd::detail::MmlSeqTrack, derived from SeqTrack; 0xC8 bytes */
+    struct MmlSeqTrack {
+        void *vTable;       /* +0x00 SeqTrack's while the base part is built */
+        u8 seqTrack[0x64];  /* +0x04 SeqTrack state, see its InitParam() */
+        SeqParam param;     /* +0x68 note/parameter block */
+        u8 seqTrack2[0x3C]; /* +0x78 more SeqTrack state */
+        void *seqPlayer;    /* +0xB4 owning SeqPlayer, set by AllocTrack() */
+        u8 pad_0xB8[0x04];  /* +0xB8 */
+        void *mmlParser;    /* +0xBC MmlParser that parses this track */
+        u8 flag_0xC0;       /* +0xC0 */
+        u8 flag_0xC1;       /* +0xC1 */
+        u8 flag_0xC2;       /* +0xC2 */
+        u8 pad_0xC3[0x03];  /* +0xC3 */
+        u8 flag_0xC6;       /* +0xC6 */
+    };
+    extern u8 lbl_80323258[]; /* nw4hbm::snd::detail::SeqTrack vtable */
+    extern u8 lbl_80323760[]; /* nw4hbm::snd::detail::MmlSeqTrack vtable */
     extern void fn_800EC890(void *);
     extern void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
-    *(u8 **)arg0 = lbl_80323258;
-    fn_800EC890((u8 *)arg0 + 0x68);
-    *(s32 *)((u8 *)arg0 + 0xB4) = 0;
-    InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(arg0);
-    *((u8 *)arg0 + 0xC1) = 1;
-    *(u8 **)arg0 = lbl_80323760;
-    *((u8 *)arg0 + 0xC2) = 0;
-    *((u8 *)arg0 + 0xC0) = 1;
-    *((u8 *)arg0 + 0xC6) = 0;
-    return arg0;
+    #define seqTrackVTable lbl_80323258
+    #define mmlSeqTrackVTable lbl_80323760
+    #define InitParamBlock fn_800EC890
+    MmlSeqTrack *track = (MmlSeqTrack *)this_;
+
+    track->vTable = seqTrackVTable;
+    InitParamBlock(&track->param);
+    track->seqPlayer = 0;
+    InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(this_);
+    track->flag_0xC1 = 1;
+    track->vTable = mmlSeqTrackVTable;
+    track->flag_0xC2 = 0;
+    track->flag_0xC0 = 1;
+    track->flag_0xC6 = 0;
+
+    #undef seqTrackVTable
+    #undef mmlSeqTrackVTable
+    #undef InitParamBlock
+    return this_;
 }
 #pragma pop
 
