@@ -720,53 +720,54 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
         virtual Item *at(s32);
     };
     char *str = lbl_803306D0;
-    List8016C768 *list;
+    List8016C768 *list1;
+    List8016C768 *list2;
     Item *obj;
-    s32 count, i, idx;
+    s32 count1, i1, count2, i2, idx;
     s32 ok;
     List8016C768 **out = (List8016C768 **)arg0;
     Doc *doc = (Doc *)arg1;
     Doc **coll = (Doc **)arg2;
-    list = (List8016C768 *)fn_801284F8(0x10, str + 0x114);
-    if (list != 0) {
-        count = 0;
-        i = 0;
-        while ((obj = doc->at(i)) != 0) {
+    list1 = (List8016C768 *)fn_801284F8(0x10, str + 0x114);
+    if (list1 != 0) {
+        count1 = 0;
+        i1 = 0;
+        while ((obj = doc->at(i1)) != 0) {
             if (stricmp(obj->name(), &lbl_8055A228) == 0) {
-                if (stricmp(obj->search(&lbl_8055A230), str + 0x120) != 0) count++;
+                if (stricmp(obj->search(&lbl_8055A230), str + 0x120) != 0) count1++;
             }
-            i++;
+            i1++;
         }
         {
-            s32 mem = ((s32 (*)(s32, char *))fn_8012850C)(count * 0x44 + 0x10, str + 0x12C);
-            s32 r = ((s32 (*)(s32, void *, void *, s32, s32))fn_8002F37C)(mem, (void *)fn_8016CD28, (void *)fn_8016C29C, 0x44, count);
-            list->data = r;
-            list->count = count;
-            list->index = 0;
-            list->data2 = r;
+            s32 mem = ((s32 (*)(s32, char *))fn_8012850C)(count1 * 0x44 + 0x10, str + 0x12C);
+            s32 r = ((s32 (*)(s32, void *, void *, s32, s32))fn_8002F37C)(mem, (void *)fn_8016CD28, (void *)fn_8016C29C, 0x44, count1);
+            list1->data = r;
+            list1->count = count1;
+            list1->index = 0;
+            list1->data2 = r;
         }
     }
-    out[0] = list;
-    list = (List8016C768 *)fn_801284F8(0x10, str + 0x13C);
-    if (list != 0) {
-        count = 0;
-        i = 0;
-        while ((obj = doc->at(i)) != 0) {
+    out[0] = list1;
+    list2 = (List8016C768 *)fn_801284F8(0x10, str + 0x13C);
+    if (list2 != 0) {
+        count2 = 0;
+        i2 = 0;
+        while ((obj = doc->at(i2)) != 0) {
             if (stricmp(obj->name(), &lbl_8055A228) == 0) {
-                if (stricmp(obj->search(&lbl_8055A230), str + 0x120) == 0) count++;
+                if (stricmp(obj->search(&lbl_8055A230), str + 0x120) == 0) count2++;
             }
-            i++;
+            i2++;
         }
         {
-            s32 mem = ((s32 (*)(s32, char *))fn_8012850C)(count * 0x38 + 0x10, str + 0x14C);
-            s32 r = ((s32 (*)(s32, void *, void *, s32, s32))fn_8002F37C)(mem, (void *)fn_8016CD10, (void *)fn_8016C25C, 0x38, count);
-            list->data = r;
-            list->count = count;
-            list->index = 0;
-            list->data2 = r;
+            s32 mem = ((s32 (*)(s32, char *))fn_8012850C)(count2 * 0x38 + 0x10, str + 0x14C);
+            s32 r = ((s32 (*)(s32, void *, void *, s32, s32))fn_8002F37C)(mem, (void *)fn_8016CD10, (void *)fn_8016C25C, 0x38, count2);
+            list2->data = r;
+            list2->count = count2;
+            list2->index = 0;
+            list2->data2 = r;
         }
     }
-    out[1] = list;
+    out[1] = list2;
     ok = 1;
     idx = 0;
     while ((obj = doc->at(idx)) != 0) {
@@ -792,7 +793,7 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
                     *(s32 *)(e + 0xC) = 2;
                 } else {
                     *(s32 *)(e + 0xC) = 1;
-                    *(s32 *)e = fn_802C6FC0((s32)c->search(&lbl_8055A238), 0);
+                    *(s32 *)e = fn_802C6FC0((s32)c->search(&lbl_8055A238), 0, 0);
                 }
                 *(Blk *)(e + 0x14) = obj->getblk(str + 0x190);
                 *(u8 *)(e + 0x10) = 1;
@@ -1741,9 +1742,8 @@ void fn_8016E918(void *arg0) {
     s32 result;
     *(void **)((u8 *)arg0 + 0x98) = fn_80145E70(lbl_80330BC8);
     result = fn_801284F8(8, lbl_80330BD8);
-    if (result == 0) goto skip;
-    *(void **)((u8 *)arg0 + 0xB8) = ((void *(*)(s32, s32))fn_802ADDD8)(result, 1);
-skip:
+    if (result != 0)
+        *(void **)((u8 *)arg0 + 0xB8) = ((void *(*)(s32, s32))fn_802ADDD8)(result, 1);
     {
         volatile u8 *p = (volatile u8 *)arg0;
         fn_8016EA9C((void *)(p + 0xAC));
@@ -1795,7 +1795,7 @@ extern f32 lbl_805619C4;
 #pragma scheduling invalid_target
 void fn_8016EA9C(void *arg0) {
     union Word { s32 i; void *p; } stack[94];
-    register char *base;
+    char *base;
     volatile s32 *var_r4;
     s32 temp_r0;
     s32 temp_r0_2;
@@ -1811,7 +1811,7 @@ void fn_8016EA9C(void *arg0) {
     s32 temp_r7_2;
     s32 temp_r8;
     s32 temp_r9;
-    register u32 var_ctr;
+    u32 var_ctr;
     s32 var_r24;
     s32 var_r6;
     s32 var_r6_2;
@@ -1834,7 +1834,6 @@ void fn_8016EA9C(void *arg0) {
     void *temp_r27;
     void *temp_r28;
     void *temp_r29;
-
     base = lbl_803306D0;
     var_r4 = (volatile s32 *)&stack[45].i;
     for (var_ctr = 0; var_ctr < 0x18; var_ctr++) {
@@ -2072,16 +2071,14 @@ void fn_8016FD60(void *arg0, void *arg1) {
     *((s32 *)arg0 + 6) = g;
 }
 
-void fn_8016FD9C(f32 *arg0, void *arg1) {
-    f32 input = *arg0;
+void fn_8016FD9C(const f32 *arg0, void *arg1) {
     char sp8[0x20];
-    f32 value = lbl_80561980;
-    value = (input <= value) ? input : value;
+    f32 input = *arg0;
+    f32 value = (0.0f > input) ? 0.0f : input;
     fn_80130978(sp8, 0x20, value);
     fn_8014784C(arg1, lbl_80330B7C, lbl_80330B8C, 0);
     fn_801475D0(arg1, (const char *)&lbl_8055A248, (const char *)&lbl_8055A268, sp8);
 }
-
 #pragma cplusplus on
 extern "C" void fn_8016FE1C(void *arg0) {
     ((TObj4C *)arg0)->v4C();
@@ -2204,23 +2201,146 @@ extern char lbl_80330DF4[];
 extern char lbl_8055A270[];
 extern float lbl_80561980;
 s32 fn_8016FFEC(void *arg0, void *arg1, s32 arg2) {
-char sp60[16];
+extern void fn_801345D8(void *, s32, const char *, ...);
+extern double fn_8002F234(float, float, float, float, float);
+extern void fn_801352B8(void *);
+extern void fn_8013530C(void *, int, float, float, float);
+extern void fn_801355C0(void *, void *, int, void *, int);
+extern int fn_80135D60(void *, int);
+extern void *fn_80156A40(void);
+extern void fn_801B7C8C(void *, float *, float *);
+extern char lbl_80330DF4[];
+extern char lbl_80330E04[];
+extern char lbl_8055A270[];
+extern char lbl_8055A278[];
+extern float lbl_80561980;
+extern float lbl_80561984;
+extern float lbl_80561988;
+extern float lbl_80561A10;
+float f8, fC;
+float f10, f14;
+float f18, f1C;
+float f30, f34;
+float f38, f3C;
 char sp40[16];
-float sp70[6];
+char stk50[16];
+char sp60[16];
+float pts[6];
+char query[72];
+double d28;
 void *manager;
 void *obj;
 int i;
+float *p;
+int idx;
+int o1, o2;
+float sqf;
+float inv;
+float nx;
 manager = *(void **)((char *)fn_8000AC38() + 0x20);
 if (manager == 0) return 0;
 fn_801345D8(sp60, 0x10, lbl_80330DF4, arg2);
 obj = ((void *(*)(void *, void *))*(void **)((char *)*(void **)manager + 0x5C))(manager, sp60);
 if (obj == 0) return 0;
+p = pts;
 i = 0;
+f38 = lbl_80561980;
+f3C = lbl_80561980;
+f30 = lbl_80561980;
+f34 = lbl_80561980;
 do {
 fn_801345D8(sp40, 0x10, lbl_8055A270, i);
+{
+unsigned long long ret = ((unsigned long long (*)(void *, void *))*(void **)((char *)*(void **)obj + 0x3C))(obj, sp40);
+p[0] = *(float *)&ret;
+p[1] = *((float *)&ret + 1);
+}
+p += 2;
 i += 1;
 } while (i < 3);
-sp70[0] = lbl_80561980;
+idx = 2;
+f18 = pts[4] - pts[0];
+f1C = pts[5] - pts[1];
+{
+float len1 = f18 * f18 + f1C * f1C;
+float d0 = pts[0] - pts[2];
+float c0 = pts[1] - pts[3];
+float len2 = d0 * d0 + c0 * c0;
+f10 = d0;
+f14 = c0;
+if (len2 > len1) {
+len1 = len2;
+idx = 0;
+}
+{
+float g = pts[3] - pts[5];
+float h = pts[2] - pts[4];
+f14 = g;
+f10 = h;
+if (h * h + g * g > len1) {
+idx = 1;
+}
+}
+}
+o1 = ((idx + 1) % 3) * 2;
+o2 = idx * 2;
+fC = pts[o2 + 1] + lbl_80561988 * (pts[o1 + 1] - pts[o2 + 1]);
+f8 = pts[o2] + lbl_80561988 * (pts[o1] - pts[o2]);
+o1 = ((idx + 2) % 3) * 2;
+{
+double dd = *(double *)&f8;
+*(double *)&d28 = dd;
+{
+float dx = pts[o1] - (float)dd;
+float dy = pts[o1 + 1] - *((float *)&d28 + 1);
+f38 = (float)dd;
+f3C = *((float *)&d28 + 1);
+f30 = dx;
+f34 = dy;
+sqf = (float)((double (*)(float))fn_8002F234)(dx * dx + dy * dy);
+}
+}
+inv = lbl_80561984 / sqf;
+nx = f30 * inv;
+f30 = nx;
+f34 = f34 * inv;
+if (((int (*)(void *, void *, int, float, float, float))*(void **)((char *)*(void **)obj + 0x30))(obj, lbl_80330E04, 1, nx, inv, sqf) != 0) {
+fn_801352B8(query);
+fn_80135D60(query, ((int (*)(int))*(void **)((char *)*(void **)fn_80156A40() + 0xC))(0));
+{
+float tt = lbl_80561980;
+*(void **)stk50 = 0;
+*(int *)(stk50 + 8) = 0x2710;
+*(float *)(stk50 + 4) = lbl_80561980;
+fn_801355C0(query, &f38, 0, stk50, 0);
+{
+void *nd = *(void **)stk50;
+float v0 = *(float *)nd;
+float w0 = *(float *)(*(void **)((char *)nd + 0x14));
+f38 = v0 + tt * (w0 - v0);
+v0 = *((float *)nd + 1);
+w0 = *((float *)(*(void **)((char *)nd + 0x14)) + 1);
+f3C = v0 + tt * (w0 - v0);
+v0 = *((float *)nd + 2);
+f30 = v0 + tt * (*((float *)(*(void **)((char *)nd + 0x14)) + 2) - v0);
+w0 = *((float *)nd + 3);
+f34 = w0 + tt * (*((float *)(*(void **)((char *)nd + 0x14)) + 3) - w0);
+sqf = (float)((double (*)(float))fn_8002F234)(f30 * f30 + f34 * f34);
+}
+inv = lbl_80561984 / sqf;
+nx = f30 * inv;
+f30 = nx;
+f34 = f34 * inv;
+fn_8013530C(query, -1, nx, inv, sqf);
+}
+}
+fn_801B7C8C(arg1, &f38, &f30);
+{
+float sc = lbl_80561A10 * ((float (*)(void *, void *, float))*(void **)((char *)*(void **)obj + 0x28))(obj, lbl_8055A278, lbl_80561980);
+*(float *)((char *)arg1 + 0x30) = *(float *)((char *)arg1 + 0x18) * sc;
+*(float *)((char *)arg1 + 0x34) = *(float *)((char *)arg1 + 0x1C) * sc;
+*(float *)((char *)arg1 + 0x38) = *(float *)((char *)arg1 + 0x20) * sc;
+}
 return 1;
 }
 
@@ -2685,7 +2805,6 @@ void fn_80170DA8(void *arg0, void *arg1) {
     u8 *item;
     s32 index;
     s32 next;
-    s32 off;
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
     f32 x;
     f32 y;
@@ -2696,11 +2815,10 @@ void fn_80170DA8(void *arg0, void *arg1) {
     index = *(s32 *)((u8 *)arg0 + 0x10);
     next = index + 1;
     if (next < *(s32 *)(*(u8 **)((u8 *)arg0 + 4) + 4)) {
-        off = (index + 1) * 0x38;
         base = *(u8 **)*(void **)((u8 *)arg0 + 4);
+        item = base + (index + 1) * 0x38;
         x = *(f32 *)((u8 *)arg1 + 0x60);
         y = *(f32 *)((u8 *)arg1 + 0x68);
-        item = base + off;
         dx = *(f32 *)(item + 0x24) - x;
         sp18 = *(f32 *)(item + 0x24);
         dy = *(f32 *)(item + 0x2C) - y;
@@ -3069,7 +3187,7 @@ extern s32 fn_80179650(void);
 extern "C" void **fn_8016CE9C(void *object, void **input)
 {
   s32 index = *((s32 *) (((u8 *) object) + 4));
-  register void *value = *input;
+  void *value = *input;
   void **slot = (*((void ***) object)) + index;
   *((s32 *) (((u8 *) object) + 4)) = index + 1;
   *slot = value;
