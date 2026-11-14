@@ -651,25 +651,33 @@ int fn_802E85B8(int arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802E85F4(int index) {
-    extern unsigned char lbl_80505978[];
-    extern float lbl_805651A0, lbl_805651A4;
-    unsigned char *p;
-    float current;
-    float limit;
-    float value;
-    int count;
+/* Clamps the latest tilt value (at +0x6C) into [-0.523599, 0.261799] and appends
+ * it to the 16-entry circular history buffer at +0x70, advancing the write index. */
+void fn_802E85F4(int padIndex) {
+#define gWiimoteStateTable lbl_80505978
+#define kTiltHistoryMin lbl_805651A0
+#define kTiltHistoryMax lbl_805651A4
+    extern unsigned char gWiimoteStateTable[];
+    extern float kTiltHistoryMin, kTiltHistoryMax;
+    unsigned char *padState;
+    float currentTilt;
+    float minTilt;
+    float clampedTilt;
+    int historyIndex;
 
-    value = lbl_805651A4;
-    limit = lbl_805651A0;
-    p = lbl_80505978 + index * 0x638;
-    current = *(float *)(p + 0x6C);
-    value = value < current ? value : current;
-    value = value > limit ? value : limit;
-    *(float *)(p + *(int *)(p + 0x68) * 4 + 0x70) = value;
-    count = *(int *)(p + 0x68);
-    count++;
-    *(int *)(p + 0x68) = count % 16;
+    clampedTilt = kTiltHistoryMax;
+    minTilt = kTiltHistoryMin;
+    padState = gWiimoteStateTable + padIndex * 0x638;
+    currentTilt = *(float *)(padState + 0x6C);
+    clampedTilt = clampedTilt < currentTilt ? clampedTilt : currentTilt;
+    clampedTilt = clampedTilt > minTilt ? clampedTilt : minTilt;
+    *(float *)(padState + *(int *)(padState + 0x68) * 4 + 0x70) = clampedTilt;
+    historyIndex = *(int *)(padState + 0x68);
+    historyIndex++;
+    *(int *)(padState + 0x68) = historyIndex % 16;
+#undef gWiimoteStateTable
+#undef kTiltHistoryMin
+#undef kTiltHistoryMax
 }
 #pragma pop
 void fn_802E8664(void) {}
