@@ -1002,16 +1002,18 @@ long fn_801E952C(long arg0) {
     return arg0;
 }
 #pragma scheduling on
+// Builds the scene's physics objects and registers each one (fn_801E87D4): the truck's
+// five wheels, one object per record in the track data, then the track's panels and
+// mutable parts, all created through the game's tagged MemAlloc pools.
 void fn_801E9564(long sceneData) {
     long i;
 
-    for (i = 0; i < 5; i++) fn_801E8D48();
-    fn_80127464();
-    fn_801E8F10(sceneData);
-    for (i = 0; i < 0xC; i++) fn_801E8DD4();
-    for (i = 0; i < 0x40; i++) fn_801E8E38();
+    for (i = 0; i < 5; i++) fn_801E8D48();    // 'WHLP' wheel objects, "wheel" pool
+    fn_80127464();                            // finish pending work, run queued callbacks
+    fn_801E8F10(sceneData);                   // the objects placed by the track's records
+    for (i = 0; i < 0xC; i++) fn_801E8DD4();  // 'Panl' objects, "MutableWob" pool
+    for (i = 0; i < 0x40; i++) fn_801E8E38(); // 'MUTP' objects, "MutableWob" pool
 }
-
 #pragma push
 #pragma processor 750
 void fn_801E95DC(void) {
