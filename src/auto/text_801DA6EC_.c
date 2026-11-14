@@ -31,20 +31,34 @@ extern void *lbl_8055E984;
 
 #pragma push
 #pragma scheduling invalid_target
+/* Allocates and initializes the global PathMan instance (0x580C bytes, "pathman" tag),
+ * sets up nw4r effect/PathMan vtables, registers it, and clears its entry count. */
 void fn_801DA6EC(void) {
-    void *obj;
-    void **table;
-    obj = fn_801284F8(0x580C, &lbl_8055AD98);
-    if (obj != 0) {
-        *(void **)obj = lbl_803381C0;
-        fn_801D0DDC(obj);
-        table = (void **)lbl_80339258;
-        *(void **)obj = table;
-        table = (void **)((char *)table + 0x1C);
-        *(void **)((char *)obj + 4) = table;
-        lbl_8055E984 = obj;
-        *(int *)((char *)obj + 0x5808) = 0;
+#define gPathManInstance lbl_8055E984
+#define sPathManAllocTag lbl_8055AD98
+#define sNw4rEffectVTable_Base lbl_803381C0
+#define sPathManVTable lbl_80339258
+#define AllocWithTag fn_801284F8
+#define nw4rRegisterEffect fn_801D0DDC
+    void *pathMan;
+    void **vtable;
+    pathMan = AllocWithTag(0x580C, &sPathManAllocTag);
+    if (pathMan != 0) {
+        *(void **)pathMan = sNw4rEffectVTable_Base;
+        nw4rRegisterEffect(pathMan);
+        vtable = (void **)sPathManVTable;
+        *(void **)pathMan = vtable;
+        vtable = (void **)((char *)vtable + 0x1C);
+        *(void **)((char *)pathMan + 4) = vtable;
+        gPathManInstance = pathMan;
+        *(int *)((char *)pathMan + 0x5808) = 0;
     }
+#undef gPathManInstance
+#undef sPathManAllocTag
+#undef sNw4rEffectVTable_Base
+#undef sPathManVTable
+#undef AllocWithTag
+#undef nw4rRegisterEffect
 }
 #pragma pop
 extern void *fn_801D9F28(void);
