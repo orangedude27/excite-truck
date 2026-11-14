@@ -200,25 +200,26 @@ unsigned char *fn_80029004(const unsigned char *s, int c) {
     return (ch ? 0 : (unsigned char *)p);
 }
 
-unsigned char *strstr(const unsigned char *s, const unsigned char *find) {
-    const unsigned char *p = s - 1;
-    unsigned int first;
+unsigned char *strstr(const unsigned char *haystack, const unsigned char *needle) {
+    /* Find the first occurrence of needle in haystack, returning a pointer within haystack or NULL. */
+    const unsigned char *scan = haystack - 1;
+    unsigned int firstChar;
     unsigned char current;
 
-    if (find == 0) return (unsigned char *)s;
-    first = *find;
-    if (first == 0) return (unsigned char *)s;
-    while ((current = *++p) != 0) {
-        if (current == first) {
-            unsigned int x;
-            unsigned int y;
-            const unsigned char *a = p - 1;
-            const unsigned char *b = find - 1;
+    if (needle == 0) return (unsigned char *)haystack;
+    firstChar = *needle;
+    if (firstChar == 0) return (unsigned char *)haystack;
+    while ((current = *++scan) != 0) {
+        if (current == firstChar) {
+            unsigned int haystackChar;
+            unsigned int needleChar;
+            const unsigned char *haystackPos = scan - 1;
+            const unsigned char *needlePos = needle - 1;
             do {
-                x = *++a;
-                y = *++b;
-            } while (x == y && x != 0);
-            if (y == 0) return (unsigned char *)p;
+                haystackChar = *++haystackPos;
+                needleChar = *++needlePos;
+            } while (haystackChar == needleChar && haystackChar != 0);
+            if (needleChar == 0) return (unsigned char *)scan;
         }
     }
     return 0;
