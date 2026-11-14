@@ -117,19 +117,20 @@ void fn_8029261C(void) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
+/* Calls virtual method 1 on the object stored in each 0x18-byte entry of the global object list. */
 extern "C" void fn_80292628(void) {
-    class Dummy_80292628 {
+    class EntryObject {
     public:
-        virtual void m0();
-        virtual void m1();
+        virtual void v0();
+        virtual void v1();
     };
     register unsigned char *entry;
-    register s32 i;
+    register s32 index;
     entry = lbl_804B4168;
-    i = 0;
-    for (; i < *(s32 *)(lbl_804B4168 + 0x180); entry += 0x18, i++) {
-        Dummy_80292628 *obj = *(Dummy_80292628 **)(entry + 0x10);
-        obj->m1();
+    index = 0;
+    for (; index < *(s32 *)(lbl_804B4168 + 0x180); entry += 0x18, index++) {
+        EntryObject *object = *(EntryObject **)(entry + 0x10);
+        object->v1();
     }
 }
 
