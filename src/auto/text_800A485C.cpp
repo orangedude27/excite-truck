@@ -11321,15 +11321,16 @@ void fn_800B78F0(void) {
     ((void (*)(void))fn_800B7EAC)();
 }
 
-extern "C" void fn_800B78F4(void *arg0, void *arg1) {
+extern "C" void fn_800B78F4(void *dateOut, void *timeOut) {
+    /* Get current calendar date (year, month 1-based, day) and time (hour, minute, second). */
     OSCalendarTime time;
     OSTicksToCalendarTime(OSGetTime(), &time);
-    ((s32 *)arg0)[0] = time.year;
-    ((s32 *)arg0)[1] = time.month + 1;
-    ((s32 *)arg0)[2] = time.mday;
-    ((s32 *)arg1)[0] = time.hour;
-    ((s32 *)arg1)[1] = time.min;
-    ((s32 *)arg1)[2] = time.sec;
+    ((s32 *)dateOut)[0] = time.year;
+    ((s32 *)dateOut)[1] = time.month + 1;
+    ((s32 *)dateOut)[2] = time.mday;
+    ((s32 *)timeOut)[0] = time.hour;
+    ((s32 *)timeOut)[1] = time.min;
+    ((s32 *)timeOut)[2] = time.sec;
 }
 
 extern "C" s32 lbl_80559238;
