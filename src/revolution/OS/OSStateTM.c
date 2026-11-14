@@ -132,17 +132,20 @@ exit:
     return success;
 }
 
+/* Puts the console into standby (SBY): blanks the display, asks the STM
+ * firmware to shut down and then halts the CPU here while the firmware powers
+ * the system off. Never returns. */
 void __OSShutdownToSBY(void) {
 #define in_args ((u32*)StmImInBuf)
 
-    VI_HW_REGS[VI_DCR] = 0;
+    VI_HW_REGS[VI_DCR] = 0;  // display off
 
     // clang-format off
 #line 276
     OS_ASSERT(StmReady, "Error: The firmware doesn't support shutdown feature.\n");
     // clang-format on
 
-    in_args[0] = 0;
+    in_args[0] = 0;  // ioctl argument word: nothing to ask for
     IOS_Ioctl(StmImDesc, STM_IOCTL_SHUTDOWN_TO_SBY, StmImInBuf,
               sizeof(StmImInBuf), StmImOutBuf, sizeof(StmImOutBuf));
     LockUp();
