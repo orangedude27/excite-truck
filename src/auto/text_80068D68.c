@@ -4203,13 +4203,14 @@ void uusb_CloseDeviceCB(s8 arg0) { register u8 *control = (u8 *)&lbl_803BD1E0; r
 
 void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
     extern char lbl_803BD240[];
-    char *report = lbl_803142C8;
+    register char *report = lbl_803142C8;
     BT_HDR *copy;
-    s32 size, i;
+    u32 size;
+    s32 i;
     u32 zero;
     uusb_cb_t *control;
     u8 *p;
-    if (lbl_803BD1E0.at_0x28) OSReport(report);
+    if (lbl_803BD1E0.at_0x28) OSReport(report + 0);
     zero = ((u8 *)&lbl_803BD1E0)[0x2B] = 0;
     if (lbl_803BD1E0.state != 2) {
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x28);
@@ -7556,12 +7557,14 @@ void btm_acl_device_down(void)
 tBTM_STATUS BTM_SwitchRole(BD_ADDR remote_bd_addr, UINT8 new_role, tBTM_CMPL_CB *p_cb) {
     u32 i; u8 *entry; u8 power_mode; u8 status; tBTM_PM_PWR_MD spC;
     if ((lbl_803C0F78[0x640] & 0x20) == 0) return 4;
-    entry = lbl_803C0F78 + 0x34;
-    for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] == 0) continue;
-        if (memcmp(entry + 8, remote_bd_addr, 6) != 0) continue;
-        goto found;
-    }
+    entry = lbl_803C0F78 + 0x34; i = 0;
+loop:
+    if (entry[0x119] == 0) goto next;
+    if (memcmp(entry + 8, remote_bd_addr, 6) != 0) goto next;
+    else goto found;
+next:
+    i++; entry += 0x11C;
+    if (i < 4) goto loop;
     entry = 0;
 found:
     if (entry == 0) return 7;
@@ -7656,7 +7659,6 @@ tBTM_STATUS BTM_SetLinkPolicy(BD_ADDR remote_bda, UINT16 *settings)
     u32 i;
     u8 *entry;
     u16 policy;
-
     features = (u8 *)fn_8007A3A4();
     policy = *settings;
     if (policy != 0) {
@@ -7684,18 +7686,20 @@ tBTM_STATUS BTM_SetLinkPolicy(BD_ADDR remote_bda, UINT16 *settings)
             if (lbl_803C0F78[0x27C0] >= 3) fn_80070954(0xD0002, strings + 0x170, value);
         }
     }
-
     entry = lbl_803C0F78 + 0x34;
     for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] != 0) {
-            int r = memcmp(entry + 8, remote_bda, 6);
-            if (r == 0) goto found;
-        }
+        if (entry[0x119] == 0)
+            continue;
+        if (memcmp(entry + 8, remote_bda, 6) != 0)
+            continue;
+        goto found;
     }
     entry = NULL;
 found:
     if (entry != NULL) {
-        return btsnd_hcic_write_policy_set(*(u16 *)entry, *settings) ? 1 : 3;
+        if (btsnd_hcic_write_policy_set(*(u16 *)entry, *settings) != 0)
+            return 1;
+        return 3;
     }
     return 7;
 }
@@ -7769,7 +7773,6 @@ void btm_read_remote_features_complete(UINT8 *p) {
     u32 j;
     u8 *q;
     u16 policy;
-
     if (p[0] == 0) {
         handle = p[1] + (p[2] << 8);
         for (i = 0; i < 4; i++, acl += 0x11C) {
@@ -7794,11 +7797,10 @@ void btm_read_remote_features_complete(UINT8 *p) {
                 policy = *(u16 *)(lbl_803C0F78 + 0x4C6);
                 q = lbl_803C0F78 + 0x34;
                 for (; j < 4; j++, q += 0x11C) {
-                    if (!q[0x119])
-                        continue;
-                    if (memcmp(q + 8, acl + 8, 6) != 0)
-                        continue;
+                    if (!q[0x119]) goto cont;
+                    if (memcmp(q + 8, acl + 8, 6) != 0) goto cont;
                     goto found;
+                cont:;
                 }
                 q = 0;
 found:
@@ -9263,17 +9265,18 @@ tBTM_STATUS BTM_DeleteStoredLinkKey(BD_ADDR bdAddr, tBTM_CMPL_CB *completionCb) 
     return BTM_SUCCESS;
 }
 
-void btm_read_stored_link_key_complete(u8 *p) {
-    void (*callback)(u8 *);
-    u8 param[6];
-    callback = *(void (**)(u8 *))(lbl_803C0F78 + 0x570);
+/* Handle HCI Read Stored Link Key command complete: clear and invoke the stored-link-key completion callback with status, max_keys, and read_keys. */
+void btm_read_stored_link_key_complete(u8 *hciEventStream) {
+    void (*completionCb)(u8 *);
+    u8 result[6];
+    completionCb = *(void (**)(u8 *))(lbl_803C0F78 + 0x570);
     *(void (**)(u8 *))(lbl_803C0F78 + 0x570) = NULL;
-    if (callback != NULL) {
-        param[0] = 2;
-        param[1] = p[0];
-        *(u16 *)(param + 2) = p[1] + (p[2] << 8);
-        *(u16 *)(param + 4) = p[3] + (p[4] << 8);
-        callback(param);
+    if (completionCb != NULL) {
+        result[0] = 2;
+        result[1] = hciEventStream[0];
+        *(u16 *)(result + 2) = hciEventStream[1] + (hciEventStream[2] << 8);
+        *(u16 *)(result + 4) = hciEventStream[3] + (hciEventStream[4] << 8);
+        completionCb(result);
     }
 }
 
@@ -17487,8 +17490,7 @@ UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
     struct Callback10 { u32 f[10]; };
     u8 *messages = lbl_80317C20;
     void *entry;
-
-    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, messages, psm);
+    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, messages + 0, psm);
     if (*(u32 *)((u8 *)info + 0x10) == 0 ||
         *(u32 *)((u8 *)info + 0xC) == 0 ||
         *(u32 *)((u8 *)info + 0x20) == 0 ||
@@ -19033,13 +19035,12 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     extern char lbl_80318DE0[];
     extern char lbl_80318E00[];
     extern void fn_8007093C(u32, void *);
-    u8 *p;
+    u16 pkt_type;
     u16 handle;
     u16 hci_len;
-    u16 pkt_type;
+    u8 *p;
     u8 *p_lcb;
     BT_HDR *p_return_buf;
-
     p = (u8 *)p_cur_buf + p_cur_buf->offset;
     p_cur_buf->layer_specific = 0;
     handle = p[8] + (p[9] << 8);
@@ -19050,7 +19051,6 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     p_lcb = (u8 *)l2cu_find_lcb_by_handle(handle);
     if (p_lcb == 0)
         return p_cur_buf;
-
     if (pkt_type == 2) {
         if (*(void **)(p_lcb + 0x50) != 0) {
             if (lbl_803C4040[0] >= 2)
@@ -19064,7 +19064,6 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
         u16 total_len;
         BT_HDR *p_base_buf = *(BT_HDR **)(p_lcb + 0x50);
         u8 *p_f = (u8 *)p_base_buf + p_base_buf->offset;
-
         total_len = p_f[10] + (p_f[11] << 8);
         if (total_len + hci_len <= 0x69F) {
             p_return_buf = *(BT_HDR **)(p_lcb + 0x50);
@@ -19096,7 +19095,6 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     } else {
         p_return_buf = 0;
     }
-
     if (p_return_buf == 0)
         GKI_freebuf(p_cur_buf);
     return p_return_buf;
@@ -21764,7 +21762,7 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     index = lcid - 0x40;
     if (index >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, messages + 0, lcid);
+            fn_80070954(0x90000, &messages[index - index], lcid);
         p_mcb = 0;
     } else {
         p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -25546,9 +25544,8 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
     u8 state;
     s32 stateDelta;
     s32 reverseDelta;
-    s32 equalityMask;
-    u32 result;
-
+    u32 equalityMask;
+    u16 result;
     ccb = (u8 *)l2cu_find_lcb_by_handle_80099E54(handle);
     if (ccb == 0) {
         if (lbl_803C4C40[0x4630] >= 2) {
@@ -25556,15 +25553,12 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
         }
         return;
     }
-
     if (reason != 0) {
         L2CA_DisconnectRsp(handle);
     }
-
     if (lbl_803C4C40[0x4630] >= 4) {
         fn_80070954(0xA0003, lbl_8031A38C, handle);
     }
-
     callback = *(void (**)(u16, s32, u8))(ccb + 0x414);
     if (callback != 0) {
         state = ccb[0];
@@ -25573,9 +25567,8 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
         reverseDelta = 3 - state;
         equalityMask = (s32)~(stateDelta | reverseDelta) >> 31;
         result &= ~equalityMask;
-        callback((u16)result, stateDelta, state);
+        callback(result, stateDelta, state);
     }
-
     fn_80099F58(ccb);
 }
 
@@ -28082,6 +28075,7 @@ void fn_8006BAA4(u32 arg0) {
     DBPrintf_8006CFA8(lbl_80313794);
 }
 
+u8 fn_8006CA6C(void);
 void fn_8006BAD8(u32 event, u8 *data)
 {
     u8 *base = lbl_80392960;
@@ -28093,6 +28087,7 @@ void fn_8006BAD8(u32 event, u8 *data)
     u8 *pinSrc;
     int intr;
     u8 linked;
+    u8 st;
     u8 i;
     OSTime now;
     u32 scale;
@@ -28161,13 +28156,12 @@ void fn_8006BAD8(u32 event, u8 *data)
         DBPrintf_8006CFA8((char *)strings + 0x82c);
         DBPrintf_8006CFA8((char *)strings + 0x840, data[0], data[1], data[2], data[3], data[4], data[5]);
         pInfo = WUDiGetDevInfo(data);
-        work = base + 0xC68;
-        if (pInfo == 0 && memcmp(work + 0x40, data, 6) == 0)
-            pInfo = work;
-        intr = OSDisableInterrupts();
-        linked = base[0x665];
-        OSRestoreInterrupts(intr);
-        if (pInfo == 0 || linked == 4) {
+        if (pInfo == 0) {
+            work = base + 0xC68;
+            if (memcmp(data, work + 0x40, 6) == 0)
+                pInfo = work;
+        }
+        if (pInfo == 0 || (intr = OSDisableInterrupts(), linked = base[0x665], OSRestoreInterrupts(intr), linked == 4)) {
             btm_remove_acl(data);
             msg = (char *)strings + 0x8a0;
             if (pInfo == 0)
@@ -28175,11 +28169,10 @@ void fn_8006BAD8(u32 event, u8 *data)
             DBPrintf_8006CFA8((char *)strings + 0x86c, msg, data[0], data[1], data[2], data[3], data[4], data[5]);
             break;
         }
-        msg = 0;
+        st = 3;
         if (pInfo[0x59] == 2)
-            pInfo[0x59] = 12;
-        else
-            pInfo[0x59] = 3;
+            st = 12;
+        pInfo[0x59] = st;
         wcb[0x665]++;
         break;
     }
