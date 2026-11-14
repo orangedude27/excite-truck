@@ -4140,15 +4140,22 @@ extern "C" void fn_8021F42C(void *arg0) {
 
 #pragma push
 #pragma small_data off
-extern "C" s32 fn_8021F478(s32 *arg0) {
-    char *base;
+/* While the key-binding field of fn_8021F394 has its dialog open, take the
+   next control the player triggers: refresh the input state, ask the input
+   bindings for one that is triggered (the poll writes it over the descriptor
+   the staged binding points at), put that control's display name in the
+   staging record, drop the typed-key history and hand back the dialog result
+   -2, which tells the dialog its value changed.  Returns whether a control
+   was taken. */
+extern "C" s32 fn_8021F478(s32 *result) {
+    KeyPrompt *prompt;
 
-    fn_801A7844(1);
-    base = lbl_80490934;
-    if (fn_801A7C8C(*(s32 *)(base + 0x18)) != 0) {
-        fn_801A7E54(base, 0x18, *(s32 *)(base + 0x18));
-        fn_802E47E8();
-        *arg0 = -2;
+    Input_Update(1);
+    prompt = (KeyPrompt *) gKeyPrompt;
+    if (Input_NextKey((s32) prompt->binding) != 0) {
+        Input_KeyName(prompt->name, 0x18, (s32) prompt->binding);
+        KeyHistory_Clear();
+        *result = -2;
         return 1;
     }
     return 0;
