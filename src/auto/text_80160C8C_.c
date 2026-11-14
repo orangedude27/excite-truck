@@ -59,10 +59,15 @@ struct ContestEntry {
 };
 
 #pragma cplusplus on
+/* One element of a contest's parameter table; slot 0x08 returns its name. */
+struct ContestParamElement {
+    virtual const char *getName();
+};
+
 /* A contest's parameter table object (ContestEntry+0x20): a table of named
  * elements.  Slot 0x20 reads one as an int, falling back on the default it is
  * handed; slot 0x5C looks one up by name and answers 0 when the table holds no
- * such element. */
+ * such element; slot 0x60 returns element `index` (or 0 past the end). */
 struct ContestParamTable {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
     virtual void f4(); virtual void f5(); virtual s32 getInt(const void *, s32); virtual void f7();
@@ -70,6 +75,7 @@ struct ContestParamTable {
     virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
     virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
     virtual void f20(); virtual s32 findElement(const void *);
+    virtual struct ContestParamElement *getElement(s32);
 };
 #pragma cplusplus off
 
