@@ -1140,16 +1140,19 @@ void fn_801ABFF4(void) {
     fn_8017A57C();
 }
 
-void fn_801ABFF8(void *self, int **manager) {
-    void *node;
-    node = *(void **)((char *)self + 0x224);
-    if (node != 0 &&
+/* Activates `self` (via fn_801AC240) and, when linked in a circular group ring
+   (+0x224) with propagation enabled (+0x223 != 0 and frame > 1), clears +0x223
+   and dispatches `event` (f0) to every peer in the ring. */
+void fn_801ABFF8(void *self, int **event) {
+    void *peer;
+    peer = *(void **)((char *)self + 0x224);
+    if (peer != 0 &&
         *(unsigned char *)((char *)self + 0x223) != 0 &&
         lbl_8055E3C4 > 1) {
-        while (node != self) {
-            *(unsigned char *)((char *)node + 0x223) = 0;
-            ((struct Dummy_801ABFF8 *)manager)->f0(node);
-            node = *(void **)((char *)node + 0x224);
+        while (peer != self) {
+            *(unsigned char *)((char *)peer + 0x223) = 0;
+            ((struct Dummy_801ABFF8 *)event)->f0(peer);
+            peer = *(void **)((char *)peer + 0x224);
         }
         *(unsigned char *)((char *)self + 0x223) = 0;
     }
@@ -1552,11 +1555,11 @@ void fn_801ACF94(void) {
     char sp8[0x34];
     char sp3c[0x54];
     char sp90[0xED0];
-    Obj_801ACF94 **obj;
+    void **obj;
     int i, j, zero, first, last, count, off;
     void *root;
-    Obj_801ACF94 *o;
-    Mesh_801ACF94 *a;
+    void *o;
+    void *a;
     float *base, *dst, *src;
     float fill, special, tail, x, y, z;
     root = (void *)lbl_8055E5F0;
@@ -1572,19 +1575,19 @@ void fn_801ACF94(void) {
         ((float *)sp8)[9] = fill; ((float *)sp8)[10] = fill;
         ((float *)sp8)[11] = tail; ((float *)sp8)[12] = fill;
         fn_801C2694(root, (int *)sp90, (float *)sp8,
-                    (float *)(sp8 + 0x28), (float *)(sp8 + 0x1C),
-                    (float *)(sp8 + 0x10), (float *)(sp8 + 4),
-                    special, fill);
-        obj = (Obj_801ACF94 **)lbl_80435628;
+            (float *)(sp8 + 0x28), (float *)(sp8 + 0x1C),
+            (float *)(sp8 + 0x10), (float *)(sp8 + 4),
+            special, fill);
+        obj = (void **)lbl_80435628;
         j = 0;
         zero = 0;
         while (j < lbl_8055E5EC) {
             o = *obj;
-            a = (Mesh_801ACF94 *)o->unk_0x23C;
+            a = *(void **)((char *)o + 0x23C);
             if (a != 0) {
-                first = a->unk_0x254;
+                first = *(int *)((char *)a + 0x254);
                 base = (float *)(sp90);
-                last = o->unk_0x254;
+                last = *(int *)((char *)o + 0x254);
                 dst = (float *)sp3c;
                 off = first * 12;
                 *(int *)dst = zero;
@@ -1595,19 +1598,19 @@ void fn_801ACF94(void) {
                 i = 0;
                 while (i < *(int *)(sp3c + 8)) {
                     x = src[0];
-                    i++;
+                    i = i + 1;
                     y = src[1];
                     dst[3] = x;
                     z = src[2];
-                    src += 3;
+                    src = src + 3;
                     dst[4] = y;
                     dst[5] = z;
-                    dst += 3;
+                    dst = dst + 3;
                 }
                 fn_801796CC(6, sp3c, 0x54);
             }
-            obj++;
-            j++;
+            obj = obj + 1;
+            j = j + 1;
         }
     }
 }
@@ -1949,21 +1952,20 @@ void fn_801AD750(void *arg0, void *arg1) {
         fn_801D08C0(arg0);
     }
 }
-#pragma scheduling off
+#pragma push
+#pragma peephole off
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
-    void *obj;
-    void *tmp;
-    if (arg3 >= 8) {
+    void *a;
+    void *b;
+    if (arg3 >= 8)
         return;
-    }
-    if (arg0 == 0) {
+    if (arg0 == 0)
         return;
-    }
-    obj = (char *)arg0 + 0x23C;
-    tmp = arg2;
-    fn_801D0A24(obj, tmp);
+    a = (char *)arg0 + 0x23C;
+    b = arg2;
+    fn_801D0A24(a, b);
 }
-#pragma scheduling on
+#pragma pop
 unsigned char fn_801AD860(void *arg0) {
     return ((unsigned char *)arg0)[0x220];
 }
