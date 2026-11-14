@@ -2468,6 +2468,7 @@ extern "C" s32 GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm
 }
 
 extern "C" s32 GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(void *self, void *archive) {
+    /* Return required stream buffer size (info[4] * 0xA000) for the given sound archive, or 0 if unavailable. */
     s32 info[8];
     if (archive == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x119, lbl_80324EA4);
     s32 result = 0;
