@@ -220,6 +220,8 @@ u16 OSGetWirelessID(s32 pad) {
     OSSramEx* sram;
     u16 id;
 
+    /* Read the wireless controller ID saved in SRAM for one of the four pad
+       channels; nothing changes, so unlock without writing SRAM back. */
     sram = __OSLockSramEx();
     id = sram->wirelessPadId[pad];
     __OSUnlockSramEx(FALSE);
