@@ -35,6 +35,16 @@ void fn_801EA1FC(void) {
     lbl_8055AF68 = x;
 }
 
+#pragma dont_inline on
+void fn_801EA28C(s32 arg0, f32 farg0) {
+    f32 temp_f31;
+    f32 temp;
+    temp_f31 = fn_801E8874();
+    temp = fn_801E8894(arg0);
+    fn_802C974C(temp_f31, temp, farg0);
+}
+#pragma dont_inline off
+
 #pragma dont_inline reset
 void fn_801EA2E8(void) {
     fn_801EA1FC();
@@ -93,12 +103,14 @@ void fn_801EA400(void) {
 }
 
 void fn_801EA404(s32 arg0, s32 arg1) {
-    f32 temp_f31 = fn_801E8738(-1);
+    /* Save the current entity's progress, reset/update scene state, then
+       restore progress and advance the scene with the given parameter. */
+    f32 savedProgress = fn_801E8738(-1);
     fn_801EA210(-1);
     fn_801FC904();
-    fn_801EA28C(-1, temp_f31);
+    fn_801EA28C(-1, savedProgress);
     fn_801EBF00();
-    fn_801EA210(-1, temp_f31);
+    fn_801EA210(-1, savedProgress);
     fn_801FC908(arg1);
 }
 
