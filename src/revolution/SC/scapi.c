@@ -31,6 +31,7 @@ void SCGetIdleMode(SCIdleModeInfo* mode) {
     SCFindByteArrayItem(mode, 2, SC_ITEM_IPL_IDL);
 }
 
+/* Returns the system language, defaulting by product area if unset or to English if out of range. */
 u8 SCGetLanguage(void) {
     u8 item;
 
