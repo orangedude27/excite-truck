@@ -1239,6 +1239,7 @@ extern "C" u32 Read__Q44nw4r3snd18MemorySoundArchive16MemoryFileStreamFPvUl(void
 }
 
 extern u8 lbl_803231C0[];
+/* Adjust the stream/file offset (+0x1C) from a base (+0x18) by origin: 0=set, 1=add, 2=end-relative. */
 extern "C" void fn_800ECF54(void *arg0, s32 arg1, s32 arg2) {
     switch (arg2) {
     case 0:
