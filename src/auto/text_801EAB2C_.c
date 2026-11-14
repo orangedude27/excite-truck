@@ -223,14 +223,15 @@ void fn_801EAF60(void) {
 
 void *fn_802C86DC(void);
 float PSVECDotProduct(float *, float *, float);
-float fn_801EAF64(void *arg0) {
+float fn_801EAF64(void *obj) {
+    /* Return the camera-space depth of obj's position (+0x28): dot((obj.pos - camera.pos), camera.forward). */
     float delta[3];
     void *camera;
 
     camera = fn_802C86DC();
-    delta[0] = *(float *)((u8 *)arg0 + 0x28) - *(float *)((u8 *)camera + 0x24);
-    delta[1] = *(float *)((u8 *)arg0 + 0x2C) - *(float *)((u8 *)camera + 0x28);
-    delta[2] = *(float *)((u8 *)arg0 + 0x30) - *(float *)((u8 *)camera + 0x2C);
+    delta[0] = *(float *)((u8 *)obj + 0x28) - *(float *)((u8 *)camera + 0x24);
+    delta[1] = *(float *)((u8 *)obj + 0x2C) - *(float *)((u8 *)camera + 0x28);
+    delta[2] = *(float *)((u8 *)obj + 0x30) - *(float *)((u8 *)camera + 0x2C);
     return ((float (*)(float *, float *))PSVECDotProduct)(
         delta, (float *)((u8 *)camera + 0x18));
 }
