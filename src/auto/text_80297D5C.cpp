@@ -1427,16 +1427,17 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     return arg0;
 }
 #pragma scheduling on
-extern "C" void* fn_8029A820(void *arg0, int arg1) {
-    if (arg0 != 0) {
+/* Destructor-like cleanup: unregisters handlers, releases owned subobject, and optionally frees the object. */
+extern "C" void* fn_8029A820(void *object, int shouldFree) {
+    if (object != 0) {
         fn_801EF024((void *)fn_8029C024);
         fn_801EF024((void *)fn_8029C054);
-        fn_8028E398(*(void **)((char *)arg0 + 0x160));
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        fn_8028E398(*(void **)((char *)object + 0x160));
+        if (shouldFree > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
