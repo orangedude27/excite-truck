@@ -783,6 +783,7 @@ void *fn_8024AFF8(void *object, s32 deleteFlag) {
     }
     return object;
 }
+
 extern s32 fn_80215228(void);
 extern s32 fn_8024A6EC(s32 *, void *);
 extern s32 fn_8024ACB4(s32 *, s32, void *);
