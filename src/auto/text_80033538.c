@@ -149,15 +149,29 @@ void fn_800339B0(void *arg0, void *arg1) {
 
 extern float lbl_80560AE8;
 extern unsigned int __cvt_fp2unsigned(float);
-void fn_80033A34(void *arg0, float arg1) {
+void fn_80033A34(void *paramBlock, float tempo) {
+    struct AXPB {
+        char header[0x1C];      /* voice state, sample address, ... */
+        unsigned int reinit;    /* 0x1C: which parameters to re-apply */
+        char blocks[0x1C8];     /* mixer, depop, address and ADPCM blocks */
+        unsigned short ratioHi; /* 0x1E8: SRC ratio, whole-number part */
+        unsigned short ratioLo; /* 0x1EA: SRC ratio, fraction part */
+    };
+    #define pb             ((struct AXPB *)paramBlock)
+    #define FP_16_16       lbl_80560AE8 /* 65536.0f: float -> 16.16 fixed point */
+    #define AXPB_TEMPO     0x40000      /* reinit bit: the SRC ratio changed */
+
     int state;
-    unsigned int value;
+    unsigned int ratio;
     state = OSDisableInterrupts();
-    value = __cvt_fp2unsigned(lbl_80560AE8 * arg1);
-    *(unsigned short *)((char *)arg0 + 0x1EA) = value;
-    *(unsigned short *)((char *)arg0 + 0x1E8) = value >> 16;
-    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x40000;
+    ratio = __cvt_fp2unsigned(FP_16_16 * tempo);
+    pb->ratioLo = ratio;
+    pb->ratioHi = ratio >> 16;
+    pb->reinit |= AXPB_TEMPO;
     OSRestoreInterrupts(state);
+    #undef AXPB_TEMPO
+    #undef FP_16_16
+    #undef pb
 }
 
 void fn_80033AAC(void *arg0, void *arg1) {
