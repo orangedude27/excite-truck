@@ -1622,13 +1622,16 @@ SHMainMenu::~SHMainMenu() {
     fn_8002F634((char*)this + 4, (void*)fn_801FCED8, 0x70, 0x20);
 }
 #pragma dont_inline on
-extern "C" void* __dt__10SHMainMenuFv_801FFA68(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_801FF6B4((char*)arg0 + 0x1008, -1);
-        fn_8002F634((char*)arg0 + 4, (void*)fn_801FCA14, 0x40, 0x40);
-        if (arg1 > 0) fn_80128668(arg0);
+/* Deleting destructor for SHMainMenu: destroys the subobject at offset 0x1008,
+ * destroys 0x40 inline elements at offset 4 using fn_801FCA14 as element
+ * destructor, then frees storage when requested. */
+extern "C" void* __dt__10SHMainMenuFv_801FFA68(void* thisPtr, int shouldDelete) {
+    if (thisPtr != 0) {
+        fn_801FF6B4((char*)thisPtr + 0x1008, -1);
+        fn_8002F634((char*)thisPtr + 4, (void*)fn_801FCA14, 0x40, 0x40);
+        if (shouldDelete > 0) fn_80128668(thisPtr);
     }
-    return arg0;
+    return thisPtr;
 }
 #pragma dont_inline reset
 extern "C" void fn_801FEFC4(void) {
