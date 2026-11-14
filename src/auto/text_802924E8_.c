@@ -777,14 +777,15 @@ padding:
 
 #pragma push
 #pragma scheduling invalid_target
+/* Releases each loaded model handle in the object's model array (count at +0x28, handles starting at +0x08, stepped by 4) and marks each slot as -1. */
 void fn_80293530(void* arg0) {
-    u8 *cursor = (u8*)arg0;
-    s32 i = 0;
-    while (i < *(s32*)((u8*)arg0 + 0x28)) {
-        fn_802C6CF8(*(s32*)(cursor + 8));
-        *(s32*)(cursor + 8) = -1;
-        cursor += 4;
-        i++;
+    u8 *entry = (u8*)arg0;
+    s32 index = 0;
+    while (index < *(s32*)((u8*)arg0 + 0x28)) {
+        fn_802C6CF8(*(s32*)(entry + 8));
+        *(s32*)(entry + 8) = -1;
+        entry += 4;
+        index++;
     }
 }
 
