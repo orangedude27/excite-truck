@@ -181,6 +181,8 @@ void fn_802877D0(void) {
 }
 
 void fn_802878A8(void) {
+    /* Shut down all game subsystems in order during teardown (counterpart to the init sequences
+       in fn_80287914/fn_8028797C). */
     fn_802AB504();
     fn_8029F0D0();
     fn_802A7C24();
@@ -398,10 +400,10 @@ void *fn_80287C80(void *arg0, s32 arg1) {
 void fn_80287CE8(int arg0, void *arg1, int arg2, int arg3) {
     char local[0x40];
     sprintf(local, lbl_80348A20, arg1);
-    if (fn_8012C33C(local) == 0) goto end;
-    *(void **)arg0 = (void *)fn_80131808(local);
-    fn_80287D70((void *)arg0, arg2, arg3);
-end:;
+    if (fn_8012C33C(local) != 0) {
+        *(void **)arg0 = (void *)fn_80131808(local);
+        fn_80287D70((void *)arg0, arg2, arg3);
+    }
 }
 #pragma dont_inline reset
   
@@ -498,7 +500,9 @@ extern "C" void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *sr
         virtual void f12(void *, s32, void *);
     };
     s32 sp8[3];
-    s32 a, b, c;
+    s32 a;
+    s32 b;
+    s32 c;
     Ifc *obj = *(Ifc **)arg1;
     if (obj == 0 || obj->f0(arg2) == 0) {
         fn_802E317C(lbl_80348A4C, arg2);
