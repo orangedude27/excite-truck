@@ -152,7 +152,7 @@ float fn_802BF02C(float arg0, int arg1) {
     register struct Pair *p;
     register int i;
     float lowX, highX, lowY, highY, numerator, denominator;
-    register float min, t;
+    float min, t;
     *dst++ = *src++;
     *dst++ = *src++;
     *dst++ = *src++;
@@ -953,18 +953,20 @@ extern float fn_802C9C38(void);
 extern float fn_802C9C48(void);
 extern void fn_802BED90(float *);
 extern void fn_802C03F0(void *arg0) {
-    float m[12];
-    float a, b, c, d;
-    float e, f, g, h;
-    fn_802C8B08(m);
-    fn_802C98DC(&a, &b, &c, &d, m[10]);
-    (void)fn_8002F234(0, 0);
-    (void)fn_802C9C50();
-    (void)fn_802C9C40();
-    (void)fn_802C9C38();
-    (void)fn_802C9C48();
-    (void)arg0;
-    (void)e; (void)f; (void)g; (void)h;
+char pad[640];
+float m[12];
+float a, b, c, d;
+float e, f, g, h;
+fn_802C8B08(m);
+fn_802C98DC(&a, &b, &c, &d, m[10]);
+(void)fn_8002F234(0, 0);
+(void)fn_802C9C50();
+(void)fn_802C9C40();
+(void)fn_802C9C38();
+(void)fn_802C9C48();
+(void)arg0;
+(void)pad;
+(void)e; (void)f; (void)g; (void)h;
 }
 
 #pragma pop
@@ -974,20 +976,27 @@ float fn_802C0CA0(void *arg0) { return *(float *)((char *)arg0 + 0x14); }
 
 int fn_802C0CA8(void) { return 1; }
 
-void *fn_802C0CB0(void *arg0, int arg1) {
-    int temp_r0;
+/* Destructor-like cleanup: installs lbl_8034AE20 vtable, releases the ref-counted/owned handle at offset +4 when valid, and optionally frees the object. */
+void *fn_802C0CB0(void *object, int shouldDelete) {
+    int ownedHandle;
+#define VTable_8034AE20 lbl_8034AE20
+#define ReleaseHandle fn_802CAC54
+#define FreeObject fn_80128668
 
-    if (arg0 != 0) {
-        temp_r0 = *(int *)((char *)arg0 + 4);
-        *(char **)arg0 = lbl_8034AE20;
-        if (temp_r0 != -2) {
-            fn_802CAC54(temp_r0);
+    if (object != 0) {
+        ownedHandle = *(int *)((char *)object + 4);
+        *(char **)object = VTable_8034AE20;
+        if (ownedHandle != -2) {
+            ReleaseHandle(ownedHandle);
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (shouldDelete > 0) {
+            FreeObject(object);
         }
     }
-    return arg0;
+    return object;
+#undef VTable_8034AE20
+#undef ReleaseHandle
+#undef FreeObject
 }
 
 void fn_802C0D20(void) {
