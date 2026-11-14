@@ -553,6 +553,7 @@ void fn_801BEDD4(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_801BF0C4(void *arg0, void *arg1, int arg2) {
+    /* If fn_801E9E78 fails for arg2, output default vector (0,1,0) and set arg0 Y to -100. */
     float d;
     float b;
     float a;
