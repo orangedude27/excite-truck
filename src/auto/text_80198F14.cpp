@@ -1073,15 +1073,30 @@ extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s3
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
     Vec work[64]; s32 count, sp8; Vec p70,p64,delta,p4c,p40,p34,p28,p1c,p10;
     f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz; void* body=*(void**)((u8*)arg0+4);
-    if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,farg0); Vec *wp = work; for(s32 i=0;i<count;++i,wp++) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,farg0); }
+    if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,farg0); Vec *wp = work; for(s32 i=0;i<count;wp++,++i) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,farg0); }
     if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,farg0)!=0) {
         dx=((Vec*)arg1)->x-p70.x; dy=((Vec*)arg1)->y-p70.y; dz=((Vec*)arg1)->z-p70.z; delta.x=dx; delta.y=dy; delta.z=dz;
         dot=PSVECDotProduct(&p64,&delta); f31=farg0-dot; fn_8017B6D4((s32)body,&p4c,(s32)&p70);
         farg0=f31* *(f32*)((u8*)arg0+0x10); dot=-PSVECDotProduct(&p4c,&p64);
-        tx=p64.x*farg0; ty=p64.y*farg0; tz=p64.z*farg0;
-        ux=p4c.x+p64.x*dot; uy=p4c.y+p64.y*dot; uz=p4c.z+p64.z*dot;
-        vx=ux*lbl_8056231C; vy=uy*lbl_8056231C; vz=uz*lbl_8056231C;
-        p40.x=tx; p40.y=ty; p40.z=tz; p34.x=ux; p34.y=uy; p34.z=uz;
+        tx=p64.x*farg0;
+        ux=p64.x*dot;
+        uy=p64.y*dot;
+        ty=p64.y*farg0;
+        uz=p64.z*dot;
+        ux=p4c.x+ux;
+        uz=p4c.z+uz;
+        p40.x=tx;
+        uy=p4c.y+uy;
+        tz=p64.z*farg0;
+        p40.y=ty;
+        vx=ux*lbl_8056231C;
+        p34.x=ux;
+        vy=uy*lbl_8056231C;
+        p40.z=tz;
+        vz=uz*lbl_8056231C;
+        p34.y=uy;
+        p34.z=uz;
+        p40.x=tx; p40.y=ty; p40.z=tz;
         ((Vec*)arg2)->x+=vx; ((Vec*)arg2)->y+=vy; ((Vec*)arg2)->z+=vz;
         mag=PSVECMag((Vec*)arg2); if(mag>lbl_80562320){scale=lbl_80562320/mag;((Vec*)arg2)->x*=scale;((Vec*)arg2)->y*=scale;((Vec*)arg2)->z*=scale;}
         p28.x=p34.x*lbl_80562324; p28.y=p34.y*lbl_80562324; p28.z=p34.z*lbl_80562324;
@@ -1166,12 +1181,35 @@ extern "C" s32 fn_8019B08C(void* arg0, const Vec* arg1, void* arg2, f32 farg0) {
 }
 
 extern "C" s32 fn_8019B4D8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 farg0) {
-    (void)arg0; (void)arg1; (void)arg2; (void)arg3; (void)farg0;
+    f32 *matrix;
+    u32 copied[12];
+    f32 v0;
+    f32 v1;
+    matrix = (f32 *)((VTab1A1E7C *)arg1)->Call();
+    copied[0] = ((u32 *)matrix)[0];
+    copied[1] = ((u32 *)matrix)[1];
+    copied[2] = ((u32 *)matrix)[2];
+    copied[3] = ((u32 *)matrix)[3];
+    copied[4] = ((u32 *)matrix)[4];
+    copied[5] = ((u32 *)matrix)[5];
+    copied[6] = ((u32 *)matrix)[6];
+    copied[7] = ((u32 *)matrix)[7];
+    copied[8] = ((u32 *)matrix)[8];
+    copied[9] = ((u32 *)matrix)[9];
+    copied[10] = ((u32 *)matrix)[10];
+    copied[11] = ((u32 *)matrix)[11];
+    v0 = *(f32 *)arg2 - *(f32 *)((u8 *)matrix + 0x24);
+    v1 = v0 * *(f32 *)((u8 *)matrix + 0x0);
+    (void)arg0; (void)arg3; (void)farg0; (void)v1; (void)copied;
     return 0;
 }
 
 extern "C" s32 fn_8019BD4C(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
+}
+
+extern "C" void fn_8019BD54(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+    (void)arg0; (void)arg1; (void)arg2; (void)arg3;
 }
 
 #pragma scheduling invalid_target
@@ -1553,29 +1591,58 @@ extern "C" s32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Ve
 }
 
 s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
-    Vec* a = *(Vec**)((u8*)arg0 + 0xC); Vec* b = *(Vec**)((u8*)arg1 + 0xC);
-    Vec cross, mid, da, db, p, q, delta, normal, center;
-    f32 h0=*(f32*)((u8*)arg0+0x28), h1=*(f32*)((u8*)arg1+0x28);
-    PSVECCrossProduct((Vec*)((u8*)a+0x18),(Vec*)((u8*)b+0x18),&cross);
-    f32 den=PSVECDotProduct(&cross,&cross), t0,t1;
-    if(den<lbl_8056232C) {
-        mid.x=(a->x+b->x)*lbl_805622E8; mid.y=(a->y+b->y)*lbl_805622E8; mid.z=(a->z+b->z)*lbl_805622E8;
-        da.x=mid.x-a->x; da.y=mid.y-a->y; da.z=mid.z-a->z;
-        t0=PSVECDotProduct((Vec*)((u8*)a+0x18),&da);
-        db.x=mid.x-b->x; db.y=mid.y-b->y; db.z=mid.z-b->z;
-        t1=PSVECDotProduct((Vec*)((u8*)b+0x18),&db);
-    } else { t0=0.0f; t1=0.0f; }
-    if(!clamp) { if(t0 < -h0 || t0>h0 || t1 < -h1 || t1>h1) return 0; }
-    else { if(t0 < -h0)t0=-h0; if(t0>h0)t0=h0; if(t1 < -h1)t1=-h1; if(t1>h1)t1=h1; }
-    p.x=a->x+((Vec*)((u8*)a+0x18))->x*t0; p.y=a->y+((Vec*)((u8*)a+0x18))->y*t0; p.z=a->z+((Vec*)((u8*)a+0x18))->z*t0;
-    q.x=b->x+((Vec*)((u8*)b+0x18))->x*t1; q.y=b->y+((Vec*)((u8*)b+0x18))->y*t1; q.z=b->z+((Vec*)((u8*)b+0x18))->z*t1;
-    delta.x=q.x-p.x; delta.y=q.y-p.y; delta.z=q.z-p.z;
-    f32 dist=PSVECMag(&delta); if(__fabsf(dist)==lbl_80558DC4)return 0;
-    f32 depth=*(f32*)((u8*)arg0+0x24)+*(f32*)((u8*)arg1+0x24)-dist; if(depth<lbl_805622D0)return 0;
-    f32 scale=lbl_805622DC/dist; normal.x=delta.x*scale; normal.y=delta.y*scale; normal.z=delta.z*scale;
-    center.x=(p.x+q.x)*lbl_805622E8; center.y=(p.y+q.y)*lbl_805622E8; center.z=(p.z+q.z)*lbl_805622E8;
-    typedef void (*Call)(void*,void*,f32,f32,Vec*,Vec*,s32,s32);
-    ((Call)fn_8019A788)(arg3?arg3:arg0,arg1,depth,lbl_805622D0,&center,&normal,0,0);
+    f32* aMat = *(f32**)((u8*)arg0 + 0xC);
+    f32* bMat = *(f32**)((u8*)arg1 + 0xC);
+    Vec aAxis, bAxis, aPos, bPos, diff, cross;
+    Vec mid, da, db, p, q, delta, normal, center;
+    f32 den, t0, t1;
+    f32 h0 = *(f32*)((u8*)arg0 + 0x28);
+    f32 h1 = *(f32*)((u8*)arg1 + 0x28);
+    aAxis.x = aMat[6]; aAxis.y = aMat[7]; aAxis.z = aMat[8];
+    bAxis.x = bMat[6]; bAxis.y = bMat[7]; bAxis.z = bMat[8];
+    aPos.x = aMat[9]; aPos.y = aMat[10]; aPos.z = aMat[11];
+    bPos.x = bMat[9]; bPos.y = bMat[10]; bPos.z = bMat[11];
+    diff.x = bPos.x - aPos.x; diff.y = bPos.y - aPos.y; diff.z = bPos.z - aPos.z;
+    PSVECCrossProduct(&aAxis, &bAxis, &cross);
+    den = PSVECDotProduct(&cross, &cross);
+    if (den < lbl_8056232C) {
+        mid.x = (aPos.x + bPos.x) * lbl_805622E8;
+        mid.y = (aPos.y + bPos.y) * lbl_805622E8;
+        mid.z = (aPos.z + bPos.z) * lbl_805622E8;
+        da.x = mid.x - aPos.x; da.y = mid.y - aPos.y; da.z = mid.z - aPos.z;
+        t0 = PSVECDotProduct(&aAxis, &da);
+        db.x = mid.x - bPos.x; db.y = mid.y - bPos.y; db.z = mid.z - bPos.z;
+        t1 = PSVECDotProduct(&bAxis, &db);
+    } else {
+        f32 tmp;
+        if ((f32)__fabs((f64)den) == lbl_80558DC4) return 0;
+        tmp = cross.y * diff.z - diff.y * cross.z;
+        t0 = (cross.x * (diff.y * bAxis.z - bAxis.y * diff.z) + diff.x * (bAxis.y * cross.z - cross.y * bAxis.z) + bAxis.x * tmp) / den;
+        t1 = (cross.x * (diff.y * aAxis.z - aAxis.y * diff.z) + diff.x * (aAxis.y * cross.z - cross.y * aAxis.z) + aAxis.x * tmp) / den;
+    }
+    if (!clamp) {
+        if (t0 < -h0 || t0 > h0 || t1 < -h1 || t1 > h1) return 0;
+    } else {
+        if (t0 < -h0) t0 = -h0;
+        if (t0 > h0) t0 = h0;
+        if (t1 < -h1) t1 = -h1;
+        if (t1 > h1) t1 = h1;
+    }
+    p.x = aPos.x + aAxis.x * t0; p.y = aPos.y + aAxis.y * t0; p.z = aPos.z + aAxis.z * t0;
+    q.x = bPos.x + bAxis.x * t1; q.y = bPos.y + bAxis.y * t1; q.z = bPos.z + bAxis.z * t1;
+    delta.x = q.x - p.x; delta.y = q.y - p.y; delta.z = q.z - p.z;
+    {
+        f32 dist = PSVECMag(&delta);
+        f32 depth;
+        f32 scale;
+        if ((f32)__fabs((f64)dist) == lbl_80558DC4) return 0;
+        depth = *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg1 + 0x24) - dist;
+        if (depth < lbl_805622D0) return 0;
+        scale = lbl_805622DC / dist;
+        normal.x = delta.x * scale; normal.y = delta.y * scale; normal.z = delta.z * scale;
+        center.x = (p.x + q.x) * lbl_805622E8; center.y = (p.y + q.y) * lbl_805622E8; center.z = (p.z + q.z) * lbl_805622E8;
+        fn_8019A788(arg3 ? arg3 : arg0, arg1, &center, &normal, 0, 0, depth, lbl_805622D0, lbl_805622D0);
+    }
     return 1;
 }
 
@@ -2860,6 +2927,11 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
     *(f32*)((u8*)arg0 + 0x16C) = *(f32*)((u8*)arg1 + 0x2C);
 }
 
+extern "C" void fn_801A0464(void *arg0, void *arg1) {
+    (void)arg0;
+    fn_801A0160(arg1);
+}
+
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
@@ -2870,6 +2942,7 @@ extern "C" void fn_801A0F10(void* arg0) {
     s32 i;
     u8* ent;
     s32 j;
+    s32 maxCount = 0x40;
     fn_801A0160(arg0);
     ent = (u8*)arg0;
     i = 0;
@@ -2898,7 +2971,6 @@ extern "C" void fn_801A0F10(void* arg0) {
             s32 k = 0;
             f32 one = lbl_805622E0;
             f32 zero = lbl_805622D4;
-            s32 maxCount = 0x40;
             do {
                 fn_801BEAEC(e, k, &tmp);
                 Vec v = tmp;
@@ -3470,8 +3542,12 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
     y = *(f32 *)((char *)arg0 + 0x28);
     x = *(f32 *)((char *)arg0 + 0x24);
     register f32 nx, ny, nz;
-    ny = -y; nx = -x; nz = -z;
-    corners[0]=x; corners[1]=y; corners[2]=z;
+    ny = -y;
+    nx = -x;
+    corners[1]=y;
+    nz = -z;
+    corners[0]=x;
+    corners[2]=z;
     corners[3]=nx; corners[4]=y; corners[5]=z;
     corners[6]=x; corners[7]=ny; corners[8]=z;
     corners[9]=nx; corners[10]=ny; corners[11]=z;
@@ -3490,23 +3566,27 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
     for (; i < 8; i++) {
         matrix = (f32 *)((VTab1A1E7C *)arg0)->Call();
         if (dst == cur) {
-            f32 t0 = (src[0] * matrix[0] + src[1] * matrix[3]) + src[2] * matrix[6];
-            f32 t1 = (src[0] * matrix[1] + src[1] * matrix[4]) + src[2] * matrix[7];
-            f32 t2 = (src[0] * matrix[2] + src[1] * matrix[5]) + src[2] * matrix[8];
+            f32 m3 = matrix[3], m4 = matrix[4], m5 = matrix[5];
+            f32 m0 = matrix[0], m1 = matrix[1], m2 = matrix[2];
+            f32 m6 = matrix[6], m7 = matrix[7], m8 = matrix[8];
+            f32 sx = src[0], sy = src[1], sz = src[2];
+            f32 t0 = (sy * m3 + sx * m0) + sz * m6;
+            f32 t1 = (sy * m4 + sx * m1) + sz * m7;
+            f32 t2 = (sy * m5 + sx * m2) + sz * m8;
             dst[0] = t0; dst[1] = t1; dst[2] = t2;
         } else {
             f32 sx = src[0], sy = src[1], sz = src[2];
-            dst[0] = (sx * matrix[0] + sy * matrix[3]) + sz * matrix[6];
-            dst[1] = (sx * matrix[1] + sy * matrix[4]) + sz * matrix[7];
-            dst[2] = (sx * matrix[2] + sy * matrix[5]) + sz * matrix[8];
+            dst[0] = (sy * matrix[3] + sx * matrix[0]) + sz * matrix[6];
+            dst[1] = (sy * matrix[4] + sx * matrix[1]) + sz * matrix[7];
+            dst[2] = (sy * matrix[5] + sx * matrix[2]) + sz * matrix[8];
         }
         point[0] += matrix[9]; point[1] += matrix[10]; point[2] += matrix[11];
-        if (min[0] < point[0]) min[0] = point[0];
-        if (min[1] < point[1]) min[1] = point[1];
-        if (min[2] < point[2]) min[2] = point[2];
-        if (max[0] > point[0]) max[0] = point[0];
-        if (max[1] > point[1]) max[1] = point[1];
-        if (max[2] > point[2]) max[2] = point[2];
+        min[0] = (min[0] < point[0]) ? point[0] : min[0];
+        min[1] = (min[1] < point[1]) ? point[1] : min[1];
+        min[2] = (min[2] < point[2]) ? point[2] : min[2];
+        max[0] = (max[0] > point[0]) ? point[0] : max[0];
+        max[1] = (max[1] > point[1]) ? point[1] : max[1];
+        max[2] = (max[2] > point[2]) ? point[2] : max[2];
         cur += 3; src += 3;
     }
 }
@@ -3747,7 +3827,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
     f32 depth;
     Fn801A26FCObj* other = (Fn801A26FCObj*)arg1;
     u32 type = *(u32*)((u8*)arg1 + 0x18);
-    if ((type - 0x47525500U) == 0x5550U) {
+    if (type == 0x47525550U) {
         f32* a = *(f32**)((u8*)arg0 + 0xC);
         f32* b = *(f32**)((u8*)arg1 + 0xC);
         delta.x = a[9] - b[9];
@@ -3758,7 +3838,9 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
         if (d < radius * radius) {
             Fn801A26FCObj* obj = *(Fn801A26FCObj**)((u8*)arg1 + 0x17C);
             u8* owner;
-            pos = *(Vec*)((u8*)obj + 0x38);
+            ((u32*)&pos)[0] = ((u32*)((u8*)obj + 0x38))[0];
+            ((u32*)&pos)[1] = ((u32*)((u8*)obj + 0x38))[1];
+            ((u32*)&pos)[2] = ((u32*)((u8*)obj + 0x38))[2];
             vecA[0] = lbl_805622D0; vecA[1] = lbl_805622D0; vecA[2] = lbl_805622D0;
             vecB[0] = lbl_805622D0; vecB[1] = lbl_805622D0; vecB[2] = lbl_805622D0;
             owner = *(u8**)((u8*)arg1 + 4);
@@ -3788,7 +3870,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
                 fn_801B34DC(arg1, 0, (Vec*)outHit, (Vec*)outN, (Vec*)up, *(s32*)((u8*)arg0 + 0x20));
             }
         }
-    } else if ((type - 0x424F5800U) == 0x5820U) {
+    } else if (type == 0x424F5820U) {
         f32* o = other->getPos();
         f32* p = *(f32**)((u8*)arg0 + 0xC);
         delta2.x = p[9] - o[9];
@@ -3815,7 +3897,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
             void* r4 = other->getPos();
             fn_801C28A8(*(void**)((u8*)arg0 + 0x30), r4, pos50, vecA2, vecB2, 0, -1, 0, 0);
         }
-    } else if ((type - 0x504F4C00U) == 0x4C59U) {
+    } else if (type == 0x504F4C59U) {
         s32 off;
         s32 i;
         f32 z;
@@ -4055,7 +4137,7 @@ extern "C" TagList *fn_80131808(void *, void *);
 extern "C" void fn_80131818(TagList *);
 #pragma scheduling invalid_target
 extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
-    *(s32*)((u8*)arg0 + 4) = 0x0;
+    *(s32*)((u8*)arg0 + 4) = 0;
     *(void**)arg0 = lbl_80333778;
     *(s32*)((u8*)arg0 + 8) = 0;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
@@ -4063,7 +4145,7 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
     *(f32*)((u8*)arg0 + 0x14) = farg1;
     *(s32*)((u8*)arg0 + 0x18) = 0x504F4C59;
     *(s32*)((u8*)arg0 + 0x1C) = 0;
-    *(s32*)((u8*)arg0 + 0x20) = 0x64;
+    *(s32*)((u8*)arg0 + 0x20) = 100;
     *(s32*)((u8*)arg0 + 0xDC) = 0;
     *(s32*)((u8*)arg0 + 0xBC) = arg3;
     u8 *dst = (u8*)arg0;
@@ -4181,10 +4263,9 @@ extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
     f32 sp8[3];
     f32 *mat = box->matrix;
     if (&sp8[0] == &box->min.x) {
-        f32 y, x, z;
-        y = box->min.y;
-        x = box->min.x;
-        z = box->min.z;
+        f32 y = box->min.y;
+        f32 x = *&box->min.x;
+        f32 z = box->min.z;
         f32 y0 = y * mat[3];
         f32 y1 = y * mat[4];
         f32 x0 = mat[0] * x;
@@ -4522,7 +4603,7 @@ extern "C" void fn_801A401C(void *arg0, void *arg1) {
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4) {
-    f32 stack[9];
+    f32 stack[9]; // resubmit baseline
     f32 ix = arg1[0];
     f32 iy = arg1[1];
     f32 *m = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
@@ -4662,15 +4743,13 @@ extern "C" void* fn_801A4548(s32 arg0) {
     u8 ok = 0;
     Fn801A4548Hdr* h = (Fn801A4548Hdr*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
     if (h && ok) {
-        s32* lp = (s32*)&h->list;
-        u8 t;
-        u8* q4 = (u8*)lp;
+        u8* lp = (u8*)&h->list;
         Fn801A4548Swap4((u8*)h);
         Fn801A4548Swap4((u8*)h+8);
-        Fn801A4548Swap4(q4);
+        Fn801A4548Swap4(lp);
         Fn801A4548Swap4((u8*)h+12);
         Fn801A4548Swap4((u8*)h+16);
-        fn_801A4768(lp, (s32)h);
+        fn_801A4768((s32*)lp, (s32)h);
         fn_801A4780((s32*)&h->unk10, (s32)h);
         fn_801A4798((s32*)&h->shorts, (s32)h);
         for (s32 i=0; i<h->count; i++) {
@@ -4840,7 +4919,18 @@ void fn_801A49FC(s32 arg0) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_801A4A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) { if (*(u8*)((u8*)arg0 + 0x40) != 0) { fn_801D2414(); if (*(s32*)((u8*)arg0 + 0x48) != 0) { fn_801D0738((void*)arg0, (void*)arg1, (void*)arg2, (void*)arg3); } } }
+/* Sound-event trigger hit by a vehicle: when the trigger instance is active
+ * (+0x40), runs its sound event (fn_801D2414 = SoeventTrigger_Update, which
+ * takes instance/position/object straight from r3-r5) and, if it has
+ * listeners (+0x48), tells them too (fn_801D0738). */
+extern "C" void fn_801A4A10(s32 instance, s32 position, s32 object, s32 extra) {
+    if (*(u8*)((u8*)instance + 0x40) != 0) {
+        fn_801D2414();
+        if (*(s32*)((u8*)instance + 0x48) != 0) {
+            fn_801D0738((void*)instance, (void*)position, (void*)object, (void*)extra);
+        }
+    }
+}
 #pragma scheduling on
 extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg4, s32 arg5, s32 arg6) {
     struct VTable2C {
