@@ -708,17 +708,28 @@ extern long fn_80009C84(void);
 extern unsigned char lbl_8055EEC0;
 extern signed char lbl_8055EEC8, lbl_8055B660;
 extern long lbl_8055EECC, lbl_8055B658;
+/* Stop track music: mute, clear selection/hold state, and if a song is selected while inactive reset to none and stop playback. */
 void fn_80210444(void) {
-    lbl_8055B660 = 1;
-    lbl_8055EEC0 = 0;
-    lbl_8055EEC8 = 0;
-    lbl_8055EECC = 0;
+#define trackMusicMuted lbl_8055B660
+#define trackMusicSongListReady lbl_8055EEC0
+#define trackMusicHoldSongChange lbl_8055EEC8
+#define trackMusicHoldUntil lbl_8055EECC
+#define trackMusicCurrentSong lbl_8055B658
+    trackMusicMuted = 1;
+    trackMusicSongListReady = 0;
+    trackMusicHoldSongChange = 0;
+    trackMusicHoldUntil = 0;
     if (fn_80009C84() == 0 && fn_801B85CC() == 0 &&
-        lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
-        lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(0);
+        trackMusicCurrentSong == ((long (*)(long))fn_8020F3B4)(1)) {
+        trackMusicCurrentSong = ((long (*)(long))fn_8020F3B4)(0);
         fn_802EC12C();
         fn_802EC1D8();
     }
+#undef trackMusicMuted
+#undef trackMusicSongListReady
+#undef trackMusicHoldSongChange
+#undef trackMusicHoldUntil
+#undef trackMusicCurrentSong
 }
 
 long fn_802104B8(void) {
