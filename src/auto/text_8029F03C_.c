@@ -712,28 +712,34 @@ check:
 
 #pragma cplusplus on
 extern "C" void fn_802A002C(void) {
-    struct Dummy {
+    /* Update each active track-effect entry by invoking virtual method 1 on the
+     * object stored at offset 0x70 in the 0x78-byte entry table. */
+#define trackEffectTable lbl_804B5070
+#define trackEffectCount lbl_8055F81C
+    struct TrackEffectObject {
         virtual void m0();
-        virtual void m1();
+        virtual void Update();
         virtual void m2();
         virtual void m3();
     };
-    unsigned char *current = (unsigned char *)lbl_804B5070;
-    int i = 0;
+    unsigned char *entry = (unsigned char *)trackEffectTable;
+    int index = 0;
     goto check;
 loop:
     {
-        Dummy *object = (Dummy *)*(void **)(current + 0x70);
+        TrackEffectObject *object = (TrackEffectObject *)*(void **)(entry + 0x70);
         if (object != 0) {
-            object->m1();
+            object->Update();
         }
     }
-    current += 0x78;
-    i++;
+    entry += 0x78;
+    index++;
 check:
-    if (i < lbl_8055F81C) {
+    if (index < trackEffectCount) {
         goto loop;
     }
+#undef trackEffectTable
+#undef trackEffectCount
 }
 #pragma cplusplus reset
 typedef struct Result_802A0098 {
