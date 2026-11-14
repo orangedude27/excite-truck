@@ -4141,6 +4141,31 @@ extern "C" void fn_8021F4F0(void *arg0, void *) {
         *((u8 *)arg0 + 0x234) = 1;
 }
 
+/* Horizontal slider widget (vtable lbl_8033E878, constructed by fn_8021F678). */
+typedef struct SliderWidget {
+    char pad000[0x244];
+    u8 dragging;      /* 0x244 non-zero while the user is dragging the thumb */
+    char pad245[3];
+    f32 minValue;     /* 0x248 minimum slider value */
+    f32 maxValue;     /* 0x24C maximum slider value */
+    f32 *valuePtr;    /* 0x250 bound float value */
+    s32 stepCount;    /* 0x254 number of discrete positions */
+    u8 reversed;      /* 0x258 sign bit of stepCount argument */
+    char pad259[3];
+    s32 trackImg;     /* 0x25C "slider1.img" texture handle */
+    s32 fillImg;      /* 0x260 fill/thumb texture handle */
+    s32 trackX;       /* 0x264 track left X in pixels */
+    s32 trackY;       /* 0x268 track top Y in pixels */
+    s32 trackWidth;   /* 0x26C track width in pixels */
+    s32 trackHeight;  /* 0x270 track height in pixels */
+    s32 *cursorPtr;   /* 0x274 pointer to active menu cursor index */
+    s32 cursorId;     /* 0x278 this widget's menu cursor id */
+} SliderWidget;
+
+enum {
+    SLIDER_HIT_MARGIN = 0x14
+};
+
 extern "C" char lbl_8033D9B0[];
 extern "C" char lbl_8033D9BC[];
 #pragma push
