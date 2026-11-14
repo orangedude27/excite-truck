@@ -746,14 +746,27 @@ extern s32 lbl_8055A0B0;
 extern s32 lbl_8055A0B8;
 #pragma cplusplus on
 extern "C" void fn_801619A8(void) {
-    s32 index = lbl_8055E304;
-    if (index >= 0 && index < *(s32 *)(lbl_8042FDEC + 4)) {
-        lbl_8055E300 = *(s32 *)(*(char **)lbl_8042FDEC + index * 4);
+    // Select entry by index from the global list, call its virtual update (vfunc6), then clear active flag.
+    #define SELECTED_INDEX lbl_8055E304
+    #define ENTRY_LIST_PTR *((char **)lbl_8042FDEC)
+    #define ENTRY_LIST_COUNT *(s32 *)(lbl_8042FDEC + 4)
+    #define CURRENT_ENTRY lbl_8055E300
+    #define ACTIVE_FLAG lbl_8055E2DD
+
+    s32 selectedIndex = SELECTED_INDEX;
+    if (selectedIndex >= 0 && selectedIndex < ENTRY_LIST_COUNT) {
+        CURRENT_ENTRY = *(s32 *)(ENTRY_LIST_PTR + selectedIndex * 4);
     }
-    if (lbl_8055E300 != 0) {
-        ((Dummy_801619A8 *)lbl_8055E300)->f6();
+    if (CURRENT_ENTRY != 0) {
+        ((Dummy_801619A8 *)CURRENT_ENTRY)->f6();
     }
-    lbl_8055E2DD = 0;
+    ACTIVE_FLAG = 0;
+
+    #undef SELECTED_INDEX
+    #undef ENTRY_LIST_PTR
+    #undef ENTRY_LIST_COUNT
+    #undef CURRENT_ENTRY
+    #undef ACTIVE_FLAG
 }
 #pragma cplusplus on
 extern "C" void fn_80161A18(void) {
