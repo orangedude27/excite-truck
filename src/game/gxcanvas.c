@@ -293,6 +293,7 @@ void fn_802C33A8(s32 x, s32 y, u32 packedColor) {
         *pixel = rgba;
     }
 }
+
 void fn_802C3424(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u32 arg4) {
     s8 mode = *(s8 *)lbl_8055FC00;
     s32 flag = 0;
