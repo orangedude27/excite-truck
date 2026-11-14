@@ -66,12 +66,26 @@ float fn_802E7824(float arg0, float arg1) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma processor 750
-float fn_802E78A4(float arg0) {
-    float a = fn_802E7824(lbl_80565174 + arg0, lbl_80565178);
-    float b = fn_802E7824(arg0 - lbl_80565174, lbl_80565178);
-    float v = lbl_80565170 * (b + a);
-    float f = v * (float)__fabs(v) - v;
-    return v + lbl_80565164 * f;
+/* Shapes one Wii Remote tilt/stick axis into the steering value fn_802E7DDC stores
+ * in its input record: the dead-zone response fn_802E7824() is sampled twice, with
+ * the axis pushed RJOY_KNEE toward and away from zero, and the two samples averaged,
+ * which rounds that response's hard dead-zone corner into a soft knee. The result is
+ * then blended toward the squared response v*|v| by RJOY_CURVE_AMOUNT, which is
+ * 0.0f, so the output stays linear. */
+float fn_802E78A4(float axis) {
+#define RJOY_KNEE         lbl_80565174 /* 0.05f: how far each sample is shifted */
+#define RJOY_DEAD_ZONE    lbl_80565178 /* 0.1f: dead zone fn_802E7824 rescales past */
+#define RJOY_HALF         lbl_80565170 /* 0.5f: weight of the two samples */
+#define RJOY_CURVE_AMOUNT lbl_80565164 /* 0.0f: 0 = linear, 1 = v*|v| */
+    float up = fn_802E7824(RJOY_KNEE + axis, RJOY_DEAD_ZONE);
+    float down = fn_802E7824(axis - RJOY_KNEE, RJOY_DEAD_ZONE);
+    float v = RJOY_HALF * (down + up);
+    float squared = v * (float)__fabs(v) - v;
+    return v + RJOY_CURVE_AMOUNT * squared;
+#undef RJOY_KNEE
+#undef RJOY_DEAD_ZONE
+#undef RJOY_HALF
+#undef RJOY_CURVE_AMOUNT
 }
 #pragma pop
 #pragma push
@@ -400,16 +414,14 @@ void fn_802E7FD0(void) {
     unsigned char *base;
     int channel;
     int readCount;
-    register int queueIndex;
     register int changed;
+    register int queueIndex;
     int current;
     int old;
     int active;
     int result;
     int timeNow;
-    int probe;
-    register int one;
-    register int filtered;
+    int filtered;
     formatBase = (char *)&lbl_8034D898;
     now = fn_802E2C20();
     previous = lbl_80560010;
@@ -433,7 +445,7 @@ void fn_802E7FD0(void) {
             } while (queueIndex < 4);
         }
     }
-    one = 1;
+    changed = 1;
     record = lbl_80505978;
     devices = lbl_80507278;
     base = record;
@@ -443,16 +455,16 @@ void fn_802E7FD0(void) {
         memset(record + 0xC8, 0, 0x550);
         active = 0;
         if (base[0x631] != 0)
-            active = one;
+            active = changed;
         if (base[0xC69] != 0)
-            active = one;
+            active = changed;
         if (base[0x12A1] != 0)
-            active = one;
+            active = changed;
         if (base[0x18D9] != 0)
-            active = one;
+            active = changed;
         if (active == 0 && now - *(int *)(record + 0x634) > 0x2710) {
             *(int *)(record + 0x634) = now;
-            record[0x631] = (unsigned char)one;
+            record[0x631] = (unsigned char)changed;
             result = fn_800604E8(channel, (int)(record + 0x618), fn_802E7C14);
             if (result != 0) {
                 record[0x631] = 0;
@@ -460,23 +472,23 @@ void fn_802E7FD0(void) {
                     memset(record + 0x618, 0, 0x18);
             }
         }
-        probe = WPADProbe(channel, devices);
+        queueIndex = WPADProbe(channel, devices);
         result = KPADRead(channel, record + 0xC8, 1);
-        if (result >= 1 && probe == 0 && record[0xC4] != 0) {
+        if (result >= 1 && queueIndex == 0 && record[0xC4] != 0) {
             current = *(signed char *)(record + 0x14D);
             old = *(signed char *)lastState;
             if (current != old) {
                 result = (int)fn_802E77C0((signed char)current);
-                probe = (int)fn_802E77C0(*(signed char *)lastState);
+                queueIndex = (int)fn_802E77C0(*(signed char *)lastState);
                 ((void (*)(const char *, ...))fn_802E30C8)(
-                    formatBase + 0x94, channel, probe, result);
+                    formatBase + 0x94, channel, queueIndex, result);
                 *lastState = (unsigned char)current;
             }
             if ((signed char)current == 0) {
                 if (record[0] == 0) {
-                    record[0] = (unsigned char)one;
+                    record[0] = (unsigned char)changed;
                     *(int *)(record + 0xB4) = 0;
-                    record[0xC5] = (unsigned char)one;
+                    record[0xC5] = (unsigned char)changed;
                     ((void (*)(const char *, ...))fn_802E30C8)(
                         formatBase + 0xA8, channel);
                 }
@@ -492,7 +504,7 @@ void fn_802E7FD0(void) {
         }
         if (record[0x29] != 0) {
             if (record[0xC5] == 0) {
-                record[0xC5] = (unsigned char)one;
+                record[0xC5] = (unsigned char)changed;
                 fn_802ECBF8();
             }
         } else {
@@ -502,7 +514,7 @@ void fn_802E7FD0(void) {
         if (((int (*)(int))fn_802E77B8)(channel) != 0 &&
             record[0x2B] != 0 && record[0x29] != 0 &&
             record[0x27] != 0)
-            filtered = one;
+            filtered = changed;
         timeNow = fn_802E2C20();
         if (filtered == 0)
             *(int *)(record + 0xC0) = timeNow;
