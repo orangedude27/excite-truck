@@ -346,6 +346,7 @@ void *fn_80297814(FlipBookElem *elem, s32 deleteFlag) {
     }
     return elem;
 }
+
 s32 fn_8029788C(void *arg0) {
     s32 val = *(s32 *)((u8 *)arg0 + 4);
     s32 neg = -val;
