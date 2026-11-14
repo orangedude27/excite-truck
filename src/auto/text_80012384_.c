@@ -32,16 +32,17 @@ extern void fn_802C92DC(int, int, int, int, int);
 extern void fn_80235380(void *);
 extern void fn_80128668(void *);
 #pragma scheduling invalid_target
-void *fn_80012384(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        void *resource = *(void **)((char *)arg0 + 0x50);
+/* Destructor-like cleanup: release the owned resource at offset 0x50, clear it, and optionally free the object when arg1 > 0. */
+void *fn_80012384(void *object, int shouldFree) {
+    if (object != 0) {
+        void *resource = *(void **)((char *)object + 0x50);
         if (resource != 0) {
             fn_80235380(resource);
         }
-        *(void **)((char *)arg0 + 0x50) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+        *(void **)((char *)object + 0x50) = 0;
+        if (shouldFree > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 #pragma push
 #pragma processor 750
