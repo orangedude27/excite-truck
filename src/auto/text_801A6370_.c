@@ -33,7 +33,7 @@ extern float *fn_80265D98(void);
 extern void fn_8012F57C(int, void *, void *, float);
 #pragma dont_inline on
 float fn_801A6370(float arg0, float arg1, float arg2, float arg3) {
-    return (arg0 + arg1 * arg3) + arg3 * ((lbl_80562418 * arg2) * arg3);
+    return arg0 + arg1 * arg3 + arg3 * (arg3 * (lbl_80562418 * arg2));
 }
 #pragma dont_inline reset
 
@@ -54,11 +54,19 @@ void fn_801A63F4(void *arg0, void *arg1, void *arg2, void *arg3) {
     float *a = (float *)arg1;
     float *b = (float *)arg2;
     float *t = (float *)arg3;
-    float bz, by, ax, bx, ay, tz, ty, tx, az;
+    float bz;
+    float by;
+    float ax;
+    float bx;
+    float ay;
+    float tz;
+    float ty;
+    float tx;
+    float az;
     bz = b[2];
     by = b[1];
-    ax = a[0];
     bx = b[0];
+    ax = a[0];
     ay = a[1];
     tz = t[2];
     ty = t[1];
