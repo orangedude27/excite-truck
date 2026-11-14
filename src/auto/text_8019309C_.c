@@ -931,15 +931,16 @@ extern "C" void fn_801944C0(void *driver) {
 }
 #pragma cplusplus reset
 #pragma dont_inline off
-void fn_80194590(void *arg0) {
-    int v;
-    if (*(int *)((char *)arg0 + 0x260) == 0) {
-        v = 1;
-        *(int *)((char *)arg0 + 0x260) = 1;
-        if (*(int *)((char *)arg0 + 0x18) == 1) {
-            v = -1;
+/* Initializes the lateral direction scale once, using the driver type and a base offset. */
+void fn_80194590(void *driver) {
+    int direction;
+    if (*(int *)((char *)driver + 0x260) == 0) {
+        direction = 1;
+        *(int *)((char *)driver + 0x260) = 1;
+        if (*(int *)((char *)driver + 0x18) == 1) {
+            direction = -1;
         }
-        *(float *)((char *)arg0 + 0x264) = (float)v * (*(float *)((char *)arg0 + 0x284) + lbl_8055A488 * lbl_8056215C);
+        *(float *)((char *)driver + 0x264) = (float)direction * (*(float *)((char *)driver + 0x284) + lbl_8055A488 * lbl_8056215C);
     }
 }
 
