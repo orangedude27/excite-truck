@@ -593,11 +593,6 @@ extern "C" void InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46n
     *(void **)((u8 *)sound + 0x14) = self;
 }
 
-#pragma push
-#pragma small_data off
-extern u8 lbl_80322D24[];
-extern u8 lbl_80322D00[];
-#pragma pop
 extern "C" void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(
     void* this_, void* pSound) {
     if (pSound == NULL) {
