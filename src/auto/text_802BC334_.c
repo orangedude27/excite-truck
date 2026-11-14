@@ -33,10 +33,11 @@ struct TreeList {
     char *entries;
 };
 __declspec(section ".data") extern int lbl_8034AB38;
-int fn_802BC334(int arg0) {
+/* Returns a handle for the given resource path if valid and initialized, or -2 on failure. */
+int fn_802BC334(int path) {
     int valid = 0;
-    if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28(arg0, 0);
+    if (path != 0 && fn_8012C33C() != 0) valid = 1;
+    if (valid != 0) return fn_802CAC28(path, 0);
     return -2;
 }
 
