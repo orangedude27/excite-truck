@@ -17,6 +17,7 @@ typedef union {
 AXSTUDIOStorage lbl_80363BE0 ALIGN(32);
 #define __AXStudio (lbl_80363BE0.studio)
 
+/* Steps depop fade per frame, clamping the per-frame delta and writing the output delta. */
 void __AXDepopFadeMain(s32* all, s32* value, s16* depop) {
     if (*all / AX_SAMPLES_PER_FRAME != 0) {
         s32 avg = *all / AX_SAMPLES_PER_FRAME;
