@@ -1609,19 +1609,29 @@ extern "C" long fn_8027D068(long arg0) {
     }
 }
 
-extern "C" long fn_8027D0E0(long arg0) {
-    long value = *fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
-    switch (value) {
+/* EventPath query for a bracket: finds the bracket's record in the manager's goal
+ * table (lbl_8055F654 + 0xAF0C) and asks the handler for that record's event-path
+ * type (0 = career, 1 = challenge) whether every "event_goal" contest of the
+ * bracket passes that mode's unlock check (fn_8027C650 / fn_8027CA1C compare the
+ * contest's save record with what it takes to clear it).  Returns 0 as soon as one
+ * goal fails, 1 when the bracket is through; an unknown type is reported and
+ * counted as passed.  The record pointer is still in r3 when the handler is
+ * called, which is why the call is written as taking no argument. */
+extern "C" long fn_8027D0E0(long bracketName) {
+    struct EventPathRecord *record =
+        (struct EventPathRecord *)fn_8027C26C((void *)lbl_8055F654, (const char *)bracketName);
+    long pathType = record->goalType;
+    switch (pathType) {
     case 0:
         return ((long (*)(void))fn_8027C788)();
     case 1:
         return ((long (*)(void))fn_8027CB28)();
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C70, arg0, value);
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C70, bracketName, pathType);
         return 1;
     }
 }
-
+#pragma opt_propagation off
 void fn_8027C8B8(long, char *, long);
 #pragma opt_propagation off
 extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
