@@ -1791,25 +1791,31 @@ extern "C" s32 fn_800A71E0(s32 arg0, void *arg1) {
 
 extern "C" s32 fn_800A625C(void *, s32);
 extern "C" s32 fn_800A62A8(void *);
-extern "C" s32 fn_800A7214(void *arg0) {
-    s32 result;
-    s32 result2;
-    if ((*(u32 *)arg0 & 4) != 0) {
-        goto flag_set;
+extern "C" s32 fn_800A7214(void *device) {
+    /* Mark the device as ready: call its prepare/open handlers once if not already done. */
+    s32 status;
+    s32 status2;
+
+    if ((*(u32 *)device & 4) != 0) {
+        goto already_ready;
     }
-    result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-    if (result != 0) {
-        return result;
+
+    status = fn_800A625C(*(void **)((u8 *)device + 4), (s32)device);
+    if (status != 0) {
+        return status;
     }
-    result2 = fn_800A62A8(*(void **)((u8 *)arg0 + 4));
-    if (result2 != 0) {
-        return result2;
+
+    status2 = fn_800A62A8(*(void **)((u8 *)device + 4));
+    if (status2 != 0) {
+        return status2;
     }
-    goto set_flag;
-flag_set:
+    goto mark_ready;
+
+already_ready:
     return 0xB;
-set_flag:
-    *(u32 *)arg0 |= 4;
+
+mark_ready:
+    *(u32 *)device |= 4;
     return 0;
 }
 
