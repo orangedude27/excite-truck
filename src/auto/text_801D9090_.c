@@ -559,6 +559,7 @@ void *fn_801D9A54(const char *arg0) {
 
 #pragma push
 #pragma processor 750
+/* Applies the given blend weight to each morph region in the group, unless morph updates are frozen. */
 void fn_801D9AB8(void *arg0, float weight) {
     void *node;
     float start;
