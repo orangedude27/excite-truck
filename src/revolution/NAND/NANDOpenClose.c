@@ -65,6 +65,8 @@ s32 NANDOpenAsync(const char* path, NANDFileInfo* info, u8 mode,
     return nandConvertErrorCode(nandOpen(path, mode, block, TRUE, FALSE));
 }
 
+/* Asynchronous NANDPrivateOpen(): like NANDOpenAsync(), but privileged - the
+ * caller may open files under the private "/shared2" tree (system software). */
 s32 NANDPrivateOpenAsync(const char* path, NANDFileInfo* info, u8 mode,
                          NANDAsyncCallback callback, NANDCommandBlock* block) {
     if (!nandIsInitialized()) {
