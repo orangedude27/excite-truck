@@ -11,6 +11,19 @@ extern char lbl_8034AFF8[16];
 extern s32 lbl_8055FB6C;
 extern s32 lbl_8055FB70;
 
+// The level's "swlmap" light map, held as two src/game/texture.c slots: the
+// swlmap.tex file when the disc has it, otherwise a 512x512 "rtarg" render
+// target the game draws the map into itself (fn_802C276C).
+#define ResFindFile fn_8012C33C        /* is this resource name in the archive? */
+#define TextureLoad fn_802CAC28        /* load a .tex file into a slot; the slot number */
+#define RenderTargetCreate fn_802CB128 /* make a "rtarg" render-target slot, width, height */
+#define RenderTargetFree fn_802CB228   /* free a render-target slot */
+#define TextureFree fn_802CAC54        /* release a loaded texture slot */
+#define NO_TEXTURE_SLOT (-2)           /* the "no slot" value of the two globals below */
+#define sSwlMapName lbl_8034AFF8       /* "swlmap.tex" */
+#define sSwlMapTargetSlot lbl_8055FB6C /* render target, NO_TEXTURE_SLOT when the file loaded */
+#define sSwlMapFileSlot lbl_8055FB70   /* swlmap.tex's slot, NO_TEXTURE_SLOT when absent */
+
 void *fn_802C2698(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -53,10 +66,9 @@ extern s32 fn_802CB274(s32);
 extern f32 lbl_8055FB74, lbl_80564EB4, lbl_80564EB8, lbl_80564EBC, lbl_80564EC0, lbl_80564EC4, lbl_80564EC8, lbl_80564ECC, lbl_80564ED0;
 void fn_802C276C(void) {
     f32 sp[12];
-    f32 temp_f2;
     f32 temp_f3;
+    f32 temp_f2;
     s32 temp_r31;
-
     if (lbl_8055FB70 == -2) {
         fn_802CB274(lbl_8055FB6C);
         fn_802C9294(lbl_8055FB6C, 0);
@@ -75,7 +87,7 @@ void fn_802C276C(void) {
         sp[6] = lbl_80564EB8;
         sp[7] = lbl_80564EC8;
         sp[8] = lbl_80564EB8;
-        fn_802C8638(sp, sp[0], sp[10], temp_f3, lbl_80564EB8);
+        fn_802C8638(sp, lbl_80564EC4, temp_f2, temp_f3, lbl_80564EB8);
         fn_802C87B4(0, 0, 0x200, 0x200);
         fn_802C974C(lbl_80564EC4, lbl_80564ECC + sp[10], lbl_80564ED0);
         fn_802C86E8(0xFF00FF00);
