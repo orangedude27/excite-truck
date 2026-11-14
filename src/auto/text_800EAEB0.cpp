@@ -581,16 +581,17 @@ void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
     *(f32*)((u8*)this + 0xC) = value;
 }
 
-extern "C" void InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *self, void *sound) {
-    void *head = (u8 *)self + 4;
-    if (sound == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D24, 0x233,
-                                     (const char *)lbl_80322D00);
+/* Append a BasicSound to this ExternalSoundPlayer's sound list and bind its external player pointer. */
+extern "C" void InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *player, void *sound) {
+    void *endNode = (u8 *)player + LINK_LIST_SENTINEL_OFFSET;
+    if (sound == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)sLinkListHeaderFile, LINK_LIST_PUSH_BACK_LINE,
+                                     (const char *)sLinkListNullPtrMsg);
     }
-    void *iterator = head;
+    void *endIter = endNode;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
-        self, &iterator, (u8 *)sound + 0xD0);
-    *(void **)((u8 *)sound + 0x14) = self;
+        player, &endIter, (u8 *)sound + BASIC_SOUND_EXT_PLAYER_LINK_OFFSET);
+    *(void **)((u8 *)sound + BASIC_SOUND_EXT_PLAYER_OFFSET) = player;
 }
 
 extern "C" void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(
