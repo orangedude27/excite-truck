@@ -73,6 +73,52 @@ struct FxSpawnQueue {
 /* the live instance count: word 0x50 of the queue, right after the 16 slots */
 #define FX_SPAWN_COUNT (lbl_804B32B8[0x50])
 
+/* Settings handed to the particle emitter factory fn_8028E2F8; fn_8028E61C
+   clears the first 0x8C bytes and fn_8028FD00 copies them into the new
+   emitter, which keeps them at the same offsets.  fn_8028E654 reads the same
+   fields from an emitter's parameter file (the key names are quoted below);
+   fn_8028B3CC fills them by hand for the built-in paint splats. */
+struct EfSettings {
+    s32 type;             /* +0x00  "Type": 0 simple, 1 animated, 2 rotating */
+    s32 maxEntries;       /* +0x04  splats held at once, 0x28 bytes each */
+    f32 life;             /* +0x08  seconds a splat lives; 1.0/this is its rate */
+    f32 phaseStep;        /* +0x0C  advance of the emitter's phase per update */
+    f32 spawnRadiusX;     /* +0x10  spawn box: the loader sets x and z together */
+    f32 spawnHeight;      /* +0x14 */
+    f32 spawnRadiusZ;     /* +0x18 */
+    f32 spreadX;          /* +0x1C  how far a splat may drift from that point */
+    f32 spreadY;          /* +0x20 */
+    f32 spreadZ;          /* +0x24 */
+    f32 spawnScale;       /* +0x28  scales the spawn box (fn_8028F444) */
+    f32 f2C;              /* +0x2C */
+    f32 gravity;          /* +0x30  "Gravity" */
+    f32 drag;             /* +0x34  "Drag", kept inside 0.0..1.0 */
+    u8 randomColor;       /* +0x38  give each splat a random colour index */
+    u8 pad38[3];
+    f32 f3C;              /* +0x3C */
+    f32 f40;              /* +0x40 */
+    s32 priority;         /* +0x44  draw priority 1..9, default 5 */
+    f32 shading;          /* +0x48  "Shading" */
+    f32 sizeAccel;        /* +0x4C  size over the splat's life: quadratic term */
+    f32 sizeSpeed;        /* +0x50                      : linear term */
+    f32 size;             /* +0x54                      : start */
+    f32 alphaFade;        /* +0x58  colour over its life: change ... */
+    f32 alpha;            /* +0x5C                        ... and start */
+    f32 blueFade;         /* +0x60 */
+    f32 blue;             /* +0x64 */
+    f32 greenFade;        /* +0x68 */
+    f32 green;            /* +0x6C */
+    f32 redFade;          /* +0x70 */
+    f32 red;              /* +0x74 */
+    f32 f78;              /* +0x78 */
+    f32 f7C;              /* +0x7C */
+    f32 f80;              /* +0x80 */
+    s32 frameCount;       /* +0x84  "#Frames": frames of an animated splat */
+    u8 randomFrame;       /* +0x88  start an animated splat on a random frame */
+    u8 pad88[3];
+    u8 tail[4];           /* +0x8C  past the 0x8C bytes the emitter copies */
+};
+
 extern void fn_8028BC88(s32);
 extern f32 lbl_805643A0;
 extern f32 lbl_80564394;
@@ -121,19 +167,20 @@ void fn_8028A664(void) {
     extern s32 fn_8028BA44(void *);
     extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BB14(s32);
-    char *data = lbl_80348B98;
+    struct Data { char a[16]; char b[12]; char c[16]; char d[4]; };
+    struct Data *data = (struct Data *)lbl_80348B98;
     void *p;
-    p = fn_801284F8(0xDC, (void *)(*(char (*)[0xDC])data));
+    p = fn_801284F8(0xDC, &data->a);
     if (p != 0) p = fn_8028BB68(p, 0x80, lbl_80564328);
     lbl_8055F6F0 = (s32)p;
-    p = fn_801284F8(0xDC, data + 0x10);
+    p = fn_801284F8(0xDC, &data->b);
     if (p != 0) p = fn_8028BB68(p, 0x60, lbl_8056432C);
     lbl_8055F6F4 = (s32)p;
-    p = fn_801284F8(0x14, data + 0x1C);
+    p = fn_801284F8(0x14, &data->c);
     if (p != 0) p = fn_8028C824(p, 0x60);
     lbl_8055F6F8 = (s32)p;
     lbl_8055F6FC = fn_802929D8(1, &lbl_8055C8A0, 0, 0);
-    p = fn_802974CC(data + 0x2C);
+    p = fn_802974CC(&data->d);
     *(volatile s32 *)&lbl_8055F700 = (s32)p;
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
     fn_8028ABE8(p);
