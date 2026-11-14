@@ -1229,15 +1229,17 @@ s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 #pragma scheduling on
-void *fn_802A69D8(void *arg0, s32 arg1) {
-    s32 temp;
-    if (arg0 != 0) {
-        fn_802CAC54(((s32 *)arg0)[3]);
-        temp = *(s32 *)arg0;
-        if (temp != 0) fn_80128670(temp - 0x10);
-        if (arg1 > 0) fn_80128668(arg0);
+void *fn_802A69D8(void *object, s32 deleteFlag) {
+    /* Destroying destructor: release the texture handle at +0xC, free the owned
+     * buffer at +0 (allocated with a 0x10-byte header), and optionally delete the object. */
+    s32 buffer;
+    if (object != 0) {
+        fn_802CAC54(((s32 *)object)[3]);
+        buffer = *(s32 *)object;
+        if (buffer != 0) fn_80128670(buffer - 0x10);
+        if (deleteFlag > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 extern f32 lbl_80564850;
