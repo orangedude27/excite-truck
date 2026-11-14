@@ -22,6 +22,16 @@ void fn_80128668(void *);
 extern int fn_802C9C24(int);
 extern void fn_802E317C(const char *, ...);
 extern int fn_802B110C(void *, int);
+/* The tree list loaded from "treelist.trl" (its "TLST" block, held in
+   lbl_8055FAB8): entryCount entries of TREE_ENTRY_SIZE bytes at `entries`,
+   every entry beginning with the tree's name (fn_802BD194 looks one up).
+   Each entry carries three lists: the frame list at +0x20 and two near
+   lists at +0x28 and +0x30 (see fn_802BD210). */
+#define TREE_ENTRY_SIZE 0x38
+struct TreeList {
+    unsigned int entryCount;
+    char *entries;
+};
 __declspec(section ".data") extern int lbl_8034AB38;
 int fn_802BC334(int arg0) {
     int valid = 0;
@@ -658,16 +668,18 @@ void fn_802BD414(int arg0, volatile int *arg1)
     }
 }
 #pragma scheduling reset
-void fn_802BD478(int arg0, volatile int *arg1) {
-    volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
-    if (result != 0) {
-        int second = arg1[1];
-        int first = arg1[0];
-        result[0] = second;
-        result[2] = first;
-        result[1] = 0;
-        result[1] = result[1] + arg1[0];
-    }
+void fn_802BD478(int arg0, volatile int *arg1)
+{
+  volatile int *result = (volatile int *) fn_801284F8(0xC, arg0);
+  if (result != 0)
+  {
+    int second;
+    int first = arg1[0];
+    result[0] = arg1[1];
+    result[2] = first;
+    result[1] = 0;
+    result[1] = result[1] + arg1[0];
+  }
 }
 
 #pragma push
@@ -680,11 +692,12 @@ void fn_802BD4DC(void *arg0, int arg1) {
     char *entry;
     int offset;
     unsigned int i;
-    unsigned char b6, b2, b3, b0, b1, b4, b5;
+    unsigned char b7, b6, b2, b3, b0, b1, b4, b5;
     b4 = p[4];
+    b7 = p[7];
+    p[4] = b7;
     b5 = p[5];
     b6 = p[6];
-    p[4] = p[7];
     b0 = p[0];
     b3 = p[3];
     p[7] = b4;
