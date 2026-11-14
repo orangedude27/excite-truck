@@ -9360,16 +9360,17 @@ void btm_write_stored_link_key_complete(u8 *p) {
     }
 }
 
-void btm_delete_stored_link_key_complete(u8 *p) {
-    void (*callback)(u8 *);
-    u8 param[4];
-    callback = *(void (**)(u8 *))(lbl_803C0F78 + 0x570);
+void btm_delete_stored_link_key_complete(u8 *event) {
+    /* HCI Delete Stored Link Key complete: report status and number of keys deleted via the stored-link-key callback. */
+    void (*storedKeyCallback)(u8 *);
+    u8 result[4];
+    storedKeyCallback = *(void (**)(u8 *))(lbl_803C0F78 + 0x570);
     *(void (**)(u8 *))(lbl_803C0F78 + 0x570) = NULL;
-    if (callback != NULL) {
-        param[0] = 4;
-        param[1] = p[0];
-        *(u16 *)(param + 2) = p[1] + (p[2] << 8);
-        callback(param);
+    if (storedKeyCallback != NULL) {
+        result[0] = 4;
+        result[1] = event[0];
+        *(u16 *)(result + 2) = event[1] + (event[2] << 8);
+        storedKeyCallback(result);
     }
 }
 
