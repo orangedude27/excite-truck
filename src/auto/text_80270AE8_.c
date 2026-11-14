@@ -57,7 +57,7 @@ extern "C" static inline void *callGetCamera(void *manager) {
 
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern void fn_80271624(void);
+extern void fn_80271624();
 extern int stricmp(const char *, const char *);
 extern char *lbl_80346B54[];
 extern float lbl_80563F48;
