@@ -21465,6 +21465,7 @@ extern "C" void DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo(Boundi
     };
     ColorArg color;
 
+    /* Draw the bounding outline in debug draw mode (DrawInfo flag bit 3). */
     if ((info->flag >> 3) & 1) {
         self->v22();
         color.value = 0x00FF00FF;
