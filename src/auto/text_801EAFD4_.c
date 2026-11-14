@@ -458,13 +458,18 @@ void fn_801EB824(s32 arg0) {
     ((s32 (*)(s32, s32 *))fn_801EB000)(arg0, &sp8);
 }
 
+/* Initialize 24 cached values by calling each getter in the descriptor table and storing its result in the corresponding slot. */
 void fn_801EB854(void) {
-    s32 *var_r31=lbl_802F9A08;
-    s32 *var_r30=lbl_804885E8;
-    u32 var_r29=0;
-    for(;var_r29<0x18;var_r29++,var_r31+=2,var_r30++) {
-        fn_801EB96C(var_r30,var_r31[1]);
+#define descriptorTable lbl_802F9A08
+#define cachedValues lbl_804885E8
+    s32 *descriptor = descriptorTable;
+    s32 *cacheSlot = cachedValues;
+    u32 index = 0;
+    for (; index < 0x18; index++, descriptor += 2, cacheSlot++) {
+        fn_801EB96C(cacheSlot, descriptor[1]);
     }
+#undef descriptorTable
+#undef cachedValues
 }
 
 void fn_801EB8BC(void) {
