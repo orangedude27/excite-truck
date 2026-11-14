@@ -1724,6 +1724,8 @@ s32 WPADProbe(s32 chan, s32* outDevType) {
     return status;
 }
 
+/* Set the sampling callback for a WPAD channel and return the previous one.
+ * Interrupts are disabled while the callback slot is swapped. */
 WPADSamplingCallback WPADSetSamplingCallback(s32 chan,
                                              WPADSamplingCallback pCallback) {
 
