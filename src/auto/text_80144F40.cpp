@@ -1807,6 +1807,7 @@ extern "C" void fn_801478E0(void *arg0, s32 unused, s32 arg1, s32 arg2) {
 #pragma dont_inline on
 #pragma push
 extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    /* Look up an object via arg0's vtable (slot f(arg2)); if arg1 and the result are non-null, forward them to fn_80145CF4. */
     class V {
     public:
         virtual void a();
