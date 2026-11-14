@@ -256,8 +256,8 @@ void *fn_8023512C(const char *arg0) {
     char *tbl = (char *)lbl_80340670;
     char full[0x80];
     char name[0x80];
-    char *dot;
     int *obj;
+    char *dot;
     CopyStrB_8023512C(arg0, 0x80, full);
     if (fn_8012C33C(arg0) == 0) {
         fn_802E30C8(tbl + 0x120, arg0);
@@ -287,23 +287,25 @@ void *fn_8023512C(const char *arg0) {
     return obj;
 }
 
-void fn_80235380(void *arg0) {
-    int count;
-    void *node;
-    void *next;
+/* Releases one reference to an art set: frees its picture list, texture handle,
+ * and tracker entry, then frees the set itself when the refcount reaches zero. */
+void fn_80235380(void *artSet) {
+    int refCount;
+    ArtPicture *picture;
+    ArtPicture *nextPicture;
 
-    count = *(int *)((char *)arg0 + 0x80) - 1;
-    *(int *)((char *)arg0 + 0x80) = count;
-    if (count <= 0) {
-        node = *(void **)((char *)arg0 + 0x88);
-        while (node != 0) {
-            next = *(void **)((char *)node + 0x18);
-            fn_80128668(node);
-            node = next;
+    refCount = ((ArtSet *)artSet)->refCount - 1;
+    ((ArtSet *)artSet)->refCount = refCount;
+    if (refCount <= 0) {
+        picture = ((ArtSet *)artSet)->pictures;
+        while (picture != 0) {
+            nextPicture = picture->next;
+            fn_80128668(picture);
+            picture = nextPicture;
         }
-        fn_802CAC54(*(int *)((char *)arg0 + 0x84));
-        fn_80234DE4((unsigned int)arg0);
-        fn_80128668(arg0);
+        fn_802CAC54(((ArtSet *)artSet)->drawHandle);
+        fn_80234DE4((unsigned int)artSet);
+        fn_80128668(artSet);
     }
 }
 
