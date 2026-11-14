@@ -101,7 +101,7 @@ extern char *fn_80008188(void *);
 extern char *fn_801345D8(char *, int, const char *, ...);
 extern int stricmp(const char *, const char *);
 static inline int FindRecord8025(const char *name, char *table) {
-    int offset, index;
+    int index, offset;
     for (index = 0, offset = 0; index < *(int *)(table + 4); offset += 0x38, index++) {
         if (stricmp(*(char **)table + offset, name) == 0) return index;
     }
