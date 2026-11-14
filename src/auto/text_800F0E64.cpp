@@ -401,15 +401,16 @@ extern "C" void fn_800F1080(void *arg0, int arg1, int arg2) {
     *(int *)((char *)arg0 + 0x54) = arg1 + arg2;
 }
 
-extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) {
-    ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(self, -1);
+extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *track) {
+    /* Release all active channels and clear the track's channel list. */
+    ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(track, -1);
     u32 interruptState = OSDisableInterrupts();
-    void *channel = *(void **)((u8 *)self + 0xB8);
+    void *channel = *(void **)((u8 *)track + 0xB8);
     while (channel != 0) {
         fn_800EAD00(channel);
         channel = *(void **)((u8 *)channel + 0xE4);
     }
-    *(void **)((u8 *)self + 0xB8) = 0;
+    *(void **)((u8 *)track + 0xB8) = 0;
     OSRestoreInterrupts(interruptState);
 }
 
