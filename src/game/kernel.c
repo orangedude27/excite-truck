@@ -296,14 +296,15 @@ void fn_802E27F0(void) {
                 (-(count - 1) * 4));
 }
 #pragma scheduling on
+/* Checks stack guard slots from the top down and reports stack usage if a guard is corrupted. */
 void fn_802E29AC(void) {
-    int count = *(int *)lbl_804DB780;
-    int *array = *(int **)((char *)lbl_804DB780 + 4);
+    int size = *(int *)lbl_804DB780;
+    int *base = *(int **)((char *)lbl_804DB780 + 4);
     int i;
-    int n = count / 4;
-    for (i = n - 1; i >= 0; --i) {
-        if (array[-i] != 0x53ffeedd) {
-            fn_802E30C8(lbl_8034CD30, (i * 4) / 1024, count / 1024);
+    int slotCount = size / 4;
+    for (i = slotCount - 1; i >= 0; --i) {
+        if (base[-i] != 0x53ffeedd) {
+            fn_802E30C8(lbl_8034CD30, (i * 4) / 1024, size / 1024);
             return;
         }
     }
