@@ -120,10 +120,12 @@ void* fn_802B8DF8(void* arg0, s32 arg1) {
     return arg0;
 }
 
-int fn_802B8E50(int arg0) {
+/* Load a texture from the given path when the DVD/file system is available.
+ * Returns the texture handle, or -2 if the path is null or unavailable. */
+int fn_802B8E50(int path) {
     int valid = 0;
-    if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28(arg0, 0);
+    if (path != 0 && fn_8012C33C() != 0) valid = 1;
+    if (valid != 0) return fn_802CAC28(path, 0);
     return -2;
 }
 
