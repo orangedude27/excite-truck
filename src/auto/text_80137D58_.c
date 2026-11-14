@@ -167,10 +167,17 @@ void fn_80137FF0(void *arg0) {
 }
 
 void fn_801380DC(void *extRecord) {
-    /* idealres ext type 3: byte-swap a square-matrix extension record in
+    /* idealres ext type 3 (square-matrix extension): byte-swap the record in
        place.  The 32-bit side length at +0x8 is swapped first (so the loop
        bound is read in this machine's byte order), then each of the
        size*size 32-bit entries of the matrix at +0xC is swapped. */
+    struct IdealResMatrixExt {
+        unsigned int type;    /* +0x00 extension type, swapped by the caller */
+        unsigned int field_4; /* +0x04 */
+        int size;             /* +0x08 matrix side length, swapped just below */
+        unsigned int values;  /* +0x0C size*size 32-bit entries follow it */
+    };
+    struct IdealResMatrixExt *matrix = (struct IdealResMatrixExt *)extRecord;
     unsigned char *record = (unsigned char *)extRecord;
     unsigned char t0 = record[8];
     unsigned char *entry = record + 0xC;
@@ -181,7 +188,7 @@ void fn_801380DC(void *extRecord) {
     record[11] = t0;
     record[9] = record[10];
     record[10] = t1;
-    for (i = 0; i < *(int *)(record + 8) * *(int *)(record + 8); i++) {
+    for (i = 0; i < matrix->size * matrix->size; i++) {
         t0 = entry[0];
         t2 = entry[3];
         entry[0] = t2;
