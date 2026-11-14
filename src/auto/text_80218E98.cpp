@@ -8373,14 +8373,16 @@ extern "C" void fn_80228A6C(void *arg0) {
 extern "C" void fn_80228A80(void) {
 }
 
-extern "C" void fn_80228A84(void *arg0) {
-    s32 value = *(s32 *)((u8 *)arg0 + 0x270);
-    s32 work[2];
-    fn_802C86F0(work, value, *(s32 *)((u8 *)arg0 + 0x274),
-        *(s32 *)((u8 *)arg0 + 0x278), *(s32 *)((u8 *)arg0 + 0x27C));
+/* Set a draw/color state from this object's parameters, invoke a virtual
+   callback on its child object, then restore the previous state. */
+extern "C" void fn_80228A84(void *object) {
+    s32 mode = *(s32 *)((u8 *)object + 0x270);
+    s32 savedState[2];
+    fn_802C86F0(savedState, mode, *(s32 *)((u8 *)object + 0x274),
+        *(s32 *)((u8 *)object + 0x278), *(s32 *)((u8 *)object + 0x27C));
     fn_802C88BC(2);
-    ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf5();
-    fn_802C8750(work, -1);
+    ((VfObj *)*(void **)((u8 *)object + 0x268))->vf5();
+    fn_802C8750(savedState, -1);
 }
 
 #pragma push
