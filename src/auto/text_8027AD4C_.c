@@ -1607,15 +1607,30 @@ extern "C" long fn_8027CFB4(long arg0) {
     return 0;
 }
 
-extern "C" long fn_8027D068(long arg0) {
-    long value = *fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
-    switch (value) {
+/* EventPath query for a bracket: finds the bracket's record in the manager's goal
+ * table (lbl_8055F654 + 0xAF0C, through fn_8027C26C) and asks the handler for that
+ * record's event-path type (0 = career, 1 = challenge) whether the bracket has been
+ * *reached*, that is whether the bracket ahead of it in the path is through.  The
+ * career handler (fn_8027C850) looks this bracket up in the goal table, takes the
+ * record before it and runs that path's goal check (fn_8027C788) on it -- a first
+ * bracket of a path has nothing to clear -- while the challenge handler
+ * (fn_8027CBF0) is always reached, its brackets being open from the start.
+ * fn_8027AD4C stores the answer at +0x1F1 of the "event_path" object it is reading,
+ * next to the "every goal cleared" answer of fn_8027D0E0; an unknown type is
+ * reported and counted as reached.  The record pointer is still in r3 when the
+ * handler is called, which is why the call is written as taking no argument. */
+extern "C" long fn_8027D068(long bracketName) {
+    struct EventPathRecord *record =
+        (struct EventPathRecord *)fn_8027C26C((void *)lbl_8055F654, (const char *)bracketName);
+    long pathType = record->goalType;
+    switch (pathType) {
     case 0:
         return ((long (*)(void))fn_8027C850)();
     case 1:
         return ((long (*)(void))fn_8027CBF0)();
     default:
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C70, arg0, value);
+        /* "eventpath: bracket %s has unknown event-path type %d" */
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C70, bracketName, pathType);
         return 1;
     }
 }
