@@ -623,6 +623,7 @@ body:
 test:
     if (i < *(int *)((char *)base + 0x100)) goto body;
 }
+
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
