@@ -237,18 +237,22 @@ BOOL ARCChangeDir(ARCHandle *handle, const char *path) {
     return TRUE;
 }
 
-BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
+/* Opens the directory `path` inside the archive `handle` was initialised for:
+ * resolves the path to a node of the FST, refuses it unless that node is a
+ * folder, and records in `dir` the run of nodes ARCReadDir will walk. */
+BOOL ARCOpenDir(ARCHandle *handle, const char *path, ARCDir *dir) {
     register s32 entrynum = ARCConvertPathToEntrynum(handle, path);
-    void* fst = handle->FSTStart;
-    
-    if (entrynum < 0 || !(*(u32*)((u8*)fst + entrynum * 0xC) & 0xFF000000)) {
+    ARCNode *fst = (ARCNode *)handle->FSTStart;
+
+    if (entrynum < 0 ||
+        !(((ARCNode *)((u8 *)fst + entrynum * 0xC))->packed_type_name & 0xFF000000)) {
         return FALSE;
     }
-    
+
     dir->handle = handle;
     dir->location = entrynum + 1;
     dir->entryNum = entrynum;
-    dir->next = *(u32*)((u8*)fst + entrynum * (unsigned)0xC + 8);
+    dir->next = ((ARCNode *)((u8 *)fst + entrynum * (unsigned)0xC))->folder.sibling_next;
     return TRUE;
 }
 
@@ -535,18 +539,18 @@ u32 fn_80116F8C(void *arg0) {
     if (temp_r0 < temp_r4) {
         temp_r30 = temp_r4 - temp_r0;
         temp_r29 = (u32)(0x3E8 * temp_r30) / (u32)((data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3);
-        temp_r6 = data[0x38 / 4] - temp_r30;
+        temp_r6 = data[0x38 / 4] - (u32)temp_r30;
         temp_r9 = data[0x2C / 4];
         data[0x38 / 4] = temp_r6;
         if (temp_r6 < temp_r9) {
-            temp_r28 = temp_r9 - temp_r6;
+            temp_r28 = (s32)(temp_r9 - temp_r6);
             data[0x38 / 4] = temp_r6 + data[0x28 / 4];
-            memset((void *)temp_r9, 0, temp_r30 - temp_r28);
-            memset((void *)data[0x38 / 4], 0, temp_r28);
+            memset((void *)temp_r9, 0, (u32)(temp_r30 - temp_r28));
+            memset((void *)data[0x38 / 4], 0, (u32)temp_r28);
         } else {
-            memset((void *)temp_r6, 0, temp_r30);
+            memset((void *)temp_r6, 0, (u32)temp_r30);
         }
-        data[0x40 / 4] = data[0x40 / 4] + temp_r30;
+        data[0x40 / 4] = data[0x40 / 4] + (u32)temp_r30;
         return temp_r29;
     }
     return 0;
@@ -2270,14 +2274,12 @@ extern void fn_8011A6A0(void *);
 extern void TRKGetFreeBuffer(void *);
 void *fn_8011A168(void *arg0) {
     s32 *src = (s32 *)arg0;
-    s32 second;
-    s32 first;
     if (arg0 == NULL) {
         lbl_8055DEE0 = 0;
         *((s32 *)&lbl_8055DEE0 + 1) = 0;
     } else {
-        second = src[1];
-        first = src[0];
+        s32 first = src[0];
+        s32 second = src[1];
         lbl_8055DEE0 = first;
         lbl_8055DEE4 = second;
     }
@@ -3485,13 +3487,13 @@ void fn_8011BEC8(void *tick, void *node, s32 checkFn, s32 tickFn) {
 
 void fn_8011C364(s32);
 s32 fn_8011BF4C(s32 arg0, s32 arg1, s32 arg2) {
-    int ret = 0;
-    int save;
-    if (arg0 != 0 && arg1 != 0 && *(int *)(arg1 + 0x18) != 0 && *(int *)(arg1 + 0x14) != 0) {
+    s32 ret = 0;
+    s32 save;
+    if (arg0 != 0 && arg1 != 0 && *(s32 *)(arg1 + 0x18) != 0 && *(s32 *)(arg1 + 0x14) != 0) {
         save = OSDisableInterrupts();
         if (fn_8011BC4C((void *)arg0, (void *)arg1) != 0) {
-            *(int *)(arg0 + 0x38) -= 1;
-            if ((arg2 & 1) && *(int *)(arg0 + 0x30) == 0) {
+            *(s32 *)(arg0 + 0x38) -= 1;
+            if ((arg2 & 1) != 0 && *(s32 *)(arg0 + 0x30) == 0) {
                 fn_8011C364(arg0);
                 ret = 1;
             }
