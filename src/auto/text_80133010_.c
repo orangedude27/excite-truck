@@ -159,14 +159,19 @@ void fn_801330E8(int arg0) {
 }
 
 void fn_80133144(void) {
- int *entry=&lbl_8042F718[0];
- int i;
- for(i=0;i<8;i++){
-  if(entry[1]!=0) fn_802E317C(lbl_8032B8D0, entry[0], entry[1]);
-  entry+=2;
- }
- fn_80128668(lbl_8055E07C);
- lbl_8055E07C=0;
+    /* Shut down the options table: warn about any of the 8 reload-callback
+     * slots in lbl_8042F718 ({name, callback}) that were never removed
+     * ("opt: callback %s (%x) was never removed", lbl_8032B8D0), then free and
+     * clear the OptionTable at lbl_8055E07C. */
+    int *callbackSlot = &lbl_8042F718[0];
+    int slotIndex;
+    for (slotIndex = 0; slotIndex < 8; slotIndex++) {
+        if (callbackSlot[1] != 0)
+            fn_802E317C(lbl_8032B8D0, callbackSlot[0], callbackSlot[1]);
+        callbackSlot += 2;
+    }
+    fn_80128668(lbl_8055E07C);
+    lbl_8055E07C = 0;
 }
 
 void fn_801331C4(int arg0,int arg1,float *arg2) {
@@ -658,9 +663,9 @@ check:
 
 #pragma dont_inline on
 int fn_80133F3C(int arg0) {
+    int offset = 0;
     int i = 0;
     int *p;
-    int offset;
     goto check;
 loop:
     offset = i * 0x38;
