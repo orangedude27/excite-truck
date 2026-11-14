@@ -183,6 +183,8 @@ extern void fn_801E5998(void *, void *, void *);
 extern int fn_801C1BA4();
 extern void fn_801C1CBC();
 extern char lbl_802F9C60[], lbl_802F9CC0[];
+#pragma push
+#pragma processor 750
 void *fn_802002D4(int arg0, int arg1, int arg2) {
     float *o;
     struct { int n; float r[3]; float P[3]; float Q[3]; } sp8;
@@ -262,22 +264,23 @@ void *fn_802002D4(int arg0, int arg1, int arg2) {
     o[50] = lbl_8056305C;
     return o;
 }
-
+#pragma pop
 extern int fn_801E323C(int);
 extern int fn_801C1C7C(int);
 extern int fn_801E598C(int);
 extern int fn_802C6CF8(int);
 extern int fn_80128668(void *);
-void fn_8020095C(int *arg0) {
-    if (arg0 != 0) {
-        fn_801E323C(arg0[7]);
-        fn_801E323C(arg0[8]);
-        fn_801E323C(arg0[9]);
-        fn_801E323C(arg0[10]);
-        fn_801C1C7C(arg0[0]);
-        fn_801E598C(arg0[3]);
-        fn_802C6CF8(arg0[2]);
-        fn_80128668(arg0);
+/* Destroys/releases the resources owned by an object and then frees the object itself. */
+void fn_8020095C(int *object) {
+    if (object != 0) {
+        fn_801E323C(object[7]);
+        fn_801E323C(object[8]);
+        fn_801E323C(object[9]);
+        fn_801E323C(object[10]);
+        fn_801C1C7C(object[0]);
+        fn_801E598C(object[3]);
+        fn_802C6CF8(object[2]);
+        fn_80128668(object);
     }
 }
 
