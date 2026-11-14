@@ -667,6 +667,7 @@ void fn_801310B4(char *buffer, int bufferSize, int number) {
     fn_801345D8(buffer, bufferSize, ordinalFormat, number, suffix + 1);
 #undef ordinalFormat
 }
+
 extern void *fn_8012C370(const char *, unsigned int, unsigned int *, int *, int, void **);
 extern void fn_8012C4D8(void *);
 extern void fn_8012BEF0(void *);
