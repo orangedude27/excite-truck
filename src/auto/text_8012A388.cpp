@@ -3232,6 +3232,7 @@ extern "C" void fn_8012C90C(void *arg0) {
     }
 }
 
+/* Releases an active load if present, resets the load request fields, and tags it as freed. */
 extern "C" void fn_8012C958(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0xC) != -1) {
         fn_8012C90C(arg0);
