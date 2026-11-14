@@ -710,7 +710,7 @@ void fn_80217C4C(void *arg0) {
     matches = 0;
     i = 0;
     for (; i < count; i++, entry += 8) {
-        char *item;
+        register char *item;
         float value;
         if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
         item = *(char **)(entry + 0x4A4);
@@ -921,30 +921,16 @@ void fn_8021818C(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80218198(void *arg0, void **arg1) {
-    struct Dummy {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void f6();
-        virtual void f7();
-        virtual void f8();
-        virtual void f9();
-        virtual void f10();
-        virtual void f11();
-        virtual void f12();
-    };
-    void *old = *(void **)((char *)arg0 + 0x450);
-    if (arg1 != old) {
-        if (old != 0) {
-            ((Dummy *)old)->f12();
+/* UiMenuGroup_setCurrentWidget: change the menu group's currently selected widget (+0x450), notifying the previous widget via OnDeselected (+0x38) and the new widget via OnSelected (+0x34). */
+extern "C" void fn_80218198(void *menuGroup, void **widget) {
+    void *prevWidget = ((struct UiMenuGroup *)menuGroup)->current;
+    if (widget != prevWidget) {
+        if (prevWidget != 0) {
+            ((struct UiWidget *)prevWidget)->OnDeselected();
         }
-        *(void **)((char *)arg0 + 0x450) = arg1;
-        if (arg1 != 0) {
-            ((Dummy *)arg1)->f11();
+        ((struct UiMenuGroup *)menuGroup)->current = widget;
+        if (widget != 0) {
+            ((struct UiWidget *)widget)->OnSelected();
         }
     }
 }
