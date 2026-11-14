@@ -20,6 +20,19 @@ extern long lbl_80507600[];
 extern char lbl_8034E9C8[];
 __declspec(section ".rodata") extern long lbl_8034E9B0;
 extern long fn_800B7BDC(long);
+/* The game's MP3 stream source, the one object at lbl_80507600.  It plays
+ * either from a VF file (fn_802E9A6C installs vtable lbl_8034E9B0) or from a
+ * block of memory (fn_802E9A3C installs lbl_8034E9C8); the four virtual slots
+ * are close/destroy, seek, size and read(dst, size). */
+typedef struct {
+    long *vtable; /* 0x00 lbl_8034E9B0 (file) or lbl_8034E9C8 (memory) */
+    long file;    /* 0x04 VFFile handle, or the buffer to play from */
+    long size;    /* 0x08 file size; the buffer's read position */
+    long length;  /* 0x0C the buffer's size */
+} Mp3Stream;
+#define mp3StreamFile_vtable lbl_8034E9B0 /* the file-backed stream's vtable */
+#define mp3StreamOpen        lbl_80560060 /* 1 while a stream is set up */
+#define VFCloseFile          fn_800B7BDC  /* VF close; 0 on success */
 extern char lbl_8055D278;
 extern char lbl_8055D280;
 __declspec(section ".rodata") extern long lbl_8034E260;
