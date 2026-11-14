@@ -218,22 +218,23 @@ void fn_802409A4(void *arg0, signed char arg1) {
     *(signed char *)((char *)arg0 + 0x2E8) = arg1;
 }
 
-void fn_802409AC(void *arg0, s32 arg1) {
+/* Append a menu entry id and refresh each item's selected flag and displayed value from the shared payload. */
+void fn_802409AC(void *menu, s32 entryId) {
     void *item;
-    s32 count = *(s32 *)((char *)arg0 + 0x2C);
-    s32 i;
+    s32 count = *(s32 *)((char *)menu + 0x2C);
+    s32 index;
     s32 value;
-    char *entry = (char *)arg0;
-    s32 selected;
-    *(s32 *)((char *)arg0 + 0x18 + count * 4) = arg1;
-    *(s32 *)((char *)arg0 + 0x2C) = count + 1;
-    for (i = 0; i < *(s32 *)((char *)arg0 + 0x2C);) {
-        value = **(s32 **)((char *)arg0 + 0x34);
-        selected = *(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30);
-        item = *(void **)(entry + 0x18);
-        entry += 4;
-        i++;
-        *(u8 *)item = selected;
+    char *entryCursor = (char *)menu;
+    s32 isSelected;
+    *(s32 *)((char *)menu + 0x18 + count * 4) = entryId;
+    *(s32 *)((char *)menu + 0x2C) = count + 1;
+    for (index = 0; index < *(s32 *)((char *)menu + 0x2C);) {
+        value = **(s32 **)((char *)menu + 0x34);
+        isSelected = *(u8 *)((char *)menu + 0x38) != 0 && index == *(s32 *)((char *)menu + 0x30);
+        item = *(void **)(entryCursor + 0x18);
+        entryCursor += 4;
+        index++;
+        *(u8 *)item = isSelected;
         *(s32 *)((char *)item + 4) = value;
     }
 }
