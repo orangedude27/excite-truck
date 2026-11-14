@@ -78,19 +78,22 @@ char *fn_8013A708(char *arg0, int arg1, int arg2) {
 
 #pragma dont_inline fn_8013A708
 #pragma cplusplus on
-extern "C" int fn_8013A760(unkVtable **arg0, int arg1) {
-    struct Dummy {
+/* Return 1 if the parameter table `table` holds any of the three difficulty-
+ * prefixed variants ("easy_", "medium_", "hard_", built by fn_8013A708) of
+ * `elementSuffix`, or 0 when none of the three exists. */
+extern "C" int fn_8013A760(unkVtable **table, int elementSuffix) {
+    struct ParamTable {
         virtual int f0();
-        virtual int f1(char *);
+        virtual int hasElement(char *);
     };
-    char buffer[0x20];
-    int i = 0;
+    char elementName[0x20];
+    int difficultyIndex = 0;
     do {
-        char *name = ((char *(*)(char *, int, int))fn_8013A708)(buffer, i, arg1);
-        if (((Dummy *)arg0)->f1(name) != 0)
+        char *name = ((char *(*)(char *, int, int))fn_8013A708)(elementName, difficultyIndex, elementSuffix);
+        if (((ParamTable *)table)->hasElement(name) != 0)
             return 1;
-        i++;
-    } while (i < 3);
+        difficultyIndex++;
+    } while (difficultyIndex < 3);
     return 0;
 }
 #pragma cplusplus reset
