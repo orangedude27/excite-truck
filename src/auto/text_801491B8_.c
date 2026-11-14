@@ -2366,6 +2366,7 @@ void fn_80151914(void) {
 
 }
 
+/* Clears the indexed sub-object (at owner + index*0xC0 + 0x9E4) via fn_8014DC08, and if the owner has the per-index flag table enabled at +0x8F4 clears that entry's byte (owner + index*0x1C + 0x8F8). The index is read from arg1 + 0x1EC. */
 void fn_80151918(void *arg0, void *arg1) {
     u32 index = *(u32*)((u8*)arg1 + 0x1EC);
     u32 base = (u32)arg0 + index * 0xC0;
