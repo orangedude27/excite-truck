@@ -114,6 +114,30 @@ typedef struct MRollRecordOption {
     s32 result;          /* +0x6C: collection getResult(index) */
 } MRollRecordOption;
 
+/* One player's car icon on the roll (player-select) screen: built by fn_802410F8
+   and destroyed by fn_802408B0.  Like MRollRecordOption it sits behind the
+   0xC-byte non-virtual base, so its own vtable is at +0xC and the secondary
+   base subobject's at +0x10 (both inside the class's vtable lbl_803426B0;
+   fn_80243470 is that secondary's deleting destructor). */
+typedef struct MRollCarIcon {
+    u8 base[0xC];          /* +0x00: shared non-virtual base (u8 flag, s32 id = -1, u8 active) */
+    void *vtable;          /* +0x0C: lbl_803426B0 */
+    void *secondaryVtable; /* +0x10: lbl_803426B0 + 0x18 */
+    s32 field14;           /* +0x14 */
+    s32 field18;           /* +0x18 */
+    s32 field1C;           /* +0x1C */
+    s32 field20;           /* +0x20 */
+    s32 field24;           /* +0x24 */
+    s32 field28;           /* +0x28 */
+    s32 value;             /* +0x2C: copy of *valuePtr taken by fn_802410F8 */
+    s32 *valuePtr;         /* +0x30: the value this icon follows */
+    s32 id;                /* +0x34: id the icon was built with */
+    s32 field38;           /* +0x38 */
+    s32 instanceId;        /* +0x3C: id taken from the next-id counter lbl_8055F1F4 */
+    s32 field40;           /* +0x40 */
+    s32 carIconResource;   /* +0x44: "caricona.art" handle loaded by fn_8023512C */
+} MRollCarIcon;
+
 extern int fn_80128668(); /* free(): releases an allocation back to the primary/secondary buffer */
 #pragma cplusplus on
 /* Deleting destructor of a player's MRollRecordOption: installs this class's vtable,
