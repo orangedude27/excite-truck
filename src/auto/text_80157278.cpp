@@ -872,20 +872,21 @@ extern "C" void* fn_801579F4(void* arg0, s32 arg1, s32 arg2) {
 #pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma small_data reset
-extern "C" void* fn_80157A98(void* arg0, s32 arg1) {
- if (arg0 != 0) {
- if (arg0 != 0) {
- if ((u32)arg0 + 8 != 0) {
- if ((u32)arg0 + 8 != 0) {
- if ((u32)arg0 + 8 != 0) {
- *(u32*)((char*)arg0 + 8) = 0;
- *(u32*)((char*)arg0 + 0xC) = 0;
- *(u32*)((char*)arg0 + 0x10) = 0;
+/* Clears three fields at +8/+C/+10 and optionally frees the object (arg1 > 0). */
+extern "C" void* fn_80157A98(void* object, s32 shouldFree) {
+ if (object != 0) {
+ if (object != 0) {
+ if ((u32)object + 8 != 0) {
+ if ((u32)object + 8 != 0) {
+ if ((u32)object + 8 != 0) {
+ *(u32*)((char*)object + 8) = 0;
+ *(u32*)((char*)object + 0xC) = 0;
+ *(u32*)((char*)object + 0x10) = 0;
  }}}
  }
- if (arg1 > 0) fn_80128668(arg0);
+ if (shouldFree > 0) fn_80128668(object);
  }
- return arg0;
+ return object;
 }
 
 #pragma push
