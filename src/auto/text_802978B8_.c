@@ -160,9 +160,7 @@ test:
     gStaticShadowRecords = 0;
     gStaticShadowCount = 0;
 }
-#pragma paired_single off
-#pragma push
-#pragma processor 750
+
 extern void *fn_802C86DC(void);
 extern float fn_801E88F0(int);
 extern double fn_8002F234(void);
