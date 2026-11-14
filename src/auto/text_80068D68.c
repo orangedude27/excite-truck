@@ -6146,16 +6146,33 @@ void bta_dm_pm_set_mode(u8 *peer_addr, u8 timed_out) {
     }
 }
 
-void bta_dm_pm_btm_cback(void *arg0, s8 arg1, s16 arg2, s8 arg3) {
-    u8 *buf = GKI_getbuf(0x14);
-    if (buf != 0) {
-        *(u16 *)(buf + 0) = 0x109;
-        buf[0xE] = arg1;
-        *(u16 *)(buf + 0x10) = arg2;
-        buf[0x12] = arg3;
-        fn_80070FA4(buf + 8, arg0);
-        fn_80071450(buf);
+/* BTM power-manager callback (SDK bta_dm_pm.c): report a peer's power mode
+ * change to the BTA device manager as a PM-status message. */
+void bta_dm_pm_btm_cback(void *bd_addr, s8 status, s16 value, s8 hci_status) {
+    /* tBTA_DM_PM_BTM_STATUS of the SDK's bta_dm_int.h, as this BTE revision
+     * lays it out (that header is for the newer stack and is not included). */
+    typedef struct {
+        BT_HDR  hdr;        /* +0x00 message header */
+        BD_ADDR bd_addr;    /* +0x08 peer the mode change is for */
+        UINT8   status;     /* +0x0E new power mode, a tBTM_PM_STATUS */
+        UINT16  value;      /* +0x10 mode-specific value, e.g. the sniff timeout */
+        UINT8   hci_status; /* +0x12 HCI status of the mode change */
+    } tBTA_DM_PM_BTM_STATUS;
+    #define BTA_DM_PM_BTM_STATUS_EVT 0x109       /* DM event, this revision's numbering */
+    #define bta_sys_sendmsg          fn_80071450 /* -> BTA task */
+
+    tBTA_DM_PM_BTM_STATUS *p_buf = (tBTA_DM_PM_BTM_STATUS *)GKI_getbuf(sizeof(tBTA_DM_PM_BTM_STATUS));
+    if (p_buf != 0) {
+        p_buf->hdr.event = BTA_DM_PM_BTM_STATUS_EVT;
+        p_buf->status = status;
+        p_buf->value = value;
+        p_buf->hci_status = hci_status;
+        bdcpy(p_buf->bd_addr, bd_addr);
+        bta_sys_sendmsg(p_buf);
     }
+
+    #undef BTA_DM_PM_BTM_STATUS_EVT
+    #undef bta_sys_sendmsg
 }
 
 /* Handles a BTA device-manager power-mode timer expiry: finds which PM timer slot fired, clears it, and posts a PM timer event with the slot's peer address. */
