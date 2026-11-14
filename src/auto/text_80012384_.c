@@ -93,10 +93,10 @@ void fn_800124DC(const char *text, float target) {
 }
 #pragma pop
 
-#pragma pop
 #pragma push
 #pragma processor 750
 void fn_8001255C(const char *arg0, float farg0) {
+    /* Update the progress message text and accumulated progress, and record time since it started. */
     register char *p = lbl_80351790;
     float f = *(float *)(p + 0x84) + farg0;
     strncpy(p + 1, arg0, 0x7f);
