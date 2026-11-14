@@ -157,6 +157,18 @@ void *__dt__Q34nw4r2ef6EffectFv_8029C3F0(void *arg0, int arg1) {
     return arg0;
 }
 
+/* One entry of the list of objects near the players: fn_8028874C fills these
+   (object, its index in the object list, its scaled squared distance to the
+   nearest player and whether it is still flagged), sorts them by distance and
+   fn_802887EC hands the array and its count to every callback registered with
+   fn_80287B38. */
+typedef struct NearObject {
+    void *object;          /* the object itself (4 0x3C-byte wheel entries at +0x70...) */
+    int objectIndex;       /* its index in the object list */
+    float distance;        /* squared distance to the nearest player, scaled */
+    unsigned char flag;    /* set while the object counts as a player's vehicle */
+} NearObject;
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
