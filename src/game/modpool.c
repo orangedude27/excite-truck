@@ -186,18 +186,25 @@ void fn_802CE744(void *arg0) {
 #pragma pop
 #pragma scheduling on
 void fn_802CE7D4(int arg0, int arg1, void *arg2);
-void fn_802CE7D4(int arg0, int arg1, void *arg2) {
-    unsigned char *ptr = (unsigned char *)arg2;
-    if (*ptr != 0) {
-        *(int *)(ptr + 0x30) = arg0;
-        fn_802C61BC(arg0, ptr + 8);
-        fn_802C6FA8(*(int *)(ptr + 0x30));
-        *(int *)(ptr + 0x34) = fn_802C6DC4(ptr + 8, *(int *)(ptr + 0x30), 0, 0);
-        *(int *)(ptr + 0x38) = 2;
+/* ModPool_onLoadComplete: async MODL load callback that fixes up the model resource, registers its textures, and creates a model instance if the slot is still in use. */
+void fn_802CE7D4(int modelData, int dataSize, void *userData) {
+#define mrModelFixupResource fn_802C61BC
+#define mrModelRegisterTextures fn_802C6FA8
+#define mrModelCreateInstance fn_802C6DC4
+    unsigned char *slot = (unsigned char *)userData;
+    if (*slot != 0) {
+        *(int *)(slot + 0x30) = modelData;
+        mrModelFixupResource(modelData, slot + 8);
+        mrModelRegisterTextures(*(int *)(slot + 0x30));
+        *(int *)(slot + 0x34) = mrModelCreateInstance(slot + 8, *(int *)(slot + 0x30), 0, 0);
+        *(int *)(slot + 0x38) = 2;
     } else {
-        *(int *)(ptr + 0x38) = 0;
-        *(int *)(ptr + 0x2C) = -1;
+        *(int *)(slot + 0x38) = 0;
+        *(int *)(slot + 0x2C) = -1;
     }
+#undef mrModelCreateInstance
+#undef mrModelRegisterTextures
+#undef mrModelFixupResource
 }
 
 int fn_802CE850(void *arg0) {
