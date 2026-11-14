@@ -104,14 +104,14 @@ int arg0;
     int *base = *(int * volatile *)((char *)lbl_804C139C + 8);
     return *(int *)((char *)base + (arg0 << 4) + 4);
 }
-#pragma scheduling reset
+#pragma scheduling invalid_target
 void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     register int count = lbl_804C1338[0];
     register int limit = lbl_804C1338[1];
-    unsigned char *entry;
+    register unsigned char *entry;
     if (count < limit) {
+        register unsigned char *base = (unsigned char *)(unsigned long)lbl_804C1338[2];
         register int offset = count * 0x14;
-        unsigned char *base = (unsigned char *)(unsigned long)lbl_804C1338[2];
         lbl_804C1338[0] = count + 1;
         entry = base + offset;
     } else {
@@ -1058,14 +1058,15 @@ int fn_802C6B44(int);
 extern const char lbl_8034B3DC[];
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
-void fn_802C7040(int arg0) {
-    float spC;
-    unsigned char sp8;
-    void* temp;
-    if (arg0 != -1) {
-        temp = *(void**)((char*)fn_802C5390(arg0) + 4);
-        if (fn_802C94A0((char*)temp + 0x20, &sp8, &spC, *(float*)((char*)temp + 0x1C))) {
-            fn_802C57B4(arg0, 0, -1, sp8, spC);
+void fn_802C7040(int instanceId) {
+    float distance;
+    unsigned char visibility;
+    void *groupHeader;
+
+    if (instanceId != -1) {
+        groupHeader = *(void **)((char *)fn_802C5390(instanceId) + 4);
+        if (fn_802C94A0((char *)groupHeader + 0x20, &visibility, &distance, *(float *)((char *)groupHeader + 0x1C))) {
+            fn_802C57B4(instanceId, 0, -1, visibility, distance);
         }
     }
 }
