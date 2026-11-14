@@ -74,8 +74,8 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
 }
 static inline void transform_vec_scheduled(float *out, const float *m, float *in) {
     if (out == in) {
-        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
-        float x, y, z;
+        float m8, m5, m2, m7, m4, m1, m6, m3, m0;
+        float z, y, x;
         m3 = m[3];
         m4 = m[4];
         m5 = m[5];
@@ -223,9 +223,6 @@ extern "C" void *fn_801B8D80(void) {
     }
     return object;
 }
-#pragma cplusplus reset
-#pragma scheduling on
-#pragma pop
 extern "C" void fn_801B8E28(int arg0) {
     struct Dummy {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -241,35 +238,31 @@ extern "C" void fn_801B8E28(int arg0) {
     };
     void *obj = lbl_80436D28[arg0];
     struct Work {
-        volatile float input[3];
-        float sp14[3];
-        float sp20[3];
         Vec copy[3];
         float output[3];
-        volatile float fx, fy, fz;
-        volatile int zero;
-        volatile short h;
+        float fx, fy, fz;
+        int zero;
+        short h;
     } w;
-    register float temp_f2, temp_f3, temp_f1, temp_f1_2;
+    float sp20[3];
+    float sp14[3];
+    float input[3];
+    float temp_f3;
     float dot;
     fn_80189C64(obj, lbl_80436D28);
-    temp_f3 = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
-    w.input[0] = temp_f3;
-    temp_f2 = *(float *)((char *)obj + 0x274c) - *(float *)((char *)obj + 0x2740);
-    w.input[1] = temp_f2;
-    temp_f1 = *(float *)((char *)obj + 0x2750) - *(float *)((char *)obj + 0x2744);
-    w.input[2] = temp_f1;
-    w.input[0] = temp_f3 - *(float *)((char *)obj + 0x30);
-    w.input[1] = temp_f2 - *(float *)((char *)obj + 0x34);
-    temp_f1_2 = temp_f1 - *(float *)((char *)obj + 0x38);
-    w.input[2] = temp_f1_2;
+    input[0] = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
+    input[1] = *(float *)((char *)obj + 0x274c) - *(float *)((char *)obj + 0x2740);
+    input[2] = *(float *)((char *)obj + 0x2750) - *(float *)((char *)obj + 0x2744);
+    input[0] -= *(float *)((char *)obj + 0x30);
+    input[1] -= *(float *)((char *)obj + 0x34);
+    input[2] -= *(float *)((char *)obj + 0x38);
     if (*(unsigned char *)((char *)obj + 0x275d) != 0) {
-        w.input[2] = temp_f1_2 - lbl_80562754;
+        input[2] -= lbl_80562754;
     }
     w.h = -1;
     {
         char *matrix = *(char **)((char *)obj + 0x2754);
-        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), (float *)w.input);
+        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), input);
         w.output[0] += *(float *)(matrix + 0x94);
         w.output[1] += *(float *)(matrix + 0x98);
         w.output[2] += *(float *)(matrix + 0x9c);
@@ -281,8 +274,8 @@ extern "C" void fn_801B8E28(int arg0) {
         w.copy[2] = matrix[2];
     }
     dot = PSVECDotProduct((float *)((char *)*(void **)((char *)obj + 0x2754) + 0x118), (float *)((char *)obj + 0x54));
-    w.fx = w.copy[2].x * dot;
     w.zero = 0;
+    w.fx = w.copy[2].x * dot;
     w.fy = w.copy[2].y * dot;
     w.fz = w.copy[2].z * dot;
     {
@@ -292,17 +285,17 @@ extern "C" void fn_801B8E28(int arg0) {
     }
     *(void **)((char *)obj + 0x2738) = obj;
     if (*(unsigned char *)((char *)obj + 0x275d) == 0) {
-        w.sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
-        w.sp14[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
+        sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
+        sp14[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
         temp_f3 = *(float *)((char *)obj + 0x2744);
-        w.sp14[2] = temp_f3 + *(float *)((char *)obj + 0x38);
-        fn_801AD148((char *)obj + 0x2704, w.sp14, *(void **)((char *)obj + 0x2754), lbl_80562758, lbl_8056275C, temp_f3);
+        sp14[2] = temp_f3 + *(float *)((char *)obj + 0x38);
+        fn_801AD148((char *)obj + 0x2704, sp14, *(void **)((char *)obj + 0x2754), lbl_80562758, lbl_8056275C, temp_f3);
     } else {
-        w.sp20[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
-        w.sp20[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
+        sp20[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
+        sp20[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
         temp_f3 = *(float *)((char *)obj + 0x2744);
-        w.sp20[2] = temp_f3 + *(float *)((char *)obj + 0x38);
-        fn_801AD28C((char *)obj + 0x2704, w.sp20, *(void **)((char *)obj + 0x2754), &((struct ObjectLayout *)obj)->position, lbl_80562758, lbl_80562760, temp_f3);
+        sp20[2] = temp_f3 + *(float *)((char *)obj + 0x38);
+        fn_801AD28C((char *)obj + 0x2704, sp20, *(void **)((char *)obj + 0x2754), &((struct ObjectLayout *)obj)->position, lbl_80562758, lbl_80562760, temp_f3);
     }
     fn_8018A08C((void *)obj);
 }
