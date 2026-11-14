@@ -565,12 +565,14 @@ extern "C" void fn_80206C70(void *arg0) {
 #pragma push
 #pragma processor 750
 extern "C" float fn_80206CD0(void* arg0, float arg1) {
-    float f = lbl_805631FC;
-    float x = lbl_80563204 * *(float*)((char*)arg0 + 8);
-    f = (f > x) ? f : x;
-    float y = PSVECMag(arg0) - f;
-    y = (y > arg1) ? y : arg1;
-    return arg1 / y;
+    /* Returns arg1 clamped by (vector magnitude minus max(0, 0.75*z)): computes
+     * arg1 / max(arg1, |arg0| - max(0, 0.75 * arg0.z)). */
+    float minOffset = lbl_805631FC;
+    float zTerm = lbl_80563204 * *(float*)((char*)arg0 + 8);
+    minOffset = (minOffset > zTerm) ? minOffset : zTerm;
+    float dist = PSVECMag(arg0) - minOffset;
+    dist = (dist > arg1) ? dist : arg1;
+    return arg1 / dist;
 }
 #pragma pop
 extern "C" float PSVECDotProduct(const void*, const void*);
