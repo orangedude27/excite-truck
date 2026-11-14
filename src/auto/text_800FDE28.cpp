@@ -474,18 +474,19 @@ extern "C" void fn_800FE804(void *arg0) {
     OSSendMessage((OSMessageQueue *)((u8 *)arg0 + 0x2320), (OSMessage)0x1, 0);
 }
 
-extern "C" s32 fn_800FE814(s32 arg0) {
-    u32 msg;
+extern "C" s32 fn_800FE814(s32 taskThread) {
+    /* Worker thread loop: initialize its message queue and process work/stop messages until requested to exit. */
+    u32 message;
 
-    OSInitMessageQueue((OSMessageQueue *)(arg0 + 0x2320), (OSMessage *)(arg0 + 0x2340), 8);
+    OSInitMessageQueue((OSMessageQueue *)(taskThread + 0x2320), (OSMessage *)(taskThread + 0x2340), 8);
     for (;;) {
-        OSReceiveMessage((OSMessageQueue *)(arg0 + 0x2320), (OSMessage *)&msg, 1);
-        if (msg == 1) {
+        OSReceiveMessage((OSMessageQueue *)(taskThread + 0x2320), (OSMessage *)&message, 1);
+        if (message == 1) {
             fn_800FDE60();
             fn_800FE1D0();
             continue;
         }
-        if (msg != 2) {
+        if (message != 2) {
             continue;
         }
         return 0;
