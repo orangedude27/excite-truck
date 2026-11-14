@@ -390,9 +390,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     }
     *(void **)((u8 *)arg0 + 4) = temp_r3;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
-    int leading = __cntlzw(*(int *)((u8 *)arg2 + 0x5C));
-    leading >>= 5;
-    *(u8 *)((u8 *)arg0 + 0x25) = leading;
+    *(u8 *)((u8 *)arg0 + 0x25) = __rlwinm(__cntlzw(*(u32 *)((u8 *)arg2 + 0x5C)), 27, 5, 31);
     {
         s32 value = *(s32 *)((u8 *)arg2 + 0x5C);
         s32 negative = -value;
@@ -990,9 +988,8 @@ int fn_80190CD0(float a, float b, float c) {
 int fn_80190D38(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC))); }
 
 extern float lbl_805620B8;
-#pragma scheduling on
-int fn_80190D9C(float a, float b, float c) { float lower; float value; value = (a - b) / (c - b); lower = lbl_80562090; if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620B8))); }
-#pragma scheduling pop
+#pragma scheduling invalid_target
+int fn_80190D9C(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = lower; } else { lower = value; } if (lower > lbl_8056208C) { lower = lower; } else { lower = lbl_8056208C; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620B8))); }
 
 #pragma scheduling pop
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
@@ -1211,8 +1208,9 @@ extern "C" void fn_80191064(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80191084(int arg0, int arg1) {
-    class Dummy {
+/* Switches the Hybrid driver's active sub-driver at +0x10, notifying the previous driver (virtual slot 8) before detaching and the new driver (virtual slot 7) after attaching. */
+extern "C" void fn_80191084(int hybridDriver, int newDriver) {
+    class Driver {
     public:
         virtual void f0();
         virtual void f1();
@@ -1221,18 +1219,18 @@ extern "C" void fn_80191084(int arg0, int arg1) {
         virtual void f4();
         virtual void f5();
         virtual void f6();
-        virtual void f7();
-        virtual void f8(int);
+        virtual void onActivate();
+        virtual void onDeactivate(int);
     };
-    void *old;
-    old = *(void **)((char *)arg0 + 0x10);
-    if ((unsigned int)arg1 != (unsigned int)old) {
-        if (old != 0) {
-            ((Dummy *)old)->f8(arg1);
+    void *oldDriver;
+    oldDriver = *(void **)((char *)hybridDriver + 0x10);
+    if ((unsigned int)newDriver != (unsigned int)oldDriver) {
+        if (oldDriver != 0) {
+            ((Driver *)oldDriver)->onDeactivate(newDriver);
         }
-        *(void **)((char *)arg0 + 0x10) = (void *)arg1;
-        if (arg1 != 0) {
-            ((Dummy *)(void *)arg1)->f7();
+        *(void **)((char *)hybridDriver + 0x10) = (void *)newDriver;
+        if (newDriver != 0) {
+            ((Driver *)(void *)newDriver)->onActivate();
         }
     }
 }
