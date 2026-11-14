@@ -782,31 +782,6 @@ void *fn_802DA918(float x0, float x1, float x2) {
 }
 extern void *memset(void *, int, unsigned int);
 #pragma opt_propagation off
-struct DaaContext {
-    int unk_0;
-    unsigned char *buffer;
-    void *name;
-    int capacity;
-    int used;
-    void *callback0;
-    void *callback1;
-    void *callback2;
-    void *current;
-    unsigned char status;
-    unsigned char initialized;
-};
-
-struct DaaRecord {
-    int kind;
-    int unk_4;
-    int capacity;
-    int kind2;
-    unsigned char status;
-    unsigned char pad_11[3];
-    void *next;
-    unsigned char data[0x3C0];
-};
-
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_802DAA18(void *arg0) {
