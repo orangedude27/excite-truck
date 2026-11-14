@@ -3607,16 +3607,18 @@ void fn_8011C274(s32 lockTick, void *lockObj) {
     }
 }
 
-void fn_8011C2EC(s32 arg0, void *arg1) {
-    if (arg0 != 0 && arg1 != 0 &&
-        *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
-        *(s32 *)((u8 *)arg1 + 0x14) != 0) {
+void fn_8011C2EC(s32 lockTick, void *lockObj) {
+    /* Release the manager lock at lockObj: decrement its ref count (+0x10) and
+       clear the busy state (+0x0C -> 1/unlocked) when the count reaches zero. */
+    if (lockTick != 0 && lockObj != 0 &&
+        *(s32 *)((u8 *)lockObj + 0x18) != 0 &&
+        *(s32 *)((u8 *)lockObj + 0x14) != 0) {
         BOOL enabled;
-        volatile s32 *p = (volatile s32 *)((u8 *)arg1 + 0x10);
+        volatile s32 *refCount = (volatile s32 *)((u8 *)lockObj + 0x10);
         enabled = OSDisableInterrupts();
-        *p = *p - 1;
-        if (*p == 0)
-            *(s32 *)((u8 *)arg1 + 0xC) = 1;
+        *refCount = *refCount - 1;
+        if (*refCount == 0)
+            *(s32 *)((u8 *)lockObj + 0xC) = 1;
         OSRestoreInterrupts(enabled);
     }
 }
