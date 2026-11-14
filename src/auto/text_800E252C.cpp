@@ -959,13 +959,14 @@ extern "C" void RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6
     OSRestoreInterrupts(level);
 }
 
-extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNode(void *self, void *node) {
-    unsigned int level = OSDisableInterrupts();
-    if (node == 0) {
+/* nw4hbm::snd::detail::AxManager::UnregisterCallback: remove a callback node from mCallbackList (+0x8) with interrupts disabled. */
+extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNode(void *self, void *callbackNode) {
+    unsigned int interruptLevel = OSDisableInterrupts();
+    if (callbackNode == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322094, 0x233, lbl_80322070);
     }
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)self + 8, node);
-    OSRestoreInterrupts(level);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)self + 8, callbackNode);
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" void fn_80031C6C(int);
@@ -1293,11 +1294,10 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
     extern const char lbl_80322040[];
     unsigned int interrupt;
     int valid;
-    void *sentinel;
     void *node;
+    void *sentinel;
     void *list;
     unsigned int base;
-
     interrupt = OSDisableInterrupts();
     valid = 0;
     if (arg1 >= 0 && arg1 < 3) valid = 1;
