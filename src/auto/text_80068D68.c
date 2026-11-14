@@ -23193,12 +23193,13 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
-void RFCOMM_DlcEstablishReq(void *arg0, u8 arg1) {
-    void *port = port_find_mcb_dlci_port(arg0, arg1);
-    if (*((u8 *)arg0 + 0x6C) != 5) {
-        PORT_DlcEstablishCnf(arg0, arg1, 0, 1);
+void RFCOMM_DlcEstablishReq(void *p_mcb, u8 dlci) {
+    /* Request establishment of an RFCOMM DLC; if the mux is not connected, confirm with error, otherwise start the port state machine. */
+    void *p_port = port_find_mcb_dlci_port(p_mcb, dlci);
+    if (*((u8 *)p_mcb + 0x6C) != 5) {
+        PORT_DlcEstablishCnf(p_mcb, dlci, 0, 1);
     } else {
-        rfc_port_sm_execute(port, 9, 0);
+        rfc_port_sm_execute(p_port, 9, 0);
     }
 }
 
