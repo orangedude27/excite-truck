@@ -680,6 +680,7 @@ extern "C" void fn_80145C08(void * __restrict arg0, const char *text) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+/* Draw a formatted text entry from a context: scale Y, compute X by justification, then call the text drawer with "%s" and the provided text argument. */
 extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
     f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 input = *(f32 *)((u8 *)arg0 + 4);
