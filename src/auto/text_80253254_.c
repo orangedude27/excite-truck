@@ -1022,19 +1022,25 @@ void fn_8025539C(void *arg0, s32 arg1) {
     }
 }
 #pragma cplusplus off
-void fn_80255604(s32 arg0) {
-    extern char lbl_803447C0[];
-    extern u8 lbl_8055F330;
-    fn_8012E81C(lbl_803447C0 + 0x1E0);
+/* One-time setup the UI car does on the screen's first frame: waits for the
+ * three resources whose names sit in this file's string pool (lbl_803447C0) to
+ * finish loading and makes sure a fourth one is loaded, builds the
+ * environment/ambient/illumination map textures - the shadow environment map
+ * (shwenv.tex) instead of cenvmap.tex when mode is set -, resets the wheelmod
+ * class table, marks that no UI view is being drawn and creates the two UI
+ * cameras. */
+void fn_80255604(s32 mode) {
+    extern char lbl_803447C0[]; /* this file's string pool, "fwheelbuf" ... */
+    extern u8 lbl_8055F330;     /* which UI view is being drawn (0 = none) */
+    fn_8012E81C(lbl_803447C0 + 0x1E0); /* wait for this resource to load */
     fn_8012E81C(lbl_803447C0 + 0x1F0);
     fn_8012E81C(lbl_803447C0 + 0x1FC);
-    fn_8012E96C(lbl_803447C0 + 0x208);
-    fn_80203C50(arg0 != 0);
-    fn_801EFF4C();
+    fn_8012E96C(lbl_803447C0 + 0x208); /* make sure this one is loaded */
+    fn_80203C50(mode != 0);            /* env/ambient/illumination map textures */
+    fn_801EFF4C();                     /* wheelmod class table */
     lbl_8055F330 = 0;
-    fn_802AB9E8();
+    fn_802AB9E8();                     /* the two UI cameras */
 }
-
 void fn_8025567C(void) {
     extern u8 lbl_8055F330;
     if (lbl_8055F330 != 0) {
