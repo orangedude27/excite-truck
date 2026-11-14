@@ -187,14 +187,16 @@ void fn_80033AAC(void *arg0, void *arg1) {
  OSRestoreInterrupts(state);
 }
 
-void fn_80033B0C(void *arg0, void *arg1) {
- int state=OSDisableInterrupts();
- *(unsigned short *)((char *)arg0+0x1FC)=*(unsigned short *)arg1;
- *(unsigned short *)((char *)arg0+0x1FE)=*(unsigned short *)((char *)arg1+2);
- *(unsigned short *)((char *)arg0+0x200)=*(unsigned short *)((char *)arg1+4);
- *(unsigned short *)((char *)arg0+0x202)=*(unsigned short *)((char *)arg1+6);
- *(unsigned int *)((char *)arg0+0x1C)|=0x100000;
- OSRestoreInterrupts(state);
+/* Copy four filter coefficient halfwords into the AX voice parameter block and
+ * mark the filter coefficients for re-sync, with interrupts disabled. */
+void fn_80033B0C(void *paramBlock, void *coeffs) {
+    int state = OSDisableInterrupts();
+    *(unsigned short *)((char *)paramBlock + 0x1FC) = *(unsigned short *)coeffs;
+    *(unsigned short *)((char *)paramBlock + 0x1FE) = *(unsigned short *)((char *)coeffs + 2);
+    *(unsigned short *)((char *)paramBlock + 0x200) = *(unsigned short *)((char *)coeffs + 4);
+    *(unsigned short *)((char *)paramBlock + 0x202) = *(unsigned short *)((char *)coeffs + 6);
+    *(unsigned int *)((char *)paramBlock + 0x1C) |= 0x100000;
+    OSRestoreInterrupts(state);
 }
 
 void fn_80033B74(void *arg0, short arg1, short arg2) {
