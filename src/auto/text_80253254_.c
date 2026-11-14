@@ -1041,6 +1041,7 @@ void fn_80255604(s32 mode) {
     lbl_8055F330 = 0;
     fn_802AB9E8();                     /* the two UI cameras */
 }
+
 void fn_8025567C(void) {
     extern u8 lbl_8055F330;
     if (lbl_8055F330 != 0) {
