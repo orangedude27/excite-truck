@@ -531,16 +531,18 @@ void *fn_802DA450(void *object, int shouldDelete) {
     }
     return object;
 }
+/* Destroy the global stack allocator instance: release its owned buffer, free the
+   object, and clear the global pointer. */
 void fn_802DA4C4(void) {
-    void *p = lbl_8055FE5C;
-    if (p != 0) {
-        if (p != 0) {
-            *(volatile void **)p = lbl_8034C8E8;
-            fn_80128670(*(int *)((char *)p + 4));
-            if (p != 0)
-                *(int *)((char *)p + 4) = 0;
+    void *instance = lbl_8055FE5C;
+    if (instance != 0) {
+        if (instance != 0) {
+            *(volatile void **)instance = lbl_8034C8E8;
+            fn_80128670(*(int *)((char *)instance + 4));
+            if (instance != 0)
+                *(int *)((char *)instance + 4) = 0;
         }
-        fn_80128668(p);
+        fn_80128668(instance);
     }
     lbl_8055FE5C = 0;
 }
