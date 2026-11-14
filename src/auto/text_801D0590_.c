@@ -80,6 +80,7 @@ void fn_801D05B4(void *obj) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+/* Call virtual slot 0 on every listener in the first dispatch list. */
 extern "C" void fn_801D0650(void *arg0) {
     struct Dummy {
         virtual void f0(void *);
