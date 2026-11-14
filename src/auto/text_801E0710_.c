@@ -309,19 +309,30 @@ void fn_801E0710(void) {
 }
 #pragma scheduling on
 extern void fn_80128658();
-void *fn_801E07E8(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        s32 value = *(s32 *)arg0;
-        if (value != 0) {
-            ((void (*)(s32))fn_80128658)(value);
-            *(s32 *)arg0 = 0;
-            fn_80128670(*(s32 *)((u8 *)arg0 + 4));
-            *(s32 *)((u8 *)arg0 + 4) = 0;
+/* Destructor of one boost-area record (BoostMan keeps up to 100 of these
+ * 0x1C-byte records in its area store at +0x88; fn_801E0FC4 registers this
+ * destructor with the store and fn_801E1568 runs it when BoostMan is torn
+ * down).  Releases the record's outline quad and its grid of cells, then
+ * frees the record itself when deleteFlag > 0. */
+void *fn_801E07E8(void *self, s32 deleteFlag) {
+#define MemFree fn_80128658        /* free a "MemAlloc" block */
+#define MemFreeArray fn_80128670   /* free a "new[]" block */
+#define MemFreeObject fn_80128668  /* free a "new" block */
+    if (self != 0) {
+        s32 quad = (s32)((Rec_801E0890 *)self)->quad;
+        if (quad != 0) {
+            ((void (*)(s32))MemFree)(quad);
+            ((Rec_801E0890 *)self)->quad = 0;
+            MemFreeArray((s32)((Rec_801E0890 *)self)->cells);
+            ((Rec_801E0890 *)self)->cells = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deleteFlag > 0)
+            MemFreeObject((s32)self);
     }
-    return arg0;
+#undef MemFree
+#undef MemFreeArray
+#undef MemFreeObject
+    return self;
 }
 #pragma scheduling on
 void fn_801E0864(void *arg0) {
