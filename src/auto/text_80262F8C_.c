@@ -379,23 +379,25 @@ s32 fn_80263BE4(void *arg0, s32 event) {
     return 0;
 }
 #pragma scheduling on
-void fn_80263CA8(void *arg0) {
-    if (*((u8 *)arg0 + 0x2A) != 0) {
-        void *temp = *(void **)((u8 *)arg0 + 0x30);
-        *((u8 *)arg0 + 0x2A) = 0;
-        *(s32 *)((u8 *)temp + 0x14) = *(s32 *)((u8 *)arg0 + 0x2C);
-        *((u8 *)temp + 0x4F) = 1;
-        temp = *(void **)((u8 *)arg0 + 0x30);
-        *((u8 *)temp + 0x49) = 1;
-        *((u8 *)temp + 0x4B) = 0;
-        *((u8 *)temp + 0x4A) = 0;
+/* Sync this object's state with the current selection, updating its child and
+ * selected flags when its id matches. */
+void fn_80263CA8(void *obj) {
+    if (*((u8 *)obj + 0x2A) != 0) {
+        void *child = *(void **)((u8 *)obj + 0x30);
+        *((u8 *)obj + 0x2A) = 0;
+        *(s32 *)((u8 *)child + 0x14) = *(s32 *)((u8 *)obj + 0x2C);
+        *((u8 *)child + 0x4F) = 1;
+        child = *(void **)((u8 *)obj + 0x30);
+        *((u8 *)child + 0x49) = 1;
+        *((u8 *)child + 0x4B) = 0;
+        *((u8 *)child + 0x4A) = 0;
     }
-    if (lbl_8055F434 == *(s32 *)((u8 *)arg0 + 0x20)) {
-        *(s32 *)((u8 *)arg0 + 0x1C) = 1;
-        *((u8 *)arg0 + 0x29) = 1;
+    if (lbl_8055F434 == *(s32 *)((u8 *)obj + 0x20)) {
+        *(s32 *)((u8 *)obj + 0x1C) = 1;
+        *((u8 *)obj + 0x29) = 1;
     } else {
-        *(s32 *)((u8 *)arg0 + 0x1C) = 0;
-        *((u8 *)arg0 + 0x29) = 0;
+        *(s32 *)((u8 *)obj + 0x1C) = 0;
+        *((u8 *)obj + 0x29) = 0;
     }
 }
 
