@@ -5038,6 +5038,20 @@ block_21:
 #define VF_FAT_TYPE_16             1             /* VF_VOL_FAT_TYPE: 16-bit entries */
 #define VF_FAT_TYPE_32             2             /* VF_VOL_FAT_TYPE: 28-bit entries */
 
+/* More volume fields the FAT writers use: the FAT is kept VF_VOL_FAT_COUNT
+ * times over, each copy VF_VOL_FAT_SECTOR_STEP sectors past the previous one,
+ * the first starting at VF_VOL_FAT_FIRST_SECTOR.  A cluster's entry sits at
+ * byte (cluster * entry size) of the FAT: sector VF_VOL_FAT_FIRST_SECTOR +
+ * (byte >> VF_VOL_SECTOR_SHIFT), VF_VOL_SECTOR_SIZE bytes into which it starts
+ * at (byte & (VF_VOL_SECTOR_SIZE - 1)). */
+#define VF_VOL_FAT_SECTOR_STEP(v)  (*(u32 *)((u8 *)(v) + 0x0C)) /* sectors one FAT copy spans */
+#define VF_VOL_FAT_COUNT(v)        (*(u8 *)((u8 *)(v) + 0x22))  /* FAT copies the volume keeps */
+#define VF_VOL_FAT_FIRST_SECTOR(v) (*(u32 *)((u8 *)(v) + 0x28)) /* first sector of the first FAT */
+
+/* A FAT32 entry: 28 bits of cluster number under four bits left alone. */
+#define VF_FAT32_CLUSTER_MASK      0x0FFFFFFF
+#define VF_FAT32_RESERVED_MASK     0xF0000000
+
 #pragma push
 #pragma use_lmw_stmw off
 /* Look for `needed` consecutive free clusters in a volume's FAT.
