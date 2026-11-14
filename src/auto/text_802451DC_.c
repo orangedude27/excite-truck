@@ -726,19 +726,28 @@ extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
 #pragma cplusplus reset
 
 #pragma small_data off
-void *fn_80246428(void *arg0, int arg1) {
-    int temp_r0;
-    if (arg0 != 0) {
-        temp_r0 = *(int *)((char *)arg0 + 0x1C);
-        *(void **)arg0 = &lbl_803430E8;
-        if (temp_r0 != 0) {
-            fn_80235380(temp_r0);
+/* Destructor for the UI object using vtable lbl_803430E8: installs the vtable,
+ * releases the owned resource handle at +0x1C, and optionally frees the object. */
+void *fn_80246428(void *object, int shouldDelete) {
+#define UIWidget_vtable lbl_803430E8
+#define UIWidget_releaseResource fn_80235380
+#define Mem_freeObject fn_80128668
+    int ownedResource;
+
+    if (object != 0) {
+        ownedResource = *(int *)((char *)object + 0x1C);
+        *(void **)object = &UIWidget_vtable;
+        if (ownedResource != 0) {
+            UIWidget_releaseResource(ownedResource);
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (shouldDelete > 0) {
+            Mem_freeObject(object);
         }
     }
-    return arg0;
+    return object;
+#undef UIWidget_vtable
+#undef UIWidget_releaseResource
+#undef Mem_freeObject
 }
 #pragma small_data on
 
