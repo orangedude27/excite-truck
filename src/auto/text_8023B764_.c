@@ -199,24 +199,37 @@ void fn_8023BB0C(void) {
 }
 
 #pragma dont_inline on
+/* Runs the multiplayer event selection and race loop: repeatedly prompts for an event (fn_8024A4CC), runs truck selection (fn_8023FF1C), and if not canceled refreshes driver slots and executes the event (fn_8023B9EC). */
 void fn_8023BBA8(void) {
-    s32 sp10;
-    s32 spC;
-    s32 sp8;
+#define MRoll_Reset fn_802411C8
+#define MRoll_SelectTrucks fn_8023FF1C
+#define MSingle_RefreshDriverSlots fn_8023BB0C
+#define MSingle_DoEvent fn_8023B9EC
+#define MSingle_PostEvent fn_8001EFC8
+#define MEvent_SelectMultiplayer fn_8024A4CC
+    s32 cupIndex;
+    s32 eventIndex;
+    s32 mirrorMode;
 
-    sp10 = 0;
-    spC = 0;
-    sp8 = 0;
-    goto check;
-body:
-    fn_802411C8();
-    if (fn_8023FF1C(1) != 1) {
-        fn_8023BB0C();
-        fn_8023B9EC(sp10, spC, 0, sp8, 0);
-        fn_8001EFC8();
+    cupIndex = 0;
+    eventIndex = 0;
+    mirrorMode = 0;
+    goto select_event;
+run_event:
+    MRoll_Reset();
+    if (MRoll_SelectTrucks(1) != 1) {
+        MSingle_RefreshDriverSlots();
+        MSingle_DoEvent(cupIndex, eventIndex, 0, mirrorMode, 0);
+        MSingle_PostEvent();
     }
-check:
-    if (fn_8024A4CC(&sp10, &spC, &sp8) != 0) goto body;
+select_event:
+    if (MEvent_SelectMultiplayer(&cupIndex, &eventIndex, &mirrorMode) != 0) goto run_event;
+#undef MEvent_SelectMultiplayer
+#undef MSingle_PostEvent
+#undef MSingle_DoEvent
+#undef MSingle_RefreshDriverSlots
+#undef MRoll_SelectTrucks
+#undef MRoll_Reset
 }
 #pragma dont_inline reset
 
