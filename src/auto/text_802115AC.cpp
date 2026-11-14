@@ -2338,9 +2338,10 @@ extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
 extern "C" s32 fn_802C4F14(s32);
 extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
-extern "C" void fn_80215618(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 rem = arg3 % fn_802C4F14(*(s32 *)((char *)arg0 + 4));
-    fn_802C4C90(*(s32 *)((char *)arg0 + 4), arg1, arg2, rem, 0);
+/* Wraps a modulo by the count from fn_802C4F14(self+4) and forwards (arg1,arg2,rem,0) to fn_802C4C90. */
+extern "C" void fn_80215618(void *self, s32 arg1, s32 arg2, s32 value) {
+    s32 rem = value % fn_802C4F14(*(s32 *)((char *)self + 4));
+    fn_802C4C90(*(s32 *)((char *)self + 4), arg1, arg2, rem, 0);
 }
 
 extern "C" void fn_802C4F2C(s32, s32 *, s32 *);
