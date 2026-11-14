@@ -109,14 +109,17 @@ extern "C" void fn_801E2084(void *arg0, void *arg1) {
     }
 }
 #pragma pop
-void fn_801E2100(void *arg0, void *arg1) {
-    int result;
-    int (*first)(int);
-    first = *(int (**)(int))((char *)arg1 + 0x20);
-    if (first == 0 || first(*(int *)((char *)arg0 + 0x20)) != 0) {
-        result = ((struct Dummy_801E2100 *)arg0)->f6(arg1, (char *)arg1 + 0xC, *(int *)((char *)arg1 + 0x18), &result);
-        if (result != 0)
-            *((unsigned char *)arg1 + 0x1C) = 1;
+void fn_801E2100(void *solid, void *query) {
+    /* Test ray/direction query `query` (E2640Query) against `solid`: if `query`'s
+     * optional collision-type filter (+0x20) accepts `solid`'s type (+0x20) and
+     * `solid`'s virtual intersection test (vtable +0x18) hits, set `query->found` (+0x1C). */
+    int hit;
+    int (*filter)(int);
+    filter = *(int (**)(int))((char *)query + 0x20);
+    if (filter == 0 || filter(*(int *)((char *)solid + 0x20)) != 0) {
+        hit = ((struct Dummy_801E2100 *)solid)->f6(query, (char *)query + 0xC, *(int *)((char *)query + 0x18), &hit);
+        if (hit != 0)
+            *((unsigned char *)query + 0x1C) = 1;
     }
 }
 #pragma dont_inline reset
