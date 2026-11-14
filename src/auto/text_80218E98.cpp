@@ -1887,15 +1887,16 @@ extern "C" void *fn_8021B2B0(void *widget, s32 x, s32 y, const char *textPtr, s3
 #undef UILabel_InitBase
 }
 extern "C" int strcmp(const char *, const char *);
-extern "C" void fn_8021B32C(void *arg0) {
-    s32 temp_r31;
-    fn_802192AC(arg0);
-    temp_r31 = *(s32 *)((u8 *)arg0 + 0x254);
-    if (strcmp((char *)temp_r31, (char *)arg0 + 0x268) != 0) {
-        strcpy((char *)arg0 + 0x268, (char *)temp_r31);
-        fn_80219718(arg0);
-        if (*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
-            *(u8 *)((u8 *)arg0 + 0x234) = 1;
+extern "C" void fn_8021B32C(void *widget) {
+    /* Refresh a dynamic text label: if the watched string changed, copy it into the cache, recompute bounds, and mark dirty when active. */
+    s32 textPtr;
+    fn_802192AC(widget);
+    textPtr = *(s32 *)((u8 *)widget + 0x254);
+    if (strcmp((char *)textPtr, (char *)widget + 0x268) != 0) {
+        strcpy((char *)widget + 0x268, (char *)textPtr);
+        fn_80219718(widget);
+        if (*(u8 *)((u8 *)widget + 0x1A) != 0) {
+            *(u8 *)((u8 *)widget + 0x234) = 1;
         }
     }
 }
