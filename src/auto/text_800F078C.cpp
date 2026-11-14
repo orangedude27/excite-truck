@@ -160,9 +160,10 @@ extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void*, const voi
 #pragma small_data off
 extern "C" u8 lbl_803240D4[];
 extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void*, const void*, s32);
-extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCvl(void* arg0, const void* arg1, s32 arg2) {
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324060, 0x70, (const char*)lbl_803240D4);
-    SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl((u8*)arg0 + 0xD8, arg1, arg2);
+extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCvl(void* this_, const void* seqBase, s32 seqSize) {
+    /* nw4hbm::snd::detail::SeqSound::Prepare: validate sequence base pointer, then set sequence data on the embedded SeqPlayer at +0xD8. */
+    if (seqBase == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324060, 0x70, (const char*)lbl_803240D4);
+    SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl((u8*)this_ + 0xD8, seqBase, seqSize);
 }
 
 #pragma push
