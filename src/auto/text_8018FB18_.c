@@ -1453,7 +1453,8 @@ u8 fn_8019157C(void *arg0) { return *((u8 *)arg0 + 0x14); }
 
 #pragma cplusplus on
 extern "C" void fn_80191584(void *arg0) {
-    class Dummy {
+    /* Clear several status flags on the object at +0x34, reset its companion at +0x38, and mark this state inactive. */
+    class Obj38VTable {
     public:
         virtual void f0();
         virtual void f1();
@@ -1487,17 +1488,21 @@ extern "C" void fn_80191584(void *arg0) {
     };
     extern void fn_8018AE24(void *, s32);
     register int zero = 0;
-    void *obj;
-    Dummy *obj38;
-    obj = *(void **)((char *)arg0 + 0x34);
-    *(unsigned char *)((char *)obj + 0x2680) = (unsigned char)zero;
+    void *stateObj;
+    Obj38VTable *companion;
+
+    stateObj = *(void **)((char *)arg0 + 0x34);
+    *(unsigned char *)((char *)stateObj + 0x2680) = (unsigned char)zero;
     fn_8018AE24(*(void **)((char *)arg0 + 0x34), zero);
-    obj = *(void **)((char *)arg0 + 0x34);
-    *(unsigned char *)((char *)obj + 0x260E) = (unsigned char)zero;
-    obj38 = *(Dummy **)((char *)arg0 + 0x38);
-    obj38->f28(zero);
-    obj = *(void **)((char *)arg0 + 0x34);
-    *(unsigned char *)((char *)obj + 0x260C) = (unsigned char)zero;
+
+    stateObj = *(void **)((char *)arg0 + 0x34);
+    *(unsigned char *)((char *)stateObj + 0x260E) = (unsigned char)zero;
+
+    companion = *(Obj38VTable **)((char *)arg0 + 0x38);
+    companion->f28(zero);
+
+    stateObj = *(void **)((char *)arg0 + 0x34);
+    *(unsigned char *)((char *)stateObj + 0x260C) = (unsigned char)zero;
     *(int *)((char *)arg0 + 8) = -1;
 }
 #pragma cplusplus off
@@ -2671,14 +2676,14 @@ void fn_80192F80(void *source) {
 int fn_80193010(void) { return 0x20; }
 
 void fn_80193018(void *arg0, void *arg1) {
-    float *dst = (float *)((u8 *)arg0 + 0x10);
+    float *dst = (float *)arg0;
     float *src = (float *)arg1;
-    float x = dst[0] + src[0];
-    float y = dst[1] + src[1];
-    float z = src[2] + dst[2];
-    dst[0] = x;
-    dst[1] = y;
-    dst[2] = z;
+    float x = dst[4] + src[0];
+    float y = dst[5] + src[1];
+    float z = src[2] + dst[6];
+    dst[4] = x;
+    dst[5] = y;
+    dst[6] = z;
 }
 
 void fn_8019304C(void *arg0) {
