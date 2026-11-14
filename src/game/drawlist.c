@@ -1047,20 +1047,31 @@ void fn_802C9CE0(void) {
     lbl_8055FC70 = 1;
 }
 
-void *fn_802C9D10(int arg0, void *arg1) {
-    void *value;
-    (void)arg0;
-    (void)arg1;
-    if (lbl_8055FC98 == 0) {
-        value = fn_801284F8(0x20, lbl_8034B514);
-        if (value != 0) {
-            value = fn_8012A13C(value, lbl_8034B514, 0x10, 0x18);
+/* DrawListWrapper::alloc(size, name): hand out one DrawListWrapper from the
+ * class's static pool, building that pool (DRAWLIST_POOL_CAPACITY elements of
+ * DRAWLIST_WRAPPER_SIZE bytes, named "DrawListWrapper::pool") the first time
+ * one is wanted.  The requested size and name (fn_802CA04C passes 0x18 and
+ * "mrDrawList") go unused: every element of this pool is the same.  Returns 0
+ * when the pool is empty; fn_802C9D88 hands elements back and tears the pool
+ * down once no DrawListWrapper is live any more. */
+void *fn_802C9D10(int size, const char *name) {
+    struct ObjectPool *pool;
+    void *element;
+
+    (void)size;
+    (void)name;
+    if (sDrawListLiveCount == 0) {
+        pool = NamedAlloc(sizeof(struct ObjectPool), STR_DRAWLIST_POOL);
+        if (pool != 0) {
+            pool = Pool_Init(pool, STR_DRAWLIST_POOL, DRAWLIST_POOL_CAPACITY, DRAWLIST_WRAPPER_SIZE);
         }
-        lbl_8055FC9C = value;
+        sDrawListPool = pool;
     }
-    if (fn_8012A2D8(lbl_8055FC9C) != 0) {
-        lbl_8055FC98 += 1;
+    element = Pool_Alloc(sDrawListPool);
+    if (element != 0) {
+        sDrawListLiveCount += 1;
     }
+    return element;
 }
 
 extern int fn_8012A364(void *, int);
