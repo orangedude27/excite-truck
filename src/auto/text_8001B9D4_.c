@@ -175,14 +175,17 @@ void fn_8001BA84(void) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_8001BA90(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 temp = fn_8001D25C(arg2);
-    if (temp != 0) {
-        return fn_8001CDB8(arg0, arg1, temp, arg3, arg4);
+/* Read one counter of a contest's statistics record.  The record is filed under the
+ * contest's name, which fn_8001D25C takes from the contest's table entry; when the
+ * contest has no name, or its record holds no value for counterIdx, the caller's
+ * defaultValue comes back instead. */
+s32 fn_8001BA90(s32 slot, s32 key, s32 contestIdx, s32 counterIdx, s32 defaultValue) {
+    s32 contestName = fn_8001D25C(contestIdx);
+    if (contestName != 0) {
+        return fn_8001CDB8(slot, key, contestName, counterIdx, defaultValue);
     }
-    return arg4;
+    return defaultValue;
 }
-
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
