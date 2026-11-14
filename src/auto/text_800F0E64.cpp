@@ -4683,10 +4683,7 @@ static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
                 return 0;
             }
         }
-        {
-            void **vt = *(void ***)front;
-            ((void (*)(void *, s32))vt[6])(front, 0);
-        }
+        ((BasicSoundVirtuals *)front)->Stop(0);
         mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(pool);
         sound = mem;
         if (mem == 0) {
@@ -4793,9 +4790,8 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     s32 startOffset;
     s32 prio;
     void *sound;
-    void *pool = arg6;
 
-    if (pool == 0) {
+    if (arg6 == 0) {
         return 0;
     }
     startOffset = 0;
@@ -4813,7 +4809,7 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     if (CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer((void *)arg0, prio, (void *)arg4) == 0) {
         return 0;
     }
-    sound = SoundInstanceManager_Alloc(pool, prio);
+    sound = SoundInstanceManager_Alloc(arg6, prio);
     if (sound == 0) {
         return 0;
     }
