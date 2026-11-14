@@ -617,6 +617,7 @@ extern double lbl_80563938;
 int fn_80232B70(int);
 #pragma scheduling invalid_target
 void fn_8024CFE8(void *arg0) {
+    /* Computes and stores a scale ratio at +0x40 from the count at +0x10 and the size from the object at +0x34. */
     int denominator = fn_80232B70(*(int *)((char *)arg0 + 0x34));
     int numerator = *(int *)((char *)arg0 + 0x10);
     *(float *)((char *)arg0 + 0x40) = (float)numerator / (float)denominator;
