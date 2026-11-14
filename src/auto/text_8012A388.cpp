@@ -787,6 +787,51 @@ static inline void *AllocAligned80(void *owner, s32 size) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling on
+/* Body of fn_8012B6FC with the string pool base passed in. */
+static inline s32 LoadEntryData(void *arg0, s32 arg1, const char *strings) {
+    u8 *entry;
+    u8 *header;
+    void *object;
+    s32 handle;
+    s32 startTime;
+    u32 flags;
+
+    entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
+    flags = *(u32 *)(entry + 0x34);
+    if (!(flags & 8)) {
+        object = AllocAligned80(entry, *(s32 *)(entry + 0x28) + 0x80);
+        if (object != 0) {
+            startTime = fn_802E2C20();
+            handle = ((s32 (*)(void *))fn_802E36D8)((u8 *)arg0 + 0x20);
+            if (handle != -1) {
+                *(void **)((u8 *)object + 0x78) = entry;
+                *(u32 *)((u8 *)object + 0x7C) = 0x4D474921;
+                header = (u8 *)object + 0x78;
+                fn_802E3A14(handle, *(s32 *)(entry + 0x2C) + *(s32 *)((u8 *)arg0 + 0x80));
+                fn_802E3804(handle, header + 8, *(s32 *)(entry + 0x28));
+                if (*(u32 *)(entry + 0x30) == (u32)fn_80132E7C(header + 8, *(s32 *)(entry + 0x28))) {
+                    flags = *(u32 *)(entry + 0x34) | 0xC;
+                    *(u32 *)(entry + 0x34) = flags;
+                    *(void **)(entry + 0x3C) = header;
+                    *(void **)(entry + 0x40) = object;
+                    ((void (*)(void *, const char *))fn_8012A46C)(header + 8, strings + 0x3B0);
+                    fn_802E30C8(strings + 0x3C0, arg0, entry, fn_802E2C20() - startTime);
+                } else {
+                    fn_802E30C8(strings + 0x3E4, entry);
+                    fn_8012A7FC();
+                }
+                fn_802E3734(&handle);
+            }
+            flags = *(u32 *)(entry + 0x34);
+            if (!(flags & 8)) {
+                fn_80128660((s32)object);
+            }
+        }
+    }
+    flags = *(u32 *)(entry + 0x34);
+    return (flags >> 3) & 1;
+}
+
 /* The inline helpers above must be inlined into fn_8012B6FC only. */
 #pragma push
 #pragma dont_inline off
