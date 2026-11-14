@@ -538,14 +538,15 @@ void fn_8017F718(void *arg0) {
 }
 extern int fn_80128668(void);
 extern int fn_801A8EE4(void *);
-int fn_8017FEE4(void *arg0) {
-    int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x340) != 0 ||
-        fn_801A8EE4((char *)arg0 + 0x6C) != 0 ||
-        fn_801A8EE4((char *)arg0 + 0x7C) != 0) {
-        result = 1;
+/* Return 1 if the object's flag at 0x340 is set or if either of the checked subobjects at offsets 0x6C or 0x7C reports active via fn_801A8EE4. */
+int fn_8017FEE4(void *object) {
+    int isActive = 0;
+    if (*(unsigned char *)((char *)object + 0x340) != 0 ||
+        fn_801A8EE4((char *)object + 0x6C) != 0 ||
+        fn_801A8EE4((char *)object + 0x7C) != 0) {
+        isActive = 1;
     }
-    return result;
+    return isActive;
 }
 
 #pragma push
