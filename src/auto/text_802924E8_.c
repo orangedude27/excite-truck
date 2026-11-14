@@ -1194,6 +1194,8 @@ padding:
 #pragma push
 #pragma scheduling invalid_target
 void fn_80293EB0(void* arg0) {
+    /* Releases every loaded model handle in the object's model table,
+       setting each slot back to -1. */
     u8 *cursor = (u8*)arg0;
     s32 i = 0;
     while (i < *(s32*)((u8*)arg0 + 0x28)) {
