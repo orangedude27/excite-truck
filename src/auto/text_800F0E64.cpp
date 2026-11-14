@@ -2945,6 +2945,7 @@ extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
 }
 
 extern "C" s32 GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *arg0, u32 arg1) {
+    /* Returns the sound player at the given index, panicking if out of bounds. */
     struct SoundArchivePlayer {
         u8 pad[0x70];
         u32 playerCount;
