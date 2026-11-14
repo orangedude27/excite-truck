@@ -4640,7 +4640,7 @@ static inline LinkListIter LinkList_GetEndIter(void *list) {
 }
 
 static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
-    void *sound;
+    void *sound = 0;
     void *it;
     struct { u32 old; } lock;
     u32 &irq = lock.old;
