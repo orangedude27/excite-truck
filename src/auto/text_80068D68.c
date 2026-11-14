@@ -8032,6 +8032,7 @@ UINT16 btm_get_max_packet_size(BD_ADDR addr) {
     u8 *p;
     u16 pkt_types;
     u16 pkt_size;
+
     i = 0;
     p = lbl_803C0F78 + 0x34;
 loop:
@@ -8039,20 +8040,23 @@ loop:
         goto next;
     if (memcmp(p + 8, addr, 6) != 0)
         goto next;
-    goto done;
+    goto found;
 next:
     i++;
     p += 0x11C;
     if (i < 4)
         goto loop;
     p = 0;
-done:
+found:
     pkt_types = 0;
     pkt_size = 0;
-    if (p != 0)
+    if (p != 0) {
         pkt_types = *(u16 *)(p + 2);
-    else if (memcmp(lbl_803C0F78 + 0x630, addr, 6) == 0)
-        pkt_types = *(u16 *)(lbl_803C0F78 + 0x654);
+    } else {
+        if (memcmp(lbl_803C0F78 + 0x630, addr, 6) == 0)
+            pkt_types = *(u16 *)(lbl_803C0F78 + 0x654);
+    }
+
     if (pkt_types) {
         if (!(pkt_types & 0x2000))
             pkt_size = 0x3FD;
@@ -8079,6 +8083,7 @@ done:
         else if (pkt_types & 0x0008)
             pkt_size = 0x11;
     }
+
     if (pkt_size == 0x3FD && *(u16 *)(lbl_803C0A50 + 0x7C) == 0x3F9)
         pkt_size = 0x3F9;
     return pkt_size;
@@ -9676,15 +9681,17 @@ found:
 }
 
 tBTM_STATUS BTM_CancelRemoteDeviceName(void) {
-    u8 *base = lbl_803C0F78;
-    if (base[0x27C0] >= 3)
+    /* Cancel an in-progress remote device name request if one is active. */
+    u8 *btm_cb = lbl_803C0F78;
+
+    if (btm_cb[0x27C0] >= 3)
         fn_8007093C(0xD0002, lbl_80316464);
-    if (base[0x16AE] & 1) {
-        if ((u8)btsnd_hcic_link_key_neg_reply_800843D8(base + 0x16A8) != 0)
-            return 1;
-        return 3;
+    if (btm_cb[0x16AE] & 1) {
+        if ((u8)btsnd_hcic_link_key_neg_reply_800843D8(btm_cb + 0x16A8) != 0)
+            return BTM_CMD_STARTED;
+        return BTM_NO_RESOURCES;
     } else
-        return 6;
+        return BTM_WRONG_MODE;
 }
 
 #pragma pop
@@ -10138,8 +10145,8 @@ found:
 }
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
-    register u32 zero;
-    register u8 *cleanup_base;
+    u8 *cleanup_base;
+    u32 zero;
     u8 *base;
     void (*callback)(void *);
     u8 result;
@@ -10157,15 +10164,15 @@ void btm_process_inq_complete(UINT8 status, UINT8 unused) {
             zero = 0;
             buffer = *(void **)(cleanup_base + 0x16DC);
             *(u32 *)(base + 0x16B4) = zero;
-            base[0x1848] = (u8)zero;
-            base[0x1847] = (u8)zero;
+            base[0x1848] = zero;
+            base[0x1847] = zero;
             *(void (**)(void *))(base + 0x16B0) = NULL;
             if (buffer != NULL) {
                 GKI_freebuf(buffer);
                 *(void **)(cleanup_base + 0x16DC) = (void *)zero;
             }
-            *(u16 *)(cleanup_base + 0x16E0) = (u16)zero;
-            *(u16 *)(cleanup_base + 0x16E2) = (u16)zero;
+            *(u16 *)(cleanup_base + 0x16E0) = zero;
+            *(u16 *)(cleanup_base + 0x16E2) = zero;
             if (lbl_803C0F78[0x27C0] >= 5)
                 fn_8007096C(0xD0004, lbl_803164F4,
                             base[0x183E], base[0x183F]);
@@ -17304,9 +17311,9 @@ void hidh_l2cif_disconnect_cfm(u32 handle) {
         if (*(u16 *)(found + 4) == 0 && *(u16 *)(found + 6) == 0) {
             *((u8 *)lbl_803C3C38 + dhandle * 0x34 + 0xA) = 0;
             found[0] = 0;
-            ((void (*)(u8, u8, u16, u8, void *, u8))
+            ((void (*)(u8, u32, u32, u32, u32, u32))
                 (*(void **)((u8 *)lbl_803C3C38 + 0x340)))(dhandle, 1, *(u16 *)(found + 0xA), 0,
-                                                    (void *)lbl_803C3C38, 0);
+                                                    (u32)lbl_803C3C38, 0);
         }
     }
 }
@@ -17929,7 +17936,8 @@ extern u8 lbl_80560D48[];
 BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
     extern u8 lbl_80560D48[6];
     void *p;
-    u8 *entry;
+    u8 *t;
+
     if (memcmp(lbl_80560D48, addr, 6) != 0) {
         p = l2cu_find_lcb_by_bd_addr(addr);
         if (p != 0 && *(u8 *)p != 0 && *(s32 *)((u8 *)p + 4) == 4) {
@@ -17938,12 +17946,15 @@ BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
         }
         return FALSE;
     }
-    entry = lbl_803C4040;
-    if (entry[8] != 0 && *(s32 *)(entry + 0xC) == 4) *(u16 *)(entry + 0x60) = timeout;
-    entry += 0x64;
-    if (entry[0] != 0 && *(s32 *)(entry + 4) == 4) *(u16 *)(entry + 0x58) = timeout;
-    if (entry[0x5C] != 0 && *(s32 *)(entry + 0x60) == 4) *(u16 *)(entry + 0xB4) = timeout;
-    if (entry[0xB8] != 0 && *(s32 *)(entry + 0xBC) == 4) *(u16 *)(entry + 0x110) = timeout;
+
+    t = lbl_803C4040 + 0x64;
+    if (*(u8 *)(t - 0x5C) != 0 && *(s32 *)(t - 0x58) == 4) *(u16 *)(t - 4) = timeout;
+    if (*(u8 *)t != 0 && *(s32 *)(t + 4) == 4) *(u16 *)(t + 0x58) = timeout;
+    t += 0x5C;
+    if (*(u8 *)t != 0 && *(s32 *)(t + 4) == 4) *(u16 *)(t + 0x58) = timeout;
+    t += 0x5C;
+    if (*(u8 *)t != 0 && *(s32 *)(t + 4) == 4) *(u16 *)(t + 0x58) = timeout;
+
 done:
     return TRUE;
 }
@@ -24488,9 +24499,10 @@ tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
             p_attr = (tSDP_ATTRIBUTE *)(base + 0xC);
             for (xx = 0; xx < *(UINT16 *)(base + 8); xx++, p_attr++) {
                 if (p_attr->type == UUID_DESC_TYPE) {
-                    if (sdpu_compare_uuid_arrays(p_attr->value_ptr, p_attr->len,
+                    if (!sdpu_compare_uuid_arrays(p_attr->value_ptr, p_attr->len,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len))
-                        break;
+                        continue;
+                    break;
                 } else if (p_attr->type == DATA_ELE_SEQ_DESC_TYPE) {
                     if (find_uuid_in_seq(p_attr->value_ptr, p_attr->len,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len, 0))
