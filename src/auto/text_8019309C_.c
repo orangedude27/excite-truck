@@ -842,10 +842,6 @@ static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
     float n = -ay;
     return ax * bx + by * n;
 }
-static inline float Cross2DVector_80194324(const float *a, const float *b) {
-    float n = -a[0];
-    return a[1] * b[0] + n * b[1];
-}
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
 extern "C" void *fn_801B83A0(void);
@@ -870,7 +866,7 @@ extern "C" void fn_80194324(void *arg0) {
                 float k = t / lbl_805621C0;
                 float a = Cross2D_80194324(*(float *)(p + 0x1B0), *(float *)(p + 0x1AC), *(float *)(p + 0x1B4), *(float *)(p + 0x1B8));
                 float b = Cross2D_80194324(*(float *)(p + 0x17C), *(float *)(p + 0x178), *(float *)(p + 0x180), *(float *)(p + 0x184));
-                v = b + k * (a - b);
+                v = (a - b) * k + b;
             } else {
                 v = Cross2D_80194324(*(float *)(p + 0x1B0), *(float *)(p + 0x1AC), *(float *)(p + 0x1B4), *(float *)(p + 0x1B8));
             }
