@@ -645,16 +645,23 @@ done:
     ;
 }
 
-void fn_802CAF1C(int arg0, signed char arg1, signed char arg2) {
-    int offset;
-    int ptr;
-    if (fn_802CAE00(arg0)) {
-        offset = arg0 * 0x4C;
-        ptr = *(int *)((char *)lbl_8055FCB0 + offset + 0x2C);
-        *(signed char *)(ptr + 8) = arg1;
-        ptr = *(int *)((char *)lbl_8055FCB0 + offset + 0x2C);
-        *(signed char *)(ptr + 9) = arg2;
+/* Sets the texture slot's filter/wrap (or mode) bytes at +8/+9 of its loaded
+ * resource, if the slot handle is valid. */
+void fn_802CAF1C(int textureSlot, signed char value8, signed char value9) {
+#define TextureSlot_isValid fn_802CAE00
+#define gTextureSlots lbl_8055FCB0
+    int slotOffset;
+    int textureResource;
+
+    if (TextureSlot_isValid(textureSlot)) {
+        slotOffset = textureSlot * 0x4C;
+        textureResource = *(int *)((char *)gTextureSlots + slotOffset + 0x2C);
+        *(signed char *)(textureResource + 8) = value8;
+        textureResource = *(int *)((char *)gTextureSlots + slotOffset + 0x2C);
+        *(signed char *)(textureResource + 9) = value9;
     }
+#undef TextureSlot_isValid
+#undef gTextureSlots
 }
 
 #pragma dont_inline reset
