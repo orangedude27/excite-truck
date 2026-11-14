@@ -390,24 +390,26 @@ extern "C" void fn_800E0434(nw4hbm::lyt::Window* window) {
     }
 }
 
-extern "C" void AnimateSelf__Q36nw4hbm3lyt6WindowFUl(void* self, unsigned long arg) {
+/* Animate the base Pane, and unless this window is invisible and `option`
+ * requests skipping invisible panes, animate each of its frame materials. */
+extern "C" void AnimateSelf__Q36nw4hbm3lyt6WindowFUl(nw4hbm::lyt::Window* window, unsigned long option) {
     extern void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void*, unsigned long);
-    struct DummyPane {
+    struct FrameMaterial {
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4();
         virtual void Animate();
     };
     int offset;
-    int count;
-    AnimateSelf__Q36nw4hbm3lyt4PaneFUl(self, arg);
-    if ((*((unsigned char*)self + 0xCF) & 1) || !(arg & 1)) {
-        count = 0;
+    int frameIndex;
+    AnimateSelf__Q36nw4hbm3lyt4PaneFUl(window, option);
+    if ((window->flags & 1) || !(option & 1)) {
+        frameIndex = 0;
         offset = 0;
-        while (count < *((unsigned char*)self + 0x100)) {
-            DummyPane* pane = *(DummyPane**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
-            pane->Animate();
+        while (frameIndex < window->materialCount) {
+            FrameMaterial* material = *(FrameMaterial**)((u8*)window->materials + offset + 4);
+            material->Animate();
             offset += 8;
-            count++;
+            frameIndex++;
         }
     }
 }
@@ -492,6 +494,44 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(
         (f32 *)&quad[2], (f32 *)&quad[0], format,
         (f32 (*)[])texture, (s32)vtxColor, arg3);
+}
+
+extern "C" void DrawFrame__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2RCQ46nw4hbm3lyt6Window5FrameRCQ36nw4hbm3lyt15WindowFrameSizeUc(void* arg0, f32* arg1, void* arg2, void* arg3, u8 arg4) {
+    struct MaterialVTable { virtual void fn0(); virtual s32 fn1(s32, u8); };
+    s32 mod = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(0, arg4);
+    s32 m = ((struct MaterialVTable*)M2C_FIELD(arg2, void*, 4))->fn1(mod, arg4);
+    f32 tex[2];
+    f32 pos[2];
+    f32 size[2];
+    f32 buf[8];
+    s32 sp108[4];
+    sp108[0] = -1; sp108[1] = -1; sp108[2] = -1; sp108[3] = -1;
+    tex[0] = lbl_80560EE8; tex[1] = lbl_80560EE8;
+    GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(tex, M2C_FIELD(arg2, void*, 4), 0);
+    pos[0] = arg1[0]; pos[1] = arg1[1];
+    size[0] = M2C_FIELD(arg0, f32, 0x4C) - M2C_FIELD(arg3, f32, 4);
+    size[1] = M2C_FIELD(arg3, f32, 8);
+    buf[0] = 0; buf[1] = 0; buf[2] = 0; buf[3] = 0; buf[4] = 0; buf[5] = 0; buf[6] = 0; buf[7] = 0;
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
+    pos[0] = arg1[0] + M2C_FIELD(arg0, f32, 0x4C) - M2C_FIELD(arg3, f32, 4);
+    pos[1] = arg1[1];
+    size[0] = M2C_FIELD(arg3, f32, 4);
+    size[1] = M2C_FIELD(arg0, f32, 0x50) - M2C_FIELD(arg3, f32, 12);
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
+    pos[0] = arg1[0] + M2C_FIELD(arg3, f32, 0);
+    pos[1] = arg1[1] + M2C_FIELD(arg0, f32, 0x50) - M2C_FIELD(arg3, f32, 12);
+    size[0] = M2C_FIELD(arg0, f32, 0x4C) - M2C_FIELD(arg3, f32, 0);
+    size[1] = M2C_FIELD(arg3, f32, 12);
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
+    pos[0] = arg1[0];
+    pos[1] = arg1[1] + M2C_FIELD(arg3, f32, 8);
+    size[0] = M2C_FIELD(arg3, f32, 0);
+    size[1] = M2C_FIELD(arg0, f32, 0x50) - M2C_FIELD(arg3, f32, 8);
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
 }
 
 extern "C" void DrawFrame4__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hbm3lyt6Window5FrameRCQ36nw4hbm3lyt15WindowFrameSizeUc(void *arg0, f32 *arg1, void *arg2, void *arg3, u8 arg4) {
