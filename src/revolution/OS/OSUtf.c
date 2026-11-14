@@ -143,6 +143,8 @@ wchar_t OSUTF32toSJIS(u32 utf32) {
     return 0;
 }
 
+/* Unicode value of each ANSI code 0x80-0x9F (Windows-1252 punctuation);
+ * 0 for the codes that font leaves empty. */
 static wchar_t UcsAnsiTable[32] = {
     0x20AC, 0x0000, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021,
     0x02C6, 0x2030, 0x0160, 0x2039, 0x0152, 0x0000, 0x017D, 0x0000,
