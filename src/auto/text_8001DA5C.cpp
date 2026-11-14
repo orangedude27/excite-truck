@@ -216,9 +216,11 @@ extern "C" void fn_8001DEA8(void) {
 extern "C" void fn_8001DF04(void) {
 }
 
-extern "C" void fn_8001DF08(s32 arg0, s32 arg1) {
-    ((CollisionEntry*)lbl_80358680[0])->apply(arg0, arg1);
-    ((CollisionEntry*)lbl_80358680[2])->apply(arg0, arg1);
+/* Notifies the ScoreOverlay and GradeOverlay HUD widgets of a score/star update
+   for the given player. */
+extern "C" void fn_8001DF08(s32 playerIndex, s32 stars) {
+    ((CollisionEntry*)lbl_80358680[OVERLAY_SCORE])->apply(playerIndex, stars);
+    ((CollisionEntry*)lbl_80358680[OVERLAY_GRADE])->apply(playerIndex, stars);
 }
 
 // Invalid-target scheduling reuses r5 for the object base before passing the zero argument.
