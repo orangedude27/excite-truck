@@ -4694,8 +4694,7 @@ static inline void *SoundInstanceManager_Alloc(void *pool, s32 priority) {
         }
     }
     pos = *(void **)((u8 *)pool + 8);
-    end = (void *)((u8 *)pool + 8);
-    while (pos != end) {
+    while (pos != (void *)((u8 *)pool + 8)) {
         if (pos == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
         }
