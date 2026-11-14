@@ -124,6 +124,7 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
     register f32 increment;
     register f32 start;
     register f32 step;
+    s32 enabled;
     step = lbl_805625BC;
     increment = lbl_805625C0;
     start = step;
@@ -133,7 +134,6 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
         f32 dy = *(f32 *)((u8 *)arg1 + 4) * step;
         f32 x = *(f32 *)arg0 + dx;
         f32 y = *(f32 *)((u8 *)arg0 + 4) + dy;
-        register s32 enabled;
         sp14 = start;
         sp8 = x;
         spC = y;
@@ -141,7 +141,9 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
         sp18 = y;
         if (fn_802B04D4((f32 *)&sp10, dy, x, dx)) return 1;
         enabled = lbl_8055E66C;
-        if (enabled && fn_80139EC4(sp8, spC)) return 1;
+        if (enabled != 0) {
+            if (fn_80139EC4(sp8, spC) != 0) return 1;
+        }
         step += increment;
     }
     return 0;
@@ -484,6 +486,7 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
     u32 scratch[3];
     Request request;
     s32 isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
+    s32 failed;
 
     state.head = 0;
     state.weight = lbl_805625BC;
@@ -500,33 +503,31 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
         state.weight = *(f32 *)((u8 *)item + 0x50);
         state.limit = *(s32 *)((u8 *)item + 0x54);
     }
-    {
-        s32 failed = 0;
-        if (isResource == 0) {
-            if (fn_801B0E40(arg0, &arg1) != 0) {
-                s32 found = 0;
-                void *thresholdObject = (void *)((s32 (*)(s32))fn_801B0F18)(0);
-                s32 threshold = *(s32 *)((u8 *)thresholdObject + 0x10);
-                void *node = state.head;
-                for (; ((s32 (*)(void *, void *))fn_801B06D8)(node, (u8 *)node + 8) != 0; node = *(void **)((u8 *)node + 0x14)) {
-                    if (fn_801B0F48(*(u32 *)((u8 *)node + 0x10), (u32)threshold) != 0) {
-                        found = 1;
-                        break;
-                    }
+    failed = 0;
+    if (isResource == 0) {
+        if (fn_801B0E40(arg0, &arg1) != 0) {
+            s32 found = 0;
+            void *thresholdObject = (void *)((s32 (*)(s32))fn_801B0F18)(0);
+            s32 threshold = *(s32 *)((u8 *)thresholdObject + 0x10);
+            void *node = state.head;
+            for (; ((s32 (*)(void *, void *))fn_801B06D8)(node, (u8 *)node + 8) != 0; node = *(void **)((u8 *)node + 0x14)) {
+                if (fn_801B0F48(*(u32 *)((u8 *)node + 0x10), (u32)threshold) != 0) {
+                    found = 1;
+                    break;
                 }
-                state.head = node;
-                if (found != 0) {
-                    fn_802E30C8(lbl_80335A94, arg0, lbl_8055E3C4);
-                    failed = 1;
-                }
-            } else {
+            }
+            state.head = node;
+            if (found != 0) {
+                fn_802E30C8(lbl_80335A94, arg0, lbl_8055E3C4);
                 failed = 1;
             }
+        } else {
+            failed = 1;
         }
-        if (failed != 0) {
-            fn_8018AF04(result);
-            return;
-        }
+    }
+    if (failed != 0) {
+        fn_8018AF04(result);
+        return;
     }
     request.marker = -1;
     fn_801B07B4(&request, &state);
@@ -628,15 +629,23 @@ extern s32 fn_801B11DC(const void *, const void *);
 extern void qsort(void *, unsigned long, unsigned long, s32 (*)(const void *, const void *));
 #pragma dont_inline on
 void fn_801B1318(void) {
+#define deitySlotOrderTable lbl_80435C30
+#define deitySlotCount lbl_8055E678
+#define deitySlotBase lbl_8055E684
+#define CompareDeitySlotRanks fn_801B11DC
     s32 *p;
     s32 i;
-    qsort(lbl_80435C30, (unsigned long)lbl_8055E678, 4, fn_801B11DC);
-    p = lbl_80435C30;
-    for (i = 0; i < (s32)lbl_8055E678; i++) {
+    qsort(deitySlotOrderTable, (unsigned long)deitySlotCount, 4, CompareDeitySlotRanks);
+    p = deitySlotOrderTable;
+    for (i = 0; i < (s32)deitySlotCount; i++) {
         s32 value = *p;
-        *(s32 *)((u8 *)lbl_8055E684 + (value << 7) + 8) = i + 1;
+        *(s32 *)((u8 *)deitySlotBase + (value << 7) + 8) = i + 1;
         p++;
     }
+#undef deitySlotOrderTable
+#undef deitySlotCount
+#undef deitySlotBase
+#undef CompareDeitySlotRanks
 }
 #pragma dont_inline reset
 
@@ -1822,7 +1831,6 @@ extern "C" void fn_801B2D28(void *arg0) {
     u8 *dst;
     s32 index;
     s32 value;
-
     memset((u8 *)arg0 + 0x560, 0, 0x1C);
     ((Header *)arg0)->resource = fn_801B307C();
     *(s32 *)((u8 *)arg0 + 0x564) = fn_801B2F40(0);
@@ -1833,7 +1841,6 @@ extern "C" void fn_801B2D28(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x578) = value;
     *(f32 *)((u8 *)arg0 + 0x56C) = lbl_8055E6A4;
     *(f32 *)((u8 *)arg0 + 0x570) = fn_801B306C();
-
     dst = (u8 *)arg0;
     index = 0;
     *(void **)((u8 *)arg0 + 0x568) = lbl_8055E680;
@@ -1842,8 +1849,7 @@ extern "C" void fn_801B2D28(void *arg0) {
         Item *obj = (Item *)((u8 *)lbl_8055E684 + offset);
         void *result = obj->get();
         void *tail30;
-        u32 tail34;
-
+        void *tail34;
         *(u32 *)(dst + 0x3A0) = *(u32 *)((u8 *)result + 0x00);
         *(u32 *)(dst + 0x3A4) = *(u32 *)((u8 *)result + 0x04);
         *(u32 *)(dst + 0x3A8) = *(u32 *)((u8 *)result + 0x08);
@@ -1857,14 +1863,13 @@ extern "C" void fn_801B2D28(void *arg0) {
         *(u8 *)(dst + 0x3C8) = *(u8 *)((u8 *)result + 0x28);
         *(f32 *)(dst + 0x3CC) = *(f32 *)((u8 *)result + 0x2C);
         tail30 = *(void **)((u8 *)result + 0x30);
-        tail34 = *(u32 *)((u8 *)result + 0x34);
+        tail34 = *(void **)((u8 *)result + 0x34);
         *(void **)(dst + 0x3D0) = tail30;
-        *(u32 *)(dst + 0x3D4) = tail34;
+        *(void **)(dst + 0x3D4) = tail34;
         dst += 0x38;
         offset += 0x80;
         ++index;
     }
-
     if (fn_801E89EC() == 0) {
         if (lbl_8055E6A0 != 0) {
             f32 end;
@@ -2014,21 +2019,23 @@ extern "C" void fn_801B30E0(s32 index) {
     void *bestNode;
     if (reference != 0) {
         void *parent = *(void **)((u8 *)header + 0x2C);
-        s32 referenceValue = *(s32 *)((u8 *)reference + 0x10);
-        s32 bestDiff = 0x7FFFFFFF;
         void *first = *(void **)((u8 *)parent + 0x1C);
+        s32 referenceValue = *(s32 *)((u8 *)reference + 0x10);
         void *node = first;
+        s32 bestDiff = 0x7FFFFFFF;
         bestNode = 0;
-        do {
+        for (;;) {
             s32 difference = *(s32 *)((u8 *)node + 0x10) - referenceValue;
-            s32 sign = difference >> 31;
-            difference = (difference ^ sign) - sign;
-            if (difference < bestDiff) {
-                bestDiff = difference;
+            s32 absDiff = difference < 0 ? -difference : difference;
+            if (absDiff < bestDiff) {
+                bestDiff = absDiff;
                 bestNode = node;
             }
             node = *(void **)((u8 *)node + 0x14);
-        } while (node != first);
+            if (node == first) {
+                break;
+            }
+        }
     } else {
         bestNode = 0;
     }
