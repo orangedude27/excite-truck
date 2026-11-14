@@ -795,7 +795,9 @@ void fn_8023B220(void *arg0) {
 #pragma scheduling on
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_8023B284(void *arg0) {
+/* If the global UI/controller object reports mode 22 inactive, set this widget's
+   enabled flag from the current menu state (active only in state 3). */
+extern "C" void fn_8023B284(void *widget) {
     struct Dummy {
         virtual s32 f0();
         virtual s32 f1();
@@ -824,10 +826,10 @@ extern "C" void fn_8023B284(void *arg0) {
     if (((Dummy *)lbl_8055F10C)->f22() == 0) {
         switch (fn_80214D04()) {
         case 3:
-            *(s32 *)((char *)arg0 + 0x18) = 1;
+            *(s32 *)((char *)widget + 0x18) = 1;
             break;
         default:
-            *(s32 *)((char *)arg0 + 0x18) = 0;
+            *(s32 *)((char *)widget + 0x18) = 0;
             break;
         }
     }
