@@ -205,6 +205,7 @@ static void SetRun(OSThread* thread) {
 }
 
 static void UnsetRun(OSThread* thread) DECOMP_DONT_INLINE {
+    /* Remove a thread from its run queue and clear the run-queue bit if empty. */
     OSThreadQueue* queue;
     OSThread* next;
     OSThread* prev;
