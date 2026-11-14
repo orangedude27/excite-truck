@@ -101,6 +101,12 @@ extern "C" long *fn_802E9A6C(long arg0) {
 }
 #pragma cplusplus reset
 #pragma pop
+/* Deleting destructor of the file-backed MP3 stream -- slot 0x8 of vtable
+ * lbl_8034E9B0, which fn_802E9BCC calls as destroy(1) when the stream is torn
+ * down.  It installs the destructor's vtable, closes the VF file the stream
+ * plays from, and clears the "stream open" flag when the delete flag is set;
+ * the stream is the static object at lbl_80507600, so there is nothing to
+ * free here. */
 void *fn_802E9B54(Mp3Stream *stream, long deleteFlag) {
     long file;
     if (stream != 0) {
@@ -114,7 +120,6 @@ void *fn_802E9B54(Mp3Stream *stream, long deleteFlag) {
     }
     return stream;
 }
-
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_802E9BCC(void *arg0) {
