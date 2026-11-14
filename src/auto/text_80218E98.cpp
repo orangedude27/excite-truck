@@ -7819,6 +7819,7 @@ extern "C" void fn_802272D4(void *arg0) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_80227880(s32 unused, f32 x, f32 y, f32 width, f32 height) {
+    /* Draw a filled rectangle (x,y)-(x+width,y-height) with two passes: light overlay then dark overlay. */
     ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
         0x40FFFFFF, x, y, x + width, y - height, lbl_805634A8);
     ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
