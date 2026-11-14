@@ -147,7 +147,7 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
     void *p;
 
     fn_8013BD30(arg0);
-    p = ((Selector *)arg1)->select(names);
+    p = ((Selector *)arg1)->select((const char *)((char *)names + 0));
     if (p != 0) {
         v[0] = ((Getter *)p)->get(lbl_80559CE0, v[0]);
         v[1] = ((Getter *)p)->get(lbl_80559CE8, v[1]);
@@ -161,45 +161,48 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
 extern void fn_8013A2FC(void *, int);
 extern void fn_8013BD5C(void *, void *);
 extern const char lbl_8032C420[];
-#pragma push
 #pragma cplusplus on
-extern "C" void *fn_8013BE64(void *arg0, const char *arg1) {
-    class Obj {
+/* Allocates and populates a LineInfo record from an opened VALT resource (reader)
+   under the given name: initializes default line parameters at +0x40, copies the
+   name, loads the "exceptions" section into +0x40 and the "lineinfo" curve
+   parameters into +0x60, and clears the buffer pointer at +0x74. */
+extern "C" void *fn_8013BE64(void *reader, const char *name) {
+    class ResourceReader {
       public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual int get(const char *);
+        virtual void v20(); virtual int getSection(const char *);
     };
-    void *p;
-    int n;
+    CacheResource *line;
+    int count;
     char *dst;
     unsigned char c;
-    p = fn_801284F8(0x78, lbl_8032C414);
-    if (p != 0)
-        fn_8013A264((char *)p + 0x40);
-    dst = (char *)p;
-    n = 0x40;
+    line = (CacheResource *)fn_801284F8(sizeof(CacheResource), LINE_INFO_TAG);
+    if (line != 0)
+        fn_8013A264(line->blocks);
+    dst = (char *)line;
+    count = sizeof(line->name);
     goto copy;
 count_check:
-    if (--n > 0)
+    if (--count > 0)
         goto copy;
     dst[-1] = 0;
     goto copied;
 copy:
-    c = *arg1++;
+    c = *name++;
     *dst++ = c;
     if ((signed char)c != 0)
         goto count_check;
 copied:
-    fn_8013A2FC((char *)p + 0x40, ((Obj *)arg0)->get(lbl_8032C420));
-    ((void (*)(void *, void *))fn_8013BD5C)((char *)p + 0x60, arg0);
-    *(volatile int *)((char *)p + 0x74) = 0;
-    return p;
+    fn_8013A2FC(line->blocks, ((ResourceReader *)reader)->getSection(lbl_8032C420));
+    ((void (*)(void *, void *))fn_8013BD5C)(line->params, reader);
+    *(volatile int *)&line->buffer = 0;
+    return line;
 }
-#pragma pop
+#pragma cplusplus reset
 
 void fn_8013BF3C(void) {
     ((void (*)(void))fn_8013BD30)();
