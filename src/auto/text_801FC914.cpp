@@ -249,7 +249,6 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
     pos.x = q[0] + dir.x * s;
     pos.y = q[1] + dir.y * s;
     pos.z = q[2] + dir.z * s;
-    
     Vec d;
     d.x = q1[0] - pos.x;
     d.y = q1[1] - pos.y;
@@ -295,7 +294,7 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
         up.z = q0[5] + t * uz;
         up.y = q0[4] + t * uy;
         up.x = q0[3] + t * ux;
-        p[2] = up.z; p[1] = up.y; p[0] = up.x;
+        *(Vec*)p = up;
         Vec n;
         n.z = dir.z + t * (v.z - dir.z);
         n.y = dir.y + t * (v.y - dir.y);
@@ -793,38 +792,32 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
     char* track = *slot;
     int idx = *(int*)(obj + 0x3C);
     char* node = GetTrackNodeLinear(track, idx);
-
     float one = lbl_80563030;
     float t_step;
     float old_pos = *(float*)(obj + 0x40);
     t_step = old_pos + farg0;
     float step = *(float*)(node + 0x20) * t_step;
-
     if (step < one) {
         *(float*)(obj + 0x40) = t_step;
     } else if (idx + 2 < *(int*)(track + 0x6D0)) {
         float inv_speed = one / *(float*)(node + 0x20);
-        char* slot_ptr = *(char* volatile*)(obj + 4);
         int next_idx = *(volatile int*)(obj + 0x3C) + 1;
+        char* slot_ptr = *(char* volatile*)(obj + 4);
         *(int*)(obj + 0x3C) = next_idx;
         float delta = farg0 - inv_speed;
         step -= one;
         *(float*)(obj + 0x40) = old_pos + delta;
-
         node = GetTrackNodeLinear(*(char**)slot_ptr, next_idx);
-
         *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
         *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
         *(float*)(obj + 0x4C) = *(float*)(obj + 0x5C);
         *(float*)(obj + 0x50) = *(float*)(obj + 0x60);
         *(float*)(obj + 0x64) = *(float*)(obj + 0x68);
-
         char* next_node = GetTrackNodeLinear(*(char**)(*(char* volatile*)(obj + 4)), *(int*)(obj + 0x3C) + 1);
         *(float*)(obj + 0x54) = *(float*)(next_node + 0xC);
         *(float*)(obj + 0x58) = *(float*)(next_node + 0x10);
         *(float*)(obj + 0x5C) = *(float*)(next_node + 0x14);
         *(float*)(obj + 0x60) = *(float*)(next_node + 0x18);
-
         char* next2_node = GetTrackNodeLinear(*(char**)(*(char* volatile*)(obj + 4)), *(int*)(obj + 0x3C) + 1);
         *(float*)(obj + 0x68) = *(float*)(next2_node + 0x1C);
     } else {
@@ -833,16 +826,13 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         *(int*)(obj + 0x3C) = -1;
         return;
     }
-
     char* call_track = **(char***)((char*)arg0 + 4);
     int cur_idx = *(int*)((char*)arg0 + 0x3C);
     char* prev = GetTrackNodeLinear(call_track, cur_idx - 1);
     char* next = GetTrackNodeLinear(call_track, cur_idx + 1);
     char* next2 = GetTrackNodeLinear(call_track, cur_idx + 2);
-
     fn_801FD144(obj, prev, node, next, next2, step);
     fn_801FD320(obj, step);
-
     float f68_val = *(float*)(obj + 0x68);
     float f64_val = *(float*)(obj + 0x64);
     *(float*)(obj + 0x6C) = f64_val + step * (f68_val - f64_val);
@@ -949,11 +939,9 @@ __declspec(section ".data") extern float lbl_80558DC4;
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_801FE448(void *arg0) {
-    float delta;
-    delta = fn_801E7E24();
+    float delta = fn_801E7E24();
     if (!((float)__fabs((double)delta) <= lbl_80558DC4)) {
-        float threshold;
-        threshold = lbl_80563034;
+        float threshold = lbl_80563034;
         char *item = (char *)arg0 + 4;
         int i = 0;
         while (i < *(int *)((char *)arg0 + 0x34)) {
@@ -1028,16 +1016,19 @@ extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
     t = p[0x6fd]; p[0x6fd] = p[0x6fe]; p[0x6fe] = t;
 }
 #pragma pop
-extern "C" void fn_801FE708(void *arg0, void *arg1) {
-    char *p = (char *)arg1 + 0x2C;
-    int count = *(int *)((char *)arg0 + 0x94);
+extern "C" void fn_801FE708(void *container, void *entry) {
+#define hermitePathLimitMsg lbl_8033B654
+    /* Append a path entry (at entry+0x2C) to the container, filling slot fields; max 4 entries. */
+    char *pathData = (char *)entry + 0x2C;
+    int count = *(int *)((char *)container + 0x94);
     if (count >= 4)
-        fn_802E317C(lbl_8033B654);
-    count = *(int *)((char *)arg0 + 0x94);
-    char *slot = (char *)arg0 + count * 0x24;
-    *(char **)(slot + 4) = p;
-    fn_801FE88C(arg0, slot + 4);
-    ++*(int *)((char *)arg0 + 0x94);
+        fn_802E317C(hermitePathLimitMsg);
+    count = *(int *)((char *)container + 0x94);
+    char *slot = (char *)container + count * 0x24;
+    *(char **)(slot + 4) = pathData;
+    fn_801FE88C(container, slot + 4);
+    ++*(int *)((char *)container + 0x94);
+#undef hermitePathLimitMsg
 }
 
 extern "C" void fn_801FE77C(void* arg0) {
@@ -1562,13 +1553,13 @@ extern "C" int stricmp(const char *, const char *);
 void fn_801FF7D4(void *arg0, void *arg1) {
     const char *name = *(const char **)arg1;
     int i = 0;
-    void *entry = arg0;
+    char *entry = (char *)arg0;
     while (i < *(int *)((char *)arg0 + 0x4C0)) {
-        if (stricmp(name, (char *)entry) == 0) {
+        if (stricmp(name, entry) == 0) {
             entry = (char *)arg0 + i * 0x98;
             goto found;
         }
-        entry = (char *)entry + 0x98;
+        entry += 0x98;
         i++;
     }
     entry = 0;
@@ -1581,12 +1572,12 @@ found:
         fn_801FF8DC(arg0, entry, *(int *)arg1);
         *(int *)((char *)arg0 + 0x4C0) += 1;
     }
-    if (*(int *)((char *)entry + 0x90) + 1 > 0x10) {
+    if (*(int *)(entry + 0x90) + 1 > 0x10) {
         fn_802E317C(lbl_8033B90C, 0x10);
     }
-    int count = *(int *)((char *)entry + 0x90);
-    *(void **)((char *)entry + 0x10 + count * 4) = arg1;
-    *(int *)((char *)entry + 0x90) = count + 1;
+    int count = *(int *)(entry + 0x90);
+    *(void **)(entry + 0x10 + count * 4) = arg1;
+    *(int *)(entry + 0x90) = count + 1;
 }
 extern "C" void fn_801FF8DC(void *arg0, void *dest, int src) {
     strncpy((char *)dest, (const char *)src, 0x10);
