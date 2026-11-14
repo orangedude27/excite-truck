@@ -3876,28 +3876,29 @@ extern "C" void fn_800AAED8(void) {
     ((void (*)(s32, s32, s32, s32, s32, void *))fn_800AAC08)(a, b, c, d, e, &sp8);
 }
 
-extern "C" s32 fn_800AAEFC(s32 arg0, void *arg1) {
-    ((s32 *)arg1)[0x8B] = arg0;
-    ((s16 *)arg1)[0] = 0x5C;
-    ((s16 *)arg1)[1] = 0;
-    ((u8 *)arg1)[0x20A] = 0;
-    ((u8 *)arg1)[0x20B] = 0;
-    ((u8 *)arg1)[0x20C] = 0;
-    ((u8 *)arg1)[0x20E] = 0x5C;
-    ((u8 *)arg1)[0x20F] = 0;
-    ((u8 *)arg1)[0x21B] = 0;
-    ((u8 *)arg1)[0x21C] = 0x10;
-    ((u8 *)arg1)[0x21D] = 0;
-    ((s16 *)arg1)[0x10F] = 0;
-    ((s16 *)arg1)[0x110] = 0;
-    ((s16 *)arg1)[0x111] = 0;
-    ((s16 *)arg1)[0x112] = 0;
-    ((s16 *)arg1)[0x113] = 0;
-    ((s32 *)arg1)[0x8A] = 0;
-    ((s32 *)arg1)[0x8C] = 3;
-    ((s32 *)arg1)[0x8D] = 1;
-    ((s32 *)arg1)[0x8E] = -1;
-    ((s16 *)arg1)[0x11E] = 0;
+/* Initializes a VFiPF slot/context structure (0x248 bytes) with default state for the given owner. */
+extern "C" s32 fn_800AAEFC(s32 owner, void *slot) {
+    ((s32 *)slot)[0x8B] = owner;
+    ((s16 *)slot)[0] = 0x5C;
+    ((s16 *)slot)[1] = 0;
+    ((u8 *)slot)[0x20A] = 0;
+    ((u8 *)slot)[0x20B] = 0;
+    ((u8 *)slot)[0x20C] = 0;
+    ((u8 *)slot)[0x20E] = 0x5C;
+    ((u8 *)slot)[0x20F] = 0;
+    ((u8 *)slot)[0x21B] = 0;
+    ((u8 *)slot)[0x21C] = 0x10;
+    ((u8 *)slot)[0x21D] = 0;
+    ((s16 *)slot)[0x10F] = 0;
+    ((s16 *)slot)[0x110] = 0;
+    ((s16 *)slot)[0x111] = 0;
+    ((s16 *)slot)[0x112] = 0;
+    ((s16 *)slot)[0x113] = 0;
+    ((s32 *)slot)[0x8A] = 0;
+    ((s32 *)slot)[0x8C] = 3;
+    ((s32 *)slot)[0x8D] = 1;
+    ((s32 *)slot)[0x8E] = -1;
+    ((s16 *)slot)[0x11E] = 0;
     return 0;
 }
 
