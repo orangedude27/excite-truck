@@ -241,6 +241,7 @@ void fn_8023509C(void) {
 }
 #pragma scheduling on
 void fn_802350BC(void) {
+    /* Flush the remaining art-resource list, logging each removal and freeing the entries. */
     if (lbl_8055F084 != 0)
         fn_802E30C8(lbl_80340724);
     while (lbl_8055F084 != 0) {
