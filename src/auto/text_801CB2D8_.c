@@ -172,7 +172,9 @@ done:
     return;
 }
 #pragma scheduling on
-void fn_801CB648(int arg0, int arg1, f32 farg0) {
+void fn_801CB648(int playerIndex, int arg1, f32 farg0) {
+    /* Conditionally forwards to fn_801CD7BC when not blocked by fn_80019BA8 and
+     * fn_80161C38 indicates case 0. */
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
     case 0:
@@ -181,7 +183,7 @@ void fn_801CB648(int arg0, int arg1, f32 farg0) {
         goto done;
     }
 action:
-    fn_801CD7BC(arg0, arg1, farg0);
+    fn_801CD7BC(playerIndex, arg1, farg0);
 done:
     return;
 }
