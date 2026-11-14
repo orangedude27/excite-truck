@@ -192,6 +192,7 @@ int fn_802574E0(int self, int deletingFlag) {
     #undef Mem_freeObject
     return self;
 }
+
 #pragma cplusplus on
 extern "C" void fn_80257558(void *arg0, void *arg1) {
     int outer;
