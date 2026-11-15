@@ -365,14 +365,14 @@ extern "C" void fn_801FCF74(void* arg0, float farg0) {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_801FCFC8(void* arg0) {
-    if (*(int*)((char*)arg0 + 4) != 0) {
-        float value = fn_802C99E8(*(float*)((char*)arg0 + 0x6C));
-        fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
-        fn_802C99E8(value);
+extern "C" void fn_801FCFC8(void *obj) {
+    /* If the object is active, save its float field, apply its transform, then restore it. */
+    if (*(int *)((char *)obj + 4) != 0) {
+        float savedValue = fn_802C99E8(*(float *)((char *)obj + 0x6C));
+        fn_802C744C(*(void **)((char *)obj + 8), (char *)obj + 0xC);
+        fn_802C99E8(savedValue);
     }
 }
-
 extern float lbl_80563030;
 extern "C" void fn_801FD024(void* arg0, void* arg1) {
     char* dst = (char*)arg0;
