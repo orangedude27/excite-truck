@@ -1869,7 +1869,7 @@ typedef struct Entry_802D18E8 {
 } Entry_802D18E8;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma optimization_level 3
+#pragma opt_live_range_split off
 void fn_802D18E8(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
     float *from = (float *)(base + 0x40);
@@ -2524,7 +2524,8 @@ void fn_802D2F70(int arg0) {
     fn_802D2ED8(arg0, 0);
 }
 
-int fn_802D2F78(int *arg0, int *arg1) {
+int fn_802D2F78(int *outWidth, int *outHeight) {
+    /* Prepare/framebuffer handoff helper: disable draw-sync callback state, flush VI, mark buffer in-use, and return stored buffer pointer with its dimensions. */
     int *data;
     int value;
     GXSetDrawSyncCallback();
@@ -2532,8 +2533,8 @@ int fn_802D2F78(int *arg0, int *arg1) {
     data = lbl_804C9760;
     value = data[2];
     *((unsigned char *)data + 0x14) = 1;
-    *arg0 = value;
-    *arg1 = data[3];
+    *outWidth = value;
+    *outHeight = data[3];
     return data[1];
 }
 
