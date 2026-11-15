@@ -2899,10 +2899,7 @@ extern "C" void fn_801FC720(BatchedGob *node) {
         ModelDraw(node->gobId, node->world, -1, GOB_GROUP_MASK);
     }
 }
-#pragma push
-#pragma processor 750
-#pragma push
-#pragma processor 750
+
 extern "C" f32 fn_801E88F0(s32);
 extern "C" f32 fn_802C88E8(void *);
 extern "C" f64 fn_8002F234(void);
