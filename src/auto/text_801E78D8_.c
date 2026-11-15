@@ -746,14 +746,8 @@ void fn_801E87B8(long arg0) {
     lbl_8055EB3C[lbl_8055EB34++] = arg0;
 }
 void fn_801E87D4(long arg0) {
-    long value2 = arg0;
-    int index;
-    long *base;
-    fn_801E87B8(value2);
-    index = (int)lbl_8055EB38;
-    base = lbl_8055EB40;
-    base[index] = value2;
-    lbl_8055EB38 = index + 1;
+    fn_801E87B8(arg0);
+    lbl_8055EB40[lbl_8055EB38++] = arg0;
 }
 
 extern void *lbl_8055EB24;
