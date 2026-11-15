@@ -433,9 +433,18 @@ void *__AXGetStudio_80178C90(void);
 int fn_801B4D80(void *, int, int, float);
 #pragma push
 #pragma scheduling invalid_target
-void fn_801B5060(int arg0, int arg1, float arg2) {
- void *studio = __AXGetStudio_80178C90();
- fn_801B4D80(studio, arg0, arg1, arg2);
+void fn_801B5060(int fromFrame, int toFrame, float fraction) {
+    /* Blends the sound parameters of two replay frames and leaves the result in
+     * the 20-byte parameter block __AXGetStudio_80178C90() returns.  The frames
+     * are 12-byte records: a word at +0 and a byte at +4 are copied from the
+     * first one, while the u16 fields at +6, +8 and +0xA are turned into
+     * pan (-300..300) and two -4..4 mix values, clamped to 0..1 first, and
+     * linearly blended by fraction.  fn_801B50B4 calls this with the pointers
+     * fn_801B49D4 fetched for the current and the next frame of the replay
+     * queue, and the part of the 6-tick frame already played.
+     * Proposed name: AudioBlendReplayParams. */
+    void *params = __AXGetStudio_80178C90();
+    fn_801B4D80(params, fromFrame, toFrame, fraction);
 }
 #pragma pop
 
