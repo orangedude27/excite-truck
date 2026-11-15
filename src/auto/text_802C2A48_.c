@@ -19,14 +19,15 @@ void fn_801E6978(void);
 extern unsigned char lbl_804C1328[];
 void fn_802C2B78(float, float, float);
 #pragma dont_inline on
-void fn_802C2A48(int arg0) {
-    unsigned int *p;
-    lbl_8055FBA4 = arg0;
-    p = fn_802CE344(arg0);
-    lbl_8055CFF0 = p[0];
-    lbl_8055CFF4 = p[1];
-    lbl_8055CFF8 = *(unsigned char *)(p + 3);
-    lbl_8055FB98 = (p[2] >> 3) * p[0];
+void fn_802C2A48(int videoModeId) {
+    /* Cache the selected video mode's dimensions/format and set the default viewport size. */
+    unsigned int *videoMode;
+    lbl_8055FBA4 = videoModeId;
+    videoMode = fn_802CE344(videoModeId);
+    lbl_8055CFF0 = videoMode[0];
+    lbl_8055CFF4 = videoMode[1];
+    lbl_8055CFF8 = *(unsigned char *)(videoMode + 3);
+    lbl_8055FB98 = (videoMode[2] >> 3) * videoMode[0];
     lbl_8055FB9C = 0x280;
     lbl_8055FBA0 = 0x1E0;
 }
