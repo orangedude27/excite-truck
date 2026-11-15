@@ -19719,7 +19719,7 @@ extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
                (self->m_stopTiming = 0,
                 (u32)((u32)OSGetTime() - self->m_playStartLo) /
                         ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) >= 0x75300U)) {
-        sound = self->m_soundId;
+        sound = self->m_channel;
         self->m_soundActive = 0;
         self->m_stopTiming = 0;
         if (fn_80060C7C((void *)sound) != 0) {
