@@ -23120,12 +23120,15 @@ void fn_800932DC(void *arg0, s32 arg1) {
     GKI_freebuf((void *)arg1);
 }
 
-void rfc_process_fcon(void *arg0, s32 arg1) {
-    if (arg1 != 0) {
+/* Handle an RFCOMM FCON (flow-control on) frame: on command, clear peer
+ * flow-off state, send an FCON response, and if local flow is not off signal
+ * PORT_FlowInd to allow data. */
+void rfc_process_fcon(void *p_mcb, s32 is_command) {
+    if (is_command != 0) {
         *(u8 *)(lbl_803C4828 + 0x64) = 0;
-        rfc_send_fcon(arg0, 0, lbl_803C4828);
-        if (*(u8 *)((u8 *)arg0 + 0x73) == 0) {
-            PORT_FlowInd(arg0, 0, 1);
+        rfc_send_fcon(p_mcb, 0, lbl_803C4828);
+        if (*(u8 *)((u8 *)p_mcb + 0x73) == 0) {
+            PORT_FlowInd(p_mcb, 0, 1);
         }
     }
 }
