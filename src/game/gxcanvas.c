@@ -353,10 +353,8 @@ void fn_802C3424(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
         return;
     fn_802C356C(x0, y0, x1, y1, color);
 }
+
 #pragma pop
-#pragma push
-#pragma processor 750
-#pragma inline_depth(0)
 
 #pragma push
 #pragma processor 750
