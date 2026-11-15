@@ -67,6 +67,9 @@ struct Container {
     virtual void _54();
     virtual Entry *GetEntry(int);
 };
+static inline f32 ReadAIEntryFloat(const void *key, Entry *entry) {
+    return entry->GetFloat(key);
+}
 #pragma pop
 
 void *fn_801284F8(unsigned int, const void *);
