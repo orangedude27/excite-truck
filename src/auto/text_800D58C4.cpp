@@ -736,6 +736,13 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, int arg1) {
     return arg0;
 }
 
+static inline GroupListNode* CheckedGroupContainerNode(GroupListNode* node) {
+    extern const char lbl_8031F6B8[];
+    extern const char lbl_8031F694[];
+    if (node == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
+    return node;
+}
 extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     extern const char lbl_8031F6B8[];
     extern const char lbl_8031F694[];
@@ -743,14 +750,13 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     extern const char lbl_8031F664[];
     struct GroupContainerDispatch { virtual void Destroy(s32); };
     struct GroupContainerObject : GroupContainerDispatch, GroupListNode {};
-    struct ListHead { int pad; GroupListNode* first; };
     if (arg0 != 0) {
-        GroupListNode* node = ((ListHead*)arg0)->first;
-        void* end = &((ListHead*)arg0)->first;
+        u32 node = *(u32*)((char*)arg0 + 4);
+        u32 end = (u32)arg0 + 4;
         while (node != end) {
-            GroupListNode* current = node;
+            GroupListNode* current = (GroupListNode*)node;
             void* slot;
-            node = node->next;
+            node = *(u32*)node;
             slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(arg0, &slot);
             if (current == 0)
