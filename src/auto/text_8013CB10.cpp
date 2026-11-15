@@ -122,7 +122,6 @@ struct ZoneTextures {
     inline ZoneTextures() { fn_801414A4(this); }
     inline void init() { fn_801414A4(this); }
 };
-typedef ZoneTextures Perc8013D2C4;
 extern "C" u8 lbl_8032CAF0[];
 /* ZoneMaster - the zone system's owner object (vtable lbl_8032CAF0).
  * It loads zlmain/zlclosure/zlresult, the zone textures and the zone table
