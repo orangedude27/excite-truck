@@ -15,6 +15,9 @@ extern void fn_802C6CF8(s32);
 extern void fn_80128668(s32);
 extern void fn_8012ED20(s32);
 extern s32 fn_8012EC90(s32);
+/* The anim streaming-buffer pool: the 8 buffers of 0x4000 bytes fn_801E6978 asks
+ * the allocator for, and the in-use flag of each (0 free, 1 taken).  fn_801E68D4
+ * hands out the next free one and fn_801E6924 gives one back. */
 extern s8 lbl_8055EAC8[8];
 extern s32 lbl_80487CC0[8];
 
