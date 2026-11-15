@@ -10,7 +10,7 @@ extern int lbl_8055B4DC;
 extern char lbl_8055B4E8;
 extern void *fn_801284F8(int, void *);
 extern void fn_8000DBC8(void *);
-extern void *fn_802E9A14(void);
+extern int fn_802E9A14(void); /* config.c: the cached SCSoundMode */
 extern void fn_8020A72C(void);
 extern int fn_8013365C(int, int);
 extern void *memset(void *, int, unsigned int);
@@ -189,11 +189,12 @@ extern "C" void fn_80208D80(int arg0) {
     int enabled;
     int index = 0;
     int index2;
-    const struct Table {
+    struct Table {
         void *entries[6];
         int count;
         int value;
-    } *base;
+    };
+    struct Table *base;
     void **items;
     void *object;
 
@@ -208,7 +209,7 @@ extern "C" void fn_80208D80(int arg0) {
 
     if (arg0 != 0) {
         items = (void **)lbl_80489238;
-        base = (const struct Table *)items;
+        base = (struct Table *)items;
         index2 = 0;
         while (index2 < base->count) {
             object = *items;
@@ -223,7 +224,7 @@ extern "C" void fn_80208D80(int arg0) {
         }
     }
 
-    fn_80133348(4, &lbl_8055B4E8, ((const struct Table *)lbl_80489238)->value);
+    fn_80133348(4, &lbl_8055B4E8, ((struct Table *)lbl_80489238)->value);
     fn_8013323C(4, lbl_8033BEF8, lbl_8055B4D0);
     fn_80133348(4, &lbl_8055B4E0, (int)lbl_8055EDA8);
     fn_801336E0(lbl_8055B4DC, fn_80208A78);
@@ -247,8 +248,7 @@ extern "C" void fn_80208E90(void *arg0, int arg1) {
     const char *strings = lbl_8033BEF8;
     int addObject;
     unsigned int count;
-
-    if (strncmp(object->name(), strings + 96, 11) == 0) {
+    if (strncmp(object->name(), strings + 0x60, 0xB) == 0) {
         fn_802E30C8(strings + 0x70, object->name());
         if (arg0 != 0) {
             object->close(1);
@@ -262,7 +262,7 @@ extern "C" void fn_80208E90(void *arg0, int arg1) {
                 object->finish();
             }
             if (addObject != 0) {
-                unsigned int idx = lbl_80489238[6];
+                int idx = lbl_80489238[6];
                 lbl_80489238[idx] = (int)arg0;
                 lbl_80489238[6] = idx + 1;
             } else if (arg0 != 0) {
