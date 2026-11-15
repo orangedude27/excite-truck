@@ -674,18 +674,20 @@ inner_check:
     return EF_NO_TEXTURE;
 }
 #pragma pop
-int fn_8028F0C0(int *arg0, int arg1, int arg2) {
-    int i;
-    int *p;
-    i = arg1 + 1;
-    p = (int *)((char *)arg0 + i * 0x104);
-    for (; i < 9; p = (int *)((char *)p + 0x104), i++) {
-        if (*(int *)((char *)p + 0x100) > 0)
-            return fn_8028F040((int *)((char *)arg0 + arg1 * 0x104), (int *)((char *)arg0 + i * 0x104), arg2);
+int fn_8028F0C0(int *lists, int index, int excludeTexId) {
+    int next;
+    int *nextList;
+    next = index + 1;
+    nextList = (int *)((char *)lists + next * 0x104);
+    for (; next < 9; nextList = (int *)((char *)nextList + 0x104), next++) {
+        if (((EfList *)nextList)->count > 0)
+            return fn_8028F040((int *)((char *)lists + index * 0x104), (int *)((char *)lists + next * 0x104), excludeTexId);
     }
-    return -2;
+    return EF_NO_TEXTURE;
 }
 #pragma pop
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
