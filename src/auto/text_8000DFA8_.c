@@ -2065,8 +2065,9 @@ void fn_8000E15C(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
         lbl_80560264, lbl_80560270 + arg2, arg3);
 }
 #pragma pop
-s32 fn_8000E2D8(s32 arg0) {
-    switch (arg0) {
+/* Returns an ARGB color value for the given color index. */
+s32 fn_8000E2D8(s32 colorIndex) {
+    switch (colorIndex) {
     default:
     case 0:
         return -1;
