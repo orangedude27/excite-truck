@@ -744,23 +744,24 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 #pragma pop
 extern const char lbl_802FD9E8[];
-int fn_8001C960(u32 arg0) {
+/* Look up a record/stat entry by index in lbl_802ED7B8 (3-word entries, id in low byte), returning the entry's first word or 0 and reporting invalid indices. */
+int fn_8001C960(u32 index) {
     volatile s32 *entry;
-    s32 value;
+    s32 entryId;
 
     entry = lbl_802ED7B8;
     goto check;
 loop:
-    if ((u8)value == arg0) {
+    if ((u8)entryId == index) {
         return *entry;
     }
     entry += 3;
 check:
-    value = *entry;
-    if (value != 0) {
+    entryId = *entry;
+    if (entryId != 0) {
         goto loop;
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD9E8, arg0);
+    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD9E8, index);
     return 0;
 }
 
