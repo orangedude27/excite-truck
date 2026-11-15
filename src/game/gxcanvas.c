@@ -241,18 +241,18 @@ extern void fn_802C3320();
 extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
 void fn_802C32B8(s32 arg0, s32 arg1, u32 arg2) {
-    u32 state = lbl_8055FC00;
+    u8 *state = (u8 *)lbl_8055FC00;
     u8 mode;
     s32 flag;
-    if (((u8 *)state)[1] & 4) return;
-    mode = ((u8 *)state)[0];
+    if (state[1] & 4) return;
+    mode = state[0];
     flag = 0;
     if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
     if (flag != 0) {
         fn_802C3320();
         return;
     }
-    if ((s8)((u8 *)state)[0] == 5) {
+    if ((s8)mode == 5) {
         fn_802C33A8(arg0, arg1, arg2);
         return;
     }
@@ -379,7 +379,7 @@ void fn_802C356C(s32 x0, s32 y0, s32 x1, s32 y1, u32 argbColor) {
 #pragma optimize_for_size off
 void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
-    u32 packed;
+    u16 packed;
     s32 low;
     s32 width, height, n;
     u32 skip;
@@ -387,14 +387,14 @@ void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
     low = (s32)((color * 8) & 0xF8) >> 4;
-    packed = ((s32)color >> 3) & 0xF00;
-    packed = (packed & ~0xF0) | (((s32)color >> 2) & 0xF0);
     width = x1 - x0;
+    packed = __rlwinm(color, 29, 20, 23);
+    packed = __rlwimi(packed, color, 30, 24, 27);
     pixel = low | packed;
     height = y1 - y0;
     p = (u16 *)fn_802C3044((void *)lbl_8055FC00, x0, y0);
     skip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 2);
-    skip = ((skip >> 31) + skip) & ~1;
+    skip = (u32)((u8 *)(skip >> 31) + skip) & ~1;
     do {
         n = width;
         do {
