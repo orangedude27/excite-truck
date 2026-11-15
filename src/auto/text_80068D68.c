@@ -196,7 +196,8 @@ typedef struct {
     u8      pad_1920[0x04];              /* 0x1920 abort callback */
     tBTM_LINK_KEY_NOTIFY_CB *p_link_key_notify_callback
         [BTM_SEC_MAX_LINK_KEY_NOTIFY_CALLBACKS];     /* 0x1924 extra notifiers */
-    u8      pad_192C[0x10];              /* 0x192C remote name callbacks */
+    tBTM_RMT_NAME_CALLBACK *p_rmt_name_callback
+                           [BTM_SEC_MAX_RMT_NAME_CALLBACKS]; /* 0x192C remote name callbacks */
     u8      pin_code_tle[0x10];          /* 0x193C timer waiting for a local PIN */
     void    *pin_code_tle_cback;         /* 0x194C non-NULL while that timer runs */
     u8      pad_1950[0x04];
