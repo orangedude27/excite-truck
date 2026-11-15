@@ -250,11 +250,12 @@ void fn_802A4C60(void) {
 }
 #pragma dont_inline reset
 void fn_802A4CA8(void) {
-    u8 *p = (u8 *)fn_801E1F44();
-    if (p[0x18] != 0) {
+    /* Apply the level's fog parameters when the weather state has fog active. */
+    u8 *weather = (u8 *)fn_801E1F44();
+    if (weather[0x18] != 0) {
         fn_802C2C00(1);
-        fn_802C990C(*(s32 *)(p + 8));
-        fn_802C2B78(*(f32 *)(p + 0xC), *(f32 *)(p + 0x10), *(f32 *)(p + 0x14));
+        fn_802C990C(*(s32 *)(weather + 8));
+        fn_802C2B78(*(f32 *)(weather + 0xC), *(f32 *)(weather + 0x10), *(f32 *)(weather + 0x14));
     }
 }
 
