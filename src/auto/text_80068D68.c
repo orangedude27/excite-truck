@@ -16554,13 +16554,11 @@ u8 HID_HostDeregister(void) {
     extern u8 hidh_conn_disconnect(u32);
     extern void fn_80070F90(void *);
     extern void fn_80089248(void);
-    u8 *base;
     u8 *entry;
     u32 i;
     u32 offset;
     u8 one = 1;
     u8 zero = 0;
-    base = lbl_803C3C38;
     if (lbl_803C3C38[0x400] == 0)
         return 1;
     for (i = 0; i < 0x10; i++) {
@@ -16571,8 +16569,8 @@ u8 HID_HostDeregister(void) {
         if ((u8)i > 0x10)
             continue;
         offset = ((u8)i) * 0x34;
-        entry = base + offset;
-        active = base[offset];
+        entry = lbl_803C3C38 + offset;
+        active = lbl_803C3C38[offset];
         if (active == 0)
             continue;
         if (flag == 0 || (u8)i > 0x10 || active == 0)
