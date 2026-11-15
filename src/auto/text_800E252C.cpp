@@ -2225,17 +2225,18 @@ extern "C" void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *voice, int pri
     fn_800E3DDC(Instance__15EmissionManagerFv(), voice);
 }
 
-extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
-    unsigned int level = OSDisableInterrupts();
-    void *voice = *(void **)((char *)self + 0xc);
-    void *dsp = (char *)voice + 0x138;
-    if (dsp == 0) {
-        OSRestoreInterrupts(level);
+/* Get the DSP's current sample address for this AX voice, or 0 if none. */
+extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *axVoice) {
+    unsigned int enabled = OSDisableInterrupts();
+    void *vpb = *(void **)((char *)axVoice + 0xc);
+    void *pb = (char *)vpb + 0x138;
+    if (pb == 0) {
+        OSRestoreInterrupts(enabled);
         return 0;
     }
-    int address = (*(unsigned short *)((char *)dsp + 0x84) << 16) +
-                  *(unsigned short *)((char *)dsp + 0x86);
-    OSRestoreInterrupts(level);
+    int address = (*(unsigned short *)((char *)pb + 0x84) << 16) +
+                  *(unsigned short *)((char *)pb + 0x86);
+    OSRestoreInterrupts(enabled);
     return address;
 }
 
