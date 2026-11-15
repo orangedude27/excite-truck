@@ -165,15 +165,18 @@ extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv
     return 0;
 }
 #pragma pop
-extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl_80107668(nw4hbm::ut::IOStream* this_,
-                                                          void* buf,
-                                                          u32 size) {
-    if (this_->Read(buf, size) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803285B8, 0x8E, lbl_803285EC);
+extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl_80107668(nw4hbm::ut::IOStream* stream,
+                                                         void* buf,
+                                                         u32 size) {
+#define sFileUtIOStream lbl_803285B8 /* __FILE__: "ut_IOStream.cpp" */
+#define sMsgNoAsyncSupport lbl_803285EC /* "Stream don't support ASYNC function\n" */
+    if (stream->Read(buf, size) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(sFileUtIOStream, 0x8E, sMsgNoAsyncSupport);
     }
+#undef sFileUtIOStream
+#undef sMsgNoAsyncSupport
     return 0;
 }
-
 extern "C" u32* fn_801076BC(void) {
     return (u32*)&lbl_8055DEA8;
 }
