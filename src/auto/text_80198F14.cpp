@@ -4841,16 +4841,17 @@ check:
 }
 
 #pragma opt_tail_call on
-extern "C" void fn_801A4868(void* arg0, u8 arg1) {
-    if (*(u8*)((u8*)arg0 + 0x40) != arg1) {
+extern "C" void fn_801A4868(void* instance, u8 state) {
+    /* If the instance's active/state byte at +0x40 changes, post an event (id 12) carrying its value at +0x38 and the new state, then store it. */
+    if (*(u8*)((u8*)instance + 0x40) != state) {
         struct Local {
             s32 value;
             u8 type;
         } local;
-        local.value = *(s32*)((u8*)arg0 + 0x38);
-        local.type = arg1;
+        local.value = *(s32*)((u8*)instance + 0x38);
+        local.type = state;
         fn_801796EC(12, (s32*)&local.value, 8);
-        *(u8*)((u8*)arg0 + 0x40) = arg1;
+        *(u8*)((u8*)instance + 0x40) = state;
     }
 }
 
