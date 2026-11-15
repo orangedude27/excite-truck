@@ -35,7 +35,6 @@ void fn_800328F0(void *arg0) {
     unsigned int *cs;
     unsigned int *cd;
     int *z;
-
     dst = p + 0x138;
     lbl_8055D7E0 = (void *)((unsigned int)lbl_8055D7E0 + 1);
     flags = *(unsigned int *)(p + 0x1C);
@@ -226,9 +225,8 @@ void fn_80032EAC(int arg0) {
             }
             if (*(unsigned short *)(p + 0x148) == 1 || *(int *)(p + 0x28) != 0) {
                 if (*(unsigned short *)(p + 0x140) != 2) {
-                    unsigned short hi = *(unsigned short *)(p + 0x1E8);
                     unsigned short lo = *(unsigned short *)(p + 0x1EA);
-                    unsigned int v = ((unsigned int)hi << 16) | (unsigned int)lo;
+                    unsigned int v = lo | (*(unsigned short *)(p + 0x1E8) << 16);
                     r29 += ((((v * 0x84) + 0x8000) >> 16) + 0x2D8) * 6;
                 }
                 if (*(unsigned short *)(p + 0x1FC) != 0) {
@@ -295,24 +293,26 @@ void fn_80032EAC(int arg0) {
 void *__AXFXGetLfoSinTable_8003313C(void) { return lbl_80363C60; }
 
 void fn_80033148(void *arg0) {
-    unsigned char *p = (unsigned char *)arg0;
-    *(short *)(p + 0x148) = 0;
-    *(short *)(p + 0x17C) = 0;
-    *(int *)(p + 0x1C) = 0x115000A4;
-    *(int *)(p + 0x28) = 0;
-    *(int *)(p + 0x24) = 0;
-    *(int *)(p + 0x30) = (int)(p + 0x34);
-    *(short *)(p + 0x18E) = 0;
-    *(short *)(p + 0x18C) = 0;
-    *(short *)(p + 0x18A) = 0;
-    *(short *)(p + 0x1FC) = 0;
-    *(short *)(p + 0x204) = 0;
-    *(short *)(p + 0x20C) = 0;
-    *(short *)(p + 0x240) = 0;
-    *(short *)(p + 0x242) = 0;
-    *(short *)(p + 0x244) = 0;
-    *(short *)(p + 0x246) = 0;
-    *(short *)(p + 0x248) = 0;
+    /* Reset an AX voice parameter block to default state. */
+    unsigned char *voiceParam = (unsigned char *)arg0;
+
+    *(short *)(voiceParam + 0x148) = 0;
+    *(short *)(voiceParam + 0x17C) = 0;
+    *(int *)(voiceParam + 0x1C) = 0x115000A4;
+    *(int *)(voiceParam + 0x28) = 0;
+    *(int *)(voiceParam + 0x24) = 0;
+    *(int *)(voiceParam + 0x30) = (int)(voiceParam + 0x34);
+    *(short *)(voiceParam + 0x18E) = 0;
+    *(short *)(voiceParam + 0x18C) = 0;
+    *(short *)(voiceParam + 0x18A) = 0;
+    *(short *)(voiceParam + 0x1FC) = 0;
+    *(short *)(voiceParam + 0x204) = 0;
+    *(short *)(voiceParam + 0x20C) = 0;
+    *(short *)(voiceParam + 0x240) = 0;
+    *(short *)(voiceParam + 0x242) = 0;
+    *(short *)(voiceParam + 0x244) = 0;
+    *(short *)(voiceParam + 0x246) = 0;
+    *(short *)(voiceParam + 0x248) = 0;
 }
 
 extern unsigned char lbl_80368460[];
