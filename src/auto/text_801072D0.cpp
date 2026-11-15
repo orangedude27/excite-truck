@@ -15,6 +15,8 @@ namespace nw4hbm {
 namespace ut {
 enum FontEncoding { FontEncodingDefault };
 class Font { public: void InitReaderFunc(int); void InitReaderFunc(FontEncoding); };
+// nw4hbm::ut::IOStream: the abstract stream interface.  Only the virtuals this unit's
+// wrappers call are named; the offset each one is reached through is on its line.
 class IOStream {
 public:
     virtual void vf0();
@@ -30,6 +32,9 @@ public:
     virtual u32 Seek(s32 off, u32 origin);   // vtable 0x30
 };
 class FileStream : public IOStream {};
+// The same nw4hbm::ut::IOStream seen by this unit's other wrappers: it mangles to the
+// very same name (both are IOStream::Read(void*, u32)) but its virtual read sits one
+// slot later, at vtable 0x2C.
 class IOStreamAsync {
 public:
     virtual void vf0();
