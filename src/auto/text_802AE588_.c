@@ -344,15 +344,17 @@ void fn_802AE9D0(void) {
 }
 #pragma scheduling invalid_target
 void fn_802AEA44(void) {
-    volatile int start;
-    char *volatile buffer;
-    int diff;
+    /* Reset fan-info draw state, refresh visibility masks, and log if it takes too long. */
+    volatile int startTime;
+    char *volatile name;
+    int elapsedMs;
+
     fn_802C10B8();
-    start = fn_802E2C20(buffer = lbl_8034A048);
+    startTime = fn_802E2C20(name = lbl_8034A048);
     fn_802BEB70();
-    diff = fn_802E2C20() - start;
-    if (diff > 0x1F4)
-        fn_802E30C8(lbl_8034A064, buffer, diff);
+    elapsedMs = fn_802E2C20() - startTime;
+    if (elapsedMs > 0x1F4)
+        fn_802E30C8(lbl_8034A064, name, elapsedMs);
     fn_802AE774();
 }
 #pragma scheduling on
