@@ -758,7 +758,19 @@ void fn_80210510(void) {
     fn_802EC1C0();
 }
 
-void fn_80210514(int x){switch(x){case 0: fn_8020F608(0,fn_8000DA10()); break; case 1: fn_8020F608(1,fn_8000DA10()); break; case 2: break;}}
+/* Select the track-music mode (0/1) using the current DA parameter, or do nothing for 2. */
+void fn_80210514(int mode) {
+    switch (mode) {
+    case 0:
+        fn_8020F608(0, fn_8000DA10());
+        break;
+    case 1:
+        fn_8020F608(1, fn_8000DA10());
+        break;
+    case 2:
+        break;
+    }
+}
 
 long fn_80210570(void) {
     register long val = 3;
