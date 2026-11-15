@@ -126,16 +126,17 @@ void* fn_802AE588(void* arg0, s32 arg1) {
 
 #pragma scheduling invalid_target
 void fn_802AE5E0(int arg0) {
-    int *ptr = &lbl_804BDFF0[1];
-    int total = 0;
-    int i = 2;
-    while (i <= arg0) {
-        *ptr = total;
-        total += (i + 1) * 4;
-        ptr++;
-        i *= 2;
+    /* Build a bucket offset table and allocate a wave table buffer sized for it. */
+    int *offsetPtr = &lbl_804BDFF0[1];
+    int totalSize = 0;
+    int bucket = 2;
+    while (bucket <= arg0) {
+        *offsetPtr = totalSize;
+        totalSize += (bucket + 1) * 4;
+        offsetPtr++;
+        bucket *= 2;
     }
-    *(int *)lbl_8055F984 = fn_8012850C(total * 2, &lbl_8055CD7C);
+    *(int *)lbl_8055F984 = fn_8012850C(totalSize * 2, &lbl_8055CD7C);
 }
 #pragma scheduling on
 extern void fn_802AE64C(void *);
