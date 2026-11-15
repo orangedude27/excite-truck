@@ -924,12 +924,14 @@ extern "C" void *fn_80207848(int soundId, int flags) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
-    void *value = arg2;
-    if (arg2 != 0) {
-        value = fn_802072E4(arg2, arg0, arg1);
+extern "C" void *fn_802078CC(int arg0, int arg1, void *object) {
+    /* Resolve object through fn_802072E4 when non-null, returning it only if its
+     * handle at +0xC is set. */
+    void *result = object;
+    if (object != 0) {
+        result = fn_802072E4(object, arg0, arg1);
     }
-    return (*(int *)((u8 *)value + 0xC) != 0) ? value : 0;
+    return (*(int *)((u8 *)result + 0xC) != 0) ? result : 0;
 }
 #pragma scheduling on
 extern "C" void fn_80207924(void *arg0) {
