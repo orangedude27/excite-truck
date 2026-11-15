@@ -141,18 +141,23 @@ s32 fn_801B32C8(void* arg0, s32 arg1) {
 }
 #pragma scheduling on
 #pragma dont_inline on
-void* fn_801B3338(void* arg0) {
- s32* obj=*(s32**)((char*)arg0+4);
- if(obj!=NULL) {
-   s32 found=0;
-   s32 magic=obj[4];
-   if((u32)(magic-0x43410000)==0x5220
-      || (u32)(magic-0x50430000)==0x4152
-      || (u32)(magic-0x41430000)==0x4152
-      || (u32)(magic-0x4E430000)==0x4152) found=1;
-   if(found!=0) return obj;
- }
- return NULL;
+/* Returns the inner object if it carries a known vehicle/archive tag (CAR / PCAR / ACAR / NCAR), else NULL. */
+void *fn_801B3338(void *container) {
+    s32 *object = *(s32 **)((char *)container + 4);
+    if (object != NULL) {
+        s32 found = 0;
+        s32 tag = object[4];
+        if ((u32)(tag - 0x43410000) == 0x5220 ||
+            (u32)(tag - 0x50430000) == 0x4152 ||
+            (u32)(tag - 0x41430000) == 0x4152 ||
+            (u32)(tag - 0x4E430000) == 0x4152) {
+            found = 1;
+        }
+        if (found != 0) {
+            return object;
+        }
+    }
+    return NULL;
 }
 #pragma dont_inline off
 
