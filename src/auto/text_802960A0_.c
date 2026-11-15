@@ -365,8 +365,9 @@ void *fn_80296950(const char *name) {
     return 0;
 }
 
-int fn_802969B4(unsigned int arg0, unsigned int arg1, float farg0) {
-    return (int)((float)arg0 + farg0 * ((float)arg1 - (float)arg0));
+/* Linearly interpolates between unsigned values a and b by factor t, returning the result as int. */
+int fn_802969B4(unsigned int a, unsigned int b, float t) {
+    return (int)((float)a + t * ((float)b - (float)a));
 }
 
 #pragma push
