@@ -19734,7 +19734,7 @@ extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
             self->m_alarmPending = 1;
         }
     } else if (self->m_alarmPending == 0 && fn_8005EE80(sound) <= 0x55) {
-        s32 id = self->m_soundId;
+        s32 id = self->m_channel;
         if (fn_80060C7C((void *)id) != 0) {
             OSAlarm *alarm;
             u32 ticks;
