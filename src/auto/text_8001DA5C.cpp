@@ -770,15 +770,16 @@ extern "C" void** lbl_8055D5FC;
 extern "C" void** lbl_8055D600;
 // The array label, typed virtual call, and fixed-arity cleanup call preserve the target instructions.
 extern "C" void fn_8001EDB8(void) {
+    /* Notify the active continue-prompt UI object with the "continue_prompt" data. */
     struct Obj { virtual void v0(); virtual void v1(void *); };
-    void* object = lbl_802FDE38;
-    void* selected;
+    void *data = lbl_802FDE38;
+    void *target;
     if (fn_801E85A4() == 2) {
-        selected = lbl_8055D600;
+        target = lbl_8055D600;
     } else {
-        selected = lbl_8055D5FC;
+        target = lbl_8055D5FC;
     }
-    ((Obj *)selected)->v1(object);
+    ((Obj *)target)->v1(data);
     ((void (*)(void))fn_801476C4)();
 }
 
