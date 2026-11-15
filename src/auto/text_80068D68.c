@@ -14038,9 +14038,12 @@ void *arg0;
     u8 highByte;
     u8 lowByte;
 
-    if (msg != 0 && *(u16 *)(lbl_803C0A50 + 0x6C) != 0) {
-        GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
+    if (msg != 0) {
+        register u8 *base = lbl_803C0A50;
+        if (*(u16 *)(base + 0x6C) != 0) {
+        GKI_enqueue((BUFFER_Q *)(base + 0x64), msg);
         msg = 0;
+        }
     }
 
     if (*(u16 *)(lbl_803C0A50 + 0x80) == 0 && lbl_803C0F78[0x64E] == 0)
@@ -27327,22 +27330,24 @@ s32 IUSB_WriteCtrlMsgAsync(s32 fd, s32 requestType, s32 request, s32 value, s32 
 }
 #pragma use_lmw_stmw reset
 s32 AXFXReverbHiInit(void* arg0) {
-    AutoReverbHi* fx = (AutoReverbHi*)arg0;
-    fx->exp.earlyMode = 5;
-    fx->exp.preDelayTimeMax = fx->preDelay;
-    fx->exp.preDelayTime = fx->preDelay;
-    fx->exp.fusedMode = 0;
-    fx->exp.fusedTime = fx->time;
-    fx->exp.coloration = fx->coloration;
-    fx->exp.damping = fx->damping;
-    fx->exp.crosstalk = fx->crosstalk;
-    fx->exp.earlyGain = 0.0f;
-    fx->exp.fusedGain = 1.0f;
-    fx->exp.busIn = 0;
-    fx->exp.busOut = 0;
-    fx->exp.outGain = fx->mix;
-    fx->exp.sendGain = 0.0f;
-    return AXFXReverbHiExpInit(&fx->exp);
+    /* Initialize the simple reverb wrapper by copying parameters into the
+     * extended reverb state and then initializing the extended effect. */
+    AutoReverbHi* reverb = (AutoReverbHi*)arg0;
+    reverb->exp.earlyMode = 5;
+    reverb->exp.preDelayTimeMax = reverb->preDelay;
+    reverb->exp.preDelayTime = reverb->preDelay;
+    reverb->exp.fusedMode = 0;
+    reverb->exp.fusedTime = reverb->time;
+    reverb->exp.coloration = reverb->coloration;
+    reverb->exp.damping = reverb->damping;
+    reverb->exp.crosstalk = reverb->crosstalk;
+    reverb->exp.earlyGain = 0.0f;
+    reverb->exp.fusedGain = 1.0f;
+    reverb->exp.busIn = 0;
+    reverb->exp.busOut = 0;
+    reverb->exp.outGain = reverb->mix;
+    reverb->exp.sendGain = 0.0f;
+    return AXFXReverbHiExpInit(&reverb->exp);
 }
 
 s32 fn_8009BF98(void* arg0) {
