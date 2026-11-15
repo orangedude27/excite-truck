@@ -2009,6 +2009,7 @@ extern "C" s32 fn_801632C8(void *banner) {
 #pragma pop
 
 #pragma cplusplus on
+/* Returns 1 if the object's virtual v7() reports nonzero and its enabled flag at offset 0x90 is set, otherwise 0. */
 extern "C" s32 fn_801634F0(void *arg0) {
     class Obj {
     public:
