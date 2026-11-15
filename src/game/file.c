@@ -212,17 +212,20 @@ extern "C" s32 fn_802E367C(s32 arg0) {
     return -1;
 }
 #pragma cplusplus on
-extern "C" s32 fn_802E36D8(s32 arg0) {
+extern "C" s32 fn_802E36D8(s32 pathOrName)
+{
+    /* Resolve path/name via the file manager's vtable method at slot 0x10 (3rd virtual),
+     * then if it yields a handle/name token, pass it to fn_802E35C0; otherwise return -1. */
     class V {
     public:
         virtual void a();
         virtual void b();
         virtual s32 c(s32);
     };
-    V *obj = (V *)fn_802E333C();
-    s32 result = obj->c(arg0);
-    if (result != 0)
-        return fn_802E35C0((const char *)arg0, result);
+    V *fileManager = (V *)fn_802E333C();
+    s32 lookupResult = fileManager->c(pathOrName);
+    if (lookupResult != 0)
+        return fn_802E35C0((const char *)pathOrName, lookupResult);
     return -1;
 }
 #pragma cplusplus on
