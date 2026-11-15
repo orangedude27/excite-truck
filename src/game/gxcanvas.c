@@ -31,7 +31,9 @@ extern void fn_8012C4D8(void);
 typedef struct GxCanvas {
     /* 0x00 pixel format: 5 keeps 4-byte pixels (rowBytes = width * 4),
      * 6 is no format this build draws, every other value 2-byte RGB565
-     * ones.  The drawing code sign-extends it before comparing. */
+     * ones.  Of those, 1 is the 4-bit-component one that keeps the old
+     * alpha nibble when filled.  The drawing code sign-extends it before
+     * comparing. */
     u8 format;
     /* 0x01 flags; fn_802C2CE8 starts a fresh canvas at 0x82.  Bit 0x4 marks
      * a canvas that must not be drawn on: the plotters return without
