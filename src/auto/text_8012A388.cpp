@@ -883,65 +883,66 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
 }
 #pragma pop
 #pragma scheduling invalid_target
-extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    /* Entry flags word at +0x34, seen as bitfields. */
+extern "C" s32 fn_8012B85C(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
+    /* The entry's flag word at +0x34, seen as bitfields. */
     struct EntryFlags {
         u32 rest : 31;
         u32 requested : 1;
     };
-    s32 sp8;
-    u8 requestName[5];
-    u8 entryName[5];
-    u8 *manager;
+    s32 index;
+    u8 wantedTagText[5];
+    u8 entryTagText[5];
+    struct ResManager *manager;
     const char *strings = lbl_8032A630;
     u8 *result = 0;
-    manager = ((u8 *(*)(s32, s32 *, s32))fn_8012B534)(arg0, &sp8, 0);
+    manager = (struct ResManager *)((struct ResManager *(*)(s32, s32 *, s32))fn_8012B534)(path, &index, 0);
     if (manager != 0) {
-        if (fn_8012B6FC(manager, sp8) != 0) {
-            u8 *entry = *(u8 **)(manager + 0x60) + sp8 * 0x44;
-            if ((u32)arg1 == *(u32 *)(entry + 0x20)) {
+        if (fn_8012B6FC(manager, index) != 0) {
+            struct ResEntry *entry = (struct ResEntry *)(manager->entries + index * 0x44);
+            if ((u32)dataTag == entry->dataTag) {
                 s32 count;
-                *(u32 *)(entry + 0x34) |= 2;
-                if ((s8 *)arg5 != 0) {
-                    s32 requested = ((EntryFlags *)(entry + 0x34))->requested;
-                    ((EntryFlags *)(entry + 0x34))->requested = 1;
-                    *(s8 *)arg5 = !requested;
+                entry->flags |= RES_ENTRY_IN_USE;
+                if ((s8 *)outNewRequest != 0) {
+                    s32 requested = ((EntryFlags *)&entry->flags)->requested;
+                    ((EntryFlags *)&entry->flags)->requested = 1;
+                    *(s8 *)outNewRequest = !requested;
                 }
-                if ((s32 *)arg3 != 0) *(s32 *)arg3 = *(s32 *)(entry + 0x28);
-                if ((s8 *)arg4 != 0) *(s8 *)arg4 = *(s32 *)(entry + 0x38) == 0;
-                count = *(s32 *)(entry + 0x38);
-                *(s32 *)(entry + 0x38) = count + 1;
+                if ((s32 *)outSize != 0) *(s32 *)outSize = entry->size;
+                if ((s8 *)outFirstUse != 0) *(s8 *)outFirstUse = entry->useCount == 0;
+                count = entry->useCount;
+                entry->useCount = count + 1;
                 if (count == 0) {
-                    *(u32 *)(*(u8 **)(entry + 0x3C) + 4) = 0x4D474921;
-                    **(u8 ***)(entry + 0x3C) = entry;
+                    /* (Re)stamp the block header of a freshly loaded entry. */
+                    *(u32 *)(entry->header + 4) = 0x4D474921; /* 'MGI!' */
+                    *(struct ResEntry **)entry->header = entry;
                 }
-                *(s32 *)arg2 = *(s32 *)(entry + 0x24);
-                result = *(u8 **)(entry + 0x3C) + 8;
+                *(s32 *)outId = entry->id;
+                result = entry->header + 8;
                 ((void (*)(void *, const char *))fn_8012A46C)(result, strings + 0x408);
             } else {
-                /* Both four-character type codes, byte-reversed into strings for the message. */
-                u8 tmp0;
-                u8 tmp1;
-                *(u32 *)requestName = arg1;
-                tmp0 = requestName[0];
-                requestName[0] = requestName[3];
-                requestName[3] = tmp0;
-                tmp1 = requestName[1];
-                requestName[1] = requestName[2];
-                requestName[2] = tmp1;
-                requestName[4] = 0;
-                *(u32 *)entryName = *(u32 *)(entry + 0x20);
-                tmp0 = entryName[0];
-                entryName[0] = entryName[3];
-                entryName[3] = tmp0;
-                tmp1 = entryName[1];
-                entryName[1] = entryName[2];
-                entryName[2] = tmp1;
-                entryName[4] = 0;
-                fn_802E30C8(strings + 0x414, arg0, (const char *)requestName, (const char *)entryName);
+                /* Both four-character type tags, byte-reversed into strings for the message. */
+                u8 swap0;
+                u8 swap1;
+                *(u32 *)wantedTagText = dataTag;
+                swap0 = wantedTagText[0];
+                wantedTagText[0] = wantedTagText[3];
+                wantedTagText[3] = swap0;
+                swap1 = wantedTagText[1];
+                wantedTagText[1] = wantedTagText[2];
+                wantedTagText[2] = swap1;
+                wantedTagText[4] = 0;
+                *(u32 *)entryTagText = entry->dataTag;
+                swap0 = entryTagText[0];
+                entryTagText[0] = entryTagText[3];
+                entryTagText[3] = swap0;
+                swap1 = entryTagText[1];
+                entryTagText[1] = entryTagText[2];
+                entryTagText[2] = swap1;
+                entryTagText[4] = 0;
+                fn_802E30C8(strings + 0x414, path, (const char *)wantedTagText, (const char *)entryTagText);
             }
         } else {
-            fn_802E30C8(strings + 0x450, arg0);
+            fn_802E30C8(strings + 0x450, path);
         }
     }
     return (s32)result;
