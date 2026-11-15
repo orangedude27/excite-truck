@@ -2614,6 +2614,8 @@ void GXSetChanAmbColor(short intr, void *ctx) {
 }
 
 void __GXPEInit(void) {
+    /* Install PE token/done interrupt handlers, initialize their wait queue,
+       and enable the PE-related OS interrupts and PE control bits. */
     __OSSetInterruptHandler(0x12, (GXPEIntrHandler)GXInitSpecularDir);
     __OSSetInterruptHandler(0x13, (GXPEIntrHandler)GXSetChanAmbColor);
     OSInitThreadQueue(&lbl_8055D968);
