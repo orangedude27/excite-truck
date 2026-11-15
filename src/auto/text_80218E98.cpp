@@ -8559,14 +8559,15 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228FFC(void *arg0, 
     return arg0;
 }
 
+/* Destroys a DisposeCallbackManager's base list (via fn_8021915C) and, if requested, frees the object storage. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229054(
-    void* this_, s32 flag) {
+    void* this_, s32 deleteFlag) {
     if (this_) {
         if (this_ != NULL) {
             fn_8021915C(this_, 0);
         }
 
-        if (flag > 0) {
+        if (deleteFlag > 0) {
             fn_80128668(this_);
         }
     }
