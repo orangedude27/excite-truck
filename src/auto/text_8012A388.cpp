@@ -2011,6 +2011,7 @@ extern "C" s32 fn_8012D838(s32 obj) {
     }
 }
 
+/* Destroys the resource/object handle: refreshes and tears down its state, frees its data buffer, clears state, resets parser linkage, and releases the handle. */
 extern "C" void fn_8012D8A8(s32 arg0) {
     if (arg0 != 0) {
         fn_8012D40C(arg0);
