@@ -71,7 +71,7 @@ struct TimedEffect {
     virtual void onWaiting();     /* 0x3C: the delay has not run out yet */
     virtual void onRunning(float);/* 0x40: seconds since the delay ran out */
     virtual void onFinished();    /* 0x44: the length ran out */
-    int   state;                  /* 0x04: 1 ready, 2 running, 3 finished */
+    int   state;                  /* 0x04: enum TimedEffectState */
     float delay;                  /* 0x08, the value file's "delay" */
     float length;                 /* 0x0C, the value file's "length" */
     float startTime;              /* 0x10: lbl_8055E3C8 when it was started */
