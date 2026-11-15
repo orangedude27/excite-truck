@@ -1318,6 +1318,9 @@ extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut1
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Fills `glyph` with texture/source and metrics for the glyph at `index` in this font
+ * resource.  The debug builds assert that `this`, its font-info pointer, and the
+ * width-map entry lie in valid address ranges before dereferencing them. */
 void nw4hbm::ut::detail::ResFontBase::GetGlyphFromIndex(nw4hbm::ut::Glyph* glyph, unsigned short index) const {
     const char* file = lbl_80329140;
     register u32 top = (u32)this & 0xFF000000U;
