@@ -20,6 +20,7 @@ DECL_SECTION(".ctors") funcptr_t D_802ED58C = fn_802C2640;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* Register static/global initialization record for this module. */
 void fn_802C2640(void) {
     fn_8000D838(&lbl_8055FB58);
     lbl_804C109C[0] = (int)((char *)lbl_804C109C + 12);
