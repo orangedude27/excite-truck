@@ -35,43 +35,49 @@ extern void fn_802E99AC(void);
 extern char lbl_8034E238[];
 extern char lbl_80560040;
 #pragma scheduling invalid_target
+extern void fn_802E317C(const char*, ...); /* panic(): "PANIC: <msg>", then ABEND */
+extern void fn_802E99AC(void);            /* ConfigReadWpadSettings(), below */
+#pragma scheduling invalid_target
+#pragma scheduling invalid_target
 void fn_802E98D0(void) {
     u32 status;
-    s32 aspect;
+    s32 aspectRatio;
     s32 soundMode;
     SCInit();
     do {
         status = SCCheckStatus();
-    } while (status == 1);
-    if (status == 2) {
-        fn_802E317C(lbl_8034E238);
+    } while (status == SC_STATUS_BUSY);
+    if (status == SC_STATUS_FATAL) {
+        fn_802E317C(sScCheckStatusError);
     }
-    aspect = SCGetAspectRatio();
-    if (aspect == 1) goto aspect_one;
-    *(volatile s32*)&lbl_80560044 = 0;
+    aspectRatio = SCGetAspectRatio();
+    if (aspectRatio == SC_ASPECT_WIDE) goto aspect_wide;
+    *(volatile s32*)&sConfigAspectRatio = SC_ASPECT_STD;
     goto aspect_done;
-aspect_one:
-    *(volatile s32*)&lbl_80560044 = 1;
+aspect_wide:
+    *(volatile s32*)&sConfigAspectRatio = SC_ASPECT_WIDE;
 aspect_done:
+    /* switch (soundMode) the compiler turned into a branch tree: the three
+     * known modes keep their value, everything else lands on stereo. */
     soundMode = SCGetSoundMode();
-    if (soundMode == 1) goto sound_one;
-    if (soundMode >= 1) goto sound_three;
-    if (soundMode < 0) goto sound_one;
-    goto sound_zero;
-sound_three:
-    if (soundMode < 3) goto sound_two;
-    goto sound_one;
-sound_zero:
-    *(volatile s32*)&lbl_80560048 = 0;
+    if (soundMode == SC_SND_STEREO) goto sound_stereo;
+    if (soundMode >= SC_SND_STEREO) goto sound_over;
+    if (soundMode < SC_SND_MONO) goto sound_stereo;
+    goto sound_mono;
+sound_over:
+    if (soundMode < 3 /* SC_SND_SURROUND + 1 */) goto sound_surround;
+    goto sound_stereo;
+sound_mono:
+    *(volatile s32*)&sConfigSoundMode = SC_SND_MONO;
     goto sound_done;
-sound_one:
-    *(volatile s32*)&lbl_80560048 = 1;
+sound_stereo:
+    *(volatile s32*)&sConfigSoundMode = SC_SND_STEREO;
     goto sound_done;
-sound_two:
-    *(volatile s32*)&lbl_80560048 = 2;
+sound_surround:
+    *(volatile s32*)&sConfigSoundMode = SC_SND_SURROUND;
 sound_done:
-    lbl_8056004C = (SCGetProgressiveMode() - 1) == 0;
-    lbl_80560040 = 1;
+    sConfigProgressive = SCGetProgressiveMode() == SC_PROGRESSIVE;
+    sConfigReady = 1;
     fn_802E99AC();
 }
 #pragma scheduling on
