@@ -258,17 +258,18 @@ extern f32 lbl_80561648, lbl_80561688, lbl_805616C0, lbl_805616C4;
 extern u8 lbl_8032E190[];
 extern s32 fn_8014EFC0(s32, s32);
 extern void fn_80128668(void *);
-void *fn_801491B8(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+/* Clearing/deleting destructor-style helper: zeros the first three 32-bit fields of the object, frees it via fn_80128668 when deletingFlag > 0, and returns the object. (renames unavailable: fn_801491B8) */
+void *fn_801491B8(void *object, s32 deletingFlag) {
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deletingFlag > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_80149210(int *p) {
