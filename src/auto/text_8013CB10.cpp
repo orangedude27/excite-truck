@@ -2289,10 +2289,15 @@ extern "C" void *fn_801414A4(void *arg0) {
 }
 
 extern "C" void *__dt__Q210JASDrumSet5TPercFv(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        fn_802CAC54(*(s32 *)arg0);
-        fn_802CAC54(*(s32 *)((u8 *)arg0 + 4));
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    /* JASDrumSet::TPerc destructor (scalar deleting): release the two owned
+     * sound/velocity resources at +0x0 and +0x4 via fn_802CAC54, then free
+     * this object with mode 3 (fn_80128668) when arg1 > 0. */
+    void *self = arg0;
+
+    if (self != 0) {
+        fn_802CAC54(*(s32 *)self);
+        fn_802CAC54(*(s32 *)((u8 *)self + 4));
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(self);
     }
     return arg0;
 }
