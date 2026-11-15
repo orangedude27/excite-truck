@@ -1921,16 +1921,17 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     OSRestoreInterrupts(level);
 }
 #pragma use_lmw_stmw reset
-extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *this_, u8 paused) {
-    unsigned int level = OSDisableInterrupts();
-    if (*(u8 *)((char *)this_ + 0x11F) == paused) {
-        OSRestoreInterrupts(level);
+/* Pause or unpause this voice, marking its AX parameters dirty when the pause state changes. */
+extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *voice, u8 pauseFlag) {
+    unsigned int interrupts = OSDisableInterrupts();
+    if (*(u8 *)((char *)voice + 0x11F) == pauseFlag) {
+        OSRestoreInterrupts(interrupts);
         return;
     }
-    *(u8 *)((char *)this_ + 0x11F) = paused;
-    u8 flags = *(u8 *)((char *)this_ + 0x123);
-    *(u8 *)((char *)this_ + 0x123) = flags | 2;
-    OSRestoreInterrupts(level);
+    *(u8 *)((char *)voice + 0x11F) = pauseFlag;
+    u8 syncFlags = *(u8 *)((char *)voice + 0x123);
+    *(u8 *)((char *)voice + 0x123) = syncFlags | 2;
+    OSRestoreInterrupts(interrupts);
 }
 
 extern "C" void fn_800E5338(void *arg0, float arg1) {
