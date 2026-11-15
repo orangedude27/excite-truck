@@ -50,6 +50,8 @@ int fn_802C51C0(void* arg0) {
 }
 
 extern f32 fn_80235F64(int);
+/* Return the image height as an integer, rounding toward zero via a +/-0.5 bias;
+ * return 1 for a null image handle. */
 int fn_802C5220(void* arg0) {
     f32 value;
     f32 result;
