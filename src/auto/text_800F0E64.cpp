@@ -7126,7 +7126,8 @@ extern "C" void NotifyAsyncEnd__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFb(
 }
 #pragma pop
 
-extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void* self, int n, u16* p) {
+extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void* self, int count, u16* values) {
+    /* Copies up to two ADPCM loop-context samples into the stream and marks it set. */
     void* stream = *(void**)((u8*)self + 4);
     if (*((u8*)stream + 0x10) != 2) return;
     u16 value;
@@ -7138,13 +7139,13 @@ extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadComma
 loop_body:
     stream = *(void**)((u8*)self + 4);
     ++index;
-    value = *p;
-    ++p;
+    value = *values;
+    ++values;
     u16* context = (u16*)((u8*)stream + 0x518 + offset);
     offset += 2;
     *context = value;
 loop_check:
-    if (index < n && index < 2) goto loop_body;
+    if (index < count && index < 2) goto loop_body;
     stream = *(void**)((u8*)self + 4);
     *((u8*)stream + 0x51) = 1;
 }
