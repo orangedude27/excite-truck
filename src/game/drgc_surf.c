@@ -749,7 +749,6 @@ void fn_802D56D4(void *arg0) {
     extern f32 lbl_804DB068[];
     extern f32 lbl_80564FF0;
     extern f64 lbl_80564FF8;
-    extern void fn_802D5680(void *);
     register void *object = arg0;
     register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
