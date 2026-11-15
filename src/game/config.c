@@ -3,8 +3,20 @@
 // Static-init thunk fn_802E9A34 (+ .ctors slot 0x802ED620) remains in
 // auto/text_802E9A34_.c pending a promotion pass.
 #include "revolution/SC/scapi.h"
+#include "revolution/SC/scsystem.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+/* The console's system config, read once by ConfigInit() below and handed out
+ * by the getters at the end of this file.  Named here because the symbols are
+ * the project's placeholders (projects can't rename the game's data yet). */
+#define sConfigReady lbl_80560040             /* set once the cache is filled in */
+#define sConfigAspectRatio lbl_80560044       /* SCAspectRatio: 4:3 or 16:9 */
+#define sConfigSoundMode lbl_80560048         /* SCSoundMode: mono/stereo/surround */
+#define sConfigProgressive lbl_8056004C       /* 1 when the display is progressive */
+#define sConfigWpadMotor lbl_8056004D         /* 1 when the WPAD rumble is enabled */
+#define sConfigWpadSpeakerVolume lbl_80560050 /* WPAD speaker volume, 0.0 .. 1.0 */
+#define sScCheckStatusError lbl_8034E238      /* "config: SCCheckStatus returns error!" */
 
 extern char lbl_8056004C;
 extern char lbl_8056004D;
