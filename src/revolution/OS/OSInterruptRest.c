@@ -40,6 +40,12 @@ static u32 InterruptPrioTable[] = {
     0xFFFFFFFF /* anything left over */
 };
 
+/* Hand-written assembly entry the external-interrupt exception is dispatched
+ * to (__OSInterruptInit installs it for OS_ERR_EXT_INTERRUPT).  The exception
+ * dispatcher has already saved most of the context; this adds what it leaves
+ * alone - r0-r2, r6-r31 via stmw and the seven GQRs - to the OSContext it was
+ * handed, then keeps the arguments in r3/r4 and tail-jumps to
+ * __OSDispatchInterrupt.  Defined at the end of this file. */
 void ExternalInterruptHandler(u8 type, OSContext* ctx);
 u32 SetInterruptMask(u32 type, u32 mask);
 
