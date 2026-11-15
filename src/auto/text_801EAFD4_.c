@@ -482,18 +482,20 @@ void fn_801EB8BC(void) {
 #pragma dont_inline off
 
 #pragma cplusplus on
+/* Calls vtable slot 4 on each of the 24 cached subsystem entry objects. */
 extern "C" void fn_801EB90C(void) {
-    struct Entry {
+    class Entry {
+    public:
         virtual void u0();
         virtual void u1();
         virtual void u2();
         virtual void u3();
         virtual void f();
     };
-    void **p = (void **)lbl_804885E8;
-    u32 i;
-    for (i = 0; i < 0x18; i++, p++) {
-        ((Entry *)*p)->f();
+    void **entryPtr = (void **)lbl_804885E8;
+    u32 index;
+    for (index = 0; index < 0x18; index++, entryPtr++) {
+        ((Entry *)*entryPtr)->f();
     }
 }
 #pragma cplusplus reset
