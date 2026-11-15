@@ -95,6 +95,7 @@ void fn_802B9EC8(void *);
 void fn_802B9F38(void **);
 int fn_802CAC54(void);
 void* fn_802B8DA0(void* arg0, s32 arg1) {
+    /* Destroy a small struct by clearing its three fields and optionally freeing it. */
     if (arg0 != 0) {
         if (arg0 != 0) {
             *(s32 *)arg0 = 0;
@@ -1522,14 +1523,11 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
     int zero = 0;
     arg0 = (void ***)*arg0;
     while (*(void **)arg0 != 0) {
-        void *queue;
-        void *entry;
+        void *entry = *(void **)arg0;
+        void *queue = *(void **)((char *)entry + 4);
         int *slot = 0;
-        void *pool;
+        void *pool = *(void * volatile *)&lbl_8055FA74;
         int count;
-        entry = *(void **)arg0;
-        queue = *(void **)((char *)entry + 4);
-        pool = *(void * volatile *)&lbl_8055FA74;
         if (queue == 0 || *(volatile int *)((char *)queue + 4) + 1 > *(volatile int *)((char *)queue + 8)) {
             void *node = 0;
             if (*(volatile int *)((char *)pool + 8) + 1 <= *(volatile int *)((char *)pool + 0xC)) {
