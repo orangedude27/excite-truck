@@ -813,13 +813,14 @@ end:
     return slot;
 }
 
-void fn_802E5FE4(void *arg0) {
-    if (*(int *)((char *)arg0 + 0x98) > 0) {
-        fn_802E317C(lbl_8034D584, arg0, *(int *)((char *)arg0 + 0x98));
+// Free the audio buffer/region owned by this object and clear its state fields.
+void fn_802E5FE4(void *obj) {
+    if (*(int *)((char *)obj + 0x98) > 0) {
+        fn_802E317C(lbl_8034D584, obj, *(int *)((char *)obj + 0x98));
     }
-    fn_80128670(*(int *)((char *)arg0 + 0x90));
-    *(int *)((char *)arg0 + 0x90) = 0;
-    *(int *)((char *)arg0 + 0x94) = 0;
+    fn_80128670(*(int *)((char *)obj + 0x90));
+    *(int *)((char *)obj + 0x90) = 0;
+    *(int *)((char *)obj + 0x94) = 0;
 }
 
 float fn_802E6040(void *arg0) {
