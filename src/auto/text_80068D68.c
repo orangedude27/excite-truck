@@ -7615,12 +7615,13 @@ found:
 }
 
 extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
+/* On device down, notify L2CAP of HCI disconnect for each active ACL link. */
 void btm_acl_device_down(void)
 {
-    u8 *entry;
-    u32 i;
-    for (i = 0, entry = lbl_803C0F78 + 0x34; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119]) l2c_link_hci_disc_comp(*(u16 *)entry, 3);
+    u8 *aclEntry;
+    u32 index;
+    for (index = 0, aclEntry = lbl_803C0F78 + 0x34; index < 4; index++, aclEntry += 0x11C) {
+        if (aclEntry[0x119]) l2c_link_hci_disc_comp(*(u16 *)aclEntry, 3);
     }
 }
 
