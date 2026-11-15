@@ -267,20 +267,21 @@ extern f32 lbl_805635E0;
 extern f32 lbl_805635E4;
 extern void *fn_8022EDE4(f32 *, f32);
 void fn_8022EE9C(void) {
-    f32 a[12];
-    a[0] = 1.0f;
-    a[1] = 0.0f;
-    a[2] = 0.0f;
-    a[3] = 0.0f;
-    a[4] = 1.0f;
-    a[5] = 0.0f;
-    a[6] = 0.0f;
-    a[7] = 0.0f;
-    a[8] = 1.0f;
-    a[9] = 0.0f;
-    a[10] = 0.0f;
-    a[11] = 0.0f;
-    fn_8022EDE4(a, 1.0f);
+    /* Build an identity 3x3 rotation/translation matrix and install it as the current UI context. */
+    f32 identityMatrix[12];
+    identityMatrix[0] = 1.0f;
+    identityMatrix[1] = 0.0f;
+    identityMatrix[2] = 0.0f;
+    identityMatrix[3] = 0.0f;
+    identityMatrix[4] = 1.0f;
+    identityMatrix[5] = 0.0f;
+    identityMatrix[6] = 0.0f;
+    identityMatrix[7] = 0.0f;
+    identityMatrix[8] = 1.0f;
+    identityMatrix[9] = 0.0f;
+    identityMatrix[10] = 0.0f;
+    identityMatrix[11] = 0.0f;
+    fn_8022EDE4(identityMatrix, 1.0f);
 }
 
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
