@@ -1194,15 +1194,16 @@ extern "C" void* fn_802A3610(void* arg0, DummyReceiver_802A3314* arg1) {
 }
 
 extern "C" int lbl_80349B00[];
-extern "C" void* __dt__14CollisionSpaceFv_802A366C(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = &lbl_80349B00;
-        fn_8028E398(((void**)arg0)[1]);
-        if (arg1 > 0) {
-            ((s32 (*)(void*))fn_80128668)(arg0);
+extern "C" void* __dt__14CollisionSpaceFv_802A366C(void* object, s32 deleting) {
+    /* CollisionSpace destructor: install vtable, release owned resource, and optionally delete the object. */
+    if (object != 0) {
+        *(void**)object = &lbl_80349B00;
+        fn_8028E398(((void**)object)[1]);
+        if (deleting > 0) {
+            ((s32 (*)(void*))fn_80128668)(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 extern "C" f32 lbl_80564730, lbl_80564744, lbl_8056475C, lbl_8056476C, lbl_805647C4, lbl_805647DC, lbl_80564818, lbl_8056481C;
