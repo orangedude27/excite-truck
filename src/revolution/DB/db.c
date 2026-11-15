@@ -37,6 +37,14 @@ BOOL __DBIsExceptionMarked(u8 exc) {
     return __DBInterface->exceptionMask & (1 << exc);
 }
 
+/*
+ * Debug print to the development environment.
+ *
+ * The SDK builds this function out for release (its body sits inside a
+ * REVOLUTION_DEBUG guard that is not defined here - see DB.h), so nothing
+ * references "msg" and the only code left is the variadic register save area
+ * the ABI sets up for the arguments that are never read.
+ */
 void DBPrintf(const char* msg, ...) {
 #pragma unused(msg)
 }
