@@ -108,13 +108,14 @@ void fn_80013C98(f32 *arg0) {
     }
 }
 
-void fn_80013CFC(f32 *arg0) {
-    f32 value;
+/* Decay a value toward 0 by delta-time (fn_801E7E24 / 0.35), clamping at 0 when dt > 0. */
+void fn_80013CFC(f32 *valuePtr) {
+    f32 step;
     if (fn_801E7E24() > lbl_80560360) {
-        value = fn_801E7E24() / lbl_80560364;
-        value = *arg0 - value;
-        value = value > lbl_80560360 ? value : lbl_80560360;
-        *arg0 = value;
+        step = fn_801E7E24() / lbl_80560364;
+        step = *valuePtr - step;
+        step = step > lbl_80560360 ? step : lbl_80560360;
+        *valuePtr = step;
     }
 }
 
@@ -202,7 +203,6 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
     Rec8 R1, R2, R3, R4, R5, R6, R7;
     char b1[20], b2[20], b3[20];
     f32 t;
-    s32 m = mode;
     u8 *base = lbl_802FCB98;
     s32 n = 0;
     void *obj = *(void **)((u8 *)arg0 + 0x50);
@@ -228,7 +228,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
     L.x = L.x + t * ((lbl_80560388 + (L.x + L.e) + fn_80011EB0(*(s32 *)((u8 *)lbl_8055D350 + 0x1C))) - L.x);
     n = 0;
     if (*(u8 *)((u8 *)lbl_8055D350 + 1) != 0) {
-        if (m != 0) {
+        if (mode != 0) {
             Rec8 *q;
             obj = *(void **)((u8 *)arg0 + 0x50);
             q = (Rec8 *)VC(3, 0xC0);
@@ -789,10 +789,12 @@ extern "C" void fn_80014D04(void *arg0) {
                     obj = *(void **)((u8 *)arg0 + 0x50);
                     obj = ((Obj2 *)obj)->v3(base + 0x210);
                     if (obj != 0) {
+                        f32 *pC = &spC;
+                        f32 *p8 = &sp8;
+                        s32 ic = *(s32 *)((u8 *)obj + 0xC);
                         f32 fa = *(f32 *)((u8 *)obj + 4);
                         f32 fb = *(f32 *)((u8 *)obj + 8);
-                        s32 ic = *(s32 *)((u8 *)obj + 0xC);
-                        fn_80148134(&spC, &sp8, ic, fa, fb);
+                        fn_80148134(pC, p8, ic, fa, fb);
                         fn_8001A1F4(*(s32 *)((u8 *)arg0 + 0x48), spC, sp8,
                                     *(f32 *)((u8 *)obj + 0x10), *(f32 *)((u8 *)obj + 0x14));
                     }
@@ -1118,22 +1120,25 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
     f32 *b = (f32 *)arg2;
 
     if ((arg0 == arg1) || (arg0 == arg2)) {
-        register f32 f10, f1, f19, f12, f3, f9, f0, f20, f11, f18, f7, f6, f1b, f0b, f2, f4, f5, f8;
-        f10 = a[1]; f1 = b[3]; f19 = a[4]; f12 = b[4];
-        f3 = a[7]; f9 = a[0]; f0 = b[0]; f20 = a[3];
-        f11 = b[1]; f18 = a[6]; f7 = b[5]; f6 = b[2];
-        f1b = a[2]; f0b = b[6]; f2 = a[5]; f4 = a[8];
-        f5 = b[7]; f8 = b[8];
+        register f32 temp_f10, temp_f1, temp_f19, temp_f12, temp_f3, temp_f9, temp_f0, temp_f20;
+        register f32 temp_f11, temp_f18, temp_f7, temp_f6, temp_f1_2, temp_f0_2, temp_f2;
+        register f32 temp_f4, temp_f5, temp_f8;
 
-        out[0] = f0b * f1b + (f0 * f9 + f1 * f10);
-        out[3] = f0b * f2 + (f0 * f20 + f1 * f19);
-        out[6] = f0b * f4 + (f0 * f18 + f1 * f3);
-        out[1] = f5 * f1b + (f11 * f9 + f12 * f10);
-        out[4] = f5 * f2 + (f11 * f20 + f12 * f19);
-        out[7] = f5 * f4 + (f11 * f18 + f12 * f3);
-        out[2] = f8 * f1b + (f6 * f9 + f7 * f10);
-        out[5] = f8 * f2 + (f6 * f20 + f7 * f19);
-        out[8] = f8 * f4 + (f6 * f18 + f7 * f3);
+        temp_f10 = a[1]; temp_f1 = b[3]; temp_f19 = a[4]; temp_f12 = b[4];
+        temp_f3 = a[7]; temp_f9 = a[0]; temp_f0 = b[0]; temp_f20 = a[3];
+        temp_f11 = b[1]; temp_f18 = a[6]; temp_f7 = b[5]; temp_f6 = b[2];
+        temp_f1_2 = a[2]; temp_f0_2 = b[6]; temp_f2 = a[5]; temp_f4 = a[8];
+        temp_f5 = b[7]; temp_f8 = b[8];
+
+        out[0] = (temp_f0_2 * temp_f1_2) + ((temp_f0 * temp_f9) + (temp_f1 * temp_f10));
+        out[3] = (temp_f0_2 * temp_f2) + ((temp_f0 * temp_f20) + (temp_f1 * temp_f19));
+        out[6] = (temp_f0_2 * temp_f4) + ((temp_f0 * temp_f18) + (temp_f1 * temp_f3));
+        out[1] = (temp_f5 * temp_f1_2) + ((temp_f11 * temp_f9) + (temp_f12 * temp_f10));
+        out[4] = (temp_f5 * temp_f2) + ((temp_f11 * temp_f20) + (temp_f12 * temp_f19));
+        out[7] = (temp_f5 * temp_f4) + ((temp_f11 * temp_f18) + (temp_f12 * temp_f3));
+        out[2] = (temp_f8 * temp_f1_2) + ((temp_f6 * temp_f9) + (temp_f7 * temp_f10));
+        out[5] = (temp_f8 * temp_f2) + ((temp_f6 * temp_f20) + (temp_f7 * temp_f19));
+        out[8] = (temp_f8 * temp_f4) + ((temp_f6 * temp_f18) + (temp_f7 * temp_f3));
     } else {
         out[0] = (b[6] * a[2]) + ((b[0] * a[0]) + (b[3] * a[1]));
         out[3] = (b[7] * a[2]) + ((b[1] * a[0]) + (b[4] * a[1]));
