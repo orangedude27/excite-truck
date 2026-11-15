@@ -672,12 +672,13 @@ void fn_801EBD14(void) {
 
 }
 
-void fn_801EBD18(s32 arg0) {
-    f32 temp;
+void fn_801EBD18(s32 playerIndex) {
+    f32 value;
+    /* In multiplayer, notify the player's race slot of its current value. */
     if (fn_801E85A4() > 1) {
-        temp = fn_801E8738(arg0);
-        fn_801E8718(arg0);
-        fn_802BF598(temp);
+        value = fn_801E8738(playerIndex);
+        fn_801E8718(playerIndex);
+        fn_802BF598(value);
     }
 }
 
