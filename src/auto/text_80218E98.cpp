@@ -7431,12 +7431,13 @@ extern "C" void fn_80226758(void *arg0) {
     *(s32 *)*(u32 *)((u8 *)arg0 + 0x264) = *(s32 *)((u8 *)arg0 + 0x260);
 }
 
-extern "C" void fn_80226768(void *arg0) {
+extern "C" void fn_80226768(void *self) {
+    /* If active (+0x18) and the optional callback at +0x258 allows it, notify via fn_802168BC with the value at +0x25C. */
     s32 (*callback)(s32);
-    if (*(u8 *)((u8 *)arg0 + 0x18) != 0) {
-        callback = *(s32 (**)(s32))((u8 *)arg0 + 0x258);
-        if (callback == 0 || callback(*(s32 *)((u8 *)arg0 + 0x25C)) != 0)
-            fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+    if (*(u8 *)((u8 *)self + 0x18) != 0) {
+        callback = *(s32 (**)(s32))((u8 *)self + 0x258);
+        if (callback == 0 || callback(*(s32 *)((u8 *)self + 0x25C)) != 0)
+            fn_802168BC((void *)*(s32 *)((u8 *)self + 0x25C));
     }
 }
 
