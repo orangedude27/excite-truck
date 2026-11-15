@@ -328,9 +328,10 @@ extern "C" void fn_801B4AC4(int queue, int tick) {
     memory->f3(dataOfs);
 }
 #pragma cplusplus off
-int fn_801B4B44(char *arg0) {
+int fn_801B4B44(char *object) {
+    /* Return true if the object is marked active and its buffer at +4 is non-empty. */
     int result = 0;
-    if (fn_801B47F0((int)(arg0 + 4)) != 0 && *(unsigned char *)arg0 != 0) result = 1;
+    if (fn_801B47F0((int)(object + 4)) != 0 && *(unsigned char *)object != 0) result = 1;
     return result;
 }
 
