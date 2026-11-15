@@ -3999,7 +3999,7 @@ void* fn_80060784(void) {
     return val;
 }
 
-// fn_800609E0: get data format (clamped)
+/* Returns the data format for the given WPAD channel (field at +0x7F0), clamping -1 to 0. */
 u32 fn_800609E0(s32 chan) {
     BOOL enabled = OSDisableInterrupts();
     u32 val = *(u32*)((u8*)lbl_8038F4F0[chan] + 0x7F0);
