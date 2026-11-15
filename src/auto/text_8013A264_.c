@@ -4,19 +4,6 @@ typedef signed int s32;
 typedef unsigned char u8;
 typedef float f32;
 
-typedef struct Node604 {
-    f32 lo;
-    f32 hi;
-    f32 f8;
-    f32 fC;
-    f32 f10;
-    f32 f14;
-    f32 f18;
-    f32 f1C;
-    f32 f20;
-    struct Node604 *next;
-} Node604;
-
 /* The seven AI driving values a track section can tune. The names in the comments are the
    keys they are read under in the track's "exception" container (see fn_8013A2FC). */
 typedef struct AiParams {
