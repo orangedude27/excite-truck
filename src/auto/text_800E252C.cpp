@@ -1325,28 +1325,29 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
     OSRestoreInterrupts(interrupt);
 }
 #pragma pop
-extern "C" void __ct__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_) {
-    ((unsigned long *)this_)[0x00 / 4] = 0;
-    ((unsigned long *)this_)[0x04 / 4] = 0;
-    ((unsigned long *)this_)[0x08 / 4] = (unsigned long)&lbl_80322498;
-    ((unsigned long *)this_)[0x10C / 4] = 0;
-    ((u8 *)this_)[0x11C] = 0;
-    ((u8 *)this_)[0x11D] = 0;
-    ((u8 *)this_)[0x11E] = 0;
-    ((u8 *)this_)[0x11F] = 0;
-    ((u8 *)this_)[0x121] = 0;
-    ((u8 *)this_)[0x122] = 0;
-    ((u8 *)this_)[0x123] = 0;
-    ((unsigned long *)this_)[0x1A8 / 4] = 0;
-    ((unsigned long *)this_)[0x1AC / 4] = 0;
-    ((unsigned long *)this_)[0x0C / 4] = 0;
-    ((unsigned long *)this_)[0x10 / 4] = 0;
-    ((unsigned long *)this_)[0x14 / 4] = 0;
-    ((unsigned long *)this_)[0x18 / 4] = 0;
-    ((unsigned long *)this_)[0x1C / 4] = 0;
-    ((unsigned long *)this_)[0x20 / 4] = 0;
-    ((unsigned long *)this_)[0x24 / 4] = 0;
-    ((unsigned long *)this_)[0x28 / 4] = 0;
+extern "C" void __ct__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice) {
+    /* Initialize nw4hbm::snd::detail::AxVoice: clear fields and install the AxVoice vtable. */
+    ((unsigned long *)voice)[0x00 / 4] = 0;
+    ((unsigned long *)voice)[0x04 / 4] = 0;
+    ((unsigned long *)voice)[0x08 / 4] = (unsigned long)&lbl_80322498;
+    ((unsigned long *)voice)[0x10C / 4] = 0;
+    ((u8 *)voice)[0x11C] = 0;
+    ((u8 *)voice)[0x11D] = 0;
+    ((u8 *)voice)[0x11E] = 0;
+    ((u8 *)voice)[0x11F] = 0;
+    ((u8 *)voice)[0x121] = 0;
+    ((u8 *)voice)[0x122] = 0;
+    ((u8 *)voice)[0x123] = 0;
+    ((unsigned long *)voice)[0x1A8 / 4] = 0;
+    ((unsigned long *)voice)[0x1AC / 4] = 0;
+    ((unsigned long *)voice)[0x0C / 4] = 0;
+    ((unsigned long *)voice)[0x10 / 4] = 0;
+    ((unsigned long *)voice)[0x14 / 4] = 0;
+    ((unsigned long *)voice)[0x18 / 4] = 0;
+    ((unsigned long *)voice)[0x1C / 4] = 0;
+    ((unsigned long *)voice)[0x20 / 4] = 0;
+    ((unsigned long *)voice)[0x24 / 4] = 0;
+    ((unsigned long *)voice)[0x28 / 4] = 0;
 }
 
 extern "C" int fn_800E4520(int arg0, int arg1) {
