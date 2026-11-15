@@ -180,6 +180,7 @@ extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl_80107668(nw4hbm::ut::IOStream* s
 #undef sMsgNoAsyncSupport
     return 0;
 }
+
 extern "C" u32* fn_801076BC(void) {
     return (u32*)&lbl_8055DEA8;
 }
