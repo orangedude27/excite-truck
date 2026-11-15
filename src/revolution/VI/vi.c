@@ -1735,11 +1735,12 @@ void fn_8005BAEC(u8 value)
 
 void __VISetCGMS(void)
 {
+    /* Send the CGMS (copy generation management system) VBI packet to the GPU encoder over I2C. */
     u8 data[3];
 
     data[0] = 5;
-    data[1] = ((lbl_80558FC1 & 0xF) << 2) | (lbl_80558FC0 & 3);
-    data[2] = lbl_80558FC2;
+    data[1] = ((CGMS_B & 0xF) << 2) | (CGMS_W & 3);
+    data[2] = CGMS_O;
     __VISendI2CData(0xE0, data, 3);
     WaitMicroTime(2);
 }
