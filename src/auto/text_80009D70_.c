@@ -407,6 +407,7 @@ void fn_8000A8C4(void* arg0) {
 #pragma pop
 
 void fn_8000AA38(void* arg0) {
+    /* Release and clear the sound/UI state block and its three string slots. */
     char* base = (char*)&lbl_8034F4C8;
     fn_80129324(lbl_8055D3B0);
     lbl_8055D3B0 = 0;
