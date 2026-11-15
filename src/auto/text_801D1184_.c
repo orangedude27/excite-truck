@@ -37,8 +37,9 @@ extern void *lbl_804348E8[];
 extern float lbl_80562A48;
 extern void fn_801819A0(void *, void *, void *, float, float, float);
 extern float lbl_80562A4C;
-void fn_801D1244(float *arg0) {
-    *arg0 = lbl_80562A4C;
+/* Sets the first float field of an entry to lbl_80562A4C (0.0f). */
+void fn_801D1244(float *entry) {
+    *entry = lbl_80562A4C;
 }
 
 #pragma scheduling invalid_target
