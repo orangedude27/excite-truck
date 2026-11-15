@@ -18542,6 +18542,8 @@ extern "C" s32 fn_800CF2B0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma optimize_for_size on
 void homebutton::GroupAnmController::do_calc() {
     class ComponentDispatch {
     public:
@@ -18555,7 +18557,6 @@ void homebutton::GroupAnmController::do_calc() {
     struct Node { Node *next; u32 pad; void *object; };
     struct List { u8 pad[0x10]; Node *head; };
     Node *node;
-    Node *end;
     const char *file;
     const char *message;
     s32 active;
@@ -18568,8 +18569,7 @@ void homebutton::GroupAnmController::do_calc() {
     }
     List *list = *(List **)((u8 *)this + 0x20);
     node = list->head;
-    end = (Node *)((u8 *)list + 0x10);
-    while (node != end) {
+    while (node != (Node *)((u8 *)list + 0x10)) {
         if (node == 0) {
             file = lbl_8031E764;
             message = lbl_8031E740;
@@ -18579,7 +18579,7 @@ void homebutton::GroupAnmController::do_calc() {
         node = node->next;
     }
 }
-
+#pragma pop
 extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     f32 value;
 
@@ -21036,10 +21036,10 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     void **textureResources;
 
     if (*(void **)(self + 0x14) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0x14 - 0x14, 0x1A6, file + 0x14);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A6, file + 0x14);
     }
     if (*(void **)(self + 0x18) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0x40 - 0x40, 0x1A7, file + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A7, file + 0x40);
     }
 
     *(const void **)(self + 0xC) = resource;
@@ -21247,7 +21247,6 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
     }
 }
 
-extern "C" const char lbl_8031EE58[];
 extern "C" const char lbl_8031F1FC[];
 extern "C" const char lbl_8031F1D8[];
 extern "C" const char lbl_8031F1CC[];
