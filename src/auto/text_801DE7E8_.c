@@ -208,6 +208,7 @@ void fn_801DE9F0(int popupId, int playSound) {
 }
 
 #pragma dont_inline on
+/* Finalizes popup state 8: clears queued popup state, resets current popup to 0, sets seen-flag bit 0, and records the current time. */
 void fn_801DEB10(void) {
     unsigned long long result;
     if (lbl_8055E9E8 == 8) {
@@ -273,13 +274,14 @@ extern "C" void fn_801DEC18(void) {
         virtual Node *get(int);
     };
     float sp8;
-    register char *base = (char *)lbl_803394B0;
     char *name;
+    char *base = lbl_803394B0;
     Handle *h;
     int n;
     Node *node;
     unsigned int j;
     void *obj;
+
     fn_801332D0(fn_8000DA10() + 0xC, (int *)(base + 0xC0), &lbl_8055E9DC);
     name = base + 0xCC;
     h = (Handle *)fn_80131810(name);
@@ -511,6 +513,7 @@ extern "C" int fn_801DF110(void) {
             char *base = lbl_804872B0;
             struct Entry *entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
             int (*callback)(int, int) = entry->callback;
+
             if (callback != 0) {
                 callback(entry->arg2, entry->arg1);
             } else {
@@ -518,8 +521,9 @@ extern "C" int fn_801DF110(void) {
                 entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
                 fn_800103B8(-1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->arg1);
                 fn_8000FF88(-1, 0xC, (const char *)lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
-                ((void (*)(int))fn_801DE890)(lbl_8055E9E8);
+                fn_801DE890(lbl_8055E9E8);
             }
+
             entry = (struct Entry *)(lbl_804872B0 + lbl_8055E9E8 * 0x1C);
             if (entry->object != 0)
                 ((Dummy *)entry->object)->call();
