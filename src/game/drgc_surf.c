@@ -107,6 +107,7 @@ void fn_802D3F98(void *surface) {
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_802D3FFC(void *arg0) {
+    /* Binds this object's position, texture, and color vertex arrays, then submits its display list. */
     GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXSetArray(0xE, *(void **)((char *)arg0 + 0x24), 4);
