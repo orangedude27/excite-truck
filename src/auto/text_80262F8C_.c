@@ -323,13 +323,14 @@ void fn_80263AB4(void *self) {
 extern const u8 lbl_80346280[];
 #pragma push
 #pragma scheduling invalid_target
-void fn_80263B68(void *arg0, s32 arg1) {
-    s32 value;
-    *(s32 *)((u8 *)arg0 + 0x24) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x20) = (arg1 * 2) + 1;
-    ((void (*)(s32, const u8 *, u8 *))fn_801333E8)(arg1 + 8, lbl_80346280, (u8 *)arg0 + 0x28);
-    value = *(s32 *)((u8 *)arg0 + 0x24);
-    *(s32 *)((u8 *)arg0 + 0x2C) |= 1 << value;
+void fn_80263B68(void *object, s32 index) {
+    /* Stores controller/speaker selection index and updates related fields/bitmask. */
+    s32 selectedIndex;
+    *(s32 *)((u8 *)object + 0x24) = index;
+    *(s32 *)((u8 *)object + 0x20) = (index * 2) + 1;
+    ((void (*)(s32, const u8 *, u8 *))fn_801333E8)(index + 8, lbl_80346280, (u8 *)object + 0x28);
+    selectedIndex = *(s32 *)((u8 *)object + 0x24);
+    *(s32 *)((u8 *)object + 0x2C) |= 1 << selectedIndex;
 }
 #pragma pop
 extern const u8 lbl_80346294[];
