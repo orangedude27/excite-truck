@@ -1715,6 +1715,8 @@ typedef struct {
 
 #pragma push
 #pragma dont_inline on
+/* Terminates active ACL links for all standard and simple-pairing WUD device slots
+ * whose status indicates a connection is up, then returns delete-state 3. */
 s32 WUDiTerminateDevice(void) {
     WUDDevInfoSlot *dev;
     s32 i;
