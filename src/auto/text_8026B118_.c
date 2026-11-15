@@ -43,16 +43,17 @@ void fn_8026B11C(void **outObj, void *soundId) {
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void deleteThreads__6SystemFv_8026B178(void *arg0) {
+/* System::deleteThreads helper: deletes the owned thread object stored in the given slot (virtual destroy with deleting flag 1) and clears the slot. (rename_symbol unavailable for mangled symbol) */
+extern "C" void deleteThreads__6SystemFv_8026B178(void *threadSlot) {
     class ThreadObject {
     public:
         virtual void destroy(int);
     };
-    ThreadObject *p = *(ThreadObject **)arg0;
-    if (p) {
-        if (p)
-            p->destroy(1);
-        *(ThreadObject **)arg0 = 0;
+    ThreadObject *thread = *(ThreadObject **)threadSlot;
+    if (thread) {
+        if (thread)
+            thread->destroy(1);
+        *(ThreadObject **)threadSlot = 0;
     }
 }
 #pragma cplusplus reset
