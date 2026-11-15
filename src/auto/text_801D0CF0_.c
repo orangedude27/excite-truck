@@ -40,6 +40,7 @@ extern "C" void fn_801D0CFC(void) {
 }
 #pragma cplusplus off
 void *__dt__Q34nw4r2ef6EffectFv_801D0D7C(void *arg0, int arg1) {
+    /* Destructor for the base manager object: restore base vtable, unregister from the manager list, and optionally free. */
     extern void fn_801D0DFC(void);
     extern void *lbl_803381C0[];
     extern void *fn_80128668(void *);
