@@ -2195,14 +2195,16 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802152F0(void *arg0, 
     return arg0;
 }
 
-extern "C" s32 __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80215348(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            ((s32 (*)(void *))fn_80128668)(arg0);
+extern "C" s32 __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80215348(void *self, s32 shouldDelete) {
+    /* nw4hbm::snd::MemorySoundArchive destructor variant: run base teardown, then
+     * free the object when requested (shouldDelete > 0). */
+    if (self != 0) {
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) {
+            ((s32 (*)(void *))fn_80128668)(self);
         }
     }
-    return (s32)arg0;
+    return (s32)self;
 }
 
 extern "C" void fn_802153A0(void) {
