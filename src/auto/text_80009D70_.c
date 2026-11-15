@@ -314,6 +314,8 @@ void fn_8000A7A8(void) {
     fn_801DCDA0();
 }
 
+// Leaves a track: shuts the ground down and releases the three track effect
+// sets whose names fn_8000A8C4 built in the block at lbl_8034F4C8.
 void fn_8000A808(void) {
     /* Leaving a track: shut the ground down (fn_801DCDA4 frees the heightmap
      * block lbl_80446F08 and clears the ground update callback), then release
