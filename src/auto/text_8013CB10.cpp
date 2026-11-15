@@ -1119,34 +1119,51 @@ extern "C" void fn_8013E19C(void *arg0, float arg1) {
 }
 #pragma pop
 
-extern "C" void fn_8013E2AC(void *arg0, void *arg1) {
-    volatile u32 *src = (volatile u32 *)arg1;
+/* Copies one path node over another: the six words of its two edge points, the float at
+   0x18, the short at 0x1C, the flag byte at 0x1E and the value at 0x20. fn_8013D8D0
+   starts a new path group by copying the previous group's nodes and then scaling the
+   copies with fn_8013E19C. */
+extern "C" void fn_8013E2AC(void *destPtr, void *srcPtr) {
+    /* A path node as fn_8013E054 builds it: the two 3D points of the road's edges at
+       this node (their y is the constant at lbl_805614A4), a short written through
+       fn_801E9DC4, a flag byte read off the node's source element and, when that flag
+       is set, the element's value. */
+    struct Node {
+        u32 edge[6]; /* 0x00 two x/y/z points, kept as words so they copy untouched */
+        f32 field_18;
+        s16 field_1C;
+        u8 flag;     /* 0x1E */
+        char pad;
+        f32 value;   /* 0x20 */
+    };
+    volatile Node *src = (volatile Node *)srcPtr;
+    Node *dest = (Node *)destPtr;
     u32 word5, word4, word3, word2, word1, word0;
-    f32 value3, value2, value1, value0;
+    f32 value, field18;
     s16 half;
-    u8 byte;
+    u8 flag;
 
-    word0 = src[0];
-    word1 = src[1];
-    word2 = src[2];
-    word3 = src[3];
-    word4 = src[4];
-    word5 = src[5];
-    value0 = *(volatile f32 *)((u8 *)arg1 + 0x18);
-    half = *(volatile s16 *)((u8 *)arg1 + 0x1C);
-    byte = *((volatile u8 *)arg1 + 0x1E);
-    value3 = *(volatile f32 *)((u8 *)arg1 + 0x20);
+    word0 = src->edge[0];
+    word1 = src->edge[1];
+    word2 = src->edge[2];
+    word3 = src->edge[3];
+    word4 = src->edge[4];
+    word5 = src->edge[5];
+    field18 = src->field_18;
+    half = src->field_1C;
+    flag = src->flag;
+    value = src->value;
 
-    ((u32 *)arg0)[0] = word0;
-    ((u32 *)arg0)[1] = word1;
-    ((u32 *)arg0)[2] = word2;
-    ((u32 *)arg0)[3] = word3;
-    ((u32 *)arg0)[4] = word4;
-    ((u32 *)arg0)[5] = word5;
-    *(f32 *)((u8 *)arg0 + 0x18) = value0;
-    *(s16 *)((u8 *)arg0 + 0x1C) = half;
-    *((u8 *)arg0 + 0x1E) = byte;
-    *(f32 *)((u8 *)arg0 + 0x20) = value3;
+    dest->edge[0] = word0;
+    dest->edge[1] = word1;
+    dest->edge[2] = word2;
+    dest->edge[3] = word3;
+    dest->edge[4] = word4;
+    dest->edge[5] = word5;
+    dest->field_18 = field18;
+    dest->field_1C = half;
+    dest->flag = flag;
+    dest->value = value;
 }
 
 #pragma dont_inline off
