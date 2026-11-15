@@ -24159,11 +24159,12 @@ void rfc_timer_start(void *p_mcb, u16 timeout) {
     btu_start_timer(p_mcb, 0xB, timeout);
 }
 
-void rfc_timer_stop(void *arg0) {
+void rfc_timer_stop(void *p_mcb) {
+    /* Stop the RFCOMM multiplexer control block timer, logging when trace level >= 4. */
     if (lbl_803C4828[0x414] >= 4) {
         fn_8007093C(0x90003, lbl_80319EB0);
     }
-    fn_80070F90(arg0);
+    fn_80070F90(p_mcb);
 }
 
 extern char lbl_80319EE0[];
