@@ -1069,6 +1069,7 @@ void fn_802DD228(void) {
 #undef NO_TEXTURE
 #undef TEXCOORD_SLOT_INDIRECT
 }
+
 /* The vertex record the light renderer builds and points the GX vertex arrays
  * at: a position, one RGBA8 color and one texture coordinate, 24 bytes. */
 typedef struct { f32 x, y, z; } LightVec3;
