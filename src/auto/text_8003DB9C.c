@@ -5494,6 +5494,7 @@ void GXSetProjection(float *arg0, int arg1) {
     register float fourth, third, second, first;
     register float perspectiveB, perspectiveA, orthographicB, orthographicA;
 
+    /* Stores projection matrix parameters into GX state for the given projection type. */
     first = arg0[0];
     data[0x528 / 4] = arg1;
     second = arg0[5];
