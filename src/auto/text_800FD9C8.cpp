@@ -23,12 +23,13 @@ extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* this_, u32 a);
 extern "C" void fn_8002F634(void* arg0, void* arg1, s32 arg2, s32 arg3);
 extern "C" void fn_80128668(void* arg0);
 extern "C" void fn_800FB374(void);
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FD9C8(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FD9C8(void *self, int shouldDelete) {
+    /* Destroys a MemorySoundArchive instance and optionally deletes it. */
+    if (self != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 /* Initializes a stream sound instance: constructs its BasicSound base and embedded StrmPlayer, installs the stream-sound vtable, and stores the owning pool with the active flag cleared. */
