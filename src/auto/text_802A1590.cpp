@@ -1398,11 +1398,13 @@ extern "C" void fn_802A3C50(void *owner, s32 param) {
     *(s32 *)((char *)owner + 4) = ((s32 (*)(void *, void *, s32))fn_8028E2F8)(&config.values[6], lbl_80349A80, param);
 }
 #pragma scheduling on
-extern "C" void* fn_802A3D3C(void* arg0, DummyReceiver_802A3314* arg1) {
-    *(void**)arg0 = lbl_80349AB0;
-    s32 result = arg1->v3(&lbl_8055CBB0);
-    fn_802A41D8(arg0, result);
-    return arg0;
+/* Construct a terrain effect object: set its vtable, read its texture resource
+ * key, and initialize the effect using that resource. */
+extern "C" void *fn_802A3D3C(void *self, DummyReceiver_802A3314 *receiver) {
+    *(void **)self = lbl_80349AB0;
+    s32 textureResource = receiver->v3(&lbl_8055CBB0);
+    fn_802A41D8(self, textureResource);
+    return self;
 }
 
 /* Destructor for CollisionSpace: restores its vtable, releases the owned
