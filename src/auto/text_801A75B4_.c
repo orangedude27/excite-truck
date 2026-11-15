@@ -288,18 +288,20 @@ int fn_801A7C8C(void *arg0) {
 #pragma pop
 void fn_801A9110(void *, const char *);
 #pragma dont_inline on
-void fn_801A7DFC(int arg0, const char *arg1, int arg2) {
+/* Look up the input binding named by bindingName and store it in the given
+ * config slot (groupId, valueId). */
+void fn_801A7DFC(int valueId, const char *bindingName, int groupId) {
     struct {
-        int unk0;
-        int unk4;
-        char unk8[4];
-        char unkC;
-    } local;
+        int type;
+        int field4;
+        char field8[4];
+        char fieldC;
+    } binding;
 
-    local.unk4 = 0;
-    local.unkC = 0;
-    fn_801A9110(&local, arg1);
-    fn_801A7A08((const char *)&local, arg0, arg2);
+    binding.field4 = 0;
+    binding.fieldC = 0;
+    fn_801A9110(&binding, bindingName);
+    fn_801A7A08((const char *)&binding, valueId, groupId);
 }
 #pragma dont_inline reset
 
