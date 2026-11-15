@@ -87,13 +87,15 @@ int fn_802B50E8(int unused, int output, int count) {
 }
 
 #pragma dont_inline on
-void *fn_802B51E4(int arg0, int arg1) {
-    int size = arg0 * arg1 * 4;
-    char *result = fn_801284E8(lbl_8034A4E0, size + 0xC);
-    *(int *)result = arg0;
-    *(int *)(result + 4) = arg1;
-    *(void **)(result + 8) = result + 0xC;
-    return result;
+/* Allocate a simple 2D buffer (e.g. TGA/image grid) with header: width, height, and pointer to data after header. */
+void *fn_802B51E4(int width, int height) {
+    int dataBytes = width * height * 4;
+    char *buffer = fn_801284E8(lbl_8034A4E0, dataBytes + 0xC);
+
+    *(int *)buffer = width;
+    *(int *)(buffer + 4) = height;
+    *(void **)(buffer + 8) = buffer + 0xC;
+    return buffer;
 }
 void *fn_802B5240(void *path) {
     /* Open a 2D image (TGA-like) at path, allocate a width/height/pixels buffer,
