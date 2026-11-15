@@ -974,12 +974,13 @@ s32 fn_8001CE34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 s32 fn_8001CE74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    void *result;
+    /* Return a pointer to the indexed sub-entry (0x14 bytes, at +8) in the named record, or 0 if missing/out of range. */
+    void *record;
     if (arg1 != 0) {
-        result = fn_8001C540(arg0, arg1, arg2, 0);
-        if (result != 0) {
-            if (arg3 < *(s32 *)((u8 *)result + 0x6C)) {
-                return (s32)((u8 *)result + arg3 * 0x14 + 8);
+        record = fn_8001C540(arg0, arg1, arg2, 0);
+        if (record != 0) {
+            if (arg3 < *(s32 *)((u8 *)record + 0x6C)) {
+                return (s32)((u8 *)record + arg3 * 0x14 + 8);
             }
         }
     }
