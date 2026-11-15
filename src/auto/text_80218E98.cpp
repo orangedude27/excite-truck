@@ -1776,12 +1776,13 @@ extern "C" void *fn_8021AF0C(void *obj, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, 
     return obj;
 }
 #pragma dont_inline reset
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *self, int shouldDelete) {
+    /* Scalar deleting destructor: destroy contents, then free this object when requested. */
+    if (self != 0) {
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern double lbl_805634B8;
