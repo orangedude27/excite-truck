@@ -3,17 +3,18 @@
 
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
-void* fn_802BB7CC(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(int *)arg0 = 0;
-            *((int *)arg0 + 1) = 0;
-            *((int *)arg0 + 2) = 0;
+/* Destroys/resets a 12-byte object, zeroing its three fields, and frees it when deleting > 0. */
+void *fn_802BB7CC(void *self, int deleting) {
+    if (self != 0) {
+        if (self != 0) {
+            *(int *)self = 0;
+            *((int *)self + 1) = 0;
+            *((int *)self + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deleting > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 void* fn_802BB824(void* arg0, int arg1) {
