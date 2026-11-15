@@ -63,7 +63,8 @@ void fn_80127C8C(void) {
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-void fn_80127C90(int arg0, int arg1) {
+void fn_80127C90(int callback, int arg) {
+    /* Register a callback task in the bg task table if space is available; log overflow otherwise. */
     int count;
     int *base;
     int masked;
@@ -80,9 +81,9 @@ void fn_80127C90(int arg0, int arg1) {
     if (available != 0) {
         base[1] = count + 1;
         entry = (char *)base + count * 16;
-        *(int *)(entry + 8) = arg0;
+        *(int *)(entry + 8) = callback;
         *(int *)(entry + 12) = 0;
-        *(int *)(entry + 16) = arg1;
+        *(int *)(entry + 16) = arg;
         entry[20] = 0;
     }
     if (available == 0)
