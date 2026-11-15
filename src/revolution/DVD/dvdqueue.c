@@ -80,6 +80,7 @@ DVDCommandBlock* __DVDPopWaitingQueue(void) {
     return NULL;
 }
 
+/* Returns TRUE if any priority waiting queue contains a queued DVD command block. */
 BOOL __DVDCheckWaitingQueue(void) {
     u32 i;
     BOOL enabled = OSDisableInterrupts();
