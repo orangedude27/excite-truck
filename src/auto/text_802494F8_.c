@@ -1341,11 +1341,13 @@ extern "C" void fn_8024BB98(void *arg0) {
         virtual void v11();
         virtual void v12(s32 *, s32 *);
     };
-    s32 spC;
-    s32 sp8;
-    void *obj = *(void **)((char *)arg0 + 0x4C);
-    ((Dummy *)obj)->v12(&spC, &sp8);
-    fn_80257BB8(arg0, *(s32 *)fn_80012870(spC, sp8));
+    s32 out0;
+    s32 out1;
+    void *child = *(void **)((char *)arg0 + 0x4C);
+
+    /* Query the child object for two ids via vtable slot 12, then apply the looked-up value to this object. */
+    ((Dummy *)child)->v12(&out0, &out1);
+    fn_80257BB8(arg0, *(s32 *)fn_80012870(out0, out1));
 }
 #pragma scheduling on
 #pragma cplusplus off
