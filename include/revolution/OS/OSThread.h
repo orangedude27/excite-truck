@@ -6,8 +6,8 @@
 extern "C" {
 #endif
 
-#define OS_PRIORITY_MIN 0
-#define OS_PRIORITY_MAX 31
+#define OS_PRIORITY_MIN 0   // most urgent
+#define OS_PRIORITY_MAX 31  // least urgent
 
 #define OS_THREAD_STACK_MAGIC 0xDEADBABE
 
