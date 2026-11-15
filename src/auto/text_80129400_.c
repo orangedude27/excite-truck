@@ -211,16 +211,17 @@ void fn_80129864(void) {
     fn_802E7D0C();
 }
 
+/* Count how many of the 4 controller ports report connected/ready. */
 s32 fn_80129890(void) {
-    s32 count = 0;
-    s32 i = 0;
+    s32 connectedCount = 0;
+    s32 controllerIndex = 0;
     do {
-        if (fn_802E8504(i) != 0) {
-            count++;
+        if (fn_802E8504(controllerIndex) != 0) {
+            connectedCount++;
         }
-        i++;
-    } while (i < 4);
-    return count;
+        controllerIndex++;
+    } while (controllerIndex < 4);
+    return connectedCount;
 }
 
 // Copies a 0x64-byte record for the given index from the table at lbl_80422180 (stride 0x80)
