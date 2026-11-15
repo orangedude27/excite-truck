@@ -8728,12 +8728,13 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229330(void *self, 
     return self;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229388(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_802223C4(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229388(void *self, int shouldDelete) {
+    /* Scalar deleting destructor: destroy base/subobject, then free storage when requested. */
+    if (self != 0) {
+        fn_802223C4(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 /* nw4hbm::snd::detail::DisposeCallbackManager scalar deleting destructor.
