@@ -1106,6 +1106,7 @@ extern void fn_80177F40(void);
 extern long lbl_80430850[];
 #pragma cplusplus on
 extern "C" void fn_80179140(void) {
+    /* Call virtual method 3 on each registered object in the global object table. */
     class Element {
     public:
         virtual void f0();
@@ -1113,14 +1114,14 @@ extern "C" void fn_80179140(void) {
         virtual void f2();
         virtual void f3();
     };
-    s32 i = 0;
-    s32 count = 0;
-    Element *entry;
-    while (count < lbl_8055E438) {
-        entry = (Element *)*(void **)((char *)lbl_8055E434 + i);
-        entry->f3();
-        i += 4;
-        count += 1;
+    s32 offset = 0;
+    s32 index = 0;
+    Element *object;
+    while (index < lbl_8055E438) {
+        object = (Element *)*(void **)((char *)lbl_8055E434 + offset);
+        object->f3();
+        offset += 4;
+        index += 1;
     }
 }
 #pragma cplusplus off
