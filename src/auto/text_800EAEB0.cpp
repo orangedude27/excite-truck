@@ -1015,17 +1015,18 @@ void nw4hbm::snd::detail::PoolImpl::DestroyImpl(void* buffer, unsigned long size
 }
 
 void *nw4r::snd::detail::PoolImpl::AllocImpl() {
-    void **head = (void **)this;
-    void *node;
-    u32 level = OSDisableInterrupts();
-    node = *head;
-    if (node == 0) {
-        OSRestoreInterrupts(level);
+    /* Pop one block from the free list (interrupt-safe) and return it, or 0 if empty. */
+    void **freeList = (void **)this;
+    void *block;
+    u32 savedIrq = OSDisableInterrupts();
+    block = *freeList;
+    if (block == 0) {
+        OSRestoreInterrupts(savedIrq);
         return 0;
     }
-    *head = *(void **)node;
-    OSRestoreInterrupts(level);
-    return node;
+    *freeList = *(void **)block;
+    OSRestoreInterrupts(savedIrq);
+    return block;
 }
 
 extern "C" void fn_800EC848(void** head, void* node) {
