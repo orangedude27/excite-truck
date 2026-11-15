@@ -2978,15 +2978,17 @@ struct CachePage {
     s32 prev;
     u32 pad[5];
 };
-extern "C" s32 VFiPFCACHE_FlushAllCaches(void *arg0) {
-    s32 temp_r3;
+extern "C" s32 VFiPFCACHE_FlushAllCaches(void *volume) {
+    /* Flush all dirty pages in both volume cache lists (FAT at +0x1630, data at +0x1634);
+     * return 0 on success or the first/last nonzero flush error. */
+    s32 result;
 
-    temp_r3 = ((s32 (*)(void *, s32))fn_800A8AD4)(arg0, *(s32 *)((u8 *)arg0 + 0x1630));
-    if (temp_r3 != 0) {
-        return temp_r3;
+    result = ((s32 (*)(void *, s32))fn_800A8AD4)(volume, *(s32 *)((u8 *)volume + 0x1630));
+    if (result != 0) {
+        return result;
     }
-    temp_r3 = ((s32 (*)(void *, s32))fn_800A8AD4)(arg0, *(s32 *)((u8 *)arg0 + 0x1634));
-    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+    result = ((s32 (*)(void *, s32))fn_800A8AD4)(volume, *(s32 *)((u8 *)volume + 0x1634));
+    return result & ((s32)(-result | result) >> 31);
 }
 
 extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0, void *unused1, void *unused2, void *unused3, void *unused4, void *node) {
