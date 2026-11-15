@@ -732,16 +732,21 @@ void fn_801F6358(void *arg0) {
 }
 
 #pragma dont_inline on
+/* Release one cloth entry: the vertices pinned in the world (+0x1C, a C++ array
+ * whose 0x10-byte cookie sits just before it) and its edge table (+0x14), then
+ * its position and texture-coordinate buffers (fn_801F6358) and finally the
+ * texture it was given (+0x24), which is freed once nothing else uses it. */
 void fn_801F639C(void *arg0) {
-    int temp_r4 = *(int*)((char*)arg0 + 0x1C);
-    if (temp_r4 != 0) {
-        fn_80128670(temp_r4 - 0x10);
-    }
-    fn_80128670(*(int*)((char*)arg0 + 0x14));
-    fn_801F6358(arg0);
-    fn_802CAC54(*(int*)((char*)arg0 + 0x24));
-}
+    ClothEntry *entry = (ClothEntry *)arg0;
+    ClothPin *pins = entry->pins;
 
+    if (pins != 0) {
+        fn_80128670((int)pins - 0x10);
+    }
+    fn_80128670((int)entry->edges);
+    fn_801F6358(entry);
+    fn_802CAC54(entry->textureId);
+}
 #pragma scheduling invalid_target
 void fn_801F63F0(void *arg0, float *arg1, float arg2) {
     extern float lbl_80562FB0, lbl_80562FD4, lbl_80562FD8;
