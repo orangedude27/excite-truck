@@ -145,11 +145,12 @@ void *fn_8022D458(UITable *table, int rows, int columns, const int *__restrict c
     fn_8022D76C(table);
     return table;
 }
-void fn_8022D76C(void *arg0) {
-    memset(*(void **)arg0, 0, *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x14));
-    *(int *)((char *)arg0 + 8) = 0;
-    *(int *)((char *)arg0 + 0x20) = 0;
-    *(int *)((char *)arg0 + 0x24) += 1;
+/* Clears a UITable's text buffer and resets its used-row/cursor counters, then bumps its update count. (renames unavailable: fn_8022D76C->UITable_Clear) */
+void fn_8022D76C(void *table) {
+    memset(*(void **)table, 0, *(int *)((char *)table + 0xC) * *(int *)((char *)table + 0x14));
+    *(int *)((char *)table + 8) = 0;
+    *(int *)((char *)table + 0x20) = 0;
+    *(int *)((char *)table + 0x24) += 1;
 }
 
 /* Destroy table buffers and optionally free the table object. */
