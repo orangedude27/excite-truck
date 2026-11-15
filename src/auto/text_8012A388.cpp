@@ -1240,9 +1240,12 @@ extern "C" s32 fn_8012C33C(char *arg0) {
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012C370(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 result;
-    s32 i = 0;
+    s32 i;
+    s32 zero;
+    i = 0;
+    zero = 0;
     do {
-        lbl_8055DFF9 = 0;
+        lbl_8055DFF9 = (u8)zero;
         result = fn_8012B85C(arg0, arg1, arg2, arg3, arg4, arg5);
         if (lbl_8055DFF9 == 0 || result != 0)
             break;
@@ -1252,33 +1255,6 @@ extern "C" s32 fn_8012C370(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
     } while (i < 10);
     return result;
 }
-/* Bit in struct ResEntry flags: the entry's resource is loaded/available
- * (fn_8012B534 rejects entries without it, fn_8012B6FC loads those that lack it). */
-#define RES_ENTRY_LOADED 8
-
-/* One entry of a resource manager's table (stride 0x44); the name is at +0x00
- * (fn_8012B534 compares it with stricmp). */
-struct ResEntry {
-    /* 0x00 */ char name[0x20];
-    /* 0x20 */ void *data; /* per-type tag, e.g. 'SFX0' for sound effects */
-    char pad24[4];
-    /* 0x28 */ s32 size;
-    char pad2C[8];
-    /* 0x34 */ u32 flags;
-    char pad38[0xC];
-};
-
-/* One resource manager in the global list lbl_8055E000; the manager's directory
- * name is the string at +0x00 and the list link is +0xA8. */
-struct ResManager {
-    /* 0x00 */ char dirName[0x60];
-    /* 0x60 */ u8 *entries; /* struct ResEntry[entryCount], stride 0x44 */
-    char pad64[0x24];
-    /* 0x88 */ s32 entryCount;
-    char pad8C[0x1C];
-    /* 0xA8 */ struct ResManager *next;
-};
-
 #pragma push
 #pragma use_lmw_stmw off
 /* Walks the global resource-manager list (lbl_8055E000) and calls
@@ -1287,16 +1263,16 @@ struct ResManager {
  * every manager when dirName is NULL. Stops at the first callback returning 0. */
 extern "C" void fn_8012C41C(s32 (*callback)(void *, void *, void *, s32), s32 userData, const char *dirName) {
     s32 off;
-    struct ResManager *manager;
+    u8 *manager;
     s32 i;
-    for (manager = (struct ResManager *)lbl_8055E000; manager != NULL; manager = manager->next) {
+    for (manager = (u8 *)lbl_8055E000; manager != NULL; manager = *(u8 **)(manager + 0xA8)) {
         if (dirName == 0 || stricmp((const char *)manager, dirName) == 0) {
             i = 0;
             off = 0;
-            while (i < manager->entryCount) {
-                struct ResEntry *entry = (struct ResEntry *)(manager->entries + off);
-                if (entry->flags & RES_ENTRY_LOADED) {
-                    volatile void *param = entry->data;
+            while (i < *(s32 *)(manager + 0x88)) {
+                u8 *entry = *(u8 **)(manager + 0x60) + off;
+                if (*(u32 *)(entry + 0x34) & 8) {
+                    volatile void *param = *(void **)(entry + 0x20);
                     if (callback(entry, (void *)param, manager, userData) == 0) return;
                 }
                 off += 0x44;
