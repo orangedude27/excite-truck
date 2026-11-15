@@ -581,15 +581,16 @@ extern const char lbl_802FD85C[];
 extern s32 fn_802E317C(const char *);
 #pragma scheduling invalid_target
 #pragma scheduling on
-s32 *fn_8001C4E0(s32 arg0) {
+s32 *fn_8001C4E0(s32 statType) {
+    /* Look up a stat type info entry by id; report and return NULL if not found. */
     s32 *entry = lbl_802ED7B8;
-    s32 v;
-    for (; (v = *entry) != 0; entry += 3) {
-        if (v == arg0) {
+    s32 entryType;
+    for (; (entryType = *entry) != 0; entry += 3) {
+        if (entryType == statType) {
             return entry;
         }
     }
-    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD85C, arg0);
+    ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD85C, statType);
     return 0;
 }
 
