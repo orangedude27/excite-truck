@@ -6300,7 +6300,9 @@ struct MenuSoundList {
     s32 rowCount;                // 0x2C8 rows in the list (fn_802237E8)
     u8 pad_0x2CC[0x378 - 0x2CC];
     s32 soundIds[1];             // 0x378 sound id of each row (fn_802237F0)
-    u8 pad_0x37C[0x420 - 0x37C];
+    u8 pad_0x37C[0x41C - 0x37C];
+    u8 disabled;                 // 0x41C cursor keys ignored while set (fn_802237D0/fn_802237DC)
+    u8 pad_0x41D[0x420 - 0x41D];
     s32 *selected;               // 0x420 -> row the cursor is on
 };
 
