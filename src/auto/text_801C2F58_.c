@@ -1836,7 +1836,9 @@ extern char lbl_8055A964[7];
 void fn_801C81B8(void) {
     strcpy(sInterludeWhoList, sInputLine);
     strcpy(sInputLine, STR_EMPTY);
-    if (sInterludeWhoList[0] == 0) strcpy(sInterludeWhoList, STR_ALL);
+    if (sInterludeWhoList[0] == 0) {
+        strcpy(sInterludeWhoList, STR_ALL);
+    }
 }
 
 /* Menu item "EXCEPT?" (id 0x1A): copy the name list typed into the console input
