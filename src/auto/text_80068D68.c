@@ -16554,38 +16554,41 @@ u8 HID_HostDeregister(void) {
     extern u8 hidh_conn_disconnect(u32);
     extern void fn_80070F90(void *);
     extern void fn_80089248(void);
-    u8 *entry;
-    u32 i;
-    u32 offset;
-    u8 one = 1;
-    u8 zero = 0;
+    u8 *deviceEntry;
+    u32 deviceIndex;
+    u32 entryOffset;
+    u8 disconnecting = 1;
+    u8 cleared = 0;
+
+    /* Deregister the HID host: disconnect and clear every active device,
+     * then deregister the host connection channels and clear the registered flag. */
     if (lbl_803C3C38[0x400] == 0)
         return 1;
-    for (i = 0; i < 0x10; i++) {
-        u8 flag = lbl_803C3C38[0x400];
-        u8 active;
-        if (flag == 0)
+    for (deviceIndex = 0; deviceIndex < 0x10; deviceIndex++) {
+        u8 isRegistered = lbl_803C3C38[0x400];
+        u8 isInUse;
+        if (isRegistered == 0)
             continue;
-        if ((u8)i > 0x10)
+        if ((u8)deviceIndex > 0x10)
             continue;
-        offset = ((u8)i) * 0x34;
-        entry = lbl_803C3C38 + offset;
-        active = lbl_803C3C38[offset];
-        if (active == 0)
+        entryOffset = ((u8)deviceIndex) * 0x34;
+        deviceEntry = lbl_803C3C38 + entryOffset;
+        isInUse = lbl_803C3C38[entryOffset];
+        if (isInUse == 0)
             continue;
-        if (flag == 0 || (u8)i > 0x10 || active == 0)
-            goto do_clear;
-        entry[0xC] = one;
-        fn_80070F90(entry + 0x1C);
-        if (entry[0xA] != 1)
-            goto do_clear;
-        entry[0xC] = one;
-        hidh_conn_disconnect((u8)i);
-do_clear:
-        entry[0] = zero;
-        entry[0x10] = zero;
-        *(u16 *)(entry + 0x16) = 0;
-        *(u16 *)(entry + 0x14) = 0;
+        if (isRegistered == 0 || (u8)deviceIndex > 0x10 || isInUse == 0)
+            goto clear_entry;
+        deviceEntry[0xC] = disconnecting;
+        fn_80070F90(deviceEntry + 0x1C);
+        if (deviceEntry[0xA] != 1)
+            goto clear_entry;
+        deviceEntry[0xC] = disconnecting;
+        hidh_conn_disconnect((u8)deviceIndex);
+clear_entry:
+        deviceEntry[0] = cleared;
+        deviceEntry[0x10] = cleared;
+        *(u16 *)(deviceEntry + 0x16) = 0;
+        *(u16 *)(deviceEntry + 0x14) = 0;
     }
     fn_80089248();
     lbl_803C3C38[0x400] = 0;
