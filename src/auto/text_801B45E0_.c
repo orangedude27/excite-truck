@@ -250,6 +250,8 @@ int fn_801B4904(int self) {
 }
 #pragma pop
 int __dt__15shdStateMachineFv_801B496C(int arg0, int arg1) {
+    /* shdStateMachine destructor (clone): destroy the embedded subobject at +4 via fn_801B4610(-1),
+     * and if arg1 > 0 free the object with fn_80128668 (mode 3). Returns arg0. */
     if (arg0 != 0) {
         fn_801B4610((void *)(arg0 + 4), -1);
         if (arg1 > 0) {
