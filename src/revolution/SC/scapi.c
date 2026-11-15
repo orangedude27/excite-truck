@@ -142,16 +142,20 @@ BOOL SCSetWpadMotorMode(u8 mode) {
     return SCReplaceU8Item(mode, SC_ITEM_BT_MOT);
 }
 
+/* Return where the WPAD sensor bar is placed (an SCSensorBarPos), read from the System
+   Configuration's Bluetooth sensor-bar item (SC_ITEM_BT_BAR, id 0x19); bottom is
+   returned when the item is missing, and any value other than SC_SENSOR_BAR_TOP is
+   reported as SC_SENSOR_BAR_BOTTOM. */
 u8 SCGetWpadSensorBarPosition(void) {
-    u8 item;
+    u8 sensorBarPos;
 
-    if (!SCFindU8Item(&item, SC_ITEM_BT_BAR)) {
-        item = SC_SENSOR_BAR_BOTTOM;
-    } else if (item != SC_SENSOR_BAR_TOP) {
-        item = SC_SENSOR_BAR_BOTTOM;
+    if (!SCFindU8Item(&sensorBarPos, SC_ITEM_BT_BAR)) {
+        sensorBarPos = SC_SENSOR_BAR_BOTTOM;
+    } else if (sensorBarPos != SC_SENSOR_BAR_TOP) {
+        sensorBarPos = SC_SENSOR_BAR_BOTTOM;
     }
 
-    return item;
+    return sensorBarPos;
 }
 
 u8 SCGetWpadSpeakerVolume(void) {
