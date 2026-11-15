@@ -14533,6 +14533,7 @@ typedef struct {
 } tGAP_CONN_VIEW;                       /* 0x60 */
 
 void GAP_Init(void) {
+    /* Initialize the GAP control block (zeroed) and install default L2CAP callbacks. */
     memset(lbl_803C3740, 0, 0x3AC);
     *(void **)(lbl_803C3740 + 0x20) = fn_800833E8;
     *(void **)(lbl_803C3740 + 0x24) = fn_800833F4;
