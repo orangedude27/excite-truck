@@ -25,9 +25,9 @@ extern s32 fn_80128668(void);
 extern void fn_8000BF20(void *);
 extern void fn_8000C0E8(void);
 extern u8 lbl_803413A8[];
-extern s32 atoi(void);
-extern void fn_802E317C(const char *);
-extern const char lbl_80341354[];
+extern s32 atoi();
+extern void fn_802E317C(const char *, ...);
+extern const char lbl_80341354[]; /* "Can't set %d players.  That's crazy." */
 extern s32 lbl_8055BB30;
 extern s32 fn_802054EC(s32, s32, s32);
 extern void fn_802ECC18(s32);
