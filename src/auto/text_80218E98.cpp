@@ -6354,13 +6354,28 @@ fallback:
     return fn_802192A4(object, message);
 }
 
-extern "C" void fn_80223A58(void *arg0) {
-    if (*(u8 *)fn_80216708() != 0) {
-        fn_802237DC(arg0);
+/* Row-draw override for the sound-list menu (it replaces the base class's
+ * fn_80223280 in slot 0x28 of vtable lbl_8033E458): the menu only takes
+ * left/right cursor input while the UI mode byte behind fn_80216708() is set,
+ * so this clears the list's input-disabled flag when it is and sets it when
+ * clear, then runs the base class's row drawer. */
+extern "C" void fn_80223A58(MenuSoundList *list) {
+#define uiModeFlag  fn_80216708
+#define enableList  fn_802237DC
+#define disableList fn_802237D0
+#define drawRows    fn_80223280
+
+    if (*(u8 *)uiModeFlag() != 0) {
+        enableList(list);
     } else {
-        fn_802237D0(arg0);
+        disableList(list);
     }
-    ((void (*)(void *))fn_80223280)(arg0);
+    ((void (*)(void *))drawRows)(list);
+
+#undef uiModeFlag
+#undef enableList
+#undef disableList
+#undef drawRows
 }
 
 extern "C" u32 fn_80223AAC(void) { return 1; }
