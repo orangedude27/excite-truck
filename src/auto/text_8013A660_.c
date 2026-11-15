@@ -70,10 +70,11 @@ int fn_8013A6D4(int arg0) {
 
 #pragma push
 #pragma inline_depth(0)
-char *fn_8013A708(char *arg0, int arg1, int arg2) {
-    strcpy(arg0, (char *)fn_8013A6D4(arg1));
-    fn_80028E00(arg0, arg2);
-    return arg0;
+char *fn_8013A708(char *dest, int prefixIndex, int suffix) {
+    /* Builds a name by copying the difficulty prefix for prefixIndex and appending the suffix. */
+    strcpy(dest, (char *)fn_8013A6D4(prefixIndex));
+    fn_80028E00(dest, suffix);
+    return dest;
 }
 #pragma pop
 
