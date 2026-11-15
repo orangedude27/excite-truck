@@ -1330,20 +1330,21 @@ extern "C" void* fn_80158760(void* self, s32 shouldDelete) {
     return self;
 }
 
-extern "C" void fn_801587CC(void* arg0) {
-    f32 zero = lbl_80561754;
-    s32 i = 0;
+extern "C" void fn_801587CC(void *container) {
+    /* Clear the first four fields of each 0x38-byte record in the container's data array. */
+    f32 zeroFloat = lbl_80561754;
+    s32 index = 0;
     s32 offset = 0;
-    s32 value = 0;
-    for (; i < *(s32*)((u8*)arg0 + 0xC); ++i) {
-        u8* base = (u8*)*(u32*)((u8*)arg0 + 8);
-        *(s32*)(base + offset) = value;
-        s32* p = (s32*)*(u32*)((u8*)arg0 + 8);
-        *(s32*)((u8*)p + offset + 4) = value;
-        p = (s32*)*(u32*)((u8*)arg0 + 8);
-        *(s32*)((u8*)p + offset + 8) = value;
-        p = (s32*)*(u32*)((u8*)arg0 + 8);
-        *(f32*)((u8*)p + offset + 0xC) = zero;
+    s32 zeroInt = 0;
+    for (; index < *(s32 *)((u8 *)container + 0xC); ++index) {
+        u8 *base = (u8 *)*(u32 *)((u8 *)container + 8);
+        *(s32 *)(base + offset) = zeroInt;
+        s32 *record = (s32 *)*(u32 *)((u8 *)container + 8);
+        *(s32 *)((u8 *)record + offset + 4) = zeroInt;
+        record = (s32 *)*(u32 *)((u8 *)container + 8);
+        *(s32 *)((u8 *)record + offset + 8) = zeroInt;
+        record = (s32 *)*(u32 *)((u8 *)container + 8);
+        *(f32 *)((u8 *)record + offset + 0xC) = zeroFloat;
         offset += 0x38;
     }
 }
