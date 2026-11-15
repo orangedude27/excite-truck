@@ -27,20 +27,12 @@ s32 fn_802E98C8(void) {
     return 0;
 }
 
-#pragma scheduling invalid_target
-extern void SCInit(void);
-extern u32 SCCheckStatus(void);
-extern void fn_802E317C(const char*, ...);
-extern void fn_802E99AC(void);
-extern char lbl_8034E238[];
-extern char lbl_80560040;
-#pragma scheduling invalid_target
+/* SCInit/SCCheckStatus and the SC enums come from the two SDK headers above. */
 extern void fn_802E317C(const char*, ...); /* panic(): "PANIC: <msg>", then ABEND */
-extern void fn_802E99AC(void);            /* ConfigReadWpadSettings(), below */
-#pragma scheduling invalid_target
 extern void fn_802E99AC(void);             /* ConfigReadWpadSettings(), below */
 extern char lbl_8034E238[];                /* "config: SCCheckStatus returns error!" */
 extern char lbl_80560040;                  /* sConfigReady */
+#pragma scheduling invalid_target
 /**
  * @brief Read the console's system config into this module's cache.
  *
