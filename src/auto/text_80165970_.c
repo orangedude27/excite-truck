@@ -335,7 +335,9 @@ extern "C" void fn_80165FAC(void) {
 #pragma pop
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void *fn_80166040(int arg0) {
+/* Finds the first free slot (0x14-byte entries at lbl_8042FEB0, field +0x10 == -1),
+ * marks it with the given id, and returns a pointer to that slot, or NULL if none. */
+void *fn_80166040(int id) {
     void *base;
     void *cur;
     void *found;
@@ -349,7 +351,7 @@ void *fn_80166040(int arg0) {
     while (count > 0) {
         if (*(int *)((char *)cur + 0x10) == -1) {
             found = (char *)base + i * 0x14;
-            *(int *)((char *)found + 0x10) = arg0;
+            *(int *)((char *)found + 0x10) = id;
             break;
         }
         cur = (char *)cur + 0x14;
