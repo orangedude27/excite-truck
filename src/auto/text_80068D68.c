@@ -24178,11 +24178,12 @@ void rfc_port_timer_start(void *port, u16 timeout) {
 }
 
 extern char lbl_80319F04[];
-void rfc_port_timer_stop(void *arg0) {
+void rfc_port_timer_stop(void *port) {
+    /* Stop the RFCOMM port's timer, logging the trace event when enabled. */
     if (lbl_803C4828[0x414] >= 4) {
         fn_8007093C(0x90003, lbl_80319F04);
     }
-    fn_80070F90((u8 *)arg0 + 0x70);
+    fn_80070F90((u8 *)port + 0x70);
 }
 
 /* Check if any DLCI is active on this RFCOMM MCB; clear idle state or start close timer as needed. */
