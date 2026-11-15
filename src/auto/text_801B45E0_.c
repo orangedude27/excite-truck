@@ -561,18 +561,19 @@ void fn_801B5364(int arg0, int arg1) {
 }
 #pragma push
 #pragma scheduling invalid_target
-void fn_801B537C(int arg0) {
-    unsigned int *ptr;
+/* Remove a physics replay event handler by handle; panics if the handle is not registered. */
+void fn_801B537C(int handler) {
+    unsigned int *entry;
     int i;
 
-    ptr = (unsigned int *)lbl_80435C70;
+    entry = (unsigned int *)lbl_80435C70;
     for (i = 0; i < 16; i++) {
-        if ((unsigned int)ptr[0x82] == (unsigned int)arg0) {
+        if ((unsigned int)entry[0x82] == (unsigned int)handler) {
             *(unsigned int *)((char *)lbl_80435C70 + 0x208 + i * 4) = 0;
             return;
         }
-        ptr++;
+        entry++;
     }
-    fn_802E317C(lbl_80335E48, arg0);
+    fn_802E317C(lbl_80335E48, handler);
 }
 #pragma pop
