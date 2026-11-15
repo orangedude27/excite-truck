@@ -1385,7 +1385,6 @@ s32 fn_80169D64(s32 arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     s32 sp8 = -1;
