@@ -40,10 +40,10 @@ BOOL __DBIsExceptionMarked(u8 exc) {
 /*
  * Debug print to the development environment.
  *
- * The SDK builds this function out for release (its body sits inside a
- * REVOLUTION_DEBUG guard that is not defined here - see DB.h), so nothing
- * references "msg" and the only code left is the variadic register save area
- * the ABI sets up for the arguments that are never read.
+ * Shipped here as a stub: nothing references "msg", so all that is left is the
+ * variadic register save area (f1-f8 into 0x28(r1), r3-r10 into 0x8(r1)) the
+ * prologue builds and then throws away.  The Revolution SDK only fills this in
+ * for debugging builds.
  */
 void DBPrintf(const char* msg, ...) {
 #pragma unused(msg)
