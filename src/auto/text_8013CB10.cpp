@@ -114,12 +114,15 @@ struct Timer8013D2C4 {
     inline Timer8013D2C4(f32 v) { fn_8001DAE0(this, v); }
     inline void init(f32 v) { fn_8001DAE0(this, v); }
 };
-struct Perc8013D2C4 {
-    void *a;
-    void *b;
-    inline Perc8013D2C4() { fn_801414A4(this); }
+/* The zone system's two effect textures, loaded by name by fn_801414A4
+ * ("zonelite.tex" and "zoneglow.tex"); each holds a texture-table slot. */
+struct ZoneTextures {
+    void *liteTex;
+    void *glowTex;
+    inline ZoneTextures() { fn_801414A4(this); }
     inline void init() { fn_801414A4(this); }
 };
+typedef ZoneTextures Perc8013D2C4;
 extern "C" u8 lbl_8032CAF0[];
 /* ZoneMaster - the zone system's owner object (vtable lbl_8032CAF0).
  * It loads zlmain/zlclosure/zlresult, the zone textures and the zone table
