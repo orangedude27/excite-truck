@@ -869,20 +869,23 @@ void fn_801CCAEC(int arg0) {
     }
 }
 
-void fn_801CCB48(int arg0) {
-    int index;
-    unsigned char *manager;
-    char *base;
-    (void)arg0;
-    base = (char *)lbl_8055E884;
-    manager = fn_801EA9A0();
-    if (*manager != 0) {
-        index = manager[0xB4] & 3;
+/* Clears the award handler's flag for the player driving car playerIndex: the byte
+ * the handler keeps per player slot, at StatHandler+0x11+slot, where the slot is
+ * the low two bits of the car record's +0xB4.  Nothing happens for a car that is
+ * not in play.  fn_801CCAEC is the matching set. */
+void fn_801CCB48(int playerIndex) {
+    int slotIndex;
+    u8 *entry;
+    StatHandler *handler;
+    handler = (StatHandler *)lbl_8055E884;
+    entry = ((u8 *(*)(int))fn_801EA9A0)(playerIndex);
+    if (entry[0] != 0) {
+        slotIndex = entry[0xB4] & 3;
     } else {
-        index = -1;
+        slotIndex = -1;
     }
-    if (index >= 0) {
-        *(signed char *)(base + index + 0x11) = 0;
+    if (slotIndex >= 0) {
+        handler->player[slotIndex] = 0;
     }
 }
 
