@@ -15,17 +15,20 @@ extern float lbl_80562C48;
 extern int lbl_8055E4D0;
 extern float PSVECMag(void*);
 extern char lbl_8055AE2C;
-void* fn_801DF678(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(int*)arg0 = 0;
-            *((int*)arg0 + 1) = 0;
-            *((int*)arg0 + 2) = 0;
+/* Scalar-deleting style destructor/cleanup for a small 3-word object: clears
+ * its three 32-bit fields to 0 and, if deleteFlags > 0, frees the storage.
+ * Returns this. (The redundant inner null check is intentional.) */
+void* fn_801DF678(void* this_, int deleteFlags) {
+    if (this_ != 0) {
+        if (this_ != 0) {
+            *(int*)this_ = 0;
+            *((int*)this_ + 1) = 0;
+            *((int*)this_ + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deleteFlags > 0)
+            fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 #pragma scheduling invalid_target
@@ -52,6 +55,7 @@ extern int stricmp(const char *, const char *);
 extern char lbl_803381C0[], lbl_803395D8[], lbl_80339744[];
 extern char lbl_8055AE44[], lbl_8055AE4C[];
 extern void *lbl_8055EA04;
+#pragma use_lmw_stmw off
 void fn_801DF6FC(void) {
     void *obj, *iter, *list, *entry;
     int i, j, n;
@@ -105,7 +109,7 @@ void fn_801DF6FC(void) {
         }
     }
 }
-
+#pragma use_lmw_stmw on
 int fn_801DF93C(int arg0) { (void)arg0; return 1; }
 
 void fn_801476D8(int, int);
@@ -176,44 +180,47 @@ extern int fn_80161BB8(void);
 extern float fn_801E7E18(void);
 extern float fn_802C9A50(void);
 extern void fn_80148100(void *);
+#pragma push
+#pragma processor 750
 void fn_801DFFB4(void) {
     register int index;
     register float f31;
     register float f30;
     float x;
+    float one;
     float ratio;
+    float t;
     void *manager;
     void *object;
+    void *(*fn)(void *, const char *);
 
     manager = lbl_8055EA04;
     index = fn_801E866C(0);
-    if (fn_80179650() != 1 || !fn_801B8570(index) || fn_801769F8() || fn_80161BB8())
-        return;
+    if (fn_80179650() == 1 && fn_801B8570(index) && !fn_801769F8() && !fn_80161BB8()) {
+        f31 = lbl_8055AE40 / lbl_80562C18;
+        x = fn_801E7E18() - *(float *)((char *)manager + index * 0x1C + 8);
+        x = f31 - x;
+        x = lbl_80562C4C + x;
+        f30 = lbl_80562C1C;
+        f30 = (f30 > x) ? f30 : x;
 
-    f31 = lbl_8055AE40 / lbl_80562C18;
-    x = fn_801E7E18() - *(float *)((char *)manager + index * 0x1C + 8);
-    x = f31 - x;
-    x = lbl_80562C4C + x;
-    f30 = lbl_80562C1C;
-    if (f30 > x)
-        f30 = x;
-
-    if (__fabs(f30) <= lbl_80558DC4)
-        return;
-
-    object = *(void **)((char *)manager + 0xE4);
-    object = (*(void * (**)(void *, const char *))(*(void ***)object + 5))(object, lbl_80339738);
-    ratio = (f30 - f31 * lbl_80562C30) / (lbl_80562C4C - f31 * lbl_80562C30);
-    if (ratio < lbl_80562C20)
-        ratio = lbl_80562C20;
-    if (ratio > lbl_80562C1C)
-        ratio = lbl_80562C1C;
-    *(int *)((char *)object + 0x18) = ((int)(ratio * lbl_80562C28 + lbl_80562C1C) << 24) | 0xFFFFFF;
-    x = fn_802C9A50();
-    *(float *)((char *)object + 0x10) = (float)lbl_8055CFF0 / x;
-    fn_80148100(object);
+        if (!((float)__fabs((double)f30) <= lbl_80558DC4)) {
+            object = *(void **)((char *)manager + 0xE4);
+            fn = (void *(*)(void *, const char *))(*(void ***)object)[5];
+            object = fn(object, lbl_80339738);
+            t = f31 * lbl_80562C30;
+            one = lbl_80562C20;
+            ratio = (f30 - t) / (lbl_80562C4C - t);
+            ratio = (ratio < one) ? ratio : one;
+            ratio = (ratio > lbl_80562C1C) ? ratio : lbl_80562C1C;
+            *(int *)((char *)object + 0x18) = ((int)(ratio * lbl_80562C28 + lbl_80562C1C) << 24) | 0xFFFFFF;
+            x = fn_802C9A50();
+            *(float *)((char *)object + 0x10) = (float)lbl_8055CFF0 / x;
+            fn_80148100(object);
+        }
+    }
 }
-
+#pragma pop
 #pragma cplusplus on
 extern "C" void fn_801D0DFC(void *);
 extern "C" void fn_802CAC54(int);
