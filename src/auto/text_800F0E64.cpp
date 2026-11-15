@@ -3483,6 +3483,14 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* sel
     } while (index < entries[0]);
 }
 
+/* nw4r::snd::SoundArchivePlayer::InvalidateData(const void *start,
+   const void *end) -- variant that clears the loaded WAVE DATA address of every
+   sound group whose wave data lies inside the address range [start, end]
+   (inclusive), so those groups are read back from the archive the next time
+   they play; used when a sound memory pool is handed back.  The sibling clone
+   at 0x800F6E9C clears the group's file-data address instead.  The table's
+   count word sits one word before the first record, so walking it in 8-byte
+   steps from its base reaches each record four bytes later. */
 extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self, u32 start, u32 end) {
     struct GroupLoadStatus { void* data_address; void* wave_data_address; };
     struct LoadStatusTable { u32 count; struct GroupLoadStatus entries[1]; };
