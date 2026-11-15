@@ -38,7 +38,7 @@ struct Entry {
     virtual void _18();
     virtual void _1C();
     virtual void _20();
-    virtual f32 GetFloat(const void *);
+    virtual f32 GetFloat(const char *);
     virtual f32 GetFloatDef(const void *, f32);
 };
 
@@ -109,18 +109,19 @@ void *fn_8013A264(void *arg0) {
 extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i) {
     const char *base = (const char *)lbl_8032C118;
     if (container != 0) {
-        Node604 *node;
         f32 step;
         f32 min;
         f32 max;
         struct Entry *entry;
+
         max = lbl_80561424;
         i = 0;
         min = lbl_80561428;
         step = lbl_8056142C;
-        for (; (entry = container->GetEntry(i)) != 0; ++i) {
+
+        for (; (entry = container->GetEntry(i)) != 0; i++) {
             if (stricmp(entry->GetName(), base + 0x34) == 0) {
-                node = (Node604 *)fn_801284F8(0x28, base + 0x40);
+                Node604 *node = (Node604 *)fn_801284F8(0x28, base + 0x40);
                 node->lo = entry->GetFloat(&lbl_80559C68);
                 node->hi = entry->GetFloat(&lbl_80559C70);
                 node->f8 = entry->GetFloatDef(&lbl_80559C78, config->f4);
@@ -132,10 +133,12 @@ extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i
                 node->f20 = entry->GetFloatDef(base + 0x58, config->f1C);
                 node->next = config->head;
                 config->head = node;
+
                 if (node->lo > node->hi) {
                     Node604 *copy = (Node604 *)fn_801284F8(0x28, base + 0x40);
-                    if (copy != 0)
+                    if (copy != 0) {
                         *copy = *node;
+                    }
                     node->hi = max;
                     copy->lo = min;
                     copy->f8 = step;
@@ -144,10 +147,10 @@ extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i
                 }
             }
         }
+
         fn_802E30C8(base + 0x68, i, (i != 1) ? &lbl_80559C90 : &lbl_80559C94);
     }
 }
-#pragma cplusplus reset
 #pragma pop
 
 /* Free a singly-linked list (next at +0x24) whose head pointer is stored at *listHead, then optionally free the head storage. */
