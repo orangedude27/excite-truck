@@ -1,6 +1,29 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* The "IdealLineRes" resource (magic 'ILIN', the "ideal:"/"idealres:" messages)
+ * keeps a singly-linked list of typed extension records, first at +0x24.
+ * fn_80138144 endian-swaps one record by type; fn_80138594, fn_80138B1C and
+ * fn_80138B4C look records of a given type up in that list. */
+struct IdealResExt {
+    unsigned int type;         /* +0x00 enum IdealResExtType */
+    struct IdealResExt *next;  /* +0x04 next record, 0 at the end of the list */
+};
+
+enum IdealResExtType {
+    /* two words at +0x08/+0x0C; the float at +0x0C is a base timing
+     * (fn_8013B590) -- fn_80137F30 swaps them */
+    IDEAL_EXT_TIMING = 0,
+    IDEAL_EXT_POINT = 1,        /* vec3 at +0x08 -- fn_80137F74 */
+    IDEAL_EXT_ROAD_OBJECTS = 2, /* int count at +0x08, float spacing at +0x10,
+                                 * count 8-byte {s16 item; s16 radius; s32 path
+                                 * index} records at +0x14 -- fn_80137FF0 */
+    IDEAL_EXT_MATRIX = 3        /* int size at +0x08, size*size words at +0x0C
+                                 * -- fn_801380DC */
+};
+
+#define IDEAL_RES_EXT_LIST 0x24  /* IdealLineRes: first extension record */
+
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
