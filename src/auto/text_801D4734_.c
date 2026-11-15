@@ -54,6 +54,13 @@ struct RacerObject {
  * seconds and then finishes.  The two leading virtual slots are the destructor
  * pair, so the first declared method sits at 0x8; the last three are the steps
  * fn_801D8D00 drives from the frame update. */
+/* TimedEffect.state: how far a cue has got. */
+enum TimedEffectState {
+    TIMED_EFFECT_UNSET = 0,  /* its parameters have not been read yet */
+    TIMED_EFFECT_READY = 1,  /* may be started (fn_801D8CAC) */
+    TIMED_EFFECT_RUNNING = 2,/* fn_801D8D00 steps it every frame */
+    TIMED_EFFECT_FINISHED = 3/* its length ran out */
+};
 #pragma cplusplus on
 struct TimedEffect {
     virtual void v0();   virtual void v1();   virtual void v2();
