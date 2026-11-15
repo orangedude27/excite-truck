@@ -50,9 +50,21 @@ void fn_8023B640(void) { fn_802E30C8(lbl_803412D8); fn_802473A4(); }
 void fn_8023B670(void) { fn_802E30C8(lbl_803412EC); fn_80012794(); fn_80012788(); fn_80247210(); fn_80012794(); fn_80012778(); }
 #pragma pop
 void fn_8023B6B0(void) {
-    fn_80129AEC(0); fn_802E47E8(); fn_80127A24(); fn_8023B618(); fn_8027B690();
-    if (fn_8012742C() != 0) fn_80127434();
-    if (fn_80019BA8() != 0) fn_8023B670(); else fn_8023B640();
-    fn_8027B77C(); fn_802ECEC0();
+    /* Shut down the current mode/session, then run the appropriate exit path and finalize teardown. */
+    fn_80129AEC(0);
+    fn_802E47E8();
+    fn_80127A24();
+    fn_8023B618();
+    fn_8027B690();
+    if (fn_8012742C() != 0) {
+        fn_80127434();
+    }
+    if (fn_80019BA8() != 0) {
+        fn_8023B670();
+    } else {
+        fn_8023B640();
+    }
+    fn_8027B77C();
+    fn_802ECEC0();
 }
 #pragma dont_inline off
