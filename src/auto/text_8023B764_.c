@@ -382,11 +382,16 @@ void fn_8023BF4C(void *arg0) {
  * with (fn_8023BF68 rejects 0 and anything past 4).  A negative count gives
  * every player its own index instead of the currently selected player. */
 #define player_count lbl_8055BB30
-void fn_8023BF68(void) {
-    s32 value = atoi();
-    lbl_8055BB30 = value;
-    if (value == 0 || (((value >> 31) ^ value) - (value >> 31)) > 4) {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80341354, value);
+/* Debug_SetPlayerCount: the debug console's player-count command.  The command
+ * text its caller hands over is parsed with atoi() and kept for fn_8023BFBC to
+ * run the next race with; 0 players or more than 4 of them (in absolute value,
+ * a negative count being the "one index per player" form) is reported -- and
+ * stays set all the same. */
+void fn_8023BF68(const char *countText) {
+    s32 playerCount = atoi(countText);
+    player_count = playerCount;
+    if (playerCount == 0 || (((playerCount >> 31) ^ playerCount) - (playerCount >> 31)) > 4) {
+        fn_802E317C(lbl_80341354, playerCount);
     }
 }
 
