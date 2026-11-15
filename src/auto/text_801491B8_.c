@@ -1114,23 +1114,27 @@ int fn_8014C964(int *arg0, int arg1) {
     return *arg0 == arg1;
 }
 
-void fn_8014C978(void *arg0, void *arg1) {
-    s32 d, c, b, a;
-    f32 j, i, h, g, f, e;
-    volatile s32 *src = (volatile s32 *)arg1;
-    volatile f32 *fsrc = (volatile f32 *)((u8 *)arg1 + 0x10);
-    a = src[0]; b = src[1]; c = src[2]; d = src[3];
-    e = fsrc[0]; f = fsrc[1]; g = fsrc[2]; h = fsrc[3]; i = fsrc[4]; j = fsrc[5];
-    *(s32 *)arg0 = a;
-    *((s32 *)arg0 + 1) = b;
-    *((s32 *)arg0 + 2) = c;
-    *((s32 *)arg0 + 3) = d;
-    *(f32 *)((u8 *)arg0 + 0x10) = e;
-    *(f32 *)((u8 *)arg0 + 0x14) = f;
-    *(f32 *)((u8 *)arg0 + 0x18) = g;
-    *(f32 *)((u8 *)arg0 + 0x1c) = h;
-    *(f32 *)((u8 *)arg0 + 0x20) = i;
-    *(f32 *)((u8 *)arg0 + 0x24) = j;
+/* Copy a 0x28-byte 2D draw descriptor (the block fn_801476D8 draws a rectangle
+ * from): its four leading words and the six floats that follow them, one by one.
+ * Reading the source through volatile pointers is what keeps the compiler from
+ * folding the ten loads into an lmw/stmw pair. */
+void fn_8014C978(void *dst, void *srcObj) {
+    s32 mode, y, x, tag;
+    f32 y1, x1, y0, x0, height, width;
+    volatile s32 *src = (volatile s32 *)srcObj;
+    volatile f32 *fsrc = (volatile f32 *)((u8 *)srcObj + 0x10);
+    tag = src[0]; x = src[1]; y = src[2]; mode = src[3];
+    width = fsrc[0]; height = fsrc[1]; x0 = fsrc[2]; y0 = fsrc[3]; x1 = fsrc[4]; y1 = fsrc[5];
+    *(s32 *)dst = tag;
+    *((s32 *)dst + 1) = x;
+    *((s32 *)dst + 2) = y;
+    *((s32 *)dst + 3) = mode;
+    *(f32 *)((u8 *)dst + 0x10) = width;
+    *(f32 *)((u8 *)dst + 0x14) = height;
+    *(f32 *)((u8 *)dst + 0x18) = x0;
+    *(f32 *)((u8 *)dst + 0x1c) = y0;
+    *(f32 *)((u8 *)dst + 0x20) = x1;
+    *(f32 *)((u8 *)dst + 0x24) = y1;
 }
 
 int fn_8014C9CC(void *arg0) {
