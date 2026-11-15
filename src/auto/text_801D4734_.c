@@ -1967,15 +1967,18 @@ void fn_801D6FA0(int arg0) {
     }
 }
 
-void fn_801D6FB8(int arg0) {
-    if (*(unsigned char *)(arg0 + 0x34) == 0) {
-        if (fn_8016A15C((char *)arg0 + 8) != 0) {
-            int p = ((int *)arg0)[0x38 / 4];
-            *(char *)(p + 0x49) = 1;
-            *(char *)(p + 0x4B) = 0;
-            *(char *)(p + 0x4A) = 0;
+/* If this element has not yet triggered, looks up the named object (+8) via
+ * fn_8016A15C and, on success, sets flags 0x49=1, 0x4B=0, 0x4A=0 on the
+ * target object stored at +0x38, then marks the element as triggered (+0x34). */
+void fn_801D6FB8(int self) {
+    if (*(unsigned char *)(self + 0x34) == 0) {
+        if (fn_8016A15C((char *)self + 8) != 0) {
+            int target = ((int *)self)[0x38 / 4];
+            *(char *)(target + 0x49) = 1;
+            *(char *)(target + 0x4B) = 0;
+            *(char *)(target + 0x4A) = 0;
         }
-        *(char *)(arg0 + 0x34) = 1;
+        *(char *)(self + 0x34) = 1;
     }
 }
 
