@@ -337,6 +337,8 @@ check:
 #pragma dont_inline off
 
 int fn_8022DC68(void *arg0, int arg1) {
+    /* Temporarily set the index at +0xC to arg1 via fn_8022DC40, fetch the element
+     * at that index with fn_8022DBD4, then restore the saved index and return it. */
     int saved = *(int *)((char *)arg0 + 0xC);
     int value;
     fn_8022DC40(arg0, arg1);
