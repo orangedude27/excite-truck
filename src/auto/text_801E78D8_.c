@@ -675,25 +675,26 @@ long fn_801E866C(long arg0) {
 }
 
 #pragma scheduling invalid_target
-long fn_801E868C(long arg0, unsigned long *arg1, unsigned long *arg2) {
+/* If this 0xE0-byte entry's id at +0x70 changed since last seen, cache it and
+ * return the packed value at +0x74 split into high/low 16-bit parts. */
+long fn_801E868C(long index, unsigned long *outHi, unsigned long *outLo) {
     volatile unsigned long *entry;
     volatile unsigned long *cache;
     unsigned long id;
 
-    entry = (volatile unsigned long *)((char *)lbl_8055EB04 + arg0 * 0xE0);
+    entry = (volatile unsigned long *)((char *)lbl_8055EB04 + index * 0xE0);
     cache = (volatile unsigned long *)lbl_80487CE0;
     id = entry[0x70 / 4];
-    if (id != cache[arg0]) {
-        cache[arg0] = id;
-        *arg1 = entry[0x74 / 4] >> 16;
-        if (arg2 != 0) {
-            *arg2 = entry[0x74 / 4] & 0xFFFF;
+    if (id != cache[index]) {
+        cache[index] = id;
+        *outHi = entry[0x74 / 4] >> 16;
+        if (outLo != 0) {
+            *outLo = entry[0x74 / 4] & 0xFFFF;
         }
         return 1;
     }
     return 0;
 }
-#pragma scheduling on
 void fn_801E86E8(long arg0, long arg1) {
     if (arg1 < 0) arg1 = (long)lbl_8055AF0C;
     fn_8026A248(arg0, arg1);
