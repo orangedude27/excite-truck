@@ -3594,28 +3594,25 @@ int fn_801D8CA4(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" s32 fn_801D8CAC(void *arg0) {
-    struct Obj {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12();
-        s32 f4;
-        u8 pad[8];
-        f32 f10;
-    };
-    Obj *o = (Obj *)arg0;
-    if (o->f4 == 1) {
-        o->f4 = 2;
-        o->f10 = lbl_8055E3C8;
-        o->v12();
+extern "C" s32 fn_801D8CAC(void *obj) {
+    /* Start one timed cue of an action sequence (a TimedEffect element).
+
+       A cue that is ready is put into its running state, stamps the moment it
+       started from the frame clock lbl_8055E3C8 -- fn_801D8D00 subtracts that
+       from the clock every frame to pick the step to run -- and runs its start
+       step, the virtual at vtable+0x38, just before the waiting, running and
+       finished steps.  Answering whether the cue started makes a trigger that
+       fires the same cue twice start it only once.
+       Proposed name: TimedEffect_start */
+    TimedEffect *effect = (TimedEffect *)obj;
+    if (effect->state == TIMED_EFFECT_READY) {
+        effect->state = TIMED_EFFECT_RUNNING;
+        effect->startTime = lbl_8055E3C8;
+        effect->onStart();
         return 1;
     }
     return 0;
 }
-
-#pragma use_lmw_stmw off
-#pragma cplusplus on
 /* Frame update of a running timed cue: work out how long it has been going and
  * hand the frame to whichever step that time falls in -- still waiting out its
  * delay, part way through its length (passed the seconds past the delay), or
