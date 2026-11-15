@@ -38,7 +38,7 @@ struct Entry {
     virtual void _18();
     virtual void _1C();
     virtual void _20();
-    virtual f32 GetFloat(const char *);
+    virtual f32 GetFloat(const char *) volatile;
     virtual f32 GetFloatDef(const void *, f32);
 };
 
