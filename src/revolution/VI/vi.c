@@ -286,10 +286,11 @@ static inline VITiming *getTiming(VITVMode mode)
     }
 }
 
-s32 fn_80058A00(s32 arg0, s32 arg1)
+/* VI shutdown callback: handle shutdown/power-off events, resetting VI state for reset transitions. */
+s32 fn_80058A00(s32 final, s32 event)
 {
-    if (arg0 == 0) {
-        switch (arg1) {
+    if (final == 0) {
+        switch (event) {
         case 1:
         case 2:
         case 3:
@@ -304,7 +305,7 @@ s32 fn_80058A00(s32 arg0, s32 arg1)
     } else {
         return 1;
     }
-    return arg0;
+    return final;
 }
 
 static OSShutdownFunctionInfo lbl_80311910 = {
