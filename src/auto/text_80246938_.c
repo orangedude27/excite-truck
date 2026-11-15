@@ -1620,10 +1620,19 @@ void fn_80249104(void *arg0) {
     }
 }
 
+/* Screen wait timeout (1.5 s): while the object's "waited" byte (+0x1C) is still clear
+ * 1500 ms after the start stamp taken at +0x18, ask the screen loop to exit with code -2.
+ * Returns 1 so the caller keeps the wait running. */
 s32 fn_80249154(void *arg0) {
-    unsigned char *p = (unsigned char *)arg0;
+    /* The wait state fn_802490AC sets up in this object. */
+    struct WaitTimer {
+        char pad[0x18];
+        s32 startTime;        /* +0x18 fn_802E2C20() millisecond stamp */
+        unsigned char waited; /* +0x1C cleared on start, set to stop the timeout */
+    };
+    struct WaitTimer *wait = (struct WaitTimer *)arg0;
 
-    if (*(p + 0x1C) == 0 && fn_802E2C20() - *(s32 *)((char *)arg0 + 0x18) >= 0x5DC) {
+    if (wait->waited == 0 && fn_802E2C20() - wait->startTime >= 1500) {
         fn_802168BC(-2);
     }
     return 1;
