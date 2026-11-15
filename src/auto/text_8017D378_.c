@@ -173,9 +173,8 @@ extern "C" void fn_8017D404(float *pos, int target, float radius, float strength
 #pragma pop
 
 #pragma scheduling on
-/* Allocates and constructs a Ball object (0x230 bytes, tagged "Ball" in lbl_8055A310),
- * runs its base initializer (fn_8017B0B0), and installs the primary and secondary
- * vtable pointers from lbl_80331D18. Returns the object or NULL on allocation failure. */
+/* Allocate and initialize a 0x230-byte Ball body (vtable lbl_80331D18),
+ * returning it with the primary and secondary (+0x1EC) vtable pointers set. */
 void *fn_8017D688(void) {
     extern void *fn_801284F8(int, void *);
     extern void fn_8017B0B0(void);
