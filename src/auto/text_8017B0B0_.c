@@ -1189,11 +1189,15 @@ void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3
 /* Stores an object's rotation as three s16 angles at record+0x00 and its
    position (self+0x60) at record+0x08; returns the bytes written (0x14). */
 extern void fn_8017A804();
-int fn_8017D274(void *arg0, void *arg1) {
-    fn_8017A804();
-    *(float *)((char *)arg1 + 0x14) = *(float *)((char *)arg0 + 0x118);
-    *(float *)((char *)arg1 + 0x18) = *(float *)((char *)arg0 + 0x11C);
-    *(float *)((char *)arg1 + 0x1C) = *(float *)((char *)arg0 + 0x120);
+/* Writes this object's transform into a 0x20-byte key record and returns that
+   size: fn_8017A804 stores the rotation as three s16 angles at record+0x00 and
+   the object position (self+0x60) at +0x08, and the object's current position
+   (self+0x118, the vector fn_8017D160 interpolates) goes in at +0x14. */
+int fn_8017D274(void *self, void *record) {
+    fn_8017A804(self, record);
+    *(float *)((char *)record + 0x14) = *(float *)((char *)self + 0x118);
+    *(float *)((char *)record + 0x18) = *(float *)((char *)self + 0x11C);
+    *(float *)((char *)record + 0x1C) = *(float *)((char *)self + 0x120);
     return 0x20;
 }
 
