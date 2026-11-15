@@ -924,19 +924,21 @@ int fn_802B2E08(int);
 extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
 int fn_802B3340(int);
+#pragma dont_inline on
+#pragma dont_inline reset
+/* Applies fn_802B3340 to each element in the container. */
 void fn_802B32E0(int *arg0) {
-    int *object = arg0;
+    int *container = arg0;
     int i = 0;
     goto check;
 loop:
-    fn_802B3340(*fn_802B320C(object, i));
+    fn_802B3340(*fn_802B320C(container, i));
     i++;
 check:
-    if (i < fn_802B2E00(object)) {
+    if (i < fn_802B2E00(container)) {
         goto loop;
     }
 }
-
 int fn_802B3340(int arg) {
     char *p = (char *)arg;
     if (((unsigned char *)p)[5] != ((unsigned char *)p)[4]) {
