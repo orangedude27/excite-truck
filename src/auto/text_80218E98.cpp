@@ -1433,8 +1433,9 @@ extern "C" void fn_8021A6A8(void *arg0) {
     }
 }
 
-extern "C" void fn_8021A6EC(void *arg0) {
-    u8 *p = (u8 *)arg0;
+/* Initialize this object's display/state fields and create its drawable handle. */
+extern "C" void fn_8021A6EC(void *object) {
+    u8 *p = (u8 *)object;
     *(u8 *)(p + 0x250) = 1;
     *(u8 *)(p + 0x251) = 1;
     *(f32 *)(p + 0x24C) = 30.0f;
