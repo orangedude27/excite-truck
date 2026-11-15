@@ -101,8 +101,6 @@ extern void *memset(void *, int, unsigned long);
 extern char *strcpy(char *, const char *);
 #pragma use_lmw_stmw off
 void fn_80137B20(void) {
-    int *q = lbl_8042F798;
-    int four = 4;
     void **pp = lbl_8042F788;
     int i = 0;
     lbl_8055E0E0 = 1;
@@ -113,10 +111,10 @@ void fn_80137B20(void) {
         strcpy((char *)*pp + 8, fn_80137950(i));
         fn_80137B0C((void *)i);
         fn_801379CC();
-        lbl_8042F798[0] = four;
-        q[1] = four;
-        q[2] = four;
-        q[3] = four;
+        lbl_8042F798[0] = 4;
+        lbl_8042F798[1] = 4;
+        lbl_8042F798[2] = 4;
+        lbl_8042F798[3] = 4;
         fn_80137A18();
         fn_80137B14();
         i++;
