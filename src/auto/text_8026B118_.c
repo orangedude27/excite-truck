@@ -26,10 +26,12 @@ void fn_8026B118(void) {}
 
 extern int lbl_8055F4D0, lbl_8055F4CC;
 #pragma dont_inline on
-void fn_8026B11C(void **arg0, void *arg1) {
-    void *obj = fn_80207848((int)arg1, 0);
+/* Get a sound object by id (via fn_80207848) into *outObj and, if found, set
+ * its float at +0x8 to lbl_8055C4F8 (marking +0x4D when it changes). */
+void fn_8026B11C(void **outObj, void *soundId) {
+    void *obj = fn_80207848((int)soundId, 0);
     float value;
-    *arg0 = obj;
+    *outObj = obj;
     if (obj != 0) {
         value = lbl_8055C4F8;
         if (value != *(float *)((unsigned char *)obj + 8)) {
@@ -38,7 +40,6 @@ void fn_8026B11C(void **arg0, void *arg1) {
         }
     }
 }
-
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
@@ -135,7 +136,7 @@ extern "C" void fn_8026B260(void) {
     lbl_8055F4C8 = iteratorOrZero;
     obj = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     nameObj = *(FileName **)((char *)obj + 0x20);
-    dot = nameObj->getFileName(base + 0, 0);
+    dot = nameObj->getFileName(&base[0], 0);
     if (dot != 0) {
         strncpy(name, dot, 11);
         dot = strchr(name, '.');
