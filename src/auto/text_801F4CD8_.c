@@ -1246,6 +1246,7 @@ void fn_801F7160(void *clothGroup) {
 
 #pragma dont_inline on
 void fn_801F7220(void *arg0) {
+    /* Call fn_801F6880 for each 0x48-byte entry in the container (count at +0x120). */
     void *entry;
     int i;
     i = 0;
