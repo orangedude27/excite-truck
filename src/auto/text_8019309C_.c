@@ -1236,12 +1236,15 @@ void fn_80194C4C(void *arg0, float *arg1) {
 extern float lbl_8055A488, lbl_8056215C;
 extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
-void fn_80194F70(void * __restrict arg0, float * __restrict a, float * __restrict b) {
-    float diff[3];
-    diff[0] = a[0] - b[0];
-    diff[1] = a[1] - b[1];
-    diff[2] = a[2] - b[2];
-    PSVECDotProduct(arg0, diff);
+/* `axis` dotted with the vector from `origin` to `point`: the difference of the
+ * two points is built on the stack and handed to PSVECDotProduct, which leaves
+ * the product in f1 -- the caller reads it there, so this stays void-returning. */
+void fn_80194F70(void * __restrict axis, float * __restrict point, float * __restrict origin) {
+    float delta[3];
+    delta[0] = point[0] - origin[0];
+    delta[1] = point[1] - origin[1];
+    delta[2] = point[2] - origin[2];
+    PSVECDotProduct(axis, delta);
 }
 
 void fn_80194FC4(void) {
