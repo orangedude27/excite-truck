@@ -1819,8 +1819,8 @@ extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
 extern f32 lbl_8055A958;
 extern s32 lbl_8055E864;
-extern char lbl_804384A8[];
-extern char lbl_804385A8[];
+extern char sInterludeWhoList[];
+extern char sInterludeWhoNotList[];
 extern char lbl_80336FDC[];
 extern void fn_801C7BA0(void);
 void fn_801C819C(void) {
