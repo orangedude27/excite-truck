@@ -652,6 +652,7 @@ char fn_80247624(void) {
 }
 
 s32 fn_8024762C(void) {
+    /* Periodically toggles a UI state flag on/off based on the millisecond timer (on for 2/3 of each 1500ms cycle). */
     if (fn_802E2C20() % 1500 > 500) fn_80214AF0(1);
     else fn_80214A9C(1);
     return 0;
