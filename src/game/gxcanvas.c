@@ -271,7 +271,9 @@ void fn_802C32B8(s32 x, s32 y, u32 packedColor) {
      * (x, y).  A canvas whose NO_DRAW flag is set is left alone; an RGB565
      * one takes the colour's high half through fn_802C3320, a 4-byte (format
      * 5) one through fn_802C33A8, and format 6, which passes for a wide
-     * canvas but is drawn by neither, only reports "gxPoint: bad format". */
+     * canvas but is drawn by neither, only reports "gxPoint: bad format".
+     * fn_802C3320 is declared without a prototype above, so the tail call
+     * below hands it x, y and packedColor in the argument registers. */
     GxCanvas *canvas = (GxCanvas *)lbl_8055FC00;
     u8 format;
     s32 is16Bit;
@@ -280,7 +282,7 @@ void fn_802C32B8(s32 x, s32 y, u32 packedColor) {
     is16Bit = 0;
     if ((s8)format != CANVAS_FORMAT_RGBA && (s8)format != CANVAS_FORMAT_NONE) is16Bit = 1;
     if (is16Bit != 0) {
-        fn_802C3320();
+        fn_802C3320(x, y, packedColor);
         return;
     }
     if ((s8)format == CANVAS_FORMAT_RGBA) {
