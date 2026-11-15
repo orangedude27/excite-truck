@@ -15524,6 +15524,9 @@ void btsnd_hcic_accept_esco_conn(BT_HDR *p, BD_ADDR bd_addr, UINT32 tx_bw,
 }
 
 int btsnd_hcic_reject_esco_conn(void *p_buf, u8 *bd_addr, u8 reason) {
+    /* Send HCI Reject Synchronous Connection Request (opcode 0x042A) for bd_addr
+     * with the given reason; copies the 6-byte address in reverse order into the
+     * command buffer and submits it via btu_hcif_send_cmd. */
     u8 *buf = p_buf;
 
     *(u16 *)(buf + 2) = 0xA;
