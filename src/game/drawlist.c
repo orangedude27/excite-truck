@@ -1111,12 +1111,13 @@ void *fn_802C9DE8(void *arg0, int arg1) {
     return arg0;
 }
 
-int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(int *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_801E7888(*arg0);
-        if (arg1 > 0) fn_802C9D88((int)arg0);
+int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(int *self, int shouldDelete) {
+    /* Deleting destructor for J2DAnmTexPatternTIMGPointer: release owned data, optionally free storage. */
+    if (self != 0) {
+        fn_801E7888(*self);
+        if (shouldDelete > 0) fn_802C9D88((int)self);
     }
-    return arg0;
+    return self;
 }
 
 extern void fn_801E7890(void);
