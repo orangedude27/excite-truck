@@ -32,7 +32,7 @@ asm void PSQUATMultiply(register const Quaternion* a, register const Quaternion*
     fcmpu cr0, f4, f1
     beqlr                           // coincident points: return 0.0f
     frsqrte f0, f1                  // f0 ~= 1 / sqrt(dist^2)
-    lfs f4, 3.0f                    // f4 = 3.0f
+    lfs f4, lbl_80560C6C              // f4 = 3.0f
     fmuls f2, f0, f0                // f2 = rsqrt^2
     fmuls f0, f0, f3                // f0 = rsqrt * 0.5
     fnmsubs f2, f2, f1, f4          // f2 = 3 - dist^2 * rsqrt^2
