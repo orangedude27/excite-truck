@@ -36,10 +36,10 @@ void fn_8020A600(void) {
 }
 #pragma scheduling on
 
-s32 fn_802E2C20(void);
-extern const char lbl_8033C318[];
-extern s32 lbl_8055EDE4;
-extern s32 lbl_8055EDE8;
+s32 fn_802E2C20(void);            /* milliseconds since boot */
+extern const char lbl_8033C318[]; /* "music: setting song idx to %d" */
+extern s32 lbl_8055EDE4;          /* song index last requested (-1 = no music) */
+extern s32 lbl_8055EDE8;          /* ms stamp of that request; fn_8020A100 ramps the crossfade from it */
 
 #pragma scheduling invalid_target
 void fn_8020A648(s32 arg0) {
@@ -143,6 +143,7 @@ void fn_80209FFC(void) {
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_8020A100(void) {
     char buf[0x40];
     s32 *slot;
@@ -167,8 +168,8 @@ void fn_8020A100(void) {
                 scale = lbl_80563294 + t * lbl_805632A0;
             }
         }
-        slot = lbl_804892C0;
         one = lbl_8056329C;
+        slot = lbl_804892C0;
         i = 0;
         flag = (u8 *)&lbl_8055EDD4;
         name = &lbl_8055B560;
@@ -178,7 +179,7 @@ void fn_8020A100(void) {
                 sprintf(buf, &lbl_8055B568, *name);
                 if (fn_8012E938(buf) != 0) {
                     fn_8012E81C(buf);
-                    sprintf(buf, lbl_8033C2A8, *name, 1 == zero ? &lbl_8055B570 : &lbl_8055B574);
+                    sprintf(buf, lbl_8033C2A8, *name, zero == 1 ? &lbl_8055B570 : &lbl_8055B574);
                     slot[0] = (s32)fn_802078CC(buf, 0, slot[1], 0x70);
                     fn_802E30C8(lbl_8033C2B4, i, 0, buf, slot[0]);
                     *flag = 1;
