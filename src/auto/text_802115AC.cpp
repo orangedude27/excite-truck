@@ -2187,12 +2187,13 @@ extern "C" s32 fn_802152CC(void) {
     fn_802152C8();
     return 0;
 }
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802152F0(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802152F0(void *self, int shouldDelete) {
+    /* Deleting destructor for nw4hbm::snd::MemorySoundArchive: run base destructor, optionally free storage. */
+    if (self != 0) {
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) ((s32 (*)(void *))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" s32 __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80215348(void *self, s32 shouldDelete) {
