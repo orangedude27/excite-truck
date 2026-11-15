@@ -301,15 +301,17 @@ extern "C" void fn_802981F8(void* self) {
     fn_80288A40(self, &sp8);
 }
 
-  void* __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_80298250(void* self, int arg1) {
-      if (self != 0) {
-          fn_8028E398(*(void**)((char*)self + 0xB0));
-          if (arg1 > 0) {
-              fn_80128668(self);
-          }
-      }
-      return self;
-  }
+/* Destructor for J2DAnmTexPatternTIMGPointer: releases the owned resource at +0xB0
+ * and, if shouldDelete is positive, frees this object. Returns this. */
+void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_80298250(void *self, int shouldDelete) {
+    if (self != 0) {
+        fn_8028E398(*(void **)((char *)self + 0xB0));
+        if (shouldDelete > 0) {
+            fn_80128668(self);
+        }
+    }
+    return self;
+}
 
   extern "C" void fn_802982A8(void *arg0) {
       *(unsigned char *)((unsigned char *)arg0 + 0x28) = 0;
