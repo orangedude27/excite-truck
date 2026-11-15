@@ -113,6 +113,7 @@ int fn_80238A20(void) {
     #undef uiTextScale
     #undef fontHeight
 }
+
 void fn_80238A74(int arg0, int arg1, int arg2, int arg3) { ((int (*)(int, int, int, int, int))fn_8023875C)(arg0, arg1 - 3, arg2, arg3, 9); }
 
 void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
