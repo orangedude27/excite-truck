@@ -317,10 +317,9 @@ void fn_8000A7A8(void) {
 // Leaves a track: shuts the ground down and releases the three track effect
 // sets whose names fn_8000A8C4 built in the block at lbl_8034F4C8.
 void fn_8000A808(void) {
-    /* Leaving a track: shut the ground down (fn_801DCDA4 frees the heightmap
-     * block lbl_80446F08 and clears the ground update callback), then release
-     * the three effect sets fn_8000A8C4 named for this track.  fn_8012E498
-     * takes a set by name and frees its resource once nothing uses it. */
+    /* fn_801DCDA4 frees the ground heightmap block lbl_80446F08 and clears the
+     * ground update callback; fn_8012E498 releases one effect set by name and
+     * frees its resource once nothing uses it any more. */
     typedef struct TrackEffectNames {
         char unused_00[0x18];
         char trackName[0x40];    /* 0x18 "%s.trk" of the track name */
