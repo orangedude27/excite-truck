@@ -45,17 +45,6 @@ typedef struct AiExceptionConfig {
     AiParams params;   /* +0x04 defaults, used when no entry covers the position */
 } AiExceptionConfig;
 
-typedef struct AIConfig {
-    Node604 *head;
-    f32 f4;
-    f32 f8;
-    f32 fC;
-    f32 f10;
-    f32 f14;
-    f32 f18;
-    f32 f1C;
-} AIConfig;
-
 #pragma push
 #pragma cplusplus on
 struct Entry {
