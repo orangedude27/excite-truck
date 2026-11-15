@@ -124,15 +124,17 @@ extern "C" void fn_801EC214(void *out, void *obj, int arg2, char *name, int arg4
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448
-long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long arg0, long arg1) {
-    if (arg0 != 0) {
-        long vptr = *(long *)arg0;
-        if (vptr != 0) {
-            ((void (*)(long))fn_801E323C)(vptr);
+/* Destructor for J3DUMtxAnmCacheTableBase: if it holds a cache object pointer,
+ * free it via fn_801E323C, then delete this object when shouldDelete > 0. */
+long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long this_, long shouldDelete) {
+    if (this_ != 0) {
+        long cache = *(long *)this_;
+        if (cache != 0) {
+            ((void (*)(long))fn_801E323C)(cache);
         }
-        if (arg1 > 0) fn_80128668((void *)arg0);
+        if (shouldDelete > 0) fn_80128668((void *)this_);
     }
-    return arg0;
+    return this_;
 }
 #pragma pop
 void fn_801E353C(long, float);
@@ -943,8 +945,8 @@ process:
         dot = -PSVECDotProduct(vector, fn_802C9A40());
         limit = lbl_80562E9C;
         var_f29 = *(float*)((char*)arg0 + 0x2C) - settings.second.value;
-        dot = limit > dot ? dot : limit;
-        var_f30 = lbl_80562E90 / dot;
+        limit = limit > dot ? dot : limit;
+        var_f30 = lbl_80562E90 / limit;
     } else {
         var_f29 = lbl_80562E88;
         var_f30 = lbl_80562EC8;
