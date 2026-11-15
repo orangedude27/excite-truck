@@ -115,6 +115,7 @@ DVDCommandBlock* __DVDGetNextWaitingQueue(void) {
     return NULL;
 }
 
+/* Remove a command block from whichever waiting queue it is in; return FALSE if it is not linked. */
 BOOL __DVDDequeueWaitingQueue(const DVDCommandBlock* block) {
     BOOL enabled = OSDisableInterrupts();
 
