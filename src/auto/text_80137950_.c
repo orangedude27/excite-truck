@@ -98,27 +98,39 @@ extern void fn_80137B14(void);
 extern void *memset(void *, int, unsigned long);
 extern char *strcpy(char *, const char *);
 #pragma use_lmw_stmw off
+/* Build the AI driver's four league entries: allocate one block per league
+ * (Dirt, Modified, Truck, Cup) under the heap name "league", store the name
+ * that fn_80137A18 opens as "<name>.val", and read that file's Info entry
+ * (car_wid/car_len) into it.  Marks the table built (lbl_8055E0E0), leaves no
+ * league selected and no context assigned to one; fn_80137BE4 frees it again. */
 void fn_80137B20(void) {
-    void **pp = lbl_8042F788;
-    int i = 0;
+    // One entry of the league table, as allocated here.
+    typedef struct League {
+        float carWidth;   // at 0x00  "car_wid" of the league's Info entry
+        float carLength;  // at 0x04  "car_len" of the same entry
+        char name[0x20];  // at 0x08  league name, also its "<name>.val" file
+    } League;
+    League **slot = (League **)lbl_8042F788;
+    int league = 0;
     lbl_8055E0E0 = 1;
-    lbl_80559C00 = (void *)-1;
+    lbl_80559C00 = (void *)-1;  // no league selected
     do {
-        *pp = fn_801284F8(0x28, lbl_80559C38);
-        memset(*pp, 0, 0x28);
-        strcpy((char *)*pp + 8, fn_80137950(i));
-        fn_80137B0C((void *)i);
-        fn_801379CC();
-        lbl_8042F798[0] = 4;
+        *slot = fn_801284F8(sizeof(League), lbl_80559C38);  // "league"
+        memset(*slot, 0, sizeof(League));
+        // fn_80137950: 0 Dirt, 1 Modified, 2 Truck, 3 Cup
+        strcpy((char *)*slot + 8, fn_80137950(league));
+        fn_80137B0C((void *)league);  // make it the current league
+        fn_801379CC();                // warns "league not set" if none
+        lbl_8042F798[0] = 4;          // 4 = no league for that context yet
         lbl_8042F798[1] = 4;
         lbl_8042F798[2] = 4;
         lbl_8042F798[3] = 4;
-        fn_80137A18();
-        fn_80137B14();
-        i++;
-        pp++;
-    } while (i < 4);
-    fn_80137B0C((void *)0);
+        fn_80137A18();  // read "<name>.val" into the current league
+        fn_80137B14();  // and select no league again
+        league++;
+        slot++;
+    } while (league < 4);
+    fn_80137B0C((void *)0);  // Dirt is the league to start on
 }
 void fn_80137BE4(void) {
     // Free and clear a fixed table of four heap-allocated pointers, then mark it uninitialized.
