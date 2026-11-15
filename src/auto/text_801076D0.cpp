@@ -338,12 +338,13 @@ extern "C" void* fn_80107FE4(void* arg0, const void* arg1) {
     return arg0;
 }
 
-extern "C" void* __dt__Q36nw4hbm2ut7ResFontFv(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_80109040((s32)arg0, 0);
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+/* nw4hbm::ut::ResFont::~ResFont(): destroys base font state and optionally deletes storage. */
+extern "C" void* __dt__Q36nw4hbm2ut7ResFontFv(void* self, int shouldDelete) {
+    if (self != 0) {
+        fn_80109040((s32)self, 0);
+        if (shouldDelete > 0) ((void (*)(void *))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" const char lbl_80328888[];
