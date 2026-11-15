@@ -605,14 +605,15 @@ void fn_80135EA8(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_80135EF0(void *arg0, s32 arg1) {
-    Unk_80135278 *obj = (Unk_80135278 *)arg0;
-    s32 res = fn_80135D60(obj, arg1);
+/* Applies a resource to the follower; on success (res == 1) resets progress/counter fields and, if a path table is set, loads the initial step count from the resource (+0x18 >> 16). */
+s32 fn_80135EF0(void *arg0, s32 resourceId) {
+    Unk_80135278 *follower = (Unk_80135278 *)arg0;
+    s32 res = fn_80135D60(follower, resourceId);
     if (res == 1) {
-        obj->unk_34 = 0;
-        obj->unk_5c = 0;
-        if (obj->unk_50 != 0) {
-            obj->unk_54 = *(s32 *)((u8 *)obj->unk_2c + 0x18) >> 16;
+        follower->unk_34 = 0;
+        follower->unk_5c = 0;
+        if (follower->unk_50 != 0) {
+            follower->unk_54 = *(s32 *)((u8 *)follower->unk_2c + 0x18) >> 16;
         }
     }
     return res;
