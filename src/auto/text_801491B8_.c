@@ -836,23 +836,24 @@ void fn_8014AE54(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x10) = lbl_8055E3C8;
 }
 
-void fn_8014AE60(void *arg0) {
+/* Removes a node from the doubly-linked list referenced by the iterator/unlink context. */
+void fn_8014AE60(void *context) {
     struct Node8014AE60 { u8 pad[0x11C]; struct Node8014AE60 *prev; struct Node8014AE60 *next; };
     struct Head8014AE60 { struct Node8014AE60 *first; struct Node8014AE60 *last; };
-    struct Head8014AE60 *head;
-    struct Node8014AE60 *obj;
-    struct Node8014AE60 *next;
-    struct Node8014AE60 *prev;
-    head = *(struct Head8014AE60 **)arg0;
-    obj = *((struct Node8014AE60 **)arg0 + 1);
-    next = obj->next;
-    if (next != 0) next->prev = obj->prev;
-    else head->first = obj->prev;
-    prev = obj->prev;
-    if (prev != 0) prev->next = obj->next;
-    else head->last = obj->next;
-    obj->next = 0;
-    obj->prev = 0;
+    struct Head8014AE60 *list;
+    struct Node8014AE60 *node;
+    struct Node8014AE60 *nextNode;
+    struct Node8014AE60 *prevNode;
+    list = *(struct Head8014AE60 **)context;
+    node = *((struct Node8014AE60 **)context + 1);
+    nextNode = node->next;
+    if (nextNode != 0) nextNode->prev = node->prev;
+    else list->first = node->prev;
+    prevNode = node->prev;
+    if (prevNode != 0) prevNode->next = node->next;
+    else list->last = node->next;
+    node->next = 0;
+    node->prev = 0;
 }
 
 s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
