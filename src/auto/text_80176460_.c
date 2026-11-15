@@ -215,17 +215,26 @@ void fn_80176460(void *arg0, const char *arg1, s32 *arg2) {
     fn_80177790();
 }
 #pragma use_lmw_stmw reset
+/* Shuts down the physics module: unregisters its update callback, clears state, runs subsystem shutdown steps, frees the physics heap/work buffers, resets scene timing, and marks the module inactive. (renames unavailable: fn_801765B8->Physics_Shutdown, lbl_8055E3F4->sPhysicsState, lbl_8055E3E0->sPhysicsHeapBlock, lbl_8055E3DC->sPhysicsWorkBuffer, lbl_8055E3BC->sPhysicsModuleActive) */
 void fn_801765B8(void) {
+#define sPhysicsState lbl_8055E3F4
+#define sPhysicsHeapBlock lbl_8055E3E0
+#define sPhysicsWorkBuffer lbl_8055E3DC
+#define sPhysicsModuleActive lbl_8055E3BC
     fn_801777C0();
-    lbl_8055E3F4 = 0;
+    sPhysicsState = 0;
     fn_801D0BF4();
     fn_801B6614();
     fn_801AE5AC();
     fn_8017EC30();
-    fn_8012F418(lbl_8055E3E0);
-    fn_8012F384(lbl_8055E3DC);
+    fn_8012F418(sPhysicsHeapBlock);
+    fn_8012F384(sPhysicsWorkBuffer);
     fn_801E1D2C();
-    lbl_8055E3BC = 0;
+    sPhysicsModuleActive = 0;
+#undef sPhysicsState
+#undef sPhysicsHeapBlock
+#undef sPhysicsWorkBuffer
+#undef sPhysicsModuleActive
 }
 
 #pragma dont_inline on
