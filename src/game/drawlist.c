@@ -282,14 +282,15 @@ void *fn_802C86F0(void *arg0, int arg1, int arg2, int arg3, int arg4) {
 
 extern void fn_802C87B4(int, int, int, int);
 extern void fn_80128668(void *);
-void *fn_802C8750(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_802C87B4(*(int *)((unsigned char *)arg0), *(int *)((unsigned char *)arg0 + 4), *(int *)((unsigned char *)arg0 + 8), *(int *)((unsigned char *)arg0 + 0xC));
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+/* Restore a saved viewport rect (x, y, width, height at +0,+4,+8,+0xC) and optionally delete it. */
+void *fn_802C8750(void *savedRect, int deleteFlag) {
+    if (savedRect != 0) {
+        fn_802C87B4(*(int *)((unsigned char *)savedRect), *(int *)((unsigned char *)savedRect + 4), *(int *)((unsigned char *)savedRect + 8), *(int *)((unsigned char *)savedRect + 0xC));
+        if (deleteFlag > 0) {
+            fn_80128668(savedRect);
         }
     }
-    return arg0;
+    return savedRect;
 }
 
 #pragma push
