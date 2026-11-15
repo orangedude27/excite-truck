@@ -5530,17 +5530,20 @@ extern "C" void *fn_80222530(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 8) = arg2;
     return arg0;
 }
-extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = &lbl_8033F9E0;
-        fn_802328D4(((void**)arg0)[1]);
-        if (arg1 > 0) {
-            ((s32 (*)(void*))fn_80128668)(arg0);
+#pragma scheduling invalid_target
+#pragma scheduling invalid_target
+/* Destructor for CollisionSpace: restores its vtable, releases the owned
+ * resource at offset +4, and deletes the object when shouldDelete > 0. */
+extern "C" void* __dt__14CollisionSpaceFv_80222584(void* self, s32 shouldDelete) {
+    if (self != 0) {
+        *(void**)self = &lbl_8033F9E0;
+        fn_802328D4(((void**)self)[1]);
+        if (shouldDelete > 0) {
+            ((s32 (*)(void*))fn_80128668)(self);
         }
     }
-    return arg0;
+    return self;
 }
-
 extern "C" void fn_802336AC(s32, s32, s32, const char *, f32, f32, f32, ...);
 extern "C" char lbl_8055B8A4[4];
 extern "C" void fn_802225E8(void *arg0, s32 arg1, s32 arg2) {
