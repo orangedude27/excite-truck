@@ -89,7 +89,14 @@ struct Dummy_801B8318 {
     virtual void f58();
     virtual void f59();
 };
-              struct Dummy_801B851C {
+              /* The arena-event "master" object lbl_8055E744 points at.  fn_801B826C picks it
+ * by the arena event id at +0x3E8: fn_801B81E0 builds a ZoneMaster (0x180201) or
+ * one of the other event masters, and an event that needs none gets the
+ * "null_amaster" null object with the empty vtable lbl_8033678C.  MWCC keeps two
+ * empty words (offset-to-top, type info) ahead of the first method, so d0 is the
+ * slot at vtable+0x08 (the destructor) and d8 the one at vtable+0x28. */
+typedef struct ArenaMaster Dummy_801B851C; /* the old placeholder name */
+struct ArenaMaster {
           virtual void d0();
           virtual void d1();
           virtual void d2();
