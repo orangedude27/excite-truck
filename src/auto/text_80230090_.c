@@ -460,6 +460,7 @@ float fn_80230DA4(float a,float b) { float v; lbl_8055F030=a; v=(float)fn_8002EF
 #pragma push
 #pragma processor 750
 float fn_80230DF4(float a, float b) {
+    /* Compute a normalized [0,1] phase/wrap value from (a + lbl_8055F02C) over period b, mirrored around 0.5. */
     float value = (float)fn_8002EFB4(a + lbl_8055F02C);
     if (value < lbl_80563614) value += b;
     value /= b;
