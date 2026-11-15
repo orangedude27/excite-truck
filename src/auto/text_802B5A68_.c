@@ -1875,6 +1875,11 @@ void fn_802B87A0(void) {
 }
 #pragma push
 #pragma dont_inline on
+/* One frame of the "tedash.val" debug viewer while its UI object is up: polls the
+ * UI's input events, makes the material set picked by matSetIndex the active one
+ * (fn_802B0288() reloads the skagbag field caches when the set changes) and, in
+ * every view but "Advanced", narrows the skagbag tables to the object selected in
+ * the viewer (skipped while it is on "All Objects"). */
 void fn_802B87F4(void) {
 #define uiFrame     lbl_8055FA48 /* the "tedash.val" UI object fn_802B8744() creates */
 #define viewMode    lbl_8055FA38 /* 0 "Objects", 1 "Advanced", 2 "Material-Map", 3 "Road-Opacity" */
