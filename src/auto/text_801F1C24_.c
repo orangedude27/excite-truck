@@ -809,6 +809,7 @@ check:
 #pragma push
 #pragma small_data off
 void *__dt__14CollisionSpaceFv_801F2E24(void *arg0, int arg1) {
+    /* Scalar-deleting destructor for CollisionSpace: reset vtable, destroy owned subobject, and optionally free. */
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033A958;
         fn_802CAC54(*(void **)((char *)arg0 + 4));
@@ -817,10 +818,6 @@ void *__dt__14CollisionSpaceFv_801F2E24(void *arg0, int arg1) {
     }
     return arg0;
 }
-
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
 void fn_801F2E88(void *arg0, void *arg1) {
     extern float fn_801F3174(void);
     extern void fn_801F3198(void *);
