@@ -120,28 +120,42 @@ extern "C" void fn_8012834C(void *arg0, void *arg1, s32 arg2) {
         virtual void d1();
         virtual void *alloc(s32, void *, s32);
     };
-    struct H {
-        static inline void pad(Ring *q, s32 size) {
-            s32 mask = size - 1;
-            s32 sum = *(s32 *)((u8 *)q + 0xC) + *(s32 *)((u8 *)q + 4);
-            if (((sum + 0x40) & mask) != 0) {
-                void *r = q->alloc(mask & (size - ((sum + 0x80) & mask)), lbl_8032A05C, 3);
-                *(u8 *)((u8 *)r - 0x1C) = 0;
-            }
-        }
-    };
+    s32 size;
+    s32 mask;
+    s32 sum;
+    s32 offset;
+    void *queue;
+    void *result;
 
     fn_80127964();
     if (lbl_8055DF80 == 0 && (u8)lbl_8055DF88 != 0) {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A034, arg0);
     }
 
-    if (lbl_8055DF8C != 0) {
-        s32 size = lbl_8055DF8C;
+    size = lbl_8055DF8C;
+    if (size != 0) {
         if ((u8)lbl_8055DF81 == 0) {
-            if (size > 0x40) H::pad((Ring *)lbl_8041E140, size);
-        } else {
-            if (size > 0x40) H::pad((Ring *)lbl_8041E160, size);
+            if (size > 0x40) {
+                queue = lbl_8041E140;
+                mask = size - 1;
+                sum = *(s32 *)((u8 *)queue + 0xC) +
+                      *(s32 *)((u8 *)queue + 4);
+                if (((sum + 0x40) & mask) != 0) {
+                    offset = mask & (size - ((sum + 0x80) & mask));
+                    result = ((Ring *)queue)->alloc(offset, lbl_8032A05C, 3);
+                    *(u8 *)((u8 *)result - 0x1C) = 0;
+                }
+            }
+        } else if (size > 0x40) {
+            queue = lbl_8041E160;
+            mask = size - 1;
+            sum = *(s32 *)((u8 *)queue + 0xC) +
+                  *(s32 *)((u8 *)queue + 4);
+            if (((sum + 0x40) & mask) != 0) {
+                offset = mask & (size - ((sum + 0x80) & mask));
+                result = ((Ring *)queue)->alloc(offset, lbl_8032A05C, 3);
+                *(u8 *)((u8 *)result - 0x1C) = 0;
+            }
         }
         lbl_8055DF8C = 0;
     }
@@ -638,12 +652,13 @@ check:
         goto loop;
 }
 
-s32 fn_80128E58(void *arg0, s32 arg1) {
-    s32 aligned = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x40);
-    s32 end = *(s32 *)((u8 *)arg0 + 8);
+s32 fn_80128E58(void *heap, s32 size) {
+    /* Return an aligned allocation address from the end of heap space, or 0 if not enough room. */
+    s32 alignedSize = ((s32 (*)(s32, s32))fn_801281F4)(size, 0x40);
+    s32 used = *(s32 *)((u8 *)heap + 8);
     s32 result;
-    if (*(s32 *)((u8 *)arg0 + 4) < end - aligned)
-        result = *(s32 *)((u8 *)arg0 + 0xC) + end - aligned;
+    if (*(s32 *)((u8 *)heap + 4) < used - alignedSize)
+        result = *(s32 *)((u8 *)heap + 0xC) + used - alignedSize;
     else
         result = 0;
     return result;
