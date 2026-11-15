@@ -465,6 +465,7 @@ extern s32 fn_80179630(s32);
 extern void fn_8020C8FC(void);
 extern void fn_8020C8F8(void);
 void fn_801C4B10(void) {
+    /* Count active player slots, allocate the action list buffer, and initialize it. */
     for (lbl_8055E804 = 0; fn_8017960C(lbl_8055E804); lbl_8055E804++) {
     }
     lbl_8055E7F8 = fn_8012850C(0xC300, lbl_80336D84);
