@@ -354,10 +354,15 @@ char fn_801B8514(void) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_801B851C(void* arg0) {
+/* Hand obj on to the arena-event master (lbl_8055E744) through its vtable slot
+ * 0x28: ZoneMaster's fn_801B8A20 runs obj's own slot 0x1C while the master is
+ * active (lbl_8055E748), and the "null_amaster" answer is a plain 1.  Nothing is
+ * handed on, and 0 comes back, while the screen's challenge sub-task reports
+ * itself finished (fn_80161BB8, that object's vtable slot 0x24). */
+extern "C" int fn_801B851C(void *obj) {
     extern int fn_80161BB8(void);
     if (fn_80161BB8() != 0) return 0;
-    return ((Dummy_801B851C *)lbl_8055E744)->d8(arg0);
+    return ((ArenaMaster *)lbl_8055E744)->d8(obj);
 }
 /* Return 1 if the global object accepts arg0 and fn_80161B94 reports clear. */
 extern "C" int fn_801B8570(int arg0) {
