@@ -26,16 +26,18 @@ extern u8 lbl_80422380[0x20];
 extern void *lbl_8055DFD4;
 #pragma scheduling invalid_target
 void fn_80129400(void) {
-    u8 *p;
-    s32 i;
+    /* Refresh controller input and copy each controller's state into its 0x80-byte snapshot slot (state stored at +0x1C). */
+    u8 *snapshot;
+    s32 controllerIndex;
+
     fn_802E7FD0();
-    p = lbl_80422180;
-    i = 0;
+    snapshot = lbl_80422180;
+    controllerIndex = 0;
     do {
-        fn_802E8364(p + 0x1C, i);
-        i += 1;
-        p += 0x80;
-    } while (i < 4);
+        fn_802E8364(snapshot + 0x1C, controllerIndex);
+        controllerIndex += 1;
+        snapshot += 0x80;
+    } while (controllerIndex < 4);
 }
 #pragma push
 #pragma scheduling invalid_target
