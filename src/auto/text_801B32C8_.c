@@ -69,6 +69,20 @@ extern void fn_801B3E24(void *, void *, void *, s32, s32, f32);
 typedef struct Ent801B3FD8 { s32 a; s32 group; f32 c; } Ent801B3FD8;
 typedef struct Out801B3FD8 { Ent801B3FD8* p; s32 n; s32 z; } Out801B3FD8;
 
+/* One of the 16 sound slots the manager at lbl_8055E6C0 keeps at +0x2FC (its ring
+   index is at +0x5BC).  fn_801B42D0 builds the slot's Sound3D on the two vectors
+   and fn_801B3E24 fills in what it is playing: the object, that object's pair key
+   and the game time it was started at (lbl_80562650 = never). */
+typedef struct SoundSlot801B3DC0 {
+    void*          vtable;      /* 0x00 */
+    V3_801B34DC    pos;         /* 0x04: where its sound plays (live, the Sound3D points here) */
+    V3_801B34DC    vel;         /* 0x10: the sound's second vector, kept at zero */
+    s32            sound;       /* 0x1C: the Sound3D built on those two vectors */
+    u32            object;      /* 0x20: object the sound was last played for */
+    u32            key;         /* 0x24: that object's pair key */
+    f32            time;        /* 0x28: game time (lbl_8055E3C8) it was played at */
+} SoundSlot801B3DC0;            /* 0x2C */
+
 void fn_801B435C(void*);
 void fn_801B3DBC(void*);
 
