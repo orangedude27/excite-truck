@@ -8618,18 +8618,20 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229168(
     return this_;
 }
 
+/* nw4hbm::snd::detail::DisposeCallbackManager destructor helper:
+ * destroys the base/subobject when non-null, then optionally frees storage. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802291C4(
-    void* this_, s32 flag) {
-    if (this_) {
-        if (this_ != NULL) {
-            fn_8021915C(this_, 0);
+    void* object, s32 shouldDelete) {
+    if (object) {
+        if (object != NULL) {
+            fn_8021915C(object, 0);
         }
 
-        if (flag > 0) {
-            fn_80128668(this_);
+        if (shouldDelete > 0) {
+            fn_80128668(object);
         }
     }
-    return this_;
+    return object;
 }
 
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229220(
