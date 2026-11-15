@@ -5285,6 +5285,8 @@ void fn_80071298(void *a, void *b, void *c) {
     if (callback != 0) callback(7, a, b, c);
 }
 
+/* Initialize the BTA system control block: clear state, initialize the protocol timer,
+ * record the owning GKI task id, and cache the configured trace level. */
 void bta_sys_init(void) {
     memset(lbl_803C0AD8, 0, 0x8C);
     fn_80071510(lbl_803C0AD8 + 0x68, 0x3E8, lbl_80559038[3]);
@@ -21571,21 +21573,25 @@ void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
 }
 
 extern char lbl_80319570[];
+#pragma push
+#pragma opt_propagation off
 void port_select_mtu(void *arg0) {
     register char *messages = lbl_80319570;
     register u8 *port = (u8 *)arg0;
     u16 packet_size;
+    u32 raw_size;
     u32 mtu;
 
     mtu = *(u16 *)(port + 0x12);
     if (mtu == 0) {
-        packet_size = btm_get_max_packet_size(port + 6);
+        raw_size = ((u32 (*)(u8 *))btm_get_max_packet_size)(port + 6);
+        packet_size = raw_size;
         if (packet_size == 0) {
             if (lbl_803C4828[0x414] >= 2)
-                fn_8007093C(0x90001, messages);
+                fn_8007093C(0x90001, (void *)((u32)messages + 0));
             *(u16 *)(port + 0x12) = 0x7F;
         } else if (packet_size <= 0x69F) {
-            mtu = ((0x69F / packet_size) * packet_size) - 0xA;
+            mtu = ((0x69F / packet_size) * raw_size) - 0xA;
             *(u16 *)(port + 0x12) = mtu;
             if (lbl_803C4828[0x414] >= 5)
                 fn_80070954(0x90004, messages + 0x20, mtu);
@@ -21595,7 +21601,7 @@ void port_select_mtu(void *arg0) {
                 fn_80070954(0x90004, messages + 0x58, 0x695);
         }
     } else if (lbl_803C4828[0x414] >= 5) {
-        ((void (*)(u32, void *))fn_80070954)(0x90004, messages + 0x90);
+        fn_80070954(0x90004, messages + 0x90, mtu);
     }
 
     *(u16 *)(port + 0x9C) = 0x1F40 / *(u16 *)(port + 0x12);
@@ -21607,7 +21613,7 @@ void port_select_mtu(void *arg0) {
             *(u16 *)(port + 0x9C), *(u16 *)(port + 0x9E), *(u16 *)(port + 0xA0));
     }
 }
-
+#pragma pop
 void port_release_port(void *arg0) {
     u8 *port = arg0;
     void *buf;
