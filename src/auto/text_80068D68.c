@@ -801,7 +801,7 @@ typedef struct {
 extern char lbl_80317A54[];
 extern char lbl_80317A80[];
 #include "revolution/BTE/stack/include/wbt_api.h"
-extern void AXFXReverbHiExpShutdown(void*);
+extern void AXFXReverbHiExpShutdown();
 BOOL AXFXReverbHiExpInit(void*);
 extern void __FreeDelayLine(void*);
 typedef struct AXFX_BUFFERUPDATE_VIEW {
