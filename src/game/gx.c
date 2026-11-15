@@ -1881,6 +1881,12 @@ static void BssOrder_802D18E8(void) {
 }
 #pragma push
 #pragma use_lmw_stmw off
+/* Sets up the frame's lighting. The light direction is the view direction
+ * (sViewFrom's translation column minus sViewTo's) normalised to length 1.0;
+ * every entry of the scene light table is turned into a GX light object - or
+ * the fallback light is, when the table is empty - those objects are loaded
+ * into the GX light channels starting at GX_LIGHT1, and GX_COLOR1 is lit by
+ * the channels they went into. */
 void fn_802D18E8(void) {
     unsigned char color[4];
     float direction[3];
