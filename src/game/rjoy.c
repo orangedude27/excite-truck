@@ -25,20 +25,21 @@ int fn_802E77B8(void) { return 0; }
 
 #pragma push
 #pragma dont_inline on
-void *fn_802E77C0(int x) {
-    switch (x) {
+/* Returns the status label string for a WPAD/rjoy controller state code. */
+void *fn_802E77C0(int statusCode) {
+    switch (statusCode) {
     case 0:
-        return &lbl_8055D208;
+        return &lbl_8055D208; /* "NONE" */
     case -1:
-        return &lbl_8034D898;
+        return &lbl_8034D898; /* "NO_CONTROLLER" */
     case -2:
-        return &lbl_8055D210;
+        return &lbl_8055D210; /* "BUSY" */
     case -3:
-        return &lbl_8034D8A8;
+        return &lbl_8034D8A8; /* "TRANSFER" */
     case -4:
-        return &lbl_8055D218;
+        return &lbl_8055D218; /* "INVALID" */
     default:
-        return &lbl_8055D220;
+        return &lbl_8055D220; /* "???" */
     }
 }
 #pragma pop
@@ -87,46 +88,45 @@ float fn_802E78A4(float axis) {
 #undef RJOY_HALF
 #undef RJOY_CURVE_AMOUNT
 }
-#pragma pop
-#pragma push
-#pragma scheduling invalid_target
+#pragma cplusplus off
 void fn_802E7920(int arg0) {
     extern int WPADControlMotor(int, int);
     extern int fn_802D9BF0(void);
     extern int fn_802E2C20(void);
     extern unsigned char lbl_80505978[];
     extern unsigned char lbl_80560008;
-    register unsigned char *p;
-    register int player = arg0;
-    register int time;
+    struct MotorState { unsigned char pad[0xB0]; unsigned short level; unsigned short padB2; int value, lastLow, lastHigh; };
+    struct MotorState *p;
+    int player = arg0;
+    int time;
     int motor;
     int value;
     int cmd;
-    p = lbl_80505978 + player * 0x638;
+    p = (struct MotorState *)(lbl_80505978 + player * 0x638);
     time = fn_802E2C20();
     motor = fn_802D9BF0();
-    if (*(unsigned short *)(p + 0xB0) < 0x5000) {
-        if (time - *(int *)(p + 0xBC) > 0x3E8)
-            *(int *)(p + 0xB8) = time;
+    if (p->level < 0x5000) {
+        if (time - p->lastHigh > 0x3E8)
+            p->lastLow = time;
     } else {
-        *(int *)(p + 0xBC) = time;
-        if (time - *(int *)(p + 0xB8) > 0x1388)
+        p->lastHigh = time;
+        if (time - p->lastLow > 0x1388)
             motor = 1;
     }
     if (lbl_80560008 == 0)
         motor = 1;
     if (motor == 0) {
-        value = *(int *)(p + 0xB4) + *(unsigned short *)(p + 0xB0);
-        *(int *)(p + 0xB4) = value;
+        value = p->value + p->level;
+        p->value = value;
         cmd = (value >= 0x8000);
         if (cmd != 0)
-            *(int *)(p + 0xB4) = *(int *)(p + 0xB4) - 0x10000;
+            p->value = p->value - 0x10000;
     } else {
-        *(int *)(p + 0xB4) = cmd = 0;
+        p->value = cmd = 0;
     }
     WPADControlMotor(player, cmd);
 }
-#pragma pop
+#pragma cplusplus reset
 extern int fn_801282EC(int);
 extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
