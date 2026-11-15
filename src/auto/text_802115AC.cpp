@@ -186,7 +186,18 @@ public:
   virtual void vf18();
   virtual void vf19();
      virtual s32 vf20();     // vtable 0x58
-   virtual void vf21();    // vtable 0x5C
+        virtual void vf21();    // vtable 0x5C
+};
+
+/* A widget's head, as the widget code lays it out: the vtable pointer and the
+ * rectangle a move writes (fn_802191F0 keeps left, top, right and bottom
+ * here).  The wrapper methods below reach it through the widget at +0x244. */
+struct WidgetRect {
+    void *vtable;  /* 0x00 */
+    s32 left;      /* 0x04 */
+    s32 top;       /* 0x08 */
+    s32 right;     /* 0x0C */
+    s32 bottom;    /* 0x10 */
 };
 
 extern "C" void fn_8021915C(void *, unsigned int);
