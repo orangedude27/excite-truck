@@ -289,6 +289,7 @@ void fn_802C32B8(s32 x, s32 y, u32 packedColor) {
     }
     fn_802E317C(lbl_8034B060, (s32)*(volatile s8 *)canvas);
 }
+
 #pragma push
 #pragma inline_depth(0)
 void fn_802C3320(s32 x, s32 y, u32 packedValue) {
