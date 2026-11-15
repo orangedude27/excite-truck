@@ -439,18 +439,33 @@ s32 fn_8023DFB0(void) {
     return 0;
 }
 
+/* Input command 0x126 of the control-configuration screen: unhighlight the row of the
+   control list the cursor is on, move the cursor to the previous control (wrapping from
+   the first row back to the last one) and highlight that row. */
 int fn_8023DFD4(void) {
-    extern int lbl_8055F194;
-    extern void fn_8023E16C(void *, int);
-    extern void fn_8023E0DC(void *, int, int);
-    int capacity;
-    int index;
+    /* The control list (a UITable, one row per configurable control) and the row the
+       cursor is on; fn_8023D4B8 builds both, fn_8023E1FC fills the rows. */
+#define gControlTable lbl_8055F190
+#define gCursorRow lbl_8055F194
+#define UITable_ClearRow fn_8023E16C  /* writes tag 0 into every cell of a row */
+#define UITable_SelectRow fn_8023E0DC /* writes tag 1 into every cell of a row */
+    struct UITable {
+        char *text;   /* 0x00 every cell's string */
+        int columns;  /* 0x04 */
+        int rowsUsed; /* 0x08 rows written so far */
+    };
+    int rowsUsed;
+    int previous;
 
-    fn_8023E16C(lbl_8055F190, lbl_8055F194);
-    capacity = *(int *)((char *)lbl_8055F190 + 8);
-    index = (capacity + lbl_8055F194 - 1) % capacity;
-    lbl_8055F194 = index;
-    fn_8023E0DC(lbl_8055F190, index, capacity);
+    UITable_ClearRow(gControlTable, gCursorRow);
+    rowsUsed = ((struct UITable *)gControlTable)->rowsUsed;
+    previous = (rowsUsed + gCursorRow - 1) % rowsUsed;
+    gCursorRow = previous;
+    UITable_SelectRow(gControlTable, previous, rowsUsed);
+#undef gControlTable
+#undef gCursorRow
+#undef UITable_ClearRow
+#undef UITable_SelectRow
     return 0;
 }
 
