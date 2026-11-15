@@ -550,7 +550,6 @@ void *fn_801782C8(void) {
     return (void *)object;
 }
 #pragma scheduling on
-#pragma scheduling on
 
 #pragma scheduling on
 /* nw4hbm::snd::MemorySoundArchive scalar-deleting destructor: runs the base
