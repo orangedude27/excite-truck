@@ -23,6 +23,16 @@ extern void fn_8001D298(s32);
 
 extern void fn_8001C714(void);
 
+/* A ranking table entry's packed word (fn_8001D220) taken apart by fn_8001BBBC:
+ * which entry of the game's data table (fn_80016510, 0xA8 stride) the record
+ * belongs to, which of that entry's values at +0x64 it is, and the flag byte
+ * stored with it. */
+typedef struct EntryRef {
+    s32 entryIndex; /* 0x00: packed byte 0, index into the data table */
+    s32 valueIndex; /* 0x04: packed byte 1, index into that entry at +0x64 */
+    s32 flag;       /* 0x08: packed byte 2, set when that byte was non-zero */
+} EntryRef;
+
 typedef struct Unk8001BBBC {
     s32 unk_0x0;
     s32 unk_0x4;
