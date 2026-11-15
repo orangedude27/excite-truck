@@ -798,13 +798,15 @@ void fn_8028F5A4(void) {
 }
 
 extern void fn_802916E4(void);
-void *__dt__Q34nw4r2ef6EffectFv_8028F5A8(void *arg0, int arg1) {
-    if (arg0) {
-        *(void **)arg0 = lbl_803490D4;
+/* Destructor for nw4r::ef::Effect: installs this class's vtable, runs the base
+ * destructor, and frees the object when shouldDelete is positive. */
+void *__dt__Q34nw4r2ef6EffectFv_8028F5A8(void *effect, int shouldDelete) {
+    if (effect) {
+        *(void **)effect = lbl_803490D4; /* nw4r::ef::Effect vtable */
         fn_802916E4();
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(effect);
     }
-    return arg0;
+    return effect;
 }
 
 extern double fn_8002EFB4(double, double);
