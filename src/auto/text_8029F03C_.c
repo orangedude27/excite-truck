@@ -134,6 +134,7 @@ void fn_8029F0D0(void) {
 #undef resetEmitterTable
 #undef destroyTrackEffectObjects
 }
+
 #pragma push
 #pragma scheduling invalid_target
 void fn_8029F124(void) {
