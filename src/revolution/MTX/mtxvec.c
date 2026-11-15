@@ -28,6 +28,22 @@ void PSMTXScale(Mtx m, f32 sx, f32 sy, f32 sz) {
     // clang-format on
 }
 
+/*
+ * PSMTXMultVec - transform a point by a 3x4 row-major matrix (below).
+ *
+ * out = mtx * (vec, 1): every component is the dot product of one matrix row
+ * with the vector.  The vector's Z is loaded with the paired-load "w" bit set
+ * (psq_l f1, Vec.z(vec), 1, 0), so that load hands back {VZ, 1.0} and each
+ * row's translation element mtx[row][3] takes part in the sum - this maps
+ * points, not directions.
+ *
+ * The body is the Revolution SDK's own hand-written assembly, kept as the SDK
+ * wrote it: a row's four products are done as two paired-single operations,
+ * ps_sum0 folds the pair's halves into one scalar, and the next row's loads
+ * are issued before the store of the finished component.  No C reproduces
+ * that schedule, so the body stays assembly.
+ */
+
 asm void PSMTXMultVec(register const Mtx mtx, register const Vec* vec,
                       register Vec* out) {
     // clang-format off
