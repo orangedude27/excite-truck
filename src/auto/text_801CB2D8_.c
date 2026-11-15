@@ -327,6 +327,7 @@ void *fn_801CB954(s32 arg0, void *arg1, s32 arg2) {
 #pragma pop
 
 void *__dt__Q34nw4r2ef6EffectFv_801CBCA4(void *arg0, int arg1) {
+    /* Destructor for nw4r2ef::Effect variant: restore vtable at +4, run cleanup, and optionally free. */
     extern void fn_801CBD04(void *);
     if (arg0) {
         *(void **)((char *)arg0 + 4) = lbl_80338038;
