@@ -4555,14 +4555,15 @@ extern "C" void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
 
 #pragma push
 #pragma small_data off
-extern "C" void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_80333728;
-        ((void (*)(void *))fn_801CFF14)(*(void **)((u8 *)arg0 + 0x24));
-        if (arg1 > 0)
-            ((void (*)(void *))fn_80128668)(arg0);
+extern "C" void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *thisPtr, s32 deleteFlag) {
+    /* PSSystem::SeqHeap destructor: install vtable, destroy owned heap object, then optionally free. */
+    if (thisPtr != 0) {
+        *(void **)thisPtr = &lbl_80333728;
+        ((void (*)(void *))fn_801CFF14)(*(void **)((u8 *)thisPtr + 0x24));
+        if (deleteFlag > 0)
+            ((void (*)(void *))fn_80128668)(thisPtr);
     }
-    return arg0;
+    return thisPtr;
 }
 #pragma pop
 extern "C" void fn_801A401C(void *arg0, void *arg1) {
