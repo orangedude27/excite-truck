@@ -1058,11 +1058,26 @@ int fn_802C9C58(int arg0) {
     return old;
 }
 
-int fn_802C9C8C(int arg0) {
+/* Begin the alpha-only overlay pass that fn_802C9CE0 finishes.  The texture
+ * module's "texture last bound" cache is dropped first (fn_802CAD68, the pass
+ * replaces the TEV and blend state behind its back) and fn_802D31D8 then puts
+ * GX into the state that writes alpha only: colour updates off, one TEV stage
+ * producing a constant alpha, that alpha blended into the frame buffer.  (It
+ * takes no real argument; the 1 is what the original left in r3.)  Whatever the
+ * caller draws up to fn_802C9CE0 therefore only paints an alpha mask, which
+ * that function copies off the frame buffer and blends back over the screen
+ * tinted with `tintColor` -- a packed RGBA word, read as a colour by
+ * fn_802CEA1C; fn_8029790C passes 0x50000000 for its shadow volumes, black at
+ * 0x50 alpha.  The tint is kept for that second half, the module's render state
+ * becomes the overlay pass, and 0 is returned when the state could not be set
+ * up, so the caller skips its drawing.
+ * (rename_symbol is refused here, so the suggested name
+ * DrawList_BeginAlphaOverlay only lives in this comment.) */
+int fn_802C9C8C(unsigned int tintColor) {
     fn_802CAD68();
     if (fn_802D31D8(1) != 0) {
-        lbl_8055FC84 = arg0;
-        lbl_8055FC70 = 4;
+        sOverlayTint = tintColor;
+        sRenderMode = RENDER_MODE_ALPHA_OVERLAY;
         return 1;
     }
     return 0;
