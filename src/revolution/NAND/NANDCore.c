@@ -136,6 +136,7 @@ BOOL nandIsPrivatePath(const char* path) {
 }
 
 BOOL nandIsUnderPrivatePath(const char* path) {
+    /* Check whether `path` begins with "/shared2/" and has at least one more character after it. */
     size_t len = sizeof("/shared2/") - 1;
 
     if (strncmp(path, "/shared2/", len) == 0 && path[len] != '\0') {
