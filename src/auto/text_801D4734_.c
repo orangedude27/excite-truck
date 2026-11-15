@@ -1655,7 +1655,7 @@ extern "C" int fn_801D6948(void *out, void *object) {
         float y;
         float z;
         Vec3() {}
-        Vec3(float a, float b, float c) : x(a), y(b), z(c) {}
+        Vec3(const float &a, const float &b, const float &c) : x(a), y(b), z(c) {}
     };
     struct Dummy {
         virtual void v0();
@@ -1699,7 +1699,7 @@ extern "C" int fn_801D6948(void *out, void *object) {
         return 0;
     }
     {
-        Vec3 v = obj->vector2(&lbl_8055ACD4, Vec3(lbl_80562ADC, lbl_80562ADC, lbl_80562ADC));
+        const Vec3 &v = obj->vector2(&lbl_8055ACD4, Vec3(lbl_80562ADC, lbl_80562ADC, lbl_80562ADC));
         ((float *)out)[9] = v.x;
         ((float *)out)[10] = v.y;
         ((float *)out)[11] = v.z;
@@ -1720,7 +1720,6 @@ extern "C" int fn_801D6948(void *out, void *object) {
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
-
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
@@ -2369,19 +2368,20 @@ int fn_801D770C(int arg0, int arg1) {
     return arg0;
 }
 
-void *fn_801D774C(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (((int)arg0 + 0x24) != 0) {
-            if (((int)arg0 + 0x24) != 0) {
-                *(int *)((char *)arg0 + 0x24) = 0;
-                *(int *)((char *)arg0 + 0x28) = 0;
-                *(int *)((char *)arg0 + 0x2C) = 0;
+/* Destructor-like helper: clear embedded state at offsets +0x24, +0x28, +0x2C, then optionally free the object. */
+void *fn_801D774C(void *object, int shouldDelete) {
+    if (object != 0) {
+        if (((int)object + 0x24) != 0) {
+            if (((int)object + 0x24) != 0) {
+                *(int *)((char *)object + 0x24) = 0;
+                *(int *)((char *)object + 0x28) = 0;
+                *(int *)((char *)object + 0x2C) = 0;
             }
         }
-        if (arg1 > 0)
-            ((void (*)(void *))fn_80128668)(arg0);
+        if (shouldDelete > 0)
+            ((void (*)(void *))fn_80128668)(object);
     }
-    return arg0;
+    return object;
 }
 
 char *fn_801D77AC(void) {
