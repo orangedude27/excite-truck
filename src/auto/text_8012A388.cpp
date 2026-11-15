@@ -845,10 +845,6 @@ static inline s32 LoadEntryData(void *arg0, s32 arg1) {
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
-
-#pragma push
-#pragma dont_inline off
-#pragma auto_inline off
 extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     return LoadEntryData(arg0, arg1);
 }
