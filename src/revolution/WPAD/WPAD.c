@@ -5758,25 +5758,26 @@ void fn_80065524(s32 chan, WPADStatusEx* pStatus)
 {
     WPADCB* pCB;
     volatile u8* pBase;
-    u8* tmp;
     u32 enabled;
     u32 idx;
+    u8* p = (u8*)pStatus;
+
     enabled = OSDisableInterrupts();
     pCB = lbl_8038F4F0[(u8)chan];
-    tmp = (u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60;
-    pBase = (volatile u8*)(tmp + 0xA0);
+    pBase = (volatile u8*)pCB->rxBufs[*(u8*)((u8*)pCB + 0x806)];
     for (idx = 0; idx < 96; idx++) {
         pBase[idx] = 0;
     }
-    *(u16*)pBase = ((u16)*((u8*)pStatus + 1) | ((u16)*((u8*)pStatus + 2) << 8)) & 0x9F1F;
+    *(u16*)pBase = ((u16)p[2] << 8) | p[1];
+    *(u16*)pBase &= 0x9F1F;
     if (*(s32*)((u8*)pCB + 0x7F8) == 0) {
-        pBase[0x29] = *(u32*)((u8*)pCB + 0x7FC);
+        *(u8*)(pBase + 0x29) = *(u32*)((u8*)pCB + 0x7FC);
     } else if (*(s32*)((u8*)pCB + 0x7FC) == 0) {
-        ((volatile s8*)pBase)[0x29] = -4;
+        *(s8*)(pBase + 0x29) = -4;
     }
-    pBase[0x28] = *(u8*)((u8*)pCB + 0x801);
-    *(s32*)((u8*)pCB + 0x788) = (s32)((s32)(*(u8*)((u8*)pStatus + 1) & 0x80) >> 7);
-    *(u8*)((u8*)pCB + 0x806) = (u8)((u32)__cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 5);
+    *(u8*)(pBase + 0x28) = *(u8*)((u8*)pCB + 0x801);
+    *(u32*)((u8*)pCB + 0x788) = (p[1] >> 7) & 1;
+    *(u8*)((u8*)pCB + 0x806) = !*(u8*)((u8*)pCB + 0x806);
     OSRestoreInterrupts(enabled);
 }
 
