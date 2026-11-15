@@ -109,6 +109,7 @@ void* fn_802B8DA0(void* arg0, s32 arg1) {
 }
 
 void* fn_802B8DF8(void* arg0, s32 arg1) {
+    /* Destroy a small struct by clearing its three fields and optionally freeing it. */
     if (arg0 != 0) {
         if (arg0 != 0) {
             *(s32 *)arg0 = 0;
