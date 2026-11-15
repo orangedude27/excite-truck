@@ -2056,15 +2056,21 @@ copy_done:
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801D71A8(void *arg0) {
-    struct ThreadObject {
-        virtual void destroy(int);
+/* RingMaster_ASE (vtable lbl_80338B08, class name returned by fn_801D7200):
+ * frees the "ringon.sfx" Sound that fn_801D707C created with fn_80207848 and
+ * kept at +0x38, then clears the field.  destroy(1) is the deleting destructor
+ * call -- vtable +0x8 with the delete flag, as in fn_80207848's cleanup.
+ * The original tests the pointer twice (both branches are in the code), so the
+ * null check is written twice. */
+extern "C" void fn_801D71A8(void *self) {
+    struct Sound {
+        virtual void destroy(int); /* the deleting destructor, vtable +0x8 */
     };
-    ThreadObject *obj = *(ThreadObject **)((char *)arg0 + 0x38);
-    if (obj != 0 && obj != 0) {
-        obj->destroy(1);
+    Sound *sound = *(Sound **)((char *)self + 0x38);
+    if (sound != 0 && sound != 0) {
+        sound->destroy(1);
     }
-    *(ThreadObject **)((char *)arg0 + 0x38) = 0;
+    *(Sound **)((char *)self + 0x38) = 0;
 }
 #pragma pop
 #pragma cplusplus reset
