@@ -17,6 +17,7 @@ DECL_SECTION(".ctors") funcptr_t D_802ED550 = fn_802B1C88;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* Initializes this module's global object record and registers its static destructor. */
 void fn_802B1C88(void) {
     fn_8000D838(&lbl_8055F990);
     lbl_804BE104[0] = (int)((char *)lbl_804BE104 + 12);
