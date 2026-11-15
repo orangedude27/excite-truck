@@ -205,10 +205,26 @@ void fn_8000F2EC(void) {
     if (lbl_80351214 != 0) fn_80235380(lbl_80351214);
 }
 
-void fn_8000F330(void *arg0, void *arg1, s32 arg2) {
-    lbl_8055D4C0 = fn_8023512C();
-    lbl_8055D4C4 = fn_80232578((s32)arg1);
-    lbl_8055D4C8 = fn_80232578(arg2);
+/* Load the resources the two bottom-of-screen banners are drawn from, the same
+ * ones fn_8000F384 releases again: the sprite sheet fn_8000FC8C and fn_8000FDF0
+ * draw as their end caps, opened as a refcounted archive file handle
+ * (fn_8023512C; fn_80235EF0 / fn_80235F64 give one of its frames' size), and the
+ * gText font taken twice, once per banner, so each holds a reference of its own
+ * (fn_802328D4 drops one).  The names come from the string table at
+ * lbl_802FC2A8 -- "interlude.art" and, for both font slots, the "uifnt.gtx" UI
+ * font; the caller fn_8000F884 passes that one name twice.
+ * (rename_symbol is refused here, so the suggested name
+ * DashHelper_LoadBannerResources only lives in this comment.) */
+void fn_8000F330(const char *artName, const char *fontName, s32 otherFontName) {
+#define INTERLUDE_ART lbl_8055D4C0 /* the "interlude.art" file handle */
+#define VALUE_FONT lbl_8055D4C4 /* font of the value banner fn_8000FC8C */
+#define INTERLUDE_FONT lbl_8055D4C8 /* font of the interlude banner fn_8000FDF0 */
+    INTERLUDE_ART = fn_8023512C(artName);
+    VALUE_FONT = fn_80232578((s32)fontName);
+    INTERLUDE_FONT = fn_80232578(otherFontName);
+#undef INTERLUDE_ART
+#undef VALUE_FONT
+#undef INTERLUDE_FONT
 }
 
 /* Free the interlude banner resources (art set and two font objects) loaded by fn_8000F330. */
