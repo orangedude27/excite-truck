@@ -687,24 +687,25 @@ extern "C" void *fn_80218F80(void *arg0, void *arg1) {
 #pragma pop
 #define fn_80218F80() ((void (*)(void))fn_80218F80)()
 
-extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    *(u8 *)((u8 *)arg0 + 0x1A) = 1;
-    *(u8 *)((u8 *)arg0 + 0x1B) = 1;
-    *(f32 *)((u8 *)arg0 + 0x1C) = -1.0f;
-    *(f32 *)((u8 *)arg0 + 0x20) = -1.0f;
-    *(f32 *)((u8 *)arg0 + 0x24) = 1.0f;
-    *(f32 *)((u8 *)arg0 + 0x28) = 1.0f;
-    *(u8 *)((u8 *)arg0 + 0x234) = 1;
-    *(s32 *)((u8 *)arg0 + 0x238) = 0;
-    *(u8 *)((u8 *)arg0 + 0x18) = 0;
-    *(s32 *)((u8 *)arg0 + 0x230) = 0;
-    *(s32 *)((u8 *)arg0 + 4) = arg1;
-    *(s32 *)((u8 *)arg0 + 0xC) = arg3;
-    *(s32 *)((u8 *)arg0 + 8) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x10) = arg4;
-    *(s32 *)((u8 *)arg0 + 0x14) = arg5;
-    *(u8 *)((u8 *)arg0 + 0x19) = 0;
-    *(s32 *)((u8 *)arg0 + 0x2C) = 0;
+/* Initializes UI bounds/state fields: enables flags, sets default scales/extents, stores bounds/flags, and clears transient state. */
+extern "C" void fn_80218FEC(void *obj, s32 left, s32 top, s32 right, s32 bottom, s32 flags) {
+    *(u8 *)((u8 *)obj + 0x1A) = 1;
+    *(u8 *)((u8 *)obj + 0x1B) = 1;
+    *(f32 *)((u8 *)obj + 0x1C) = -1.0f;
+    *(f32 *)((u8 *)obj + 0x20) = -1.0f;
+    *(f32 *)((u8 *)obj + 0x24) = 1.0f;
+    *(f32 *)((u8 *)obj + 0x28) = 1.0f;
+    *(u8 *)((u8 *)obj + 0x234) = 1;
+    *(s32 *)((u8 *)obj + 0x238) = 0;
+    *(u8 *)((u8 *)obj + 0x18) = 0;
+    *(s32 *)((u8 *)obj + 0x230) = 0;
+    *(s32 *)((u8 *)obj + 4) = left;
+    *(s32 *)((u8 *)obj + 0xC) = right;
+    *(s32 *)((u8 *)obj + 8) = top;
+    *(s32 *)((u8 *)obj + 0x10) = bottom;
+    *(s32 *)((u8 *)obj + 0x14) = flags;
+    *(u8 *)((u8 *)obj + 0x19) = 0;
+    *(s32 *)((u8 *)obj + 0x2C) = 0;
 }
 
 /* Updates fade timers at +0x1C/+0x20 based on state flag +0x1A, decaying by dt * rate until threshold and setting dirty flag +0x234 on transitions. */
