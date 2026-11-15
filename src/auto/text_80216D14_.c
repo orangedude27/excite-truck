@@ -336,8 +336,9 @@ extern "C" void fn_8021749C(void *menuGroup, int screenX, int screenY) {
 #pragma cplusplus off
 
 #pragma cplusplus on
-extern "C" void fn_80217590(void *arg0, int arg1, int arg2) {
-    class Obj {
+/* Delivers a pointer-release event (v14) to the held widget at group-local coordinates, then clears the held-widget slot. */
+extern "C" void fn_80217590(void *menuGroup, int screenX, int screenY) {
+    class HeldWidget {
     public:
         virtual void v0();
         virtual void v1();
@@ -355,14 +356,14 @@ extern "C" void fn_80217590(void *arg0, int arg1, int arg2) {
         virtual void v13();
         virtual void v14(int, int);
     };
-    char *base = (char *)arg0;
-    void *obj = *(void **)(base + 0x44C);
-    int x = arg1 - *(int *)(base + 0x454);
-    int y = arg2 - *(int *)(base + 0x458);
-    if (obj != 0) {
-        ((Obj *)obj)->v14(x, y);
+    char *groupBase = (char *)menuGroup;
+    void *heldWidget = *(void **)(groupBase + 0x44C);
+    int localX = screenX - *(int *)(groupBase + 0x454);
+    int localY = screenY - *(int *)(groupBase + 0x458);
+    if (heldWidget != 0) {
+        ((HeldWidget *)heldWidget)->v14(localX, localY);
     }
-    *(void **)(base + 0x44C) = 0;
+    *(void **)(groupBase + 0x44C) = 0;
 }
 #pragma cplusplus off
 void fn_80218198(void *, void **);
