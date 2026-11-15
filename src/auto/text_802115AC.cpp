@@ -2326,6 +2326,8 @@ extern "C" s32 fn_802155AC(void) {
 
 extern "C" void fn_802C4C80(void*);
 extern "C" int lbl_8033D528[];
+/* Destroys a CollisionSpace instance: installs this class's vtable, releases the
+ * owned subobject at offset 4, and conditionally frees the storage. */
 extern "C" void* __dt__14CollisionSpaceFv_802155B4(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void**)arg0 = &lbl_8033D528;
