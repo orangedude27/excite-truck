@@ -165,6 +165,9 @@ extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv
     return 0;
 }
 #pragma pop
+/* nw4hbm::ut::IOStream::Read(void*, u32) -- ut_IOStream.cpp line 142.
+   Reads `size` bytes into `buf` through the stream's virtual read (vtable 0x28);
+   a stream whose read reports failure has no async read at all, which is fatal. */
 extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl_80107668(nw4hbm::ut::IOStream* stream,
                                                          void* buf,
                                                          u32 size) {
