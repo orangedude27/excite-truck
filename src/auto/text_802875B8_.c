@@ -96,17 +96,18 @@ extern void fn_8029F03C(void);
 extern void fn_802AB21C(void);
 extern void fn_8028DFB0(void);
 typedef struct Obj { void **vtable; } Obj;
-void* fn_802875B8(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+void* fn_802875B8(void* object, s32 shouldDelete) {
+    /* Clears a 3-word object header and frees it when requested (global destructor). */
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 /* Resets the three 32-bit fields of a container to zero and, when shouldFree
