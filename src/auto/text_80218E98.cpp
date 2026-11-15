@@ -2997,14 +2997,15 @@ extern "C" void *fn_8021D044(void *obj, s32 x, s32 y, s32 selectedIndexPtr, cons
     return obj;
 }
 
-extern "C" void fn_8021D154(void *arg0) {
-    void *value;
+extern "C" void fn_8021D154(void *widget) {
+    void *entry;
 
+    /* If enabled, register (+0x2C0, +0x2C) and cache the returned entry at +0x2BC, then notify (tag 1, size 4). */
     if (fn_80129BC4() != 0) {
-        value = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C),
-                            *(s32 *)((u8 *)arg0 + 0x2C0), arg0);
-        *(void **)((u8 *)arg0 + 0x2BC) = value;
-        ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
+        entry = fn_80217BD8(*(s32 *)((u8 *)widget + 0x2C),
+                            *(s32 *)((u8 *)widget + 0x2C0), widget);
+        *(void **)((u8 *)widget + 0x2BC) = entry;
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(widget, 1, entry, 4);
     }
 }
 
