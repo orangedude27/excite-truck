@@ -750,17 +750,19 @@ void fn_802B9B68(void) {
     lbl_8055FA78 = 0;
 }
 
-void* fn_802B9C9C(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+/* Resets the three 32-bit fields of a container to zero and, when shouldFree
+ * is positive, frees the container itself. */
+void *fn_802B9C9C(void *object, s32 shouldFree) {
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldFree > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_802B9CF4(void *arg0) {
