@@ -5542,14 +5542,15 @@ extern "C" void* __dt__14CollisionSpaceFv_80222584(void* self, s32 shouldDelete)
 }
 extern "C" void fn_802336AC(s32, s32, s32, const char *, f32, f32, f32, ...);
 extern "C" char lbl_8055B8A4[4];
-extern "C" void fn_802225E8(void *arg0, s32 arg1, s32 arg2) {
-    f32 spC;
-    f32 sp8;
+extern "C" void fn_802225E8(void *obj, s32 gridX, s32 gridY) {
+    /* Convert grid coordinates to world position and draw the object's text at offset +4 with format "%s". */
+    f32 worldX;
+    f32 worldY;
 
-    fn_80230C30(&spC, &sp8, arg1, arg2);
-    f32 f = lbl_805634A8;
-    fn_802336AC(*(s32 *)((u8 *)arg0 + 4), -1, 9, lbl_8055B8A4, spC, sp8, f,
-                *(s32 *)((u8 *)arg0 + 8));
+    fn_80230C30(&worldX, &worldY, gridX, gridY);
+    f32 z = lbl_805634A8;
+    fn_802336AC(*(s32 *)((u8 *)obj + 4), -1, 9, lbl_8055B8A4, worldX, worldY, z,
+                *(s32 *)((u8 *)obj + 8));
 }
 
 extern "C" void fn_8022264C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
