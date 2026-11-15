@@ -2552,18 +2552,22 @@ extern "C" void *fn_80141EB0(RingBuf8013D2C4 *rb) {
     return entry;
 }
 
-extern "C" s32 fn_80141F28(void *arg0, s32 arg1) {
-    s32 head = ((s32 *)arg0)[3];
-    s32 capacity = ((s32 *)arg0)[1];
-    s32 count = capacity + (((s32 *)arg0)[2] - head);
-    if (arg1 >= count % capacity)
+/* ZoneMaster's ring buffer peek (ZoneMaster::rb, at ZoneMaster+0xC0): hands back
+ * a pointer to the 12-byte record `n` places ahead of the read index `tail`,
+ * wrapping at `cap`, or 0 once n reaches the number of queued records
+ * ((cap + head - tail) % cap).  Unlike fn_80141EB0 it does not step the read
+ * index, so a caller can look at the oldest queued record without consuming it. */
+extern "C" s32 fn_80141F28(RingBuf8013D2C4 *rb, s32 n) {
+    s32 tail = rb->tail;
+    s32 capacity = rb->cap;
+    s32 count = capacity + (rb->head - tail);
+    if (n >= count % capacity)
         return 0;
-    char *tmp = (char *)capacity + head;
-    s32 *base = (s32 *)((s32 *)arg0)[0];
-    s32 index = (s32)(tmp + arg1) % capacity;
+    char *tmp = (char *)capacity + tail;
+    s32 *base = (s32 *)rb->ptr;
+    s32 index = (s32)(tmp + n) % capacity;
     return (s32)base + index * 12;
 }
-
 #pragma small_data off
 extern "C" s32 fn_80141F7C(f32 arg0) {
     return (f32)__fabs((f64)arg0) <= lbl_80558DC4[0];
