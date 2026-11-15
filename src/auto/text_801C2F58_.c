@@ -2581,10 +2581,24 @@ void fn_801C94BC(void) {
     fn_80238B44();
 }
 
-void fn_801C94C0(s32 arg0, s32 arg1) {
-    fn_8023895C();
-    ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg0, arg1, (char *)((u32)lbl_80437FC0 | 0), -1);
-    fn_802389E4();
+void fn_801C94C0(s32 x, s32 y) {
+    /* Draw the console line the debug menu's actions report their result on at
+     * (x, y) of the debug overlay, in a text pass of its own: fn_8023895C opens
+     * the overlay text renderer and fn_802389E4 closes it, flushing the line.
+     * The cast on debug_draw_text is load-bearing -- without it the call to the
+     * fn_801C94B8 thunk above gets inlined and the code changes.
+     * Proposed name: draw_console_line. */
+    #define console_line    lbl_80437FC0 /* 304-byte line sprintf'd by the menu actions */
+    #define begin_text_pass fn_8023895C  /* open the overlay text renderer */
+    #define end_text_pass   fn_802389E4  /* close it, flushing what was drawn */
+
+    begin_text_pass();
+    ((void (*)(s32, s32, char *, s32))debug_draw_text)(x, y, (char *)((u32)console_line | 0), -1);
+    end_text_pass();
+
+    #undef console_line
+    #undef begin_text_pass
+    #undef end_text_pass
 }
 
 extern void fn_801769EC(void);
