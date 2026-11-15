@@ -262,11 +262,12 @@ float fn_8022DAB0(void *arg0) {
     return (**(float **)((char *)arg0 + 0x18) - low) / (*(float *)((char *)arg0 + 0x10) - low);
 }
 
-void fn_8022DAD0(void *arg0, float arg1) {
-    float high = *(float *)((char *)arg0 + 0x10);
-    float low = *(float *)((char *)arg0 + 0xC);
-    float step = *(float *)((char *)arg0 + 0x14);
-    **(float **)((char *)arg0 + 0x18) = step * (float)(int)(lbl_805635D4 + ((low + arg1 * (high - low)) / step));
+void fn_8022DAD0(void *params, float t) {
+    /* Quantize an interpolated value (low + t*(high-low)) to step increments and store it. */
+    float high = *(float *)((char *)params + 0x10);
+    float low = *(float *)((char *)params + 0x0C);
+    float step = *(float *)((char *)params + 0x14);
+    **(float **)((char *)params + 0x18) = step * (float)(int)(lbl_805635D4 + ((low + t * (high - low)) / step));
 }
 
 #pragma push
