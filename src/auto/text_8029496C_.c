@@ -97,15 +97,16 @@ void fn_80294970(void) {
 }
 
 #pragma scheduling invalid_target
+/* Releases the two cached truck effect handles and resets them; iterates truck slots. */
 void fn_80294C68(void) {
-    int i;
+    int truckIndex;
     fn_802CAC54(lbl_8055C990);
     fn_802CAC54(lbl_8055C994);
     lbl_8055C990 = -1;
-    i = 0;
+    truckIndex = 0;
     lbl_8055C994 = -1;
-    while (i < fn_80287B14()) {
-        i++;
+    while (truckIndex < fn_80287B14()) {
+        truckIndex++;
     }
 }
 #pragma scheduling on
@@ -120,35 +121,36 @@ void fn_80294CC8(void) { fn_80294ED4(); }
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80294ED4(void) {
-    Vec80295 spD4;
-    Vec80295 spC8;
-    Vec80295 spBC;
-    Vec80295 spB0;
-    Vec80295 spA4;
-    Vec80295 sp98;
-    Vec80295 sp8C;
-    Vec80295 sp80;
-    Vec80295 sp74;
-    Vec80295 sp68;
-    Vec80295 sp5C;
-    Vec80295 sp50;
-    Vec80295 sp44;
-    Vec80295 sp38;
-    Vec80295 sp2C;
-    Vec80295 sp20;
-    Vec80295 sp14;
     Vec80295 sp8;
-    register Vec80295 *ptr_sp74;
-    register Vec80295 *ptr_sp14;
-    register Vec80295 *ptr_sp68;
-    register Vec80295 *ptr_sp20;
-    register Vec80295 *ptr_sp80;
-    register Vec80295 *ptr_sp2C;
-    register Vec80295 *ptr_sp8C;
-    register Vec80295 *ptr_sp38;
-    register Vec80295 *ptr_sp98;
-    register Vec80295 *ptr_spA4;
-    register Vec80295 *ptr_spBC;
+    Vec80295 sp14;
+    Vec80295 sp20;
+    Vec80295 sp2C;
+    Vec80295 sp38;
+    Vec80295 sp44;
+    Vec80295 sp50;
+    Vec80295 sp5C;
+    Vec80295 sp68;
+    Vec80295 sp74;
+    Vec80295 sp80;
+    Vec80295 sp8C;
+    Vec80295 sp98;
+    Vec80295 spA4;
+    Vec80295 spB0;
+    Vec80295 spBC;
+    Vec80295 spC8;
+    Vec80295 spD4;
+
+    Vec80295 *ptr_sp74;
+    Vec80295 *ptr_sp14;
+    Vec80295 *ptr_sp68;
+    Vec80295 *ptr_sp20;
+    Vec80295 *ptr_sp80;
+    Vec80295 *ptr_sp2C;
+    Vec80295 *ptr_sp8C;
+    Vec80295 *ptr_sp38;
+    Vec80295 *ptr_sp98;
+    Vec80295 *ptr_spA4;
+    Vec80295 *ptr_spBC;
 
     int spF0;
 
