@@ -303,13 +303,23 @@ void fn_80243A38(void *arg0) {
 #pragma pop
 extern s32 fn_802328D4(char *);
 extern s32 fn_802C519C(char *);
+/* MenuList_ReleaseResources: the menu list widget's release method (vtable
+ * lbl_80342CEC slot +0x10, the counterpart of the load in fn_80243A38).
+ * Drops the '_' marker left on the text the player typed and gives back the
+ * image handle and the gText font block the widget loaded, clearing both. */
 void fn_80243B84(void *arg0) {
-    char **obj = (char **)arg0;
-    fn_802438EC(obj[6]);
-    fn_802C519C(obj[9]);
-    obj[9] = 0;
-    fn_802328D4(obj[8]);
-    obj[8] = 0;
+#define MenuList_TrimTrailingMarker fn_802438EC
+#define Image_ReleaseHandle fn_802C519C
+#define GTex_ReleaseFont fn_802328D4
+    MenuListObject *menuList = (MenuListObject *)arg0;
+    MenuList_TrimTrailingMarker(menuList->text);
+    Image_ReleaseHandle(menuList->image);
+    menuList->image = 0;
+    GTex_ReleaseFont(menuList->font);
+    menuList->font = 0;
+#undef MenuList_TrimTrailingMarker
+#undef Image_ReleaseHandle
+#undef GTex_ReleaseFont
 }
 
 extern s32 fn_80128668(void);
