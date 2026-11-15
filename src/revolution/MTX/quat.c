@@ -1,5 +1,14 @@
 #include <revolution/MTX.h>
 
+// Despite its SDK name, PSQUATMultiply is not a quaternion product. It leaves
+// sqrt((a.x-b.x)^2 + (a.y-b.y)^2 + (a.z-b.z)^2) -- the distance between the
+// vector parts of the two quaternions -- in f1, even though the prototype
+// says void; the w components and `prod` are never read. The game calls it
+// that way, as a plain 3-float point distance whose result is used as a float.
+//
+// The paired loads below take two floats at a time, so offset 0 holds (x, y)
+// and offset 4 holds (y, z): the sum of squares covers x, y and z only.
+
 asm void PSQUATMultiply(register const Quaternion* a, register const Quaternion* b,
                         register Quaternion* prod) {
     // clang-format off
