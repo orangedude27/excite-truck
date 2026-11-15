@@ -294,14 +294,9 @@ void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
     b5 = arg1[1];
     b6 = arg1[2];
     b7 = arg1[3];
-    dst[0] = b1;
-    dst[1] = b2;
-    dst[2] = b3;
-    dst[3] = b4;
-    dst[4] = b5;
-    dst[5] = b6;
-    dst[6] = b7;
-    *(int *)((char *)lbl_8038E328 + 8) = arg2;
+    dst[0] = b1; dst[1] = b2; dst[2] = b3;
+    dst[3] = b4; dst[4] = b5; dst[5] = b6; dst[6] = b7;
+    *(int *)(dst + 7) = arg2;
     ((void (*)(void *, void *))OSSwitchFiber)(Halt, OSGetArenaHi());
 }
 
@@ -472,27 +467,56 @@ void Decode(unsigned char *src, unsigned char *dst) {
 #pragma pop
 extern int IOS_IoctlvReboot(int,int,int,int,void*,int);
 #pragma opt_propagation off
+/* The character encoding the OS font routines use (0 = ANSI, 1 = SJIS; the
+ * wider encodings 3-5 can only be asked for with OSSetFontEncode()), worked
+ * out from the console the first time it is wanted and cached after that.
+ *
+ * While the cache still holds its "not worked out yet" mark 0xFFFF: the boot
+ * ROM left the console's TV format (a VITVFormat, see include/revolution/VI/vi.h)
+ * at OS_TV_FORMAT.  Only an NTSC console may use the SJIS font, and even then
+ * only when bit 1 of the VI's region strap register VI_VISEL says so; every
+ * other TV format (PAL, MPAL, the two debug modes, EURGB60) falls back to the
+ * ANSI font.  Either way the single-byte walker ParseStringS becomes the string
+ * parser the font functions call through __FontParseString. */
 unsigned short OSGetFontEncode(void) {
-    if (lbl_80558F58 != 0xFFFF) {
-        return lbl_80558F58;
+    #define __FontEncode lbl_80558F58        /* the cached encoding */
+    #define __FontParseString lbl_8055DA48   /* ParseStringS or ParseStringW */
+    #define OS_TV_FORMAT (*(int *)0x800000CC)                 /* boot ROM's VITVFormat */
+    #define VI_VISEL (*(volatile unsigned short *)0xCC00206E) /* region strap; bit 1 = SJIS */
+    #define FONT_ENCODE_UNKNOWN 0xFFFF       /* nothing worked out yet */
+    #define FONT_ENCODE_ANSI 0
+    #define VISEL_SJIS_BIT 1
+    /* VITVFormat values the boot ROM can leave behind. */
+    enum { TV_NTSC, TV_PAL, TV_MPAL, TV_DEBUG, TV_DEBUG_PAL, TV_EURGB60 };
+
+    if (__FontEncode != FONT_ENCODE_UNKNOWN) {
+        return __FontEncode;
     }
 
-    switch (*(int *)0x800000CC) {
-    case 0:
-        lbl_80558F58 = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+    switch (OS_TV_FORMAT) {
+    case TV_NTSC:
+        __FontEncode = (VI_VISEL >> VISEL_SJIS_BIT) & 1;
         break;
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
+    case TV_PAL:
+    case TV_MPAL:
+    case TV_DEBUG:
+    case TV_DEBUG_PAL:
+    case TV_EURGB60:
     default:
-        lbl_80558F58 = 0;
+        __FontEncode = FONT_ENCODE_ANSI;
         break;
     }
 
-    lbl_8055DA48 = (void *)ParseStringS;
-    return lbl_80558F58;
+    __FontParseString = (void *)ParseStringS;
+    return __FontEncode;
+
+    #undef __FontEncode
+    #undef __FontParseString
+    #undef OS_TV_FORMAT
+    #undef VI_VISEL
+    #undef FONT_ENCODE_UNKNOWN
+    #undef FONT_ENCODE_ANSI
+    #undef VISEL_SJIS_BIT
 }
 #pragma opt_propagation reset
 /* Set the OS font encoding (0-5). Updates lbl_80558F58 when valid and, for
@@ -689,25 +713,22 @@ enum OSFontEncode {
 };
 
 char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
-    int *widths;
-    unsigned char *next;
-    unsigned short first;
+    int *widths = outCode;
+    char *next = text;
+    unsigned short first = 0;
     int valid;
     unsigned char second;
-    widths = outCode;
-    next = (unsigned char *)text;
-    first = 0;
     switch (format) {
     case 0:
         first = *(unsigned char *)text;
         widths = lbl_8055DA54;
-        if (first != 0) next = (unsigned char *)text + 1;
+        if (first != 0) next = text + 1;
         break;
     case 1:
         first = *(unsigned char *)text;
         widths = lbl_8055DA50;
         if (first != 0) {
-            next = (unsigned char *)text + 1;
+            next = text + 1;
             valid = 0;
             if ((first >= 0x81 && first <= 0x9F) || (first >= 0xE0 && first <= 0xFC))
                 valid = 1;
@@ -725,7 +746,7 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     }
     *outWidths = widths;
     *outCode = ((u32 (*)(int, unsigned short))GetFontCode)(format, first);
-    return (char *)next;
+    return next;
 }
 
 /* UTF-32 is the font code's currency: these convert to and from it. */
