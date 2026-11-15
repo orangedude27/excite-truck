@@ -2754,6 +2754,7 @@ void fn_8005CB70(void)
 	__VISetGammaImm((u8*)&lbl_80311B50 + lbl_8055DBE8 * 0x22);
 }
 
+/* Configure the VI trap filter via I2C: disable filter when lbl_80558FD0 is 1, else enable. */
 void __VISetTrapFilter(void)
 {
     u8 data[2];
