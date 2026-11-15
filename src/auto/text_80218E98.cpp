@@ -8567,12 +8567,13 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228F4C(void *arg0, 
     return arg0;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228FA4(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* nw4hbm::snd::MemorySoundArchive deleting destructor: tears down base sound-archive state via fn_8021915C, then frees storage when deletingFlag > 0. (rename_symbol unavailable for mangled/game symbols) */
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228FA4(void *object, int deletingFlag) {
+    if (object != 0) {
+        fn_8021915C(object, 0);
+        if (deletingFlag > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 /* Scalar deleting destructor for nw4hbm::snd::MemorySoundArchive: runs the base
