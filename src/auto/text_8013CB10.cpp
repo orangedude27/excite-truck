@@ -181,9 +181,9 @@ struct ZoneMaster {
         t8C.init(lbl_805614C4);
         rb.init();
         sub.init();
-        perc.init();
+        zoneTex.init();
     }
-    inline ZoneMaster() : vt(lbl_8032CAF0), sa(), t6C(lbl_805614C0), t74(lbl_805614C0), t7C(lbl_805614AC), t84(lbl_805614AC), t8C(lbl_805614C4), rb(), sub(), perc() {}
+    inline ZoneMaster() : vt(lbl_8032CAF0), sa(), t6C(lbl_805614C0), t74(lbl_805614C0), t7C(lbl_805614AC), t84(lbl_805614AC), t8C(lbl_805614C4), rb(), sub(), zoneTex() {}
     inline void initWidgets(const char *base);
 };
 extern "C" void *fn_80145E70(const char *);
