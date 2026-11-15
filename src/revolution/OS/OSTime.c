@@ -57,11 +57,12 @@ s64 __OSGetSystemTime(void) {
     return time;
 }
 
+/* Convert a time offset to system time by adding the OS system-time base (interrupt-safe). */
 s64 __OSTimeToSystemTime(s64 time) {
     BOOL enabled = OSDisableInterrupts();
-    s64 sysTime = OS_SYSTEM_TIME + time;
+    s64 systemTime = OS_SYSTEM_TIME + time;
     OSRestoreInterrupts(enabled);
-    return sysTime;
+    return systemTime;
 }
 
 static BOOL IsLeapYear(s32 year) {
