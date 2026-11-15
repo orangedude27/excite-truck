@@ -321,11 +321,12 @@ extern "C" void fn_80177E14(void) {
 
 #pragma cplusplus off
 #pragma dont_inline on
+/* If the pending player reset flag is set, run reset handling for each active player slot (0-7) and clear the flag. */
 void fn_80177EE4(void) {
-    int i;
+    int playerIndex;
     if (lbl_8055E44C != 0) {
-        for (i = 0; i < 8; i++) {
-            if (fn_8017960C(i) != 0) {
+        for (playerIndex = 0; playerIndex < 8; playerIndex++) {
+            if (fn_8017960C(playerIndex) != 0) {
                 fn_8018A180();
             }
         }
