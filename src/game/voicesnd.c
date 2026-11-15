@@ -112,15 +112,17 @@ int fn_8020A788(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_8020A800(void *arg0) {
-    class Obj {
+extern "C" void fn_8020A800(void *voiceSound) {
+    /* Return a voice sound to the shared pool and, when the last user is gone,
+     * delete the pool object (virtual destructor, deleting) and clear it. */
+    class PoolObject {
     public:
-        virtual void f(int);
+        virtual void dtor(int shouldDelete);
     };
-    fn_8012A364(lbl_8055EE10, arg0);
+    fn_8012A364(lbl_8055EE10, voiceSound);
     if (--lbl_8055EE0C == 0) {
         if (lbl_8055EE10 != 0)
-            ((Obj *)lbl_8055EE10)->f(1);
+            ((PoolObject *)lbl_8055EE10)->dtor(1);
         lbl_8055EE10 = 0;
     }
 }
