@@ -859,7 +859,8 @@ extern int lbl_8055FAA8, lbl_8055FAAC, lbl_8055FAB0;
 extern void *lbl_8055FABC;
 #pragma push
 #pragma cplusplus on
-extern "C" void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
+/* Deletes the System thread object stored in *threadSlot, if any, then clears the slot. */
+extern "C" void deleteThreads__6SystemFv_802BDCA4(void **threadSlot) {
     class Base {
     public:
         void *unk0;
@@ -870,11 +871,11 @@ extern "C" void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
         virtual void dummy2();
         virtual void destroy(int);
     };
-    ThreadObject *p = *(ThreadObject **)arg0;
-    if (p) {
-        if (p)
-            p->destroy(1);
-        *(ThreadObject **)arg0 = 0;
+    ThreadObject *thread = *(ThreadObject **)threadSlot;
+    if (thread) {
+        if (thread)
+            thread->destroy(1);
+        *(ThreadObject **)threadSlot = 0;
     }
 }
 #pragma cplusplus reset
