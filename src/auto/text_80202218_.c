@@ -67,12 +67,13 @@ int fn_80202218(void) {
 }
 #pragma pop
 
-int fn_80202248(int arg0) {
-    int result = -1;
+/* Load a model by path if the model system is available. Returns the model handle, or -1 on failure. */
+int fn_80202248(int modelPath) {
+    int modelHandle = -1;
     if (fn_8012C33C() != 0) {
-        result = fn_802C6FC0(arg0, 0, 0);
+        modelHandle = fn_802C6FC0(modelPath, 0, 0);
     }
-    return result;
+    return modelHandle;
 }
 
 #pragma push
