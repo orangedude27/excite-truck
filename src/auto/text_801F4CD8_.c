@@ -72,6 +72,7 @@ void fn_801F4CD8(void) {
 }
 
 void fn_801F4D64(void) {
+    /* Destroy the cloth subsystem pools/buffers and clear their global pointers/state. */
     fn_801F70D0(lbl_8055EC18, 1);
     lbl_8055EC18 = 0;
     fn_801F6D60(lbl_8055EC14, 1);
