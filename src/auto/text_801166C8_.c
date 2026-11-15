@@ -227,13 +227,14 @@ s32 fn_80116A38(void) {
     return 1;
 }
 
+/* Changes the handle's current directory to the given path if it resolves to a directory entry. */
 BOOL ARCChangeDir(ARCHandle *handle, const char *path) {
-    s32 entrynum = ARCConvertPathToEntrynum(handle, path);
+    s32 entryNum = ARCConvertPathToEntrynum(handle, path);
     u32 *fst = (u32 *)handle->FSTStart;
-    if (entrynum < 0 || !(fst[entrynum * 3] & 0xFF000000)) {
+    if (entryNum < 0 || !(fst[entryNum * 3] & 0xFF000000)) {
         return FALSE;
     }
-    handle->currDir = entrynum;
+    handle->currDir = entryNum;
     return TRUE;
 }
 
