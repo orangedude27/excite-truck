@@ -480,11 +480,12 @@ float fn_80230E54(float a, float b) {
 }
 
 #pragma dont_inline on
-void fn_80230E90(s32 arg0) {
-    if (arg0 == 1) {
+void fn_80230E90(s32 useTickTime) {
+    /* Update timing state using the tick counter when requested, otherwise the frame timer. */
+    if (useTickTime == 1) {
         s32 ticks = fn_802E2C20();
-        f32 t = ticks;
-        fn_80230DA4(t / lbl_80563640, lbl_80563648);
+        f32 tickSeconds = ticks;
+        fn_80230DA4(tickSeconds / lbl_80563640, lbl_80563648);
     } else {
         fn_80230DA4(fn_8023659C(), lbl_80563648);
     }
