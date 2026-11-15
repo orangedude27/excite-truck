@@ -2259,15 +2259,17 @@ void WUDSetSniffMode(BD_ADDR addr, s32 interval)
 }
 
 extern char lbl_803134A0[];
-void (*WUDSetSyncSimpleCallback(void (*pCallback)(s32, s32)))(s32, s32) {
-    void (*pOldCallback)(s32, s32);
+/* Sets the simple-sync completion callback and returns the previous one. */
+void (*WUDSetSyncSimpleCallback(void (*callback)(s32, s32)))(s32, s32) {
+    void (*previousCallback)(s32, s32);
     s32 enabled;
+
     DBPrintf_8006CFA8(lbl_803134A0);
     enabled = OSDisableInterrupts();
-    pOldCallback = *(void (**)(s32, s32))(lbl_80392960 + 4);
-    *(void (**)(s32, s32))(lbl_80392960 + 4) = pCallback;
+    previousCallback = *(void (**)(s32, s32))(lbl_80392960 + 4);
+    *(void (**)(s32, s32))(lbl_80392960 + 4) = callback;
     OSRestoreInterrupts(enabled);
-    return pOldCallback;
+    return previousCallback;
 }
 
 #pragma use_lmw_stmw off
