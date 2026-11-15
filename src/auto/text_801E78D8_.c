@@ -497,15 +497,16 @@ second_check:
 }
 #pragma scheduling invalid_target
 extern "C" void fn_801E837C(void) {
+    /* Applies per-entry DB4 values from the global table to entries 0..0x4A via fn_802D6C54. */
     extern void fn_802D6C54(long, void *, float);
-    long offset = 0;
-    long i = 0;
+    long byteOffset = 0;
+    long index = 0;
     do {
-        fn_802D6C54(i, (char *)lbl_8055EB04 + offset,
-                    *(float *)((char *)lbl_8055EB04 + offset + 0xDB4));
-        i++;
-        offset += 4;
-    } while (i < 0x4B);
+        fn_802D6C54(index, (char *)lbl_8055EB04 + byteOffset,
+                    *(float *)((char *)lbl_8055EB04 + byteOffset + 0xDB4));
+        index++;
+        byteOffset += 4;
+    } while (index < 0x4B);
 }
 #pragma scheduling on
 void fn_801E83D4(void) { extern int fn_801B89F8(void); extern void *lbl_8055AF0C; extern void fn_801EBD18(void *); if (fn_801B89F8() == 0 || lbl_8055AF0C == 0) fn_801EBD18(lbl_8055AF0C); }
