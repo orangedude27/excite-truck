@@ -19579,11 +19579,15 @@ extern "C" void *fn_800D0F1C(void *object, s32 freeMode) {
     return object;
 }
 
+/* Hand WPAD back the two callbacks this controller had installed: each saved
+ * callback goes back into its WPAD slot and the saved pointer is cleared, so
+ * the home-button layer stops seeing the remote (setCallback saved them when
+ * it replaced them with wpadConnectCallback / wpadExtensionCallback). */
 void homebutton::Controller::clearCallback() {
-    WPADSetSamplingCallback(*(s32 *)this, *(void **)((u8 *)this + 0x28));
-    *(s32 *)((u8 *)this + 0x28) = 0;
-    ((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(*(s32 *)this, *(void **)((u8 *)this + 0x2C));
-    *(s32 *)((u8 *)this + 0x2C) = 0;
+    WPADSetSamplingCallback(m_channel, m_prevConnectCb);
+    m_prevConnectCb = 0;
+    ((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(m_channel, m_prevExtensionCb);
+    m_prevExtensionCb = 0;
 }
 
 extern "C" void fn_800D1054(void *dst, void *src, s32 copyPos) {
