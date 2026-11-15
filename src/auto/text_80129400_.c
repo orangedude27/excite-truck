@@ -182,6 +182,8 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     } while (i < 0xE);
     fn_8012960C(arg0);
 }
+/* Initializes audio/session state, registers fn_80129400, resets the 0x38-byte
+ * buffer at lbl_804223C0 to -1, and passes it to fn_802E830C. */
 void fn_80129790(void) {
     fn_802E7C64();
     fn_80127C90(fn_80129400, lbl_8032A5B0);
