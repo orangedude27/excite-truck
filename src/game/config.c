@@ -20,8 +20,8 @@
 
 extern char lbl_8056004C;
 extern char lbl_8056004D;
-extern void *lbl_80560044;
-extern void *lbl_80560048;
+extern s32 lbl_80560044;
+extern s32 lbl_80560048;
 extern f32 lbl_80560050;
 s32 fn_802E98C8(void) {
     return 0;
