@@ -108,17 +108,19 @@ void *arg0;
 
 #pragma dont_inline on
 void fn_8027974C(void) {
-    s32 offset;
-    s32 i;
-    offset = 0;
-    i = 0;
+    /* Call fn_802795E8 for each 0x2B8-byte entry in the array at lbl_8055F618
+     * (count lbl_8055F61C), passing a pointer 4 bytes into each entry. */
+    s32 entryOffset;
+    s32 index;
+    entryOffset = 0;
+    index = 0;
     goto check;
 loop:
-    fn_802795E8((char *)lbl_8055F618 + offset + 4);
-    offset += 0x2B8;
-    i++;
+    fn_802795E8((char *)lbl_8055F618 + entryOffset + 4);
+    entryOffset += 0x2B8;
+    index++;
 check:
-    if (i < lbl_8055F61C) goto loop;
+    if (index < lbl_8055F61C) goto loop;
 }
 
 #pragma scheduling invalid_target
