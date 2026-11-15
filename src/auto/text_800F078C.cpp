@@ -255,14 +255,16 @@ void nw4hbm::snd::detail::SeqSound::Shutdown() {
     OSRestoreInterrupts(interrupts);
 }
 
-extern "C" s32 __dt__15shdStateMachineFv(s32 arg0, s32 arg1) {
-    if (arg0 != 0) {
-        ((void (*)(s32, s32))__dt__Q46nw4hbm3snd6detail9SeqPlayerFv)(arg0 + 0xD8, -1);
-        if (arg1 > 0) {
-            fn_80128668((void *)arg0);
+/* Destroys a shdStateMachine: destructs the embedded nw4hbm::snd::detail::SeqPlayer
+ * subobject at offset 0xD8, then optionally deletes the object. */
+extern "C" s32 __dt__15shdStateMachineFv(s32 object, s32 shouldDelete) {
+    if (object != 0) {
+        ((void (*)(s32, s32))__dt__Q46nw4hbm3snd6detail9SeqPlayerFv)(object + 0xD8, -1);
+        if (shouldDelete > 0) {
+            fn_80128668((void *)object);
         }
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
