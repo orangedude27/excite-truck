@@ -727,10 +727,10 @@ void fn_800063A4(void) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_800063A8(void) {
-    s32 *state = (s32 *)lbl_8055D350;
-    s32 index = state[7];
-    s32 *entry;
-    void *object;
+    s32 *sessionState = (s32 *)lbl_8055D350;
+    s32 playerIndex = sessionState[7];
+    s32 *overlayEntry;
+    void *overlayObject;
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -742,12 +742,12 @@ extern "C" void fn_800063A8(void) {
         virtual void v7();
     };
 
-    fn_80011A5C(state[5]);
-    entry = (s32 *)&lbl_8034EEB8;
-    entry += index * 4;
-    object = (void *)entry[6];
-    ((Dummy *)object)->v7();
-    fn_801B84A4(index);
+    fn_80011A5C(sessionState[5]);
+    overlayEntry = (s32 *)&lbl_8034EEB8;
+    overlayEntry += playerIndex * 4;
+    overlayObject = (void *)overlayEntry[6];
+    ((Dummy *)overlayObject)->v7();
+    fn_801B84A4(playerIndex);
 }
 
 extern "C" s32 fn_80006408(void *arg0, s32 arg1, u32 arg2, u32 arg3) {
