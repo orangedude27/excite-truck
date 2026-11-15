@@ -11,7 +11,10 @@ public:
 #pragma cplusplus off
 
 extern char lbl_8055DF88;
+/* lbl_802F8E40: the four allocation-source names, indexed by the source id stored at
+   heap block header +0x30 -- 0 "new[]", 1 "MemAlloc", 2 "MemAllocPhys", 3 "new". */
 __declspec(section ".data") extern u32 lbl_802F8E40;
+/* lbl_80559968: the string "unknown", the name for an out-of-range source id. */
 extern u32 lbl_80559968;
 extern char lbl_8032A430[];
 extern char lbl_8032A01C[];
