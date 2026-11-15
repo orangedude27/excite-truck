@@ -853,10 +853,11 @@ extern u64 fn_802E2C9C(void);
 extern s64 __div2i(s64, s64);
 extern u8 lbl_804305C0[];
 #pragma dont_inline on
-s64 fn_80178BBC(s32 *arg0) {
-    s32 r4 = lbl_8055E3C4 - arg0[0];
-    s64 r31 = *(s64 *)&arg0[2] + (s64)r4 * 0x412b;
-    return fn_802E2C9C() - r31;
+/* Compute remaining time (ticks/units) from an entry's base time and offset against the current timer. */
+s64 fn_80178BBC(s32 *entry) {
+    s32 delta = lbl_8055E3C4 - entry[0];
+    s64 scaled = *(s64 *)&entry[2] + (s64)delta * 0x412b;
+    return fn_802E2C9C() - scaled;
 }
 s32 fn_80178C1C(s32 *arg0) {
     s64 r3 = fn_80178BBC(arg0);
