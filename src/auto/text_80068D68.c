@@ -21726,19 +21726,34 @@ void port_release_port(void *arg0) {
     }
 }
 
-void *port_find_mcb_dlci_port(void *mcb, u8 dlci) {
+/* port_utils.c: return the RFCOMM port (tPORT) carrying dlci on the multiplexer
+ * control block p_mcb, or NULL when the DLCI runs on no port.  The MCB keeps a
+ * 1-based index into rfc_cb's port pool for every DLCI it has open, in
+ * tRFC_MCB.port_inx[dlci]; 0 there means the DLCI is not assigned. */
+void *port_find_mcb_dlci_port(void *p_mcb, u8 dlci) {
+#define RFCOMM_MAX_DLCI 61  /* rfcdefs.h: highest DLCI handled by this build */
+#define RFC_CB_PORTS    0x68 /* rfc_cb.rfc.port[0], the tPORT pool */
+    /* tRFC_MCB (port_int.h) up to its DLCI table. */
+    struct t_rfc_mcb {
+        TIMER_LIST_ENT tle;               /* timer list entry, +0 */
+        BUFFER_Q cmd_q;                   /* command messages on this mux, +0x18 */
+        u8 port_inx[RFCOMM_MAX_DLCI + 1]; /* dlci -> 1 + index into rfc_cb ports, +0x24 */
+    };
     u8 index;
-    if (mcb == 0) {
+
+    if (p_mcb == 0) {
         return 0;
     }
-    if (dlci > 0x3D) {
+    if (dlci > RFCOMM_MAX_DLCI) {
         return 0;
     }
-    index = *((u8 *)mcb + dlci + 0x24);
+    index = ((struct t_rfc_mcb *)p_mcb)->port_inx[dlci];
     if (index == 0) {
         return 0;
     }
-    return lbl_803C4828 + (index - 1) * 0xA4 + 0x68;
+    return rfc_cb + (index - 1) * PORT_INFO_SIZE + RFC_CB_PORTS;
+#undef RFCOMM_MAX_DLCI
+#undef RFC_CB_PORTS
 }
 
 /* Finds the RFCOMM port for the given DLCI in rfc_cb (lbl_803C4828, 5 entries * 0xA4). If the DLCI is odd, accepts the matching even DLCI slot and bumps its DLCI by 1. */
