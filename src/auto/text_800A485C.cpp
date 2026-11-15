@@ -18322,21 +18322,23 @@ extern "C" void fn_800C687C(void) {
     MEMDestroyFrmHeap(*(MEMiHeapHead **)(lbl_804075F0 + 1));
 }
 
+/* Updates the home button sound archive player and, for the first four slots,
+ * advances controller sound state from the manager object. */
 extern "C" void fn_800C68B0(void) {
-    s32 r31;
-    u8 *r30;
-    r30 = (u8 *)lbl_8055DD98;
-    if (*(void **)(r30 + 0x5C0) != NULL) {
-        Update__Q36nw4hbm3snd18SoundArchivePlayerFv(*(void **)(r30 + 0x5C0));
+    s32 index;
+    u8 *manager;
+    manager = (u8 *)lbl_8055DD98;
+    if (*(void **)(manager + 0x5C0) != NULL) {
+        Update__Q36nw4hbm3snd18SoundArchivePlayerFv(*(void **)(manager + 0x5C0));
     }
-    r31 = 0;
+    index = 0;
     do {
-        if (r31 < 4) {
-            updateSound__Q210homebutton10ControllerFv(*(void **)(r30 + 0x254));
+        if (index < 4) {
+            updateSound__Q210homebutton10ControllerFv(*(void **)(manager + 0x254));
         }
-        r31 += 1;
-        r30 += 4;
-    } while (r31 < 4);
+        index += 1;
+        manager += 4;
+    } while (index < 4);
 }
 
 extern "C" void *__ct__Q34nw4r3lyt8DrawInfoFv(void *);
