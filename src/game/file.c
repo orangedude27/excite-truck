@@ -199,16 +199,19 @@ s32 fn_802E35C0(const char *arg0, s32 arg1) {
 
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" s32 fn_802E367C(s32 arg0) {
-    class V {
+extern "C" s32 fn_802E367C(s32 path) {
+    /* Open/create the given path via the active file system and register the returned
+       native handle in the open-file table, or return -1 if the open fails. */
+    class FileSystem {
     public:
-        virtual void a();
-        virtual s32 b(s32);
+        virtual void v0();
+        virtual s32 open(s32 path);
     };
-    V *obj = (V *)fn_802E333C();
-    s32 result = obj->b(arg0);
-    if (result != 0)
-        return fn_802E35C0((const char *)arg0, result);
+
+    FileSystem *fileSystem = (FileSystem *)fn_802E333C();
+    s32 nativeHandle = fileSystem->open(path);
+    if (nativeHandle != 0)
+        return fn_802E35C0((const char *)path, nativeHandle);
     return -1;
 }
 #pragma cplusplus on
