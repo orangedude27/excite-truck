@@ -15060,15 +15060,16 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
 }
 
 u8 btsnd_hcic_inq_cancel(void) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    if (p == 0)
+    /* Send HCI Inquiry_Cancel command (opcode 0x0402); returns 1 on success, 0 if buffer alloc failed. */
+    u8 *cmdBuf = (u8 *)GKI_getpoolbuf(2);
+    if (cmdBuf == 0)
         return 0;
-    *(u16 *)(p + 2) = 3;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 2;
-    p[9] = 4;
-    p[10] = 0;
-    btu_hcif_send_cmd(p);
+    *(u16 *)(cmdBuf + 2) = 3;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 2;
+    cmdBuf[9] = 4;
+    cmdBuf[10] = 0;
+    btu_hcif_send_cmd(cmdBuf);
     return 1;
 }
 
