@@ -462,6 +462,9 @@ void fn_8023C0EC(void *setup, s32 eventId, s32 contestIdx) {
 
 void fn_8023C20C(void) {}
 
+/* Copies a source record (three s32 header fields, three bytes, and a 0xA0-byte tail)
+ * into a destination record that has a 4-byte leading pad, field-by-field so the
+ * compiler emits the same bytewise tail copy as the original. */
 void fn_8023C210(Dst8023C210 *dst, Src8023C210 *src) {
     dst->a = src->a;
     dst->b = src->b;
