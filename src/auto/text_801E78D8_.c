@@ -802,16 +802,17 @@ void fn_801E88B4(long *arg0, long *arg1, long *arg2, long *arg3, long arg4) {
 }
 
 #pragma scheduling invalid_target
-float fn_801E88F0(long arg0) {
-    long index = arg0;
-    long params[4];
-    long which;
-    char *base;
+float fn_801E88F0(long playerIndex) {
+    /* Return a scaled per-player float field, defaulting to the current player and selecting a scale factor by mode. */
+    long index = playerIndex;
+    long scaleWords[4];
+    long scaleIndex;
+    char *playerBase;
     if (index < 0) index = (long)lbl_8055AF0C;
-    *(struct FourLongs *)params = *(struct FourLongs *)lbl_802F99F8;
-    which = (long)lbl_8055EB2C - 1;
-    base = (char *)lbl_8055EB04 + index * 0xE0;
-    return *(float *)(base + 0x38) * ((float *)params)[which];
+    *(struct FourLongs *)scaleWords = *(struct FourLongs *)lbl_802F99F8;
+    scaleIndex = (long)lbl_8055EB2C - 1;
+    playerBase = (char *)lbl_8055EB04 + index * 0xE0;
+    return *(float *)(playerBase + 0x38) * ((float *)scaleWords)[scaleIndex];
 }
 #pragma scheduling on
 long fn_801E8954(long arg0) {
