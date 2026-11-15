@@ -19,17 +19,19 @@ void *fn_801D0B34(void *arg0, int arg1) {
     return arg0;
 }
 
-void *fn_801D0B8C(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            ((int *)arg0)[0] = 0;
-            ((int *)arg0)[1] = 0;
-            ((int *)arg0)[2] = 0;
+void *fn_801D0B8C(void *object, int shouldDelete) {
+    /* Reset the object's three 32-bit fields to 0, then free it when
+     * shouldDelete > 0 (deleting-destructor style helper). */
+    if (object != 0) {
+        if (object != 0) {
+            ((int *)object)[0] = 0;
+            ((int *)object)[1] = 0;
+            ((int *)object)[2] = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_801D0BE4(void) {
@@ -43,25 +45,43 @@ void fn_801D0BF4(void) {
 
 int fn_801D0BF8(int arg0, int arg1) {
     struct Entry *entry = lbl_80438758;
-    int i = 0;
+    int i;
     int count = lbl_8055E8D8;
-    if (count <= 0)
-        return 0;
-    do {
-        if (arg0 == entry->first && arg1 == entry->second)
-            return lbl_80438758[i].value;
-        entry++;
-        i++;
-    } while (--count != 0);
+    if (count > 0) {
+        for (i = 0; i < count; entry++, i++) {
+            if (arg0 == entry->first && arg1 == entry->second)
+                return lbl_80438758[i].value;
+        }
+    }
     return 0;
 }
 
 void fn_801D0C58(int arg0, int arg1, int arg2) {
     int count = lbl_8055E8D8;
-    struct Entry *entry = &lbl_80438758[count];
-    entry->second = arg2;
+    lbl_80438758[count].second = arg2;
+    lbl_80438758[count].first = arg1;
+    lbl_80438758[count].value = arg0;
     lbl_8055E8D8 = count + 1;
-    entry->first = arg1;
-    entry->value = arg0;
+}
+
+void fn_801D0C84(unsigned int arg0) {
+    int count = lbl_8055E8D8;
+    struct Entry *entry = lbl_80438758;
+    struct Entry *base = entry;
+    int i;
+    for (i = 0; i < count; ) {
+        if ((unsigned int)entry->value == arg0) {
+            int off;
+            count--;
+            off = count * 12;
+            lbl_8055E8D8 = count;
+            entry->first = *(int *)((char *)base + off);
+            entry->second = *(int *)((char *)base + off + 4);
+            entry->value = *(int *)((char *)base + off + 8);
+        } else {
+            entry++;
+            i++;
+        }
+    }
 }
 
