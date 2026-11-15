@@ -600,14 +600,18 @@ void fn_8024CF54(void) {
 // Keep fn_8024CF38 as a call; inlining it substitutes fn_8024CC54 and changes the target sequence.
 #pragma dont_inline on
 void fn_8024CF60(void) {
-    int sp8;
-    if (fn_8024CF38(&sp8) != 0) {
-        fn_8000D984(sp8);
-        fn_8000DA80();
-        fn_8000DC70(sp8);
-        ((void (*)(void))fn_8000DA1C)();
+    /* "New profile" action of the player-select menu (fn_802473A4, code -1):
+     * ask which slot to use (fn_8024CF38 confirms first if the slot already
+     * holds a profile), make that slot the current identity, reset the save
+     * blocks registered for it, name it after the slot's default name and
+     * write the memory-card save back. */
+    int slot;
+    if (fn_8024CF38(&slot) != 0) {
+        fn_8000D984(slot);              /* make this identity the current one */
+        fn_8000DA80();                  /* clear its registered save blocks */
+        fn_8000DA1C(fn_8000DC70(slot)); /* mark it in use, named after the slot */
         if (fn_802E8D84() != 0)
-            fn_802E7128();
+            fn_802E7128();              /* build and write the memory-card image */
     }
 }
 #pragma dont_inline reset
