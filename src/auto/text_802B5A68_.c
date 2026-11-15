@@ -1876,16 +1876,26 @@ void fn_802B87A0(void) {
 #pragma push
 #pragma dont_inline on
 void fn_802B87F4(void) {
-    if (lbl_8055FA48 != 0) {
+#define uiFrame     lbl_8055FA48 /* the "tedash.val" UI object fn_802B8744() creates */
+#define viewMode    lbl_8055FA38 /* 0 "Objects", 1 "Advanced", 2 "Material-Map", 3 "Road-Opacity" */
+#define matSetIndex lbl_8055FA3C /* which UMatSet (material set) the viewer is on */
+#define objectIndex lbl_8055FA40 /* which object it shows; 6 is "All Objects" */
+    extern void fn_802B0288(void *matSet); /* fn_802AE588: switch to this material set */
+    extern void fn_802B4E3C(s32 object);   /* fn_802B3F6C: object the skagbag tables answer for */
+
+    if (uiFrame != 0) {
         fn_802B869C();
-        fn_802B59A4(lbl_8055FA3C);
-        fn_802B0288();
-        if (lbl_8055FA38 != 1) {
-            if (lbl_8055FA40 != 6) {
-                fn_802B4E3C(lbl_8055FA40);
+        fn_802B0288((void *)fn_802B59A4(matSetIndex));
+        if (viewMode != 1) {
+            if (objectIndex != 6) {
+                fn_802B4E3C(objectIndex);
             }
         }
     }
+#undef uiFrame
+#undef viewMode
+#undef matSetIndex
+#undef objectIndex
 }
 #pragma pop
 extern char lbl_8055FA32;
