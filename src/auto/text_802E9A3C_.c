@@ -443,6 +443,7 @@ void fn_802EA7E0(void) {
     #undef defaultMusicDir
     #undef ScanSongDirectory
 }
+
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
