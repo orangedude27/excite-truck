@@ -1473,60 +1473,63 @@ extern "C" void fn_8029A8B8(void* arg0) {
 extern float lbl_80558DC4;
 extern float lbl_80564610;
 extern float lbl_80564614;
+#pragma push
+#pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float farg1) {
-    float* var_f31 = (float*)((char*)arg2 + 0x58);
-    float var_f1 = *var_f31;
-    float var_f2 = farg1;
-    int var_r4 = arg1;
-    void* var_r28 = (char*)arg0 + (var_r4 * 0x2C);
-    float abs_f3 = fabsf(var_f1);
-    float temp_f1 = abs_f3;
-    if (temp_f1 != lbl_80558DC4) {
-        *(unsigned char*)((char*)var_r28 + 0x28) = 0;
-        *(float*)((char*)var_r28 + 0x24) = lbl_8056459C;
+    int limit;
+    float* point;
+    unsigned char* entry;
+    float* velocity;
+    int i;
+    unsigned j;
+    float dt;
+    register float gravity, x, y, z;
+    float delta[3];
+    float pos[3];
+    entry = (unsigned char*)arg0 + arg1 * 0x2C;
+    if (!((float)fabs(*(float*)((char*)arg2 + 0x58)) <= lbl_80558DC4)) {
+        entry[0x28] = 0;
+        *(float*)(entry + 0x24) = lbl_8056459C;
     }
-    if ((*(unsigned char*)((char*)var_r28 + 0x28) != 0) || (*(float*)((char*)var_r28 + 0x24) > lbl_8056459C)) {
-        if (var_f2 < lbl_80564610) {
+    if (entry[0x28] != 0 || *(float*)(entry + 0x24) > lbl_8056459C) {
+        if (farg1 < lbl_80564610) {
             fn_8029AAE0((int)arg0, arg1, arg2);
-            float* var_f0 = (float*)((char*)arg2 + 0x50);
-            int var_i = 1;
-            int temp_i = (int)(farg0 * (*var_f0));
-            if (temp_i > 1) {
-                var_i = temp_i;
-            }
-            int var_r30 = 4;
-            if (var_i < 4) {
-                var_r30 = var_i;
-            }
-            float temp_f25 = lbl_80564614;
-            int var_r26 = 0;
-            while (var_r26 < var_r30) {
-                float* base = (float*)((char*)var_r28 + (var_r26 * 0x10));
-                float* var_f27 = (float*)((char*)arg2 + 0x34);
-                float diff = (float)(-var_r26) * (farg0 / (float)var_r30);
-                float f3 = var_f27[2] * diff;
-                float f2 = var_f27[0] * diff;
-                float f1 = var_f27[1] * diff;
-                float f0 = temp_f25 * (diff * diff);
-                f0 = f1 + f0;
-                float f26 = f2 + f0;
-                float sp8 = base[0] + f2;
-                float sp12 = base[1] + f26;
-                float sp16 = base[2] + f3;
-                fn_8028E584(*(void**)((char*)arg0 + 0x160), arg2, &sp8, farg0);
-                var_r26++;
+            velocity = (float*)((char*)arg2 + 0x34);
+            int count = 1;
+            int samples = (int)(farg0 * *(float*)((char*)arg2 + 0x50));
+            if (samples > 1) count = samples;
+            limit = 4;
+            if (count < 4) limit = count;
+            dt = farg0 / (float)limit;
+            gravity = lbl_80564614;
+            for (i = 0; i < limit; i++) {
+                float time = (float)-i * dt;
+                float square = time * time;
+                delta[2] = velocity[2] * time;
+                delta[0] = velocity[0] * time;
+                delta[1] = velocity[1] * time + gravity * square;
+                x = delta[0];
+                y = delta[1];
+                z = delta[2];
+                point = (float*)entry;
+                for (j = 0; j < 2; j++, point += 3) {
+                    pos[0] = point[0] + x;
+                    pos[1] = point[1] + y;
+                    pos[2] = point[2] + z;
+                    ((void (*)(void*, float*, float*))fn_8028E584)(*(void**)((char*)arg0 + 0x160), pos, velocity);
+                }
             }
         }
-        *(unsigned char*)((char*)var_r28 + 0x28) = 0;
-        float val = *(float*)((char*)var_r28 + 0x24) - farg0;
-        *(float*)((char*)var_r28 + 0x24) = val;
+        entry[0x28] = 0;
+        *(float*)(entry + 0x24) -= farg0;
     }
 }
-
-#pragma push
 #pragma scheduling reset
 extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
 {
+  /* Transform two 3D points by a 3x3 matrix/translation from XformData, apply a fixed Y offset, and store them into the arg0+arg1*0x2C slot. */
   float *out = (float *) (((char *) arg0) + (arg1 * 0x2C));
   float new_var2;
   float new_var;
@@ -1666,7 +1669,6 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
     out[1] = y1;
   }
 }
-#pragma pop
 extern "C" int fn_8029ADCC(void *arg0);
 extern "C" void fn_8029B1B8(void *);
 extern "C" void *fn_80288208(int);
