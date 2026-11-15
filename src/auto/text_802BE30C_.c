@@ -12,6 +12,11 @@ extern char lbl_8034AC74[];
 extern void *lbl_804C06E0[];
 extern u8 lbl_8055FACC;
 
+/* The FanInfo grids (faninfo.fnf) are one cell grid per cell size, indexed by the
+ * size itself: only entries 4, 8, 16, 32 and 64 of lbl_804C06E0 are ever used. */
+#define FAN_INFO_MIN_CELL_SIZE 4
+#define FAN_INFO_MAX_CELL_SIZE 0x40
+
 typedef struct {
     u32 unk0;
     u32 unk4;
