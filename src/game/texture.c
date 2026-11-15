@@ -696,9 +696,9 @@ DECL_SECTION(".sdata") extern char lbl_8055FCBC[];
 DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 #pragma small_data off
 #pragma pop
-extern float lbl_80564F40;
-extern float lbl_80564F44;
-extern float lbl_8055FCC4;
+extern float lbl_80564F40; /* 1.0f: floor for the scale fn_802CC550 weighs a slot by */
+extern float lbl_80564F44; /* 1e-5f: weight a slot is raised to when it is just used */
+extern float lbl_8055FCC4; /* texel scale, set by fn_802CC518 */
   extern unsigned short lbl_8055FCA8;
 int fn_802CAF8C(int arg0) {
     int *entry;
