@@ -1350,6 +1350,7 @@ void fn_800322E4(void) {
 #undef s_dspTask
 #undef s_dspSleepQueue
 }
+
 u32 AIRegisterDMACallback(u32 value) {
     u32 old = lbl_8055D774;
     BOOL enabled = OSDisableInterrupts();
