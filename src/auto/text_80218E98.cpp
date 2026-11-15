@@ -9386,12 +9386,14 @@ extern "C" void *fn_8022A054(void *self, s32 deletingFlag) {
     return self;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8022A0CC(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8022A0CC(void *self, int shouldDelete) {
+    /* nw4hbm::snd::MemorySoundArchive scalar deleting destructor: run the base
+     * teardown, then free the storage when shouldDelete > 0. */
+    if (self != 0) {
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 /* Deleting destructor of the spinning 3D model view a text widget builds in
