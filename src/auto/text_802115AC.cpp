@@ -2628,10 +2628,17 @@ extern "C" void fn_80215B44(void *arg0) {
 }
 
 extern "C" void fn_802191F0(void);
-extern "C" void fn_80215B58(void *arg0, s32 arg1, s32 arg2) {
-    fn_802191F0();
-    ((void **)*(void ***)((char *)arg0 + 0x244))[1] = (void *)arg1;
-    ((void **)*(void ***)((char *)arg0 + 0x244))[2] = (void *)arg2;
+/* Vtable slot 0x1C of the widget wrapper (vtable lbl_8033D480): move to
+ * (left, top).  The call below is the widget code's own move; the wrapper's
+ * arguments are already in r3-r5, so it moves the wrapper and recomputes its
+ * right and bottom edges.  The wrapper then hands the new position to the
+ * widget it wraps at +0x244, which keeps its own left and top. */
+extern "C" void fn_80215B58(void *wrapper, s32 left, s32 top) {
+#define Widget_move fn_802191F0 /* move(widget, left, top) in text_80218E98.cpp */
+    Widget_move();
+    ((WidgetRect *)*(void **)((char *)wrapper + 0x244))->left = left;
+    ((WidgetRect *)*(void **)((char *)wrapper + 0x244))->top = top;
+#undef Widget_move
 }
 
 extern "C" s32 fn_80215BAC(void) {
