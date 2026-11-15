@@ -1224,11 +1224,12 @@ void fn_80068F80(void) {
 
 extern u8 lbl_80393028[];
 #pragma use_lmw_stmw off
-u8 fn_80068F94(void) { /* v6 */
+u8 fn_80068F94(void) {
     BOOL interrupts;
-    u8 state;
-    u8 state2;
-    u8 *base = lbl_80392960;
+    register u8 state;
+    register u8 state2;
+    register u8 *base = lbl_80392960;
+
     if ((s8)base[0x668] == 0) return 0xE;
     interrupts = OSDisableInterrupts();
     state = base[0x665];
@@ -1240,10 +1241,10 @@ u8 fn_80068F94(void) { /* v6 */
         if (state2 == 4) return 0xE;
     }
     if (base[0x667] != 0) {
-        u8 *scan_base;
-        u8 *record;
-        s32 i;
-        s32 offset;
+        register u8 *scan_base;
+        register u8 *record;
+        register s32 i;
+        register s32 offset;
         offset = 0;
         record = lbl_80392960;
         i = 0;
@@ -1251,10 +1252,10 @@ u8 fn_80068F94(void) { /* v6 */
         interrupts = OSDisableInterrupts();
         if (offset < 0) goto high_record;
         if (offset >= 0xA) goto high_record;
-        scan_base = record + i + 0x64;
+        scan_base = (u8 *)((u32)record + (u32)i + 0x64);
         goto selected_record;
     high_record:
-        scan_base = record + (((u8)offset - 0xA) * 0x60) + 0x424;
+        scan_base = (u8 *)((u32)record + ((u32)(offset - 0xA) * 0x60u) + 0x424);
     selected_record:
         OSRestoreInterrupts(interrupts);
         if (scan_base[0x59] == 9) {
@@ -1273,8 +1274,8 @@ u8 fn_80068F94(void) { /* v6 */
     }
     if ((s8)base[0x668] > 0) base[0x668]--;
     if ((s8)base[0x668] == -1) {
-        u8 timer_state;
-        s32 interval;
+        register u8 timer_state;
+        register s32 interval;
         ((s8 *)base)[0x668] = -2;
         interrupts = OSDisableInterrupts();
         timer_state = lbl_80392960[0x665];
@@ -1291,7 +1292,9 @@ u8 fn_80068F94(void) { /* v6 */
             if (state2 == 4) lbl_80392960[0xC] = 0xE;
         }
         OSCreateAlarm((OSAlarm *)lbl_80393028);
-        OSSetAlarm((OSAlarm *)lbl_80393028, (s64)(interval * ((*(u32 *)0x800000F8) >> 2)), (OSAlarmHandler)fn_80068F80);
+        OSSetAlarm((OSAlarm *)lbl_80393028,
+                   (s64)(interval * ((*(u32 *)0x800000F8) >> 2)),
+                   (OSAlarmHandler)fn_80068F80);
         return 0x18;
     }
     return 2;
@@ -4582,8 +4585,7 @@ void UUSB_Register(tUUSB *uusb) {
     extern s32 lbl_80558FF0;
     register char *report = lbl_803142C8;
     register u8 *c = (u8 *)&lbl_803BD1E0;
-    u8 pool0;
-    u8 pool1;
+    register u8 pool1;
 
     memset(&lbl_803BD1E0, 0, 0x4C);
     fn_8006EBAC();
@@ -4628,11 +4630,10 @@ void UUSB_Register(tUUSB *uusb) {
     c[0x38] = 0;
     fn_8006D4C4(c + 0x3C);
     c[0x48] = 0;
-    pool0 = GKI_create_pool(0x294, 0x2D, 1, 0);
-    c[0x1C] = pool0;
+    c[0x1C] = GKI_create_pool(0x294, 0x2D, 1, 0);
     pool1 = GKI_create_pool(0x708, 0x1E, 1, 0);
     c[0x1D] = pool1;
-    if (c[0x1C] == 0xFF || pool1 == 0xFF) {
+    if ((u8)c[0x1C] == 0xFF || pool1 == 0xFF) {
         if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x768);
         return;
     }
@@ -7548,6 +7549,8 @@ s32 btsnd_hcic_auth_request_80084478(u16);
 s32 btsnd_hcic_auth_request_800844F4(u16);
 s32 btsnd_hcic_auth_request_80084570(u16);
 s32 btsnd_hcic_write_policy_set_80085668(u16, u16);
+#pragma push
+#pragma optimization_level 3
 void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
                      UINT16 hci_handle, UINT8 link_role, UINT8 is_le_link) {
     u8 *temp_r3;
@@ -7565,9 +7568,8 @@ void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
     u8 *var_r31_2;
 
     var_r29 = lbl_803C0F78 + 0x34;
-    for (var_r31 = 0; var_r31 < 4; var_r31++, var_r29 += 0x11C) {
-        if (var_r29[0x119] == 0 || memcmp(var_r29 + 8, bda, 6) != 0) {
-        } else {
+    for (var_r31 = 0; var_r31 < 4; ++var_r31, var_r29 += 0x11C) {
+        if (var_r29[0x119] && !memcmp(var_r29 + 8, bda, 6)) {
             goto loop_1_done;
         }
     }
@@ -7582,7 +7584,7 @@ loop_1_done:
         }
     } else {
         for (var_r4 = 0, var_r31_2 = lbl_803C0F78 + 0x34; var_r4 < 4;
-             var_r4++, var_r31_2 += 0x11C) {
+             ++var_r4, var_r31_2 += 0x11C) {
             if (var_r31_2[0x119] != 0) {
                 continue;
             }
@@ -7602,20 +7604,14 @@ loop_1_done:
             btsnd_hcic_auth_request_800844F4(*(u16 *)var_r31_2);
             temp_r3 = (u8 *)btm_find_dev_by_handle(hci_handle);
             if (temp_r3 != NULL) {
-                for (var_r6 = 0; var_r6 < 8; var_r6++) {
+                for (var_r6 = 0; var_r6 < 8; ++var_r6) {
                     if (temp_r3[0x77 + var_r6] != 0) {
-                        u8 *p_btm;
-                        u16 supported;
-                        u8 ver;
-
                         memcpy(var_r31_2 + 0x110, temp_r3 + 0x77, 8);
-                        p_btm = lbl_803C0F78;
-                        supported = *(u16 *)(p_btm + 0x654);
-                        ver = p_btm[0x636];
-                        temp_r4 = supported & 0xCC18;
-                        var_r30 = temp_r4 & ~0x3306;
-                        if (ver >= 3) {
-                            var_r30 = temp_r4 | (supported & 0x3306);
+                        temp_r4 = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
+                        if (lbl_803C0F78[0x636] >= 3) {
+                            var_r30 = temp_r4 | (*(u16 *)(lbl_803C0F78 + 0x654) & 0x3306);
+                        } else {
+                            var_r30 = temp_r4 & ~0x3306;
                         }
                         if (lbl_803C0F78[0x27C0] >= 4) {
                             fn_80070954(0xD0003, lbl_80315CE0, var_r30);
@@ -7628,9 +7624,8 @@ loop_1_done:
                         }
                         temp_r28 = *(u16 *)(lbl_803C0F78 + 0x4C6);
                         var_r30_2 = lbl_803C0F78 + 0x34;
-                        for (var_r29_2 = 0; var_r29_2 < 4; var_r29_2++, var_r30_2 += 0x11C) {
-                            if (var_r30_2[0x119] == 0 || memcmp(var_r30_2 + 8, var_r31_2 + 8, 6) != 0) {
-                            } else {
+                        for (var_r29_2 = 0; var_r29_2 < 4; ++var_r29_2, var_r30_2 += 0x11C) {
+                            if (var_r30_2[0x119] && !memcmp(var_r30_2 + 8, var_r31_2 + 8, 6)) {
                                 goto loop_27_done;
                             }
                         }
@@ -7656,7 +7651,7 @@ block_done:
         }
     }
 }
-
+#pragma pop
 void btm_acl_removed(u8 *addr) {
     unsigned int i;
     u8 *entry;
@@ -8239,28 +8234,28 @@ tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     extern char lbl_80315F4C[];
     u8 *entry;
     u32 i;
+
     if (lbl_803C0F78[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80315F4C,
                     remote_bda[0], remote_bda[1], remote_bda[2],
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
+
     if (*(void **)(lbl_803C0F78 + 0x5E0) != NULL) return 2;
+
     entry = lbl_803C0F78 + 0x34;
     i = 0;
-    do {
-        if (entry[0x119] == 0)
-            goto next;
-        switch (memcmp(entry + 8, remote_bda, 6)) {
-        case 0:
+    while (1) {
+        if (entry[0x119] != 0 && memcmp(entry + 8, remote_bda, 6) == 0) {
             goto found;
-        default:
-            goto next;
         }
-next:
         i++;
         entry += 0x11C;
-    } while (i < 4);
-    entry = NULL;
+        if (i >= 4) {
+            entry = NULL;
+            goto found;
+        }
+    }
 found:
     if (entry != NULL) {
         btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5C8), 9, 3);
@@ -8275,6 +8270,8 @@ found:
     return 7;
 }
 
+#pragma push
+#pragma optimization_level 3
 tBTM_STATUS BTM_ReadLinkQuality(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     u8 *p_dev_rec;
     u32 i;
@@ -8288,14 +8285,14 @@ tBTM_STATUS BTM_ReadLinkQuality(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
         return (tBTM_STATUS)2;
     }
     p_dev_rec = lbl_803C0F78 + 0x34;
-    i = 0;
-    for (; i < 4; i++, p_dev_rec += 0x11C) {
+    for (i = 0; i < 4; i++, p_dev_rec += 0x11C) {
         if (p_dev_rec[0x119] == 0) {
             continue;
         }
         if (memcmp(p_dev_rec + 8, remote_bda, 6) != 0) {
             continue;
         }
+lbl:
         goto found;
     }
     p_dev_rec = NULL;
@@ -8314,7 +8311,7 @@ found:
 not_found:
     return (tBTM_STATUS)7;
 }
-
+#pragma pop
 void btm_read_rssi_complete(u8 *hciEvent) {
     tBTM_CMPL_CB *completionCb;
     tBTM_RSSI_RESULTS results;
@@ -23403,19 +23400,14 @@ void fn_800937A0(void *p, u16 a1, u16 a2, u16 a3) {
 }
 
 void RFCOMM_ControlReq(void *mcb, u8 dlci, void *ctrl) {
-    void *port = port_find_mcb_dlci_port(mcb, dlci);
-    if (*(u8 *)((u8 *)port + 2) == 2) {
-        switch (*(u8 *)((u8 *)port + 0x68)) {
-        case 4:
-            *(u8 *)((u8 *)port + 0x64) |= 1;
-            *(u8 *)((u8 *)port + 0x69) |= 8;
-            rfc_send_msc(mcb, dlci, 1, ctrl);
-            rfc_port_timer_start(port, 0x3c);
-            break;
-        default:
-            break;
-        }
+    u8 *port = (u8 *)port_find_mcb_dlci_port(mcb, dlci);
+    if ((port[2] != 2) || (port[0x68] != 4)) {
+        return;
     }
+    port[0x64] |= 1;
+    port[0x69] |= 8;
+    rfc_send_msc(mcb, dlci, 1, ctrl);
+    rfc_port_timer_start(port, 0x3c);
 }
 
 // Request flow control state change for a DLCI (send MSC with flow control)
