@@ -184,14 +184,16 @@ extern "C" void fn_801E2F68(void) {
 }
 #pragma cplusplus reset
 #pragma pop
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801E2FAC(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_8012A260((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+/* Destructor for nw4hbm::snd::MemorySoundArchive: runs base destruction with
+ * shouldDelete=0, then if requested frees this object. Returns this. */
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801E2FAC(long self, long shouldDelete) {
+    if (self != 0) {
+        fn_8012A260((void *)self, 0);
+        if (shouldDelete > 0) {
+            fn_80128668((void *)self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern void *fn_8012A2D8(void *);
