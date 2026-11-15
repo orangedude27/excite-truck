@@ -1202,6 +1202,7 @@ void fn_8017D2C8(void *arg0, float *arg1, float *arg2) {
 #pragma dont_inline reset
 
 void fn_8017D2CC(int arg0) {
+    /* Initialize an ext_imp_tab pool (0x28-byte entries): allocate storage and construct arg0 entries. */
     int (*create)(void *, void *, int, int, int) =
         (int (*)(void *, void *, int, int, int))fn_8002F37C;
     void *(*prepare)(void *, void *) = (void *(*)(void *, void *))fn_8012850C;
