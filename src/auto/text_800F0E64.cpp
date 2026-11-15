@@ -6445,22 +6445,29 @@ extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void)
         UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)cur)[-0x08]);
     }
 }
+/* One update tick for every streaming player: walk nw4hbm's global list of
+ * StrmPlayers (lbl_8041506C, a nw4hbm::ut::LinkList { size, sentinel }) and call
+ * StrmPlayer::Update on each. A node is the LinkListNode at +0x08 of its player,
+ * so the player is the eight bytes in front of it; the list's own node ends the
+ * walk, and dereferencing an iterator checks the node the way LinkList.h does.
+ * (The game's map names this SeqPlayer::UpdateAllPlayers, but it is the
+ * StrmPlayer-side twin of UpdateBufferAllPlayers just above.) */
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void) {
     LinkListIter begin;
-    begin.node = *(void**)&lbl_8041506C[0x04];
+    begin.node = *(void**)&lbl_8041506C[0x04]; /* the list's first node */
     LinkListIter it = begin;
 
-    while (it.node != (void*)&lbl_8041506C[0x04]) {
-        void* cur = it.node;
+    while (it.node != (void*)&lbl_8041506C[0x04]) { /* up to the list's own node */
+        void* node = it.node;
         it.node = *(void**)it.node;
-        if (cur == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
-                                         (const char*)lbl_80326B68);
+        if (node == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C /* "LinkList.h" */,
+                                         0x23D,
+                                         (const char*)lbl_80326B68 /* "NW4HBM:Pointer must not be NULL (p)" */);
         }
-        Update__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)cur)[-0x08]);
+        Update__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)node)[-0x08]); /* its StrmPlayer */
     }
 }
-
 #pragma push
 #pragma small_data off
 #pragma use_lmw_stmw off
