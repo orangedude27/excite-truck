@@ -119,17 +119,19 @@ void fn_8029F0D0(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8029F124(void) {
-    int zero;
-    int offset;
-    int i;
+    /* Update track effects and clear all per-entry track-effect states. */
+    int clearValue;
+    int byteOffset;
+    int entryIndex;
+
     fn_802A002C();
-    i = 0;
-    offset = 0;
-    zero = 0;
-    while (i < fn_801E85A4()) {
-        i++;
-        *(int *)((char *)lbl_8055F820 + offset) = zero;
-        offset += 4;
+    entryIndex = 0;
+    byteOffset = 0;
+    clearValue = 0;
+    while (entryIndex < fn_801E85A4()) {
+        entryIndex++;
+        *(int *)((char *)lbl_8055F820 + byteOffset) = clearValue;
+        byteOffset += 4;
     }
 }
 #pragma pop
