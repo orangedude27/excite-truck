@@ -2652,14 +2652,15 @@ void fn_801C95EC(f32 arg0) {
     }
 }
 
+/* Moves the current menu item selection by delta, wrapping within the active menu's item count. */
 void fn_801C968C(s32 delta) {
-    s32 updated = lbl_8055E820 + delta;
-    lbl_8055E820 = updated;
-    if (updated < 0) {
+    s32 newSelection = lbl_8055E820 + delta;
+    lbl_8055E820 = newSelection;
+    if (newSelection < 0) {
         lbl_8055E820 = *(s32 *)((u8 *)lbl_8055E86C + lbl_8055E81C * 0x10 + 8) - 1;
         return;
     }
-    if (updated >= *(s32 *)((u8 *)lbl_8055E86C + lbl_8055E81C * 0x10 + 8)) {
+    if (newSelection >= *(s32 *)((u8 *)lbl_8055E86C + lbl_8055E81C * 0x10 + 8)) {
         lbl_8055E820 = 0;
     }
 }
