@@ -423,11 +423,12 @@ void fn_8027D96C(int arg0) {
   extern int memset(void *, int, unsigned int);
   extern char lbl_80347DF8[];
   extern void fn_802E30C8(char *, ...);
-void fn_8027D9A4(int arg0, int arg1) {
-    switch (arg1) {
+/* Handles a per-slot career/path event; for event 0 logs the cleared slot and zeroes its 8-byte state entry. */
+void fn_8027D9A4(int slotIndex, int event) {
+    switch (event) {
     case 0:
-        fn_802E30C8(lbl_80347DF8, arg0);
-        memset(lbl_804B2FD8 + arg0 * 8, 0, 8);
+        fn_802E30C8(lbl_80347DF8, slotIndex);
+        memset(lbl_804B2FD8 + slotIndex * 8, 0, 8);
         break;
     default:
         break;
