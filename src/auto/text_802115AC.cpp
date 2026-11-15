@@ -232,6 +232,7 @@ extern "C" s32 fn_80128668(void);
 extern "C" s32 (*lbl_8055EF0C)(s32 *);
 extern "C" s32 fn_802168BC(s32);
 extern "C" void *fn_802115AC(void *arg0, s32 arg1) {
+    /* Reset the object's three 32-bit fields to 0, then free it when arg1 > 0 (deleting-destructor helper). */
     if (arg0 != 0) {
         if (arg0 != 0) {
             *(s32 *)arg0 = 0;
