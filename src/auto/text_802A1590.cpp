@@ -1105,11 +1105,13 @@ extern "C" void fn_802A31DC(void *effectGroup, s32 texturePath) {
 #pragma scheduling on
 
 #pragma scheduling invalid_target
-extern "C" void* fn_802A3314(void* arg0, DummyReceiver_802A3314* arg1) {
-    *(void**)arg0 = lbl_80349B28;
-    s32 result = arg1->v3(&lbl_8055CBB0);
-    fn_802A3500(arg0, result);
-    return arg0;
+extern "C" void* fn_802A3314(void* object, DummyReceiver_802A3314* terrainObject) {
+    /* Initializes an object with vtable lbl_80349B28: queries the terrain object's
+     * resource via lbl_8055CBB0, sets up its effect, and returns the object. */
+    *(void**)object = lbl_80349B28;
+    s32 result = terrainObject->v3(&lbl_8055CBB0);
+    fn_802A3500(object, result);
+    return object;
 }
 #pragma scheduling on
 extern "C" void fn_8028E398(void*);
