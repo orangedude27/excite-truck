@@ -391,14 +391,15 @@ void fn_8017AB84(void *matrix, float *dst, const float *src) {
 
 
 void fn_80128668(void*);
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017B038(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_80179EE8((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017B038(long self, long shouldDelete) {
+    /* Deleting destructor: destroy base and optionally free storage. */
+    if (self != 0) {
+        fn_80179EE8((void *)self, 0);
+        if (shouldDelete > 0) {
+            fn_80128668((void *)self);
         }
     }
-    return arg0;
+    return self;
 }
 
 void fn_8017B090(void) {
