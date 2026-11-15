@@ -12,10 +12,11 @@ extern int fn_802E75FC(int);
 extern int fn_802E75E4(const char *);
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
-void fn_801292CC(int arg0) {
+/* Loads a sound bank by id: logs the operation, formats "<id>.bnk", and stores the loaded bank handle. */
+void fn_801292CC(int bankId) {
     char sp8[24];
     fn_802E30C8((const char *)(void *)&lbl_8032A588);
-    sprintf(sp8, (const char *)(void *)&lbl_80559978, arg0);
+    sprintf(sp8, (const char *)(void *)&lbl_80559978, bankId);
     lbl_8055DFA8 = fn_802E75E4(sp8);
 }
 #pragma scheduling on
