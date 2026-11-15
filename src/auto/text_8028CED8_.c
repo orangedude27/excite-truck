@@ -130,29 +130,36 @@ extern void fn_8028D084(void *, void *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
+#pragma cplusplus on
 int fn_8028D17C(void) {
-    register char *base;
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20();
+        virtual void *get(void *);
+    };
+    register int *base;
     register int *slot;
-    register int i;
+    int i;
     register int invalid;
     char temp[0x20];
-    register void *obj;
-
+    void *obj;
     slot = (int *)lbl_804B3470;
     lbl_8055F728 = 0;
-    base = (char *)&lbl_804B3400;
+    base = &lbl_804B3400;
     i = 0;
     invalid = -1;
     for (; i < 8; i++) {
         fn_801345D8(temp, 0x20, lbl_80348CA0, i);
         obj = fn_802AE414(temp);
         if (obj != 0) {
-            void **vt = *(void ***)obj;
-            typedef void *(*F)(void *, void *);
-            obj = ((F *)vt)[23](obj, &lbl_8055C8D0);
+            obj = ((Obj *)obj)->get(&lbl_8055C8D0);
         }
         if (obj != 0) {
-            fn_8028D084(base + lbl_8055F728 * 0x1C, obj);
+            fn_8028D084((char *)base + lbl_8055F728 * 0x1C, obj);
             *slot = lbl_8055F728;
             lbl_8055F728++;
         } else {
@@ -162,6 +169,7 @@ int fn_8028D17C(void) {
     }
     return lbl_8055F728 > 0;
 }
+#pragma cplusplus off
 #pragma dont_inline reset
 #pragma scheduling reset
 #pragma use_lmw_stmw reset
@@ -240,6 +248,7 @@ void fn_8028D49C(void) {
 extern int lbl_8055F718, lbl_8055F71C, lbl_8055F720;
 extern int fn_80128670(int);
 void fn_8028D4A0(void) {
+    /* Release the three buffers allocated by fn_8028D2B4 (lbl_8055F720, lbl_8055F71C, and lbl_8055F718) and clear their pointers. */
     fn_80128670(lbl_8055F720);
     lbl_8055F720 = 0;
     fn_80128670(lbl_8055F71C);
@@ -276,9 +285,10 @@ void fn_8028D4FC(void) {
     {
         float f = lbl_805643F0;
         int k = 0;
-        unsigned int o = 0;
+        int o = 0;
+        int *b;
         while (k < *(volatile int *)&lbl_8055F724) {
-            int *b = (int *)*(volatile int *)&lbl_8055F720;
+            b = (int *)*(volatile int *)&lbl_8055F720;
             *(int *)((char *)b + o) = -1;
             *(float *)((char *)b + o + 4) = f;
             k++;
@@ -516,6 +526,10 @@ extern int lbl_804B3490[];
 extern float lbl_80564414;
 extern float fn_801E7E18(void);
 extern void fn_8028D89C(void *, int, float);
+#pragma push
+#pragma processor 750
+#pragma optimization_level 3
+#pragma scheduling invalid_target
 void fn_8028DDF0(register void *arg0, register int arg1) {
     typedef struct {
         int *items;
@@ -564,6 +578,4 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
         i++;
     }
 }
-
-#pragma scheduling on
 #pragma pop
