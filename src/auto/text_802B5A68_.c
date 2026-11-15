@@ -1802,10 +1802,11 @@ public:
 };
 #pragma cplusplus on
 extern "C" void fn_802B869C(void) {
-    s32 sp8[6];
+    /* Poll for an input event and apply its UI config when the active handler allows it. */
+    s32 event[6];
     if (((Dummy_802B869C *)lbl_8055FA48)->f8() == 0) {
-        if (fn_80127A50(sp8) != 0) {
-            fn_802B8624(sp8);
+        if (fn_80127A50(event) != 0) {
+            fn_802B8624(event);
         } else {
             fn_802B8624(0);
         }
