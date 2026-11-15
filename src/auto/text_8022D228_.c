@@ -494,6 +494,7 @@ int fn_8022DF9C(void *arg0) {
 
 #pragma scheduling invalid_target
 float fn_8022DFBC(void *arg0) {
+    /* Return normalized progress of *arg0->value within [arg0->min, arg0->max] as (value - min) / (max - min). */
     int offset = *(int *)((char *)arg0 + 8);
     int denominator = *(int *)((char *)arg0 + 0xC) - offset;
     int numerator = **(int **)((char *)arg0 + 4) - offset;
