@@ -203,11 +203,12 @@ void fn_80033B0C(void *paramBlock, void *coeffs) {
     OSRestoreInterrupts(state);
 }
 
-void fn_80033B74(void *arg0, short arg1, short arg2) {
+/* Set the AX voice LPF state (on/yn1) and flag LPF sync. */
+void fn_80033B74(void *vpb, short on, short yn1) {
     int state = OSDisableInterrupts();
-    *(short *)((char *)arg0 + 0x200) = arg1;
-    *(short *)((char *)arg0 + 0x202) = arg2;
-    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x00200000;
+    *(short *)((char *)vpb + 0x200) = on;
+    *(short *)((char *)vpb + 0x202) = yn1;
+    *(unsigned int *)((char *)vpb + 0x1C) |= 0x00200000;
     OSRestoreInterrupts(state);
 }
 
