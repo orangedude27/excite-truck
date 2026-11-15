@@ -1411,12 +1411,14 @@ extern "C" void *fn_8021A5B8(void *object, s32 id, u8 flagA, u8 flagB, s32 value
     return object;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021A650(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destroys a nw4hbm::snd::MemorySoundArchive variant (base subobject via fn_8021915C)
+ * and, if shouldDelete > 0, frees the storage. */
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021A650(void *self, int shouldDelete) {
+    if (self != 0) {
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_8021A6A8(void *arg0) {
