@@ -621,10 +621,17 @@ void fn_801B435C(void *arg0) {
 extern void fn_802E317C(const char *, ...);
 extern u8 lbl_80335D80[];
 #pragma scheduling invalid_target
-s32 fn_801B4428(u32 * __restrict arg0, u32 * __restrict arg1) {
-    if (*arg0 < *arg1) return -1;
-    if (*arg0 > *arg1) return 1;
-    fn_802E317C((const char *)lbl_80335D80);
+/* qsort comparator for the 0x2B collision-pair nodes fn_801B4204 lays out at +0x48
+   (one 16-byte node per colliding pair of objects, its packed pair key in the first
+   word).  Orders two nodes by that key; fn_801B447C then turns the sorted array into
+   a balanced binary search tree that fn_801B4528 searches by key, so two nodes may
+   not share one. */
+s32 fn_801B4428(u32 * __restrict nodeA, u32 * __restrict nodeB) {
+#define STR_SAME_KEY lbl_80335D80 /* "collide: tree nodes can't have the same key" */
+    if (*nodeA < *nodeB) return -1;
+    if (*nodeA > *nodeB) return 1;
+    fn_802E317C((const char *)STR_SAME_KEY);
+#undef STR_SAME_KEY
     return 0;
 }
 #pragma dont_inline on
