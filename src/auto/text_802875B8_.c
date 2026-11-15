@@ -134,16 +134,26 @@ void fn_802876A8(void *arg0) {
 }
 
 void fn_802876E8(void *arg0) {
+#define startTime field_18
+#define expired field_1C
+    /* Mark this timer expired once the elapsed time exceeds the 1.5s threshold, then stop the associated sound. */
+    typedef struct {
+        u8 _pad[0x18];
+        f32 field_18;
+        u8 field_1C;
+    } TimerObj;
     f32 temp_f0;
     f32 temp_f1;
     temp_f1 = fn_8023659C();
-    temp_f0 = *(f32 *)((u8 *)arg0 + 0x18);
+    temp_f0 = ((TimerObj *)arg0)->startTime;
     if ((temp_f1 < temp_f0) || ((temp_f1 - temp_f0) > lbl_80564248)) {
-        *((u8 *)arg0 + 0x1C) = 1;
+        ((TimerObj *)arg0)->expired = 1;
     }
-    if (*((u8 *)arg0 + 0x1C) != 0) {
+    if (((TimerObj *)arg0)->expired != 0) {
         fn_80214AF0(0x1D);
     }
+#undef startTime
+#undef expired
 }
 
 s32 fn_8028774C(void *arg0) {
