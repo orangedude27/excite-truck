@@ -7431,13 +7431,14 @@ extern "C" void *fn_80226630(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     return self;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802266B0(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        fn_802223C4(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802266B0(void *self, s32 shouldDelete) {
+    /* Scalar deleting destructor: destroy contents, then free this object when requested. */
+    if (self != 0) {
+        fn_802223C4(self, 0);
+        if (shouldDelete > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_80226708(void *arg0) {
