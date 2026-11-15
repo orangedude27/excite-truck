@@ -101,6 +101,9 @@ extern "C" void fn_801D0ED4(void) {
         virtual void m2();
     };
     int i;
+
+    /* Notifies each registered callback object in lbl_80438818 (count
+     * lbl_8055E8E8) via virtual method m2. */
     for (i = 0; i < lbl_8055E8E8; i++) {
         Dummy_801D0ED4 *obj = (Dummy_801D0ED4 *)lbl_80438818[i];
         obj->m2();
