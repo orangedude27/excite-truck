@@ -19683,11 +19683,11 @@ extern "C" s32 fn_800D1E78(void *, s32, s32);
 #pragma dont_inline
 int homebutton::Controller::isPlayingSoundId(int soundId) const {
     /* Return nonzero if the controller's sound player is playing soundId on
-     * this controller's sound slot (m_soundId at 0x00, player at 0x24). */
-    if (fn_800D1E5C(m_soundPlayer, m_soundId) == 0) {
+     * this remote's sound slot (m_channel at 0x00, player at 0x24). */
+    if (fn_800D1E5C(m_soundPlayer, m_channel) == 0) {
         return 0;
     }
-    return fn_800D1E78(m_soundPlayer, m_soundId, soundId);
+    return fn_800D1E78(m_soundPlayer, m_channel, soundId);
 }
 extern "C" void fn_800D1300(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x42) = 0;
