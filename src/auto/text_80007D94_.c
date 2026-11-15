@@ -149,13 +149,14 @@ const char* fn_80007F90(u32 arg0) {
     return lbl_80558998;
 }
 #pragma scheduling on
-const char* fn_80007FF0(u32 arg0) {
-    Unk802FB70C* p;
-    u32 key;
-    for (p = lbl_802FB70C; (key = p->unk_0x0) != 0; ++p) {
-        if (key == arg0) return p->unk_0x8;
+const char* fn_80007FF0(u32 eventType) {
+    /* Look up the display name for an event type ID in the event type table, or return "unknown" if not found. */
+    Unk802FB70C* entry;
+    u32 id;
+    for (entry = lbl_802FB70C; (id = entry->unk_0x0) != 0; ++entry) {
+        if (id == eventType) return entry->unk_0x8;
     }
-    fn_802E317C(lbl_802FB77C, arg0);
+    fn_802E317C(lbl_802FB77C, eventType);
     return lbl_805589A0;
 }
 
