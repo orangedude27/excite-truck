@@ -798,13 +798,13 @@ void fn_801688B4(s32 arg0) {
 }
 
 void fn_801688FC(s32 arg0) {
+    u8 *base = (u8 *)lbl_8055E354 + 0x20000;
     s32 i = 0;
     s32 offset = 0;
-    u8 *base = (u8 *)(u32)lbl_8055E354 + 0x20000;
     while (i < *(s32 *)(base - 0x2B30)) {
-        s32 table = *(s32 *)(base - 0x2B34);
-        if (arg0 == *(s32 *)(table + offset)) {
-            *((u8 *)(table + offset) + 4) = 0;
+        s32 *record = (s32 *)(*(s32 *)(base - 0x2B34) + offset);
+        if (arg0 == *record) {
+            *((u8 *)record + 4) = 0;
         }
         offset += 0x20;
         i++;
