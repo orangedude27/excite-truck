@@ -150,13 +150,14 @@ void fn_8029C3EC(void) {
 }
 
 extern void fn_8029EF24();
-void *__dt__Q34nw4r2ef6EffectFv_8029C3F0(void *arg0, int arg1) {
-    if (arg0) {
-        *(void **)arg0 = (void *)lbl_80349780;
-        fn_8029EF24(arg0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* nw4r::ef::Effect destructor: restore this class's vtable (lbl_80349780), run base cleanup, and optionally free the object. */
+void *__dt__Q34nw4r2ef6EffectFv_8029C3F0(void *effect, int deleteFlags) {
+    if (effect) {
+        *(void **)effect = (void *)lbl_80349780;
+        fn_8029EF24(effect);
+        if (deleteFlags > 0) fn_80128668(effect);
     }
-    return arg0;
+    return effect;
 }
 
 /* One entry of the list of objects near the players: fn_8028874C fills these
