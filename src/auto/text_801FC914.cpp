@@ -322,28 +322,30 @@ extern "C" void* fn_801FCED8(void* arg0, int arg1) {
 }
 
 extern "C" void fn_801FCF18(void* arg0, int arg1, int arg2) {
+    /* Initialize a DronePath with the given pool name and source id and an identity transform. */
     float zero;
     float one;
+    struct DronePath* path = (struct DronePath*)arg0;
     zero = lbl_80563034;
     one = lbl_80563030;
-    int value = *(int*)(arg1 + 4);
-    *(int*)((char*)arg0 + 0) = arg2;
-    *(int*)((char*)arg0 + 4) = 0;
-    *(int*)((char*)arg0 + 8) = value;
-    *(float*)((char*)arg0 + 0xc) = one;
-    *(float*)((char*)arg0 + 0x10) = zero;
-    *(float*)((char*)arg0 + 0x14) = zero;
-    *(float*)((char*)arg0 + 0x18) = zero;
-    *(float*)((char*)arg0 + 0x1c) = one;
-    *(float*)((char*)arg0 + 0x20) = zero;
-    *(float*)((char*)arg0 + 0x24) = zero;
-    *(float*)((char*)arg0 + 0x28) = zero;
-    *(float*)((char*)arg0 + 0x2c) = one;
-    *(float*)((char*)arg0 + 0x30) = zero;
-    *(float*)((char*)arg0 + 0x34) = zero;
-    *(float*)((char*)arg0 + 0x38) = zero;
-    *(int*)((char*)arg0 + 0x3C) = -1;
-    *(float*)((char*)arg0 + 0x40) = zero;
+    int sourceId = *(int*)(arg1 + 4);
+    *(int*)((char*)path + 0) = arg2;
+    *(int*)((char*)path + 4) = 0;
+    *(int*)((char*)path + 8) = sourceId;
+    *(float*)((char*)path + 0xc) = one;
+    *(float*)((char*)path + 0x10) = zero;
+    *(float*)((char*)path + 0x14) = zero;
+    *(float*)((char*)path + 0x18) = zero;
+    *(float*)((char*)path + 0x1c) = one;
+    *(float*)((char*)path + 0x20) = zero;
+    *(float*)((char*)path + 0x24) = zero;
+    *(float*)((char*)path + 0x28) = zero;
+    *(float*)((char*)path + 0x2c) = one;
+    *(float*)((char*)path + 0x30) = zero;
+    *(float*)((char*)path + 0x34) = zero;
+    *(float*)((char*)path + 0x38) = zero;
+    *(int*)((char*)path + 0x3C) = -1;
+    *(float*)((char*)path + 0x40) = zero;
 }
 
 extern "C" void fn_801FCF74(void* arg0, float farg0) {
