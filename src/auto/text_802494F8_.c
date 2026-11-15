@@ -150,14 +150,17 @@ s32 fn_8024A16C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_80236074((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+/* Scalar deleting destructor for nw4hbm::snd::MemorySoundArchive: runs the base
+ * subobject destructor (fn_80236074, deleteFlag 0) and, when deletingFlag > 0,
+ * frees the object (fn_80128668 = operator delete, mode 3). Returns this_. */
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long this_, long deletingFlag) {
+    if (this_ != 0) {
+        fn_80236074((void*)this_, 0);
+        if (deletingFlag > 0) {
+            fn_80128668((void*)this_);
         }
     }
-    return arg0;
+    return this_;
 }
 
 #pragma scheduling invalid_target
