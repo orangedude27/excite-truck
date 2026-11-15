@@ -1791,7 +1791,8 @@ extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 #pragma push
 #pragma dont_inline on
-extern "C" void fn_801478E0(void *arg0, s32 unused, s32 arg1, s32 arg2) {
+extern "C" void fn_801478E0(void *widget, s32 unused, s32 resource, s32 flags) {
+    /* Look up a text entry via the widget's vtable (slot 3); if found and a resource is provided, draw it with fn_80145CF4. */
     class V {
     public:
         virtual void f0();
@@ -1799,9 +1800,9 @@ extern "C" void fn_801478E0(void *arg0, s32 unused, s32 arg1, s32 arg2) {
         virtual void f2();
         virtual s32 f3();
     };
-    s32 result = ((V *)arg0)->f3();
-    if (result != 0 && arg1 != 0)
-        fn_80145CF4((void *)result, (void *)arg1, (u32)arg2);
+    s32 textEntry = ((V *)widget)->f3();
+    if (textEntry != 0 && resource != 0)
+        fn_80145CF4((void *)textEntry, (void *)resource, (u32)flags);
 }
 #pragma pop
 #pragma dont_inline on
