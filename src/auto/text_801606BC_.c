@@ -11,6 +11,7 @@ extern float lbl_80561804;
 extern float lbl_80561808;
 extern float lbl_80561828;
 void fn_801606BC(void) {
+    /* Initialize a small state node and precompute spatial bin/range parameters from configuration floats. */
     fn_8000D838(&lbl_8055E290);
     lbl_8055E298 = 0xFFFF0000;
     lbl_8055E2A4 = lbl_80561800 * lbl_80561804;
