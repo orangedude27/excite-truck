@@ -436,6 +436,7 @@ void fn_80057F2C(s32 param_0, u32 param_1) {
 }
 #pragma dont_inline reset
 
+/* Set SI poll X/Y counts and update the hardware SIPOLL register, returning the new poll value. */
 u32 SISetXY(u32 lines, u32 times) {
     BOOL enabled;
     u32 poll;
