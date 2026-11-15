@@ -1265,13 +1265,28 @@ extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
 #pragma scheduling invalid_target
 void fn_802D6860(void) {
-    s32 lastLength;
-    fn_802E30C8(lbl_8034C3F4, lbl_8055FDF8 - lbl_8055FDF4, lbl_8055FDF0);
-    fn_80128670(lbl_8055FDF4);
-    lastLength = lbl_8055FE00;
-    lbl_8055FDF4 = 0;
-    lbl_8055FDF8 = 0;
-    fn_802E30C8(lbl_8034C428, lastLength);
+    s32 savedYmorphVertCount;
+    /* Finalize vertex-format display list logging/cleanup, then report total ymorph verts. */
+#define vertexFormatDlStart lbl_8055FDF4
+#define vertexFormatDlEnd lbl_8055FDF8
+#define vertexFormatCount lbl_8055FDF0
+#define totalYmorphVerts lbl_8055FE00
+#define logVertexFormatDlMsg lbl_8034C3F4
+#define logTotalYmorphVertsMsg lbl_8034C428
+
+    fn_802E30C8(logVertexFormatDlMsg, vertexFormatDlEnd - vertexFormatDlStart, vertexFormatCount);
+    fn_80128670(vertexFormatDlStart);
+    savedYmorphVertCount = totalYmorphVerts;
+    vertexFormatDlStart = 0;
+    vertexFormatDlEnd = 0;
+    fn_802E30C8(logTotalYmorphVertsMsg, savedYmorphVertCount);
+
+#undef vertexFormatDlStart
+#undef vertexFormatDlEnd
+#undef vertexFormatCount
+#undef totalYmorphVerts
+#undef logVertexFormatDlMsg
+#undef logTotalYmorphVertsMsg
 }
 #pragma scheduling on
 void fn_802D6B08(void *arg0) {
