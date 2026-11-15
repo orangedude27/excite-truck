@@ -181,6 +181,7 @@ void fn_801E6B98(void* object) {
     fn_802C6CF8(player->handle);
     fn_80128668((s32)object);
 }
+
 extern void *fn_8012C370(const char *, unsigned int, int *, int *, unsigned char *, unsigned char *);
 extern char *strcpy(char *, const char *);
 extern char *fn_80029004(const char *, int);
