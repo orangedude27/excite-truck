@@ -851,13 +851,14 @@ void fn_8025F9B8(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
 
-void* fn_8025F9C0(void* arg0) {
-    *(int*)((char*)arg0 + 0x14) = 0;
-    *(void**)arg0 = lbl_80345A30;
-    *(int*)((char*)arg0 + 0x18) = 0;
-    *((char*)arg0 + 0x25) = 0;
-    *(void**)((char*)arg0 + 0x2C) = fn_8023512C(lbl_80345A1C);
-    return arg0;
+void* fn_8025F9C0(void* self) {
+    /* Initialize this object: clear fields, install vtable lbl_80345A30, and open the resource named by lbl_80345A1C. */
+    *(int*)((char*)self + 0x14) = 0;
+    *(void**)self = lbl_80345A30;
+    *(int*)((char*)self + 0x18) = 0;
+    *((char*)self + 0x25) = 0;
+    *(void**)((char*)self + 0x2C) = fn_8023512C(lbl_80345A1C);
+    return self;
 }
 
 extern void *fn_801284F8(int, const char *);
