@@ -118,17 +118,18 @@ void fn_802C2BB8(float *arg0, float *arg1, float *arg2) {
     }
 }
 
-unsigned char fn_802C2C00(int arg0) {
-    unsigned char saved = lbl_804C1328[0xC];
-    float f;
-    lbl_804C1328[0xC] = arg0;
-    if ((arg0 & 0xFF) != 0) {
-        f = *(float *)(lbl_804C1328 + 8);
+/* Sets the stored view-range enabled flag and reapplies the current range values, returning the previous flag. */
+unsigned char fn_802C2C00(int enableFlag) {
+    unsigned char previousFlag = lbl_804C1328[0xC];
+    float zValue;
+    lbl_804C1328[0xC] = enableFlag;
+    if ((enableFlag & 0xFF) != 0) {
+        zValue = *(float *)(lbl_804C1328 + 8);
     } else {
-        f = lbl_80564ED8;
+        zValue = lbl_80564ED8;
     }
-    fn_802D0014(*(float *)lbl_804C1328, *(float *)(lbl_804C1328 + 4), f);
-    return saved;
+    fn_802D0014(*(float *)lbl_804C1328, *(float *)(lbl_804C1328 + 4), zValue);
+    return previousFlag;
 }
 
 void fn_802DD63C(void);
