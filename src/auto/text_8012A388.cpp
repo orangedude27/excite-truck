@@ -490,10 +490,13 @@ loop_37_done:
 #pragma push
 #pragma processor 750
 extern "C" void *fn_8012AFE0(void *arg0, void *arg1) {
-    u32 buf[13];
+    /* Load a resource file into a 0xB0-byte node: open/validate it, allocate the
+       node, copy the name strings and header, read the data, parse it, and on
+       failure tear the node down; returns the node, or 0 on failure. */
+    u32 header[13];
     s32 handle;
-    u8 *p = 0;
-    u8 *name = (u8 *)arg0;
+    u8 *node = 0;
+    u8 *fileName = (u8 *)arg0;
     u8 c;
     u8 *src;
     s32 n;
@@ -506,13 +509,13 @@ extern "C" void *fn_8012AFE0(void *arg0, void *arg1) {
     s32 var_r31;
     s32 res;
 
-    handle = ((s32 (*)(void *, void *))fn_8012ABB0)(arg0, buf);
+    handle = ((s32 (*)(void *, void *))fn_8012ABB0)(arg0, header);
     if (handle != -1) {
-        p = (u8 *)fn_801284F8(0xB0, (void *)lbl_8032A8E8);
-        if (p != 0) {
-            var_r31 = ((s32 (*)(void *))fn_8012AC98)(name);
-            p[0xAC] = 0;
-            src = (u8 *)arg1; dst = p; n = 0x20;
+        node = (u8 *)fn_801284F8(0xB0, (void *)lbl_8032A8E8);
+        if (node != 0) {
+            var_r31 = ((s32 (*)(void *))fn_8012AC98)(fileName);
+            node[0xAC] = 0;
+            src = (u8 *)arg1; dst = node; n = 0x20;
             goto copy1;
 limit1:
             n -= 1;
@@ -523,7 +526,7 @@ copy1:
             c = *src++; *dst++ = c;
             if ((s8)c != 0) goto limit1;
 done1:
-            dst2 = p + 0x20; n2 = 0x40;
+            dst2 = node + 0x20; n2 = 0x40;
             goto copy2;
 limit2:
             n2 -= 1;
@@ -531,75 +534,75 @@ limit2:
             dst2[-1] = 0;
             goto done2;
 copy2:
-            c2 = *name++; *dst2++ = c2;
+            c2 = *fileName++; *dst2++ = c2;
             if ((s8)c2 != 0) goto limit2;
 done2:
-            *(s32 *)(p + 0xA8) = 0;
-            *(s32 *)(p + 0x60) = 0;
-            if (buf != 0) {
-                *(u32 *)(p + 0x68) = buf[0];
-                *(u32 *)(p + 0x6C) = buf[1];
-                *(u32 *)(p + 0x70) = buf[2];
-                *(u32 *)(p + 0x74) = buf[3];
-                *(u32 *)(p + 0x78) = buf[4];
-                *(u32 *)(p + 0x7C) = buf[5];
-                *(u32 *)(p + 0x80) = buf[6];
-                *(u32 *)(p + 0x84) = buf[7];
-                *(u32 *)(p + 0x88) = buf[8];
-                *(u32 *)(p + 0x8C) = buf[9];
-                *(u32 *)(p + 0x90) = buf[10];
-                *(u32 *)(p + 0x94) = buf[11];
-                *(u32 *)(p + 0x98) = buf[12];
+            *(s32 *)(node + 0xA8) = 0;
+            *(s32 *)(node + 0x60) = 0;
+            if (header != 0) {
+                *(u32 *)(node + 0x68) = header[0];
+                *(u32 *)(node + 0x6C) = header[1];
+                *(u32 *)(node + 0x70) = header[2];
+                *(u32 *)(node + 0x74) = header[3];
+                *(u32 *)(node + 0x78) = header[4];
+                *(u32 *)(node + 0x7C) = header[5];
+                *(u32 *)(node + 0x80) = header[6];
+                *(u32 *)(node + 0x84) = header[7];
+                *(u32 *)(node + 0x88) = header[8];
+                *(u32 *)(node + 0x8C) = header[9];
+                *(u32 *)(node + 0x90) = header[10];
+                *(u32 *)(node + 0x94) = header[11];
+                *(u32 *)(node + 0x98) = header[12];
             } else {
-                memset(p + 0x68, 0, 0x34);
+                memset(node + 0x68, 0, 0x34);
             }
-            *(s32 *)(p + 0x9C) = 1;
-            *(s32 *)(p + 0xA0) = 0;
-            *(s32 *)(p + 0xA4) = var_r31;
-            p[0xAC] = 1;
-            *(s32 *)(p + 0x64) = 0;
-            p[0xAD] = 0;
+            *(s32 *)(node + 0x9C) = 1;
+            *(s32 *)(node + 0xA0) = 0;
+            *(s32 *)(node + 0xA4) = var_r31;
+            node[0xAC] = 1;
+            *(s32 *)(node + 0x64) = 0;
+            node[0xAD] = 0;
         }
-        size = buf[9];
+        size = header[9];
         fn_801282F4();
         fn_801282EC(0x80);
         data = (s32)((void *(*)(void *, s32))fn_801284F0)(arg1, size);
-        fn_802E3A14(handle, *(s32 *)(p + 0x80));
+        fn_802E3A14(handle, *(s32 *)(node + 0x80));
         fn_802E3804(handle, (void *)data, size);
-        *(s32 *)(p + 0xA0) = data;
-        if (buf[3] & 1) {
-            *(s32 *)(p + 0x60) = 0;
-            res = fn_8012ACA0(p, (void *)data, size);
+        *(s32 *)(node + 0xA0) = data;
+        if (header[3] & 1) {
+            *(s32 *)(node + 0x60) = 0;
+            res = fn_8012ACA0(node, (void *)data, size);
         } else {
-            *(s32 *)(p + 0x60) = *(s32 *)(p + 0xA0);
-            res = ((s32 (*)(void *, s32))fn_8012AA60)(p, size);
+            *(s32 *)(node + 0x60) = *(s32 *)(node + 0xA0);
+            res = ((s32 (*)(void *, s32))fn_8012AA60)(node, size);
         }
         if (res == 0) {
             fn_8012A7FC();
-            if (p != 0) {
-                if (p[0xAC] != 0) {
+            if (node != 0) {
+                if (node[0xAC] != 0) {
                     var_r31 = 0;
                     n = 0;
-                    while (var_r31 < *(s32 *)(p + 0x88)) {
-                        u8 *e = (u8 *)*(void **)(p + 0x60) + n;
+                    while (var_r31 < *(s32 *)(node + 0x88)) {
+                        u8 *e = (u8 *)*(void **)(node + 0x60) + n;
                         if (*(u32 *)(e + 0x34) & 4) fn_802E317C(lbl_8032AE20, e);
                         var_r31 += 1;
-                        e = (u8 *)*(void **)(p + 0x60) + n;
+                        e = (u8 *)*(void **)(node + 0x60) + n;
                         u32 fl = *(u32 *)(e + 0x34);
                         n += 0x44;
                         *(u32 *)(e + 0x34) = fl & ~0xF;
                     }
-                    if (*(s32 *)(p + 0x64) != 0) fn_8012C4D8(*(void **)(p + 0x64));
-                    if (*(s32 *)(p + 0xA0) != 0) fn_80128660(*(s32 *)(p + 0xA0));
-                    p[0xAC] = 0;
+                    if (*(s32 *)(node + 0x64) != 0) fn_8012C4D8(*(void **)(node + 0x64));
+                    if (*(s32 *)(node + 0xA0) != 0) fn_80128660(*(s32 *)(node + 0xA0));
+                    node[0xAC] = 0;
                 }
-                fn_80128668(p);
+                fn_80128668(node);
             }
-            p = 0;
+            node = 0;
         }
         fn_802E3734(&handle);
     }
-    return p;
+    return node;
 }
 #pragma pop
 extern "C" int sprintf(char *, const char *, ...);
