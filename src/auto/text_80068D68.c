@@ -15175,22 +15175,23 @@ int btsnd_hcic_accept_conn(void *cmdBuf, u8 *bdAddr, u8 role) {
     return btu_hcif_send_cmd(buf);
 }
 
+/* Build and send an HCI Reject Connection Request command for a remote device. */
 int btsnd_hcic_reject_conn(void *p_buf, u8 *bd_addr, u8 reason) {
-    u8 *buf = p_buf;
+    u8 *cmd = p_buf;
 
-    *(u16 *)(buf + 2) = 0xA;
-    *(u16 *)(buf + 4) = 0;
-    buf[8] = 0xA;
-    buf[9] = 4;
-    buf[0xA] = 7;
-    buf[0xB] = bd_addr[5];
-    buf[0xC] = bd_addr[4];
-    buf[0xD] = bd_addr[3];
-    buf[0xE] = bd_addr[2];
-    buf[0xF] = bd_addr[1];
-    buf[0x10] = bd_addr[0];
-    buf[0x11] = reason;
-    return btu_hcif_send_cmd(buf);
+    *(u16 *)(cmd + 2) = 0xA;
+    *(u16 *)(cmd + 4) = 0;
+    cmd[8] = 0xA;
+    cmd[9] = 4;
+    cmd[0xA] = 7;
+    cmd[0xB] = bd_addr[5];
+    cmd[0xC] = bd_addr[4];
+    cmd[0xD] = bd_addr[3];
+    cmd[0xE] = bd_addr[2];
+    cmd[0xF] = bd_addr[1];
+    cmd[0x10] = bd_addr[0];
+    cmd[0x11] = reason;
+    return btu_hcif_send_cmd(cmd);
 }
 
 /* Send an HCI Link Key Request Reply command for a device address and link key. */
