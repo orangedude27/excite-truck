@@ -1,6 +1,7 @@
 #include <revolution/OS.h>
 
 void OSInitSemaphore(OSSemaphore* sem, s32 count) {
+    /* Initialize a semaphore with the given initial count. */
     BOOL enabled;
 
     enabled = OSDisableInterrupts();
