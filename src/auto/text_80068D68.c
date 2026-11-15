@@ -5827,12 +5827,19 @@ u8 fn_80073B30(void) {
     return result;
 }
 
-void BTA_DmSetDeviceName(char *name) {
-    void *buf = GKI_getbuf(0x28);
-    if (buf != 0) {
-        *(u16 *)buf = 0x102;
-        strncpy((char *)buf + 8, name, 0x20);
-        fn_80071450(buf);
+/*******************************************************************************
+**
+** Function         BTA_DmSetDeviceName
+**
+** Description      This function sets the Bluetooth name of the local device.
+**
+*******************************************************************************/
+void BTA_DmSetDeviceName(char *p_name) {
+    void *p_msg = GKI_getbuf(0x28);
+    if (p_msg != 0) {
+        *(u16 *)p_msg = 0x102;
+        strncpy((char *)p_msg + 8, p_name, 0x20);
+        fn_80071450(p_msg);
     }
 }
 
