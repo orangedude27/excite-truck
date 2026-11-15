@@ -206,14 +206,15 @@ void fn_8020D178(void) {
 }
 
 #pragma cplusplus on
+/* Tear down the volume panel: destroy its object, release its mixer handle, and clear state. */
 extern "C" void fn_8020D1C8(void) {
     struct Dummy_8020D1C8_Local {
         virtual void d1(int);
     };
-    Dummy_8020D1C8_Local *obj = (Dummy_8020D1C8_Local *)lbl_8055EEA0;
-    if (obj != 0) {
-        if (obj != 0) {
-            obj->d1(1);
+    Dummy_8020D1C8_Local *panelObject = (Dummy_8020D1C8_Local *)lbl_8055EEA0;
+    if (panelObject != 0) {
+        if (panelObject != 0) {
+            panelObject->d1(1);
         }
         lbl_8055EEA0 = 0;
     }
