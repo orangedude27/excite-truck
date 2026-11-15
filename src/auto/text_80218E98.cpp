@@ -9036,6 +9036,7 @@ extern "C" void fn_80229AE4(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
+    /* Forward (arg1,arg2) via fn_80219264, then add them to the object's fields at +0x248 and +0x24C. */
     ((void (*)(void *, s32, s32))fn_80219264)(arg0, arg1, arg2);
     s32 temp_r3 = *(s32 *)((u8 *)arg0 + 0x248) + arg1;
     s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0x24C) + arg2;
