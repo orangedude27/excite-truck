@@ -513,10 +513,12 @@ void fn_80253890(void *arg0, void *arg1) {
 #pragma pop
 #pragma cplusplus off
 
+/* Release handles/resources owned by this object (audio/model handle at +0x28, resource at +0x3FC). */
 void fn_80253C48(void *arg0) {
-    s32 temp = *(s32 *)((u8 *)arg0 + 0x28);
-    if (temp != -1) {
-        fn_802C6CF8(temp);
+    s32 resourceHandle = *(s32 *)((u8 *)arg0 + 0x28);
+
+    if (resourceHandle != -1) {
+        fn_802C6CF8(resourceHandle);
         *(s32 *)((u8 *)arg0 + 0x28) = -1;
     }
     if (*(s32 *)((u8 *)arg0 + 0x3FC) != 0) {
