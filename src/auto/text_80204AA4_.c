@@ -223,16 +223,17 @@ int fn_8020503C(const char *arg0) {
     return stricmp((const char *)value, lbl_8055B4B4) == 0 || stricmp((const char *)value, lbl_8055B4B8) == 0;
 }
 
+/* Clear the active contest configuration and release its resources. */
 void fn_80205208(void) {
-    int *p = lbl_8055ED5C;
+    int *contestConfig = lbl_8055ED5C;
     lbl_8055ED58 = 0;
-    if (p != 0) {
-        p[4] = 0;
-        p[2] = 0;
-        p[3] = 0;
-        fn_80131818(p[1]);
-        p[1] = 0;
-        fn_80128668(p);
+    if (contestConfig != 0) {
+        contestConfig[4] = 0;
+        contestConfig[2] = 0;
+        contestConfig[3] = 0;
+        fn_80131818(contestConfig[1]);
+        contestConfig[1] = 0;
+        fn_80128668(contestConfig);
     }
 }
 
