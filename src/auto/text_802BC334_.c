@@ -883,19 +883,26 @@ extern "C" void deleteThreads__6SystemFv_802BDCA4(void **threadSlot) {
 void fn_802C2930(void*, unsigned int);
 #pragma push
 #pragma scheduling invalid_target
-void fn_802BD018(void *arg0) {
-    void *obj = *(void **)arg0;
-    if (obj) {
-        if (obj) {
-            *(int *)obj = 0;
-            ((int *)obj)[1] = 0;
-            ((int *)obj)[2] = 0;
-            fn_80128668(obj);
+/* Release the pointer list stored at *slot (an owner's +4 / +8 subobject slot, see
+ * fn_802BCFB0): clear its { item array, count, capacity } header, free it with
+ * fn_80128668 and set the slot to null. */
+void fn_802BD018(void *slot) {
+    struct PtrTable {
+        /* 0x0 */ void **items;
+        /* 0x4 */ int count;
+        /* 0x8 */ int capacity;
+    } *table = *(void **)slot;
+
+    if (table) {
+        if (table) {
+            table->items = 0;
+            table->count = 0;
+            table->capacity = 0;
+            fn_80128668(table);
         }
-        *(void **)arg0 = 0;
+        *(void **)slot = 0;
     }
 }
-
 int fn_802BD070(void *slot) {
     /* Clear the 3-word object stored at *slot, free it (mode 3), and clear the slot. */
     void *obj = *(void **)slot;
