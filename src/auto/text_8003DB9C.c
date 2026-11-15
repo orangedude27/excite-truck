@@ -4166,11 +4166,15 @@ void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXLoadTexObj(void *arg0, unsigned int arg1) {
-    unsigned int *data = *(unsigned int * volatile *)&__GXData;
-    void *result;
-    result = ((void *(*)(void *))data[0x518 / 4])(arg0);
-    GXLoadTexObjPreLoaded(arg0, result, arg1);
+void GXLoadTexObj(void *obj, unsigned int map) {
+    /* Bind a texture object to one texmap channel: ask the installed texture-region
+     * callback which GXTexRegion the object belongs in, then load the object into it.
+     * The SDK's GXLoadTexObj also checks the channel id and the callback pointer here;
+     * this build compiles those assertions out. */
+    GXTexRegionData *data = gxtexdata;
+    void *region;
+    region = data->texRegionCallback(obj, map);
+    GXLoadTexObjPreLoaded(obj, region, map);
 }
 
 void GXInitTlutObj(void *arg0, unsigned int arg1, int arg2, short arg3) {
