@@ -679,14 +679,16 @@ void fn_801EBD18(s32 arg0) {
     }
 }
 
+/* When no active context exists and there is exactly one player, reset state
+ * and apply the default player's stored value to the current slot object. */
 void fn_801EBD70(void) {
-    f32 temp;
+    f32 value;
     if (lbl_8055EBA0 == 0) {
         fn_802B0144();
         if (fn_801E85A4() == 1) {
-            temp = fn_801E8738(-1);
+            value = fn_801E8738(-1);
             fn_801E8718(-1);
-            fn_802BF598(temp);
+            fn_802BF598(value);
         }
     }
 }
