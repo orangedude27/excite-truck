@@ -4797,6 +4797,7 @@ void fn_8007079C(u16 *arg0, u16 arg1) {
 }
 
 void bte_hcisu_task(void) {
+    /* Initialize and open the HCI transport interface if one is registered. */
     if (lbl_8055DC68 != NULL) {
         if (lbl_8055DC68->init != NULL) {
             lbl_8055DC68->init(2, 1, 0x800);
