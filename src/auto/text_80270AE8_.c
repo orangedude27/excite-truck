@@ -1623,8 +1623,9 @@ void fn_80273490(int mode, void *obj) {
 }
 
 #pragma dont_inline on
-int fn_80273494(int arg0) {
-    switch (arg0) {
+/* Map an event type to its region-group index (0-4 for types 11-15), or 6 if it has no region group. */
+int fn_80273494(int eventType) {
+    switch (eventType) {
     case 11: return 0;
     case 12: return 1;
     case 13: return 2;
