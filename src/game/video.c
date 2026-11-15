@@ -325,15 +325,17 @@ void fn_802DF6D0(void) {
     GXLoadTexObj(fn_802D30FC(), GX_TEXMAP6);
 }
 
+/* Reset TEV swap modes for stages 0-2 to swap 0 (identity), disable indirect
+ * texturing stages, and set stage 1 to direct texturing. */
 void fn_802DF938(void) {
-    register GXTevStageID stage = GX_TEVSTAGE0;
-    register GXTevSwapSel color = (GXTevSwapSel)0;
-    register GXTevSwapSel alpha = (GXTevSwapSel)0;
-    GXSetTevSwapMode(stage, color, alpha);
-    stage = GX_TEVSTAGE1;
-    GXSetTevSwapMode(stage, color, alpha);
-    stage = GX_TEVSTAGE2;
-    GXSetTevSwapMode(stage, color, alpha);
+    register GXTevStageID tevStage = GX_TEVSTAGE0;
+    register GXTevSwapSel rasSel = (GXTevSwapSel)0;
+    register GXTevSwapSel texSel = (GXTevSwapSel)0;
+    GXSetTevSwapMode(tevStage, rasSel, texSel);
+    tevStage = GX_TEVSTAGE1;
+    GXSetTevSwapMode(tevStage, rasSel, texSel);
+    tevStage = GX_TEVSTAGE2;
+    GXSetTevSwapMode(tevStage, rasSel, texSel);
     GXSetNumIndStages(0);
     GXSetTevDirect(1);
 }
