@@ -7959,9 +7959,10 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
     }
 }
 
-extern "C" void fn_80227C9C(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
-    fn_80227880(arg0, arg1, arg2, arg3, arg4);
-    fn_802278F0(arg0, arg1, arg2, arg3, arg4);
+extern "C" void fn_80227C9C(s32 unused, f32 x, f32 y, f32 width, f32 height) {
+    /* Draw a filled background and its border for the same rectangle. */
+    fn_80227880(unused, x, y, width, height);
+    fn_802278F0(unused, x, y, width, height);
 }
 
 extern "C" void *fn_80227D00(void *object) {
