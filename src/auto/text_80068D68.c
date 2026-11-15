@@ -24322,13 +24322,19 @@ BOOLEAN SDP_ServiceSearchRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP
     return TRUE;
 }
 
+/* Ask the SDP server of the device at p_bd_addr for its services' attributes:
+   get an SDP connection control block for it and remember where to save the
+   discovery (p_db) and whom to call when it completes (p_cb), flagged as an
+   attribute search.  Returns TRUE if the discovery was started. */
 BOOLEAN SDP_ServiceSearchAttributeRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
-    tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
+    tCONN_CB_DISC_VIEW *p_ccb = (tCONN_CB_DISC_VIEW *)sdp_conn_originate(p_bd_addr);
+
     if (p_ccb == NULL) return FALSE;
-    *(u8 *)((u8 *)p_ccb + 0x474) = 0;
-    *(u32 *)((u8 *)p_ccb + 0x410) = (u32)p_db;
-    *(u32 *)((u8 *)p_ccb + 0x414) = (u32)p_cb;
-    *(u8 *)((u8 *)p_ccb + 0x475) = 1;
+
+    p_ccb->disc_state = SDP_DISC_WAIT_CONN;
+    p_ccb->p_db = p_db;
+    p_ccb->p_cb = p_cb;
+    p_ccb->is_attr_search = TRUE;
     return TRUE;
 }
 
