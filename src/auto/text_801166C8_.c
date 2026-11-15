@@ -3651,16 +3651,19 @@ void fn_8011C364(s32 arg0) {
     }
 }
 
-void fn_8011C3A8(s32 arg0, void *arg1, s32 arg2, u32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    *(s32 *)((u8 *)arg1 + 0x28) = 0x20 - __cntlzw((u16)(arg2 + ((arg3 >> 3) * arg5) - 1));
-    *(s32 *)((u8 *)arg1 + 0) = 0;
-    *(s32 *)((u8 *)arg1 + 4) = 0;
-    *(s32 *)((u8 *)arg1 + 8) = arg4;
-    if (arg6)
-        *(s32 *)((u8 *)arg1 + 0xC) = 1 << (arg4 - 1);
+/* Initialize a compressed-stream band/state: store the buffer, clear the
+ * cursor/count, set the element bit-width and optional initial mask, and
+ * compute the index bit-width from the band size (arg3>>3)*arg5 elements. */
+void fn_8011C3A8(s32 buffer, void *state, s32 baseCount, u32 width, s32 elemBits, s32 scale, s32 useMask) {
+    *(s32 *)((u8 *)state + 0x28) = 0x20 - __cntlzw((u16)(baseCount + ((width >> 3) * scale) - 1));
+    *(s32 *)((u8 *)state + 0) = 0;
+    *(s32 *)((u8 *)state + 4) = 0;
+    *(s32 *)((u8 *)state + 8) = elemBits;
+    if (useMask)
+        *(s32 *)((u8 *)state + 0xC) = 1 << (elemBits - 1);
     else
-        *(s32 *)((u8 *)arg1 + 0xC) = 0;
-    *(s32 *)((u8 *)arg1 + 0x2C) = arg0;
+        *(s32 *)((u8 *)state + 0xC) = 0;
+    *(s32 *)((u8 *)state + 0x2C) = buffer;
 }
 
 /* Merge the two halves of a permutation chunk into the output.
