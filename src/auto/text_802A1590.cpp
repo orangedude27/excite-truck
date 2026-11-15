@@ -1389,15 +1389,17 @@ extern "C" void* fn_802A3D3C(void* arg0, DummyReceiver_802A3314* arg1) {
     return arg0;
 }
 
-extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = &lbl_80349AB0;
-        fn_8028E398(*(void**)((char*)arg0 + 4));
-        if (arg1 > 0) {
-            ((s32 (*)(void*))fn_80128668)(arg0);
+/* Destructor for CollisionSpace: restores its vtable, releases the owned
+ * resource at offset +4, and deletes the object when shouldDelete > 0. */
+extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* self, s32 shouldDelete) {
+    if (self != 0) {
+        *(void**)self = &lbl_80349AB0;
+        fn_8028E398(*(void**)((char*)self + 4));
+        if (shouldDelete > 0) {
+            ((s32 (*)(void*))fn_80128668)(self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_802A3DFC(void *arg0) {
