@@ -222,16 +222,17 @@ void fn_8023DA64(void *context, int skipLookup, int flag) {
 #pragma use_lmw_stmw on
 
 void fn_8023DB68(void) {
-    long *dst;
-    long i;
+    /* Snapshot each stack head into the saved-heads array. */
+    long *savedHead;
+    long index;
 
     lbl_8055BC54 = fn_80137C74();
-    dst = &lbl_804987D0[0];
-    i = 0;
-    while (i < lbl_8055BC54) {
-        *dst = __AXGetStackHead_80137CFC(i);
-        dst++;
-        i++;
+    savedHead = &lbl_804987D0[0];
+    index = 0;
+    while (index < lbl_8055BC54) {
+        *savedHead = __AXGetStackHead_80137CFC(index);
+        savedHead++;
+        index++;
     }
 }
 
