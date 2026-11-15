@@ -360,11 +360,24 @@ int fn_8022AB94(const char *arg0, char arg1) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void fn_8022ABC8(void *arg0, const char *arg1, int arg2) {
-    char buffer[0x800];
-    strncpy(buffer, arg1, arg2);
-    buffer[arg2] = 0;
-    fn_8023293C(arg0, buffer, lbl_80563588);
+void fn_8022ABC8(void *font, const char *text, int length) {
+    /* Measure the width of the first `length` bytes of `text` with a UI
+     * style's outline font (UIStyle.vectorFont, UIStyle+8).
+     *
+     * The measurer fn_8023293C only takes a NUL-terminated string, so the run
+     * is copied into a 2 KiB stack buffer and closed with a NUL before it is
+     * measured with no extra line spacing.  Its width is not used here but is
+     * left in f1, which is how the callers read it back -- they reach this
+     * function through a float (*)(void *, char *, int) cast.
+     * Proposed name: MeasureTextWidthN */
+    #define NO_EXTRA_SPACING lbl_80563588 /* 1.0f: the font's own line height */
+
+    char line[0x800];
+
+    strncpy(line, text, length);
+    line[length] = 0;
+    fn_8023293C(font, line, NO_EXTRA_SPACING);
+    #undef NO_EXTRA_SPACING
 }
 #pragma scheduling on
 extern void fn_8022ACFC(int, char *, float *, float *, float *, float *, float, float);
