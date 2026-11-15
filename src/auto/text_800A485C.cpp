@@ -12629,6 +12629,7 @@ extern "C" s32 fn_800BA204(s32 arg0) {
     return 0;
 }
 
+/* Clears SD/device state flags and resets related fields in the global state block. */
 extern "C" s32 fn_800BA238(s32 arg0) {
     u32 flags;
     if (arg0 == 0) return 1;
