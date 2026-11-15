@@ -1062,6 +1062,7 @@ void fn_80267680(void) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8026785C(void) {
+    /* Shut down sound subsystems, unregister the event handler, and release the sound object. */
     extern void fn_801EF024(void *);
     extern void fn_80278288(void);
     extern void fn_802733F0(void);
@@ -1076,10 +1077,10 @@ extern "C" void fn_8026785C(void) {
     public:
         virtual void destroy(int);
     };
-    SoundObject *p = (SoundObject *)lbl_8055F490;
-    if (p) {
-        if (p)
-            p->destroy(1);
+    SoundObject *soundObject = (SoundObject *)lbl_8055F490;
+    if (soundObject) {
+        if (soundObject)
+            soundObject->destroy(1);
         lbl_8055F490 = 0;
     }
     fn_80209110((void *)&lbl_8055F494);
