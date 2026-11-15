@@ -876,18 +876,21 @@ extern "C" void *fn_802076A0(int arg0, int arg1, int arg2, int arg3) {
 #pragma dont_inline reset
 
 extern "C" void *fn_802066C8(void*, u32);
+/* nw4hbm::snd::detail::DisposeCallbackManager scalar deleting destructor.
+ * Destroys the subobject via fn_802066C8 when non-null, then frees storage
+ * with fn_80128668 (operator delete, mode 3) if deletingFlag > 0. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
-    void* this_, s32 flag) {
-    if (this_) {
-        if (this_ != NULL) {
-            fn_802066C8(this_, 0);
+    void* thisPtr, s32 deletingFlag) {
+    if (thisPtr) {
+        if (thisPtr != NULL) {
+            fn_802066C8(thisPtr, 0);
         }
 
-        if (flag > 0) {
-            fn_80128668(this_);
+        if (deletingFlag > 0) {
+            fn_80128668(thisPtr);
         }
     }
-    return this_;
+    return thisPtr;
 }
 
 #pragma scheduling on
