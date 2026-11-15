@@ -701,15 +701,17 @@ void fn_801AF6FC(void) {
 #pragma small_data on
 
 #pragma scheduling on
-void *fn_801AF8D0(int arg0) {
- void *result = 0;
- if (arg0 < lbl_8055E624[1]) {
-  result = (char *)lbl_8055E624[0] + arg0 * 0x1C;
-  if (!fn_801AE620(result)) {
-   result = 0;
-  }
- }
- return result;
+/* Return the result-table entry at the given index, or NULL if out of range or invalid. */
+void *fn_801AF8D0(int index) {
+    void *entry = 0;
+
+    if (index < lbl_8055E624[1]) {
+        entry = (char *)lbl_8055E624[0] + index * 0x1C;
+        if (!fn_801AE620(entry)) {
+            entry = 0;
+        }
+    }
+    return entry;
 }
 
 #pragma small_data off
