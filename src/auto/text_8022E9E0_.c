@@ -130,6 +130,7 @@ extern "C" void fn_8022EB30(void *context) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8022EB90(void) {
+    /* Initialize the global list record: warn if one already exists, allocate an 8-byte {head, tail} block, and clear both links. */
     if (lbl_8055F004 != 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_803402A0);
     lbl_8055F004 = (s32)fn_801284F8(8, lbl_803402F4);
     *(s32 *)lbl_8055F004 = 0;
