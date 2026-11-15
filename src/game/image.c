@@ -38,13 +38,15 @@ int fn_802C51AC(void* arg0) {
 }
 
 int fn_802C51C0(void* arg0) {
+    /* Return the float value of the node (fn_80235EF0, index 0) rounded to
+     * the nearest integer, or 1 if the node is null. */
     f32 value;
-    f32 result;
+    f32 rounded;
     if (arg0 != 0) {
         value = ((f32 (*)(void*, int))fn_80235EF0)(arg0, 0);
-        if (value < lbl_80564EEC) result = value - lbl_80564EE8;
-        else result = lbl_80564EE8 + value;
-        return (int)result;
+        if (value < lbl_80564EEC) rounded = value - lbl_80564EE8;
+        else rounded = lbl_80564EE8 + value;
+        return (int)rounded;
     }
     return 1;
 }
