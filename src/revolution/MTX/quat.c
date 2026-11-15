@@ -20,7 +20,7 @@ asm void PSQUATMultiply(register const Quaternion* a, register const Quaternion*
     nofralloc
     psq_l f0, Quaternion.y(a), 0, 0 // f0 = (a.y, a.z)
     psq_l f1, Quaternion.y(b), 0, 0 // f1 = (b.y, b.z)
-    lfs f3, lbl_80560C68              // f3 = 0.5f, for the refinement below
+    lfs f3, lbl_80560C68            // f3 = 0.5f, for the refinement below
     ps_sub f2, f0, f1               // f2 = (dy, dz)
     psq_l f0, Quaternion.x(a), 0, 0 // f0 = (a.x, a.y)
     psq_l f1, Quaternion.x(b), 0, 0 // f1 = (b.x, b.y)
@@ -32,7 +32,7 @@ asm void PSQUATMultiply(register const Quaternion* a, register const Quaternion*
     fcmpu cr0, f4, f1
     beqlr                           // coincident points: return 0.0f
     frsqrte f0, f1                  // f0 ~= 1 / sqrt(dist^2)
-    lfs f4, lbl_80560C6C              // f4 = 3.0f
+    lfs f4, lbl_80560C6C            // f4 = 3.0f
     fmuls f2, f0, f0                // f2 = rsqrt^2
     fmuls f0, f0, f3                // f0 = rsqrt * 0.5
     fnmsubs f2, f2, f1, f4          // f2 = 3 - dist^2 * rsqrt^2
