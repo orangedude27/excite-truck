@@ -362,14 +362,13 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     int best;
     int index;
     int offset;
-    int resource;
     int path_value;
     int size;
     char *src;
     char *dst;
     int count;
     int c;
-    unsigned char flag;
+    int flag;
 
     path_value = arg0;
     strings = (int)lbl_8034B538;
@@ -417,16 +416,15 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
         fn_802E317C((const char *)(strings + 0x33C), (char *)path_value);
 
     if (flag == 0) {
-        resource = fn_802CA658((int)(char *)path_value, arg3);
-        if (resource == 0) {
+        arg2 = fn_802CA658((int)(char *)path_value, arg3);
+        if (arg2 == 0) {
             fn_802E30C8((const char *)(strings + 0x354), (char *)path_value);
-            resource = fn_802CA658((int)(strings + 0x370), 0xE);
+            arg2 = fn_802CA658((int)(strings + 0x370), 0xE);
         }
     } else {
-        resource = arg2;
-        ((int (*)(int, int, int, int))fn_802CA57C)(resource, (int)(char *)path_value, 0, arg3);
+        ((int (*)(int, int, int, int))fn_802CA57C)(arg2, (int)(char *)path_value, 0, arg3);
     }
-    if (resource == 0)
+    if (arg2 == 0)
         return -1;
 
     entry = (int *)(lbl_8055FCB0 + best * 0x4C);
@@ -482,9 +480,9 @@ copy2_done:
 
     entry[0x40 / 4] = 0;
     entry[0x44 / 4] = 0;
-    entry[0x2C / 4] = resource;
+    entry[0x2C / 4] = arg2;
     entry[0x34 / 4] = arg3;
-    entry[0x28 / 4] = fn_802CA4E0(resource, (int)(char *)path_value, 0, 0, arg3);
+    entry[0x28 / 4] = fn_802CA4E0(arg2, (int)(char *)path_value, 0, 0, arg3);
     lbl_8055FCB8 = -2;
     return best;
 }
@@ -726,12 +724,13 @@ int fn_802CB288(int arg0) {
 extern void fn_802D93E8(int);
 extern void fn_802D9418(void);
 extern int lbl_8055D06C;
-void fn_802CB29C(int arg0) {
-    if (arg0 != -1 && arg0 != -2) {
-        int offset = arg0 * 0x4C;
+void fn_802CB29C(int textureIndex) {
+    /* Select a texture for the active drawing context, or clear the selection for invalid indices. */
+    if (textureIndex != -1 && textureIndex != -2) {
+        int offset = textureIndex * 0x4C;
         int *entry = (int *)(lbl_8055FCB0 + offset);
         fn_802D93E8(entry[0x28 / 4]);
-        lbl_8055D06C = arg0;
+        lbl_8055D06C = textureIndex;
         return;
     }
     fn_802D9418();
