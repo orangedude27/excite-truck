@@ -826,43 +826,46 @@ void fn_80166E54(void *arg0) {
     *(float *)((char *)arg0 + 0xC) += lbl_805618F0;
 }
 
-void fn_80166E68(float *arg0, float arg1)
+/* Retarget a time-based float ramp. The ramp stores {value, target, startTime, endTime, rate}
+   in arg0[0..4]. If the target changes, advance toward it from the current interpolated
+   value and recompute the end time from the remaining distance and rate. */
+void fn_80166E68(float *ramp, float newTarget)
 {
   float value;
-  float start;
-  float end;
+  float startTime;
+  float endTime;
   float oldValue;
   float oldTarget;
-  float factor;
-  float ratio;
-  if (((float) __fabs(arg1 - arg0[1])) <= lbl_80558DC4)
+  float clampedT;
+  float t;
+  if (((float) __fabs(newTarget - ramp[1])) <= lbl_80558DC4)
   {
     return;
   }
-  start = arg0[2];
-  end = arg0[3];
-  if (((float) __fabs(arg0[2] - end)) <= lbl_80558DC4)
+  startTime = ramp[2];
+  endTime = ramp[3];
+  if (((float) __fabs(ramp[2] - endTime)) <= lbl_80558DC4)
   {
-    value = arg0[0];
+    value = ramp[0];
   }
   else
   {
-    oldTarget = ((volatile float *) arg0)[1];
-    oldValue = arg0[0];
-    ratio = (lbl_8055E318 - arg0[2]) / (end - arg0[2]);
-    factor = lbl_805618D0;
-    factor = (factor < ratio) ? (factor) : (ratio);
-    factor = (factor > lbl_8056189C) ? (factor) : (lbl_8056189C);
-    value = oldValue + (factor * (oldTarget - oldValue));
+    oldTarget = ((volatile float *) ramp)[1];
+    oldValue = ramp[0];
+    t = (lbl_8055E318 - ramp[2]) / (endTime - ramp[2]);
+    clampedT = lbl_805618D0;
+    clampedT = (clampedT < t) ? (clampedT) : (t);
+    clampedT = (clampedT > lbl_8056189C) ? (clampedT) : (lbl_8056189C);
+    value = oldValue + (clampedT * (oldTarget - oldValue));
   }
-  arg0[1] = arg1;
-  arg0[0] = value;
-  arg0[2] = lbl_8055E318;
+  ramp[1] = newTarget;
+  ramp[0] = value;
+  ramp[2] = lbl_8055E318;
   {
-    double target = arg1;
-    double current = value;
-    arg1 = ((float)current) - ((float)target);
-    arg0[3] = lbl_8055E318 + ((float)__fabs(arg1) / arg0[4]);
+    double targetD = newTarget;
+    double currentD = value;
+    newTarget = ((float)currentD) - ((float)targetD);
+    ramp[3] = lbl_8055E318 + ((float)__fabs(newTarget) / ramp[4]);
   }
 }
 
