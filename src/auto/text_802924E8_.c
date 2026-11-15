@@ -359,9 +359,10 @@ extern "C" int fn_802929F8(const char *name, int unused) {
 #pragma pop
 
 #pragma cplusplus on
-extern "C" void fn_80292B48(void *arg0) {
-    if (fn_80292FB4(lbl_804B4168, arg0) != 0 && arg0 != 0) {
-        ((Dummy_80292B48 *)arg0)->f0(1);
+/* Release a cached resource from lbl_804B4168; when its refcount reaches zero, destroy it (vtable slot 2, arg 1). */
+extern "C" void fn_80292B48(void *resource) {
+    if (fn_80292FB4(lbl_804B4168, resource) != 0 && resource != 0) {
+        ((Dummy_80292B48 *)resource)->f0(1);
     }
 }
 #pragma cplusplus off
