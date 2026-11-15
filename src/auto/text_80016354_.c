@@ -338,14 +338,46 @@ void fn_80016A48(void *out, int id) {
     }
     fn_8027953C(out);
 }
-void *fn_80016BC8(void *arg0, int arg1) {
-    int *var_r3;
+/* Address of the 12-byte record the 'Drvr' resource (fn_800177B8) keeps for the
+ * vehicle `entry` in slot group `slot` (0..3).  A vehicle that borrows another
+ * one's data (+0xA0 flag bit 2) answers with the record of the vehicle whose
+ * number is at +8. */
+void *fn_80016BC8(void *arg0, int slot) {
+    /* A vehicle as the driver tables keep it (0xA8 bytes, built by
+     * fn_80016ED4); only the fields this look-up reads are named. */
+    struct VehicleInfo {
+        int index;        /* +0x00 its place in the vehicle table */
+        int number;       /* +0x04 the number the game hands out */
+        int borrowNumber; /* +0x08 vehicle borrowed while the flag is set */
+        char pad[0x94];
+        int flags;        /* +0xA0 */
+    };
+    /* One of the four per-vehicle records fn_80017708 fills in. */
+    struct VehicleSlot {
+        int colorIndex;     /* +0x00 colour index into VehicleInfo +0x64 */
+        int colorIndex2;    /* +0x04 starts the same; callers keep them apart */
+        unsigned char flag; /* +0x08 cleared with the record */
+    };
+    #define VEHICLE_BORROWS     2       /* flags bit: use borrowNumber's records */
+    #define VEHICLES_PER_SLOT   50      /* vehicles in one slot group */
+    #define sVehicleSlotTable   lbl_8055D548 /* VehicleSlot[4][50], 'Drvr' resource */
+    #define FindVehicleByNumber fn_80016544  /* vehicle entry with a given number */
 
-    var_r3 = (int *)arg0;
-    if (*(int *)((char *)var_r3 + 0xA0) & 2) {
-        var_r3 = (int *)fn_80016544(*(int *)((char *)var_r3 + 8));
+    struct VehicleInfo *entry;
+    struct VehicleSlot *record;
+
+    entry = (struct VehicleInfo *)arg0;
+    if (entry->flags & VEHICLE_BORROWS) {
+        entry = (struct VehicleInfo *)FindVehicleByNumber(entry->borrowNumber);
     }
-    return (void *)((char *)lbl_8055D548 + ((*var_r3 + (arg1 * 0x32)) * 0xC));
+    record = (struct VehicleSlot *)((char *)sVehicleSlotTable +
+                                    ((entry->index + (slot * VEHICLES_PER_SLOT)) *
+                                     sizeof(struct VehicleSlot)));
+#undef VEHICLE_BORROWS
+#undef VEHICLES_PER_SLOT
+#undef sVehicleSlotTable
+#undef FindVehicleByNumber
+    return record;
 }
 
 extern void *lbl_8055D538;
