@@ -6609,17 +6609,18 @@ void bta_hh_open_act(void *arg0, void *arg1) {
     bta_hh_start_sdp(arg0, sdpData);
 }
 
-void bta_hh_data_act(void *arg0, void *arg1) {
-    u8 *data = *(u8 **)((u8 *)arg1 + 0xC);
-    void *sp8 = data;
+void bta_hh_data_act(void *p_dev_cb, void *p_data) {
+    /* Forward a received HID report to the HID host layer and free its buffer. */
+    u8 *p_buf = *(u8 **)((u8 *)p_data + 0xC);
+    void *p_free_buf = p_buf;
 
-    fn_8006CF44((void *)(u32)(u8)*(u16 *)((u8 *)arg1 + 6),
-                data + *(u16 *)(data + 4) + 8,
-                (void *)(u32)*(u16 *)(data + 2),
-                (void *)(u32)((u8 *)arg0)[0x1B],
-                (void *)(u32)((u8 *)arg0)[0x13],
-                ((u8 *)arg0)[0x15]);
-    fn_800716F0(&sp8);
+    fn_8006CF44((void *)(u32)(u8)*(u16 *)((u8 *)p_data + 6),
+                p_buf + *(u16 *)(p_buf + 4) + 8,
+                (void *)(u32)*(u16 *)(p_buf + 2),
+                (void *)(u32)((u8 *)p_dev_cb)[0x1B],
+                (void *)(u32)((u8 *)p_dev_cb)[0x13],
+                ((u8 *)p_dev_cb)[0x15]);
+    fn_800716F0(&p_free_buf);
 }
 
 void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
