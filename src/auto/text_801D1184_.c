@@ -24,6 +24,13 @@ void fn_801D11D4(void) {
     fn_801D11D8();
 }
 
+int fn_801D11D8(void *arg0, int arg1) {
+    char *p = (char *)lbl_804348E8[arg1];
+    char *q = p + 0x32c;
+    fn_801819A0((char *)arg0 + 4, q, p, lbl_80562A48 * *(float *)(p + 0x2dc), *(float *)(p + 0x2e4), *(float *)(p + 0x2e8));
+    *(float *)((char *)arg0 + 0x30) = *(float *)(q + 0x64);
+}
+
 extern void *fn_801284F8(int, const char *);
 extern void fn_801D0FA4(void);
 extern void *lbl_804348E8[];
@@ -37,22 +44,22 @@ void fn_801D1244(float *arg0) {
 #pragma scheduling invalid_target
 void fn_801D1250(float *arg0, int arg1) {
     char *p = (char *)lbl_804348E8[arg1];
-    float f4 = *(float *)(p + 0x25d0);
-    float f5 = *(float *)(p + 0x25f4);
+    float f4 = *(float *)(p + 0x25D0);
+    float f5 = *(float *)(p + 0x25F4);
     float f6;
     if (f4 > arg0[11]) {
         f6 = lbl_80562A4C > (f4 - arg0[8]) ? lbl_80562A4C : (f4 - arg0[8]);
         {
             float first = arg0[2] * f4;
-            float square = f4 * f4;
-            float second = arg0[1] * square;
+            float sq = f4 * f4;
+            float second = arg0[1] * sq;
             float base = arg0[3];
             float val = (base + (first + second)) - arg0[9] * f6;
             f6 = arg0[10] > val ? arg0[10] : val;
         }
     } else {
-        float square = f4 * f4;
-        f6 = arg0[6] + (arg0[5] * f4 + arg0[4] * square);
+        float sq2 = f4 * f4;
+        f6 = arg0[6] + (arg0[5] * f4 + arg0[4] * sq2);
     }
     arg0[0] = f5 * f6 - f4 * arg0[7];
 }
@@ -101,6 +108,9 @@ void fn_801D13A0(void) {
     }
 }
 
+#pragma inline_depth(0)
+/* Iterates over the array at lbl_8055E908 (0x34 bytes per element, count lbl_8055E8F8)
+ * and calls fn_801D1244 to reset each element's first float. */
 void fn_801D13FC(void) {
     int offset = 0;
     int i = 0;
@@ -110,7 +120,6 @@ void fn_801D13FC(void) {
         i++;
     }
 }
-
 void fn_801D1458(void *arg0, int arg1) {
     ((void (*)(int))fn_801D11D4)(lbl_8055E908 + arg1 * 0x34);
 }
