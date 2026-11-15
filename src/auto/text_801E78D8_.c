@@ -913,6 +913,8 @@ void fn_801E8CB8(float *arg0, float *arg1) {
 }
 
 #pragma scheduling off
+/* Run per-frame shutdown/reset steps for several subsystems and clear related
+ * state. */
 void fn_801E8CE4(void) {
     fn_80297984(); fn_802889F0();
     if (lbl_8055EB24 != 0) ((void (*)(void))lbl_8055EB24)();
