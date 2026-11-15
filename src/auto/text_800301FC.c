@@ -1331,15 +1331,25 @@ void fn_800320E8(s32 arg0) {
 }
 
 #pragma scheduling reset
+/* Stops the audio output path, with interrupts kept off throughout: drops the AI
+ * DMA callback so no more samples are asked for, flags the AX DSP task (its 0x8
+ * flags word, the SDK's DSP_TASK_CANCELED bit) so the DSP finishes it, sleeps
+ * until that task's done callback __AXDSPDoneCallback wakes this thread, and then
+ * stops the AI DMA. */
 void fn_800322E4(void) {
+#define s_aiDmaCallback lbl_8055D774 /* callback AIRegisterDMACallback registers */
+#define s_dspTask lbl_8035FB80       /* the AX DSP task fn_80032004 set up */
+#define s_dspSleepQueue lbl_8055D760 /* queue __AXDSPDoneCallback wakes */
     s32 enabled = OSDisableInterrupts();
-    lbl_8055D774 = 0;
-    __DSPHandler(lbl_8035FB80);
-    OSSleepThread(&lbl_8055D760);
+    s_aiDmaCallback = 0;
+    __DSPHandler(s_dspTask);
+    OSSleepThread(&s_dspSleepQueue);
     AIStopDMA();
     OSRestoreInterrupts(enabled);
+#undef s_aiDmaCallback
+#undef s_dspTask
+#undef s_dspSleepQueue
 }
-
 u32 AIRegisterDMACallback(u32 value) {
     u32 old = lbl_8055D774;
     BOOL enabled = OSDisableInterrupts();
