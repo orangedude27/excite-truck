@@ -5709,24 +5709,26 @@ void bta_dm_compress_cback(s32 event, u8 service, u8 id, s32 addr) {
 }
 
 extern u8 *lbl_80559010;
-void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused) {
-    u8 i;
-    u8 j;
-    u8 *config;
-    u8 value;
+void bta_dm_rm_cback(s32 status, u8 id, u8 app_id, u8 *peer_addr, u32 unused) {
+    /* Role-management callback: on connect, mark the peer connected and raise
+       its preferred role from the matching RM config entry. */
+    u8 peerIdx;
+    u8 cfgIdx;
+    u8 *rmCfg;
+    u8 cfgRole;
 
     if (status != 0) return;
 
-    for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
-        if (bdcmp(lbl_803C0C14 + (u32)i * 0xB, bd_addr) == 0) {
-            lbl_803C0C14[(u32)i * 0xB + 6] = 1;
-            config = lbl_80559010;
-            for (j = 1; j <= config[1]; j++) {
-                if ((addr == config[((u32)j << 2) - (u32)j + 1] || config[((u32)j << 2) - (u32)j + 1] == 0xFF) &&
-                    addr_type == config[((u32)j << 2) - (u32)j]) {
-                    value = config[((u32)j << 2) - (u32)j + 2];
-                    if (value > lbl_803C0C14[(u32)i * 0xB + 7])
-                        lbl_803C0C14[(u32)i * 0xB + 7] = value;
+    for (peerIdx = 0; peerIdx < lbl_803C0C14[0x4D]; peerIdx++) {
+        if (bdcmp(lbl_803C0C14 + (u32)peerIdx * 0xB, peer_addr) == 0) {
+            lbl_803C0C14[(u32)peerIdx * 0xB + 6] = 1;
+            rmCfg = lbl_80559010;
+            for (cfgIdx = 1; cfgIdx <= rmCfg[1]; cfgIdx++) {
+                if ((app_id == rmCfg[((u32)cfgIdx << 2) - (u32)cfgIdx + 1] || rmCfg[((u32)cfgIdx << 2) - (u32)cfgIdx + 1] == 0xFF) &&
+                    id == rmCfg[((u32)cfgIdx << 2) - (u32)cfgIdx]) {
+                    cfgRole = rmCfg[((u32)cfgIdx << 2) - (u32)cfgIdx + 2];
+                    if (cfgRole > lbl_803C0C14[(u32)peerIdx * 0xB + 7])
+                        lbl_803C0C14[(u32)peerIdx * 0xB + 7] = cfgRole;
                     return;
                 }
             }
