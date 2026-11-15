@@ -21560,16 +21560,15 @@ extern "C" void fn_800C790C(void *arg0) {
         u16 *table[7][6];
     };
     Context *ctx = (Context *)arg0;
-    u16 *var_r7 = 0;
-    u32 row = 0;
+    s32 row = 0;
     s32 var_r9 = 0;
     s32 col = 0;
     s32 in_quote = 0;
     u16 *str = *(u16 **)((u8 *)ctx->inner + 8);
-    var_r7 = str;
-    while (*var_r7 != 0) {
-        if (*var_r7 == 0x22) {
-            *var_r7 = 0;
+
+    while (str[var_r9] != 0) {
+        if (str[var_r9] == 0x22) {
+            str[var_r9] = 0;
             if (in_quote == 0) {
                 u16 *elem = &str[var_r9 + 1];
                 ctx->table[col][row] = elem;
@@ -21583,7 +21582,6 @@ extern "C" void fn_800C790C(void *arg0) {
                 in_quote = 0;
             }
         }
-        var_r7++;
         var_r9++;
     }
 }
