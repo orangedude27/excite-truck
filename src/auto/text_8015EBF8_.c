@@ -24,6 +24,7 @@ extern float lbl_805617D0;
 int stricmp(const char *, const char *);
 void fn_80136594(int *, void *, void *);
 void* fn_8015EBF8(void* arg0, s32 arg1) {
+    /* Destroy a small struct by clearing its three fields and optionally freeing it. */
     if (arg0 != 0) {
         if (arg0 != 0) {
             *(s32 *)arg0 = 0;
