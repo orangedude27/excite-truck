@@ -2183,18 +2183,19 @@ void fn_801965AC(void *controller) {
 
 extern void fn_80196AA0(void *);
 extern void fn_80198530(void *);
-  void fn_801967A4(void *arg0) {
-      int value = *(int *)((char *)arg0 + 0x210);
-      switch (value) {
-      case 0:
-                     fn_80198530(arg0);
-           fn_801965AC(arg0);
-          return;
-      case 1:
-          fn_80196AA0(arg0);
-          return;
-      }
-  }
+void fn_801967A4(void *controller) {
+    /* Dispatch the controller's per-tick update based on its current state. */
+    int state = *(int *)((char *)controller + 0x210);
+    switch (state) {
+    case 0:
+        fn_80198530(controller);
+        fn_801965AC(controller);
+        return;
+    case 1:
+        fn_80196AA0(controller);
+        return;
+    }
+}
 
 void fn_801967FC(void *arg0) {
     float temp_f0;
