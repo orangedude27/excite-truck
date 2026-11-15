@@ -122,8 +122,7 @@ s32 fn_80243710(s32 entryIndex, s32 group) {
 #undef MenuTable_GetEntryCount
     return result;
 }
-#pragma push
-#pragma use_lmw_stmw off
+
 /* Menu cursor hold: the group/entry the cursor rested on when it last moved,
  * -1/-1 when there is nothing to hold on to (kept by MenuList_MoveCursor). */
 __declspec(section ".sdata") extern s32 lbl_8055BE0C; /* s_cursorHoldGroup */
