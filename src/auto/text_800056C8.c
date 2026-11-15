@@ -152,14 +152,14 @@ void fn_800056C8(s32 arg0, s32 arg1) {
 
 #pragma push
 #pragma dont_inline on
-void fn_800056E0(s32 arg0) {
-    s32 count = ((s32 *)lbl_8055D350)[5];
-    s32 i = 0;
-    for (; i < count; i++) {
-        fn_800056C8(i, arg0);
+/* Set the active HUD overlay to `overlay` for every player slot in use. */
+void fn_800056E0(s32 overlay) {
+    s32 playerCount = SESSION->playerCount;
+    s32 playerIndex = 0;
+    for (; playerIndex < playerCount; playerIndex++) {
+        fn_800056C8(playerIndex, overlay);
     }
 }
-
 #pragma pop
 /* Session_selectPlayer: bind the active player index, car slot, car entry pointers, and HUD flags in gSessionState, and update the arena car state when the arena overlay is active. */
 void fn_80005740(s32 playerIdx) {
