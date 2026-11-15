@@ -3783,14 +3783,21 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* 
 }
 
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
-    void* mutex = *(void**)((char*)self + 0x2c);
+    /* nw4hbm::snd::SoundArchivePlayer::SeqLoadTask::Cancel(): abort an in-flight
+     * sequence-file load. Execute() keeps the loader it is working through at
+     * +0x10 while it reads, under the task's mutex at +0x2c; if one is active,
+     * ask it to cancel before the task is dropped. */
+    struct SeqLoadTask { char pad[0x10]; void* loader; char pad14[0x18]; void* mutex; };
+    SeqLoadTask* task = (SeqLoadTask*)self;
+
+    void* mutex = task->mutex;
     OSLockMutex(mutex);
-    void* loader = *(void**)((char*)self + 0x10);
+    void* loader = task->loader;
     if (loader)
+        /* detail::SoundArchiveLoader::Cancel(), loader as the hidden `this` */
         ((void (*)(void*))((void (*)(void))Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv))(loader);
     OSUnlockMutex(mutex);
 }
-
 #pragma opt_strength_reduction off
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
     struct Frame { void* stream; s32 valid; void* ref; u32 pad; u8 header[0x38]; u8 adpcm[8][0x30]; u8 fileBuf[0x200]; };
