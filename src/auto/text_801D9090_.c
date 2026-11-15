@@ -486,14 +486,15 @@ check:
     *arg0 = 0;
 }
 
-void fn_801D98F0(void **arg0) {
-    void *node = *arg0;
+/* Frees every node in a singly-linked list (next pointer at offset 0xC) and clears the list head. */
+void fn_801D98F0(void **listHead) {
+    void *node = *listHead;
     while (node != 0) {
         void *next = *(void **)((char *)node + 0xC);
         fn_80128668(node);
         node = next;
     }
-    *arg0 = 0;
+    *listHead = 0;
 }
 
 #pragma use_lmw_stmw off
