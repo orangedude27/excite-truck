@@ -1440,6 +1440,7 @@ extern "C" void *fn_80294254(void *arg0, void *arg1, int arg2, int arg3, int arg
 
 extern unsigned char lbl_8034925C[];
 extern void fn_80294710(void *);
+/* Destructor for nw4r::ef::Effect: resets vtable, tears down resources, and conditionally frees memory. */
 void *__dt__Q34nw4r2ef6EffectFv_802942DC(void *arg0, int arg1) {
     if (arg0) {
         *(void **)arg0 = lbl_8034925C;
