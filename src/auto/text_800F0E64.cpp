@@ -190,12 +190,21 @@ extern "C" void* Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl(void*);
 extern "C" void* Alloc__Q46nw4hbm3snd6detail9FrameHeapFUlPFPvUlPv_vPv(void*, unsigned long, DisposeCallback, void*);
 extern "C" void OSLockMutex(void*);
 extern "C" void OSUnlockMutex(void*);
-extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void*, unsigned long, void*);
+// SoundHeap's frame heap (at +0x1C) and the callback it registers on every allocation.
+extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void* start,
+                                                                    unsigned long size,
+                                                                    void* user);
 extern "C" void Destroy__Q46nw4hbm3snd6detail9FrameHeapFv(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail9FrameHeapFv(void*, int);
 extern "C" u8 lbl_80325C40[];
-extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(void*, unsigned long, void*);
-extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(void*, unsigned long, void*);
+// nw4hbm::snd::detail::DisposeCallbackManager: walks the registered callbacks over the
+// memory range [start, start + size).  Dispose notifies them as objects, DisposeWave as
+// wave data; both are static (no manager pointer -- the singleton is taken inside).
+extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(void* start,
+                                                                             unsigned long size,
+                                                                             void* user);
+extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(
+    void* start, unsigned long size, void* user);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" s32 fn_800E9B88(void *);
 extern "C" s32 fn_800E9B9C(void *);
