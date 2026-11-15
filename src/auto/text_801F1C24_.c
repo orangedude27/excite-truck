@@ -1412,9 +1412,9 @@ void fn_801F3EA0(void) {
 #pragma push
 #pragma small_data off
 #pragma pop
-void fn_801F3EA4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-    fn_802CD33C(arg2, arg3, 0);
-    fn_802CD33C(arg4, arg5, 0);
+void fn_801F3EA4(int arg0, int arg1, void *listA, int entryA, void *listB, int entryB) {
+    fn_802CD33C(listA, entryA, 0);
+    fn_802CD33C(listB, entryB, 0);
 }
 extern int fn_802CD33C(int, int, int);
 extern int lbl_8033A7A0_arr[];
