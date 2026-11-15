@@ -182,8 +182,8 @@ public:
   virtual void vf17();
   virtual void vf18();
   virtual void vf19();
-  virtual void vf20();
-  virtual void vf21();    // vtable 0x5C
+     virtual s32 vf20();     // vtable 0x58
+   virtual void vf21();    // vtable 0x5C
 };
 
 extern "C" void fn_8021915C(void *, unsigned int);
