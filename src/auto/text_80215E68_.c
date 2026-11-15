@@ -348,17 +348,17 @@ u32 *fn_80216708(void) {
 }
 
 #pragma scheduling invalid_target
+/* Clears a 16-entry state array and related counters/flags to zero. */
 void fn_80216710(void) {
-    int i;
+    int index;
     lbl_8055EF88 = 0;
-    for (i = 0; i < 16; i++) {
-        lbl_804908C8[i] = 0;
+    for (index = 0; index < 16; index++) {
+        lbl_804908C8[index] = 0;
     }
     lbl_8055EF7C = 0;
     lbl_8055EF8C = 0;
     lbl_8055EF90 = 0;
 }
-#pragma scheduling on
 void fn_8021676C(void) {
 
 }
@@ -496,11 +496,11 @@ s32 fn_802168F0(void *arg0) {
     f2 = sp[0] > lbl_80563484 ? sp[0] : lbl_80563484;
     f28 = lbl_80563468;
     f29 = f28 / f2;
-    f28 = (f32)__fabs(sp[0]) <= lbl_80558DC4 ? f28 : lbl_80563458;
     f30 = lbl_80563468;
+    f28 = (f32)__fabs(sp[0]) <= lbl_80558DC4 ? f28 : lbl_80563458;
+    f31 = lbl_80563488;
     flag = 0;
     lbl_8055EF94 = f28;
-    f31 = lbl_80563488;
     while (lbl_8055EF70 == 0) {
         fn_80236674();
         if (lbl_8055EF88 != 0) {
