@@ -43,17 +43,22 @@ s32 fn_801E68D4(void) {
     return 0;
 }
 #pragma scheduling invalid_target
-void fn_801E6924(s32 arg0) {
-    s32* ptr = lbl_80487CC0;
+/* Give a streaming buffer back to the anim buffer pool: clears the in-use flag of
+ * the slot holding `buffer`, and reports "anim: release_buffer: unknown buffer %p"
+ * (lbl_80339A20) when no slot holds it.  fn_801E68D4 takes the next free slot;
+ * fn_801E6B98 releases the one an animation player was streaming into. */
+void fn_801E6924(s32 buffer) {
+    s32* slot = lbl_80487CC0;
     s32 i;
+
     for (i = 0; i < 8; i++) {
-        if ((unsigned int)*ptr == (unsigned int)arg0) {
+        if ((unsigned int)*slot == (unsigned int)buffer) {
             lbl_8055EAC8[i] = 0;
             return;
         }
-        ptr++;
+        slot++;
     }
-    fn_802E317C(&lbl_80339A20[0], arg0);
+    fn_802E317C(&lbl_80339A20[0], buffer);
 }
 #pragma scheduling reset
 
