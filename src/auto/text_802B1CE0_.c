@@ -948,11 +948,12 @@ int fn_802B3340(int arg) {
     return arg;
 }
 
-void *fn_802B3DA4(void *arg0, int arg1, int arg2) {
+void *fn_802B3DA4(void *container, int slot, int index) {
+    /* Look up a field data pointer by index within a slot; returns 0 if out of range or uninitialized. */
     void *result = 0;
-    if (arg2 >= 0 && arg2 < ((int *)arg0)[1]) {
-        void *items = *(void **)arg0;
-        void *entry = (char *)((void **)items)[arg2] + ((arg1 & 0x7F) * 4);
+    if (index >= 0 && index < ((int *)container)[1]) {
+        void *items = *(void **)container;
+        void *entry = (char *)((void **)items)[index] + ((slot & 0x7F) * 4);
         void *obj = *(void **)((char *)entry + 0x208);
         result = 0;
         if (obj != 0) {
