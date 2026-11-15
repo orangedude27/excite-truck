@@ -4003,29 +4003,52 @@ extern "C" void fn_8021EC1C(void* arg0, s32 arg1) {
 
 #pragma push
 #pragma processor 750
+/* Draws one text box on the canvas being drawn on: first its "slider.img"
+ * graphic, stretched to the box' width (a single-row box only, the field is 0
+ * otherwise), then its text in the box' UI style, and finally the caret - a
+ * one-pixel-wide 0xFFFFFF00 bar at the x the text reaches when cut at the caret
+ * index.  Nothing is drawn at the box' own coordinates: +0x04/+0x08 count from
+ * the middle of the screen with y upwards, so every position goes through the
+ * same centring before fn_802C5320/fn_8022BAD0/fn_80230924 see it.  No code
+ * calls this; it is reached through the object' vtable. */
 extern "C" void fn_8021EDA4(void *self) {
-    u8 *p = (u8 *)self;
-    char text[256];
-    if (*(s32 *)(p + 0xA60)) {
+    /* The text box being drawn; only the fields used here are named. */
+    struct TextBox {
+        void *vtable;                /* 0x00; the virtual at 0x78 is the width */
+        s32 x;                       /* 0x04 left, from the screen centre */
+        s32 y;                       /* 0x08 top, from the screen centre */
+        u8 pad0C[0x19 - 0x0C];
+        u8 showCaret;                /* 0x19: the box is being edited */
+        u8 pad1A[0x250 - 0x1A];
+        s32 caretIndex;              /* 0x250 character the caret stands before */
+        u8 pad254[0xA54 - 0x254];
+        char *text;                  /* 0xA54 the string shown */
+        s32 style;                   /* 0xA58 UI style index, see fn_8022CA2C */
+        u8 padA5C[4];                /* 0xA5C the "ibeam.img" cursor graphic */
+        s32 sliderArt;               /* 0xA60 "slider.img", single-row boxes */
+    };
+    TextBox *box = (TextBox *)self;
+    char caretText[256]; /* the box' text, cut where the caret stands */
+    if (box->sliderArt) {
         f32 height, x, y;
-        x = (f32)(*(s32 *)(p + 4) - lbl_8055FB9C / 2);
-        y = (f32)(lbl_8055FBA0 / 2 - *(s32 *)(p + 8));
-        height = (f32)fn_802C5220(*(s32 *)(p + 0xA60));
+        x = (f32)(box->x - lbl_8055FB9C / 2);
+        y = (f32)(lbl_8055FBA0 / 2 - box->y);
+        height = (f32)fn_802C5220(box->sliderArt);
         f32 width = (f32)((Vf78 *)self)->get();
-        fn_802C5320(*(s32 *)(p + 0xA60), 0, x, y, lbl_805634A8, width, height);
+        fn_802C5320(box->sliderArt, 0, x, y, lbl_805634A8, width, height);
     }
     s32 zero = 0;
     ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
-        *(s32 *)(p + 0xA58), *(s32 *)(p + 4), *(s32 *)(p + 8),
-        0, 0, 0, *(s32 *)(p + 0xA54), *(u8 *)(p + 0x19) != 0,
+        box->style, box->x, box->y,
+        0, 0, 0, (s32)box->text, box->showCaret != 0,
         zero, 1.0f);
-    if (*(u8 *)(p + 0x19)) {
-        f32 x = (f32)(*(s32 *)(p + 4) - lbl_8055FB9C / 2);
-        f32 y = (f32)(lbl_8055FBA0 / 2 - *(s32 *)(p + 8));
-        strcpy(text, *(char **)(p + 0xA54));
-        if (*(s32 *)(p + 0x250) >= 0) text[*(s32 *)(p + 0x250)] = zero;
-        x += (f32)fn_8022B498(*(s32 *)(p + 0xA58), (s32)text);
-        f32 height = (f32)fn_8022B620(*(s32 *)(p + 0xA58), text);
+    if (box->showCaret) {
+        f32 x = (f32)(box->x - lbl_8055FB9C / 2);
+        f32 y = (f32)(lbl_8055FBA0 / 2 - box->y);
+        strcpy(caretText, box->text);
+        if (box->caretIndex >= 0) caretText[box->caretIndex] = zero;
+        x += (f32)fn_8022B498(box->style, (s32)caretText);
+        f32 height = (f32)fn_8022B620(box->style, caretText);
         ((void (*)(s32,f32,f32,f32,f32,f32))fn_80230924)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
     }
 }
