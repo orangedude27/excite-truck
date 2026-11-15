@@ -254,6 +254,7 @@ extern "C" void fn_802A17F8(void) {
 }
 
 extern "C" void fn_802A17FC(void) {
+    /* Call virtual slot 4 on each non-null object in the 8-entry lbl_804BCF88 table. */
     void ***entry = (void ***)&lbl_804BCF88;
     s32 index = 0;
     struct Dispatch {
