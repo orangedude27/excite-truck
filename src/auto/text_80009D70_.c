@@ -300,6 +300,8 @@ u32 fn_8000AC38(void) {
     return lbl_8055D3B8;
 }
 
+// Stops/ticks down subsystems in the global state at lbl_8034F4C8 (base offsets +0x58, +0x18,
+// +0x98 gated by lbl_8055D3B4/lbl_8055D3B5), then calls fn_801DCDA0.
 void fn_8000A7A8(void) {
     char* base = (char*)&lbl_8034F4C8;
     if (lbl_8055D3B4 != 0) {
