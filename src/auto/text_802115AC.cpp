@@ -1802,13 +1802,30 @@ extern "C" s32 fn_80214A38(s32 groupId) {
 extern "C" void fn_802192AC(void);
 extern "C" void fn_80219354(void);
 #pragma scheduling invalid_target
-extern "C" void fn_80214A9C(s32 arg0) {
-    s32 temp = fn_802168E4();
-    if (temp != 0) {
-        ((s32 (*)(s32, s32, float))fn_802168CC)(temp, arg0, lbl_80563434);
+/* UIHideGroup(groupId): hides one widget group of the currently active UI
+ * window.  fn_802168E4 is the active-window getter and fn_802168CC the
+ * window's hide-group method (it sets the group's bit in the window's
+ * hidden-group mask at +0x464 and starts a fade-out on every slot the group
+ * is set in, fn_802193C8).  The fade time is 0.0f, so the group vanishes at
+ * once; with no active window the game prints the message below instead.
+ * UIShowGroup (fn_80214AF0) is the way back. */
+extern "C" void fn_80214A9C(s32 groupId) {
+#define UIGetActiveWindow fn_802168E4
+#define UIWindow_HideGroup fn_802168CC
+#define UIPanic fn_802E317C
+#define UIHideGroup_noWindowMsg lbl_8033D2A0
+#define groupFadeTime lbl_80563434
+    s32 window = UIGetActiveWindow();
+    if (window != 0) {
+        ((s32 (*)(s32, s32, float))UIWindow_HideGroup)(window, groupId, groupFadeTime);
     } else {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D2A0);
+        ((s32 (*)(const char *, ...))UIPanic)(UIHideGroup_noWindowMsg);
     }
+#undef groupFadeTime
+#undef UIHideGroup_noWindowMsg
+#undef UIPanic
+#undef UIWindow_HideGroup
+#undef UIGetActiveWindow
 }
 #pragma scheduling on
 extern "C" s32 fn_802168D0(s32, s32, float);
