@@ -4307,14 +4307,17 @@ extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 }
 #pragma pop
 
-extern "C" void fn_8021F7EC(void *arg0) {
-    void *value;
+/* Initialize this object's cached handle (+0x274) from table entry +0x278
+ * under key +0x2C when fn_80129BC4() allows, then register it via fn_80219440
+ * with tag 1 and size 4. */
+extern "C" void fn_8021F7EC(void *object) {
+    void *handle;
 
     if (fn_80129BC4() != 0) {
-        value = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C),
-                            *(s32 *)((u8 *)arg0 + 0x278), arg0);
-        *(void **)((u8 *)arg0 + 0x274) = value;
-        ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
+        handle = fn_80217BD8(*(s32 *)((u8 *)object + 0x2C),
+                             *(s32 *)((u8 *)object + 0x278), object);
+        *(void **)((u8 *)object + 0x274) = handle;
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(object, 1, handle, 4);
     }
 }
 
