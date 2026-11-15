@@ -610,8 +610,8 @@ public:
     s32 m_channel;          // 0x00 WPAD remote this controller drives
     u8 pad4[0x20];
     void *m_soundPlayer;    // 0x24 archive player that plays the tone
-    void *m_samplingCb;     // 0x28 callback WPADSetSamplingCallback had installed
-    void *m_samplingCb2;    // 0x2C callback WPADSetSamplingCallback_800603D0 had installed
+    void *m_prevConnectCb;   // 0x28 WPAD callback to chain/restore (WPADSetSamplingCallback)
+    void *m_prevExtensionCb; // 0x2C WPAD callback to chain/restore (WPADSetSamplingCallback_800603D0)
     u32 m_playStartHi;      // 0x30 OSGetTime() when the tone started playing
     u32 m_playStartLo;      // 0x34
     u32 m_stopStartHi;      // 0x38 OSGetTime() when it was first seen stopped
