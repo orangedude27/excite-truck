@@ -507,7 +507,8 @@ extern "C" void fn_801B878C(void) {
 }
 #pragma cplusplus on
 extern "C" int fn_801B87A0(int arg0, int arg1) {
-    struct Dummy_801B87A0 {
+    /* Forward the call to the global UI object's vtable method at offset 0x8C, or return 1 if input is blocked. */
+    struct UiObjectVTable_801B87A0 {
         virtual void d0();
         virtual void d1();
         virtual void d2();
@@ -541,13 +542,13 @@ extern "C" int fn_801B87A0(int arg0, int arg1) {
         virtual void d30();
         virtual void d31();
         virtual void d32();
-        virtual int call(int, int);
+        virtual int method(int, int);
     };
     extern int fn_80161B0C(void);
     if (fn_80161B0C() != 0) {
         return 1;
     }
-    return ((Dummy_801B87A0 *)lbl_8055E744)->call(arg0, arg1);
+    return ((UiObjectVTable_801B87A0 *)lbl_8055E744)->method(arg0, arg1);
 }
 #pragma cplusplus off
 int fn_801B8804(void) { return 0; }
