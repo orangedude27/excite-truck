@@ -155,10 +155,11 @@ void fn_8000DB18(void) {
     entry[1] = 2;
 }
 
-void *fn_8000DB34(int arg0) {
+void *fn_8000DB34(int index) {
+    /* Return a 0x18-byte table entry's data, loading the fallback resource if not ready. */
     char *entry;
     fn_80247624();
-    entry = (char *)lbl_8055D46C + arg0 * 0x18;
+    entry = (char *)lbl_8055D46C + index * 0x18;
     if (*(int *)(entry + 4) == 0)
         return fn_80131234(lbl_802FC24C);
     return entry + 8;
