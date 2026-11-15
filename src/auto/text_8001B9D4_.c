@@ -294,8 +294,8 @@ void fn_8001BD38(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma dont_inline on
-void fn_8001BD54(Unk8001BBBC *arg0, void *arg1) {
-    fn_8001BBBC(arg0, *(s32 *)((u8 *)*(void **)((u8 *)arg1 + 0x18) + *(s32 *)((u8 *)arg1 + 0xC) * 0xC + 0xC));
+void fn_8001BD54(EntryRef *out, void *table) {
+    fn_8001BBBC((Unk8001BBBC *)out, *(s32 *)((u8 *)*(void **)((u8 *)table + 0x18) + *(s32 *)((u8 *)table + 0xC) * 0xC + 0xC));
 }
 #pragma scheduling invalid_target
 u32 fn_8001BD6C(void *arg0, void *arg1) {
