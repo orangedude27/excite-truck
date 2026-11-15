@@ -751,12 +751,13 @@ void fn_801290CC(void *arg0, void *arg1) {
     fn_80129088(arg0);
 }
 
-s32 fn_801290DC(void *arg0, s32 arg1) {
-    s32 aligned = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x40);
-    s32 end = *(s32 *)((u8 *)arg0 + 0xC);
+s32 fn_801290DC(void *region, s32 size) {
+    /* Return an aligned address from the end of the region, or 0 if there is no room. */
+    s32 alignedSize = ((s32 (*)(s32, s32))fn_801281F4)(size, 0x40);
+    s32 end = *(s32 *)((u8 *)region + 0xC);
     s32 result;
-    if (*(s32 *)((u8 *)arg0 + 8) < end - aligned)
-        result = *(s32 *)((u8 *)arg0 + 4) + end - aligned;
+    if (*(s32 *)((u8 *)region + 8) < end - alignedSize)
+        result = *(s32 *)((u8 *)region + 4) + end - alignedSize;
     else
         result = 0;
     return result;
