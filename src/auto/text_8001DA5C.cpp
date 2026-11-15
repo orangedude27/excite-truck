@@ -194,23 +194,24 @@ extern "C" void fn_8001DD6C(void) {
     }
 }
 #pragma scheduling invalid_target
+/* Calls virtual method 2 on each of the 6 HUD overlay objects. */
 extern "C" void fn_8001DEA8(void) {
-    class Entry {
+    class HudOverlay {
     public:
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
+        virtual void v0();
+        virtual void v1();
+        virtual void update();
     };
-    void*** p;
-    u32 i;
-    p = (void***)lbl_80358680;
-    i = 0;
+    void ***overlayPtr;
+    u32 index;
+    overlayPtr = (void ***)lbl_80358680;
+    index = 0;
     do {
-        Entry* obj = (Entry*)p[0];
-        obj->f2();
-        i++;
-        p++;
-    } while (i < 6);
+        HudOverlay *overlay = (HudOverlay *)overlayPtr[0];
+        overlay->update();
+        index++;
+        overlayPtr++;
+    } while (index < 6);
 }
 #pragma scheduling on
 extern "C" void fn_8001DF04(void) {
