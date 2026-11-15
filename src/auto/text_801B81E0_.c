@@ -1,6 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* The current arena-event master object ("amaster"): fn_801B826C installs the one
+ * fn_801B81E0 built for the arena event, or the "null_amaster" null object.  The
+ * wrappers in this file forward to its vtable (see struct ArenaMaster); it is 0
+ * between fn_801B832C (shut down) and the next event. */
 extern void *lbl_8055E744;
 extern void *fn_801284F8(int, const char *);
 extern void *fn_8001285C(int);
