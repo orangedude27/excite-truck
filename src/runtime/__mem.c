@@ -1,16 +1,22 @@
 #include <string.h>
 
+/* Startup memcpy, put in .init so __copy_rom_section can reach it before the C
+   library is running: copies count bytes one at a time, walking up when src is not
+   below dest and down from the far end otherwise, so overlapping ranges still come
+   out right (memmove semantics). Both pointers step back one first so the loops can
+   pre-increment/decrement into the byte they want and count the same move; nothing
+   is returned, the boot code ignores the value. */
 DECL_SECTION(".init") void * memcpy(void * dest, const void * src, size_t count)
 {
     const char * csrc = (const char *)src;
     char * cdest = (char *)dest;
-    
+
     if (src >= dest)
     {
         csrc--;
         cdest--;
         count++;
-        
+
         while (--count)
         {
             *++cdest = *++csrc;
@@ -21,7 +27,7 @@ DECL_SECTION(".init") void * memcpy(void * dest, const void * src, size_t count)
         csrc += count;
         cdest += count;
         count++;
-        
+
         while (--count)
         {
             *--cdest = *--csrc;
