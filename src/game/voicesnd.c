@@ -861,17 +861,23 @@ extern void fn_802E61BC(void *);
 extern void fn_802E61A8(void *);
 #pragma push
 #pragma processor 750
-void fn_8020B9D4(void *arg0) {
-    VoiceSnd *snd = (VoiceSnd *)arg0;
+/* Unmute a voice sound (vtable slot +0x2C of lbl_8033C3F4): clear the mute flag
+ * and, if fn_8020B908 took it down while it was playing (state 1, its voices
+ * released), grab its voices again, re-apply the mix values and restart it. */
+void fn_8020B9D4(void *self) {
+    VoiceSnd *snd = (VoiceSnd *)self;
     float master, gain, side;
     int i;
     void *voice;
     if (snd->mute != 0) {
         snd->mute = 0;
+        // Only a sound that was playing when it got muted comes back.
         if (snd->state == 1 && snd->voice == 0) {
+            // From here this is the grab-and-start code of fn_8020B368 (play).
             if (snd->sound != 0 && snd->voice == 0) {
                 snd->voice = SND_GrabVoice(snd->sound);
                 if (snd->voice == 0) {
+                    // The name the library returns is the report's argument.
                     SND_Name(snd->sound);
                     SND_ReportGrabFailed();
                 } else if (snd->sound2 != 0) {
@@ -884,11 +890,13 @@ void fn_8020B9D4(void *arg0) {
             }
             if (snd->voice != 0) {
                 gain = snd->volume * snd->group->volume;
+                // snd->mute was just cleared, so this takes the live path.
                 if (snd->mute != 0) master = FLOAT_ZERO;
                 else {
                     master = MASTER_VOLUME * (snd->unscaled ? gain : gain * VOLUME_SCALE);
                 }
                 if (snd->voice2 != 0) {
+                    // Two resources: one per channel, the pan splits the volume.
                     gain = FLOAT_ONE;
                     side = gain + -snd->pan;
                     gain = (gain < side) ? gain : side;
@@ -906,14 +914,14 @@ void fn_8020B9D4(void *arg0) {
                     SND_SetPan(snd->voice, snd->pan);
                 }
                 i = 0;
-                do {
+                do {  // the same mix values onto both voices
                     if (i == 0) voice = snd->voice;
                     else voice = snd->voice2;
                     if (voice != 0) {
                         SND_SetSurroundPan(voice, snd->surroundPan);
-                        fn_802E6234(voice, snd->unused2c);
-                        fn_802E6238(voice, snd->unused30);
-                        fn_802E623C(voice, snd->unused34);
+                        fn_802E6234(voice, snd->unused2c);  // the three setters
+                        fn_802E6238(voice, snd->unused30);  // of this build do
+                        fn_802E623C(voice, snd->unused34);  // nothing at all
                         SND_SetRate(voice, snd->rate);
                         SND_SetAuxFlags(voice, snd->auxFlags);
                     }
