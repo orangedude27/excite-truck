@@ -632,8 +632,8 @@ void fn_802B14B4(void *arg0) {
         if (lbl_8055FA59 != 0) {
             fn_802C8BD0(*(int *)((char *)arg0 + 4));
         } else {
-            fn_802C8BD0();
             fn_802C28C0();
+            fn_802C8BD0();
         }
         fn_802B05EC();
         fn_802DBF00();
