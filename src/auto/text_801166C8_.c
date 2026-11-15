@@ -3366,22 +3366,27 @@ void fn_8011BC48(void) {
     fn_80120084();
 }
 
-s32 fn_8011BC4C(void *arg0, void *arg1) {
-    void *cur;
+s32 fn_8011BC4C(void *list, void *node) {
+    /* Remove a node from a singly-linked list rooted at offset 0x30; return 1 if removed. */
+    void *current;
     void *next;
-    if (arg0 == NULL) return 0;
-    cur = *(void **)((u8 *)arg0 + 0x30);
-    if (cur == arg1) {
-        *(void **)((u8 *)arg0 + 0x30) = *(void **)cur;
+
+    if (list == NULL) return 0;
+
+    current = *(void **)((u8 *)list + 0x30);
+    if (current == node) {
+        *(void **)((u8 *)list + 0x30) = *(void **)current;
         return 1;
     }
-    while ((next = *(void **)cur) != NULL) {
-        if (next == arg1) {
-            *(void **)cur = *(void **)arg1;
+
+    while ((next = *(void **)current) != NULL) {
+        if (next == node) {
+            *(void **)current = *(void **)node;
             return 1;
         }
-        cur = next;
+        current = next;
     }
+
     return 0;
 }
 
