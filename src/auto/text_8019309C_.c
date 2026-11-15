@@ -1374,12 +1374,13 @@ void fn_80194FD0(unsigned char *self, float *out, float dt) {
     }
 }
 
-void fn_801955F0(void *arg0, float *arg1) {
+/* Compute a trajectory sample position and offset it by the object's local translation scaled by its current scale. */
+void fn_801955F0(void *obj, float *outPos) {
     float scale;
-    ((void (*)(void *, float *))fn_80194FD0)(arg0, arg1);
-    scale = *(float *)((unsigned char *)arg0 + 0x2B8);
-    arg1[0] += *(float *)((unsigned char *)arg0 + 0x58) * scale;
-    arg1[1] += *(float *)((unsigned char *)arg0 + 0x5C) * scale;
+    ((void (*)(void *, float *))fn_80194FD0)(obj, outPos);
+    scale = *(float *)((unsigned char *)obj + 0x2B8);
+    outPos[0] += *(float *)((unsigned char *)obj + 0x58) * scale;
+    outPos[1] += *(float *)((unsigned char *)obj + 0x5C) * scale;
 }
 
 extern void fn_801971AC(void *, void *);
