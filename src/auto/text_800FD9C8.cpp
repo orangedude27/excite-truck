@@ -31,13 +31,14 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FD9C8(void *arg0, 
     return arg0;
 }
 
-extern "C" void *fn_800FDA20(void *arg0, void *arg1) {
-    __ct__Q44nw4r3snd6detail10BasicSoundFv(arg0);
-    *(void **)arg0 = lbl_80326D00;
-    __ct__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)arg0 + 0xD8, lbl_80326D00);
-    *(void **)((u8 *)arg0 + 0x5F8) = arg1;
-    *(u32 *)((u8 *)arg0 + 0x5F4) = 0;
-    return arg0;
+/* Initializes a stream sound instance: constructs its BasicSound base and embedded StrmPlayer, installs the stream-sound vtable, and stores the owning pool with the active flag cleared. */
+extern "C" void *fn_800FDA20(void *sound, void *pool) {
+    __ct__Q44nw4r3snd6detail10BasicSoundFv(sound);
+    *(void **)sound = lbl_80326D00;
+    __ct__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)sound + 0xD8, lbl_80326D00);
+    *(void **)((u8 *)sound + 0x5F8) = pool;
+    *(u32 *)((u8 *)sound + 0x5F4) = 0;
+    return sound;
 }
 
 #pragma push
