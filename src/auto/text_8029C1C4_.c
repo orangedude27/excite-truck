@@ -392,12 +392,13 @@ void fn_8029C73C(void) {
 #pragma pop
 
 void fn_8029C934(void) {
-    int *p = (int *)lbl_804B5010;
-    int i = 0;
-    while (i < lbl_8055F7F0) {
-        fn_8029D464((void *)*p, 1);
-        ++p;
-        ++i;
+    /* Destroy and free every active 3D water pool object, then reset the pool count. */
+    int *poolSlot = (int *)lbl_804B5010;
+    int index = 0;
+    while (index < lbl_8055F7F0) {
+        fn_8029D464((void *)*poolSlot, 1);
+        ++poolSlot;
+        ++index;
     }
     lbl_8055F7F0 = 0;
 }
