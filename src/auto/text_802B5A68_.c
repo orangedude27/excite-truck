@@ -92,17 +92,19 @@ void *fn_802B5A68(void *object, s32 shouldFree) {
     return object;
 }
 
-void* fn_802B5AC0(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+/* Destroys a 3-word container: clears its first three fields and, if shouldDelete
+ * is positive, frees the container itself (delete-mode 3). Returns the container. */
+void *fn_802B5AC0(void *object, s32 shouldDelete) {
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 __declspec(section ".data") extern u32 lbl_802FAB30;
