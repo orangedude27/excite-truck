@@ -27,9 +27,9 @@ extern unsigned char lbl_8055F9A8;
 # pragma scheduling invalid_target
 # pragma opt_propagation off
 # pragma opt_dead_assignments off
-/* Constructor of the global SetPlacer list: point its item array at the inline
- * storage, set capacity 16 and count 0, register this module's static record and
- * chain the list's destructor onto the runtime's global-object list. */
+/* Constructor of the global "umat-DLO-SetPlacer" list lbl_804BE1FC: point its item
+ * array at the inline entries, set capacity 16 and count 0, register this module's
+ * static record and chain the list's destructor onto the runtime's global-object list. */
 void fn_802B3F14(void) {
     fn_8000D838(&lbl_8055F9A8);
     lbl_804BE1FC.items = &lbl_804BE1FC.entries[0];
