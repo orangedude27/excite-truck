@@ -150,14 +150,16 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail11TaskManagerFv(void *this_, s32 dele
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0(
-    void *this_, s32 flag) {
-    if (this_) {
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
-        if (flag > 0) {
-            fn_80128668(this_);
+    void *archive, s32 shouldDelete) {
+    /* Destruct a MemorySoundArchive (via LinkListImpl base), deleting the
+     * object when shouldDelete > 0. */
+    if (archive) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(archive, 0);
+        if (shouldDelete > 0) {
+            fn_80128668(archive);
         }
     }
-    return this_;
+    return archive;
 }
 
 extern "C" void fn_800FDFF8(void *arg0) {
