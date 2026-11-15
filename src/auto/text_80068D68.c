@@ -2867,7 +2867,14 @@ void WUDiMoveBottomSmpDevInfoPtr_8006B98C(void *arg0) {
 #pragma use_lmw_stmw reset
 extern char lbl_80319994[];
 extern u16 lbl_80394680[];
-extern u32 lbl_80393628[];
+extern u32 lbl_80393628[]; /* the SDK's _dev_handle_to_bda[WUD_MAX_DEV_ENTRY] */
+/* Address of the device currently on a WUD device handle: the SDK's
+ * BD_ADDR_PTR _WUDGetDevAddr(UINT8 handle) (include/revolution/WUD/WUD.h).
+ * lbl_80393628 holds, per handle, a pointer to the devAddr field of that
+ * device's info block; fn_8006CAA8 fills the entry when a device links up and
+ * clears it to 0 when it drops, so 0 means "nothing on this handle" as well as
+ * "no such handle".  The ROM keeps the argument in a full word: it compares it
+ * unsigned against the table size and only takes the low byte as the index. */
 BD_ADDR_PTR _WUDGetDevAddr(u32 handle) {
     BD_ADDR_PTR addr;
     s32 enabled = OSDisableInterrupts();
