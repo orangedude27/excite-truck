@@ -3254,9 +3254,14 @@ extern "C" void fn_8021D864(void *arg0) {
     obj->v5();
 }
 
-extern "C" void fn_8021D878(void *arg0) {
-    void *result;
-    if(fn_80129BC4()!=0){ result=fn_80217BD8(*(s32*)((u8*)arg0+0x2C),*(s32*)((u8*)arg0+0x25C),arg0); *(void**)((u8*)arg0+0x258)=result; ((void(*)(void*,s32,void*,s32))fn_80219440)(arg0,1,result,4); }
+extern "C" void fn_8021D878(void *widget) {
+    /* If enabled, register (+0x25C, +0x2C) and cache the returned entry at +0x258, then notify (tag 1, size 4). */
+    void *entry;
+    if (fn_80129BC4() != 0) {
+        entry = fn_80217BD8(*(s32 *)((u8 *)widget + 0x2C), *(s32 *)((u8 *)widget + 0x25C), widget);
+        *(void **)((u8 *)widget + 0x258) = entry;
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(widget, 1, entry, 4);
+    }
 }
 
 extern "C" s32 fn_8021D8D4(void *self) {
