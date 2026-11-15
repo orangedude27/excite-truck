@@ -787,8 +787,9 @@ void fn_8023B21C(void) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_8023B220(void *arg0) {
-    if ((fn_802399AC() != 0) || (*(unsigned char *)((char *)arg0 + 0x1C) != 0)) {
+/* If fn_802399AC() is nonzero or this object's flag at +0x1C is set, disable UI slot 6; otherwise enable it. */
+void fn_8023B220(void *object) {
+    if ((fn_802399AC() != 0) || (*(unsigned char *)((char *)object + 0x1C) != 0)) {
         fn_80214B94(6);
         fn_80214AF0(6);
         return;
