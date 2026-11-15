@@ -1236,17 +1236,18 @@ void fn_802483E0(void) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void* fn_8024859C(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(unsigned char *)((unsigned char *)arg0 + 0x18) = 0;
-        *(unsigned char *)((unsigned char *)arg0 + 0x50) = 0;
-        *(unsigned char *)((unsigned char *)arg0 + 0x5C) = 0;
-        *(s32 *)((unsigned char *)arg0 + 0x24) = 1;
-        *(s32 *)((unsigned char *)arg0 + 0x20) = 0;
-        *(unsigned char *)((unsigned char *)arg0 + 0x44) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destructor-like helper: reset key fields and optionally free the object. */
+void* fn_8024859C(void *object, s32 shouldDelete) {
+    if (object != 0) {
+        *(unsigned char *)((unsigned char *)object + 0x18) = 0;
+        *(unsigned char *)((unsigned char *)object + 0x50) = 0;
+        *(unsigned char *)((unsigned char *)object + 0x5C) = 0;
+        *(s32 *)((unsigned char *)object + 0x24) = 1;
+        *(s32 *)((unsigned char *)object + 0x20) = 0;
+        *(unsigned char *)((unsigned char *)object + 0x44) = 0;
+        if (shouldDelete > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 #pragma scheduling on
 /* Secret key-code check: copies the trigger sequence stored in .rodata (device 1
