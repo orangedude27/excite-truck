@@ -832,9 +832,9 @@ static inline void *AllocAligned80(void *owner, s32 size) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling on
-/* Body of fn_8012B6FC with the string pool base passed in. */
-static inline s32 LoadEntryData(void *arg0, s32 arg1) {
-    u8 *entry;
+/* fn_8012B6FC's body; the pragmas below inline it into that function only. */
+static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) {
+    struct ResEntry *entry;
     u8 *header;
     void *object;
     s32 handle;
@@ -842,49 +842,54 @@ static inline s32 LoadEntryData(void *arg0, s32 arg1) {
     u32 flags;
     const char *strings;
 
-    entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
-    flags = *(u32 *)(entry + 0x34);
+    entry = (struct ResEntry *)manager->entries + entryIndex;
+    flags = entry->flags;
     strings = lbl_8032A630;
-    if (!(flags & 8)) {
-        object = AllocAligned80(entry, *(s32 *)(entry + 0x28) + 0x80);
+    if (!(flags & RES_ENTRY_LOADED)) {
+        /* The object holds the entry's data behind an 0x80-byte block header. */
+        object = AllocAligned80(entry, entry->size + 0x80);
         if (object != 0) {
             startTime = fn_802E2C20();
-            handle = ((s32 (*)(void *))fn_802E36D8)((u8 *)arg0 + 0x20);
+            handle = ((s32 (*)(void *))fn_802E36D8)(manager->fileName);
             if (handle != -1) {
-                *(void **)((u8 *)object + 0x78) = entry;
-                *(u32 *)((u8 *)object + 0x7C) = 0x4D474921;
+                /* The block header sits in front of the data: back-pointer to the
+                 * entry, then its 'MGI!' tag. */
+                *(struct ResEntry **)((u8 *)object + 0x78) = entry;
+                *(u32 *)((u8 *)object + 0x7C) = 0x4D474921; /* 'MGI!' */
                 header = (u8 *)object + 0x78;
-                fn_802E3A14(handle, *(s32 *)(entry + 0x2C) + *(s32 *)((u8 *)arg0 + 0x80));
-                fn_802E3804(handle, header + 8, *(s32 *)(entry + 0x28));
-                if (*(u32 *)(entry + 0x30) == (u32)fn_80132E7C(header + 8, *(s32 *)(entry + 0x28))) {
-                    flags = *(u32 *)(entry + 0x34) | 0xC;
-                    *(u32 *)(entry + 0x34) = flags;
-                    *(void **)(entry + 0x3C) = header;
-                    *(void **)(entry + 0x40) = object;
-                    ((void (*)(void *, const char *))fn_8012A46C)(header + 8, strings + 0x3B0);
-                    fn_802E30C8(strings + 0x3C0, arg0, entry, fn_802E2C20() - startTime);
+                fn_802E3A14(handle, entry->offset + manager->dataOffset);
+                fn_802E3804(handle, header + 8, entry->size);
+                if (entry->crc == (u32)fn_80132E7C(header + 8, entry->size)) {
+                    flags = entry->flags | RES_ENTRY_ALLOCATED | RES_ENTRY_LOADED;
+                    entry->flags = flags;
+                    entry->header = header;
+                    entry->object = object;
+                    ((void (*)(void *, const char *))fn_8012A46C)(header + 8,
+                                                                  strings + 0x3B0); /* "extracted res" */
+                    fn_802E30C8(strings + 0x3C0, manager, entry,
+                                fn_802E2C20() - startTime); /* "EXTRACTION: LOADED %s/%s %d msec" */
                 } else {
-                    fn_802E30C8(strings + 0x3E4, entry);
+                    fn_802E30C8(strings + 0x3E4, entry); /* "res: crc failure on extraction: %s" */
                     fn_8012A7FC();
                 }
                 fn_802E3734(&handle);
             }
-            flags = *(u32 *)(entry + 0x34);
-            if (!(flags & 8)) {
-                fn_80128660((s32)object);
+            flags = entry->flags;
+            if (!(flags & RES_ENTRY_LOADED)) {
+                fn_80128660((s32)object); /* nothing loaded: give the allocation back */
             }
         }
     }
-    flags = *(u32 *)(entry + 0x34);
-    return (flags >> 3) & 1;
+    flags = entry->flags;
+    return (flags >> 3) & 1; /* RES_ENTRY_LOADED */
 }
 
 /* The inline helpers above must be inlined into fn_8012B6FC only. */
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
-extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
-    return LoadEntryData(arg0, arg1);
+extern "C" s32 fn_8012B6FC(struct ResManager *manager, s32 entryIndex) {
+    return LoadEntryDataBody(manager, entryIndex);
 }
 #pragma pop
 #pragma scheduling invalid_target
