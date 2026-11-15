@@ -1886,40 +1886,44 @@ void fn_802D18E8(void) {
     float direction[3];
     float mag;
     float scale;
-    int var_r28;
-    unsigned char *var_r29;
-    unsigned char *var_r30;
-    int var_r27;
+    SceneLight_802D18E8 *entry;
+    unsigned char *lightObj;
+    int count;
+    int lightBit;
+    int lightMask;
+    int i;
 
     direction[0] = sViewFrom_802D18E8[9] - sViewTo_802D18E8[9];
     direction[1] = sViewFrom_802D18E8[10] - sViewTo_802D18E8[10];
     direction[2] = sViewFrom_802D18E8[11] - sViewTo_802D18E8[11];
     mag = PSVECMag(direction);
-    mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
-    scale = lbl_80564F8C / mag;
+    mag = mag > lbl_80564F80 ? mag : lbl_80564F80; /* lbl_80564F80 = 0.001f */
+    scale = lbl_80564F8C / mag;                    /* lbl_80564F8C = 1.0f */
     lbl_8055FDCC = 0;
     direction[0] *= scale;
     direction[1] *= scale;
     direction[2] *= scale;
 
     if (lbl_8055FDC8 > 0) {
-        var_r30 = sLightEntries_802D18E8;
-        var_r29 = sLightObjs_802D18E8[0];
-        var_r28 = 0;
+        entry = (SceneLight_802D18E8 *)sLightEntries_802D18E8;
+        lightObj = sLightObjs_802D18E8[0];
+        count = 0;
         goto loop_test;
     loop_body:
-        color[0] = var_r30[0x0C];
-        color[1] = var_r30[0x0D];
-        color[2] = var_r30[0x0E];
-        color[3] = var_r30[0x0F];
-        fn_802D17BC(var_r29, direction, (float *)var_r30, color, *(float *)(var_r30 + 0x10));
-        var_r30 += 0x14;
-        var_r29 += 0x40;
-        var_r28 += 1;
+        color[0] = entry->color[0];
+        color[1] = entry->color[1];
+        color[2] = entry->color[2];
+        color[3] = entry->color[3];
+        fn_802D17BC(lightObj, direction, entry->pos, color, entry->scale);
+        entry++;
+        lightObj += 0x40;
+        count++;
     loop_test:
-        if (var_r28 < lbl_8055FDC8) goto loop_body;
+        if (count < lbl_8055FDC8) goto loop_body;
         lbl_8055FDCC = lbl_8055FDC8;
     } else {
+        /* Nothing to light the scene: one light from the fallback entry, whose
+         * colour is scaled by its strength and whose cone is 64.0 wide. */
         unsigned int packed;
         unsigned char rgba[4];
         float strength = sDefaultLight_802D18E8.strength;
@@ -1932,24 +1936,24 @@ void fn_802D18E8(void) {
         lbl_8055FDCC++;
     }
 
-    var_r30 = sLightObjs_802D18E8[0];
-    var_r28 = 0;
-    var_r29 = (unsigned char *)0;
-    var_r27 = 2;
+    lightObj = sLightObjs_802D18E8[0];
+    lightMask = 0;
+    i = 0;
+    lightBit = GX_LIGHT1;
     goto light_test;
 light_body:
     {
-        int bits = var_r27 << (unsigned int)var_r29;
-        GXLoadLightObjImm(var_r30, bits);
-        var_r28 |= bits;
-        var_r30 += 0x40;
-        var_r29 = (unsigned char *)((unsigned int)var_r29 + 1);
+        int bits = lightBit << i;
+        GXLoadLightObjImm(lightObj, bits);
+        lightMask |= bits;
+        lightObj += 0x40;
+        i++;
     }
 light_test:
-    if ((int)var_r29 < lbl_8055FDCC) goto light_body;
+    if (i < lbl_8055FDCC) goto light_body;
     GXSetNumChans(2);
-    GXSetChanCtrl(1, 1, 0, 0, var_r28, 0, 0);
-    GXSetChanCtrl(3, 0, 0, 0, 0, 0, 2);
+    GXSetChanCtrl(GX_COLOR1, GX_ENABLE, GX_SRC_REG, GX_SRC_REG, lightMask, GX_DF_NONE, GX_AF_SPEC);
+    GXSetChanCtrl(GX_ALPHA1, GX_DISABLE, GX_SRC_REG, GX_SRC_REG, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
 }
 #pragma pop
 
