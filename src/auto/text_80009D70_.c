@@ -300,8 +300,9 @@ u32 fn_8000AC38(void) {
     return lbl_8055D3B8;
 }
 
-// Stops/ticks down subsystems in the global state at lbl_8034F4C8 (base offsets +0x58, +0x18,
-// +0x98 gated by lbl_8055D3B4/lbl_8055D3B5), then calls fn_801DCDA0.
+// Enters a track: starts the ground (fn_801DCDA0) and queues the track effect
+// sets whose names fn_8000A8C4 built in the block at lbl_8034F4C8 (+0x18 always,
+// +0x58 while lbl_8055D3B4, +0x98 while lbl_8055D3B5); fn_8012DDA8 loads one by name.
 void fn_8000A7A8(void) {
     char* base = (char*)&lbl_8034F4C8;
     if (lbl_8055D3B4 != 0) {
