@@ -6,15 +6,16 @@
 extern s32 lbl_803582B0[];
 void fn_802E6BD8(s32, s32, void*, s32, void*);
 void *fn_80128668(void *);
-void *fn_800197B0(void *arg0, s32 arg1) {
-    void *local = arg0;
-    if (arg0 != (void*)0) {
-        if ((arg0 != (void*)0) && (arg0 != (void*)0)) {
-            *(s32*)arg0 = 0;
-            *(s32*)((s8*)arg0 + 4) = 0;
-            *(s32*)((s8*)arg0 + 8) = 0;
+/* Resets three 32-bit fields of an object to zero and, when shouldFree is positive, frees it via fn_80128668. */
+void *fn_800197B0(void *object, s32 shouldFree) {
+    void *local = object;
+    if (object != (void*)0) {
+        if ((object != (void*)0) && (object != (void*)0)) {
+            *(s32*)object = 0;
+            *(s32*)((s8*)object + 4) = 0;
+            *(s32*)((s8*)object + 8) = 0;
         }
-        if (arg1 > 0) {
+        if (shouldFree > 0) {
             fn_80128668(local);
         }
     }
