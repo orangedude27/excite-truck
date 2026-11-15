@@ -941,11 +941,23 @@ extern "C" void fn_800E3228(void *arg0) {
     }
 }
 
+/* nw4hbm::snd::detail::AxManager::GetZeroBufferAddress(): returns the address of the
+ * zero-filled DSP buffer silent voices sample from, panicking if it was never created. */
 extern "C" void *GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(void *self) {
-    if (*(void **)((char *)self + 4) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x172, lbl_80321FAC);
+    /* The part of nw4hbm::snd::detail::AxManager (snd_AxManager.cpp) this reads. */
+    struct AxManager {
+        int outputMode;   /* +0x00 nw4hbm::snd::OutputMode */
+        void *zeroBuffer; /* +0x04 zero buffer, held as a DSP-mirror-relative address */
+    };
+#define sndAxManagerCpp lbl_80321F80     /* "snd_AxManager.cpp" */
+#define zeroBufferNotCreated lbl_80321FAC /* "Zero buffer is not created." */
+    AxManager *manager = (AxManager *)self;
+    if (manager->zeroBuffer == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(sndAxManagerCpp, 0x172, zeroBufferNotCreated);
     }
-    return *(void **)((char *)self + 4);
+    return manager->zeroBuffer;
+#undef sndAxManagerCpp
+#undef zeroBufferNotCreated
 }
 
 extern "C" void RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNodePFv_v(void *self, void *node, void (*callback)(void)) {
