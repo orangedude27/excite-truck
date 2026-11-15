@@ -1505,6 +1505,7 @@ void fn_801FF5D4(void* arg0, void* arg1, float farg0) {
 
 #pragma dont_inline on
 void fn_801FF644(void* arg0, void* arg1) {
+    /* Call fn_801FCFC8 for each in-use entry's object pointer (entries at +0x30, stride 4, count at +0x54). */
     void* entry;
     int i;
     i = 0;
