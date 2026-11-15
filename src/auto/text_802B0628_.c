@@ -250,18 +250,19 @@ void fn_802B0954(void) {
 #pragma dont_inline reset
 
 #pragma opt_common_subs off
-void *fn_802B0AC0(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if ((char *)arg0 + 4 != 0) {
-            if ((char *)arg0 + 4 != 0) {
-                ((int *)arg0)[1] = 0;
-                ((int *)arg0)[2] = 0;
-                ((int *)arg0)[3] = 0;
+void *fn_802B0AC0(void *object, int shouldDelete) {
+    /* Destructor helper: clear embedded fields at offsets +4, +8, +C, then optionally free the object. */
+    if (object != 0) {
+        if ((char *)object + 4 != 0) {
+            if ((char *)object + 4 != 0) {
+                ((int *)object)[1] = 0;
+                ((int *)object)[2] = 0;
+                ((int *)object)[3] = 0;
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_802B0B20(void *arg0, void *arg1) {
