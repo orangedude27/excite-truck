@@ -1298,11 +1298,12 @@ extern "C" void fn_802A37C8(void* arg0, s32 arg1) {
     *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(desc + 0x18, lbl_80349A74, arg1);
 }
 
-extern "C" void* fn_802A38D0(void* arg0, DummyReceiver_802A3314* arg1) {
-    *(void**)arg0 = lbl_80349AD8;
-    s32 result = arg1->v3(&lbl_8055CBB0);
-    fn_802A3C50(arg0, result);
-    return arg0;
+extern "C" void* fn_802A38D0(void* self, DummyReceiver_802A3314* receiver) {
+    /* Initialize self with vtable lbl_80349AD8, query receiver for the value at lbl_8055CBB0, and set up via fn_802A3C50. */
+    *(void**)self = lbl_80349AD8;
+    s32 value = receiver->v3(&lbl_8055CBB0);
+    fn_802A3C50(self, value);
+    return self;
 }
 
 extern "C" int lbl_80349B50[];
