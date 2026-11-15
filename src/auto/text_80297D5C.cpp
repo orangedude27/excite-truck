@@ -1064,9 +1064,10 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     count = count > 1 ? count : 1;
     q = frame.rotation.v;
     float c = (float)cos((double)(lbl_805645F4 / (float)count));
-    float s = (float)sin((double)(lbl_805645F4 / (float)count));
-    float neg = -s;
-    float zero = lbl_8056459C, one = lbl_80564590;
+    float one, neg, zero, s;
+    s = (float)sin((double)(lbl_805645F4 / (float)count));
+    neg = -s;
+    zero = lbl_8056459C; one = lbl_80564590;
     float *p=(float*)unused;
     u32 *w = (u32 *)p;
     u32 w8,w7,w6,w5,w4,w3,w2,w1,w0;
@@ -1080,9 +1081,12 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     for (int n=0; n<count; cursor+=0xc, n++) {
        float b=p[10], a=p[9], c=p[11];
        float product=m[3]*scale;
-       *(float *)(cursor+4)=a+product;
-       *(float *)(cursor+8)=b+m[4]*scale;
-       *(float *)(cursor+0xc)=c+m[5]*scale;
+       a += product;
+       *(float *)(cursor+4)=a;
+       b += m[4]*scale;
+       *(float *)(cursor+8)=b;
+       c += m[5]*scale;
+       *(float *)(cursor+0xc)=c;
        MatrixMul801FD5E8(m, m, q);
     }
     }
@@ -1717,15 +1721,16 @@ extern "C" int fn_8029ADCC(void *arg0) {
 }
 #pragma pop
 
-extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_802CAC54(*(int*)((char*)arg0 + 0x1E4));
-        fn_802CAC54(*(int*)((char*)arg0 + 0x1E8));
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+/* Destroys this JASDrumSet::TPerc instance and optionally frees its storage. */
+extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* this_, int deleteFlag) {
+    if (this_ != 0) {
+        fn_802CAC54(*(int*)((char*)this_ + 0x1E4));
+        fn_802CAC54(*(int*)((char*)this_ + 0x1E8));
+        if (deleteFlag > 0) {
+            fn_80128668(this_);
         }
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" int fn_8029AEE8(void *arg0) {
