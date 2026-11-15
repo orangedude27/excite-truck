@@ -548,16 +548,17 @@ void *fn_80241024(void *container) {
     return container;
 }
 
-void *fn_80241098(void *arg0) {
+/* Initializes an MRoll stat label with its vtable, default fields, and the uifnt_o.gtx font resource. */
+void *fn_80241098(void *statLabel) {
     s32 zero = 0;
     s32 minusOne = -1;
-    *(void **)arg0 = lbl_80342734;
-    *(s32 *)((u8 *)arg0 + 0x14) = zero;
-    *(s32 *)((u8 *)arg0 + 0x1C) = minusOne;
-    *(s32 *)((u8 *)arg0 + 0x24) = zero;
-    *(s32 *)((u8 *)arg0 + 0x20) = zero;
-    *(s32 *)((u8 *)arg0 + 0x18) = ((s32 (*)(char *))fn_80232578)(lbl_8034288C);
-    return arg0;
+    *(void **)statLabel = lbl_80342734;
+    *(s32 *)((u8 *)statLabel + 0x14) = zero;
+    *(s32 *)((u8 *)statLabel + 0x1C) = minusOne;
+    *(s32 *)((u8 *)statLabel + 0x24) = zero;
+    *(s32 *)((u8 *)statLabel + 0x20) = zero;
+    *(s32 *)((u8 *)statLabel + 0x18) = ((s32 (*)(char *))fn_80232578)(lbl_8034288C);
+    return statLabel;
 }
 
 /* Construct an object (vtable lbl_803426B0, secondary +0x18), copy *valuePtr, store id/arg3,
