@@ -3510,6 +3510,7 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(
         offset += 8;
         ++index;
     loop_check:
+        /* the table is read again every pass: the store above may alias it */
         table = *(struct LoadStatusTable**)((u8*)self + 0x14);
     } while (index < table->count);
 }
