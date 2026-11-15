@@ -1182,11 +1182,13 @@ void SyncFlushCallback(s32 status) {
     }
 }
 
-void DeleteFlushCallback(s32 arg0) {
+/* WUD SC flush completion callback for delete: logs the status and delete state,
+ * and advances delete state to 8 if it was non-zero. */
+void DeleteFlushCallback(s32 status) {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern u8 lbl_803131E8[];
     extern u8 lbl_80392960[];
-    DBPrintf_8006CFA8((const char *)lbl_803131E8, arg0, lbl_80392960[0xD]);
+    DBPrintf_8006CFA8((const char *)lbl_803131E8, status, lbl_80392960[0xD]);
     if (lbl_80392960[0xD] != 0) lbl_80392960[0xD] = 8;
 }
 
