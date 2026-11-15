@@ -373,15 +373,16 @@ void fn_801384A0();
 int fn_801386D0(void *, float, float, float);
 void fn_80138958(void *, float *);
 #pragma dont_inline fn_80138594
-void fn_80138594(void *arg0) {
-    void *node;
+void fn_80138594(void *object) {
+    /* Walk the object's entry list at +0x24; for each type-1 entry, apply its vec3 at +0x8 via fn_80138958. */
+    void *entry;
 
-    node = *(void **)((char *)arg0 + 0x24);
-    while (node != 0) {
-        if (*(unsigned int *)node == 1) {
-            fn_80138958(arg0, (float *)((char *)node + 8));
+    entry = *(void **)((char *)object + 0x24);
+    while (entry != 0) {
+        if (*(unsigned int *)entry == 1) {
+            fn_80138958(object, (float *)((char *)entry + 8));
         }
-        node = *(void **)((char *)node + 4);
+        entry = *(void **)((char *)entry + 4);
     }
 }
 
