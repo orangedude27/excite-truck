@@ -855,9 +855,14 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
 #pragma pop
 #pragma scheduling invalid_target
 extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    /* Entry flags word at +0x34, seen as bitfields. */
+    struct EntryFlags {
+        u32 rest : 31;
+        u32 requested : 1;
+    };
     s32 sp8;
-    volatile u8 requestName[5];
-    volatile u8 entryName[5];
+    u8 requestName[5];
+    u8 entryName[5];
     u8 *manager;
     const char *strings = lbl_8032A630;
     u8 *result = 0;
@@ -866,13 +871,12 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         if (fn_8012B6FC(manager, sp8) != 0) {
             u8 *entry = *(u8 **)(manager + 0x60) + sp8 * 0x44;
             if ((u32)arg1 == *(u32 *)(entry + 0x20)) {
-                s32 flags;
                 s32 count;
                 *(u32 *)(entry + 0x34) |= 2;
                 if ((s8 *)arg5 != 0) {
-                    flags = *(s32 *)(entry + 0x34);
-                    *(s32 *)(entry + 0x34) = flags | 1;
-                    *(s8 *)arg5 = !(flags & 1);
+                    s32 requested = ((EntryFlags *)(entry + 0x34))->requested;
+                    ((EntryFlags *)(entry + 0x34))->requested = 1;
+                    *(s8 *)arg5 = !requested;
                 }
                 if ((s32 *)arg3 != 0) *(s32 *)arg3 = *(s32 *)(entry + 0x28);
                 if ((s8 *)arg4 != 0) *(s8 *)arg4 = *(s32 *)(entry + 0x38) == 0;
@@ -886,32 +890,26 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 result = *(u8 **)(entry + 0x3C) + 8;
                 ((void (*)(void *, const char *))fn_8012A46C)(result, strings + 0x408);
             } else {
-                u8 *request = (u8 *)requestName;
-                u32 first;
-                u8 fourth;
-                u32 second;
-                u8 third;
-                *(volatile u32 *)request = arg1;
-                first = requestName[0];
-                fourth = requestName[3];
-                second = requestName[1];
-                third = requestName[2];
-                requestName[0] = fourth;
-                requestName[3] = first;
-                requestName[1] = third;
-                requestName[2] = second;
+                /* Both four-character type codes, byte-reversed into strings for the message. */
+                u8 tmp0;
+                u8 tmp1;
+                *(u32 *)requestName = arg1;
+                tmp0 = requestName[0];
+                requestName[0] = requestName[3];
+                requestName[3] = tmp0;
+                tmp1 = requestName[1];
+                requestName[1] = requestName[2];
+                requestName[2] = tmp1;
                 requestName[4] = 0;
-                *(volatile u32 *)entryName = *(u32 *)(entry + 0x20);
-                first = entryName[0];
-                fourth = entryName[3];
-                second = entryName[1];
-                third = entryName[2];
-                entryName[0] = fourth;
-                entryName[3] = first;
-                entryName[1] = third;
-                entryName[2] = second;
+                *(u32 *)entryName = *(u32 *)(entry + 0x20);
+                tmp0 = entryName[0];
+                entryName[0] = entryName[3];
+                entryName[3] = tmp0;
+                tmp1 = entryName[1];
+                entryName[1] = entryName[2];
+                entryName[2] = tmp1;
                 entryName[4] = 0;
-                fn_802E30C8(strings + 0x414, arg0, (const char *)request, (const char *)entryName);
+                fn_802E30C8(strings + 0x414, arg0, (const char *)requestName, (const char *)entryName);
             }
         } else {
             fn_802E30C8(strings + 0x450, arg0);
@@ -919,8 +917,6 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
     }
     return (s32)result;
 }
-#pragma scheduling on
-
 #pragma dont_inline reset
 #pragma scheduling reset
 #pragma pop
