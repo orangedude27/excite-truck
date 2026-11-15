@@ -24350,6 +24350,7 @@ BOOLEAN SDP_InitDiscoveryDb(tSDP_DISCOVERY_DB *p_db, UINT32 len, UINT16 num_uuid
     return TRUE;
 }
 
+/* Originate an SDP connection to p_bd_addr and start a service search: record the discovery DB and completion callback on the connection. Returns TRUE on success. */
 BOOLEAN SDP_ServiceSearchRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
     tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
     if (p_ccb == NULL) return FALSE;
