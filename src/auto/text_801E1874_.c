@@ -137,49 +137,48 @@ extern double __fabs(double);
 #pragma push
 #pragma processor 750
 void fn_801E1B30(void) {
+    typedef struct { int mode; float cur; float tgt; float unkC; float unk10; } State;
     float temp = lbl_8055E3C8;
-    char *state = lbl_804874B8;
+    State *state = (State *)lbl_804874B8;
     int zero;
 
     zero = 0;
     if (fn_80129D18(4, 0x12C) == 0 || (unsigned char)lbl_8055EA21 != 0) {
-        if (*(int *)state == 1 || (unsigned char)lbl_8055EA21 != 0) {
+        if (state->mode == 1 || (unsigned char)lbl_8055EA21 != 0) {
             if (fn_80129D18(4, 0xA) < 6 || (unsigned char)lbl_8055EA21 != 0) {
-                *(int *)state = 2;
-                *(float *)(state + 0x10) = fn_80129DC4(4, lbl_80562CAC, lbl_80562CB0);
+                state->mode = 2;
+                state->unk10 = fn_80129DC4(4, lbl_80562CAC, lbl_80562CB0);
             } else {
-                *(int *)state = 3;
-                *(float *)(state + 0xC) = temp + fn_80129DC4(4, lbl_80562CB4, lbl_80562CB8);
+                state->mode = 3;
+                state->unkC = temp + fn_80129DC4(4, lbl_80562CB4, lbl_80562CB8);
             }
-            *(float *)(state + 8) = fn_80129DC4(4, lbl_80562CB8, lbl_80562CBC);
-        } else if (*(float *)(state + 4) > *(float *)(state + 8)) {
-            *(float *)(state + 8) = fn_80129DC4(4, *(float *)(state + 4), lbl_80562CC0);
+            state->tgt = fn_80129DC4(4, lbl_80562CB8, lbl_80562CBC);
+        } else if (state->cur > state->tgt) {
+            state->tgt = fn_80129DC4(4, state->cur, lbl_80562CC0);
         }
     }
 
     lbl_8055EA21 = zero;
-    if (*(int *)state != 1) {
-        float target = *(float *)(state + 8);
-        float current = *(float *)(state + 4);
+    if (state->mode != 1) {
+        register float target = state->tgt;
+        register float current = state->cur;
         if ((float)__fabs((double)(target - current)) < lbl_80562CC4) {
             if ((float)__fabs((double)target) <= lbl_80558DC4) {
                 goto set_mode;
             }
-            *(float *)(state + 8) = lbl_80562CAC;
+            state->tgt = lbl_80562CAC;
             goto after_mode;
         set_mode:
-            *(int *)state = 1;
+            state->mode = 1;
         after_mode:
             ;
         }
-        *(float *)(state + 4) =
-            *(float *)(state + 4) +
-            lbl_80562CB4 * (*(float *)(state + 8) - *(float *)(state + 4));
+        state->cur = state->cur + lbl_80562CB4 * (state->tgt - state->cur);
     }
 
     if (*(void **)(lbl_804874B8 + 0x18) != 0 &&
-        *(float *)(state + 0xC) > lbl_80562CAC &&
-        temp > *(float *)(state + 0xC)) {
+        state->unkC > lbl_80562CAC &&
+        temp > state->unkC) {
         unsigned char *obj = *(unsigned char **)(lbl_804874B8 + 0x18);
         if (obj[0x19] != 0) {
             obj[0x4C] = 1;
@@ -189,7 +188,7 @@ void fn_801E1B30(void) {
             obj[0x4B] = 0;
             obj[0x4A] = 0;
         }
-        *(float *)(state + 0xC) = lbl_80562CC8;
+        state->unkC = lbl_80562CC8;
     }
 }
 #pragma pop
@@ -203,6 +202,8 @@ void fn_801E1D2C(void) {
 }
 
 void fn_801E1D38(void) {
+    /* If the weather parameters (fn_801E1F44) indicate precip type 1 (rain),
+       load rain and thunder sound effects into lbl_804874B8 slots at +0x14/+0x18. */
     if (*fn_801E1F44() == 1) {
         *(void **)(lbl_804874B8 + 0x14) = fn_80207848(lbl_80339878, 2);
         *(void **)(lbl_804874B8 + 0x18) = fn_80207848(lbl_80339884, 2);
