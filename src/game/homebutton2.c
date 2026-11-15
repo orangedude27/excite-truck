@@ -10,12 +10,14 @@ extern u8 lbl_805600E9;
 extern s8 lbl_805600EA;
 extern u8 lbl_805600EB;
 extern u8 lbl_805600ED;
-s32 fn_8002173C(void);
-void fn_802CFCA0(void);
-void fn_802D02F8(s32, s32);
-void fn_802D68C4(s32, s32, s32, s32);
-void fn_802CFDE0(void);
-void fn_802CFF10(void);
+/* The renderer of src/game/gx.c and src/game/drgc_surf.c, used by the handover
+ * loop below to keep the screen covered while the Home Menu starts up. */
+s32 fn_8002173C(void);                      /* runs a pending sound request; 1 when it did work */
+void fn_802CFCA0(void);                     /* opens a frame: resets the GX state, sets the FIFO break point */
+void fn_802D02F8(s32 color, s32 on);        /* fade colour (aRGB) and whether to fade with it */
+void fn_802D68C4(s32, s32, s32, s32);       /* indexed triangles straight into the GX FIFO */
+void fn_802CFDE0(void);                     /* draws the home-button UI, flushes the FIFO and waits for the GPU */
+void fn_802CFF10(void);                     /* closes the frame: clears the FIFO state */
 void fn_80127464(void);
   extern s32 fn_802E9A0C(void);
   extern char lbl_80558860[];
