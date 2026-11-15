@@ -4052,6 +4052,7 @@ extern "C" void fn_8021EDA4(void *self) {
         ((void (*)(s32,f32,f32,f32,f32,f32))fn_80230924)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
     }
 }
+
 #pragma pop
 
 extern "C" void fn_8021EFE0(void *self, s32 x, s32 y) {
