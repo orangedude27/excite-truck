@@ -5544,14 +5544,17 @@ extern "C" void* fn_80111B64(void* arg0) {
     return arg0;
 }
 
-extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* arg0, int arg1) {
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* this_, int flag) {
     extern void fn_801033F0(void*, unsigned int);
     extern void fn_80128668(void*);
-    if (arg0 != 0) {
-        fn_801033F0(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+    /* nw4hbm::snd::MemorySoundArchive scalar-deleting destructor: if non-null,
+       run the base destructor (fn_801033F0, a=0), then free storage with the
+       deleting operator (fn_80128668) when flag > 0. Returns this_. */
+    if (this_ != 0) {
+        fn_801033F0(this_, 0);
+        if (flag > 0) fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" f32 fn_80111C10(s32 arg0) {
