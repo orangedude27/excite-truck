@@ -2930,14 +2930,16 @@ extern "C" void *fn_80142BD8(void *arg0) {
     u8 *base;
     s32 write;
     s32 read;
-    register s32 next;
+    s32 next;
+    s32 offset;
     void *result;
     write = ring[2];
     count = ring[1];
     read = ring[3];
     base = (u8 *)ring[0];
+    offset = write * 12;
     next = (write + 1) % count;
-    result = base + write * 12;
+    result = base + offset;
     ring[2] = next;
     if (next == read)
         ring[3] = (read + 1) % count;
