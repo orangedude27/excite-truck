@@ -1840,15 +1840,16 @@ extern "C" void fn_8021B134(void *arg0) {
 }
 #pragma scheduling on
 #pragma pop
-extern "C" void *fn_8021B1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+/* Initializes this widget with a base image widget, sets its vtable, and stores the range and output pointers. */
+extern "C" void *fn_8021B1C4(void *widget, s32 x, s32 y, s32 outputPtr, s32 rangeMin, s32 resourceId) {
     void *vtable;
 
-    fn_8021AC24(arg0, arg1, arg2, arg5, arg4);
+    fn_8021AC24(widget, x, y, resourceId, rangeMin);
     vtable = lbl_8033F548;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg4;
-    *(void **)arg0 = vtable;
-    *(s32 *)((u8 *)arg0 + 0x258) = arg3;
-    return arg0;
+    *(s32 *)((u8 *)widget + 0x254) = rangeMin;
+    *(void **)widget = vtable;
+    *(s32 *)((u8 *)widget + 0x258) = outputPtr;
+    return widget;
 }
 #pragma dont_inline reset
 
