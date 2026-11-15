@@ -5530,6 +5530,12 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
     return var_f31;
 }
 #pragma dont_inline reset
+/* nw4hbm::ut::CharWriter's constructor (the ut_TextWriterBase.cpp copy of the class):
+ * builds the base CharWriter, then clears the print-layout block this copy adds right
+ * after its 0x4C bytes -- the space left after every glyph and the cursor's X, the glyph
+ * count between two tab stops, the print flags (none set), and the inline-tag processor
+ * the printer asks about the tags inside a string, which starts at the library's one
+ * global processor object. */
 extern "C" void* fn_80111B64(void* writer) {
     /* nw4hbm::ut::CharWriter's own constructor, for the object below 0x4C */
     extern void __ct__Q36nw4hbm2ut10CharWriterFv(void*);
@@ -5561,7 +5567,6 @@ extern "C" void* fn_80111B64(void* writer) {
     self->tagProcessor = &lbl_8055DEB8;
     return writer;
 }
-
 extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* this_, int flag) {
     extern void fn_801033F0(void*, unsigned int);
     extern void fn_80128668(void*);
