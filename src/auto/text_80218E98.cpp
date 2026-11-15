@@ -8689,18 +8689,21 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229388(void *arg0, 
     return arg0;
 }
 
+/* nw4hbm::snd::detail::DisposeCallbackManager scalar deleting destructor.
+ * Destroys the subobject via fn_8021915C when non-null, then frees storage
+ * with fn_80128668 (operator delete, mode 3) if deletingFlag > 0. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802293E0(
-    void* this_, s32 flag) {
-    if (this_) {
-        if (this_ != NULL) {
-            fn_8021915C(this_, 0);
+    void* thisPtr, s32 deletingFlag) {
+    if (thisPtr) {
+        if (thisPtr != NULL) {
+            fn_8021915C(thisPtr, 0);
         }
 
-        if (flag > 0) {
-            fn_80128668(this_);
+        if (deletingFlag > 0) {
+            fn_80128668(thisPtr);
         }
     }
-    return this_;
+    return thisPtr;
 }
 
 /* nw4hbm::snd::detail::DisposeCallbackManager destructor helper:
