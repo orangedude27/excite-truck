@@ -239,12 +239,22 @@ extern "C" void fn_802A172C(void) {
 extern "C" void fn_802A1790(void) {}
 
 extern "C" void fn_802A1794(void) {
-    struct Dispatch { virtual void f0(); virtual void f1(); virtual void f2(); virtual void call(); };
+    struct Dispatch {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void call();
+    };
     void **entry = lbl_804BCF88;
     s32 index = 0;
+
+    /* Calls virtual method slot 0x14 on each non-null object in the 8-entry
+     * table at lbl_804BCF88. */
     do {
         void *obj = *entry;
-        if (obj != 0) ((Dispatch *)obj)->call();
+        if (obj != 0) {
+            ((Dispatch *)obj)->call();
+        }
         index++;
         entry++;
     } while (index < 8);
