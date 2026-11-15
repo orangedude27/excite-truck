@@ -931,14 +931,18 @@ float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
     return result - value;
 }
 #pragma pop
-s32 fn_801366C0(void *arg0, void *arg1, float farg0) {
-    if (*(s32 *)((char *)arg0 + 4) == 0 ||
-        *(s32 *)(*(s32 *)((char *)arg0 + 0x2C) + 0x1C) == 0)
+/* Whether the world vector `vec` points backwards along a path follower's
+ * direction by more than `backAmount`: dot(dir, vec) < -backAmount, over the
+ * vector's x and z (the path is flat).  The direction is the follower's
+ * normalized one along the path (unk_10/unk_14, kept unit length by the
+ * samplers).  Returns 0 when the follower has no current path (unk_4) or that
+ * path has no node array (+0x1C).  fn_801B14E4 calls it every frame with a
+ * vehicle's vector and 4.44444 to count how long it is driven the wrong way. */
+s32 fn_801366C0(Unk_80135278 *follower, WorldVec *vec, float backAmount) {
+    if (follower->unk_4 == 0 || *(s32 *)(follower->unk_2c + 0x1C) == 0)
         return 0;
-    return ((*(float *)((char *)arg1 + 0) * *(float *)((char *)arg0 + 0x10))
-          + (*(float *)((char *)arg1 + 8) * *(float *)((char *)arg0 + 0x14))) < -farg0;
+    return (vec->x * follower->unk_10 + vec->z * follower->unk_14) < -backAmount;
 }
-
 void fn_80136714(void *arg0) {
     float a = *(float *)((char *)arg0 + 0x10);
     float b = *(float *)((char *)arg0 + 0x14);
