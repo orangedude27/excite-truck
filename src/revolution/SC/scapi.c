@@ -122,16 +122,20 @@ u32 SCGetBtDpdSensibility(void) {
     return item;
 }
 
+/* Return whether the Wii Remote's rumble motor is enabled, read from the System
+   Configuration's Bluetooth motor-mode item (SC_ITEM_BT_MOT, id 0x18); enabled is
+   returned when the item is missing, and any value other than SC_MOTOR_ON is
+   reported as SC_MOTOR_OFF. */
 u8 SCGetWpadMotorMode(void) {
-    u8 item;
+    u8 motorMode;
 
-    if (!SCFindU8Item(&item, SC_ITEM_BT_MOT)) {
-        item = TRUE;
-    } else if (item != TRUE) {
-        item = FALSE;
+    if (!SCFindU8Item(&motorMode, SC_ITEM_BT_MOT)) {
+        motorMode = SC_MOTOR_ON;
+    } else if (motorMode != SC_MOTOR_ON) {
+        motorMode = SC_MOTOR_OFF;
     }
 
-    return item;
+    return motorMode;
 }
 
 BOOL SCSetWpadMotorMode(u8 mode) {
