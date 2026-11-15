@@ -100,11 +100,12 @@ void *fn_802BC4D4(void *arg0) {
 }
 
 #pragma scheduling on
-int fn_802BC4E0(void *__restrict arg0) {
-    int result = fn_802C9C24(*(int *)((char *)arg0 + 4));
+int fn_802BC4E0(void *__restrict node) {
+    /* Resolve a texture handle for node+4; warn if missing, then invoke callback fn_802BC334 with it. */
+    int texture = fn_802C9C24(*(int *)((char *)node + 4));
     if (fn_8012C33C() == 0)
-        fn_802E317C((const char *)&lbl_8034AB38, result);
-    return fn_802B110C(&fn_802BC334, result);
+        fn_802E317C((const char *)&lbl_8034AB38, texture);
+    return fn_802B110C(&fn_802BC334, texture);
 }
 double fn_8002F234(float, float);
 #pragma push
