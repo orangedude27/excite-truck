@@ -161,7 +161,8 @@ void fn_8023C55C(void *arg0) {
     char obj2[0x1C];
     s32 hdr[5];
     s32 data[35];
-    s32 *v;
+    s32 *s = lbl_80498788;
+    s32 *v = lbl_802FA07C;
 
     lbl_8055F148 = fn_802C83C4();
     lbl_8055F150 = lbl_8055F148;
@@ -170,6 +171,11 @@ void fn_8023C55C(void *arg0) {
     lbl_8055F14C = lbl_8055F144;
     fn_8023C800(obj2, (s32)&lbl_8055F144, fn_80131234(base + 0x38), fn_80131234(base + 0x44), fn_80131234(base + 0x54), 0);
 
+    data[30] = s[0];
+    data[31] = s[1];
+    data[32] = s[2];
+    data[33] = s[3];
+    data[34] = s[4];
     data[0] = (s32)lbl_8055BB50;
     data[1] = 0x10;
     data[2] = 0;
@@ -200,12 +206,6 @@ void fn_8023C55C(void *arg0) {
     data[27] = (s32)fn_8023C2B4;
     data[28] = 0;
     data[29] = 0;
-    data[30] = lbl_80498788[0];
-    data[31] = lbl_80498788[1];
-    data[32] = lbl_80498788[2];
-    data[33] = lbl_80498788[3];
-    data[34] = lbl_80498788[4];
-    v = lbl_802FA07C;
     hdr[0] = v[0];
     hdr[2] = v[2];
     hdr[3] = v[3];
@@ -228,15 +228,16 @@ extern s32 fn_80128668();
 extern s32 fn_80128670(s32);
 extern s32 lbl_80341448;
 __declspec(section ".data") extern s32 lbl_80341448;
-void *__dt__Q28PSSystem7SeqHeapFv_8023C79C(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(s32 **)((char *)arg0 + 0xC) = &lbl_80341448;
-        fn_80128670(*(s32 *)((char *)arg0 + 0x10));
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+void *__dt__Q28PSSystem7SeqHeapFv_8023C79C(void *object, s32 deleting) {
+    /* PSSystem::SeqHeap destructor: install vtable, release the owned heap buffer, and optionally delete the object. */
+    if (object != 0) {
+        *(s32 **)((char *)object + 0xC) = &lbl_80341448;
+        fn_80128670(*(s32 *)((char *)object + 0x10));
+        if (deleting > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 extern void *fn_8012850C(s32, s32 *);
