@@ -2431,14 +2431,15 @@ s32 fn_8006AE20(s32 arg0)
     return prev;
 }
 
-void WUDSetVisibility(u8 arg0, u8 arg1)
+/* Sets the Bluetooth device manager visibility flags (discoverable/connectable): stores them into the WUD state under interrupt lock, then forwards them to BTA_DmSetVisibility. (rename_symbol unavailable for game symbols/fields) */
+void WUDSetVisibility(u8 discoverable, u8 connectable)
 {
-    s32 enabled;
-    enabled = OSDisableInterrupts();
-    lbl_80392960[0x66B] = arg0;
-    lbl_80392960[0x66A] = arg1;
-    OSRestoreInterrupts(enabled);
-    BTA_DmSetVisibility(arg0, arg1);
+    s32 interrupts;
+    interrupts = OSDisableInterrupts();
+    lbl_80392960[0x66B] = discoverable;
+    lbl_80392960[0x66A] = connectable;
+    OSRestoreInterrupts(interrupts);
+    BTA_DmSetVisibility(discoverable, connectable);
 }
 
 extern u32 lbl_8055DC3C;
