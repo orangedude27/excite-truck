@@ -125,6 +125,7 @@ extern "C" int fn_802062E8(void) {
 extern "C" void fn_802063D8(void) {
     extern int lbl_8055ED80;
     struct Callback { virtual void slot0(int); };
+    /* Flush sound work, notify the active manager if present, then clear and shut it down. */
     fn_8020A400();
     if (lbl_8055ED80)
         ((Callback *)lbl_8055ED80)->slot0(1);
