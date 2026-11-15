@@ -27,7 +27,6 @@ void fn_802E98D0(void) {
     u32 status;
     s32 aspect;
     s32 soundMode;
-    u8 prog;
     SCInit();
     do {
         status = SCCheckStatus();
@@ -59,9 +58,8 @@ sound_one:
 sound_two:
     *(volatile s32*)&lbl_80560048 = 2;
 sound_done:
-    prog = SCGetProgressiveMode();
-    *(volatile char*)&lbl_8056004C = (prog - 1) == 0;
-    *(volatile char*)&lbl_80560040 = 1;
+    lbl_8056004C = (SCGetProgressiveMode() - 1) == 0;
+    lbl_80560040 = 1;
     fn_802E99AC();
 }
 #pragma scheduling on
@@ -70,6 +68,7 @@ void fn_802E99A8(void) {
 }
 
 void fn_802E99AC(void) {
+    /* Cache WPAD motor enable (SC motor mode == 1) and speaker volume (0..1 from 0..127). */
     lbl_8056004D = (SCGetWpadMotorMode() == 1);
     lbl_80560050 = (f32)(u32)SCGetWpadSpeakerVolume() / 127.0f;
 }
