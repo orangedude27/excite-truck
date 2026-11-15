@@ -2571,35 +2571,37 @@ extern "C" s32 fn_8012E490(s32 *arg0) {
 extern "C" const char lbl_8032ACF4[];
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_8012E498(void *arg0) {
+/* Releases a named resource: decrements its refcount, and when it reaches zero
+ * finalizes pending/active effect entries for that name or removes the resource. */
+extern "C" void fn_8012E498(void *name) {
     s32 removed;
     s32 entry;
     s32 effect;
-    s32 object;
-    fn_8012E81C((s32)arg0);
-    object = (s32)fn_8012BD3C(lbl_8055E000, (const char *)arg0);
-    if (object != 0 && --*(s32 *)(object + 0x9C) == 0) {
+    s32 resource;
+    fn_8012E81C((s32)name);
+    resource = (s32)fn_8012BD3C(lbl_8055E000, (const char *)name);
+    if (resource != 0 && --*(s32 *)(resource + 0x9C) == 0) {
         effect = (s32)lbl_8055E014;
         if (effect != 0) {
             removed = 0;
             entry = fn_8012E490((s32 *)(effect + 0xA18));
             while (entry != 0) {
-                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) == 0) {
-                    fn_8012E67C(effect, (s32)arg0);
+                if (stricmp((const char *)(entry + 0xC), (const char *)name) == 0) {
+                    fn_8012E67C(effect, (s32)name);
                     break;
                 }
                 entry = *(s32 *)(entry + 4);
             }
             entry = fn_8012E490((s32 *)(effect + 0xA18));
             while (entry != 0) {
-                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) == 0) {
+                if (stricmp((const char *)(entry + 0xC), (const char *)name) == 0) {
                     fn_802E317C(lbl_8032ACF4);
                 }
                 entry = *(s32 *)(entry + 4);
             }
             entry = fn_8012E674((void *)(effect + 8));
             while (entry != 0) {
-                if (stricmp((const char *)(entry + 0xC), (const char *)arg0) == 0) {
+                if (stricmp((const char *)(entry + 0xC), (const char *)name) == 0) {
                     fn_8012E630((void *)entry);
                     fn_8012E5E4((void *)(effect + 8), (void *)entry);
                     removed = 1;
@@ -2609,7 +2611,7 @@ extern "C" void fn_8012E498(void *arg0) {
             }
             if (removed != 0) return;
         }
-        fn_8012BB20((s32)&lbl_8055E000, (void *)object);
+        fn_8012BB20((s32)&lbl_8055E000, (void *)resource);
     }
 }
 #pragma pop
