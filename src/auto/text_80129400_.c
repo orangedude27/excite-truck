@@ -125,14 +125,13 @@ void fn_8012960C(void *arg0) {
     s32 old;
     s32 elapsed;
     s32 limit;
-
     if (p[8] != 0) {
         count = *(s32 *)(p + 4);
-        limit = 0xFA;
+        limit = 250;
         old = *(s32 *)p;
         elapsed = now - old;
         if (count != 0)
-            limit = 0x7D;
+            limit = 125;
         if (elapsed > limit) {
             *(s32 *)p = now;
             *(s32 *)(p + 0x18) = 0;
@@ -300,14 +299,15 @@ void fn_80129AFC(void) {
     } while (i < 4);
 }
 
+/* Apply controller config table lbl_80422380 to all four 0x80-byte input state entries. */
 void fn_80129B60(void) {
-    u8 *p = lbl_80422180;
-    s32 i = 0;
+    u8 *entry = lbl_80422180;
+    s32 index = 0;
     do {
-        fn_80129690(p, i, lbl_80422380);
-        i++;
-        p += 0x80;
-    } while (i < 4);
+        fn_80129690(entry, index, lbl_80422380);
+        index++;
+        entry += 0x80;
+    } while (index < 4);
 }
 
 s32 fn_80129BC4(void) {
