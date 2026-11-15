@@ -73,22 +73,23 @@ struct Container {
 };
 #pragma pop
 
-void *fn_801284F8(unsigned int, const void *);
-void *fn_80128668();
+void *fn_801284F8(unsigned int, const void *);   /* alloc of that size, tagged with this string */
+void *fn_80128668();                             /* free */
 int stricmp(const char *, const char *);
-void fn_802E30C8(const char *, ...);
-extern f32 lbl_8032C118[];
-extern f32 lbl_80559C60;
-extern char lbl_80559C68;
-extern char lbl_80559C70;
-extern char lbl_80559C78;
-extern char lbl_80559C80;
-extern char lbl_80559C88;
-extern char lbl_80559C90;
-extern char lbl_80559C94;
-extern f32 lbl_80561418, lbl_8056141C, lbl_80561420;
-extern f32 lbl_80561424, lbl_80561428, lbl_8056142C;
-f32 fn_80134B58(f32 *, f32);
+void fn_802E30C8(const char *, ...);             /* log */
+extern f32 lbl_8032C118[]; /* "pushpass_factor", "moveout_factor", "push_sensitivity", "exception",
+                              "AIException", "lookahead_f", "landing_f", "ai: track has %d ai-exception%s" */
+extern f32 lbl_80559C60;    /* "checks" -- a key string */
+extern char lbl_80559C68;   /* "on_lon" */
+extern char lbl_80559C70;   /* "off_lon" */
+extern char lbl_80559C78;   /* "on_t" */
+extern char lbl_80559C80;   /* "moveout" */
+extern char lbl_80559C88;   /* "passout" */
+extern char lbl_80559C90;   /* "s" -- plural for the log message above */
+extern char lbl_80559C94;   /* "" */
+extern f32 lbl_80561418, lbl_8056141C, lbl_80561420; /* default parameter values */
+extern f32 lbl_80561424, lbl_80561428, lbl_8056142C; /* track max, track min and blend time for a section wrapping the end */
+f32 fn_80134B58(f32 *, f32);                     /* value set for this key, or the default */
 
 #pragma push
 #pragma scheduling invalid_target
