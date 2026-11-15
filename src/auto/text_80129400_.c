@@ -195,11 +195,12 @@ void fn_80129790(void) {
 
 void *__AXFXGetLfoSinTable_801297F4(void) { return lbl_804223C0; }
 
-u8 fn_80129800(void *arg0, int arg1) {
+/* Load a 0x70-byte record for the given id and return the byte at fieldOffset[fieldIndex] within its payload, or 0 when unavailable. */
+u8 fn_80129800(void *recordId, int fieldIndex) {
     u8 buffer[0x70];
     s32 offset;
-    if (fn_801298E8(buffer, (int)arg0) != 0) {
-        offset = ((s32 *)lbl_804223C0)[arg1];
+    if (fn_801298E8(buffer, (int)recordId) != 0) {
+        offset = ((s32 *)lbl_804223C0)[fieldIndex];
         if (offset >= 0) return buffer[offset + 0x20];
     }
     return 0;
