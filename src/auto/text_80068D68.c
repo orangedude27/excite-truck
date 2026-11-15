@@ -1716,14 +1716,16 @@ typedef struct {
 #pragma push
 #pragma dont_inline on
 s32 WUDiTerminateDevice(void) {
+    WUDDevInfoSlot *dev;
     s32 i;
-    u8 *entry;
-    u8 *base = lbl_80392960;
-    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) {
-        if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    s32 j;
+    WUDDevInfoSlot *dev2;
+    register WUDCBView *base = (WUDCBView *)lbl_80392960;
+    for (i = 0, dev = base->stdDevs; i < 10; i++, dev++) {
+        if (dev->status > 1) btm_remove_acl(dev->devAddr);
     }
-    for (i = 0, entry = base + 0x424; i < 6; i++, entry += 0x60) {
-        if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    for (j = 0, dev2 = base->smpDevs; j < 6; j++, dev2++) {
+        if (dev2->status > 1) btm_remove_acl(dev2->devAddr);
     }
     return 3;
 }
