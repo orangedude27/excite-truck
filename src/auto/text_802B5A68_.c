@@ -643,15 +643,16 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
 
 #pragma cplusplus on
 extern "C" void fn_802B676C(void) {
+    /* Show the current material name in the debug UI entry. */
     class Dummy_802B676C {
     public:
         virtual void m0();
         virtual Dummy_802B676C *m1(void *);
     };
-    s32 *p = ((s32 *(*)())fn_802B5B6C)();
-    Dummy_802B676C *obj = (Dummy_802B676C *)lbl_8055FA48;
-    obj = obj->m1(lbl_8034A6A0);
-    fn_802B6568(obj, lbl_8034A790, *p);
+    s32 *state = ((s32 *(*)())fn_802B5B6C)();
+    Dummy_802B676C *uiRoot = (Dummy_802B676C *)lbl_8055FA48;
+    uiRoot = uiRoot->m1(lbl_8034A6A0);
+    fn_802B6568(uiRoot, lbl_8034A790, *state);
 }
 #pragma cplusplus reset
 
