@@ -1668,16 +1668,26 @@ void fn_801F447C(void) {
 
 }
 
-void fn_801F4480(int unused, void *arg1) {
-    int v;
-    void *p = arg1;
+/* For each node in a linked list starting at head: if the object at node+0x2C passes
+ * fn_801F1CF0 (camera-facing / dot-product test), call fn_802C7040 on the node's
+ * value at +4. Node layout used: +4 value, +0xC next, +0x2C test object. */
+void fn_801F4480(int unused, void *head)
+{
+    int value;
+    void *node;
+
+    node = head;
     goto check;
 loop:
-    v = *(int *)((char *)p + 4);
-    if (fn_801F1CF0((int)((char *)p + 0x2C))) fn_802C7040(v);
-    p = *(void **)((char *)p + 12);
+    value = *(int *)((char *)node + 4);
+    if (fn_801F1CF0((int)((char *)node + 0x2C))) {
+        fn_802C7040(value);
+    }
+    node = *(void **)((char *)node + 0xC);
 check:
-    if (p != 0) goto loop;
+    if (node != 0) {
+        goto loop;
+    }
 }
 
 #pragma scheduling invalid_target
