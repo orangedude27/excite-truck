@@ -782,6 +782,19 @@ typedef struct {
     UINT8            pad_0x40E[0x6A];                         /* 0x40E */
 } tCONN_CB_BUILD_VIEW;                                        /* 0x478 */
 
+/* tCONN_CB's client (discovery) fields where this build puts them, after the
+   inline response list of tCONN_CB_ATTR_VIEW: the discovery database and its
+   callback at 0x410/0x414, and the two discovery state bytes at the end of the
+   0x478-byte block (sdpint.h's disc_state and is_attr_search). */
+typedef struct {
+    UINT8               pad_0x000[0x410];
+    tSDP_DISCOVERY_DB  *p_db;                                     /* 0x410 */
+    tSDP_DISC_CMPL_CB  *p_cb;                                     /* 0x414 */
+    UINT8               pad_0x418[0x5C];
+    UINT8               disc_state;                               /* 0x474 */
+    UINT8               is_attr_search;                           /* 0x475 */
+} tCONN_CB_DISC_VIEW;
+
 /* sdp_cb.ccb[]: the SDP_MAX_CONNECTIONS connection control blocks, after the
    control block's tL2CAP_CFG_INFO. */
 #define sdp_cb_ccb    ((tCONN_CB_BUILD_VIEW *)(lbl_803C4C40 + 0x3C))
