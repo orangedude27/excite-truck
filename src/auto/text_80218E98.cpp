@@ -5602,11 +5602,25 @@ extern "C" void fn_802328D4(void*);
 extern "C" s32 lbl_8033F9E0[];
 extern "C" s32 fn_80232578(s32);
 #pragma scheduling invalid_target
-extern "C" void *fn_80222530(void *arg0, s32 arg1, s32 arg2) {
-    *(void **)arg0 = &lbl_8033F9E0;
-    *(s32 *)((u8 *)arg0 + 4) = fn_80232578(arg1);
-    *(s32 *)((u8 *)arg0 + 8) = arg2;
-    return arg0;
+#pragma scheduling invalid_target
+/* Constructs a gText display item: loads the font file named by fontName through
+ * the gText loader, remembers the string to draw with it, and installs the text
+ * item's vtable (draw fn_802225E8, measure fn_8022264C, dtor fn_80222584). */
+extern "C" void *fn_80222530(void *self, const char *fontName, const char *text) {
+    #define GTextItemVTable lbl_8033F9E0 /* this item's vtable */
+    #define GTexLoadFont fn_80232578     /* gText: load a font by archive file name */
+    struct GTextItem {
+        void *vtable;      /* 0x0 */
+        void *font;        /* 0x4: the loaded gText font block */
+        const char *text;  /* 0x8: the string to draw */
+    };
+
+    ((GTextItem *)self)->vtable = &GTextItemVTable;
+    ((GTextItem *)self)->font = (void *)GTexLoadFont((s32)fontName);
+    ((GTextItem *)self)->text = text;
+    #undef GTextItemVTable
+    #undef GTexLoadFont
+    return self;
 }
 #pragma scheduling invalid_target
 #pragma scheduling invalid_target
