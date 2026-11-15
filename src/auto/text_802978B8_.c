@@ -111,6 +111,7 @@ void fn_80297998(void) {
 }
 
 #pragma cplusplus on
+/* Calls virtual method 5 on each registered object in the listener list. */
 extern "C" void fn_802979A4(void) {
     class Dummy_802979A4 {
     public:
@@ -121,11 +122,11 @@ extern "C" void fn_802979A4(void) {
         virtual void m4();
         virtual void m5();
     };
-    int i;
+    int index;
 
-    for (i = 0; i < lbl_8055F7A4; i++) {
-        Dummy_802979A4 *obj = ((Dummy_802979A4 **)(void *)lbl_804B4F10)[i];
-        obj->m5();
+    for (index = 0; index < lbl_8055F7A4; index++) {
+        Dummy_802979A4 *listener = ((Dummy_802979A4 **)(void *)lbl_804B4F10)[index];
+        listener->m5();
     }
 }
 #pragma cplusplus off
