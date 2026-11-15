@@ -535,14 +535,17 @@ void *fn_801782C8(void) {
 #pragma scheduling on
 
 #pragma scheduling on
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_80179EE8((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+/* nw4hbm::snd::MemorySoundArchive scalar-deleting destructor: runs the base
+ * destructor (fn_80179EE8 with shouldFree=0) and, if deleteFlags > 0, frees
+ * the object storage (fn_80128668). Returns this. */
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long this_, long deleteFlags) {
+    if (this_ != 0) {
+        fn_80179EE8((void*)this_, 0);
+        if (deleteFlags > 0) {
+            fn_80128668((void*)this_);
         }
     }
-    return arg0;
+    return this_;
 }
 
 extern char lbl_80331950[];
