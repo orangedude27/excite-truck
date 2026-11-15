@@ -63,13 +63,31 @@ void fn_80278288(void) {
 
 #pragma scheduling invalid_target
 void fn_802782C4(void) {
-    lbl_8055F5B8 = 1;
-    lbl_8055F5B4 = 0;
-    lbl_8055F5BA = 0;
-    lbl_8055F5B9 = 0;
-    fn_802E30C8(lbl_80347590, lbl_8055E3C4);
-    lbl_8055F5BC = -1;
-    lbl_8055F5C0 = -1;
+#define sRecording       lbl_8055F5B8 /* 1 while keyframes are being captured */
+#define sKeyCount        lbl_8055F5B4 /* keyframes captured so far */
+#define sPlayPending     lbl_8055F5B9 /* a movie is queued to play back */
+#define sPlayingBack     lbl_8055F5BA /* 1 while the captured movie plays */
+#define sPlayEndTick     lbl_8055F5BC /* playback range end, -1 = unset */
+#define sPlayStartTick   lbl_8055F5C0 /* playback range start, -1 = unset */
+#define sCurrentTick     lbl_8055E3C4 /* global tick/frame counter */
+#define sMsgBeginRecord  lbl_80347590 /* "script: begin recording on tick %d" */
+
+    sRecording = 1;
+    sKeyCount = 0;
+    sPlayingBack = 0;
+    sPlayPending = 0;
+    fn_802E30C8(sMsgBeginRecord, sCurrentTick);
+    sPlayEndTick = -1;
+    sPlayStartTick = -1;
+
+#undef sRecording
+#undef sKeyCount
+#undef sPlayPending
+#undef sPlayingBack
+#undef sPlayEndTick
+#undef sPlayStartTick
+#undef sCurrentTick
+#undef sMsgBeginRecord
 }
 #pragma scheduling on
 
