@@ -560,11 +560,12 @@ int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
 #pragma pop
 
 void fn_80005304(void) DECOMP_DONT_INLINE {
-    char name[64];
+    /* Probe sequential "PA_Eve%d" menu entries until one is not present. */
+    char menuName[64];
     int index = 0;
     while (1) {
-        sprintf(name, lbl_802FB0B8, index);
-        if (fn_80005158(name) == 0) {
+        sprintf(menuName, lbl_802FB0B8, index);
+        if (fn_80005158(menuName) == 0) {
             return;
         }
         index++;
