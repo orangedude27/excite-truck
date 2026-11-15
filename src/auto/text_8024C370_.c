@@ -452,6 +452,8 @@ void fn_8024CAAC(int arg0) {
 extern unsigned char lbl_8055F2D0;
 int fn_80214B44(int);
 int fn_80214CB4(void);
+// For each of the 4 per-slot flags in lbl_8055F2D0, if clear calls fn_80214B44(slot+1),
+// then calls fn_8000DA10 and fn_80214CB4.
 void fn_8024CBF4(void) {
     unsigned char *p = &lbl_8055F2D0;
     int i = 0;
