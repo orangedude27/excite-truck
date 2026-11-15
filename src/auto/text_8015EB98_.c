@@ -8,6 +8,9 @@ extern unsigned char lbl_8055E280, lbl_8042FD34[16], lbl_8042FD28[];
 extern void fn_8015EBF8(void);
 extern int lbl_8055E288;
 #pragma scheduling invalid_target
+// Global constructor for callback/list object lbl_8042FD34: initializes lbl_8055E280,
+// sets sentinel lbl_8055E288, sets up inline storage {data,count,capacity}, and registers
+// destructor fn_8015EBF8 via __register_global_object.
 void fn_8015EB98(void) {
     fn_8000D838(&lbl_8055E280);
     lbl_8055E288 = 0x7F000000;
