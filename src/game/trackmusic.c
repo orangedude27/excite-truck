@@ -661,13 +661,14 @@ exit:
 }
 #pragma cplusplus reset
  
+/* Initializes the track-music buffer and registers it with the 'Tmus' resource handler. */
 void fn_8021031C(void) {
-    long type;
-    char *buffer;
-    type = 0x546D7573;
-    buffer = lbl_80489CA0;
+    long resourceTag;
+    char *trackMusicBuffer;
+    resourceTag = 0x546D7573;
+    trackMusicBuffer = lbl_80489CA0;
     memset(&lbl_80489CA0, 0, 0x6400);
-    fn_802E6BD8(type, 0, buffer, 0x6400, 0);
+    fn_802E6BD8(resourceTag, 0, trackMusicBuffer, 0x6400, 0);
     fn_8000DBC8(&fn_8020F6E0);
 }
  
