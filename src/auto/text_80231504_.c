@@ -913,12 +913,17 @@ s32 fn_80232578(const char *name) {
 }
 
 #pragma dont_inline on
+/* Give a loaded 'GETX' font block back to the gText block cache: first the
+ * outline variant linked at +8, dropping that link once the cache has really
+ * released it, then the block itself (fn_802316A4 releases one block and
+ * answers 0 when it is not filed in the cache). */
 void fn_802328D4(s32 arg0) {
-    s32 value = *(s32 *)(arg0 + 8);
-    if (value != 0 && fn_802316A4((void *)value) != 0) {
-        *(s32 *)(arg0 + 8) = 0;
+    GTexBlock *block = (GTexBlock *)arg0;
+    GTexBlock *outline = block->outline;
+    if (outline != 0 && fn_802316A4(outline) != 0) {
+        block->outline = 0;
     }
-    fn_802316A4((void *)arg0);
+    fn_802316A4(block);
 }
 #pragma dont_inline off
 
