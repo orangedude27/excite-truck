@@ -822,9 +822,10 @@ void fn_80176E4C(void) {
 }
 
 void fn_80176EC0(void) {
-    if (lbl_804303D4[0] != 4) {
+    /* Run the pending physics tick if active, then start or clear the next tick as needed. */
+    if (sPendingCommand[0] != PHYS_MODE_NONE) {
         fn_801AED68();
-        if (lbl_804303D4[1] & 0x200) {
+        if (sPendingCommand[1] & PHYS_FLAG_200) {
             fn_801AED5C();
         }
     }
