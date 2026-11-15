@@ -2,12 +2,19 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern void fn_802E12DC(void *);
-extern void fn_802E1290(void *);
-extern void fn_80128668(void *);
-extern s32 lbl_805600F8;
-extern char lbl_8034EC04[];
-extern char lbl_8034EC18[];
+/* Movie play records (src/game/video.c is the movie player they drive).
+ * A record is 0x44 bytes: char name[0x40] holding the movie's file name without
+ * extension, then the movie handle fn_802E11A4 opened for that name at +0x40.
+ * fn_802ECE48 builds 0x48-byte "single_movie_info" nodes: the same record plus a
+ * next pointer at +0x44, chained into lbl_805600F8. */
+extern void fn_802E12DC(void *); /* video.c: play/advance a movie */
+extern void fn_802E1290(void *); /* video.c: drMovieUnload, close a movie */
+extern void fn_80128668(void *); /* free an allocated object block */
+extern s32 lbl_805600F8; /* head of the "single_movie_info" list; while it is set that
+                          * one record answers every request, so nothing is allocated,
+                          * freed or compared against */
+extern char lbl_8034EC04[]; /* "single_movie_info": heap tag of the 0x48-byte node */
+extern char lbl_8034EC18[]; /* "MoviePlayInfo": heap tag of the 0x44-byte record */
 #pragma dont_inline fn_802ECCE4
 #pragma dont_inline fn_802ECD68
 #pragma dont_inline fn_802ECE48
