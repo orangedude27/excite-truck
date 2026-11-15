@@ -52,6 +52,8 @@ void *fn_801AFD20(void *this_) {
     return this_;
 }
 #pragma scheduling on
+/* nw4hbm::snd::detail::DisposeCallbackManager destructor helper:
+ * destroys the base/subobject when non-null, then optionally frees storage. */
 void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_, s32 flag) {
     if (this_ != NULL) {
         if (this_ != NULL) {
@@ -69,7 +71,6 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_,
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_801AFDCC(void *arg0, void *arg1) {
-    // Fix note: reuse the dead ratio temporary for the reset value, matching the target's f0 loads.
     struct Object {
         void *vtable; void *owner; s32 field8; void *fieldC;
         f32 field10; f32 field14; s32 field18; s32 field1C; s32 field20;
@@ -99,7 +100,7 @@ void fn_801AFDCC(void *arg0, void *arg1) {
     temp_f0 = *(volatile f32 *)((u8 *)arg1 + 0x1C);
     zero = *(volatile f32 *)&lbl_80562578;
     temp_f0 = temp_f2 * temp_f0;
-    temp_f3 = *(volatile f32 *)&lbl_8056257C;
+    temp_f3 = lbl_8056257C;
     temp_f4 = *(volatile f32 *)((u8 *)arg1 + 0x20);
     temp_f2 = *(volatile f32 *)((u8 *)arg1 + 0x18);
     temp_f5 = temp_f0 / temp_f3;
@@ -160,44 +161,55 @@ void fn_801AFDCC(void *arg0, void *arg1) {
     }
 }
 
-void fn_801AFF64(u8 *arg0, u8 *arg1) {
-    u8 *dst = arg1 + *(s32 *)(arg0 + 8);
-    f32 t = lbl_8055E460;
-    f32 c = lbl_80562588;
-    Blend12 tmp;
-    f32 *a;
-    f32 *b;
-    f32 *o;
-    int i;
-    if ((f32)fabs(t - c) <= lbl_80558DC4[0]) {
-        *(Blend12 *)dst = *(Blend12 *)(arg0 + 0x70);
+void fn_801AFF64(void *arg0, int arg1) {
+    struct WordPair { unsigned int a, b; };
+    unsigned char *src = (unsigned char *)arg0;
+    unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
+    float c = lbl_80562588;
+    float t = lbl_8055E460;
+    float delta = t - c;
+    if ((float)fabs(delta) <= lbl_80558DC4[0]) {
+        struct WordPair *s = (struct WordPair *)(src + 0x70);
+        struct WordPair *d = (struct WordPair *)dst;
+        d[0] = s[0]; d[1] = s[1]; d[2] = s[2]; d[3] = s[3];
+        ((unsigned int *)dst)[8] = ((unsigned int *)(src + 0x70))[8];
+        ((struct WordPair *)(dst + 0x24))[0] = ((struct WordPair *)(src + 0x94))[0];
+        ((unsigned int *)dst)[11] = ((unsigned int *)(src + 0x70))[11];
     } else {
-        a = (f32 *)(arg0 + 0x70);
-        b = (f32 *)(arg0 + 0xA0);
-        o = tmp.v;
-        for (i = 0; i < 2; i++) {
-            f32 r0 = b[0] + t * (a[0] - b[0]);
-            f32 r1 = b[1] + t * (a[1] - b[1]);
-            f32 r2 = b[2] + t * (a[2] - b[2]);
-            f32 r3 = b[3] + t * (a[3] - b[3]);
-            f32 r4 = b[4] + t * (a[4] - b[4]);
-            f32 r5 = b[5] + t * (a[5] - b[5]);
-            o[0] = r0;
-            o[1] = r1;
-            o[2] = r2;
-            o[3] = r3;
-            o[4] = r4;
-            o[5] = r5;
-            a += 6; b += 6; o += 6;
+        float temp[12];
+        float *a = (float *)(src + 0x70);
+        float *b = (float *)(src + 0xA0);
+        float *out = temp;
+        int i;
+        for (i = 0; i < 2; ++i) {
+            float a0 = a[0], b0 = b[0];
+            float a1 = a[1], b1 = b[1];
+            float a2 = a[2], b2 = b[2];
+            float a3 = a[3], b3 = b[3];
+            float a4 = a[4], b4 = b[4];
+            float a5 = a[5], b5 = b[5];
+            out[0] = b0 + t * (a0 - b0);
+            out[1] = b1 + t * (a1 - b1);
+            out[2] = b2 + t * (a2 - b2);
+            out[3] = b3 + t * (a3 - b3);
+            out[4] = b4 + t * (a4 - b4);
+            out[5] = b5 + t * (a5 - b5);
+            a += 6; b += 6; out += 6;
         }
-        *(Blend12 *)dst = tmp;
+        {
+            unsigned int *s = (unsigned int *)temp;
+            unsigned int *d = (unsigned int *)dst;
+            d[0] = s[0]; d[1] = s[1]; d[2] = s[2]; d[3] = s[3];
+            d[4] = s[4]; d[5] = s[5]; d[6] = s[6]; d[7] = s[7];
+            d[8] = s[8]; d[9] = s[9]; d[10] = s[10]; d[11] = s[11];
+        }
     }
-    *(s16 *)(dst + 0x30) = *(s16 *)(arg0 + 0x6C);
-    dst = arg1 + *(s32 *)(arg0 + 8);
-    *(s32 *)(dst + 0x34) = *(s32 *)(arg0 + 0x1F0);
-    *(s32 *)(dst + 0x38) = *(s32 *)(arg0 + 0x1F4);
-    *(f32 *)(dst + 0x3C) = PSVECDotProduct(arg0 + 0x124, arg0 + 0x3C);
-    *(u8 *)(dst + 0x40) = *(u8 *)(arg0 + 0x1F8);
+    *(short *)(dst + 0x30) = *(short *)(src + 0x6C);
+    dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
+    *(unsigned int *)(dst + 0x34) = *(unsigned int *)(src + 0x1F0);
+    *(unsigned int *)(dst + 0x38) = *(unsigned int *)(src + 0x1F4);
+    *(float *)(dst + 0x3C) = PSVECDotProduct(src + 0x124, src + 0x3C);
+    *(unsigned char *)(dst + 0x40) = *(unsigned char *)(src + 0x1F8);
 }
 
 #pragma pop
@@ -320,15 +332,15 @@ void fn_801B02E0(void *arg0) {
         out124 = *(f32 *)(self + 0x124) * lbl_8056259C;
         out128 = *(f32 *)(self + 0x128) * lbl_8056259C;
         out12c = *(f32 *)(self + 0x12C) * lbl_8056259C;
-        out118 = lbl_805625A0 * *(f32 *)(self + 0x118);
+        out118 = *(f32 *)(self + 0x118) * lbl_805625A0;
         out11c = *(f32 *)(self + 0x11C) * lbl_805625A0;
         out120 = *(f32 *)(self + 0x120) * lbl_805625A0;
-        *(volatile f32 *)(self + 0x124) = out124;
-        *(volatile f32 *)(self + 0x128) = out128;
-        *(volatile f32 *)(self + 0x12C) = out12c;
-        *(volatile f32 *)(self + 0x118) = out118;
-        *(volatile f32 *)(self + 0x11C) = out11c;
-        *(volatile f32 *)(self + 0x120) = out120;
+        *(f32 *)(self + 0x124) = out124;
+        *(f32 *)(self + 0x128) = out128;
+        *(f32 *)(self + 0x12C) = out12c;
+        *(f32 *)(self + 0x118) = out118;
+        *(f32 *)(self + 0x11C) = out11c;
+        *(f32 *)(self + 0x120) = out120;
         velocityMag = PSVECMag(self + 0x124);
         active = 1;
         if (velocityMag > lbl_805625A4) {
@@ -340,9 +352,7 @@ void fn_801B02E0(void *arg0) {
             scale = lbl_805625A8 * speed;
             speed = PSVECMag(vec);
             {
-                f32 denominator = lbl_80562588;
-                if (speed > denominator)
-                    denominator = speed;
+                f32 denominator = (lbl_80562588 > speed) ? lbl_80562588 : speed;
                 factor = scale / denominator;
             }
             vec[0] *= factor;
