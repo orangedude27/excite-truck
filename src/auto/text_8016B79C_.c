@@ -626,13 +626,16 @@ void fn_8016C55C(void *arg0, void *arg1) {
     *(float *)((char *)dst + 12) = *(float *)((char *)arg1 + 12);
 }
 
-void *fn_8016C598(void *arg0, int arg1, int arg2) {
-    int temp = fn_8012850C(arg1 * 16, arg2);
-    ((int *)arg0)[0] = temp;
-    ((int *)arg0)[3] = temp;
-    ((int *)arg0)[2] = arg1;
-    ((int *)arg0)[1] = 0;
-    return arg0;
+/* Initializes a 16-byte-entry array container: allocates storage for entryCount
+ * entries, sets the buffer/capacity pointers and count, clears the size, and
+ * returns the container. */
+void *fn_8016C598(void *container, int entryCount, int allocTag) {
+    int buffer = fn_8012850C(entryCount * 16, allocTag);
+    ((int *)container)[0] = buffer;
+    ((int *)container)[3] = buffer;
+    ((int *)container)[2] = entryCount;
+    ((int *)container)[1] = 0;
+    return container;
 }
 
 #pragma cplusplus on
