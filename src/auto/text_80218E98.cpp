@@ -8694,12 +8694,15 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8022927C(
     return this_;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802292D8(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* Scalar deleting destructor for nw4hbm::snd::MemorySoundArchive: runs the base
+ * subobject destructor (fn_8021915C, deletingFlag 0) and, when deletingFlag > 0,
+ * frees the object (fn_80128668 = operator delete, mode 3). Returns this_. */
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802292D8(void *this_, int deletingFlag) {
+    if (this_ != 0) {
+        fn_8021915C(this_, 0);
+        if (deletingFlag > 0) fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
