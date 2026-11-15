@@ -2254,13 +2254,17 @@ extern "C" void fn_8012DD00(void) {
     }
 }
 
-extern "C" void *__dt__Q34nw4r2ef6EffectFv(void *arg0, s32 arg1) {
-    if (arg0) {
-        *(void **)arg0 = lbl_8032ACB0;
-        fn_80127E28(arg0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q34nw4r2ef6EffectFv(nw4r::ef::Effect *effect, s32 deleteFlag) {
+    /* nw4r::ef::Effect::~Effect(): the deleting destructor CodeWarrior emits for
+     * the class declared above (the "AsyncSetQ" effect object fn_8012DBD0 builds).
+     * Restores the vtable pointer, drops the object's record from the effect
+     * registry and frees it when the hidden delete flag is set. */
+    if (effect) {
+        *(void **)effect = lbl_8032ACB0; // nw4r::ef::Effect's vtable
+        fn_80127E28(effect);
+        if (deleteFlag > 0) fn_80128668(effect); // operator delete
     }
-    return arg0;
+    return effect;
 }
 
 extern "C" void fn_8012DFE8(void *, const char *, s32);
