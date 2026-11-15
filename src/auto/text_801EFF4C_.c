@@ -55,6 +55,7 @@ void fn_801EFF70(void* alarm) {
 
 #pragma scheduling invalid_target
 void fn_801EFF94(int arg0, int arg1, int arg2) {
+    /* Allocate a 0x4C-byte "wheel" object and initialize it if allocation succeeds. */
     int result = fn_801284F8(0x4C, &lbl_8055B0B8);
     if (result != 0) {
         fn_801F0DC0(result, arg0, arg1, arg2);
