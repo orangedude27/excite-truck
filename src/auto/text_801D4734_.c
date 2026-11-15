@@ -67,7 +67,7 @@ struct TimedEffect {
     virtual void v3();   virtual void v4();   virtual void v5();
     virtual void v6();   virtual void v7();   virtual void v8();
     virtual void v9();   virtual void v10();  virtual void v11();
-    virtual void v12();
+    virtual void onStart();         /* 0x38: run when the cue is started */
     virtual void onWaiting();     /* 0x3C: the delay has not run out yet */
     virtual void onRunning(float);/* 0x40: seconds since the delay ran out */
     virtual void onFinished();    /* 0x44: the length ran out */
