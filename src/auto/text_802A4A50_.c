@@ -761,16 +761,17 @@ check:
 }
 
 void fn_802A775C(void *);
+/* Calls fn_802A775C for each registered "spar" object handle in lbl_804BCFA8 (count lbl_8055F890). */
 void fn_802A5A38(void) {
-    s32 *ptr = lbl_804BCFA8;
-    s32 i = 0;
+    s32 *objectSlot = lbl_804BCFA8;
+    s32 index = 0;
     goto check;
 loop:
-    fn_802A775C((void *)*ptr);
-    ptr++;
-    i++;
+    fn_802A775C((void *)*objectSlot);
+    objectSlot++;
+    index++;
 check:
-    if (i < lbl_8055F890) goto loop;
+    if (index < lbl_8055F890) goto loop;
 }
 
 void fn_802A5A90(void);
