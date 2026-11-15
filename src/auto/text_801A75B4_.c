@@ -49,6 +49,16 @@ typedef struct InputBinding {
 #define gInputBindingTable lbl_8055E5CC /* InputBinding*: table base */
 #define gInputBindingCount lbl_8055E5D0 /* int: number of entries (0x7A) */
 
+/* A control's binding the way the options code keeps it: the kind of input and
+ * the key/axis within it.  fn_801A9110 builds one from a binding's display
+ * name, fn_801A9234 finds the table entry one describes, and fn_801A90A4 turns
+ * one back into the name written to the options file. */
+typedef struct InputKeySpec {
+    int type;  /* +0x00 binding type (1..6, 0 = unbound) */
+    int unk4;  /* +0x04 zeroed by the callers; fn_801A9234 never compares it */
+    int value; /* +0x08 key code, compared as a byte for type 1 */
+} InputKeySpec;
+
 extern char lbl_8055E5C8;
 #pragma push
 #pragma scheduling invalid_target
