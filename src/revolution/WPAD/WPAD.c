@@ -5264,6 +5264,8 @@ BOOL fn_80063A50(u8* queue, u32 value, u16 halfword, u32 word, u32 last) {
     return TRUE;
 }
 
+/* Reset a WPAD command queue by clearing its front/back indices and zeroing all
+ * queued command slots, while holding interrupts disabled. */
 void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 	s32 enabled = OSDisableInterrupts();
 
