@@ -2962,7 +2962,8 @@ void fn_801D832C(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801D8344(void *arg0) {
+/* Resets to state 1 and, if a target object at +0x2C is present, invokes its virtual method v5. */
+extern "C" void fn_801D8344(void *self) {
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -2971,12 +2972,12 @@ extern "C" void fn_801D8344(void *arg0) {
         virtual void v4();
         virtual void v5();
     };
-    if (*(int *)((char *)arg0 + 0x40) != 0) {
-        Dummy *p = *(Dummy **)((char *)arg0 + 0x2C);
-        if (p != 0) {
-            p->v5();
+    if (*(int *)((char *)self + 0x40) != 0) {
+        Dummy *target = *(Dummy **)((char *)self + 0x2C);
+        if (target != 0) {
+            target->v5();
         }
-        *(int *)((char *)arg0 + 0x40) = 1;
+        *(int *)((char *)self + 0x40) = 1;
     }
 }
 #pragma cplusplus reset
