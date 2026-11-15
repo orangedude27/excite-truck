@@ -4176,9 +4176,17 @@ extern "C" void* fn_800F83D8(void* arg0, unsigned long arg1) {
     return result;
 }
 
-extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void* arg0, unsigned long arg1, void* arg2) {
-    Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(arg0, arg1, arg2);
-    DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(arg0, arg1, arg2);
+/* nw4hbm::snd::SoundHeap::DisposeCallbackFunc(void*, u32, void*): the disposal callback
+   handed to FrameHeap::Alloc for every block taken from a SoundHeap (fn_800F83D8).  The
+   frame heap calls it with the block's data [start, start + size) as it drops the block;
+   the two DisposeCallbackManager passes then tell every registered sound object that the
+   range is going away -- once as a generic object, once as wave data. */
+extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void* start,
+                                                                    unsigned long size,
+                                                                    void* user) {
+    Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(start, size, user);
+    DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(start, size,
+                                                                              user);
 }
 
 extern "C" void __ct__Q36nw4hbm3snd11SoundPlayerFv(void* self) {
