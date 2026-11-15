@@ -26,7 +26,7 @@ extern void fn_801BFD34(void*, void*, s32);
 extern void fn_80015B20(void*, void*, s32);
 extern void fn_802C70AC(s32, void*, s32, s32);
 extern void fn_802E317C(const char*, ...);
-extern char lbl_80339A20[];
+extern char lbl_80339A20[]; /* "anim: release_buffer: unknown buffer %p" */
 #pragma scheduling invalid_target
 s32 fn_801E68D4(void) {
     s32 i;
