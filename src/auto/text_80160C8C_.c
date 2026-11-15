@@ -602,16 +602,17 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
 #pragma cplusplus off
 #pragma scheduling on
 
-s32 fn_801615B4(s32 arg0) {
+/* Sum the number of "challenge" elements across contest entries [0, count). */
+s32 fn_801615B4(s32 count) {
     s32 total = 0;
-    s32 i = 0;
+    s32 index = 0;
     goto test;
 body:
-    fn_80161E40(i);
+    fn_80161E40(index);
     total = total + fn_8016208C();
-    i = i + 1;
+    index = index + 1;
 test:
-    if (i < arg0) goto body;
+    if (index < count) goto body;
     return total;
 }
 
@@ -1720,12 +1721,14 @@ extern "C" void fn_80162A14(void *arg0) {
 extern "C" void fn_80162BA8(void *arg0) {
     s32 flag, off, i, j;
     int *cars;
+    u8 *entry;
     s32 offset;
-    u8 *entry, *car;
+    u8 *car;
     u8 *self = (u8 *)arg0;
     u8 *flags, *ui;
     f32 threshold, one, epsilon;
-    f32 velocity[2], length, scale;
+    f32 velocity[2];
+    f32 x, y, scale, length, dirX, dirY;
     off = 0;
     for (s32 remaining = *(s32 *)(self + 0x574); remaining > 0; remaining--) {
         if (*(u8 *)(*(u8 **)(self + 0x570) + off + 8) == 0) {
@@ -1748,10 +1751,10 @@ done:
     if (fn_801C5B60() == 0) fn_801DF074(8, 0);
     if (((State_80162BA8 *)self)->f9() == 0) {
         one = lbl_80561840; threshold = lbl_80561854; epsilon = lbl_80561850;
-        for (i = 0, cars = lbl_804348E8; i < fn_801B2F24(); i++, cars++) {
+        for (i = 0, cars = lbl_804348E8; i < fn_801B2F24(); cars++, i++) {
             car = (u8 *)*cars;
             if (*(u32 *)(car + 0x10) != 0x50434152) continue;
-            for (j = 0, offset = 0; j < *(s32 *)(self + 0xE4); j++, offset += 0x48) {
+            for (j = 0, offset = 0; j < *(s32 *)(self + 0xE4); offset += 0x48, j++) {
                 entry = *(u8 **)(self + 0xE0) + offset;
                 if (!entry[0x3C]) continue;
                 if (*(s32 *)(entry + 0x34)) {
@@ -1762,10 +1765,15 @@ done:
                             velocity[1] = *(f32 *)(car + 0x120);
                             length = velocity[0] * velocity[0] + velocity[1] * velocity[1];
                             if (length > epsilon) {
-                                scale = one / (f32)fn_8002F234(length);
-                                velocity[0] *= scale;
-                                velocity[1] *= scale;
-                                if (velocity[0] * *(f32 *)(entry + 0x2C) + velocity[1] * *(f32 *)(entry + 0x30) > threshold) {
+                                length = (f32)fn_8002F234(length);
+                                scale = one / length;
+                                x = velocity[0];
+                                y = velocity[1];
+                                dirY = *(f32 *)(entry + 0x30);
+                                dirX = *(f32 *)(entry + 0x2C);
+                                velocity[0] = x * scale;
+                                velocity[1] = y * scale;
+                                if (velocity[0] * dirX + velocity[1] * dirY > threshold) {
                                     ++*(s32 *)(self + 0x94);
                                     entry[0x3C] = 0;
                                     ui = *(u8 **)(self + 0xDC);
@@ -1795,9 +1803,9 @@ done:
     } else {
         if ((f32)__fabs(*(f32 *)(self + 0x8C)) <= *(f32 *)&lbl_80558DC4) {
             fn_80276DC8(0);
-            for (i = 0, cars = lbl_804348E8; i < fn_801B2F24(); i++, cars++) {
+            for (i = 0, entry = (u8 *)lbl_804348E8; i < fn_801B2F24(); entry += 4, i++) {
                 void *manager = fn_801B83A0();
-                ((void (*)(void *, s32, s32))(*(void ***)manager)[37])(manager, *cars, i);
+                ((State_80162BA8 *)manager)->f37(*(s32 *)entry, i);
             }
         }
         *(f32 *)(self + 0x8C) += lbl_80561858;
