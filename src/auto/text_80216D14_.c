@@ -3,6 +3,7 @@
 extern float lbl_80563490;
 extern void fn_802E30C8(const char *, ...);
 struct Rec80216 { int w[12]; float f[3]; };
+struct UiRenderMatrix { int w[12]; };
 extern int fn_802182F0(void *, void *);
 extern int fn_802368B4(int);
 #pragma cplusplus on
