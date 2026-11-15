@@ -12,6 +12,9 @@ extern void fn_802D3F30(void);
 #pragma push
 #pragma scheduling invalid_target
 void fn_802D3ED4(void) {
+    /* Static-init thunk: initialize lbl_8055FD00 block (fn_8000D838), set related globals
+     * at lbl_8055FD08/0A/0C, then construct 7 elements of 0x14 bytes at lbl_804CA088
+     * via fn_8002F53C using fn_802D3F30 as ctor. */
     register int value;
     fn_8000D838(&lbl_8055FD00);
     value = 0x405;
