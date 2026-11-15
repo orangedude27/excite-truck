@@ -378,10 +378,6 @@ void fn_8023BF4C(void *arg0) {
                 *(s32 *)((u8 *)arg0 + 8), 0);
 }
 
-extern s32 atoi(void);
-extern void fn_802E317C(const char *);
-extern const char lbl_80341354[];
-extern s32 lbl_8055BB30;
 void fn_8023BF68(void) {
     s32 value = atoi();
     lbl_8055BB30 = value;
