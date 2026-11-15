@@ -299,7 +299,8 @@ void fn_80129AFC(void) {
     } while (i < 4);
 }
 
-/* Apply controller config table lbl_80422380 to all four 0x80-byte input state entries. */
+/* Apply controller config table lbl_80422380 to all four 0x80-byte input state
+ * entries. */
 void fn_80129B60(void) {
     u8 *entry = lbl_80422180;
     s32 index = 0;
