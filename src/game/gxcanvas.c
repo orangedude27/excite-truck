@@ -263,7 +263,7 @@ s32 fn_802C3170(void *bounds, s32 *x, s32 *y, s32 *srcX, s32 *srcY, s32 *w, s32 
 }
 
 extern const char lbl_8034B060[];
-extern void fn_802C3320();
+extern void fn_802C3320(s32 x, s32 y, u32 packedValue);
 extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
 void fn_802C32B8(s32 x, s32 y, u32 packedColor) {
