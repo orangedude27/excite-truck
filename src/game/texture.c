@@ -1607,13 +1607,22 @@ void fn_802CC550(int arg0, float arg1, float arg2) {
     *(float *)(entry + 0x38) = value;
 }
 
-void fn_802CC5B8(int arg0) {
-    int offset;
-    if (arg0 == -1)
+/* Marks a texture slot as used this pass: raises its keep-alive weight (+0x38)
+ * to the floor fn_802CC550 keeps (the 1.0f / 1e-5f pair in .sdata2) and stamps
+ * its use count (+0x48) with 1000000, so the eviction pass fn_802CC770 - which
+ * only weighs slots whose count is positive - leaves it resident.
+ * The slot index -1 (no texture) is ignored. */
+void fn_802CC5B8(int textureIndex) {
+#define gTextureSlots lbl_8055FCB0
+#define TEX_KEEP_USE_COUNT 1000000
+    int slotOffset;
+    if (textureIndex == -1)
         return;
-    fn_802CC550(arg0, lbl_80564F40, lbl_80564F44);
-    offset = arg0 * 0x4C;
-    *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = 1000000;
+    fn_802CC550(textureIndex, lbl_80564F40, lbl_80564F44);
+    slotOffset = textureIndex * 0x4C;
+    *(int *)((char *)gTextureSlots + slotOffset + 0x48) = TEX_KEEP_USE_COUNT;
+#undef gTextureSlots
+#undef TEX_KEEP_USE_COUNT
 }
 
 extern int lbl_8055FCC0;
