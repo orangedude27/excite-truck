@@ -51,16 +51,19 @@ u8 SCGetLanguage(void) {
     return item;
 }
 
+/* Return the progressive-scan flag (an SCProgressiveMode) saved in the System
+   Configuration's IPL progressive-mode item (SC_ITEM_IPL_PGS, id 0x9); interlaced
+   is returned when the item is missing or holds anything other than progressive. */
 u8 SCGetProgressiveMode(void) {
-    u8 item;
+    u8 progressive;
 
-    if (!SCFindU8Item(&item, SC_ITEM_IPL_PGS)) {
-        item = FALSE;
-    } else if (item != TRUE) {
-        item = FALSE;
+    if (!SCFindU8Item(&progressive, SC_ITEM_IPL_PGS)) {
+        progressive = SC_INTERLACED;
+    } else if (progressive != SC_PROGRESSIVE) {
+        progressive = SC_INTERLACED;
     }
 
-    return item;
+    return progressive;
 }
 
 u8 SCGetScreenSaverMode(void) {
