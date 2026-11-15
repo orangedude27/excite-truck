@@ -184,19 +184,20 @@ void fn_8023E7A8(unsigned int mode) {
 
 #pragma scheduling invalid_target
 void fn_8023EC94(void) {
-    u8 *p;
-    s32 i;
-    p = &lbl_8055F1AC;
-    i = 0;
+    /* Show or hide each of the three UI groups based on its visibility flag. */
+    u8 *flag;
+    s32 index;
+    flag = &lbl_8055F1AC;
+    index = 0;
     do {
-        if (*p != 0) {
-            fn_80214AF0(i + 1);
+        if (*flag != 0) {
+            fn_80214AF0(index + 1);
         } else {
-            fn_80214A9C(i + 1);
+            fn_80214A9C(index + 1);
         }
-        i++;
-        p++;
-    } while (i < 3);
+        index++;
+        flag++;
+    } while (index < 3);
 }
 #pragma scheduling on
 s32 fn_8023ECF8(void) {
