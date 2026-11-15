@@ -198,22 +198,24 @@ void fn_80263848(void *widget, s32 arg1) {
 void fn_802638C4(void) {}
 
 #pragma scheduling on
-s32 fn_802638C8(void *arg0, s32 arg1) {
-    if (*((u8 *)arg0 + 0x29) == 0) goto done;
-    if (arg1 == 0x126) goto done;
-    if (arg1 < 0x126) {
-        if (arg1 < 0x125) goto done;
-        goto set_value;
+/* Handle input for this object: id 0x125 sets flag at +0x28 when +0x29 is set
+ * and the flag is clear, id 0x127 clears it when set; returns 0. */
+s32 fn_802638C8(void *obj, s32 inputId) {
+    if (*((u8 *)obj + 0x29) == 0) goto done;
+    if (inputId == 0x126) goto done;
+    if (inputId < 0x126) {
+        if (inputId < 0x125) goto done;
+        goto set_flag;
     }
-    if (arg1 < 0x128) goto clear_value;
+    if (inputId < 0x128) goto clear_flag;
     goto done;
-set_value:
-    if (*((u8 *)arg0 + 0x28) != 0) goto done;
-    *((u8 *)arg0 + 0x28) = 1;
+set_flag:
+    if (*((u8 *)obj + 0x28) != 0) goto done;
+    *((u8 *)obj + 0x28) = 1;
     goto done;
-clear_value:
-    if (*((u8 *)arg0 + 0x28) == 0) goto done;
-    *((u8 *)arg0 + 0x28) = 0;
+clear_flag:
+    if (*((u8 *)obj + 0x28) == 0) goto done;
+    *((u8 *)obj + 0x28) = 0;
 done:
     return 0;
 }
