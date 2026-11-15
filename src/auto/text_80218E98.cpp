@@ -2688,12 +2688,15 @@ extern "C" s32 fn_8021C730(MenuValueItem *item, s32 keyCode) {
 #pragma pop
 extern "C" s32 fn_8021C974(void) { return 0; }
 
-extern "C" void *fn_8021C97C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    fn_8021AC24(arg0, arg1, arg2, arg3, arg4);
-    *(s32 *)((u8 *)arg0 + 0x258) = arg4;
-    *(void **)arg0 = lbl_8033EDC8;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg5;
-    return (void *)((char *)arg0 + 0);
+extern "C" void *fn_8021C97C(void *obj, s32 arg1, s32 arg2, s32 arg3, s32 value258, s32 value254)
+{
+    /* Constructor/init: initializes base via fn_8021AC24, stores value258 at +0x258,
+     * installs vtable lbl_8033EDC8, stores value254 at +0x254, and returns obj. */
+    fn_8021AC24(obj, arg1, arg2, arg3, value258);
+    *(s32 *)((u8 *)obj + 0x258) = value258;
+    *(void **)obj = lbl_8033EDC8;
+    *(s32 *)((u8 *)obj + 0x254) = value254;
+    return (void *)((char *)obj + 0);
 }
 
 extern "C" void fn_8021C9D8(void *arg0) {
