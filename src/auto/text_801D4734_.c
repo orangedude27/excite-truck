@@ -116,6 +116,7 @@ extern void *fn_801D5860();
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma opt_strength_reduction off
 extern "C" void fn_801D4734(void) {
     struct Mgr { virtual void v0(); virtual int v1(void *); virtual void v2(); virtual char *v3(void *); };
     extern char lbl_80338460;
@@ -131,7 +132,7 @@ extern "C" void fn_801D4734(void) {
     void *manager;
     Mgr *m;
     lbl_8055E954 = 1;
-    obj = fn_802077A4(&base[0], 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
+    obj = fn_802077A4((void *)((unsigned)base + 0), 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
     *(void **)lbl_804422F0 = obj;
     if (obj != 0) {
         *(float *)((char *)obj + 0x6C) = lbl_80562AD8;
@@ -144,7 +145,6 @@ extern "C" void fn_801D4734(void) {
         fn_801D5520(r);
     }
 }
-#pragma cplusplus reset
 #pragma pop
 
 void fn_801D47F4(void) {
@@ -2113,16 +2113,18 @@ void fn_801D7240(void *arg0) {
 }
 #pragma dont_inline reset
 
-void fn_801D72D0(void *arg0) {
-    char *p;
-    fn_8016A240((char *)arg0 + 8);
-    p = *(char **)((char *)arg0 + 0x38);
-    *(volatile int *)((char *)arg0 + 4) = 1;
-    if (p != 0 && *(unsigned char *)(p + 0x19) != 0) {
-        *(unsigned char *)(p + 0x4A) = 1;
-        *(unsigned char *)(p + 0x4C) = 0;
+/* Reset this object's state: clear its timer data, mark it idle, clear the linked
+   object's active flags if present, and clear the running flag. */
+void fn_801D72D0(void *self) {
+    char *linked;
+    fn_8016A240((char *)self + 8);
+    linked = *(char **)((char *)self + 0x38);
+    *(volatile int *)((char *)self + 4) = 1;
+    if (linked != 0 && *(unsigned char *)(linked + 0x19) != 0) {
+        *(unsigned char *)(linked + 0x4A) = 1;
+        *(unsigned char *)(linked + 0x4C) = 0;
     }
-    *(unsigned char *)((char *)arg0 + 0x34) = 0;
+    *(unsigned char *)((char *)self + 0x34) = 0;
 }
 
 extern void *fn_801284F8(int, void *);
