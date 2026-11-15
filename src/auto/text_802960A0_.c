@@ -388,6 +388,7 @@ int fn_80296A10(unsigned int arg0, unsigned int arg1, float arg2) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80296AAC(void *arg0) {
+    /* Initialize a 0x30-byte record: zero it, then set default float/int fields. */
     register float value68;
     register float value64;
     register float value60;
@@ -404,7 +405,6 @@ void fn_80296AAC(void *arg0) {
     *(int *)((char *)arg0 + 0x2C) = 10;
     *(int *)((char *)arg0 + 0x14) = -1;
 }
-
 #pragma inline_depth(0)
 #pragma use_lmw_stmw off
 #pragma push
