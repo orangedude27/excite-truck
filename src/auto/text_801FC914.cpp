@@ -1616,14 +1616,15 @@ check:
 
 #pragma dont_inline on
 extern "C" void fn_801FF994(void* arg0, void* arg1) {
+    /* For each pointer in the list at arg1+0x50 (count at arg1+0x94), invoke fn_801FCAC0. */
     void* entry;
-    int i;
-    i = 0;
+    int index;
+    index = 0;
     entry = arg1;
-    while (i < *(int*)((char*)arg1 + 0x94)) {
+    while (index < *(int*)((char*)arg1 + 0x94)) {
         fn_801FCAC0(*(void**)((char*)entry + 0x50));
         entry = (char*)entry + 4;
-        i++;
+        index++;
     }
 }
 #pragma dont_inline reset
