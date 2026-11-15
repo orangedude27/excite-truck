@@ -1,5 +1,24 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#include <types.h>
+
+/* One entry of the Locale module's language table (lbl_802F8E60), one per
+ * supported language: "usenglish.res"/"English (US)"/"flag_usa.art" and
+ * "japanese.res"/"Japanese"/"flag_jp.art". */
+typedef struct {
+    /* 0x00 */ char *resName;     /* archive holding the messages */
+    /* 0x04 */ char *displayName; /* name shown in the language menu */
+    /* 0x08 */ char *flagArt;     /* flag icon art */
+} LocaleLanguage;
+
+/* The Locale module's data block (lbl_804230D0): which language's resource is
+ * loaded and the message table copied out of it. */
+typedef struct {
+    /* 0x00 */ s32 language;     /* loaded language index, -1 = none loaded */
+    /* 0x04 */ char *msgTable;   /* message table, 0 until one is loaded */
+    /* 0x08 */ u8 table[0xC350]; /* the table, copied in from the resource */
+} LocaleData;
+
 extern char lbl_80423040[];
 extern char lbl_8032B028[];
 __declspec(section ".sdata") extern char lbl_80559A5C[];
