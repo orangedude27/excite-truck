@@ -33,6 +33,8 @@ void fn_80262FCC(void *arg0) {
     fn_80214A9C(0x1D);
 }
 
+/* If the current time is before the stored start time or more than lbl_80563BC8
+ * seconds after it, marks this object expired (+0x1C) and signals event 0x1D. */
 void fn_8026300C(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
