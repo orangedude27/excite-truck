@@ -98,15 +98,15 @@ void fn_80205850(void) {
 
 #pragma dont_inline
 int fn_80205964(void) {
-    int i = 0;
-    while (i < fn_801E85A4()) {
-        fn_801E866C(i);
+    /* Check all players/entries: select each by index and return 1 if any passes fn_801B8570. */
+    int index = 0;
+    while (index < fn_801E85A4()) {
+        fn_801E866C(index);
         if (fn_801B8570() != 0) return 1;
-        ++i;
+        ++index;
     }
     return 0;
 }
-
 extern float fn_8013672C(void);
 extern void *fn_801E7E3C(void);
 extern void *fn_801EA9A0(int);
