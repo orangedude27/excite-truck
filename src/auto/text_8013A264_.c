@@ -160,7 +160,8 @@ extern "C" void fn_8013A2FC(AiExceptionConfig *config, struct Container *contain
 }
 #pragma pop
 
-/* Free a singly-linked list (next at +0x24) whose head pointer is stored at *listHead, then optionally free the head storage. */
+/* Frees the AIException list whose head pointer is stored at *listHead (next at +0x24); when
+   doDelete > 0 it also frees the head storage itself, i.e. the config the list head lives in. */
 void **fn_8013A598(void **listHead, s32 doDelete) {
     if (listHead != 0) {
         while (*listHead != 0) {
