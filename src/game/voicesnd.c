@@ -862,76 +862,69 @@ extern void fn_802E61A8(void *);
 #pragma push
 #pragma processor 750
 void fn_8020B9D4(void *arg0) {
-    char *p = (char *)arg0;
-    float f31, f1, f0;
+    VoiceSnd *snd = (VoiceSnd *)arg0;
+    float master, gain, side;
     int i;
-    void *h;
-    void *h8;
-    if (*(unsigned char *)(p + 0x3e) != 0) {
-        *(unsigned char *)(p + 0x3e) = 0;
-        if (*(int *)(p + 4) == 1 && *(void **)(p + 8) == 0) {
-            if (*(int *)(p + 0x10) != 0 && *(void **)(p + 8) == 0) {
-                *(void **)(p + 8) = fn_802E6058(*(int *)(p + 0x10));
-                if (*(void **)(p + 8) == 0) {
-                    fn_802E6ABC(*(int *)(p + 0x10));
-                    fn_80207938();
-                } else if (*(int *)(p + 0x14) != 0) {
-                    *(void **)(p + 0xc) = fn_802E6058(*(int *)(p + 0x14));
-                    if (*(void **)(p + 0xc) == 0) {
-                        ((void (*)(void *))fn_802E6138)(*(void **)(p + 8));
-                        *(void **)(p + 8) = 0;
+    void *voice;
+    if (snd->mute != 0) {
+        snd->mute = 0;
+        if (snd->state == 1 && snd->voice == 0) {
+            if (snd->sound != 0 && snd->voice == 0) {
+                snd->voice = SND_GrabVoice(snd->sound);
+                if (snd->voice == 0) {
+                    SND_Name(snd->sound);
+                    SND_ReportGrabFailed();
+                } else if (snd->sound2 != 0) {
+                    snd->voice2 = SND_GrabVoice(snd->sound2);
+                    if (snd->voice2 == 0) {
+                        SND_ReleaseVoice(snd->voice);
+                        snd->voice = 0;
                     }
                 }
             }
-            h8 = *(void **)(p + 8);
-            if (h8 != 0) {
-                f1 = *(float *)(p + 0x1c) * *(float *)(*(char **)(p + 0x18) + 0x20);
-                if (*(unsigned char *)(p + 0x3e) != 0) {
-                    f31 = lbl_805632B0;
-                } else {
-                    if (*(unsigned char *)(p + 0x3c) != 0) {
-                    } else {
-                        f1 = f1 * lbl_8055B590;
-                    }
-                    f31 = lbl_8055B598 * f1;
+            if (snd->voice != 0) {
+                gain = snd->volume * snd->group->volume;
+                if (snd->mute != 0) master = FLOAT_ZERO;
+                else {
+                    master = MASTER_VOLUME * (snd->unscaled ? gain : gain * VOLUME_SCALE);
                 }
-                if (*(void **)(p + 0xc) != 0) {
-                    f1 = lbl_805632B4;
-                    f0 = f1 + -*(float *)(p + 0x20);
-                    f1 = (f1 < f0) ? f1 : f0;
-                    f1 = (f1 > lbl_805632B0) ? f1 : lbl_805632B0;
-                    fn_802E61E4(f31 * f1);
-                    fn_802E61EC(*(void **)(p + 8), lbl_805632B8);
-                    f1 = lbl_805632B4;
-                    f0 = f1 + *(float *)(p + 0x20);
-                    f1 = (f1 < f0) ? f1 : f0;
-                    f1 = (f1 > lbl_805632B0) ? f1 : lbl_805632B0;
-                    fn_802E61E4(f31 * f1);
-                    fn_802E61EC(*(void **)(p + 0xc), lbl_805632B4);
+                if (snd->voice2 != 0) {
+                    gain = FLOAT_ONE;
+                    side = gain + -snd->pan;
+                    gain = (gain < side) ? gain : side;
+                    gain = (gain > FLOAT_ZERO) ? gain : FLOAT_ZERO;
+                    SND_SetVolume(snd->voice, master * gain);
+                    SND_SetPan(snd->voice, FLOAT_NEG_ONE);
+                    gain = FLOAT_ONE;
+                    side = gain + snd->pan;
+                    gain = (gain < side) ? gain : side;
+                    gain = (gain > FLOAT_ZERO) ? gain : FLOAT_ZERO;
+                    SND_SetVolume(snd->voice2, master * gain);
+                    SND_SetPan(snd->voice2, FLOAT_ONE);
                 } else {
-                    fn_802E61E4(f31);
-                    fn_802E61EC(*(void **)(p + 8), *(float *)(p + 0x20));
+                    SND_SetVolume(snd->voice, master);
+                    SND_SetPan(snd->voice, snd->pan);
                 }
                 i = 0;
                 do {
-                    if (i == 0) h = *(void **)(p + 8);
-                    else h = *(void **)(p + 0xc);
-                    if (h != 0) {
-                        fn_802E620C(h, *(float *)(p + 0x28));
-                        fn_802E6234(h, *(float *)(p + 0x2c));
-                        fn_802E6238(h, *(float *)(p + 0x30));
-                        fn_802E623C(h, *(float *)(p + 0x34));
-                        fn_802E622C(h, *(float *)(p + 0x24));
-                        fn_802E6240(h, *(int *)(p + 0x38));
+                    if (i == 0) voice = snd->voice;
+                    else voice = snd->voice2;
+                    if (voice != 0) {
+                        SND_SetSurroundPan(voice, snd->surroundPan);
+                        fn_802E6234(voice, snd->unused2c);
+                        fn_802E6238(voice, snd->unused30);
+                        fn_802E623C(voice, snd->unused34);
+                        SND_SetRate(voice, snd->rate);
+                        SND_SetAuxFlags(voice, snd->auxFlags);
                     }
                     i++;
                 } while (i < 2);
-                if (*(unsigned char *)(p + 0x3d) != 0) {
-                    fn_802E61BC(*(void **)(p + 8));
-                    if (*(void **)(p + 0xc) != 0) fn_802E61BC(*(void **)(p + 0xc));
+                if (snd->loop != 0) {
+                    SND_StartLoop(snd->voice);
+                    if (snd->voice2 != 0) SND_StartLoop(snd->voice2);
                 } else {
-                    fn_802E61A8(*(void **)(p + 8));
-                    if (*(void **)(p + 0xc) != 0) fn_802E61A8(*(void **)(p + 0xc));
+                    SND_Start(snd->voice);
+                    if (snd->voice2 != 0) SND_Start(snd->voice2);
                 }
             }
         }
