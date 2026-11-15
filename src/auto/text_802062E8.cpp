@@ -549,12 +549,13 @@ __declspec(section ".rodata") extern char lbl_8033BDC0;
 extern "C" void fn_80208620(int, void *);
 extern "C" void fn_8020899C(int, int);
 extern "C" int fn_80128668(void *);
-extern "C" void fn_80206C70(void *arg0) {
+/* Returns an object to the Sound3D pool and destroys the pool when its use count reaches zero. */
+extern "C" void fn_80206C70(void *object) {
     struct Callback {
         virtual void slot1(int);
         virtual void slot0();
     };
-    fn_8012A364(lbl_8055ED90, arg0);
+    fn_8012A364(lbl_8055ED90, object);
     if (--lbl_8055ED8C == 0) {
         if (lbl_8055ED90)
             ((Callback *)lbl_8055ED90)->slot1(1);
