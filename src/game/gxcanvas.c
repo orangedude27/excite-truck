@@ -266,25 +266,29 @@ extern const char lbl_8034B060[];
 extern void fn_802C3320();
 extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
-void fn_802C32B8(s32 arg0, s32 arg1, u32 arg2) {
-    u8 *state = (u8 *)lbl_8055FC00;
-    u8 mode;
-    s32 flag;
-    if (state[1] & 4) return;
-    mode = state[0];
-    flag = 0;
-    if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
-    if (flag != 0) {
+void fn_802C32B8(s32 x, s32 y, u32 packedColor) {
+    /* gxPoint (proposed name): plot one pixel of the canvas being drawn on at
+     * (x, y).  A canvas whose NO_DRAW flag is set is left alone; an RGB565
+     * one takes the colour's high half through fn_802C3320, a 4-byte (format
+     * 5) one through fn_802C33A8, and format 6, which passes for a wide
+     * canvas but is drawn by neither, only reports "gxPoint: bad format". */
+    GxCanvas *canvas = (GxCanvas *)lbl_8055FC00;
+    u8 format;
+    s32 is16Bit;
+    if (canvas->flags & CANVAS_FLAG_NO_DRAW) return;
+    format = canvas->format;
+    is16Bit = 0;
+    if ((s8)format != CANVAS_FORMAT_RGBA && (s8)format != CANVAS_FORMAT_NONE) is16Bit = 1;
+    if (is16Bit != 0) {
         fn_802C3320();
         return;
     }
-    if ((s8)mode == 5) {
-        fn_802C33A8(arg0, arg1, arg2);
+    if ((s8)format == CANVAS_FORMAT_RGBA) {
+        fn_802C33A8(x, y, packedColor);
         return;
     }
-    fn_802E317C(lbl_8034B060, (s32)*(volatile s8 *)lbl_8055FC00);
+    fn_802E317C(lbl_8034B060, (s32)*(volatile s8 *)canvas);
 }
-
 #pragma push
 #pragma inline_depth(0)
 void fn_802C3320(s32 x, s32 y, u32 packedValue) {
