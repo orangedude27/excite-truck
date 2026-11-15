@@ -369,7 +369,7 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     char *dst;
     int count;
     int c;
-    int flag;
+    unsigned char flag;
 
     path_value = arg0;
     strings = (int)lbl_8034B538;
@@ -606,16 +606,17 @@ extern int fn_802CAE00(int);
 extern int lbl_8055FCB0;
 extern char lbl_8034B904[];
 extern char lbl_8034B914[];
-char *fn_802CAE34(int arg0) {
-    int offset;
-    char *result;
-    if (arg0 == -1)
+/* Returns the name of a texture slot, or a placeholder string for an invalid slot. */
+char *fn_802CAE34(int textureIndex) {
+    int slotOffset;
+    char *slot;
+    if (textureIndex == -1)
         return lbl_8034B904;
-    if (!((int (*)(int))fn_802CAE00)(arg0))
+    if (!((int (*)(int))fn_802CAE00)(textureIndex))
         return lbl_8034B914;
-    offset = arg0 * 0x4C;
-    result = (char *)lbl_8055FCB0 + offset;
-    return result + 4;
+    slotOffset = textureIndex * 0x4C;
+    slot = (char *)lbl_8055FCB0 + slotOffset;
+    return slot + 4;
 }
 #pragma dont_inline on
 void fn_802CAE98(int arg0, char *arg1) {
