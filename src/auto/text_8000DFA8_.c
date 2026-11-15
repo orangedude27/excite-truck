@@ -211,6 +211,7 @@ void fn_8000F330(void *arg0, void *arg1, s32 arg2) {
     lbl_8055D4C8 = fn_80232578(arg2);
 }
 
+/* Free the interlude banner resources (art set and two font objects) loaded by fn_8000F330. */
 void fn_8000F384(void) {
     if (lbl_8055D4C0 != 0) {
         fn_80235380(lbl_8055D4C0);
