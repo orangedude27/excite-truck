@@ -2473,12 +2473,14 @@ extern "C" void fn_80148EDC(void *slot) {
     }
 }
 
-extern "C" void deleteThreads__6SystemFv(void *arg0) {
-    ThreadObject80144F40 *p = *(ThreadObject80144F40 **)arg0;
-    if (p) {
-        if (p)
-            p->destroy(1);
-        *(ThreadObject80144F40 **)arg0 = 0;
+extern "C" void deleteThreads__6SystemFv(void *system) {
+    /* If this system owns a thread object, destroy it (deleting storage) and
+     * clear the slot. The redundant null check matches the original. */
+    ThreadObject80144F40 *thread = *(ThreadObject80144F40 **)system;
+    if (thread) {
+        if (thread)
+            thread->destroy(1);
+        *(ThreadObject80144F40 **)system = 0;
     }
 }
 
