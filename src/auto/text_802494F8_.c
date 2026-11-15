@@ -160,24 +160,30 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
 }
 
 #pragma scheduling invalid_target
-void *fn_8024A204(void *arg0, s32 arg1) {
+/* Deleting destructor of the race-movie list: the object keeps its {item array,
+ * count, flag} record at +0x10 (items are {id, name} pairs; its prev/next
+ * handlers pick a name by the +0x11C index and build a "%s/race.%s" path), so
+ * this drops the current selection, re-initialises that record, and frees the
+ * object when deleteFlag > 0. The guard tests the record's own address -- an
+ * inlined member call's `this != NULL` check, so it can never fail. */
+void *fn_8024A204(void *self, s32 deleteFlag) {
     char *base;
     unsigned int offset;
     s32 zero = 0;
-    if (arg0 != 0) {
-        base = (char *)arg0;
+    if (self != 0) {
+        base = (char *)self;
         *(s32 *)(base + 0x11C) = zero;
-        if ((base + 0x10 != 0) && ((char *)arg0 + 0x10 != 0)) {
+        if ((base + 0x10 != 0) && ((char *)self + 0x10 != 0)) {
             offset = 0x10;
-            *(s32 *)((char *)arg0 + offset) = zero;
-            *(s32 *)((char *)arg0 + 0x14) = zero;
-            *(s32 *)((char *)arg0 + 0x18) = zero;
+            *(s32 *)((char *)self + offset) = zero;
+            *(s32 *)((char *)self + 0x14) = zero;
+            *(s32 *)((char *)self + 0x18) = zero;
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (deleteFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
 #pragma scheduling reset
 void *fn_8024A268(void *arg0, s32 arg1) {
@@ -318,16 +324,19 @@ s32 fn_8024A4CC(s32 *arg0, s32 *arg1, s32 *arg2) {
     register s32 count;
     void *record;
     s32 result;
+
     *arg0 = -1;
     *arg1 = 0;
     *arg2 = 0;
     fn_801332D0(0, lbl_8055BF14, arg0);
     fn_801332D0(0, lbl_8055BF10, arg1);
+
     *(volatile s32 *)&buffer.count = 0;
     *(volatile void **)&buffer.data = buffer.bytes;
     *(volatile s32 *)&buffer.size = 0x80;
     fn_8027BCD0(&buffer);
     key = -1;
+
     index = *arg0;
     if (index >= 0 && index < fn_80012818()) {
         record = (void *)fn_80012820(index);
@@ -335,14 +344,13 @@ s32 fn_8024A4CC(s32 *arg0, s32 *arg1, s32 *arg2) {
         if (count >= 0 && count < *(s32 *)((u8 *)record + 0x70)) {
             record = (void *)fn_80012870(*(volatile s32 *)arg0, count);
             count = buffer.count;
-            i = 0;
             targetKey = *(s32 *)record;
             entry = (s32 *)buffer.data;
-            for (; i < count; i++) {
-                if (*entry != targetKey)
-                    goto scan_increment;
-                goto found_entry;
-scan_increment:
+            for (i = 0; i < count; i++) {
+                if (*entry != targetKey) {
+                } else {
+                    goto found_entry;
+                }
                 entry = (s32 *)((u8 *)entry + 0x18);
             }
             i = -1;
@@ -351,6 +359,7 @@ found_entry:
                 key = targetKey;
         }
     }
+
     if (((s32 (*)(s32 *, s32 **))fn_8024B070)(&key, (s32 **)&buffer.data)) {
         *arg0 = *(s32 *)((u8 *)fn_8001285C(key) + 4);
         *arg1 = -1;
