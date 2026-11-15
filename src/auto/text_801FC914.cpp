@@ -208,6 +208,7 @@ extern "C" void fn_801FCAC0(void* arg0) {
 }
 
 extern "C" void fn_801FCAE0(void* arg0, void* arg1) {
+    /* Initialize a path/transform slot: bind it to source, reset index, set identity matrix, and copy source position. */
     float zero = lbl_80563034;
     float one = lbl_80563030;
     *(void**)((char*)arg0 + 4) = arg1;
