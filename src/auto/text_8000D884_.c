@@ -178,22 +178,22 @@ extern char lbl_802FC264[];
 extern void fn_802E30C8();
 #pragma push
 #pragma scheduling invalid_target
-void fn_8000DBC8(int arg0) {
+/* Registers an identity callback if not already present; warns on duplicates. */
+void fn_8000DBC8(int callback) {
     int count;
     unsigned int *entry;
 
     count = lbl_8055D460;
     entry = lbl_8034F628;
     for (; count > 0; count--) {
-        if (*entry == (unsigned int)arg0) {
-            ((void (*)(const char *, ...))fn_802E30C8)(lbl_802FC264, arg0);
+        if (*entry == (unsigned int)callback) {
+            ((void (*)(const char *, ...))fn_802E30C8)(lbl_802FC264, callback);
             return;
         }
         entry++;
     }
-    lbl_8034F628[lbl_8055D460++] = arg0;
+    lbl_8034F628[lbl_8055D460++] = callback;
 }
-#pragma optimization_level 2
 void fn_8000DC28(const char *source, int arg1) {
     int remaining = 0x12;
     char *p;
