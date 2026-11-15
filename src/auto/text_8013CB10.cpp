@@ -3461,11 +3461,15 @@ extern "C" void fn_80143DC8(void *);
 extern "C" void fn_80143CB0(void *);
 extern "C" char lbl_8032CD54[];
 extern "C" void fn_80143C54(void *arg0) {
+    /* Initialize the ArtAnim manager: allocate an 8-byte handle tagged "ArtAnimManager",
+       construct it with fn_802ADDD8, store it at +0x140, then initialize and reset the
+       embedded subobject at +0x134. */
     void *check = fn_801284F8(8, lbl_8032CD54);
     if (check != 0) {
         check = (void *)((s32 (*)(void *, s32))fn_802ADDD8)(check, 1);
     }
     *(void **)((u8 *)arg0 + 0x140) = check;
+
     volatile u8 *p = (volatile u8 *)arg0;
     fn_80143DC8((void *)(p + 0x134));
     fn_80143CB0((void *)(p + 0x134));
