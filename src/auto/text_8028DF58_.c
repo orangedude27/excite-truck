@@ -327,10 +327,11 @@ extern "C" int fn_8028E3F4(const char *tableName) {
 
 extern int fn_8028EF44(void *, unsigned int);
 extern int lbl_804B36B8[];
-void fn_8028E528(int arg0) {
-    if (fn_8028EF44(&lbl_804B36B8[0], arg0) != 0) {
-        fn_8028EF44((unsigned int *)lbl_804B34B0_arr, arg0);
-        fn_8028F858(arg0, 1);
+void fn_8028E528(int emitter) {
+    /* If the emitter is in the lbl_804B36B8 pool, remove it from the global emitter list and destroy it. */
+    if (fn_8028EF44(&lbl_804B36B8[0], (unsigned int)emitter) != 0) {
+        fn_8028EF44(&lbl_804B34B0, (unsigned int)emitter);
+        fn_8028F858(emitter, 1);
     }
 }
 
