@@ -1203,23 +1203,23 @@ extern "C" void fn_801738D4(void *object) {
 }
 #pragma cplusplus reset
 
-#pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void deleteThreads__6SystemFv_80173A2C(void *arg0) {
+extern "C" void deleteThreads__6SystemFv_80173A2C(void *self) {
+    /* System::deleteThreads: delete owned thread object (if any) and clear slot. */
     class ThreadObject80173A2C {
     public:
         virtual void destroy(int);
     };
-    ThreadObject80173A2C *p = *(ThreadObject80173A2C **)arg0;
-    if (p) {
-        if (p)
-            p->destroy(1);
-        *(ThreadObject80173A2C **)arg0 = 0;
+    ThreadObject80173A2C *thread = *(ThreadObject80173A2C **)self;
+    if (thread) {
+        if (thread)
+            thread->destroy(1);
+        *(ThreadObject80173A2C **)self = 0;
     }
 }
 #pragma cplusplus reset
-#pragma pop
+#pragma scheduling on
 
 int fn_80173A84(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x170);
