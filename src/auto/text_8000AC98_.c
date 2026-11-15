@@ -1227,11 +1227,13 @@ void fn_8000C0E8(void *arg0) {
     fn_8000BF20(&local, 0);
 }
 
+/* Builds the camera/view matrices, applies the current camera position to the
+ * renderer, draws the "DEMO" overlay text, updates UI state, and finalizes. */
 void fn_8000C5CC(void) {
-    char sp8[0x38];
+    char viewMatrix[0x38];
 
-    fn_80230B5C((int *)sp8);
-    fn_802C8638((int *)sp8);
+    fn_80230B5C((int *)viewMatrix);
+    fn_802C8638((int *)viewMatrix);
     fn_802C974C(lbl_805601F8, lbl_805601FC, lbl_80560200);
     ((int (*)(int, int, const char *, ...))fn_80010074)(-0x100, 9, (const char *)&lbl_80558A48,
         lbl_805601F8, lbl_80560208, lbl_8056020C);
