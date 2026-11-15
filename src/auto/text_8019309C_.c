@@ -1876,13 +1876,33 @@ void fn_80195F6C(void *arg0, void *arg1) {
 
 }
 
-void fn_801961FC(void *arg0) {
-    extern float fn_801671FC(int);
-    extern int fn_801B89F8(void);
-    *(float *)((char *)arg0 + 0x28) *= fn_801671FC(*(int *)((char *)arg0 + 0x290));
-    if (fn_801B89F8() != 0) {
-        *(int *)((char *)arg0 + 0x2D0) |= 0x1150;
+/* Per-frame orbit (race-director) scaling for one AI driver, run first in the
+ * driver's state-0 tick (fn_80198530, from fn_801967A4 case 0).
+ *
+ * The car's current orbit speed factor -- the rubber-band multiplier the orbit
+ * automation keeps per car (fn_801671FC; 1.0 while the automation is off, and
+ * bounded by the value file's "max_sf") -- is folded into the driver's own
+ * speed scalar at +0x28.  Once the game mode's timer (fn_801B841C steps it by
+ * one 1/60 s frame while the mode runs) has passed 4 s, the driver also forces
+ * the drive word at +0x2D0 on: 0x1150 = 0x10 | 0x40 | 0x100 | 0x1000, the same
+ * word fn_80194C4C hands to the steering controller. */
+void fn_801961FC(void *driver) {
+    #define DRV_SPEED_SCALAR(driver) (*(float *)((char *)(driver) + 0x28))
+    #define DRV_CAR_INDEX(driver) (*(int *)((char *)(driver) + 0x290))
+    #define DRV_DRIVE_FLAGS(driver) (*(int *)((char *)(driver) + 0x2D0))
+    #define Orbit_GetSpeedFactor fn_801671FC
+    #define ModeTimerPastIntro fn_801B89F8
+    extern float Orbit_GetSpeedFactor(int);
+    extern int ModeTimerPastIntro(void);
+    DRV_SPEED_SCALAR(driver) *= Orbit_GetSpeedFactor(DRV_CAR_INDEX(driver));
+    if (ModeTimerPastIntro() != 0) {
+        DRV_DRIVE_FLAGS(driver) |= 0x1150;
     }
+    #undef DRV_SPEED_SCALAR
+    #undef DRV_CAR_INDEX
+    #undef DRV_DRIVE_FLAGS
+    #undef Orbit_GetSpeedFactor
+    #undef ModeTimerPastIntro
 }
 
 extern float lbl_80562140, lbl_80562144, lbl_80562168;
