@@ -5252,6 +5252,8 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
     return (void *)lbl_80412CC8;
 }
 #pragma pop
+// TitleScene destructor: destroys embedded nw4hbm::ut::detail::LinkListImpl at +0x2384,
+// then frees this object when flag > 0 (operator delete).
 extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
     if (this_) {
         if ((u8*)this_ + 0x2384 != 0) {
