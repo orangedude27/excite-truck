@@ -166,7 +166,6 @@ struct ZoneMaster {
     s32 f274;
     s32 f278;
     s32 f27C;
-#define perc zoneTex
     ZoneTextures zoneTex;
     s32 f288;
     inline void *operator new(u32, void *p) { return p; }
