@@ -1214,6 +1214,8 @@ void fn_8022C520(void) {
 }
 
 void fn_8022C9D0(void) {
+    /* Iterate all 0x100 style entries in lbl_80490968 (0x74 bytes each) and destroy/reset
+     * any active one (byte 0 set) via fn_8022A8E4. */
     unsigned char *p = (unsigned char *)lbl_80490968;
     int i = 0;
     do {
