@@ -2226,6 +2226,10 @@ extern "C" void fn_8012C958(void *);
 extern "C" void *memcpy(void *, const void *, u32);
 extern "C" u8 lbl_8032ACB0[];
 namespace nw4r { namespace ef {
+// Effect: the game's effect object.  Its vtable is lbl_8032ACB0 (+0x8 the
+// deleting destructor __dt__Q34nw4r2ef6EffectFv, +0xC fn_8012F06C,
+// +0x18 fn_8012DCC0); the one instance, lbl_8055E014, is the 0xA24-byte
+// "AsyncSetQ" queue fn_8012DBD0 allocates and fn_8012DD00 deletes.
 class Effect {
 public:
     virtual ~Effect();
