@@ -611,55 +611,59 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
 #pragma opt_loop_invariants off
 #pragma use_lmw_stmw off
 #pragma opt_lifetimes off
+/* Render/dispatch pass for this manager's cached entries: set up the active
+ * path (single or alternate based on lbl_8055FA59), walk each slot group and
+ * submit non-empty node records to fn_802DC078, then tear down and run the
+ * post-pass callbacks. */
 void fn_802B14B4(void *arg0) {
-    int c;
+    int recordCount;
     int *node;
-    int flag;
-    unsigned idx;
-    unsigned mask;
+    int isFirstInGroup;
+    unsigned slotIndex;
+    unsigned groupMask;
     int cacheCount;
-    int j;
+    int objEntryIndex;
     int *slot;
-    int cache;
-    int obj;
-    int i;
-    int saved;
+    int cacheBase;
+    int objEntry;
+    int slotGroupIndex;
+    int savedState;
 
     fn_802B1BEC();
     if (fn_802B1BE4((char *)arg0 + 0x318) > 0) {
         fn_802B1B60(arg0);
-        saved = fn_802C2C00(0);
+        savedState = fn_802C2C00(0);
         if (lbl_8055FA59 != 0) {
             fn_802C8BD0(*(int *)((char *)arg0 + 4));
         } else {
-            fn_802C28C0();
             fn_802C8BD0();
+            fn_802C28C0();
         }
         fn_802B05EC();
         fn_802DBF00();
-        for (i = 0; i < fn_802B1AF0((char *)arg0 + 0xC); i++) {
-            obj = fn_802B1B50((int *)((char *)arg0 + 0xC), i) + 4;
+        for (slotGroupIndex = 0; slotGroupIndex < fn_802B1AF0((char *)arg0 + 0xC); slotGroupIndex++) {
+            objEntry = fn_802B1B50((int *)((char *)arg0 + 0xC), slotGroupIndex) + 4;
             if (lbl_8055FA59 != 0) {
-                fn_802CADD0(*(int *)(fn_802B1B50((int *)((char *)arg0 + 0xC), i) + 0x7C), 1);
-                fn_802CADD0(__AXGetStackHead_802BC30C(i), 2);
+                fn_802CADD0(*(int *)(fn_802B1B50((int *)((char *)arg0 + 0xC), slotGroupIndex) + 0x7C), 1);
+                fn_802CADD0(__AXGetStackHead_802BC30C(slotGroupIndex), 2);
             } else {
-                for (j = 0; j < fn_802B1B38((void *)obj); j++) {
-                    fn_802CADD0(*(int *)fn_802B1B40((int *)obj, j), j + 1);
+                for (objEntryIndex = 0; objEntryIndex < fn_802B1B38((void *)objEntry); objEntryIndex++) {
+                    fn_802CADD0(*(int *)fn_802B1B40((int *)objEntry, objEntryIndex), objEntryIndex + 1);
                 }
-                fn_802CADD0(__AXGetStackHead_802BC30C(i), 3);
+                fn_802CADD0(__AXGetStackHead_802BC30C(slotGroupIndex), 3);
             }
-            cache = fn_802B1B28((int *)((char *)arg0 + 0x318), 0);
+            cacheBase = fn_802B1B28((int *)((char *)arg0 + 0x318), 0);
             cacheCount = fn_802B1BE4((char *)arg0 + 0x318);
-            mask = 1 << i;
-            idx = mask;
-            slot = (int *)((unsigned)arg0 + (mask << 2) + 0x934);
-            for (; idx < 0x41; slot++, idx++) {
-                if ((idx & mask) && fn_802B1B18(slot) == 0) {
-                    flag = (((mask - 1) & idx) == 0);
+            groupMask = 1 << slotGroupIndex;
+            slotIndex = groupMask;
+            slot = (int *)((unsigned)arg0 + (groupMask << 2) + 0x934);
+            for (; slotIndex < 0x41; slot++, slotIndex++) {
+                if ((slotIndex & groupMask) && fn_802B1B18(slot) == 0) {
+                    isFirstInGroup = (((groupMask - 1) & slotIndex) == 0);
                     for (node = (int *)fn_802B1B10(slot); node != 0; node = (int *)node[3]) {
-                        c = fn_802B1B08(node);
-                        if (c > 0) {
-                            fn_802DC078(cache, cacheCount, fn_802B1AF8(node, 0), c, flag, i);
+                        recordCount = fn_802B1B08(node);
+                        if (recordCount > 0) {
+                            fn_802DC078(cacheBase, cacheCount, fn_802B1AF8(node, 0), recordCount, isFirstInGroup, slotGroupIndex);
                         }
                     }
                 }
@@ -668,20 +672,20 @@ void fn_802B14B4(void *arg0) {
                 fn_802CADD0(-1, 1);
                 fn_802CADD0(-1, 2);
             } else {
-                for (cache = 0; cache < fn_802B1B38((void *)obj); cache++) {
-                    fn_802CADD0(-1, cache + 1);
+                for (cacheBase = 0; cacheBase < fn_802B1B38((void *)objEntry); cacheBase++) {
+                    fn_802CADD0(-1, cacheBase + 1);
                 }
                 fn_802CADD0(-1, 3);
             }
         }
         fn_802DBF30();
         fn_802C8D74();
-        fn_802C2C00(saved);
-        saved = fn_802B1BE4((char *)arg0 + 0x318);
-        fn_802BB0FC(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), saved);
+        fn_802C2C00(savedState);
+        savedState = fn_802B1BE4((char *)arg0 + 0x318);
+        fn_802BB0FC(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), savedState);
         fn_802B1758(arg0);
-        saved = fn_802B1BE4((char *)arg0 + 0x318);
-        fn_802BB3B8(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), saved);
+        savedState = fn_802B1BE4((char *)arg0 + 0x318);
+        fn_802BB3B8(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), savedState);
     }
 }
 #pragma pop
