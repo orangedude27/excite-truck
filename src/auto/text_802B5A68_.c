@@ -275,6 +275,12 @@ extern Fn802B83CCEntry lbl_8034A95C[];
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
+/* Predicate for the "layer" tag: true when `text` (a string passed as a number,
+ * the way these tag helpers take it) carries a "layer:<n>" value naming a water
+ * layer other than the one in use.  fn_802B5D2C parses the tag and answers -1
+ * when it is absent; fn_802B05DC returns the "water_layer" index taken from the
+ * game config (lbl_8055CD78, -1 when there is none).
+ * Proposed name: IsLayerChangeRequested */
 s32 fn_802B5DD0(s32 text) {
     s32 parsedLayer;
     s32 waterLayer;
