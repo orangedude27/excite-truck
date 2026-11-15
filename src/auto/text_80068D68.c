@@ -2395,18 +2395,20 @@ s32 WUDSetDisableChannel(s8 arg0) {
     return result;
 }
 
+/* Sets the WUD HID-receive callback in lbl_80392960+0x66C (see "WUDSetHidRecvCallback()\n") and returns the previous value. */
 s32 fn_8006ADC4(s32 arg0)
 {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern const char lbl_80313584[];
-    s32 prev;
+    s32 previousCallback;
     s32 enabled;
+
     DBPrintf_8006CFA8(lbl_80313584);
     enabled = OSDisableInterrupts();
-    prev = *(s32 *)(lbl_80392960 + 0x66C);
+    previousCallback = *(s32 *)(lbl_80392960 + 0x66C);
     *(s32 *)(lbl_80392960 + 0x66C) = arg0;
     OSRestoreInterrupts(enabled);
-    return prev;
+    return previousCallback;
 }
 
 s32 fn_8006AE20(s32 arg0)
