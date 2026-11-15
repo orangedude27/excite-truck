@@ -215,6 +215,8 @@ void fn_802878A8(void) {
     fn_802882A0();
 }
 
+// Initializes game subsystems in sequence (counterpart to shutdown in fn_802878A8),
+// then passes 0 to fn_80288868.
 void fn_80287914(void) {
     fn_802A86A4();
     fn_8028E138();
