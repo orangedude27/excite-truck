@@ -1012,25 +1012,43 @@ s64 fn_8014C770(const f32 *arg0, const f32 *arg1, f32 t) {
     return out.bits;
 }
 #pragma scheduling on
-void fn_8014C7B4(void *arg0, void *arg1) {
-    s32 d, c, b, a;
-    f32 j, i, h, g, f, e;
-    volatile s32 *src = (volatile s32 *)arg1;
-    volatile f32 *fsrc = (volatile f32 *)((u8 *)arg1 + 0x10);
-    a = src[0]; b = src[1]; c = src[2]; d = src[3];
-    e = fsrc[0]; f = fsrc[1]; g = fsrc[2]; h = fsrc[3]; i = fsrc[4]; j = fsrc[5];
-    *(s32 *)arg0 = a;
-    *((s32 *)arg0 + 1) = b;
-    *((s32 *)arg0 + 2) = c;
-    *((s32 *)arg0 + 3) = d;
-    *(f32 *)((u8 *)arg0 + 0x10) = e;
-    *(f32 *)((u8 *)arg0 + 0x14) = f;
-    *(f32 *)((u8 *)arg0 + 0x18) = g;
-    *(f32 *)((u8 *)arg0 + 0x1c) = h;
-    *(f32 *)((u8 *)arg0 + 0x20) = i;
-    *(f32 *)((u8 *)arg0 + 0x24) = j;
-}
+/* Copy a 0x28-byte 2D draw descriptor - the block fn_801476D8 draws a rectangle
+ * from - field by field: its four leading words and the six floats that follow
+ * them.  fn_8014C978 is the same copy.  Reading the source through a volatile
+ * pointer is what keeps the compiler from folding the ten loads into an
+ * lmw/stmw pair. */
+void fn_8014C7B4(void *dst, void *srcObj) {
+    typedef struct {
+        s32 tag;    /* 0x00 which descriptor this is */
+        s32 x;      /* 0x04 */
+        s32 y;      /* 0x08 */
+        s32 mode;   /* 0x0C how the rectangle is drawn */
+        f32 width;  /* 0x10 */
+        f32 height; /* 0x14 */
+        f32 x0;     /* 0x18 one corner ... */
+        f32 y0;     /* 0x1C ... */
+        f32 x1;     /* 0x20 ... and the other */
+        f32 y1;     /* 0x24 */
+    } DrawDesc;
 
+    s32 mode, y, x, tag;
+    f32 y1, x1, y0, x0, height, width;
+    volatile DrawDesc *src = (volatile DrawDesc *)srcObj;
+    DrawDesc *out = (DrawDesc *)dst;
+
+    tag = src->tag; x = src->x; y = src->y; mode = src->mode;
+    width = src->width; height = src->height; x0 = src->x0; y0 = src->y0; x1 = src->x1; y1 = src->y1;
+    out->tag = tag;
+    out->x = x;
+    out->y = y;
+    out->mode = mode;
+    out->width = width;
+    out->height = height;
+    out->x0 = x0;
+    out->y0 = y0;
+    out->x1 = x1;
+    out->y1 = y1;
+}
 unsigned int fn_8014C808(unsigned int arg0) { return arg0 >> 24; }
 
 unsigned char fn_8014C810(unsigned char arg0) { return arg0; }
