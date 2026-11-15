@@ -16703,6 +16703,7 @@ u8 HID_HostRemoveDev(u32 dev_handle) {
 }
 #pragma pop
 u8 HID_HostOpenDev(u32 arg0) {
+    /* Open a registered HID host device by handle and initiate its connection. */
     u8 *entry = lbl_803C3C38;
     s32 offset;
     if (entry[0x400] == 0)
