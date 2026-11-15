@@ -943,6 +943,7 @@ s32 fn_801366C0(Unk_80135278 *follower, WorldVec *vec, float backAmount) {
         return 0;
     return (vec->x * follower->unk_10 + vec->z * follower->unk_14) < -backAmount;
 }
+
 void fn_80136714(void *arg0) {
     float a = *(float *)((char *)arg0 + 0x10);
     float b = *(float *)((char *)arg0 + 0x14);
