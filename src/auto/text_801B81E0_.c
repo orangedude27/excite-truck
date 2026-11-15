@@ -352,11 +352,12 @@ extern "C" int fn_801B851C(void* arg0) {
     if (fn_80161BB8() != 0) return 0;
     return ((Dummy_801B851C *)lbl_8055E744)->d8(arg0);
 }
+/* Return 1 if the global object accepts arg0 and fn_80161B94 reports clear. */
 extern "C" int fn_801B8570(int arg0) {
     extern int fn_80161B94(void);
-    int result = 0;
-    if (((Dummy_801B8570 *)lbl_8055E744)->d9(arg0) != 0 && fn_80161B94() == 0) result = 1;
-    return result;
+    int accepted = 0;
+    if (((Dummy_801B8570 *)lbl_8055E744)->d9(arg0) != 0 && fn_80161B94() == 0) accepted = 1;
+    return accepted;
 }
 
 #pragma cplusplus on
