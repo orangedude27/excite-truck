@@ -2579,21 +2579,15 @@ extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
     return ((Iface *)*(void **)(self + 0x244))->v18();
 }
 #pragma scheduling on
-extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
-    class Callback {
-    public:
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
-        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
-        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-        virtual s32 call();
-    };
-    Callback *obj = *(Callback **)((u8 *)arg0 + 0x244);
-    if (obj->call() != 0) return 1;
-    return fn_802192A4(arg0, arg1);
+/* Vtable slot 0x64 of the widget wrapper (vtable lbl_8033D480): forward the
+ * call to the wrapped widget at +0x244 through its vtable slot 0x58, and report
+ * 1 when that answers nonzero; otherwise fall back on the base handler
+ * fn_802192A4, which answers 0. */
+extern "C" s32 fn_80215AA4(void *wrapper, s32 arg1) {
+    VfObj *widget = *(VfObj **)((u8 *)wrapper + 0x244);
+    if (widget->vf20() != 0) return 1;
+    return fn_802192A4(wrapper, arg1);
 }
-
 extern "C" void fn_80215B08(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
     obj->vf21();
