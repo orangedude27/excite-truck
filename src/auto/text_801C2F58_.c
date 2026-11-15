@@ -1612,6 +1612,8 @@ void fn_801C7A28(void) {
 }
 
 extern f64 atof(const char *);
+/* Parses the input line as a float, stores it as the menu position Z with X/Y zeroed,
+ * and clears the input line. */
 void fn_801C7A6C(void) {
     f32 value = (f32)atof(lbl_804380F0);
     lbl_80438498.x = lbl_80562970;
