@@ -16018,15 +16018,16 @@ s32 btsnd_hcic_inq_cancel_8008576C(void) {
     return 1;
 }
 
+/* Allocate and send an HCI Reset command buffer (opcode 0x0C03); returns 1 on success, 0 on allocation failure. */
 s32 btsnd_hcic_reset_800857CC(void) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL) return 0;
-    *(u16 *)(p + 2) = 3;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 3;
-    p[9] = 0x10;
-    p[10] = 0;
-    btu_hcif_send_cmd(p);
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == NULL) return 0;
+    *(u16 *)(cmdBuf + 2) = 3;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 3;
+    cmdBuf[9] = 0x10;
+    cmdBuf[10] = 0;
+    btu_hcif_send_cmd(cmdBuf);
     return 1;
 }
 
