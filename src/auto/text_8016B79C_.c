@@ -2896,9 +2896,10 @@ void fn_80170E98(void *source, void *buffer, s32 bufferSize) {
     }
 }
 
-s32 fn_80170F1C(void *arg0) {
+/* Return whether the global scene flag is set and the object is active but not in its disabled state. */
+s32 fn_80170F1C(void *obj) {
     s32 result = 0;
-    if (fn_801B8514() != 0 && *((u8 *)arg0 + 0x79) != 0 && *((u8 *)arg0 + 0x9C) == 0) {
+    if (fn_801B8514() != 0 && *((u8 *)obj + 0x79) != 0 && *((u8 *)obj + 0x9C) == 0) {
         result = 1;
     }
     return result;
