@@ -4335,11 +4335,12 @@ extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
 }
 #pragma fp_contract on
 #pragma scheduling invalid_target
-extern "C" f32 fn_801A3880(s32 arg0) {
-    f32 first = PSVECDotProduct((Vec*)(arg0 + 0x30), (Vec*)(arg0 + 0x30));
-    f32 second = PSVECDotProduct((Vec*)(arg0 + 0x24), (Vec*)(arg0 + 0x24));
-    f32 selected = second > first ? second : first;
-    return (f32)fn_8002F234(selected);
+extern "C" f32 fn_801A3880(s32 self) {
+    /* Return the length of the larger of the two basis vectors at offsets 0x30 and 0x24. */
+    f32 sqLen1 = PSVECDotProduct((Vec *)(self + 0x30), (Vec *)(self + 0x30));
+    f32 sqLen2 = PSVECDotProduct((Vec *)(self + 0x24), (Vec *)(self + 0x24));
+    f32 maxSqLen = sqLen2 > sqLen1 ? sqLen2 : sqLen1;
+    return (f32)fn_8002F234(maxSqLen);
 }
 #pragma fp_contract off
 #pragma scheduling on
