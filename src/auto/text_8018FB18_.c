@@ -999,6 +999,7 @@ int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_80190E08(void) {
+    /* Call virtual method 16 (vtable offset 0x48) on each registered object in lbl_804349A0. */
     class Dummy_80190E08 {
     public:
         virtual void m0();
@@ -1019,10 +1020,10 @@ extern "C" void fn_80190E08(void) {
         virtual void m15();
         virtual void m16();
     };
-    int i;
-    for (i = 0; i < lbl_8055E518; i++) {
-        Dummy_80190E08 *obj = (Dummy_80190E08 *)lbl_804349A0[i];
-        obj->m16();
+    int index;
+    for (index = 0; index < lbl_8055E518; index++) {
+        Dummy_80190E08 *object = (Dummy_80190E08 *)lbl_804349A0[index];
+        object->m16();
     }
 }
 #pragma cplusplus reset
