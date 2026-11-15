@@ -811,11 +811,12 @@ void fn_801688FC(s32 arg0) {
     }
 }
 
-s32 fn_80168944(s32 arg0, s32 arg1) {
-    s32 addr = (s32)lbl_803301B8;
-    s32 len = strlen((char *)addr);
-    s32 r = fn_8002B1D8(arg1, (s32 *)addr, len);
-    return (u32)__cntlzw(r) >> 5;
+s32 fn_80168944(s32 unused, s32 name) {
+    /* Returns nonzero if the given name starts with the "coin_strip" prefix. */
+    s32 prefix = (s32)lbl_803301B8;
+    s32 len = strlen((char *)prefix);
+    s32 cmp = fn_8002B1D8(name, (s32 *)prefix, len);
+    return (u32)__cntlzw(cmp) >> 5;
 }
 
 #pragma push
