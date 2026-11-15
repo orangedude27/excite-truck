@@ -589,18 +589,23 @@ void fn_80138AD8(void **arg0) { void *p=*arg0; fn_8013C428(*(int*)((char*)p+0x28
 
 void *fn_80138B1C(void *arg0) { void *p=*(void **)((char*)arg0+0x24); void *result=0; while(p){ if(*(int*)p==0){result=p;break;} p=*(void **)((char*)p+4); } return result; }
 
-void *fn_80138B4C(void *arg0, void *arg1) {
-    void *result;
-    void *node;
-    node = arg1 != 0 ? *(void **)((char *)arg1 + 4) : 0;
+/* First road-object extension record (type 2) of the racing-line resource
+ * `res`, or the next one after the record `prev` -- pass 0 to start at the
+ * resource's own extension list.  Callers walk every one of them with
+ * `for (ext = fn_80138B4C(res, 0); ext; ext = fn_80138B4C(res, ext))`.
+ * Returns 0 when the list runs out. */
+void *fn_80138B4C(void *res, void *prev) {
+    struct IdealResExt *result;
+    struct IdealResExt *ext;
+    ext = prev != 0 ? ((struct IdealResExt *)prev)->next : 0;
     result = 0;
-    node = node != 0 ? node : *(void **)((char *)arg0 + 0x24);
-    while (node != 0) {
-        if (*(unsigned int *)node == 2) {
-            result = node;
+    ext = ext != 0 ? ext : *(struct IdealResExt **)((char *)res + IDEAL_RES_EXT_LIST);
+    while (ext != 0) {
+        if (ext->type == IDEAL_EXT_ROAD_OBJECTS) {
+            result = ext;
             break;
         }
-        node = *(void **)((char *)node + 4);
+        ext = ext->next;
     }
     return result;
 }
