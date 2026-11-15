@@ -61,15 +61,16 @@ void fn_801D0DFC(void) {
 
 #pragma cplusplus on
 extern "C" void fn_801D0E0C(void) {
+    /* Call the second virtual method on each registered object. */
     class Dummy_801D0E0C {
     public:
         virtual void m0();
         virtual void m1();
         virtual void m2();
     };
-    int i;
-    for (i = 0; i < lbl_8055E8E8; i++) {
-        Dummy_801D0E0C *obj = (Dummy_801D0E0C *)lbl_80438818[i];
+    int index;
+    for (index = 0; index < lbl_8055E8E8; index++) {
+        Dummy_801D0E0C *obj = (Dummy_801D0E0C *)lbl_80438818[index];
         obj->m1();
     }
 }
