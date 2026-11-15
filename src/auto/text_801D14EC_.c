@@ -51,7 +51,7 @@ void fn_801D1540(Obj801D *p, int idx) {
     float *curve = (float *)(lbl_8055E908 + idx * 0x34);
     unsigned char *ratios = cfg + 0x32c;
     float limit;
-    float v, top, base, scale;
+    float v, base, scale, top;
     v = *(float *)(cfg + 0x35c);
     p->mul = v;
     top = *(float *)(cfg + 0x2544);
@@ -144,6 +144,7 @@ void fn_801D183C(int arg0, int idx) {
     int tgt;
     float x;
     float step = lbl_80562A7C;
+    float t1;
     p->f4 = lbl_80562A58;
     if (in == -10) {
         if (p->target < 1) {
@@ -189,10 +190,11 @@ void fn_801D183C(int arg0, int idx) {
         }
     }
     tgt = p->target;
-    p->timer2 += step;
+    p->timer2 = p->timer2 + step;
     if (tgt != cur) {
-        p->timer1 += step;
-        if (cur >= 1 && tgt >= 1 && p->timer1 > lbl_80562A80) {
+        t1 = p->timer1 + step;
+        p->timer1 = t1;
+        if (cur >= 1 && tgt >= 1 && t1 > lbl_80562A80) {
             p->prev = tgt;
             p->target = cur;
             p->timer1 = lbl_80562A58;
@@ -259,13 +261,15 @@ void fn_801D1B48(void) {
     }
 }
 
+/* Initializes each element in the lbl_8055E918 object table by calling
+ * fn_801D1810 on every entry (0x9C bytes each) up to lbl_8055E8F8. */
 void fn_801D1BA4(void) {
     int offset = 0;
-    int i = 0;
-    while (i < lbl_8055E8F8) {
-        fn_801D1810(lbl_8055E918 + offset, i);
+    int index = 0;
+    while (index < lbl_8055E8F8) {
+        fn_801D1810(lbl_8055E918 + offset, index);
         offset += 0x9c;
-        i++;
+        index++;
     }
 }
 
