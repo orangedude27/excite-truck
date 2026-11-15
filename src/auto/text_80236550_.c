@@ -67,17 +67,19 @@ void fn_8023660C(void) {
 int fn_802ECC10(void);
 void fn_80236550(void);
 extern int lbl_8055F094, lbl_8055F098, lbl_8055F09C;
+/* Updates timer state while unpaused: clamps overflow, samples current time,
+ * advances the base by elapsed time when timing is active, and stores the sample. */
 void fn_80236674(void) {
-    int time;
+    int currentTime;
 
     if (lbl_8055F0A0 == 0) {
         fn_80236550();
-        time = fn_802E2C20();
+        currentTime = fn_802E2C20();
         if (fn_802ECC10() != 0) {
-            lbl_8055F094 += time - lbl_8055F09C;
+            lbl_8055F094 += currentTime - lbl_8055F09C;
         }
-        lbl_8055F098 = time;
-        lbl_8055F09C = time;
+        lbl_8055F098 = currentTime;
+        lbl_8055F09C = currentTime;
     }
 }
 
