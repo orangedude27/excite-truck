@@ -561,25 +561,50 @@ extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *env, int 
 #pragma pop
 
 #pragma pop
-void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
-    f32 value;
-    int valid = 0;
-    register f32 factor;
-    if (release >= 0 && release <= 0x7F) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80, 0x127, (const char*)lbl_80322C50, release, 0, 0x7F);
-    valid = 0;
-    if (release >= 0 && release <= 0x7F) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80, 0x132, (const char*)lbl_80322C50, release, 0, 0x7F);
-    if (release == 0x7F) value = lbl_80560FE8;
-    else if (release == 0x7E) value = lbl_80561008;
-    else if (release < 0x32) {
-        factor = (f32)((release * 2) + 1);
-        value = factor * lbl_8056100C;
-        value = value / lbl_80561010;
-    } else {
-        value = lbl_80561014 / (0x7E - release) / lbl_80561010;
-    }
-    *(f32*)((u8*)this + 0xC) = value;
+void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release)
+{
+  f32 value;
+  int valid = 0;
+  register f32 factor;
+  if ((release >= 0) && (release <= 0x7F))
+  {
+    valid = 1;
+  }
+  if (valid == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce((const char *) lbl_80322B80, 0x127, (const char *) lbl_80322C50, release, 0, 0x7F);
+  }
+  valid = 0;
+  if ((release >= 0) && (release <= 0x7F))
+  {
+    valid = 1;
+  }
+  if (valid == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce((const char *) lbl_80322B80, 0x132, (const char *) lbl_80322C50, release, 0, 0x7F);
+  }
+  if (release == 0x7F)
+  {
+    value = lbl_80560FE8;
+  }
+  else
+    if (release == 0x7E)
+  {
+    value = lbl_80561008;
+  }
+  else
+    if (release < 0x32)
+  {
+    factor = (f32) ((release * 2) + 1);
+    value = factor * lbl_8056100C;
+    value = value / lbl_80561010;
+  }
+  else
+  {
+    value = (lbl_80561014 / ((f32) (0x7E - release))) / lbl_80561010;
+    value = (lbl_80561014 / ((f32) (0x7E - release))) / lbl_80561010;
+  }
+  *((f32 *) (((u8 *) this) + 0xC)) = value;
 }
 
 /* Append a BasicSound to this ExternalSoundPlayer's sound list and bind its external player pointer. */
