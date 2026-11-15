@@ -150,7 +150,7 @@ void fn_802BE72C(void) {
      * and clears the pointer to it. */
     u32 cellSize;
 
-    for (cellSize = FAN_INFO_MIN_CELL_SIZE; cellSize < 0x41U; cellSize <<= 1) {
+    for (cellSize = FAN_INFO_MIN_CELL_SIZE; cellSize < FAN_INFO_CELL_SIZE_LIMIT; cellSize <<= 1) {
         freeFanInfoGrid(&fanInfoGrids[cellSize]);
     }
 #undef fanInfoGrids
