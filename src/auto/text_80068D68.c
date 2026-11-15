@@ -6667,7 +6667,7 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
     s32 event;
 
     if (lbl_8055DC80 >= 5) {
-        register u8 *msg;
+        u8 *msg;
         switch (*(u16 *)(cb + 0x10)) {
         case 4: msg = strings + 0x16C; break;
         case 5: msg = strings + 0x180; break;
@@ -6711,7 +6711,7 @@ byte6:
 
 second_trace:
     if (lbl_8055DC80 >= 5) {
-        register u8 *msg;
+        u8 *msg;
         switch (event) {
         case 4: msg = strings + 0x16C; break;
         case 5: msg = strings + 0x180; break;
@@ -11648,11 +11648,12 @@ void bta_dm_rmt_name(s32 arg0) {
     callback(2, (void *)(arg0 + 8));
 }
 
+/* Handle a remote name discovery request by posting a "name done/none" result and reporting it to the search callback. */
 void bta_dm_disc_rmt_name(void *arg0) {
-    void *buf = GKI_getbuf(0x110);
-    if (buf != 0) {
-        *(u16 *)buf = 0x207;
-        fn_80071450(buf);
+    void *p_msg = GKI_getbuf(0x110);
+    if (p_msg != 0) {
+        *(u16 *)p_msg = 0x207;
+        fn_80071450(p_msg);
     }
     *(s32 *)((u8 *)arg0 + 0x108) = 0;
     ((void (*)(s32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
