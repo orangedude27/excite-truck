@@ -547,6 +547,7 @@ void fn_801D9A08(void) {
     lbl_8055E968 = 0;
 }
 
+/* Finds the morph-group node in the lbl_8055E96C list whose name matches arg0. */
 void *fn_801D9A54(const char *arg0) {
     void *node = lbl_8055E96C;
     while (node != 0) {
