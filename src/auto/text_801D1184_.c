@@ -125,10 +125,12 @@ void fn_801D1458(void *arg0, int arg1) {
     ((void (*)(int))fn_801D11D4)(lbl_8055E908 + arg1 * 0x34);
 }
 
+/* Allocates and initializes the lbl_8055E908 array with lbl_8055E8F8 entries of 0x34 bytes,
+ * using fn_801D14BC to initialize each element. */
 void fn_801D1468(void) {
     int count = lbl_8055E8F8;
-    int result = (int)fn_8012850C(count * 0x34 + 0x10, &lbl_8055ABD0);
-    lbl_8055E908 = ((int (*)(int, void *, int, int, int))fn_8002F37C)(result, fn_801D14BC, 0, 0x34, count);
+    int buffer = (int)fn_8012850C(count * 0x34 + 0x10, &lbl_8055ABD0);
+    lbl_8055E908 = ((int (*)(int, void *, int, int, int))fn_8002F37C)(buffer, fn_801D14BC, 0, 0x34, count);
 }
 
 void fn_801D14BC(void* arg0) {
