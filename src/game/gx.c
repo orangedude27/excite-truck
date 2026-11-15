@@ -2382,6 +2382,16 @@ void fn_802D2AC4(void) {
     fn_802DFAF4();
 }
 
+extern unsigned char lbl_804C9930[];
+static inline void SetAppliedFlags_802D2B0C(unsigned char f8, unsigned char f9, unsigned char fA,
+                                            unsigned char fB, unsigned char fC, unsigned char fD) {
+    lbl_804C9930[8] = f8;
+    lbl_804C9930[9] = f9;
+    lbl_804C9930[0xA] = fA;
+    lbl_804C9930[0xB] = fB;
+    lbl_804C9930[0xC] = fC;
+    lbl_804C9930[0xD] = fD;
+}
 void fn_802D2B0C(void) {
     extern unsigned char lbl_804C9930[];
     extern unsigned short lbl_8055FD0C;
