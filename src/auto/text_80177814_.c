@@ -1461,10 +1461,9 @@ void DBPrintf_801797A8(const char *fmt, ...) {
 extern int lbl_804305A0[];
 extern int lbl_8055E450;
 int fn_801797F8(int arg0, int arg1, int arg2) {
-    int combined = (arg1 << 16) | (arg2 & 0xFFFF);
-    int *entry = (int *)((char *)lbl_804305A0 + (arg0 << 3));
-    entry[0] = combined;
-    return entry[1]++;
+    int (*table)[2];
+    (table = (int (*)[2])lbl_804305A0)[arg0][0] = (arg1 << 16) | (arg2 & 0xFFFF);
+    return table[arg0][1]++;
 }
 
 #pragma push
