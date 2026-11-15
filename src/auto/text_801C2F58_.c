@@ -1266,10 +1266,11 @@ void fn_801C7288(void) {
     fn_801C957C(0);
 }
 
+/* Set the selected entry to type 2, format its fadeout timestamp, and resort the entry table. */
 void fn_801C7290(void) {
-    void *ptr = fn_801C3C80();
-    ((s32 *)ptr)[2] = 2;
-    sprintf(lbl_80437FC0, lbl_80336EC8, ((f32 *)ptr)[0]);
+    void *entry = fn_801C3C80();
+    ((s32 *)entry)[2] = 2;
+    sprintf(lbl_80437FC0, lbl_80336EC8, ((f32 *)entry)[0]);
     qsort((void *)(s32)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
 
