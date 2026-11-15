@@ -1144,9 +1144,9 @@ extern void *fn_8022EDC4(void);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80218574(void *arg0) {
-    struct Mtx { int w[12]; };
-    struct State { struct Mtx m; float a, b, c; };
+#pragma cplusplus on
+extern "C" void fn_80218574(void *arg0) {
+    struct State { struct UiRenderMatrix m; float a, b, c; };
     struct VObj;
     struct VTab { void *pad0[10]; void (*f28)(struct VObj *); void *pad1[19]; int (*f78)(struct VObj *); };
     struct VObj { struct VTab *vt; };
@@ -1199,16 +1199,17 @@ void fn_80218574(void *arg0) {
                 else if (*(unsigned char *)((char*)obj+0x1a)) innerAlpha=lbl_80563494;
                 else innerAlpha=zero;
                 c=*(int *)((char*)obj+8); b=*(int *)((char*)obj+4); a=*(int *)((char*)obj+0x238);
-                result=((struct VObj *)obj)->vt->f78((struct VObj *)obj);
+                result=((struct VObj2 *)obj)->f78();
                 (*(void (**)(void *,int,int,int,int,int,int,float))((char*)base+0x444))(&state,a,b,c,result,*(int *)((char*)obj+0x10)-c,0,innerAlpha);
                 fn_8022ED00(&state);
             }
-            ((struct VObj *)obj)->vt->f28((struct VObj *)obj);
+            ((struct VObj2 *)obj)->f28();
             if(pushed) fn_8022EDB8();
         }
     }
     if(current!=-1) fn_8022EDB8();
 }
+#pragma cplusplus off
 #pragma pop
 
 #pragma dont_inline on
