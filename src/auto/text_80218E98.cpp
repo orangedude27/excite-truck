@@ -3859,12 +3859,16 @@ extern "C" void fn_8021E7D4(void *widget) {
     }
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *this_, int flag) {
+    /* nw4hbm::snd::MemorySoundArchive scalar-deleting destructor (8021E884):
+       if non-null, run the base destructor fn_8021915C(this_, 0), then free
+       storage with the deleting operator fn_80128668 when flag > 0. Returns
+       this_. (Mirrors __dt__...Fv_80111BB8 but with base fn_8021915C.) */
+    if (this_ != 0) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" void fn_8021E8DC(void *widget, s32 drawContext) {
