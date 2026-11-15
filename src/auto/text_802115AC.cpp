@@ -244,17 +244,19 @@ extern "C" void *fn_802115AC(void *arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void *fn_80211604(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+/* Reset a three-word header and, when requested, free the object (deleting-
+ * destructor helper). Returns the object pointer. */
+extern "C" void *fn_80211604(void *object, s32 shouldDelete) {
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            ((void (*)(void *))fn_80128668)(arg0);
+        if (shouldDelete > 0)
+            ((void (*)(void *))fn_80128668)(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" s32 fn_8021165C(s32 arg0, s32 arg1) {
