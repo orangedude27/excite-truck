@@ -359,21 +359,22 @@ void fn_801E3440(void* arg0) {
 
 #pragma push
 #pragma small_data off
-void fn_801E3488(void *arg0, void *arg1) {
-    f32 sp[12];
-    sp[0] = 1.0f;
-    sp[1] = 0.0f;
-    sp[2] = 0.0f;
-    sp[3] = 0.0f;
-    sp[4] = 1.0f;
-    sp[5] = 0.0f;
-    sp[6] = 0.0f;
-    sp[7] = 0.0f;
-    sp[8] = 1.0f;
-    sp[9] = 0.0f;
-    sp[10] = 0.0f;
-    sp[11] = 0.0f;
-    ((void (*)(void *, void *, f32 *))fn_801E3440)(arg0, arg1, sp);
+/* Compute a node's world-space translation from an identity local transform. */
+void fn_801E3488(void *outTranslation, void *node) {
+    f32 identity[12];
+    identity[0] = 1.0f;
+    identity[1] = 0.0f;
+    identity[2] = 0.0f;
+    identity[3] = 0.0f;
+    identity[4] = 1.0f;
+    identity[5] = 0.0f;
+    identity[6] = 0.0f;
+    identity[7] = 0.0f;
+    identity[8] = 1.0f;
+    identity[9] = 0.0f;
+    identity[10] = 0.0f;
+    identity[11] = 0.0f;
+    ((void (*)(void *, void *, f32 *))fn_801E3440)(outTranslation, node, identity);
 }
 
 #pragma push
