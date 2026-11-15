@@ -2250,13 +2250,15 @@ extern "C" int fn_8029BD14(int arg0) {
     return arg0;
 }
 #pragma scheduling reset
-extern "C" void* fn_8029BD54(void* arg0, int arg1) {
-    if (arg0 != 0) {
+extern "C" void* fn_8029BD54(void* object, int deletingFlag) {
+    /* Destructor-like cleanup: unregister callback fn_8029C190, destroy the owned
+       child object at offset 0, and optionally free this object. */
+    if (object != 0) {
         fn_801EF024((void*)fn_8029C190);
-        fn_8028E398(*(void**)arg0);
-        if (arg1 > 0) fn_80128668(arg0);
+        fn_8028E398(*(void**)object);
+        if (deletingFlag > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_8029BEF8(void *);
