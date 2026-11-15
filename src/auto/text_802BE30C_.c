@@ -142,10 +142,17 @@ void fn_802BE694(void) {
 #pragma dont_inline off
 extern void fn_802BE780(void *);
 void fn_802BE72C(void) {
-    u32 i;
-    for (i = 4; i < 0x41U; i <<= 1) {
-        fn_802BE780(&lbl_804C06E0[i]);
+#define fanInfoGrids lbl_804C06E0
+#define freeFanInfoGrid fn_802BE780
+    /* Frees the FanInfo cell grid allocated for each cell size (4, 8, 16, 32, 64)
+     * and clears the pointer to it. */
+    u32 cellSize;
+
+    for (cellSize = FAN_INFO_MIN_CELL_SIZE; cellSize < 0x41U; cellSize <<= 1) {
+        freeFanInfoGrid(&fanInfoGrids[cellSize]);
     }
+#undef fanInfoGrids
+#undef freeFanInfoGrid
 }
 
 void fn_802BE780(void *arg0) {
