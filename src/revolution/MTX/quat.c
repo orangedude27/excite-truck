@@ -20,7 +20,7 @@ asm void PSQUATMultiply(register const Quaternion* a, register const Quaternion*
     nofralloc
     psq_l f0, Quaternion.y(a), 0, 0 // f0 = (a.y, a.z)
     psq_l f1, Quaternion.y(b), 0, 0 // f1 = (b.y, b.z)
-    lfs f3, 0.5f                    // f3 = 0.5f, for the refinement below
+    lfs f3, lbl_80560C68              // f3 = 0.5f, for the refinement below
     ps_sub f2, f0, f1               // f2 = (dy, dz)
     psq_l f0, Quaternion.x(a), 0, 0 // f0 = (a.x, a.y)
     psq_l f1, Quaternion.x(b), 0, 0 // f1 = (b.x, b.y)
