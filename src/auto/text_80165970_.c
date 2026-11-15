@@ -118,16 +118,17 @@ __declspec(section ".data") extern unsigned char lbl_8042FEB0;
 extern float lbl_8055E320;
 #pragma push
 #pragma small_data off
-void *fn_80165970(void *arg0, int arg1) {
-    if (arg0 == 0) goto done;
-    if (arg0 == 0) goto after_clear;
-    *(int *)arg0 = 0;
-    *((int *)arg0 + 1) = 0;
-    *((int *)arg0 + 2) = 0;
+void *fn_80165970(void *self, int shouldDelete) {
+    /* Scalar deleting destructor-like helper: clear three fields, then free the object when requested. */
+    if (self == 0) goto done;
+    if (self == 0) goto after_clear;
+    *(int *)self = 0;
+    *((int *)self + 1) = 0;
+    *((int *)self + 2) = 0;
 after_clear:
-    if (arg1 > 0) fn_80128668(arg0);
+    if (shouldDelete > 0) fn_80128668(self);
 done:
-    return arg0;
+    return self;
 }
 
 void fn_801659C8(int arg0) {
