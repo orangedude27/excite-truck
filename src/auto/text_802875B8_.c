@@ -839,17 +839,21 @@ void fn_80288870_old(void) {
 #pragma push
 #pragma cplusplus on
 extern "C" s32 fn_80287E20(void ***arg0, s32 arg1) {
+    /* Look up the stored object and, if present, invoke its virtual method at
+     * vtable slot 2 with a 0x40-byte name buffer copied from arg1 (via
+     * fn_801346B4). Returns the method's result, or 0 if no object is stored. */
     class Obj {
     public:
         virtual void f0(void *);
         virtual void f1(void *);
         virtual s32 f2(void *);
     };
-    char local[0x40];
+    char name[0x40];
     Obj *obj;
-    fn_801346B4(local, 0x40, arg1);
+
+    fn_801346B4(name, 0x40, arg1);
     obj = (Obj *)*arg0;
-    if (obj != 0) return obj->f2(local);
+    if (obj != 0) return obj->f2(name);
     return 0;
 }
 #pragma cplusplus reset
