@@ -1146,18 +1146,21 @@ void fn_802AB9E8(void) {
     fn_8028E024();
 }
 #pragma pop
+/* Shutdown of the UI stun-part effect: destroy the two particle systems this
+ * module created -- the invisible spark and the entry puff -- take them out of
+ * the partman registries (fn_8028E398), free the handle block they were kept in
+ * (fn_80128668) and clear the global.  The original tests the handle twice, so
+ * both null checks stay. */
 void fn_802ABC2C(void) {
-    int *p = (int *)lbl_8055F924;
-    if (p == 0) return;
-    if (p != 0) {
-        fn_8028E398(p[0]);
-        fn_8028E398(p[1]);
-        fn_80128668(p);
+    UiStunParts *parts = (UiStunParts *)lbl_8055F924;
+    if (parts == 0) return;
+    if (parts != 0) {
+        fn_8028E398(parts->spark);
+        fn_8028E398(parts->entryPuff);
+        fn_80128668(parts);
     }
     lbl_8055F924 = 0;
 }
-
-#pragma processor 750
 void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
