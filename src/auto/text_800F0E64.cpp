@@ -6430,20 +6430,37 @@ extern "C" const char lbl_8032687C[];
 extern "C" u8 lbl_8041506C[];
 #pragma push
 #pragma use_lmw_stmw off
+/* nw4hbm::snd::detail::StrmPlayer::UpdateBufferAllPlayers()
+ *
+ * Runs on the AX sound-mix callback (fn_800FA6E8), once per audio tick: walk the
+ * game's global list of streaming players and give every one of them a single
+ * streaming-buffer update.  The list is a nw4hbm::ut::LinkList laid out as
+ * { u32 count; LinkListNode node; }, so its first node is at +0x04 and the walk
+ * ends on the list's own node.  A node is the LinkListNode kept at +0x08 inside
+ * its player, so the player is the eight bytes in front of it; holding an
+ * iterator checks the node for NULL the way LinkList.h does (line 0x23D).
+ */
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
-    LinkListIter begin;
-    begin.node = *(void**)&lbl_8041506C[0x04];
+#define strmPlayerList lbl_8041506C    /* nw4hbm::ut::LinkList of StrmPlayers */
+#define linkListH lbl_80326B8C         /* "LinkList.h" */
+#define nullPointerMsg lbl_80326B68    /* "NW4HBM:Pointer must not be NULL (p)" */
+
+    LinkListIter begin;                        /* LinkList::GetBeginIter() */
+    begin.node = *(void**)&strmPlayerList[0x04]; /* the list's first node */
     LinkListIter it = begin;
 
-    while (it.node != (void*)&lbl_8041506C[0x04]) {
-        void* cur = it.node;
-        it.node = *(void**)it.node;
-        if (cur == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
-                                         (const char*)lbl_80326B68);
+    while (it.node != (void*)&strmPlayerList[0x04]) { /* up to the list's own node */
+        void* node = it.node;
+        it.node = *(void**)it.node;                    /* ++it */
+        if (node == 0) {                               /* *it */
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)linkListH, 0x23D,
+                                         (const char*)nullPointerMsg);
         }
-        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)cur)[-0x08]);
+        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)node)[-0x08]); /* that player */
     }
+#undef strmPlayerList
+#undef linkListH
+#undef nullPointerMsg
 }
 /* One update tick for every streaming player: walk nw4hbm's global list of
  * StrmPlayers (lbl_8041506C, a nw4hbm::ut::LinkList { size, sentinel }) and call
