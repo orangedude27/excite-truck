@@ -47,6 +47,10 @@ s32 fn_802E321C(const char *arg0) {
     return strncmp(arg0, prefix, strlen(prefix)) == 0;
 }
 
+/* Returns 1 when the path begins with the SD-card prefix "sd:"
+   (lbl_8055D1A8), 0 otherwise; fn_802E32C4 then hands out the SD-card file
+   system handle lbl_8055FF24 for it.  Its sibling fn_802E321C tests the
+   "nand:" prefix (lbl_8055D1A0). */
 s32 fn_802E3270(s32 path) {
     /* the prefix address is held as an integer so the compiler keeps it in one
        callee-saved register instead of re-materializing the small-data address */
