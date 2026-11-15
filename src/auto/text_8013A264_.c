@@ -67,9 +67,6 @@ struct Container {
     virtual void _54();
     virtual Entry *GetEntry(int);
 };
-static inline f32 ReadAIEntryFloat(const void *key, Entry *entry) {
-    return entry->GetFloat(key);
-}
 #pragma pop
 
 void *fn_801284F8(unsigned int, const void *);
@@ -124,25 +121,25 @@ extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i
 
         for (; (entry = container->GetEntry(i)) != 0; i++) {
             if (stricmp(entry->GetName(), base + 0x34) == 0) {
-                Node604 *node = (Node604 *)fn_801284F8(0x28, base + 0x40);
-                node->lo = entry->GetFloat(&lbl_80559C68);
-                node->hi = entry->GetFloat(&lbl_80559C70);
-                node->f8 = entry->GetFloatDef(&lbl_80559C78, config->f4);
-                node->fC = entry->GetFloatDef(&lbl_80559C80, config->f8);
-                node->f10 = entry->GetFloatDef(&lbl_80559C88, config->fC);
-                node->f14 = entry->GetFloatDef(base + 0x20, config->f10);
-                node->f18 = entry->GetFloatDef(base + 0x4C, config->f14);
-                node->f1C = entry->GetFloatDef(&lbl_80559C60, config->f18);
-                node->f20 = entry->GetFloatDef(base + 0x58, config->f1C);
-                node->next = config->head;
-                config->head = node;
+                Node604 &node = *(Node604 *)fn_801284F8(0x28, base + 0x40);
+                node.lo = entry->GetFloat(&lbl_80559C68);
+                node.hi = entry->GetFloat(&lbl_80559C70);
+                node.f8 = entry->GetFloatDef(&lbl_80559C78, config->f4);
+                node.fC = entry->GetFloatDef(&lbl_80559C80, config->f8);
+                node.f10 = entry->GetFloatDef(&lbl_80559C88, config->fC);
+                node.f14 = entry->GetFloatDef(base + 0x20, config->f10);
+                node.f18 = entry->GetFloatDef(base + 0x4C, config->f14);
+                node.f1C = entry->GetFloatDef(&lbl_80559C60, config->f18);
+                node.f20 = entry->GetFloatDef(base + 0x58, config->f1C);
+                node.next = config->head;
+                config->head = &node;
 
-                if (node->lo > node->hi) {
+                if (node.lo > node.hi) {
                     Node604 *copy = (Node604 *)fn_801284F8(0x28, base + 0x40);
                     if (copy != 0) {
-                        *copy = *node;
+                        *copy = node;
                     }
-                    node->hi = max;
+                    node.hi = max;
                     copy->lo = min;
                     copy->f8 = step;
                     copy->next = config->head;
