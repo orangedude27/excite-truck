@@ -1041,7 +1041,7 @@ void fn_801F3288(struct Sky *sky) {
     }
 }
 #pragma pop
-/* Fetches a byte buffer by id and byte-swaps four 4-byte words in place. */
+/* Fetches a byte buffer by id and byte-swaps four 4-byte words in place (big-endian to little-endian conversion for 32-bit fields). */
 void fn_801F33BC(void *unused, int id) {
     extern int *fn_801F1CE8(int);
     unsigned char *bytes = (unsigned char *)fn_801F1CE8(id);
