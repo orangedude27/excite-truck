@@ -80,17 +80,18 @@ u32 fn_8000AC38(void);
 
 #pragma push
 #pragma processor 750
-void* fn_80009D70(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+/* Deleting-destructor style helper: clears three 32-bit fields and optionally frees the object. */
+void* fn_80009D70(void* object, s32 shouldDelete) {
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_80009DC8(void *arg0) {
