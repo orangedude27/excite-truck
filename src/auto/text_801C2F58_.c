@@ -31,6 +31,7 @@ extern f32 fn_801C3B6C(void);
 #define sInputLine           lbl_804380F0 /* 256-byte line the on-screen text field edits */
 #define sWhoList             lbl_80438280 /* names the entry applies to */
 #define sWhoNotList          lbl_80438380 /* names the entry skips */
+#define sInterludeWhoList     lbl_804384A8 /* names the AI-think interlude entry applies to */
 #define sInterludeWhoNotList lbl_804385A8 /* names the AI-think interlude entry skips ("EXCEPT?") */
 #define sMenuAction          lbl_8055E868 /* action run by the selected item; no-op when idle */
 #define sTextFieldFlag       lbl_8055E83A /* text field in use: gates the (empty) fn_801C9830 draw */
