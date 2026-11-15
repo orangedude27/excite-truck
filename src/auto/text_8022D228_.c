@@ -98,6 +98,10 @@ void fn_8022D350(void *arg0, const char *arg1, char arg2) {
 }
 
 char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
+    /* Look up entry arg1 in the container's table at +0x10 (count at +0x08).
+     * If in range, store the signed byte at [entry][+0x04 offset] in *arg2
+     * (when non-null) and return the entry pointer; otherwise store 0 and
+     * return null. */
     if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 8)) {
         if (arg2 != 0) {
             *arg2 = ((signed char *)(*(char ***)((char *)arg0 + 0x10))[arg1])[
