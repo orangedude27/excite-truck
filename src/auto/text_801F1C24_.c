@@ -1058,13 +1058,15 @@ void fn_801F33BC(void *unused, int id) {
 
 #pragma small_data off
 __declspec(section ".data") extern int lbl_8033A8F8;
-void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8033A8F8;
+/* Scalar-deleting destructor for PSSystem::SeqHeap: restores the vtable, tears down
+ * associated state, and optionally frees the object storage. */
+void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *this_, int shouldDelete) {
+    if (this_ != 0) {
+        *(void **)this_ = &lbl_8033A8F8;
         fn_802C9994(-1, &lbl_8033A8F8);
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 #pragma small_data on
 void fn_801F34C4(void *arg0, int arg1) {
