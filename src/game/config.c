@@ -82,31 +82,41 @@ sound_done:
 }
 #pragma scheduling on
 
+/* Empty slot of the config module (kept for the original's code layout). */
 void fn_802E99A8(void) {
 }
 
+/**
+ * @brief Cache the two Bluetooth-WPAD settings of the system config.
+ *
+ * The motor mode becomes a 0/1 and the speaker volume, which the config block
+ * stores as 0..SC_MAX_SPEAKER_VOLUME (127), is scaled to 0.0 .. 1.0.
+ */
 void fn_802E99AC(void) {
-    /* Cache WPAD motor enable (SC motor mode == 1) and speaker volume (0..1 from 0..127). */
-    lbl_8056004D = (SCGetWpadMotorMode() == 1);
-    lbl_80560050 = (f32)(u32)SCGetWpadSpeakerVolume() / 127.0f;
+    sConfigWpadMotor = (SCGetWpadMotorMode() == SC_MOTOR_ON);
+    sConfigWpadSpeakerVolume = (f32)(u32)SCGetWpadSpeakerVolume() / 127.0f;
 }
 
+/** @brief The console's aspect ratio, as set in the system menu (4:3/16:9). */
 void* fn_802E9A0C(void) {
-    return lbl_80560044;
+    return sConfigAspectRatio;
 }
 
-extern void *lbl_80560048;
+/** @brief The sound mode the game should start in (mono/stereo/surround). */
 void* fn_802E9A14(void) {
-    return lbl_80560048;
+    return sConfigSoundMode;
 }
 
+/** @brief 1 when the display is set to progressive (non-interlaced). */
 char fn_802E9A1C(void) {
-    return lbl_8056004C;
+    return sConfigProgressive;
 }
 
+/** @brief 1 when the WPAD rumble motor is enabled. */
 char fn_802E9A24(void) {
-    return lbl_8056004D;
+    return sConfigWpadMotor;
 }
 
-f32 fn_802E9A2C(void) { return lbl_80560050; }
+/** @brief WPAD speaker volume, scaled to 0.0 .. 1.0. */
+f32 fn_802E9A2C(void) { return sConfigWpadSpeakerVolume; }
 
