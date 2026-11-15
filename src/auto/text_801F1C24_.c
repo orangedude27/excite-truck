@@ -238,9 +238,10 @@ void fn_801F2020(void) {
 #pragma push
 #pragma scheduling invalid_target
 void *fn_801F2064(void) {
-    void *p = fn_801284F8(8, &lbl_8033A660);
-    if (p) { *(void **)p = &lbl_8033A958; *(int *)((char *)p + 4) = fn_802CAC28(&lbl_8033AC58, 0); }
-    return p;
+    /* Allocate an 8-byte CollisionSpace object: set its vtable and load "turn.tex". */
+    void *object = fn_801284F8(8, &lbl_8033A660);
+    if (object) { *(void **)object = &lbl_8033A958; *(int *)((char *)object + 4) = fn_802CAC28(&lbl_8033AC58, 0); }
+    return object;
 }
 #pragma pop
 extern const char lbl_8033A66C[];
