@@ -45,17 +45,20 @@ extern void *memset(void *, int, unsigned long);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-u32 fn_801281A0(s32 arg0) {
-    u32 vals[4];
-    u32 *p = (u32 *)&lbl_802F8E40;
-    vals[0] = *p++;
-    vals[1] = *p++;
-    vals[2] = *p++;
-    vals[3] = *p;
-    if (arg0 >= 0 && (u32)arg0 < 4) return vals[arg0];
-    return (u32)&lbl_80559968;
+u32 fn_801281A0(s32 allocSource) {
+    /* Name of the routine a heap block was allocated through, looked up by the
+     * source id stored at block header +0x30 (0 "new[]", 1 "MemAlloc",
+     * 2 "MemAllocPhys", 3 "new"); "unknown" when the id is out of range.
+     * The four pointers are copied off the table first, then indexed. */
+    const char *names[4];
+    const char **p = (const char **)&lbl_802F8E40;
+    names[0] = *p++;
+    names[1] = *p++;
+    names[2] = *p++;
+    names[3] = *p;
+    if (allocSource >= 0 && (u32)allocSource < 4) return (u32)names[allocSource];
+    return (u32)&lbl_80559968; /* "unknown" */
 }
-
 #pragma scheduling off
 s32 fn_801281F4(s32 arg0, s32 arg1) {
     return ((arg0 + arg1) - 1) & ~(arg1 - 1);
