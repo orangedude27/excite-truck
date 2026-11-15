@@ -352,15 +352,16 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
 }
 
 __declspec(section ".data") extern s32 lbl_803410D8;
-void *__dt__Q28PSSystem7SeqHeapFv_8023A7D8(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(s32 **)((char *)arg0 + 0xC) = &lbl_803410D8;
-        fn_80128670(*(s32 *)((char *)arg0 + 0x10));
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+/* PSSystem::SeqHeap scalar-deleting destructor variant: install this variant's vtable, free the owned heap buffer, then delete the object when requested. */
+void *__dt__Q28PSSystem7SeqHeapFv_8023A7D8(void *this_, s32 shouldDelete) {
+    if (this_ != 0) {
+        *(s32 **)((char *)this_ + 0xC) = &lbl_803410D8;
+        fn_80128670(*(s32 *)((char *)this_ + 0x10));
+        if (shouldDelete > 0) {
+            fn_80128668(this_);
         }
     }
-    return arg0;
+    return this_;
 }
 
 #pragma push
