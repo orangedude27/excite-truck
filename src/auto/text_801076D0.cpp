@@ -5530,21 +5530,37 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
     return var_f31;
 }
 #pragma dont_inline reset
-extern "C" void* fn_80111B64(void* arg0) {
+extern "C" void* fn_80111B64(void* writer) {
+    /* nw4hbm::ut::CharWriter's own constructor, for the object below 0x4C */
     extern void __ct__Q36nw4hbm2ut10CharWriterFv(void*);
+    /* 0.0f */
     extern f32 lbl_80561178;
+    /* nw4hbm::ut::detail::TagProcessorBase's single global instance (ut_TagProcessorBase.cpp):
+       fn_80116644 constructs it and registers its destructor with __register_global_object */
     extern s32 lbl_8055DEB8;
-    f32 value;
-    __ct__Q36nw4hbm2ut10CharWriterFv(arg0);
-    value = lbl_80561178;
-    *(f32*)((char*)arg0 + 0x4C) = value;
-    *(f32*)((char*)arg0 + 0x50) = value;
-    *(s32*)((char*)arg0 + 0x54) = 4;
-    *(s32*)((char*)arg0 + 0x58) = 0;
-    *(s32*)((char*)arg0 + 0x5C) = (s32)&lbl_8055DEB8;
-    return arg0;
-}
 
+    /* the print-layout block, laid out over the base CharWriter */
+    struct PrintLayout {
+        unsigned char base[0x4C];
+        f32 charSpace;      /* +0x4C: space added after every glyph */
+        f32 cursorX;        /* +0x50: the cursor's X, as SetCursorX stores it */
+        s32 charsPerTab;    /* +0x54: glyph count between two tab stops */
+        s32 flags;          /* +0x58: print flags, none of them set here */
+        void* tagProcessor; /* +0x5C: what the printer asks about a string's tags */
+    };
+
+    f32 value;
+    PrintLayout* self = (PrintLayout*)writer;
+
+    __ct__Q36nw4hbm2ut10CharWriterFv(writer);
+    value = lbl_80561178;
+    self->charSpace = value;
+    self->cursorX = value;
+    self->charsPerTab = 4;
+    self->flags = 0;
+    self->tagProcessor = &lbl_8055DEB8;
+    return writer;
+}
 extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* this_, int flag) {
     extern void fn_801033F0(void*, unsigned int);
     extern void fn_80128668(void*);
