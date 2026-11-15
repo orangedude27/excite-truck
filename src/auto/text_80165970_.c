@@ -237,6 +237,7 @@ extern float lbl_805618CC;
 #pragma cplusplus on
 extern "C" void fn_80165B78(void **arg0) {
     char *strings = lbl_8032FCC0;
+    char *s0 = strings;
     char *match, *text;
     Dummy80165B78 *obj2;
     Dummy80165B78 *obj;
@@ -244,7 +245,7 @@ extern "C" void fn_80165B78(void **arg0) {
     float value;
 
     obj = ((Dummy80165B78 *)arg0)->getObject(&lbl_8055A170);
-    value = obj->getFloat(strings + 0);
+    value = obj->getFloat(s0);
     *(float *)((char *)&lbl_8042FE38 + 0x28) = value;
     value = obj->getFloat(strings + 0x10);
     *(float *)((char *)&lbl_8042FE38 + 0x2c) = value;
@@ -254,8 +255,7 @@ extern "C" void fn_80165B78(void **arg0) {
     *(float *)((char *)&lbl_8042FE38 + 0x34) = value;
     value = obj->getFloatDefault(strings + 0x3C, lbl_805618A8);
     *(float *)((char *)&lbl_8042FE38 + 0x38) = value;
-    float def2c = *(float *)((char *)&lbl_8042FE38 + 0x2c);
-    value = obj->getFloatDefault(strings + 0x50, def2c);
+    value = obj->getFloatDefault(strings + 0x50, *(float *)((char *)&lbl_8042FE38 + 0x2c));
     *(float *)((char *)&lbl_8042FE38 + 0x30) = value;
     value = obj->getFloatDefault(strings + 0x60, lbl_805618AC);
     *(float *)((char *)&lbl_8042FE38 + 0x44) = value;
@@ -612,8 +612,8 @@ void fn_80166898(void) {
     float height;
     register float zero;
     register int zeroInt;
-    register unsigned int i;
-    register unsigned int j;
+    register int i;
+    register int j;
     register unsigned int offset;
     unsigned char *p1;
     register unsigned char *p2;
@@ -633,7 +633,7 @@ void fn_80166898(void) {
     scale = lbl_805618A0;
     lbl_8055E320 = zero;
     lbl_8055E31C = zero;
-    while ((int)i < *(int *)((char *)*(unsigned char * volatile *)&lbl_8055E32C + 4)) {
+    while (i < *(int *)((char *)*(unsigned char * volatile *)&lbl_8055E32C + 4)) {
         holder = *(unsigned char * volatile *)&lbl_8055E32C;
         p1 = *(unsigned char **)holder + offset;
         arg1 = lbl_805618E4;
@@ -660,13 +660,13 @@ void fn_80166898(void) {
     }
     scale = lbl_805618A0;
     countPtr = (char *)&lbl_8042FEB0 + 4;
-    offset = (unsigned int)zeroInt;
-    j = (unsigned int)(short)zeroInt;
-    minusOne = (unsigned int)-1;
-    while ((int)j < *(int *)countPtr) {
+    offset = zeroInt;
+    j = (short)zeroInt;
+    minusOne = -1;
+    while (j < *(int *)countPtr) {
         callArg = lbl_8056189C;
         p2 = *(unsigned char **)&lbl_8042FEB0 + offset;
-        *(int *)(p2 + 0x10) = (int)minusOne;
+        *(int *)(p2 + 0x10) = minusOne;
         *(float *)(p2 + 0xC) = lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, callArg, scale * *(float *)(p2 + 8));
         j++;
         offset += 0x14;
@@ -694,9 +694,9 @@ extern float lbl_8055E3C8, lbl_80561898, lbl_805618D0, lbl_805618E0, lbl_805618E
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_80166A24(void) {
+extern "C" void fn_80166A24(void) {
     int wasActive;
-    int var_r27;
+    unsigned char *var_r27;
     int var_r28;
     int var_r29;
     int var_r30;
@@ -727,7 +727,7 @@ void fn_80166A24(void) {
         for (var_r28 = 0, var_r27 = 0;
              var_r28 < *(int *)((unsigned char *)(*(unsigned char * volatile *)&lbl_8055E32C) + 4);
              var_r27 += 0x88, var_r28++) {
-            unsigned char *temp_r25 = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + var_r27;
+            unsigned char *temp_r25 = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + (int)var_r27;
             void *object = (void *)((int (*)(int))fn_801B2EC0)(*(int *)temp_r25);
             time = fn_8016618C(object);
             temp_r25[0x2C] = 1;
@@ -739,7 +739,7 @@ void fn_80166A24(void) {
     previous = lbl_80561898;
     emptyValue = lbl_805618D0;
     var_r28 = 0;
-    var_r27 = (int)&lbl_8042FE38;
+    var_r27 = (unsigned char *)&lbl_8042FE38;
     for (var_r29 = 0, var_r30 = 0;
          var_r29 < *(int *)((unsigned char *)(*(unsigned char * volatile *)&lbl_8055E32C) + 4);
          var_r30 += 0x88, var_r29++) {
@@ -756,27 +756,27 @@ void fn_80166A24(void) {
             delta = time - stateValue;
 
             if (fn_80166F78((float *)(temp_r31 + 0x1C))) {
-                firstValue = fn_801429D0(lbl_8056189C, *(float *)(((unsigned char *)var_r27) + 0x10) - previous);
-                ((void (*)(float *, float, float))fn_80166F3C)((float *)(temp_r31 + 0x1C), firstValue, previous + *(float *)(((unsigned char *)var_r27) + 0x10));
-                amount = fn_8014C8B4(*(float *)&lbl_8042FE38, *(float *)(((unsigned char *)var_r27) + 4), *(float *)(((unsigned char *)var_r27) + 0xC), *(float *)(((unsigned char *)var_r27) + 8), delta);
-                active = time > *(float *)(((unsigned char *)var_r27) + 0x18) && time < *(float *)(((unsigned char *)var_r27) + 0x1C);
+                firstValue = fn_801429D0(lbl_8056189C, *(float *)(var_r27 + 0x10) - previous);
+                ((void (*)(float *, float, float))fn_80166F3C)((float *)(temp_r31 + 0x1C), firstValue, previous + *(float *)(var_r27 + 0x10));
+                amount = fn_8014C8B4(*(float *)&lbl_8042FE38, *(float *)(var_r27 + 4), *(float *)(var_r27 + 0xC), *(float *)(var_r27 + 8), delta);
+                active = time > *(float *)(var_r27 + 0x18) && time < *(float *)(var_r27 + 0x1C);
                 temp_r31[5] = active;
                 if (active) {
-                    amount = ((float (*)(float, float, float))fn_8014C8F8)(amount, *(float *)(((unsigned char *)var_r27) + 0x20), *(float *)(((unsigned char *)var_r27) + 0x24));
+                    amount = ((float (*)(float, float, float))fn_8014C8F8)(amount, *(float *)(var_r27 + 0x20), *(float *)(var_r27 + 0x24));
                 }
-                fn_80166E68((float *)(temp_r31 + 8), *(float *)(((unsigned char *)var_r27) + 0x54) + amount * lbl_8055E31C);
+                fn_80166E68((float *)(temp_r31 + 8), *(float *)(var_r27 + 0x54) + amount * lbl_8055E31C);
             }
 
             active = 0;
-            if (((unsigned char *)var_r27)[0x4C] != 0 && (delta < *(float *)&lbl_8042FE38 || delta > *(float *)(((unsigned char *)var_r27) + 4))) {
+            if (var_r27[0x4C] != 0 && (delta < *(float *)&lbl_8042FE38 || delta > *(float *)(var_r27 + 4))) {
                 active = 1;
             }
             if (active) {
                 fn_80166E54(*(void **)(temp_r31 + 0x58));
             }
 
-            active = delta > *(float *)(((unsigned char *)var_r27) + 0x2C);
-            if (delta > *(float *)(((unsigned char *)var_r27) + 0x28) && fn_80166F78((float *)(temp_r31 + 0x20))) {
+            active = delta > *(float *)(var_r27 + 0x2C);
+            if (delta > *(float *)(var_r27 + 0x28) && fn_80166F78((float *)(temp_r31 + 0x20))) {
                 if (active) {
                     ((Dummy8016707C *)fn_80156A40())->v5(*(int *)temp_r31, 1);
                 } else {
@@ -791,11 +791,11 @@ void fn_80166A24(void) {
                 fn_80166E68((float *)(temp_r31 + 0x34), lbl_8056189C);
             }
             *(float *)(temp_r31 + 0x24) = fn_80166DD4(temp_r31 + 8);
-            temp_r31[0x5D] = delta > *(float *)(((unsigned char *)var_r27) + 0x34);
-            temp_r31[0x5C] = delta > *(float *)(((unsigned char *)var_r27) + 0x30);
-            temp_r31[0x5E] = delta < *(float *)(((unsigned char *)var_r27) + 0x38);
-            temp_r31[0x5F] = delta < *(float *)(((unsigned char *)var_r27) + 0x40);
-            temp_r31[0x60] = delta < *(float *)(((unsigned char *)var_r27) + 0x44);
+            temp_r31[0x5D] = delta > *(float *)(var_r27 + 0x34);
+            temp_r31[0x5C] = delta > *(float *)(var_r27 + 0x30);
+            temp_r31[0x5E] = delta < *(float *)(var_r27 + 0x38);
+            temp_r31[0x5F] = delta < *(float *)(var_r27 + 0x40);
+            temp_r31[0x60] = delta < *(float *)(var_r27 + 0x44);
         } else {
             temp_r31[0x5C] = var_r28;
             temp_r31[0x5E] = var_r28;
@@ -829,9 +829,12 @@ void fn_80166E54(void *arg0) {
 void fn_80166E68(float *arg0, float arg1)
 {
   float value;
-  float factor;
   float start;
   float end;
+  float oldValue;
+  float oldTarget;
+  float factor;
+  float ratio;
   if (((float) __fabs(arg1 - arg0[1])) <= lbl_80558DC4)
   {
     return;
@@ -844,9 +847,9 @@ void fn_80166E68(float *arg0, float arg1)
   }
   else
   {
-    float oldValue = arg0[0];
-    float oldTarget = ((volatile float *) arg0)[1];
-    float ratio = (lbl_8055E318 - arg0[2]) / (end - arg0[2]);
+    oldTarget = ((volatile float *) arg0)[1];
+    oldValue = arg0[0];
+    ratio = (lbl_8055E318 - arg0[2]) / (end - arg0[2]);
     factor = lbl_805618D0;
     factor = (factor < ratio) ? (factor) : (ratio);
     factor = (factor > lbl_8056189C) ? (factor) : (lbl_8056189C);
@@ -858,7 +861,8 @@ void fn_80166E68(float *arg0, float arg1)
   {
     double target = arg1;
     double current = value;
-    arg0[3] = lbl_8055E318 + (((float) __fabs(((float) current) - ((float) target))) / arg0[4]);
+    arg1 = ((float)current) - ((float)target);
+    arg0[3] = lbl_8055E318 + ((float)__fabs(arg1) / arg0[4]);
   }
 }
 
