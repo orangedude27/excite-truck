@@ -2874,6 +2874,7 @@ extern u16 lbl_803946A0[];
 u16 _WUDGetQueuedSize_8006CA10(s8 arg0) {
     u16 r31;
     s32 saved = OSDisableInterrupts();
+    /* Return queued TX size for handle in [0,15], otherwise 0. */
     if (arg0 >= 0 && arg0 < 0x10) {
         r31 = lbl_803946A0[arg0];
     } else {
