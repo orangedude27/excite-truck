@@ -989,8 +989,10 @@ s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
     return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * (s16)fn_802B6E30()));
 }
 
-s16 fn_802B6ED8(s32 arg0, s32 arg1, u32 arg2) {
-    return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * (s16)fn_802B6E30()));
+s16 fn_802B6ED8(s32 base, s32 index, u32 count) {
+    /* Compute a signed 16-bit offset position: center by half the count (>> 1),
+     * scale the index delta by fn_802B6E30(), and add to base. */
+    return (s16)(base + ((index - (count >> 1)) * (s16)fn_802B6E30()));
 }
 
 extern void fn_80204048();
