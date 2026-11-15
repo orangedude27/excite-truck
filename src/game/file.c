@@ -463,7 +463,8 @@ extern "C" s32 fn_802E3C24(s32 findHandle, s32 pathBuffer, s32 bufferSize) {
 #pragma cplusplus off
 
 #pragma cplusplus on
-extern "C" void fn_802E3CA4(s32 arg0) {
+/* Close a file-find handle via the file subsystem (vtable slot 4); log if unsupported. */
+extern "C" void fn_802E3CA4(s32 findHandle) {
     class Obj {
     public:
         virtual void v0();
@@ -473,9 +474,9 @@ extern "C" void fn_802E3CA4(s32 arg0) {
         virtual void v4(s32);
     };
 
-    s32 result = ((s32 (*)(void))fn_802E339C)();
-    if (result != 0) {
-        ((Obj *)result)->v4(arg0);
+    s32 fileSubsystem = ((s32 (*)(void))fn_802E339C)();
+    if (fileSubsystem != 0) {
+        ((Obj *)fileSubsystem)->v4(findHandle);
     } else {
         fn_802E317C(lbl_8034D000);
     }
