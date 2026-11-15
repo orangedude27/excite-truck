@@ -90,12 +90,19 @@ extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
     return arg0;
 }
 
-extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_80128670(*(int *)arg0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* J2DAnmTexPattern::J2DAnmTexPatternTIMGPointer::~J2DAnmTexPatternTIMGPointer()
+ * -- CodeWarrior's deleting destructor.  fn_801C1C1C allocates the 0x70-byte
+ * object and fn_801C109C stores at +0 the one block fn_8012850C made for all
+ * of its arrays; this frees that block (fn_80128670 is the free routine for
+ * fn_8012850C blocks) and, when the destructor was called through delete
+ * (flag > 0), the object itself (fn_80128668).  fn_801C1C7C is the release
+ * helper that passes 0 here and frees the object itself afterwards. */
+extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int self, int shouldDelete) {
+    if (self != 0) {
+        fn_80128670(*(int *)self);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 #pragma dont_inline reset
 extern float lbl_80562910, lbl_80562914;
