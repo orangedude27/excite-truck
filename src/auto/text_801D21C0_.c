@@ -52,18 +52,17 @@ typedef struct { void *pad[0x12]; void (*fn48)(void *, f32 *, void *, s32, s32);
 
 #pragma dont_inline on
 void fn_801D2B94(void) {
-    u8 *var_r31;
-    s32 var_r30;
-    s32 temp;
-    var_r31 = lbl_80438958;
-    var_r30 = 0;
-    while (var_r30 < lbl_8055E930) {
-        temp = *(s32 *)(var_r31 + 0x6C);
-        if (temp != -1) {
-            fn_802C6CF8(temp);
+    /* Finalize each soevent class: release its loaded resource handle if one was acquired. */
+    u8 *entry = lbl_80438958;
+    s32 index = 0;
+    s32 resourceHandle;
+    while (index < lbl_8055E930) {
+        resourceHandle = *(s32 *)(entry + 0x6C);
+        if (resourceHandle != -1) {
+            fn_802C6CF8(resourceHandle);
         }
-        var_r31 += 0x4C4;
-        var_r30 += 1;
+        entry += 0x4C4;
+        index += 1;
     }
 }
 #pragma dont_inline off
@@ -176,10 +175,11 @@ extern void PSVECNormalize(f32 *, f32 *);
 extern f32 fabs(f32);
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
     u8 *arg0 = a0;
-    f32 *arg1 = a1;
     f32 *arg2 = (f32 *)a2;
+    f32 *arg1 = a1;
     f32 *arg3 = a3;
     f32 sp8[3];
     f32 sp14[3];
@@ -188,28 +188,30 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
     s32 sp38[9];
     f32 sp5C[3];
     f32 inv, a, b, c, d;
+    register f32 c98, c9C;
     s32 i;
     u8 *e;
     void *r7;
     s32 r24;
     u8 *obj;
     f32 g1, g2, g3;
-    s32 *src = (s32 *)arg1;
-
-    inv = scale / lbl_80562A98;
-    sp38[0] = src[1]; sp38[1] = src[2];
+    c98 = lbl_80562A98;
+    c9C = lbl_80562A9C;
+    sp38[0] = ((s32 *)arg1)[1];
+    sp38[1] = ((s32 *)arg1)[2];
+    inv = scale / c98;
+    sp38[2] = ((s32 *)arg1)[3];
     sp2C[0] = arg3[0]; sp2C[1] = arg3[1]; sp2C[2] = arg3[2];
-    sp38[2] = src[3];
     sp2C[0] = arg3[0] * inv; sp2C[1] = arg3[1] * inv; sp2C[2] = arg3[2] * inv;
-    sp38[3] = src[4]; sp38[4] = src[5]; sp38[5] = src[6];
-    sp38[6] = src[7]; sp38[7] = src[8]; sp38[8] = src[9];
+    sp38[3] = ((s32 *)arg1)[4]; sp38[4] = ((s32 *)arg1)[5]; sp38[5] = ((s32 *)arg1)[6];
+    sp38[6] = ((s32 *)arg1)[7]; sp38[7] = ((s32 *)arg1)[8]; sp38[8] = ((s32 *)arg1)[9];
     i = 0;
     if (*(s32 *)(arg0 + 0x490) > 0) {
         e = arg0 + 0x40;
         for (; i < *(s32 *)(arg0 + 0x490); i++, e += 0x5C) {
-            sp20[0] = *(f32 *)(e + 0x38) * lbl_80562A9C;
-            sp20[1] = *(f32 *)(e + 0x3C) * lbl_80562A9C;
-            sp20[2] = *(f32 *)(e + 0x40) * lbl_80562A9C;
+            sp20[0] = *(f32 *)(e + 0x38) * c9C;
+            sp20[1] = *(f32 *)(e + 0x3C) * c9C;
+            sp20[2] = *(f32 *)(e + 0x40) * c9C;
             if (sp5C == (f32 *)(e + 0x38)) {
                 a = *(f32 *)(e + 0x38); b = *(f32 *)(e + 0x3C); c = *(f32 *)(e + 0x40);
                 sp5C[0] = a * arg1[1] + b * arg1[4] + c * arg1[7];
@@ -230,7 +232,7 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
             sp14[0] = sp2C[0] * d; sp14[1] = sp2C[1] * d; sp14[2] = sp2C[2] * d;
             sp8[0] = arg2[0]; sp8[1] = arg2[1]; sp8[2] = arg2[2];
             (*(Vt801E **)obj)->fn48(obj, sp14, sp8, r24, 0);
-            d = *(f32 *)(obj + 0xD4) / lbl_80562A98;
+            d = *(f32 *)(obj + 0xD4) / c98;
             sp14[0] = *(f32 *)(e + 0x44) * d;
             sp14[1] = *(f32 *)(e + 0x48) * d;
             sp14[2] = *(f32 *)(e + 0x4C) * d;
