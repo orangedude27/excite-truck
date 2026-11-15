@@ -11393,11 +11393,12 @@ void bta_dm_auth_reply(tBTA_DM_AUTH_REPLY *p_data) {
 
 extern void bta_dm_inq_results_cb(u8 *);
 extern void fn_80072A98(void *);
-void bta_dm_search_start(void *arg0) {
+/* Start a BTA device-manager inquiry: clear the inquiry DB, save search callbacks/state, and begin BTM inquiry. */
+void bta_dm_search_start(void *p_msg) {
     BTM_ClearInqDb(0);
-    *(u32 *)lbl_803C0B98 = *(u32 *)((u8 *)arg0 + 0x18);
-    *(u32 *)(lbl_803C0B98 + 8) = *(u32 *)((u8 *)arg0 + 0x14);
-    BTM_StartInquiry((tBTM_INQ_PARMS *)((u8 *)arg0 + 8),
+    *(u32 *)lbl_803C0B98 = *(u32 *)((u8 *)p_msg + 0x18);
+    *(u32 *)(lbl_803C0B98 + 8) = *(u32 *)((u8 *)p_msg + 0x14);
+    BTM_StartInquiry((tBTM_INQ_PARMS *)((u8 *)p_msg + 8),
                      (tBTM_INQ_RESULTS_CB *)bta_dm_inq_results_cb,
                      (tBTM_CMPL_CB *)fn_80072A98);
 }
