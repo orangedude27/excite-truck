@@ -1039,8 +1039,36 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
 }
 
 #pragma pop
-void fn_802DD228(void) { if (lbl_8055FEC0 != 0) { fn_802D3E88(); lbl_8055FEC0 = 0; } fn_802DBDD8(); fn_802CADD0(-1, 1); GXSetNumIndStages(0); GXSetTevDirect(0); }
+/* Ends the indirect-texture pass fn_802DCFCC set up, once the geometry drawn
+ * with it is on screen (its caller fn_802C03F0 draws it with fn_802DD27C in
+ * between): drops the indirect texture matrix from the GX state block, forgets
+ * the cached position array, unbinds the pass' texture from texcoord slot 1,
+ * turns indirect stages off and makes tev stage 0 direct again.
+ * (rename_symbol is refused here; suggested name CpuLight_EndIndirectPass.) */
+void fn_802DD228(void) {
+    /* Whether fn_802DCFCC left an indirect-texture pass running. */
+#define indirectPassRunning lbl_8055FEC0
+#define ClearIndTexMtxFlag fn_802D3E88 /* lbl_804C5700[13]: indirect tex matrix loaded */
+#define ForgetPositionArray fn_802DBDD8 /* cached position array + vertex count */
+#define BindTextureSlot fn_802CADD0 /* (texture handle, texcoord slot) */
+#define NO_TEXTURE (-1) /* BindTextureSlot's "clear this slot" handle */
+#define TEXCOORD_SLOT_INDIRECT 1 /* the slot the indirect pass' texture sits in */
 
+    if (indirectPassRunning != 0) {
+        ClearIndTexMtxFlag();
+        indirectPassRunning = 0;
+    }
+    ForgetPositionArray();
+    BindTextureSlot(NO_TEXTURE, TEXCOORD_SLOT_INDIRECT);
+    GXSetNumIndStages(0);
+    GXSetTevDirect(GX_TEVSTAGE0);
+#undef indirectPassRunning
+#undef ClearIndTexMtxFlag
+#undef ForgetPositionArray
+#undef BindTextureSlot
+#undef NO_TEXTURE
+#undef TEXCOORD_SLOT_INDIRECT
+}
 /* The vertex record the light renderer builds and points the GX vertex arrays
  * at: a position, one RGBA8 color and one texture coordinate, 24 bytes. */
 typedef struct { f32 x, y, z; } LightVec3;
