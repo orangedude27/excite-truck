@@ -47,11 +47,13 @@ s32 fn_802E321C(const char *arg0) {
     return strncmp(arg0, prefix, strlen(prefix)) == 0;
 }
 
-s32 fn_802E3270(s32 arg0) {
-    s32 p = (s32)lbl_8055D1A8;
-    s32 len = strlen((char *)p);
-    s32 r = strncmp((const char *)arg0, (char *)p, len);
-    return (unsigned int)__cntlzw(r) >> 5;
+s32 fn_802E3270(s32 path) {
+    /* the prefix address is held as an integer so the compiler keeps it in one
+       callee-saved register instead of re-materializing the small-data address */
+    s32 prefix = (s32)lbl_8055D1A8; /* "sd:" */
+    s32 prefixLen = strlen((char *)prefix);
+    s32 result = strncmp((const char *)path, (char *)prefix, prefixLen);
+    return (unsigned int)__cntlzw(result) >> 5;
 }
 
 #pragma dont_inline on
