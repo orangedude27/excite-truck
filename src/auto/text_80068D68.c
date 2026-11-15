@@ -5860,12 +5860,20 @@ void BTA_DmSetDeviceName(char *p_name) {
     }
 }
 
-void BTA_DmSetVisibility(u8 arg0, u8 arg1) {
+/*******************************************************************************
+**
+** Function         BTA_DmSetVisibility
+**
+** Description      Post a DM request to set local device discoverable and
+**                  connectable modes.
+**
+*******************************************************************************/
+void BTA_DmSetVisibility(u8 disc_mode, u8 conn_mode) {
     void *buf = GKI_getbuf(0x110);
     if (buf != 0) {
         *(u16 *)buf = 0x103;
-        *((u8 *)buf + 8) = arg0;
-        *((u8 *)buf + 9) = arg1;
+        *((u8 *)buf + 8) = disc_mode;
+        *((u8 *)buf + 9) = conn_mode;
         fn_80071450(buf);
     }
 }
