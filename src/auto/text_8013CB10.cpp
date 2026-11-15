@@ -2300,10 +2300,20 @@ extern "C" void fn_8014145C(void *arg0) {
 extern "C" char lbl_8032CAA0[];
 extern "C" char lbl_8032CAB0[];
 extern "C" void *fn_802CAC28(const char *, s32);
+/* ZoneTextures::init -- load the zone system's two effect textures by name
+ * through the texture manager (fn_802CAC28(path, type) opens a ".tex" in the
+ * 0x200-entry texture table) and keep the slots it hands back; returns the
+ * pair. ZoneMaster owns one at +0x280, fn_80171698's object one at +0xA14. */
 extern "C" void *fn_801414A4(void *arg0) {
-    void **fields = (void **)arg0;
-    fields[0] = fn_802CAC28(lbl_8032CAA0, 0);
-    fields[1] = fn_802CAC28(lbl_8032CAB0, 0);
+    #define LoadTexture fn_802CAC28
+    #define zoneLiteTexName lbl_8032CAA0
+    #define zoneGlowTexName lbl_8032CAB0
+    ZoneTextures *textures = (ZoneTextures *)arg0;
+    textures->liteTex = LoadTexture(zoneLiteTexName, 0);
+    textures->glowTex = LoadTexture(zoneGlowTexName, 0);
+    #undef LoadTexture
+    #undef zoneLiteTexName
+    #undef zoneGlowTexName
     return arg0;
 }
 
