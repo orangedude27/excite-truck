@@ -76,9 +76,10 @@ int fn_8000AD2C(void) {
     }
 }
 
+/* Returns true when the current state-table entry is one of the special states (indices 1, 0x12, or 0x18). */
 int fn_8000AD84(void) {
- int index = ((char *)lbl_8055D3D0 - lbl_802FBC90) / 0x14;
- switch (index) {
+ int stateIndex = ((char *)lbl_8055D3D0 - lbl_802FBC90) / 0x14;
+ switch (stateIndex) {
  case 0x12:
  case 1:
  case 0x18:
