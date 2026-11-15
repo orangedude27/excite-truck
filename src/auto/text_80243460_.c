@@ -112,12 +112,19 @@ s32 fn_8024360C(s32 value, s32 tableIndex) {
 }
 #pragma unroll reset
 
-s32 fn_80243710(s32 arg0, s32 arg1) {
+#pragma unroll reset
+/* MenuTable_IsEntryIndexValid: whether entryIndex names an entry of the menu
+ * table's group -- 0 through the group's entry count inclusive, so the index
+ * one past the group's last entry passes as well. */
+s32 fn_80243710(s32 entryIndex, s32 group) {
+#define MenuTable_GetEntryCount fn_80243478
     s32 result = 0;
-    if (arg0 >= 0 && arg0 <= fn_80243478(arg1)) result = 1;
+    if (entryIndex >= 0 && entryIndex <= MenuTable_GetEntryCount(group)) result = 1;
+#undef MenuTable_GetEntryCount
     return result;
 }
-
+#pragma push
+#pragma use_lmw_stmw off
 /* Menu cursor hold: the group/entry the cursor rested on when it last moved,
  * -1/-1 when there is nothing to hold on to (kept by MenuList_MoveCursor). */
 __declspec(section ".sdata") extern s32 lbl_8055BE0C; /* s_cursorHoldGroup */
