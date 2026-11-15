@@ -64,14 +64,15 @@ void fn_800123EC(float arg0) {
 
 #pragma push
 #pragma scheduling on
+/* Reset the progress/update state block (lbl_80351790) to defaults and mark it active. */
 void fn_80012478(void) {
-    register char *p = lbl_80351790;
+    register char *progressState = lbl_80351790;
     register int zero = 0;
-    p[0] = zero;
-    memset(p + 1, zero, 0x80);
-    *(int *)(p + 0x8c) = zero;
-    *(float *)(p + 0x88) = lbl_8056034C;
-    *(float *)(p + 0x84) = lbl_8056034C;
+    progressState[0] = zero;
+    memset(progressState + 1, zero, 0x80);
+    *(int *)(progressState + 0x8c) = zero;
+    *(float *)(progressState + 0x88) = lbl_8056034C;
+    *(float *)(progressState + 0x84) = lbl_8056034C;
     lbl_8055D4EC = 1;
 }
 
