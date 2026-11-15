@@ -15705,15 +15705,16 @@ BOOLEAN btsnd_hcic_write_policy_set(UINT16 handle, UINT16 settings) {
     return TRUE;
 }
 
+/* Send HCI Reset command (opcode 0x0C03, no parameters) to the controller. */
 BOOLEAN btsnd_hcic_reset(UINT8 local_controller_id) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 3;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 3;
-    p[9] = 0xC;
-    p[10] = 0;
-    btu_hcif_send_cmd(p);
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == NULL) return FALSE;
+    *(u16 *)(cmdBuf + 2) = 3;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 3;
+    cmdBuf[9] = 0xC;
+    cmdBuf[10] = 0;
+    btu_hcif_send_cmd(cmdBuf);
     return TRUE;
 }
 
