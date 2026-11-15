@@ -454,7 +454,14 @@ static asm void RealMode(register void* config) {
     // clang-format on
 }
 
-/* Configures DBATs for the simulated/physical MEM1 and MEM2 layout. */
+/* Configures DBATs for the simulated/physical MEM1 and MEM2 layout.
+ *
+ * Each ConfigMEM* stub is run through RealMode(), which jumps to it with
+ * address translation off; the stub writes its BAT pair(s) and returns with
+ * rfi and MSR IR|DR set, so no translated access ever sees a half-written
+ * mapping.  MEM1 is mapped at 0x80000000 (physical 0) and MEM2 at 0x90000000
+ * (physical 0x10000000), with a second, cache-inhibited copy of MEM2 at
+ * 0xD0000000; the sizes below are what each stub's BATs cover. */
 static void BATConfig(void) {
     u32 mem1sim;
     u32 mem1phys;
@@ -464,14 +471,13 @@ static void BATConfig(void) {
         // @bug Checks function address rather than result
         // NOLINTNEXTLINE (-Wtautological-pointer-compare)
         if (OSGetPhysicalMem1Size == 0) {
-            // ES1 with no physical MEM1: ConfigMEM_ES1_0 runs in real mode and
-            // covers the whole 128 MB window with one pair of BATs (virtual
-            // 0x80000000..0x87FFFFFF -> physical 0, cacheable, supervisor only)
-            // before switching address translation on (MSR IR|DR) and rfying
-            // back here.  A BAT upper half is virtual base | (size / 64 KB - 1)
-            // << 1 | valid, a lower half physical base | PP (01 = supervisor
-            // read/write); the upper half is written last so an entry only
-            // appears once its base and attributes are in place.
+            // ES1 with no physical MEM1: ConfigMEM_ES1_0 covers the whole
+            // 128 MB window with a single pair of BATs (virtual 0x80000000 ->
+            // physical 0, cacheable, supervisor only).  A BAT upper half is
+            // virtual base | (size / 64 KB - 1) << 1 | valid, a lower half is
+            // physical base | PP (01 = supervisor read/write), and the upper
+            // half is written last so an entry only appears once its base and
+            // attributes are in place.
             RealMode(ConfigMEM_ES1_0);
             return;
         }
@@ -479,29 +485,35 @@ static void BATConfig(void) {
 
     mem1sim = OSGetConsoleSimulatedMem1Size();
     mem1phys = OSGetPhysicalMem1Size();
+    // 24 MB of MEM1 mapped on a console with more physical MEM1 than that:
+    // drop the cached lines above the 24 MB window and put the memory-protect
+    // block's mode register (0xCC004028) in mode 2 for the bigger chip.
     if (OSGetConsoleSimulatedMem1Size() < mem1phys &&
         mem1sim == OS_MEM_MB_TO_B(24)) {
         DCInvalidateRange((void*)0x81800000, OS_MEM_MB_TO_B(24));
         MI_HW_REGS[MI_REG_0x28] = 2;
     }
 
+    // 24 MB = 16 MB + 8 MB at 0x81000000, 48 MB = 32 MB + 16 MB at 0x82000000.
     if (mem1sim <= OS_MEM_MB_TO_B(24)) {
         RealMode(ConfigMEM1_24MB);
     } else if (mem1sim <= OS_MEM_MB_TO_B(48)) {
         RealMode(ConfigMEM1_48MB);
     }
 
+    // First address past the MEM2 the memory controller reports as accessible.
     mem2end = *(void**)OSPhysicalToCached(OS_PHYS_ACCESSIBLE_MEM2_END);
+    // MEM2 in 4 MB steps: 52, 56 or 64 MB, or 112 / 128 MB on the big boards.
     if (OSGetConsoleSimulatedMem2Size() <= OS_MEM_MB_TO_B(64)) {
-        if (mem2end <= (void*)0x93400000) {
+        if (mem2end <= (void*)0x93400000) {  // 0x90000000 + 52 MB
             RealMode(ConfigMEM2_52MB);
         } else if ((char*)mem2end <= (char*)0x93400000 + OS_MEM_MB_TO_B(4)) {
-            RealMode(ConfigMEM2_56MB);
+            RealMode(ConfigMEM2_56MB);       // + 56 MB
         } else {
             RealMode(ConfigMEM2_64MB);
         }
     } else if (OSGetConsoleSimulatedMem2Size() <= OS_MEM_MB_TO_B(128)) {
-        if (mem2end <= (void*)0x97000000) {
+        if (mem2end <= (void*)0x97000000) {  // 0x90000000 + 112 MB
             RealMode(ConfigMEM2_112MB);
         } else {
             RealMode(ConfigMEM2_128MB);
