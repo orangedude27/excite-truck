@@ -11,6 +11,7 @@ void fn_80160B14(void) {
 	fn_80128658();
 }
 
+/* Normalize a 2D float vector in place (x = x / |v|, y = y / |v|). */
 void fn_80160B18(float *arg0) {
     float temp_f0;
     float temp_f1;
