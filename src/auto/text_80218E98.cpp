@@ -7961,18 +7961,19 @@ extern "C" void fn_80227C9C(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     fn_802278F0(arg0, arg1, arg2, arg3, arg4);
 }
 
-extern "C" void *fn_80227D00(void *arg0) {
+extern "C" void *fn_80227D00(void *object) {
+    /* Construct a TabItemBox object: run base init, install its vtable, load box artwork, and warn on failure. */
     s32 result;
     void *vtable;
 
     fn_80218F80();
     vtable = lbl_8033DEAC;
-    *(void **)arg0 = vtable;
+    *(void **)object = vtable;
     result = ((s32 (*)(void *, void *))fn_8023512C)(lbl_8033DC4C, lbl_8033DEAC);
-    *(s32 *)((u8 *)arg0 + 0x244) = result;
+    *(s32 *)((u8 *)object + 0x244) = result;
     if (result == 0)
         fn_802E30C8(lbl_8033DC58);
-    return arg0;
+    return object;
 }
 
 /* Destructor-like cleanup: installs vtable, releases owned object at +0x244, runs base destructor, optionally frees self. */
