@@ -692,6 +692,10 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 #pragma pop
 
 void fn_802321D8(void) {
+    /* (Re)initialize the gText font-tracker cache: warn if a cache is already
+       allocated, allocate a fresh 0x16C-byte tracker tagged "gtext:fontTracker",
+       and clear it. (lbl_8055F068 = cache, lbl_80340488 = double-init message,
+       lbl_803404C0 = allocation tag; fn_802E317C reports and aborts.) */
     if (lbl_8055F068 != 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_80340488);
     lbl_8055F068 = fn_801284F8(0x16C, lbl_803404C0);
     memset(lbl_8055F068, 0, 0x16C);
