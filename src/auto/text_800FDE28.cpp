@@ -640,14 +640,15 @@ u32 fn_800FEB9C(void) {
     return out >> 16;
 }
 
+/* Resolve a data reference to an address: ADDRESS returns value, OFFSET adds base, others panic. */
 extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-    s32 type, u32 arg, void *pBase) {
-    if (type == 1) {
-        return (void *)(arg + (u32)pBase);
+    s32 refType, u32 value, void *base) {
+    if (refType == 1) {
+        return (void *)(value + (u32)base);
     }
 
-    if (type == 0) {
-        return (void *)arg;
+    if (refType == 0) {
+        return (void *)value;
     }
 
     Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327010, 0x1F6,
