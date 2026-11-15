@@ -326,7 +326,7 @@ void PPCMthid4(u32 val);
  * HID4
  * Hardware Implementation-Dependent Register 4
  */
-// Unknown
+// Broadway errata: must never be cleared (see PPCMthid4)
 #define HID4_H4A (1 << (31 - 0))
 // L2 fetch mode
 #define HID4_L2FM (0b11 << (31 - 2))
