@@ -1042,19 +1042,12 @@ extern "C" void fn_80219718(void *arg0) {
         *(s32 *)((u8 *)arg0 + 0x244) + *(s32 *)((u8 *)arg0 + 4),
         *(s32 *)((u8 *)arg0 + 0x248) + *(s32 *)((u8 *)arg0 + 8),
         &sp14, &sp10, &spC, &sp8);
-    var_r0 = sp14;
-    if (var_r0 > *(s32 *)((u8 *)arg0 + 4)) var_r0 = *(s32 *)((u8 *)arg0 + 4);
-    sp14 = var_r0;
+    sp14 = sp14 < *(s32 *)((u8 *)arg0 + 4) ? sp14 : *(s32 *)((u8 *)arg0 + 4);
     temp_r30 = *(s32 *)((u8 *)arg0 + 4);
-    var_r0_2 = temp_r30 + ((VfObj *)arg0)->vf28();
-    if (var_r0_2 > spC) var_r0_2 = spC;
-    spC = var_r0_2;
-    var_r0_3 = sp10;
-    if (var_r0_3 > *(s32 *)((u8 *)arg0 + 8)) var_r0_3 = *(s32 *)((u8 *)arg0 + 8);
-    sp10 = var_r0_3;
-    var_r0_4 = sp8;
-    if (var_r0_4 < *(s32 *)((u8 *)arg0 + 0x10)) var_r0_4 = *(s32 *)((u8 *)arg0 + 0x10);
-    sp8 = var_r0_4;
+    var_r0_2 = ((VfObj *)arg0)->vf28();
+    spC = spC > temp_r30 + var_r0_2 ? spC : temp_r30 + var_r0_2;
+    sp10 = sp10 < *(s32 *)((u8 *)arg0 + 8) ? sp10 : *(s32 *)((u8 *)arg0 + 8);
+    sp8 = sp8 > *(s32 *)((u8 *)arg0 + 0x10) ? sp8 : *(s32 *)((u8 *)arg0 + 0x10);
     *(s32 *)((u8 *)arg0 + 0x244) += *(s32 *)((u8 *)arg0 + 4) - sp14;
     *(s32 *)((u8 *)arg0 + 0x248) += *(s32 *)((u8 *)arg0 + 8) - sp10;
     ((Dispatch19718_1C *)arg0)->set(sp14, sp10);
