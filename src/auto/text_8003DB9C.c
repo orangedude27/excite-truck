@@ -620,7 +620,7 @@ void GXSetCoPlanar(s32 enable);
 void GXSetCullMode(unsigned int mode);
 void GXSetClipMode(s32 arg0);
 void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
-void GXSetScissorBoxOffset(s32 x, s32 y);
+void GXSetScissorBoxOffset();
 void GXSetNumChans(s32 num);
 void GXSetChanAmbColor_Internal(s32 type, void *color);
 void GXSetChanMatColor_Internal(s32 type, void *color);
