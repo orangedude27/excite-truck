@@ -1239,6 +1239,7 @@ void fn_801AC254(void *arg0) {
     }
 }
 
+/* Allocates and constructs a 0x244-byte DynamicObstacle instance with its primary and secondary vtables. */
 void *fn_801AC26C(void) {
     const char *name = lbl_80335718;
     void *obj = ((void *(*)(int, const char *))fn_801284F8)(0x244, name);
