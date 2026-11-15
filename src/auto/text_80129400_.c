@@ -293,13 +293,14 @@ void fn_80129AEC(void *arg0) {
 }
 
 void fn_80129AFC(void) {
-    u8 *p = lbl_80422180;
-    s32 i = 0;
+    /* Initialize 4 controller state entries using the default configuration template. */
+    u8 *entry = lbl_80422180;
+    s32 index = 0;
     do {
-        fn_80129690(p, i, lbl_804223A0);
-        i++;
-        p += 0x80;
-    } while (i < 4);
+        fn_80129690(entry, index, lbl_804223A0);
+        index++;
+        entry += 0x80;
+    } while (index < 4);
 }
 
 /* Apply controller config table lbl_80422380 to all four 0x80-byte input state
