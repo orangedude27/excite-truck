@@ -323,14 +323,17 @@ void fn_80207C80(void *arg0) {
 }
 
 #pragma dont_inline on
-signed long fn_80207D40(void* arg0) {
-    signed long temp_r3;
+/* Whether the SoundManager may run its update this frame: only once more than 16
+ * ms have gone by since its last pass.  fn_802E2C20 counts the ms since boot, and
+ * the pass started here is stamped into the manager at +0x08. */
+signed long fn_80207D40(SoundMgr* soundMgr) {
+    signed long now;
 
-    temp_r3 = fn_802E2C20();
-    if ((signed long)(temp_r3 - *(signed long*)(((signed char*)arg0) + 8)) <= 0x10) {
+    now = fn_802E2C20();
+    if ((signed long)(now - soundMgr->lastUpdateMs) <= 0x10) {
         return 0;
     }
-    *(signed long*)(((signed char*)arg0) + 8) = temp_r3;
+    soundMgr->lastUpdateMs = now;
     return 1;
 }
 #pragma dont_inline reset
