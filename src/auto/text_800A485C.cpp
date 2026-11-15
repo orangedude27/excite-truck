@@ -21471,12 +21471,13 @@ extern "C" void* fn_800D57AC(void* arg0, const void* arg1) {
     return arg0;
 }
 
-extern "C" void* __dt__Q36nw4hbm3lyt8BoundingFv(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+/* nw4hbm::lyt::Bounding::~Bounding(): destroys base Pane and optionally deletes storage. */
+extern "C" void* __dt__Q36nw4hbm3lyt8BoundingFv(void* self, int shouldDelete) {
+    if (self != 0) {
+        __dt__Q36nw4hbm3lyt4PaneFv(self, 0);
+        if (shouldDelete > 0) ((void (*)(void *))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo(BoundingPane *self, const DrawInfo *info) {
