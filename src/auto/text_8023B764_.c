@@ -83,13 +83,16 @@ void fn_8023B7EC(void *context, s32 arg1, s32 arg2, s32 arg3) {
     fn_8000AB48(context, tempBuf);
 }
 #pragma pop
-void fn_8023B8AC(s32 arg0) {
+/* Run one context/frame update: initialize per-frame state, run subsystems, then post-update steps. */
+void fn_8023B8AC(s32 context) {
     fn_8000ABE0();
-    fn_800126C0(arg0, arg0 + 0x3F8);
+    fn_800126C0(context, context + 0x3F8);
     fn_80244738();
     fn_8023B77C();
     fn_80211F44();
-    if (fn_80019B3C() == 0) fn_8027B690();
+    if (fn_80019B3C() == 0) {
+        fn_8027B690();
+    }
     fn_8020A600();
 }
 
