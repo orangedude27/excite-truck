@@ -2868,16 +2868,16 @@ void WUDiMoveBottomSmpDevInfoPtr_8006B98C(void *arg0) {
 extern char lbl_80319994[];
 extern u16 lbl_80394680[];
 extern u32 lbl_80393628[];
-s32 _WUDGetDevAddr(u32 arg0) {
-    s32 r31;
-    s32 saved = OSDisableInterrupts();
-    if (arg0 < 0x10) {
-        r31 = ((u32 *)&lbl_80393628)[(u8)arg0];
+BD_ADDR_PTR _WUDGetDevAddr(u32 handle) {
+    BD_ADDR_PTR addr;
+    s32 enabled = OSDisableInterrupts();
+    if (handle < 16 /* WUD_MAX_DEV_ENTRY */) {
+        addr = ((BD_ADDR_PTR *)lbl_80393628)[(u8)handle];
     } else {
-        r31 = 0;
+        addr = 0;
     }
-    OSRestoreInterrupts(saved);
-    return r31;
+    OSRestoreInterrupts(enabled);
+    return addr;
 }
 
 /* Returns the queued output size for the given WUD device handle (0-15), or 0 if invalid. */
@@ -7558,20 +7558,11 @@ void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
     u8 *var_r31_2;
 
     var_r29 = lbl_803C0F78 + 0x34;
-    var_r31 = 0;
-loop_1:
-    if (var_r29[0x119] == 0) {
-        goto loop_1_next;
-    }
-    if (memcmp(var_r29 + 8, bda, 6) != 0) {
-        goto loop_1_next;
-    }
-    goto loop_1_done;
-loop_1_next:
-    var_r31 += 1;
-    var_r29 += 0x11C;
-    if (var_r31 < 4) {
-        goto loop_1;
+    for (var_r31 = 0; var_r31 < 4; var_r31++, var_r29 += 0x11C) {
+        if (var_r29[0x119] == 0 || memcmp(var_r29 + 8, bda, 6) != 0) {
+        } else {
+            goto loop_1_done;
+        }
     }
     var_r29 = NULL;
 loop_1_done:
@@ -7606,11 +7597,18 @@ loop_1_done:
             if (temp_r3 != NULL) {
                 for (var_r6 = 0; var_r6 < 8; var_r6++) {
                     if (temp_r3[0x77 + var_r6] != 0) {
+                        u8 *p_btm;
+                        u16 supported;
+                        u8 ver;
+
                         memcpy(var_r31_2 + 0x110, temp_r3 + 0x77, 8);
-                        temp_r4 = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
+                        p_btm = lbl_803C0F78;
+                        supported = *(u16 *)(p_btm + 0x654);
+                        ver = p_btm[0x636];
+                        temp_r4 = supported & 0xCC18;
                         var_r30 = temp_r4 & ~0x3306;
-                        if (lbl_803C0F78[0x636] >= 3) {
-                            var_r30 = temp_r4 | (*(u16 *)(lbl_803C0F78 + 0x654) & 0x3306);
+                        if (ver >= 3) {
+                            var_r30 = temp_r4 | (supported & 0x3306);
                         }
                         if (lbl_803C0F78[0x27C0] >= 4) {
                             fn_80070954(0xD0003, lbl_80315CE0, var_r30);
@@ -7621,22 +7619,13 @@ loop_1_done:
                         if (*(u16 *)(lbl_803C0F78 + 0x4C4) != 0) {
                             BTM_SetLinkPolicy(var_r31_2 + 8, (u16 *)(lbl_803C0F78 + 0x4C4));
                         }
-                        var_r29_2 = 0;
                         temp_r28 = *(u16 *)(lbl_803C0F78 + 0x4C6);
                         var_r30_2 = lbl_803C0F78 + 0x34;
-loop_27:
-                        if (var_r30_2[0x119] == 0) {
-                            goto loop_27_next;
-                        }
-                        if (memcmp(var_r30_2 + 8, var_r31_2 + 8, 6) != 0) {
-                            goto loop_27_next;
-                        }
-                        goto loop_27_done;
-loop_27_next:
-                        var_r29_2 += 1;
-                        var_r30_2 += 0x11C;
-                        if (4 > var_r29_2) {
-                            goto loop_27;
+                        for (var_r29_2 = 0; var_r29_2 < 4; var_r29_2++, var_r30_2 += 0x11C) {
+                            if (var_r30_2[0x119] == 0 || memcmp(var_r30_2 + 8, var_r31_2 + 8, 6) != 0) {
+                            } else {
+                                goto loop_27_done;
+                            }
                         }
                         var_r30_2 = NULL;
 loop_27_done:
