@@ -519,11 +519,12 @@ s32 fn_80156AB8(void *arg0) {
 
 extern u8 lbl_8032E448[];
 extern void fn_80138AD8(void* this_, u32 a);
-void* __dt__Q28PSSystem7SeqHeapFv_80156AC4(void* this_, s32 flag) {
+/* PSSystem::SeqHeap scalar-deleting destructor variant: install this variant's vtable, destroy the base subobject at +4, then delete the object when requested. */
+void* __dt__Q28PSSystem7SeqHeapFv_80156AC4(void* this_, s32 shouldDelete) {
     if (this_) {
         *(u32*)this_ = (u32)lbl_8032E448;
         fn_80138AD8((u8*)this_ + 4, (u32)lbl_8032E448);
-        if (flag > 0) {
+        if (shouldDelete > 0) {
             fn_80128668(this_);
         }
     }
