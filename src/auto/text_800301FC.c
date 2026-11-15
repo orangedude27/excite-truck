@@ -84,8 +84,8 @@ void TRKPostEvent(s32 arg0) {
     extern void TRKGetNextEvent(void *, void *);
     s32 irq;
     u32 ticks;
-    u32 zero = 0;
     if ((s32)lbl_8055D6A8 != 1) {
+        u32 zero = 0;
         OSRegisterVersion(lbl_80558DD0);
         ticks = (*(volatile u32 *)0x800000F8 >> 2) / 125000;
         lbl_8055D6D0 = zero;
@@ -1385,14 +1385,15 @@ s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     return count;
 }
 
-void AXRmtAdvancePtr(s32 arg0) {
-    s32 end;
-    end = lbl_8055D754 - 0x24;
-    if (end < 0) end += lbl_8055D758;
-    end -= lbl_8055D750;
-    if (end < 0) end += lbl_8055D758;
-    if (arg0 > end) arg0 = end;
-    lbl_8055D750 += arg0;
+void AXRmtAdvancePtr(s32 samples) {
+    /* Advance the remote audio read pointer, clamping to the available sample space in the ring buffer. */
+    s32 available;
+    available = lbl_8055D754 - 0x24;
+    if (available < 0) available += lbl_8055D758;
+    available -= lbl_8055D750;
+    if (available < 0) available += lbl_8055D758;
+    if (samples > available) samples = available;
+    lbl_8055D750 += samples;
     if (lbl_8055D750 >= lbl_8055D758) {
         lbl_8055D750 -= lbl_8055D758;
     }
