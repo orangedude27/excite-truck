@@ -4752,13 +4752,14 @@ extern "C" void *fn_80220874(void *self, s32 deletingFlag) {
     return self;
 }
 
-extern "C" void fn_802208EC(void *arg0) {
-    void *value;
+extern "C" void fn_802208EC(void *widget) {
+    /* If enabled, register (+0x260, +0x2C) and cache the returned entry at +0x25C, then notify (tag 1, size 4). */
+    void *entry;
     if (fn_80129BC4() != 0) {
-        value = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C),
-                            *(s32 *)((u8 *)arg0 + 0x260), arg0);
-        *(void **)((u8 *)arg0 + 0x25C) = value;
-        ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
+        entry = fn_80217BD8(*(s32 *)((u8 *)widget + 0x2C),
+                            *(s32 *)((u8 *)widget + 0x260), widget);
+        *(void **)((u8 *)widget + 0x25C) = entry;
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(widget, 1, entry, 4);
     }
 }
 
