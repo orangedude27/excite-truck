@@ -55,7 +55,9 @@ typedef struct _GXData {
     u32 zControl;  // at 0x22C
     char UNK_0x230[0x254 - 0x230];
     u32 genMode; // at 0x254
-    char UNK_0x258[0x520 - 0x258];
+    char UNK_0x258[0x518 - 0x258];
+    GXTexRegion *(*texRegionCallback)(GXTexObj *, GXTexMapID); // at 0x518 set by GXSetTexRegionCallback
+    GXTlutRegion *(*tlutRegionCallback)(u32 tlutName);         // at 0x51C set by GXSetTlutRegionCallback
     GXAttrType normalType;          // at 0x520
     GXBool normal;                  // at 0x524
     GXBool binormal;                // at 0x525
