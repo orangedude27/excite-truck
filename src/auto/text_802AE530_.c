@@ -8,6 +8,7 @@ extern int lbl_804BD8CC[3];
 extern int lbl_804BD8C0[];
 extern void *fn_802AE588(void *, int);
 #pragma scheduling invalid_target
+/* Initialize and register this translation unit's global object-list record. */
 void fn_802AE530(void) {
     fn_8000D838(&lbl_8055F950);
     lbl_804BD8CC[0] = (int)((char *)lbl_804BD8CC + 12);
