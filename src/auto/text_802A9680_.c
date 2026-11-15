@@ -19,6 +19,8 @@ extern void fn_802C6CF8(int);
 extern void fn_80128668(void*);
 #pragma scheduling invalid_target
 void* fn_802A9680(void* arg0, s32 arg1) {
+    /* Destroy/cleanup helper: release the handle stored at +0x4 if set, then
+       optionally free the object itself when arg1 > 0. Returns the object. */
     if (arg0 != 0) {
         s32 handle = *(s32 *)((u8 *)arg0 + 4);
         if (handle != -1) {
@@ -31,7 +33,6 @@ void* fn_802A9680(void* arg0, s32 arg1) {
     }
     return arg0;
 }
-
 extern void *fn_802C86DC(void);
 extern s32 fn_802C8DBC(s32);
 extern void fn_802C8E00(s32, s32, float, float, float, float, float);
@@ -44,18 +45,18 @@ extern const float lbl_8056499C, lbl_805649A0, lbl_805649A4, lbl_805649A8, lbl_8
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
-    void *camA;
-    void *camA24;
     void *camB;
     void *camC;
+    void *camA24;
+    float e18;
     float f31v;
     float f30v;
-    camA = fn_802C86DC();
-    camA24 = (u8 *)camA + 0x24;
+    camA24 = (u8 *)fn_802C86DC() + 0x24;
     camB = fn_802C86DC();
     camC = fn_802C86DC();
     fn_802C8BD0(arg3);
-    f31v = lbl_80564998 - (float)fn_8002EFB4(fn_801E7E18(), lbl_80564990);
+    e18 = fn_801E7E18();
+    f31v = lbl_80564998 - (float)fn_8002EFB4(e18, lbl_80564990);
     f30v = lbl_8056499C + f31v;
     if (fn_802C8DBC(count * 4) != 0) {
         float p[3];
@@ -73,14 +74,14 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         u32 low;
         s32 i;
         float dist;
-        s32 n;
         s32 nn;
+        s32 n;
         s32 m;
         s32 col;
         c98 = lbl_80564998;
         low = (u32)colorArg & 0xFFFFFF;
-        cA4 = lbl_805649A4;
         walker = (float *)obj;
+        cA4 = lbl_805649A4;
         cA8 = lbl_805649A8;
         cB0 = lbl_805649B0;
         i = 0;
@@ -150,8 +151,8 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         fn_802C8DBC(count * 4);
         c98b = lbl_80564998;
         lowb = (u32)colorArg & 0xFFFFFF;
-        cA4b = lbl_805649A4;
         walker2 = (float *)obj;
+        cA4b = lbl_805649A4;
         j = 0;
         cA8b = lbl_805649A8;
         cB0b = lbl_805649B0;
