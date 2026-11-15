@@ -606,22 +606,24 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
     fn_802BAFF8(arg1, &recordId);
 }
 
-#pragma use_lmw_stmw off
+#pragma push
+#pragma cplusplus off
 #pragma opt_loop_invariants off
+#pragma use_lmw_stmw off
+#pragma opt_lifetimes off
 void fn_802B14B4(void *arg0) {
-    int i;
-    int obj;
-    int cache;
-    int saved;
     int c;
     int *node;
     int flag;
     unsigned idx;
     unsigned mask;
-    int j;
-    int k;
     int cacheCount;
+    int j;
     int *slot;
+    int cache;
+    int obj;
+    int i;
+    int saved;
 
     fn_802B1BEC();
     if (fn_802B1BE4((char *)arg0 + 0x318) > 0) {
@@ -650,7 +652,7 @@ void fn_802B14B4(void *arg0) {
             cacheCount = fn_802B1BE4((char *)arg0 + 0x318);
             mask = 1 << i;
             idx = mask;
-            slot = (int *)((char *)arg0 + mask * 4 + 0x934);
+            slot = (int *)((unsigned)arg0 + (mask << 2) + 0x934);
             for (; idx < 0x41; slot++, idx++) {
                 if ((idx & mask) && fn_802B1B18(slot) == 0) {
                     flag = (((mask - 1) & idx) == 0);
@@ -666,8 +668,8 @@ void fn_802B14B4(void *arg0) {
                 fn_802CADD0(-1, 1);
                 fn_802CADD0(-1, 2);
             } else {
-                for (k = 0; k < fn_802B1B38((void *)obj); k++) {
-                    fn_802CADD0(-1, k + 1);
+                for (cache = 0; cache < fn_802B1B38((void *)obj); cache++) {
+                    fn_802CADD0(-1, cache + 1);
                 }
                 fn_802CADD0(-1, 3);
             }
@@ -682,6 +684,7 @@ void fn_802B14B4(void *arg0) {
         fn_802BB3B8(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), saved);
     }
 }
+#pragma pop
 extern float lbl_80564BB8, lbl_80564BD0, lbl_80564BD4, lbl_80564BD8;
 extern float lbl_80564BDC, lbl_80564BE0, lbl_80564BE4, lbl_80564BE8;
 extern double lbl_80564BF0;
