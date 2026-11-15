@@ -15,6 +15,10 @@ extern int lbl_80560068;
 extern int lbl_80560070;
 extern void fn_8000D838(void *);
 void fn_802EC464(void) {
+    /* .ctors init: set up the 8-byte record at lbl_80560058 (fn_8000D838 fills
+       and links it), then initialize the two 8-byte counter/sentinel pairs at
+       lbl_80560068 and lbl_80560070 by clearing their high word and setting the
+       low word to 1. */
     fn_8000D838(&lbl_80560058);
     *(volatile int *)((char *)&lbl_80560068 + 4) = 0;
     *(volatile int *)&lbl_80560068 = 0;
