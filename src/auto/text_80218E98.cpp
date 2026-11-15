@@ -3986,12 +3986,15 @@ extern "C" void fn_8021EDA4(void *self) {
 }
 #pragma pop
 
-extern "C" void fn_8021EFE0(void *arg0, s32 arg1, s32 arg2) {
-    s32 dx = arg1 - *(s32 *)((u8 *)arg0 + 4);
-    s32 dy = arg2 - *(s32 *)((u8 *)arg0 + 8);
-    *(s32 *)((u8 *)arg0 + 0x250) = ((s32 (*)(s32, s32, s32, s32))fn_8022B2D4)(*(s32 *)((u8 *)arg0 + 0xA58), *(s32 *)((u8 *)arg0 + 0xA54), dx, dy);
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+extern "C" void fn_8021EFE0(void *self, s32 x, s32 y) {
+    /* Set the text caret index (at +0x250) to the character position nearest the given point,
+     * computed relative to this object's position, and mark it dirty if it is active. */
+    s32 dx = x - *(s32 *)((u8 *)self + 4);
+    s32 dy = y - *(s32 *)((u8 *)self + 8);
+    *(s32 *)((u8 *)self + 0x250) = ((s32 (*)(s32, s32, s32, s32))fn_8022B2D4)(
+        *(s32 *)((u8 *)self + 0xA58), *(s32 *)((u8 *)self + 0xA54), dx, dy);
+    if (*(u8 *)((u8 *)self + 0x1A) != 0)
+        *(u8 *)((u8 *)self + 0x234) = 1;
 }
 
 extern "C" void fn_8021F044(void *arg0) {
