@@ -112,7 +112,6 @@ s32 fn_8024360C(s32 value, s32 tableIndex) {
 }
 #pragma unroll reset
 
-#pragma unroll reset
 /* MenuTable_IsEntryIndexValid: whether entryIndex names an entry of the menu
  * table's group -- 0 through the group's entry count inclusive, so the index
  * one past the group's last entry passes as well. */
