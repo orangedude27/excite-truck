@@ -172,6 +172,7 @@ call_four:
 }
 
 void fn_8020D06C(void) {
+    /* Apply current music/effects volume settings and refresh/persist them. */
     fn_8020A5F8(lbl_8055EE8C);
     fn_8020C908(lbl_8055EE8C);
     fn_80209030(lbl_8055EE90);
