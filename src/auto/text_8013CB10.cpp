@@ -743,7 +743,7 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     obj->t8C.init(lbl_805614C4);
     obj->rb.init();
     obj->sub.init();
-    obj->perc.init();
+    obj->zoneTex.init();
     void *w0 = fn_80145E70(base + 0x0);
     obj->w54 = w0;
     obj->sa.push(w0);
