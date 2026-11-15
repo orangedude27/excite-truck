@@ -9132,18 +9132,18 @@ extern "C" s32 fn_80229D5C(s32 arg0) {
     return arg0 + 0x264;
 }
 
-extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(
-    void* this_, s32 flag) {
-    if (this_) {
-        if (this_ != NULL) {
-            fn_8021915C(this_, 0);
+extern "C" void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(void *self, s32 deletingFlag) {
+    /* nw4hbm::snd::detail::DisposeCallbackManager deleting destructor: run cleanup, then free storage if requested. */
+    if (self) {
+        if (self != NULL) {
+            fn_8021915C(self, 0);
         }
 
-        if (flag > 0) {
-            fn_80128668(this_);
+        if (deletingFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return this_;
+    return self;
 }
 
 extern "C" s32 fn_80229DC0(s32 arg0) {
