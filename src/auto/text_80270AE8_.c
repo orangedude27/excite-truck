@@ -504,7 +504,8 @@ extern const char lbl_8055C5A0[];
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_802712F8(void *arg0) {
+/* Load camera and region definitions from a parsed node tree into the camera/region tables. */
+extern "C" void fn_802712F8(void *rootNode) {
     class Item { public: virtual const char *getName(); };
     class Iterator { public: virtual void unused(); virtual Item *next(int); };
     extern char lbl_80346B00[];
@@ -525,51 +526,51 @@ extern "C" void fn_802712F8(void *arg0) {
     extern void fn_80277828(void);
     extern void fn_802E30C8(const char *, ...);
     extern int stricmp(const char *, const char *);
-    register char *tableA;
-    register char *tableB;
+    register char *cameraTable;
+    register char *regionTable;
     register Iterator *iterator;
-    register Item *item;
+    register Item *node;
     register int index;
-    register char *strings = lbl_80346B00;
+    register char *stringBase = lbl_80346B00;
     lbl_8055F550 = 0;
     lbl_8055F548 = 0;
     fn_80277740();
-    if (fn_8012C33C(arg0) != 0) {
-        iterator = (Iterator *)fn_80131808(arg0);
-        tableA = lbl_8049A2C8;
-        tableB = lbl_8049EDC8;
+    if (fn_8012C33C(rootNode) != 0) {
+        iterator = (Iterator *)fn_80131808(rootNode);
+        cameraTable = lbl_8049A2C8;
+        regionTable = lbl_8049EDC8;
         index = 0;
-        while ((item = iterator->next(index)) != 0) {
-            if (stricmp(item->getName(), lbl_8055C5A0) == 0) {
-                if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0)
+        while ((node = iterator->next(index)) != 0) {
+            if (stricmp(node->getName(), lbl_8055C5A0) == 0) {
+                if (fn_80272DCC(cameraTable + lbl_8055F548 * 0x60, node) != 0)
                     lbl_8055F548 += 1;
-            } else if (stricmp(item->getName(), strings + 0x2FC) == 0) {
-                if (fn_80272028(tableB + lbl_8055F550 * 0x60, item) != 0)
+            } else if (stricmp(node->getName(), stringBase + 0x2FC) == 0) {
+                if (fn_80272028(regionTable + lbl_8055F550 * 0x60, node) != 0)
                     lbl_8055F550 += 1;
-            } else if (fn_80277754(item) == 0) {
-                fn_802E30C8(strings + 0x30C, item->getName());
+            } else if (fn_80277754(node) == 0) {
+                fn_802E30C8(stringBase + 0x30C, node->getName());
             }
             index += 1;
         }
         fn_80131818(iterator);
-    } else if (fn_8012C33C(strings + 0x334) != 0) {
+    } else if (fn_8012C33C(stringBase + 0x334) != 0) {
         register Iterator *iterator;
-        register Item *item;
+        register Item *node;
         register int index;
-        register char *tableA;
-        iterator = (Iterator *)fn_80131808(strings + 0x334);
-        tableA = lbl_8049A2C8;
+        register char *cameraTable;
+        iterator = (Iterator *)fn_80131808(stringBase + 0x334);
+        cameraTable = lbl_8049A2C8;
         index = 0;
-        while ((item = iterator->next(index)) != 0) {
-            if (stricmp(item->getName(), lbl_8055C5A0) == 0) {
+        while ((node = iterator->next(index)) != 0) {
+            if (stricmp(node->getName(), lbl_8055C5A0) == 0) {
                 if (lbl_8055F548 < 0xC8) {
-                    if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0)
+                    if (fn_80272DCC(cameraTable + lbl_8055F548 * 0x60, node) != 0)
                         lbl_8055F548 += 1;
                     else
-                        fn_802E30C8(strings + 0x340, index);
+                        fn_802E30C8(stringBase + 0x340, index);
                 } else if (lbl_8055F55B == 0) {
                     lbl_8055F55B = 1;
-                    fn_802E30C8(lbl_8055C59C, strings + 0x370);
+                    fn_802E30C8(lbl_8055C59C, stringBase + 0x370);
                 }
             }
             index += 1;
