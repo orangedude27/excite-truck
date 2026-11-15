@@ -2932,11 +2932,11 @@ extern "C" s32 VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(void *arg0, s32 arg1, u3
 }
 
 extern "C" s32 fn_800A8730(void *, u32 *, void *, u32, s32, s32 *);
-extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098(void *arg0, void *arg1, u32 arg2, s32 arg3, s32 arg4) {
+extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098(void *volume, void *buffer, u32 sector, s32 sectorCount, s32 sectorsWritten) {
     s32 result;
-    if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
+    if (sector >= *(u32 *)((u8 *)volume + 8))
         return 0x10;
-    result = ((s32 (*)(void *, s32, s32, u32, s32, s32))fn_800A8730)(arg0, (s32)((u8 *)arg0 + 0x1634), (s32)arg1, arg2, arg3, arg4);
+    result = ((s32 (*)(void *, s32, s32, u32, s32, s32))fn_800A8730)(volume, (s32)((u8 *)volume + 0x1634), (s32)buffer, sector, sectorCount, sectorsWritten);
     return result & ((-result | result) >> 31);
 }
 
