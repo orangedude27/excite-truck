@@ -121,9 +121,9 @@ extern "C" void fn_8017D404(float *pos, int target, float radius, float strength
     register int i;
     float dist, rand, px, py, pz;
     register float zero;
-    register float factor;
-    register float offset;
     register float one;
+    register float offset;
+    register float factor;
     count = 5;
     fn_801B619C(lists, &count, pos);
     one = lbl_80561BF4;
@@ -298,14 +298,17 @@ extern "C" void *fn_8017D93C(void *arg0, int arg1) {
 }
 #pragma scheduling on
 #pragma cplusplus reset
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_802066C8((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80206C70((void*)arg0);
+/* nw4hbm::snd::MemorySoundArchive scalar-deleting destructor: runs the base
+ * destructor (fn_802066C8 with shouldFree=0) and, if deleteFlags > 0, frees
+ * the object storage (fn_80206C70). Returns this. */
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(long this_, long deleteFlags) {
+    if (this_ != 0) {
+        fn_802066C8((void*)this_, 0);
+        if (deleteFlags > 0) {
+            fn_80206C70((void*)this_);
         }
     }
-    return arg0;
+    return this_;
 }
 
 extern float lbl_8055E3C8;
