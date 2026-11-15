@@ -400,18 +400,23 @@ void fn_801B3DBC(void* arg0) {
     fn_801B435C(arg0);
 }
 
-s32 fn_801B3DC0(void* arg0, u32 arg1, u32 arg2) {
-    u8* p = (u8*)arg0 + 0x2FC;
+/* hasRecentSoundSlot: TRUE if one of the manager's 16 sound slots is already
+   playing for (object, key) - that is, holds that pair and was started less than
+   half a second (lbl_80562630) ago, lbl_8055E3C8 being the running game time.
+   The impact handler uses this to keep one collision from retriggering its
+   sound every frame. */
+s32 fn_801B3DC0(void* owner, u32 object, u32 key) {
+    SoundSlot801B3DC0* slot = (SoundSlot801B3DC0*)((u8*)owner + 0x2FC);
     s32 found = 0;
     s32 i = 0;
 
     while (found == 0 && i < 0x10) {
         found = 0;
-        if (*(u32*)(p + 0x20) == arg1 && *(u32*)(p + 0x24) == arg2
-            && *(f32*)(p + 0x28) > lbl_8055E3C8 - lbl_80562630) {
+        if (slot->object == object && slot->key == key
+            && slot->time > lbl_8055E3C8 - lbl_80562630) {
             found = 1;
         }
-        p += 0x2C;
+        slot++;
         i++;
     }
     return found;
