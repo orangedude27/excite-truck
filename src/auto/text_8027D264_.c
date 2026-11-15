@@ -139,13 +139,14 @@ void *fn_8027D39C(void *thisPtr, int deleteFlags) {
     return obj;
 }
 
-void *__dt__Q34nw4r2ef6EffectFv_8027D434(void *arg0, int arg1) {
-    if (arg0) {
-        *(void **)arg0 = lbl_80347CF8;
-        fn_8027AF94(arg0);
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+/* Destroys this nw4r::ef::Effect instance and optionally frees its storage. */
+void *__dt__Q34nw4r2ef6EffectFv_8027D434(void *this, int deleteFlag) {
+    if (this) {
+        *(void **)this = lbl_80347CF8;
+        fn_8027AF94(this);
+        if (deleteFlag > 0) ((void (*)(void *))fn_80128668)(this);
     }
-    return arg0;
+    return this;
 }
 
 void *fn_8027D494(void *playerBlock) {
