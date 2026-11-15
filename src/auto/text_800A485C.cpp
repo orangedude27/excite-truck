@@ -19558,17 +19558,18 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
-extern "C" void *fn_800D0F1C(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        s32 soundHandle = (s32)arg0 + 0x20;
+/* Destroy helper: detach the nw4r::snd::SoundHandle at offset 0x20, then optionally free the object. */
+extern "C" void *fn_800D0F1C(void *object, s32 freeMode) {
+    if (object != 0) {
+        s32 soundHandle = (s32)object + 0x20;
         if (soundHandle != 0) {
             ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)((void *)soundHandle);
         }
-        if (arg1 > 0) {
-            ((void (*)(void *))fn_80128668)(arg0);
+        if (freeMode > 0) {
+            ((void (*)(void *))fn_80128668)(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 void homebutton::Controller::clearCallback() {
