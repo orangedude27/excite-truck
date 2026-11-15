@@ -4670,8 +4670,11 @@ u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
         if (cb->at_0x28) OSReport(lbl_80558FF8, arg1[i]);
     }
     if (lbl_803BD1E0.at_0x28) OSReport(lbl_80559000);
-    switch (arg0) {
-    case 0:
+    if (arg0 == 2) goto bulk;
+    if (arg0 >= 2) goto done;
+    if (arg0 == 0) goto control;
+    goto done;
+control:
         cb = &lbl_803BD1E0;
         buf = GKI_getpoolbuf(((u8 *)cb)[0x1c]);
         if (buf == 0) {
@@ -4703,10 +4706,8 @@ u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
             ((u8 *)cb)[0x48]++;
             fn_8006EB88();
         }
-        break;
-    case 1:
-        break;
-    case 2:
+        goto done;
+bulk:
         buf = GKI_getpoolbuf(((u8 *)&lbl_803BD1E0)[0x1d]);
         if (buf == 0) {
             if (lbl_803BD1E0.at_0x28) OSReport(report + 0xb6c);
@@ -4738,8 +4739,7 @@ u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
             ((u8 *)&lbl_803BD1E0)[0x38]++;
             fn_8006EB88();
         }
-        break;
-    }
+done:
     return ret;
 }
 
@@ -15142,19 +15142,20 @@ BOOLEAN btsnd_hcic_add_SCO_conn(UINT16 handle, UINT16 packet_types) {
     return TRUE;
 }
 
-int btsnd_hcic_accept_conn(void *p_buf, u8 *bd_addr, u8 role) {
-    u8 *buf = p_buf;
+/* Build and send HCI Accept Connection Request command (pack BD_ADDR and role into the command buffer). */
+int btsnd_hcic_accept_conn(void *cmdBuf, u8 *bdAddr, u8 role) {
+    u8 *buf = (u8 *)cmdBuf;
     *(u16 *)(buf + 2) = 0xA;
     *(u16 *)(buf + 4) = 0;
     buf[8] = 9;
     buf[9] = 4;
     buf[0xA] = 7;
-    buf[0xB] = bd_addr[5];
-    buf[0xC] = bd_addr[4];
-    buf[0xD] = bd_addr[3];
-    buf[0xE] = bd_addr[2];
-    buf[0xF] = bd_addr[1];
-    buf[0x10] = bd_addr[0];
+    buf[0xB] = bdAddr[5];
+    buf[0xC] = bdAddr[4];
+    buf[0xD] = bdAddr[3];
+    buf[0xE] = bdAddr[2];
+    buf[0xF] = bdAddr[1];
+    buf[0x10] = bdAddr[0];
     buf[0x11] = role;
     return btu_hcif_send_cmd(buf);
 }
