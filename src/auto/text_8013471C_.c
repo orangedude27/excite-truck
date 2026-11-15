@@ -451,16 +451,17 @@ extern f64 lbl_80561310;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-f32 fn_80134E34(f32 arg0) {
-    f32 f30;
-    f32 f31;
-    if (arg0 < lbl_805612F4) {
-        f30 = fn_80134E00();
+f32 fn_80134E34(f32 value) {
+    /* Compute a base amount minus value scaled by a rate; uses a fallback value when below zero. */
+    f32 clampedValue;
+    f32 rate;
+    if (value < lbl_805612F4) {
+        clampedValue = fn_80134E00();
     } else {
-        f30 = arg0;
+        clampedValue = value;
     }
-    f31 = fn_80134C1C();
-    return fn_80134D20() - f30 * f31;
+    rate = fn_80134C1C();
+    return fn_80134D20() - clampedValue * rate;
 }
 #pragma scheduling on
 #pragma pop
