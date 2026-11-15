@@ -7945,15 +7945,17 @@ found:
     return FALSE;
 }
 
+/* Return the number of currently active ACL links by checking each slot's
+ * in_use flag in btm_cb.acl_db (4 slots at offsets 0x14D, 0x269, 0x385, 0x4A1). */
 u16 BTM_GetNumAclLinks(void)
 {
-    u8 *p = lbl_803C0F78;
-    u16 count = 0;
-    if (p[0x14D]) count = 1;
-    if (p[0x269]) count++;
-    if (p[0x385]) count++;
-    if (p[0x4A1]) count++;
-    return count;
+    u8 *btmCb = lbl_803C0F78;
+    u16 aclCount = 0;
+    if (btmCb[0x14D]) aclCount = 1;
+    if (btmCb[0x269]) aclCount++;
+    if (btmCb[0x385]) aclCount++;
+    if (btmCb[0x4A1]) aclCount++;
+    return aclCount;
 }
 
 u8 fn_80077DD8(void) {
