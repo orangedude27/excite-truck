@@ -29,40 +29,39 @@ void *fn_801E76A8(void *arg0, int arg1) {
     return arg0;
 }
 
-void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_80128670(*(void **)((char *)arg0 + 0xC));
-        fn_80128670(*(void **)((char *)arg0 + 0));
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destroy a PhysicsWorld-like object by releasing owned buffers at offsets 0xC
+ * and 0x0, then optionally freeing the object storage. */
+void *__dt__12PhysicsWorldFv_801E7730(void *object, int shouldDelete) {
+    if (object != 0) {
+        fn_80128670(*(void **)((char *)object + 0xC));
+        fn_80128670(*(void **)((char *)object + 0));
+        if (shouldDelete > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_801E7790(void *buf, int id, int emit, float x, float y, float z, float u, float v) {
     int *b = (int *)buf;
     char *base = (char *)b[0];
-    int cnt = b[1];
-    float *dst = (float *)(base + cnt * 0x18);
+    float *dst = (float *)(base + b[1] * 24);
     dst[0] = x;
     dst[1] = y;
     dst[2] = z;
     ((int *)dst)[3] = id;
     dst[4] = u;
     dst[5] = v;
-    cnt++;
-    b[1] = cnt;
+    b[1]++;
     if (emit == 0) return;
-    if (cnt <= 1) return;
+    if (b[1] <= 1) return;
     {
-        short *ib = (short *)b[3];
         int ic = b[4];
-        ib[ic] = (short)(cnt - 3);
+        ((short *)b[3])[ic] = (short)(b[1] - 3);
+        b[4] = ic + 1;
         ic++;
-        b[4] = ic;
-        ib[ic] = (short)(cnt - 2);
+        ((short *)b[3])[ic] = (short)(b[1] - 2);
+        b[4] = ic + 1;
         ic++;
-        b[4] = ic;
-        ib[ic] = (short)(cnt - 1);
+        ((short *)b[3])[ic] = (short)(b[1] - 1);
         b[4] = ic + 1;
     }
 }
