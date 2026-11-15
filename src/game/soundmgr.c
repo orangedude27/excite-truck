@@ -53,10 +53,11 @@ typedef struct SoundMgrObj {
 } SoundMgrObj;
 
 typedef struct SoundMgr {
-    char pad0[0xc];
-    void** list;
+    char pad0[0x8];
+    signed long lastUpdateMs; /* ms of the last update pass (fn_80207D40) */
+    void** list;              /* +0x0C items the manager tracks */
     char pad10[0x4];
-    signed long count;
+    signed long count;        /* +0x14 */
 } SoundMgr;
 
 typedef struct Vt_80207960 {
