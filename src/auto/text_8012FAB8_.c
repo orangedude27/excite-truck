@@ -237,14 +237,21 @@ void fn_801301E0(unsigned char *arg0) {
 
 __declspec(section ".data") extern int lbl_804230D0;
 #pragma dont_inline on
+/* Release the language resource archive the Locale module has loaded, if any,
+ * and mark that no language is loaded any more.  fn_8012BF24 releases a
+ * resource by name; the archive of language n is named by entry n of the
+ * Locale language table (lbl_802F8E60). */
 void fn_8013028C(void) {
-    int index = lbl_804230D0;
+#define sLocaleData (*(LocaleData *)&lbl_804230D0)
+#define sLocaleLanguages ((LocaleLanguage *)lbl_802F8E60)
+    int index = sLocaleData.language;
     if (index >= 0 && (unsigned int)index < 2) {
-        fn_8012BF24(*(void **)((char *)lbl_802F8E60 + index * 12));
+        fn_8012BF24(sLocaleLanguages[index].resName);
     }
-    lbl_804230D0 = -1;
+    sLocaleData.language = -1;
+#undef sLocaleData
+#undef sLocaleLanguages
 }
-
 int fn_801302E0(void *arg0) {
     int offset;
     int index;
