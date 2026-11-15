@@ -340,20 +340,16 @@ void *fn_801E07E8(void *self, s32 deleteFlag) {
 void fn_801E0864(void *arg0) {
     float b;
     float a;
-    int z;
-    int m;
+    BoostSlot_801E0710 *slot = (BoostSlot_801E0710 *)arg0;
     a = lbl_80562C78;
-    z = 0;
     b = lbl_80562C7C;
-    m = -1;
-    *(int *)arg0 = m;
-    *((char *)arg0 + 4) = z;
-    *(int *)((char *)arg0 + 0x10) = z;
-    *(int *)((char *)arg0 + 0x14) = z;
-    *(float *)((char *)arg0 + 8) = a;
-    *(float *)((char *)arg0 + 0xC) = b;
+    slot->areaId = -1;
+    slot->pad04 = 0;
+    slot->arrowColor = 0;
+    slot->lineColor = 0;
+    slot->speed = a;
+    slot->timer = b;
 }
-
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -512,13 +508,15 @@ f32 fn_801E0FA4(f32 *arg0, f32 *arg1) {
     return y + x;
 }
 #pragma pop
-void *fn_801E0FC4(void *arg0) {
-    void *temp_r6 = (u8 *)arg0 + 0xC;
-    ((s32 *)arg0)[2] = 0x64;
-    ((void **)arg0)[0] = temp_r6;
-    ((s32 *)arg0)[1] = 0;
-    fn_8002F53C(temp_r6, NWC24Data_Init_801E1028, fn_801E07E8, 0x1C, 0x64);
-    return arg0;
+/* Initializes the embedded array at +0x7C: points it at inline storage,
+ * clears the count, sets capacity to 0x64, and constructs 0x64 0x1C-byte elements. */
+void *fn_801E0FC4(void *array) {
+    void *storage = (u8 *)array + 0xC;
+    ((s32 *)array)[2] = 0x64;
+    ((void **)array)[0] = storage;
+    ((s32 *)array)[1] = 0;
+    fn_8002F53C(storage, NWC24Data_Init_801E1028, fn_801E07E8, 0x1C, 0x64);
+    return array;
 }
 
 void NWC24Data_Init_801E1028(void *arg0) {
