@@ -5716,24 +5716,15 @@ void GXSetScissor(s32 left, s32 top, s32 width, s32 height) {
     *(volatile unsigned short *)((char *)gxData + 2) = 0;
 }
 
-void GXSetScissorBoxOffset(s32 x_off, s32 y_off) {
-    union {
-        u32 value;
-        struct {
-            unsigned int tag : 8;
-            unsigned int reserved : 4;
-            unsigned int y : 10;
-            unsigned int x : 10;
-        } bits;
-    } reg;
+void GXSetScissorBoxOffset(u32 ox, u32 oy) {
+    u32 cmd = 0;
 
-    reg.value = 0;
-    reg.bits.x = ((u32)(x_off + 0x156)) >> 1;
-    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
-    reg.bits.y = ((u32)(y_off + 0x156)) >> 1;
-    reg.bits.tag = 0x59;
-    WGPIPE.i = reg.value;
-    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
+    GX_BP_SET_SCISSOROFFSET_OX(cmd, (ox + 342) / 2);
+    GX_BP_SET_SCISSOROFFSET_OY(cmd, (oy + 342) / 2);
+    GX_BP_SET_OPCODE(cmd, GX_BP_REG_SCISSOROFFSET);
+
+    GX_BP_LOAD_REG(cmd);
+    gxdraw->lastWriteWasXF = FALSE;
 }
 
 void GXSetClipMode(s32 arg0) {
