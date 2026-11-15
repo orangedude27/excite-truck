@@ -10,8 +10,8 @@ extern int fn_802344C4(int);
 extern int fn_802C8BD0(int);
 extern int fn_802C8D74(void);
 extern int fn_802C92DC(int, int, int, int, int);
-extern int lbl_8055F0D4;
-extern float lbl_805636F0;
+extern int lbl_8055F0D4;   /* uiFont: UI font fn_8023889C loaded, 0 until then */
+extern float lbl_805636F0; /* uiTextScale: 0.4f, the scale overlay text is drawn at */
 extern float lbl_805636F4;
 extern unsigned char lbl_8055F0D8;
 __declspec(section ".sdata") extern unsigned int lbl_8055CFF0;
