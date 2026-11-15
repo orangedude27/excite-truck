@@ -23,12 +23,17 @@ struct ResEntry {
     /* 0x40 */ void *object; /* the allocation fn_80128660 frees */
 };
 
-/* One resource manager in the global list lbl_8055E000; the manager's directory
- * name is the string at +0x00 and the list link is +0xA8. */
+/* One resource manager ("resource set") in the global list lbl_8055E000: the
+ * 0xB0-byte node fn_8012AFE0 builds from one resource file. Its directory name
+ * is the string at +0x00 (fn_8012B534 matches a path's directory against it)
+ * and the list link is +0xA8. */
 struct ResManager {
-    /* 0x00 */ char dirName[0x60];
+    /* 0x00 */ char dirName[0x20]; /* directory this set's entries answer to */
+    /* 0x20 */ char fileName[0x40]; /* the archive fn_802E36D8 opens for the set */
     /* 0x60 */ u8 *entries; /* struct ResEntry[entryCount], stride 0x44 */
-    char pad64[0x24];
+    char pad64[0x1C];
+    /* 0x80 */ s32 dataOffset; /* where the set's data starts in the archive */
+    char pad84[4];
     /* 0x88 */ s32 entryCount;
     char pad8C[0x1C];
     /* 0xA8 */ struct ResManager *next;
