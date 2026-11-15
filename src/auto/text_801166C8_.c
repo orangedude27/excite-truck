@@ -731,6 +731,14 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     return off & sign;
 }
 
+/* Tick-list "finish" callback for the audio stream manager, registered by
+ * fn_8011BEC8 at the manager's node (mgr+0x340) alongside the check callback
+ * fn_80117598. The periodic tick driver (fn_8011BD20) calls it once per alarm
+ * with the running tick count. Recovers the manager base from the node pointer
+ * (mgr = node - 0x340), refills the active output streams via fn_80117074 when
+ * any are open (mgr+0x2E8 entry count), then records the tick count at mgr+0x33C.
+ * The offset/mgr temporaries reproduce the compiler's addi/subf/subf idiom for
+ * the base recovery; folding them into one subtraction would not match. */
 void fn_801175C4(s32 node, s32 tickCount) {
     register s32 offset;
     register s32 mgr;
