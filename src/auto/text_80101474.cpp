@@ -179,6 +179,8 @@ extern "C" void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
 }
 
 void nw4hbm::snd::detail::WsdTrack::Close() {
+    /* nw4hbm::snd::detail::WsdTrack::Close: release all channels (-1), then walk the
+     * linked list at +0x30 (next at +0xE4) clearing each node via fn_800EAD00 and clear the head. */
     void *var_r31;
     ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(this, -1);
     var_r31 = *(void **)((char *)this + 0x30);
@@ -547,8 +549,10 @@ extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void
 }
 
 extern "C" const char lbl_80328030[];
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
-    const char (&file)[0x200] = *(const char (*)[0x200])lbl_80328030;
+    const char *file = lbl_80328030;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)arg0 & 0xFF000000U;
     if (top != 0x80000000U && ((unsigned int)arg0 & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -569,13 +573,14 @@ extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void
     if (f6 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
     if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x9C, file + 0x50);
-    unsigned int v1 = *(volatile unsigned int *)arg0;
-    unsigned int v2 = *(volatile unsigned int *)arg0;
+    volatile unsigned int *vp = (volatile unsigned int *)arg0;
+    unsigned int v1 = *vp;
+    unsigned int v2 = *vp;
     unsigned char result = *(unsigned char *)v1;
-    *(volatile unsigned int *)arg0 = v2 + 1;
+    *vp = v2 + 1;
     return result;
 }
-
+#pragma pop
 static inline bool IsSJISLeadByte(unsigned char c) {
     return (c >= 0x81 && c < 0xA0) || c >= 0xE0;
 }
