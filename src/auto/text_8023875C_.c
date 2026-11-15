@@ -3,7 +3,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_8023875C(int, int, const char *, int, int);
-extern int fn_80232B70(int);
+extern int fn_80232B70(int); /* fontHeight: a font's height byte (u8 at font+4) */
 extern int fn_802344B0(void);
 extern int fn_802346C8(void);
 extern int fn_802344C4(int);
