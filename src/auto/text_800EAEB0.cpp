@@ -244,14 +244,15 @@ skip_init:
     return &lbl_8041279C;
 }
 
+/* Destroys a DisposeCallbackManager's base LinkListImpl and, if requested, frees the object storage. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54(
-    void* this_, s32 flag) {
+    void* this_, s32 deleteFlag) {
     if (this_) {
         if (this_ != NULL) {
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
         }
 
-        if (flag > 0) {
+        if (deleteFlag > 0) {
             fn_80128668(this_);
         }
     }
@@ -2999,6 +3000,8 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma opt_lifetimes off
+#pragma optimization_level 3
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
     class PlayerVTable {
     public:
@@ -3007,12 +3010,12 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
         virtual void Stop();
     };
     struct Iter { void *p; };
-    struct Iter it;
-    void *pList = &lbl_80412A6C[4];
+    unsigned pList = (unsigned)&lbl_80412A6C[4];
+    unsigned head;
     void *pPlayer;
-    for (it.p = *(void **)pList; it.p != pList;) {
-        pPlayer = it.p;
-        it.p = *(void **)pPlayer;
+    for (head = *(unsigned *)pList; head != pList;) {
+        pPlayer = (void *)head;
+        head = *(unsigned *)pPlayer;
         if (pPlayer == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324024, 0x23D,
                                          (const char *)lbl_80324000);
