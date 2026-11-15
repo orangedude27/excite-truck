@@ -1375,13 +1375,14 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
 #pragma pop
 
 extern char lbl_8055A1B8;
-s32 fn_80169D64(s32 arg0, s32 arg1) {
-    s32 p = (s32)&lbl_8055A1B8;
-    s32 len = strlen((char *)p);
-    s32 r = fn_8002B1D8(arg1, (s32 *)p, len);
-    return (u32)__cntlzw(r) >> 5;
+s32 fn_80169D64(s32 unused, s32 name) {
+    /* Returns nonzero if the given object name starts with the "poop" prefix,
+     * the names of the "poop_%d" objects fn_80169DB8 places. */
+    s32 prefix = (s32)&lbl_8055A1B8; /* "poop" */
+    s32 len = strlen((char *)prefix);
+    s32 cmp = fn_8002B1D8(name, (s32 *)prefix, len); /* strncmp */
+    return (u32)__cntlzw(cmp) >> 5;
 }
-
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -1392,6 +1393,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     s32 id = 0;
     s32 i;
     f32 zero = lbl_80561924;
+
     sscanf(arg1->getName(), lbl_8055A1C0, &sp8);
     id = sp8;
     {
@@ -1408,14 +1410,13 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         entry->active = 1;
         arg2->flag1E158 = 1;
     }
-    for (; (item = arg1->getItem(i)) != 0; ++i) {
+
+    for (; (item = arg1->getItem(i)) != 0; i++) {
         f32 hit = item->getHit(lbl_8055A1C8);
         DummyVec2 loc = item->getLoc(lbl_8055A1CC);
         s32 count = arg2->recordCount;
         arg2->recordCount = count + 1;
-        u8 *rbase = (u8 *)arg2->records;
-        s32 roff = count * 24;
-        DummyRecord *rec = (DummyRecord *)(rbase + roff);
+        DummyRecord *rec = &arg2->records[count];
         rec->obj = 0;
         rec->obj = (DummyRecordObj *)fn_80167874(1);
         rec->x = loc.x;
@@ -1427,10 +1428,11 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         rec->flag = 0;
         fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
         *(s32 *)((u8 *)fn_80167874(1) + 0x1C) += 1;
+
         if (arg2->flag1E158 != 0) {
             s32 last2 = arg2->entryCount - 1;
             u8 *base2 = (u8 *)arg2->entries;
-            u8 *e2 = base2 + last2 * 32;
+            u8 *e2 = base2 + last2 * 0x20;
             (*(s32 *)(e2 + 0x18))++;
         } else {
             s32 __c = arg2->entryCount;
@@ -1438,7 +1440,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
                 goto mkEntry;
             } else {
                 s32 __last = __c - 1;
-                volatile u8 *__e = (u8 *)arg2->entries + __last * 32 + 0x1C;
+                volatile u8 *__e = (u8 *)arg2->entries + __last * 0x20 + 0x1C;
                 if (*__e == 0) {
                     goto incEntry;
                 }
@@ -1455,11 +1457,12 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
             {
                 s32 last3 = arg2->entryCount - 1;
                 u8 *base3 = (u8 *)arg2->entries;
-                u8 *e3 = base3 + last3 * 32;
+                u8 *e3 = base3 + last3 * 0x20;
                 (*(s32 *)(e3 + 0x18))++;
             }
         }
     }
+
     arg2->flag1E158 = 0;
     return 1;
 }
