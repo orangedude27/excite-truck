@@ -23407,15 +23407,18 @@ void fn_800937A0(void *p, u16 a1, u16 a2, u16 a3) {
         rfc_send_rpn(p, a1, 0, a2, a3);
 }
 
-void RFCOMM_ControlReq(void *mcb, u8 dlci, void *ctrl) {
-    u8 *port = (u8 *)port_find_mcb_dlci_port(mcb, dlci);
-    if ((port[2] != 2) || (port[0x68] != 4)) {
+/* Called by the port entity to send our modem status (an MSC command carrying
+ * the tPORT_CTRL at *p_pars) to the peer's port emulation entity, and to wait
+ * for its answer.  (rfc_port_if.c: RFCOMM_ControlReq(p_mcb, dlci, p_pars)) */
+void RFCOMM_ControlReq(void *p_mcb, u8 dlci, void *p_pars) {
+    tPORT_VIEW *p_port = (tPORT_VIEW *)port_find_mcb_dlci_port(p_mcb, dlci);
+    if ((p_port->state != PORT_STATE_OPENED) || (p_port->rfc_state != RFC_STATE_OPENED)) {
         return;
     }
-    port[0x64] |= 1;
-    port[0x69] |= 8;
-    rfc_send_msc(mcb, dlci, 1, ctrl);
-    rfc_port_timer_start(port, 0x3c);
+    p_port->port_ctrl |= PORT_CTRL_REQ_SENT;
+    p_port->expected_rsp |= RFC_RSP_MSC;
+    rfc_send_msc(p_mcb, dlci, TRUE, p_pars);
+    rfc_port_timer_start(p_port, RFC_T2_TIMEOUT);
 }
 
 // Request flow control state change for a DLCI (send MSC with flow control)
