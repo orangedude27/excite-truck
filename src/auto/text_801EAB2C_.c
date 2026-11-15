@@ -123,6 +123,7 @@ s32 fn_801EACB8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+/* PSSystem::SeqHeap::~SeqHeap (scalars deleting): restore vtable, free heap buffer, and optionally delete. */
 void* __dt__Q28PSSystem7SeqHeapFv_801EACF8(void* this_, s32 flag) {
     if (this_) {
         *(u32*)this_ = (u32)lbl_80339E3C;
