@@ -36,7 +36,8 @@ typedef struct OSThread {
     u16 state;                   // at 0x2C8
     u16 flags;                   // at 0x2CA
     s32 suspend;                 // at 0x2CC  >0 while suspended (OS{Suspend,Resume}Thread)
-    s32 priority;                // at 0x2D0  effective priority; higher runs first
+    s32 priority;                // at 0x2D0  effective priority; the smaller number
+                                 //           runs first (0 is the most urgent)
     s32 base;                    // at 0x2D4  priority the thread was created/set with
     u32 val;                     // at 0x2D8  value returned to OSJoinThread
     OSThreadQueue* queue;        // at 0x2DC  RunQueue[priority] when ready, the
