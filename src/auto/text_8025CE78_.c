@@ -114,6 +114,7 @@ extern char lbl_803456A4[];
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8025DAEC(void *arg0, void *arg1) {
+    /* Select the best matching record for arg1, copy its display/name data into arg0, or fill defaults if none found. */
     struct Source {
         virtual void s2();
         virtual int has(const char *);
@@ -180,8 +181,6 @@ copy2:      *dst++=*src++; } while(dst[-1]);
     }
     *(int *)(obj+0x408)=best_j;
 }
-
-  #pragma pop
 
 void fn_8025DDD0(void *arg0, int arg1) {
     float spC, sp8, f25, f24, f26, f27, f28, f29;
