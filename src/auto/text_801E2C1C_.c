@@ -333,21 +333,22 @@ void fn_801E3284(void *out, void *in, s32 arg2) {
     ((s32 *)out)[11] = local.result.sp8[11];
 }
 #pragma scheduling on
-void fn_801E33E4(void *arg0, void *arg1) {
-    f32 sp[12];
-    sp[0] = 1.0f;
-    sp[1] = 0.0f;
-    sp[2] = 0.0f;
-    sp[3] = 0.0f;
-    sp[4] = 1.0f;
-    sp[5] = 0.0f;
-    sp[6] = 0.0f;
-    sp[7] = 0.0f;
-    sp[8] = 1.0f;
-    sp[9] = 0.0f;
-    sp[10] = 0.0f;
-    sp[11] = 0.0f;
-    fn_801E3284(arg0, arg1, (s32)sp);
+void fn_801E33E4(void *outTransform, void *node) {
+    /* Compute a node's world transform from the identity matrix (3x3 rotation + translation). */
+    f32 identity[12];
+    identity[0] = 1.0f;
+    identity[1] = 0.0f;
+    identity[2] = 0.0f;
+    identity[3] = 0.0f;
+    identity[4] = 1.0f;
+    identity[5] = 0.0f;
+    identity[6] = 0.0f;
+    identity[7] = 0.0f;
+    identity[8] = 1.0f;
+    identity[9] = 0.0f;
+    identity[10] = 0.0f;
+    identity[11] = 0.0f;
+    fn_801E3284(outTransform, node, (s32)identity);
 }
 void fn_801E3440(void* arg0) {
     f32 sp[12];
