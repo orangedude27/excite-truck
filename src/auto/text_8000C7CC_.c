@@ -78,14 +78,15 @@ extern u32 __AXGetStackHead_80137CFC(s32);
 extern s32 fn_802E8504(void);
 extern s32 fn_80137C74(void);
 
-s32 fn_8000CFA8(s32 arg0, s32 arg1) {
-    if (arg0 != 0) {
-        fn_802066C8((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+s32 fn_8000CFA8(s32 object, s32 shouldDelete) {
+    /* Destroys an object and optionally deletes it. */
+    if (object != 0) {
+        fn_802066C8((void*)object, 0);
+        if (shouldDelete > 0) {
+            fn_80128668((void*)object);
         }
     }
-    return arg0;
+    return object;
 }
 
 #pragma scheduling invalid_target
