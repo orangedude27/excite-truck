@@ -442,12 +442,13 @@ void fn_8029C998(void) {
 extern void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *, int);
 extern int lbl_804B5030[];
 void fn_8029CB3C(void) {
-    int *p = (int *)lbl_804B5030;
-    int i = 0;
-    while (i < lbl_8055F7F4) {
-        __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888((void *)*p, 1);
-        ++p;
-        ++i;
+    /* Destroy all stored texture-pattern animation pointer objects and clear the count. */
+    int *objectSlot = (int *)lbl_804B5030;
+    int index = 0;
+    while (index < lbl_8055F7F4) {
+        __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888((void *)*objectSlot, 1);
+        ++objectSlot;
+        ++index;
     }
     lbl_8055F7F4 = 0;
 }
