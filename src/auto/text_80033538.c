@@ -62,13 +62,14 @@ void fn_80033584(void *arg0, void *arg1) {
     OSRestoreInterrupts(0);
 }
 
-void fn_800337C4(void *arg0, void *arg1) {
-    int state;
-    state = OSDisableInterrupts();
-    *(unsigned short *)((char *)arg0 + 0x1AC) = *(unsigned short *)arg1;
-    *(short *)((char *)arg0 + 0x1AE) = *(short *)((char *)arg1 + 2);
-    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x200;
-    OSRestoreInterrupts(state);
+void fn_800337C4(void *object, void *value) {
+    int enabled;
+    /* Copies a 4-byte value into object fields 0x1AC/0x1AE and sets the update flag, with interrupts disabled. */
+    enabled = OSDisableInterrupts();
+    *(unsigned short *)((char *)object + 0x1AC) = *(unsigned short *)value;
+    *(short *)((char *)object + 0x1AE) = *(short *)((char *)value + 2);
+    *(unsigned int *)((char *)object + 0x1C) |= 0x200;
+    OSRestoreInterrupts(enabled);
 }
 
 void fn_8003381C(void *dest, void *src) {
