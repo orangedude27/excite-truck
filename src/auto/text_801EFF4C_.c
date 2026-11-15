@@ -1050,7 +1050,10 @@ int fn_801F18F0(void *arg0) {
     }
 }
 #pragma pop
-int fn_801F196C(int a, int b) { return b + a * 4; }
+int fn_801F196C(int index, int base) {
+    /* Compute the address offset for an element at index in a 4-byte stride table. */
+    return base + index * 4;
+}
 
 extern char lbl_8033A5B0[];
 #pragma push
