@@ -1968,13 +1968,14 @@ void fn_800121F0(void) {
 #pragma scheduling on
 #pragma optimize_for_size reset
 #pragma unroll reset
-s32 fn_800122B4(s32 arg0, s32 arg1) {
+// Formats the ordinal string for number into outBuffer and returns outBuffer.
+s32 fn_800122B4(s32 number, s32 outBuffer) {
     struct { char sp8[0x14]; volatile s32 sp1C; } frame;
 
-    fn_801310B4(frame.sp8, 0x14, arg0);
-    frame.sp1C = fn_80130FE0(arg0);
-    strcpy((char *)arg1, frame.sp8);
-    return arg1;
+    fn_801310B4(frame.sp8, 0x14, number);
+    frame.sp1C = fn_80130FE0(number);
+    strcpy((char *)outBuffer, frame.sp8);
+    return outBuffer;
 }
 
 void fn_8000F158(void) {
