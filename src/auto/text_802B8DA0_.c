@@ -1509,6 +1509,10 @@ void fn_802BAF98(void* arg0, s8 arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802BAFA0(void) {
+    /* Reset global counters (lbl_8055FA6C/lbl_8055FA70) and walk each entry in
+       the table at lbl_804BFFF4 ([0] = pointer to entries, [1] = count): for
+       each entry chase the linked list at (*entry)+0xC via next at +0x10 to its
+       end. Finally clear the field at lbl_8055FA74+8. */
     void **entries = *(void ** volatile *)lbl_804BFFF4;
     int count = *(volatile int *)(lbl_804BFFF4 + 4);
     lbl_8055FA6C = 0;
