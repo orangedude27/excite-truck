@@ -61,9 +61,9 @@ s32 fn_802E3270(s32 path) {
 }
 
 #pragma dont_inline on
-/* Returns the file system handle for the given path: DVD (lbl_8055FF20) for
-   paths matching the disc prefix, memory (lbl_8055FF24) for paths matching the
-   memory prefix, or 0 if no matching file system is available. */
+/* Returns the file system handle for the given path: NAND (lbl_8055FF20) for
+   paths matching the "nand:" prefix, SD card (lbl_8055FF24) for paths matching
+   the "sd:" prefix, or 0 if no matching file system is available. */
 s32 fn_802E32C4(s32 path) {
     if (path != 0 && fn_802E321C((const char *)path) != 0 && lbl_8055FF20 != 0) {
         return lbl_8055FF20;
