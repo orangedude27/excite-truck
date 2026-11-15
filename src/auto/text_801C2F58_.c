@@ -1640,16 +1640,17 @@ void fn_801C7B28(void) {
 #pragma push
 #pragma small_data off
 #pragma pop
+/* Resets the debug menu text-input/filter state: clears menu flags, sets the idle menu action, empties the "who" and "who-not" name lists, and closes the text entry field. */
 void fn_801C7BA0(void) {
-    void (*callback)(void) = fn_801C6CB0;
+    void (*callback)(void) = menu_action_idle;
     lbl_8055E83D = 0;
-    lbl_8055E83C = 0;
+    sInterludeMenuFlag = 0;
     lbl_8055E83B = 0;
-    lbl_8055E83A = 0;
-    lbl_8055E868 = callback;
-    strcpy(lbl_80438280, lbl_8055AA44);
-    strcpy(lbl_80438380, lbl_8055AA44);
-    fn_801C957C(0);
+    sTextFieldFlag = 0;
+    sMenuAction = callback;
+    strcpy(sWhoList, STR_EMPTY);
+    strcpy(sWhoNotList, STR_EMPTY);
+    set_text_entry(0);
 }
 
 #pragma push
@@ -2625,15 +2626,14 @@ void fn_801C95EC(f32 arg0) {
         s32 id;
         s32 flags;
     };
-    struct L1 { struct Entry *e; s32 f4; s32 f8; s32 fC; };
     struct Entry *entry;
     s32 id;
     s32 prev;
+
     strcpy(lbl_80437FC0, lbl_8055AA44);
-    entry = &((struct L1 *)lbl_8055E86C)[lbl_8055E81C].e[lbl_8055E820];
+    entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
     entry->callback(entry);
-    entry = &((struct L1 *)lbl_8055E86C)[lbl_8055E81C].e[lbl_8055E820];
-    id = entry->id;
+    id = *(s32 *)(((u32 (*)[4])lbl_8055E86C)[lbl_8055E81C][0] + (lbl_8055E820 << 4) + 8);
     if (id == 0x22) {
         lbl_8055E81C = lbl_8055E870;
     } else {
