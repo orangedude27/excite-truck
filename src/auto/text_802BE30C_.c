@@ -36,17 +36,18 @@ extern struct {
     s32 value;
     s32 flags;
 } lbl_804C07E4;
-void* fn_802BE30C(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+void* fn_802BE30C(void* object, s32 shouldDelete) {
+    /* Clears a 3-word object header and frees it when requested (global destructor). */
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_802BE364(void *arg0) {
