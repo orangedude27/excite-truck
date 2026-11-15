@@ -1865,17 +1865,28 @@ int fn_8018A100(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_8018A120(void* arg0) {
-    if (fn_801B2F2C(*(int*)((u8*)arg0 + 0x1EC)) == 0) {
-        struct Obj {
+/* fn_80155700 calls this on a truck just after queueing the hit sound for it:
+   unless that truck's car slot has already finished the race -- fn_801B2F2C reads
+   the "finished" byte at 0x79 of the slot's 0x80-byte record in the slot table
+   lbl_8055E684, and the truck keeps its slot index at +0x1EC -- it clears the
+   truck's +0x25BC timer and raises the flag of the sound set the truck owns at
+   +0x2584.  That call is vtable slot 0x38 of that class (fn_8020F3A0, which sets
+   CarSound+0x72); its per-frame update uses the flag to start or stop the
+   "invulnerable.sfx" sound (fn_8020E598). */
+extern "C" void fn_8018A120(void *truck) {
+    if (fn_801B2F2C(*(int *)((u8 *)truck + 0x1EC)) == 0) {
+        /* The truck's CarSound (src/game/waterbounce.c).  MWCC keeps two reserved
+           slots above the first declared virtual, so the flag setter is the 13th
+           virtual declared here. */
+        struct CarSound {
             virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3();
             virtual int v4(); virtual int v5(); virtual int v6(); virtual int v7();
             virtual int v8(); virtual int v9(); virtual int v10(); virtual int v11();
-            virtual int v12();
+            virtual int raiseSoundFlag();
         };
-        Obj* obj = *(Obj**)((u8*)arg0 + 0x2584);
-        *(float*)((u8*)arg0 + 0x25BC) = lbl_8055E4E0;
-        obj->v12();
+        CarSound *sounds = *(CarSound **)((u8 *)truck + 0x2584);
+        *(float *)((u8 *)truck + 0x25BC) = lbl_8055E4E0;
+        sounds->raiseSoundFlag();
     }
 }
 #pragma cplusplus off
