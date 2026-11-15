@@ -50,13 +50,14 @@ static inline void xformv(float *v, float *m, float *out) {
 }
 
 #pragma scheduling invalid_target
-char *fn_801FFB08(int arg0, int arg1) {
-    char *sp8;
-    if (fn_801E2CCC(arg0, arg1, &sp8) == 0) {
-        fn_802E30C8(lbl_8033B938, arg1, lbl_8055ECA8);
+/* Look up a drivmod helper entry and return a pointer to its data, or a fallback buffer on failure. */
+char *fn_801FFB08(int arg0, int helperId) {
+    char *helperEntry;
+    if (fn_801E2CCC(arg0, helperId, &helperEntry) == 0) {
+        fn_802E30C8(lbl_8033B938, helperId, lbl_8055ECA8);
         return lbl_804888A8;
     }
-    return sp8 + 0x24;
+    return helperEntry + 0x24;
 }
 #pragma scheduling on
 void fn_801FFB6C(void) {
