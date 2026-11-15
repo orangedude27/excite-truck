@@ -1108,10 +1108,10 @@ extern "C" void* fn_80158218(void* self, s32 shouldDelete) {
 }
 
 extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
-    u32 val = *(u32 *)arg1;
-    u32 idx = ((u32 *)arg0)[1];
-    u32 *base = *(u32 **)arg0;
-    ((u32 *)arg0)[1] = idx + 1;
+    s32 val = *arg1;
+    s32 idx = ((s32 *)arg0)[1];
+    s32 *base = *(s32 **)arg0;
+    ((s32 *)arg0)[1] = idx + 1;
     base[idx] = val;
     return &base[idx];
 }
@@ -1520,12 +1520,17 @@ extern "C" s32 fn_80158D04(void* arg0) {
     return *(s32*)((u8*)arg0 + 0xC);
 }
 
+/* One step of a bonus tracker on a frame that emits nothing: once the progress
+ * counted for the award type at 0x268 (held in 0x260) has passed the level at
+ * 0x24C, that award is given to this tracker's player through fn_801CB750 and
+ * the progress is cleared.  fn_801590A8 takes the same step at a frame end. */
 extern "C" void fn_80158D0C(void* arg0) {
-    if (*(f32*)((char*)arg0 + 0x260) > *(f32*)((char*)arg0 + 0x24c)) {
-        if (*(s32*)((char*)arg0 + 0x268) != 0) {
-            fn_801CB750(*(s32*)((char*)arg0 + 0x268), *(s32*)((char*)arg0 + 4));
+    if (((Fn8015889C*)arg0)->mProgress260 > ((Fn8015889C*)arg0)->mLevel24C) {
+        s32 instance = ((Fn8015889C*)arg0)->mInstance268;
+        if (instance != 0) {
+            fn_801CB750(instance, ((Fn8015889C*)arg0)->m4);
         }
-        *(f32*)((char*)arg0 + 0x260) = lbl_80561754;
+        ((Fn8015889C*)arg0)->mProgress260 = BONUS_NONE;
     }
 }
 
