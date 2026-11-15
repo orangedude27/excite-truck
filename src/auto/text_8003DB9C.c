@@ -91,6 +91,11 @@ typedef struct {
 #define GX_BP_SET_FOGPARAM3_PROJ(reg, x) ((reg) = GX_BITSET((reg), 11, 1, x))
 #define GX_BP_SET_FOGPARAM3_FSEL(reg, x) ((reg) = GX_BITSET((reg), 8, 3, x))
 #define GX_BP_SET_FOGCOLOR_RGB(reg, x) ((reg) = GX_BITSET((reg), 8, 24, x))
+// BP scissor box offset (GXHardwareBP.h): the 20 data bits are one 10-bit
+// offset per axis, each already biased and halved by the caller.
+#define GX_BP_REG_SCISSOROFFSET 0x59
+#define GX_BP_SET_SCISSOROFFSET_OX(reg, x) ((reg) = GX_BITSET((reg), 22, 10, x))
+#define GX_BP_SET_SCISSOROFFSET_OY(reg, x) ((reg) = GX_BITSET((reg), 12, 10, x))
 #define GX_BP_REG_FOGPARAM0 0xEE
 #define GX_BP_REG_FOGPARAM1 0xEF
 #define GX_BP_REG_FOGPARAM2 0xF0
@@ -5711,7 +5716,25 @@ void GXSetScissor(s32 left, s32 top, s32 width, s32 height) {
     *(volatile unsigned short *)((char *)gxData + 2) = 0;
 }
 
-void GXSetScissorBoxOffset(s32 x, s32 y) { union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = ((u32)(x + 0x156)) >> 1; *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = ((u32)(y + 0x156)) >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
+void GXSetScissorBoxOffset(s32 x_off, s32 y_off) {
+    union {
+        u32 value;
+        struct {
+            unsigned int tag : 8;
+            unsigned int reserved : 4;
+            unsigned int y : 10;
+            unsigned int x : 10;
+        } bits;
+    } reg;
+
+    reg.value = 0;
+    reg.bits.x = ((u32)(x_off + 0x156)) >> 1;
+    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
+    reg.bits.y = ((u32)(y_off + 0x156)) >> 1;
+    reg.bits.tag = 0x59;
+    WGPIPE.i = reg.value;
+    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
+}
 
 void GXSetClipMode(s32 arg0) {
     register volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
