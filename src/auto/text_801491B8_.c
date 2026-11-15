@@ -1049,6 +1049,7 @@ void fn_8014C7B4(void *dst, void *srcObj) {
     out->x1 = x1;
     out->y1 = y1;
 }
+
 unsigned int fn_8014C808(unsigned int arg0) { return arg0 >> 24; }
 
 unsigned char fn_8014C810(unsigned char arg0) { return arg0; }
