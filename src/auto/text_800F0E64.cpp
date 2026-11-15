@@ -5008,13 +5008,14 @@ extern "C" void SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi(void *self, 
     }
 }
 #pragma pop
+/* Sets the sound player's playable sound limit (stored as a u16 at offset 0x26), panicking if the limit is negative. */
 extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
-    void* this_, s32 limit) {
-    if (limit < 0) {
+    void* soundPlayer, s32 playableSoundLimit) {
+    if (playableSoundLimit < 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x227,
                                      (const char*)lbl_80325D48);
     }
-    *(u16*)&((u8*)this_)[0x26] = (u16)limit;
+    *(u16*)&((u8*)soundPlayer)[0x26] = (u16)playableSoundLimit;
 }
 
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *);
