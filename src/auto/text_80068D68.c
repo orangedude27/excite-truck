@@ -240,6 +240,16 @@ typedef struct {
 #define btm_cb_connecting_bda   (lbl_803C0F78 + 0x27B4) /* BDA of the device being connected */
 #define btm_cb_connecting_dc    (lbl_803C0F78 + 0x27BA) /* its class of device */
 
+/*
+ * btm_cb.p_rmt_name_callback[]: the profiles waiting for a remote device's
+ * name, BTM_SecAddRmtNameNotifyCallback() filling the slots.  Reading them
+ * through a typed pointer of the array's own changes how the compiler
+ * addresses them, so the walk keeps a byte pointer at btm_cb and these macros
+ * hold the offsets.
+ */
+#define btm_cb_rmt_name_cb(p)    (*(tBTM_RMT_NAME_CALLBACK **)((p) + 0x192C))
+#define btm_cb_rmt_name_cb_at(i) (*(tBTM_RMT_NAME_CALLBACK **)(lbl_803C0F78 + (i) * 4 + 0x192C))
+
 /* The HCI Write_Authentication_Enable command (opcode 0x0C20); the game's
    symbol for it still carries the name of the PIN-type helper next to it. */
 #define btsnd_hcic_write_auth_enable btsnd_hcic_write_pin_type_8008543C
