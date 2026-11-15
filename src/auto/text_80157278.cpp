@@ -3558,7 +3558,8 @@ extern "C" void fn_8015D400(Unk801577F0* arg0) {
 
 extern "C" u32 fn_8015D498(void) { return 1; }
 
-extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 arg1) {
+extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 index) {
+    /* Return the float at offset 0x10 of the index-th 0x38-byte entry, or 0.0 if below the bound from slot 19. */
     class LocalVtable {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -3567,8 +3568,8 @@ extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 arg1) {
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual void v16(); virtual s32 v17();
     };
-    if (arg1 >= ((LocalVtable*)arg0)->v17()) {
-        return *(f32*)((u8*)arg0->mData + arg1 * 0x38 + 0x10);
+    if (index >= ((LocalVtable*)arg0)->v17()) {
+        return *(f32*)((u8*)arg0->mData + index * 0x38 + 0x10);
     }
     return lbl_80561754;
 }
