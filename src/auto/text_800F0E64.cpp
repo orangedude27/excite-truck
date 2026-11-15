@@ -5389,6 +5389,7 @@ extern "C" void fn_800FA6E8(void) {
 }
 
 extern "C" s32 fn_800FA77C(s32 arg0) {
+    /* Sound thread entry: set up message queue and AX callback, run thread loop, then clean up. */
     OSInitMessageQueue((void*)(arg0 + 0x2338), (void*)(arg0 + 0x2358), 8);
     void* manager = Instance__15EmissionManagerFv();
     RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNodePFv_v(
