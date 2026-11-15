@@ -479,29 +479,39 @@ void fn_80294ED4(void) {
 #pragma processor gekko
 #pragma optimization_level 4
 #pragma scheduling invalid_target
-void fn_80295C70(void *arg0, int arg1, const float *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
-    struct Entry { int value; float a,b,c,d,e; unsigned char flags[3]; int tail; };
-    struct Obj { struct Entry entries[12]; int count; };
-    struct Obj *obj = (struct Obj *)arg0;
+/* AddTruckLight: appends one light to a truck's light queue -- the 0x184-byte
+ * per-truck block of lbl_804B42F0, twelve entries followed by their count at
+ * +0x180.  fn_80295CC4 fills the fields in from the light's "color", "width",
+ * "height" and "light_type" properties (the lights are looked up by name:
+ * "left headlight", "right taillight", "acc light %d", ...), and fn_80294ED4
+ * walks the queue to draw each one as a billboard in the lights.tex/glowz.tex
+ * page.  The colour arrives packed as RGBA and is split into its bytes. */
+void fn_80295C70(void *arg0, int light, const float *pos, unsigned int rgba, int lightType, float width, float height) {
+    /* One queued light: the light object, the point it hangs at on the truck,
+       its height and width, its colour and type. */
+    struct Light { void *object; float x, y, z; float height, width; unsigned char rgb[3]; int type; };
+    /* A truck's lights and how many of the twelve slots are in use. */
+    struct LightQueue { struct Light lights[12]; int count; };
+    struct LightQueue *queue = (struct LightQueue *)arg0;
     float z, y, x;
-    unsigned char flag0 = arg3 >> 16;
-    unsigned char flag1 = arg3 >> 8;
-    struct Entry *entry;
-    entry = &obj->entries[obj->count];
-    entry->value = arg1;
-    x = arg2[0];
-    y = arg2[1];
-    z = arg2[2];
-    entry->a = x;
-    entry->b = y;
-    entry->c = z;
-    entry->d = farg1;
-    entry->e = farg0;
-    entry->flags[0] = flag0;
-    entry->flags[1] = flag1;
-    entry->flags[2] = arg3;
-    entry->tail = arg4;
-    obj->count++;
+    unsigned char red = rgba >> 16;
+    unsigned char green = rgba >> 8;
+    struct Light *entry;
+    entry = &queue->lights[queue->count];
+    entry->object = (void *)light;
+    x = pos[0];
+    y = pos[1];
+    z = pos[2];
+    entry->x = x;
+    entry->y = y;
+    entry->z = z;
+    entry->height = height;
+    entry->width = width;
+    entry->rgb[0] = red;
+    entry->rgb[1] = green;
+    entry->rgb[2] = rgba;
+    entry->type = lightType;
+    queue->count++;
 }
 #pragma pop
 void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *pos, float size) {
