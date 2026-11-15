@@ -4111,6 +4111,19 @@ int GXGetTexObjAll(void *obj) {
     return (*(unsigned char *)((char *)obj + 0x1F)) & 1;
 }
 
+// __GXData's texture-loading tail: the two region callbacks GXLoadTexObj and
+// GXLoadTexObjPreLoaded call.  include/revolution/GX/GXTypes.h names the types
+// they trade in (GXTexRegion *, GXTlutRegion *); the library grew __GXData past
+// the layout in include/revolution/GX/__gx.h, so they sit at 0x518 and 0x51C here.
+typedef struct {
+    u8 unused_000[0x518];
+    void *(*texRegionCallback)(void *obj, unsigned int map); // 0x518 GXTexRegion *(*)(GXTexObj *, GXTexMapID)
+    void *(*tlutRegionCallback)(unsigned int tlutName);      // 0x51C GXTlutRegion *(*)(u32)
+} GXTexRegionData;
+
+// Volatile: GXLoadTexObj reads the block pointer before it saves its arguments.
+#define gxtexdata (*(GXTexRegionData * volatile *)&__GXData)
+
 extern unsigned char lbl_80558E48, lbl_80558E50, lbl_80558E58;
 extern unsigned char lbl_80558E60, lbl_80558E68, lbl_80558E70, lbl_80558E78;
 void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
