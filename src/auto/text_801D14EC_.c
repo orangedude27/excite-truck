@@ -220,14 +220,15 @@ void fn_801D183C(int arg0, int idx) {
 
 void fn_801D1008(void*, unsigned int);
 void fn_80128668(void*);
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D1AB4(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_801D1008((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+/* Deleting destructor for nw4hbm::snd::MemorySoundArchive: run base destruction, then free storage if requested. */
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D1AB4(long self, long shouldDelete) {
+    if (self != 0) {
+        fn_801D1008((void*)self, 0);
+        if (shouldDelete > 0) {
+            fn_80128668((void*)self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern int lbl_8055E918;
