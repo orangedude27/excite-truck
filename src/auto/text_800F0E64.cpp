@@ -6446,16 +6446,18 @@ extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void)
     }
 }
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void) {
-    void *pHead = *(void **)&lbl_8041506C[0x04];
-    void *pList = &lbl_8041506C[0x04];
-    void *p;
-    while (pHead != pList) {
-        p = pHead;
-        pHead = *(void **)pHead;
-        if (p == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68);
+    LinkListIter begin;
+    begin.node = *(void**)&lbl_8041506C[0x04];
+    LinkListIter it = begin;
+
+    while (it.node != (void*)&lbl_8041506C[0x04]) {
+        void* cur = it.node;
+        it.node = *(void**)it.node;
+        if (cur == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
+                                         (const char*)lbl_80326B68);
         }
-        Update__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8 *)p)[-0x08]);
+        Update__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)cur)[-0x08]);
     }
 }
 
