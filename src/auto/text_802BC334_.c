@@ -903,6 +903,7 @@ void fn_802BD018(void *slot) {
         *(void **)slot = 0;
     }
 }
+
 int fn_802BD070(void *slot) {
     /* Clear the 3-word object stored at *slot, free it (mode 3), and clear the slot. */
     void *obj = *(void **)slot;
