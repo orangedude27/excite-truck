@@ -1139,12 +1139,13 @@ extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
     return p;
 }
 extern "C" s32 fn_8012BE90(void) {
+    /* Initialize the TOC library/resources subsystem and its async effect queue; returns success. */
     fn_8012A648();
     lbl_8055DFF8 = 1;
-    void *p = fn_801284F8(1, &lbl_805599B8);
-    if (p)
+    void *allocatedObject = fn_801284F8(1, &lbl_805599B8);
+    if (allocatedObject)
         fn_8012BEF0((s32)lbl_8032AE9C);
-    lbl_8055DFFC = (s32)p;
+    lbl_8055DFFC = (s32)allocatedObject;
     fn_8012DBD0();
     return 1;
 }
