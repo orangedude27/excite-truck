@@ -65,10 +65,10 @@ enum {
 #define SI(o) (*(int *)(s + (o)))
 #define SU(o) (*(unsigned int *)(s + (o)))
 void fn_802E4D84(void *dst, void *src, int size) {
-    register long saved_dst = (long)dst;
-    register void *saved_size = (void *)size;
-    memcpy((void *)saved_dst, src, (unsigned long)saved_size);
-    DCFlushRange((void *)saved_dst, (unsigned long)saved_size);
+    register unsigned long destination = (unsigned long)dst;
+    register unsigned long length = (unsigned long)size;
+    memcpy((void *)destination, src, length);
+    DCFlushRange((void *)destination, length);
 }
 
 extern unsigned char *fn_8012C370(int, unsigned int *, int, unsigned char *, unsigned char *);
