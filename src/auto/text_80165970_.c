@@ -139,10 +139,11 @@ void fn_801659C8(int arg0) {
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
-float fn_801659D0(int arg0) {
-    float temp_f31;
-    temp_f31 = fn_8013672C(arg0);
-    return temp_f31 * (float)fn_800081F0(arg0);
+/* Returns the product of the object's float value and its associated count. */
+float fn_801659D0(int obj) {
+    float value;
+    value = fn_8013672C(obj);
+    return value * (float)fn_800081F0(obj);
 }
 #pragma pop
 extern int strcmp(const char *, const char *);
