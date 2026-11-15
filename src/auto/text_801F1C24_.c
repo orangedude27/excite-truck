@@ -377,6 +377,7 @@ void fn_801F24D4(void *arg0, void *arg1) {
     }
 }
 
+/* Tear down a tree node: release its left/right subtrees and the node's own model. */
 void fn_801F2514(void *arg0, void *arg1) {
     int stack[12];
     fn_801F1C24(&stack[0]);
