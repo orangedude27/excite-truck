@@ -692,6 +692,8 @@ extern "C" int fn_801A6024(void *arg0, int arg1) {
         virtual void v5();
         virtual int v6(int);
     };
+    /* Computes the size contributed beyond arg1 by combining fn_8018BA54()
+     * with a query on the child object at +0x270C (vtable slot 0x20). */
     int base = arg1 + fn_8018BA54();
     Obj *obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
     base += obj->v6(base);
