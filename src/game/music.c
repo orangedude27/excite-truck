@@ -42,10 +42,14 @@ extern s32 lbl_8055EDE4;          /* song index last requested (-1 = no music) *
 extern s32 lbl_8055EDE8;          /* ms stamp of that request; fn_8020A100 ramps the crossfade from it */
 
 #pragma scheduling invalid_target
-void fn_8020A648(s32 arg0) {
-    if (arg0 != lbl_8055EDE4) {
-        fn_802E30C8(lbl_8033C318, arg0);
-        lbl_8055EDE4 = arg0;
+/* Requests a song change. When the index differs from the one already pending,
+ * log it, make it the pending index (-1 stops the music) and stamp the moment of
+ * the switch; fn_8020A100 crossfades the two music slots over the time elapsed
+ * since that stamp. */
+void fn_8020A648(s32 songIdx) {
+    if (songIdx != lbl_8055EDE4) {
+        fn_802E30C8(lbl_8033C318, songIdx);
+        lbl_8055EDE4 = songIdx;
         lbl_8055EDE8 = fn_802E2C20();
     }
 }
