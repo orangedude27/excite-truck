@@ -55,7 +55,13 @@ extern void fn_80039FC4(int);
 #define sDvderrorPath lbl_80302368
 void fn_80039F3C(int arg0) { if (lbl_8055D8D0 != 0) { lbl_8055D8D0(arg0 == 0 ? 1 : 2, 0); } }
 
-void fn_80039F68(int arg0) { if (NANDCloseAsync(lbl_8037B640, fn_80039F3C, lbl_8037B6D0) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2, 0); }
+/* NAND async step after writing dvderror.dat: close the file and report failure. */
+void fn_80039F68(int result) {
+    if (NANDCloseAsync(sNandDvderrorFileInfo, fn_80039F3C, sNandDvderrorCmdBlock) != 0 &&
+        sNandErrorReportCallback != 0) {
+        sNandErrorReportCallback(2, 0);
+    }
+}
 
 void fn_80039FC4(int arg0) {
  char *base = lbl_8037B640;
