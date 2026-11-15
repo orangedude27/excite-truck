@@ -686,8 +686,6 @@ int fn_8028F0C0(int *lists, int index, int excludeTexId) {
     return EF_NO_TEXTURE;
 }
 #pragma pop
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
