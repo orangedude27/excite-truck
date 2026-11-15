@@ -3,17 +3,19 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80128668(void *);
-void *fn_801677DC(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+/* Reset the object's three 32-bit fields to 0, then free it when
+ * shouldDelete > 0 (deleting-destructor style helper). */
+void *fn_801677DC(void *object, s32 shouldDelete) {
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_80167834(void) {
