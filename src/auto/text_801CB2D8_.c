@@ -270,11 +270,18 @@ void fn_801CB8FC(void) {
 }
 
 #pragma dont_inline on
-int fn_801CB900(int *arg0, int arg1) {
+/* Award_statMatches: 1 when the stat object a slot of the StatHandler's stat
+   array points to carries the stat type being looked for (its type word at
+   +0x04, e.g. 0x22205 or 0x20507). The Awards code scans the array
+   (lbl_8055E884 + 0x18, count at +0x1C) with this and reports
+   "Awards: can't find stat info for type %d!" when no slot matches. */
+int fn_801CB900(int *statSlot, int statType) {
+#define Award_statGetType fn_8001BD28
     int result = 0;
-    if (arg0 != 0 && arg1 == fn_8001BD28(*arg0)) {
+    if (statSlot != 0 && statType == Award_statGetType(*statSlot)) {
         result = 1;
     }
+#undef Award_statGetType
     return result;
 }
 #pragma dont_inline reset
