@@ -6316,17 +6316,6 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
     return 0;
 }
 
-static inline s32 ClearFatEntry800AE7A8(u8 *ctx, s32 cur, void *page) {
-    s32 type = *(s32 *)(ctx + 0x1C);
-    void *pp = page;
-    switch (type) {
-    case 0: return ((s32 (*)(void *, u16, s32, void *))fn_800AF8EC)(ctx, (u16)cur, 0, pp);
-    case 1: return ((s32 (*)(void *, s32, s32, void *))fn_800AFFE0)(ctx, cur, 0, pp);
-    case 2: return ((s32 (*)(void *, s32, s32, void *))fn_800B0488)(ctx, cur, 0, pp);
-    default: return 0xF;
-    }
-}
-
 extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 *ctx = (u8 *)*(void **)((u8 *)arg0 + 0x34);
     s32 next;
