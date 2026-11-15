@@ -806,12 +806,14 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     }
 }
 #pragma pop
-void fn_801F131C(int arg0, int arg1) {
-    if (*(unsigned int *)(arg0 + 4) != 3) {
-        int value;
-        if (arg1 != 0) value = 0;
-        else value = fn_801F15A8(arg0, arg0 + 0x3C);
-        fn_801F163C((void *)arg0, value, *(float *)(arg0 + 0x48));
+/* Draw one detached wheel instance: pick its LOD (nearest by default, or LOD 0
+ * when forced) and submit it to the model manager, unless its draw state is 3. */
+void fn_801F131C(int instance, int forceNearestLod) {
+    if (*(unsigned int *)(instance + 4) != 3) {
+        int lodIndex;
+        if (forceNearestLod != 0) lodIndex = 0;
+        else lodIndex = fn_801F15A8(instance, instance + 0x3C);
+        fn_801F163C((void *)instance, lodIndex, *(float *)(instance + 0x48));
     }
 }
 
