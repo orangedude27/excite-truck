@@ -731,16 +731,16 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     return off & sign;
 }
 
-void fn_801175C4(s32 arg0, s32 arg1) {
-    register s32 off;
-    register s32 base;
-    off = arg0 + 0x340;
-    off -= arg0;
-    base = arg0 - off;
-    if (*(s32 *)(base + 0x2E8) != 0) {
-        fn_80117074((void *)base);
+void fn_801175C4(s32 node, s32 tickCount) {
+    register s32 offset;
+    register s32 mgr;
+    offset = node + 0x340;
+    offset -= node;
+    mgr = node - offset;
+    if (*(s32 *)(mgr + 0x2E8) != 0) {
+        fn_80117074((void *)mgr);
     }
-    *(s32 *)(base + 0x33C) = arg1;
+    *(s32 *)(mgr + 0x33C) = tickCount;
 }
 
 /* Compute render/texture buffer layout parameters (sizes, strides, and flags) from
