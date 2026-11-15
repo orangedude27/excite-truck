@@ -378,6 +378,10 @@ void fn_8023BF4C(void *arg0) {
                 *(s32 *)((u8 *)arg0 + 8), 0);
 }
 
+/* lbl_8055BB30: how many players the debug console asked the next race to run
+ * with (fn_8023BF68 rejects 0 and anything past 4).  A negative count gives
+ * every player its own index instead of the currently selected player. */
+#define player_count lbl_8055BB30
 void fn_8023BF68(void) {
     s32 value = atoi();
     lbl_8055BB30 = value;
