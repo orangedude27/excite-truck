@@ -96,15 +96,40 @@ void fn_802A09B0(void) {
 void fn_802A0AF8(void) {
 }
 
+/* Chain-link fence module shutdown (suggested name ChainLink_Shutdown;
+ * rename_symbol is refused here, so the name only lives in this comment).
+ * Counterpart of fn_802A09B0 and called from the game's subsystem teardown
+ * list fn_802878A8: drops the module's event handler, releases its fence
+ * texture and frees the record table the handler fills. */
 void fn_802A0AFC(void) {
-    fn_801EF024(fn_802A0944);
-    fn_802CAC54(lbl_8055CB68);
+    /* The module's globals: the 64 0x54-byte chain-link records fn_802A0944
+     * stores from event type 6 (heap block named "chainlink"), and the
+     * "fencepol.tex" texture handle fn_802A0B54 draws those records with. */
+#define chainLinkRecords lbl_8055F834
+#define fenceTextureHandle lbl_8055CB68
+#define ChainLinkEventHandler fn_802A0944 /* event type 6 handler set by fn_802A09B0 */
+#define UnregisterEventHandler fn_801EF024
+#define ReleaseTexture fn_802CAC54
+#define FreeBlock fn_80128670
+#define TEXTURE_HANDLE_FREE (-2) /* fn_802CAC28's "no texture" handle value */
+#define BLOCK_HEADER 0x10        /* header fn_8012850C puts before the block it returns */
+
+    UnregisterEventHandler(ChainLinkEventHandler);
+    ReleaseTexture(fenceTextureHandle);
     {
-        int value = (int)lbl_8055F834;
-        lbl_8055CB68 = -2;
-        if (value != 0) fn_80128670(value - 0x10);
-        lbl_8055F834 = 0;
+        int tableAddress = (int)chainLinkRecords;
+        fenceTextureHandle = TEXTURE_HANDLE_FREE;
+        if (tableAddress != 0) FreeBlock(tableAddress - BLOCK_HEADER);
+        chainLinkRecords = 0;
     }
+#undef chainLinkRecords
+#undef fenceTextureHandle
+#undef ChainLinkEventHandler
+#undef UnregisterEventHandler
+#undef ReleaseTexture
+#undef FreeBlock
+#undef TEXTURE_HANDLE_FREE
+#undef BLOCK_HEADER
 }
 
 void fn_802A0B50(void) {
