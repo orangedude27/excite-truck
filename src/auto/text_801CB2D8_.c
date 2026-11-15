@@ -851,20 +851,21 @@ void fn_801CC918(void) {
     }
 }
 #pragma scheduling on
+// Enables a per-racer flag byte (offset +0x11) in the race UI/state block for the current racer slot.
 void fn_801CCAEC(int arg0) {
-    int index;
-    unsigned char *manager;
-    char *base;
+    int racerIndex;
+    unsigned char *raceMgr;
+    char *uiStateBase;
     (void)arg0;
-    base = (char *)lbl_8055E884;
-    manager = fn_801EA9A0();
-    if (*manager != 0) {
-        index = manager[0xB4] & 3;
+    uiStateBase = (char *)lbl_8055E884;
+    raceMgr = fn_801EA9A0();
+    if (*raceMgr != 0) {
+        racerIndex = raceMgr[0xB4] & 3;
     } else {
-        index = -1;
+        racerIndex = -1;
     }
-    if (index >= 0) {
-        *(signed char *)(base + index + 0x11) = 1;
+    if (racerIndex >= 0) {
+        *(signed char *)(uiStateBase + racerIndex + 0x11) = 1;
     }
 }
 
