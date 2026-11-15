@@ -196,6 +196,7 @@ void fn_8001BB0C(s32 arg0, s32 arg1, s32 arg2) {
 }
 #pragma pop
 void fn_8001BB58(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    /* Fetch a contest name via fn_8001D25C(arg1) and return the indexed sub-entry from its record (fn_8001CE74). */
     register s32 a = arg3;
     register s32 b = arg2;
     fn_8001CE74(arg0, fn_8001D25C(arg1), b, a);
