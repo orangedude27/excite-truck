@@ -1107,6 +1107,19 @@ extern "C" void* fn_80158218(void* self, s32 shouldDelete) {
     return self;
 }
 
+struct WordArray80158280 {
+    s32 *data;
+    s32 count;
+
+    inline s32 *push(s32 val) {
+        s32 idx = count;
+        s32 *base = data;
+        count = idx + 1;
+        base[idx] = val;
+        return &base[idx];
+    }
+};
+
 extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
     u32 val = *(u32 *)arg1;
     u32 idx = ((u32 *)arg0)[1];
