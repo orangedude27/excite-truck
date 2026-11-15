@@ -6667,7 +6667,7 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
     s32 event;
 
     if (lbl_8055DC80 >= 5) {
-        u8 *msg;
+        register u8 *msg;
         switch (*(u16 *)(cb + 0x10)) {
         case 4: msg = strings + 0x16C; break;
         case 5: msg = strings + 0x180; break;
@@ -6678,8 +6678,8 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
         case 2: msg = strings + 0x1F0; break;
         case 0:
         case 1:
-        case 3: msg = strings + 0x200; break;
-        default: break;
+        case 3:
+        default: msg = strings + 0x200; break;
         }
         ((void (*)(u32, void *, void *))fn_80070954)(
             0x504, strings + 0x2A8, msg);
@@ -6711,7 +6711,7 @@ byte6:
 
 second_trace:
     if (lbl_8055DC80 >= 5) {
-        u8 *msg;
+        register u8 *msg;
         switch (event) {
         case 4: msg = strings + 0x16C; break;
         case 5: msg = strings + 0x180; break;
@@ -6722,8 +6722,8 @@ second_trace:
         case 2: msg = strings + 0x1F0; break;
         case 0:
         case 1:
-        case 3: msg = strings + 0x200; break;
-        default: break;
+        case 3:
+        default: msg = strings + 0x200; break;
         }
         ((void (*)(u32, void *, void *))fn_80070954)(
             0x504, strings + 0x2CC, msg);
