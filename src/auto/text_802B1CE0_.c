@@ -55,17 +55,20 @@ extern void *fn_802B1F68(void *, int);
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
 extern void fn_80128668(void *);
-void *fn_802B1CE0(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(int *)arg0 = 0;
-            *((int *)arg0 + 1) = 0;
-            *((int *)arg0 + 2) = 0;
+/* Scalar deleting destructor helper: clears the object's three-word header
+ * {+0x00,+0x04,+0x08} to zero, and frees the object when deletingFlag > 0.
+ * The redundant null check is intentional (matches the original). */
+void *fn_802B1CE0(void *this_, int deletingFlag) {
+    if (this_ != 0) {
+        if (this_ != 0) {
+            *(int *)this_ = 0;
+            *((int *)this_ + 1) = 0;
+            *((int *)this_ + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deletingFlag > 0)
+            fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 int fn_802B1D38(int handle) {
