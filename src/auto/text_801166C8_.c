@@ -1588,20 +1588,21 @@ status_done:
     fn_80120084(bink);
 }
 
-void fn_80118F1C(void *arg0, s32 arg1) {
-    s32 temp_r0 = *(s32*)((u8*)arg0 + 0x274);
-    if (temp_r0 != 0) {
-        u32 temp_r5 = *(u32*)((u8*)arg0 + 0x278);
-        u32 temp_r6 = arg1 - temp_r0;
-        *(s32*)((u8*)arg0 + 0x274) = 0;
-        if (temp_r6 > temp_r5) {
-            *(u32*)((u8*)arg0 + 0x280) = temp_r5;
-            *(s32*)((u8*)arg0 + 0x284) = *(s32*)((u8*)arg0 + 0x27C);
-            *(u32*)((u8*)arg0 + 0x278) = temp_r6;
-            *(s32*)((u8*)arg0 + 0x27C) = *(s32*)((u8*)arg0 + 0xC);
-        } else if (temp_r6 > *(u32*)((u8*)arg0 + 0x280)) {
-            *(u32*)((u8*)arg0 + 0x280) = temp_r6;
-            *(s32*)((u8*)arg0 + 0x284) = *(s32*)((u8*)arg0 + 0xC);
+/* Updates recorded interval durations for an object: when a start tick at +0x274 is set, computes (endTick - startTick), clears the start, and promotes it into the longest (+0x278/+0x27C tag from +0xC) or second-longest (+0x280/+0x284) slot as needed. */
+void fn_80118F1C(void *object, s32 endTick) {
+    s32 startTick = *(s32*)((u8*)object + 0x274);
+    if (startTick != 0) {
+        u32 longestDuration = *(u32*)((u8*)object + 0x278);
+        u32 duration = endTick - startTick;
+        *(s32*)((u8*)object + 0x274) = 0;
+        if (duration > longestDuration) {
+            *(u32*)((u8*)object + 0x280) = longestDuration;
+            *(s32*)((u8*)object + 0x284) = *(s32*)((u8*)object + 0x27C);
+            *(u32*)((u8*)object + 0x278) = duration;
+            *(s32*)((u8*)object + 0x27C) = *(s32*)((u8*)object + 0xC);
+        } else if (duration > *(u32*)((u8*)object + 0x280)) {
+            *(u32*)((u8*)object + 0x280) = duration;
+            *(s32*)((u8*)object + 0x284) = *(s32*)((u8*)object + 0xC);
         }
     }
 }
