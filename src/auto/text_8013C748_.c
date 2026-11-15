@@ -21,34 +21,34 @@ void fn_8013C748(void);
 
 extern char lbl_8032C478[];
 void fn_8013C748(void) {
-    struct Entry { int a; int b; int c; };
-    struct Entry *e = (struct Entry *)&lbl_8032C478;
-    while (e->a != 0) {
-        e->c = 0;
-        e++;
+    unsigned char *p = (unsigned char *)&lbl_8032C478;
+    while (*(int *)p != 0) {
+        *(int *)(p + 8) = 0;
+        p += 12;
     }
 }
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void *fn_8013C770(const char *arg0) {
-    int *var_r31;
+/* Finds the 12-byte registry entry in lbl_8032C478 whose name matches (case-insensitive), returning a pointer to the entry (or the null terminator entry if not found). */
+void *fn_8013C770(const char *name) {
+    int *entry;
 
-    var_r31 = (int *)&lbl_8032C478;
+    entry = (int *)&lbl_8032C478;
     goto loop_test;
 loop_body:
-    if (stricmp(arg0, (const char *)*var_r31) != 0) {
+    if (stricmp(name, (const char *)*entry) != 0) {
         goto loop_next;
     }
     goto done;
 loop_next:
-    var_r31 += 3;
+    entry += 3;
 loop_test:
-    if (*var_r31 != 0) {
+    if (*entry != 0) {
         goto loop_body;
     }
 done:
-    return var_r31;
+    return entry;
 }
 
 #pragma dont_inline on
