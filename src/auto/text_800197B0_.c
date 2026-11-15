@@ -22,17 +22,19 @@ void *fn_800197B0(void *object, s32 shouldFree) {
     return local;
 }
 
-void* fn_8001980C(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+/* Resets the three 32-bit fields of a container to zero and, when shouldFree
+ * is positive, frees the container itself. */
+void *fn_8001980C(void *object, s32 shouldFree) {
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldFree > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma scheduling on
