@@ -497,15 +497,16 @@ extern void fn_80128668(void*);
 extern void **lbl_8055E27C;
 extern u8 lbl_8032E46C[];
 extern void fn_80138AD8(void* this_, u32 a);
-void* __dt__Q28PSSystem7SeqHeapFv_80156A4C(void* this_, s32 flag) {
-    if (this_) {
-        *(u32*)this_ = (u32)lbl_8032E46C;
-        fn_80138AD8((u8*)this_ + 4, (u32)lbl_8032E46C);
-        if (flag > 0) {
-            fn_80128668(this_);
+/* Destructor for PSSystem::SeqHeap (address-suffixed variant): restore vtable, destroy base subobject, and conditionally delete storage. */
+void* __dt__Q28PSSystem7SeqHeapFv_80156A4C(void* seqHeap, s32 shouldDelete) {
+    if (seqHeap) {
+        *(u32*)seqHeap = (u32)lbl_8032E46C;
+        fn_80138AD8((u8*)seqHeap + 4, (u32)lbl_8032E46C);
+        if (shouldDelete > 0) {
+            fn_80128668(seqHeap);
         }
     }
-    return this_;
+    return seqHeap;
 }
 
 s32 fn_80156AB0(void *arg0) {
