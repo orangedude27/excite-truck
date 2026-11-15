@@ -359,7 +359,10 @@ void fn_802E9EB8(void) {
 }
 
 #pragma use_lmw_stmw off
-// Recursively scans a directory for .brf files (up to maxDepth), recording matching paths/names into lbl_80508818 entries.
+// Scans a directory (and up to maxDepth-1 levels below it) for .mp3 files,
+// appending each one to the song table lbl_80508818 -- 100 entries of 0x610:
+// the directory it was found in (0x200), its file name (0x208) and that name
+// with every non-ASCII byte replaced by '?' (0x208). lbl_8056007C counts them.
 int fn_802EA5D4(void *dirPath, int maxDepth) {
     extern void fn_801345D8(char *, long, const char *, ...);
     extern int fn_800B7C90(char *, int, char *);
