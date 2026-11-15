@@ -76,12 +76,14 @@ extern "C" void __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(s32 arg0 = 0);
 extern "C" void fn_800F0E64(s32);
 extern "C" u32 lbl_8055DE48;
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F078C(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+/* Destroys a nw4hbm::snd::MemorySoundArchive (base LinkListImpl subobject) and,
+ * if shouldDelete > 0, frees the storage. */
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F078C(void *self, int shouldDelete) {
+    if (self != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_800F07E4(s32 arg0) {
