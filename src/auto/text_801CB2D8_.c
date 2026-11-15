@@ -1848,13 +1848,14 @@ void fn_801CE6D0(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
 }
 
 void fn_801CE6F8(void) {
-    s32 *temp_r31;
+    /* Update the active race/menu state each frame, skipping when unavailable. */
+    s32 *state;
     if (fn_801CE898() != 0) return;
-    temp_r31 = lbl_8055E884;
-    fn_801CBD48((void *)(temp_r31 + 0x2C0 / 4), (void *)temp_r31);
-    if (temp_r31[0x2C8 / 4] != 0)
-        ((void (*)(void *, void *))fn_802AE220)((void *)temp_r31[0x2C8 / 4], (void *)(temp_r31 + 0x608 / 4));
-    if (temp_r31[0x2C0 / 4] == 3)
+    state = lbl_8055E884;
+    fn_801CBD48((void *)(state + 0x2C0 / 4), (void *)state);
+    if (state[0x2C8 / 4] != 0)
+        ((void (*)(void *, void *))fn_802AE220)((void *)state[0x2C8 / 4], (void *)(state + 0x608 / 4));
+    if (state[0x2C0 / 4] == 3)
         fn_8001DFCC();
 }
 
