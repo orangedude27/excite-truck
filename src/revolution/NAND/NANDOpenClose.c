@@ -79,6 +79,7 @@ s32 NANDPrivateOpenAsync(const char* path, NANDFileInfo* info, u8 mode,
 }
 
 static void nandOpenCallback(s32 result, void* arg) {
+    /* ISFS async open completion: store the file descriptor on success and forward a NAND result. */
     NANDCommandBlock* block = (NANDCommandBlock*)arg;
 
     if (result >= 0) {
