@@ -2890,12 +2890,19 @@ extern "C" void *fn_801FC674(void *arg0, s32 shouldDelete) {
     return arg0;
 }
 
-extern "C" void fn_801FC720(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x50) == 0 && fn_801F7A0C() != 0) {
-        fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x3C), (u8 *)arg0 + 4, -1, -15);
+/* Draw pass for one batched-GOB node outside the batched run: if the node is not
+ * claimed by the batched pass (batchDraw clear) and the model system's draw gate
+ * (fn_801F7A0C) allows it, submit its model instance at the world matrix the node
+ * carries, keeping every draw group but the first four. */
+extern "C" void fn_801FC720(BatchedGob *node) {
+    if (node->batchDraw == 0 && fn_801F7A0C() != 0) {
+        ModelDraw(node->gobId, node->world, -1, GOB_GROUP_MASK);
     }
 }
-
+#pragma push
+#pragma processor 750
+#pragma push
+#pragma processor 750
 extern "C" f32 fn_801E88F0(s32);
 extern "C" f32 fn_802C88E8(void *);
 extern "C" f64 fn_8002F234(void);
