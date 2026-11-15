@@ -357,11 +357,13 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9WsdPlayerFv(void* player) {
 }
 
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *, unsigned char);
-extern "C" void Pause__Q46nw4hbm3snd6detail9WsdPlayerFb(void *arg0, unsigned char arg1) {
-    int enabled = OSDisableInterrupts();
-    *(unsigned char *)((char *)arg0 + 0x20) = arg1;
-    PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb((char *)arg0 + 0x9C, arg1);
-    OSRestoreInterrupts(enabled);
+// Pause or resume all tracks owned by this WsdPlayer.
+extern "C" void Pause__Q46nw4hbm3snd6detail9WsdPlayerFb(void *player, unsigned char pause) {
+    int irqState;
+    irqState = OSDisableInterrupts();
+    *(unsigned char *)((char *)player + 0x20) = pause;
+    PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb((char *)player + 0x9C, pause);
+    OSRestoreInterrupts(irqState);
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100820(void *arg0, float value) {
@@ -640,6 +642,7 @@ extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void*, unsigned
 extern "C" char lbl_8041D4C4[];
 #pragma push
 #pragma use_lmw_stmw off
+#pragma opt_lifetimes off
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) {
     class PlayerVTable {
     public:
@@ -651,10 +654,10 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) 
     void* pHead;
     void* pPlayer;
     pList = (void*)&lbl_8041D4C4[0x04];
-    pHead = *(void**)pList;
+    pHead = *(void* volatile*)pList;
     while (pHead != pList) {
         pPlayer = pHead;
-        pHead = *(void**)pPlayer;
+        pHead = *(void* volatile*)pPlayer;
         if (pPlayer == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327C7C, 0x23D, (const char*)lbl_80327C58);
         }
