@@ -55,10 +55,11 @@ void fn_801607BC(void) {
 
 #pragma dont_inline on
 void fn_801607F8(void) {
-    void *p = lbl_8055E2BC;
-    if (p != 0) {
-        if (p != 0) {
-            ((int (*)(void *))fn_80128668)(p);
+    /* Frees the audio instance at lbl_8055E2BC if set, then resets the five bound slots to -1. */
+    void *instance = lbl_8055E2BC;
+    if (instance != 0) {
+        if (instance != 0) {
+            ((int (*)(void *))fn_80128668)(instance);
         }
         lbl_8055E2BC = 0;
     }
