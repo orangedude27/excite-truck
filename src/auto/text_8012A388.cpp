@@ -795,16 +795,18 @@ static inline void *AllocAligned80(void *owner, s32 size) {
 #pragma dont_inline on
 #pragma scheduling on
 /* Body of fn_8012B6FC with the string pool base passed in. */
-static inline s32 LoadEntryData(void *arg0, s32 arg1, const char *strings) {
+static inline s32 LoadEntryData(void *arg0, s32 arg1) {
     u8 *entry;
     u8 *header;
     void *object;
     s32 handle;
     s32 startTime;
     u32 flags;
+    const char *strings;
 
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
+    strings = lbl_8032A630;
     if (!(flags & 8)) {
         object = AllocAligned80(entry, *(s32 *)(entry + 0x28) + 0x80);
         if (object != 0) {
