@@ -163,6 +163,7 @@ void fn_802D4060(void *arg0) {
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_802D41C8(void *arg0) {
+    /* Binds this object's position, normal, and color vertex arrays, then submits its display list. */
     GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
