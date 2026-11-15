@@ -605,6 +605,9 @@ extern "C" void VFipf_memcpy(void *, const void *, u32);
   #pragma opt_tail_call on
 
 namespace homebutton {
+/* One WPAD remote's home-button state: the channel it drives, the two WPAD
+ * callbacks homebutton replaced (kept so they can be chained to and put back),
+ * and the remote-speaker tone it watches through m_soundPlayer. */
 class Controller {
 public:
     s32 m_channel;          // 0x00 WPAD remote this controller drives
