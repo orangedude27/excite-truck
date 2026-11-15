@@ -1035,23 +1035,32 @@ extern "C" void fn_80219660(void *arg0) {
 
 extern "C" void fn_8022AC1C(s32, s32, s32, s32, s32 *, s32 *, s32 *, s32 *);
 extern "C" void fn_80219718(void *arg0) {
-    s32 sp14, sp10, spC, sp8;
-    s32 temp_r30;
-    s32 var_r0, var_r0_2, var_r0_3, var_r0_4;
+    /* Recompute this label/widget's bounds from its layout data and update its position/size. */
+    s32 left;
+    s32 top;
+    s32 right;
+    s32 bottom;
+    s32 originY;
+    s32 width;
+    s32 rightEdge;
+    s32 bottomEdge;
+
     fn_8022AC1C(*(s32 *)((u8 *)arg0 + 0x250), ((VfObj *)arg0)->vf32(),
         *(s32 *)((u8 *)arg0 + 0x244) + *(s32 *)((u8 *)arg0 + 4),
         *(s32 *)((u8 *)arg0 + 0x248) + *(s32 *)((u8 *)arg0 + 8),
-        &sp14, &sp10, &spC, &sp8);
-    sp14 = sp14 < *(s32 *)((u8 *)arg0 + 4) ? sp14 : *(s32 *)((u8 *)arg0 + 4);
-    temp_r30 = *(s32 *)((u8 *)arg0 + 4);
-    var_r0_2 = ((VfObj *)arg0)->vf28();
-    spC = spC > temp_r30 + var_r0_2 ? spC : temp_r30 + var_r0_2;
-    sp10 = sp10 < *(s32 *)((u8 *)arg0 + 8) ? sp10 : *(s32 *)((u8 *)arg0 + 8);
-    sp8 = sp8 > *(s32 *)((u8 *)arg0 + 0x10) ? sp8 : *(s32 *)((u8 *)arg0 + 0x10);
-    *(s32 *)((u8 *)arg0 + 0x244) += *(s32 *)((u8 *)arg0 + 4) - sp14;
-    *(s32 *)((u8 *)arg0 + 0x248) += *(s32 *)((u8 *)arg0 + 8) - sp10;
-    ((Dispatch19718_1C *)arg0)->set(sp14, sp10);
-    fn_80219284(arg0, spC - sp14, sp8 - sp10);
+        &left, &top, &right, &bottom);
+    left = left < *(s32 *)((u8 *)arg0 + 4) ? left : *(s32 *)((u8 *)arg0 + 4);
+    originY = *(s32 *)((u8 *)arg0 + 4);
+    width = ((VfObj *)arg0)->vf28();
+    right = right > originY + width ? right : originY + width;
+    top = top < *(s32 *)((u8 *)arg0 + 8) ? top : *(s32 *)((u8 *)arg0 + 8);
+    bottom = bottom > *(s32 *)((u8 *)arg0 + 0x10) ? bottom : *(s32 *)((u8 *)arg0 + 0x10);
+    *(s32 *)((u8 *)arg0 + 0x244) += *(s32 *)((u8 *)arg0 + 4) - left;
+    *(s32 *)((u8 *)arg0 + 0x248) += *(s32 *)((u8 *)arg0 + 8) - top;
+    ((Dispatch19718_1C *)arg0)->set(left, top);
+    rightEdge = right - left;
+    bottomEdge = bottom - top;
+    fn_80219284(arg0, rightEdge, bottomEdge);
 }
 
 extern "C" void *fn_80219870(void *object, s32 arg1, s32 arg2, char *name, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
