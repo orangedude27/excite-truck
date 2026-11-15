@@ -1723,17 +1723,18 @@ extern "C" int fn_801D6948(void *out, void *object) {
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_801D6BD0(void *arg0) {
+/* Destroy the thread object stored at +0x30, if any, and clear the slot. */
+extern "C" void fn_801D6BD0(void *owner) {
     class ThreadObject {
     public:
         virtual void destroy(int);
     };
-    ThreadObject *p = *(ThreadObject **)((u8 *)arg0 + 0x30);
-    if (p) {
-        if (p)
-            p->destroy(1);
+    ThreadObject *thread = *(ThreadObject **)((u8 *)owner + 0x30);
+    if (thread) {
+        if (thread)
+            thread->destroy(1);
     }
-    *(ThreadObject **)((u8 *)arg0 + 0x30) = 0;
+    *(ThreadObject **)((u8 *)owner + 0x30) = 0;
 }
 #pragma pop
 #pragma cplusplus reset
