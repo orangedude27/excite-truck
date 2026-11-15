@@ -15985,12 +15985,13 @@ void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, u8 *cur_iac_lap) {
 }
 
 s32 btsnd_hcic_inq_cancel_8008576C(void) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == 0) return 0;
-    *(u16 *)(p + 2) = 3;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 1; p[9] = 0x10; p[10] = 0;
-    btu_hcif_send_cmd(p);
+    /* Allocate and send an HCI command buffer (opcode 0x1001, no parameters); returns 1 on success, 0 on allocation failure. */
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == 0) return 0;
+    *(u16 *)(cmdBuf + 2) = 3;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 1; cmdBuf[9] = 0x10; cmdBuf[10] = 0;
+    btu_hcif_send_cmd(cmdBuf);
     return 1;
 }
 
