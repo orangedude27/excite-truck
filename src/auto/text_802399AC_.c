@@ -601,10 +601,12 @@ void fn_8023AEF8(void *obj) {
     }
 }
 
-s32 fn_8023AF6C(void *arg0, s32 arg1) {
-    switch (arg1) {
+s32 fn_8023AF6C(void *context, s32 command) {
+    /* Handles command 0xD by triggering an event action when context flag at
+       offset 0x20 is set and fn_802399DC(0) allows it; returns 1 if handled. */
+    switch (command) {
     case 0xD:
-        if (*(unsigned char *)((char *)arg0 + 0x20) == 0)
+        if (*(unsigned char *)((char *)context + 0x20) == 0)
             goto zero_a;
         if (fn_802399DC(0) == 0)
             goto zero_a;
