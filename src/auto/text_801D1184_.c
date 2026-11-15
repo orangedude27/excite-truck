@@ -67,14 +67,16 @@ void fn_801D1250(float *arg0, int arg1) {
 #pragma scheduling on
 void fn_801D1008(void*, unsigned int);
 void fn_80128668(void*);
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D130C(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_801D1008((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+/* Destructor for nw4hbm::snd::MemorySoundArchive: runs base destruction with
+ * shouldDelete=0, then if requested frees this object. Returns this. */
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D130C(long self, long shouldDelete) {
+    if (self != 0) {
+        fn_801D1008((void *)self, 0);
+        if (shouldDelete > 0) {
+            fn_80128668((void *)self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern int lbl_8055E908;
