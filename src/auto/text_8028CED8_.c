@@ -175,13 +175,15 @@ int fn_8028D17C(void) {
 #pragma use_lmw_stmw reset
 extern int lbl_8055F728;
 extern void fn_802CAC54(int);
+/* Releases the texture handle in each registered 0x1C-byte entry
+ * at lbl_804B3400 (count lbl_8055F728). */
 void fn_8028D25C(void) {
-    int *ptr = (int *)(void *)&lbl_804B3400;
-    int i = 0;
-    while (i < lbl_8055F728) {
-        fn_802CAC54(*ptr);
-        ptr = (int *)((char *)ptr + 0x1C);
-        i++;
+    int *entry = (int *)(void *)&lbl_804B3400;
+    int index = 0;
+    while (index < lbl_8055F728) {
+        fn_802CAC54(*entry);
+        entry = (int *)((char *)entry + 0x1C);
+        index++;
     }
 }
 
