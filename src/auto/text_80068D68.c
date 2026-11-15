@@ -15021,6 +15021,7 @@ void gap_find_addr_inq_cb(u8 *param) {
 }
 
 u16 gap_convert_btm_status(u16 status) {
+    /* Convert a BTM status code to the corresponding GAP/BTM callback result code. */
     switch (status) {
     case 0: return 0;
     case 1: return 0x10B;
