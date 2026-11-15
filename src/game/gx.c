@@ -1870,20 +1870,16 @@ typedef struct Entry_802D18E8 {
     float strength;
 } Entry_802D18E8;
 /* Experiment: the TU's own .bss laid out as separate variables (lbl_804C5650 + offset). */
-static unsigned char sBssHead_802D18E8[0x40];    /* lbl_804C5650 */
-static float sViewFrom_802D18E8[12];             /* lbl_804C5690 */
-static float sViewTo_802D18E8[0x4110 / 4];       /* lbl_804C56C0 .. */
-static Entry_802D18E8 sDefaultLight_802D18E8;    /* lbl_804C97D0 */
-static unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(Entry_802D18E8)];
-static unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088, 0x14 each */
-static unsigned char sLightObjs_802D18E8[8][0x40];  /* lbl_804CA118 */
+unsigned char sBssHead_802D18E8[0x40];    /* lbl_804C5650 */
+float sViewFrom_802D18E8[12];             /* lbl_804C5690 */
+float sViewTo_802D18E8[0x4110 / 4];       /* lbl_804C56C0 .. */
+Entry_802D18E8 sDefaultLight_802D18E8;    /* lbl_804C97D0 */
+unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(Entry_802D18E8)];
+unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088, 0x14 each */
+unsigned char sLightObjs_802D18E8[8][0x40];  /* lbl_804CA118 */
 #pragma push
 #pragma use_lmw_stmw off
-#pragma opt_live_range_split off
 void fn_802D18E8(void) {
-    unsigned char *base = (unsigned char *)lbl_804C5650;
-    float *from = (float *)(base + 0x40);
-    float *to = (float *)(base + 0x70);
     unsigned char color[4];
     float direction[3];
     float mag;
@@ -1893,9 +1889,9 @@ void fn_802D18E8(void) {
     unsigned char *var_r30;
     int var_r27;
 
-    direction[0] = from[9] - to[9];
-    direction[1] = from[10] - to[10];
-    direction[2] = from[11] - to[11];
+    direction[0] = sViewFrom_802D18E8[9] - sViewTo_802D18E8[9];
+    direction[1] = sViewFrom_802D18E8[10] - sViewTo_802D18E8[10];
+    direction[2] = sViewFrom_802D18E8[11] - sViewTo_802D18E8[11];
     mag = PSVECMag(direction);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
     scale = lbl_80564F8C / mag;
@@ -1905,8 +1901,8 @@ void fn_802D18E8(void) {
     direction[2] *= scale;
 
     if (lbl_8055FDC8 > 0) {
-        var_r30 = (unsigned char *)base + 0x4A38;
-        var_r29 = (unsigned char *)base + 0x4AC8;
+        var_r30 = sLightEntries_802D18E8;
+        var_r29 = sLightObjs_802D18E8[0];
         var_r28 = 0;
         goto loop_test;
     loop_body:
@@ -1922,20 +1918,19 @@ void fn_802D18E8(void) {
         if (var_r28 < lbl_8055FDC8) goto loop_body;
         lbl_8055FDCC = lbl_8055FDC8;
     } else {
-        unsigned char *entry = (unsigned char *)base + 0x4180;
         unsigned int packed;
         unsigned char rgba[4];
-        float strength = *(float *)(entry + 0x18);
-        rgba[0] = (unsigned char)(int)(strength * (float)entry[0]);
-        rgba[1] = (unsigned char)(int)(strength * (float)entry[1]);
-        rgba[2] = (unsigned char)(int)(strength * (float)entry[2]);
-        rgba[3] = entry[3];
+        float strength = sDefaultLight_802D18E8.strength;
+        rgba[0] = (unsigned char)(int)(strength * (float)sDefaultLight_802D18E8.c[0]);
+        rgba[1] = (unsigned char)(int)(strength * (float)sDefaultLight_802D18E8.c[1]);
+        rgba[2] = (unsigned char)(int)(strength * (float)sDefaultLight_802D18E8.c[2]);
+        rgba[3] = sDefaultLight_802D18E8.c[3];
         packed = *(unsigned int *)rgba;
-        fn_802D17BC((unsigned char *)base + 0x4AC8, direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
+        fn_802D17BC(sLightObjs_802D18E8[0], direction, sDefaultLight_802D18E8.pos, (unsigned char *)&packed, lbl_80564FD4);
         lbl_8055FDCC++;
     }
 
-    var_r30 = (unsigned char *)base + 0x4AC8;
+    var_r30 = sLightObjs_802D18E8[0];
     var_r28 = 0;
     var_r29 = (unsigned char *)0;
     var_r27 = 2;
