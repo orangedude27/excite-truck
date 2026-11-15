@@ -11849,6 +11849,9 @@ void fn_80072688(void) {
     }
 }
 
+/* BTA DM search: cancel an in-progress SDP transaction and free its discovery DB
+ * (bta_dm_search_cb.p_sdp_db at +0x14), then notify search-cancel completion
+ * via bta_dm_search_cb.p_search_cback (+0x00) with result 4, NULL. */
 void bta_dm_search_cancel_transac_cmpl(void) {
     if (*(void **)(lbl_803C0B98 + 0x14) != 0) {
         GKI_freebuf(*(void **)(lbl_803C0B98 + 0x14));
