@@ -2546,12 +2546,23 @@ extern "C" void *fn_8012E3D4(void *arg0) {
     return var_r5;
 }
 
-extern "C" void fn_8012E40C(void *arg0, s32 arg1) {
-    void *self = arg0;
+/* (Re)starts a queued resource request -- the handle a loader's queue node keeps
+ * at +0x4C.  Runs the request's state machine once (fn_8012D40C), releases
+ * whatever it holds right now (fn_8012D1A8), rewinds its cursor into the
+ * candidate-name list (+0xBC) and starts loading from nameList again
+ * (fn_8012D024), which opens the first candidate that resolves.  The loader
+ * calls this for a request whose status (fn_8012D838) is 0, i.e. one that never
+ * got going. */
+extern "C" void fn_8012E40C(void *request, s32 nameList) {
+#define REQ_NAME_INDEX 0xBC /* which candidate of the name list the request is on */
+    void *self = request;
     fn_8012D40C((s32)self);
     fn_8012D1A8((s32)self);
-    *(s32 *)((u8 *)self + 0xBC) = 0;
-    ((void (*)(void *, s32))fn_8012D024)(self, arg1);
+    *(s32 *)((u8 *)self + REQ_NAME_INDEX) = 0;
+    /* fn_8012D024 is prototyped with a third, unused argument; called with the
+     * two it uses. */
+    ((void (*)(void *, s32))fn_8012D024)(self, nameList);
+#undef REQ_NAME_INDEX
 }
 
 extern "C" void *fn_8012E460(void *arg0) {
