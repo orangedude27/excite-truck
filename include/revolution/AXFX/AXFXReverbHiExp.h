@@ -40,7 +40,7 @@ typedef struct AXFX_REVERBHI_EXP {
     f32 allpassCoef;     // at 0xF8
     f32 lastLpfOut[3];   // at 0xFC
     f32 lpfCoef;         // at 0x108
-    u32 active;          // at 0x10C
+    u32 active;          // at 0x10C, bit 0: shut down, bit 1: settings applied
     u32 earlyMode;       // at 0x110
     f32 preDelayTimeMax; // at 0x114
     f32 preDelayTime;    // at 0x118
