@@ -21,6 +21,7 @@ static void SetTimer(const OSAlarm* alarm) {
 }
 
 void __OSInitAlarm(void) {
+    /* Install the decrementer exception handler and initialize the alarm queue on first use. */
     if (__OSGetExceptionHandler(OS_ERR_DECREMENTER) !=
         DecrementerExceptionHandler) {
         AlarmQueue.head = AlarmQueue.tail = NULL;
