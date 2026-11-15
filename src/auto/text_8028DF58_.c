@@ -263,6 +263,8 @@ extern int fn_8028F858(int, int);
 #pragma push
 #pragma small_data off
 void fn_8028E398(int arg0) {
+    /* Remove arg0 from the list at lbl_804B35B4 (fn_8028EDA8); if found, also remove it
+     * from lbl_804B34B0_arr and destroy it via fn_8028F858(arg0, 1). */
     if (fn_8028EDA8(&lbl_804B35B4[0], arg0) != 0) {
         fn_8028EDA8((unsigned int *)lbl_804B34B0_arr, arg0);
         fn_8028F858(arg0, 1);
