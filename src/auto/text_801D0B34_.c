@@ -6,17 +6,19 @@ extern int lbl_8055E8DC;
 struct Entry { int first; int second; int value; };
 extern struct Entry lbl_80438758[];
 extern void fn_80128668(void *);
-void *fn_801D0B34(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            ((int *)arg0)[0] = 0;
-            ((int *)arg0)[1] = 0;
-            ((int *)arg0)[2] = 0;
+void *fn_801D0B34(void *object, int shouldDelete) {
+    /* Reset the object's three 32-bit fields to 0, then free it when
+     * shouldDelete > 0 (deleting-destructor style helper). */
+    if (object != 0) {
+        if (object != 0) {
+            ((int *)object)[0] = 0;
+            ((int *)object)[1] = 0;
+            ((int *)object)[2] = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void *fn_801D0B8C(void *object, int shouldDelete) {
