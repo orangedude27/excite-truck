@@ -982,6 +982,8 @@ extern "C" s32 fn_800F273C(void *arg0) __attribute__((noinline)) {
 }
 
 extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(void *arg0, s32 flag) {
+    /* nw4hbm::snd::SoundPlayer::detail_SetPlayableSoundLimit(int): require a non-zero
+     * playable sound count (panic if 0) and store it in the sound player's limit field (+4). */
     if (flag == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803247E0, 0x46, (const char *)lbl_803247F8);
     }
