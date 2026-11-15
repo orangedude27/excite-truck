@@ -12146,12 +12146,13 @@ BOOLEAN btm_is_sco_active(UINT16 handle) {
 
 extern unsigned char lbl_803C0F78[];
 extern int memcmp(const void *, const void *, unsigned long);
+/* Return the number of active SCO links (states 2..6) across the three SCO connection slots. */
 int btm_num_sco_links_active(void) {
     unsigned char *base = lbl_803C0F78;
     int count = 0;
-    int state;
-    state = *(unsigned short *)(base + 0x185c);
-    switch (state) {
+    int scoState;
+    scoState = *(unsigned short *)(base + 0x185c);
+    switch (scoState) {
     case 2:
     case 3:
     case 4:
@@ -12162,8 +12163,8 @@ int btm_num_sco_links_active(void) {
     default:
         break;
     }
-    state = *(unsigned short *)(base + 0x1890);
-    switch (state) {
+    scoState = *(unsigned short *)(base + 0x1890);
+    switch (scoState) {
     case 2:
     case 3:
     case 4:
@@ -12174,8 +12175,8 @@ int btm_num_sco_links_active(void) {
     default:
         break;
     }
-    state = *(unsigned short *)(base + 0x18c4);
-    switch (state) {
+    scoState = *(unsigned short *)(base + 0x18c4);
+    switch (scoState) {
     case 2:
     case 3:
     case 4:
