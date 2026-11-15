@@ -75,17 +75,20 @@ typedef struct SkagTable_802B4BDC {
     SkagCell_802B4BDC cells[0x400];
     unsigned char holdsObjects;  /* +0x2000 */
 } SkagTable_802B4BDC;
-void *fn_802B3F6C(void *arg0, int arg1) {
-    if (arg0 != NULL) {
-        if (arg0 != NULL) {
-            *(int *)arg0 = 0;
-            *((int *)arg0 + 1) = 0;
-            *((int *)arg0 + 2) = 0;
+/* Scalar deleting destructor helper: clears the object's three-word header
+ * {+0x00,+0x04,+0x08} to zero, and frees the object when deletingFlag > 0.
+ * The redundant null check is intentional (matches the original). */
+void *fn_802B3F6C(void *this_, int deletingFlag) {
+    if (this_ != NULL) {
+        if (this_ != NULL) {
+            *(int *)this_ = 0;
+            *((int *)this_ + 1) = 0;
+            *((int *)this_ + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deletingFlag > 0)
+            fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 int stricmp(const char *, const char *);
