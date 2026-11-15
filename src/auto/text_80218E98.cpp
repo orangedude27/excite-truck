@@ -1930,18 +1930,20 @@ extern "C" void fn_8021B3BC(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_80128668(void*);
+/* DisposeCallbackManager destructor helper: if object is non-null, run base
+ * destructor logic via fn_8021915C(object, 0), and if shouldDelete > 0, free it. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
-    void* this_, s32 flag) {
-    if (this_) {
-        if (this_ != NULL) {
-            fn_8021915C(this_, 0);
+    void* object, s32 shouldDelete) {
+    if (object) {
+        if (object != NULL) {
+            fn_8021915C(object, 0);
         }
 
-        if (flag > 0) {
-            fn_80128668(this_);
+        if (shouldDelete > 0) {
+            fn_80128668(object);
         }
     }
-    return this_;
+    return object;
 }
 
 #pragma dont_inline on
