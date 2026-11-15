@@ -41,6 +41,14 @@ typedef struct InitStruct {
     float pad80[3];
 } InitStruct;
 
+/* The handle block the UI stun-part effect keeps: an 8-byte block allocated
+ * under the name "uistuntpart", holding the two "partman" particle systems
+ * fn_8028E2F8 made for it (global lbl_8055F924). */
+typedef struct {
+    int spark;     /* "invcblespark", drawn with spark.tex */
+    int entryPuff; /* the entry puff, drawn with entrypuff.tex */
+} UiStunParts;
+
 extern const char lbl_80349DC8[];
 extern const char lbl_80349DFC[], lbl_80349E24[], lbl_80349E18[], lbl_80349E08[];
 extern float lbl_8055CC80;
