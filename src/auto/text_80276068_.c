@@ -39,8 +39,8 @@ extern void fn_802E30C8(const char *, ...);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80276098(void *arg0, void *arg1, float arg2, float arg3, float arg4, int arg5, int arg6) {
+    float *a=(float*)arg0, *b=(float*)arg1, *out;
     unsigned char *entry;
-    float *out;
     float trace, root, inv;
     int i,j,k;
     if ((float)__fabs(arg2-arg3) > lbl_80558DC4[0] ||
@@ -50,14 +50,14 @@ void fn_80276098(void *arg0, void *arg1, float arg2, float arg3, float arg4, int
         (float)__fabs(PSVECSquareDistance((char*)arg0+0x18,(char*)arg1+0x18)) > lbl_80558DC4[0]) {
     } else return;
     entry=(unsigned char *)&lbl_8049FD58+arg5*0x50; out=(float*)(entry+4);
-    trace=((float*)arg0)[0]+((float*)arg0)[4]+((float*)arg0)[8]; *(float*)(entry+0x44)=arg4; *(float*)(entry+0x48)=lbl_8055E3C8;
-    if(trace>lbl_80564048){root=fn_8002F234(lbl_8056404C+trace);inv=lbl_80564050/root;out[0]=lbl_80564050*root;out[1]=inv*(((float*)arg0)[5]-((float*)arg0)[7]);out[2]=inv*(((float*)arg0)[6]-((float*)arg0)[2]);out[3]=inv*(((float*)arg0)[1]-((float*)arg0)[3]);}
-    else{i=0;if(((float*)arg0)[4]>((float*)arg0)[0])i=1;if(((float*)arg0)[8]>((float*)arg0)[i*3+i])i=2;j=(i+1)%3;k=(j+1)%3;root=fn_8002F234(lbl_8056404C+(((float*)arg0)[i*3+i]-(((float*)arg0)[j*3+k]+((float*)arg0)[k*3+j])));inv=lbl_80564050/root;out[i]=lbl_80564050*root;out[3]=inv*(((float*)arg0)[j*3+k]-((float*)arg0)[k*3+j]);out[j]=inv*(((float*)arg0)[i*3+j]+((float*)arg0)[j*3+i]);out[k]=inv*(((float*)arg0)[i*3+k]+((float*)arg0)[k*3+i]);}
-    *(float*)(entry+0x24)=((float*)arg0)[9];*(float*)(entry+0x28)=((float*)arg0)[10];*(float*)(entry+0x2C)=((float*)arg0)[11];*(float*)(entry+0x3C)=arg2;
-    trace=((float*)arg1)[0]+((float*)arg1)[4]+((float*)arg1)[8];
-    if(trace>lbl_80564048){root=fn_8002F234(lbl_8056404C+trace);inv=lbl_80564050/root;out[4]=lbl_80564050*root;out[5]=inv*(((float*)arg1)[5]-((float*)arg1)[7]);out[6]=inv*(((float*)arg1)[6]-((float*)arg1)[2]);out[7]=inv*(((float*)arg1)[1]-((float*)arg1)[3]);}
-    else{i=0;if(((float*)arg1)[4]>((float*)arg1)[0])i=1;if(((float*)arg1)[8]>((float*)arg1)[i*3+i])i=2;j=(i+1)%3;k=(j+1)%3;root=fn_8002F234(lbl_8056404C+(((float*)arg1)[i*3+i]-(((float*)arg1)[j*3+k]+((float*)arg1)[k*3+j])));inv=lbl_80564050/root;out[4+i]=lbl_80564050*root;out[7]=inv*(((float*)arg1)[j*3+k]-((float*)arg1)[k*3+j]);out[4+j]=inv*(((float*)arg1)[i*3+j]+((float*)arg1)[j*3+i]);out[4+k]=inv*(((float*)arg1)[i*3+k]+((float*)arg1)[k*3+i]);}
-    *(float*)(entry+0x30)=((float*)arg1)[9];*(float*)(entry+0x34)=((float*)arg1)[10];*(float*)(entry+0x38)=((float*)arg1)[11];*(float*)(entry+0x40)=arg3;*(int*)(entry+0x4C)=arg6;*entry=1;
+    trace=a[0]+a[4]+a[8]; *(float*)(entry+0x44)=arg4; *(float*)(entry+0x48)=lbl_8055E3C8;
+    if(trace>lbl_80564048){root=fn_8002F234(lbl_8056404C+trace);inv=lbl_80564050/root;out[0]=lbl_80564050*root;out[1]=inv*(a[5]-a[7]);out[2]=inv*(a[6]-a[2]);out[3]=inv*(a[1]-a[3]);}
+    else{i=0;if(a[4]>a[0])i=1;if(a[8]>a[i*3+i])i=2;j=(i+1)%3;k=(j+1)%3;root=fn_8002F234(lbl_8056404C+(a[i*3+i]-(a[j*3+k]+a[k*3+j])));inv=lbl_80564050/root;out[i]=lbl_80564050*root;out[3]=inv*(a[j*3+k]-a[k*3+j]);out[j]=inv*(a[i*3+j]+a[j*3+i]);out[k]=inv*(a[i*3+k]+a[k*3+i]);}
+    *(float*)(entry+0x24)=a[9];*(float*)(entry+0x28)=a[10];*(float*)(entry+0x2C)=a[11];*(float*)(entry+0x3C)=arg2;
+    trace=b[0]+b[4]+b[8];
+    if(trace>lbl_80564048){root=fn_8002F234(lbl_8056404C+trace);inv=lbl_80564050/root;out[4]=lbl_80564050*root;out[5]=inv*(b[5]-b[7]);out[6]=inv*(b[6]-b[2]);out[7]=inv*(b[1]-b[3]);}
+    else{i=0;if(b[4]>b[0])i=1;if(b[8]>b[i*3+i])i=2;j=(i+1)%3;k=(j+1)%3;root=fn_8002F234(lbl_8056404C+(b[i*3+i]-(b[j*3+k]+b[k*3+j])));inv=lbl_80564050/root;out[4+i]=lbl_80564050*root;out[7]=inv*(b[j*3+k]-b[k*3+j]);out[4+j]=inv*(b[i*3+j]+b[j*3+i]);out[4+k]=inv*(b[i*3+k]+b[k*3+i]);}
+    *(float*)(entry+0x30)=b[9];*(float*)(entry+0x34)=b[10];*(float*)(entry+0x38)=b[11];*(float*)(entry+0x40)=arg3;*(int*)(entry+0x4C)=arg6;*entry=1;
 }
 #pragma pop
 extern float lbl_80564054, lbl_80564058, lbl_8056405C;
@@ -83,18 +83,16 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
     float x2, y2, z2;
     float xx, yy, zz, wx, yz;
     float *outm;
-    float *m;
     t = fn_80277704(arg2);
     base = lbl_8049FD58;
     off = arg2 * 0x50;
     if (*(int *)(base + off + 0x4C) != 0x22) {
-        m = mat;
         fn_8026A49C(arg2, *(int *)(base + off + 0x4C), mat, &scalar);
         trace = mat[0] + mat[4] + mat[8];
         if (trace > lbl_80564048) {
             root = (float)fn_8002F234(lbl_8056404C + trace);
             inv = lbl_80564050 / root;
-            *(float *)(base + off + 0x14 + 12) = lbl_80564050 * root;
+            *(float *)(base + off + 0x20) = lbl_80564050 * root;
             *(float *)(base + off + 0x14) = inv * (mat[5] - mat[7]);
             *(float *)(base + off + 0x18) = inv * (mat[6] - mat[2]);
             *(float *)(base + off + 0x1C) = inv * (mat[1] - mat[3]);
@@ -104,12 +102,12 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
             if (mat[8] > mat[i * 3 + i]) i = 2;
             j = (i + 1) % 3;
             k = (j + 1) % 3;
-            root = (float)fn_8002F234(lbl_8056404C + (m[i * 3 + i] - (m[j * 3 + k] + m[k * 3 + j])));
+            root = (float)fn_8002F234(lbl_8056404C + (mat[i * 3 + i] - (mat[j * 3 + i] + mat[k * 3 + j])));
             inv = lbl_80564050 / root;
             *(float *)(base + off + 0x14 + i * 4) = lbl_80564050 * root;
-            *(float *)(base + off + 0x20) = inv * (m[j * 3 + k] - m[k * 3 + j]);
-            *(float *)(base + off + 0x14 + j * 4) = inv * (m[i * 3 + j] + m[j * 3 + i]);
-            *(float *)(base + off + 0x14 + k * 4) = inv * (m[i * 3 + k] + m[k * 3 + i]);
+            *(float *)(base + off + 0x20) = inv * (mat[j * 3 + i] - mat[k * 3 + j]);
+            *(float *)(base + off + 0x14 + j * 4) = inv * (mat[i * 3 + j] + mat[j * 3 + i]);
+            *(float *)(base + off + 0x14 + k * 4) = inv * (mat[i * 3 + k] + mat[k * 3 + i]);
         }
         *(float *)(base + off + 0x30) = mat[9];
         *(float *)(base + off + 0x34) = mat[10];
@@ -272,14 +270,15 @@ extern "C" void fn_80276ACC(void *camera, int defaultName) {
         lbl_8055F598 = (int)entry;
 }
 #pragma cplusplus reset
+/* Clears all camera blend records (4 entries of 0x50 bytes at lbl_8049FD58). */
 void fn_80276B8C(void) {
-    unsigned char *entry = lbl_8049FD58;
-    int i = 0;
+    unsigned char *blend = lbl_8049FD58;
+    int index = 0;
     do {
-        memset(entry, 0, 0x50);
-        i++;
-        entry += 0x50;
-    } while (i < 4);
+        memset(blend, 0, 0x50);
+        index++;
+        blend += 0x50;
+    } while (index < 4);
 }
 #pragma scheduling on
 typedef unsigned char u8;
@@ -410,17 +409,14 @@ void fn_80276DC8(int arg0) {
     float trans[3][3];
     void *target;
     float mag;
-
     src = (struct TruckState *)fn_802678E4(arg0);
     dst = (struct TruckState *)((char *)&lbl_8049FD58 + 0xF08) + arg0;
     *dst = *src;
     ((float *)((char *)&lbl_8049FD58 + 0x1868))[arg0] = lbl_80564048;
-
     v[0] = *(Vec *)((char *)dst + 0x58);
     v[1] = *(Vec *)((char *)dst + 0x64);
     v[2] = *(Vec *)((char *)dst + 0x70);
     v[3] = *(Vec *)((char *)dst + 0x7C);
-
     if (fn_80276068(dst->unk_14) == 0 || *(int *)((char *)src->unk_140 + 0x24) == 0) {
         float t;
         float *dir, *pos;
@@ -440,14 +436,12 @@ void fn_80276DC8(int arg0) {
         PSVECCrossProduct(&v[2], &v[0], &v[1]);
         PSVECNormalize(&v[1], &v[1]);
     }
-
     v_right = *(Vec *)((char *)dst + 0xC0);
     v_up.x = lbl_80564048;
     v_up.y = lbl_8056404C;
     v_up.z = lbl_80564048;
     v_fwd = *(Vec *)((char *)dst + 0xD8);
     v_pos = *(Vec *)((char *)dst + 0xE4);
-
     if (lbl_8056404C - ((float *)((char *)dst + 0xD8))[1] < lbl_80564064) {
         v_fwd.x = lbl_80564048;
         v_fwd.y = lbl_80564048;
@@ -457,17 +451,13 @@ void fn_80276DC8(int arg0) {
     PSVECNormalize(&v_right, &v_right);
     PSVECCrossProduct(&v_right, &v_up, &v_fwd);
     PSVECNormalize(&v_fwd, &v_fwd);
-
     fn_801E9DC4((int *)((char *)dst + 0x1EC));
-
     input.x = lbl_80564068 * lbl_802FA818[3];
     input.y = lbl_80564068 * lbl_802FA818[4];
     input.z = lbl_80564068 * lbl_802FA818[5];
-
     axis.x = lbl_802FA818[0] * *(float *)((char *)src->unk_140 + 0x5E4);
     axis.y = lbl_802FA818[1] * *(float *)((char *)src->unk_140 + 0x5E4);
     axis.z = lbl_802FA818[2] * *(float *)((char *)src->unk_140 + 0x5E4);
-
     mag = PSVECMag(&input);
     if (mag > lbl_8056406C) {
         float inv = lbl_8056404C / mag;
@@ -491,18 +481,15 @@ void fn_80276DC8(int arg0) {
         rot[1][0] = lbl_80564048; rot[1][1] = lbl_8056404C; rot[1][2] = lbl_80564048;
         rot[2][0] = lbl_80564048; rot[2][1] = lbl_80564048; rot[2][2] = lbl_8056404C;
     }
-
     target = (char *)&lbl_8049FD58 + 0x17A8 + arg0 * 0x30;
     fn_801BFD34((char *)target + 0x24, &axis, &v_right);
     fn_80015B20(target, rot, &v_right);
-
     trans[0][0] = v[0].x; trans[0][1] = v[0].y; trans[0][2] = v[0].z;
     trans[1][0] = v[1].x; trans[1][1] = v[1].y; trans[1][2] = v[1].z;
     trans[2][0] = v[2].x; trans[2][1] = v[2].y; trans[2][2] = v[2].z;
     fn_801C7254(trans);
     fn_80015B20(target, target, trans);
     fn_80144CD0((char *)target + 0x24, (char *)target + 0x24, &v[0]);
-
     fn_80276098((char *)src + 0x58, rot, src->unk_BC, lbl_80564068 * lbl_802FA818[6], lbl_80564060, arg0, 0x22);
 }
 
@@ -623,7 +610,7 @@ int fn_80277960(void *arg0, void *arg1, float *arg2) {
         a = src[2]; b = src[3]; dst[2] = a; dst[3] = b;
         a = src[4]; b = src[5]; dst[4] = a; dst[5] = b;
         a = src[6]; b = src[7]; dst[6] = a; dst[7] = b;
-        a = src[8]; dst[8] = a;
+        dst[8] = src[8];
         b = src[9]; a = src[10]; dst[9] = b; dst[10] = a;
         b = src[11]; dst[11] = b;
         *arg2 = *(float *)(p + 0x34);
@@ -633,7 +620,24 @@ int fn_80277960(void *arg0, void *arg1, float *arg2) {
 }
 
 void fn_80277A14(void *arg0, int arg1) {
-    return;
+    extern unsigned char lbl_804A0C60[];
+    extern void *fn_8017960C(int);
+    extern void fn_8026A51C(void *, void *, int);
+    extern int fn_801B89F8(void);
+    extern void fn_80020434(void *, void *);
+    unsigned char *rec;
+    void *truck;
+    unsigned char flag;
+    rec = lbl_804A0C60 + arg1 * 0x228;
+    *(int *)(rec + 0x20) = *(int *)(rec + 0x24);
+    truck = fn_8017960C(*(int *)(rec + 0x20));
+    *(void **)(rec + 0x140) = truck;
+    flag = 0;
+    fn_8026A51C(rec, &flag, arg1);
+    if (fn_801B89F8() != 0) {
+        fn_80020434((void *)((char *)arg0 + 0x58), (void *)((char *)arg0 + 0xBC));
+    }
+    (void)truck;
 }
 
 #pragma cplusplus on
