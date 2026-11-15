@@ -1,5 +1,38 @@
 #include <types.h>
 struct E7FC { char pad[0x28]; int v28; unsigned int v30; };
+
+/* Bits in a resource entry's flag word (struct ResEntry +0x34). */
+#define RES_ENTRY_REQUESTED 1 /* ResourceGet asked to report a first request */
+#define RES_ENTRY_IN_USE 2    /* a reference is held (set by ResourceGet) */
+#define RES_ENTRY_ALLOCATED 4 /* LoadEntryData allocated the object for it */
+#define RES_ENTRY_LOADED 8    /* the entry's data is loaded and CRC-checked */
+
+/* One entry of a resource manager's table (stride 0x44); the name is at +0x00
+ * (fn_8012B534 compares it with stricmp). The five words at +0x20 are stored
+ * byte-reversed and swapped by fn_8012A388 when the table is read in. */
+struct ResEntry {
+    /* 0x00 */ char name[0x20];
+    /* 0x20 */ u32 dataTag; /* fourcc the caller must ask for, e.g. 'SFX0', 'ETOC' */
+    /* 0x24 */ u32 id;      /* 16-bit id (fn_8012A388 keeps only its low half) */
+    /* 0x28 */ s32 size;    /* data size; the object is allocated with 0x80 bytes more */
+    /* 0x2C */ s32 offset;  /* offset in the manager's archive (+ manager+0x80) */
+    /* 0x30 */ u32 crc;     /* CRC the extracted data has to match */
+    /* 0x34 */ u32 flags;   /* RES_ENTRY_* bits */
+    /* 0x38 */ s32 useCount; /* references taken by ResourceGet, dropped by fn_8012BC50 */
+    /* 0x3C */ u8 *header;  /* 0x80-byte block header ('MGI!' at +4); payload is +8 */
+    /* 0x40 */ void *object; /* the allocation fn_80128660 frees */
+};
+
+/* One resource manager in the global list lbl_8055E000; the manager's directory
+ * name is the string at +0x00 and the list link is +0xA8. */
+struct ResManager {
+    /* 0x00 */ char dirName[0x60];
+    /* 0x60 */ u8 *entries; /* struct ResEntry[entryCount], stride 0x44 */
+    char pad64[0x24];
+    /* 0x88 */ s32 entryCount;
+    char pad8C[0x1C];
+    /* 0xA8 */ struct ResManager *next;
+};
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" s32 lbl_80559984;
 extern "C" char lbl_805599AC[];
