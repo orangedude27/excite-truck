@@ -19758,11 +19758,13 @@ extern "C" void fn_800D1558(void) {
 }
 
 extern "C" s32 WPADControlMotor(s32, s32);
-extern "C" void fn_800D155C(void *arg0) {
-    if (*(s32 *)arg0 >= 4) return;
-    if (fn_800D1E5C(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0) != 0) return;
-    *(u8 *)((u8 *)arg0 + 0x1C) = 1;
-    WPADControlMotor(*(s32 *)arg0, 1);
+extern "C" void fn_800D155C(void *controller) {
+    /* If this controller slot is valid and its sound/rumble player is idle,
+     * mark motor rumble active and start the WPAD motor. */
+    if (*(s32 *)controller >= 4) return;
+    if (fn_800D1E5C(*(void **)((u8 *)controller + 0x24), *(s32 *)controller) != 0) return;
+    *(u8 *)((u8 *)controller + 0x1C) = 1;
+    WPADControlMotor(*(s32 *)controller, 1);
 }
 
 #pragma dont_inline on
