@@ -9,6 +9,11 @@
 // The paired loads below take two floats at a time, so offset 0 holds (x, y)
 // and offset 4 holds (y, z): the sum of squares covers x, y and z only.
 
+// 0.5f and 3.0f live in the shared sdata2 pool (as in vec.c); naming the pool's
+// labels keeps this file's own .sdata2 empty, the way its object was built.
+extern const f32 lbl_80560C68; // 0.5f
+extern const f32 lbl_80560C6C; // 3.0f
+
 asm void PSQUATMultiply(register const Quaternion* a, register const Quaternion* b,
                         register Quaternion* prod) {
     // clang-format off
