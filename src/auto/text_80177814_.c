@@ -524,14 +524,32 @@ extern char lbl_80331944[];
 extern char lbl_80338400[];
 void *fn_8017B0B0(void *);
 #pragma scheduling invalid_target
+/* Creates a new MutablePhob (a movable physics object): asks the heap for its
+ * 0x29C bytes under the tag "MutablePhob", runs the Phob constructor over the
+ * storage and installs the MutablePhob vtable. Returns the new object, or 0 if
+ * the allocation failed. */
 void *fn_801782C8(void) {
-    long object = fn_801284F8(0x29C, (void *)&lbl_80331944[0]);
+    struct MutablePhob {
+        void *vtable;
+    };
+#define heapAlloc       fn_801284F8
+#define phobCtor        fn_8017B0B0
+#define mutablePhobName lbl_80331944
+#define mutablePhobVtbl lbl_80338400
+
+    struct MutablePhob *object =
+        (struct MutablePhob *)heapAlloc(0x29C, (void *)&mutablePhobName[0]);
     if (object != 0) {
-        fn_8017B0B0((void *)object);
-        *(long *)object = (long)&lbl_80338400[0];
+        phobCtor((void *)object);
+        object->vtable = &mutablePhobVtbl[0];
     }
+#undef heapAlloc
+#undef phobCtor
+#undef mutablePhobName
+#undef mutablePhobVtbl
     return (void *)object;
 }
+#pragma scheduling on
 #pragma scheduling on
 
 #pragma scheduling on
