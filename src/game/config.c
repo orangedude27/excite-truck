@@ -103,12 +103,12 @@ void fn_802E99AC(void) {
 
 /** @brief The console's aspect ratio, as set in the system menu (SCAspectRatio). */
 s32 fn_802E9A0C(void) {
-    return (s32)sConfigAspectRatio;
+    return sConfigAspectRatio;
 }
 
 /** @brief The sound mode the game should start in (SCSoundMode). */
 s32 fn_802E9A14(void) {
-    return (s32)sConfigSoundMode;
+    return sConfigSoundMode;
 }
 
 /** @brief 1 when the display is set to progressive (non-interlaced). */
