@@ -1413,6 +1413,10 @@ void fn_801F3EA0(void) {
 #pragma small_data off
 #pragma pop
 void fn_801F3EA4(int arg0, int arg1, void *listA, int entryA, void *listB, int entryB) {
+    /* Turn on the 0x40 flag of two material-list (mlist) entries.
+     * Each list keeps an array of 32-byte entries at +0x24; fn_802CD33C(list, index, 0)
+     * sets bit 0x40 of the entry's u16 flags at +0x12.  arg0/arg1 arrive in r3/r4
+     * and are ignored. */
     fn_802CD33C(listA, entryA, 0);
     fn_802CD33C(listB, entryB, 0);
 }
