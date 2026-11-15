@@ -17,6 +17,34 @@ typedef struct Node604 {
     struct Node604 *next;
 } Node604;
 
+/* The seven AI driving values a track section can tune. The names in the comments are the
+   keys they are read under in the track's "exception" container (see fn_8013A2FC). */
+typedef struct AiParams {
+    f32 onT;             /* "on_t": time the driver blends towards these values over */
+    f32 moveout;         /* "moveout" */
+    f32 passout;         /* "passout" */
+    f32 pushSensitivity; /* "push_sensitivity" */
+    f32 lookahead;       /* "lookahead_f" */
+    f32 checks;          /* "checks" */
+    f32 landing;         /* "landing_f" */
+} AiParams;
+
+/* One "AIException" entry (0x28 bytes): the parameters to drive with while the car's
+   longitudinal track position is between onLon and offLon; entries form a list. */
+typedef struct AiException {
+    f32 onLon;                /* "on_lon":  start of the section this section covers */
+    f32 offLon;               /* "off_lon": end of the section this entry covers */
+    AiParams params;          /* +0x08 */
+    struct AiException *next; /* +0x24 */
+} AiException;
+
+/* The track's "exception" settings: default parameters plus the parsed AIException list
+   (most recently read entry first). */
+typedef struct AiExceptionConfig {
+    AiException *list; /* +0x00 */
+    AiParams params;   /* +0x04 defaults, used when no entry covers the position */
+} AiExceptionConfig;
+
 typedef struct AIConfig {
     Node604 *head;
     f32 f4;
