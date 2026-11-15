@@ -68,10 +68,20 @@ typedef struct {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void __OSGetIOSRev(void *arg_rev) {
-    OSIOSRev_Report *rev = (OSIOSRev_Report *)arg_rev;
-    u32 version = *(u32 *)0xC0003140;
-    u32 builddate = *(u32 *)0xC0003144;
+/*
+ * __OSGetIOSRev - ask the Starlet which firmware it is running.
+ *
+ * The boot program left the running IOS's version in MEM1 at
+ * OS_IOS_VERSION, one byte per field (idHi.idLo.verMajor.verMinor), and the
+ * date that firmware was built at OS_IOS_BUILD_DATE: month, day and year,
+ * the day in BCD and the year counted from 2000.  Both are read through the
+ * uncached mirror of MEM1, so no stale cache line can hide what the boot
+ * program wrote.  Callers use the answer to refuse to run on firmware that
+ * is too old for them (NWC24 wants 0.7.6 or newer).
+ */
+void __OSGetIOSRev(OSIOSRev_Report *rev) {
+    u32 version = *(u32 *)OSPhysicalToUncached(OS_PHYS_IOS_VERSION);
+    u32 builddate = *(u32 *)OSPhysicalToUncached(OS_PHYS_IOS_BUILD_DATE);
 
     rev->idHi = version >> 24;
     rev->idLo = (version >> 16) & 0xFF;
