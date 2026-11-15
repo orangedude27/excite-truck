@@ -144,12 +144,18 @@ void fn_80171D94(int unused) {
 }
 
 #pragma dont_inline on
-int fn_80171DE4(void *arg0) {
+int fn_80171DE4(void *point) {
     extern int fn_80139EC4(int, float, float);
     extern int lbl_8055E3A4;
-    int result = 0;
-    if (lbl_8055E3A4 != 0 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4)) != 0) result = 1;
-    return result;
+
+    /* Returns 1 if a global spatial container exists and the given 2D point hits it. */
+    int hit = 0;
+
+    if (lbl_8055E3A4 != 0 && fn_80139EC4(lbl_8055E3A4, *(float *)point, *(float *)((char *)point + 4)) != 0) {
+        hit = 1;
+    }
+
+    return hit;
 }
 
 #pragma push
