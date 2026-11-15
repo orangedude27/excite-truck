@@ -626,7 +626,6 @@ public:
     int isPlayingSoundId(int) const;
     static void wpadConnectCallback(long, long);
 };
-#define m_soundId m_channel  // transitional: +0x00 is the channel, not a sound id
 class FrameController {
 public:
     u8 pad0[4];
