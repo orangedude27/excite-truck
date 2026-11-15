@@ -414,33 +414,34 @@ void fn_801E353C(s32 arg0, f32 angle) {
     fn_801E35D4((void *)arg0, p);
 }
 #pragma pop
+/* Copy 9 words from src to dst+0x8..0x28 and set dst+0x2C..0x34 to zero (lbl_80562CEC). */
 void fn_801E35D4(void *arg0, void *arg1) {
-    f32 val = lbl_80562CEC;
-    s32 *src = (s32 *)arg1;
-    s32 *dst = (s32 *)arg0;
-    f32 *fdst = (f32 *)((u8 *)arg0 + 0x2C);
-    s32 i, h, g, f, e, d, c, b, a;
-    a = src[0];
-    b = src[1];
-    c = src[2];
-    d = src[3];
-    e = src[4];
-    f = src[5];
-    g = src[6];
-    h = src[7];
-    i = src[8];
-    fdst[0] = val;
-    fdst[1] = val;
-    fdst[2] = val;
-    dst[2] = a;
-    dst[3] = b;
-    dst[4] = c;
-    dst[5] = d;
-    dst[6] = e;
-    dst[7] = f;
-    dst[8] = g;
-    dst[9] = h;
-    dst[10] = i;
+    f32 zero = lbl_80562CEC;
+    s32 *srcWords = (s32 *)arg1;
+    s32 *dstWords = (s32 *)arg0;
+    f32 *dstFloats = (f32 *)((u8 *)arg0 + 0x2C);
+    s32 word8, word7, word6, word5, word4, word3, word2, word1, word0;
+    word0 = srcWords[0];
+    word1 = srcWords[1];
+    word2 = srcWords[2];
+    word3 = srcWords[3];
+    word4 = srcWords[4];
+    word5 = srcWords[5];
+    word6 = srcWords[6];
+    word7 = srcWords[7];
+    word8 = srcWords[8];
+    dstFloats[0] = zero;
+    dstFloats[1] = zero;
+    dstFloats[2] = zero;
+    dstWords[2] = word0;
+    dstWords[3] = word1;
+    dstWords[4] = word2;
+    dstWords[5] = word3;
+    dstWords[6] = word4;
+    dstWords[7] = word5;
+    dstWords[8] = word6;
+    dstWords[9] = word7;
+    dstWords[10] = word8;
 }
 
 #pragma push
