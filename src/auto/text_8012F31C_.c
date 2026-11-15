@@ -76,9 +76,9 @@ void fn_8012F458(MemStreamPtr *stream, s32 word) {
     stream->pos += 4;
 }
 
-void fn_8012F4AC(void *arg0, void *src, s32 size) {
-    memcpy((u8 *)**(void ***)arg0 + *(s32 *)((u8 *)arg0 + 4), src, size);
-    *(s32 *)((u8 *)arg0 + 4) += size;
+void fn_8012F4AC(MemStreamPtr *cursor, const void *src, s32 size) {
+    memcpy(cursor->stream->buffer + cursor->pos, src, size);
+    cursor->pos += size;
 }
 
 void fn_8012F500(void *arg0, s32 arg1) {
