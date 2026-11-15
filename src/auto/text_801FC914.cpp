@@ -25,7 +25,7 @@ struct PathSpawnEntry {
     void *source;          // +0x00: object to place the prop at (position +0x10, quaternion +0x1C)
     char poolName[0x10];   // +0x04: pool the prop is taken from, matched with stricmp
     unsigned short mode;   // +0x14: 0 = spawn every frame, 1 = spawn on a timer
-    unsigned short unk16;  // +0x16: second archive parameter, unused here
+    unsigned short endBehavior;  // +0x16: PathEndBehavior, what a drone does at the last node
     float minDelay;        // +0x18: timer range, low end
     float maxDelay;        // +0x1C: timer range, high end
     float nextSpawn;       // +0x20: time the next prop is due
