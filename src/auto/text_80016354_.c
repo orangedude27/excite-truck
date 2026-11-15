@@ -180,15 +180,16 @@ void *fn_80016720(const char *arg0) {
 }
 
 #pragma scheduling invalid_target
-void *fn_8001675C(unsigned int arg0, int arg1) {
+/* Finds the nth table entry (0xA8 bytes each) whose flags at offset 0xA0 contain all bits set in mask, or returns the table base if not found. */
+void *fn_8001675C(unsigned int mask, int matchIndex) {
     unsigned char *entry;
     unsigned char *base;
     int found = 0;
     int i = 0;
     entry = base = lbl_8055D544;
     for (i = 0; i < (int)lbl_8055D550; entry += 0xA8, i++) {
-        if (arg0 == (arg0 & *(unsigned int *)(entry + 0xA0))) {
-            if (found == arg1)
+        if (mask == (mask & *(unsigned int *)(entry + 0xA0))) {
+            if (found == matchIndex)
                 return base + i * 0xA8;
             found++;
         }
