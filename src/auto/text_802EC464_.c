@@ -7,7 +7,10 @@
 void fn_802EC464(void);
 DECL_SECTION(".ctors") funcptr_t D_802ED624 = fn_802EC464;
 
+/* lbl_80560058: 8-byte (.sbss) record zeroed/linked by fn_8000D838. */
 extern int lbl_80560058;
+/* lbl_80560068/lbl_80560070: 8-byte (.sbss) counters, [1] cleared then [0] set
+ * to 1 (a "generation"/initialized sentinel pair). */
 extern int lbl_80560068;
 extern int lbl_80560070;
 extern void fn_8000D838(void *);
