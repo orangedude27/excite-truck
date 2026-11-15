@@ -660,6 +660,8 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *arg0, 
 
 #pragma dont_inline on
 extern "C" void *Instance__15EmissionManagerFv(void) {
+    /* Returns the singleton EmissionManager instance, constructing it once and
+     * registering its global destructor. */
     if ((signed char)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
         __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
@@ -667,7 +669,6 @@ extern "C" void *Instance__15EmissionManagerFv(void) {
     }
     return &lbl_80407F6C;
 }
-
 /* EmissionManager deleting destructor: destroys embedded subobjects/arrays and optionally frees the object. */
 extern "C" void *fn_800E2D74(void *self, int deleteFlag) {
     if (self != 0) {
