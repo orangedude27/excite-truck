@@ -1138,11 +1138,11 @@ void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3
     float sx;
     float out1;
     float out0;
+    float dxs;
     float dx2;
+    float dys;
     float dy2;
     float dz2;
-    float dxs;
-    float dys;
     float sx2;
     float sx1;
     float sx0;
@@ -1153,12 +1153,12 @@ void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3
     fn_8017A028();
     fn_8017D140((unsigned char *)first, arg1 + 0x14, 0xC);
     fn_8017D140((unsigned char *)second, arg2 + 0x14, 0xC);
-    fx0 = first[0];
-    fx1 = first[1];
-    fx2 = first[2];
-    sx0 = second[0];
+    sx0 = second[2];
+    fx0 = first[2];
     sx1 = second[1];
-    sx2 = second[2];
+    fx1 = first[1];
+    sx2 = second[0];
+    fx2 = first[0];
     dz = sx2 - fx2;
     dy = sx1 - fx1;
     sz = farg0 * dz;
@@ -1168,10 +1168,10 @@ void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3
     out2 = fx2 + sz;
     sx = farg0 * dx;
     out1 = fx1 + sy;
-    *(float *)((char *)arg0 + 0x120) = out2;
+    *(float *)((char *)arg0 + 0x118) = out2;
     out0 = fx0 + sx;
     *(float *)((char *)arg0 + 0x11C) = out1;
-    *(float *)((char *)arg0 + 0x118) = out0;
+    *(float *)((char *)arg0 + 0x120) = out0;
     dx2 = second[0] - first[0];
     *(float *)((char *)arg0 + 0x16C) = dx2;
     dxs = dx2 * scale;
@@ -1186,7 +1186,9 @@ void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3
     *arg3 = 0x20;
 }
 #pragma pop
-extern void fn_8017A804(void);
+/* Stores an object's rotation as three s16 angles at record+0x00 and its
+   position (self+0x60) at record+0x08; returns the bytes written (0x14). */
+extern void fn_8017A804();
 int fn_8017D274(void *arg0, void *arg1) {
     fn_8017A804();
     *(float *)((char *)arg1 + 0x14) = *(float *)((char *)arg0 + 0x118);
