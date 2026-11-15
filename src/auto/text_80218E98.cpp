@@ -8809,12 +8809,16 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229550(
     return self;
 }
 #pragma dont_inline reset
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802295AC(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802295AC(void *this_, int flag) {
+    /* nw4hbm::snd::MemorySoundArchive scalar-deleting destructor (802295AC):
+       if non-null, run the base destructor fn_8021915C(this_, 0), then free
+       storage with the deleting operator fn_80128668 when flag > 0. Returns
+       this_. */
+    if (this_ != 0) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" void fn_80229604(void *arg0) {
