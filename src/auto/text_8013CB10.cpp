@@ -2523,9 +2523,9 @@ extern "C" s32 fn_80141F28(void *arg0, s32 arg1) {
     s32 count = capacity + (((s32 *)arg0)[2] - head);
     if (arg1 >= count % capacity)
         return 0;
-    s32 tmp = capacity + head;
+    char *tmp = (char *)capacity + head;
     s32 *base = (s32 *)((s32 *)arg0)[0];
-    s32 index = (arg1 + tmp) % capacity;
+    s32 index = (s32)(tmp + arg1) % capacity;
     return (s32)base + index * 12;
 }
 
