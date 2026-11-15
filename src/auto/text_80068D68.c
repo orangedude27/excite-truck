@@ -14031,27 +14031,33 @@ void *arg0;
     u8 *msg = (u8 *)arg0;
     u8 *queueBase;
     u8 *newMsg;
+    register u8 *payload;
     u16 count;
     u16 opcode;
     u16 offset;
-    u8 *payload;
-    if (msg != 0) {
-        if (*(volatile u16 *)(lbl_803C0A50 + 0x6C) != 0) {
-            GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
-            msg = 0;
-        }
+    u8 highByte;
+    u8 lowByte;
+
+    if (msg != 0 && *(u16 *)(lbl_803C0A50 + 0x6C) != 0) {
+        GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
+        msg = 0;
     }
-    if (*(volatile u16 *)(lbl_803C0A50 + 0x80) == 0 && lbl_803C0F78[0x64E] == 0)
-        *(volatile u16 *)(lbl_803C0A50 + 0x80) = *(volatile u16 *)(lbl_803C0A50 + 0x6C) + 1;
+
+    if (*(u16 *)(lbl_803C0A50 + 0x80) == 0 && lbl_803C0F78[0x64E] == 0)
+        *(u16 *)(lbl_803C0A50 + 0x80) = *(u16 *)(lbl_803C0A50 + 0x6C) + 1;
+
     queueBase = lbl_803C0A50;
-    while (*(volatile u16 *)(queueBase + 0x80) != 0) {
+    while (*(u16 *)(queueBase + 0x80) != 0) {
         if (msg == 0)
             msg = (u8 *)GKI_dequeue((BUFFER_Q *)(queueBase + 0x64));
         if (msg == 0)
             break;
+
         offset = *(u16 *)(msg + 4);
         payload = msg + offset;
-        opcode = (u16)(((u16)payload[9] << 8) + payload[8]);
+        lowByte = payload[8];
+        highByte = payload[9];
+        opcode = (u16)(lowByte + ((u16)highByte << 8));
         if (opcode != 0x0C03 && opcode != 0x0C35) {
             newMsg = (u8 *)GKI_getpoolbuf(2);
             if (newMsg != 0) {
@@ -14063,11 +14069,12 @@ void *arg0;
                 btu_start_timer((TIMER_LIST_ENT *)(queueBase + 0x4C), 0x3C, 8);
             }
         }
-        count = *(volatile u16 *)(queueBase + 0x80);
-        *(volatile u16 *)(queueBase + 0x80) = count - 1;
+        count = *(u16 *)(queueBase + 0x80);
+        *(u16 *)(queueBase + 0x80) = count - 1;
         ((void (*)(void *, u16, u16))fn_8007079C)(msg, 0x2000, count);
         msg = 0;
     }
+
     if (msg != 0)
         GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
 }
@@ -24258,17 +24265,18 @@ void fn_8009578C(void *arg0) {
     }
 }
 
-void rfc_check_send_cmd(void *arg0, void *arg1) {
-    register u8 *p = (u8 *)arg0;
-    if (arg1 != 0) {
-        GKI_enqueue((BUFFER_Q *)(p + 0x18), arg1);
+void rfc_check_send_cmd(void *p_mcb, void *p_cmd) {
+    /* Queue an RFCOMM command buffer and send pending commands while the multiplexer can transmit. */
+    register u8 *mcb = (u8 *)p_mcb;
+    if (p_cmd != 0) {
+        GKI_enqueue((BUFFER_Q *)(mcb + 0x18), p_cmd);
     }
-    while (p[0x73] == 0) {
-        arg1 = GKI_dequeue((BUFFER_Q *)(p + 0x18));
-        if (arg1 == 0) {
+    while (mcb[0x73] == 0) {
+        p_cmd = GKI_dequeue((BUFFER_Q *)(mcb + 0x18));
+        if (p_cmd == 0) {
             return;
         }
-        L2CA_DataWrite(*(u16 *)(p + 0x68), (BT_HDR *)arg1);
+        L2CA_DataWrite(*(u16 *)(mcb + 0x68), (BT_HDR *)p_cmd);
     }
 }
 
