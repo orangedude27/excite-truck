@@ -2838,9 +2838,11 @@ extern "C" void fn_80142948(void *arg0) {
     *(f32 *)((u8 *)arg0 + 4) = fn_8001DAE8(arg0);
 }
 
-extern "C" s32 fn_80142978(void *arg0) {
-    f32 diff = fn_8001DAE8(arg0) - *(f32 *)((u8 *)arg0 + 4);
-    return diff >= lbl_805614A4 && diff < *(f32 *)arg0;
+extern "C" s32 fn_80142978(void *timer) {
+    /* Returns true if the elapsed time since the timer's start (offset +4)
+     * is in [0, duration) where duration is at offset +0. */
+    f32 elapsed = fn_8001DAE8(timer) - *(f32 *)((u8 *)timer + 4);
+    return elapsed >= lbl_805614A4 && elapsed < *(f32 *)timer;
 }
 
 extern "C" f32 fn_801429D0(f32 arg0, f32 arg1) {
