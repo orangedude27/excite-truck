@@ -33,7 +33,6 @@ typedef struct EntryRef {
     s32 flag;       /* 0x08: packed byte 2, set when that byte was non-zero */
 } EntryRef;
 
-
 extern s8 lbl_8055D5C8;
 extern s32 *lbl_8055D5D0;
 extern u8 *lbl_8055D5CC;
