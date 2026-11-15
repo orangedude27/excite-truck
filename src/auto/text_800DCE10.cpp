@@ -59,11 +59,16 @@ struct SoundEntry60 {
     s32 i1, i2, i3;
 };
 
-extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior's "delete" helper for destructors (nw4hbm::lyt classes call it at
+ * the end of their __dt__): frees `object` with the game's heap free
+ * (fn_80128668 -> fn_80128584(obj, 3), "MemFree") when the destructor ran with
+ * the deleting flag set.  The free is declared argument-less above, so the
+ * pointer stays in r3 for the tail call. */
+extern "C" void *fn_800DCE10(void *object, s32 deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_800DCE50(void **arg0) {
