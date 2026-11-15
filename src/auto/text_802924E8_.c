@@ -1456,12 +1456,19 @@ void fn_8029433C(void *arg0) {
 }
 
 extern void fn_80294780(void*);
-void fn_80294348(void* arg0) {
-    float value = fn_801E7E24(arg0);
-    float abs = (float)__fabs((double)value);
-    if (!(abs <= lbl_80558DC4)) fn_80294780(arg0);
+/**
+ * @brief nw4r::ef::Effect::calc(): advance this effect's particles one frame.
+ *
+ * Every particle is moved by the frame time, so when no time has passed - the
+ * frame time sitting at zero within the game's float epsilon lbl_80558DC4
+ * (0x34000000, 2^-23) - the update is skipped and the effect keeps its place.
+ */
+void fn_80294348(void* effect) {
+    float frameTime = fn_801E7E24(effect); /* fw::Frame::getFrameTime(); the
+                                            * getter takes no argument */
+    float absTime = (float)__fabs((double)frameTime);
+    if (!(absTime <= lbl_80558DC4)) fn_80294780(effect);
 }
-
 #pragma scheduling invalid_target
 void fn_80294398(void *arg0) {
     /* For each active record, dispatch it with fn_802C744C using the per-record slot byte
