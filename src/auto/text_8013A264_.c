@@ -19,7 +19,7 @@ typedef struct AiParams {
 /* One "AIException" entry (0x28 bytes): the parameters to drive with while the car's
    longitudinal track position is between onLon and offLon; entries form a list. */
 typedef struct AiException {
-    f32 onLon;                /* "on_lon":  start of the section this section covers */
+    f32 onLon;                /* "on_lon":  start of the section this entry covers */
     f32 offLon;               /* "off_lon": end of the section this entry covers */
     AiParams params;          /* +0x08 */
     struct AiException *next; /* +0x24 */
