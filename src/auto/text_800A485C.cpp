@@ -25645,11 +25645,17 @@ s32 nw4hbm::db::Console_GetTotalLines(nw4hbm::db::detail::ConsoleHead *console) 
 
 #pragma pop
 
+/* Hides the shared on-screen debug console: clears ConsoleHead::visible, which
+   Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead checks before
+   drawing. This is console.h's inline show/hide helper at line 0x1F1 -- the same
+   check nw4hbm::db::Warning uses when it sets visible to 1. lbl_8055DDBC is the
+   console head; lbl_8031EA40 / lbl_8031EA4C are "console.h" and
+   "Pointer must not be NULL (console)". */
 extern "C" void fn_800D2480(void) {
     if (lbl_8055DDBC == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA40, 0x1F1, lbl_8031EA4C);
     }
-    ((u8 *)lbl_8055DDBC)[0x22] = 0;
+    ((nw4hbm::db::detail::ConsoleHead *)lbl_8055DDBC)->visible = 0;
 }
 
 /* Prints the debug console's stored lines from its scroll position on: through the
