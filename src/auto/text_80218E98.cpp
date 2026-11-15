@@ -8229,7 +8229,16 @@ extern "C" void fn_8022854C(void *p){fn_8023976C(*(s32*)((u8*)p+0x244));}
 extern "C" void fn_802396BC(s32);
 extern "C" void fn_80228554(void *p){fn_802396BC(*(s32*)((u8*)p+0x244));}
 
-extern "C" void *fn_8022855C(void *p,s32 unused,s32 a,s32 b){fn_80218F80();*(s32*)((u8*)p+0x244)=a;*(void**)p=lbl_8033DDA4;*(s32*)((u8*)p+0x248)=b;return (void*)((char*)p+0);}
+extern "C" void *fn_8022855C(void *obj, void *config, s32 value244, s32 value248)
+{
+    /* Constructor/init: runs base fn_80218F80(obj, config) via the file's no-arg macro,
+     * stores value244 at +0x244, installs vtable lbl_8033DDA4, stores value248 at +0x248. */
+    fn_80218F80();
+    *(s32 *)((u8 *)obj + 0x244) = value244;
+    *(void **)obj = lbl_8033DDA4;
+    *(s32 *)((u8 *)obj + 0x248) = value248;
+    return (void *)((char *)obj + 0);
+}
 
 extern "C" void fn_802361E8(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
