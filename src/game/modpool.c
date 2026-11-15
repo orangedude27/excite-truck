@@ -55,15 +55,16 @@ void fn_802CE474(void *arg0) {
     *(int *)((char *)arg0 + 0x3C) = -1;
 }
 
-void fn_802CE49C(void *arg0) {
+void fn_802CE49C(void *object) {
     int value;
-    if (arg0 != 0) {
-        value = *(int *)arg0;
+    /* Destroys a modpool object: frees its data buffer, releases its load pool, and deletes the object. */
+    if (object != 0) {
+        value = *(int *)object;
         if (value != 0) {
             fn_80128670(value - 0x10);
         }
-        fn_801342B0(*(int *)((char *)arg0 + 4), 1);
-        fn_80128668(arg0);
+        fn_801342B0(*(int *)((char *)object + 4), 1);
+        fn_80128668(object);
     }
 }
 
