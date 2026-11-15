@@ -242,7 +242,7 @@ extern s32 fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_802B05DC(void);
 extern s32 fn_802B5D2C(const char *, s32);
 __declspec(section ".sdata") extern const char lbl_8055CE38[];
-__declspec(section ".sdata") extern const char lbl_8055CE48[];
+__declspec(section ".sdata") extern const char lbl_8055CE48[]; /* "layer" -- tag parsed by fn_802B5D2C */
 __declspec(section ".sdata") extern const char lbl_8055CE50[];
 typedef struct {
     s32 w[5];
