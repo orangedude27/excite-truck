@@ -1451,10 +1451,11 @@ void fn_80233BF0(u8 *text, u8 *font, f32 *x, f32 *y, s32 flags, f32 scale, f32 e
         *y -= textHeight * lbl_80563688;
     }
 }
-void fn_80233DD8(s32 *arg0, s32 arg1) {
-    s32 temp_r31 = fn_8022EDC4();
-    lbl_8055F050 = fn_80230B9C(arg1);
-    fn_802C8B98(*arg0, (s32)temp_r31);
+/* Set the current draw color and submit the object to the draw list. */
+void fn_80233DD8(s32 *object, s32 color) {
+    s32 drawContext = fn_8022EDC4();
+    lbl_8055F050 = fn_80230B9C(color);
+    fn_802C8B98(*object, (s32)drawContext);
 }
 #pragma scheduling reset
 void fn_80233E34(s32 *arg0, s32 arg1, s32 arg2) {
