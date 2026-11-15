@@ -220,10 +220,14 @@ void fn_8001BBB8(void) {
 }
 
 extern void fn_8001D234(s32, s32 *, s32 *, s32 *);
-void fn_8001BBBC(Unk8001BBBC *arg0, s32 arg1) {
-    Unk8001BBBC value;
-    fn_8001D234(arg1, &value.unk_0x0, &value.unk_0x4, &value.unk_0x8);
-    *arg0 = value;
+/* Decode one ranking entry's packed word into an EntryRef: byte 0 says which
+   entry of the game's data table set the record, byte 1 which of that entry's
+   values it is and byte 2 whether the flag byte was set (fn_8001D234 splits
+   the three bytes out). */
+void fn_8001BBBC(EntryRef *out, s32 encoded) {
+    EntryRef value;
+    fn_8001D234(encoded, &value.entryIndex, &value.valueIndex, &value.flag);
+    *out = value;
 }
 
 s32 ARCGetStartOffset(void *arg0) { return ((s32 *)arg0)[2]; }
