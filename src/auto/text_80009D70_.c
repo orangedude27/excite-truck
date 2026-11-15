@@ -315,14 +315,25 @@ void fn_8000A7A8(void) {
 }
 
 void fn_8000A808(void) {
-    char* lbl_8034F4C8_ptr = (char*)&lbl_8034F4C8;
+    /* Leaving a track: shut the ground down (fn_801DCDA4 frees the heightmap
+     * block lbl_80446F08 and clears the ground update callback), then release
+     * the three effect sets fn_8000A8C4 named for this track.  fn_8012E498
+     * takes a set by name and frees its resource once nothing uses it. */
+    typedef struct TrackEffectNames {
+        char unused_00[0x18];
+        char trackName[0x40];    /* 0x18 "%s.trk" of the track name */
+        char resourceName[0x40]; /* 0x58 "%s_%s.trk", set while lbl_8055D3B4 */
+        char weatherName[0x40];  /* 0x98 "%s_%s.trk", set while lbl_8055D3B5 */
+    } TrackEffectNames;
+    TrackEffectNames* names = (TrackEffectNames*)&lbl_8034F4C8;
+
     fn_801DCDA4();
-    fn_8012E498(lbl_8034F4C8_ptr + 0x18);
+    fn_8012E498(names->trackName);
     if (lbl_8055D3B4 != 0) {
-        fn_8012E498(lbl_8034F4C8_ptr + 0x58);
+        fn_8012E498(names->resourceName);
     }
     if (lbl_8055D3B5 != 0) {
-        fn_8012E498(lbl_8034F4C8_ptr + 0x98);
+        fn_8012E498(names->weatherName);
     }
 }
 
