@@ -1200,11 +1200,13 @@ extern "C" void fn_802A3500(void *effectGroup, s32 texture) {
 }
 
 extern "C" { extern f32 lbl_80564730, lbl_80564734, lbl_80564738, lbl_8056479C, lbl_805647A0, lbl_805647B8, lbl_805647C4, lbl_805647F0; extern f32 lbl_80564820, lbl_80564824, lbl_80564828; extern int lbl_80349A74[]; void fn_802A37C8(void*, s32); }
-extern "C" void* fn_802A3610(void* arg0, DummyReceiver_802A3314* arg1) {
-    *(void**)arg0 = lbl_80349B00;
-    s32 result = arg1->v3(&lbl_8055CBB0);
-    fn_802A37C8(arg0, result);
-    return arg0;
+extern "C" void* fn_802A3610(void* object, DummyReceiver_802A3314* terrainObject) {
+    /* Initializes an object with vtable lbl_80349B00: queries the terrain object's
+     * resource via lbl_8055CBB0, sets up its trail-sand effect, and returns the object. */
+    *(void**)object = lbl_80349B00;
+    s32 result = terrainObject->v3(&lbl_8055CBB0);
+    fn_802A37C8(object, result);
+    return object;
 }
 
 extern "C" int lbl_80349B00[];
