@@ -167,17 +167,19 @@ extern "C" void fn_802B1E28(void) {
 void fn_802B1F64(void) {
 }
 
-void *fn_802B1F68(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(int *)arg0 = 0;
-            *((int *)arg0 + 1) = 0;
-            *((int *)arg0 + 2) = 0;
+void *fn_802B1F68(void *object, int shouldDelete) {
+    /* Reset the object's three 32-bit fields to 0, then free it when
+     * shouldDelete > 0 (deleting-destructor style helper). */
+    if (object != 0) {
+        if (object != 0) {
+            *(int *)object = 0;
+            *((int *)object + 1) = 0;
+            *((int *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_802B1FC0(void *arg0) {
