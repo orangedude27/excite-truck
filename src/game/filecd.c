@@ -122,20 +122,22 @@ void *fn_802E3EBC(void) {
 #pragma scheduling on
 
 #pragma scheduling invalid_target
-void fn_802E3F38(void *arg0) {
-    unsigned char *p;
+/* Release a DVD file node back to the 16-slot "fdo" pool (fn_802E3EBC hands
+ * them out).  The node is the slot base plus one; if it isn't one of our
+ * slots, panic with the owner pointer. */
+void fn_802E3F38(void *node) {
+    unsigned char *slot;
     int i;
-    p = lbl_804FBAA0;
+    slot = lbl_804FBAA0;
     for (i = 0; i < 0x10; i++) {
-        if (arg0 == p + 1) {
+        if (node == slot + 1) {
             lbl_804FBAA0[i * 0x91] = 0;
             return;
         }
-        p += 0x91;
+        slot += 0x91;
     }
-    fn_802E317C(lbl_8034D054, arg0);
+    fn_802E317C(lbl_8034D054, node);
 }
-
 #pragma cplusplus on
 // Start the filecd DVD file system: take this TU's one static FileCd object,
 // bring up the Nintendo DVD services on it and hand it back for file.c to keep
