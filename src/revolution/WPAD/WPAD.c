@@ -5753,31 +5753,58 @@ void fn_80064F64(s32 chan, void* data) {
     OSRestoreInterrupts(enabled);
 }
 
-// fn_80065524: WPAD data processing
-void fn_80065524(s32 chan, WPADStatusEx* pStatus)
+// WPADiDecodeStatus (proposed name): decode one core button (no accelerometer)
+// input report from the remote on `chan` into the WPADStatus the application
+// reads.
+void fn_80065524(s32 chan, WPADStatus* pReport)
 {
-    WPADCB* pCB;
-    volatile u8* pBase;
-    u32 enabled;
-    u32 idx;
-    u8* p = (u8*)pStatus;
+    /* WPADiDecodeStatus (proposed name): the report arrives as bytes - +1 is
+     * the status byte (bit 7 says whether an extension is plugged in) and +2
+     * the high button byte.  Its buttons are narrowed to the core set and
+     * written, with the last read's result and the attached extension's kind,
+     * into the control block's other receive buffer, which is cleared first;
+     * flipping rxBufIndex at the end, with interrupts off, publishes it.
+     * fn_800656E8 does the same with the accelerometer and fn_80065934 with an
+     * extension's data. */
+    typedef struct {
+        u8 _head[0xA0];
+        u8 rxBufs[2][RX_BUFFER_SIZE]; /* 0xA0 decoded statuses, double buffered */
+        u8 _gap160[0x788 - 0x160];
+        u32 extDisconnected; /* 0x788 bit 7 of the last report's status byte */
+        u8 _gap78C[0x7B4 - 0x78C];
+        u8 _gap7B4[0x7F8 - 0x7B4]; /* 0x7B4.. accelerometer zero-g/1-g points */
+        u32 dataFormat;      /* 0x7F8 WPADDataFormat the remote is set to */
+        s32 status;          /* 0x7FC WPADResult of the last read */
+        u8 _gap800;
+        u8 extType;          /* 0x801 WPADDeviceType of the attached extension */
+        u8 _gap802[0x806 - 0x802];
+        u8 rxBufIndex;       /* 0x806 which rxBufs[] holds the last report */
+    } CBView;
+
+    CBView* cb;
+    volatile u8* pBuf;
+    WPADStatus* pOut;
+    u32 i;
+    BOOL enabled;
+    u8* p = (u8*)pReport;
 
     enabled = OSDisableInterrupts();
-    pCB = lbl_8038F4F0[(u8)chan];
-    pBase = (volatile u8*)pCB->rxBufs[*(u8*)((u8*)pCB + 0x806)];
-    for (idx = 0; idx < 96; idx++) {
-        pBase[idx] = 0;
+    cb = (CBView*)lbl_8038F4F0[(u8)chan];
+    pBuf = (volatile u8*)cb->rxBufs[cb->rxBufIndex];
+    for (i = 0; i < RX_BUFFER_SIZE; i++) {
+        pBuf[i] = 0;
     }
-    *(u16*)pBase = ((u16)p[2] << 8) | p[1];
-    *(u16*)pBase &= 0x9F1F;
-    if (*(s32*)((u8*)pCB + 0x7F8) == 0) {
-        *(u8*)(pBase + 0x29) = *(u32*)((u8*)pCB + 0x7FC);
-    } else if (*(s32*)((u8*)pCB + 0x7FC) == 0) {
-        *(s8*)(pBase + 0x29) = -4;
+    pOut = (WPADStatus*)pBuf;
+    pOut->button = ((u16)p[2] << 8) | p[1];
+    pOut->button &= WPAD_BUTTON_CORE_ALL;
+    if (cb->dataFormat == WPAD_FMT_CORE_BTN) {
+        pOut->err = cb->status;
+    } else if (cb->status == WPAD_ERR_OK) {
+        pOut->err = WPAD_ERR_INVALID;
     }
-    *(u8*)(pBase + 0x28) = *(u8*)((u8*)pCB + 0x801);
-    *(u32*)((u8*)pCB + 0x788) = (p[1] >> 7) & 1;
-    *(u8*)((u8*)pCB + 0x806) = !*(u8*)((u8*)pCB + 0x806);
+    pOut->dev = cb->extType;
+    cb->extDisconnected = (p[1] >> 7) & 1;
+    cb->rxBufIndex = !cb->rxBufIndex;
     OSRestoreInterrupts(enabled);
 }
 
