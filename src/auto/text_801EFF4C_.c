@@ -719,8 +719,13 @@ int fn_801F0E88(int arg0, int arg1) {
 }
 #pragma dont_inline off
 int fn_801F0F18(int arg0, int arg1) {
-    if (arg0 != 0) {
-        if (*(unsigned char *)(arg0 + 0x14) == 0) fn_801F18F0();
+    /* Destroy a WheelInstance: unregister it from the wheel slot table if
+     * still registered (notRegistered == 0), then free the object when
+     * doDelete > 0 (mode 3 via fn_80128668). Returns the instance pointer. */
+    WheelInstance *wheel = (WheelInstance *)arg0;
+
+    if (wheel != 0) {
+        if (wheel->notRegistered == 0) fn_801F18F0();
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
