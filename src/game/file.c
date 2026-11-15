@@ -319,16 +319,17 @@ void fn_802E3898(s32 arg0, const char *arg1, s32 *arg2) {
     *arg2 = result;
 }
 #pragma use_lmw_stmw reset
-extern "C" void fn_802E3930(s32 arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_802E3930(s32 fileHandle, s32 offset, s32 whence) {
+    /* Seek the stream for fileHandle to offset/whence via its vtable (file.cpp:0x15e). */
     class Obj {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2(int, int);
     };
-    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x15e);
-    s32 entry = *(s32 *)(obj + 0x24);
-    ((Obj *)entry)->v2(arg1, arg2);
+    s32 fileObject = fn_802E33D8(fileHandle, lbl_8034CFB4, 0x15e);
+    s32 stream = *(s32 *)(fileObject + 0x24);
+    ((Obj *)stream)->v2(offset, whence);
 }
 #pragma cplusplus on
 extern "C" void fn_802E3990(s32 arg0) {
