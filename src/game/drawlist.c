@@ -1083,12 +1083,13 @@ extern void *fn_801E7840(int);
 #pragma dont_inline on
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_802C9D88(int arg0) {
+extern "C" void fn_802C9D88(int element) {
+    /* Return a DrawListWrapper to its pool and, when none remain live, destroy the pool via its vtable and clear it. */
     class Obj {
     public:
         virtual void f(int);
     };
-    fn_8012A364(lbl_8055FC9C, arg0);
+    fn_8012A364(lbl_8055FC9C, element);
     if (--lbl_8055FC98 == 0) {
         if (lbl_8055FC9C != 0)
             ((Obj *)lbl_8055FC9C)->f(1);
