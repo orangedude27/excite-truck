@@ -464,6 +464,14 @@ static void BATConfig(void) {
         // @bug Checks function address rather than result
         // NOLINTNEXTLINE (-Wtautological-pointer-compare)
         if (OSGetPhysicalMem1Size == 0) {
+            // ES1 with no physical MEM1: ConfigMEM_ES1_0 runs in real mode and
+            // covers the whole 128 MB window with one pair of BATs (virtual
+            // 0x80000000..0x87FFFFFF -> physical 0, cacheable, supervisor only)
+            // before switching address translation on (MSR IR|DR) and rfying
+            // back here.  A BAT upper half is virtual base | (size / 64 KB - 1)
+            // << 1 | valid, a lower half physical base | PP (01 = supervisor
+            // read/write); the upper half is written last so an entry only
+            // appears once its base and attributes are in place.
             RealMode(ConfigMEM_ES1_0);
             return;
         }
