@@ -79,6 +79,7 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D130C(long arg0, long arg1) {
 
 extern int lbl_8055E908;
 extern int fn_80128670(int);
+/* Frees the lbl_8055E908 array buffer (allocated with 0x10-byte header) and clears the pointer. */
 void fn_801D1364(void) {
     if (lbl_8055E908 != 0) {
         fn_80128670(lbl_8055E908 - 0x10);
