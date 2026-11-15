@@ -985,8 +985,9 @@ s32 fn_802B6E30(void) {
 s32 fn_802B6E30(void);
 #pragma push
 #pragma scheduling on
-s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
-    return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * (s16)fn_802B6E30()));
+s16 fn_802B6E7C(s32 base, s32 index, u32 count) {
+    /* Compute a 16-bit position: offset `base` by (index - count/2) scaled by fn_802B6E30(). */
+    return (s16)(base + ((index - (count >> 1)) * (s16)fn_802B6E30()));
 }
 
 s16 fn_802B6ED8(s32 base, s32 index, u32 count) {
