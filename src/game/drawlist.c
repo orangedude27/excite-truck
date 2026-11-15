@@ -798,14 +798,15 @@ void *fn_802C9694(void *arg0) {
     return arg0;
 }
 
-void *fn_802C96DC(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_802C974C(((float *)arg0)[0], ((float *)arg0)[1], ((float *)arg0)[2]);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+void *fn_802C96DC(void *object, int shouldDelete) {
+    /* Destructor helper: apply stored projection parameters, then optionally free the object. */
+    if (object != 0) {
+        fn_802C974C(((float *)object)[0], ((float *)object)[1], ((float *)object)[2]);
+        if (shouldDelete > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 float fn_802C973C(void) { return lbl_8055FC4C; }
