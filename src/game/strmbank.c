@@ -44,9 +44,10 @@ extern "C" void fn_802E75E4(s32 arg0) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_802E75FC(s32 arg0) {
+/* Logs before/after unloading a stream bank via the global stream bank object. */
+extern "C" void fn_802E75FC(s32 bankId) {
     fn_802E30C8(lbl_8034D808);
-    ((Dummy_8055FFF0*)lbl_8055FFF0)->f8(arg0);
+    ((Dummy_8055FFF0 *)lbl_8055FFF0)->f8(bankId);
     fn_802E30C8(lbl_8034D818);
 }
 
