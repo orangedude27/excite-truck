@@ -325,7 +325,9 @@ void fn_802CEC50(int arg0) {
     }
 }
 
-void fn_802CECF4(unsigned int arg0) {
+/* Cycles lbl_8055D0F6 through values 1..2 until it equals targetIndex, calling
+ * fn_802CEC50 for each step. */
+void fn_802CECF4(unsigned int targetIndex) {
     extern unsigned short lbl_8055D0F6;
     extern void fn_802CEC50(int);
     unsigned int value;
@@ -337,7 +339,7 @@ void fn_802CECF4(unsigned int arg0) {
             lbl_8055D0F6 = 1;
         }
         fn_802CEC50((unsigned short)value);
-    } while ((unsigned short)lbl_8055D0F6 != arg0);
+    } while ((unsigned short)lbl_8055D0F6 != targetIndex);
 }
 
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
