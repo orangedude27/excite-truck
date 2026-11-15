@@ -333,18 +333,19 @@ extern int lbl_8055CF28;
 #pragma push
 #pragma scheduling invalid_target
 void fn_802BBEE4(void) {
-    register int result;
-    register unsigned char status;
+    /* Rebuild cached state, then run two setup passes bracketed by begin/end guards when not enabled. */
+    register int savedState;
+    register unsigned char isEnabled;
 
     fn_802BBE34();
-    result = fn_80128690();
-    status = (unsigned char)result;
-    if (status == 0)
+    savedState = fn_80128690();
+    isEnabled = (unsigned char)savedState;
+    if (isEnabled == 0)
         fn_80128684();
     fn_802BBA08(&lbl_8055CF20, 0);
     fn_802BBA08(&lbl_8055CF28, 3);
-    status = (unsigned char)result;
-    if (status == 0)
+    isEnabled = (unsigned char)savedState;
+    if (isEnabled == 0)
         fn_80128678();
 }
 #pragma pop
