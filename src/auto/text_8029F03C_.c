@@ -106,16 +106,34 @@ void fn_8029F03C(void) {
 }
 
 void fn_8029F0D0(void) {
-    if (lbl_8055F820) {
-        ((int (*)(int))fn_80128670)(lbl_8055F820);
-    }
-    lbl_8055F820 = 0;
-    fn_801EF024((void *)fn_802A0720);
-    fn_801EF024((void *)fn_802A0620);
-    fn_8029FDDC();
-    fn_8029FFBC();
-}
+    /* Shuts the particle / track-effect system down (counterpart of the init fn_8029F03C):
+     * releases the per-view screen-rect table, unregisters the two effect event handlers
+     * from the world/event registry, empties the emitter-record table and destroys the
+     * objects every active track-effect record owns. */
+#define screenRectTab lbl_8055F820 /* heap block "fsrecttab": one u32 per view */
+#define freeHeapBlock fn_80128670
+#define unregisterEventHandler fn_801EF024
+#define triggerEmitters fn_802A0720    /* event type 11: fire emitters by id */
+#define emitEffectBurst fn_802A0620    /* event type 10: emit an effect record */
+#define resetEmitterTable fn_8029FDDC
+#define destroyTrackEffectObjects fn_8029FFBC
 
+    if (screenRectTab) {
+        ((int (*)(int))freeHeapBlock)(screenRectTab);
+    }
+    screenRectTab = 0;
+    unregisterEventHandler((void *)triggerEmitters);
+    unregisterEventHandler((void *)emitEffectBurst);
+    resetEmitterTable();
+    destroyTrackEffectObjects();
+#undef screenRectTab
+#undef freeHeapBlock
+#undef unregisterEventHandler
+#undef triggerEmitters
+#undef emitEffectBurst
+#undef resetEmitterTable
+#undef destroyTrackEffectObjects
+}
 #pragma push
 #pragma scheduling invalid_target
 void fn_8029F124(void) {
