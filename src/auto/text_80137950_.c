@@ -8,7 +8,7 @@ extern int fn_800167F4(void);
 void fn_80137C84(int, int);
 extern unsigned char lbl_8055E0E0;
 extern void fn_80128668(void*);
-extern void fn_802E317C(const char*, ...);
+extern int fn_802E317C(void*, ...);
 extern char lbl_8032BEE4[];
 extern char lbl_8032BEC0[];
 extern char lbl_8032BECC[];
@@ -16,20 +16,18 @@ extern int lbl_80559C04;
 extern int lbl_80559C08;
 extern int lbl_80559C10;
 char *fn_80137950(int arg0) {
-    char *s;
     switch (arg0) {
-        case 3:
-            return (char *)&lbl_80559C04;
-        case 1:
-            return lbl_8032BEC0;
-        case 2:
-            return (char *)&lbl_80559C08;
-        case 0:
-            return (char *)&lbl_80559C10;
-        default:
-            s = lbl_8032BECC;
-            fn_802E317C(s, arg0);
-            return (char *)0;
+    case 3:
+        return (char *)&lbl_80559C04;
+    case 1:
+        return lbl_8032BEC0;
+    case 2:
+        return (char *)&lbl_80559C08;
+    case 0:
+        return (char *)&lbl_80559C10;
+    default:
+        fn_802E317C(lbl_8032BECC, arg0);
+        return 0;
     }
 }
 
