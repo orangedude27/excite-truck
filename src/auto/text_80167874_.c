@@ -789,7 +789,7 @@ void fn_801688B4(s32 arg0) {
     s32 offset = 0;
     while (i < *(s32 *)(base - 0x2B30)) {
         s32 *record = (s32 *)(*(s32 *)(base - 0x2B34) + offset);
-        if (arg0 == *(s32 *)((u8 *)record + offset)) {
+        if (arg0 == *record) {
             *((u8 *)record + 4) = 1;
         }
         offset += 0x20;
