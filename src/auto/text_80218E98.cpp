@@ -1074,12 +1074,13 @@ extern "C" void *fn_80219870(void *object, s32 arg1, s32 arg2, char *name, s32 a
     return object;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80219900(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80219900(void *self, int shouldDelete) {
+    /* Destroys a MemorySoundArchive instance and optionally deletes it. */
+    if (self != 0) {
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma dont_inline on
