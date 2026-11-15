@@ -97,15 +97,20 @@ void *fn_802ECF08(void *arg0, s32 arg1) {
     return result;
 }
 #pragma dont_inline reset
-s32 fn_802ECF90(const char *arg0, void *arg1) {
-    char buffer[64];
+/* Returns whether a movie record already plays the movie `movieName` asks for: the
+ * name stored in the record (its first 0x40 bytes) and `movieName`'s base name, up to
+ * and including the first '.', are the same ignoring case. While one
+ * "single_movie_info" record stands in for every movie (lbl_805600F8), every name
+ * matches, so the caller keeps the record it has. */
+s32 fn_802ECF90(char *record, void *movieName) {
+    char baseName[64];
+
     if (lbl_805600F8 != 0) {
         return 1;
     }
-    fn_802ECCE4(buffer, arg1, 64);
-    return stricmp(buffer, arg0) == 0;
+    fn_802ECCE4(baseName, movieName, 64);
+    return stricmp(baseName, record) == 0;
 }
-
 void fn_802ECFEC(void *arg0) {
     fn_802E12DC(((void **)arg0)[16]);
 }
