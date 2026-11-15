@@ -4015,7 +4015,10 @@ extern "C" void fn_8021EDA4(void *self) {
         fn_802C5320(*(s32 *)(p + 0xA60), 0, x, y, lbl_805634A8, width, height);
     }
     s32 zero = 0;
-    ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,f32,s32))fn_8022BAD0)(*(s32 *)(p + 0xA58), *(s32 *)(p + 4), *(s32 *)(p + 8), zero, zero, zero, *(s32 *)(p + 0xA54), *(u8 *)(p + 0x19) != 0, lbl_805634A4, zero);
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
+        *(s32 *)(p + 0xA58), *(s32 *)(p + 4), *(s32 *)(p + 8),
+        0, 0, 0, *(s32 *)(p + 0xA54), *(u8 *)(p + 0x19) != 0,
+        zero, 1.0f);
     if (*(u8 *)(p + 0x19)) {
         f32 x = (f32)(*(s32 *)(p + 4) - lbl_8055FB9C / 2);
         f32 y = (f32)(lbl_8055FBA0 / 2 - *(s32 *)(p + 8));
