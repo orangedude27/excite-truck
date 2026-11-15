@@ -1297,16 +1297,16 @@ extern "C" s32 fn_8012C370(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
  * every manager when dirName is NULL. Stops at the first callback returning 0. */
 extern "C" void fn_8012C41C(s32 (*callback)(void *, void *, void *, s32), s32 userData, const char *dirName) {
     s32 off;
-    u8 *manager;
+    struct ResManager *manager;
     s32 i;
-    for (manager = (u8 *)lbl_8055E000; manager != NULL; manager = *(u8 **)(manager + 0xA8)) {
+    for (manager = (struct ResManager *)lbl_8055E000; manager != NULL; manager = manager->next) {
         if (dirName == 0 || stricmp((const char *)manager, dirName) == 0) {
             i = 0;
             off = 0;
-            while (i < *(s32 *)(manager + 0x88)) {
-                u8 *entry = *(u8 **)(manager + 0x60) + off;
-                if (*(u32 *)(entry + 0x34) & 8) {
-                    volatile void *param = *(void **)(entry + 0x20);
+            while (i < manager->entryCount) {
+                struct ResEntry *entry = (struct ResEntry *)(manager->entries + off);
+                if (entry->flags & RES_ENTRY_LOADED) {
+                    volatile void *param = (void *)entry->dataTag;
                     if (callback(entry, (void *)param, manager, userData) == 0) return;
                 }
                 off += 0x44;
