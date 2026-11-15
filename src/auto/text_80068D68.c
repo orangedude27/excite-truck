@@ -12299,16 +12299,21 @@ BOOLEAN BTM_SecAddRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
     return FALSE;
 }
 
+/*
+ * Removes a remote device name notification callback from the stack's list
+ * (btm_cb.p_rmt_name_callback, the slots BTM_SecAddRmtNameNotifyCallback()
+ * fills).  Returns TRUE if the callback was registered and has now gone.
+ */
 BOOLEAN BTM_SecDeleteRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
-    u8 *base = lbl_803C0F78;
+    u8 *p_btm_cb = lbl_803C0F78; /* walked along btm_cb, one callback slot at a time */
     int i;
 
     for (i = 0; i < BTM_SEC_MAX_RMT_NAME_CALLBACKS; i++) {
-        if (*(tBTM_RMT_NAME_CALLBACK **)(base + 0x192C) == p_callback) {
-            *(tBTM_RMT_NAME_CALLBACK **)(lbl_803C0F78 + i * 4 + 0x192C) = NULL;
+        if (btm_cb_rmt_name_cb(p_btm_cb) == p_callback) {
+            btm_cb_rmt_name_cb_at(i) = NULL;
             return TRUE;
         }
-        base += 4;
+        p_btm_cb += sizeof(tBTM_RMT_NAME_CALLBACK *);
     }
 
     return FALSE;
