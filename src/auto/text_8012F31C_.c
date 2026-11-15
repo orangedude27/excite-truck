@@ -68,10 +68,12 @@ s32 fn_8012F450(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
-void fn_8012F458(void *arg0, s32 arg1) {
-    s32 value = arg1;
-    memcpy(**(u8 ***)arg0 + ((s32 *)arg0)[1], &value, 4);
-    ((s32 *)arg0)[1] += 4;
+/* Appends a 32-bit word to the stream at its cursor and advances the cursor
+   past it (MemStreamPtr write). */
+void fn_8012F458(MemStreamPtr *stream, s32 word) {
+    s32 data = word;
+    memcpy(stream->stream->buffer + stream->pos, &data, 4);
+    stream->pos += 4;
 }
 
 void fn_8012F4AC(void *arg0, void *src, s32 size) {
