@@ -239,6 +239,9 @@ static void PlayRecordCallback(s32 result, NANDCommandBlock* block) {
     PlayRecordLastError = error;
 }
 
+/* Boots the play-record log: brings up NAND, clears this module's bookkeeping
+ * and starts the async open/read/seek/write/close state machine running by
+ * feeding a first OK result into PlayRecordCallback(). */
 void __OSStartPlayRecord(void) {
     if (NANDInit() == NAND_RESULT_OK) {
         PlayRecordTerminate = FALSE;
