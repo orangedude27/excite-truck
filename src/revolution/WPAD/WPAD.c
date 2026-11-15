@@ -5782,45 +5782,80 @@ void fn_80065524(s32 chan, WPADStatusEx* pStatus)
 }
 
 // fn_800656E8: WPAD data processing
-void fn_800656E8(s32 chan, WPADStatusEx* pStatus)
+void fn_800656E8(s32 chan, WPADStatusEx* pReport)
 {
+    /* WPADiDecodeAccStatus (proposed name): turn one core button +
+     * accelerometer input report from the remote on `chan` into the
+     * WPADStatusEx the application reads.
+     *
+     * pReport is the report as it came in, read as bytes: +1 is the status
+     * byte (bit 7 says whether an extension is plugged in, bits 5-6 carry the
+     * two low bits of the X accelerometer), +2 the high button byte, and +3
+     * to +5 the eight high bits of the X, Y and Z accelerometer readings.
+     * The decoded status goes into the control block's other receive buffer
+     * - the one the application is not reading - which is cleared first;
+     * flipping rxBufIndex at the end, with interrupts off, publishes it.
+     * The readings are widened back to 10 bits and brought down to the
+     * remote's zero-g calibration, and the buttons narrowed to the core set.
+     * fn_80065524 does the same without the accelerometer and fn_80065934
+     * with an extension's data. */
+    typedef struct {
+        u8 _head[0x788];
+        u32 extDisconnected; /* 0x788 bit 7 of the last report's status byte */
+        u8 _gap78C[0x7B4 - 0x78C];
+        s16 accX0g;          /* 0x7B4 the remote's accelerometer zero-g ... */
+        s16 accY0g;          /* 0x7B6 ... calibration, read back from its ... */
+        s16 accZ0g;          /* 0x7B8 ... memory by fn_80065350-ish code */
+        u8 _gap7BA[0x7F8 - 0x7BA];
+        u32 dataFormat;      /* 0x7F8 WPADDataFormat the remote is set to */
+        s32 status;          /* 0x7FC WPADResult of the last read */
+        u8 _gap800;
+        u8 extType;          /* 0x801 WPADDeviceType of the attached extension */
+        u8 _gap802[0x806 - 0x802];
+        u8 rxBufIndex;       /* 0x806 which rxBufs[] holds the last report */
+    } CBView;
+
     WPADCB* pCB;
     volatile u8* pBuf;
     u32 i;
     BOOL enabled;
-    u8* p = (u8*)pStatus;
+    u8* p = (u8*)pReport;
+    CBView* cb;
+    WPADStatusEx* pOut;
 
     pCB = lbl_8038F4F0[(u8)chan];
-    pBuf = (volatile u8*)pCB->rxBufs[*(u8*)((u8*)pCB + 0x806)];
-    for (i = 0; i < 96; i++) {
+    cb = (CBView*)pCB;
+    pBuf = (volatile u8*)pCB->rxBufs[cb->rxBufIndex];
+    for (i = 0; i < RX_BUFFER_SIZE; i++) {
         pBuf[i] = 0;
     }
-    *(u16*)pBuf = ((u16)p[2] << 8) | p[1];
-    *(u16*)pBuf &= 0x9F1F;
-    if (*(u32*)((u8*)pCB + 0x7F8) <= 1) {
-        *(u8*)(pBuf + 0x29) = *(u32*)((u8*)pCB + 0x7FC);
-    } else if (*(s32*)((u8*)pCB + 0x7FC) == 0) {
-        *(s8*)(pBuf + 0x29) = -4;
+    pOut = (WPADStatusEx*)pBuf;
+    pOut->button = ((u16)p[2] << 8) | p[1];
+    pOut->button &= WPAD_BUTTON_CORE_ALL;
+    if (cb->dataFormat <= (u32)WPAD_FMT_CORE_BTN_ACC) {
+        pOut->err = cb->status;
+    } else if (cb->status == WPAD_ERR_OK) {
+        pOut->err = WPAD_ERR_INVALID;
     }
-    *(u8*)(pBuf + 0x28) = *(u8*)((u8*)pCB + 0x801);
-    *(u32*)((u8*)pCB + 0x788) = (p[1] >> 7) & 1;
+    pOut->dev = cb->extType;
+    cb->extDisconnected = (p[1] >> 7) & 1;
     {
-        s16 a = p[3] << 2;
-        a &= ~3;
-        *(s16*)(pBuf + 2) = (s16)(a | ((p[1] >> 5) & 3)) - *(s16*)((u8*)pCB + 0x7B4);
-    }
-    {
-        s16 b = p[4] << 2;
-        b &= ~3;
-        *(s16*)(pBuf + 4) = (s16)(b | (s16)((p[2] >> 4) & 2)) - *(s16*)((u8*)pCB + 0x7B6);
+        s16 accX = p[3] << 2; /* the reading's high 8 bits ... */
+        accX &= ~3;
+        pOut->accX = (s16)(accX | ((p[1] >> 5) & 3)) - cb->accX0g; /* ... and its low 2 */
     }
     {
-        s16 c = p[5] << 2;
-        c &= ~3;
-        *(s16*)(pBuf + 6) = (s16)(c | (s16)((p[2] >> 5) & 2)) - *(s16*)((u8*)pCB + 0x7B8);
+        s16 accY = p[4] << 2;
+        accY &= ~3;
+        pOut->accY = (s16)(accY | (s16)((p[2] >> 4) & 2)) - cb->accY0g;
+    }
+    {
+        s16 accZ = p[5] << 2;
+        accZ &= ~3;
+        pOut->accZ = (s16)(accZ | (s16)((p[2] >> 5) & 2)) - cb->accZ0g;
     }
     enabled = OSDisableInterrupts();
-    *(u8*)((u8*)pCB + 0x806) = !*(u8*)((u8*)pCB + 0x806);
+    cb->rxBufIndex = !cb->rxBufIndex;
     OSRestoreInterrupts(enabled);
 }
 
