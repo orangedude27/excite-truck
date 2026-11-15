@@ -95,6 +95,7 @@ void __AXPrintStudio(void) {
 }
 
 void __AXSPBInit(void) {
+    /* Clear all SPB depop-accumulator channels (main, aux A/B/C, remote main/aux). */
     __AXSpbAux3 = 0;
     __AXSpbAux2 = 0;
     __AXSpbAux1 = 0;
