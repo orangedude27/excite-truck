@@ -65,6 +65,7 @@ struct DroneManager {
 #define DMGR_POOLS(m)      ((char *)(m) + 0x1008)           /* the manager's pool table */
 #define DMGR_PATH_MAX      0x40                             /* segments per manager */
 #define STR_PATH_DRONE_LIMIT lbl_8033B8C8 /* "path: exceeded total drone limit" */
+#define STR_PATH_END_BEHAVIOR lbl_8033B618 /* "path: unknown end behavior %d." */
 extern "C" void fn_801FEA28(void*);
 class SHMainMenu { public: ~SHMainMenu(); };
 extern "C" {
