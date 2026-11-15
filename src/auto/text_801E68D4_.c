@@ -155,17 +155,29 @@ void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma scheduling reset
-void fn_801E6B98(void* arg0) {
-    s32* var_r31 = (s32*)arg0;
-    s32 temp = var_r31[5];
-    if (temp != 0) {
-        ((void (*)(s32))fn_801E6924)(temp);
+void fn_801E6B98(void* object) {
+    /* Head of the animation player object built by fn_801E6A3C; the file's
+       AnimPlayer typedef (further down) describes the whole 0x73C bytes. */
+    struct AnimPlayerHead {
+        s32 handle;     /* 0x00 model handle */
+        void* res;      /* 0x04 MRBN resource entry */
+        s32 trackCount; /* 0x08 */
+        u8 flagC;       /* 0x0C */
+        u8 flagD;       /* 0x0D */
+        u8 padE[2];
+        void* data;     /* 0x10 animation data */
+        s32 stream;     /* 0x14 streaming buffer slot */
+    };
+    struct AnimPlayerHead* player = (struct AnimPlayerHead*)object;
+    s32 stream = player->stream;
+    if (stream != 0) {
+        /* the cast keeps -ipa file from inlining this call */
+        ((void (*)(s32))fn_801E6924)(stream);
     }
-    fn_801E598C(var_r31[1]);
-    fn_802C6CF8(var_r31[0]);
-    fn_80128668((s32)arg0);
+    fn_801E598C((s32)player->res);
+    fn_802C6CF8(player->handle);
+    fn_80128668((s32)object);
 }
-
 extern void *fn_8012C370(const char *, unsigned int, int *, int *, unsigned char *, unsigned char *);
 extern char *strcpy(char *, const char *);
 extern char *fn_80029004(const char *, int);
