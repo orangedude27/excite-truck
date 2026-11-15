@@ -150,12 +150,13 @@ void fn_80133024(void) {
     fn_8000DBC8(fn_801341B4);
 }
 #pragma scheduling on
-void fn_801330E8(int arg0) {
- if (!fn_80133BA0(lbl_80559B58,0,arg0)) {
-   const char *fmt=lbl_8032B8B0;
-   int result=fn_80133AD8(arg0);
-   fn_802E317C(fmt,result);
- }
+/* Load default options for a section, or report failure with the section name. */
+void fn_801330E8(int section) {
+    if (!fn_80133BA0(lbl_80559B58, 0, section)) {
+        const char *fmt = lbl_8032B8B0;
+        int sectionName = fn_80133AD8(section);
+        fn_802E317C(fmt, sectionName);
+    }
 }
 
 void fn_80133144(void) {
