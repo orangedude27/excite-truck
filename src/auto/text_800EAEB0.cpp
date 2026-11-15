@@ -2269,14 +2269,15 @@ check_valid:
     return self;
 }
 
+/* Return the base address of the sequence data in the referenced sequence file. */
 void *nw4hbm::snd::detail::SeqFileReader::GetBaseAddress() const {
-    const u8 *self = (const u8 *)this;
-    if (*(u32 *)self == 0) {
+    const u8 *reader = (const u8 *)this;
+    if (*(u32 *)reader == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803239C0, 0x5E,
                                      (const char *)lbl_80323AF8);
     }
-    u8 *file = *(u8 **)(self + 4);
-    return (void *)(*(u32 *)(file + 8) + (u32)file);
+    u8 *header = *(u8 **)(reader + 4);
+    return (void *)(*(u32 *)(header + 8) + (u32)header);
 }
 
 extern "C" void OSCancelAlarm(void *);
