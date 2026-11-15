@@ -8703,6 +8703,8 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802293E0(
     return this_;
 }
 
+/* nw4hbm::snd::detail::DisposeCallbackManager destructor helper:
+ * destroys the base/subobject when non-null, then optionally frees storage. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8022943C(
     void* this_, s32 flag) {
     if (this_) {
