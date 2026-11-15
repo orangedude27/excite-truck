@@ -469,8 +469,9 @@ void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
 }
 
 #pragma dont_inline on
+/* Resolve the selected track-music entry into the current track id (lbl_8055B658). */
 void fn_8020FE90(void) {
-    long result;
+    long resolvedTrack;
 
     fn_802EC12C();
     fn_802EC1D8();
@@ -479,11 +480,11 @@ void fn_8020FE90(void) {
         return;
     }
     if (lbl_8055EEE0 == -1) {
-        result = fn_8020F6FC();
+        resolvedTrack = fn_8020F6FC();
     } else {
-        result = lbl_8055EEE0 + (lbl_8055EEE4 * 0xA);
+        resolvedTrack = lbl_8055EEE0 + (lbl_8055EEE4 * 0xA);
     }
-    lbl_8055B658 = result;
+    lbl_8055B658 = resolvedTrack;
 }
 
 long fn_8020FEF0(long arg0) {
