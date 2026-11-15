@@ -87,12 +87,14 @@ void** fn_801A9700(void** arg0) {
     return arg0;
 }
 #pragma scheduling on
-void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801A973C(void *this_, int flag) {
-    if (this_) {
-        if (this_ != 0) fn_80179EE8(this_, 0);
-        if (flag > 0) fn_80128668(this_);
+/* Deleting destructor for nw4r::snd::detail::DisposeCallbackManager: destroy base
+ * state, then optionally free the object. */
+void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801A973C(void *self, int shouldDelete) {
+    if (self) {
+        if (self != 0) fn_80179EE8(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return this_;
+    return self;
 }
 
 extern void *fn_801AE180(void);
