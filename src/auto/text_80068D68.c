@@ -7189,12 +7189,21 @@ void BTA_HhRemoveDev(u8 dev_handle) {
 }
 
 void BTA_HhGetAclQueueInfo(void) {
-    void *buf = GKI_getbuf(8);
-    if (buf != 0) {
-        memset(buf, 0, 8);
-        *(u16 *)buf = 0x170E;
-        fn_80071450(buf);
+    /* HID-Host API event this BTE revision inserts before BTA_HH_DISC_CMPL_EVT;
+     * bta_hh_hdl_event() answers it by running bta_hh_get_acl_q_info(). */
+#define BTA_HH_API_GET_ACL_Q_INFO_EVT   0x170E
+
+    /* Ask the BTA task for the ACL queue statistics of the connected HID devices
+     * (WPAD polls this from its background task): the message it queues carries
+     * nothing but its event header, and the per-device queue depths come back
+     * through the application callback bta_hh_get_acl_q_info() reports to. */
+    BT_HDR *p_msg = (BT_HDR *)GKI_getbuf(sizeof(BT_HDR));
+    if (p_msg != 0) {
+        memset(p_msg, 0, sizeof(BT_HDR));
+        p_msg->event = BTA_HH_API_GET_ACL_Q_INFO_EVT;
+        bta_sys_sendmsg(p_msg);
     }
+#undef BTA_HH_API_GET_ACL_Q_INFO_EVT
 }
 
 void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
