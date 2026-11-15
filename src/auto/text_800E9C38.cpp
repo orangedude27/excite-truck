@@ -243,13 +243,25 @@ extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveD
     *(signed char *)((char *)channel + 0x3A) = 1;
 }
 
-extern "C" void Release__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
-    if (*(int *)((char *)arg0 + 8) != 3) {
-        if (*(void **)((char *)arg0 + 0xE0) != (void *)0)
-            SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(*(void **)((char *)arg0 + 0xE0), 1);
-        *(int *)((char *)arg0 + 8) = 3;
+extern "C" void Release__Q46nw4hbm3snd6detail7ChannelFv(void *channel) {
+    /* Move a non-released channel to the released state (lowering its voice
+     * priority) and clear its active flag. */
+    struct ChannelState {
+        unsigned char pad[8];
+        int state;            /* +0x08 */
+        unsigned char pad0C[0x39 - 0x0C];
+        unsigned char active; /* +0x39 */
+        unsigned char pad3A[0xE0 - 0x3A];
+        void *voice;          /* +0xE0 */
+    };
+    ChannelState *ch = (ChannelState *)channel;
+
+    if (ch->state != 3) {
+        if (ch->voice != (void *)0)
+            SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(ch->voice, 1);
+        ch->state = 3;
     }
-    *(unsigned char *)((char *)arg0 + 0x39) = 0;
+    ch->active = 0;
 }
 
 extern "C" char lbl_803228E8[];
