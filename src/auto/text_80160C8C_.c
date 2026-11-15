@@ -901,6 +901,8 @@ extern "C" void fn_80161AEC(void) {
 extern "C" int fn_800121A4(void);
 #pragma cplusplus on
 #pragma scheduling invalid_target
+/* If the current subtask exists and reports completion (f10), clear the active flag
+   (triggering fn_800121A4 once on the transition) and report that it is done. */
 extern "C" s32 fn_80161B0C(void) {
     if (lbl_8055E300 != 0 &&
         ((Dummy_801638A0 *)lbl_8055E300)->f10() != 0) {
