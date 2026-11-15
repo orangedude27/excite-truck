@@ -16019,13 +16019,14 @@ void fn_80085828(void *arg0) {
     btu_hcif_send_cmd(arg0);
 }
 
+/* Builds and sends an HCI command buffer (opcode 0x1009, no parameters); returns 1 on success, 0 on allocation failure. */
 s32 btsnd_hcic_inq_cancel_80085850(void) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == 0) return 0;
-    *(u16 *)(p + 2) = 3;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 9; p[9] = 0x10; p[10] = 0;
-    btu_hcif_send_cmd(p);
+    u8 *cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == 0) return 0;
+    *(u16 *)(cmdBuf + 2) = 3;
+    *(u16 *)(cmdBuf + 4) = 0;
+    cmdBuf[8] = 9; cmdBuf[9] = 0x10; cmdBuf[10] = 0;
+    btu_hcif_send_cmd(cmdBuf);
     return 1;
 }
 
