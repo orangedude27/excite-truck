@@ -2498,13 +2498,16 @@ extern "C" void *fn_8021C344(void *self, s32 x, s32 y, void *callbackObj, s32 pa
     return self;
 }
 
-extern "C" void fn_8021C478(void *arg0) {
+/* If active (fn_80129BC4), inserts the pair (field +0x2C, field +0x2AC) for self
+ * into the table via fn_80217BD8, stores the result at +0x2A8, and notifies via
+ * fn_80219440 with tag 1 and size 4. */
+extern "C" void fn_8021C478(void *self) {
     void *value;
     if (fn_80129BC4() != 0) {
-        value = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C),
-                            *(s32 *)((u8 *)arg0 + 0x2AC), arg0);
-        *(void **)((u8 *)arg0 + 0x2A8) = value;
-        ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
+        value = fn_80217BD8(*(s32 *)((u8 *)self + 0x2C),
+                            *(s32 *)((u8 *)self + 0x2AC), self);
+        *(void **)((u8 *)self + 0x2A8) = value;
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(self, 1, value, 4);
     }
 }
 
