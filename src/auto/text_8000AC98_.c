@@ -64,6 +64,8 @@ void fn_8000AD20(void) {
 
 int fn_8000AD24(void) { return 0; }
 
+/* Returns 0 for game modes that should not save/restore state on dispatch
+ * (entries 0, 1, and 0x12 in the 0x14-byte mode table at lbl_802FBC90), 1 otherwise. */
 int fn_8000AD2C(void) {
     int index = ((char *)lbl_8055D3D0 - lbl_802FBC90) / 0x14;
     switch (index) {
