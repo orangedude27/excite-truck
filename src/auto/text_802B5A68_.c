@@ -1858,6 +1858,12 @@ void fn_802B8744(void) {
     lbl_8055FA34 = -1;
 }
 #pragma pop
+/* Clears the state of this menu/UI system, as run from the startup reset path:
+ * hands the camera's update-check callback back to whatever was installed
+ * before fn_802B8744() (lbl_8055FA00 holds the one fn_8026E214() returned for
+ * us), destroys the UI handler object and its thread (lbl_8055FA48), releases
+ * the model we still hold a handle to (lbl_8055FA34, -1 when none) and empties
+ * the named-record list at lbl_804BFA70 by zeroing its entry count at +4. */
 void fn_802B87A0(void) {
     ((s32 (*)(void *))fn_8026E214)((void *)lbl_8055FA00);
     deleteThreads__6SystemFv((void *)&lbl_8055FA48);
