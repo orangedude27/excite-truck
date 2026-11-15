@@ -476,6 +476,8 @@ long fn_801ECC8C(unsigned int vehicleRender) {
         usesEffect = 1;
     return usesEffect;
 }
+
+#pragma dont_inline on
 void fn_801ECCE0(long arg0, long arg1) {
     void *list[8];
     void *item;
