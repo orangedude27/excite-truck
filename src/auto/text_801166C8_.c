@@ -3464,14 +3464,16 @@ void fn_8011BD20(s32 arg0) {
     }
 }
 
-void fn_8011BDF0(s32 arg0) {
-    s32 temp;
-    s32 old;
-    temp = arg0 - 8;
-    if (temp != 0 && *(s32 *)(temp + 0x30) != 0) {
-        old = OSEnableInterrupts();
-        fn_8011BD20(temp);
-        OSRestoreInterrupts(old);
+/* OS alarm handler: recovers the owner object (alarm at +8), and if it has an
+ * active work flag at +0x30, runs fn_8011BD20 on it with interrupts disabled. */
+void fn_8011BDF0(s32 alarmPtr) {
+    s32 owner;
+    s32 savedInterrupts;
+    owner = alarmPtr - 8;
+    if (owner != 0 && *(s32 *)(owner + 0x30) != 0) {
+        savedInterrupts = OSEnableInterrupts();
+        fn_8011BD20(owner);
+        OSRestoreInterrupts(savedInterrupts);
     }
 }
 
