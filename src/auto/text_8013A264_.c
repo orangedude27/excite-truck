@@ -184,14 +184,17 @@ void **fn_8013A598(void **listHead, s32 doDelete) {
     return listHead;
 }
 
-void *fn_8013A604(void **arg0, f32 value) {
-    Node604 *node = (Node604 *)*arg0;
+/* Returns the AI driving parameters that apply at longitudinal track position `lon`: those of
+   the first AIException entry whose [onLon, offLon] section covers it, or, when no entry does,
+   the defaults held in the config itself. */
+AiParams *fn_8013A604(AiExceptionConfig *config, f32 lon) {
+    AiException *node = config->list;
     s32 found;
     while (node != 0) {
         found = 0;
-        if (value >= node->lo && value <= node->hi) found = 1;
-        if (found) return (u8 *)node + 8;
+        if (lon >= node->onLon && lon <= node->offLon) found = 1;
+        if (found) return &node->params;
         node = node->next;
     }
-    return (u8 *)arg0 + 4;
+    return &config->params;
 }
