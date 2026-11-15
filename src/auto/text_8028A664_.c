@@ -836,11 +836,23 @@ s32 fn_8028BA9C(void *arg0) {
     return 0x1C;
 }
 
-s32 fn_8028BB14(s32 arg0) {
-    s32 *value = (s32 *)arg0;
+s32 fn_8028BB14(s32 payload) {
+    /* Event-handler for event type 8 (registered by fn_8028A664, run by the
+     * event-script dispatcher in world/event.c).  Its 0x18-byte payload holds
+     * the world position a splat lands at and the direction it is thrown in;
+     * 20 paint splats are dropped into the built-in splat emitter
+     * lbl_8055F704 (created by fn_8028B3CC) at that spot, each one getting its
+     * own random jitter from the emitter's spawn box.  Returns the number of
+     * payload bytes the dispatcher steps over.  Proposed name: EvtHdlSplat. */
+    struct SplatEvent {
+        f32 position[3]; /* +0x00 splat start position */
+        f32 velocity[3]; /* +0x0C throw direction, jittered per splat */
+    };
+    extern void fn_8028E584(void *emitter, s32 position, f32 *velocity);
+    struct SplatEvent *event = (struct SplatEvent *)payload;
     s32 i = 0;
     do {
-        fn_8028E584(lbl_8055F704, (s32)value, (s32)(value + 3));
+        fn_8028E584((void *)lbl_8055F704, (s32)event, event->velocity);
         i++;
     } while (i < 0x14);
     return 0x18;
