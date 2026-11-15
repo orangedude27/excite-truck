@@ -212,14 +212,15 @@ void *fn_801DA8C8(const char *arg0, const char *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma pop
-void *__dt__14CollisionSpaceFv_801DAB70(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_80339288;
-        fn_80128670(*(void **)((char *)arg0 + 4));
-        if (arg1 > 0)
-            fn_80128668(arg0);
+/* CollisionSpace::~CollisionSpace (scalars deleting): restore vtable, free owned buffer, and optionally delete. */
+void *__dt__14CollisionSpaceFv_801DAB70(void *this_, int flag) {
+    if (this_ != 0) {
+        *(void **)this_ = lbl_80339288;
+        fn_80128670(*(void **)((char *)this_ + 4));
+        if (flag > 0)
+            fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 #pragma scheduling invalid_target
