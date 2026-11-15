@@ -32,7 +32,7 @@ struct PathSpawnEntry {
 };
 
 // PathSpawnEntry::endBehavior: what a drone does when it runs off the end of
-// its path. Drone_Update picks the per-frame walker with it.
+// its path; the drone updater picks its per-frame walker with it.
 enum PathEndBehavior {
     PATH_END_LOOP = 0,    // wrap back to the first node and keep going
     PATH_END_REVERSE = 1, // run the node list backwards (ping-pong)
