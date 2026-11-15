@@ -1869,6 +1869,14 @@ typedef struct Entry_802D18E8 {
     float pos[3];
     float strength;
 } Entry_802D18E8;
+/* Experiment: the TU's own .bss laid out as separate variables (lbl_804C5650 + offset). */
+static unsigned char sBssHead_802D18E8[0x40];    /* lbl_804C5650 */
+static float sViewFrom_802D18E8[12];             /* lbl_804C5690 */
+static float sViewTo_802D18E8[0x4110 / 4];       /* lbl_804C56C0 .. */
+static Entry_802D18E8 sDefaultLight_802D18E8;    /* lbl_804C97D0 */
+static unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(Entry_802D18E8)];
+static unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088, 0x14 each */
+static unsigned char sLightObjs_802D18E8[8][0x40];  /* lbl_804CA118 */
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_live_range_split off
