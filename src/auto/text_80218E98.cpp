@@ -6154,13 +6154,14 @@ loop_cond:
 extern "C" void fn_8022375C(void);
 extern "C" void fn_802235B4(void *);
 extern "C" void fn_80223644(void *);
+/* Returns a display/color code for entry arg1: special value when disabled (0x41C), highlight when it's the selected entry (0x2CC) and the marker (0x414) matches, otherwise enabled/disabled based on flag at 0x2D0. */
 extern "C" s32 fn_802236C8(void *arg0, s32 arg1) {
     if (*(u8 *)((u8 *)arg0 + 0x41C) != 0)
         return (s32)0xE6969696;
-    u8 *p = (u8 *)arg0 + arg1;
-    u8 flag = p[0x2D0];
+    u8 *entry = (u8 *)arg0 + arg1;
+    u8 enabledFlag = entry[0x2D0];
     s32 result = (s32)0xFF9F9F9F;
-    if (flag != 0)
+    if (enabledFlag != 0)
         result = -1;
     if (arg1 == *(s32 *)*(s32 **)((u8 *)arg0 + 0x2CC) &&
         lbl_805634A4 == *(f32 *)((u8 *)arg0 + 0x414))
