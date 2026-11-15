@@ -48,6 +48,7 @@ extern "C" void fn_8013A660(void *arg0, char *arg1, char *arg2) {
         virtual int f0();
         virtual int f1();
     };
+    /* Reports an error if the vtable check fails (f1 returns 0). */
     if (((Dummy *)arg0)->f1() == 0) {
         fn_802E317C(lbl_8032C1A0, arg2, arg1);
     }
