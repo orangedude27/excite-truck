@@ -363,12 +363,13 @@ void fn_8017691C(void) {
     }
 }
 
-void fn_80176948(void *arg0, s32 *arg1) {
-    s32 value = lbl_8055E3CC;
-    *arg1 = value;
-    fn_8012F458(lbl_8055E3E0, value);
-    fn_8012F4AC(lbl_8055E3E0, arg0, *(s32 *)((char *)arg0 + 4));
-    lbl_8055E3CC += fn_80179658(*(s32 *)arg0);
+/* Record current stream offset, write chunk bytes, then advance the offset by the chunk's padded size. */
+void fn_80176948(void *chunk, s32 *outOffset) {
+    s32 offset = lbl_8055E3CC;
+    *outOffset = offset;
+    fn_8012F458(lbl_8055E3E0, offset);
+    fn_8012F4AC(lbl_8055E3E0, chunk, *(s32 *)((char *)chunk + 4));
+    lbl_8055E3CC += fn_80179658(*(s32 *)chunk);
 }
 
 s32 fn_801769A8(void);
