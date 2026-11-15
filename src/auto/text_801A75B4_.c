@@ -1070,24 +1070,27 @@ void fn_801A91B0(void *dst, const void *src) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void *fn_801A9234(const char *arg0) {
     extern int lbl_8055E5D0;
     extern const char **lbl_8055E5CC;
     const char *entry;
     const char **base;
-    int count;
     int i;
+    int count;
     int type;
 
     fn_801A7628();
-    count = lbl_8055E5D0;
-    base = lbl_8055E5CC;
-    for (i = 0, entry = (const char *)base; i < count; entry += 0x18, i++) {
+    count = *(volatile int *)&lbl_8055E5D0;
+    i = 0;
+    entry = (const char *)(base = *(const char **volatile *)&lbl_8055E5CC);
+    for (; i < count; i++) {
         type = *(int *)arg0;
         if (type == *(int *)(entry + 8)) {
             switch (type) {
-            case 4: goto check_word_a;
-            case 2: goto check_word_b;
+            case 4: goto check_word_b;
+            case 2: goto check_word_a;
             case 3: goto check_word_c;
             case 5: goto check_word_d;
             case 6: goto check_word_e;
@@ -1119,8 +1122,8 @@ check_byte:
                 return (char *)base + i * 0x18;
         }
 next:
-        ;
+        entry += 0x18;
     }
     return 0;
 }
-
+#pragma pop
