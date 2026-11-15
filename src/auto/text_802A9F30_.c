@@ -1161,6 +1161,8 @@ void fn_802ABC2C(void) {
     }
     lbl_8055F924 = 0;
 }
+
+#pragma processor 750
 void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
