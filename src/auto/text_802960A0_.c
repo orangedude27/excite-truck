@@ -354,10 +354,12 @@ void *arg0;
 }
 #pragma pop
 
-void *fn_80296950(const char *arg0) {
+/* Find a node in the lbl_8055F788 linked list whose name (at offset 0)
+ * matches the given string case-insensitively; return NULL if not found. */
+void *fn_80296950(const char *name) {
     void *node = lbl_8055F788;
     while (node != 0) {
-        if (stricmp(arg0, (const char *)node) == 0) return node;
+        if (stricmp(name, (const char *)node) == 0) return node;
         node = *(void **)((char *)node + 0x20);
     }
     return 0;
