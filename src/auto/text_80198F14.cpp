@@ -4699,10 +4699,11 @@ extern "C" void fn_801A442C(void* arg0, void* arg1, void* arg2) {
 
 #pragma scheduling invalid_target
 extern "C" f32 fn_801A4460(s32 arg0) {
-    f32 first = PSVECDotProduct((Vec*)(arg0 + 0x34), (Vec*)(arg0 + 0x34));
-    f32 second = PSVECDotProduct((Vec*)(arg0 + 0x28), (Vec*)(arg0 + 0x28));
-    f32 selected = second > first ? second : first;
-    return (f32)fn_8002F234(selected);
+    f32 firstSqLen = PSVECDotProduct((Vec *)(arg0 + 0x34), (Vec *)(arg0 + 0x34));
+    f32 secondSqLen = PSVECDotProduct((Vec *)(arg0 + 0x28), (Vec *)(arg0 + 0x28));
+    f32 maxSqLen = secondSqLen > firstSqLen ? secondSqLen : firstSqLen;
+    /* Returns the length of the larger of the two basis vectors at offsets 0x34 and 0x28. */
+    return (f32)fn_8002F234(maxSqLen);
 }
 #pragma scheduling on
 extern "C" void fn_801A44C4(void* arg0) {
