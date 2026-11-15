@@ -10,17 +10,18 @@ extern int fn_80128670(int);
 extern long fn_801EF024(long (*)(void *));
 extern void fn_802CAC54(int);
 extern void fn_80128668(void*);
-void* fn_802A08E8(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+void *fn_802A08E8(void *object, s32 shouldDelete) {
+    /* Clear three word fields and optionally free the object (destructor helper). */
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_802A0940(void) {
@@ -45,17 +46,14 @@ extern void fn_802A0AF8(void);
 extern char lbl_803498E0[];
 extern char lbl_803498EC[];
 void fn_802A09B0(void) {
-    s32 counter;
-    s32 offset;
-    s32 zero;
+    s32 offset = 0;
+    s32 zero = 0;
+    s32 counter = 4;
     u8 *base;
-    counter = 4;
     lbl_8055F834 = (u8 *)((void *(*)(void *, void (*)(void), int, int, int))fn_8002F37C)(
         (void *)((s32 (*)(void *, void *))fn_8012850C)((void *)0x1510, lbl_803498E0),
         fn_802A0AF8, 0, 0x54, 0x40);
-    offset = 0;
-    zero = 0;
-    for (; counter != 0; counter--) {
+    for (; counter != 0; --counter) {
         base = *(u8 * volatile *)&lbl_8055F834 + offset;
         *(s32 *)(base + 8) = zero;
         base = *(u8 * volatile *)&lbl_8055F834 + offset;
@@ -146,6 +144,10 @@ typedef struct {
     Fn802A0B54FloatConv firstConv;
     Fn802A0B54FloatConv secondConv;
 } Fn802A0B54Work;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma ppc_psq_save off
 void fn_802A0B54(void) {
     Fn802A0B54Work work;
@@ -167,8 +169,6 @@ void fn_802A0B54(void) {
     float f0;
     float f4;
     u8 *record;
-
-    /* Fix note: place indices, vertices, and float conversion words at their target stack offsets. */
     fn_802C8BD0(lbl_8055CB68);
     bias = lbl_805646E0;
     scale = lbl_805646D8;
@@ -232,4 +232,4 @@ void fn_802A0B54(void) {
     } while (outer < 0x40);
     fn_802C8D74();
 }
-#pragma ppc_psq_save reset
+#pragma pop
