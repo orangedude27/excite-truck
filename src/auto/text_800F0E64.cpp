@@ -3484,24 +3484,26 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* sel
 }
 
 extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self, u32 start, u32 end) {
-    if (*(u32**)((u8*)self + 0x14) == 0) return;
+    struct GroupLoadStatus { void* data_address; void* wave_data_address; };
+    struct LoadStatusTable { u32 count; struct GroupLoadStatus entries[1]; };
+    if (*(struct LoadStatusTable**)((u8*)self + 0x14) == 0) return;
     u32 offset;
-    u32* entries;
+    struct LoadStatusTable* table;
     u32 index;
-    u32 zero;
+    void* null_address;
     index = 0;
     offset = 0;
-    zero = 0;
+    null_address = 0;
     goto loop_check;
     do {
-        u32* entry = (u32*)((u8*)entries + offset);
-        u32 value = entry[2];
-        if (!(start > value) && !(value > end)) entry[2] = zero;
+        struct GroupLoadStatus* entry = &((struct LoadStatusTable*)((u8*)table + offset))->entries[0];
+        u32 value = (u32)entry->wave_data_address;
+        if (!(start > value) && !(value > end)) entry->wave_data_address = null_address;
         offset += 8;
         ++index;
     loop_check:
-        entries = *(u32**)((u8*)self + 0x14);
-    } while (index < entries[0]);
+        table = *(struct LoadStatusTable**)((u8*)self + 0x14);
+    } while (index < table->count);
 }
 
 #pragma push
