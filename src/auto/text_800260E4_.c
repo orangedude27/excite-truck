@@ -1,15 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-typedef struct decimal {
-    char sign;
-    char unk;
-    short exp;
-    struct {
-        unsigned char length;
-        unsigned char text[36];
-    } sig;
-} decimal;
+#include "MSL/ansi_fp.h"
 
 void round_decimal(decimal* dec, int new_length) {
     char c;
