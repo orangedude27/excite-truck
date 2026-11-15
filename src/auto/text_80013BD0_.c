@@ -98,13 +98,14 @@ extern "C" void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 #pragma pop
-void fn_80013C98(f32 *arg0) {
-    f32 value;
+/* Increase *value toward 1.0 over time (by delta/0.35 per frame while delta > 0), clamping at 1.0. */
+void fn_80013C98(f32 *value) {
+    f32 step;
     if (fn_801E7E24() > lbl_80560360) {
-        value = fn_801E7E24() / lbl_80560364;
-        value = *arg0 + value;
-        value = value < lbl_80560368 ? value : lbl_80560368;
-        *arg0 = value;
+        step = fn_801E7E24() / lbl_80560364;
+        step = *value + step;
+        step = step < lbl_80560368 ? step : lbl_80560368;
+        *value = step;
     }
 }
 
