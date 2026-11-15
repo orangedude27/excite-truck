@@ -1111,16 +1111,22 @@ extern "C" void fn_802C9D88(int element) {
 #pragma cplusplus reset
 #pragma pop
 
-void *fn_802C9DE8(void *arg0, int arg1) {
-    void *value = fn_801E7840(arg1);
+void *fn_802C9DE8(void *obj, int listCount) {
+#define NewGenericDrawList fn_801E7840
+    /* DrawListWrapper constructor: creates the GenericDrawList of `listCount` entries
+     * this wrapper draws through, then clears the orientation (x, y, z, w) that
+     * fn_802C9E94 blends in frame to frame and the number of frames blended. */
+    struct DrawListWrapper *list = (struct DrawListWrapper *)obj;
+    void *drawList = NewGenericDrawList(listCount);
     float zero = lbl_80564F00;
-    *(void **)arg0 = value;
-    *(float *)((char *)arg0 + 4) = zero;
-    *(float *)((char *)arg0 + 8) = zero;
-    *(float *)((char *)arg0 + 12) = zero;
-    *(float *)((char *)arg0 + 16) = zero;
-    *(int *)((char *)arg0 + 20) = 0;
-    return arg0;
+
+    list->drawList = drawList;
+    list->x = zero;
+    list->y = zero;
+    list->z = zero;
+    list->w = zero;
+    list->count = 0;
+    return obj;
 }
 
 int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(int *self, int shouldDelete) {
