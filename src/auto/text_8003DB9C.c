@@ -2166,6 +2166,8 @@ out:
 }
 
 void GXGetVtxDesc(void) {
+    /* GX state sync used in this unit: if dirty flags are set, flush GX state,
+     * then issue 8 zero writes to the write-gather pipe and sync. */
     if (__GXData[0x5FC / 4] != 0) {
         __GXSetDirtyState();
     }
