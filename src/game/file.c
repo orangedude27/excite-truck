@@ -509,23 +509,28 @@ fail:
 done:
     return result;
 }
+#pragma cplusplus on
 extern "C" s32 fn_802E3D68(s32 arg0) {
     class V {
     public:
         virtual void a();
         virtual s32 b(s32);
     };
-    V *obj = (V *)fn_802E336C();
-    s32 result;
-    if (obj == 0) goto fail;
-    result = obj->b(arg0);
-    if (result == 0) goto fail;
-    result = fn_802E35C0((const char *)arg0, result);
+    V *fileSystem = (V *)fn_802E336C();
+    s32 handle;
+
+    /* Opens/looks up arg0 through the vtable method at slot +0x0C of the
+     * secondary file-system object returned by fn_802E336C, registers the
+     * result via fn_802E35C0, and returns that handle (or -1 on failure). */
+    if (fileSystem == 0) goto fail;
+    handle = fileSystem->b(arg0);
+    if (handle == 0) goto fail;
+    handle = fn_802E35C0((const char *)arg0, handle);
     goto done;
 fail:
-    result = -1;
+    handle = -1;
 done:
-    return result;
+    return handle;
 }
 #pragma cplusplus off
 void fn_802E3DCC(void) {
