@@ -49,32 +49,33 @@ float fn_801A63C4(int arg0, int arg1) {
 #pragma scheduling on
 #pragma dont_inline off
 
-void fn_801A63F4(void *arg0, void *arg1, void *arg2, void *arg3) {
-    float *out = (float *)arg0;
-    float *a = (float *)arg1;
-    float *b = (float *)arg2;
-    float *t = (float *)arg3;
-    float bz;
-    float by;
-    float ax;
-    float bx;
-    float ay;
-    float tz;
-    float ty;
-    float tx;
-    float az;
-    bz = b[2];
-    by = b[1];
-    bx = b[0];
-    ax = a[0];
-    ay = a[1];
-    tz = t[2];
-    ty = t[1];
-    tx = t[0];
-    az = a[2];
-    out[2] = az + tz * (bz - az);
-    out[1] = ay + ty * (by - ay);
-    out[0] = ax + tx * (bx - ax);
+/* Linearly interpolates three components from a to b by per-component factors in t (out = a + t*(b-a)). */
+void fn_801A63F4(void *outVec, void *aVec, void *bVec, void *tVec) {
+    float *out = (float *)outVec;
+    float *a = (float *)aVec;
+    float *b = (float *)bVec;
+    float *t = (float *)tVec;
+    float bZ;
+    float bY;
+    float aX;
+    float bX;
+    float aY;
+    float tZ;
+    float tY;
+    float tX;
+    float aZ;
+    bZ = b[2];
+    bY = b[1];
+    bX = b[0];
+    aX = a[0];
+    aY = a[1];
+    tZ = t[2];
+    tY = t[1];
+    tX = t[0];
+    aZ = a[2];
+    out[2] = aZ + tZ * (bZ - aZ);
+    out[1] = aY + tY * (bY - aY);
+    out[0] = aX + tX * (bX - aX);
 }
 
 #pragma dont_inline on
