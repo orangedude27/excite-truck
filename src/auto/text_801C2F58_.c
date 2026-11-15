@@ -1830,10 +1830,13 @@ void fn_801C819C(void) {
 }
 
 extern char lbl_8055A964[7];
+/* Copy the name list typed into the console input line into the AI-think
+ * interlude "who" list, defaulting to "all" when left empty, and clear the
+ * input line. */
 void fn_801C81B8(void) {
-    strcpy(lbl_804384A8, lbl_804380F0);
-    strcpy(lbl_804380F0, lbl_8055AA44);
-    if (lbl_804384A8[0] == 0) strcpy(lbl_804384A8, lbl_8055A964);
+    strcpy(sInterludeWhoList, sInputLine);
+    strcpy(sInputLine, STR_EMPTY);
+    if (sInterludeWhoList[0] == 0) strcpy(sInterludeWhoList, STR_ALL);
 }
 
 /* Menu item "EXCEPT?" (id 0x1A): copy the name list typed into the console input
