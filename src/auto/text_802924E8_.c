@@ -1469,6 +1469,7 @@ void fn_80294348(void* effect) {
     float absTime = (float)__fabs((double)frameTime);
     if (!(absTime <= lbl_80558DC4)) fn_80294780(effect);
 }
+
 #pragma scheduling invalid_target
 void fn_80294398(void *arg0) {
     /* For each active record, dispatch it with fn_802C744C using the per-record slot byte
