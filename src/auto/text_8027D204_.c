@@ -13,6 +13,9 @@ extern void fn_8027D264(void);
 #pragma push
 #pragma scheduling invalid_target
 void fn_8027D204(void) {
+    /* Static initializer: register the per-player/car state block table
+     * (lbl_804A4380, 4 entries of 0x3B10 bytes) with ctor fn_8027D494 and
+     * dtor fn_8027D280, and register its global destructor fn_8027D264. */
     fn_8000D838(&lbl_8055F648);
     fn_8002F53C(lbl_804A4380, fn_8027D494, fn_8027D280, 0x3B10, 4);
     __register_global_object(0, fn_8027D264, lbl_804A4370);
