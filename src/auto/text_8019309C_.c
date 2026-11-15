@@ -958,7 +958,7 @@ void fn_801945F8(void *arg0) {
     fn_80194590(arg0);
 }
 
-extern void *fn_8013A604(void **, float);
+extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params covering lon, or the defaults */
 void fn_80194624(void *arg0) {
     char *p = (char *)arg0;
     void *r = fn_8013A604((void **)(*(char **)(p + 0x2C8) + 0x40), *(float *)(p + 0x280));
