@@ -6657,9 +6657,12 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
     fn_80071264((void *)0x17, (void *)(u32)p_cb[0x15], p_cb + 8);
 }
 
-void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
-    register u8 *cb = (u8 *)arg0;
-    void *buf = *(void **)((u8 *)arg1 + 0x0C);
+/* Processes a completed HID control/data transaction: logs the event, builds the
+ * confirm payload from the response buffer as appropriate, notifies the upper
+ * layer, invokes the control callback, resets the pending event, and frees the buffer. */
+void bta_hh_ctrl_dat_act(void *p_cb, void *p_data) {
+    register u8 *cb = (u8 *)p_cb;
+    void *buf = *(void **)((u8 *)p_data + 0x0C);
     u16 len = *(u16 *)((u8 *)buf + 4);
     register u8 *tail = (u8 *)buf + len;
     register u8 *strings = lbl_803151D8;
