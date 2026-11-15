@@ -49,40 +49,40 @@ asm void PSMTXMultVec(register const Mtx mtx, register const Vec* vec,
     // clang-format off
     nofralloc
 
-    // Calculate X transformation (dot(mtx[0], vec))
+    // out->x = dot(mtx[0], (vec,1))
     psq_l   f0, Vec.x(vec), 0, 0 // VX,            VY
     psq_l   f2, 0(mtx),     0, 0 // M0X,           M0Y
-    psq_l   f1, Vec.z(vec), 1, 0 // VZ,            1
+    psq_l   f1, Vec.z(vec), 1, 0 // VZ,            1  <- "w" bit fills w=1.0
     ps_mul  f4, f2, f0           // M0X*VX,        M0Y*VY
-    psq_l   f3, 8(mtx),     0, 0 // M0Z,           M0W
+    psq_l   f3, 8(mtx),     0, 0 // M0Z,           M0W (translation)
     ps_madd f5, f3, f1, f4       // M0Z*VZ+M0X*VX, M0W+M0Y*VY
-    psq_l   f8, 16(mtx),    0, 0 // M1X,           M1Y
-    ps_sum0 f6, f5, f6, f5
+    psq_l   f8, 16(mtx),    0, 0 // M1X,           M1Y (head start on Y)
+    ps_sum0 f6, f5, f6, f5       // add the pair's halves -> tx
 
-    // Head start on Y transformation
+    // Y's products, issued while X is stored
     psq_l  f9,  24(mtx), 0, 0    // M1Z, M1W
     ps_mul f10, f8, f0           // M1X*VX, M1Y*VY
 
-    // tx = dot(mtx[0], vec)
+    // tx
     psq_st f6, Vec.x(out), 1, 0
 
-    // Calculate Y transformation (dot(mtx[1], vec))
-    ps_madd f11, f9,  f1,  f10
-    psq_l   f2,  32(mtx), 0, 0   // M2X, M2Y
-    ps_sum0 f12, f11, f12, f11
+    // out->y = dot(mtx[1], (vec,1))
+    ps_madd f11, f9,  f1,  f10   // M1Z*VZ+M1X*VX, M1W+M1Y*VY
+    psq_l   f2,  32(mtx), 0, 0   // M2X, M2Y       (head start on Z)
+    ps_sum0 f12, f11, f12, f11   // add the pair's halves -> ty
 
-    // Head start on Z transformation
+    // Z's products, issued while Y is stored
     psq_l  f3, 40(mtx), 0, 0     // M2Z, M2W
     ps_mul f4, f2, f0            // M2X*VX, M2Y*VY
 
-    // ty = dot(mtx[1], vec)
+    // ty
     psq_st f12, Vec.y(out), 1, 0
 
-    // Calculate Z transformation (dot(mtx[2], vec))
-    ps_madd f5, f3, f1, f4
-    ps_sum0 f6, f5, f6, f5
+    // out->z = dot(mtx[2], (vec,1))
+    ps_madd f5, f3, f1, f4       // M2Z*VZ+M2X*VX, M2W+M2Y*VY
+    ps_sum0 f6, f5, f6, f5       // add the pair's halves -> tz
 
-    // tz = dot(mtx[2], vec)
+    // tz
     psq_st f6, Vec.z(out), 1, 0
 
     blr
