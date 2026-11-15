@@ -272,6 +272,7 @@ s32 __GXDefaultTlutRegionCallback(unsigned int region) {
 }
 
 int __GXShutdown(int shutdown) {
+    /* On poll, detect PE register/token progress to decide if GX is idle; on shutdown, reset GX/CP state. */
     signed long long now;
     unsigned int oldLow;
     unsigned int oldHigh;
