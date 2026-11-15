@@ -9,19 +9,21 @@ void *fn_80128668(void *);
 void fn_80128670(int);
 extern void *lbl_8055FED8;
 extern float lbl_804DB6A0[];
-void *fn_802DD4A0(void *arg0, int arg1) {
-    void *local = arg0;
-    if (arg0 != (void*)0) {
-        if ((arg0 != (void*)0) && (arg0 != (void*)0)) {
-            *(int*)arg0 = 0;
-            *(int*)((char*)arg0 + 4) = 0;
-            *(int*)((char*)arg0 + 8) = 0;
+/* Scalar deleting-style helper: zero the first three fields when non-null,
+ * then free storage via fn_80128668 (operator delete, mode 3) if deletingFlag > 0. */
+void *fn_802DD4A0(void *object, int deletingFlag) {
+    void *result = object;
+    if (object != (void *)0) {
+        if ((object != (void *)0) && (object != (void *)0)) {
+            *(int *)object = 0;
+            *(int *)((char *)object + 4) = 0;
+            *(int *)((char *)object + 8) = 0;
         }
-        if (arg1 > 0) {
-            fn_80128668(local);
+        if (deletingFlag > 0) {
+            fn_80128668(result);
         }
     }
-    return local;
+    return result;
 }
 
 extern int lbl_8055FED0;
@@ -69,26 +71,31 @@ void fn_802DD5F4(void) {
 
 extern float lbl_80565088, lbl_8056508C, lbl_80565090, lbl_80565094;
 void fn_802DD63C(int count) {
-    float f0 = lbl_80565090;
-    float f1 = lbl_8056508C;
-    float f2 = lbl_80565094;
-    float f3 = lbl_80565088;
+    typedef struct { float v[36]; int n; } VBuf;
+    float f2;
+    float f1;
+    float f0;
+    float f3;
     int i;
     float *entry;
 
-    *(int *)((char *)lbl_804DB6A0 + 0x90) = count;
-    entry = lbl_804DB6A0;
-    for (i = 0; i < *(int *)((char *)lbl_804DB6A0 + 0x90); entry += 9, i++) {
-        if (*(int *)((char *)lbl_804DB6A0 + 0x90) < 3) {
+    f0 = lbl_80565090;
+    f1 = lbl_8056508C;
+    f2 = lbl_80565094;
+    f3 = lbl_80565088;
+    ((VBuf *)lbl_804DB6A0)->n = count;
+    entry = ((VBuf *)lbl_804DB6A0)->v;
+    for (i = 0; i < ((VBuf *)lbl_804DB6A0)->n; entry += 9, i++) {
+        if (((VBuf *)lbl_804DB6A0)->n < 3) {
             entry[0] = f3; entry[1] = f1; entry[4] = f0; entry[5] = f1;
         } else if (i % 2 == 0) {
             entry[0] = f3; entry[1] = f0; entry[4] = f0; entry[5] = f2;
         } else {
             entry[0] = f0; entry[1] = f1; entry[4] = f2; entry[5] = f1;
         }
-        if (*(int *)((char *)lbl_804DB6A0 + 0x90) == 1) {
+        if (((VBuf *)lbl_804DB6A0)->n == 1) {
             entry[2] = f1; entry[3] = f3; entry[6] = f0; entry[7] = f1;
-        } else if (i < (*(int *)((char *)lbl_804DB6A0 + 0x90) + 1) / 2) {
+        } else if (i < (((VBuf *)lbl_804DB6A0)->n + 1) / 2) {
             entry[2] = f1; entry[3] = f0; entry[6] = f0; entry[7] = f2;
         } else {
             entry[2] = f0; entry[3] = f3; entry[6] = f2; entry[7] = f1;
@@ -110,27 +117,29 @@ extern float lbl_80565094, lbl_80565098;
 void fn_802DE788(void);
 void fn_802DD898(void *, float, float);
 void fn_802DEA6C(void *);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802DD754(void) {
     float *entry;
     register int i;
     register int j;
     register int one;
     register void *texObj;
-    int count;
+    int found;
     float *base;
 
     one = 1;
     entry = lbl_804DB6A0;
-    count = *(int *)((char *)lbl_804DB6A0 + 0x90);
-    while (count > 0) {
+    for (found = *(int *)((char *)lbl_804DB6A0 + 0x90); found > 0; found--, entry += 9) {
         if (entry[8] > lbl_80565098) {
-            count = 1;
-            break;
+            found = 1;
+            goto done;
         }
-        entry += 9;
-        count -= 1;
     }
-    if (count != 0) {
+    found = 0;
+done:
+    if (found != 0) {
         fn_802DE788();
         base = lbl_804DB6A0;
         for (i = 0; i < 5; i++) {
@@ -154,7 +163,7 @@ void fn_802DD754(void) {
         ((void (*)(void))fn_802DEA6C)();
     }
 }
-
+#pragma pop
 extern float lbl_8056508C, lbl_80565090, lbl_80565094, lbl_80565098;
 extern float lbl_805650A8, lbl_805650AC, lbl_805650B0, lbl_805650B4;
 extern float lbl_805650B8, lbl_805650BC, lbl_805650C0, lbl_805650C4;
@@ -183,183 +192,183 @@ void fn_802DD898(void *arg0,float farg0,float farg1) {
     color=tempColor | -0x100;
     f31=((*(float *)((char *)box+0x14)-*(float *)((char *)box+0x10))*farg0*lbl_80565094*lbl_80565098)/lbl_805650AC;
     f30=((*(float *)((char *)box+0x1C)-*(float *)((char *)box+0x18))*farg0*lbl_80565094*lbl_80565098)/lbl_805650AC;
-    i=0;
     v=(float *)fn_802CFF64(0x240);
+    i=0;
     t0=lbl_80565090; z=lbl_80565094;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t0;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t0;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t0;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t0;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t0;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t0;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t0;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t0;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
     t09=lbl_805650B0;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t09;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t09;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t09;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t09;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t09;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t09;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t09;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t09;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
     t1=lbl_8056508C;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t0;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t1;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t0;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t1;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t0;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t1;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t0;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t1;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
     t97=lbl_805650B4;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t09;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t97;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t09;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t97;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t09;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t97;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t09;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t97;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t1;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t1;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t1;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t1;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t1;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t1;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t1;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t1;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
     t91=lbl_805650B8;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t91;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t97;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t91;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t97;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t91;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t97;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t91;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t97;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t1;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t0;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t1;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t0;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t1;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t0;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t1;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t0;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t91;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t09;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t91;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t09;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t91;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t09;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t91;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t09;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t0;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t0;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t0;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t0;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t0;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t0;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t0;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t0;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t09;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t09;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t09;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t09;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t09;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t09;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t09;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t09;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t09;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t09;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t09;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t09;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t09;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t09;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t09;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t09;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
     t30=lbl_805650BC;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t30;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t30;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t30;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t30;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t30;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t30;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t30;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t30;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t09;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t97;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t09;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t97;
-    ((unsigned int *)v)[i*6+5]=0;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t09;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t97;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t09;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t97;
+    *(unsigned int *)((char *)v+i*24+20)=0;
     i++;
     t0=lbl_805650C0;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t30;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t0;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t30;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t0;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t30;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t0;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t30;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t0;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t91;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t97;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t91;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t97;
-    ((unsigned int *)v)[i*6+5]=0;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t91;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t97;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t91;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t97;
+    *(unsigned int *)((char *)v+i*24+20)=0;
     i++;
     t1=lbl_805650C4;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t1;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t0;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t1;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t0;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t1;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t0;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t1;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t0;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t91;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t09;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t91;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t09;
-    ((unsigned int *)v)[i*6+5]=0;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t91;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t09;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t91;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t09;
+    *(unsigned int *)((char *)v+i*24+20)=0;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t1;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t30;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t1;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t30;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t1;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t30;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t1;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t30;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t09;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t09;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t09;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t09;
-    ((unsigned int *)v)[i*6+5]=0;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t09;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t09;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t09;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t09;
+    *(unsigned int *)((char *)v+i*24+20)=0;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t30;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t30;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t30;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t30;
-    ((unsigned int *)v)[i*6+5]=color;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t30;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t30;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t30;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t30;
+    *(unsigned int *)((char *)v+i*24+20)=color;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t30;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t30;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t30;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t30;
-    ((unsigned int *)v)[i*6+5]=0;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t30;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t30;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t30;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t30;
+    *(unsigned int *)((char *)v+i*24+20)=0;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t30;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t0;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t30;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t0;
-    ((unsigned int *)v)[i*6+5]=0;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t30;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t0;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t30;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t0;
+    *(unsigned int *)((char *)v+i*24+20)=0;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t1;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t30;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t1;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t30;
-    ((unsigned int *)v)[i*6+5]=0;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t1;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t30;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t1;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t30;
+    *(unsigned int *)((char *)v+i*24+20)=0;
     i++;
-    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t1;
-    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t0;
-    v[i*6+2]=z;
-    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; v[i*6+3]=ul+(uh-ul)*t1;
-    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; v[i*6+4]=vl+(vh-vl)*t0;
-    ((unsigned int *)v)[i*6+5]=0;
+    xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); *(float *)((char *)v+i*24)=xl+(xh-xl)*t1;
+    yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); *(float *)((char *)v+i*24+4)=yl+(yh-yl)*t0;
+    *(float *)((char *)v+i*24+8)=z;
+    uh=*(float *)((char *)box+0x14)-f31; ul=*(float *)((char *)box+0x10)+f31; *(float *)((char *)v+i*24+12)=ul+(uh-ul)*t1;
+    vh=*(float *)((char *)box+0x1C)-f30; vl=*(float *)((char *)box+0x18)+f30; *(float *)((char *)v+i*24+16)=vl+(vh-vl)*t0;
+    *(unsigned int *)((char *)v+i*24+20)=0;
     i++;
     GXSetArray(9,v,0x18);
     GXSetArray(0xD,v+3,0x18);
@@ -411,16 +420,37 @@ void fn_802DE788(void) {
     GXDescCopy desc;
     GXMatrix4Copy fmt, proj;
     GXMatrix3Copy mtx;
-    desc = *(GXDescCopy *)lbl_802FAD58;
+    u32 *b0 = (u32 *)lbl_802FAD58;
+    u32 *b0b = (u32 *)lbl_802FAD58;
+    u32 *b1 = (u32 *)(lbl_802FAD58+8);
+    u32 *b1b = (u32 *)(lbl_802FAD58+8);
+    u32 *b2 = (u32 *)(lbl_802FAD58+24);
+    u32 *b2b = (u32 *)(lbl_802FAD58+24);
+    u32 *b3 = (u32 *)(lbl_802FAD58+40);
+    u32 *b3b = (u32 *)(lbl_802FAD58+40);
+    desc.words[0] = b0[0];
+    desc.words[1] = b0b[1]; desc.words[2] = b0b[2]; desc.words[3] = b0b[3];
+    desc.words[4] = b0b[4]; desc.words[5] = b0b[5]; desc.words[6] = b0b[6]; desc.words[7] = b0b[7];
     GXClearVtxDesc();
     GXSetVtxDescv(&desc);
-    fmt = *(GXMatrix4Copy *)(lbl_802FAD58+8);
+    fmt.words[0] = b1[0];
+    fmt.words[1] = b1b[1]; fmt.words[2] = b1b[2]; fmt.words[3] = b1b[3];
+    fmt.words[4] = b1b[4]; fmt.words[5] = b1b[5]; fmt.words[6] = b1b[6]; fmt.words[7] = b1b[7];
+    fmt.words[8] = b1b[8]; fmt.words[9] = b1b[9]; fmt.words[10] = b1b[10]; fmt.words[11] = b1b[11];
+    fmt.words[12] = b1b[12]; fmt.words[13] = b1b[13]; fmt.words[14] = b1b[14]; fmt.words[15] = b1b[15];
     GXSetVtxAttrFmtv(0,&fmt);
     GXSetViewport(lbl_80565090,lbl_80565090,
         (float)lbl_8055FED0,(float)lbl_8055FED4,lbl_80565090,lbl_8056508C);
-    proj = *(GXMatrix4Copy *)(lbl_802FAD58+24);
+    proj.words[0] = b2[0];
+    proj.words[1] = b2b[1]; proj.words[2] = b2b[2]; proj.words[3] = b2b[3];
+    proj.words[4] = b2b[4]; proj.words[5] = b2b[5]; proj.words[6] = b2b[6]; proj.words[7] = b2b[7];
+    proj.words[8] = b2b[8]; proj.words[9] = b2b[9]; proj.words[10] = b2b[10]; proj.words[11] = b2b[11];
+    proj.words[12] = b2b[12]; proj.words[13] = b2b[13]; proj.words[14] = b2b[14]; proj.words[15] = b2b[15];
     GXSetProjection(&proj,1);
-    mtx = *(GXMatrix3Copy *)(lbl_802FAD58+40);
+    mtx.words[0] = b3[0];
+    mtx.words[1] = b3b[1]; mtx.words[2] = b3b[2]; mtx.words[3] = b3b[3];
+    mtx.words[4] = b3b[4]; mtx.words[5] = b3b[5]; mtx.words[6] = b3b[6]; mtx.words[7] = b3b[7];
+    mtx.words[8] = b3b[8]; mtx.words[9] = b3b[9]; mtx.words[10] = b3b[10]; mtx.words[11] = b3b[11];
     GXLoadPosMtxImm(&mtx,0);
     GXSetCurrentMtx(0); GXSetNumChans(1);
     GXSetChanCtrl(4,0,1,1,0,0,2); GXSetChanCtrl(5,0,1,1,0,0,2);
