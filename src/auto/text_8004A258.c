@@ -52,14 +52,17 @@ typedef enum {
     OS_CONSOLE_NDEV_2_1 = 0x10000021
 } OSConsoleType_Report;
 
+// Copy of <revolution/OS/OS.h>'s OSIOSRev, for the same reason as the enum
+// above.  The Starlet's firmware version reaches the game as four bytes, one
+// per field: an id (idHi.idLo), then a major and a minor number.
 typedef struct {
-    u8 idHi;
-    u8 idLo;
-    u8 verMajor;
-    u8 verMinor;
-    u8 buildMon;
-    u8 buildDay;
-    u16 buildYear;
+    u8 idHi;      // at 0x0
+    u8 idLo;      // at 0x1
+    u8 verMajor;  // at 0x2
+    u8 verMinor;  // at 0x3
+    u8 buildMon;  // at 0x4
+    u8 buildDay;  // at 0x5
+    u16 buildYear;  // at 0x6
 } OSIOSRev_Report;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -215,88 +218,82 @@ void ClearArena(void) {
     unsigned int flush;
     unsigned int size;
     reset = OSGetResetCode();
-
     if ((reset >> 31) == 0) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
         base = OSGetArenaLo();
-        if (size <= 0x40000)
+        if (size <= 0x40000U)
             goto clear0_small;
-        flush = size - 0x40000;
+        flush = size - 0x40000U;
         flush = base + flush;
         goto clear0_join;
     clear0_small:
         flush = base;
     clear0_join:
         DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        DCFlushRange(flush, 0x40000U);
         return;
     }
-
-    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) != 0) {
+    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000U) != 0) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
         base = OSGetArenaLo();
-        if (size <= 0x40000)
+        if (size <= 0x40000U)
             goto clear1_small;
-        flush = size - 0x40000;
+        flush = size - 0x40000U;
         flush = base + flush;
         goto clear1_join;
     clear1_small:
         flush = base;
     clear1_join:
         DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        DCFlushRange(flush, 0x40000U);
         return;
     }
-
     if (OSGetArenaLo() >= __OSRebootParams[3])
         return;
-
     if (OSGetArenaHi() <= __OSRebootParams[3]) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
         base = OSGetArenaLo();
-        if (size <= 0x40000)
+        if (size <= 0x40000U)
             goto clear2_small;
-        flush = size - 0x40000;
+        flush = size - 0x40000U;
         flush = base + flush;
         goto clear2_join;
     clear2_small:
         flush = base;
     clear2_join:
         DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        DCFlushRange(flush, 0x40000U);
         return;
     }
-
     size = __OSRebootParams[3] - OSGetArenaLo();
     base = OSGetArenaLo();
-    if (size <= 0x40000)
+    if (size <= 0x40000U)
         goto clear3_small;
-    flush = size - 0x40000;
+    flush = size - 0x40000U;
     flush = base + flush;
     goto clear3_join;
 clear3_small:
     flush = base;
 clear3_join:
     DCZeroRange((void *)base, size);
-    DCFlushRange(flush, 0x40000);
-
+    DCFlushRange(flush, 0x40000U);
     base = __OSRebootParams[4];
     if (OSGetArenaHi() > base) {
         size = OSGetArenaHi();
         size -= base;
-        if (size <= 0x40000)
+        if (size <= 0x40000U)
             goto clear4_small;
-        flush = size - 0x40000;
+        flush = size - 0x40000U;
         flush = base + flush;
         goto clear4_join;
     clear4_small:
         flush = base;
     clear4_join:
         DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        DCFlushRange(flush, 0x40000U);
     }
 }
 #pragma pop
