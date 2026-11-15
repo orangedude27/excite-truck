@@ -23078,6 +23078,11 @@ typedef struct {
 #define PORT_STATE_OPENED       2     /* tPORT.state: the port is connected */
 #define RFC_STATE_OPENED        4     /* tRFC_PORT.rfc.state: the DLCI is established */
 
+#define PORT_CTRL_REQ_SENT          0x01  /* tPORT.port_ctrl: we sent a modem status (MSC) request */
+#define PORT_CTRL_REQ_CONFIRMED     0x02  /* the peer answered it */
+#define PORT_CTRL_IND_RECEIVED      0x04  /* the peer sent us one */
+#define PORT_CTRL_IND_RESPONDED     0x08  /* we answered it */
+
 #define RFCOMM_FLOW_STATE_DISABLE   0 /* the port will not accept more data */
 #define RFCOMM_FLOW_STATE_ENABLE    1 /* the port can accept data again */
 
