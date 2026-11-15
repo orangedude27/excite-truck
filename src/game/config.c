@@ -69,14 +69,14 @@ void fn_802E98D0(void) {
     soundMode = SCGetSoundMode();
     switch (soundMode) {
     case SC_SND_MONO:
-        *(volatile s32*)&sConfigSoundMode = SC_SND_MONO;
+        sConfigSoundMode = SC_SND_MONO;
         break;
     case SC_SND_STEREO: /* anything the config block holds besides mono and */
     default:            /* surround starts the game in stereo */
-        *(volatile s32*)&sConfigSoundMode = SC_SND_STEREO;
+        sConfigSoundMode = SC_SND_STEREO;
         break;
     case SC_SND_SURROUND:
-        *(volatile s32*)&sConfigSoundMode = SC_SND_SURROUND;
+        sConfigSoundMode = SC_SND_SURROUND;
         break;
     }
 
