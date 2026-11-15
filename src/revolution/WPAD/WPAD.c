@@ -5785,14 +5785,13 @@ void fn_800656E8(s32 chan, WPADStatusEx* pStatus)
 {
     WPADCB* pCB;
     volatile u8* pBuf;
-    u32 idx;
     u32 i;
     BOOL enabled;
     u8* p = (u8*)pStatus;
+
     pCB = lbl_8038F4F0[(u8)chan];
-    idx = *(u8*)((u8*)pCB + 0x806);
-    pBuf = (volatile u8*)pCB + idx * 0x60 + 0xA0;
-    for (i = 0; i < 0x60; i++) {
+    pBuf = (volatile u8*)pCB->rxBufs[*(u8*)((u8*)pCB + 0x806)];
+    for (i = 0; i < 96; i++) {
         pBuf[i] = 0;
     }
     *(u16*)pBuf = ((u16)p[2] << 8) | p[1];
@@ -5820,7 +5819,7 @@ void fn_800656E8(s32 chan, WPADStatusEx* pStatus)
         *(s16*)(pBuf + 6) = (s16)(c | (s16)((p[2] >> 5) & 2)) - *(s16*)((u8*)pCB + 0x7B8);
     }
     enabled = OSDisableInterrupts();
-    *(u8*)((u8*)pCB + 0x806) = (u8)((u32)__cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 5);
+    *(u8*)((u8*)pCB + 0x806) = !*(u8*)((u8*)pCB + 0x806);
     OSRestoreInterrupts(enabled);
 }
 
