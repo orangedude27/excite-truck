@@ -134,7 +134,7 @@ void *fn_8013A264(void *arg0) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i) {
+extern "C" void fn_8013A2FC(AiExceptionConfig *config, struct Container *container, int i) {
     const char *base = (const char *)lbl_8032C118;
     if (container != 0) {
         f32 step;
@@ -149,29 +149,31 @@ extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i
 
         for (; (entry = container->GetEntry(i)) != 0; i++) {
             if (stricmp(entry->GetName(), base + 0x34) == 0) {
-                Node604 &node = *(Node604 *)fn_801284F8(0x28, base + 0x40);
-                node.lo = entry->GetFloat(&lbl_80559C68);
-                node.hi = entry->GetFloat(&lbl_80559C70);
-                node.f8 = entry->GetFloatDef(&lbl_80559C78, config->f4);
-                node.fC = entry->GetFloatDef(&lbl_80559C80, config->f8);
-                node.f10 = entry->GetFloatDef(&lbl_80559C88, config->fC);
-                node.f14 = entry->GetFloatDef(base + 0x20, config->f10);
-                node.f18 = entry->GetFloatDef(base + 0x4C, config->f14);
-                node.f1C = entry->GetFloatDef(&lbl_80559C60, config->f18);
-                node.f20 = entry->GetFloatDef(base + 0x58, config->f1C);
-                node.next = config->head;
-                config->head = &node;
+                AiException &node = *(AiException *)fn_801284F8(0x28, base + 0x40);
+                node.onLon = entry->GetFloat(&lbl_80559C68);
+                node.offLon = entry->GetFloat(&lbl_80559C70);
+                node.params.onT = entry->GetFloatDef(&lbl_80559C78, config->params.onT);
+                node.params.moveout = entry->GetFloatDef(&lbl_80559C80, config->params.moveout);
+                node.params.passout = entry->GetFloatDef(&lbl_80559C88, config->params.passout);
+                node.params.pushSensitivity = entry->GetFloatDef(base + 0x20, config->params.pushSensitivity);
+                node.params.lookahead = entry->GetFloatDef(base + 0x4C, config->params.lookahead);
+                node.params.checks = entry->GetFloatDef(&lbl_80559C60, config->params.checks);
+                node.params.landing = entry->GetFloatDef(base + 0x58, config->params.landing);
+                node.next = config->list;
+                config->list = &node;
 
-                if (node.lo > node.hi) {
-                    Node604 *copy = (Node604 *)fn_801284F8(0x28, base + 0x40);
+                if (node.onLon > node.offLon) {
+                    /* The section runs across the end of the track: this entry keeps
+                       [onLon, max] and a copy of it takes [min, offLon]. */
+                    AiException *copy = (AiException *)fn_801284F8(0x28, base + 0x40);
                     if (copy != 0) {
                         *copy = node;
                     }
-                    node.hi = max;
-                    copy->lo = min;
-                    copy->f8 = step;
-                    copy->next = config->head;
-                    config->head = copy;
+                    node.offLon = max;
+                    copy->onLon = min;
+                    copy->params.onT = step;
+                    copy->next = config->list;
+                    config->list = copy;
                 }
             }
         }
