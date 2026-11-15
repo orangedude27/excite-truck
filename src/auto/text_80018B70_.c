@@ -271,16 +271,18 @@ void fn_800196F0(void) {
 
 #pragma dont_inline on
 s32 fn_80019604(void) {
-    s32 var_r31;
+    /* True if a quit/reset has been requested, a simple reset was triggered,
+     * or the display manager reports a pending fatal/display-reset (kind 2). */
+    s32 shouldExit;
     if ((s32)(u8)lbl_8055D588 != 0) {
-        var_r31 = 1;
+        shouldExit = 1;
     } else {
-        var_r31 = 0;
+        shouldExit = 0;
         if (((volatile s32)fn_80019430() != 0) || (fn_8027DE68(2) != 0)) {
-            var_r31 = 1;
+            shouldExit = 1;
         }
     }
-    return var_r31;
+    return shouldExit;
 }
 #pragma dont_inline off
 
