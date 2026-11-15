@@ -3613,6 +3613,9 @@ extern "C" s32 fn_801D8CAC(void *obj) {
     }
     return 0;
 }
+
+#pragma use_lmw_stmw off
+#pragma cplusplus on
 /* Frame update of a running timed cue: work out how long it has been going and
  * hand the frame to whichever step that time falls in -- still waiting out its
  * delay, part way through its length (passed the seconds past the delay), or
