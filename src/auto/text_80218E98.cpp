@@ -8766,18 +8766,19 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802294F4(
 }
 
 #pragma dont_inline on
+/* Deleting destructor for nw4hbm::snd::detail::DisposeCallbackManager. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229550(
-    void* this_, s32 flag) {
-    if (this_) {
-        if (this_ != NULL) {
-            fn_802223C4(this_, 0);
+    void* self, s32 deletingFlag) {
+    if (self) {
+        if (self != NULL) {
+            fn_802223C4(self, 0);
         }
 
-        if (flag > 0) {
-            fn_80128668(this_);
+        if (deletingFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return this_;
+    return self;
 }
 #pragma dont_inline reset
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802295AC(void *arg0, int arg1) {
