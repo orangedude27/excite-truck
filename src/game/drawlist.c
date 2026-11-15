@@ -58,6 +58,17 @@ struct DrawListWrapper {
 #define Pool_Alloc  fn_8012A2D8 /* void *(void *pool): pop one element */
 #define Pool_Free   fn_8012A364 /* (void *pool, void *element): push one back */
 
+/* Which GX render state the draw lists are drawing in.  Only 0 is read back
+ * (fn_802C90E0 asks whether the module is shut down); the other values record
+ * the state the function that set them left GX in: 1 the game's normal one
+ * (fn_802C8D74 puts it back), 2 the one fn_802CAD74/fn_801E4FF4 set up,
+ * 3 fn_802C8C04's with the world matrix saved, 4 the alpha-only overlay pass
+ * fn_802C9C8C begins, 6 the pass fn_802C8DBC begins. */
+#define sRenderMode  lbl_8055FC70
+#define sOverlayTint lbl_8055FC84 /* colour fn_802C9CE0 blends the screen back with */
+
+#define RENDER_MODE_ALPHA_OVERLAY 4 /* GX writes alpha only, see fn_802C9C8C */
+
 extern int lbl_8055FC98;
 extern void *lbl_8055FC9C;
 extern char lbl_8034B514[];
