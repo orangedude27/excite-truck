@@ -288,15 +288,7 @@ extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" VFT_RET VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
 namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor { public: virtual ~ResourceAccessor(); virtual void *GetResource(u32, const char *, u32); }; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
 
-struct LytAnimationStringBlock {
-    char fileName[0x14];
-    char fileResourcesAssert[0x2C];
-    char animLinksAssert[0x2C];
-    char remainder[0x2A4];
-    operator const char *() const { return fileName; }
-    operator int() const { return (int)fileName; }
-};
-extern "C" const LytAnimationStringBlock lbl_8031EE58;
+extern "C" const char lbl_8031EE58[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
 extern "C" const char lbl_8031F208[];
 extern "C" f32 lbl_80560E64;
