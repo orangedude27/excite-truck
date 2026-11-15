@@ -20676,6 +20676,7 @@ void l2cu_release_ccb(void *arg0) {
     }
 }
 
+/* Find an L2CAP channel control block by local CID, optionally restricted to a link. */
 void *l2cu_find_ccb_by_cid(void *p_lcb, u16 cid) {
     u8 *p_ccb = 0;
     if (cid >= 0x40) {
