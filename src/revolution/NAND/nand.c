@@ -310,6 +310,8 @@ s32 NANDGetLengthAsync(NANDFileInfo* info, u32* lengthOut,
     return nandConvertErrorCode(nandGetFileStatus(info->fd, NULL, lengthOut));
 }
 
+/* Packs owner, group and other access masks into a single NAND permission
+ * byte (stored in NANDStatus.perm); the inverse of nandSplitPerm(). */
 static void nandComposePerm(u8* out, u32 ownerPerm, u32 groupPerm,
                             u32 otherPerm) DECOMP_DONT_INLINE {
     u32 perm = 0;
