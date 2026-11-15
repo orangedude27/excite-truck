@@ -883,6 +883,18 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
 }
 #pragma pop
 #pragma scheduling invalid_target
+/* ResourceGet: look the resource `path` up in the resource-manager list, make
+ * sure its data is loaded (LoadEntryData) and, if the entry carries the fourcc
+ * type tag the caller asked for, take a reference on it and hand back the
+ * loaded data (the payload of the entry's 0x80-byte block header).
+ * `path` is a char*, `dataTag` a fourcc such as 'ETOC', and the last four
+ * arguments are out pointers:
+ *   outId        - the entry's id
+ *   outSize      - the size of its data
+ *   outFirstUse  - whether this reference is the entry's first one
+ *   outNewRequest- whether the entry was not marked "requested" until now
+ * Returns 0 when the resource is unknown, could not be made resident, or has
+ * another type tag than asked for (each reported on the "res:" log). */
 extern "C" s32 fn_8012B85C(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
     /* The entry's flag word at +0x34, seen as bitfields. */
     struct EntryFlags {
