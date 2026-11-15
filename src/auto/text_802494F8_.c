@@ -130,12 +130,13 @@ s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
 #pragma pop
 
 void fn_8022D7C4(void *, unsigned int);
-void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110(void *this_, s32 flag) {
+/* Deleting destructor for nw4hbm::snd::detail::DisposeCallbackManager. */
+void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110(void *this_, s32 deletingFlag) {
     if (this_) {
         if (this_ != 0) {
             fn_8022D7C4(this_, 0);
         }
-        if (flag > 0) {
+        if (deletingFlag > 0) {
             fn_80128668(this_);
         }
     }
