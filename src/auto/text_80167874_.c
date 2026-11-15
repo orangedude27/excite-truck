@@ -1053,11 +1053,12 @@ extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
 #pragma pop
 
 extern char lbl_80330364[];
-s32 fn_80169108(s32 arg0, s32 arg1) {
-    s32 addr = (s32)lbl_80330364;
-    s32 len = strlen((char *)addr);
-    s32 r = fn_8002B1D8(arg1, (s32 *)addr, len);
-    return (u32)__cntlzw(r) >> 5;
+/* Returns nonzero if name starts with "coin_box" (lbl_80330364). */
+s32 fn_80169108(s32 unused, s32 name) {
+    s32 prefix = (s32)lbl_80330364;
+    s32 len = strlen((char *)prefix);
+    s32 cmp = fn_8002B1D8(name, (s32 *)prefix, len);
+    return (u32)__cntlzw(cmp) >> 5;
 }
 
 #pragma push
