@@ -895,10 +895,12 @@ extern s32 lbl_80558A90;
 #pragma processor 750
 #pragma paired_single off
 #pragma fp_contract off
-f32 fn_8001090C(f32 farg0) {
-    f32 scaled;
-    scaled = (f32)fn_80232B70(lbl_8055D490);
-    return lbl_805602C8 * (farg0 * scaled);
+f32 fn_8001090C(f32 value) {
+    /* Scale a value by the UI text scale factor (lbl_805602C8) and a count
+     * queried from the UI/font object (lbl_8055D490). */
+    f32 count;
+    count = (f32)fn_80232B70(lbl_8055D490);
+    return lbl_805602C8 * (value * count);
 }
 #pragma pop
 s32 fn_80010964(s32 arg0) {
