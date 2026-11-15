@@ -1331,14 +1331,15 @@ void fn_80179320(void) {
     fn_801D0ED4();
     fn_801777A8();
 }
+/* Enable a flag via fn_802E4C18, query iteration count for lbl_80430850 via fn_801787B4, then run fn_80177F40 that many times. */
 void fn_8017952C(void) {
-    long count;
+    long iterationCount;
     long i;
 
     fn_802E4C18(1);
-    count = fn_801787B4(&lbl_80430850);
+    iterationCount = fn_801787B4(&lbl_80430850);
     i = 0;
-    while (i < count) {
+    while (i < iterationCount) {
         fn_80177F40();
         i++;
     }
