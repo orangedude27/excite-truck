@@ -14393,6 +14393,9 @@ done:
     btu_hcif_send_cmd(0);
 }
 
+/* Handles the HCI Link Key Notification event: extracts the peer BD_ADDR, link
+ * key, and key type from the event payload and passes them to the security
+ * manager. */
 void btu_hcif_link_key_notification_evt(u8 *p, u16 evt_len) {
     BD_ADDR bda;
     LINK_KEY key;
