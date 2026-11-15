@@ -167,20 +167,18 @@ void fn_802E8920(int arg0) {
                     fn_802E8918();
                     break;
                 }
-                if (fn_802E88D8() != 0)
-                    goto done;
-                goto loop_cont;
+                if (fn_802E88D8() != 0) {
+                    break;
+                }
             } else {
                 if (fn_802E888C(7) != 0) {
                     break;
                 }
-                if (fn_802E88D8() != 0)
-                    goto done;
-                goto loop_cont;
+                if (fn_802E88D8() != 0) {
+                    break;
+                }
             }
-loop_cont:;
         }
-done:;
     } else {
         fn_802E30C8(messages + 0x398, result);
     }
@@ -223,13 +221,13 @@ int fn_802E8AE8(const char *arg0) {
     return result;
 }
 
-void fn_802E8B34(const char *arg0) {
-    /* Report the path and status if NANDDelete fails. */
-    fn_802E30C8(lbl_8034DE54, arg0);
+void fn_802E8B34(const char *path) {
+    /* Logs the NAND delete attempt and reports an error if NANDDelete fails. */
+    fn_802E30C8(lbl_8034DE54, path);
     {
-        int result = NANDDelete(arg0);
+        int result = NANDDelete(path);
         if (result != 0) {
-            fn_802E30C8(lbl_8034DE6C, result, arg0);
+            fn_802E30C8(lbl_8034DE6C, result, path);
         }
     }
 }
@@ -515,13 +513,7 @@ void fn_802E9160(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)(
 int fn_802E91AC(int *arg0) { return *arg0 == 0; }
 
 #pragma scheduling invalid_target
-unsigned int fn_802E91BC(int *arg0) {
-    int value = *arg0 ^ 2;
-    int shifted = value >> 1;
-    value &= 2;
-    shifted -= value;
-    return shifted < 0;
-}
+unsigned int fn_802E91BC(int *arg0) { register int value = *arg0 ^ 2; register int shifted = value >> 1; value &= 2; shifted -= value; return shifted < 0; }
 #pragma scheduling on
 extern int fn_802E2C20(void);
 extern char lbl_8034E024[];
