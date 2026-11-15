@@ -1173,26 +1173,29 @@ void fn_802D657C(s32 *arg0, s32 arg1) {
 }
 
 void fn_802D6594(void *arg0) {
+    /* Byte-swap the 4-byte header at +0x34..+0x37 and each 4-byte element in the
+     * data block at +0x38 (count taken from the header at +0x34). */
     unsigned char *base = (unsigned char *)arg0;
-    unsigned char a = base[0x34];
-    unsigned char *p = base + 0x38;
-    unsigned char b = base[0x35];
-    int i;
-    unsigned char c;
+    unsigned char swappedByte = base[0x34];
+    unsigned char *element = base + 0x38;
+    unsigned char headerByte = base[0x35];
+    int elementIndex;
+    unsigned char tempByte;
+
     base[0x34] = base[0x37];
-    base[0x37] = a;
+    base[0x37] = swappedByte;
     base[0x35] = base[0x36];
-    base[0x36] = b;
-    for (i = 0; i < *(int *)(base + 0x34); i++) {
-        a = p[0];
-        c = p[3];
-        p[0] = c;
-        p[3] = a;
-        a = p[1];
-        c = p[2];
-        p[1] = c;
-        p[2] = a;
-        p += 4;
+    base[0x36] = headerByte;
+    for (elementIndex = 0; elementIndex < *(int *)(base + 0x34); elementIndex++) {
+        swappedByte = element[0];
+        tempByte = element[3];
+        element[0] = tempByte;
+        element[3] = swappedByte;
+        swappedByte = element[1];
+        tempByte = element[2];
+        element[1] = tempByte;
+        element[2] = swappedByte;
+        element += 4;
     }
 }
 
