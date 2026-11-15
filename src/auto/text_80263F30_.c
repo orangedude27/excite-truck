@@ -286,17 +286,18 @@ void fn_80264484(void *arg0) {
     extern char lbl_803464A8[];
     extern char lbl_803464F8[];
     extern unsigned char lbl_80498F78[];
-    void *result;
     int count;
     void **items;
-    result = fn_801284F8(24, lbl_803464A8);
+    void *result;
+
+    result = fn_801284F8(0x18, lbl_803464A8);
     if (result != 0) {
-        *(int *)((char *)result + 20) = 0;
+        *(int *)((char *)result + 0x14) = 0;
         *(void **)result = lbl_803464F8;
     }
-    count = *(int *)(lbl_80498F78 + 4);
-    items = *(void ***)(lbl_80498F78 + 0);
-    *(int *)(lbl_80498F78 + 4) = count + 1;
+    items = ((void ***)lbl_80498F78)[0];
+    count = ((int *)lbl_80498F78)[1];
+    ((int *)lbl_80498F78)[1] = count + 1;
     items[count] = result;
     *(int *)arg0 = 0;
     fn_80264098(arg0, 5);
@@ -941,14 +942,15 @@ void fn_80265618(void *arg0) {
 }
 
 #pragma dont_inline on
-void fn_8026562C(void *arg0) {
+/* Advance a countdown timer and mark it complete when it expires. */
+void fn_8026562C(void *timer) {
     extern float lbl_80558DC4[];
     extern float fn_80214D48();
     fn_802645EC();
-    if (*(float *)((char *)arg0 + 0x18) > lbl_80558DC4[0]) {
-        *(float *)((char *)arg0 + 0x18) -= fn_80214D48();
+    if (*(float *)((char *)timer + 0x18) > lbl_80558DC4[0]) {
+        *(float *)((char *)timer + 0x18) -= fn_80214D48();
     } else {
-        *(unsigned char *)((char *)arg0 + 0x20) = 1;
+        *(unsigned char *)((char *)timer + 0x20) = 1;
     }
 }
 
