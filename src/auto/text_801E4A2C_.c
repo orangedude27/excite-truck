@@ -63,6 +63,7 @@ s32 fn_801E4B00(s32 *arg0) {
     return fn_802C501C();
 }
 #pragma scheduling on
+// Returns the object's line-height metric minus the secondary value from fn_802C4F2C, or 0 if null.
 s32 fn_801E4B48(s32 *arg0) {
     s32 spC;
     s32 sp8;
