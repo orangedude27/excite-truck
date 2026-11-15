@@ -1771,12 +1771,15 @@ extern "C" void fn_802149FC(s32 arg0) {
 #pragma pop
 
 #pragma scheduling invalid_target
-extern "C" s32 fn_80214A38(s32 arg0) {
-    s32 result = 0;
-    s32 check = fn_802168E4();
-    if (check != 0) result = ((s32 (*)(s32, s32))fn_802168D4)(check, arg0);
-    else ((void (*)(const char *, ...))fn_802E317C)(lbl_8033D274);
-    return result;
+extern "C" s32 fn_80214A38(s32 groupId) {
+    /* Return whether the given UI group is visible in the active window, or 0 if there is none. */
+    s32 isVisible = 0;
+    s32 window = fn_802168E4();
+    if (window != 0)
+        isVisible = ((s32 (*)(s32, s32))fn_802168D4)(window, groupId);
+    else
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_8033D274);
+    return isVisible;
 }
 #pragma scheduling on
 extern "C" void fn_802192AC(void);
