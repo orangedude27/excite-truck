@@ -139,13 +139,14 @@ void fn_80007F68(void) {
     fn_80007F04();
 }
 #pragma scheduling invalid_target
-const char* fn_80007F90(u32 arg0) {
-    Unk802FB70C* p = lbl_802FB70C;
-    while (p->unk_0x0) {
-        if (p->unk_0x0 == arg0) return p->unk_0x4;
-        p++;
+const char* fn_80007F90(u32 eventId) {
+    /* Look up the name string for an event ID in the event table, or return "?" if not found. */
+    Unk802FB70C* entry = lbl_802FB70C;
+    while (entry->unk_0x0) {
+        if (entry->unk_0x0 == eventId) return entry->unk_0x4;
+        entry++;
     }
-    fn_802E317C(lbl_802FB77C, arg0);
+    fn_802E317C(lbl_802FB77C, eventId);
     return lbl_80558998;
 }
 #pragma scheduling on
