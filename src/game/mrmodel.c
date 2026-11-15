@@ -902,15 +902,16 @@ void fn_802C6C38(int arg0) {
     }
 }
 
-void fn_802C6CF8(int arg0) {
-    int temp_r31;
-    if (arg0 == -1) {
+/* mrModelUnload: release a model instance handle, or warn if MODEL_INVALID (-1). */
+void fn_802C6CF8(int modelHandle) {
+    int resource;
+    if (modelHandle == -1) {
         ((int (*)(const char *, ...))fn_802E30C8)(lbl_8034B34C);
         return;
     }
-    temp_r31 = fn_802C53A8();
-    fn_802C6C38(arg0);
-    fn_802C6C20(temp_r31);
+    resource = fn_802C53A8();
+    fn_802C6C38(modelHandle);
+    fn_802C6C20(resource);
 }
 
 s32 fn_802C6D5C(void *container) {
