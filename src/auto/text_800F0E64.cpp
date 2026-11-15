@@ -3504,7 +3504,7 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* sel
    count word sits one word before the first record, so walking it in 8-byte
    steps from its base reaches each record four bytes later. */
 extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self, u32 start, u32 end) {
-    struct GroupLoadStatus { void* data_address; void* wave_data_address; };
+    struct GroupLoadStatus { void* file_data_address; void* wave_data_address; };
     struct LoadStatusTable { u32 count; struct GroupLoadStatus entries[1]; };
     if (*(struct LoadStatusTable**)((u8*)self + 0x14) == 0) return;
     u32 offset;
