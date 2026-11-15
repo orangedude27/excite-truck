@@ -5376,11 +5376,12 @@ outer_check:
 }
 #pragma scheduling on
 #pragma pop
-extern "C" void fn_80222120(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x248) = 1;
-    ((VfObj *)arg0)->vf17();
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+extern "C" void fn_80222120(void *self) {
+    /* Marks selection pending, refreshes, and flags redraw when active. */
+    *(u8 *)((u8 *)self + 0x248) = 1;
+    ((VfObj *)self)->vf17();
+    if (*(u8 *)((u8 *)self + 0x1A) != 0)
+        *(u8 *)((u8 *)self + 0x234) = 1;
 }
 
 extern "C" void fn_80222178(void *arg0) {
