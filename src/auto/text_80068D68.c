@@ -27473,13 +27473,15 @@ BOOL AXFXReverbHiExpInit(void *arg0) {
     return TRUE;
 }
 
-void AXFXReverbHiExpShutdown(void* arg0) {
-    s32 enabled = OSDisableInterrupts();
-    *(u32*)((u8*)arg0 + 0x10C) |= 1;
-    __FreeDelayLine(arg0);
-    OSRestoreInterrupts(enabled);
+/* Take the exponential reverb out of service: raise its "shut down" flag (bit 0
+   of active) and free every delay-line buffer it held. Interrupts stay masked
+   so the mixer cannot run over the half-freed effect. */
+void AXFXReverbHiExpShutdown(AXFX_REVERBHI_EXP_VIEW* fx) {
+    BOOL mask = OSDisableInterrupts();
+    fx->active |= 1;
+    __FreeDelayLine(fx);
+    OSRestoreInterrupts(mask);
 }
-
 #pragma use_lmw_stmw off
 /* Process one 96-sample block of the exponential reverb: read the input
    channels (mixed with the aux bus when one is set), filter them through the
