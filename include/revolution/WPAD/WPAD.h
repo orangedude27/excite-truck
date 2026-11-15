@@ -102,6 +102,15 @@ typedef enum {
     WPAD_BUTTON_CL_HOME = (1 << 11),
 } WPADButton;
 
+/* The core (Wii Remote) buttons of a report's button word: bits 0-4 and 8-12
+ * plus HOME, dropping the three status bits 5-7 and the Free-Style Z/C bits
+ * 13-14 an extension shares with them.  The report decoders narrow every
+ * received word to this set. */
+#define WPAD_BUTTON_CORE_ALL                                                     \
+    (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT | WPAD_BUTTON_DOWN | WPAD_BUTTON_UP |  \
+     WPAD_BUTTON_PLUS | WPAD_BUTTON_2 | WPAD_BUTTON_1 | WPAD_BUTTON_B |          \
+     WPAD_BUTTON_A | WPAD_BUTTON_MINUS | WPAD_BUTTON_HOME) /* 0x9F1F */
+
 typedef enum {
     WPAD_DEV_CORE,
     WPAD_DEV_FREESTYLE,
