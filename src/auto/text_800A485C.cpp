@@ -3468,13 +3468,8 @@ extern "C" s32 VFiPFENT_findEmptyTailSFN(void *arg0, void *name, u32 *out) {
     goto candidateCheck;
 search:
     result = VFiPFENT_searchEmptyTailSFN(sp18, candidate, name, *(s32 **)(volume + 0x1F7C));
-    switch (result) {
-    case 0:
-        goto haveResult;
-    default:
-        return 0;
-    }
-haveResult:
+    if (result != 0)
+        return result;
     idx = 0;
     off = 0;
     goto blocksCheck;
@@ -10987,8 +10982,8 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
     }
     code = (hi << 8) + lo;
     if (code >= 0xff61 && code <= 0xff9f) {
-        s32 v = code - 0x10000;
-        out[0] = v + 0x140;
+        sjis = code - 0x10000;
+        out[0] = sjis + 0x140;
         out[1] = 0;
         return fn_800A4BE8(1, 2);
     }
@@ -12209,6 +12204,16 @@ block_11:
 }
 
 extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+#define SET_SLOT_ERROR(err_val) do { \
+    for (i = 0; i < 0x17; i++) { \
+        offset = i * 0xF0; \
+        if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) { \
+            *(s32 *)(lbl_80405D58 + offset + 0xEC) = (err_val); \
+            break; \
+        } \
+    } \
+} while (0)
+
     s32 status;
     u16 i;
     u32 filelen;
@@ -12218,13 +12223,15 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     s32 r;
     u32 remain;
     u32 done;
+    u32 offset;
     unsigned char *entry;
     unsigned char buf[0x200] __attribute__((aligned(32)));
 
     entry = 0;
     for (i = 0; i < 0x17; i++) {
-        if (*(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0) == (u32)arg5) {
-            entry = lbl_80405D58 + (u32)(u16)i * 0xF0;
+        offset = i * 0xF0;
+        if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+            entry = lbl_80405D58 + offset;
             break;
         }
     }
@@ -12270,12 +12277,7 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     while (length >= 0x200) {
         r = NANDRead(entry + 0x58, buf, 0x200);
         if (r < 0) {
-            for (i = 0; i < 0x17; i++) {
-                if (*(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
-                    break;
-                }
-            }
+            SET_SLOT_ERROR(r);
             return r;
         }
         VFipf_memcpy((void *)(arg1 + done), buf, r);
@@ -12285,12 +12287,7 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     if (length != 0) {
         r = NANDRead(entry + 0x58, buf, length);
         if (r < 0) {
-            for (i = 0; i < 0x17; i++) {
-                if (*(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
-                    break;
-                }
-            }
+            SET_SLOT_ERROR(r);
             return r;
         }
         VFipf_memcpy((void *)(arg1 + done), buf, r);
@@ -12299,13 +12296,9 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     return 0;
 
 fail:
-    for (i = 0; i < 0x17; i++) {
-        if (*(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0) == (u32)arg5) {
-            *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
-            break;
-        }
-    }
+    SET_SLOT_ERROR(r);
     return r;
+#undef SET_SLOT_ERROR
 }
 
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
