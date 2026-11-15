@@ -1190,13 +1190,16 @@ void DeleteFlushCallback(s32 arg0) {
     if (lbl_80392960[0xD] != 0) lbl_80392960[0xD] = 8;
 }
 
-void fn_80068F28(s32 arg0) {
+/* Shutdown flush callback: logs the callback with the shutdown state, cancels
+ * the pending shutdown alarm, sets the shutdown state to 3, and posts the
+ * shutdown work message. */
+void fn_80068F28(s32 result) {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern char lbl_80313210[];
     extern u8 lbl_80392960[];
     extern void OSCancelAlarm(OSAlarm *);
     extern void fn_80073AF8(void);
-    DBPrintf_8006CFA8(lbl_80313210, arg0, lbl_80392960[0x11]);
+    DBPrintf_8006CFA8(lbl_80313210, result, lbl_80392960[0x11]);
     OSCancelAlarm((OSAlarm *)(lbl_80392960 + 0x690));
     lbl_80392960[0x11] = 3;
     fn_80073AF8();
