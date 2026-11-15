@@ -16,6 +16,8 @@ extern u8 lbl_8055FACC;
  * size itself: only entries 4, 8, 16, 32 and 64 of lbl_804C06E0 are ever used. */
 #define FAN_INFO_MIN_CELL_SIZE 4
 #define FAN_INFO_MAX_CELL_SIZE 0x40
+/* exclusive upper bound the grid loops use: cellSize < FAN_INFO_CELL_SIZE_LIMIT */
+#define FAN_INFO_CELL_SIZE_LIMIT (FAN_INFO_MAX_CELL_SIZE + 1)
 
 typedef struct {
     u32 unk0;
