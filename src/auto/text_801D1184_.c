@@ -100,17 +100,17 @@ void fn_801D14BC(void*);
 extern void *fn_8012850C();
 extern void *fn_8002F37C();
 #pragma inline_depth(0)
+/* Call fn_801D1250 for each 0x34-byte entry in the lbl_8055E908 array
+ * (count lbl_8055E8F8). */
 void fn_801D13A0(void) {
-    int offset = 0;
-    int i = 0;
-    while (i < lbl_8055E8F8) {
-        fn_801D1250((float *)(lbl_8055E908 + offset), i);
-        offset += 0x34;
-        i++;
+    int entryOffset = 0;
+    int index = 0;
+    while (index < lbl_8055E8F8) {
+        fn_801D1250((float *)(lbl_8055E908 + entryOffset), index);
+        entryOffset += 0x34;
+        index++;
     }
 }
-
-#pragma inline_depth(0)
 /* Iterates over the array at lbl_8055E908 (0x34 bytes per element, count lbl_8055E8F8)
  * and calls fn_801D1244 to reset each element's first float. */
 void fn_801D13FC(void) {
