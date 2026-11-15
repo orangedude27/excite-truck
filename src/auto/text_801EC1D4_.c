@@ -463,14 +463,19 @@ void fn_801ECC70(void *arg0) {
 #pragma pop
 
 #pragma scheduling invalid_target
-long fn_801ECC8C(unsigned int arg0) {
-    long result = 0;
-    if (fn_801ECB60((void *)arg0) != 0 || arg0 == lbl_8055EBC8)
-        result = 1;
-    return result;
+long fn_801ECC8C(unsigned int vehicleRender) {
+    /* Which update group a vehicle render object (the pointers kept in the
+     * lbl_80488648[] table) belongs to: 1 for the ones that take the
+     * per-player effect pass of fn_801ECCE0 (called there with key 0) - the
+     * player's own car, remembered in lbl_8055EBC8 when the 'PCAR' object is
+     * created, plus any vehicle whose owner data (+0x3C) still has the float
+     * at +0x2D4 above the global threshold lbl_80558DC4 - and 0 for the plain
+     * ones (key 1). */
+    long usesEffect = 0;
+    if (fn_801ECB60((void *)vehicleRender) != 0 || vehicleRender == lbl_8055EBC8)
+        usesEffect = 1;
+    return usesEffect;
 }
-
-#pragma dont_inline on
 void fn_801ECCE0(long arg0, long arg1) {
     void *list[8];
     void *item;
