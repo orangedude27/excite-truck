@@ -12,13 +12,13 @@ extern u8 lbl_803381E0[16];
 extern void *lbl_80438858[256];
 
 #pragma scheduling invalid_target
-void *fn_801D0FA4(void *arg0) {
-    /* Initialize object vtables, register it in the base list, then append to a secondary object list. */
-    *(void **)arg0 = lbl_803381C0;
-    fn_801D0DDC(arg0);
-    *(void **)arg0 = lbl_803381E0;
-    lbl_80438858[lbl_8055E8FC++] = arg0;
-    return arg0;
+void *fn_801D0FA4(void *object) {
+    /* Construct an object: set initial/base vtables, register in base and secondary lists, and return it. */
+    *(void **)object = lbl_803381C0;
+    fn_801D0DDC(object);
+    *(void **)object = lbl_803381E0;
+    lbl_80438858[lbl_8055E8FC++] = object;
+    return object;
 }
 
 /* Effect object scalar-deleting destructor: pop from active list, reset vtable, destroy base, conditionally free. */
