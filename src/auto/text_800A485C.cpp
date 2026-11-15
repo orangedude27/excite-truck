@@ -19701,7 +19701,7 @@ extern "C" u8 fn_8005EE80(s32);
 // has not been started yet.
 extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
     homebutton::Controller *self = (homebutton::Controller *)arg0;
-    s32 sound = self->m_soundId;
+    s32 sound = self->m_channel;
     if (fn_800D1E5C(self->m_soundPlayer, sound) == 0) {
         if (self->m_soundActive != 0) {
             if (self->m_stopTiming == 0) {
