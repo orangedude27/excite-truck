@@ -252,6 +252,7 @@ void fn_8000AAE0(void* arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Call fn_8000AABC for each 0x78-byte entry in the container (count at +0x3E0). */
 void fn_8000AAE4(void* arg0) {
     s8* p = (s8*)arg0 + 0x64;
     s32 i;
