@@ -1048,16 +1048,18 @@ extern float lbl_80563F48;
 extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
-void fn_80272354(void *arg0) {
+/* Initializes a camera-like object: zeros its position, sets the fourth float
+ * to 10.0f, clears an 8-byte region at offset 0x10, and sets fields at 0x58/0x5C. */
+void fn_80272354(void *obj) {
     float other = 10.0f;
     float value = 0.0f;
-    *(float *)((char *)arg0 + 0x0) = value;
-    *(float *)((char *)arg0 + 0x4) = value;
-    *(float *)((char *)arg0 + 0x8) = value;
-    *(float *)((char *)arg0 + 0xC) = other;
-    memset((char *)arg0 + 0x10, 0, 8);
-    *(int *)((char *)arg0 + 0x58) = 0;
-    *(int *)((char *)arg0 + 0x5C) = 2;
+    *(float *)((char *)obj + 0x0) = value;
+    *(float *)((char *)obj + 0x4) = value;
+    *(float *)((char *)obj + 0x8) = value;
+    *(float *)((char *)obj + 0xC) = other;
+    memset((char *)obj + 0x10, 0, 8);
+    *(int *)((char *)obj + 0x58) = 0;
+    *(int *)((char *)obj + 0x5C) = 2;
 }
 
 #pragma scheduling invalid_target
