@@ -11,67 +11,55 @@ typedef struct decimal {
     } sig;
 } decimal;
 
-void round_decimal(void *arg0, int arg1) {
-    unsigned char *base;
-    unsigned char n;
-    unsigned char *p;
-    int t, i;
-    unsigned int carry;
-    signed char x;
+void round_decimal(decimal* dec, int new_length) {
+    char c;
+    char* p;
+    int carry;
 
-    if (arg1 >= 0) goto normal;
-reset:
-    *(short *)((char *)arg0 + 2) = 0;
-    *((unsigned char *)arg0 + 4) = 1;
-    *((char *)arg0 + 5) = 0x30;
-    return;
-
-normal:
-    n = *((unsigned char *)arg0 + 4);
-    if (arg1 >= n) return;
-
-    base = (unsigned char *)arg0 + arg1;
-    p = base + 5;
-    x = base[5] - 0x30;
-    if (x == 5) {
-        signed char *q = (signed char *)arg0 + n + 5;
-        do {
-            q--;
-        } while (q > (signed char *)p && *q == 0x30);
-        if (q == (signed char *)p)
-            carry = p[-1] & 1;
-        else
-            carry = 1;
-    } else {
-        t = x ^ 5;
-        carry = t >> 1;
-        t = t & x;
-        carry = (carry - t) >> 31;
+    if (new_length < 0) {
+    return_zero:
+        dec->exp = 0;
+        dec->sig.length = 1;
+        *dec->sig.text = '0';
+        return;
     }
 
-    for (i = arg1; arg1 != 0; i--) {
-        x = *--p + carry - 0x30;
-        t = x ^ 9;
-        carry = t >> 1;
-        t = t & x;
-        carry = (carry - t) >> 31;
-        if (carry != 0 || x == 0)
-            arg1--;
-        else {
-            *p = x + 0x30;
+    if (new_length >= dec->sig.length) {
+        return;
+    }
+
+    p = (char*)dec->sig.text + new_length + 1;
+    c = *--p - '0';
+
+    if (c == 5) {
+        char* q = &((char*)dec->sig.text)[dec->sig.length];
+
+        while (--q > p && *q == '0')
+            ;
+        carry = (q == p) ? p[-1] & 1 : 1;
+    } else {
+        carry = (c > 5);
+    }
+
+    while (new_length != 0) {
+        c = *--p - '0' + carry;
+
+        if ((carry = (c > 9)) != 0 || c == 0) {
+            --new_length;
+        } else {
+            *p = c + '0';
             break;
         }
     }
 
     if (carry != 0) {
-        *((unsigned char *)arg0 + 4) = 1;
-        *(short *)((char *)arg0 + 2) += 1;
-        *((char *)arg0 + 5) = 0x31;
+        dec->exp += 1;
+        dec->sig.length = 1;
+        *dec->sig.text = '1';
         return;
+    } else if (new_length == 0) {
+        goto return_zero;
     }
-    if (arg1 != 0) {
-        *((unsigned char *)arg0 + 4) = arg1;
-        return;
-    }
-    goto reset;
+
+    dec->sig.length = new_length;
 }
