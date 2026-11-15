@@ -2909,9 +2909,10 @@ s32 fn_80170F1C(void *obj) {
 }
 
 #pragma cplusplus on
-extern "C" s32 fn_80170F7C(void *arg0) {
-    if (((TObj4C *)arg0)->d7() != 0) {
-        return *(s32 *)((u8 *)arg0 + 0xAC) == 2;
+extern "C" s32 fn_80170F7C(void *object) {
+    /* Return true if the object is active (d7) and its state at +0xAC is 2. */
+    if (((TObj4C *)object)->d7() != 0) {
+        return *(s32 *)((u8 *)object + 0xAC) == 2;
     }
     return 0;
 }
