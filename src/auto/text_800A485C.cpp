@@ -21553,6 +21553,8 @@ extern "C" void fn_800C7774(u8 *self)
 }
 
 extern "C" void fn_800C790C(void *arg0) {
+    /* Parse a quoted UTF-16 string in place and store pointers to each quoted field
+     * into a 7-column by 6-row table embedded in the context object. */
     struct Context {
         u8 pad0[4];
         void *inner;
