@@ -79,13 +79,16 @@ extern char lbl_8055BAC0[];
 extern char lbl_8055B860[];
 extern int lbl_802FA690[5];
 extern int lbl_80498EE8[5];
+__declspec(section ".sdata") extern char lbl_8055BAC0[];
+__declspec(section ".sdata") extern char lbl_8055B860[];
+#pragma push
+#pragma use_lmw_stmw off
 void fn_8025E034(void)
 {
     extern void *fn_801284F8(int, const char *);
     extern void *lbl_8055F2E4;
     extern int lbl_8055F2E8;
-    struct DbgItem { void *name; int type; void *data; int a; int b; };
-    struct DbgMenu { int w0; struct DbgItem *items; int w2; int w3; int w4; };
+    struct DbgMenu { int w0; DbgMenuItem *items; int w2; int w3; int w4; };
     struct DbgCtx {
         void *list;
         void *seq[3];
@@ -95,15 +98,11 @@ void fn_8025E034(void)
         struct { char a[0x20]; char b[0x20]; char c[0x18]; } sub[6];
         void *objs[6];
     };
-    struct DbgMenu menu;
-    struct DbgItem items[35];
     struct DbgCtx ctx;
-    char *str = lbl_80345828;
+    DbgMenuItem items[35];
+    struct DbgMenu menu;
     int old;
-    int i;
-    void *obj;
-    struct { char *recs; int count; } *heap;
-    int off;
+    char *str = lbl_80345828;
 
     old = fn_80012810();
     if (old != 0x130) {
@@ -111,55 +110,61 @@ void fn_8025E034(void)
         fn_80012790(0x130);
     }
     lbl_8055F3D4 = &ctx;
-    for (i = 0; i < 3; i++)
-        ctx.seq[i] = fn_8027B834(i);
+    {
+        int i;
+        for (i = 0; i < 3; i++)
+            ctx.seq[i] = fn_8027B834(i);
+    }
     ctx.heap = fn_8025FA18();
-    for (i = 0; i < 6; i++) {
-        obj = fn_801284F8(0x30, str + 0xC);
-        if (obj != 0)
-            obj = fn_8025F9C0(obj);
-        ctx.objs[i] = obj;
-        fn_8025F9B8(obj, (int)ctx.heap);
+    {
+        int i;
+        for (i = 0; i < 6; i++) {
+            void *obj = fn_801284F8(0x30, str + 0xC);
+            if (obj != 0)
+                obj = fn_8025F9C0(obj);
+            ctx.objs[i] = obj;
+            fn_8025F9B8(obj, (int)ctx.heap);
+        }
     }
     ctx.cur = 0;
     ctx.list = ctx.seq[2];
     fn_8025F46C(&ctx);
 
-    items[0].name = lbl_8055BAC0; items[0].type = 8; items[0].data = (void *)fn_8025F274; items[0].a = 0; items[0].b = 0;
-    items[1].name = str + 0x18; items[1].type = 3; items[1].data = ctx.rows[0].name; items[1].a = 0; items[1].b = 0;
-    items[2].name = str + 0x24; items[2].type = 2; items[2].data = &ctx.rows[0].state; items[2].a = 0; items[2].b = 0;
-    items[3].name = str + 0x34; items[3].type = 3; items[3].data = ctx.rows[1].name; items[3].a = 0; items[3].b = 0;
-    items[4].name = str + 0x40; items[4].type = 2; items[4].data = &ctx.rows[1].state; items[4].a = 0; items[4].b = 0;
-    items[5].name = str + 0x50; items[5].type = 3; items[5].data = ctx.rows[2].name; items[5].a = 0; items[5].b = 0;
-    items[6].name = str + 0x5C; items[6].type = 2; items[6].data = &ctx.rows[2].state; items[6].a = 0; items[6].b = 0;
-    items[7].name = str + 0x6C; items[7].type = 3; items[7].data = ctx.rows[3].name; items[7].a = 0; items[7].b = 0;
-    items[8].name = str + 0x78; items[8].type = 2; items[8].data = &ctx.rows[3].state; items[8].a = 0; items[8].b = 0;
-    items[9].name = str + 0x88; items[9].type = 3; items[9].data = ctx.rows[4].name; items[9].a = 0; items[9].b = 0;
-    items[10].name = str + 0x94; items[10].type = 2; items[10].data = &ctx.rows[4].state; items[10].a = 0; items[10].b = 0;
-    items[11].name = str + 0xA4; items[11].type = 3; items[11].data = ctx.sub[0].a; items[11].a = 0; items[11].b = 0;
-    items[12].name = str + 0xB8; items[12].type = 3; items[12].data = ctx.sub[0].b; items[12].a = 0; items[12].b = 0;
-    items[13].name = str + 0xC8; items[13].type = 3; items[13].data = ctx.sub[0].c; items[13].a = 0; items[13].b = 0;
-    items[14].name = str + 0xD8; items[14].type = 3; items[14].data = ctx.sub[1].a; items[14].a = 0; items[14].b = 0;
-    items[15].name = str + 0xF0; items[15].type = 3; items[15].data = ctx.sub[1].b; items[15].a = 0; items[15].b = 0;
-    items[16].name = str + 0x100; items[16].type = 3; items[16].data = ctx.sub[1].c; items[16].a = 0; items[16].b = 0;
-    items[17].name = str + 0x110; items[17].type = 3; items[17].data = ctx.sub[2].a; items[17].a = 0; items[17].b = 0;
-    items[18].name = str + 0x128; items[18].type = 3; items[18].data = ctx.sub[2].b; items[18].a = 0; items[18].b = 0;
-    items[19].name = str + 0x138; items[19].type = 3; items[19].data = ctx.sub[2].c; items[19].a = 0; items[19].b = 0;
-    items[20].name = str + 0x148; items[20].type = 3; items[20].data = ctx.sub[3].a; items[20].a = 0; items[20].b = 0;
-    items[21].name = str + 0x160; items[21].type = 3; items[21].data = ctx.sub[3].b; items[21].a = 0; items[21].b = 0;
-    items[22].name = str + 0x170; items[22].type = 3; items[22].data = ctx.sub[3].c; items[22].a = 0; items[22].b = 0;
-    items[23].name = str + 0x180; items[23].type = 3; items[23].data = ctx.sub[4].a; items[23].a = 0; items[23].b = 0;
-    items[24].name = str + 0x198; items[24].type = 3; items[24].data = ctx.sub[4].b; items[24].a = 0; items[24].b = 0;
-    items[25].name = str + 0x1A8; items[25].type = 3; items[25].data = ctx.sub[4].c; items[25].a = 0; items[25].b = 0;
-    items[26].name = str + 0x1B8; items[26].type = 5; items[26].data = ctx.objs[0]; items[26].a = 0; items[26].b = 0;
-    items[27].name = str + 0x1C4; items[27].type = 5; items[27].data = ctx.objs[1]; items[27].a = 0; items[27].b = 0;
-    items[28].name = str + 0x1D0; items[28].type = 5; items[28].data = ctx.objs[2]; items[28].a = 0; items[28].b = 0;
-    items[29].name = str + 0x1DC; items[29].type = 5; items[29].data = ctx.objs[3]; items[29].a = 0; items[29].b = 0;
-    items[30].name = str + 0x1E8; items[30].type = 5; items[30].data = ctx.objs[4]; items[30].a = 0; items[30].b = 0;
-    items[31].name = lbl_8055B860; items[31].type = 6; items[31].data = (void *)fn_8025ECBC; items[31].a = 0; items[31].b = 0x125;
-    items[32].name = lbl_8055B860; items[32].type = 6; items[32].data = (void *)fn_8025E678; items[32].a = 0; items[32].b = 0x127;
-    items[33].name = lbl_8055B860; items[33].type = 6; items[33].data = 0; items[33].a = -1; items[33].b = 0x1B;
-    items[34] = *(struct DbgItem *)lbl_80498EE8;
+    DbgMenuItemSet(&items[0], lbl_8055BAC0, 8, (void *)fn_8025F274, 0, 0);
+    DbgMenuItemSet(&items[1], lbl_80345828 + 0x18, 3, ctx.rows[0].name, 0, 0);
+    DbgMenuItemSet(&items[2], lbl_80345828 + 0x24, 2, &ctx.rows[0].state, 0, 0);
+    DbgMenuItemSet(&items[3], lbl_80345828 + 0x34, 3, ctx.rows[1].name, 0, 0);
+    DbgMenuItemSet(&items[4], lbl_80345828 + 0x40, 2, &ctx.rows[1].state, 0, 0);
+    DbgMenuItemSet(&items[5], lbl_80345828 + 0x50, 3, ctx.rows[2].name, 0, 0);
+    DbgMenuItemSet(&items[6], lbl_80345828 + 0x5C, 2, &ctx.rows[2].state, 0, 0);
+    DbgMenuItemSet(&items[7], lbl_80345828 + 0x6C, 3, ctx.rows[3].name, 0, 0);
+    DbgMenuItemSet(&items[8], lbl_80345828 + 0x78, 2, &ctx.rows[3].state, 0, 0);
+    DbgMenuItemSet(&items[9], lbl_80345828 + 0x88, 3, ctx.rows[4].name, 0, 0);
+    DbgMenuItemSet(&items[10], lbl_80345828 + 0x94, 2, &ctx.rows[4].state, 0, 0);
+    DbgMenuItemSet(&items[11], lbl_80345828 + 0xA4, 3, ctx.sub[0].a, 0, 0);
+    DbgMenuItemSet(&items[12], lbl_80345828 + 0xB8, 3, ctx.sub[0].b, 0, 0);
+    DbgMenuItemSet(&items[13], lbl_80345828 + 0xC8, 3, ctx.sub[0].c, 0, 0);
+    DbgMenuItemSet(&items[14], lbl_80345828 + 0xD8, 3, ctx.sub[1].a, 0, 0);
+    DbgMenuItemSet(&items[15], lbl_80345828 + 0xF0, 3, ctx.sub[1].b, 0, 0);
+    DbgMenuItemSet(&items[16], lbl_80345828 + 0x100, 3, ctx.sub[1].c, 0, 0);
+    DbgMenuItemSet(&items[17], lbl_80345828 + 0x110, 3, ctx.sub[2].a, 0, 0);
+    DbgMenuItemSet(&items[18], lbl_80345828 + 0x128, 3, ctx.sub[2].b, 0, 0);
+    DbgMenuItemSet(&items[19], lbl_80345828 + 0x138, 3, ctx.sub[2].c, 0, 0);
+    DbgMenuItemSet(&items[20], lbl_80345828 + 0x148, 3, ctx.sub[3].a, 0, 0);
+    DbgMenuItemSet(&items[21], lbl_80345828 + 0x160, 3, ctx.sub[3].b, 0, 0);
+    DbgMenuItemSet(&items[22], lbl_80345828 + 0x170, 3, ctx.sub[3].c, 0, 0);
+    DbgMenuItemSet(&items[23], lbl_80345828 + 0x180, 3, ctx.sub[4].a, 0, 0);
+    DbgMenuItemSet(&items[24], lbl_80345828 + 0x198, 3, ctx.sub[4].b, 0, 0);
+    DbgMenuItemSet(&items[25], lbl_80345828 + 0x1A8, 3, ctx.sub[4].c, 0, 0);
+    DbgMenuItemSet(&items[26], lbl_80345828 + 0x1B8, 5, ctx.objs[0], 0, 0);
+    DbgMenuItemSet(&items[27], lbl_80345828 + 0x1C4, 5, ctx.objs[1], 0, 0);
+    DbgMenuItemSet(&items[28], lbl_80345828 + 0x1D0, 5, ctx.objs[2], 0, 0);
+    DbgMenuItemSet(&items[29], lbl_80345828 + 0x1DC, 5, ctx.objs[3], 0, 0);
+    DbgMenuItemSet(&items[30], lbl_80345828 + 0x1E8, 5, ctx.objs[4], 0, 0);
+    DbgMenuItemSet(&items[31], lbl_8055B860, 6, (void *)fn_8025ECBC, 0, 0x125);
+    DbgMenuItemSet(&items[32], lbl_8055B860, 6, (void *)fn_8025E678, 0, 0x127);
+    DbgMenuItemSet(&items[33], lbl_8055B860, 6, 0, -1, 0x1B);
+    items[34] = *(DbgMenuItem *)lbl_80498EE8;
     menu = *(struct DbgMenu *)lbl_802FA690;
     menu.items = items;
     fn_802146BC(&menu, -999, -999, 1);
@@ -169,15 +174,19 @@ void fn_8025E034(void)
         fn_80012790(old);
     }
     lbl_8055F3D4 = 0;
-    for (i = 0; i < 6; i++) {
-        obj = ctx.objs[i];
-        if (obj != 0)
-            ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+    {
+        int i;
+        for (i = 0; i < 6; i++) {
+            void *obj = ctx.objs[i];
+            if (obj != 0)
+                ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        }
     }
     if (--lbl_8055F2E8 == 0) {
-        heap = lbl_8055F2E4;
+        struct { char *recs; int count; } *heap = lbl_8055F2E4;
         if (heap != 0) {
-            for (i = 0, off = 0; i < heap->count; i++, off += 0x38) {
+            int i, off;
+            for (i = 0, off = 0; i < heap->count; off += 0x38, i++) {
                 char *rec = heap->recs + off;
                 fn_802CAC54(*(int *)(rec + 0x20));
                 fn_802CAC54(*(int *)(rec + 0x24));
@@ -188,8 +197,10 @@ void fn_8025E034(void)
         lbl_8055F2E4 = 0;
     }
 }
-
+#pragma pop
 void* __dt__Q28PSSystem7SeqHeapFv_8025E614(void* arg0, int arg1) {
+    /* Destroy a PSSystem::SeqHeap: reset its vtable, tear down the owned
+       object at +0x2C, and optionally free the storage when arg1 > 0. */
     if (arg0 != 0) {
         *(void**)arg0 = lbl_80345A30;
         fn_80235380(*(void**)((char*)arg0 + 0x2C), lbl_80345A30);
