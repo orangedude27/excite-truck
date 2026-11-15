@@ -538,15 +538,16 @@ void SamplingHandler(s16 intr, OSContext* context) {
     }
 }
 
+/* Enables or disables PAD origin recalibration. Returns TRUE if recalibration was previously disabled. */
 BOOL __PADDisableRecalibration(BOOL disable) {
-    BOOL enabled = OSDisableInterrupts();
-    BOOL old = (OS_PAD_FLAGS & 0x40) ? TRUE : FALSE;
+    BOOL interrupts = OSDisableInterrupts();
+    BOOL wasDisabled = (OS_PAD_FLAGS & 0x40) ? TRUE : FALSE;
     OS_PAD_FLAGS &= ~0x40;
     if (disable) {
         OS_PAD_FLAGS |= 0x40;
     }
-    OSRestoreInterrupts(enabled);
-    return old;
+    OSRestoreInterrupts(interrupts);
+    return wasDisabled;
 }
 
 #pragma dont_inline on
