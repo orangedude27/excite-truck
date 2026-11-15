@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* Classify a single-precision float: NaN (1), infinity (2), zero (3), normal (4), or subnormal (5). */
 int __fpclassifyf(float x) {
     union { float f; unsigned int u; } bits;
     unsigned int exp;
