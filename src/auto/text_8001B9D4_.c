@@ -215,7 +215,7 @@ void fn_8001BBB8(void) {
     fn_8001CF8C();
 }
 
-extern void fn_8001D234(s32, s32 *, s32 *, s32 *);
+extern void fn_8001D234(s32 packed, s32 *entryIndex, s32 *valueIndex, s32 *flag);
 /* Decode one ranking entry's packed word into an EntryRef: byte 0 says which
    entry of the game's data table set the record, byte 1 which of that entry's
    values it is and byte 2 whether the flag byte was set (fn_8001D234 splits
