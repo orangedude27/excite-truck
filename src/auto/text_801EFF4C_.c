@@ -822,15 +822,15 @@ void fn_801F1378(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_801F1394(int *arg0, int arg1) {
-    int frame = fn_801F1978(0);
-    int index = *(int *)((char *)arg0 + 0x10);
-    int *base = *(int **)arg0;
-    int *element = base + index;
+int fn_801F1394(int *object, int transform) {
+    /* Submit the selected element's model with the given transform and default frame flags. */
+    int frameFlags = fn_801F1978(0);
+    int elementIndex = *(int *)((char *)object + 0x10);
+    int *elementBase = *(int **)object;
+    int *element = elementBase + elementIndex;
 
-    fn_802C70AC(*(int *)((char *)element + 0x28), arg1, 0, frame);
+    fn_802C70AC(*(int *)((char *)element + 0x28), transform, 0, frameFlags);
 }
-#pragma scheduling invalid_target
 void fn_801F13F4(int *arg0, float arg1, float arg2) {
     char *base = (char *)*(int *)arg0 + 0xEC;
     char *entry;
