@@ -2368,12 +2368,14 @@ extern "C" void fn_800F4FF4(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(void *self, int shouldDelete) {
+    /* nw4hbm::snd::MemorySoundArchive destructor: destroy embedded LinkListImpl
+     * subobject and, if requested, free this object's storage. */
+    if (self != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(self, 0);
+        if (shouldDelete > 0) ((void (*)(void *))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self, s32 flag) {
