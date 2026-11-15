@@ -25,21 +25,20 @@ typedef struct { float x, y, z; } Vec801EF;
 typedef struct { Vec801EF x, y, z, pos; } Matrix801EF;
 #pragma scheduling invalid_target
 #pragma dont_inline on
-float fn_801EF190(int arg0) {
-    float a, c, e, b, d, f;
-    if (arg0 == -1) {
+/* Returns the span between the queried bounds' fourth and third values, or a default for invalid id. */
+float fn_801EF190(int boundsId) {
+    float out1, out3, out5, out2, out4, out6;
+    if (boundsId == -1) {
         return lbl_80562EE0;
     }
-    c = lbl_80562EE4;
-    d = lbl_80562EE4;
-    fn_802C7760((void *)arg0, &a, &b, &c, &d, &e, &f);
-    return d - c;
+    out3 = lbl_80562EE4;
+    out4 = lbl_80562EE4;
+    fn_802C7760((void *)boundsId, &out1, &out2, &out3, &out4, &out5, &out6);
+    return out4 - out3;
 }
-#pragma scheduling on
-#pragma dont_inline reset
 void **fn_801EF1F0(void **arg0, void *arg1) {
     Lbl801EF *L = (Lbl801EF *)lbl_8033A380;
-    *arg0 = fn_801284F8(0x4C, &L->s0[0]);
+    *arg0 = fn_801284F8(0x4C, lbl_8033A380 + 0 * (int)arg1);
     * (void **)*arg0 = fn_802C6FC0(arg1, 0, 0);
     *((float *)*arg0 + 9) = lbl_80562EE8;
     *((void **)*arg0 + 1) = fn_802C6FC0(L->s10, 0, 0);
@@ -50,8 +49,7 @@ void **fn_801EF1F0(void **arg0, void *arg1) {
     *((void **)*arg0 + 4) = fn_801E31D8(*((void **)*arg0 + 3), lbl_8055B0A0, -1);
     *((void **)*arg0 + 5) = fn_801E3004(**(void ***)arg0, L->s40, -1);
     *((void **)*arg0 + 7) = fn_801E3004(**(void ***)arg0, lbl_8055B0A8, -1);
-    fn_801E3534(*((void **)*arg0 + 4));
-    *((float *)*arg0 + 8) = fn_801EF190(0);
+    *((float *)*arg0 + 8) = fn_801EF190(fn_801E3534(*((void **)*arg0 + 4)));
     *((float *)*arg0 + 18) = lbl_80562EEC;
     *((void **)*arg0 + 11) = fn_801E3004(**(void ***)arg0, L->s4C, -1);
     *((void **)*arg0 + 12) = fn_801E3004(**(void ***)arg0, L->s58, -1);
@@ -59,8 +57,7 @@ void **fn_801EF1F0(void **arg0, void *arg1) {
     *((void **)*arg0 + 13) = fn_801E31D8(*((void **)*arg0 + 12), lbl_8055B0A0, -1);
     *((void **)*arg0 + 14) = fn_801E3004(**(void ***)arg0, L->s64, -1);
     *((void **)*arg0 + 16) = fn_801E3004(**(void ***)arg0, lbl_8055B0B0, -1);
-    fn_801E3534(*((void **)*arg0 + 13));
-    *((float *)*arg0 + 17) = fn_801EF190(0);
+    *((float *)*arg0 + 17) = fn_801EF190(fn_801E3534(*((void **)*arg0 + 13)));
     return arg0;
 }
 
