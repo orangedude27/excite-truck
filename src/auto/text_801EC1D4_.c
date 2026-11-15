@@ -1163,14 +1163,15 @@ void **fn_801EEEB0(void **arg0) {
 }
 #pragma scheduling on
 
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_801EC9CC((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+/* Deleting destructor for nw4hbm::snd::MemorySoundArchive: run base destruction, then free storage if requested. */
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(long self, long shouldDelete) {
+    if (self != 0) {
+        fn_801EC9CC((void*)self, 0);
+        if (shouldDelete > 0) {
+            fn_80128668((void*)self);
         }
     }
-    return arg0;
+    return self;
 }
 
 void fn_801EEF44(void *arg0, void *arg1) {
