@@ -823,20 +823,21 @@ extern "C" void* fn_80157928(void* object, s32 shouldFree) {
  return object;
 }
 
-extern "C" void* fn_80157990(void* arg0, s32 arg1) {
- if (arg0 != 0) {
+/* Destroy/clear embedded fields at offsets 0x08, 0x0C, 0x10 when present, then optionally free the object. */
+extern "C" void* fn_80157990(void* self, s32 shouldDelete) {
+ if (self != 0) {
  
- if ((u32)arg0 + 8 != 0) {
- if ((u32)arg0 + 8 != 0) {
- if ((u32)arg0 + 8 != 0) {
- *(u32*)((char*)arg0 + 8) = 0;
- *(u32*)((char*)arg0 + 0xC) = 0;
- *(u32*)((char*)arg0 + 0x10) = 0;
+ if ((u32)self + 8 != 0) {
+ if ((u32)self + 8 != 0) {
+ if ((u32)self + 8 != 0) {
+ *(u32*)((char*)self + 8) = 0;
+ *(u32*)((char*)self + 0xC) = 0;
+ *(u32*)((char*)self + 0x10) = 0;
  }}}
  
- if (arg1 > 0) fn_80128668(arg0);
+ if (shouldDelete > 0) fn_80128668(self);
  }
- return arg0;
+ return self;
 }
 
 #pragma small_data off
@@ -1107,10 +1108,10 @@ extern "C" void* fn_80158218(void* self, s32 shouldDelete) {
 }
 
 extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
-    s32 val = *arg1;
-    s32 idx = ((s32 *)arg0)[1];
-    s32 *base = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = idx + 1;
+    u32 val = *(u32 *)arg1;
+    u32 idx = ((u32 *)arg0)[1];
+    u32 *base = *(u32 **)arg0;
+    ((u32 *)arg0)[1] = idx + 1;
     base[idx] = val;
     return &base[idx];
 }
