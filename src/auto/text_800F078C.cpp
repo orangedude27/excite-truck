@@ -88,15 +88,18 @@ extern "C" void fn_800F07E4(s32 arg0) {
     __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(arg0 - 8);
 }
 
-extern "C" void *fn_800F07EC(void *arg0, s32 arg1) {
+/* Construct a nw4r::snd::detail::SeqSound: initialize the base BasicSound,
+ * install the SeqSound vtable, initialize the embedded SeqPlayer at +0xD8,
+ * and set up the initial instance-manager/state fields. */
+extern "C" void *fn_800F07EC(void *sound, s32 instanceManager) {
     __ct__Q44nw4r3snd6detail10BasicSoundFv();
-    *(void **)arg0 = lbl_8032428C;
-    fn_800EEE8C((u8 *)arg0 + 0xD8, lbl_8032428C);
-    *(s32 *)((u8 *)arg0 + 0x1E4) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x1E0) = 0;
-    *(u8 *)((u8 *)arg0 + 0x1E8) = 0;
-    *(s32 *)((u8 *)arg0 + 0x1EC) = 0;
-    return arg0;
+    *(void **)sound = lbl_8032428C;
+    fn_800EEE8C((u8 *)sound + 0xD8, lbl_8032428C);
+    *(s32 *)((u8 *)sound + 0x1E4) = instanceManager;
+    *(s32 *)((u8 *)sound + 0x1E0) = 0;
+    *(u8 *)((u8 *)sound + 0x1E8) = 0;
+    *(s32 *)((u8 *)sound + 0x1EC) = 0;
+    return sound;
 }
 
 extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void);
