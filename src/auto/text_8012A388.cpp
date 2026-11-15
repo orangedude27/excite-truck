@@ -2603,9 +2603,8 @@ extern "C" void fn_8012E498(void *arg0) {
                     fn_8012E630((void *)entry);
                     fn_8012E5E4((void *)(effect + 8), (void *)entry);
                     removed = 1;
-                    goto next_entry;
+                    break;
                 }
-next_entry:
                 entry = *(s32 *)entry;
             }
             if (removed != 0) return;
