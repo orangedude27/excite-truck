@@ -33,10 +33,6 @@ typedef struct EntryRef {
     s32 flag;       /* 0x08: packed byte 2, set when that byte was non-zero */
 } EntryRef;
 
-typedef EntryRef Unk8001BBBC; /* old name, same type */
-#define unk_0x0 entryIndex    /* while fn_8001BBBC's body uses the old field names */
-#define unk_0x4 valueIndex
-#define unk_0x8 flag
 
 extern s8 lbl_8055D5C8;
 extern s32 *lbl_8055D5D0;
