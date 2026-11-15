@@ -1721,6 +1721,8 @@ void fn_801C7EF4(void) {
 }
 
 extern char lbl_8055A964[7];
+/* Saves the current string buffer (lbl_804380F0) into lbl_80438280, clears the
+ * current buffer, and defaults the saved buffer to "all" if it is empty. */
 void fn_801C7F00(void) {
     strcpy(lbl_80438280, lbl_804380F0);
     strcpy(lbl_804380F0, lbl_8055AA44);
