@@ -2411,6 +2411,7 @@ s32 fn_8006ADC4(s32 arg0)
 
 s32 fn_8006AE20(s32 arg0)
 {
+    /* Set the HID connection callback in the WUD control block and return the previous one. */
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern const char lbl_803135A0[];
     s32 prev;
