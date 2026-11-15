@@ -15,14 +15,16 @@ struct SrcHdr { s32 unk[2]; s32 count; s32 unk2; struct Rec14 data[1]; };
 #pragma scheduling invalid_target
 s32 *fn_801E592C(void) {
     s32 i;
-    s32 n;
-    void *sp;
+    s32 count;
+    void *tableBase;
+    s32 *entry;
 
-    sp = fn_802C6C34();
-    n = *(s32 *)((s8 *)sp + 0x10);
-    for (i = 0; i < n; i++) {
-        s32 *entry = ((s32 ***)sp)[5][i];
-        if ((u32)(entry[0] + 0xB2AE0000) == 0x424E) {
+    /* Find the first table entry whose tag dword is 'MRBN' (0x4D52424E). */
+    tableBase = fn_802C6C34();
+    count = *(s32 *)((s8 *)tableBase + 0x10);
+    for (i = 0; i < count; i++) {
+        entry = ((s32 ***)tableBase)[5][i];
+        if ((u32)(entry[0] + 0xB2AE0000U) == 0x424EU) {
             return entry;
         }
     }
