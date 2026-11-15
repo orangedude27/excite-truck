@@ -73,6 +73,15 @@ struct TimedEffect {
 };
 #pragma cplusplus reset
 
+/* The element fn_801D701C constructs and fn_801D707C reads parameters for is
+ * the "RingMaster_ASE" (its name comes back from fn_801D7200) and its vtable
+ * is lbl_80338B08: +0x8 fn_801D7034 (delete), +0xC fn_801D707C (read
+ * parameters), +0x10 fn_801D71A8 (free the sound), +0x14 fn_801D7200 (class
+ * name), +0x18 fn_801D720C, +0x1C fn_801D8AA4.  What is known of its fields:
+ * +0x04 state (1 once read), +0x08 the "name" string (0x1E bytes), +0x28
+ * "delay", +0x2C a float kept at 0, +0x30 "length", +0x34 a flag byte and
+ * +0x38 the "ringon.sfx" Sound fn_80207848 made. */
+
   extern void fn_801D50B8(int);
 
 extern int fn_8017960C(int);
