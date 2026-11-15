@@ -435,14 +435,15 @@ extern void fn_8017B0B0(void);
 extern void fn_801BD808(void *);
 extern char lbl_803326F8[];
 extern int lbl_8055E4D0;
-void *fn_80182010(void *arg0) {
-    unsigned char *p = (unsigned char *)arg0;
+/* Construct/init an object: initialize base state, install vtable, initialize per-instance data, and register it in the global instance list. */
+void *fn_80182010(void *object) {
+    unsigned char *objectBytes = (unsigned char *)object;
     fn_8017B0B0();
-    *(int **)p = (int *)lbl_803326F8;
-    *(short *)(p + 0x2B4) = -1;
+    *(int **)objectBytes = (int *)lbl_803326F8;
+    *(short *)(objectBytes + 0x2B4) = -1;
     fn_801BD808(lbl_803326F8);
-    ((void **)lbl_804348E8)[lbl_8055E4D0++] = arg0;
-    return arg0;
+    ((void **)lbl_804348E8)[lbl_8055E4D0++] = object;
+    return object;
 }
 
 void fn_80182074(void *arg0, int arg1) {
