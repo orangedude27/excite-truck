@@ -1870,22 +1870,27 @@ typedef struct Entry_802D18E8 {
     float strength;
 } Entry_802D18E8;
 /* Experiment: the TU's own .bss laid out as separate variables (lbl_804C5650 + offset). */
-static unsigned char sLightObjs_802D18E8[8][0x40];  /* lbl_804CA118 */
-static unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088, 0x14 each */
-static unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(Entry_802D18E8)];
-static Entry_802D18E8 sDefaultLight_802D18E8;    /* lbl_804C97D0 */
-static float sViewTo_802D18E8[0x4110 / 4];       /* lbl_804C56C0 .. */
-static float sViewFrom_802D18E8[12];             /* lbl_804C5690 */
 static unsigned char sBssHead_802D18E8[0x40];    /* lbl_804C5650 */
+static float sViewFrom_802D18E8[12];             /* lbl_804C5690 */
+static float sViewTo_802D18E8[0x4110 / 4];       /* lbl_804C56C0 .. */
+static Entry_802D18E8 sDefaultLight_802D18E8;    /* lbl_804C97D0 */
+static unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(Entry_802D18E8)];
+static unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088, 0x14 each */
+static unsigned char sLightObjs_802D18E8[8][0x40];  /* lbl_804CA118 */
+/* mwcc lays the pooled .bss out in order of first use by generated code; until the
+   earlier functions of this file use these variables, this unused function fixes the order. */
+static void BssOrder_802D18E8(void) {
+    sBssHead_802D18E8[0] = 0;
+    sViewFrom_802D18E8[0] = 0.0f;
+    sViewTo_802D18E8[0] = 0.0f;
+    sDefaultLight_802D18E8.c[0] = 0;
+    sBssGap_802D18E8[0] = 0;
+    sLightEntries_802D18E8[0] = 0;
+    sLightObjs_802D18E8[0][0] = 0;
+}
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802D18E8(void) {
-    /* take the TU's .bss variables in address order so the pool keeps the original layout */
-    unsigned char *bssHead = sBssHead_802D18E8;
-    float *viewFrom = sViewFrom_802D18E8;
-    float *viewTo = sViewTo_802D18E8;
-    Entry_802D18E8 *defaultLight = &sDefaultLight_802D18E8;
-    unsigned char *bssGap = sBssGap_802D18E8;
     unsigned char color[4];
     float direction[3];
     float mag;
