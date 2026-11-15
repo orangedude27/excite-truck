@@ -3450,51 +3450,62 @@ extern "C" s32 fn_800AF530(void *, void *, s32, s32);
 extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *, u32, void *, s32 *);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 VFiPFENT_findEmptyTailSFN(void *arg0, void *name, u32 *out) {
-    u8 sp18[0x38];
-    u8 sp8[0x10];
-    u8 *volume = *(u8 **)((u8 *)arg0 + 0x22C);
-    u32 candidate;
-    u32 base;
-    u32 limit;
-    u32 idx;
-    u32 off;
-    s32 result;
-    *out = 1;
-    fn_800AF530(sp18, sp8, *(s32 *)((u8 *)arg0 + 0x22C), (s32)((u8 *)arg0 + 0x234));
-    base = 0xF0000;
-    candidate = 1;
-    limit = base + 0x423F;
-    goto candidateCheck;
-search:
-    result = VFiPFENT_searchEmptyTailSFN(sp18, candidate, name, *(s32 **)(volume + 0x1F7C));
-    if (result != 0)
-        return result;
-    idx = 0;
-    off = 0;
-    goto blocksCheck;
+/* Find a free "~N" tail number for a short name whose own tail is already taken.
+ *
+ * The volume keeps a scratch usage bitmap at +0x1F7C of *(volume+0x1F74) words,
+ * one bit per tail number.  For every window of numbers - a word covers 32 of
+ * them - VFiPFENT_searchEmptyTailSFN walks the directory and sets the bit of
+ * every "~N" this window holds, and the first clear bit here is the free
+ * number, counted up in *tail.  A word of all ones is 32 numbers all in use,
+ * so *tail steps over it whole; the first word with a clear bit ends the
+ * search by pushing `first` past the last number to try.  Windows run from 1
+ * to 999999 (0xF423F, the same limit fn_800A95B4 checks); returns the search's
+ * error, or 0 once a number is in *tail. */
+extern "C" s32 VFiPFENT_findEmptyTailSFN(void *handle, void *name, u32 *tail) {
+    u8 iter[0x38];   /* directory iterator, fn_800AF530 puts it on the handle's directory */
+    u8 temp[0x10];   /* the iterator's scratch block, iter+0x30 */
+    u8 *volume = *(u8 **)((u8 *)handle + 0x22C);
+    u32 first;      /* first tail number of the window being scanned */
+    u32 tailBase;   /* 0xF0000: the 1..999999 range is written off of it */
+    u32 tailLimit;  /* last window to start at, 999999 */
+    u32 word;       /* bitmap word being looked at */
+    u32 byteOff;    /* that word's byte offset in the bitmap */
+    s32 status;
+    *tail = 1;
+    fn_800AF530(iter, temp, *(s32 *)((u8 *)handle + 0x22C), (s32)((u8 *)handle + 0x234));
+    tailBase = 0xF0000;
+    first = 1;
+    tailLimit = tailBase + 0x423F;
+    goto windowCheck;
+window:
+    status = VFiPFENT_searchEmptyTailSFN(iter, first, name, *(s32 **)(volume + 0x1F7C));
+    if (status != 0)
+        return status;
+    word = 0;
+    byteOff = 0;
+    goto wordCheck;
 scan:
-    if (*(volatile u32 *)((u8 *)*(volatile u32 **)(volume + 0x1F7C) + off) == 0xFFFFFFFFU)
-        goto advance;
-    off = idx << 2;
-    while ((*(volatile u32 *)((u8 *)off + (u32)*(volatile u32 **)(volume + 0x1F7C)) & 1U) != 0) {
-        *(volatile u32 *)((u8 *)off + (u32)*(volatile u32 **)(volume + 0x1F7C)) >>= 1;
-        *out += 1;
+    if (*(volatile u32 *)((u8 *)*(volatile u32 **)(volume + 0x1F7C) + byteOff) == 0xFFFFFFFFU)
+        goto wordFull;
+    byteOff = word << 2;
+    while ((*(volatile u32 *)((u8 *)byteOff + (u32)*(volatile u32 **)(volume + 0x1F7C)) & 1U) != 0) {
+        *(volatile u32 *)((u8 *)byteOff + (u32)*(volatile u32 **)(volume + 0x1F7C)) >>= 1;
+        *tail += 1;
     }
-    candidate = base + 0x4240;
-    goto update;
-advance:
-    *out += 0x20;
-    off += 4;
-    idx += 1;
-blocksCheck:
-    if (idx < *(volatile u32 *)(volume + 0x1F74))
+    first = tailBase + 0x4240; /* one past tailLimit: the free number is in *tail */
+    goto windowAdvance;
+wordFull:
+    *tail += 0x20;
+    byteOff += 4;
+    word += 1;
+wordCheck:
+    if (word < *(volatile u32 *)(volume + 0x1F74))
         goto scan;
-update:
-    candidate += *(volatile u32 *)(volume + 0x1F74) << 5;
-candidateCheck:
-    if (candidate <= limit)
-        goto search;
+windowAdvance:
+    first += *(volatile u32 *)(volume + 0x1F74) << 5;
+windowCheck:
+    if (first <= tailLimit)
+        goto window;
     return 0;
 }
 #pragma pop
