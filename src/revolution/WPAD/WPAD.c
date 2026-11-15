@@ -5781,7 +5781,8 @@ void fn_80065524(s32 chan, WPADStatusEx* pStatus)
     OSRestoreInterrupts(enabled);
 }
 
-// fn_800656E8: WPAD data processing
+// fn_800656E8: WPADiDecodeAccStatus (proposed name) - decode one core button +
+// accelerometer input report into the control block's other receive buffer.
 void fn_800656E8(s32 chan, WPADStatusEx* pReport)
 {
     /* WPADiDecodeAccStatus (proposed name): turn one core button +
