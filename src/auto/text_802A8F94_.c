@@ -16,17 +16,18 @@ extern void fn_802C77F0(void *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern void PSVECNormalize(f32 *, f32 *);
 extern void fn_80128668(void*);
-void* fn_802A8F94(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+void *fn_802A8F94(void *obj, s32 shouldFree) {
+    /* Clear a 3-word object and optionally free it. */
+    if (obj != 0) {
+        if (obj != 0) {
+            *(s32 *)obj = 0;
+            *((s32 *)obj + 1) = 0;
+            *((s32 *)obj + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldFree > 0)
+            fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 extern f32 fn_801EA0E8(f32, f32);
