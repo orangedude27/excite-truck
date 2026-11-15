@@ -5561,6 +5561,7 @@ extern "C" void* fn_80111B64(void* writer) {
     self->tagProcessor = &lbl_8055DEB8;
     return writer;
 }
+
 extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* this_, int flag) {
     extern void fn_801033F0(void*, unsigned int);
     extern void fn_80128668(void*);
