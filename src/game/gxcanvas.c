@@ -48,6 +48,7 @@ typedef struct GxCanvas {
 } GxCanvas;       /* 0x24: fn_802C2D94 memsets the whole block on free */
 
 #define CANVAS_FLAG_NO_DRAW 0x04 /* GxCanvas.flags: drawing is turned off */
+#define CANVAS_FORMAT_RGBA4444 1 /* GxCanvas.format: 4-bit components; the fillers keep the destination's alpha nibble (fn_802C365C) */
 #define CANVAS_FORMAT_RGBA  5    /* GxCanvas.format: 4-byte pixels */
 #define CANVAS_FORMAT_NONE  6    /* GxCanvas.format: 4-byte sized, undrawn */
 
