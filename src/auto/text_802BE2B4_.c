@@ -13,6 +13,9 @@ extern unsigned char lbl_8055FAA0;
 # pragma scheduling invalid_target
 # pragma opt_propagation off
 # pragma opt_dead_assignments off
+/* Static initializer: constructs lbl_8055FAA0, initializes the global object
+ * record at lbl_804C00D4, and registers its destroying destructor fn_802BE30C
+ * with the global destructor chain (lbl_804C00C8). */
 void fn_802BE2B4(void) {
     fn_8000D838(&lbl_8055FAA0);
     lbl_804C00D4[0] = (int)((char *)lbl_804C00D4 + 12);
