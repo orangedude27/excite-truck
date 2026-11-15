@@ -25,6 +25,32 @@ void fn_802C5024(s32, s32, s32, s32);
 
 extern void fn_8012C4D8(void);
 
+/* One drawing canvas, the object every gxCanvas* routine in this file works
+   on.  The one being drawn on is the pointer kept in lbl_8055FC00
+   (fn_802C3034 swaps it); fn_802C2CE8 builds one from scratch. */
+typedef struct GxCanvas {
+    /* 0x00 pixel format: 5 keeps 4-byte pixels (rowBytes = width * 4),
+     * 6 is no format this build draws, every other value 2-byte RGB565
+     * ones.  The drawing code sign-extends it before comparing. */
+    u8 format;
+    /* 0x01 flags; fn_802C2CE8 starts a fresh canvas at 0x82.  Bit 0x4 marks
+     * a canvas that must not be drawn on: the plotters return without
+     * writing, and fn_802C40B8 only calls the empty fn_802DB2C8. */
+    u8 flags;
+    void *pixels; /* 0x04 first pixel of the first row */
+    s32 width;    /* 0x08 pixels per row */
+    s32 height;   /* 0x0C rows */
+    s32 rowBytes; /* 0x10 bytes from one row to the next */
+    s32 minX;     /* 0x14 clip rectangle the plotters test every point */
+    s32 minY;     /* 0x18 against: fn_802C3130 (a point), fn_802C307C */
+    s32 maxX;     /* 0x1C (a rectangle) */
+    s32 maxY;     /* 0x20 */
+} GxCanvas;       /* 0x24: fn_802C2D94 memsets the whole block on free */
+
+#define CANVAS_FLAG_NO_DRAW 0x04 /* GxCanvas.flags: drawing is turned off */
+#define CANVAS_FORMAT_RGBA  5    /* GxCanvas.format: 4-byte pixels */
+#define CANVAS_FORMAT_NONE  6    /* GxCanvas.format: 4-byte sized, undrawn */
+
 extern s32 lbl_8055FC00; /* the canvas the gxCanvas* routines below draw on:
                           * {s8 format; u8 flags; void *pixels; s32 width, height,
                            *  rowBytes; s32 minX, minY, maxX, maxY;} — format 5 keeps 4-byte pixels
