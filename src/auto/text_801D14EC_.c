@@ -252,12 +252,13 @@ void fn_801D153C(void);
 int fn_8012850C(int, int *);
 int fn_8002F37C(int, int, int, int);
 void fn_801D1B48(void) {
+    /* Call fn_801D183C on each 0x9C-byte entry in the table at lbl_8055E918. */
     int offset = 0;
-    int i = 0;
-    while (i < lbl_8055E8F8) {
-        fn_801D183C(lbl_8055E918 + offset, i);
+    int index = 0;
+    while (index < lbl_8055E8F8) {
+        fn_801D183C(lbl_8055E918 + offset, index);
         offset += 0x9c;
-        i++;
+        index++;
     }
 }
 
