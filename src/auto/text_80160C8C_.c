@@ -2624,6 +2624,7 @@ void fn_80164510(void *arg0, s32 arg1) {
 extern s32 lbl_8055A0E0;
 extern s32 lbl_8055A0E8;
 extern u8 lbl_8055E2DD;
+/* Handle special key/button inputs (0x58, 0x1B) when a timer/value at +0x8C is above threshold; sets flags and returns nonzero on handled input. */
 s32 fn_801645D8(void *arg0, s32 arg1) {
     if (*(float *)((char *)arg0 + 0x8C) > lbl_8056185C) {
         if (arg1 == 0x58) {
