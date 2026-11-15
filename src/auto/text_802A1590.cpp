@@ -221,6 +221,7 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_802A172C(void) {
+    /* Call the vtable slot 2 method on each non-null object in the 8-entry global object table. */
     void ***entry = (void ***)&lbl_804BCF88;
     s32 index = 0;
     struct Dispatch {
