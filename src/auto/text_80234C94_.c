@@ -91,17 +91,20 @@ extern void fn_802E317C(const char *, ...);
 extern char lbl_80340670[];
 extern unsigned char lbl_80340680[];
 extern void *lbl_8055F084;
-void *fn_80234C94(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(int *)arg0 = 0;
-            *((int *)arg0 + 1) = 0;
-            *((int *)arg0 + 2) = 0;
+/* Scalar-deleting style destructor/cleanup for a small 3-word object: clears
+ * its three 32-bit fields to 0 and, if deleteFlags > 0, frees the storage.
+ * Returns this. (The redundant inner null check is intentional.) */
+void *fn_80234C94(void *this_, int deleteFlags) {
+    if (this_ != 0) {
+        if (this_ != 0) {
+            *(int *)this_ = 0;
+            *((int *)this_ + 1) = 0;
+            *((int *)this_ + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deleteFlags > 0)
+            fn_80128668(this_);
     }
-    return arg0;
+    return this_;
 }
 
 void *fn_80234CEC(void *arg0, int arg1) {
