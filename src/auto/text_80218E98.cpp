@@ -8560,12 +8560,14 @@ extern "C" s32 fn_80228F40(s32 arg0, s32 arg1) {
 }
 
 extern "C" void *fn_80223208(void *, unsigned int);
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228F4C(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_80223208(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228F4C(void *archive, int shouldDelete) {
+    /* Destruct this MemorySoundArchive variant (via fn_80223208 base
+     * destructor), deleting the object when shouldDelete > 0. */
+    if (archive != 0) {
+        fn_80223208(archive, 0);
+        if (shouldDelete > 0) fn_80128668(archive);
     }
-    return arg0;
+    return archive;
 }
 
 /* nw4hbm::snd::MemorySoundArchive deleting destructor: tears down base sound-archive state via fn_8021915C, then frees storage when deletingFlag > 0. (rename_symbol unavailable for mangled/game symbols) */
