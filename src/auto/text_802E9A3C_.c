@@ -421,14 +421,28 @@ int fn_802EA5D4(void *dirPath, int maxDepth) {
     }
     return result;
 }
+/* Rebuild the list of playable songs: empty the song table's count and, while an
+ * SD card is in, scan the directory the game was pointed at (no recursion).  If
+ * that holds no .mp3 at all, search the default music folder 8 levels deep. */
 void fn_802EA7E0(void) {
-    lbl_8056007C = 0;
-    if ((unsigned char)lbl_80560061 != 0) {
-        fn_802EA5D4(lbl_8055D274, 0);
-        if (lbl_8056007C == 0) fn_802EA5D4(&lbl_8055D2A4, 8);
-    }
-}
+    #define songCount         lbl_8056007C /* songs in the table lbl_80508818 */
+    #define sdCardPresent     lbl_80560061 /* set by the SD mount/attach callbacks */
+    #define musicDirPath      lbl_8055D274 /* directory to look in first */
+    #define defaultMusicDir   lbl_8055D2A4 /* 0x20-byte path, searched recursively */
+    #define ScanSongDirectory fn_802EA5D4
 
+    songCount = 0;
+    if ((unsigned char)sdCardPresent != 0) {
+        ScanSongDirectory(musicDirPath, 0);
+        if (songCount == 0) ScanSongDirectory(&defaultMusicDir, 8);
+    }
+
+    #undef songCount
+    #undef sdCardPresent
+    #undef musicDirPath
+    #undef defaultMusicDir
+    #undef ScanSongDirectory
+}
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
