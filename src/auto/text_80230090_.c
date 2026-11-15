@@ -374,11 +374,12 @@ void fn_80230AB8(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4) {
 }
 #pragma dont_inline reset
 
-void fn_80230AD8(s32 arg0) {
+/* Configure the 2D UI/camera state for the given display list index. */
+void fn_80230AD8(s32 displayListIndex) {
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(3);
     fn_802C8530();
-    fn_802C8638(arg0);
+    fn_802C8638(displayListIndex);
     fn_802C974C(lbl_80563610, lbl_80563640, lbl_80563644);
 }
 
