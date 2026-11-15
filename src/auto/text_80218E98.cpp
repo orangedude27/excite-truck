@@ -8599,14 +8599,15 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802290B0(
     return this_;
 }
 
+/* Deleting destructor for nw4hbm::snd::detail::DisposeCallbackManager. */
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8022910C(
-    void* this_, s32 flag) {
+    void* this_, s32 deletingFlag) {
     if (this_) {
         if (this_ != NULL) {
             fn_8021915C(this_, 0);
         }
 
-        if (flag > 0) {
+        if (deletingFlag > 0) {
             fn_80128668(this_);
         }
     }
