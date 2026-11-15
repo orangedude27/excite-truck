@@ -101,14 +101,14 @@ void fn_802E99AC(void) {
     sConfigWpadSpeakerVolume = (f32)(u32)SCGetWpadSpeakerVolume() / 127.0f;
 }
 
-/** @brief The console's aspect ratio, as set in the system menu (4:3/16:9). */
-void* fn_802E9A0C(void) {
-    return sConfigAspectRatio;
+/** @brief The console's aspect ratio, as set in the system menu (SCAspectRatio). */
+s32 fn_802E9A0C(void) {
+    return (s32)sConfigAspectRatio;
 }
 
-/** @brief The sound mode the game should start in (mono/stereo/surround). */
-void* fn_802E9A14(void) {
-    return sConfigSoundMode;
+/** @brief The sound mode the game should start in (SCSoundMode). */
+s32 fn_802E9A14(void) {
+    return (s32)sConfigSoundMode;
 }
 
 /** @brief 1 when the display is set to progressive (non-interlaced). */
