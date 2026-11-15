@@ -751,17 +751,18 @@ void fn_802543FC(void *arg0) {
 }
 #pragma scheduling on
 
-void fn_80254568(void *arg0, s32 arg1, const char *arg2) {
+/* Copies a 3-word value (e.g. a position) stored at offset 0x24 of the named MRJT archive entry (lbl_8055C178/180/188 "front_r"/"front_l"/"rear_c"). */
+void fn_80254568(void *outValue, s32 archiveCtx, const char *entryName) {
     struct Result {
         s32 x;
         s32 y;
         s32 z;
     };
-    void *sp8 = 0;
+    void *entry = 0;
     struct Result *result;
-    fn_801E2CCC(arg1, arg2, &sp8);
-    result = (struct Result *)((u8 *)sp8 + 0x24);
-    *(struct Result *)arg0 = *result;
+    fn_801E2CCC(archiveCtx, entryName, &entry);
+    result = (struct Result *)((u8 *)entry + 0x24);
+    *(struct Result *)outValue = *result;
 }
 
 #pragma dont_inline on
