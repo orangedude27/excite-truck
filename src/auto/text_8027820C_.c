@@ -61,6 +61,9 @@ void fn_80278288(void) {
     lbl_8055F5B0 = 0; lbl_8055F5B4 = 0;
 }
 
+/* Starts capturing the cscript movie: turns recording on, clears the captured
+   keyframe list, the playback flags and the playback tick range, then logs the
+   tick recording began on (the script's "begin recording" command). */
 #pragma scheduling invalid_target
 void fn_802782C4(void) {
 #define sRecording       lbl_8055F5B8 /* 1 while keyframes are being captured */
