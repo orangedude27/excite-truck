@@ -1838,45 +1838,36 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     }
 }
 
-typedef struct LightPos_802D18E8 {
-    unsigned char pad[0x24];
-    float x, y, z;
-} LightPos_802D18E8;
-typedef struct LightEntry_802D18E8 {
-    unsigned char r, g, b, a;
-    unsigned char pad[8];
-    float x, y, z;
-    float scale;
-} LightEntry_802D18E8;
-static inline void VecSub_802D18E8(float *dst, float *a, float *b) {
-    dst[0] = a[9] - b[9];
-    dst[1] = a[10] - b[10];
-    dst[2] = a[11] - b[11];
-}
-extern int lbl_8055FDC8;
-extern int lbl_8055FDCC;
-extern float lbl_80564FD4;
+/* One entry of the scene light table (0x14 bytes): where the light sits, its
+ * colour and how wide its cone is; fn_802D17BC turns it into a GX light object. */
+typedef struct SceneLight_802D18E8 {
+    /* 0x00 */ float pos[3];
+    /* 0x0C */ unsigned char color[4];
+    /* 0x10 */ float scale;
+} SceneLight_802D18E8;
+/* The fallback light used when the scene table is empty: colour first, then the
+ * position and the strength the colour is scaled by. */
+typedef struct DefaultLight_802D18E8 {
+    /* 0x00 */ unsigned char c[4];
+    /* 0x04 */ unsigned char pad[8];
+    /* 0x0C */ float pos[3];
+    /* 0x18 */ float strength;
+} DefaultLight_802D18E8;
+extern int lbl_8055FDC8;   /* scene light table: entries in it */
+extern int lbl_8055FDCC;   /* light objects loaded into GX light channels */
+extern float lbl_80564FD4; /* 64.0f: cone scale of the fallback light */
 extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 #pragma pop
 
-typedef struct Row3_802D18E8 {
-    float v[3][4];
-} Row3_802D18E8;
-typedef struct Entry_802D18E8 {
-    unsigned char c[4];
-    unsigned char pad[8];
-    float pos[3];
-    float strength;
-} Entry_802D18E8;
 /* Experiment: the TU's own .bss laid out as separate variables (lbl_804C5650 + offset). */
 static unsigned char sBssHead_802D18E8[0x40];    /* lbl_804C5650 */
-static float sViewFrom_802D18E8[12];             /* lbl_804C5690 */
-static float sViewTo_802D18E8[0x4110 / 4];       /* lbl_804C56C0 .. */
-static Entry_802D18E8 sDefaultLight_802D18E8;    /* lbl_804C97D0 */
-static unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(Entry_802D18E8)];
-static unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088, 0x14 each */
-static unsigned char sLightObjs_802D18E8[8][0x40];  /* lbl_804CA118 */
+static float sViewFrom_802D18E8[12];             /* lbl_804C5690: view matrix; [9..11] is its translation */
+static float sViewTo_802D18E8[0x4110 / 4];       /* lbl_804C56C0: the point looked at, same shape */
+static DefaultLight_802D18E8 sDefaultLight_802D18E8; /* lbl_804C97D0 */
+static unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(DefaultLight_802D18E8)];
+static unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088: SceneLight_802D18E8[], 0x14 each */
+static unsigned char sLightObjs_802D18E8[8][0x40];  /* lbl_804CA118: GXLightObj[8] */
 /* mwcc lays the pooled .bss out in order of first use by generated code; until the
    earlier functions of this file use these variables, this unused function fixes the order. */
 static void BssOrder_802D18E8(void) {
