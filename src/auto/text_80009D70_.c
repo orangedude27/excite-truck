@@ -341,13 +341,21 @@ void fn_8000A808(void) {
 }
 
 void fn_8000A868(void) {
-    char* lbl_8034F4C8_ptr = (char*)&lbl_8034F4C8;
-    fn_8012E81C(lbl_8034F4C8_ptr + 0x18);
+    /* Wait until the track effect sets whose names are stored in lbl_8034F4C8 (+0x18 always, +0x58 when lbl_8055D3B4, +0x98 when lbl_8055D3B5) have finished loading. */
+    typedef struct TrackEffectNames {
+        char unused_00[0x18];
+        char trackName[0x40];    /* 0x18 */
+        char resourceName[0x40]; /* 0x58 */
+        char weatherName[0x40];  /* 0x98 */
+    } TrackEffectNames;
+    TrackEffectNames* names = (TrackEffectNames*)&lbl_8034F4C8;
+
+    fn_8012E81C(names->trackName);
     if (lbl_8055D3B4 != 0) {
-        fn_8012E81C(lbl_8034F4C8_ptr + 0x58);
+        fn_8012E81C(names->resourceName);
     }
     if (lbl_8055D3B5 != 0) {
-        fn_8012E81C(lbl_8034F4C8_ptr + 0x98);
+        fn_8012E81C(names->weatherName);
     }
 }
 
