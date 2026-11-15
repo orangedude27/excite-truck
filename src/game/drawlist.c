@@ -36,6 +36,18 @@ struct ObjectPool {
 #define DRAWLIST_POOL_CAPACITY  0x10 /* DrawListWrappers the pool holds */
 #define DRAWLIST_WRAPPER_SIZE   0x18 /* bytes per DrawListWrapper */
 
+/* DrawListWrapper: the pooled ("mrDrawList") object.  It owns the GenericDrawList
+ * built by fn_801E7840 and carries the orientation fn_802C9E94 blends in from
+ * frame to frame plus the number of frames blended so far. */
+struct DrawListWrapper {
+    void *drawList;  /* 0x00 GenericDrawList this wrapper draws through */
+    float x;         /* 0x04 accumulated orientation */
+    float y;         /* 0x08 */
+    float z;         /* 0x0C */
+    float w;         /* 0x10 */
+    int count;       /* 0x14 frames blended into the orientation */
+};                 /* 0x18 bytes */
+
 #define STR_DRAWLIST_POOL   lbl_8034B514 /* "DrawListWrapper::pool" */
 #define STR_MR_DRAWLIST     lbl_8034B52C /* "mrDrawList" */
 #define sDrawListPool       lbl_8055FC9C /* the ObjectPool of DrawListWrappers */
