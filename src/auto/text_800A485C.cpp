@@ -19923,16 +19923,19 @@ extern "C" void *fn_800D1948(void *arg0, s32 arg1) {
     return r26;
 }
 #pragma pop
-extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(u32 *)((u8 *)arg0 + 0x1F0) = (u32)&lbl_8031E9C0;
+/* Destructor-like cleanup for the remote-speaker manager: installs its vtable,
+ * clears the global instance pointer and active flag, and optionally frees
+ * this object (delete-mode 3). Returns this. */
+extern "C" void *fn_800D19F8(void *self, s32 shouldDelete) {
+    if (self != 0) {
+        *(u32 *)((u8 *)self + 0x1F0) = (u32)&lbl_8031E9C0;
         lbl_8055DDB0 = 0;
-        ((u8 *)arg0)[0x1EC] = 0;
-        if (arg1 > 0) {
+        ((u8 *)self)[0x1EC] = 0;
+        if (shouldDelete > 0) {
             fn_80128668();
         }
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
