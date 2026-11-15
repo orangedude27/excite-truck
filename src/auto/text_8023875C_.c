@@ -94,10 +94,25 @@ void fn_802389E4(void) {
     fn_802344C4(0);
 }
 #pragma scheduling on
+/* TextLineHeight - how far down one line of overlay text steps.
+ *
+ * The overlay/debug text is always drawn at the same uiTextScale (0.4f), so a
+ * line is that fraction of the UI font's height.  Callers add the result to a
+ * y to draw the line under another (see the debug overlay's text blocks).
+ * It comes out 0 while no UI font is loaded: fn_8023889C picks the font at
+ * start-up and fn_80238920 hands it back.
+ */
 int fn_80238A20(void) {
-    return (int)(lbl_805636F0 * (float)fn_80232B70(lbl_8055F0D4));
-}
+    #define uiFont      lbl_8055F0D4 /* the UI font handle, 0 until loaded */
+    #define uiTextScale lbl_805636F0 /* 0.4f */
+    #define fontHeight  fn_80232B70  /* a font's height byte */
 
+    return (int)(uiTextScale * (float)fontHeight(uiFont));
+
+    #undef uiFont
+    #undef uiTextScale
+    #undef fontHeight
+}
 void fn_80238A74(int arg0, int arg1, int arg2, int arg3) { ((int (*)(int, int, int, int, int))fn_8023875C)(arg0, arg1 - 3, arg2, arg3, 9); }
 
 void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
