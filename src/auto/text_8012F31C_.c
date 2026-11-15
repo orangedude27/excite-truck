@@ -10,6 +10,20 @@ extern s32 fn_8012850C(s32, s32 *);
 
 extern char lbl_8032AFB8[];
 extern char lbl_8032AFD4[];
+/* A byte buffer of the given size allocated off the heap (heap tag
+   "MemStream"); it is the storage a MemStreamPtr cursor reads and writes. */
+typedef struct MemStream {
+    u8 *buffer; /* 0x00 backing buffer, size bytes */
+    s32 size;   /* 0x04 bytes the buffer holds */
+} MemStream;
+
+/* A read/write cursor over a MemStream (heap tag "MemStreamPtr"): the Read,
+   Write and Seek helpers below work on pos, which they advance by what they
+   moved. */
+typedef struct MemStreamPtr {
+    MemStream *stream; /* 0x00 buffer this cursor reads and writes */
+    s32 pos;           /* 0x04 byte offset of the next access */
+} MemStreamPtr;
 /* Allocate an 8-byte MemStream object tagged "MemStream" (proposed name:
    MemStream_Create): store the requested buffer size at +4 and allocate the
    backing buffer (tagged "MemStream") at +0. Returns NULL on allocation failure. */
