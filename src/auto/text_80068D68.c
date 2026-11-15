@@ -10356,6 +10356,7 @@ void fn_8007C794(void) {
     btm_sec_rmt_name_request_complete(0, 0, 0x1F);
 }
 
+// Initialize Bluetooth Manager control block and start BTM subsystems.
 void btm_init(void) {
     u8 *base = lbl_803C0F78;
 
