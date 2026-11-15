@@ -21,28 +21,30 @@ void fn_8025CE78(void) {
     fn_80012810();
 }
 
-void *fn_8025D96C(void *arg0, int arg1)
+/* Destructor-like cleanup: clears a global state, zeroes fields at +0x18..+0x20
+ * when present, and optionally deletes the object. */
+void *fn_8025D96C(void *self, int shouldDelete)
 {
-  char *new_var2;
-  unsigned int new_var;
-  if (arg0)
+  char *basePtr;
+  unsigned int offset;
+  if (self)
   {
     int zero = 0;
-    new_var2 = (char *) arg0;
+    basePtr = (char *) self;
     lbl_8055F3C4 = 0;
-    if (((new_var2 + 0x18) != 0) && ((((char *) arg0) + 0x18) != 0))
+    if (((basePtr + 0x18) != 0) && ((((char *) self) + 0x18) != 0))
     {
-      new_var = 0x18;
-      *((int *) (((char *) arg0) + new_var)) = zero;
-      *((int *) (((char *) arg0) + 0x1c)) = zero;
-      *((int *) (((char *) arg0) + 0x20)) = zero;
+      offset = 0x18;
+      *((int *) (((char *) self) + offset)) = zero;
+      *((int *) (((char *) self) + 0x1c)) = zero;
+      *((int *) (((char *) self) + 0x20)) = zero;
     }
-    if (arg1 > 0)
+    if (shouldDelete > 0)
     {
-      fn_80128668(arg0);
+      fn_80128668(self);
     }
   }
-  return arg0;
+  return self;
 }
 
 void *fn_8025D9D0(void *arg0) {
