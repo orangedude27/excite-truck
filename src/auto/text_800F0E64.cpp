@@ -3500,7 +3500,7 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* sel
    sound group whose wave data lies inside the address range [start, end]
    (inclusive), so those groups are read back from the archive the next time
    they play; used when a sound memory pool is handed back.  The sibling clone
-   at 0x800F6E9C clears the group's file-data address instead.  The table's
+   at 0x800F6EC4 clears the group's file-data address instead.  The table's
    count word sits one word before the first record, so walking it in 8-byte
    steps from its base reaches each record four bytes later. */
 extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self, u32 start, u32 end) {
