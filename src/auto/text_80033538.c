@@ -178,13 +178,17 @@ void fn_80033A34(void *paramBlock, float tempo) {
     #undef pb
 }
 
-void fn_80033AAC(void *arg0, void *arg1) {
- int state=OSDisableInterrupts();
- *(unsigned short *)((char *)arg0+0x1F6)=*(unsigned short *)arg1;
- *(unsigned short *)((char *)arg0+0x1F8)=*(unsigned short *)((char *)arg1+2);
- *(unsigned short *)((char *)arg0+0x1FA)=*(unsigned short *)((char *)arg1+4);
- *(unsigned int *)((char *)arg0+0x1C)|=0x80000;
- OSRestoreInterrupts(state);
+/* Copy three 16-bit values into the voice parameter block and set reinit flag, with interrupts disabled. */
+void fn_80033AAC(void *paramBlock, void *values) {
+    int intsDisabled;
+    unsigned short *v = (unsigned short *)values;
+
+    intsDisabled = OSDisableInterrupts();
+    *(unsigned short *)((char *)paramBlock + 0x1F6) = v[0];
+    *(unsigned short *)((char *)paramBlock + 0x1F8) = v[1];
+    *(unsigned short *)((char *)paramBlock + 0x1FA) = v[2];
+    *(unsigned int *)((char *)paramBlock + 0x1C) |= 0x80000;
+    OSRestoreInterrupts(intsDisabled);
 }
 
 /* Copy four filter coefficient halfwords into the AX voice parameter block and
