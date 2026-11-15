@@ -650,12 +650,14 @@ extern "C" void fn_800E2C98(void *arg0) {
     *(int *)((char *)arg0 + 8) = (int)p;
 }
 
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *self, int shouldDelete) {
+    /* nw4hbm::snd::MemorySoundArchive destructor: destroy base link list, then
+     * free the object when requested (shouldDelete > 0). */
+    if (self != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma dont_inline on
