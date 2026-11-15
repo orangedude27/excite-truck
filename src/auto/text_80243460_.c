@@ -24,8 +24,8 @@ typedef struct MenuListObject {
     /* 0x14 */ s32 field_14;
     /* 0x18 */ char *text;     /* string the player is typing in */
     /* 0x1C */ s32 textLimit;  /* its buffer size, at most 11 */
-    /* 0x20 */ s32 font;
-    /* 0x24 */ char *field_24;
+    /* 0x20 */ void *font;     /* gText font block, loaded by fn_80232578 */
+    /* 0x24 */ void *image;    /* image handle, loaded by fn_802C5130 */
     /* 0x28 */ u8 edited;
     /* 0x29 */ u8 toggle;      /* flips between the two labels of a 2-char entry */
     /* 0x2C */ s32 groupIndex; /* menu table group (page) the cursor is on */
