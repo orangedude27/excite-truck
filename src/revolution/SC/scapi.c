@@ -66,16 +66,19 @@ u8 SCGetProgressiveMode(void) {
     return progressive;
 }
 
+/* Return whether the screen saver is enabled, read from the System Configuration's
+   IPL screen-saver item (SC_ITEM_IPL_SSV, id 0xA); enabled is returned when the item
+   is missing, and any value other than TRUE is reported as disabled. */
 u8 SCGetScreenSaverMode(void) {
-    u8 item;
+    u8 screenSaver;
 
-    if (!SCFindU8Item(&item, SC_ITEM_IPL_SSV)) {
-        item = TRUE;
-    } else if (item != TRUE) {
-        item = FALSE;
+    if (!SCFindU8Item(&screenSaver, SC_ITEM_IPL_SSV)) {
+        screenSaver = TRUE;
+    } else if (screenSaver != TRUE) {
+        screenSaver = FALSE;
     }
 
-    return item;
+    return screenSaver;
 }
 
 u8 SCGetSoundMode(void) {
