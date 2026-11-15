@@ -343,16 +343,28 @@ static void UpdatePriority(OSThread* thread) {
     }
 }
 
+/**
+ * Priority inheritance: lifts a mutex owner to the priority of the thread waiting
+ * behind it (OSLockMutex passes the waiter's priority). The smaller priority number
+ * is the more urgent one, so the walk stops once the thread already outranks
+ * `prio`, and a suspended thread is left alone because the scheduler cannot see it
+ * anyway. SetEffectivePriority requeues the thread and hands back the owner of the
+ * mutex that thread is itself sleeping on, so the boost climbs the whole lock
+ * chain until it runs out (NULL).
+ */
 void __OSPromoteThread(OSThread* thread, s32 prio) {
     while (TRUE) {
+        // Held off the CPU: no point boosting a thread the scheduler will not pick.
         if (thread->suspend > 0) {
             return;
         }
 
+        // Already at least as urgent as the thread waiting on it.
         if (thread->priority <= prio) {
             return;
         }
 
+        // Requeue at the new priority; the thread owning this one's mutex is next.
         thread = SetEffectivePriority(thread, prio);
         if (thread == NULL) {
             return;
