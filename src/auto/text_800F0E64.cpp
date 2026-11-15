@@ -3899,114 +3899,115 @@ extern "C" const char lbl_80325624[];
 #pragma push
 #pragma dont_inline off
 #pragma always_inline on
-extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(void *arg0) {
-    register void *temp_r29;
-    register void *temp_r30;
-    s16 sp8;
+/* Execute the stream data load task: open the stream file, validate/read data into the buffer, handle ADPCM loop context, and notify the load command callback. */
+extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(void *task) {
+    register void *dynamicCastResult;
+    register void *mutex;
+    s16 adpcmLoopContext[1];
     u8 padding[6];
-    u8 sp10[0x200];
-    s16 *var_r31;
-    s32 temp_r25;
-    s32 temp_r26;
-    register s32 temp_r27;
-    register s32 temp_r29_2;
-    register s32 temp_r30_2;
-    register s32 temp_r5;
-    u8 *temp_r6;
-    s32 var_r0;
-    s32 var_r29_2;
-    void **temp_r3;
-    void **temp_r3_10;
-    void **temp_r3_2;
-    void **temp_r3_3;
-    void **temp_r3_4;
-    void **temp_r3_5;
-    void **temp_r3_6;
-    void **temp_r3_7;
-    void **temp_r3_8;
-    void **temp_r3_9;
-    void **var_r3;
+    u8 streamBuffer[0x200];
+    s16 *adpcmContextOut;
+    s32 channelBufferAddr;
+    s32 blockSizeAligned;
+    register s32 destAddr;
+    register s32 bytesRead;
+    register s32 bufferBase;
+    register s32 tempCalc;
+    u8 *bufferPtr;
+    s32 zeroOffset;
+    s32 channelIndex;
+    void **stream;
+    void **callbackForNotify;
+    void **callbackOnOpenFail;
+    void **streamForCanSeek;
+    void **streamForCanRead;
+    void **callbackOnValidateFail;
+    void **streamForSeek;
+    void **streamForRead;
+    void **streamForClose;
+    void **callbackOnReadFail;
+    void **unusedVar;
 
-    DCInvalidateRange(M2C_FIELD(arg0, s32 *, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
-    temp_r29 = (void *)M2C_FIELD(arg0, void **, 0x3C);
-    OSLockMutex(temp_r29);
-    M2C_FIELD(arg0, void ***, 0x14) = (void **)detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi((void *)M2C_FIELD(arg0, s32 *, 0x18), (unsigned long)M2C_FIELD(arg0, s32 *, 0x1C), &sp10, 0x200);
-    OSUnlockMutex(temp_r29);
-    temp_r3 = M2C_FIELD(arg0, void ***, 0x14);
-    if (temp_r3 == 0) {
-        temp_r3_2 = M2C_FIELD(arg0, void ***, 0x10);
-        if (temp_r3_2 != 0) {
-            ((DummyStrmLoadTaskCallback *)temp_r3_2)->f2(0);
+    DCInvalidateRange(M2C_FIELD(task, s32 *, 0x20), M2C_FIELD(task, u32 *, 0x24));
+    dynamicCastResult = (void *)M2C_FIELD(task, void **, 0x3C);
+    OSLockMutex(dynamicCastResult);
+    M2C_FIELD(task, void ***, 0x14) = (void **)detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi((void *)M2C_FIELD(task, s32 *, 0x18), (unsigned long)M2C_FIELD(task, s32 *, 0x1C), &streamBuffer, 0x200);
+    OSUnlockMutex(dynamicCastResult);
+    stream = M2C_FIELD(task, void ***, 0x14);
+    if (stream == 0) {
+        callbackOnOpenFail = M2C_FIELD(task, void ***, 0x10);
+        if (callbackOnOpenFail != 0) {
+            ((DummyStrmLoadTaskCallback *)callbackOnOpenFail)->f2(0);
         }
     } else {
-        if (((DummyStrmLoadStream *)temp_r3)->f20() == 0) {
+        if (((DummyStrmLoadStream *)stream)->f20() == 0) {
             goto fail_6f1c;
         }
-        temp_r3_3 = M2C_FIELD(arg0, void ***, 0x14);
-        if (((DummyStrmLoadStream *)temp_r3_3)->f11() != 0) {
+        streamForCanRead = M2C_FIELD(task, void ***, 0x14);
+        if (((DummyStrmLoadStream *)streamForCanRead)->f11() != 0) {
             goto success_6f5c;
         }
 fail_6f1c:
-        temp_r3_4 = M2C_FIELD(arg0, void ***, 0x14);
-        ((DummyStrmLoadStream *)temp_r3_4)->f4();
-        temp_r3_5 = M2C_FIELD(arg0, void ***, 0x10);
-        M2C_FIELD(arg0, void ***, 0x14) = 0;
-        if (temp_r3_5 != 0) {
-            ((DummyStrmLoadTaskCallback *)temp_r3_5)->f2(0);
+        streamForClose = M2C_FIELD(task, void ***, 0x14);
+        ((DummyStrmLoadStream *)streamForClose)->f4();
+        callbackOnValidateFail = M2C_FIELD(task, void ***, 0x10);
+        M2C_FIELD(task, void ***, 0x14) = 0;
+        if (callbackOnValidateFail != 0) {
+            ((DummyStrmLoadTaskCallback *)callbackOnValidateFail)->f2(0);
         }
         goto done;
 success_6f5c:
-        temp_r29 = StrmLoadDynamicCast(M2C_FIELD(arg0, void ***, 0x14), &lbl_8055DE98);
-        if (temp_r29 != 0) {
-            M2C_FIELD(temp_r29, s32 *, 0x68) = 1;
+        dynamicCastResult = StrmLoadDynamicCast(M2C_FIELD(task, void ***, 0x14), &lbl_8055DE98);
+        if (dynamicCastResult != 0) {
+            M2C_FIELD(dynamicCastResult, s32 *, 0x68) = 1;
         }
-        temp_r3_6 = M2C_FIELD(arg0, void ***, 0x14);
-        ((DummyStrmLoadStream *)temp_r3_6)->f17(M2C_FIELD(arg0, s32 *, 0x28), 0);
-        temp_r3_7 = M2C_FIELD(arg0, void ***, 0x14);
-        temp_r29_2 = ((DummyStrmLoadStream *)temp_r3_7)->f5((void *)M2C_FIELD(arg0, void **, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
-        temp_r30 = (void *)M2C_FIELD(arg0, void **, 0x3C);
-        OSLockMutex(temp_r30);
-        temp_r3_8 = M2C_FIELD(arg0, void ***, 0x14);
-        ((DummyStrmLoadStream *)temp_r3_8)->f4();
-        M2C_FIELD(arg0, void ***, 0x14) = 0;
-        OSUnlockMutex(temp_r30);
-        if (temp_r29_2 != -3) {
-            if ((u32)temp_r29_2 != (u32)M2C_FIELD(arg0, u32 *, 0x24)) {
-                if (temp_r29_2 == 0) {
+        streamForSeek = M2C_FIELD(task, void ***, 0x14);
+        ((DummyStrmLoadStream *)streamForSeek)->f17(M2C_FIELD(task, s32 *, 0x28), 0);
+        streamForRead = M2C_FIELD(task, void ***, 0x14);
+        bytesRead = ((DummyStrmLoadStream *)streamForRead)->f5((void *)M2C_FIELD(task, void **, 0x20), M2C_FIELD(task, u32 *, 0x24));
+        mutex = (void *)M2C_FIELD(task, void **, 0x3C);
+        OSLockMutex(mutex);
+        streamForClose = M2C_FIELD(task, void ***, 0x14);
+        ((DummyStrmLoadStream *)streamForClose)->f4();
+        M2C_FIELD(task, void ***, 0x14) = 0;
+        OSUnlockMutex(mutex);
+        if (bytesRead != -3) {
+            if ((u32)bytesRead != (u32)M2C_FIELD(task, u32 *, 0x24)) {
+                if (bytesRead == 0) {
                     Warning__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80324E88, 0x79C, (const char *)&lbl_80325624);
                 }
-                temp_r3 = (void **)((void *(*)(void))fn_800FDE60)();
-                ((void (*)(void *, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(temp_r3, M2C_FIELD(arg0, u32 *, 0xC));
-                temp_r3_9 = M2C_FIELD(arg0, void ***, 0x10);
-                if (temp_r3_9 != 0) {
-                    ((DummyStrmLoadTaskCallback *)temp_r3_9)->f2(0);
+                stream = (void **)((void *(*)(void))fn_800FDE60)();
+                ((void (*)(void *, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(stream, M2C_FIELD(task, u32 *, 0xC));
+                callbackOnReadFail = M2C_FIELD(task, void ***, 0x10);
+                if (callbackOnReadFail != 0) {
+                    ((DummyStrmLoadTaskCallback *)callbackOnReadFail)->f2(0);
                 }
             } else {
-                temp_r30_2 = M2C_FIELD(arg0, s32 *, 0x20);
-                var_r31 = &sp8;
-                for (var_r29_2 = 0; var_r29_2 < (s32)M2C_FIELD(arg0, s32 *, 0x2C); var_r29_2++) {
-                    if ((s32)M2C_FIELD(arg0, u8 *, 0x38) != 0) {
-                        *var_r31 = *(u8 *)(var_r29_2 * ((M2C_FIELD(arg0, s32 *, 0x30) + 0x1F) & 0xFFFFFFE0) + (temp_r30_2 + M2C_FIELD(arg0, s32 *, 0x34)));
+                bufferBase = M2C_FIELD(task, s32 *, 0x20);
+                adpcmContextOut = &adpcmLoopContext[0];
+                for (channelIndex = 0; channelIndex < (s32)M2C_FIELD(task, s32 *, 0x2C); channelIndex++) {
+                    if ((s32)M2C_FIELD(task, u8 *, 0x38) != 0) {
+                        *adpcmContextOut = *(u8 *)(channelIndex * ((M2C_FIELD(task, s32 *, 0x30) + 0x1F) & 0xFFFFFFE0) + (bufferBase + M2C_FIELD(task, s32 *, 0x34)));
                     }
-                    if ((void **)M2C_FIELD(arg0, void ***, 0x10) != 0) {
-                        temp_r5 = M2C_FIELD(arg0, s32 *, 0x30) + 0x1F;
-                        temp_r26 = temp_r5 & 0xFFFFFFE0;
-                        temp_r6 = (u8 *)M2C_FIELD(arg0, void **, 0x20);
-                        var_r0 = M2C_FIELD(arg0, s32 *, 0x34);
-                        temp_r5 = var_r29_2 * temp_r26;
-                        temp_r25 = (s32)(temp_r6 + var_r0 + temp_r5);
-                        temp_r27 = fn_800FD810(M2C_FIELD(arg0, void **, 0x10), var_r29_2);
-                        memcpy((void *)temp_r27, (void *)temp_r25, temp_r26);
-                        DCFlushRange(temp_r27, temp_r26);
+                    if ((void **)M2C_FIELD(task, void ***, 0x10) != 0) {
+                        tempCalc = M2C_FIELD(task, s32 *, 0x30) + 0x1F;
+                        blockSizeAligned = tempCalc & 0xFFFFFFE0;
+                        bufferPtr = (u8 *)M2C_FIELD(task, void **, 0x20);
+                        zeroOffset = M2C_FIELD(task, s32 *, 0x34);
+                        tempCalc = channelIndex * blockSizeAligned;
+                        channelBufferAddr = (s32)(bufferPtr + zeroOffset + tempCalc);
+                        destAddr = fn_800FD810(M2C_FIELD(task, void **, 0x10), channelIndex);
+                        memcpy((void *)destAddr, (void *)channelBufferAddr, blockSizeAligned);
+                        DCFlushRange(destAddr, blockSizeAligned);
                     }
-                    var_r31 += 1;
+                    adpcmContextOut += 1;
                 }
-                if (((s32)M2C_FIELD(arg0, u8 *, 0x38) != 0) && ((void **)M2C_FIELD(arg0, void ***, 0x10) != 0)) {
-                    SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(M2C_FIELD(arg0, void **, 0x10), M2C_FIELD(arg0, s32 *, 0x2C), (u16 *)&sp8);
+                if (((s32)M2C_FIELD(task, u8 *, 0x38) != 0) && ((void **)M2C_FIELD(task, void ***, 0x10) != 0)) {
+                    SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(M2C_FIELD(task, void **, 0x10), M2C_FIELD(task, s32 *, 0x2C), (u16 *)&adpcmLoopContext[0]);
                 }
-                temp_r3_10 = M2C_FIELD(arg0, void ***, 0x10);
-                if (temp_r3_10 != 0) {
-                    ((DummyStrmLoadTaskCallback *)temp_r3_10)->f2(1);
+                callbackForNotify = M2C_FIELD(task, void ***, 0x10);
+                if (callbackForNotify != 0) {
+                    ((DummyStrmLoadTaskCallback *)callbackForNotify)->f2(1);
                 }
             }
         }
