@@ -2259,9 +2259,12 @@ extern "C" void fn_800E5A8C(void) {
 }
 
 extern "C" void fn_80033538(unsigned short);
-extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *self, int index, const void *address) {
+/* nw4hbm::snd::detail::AxVoice::SetBaseAddress(int, const void*): point one of
+ * this voice's channels at new sample data.  Interrupts stay off across the
+ * store so the AX mixers never read a half-updated address. */
+extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(AxVoice *voice, int channelIndex, const void *address) {
     unsigned int level = OSDisableInterrupts();
-    *(const void **)((char *)self + index * 0x34 + 0x2C) = address;
+    voice->channel[channelIndex].dataAddr = (void *)address;
     OSRestoreInterrupts(level);
 }
 
