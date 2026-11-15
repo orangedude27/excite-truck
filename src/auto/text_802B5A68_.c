@@ -107,8 +107,10 @@ void *fn_802B5AC0(void *object, s32 shouldDelete) {
     return object;
 }
 
-__declspec(section ".data") extern u32 lbl_802FAB30;
-extern u32 lbl_8055CE30;
+/* Display name of each debug view mode, indexed by mode: "Objects", "Advanced",
+   "Material-Map", "Road-Opacity". */
+__declspec(section ".data") extern const char *lbl_802FAB30[4];
+extern const char lbl_8055CE30; /* "<unk>" -- what an out-of-range mode shows */
 u32 fn_802B5B18(s32 arg0) {
     u32 vals[4];
     u32 *p = (u32 *)&lbl_802FAB30;
