@@ -529,19 +529,20 @@ void fn_802E7FD0(void) {
     fn_802EC884();
 }
 #pragma scheduling invalid_target
-void fn_802E830C(int *p) {
-    p[0] = 3;
-    p[1] = 0;
-    p[2] = 2;
-    p[3] = 1;
-    p[4] = 7;
-    p[9] = -1;
-    p[12] = 4;
-    p[13] = -1;
-    p[10] = -1;
-    p[11] = -1;
-    p[5] = 5;
-    p[6] = 6;
+/* Initializes the 14-entry field-offset/state table with its default index map. */
+void fn_802E830C(int *table) {
+    table[0] = 3;
+    table[1] = 0;
+    table[2] = 2;
+    table[3] = 1;
+    table[4] = 7;
+    table[9] = -1;
+    table[12] = 4;
+    table[13] = -1;
+    table[10] = -1;
+    table[11] = -1;
+    table[5] = 5;
+    table[6] = 6;
 }
 #pragma scheduling on
 /* Copy an indexed rjoy input/state record (0x638 bytes per entry) into an output buffer and return its status byte. */
