@@ -303,7 +303,7 @@ extern int __cntlzw(unsigned int);
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
     s32 count;
-    register s32 result;
+    s32 result;
     void *base;
     void *p;
     s32 i;
@@ -314,7 +314,8 @@ extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
     base = p;
     result = (u32)__cntlzw((u32)(fn_80132E7C(p, count * 0x44) - result)) >> 5;
     if (result != 0) {
-        for (i = 0; i < count; i++) {
+        i=0;
+        while (i < count) {
             fn_8012A388(p);
             if (*(s32 *)((char *)p + 0x2C) + *(s32 *)((char *)p + 0x28) <= arg1) {
                 if (fn_8012A470(arg0, i, p, base) == 0) {
@@ -323,6 +324,7 @@ extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
                 }
             }
             p = (char *)p + 0x44;
+            i++;
         }
     } else {
         fn_802E30C8(lbl_8032A7E8, arg0);
@@ -3340,7 +3342,9 @@ extern "C" void fn_8012C9C8(void) {
   extern "C" u8 lbl_8055DFF9;
   extern "C" s32 lbl_8055E00C;
   extern "C" void **lbl_8055E010;
-  extern "C" void fn_8012CA40(void *arg0) {
+/* Return one item to the shared pool tracked by lbl_8055E010 and destroy the pool
+ * when the last outstanding reference is released. */
+extern "C" void fn_8012CA40(void *arg0) {
     fn_8012A364(lbl_8055E010, arg0);
     if (--lbl_8055E00C == 0) {
         delete (Unk8012A570 *)lbl_8055E010;
