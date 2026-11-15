@@ -5804,8 +5804,8 @@ void fn_800656E8(s32 chan, WPADStatusEx* pReport)
         u32 extDisconnected; /* 0x788 bit 7 of the last report's status byte */
         u8 _gap78C[0x7B4 - 0x78C];
         s16 accX0g;          /* 0x7B4 the remote's accelerometer zero-g ... */
-        s16 accY0g;          /* 0x7B6 ... calibration, read back from its ... */
-        s16 accZ0g;          /* 0x7B8 ... memory by fn_80065350-ish code */
+        s16 accY0g;          /* 0x7B6 ... calibration (0x212 until read out ... */
+        s16 accZ0g;          /* 0x7B8 ... of its memory; 0x7BA.. holds 1-g) */
         u8 _gap7BA[0x7F8 - 0x7BA];
         u32 dataFormat;      /* 0x7F8 WPADDataFormat the remote is set to */
         s32 status;          /* 0x7FC WPADResult of the last read */
