@@ -170,6 +170,8 @@ int fn_80246AA8(int arg0, int arg1) {
     return arg0;
 }
 
+/* Destroys a PSSystem::SeqHeap object: installs its vtable, tears down the owned
+ * resource at +0x18, and optionally frees the object storage. */
 void *__dt__Q28PSSystem7SeqHeapFv_80246C48(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80343780;
