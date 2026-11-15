@@ -1121,12 +1121,14 @@ extern "C" void *fn_800ECAEC(void *arg0) {
 }
 
 extern "C" void *fn_800F26FC(void *, unsigned int);
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800ECB38(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_800F26FC(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800ECB38(void *self, int shouldDelete) {
+    /* nw4hbm::snd::MemorySoundArchive destructor variant: run base teardown, then
+     * free the object when requested (shouldDelete > 0). */
+    if (self != 0) {
+        fn_800F26FC(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma push
