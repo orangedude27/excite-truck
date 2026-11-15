@@ -628,6 +628,10 @@ extern "C" void fn_80218EBC(void *arg0, void *arg1) {
     dst[3] = fourth;
 }
 
+/* Clip the drawing object's rectangle to the one given: the object keeps only the part
+ * it shares with (left, top, right, bottom) -- the later of the two left and top edges,
+ * the earlier of the two right and bottom ones. fn_80218E98 and fn_80218EBC save and
+ * restore these same four words around a clipped draw. */
 extern "C" void fn_80218EE0(void *arg0, s32 left, s32 top, s32 right, s32 bottom) {
     /* the object's clip rectangle, the four words at +0x14 */
     struct ClipRect {
@@ -664,7 +668,6 @@ extern "C" void fn_80218EE0(void *arg0, s32 left, s32 top, s32 right, s32 bottom
         newBottom = ownBottom;
     clip->bottom = newBottom;
 }
-
 #pragma dont_inline on
 extern "C" s32 fn_80218F34(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     *(void **)arg0 = lbl_8033FB38;
