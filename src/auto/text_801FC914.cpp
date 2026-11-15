@@ -1440,6 +1440,9 @@ extern "C" void fn_801FF420(void*);
 extern "C" void fn_801FF420(void* arg0) {
     char* entry;
     int i;
+
+    /* Iterates over the pool entries at arg0 (count at +0x2C0) and applies
+     * fn_801FF644 to each 0x58-byte entry. */
     i = 0;
     entry = (char*)arg0;
     while (i < *(int*)((char*)arg0 + 0x2C0)) {
