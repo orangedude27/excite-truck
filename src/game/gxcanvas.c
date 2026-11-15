@@ -328,25 +328,35 @@ void fn_802C33A8(s32 x, s32 y, u32 packedColor) {
     }
 }
 
-void fn_802C3424(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u32 arg4) {
-    s8 mode = *(s8 *)lbl_8055FC00;
-    s32 flag = 0;
-    if (mode != 5 && mode != 6)
-        flag = 1;
-    if (flag != 0) {
-        if (*(volatile s8 *)lbl_8055FC00 != 1) {
-            fn_802C3478(arg0, arg1, arg2, arg3, arg4);
+/* gxRect (proposed name): fill the rectangle (x0, y0)-(x1, y1) on the canvas
+ * every gxCanvas* routine of this file draws on (lbl_8055FC00, a GxCanvas *)
+ * with the colour in `color`.  Its format byte (a signed read of +0x00) picks
+ * the filler: a 16-bit canvas (any format but 5 and 6) is filled by
+ * fn_802C3478, except format 1, whose 4-bit-per-component pixels keep their
+ * alpha nibble and so go through fn_802C365C; the 4-byte format 5 goes to
+ * fn_802C356C; format 6 has no filler at all and is left untouched - gxPoint
+ * reports that one, this does not. */
+void fn_802C3424(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
+    s8 format = *(s8 *)lbl_8055FC00;
+    s32 is16Bit = 0;
+    if (format != CANVAS_FORMAT_RGBA && format != CANVAS_FORMAT_NONE)
+        is16Bit = 1;
+    if (is16Bit != 0) {
+        if (*(volatile s8 *)lbl_8055FC00 != CANVAS_FORMAT_RGBA4444) {
+            fn_802C3478(x0, y0, x1, y1, color);
             return;
         }
-        fn_802C365C(arg0, arg1, arg2, arg3, arg4);
+        fn_802C365C(x0, y0, x1, y1, color);
         return;
     }
-    if (*(volatile s8 *)lbl_8055FC00 != 5)
+    if (*(volatile s8 *)lbl_8055FC00 != CANVAS_FORMAT_RGBA)
         return;
-    fn_802C356C(arg0, arg1, arg2, arg3, arg4);
+    fn_802C356C(x0, y0, x1, y1, color);
 }
-
 #pragma pop
+#pragma push
+#pragma processor 750
+#pragma inline_depth(0)
 
 #pragma push
 #pragma processor 750
