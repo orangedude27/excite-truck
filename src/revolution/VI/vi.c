@@ -1418,6 +1418,7 @@ u32 VIGetCurrentLine(void)
     return halfLine >> 1U;
 }
 
+/* Return the current TV video format by querying the VI state under interrupt lock. */
 VITVFormat VIGetTvFormat(void)
 {
     return VIGetTvFormatInline();
