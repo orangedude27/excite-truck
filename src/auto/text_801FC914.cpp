@@ -1545,15 +1545,17 @@ void fn_801FF6FC(void* arg0, float farg0) {
 extern "C" void fn_801FF994(void*, void*);
 extern "C" void fn_801FCAAC(void*, float);
 void fn_801FCAC0(void*);
-void fn_801FF770(void* arg0) {
-    void *entry;
-    int i;
-    i = 0;
-    entry = arg0;
-    while (i < *(int *)((char *)arg0 + 0x4C0)) {
-        fn_801FF994(arg0, entry);
-        entry = (char *)entry + 0x98;
-        i++;
+void fn_801FF770(void* container) {
+    void* entry;
+    int index;
+
+    /* Calls fn_801FF994 for each 0x98-byte entry in the container (count at +0x4C0). */
+    index = 0;
+    entry = container;
+    while (index < *(int*)((char*)container + 0x4C0)) {
+        fn_801FF994(container, entry);
+        entry = (char*)entry + 0x98;
+        index++;
     }
 }
 
