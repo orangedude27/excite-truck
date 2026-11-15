@@ -782,7 +782,9 @@ extern f32 lbl_80561650;
 extern void fn_8001DFF0(void);
 extern u32 fn_80149658(s32, void *, void *, s32);
 extern unsigned long lbl_80559E94;
-void fn_8014AD74(void *arg0) {
+void fn_8014AD74(void *obj) {
+    /* Advance the float timer at +0x8 by a fixed rate, scaled by the frame step
+     * when fn_80176A1C() reports state 2. */
     f32 step;
     s32 state = fn_80176A1C() - 2;
     if (((u32)__cntlzw((u32)state) >> 5) != 0) {
@@ -790,7 +792,7 @@ void fn_8014AD74(void *arg0) {
     } else {
         step = lbl_8056164C;
     }
-    *(f32 *)((u8 *)arg0 + 8) += lbl_80561650 * step;
+    *(f32 *)((u8 *)obj + 8) += lbl_80561650 * step;
 }
 
 s32 fn_8014ADD0(void *arg0) {
