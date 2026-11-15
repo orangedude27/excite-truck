@@ -46,13 +46,16 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FF9B8(void *arg0, 
     return arg0;
 }
 
-extern "C" void *fn_800FFA10(void *arg0, int arg1) {
-    __ct__Q44nw4r3snd6detail10BasicSoundFv(arg0);
-    *(void **)arg0 = lbl_803275EC;
-    __ct__Q46nw4hbm3snd6detail9WsdPlayerFv((char *)arg0 + 0xD8, lbl_803275EC);
-    *(int *)((char *)arg0 + 0x1B0) = arg1;
-    *(int *)((char *)arg0 + 0x1AC) = 0;
-    return arg0;
+/* Construct a WaveSound: initialize its BasicSound base, set vtable lbl_803275EC,
+ * construct the embedded WsdPlayer at +0xD8, store the owner/player pointer at +0x1B0,
+ * and clear the field at +0x1AC. */
+extern "C" void *fn_800FFA10(void *sound, int owner) {
+    __ct__Q44nw4r3snd6detail10BasicSoundFv(sound);
+    *(void **)sound = lbl_803275EC;
+    __ct__Q46nw4hbm3snd6detail9WsdPlayerFv((char *)sound + 0xD8, lbl_803275EC);
+    *(int *)((char *)sound + 0x1B0) = owner;
+    *(int *)((char *)sound + 0x1AC) = 0;
+    return sound;
 }
 
 extern "C" int fn_800FFA6C(int arg0, int arg1) {
