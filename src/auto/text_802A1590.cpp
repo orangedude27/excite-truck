@@ -1297,15 +1297,16 @@ extern "C" int lbl_80349AD8[];
 extern "C" void fn_802A3500(void*, s32);
 extern "C" void fn_802A30BC(void*, s32);
 extern "C" void fn_802A31DC(void*, s32);
-extern "C" void* __dt__14CollisionSpaceFv_802A392C(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = lbl_80349AD8;
-        fn_8028E398(((void**)arg0)[1]);
-        if (arg1 > 0) {
-            ((s32 (*)(void*))fn_80128668)(arg0);
+extern "C" void* __dt__14CollisionSpaceFv_802A392C(void* object, s32 shouldDelete) {
+    /* Destructor: restore vtable, release owned resource at +4, and optionally delete. */
+    if (object != 0) {
+        *(void**)object = lbl_80349AD8;
+        fn_8028E398(((void**)object)[1]);
+        if (shouldDelete > 0) {
+            ((s32 (*)(void*))fn_80128668)(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 extern "C" float fn_80287BC8(float, float);
