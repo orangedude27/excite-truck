@@ -88,36 +88,28 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
     u32 packed;
     s32 pointOffset;
     s32 recordOffset;
-    s32 count;
     s32 c0, c1, c2, c3;
     s32 state;
-
+    s32 count;
     record = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + entryIndex * 0x28;
     color = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20) + colorIndex * 8;
     pointOffset = 0;
     recordOffset = 0;
-    count = 0;
-    while (count < record[2]) {
+    for (count = 0; count < record[2]; count++) {
         u8 *vertex = record + recordOffset;
         f32 xScale = *(f32 *)(arg1 + 4);
         f32 x = *(f32 *)(vertex + 8);
         volatile f32 *dest = (volatile f32 *)((u8 *)frame.points + pointOffset);
         f32 y = *(f32 *)(vertex + 0xC);
-        f32 yScale;
-        f32 xAdd;
-        f32 xx;
-        f32 yy;
+        f32 yScale = *(f32 *)(arg1 + 8);
+        f32 xAdd = *(f32 *)(arg1 + 0xC);
+        f32 xx = x * xScale;
+        f32 yy = x * yScale;
         f32 xy;
         f32 yAdd;
         f32 yx;
         f32 xOrigin;
         f32 yOrigin;
-
-        count++;
-        yScale = *(f32 *)(arg1 + 8);
-        xAdd = *(f32 *)(arg1 + 0xC);
-        xx = x * xScale;
-        yy = x * yScale;
         recordOffset += 8;
         xy = y * xAdd;
         yAdd = *(f32 *)(arg1 + 0x10);
@@ -126,29 +118,23 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
         xOrigin = *(f32 *)(arg1 + 0x14);
         yy += yx;
         yOrigin = *(f32 *)(arg1 + 0x18);
-        frame.points[pointOffset / 4] = xOrigin + xx;
+        dest[0] = xOrigin + xx;
         dest[1] = yOrigin + yy;
         dest[2] = lbl_80563720;
-        frame.points[pointOffset / 4] = frame.points[pointOffset / 4] - lbl_80563724;
+        dest[0] = dest[0] - lbl_80563724;
         pointOffset += 0xC;
         dest[1] = -(dest[1] - lbl_80563728);
     }
-
     packed = *(u32 *)(record + 4);
-    c0 = ((s8)color[7] * 2) + (((s8)color[3] * (s32)((((packed >> 24) & 0xFF) * 2))) / 255);
-    if (c0 > 0) { } else { c0 = 0; }
-    if (c0 < 0xFF) { } else { c0 = 0xFF; }
-    c1 = ((s8)color[4] * 2) + (((s8)color[0] * (s32)((((packed >> 16) & 0xFF) * 2))) / 255);
-    if (c1 > 0) { } else { c1 = 0; }
-    if (c1 < 0xFF) { } else { c1 = 0xFF; }
-    c2 = ((s8)color[5] * 2) + (((s8)color[1] * (s32)((((packed >> 8) & 0xFF) * 2))) / 255);
-    if (c2 > 0) { } else { c2 = 0; }
-    if (c2 < 0xFF) { } else { c2 = 0xFF; }
-    c3 = ((s8)color[6] * 2) + (((s8)color[2] * (s32)((((packed) & 0xFF) * 2))) / 255);
-    if (c3 > 0) { } else { c3 = 0; }
-    if (c3 < 0xFF) { } else { c3 = 0xFF; }
+    if ((c0 = ((s8)color[7] * 2) + (((s8)color[3] * (s32)((((packed >> 24) & 0xFF) * 2))) / 255)) <= 0) c0 = 0;
+    if (c0 >= 0xFF) c0 = 0xFF; else c0 = c0;
+    if ((c1 = ((s8)color[4] * 2) + (((s8)color[0] * (s32)((((packed >> 16) & 0xFF) * 2))) / 255)) <= 0) c1 = 0;
+    if (c1 >= 0xFF) c1 = 0xFF; else c1 = c1;
+    if ((c2 = ((s8)color[5] * 2) + (((s8)color[1] * (s32)((((packed >> 8) & 0xFF) * 2))) / 255)) <= 0) c2 = 0;
+    if (c2 >= 0xFF) c2 = 0xFF; else c2 = c2;
+    if ((c3 = ((s8)color[6] * 2) + (((s8)color[2] * (s32)((((packed) & 0xFF) * 2))) / 255)) <= 0) c3 = 0;
+    if (c3 >= 0xFF) c3 = 0xFF; else c3 = c3;
     packed = ((u32)c0 << 24) | ((u32)(u8)c1 << 16) | ((u32)(u8)c2 << 8) | (u32)(u8)c3;
-
     state = (s32)fn_8022EDC4();
     fn_80231380(&frame.outputs[0], (s32)packed, frame.points[0], frame.points[1], lbl_80563720, lbl_80563720, lbl_80563720);
     fn_80231380(&frame.outputs[6], (s32)packed, frame.points[3], frame.points[4], lbl_80563720, lbl_8056372C, lbl_80563720);
@@ -175,32 +161,31 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
     }
     fn_802C8D74();
 }
-
-#pragma scheduling invalid_target
 void fn_80238FCC(u32 arg0, u32 arg1) {
-    register u8 *data = *(u8 **)((u8 *)arg0 + 0x14);
-    register u32 stride = *(u32 *)(data + 4);
+    u32 a1 = arg1;
+    u8 *data = *(u8 **)((u8 *)arg0 + 0x14);
+    s32 stride = *(s32 *)(data + 4);
     s32 offset = 0;
-    u8 *entry = (u8 *)((*(u32 *)(data + 0x24)) + ((arg1 % stride) * 12));
+    u8 *entry = (u8 *)(*(s32 *)(data + 0x24) + (s32)((a1 % (u32)stride) * 0xC));
     s32 i = 0;
-    while (i < (s32)*(u16 *)entry) {
-        fn_80238BF4((void *)arg0, (u8 *)((*(s32 *)(entry + 8)) + offset));
-        offset += 28;
+    while (i < *(u16 *)entry) {
+        fn_80238BF4((void *)arg0, *(u8 **)(entry + 8) + offset);
+        offset += 0x1C;
         i++;
     }
 }
 
 #pragma dont_inline on
-void fn_8023905C(void *arg0) {
-    *(int *)((char *)arg0 + 0x14) = 0;
-    *(int *)((char *)arg0 + 8) = 0;
-    *(char *)((char *)arg0 + 4) = 1;
-    *(char *)((char *)arg0 + 5) = 1;
-    *(int *)arg0 = fn_802E2C20();
-    *(int *)((char *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0xC) = 0;
+/* Initializes an SWF/animation state: clears data/frame fields, enables playback/loop flags, and records the current time. */
+void fn_8023905C(void *state) {
+    *(int *)((char *)state + 0x14) = 0;
+    *(int *)((char *)state + 8) = 0;
+    *(char *)((char *)state + 4) = 1;
+    *(char *)((char *)state + 5) = 1;
+    *(int *)state = fn_802E2C20();
+    *(int *)((char *)state + 0x10) = 0;
+    *(int *)((char *)state + 0xC) = 0;
 }
-
 void fn_802390B4(void *arg0, s32 arg1) {
     s32 unused;
     u32 version;
@@ -276,12 +261,8 @@ void fn_802390B4(void *arg0, s32 arg1) {
                     entry[1] = t;
                     SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset, 4);
                     for (j = 0; j < 0x20; j += 8) {
-                        u8 *sub = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j;
-                        t = sub[8]; sub[8] = sub[11]; sub[11] = t;
-                        t = sub[9]; sub[9] = sub[10]; sub[10] = t;
-                        sub = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j;
-                        t = sub[12]; sub[12] = sub[15]; sub[15] = t;
-                        t = sub[13]; sub[13] = sub[14]; sub[14] = t;
+                        SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j, 8);
+                        SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j, 12);
                     }
                 }
             }
@@ -364,31 +345,31 @@ extern s32 fn_802CAC28(void *, s32);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_80340B2C[];
 void fn_80239784(void *arg0, s32 arg1) {
-    s32 a;
-    s32 b;
-    u32 *c;
+    s32 offset;
+    s32 i;
+    u8 *data;
     ((void (*)())fn_8023905C)();
     fn_802390B4(arg0, arg1);
-    c = *(u32 **)((u8 *)arg0 + 0x14);
-    if (c == 0) {
+    data = *(u8 **)((u8 *)arg0 + 0x14);
+    if (data == 0) {
         fn_802E30C8(lbl_80340B2C, arg1);
         return;
     }
-    *(s32 *)((u8 *)arg0 + 0x0C) = 0;
-    b = 0;
-    a = 0;
-    *(s32 *)((u8 *)arg0 + 0x10) = (s32)c[1] - 1;
-    while ((u32)b < c[2]) {
-        u8 *d = *(u8 **)((u8 *)c + 0x18) + a;
-        if ((s8)d[4] != 0) {
-            void *e = (void *)fn_802CAC28(d + 4, 0);
-            *(void **)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + a) = e;
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    i = 0;
+    offset = 0;
+    *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)(data + 4) - 1;
+    while ((u32)i < *(u32 *)(data + 8)) {
+        u8 *entry = *(u8 **)(data + 0x18) + offset;
+        if ((s8)entry[4] != 0) {
+            void *r = (void *)fn_802CAC28(entry + 4, 0);
+            *(void **)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = r;
         } else {
-            *(s32 *)d = -1;
+            *(s32 *)entry = -1;
         }
-        a += 0x14;
-        b++;
-        c = *(u32 **)((u8 *)arg0 + 0x14);
+        offset += 0x14;
+        i++;
+        data = *(u8 **)((u8 *)arg0 + 0x14);
     }
 }
 
@@ -396,23 +377,21 @@ void fn_80239784(void *arg0, s32 arg1) {
 #pragma scheduling invalid_target
 void fn_8023986C(void *arg0) {
     s32 offset;
-    unsigned int i;
-    s32 marker;
-    marker = -2;
-    if (*(void **)((char *)arg0 + 0x14) != 0) {
+    u32 i;
+    s32 marker = -2;
+    if (*(void **)((u8 *)arg0 + 0x14) != 0) {
         i = 0;
         offset = 0;
-        while (i < *(unsigned int *)(*(char **)((char *)arg0 + 0x14) + 8)) {
-            s32 v = *(s32 *)(*(char **)(*(char **)((char *)arg0 + 0x14) + 0x18) + offset);
-            if (v != -2) {
+        while (i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8)) {
+            if (*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) != -2) {
                 fn_802CAC54();
-                *(s32 *)(*(char **)(*(char **)((char *)arg0 + 0x14) + 0x18) + offset) = marker;
+                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = marker;
             }
             offset += 0x14;
             i++;
         }
         fn_8012C4D8();
-        *(void **)((char *)arg0 + 0x14) = 0;
+        *(u32 *)((u8 *)arg0 + 0x14) = 0;
     }
 }
 #pragma pop
