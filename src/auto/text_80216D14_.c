@@ -1146,6 +1146,7 @@ extern void *fn_8022EDC4(void);
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_80218574(void *arg0) {
+    /* Render active child UI elements with the appropriate draw-context, alpha, and optional per-element callback. */
     struct State { struct UiRenderMatrix m; float a, b, c; };
     struct VObj;
     struct VTab { void *pad0[10]; void (*f28)(struct VObj *); void *pad1[19]; int (*f78)(struct VObj *); };
