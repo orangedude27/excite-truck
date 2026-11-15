@@ -1093,11 +1093,12 @@ extern "C" s32 fn_8012BC50(void *ownerPtr, void *onRelease, s32 releaseArg) {
     }
     return *(s32 *)(controlBlock + 0x38) == 0;
 }
-extern "C" void *fn_8012BD3C(void *arg0, const char *arg1) {
-    void *entry = arg0;
+/* Finds and returns the first entry in a linked list (next at offset 0xA8) whose name matches (case-insensitive), or NULL if not found. */
+extern "C" void *fn_8012BD3C(void *listHead, const char *name) {
+    void *entry = listHead;
     goto test;
 body:
-    if (stricmp(arg1, (const char *)entry) == 0) goto done;
+    if (stricmp(name, (const char *)entry) == 0) goto done;
     entry = *(void **)((char *)entry + 0xA8);
 test:
     if (entry != 0) goto body;
