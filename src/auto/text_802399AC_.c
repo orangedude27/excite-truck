@@ -340,15 +340,16 @@ __declspec(section ".data") extern s32 lbl_80341108;
 extern s32 fn_802328D4(s32);
 #pragma small_data off
 __declspec(section ".data") extern s32 lbl_8034109C;
-void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(s32 **)((char *)arg0 + 0xC) = &lbl_8034109C;
-        fn_80128670(*(s32 *)((char *)arg0 + 0x10));
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *object, s32 shouldDelete) {
+    /* Destroy a SeqHeap object: reset vtable, release owned heap storage, then optionally delete the object. */
+    if (object != 0) {
+        *(s32 **)((char *)object + 0xC) = &lbl_8034109C;
+        fn_80128670(*(s32 *)((char *)object + 0x10));
+        if (shouldDelete > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 __declspec(section ".data") extern s32 lbl_803410D8;
