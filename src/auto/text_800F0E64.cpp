@@ -546,7 +546,6 @@ extern "C" const char lbl_80324734[];
 extern "C" const char lbl_803247D0[];
 extern "C" const char lbl_80324788[];
 extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) {
-    u32 irq;
     void *ch;
     f32 sa[3];
     f32 sb[4];
@@ -561,7 +560,7 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
     vol *= M2C_FIELD(self, f32 *, 8);
     vol *= SeqTrackPlayer(self)->g15();
     f32 pan = (f32)(s8)M2C_FIELD(self, u8 *, 0x82);
-    pan = 0.0078125f * pan;
+    pan = pan * 0.0078125f;
     f32 pan2 = pan * (f32)M2C_FIELD(self, u8 *, 0x83);
     f32 pitch = 1.0f;
     pitch *= SeqTrackPlayer(self)->g16();
@@ -594,7 +593,7 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
     f22 += SeqTrackPlayer(self)->g20();
     f32 f21 = 0.0f;
     f32 rawp = (f32)((s32)M2C_FIELD(self, u8 *, 0x93) - 0x40);
-    f21 += rawp * 0.015625f;
+    f21 += 0.015625f * rawp;
     f21 += M2C_FIELD(self, f32 *, 0x1C);
     f21 += SeqTrackPlayer(self)->g21();
     f32 f20 = 0.0f;
@@ -604,7 +603,7 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
     int i;
     f32 *pa = sa;
     u8 *q = (u8 *)self;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 3; ++i) {
         *pa = 0.0f;
         *pa += (f32)M2C_FIELD(self, u8 *, 0x90 + i) / 127.0f;
         *pa += M2C_FIELD(q, f32 *, 0x24);
@@ -614,7 +613,7 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
     }
     f32 *pb = sb;
     f32 *pc = sc;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; ++i) {
         *pb = 0.0f;
         *pb += SeqTrackPlayer(self)->g34(i);
         *pc = 0.0f;
@@ -622,7 +621,7 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         pb++;
         pc++;
     }
-    irq = OSDisableInterrupts();
+    u32 irq = OSDisableInterrupts();
     for (ch = M2C_FIELD(self, void **, 0xB8); ch != 0; ch = M2C_FIELD(ch, void **, 0xE4)) {
         M2C_FIELD(ch, f32 *, 0x40) = vol;
         M2C_FIELD(ch, f32 *, 0xA4) = pan2;
@@ -642,7 +641,7 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         f32 *qb = sb;
         f32 *qc = sc;
         int j;
-        for (j = 0; j < 4; j++) {
+        for (j = 0; j < 4; ++j) {
             f32 v = SeqTrackPlayer(self)->g33(j);
             int ok = 0;
             if (j >= 0 && j < 4) ok = 1;
@@ -1091,7 +1090,6 @@ extern "C" s32 ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-#pragma opt_dead_code off
 extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *self, u32 file, void *buffer, int size) {
     struct FileInfo { u32 a, b; const char *path; u32 d; } info;
     struct FilePos { u32 group, item; } pos;
@@ -1113,7 +1111,9 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
             strncpy(buf, (const char *)self + 8, prefixLen + 1);
             fn_80028E2C(buf, path, pathLen + 1);
             path = buf;
+            goto open_file;
         }
+    open_file:
         return archive->f5(buffer, size, path, 0, 0);
     }
     if (!ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(*(void **)((u8 *)self + 4), file, 0, &pos)) return 0;
@@ -1134,7 +1134,9 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
             strncpy(buf, (const char *)self + 8, prefixLen + 1);
             fn_80028E2C(buf, path, pathLen + 1);
             path = buf;
+            goto open_group;
         }
+    open_group:
         return archive->f5(buffer, size, path, offset, length);
     }
     return archive->f4(buffer, size, offset, length);
@@ -3462,27 +3464,37 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     return 1;
 }
 #pragma pop
+/* nw4r::snd::SoundArchivePlayer::InvalidateData(const void *start,
+   const void *end) -- clears the loaded FILE DATA address of every sound group
+   whose group data sits inside the address range [start, end] (inclusive), so
+   those groups are read back from the archive the next time they play; used
+   when a sound memory pool is handed back.  The sibling clone at 0x800F6F18
+   clears the group's wave-data address instead.  The table's count word sits
+   one word before the first record, so walking it in 8-byte steps from its base
+   reaches each record four bytes later. */
 extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, u32 start, u32 end) {
-    if (*(u32**)((u8*)self + 0x14) == 0) return;
+    struct GroupLoadStatus { void* file_data_address; void* wave_data_address; };
+    struct LoadStatusTable { u32 count; struct GroupLoadStatus entries[1]; };
+    if (*(struct LoadStatusTable**)((u8*)self + 0x14) == 0) return;
     u32 offset;
-    u32* entries;
+    struct LoadStatusTable* table;
     u32 index;
-    u32 zero;
+    void* null_address;
     index = 0;
     offset = 0;
-    zero = 0;
+    null_address = 0;
     goto loop_check;
     do {
-        u32* entry = (u32*)((u8*)entries + offset);
-        u32 value = entry[1];
-        if (!(start > value) && !(value > end)) entry[1] = zero;
+        struct GroupLoadStatus* entry = &((struct LoadStatusTable*)((u8*)table + offset))->entries[0];
+        u32 value = (u32)entry->file_data_address;
+        if (!(start > value) && !(value > end)) entry->file_data_address = null_address;
         offset += 8;
         ++index;
     loop_check:
-        entries = *(u32**)((u8*)self + 0x14);
-    } while (index < entries[0]);
+        /* the table is read again every pass: the store above may alias it */
+        table = *(struct LoadStatusTable**)((u8*)self + 0x14);
+    } while (index < table->count);
 }
-
 /* nw4r::snd::SoundArchivePlayer::InvalidateData(const void *start,
    const void *end) -- variant that clears the loaded WAVE DATA address of every
    sound group whose wave data lies inside the address range [start, end]
@@ -4836,7 +4848,7 @@ static inline void SoundPlayer_InsertPriorityList(s32 player, void *sound) {
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
-extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void *arg6) {
+extern "C" void *fn_800F9200(register s32 arg0, register s32 arg1, s32 arg2, register s32 arg3, register s32 arg4, s32 arg5, register void *arg6) {
     s32 startOffset;
     s32 prio;
     void *sound;
@@ -4850,126 +4862,121 @@ extern "C" void *fn_800F9200(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
         return 0;
     }
     {
-
-    sound = 0;
-    void *it;
-    struct { u32 old; } lock;
-    u32 &irq = lock.old;
-    struct { void *node; } iter;
-    void *&pos = iter.node;
-    
-    {
-        s32 ok = 0;
-        if (prio >= 0 && prio <= 0x7F) {
-            ok = 1;
-        }
-        if (ok == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803260F0, 0x5C, lbl_803260AC, prio, 0, 0x7F);
-        }
-    }
-    lock.old = OSDisableInterrupts();
-    void *mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(arg6);
-    if (mem != 0) {
-        sound = mem;
-        if (mem != 0) {
-            sound = fn_800FDA20(mem, arg6);
-        }
-    } else {
-        u8 *frontNode;
-        u8 *front;
-        if (*(s32 *)((u8 *)arg6 + 4) == 0) {
-            OSRestoreInterrupts(irq);
-            sound = 0;
-            goto allocation_done;
-        }
-        if (*(s32 *)((u8 *)arg6 + 4) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325924, 0x1F1, lbl_80325900);
-        }
-        frontNode = *(u8 **)((u8 *)arg6 + 8);
-        if (frontNode == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
-        }
-        front = frontNode - 0xB8;
-        if (front == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258F4, 0x193, lbl_803258D0);
-        }
-        if (front == 0) {
-            OSRestoreInterrupts(irq);
-            sound = 0;
-            goto allocation_done;
-        }
+        sound = 0;
+        void *it;
+        struct { u32 old; } lock;
+        u32 &irq = lock.old;
+        struct { void *node; } iter;
+        void *&pos = iter.node;
+        
         {
-            s32 c = *(u8 *)(front + 0x74) + *(s32 *)(front + 0x40);
-            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
-            if (prio < cc) {
-                OSRestoreInterrupts(irq);
-            sound = 0;
-            goto allocation_done;
+            s32 ok = 0;
+            if (prio >= 0 && prio <= 0x7F) {
+                ok = 1;
+            }
+            if (ok == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803260F0, 0x5C, lbl_803260AC, prio, 0, 0x7F);
             }
         }
-        ((BasicSoundVirtuals *)front)->Stop(0);
-        mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(arg6);
-        sound = mem;
-        if (mem == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326094, 0x72, lbl_8032606C);
+        lock.old = OSDisableInterrupts();
+        void *mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(arg6);
+        if (mem != 0) {
+            sound = mem;
+            if (mem != 0) {
+                sound = fn_800FDA20(mem, arg6);
+            }
+        } else {
+            u8 *frontNode;
+            u8 *front;
+            if (*(s32 *)((u8 *)arg6 + 4) == 0) {
+                OSRestoreInterrupts(irq);
+                sound = 0;
+                goto allocation_done;
+            }
+            if (*(s32 *)((u8 *)arg6 + 4) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325924, 0x1F1, lbl_80325900);
+            }
+            frontNode = *(u8 **)((u8 *)arg6 + 8);
+            if (frontNode == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+            }
+            front = frontNode - 0xB8;
+            if (front == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258F4, 0x193, lbl_803258D0);
+            }
+            if (front == 0) {
+                OSRestoreInterrupts(irq);
+                sound = 0;
+                goto allocation_done;
+            }
+            {
+                s32 c = *(u8 *)(front + 0x74) + *(s32 *)(front + 0x40);
+                s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
+                if (prio < cc) {
+                    OSRestoreInterrupts(irq);
+                    sound = 0;
+                    goto allocation_done;
+                }
+            }
+            ((BasicSoundVirtuals *)front)->Stop(0);
+            mem = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(arg6);
+            sound = mem;
+            if (mem == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326094, 0x72, lbl_8032606C);
+            }
+            if (sound != 0) {
+                sound = fn_800FDA20(sound, arg6);
+            }
         }
-        if (sound != 0) {
-            sound = fn_800FDA20(sound, arg6);
+        pos = *(void **)((u8 *)arg6 + 8);
+        arg2 = (u32)arg6 + 8;
+        while ((u32)pos != (u32)arg2) {
+            if (pos == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+            }
+            if (prio < ClampS32(*(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78), 0, 0x7F)) {
+                break;
+            }
+            pos = *(void **)pos;
         }
-    }
-    pos = *(void **)((u8 *)arg6 + 8);
-    arg2 = (u32)arg6 + 8;
-    while ((u32)pos != (u32)arg2) {
-        if (pos == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+        if (sound == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
         }
-        if (prio < ClampS32(*(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78), 0, 0x7F)) {
-            break;
-        }
-        pos = *(void **)pos;
-    }
-    if (sound == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
-    }
-    it = pos;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)arg6 + 4, &it, (u8 *)sound + 0xB8);
-    OSRestoreInterrupts(irq);
-
+        it = pos;
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)arg6 + 4, &it, (u8 *)sound + 0xB8);
+        OSRestoreInterrupts(irq);
     }
 allocation_done:
     if (sound == 0) {
         return 0;
     }
     {
-
-    if (*(s32 *)(arg0 + 0x18) != 0) {
-        u8 *heap;
-        
-        s32 it;
-        if (*(s32 *)(arg0 + 0x18) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E44, 0x1F1, lbl_80325E20);
-        }
-        arg2 = *(s32 *)(arg0 + 0x1C);
-        if (arg2 == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325DE4, 0x23D, lbl_80325DC0);
-        }
-        heap = (u8 *)(arg2 - 0x2C);
-        if (heap == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E14, 0x193, lbl_80325DF0);
-        }
-        it = *(s32 *)((u8 *)(arg0 + 0x18) + 4);
-        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)(arg0 + 0x18), &it);
-        *(void **)(heap + 0x34) = sound;
-        {
-            u8 *mutex = heap + 4;
-            *(void **)((u8 *)sound + 4) = (void *)heap;
-            OSLockMutex((void *)mutex);
-            fn_800EC1A4((void *)(heap + 0x1C));
-            OSUnlockMutex((void *)mutex);
+        if (*(s32 *)(arg0 + 0x18) != 0) {
+            u8 *heap;
+            s32 it;
+            if (*(s32 *)(arg0 + 0x18) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E44, 0x1F1, lbl_80325E20);
+            }
+            arg2 = *(s32 *)(arg0 + 0x1C);
+            if (arg2 == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325DE4, 0x23D, lbl_80325DC0);
+            }
+            heap = (u8 *)(arg2 - 0x2C);
+            if (heap == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325E14, 0x193, lbl_80325DF0);
+            }
+            it = *(s32 *)((u8 *)(arg0 + 0x18) + 4);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)(arg0 + 0x18), &it);
+            *(void **)(heap + 0x34) = sound;
+            {
+                u8 *mutex = heap + 4;
+                *(void **)((u8 *)sound + 4) = (void *)heap;
+                OSLockMutex((void *)mutex);
+                fn_800EC1A4((void *)(heap + 0x1C));
+                OSUnlockMutex((void *)mutex);
+            }
         }
     }
-
-}
     if (arg3 != 0) {
         if (arg3 != 0) {
             void *r = (*(AmbientArgAllocaterCallback **)(arg3 + 8))->detail_AllocAmbientArg(*(s32 *)(arg3 + 0x10));
