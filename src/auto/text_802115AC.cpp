@@ -1840,10 +1840,11 @@ extern "C" void fn_80214BE4(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 
-extern "C" void fn_80214C54(s32 arg0, s32 arg1) {
-    s32 obj = fn_802168E4();
-    if (obj != 0) {
-        ((void (*)(s32, s32, s32))fn_80218C14)(obj, arg0, arg1);
+/* Forward update-anime-context data to the active UI window, or report if none is active. */
+extern "C" void fn_80214C54(s32 updateId, s32 context) {
+    s32 window = fn_802168E4();
+    if (window != 0) {
+        ((void (*)(s32, s32, s32))fn_80218C14)(window, updateId, context);
     } else {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D388);
     }
