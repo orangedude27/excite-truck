@@ -24,17 +24,19 @@ extern s32 lbl_8055FB70;
 #define sSwlMapTargetSlot lbl_8055FB6C /* render target, NO_TEXTURE_SLOT when the file loaded */
 #define sSwlMapFileSlot lbl_8055FB70   /* swlmap.tex's slot, NO_TEXTURE_SLOT when absent */
 
-void *fn_802C2698(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(s32 *)arg0 = 0;
-            *((s32 *)arg0 + 1) = 0;
-            *((s32 *)arg0 + 2) = 0;
+void *fn_802C2698(void *object, s32 shouldDelete) {
+    /* Reset the object's three 32-bit fields to 0, then free it when
+     * shouldDelete > 0 (deleting-destructor style helper). */
+    if (object != 0) {
+        if (object != 0) {
+            *(s32 *)object = 0;
+            *((s32 *)object + 1) = 0;
+            *((s32 *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 /* Prepare the level's swlmap light map: load "swlmap.tex" from the archive when
