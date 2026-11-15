@@ -17,17 +17,18 @@ void *fn_802BB7CC(void *self, int deleting) {
     return self;
 }
 
-void* fn_802BB824(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            *(int *)arg0 = 0;
-            *((int *)arg0 + 1) = 0;
-            *((int *)arg0 + 2) = 0;
+void *fn_802BB824(void *object, int shouldDelete) {
+    /* Reset the object's three 32-bit fields to 0, then free it when shouldDelete > 0 (deleting-destructor helper). */
+    if (object != 0) {
+        if (object != 0) {
+            *(int *)object = 0;
+            *((int *)object + 1) = 0;
+            *((int *)object + 2) = 0;
         }
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
