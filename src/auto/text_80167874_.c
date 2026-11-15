@@ -149,14 +149,16 @@ extern void fn_802E317C(const char *, ...);
 #pragma optimization_level 2
 #pragma scheduling invalid_target
 #pragma dont_inline on
-s32 *fn_80167874(s32 arg0) {
+/* Look up the pickup type info entry for the given type id and return it.
+   Logs an error and returns the first entry if the type is not found. */
+s32 *fn_80167874(s32 type) {
     s32 *entry;
-    s32 value;
-    for (entry = (s32 *)lbl_80330020; (value = *entry) != 6; entry += 8) {
-        if (value == arg0)
+    s32 entryType;
+    for (entry = (s32 *)lbl_80330020; (entryType = *entry) != 6; entry += 8) {
+        if (entryType == type)
             return entry;
     }
-    fn_802E317C(lbl_803300E0, arg0);
+    fn_802E317C(lbl_803300E0, type);
     return (s32 *)lbl_80330020;
 }
 #pragma scheduling on
