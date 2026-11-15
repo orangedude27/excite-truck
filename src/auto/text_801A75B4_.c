@@ -188,11 +188,14 @@ extern void fn_801A90A4(char *, int, const char *);
 extern int fn_8013358C(int, int, char *);
 #pragma push
 #pragma scheduling invalid_target
-void fn_801A7A08(const char *arg0, int arg1, int arg2) {
-    char buffer[0x20];
+/* Save a control's binding in the options: resolve the input binding the key
+ * spec (an InputKeySpec, see fn_801A9234) describes to its display name, then
+ * write that name as the string value of option (groupId, valueId). */
+void fn_801A7A08(const char *keySpec, int valueId, int groupId) {
+    char bindingName[0x20];
 
-    fn_801A90A4(buffer, 0x20, arg0);
-    fn_8013358C(arg2, arg1, buffer);
+    fn_801A90A4(bindingName, 0x20, keySpec);
+    fn_8013358C(groupId, valueId, bindingName);
 }
 #pragma pop
 extern float lbl_80562458;
