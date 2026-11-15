@@ -29,13 +29,18 @@ public:
     void *Alloc(unsigned long, void (*)(void *, unsigned long, void *), void *);
     void Destroy();
 };
+/* Envelope generator of a sequence note (snd_EnvGenerator.cpp).  Update() runs
+ * the state machine: attack multiplies the volume up to full, decay drops it by
+ * decayStep per step down to the sustain level, release drops it by releaseStep
+ * per step.  The Set* functions turn a 0-0x7F index into those steps. */
 class EnvGenerator {
 public:
-    void *unknown_0x00[2]; /* +0x00 generator state */
-    f32 decayTime;         /* +0x08 decay time, from SetDecay(0-0x7F) */
-    f32 releaseTime;       /* +0x0C release time, from SetRelease(0-0x7F) */
-    f32 attackTime;        /* +0x10 attack time, from SetAttack(0-0x7F) */
-    u8 sustain;            /* +0x14 sustain level, from SetSustain(0-0x7F) */
+    s32 state;             /* +0x00 0=attack 1=decay 2=sustain 3=release */
+    f32 volume;            /* +0x04 current envelope value */
+    f32 decayStep;         /* +0x08 volume off per step while decaying, from SetDecay(0-0x7F) */
+    f32 releaseStep;       /* +0x0C volume off per step while releasing, from SetRelease(0-0x7F) */
+    f32 attackFactor;      /* +0x10 volume times this per step while attacking, from SetAttack(0-0x7F) */
+    u8 sustain;            /* +0x14 sustain level (0-0x7F) the decay stops at */
 
     void SetRelease(int);
     void SetDecay(int);
