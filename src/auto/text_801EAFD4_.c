@@ -515,18 +515,18 @@ s32 fn_801EB96C(s32 *out, s32 callback) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801EB9A4(s32 *arg0) {
+    /* Destroy the cached subsystem object stored in this slot, if any, and clear the slot. */
     class ThreadObject {
     public:
         virtual void destroy(int);
     };
-    ThreadObject *p = *(ThreadObject **)arg0;
-    if (p) {
-        if (p)
-            p->destroy(1);
+    ThreadObject *object = *(ThreadObject **)arg0;
+    if (object) {
+        if (object)
+            object->destroy(1);
     }
     *(ThreadObject **)arg0 = 0;
 }
-
 extern "C" s32 fn_801EB9FC(void *arg0) {
     u8 sp9;
     u8 sp8;
