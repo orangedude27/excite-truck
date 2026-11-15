@@ -447,7 +447,7 @@ extern void port_select_mtu(void *);
 extern void fn_800936BC(void *, u16, u16, u16, u16, u16, u16);
 extern void rfc_send_dm(void *, u8, u8);
 extern unsigned char lbl_803C0A50[];
-extern u16 UUSB_Write(u8, u8 *, u16, BT_HDR *);
+extern u16 UUSB_Write(s32, u8 *, u16, BT_HDR *);
 extern void sdp_connect_ind(u8 *, u16, u16, u8);
 extern void sdp_connect_cfm(u16, u16);
 extern void sdp_config_ind(u16, void *);
@@ -4649,7 +4649,7 @@ done:
 
 s32 fn_8007011C(void) { return 0; }
 
-u16 UUSB_Write(u8 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
+u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
     extern u16 fn_8006D8D0(u32);
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
@@ -4703,6 +4703,8 @@ u16 UUSB_Write(u8 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
             ((u8 *)cb)[0x48]++;
             fn_8006EB88();
         }
+        break;
+    case 1:
         break;
     case 2:
         buf = GKI_getpoolbuf(((u8 *)&lbl_803BD1E0)[0x1d]);
@@ -14038,12 +14040,9 @@ void *arg0;
     u8 highByte;
     u8 lowByte;
 
-    if (msg != 0) {
-        register u8 *base = lbl_803C0A50;
-        if (*(u16 *)(base + 0x6C) != 0) {
-        GKI_enqueue((BUFFER_Q *)(base + 0x64), msg);
+    if (msg != 0 && *(u16 *)(lbl_803C0A50 + 0x6C) != 0) {
+        GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
         msg = 0;
-        }
     }
 
     if (*(u16 *)(lbl_803C0A50 + 0x80) == 0 && lbl_803C0F78[0x64E] == 0)
@@ -14074,7 +14073,7 @@ void *arg0;
         }
         count = *(u16 *)(queueBase + 0x80);
         *(u16 *)(queueBase + 0x80) = count - 1;
-        ((void (*)(void *, u16, u16))fn_8007079C)(msg, 0x2000, count);
+        ((void (*)(void *, u16))fn_8007079C)(msg, 0x2000);
         msg = 0;
     }
 
