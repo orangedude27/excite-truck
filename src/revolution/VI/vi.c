@@ -867,6 +867,13 @@ void fn_8005954C(void)
     __VISetRevolutionModeSimple();
 }
 
+/* Blocks the calling thread until the next video retrace (vertical blank).
+
+ * The VI retrace interrupt raises retraceCount and wakes every thread asleep on
+ * retraceQueue. Keeping interrupts off from reading the count to going to sleep
+ * is what makes that safe: no retrace can slip in between and be missed, so the
+ * sleep is always ended by a retrace that happened after the count was taken.
+ */
 void VIWaitForRetrace(void)
 {
     BOOL enabled;
@@ -876,7 +883,7 @@ void VIWaitForRetrace(void)
     count = retraceCount;
     do {
         OSSleepThread(&retraceQueue);
-    } while (count == retraceCount);
+    } while (count == retraceCount); /* woken by a retrace: the count moved on */
     OSRestoreInterrupts(enabled);
 }
 
