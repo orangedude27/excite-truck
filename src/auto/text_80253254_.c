@@ -1056,14 +1056,15 @@ void fn_8025567C(void) {
     fn_802C7A00();
 }
 
-void *fn_802556BC(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 0x120) = arg1;
-    *(void **)arg0 = lbl_80344B98;
-    *(void **)((u8 *)arg0 + 0xFC) = lbl_80344BC0;
-    *(s32 *)((u8 *)arg0 + 0x110) = 0;
-    *(u8 *)((u8 *)arg0 + 0x114) = 0;
-    fn_80255200(arg0, 0);
-    return arg0;
+/* Initialize a UI car-model object: store param at +0x120, install vtables, clear state, and run base init. */
+void *fn_802556BC(void *obj, s32 param_120) {
+    *(s32 *)((u8 *)obj + 0x120) = param_120;
+    *(void **)obj = lbl_80344B98;
+    *(void **)((u8 *)obj + 0xFC) = lbl_80344BC0;
+    *(s32 *)((u8 *)obj + 0x110) = 0;
+    *(u8 *)((u8 *)obj + 0x114) = 0;
+    fn_80255200(obj, 0);
+    return obj;
 }
 
 s32 fn_80255718(s32 arg0, s32 arg1) {
