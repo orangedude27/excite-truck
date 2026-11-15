@@ -668,6 +668,7 @@ extern "C" void fn_80218EE0(void *arg0, s32 left, s32 top, s32 right, s32 bottom
         newBottom = ownBottom;
     clip->bottom = newBottom;
 }
+
 #pragma dont_inline on
 extern "C" s32 fn_80218F34(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     *(void **)arg0 = lbl_8033FB38;
