@@ -1,5 +1,6 @@
 #include <revolution/OS.h>
 
+/* Initialize a message queue with a ring buffer that can hold the given number of messages. */
 void OSInitMessageQueue(OSMessageQueue* queue, OSMessage* buffer,
                         s32 capacity) {
     OSInitThreadQueue(&queue->sendQueue);
