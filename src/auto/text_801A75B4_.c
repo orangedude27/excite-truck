@@ -1073,6 +1073,7 @@ void fn_801A91B0(void *dst, const void *src) {
 #pragma push
 #pragma scheduling invalid_target
 void *fn_801A9234(const char *arg0) {
+    /* Find an input binding table entry matching the given key spec (type and value). */
     extern int lbl_8055E5D0;
     extern const char **lbl_8055E5CC;
     const char *entry;
