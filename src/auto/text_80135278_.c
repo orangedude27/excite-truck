@@ -74,6 +74,14 @@ typedef struct PathVec {
     /* 0x04 */ float y;
 } PathVec;
 
+// A world-space vector as the path code tests it: the path is flat, so only
+// its x and z take part in the 2D maths, the height between them is skipped.
+typedef struct WorldVec {
+    /* 0x00 */ float x;
+    /* 0x04 */ float y;
+    /* 0x08 */ float z;
+} WorldVec;
+
 s32 fn_80135D60(Unk_80135278 *, s32);
 void fn_80135390(Unk_80135278 *);
 void fn_801355C0(void *, s32, s32, void *, s32);
