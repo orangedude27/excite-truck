@@ -164,74 +164,73 @@ void fn_800563C8(s32 chan, u32 status) {
 }
 
 void fn_8005649C(s32 chan, u32 type) {
-    u8* origin = (u8*)lbl_8038F080;
-    u32 chanMask;
-    u32 bit;
-    s32 currentChan;
-    u32 resetMask;
-    s32 nextChan;
-    BOOL ret;
-
-    bit = 0x80000000;
-    chanMask = bit >> chan;
-    currentChan = lbl_80558F74;
-    resetMask = lbl_8055DB0C;
-    lbl_8055DB0C = resetMask & ~chanMask;
-    if ((type & 8) || (type & 0xFFFF0000) != 0x09000000) {
-        lbl_8055DB04 |= chanMask;
-        nextChan = __cntlzw(lbl_8055DB10);
-        lbl_80558F74 = nextChan;
-        if (nextChan != 32) {
-            lbl_8055DB10 &= ~(bit >> nextChan);
-            memset(origin + nextChan * sizeof(PADStatus), 0, sizeof(PADStatus));
+    u8* origin = lbl_8038F080;
+    s32 resetChan;
+    u32 chanBit;
+    u32 recalibrate;
+    BOOL rc;
+    u32 response[2];
+    u32* typePtr;
+    (void)chan;
+    resetChan = lbl_80558F74;
+    chanBit = PAD_CHAN0_BIT >> resetChan;
+    recalibrate = lbl_8055DB0C & chanBit;
+    lbl_8055DB0C &= ~chanBit;
+    rc = TRUE;
+    if (type & 0x0F) {
+        lbl_80558F74 = __cntlzw(lbl_8055DB10);
+        if (lbl_80558F74 != 32) {
+            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+            memset(origin + lbl_80558F74 * 12, 0, 12);
             SIGetTypeAsync(lbl_80558F74, fn_8005649C);
         }
-    } else {
-        lbl_8055DB08 |= chanMask;
-        if (resetMask & chanMask) {
-            nextChan = __cntlzw(lbl_8055DB10);
-            lbl_80558F74 = nextChan;
-            if (nextChan != 32) {
-                lbl_8055DB10 &= ~(0x80000000 >> nextChan);
-                memset(origin + nextChan * sizeof(PADStatus), 0, sizeof(PADStatus));
-                SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-            }
-        } else if (lbl_80558F80 < 2) {
-            lbl_8055DB14 |= chanMask;
-            fn_80057F2C(currentChan, lbl_80558F7C | 0x00400000);
-            SIEnablePolling(lbl_8055DB14);
-            nextChan = __cntlzw(lbl_8055DB10);
-            lbl_80558F74 = nextChan;
-            if (nextChan != 32) {
-                lbl_8055DB10 &= ~(bit >> nextChan);
-                memset(origin + nextChan * sizeof(PADStatus), 0, sizeof(PADStatus));
-                SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-            }
+        return;
+    }
+    type &= ~0xFF;
+    typePtr = (u32*)(origin + 0x30);
+    typePtr[resetChan] = type;
+    if (((type & 0x18000000) != 0x08000000) || !(type & 0x01000000)) {
+        lbl_80558F74 = __cntlzw(lbl_8055DB10);
+        if (lbl_80558F74 != 32) {
+            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+            memset(origin + lbl_80558F74 * 12, 0, 12);
+            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+        }
+        return;
+    }
+    if (lbl_80558F80 < 2) {
+        lbl_8055DB14 |= chanBit;
+        SIGetResponse(resetChan, response);
+        fn_80057F2C(resetChan, lbl_80558F7C | 0x00400000);
+        SIEnablePolling(lbl_8055DB14);
+        lbl_80558F74 = __cntlzw(lbl_8055DB10);
+        if (lbl_80558F74 != 32) {
+            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+            memset(origin + lbl_80558F74 * 12, 0, 12);
+            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+        }
+        return;
+    }
+    if (!(type & 0x80000000) || (type & 0x04000000)) {
+        if (recalibrate) {
+            rc = SITransfer(lbl_80558F74, &lbl_80558F8C, 3, origin + lbl_80558F74 * 12, 10, fn_80056308, 0);
         } else {
-            switch (lbl_80558F80) {
-            case 4:
-                ret = SITransfer(lbl_80558F74, &lbl_80558F8C, 3, origin + lbl_80558F74 * 12, 10, (SICallback)fn_80056308, 0);
-                break;
-            case 3:
-                ret = SITransfer(lbl_80558F74, &lbl_80558F88, 1, origin + lbl_80558F74 * 12, 10, (SICallback)fn_80056308, 0);
-                break;
-            case 2:
-                ret = SITransfer(currentChan, &lbl_80558F88, 1, origin + currentChan * 12, 10, (SICallback)fn_80056308, 0);
-                break;
-            case 5:
-                ret = SITransfer(currentChan, (void*)(origin + 0x40 + currentChan * 4), 3, origin + currentChan * 12, 8, (SICallback)fn_800563C8, 0);
-                break;
-            }
-            if (!ret) {
-                nextChan = __cntlzw(lbl_8055DB10);
-                lbl_80558F74 = nextChan;
-                lbl_8055DB00 |= chanMask;
-                if (nextChan != 32) {
-                    lbl_8055DB10 &= ~(0x80000000 >> nextChan);
-                    memset(origin + nextChan * sizeof(PADStatus), 0, sizeof(PADStatus));
-                    SIGetTypeAsync(lbl_80558F74, fn_8005649C);
-                }
-            }
+            rc = SITransfer(lbl_80558F74, &lbl_80558F88, 1, origin + lbl_80558F74 * 12, 10, fn_80056308, 0);
+        }
+    } else if ((type & 0x00100000) && !(type & 0x00080000) && !(type & 0x00040000)) {
+        if (type & 0x40000000) {
+            rc = SITransfer(resetChan, &lbl_80558F88, 1, origin + resetChan * 12, 10, fn_80056308, 0);
+        } else {
+            rc = SITransfer(resetChan, (void*)(origin + 0x40 + resetChan * 4), 3, origin + resetChan * 12, 8, fn_800563C8, 0);
+        }
+    }
+    if (!rc) {
+        lbl_8055DB00 |= chanBit;
+        lbl_80558F74 = __cntlzw(lbl_8055DB10);
+        if (lbl_80558F74 != 32) {
+            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+            memset(origin + lbl_80558F74 * 12, 0, 12);
+            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
         }
     }
 }
@@ -525,15 +524,17 @@ BOOL fn_800572DC(BOOL final, u32 event) {
     return TRUE;
 }
 
-void SamplingHandler(s16 intr, OSContext* ctx) {
-    unsigned char local[0x2D0];
+void SamplingHandler(s16 intr, OSContext* context) {
+    /* Run the registered PAD sampling callback on a temporary OS context
+       during an SI polling interrupt, then restore the interrupted context. */
+    unsigned char tempContext[0x2D0];
     (void)intr;
     if (lbl_8055DAF4 != 0) {
-        OSClearContext((OSContext*)local);
-        OSSetCurrentContext((OSContext*)local);
+        OSClearContext((OSContext*)tempContext);
+        OSSetCurrentContext((OSContext*)tempContext);
         ((void (*)(void))lbl_8055DAF4)();
-        OSClearContext((OSContext*)local);
-        OSSetCurrentContext(ctx);
+        OSClearContext((OSContext*)tempContext);
+        OSSetCurrentContext(context);
     }
 }
 
