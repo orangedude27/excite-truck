@@ -335,20 +335,27 @@ signed long fn_80207D40(void* arg0) {
 #pragma dont_inline reset
 
 #pragma cplusplus on
-extern "C" void fn_80207D8C(void* arg0) {
-    class Item {
-    public:
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void f6(void*);
+/* SoundManager's per-frame update, its first virtual method (vtable lbl_8033BEE8
+ * +0x0C, just behind the destructor).  fn_80207D40 lets it run at most once every
+ * 16 ms (the time of the last pass is kept at +0x08); it refreshes every sound the
+ * manager tracks and then ticks the mixer device it plays on (+0x90, virtual
+ * +0x20), handing it the manager's sound context at +0x5C -- the four
+ * {id, matrix, vector} emitter slots fn_80207990 sets up at construction. */
+extern "C" void fn_80207D8C(SoundMgr *soundMgr) {
+    /* The mixer device of src/game/mixer.c (its vtable is documented there and in
+     * fn_80208858); only the slots this file reaches through are declared. */
+    struct SoundDevice {
+        virtual void close(signed long);                                   /* +0x08 */
+        virtual const char *name();                                        /* +0x0C */
+        virtual void *resetState();                                        /* +0x10 */
+        virtual void slot14();                                             /* +0x14 */
+        virtual signed long enabled();                                     /* +0x18 */
+        virtual signed long createSound(signed long, signed long, signed long); /* +0x1C */
+        virtual void update(void *soundContext);                           /* +0x20 */
     };
-    if (fn_80207D40(arg0) != 0) {
-        fn_80207C80(arg0);
-        ((Item*)*(void**)((char*)arg0 + 0x90))->f6((char*)arg0 + 0x5C);
+    if (fn_80207D40(soundMgr) != 0) {
+        fn_80207C80(soundMgr);
+        ((struct SoundDevice *)*(void **)((char *)soundMgr + 0x90))->update((char *)soundMgr + 0x5C);
     }
 }
 #pragma cplusplus reset
@@ -759,10 +766,10 @@ void fn_80208620(void* arg0, void* arg1) {
     typedef struct { int *ptr; int count; } Ent;
     typedef struct { char pad0[0xc]; int *base; int total; Ent ents[9]; } Hdr;
     Hdr *h = (Hdr*)arg0;
-    signed long idx = *(int*)((char*)arg1 + 0x44);
+    int idx = *(int*)((char*)arg1 + 0x44);
     int *found = 0;
-    signed long i;
-    signed long j;
+    int i;
+    int j;
     for (i = 0; i < h->ents[idx].count; i++) {
         if ((void*)h->ents[idx].ptr[i] == arg1) {
             found = &h->ents[idx].ptr[i];
@@ -773,7 +780,7 @@ void fn_80208620(void* arg0, void* arg1) {
         h->total -= 1;
         h->ents[idx].count -= 1;
         memmove(found, found + 1, (h->total - (found - h->base)) * 4);
-        for (j = idx + 1; j < 9; j++) {
+        for (j = idx + 1; j < 9; ++j) {
             h->ents[j].ptr--;
         }
     } else {
