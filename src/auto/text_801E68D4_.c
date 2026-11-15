@@ -155,6 +155,9 @@ void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma scheduling reset
+/* Free an animation player object (the 0x73C-byte AnimPlayer fn_801E6A3C builds):
+ * hand its streaming buffer slot back to the 8-slot pool, release its resource
+ * entry and model handle, then return the object's memory to the allocator. */
 void fn_801E6B98(void* object) {
     /* Head of the animation player object built by fn_801E6A3C; the file's
        AnimPlayer typedef (further down) describes the whole 0x73C bytes. */
