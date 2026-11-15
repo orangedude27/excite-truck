@@ -1622,6 +1622,8 @@ void fn_801C7A6C(void) {
 #pragma small_data off
 #pragma pop
 extern Vec lbl_8043848C;
+/* Save the current string buffer into the "who" buffer, clear the current buffer,
+   and default the "who" buffer to "nobody" if it ended up empty. */
 void fn_801C7AC4(void) {
     strcpy(lbl_80438280, lbl_804380F0);
     strcpy(lbl_804380F0, lbl_8055AA44);
