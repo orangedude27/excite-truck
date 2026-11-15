@@ -181,6 +181,7 @@ void fn_802D422C(void *arg0) {
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_802D4280(void *arg0) {
+    /* Bind this surface's position, normal, and color vertex arrays, then submit its display list. */
     GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0x10);
     GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
