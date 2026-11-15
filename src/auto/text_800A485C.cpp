@@ -607,10 +607,11 @@ extern "C" void VFipf_memcpy(void *, const void *, u32);
 namespace homebutton {
 class Controller {
 public:
-    s32 m_soundId;          // 0x00 remote-speaker tone this controller plays
+    s32 m_channel;          // 0x00 WPAD remote this controller drives
     u8 pad4[0x20];
     void *m_soundPlayer;    // 0x24 archive player that plays the tone
-    u8 pad28[0x30 - 0x28];
+    void *m_samplingCb;     // 0x28 callback WPADSetSamplingCallback had installed
+    void *m_samplingCb2;    // 0x2C callback WPADSetSamplingCallback_800603D0 had installed
     u32 m_playStartHi;      // 0x30 OSGetTime() when the tone started playing
     u32 m_playStartLo;      // 0x34
     u32 m_stopStartHi;      // 0x38 OSGetTime() when it was first seen stopped
@@ -625,6 +626,7 @@ public:
     int isPlayingSoundId(int) const;
     static void wpadConnectCallback(long, long);
 };
+#define m_soundId m_channel  // transitional: +0x00 is the channel, not a sound id
 class FrameController {
 public:
     u8 pad0[4];
