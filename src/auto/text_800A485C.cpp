@@ -2766,28 +2766,32 @@ extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32);
-extern "C" s32 VFiPFCACHE_InitCaches(void *arg0) {
-    struct CacheHdr1624 *h = (struct CacheHdr1624 *)((u8 *)arg0 + 0x1624);
-    h->flags &= ~1U;
-    h->flags |= 2U;
-    h->flags &= ~4U;
-    s32 total = (s32)h->count + (s32)h->extra;
-    fn_800A499C((const char *)*(void **)((u8 *)arg0 + 0x1638), 0, total << 9);
-    s32 result = fn_800A7774(arg0, (u8 *)arg0 + 0x1630,
-                             *(void **)((u8 *)arg0 + 0x162C),
-                             *(void **)((u8 *)arg0 + 0x1638),
-                             *(u16 *)((u8 *)arg0 + 0x1628),
-                             *(void **)((u8 *)arg0 + 0x163C), 1);
+extern "C" s32 VFiPFCACHE_InitCaches(void *context) {
+    /* Initialize the primary and secondary page-file caches for a VFi context. */
+    struct CacheHdr1624 *cacheHeader = (struct CacheHdr1624 *)((u8 *)context + 0x1624);
+    cacheHeader->flags &= ~1U;
+    cacheHeader->flags |= 2U;
+    cacheHeader->flags &= ~4U;
+
+    s32 totalPages = (s32)cacheHeader->count + (s32)cacheHeader->extra;
+    fn_800A499C((const char *)*(void **)((u8 *)context + 0x1638), 0, totalPages << 9);
+
+    s32 result = fn_800A7774(context, (u8 *)context + 0x1630,
+                             *(void **)((u8 *)context + 0x162C),
+                             *(void **)((u8 *)context + 0x1638),
+                             *(u16 *)((u8 *)context + 0x1628),
+                             *(void **)((u8 *)context + 0x163C), 1);
     if (result != 0) {
         return result;
     }
-    u16 secondCount = *(u16 *)((u8 *)arg0 + 0x1628);
-    void *base = *(void **)((u8 *)arg0 + 0x162C);
-    s32 status = fn_800A7774(arg0, (u8 *)arg0 + 0x1634,
+
+    u16 secondCount = *(u16 *)((u8 *)context + 0x1628);
+    void *base = *(void **)((u8 *)context + 0x162C);
+    s32 status = fn_800A7774(context, (u8 *)context + 0x1634,
                              (u8 *)base + secondCount * 0x28,
-                             (u8 *)*(void **)((u8 *)arg0 + 0x1638) + (secondCount << 9),
-                             *(u16 *)((u8 *)arg0 + 0x162A),
-                             *(void **)((u8 *)arg0 + 0x1640), 0);
+                             (u8 *)*(void **)((u8 *)context + 0x1638) + (secondCount << 9),
+                             *(u16 *)((u8 *)context + 0x162A),
+                             *(void **)((u8 *)context + 0x1640), 0);
     return status & ((-status | status) >> 31);
 }
 
