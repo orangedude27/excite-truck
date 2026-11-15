@@ -217,16 +217,17 @@ void fn_8025DDD0(void *arg0, int arg1) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8025DF80(void *arg0) {
-    register long *base = (long *)arg0;
-    register long offset = 0;
-    register long count = 0;
+    /* Notify each entry in the object's list (array at offset 0x18, count at 0x1C). */
+    register long *object = (long *)arg0;
+    register long byteOffset = 0;
+    register long index = 0;
     goto check;
 loop:
-    fn_80214A9C(*(long *)((unsigned char *)base[6] + offset));
-    offset += 4;
-    count++;
+    fn_80214A9C(*(long *)((unsigned char *)object[6] + byteOffset));
+    byteOffset += 4;
+    index++;
 check:
-    if (count < base[7])
+    if (index < object[7])
         goto loop;
 }
 #pragma pop
