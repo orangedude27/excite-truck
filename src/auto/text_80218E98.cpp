@@ -5602,7 +5602,6 @@ extern "C" void fn_802328D4(void*);
 extern "C" s32 lbl_8033F9E0[];
 extern "C" s32 fn_80232578(s32);
 #pragma scheduling invalid_target
-#pragma scheduling invalid_target
 /* Constructs a gText display item: loads the font file named by fontName through
  * the gText loader, remembers the string to draw with it, and installs the text
  * item's vtable (draw fn_802225E8, measure fn_8022264C, dtor fn_80222584). */
