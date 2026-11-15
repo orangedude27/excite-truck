@@ -2380,15 +2380,15 @@ extern "C" void fn_8021C128(void) {
 }
 
 extern "C" void fn_8021C12C(void *arg0) {
+    /* Invoke a virtual method on the object at +0x2A4 for the buffer at +0x254, refresh layout, and flag when active (+0x1A). */
     class Local {
     public:
         virtual void a0();
         virtual void a1();
         virtual void apply(void *, s32);
     };
-    void *obj;
-    obj = *(void **)((u8 *)arg0 + 0x2A4);
-    ((Local *)obj)->apply((u8 *)arg0 + 0x254, 0x50);
+    void *object = *(void **)((u8 *)arg0 + 0x2A4);
+    ((Local *)object)->apply((u8 *)arg0 + 0x254, 0x50);
     fn_80219718(arg0);
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
