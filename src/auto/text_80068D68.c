@@ -2863,16 +2863,17 @@ s32 _WUDGetDevAddr(u32 arg0) {
     return r31;
 }
 
-u16 _WUDGetQueuedSize(s8 arg0) {
-    u16 r31;
-    s32 saved = OSDisableInterrupts();
-    if (arg0 >= 0 && arg0 < 0x10) {
-        r31 = lbl_80394680[arg0];
+/* Returns the queued output size for the given WUD device handle (0-15), or 0 if invalid. */
+u16 _WUDGetQueuedSize(s8 handle) {
+    u16 queuedSize;
+    s32 enabled = OSDisableInterrupts();
+    if (handle >= 0 && handle < 0x10) {
+        queuedSize = lbl_80394680[handle];
     } else {
-        r31 = 0;
+        queuedSize = 0;
     }
-    OSRestoreInterrupts(saved);
-    return r31;
+    OSRestoreInterrupts(enabled);
+    return queuedSize;
 }
 
 extern u16 lbl_803946A0[];
