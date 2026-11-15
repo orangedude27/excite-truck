@@ -4068,9 +4068,14 @@ u32 nw4hbm::snd::SoundArchivePlayer::detail_ConvertLabelStringToSoundId(const ch
 #pragma pop
 #pragma pop
 extern "C" void *__dt__Q36nw4hbm3snd9SoundHeapFv(void*, int);
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8114(void *arg0, int arg1) {
- if(arg0) { __dt__Q36nw4hbm3snd9SoundHeapFv(arg0,0); if(arg1>0) ((void(*)(void*))fn_80128668)(arg0); }
- return arg0;
+extern "C" void *__dt__Q36nw4hbm3snd9SoundHeapFv(void *, int);
+/* Deleting destructor for nw4hbm::snd::MemorySoundArchive. */
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8114(void *self, int deleting) {
+    if (self) {
+        __dt__Q36nw4hbm3snd9SoundHeapFv(self, 0);
+        if (deleting > 0) ((void (*)(void *))fn_80128668)(self);
+    }
+    return self;
 }
 
 extern "C" s32 fn_800F816C(s32 arg0, s32 arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
