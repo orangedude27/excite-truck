@@ -1102,15 +1102,17 @@ extern "C" void* fn_802A3314(void* arg0, DummyReceiver_802A3314* arg1) {
 #pragma scheduling on
 extern "C" void fn_8028E398(void*);
 extern "C" int lbl_80349B28[];
-extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = &lbl_80349B28;
-        fn_8028E398(((void**)arg0)[1]);
-        if (arg1 > 0) {
-            ((s32 (*)(void*))fn_80128668)(arg0);
+/* CollisionSpace destructor: restore vtable lbl_80349B28, release the owned
+ * resource at +4, and optionally delete storage. */
+extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* self, s32 shouldDelete) {
+    if (self != 0) {
+        *(void**)self = &lbl_80349B28;
+        fn_8028E398(((void**)self)[1]);
+        if (shouldDelete > 0) {
+            ((s32 (*)(void*))fn_80128668)(self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void fn_802A33D4(void* arg0, void* arg1, s32 arg2) {
