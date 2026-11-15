@@ -495,6 +495,10 @@ extern "C" s32 fn_802E3D04(s32 arg0) {
     };
     V *obj = (V *)fn_802E336C();
     s32 result;
+
+    /* Opens/looks up arg0 through the vtable method at slot +0x10 of the
+     * object returned by fn_802E336C, registers the result via fn_802E35C0,
+     * and returns that handle (or -1 on failure). */
     if (obj == 0) goto fail;
     result = obj->c(arg0);
     if (result == 0) goto fail;
