@@ -534,11 +534,15 @@ void fn_80135B9C(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, float *va
 }
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
-s32 fn_80135D60(Unk_80135278 *arg0, s32 arg1) {
-    if ((unsigned long)arg1 != (unsigned long)arg0->unk_2c) {
-        fn_80135354(arg0);
-        arg0->unk_2c = arg1;
-        switch (arg1) {
+/* Set the path follower's active resource. If the requested resource differs from the
+ * current one, reset the follower state, store the new resource, and report whether
+ * a resource was selected (0 -> cleared/success, nonzero -> selected). If unchanged,
+ * return 2 to indicate no update was needed. */
+s32 fn_80135D60(Unk_80135278 *follower, s32 resourceId) {
+    if ((unsigned long)resourceId != (unsigned long)follower->unk_2c) {
+        fn_80135354(follower);
+        follower->unk_2c = resourceId;
+        switch (resourceId) {
         default:
             return 1;
         case 0:
