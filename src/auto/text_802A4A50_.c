@@ -733,16 +733,17 @@ done:
 #pragma pop
 
 void *fn_802A7614(void *, s32);
+/* Destroys every registered effect object and resets the list count. */
 s32 fn_802A597C(void) {
-    s32 *ptr = lbl_804BCFA8;
-    s32 i = 0;
+    s32 *objectSlot = lbl_804BCFA8;
+    s32 index = 0;
     goto check;
 loop:
-    fn_802A7614((void *)*ptr, 1);
-    ptr++;
-    i++;
+    fn_802A7614((void *)*objectSlot, 1);
+    objectSlot++;
+    index++;
 check:
-    if (i < lbl_8055F890) goto loop;
+    if (index < lbl_8055F890) goto loop;
     lbl_8055F890 = 0;
 }
 
@@ -1641,6 +1642,8 @@ extern char lbl_80349CC8[];
 extern char lbl_8055CBF8, lbl_8055CBFC, lbl_8055CC04, lbl_8055CC0C, lbl_8055CC10, lbl_8055CC14, lbl_8055CC18, lbl_8055CC20, lbl_8055CC28;
 extern double fn_8002F208(float);
 extern s32 fn_801EA140(void *);
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
 extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     struct Vec3 {
@@ -1685,7 +1688,11 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     }
     {
         s32 h = fn_802CAC28(obj->v3(&lbl_8055CC18), 0);
-        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208((*(s32 *)(arg0 + 0x2C) = h, lbl_80564850 / *(f32 *)(arg0 + 8)));
+        f32 denominator, numerator;
+        numerator = *(volatile f32 *)&lbl_80564850;
+        denominator = *(volatile f32 *)(arg0 + 8);
+        *(volatile s32 *)(arg0 + 0x2C) = h;
+        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208(numerator / denominator);
     }
     {
         const Vec3 &c = obj->get(&lbl_8055CC20);
@@ -1708,7 +1715,8 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     }
     return arg0;
 }
-#pragma cplusplus reset
+#pragma cplusplus off
+#pragma pop
 
 #pragma scheduling on
 extern float fn_80287BC8(float, float);
