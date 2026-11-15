@@ -160,6 +160,9 @@ extern "C" char lbl_8033D328[];
 extern "C" char lbl_8033D2A0[];
 extern "C" char lbl_8033D274[];
 
+/* The widget interface the wrapper methods below forward to. CodeWarrior keeps
+ * two slots at the head of the vtable (both null in lbl_8033D480 and
+ * lbl_8033FA28), so vfN sits at vtable offset 0x8 + 4*N. */
 class VfObj {
 public:
     virtual void vf0();
