@@ -38,11 +38,24 @@ extern char lbl_80560040;
 extern void fn_802E317C(const char*, ...); /* panic(): "PANIC: <msg>", then ABEND */
 extern void fn_802E99AC(void);            /* ConfigReadWpadSettings(), below */
 #pragma scheduling invalid_target
-#pragma scheduling invalid_target
+extern void fn_802E99AC(void);             /* ConfigReadWpadSettings(), below */
+extern char lbl_8034E238[];                /* "config: SCCheckStatus returns error!" */
+extern char lbl_80560040;                  /* sConfigReady */
+/**
+ * @brief Read the console's system config into this module's cache.
+ *
+ * Starts the SDK's asynchronous config read (SCInit) and spins until the block
+ * has arrived, panicking with "config: SCCheckStatus returns error!" if the
+ * read failed.  Aspect ratio, sound mode and progressive scan are then cached
+ * for the getters at the end of this file - an unknown sound mode falls back
+ * to stereo - and fn_802E99AC() adds the two WPAD settings.  sConfigReady
+ * marks the cache valid; the start-up calls this before anything reads it.
+ */
 void fn_802E98D0(void) {
-    u32 status;
-    s32 aspectRatio;
-    s32 soundMode;
+    u32 status;      /* SCCheckStatus()'s SCStatus */
+    s32 aspectRatio; /* an SCAspectRatio */
+    s32 soundMode;   /* an SCSoundMode */
+
     SCInit();
     do {
         status = SCCheckStatus();
@@ -50,32 +63,31 @@ void fn_802E98D0(void) {
     if (status == SC_STATUS_FATAL) {
         fn_802E317C(sScCheckStatusError);
     }
+
     aspectRatio = SCGetAspectRatio();
-    if (aspectRatio == SC_ASPECT_WIDE) goto aspect_wide;
-    *(volatile s32*)&sConfigAspectRatio = SC_ASPECT_STD;
-    goto aspect_done;
-aspect_wide:
-    *(volatile s32*)&sConfigAspectRatio = SC_ASPECT_WIDE;
-aspect_done:
-    /* switch (soundMode) the compiler turned into a branch tree: the three
-     * known modes keep their value, everything else lands on stereo. */
+    switch (aspectRatio) {
+    default: /* SC_ASPECT_STD, and anything else the config block holds */
+        *(volatile s32*)&sConfigAspectRatio = SC_ASPECT_STD;
+        break;
+    case SC_ASPECT_WIDE:
+        *(volatile s32*)&sConfigAspectRatio = SC_ASPECT_WIDE;
+        break;
+    }
+
     soundMode = SCGetSoundMode();
-    if (soundMode == SC_SND_STEREO) goto sound_stereo;
-    if (soundMode >= SC_SND_STEREO) goto sound_over;
-    if (soundMode < SC_SND_MONO) goto sound_stereo;
-    goto sound_mono;
-sound_over:
-    if (soundMode < 3 /* SC_SND_SURROUND + 1 */) goto sound_surround;
-    goto sound_stereo;
-sound_mono:
-    *(volatile s32*)&sConfigSoundMode = SC_SND_MONO;
-    goto sound_done;
-sound_stereo:
-    *(volatile s32*)&sConfigSoundMode = SC_SND_STEREO;
-    goto sound_done;
-sound_surround:
-    *(volatile s32*)&sConfigSoundMode = SC_SND_SURROUND;
-sound_done:
+    switch (soundMode) {
+    case SC_SND_MONO:
+        *(volatile s32*)&sConfigSoundMode = SC_SND_MONO;
+        break;
+    case SC_SND_STEREO: /* anything the config block holds besides mono and */
+    default:            /* surround starts the game in stereo */
+        *(volatile s32*)&sConfigSoundMode = SC_SND_STEREO;
+        break;
+    case SC_SND_SURROUND:
+        *(volatile s32*)&sConfigSoundMode = SC_SND_SURROUND;
+        break;
+    }
+
     sConfigProgressive = SCGetProgressiveMode() == SC_PROGRESSIVE;
     sConfigReady = 1;
     fn_802E99AC();
