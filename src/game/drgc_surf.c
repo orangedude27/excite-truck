@@ -73,6 +73,20 @@ typedef struct { f32 x, y, z; } FifoVec3;
 typedef struct { FifoVec3 pos; u32 color; f32 u, v; } FifoVtx;
 /* Writing a value here sends it to the GX FIFO. */
 #define GX_FIFO_ADDR 0xCC008000
+/* The per-surface draw record every drawer in this file is handed.  Byte +0x08
+ * selects the vertex layout (fn_802D5FE4 dispatches on it); +0x1C counts the
+ * vertices of the layouts that rebuild an array, and +0x20..+0x28 are the three
+ * vertex arrays the drawer binds -- which GX attribute each one becomes depends
+ * on the layout, and each array has its own stride.  +0x2C/+0x30 are the size
+ * in bytes of the prebuilt display list that indexes them, and the list. */
+struct SurfDraw {
+    u8 pad00[0x20];
+    /* 0x20 */ void *positions;   // GX_VA_POS array
+    /* 0x24 */ void *normals;     // GX_VA_NRM (or GX_VA_CLR0) array
+    /* 0x28 */ void *colors;      // GX_VA_CLR1 (or GX_VA_TEX0) array
+    /* 0x2C */ u32 listSize;      // display list size in bytes
+    /* 0x30 */ void *displayList; // prebuilt display list
+};
 extern f32 lbl_804C5690[];
 extern f32 lbl_804C56C0[];
 extern f32 lbl_804DB068[];
