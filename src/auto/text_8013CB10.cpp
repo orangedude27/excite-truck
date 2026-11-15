@@ -655,7 +655,8 @@ extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
 }
 
 extern "C" u32 fn_8013D18C(u32 arg0) {
-    u32 idx = arg0 % 6;
+    /* Return one of six constant values selected by the given index (modulo 6). */
+    u32 index = arg0 % 6;
     s32 values[6];
     s32 *src = lbl_802F9398;
     values[0] = *src++;
@@ -664,7 +665,7 @@ extern "C" u32 fn_8013D18C(u32 arg0) {
     values[3] = *src++;
     values[4] = *src++;
     values[5] = *src;
-    return values[idx];
+    return values[index];
 }
 
 extern "C" s32 fn_8013D1F0(s32 arg0) {
