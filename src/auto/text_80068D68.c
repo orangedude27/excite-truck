@@ -8082,17 +8082,19 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) { /* w5 */
         fn_8007096C(0xD0003, lbl_80315EBC, buffer[1], buffer[0]);
 }
 
+/* Handle BTM ACL timer expiry: for event 4, invoke and clear the pending
+ * remote-name callback (lbl_803C0F78+0x5C4) with result 0x0A and handle 0. */
 void btm_acl_timeout(TIMER_LIST_ENT *p_tle) {
-    u8 param[0xA];
-    void (*callback)(u8 *);
+    u8 eventData[0xA];
+    void (*nameCallback)(u8 *);
 
     if (*(u32 *)((u8 *)p_tle + 0x10) == 4) {
-        callback = *(void (**)(u8 *))(lbl_803C0F78 + 0x5C4);
-        param[0] = 0xA;
-        *(u16 *)(param + 8) = 0;
+        nameCallback = *(void (**)(u8 *))(lbl_803C0F78 + 0x5C4);
+        eventData[0] = 0xA;
+        *(u16 *)(eventData + 8) = 0;
         *(void (**)(u8 *))(lbl_803C0F78 + 0x5C4) = NULL;
-        if (callback != NULL) {
-            callback(param);
+        if (nameCallback != NULL) {
+            nameCallback(eventData);
         }
     }
 }
