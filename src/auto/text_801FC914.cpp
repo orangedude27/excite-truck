@@ -31,6 +31,14 @@ struct PathSpawnEntry {
     float nextSpawn;       // +0x20: time the next prop is due
 };
 
+// PathSpawnEntry::endBehavior: what a drone does when it runs off the end of
+// its path. Drone_Update picks the per-frame walker with it.
+enum PathEndBehavior {
+    PATH_END_LOOP = 0,    // wrap back to the first node and keep going
+    PATH_END_REVERSE = 1, // run the node list backwards (ping-pong)
+    PATH_END_STOP = 2     // hand the prop back to its pool at the last node
+};
+
 // One drone path segment of the larger "DroneManager" (name string
 // lbl_8033B86C); fn_801FCA54 builds one from a spawn record.
 struct DronePath {
