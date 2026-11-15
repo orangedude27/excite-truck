@@ -223,6 +223,13 @@ static void DecrementerExceptionCallback(u8 type, OSContext* ctx) {
     OSLoadContext(ctx);
 }
 
+// Hand-written entry the decrementer exception is dispatched to (installed by
+// __OSInitAlarm).  The dispatcher has already saved most of the context; this
+// adds what it leaves alone - r0-r2, r6-r31 via stmw and the seven GQRs - to
+// the OSContext it handed over, then keeps the arguments in r3/r4 and jumps to
+// the C callback above.  nofralloc with only an 8-byte stwu: no frame here,
+// just the stack alignment that tail call needs.
+
 static asm void DecrementerExceptionHandler(register u8 type,
                                             register OSContext* ctx) {
     // clang-format off
