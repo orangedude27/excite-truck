@@ -8716,12 +8716,13 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802292D8(void *this_,
 }
 
 extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
-extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229330(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229330(void *self, int shouldDelete) {
+    /* Destroy an embedded LinkListImpl subobject and optionally delete storage. */
+    if (self != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(self, 0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229388(void *arg0, int arg1) {
