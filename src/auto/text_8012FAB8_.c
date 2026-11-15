@@ -252,6 +252,7 @@ void fn_8013028C(void) {
 #undef sLocaleData
 #undef sLocaleLanguages
 }
+
 int fn_801302E0(void *arg0) {
     int offset;
     int index;
