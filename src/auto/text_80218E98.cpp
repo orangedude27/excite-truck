@@ -8719,18 +8719,18 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8022943C(
     return this_;
 }
 
-extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229498(
-    void* this_, s32 flag) {
-    if (this_) {
-        if (this_ != NULL) {
-            fn_8021915C(this_, 0);
+extern "C" void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229498(void *self, s32 deletingFlag) {
+    /* nw4hbm::snd::detail::DisposeCallbackManager deleting destructor: run cleanup, then free storage if requested. */
+    if (self) {
+        if (self != NULL) {
+            fn_8021915C(self, 0);
         }
 
-        if (flag > 0) {
-            fn_80128668(this_);
+        if (deletingFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return this_;
+    return self;
 }
 
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802294F4(
