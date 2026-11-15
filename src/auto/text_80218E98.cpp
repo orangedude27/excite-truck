@@ -628,32 +628,41 @@ extern "C" void fn_80218EBC(void *arg0, void *arg1) {
     dst[3] = fourth;
 }
 
-extern "C" void fn_80218EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 temp_r0;
-    s32 temp_r0_2;
-    s32 temp_r0_3;
-    s32 temp_r0_4;
-    s32 var_r4 = arg1;
-    s32 var_r5 = arg2;
-    s32 var_r6 = arg3;
-    s32 var_r7 = arg4;
+extern "C" void fn_80218EE0(void *arg0, s32 left, s32 top, s32 right, s32 bottom) {
+    /* the object's clip rectangle, the four words at +0x14 */
+    struct ClipRect {
+        u8 pad[0x14];
+        s32 left;
+        s32 top;
+        s32 right;
+        s32 bottom;
+    };
+    ClipRect *clip = (ClipRect *)arg0;
+    s32 ownLeft;
+    s32 ownTop;
+    s32 ownRight;
+    s32 ownBottom;
+    s32 newLeft = left;
+    s32 newTop = top;
+    s32 newRight = right;
+    s32 newBottom = bottom;
 
-    temp_r0 = *(s32 *)((u8 *)arg0 + 0x14);
-    if (temp_r0 > var_r4)
-        var_r4 = temp_r0;
-    temp_r0_2 = *(s32 *)((u8 *)arg0 + 0x18);
-    *(s32 *)((u8 *)arg0 + 0x14) = var_r4;
-    if (temp_r0_2 > var_r5)
-        var_r5 = temp_r0_2;
-    temp_r0_3 = *(s32 *)((u8 *)arg0 + 0x1C);
-    *(s32 *)((u8 *)arg0 + 0x18) = var_r5;
-    if (temp_r0_3 < var_r6)
-        var_r6 = temp_r0_3;
-    temp_r0_4 = *(s32 *)((u8 *)arg0 + 0x20);
-    *(s32 *)((u8 *)arg0 + 0x1C) = var_r6;
-    if (temp_r0_4 < var_r7)
-        var_r7 = temp_r0_4;
-    *(s32 *)((u8 *)arg0 + 0x20) = var_r7;
+    ownLeft = clip->left;
+    if (ownLeft > newLeft)
+        newLeft = ownLeft;
+    ownTop = clip->top;
+    clip->left = newLeft;
+    if (ownTop > newTop)
+        newTop = ownTop;
+    ownRight = clip->right;
+    clip->top = newTop;
+    if (ownRight < newRight)
+        newRight = ownRight;
+    ownBottom = clip->bottom;
+    clip->right = newRight;
+    if (ownBottom < newBottom)
+        newBottom = ownBottom;
+    clip->bottom = newBottom;
 }
 
 #pragma dont_inline on
