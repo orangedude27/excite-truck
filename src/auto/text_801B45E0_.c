@@ -128,12 +128,13 @@ extern int fn_802E4CA4(int);
 extern void fn_801B4720(int);
 #pragma push
 #pragma small_data off
-void fn_801B46BC(void *arg0, int arg1, int arg2) {
-    *(int *)((char *)arg0 + 0x1C) = arg1;
-    *(int *)((char *)arg0 + 0x18) = fn_8012850C(arg1 * 0xC, &lbl_80335DB8);
-    *(int *)((char *)arg0 + 4) = arg2;
-    *(int *)arg0 = fn_802E4CA4(arg2);
-    fn_801B4720((int)arg0);
+/* Initialize a FramePool: set frame count, allocate its frame records and backing buffer, then reset state. */
+void fn_801B46BC(void *framePool, int frameCount, int bufferSize) {
+    *(int *)((char *)framePool + 0x1C) = frameCount;
+    *(int *)((char *)framePool + 0x18) = fn_8012850C(frameCount * 0xC, &lbl_80335DB8);
+    *(int *)((char *)framePool + 4) = bufferSize;
+    *(int *)framePool = fn_802E4CA4(bufferSize);
+    fn_801B4720((int)framePool);
 }
 #pragma pop
 #pragma push
