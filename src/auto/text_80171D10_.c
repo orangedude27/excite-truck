@@ -1437,14 +1437,16 @@ void fn_801740D4(void *arg0) {
 #pragma use_lmw_stmw reset
 #pragma processor reset
 #pragma pop
-int fn_80174298(void *arg0, int arg1) {
+/* Returns nonzero if the indexed entry at +0x90 is active and the clamped
+ * difference (state->field_19C - lbl_8055E3C8) exceeds lbl_80558DC4[0]. */
+int fn_80174298(void *state, int index) {
     extern float lbl_80558DC4[];
     extern float lbl_8055E3C8;
     extern float lbl_80561A44;
-    int result = *((unsigned char *)arg0 + arg1 * 0x1C + 0x90);
+    int result = *((unsigned char *)state + index * 0x1C + 0x90);
     if (result != 0) {
         float one = lbl_8055E3C8;
-        float value = *(float *)((char *)arg0 + 0x19C) - one;
+        float value = *(float *)((char *)state + 0x19C) - one;
         float limit = lbl_80561A44;
         limit = limit > value ? limit : value;
         result = !((float)__fabs(limit) <= lbl_80558DC4[0]);
