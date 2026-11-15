@@ -1389,8 +1389,10 @@ void* fn_80179650(void) {
     return lbl_8055E430;
 }
 
+/* Get the message data size for a message type; logs an error and returns -1 if unknown. */
 s32 fn_80179658(long arg0) {
     char *entry;
+
     entry = fn_80178374(arg0);
     if (entry != 0) {
         return *(s32 *)(entry + 4);
