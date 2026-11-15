@@ -3,6 +3,7 @@
 #include <types.h>
 
 #include <revolution/GX/GXFifo.h>
+#include <revolution/GX/GXTexture.h>
 #include <revolution/GX/GXTransform.h>
 #ifdef __cplusplus
 extern "C" {
