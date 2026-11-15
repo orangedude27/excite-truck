@@ -329,12 +329,14 @@ extern "C" void fn_80206750(void *sound, int soundIndex, int enable) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_802067C8(void *arg0, void *arg1, int arg2) {
+extern "C" void fn_802067C8(void *object, void *context, int arg) {
     struct Obj { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(void *, int); };
-    int fieldEmpty = !*(int *)((u8 *)arg0 + 0x44);
-    if ((*(u8 *)((u8 *)arg0 + 0x18) = (*(u8 *)((u8 *)arg0 + 0x19) != 0 &&
-        (*(float *)((u8 *)arg0 + 8) > lbl_80563200 || fieldEmpty)))) {
-        ((Obj *)arg0)->f3(arg1, arg2);
+    /* If enabled and either active (field_08 > 0.0f) or its list slot is empty,
+     * mark this object active and dispatch virtual slot f3. */
+    int slotEmpty = !*(int *)((u8 *)object + 0x44);
+    if ((*(u8 *)((u8 *)object + 0x18) = (*(u8 *)((u8 *)object + 0x19) != 0 &&
+        (*(float *)((u8 *)object + 8) > lbl_80563200 || slotEmpty)))) {
+        ((Obj *)object)->f3(context, arg);
     }
 }
 #pragma scheduling on
