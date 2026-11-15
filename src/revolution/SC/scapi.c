@@ -1,15 +1,18 @@
 #include <revolution/SC.h>
 
+/* Return the TV aspect ratio (an SCAspectRatio) saved in the System Configuration's
+   IPL aspect-ratio item (SC_ITEM_IPL_AR, id 0x1); standard 4:3 is returned when the
+   item is missing or holds anything other than widescreen. */
 u8 SCGetAspectRatio(void) {
-    u8 item;
+    u8 aspect;
 
-    if (!SCFindU8Item(&item, SC_ITEM_IPL_AR)) {
-        item = SC_ASPECT_STD;
-    } else if (item != SC_ASPECT_WIDE) {
-        item = SC_ASPECT_STD;
+    if (!SCFindU8Item(&aspect, SC_ITEM_IPL_AR)) {
+        aspect = SC_ASPECT_STD;
+    } else if (aspect != SC_ASPECT_WIDE) {
+        aspect = SC_ASPECT_STD;
     }
 
-    return item;
+    return aspect;
 }
 
 /* Return the saved horizontal display offset, clamped to [-32, 32] and rounded down to even. */
