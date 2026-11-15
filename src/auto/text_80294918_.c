@@ -26,8 +26,12 @@ extern RotationAxis lbl_804B4030[ROTATION_AXIS_COUNT]; /* the rotation table */
 extern unsigned char lbl_804B4168[]; /* the chunk cache; entries in use at +0x180 */
 
 #pragma scheduling invalid_target
+/* Static initializer (a .ctors entry) of the chunk-system module whose code is in
+ * text_802924E8_.c: registers this module's static record with the runtime, runs
+ * the default constructor over the six rotation-axis rows and clears the chunk
+ * cache's entry count. */
 void fn_80294918(void) {
     fn_8000D838(&lbl_8055F760);
-    fn_8002F53C(lbl_804B4030, fn_8029496C, 0, 0x34, 6);
+    fn_8002F53C(lbl_804B4030, fn_8029496C, 0, sizeof(RotationAxis), ROTATION_AXIS_COUNT);
     *(s32 *)(lbl_804B4168 + 0x180) = 0;
 }
