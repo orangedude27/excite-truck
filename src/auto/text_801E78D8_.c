@@ -947,16 +947,16 @@ void fn_801E8D48(void) {
 
 #pragma scheduling invalid_target
 void fn_801E8DD4(void) {
-    long data[2];
-    void *object;
-    memset(data, 0, 8);
-    data[0] = 0x50616E6C;
-    data[1] = 8;
-    object = ((void *(*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4);
-    if (object != 0) fn_801EAD6C(object, (long)data);
+    /* Allocate and initialize a panel object ("Panl") in the MutableWob pool. */
+    long initData[2];
+    void *panelObject;
+    memset(initData, 0, 8);
+    initData[0] = 0x50616E6C;
+    initData[1] = 8;
+    panelObject = ((void *(*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4);
+    if (panelObject != 0) fn_801EAD6C(panelObject, (long)initData);
     ((void (*)(void))fn_801E87D4)();
 }
-#pragma scheduling invalid_target
 void fn_801E8E38(void) {
     struct InitData { long tag; long size; float a; float b; float c; float d; } data;
     void *object;
