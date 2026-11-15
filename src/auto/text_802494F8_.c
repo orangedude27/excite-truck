@@ -593,18 +593,19 @@ s32 fn_8024A6EC(s32* arg0, void* arg1) {
     return 0;
 }
 
-void *fn_8024AC54(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if ((unsigned int)arg0 + 0x18 != 0) {
-            if ((unsigned int)arg0 + 0x18 != 0) {
-                *(int *)((char *)arg0 + 0x18) = 0;
-                *(int *)((char *)arg0 + 0x1C) = 0;
-                *(int *)((char *)arg0 + 0x20) = 0;
+void *fn_8024AC54(void *object, int shouldDelete) {
+    /* Destructor helper: clear embedded fields at offsets 0x18-0x20, then optionally free the object. */
+    if (object != 0) {
+        if ((unsigned int)object + 0x18 != 0) {
+            if ((unsigned int)object + 0x18 != 0) {
+                *(int *)((char *)object + 0x18) = 0;
+                *(int *)((char *)object + 0x1C) = 0;
+                *(int *)((char *)object + 0x20) = 0;
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 extern void *fn_8024B73C(void *, const char *, void *);
