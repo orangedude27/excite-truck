@@ -158,16 +158,19 @@ u8 SCGetWpadSensorBarPosition(void) {
     return sensorBarPos;
 }
 
+/* Return the Wii Remote's speaker volume saved in the System Configuration's Bluetooth
+   speaker-volume item (SC_ITEM_BT_SPKV, id 0x17); the loudest volume is returned when
+   the item is missing, and anything above it is clamped down to SC_MAX_SPEAKER_VOLUME. */
 u8 SCGetWpadSpeakerVolume(void) {
-    u8 item;
+    u8 volume;
 
-    if (!SCFindU8Item(&item, SC_ITEM_BT_SPKV)) {
-        item = 127;
-    } else if (item > 127) {
-        item = 127;
+    if (!SCFindU8Item(&volume, SC_ITEM_BT_SPKV)) {
+        volume = SC_MAX_SPEAKER_VOLUME;
+    } else if (volume > SC_MAX_SPEAKER_VOLUME) {
+        volume = SC_MAX_SPEAKER_VOLUME;
     }
 
-    return item;
+    return volume;
 }
 
 BOOL SCSetWpadSpeakerVolume(u8 vol) {
