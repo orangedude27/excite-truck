@@ -169,14 +169,17 @@ void* fn_801FCA14(void* arg0, int arg1) {
 }
 
 extern "C" void fn_801FCA54(void* arg0, int arg1, int arg2) {
+    /* Initialize a DronePath segment from a spawn record: set its pool name and
+     * source object, clear state, install an identity transform, and mark it
+     * unplaced (index -1). */
     float zero;
     float one;
     zero = lbl_80563034;
     one = lbl_80563030;
-    int value = *(int*)((char*)arg1 + 4);
+    int source = *(int*)((char*)arg1 + 4);
     *(int*)((char*)arg0 + 0) = arg2;
     *(int*)((char*)arg0 + 4) = 0;
-    *(int*)((char*)arg0 + 8) = value;
+    *(int*)((char*)arg0 + 8) = source;
     *(float*)((char*)arg0 + 0xc) = one;
     *(float*)((char*)arg0 + 0x10) = zero;
     *(float*)((char*)arg0 + 0x14) = zero;
