@@ -1369,13 +1369,14 @@ void *fn_8029E754(void *arg0, void *arg1, int arg2) {
     ((int *)arg0)[16] = (int)fn_802CAC28(arg2, 0);
     return arg0;
 }
-void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_802CAC54(*(int *)((char *)arg0 + 0x40));
-        if (arg1 > 0)
-            fn_80128668(arg0);
+void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *self, int shouldDelete) {
+    /* Destroys a J2DAnmTexPatternTIMGPointer instance and optionally deletes it. */
+    if (self != 0) {
+        fn_802CAC54(*(int *)((char *)self + 0x40));
+        if (shouldDelete > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 extern void *fn_802C86DC(void);
