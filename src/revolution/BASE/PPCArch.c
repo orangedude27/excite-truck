@@ -1,3 +1,8 @@
+// PPCArch.c - Revolution SDK processor-register accessors for Broadway/Gekko.
+// The SPR read/write helpers below are hand-written CodeWarrior inline assembly
+// (nofralloc, no frame): there is no C intrinsic for mfspr/mtspr, so they stay
+// assembly for good. Only PPCDisableSpeculation, PPCSetFpNonIEEEMode and
+// PPCMthid4 have any C in them.
 #include <revolution/BASE.h>
 #include <revolution/OS.h>
 
