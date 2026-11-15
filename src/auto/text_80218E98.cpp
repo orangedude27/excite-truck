@@ -2321,13 +2321,14 @@ extern "C" void fn_8021BE48(void *);
 extern "C" void fn_8021C12C(void *);
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_80130568(char *);
-extern "C" void fn_8021BF90(void *arg0) {
-    void *value;
+/* When active, registers this widget's key/value pair and caches the resulting handle. */
+extern "C" void fn_8021BF90(void *widget) {
+    void *handle;
     if (fn_80129BC4() != 0) {
-        value = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C),
-                            *(s32 *)((u8 *)arg0 + 0x2AC), arg0);
-        *(void **)((u8 *)arg0 + 0x2A8) = value;
-        ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
+        handle = fn_80217BD8(*(s32 *)((u8 *)widget + 0x2C),
+                             *(s32 *)((u8 *)widget + 0x2AC), widget);
+        *(void **)((u8 *)widget + 0x2A8) = handle;
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(widget, 1, handle, 4);
     }
 }
 
