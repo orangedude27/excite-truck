@@ -5633,15 +5633,16 @@ extern "C" void *fn_802228B0(void *obj, s32 name, s32 width, s32 height) {
 }
 
 extern "C" int lbl_8033F998[];
-extern "C" void* __dt__14CollisionSpaceFv_80222998(void* arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = &lbl_8033F998;
-        fn_802C519C(((void**)arg0)[1]);
-        if (arg1 > 0) {
-            ((s32 (*)(void*))fn_80128668)(arg0);
+/* CollisionSpace::~CollisionSpace (scalars deleting): restore vtable, release resource handle, and optionally delete. */
+extern "C" void* __dt__14CollisionSpaceFv_80222998(void* this_, s32 flag) {
+    if (this_ != 0) {
+        *(void**)this_ = &lbl_8033F998;
+        fn_802C519C(((void**)this_)[1]);
+        if (flag > 0) {
+            ((s32 (*)(void*))fn_80128668)(this_);
         }
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" void fn_802229FC(void *arg0) {
