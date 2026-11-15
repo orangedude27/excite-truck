@@ -120,16 +120,18 @@ void fn_802B0710(void) {
     lbl_8055F9A0 = obj;
 }
 
-void *fn_802B0808(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            ((int *)arg0)[0] = 0;
-            ((int *)arg0)[1] = 0;
-            ((int *)arg0)[2] = 0;
+/* Reset the object's three 32-bit fields to 0, then free it when
+ * shouldDelete > 0 (deleting-destructor style helper). */
+void *fn_802B0808(void *object, int shouldDelete) {
+    if (object != 0) {
+        if (object != 0) {
+            ((int *)object)[0] = 0;
+            ((int *)object)[1] = 0;
+            ((int *)object)[2] = 0;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_802B0860(void *arg0) {
