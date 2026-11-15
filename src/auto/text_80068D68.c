@@ -9388,16 +9388,18 @@ void btm_read_stored_link_key_complete(u8 *hciEventStream) {
     }
 }
 
+/* HCI Write Stored Link Key command complete: clear and invoke the stored-link-key
+ * completion callback with event 3, status, and number of keys written. */
 void btm_write_stored_link_key_complete(u8 *p) {
     void (*callback)(u8 *);
-    u8 param[3];
+    u8 result[3];
     callback = *(void (**)(u8 *))(lbl_803C0F78 + 0x570);
     *(void (**)(u8 *))(lbl_803C0F78 + 0x570) = NULL;
     if (callback != NULL) {
-        param[0] = 3;
-        param[1] = p[0];
-        param[2] = p[1];
-        callback(param);
+        result[0] = 3;
+        result[1] = p[0];
+        result[2] = p[1];
+        callback(result);
     }
 }
 
