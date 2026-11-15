@@ -636,13 +636,14 @@ extern float lbl_805644D4;
 extern char lbl_80349224[];
 extern int fn_802C6CF8(int);
 extern u8 lbl_80349294[];
-void* __dt__Q34nw4r2ef6EffectFv_802930BC(void* arg0, int arg1) {
-    if (arg0) {
-        *(void**)arg0 = lbl_80349294;
-        fn_80293530(arg0);
-        if (arg1 > 0) fn_80128668(arg0);
+void *__dt__Q34nw4r2ef6EffectFv_802930BC(void *this, int shouldDelete) {
+    /* Destructor for nw4r::ef::Effect: restore vtable, release owned resources, and optionally delete. */
+    if (this) {
+        *(void **)this = lbl_80349294;
+        fn_80293530(this);
+        if (shouldDelete > 0) fn_80128668(this);
     }
-    return arg0;
+    return this;
 }
 
 void fn_8029311C(void* arg0) {
