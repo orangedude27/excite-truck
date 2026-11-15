@@ -17,6 +17,7 @@ extern float lbl_8055F880, lbl_8055F884;
 extern double lbl_805648E0, lbl_805648E8;
 #pragma scheduling invalid_target
 void fn_802A7B74(void) {
+    /* Initialize module state, cache converted float constants, and register the callback table. */
     fn_8000D838(&lbl_8055F878);
     lbl_8055F880 = (float) fn_8002F208(lbl_805648E0);
     lbl_8055F884 = (float) fn_8002F208(lbl_805648E8);
