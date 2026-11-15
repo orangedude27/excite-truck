@@ -391,11 +391,12 @@ struct CareerObj_8027EE88 {
 extern "C" unsigned char lbl_8055F684, lbl_8055F685;
 extern "C" const char lbl_80348078[];
 extern "C" void *fn_8027ED70(void);
+/* One-shot trigger to play the career level-up unlock sound. */
 extern "C" int fn_8027EE88(void) {
     if (lbl_8055F685 == 0 && lbl_8055F684 != 0) {
         lbl_8055F685 = 1;
-        CareerObj_8027EE88 *obj = (CareerObj_8027EE88 *)fn_8027ED70();
-        obj->f12(lbl_80348078);
+        CareerObj_8027EE88 *careerObj = (CareerObj_8027EE88 *)fn_8027ED70();
+        careerObj->f12(lbl_80348078);
     }
     return 0;
 }
