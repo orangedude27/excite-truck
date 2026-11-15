@@ -674,6 +674,13 @@ inner_check:
     return EF_NO_TEXTURE;
 }
 #pragma pop
+/* First texture the priority group `index` shares with the next non-empty group:
+ * scans groups index+1..8 for the first that holds any emitter and asks
+ * fn_8028F040 for a texture common to group `index` and that group, excluding
+ * `excludeTexId` (the texture the previous group already carried over).  Returns
+ * EF_NO_TEXTURE when no later group holds an emitter.  `lists` is the base of the
+ * nine EfList groups (0x104 bytes each); nextList walks them for the count test
+ * while the call recomputes each group's address from `lists`. */
 int fn_8028F0C0(int *lists, int index, int excludeTexId) {
     int next;
     int *nextList;
