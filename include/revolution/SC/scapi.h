@@ -11,6 +11,8 @@ extern "C" {
 #define SC_MAX_DEV_ENTRY_FOR_SMP 6
 #define SC_MAX_DEV_ENTRY (SC_MAX_DEV_ENTRY_FOR_STD + SC_MAX_DEV_ENTRY_FOR_SMP)
 
+#define SC_MAX_SPEAKER_VOLUME 127 // loudest WPAD speaker volume (SC_ITEM_BT_SPKV)
+
 typedef enum { SC_ASPECT_STD, SC_ASPECT_WIDE } SCAspectRatio;
 
 typedef enum { SC_EURGB_50_HZ, SC_EURGB_60_HZ } SCEuRgb60Mode;
