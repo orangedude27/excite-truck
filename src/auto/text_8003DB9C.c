@@ -628,7 +628,7 @@ void GXInvalidateTexAll(void);
 void *GXSetTexRegionCallback(void *callback);
 void *GXSetTlutRegionCallback(void *callback);
 void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap);
-void GXLoadTexObj(void *arg0, unsigned int arg1);
+ void GXLoadTexObj(void *obj, unsigned int map);
 void GXSetTevOrder(int stage, int texCoord, int texMap, int color);
 void GXSetNumTevStages(u8 count);
 void GXSetTevOp(int stage, int mode);
