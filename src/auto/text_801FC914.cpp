@@ -360,20 +360,24 @@ extern "C" void fn_801FCF18(void* arg0, int arg1, int arg2) {
     *(float*)((char*)path + 0x40) = zero;
 }
 
-extern "C" void fn_801FCF74(void* arg0, float farg0) {
-    int obj = *(int *)((char *)arg0 + 4);
-    if (obj == 0)
+/* Advance one path drone along its path by dt, using the end behavior its spawn
+ * entry asked for: 0 loops back to the first node, 1 runs the node list
+ * backwards, 2 walks off the end and hands the prop back to its pool. A null
+ * entry is a drone that already retired, so it is skipped. */
+extern "C" void fn_801FCF74(void *drone, float dt) {
+    PathSpawnEntry *entry = *(PathSpawnEntry **)((char *)drone + 4);
+    if (entry == 0)
         return;
-    int type = *(unsigned short *)((char *)obj + 0x16);
-    switch (type) {
-    case 0:
-        return ((void (*)(void *, int))fn_801FD3F0)(arg0, type);
-    case 1:
-        return ((void (*)(void *, int, float))fn_801FD5E8)(arg0, type, farg0);
-    case 2:
-        return ((void (*)(void *, int))fn_801FDF18)(arg0, type);
+    int endBehavior = *(unsigned short *)((char *)entry + 0x16);
+    switch (endBehavior) {
+    case PATH_END_LOOP:
+        return ((void (*)(void *, int))fn_801FD3F0)(drone, endBehavior);
+    case PATH_END_REVERSE:
+        return ((void (*)(void *, int, float))fn_801FD5E8)(drone, endBehavior, dt);
+    case PATH_END_STOP:
+        return ((void (*)(void *, int))fn_801FDF18)(drone, endBehavior);
     default:
-        return fn_802E317C((const char *)lbl_8033B618);
+        return fn_802E317C((const char *)STR_PATH_END_BEHAVIOR);
     }
 }
 
