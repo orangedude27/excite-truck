@@ -59,10 +59,10 @@ void fn_802E98D0(void) {
     aspectRatio = SCGetAspectRatio();
     switch (aspectRatio) {
     default: /* SC_ASPECT_STD, and anything else the config block holds */
-        *(volatile s32*)&sConfigAspectRatio = SC_ASPECT_STD;
+        sConfigAspectRatio = SC_ASPECT_STD;
         break;
     case SC_ASPECT_WIDE:
-        *(volatile s32*)&sConfigAspectRatio = SC_ASPECT_WIDE;
+        sConfigAspectRatio = SC_ASPECT_WIDE;
         break;
     }
 
