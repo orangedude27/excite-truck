@@ -355,10 +355,12 @@ void fn_8022F824(void *arg0) {
     fn_80128668(arg0);
 }
 
-void fn_8022F868(void *arg0, void *arg1) {
-    int temp = fn_8022EDC4();
-    fn_801BFD34((char *)arg0 + 0x24, (char *)arg1 + 0x24, temp);
-    fn_80015B20(arg0, arg1, (void *)temp);
+/* Copy/configure the transform/related block at +0x24 from src to dst using the
+ * current context from fn_8022EDC4, then run the follow-up step fn_80015B20. */
+void fn_8022F868(void *dst, void *src) {
+    int context = fn_8022EDC4();
+    fn_801BFD34((char *)dst + 0x24, (char *)src + 0x24, context);
+    fn_80015B20(dst, src, (void *)context);
 }
 
 #pragma push
