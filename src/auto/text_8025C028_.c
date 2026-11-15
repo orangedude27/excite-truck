@@ -42,15 +42,16 @@ void fn_8025C04C(void) {
     fn_80214CB4(lbl_8055C390);
 }
 
-void* __dt__Q28PSSystem7SeqHeapFv_8025CC14(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = lbl_803453B8;
-        fn_80235380(*(void**)((char*)arg0 + 0x28), lbl_803453B8);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+/* Destroy a PSSystem::SeqHeap: install its vtable, release the owned subobject at +0x28, and optionally delete storage. */
+void* __dt__Q28PSSystem7SeqHeapFv_8025CC14(void* self, int shouldDelete) {
+    if (self != 0) {
+        *(void**)self = lbl_803453B8;
+        fn_80235380(*(void**)((char*)self + 0x28), lbl_803453B8);
+        if (shouldDelete > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern void fn_80230C30(float*, float*, int, int);
@@ -159,4 +160,13 @@ void fn_8025C054(void) {
         }
     }
 }
+
+void fn_8025C204(int arg0, int arg1) {
+    (void)arg1;
+    if (lbl_8055F2E8 == 0) {
+        void *p = fn_801284F8(8, (void *)arg0);
+        (void)p;
+    }
+}
+
 #pragma pop
