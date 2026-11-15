@@ -6,6 +6,38 @@ typedef struct ClothEdge {
     float restDistSq;
 } ClothEdge;
 
+// One vertex held at a fixed world position (grid index + that position); the
+// array at ClothEntry::pins is re-applied after every simulation pass.
+typedef struct ClothPin {
+    unsigned short vertex;
+    float x, y, z;
+    unsigned short pad;
+} ClothPin;
+
+// One cloth in a fabric group: a columns x rows grid of vertices relaxed by
+// fn_801F65D0, drawn with textureId. The uniform group stores these 0x48 bytes
+// apart, the manual group 0x54 (its extra 0xC are the anchor offset at +0x48).
+typedef struct ClothEntry {
+    float *vertexBlock;   // 0x00 both position buffers, 2 * vertexCount * 0xC
+    float *positions;     // 0x04 buffer the pass writes
+    float *prevPositions; // 0x08 other half of vertexBlock, swapped each pass
+    float *texCoords;     // 0x0C per vertex: s, t, colour bits
+    int vertexCount;      // 0x10
+    ClothEdge *edges;     // 0x14 distance constraints, edgeCount of them
+    int edgeCount;        // 0x18
+    ClothPin *pins;       // 0x1C grid vertices pinned in the world
+    int pinCount;         // 0x20
+    int textureId;        // 0x24 texture table index (fn_802CAC28 / fn_802CAC54)
+    float scale;          // 0x28 log10 of the grid's world size
+    int columns;          // 0x2C grid width in vertices
+    int rows;             // 0x30 grid height in vertices
+    int id;               // 0x34 id the visibility test fn_802CDB20 is given
+    unsigned char active; // 0x38 simulated and drawn while non-zero
+    float windOffset;     // 0x3C subtracted from the wind's vertical part
+    float windScale;      // 0x40 scales the wind vector
+    float windFactor;     // 0x44 how much of the wind a pass applies
+} ClothEntry;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void *fn_8012850C();
 extern float PSVECSquareDistance(float *, float *);
