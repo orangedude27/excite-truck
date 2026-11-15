@@ -95,11 +95,13 @@ void fn_802D3F34(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_802D3F98(void *arg0) {
-    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
-    GXSetArray(0xB, *(void **)((char *)arg0 + 0x24), 4);
-    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
-    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+/* Bind this surface object's position, normal, and color vertex arrays, then
+ * submit its prebuilt display list. */
+void fn_802D3F98(void *surface) {
+    GXSetArray(9, *(void **)((char *)surface + 0x20), 0xC);
+    GXSetArray(0xB, *(void **)((char *)surface + 0x24), 4);
+    GXSetArray(0xD, *(void **)((char *)surface + 0x28), 4);
+    GXCallDisplayList(*(void **)((char *)surface + 0x30), *(u32 *)((char *)surface + 0x2C));
 }
 #pragma push
 #pragma scheduling invalid_target
@@ -352,59 +354,44 @@ void fn_802D45C0(void *arg0) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802D479C(void *arg0) {
-    register s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
-    register u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
-    register void *object = arg0;
+    s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
+    u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
     f32 *base = (f32 *)fn_802CFF64(count * 12);
-    register f32 *out;
-    register s32 i;
+    f32 *out;
+    s32 i;
+    u8 *vertex;
 
     if (base != 0) {
         f32 factor = lbl_80564FF0;
-        register f32 *table = lbl_804CA308;
-        register u8 *vertex = src;
+        f32 *table = lbl_804CA308;
         out = base;
-        i = count;
-        if (i > 0) {
-            for (; i > 0; i--) {
-                s16 h2 = *(s16 *)(vertex + 0x10);
-                u8 index0 = vertex[0x18];
-                s16 h0 = *(s16 *)(vertex + 0x0C);
-                s16 h1 = *(s16 *)(vertex + 0x0E);
-                f32 table0 = table[index0];
-                s16 h5 = *(s16 *)(vertex + 0x16);
-                s16 h3 = *(s16 *)(vertex + 0x12);
-                s16 h4 = *(s16 *)(vertex + 0x14);
-                u8 index1 = vertex[0x19];
-                f32 table1 = table[index1];
-                f32 w0 = factor * (f32)h0;
-                f32 w1 = factor * (f32)h1;
-                f32 w2 = factor * (f32)h2;
-                f32 w3 = factor * (f32)h3;
-                f32 w4 = factor * (f32)h4;
-                f32 w5 = factor * (f32)h5;
-                f32 x = *(f32 *)(src + 0x0) + w0 * table0;
-                f32 y = *(f32 *)(src + 0x4) + w1 * table0;
-                f32 z = *(f32 *)(src + 0x8) + w2 * table0;
-                out[0] = x;
-                out[1] = y;
-                out[2] = z;
-                x += w3 * table1;
-                y += w4 * table1;
-                z += w5 * table1;
-                out[0] = x;
-                out[1] = y;
-                out[2] = z;
-                vertex += 0x1C;
-                src += 0x1C;
-                out += 3;
+        vertex = src;
+        for (i = 0; i < count; i++) {
+            f32 a[3], b[3];
+            f32 t0 = table[vertex[0x18]];
+            f32 t1 = table[vertex[0x19]];
+            a[1] = factor * (f32)*(s16 *)(vertex + 0xE);
+            a[2] = factor * (f32)*(s16 *)(vertex + 0x10);
+            a[0] = factor * (f32)*(s16 *)(vertex + 0xC);
+            b[0] = factor * (f32)*(s16 *)(vertex + 0x12);
+            b[1] = factor * (f32)*(s16 *)(vertex + 0x14);
+            b[2] = factor * (f32)*(s16 *)(vertex + 0x16);
+            out[0] = *(f32 *)(src + 0) + a[0] * t0;
+            out[1] = *(f32 *)(src + 4) + a[1] * t0;
+            {
+                f32 z = *(f32 *)(src + 8) + a[2] * t0;
+                out[0] += b[0] * t1;
+                out[1] += b[1] * t1;
+                out[2] = z + b[2] * t1;
             }
+            vertex += 0x1C;
+            src += 0x1C;
+            out += 3;
         }
-
         GXSetArray(9, base, 0xC);
-        GXSetArray(0xB, *(void **)((u8 *)object + 0x24), 2);
-        GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
-        GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+        GXSetArray(0xB, *(void **)((u8 *)arg0 + 0x24), 2);
+        GXSetArray(0xD, *(void **)((u8 *)arg0 + 0x28), 4);
+        GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
     }
 }
 
@@ -528,7 +515,8 @@ void fn_802D4C44(void *arg0) {
         GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
     }
 }
-#pragma pop
+#pragma push
+#pragma processor 750
 void fn_802D4ECC(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
@@ -585,12 +573,8 @@ void fn_802D4ECC(void *arg0) {
         GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
     }
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma pop
 void fn_802D50B4(void *arg0) {
-    struct SourceVertex { f32 x; f32 y; f32 z; f32 scale; s16 half0; s16 half1; u8 index0; u8 index1; u16 pad; };
     register u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
     register s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
     register void *object = arg0;
@@ -616,30 +600,29 @@ void fn_802D50B4(void *arg0) {
 
         if (cached == 0) {
             f32 factor = lbl_80564FF0;
-            register struct SourceVertex *vertex = (struct SourceVertex *)src;
             out = base;
             i = count;
             if (i > 0) {
                 for (; i > 0; i--) {
-                    f32 scale = vertex->scale;
-                    s16 half0 = vertex->half0;
-                    s16 half1 = vertex->half1;
-                    u8 index0 = vertex->index0;
-                    u8 index1 = vertex->index1;
+                    f32 scale = *(f32 *)(src + 0xC);
+                    s16 half0 = *(s16 *)(src + 0x10);
+                    s16 half1 = *(s16 *)(src + 0x12);
+                    u8 index0 = src[0x14];
+                    u8 index1 = src[0x15];
                     f32 y;
                     f32 x;
                     f32 first;
                     f32 z;
                     f32 second;
-                    y = vertex->y + lbl_804C56F0[1] * scale;
-                    x = vertex->x + lbl_804C56F0[0] * scale;
+                    y = *(f32 *)(src + 0x4) + lbl_804C56F0[1] * scale;
+                    x = *(f32 *)(src + 0x0) + lbl_804C56F0[0] * scale;
                     first = factor * (f32)half0;
                     y += first * lbl_804CA308[index0];
-                    z = vertex->z + lbl_804C56F0[2] * scale;
+                    z = *(f32 *)(src + 0x8) + lbl_804C56F0[2] * scale;
                     second = factor * (f32)half1;
                     y += second * lbl_804CA308[index1];
                     out[0] = x;
-                    vertex = (struct SourceVertex *)((u8 *)vertex + 0x18);
+                    src += 0x18;
                     out[1] = y;
                     out[2] = z;
                     out += 3;
@@ -808,15 +791,14 @@ extern f32 lbl_804C5690[9];
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802D5838(void *arg0) {
- s32 count=*(s32*)((u8*)arg0+0x1C);
- f32 *src=*(f32**)((u8*)arg0+0x20), *norm=*(f32**)((u8*)arg0+0x24);
- f32 *base=(f32*)fn_802CFF64(count*12);
+ f32 *dst; f32 *src; f32 *norm; s32 count; f32 *base; s32 i;
+ f32 *m; f32 v[3]; f32 *L; f32 thresh; s32 cull;
+ count=*(s32*)((u8*)arg0+0x1C);
+ src=*(f32**)((u8*)arg0+0x20); norm=*(f32**)((u8*)arg0+0x24);
+ base=(f32*)fn_802CFF64(count*12);
  if(base) {
-  f32 *m=fn_802D2D04(); f32 v[3]; s32 i;
-  f32 *L=lbl_804C5690;
-  f32 *dst;
-  f32 thresh;
-  s32 cull;
+  m=fn_802D2D04();
+  L=lbl_804C5690;
   if(v==m) {
    f32 y=m[1], x=m[0], z=m[2];
    f32 p1=y*L[1], p4=y*L[4], p0=x*L[0], p3=x*L[3], p6=x*L[6], p7=y*L[7];
@@ -831,7 +813,7 @@ void fn_802D5838(void *arg0) {
   }
   thresh=lbl_80565008;
   dst=base;
-  for(i=0;i<count;i++){ if(PSVECDotProduct(norm,v)<thresh){f32 k=lbl_8055FDE0;dst[0]=src[0]+v[0]*k;dst[1]=src[1]+v[1]*k;dst[2]=src[2]+v[2]*k;}else{dst[0]=src[0];dst[1]=src[1];dst[2]=src[2];}src+=3;norm+=3;dst+=3;}
+  for(i=0;i<count;i++){ if(PSVECDotProduct(norm,v)<thresh){f32 k=lbl_8055FDE0;dst[0]=src[0]+v[0]*k;dst[1]=src[1]+v[1]*k;dst[2]=src[2]+v[2]*k;}else{dst[0]=src[0];dst[1]=src[1];dst[2]=src[2];}norm+=3;src+=3;dst+=3;}
   GXSetArray(9,base,12);
   cull=1; if(lbl_8055FDE4) cull=2;
   GXSetCullMode(cull);GXSetBlendMode(1,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
@@ -960,10 +942,9 @@ void fn_802D5F88(s32 arg0) {
 #pragma dont_inline on
 void fn_802D5FE4(void *arg0) {
     register void *object = arg0;
-    u8 code;
-
+    register int code;
     fn_802D5F88((s32)object);
-    code = ((u8 *)object)[8];
+    code = (int)((u8 *)object)[8];
     switch (code - 10) {
     case 0: fn_802D41C8(object); break;
     case 4: if (fn_802DAC64()) fn_802D4280(object); else fn_802D42E4(object); break;
@@ -1369,6 +1350,137 @@ void fn_802D6C54(int arg0, float arg1) {
 void fn_802D6C68(void) {
     lbl_8055FDE8 = 0;
     lbl_8055FDEC = 0;
+}
+
+void fn_802D6C78(void) {
+    extern f32 lbl_804CA308[];
+    extern f32 lbl_804DB068[];
+    extern f32 lbl_80564FF0;
+    extern double lbl_80564FF8;
+    extern f32 lbl_804C56F0[];
+    extern void LCLoadData(void*, const void*, unsigned long);
+    extern void LCStoreData(void*, const void*, unsigned long);
+    extern void LCQueueWait(unsigned long);
+    extern void OSSetGQR6(unsigned long, unsigned long);
+    {
+        unsigned char *base = (unsigned char *)lbl_804CA308 + 0x930;
+        s32 n = *(s32 *)(base + 0x4000);
+        s32 i;
+        for (i = 0; i < n; i++) {
+            s32 count = *(s32 *)(base + i * 0x10 + 0x0);
+            unsigned char *src = *(unsigned char **)(base + i * 0x10 + 0x4);
+            float *dst = *(float **)(base + i * 0x10 + 0x8);
+            s32 k;
+            double bias = lbl_80564FF8;
+            f32 factor = lbl_80564FF0;
+            f32 (*dirs)[3] = (f32 (*)[3])lbl_804DB068;
+            for (k = 0; k < count; k++) {
+                unsigned char a = src[0xE];
+                unsigned char b = src[0xC];
+                unsigned char c = src[0xD];
+                unsigned char d = src[0xF];
+                union { double dd; unsigned int ww[2]; } ca, cd;
+                float fa, fd;
+                f32 w1, w2, x, y, z;
+                ca.ww[0] = 0x43300000; ca.ww[1] = a;
+                cd.ww[0] = 0x43300000; cd.ww[1] = d;
+                fa = (float)(ca.dd - bias);
+                fd = (float)(cd.dd - bias);
+                w1 = factor * fa;
+                w2 = factor * fd;
+                x = *(f32 *)(src + 0x0) + dirs[b][0] * w1;
+                dst[0] = x;
+                y = *(f32 *)(src + 0x4) + dirs[b][1] * w1;
+                dst[1] = y;
+                z = *(f32 *)(src + 0x8) + dirs[b][2] * w1;
+                dst[2] = z;
+                src += 0x10;
+                dst[0] = x + dirs[c][0] * w2;
+                dst[1] = y + dirs[c][1] * w2;
+                dst[2] = z + dirs[c][2] * w2;
+                dst += 3;
+            }
+        }
+        *(s32 *)(base + 0x4000) = 0;
+    }
+    OSSetGQR6(7, 8);
+    OSSetGQR6(7, 8);
+    {
+        unsigned char *base = (unsigned char *)lbl_804CA308 + 0x8938;
+        s32 nch = *(s32 *)(base + 0x4000);
+        if (nch != 0) {
+            s32 chunkLeft;
+            unsigned char *chunk;
+            s32 rem;
+            unsigned char *src;
+            float *dst;
+            s32 cur;
+            void *lc;
+            s32 toggle;
+            s32 rest;
+            unsigned char *src0;
+            s32 n;
+            float *storedst;
+            float *lcbuf;
+            chunkLeft = nch - 1;
+            chunk = base + 0x10;
+            rem = *(s32 *)(base + 0x0);
+            src = *(unsigned char **)(base + 0x4);
+            dst = *(float **)(base + 0x8);
+            cur = rem <= 0x100 ? rem : 0x100;
+            lc = (void *)0xE0000000;
+            toggle = 1;
+            rest = rem - cur;
+            src0 = src;
+            src += cur * 0x14;
+            n = 0;
+            storedst = 0;
+            lcbuf = 0;
+            LCLoadData((void *)0xE0000000, src0, (unsigned long)(cur * 0x14));
+            for (;;) {
+                float *out;
+                LCQueueWait(0);
+                if (n > 0) LCStoreData(storedst, lcbuf, (unsigned long)(((n * 12) + 0x1F) & ~0x1F));
+                storedst = dst;
+                n = cur;
+                lcbuf = (float *)lc;
+                dst += cur * 3;
+                if (rest == 0 && chunkLeft > 0) {
+                    rest = *(s32 *)(chunk + 0x0);
+                    chunkLeft--;
+                    src = *(unsigned char **)(chunk + 0x4);
+                    dst = *(float **)(chunk + 0x8);
+                    chunk += 0x10;
+                }
+                cur = rest <= 0x100 ? rest : 0x100;
+                if (rest > 0) {
+                    void *nlc = (void *)((toggle << 13) + 0xE0000000);
+                    toggle = 1 - toggle;
+                    LCLoadData(nlc, src, (unsigned long)(((cur * 0x14) + 0x1F) & ~0x1F));
+                    src += cur * 0x14;
+                    rest -= cur;
+                    lc = nlc;
+                }
+                if (n == 0) break;
+                out = (float *)((toggle << 13) + 0xE0001400);
+                lcbuf = (float *)lc;
+                if (n > 0) {
+                    s32 j;
+                    float *s = lcbuf;
+                    float *d = out;
+                    for (j = 0; j < n; j++) {
+                        d[0] = s[0]; d[1] = s[1]; d[2] = s[2];
+                        s += 5; d += 3;
+                    }
+                    lcbuf = out;
+                    storedst = out;
+                }
+            }
+            LCQueueWait(0);
+            *(s32 *)(base + 0x4000) = 0;
+        }
+    }
+    OSSetGQR6(7, 8);
 }
 
 void fn_802D754C(u8 arg0) {
