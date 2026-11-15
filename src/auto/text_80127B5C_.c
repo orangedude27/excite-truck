@@ -90,6 +90,7 @@ void fn_80127C90(int callback, int arg) {
         ((void (*)(const char *, ...))fn_802E317C)(lbl_80329FA0);
 }
 void fn_80127CF4(int arg0, int arg1) {
+    /* Register an object task in the bg task table if space is available; log overflow otherwise. */
     int count;
     int *base;
     int masked;
