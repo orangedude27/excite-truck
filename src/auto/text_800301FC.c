@@ -1163,12 +1163,35 @@ void __AXDSPInitCallback_80031F90(void) {
 }
 
 void fn_80031F9C(void) {
-    if (lbl_8055D780 == 2U) {
-        lbl_8055D780 = 0;
-        CircleBufferInitialize((u32)(OSGetTime() - (((u64)lbl_8055D778 << 32) | lbl_8055D77C)) >> 2);
+    /* AXOut.c's DSP-task resume callback: fn_80032004 stores it at
+     * __AXDSPTask + 0x2C, between __AXDSPInitCallback_80031F90 and
+     * __AXDSPDoneCallback, and the DSP interrupt runs it when the audio task
+     * resumes on the DSP.  Names this build lost: lbl_8055D780 is
+     * __AXOutDspReady, lbl_8055D778/7C the time stamp fn_80031ED4
+     * (__AXOutAiCallback) takes when it asserts the task, and
+     * CircleBufferInitialize() is __AXOutNewFrame(). */
+#define __AXOutDspReady       lbl_8055D780
+#define __AXDSPAssertTimeHi   lbl_8055D778
+#define __AXDSPAssertTimeLo   lbl_8055D77C
+#define AX_OUT_DSP_IDLE       0U  /* nothing pending */
+#define AX_OUT_DSP_UP         1U  /* DSP task is up: the AI callback runs the frame */
+#define AX_OUT_DSP_W4_TASK    2U  /* task asserted: waiting for the DSP to take it */
+
+    /* Waiting on the assert: run the audio frame here, giving __AXOutNewFrame()
+     * the time the DSP took to take the task over.  Otherwise just mark the task
+     * up and leave the next frame to the AI callback. */
+    if (__AXOutDspReady == AX_OUT_DSP_W4_TASK) {
+        __AXOutDspReady = AX_OUT_DSP_IDLE;
+        CircleBufferInitialize((u32)(OSGetTime() - (((u64)__AXDSPAssertTimeHi << 32) | __AXDSPAssertTimeLo)) >> 2);
     } else {
-        lbl_8055D780 = 1;
+        __AXOutDspReady = AX_OUT_DSP_UP;
     }
+#undef __AXOutDspReady
+#undef __AXDSPAssertTimeHi
+#undef __AXDSPAssertTimeLo
+#undef AX_OUT_DSP_IDLE
+#undef AX_OUT_DSP_UP
+#undef AX_OUT_DSP_W4_TASK
 }
 
 void __AXDSPDoneCallback(void) {
