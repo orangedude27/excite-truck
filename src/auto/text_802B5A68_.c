@@ -111,14 +111,17 @@ void *fn_802B5AC0(void *object, s32 shouldDelete) {
    "Material-Map", "Road-Opacity". */
 __declspec(section ".data") extern const char *lbl_802FAB30[4];
 extern const char lbl_8055CE30; /* "<unk>" -- what an out-of-range mode shows */
-u32 fn_802B5B18(s32 arg0) {
-    u32 vals[4];
-    u32 *p = (u32 *)&lbl_802FAB30;
-    vals[0] = *p++;
-    vals[1] = *p++;
-    vals[2] = *p++;
-    vals[3] = *p;
-    if (arg0 >= 0 && (u32)arg0 < 4) return vals[arg0];
+/* Display name of a debug view mode: the lbl_802FAB30 entry for `mode` (0 "Objects",
+   1 "Advanced", 2 "Material-Map", 3 "Road-Opacity"), or "<unk>" for anything else.
+   The string pointer comes back as a u32, which is how the callers pass it on. */
+u32 fn_802B5B18(s32 mode) {
+    const char *names[4];
+    const char **p = lbl_802FAB30;
+    names[0] = *p++;
+    names[1] = *p++;
+    names[2] = *p++;
+    names[3] = *p;
+    if (mode >= 0 && (u32)mode < 4) return (u32)names[mode];
     return (u32)&lbl_8055CE30;
 }
 
