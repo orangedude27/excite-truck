@@ -566,52 +566,74 @@ extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *env, int 
 #pragma pop
 
 #pragma pop
+/* EnvGenerator::SetRelease: turn a release index (0-0x7F, bigger releases
+ * faster) into the volume step Update() subtracts from the envelope on every
+ * step while it is releasing, and store it.  0x7F mutes at once and 0x7E is the
+ * fastest stepped release; below 0x32 the step grows linearly with the index,
+ * from there on as 1 / (0x7E - index).  An index outside 0-0x7F panics in
+ * snd_EnvGenerator.cpp at 0x127 and 0x132 before anything is stored. */
 void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release)
 {
+  #define sSourceFile     lbl_80322B80  /* "snd_EnvGenerator.cpp" */
+  #define sReleaseMsg     lbl_80322C50  /* "release is out of bounds(%d)\n%d <= release <= %d not satisfied." */
+  #define fMuteStep       lbl_80560FE8  /* 65535.0f - index 0x7F */
+  #define fTopStep        lbl_80561008  /* 24.0f - index 0x7E */
+  #define fIndexScale     lbl_8056100C  /* 0.0078125 = 1/128 */
+  #define fStepDivisor    lbl_80561010  /* 5.0f */
+  #define fCurveNumerator lbl_80561014  /* 60.0f */
+  enum {
+      RELEASE_MAX_INDEX = 0x7F,    /* silence in one step */
+      RELEASE_TOP_INDEX = 0x7E,    /* last index of the 1/x curve */
+      RELEASE_LINEAR_LIMIT = 0x32  /* below this the step is linear in the index */
+  };
   f32 value;
   int valid = 0;
   register f32 factor;
-  if ((release >= 0) && (release <= 0x7F))
+  if ((release >= 0) && (release <= RELEASE_MAX_INDEX))
   {
     valid = 1;
   }
   if (valid == 0)
   {
-    Panic__Q26nw4hbm2dbFPCciPCce((const char *) lbl_80322B80, 0x127, (const char *) lbl_80322C50, release, 0, 0x7F);
+    Panic__Q26nw4hbm2dbFPCciPCce((const char *) sSourceFile, 0x127, (const char *) sReleaseMsg, release, 0, RELEASE_MAX_INDEX);
   }
   valid = 0;
-  if ((release >= 0) && (release <= 0x7F))
+  if ((release >= 0) && (release <= RELEASE_MAX_INDEX))
   {
     valid = 1;
   }
   if (valid == 0)
   {
-    Panic__Q26nw4hbm2dbFPCciPCce((const char *) lbl_80322B80, 0x132, (const char *) lbl_80322C50, release, 0, 0x7F);
+    Panic__Q26nw4hbm2dbFPCciPCce((const char *) sSourceFile, 0x132, (const char *) sReleaseMsg, release, 0, RELEASE_MAX_INDEX);
   }
-  if (release == 0x7F)
+  if (release == RELEASE_MAX_INDEX)
   {
-    value = lbl_80560FE8;
+    value = fMuteStep;
   }
-  else
-    if (release == 0x7E)
+  else if (release == RELEASE_TOP_INDEX)
   {
-    value = lbl_80561008;
+    value = fTopStep;
   }
-  else
-    if (release < 0x32)
+  else if (release < RELEASE_LINEAR_LIMIT)
   {
     factor = (f32) ((release * 2) + 1);
-    value = factor * lbl_8056100C;
-    value = value / lbl_80561010;
+    value = factor * fIndexScale;
+    value = value / fStepDivisor;
   }
   else
   {
-    value = (lbl_80561014 / ((f32) (0x7E - release))) / lbl_80561010;
-    value = (lbl_80561014 / ((f32) (0x7E - release))) / lbl_80561010;
+    value = (fCurveNumerator / ((f32) (RELEASE_TOP_INDEX - release))) / fStepDivisor;
+    value = (fCurveNumerator / ((f32) (RELEASE_TOP_INDEX - release))) / fStepDivisor;
   }
-  *((f32 *) (((u8 *) this) + 0xC)) = value;
+  releaseStep = value;
+  #undef sSourceFile
+  #undef sReleaseMsg
+  #undef fMuteStep
+  #undef fTopStep
+  #undef fIndexScale
+  #undef fStepDivisor
+  #undef fCurveNumerator
 }
-
 /* Append a BasicSound to this ExternalSoundPlayer's sound list and bind its external player pointer. */
 extern "C" void InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *player, void *sound) {
     void *endNode = (u8 *)player + LINK_LIST_SENTINEL_OFFSET;
