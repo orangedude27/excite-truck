@@ -275,14 +275,14 @@ extern Fn802B83CCEntry lbl_8034A95C[];
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-s32 fn_802B5DD0(s32 arg0) {
-    s32 temp_r31;
-    s32 temp_r3;
+s32 fn_802B5DD0(s32 text) {
+    s32 parsedLayer;
+    s32 waterLayer;
     s32 result;
-    temp_r31 = fn_802B5D2C(lbl_8055CE48, arg0);
-    temp_r3 = fn_802B05DC();
+    parsedLayer = fn_802B5D2C(lbl_8055CE48 /* "layer" */, text);
+    waterLayer = fn_802B05DC();
     result = 0;
-    if ((temp_r31 != -1) && (temp_r31 != temp_r3)) {
+    if ((parsedLayer != -1) && (parsedLayer != waterLayer)) {
         result = 1;
     }
     return result;
