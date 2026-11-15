@@ -7042,13 +7042,14 @@ void fn_80076228(void) {
     }
 }
 
-void BTA_HhClose(s16 arg0) {
-    s16 *ptr = GKI_getbuf(8);
-    if (ptr != 0) {
-        memset(ptr, 0, 8);
-        *ptr = 0x1701;
-        *(s16 *)((u8 *)ptr + 6) = arg0;
-        fn_80071450(ptr);
+/* Queue a close request for the given HID host device handle. */
+void BTA_HhClose(s16 devHandle) {
+    s16 *msg = GKI_getbuf(8);
+    if (msg != 0) {
+        memset(msg, 0, 8);
+        *msg = BTA_HH_API_CLOSE_EVT;
+        *(s16 *)((u8 *)msg + 6) = devHandle;
+        fn_80071450(msg);
     }
 }
 
