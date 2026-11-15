@@ -909,14 +909,16 @@ int fn_802BD070(void *arg0) {
 }
 
 #pragma pop
-long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
-    if (arg0 != 0) {
-        fn_802C2930((void*)arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668((void*)arg0);
+/* Destructor for nw4hbm::snd::MemorySoundArchive: runs base destruction with
+ * shouldDelete=0, then if requested frees this object. Returns this. */
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long self, long shouldDelete) {
+    if (self != 0) {
+        fn_802C2930((void *)self, 0);
+        if (shouldDelete > 0) {
+            fn_80128668((void *)self);
         }
     }
-    return arg0;
+    return self;
 }
 
 void fn_802BDD54(void) {
