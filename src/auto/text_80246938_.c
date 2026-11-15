@@ -1599,11 +1599,12 @@ s32 fn_80248FB0(void *arg0, s32 arg1) {
     return 1;
 }
 #pragma scheduling on
-void fn_802490AC(void *arg0) {
-    unsigned char *p = (unsigned char *)arg0;
+/* Initializes the object: clears the flag byte at +0x1C, records the current time at +0x18, and triggers action 1 or 2 depending on fn_802C9A58(). */
+void fn_802490AC(void *obj) {
+    unsigned char *objBytes = (unsigned char *)obj;
 
-    *(p + 0x1C) = 0;
-    *(s32 *)((char *)arg0 + 0x18) = fn_802E2C20();
+    *(objBytes + 0x1C) = 0;
+    *(s32 *)((char *)obj + 0x18) = fn_802E2C20();
     if (fn_802C9A58() != 0) {
         fn_80214A9C(1);
     } else {
