@@ -170,8 +170,9 @@ extern "C" void *fn_8012A570(u32 arg0, void *arg1) {
     return p;
 }
 #pragma dont_inline reset
-extern "C" void fn_8012A5E8(void *arg0) {
-    fn_8012A364(lbl_8055E008, arg0);
+extern "C" void fn_8012A5E8(void *element) {
+    /* Return an element to the shared pool and destroy the pool when the last user releases it. */
+    fn_8012A364(lbl_8055E008, element);
     if (--lbl_8055E004 == 0) {
         delete (Unk8012A570 *)lbl_8055E008;
         lbl_8055E008 = 0;
