@@ -398,8 +398,10 @@ extern "C" void fn_802175F0(void *menuGroup, int screenX, int screenY) {
     }
 }
 #pragma scheduling on
-extern "C" void fn_802176D4(void *arg0, int arg1, int arg2) {
-    class Obj {
+/* Forwards a pointer-release event to the held widget in group-local coordinates,
+ * then clears the held-widget pointer. */
+extern "C" void fn_802176D4(void *menuGroup, int screenX, int screenY) {
+    class HeldWidget {
     public:
         virtual void v0();
         virtual void v1();
@@ -419,14 +421,14 @@ extern "C" void fn_802176D4(void *arg0, int arg1, int arg2) {
         virtual void v15();
         virtual void v16(int, int);
     };
-    char *base = (char *)arg0;
-    void *obj = *(void **)(base + 0x44C);
-    int x = arg1 - *(int *)(base + 0x454);
-    int y = arg2 - *(int *)(base + 0x458);
-    if (obj != 0) {
-        ((Obj *)obj)->v16(x, y);
+    char *groupBase = (char *)menuGroup;
+    void *heldWidget = *(void **)(groupBase + 0x44C);
+    int localX = screenX - *(int *)(groupBase + 0x454);
+    int localY = screenY - *(int *)(groupBase + 0x458);
+    if (heldWidget != 0) {
+        ((HeldWidget *)heldWidget)->v16(localX, localY);
     }
-    *(void **)(base + 0x44C) = 0;
+    *(void **)(groupBase + 0x44C) = 0;
 }
 #pragma push
 #pragma cplusplus on
