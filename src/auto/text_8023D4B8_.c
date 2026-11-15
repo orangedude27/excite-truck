@@ -489,13 +489,14 @@ extern void *fn_8022D458(void *, int, int, int *);
 extern int fn_80137C98(int);
 extern int fn_8018108C(void);
 extern void fn_8023E1FC(void *);
-void *fn_8023E078(void *arg0, int arg1) {
-    fn_8022D458(arg0, 0x12, 2, &lbl_80563748);
-    *(int *)((char *)arg0 + 0x30) = arg1;
-    fn_80137C98(arg1);
-    *(int *)((char *)arg0 + 0x34) = fn_8018108C();
-    fn_8023E1FC(arg0);
-    return arg0;
+/* Initialize a request/context object: run the base initializer, store the parameter, cache the related object, and finish setup. */
+void *fn_8023E078(void *object, int param) {
+    fn_8022D458(object, 0x12, 2, &lbl_80563748);
+    *(int *)((char *)object + 0x30) = param;
+    fn_80137C98(param);
+    *(int *)((char *)object + 0x34) = fn_8018108C();
+    fn_8023E1FC(object);
+    return object;
 }
 
 void fn_8023E0DC(void *table, int row, int arg2) {
