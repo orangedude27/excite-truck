@@ -181,52 +181,76 @@ void fn_802059C0(void) {
 #pragma pop
 extern int lbl_802F9D90[4];
 extern float lbl_805631D4, lbl_805631EC;
-#pragma ppc_psq_save off
-void fn_80205D5C(void) {
-    int rawr[4];
-    float off[4];
-    float a[3], b[3], c[3], d[3];
-    float f3, f0, f31, f29, f30;
-    int i;
-    fn_802C8CBC(-1);
-    fn_802C8DBC(0x10);
-    f3 = lbl_80563198 * (lbl_805631D4 * (float)lbl_8055CFF0);
-    f31 = (float)lbl_8055CFF0 * lbl_80563198;
-    f29 = lbl_805631A8;
-    rawr[0] = lbl_802F9D90[0];
-    rawr[1] = lbl_802F9D90[1];
-    rawr[2] = lbl_802F9D90[2];
-    rawr[3] = lbl_802F9D90[3];
-    f0 = lbl_805631EC * f3;
-    off[0] = f0;
-    off[1] = f3;
-    off[2] = f3;
-    off[3] = f0;
-    for (i = 0; i < 4; i++) {
-        a[0] = f31 + off[i];
-        a[1] = (float)lbl_8055CFF4 * *(float *)&rawr[i];
-        a[2] = f29;
-        ((void (*)(int, int, float, float, float, float, float))fn_802C8E00)(0x404040, i > 0, a[0], a[1], a[2], f29, f29);
-        b[0] = f31;
-        b[1] = (float)lbl_8055CFF4 * *(float *)&rawr[i];
-        b[2] = f29;
-        ((void (*)(int, int, float, float, float, float, float))fn_802C8E00)(0xFF404040, i > 0, f31, b[1], f29, f29, f29);
-    }
-    f30 = lbl_805631A8;
-    for (i = 0; i < 4; i++) {
-        c[0] = f31 - off[i];
-        c[1] = (float)lbl_8055CFF4 * *(float *)&rawr[i];
-        c[2] = f30;
-        ((void (*)(int, int, float, float, float, float, float))fn_802C8E00)(0x404040, i > 0, c[0], c[1], c[2], f30, f30);
-        d[0] = f31;
-        d[1] = (float)lbl_8055CFF4 * *(float *)&rawr[i];
-        d[2] = f30;
-        ((void (*)(int, int, float, float, float, float, float))fn_802C8E00)(0xFF404040, i > 0, f31, d[1], f30, f30, f30);
-    }
-    fn_802C8E48();
-    fn_802C8D74();
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
+void fn_80205D5C(void)
+{
+  float new_var2;
+  int rawr[4];
+  float off[4];
+  float a[3];
+  float b[3];
+  float c[3];
+  float d[3];
+  float f30;
+  float f31;
+  float f29;
+  float f3;
+  float f0;
+  float new_var;
+  int i;
+  fn_802C8CBC(-1);
+  fn_802C8DBC(0x10);
+  f3 = lbl_80563198 * (lbl_805631D4 * ((float) lbl_8055CFF0));
+  new_var = (float) lbl_8055CFF0;
+  f31 = new_var * lbl_80563198;
+  f29 = lbl_805631A8;
+  {
+    typedef struct
+    {
+      int x0;
+      int x1;
+      int x2;
+      int x3;
+    } FourInts;
+    *((FourInts *) rawr) = *((FourInts *) lbl_802F9D90);
+  }
+  f0 = lbl_805631EC * f3;
+  off[0] = f0;
+  off[1] = f3;
+  off[2] = f3;
+  off[3] = f0;
+  for (i = 0; i < 4; i++)
+  {
+    a[1] = ((float) lbl_8055CFF4) * (*((float *) (&rawr[i])));
+    a[0] = f31 + off[i];
+    a[2] = f29;
+    new_var2 = a[2];
+    ((void (*)(int, int, float, float, float, float, float)) fn_802C8E00)(0x404040, i > 0, a[0], a[1], new_var2, f29, f29);
+    b[1] = ((float) lbl_8055CFF4) * (*((float *) (&rawr[i])));
+    b[0] = f31;
+    b[2] = f29;
+    ((void (*)(int, int, float, float, float, float, float)) fn_802C8E00)(0xFF404040, i > 0, f31, b[1], f29, f29, f29);
+  }
+
+  f30 = lbl_805631A8;
+  for (i = 0; i < 4; i++)
+  {
+    c[1] = ((float) lbl_8055CFF4) * (*((float *) (&rawr[i])));
+    c[0] = f31 - off[i];
+    c[2] = f30;
+    ((void (*)(int, int, float, float, float, float, float)) fn_802C8E00)(0x404040, i > 0, c[0], c[1], c[2], f30, f30);
+    d[1] = ((float) lbl_8055CFF4) * (*((float *) (&rawr[i])));
+    d[0] = f31;
+    d[2] = f30;
+    ((void (*)(int, int, float, float, float, float, float)) fn_802C8E00)(0xFF404040, i > 0, f31, d[1], f30, f30, f30);
+  }
+
+  fn_802C8E48();
+  fn_802C8D74();
 }
-#pragma ppc_psq_save reset
+#pragma pop
 extern float lbl_80563198, lbl_805631A0, lbl_805631CC, lbl_805631E4, lbl_805631F0, lbl_805631F4;
 extern double lbl_805631B0;
 extern char lbl_804891D0[];
@@ -289,16 +313,17 @@ void fn_80206228(void) {
 
 #pragma dont_inline reset
 void fn_8020625C(void) {
-    unsigned char old;
+    /* Run the post-race update sequence when more than one participant is active. */
+    unsigned char previousState;
     if (fn_801E85A4() > 1) {
-        old = fn_802C2C00(0);
+        previousState = fn_802C2C00(0);
         fn_80205D5C();
         if (fn_80205964() != 0) {
             fn_80205850();
             fn_80205FCC();
         }
         fn_802059C0();
-        fn_802C2C00(old);
+        fn_802C2C00(previousState);
     }
 }
 
