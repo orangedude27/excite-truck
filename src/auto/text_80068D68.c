@@ -27482,6 +27482,7 @@ void AXFXReverbHiExpShutdown(AXFX_REVERBHI_EXP_VIEW* fx) {
     __FreeDelayLine(fx);
     OSRestoreInterrupts(mask);
 }
+
 #pragma use_lmw_stmw off
 /* Process one 96-sample block of the exponential reverb: read the input
    channels (mixed with the aux bus when one is set), filter them through the
