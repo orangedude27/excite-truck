@@ -539,9 +539,10 @@ s32 fn_801613A0(s32 arg0, s32 arg1) {
 }
 
 #pragma dont_inline on
-s32 fn_801613E0(s32 arg0) {
+/* Handles simple system events when available; event 3 clears a flag and runs cleanup, returning success. */
+s32 fn_801613E0(s32 eventId) {
     if (fn_80161C38() != 0) {
-        switch (arg0) {
+        switch (eventId) {
         case 3:
             lbl_8055E304 = 0;
             fn_80176734();
