@@ -379,16 +379,25 @@ void fn_802ECC18(u8 arg0) {
 }
 
 #pragma dont_inline on
+/* One frame of the black screen this module paints while the home-button
+ * handover runs (fn_802ECC74 repeats it until the Home Menu takes the screen
+ * over), skipped on the frames fn_8002173C() spent on a pending sound request:
+ * fn_802CFCA0() opens the frame, fn_802D02F8() switches on the fade colour the
+ * screen is covered with -- opaque black -- fn_802D68C4() is asked for no
+ * triangles at all (only its renderer setup runs), fn_802CFDE0() draws the
+ * home-button UI and flushes the FIFO to the GPU, and fn_802CFF10() closes the
+ * frame again. */
 void fn_802ECC20(void) {
+#define FADE_BLACK 0xFF000000 /* aRGB: opaque black */
     if (fn_8002173C() == 0) {
         fn_802CFCA0();
-        fn_802D02F8(0xFF000000, 1);
+        fn_802D02F8(FADE_BLACK, 1);
         fn_802D68C4(0, 0, 0, 0);
         fn_802CFDE0();
         fn_802CFF10();
     }
+#undef FADE_BLACK
 }
-
 void fn_802ECC74(void) {
     /* Drain home button2 work while requested: guard against reentry, then loop/process until inactive. */
     u8 wasRequested;
