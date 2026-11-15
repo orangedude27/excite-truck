@@ -87,11 +87,12 @@ void *fn_8022E9E0(int unused0, void *unused1) {
 }
 #pragma scheduling reset
 #pragma cplusplus on
-extern "C" void fn_8022EA58(void *arg0) {
-    class Unk8022EA58 { public: virtual ~Unk8022EA58(); };
-    fn_8012A364(lbl_8055EFF8, arg0);
+extern "C" void fn_8022EA58(void *context) {
+    /* Return a context to its object pool and destroy the pool when the live count reaches zero. */
+    class PoolObject { public: virtual ~PoolObject(); };
+    fn_8012A364(lbl_8055EFF8, context);
     if (--lbl_8055EFF4 == 0) {
-        delete (Unk8022EA58 *)lbl_8055EFF8;
+        delete (PoolObject *)lbl_8055EFF8;
         lbl_8055EFF8 = 0;
     }
 }
