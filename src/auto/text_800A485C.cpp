@@ -2768,12 +2768,10 @@ extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
 extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32);
 extern "C" s32 VFiPFCACHE_InitCaches(void *arg0) {
     struct CacheHdr1624 *h = (struct CacheHdr1624 *)((u8 *)arg0 + 0x1624);
-    u32 masked = h->flags & ~1U;
-    s32 total;
-    masked |= 2U;
-    masked &= ~4U;
-    total = (s32)h->count + (s32)h->extra;
-    h->flags = masked;
+    h->flags &= ~1U;
+    h->flags |= 2U;
+    h->flags &= ~4U;
+    s32 total = (s32)h->count + (s32)h->extra;
     fn_800A499C((const char *)*(void **)((u8 *)arg0 + 0x1638), 0, total << 9);
     s32 result = fn_800A7774(arg0, (u8 *)arg0 + 0x1630,
                              *(void **)((u8 *)arg0 + 0x162C),
@@ -6431,17 +6429,17 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         cur = next;
     }
     {
-        arg3 = 0;
+        s32 acc = 0;
         arg2 = (s32)page;
         arg0 = (void *)*(s32 *)((u8 *)arg2 + 0x18);
         for (cur = 0; (u16)cur < *(u8 *)(ctx + 0x22); cur++) {
             s32 e = fn_800B5618(ctx, *(void **)((u8 *)arg2 + 8), (u32)arg0, 0, *(u16 *)ctx);
-            if (e != 0 && arg3 == 0) {
-                arg3 = e;
+            if (e != 0 && acc == 0) {
+                acc = e;
             }
             arg0 = (u8 *)arg0 + *(s32 *)(ctx + 0xC);
         }
-        err = arg3;
+        err = acc;
         if (err != 0) {
             VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
             return err;
