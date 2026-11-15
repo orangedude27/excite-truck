@@ -845,14 +845,16 @@ int fn_80289BE8(int arg0) {
     return arg0;
 }
 
-void *__dt__12PhysicsWorldFv_80289C20(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_8028E398(*(int *)((char *)arg0 + 4));
-        fn_8028E398(*(int *)arg0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+/* Destroy a PhysicsWorld-like object by releasing the two owned resources at
+ * offsets 0x4 and 0x0, then optionally freeing the object storage. */
+void *__dt__12PhysicsWorldFv_80289C20(void *object, int shouldDelete) {
+    if (object != 0) {
+        fn_8028E398(*(int *)((char *)object + 4));
+        fn_8028E398(*(int *)object);
+        if (shouldDelete > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 extern char lbl_80348B44[];
