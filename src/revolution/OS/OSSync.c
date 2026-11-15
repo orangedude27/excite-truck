@@ -27,6 +27,8 @@ static asm void SystemCallVector(void) {
     // clang-format on
 }
 
+/* Install the PPC system call exception handler into low memory and synchronize
+ * instruction/data caches so the copied vector can be executed immediately. */
 void __OSInitSystemCall(void) {
     memcpy(OSPhysicalToCached(OS_PHYS_SYSCALL_INTR), __OSSystemCallVectorStart,
            (u32)__OSSystemCallVectorEnd - (u32)__OSSystemCallVectorStart);
