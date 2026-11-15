@@ -3,9 +3,17 @@
 
 #include "MSL/ansi_fp.h"
 
+/* MSL printf/float2str helper: round a `decimal`'s significant digit string
+   down to `new_length` digits.  A dropped digit rounds the one before it up
+   when it is above 5, and when it is exactly 5 a tie is broken to even (up
+   only if the last kept digit is odd or a non-zero digit follows the 5).  The
+   zeros the rounding uncovers at the end are trimmed off, so the length can
+   come back smaller than asked for; a carry out of the most significant digit
+   leaves the value "1" with the exponent bumped, and digits rounded all the
+   way away leave a plain "0". */
 void round_decimal(decimal* dec, int new_length) {
-    char c;
-    char* p;
+    char digit;
+    char* digitPos;
     int carry;
 
     if (new_length < 0) {
@@ -20,26 +28,26 @@ void round_decimal(decimal* dec, int new_length) {
         return;
     }
 
-    p = (char*)dec->sig.text + new_length + 1;
-    c = *--p - '0';
+    digitPos = (char*)dec->sig.text + new_length + 1;
+    digit = *--digitPos - '0';
 
-    if (c == 5) {
-        char* q = &((char*)dec->sig.text)[dec->sig.length];
+    if (digit == 5) {
+        char* lastNonZero = &((char*)dec->sig.text)[dec->sig.length];
 
-        while (--q > p && *q == '0')
+        while (--lastNonZero > digitPos && *lastNonZero == '0')
             ;
-        carry = (q == p) ? p[-1] & 1 : 1;
+        carry = (lastNonZero == digitPos) ? digitPos[-1] & 1 : 1;
     } else {
-        carry = (c > 5);
+        carry = (digit > 5);
     }
 
     while (new_length != 0) {
-        c = *--p - '0' + carry;
+        digit = *--digitPos - '0' + carry;
 
-        if ((carry = (c > 9)) != 0 || c == 0) {
+        if ((carry = (digit > 9)) != 0 || digit == 0) {
             --new_length;
         } else {
-            *p = c + '0';
+            *digitPos = digit + '0';
             break;
         }
     }
