@@ -75,15 +75,16 @@ void *fn_8025D9D0(void *arg0) {
     return arg0;
 }
 
-void* __dt__Q28PSSystem7SeqHeapFv_8025DA88(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = lbl_80345718;
-        fn_80235380(*(void**)((char*)arg0 + 0x28), lbl_80345718);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+/* Destructor for PSSystem::SeqHeap (address-suffixed variant): restore vtable, release the owned subobject/resource, and conditionally delete storage. */
+void* __dt__Q28PSSystem7SeqHeapFv_8025DA88(void* seqHeap, int shouldDelete) {
+    if (seqHeap != 0) {
+        *(void**)seqHeap = lbl_80345718;
+        fn_80235380(*(void**)((char*)seqHeap + 0x28), lbl_80345718);
+        if (shouldDelete > 0) {
+            fn_80128668(seqHeap);
         }
     }
-    return arg0;
+    return seqHeap;
 }
 
 extern void *fn_8000DA10(void);
