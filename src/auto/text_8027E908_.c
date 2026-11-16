@@ -1210,7 +1210,19 @@ int fn_8027F958(int *selection, void *collection) {
 #pragma pop
 
 extern int fn_80216D28(void);
-int fn_80280898(void) { extern unsigned int lbl_8055F688; if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
+/* Menu action: report 1 while a UI object is selected; with no selection, signal back and report 0. */
+int fn_80280898(void) {
+#define SELECTED_OBJECT lbl_8055F688
+#define SignalBack fn_80216D28
+    extern unsigned int lbl_8055F688;
+    if (SELECTED_OBJECT == 0) {
+        SignalBack();
+        return 0;
+    }
+    return 1;
+#undef SignalBack
+#undef SELECTED_OBJECT
+}
 
 #pragma scheduling invalid_target
 #pragma cplusplus on
