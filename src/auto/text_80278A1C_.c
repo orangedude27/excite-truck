@@ -133,25 +133,26 @@ void fn_80278A24(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80278A28(void* arg0) {
-    f32 d;
-    f32 b = lbl_805640C4;
-    f32 c;
-    f32 a = lbl_805640C0;
-    f32 *p = (f32*)arg0;
+/* RealName: InitDefaultBoneFields. Fill a car-model element's fields with fallback defaults (+/-10, 0 and 1) when its bone data is missing. */
+extern "C" void fn_80278A28(void* elem) {
+    f32 one;
+    f32 zero = DEFAULT_ZERO;
+    f32 negRange;
+    f32 range = DEFAULT_RANGE;
+    f32 *values = (f32*)elem;
 
-    c = -a;
-    d = lbl_805640C8;
-    p[4] = a;
-    p[1] = c;
-    p[2] = c;
-    p[3] = c;
-    p[5] = a;
-    p[6] = a;
-    p[7] = b;
-    p[8] = b;
-    p[9] = b;
-    p[11] = d;
+    negRange = -range;
+    one = DEFAULT_ONE;
+    values[4] = range;
+    values[1] = negRange;
+    values[2] = negRange;
+    values[3] = negRange;
+    values[5] = range;
+    values[6] = range;
+    values[7] = zero;
+    values[8] = zero;
+    values[9] = zero;
+    values[11] = one;
 }
 
 #pragma push
