@@ -673,6 +673,7 @@ int fn_8029FDF0(int *arg0, int *arg1) {
 }
 
 void fn_8029FE00(void) {
+    /* Sort the effect-record table (0x78-byte entries) in place by id, using fn_8029FDF0 as the comparator. */
     int count;
     int (*compare)(const void *, const void *);
     count = lbl_8055F81C;
