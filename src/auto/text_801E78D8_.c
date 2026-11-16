@@ -903,9 +903,15 @@ long fn_801E89A4(long playerIndex) {
 #undef sPlayerConfigs
 }
 
-long fn_801E89C8(long arg0) {
-    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
-    return (*(unsigned long *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x6C) >> 3) & 1;
+/* Return flag bit 3 (interior-view enabled) of the player's 0xE0-byte config
+   entry at +0x6C (a negative index selects the current player). */
+long fn_801E89C8(long playerIndex) {
+#define CurrentPlayerIndex lbl_8055AF0C
+#define sPlayerConfigs     lbl_8055EB04
+    if (playerIndex < 0) playerIndex = (long)CurrentPlayerIndex;
+    return (*(unsigned long *)((char *)sPlayerConfigs + playerIndex * 0xE0 + 0x6C) >> 3) & 1;
+#undef CurrentPlayerIndex
+#undef sPlayerConfigs
 }
 
 extern void *lbl_8055AF08;
