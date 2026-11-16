@@ -1847,12 +1847,13 @@ void fn_801D6D68(UnkStruct_801D701C *arg0) {
     arg0->state = 0;
 }
 #pragma scheduling reset
-int fn_801D6D80(int arg0, int arg1) {
-    if (arg0 != 0) {
-        ((int *)arg0)[1] = 0;
-        if (arg1 > 0) fn_80128668();
+/* Clear the object's secondary pointer and, if requested, run its cleanup helper. */
+int fn_801D6D80(int object, int shouldFree) {
+    if (object != 0) {
+        ((int *)object)[1] = 0;
+        if (shouldFree > 0) fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma cplusplus on
