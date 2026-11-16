@@ -735,12 +735,13 @@ void fn_8017E764(void *arg0, int arg1) {
 }
 #pragma small_data on
 #define BallGetXZIfPlaced fn_8017E930 /* report a placed ball's horizontal position and velocity */
-int fn_8017E930(void *arg0, void *arg1, void *arg2) {
-    if (*((unsigned char *)arg0 + 0x1FE) != 0) {
-        *((float *)arg1) = *((float *)((char *)arg0 + 0x60));
-        *((float *)arg1 + 1) = *((float *)((char *)arg0 + 0x68));
-        *((float *)arg2) = *((float *)((char *)arg0 + 0x118));
-        *((float *)arg2 + 1) = *((float *)((char *)arg0 + 0x120));
+int fn_8017E930(void *body, void *outPosition, void *outVelocity) {
+    /* If the ball is placed, return its horizontal (x,z) position and velocity. */
+    if (((BallBody *)body)->placed) {
+        ((Vec2 *)outPosition)->x = ((BallBody *)body)->position.x;
+        ((Vec2 *)outPosition)->y = ((BallBody *)body)->position.z;
+        ((Vec2 *)outVelocity)->x = ((BallBody *)body)->velocity.x;
+        ((Vec2 *)outVelocity)->y = ((BallBody *)body)->velocity.z;
         return 1;
     }
     return 0;
