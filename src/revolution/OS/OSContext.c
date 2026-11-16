@@ -407,6 +407,8 @@ asm void OSSwitchFiberEx(u32 arg0, u32 arg1, u32 arg2, u32 arg3, register void* 
 }
 
 void OSClearContext(OSContext* ctx) {
+    /* Reset a thread context to its initial state; if it was the context that
+       currently owns the FPU, drop that ownership. */
     ctx->mode = 0;
     ctx->state = 0;
 
