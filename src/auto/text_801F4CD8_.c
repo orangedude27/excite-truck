@@ -1605,11 +1605,14 @@ int fn_801F7930(int arg0, int arg1) {
     return arg0;
 }
 
-int fn_801F7970(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668();
+/* Deleting-destructor helper: free `object` when `shouldDelete` is set, then return it. */
+int fn_801F7970(int object, int shouldDelete) {
+#define MemFree fn_80128668
+    if (object != 0 && shouldDelete > 0) {
+        MemFree();
     }
-    return arg0;
+    return object;
+#undef MemFree
 }
 
 extern int fn_80128668(void);
