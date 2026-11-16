@@ -20,11 +20,12 @@ extern s32 fn_802328D4(s32);
 extern const u8 lbl_80346324[];
 extern const u8 lbl_80346120[];
 extern f32 lbl_80563BD4;
-s32 fn_80262F8C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80262F8C(s32 ptr, s32 count) {
+    /* Free ptr via the mode-3 pool allocator when it is non-null and count is positive; return ptr unchanged. */
+    if (ptr != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return ptr;
 }
 
 void fn_80262FCC(void *arg0) {
