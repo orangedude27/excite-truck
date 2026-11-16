@@ -128,10 +128,15 @@ s32 fn_802E33D8(s32 fileId, const char *name, s32 line) {
 }
 #pragma scheduling on
 void fn_802E3498(void) {
-    memset((void *)((char *)lbl_804DB810 + 0), 0, 0x280);
-    if (lbl_8055FF18 == 0) {
-        lbl_8055FF18 = fn_802E3F94();
+    /* RealName: File_InitSubsystem (clears the open-file table and lazily creates the default DVD file-system object). */
+#define sOpenFileTable lbl_804DB810
+#define sDefaultFileSystem lbl_8055FF18
+    memset((void *)((char *)sOpenFileTable + 0), 0, 0x280);
+    if (sDefaultFileSystem == 0) {
+        sDefaultFileSystem = fn_802E3F94();
     }
+#undef sOpenFileTable
+#undef sDefaultFileSystem
 }
 
 extern void fn_802E3550(void);
