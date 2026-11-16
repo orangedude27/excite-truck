@@ -2238,10 +2238,11 @@ extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqT
     return 0;
 }
 #pragma pop
-extern "C" void fn_800EEB64(u8 *arg0) {
-    if (arg0[0] != 0) {
-        OSCancelAlarm(arg0 + 8);
-        arg0[0] = 0;
+/* Cancel the OS alarm at offset 8 if active, then clear the active flag. */
+extern "C" void fn_800EEB64(u8 *alarmOwner) {
+    if (alarmOwner[0] != 0) {
+        OSCancelAlarm(alarmOwner + 8);
+        alarmOwner[0] = 0;
     }
 }
 
