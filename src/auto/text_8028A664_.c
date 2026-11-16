@@ -657,10 +657,15 @@ void fn_8028B3CC(void) {
 extern s32 lbl_8055F704;
 extern void fn_8028E398();
 void fn_8028B4CC(void) {
-    if (lbl_8055F704 != 0) {
-        fn_8028E398(lbl_8055F704);
-        lbl_8055F704 = 0;
+    /* Destroy the built-in paint-splat emitter if present, then clear its handle. */
+#define gPaintSplatEmitter lbl_8055F704
+#define destroyEmitter fn_8028E398
+    if (gPaintSplatEmitter != 0) {
+        destroyEmitter(gPaintSplatEmitter);
+        gPaintSplatEmitter = 0;
     }
+#undef destroyEmitter
+#undef gPaintSplatEmitter
 }
 
 #pragma cplusplus on
