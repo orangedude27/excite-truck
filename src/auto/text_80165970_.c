@@ -898,8 +898,9 @@ void fn_80166F3C(float *out) {
 #undef gClock
 }
 
-int fn_80166F78(float *arg0) {
-    return lbl_8055E318 > *arg0;
+int fn_80166F78(float *time) {
+    /* True once the global clock (lbl_8055E318) has passed *time. */
+    return lbl_8055E318 > *time;
 }
 
 extern double fn_8002EFB4(float, float, float);
