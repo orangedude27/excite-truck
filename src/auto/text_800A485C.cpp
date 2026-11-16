@@ -11407,6 +11407,9 @@ extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
 
 extern "C" void* fn_800B224C(void*, void*);
 extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
+    /* File-thread alarm callback: retrieve info for the file object carried in
+       `alarm` into `ctx` (the info buffer), then fold the result into
+       fn_800B73BC's 0/-1 status mask. */
     fn_800B73BC((s32)fn_800B224C(alarm, ctx));
 }
 
