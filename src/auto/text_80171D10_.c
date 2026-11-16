@@ -1228,17 +1228,19 @@ extern "C" void deleteThreads__6SystemFv_80173A2C(void *self) {
 #pragma cplusplus reset
 #pragma scheduling on
 
+/* Returns non-zero if any of the `count` 0x1C-byte entries has byte 0x90 set
+ * and byte 0x91 clear (count is read from offset 0x170). */
 int fn_80173A84(void *arg0) {
-    int count = *(int *)((char *)arg0 + 0x170);
-    int result = 0;
+    int entryCount = *(int *)((char *)arg0 + 0x170);
+    int found = 0;
     int i;
-    for (i = 0; i < count; i++) {
+    for (i = 0; i < entryCount; i++) {
         if (*(unsigned char *)((char *)arg0 + 0x91) == 0 &&
             *(unsigned char *)((char *)arg0 + 0x90) != 0)
-            result++;
+            found++;
         arg0 = (char *)arg0 + 0x1C;
     }
-    return result != 0;
+    return found != 0;
 }
 
 #pragma push
