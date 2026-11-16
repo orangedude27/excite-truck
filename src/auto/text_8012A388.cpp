@@ -1175,9 +1175,10 @@ extern "C" s32 fn_8012BE90(void) {
 #pragma scheduling reset
 extern "C" void fn_8012DDA8(s32);
 extern "C" void fn_8012E81C(s32);
-extern "C" void fn_8012BEF0(s32 arg0) {
-    fn_8012DDA8(arg0);
-    fn_8012E81C(arg0);
+/* Queue the named resource for loading, then wait until it has finished. */
+extern "C" void fn_8012BEF0(s32 resName) {
+    fn_8012DDA8(resName);
+    fn_8012E81C(resName);
 }
 
 extern "C" void fn_8012E498(void *);
