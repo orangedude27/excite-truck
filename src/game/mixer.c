@@ -437,13 +437,22 @@ void fn_8020927C(void) {
 extern void *fn_801284F8(int, void *);
 extern char lbl_8033C1C0[];
 extern char lbl_8033C0E8[];
+/* RealName: Sound_CreateNullSource (allocate a 12-byte "Null Sound" object with vtable and value 3)
+ * Allocates a small sound object tagged "Null Sound"; on success installs
+ * its vtable pointer and sets its field at +8 to 3.
+ */
 void fn_80209280(void) {
+#define sNullSoundTag lbl_8033C1C0
+#define sNullSoundVTable lbl_8033C0E8
     struct Obj { void *vtable; int pad; int value; };
-    struct Obj *obj = (struct Obj *)fn_801284F8(12, lbl_8033C1C0);
-    if (obj) {
-        obj->vtable = lbl_8033C0E8;
-        obj->value = 3;
+    struct Obj *soundObj = (struct Obj *)fn_801284F8(12, sNullSoundTag);
+
+    if (soundObj) {
+        soundObj->vtable = sNullSoundVTable;
+        soundObj->value = 3;
     }
+#undef sNullSoundTag
+#undef sNullSoundVTable
 }
 
 int fn_802092C8(int arg0, int arg1) {
