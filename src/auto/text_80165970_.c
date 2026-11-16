@@ -1193,7 +1193,18 @@ float fn_801673A4(int entryIndex, float *lfoOut) {
     return idleValue;
 }
 #pragma pop
-unsigned char fn_80167544(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5D)); }
+/* Returns the byte at offset 0x5D of the indexed 0x88-byte entry, or 0 if unavailable. */
+unsigned char fn_80167544(int index) {
+#define IsSystemReady fn_801667F0
+#define gSystemData lbl_8055E32C
+    void *base;
+    if (!((int (*)(void))IsSystemReady)())
+        return 0;
+    base = *(void **)&gSystemData;
+    return *((unsigned char *)((char *)*(void **)base + index * 0x88 + 0x5D));
+#undef IsSystemReady
+#undef gSystemData
+}
 
 unsigned char fn_80167594(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5E)); }
 
