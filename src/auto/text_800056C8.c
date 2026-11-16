@@ -677,11 +677,16 @@ void fn_800062E4(void) {
     return;
 }
 
+/* fn_800062E8: when the current track/timer state is idle (fn_801B885C returns 0
+ * for state[+0x1C]) and the counters at +0x18 and +0x14 are equal, trigger the
+ * transition handled by fn_8000FBE4. */
 void fn_800062E8(void) {
-    if (fn_801B885C(((s32 *)lbl_8055D350)[7]) == 0 &&
-        ((s32 *)lbl_8055D350)[6] == ((s32 *)lbl_8055D350)[5]) {
+#define s_gameState lbl_8055D350
+    if (fn_801B885C(((s32 *)s_gameState)[7]) == 0 &&
+        ((s32 *)s_gameState)[6] == ((s32 *)s_gameState)[5]) {
         fn_8000FBE4();
     }
+#undef s_gameState
 }
 
 #pragma cplusplus on
