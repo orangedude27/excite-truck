@@ -2511,7 +2511,7 @@ done:
 }
 
 extern float lbl_80562144, lbl_80562170, lbl_80562194, lbl_8055A488;
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_8019703C(void *arg0, void *arg1) {
     float xLimit;
     float x;
@@ -2535,8 +2535,8 @@ int fn_8019703C(void *arg0, void *arg1) {
     update = 0;
     xLimit = lbl_80562170;
     z = *(float *)((char *)arg1 + 8);
-    xValid = x > xLimit;
     y = *(float *)((char *)arg1 + 4);
+    xValid = x > xLimit;
     coefficient = lbl_80562194;
     base = lbl_8055A488;
     absoluteY = (float)__fabs((double)y);
@@ -2601,7 +2601,6 @@ int fn_8019703C(void *arg0, void *arg1) {
         ++*(int *)((char *)arg0 + 0x98);
     return 0;
 }
-#pragma scheduling on
 /* Advance interpolation factor at +0x25C and lerp the 2D point in/out toward (base+0x48/0x4C + base+0x58/0x5C * speed) when enabled (0x260 != 0, 0x268 != 1). */
 void fn_801971AC(void *arg0, void *arg1) {
     extern float lbl_80562264;
@@ -3056,7 +3055,7 @@ extern float lbl_80562298, lbl_8056229C, lbl_805622A0, lbl_805622A4, lbl_8056227
 void fn_801981A0(void *arg0, void *arg1) {
 #define o ((char *)arg0)
 #define p ((char *)arg1)
-    float temp_f3, c, var_f4, var_f5, temp_f6, temp_f7, temp_f2, temp_f0, temp_f0_2, temp_f0_3, temp_f1, temp_f4;
+    float c, temp_f3, var_f4, var_f5, temp_f6, temp_f7, temp_f2, temp_f0, temp_f0_2, temp_f0_3, temp_f1, temp_f4;
     float var_f0, var_f1, var_f5_2, temp_f3b, temp_f3c;
     int temp_r5, var_r0, var_r4;
 
