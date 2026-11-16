@@ -289,27 +289,31 @@ struct ReplayFrame {
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" int fn_801B4C1C(int, int);
-extern "C" int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
+extern "C" int fn_801B49D4(void *queue, void **outCurrent, void **outNext, float *outFraction, int tick) {
     int index;
-    int value;
-    volatile int *entry;
-    void *obj;
-    if (fn_801B4B44((char *)arg0) == 0)
+    int dataOfs;
+    volatile int *frame;
+    void *memory;
+    /* Replay playback: for the frame covering tick, fetch its recorded data and
+       the next frame's (reusing the current one on the last frame) from the
+       queue's VirtualMemory pool, and output the interpolation fraction.  A
+       frame's data offset lives at word 2 of the volatile frame record. */
+    if (fn_801B4B44((char *)queue) == 0)
         return 0;
-    index = ((int (*)(void *, int))fn_801B4C9C)(arg0, arg4);
-    entry = ((volatile int *(*)(void *, int))fn_801B4C58)(arg0, index);
-    value = entry[2];
-    obj = *(void **)((char *)arg0 + 4);
-    *arg1 = (void *)((F801B49D4 *)obj)->f1(value, 0x2200);
-    if (fn_801B4C1C((int)arg0, arg4) != 0) {
-        *arg2 = *arg1;
+    index = ((int (*)(void *, int))fn_801B4C9C)(queue, tick);
+    frame = ((volatile int *(*)(void *, int))fn_801B4C58)(queue, index);
+    dataOfs = frame[2];
+    memory = *(void **)((char *)queue + 4);
+    *outCurrent = (void *)((F801B49D4 *)memory)->f1(dataOfs, 0x2200);
+    if (fn_801B4C1C((int)queue, tick) != 0) {
+        *outNext = *outCurrent;
     } else {
-        entry = ((volatile int *(*)(void *, int))fn_801B4C60)(arg0, index);
-        value = entry[2];
-        obj = *(void **)((char *)arg0 + 4);
-        *arg2 = (void *)((F801B49D4 *)obj)->f1(value, 0x2200);
+        frame = ((volatile int *(*)(void *, int))fn_801B4C60)(queue, index);
+        dataOfs = frame[2];
+        memory = *(void **)((char *)queue + 4);
+        *outNext = (void *)((F801B49D4 *)memory)->f1(dataOfs, 0x2200);
     }
-    *arg3 = fn_801B4D10((int)arg0, arg4);
+    *outFraction = fn_801B4D10((int)queue, tick);
     return 1;
 }
 /* Replay playback: once this tick's audio command list has been built, hand
