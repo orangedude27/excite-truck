@@ -750,12 +750,14 @@ extern "C" void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *ar
 #pragma pop
 
 #pragma scheduling invalid_target
-extern "C" u8 *fn_8012B4E4(u8 *arg0, s8 *arg1) {
-    s8 ch = (s8)*arg0;
-    *arg1 = (s8)(ch - 0x2A == 0);
+extern "C" u8 *fn_8012B4E4(u8 *path, s8 *hasWildcard) {
+    /* Detect a leading '*' wildcard in a resource path: report it through
+       hasWildcard and skip the character when present. */
+    s8 ch = (s8)*path;
+    *hasWildcard = (s8)(ch - 0x2A == 0);
     if (ch == 0x2A)
-        return arg0 + 1;
-    return arg0;
+        return path + 1;
+    return path;
 }
 #pragma scheduling on
 extern "C" s32 fn_8012B50C(void *existingEntry, void *duplicateEntry) {
