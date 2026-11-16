@@ -3712,7 +3712,7 @@ extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 extern "C" s32 fn_800F7528(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, __StrmLoadCommandRef &arg8, unsigned long arg9, unsigned long arg10, unsigned long arg11) {
     register const char *base = lbl_80324E88;
     register void *reader = *(void **)((u8 *)self + 4);
-    register void *fileInfo = *(void **)((u8 *)reader + 0x10);
+    void *fileInfo = *(void **)((u8 *)reader + 0x10);
     s32 result;
     if (fileInfo == 0)
         result = 0;
@@ -3723,7 +3723,7 @@ extern "C" s32 fn_800F7528(void *self, void *arg1, unsigned long arg2, long arg3
     reader = *(void **)((u8 *)self + 4);
     if (*(void **)((u8 *)reader + 0x10) == 0)
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x2AC, base + 0x288);
-    fileInfo = *(void **)((u8 *)reader + 0x10);
+    reader = *(void **)((u8 *)reader + 0x10);
     void *task = Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(fn_800FDE60());
     if (task == 0)
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x67B, base + 0x590);
@@ -3732,7 +3732,7 @@ extern "C" s32 fn_800F7528(void *self, void *arg1, unsigned long arg2, long arg3
     if (task != 0) {
         task = __ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUlliUllbRQ56nw4hbm3snd6detail10StrmPlayer11LoadCommandRCQ36nw4hbm3snd12SoundArchiveUlUlR7OSMutex(
             task, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
-            arg8, *(const __StrmSoundArchiveRef *)fileInfo,
+            arg8, *(const __StrmSoundArchiveRef *)reader,
             arg10, arg9, *(__StrmMutexRef *)((u8 *)self + 8));
     }
     AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(fn_800FDE60(), task, 2);
@@ -5619,7 +5619,7 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     return result != 0;
 }
 s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
-    register u8 *thread = (u8 *)this;
+    u8 *thread = (u8 *)this;
     if (*(u8 *)(thread + 0x2394) == 0)
         return 0;
     if ((s8)lbl_8055DE68 == 0) {
@@ -5637,7 +5637,7 @@ s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
         __register_global_object((void *)base, dtor, (void *)&lbl_80412CB8, object);
         lbl_8055DE68 = 1;
     }
-    if (OSSendMessage((u8 *)lbl_80412CC8 + 0x2338, (void *)2, 0) == 0)
+    if (OSSendMessage((u8 *)lbl_80412CC8 + 0x2338, (void *)2, 0x0) == 0)
         return 0;
     if (OSJoinThread((void *)thread, 0) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x70, lbl_80326488);
@@ -7410,13 +7410,13 @@ extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlay
 extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *voice, s32 status, void *player) {
     const char *base = lbl_80326768;
     if (player == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x504, base + 0x238);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x504, base + 0x238);
     if (*(void **)((char *)player + 0x438) != voice)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x506, base + 0x268);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x506, base + 0x268);
     if (status < 2) {
-        if (status >= 0)
-        goto invalid_status;
-            goto free_voice;
+        if (status < 0)
+            goto invalid_status;
+        goto free_voice;
     }
     if (status < 4)
         goto clear_voice;
@@ -7433,7 +7433,7 @@ clear_voice:
     goto done;
 
 invalid_status:
-    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x515, base + 0x298, status);
+    Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x515, base + 0x298, status);
 
 done:
     return;
@@ -7589,5 +7589,12 @@ extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *, void *);
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" f32 lbl_805610C0;
 extern "C" f32 lbl_805610C4;
+/* The snd_StrmPlayer.cpp string pool: the file string followed by its messages. */
+struct StrmPlayerMsgPool {
+    char file[0x238];
+    char msg238[0x30];
+    char msg268[0x30];
+    char msg298[0x40];
+};
 extern "C" const char lbl_80326768[];
 extern "C" const char lbl_803269A0[];
