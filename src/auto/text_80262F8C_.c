@@ -64,14 +64,21 @@ s32 fn_80263080(void) {
 }
 
 s32 fn_802630C0(void) {
-    s32 current = lbl_8055F434;
-    s32 bound = lbl_8055C440;
+    /* Advances the menu page index by one, clamping it to the maximum, then refreshes menu state. */
+#define menuPageIndex lbl_8055F434
+#define menuPageMax lbl_8055C440
+#define Menu_RefreshState fn_80230E90
+    s32 current = menuPageIndex;
+    s32 bound = menuPageMax;
     current++;
-    lbl_8055F434 = current;
+    menuPageIndex = current;
     if (current > bound) {
-        lbl_8055F434 = bound;
+        menuPageIndex = bound;
     }
-    fn_80230E90(0);
+    Menu_RefreshState(0);
+#undef menuPageIndex
+#undef menuPageMax
+#undef Menu_RefreshState
     return 0;
 }
 
