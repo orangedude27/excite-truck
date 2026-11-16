@@ -63,9 +63,11 @@ s32 fn_802ECD68(void *record, void *name, s32 mode) {
     return handle != 0;
 }
 
+#pragma dont_inline on
 s32 fn_802ECEC0(void) {
     return fn_802ECDF4();
 }
+#pragma dont_inline reset
 
 void fn_802ECEC4(void) {
     fn_802ECEC0();
@@ -82,9 +84,11 @@ void fn_802ECF00(s32 arg0) {
     fn_802ECE48(arg0);
 }
 
+#pragma dont_inline on
 s32 fn_802ECF04(void) {
     return fn_802ECDF4();
 }
+#pragma dont_inline reset
 
 #pragma dont_inline on
 void *fn_802ECF08(void *arg0, s32 arg1) {
