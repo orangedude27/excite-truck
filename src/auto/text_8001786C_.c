@@ -569,8 +569,11 @@ void fn_80018440(EntryPairList *arg0, s32 arg1, EntryPairList *arg2) {
 }
 #pragma pop
 
+/* Set the forced entry-count override (lbl_8055D560) to atoi()'s result. */
 void fn_80018794(void) {
-    lbl_8055D560 = (void*)atoi();
+#define gForcedEntryCount lbl_8055D560
+    gForcedEntryCount = (void*)atoi();
+#undef gForcedEntryCount
 }
 
 void fn_800187B8(const char* source) {
