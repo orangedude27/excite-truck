@@ -1892,8 +1892,9 @@ void fn_8018A098(void *object, float blendFactor) {
 }
 #pragma dont_inline reset
 #pragma pop
-int fn_8018A100(void *arg0) {
-    return *(float *)((unsigned char *)arg0 + 0x2618) > lbl_80434930[1];
+int fn_8018A100(void *truck) {
+    /* Return whether this truck's +0x2618 timer has exceeded the tuning threshold at lbl_80434930[1]. */
+    return *(float *)((unsigned char *)truck + 0x2618) > lbl_80434930[1];
 }
 
 #pragma cplusplus on
