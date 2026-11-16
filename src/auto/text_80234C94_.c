@@ -230,23 +230,24 @@ void fn_80234EF4(void *artObject, const char *resourceName) {
 }
 #pragma scheduling on
 #pragma dont_inline on
-void *fn_8023505C(void *arg0, int arg1) {
-    void *node;
+/* Returns the picture at the given index in an art set's linked list (or null past the end). */
+void *fn_8023505C(ArtSet *artSet, int index) {
+    ArtPicture *picture;
     int i;
 
-    if (arg1 == 0) {
-        return *(void **)((char *)arg0 + 0x88);
+    if (index == 0) {
+        return artSet->pictures;
     }
-    node = *(void **)((char *)arg0 + 0x88);
+    picture = artSet->pictures;
     i = 0;
-    while (node != 0 && i <= arg1) {
-        if (i == arg1) {
-            return node;
+    while (picture != 0 && i <= index) {
+        if (i == index) {
+            return picture;
         }
-        node = *(void **)((char *)node + 0x18);
+        picture = picture->next;
         i++;
     }
-    return node;
+    return picture;
 }
 #pragma dont_inline reset
 
