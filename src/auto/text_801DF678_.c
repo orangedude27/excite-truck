@@ -123,14 +123,15 @@ struct Dummy_801DFE50 {
     virtual void d3() {}
     virtual void d4() {}
 };
-extern "C" void fn_801DFE50(void *arg0, int arg1, int arg2) {
+extern "C" void fn_801DFE50(void *object, int unused, int value) {
+    /* Forward helper: fetches a target from the object's vtable slot 2 and passes it to fn_801476D8 with -1 and the given value. */
     struct Dummy_801DFE50_Local {
         virtual void d0();
         virtual void d1();
         virtual void* d2();
     };
-    void *result = ((Dummy_801DFE50_Local *)arg0)->d2();
-    ((void (*)(void *, int, int))fn_801476D8)(result, -1, arg2);
+    void *target = ((Dummy_801DFE50_Local *)object)->d2();
+    ((void (*)(void *, int, int))fn_801476D8)(target, -1, value);
 }
 #pragma cplusplus reset
 
