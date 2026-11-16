@@ -474,15 +474,16 @@ void fn_80156960(void *arg0) {
 }
 #pragma pop
 void fn_801569FC(void) {
+    /* Destroy the global singleton instance via vtable slot f8 (deleting) and clear its pointer. */
     struct Callback {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
         virtual void f8(int);
     };
     extern void **lbl_8055E27C;
-    Callback *ptr = (Callback *)lbl_8055E27C;
-    if (ptr != 0)
-        ptr->f8(1);
+    Callback *instance = (Callback *)lbl_8055E27C;
+    if (instance != 0)
+        instance->f8(1);
     lbl_8055E27C = 0;
 }
 
