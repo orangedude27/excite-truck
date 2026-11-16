@@ -197,6 +197,8 @@ extern "C" void fn_801DE0E8(void) {
 }
 #pragma cplusplus reset
 #pragma pop
+#define lastEditMs lbl_8055E9CC /* ms of the last edit, see fn_802E2C20 */
+#define GetTimeMs fn_802E2C20 /* ms since the timer's first call */
 void fn_801DE12C(void) {
     lbl_8055E9CC = (void*)fn_802E2C20();
 }
