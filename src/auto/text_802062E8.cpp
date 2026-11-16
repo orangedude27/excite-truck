@@ -169,15 +169,16 @@ extern "C" void fn_80206480(void) {
 extern "C" void fn_80208D70(void);
 extern "C" void *fn_80208D4C(void);
 extern "C" int fn_80206430(void);
-extern "C" void fn_80206484(int arg0) {
-    struct Callback80206484 {
+/* Dispatch an event notification to the current mixer through its callback interface. */
+extern "C" void fn_80206484(int event) {
+    struct MixerCallback {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
         virtual void f8();
-        virtual void call(int);
+        virtual void notify(int);
     };
     fn_80208D70();
-    ((Callback80206484 *)fn_80208D4C())->call(arg0);
+    ((MixerCallback *)fn_80208D4C())->notify(event);
 }
 
 extern "C" void fn_802064C8(void) {
