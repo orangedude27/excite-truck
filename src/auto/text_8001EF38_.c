@@ -283,7 +283,8 @@ f32* __AXFXGetSrcCoef(u32 i) {
 
 #pragma dont_inline on
 s32 fn_8001F388(s32 arg) {
-    return ((s32*)__AXFXGetSrcCoef(arg))[2];
+    /* Return the resolved id (unk8) of the achievements source-coefficient entry at index `arg`. */
+    return ((SrcCoef*)__AXFXGetSrcCoef(arg))->unk8;
 }
 
 /* Returns the second field of the (index - 1)'th 8-byte entry in the source-coefficient table for the given coef set, or 0 if missing/out of range. */
