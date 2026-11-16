@@ -139,6 +139,8 @@ void fn_802797A8(s32 *arg0, s32 arg1) {
 }
 #pragma scheduling reset
 void fn_80279848(void) {
+    // Free the carstate block ("cs_block") held in lbl_8055F618 back to the
+    // ring-buffer heap via fn_80128670, then clear the global pointer.
     fn_80128670((s32)lbl_8055F618);
     lbl_8055F618 = 0;
 }
@@ -201,19 +203,17 @@ extern float lbl_80564100, lbl_80564104;
 void fn_802799EC(void *arg0, float amount) {
     unsigned char *p;
     unsigned char *base;
-    int i;
-    float end;
-    float current;
-    float a;
-    float remaining;
     float selected;
-    float limit;
+    float current;
+    register float remaining;
+    float end;
     register float factor;
+    register float limit;
+    register int i;
     base = (unsigned char *)arg0 + 4;
     end = *(float *)((unsigned char *)arg0 + 0x294);
     current = *(float *)((unsigned char *)arg0 + 0x298);
-    a = amount;
-    remaining = end - a;
+    remaining = end - amount;
     selected = current;
     if (current > remaining) {
         selected = current;
@@ -227,7 +227,7 @@ void fn_802799EC(void *arg0, float amount) {
     }
     factor = lbl_80564104 - selected / limit;
     *(float *)(base + 0x290) = selected;
-    *(int *)(base + 0x298) = 0;
+    *(int *)((short)base + (u32)0x298) = 0;
     p = base;
     for (i = 0; i < 0xA4; ++i, p += 4) {
         p[0] = fn_802798F0(p[0], 0x80, factor);
