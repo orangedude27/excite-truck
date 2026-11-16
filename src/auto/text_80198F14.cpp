@@ -4703,20 +4703,21 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
     return 0;
 }
 #pragma scheduling on
-extern "C" void fn_801A442C(void* arg0, void* arg1, void* arg2) {
-    f32 z, y, x, c, b, a;
-    x = *(f32*)((u8*)arg0 + 0x28);
-    y = *(f32*)((u8*)arg0 + 0x2C);
-    z = *(f32*)((u8*)arg0 + 0x30);
-    *(f32*)((u8*)arg1 + 0x0) = x;
-    a = *(f32*)((u8*)arg0 + 0x34);
-    *(f32*)((u8*)arg1 + 0x4) = y;
-    b = *(f32*)((u8*)arg0 + 0x38);
-    *(f32*)((u8*)arg1 + 0x8) = z;
-    c = *(f32*)((u8*)arg0 + 0x3C);
-    *(f32*)((u8*)arg2 + 0x0) = a;
-    *(f32*)((u8*)arg2 + 0x4) = b;
-    *(f32*)((u8*)arg2 + 0x8) = c;
+extern "C" void fn_801A442C(void* source, void* outFirst, void* outSecond) {
+    /* Copy the two 3D vectors at offsets 0x28 and 0x34 of source into outFirst and outSecond. */
+    f32 firstZ, firstY, firstX, secondZ, secondY, secondX;
+    firstX = *(f32*)((u8*)source + 0x28);
+    firstY = *(f32*)((u8*)source + 0x2C);
+    firstZ = *(f32*)((u8*)source + 0x30);
+    *(f32*)((u8*)outFirst + 0x0) = firstX;
+    secondX = *(f32*)((u8*)source + 0x34);
+    *(f32*)((u8*)outFirst + 0x4) = firstY;
+    secondY = *(f32*)((u8*)source + 0x38);
+    *(f32*)((u8*)outFirst + 0x8) = firstZ;
+    secondZ = *(f32*)((u8*)source + 0x3C);
+    *(f32*)((u8*)outSecond + 0x0) = secondX;
+    *(f32*)((u8*)outSecond + 0x4) = secondY;
+    *(f32*)((u8*)outSecond + 0x8) = secondZ;
 }
 
 #pragma scheduling invalid_target
