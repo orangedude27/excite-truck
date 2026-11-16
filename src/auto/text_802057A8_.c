@@ -270,6 +270,9 @@ typedef struct { float m[12]; } Mtx48;
 typedef struct { int w[8]; } Blk32;
 typedef struct { int x, y; } Pair2;
 typedef struct { Blk32 a; int b; Pair2 c; int d; } Cam48;
+typedef struct { int x, y; } Pair2B;
+typedef union { struct { unsigned int hi, lo; } w; double d; } Conv48;
+typedef struct { Mtx48 buf; Cam48 cam; Conv48 conv1, conv2; } Work48;
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
@@ -277,7 +280,11 @@ extern "C" void fn_80205FCC(void) {
     Cam48 cam;
     Mtx48 buf;
     float f31;
-    cam = *(Cam48 *)fn_802C86DC();
+    Cam48 *src = (Cam48 *)fn_802C86DC();
+    cam.a = src->a;
+    cam.b = src->b;
+    cam.c = src->c;
+    cam.d = src->d;
     fn_802C88FC(&buf);
     buf.m[3] *= lbl_80563194;
     buf.m[4] *= lbl_80563194;
