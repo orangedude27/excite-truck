@@ -1310,13 +1310,15 @@ s32 fn_802C4F14(s32* arg0) {
     return 0;
 }
 
-void fn_802C4F2C(void *arg0, s32 *arg1, s32 *arg2) {
-    if (arg0 == 0) {
-        *arg2 = 0;
-        *arg1 = 0;
+void fn_802C4F2C(void *object, s32 *outFirst, s32 *outSecond) {
+    /* Copy the two 32-bit metrics at offsets 8 and 12 of a font/bitmap object
+     * into the outputs; zero both when the object pointer is null. */
+    if (object == 0) {
+        *outSecond = 0;
+        *outFirst = 0;
     } else {
-        *arg1 = *(s32 *)((u8 *)arg0 + 8);
-        *arg2 = *(s32 *)((u8 *)arg0 + 0xC);
+        *outFirst = *(s32 *)((u8 *)object + 8);
+        *outSecond = *(s32 *)((u8 *)object + 0xC);
     }
 }
 
