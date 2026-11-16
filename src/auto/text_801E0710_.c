@@ -340,12 +340,14 @@ void *fn_801E07E8(void *self, s32 deleteFlag) {
 void fn_801E0864(void *arg0) {
     float b;
     float a;
+    volatile u8 *dst;
+    dst = (volatile u8 *)arg0;
     a = lbl_80562C78;
     b = lbl_80562C7C;
-    *(int *)arg0 = -1;
-    *((char *)arg0 + 4) = 0;
-    *(int *)((char *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0x14) = 0;
+    *(s32 volatile *)(dst + 0x0) = -1;
+    *(u8 volatile *)(dst + 0x4) = 0;
+    *(s32 volatile *)(dst + 0x10) = 0;
+    *(s32 volatile *)(dst + 0x14) = 0;
     *(float *)((char *)arg0 + 8) = a;
     *(float *)((char *)arg0 + 0xC) = b;
 }
