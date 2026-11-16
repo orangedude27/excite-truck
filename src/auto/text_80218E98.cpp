@@ -9528,11 +9528,12 @@ extern "C" u32 fn_80229EC4(void) { return 1; }
 
 extern "C" u32 fn_80229ECC(void) { return 1; }
 
-extern "C" void fn_80229ED4(void *arg0) {
-    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
-        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+extern "C" void fn_80229ED4(void *widget) {
+    // Activate the widget (flag +0x18 = 1) and, if it tracks a live value (+0x1A), request a redraw (+0x234).
+    if ((*(u8 *)((u8 *)widget + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)widget + 0x234)) = 1;
     }
-    (*(u8 *)((u8 *)arg0 + 0x18)) = 1;
+    (*(u8 *)((u8 *)widget + 0x18)) = 1;
 }
 
 extern "C" void fn_80229EF4(void *arg0) {
