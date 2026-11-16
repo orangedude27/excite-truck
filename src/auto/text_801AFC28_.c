@@ -39,17 +39,24 @@ void fn_801AFC28(void) {
 }
 
 #pragma scheduling invalid_target
-void *fn_801AFD20(void *this_) {
-    f32 value;
+/* Initializes nw4hbm::snd::detail::DisposeCallbackManager subobject:
+ * calls base init, installs vtable, and clears callback/time fields. */
+void *fn_801AFD20(void *self) {
+#define kZeroFloat lbl_80562578
+#define sDisposeCallbackManagerVTable lbl_80335A00
+    f32 initValue;
     void *vtable;
+
     fn_8017B0B0();
-    value = lbl_80562578;
-    vtable = lbl_80335A00;
-    *(s32 *)((u8 *)this_ + 0x1F4) = 0;
-    *(void **)this_ = vtable;
-    *(s32 *)((u8 *)this_ + 0x1F0) = 0;
-    *(f32 *)((u8 *)this_ + 0x1EC) = value;
-    return this_;
+    initValue = kZeroFloat;
+    vtable = sDisposeCallbackManagerVTable;
+    *(s32 *)((u8 *)self + 0x1F4) = 0;
+    *(void **)self = vtable;
+    *(s32 *)((u8 *)self + 0x1F0) = 0;
+    *(f32 *)((u8 *)self + 0x1EC) = initValue;
+#undef kZeroFloat
+#undef sDisposeCallbackManagerVTable
+    return self;
 }
 #pragma scheduling on
 /* nw4hbm::snd::detail::DisposeCallbackManager destructor helper:
