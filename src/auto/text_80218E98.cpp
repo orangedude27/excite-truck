@@ -4999,9 +4999,15 @@ extern "C" void fn_80220C54(void *arg0)
 #pragma pop
 
 extern "C" void fn_802C40B8(s32, s32, s32);
-extern "C" void fn_80220E08(void *arg0, s32 arg1) {
-    fn_802C3034(arg1);
-    fn_802C40B8(*(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
+/* Sets the active text/canvas style, then blits this widget's stored picture
+ * rectangle (at +0x244) onto the canvas at the widget's (x,y) position. */
+extern "C" void fn_80220E08(void *widget, s32 canvasState) {
+#define SetTextStyle fn_802C3034
+#define DrawPicture  fn_802C40B8
+    SetTextStyle(canvasState);
+    DrawPicture(*(s32 *)((u8 *)widget + 0x244), *(s32 *)((u8 *)widget + 4), *(s32 *)((u8 *)widget + 8));
+#undef DrawPicture
+#undef SetTextStyle
 }
 
 /* Initializes a UI panel with textures based on mode. */
