@@ -19207,10 +19207,11 @@ extern "C" void fn_800CF930(void) {
 
 }
 
-extern "C" void fn_800CF934(void *arg0) {
-    struct V { virtual void f(); };
-    void *obj = *(void **)((u8 *)arg0 + 4);
-    if (obj) ((V *)obj)->f();
+extern "C" void fn_800CF934(void *holder) {
+    /* Invoke the first virtual method of the callback object stored at +4, if present. */
+    struct Callback { virtual void invoke(); };
+    void *callback = *(void **)((u8 *)holder + 4);
+    if (callback) ((Callback *)callback)->invoke();
 }
 
 extern "C" s32 fn_800CF954(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x20); }
