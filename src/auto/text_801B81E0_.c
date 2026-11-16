@@ -598,8 +598,9 @@ extern "C" void fn_801B8848(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f11();
 }
 #pragma cplusplus on
-extern "C" void fn_801B885C(void *arg0) {
-    ((Dummy_801B8318 *)lbl_8055E744)->f13(arg0);
+extern "C" void fn_801B885C(void *obj) {
+    /* Forward obj to the arena-event master (lbl_8055E744) via its f13 vtable slot. */
+    ((Dummy_801B8318 *)lbl_8055E744)->f13(obj);
 }
 extern "C" int fn_801B8874(void) {
     /* If a certain system state is active, run its handler and report handled; otherwise forward to slot 0x88 of lbl_8055E744. */
