@@ -347,8 +347,9 @@ extern "C" void fn_80136F08(void *arg0) {
 #pragma scheduling reset
 #pragma cplusplus reset
 #pragma pop
-s32 fn_8013705C(f32 arg0, f32 arg1) {
-    return arg0 * arg1 >= lbl_80561368;
+/* Returns whether valueA and valueB share a sign (their product is non-negative). */
+s32 fn_8013705C(f32 valueA, f32 valueB) {
+    return valueA * valueB >= lbl_80561368;
 }
 
 extern float PSVECDotProduct(const void *, const void *);
