@@ -192,14 +192,17 @@ void fn_802AE690(void *obj) {
 }
 
 #pragma scheduling invalid_target
-float fn_802AE6E0(const void *arg0, const void *arg1) {
-    const float *a0 = (const float *)arg0;
-    const float *a1 = (const float *)arg1;
-    float dz = a0[2] - a1[2];
-    float dx = a0[0] - a1[0];
-    float dz2 = dz*dz;
-    float dx2 = dx*dx;
-    return (float)((double (*)(double))fn_8002F234)(dx2 + dz2);
+float fn_802AE6E0(const void *pointA, const void *pointB) {
+    /* Return the 2D distance between two points in the XZ plane (sqrt of dx^2 + dz^2). */
+#define Sqrt fn_8002F234
+    const float *a = (const float *)pointA;
+    const float *b = (const float *)pointB;
+    float dz = a[2] - b[2];
+    float dx = a[0] - b[0];
+    float dz2 = dz * dz;
+    float dx2 = dx * dx;
+    return (float)((double (*)(double))Sqrt)(dx2 + dz2);
+#undef Sqrt
 }
 extern void fn_802C7A44(void);
 extern float lbl_80564B3C;
