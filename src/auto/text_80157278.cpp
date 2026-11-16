@@ -2196,6 +2196,10 @@ extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
     *(u32 *)p = arg3;
 }
 
+// lbl_80558DC4 is the "has this float moved at all" tolerance; lbl_8055E3C8 is
+// the running game clock, saved here as the tracker's start time.
+#define MOVE_SPEED_EPS  lbl_80558DC4  // .sdata: 2^-23, "is the player moving" tolerance
+#define GAME_TIME       lbl_8055E3C8  // .sbss: current game time, advanced every frame
 extern "C" void fn_8015A7D8(void* arg0, void* arg1) {
     s32 flag;
     if (((u8*)arg0)[0x2D1] != 0) {
