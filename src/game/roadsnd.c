@@ -73,52 +73,55 @@ void fn_8020CA38(void) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void* fn_8020CA3C(void* arg0) {
-    char* p;
-    char* obj;
-    int idx;
-    Item_8020CA3C* item;
-    Dir_8020CA3C* dir;
-    char* ctx;
-    f32 scale;
-    int name;
-    void* r;
-    int n;
+extern "C" void* fn_8020CA3C(void* ownerCtx) {
+    /* Builds a road-sound container from "roadsnd.val": one 0x24-byte entry per
+     * "sound" param item holds its Sound3D handle, surface type and scaled
+     * speed/volume/pitch values; the owner context is stored at +4. */
+    char* entry;
+    char* container;
+    int itemIndex;
+    RoadSndParamItem* item;
+    RoadSndParamDir* paramDir;
+    char* owner;
+    f32 speedScale;
+    int soundId;
+    void* sound3d;
+    int count;
 
-    obj = (char*)fn_801284F8(0x12C, lbl_8055B5E0);
-    if (obj != 0) {
-        *(char**)obj = lbl_8033C650;
-        *(void**)(obj + 4) = arg0;
-        *(int*)(obj + 8) = 0;
-        dir = (Dir_8020CA3C*)fn_80131808(lbl_8033C660);
-        scale = lbl_80563300;
-        idx = 0;
-        while ((item = dir->getAt(idx)) != 0) {
+    container = (char*)fn_801284F8(0x12C, lbl_8055B5E0);
+    if (container != 0) {
+        *(char**)container = lbl_8033C650;
+        *(void**)(container + 4) = ownerCtx;
+        *(int*)(container + 8) = 0;
+        paramDir = (RoadSndParamDir*)fn_80131808(lbl_8033C660);
+        speedScale = lbl_80563300;
+        itemIndex = 0;
+        while ((item = paramDir->getAt(itemIndex)) != 0) {
             if (strcmp(item->getName(), lbl_8055B5E8) == 0) {
-                n = *(int*)(obj + 8);
-                ctx = *(char**)(obj + 4);
-                *(int*)(obj + 8) = n + 1;
-                p = obj + n * 0x24;
-                name = item->getA(lbl_8055B628);
-                r = fn_802077A4(name, 4, ctx + 0x118, ctx + 0x60);
-                *(void**)(p + 0xC) = r;
-                if (r == 0 && *(int*)(ctx + 0x1EC) == 0) {
-                    fn_802E30C8(lbl_8033C678, name);
+                count = *(int*)(container + 8);
+                owner = *(char**)(container + 4);
+                *(int*)(container + 8) = count + 1;
+                entry = container + count * 0x24;
+                soundId = item->getA(lbl_8055B628);
+                sound3d = fn_802077A4(soundId, 4, owner + 0x118, owner + 0x60);
+                *(void**)(entry + 0xC) = sound3d;
+                if (sound3d == 0 && *(int*)(owner + 0x1EC) == 0) {
+                    fn_802E30C8(lbl_8033C678, soundId);
                 }
-                *(int*)(p + 0x10) = item->getB(lbl_8033C66C);
-                *(f32*)(p + 0x14) = scale * item->getF(lbl_8055B620);
-                *(f32*)(p + 0x18) = scale * item->getF(lbl_8055B618);
-                *(f32*)(p + 0x1C) = scale * item->getF(lbl_8055B610);
-                *(f32*)(p + 0x20) = item->getF(lbl_8055B608);
-                *(f32*)(p + 0x24) = item->getF(lbl_8055B600);
-                *(f32*)(p + 0x28) = item->getF(lbl_8055B5F8);
-                *(f32*)(p + 0x2C) = item->getF(lbl_8055B5F0);
+                *(int*)(entry + 0x10) = item->getB(lbl_8033C66C);
+                *(f32*)(entry + 0x14) = speedScale * item->getF(lbl_8055B620);
+                *(f32*)(entry + 0x18) = speedScale * item->getF(lbl_8055B618);
+                *(f32*)(entry + 0x1C) = speedScale * item->getF(lbl_8055B610);
+                *(f32*)(entry + 0x20) = item->getF(lbl_8055B608);
+                *(f32*)(entry + 0x24) = item->getF(lbl_8055B600);
+                *(f32*)(entry + 0x28) = item->getF(lbl_8055B5F8);
+                *(f32*)(entry + 0x2C) = item->getF(lbl_8055B5F0);
             }
-            idx++;
+            itemIndex++;
         }
-        fn_80131818(dir);
+        fn_80131818(paramDir);
     }
-    return obj;
+    return container;
 }
 #pragma pop
 
