@@ -693,13 +693,18 @@ s32 fn_801E1510(s32 *arg0, s32 arg1) { return *arg0 + arg1 * 0x1C; }
 
 void fn_801E1520(void);
 #pragma cplusplus on
+/* Destroy and clear the global BoostMan instance, if one exists. */
 void fn_801E1520(void) {
-    Dummy801E1520 *obj = (Dummy801E1520 *)lbl_8055EA10;
-    if (obj != 0) {
-        if (obj != 0)
-            obj->d5(1);
-        lbl_8055EA10 = 0;
+#define s_boostMan lbl_8055EA10
+
+    Dummy801E1520 *boostMan = (Dummy801E1520 *)s_boostMan;
+    if (boostMan != 0) {
+        if (boostMan != 0)
+            boostMan->d5(1);
+        s_boostMan = 0;
     }
+
+#undef s_boostMan
 }
 #pragma cplusplus off
 #pragma push
