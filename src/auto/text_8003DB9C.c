@@ -3197,7 +3197,7 @@ void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
     int tilesX;
     int tilesY;
     int compressed;
-    int fmt;
+    register int fmt;
     unsigned int *gx = __GXData;
     unsigned int *gx2;
     CopyControlReg *reg;
@@ -3685,11 +3685,12 @@ void GXCopyTex(void *dest, s32 clear) {
 
 void GXClearBoundingBox(void) {
     register volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
+    /* Reset both bounding-box BP registers (0x55/0x56) to 0x3FF and note a BP write in GXData. */
+    *(volatile unsigned char *)0xCC008000 = GX_FIFO_CMD_LOAD_BP_REG;
     *fifo = 0x550003FF;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned char *)0xCC008000 = GX_FIFO_CMD_LOAD_BP_REG;
     *fifo = 0x560003FF;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    ((GXDrawData *)__GXData)->lastWriteWasXF = 0;
 }
 
 void GXInitLightAttn(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
