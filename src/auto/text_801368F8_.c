@@ -252,8 +252,9 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
 #pragma cplusplus reset
 #pragma pop
 
-void fn_80136E8C(void *arg0, s32 arg1, signed char arg2) {
-    *(signed char *)((char *)*(s32 *)((char *)arg0 + 0x10) + arg1 * *(s32 *)((char *)arg0 + 0xC) + 0x15) = arg2;
+void fn_80136E8C(void *proxer, s32 carIndex, signed char active) {
+    /* Set the ProxRow.active flag (+0x15) of car carIndex's row in the proxer table. */
+    *(signed char *)((char *)*(s32 *)((char *)proxer + 0x10) + carIndex * *(s32 *)((char *)proxer + 0xC) + 0x15) = active;
 }
 
 void fn_80136EA4(void *arg0, s32 arg1) {
