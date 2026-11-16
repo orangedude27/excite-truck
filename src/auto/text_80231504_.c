@@ -1644,58 +1644,59 @@ enum {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_8023423C(s32 arg0, s32 arg1) {
-    register unsigned int offset = arg0 * 0x58;
-    u8 *font = (u8 *)lbl_8055F058;
+void fn_8023423C(s32 entryIndex, s32 flags) {
+    /* Shifts a queued text entry's x/y position by glyph metrics for alignment. */
+    register unsigned int entryOffset = entryIndex * TEXTQ_STRIDE;
+    u8 *font = (u8 *)gActiveFont;
     register u16 codepoint;
-    u8 *record;
-    u8 first;
-    u8 *base = (u8 *)lbl_8055F06C;
-    u8 *table;
-    u8 *metrics;
-    f32 speed;
+    u8 *entry;
+    u8 firstByte;
+    u8 *queueBase = (u8 *)gTextQueue;
+    u8 *glyphTable;
+    u8 *glyph;
+    f32 lineScale;
     f32 glyphRate;
-    register f32 scale;
-    record = base + offset;
-    speed = *(f32 *)(record + 0x50);
-    scale = *(f32 *)(record + 0x54);
+    register f32 glyphScale;
+    entry = queueBase + entryOffset;
+    lineScale = *(f32 *)(entry + TEXTQ_SCALE);
+    glyphScale = *(f32 *)(entry + TEXTQ_ALT_SCALE);
 
-    if (arg1 & 1) {
-        first = record[0];
-        if ((first & 0xF0) == 0xE0) {
-            codepoint = ((first & 0x0F) << 12) | ((record[1] & 0x3F) << 6) | (record[2] & 0x3F);
-        } else if ((first & 0xE0) == 0xC0) {
-            codepoint = ((first & 0x1F) << 6) | __rlwinm(record[1], 0, 26, 23);
+    if (flags & TEXT_ADJ_X_GLYPH) {
+        firstByte = entry[0];
+        if ((firstByte & 0xF0) == 0xE0) {
+            codepoint = ((firstByte & 0x0F) << 12) | ((entry[1] & 0x3F) << 6) | (entry[2] & 0x3F);
+        } else if ((firstByte & 0xE0) == 0xC0) {
+            codepoint = ((firstByte & 0x1F) << 6) | __rlwinm(entry[1], 0, 26, 23);
         } else {
-            codepoint = first & 0x7F;
+            codepoint = firstByte & 0x7F;
         }
-        table = *(u8 **)(font + 0x10);
-        metrics = table + codepoint * 0x1C;
+        glyphTable = *(u8 **)(font + 0x10);
+        glyph = glyphTable + codepoint * 0x1C;
         {
-            glyphRate = *(volatile f32 *)metrics;
-            *(volatile f32 *)((s32)base + offset + 0x40) -= scale * glyphRate;
+            glyphRate = *(volatile f32 *)glyph;
+            *(volatile f32 *)((s32)queueBase + entryOffset + TEXTQ_POS_X) -= glyphScale * glyphRate;
         }
-    } else if (arg1 & 2) {
-        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= fn_8023400C(arg0);
-    } else if (arg1 & 4) {
-        f32 advance = fn_8023400C(arg0);
-        advance *= lbl_80563688;
-        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= advance;
+    } else if (flags & TEXT_ADJ_X_FULL) {
+        *(f32 *)((u8 *)gTextQueue + entryOffset + TEXTQ_POS_X) -= fn_8023400C(entryIndex);
+    } else if (flags & TEXT_ADJ_X_HALF) {
+        f32 halfWidth = fn_8023400C(entryIndex);
+        halfWidth *= gHalf;
+        *(f32 *)((u8 *)gTextQueue + entryOffset + TEXTQ_POS_X) -= halfWidth;
     }
 
-    if (arg1 & 8) {
-        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= (f32)font[4] * speed;
-    } else if (arg1 & 0x20) {
-        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x44) -= (f32)font[6] * speed;
-    } else if (arg1 & 0x10) {
+    if (flags & TEXT_ADJ_Y_LINE) {
+        *(f32 *)((u8 *)gTextQueue + entryOffset + TEXTQ_POS_Y) -= (f32)font[4] * lineScale;
+    } else if (flags & TEXT_ADJ_Y_ALT) {
+        *(f32 *)((u8 *)gTextQueue + entryOffset + TEXTQ_POS_Y) -= (f32)font[6] * lineScale;
+    } else if (flags & TEXT_ADJ_Y_LINE_HALF) {
         {
-            register u32 height;
-            u8 *verticalBase;
-            f32 delta;
-            height = font[4];
-            delta = (f32)height * speed;
-            verticalBase = (u8 *)*(volatile s32 *)&lbl_8055F06C;
-            *(f32 *)(verticalBase + offset + 0x44) -= delta * lbl_80563688;
+            register u32 lineHeight;
+            u8 *queueReload;
+            f32 yDelta;
+            lineHeight = font[4];
+            yDelta = (f32)lineHeight * lineScale;
+            queueReload = (u8 *)*(volatile s32 *)&gTextQueue;
+            *(f32 *)(queueReload + entryOffset + TEXTQ_POS_Y) -= yDelta * gHalf;
         }
     }
 }
