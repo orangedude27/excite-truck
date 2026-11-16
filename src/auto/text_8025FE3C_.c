@@ -12,15 +12,20 @@ void fn_8000D838(void *);
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_8025FE3C(void) {
+    /* Initialize a small global state block and its associated flag word. */
+#define stateBlock lbl_80498EE8
+#define stateWord  lbl_8055F3D0
     s32 v;
     s32 *p;
     fn_8000D838(&lbl_8055F3C8);
-    p = lbl_80498EE8 + 1;
-    lbl_80498EE8[0] = 0;
+    p = stateBlock + 1;
+    stateBlock[0] = 0;
     v = 0x7B;
-    lbl_80498EE8[1] = v;
-    lbl_80498EE8[2] = 0;
-    lbl_80498EE8[3] = 0;
-    lbl_80498EE8[4] = 0;
-    lbl_8055F3D0 = 0x7F000000;
+    stateBlock[1] = v;
+    stateBlock[2] = 0;
+    stateBlock[3] = 0;
+    stateBlock[4] = 0;
+    stateWord = 0x7F000000;
+#undef stateBlock
+#undef stateWord
 }
