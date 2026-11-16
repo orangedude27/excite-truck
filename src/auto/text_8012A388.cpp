@@ -6,6 +6,9 @@ struct E7FC { char pad[0x28]; int v28; unsigned int v30; };
 #define RES_ENTRY_IN_USE 2    /* a reference is held (set by ResourceGet) */
 #define RES_ENTRY_ALLOCATED 4 /* LoadEntryData allocated the object for it */
 #define RES_ENTRY_LOADED 8    /* the entry's data is loaded and CRC-checked */
+/* Bits tested together when two entries share a name (fn_8012B50C). */
+#define RES_ENTRY_NAME_PRIMARY   0x20 /* set on the entry found first for a name */
+#define RES_ENTRY_NAME_DUPLICATE 0x10 /* set on a later entry with the same name */
 
 /* One entry of a resource manager's table (stride 0x44); the name is at +0x00
  * (fn_8012B534 compares it with stricmp). The five words at +0x20 are stored
