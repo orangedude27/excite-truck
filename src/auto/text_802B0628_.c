@@ -889,12 +889,13 @@ int fn_802B1BE4(void *arg0) {
 void fn_802B1BEC(void) {
 }
 
-void fn_802B1BF0(void *arg0, void *arg1, int arg2) {
-    float *src = (float *)((char *)((int *)arg0)[0x318 / 4] + arg2 * 0xc);
-    float *dst = (float *)arg1;
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
+void fn_802B1BF0(void *pointBuffer, void *outPoint, int index) {
+    /* Copy the 3-component point at `index` from pointBuffer's +0x318 vector table into *outPoint. */
+    float *source = (float *)((char *)((int *)pointBuffer)[0x318 / 4] + index * 0xc);
+    float *dest = (float *)outPoint;
+    dest[0] = source[0];
+    dest[1] = source[1];
+    dest[2] = source[2];
 }
 
 int fn_802B1C14(void *arg0) {
