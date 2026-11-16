@@ -596,8 +596,9 @@ s32 fn_8023AE8C(void *selector) {
     return *(s32 *)*(s32 **)((char *)selector + 0x1C) < (*(s32 *)((char *)selector + 0x14) - 1);
 }
 
-s32 fn_8023AEB4(void *arg0) {
-    return ((s32 *)*(char **)((char *)arg0 + 0x10))[*(s32 *)(*(char **)((char *)arg0 + 0x1C))];
+/* Return the value in the selector's +0x10 table at its current +0x1C index. */
+s32 fn_8023AEB4(void *selector) {
+    return ((s32 *)*(char **)((char *)selector + 0x10))[*(s32 *)(*(char **)((char *)selector + 0x1C))];
 }
 
 void fn_8023AECC(void *arg0, s32 arg1) {
