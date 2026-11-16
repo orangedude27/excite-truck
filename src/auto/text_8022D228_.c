@@ -275,9 +275,11 @@ void fn_8022DA74(void *gauge, char *out) {
     sprintf(out, GAUGE_FLOAT_FORMAT, decimalPlaces, GAUGE_ROUND_EPS + (displayMin + value * displayRange), displayRange, displayMin);
 }
 #pragma pop
-float fn_8022DAB0(void *arg0) {
-    float low = *(float *)((char *)arg0 + 0xC);
-    return (**(float **)((char *)arg0 + 0x18) - low) / (*(float *)((char *)arg0 + 0x10) - low);
+/* Normalize a float gauge's current value into [0, 1] as (value - min)/(max - min):
+ * min/max live at +0x0C/+0x10 and +0x18 points to the gauge's current value. */
+float fn_8022DAB0(void *gauge) {
+    float min = *(float *)((char *)gauge + 0xC);
+    return (**(float **)((char *)gauge + 0x18) - min) / (*(float *)((char *)gauge + 0x10) - min);
 }
 
 void fn_8022DAD0(void *params, float t) {
