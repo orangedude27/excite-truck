@@ -256,8 +256,11 @@ void *fn_802E41C4(void *file, int destroyFlag) {
 extern const char lbl_8034D104[];
 #define fileCdMsgOpenWritableNotSupported lbl_8034D104 /* "filecd: open writable not supported (%s)" */
 #pragma scheduling invalid_target
+/* FileCd::openWritable (vtable slot 0x14): the disc file layer has nothing to
+ * write to, so it only reports the attempt and fails.  The message's %s is
+ * never filled in -- the path is not passed down. */
 int fn_802E4250(void) {
-    fn_802E30C8(lbl_8034D104);
+    fn_802E30C8(fileCdMsgOpenWritableNotSupported);
     return 0;
 }
 extern unsigned int lbl_8055D1B4;
