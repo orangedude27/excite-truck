@@ -2144,11 +2144,13 @@ done:
     return;
 }
 #pragma dont_inline reset
-extern "C" void fn_8014819C(void *arg0, f32 farg0, f32 farg1) {
-    *(f32 *)arg0 = lbl_8055E200;
-    *(f32 *)((u8 *)arg0 + 4) = lbl_8055E204;
-    lbl_8055E200 += farg0;
-    lbl_8055E204 += farg1;
+extern "C" void fn_8014819C(void *out, f32 deltaX, f32 deltaY) {
+    // Copies the current screen-space origin (lbl_8055E200/lbl_8055E204, the 2D translation added by the
+    // screen-coordinate helpers fn_801451DC/fn_801452B4) into out as two consecutive floats, then advances it by the delta.
+    *(f32 *)out = lbl_8055E200;
+    *(f32 *)((u8 *)out + 4) = lbl_8055E204;
+    lbl_8055E200 += deltaX;
+    lbl_8055E204 += deltaY;
 }
 
 extern "C" void *fn_80148294(const char *, void *);
