@@ -2741,9 +2741,10 @@ void fn_801D7D20(void *arg0) {
 
 #pragma pop
 
-void fn_801D7E3C(int arg0) {
-    if (((int *)arg0)[10] != 0) {
-        ((int *)arg0)[10] = 1;
+void fn_801D7E3C(int binding) {
+    /* Mark an active audio/parameter binding as applied: set its state field at +0x28 to 1 when it is nonzero. */
+    if (((int *)binding)[10] != 0) {
+        ((int *)binding)[10] = 1;
     }
 }
 
