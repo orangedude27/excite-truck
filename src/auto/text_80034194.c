@@ -1282,11 +1282,15 @@ extern void fn_8003B38C(void *);
 extern void fn_80035B88(u32);
   extern s32 lbl_8055D8AC;
 extern s32 lbl_8055D85C;
+#define NoResetRetry lbl_8055D8AC /* set for commands retried without a drive reset */
+/* Completion callback for saving a DVD error log to NAND: re-arm the drive by
+ * clearing the pending command and queueing a fresh transaction with the fatal
+ * handler, then clear the retry and target drive-state flags. */
 void fn_80035C78(void) {
     fn_8003B380(0);
     fn_8003B38C(fn_80035B88);
-    lbl_8055D8AC = 0;
-    lbl_8055D85C = 0;
+    NoResetRetry = 0;
+    StateToChange = 0;
 }
 
 extern u32 lbl_8055D8B0;
