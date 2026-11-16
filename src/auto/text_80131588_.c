@@ -560,20 +560,25 @@ extern "C" f32 fn_801321EC(void **arg0) {
     return (f32) atof(((Dummy *)arg0)->v3());
 }
 #pragma cplusplus on
-extern "C" s32 fn_80132220(void **arg0) {
-    class Dummy {
+extern "C" s32 fn_80132220(void **node) {
+    #define BOOL_YES_STR lbl_80559B18
+    #define BOOL_TRUE_STR lbl_80559B10
+    /* Returns 1 when this value node's string is "yes" or "true" (case-insensitive), else 0. */
+    class ValueNode {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual char *v3();
+        virtual char *getValue();
     };
-    s32 result;
-    char *value = ((Dummy *)arg0)->v3();
-    result = 0;
-    if (stricmp(value, lbl_80559B18) == 0 || stricmp(value, lbl_80559B10) == 0)
-        result = 1;
-    return result;
+    s32 isTrue;
+    char *text = ((ValueNode *)node)->getValue();
+    isTrue = 0;
+    if (stricmp(text, BOOL_YES_STR) == 0 || stricmp(text, BOOL_TRUE_STR) == 0)
+        isTrue = 1;
+    #undef BOOL_YES_STR
+    #undef BOOL_TRUE_STR
+    return isTrue;
 }
 #pragma cplusplus reset
 extern unsigned long strlen(const char*);
