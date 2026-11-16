@@ -141,6 +141,7 @@ void fn_801CB4A0(void) {
 
 extern void fn_801CCBC4(void);
 void fn_801CB4DC(void) {
+    /* Finalize pending awards when no boot option or challenge sub-task is blocking. */
     if (fn_80019BA8() || fn_80161C38()) return;
     fn_801CCBC4();
 }
