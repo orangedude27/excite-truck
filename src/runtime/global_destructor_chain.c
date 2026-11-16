@@ -10,6 +10,7 @@ typedef struct DtorLink {
 
 DtorLink* __global_destructor_chain = NULL;
 
+/* Register a global object by pushing its destructor entry onto the front of the global chain. */
 void __register_global_object(void* object, DtorFunction dtor, DtorLink* link) {
     link->next = __global_destructor_chain;
     link->dtor = dtor;
