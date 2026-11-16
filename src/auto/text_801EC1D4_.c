@@ -489,16 +489,6 @@ long fn_801ECC8C(unsigned int vehicleRender) {
 }
 
 #pragma dont_inline on
-static inline void fn_801ECCE0_call(void *item, unsigned long key, void (*func)(void *)) {
-    unsigned long who = fn_801ECC8C((long)item);
-    if (who != key) {
-        if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
-        func(item);
-        if (who != 0) fn_802AB994();
-    }
-}
-
-#pragma dont_inline on
 void fn_801ECCE0(long arg0, long arg1) {
     int i;
     if (*(int *)(arg0 + 0x40) != 0) return;
