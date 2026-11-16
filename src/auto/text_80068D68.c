@@ -21006,11 +21006,13 @@ u8 l2cu_lcb_disconnecting(void) {
     return result;
 }
 
+/* Initialize the RFCOMM control block: clear it, set default state fields, and
+ * register the RFCOMM L2CAP interface. */
 void RFCOMM_Init(void) {
-    u8 *p = lbl_803C4828;
-    memset(p, 0, 0x418);
-    p[0x65] = 1;
-    p[0x414] = 5;
+    u8 *rfcCb = lbl_803C4828;
+    memset(rfcCb, 0, 0x418);
+    rfcCb[0x65] = 1;
+    rfcCb[0x414] = 5;
     rfcomm_l2cap_if_init();
 }
 
