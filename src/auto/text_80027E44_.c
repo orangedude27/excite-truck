@@ -55,6 +55,10 @@ extern int fn_80024BD4(wchar_t *pwc, const char *s, size_t n);
 
 int __sformatter(int (*ReadProc)(void *, int, int), void * ReadProcArg, const char * format_str, va_list arg, int is_secure)
 {
+    /* Core of MSL scanf: parse each format directive, pull characters through
+       ReadProc, convert numeric/string/character fields with the __strto*
+       helpers, store into the va_list destinations, and return the count of
+       assigned items (-1 if a read error occurs before any conversion). */
     int num_chars, chars_read, items_assigned, conversions;
     int base, negative, overflow;
     int rval;
