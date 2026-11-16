@@ -514,6 +514,7 @@ void fn_802C8CBC(int arg0) {
 }
 
 #pragma dont_inline on
+/* Restores normal render mode and, if a saved matrix state is active, reapplies it then clears the flag. */
 void fn_802C8D74(void) {
     lbl_8055FC70 = 1;
     if ((unsigned char)lbl_8055FC35 != 0) {
@@ -1204,8 +1205,8 @@ int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float 
     float q[3];
     float diff[3];
     float result;
-    float step;
     float new_w;
+    float step;
     int old_count;
 
     if (state->count == 0) {
@@ -1224,17 +1225,14 @@ int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float 
             diff[1] = q[1] - state->y;
             diff[2] = q[2] - state->z;
             PSVECNormalize(diff, diff);
+            step = lbl_80564F18 * (result - state->w);
+            new_w = lbl_80564F18 * (state->w + result);
+            state->x = state->x + diff[0] * step;
+            state->y = state->y + diff[1] * step;
             {
-                float w = state->w;
-                step = lbl_80564F18 * (result - w);
-                new_w = lbl_80564F18 * (w + result);
-                state->x = state->x + diff[0] * step;
-                state->y = state->y + diff[1] * step;
-                {
-                    float z_step = diff[2] * step;
-                    state->w = new_w;
-                    state->z = state->z + z_step;
-                }
+                float z_step = diff[2] * step;
+                state->w = new_w;
+                state->z = state->z + z_step;
             }
         }
     }
