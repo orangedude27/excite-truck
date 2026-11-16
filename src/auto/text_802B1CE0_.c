@@ -281,13 +281,14 @@ void fn_802B2104(void **objectSlot) {
     }
 }
 #pragma pop
-void fn_802B218C(void *arg0) {
-    void *buf = *(void **)arg0;
-    if (buf != 0) {
-        if (buf != 0) {
-            fn_80128670((char *)buf - 0x10);
+/* Free the owned buffer stored at *object (allocated with a header at -0x10) and clear the pointer. */
+void fn_802B218C(void *object) {
+    void *buffer = *(void **)object;
+    if (buffer != 0) {
+        if (buffer != 0) {
+            fn_80128670((char *)buffer - 0x10);
         }
-        *(void **)arg0 = 0;
+        *(void **)object = 0;
     }
 }
 
