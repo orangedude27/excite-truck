@@ -96,12 +96,13 @@ extern char lbl_8055CDF8[];
 __declspec(section ".sdata") extern char lbl_8055CDF8[];
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_802B3FC4(void *arg0) {
-    class Obj {
+extern "C" int fn_802B3FC4(void *item) {
+    /* RealName: UMatItem_IsSkagbag (returns nonzero if the item's name is "skagbag"). */
+    class UMatNamedItem {
     public:
         virtual const char *getName();
     };
-    return stricmp((char *)&lbl_8055CDF8, ((Obj *)arg0)->getName()) == 0;
+    return stricmp((char *)&lbl_8055CDF8, ((UMatNamedItem *)item)->getName()) == 0;
 }
 #pragma cplusplus reset
 #pragma pop
