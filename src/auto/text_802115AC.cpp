@@ -1868,13 +1868,16 @@ extern "C" void fn_80214B44(s32 arg0) {
 #pragma scheduling on
 extern "C" s32 fn_802168D8(s32);
 extern "C" char lbl_8033D304[];
-extern "C" void fn_80214B94(s32 arg0) {
-    s32 temp = fn_802168E4();
-    if (temp != 0) {
-        ((s32 (*)(s32, s32))fn_802168D8)(temp, arg0);
+/* Enables a UI group on the active window, or logs an error if there is none. */
+extern "C" void fn_80214B94(s32 group) {
+#define sNoActiveWindowMsg lbl_8033D304
+    s32 window = fn_802168E4();
+    if (window != 0) {
+        ((s32 (*)(s32, s32))fn_802168D8)(window, group);
     } else {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D304);
+        ((s32 (*)(const char *, ...))fn_802E317C)(sNoActiveWindowMsg);
     }
+#undef sNoActiveWindowMsg
 }
 
 extern "C" void fn_80214BE4(s32 arg0, s32 arg1, s32 arg2) {
