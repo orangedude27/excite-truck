@@ -75,15 +75,21 @@ s32 fn_801D2BF4(s32 *arg0, s32 *arg1) {
 void fn_801D2C04(void) {
     qsort(lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
 }
-#pragma scheduling on
 #pragma dont_inline on
 s32 fn_801D2C20(s32 arg0) {
+    /* Look up a soevent class entry by id in the sorted class table; returns 0 if the id is non-positive or not found. */
+#define sSoeventClassTable lbl_80438958
+#define sSoeventClassCount lbl_8055E930
+#define SoeventClassCompare fn_801D2BF4
     s32 sp8;
     sp8 = arg0;
     if (arg0 <= 0) {
         return 0;
     }
-    return fn_800241DC(&sp8, lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
+    return fn_800241DC(&sp8, sSoeventClassTable, sSoeventClassCount, 0x4C4, SoeventClassCompare);
+#undef sSoeventClassTable
+#undef sSoeventClassCount
+#undef SoeventClassCompare
 }
 #pragma dont_inline off
 
