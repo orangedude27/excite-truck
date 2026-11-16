@@ -642,9 +642,12 @@ void fn_802E0BA8(void) {
 
 #pragma scheduling on
 #pragma dont_inline on
+/* BinkMovie teardown helpers: a no-op free hook and the heap-block free. */
+#define videoFreeHook   fn_802E0BA4
+#define freeVideoObject fn_80128668
 void fn_802E0BE0(void) {
-    fn_802E0BA4();
-    fn_80128668();
+    videoFreeHook();
+    freeVideoObject();
 }
 
 extern void fn_802E317C(char *, ...);
