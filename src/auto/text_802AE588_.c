@@ -1196,10 +1196,12 @@ void fn_802AFE64(int *list, short x, short y, short size, short corner, int attr
     *(int *)(entry + 28) = attrD;
 }
 
-void fn_802AFEA4(int *arg0, short arg1) {
-    int index = *arg0;
-    *arg0 = index + 1;
-    *(short *)((char *)arg0 + index * 0x1C + 8) = arg1;
+/* Appends a new corner descriptor to the count-prefixed array in *list, setting only
+   its size field (+8) and advancing the append index. */
+void fn_802AFEA4(int *list, short size) {
+    int index = *list;
+    *list = index + 1;
+    *(short *)((char *)list + index * 0x1C + 8) = size;
 }
 
 /* Compute a bucketed slot from the count: uses the float exponent for counts >= 2
