@@ -1199,22 +1199,27 @@ void fn_80265A74(void) {
 }
 #pragma pop
 
+/* True when a credits transition is pending (the current object's +0x20 flag) or the credits are skippable; false otherwise. */
 int fn_80265B5C(void) {
-    int ret = 1;
-    void *p = lbl_8055F44C;
-    int flag = 0;
+#define currentObject lbl_8055F44C
+#define gCreditsSkipFlag lbl_8055F450
+    int result = 1;
+    void *obj = currentObject;
+    int transitionPending = 0;
 
-    if (p != 0 && *((unsigned char *)p + 0x20) != 0) {
-        flag = 1;
+    if (obj != 0 && *((unsigned char *)obj + 0x20) != 0) {
+        transitionPending = 1;
     }
-    if (flag != 0) {
+    if (transitionPending != 0) {
         goto done;
     }
-    if (lbl_8055F450 == 0) {
-        ret = 0;
+    if (gCreditsSkipFlag == 0) {
+        result = 0;
     }
 done:
-    return ret;
+    return result;
+#undef currentObject
+#undef gCreditsSkipFlag
 }
 
 int fn_80265B9C(int object, int deleteFlag) {
