@@ -361,9 +361,11 @@ f32 fn_8001BEE8(s32 arg0) {
 
 extern void fn_8001BC28();
 extern void fn_8001BC28(void *arg0, s32 arg1);
-void fn_8001BF0C(s32 arg0, f32 arg1) {
-    f32 temp = arg1;
-    ((void (*)(s32, s32))fn_8001BC28)(arg0, *(s32 *)&temp);
+typedef void (*ResourceFieldSetter)(s32, s32);
+/* Store the bit pattern of `value` as an override value in the resource record. */
+void fn_8001BF0C(s32 record, f32 value) {
+    f32 temp = value;
+    ((ResourceFieldSetter)fn_8001BC28)(record, *(s32 *)&temp);
 }
 
 #pragma push
