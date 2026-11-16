@@ -11374,11 +11374,12 @@ void ptim_start_timer(tPTIM_CB *p_cb, TIMER_LIST_ENT *p_tle, UINT16 type, INT32 
     GKI_add_to_timer_list(&p_cb->timer_queue, p_tle);
 }
 
-/* Match note: preserving the caller's scalar timer entry and forwarding it to GKI reproduces the original calls. */
-void fn_800716B0(void *p_queue, s32 p_tle, void *arg2) {
+/* Stop a protocol timer: remove its entry from the queue and, if the queue is
+   now empty, stop the periodic GKI tick timer. */
+void fn_800716B0(void *p_queue, s32 p_tle, void *p_sys_cb) {
     GKI_remove_from_timer_list(p_queue, (TIMER_LIST_ENT *)p_tle);
-    if (*(s32 *)p_queue == 0) {
-        GKI_stop_timer(((u8 *)p_queue)[0x10]);
+    if (((tPTIM_CB *)p_queue)->timer_queue.p_first == NULL) {
+        GKI_stop_timer(((tPTIM_CB *)p_queue)->timer_id);
     }
 }
 
