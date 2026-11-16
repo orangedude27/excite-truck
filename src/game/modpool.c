@@ -157,9 +157,11 @@ void fn_802CE6C0(void *slot) {
     *(unsigned char *)slot = 0;
 }
 
-int fn_802CE728(void *arg0) {
-    if (*(int *)((char *)arg0 + 0x38) == 2) {
-        return *(int *)((char *)arg0 + 0x34);
+/* Returns the loaded model handle from a ready model-pool slot (state 2 at +0x38),
+   or -1 when the slot is not in the loaded state. */
+int fn_802CE728(void *slot) {
+    if (*(int *)((char *)slot + 0x38) == 2) {
+        return *(int *)((char *)slot + 0x34);
     }
     return -1;
 }
