@@ -581,11 +581,7 @@ extern char lbl_80343FF0[];
 int fn_8024CEF0(void) {
     if (((int (*)(void))fn_8000DBAC)() != 0)
         return 1;
-    {
-        void *b = lbl_80343FC4;
-        void *a = lbl_80343FF0;
-        return ((int (*)(void *, void *, int))fn_80215214)(a, b, 0);
-    }
+    return ((int (*)())fn_80215214)(lbl_80343FF0, lbl_80343FC4, 0);
 }
 #pragma scheduling invalid_target
 int fn_8024CF38(int *arg0) {
@@ -620,8 +616,9 @@ void fn_8024CF60(void) {
 }
 #pragma dont_inline reset
 void fn_8024CFB4(void) {
-    int sp8;
-    if (((int (*)(int *))fn_8024CF48)(&sp8) != 0) fn_8000D984(sp8);
+    /* "Use existing profile": ask which slot to use, then make that slot the current identity. */
+    int slot;
+    if (((int (*)(int *))fn_8024CF48)(&slot) != 0) fn_8000D984(slot);
 }
 
 extern double lbl_80563938;
@@ -782,14 +779,14 @@ extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 int fn_8024D394(void *arg0, int arg1) {
     char *base = lbl_80343F00;
+
     switch (arg1) {
     case 0x113: {
         unsigned char *toggle = (unsigned char *)arg0 + 0x6C;
         char *text;
         char *dst;
         int count;
-        int tmp = (unsigned)__cntlzw(*toggle) >> 5;
-        *toggle = tmp;
+        *toggle = (unsigned char)((unsigned int)__cntlzw((unsigned int)*toggle) >> 5);
         text = base + 0x38;
         if (*toggle != 0)
             text = base + 0x20;
@@ -830,7 +827,7 @@ int fn_8024D394(void *arg0, int arg1) {
         int row = *(int *)((char *)arg0 + 0x64);
         int i;
         int length;
-        if (row == 9 && 3 == *(int *)((char *)arg0 + 0x68))
+        if (row == 9 && *(int *)((char *)arg0 + 0x68) == 3)
             return 0;
         if (row == 8 && *(int *)((char *)arg0 + 0x68) == 3) {
             i = *(int *)((char *)arg0 + 0x48);
