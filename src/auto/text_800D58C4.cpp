@@ -251,11 +251,12 @@ extern "C" s32 fn_800D591C(void* arg0) {
 #pragma dont_inline reset
 
 #pragma dont_inline fn_800D5944
-extern "C" s32 fn_800D5944(void* arg0, u32 arg1) {
+extern "C" s32 fn_800D5944(void* resource, u32 signature) {
+    /* Validate a layout resource header: matching fourCC signature, byte-order marker 0xFEFF and version 8. */
     s32 result = 0;
-    if (arg1 == *(u32*)arg0 &&
-        *(u16*)((u8*)arg0 + 4) == 0xFEFF &&
-        *(u16*)((u8*)arg0 + 6) == 8) {
+    if (signature == *(u32*)resource &&
+        *(u16*)((u8*)resource + 4) == 0xFEFF &&
+        *(u16*)((u8*)resource + 6) == 8) {
         result = 1;
     }
     return result;
