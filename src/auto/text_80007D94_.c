@@ -139,6 +139,8 @@ void fn_80007F40(void) {
 void fn_80007F04(void);
 #pragma dont_inline fn_80007F04
 void fn_80007F68(void) {
+    /* Tear down the race-event subsystem: release the per-controller model
+       list, resume the pending alarm thread, then free the parsed config. */
     fn_80012794();
     fn_80279488();
     fn_80007F04();
