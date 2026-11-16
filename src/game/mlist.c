@@ -778,10 +778,11 @@ void fn_802CDDC8(void *arg0, int arg1) {
     *(volatile int *)(base + 8) |= 1;
 }
 #pragma scheduling invalid_target
-void fn_802CE260(int *arg0, int arg1) {
-    int val = *arg0;
-    if (val != 0) {
-        *arg0 = val + arg1;
+void fn_802CE260(int *value, int delta) {
+    /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
+    int cur = *value;
+    if (cur != 0) {
+        *value = cur + delta;
     }
 }
 
