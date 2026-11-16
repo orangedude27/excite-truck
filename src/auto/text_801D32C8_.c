@@ -111,14 +111,14 @@ int fn_801D32E0(int configName, int typeId, int position, int orientation, int s
 }
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma pool_strings off
 extern "C" void fn_801D334C(void *arg0, void *arg1) {
-    const char *base = lbl_80338340;
     Fn801D334CObj *obj = (Fn801D334CObj *)arg1;
     struct Fn801D334CData *data = (struct Fn801D334CData *)arg0;
     f32 mz;
     f32 temp_f2;
     int mode;
-    data->max_life = obj->getFloat(&base[0]);
+    data->max_life = obj->getFloat("max_life");
     data->mass = obj->getFloat((const char *)&lbl_8055AC30);
     data->mx = obj->getFloat((const char *)&lbl_8055AC38);
     data->my = obj->getFloat((const char *)&lbl_8055AC3C);
@@ -127,14 +127,14 @@ extern "C" void fn_801D334C(void *arg0, void *arg1) {
     temp_f2 *= data->mass;
     data->mz = mz;
     data->spring = obj->getFloatDef((const char *)&lbl_8055AC44, 1.5f * (temp_f2 / 0.03f));
-    data->friction = obj->getFloatDef(base + 0x0C, 1.0f);
-    if (obj->hasKey(base + 0x18) != 0) {
-        data->surf_type = fn_801D04D0(obj->getString(base + 0x18));
+    data->friction = obj->getFloatDef("friction", 1.0f);
+    if (obj->hasKey("surf_type") != 0) {
+        data->surf_type = fn_801D04D0(obj->getString("surf_type"));
     } else {
         data->surf_type = 100;
     }
-    data->ground_test = obj->getByte(base + 0x24, 1);
-    data->effect_id = obj->getInt(base + 0x30, -1);
+    data->ground_test = obj->getByte("ground_test", 1);
+    data->effect_id = obj->getInt("effect_id", -1);
     mode = fn_801D37C4(obj->getString((const char *)&lbl_8055AC4C));
     data->mode = mode;
     switch (mode) {
@@ -153,7 +153,7 @@ extern "C" void fn_801D334C(void *arg0, void *arg1) {
         data->f2c = obj->getFloat((const char *)&lbl_8055AC58);
         break;
     default:
-        fn_802E317C(base + 0x3C, mode);
+        fn_802E317C("mut_phob: invalid type %d", mode);
         break;
     }
 }
@@ -596,12 +596,14 @@ extern void fn_801D4294(void *, void *);
 extern void fn_8017D2C8();
 extern void fn_801796CC();
 void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
-    volatile float tmp[8];
+    float tmp[8];
+
     fn_8017D2C8(arg0, arg1, arg2);
     if (*(int *)((char *)arg0 + 0x238) > 0 && arg4 != 0) {
         float z_val;
         float y_val;
         float x_val;
+
         x_val = *(float *)arg2;
         y_val = *(float *)((char *)arg2 + 4);
         z_val = *(float *)((char *)arg2 + 8);
@@ -613,11 +615,12 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
         tmp[5] = *(float *)((char *)arg4 + 0x120);
         *(short *)((char *)tmp + 0x18) = *(short *)((char *)arg4 + 0x6C);
         *(int *)((char *)tmp + 0x1C) = *(int *)((char *)arg0 + 0x238);
-        fn_801796CC(10, (float *)tmp, 0x20);
+        fn_801796CC(10, tmp, 0x20);
     }
     if (*(int *)((char *)arg0 + 0x230) == 2 && *(void **)((char *)arg0 + 0x22C) != arg4 && arg4 != 0) {
         int is_car = 0;
         unsigned int tag = *(unsigned int *)((char *)arg4 + 0x10);
+
         if (tag == 0x43415220 || tag == 0x50434152 || tag == 0x41434152 || tag == 0x4E434152) {
             is_car = 1;
         }
