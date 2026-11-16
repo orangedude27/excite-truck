@@ -1888,7 +1888,7 @@ extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveD
     voice->paused = 0;
     voice->started = 0;
     voice->playing = 0;
-    voice->updateFlags |= 0x70;   /* the AX voices need a full update */
+    voice->updateFlags |= AX_UPDATE_VOLUME | AX_UPDATE_MIX | AX_UPDATE_LPF;   /* a full AX update */
 }
 /* RealName: Start__Q46nw4hbm3snd6detail7AxVoiceFv - asks this AxVoice to start
  * playing: marks it started (+0x11D), clears its pause flag (+0x11F) and sets the
