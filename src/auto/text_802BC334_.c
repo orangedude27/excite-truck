@@ -816,27 +816,59 @@ __declspec(section ".data") extern int lbl_8034AC48;
 #pragma scheduling invalid_target
 extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
+/* Tree-system startup for a level: primes the tree-hit and tree-descriptor
+   subsystems, registers the two debug counters, loads the tree list when a
+   software map is present, and creates and publishes the System dispatch
+   object. */
 void fn_802BDBA8(void) {
-    char *strings = (char *)&lbl_8034AB38;
-    void *object;
-    int result;
+#define treeStrings     lbl_8034AB38
+#define counterHits     lbl_8055FAA8
+#define counterCost     lbl_8055FAAC
+#define noMapFlag       lbl_8055FAB0
+#define systemObject    lbl_8055FABC
+#define objectVtable    lbl_8034AC48
+#define InitTreeHit     fn_802C126C
+#define InitTreeDesc    fn_802BCBDC
+#define RegisterCounter fn_802B8AE0
+#define HasMapTexture   fn_802B05E4
+#define LoadTreeList    fn_802BD210
+#define AllocNamed      fn_801284F8
+#define InitDispatch    fn_802C2914
 
-    fn_802C126C();
-    fn_802BCBDC();
-    fn_802B8AE0(strings + 0xE8, &lbl_8055FAA8);
-    fn_802B8AE0(strings + 0xF4, &lbl_8055FAAC);
-    result = fn_802B05E4();
-    *(char *)&lbl_8055FAB0 = result == 0;
-    if (result != 0) {
-        ((void (*)(void))fn_802BD210)();
+    char *strings = (char *)&treeStrings;
+    void *object;
+    int hasMapTexture;
+
+    InitTreeHit();
+    InitTreeDesc();
+    RegisterCounter(strings + 0xE8, &counterHits);
+    RegisterCounter(strings + 0xF4, &counterCost);
+    hasMapTexture = HasMapTexture();
+    *(char *)&noMapFlag = hasMapTexture == 0;
+    if (hasMapTexture != 0) {
+        ((void (*)(void))LoadTreeList)();
     }
-    object = fn_801284F8(8, (int)(strings + 0x104));
+    object = AllocNamed(8, (int)(strings + 0x104));
     if (object != 0) {
-        fn_802C2914(object);
-        *(void **)((char *)object + 4) = &lbl_8034AC48;
+        InitDispatch(object);
+        *(void **)((char *)object + 4) = &objectVtable;
     }
-    lbl_8055FABC = object;
+    systemObject = object;
     return;
+
+#undef treeStrings
+#undef counterHits
+#undef counterCost
+#undef noMapFlag
+#undef systemObject
+#undef objectVtable
+#undef InitTreeHit
+#undef InitTreeDesc
+#undef RegisterCounter
+#undef HasMapTexture
+#undef LoadTreeList
+#undef AllocNamed
+#undef InitDispatch
 }
 #pragma scheduling on
 void fn_802BDC3C(void* alarm) {
