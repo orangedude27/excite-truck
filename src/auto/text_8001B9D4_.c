@@ -343,6 +343,8 @@ void fn_8001BE70(void *arg0) {
 }
 #pragma scheduling reset
 void *fn_8001BE94(void *dest, int val, size_t count) {
+    /* memset-style wrapper: fill dest by delegating to fn_8001BC38 with the
+     * same three arguments, then return the original destination pointer. */
     ((void *(*)())fn_8001BC38)(dest, val, count);
     return dest;
 }
