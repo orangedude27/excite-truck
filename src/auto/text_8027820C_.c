@@ -43,8 +43,8 @@ void fn_80278210(void) {}
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80278214(void) {
-    int minus = -1;
     int zero = 0;
+    int minus = -1;
     lbl_8055F5B4 = zero;
     lbl_8055F5C8 = zero;
     lbl_8055F5BB = zero;
@@ -54,7 +54,7 @@ void fn_80278214(void) {
     lbl_8055F5C4 = minus;
     lbl_8055F5B8 = zero;
     lbl_8055F5B0 = (int)fn_8002F37C(
-        (void *)fn_8012850C(0x80, lbl_80347580, zero),
+        (void *)(((int (*)(int, const char *))fn_8012850C)(0x80, lbl_80347580)),
         fn_80278284, zero, 0x38, 2);
 }
 #pragma scheduling on
