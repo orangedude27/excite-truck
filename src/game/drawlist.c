@@ -534,12 +534,14 @@ int fn_802C8DBC(void) {
     return 0;
 }
 
+/* Clear the deferred draw/command flag unless it was set and the active
+ * command path reports no pending work. */
 void fn_802C8E00(void) {
-    unsigned char result = 0;
+    unsigned char keepFlag = 0;
     if (lbl_8055FC8F != 0 && fn_801E4F3C() == 0) {
-        result = 1;
+        keepFlag = 1;
     }
-    lbl_8055FC8F = result;
+    lbl_8055FC8F = keepFlag;
 }
 
 extern void fn_801E4FF4(void);
