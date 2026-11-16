@@ -969,7 +969,6 @@ typedef struct GPFifoCopy {
     unsigned int w0, w1, w2, w3, w4, w5, w6, w7, w8;
 } GPFifoCopy;
 void GXSetGPFifo(unsigned int *fifo) {
-    unsigned int *dst;
     unsigned int a, b;
     unsigned int tmp;
     int intStatus;
@@ -996,24 +995,23 @@ void GXSetGPFifo(unsigned int *fifo) {
         return;
     }
 
-    dst = (unsigned int *)lbl_8037C0C0;
     a = fifo[0];
     b = fifo[1];
-    dst[0] = a;
-    dst[1] = b;
+    ((unsigned int *)lbl_8037C0C0)[0] = a;
+    ((unsigned int *)lbl_8037C0C0)[1] = b;
     a = fifo[2];
     b = fifo[3];
-    dst[2] = a;
-    dst[3] = b;
+    ((unsigned int *)lbl_8037C0C0)[2] = a;
+    ((unsigned int *)lbl_8037C0C0)[3] = b;
     a = fifo[4];
     b = fifo[5];
-    dst[4] = a;
-    dst[5] = b;
+    ((unsigned int *)lbl_8037C0C0)[4] = a;
+    ((unsigned int *)lbl_8037C0C0)[5] = b;
     a = fifo[6];
     b = fifo[7];
-    dst[6] = a;
-    dst[7] = b;
-    dst[8] = fifo[8];
+    ((unsigned int *)lbl_8037C0C0)[6] = a;
+    ((unsigned int *)lbl_8037C0C0)[7] = b;
+    ((unsigned int *)lbl_8037C0C0)[8] = fifo[8];
     lbl_8055D949 = 1;
     ((unsigned char *)lbl_8037C0C0)[0x22] = 1;
 
@@ -2545,13 +2543,14 @@ void GXInitLightDir(unsigned int x, unsigned int y, unsigned int *arg2) {
 }
 
 unsigned int GXGetLightDir(unsigned int value) {
+    /* Atomically replace lbl_8055D978 with value and return the previous value. */
     extern unsigned int lbl_8055D978;
     extern void OSRestoreInterrupts(void);
-    unsigned int old = lbl_8055D978;
+    unsigned int previousValue = lbl_8055D978;
     OSDisableInterrupts();
     lbl_8055D978 = value;
     OSRestoreInterrupts();
-    return old;
+    return previousValue;
 }
 
 extern unsigned short *__peReg;
