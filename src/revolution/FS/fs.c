@@ -822,6 +822,7 @@ s32 ISFS_OpenAsync(const char* path, IPCOpenMode mode, FSAsyncCallback callback,
                          block);
 }
 
+/* Reads an open file's statistics into a 32-byte-aligned FSFileStats via IOS_Ioctl (FS_IOCTL_GET_FILE_STATS). */
 s32 ISFS_GetFileStats(s32 fd, FSFileStats* statsOut) {
     if (statsOut == NULL || (u32)statsOut % 32 != 0) {
         return IPC_RESULT_INVALID;
