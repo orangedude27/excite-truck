@@ -1130,6 +1130,8 @@ void fn_80265A28(void) {
 }
 #pragma pop
 void fn_80265A34(void) {
+    /* Fade-out callback: after updating the trail manager, if the "fade_out" trail exists
+       but is no longer active (status 2), set the completion flags. */
     fn_80236914();
     if (fn_8023695C(lbl_803464EC) == 2) {
         fn_80216CA8();
