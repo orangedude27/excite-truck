@@ -227,92 +227,101 @@ void fn_800328F0(void *arg0) {
 #pragma cplusplus reset
 
 #pragma use_lmw_stmw off
-void fn_80032EAC(int arg0) {
-    unsigned int r29;
-    int i;
-    unsigned char *p;
+/* __AXSyncPBs(baseCycles): once per audio frame, walk the voice stacks of the
+ * live priorities (31 down to 1) and add up the DSP cycles the playing voices
+ * will need -- sample-rate conversion, LPF, biquad and the mixer controls each
+ * one touches -- on top of the mixer command list's cycles and this frame's
+ * allowance.  A voice whose settings still fit under __AXMaxDspCycles has its
+ * parameter block copied into the DSP's AXPB array; one that would go over is
+ * depopulated, silenced, stopped and queued for its callback instead.  The
+ * stack of voices that are not playing (priority 0) is only depopulated and
+ * silenced. */
+void fn_80032EAC(int baseCycles) {
+    unsigned int cycles;
+    int priority;
+    AXVPB *vpb;
 
-    lbl_8055D7E0 = 0;
-    DCInvalidateRange(lbl_80363C60, 0x4800);
-    DCInvalidateRange(lbl_8036C460, 0x1000);
-    r29 = (fn_80031248() + 0x10000 + arg0) - 0x55F0;
-    i = 0x1F;
+    __AXNumVoices = 0;
+    DCInvalidateRange(__AXPBs, sizeof(AXPB) * AX_NUM_VOICES);
+    DCInvalidateRange(__AXItdBuffers, AX_ITD_BUFFER_SIZE * AX_NUM_VOICES);
+    cycles = (__AXGetMixCycles() + 0x10000 + baseCycles) - 0x55F0;
+    priority = AX_MAX_PRIORITY;
 
     do {
-        p = (unsigned char *)TRKReadBuffer_ui8(i);
-        while (p != 0) {
-            if (*(int *)(p + 0x20) != 0) {
-                __AXDepopVoice(lbl_80363C60 + *(int *)(p + 0x18) * 0x120);
+        vpb = (AXVPB *)__AXGetStackHead(priority);
+        while (vpb != 0) {
+            if (vpb->depop != 0) {
+                __AXDepopVoice(&__AXPBs[vpb->index]);
             }
-            if (*(unsigned short *)(p + 0x148) == 1 || *(int *)(p + 0x28) != 0) {
-                if (*(unsigned short *)(p + 0x140) != 2) {
-                    unsigned int hi;
-                    unsigned int lo;
-                    unsigned int v;
-                    hi = *(volatile unsigned short *)(p + 0x1E8);
-                    lo = *(volatile unsigned short *)(p + 0x1EA);
-                    v = (hi << 16) | lo;
-                    r29 += ((((v * 0x84) + 0x8000) >> 16) + 0x2D8) * 6;
+            if (vpb->pb.state == AX_VOICE_RUN || vpb->auxDataWords != 0) {
+                if (vpb->pb.srcSelect != 2) {
+                    unsigned int ratioHi;
+                    unsigned int ratioLo;
+                    unsigned int ratio;
+                    ratioHi = *(volatile unsigned short *)&vpb->pb.src.ratioHi;
+                    ratioLo = *(volatile unsigned short *)&vpb->pb.src.ratioLo;
+                    ratio = (ratioHi << 16) | ratioLo;
+                    cycles += ((((ratio * 0x84) + 0x8000) >> 16) + 0x2D8) * 6;
                 }
-                if (*(unsigned short *)(p + 0x1FC) != 0) {
-                    r29 += 0x22B;
+                if (vpb->pb.lpf.on != 0) {
+                    cycles += AX_SYNC_LPF_CYCLES;
                 }
-                if (*(unsigned short *)(p + 0x204) != 0) {
-                    r29 += 0x22B;
+                if (vpb->pb.biquad.on != 0) {
+                    cycles += AX_SYNC_BIQUAD_CYCLES;
                 }
                 {
-                    unsigned int t = *(unsigned int *)(p + 0x144);
-                    unsigned int sum = lbl_802FED20[(t >> 21) & 0x1F] + lbl_802FED20[t & 0x1F];
-                    r29 = sum
-                        + lbl_802FED20[(t >> 16) & 0x1F]
-                        + (lbl_802FED20[(t >> 26) & 0x1F] + r29)
-                        + 0x8C;
+                    unsigned int ctrl = vpb->pb.mixerCtrl;
+                    unsigned int sum = __AXMixerCtrlCycles[(ctrl >> 21) & 0x1F] +
+                                       __AXMixerCtrlCycles[ctrl & 0x1F];
+                    cycles = sum + __AXMixerCtrlCycles[(ctrl >> 16) & 0x1F] +
+                             (__AXMixerCtrlCycles[(ctrl >> 26) & 0x1F] + cycles) +
+                             AX_SYNC_MIXER_CYCLES;
                 }
-                if (lbl_8055D7E8 > r29) {
-                    fn_800328F0(p);
+                if (__AXMaxDspCycles > cycles) {
+                    __AXUpdatePB(vpb);
                 } else {
-                    unsigned char *vpb = lbl_80363C60 + *(int *)(p + 0x18) * 0x120;
-                    if (*(unsigned short *)(vpb + 0x10) == 1) {
-                        __AXDepopVoice(vpb);
+                    AXPB *pb = &__AXPBs[vpb->index];
+                    if (pb->state == AX_VOICE_RUN) {
+                        __AXDepopVoice(pb);
                     }
-                    *(short *)(vpb + 0x56) = 0;
-                    *(short *)(vpb + 0x54) = 0;
-                    *(short *)(vpb + 0x52) = 0;
-                    *(short *)(vpb + 0x10) = 0;
-                    *(unsigned short *)(p + 0x148) = 0;
-                    TRKAppendBuffer(p);
+                    pb->itd.current[2] = 0;
+                    pb->itd.current[1] = 0;
+                    pb->itd.current[0] = 0;
+                    pb->state = AX_VOICE_STOP;
+                    vpb->pb.state = AX_VOICE_STOP;
+                    __AXPushCallbackStack(vpb);
                 }
             } else {
-                fn_800328F0(p);
+                __AXUpdatePB(vpb);
             }
-            *(int *)(p + 0x1C) = 0;
-            *(int *)(p + 0x20) = 0;
-            *(int *)(p + 0x28) = 0;
-            *(int *)(p + 0x24) = 0;
-            *(void **)(p + 0x30) = (void *)(p + 0x34);
-            p = *(unsigned char **)p;
+            vpb->sync = 0;
+            vpb->depop = 0;
+            vpb->auxDataWords = 0;
+            vpb->unk24 = 0;
+            vpb->auxData = vpb->auxDataBuffer;
+            vpb = (AXVPB *)vpb->next;
         }
-    } while (--i != 0);
+    } while (--priority != 0);
 
-    lbl_8055D7E4 = r29;
+    __AXDspCycles = cycles;
     {
-        unsigned char *p2 = (unsigned char *)TRKReadBuffer_ui8(0);
-        while (p2 != 0) {
-            if (*(int *)(p2 + 0x20) != 0) {
-                __AXDepopVoice(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120);
+        AXVPB *idle = (AXVPB *)__AXGetStackHead(0);
+        while (idle != 0) {
+            if (idle->depop != 0) {
+                __AXDepopVoice(&__AXPBs[idle->index]);
             }
-            *(int *)(p2 + 0x20) = 0;
-            *(short *)(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120 + 0x56) = 0;
-            *(short *)(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120 + 0x54) = 0;
-            *(short *)(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120 + 0x52) = 0;
-            *(short *)(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120 + 0x10) = 0;
-            p2 = *(unsigned char **)p2;
+            idle->depop = 0;
+            __AXPBs[idle->index].itd.current[2] = 0;
+            __AXPBs[idle->index].itd.current[1] = 0;
+            __AXPBs[idle->index].itd.current[0] = 0;
+            __AXPBs[idle->index].state = AX_VOICE_STOP;
+            idle = (AXVPB *)idle->next;
         }
     }
 
-    DCFlushRange(lbl_80363C60, 0x4800);
-    DCFlushRange(lbl_8036C460, 0x1000);
-    DCFlushRange(lbl_80368460, 0x4000);
+    DCFlushRange(__AXPBs, sizeof(AXPB) * AX_NUM_VOICES);
+    DCFlushRange(__AXItdBuffers, AX_ITD_BUFFER_SIZE * AX_NUM_VOICES);
+    DCFlushRange(__AXAuxBuffers, AX_AUX_BUFFER_SIZE * AX_NUM_VOICES);
 }
 #pragma use_lmw_stmw reset
 void *__AXFXGetLfoSinTable_8003313C(void) { return lbl_80363C60; }
