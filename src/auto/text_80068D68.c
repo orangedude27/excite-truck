@@ -28676,15 +28676,24 @@ void fn_8006CAA8(u32 event, u8 *data) {
 
 #pragma push
 #pragma opt_propagation off
-void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
-    u32 *ptr = (u32 *)&lbl_80392960;
+void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 appId) {
+#define kWudControlBlock lbl_80392960
+#define kHidRecvCallbackOffset 0x66C
+#define kInvalidAppIdMsg lbl_803140D0
+#define DebugPrintf DBPrintf_8006CFA8
+    /* Dispatch a WUD event with app_id 3 to the registered HID-receive callback; other ids are logged as invalid. */
+    u32 *ptr = (u32 *)&kWudControlBlock;
     void (*func)(void *, void *, void *);
-    if (arg8 == 3) {
-        func = (void (*)(void *, void *, void *))ptr[0x66C / 4];
+    if (appId == 3) {
+        func = (void (*)(void *, void *, void *))ptr[kHidRecvCallbackOffset / 4];
         if (func) func(arg0, arg1, arg2);
     } else {
-        DBPrintf_8006CFA8(lbl_803140D0, arg8);
+        DebugPrintf(kInvalidAppIdMsg, appId);
     }
+#undef kWudControlBlock
+#undef kHidRecvCallbackOffset
+#undef kInvalidAppIdMsg
+#undef DebugPrintf
 }
 #pragma pop
 void fn_8006CF80(void) {
@@ -29055,7 +29064,6 @@ void WUDVendorSpecificCallback(u8 len, u8 *pData) {
     typedef void (*WUDSyncCallback)(s32, s32);
     typedef void (*WUDClearCallback)(s32);
     u8 *state = lbl_80392960;
-    u8 *stateBase = lbl_80392960;
     u8 *strings = lbl_803130C8;
     u8 event = pData[0];
     u32 enabled, busyEnabled;
@@ -29115,13 +29123,11 @@ void WUDVendorSpecificCallback(u8 len, u8 *pData) {
             clearCallback(result);
             break;
         }
-
         DBPrintf_8006CFA8((const char *)strings + 0x470);
         enabled = OSDisableInterrupts();
         libStatus = (s8)state[0x688];
         OSRestoreInterrupts(enabled);
         if ((u32)libStatus != 3U) break;
-
         busyEnabled = OSDisableInterrupts();
         if (state[0xC] == 0 && state[0xD] == 0 &&
             state[0xF] == 4 && state[0x10] == 4) {
@@ -29132,7 +29138,6 @@ void WUDVendorSpecificCallback(u8 len, u8 *pData) {
             busy = 1;
         }
         if (busy != 0) break;
-
         enabled = OSDisableInterrupts();
         state[0xD] = 1;
         OSCreateAlarm((OSAlarm *)(state + 0x690));
@@ -29140,16 +29145,13 @@ void WUDVendorSpecificCallback(u8 len, u8 *pData) {
                            OS_MSEC_TO_TICKS(20), (OSAlarmHandler)fn_80069EB4);
         OSRestoreInterrupts(enabled);
         break;
-
     case 10:
         DBPrintf_8006CFA8((const char *)strings + 0xA88, pData[1]);
         state[0x689] = pData[1];
         break;
-
     case 16:
         DBPrintf_8006CFA8((const char *)strings + 0xAAC, pData[1]);
-        OSPanic(&lbl_80558FE8, 0xD9C,
-                (const char *)strings + 0xAD4);
+        OSPanic(&lbl_80558FE8, 0xD9C, (const char *)strings + 0xAD4);
         break;
     }
 }
