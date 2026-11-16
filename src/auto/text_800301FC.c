@@ -1030,13 +1030,30 @@ void CircleBufferReadBytes(u32 arg0, u32 arg1, void *arg2) {
 }
 #pragma dont_inline reset
 void CircleBufferWriteBytes(void) {
-    lbl_8055D740 = 0;
-    lbl_8055D748 = 0;
-    lbl_8055D744 = lbl_8035E820;
-    lbl_8055D738 = 1;
-    lbl_8055D734 = 0x8000;
-    lbl_8055D732 = 0x8000;
-    lbl_8055D730 = 0x8000;
+    /* Initialize the MetroTRK gdev CC ring-buffer state: reset the mode and
+       buffer index, point the trace writer at the static 0x300-byte buffer,
+       flag it ready, and load the three 16-bit CC mask values (0x8000). */
+#define ccMode        lbl_8055D740
+#define ccBufferIndex lbl_8055D748
+#define ccWritePtr    lbl_8055D744
+#define ccReady       lbl_8055D738
+#define ccMask1       lbl_8055D734
+#define ccMask2       lbl_8055D732
+#define ccMask3       lbl_8055D730
+    ccMode = 0;
+    ccBufferIndex = 0;
+    ccWritePtr = lbl_8035E820;
+    ccReady = 1;
+    ccMask1 = 0x8000;
+    ccMask2 = 0x8000;
+    ccMask3 = 0x8000;
+#undef ccMask3
+#undef ccMask2
+#undef ccMask1
+#undef ccReady
+#undef ccWritePtr
+#undef ccBufferIndex
+#undef ccMode
 }
 
 void fn_80031C68(void) {
