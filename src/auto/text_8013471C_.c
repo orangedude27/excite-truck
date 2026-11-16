@@ -455,6 +455,8 @@ f32 fn_80134DF8(void) {
 }
 #pragma dont_inline reset
 
+/* Pick the list length used by fn_80134E34: when the physics command's 0x100 flag is set,
+   use the computed fallback length (fn_80134D78), otherwise the fixed base (fn_80134DF8). */
 f32 fn_80134E00(void) {
     if ((fn_801769A8() >> 8) & 1) {
         return fn_80134D78();
