@@ -121,16 +121,18 @@ void fn_801D1540(Obj801D *p, int idx) {
 }
 
 #pragma dont_inline on
-void fn_801D1810(int arg0, int arg1) {
+/* Resets the dynamic state of a car-engine sound object (the Obj801D header
+ * at offsets 0x00-0x1C) to zero/zero-float, leaving its curve tables intact. */
+void fn_801D1810(int obj, int idx) {
     float zero = lbl_80562A58;
-    *(int *)((char *)arg0 + 0x10) = 0;
-    *(float *)arg0 = zero;
-    *(float *)((char *)arg0 + 4) = zero;
-    *(float *)((char *)arg0 + 0x1C) = zero;
-    *(float *)((char *)arg0 + 0x18) = zero;
-    *(int *)((char *)arg0 + 0xC) = 0;
-    *(int *)((char *)arg0 + 0x14) = 0;
-    *(int *)((char *)arg0 + 8) = 0;
+    *(int *)((char *)obj + 0x10) = 0;
+    *(float *)obj = zero;
+    *(float *)((char *)obj + 4) = zero;
+    *(float *)((char *)obj + 0x1C) = zero;
+    *(float *)((char *)obj + 0x18) = zero;
+    *(int *)((char *)obj + 0xC) = 0;
+    *(int *)((char *)obj + 0x14) = 0;
+    *(int *)((char *)obj + 8) = 0;
 }
 #pragma dont_inline off
 
