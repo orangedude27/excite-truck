@@ -35,6 +35,9 @@ extern char lbl_803453B8[];
 extern void fn_80235380(void*, void*);
 extern void fn_80128668(void*);
 
+/* Menu action: capture the active window's current menu index (fn_80214D04)
+   into the saved selection lbl_8055C390, so the companion action fn_8025C04C
+   can later restore it via fn_80214CB4. */
 void fn_8025C028(void) {
     lbl_8055C390 = fn_80214D04();
 }
