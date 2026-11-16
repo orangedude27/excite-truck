@@ -387,83 +387,94 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
 
 #pragma push
 #pragma opt_propagation off
-extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
-    PaneData temp;
-    PaneData buffer;
-    f32* p;
-    const char* base = lbl_802FDB68;
-    void* truck = fn_8017960C(arg1);
-    p = (f32*)arg0 + arg1 * 3;
-    f32 threshold;
-    f32 mem2588;
-    f32 save;
-    mem2588 = *(f32*)((u8*)truck + 0x2588);
-    threshold = lbl_80560474;
-    bool active = mem2588 > threshold;
+/* The overheat overlay of one player.  Its slot keeps a 0..1 level that is
+   held at full while the truck is overheating (truck +0x2588) and otherwise
+   falls by OVERLAY_COOL_RATE a frame, plus the truck's own warning level
+   (truck +0x25A0).  While the level is above OVERLAY_SHOW_MIN the "OVERHEAT"
+   text is drawn on the pane line interpolated between the "overheat_text" and
+   "overheat_text_end" panes, fading in over OVERLAY_FADE_TIME seconds and
+   pulsing its colour between the two panes' colours with an alpha of
+   level * OVERLAY_ALPHA_MAX; otherwise a warning level above OVERLAY_WARN_MIN
+   shows the "overheat_warn" pane, its colour pulsed between 0xC0FFFFFF and
+   0xFFFF2020. */
+extern "C" void fn_8001E2AC(void* slots, s32 playerIndex) {
+    PaneData warnData;
+    PaneData textData;
+    f32* slot;
+    const char* strings = lbl_802FDB68;
+    void* truck = fn_8017960C(playerIndex);
+    slot = (f32*)slots + playerIndex * 3;
+    f32 zero;
+    f32 heat;
+    f32 cooled;
+    heat = *(f32*)((u8*)truck + 0x2588);
+    zero = OVERLAY_ZERO;
+    bool active = heat > zero;
     if (active) {
-        if (!((f32)fabs(p[2] - lbl_80560470) <= lbl_80558DC4)) {
-            p[1] = lbl_8055E3C8;
+        if (!((f32)fabs(slot[2] - OVERLAY_ONE) <= FLOAT_EPS)) {
+            slot[1] = sOverlayTime;
         }
-        p[2] = lbl_80560470;
+        slot[2] = OVERLAY_ONE;
     } else {
-        f32 reload = *(volatile f32 *)&p[2];
-        save = reload - lbl_8056047C;
-        p[2] = save;
+        f32 level = *(volatile f32 *)&slot[2];
+        cooled = level - OVERLAY_COOL_RATE;
+        slot[2] = cooled;
     }
-    p[3] = *(f32*)((u8*)truck + 0x25A0);
-    PaneContainer* paneMgr;
+    slot[3] = *(f32*)((u8*)truck + 0x25A0);
+    PaneContainer* layout;
     if (fn_801E85A4() == 2) {
-        paneMgr = (PaneContainer*)lbl_8055D5F8;
+        layout = (PaneContainer*)lbl_8055D5F8;   /* "betalyt_2.val" */
     } else {
-        paneMgr = (PaneContainer*)lbl_8055D5F4;
+        layout = (PaneContainer*)lbl_8055D5F4;   /* "betalyt.val" */
     }
-    if (paneMgr == NULL) {
+    if (layout == NULL) {
         return;
     }
-    if (p[2] > lbl_80560480) {
-        arg1 = (s32)(lbl_80560484 * p[2]);
-        void* r28 = paneMgr->getPane(base + 0x1FC);
-        void* r29 = paneMgr->getPane(base + 0x20C);
-        if (r28 != NULL && r29 != NULL) {
-            f32 f2 = lbl_80560470;
-            f32 fq0 = ((lbl_8055E3C8 - p[1]) - f2) / lbl_80560488;
-            f2 = (f2 < fq0) ? f2 : fq0;
-            f2 = (f2 > lbl_80560474) ? f2 : lbl_80560474;
-            fn_80147CEC(&buffer, r28, r29, lbl_80560474 + f2 * lbl_80560470);
-            f32 factor1 = ((f32(*)(void))fn_8001DAD8)();
-            u32 c1 = (u32)fn_80147C50(*(u32*)((u8*)r28 + 0x18), *(u32*)((u8*)r29 + 0x18), factor1) & 0x00FFFFFF;
-            buffer.w18 = __rlwimi((int)c1, arg1, 24, 0, 7);
-            arg1 <<= 24;
-            f32 factor2 = ((f32(*)(void))fn_8001DAD8)();
-            u32 c2raw = (u32)fn_80147C50(*(u32*)((u8*)r29 + 0x18), *(u32*)((u8*)r28 + 0x18), factor2);
-            u32 masked = __rlwinm(c2raw, 0, 8, 31);
-            fn_80232928((int)(masked | (u32)arg1));
-            fn_80147230(&buffer, lbl_80558D08, fn_80131234(base + 0x220));
+    if (slot[2] > OVERLAY_SHOW_MIN) {
+        playerIndex = (s32)(OVERLAY_ALPHA_MAX * slot[2]);   /* the text's alpha */
+        void* textPane = layout->getPane(strings + 0x1FC);      /* "overheat_text" */
+        void* endPane = layout->getPane(strings + 0x20C);       /* "overheat_text_end" */
+        if (textPane != NULL && endPane != NULL) {
+            f32 blend = OVERLAY_ONE;
+            f32 elapsed = ((sOverlayTime - slot[1]) - blend) / OVERLAY_FADE_TIME;
+            blend = (blend < elapsed) ? blend : elapsed;
+            blend = (blend > OVERLAY_ZERO) ? blend : OVERLAY_ZERO;
+            fn_80147CEC(&textData, textPane, endPane, OVERLAY_ZERO + blend * OVERLAY_ONE);
+            f32 pulse1 = ((f32(*)(void))overlayPulse)();
+            u32 textColor = (u32)fn_80147C50(*(u32*)((u8*)textPane + 0x18), *(u32*)((u8*)endPane + 0x18), pulse1) & 0x00FFFFFF;
+            textData.w18 = __rlwimi((int)textColor, playerIndex, 24, 0, 7);
+            playerIndex <<= 24;
+            f32 pulse2 = ((f32(*)(void))overlayPulse)();
+            u32 endColor = (u32)fn_80147C50(*(u32*)((u8*)endPane + 0x18), *(u32*)((u8*)textPane + 0x18), pulse2);
+            u32 endColorRgb = __rlwinm(endColor, 0, 8, 31);
+            fn_80232928((int)(endColorRgb | (u32)playerIndex));
+            fn_80147230(&textData, STR_PERCENT_S, fn_80131234(strings + 0x220));   /* "RaceOverlay:OVERHEAT" */
             fn_80232930();
         }
-    } else if (p[3] > lbl_8056048C) {
-        void* r3 = paneMgr->getPane(base + 0x238);
-        if (r3 != NULL) {
-            PaneData* src = (PaneData*)r3;
-            temp.w0 = src->w0;
+    } else if (slot[3] > OVERLAY_WARN_MIN) {
+        void* warnPane = layout->getPane(strings + 0x238);    /* "overheat_warn" */
+        if (warnPane != NULL) {
+            PaneData* src = (PaneData*)warnPane;
+            warnData.w0 = src->w0;
             u32 a2;
             u32 a1;
             a1 = ((volatile PaneData *)src)->w4;
             a2 = ((volatile PaneData *)src)->w8;
-            temp.w4 = a1;
-            temp.w8 = a2;
-            temp.wc = src->wc;
-            temp.f10 = src->f10;
-            temp.w14 = src->w14;
-            temp.w18 = src->w18;
-            temp.w1c = src->w1c;
-            f32 factor = ((f32(*)(void))fn_8001DAD8)();
-            temp.w18 = fn_80147C50(0xC0FFFFFFU, 0xFFFF2020U, factor);
-            ((void(*)(void*))fn_801476C4)(&temp);
+            warnData.w4 = a1;
+            warnData.w8 = a2;
+            warnData.wc = src->wc;
+            warnData.f10 = src->f10;
+            warnData.w14 = src->w14;
+            warnData.w18 = src->w18;
+            warnData.w1c = src->w1c;
+            f32 pulse = ((f32(*)(void))overlayPulse)();
+            warnData.w18 = fn_80147C50(0xC0FFFFFFU, 0xFFFF2020U, pulse);
+            ((void(*)(void*))fn_801476C4)(&warnData);
         }
     }
 }
 #pragma pop
+#pragma scheduling off
 extern "C" f32 fn_8001DA5C(s32);
 extern f32 lbl_80560490;
 #pragma scheduling off
