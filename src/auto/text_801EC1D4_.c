@@ -55,6 +55,10 @@ extern float lbl_80488668[3]; /* saved render state; [2] = draw scale */
 extern unsigned int lbl_8055EBC8;
 long fn_801ECB60();
 extern float lbl_80558DC4[];
+/* UI default light colours (packed RGB): muted blue-gray diffuse and warm
+ * cream ambient, used as the saved render state for the vehicle effect pass. */
+#define UI_LIGHT_DIFFUSE_MODE0 0x00555766
+#define UI_LIGHT_AMBIENT 0x00FFF5D9
 void fn_801EC1D4(void) {
     ((unsigned int *)lbl_80488668)[0] = 0x555766;
     ((unsigned int *)lbl_80488668)[1] = 0xFFF5D9;
