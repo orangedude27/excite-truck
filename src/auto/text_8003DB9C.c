@@ -2251,73 +2251,100 @@ void GXGetVtxAttrFmt(void) {
 #pragma dont_inline reset
 #pragma use_lmw_stmw off
 extern char __GXIsGPFifoReady(void) __attribute__((noinline));
+#pragma dont_inline reset
+#pragma use_lmw_stmw off
 void GXGetVtxAttrFmtv(void) {
-    unsigned int old, value;
-    signed long long start, now;
-    unsigned int *data = __GXData;
-    if (*(unsigned char *)((char *)data + 0x5FA) &&
+    /* Reset the GX command FIFO so the CPU can take the Graphics back: spin until
+     * the GP read pointer stops moving (the FIFO has drained), pulse the PI frame
+     * abort to kill the frame in flight, clean the GP FIFO and GX's revision
+     * bits, drop the cached BP state and push 32 bytes of zero down the
+     * write-gather pipe.  The game runs this just before GXInit() when it
+     * re-initialises video (fn_802CFD74) and from OSFatal() before it takes over
+     * the framebuffer. */
+    #define GX_FIFO_LIVE     0x5FA                            /* __GXData byte: the GX FIFO is set up */
+    #define GX_DIRTY_STATE   0x5FC                            /* __GXData word: state __GXSetDirtyState() must resend */
+    #define GP_READ_PTR_HI   0x4E                             /* __memReg: GP read pointer, high half */
+    #define GP_READ_PTR_LO   0x50                             /* __memReg: GP read pointer, low half */
+    #define PI_FRAME_ABORT   (*(volatile unsigned int *)0xCC003018) /* __piReg[6]: abort the frame in flight */
+    #define WGPIPE_WORD      (*(volatile unsigned int *)0xCC008000) /* GX_WRITE_U32's port */
+    #define FIFO_IDLE_TICKS  8                                /* the read pointer must hold still this long */
+    #define ABORT_HOLD_TICKS 50                               /* frame abort held active */
+    #define ABORT_GAP_TICKS  5                                /* and idle after it drops */
+    unsigned int prevPtr, curPtr;
+    signed long long startTime, nowTime;
+    unsigned int *gxData = __GXData;
+    if (*(unsigned char *)((char *)gxData + GX_FIFO_LIVE) &&
         (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
-        unsigned int firstHigh, high, low;
+        unsigned int prevHi, hi, lo;
         volatile unsigned short *reg = (volatile unsigned short *)__memReg;
-        high = reg[0x4E / 2];
+        hi = reg[GP_READ_PTR_HI / 2];
         do {
-            firstHigh = high;
-            low = reg[0x50 / 2];
-            high = reg[0x4E / 2];
-        } while (high != firstHigh);
-        old = (high << 16) | low;
+            prevHi = hi;
+            lo = reg[GP_READ_PTR_LO / 2];
+            hi = reg[GP_READ_PTR_HI / 2];
+        } while (hi != prevHi);
+        prevPtr = (hi << 16) | lo;
         for (;;) {
-            unsigned int firstHigh2, low2, high2;
-            start = OSGetTime();
+            unsigned int prevHi2, lo2, hi2;
+            startTime = OSGetTime();
             do {
-                now = OSGetTime();
-            } while (now - start <= 8);
+                nowTime = OSGetTime();
+            } while (nowTime - startTime <= FIFO_IDLE_TICKS);
             {
                 volatile unsigned short *reg2 = (volatile unsigned short *)__memReg;
-                high2 = reg2[0x4E / 2];
+                hi2 = reg2[GP_READ_PTR_HI / 2];
                 do {
-                    firstHigh2 = high2;
-                    low2 = reg2[0x50 / 2];
-                    high2 = reg2[0x4E / 2];
-                } while (high2 != firstHigh2);
+                    prevHi2 = hi2;
+                    lo2 = reg2[GP_READ_PTR_LO / 2];
+                    hi2 = reg2[GP_READ_PTR_HI / 2];
+                } while (hi2 != prevHi2);
             }
-            value = (high2 << 16) | low2;
+            curPtr = (hi2 << 16) | lo2;
             {
-                unsigned int previous = old;
-                old = value;
-                if (value != previous)
+                unsigned int previous = prevPtr;
+                prevPtr = curPtr;
+                if (curPtr != previous)
                     continue;
             }
             break;
         }
     }
-    *(volatile unsigned int *)0xCC003018 = 1;
-    start = OSGetTime();
+    PI_FRAME_ABORT = 1;
+    startTime = OSGetTime();
     do {
-        now = OSGetTime();
-    } while (now - start <= 50);
-    *(volatile unsigned int *)0xCC003018 = 0;
-    start = OSGetTime();
+        nowTime = OSGetTime();
+    } while (nowTime - startTime <= ABORT_HOLD_TICKS);
+    PI_FRAME_ABORT = 0;
+    startTime = OSGetTime();
     do {
-        now = OSGetTime();
-    } while (now - start <= 5);
+        nowTime = OSGetTime();
+    } while (nowTime - startTime <= ABORT_GAP_TICKS);
     if (((unsigned int)__GXIsGPFifoReady() & 0xFF) == 0)
         return;
     __GXCleanGPFifo();
     __GXInitRevisionBits();
-    data[0x5FC / 4] = 0;
-    if (data[0x5FC / 4] != 0) {
+    gxData[GX_DIRTY_STATE / 4] = 0;
+    if (gxData[GX_DIRTY_STATE / 4] != 0) {
         __GXSetDirtyState();
     }
-    *(volatile unsigned int *)0xCC008000 = 0;
-    *(volatile unsigned int *)0xCC008000 = 0;
-    *(volatile unsigned int *)0xCC008000 = 0;
-    *(volatile unsigned int *)0xCC008000 = 0;
-    *(volatile unsigned int *)0xCC008000 = 0;
-    *(volatile unsigned int *)0xCC008000 = 0;
-    *(volatile unsigned int *)0xCC008000 = 0;
-    *(volatile unsigned int *)0xCC008000 = 0;
+    WGPIPE_WORD = 0;
+    WGPIPE_WORD = 0;
+    WGPIPE_WORD = 0;
+    WGPIPE_WORD = 0;
+    WGPIPE_WORD = 0;
+    WGPIPE_WORD = 0;
+    WGPIPE_WORD = 0;
+    WGPIPE_WORD = 0;
     PPCSync();
+    #undef GX_FIFO_LIVE
+    #undef GX_DIRTY_STATE
+    #undef GP_READ_PTR_HI
+    #undef GP_READ_PTR_LO
+    #undef PI_FRAME_ABORT
+    #undef WGPIPE_WORD
+    #undef FIFO_IDLE_TICKS
+    #undef ABORT_HOLD_TICKS
+    #undef ABORT_GAP_TICKS
 }
 #pragma use_lmw_stmw reset
 
