@@ -2374,8 +2374,10 @@ extern "C" void *__dt__Q210JASDrumSet5TPercFv(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_802A96E8(s32, s32, s32, s32, s32, void *);
-extern "C" void fn_80141558(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fn_802A96E8(arg1, arg2, arg3, *(s32 *)((char *)arg0 + 0), *(s32 *)((char *)arg0 + 4), arg0);
+extern "C" void fn_80141558(void *params, s32 points, s32 count, s32 color) {
+    /* Flush a buffer of point positions to fn_802A96E8, passing the two camera
+     * handles stored at +0/+4 of the params block and the block itself. */
+    fn_802A96E8(points, count, color, *(s32 *)((char *)params + 0), *(s32 *)((char *)params + 4), params);
 }
 
 extern "C" u8 *fn_80142D3C(void *, s32);
