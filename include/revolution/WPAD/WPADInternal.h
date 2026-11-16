@@ -104,8 +104,8 @@ typedef struct WPADCommand {
 } WPADCommand;
 
 typedef struct WPADCommandQueue {
-    s8 front;            // at 0x1
-    s8 back;             // at 0x0
+    s8 front;            // at 0x0 head of the ring
+    s8 back;             // at 0x1 tail of the ring
     WPADCommand* buffer; // at 0x4
     u32 capacity;        // at 0x8
 } WPADCommandQueue;
