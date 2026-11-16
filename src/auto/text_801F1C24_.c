@@ -1461,6 +1461,7 @@ void *fn_801F3EF8(void *arg0, int arg1) {
 #undef vtable_801F3EF8
 #undef DeleteObject
 }
+/* RealName: SwapTwoDwordByteOrder_801F3F44 */
 void fn_801F3F44(int unused, volatile unsigned char *buffer) {
     /* Reverse the byte order of two 4-byte fields at offsets 0x2C and 0x30. */
     unsigned char temp;
