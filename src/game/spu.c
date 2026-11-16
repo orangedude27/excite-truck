@@ -261,8 +261,8 @@ void fn_802E51D0(int channel, int result) {
     ((void (*)(char *, int, ...))fn_802E30C8)(lbl_8034D384, channel);
 }
 #pragma scheduling on
-/* Callback for WPAD_SPEAKER_ON: once the remote's speaker is confirmed on,
- * queue WPAD_SPEAKER_PLAY; fn_802E51D0 handles the reply and marks it ready. */
+/* Completion callback for the WPAD_SPEAKER_ON command: if the remote accepted
+ * it, send WPAD_SPEAKER_PLAY; the reply fn_802E51D0 marks the stream ready. */
 void fn_802E5248(int chan, int result) {
     if (result == 0) fn_80060CC0(chan, WPAD_SPEAKER_PLAY, (void (*)())fn_802E51D0);
 }
