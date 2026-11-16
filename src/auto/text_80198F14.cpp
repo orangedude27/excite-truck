@@ -1120,10 +1120,12 @@ extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
 #pragma pop
 
 extern "C" s32 fn_8019AA34(void*, void*, void*, void*, s32, s32, f32, f32);
-void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
-    f32 scale = *(f32*)((u8*)arg1 + 0x24);
+void fn_8019B068(void* objA, void* objB, s32 param0, s32 param1) {
+    /* Sphere/sphere collision wrapper: run fn_8019AA34 on the two collision objects'
+       world positions (+0x34) and collision radii (+0x24). */
+    f32 radiusB = *(f32*)((u8*)objB + 0x24);
     typedef s32 (*Call9)(void*, void*, void*, void*, s32, s32, void*, f32, f32);
-    ((Call9)fn_8019AA34)(arg0, (u8*)arg0 + 0x34, arg1, (u8*)arg1 + 0x34, arg2, arg3, arg1, *(f32*)((u8*)arg0 + 0x24), scale);
+    ((Call9)fn_8019AA34)(objA, (u8*)objA + 0x34, objB, (u8*)objB + 0x34, param0, param1, objB, *(f32*)((u8*)objA + 0x24), radiusB);
 }
 
 #pragma push
@@ -3035,9 +3037,9 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             x = local.x;
             y = local.y;
             z = local.z;
-            nx = z * m[2] + (x * m[0] + y * m[1]);
-            ny = z * m[5] + (x * m[3] + y * m[4]);
-            nz = z * m[8] + (x * m[6] + y * m[7]);
+            nx = (y * m[1] + x * m[0]) + z * m[2];
+            ny = (y * m[4] + x * m[3]) + z * m[5];
+            nz = (y * m[7] + x * m[6]) + z * m[8];
             local.x = nx;
             local.y = ny;
             local.z = nz;
@@ -3066,9 +3068,8 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             box_done:
                 if (ok != 0) {
                     s32 e = *(s32 *)(obj + 0x1EC);
-                    f32 one;
                     f32 eps;
-                    one = lbl_805622E0;
+                    f32 one = lbl_805622E0;
                     eps = lbl_805622D8;
                     s32 k = 0;
                     do {
@@ -3081,9 +3082,9 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
                         x = q.x;
                         y = q.y;
                         z = q.z;
-                        nx = z * bm[2] + (x * bm[0] + y * bm[1]);
-                        ny = z * bm[5] + (x * bm[3] + y * bm[4]);
-                        nz = z * bm[8] + (x * bm[6] + y * bm[7]);
+                        nx = (y * bm[1] + x * bm[0]) + z * bm[2];
+                        ny = (y * bm[4] + x * bm[3]) + z * bm[5];
+                        nz = (y * bm[7] + x * bm[6]) + z * bm[8];
                         q.x = nx;
                         q.y = ny;
                         q.z = nz;
@@ -3211,13 +3212,10 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         if (ok != 0) {
             s32 e = *(s32 *)(obj + 0x1EC);
             s32 k = 0;
-            f32 zero;
-            f32 one;
             f32 push;
-            s32 maxCount;
-            one = lbl_805622E0;
-            maxCount = 0x40;
-            zero = lbl_805622D4;
+            f32 one = lbl_805622E0;
+            s32 maxCount = 0x40;
+            f32 zero = lbl_805622D4;
             push = lbl_805623BC;
             do {
                 s32 j;
