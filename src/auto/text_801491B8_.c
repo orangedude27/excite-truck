@@ -1092,11 +1092,13 @@ s32 fn_8014C88C(f32 arg0, f32 arg1) {
     return (f32)abs <= lbl_80558DC4[0];
 }
 
-f32 fn_8014C8B4(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    f32 t = (farg4 - farg0) / (farg1 - farg0);
+f32 fn_8014C8B4(f32 inMin, f32 inMax, f32 outMin, f32 outMax, f32 value) {
+    /* Normalize value from [inMin, inMax] into [0, 1], clamp to that range,
+     * then linearly interpolate between outMin and outMax. */
+    f32 t = (value - inMin) / (inMax - inMin);
     t = (lbl_8056164C < t) ? lbl_8056164C : t;
     t = (t > lbl_80561648) ? t : lbl_80561648;
-    return farg2 + t * (farg3 - farg2);
+    return outMin + t * (outMax - outMin);
 }
 
 float fn_8014C8F8(float farg0, float farg1, float farg2) {
