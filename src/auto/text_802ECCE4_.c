@@ -63,7 +63,7 @@ s32 fn_802ECD68(void *record, void *name, s32 mode) {
     fn_802ECCE4((char *)record, name, 0x40);
     handle = fn_802E11A4(record, mode);
     if (handle == 0) {
-        handle = fn_802E11A4(&lbl_8055D300, mode);
+        handle = fn_802E11A4((char *)&lbl_8055D308, mode);
     }
     ((s32 *)record)[16] = handle;
     return handle != 0;
