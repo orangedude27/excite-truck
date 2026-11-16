@@ -389,11 +389,9 @@ s32 fn_80019144(s32 arg0) {
     name = (const char *)arg0;
     index = 0;
     offset = 0;
-    while (index < *(volatile s32 *)((char *)&lbl_803580A4 + 4)) {
+    for (; index < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, index++) {
         if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
             goto found;
-        offset += 0x10;
-        index++;
     }
     index = -1;
 found:
@@ -415,6 +413,15 @@ found:
 #pragma pop
 __declspec(section ".data") extern void *lbl_803580A4;
 __declspec(section ".data") extern void *lbl_802FD2A0;
+static inline s32 fn_80019258_find_inl(const char *name) {
+    s32 i;
+    s32 offset;
+    for (i = 0, offset = 0; i < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
+        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
+            return i;
+    }
+    return -1;
+}
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
@@ -425,10 +432,19 @@ int fn_80019258(const char *name, int *out0, int *out1, int unused) {
     register const char *name_r;
     register char *p;
     name_r = name;
-    for (i = 0, offset = 0; i < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
-        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name_r) == 0)
-            goto found;
-    }
+    i = 0;
+    offset = 0;
+    goto check;
+loop:
+    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name_r) != 0)
+        goto advance;
+    goto found;
+advance:
+    offset += 0x10;
+    i++;
+check:
+    if (i < *(volatile s32 *)((char *)&lbl_803580A4 + 4))
+        goto loop;
     i = -1;
 found:
     p = (char *)lbl_803580A4 + i * 0x10 + 4;
