@@ -176,11 +176,12 @@ s32 fn_801318E0(s32 object, s32 deleteFlag) {
     return object;
 }
 
-s32 fn_80131920(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper for the registered global object: free it with MemFree when deleting (flag > 0), then return the object pointer. */
+s32 fn_80131920(s32 object, s32 deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern char lbl_8032B5E0[];
