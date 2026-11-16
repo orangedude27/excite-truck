@@ -220,9 +220,9 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
     h = y1 - y0;
     size = size > h ? size : h;
     if (size < lbl_8056269C) {
-        pool = (char *)lbl_8055E6F4;
         off = lbl_8055E6F0 * 0xC;
         lbl_8055E6F0++;
+        pool = (char *)lbl_8055E6F4;
         node = (s32 *)(pool + off);
         *(s32 *)(pool + off) = (s32)arg0;
         node[1] = arg1;
