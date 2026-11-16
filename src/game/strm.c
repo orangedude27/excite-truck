@@ -42,6 +42,7 @@ int fn_802E72C8(int arg0) {
 #pragma dont_inline reset
 
 void fn_802E7318(void) {
+    /* Begin streaming: reset the sector cursor and entry count, and set the active flag. */
     lbl_8055FFDC = 0;
     lbl_8055FFD8 = 0;
     lbl_8055FFE0 = 1;
@@ -63,8 +64,8 @@ int fn_802E7354(const char *name) {
     int fileIndex;
     int size;
     int blocks;
-    char *dst;
     int remaining;
+    char *dst;
     signed char c;
     entry = lbl_804FC978;
     index = 0;
