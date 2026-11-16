@@ -546,12 +546,13 @@ void fn_80018F7C(void) {
     lbl_8055D58C = 0;
 }
 
-void *fn_80019054(s32 arg0) {
-    void *result;
-    if (arg0 < 0) goto done;
-    if (arg0 >= *(s32 *)(lbl_80357E0C + 4)) goto done;
-    result = (void *)((u8 *)*(void **)lbl_80357E0C + arg0 * 0x14);
-    return result;
+void *fn_80019054(s32 index) {
+    /* Bounds-checked lookup of an unlockable-table entry by index (0x14-byte records); returns 0 when out of range. */
+    void *entry;
+    if (index < 0) goto done;
+    if (index >= *(s32 *)(lbl_80357E0C + 4)) goto done;
+    entry = (void *)((u8 *)*(void **)lbl_80357E0C + index * 0x14);
+    return entry;
 done:
     return 0;
 }
