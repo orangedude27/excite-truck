@@ -34,9 +34,17 @@ float fn_8023659C(void) {
 #undef msPerSecond
 }
 
+/* Timer auto-reset: rebase the accumulated time base to the current millisecond
+ * count and refresh timing state (called when float precision is running out). */
 void fn_802365D8(void) {
-    lbl_8055F094 = fn_802E2C20();
-    fn_80236674();
+#define GetCurrentTimeMs fn_802E2C20
+#define timeBase lbl_8055F094
+#define UpdateTimerState fn_80236674
+    timeBase = GetCurrentTimeMs();
+    UpdateTimerState();
+#undef GetCurrentTimeMs
+#undef timeBase
+#undef UpdateTimerState
 }
 
 void fn_80236600(void) {
