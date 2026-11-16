@@ -1349,18 +1349,19 @@ extern "C" void fn_80146824(void *arg0) {
 extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
-extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
+extern "C" void fn_80146BD4(u8 *dst, const s8 *src, s32 maxLen) {
+    /* Bounded string copy: copy bytes from src to dst until NUL, or NUL-terminate at maxLen on truncation. */
     goto copy;
     for (;;) {
-        if (--arg2 <= 0) {
-            arg0[-1] = 0;
+        if (--maxLen <= 0) {
+            dst[-1] = 0;
             return;
         }
     copy:
-        u8 c = (u8)*arg1;
-        arg1++;
-        *arg0 = c;
-        arg0++;
+        u8 c = (u8)*src;
+        src++;
+        *dst = c;
+        dst++;
         if ((s8)c == 0) return;
     }
 }
