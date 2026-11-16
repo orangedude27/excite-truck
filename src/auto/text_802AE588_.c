@@ -1378,11 +1378,21 @@ void fn_802B0218(void) {
 }
 #pragma dont_inline reset
 void fn_802B0254(void) {
-    if (fn_802AE7AC() != 0) {
-        fn_802DBE4C();
-        fn_802BDD58();
-        fn_802DBECC();
+#define isDebugDrawReady fn_802AE7AC
+#define beginDebugDraw fn_802DBE4C
+#define drawEffectDebug fn_802BDD58
+#define endDebugDraw fn_802DBECC
+    /* Debug overlay pass: when the debug-draw buffer is allocated, save GX state,
+     * update and draw the effect/particle debug entries, then restore GX state. */
+    if (isDebugDrawReady() != 0) {
+        beginDebugDraw();
+        drawEffectDebug();
+        endDebugDraw();
     }
+#undef endDebugDraw
+#undef drawEffectDebug
+#undef beginDebugDraw
+#undef isDebugDrawReady
 }
 #pragma dont_inline reset
 void fn_802B0288(void *matSet) {
