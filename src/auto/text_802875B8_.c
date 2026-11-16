@@ -53,7 +53,6 @@ typedef unsigned char u8;
 typedef unsigned char u8;
 typedef struct { void **vtable; } Fn80287A34Obj;
 typedef float f32;
-typedef struct { f32 x, y, z; } Fn80287Vector;
 extern void fn_802885C0(void);
 extern void fn_802885F0(void);
 extern void fn_802887EC(void);
