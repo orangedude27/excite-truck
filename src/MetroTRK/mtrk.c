@@ -16,6 +16,7 @@ void InitMetroTRK(void) {
 void EnableMetroTRKInterrupts(void) {
 }
 
+/* Atomically replace the MetroTRK callback handler and return the previous one. */
 u32 fn_8003010C(u32 value) {
     u32 old = lbl_8055D6E0;
     BOOL enabled = OSDisableInterrupts();
