@@ -407,6 +407,7 @@ s32 fn_8000D764(void) {
 }
 
 extern s32 fn_80019BA8(void);
+/* Return 1 when boot option bit 0x400 (lbl_8055D5A0 bit 10) is clear. */
 s32 fn_8000C7CC(void) {
     return fn_80019BA8() == 0;
 }
