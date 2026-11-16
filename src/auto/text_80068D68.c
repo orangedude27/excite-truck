@@ -15957,17 +15957,18 @@ void fn_80085384(u8 *arg0, u8 arg1) {
     btu_hcif_send_cmd(arg0);
 }
 
-void fn_800853B4(u8 *arg0, u16 arg1, u16 arg2) {
-    ((u16 *)(arg0 + 2))[0] = 7;
-    ((u16 *)(arg0 + 4))[0] = 0;
-    arg0[8] = 0x1C;
-    arg0[9] = 0xC;
-    arg0[10] = 4;
-    arg0[11] = arg1;
-    arg0[12] = arg1 >> 8;
-    arg0[13] = arg2;
-    arg0[14] = arg2 >> 8;
-    btu_hcif_send_cmd(arg0);
+/* RealName: btsnd_hcic_write_page_scan_activity */
+void fn_800853B4(u8 *cmdBuf, u16 interval, u16 window) {
+    ((u16 *)(cmdBuf + 2))[0] = 7;
+    ((u16 *)(cmdBuf + 4))[0] = 0;
+    cmdBuf[8] = 0x1C;
+    cmdBuf[9] = 0xC;
+    cmdBuf[10] = 4;
+    cmdBuf[11] = interval;
+    cmdBuf[12] = interval >> 8;
+    cmdBuf[13] = window;
+    cmdBuf[14] = window >> 8;
+    btu_hcif_send_cmd(cmdBuf);
 }
 
 /* Builds and sends an HCI command (opcode 0x0C1E) with two 16-bit parameters from the provided buffer. */
