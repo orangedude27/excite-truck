@@ -2600,8 +2600,10 @@ void GXSetDrawSyncCallback(void) {
     }
 }
 
+/* Push the cached gen-mode word (__GXData+0x22C) to the BP through the GX FIFO,
+ * then clear the last-write-was-XF halfword at __GXData+2. */
 void __GXSetGenMode(void) {
-    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned char *)0xCC008000 = GX_FIFO_CMD_LOAD_BP_REG;
     *(volatile unsigned int *)0xCC008000 = __GXData[0x22C / 4];
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
