@@ -2572,8 +2572,9 @@ extern "C" void fn_80141DAC(char *arg0) {
     }
 }
 #pragma pop
-extern "C" s32 fn_80141E90(f32 *arg0, f32 arg1) {
-    return arg1 - *arg0 >= lbl_805614AC;
+extern "C" s32 fn_80141E90(f32 *baseline, f32 value) {
+    /* Return whether value exceeds the stored baseline at baseline by at least 1.0 (lbl_805614AC). */
+    return value - *baseline >= lbl_805614AC;
 }
 
 /* ZoneMaster's ring buffer (ZoneMaster::rb, at ZoneMaster+0xC0) hands out its
@@ -4035,7 +4036,7 @@ extern "C" s32 fn_80144454(void) { return 0; }
 extern "C" s32 fn_8013D1F0(s32);
 #pragma dont_inline on
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
-    register s32 v = fn_8013D1F0(arg1) ^ 0xA;
+    s32 v = fn_8013D1F0(arg1) ^ 0xA;
     return ((v >> 1) - (v & 0xA)) < 0;
 }
 #pragma dont_inline off
