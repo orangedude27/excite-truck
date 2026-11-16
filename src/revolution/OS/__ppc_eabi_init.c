@@ -80,6 +80,7 @@ void __fini_cpp(void) {
 }
 
 void exit(void) {
+    /* Run global destructors, then terminate the process. */
     __fini_cpp();
     _ExitProcess();
 }
