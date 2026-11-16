@@ -59,8 +59,11 @@ extern int fn_8012C33C(void);
 extern int fn_802C6FC0(int, int, int);
 #pragma push
 #pragma dont_inline on
+/* Selects the modpool index-search radius passed as the base to fn_80202378:
+ * the single-racer radius when there is exactly one racer, else the default. */
 int fn_80202218(void) {
-    if (fn_801E85A4() == 1) {
+    int racerCount = fn_801E85A4();
+    if (racerCount == 1) {
         return lbl_8055ECD4;
     }
     return lbl_8055B410;
