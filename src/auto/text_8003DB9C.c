@@ -5965,6 +5965,7 @@ void GXSetViewportJitter(s32 nextField, f32 ox, f32 oy, f32 sx, f32 sy, f32 near
     __GXData[0x5FC / 4] |= GX_DIRTY_VIEWPORT;
 }
 
+/* Set the viewport rectangle and depth range in the GX state, then flag the viewport registers dirty. */
 void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 farZ) {
     ((f32 *)__GXData)[0x544 / 4] = xOrig;
     ((f32 *)__GXData)[0x548 / 4] = yOrig;
@@ -5972,7 +5973,7 @@ void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 f
     ((f32 *)__GXData)[0x550 / 4] = height;
     ((f32 *)__GXData)[0x554 / 4] = nearZ;
     ((f32 *)__GXData)[0x558 / 4] = farZ;
-    __GXData[0x5FC / 4] |= 0x10000000;
+    __GXData[0x5FC / 4] |= GX_DIRTY_VIEWPORT;
 }
 
 /* Set the scissor rectangle (left, top, width, height) in screen coordinates, writing the packed scissor registers to the FIFO and clearing the dirty state. */
