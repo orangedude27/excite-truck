@@ -1445,12 +1445,17 @@ void fn_80248C0C(void *obj) {
 }
 
 int fn_80248C94(void *arg0, int arg1) {
-    if (*(unsigned char *)((char *)arg0 + 0x1C) == 0 && arg1 == 13) {
+    /* Handle confirm input: if not ready and input is 13, trigger close. */
+    #define objReady  (*(unsigned char *)((char *)arg0 + 0x1C))
+
+    if (objReady == 0 && arg1 == 13) {
         fn_80221F94(arg0, 0);
         return 1;
     } else {
         return 0;
     }
+
+    #undef objReady
 }
 
 extern float lbl_805638D0, lbl_805638D4, lbl_805638D8;
