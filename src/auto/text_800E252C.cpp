@@ -296,8 +296,8 @@ struct BasicSoundVt {
     virtual int HasResource();            /* 0x50 still holding the track it plays */
     virtual void ReleaseResource();       /* 0x54 hand that track back */
     virtual void InitParam();             /* 0x58 back to the state a new sound has */
-    virtual SoundPlayerVt *GetPlayer();   /* 0x5C the player inside the sound */
-    virtual SoundPlayerVt *GetPlayer2();  /* 0x60 the same player, other accessor */
+    virtual SoundPlayerVt *GetPlayer();      /* 0x5C the player inside the sound */
+    virtual SoundPlayerVt *GetSoundPlayer(); /* 0x60 the same player, second accessor */
 };
 //
 // The hook stored at BasicSound+0x20, told when its sound shuts down.
