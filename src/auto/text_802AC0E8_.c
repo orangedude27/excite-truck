@@ -134,6 +134,7 @@ extern "C" float fn_802AC344(void *arg0, void *arg1, float *arg2) {
 extern float fn_802AC344(void *, void *, float *);
 float fn_802AC454(void *arg0, void *arg1, float *arg2) { return fn_802AC344(arg0, arg1, arg2); }
 
+/* Initialize the animation state globals (count/index/timestamps and playback flag). */
 void fn_802AC458(void) {
     lbl_8055F93C = 0;
     lbl_8055F944 = fn_802E2C20();
