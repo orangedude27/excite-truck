@@ -563,9 +563,12 @@ void fn_802C8E00(void) {
 }
 
 extern void fn_801E4FF4(void);
+/* End the pending mesh pass -- fn_801E4FF4 flushes the mesh vertex/index buffers
+ * and drops the mesh mode to idle -- and put the draw lists in render mode 2,
+ * the GX state that mesh pass leaves behind. */
 void fn_802C8E48(void) {
     fn_801E4FF4();
-    lbl_8055FC70 = 2;
+    sRenderMode = 2;
 }
 
 #pragma scheduling on
