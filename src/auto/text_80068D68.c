@@ -25048,11 +25048,13 @@ BOOLEAN SDP_ServiceSearchAttributeRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p
     return TRUE;
 }
 
-void *fn_80095C64(void **head, u32 attr) {
-    void *p = *head;
-    while (p != NULL) {
-        if (*(u16 *)((u8 *)p + 4) == attr) return p;
-        p = *(void **)p;
+void *fn_80095C64(void **p_rec, u32 attr) {
+    /* SDP_FindAttributeInRec: walk a discovered record's attribute list and
+     * return the attribute whose ID matches attr, or NULL if none does. */
+    tSDP_DISC_ATTR *p_attr = (tSDP_DISC_ATTR *)*p_rec;
+    while (p_attr != NULL) {
+        if (p_attr->attr_id == attr) return p_attr;
+        p_attr = p_attr->p_next_attr;
     }
     return NULL;
 }
