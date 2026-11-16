@@ -1052,6 +1052,8 @@ BOOL OSSetThreadPriority(OSThread* thread, s32 prio) {
 static void SleepAlarmHandler(OSAlarm* alarm, OSContext* ctx) {
 #pragma unused(ctx)
 
+    /* Alarm callback for OSSleepTicks: resume the suspended thread whose pointer
+       the sleeper stored as this alarm's user data. */
     OSResumeThread((OSThread*)OSGetAlarmUserData(alarm));
 }
 
