@@ -405,14 +405,21 @@ s32 fn_80134CD4(s32 arg0, s32 arg1) {
     return arg1;
 }
 #pragma dont_inline reset
-  f32 fn_80134D20(void) {
-      extern f32 lbl_8055E0A0;
-      extern f32 lbl_8055E0A4;
-      if (fn_801769A8() & 0x800) {
-          return lbl_8055E0A4;
-      }
-      return lbl_8055E0A0;
-  }
+/* Pick the AI-driver base amount consumed by fn_80134E34: the alternate value
+ * when physics flag 0x800 is set, otherwise the normal value. Both floats are
+ * computed in fn_8013477C when the driver is initialized. */
+f32 fn_80134D20(void) {
+    extern f32 lbl_8055E0A0;
+    extern f32 lbl_8055E0A4;
+#define AI_BASE_NORMAL lbl_8055E0A0
+#define AI_BASE_ALT    lbl_8055E0A4
+    if (fn_801769A8() & 0x800) {
+        return AI_BASE_ALT;
+    }
+    return AI_BASE_NORMAL;
+#undef AI_BASE_ALT
+#undef AI_BASE_NORMAL
+}
   
 s32 fn_80134D54(void) {
     fn_801769A8();
