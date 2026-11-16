@@ -6975,9 +6975,11 @@ extern "C" s32 fn_800AF574(void *arg0) {
 }
 #pragma dont_inline reset
 
-extern "C" s32 fn_800AF584(void *arg0) {
-    s32 idx = *(s32 *)((char *)arg0 + 0x1C);
-    return *(s32 *)((char *)lbl_802EEF40 + idx * 0x14 + 8);
+extern "C" s32 fn_800AF584(void *volume) {
+    /* Return the FAT end-of-chain marker for this volume's FAT type: the s32 at +0x1C
+     * selects FAT12/16/32, and lbl_802EEF40[type*0x14 + 8] is VF_FAT_END_OF_CHAIN(type). */
+    s32 fatType = *(s32 *)((char *)volume + 0x1C);
+    return *(s32 *)((char *)lbl_802EEF40 + fatType * 0x14 + 8);
 }
 
 extern "C" s32 fn_800AF5A0(void *stream, s32 sampleIndex, s32 *outSample) {
