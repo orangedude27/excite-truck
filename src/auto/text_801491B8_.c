@@ -1750,9 +1750,10 @@ extern "C" void *fn_8014E3CC(void *object, s32 shouldFree) {
 }
 #pragma cplusplus off
 extern void *memset(void *, s32, s32);
+#pragma cplusplus off
 void *fn_8014E4BC(void *arg0) {
     u8 *base = (u8*)arg0;
-    u8 *p;
+    register u8 *p;
     u8 *end;
     *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
     *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
@@ -1771,8 +1772,6 @@ void *fn_8014E4BC(void *arg0) {
     memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
     return arg0;
 }
-
-#pragma cplusplus off
 extern s32 fn_801DF074(s32, s32);
 #pragma paired_single off
 void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
@@ -2171,13 +2170,10 @@ extern char lbl_8032DB40[];
 #pragma optimization_level 3
 #pragma opt_pointer_aliasing on
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 value, next, index;
-    s32 *data;
-    index = ((s32 *)arg0)[1];
-    value = *arg1;
-    data = *(s32 **)arg0;
-    next = index + 1;
-    ((s32 *)arg0)[1] = next;
+    s32 value = *arg1;
+    s32 index = ((s32 *)arg0)[1];
+    s32 *data = *(s32 **)arg0;
+    ((s32 *)arg0)[1] = index + 1;
     data[index] = value;
     return &data[index];
 }
@@ -2225,11 +2221,12 @@ extern "C" void *fn_8015011C(void *arg0, ...) {
 #pragma cplusplus off
 
 #pragma pop
-s32 fn_80150AD8(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80150AD8(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 s32 fn_80150B18(s32 arg0, s32 arg1) {
