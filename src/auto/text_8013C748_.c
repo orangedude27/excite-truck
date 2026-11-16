@@ -129,10 +129,12 @@ report_error:
 #pragma cplusplus off
 
 #pragma dont_inline on
+/* Tear down the car-class search manager: clear cached objects in the class
+ * registry, release the loaded manager and clear the global. */
 void fn_8013C8B8(void) {
-    fn_8013C748();
-    fn_80131818(lbl_8055E188);
-    lbl_8055E188 = 0;
+    ClearClassCache();
+    ReleaseLoaded(CarClassManager);
+    CarClassManager = 0;
 }
 #pragma dont_inline off
 void *fn_8013C770();
