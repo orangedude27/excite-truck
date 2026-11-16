@@ -307,33 +307,22 @@ void fn_802BBE34(void) {
     int inner;
     unsigned int sum;
     int count;
-    int value;
-    outer = 0;
-    do {
-        inner = 0;
-        do {
-            ptr = lbl_804C00B0;
+    for (outer = 0; outer < 0x200; outer++) {
+        for (inner = 0; inner < 0x200; inner++) {
             sum = 0;
-            count = 0;
-            do {
-                value = *ptr;
-                if (value != 0) {
+            for (count = 0, ptr = lbl_804C00B0; count < 6; count++, ptr++) {
+                if (*ptr != 0) {
                     sum += ((unsigned int)((int (*)(void *, int, int))fn_802D972C)(
-                        (void *)value, outer, inner) >> 8) & 0xFF;
+                        (void *)*ptr, outer, inner) >> 8) & 0xFF;
                 }
-                count += 1;
-                ptr += 1;
-            } while (count < 6);
+            }
             if (sum != 0xFF) {
                 fn_802E30C8(lbl_8034AAF0, outer, inner, sum);
             }
-            inner += 1;
-        } while (inner < 0x200);
-        outer += 1;
-    } while (outer < 0x200);
+        }
+    }
 }
 #pragma pop
-#pragma scheduling on
 extern int fn_80128690(void);
 extern void fn_80128684(void);
 extern void fn_80128678(void);
