@@ -906,9 +906,9 @@ s32 fn_8028BC1C(s32 arg0, s32 arg1) {
 
 extern f32 lbl_8056432C;
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_8028BC88(s32 arg0) {
-    f32 zero, one;
+    register f32 zero, one;
     one = lbl_8056432C;
     *(s32 *)(arg0 + 4) = 0;
     zero = lbl_8056434C;
