@@ -553,10 +553,15 @@ extern void *lbl_8055E6D8;
 extern void fn_801B49C8(void *);
 extern int __dt__15shdStateMachineFv_801B496C();
 void fn_801B531C(void) {
-    if (lbl_8055E6D8 != 0) {
-        ((int (*)(void *, int))__dt__15shdStateMachineFv_801B496C)(lbl_8055E6D8, 1);
-        lbl_8055E6D8 = 0;
+    /* Tear down the replay state-machine singleton if it was created, then clear its handle. */
+    #define gReplayQueue  lbl_8055E6D8                        /* replay queue (shdStateMachine) singleton */
+    #define DestroyQueue  __dt__15shdStateMachineFv_801B496C   /* shdStateMachine::~shdStateMachine */
+    if (gReplayQueue != 0) {
+        ((int (*)(void *, int))DestroyQueue)(gReplayQueue, 1);
+        gReplayQueue = 0;
     }
+    #undef DestroyQueue
+    #undef gReplayQueue
 }
 
 void fn_801B5354(void) {
