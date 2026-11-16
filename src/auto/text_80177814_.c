@@ -576,15 +576,18 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long this_, long deleteF
 
 extern char lbl_80331950[];
 #pragma dont_inline on
-char *fn_80178374(long arg0) {
-    char *var_r4 = lbl_80331950;
-    int temp_r0;
+/* Look up a provider by its four-character id in the table at lbl_80331950,
+   an array of 0xC-byte records (id, reserved, create callback) terminated by a
+   zero id.  Returns the matching record, or NULL when none matches. */
+char *fn_80178374(long id) {
+    char *entry = lbl_80331950;
+    int entryId;
 
-    while ((temp_r0 = *(int *)var_r4) != 0) {
-        if ((unsigned long)temp_r0 == (unsigned long)arg0) {
-            return var_r4;
+    while ((entryId = *(int *)entry) != 0) {
+        if ((unsigned long)entryId == (unsigned long)id) {
+            return entry;
         }
-        var_r4 += 0xC;
+        entry += 0xC;
     }
     return NULL;
 }
