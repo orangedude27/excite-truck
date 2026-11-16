@@ -23972,9 +23972,10 @@ void RFCOMM_ParNegReq(void *mcb, s32 dlci, s32 mtu) {
     rfc_port_timer_start(p_port, 0x3C);
 }
 
-void fn_800936BC(void *p, u16 a1, u16 a2, u16 a3, u16 a4, u16 a5, u16 a6) {
-    if (*((u8 *)p + 0x6C) == 5)
-        rfc_send_pn(p, a1, 0, a2, a3, a4);
+// RFCOMM Port Parameter Negotiation indication: send a PN response when the control block is in state 5.
+void fn_800936BC(void *p_mcb, u16 dlci, u16 mtu, u16 cl, u16 k, u16 a5, u16 a6) {
+    if (*((u8 *)p_mcb + 0x6C) == 5)
+        rfc_send_pn(p_mcb, dlci, 0, mtu, cl, k);
 }
 
 void RFCOMM_PortNegReq(void *mcb, u8 dlci, void *pars) {
