@@ -3761,142 +3761,149 @@ s32 fn_8005FBCC(u8 devHandle) {
     }
     return WPAD_CHAN_INVALID;
 }
+/* HID connect/disconnect callback: on connect, claim a channel for the Wii
+ * Remote, reset its control block and queue the extension/firmware probe
+ * read; on disconnect, drain the channel's command queue (answering every
+ * callback with WPAD_ERR_NO_CONTROLLER), tear the channel down and release it. */
 void fn_8005FCCC(u8 devHandle, u8 open) {
     extern void fn_8005E8E0(s32 chan);
     extern const char lbl_803120E0[];
     extern s8 lbl_80390500[];
     extern void fn_8005F3E8(s32, s32);
     extern s32 fn_8005B00C(void);
-    const char* messages = lbl_803120E0;
-    BOOL remain;
+    /* WPAD debug string block; the branch messages are at fixed offsets. */
+    const char* msgBase = lbl_803120E0;
+    BOOL hasCommand;
     s32 chan;
     WPADCommand command;
     WPADCommand queuedCommand ALIGN(8);
     WPADCommand readCommand ALIGN(8);
-    WPADCB* p;
+    WPADCB* cb;
     s8 indexByte;
-    s32 windex;
-    s32 wlast;
-    s32 wmask;
+    s32 index;
+    s32 lastIndex;
+    s32 wrapMask;
 
     if (open) {
-        DBPrintf_80068D68(messages + 0xCC);
+        DBPrintf_80068D68(msgBase + 0xCC);
         chan = fn_8005FBCC(devHandle);
-        p = lbl_8038F4F0[chan];
+        cb = lbl_8038F4F0[chan];
         lbl_80390500[devHandle] = chan;
         fn_8005E8E0(chan);
-        ((u8*)p)[0x803] = devHandle;
-        ((u8*)p)[0x801] = 0;
-        *(u32*)((u8*)p + 0x7F8) = 0;
-        *(u32*)((u8*)p + 0x818) = TRUE;
-        *(s32*)((u8*)p + 0x7FC) = 0;
-        ((u8*)p)[0x8C3] = 100;
-        ((u8*)p)[0x8C6] = FALSE;
+        cb->extDevHandle = devHandle;
+        cb->UNK_0x801 = 0;
+        cb->readFormat = WPAD_FMT_CORE_BTN;
+        cb->connected = TRUE;
+        cb->readStatus = WPAD_ERR_OK;
+        cb->devHandle = 100;
+        /* 0x8C6 is an unnamed byte inside the control block. */
+        ((u8*)cb)[0x8C6] = FALSE;
         {
-            u32 addr = 0x1770;
-            u16 len = 1;
-            BOOL enabled;
+            u32 readAddress = WM_ADDR_MEM_1770;
+            u16 readLength = 1;
+            BOOL intrEnabled;
             readCommand.reportID = 0x17;
             readCommand.dataLength = 6;
             readCommand.cmdCB = fn_8005F3E8;
-            memcpy(readCommand.dataBuf, &addr, 4);
-            memcpy(readCommand.dataBuf + 4, &len, 2);
-            readCommand.dstBuf = (u8*)p + 0x874;
-            readCommand.readLength = len;
-            readCommand.readAddress = addr;
+            memcpy(readCommand.dataBuf, &readAddress, 4);
+            memcpy(readCommand.dataBuf + 4, &readLength, 2);
+            /* Where the identifier byte read back from the extension lands. */
+            readCommand.dstBuf = (u8*)cb + 0x874;
+            readCommand.readLength = readLength;
+            readCommand.readAddress = readAddress;
             *(f64*)((u8*)&queuedCommand + 0) = *(f64*)((u8*)&readCommand + 0);
             *(f64*)((u8*)&queuedCommand + 8) = *(f64*)((u8*)&readCommand + 8);
             *(f64*)((u8*)&queuedCommand + 16) = *(f64*)((u8*)&readCommand + 16);
             *(f64*)((u8*)&queuedCommand + 24) = *(f64*)((u8*)&readCommand + 24);
             *(f64*)((u8*)&queuedCommand + 32) = *(f64*)((u8*)&readCommand + 32);
             *(f64*)((u8*)&queuedCommand + 40) = *(f64*)((u8*)&readCommand + 40);
-            enabled = OSDisableInterrupts();
+            intrEnabled = OSDisableInterrupts();
             {
             s8 count;
-            BOOL inner = OSDisableInterrupts();
-            count = p->stdCmdQueue.back - p->stdCmdQueue.front;
-            if (count < 0) count += p->stdCmdQueue.capacity;
-            OSRestoreInterrupts(inner);
-            if (p->stdCmdQueue.capacity - 1 == count) {
-                OSRestoreInterrupts(enabled);
+            BOOL savedIntr = OSDisableInterrupts();
+            count = cb->stdCmdQueue.back - cb->stdCmdQueue.front;
+            if (count < 0) count += cb->stdCmdQueue.capacity;
+            OSRestoreInterrupts(savedIntr);
+            if (cb->stdCmdQueue.capacity - 1 == count) {
+                OSRestoreInterrupts(intrEnabled);
             } else {
-                memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
-                memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], &queuedCommand, sizeof(WPADCommand));
-                indexByte = p->stdCmdQueue.back;
-                windex = indexByte;
-                wlast = p->stdCmdQueue.capacity - 1;
-                wmask = ~(((s32)windex - wlast) | (wlast - (s32)windex)) >> 31;
-                p->stdCmdQueue.back = (windex + 1) & ~wmask;
-                OSRestoreInterrupts(enabled);
+                memset(&cb->stdCmdQueue.buffer[cb->stdCmdQueue.back], 0, sizeof(WPADCommand));
+                memcpy(&cb->stdCmdQueue.buffer[cb->stdCmdQueue.back], &queuedCommand, sizeof(WPADCommand));
+                indexByte = cb->stdCmdQueue.back;
+                index = indexByte;
+                lastIndex = cb->stdCmdQueue.capacity - 1;
+                wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
+                cb->stdCmdQueue.back = (index + 1) & ~wrapMask;
+                OSRestoreInterrupts(intrEnabled);
             }
             }
         }
         fn_8005B00C();
     } else {
-        DBPrintf_80068D68(messages + 0xE4);
+        DBPrintf_80068D68(msgBase + 0xE4);
         chan = lbl_80390500[devHandle];
-        lbl_80390500[devHandle] = -1;
-        if (chan != -1) {
-            p = lbl_8038F4F0[chan];
-            *(s32*)((u8*)p + 0x7FC) = -1;
-            if (*(WPADCallback*)((u8*)p + 0x7DC) != NULL) {
-                (*(WPADCallback*)((u8*)p + 0x7DC))(chan, -1);
+        lbl_80390500[devHandle] = WUD_DEV_HANDLE_INVALID;
+        if (chan != WUD_DEV_HANDLE_INVALID) {
+            cb = lbl_8038F4F0[chan];
+            cb->readStatus = WPAD_ERR_NO_CONTROLLER;
+            if (cb->readCB != NULL) {
+                cb->readCB(chan, WPAD_ERR_NO_CONTROLLER);
             } else if (*(WPADCallback*)(lbl_80392900 + chan * 0x14 + 0x10) != NULL) {
-                (*(WPADCallback*)(lbl_80392900 + chan * 0x14 + 0x10))(chan, -1);
+                (*(WPADCallback*)(lbl_80392900 + chan * 0x14 + 0x10))(chan, WPAD_ERR_NO_CONTROLLER);
             }
             do {
                 {
                     s8 count;
-                    BOOL enabled = OSDisableInterrupts();
-                    BOOL inner = OSDisableInterrupts();
-                    count = p->stdCmdQueue.back - p->stdCmdQueue.front;
-                    if (count < 0) count += p->stdCmdQueue.capacity;
-                    OSRestoreInterrupts(inner);
+                    BOOL intrEnabled = OSDisableInterrupts();
+                    BOOL savedIntr = OSDisableInterrupts();
+                    count = cb->stdCmdQueue.back - cb->stdCmdQueue.front;
+                    if (count < 0) count += cb->stdCmdQueue.capacity;
+                    OSRestoreInterrupts(savedIntr);
                     if (count == 0) {
-                        OSRestoreInterrupts(enabled);
-                        remain = FALSE;
+                        OSRestoreInterrupts(intrEnabled);
+                        hasCommand = FALSE;
                     } else {
-                        memcpy(&command, &p->stdCmdQueue.buffer[p->stdCmdQueue.front], sizeof(WPADCommand));
-                        OSRestoreInterrupts(enabled);
-                        remain = TRUE;
+                        memcpy(&command, &cb->stdCmdQueue.buffer[cb->stdCmdQueue.front], sizeof(WPADCommand));
+                        OSRestoreInterrupts(intrEnabled);
+                        hasCommand = TRUE;
                     }
                 }
-                if (remain) {
+                if (hasCommand) {
                     if (command.cmdCB != NULL) {
-                        command.cmdCB(chan, -1);
+                        command.cmdCB(chan, WPAD_ERR_NO_CONTROLLER);
                     }
                     {
                         s8 count;
-                        BOOL enabled = OSDisableInterrupts();
-                    BOOL inner = OSDisableInterrupts();
-                    count = p->stdCmdQueue.back - p->stdCmdQueue.front;
-                    if (count < 0) count += p->stdCmdQueue.capacity;
-                    OSRestoreInterrupts(inner);
+                        BOOL intrEnabled = OSDisableInterrupts();
+                    BOOL savedIntr = OSDisableInterrupts();
+                    count = cb->stdCmdQueue.back - cb->stdCmdQueue.front;
+                    if (count < 0) count += cb->stdCmdQueue.capacity;
+                    OSRestoreInterrupts(savedIntr);
                     if (count == 0) {
-                            OSRestoreInterrupts(enabled);
+                            OSRestoreInterrupts(intrEnabled);
                         } else {
-                            memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.front], 0, sizeof(WPADCommand));
-                            indexByte = p->stdCmdQueue.front;
-                            windex = indexByte;
-                            wlast = p->stdCmdQueue.capacity - 1;
-                            wmask = ~(((s32)windex - wlast) | (wlast - (s32)windex)) >> 31;
-                            p->stdCmdQueue.front = (windex + 1) & ~wmask;
-                            OSRestoreInterrupts(enabled);
+                            memset(&cb->stdCmdQueue.buffer[cb->stdCmdQueue.front], 0, sizeof(WPADCommand));
+                            indexByte = cb->stdCmdQueue.front;
+                            index = indexByte;
+                            lastIndex = cb->stdCmdQueue.capacity - 1;
+                            wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
+                            cb->stdCmdQueue.front = (index + 1) & ~wrapMask;
+                            OSRestoreInterrupts(intrEnabled);
                         }
                     }
                 }
-            } while (remain);
-            DBPrintf_80068D68(messages + 0x100);
-            if (*(void**)((u8*)p + 0x7EC) != NULL) {
-                WPADSetAutoSamplingBuf(chan, *(void**)((u8*)p + 0x7EC), *(u32*)((u8*)p + 0x7F4));
+            } while (hasCommand);
+            DBPrintf_80068D68(msgBase + 0x100);
+            if (cb->autoSamplingBuf != NULL) {
+                WPADSetAutoSamplingBuf(chan, cb->autoSamplingBuf, cb->autoSamplingSize);
             }
             fn_8005E8E0(chan);
             lbl_8055DC08[chan] = FALSE;
-            if (*(WPADCallback*)((u8*)p + 0x7E4) != NULL) {
-                (*(WPADCallback*)((u8*)p + 0x7E4))(chan, -1);
+            if (*(WPADCallback*)((u8*)cb + 0x7E4) != NULL) {
+                (*(WPADCallback*)((u8*)cb + 0x7E4))(chan, WPAD_ERR_NO_CONTROLLER);
             }
         } else {
-            DBPrintf_80068D68(messages + 0x118);
+            DBPrintf_80068D68(msgBase + 0x118);
         }
     }
 }
