@@ -6972,11 +6972,12 @@ extern "C" s32 fn_80224A38(void *widget, s32 action) {
     }
 }
 
-extern "C" s32 fn_80224B0C(void *arg0, s32 arg1) {
-    void *p = *(void **)((u8 *)arg0 + 0x258);
-    if (p != 0 && *(s32 *)((u8 *)arg0 + 0x254) != *(s32 *)p)
+extern "C" s32 fn_80224B0C(void *widget, s32 action) {
+    /* Return whether this action is handled, but only while the tracked object id still matches. */
+    void *tracking = *(void **)((u8 *)widget + 0x258);
+    if (tracking != 0 && *(s32 *)((u8 *)widget + 0x254) != *(s32 *)tracking)
         return 0;
-    return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
+    return action == 0xD || (u32)action == 0x126 || (u32)action == 0x128;
 }
 
 extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
