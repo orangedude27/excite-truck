@@ -27132,7 +27132,7 @@ s32 IUSB_OpenLib(void) {
     interruptState = OSDisableInterrupts();
     heap = lbl_805590A0;
     if (heap != -1) {
-        USB_LOG(base + 0xC);
+        USB_LOG(base + 0xC, heap);
         goto done;
     }
 
