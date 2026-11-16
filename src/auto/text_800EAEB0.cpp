@@ -1949,8 +1949,10 @@ extern f64 lbl_80561028;
 extern "C" void fn_800F2330(s32, s32, s32, s32, s32);
 #pragma push
 #pragma small_data off
-extern "C" void fn_800EE060(void* this_, s32 a, s32 b, s32 c, s32 d, s32 e) {
-    fn_800F2330(a, b, c, d, e);
+extern "C" void fn_800EE060(void* this_, s32 player, s32 key, s32 velocity, s32 duration, s32 reuse) {
+    /* Note-on callback thunk: forward to the note-on helper, discarding the
+     * unused this pointer. */
+    fn_800F2330(player, key, velocity, duration, reuse);
 }
 
 #pragma push
