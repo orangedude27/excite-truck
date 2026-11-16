@@ -733,11 +733,11 @@ void fn_80135218(void) {
 }
 
 
-s32 fn_8013521C(void *arg0) {
-    u8 temp_r3;
-
-    temp_r3 = *(u8 *)((u8 *)arg0 + 4);
-    return ((s32)(-(s32)temp_r3 | temp_r3) >> 0x1F) & 0x100;
+s32 fn_8013521C(void *object) {
+    u8 flag;
+    /* Branchless test: returns 0x100 when the byte flag at +0x4 of object is nonzero, else 0. */
+    flag = *(u8 *)((u8 *)object + 4);
+    return ((s32)(-(s32)flag | flag) >> 0x1F) & 0x100;
 }
 
 s32 fn_80135234(void) {
