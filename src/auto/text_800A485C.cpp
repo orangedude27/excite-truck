@@ -9063,8 +9063,8 @@ extern "C" s32 VFiPFPATH_cmpName(void *name, s32 pathEntry, s32 exactMatch) {
     fn_800A4AAC((char *)scan, (char *)name);
     if ((((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U) &&
         ((u32)fn_800A4D44((void *)(u32)pathEntry) == 2U) &&
-        fn_800A4AD0(scan, &lbl_80559210) != 0 &&
-        fn_800A4AD0(scan, &lbl_80559214) != 0 &&
+        (fn_800A4AD0(scan, &lbl_80559210)) != 0 &&
+        (fn_800A4AD0(scan, &lbl_80559214)) != 0 &&
         ((s32 (*)(void *, u32, u32))fn_800B4D5C)((void *)(u32)pathEntry, 3, 1) == 0 &&
         exactMatch == 0) {
         return 1;
