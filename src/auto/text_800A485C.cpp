@@ -12045,43 +12045,64 @@ extern "C" s32 fn_800B8BE8(s32 context) {
 extern "C" s32 fn_800B808C(s32, void *, s32);
 extern "C" unsigned char lbl_80405D58[];
 #pragma dont_inline on
-extern "C" s32 fn_800B8C74(s32 arg0) {
+extern "C" s32 fn_800B8C74(s32 fileHandle) {
+    /* NAND prfile2: acquire a file-state slot for fileHandle.  Reject a slot
+     * already being opened, then prefer an existing unopened slot for the
+     * handle, else a free one; open a new slot and mark it busy on success.
+     * Errors: -20 bad handle, -21 slot busy, -22 no free slot.
+     * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.) */
+    #define NandSlots     lbl_80405D58
+    #define NandSemaphore lbl_8055DD30
+    #define SLOT_STRIDE   0xF0
+    #define SLOT_COUNT    0x17
+    #define SLOT_KIND     0x04
+    #define SLOT_FLAGS    0xE4
+    #define SLOT_BUSY     2
+
     u8 *found;
     u16 i;
     u8 *cur;
     s32 result;
     u8 *entry;
-    fn_800B8004(lbl_8055DD30);
-    if (arg0 == 0) {
-        fn_800B8048(lbl_8055DD30);
+    VFSemaphoreWait(NandSemaphore);
+    if (fileHandle == 0) {
+        VFSemaphoreSignal(NandSemaphore);
         return -20;
     }
-    for (i = 0; i < 0x17; i++) {
-        cur = lbl_80405D58 + i * 0xF0;
-        if (*(u32 *)cur == (u32)arg0) { entry = cur; break; }
+    for (i = 0; i < SLOT_COUNT; i++) {
+        cur = NandSlots + i * SLOT_STRIDE;
+        if (*(u32 *)cur == (u32)fileHandle) { entry = cur; break; }
     }
-    if (((i == 0x17) ? -22 : 0) == 0) {
-        if (*(s32 *)(entry + 0xE4) & 2) {
-            fn_800B8048(lbl_8055DD30);
+    if (((i == SLOT_COUNT) ? -22 : 0) == 0) {
+        if (*(s32 *)(entry + SLOT_FLAGS) & SLOT_BUSY) {
+            VFSemaphoreSignal(NandSemaphore);
             return -21;
         }
     }
-    for (i = 0; i < 0x17; i++) {
-        cur = lbl_80405D58 + i * 0xF0;
-        if (*(u32 *)cur == (u32)arg0 && !(*(s32 *)(cur + 0xE4) & 2)) { found = cur; goto got; }
+    for (i = 0; i < SLOT_COUNT; i++) {
+        cur = NandSlots + i * SLOT_STRIDE;
+        if (*(u32 *)cur == (u32)fileHandle && !(*(s32 *)(cur + SLOT_FLAGS) & SLOT_BUSY)) { found = cur; goto got; }
     }
-    for (i = 0; i < 0x17; i++) {
-        cur = lbl_80405D58 + i * 0xF0;
-        if (*(s32 *)cur == 0 && *(s8 *)(cur + 4) != 0) { found = cur; goto got; }
+    for (i = 0; i < SLOT_COUNT; i++) {
+        cur = NandSlots + i * SLOT_STRIDE;
+        if (*(s32 *)cur == 0 && *(s8 *)(cur + SLOT_KIND) != 0) { found = cur; goto got; }
     }
     found = 0;
 got:
-    if (found == 0) { fn_800B8048(lbl_8055DD30); return -22; }
+    if (found == 0) { VFSemaphoreSignal(NandSemaphore); return -22; }
     if (*(s32 *)found != 0) result = 0;
-    else result = fn_800B808C(arg0, found, 0);
-    if (result == 0) *(s32 *)(found + 0xE4) |= 2;
-    fn_800B8048(lbl_8055DD30);
+    else result = fn_800B808C(fileHandle, found, 0);
+    if (result == 0) *(s32 *)(found + SLOT_FLAGS) |= SLOT_BUSY;
+    VFSemaphoreSignal(NandSemaphore);
     return result;
+
+    #undef NandSlots
+    #undef NandSemaphore
+    #undef SLOT_STRIDE
+    #undef SLOT_COUNT
+    #undef SLOT_KIND
+    #undef SLOT_FLAGS
+    #undef SLOT_BUSY
 }
 #pragma dont_inline reset
 s32 fn_800B8E28(s32 arg0) {
