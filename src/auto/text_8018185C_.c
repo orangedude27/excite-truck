@@ -433,6 +433,8 @@ void fn_80181F30(void) {
     fn_8018C50C();
 }
 #pragma pop
+/* Global-teardown step: run the (currently empty) reset hook, clear the
+ * DSP-init flag, and free the physics allocation pools. */
 void fn_80181FC4(void) {
     fn_8018C510();
     __AXDSPInitCallback_801AFC38();
