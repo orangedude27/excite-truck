@@ -93,6 +93,8 @@ s32 fn_802ECDF4(void) {
     }
     return 0;
 }
+
+#pragma dont_inline on
 s32 fn_802ECE48(char *movieName) {
     /* Play one movie by itself: make a node for it and put it at the head of the
      * single-movie list lbl_805600F8, whose head record answers every movie request
