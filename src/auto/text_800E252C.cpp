@@ -2488,29 +2488,6 @@ public:
     void SetLoopEnd(int, const void *, unsigned long);
 };
 }}}
-/* Inline copy of AxVoice::GetDspAddressBySample (sample offset -> DSP address). */
-static inline unsigned int AxVoice_GetDspAddressBySample(const void *base, unsigned long samples, int format) {
-    unsigned int addr = (unsigned int)base;
-    unsigned int result;
-    if (addr != 0) addr += 0x80000000;
-    result = 0;
-    switch (format) {
-    case 0:
-        result = samples % 14 + addr * 2 + (samples / 14) * 16 + 2;
-        break;
-    case 10:
-        result = addr + samples;
-        break;
-    case 25:
-        result = (addr >> 1) + samples;
-        break;
-    default:
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
-        break;
-    }
-    return result;
-}
-
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
