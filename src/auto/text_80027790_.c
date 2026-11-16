@@ -38,10 +38,13 @@ static inline int msl_isdigit(int c) {
     return (c < 0 || c >= 256) ? 0 : (*(const unsigned short **)((char *)lbl_802FE850.cmap + 8))[c] & 8;
 }
 
+/* Parse one scanf conversion specification from *format_string into *format
+   (assignment suppression, field width, length modifier, conversion and scanset),
+   returning a pointer just past the specifier; conversion_char 0xFF flags a bad spec. */
 const char* parse_format_80109DEC(const char* format_string, scan_format *format) {
     const char* s = format_string;
     int c;
-    int flag_found, invert;
+    int length_modifier_found, invert;
     scan_format f = { 0, 0, normal_argument, 0, 2147483647, { 0 } };
 
     if (((c = *++s) == '%')) {
@@ -72,7 +75,7 @@ const char* parse_format_80109DEC(const char* format_string, scan_format *format
         f.field_width_specified = 1;
     }
 
-    flag_found = 1;
+    length_modifier_found = 1;
 
     switch (c) {
         case 'h':
@@ -102,10 +105,10 @@ const char* parse_format_80109DEC(const char* format_string, scan_format *format
             f.argument_options = ptrdiff_argument;
             break;
         default:
-            flag_found = 0;
+            length_modifier_found = 0;
     }
 
-    if (flag_found) {
+    if (length_modifier_found) {
         c = *++s;
     }
 
@@ -201,11 +204,11 @@ const char* parse_format_80109DEC(const char* format_string, scan_format *format
             }
 
             while (c && c != ']') {
-                int d;
+                int range_end;
                 set_char_map(f.char_set, c);
 
-                if (*(s + 1) == '-' && (d = *(s + 2)) != 0 && d != ']') {
-                    while (++c <= d) {
+                if (*(s + 1) == '-' && (range_end = *(s + 2)) != 0 && range_end != ']') {
+                    while (++c <= range_end) {
                         set_char_map(f.char_set, c);
                     }
                     c = *(s += 3);
