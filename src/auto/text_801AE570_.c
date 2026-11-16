@@ -11,6 +11,16 @@ extern StaticDtorRecord lbl_8055E5F8; /* this module's record, in .sbss */
 extern int lbl_8055E600;              /* state word right behind it */
 void fn_8000D838(void *);
 void fn_801AE570(void) {
-    fn_8000D838(&lbl_8055E5F8);
-    lbl_8055E600 = 0xFFFF0000;
+#define RegisterStaticDtor fn_8000D838
+#define s_dtorRecord       lbl_8055E5F8
+#define s_stateWord        lbl_8055E600
+    /* C++ static initializer (its .ctors entry is at 0x802ED23C) of the module
+     * whose code starts at fn_801AE600: chain this module's static-destructor
+     * record onto the global list, then set the module's state word to the
+     * 0xFFFF0000 "nothing set yet" sentinel. */
+    RegisterStaticDtor(&s_dtorRecord);
+    s_stateWord = 0xFFFF0000;
+#undef s_stateWord
+#undef s_dtorRecord
+#undef RegisterStaticDtor
 }
