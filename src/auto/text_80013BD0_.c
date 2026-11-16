@@ -345,18 +345,21 @@ extern "C" void *fn_80014524(void *object, s32 index) {
 #pragma pop
 
 #pragma scheduling on
+/* Reset an object's state fields to defaults: a count of 6, an inactive
+ * distance of -1000.0, two zero flags and two unit scale factors.
+ * Volatile stores preserve the required initialization order. */
 void fn_80014638(void *arg0) {
-    f32 zero = lbl_80560368;
-    s32 a = 0;
-    f32 one = lbl_80560398;
-    s32 six = 6;
-    volatile u8 *p = (volatile u8 *)arg0;
-    *(s32 volatile *)(p + 0x14) = six;
-    *(f32 volatile *)(p + 0x1C) = one;
-    *(u8 volatile *)(p + 0x20) = a;
-    *(f32 volatile *)(p + 0x2C) = zero;
-    *(f32 volatile *)(p + 0x28) = zero;
-    *(s32 volatile *)(p + 0x24) = a;
+    f32 unit = lbl_80560368;
+    s32 zero = 0;
+    f32 inactive = lbl_80560398;
+    s32 initial = 6;
+    volatile u8 *dst = (volatile u8 *)arg0;
+    *(s32 volatile *)(dst + 0x14) = initial;
+    *(f32 volatile *)(dst + 0x1C) = inactive;
+    *(u8 volatile *)(dst + 0x20) = zero;
+    *(f32 volatile *)(dst + 0x2C) = unit;
+    *(f32 volatile *)(dst + 0x28) = unit;
+    *(s32 volatile *)(dst + 0x24) = zero;
 }
 #pragma scheduling reset
 extern u8 lbl_802FCE18[];
