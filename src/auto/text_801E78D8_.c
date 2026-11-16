@@ -846,9 +846,11 @@ void fn_801E882C(void) {
 
 #define sPlayerConfigs lbl_8055EB04
 
+/* Returns the 0..255 overlay fade value stored at +0xDB0 of the player-config
+   block, or 255 when that block is not allocated. */
 int fn_801E8838(void) {
-    if (lbl_8055EB04 != 0) {
-        return *(int *)((char *)lbl_8055EB04 + 0xDB0);
+    if (sPlayerConfigs != 0) {
+        return *(int *)((char *)sPlayerConfigs + 0xDB0);
     }
     return 0xFF;
 }
