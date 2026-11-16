@@ -2349,10 +2349,12 @@ extern "C" void fn_80215428(void *arg0) {
     }
 }
 
-extern "C" void fn_80215444(void *arg0) {
-    *(u8 *)((char *)arg0 + 0x19) = 0;
-    if (*(u8 *)((char *)arg0 + 0x1A) != 0) {
-        *(u8 *)((char *)arg0 + 0x234) = 1;
+extern "C" void fn_80215444(void *widget) {
+    /* Clear this VfWidget's flag byte at +0x19 and, when its layout option
+     * (+0x1A) is set, mark it dirty (+0x234) so it gets redrawn. */
+    *(u8 *)((char *)widget + 0x19) = 0;
+    if (*(u8 *)((char *)widget + 0x1A) != 0) {
+        *(u8 *)((char *)widget + 0x234) = 1;
     }
 }
 
