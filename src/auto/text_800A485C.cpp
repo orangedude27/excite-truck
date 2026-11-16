@@ -11737,8 +11737,10 @@ extern "C" s32 fn_800B7DB0(s32 subsystemId, Unk800B7E18Callback callback0, Unk80
     return -((u32)(-result | result) >> 31);
 }
 
-extern "C" void fn_800B7E18(u32 arg0) {
-    if (lbl_80405D00[0]) lbl_80405D00[0]((u8)arg0);
+/* Dispatch a status byte to the first installed status callback (slot 0 of
+ * the lbl_80405D00 table) when one has been registered. */
+extern "C" void fn_800B7E18(u32 status) {
+    if (lbl_80405D00[0]) lbl_80405D00[0]((u8)status);
 }
 
 /* Dispatch a status byte to the second installed status callback (slot 1 of
