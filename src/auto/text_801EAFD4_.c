@@ -96,10 +96,12 @@ extern "C" void fn_801EB000(s32 *firstNode, void *context) {
 s32 fn_801EB0E8(void) { return 0; }
 
 #pragma dont_inline on
-s32 fn_801EB0F0(s32 arg0) {
-    s32 var_r0 = 0;
-    if ((arg0 >= 0) && (arg0 < 0x18)) var_r0 = 1;
-    return var_r0;
+// Returns nonzero when modelType is a recognized graphics model type (0..0x17);
+// used before indexing the model-type table and reporting unknown types.
+s32 fn_801EB0F0(s32 modelType) {
+    s32 isKnown = 0;
+    if ((modelType >= 0) && (modelType < 0x18)) isKnown = 1;
+    return isKnown;
 }
 #pragma dont_inline off
 
