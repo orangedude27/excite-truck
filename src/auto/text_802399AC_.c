@@ -73,6 +73,9 @@ s32 fn_802399AC(void) {
     return fn_8027B9EC(1) != 0;
 }
 
+/* Menu action: capture the active window's current menu index (fn_80214D04)
+   into the saved selection lbl_8055BAC8, so the companion action fn_80239AB8
+   can later restore it via fn_80214CB4. */
 void fn_80239A94(void) {
     lbl_8055BAC8 = (void*)fn_80214D04();
 }
