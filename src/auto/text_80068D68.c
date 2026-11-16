@@ -11863,6 +11863,8 @@ void bta_dm_search_result(void *p_data) {
     }
 }
 
+/* Timeout callback during discovery: if verbose, log; clear in-progress flag and
+ * continue discovering the next device. */
 void fn_80072524(void) {
     if (lbl_8055DC80 >= 4)
         fn_8007093C(0x503, lbl_80315048);
