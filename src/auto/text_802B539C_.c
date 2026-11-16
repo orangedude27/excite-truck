@@ -50,7 +50,8 @@ int fn_802B539C(int handle) {
     return -2;
 }
 
-void fn_802B5404(int *arg0) { int temp = *arg0; if (temp != -2) { fn_802CAC54(temp); *arg0 = -2; } }
+/* Release the cached texture handle at *handleSlot if set, then mark the slot as no texture (-2). */
+void fn_802B5404(int *handleSlot) { int handle = *handleSlot; if (handle != -2) { fn_802CAC54(handle); *handleSlot = -2; } }
 
 __declspec(section ".sdata") extern const char lbl_8055CE10[];
 #pragma push
