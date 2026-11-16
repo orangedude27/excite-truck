@@ -31,11 +31,12 @@ void fn_80160B7C(float *out, float *a, float *b) {
     out[1] = y;
 }
 
-void fn_80160BA0(float *arg0, float *arg1, float farg0) {
-    float x = arg1[0] * farg0;
-    float y = arg1[1] * farg0;
-    arg0[0] = x;
-    arg0[1] = y;
+void fn_80160BA0(float *out, float *a, float scale) {
+    /* Store the 2D vector scale out = a * scale. */
+    float x = a[0] * scale;
+    float y = a[1] * scale;
+    out[0] = x;
+    out[1] = y;
 }
 
 void fn_80160BBC(float *out, float *a, float *b) {
