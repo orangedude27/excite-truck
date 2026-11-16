@@ -1810,8 +1810,9 @@ f32 fn_80011DD4(s32 regionId) {
     return lbl_80350F28[regionId][1];
 }
 
-f32 fn_80011DEC(s32 arg0) {
-    return lbl_80350F28[arg0][2];
+f32 fn_80011DEC(s32 regionId) {
+    /* Width of layout region regionId (the [region][2] column of lbl_80350F28). */
+    return lbl_80350F28[regionId][2];
 }
 
 f32 fn_80011E04(s32 arg0) {
