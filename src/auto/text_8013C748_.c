@@ -203,7 +203,9 @@ extern "C" int fn_8013C8E8(const char *arg0) {
 #pragma scheduling on
 #pragma pop
 int fn_8013C9A4(void) {
-    return *(int *)((char *)fn_8013C770() + 4);
+    /* Return the class-type field (+4) of the car-class registry entry found by fn_8013C770. */
+    void *entry = fn_8013C770();
+    return *(int *)((char *)entry + 4);
 }
 
 int fn_8013C9C8(void) {
