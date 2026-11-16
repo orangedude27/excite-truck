@@ -988,7 +988,7 @@ extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
-    void* p = *(void**)((u8*)arg0 + 0x2C);
+    void* __restrict p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
         s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
         s32 old1 = *(s32*)((u8*)p + 0x454);
@@ -9416,10 +9416,12 @@ extern "C" void fn_80229CF8(void *widget) {
         (*(u8 *)((u8 *)widget + 0x234)) = 1;
     }
 }
-extern "C" void fn_80229D1C(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x18) = 0;
-    if ((s32)*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+/* Deactivate a UI widget: clear its active flag (+0x18), and if it is still live
+ * (+0x1A) mark it dirty (+0x234) so the screen redraws it. */
+extern "C" void fn_80229D1C(void *widget) {
+    *(u8 *)((u8 *)widget + 0x18) = 0;
+    if ((s32)*(u8 *)((u8 *)widget + 0x1A) != 0) {
+        *(u8 *)((u8 *)widget + 0x234) = 1;
     }
 }
 
