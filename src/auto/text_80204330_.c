@@ -300,21 +300,22 @@ void fn_802049DC(int label, int valuePtr, float min, float max, float step) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-void fn_80204A1C(int arg0, int arg1)
+void fn_80204A1C(int label, int valuePtr)
 {
-  int i;
+  /* Append a byte/toggle row (label + value pointer, type flag 0) to the Tune Dash GUI table. */
+  int index;
   char *entry;
-  i = lbl_8055ED3C;
-  if (i >= 0x40)
+  index = lbl_8055ED3C;
+  if (index >= 0x40)
   {
     return;
   }
-  i = i;
-  entry = lbl_80488BD0 + (i * 0x18);
-  *((int *) (entry + 0)) = arg0;
-  lbl_8055ED3C = i + 1;
+  index = index;
+  entry = lbl_80488BD0 + (index * 0x18);
+  *((int *) (entry + 0)) = label;
+  lbl_8055ED3C = index + 1;
   *((int *) (entry + 4)) = 0;
-  *((int *) (entry + 8)) = arg1;
+  *((int *) (entry + 8)) = valuePtr;
 }
 #pragma pop
 void fn_80204A50(void) {
