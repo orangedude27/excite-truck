@@ -4866,6 +4866,30 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
 
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
+/* Step a directory-entry iterator to the next entry and read it into its buffer. */
+static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
+    s32 result;
+    s32 code;
+    u32 sp8;
+    u32 old = *(u32 *)iter;
+    *(u32 *)iter = old + 1;
+    result = fn_800AB378((void *)iter, 0);
+    if (result != 0) {
+        *(u32 *)iter = old;
+        fn_800AB378((void *)iter, 0);
+    } else {
+        if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
+            code = 0x10;
+        } else {
+            result = fn_800B5324(*(void **)(iter + 4), iter + 0x4C, *(u32 *)(iter + 0x44),
+                                 *(u16 *)(iter + 0x48), 0x20, &sp8, 0);
+            if (sp8 != 0x20) code = 0x11;
+            else code = result;
+        }
+        result = code & (s32)(-(u32)code | (u32)code) >> 31;
+    }
+    return result & (s32)(-(u32)result | (u32)result) >> 31;
+}
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
