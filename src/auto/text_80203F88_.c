@@ -109,10 +109,21 @@ extern int fn_801E9E78(void *, void *, int, int);
 extern void fn_802E30C8(const char *, ...);
 extern double __fabs(double);
 extern double lbl_80563160;
+#pragma push
+#pragma fp_contract on
+static inline f32 fn_80204054_cvt(u32 value, f64 bias) {
+    union { f64 d; u32 w[2]; } cvt;
+    cvt.w[0] = 0x43300000;
+    cvt.w[1] = value ^ 0x80000000;
+    return (f32)(cvt.d - bias);
+}
+#pragma pop
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, s32 screenY) {
+    union { f64 d; u32 w[2]; } cvt1, cvt2, cvt3;
+    f64 bias;
     Vec dir;
     Vec pos;
     Vec hit;
@@ -123,9 +134,8 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
     f32 a, b, c, p, q, r, x, y, z;
     register f32 step, dist, minStep, maxDist, mult, tol;
     s32 noHit, flagB, found;
-    union { f64 d; u32 w[2]; } cvt1, cvt2, cvt3;
-    f64 bias;
 
+#pragma fp_contract on
     bias = lbl_80563160;
     cvt1.w[0] = 0x43300000;
     cvt1.w[1] = (u32)((lbl_8055CFF0 / 2) ^ 0x80000000);
@@ -136,6 +146,7 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
     cvt3.w[0] = 0x43300000;
     cvt3.w[1] = (u32)((screenY - lbl_8055CFF4 / 2) ^ 0x80000000);
     dy = -(f32)(cvt3.d - bias);
+#pragma fp_contract off
 
     a = m[6] * scale;
     b = m[7] * scale;
