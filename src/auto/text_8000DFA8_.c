@@ -146,8 +146,17 @@ extern char lbl_802FC42C[];
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_8000F188(s32 arg0) {
-    lbl_80558A94 = fn_802C6FC0(arg0, 0, 0);
+void fn_8000F188(const char *modelPath) {
+#define mrModelLoad fn_802C6FC0
+#define arrowModel  lbl_80558A94
+    /* Load one of the UI's models by name -- the startup fn_8000F884 passes the
+     * "hlparrow.mod" entry of its string table -- with mrModelLoad, and keep the
+     * instance handle this module's shutdown fn_8000F1B4 unloads.  (rename_symbol
+     * is refused here, so the suggested name DashUI_LoadArrowModel only lives in
+     * this comment.) */
+    arrowModel = mrModelLoad((s32)modelPath, 0, 0);
+#undef arrowModel
+#undef mrModelLoad
 }
 void fn_8000F1B4(void) {
     // Unload the model held in lbl_80558A94 (via mrModelUnload/fn_802C6CF8)
