@@ -2486,20 +2486,21 @@ extern "C" void fn_802157A8(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     }
 }
 
-extern "C" void fn_802157DC(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
-    s32 var_r0;
-    void *temp_r5;
+extern "C" void fn_802157DC(void *pane, s32 x, s32 y, s32 *outX, s32 *outY, s32 *outXPlusParent, s32 *outYPlusOffset) {
+    /* Copy (x,y) to the first two outputs; add the parent's +8 field to x and this object's +8 field to y for the last two. */
+    s32 parentOffset;
+    void *parent;
 
-    *arg3 = arg1;
-    *arg4 = arg2;
-    temp_r5 = *(void **)((u8 *)arg0 + 4);
-    if (temp_r5 != 0) {
-        var_r0 = *(s32 *)((u8 *)temp_r5 + 8);
+    *outX = x;
+    *outY = y;
+    parent = *(void **)((u8 *)pane + 4);
+    if (parent != 0) {
+        parentOffset = *(s32 *)((u8 *)parent + 8);
     } else {
-        var_r0 = 0;
+        parentOffset = 0;
     }
-    *arg5 = *arg3 + var_r0;
-    *arg6 = *arg4 + *(s32 *)((u8 *)arg0 + 8);
+    *outXPlusParent = *outX + parentOffset;
+    *outYPlusOffset = *outY + *(s32 *)((u8 *)pane + 8);
 }
 
 extern "C" s32 fn_8021581C(void *arg0) {
