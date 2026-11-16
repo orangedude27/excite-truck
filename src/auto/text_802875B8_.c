@@ -860,11 +860,15 @@ void fn_80288868(void* hi) {
 #define RNG_INCREMENT 0x1CCE8AC1u
 #define RNG_MASK 0x7FFFFFFFu
 
+/* One step of the module's random generator: advance the 31-bit linear
+ * congruential state (lbl_8055F6C8) by state * RNG_MULTIPLIER + RNG_INCREMENT,
+ * keep the low 31 bits as the new state and return it; callers mask the bits
+ * they need (e.g. & 0x1FFFF for a random fraction). */
 unsigned int fn_80288870(void) {
-    unsigned int t = (unsigned int)lbl_8055F6C8 * 0x12B9B0A1u + 0x1CCE8AC1u;
-    unsigned int v = t & 0x7FFFFFFFu;
-    lbl_8055F6C8 = (void *)v;
-    return v;
+    unsigned int next = (unsigned int)lbl_8055F6C8 * RNG_MULTIPLIER + RNG_INCREMENT;
+    unsigned int value = next & RNG_MASK;
+    lbl_8055F6C8 = (void *)value;
+    return value;
 }
 
 #pragma push
