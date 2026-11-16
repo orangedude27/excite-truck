@@ -185,12 +185,14 @@ void fn_8019315C(void *unused, int index) {
 #pragma dont_inline on
 
 
-u8 fn_80193184(void *unused, int index) {
-      void *entry;
-      entry = lbl_804349C0[index];
-      if (entry != 0) return *((u8 *)entry + 0x2FE);
-      return 0;
-  }
+u8 fn_80193184(void *unused, int slotIndex) {
+    void *entry;
+
+    /* Read the +0x2FE byte of the racer registered at slotIndex, if one is registered. */
+    entry = lbl_804349C0[slotIndex];
+    if (entry != 0) return *((u8 *)entry + 0x2FE);
+    return 0;
+}
 #pragma dont_inline reset
 
 typedef float f32;
