@@ -140,7 +140,8 @@ extern "C" void fn_801A5300(void *self, void **newSubobject) {
         ((Obj *)*(void **)((char *)self + 0x270C))->f9();
     }
 }
-#pragma cplusplus on
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void *fn_801A538C(void *arg0, int arg1) {
     class Obj {
     public:
@@ -163,13 +164,15 @@ extern "C" void *fn_801A538C(void *arg0, int arg1) {
         obj = *(void **)((char *)arg0 + 0x270C);
         if (obj != 0)
             ((Obj *)obj)->f0(1);
-        *(volatile void **)((char *)arg0 + 0x270C) = 0;
+        *(void **)((char *)arg0 + 0x270C) = 0;
         fn_801836E0(arg0, 0);
         if (arg1 > 0)
             fn_80128668(arg0);
     }
     return arg0;
 }
+#pragma scheduling on
+#pragma pop
 extern "C" void fn_801A5434(void *arg0) {
     /* Periodically validate this object's position and notify via v41 if stuck. */
     class Obj {
