@@ -294,7 +294,7 @@ extern "C" void fn_80186DE8(void);
 extern "C" void fn_801D0F38(void);
 extern "C" void fn_801B535C(void**, int);
 extern "C" void fn_801B50B4(void**, int);
-#pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_80177E14(void) {
     class Element {
     public:
@@ -320,7 +320,7 @@ extern "C" void fn_80177E14(void) {
         (*p)->f6();
     }
 }
-#pragma cplusplus off
+#pragma scheduling on
 
 #pragma cplusplus off
 #pragma dont_inline on
