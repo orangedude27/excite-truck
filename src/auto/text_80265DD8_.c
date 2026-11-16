@@ -2097,8 +2097,9 @@ void fn_8026A2CC(int *arg0, int arg1, float arg2) {
     dst[11] = arg0[11];
     *(float *)(dst + 12) = arg2;
 }
-int fn_8026A344(int arg0) {
-    return *(int *)((char *)fn_80267EE4(arg0) + 0x20);
+/* Return the index of the object the given camera is following (Camera.subject). */
+int fn_8026A344(int cameraIndex) {
+    return ((Camera *)fn_80267EE4(cameraIndex))->subject;
 }
 void *fn_80267EE4();
 /* Return the active mode (Camera.mode) of the given camera: 0..0x21, 10 = unset. */
