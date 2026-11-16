@@ -328,10 +328,11 @@ int fn_8022DBE8(void *arg0) {
     return array[*(int *)((char *)arg0 + 0xC)];
 }
 
-void fn_8022DBFC(void *arg0) {
-    int value = *(int *)((char *)arg0 + 0xC) + 1;
-    *(int *)((char *)arg0 + 0xC) = value;
-    if (value >= *(int *)((char *)arg0 + 0x10)) *(int *)((char *)arg0 + 0xC) = 0;
+void fn_8022DBFC(void *selector) {
+    /* Advance the selector's index (+0xC) by one, wrapping back to 0 when it reaches the count (+0x10). */
+    int nextIndex = *(int *)((char *)selector + 0xC) + 1;
+    *(int *)((char *)selector + 0xC) = nextIndex;
+    if (nextIndex >= *(int *)((char *)selector + 0x10)) *(int *)((char *)selector + 0xC) = 0;
 }
 
 void fn_8022DC20(void *arg0) {
