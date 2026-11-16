@@ -4276,15 +4276,17 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
     GKI_freebuf((BT_HDR *)msg);
 }
 #pragma pop
-void fn_8006F18C(u8 arg0, u8 arg1, u16 arg2) {
+/* Initialize the HCI-H2 USB transport control block: clear its state and counter
+   bytes, then store the USB device id, endpoint and pending receive byte count. */
+void fn_8006F18C(u8 deviceId, u8 endpoint, u16 pendingBytes) {
     hcisu_h2_cb_t *cb = &hcisu_h2_cb;
     cb->pad[0x1E] = 0;
     cb->pad[0x1A] = 0;
     cb->pad[0x1B] = 0;
     cb->pad[0x1C] = 0;
-    cb->at_0x1F = arg0;
-    cb->pad[0x20] = arg1;
-    *(u16 *)&cb->pad[0x12] = arg2;
+    cb->at_0x1F = deviceId;
+    cb->pad[0x20] = endpoint;
+    *(u16 *)&cb->pad[0x12] = pendingBytes;
 }
 
 /* Open the HCI USB (H2) transport: populate a UUSB descriptor from HCI config, set
