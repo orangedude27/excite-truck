@@ -15,6 +15,7 @@ extern int lbl_804A4330[];
 extern void fn_8027AA08(void);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+/* Initialize the global object at lbl_804A433C and register its destructor. */
 void fn_8027AD04(void) {
     fn_8000D838(&lbl_8055F640);
     lbl_804A433C[12] = 0;
