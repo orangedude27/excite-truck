@@ -1021,6 +1021,8 @@ extern const char *lbl_802F9588[];
 extern const char **lbl_8055E5CC;
 extern int lbl_8055E5D0;
 extern char *strncpy(char *, const char *, unsigned int);
+#define INPUT_BINDING_MAX_INDEX 0x15 /* highest valid index into the 22-entry input binding name table */
+
 int fn_801A902C(void) {
     fn_801A7628();
     return 0x15;
