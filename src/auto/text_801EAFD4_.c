@@ -537,58 +537,70 @@ extern "C" void fn_801EB9A4(s32 *arg0) {
     }
     *(ThreadObject **)arg0 = 0;
 }
-extern "C" s32 fn_801EB9FC(void *arg0) {
-    u8 sp9;
-    u8 sp8;
-    u32 sp14;
-    u32 sp10;
-    f32 *spC;
-    char *file = lbl_80339E88;
-    char *path;
-    s32 result;
+extern "C" s32 fn_801EB9FC(void *resourceMgr) {
+    /* Load the "Simple Model" EB resource (FARG, version 0x15), build its object
+       and material lists, then open its parameter/sound archives and record their handles. */
+    u8 hasExtraSetup;
+    u8 spare8;
+    u32 spareSize;
+    u32 version;
+    f32 *valueOut;
+    char *strings = lbl_80339E88;
+    char *archivePath;
+    s32 handle;
 
-    lbl_8055EBA0 = (s32 *)((void *(*)(void *, s32, u32 *, u32 *, u8 *, u8 *))fn_8012C370)(
-        arg0, 0x47524146, &sp10, &sp14, &sp8, &sp9);
-    if (lbl_8055EBA0 == 0)
+#define gEBContext lbl_8055EBA0
+#define gEBDefaultValue lbl_8055EBA4
+#define gParamHandle lbl_8055AFB8
+#define gSoundHandle lbl_8055AFBC
+
+    gEBContext = (s32 *)((void *(*)(void *, s32, u32 *, u32 *, u8 *, u8 *))fn_8012C370)(
+        resourceMgr, 0x47524146, &version, &spareSize, &spare8, &hasExtraSetup);
+    if (gEBContext == 0)
         goto no_resource;
-    if (sp10 != 0x15)
+    if (version != 0x15)
         goto bad_resource;
 
     fn_801EB128();
     fn_801EB854();
-    if (sp9 != 0) {
-        fn_801EB634(lbl_8055EBA0, (s32)lbl_8055EBA0);
-        fn_801EB2D4(*lbl_8055EBA0, (s32)lbl_8055EBA0);
-        fn_801EBB7C((char *)lbl_8055EBA0 + 4, (s32)lbl_8055EBA0);
-        fn_801EBB7C((char *)lbl_8055EBA0 + 8, (s32)lbl_8055EBA0);
-        fn_802CDDC8((void *)lbl_8055EBA0[1], lbl_8055EBA0[1]);
-        fn_802CDDC8((void *)lbl_8055EBA0[2], lbl_8055EBA0[2]);
+    if (hasExtraSetup != 0) {
+        fn_801EB634(gEBContext, (s32)gEBContext);
+        fn_801EB2D4(*gEBContext, (s32)gEBContext);
+        fn_801EBB7C((char *)gEBContext + 4, (s32)gEBContext);
+        fn_801EBB7C((char *)gEBContext + 8, (s32)gEBContext);
+        fn_802CDDC8((void *)gEBContext[1], gEBContext[1]);
+        fn_802CDDC8((void *)gEBContext[2], gEBContext[2]);
     }
-    fn_801EB6A8(*lbl_8055EBA0);
+    fn_801EB6A8(*gEBContext);
     ((void (*)(void))fn_801EB90C)();
     goto common;
 
 bad_resource:
-    fn_802E317C(file + 0x180, sp10, 0x15);
+    fn_802E317C(strings + 0x180, version, 0x15);
     goto common;
 
 no_resource:
     fn_802AE7F4();
 
 common:
-    lbl_8055EBA4 = lbl_80562E6C;
-    path = file + 0x194;
-    if (fn_8012C33C(path) != 0) {
-        result = fn_802C6FC0(path, 0, 0);
-        lbl_8055AFB8 = result;
-        spC = 0;
-        if (((s32 (*)(s32, void *, f32 **))fn_801E2CCC)(result, file + 0x1A0, &spC) != 0)
-            lbl_8055EBA4 = *spC;
+    gEBDefaultValue = lbl_80562E6C;
+    archivePath = strings + 0x194;
+    if (fn_8012C33C(archivePath) != 0) {
+        handle = fn_802C6FC0(archivePath, 0, 0);
+        gParamHandle = handle;
+        valueOut = 0;
+        if (((s32 (*)(s32, void *, f32 **))fn_801E2CCC)(handle, strings + 0x1A0, &valueOut) != 0)
+            gEBDefaultValue = *valueOut;
     } else {
-        lbl_8055AFB8 = -1;
+        gParamHandle = -1;
     }
-    lbl_8055AFBC = fn_802C6FC0(file + 0x1B0, 0, 0);
-    return lbl_8055EBA0 != 0;
+    gSoundHandle = fn_802C6FC0(strings + 0x1B0, 0, 0);
+    return gEBContext != 0;
+
+#undef gSoundHandle
+#undef gParamHandle
+#undef gEBDefaultValue
+#undef gEBContext
 }
 
 #pragma pop
