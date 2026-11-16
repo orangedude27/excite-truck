@@ -137,6 +137,26 @@ extern "C" int strcmp(const char *, const char *);
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
+/* Parameter registry entries are 0x10 bytes; right/left arrows get a type code. */
+#define PARAM_STRIDE 0x10
+#define PARAM_TYPE_OFF 0x2
+#define PARAM_FLOAT_A_OFF 0x4
+#define PARAM_FLOAT_B_OFF 0x8
+#define PARAM_VALUE_OFF 0xC
+enum {
+    PARAM_TYPE_VALUE = 0,
+    PARAM_TYPE_LEFT_ARROW = 1,
+    PARAM_TYPE_RIGHT_ARROW = 2
+};
+#define gParamRegistry lbl_8055E29C
+#define gArrowValue lbl_805617D4
+#define PARAM_KEY_PACKED lbl_8055A080
+#define PARAM_KEY_NAME1 lbl_8055A084
+#define PARAM_KEY_NAME2 lbl_8055A08C
+#define PARAM_KEY_FLOAT lbl_8055A090
+#define PARAM_NAME_LEFT lbl_8032F470
+#define PARAM_NAME_RIGHT lbl_8032F47C
+
 #pragma use_lmw_stmw off
 extern "C" void fn_8015EE14(void **collection, void *arg1) {
     class Collection {
