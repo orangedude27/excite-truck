@@ -29050,7 +29050,7 @@ write_timeout:
 
 extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void WUDVendorSpecificCallback(u8 len, u8 *pData) {
     typedef void (*WUDSyncCallback)(s32, s32);
     typedef void (*WUDClearCallback)(s32);
