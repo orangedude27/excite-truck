@@ -61,6 +61,24 @@ extern u32 lbl_802F9B40[];
 __declspec(section ".sdata") extern const char lbl_8055B328[], lbl_8055B32C[], lbl_8055B330[], lbl_8055B334[], lbl_8055B338[], lbl_8055B340[], lbl_8055B344[], lbl_8055B348[], lbl_8055B34C[], lbl_8055B354[], lbl_8055B35C[], lbl_8055B364[];
 extern const f32 lbl_8056300C;
 extern "C" char *fn_80029004(char *, s32);
+extern const f32 lbl_80563004, lbl_80563008;
+__declspec(section ".sdata") extern const char lbl_8055B314[], lbl_8055B31C[], lbl_8055B320[], lbl_8055B324[];
+extern "C" int fn_801D04D0(const char *);
+class F8988Mgr {
+public:
+    virtual void v8();
+    virtual s32 has(const char *);
+    virtual void v10();
+    virtual const char *get(const char *);
+    virtual const char *getD(const char *, const char *);
+    virtual void v1C();
+    virtual void v20();
+    virtual f32 getF(const char *);
+    virtual f32 getFD(const char *, f32);
+    virtual s32 has2(const char *);
+    virtual void v30();
+    virtual FAAVec getV(const char *);
+};
 
 
 extern "C" {
