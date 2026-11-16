@@ -53,7 +53,8 @@ s32 fn_801EAFD4(void *arg0) {
 #pragma dont_inline off
 
 #pragma cplusplus on
-void fn_801EB000(s32 *arg0, void *arg1) {
+#pragma scheduling invalid_target
+extern "C" void fn_801EB000(s32 *arg0, void *arg1) {
     s32 *item;
     s32 *node;
     s32 *child;
@@ -77,9 +78,7 @@ void fn_801EB000(s32 *arg0, void *arg1) {
             case 4:
                 child = (s32 *)node[2];
                 if (child != 0) {
-                    ((void (*)(void *, s32 *, s32, s32))
-                        ((void **)*(void ***)arg1)[2])(
-                        arg1, child, child[2], child[1]);
+                    ((EB000Context *)arg1)->dispatch(child, child[2], child[1]);
                 }
                 break;
             }
@@ -87,6 +86,7 @@ void fn_801EB000(s32 *arg0, void *arg1) {
         node = (s32 *)node[1];
     }
 }
+#pragma scheduling reset
 #pragma cplusplus reset
 s32 fn_801EB0E8(void) { return 0; }
 
