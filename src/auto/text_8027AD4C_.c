@@ -1064,6 +1064,46 @@ long *fn_8027C26C(void *container, const char *name) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma cplusplus on
+struct ItemIface8027C2B8 {
+    virtual void f0();
+    virtual void f1();
+    virtual char *getName();
+};
+struct ListIface8027C2B8 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void *fetch(long index);
+};
+struct SubIface8027C2B8 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual void f10();
+    virtual void f11();
+    virtual void f12();
+    virtual void f13();
+    virtual void f14();
+    virtual void f15();
+    virtual void f16();
+    virtual void f17();
+    virtual void f18();
+    virtual void f19();
+    virtual void f20();
+    virtual void f21();
+    virtual void f22();
+    virtual void f23();
+    virtual void *fetchSub(long index);
+};
+#pragma cplusplus reset
 struct Ctx8027C2B8 {
     void **tableArray;
     int itemCount;
@@ -1077,44 +1117,44 @@ struct Ctx8027C2B8 {
 void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     extern char lbl_80347A50[];
     extern void *fn_80131808(void *);
+    struct Ctx8027C2B8 *ctx = (struct Ctx8027C2B8 *)arg0;
     int tableCount;
     void *outerList;
+    char *record;
     void *outerItem;
     void *innerItem;
     char *name;
-    char *record;
     int outerCount;
     int outerIndex;
     void **outerArray;
     int innerIndex;
     int itemCount;
     void **tableArray;
-    volatile void *arg0b = arg0;
     outerList = fn_80131808(arg2);
     if (outerList == 0)
         return;
-    outerCount = *(volatile int *)((char *)arg0 + 0xB00C);
+    outerCount = ctx->outerCount;
     outerIndex = 0;
-    outerArray = *(void ***)((char *)arg0 + 0xB008);
-    *(volatile int *)((char *)arg0 + 0xB00C) = outerCount + 1;
+    outerArray = ctx->outerArray;
+    ctx->outerCount = outerCount + 1;
     outerArray[outerCount] = outerList;
     goto fetch_outer;
 outer_loop:
     name = ((char *(*)(void *))(*(void ***)outerItem)[2])(outerItem);
     if (stricmp(name, (const char *)&lbl_8055C760) == 0) {
-        tableCount = *(volatile int *)((char *)arg0b + 0xAF10);
-        tableArray = *(void ***)((char *)arg0b + 0xAF0C);
+        tableCount = ctx->tableCount;
+        tableArray = ctx->innerArray;
         record = (char *)tableArray + tableCount * 0xC;
-        *(volatile int *)((char *)arg0b + 0xAF10) = tableCount + 1;
+        ctx->tableCount = tableCount + 1;
         fn_8027C0D0(record, arg1, outerItem);
         innerIndex = 0;
         goto fetch_inner;
 inner_loop:
         name = ((char *(*)(void *))(*(void ***)innerItem)[2])(innerItem);
         if (stricmp(name, lbl_80347A50) == 0) {
-            itemCount = *(volatile int *)((char *)arg0 + 4);
-            tableArray = *(void ***)arg0;
-            *(volatile int *)((char *)arg0 + 4) = itemCount + 1;
+            itemCount = ctx->itemCount;
+            tableArray = ctx->tableArray;
+            ctx->itemCount = itemCount + 1;
             fn_8027C014((char *)tableArray + itemCount * 0x14, arg1, *(long *)(record + 4), innerItem);
         }
         innerIndex++;
