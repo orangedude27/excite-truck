@@ -23897,11 +23897,12 @@ void rfc_set_port_state(void *portState, void *frame) {
     }
 }
 
-void fn_800934D8(void *arg0, s16 arg1) {
-    s16 sp8;
+void fn_800934D8(void *p_mcb, s16 startStatus) {
+    /* RFCOMM multiplexer start confirmation: pass the L2CAP connect status to the mux state machine as RFC_MX_EVENT_START_RSP. */
+    s16 statusWord;
 
-    sp8 = arg1;
-    fn_800916F4(arg0, 7, &sp8);
+    statusWord = startStatus;
+    fn_800916F4(p_mcb, RFC_MX_EVENT_START_RSP, &statusWord);
 }
 
 void RFCOMM_DlcEstablishReq(void *p_mcb, u8 dlci) {
