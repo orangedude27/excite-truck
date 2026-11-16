@@ -262,7 +262,10 @@ u32 OSGetResetCode(void) {
     return PI_HW_REGS[PI_RESET] >> 3;
 }
 
-void OSResetSystem(u32 arg0, u32 arg1, u32 arg2) {
+/* Obsolete SDK entry point: the reset API no longer works, so any call simply
+ * panics with a diagnostic instead of resetting the system. Arguments are
+ * ignored (reset type, reset code and force-to-menu flag). */
+void OSResetSystem(u32 reset, u32 resetCode, u32 forceMenu) {
     // clang-format off
 #line 935
     OSPanic("OSReset.c", 0x3a7, "OSResetSystem() is obsoleted. It doesn't work any longer.\n");
