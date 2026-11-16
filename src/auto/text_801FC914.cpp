@@ -153,6 +153,7 @@ extern "C" void fn_801FC914(void) {
 }
 
 extern "C" void fn_801FC94C(void) {
+    /* Allocate and construct an 8-byte LinearDroneTMH object with its vtable and a zeroed field at +4. */
     void *p;
     if ((p = fn_801284F8(8, (const char *)&lbl_8033B5E8)) != 0) {
         *(void **)p = (void *)&lbl_8033B730;
