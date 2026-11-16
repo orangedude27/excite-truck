@@ -735,10 +735,10 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     off -= arg0;
     base = arg0 - off;
     value = *(s32*)(base + 0x33C);
-    inv = -1 - value;
     diff = (value - arg1) | (arg1 - value);
     sign = diff >> 31;
-    return sign & inv;
+    inv = -1 - value;
+    return (s32)((u32)sign & (u32)inv);
 }
 
 /* Tick-list "finish" callback for the audio stream manager, registered by
@@ -6886,6 +6886,7 @@ void fn_80122E08(s32 length, void *data, s32 twiddleOffset, void *twiddleBase) {
 extern void fn_801237C4(s32, void *, void *);
 extern void fn_801231B8(s32, void *, s32, void *);
 extern void fn_80123DC0(s32, void *, s32, void *);
+#pragma scheduling 604
 void fn_80122ED8(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     s32 n = arg0 >> 2;
     fn_801237C4(arg0, arg1, (u8 *)arg3 + (arg2 - arg0) * 4);
@@ -6893,12 +6894,12 @@ void fn_80122ED8(s32 arg0, void *arg1, s32 arg2, void *arg3) {
         fn_80122E08(n, arg1, arg2, arg3);
         fn_80122ED8(n, (u8 *)arg1 + n * 4, arg2, arg3);
         fn_80122E08(n, (u8 *)arg1 + n * 8, arg2, arg3);
-        fn_80122ED8(n, (u8 *)arg1 + (12 * n), arg2, arg3);
+        fn_80122ED8(n, (u8 *)arg1 + ((n * 3) << 2), arg2, arg3);
         return;
     }
     fn_801231B8(arg0, arg1, arg2, arg3);
 }
-
+#pragma scheduling reset
 void fn_80122FA4(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     s32 n = arg0 >> 2;
     f32 *a = (f32 *)arg1;
