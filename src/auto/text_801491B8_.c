@@ -1635,7 +1635,7 @@ extern "C" void *fn_8014E1D0(void *arg0, s32 arg1) {
     obj->unk7c = -1;
     obj->valueA = 1;
     obj->valueB = 1;
-    table = ((void *(*)(void *))fn_80131808)(strings + 0x4c8);
+    table = fn_80131808(strings + 0x4c8);
     if (table != 0) {
         ok = 0;
         iter = (Iter_8014E1D0 *)((Iter_8014E1D0 *)table)->open((char *)(strings + 0x4d8));
