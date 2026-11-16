@@ -19,14 +19,19 @@ extern char lbl_80335EE0[];
 extern void fn_802E317C(const char *, ...);
 #pragma dont_inline on
 #pragma scheduling invalid_target
+/* Pop a node from the global free list (lbl_8055E710), or log "PhobList: out of nodes" and return NULL. */
 void *fn_801B5F40(void) {
-    void *node = lbl_8055E710;
+#define sFreeNodeHead lbl_8055E710
+#define sOutOfNodesMsg lbl_80335EE0
+    void *node = sFreeNodeHead;
     if (node) {
-        lbl_8055E710 = ((void **)node)[1];
+        sFreeNodeHead = ((void **)node)[1];
         ((void **)node)[1] = 0;
         return node;
     }
-    fn_802E317C(lbl_80335EE0);
+    fn_802E317C(sOutOfNodesMsg);
+#undef sFreeNodeHead
+#undef sOutOfNodesMsg
     return 0;
 }
 #pragma scheduling on
