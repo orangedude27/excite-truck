@@ -582,8 +582,9 @@ void fn_8023AE50(void *selector) {
     *index = (*index + 1) % count;
 }
 
-s32 fn_8023AE74(void *arg0) {
-    return *(s32 *)*(s32 **)((char *)arg0 + 0x1C) > 0;
+/* Return 1 when the selector's +0x1C index is above zero (it can step back). */
+s32 fn_8023AE74(void *selector) {
+    return *(s32 *)*(s32 **)((char *)selector + 0x1C) > 0;
 }
 
 /* Return whether the selector's current index (offset 0x1C) can be advanced: it is below count (offset 0x14) minus one. */
