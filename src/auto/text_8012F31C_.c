@@ -38,6 +38,7 @@ void *fn_8012F31C(s32 bufferSize) {
 
 #pragma scheduling invalid_target
 void fn_8012F384(void *arg0) {
+    /* Destroy an object: free its owned resource at +0x0, clear the pointer at +0x4, then delete the object. */
     if (arg0 != 0) {
         fn_80128670(*(s32 *)arg0);
         ((s32 *)arg0)[1] = 0;
