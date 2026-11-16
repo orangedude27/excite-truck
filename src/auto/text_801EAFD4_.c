@@ -32,6 +32,7 @@ extern void fn_801EB6A8(s32);
 extern void fn_802CDDC8(void *, s32);
 extern void fn_802E317C(const char *, ...);
 extern void fn_802AE7F4(void);
+extern void fn_802AEAA8(void);
 extern s32 fn_802C6FC0(void *, s32, s32);
 extern s32 lbl_802F9A08[];
 extern s32 lbl_804885E8[];
