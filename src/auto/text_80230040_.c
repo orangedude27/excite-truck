@@ -11,13 +11,14 @@ void fn_8000D838(void *);
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_80230040(void) {
-    s32 v;
-    s32 *p;
+    s32 trackId;
+    s32 *state;
+
     fn_8000D838(&lbl_8055F008);
-    p = lbl_80497E28 + 1;
+    state = lbl_80497E28 + 1;
     lbl_80497E28[0] = 0;
-    v = 0x7B;
-    lbl_80497E28[1] = v;
+    trackId = 0x7B;
+    lbl_80497E28[1] = trackId;
     lbl_80497E28[2] = 0;
     lbl_80497E28[3] = 0;
     lbl_80497E28[4] = 0;
