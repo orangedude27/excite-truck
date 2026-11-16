@@ -227,8 +227,10 @@ void fn_80270C04(void *context, int options) {
     }
 }
 #pragma pop
-int fn_80270D1C(int arg0) {
-    switch (arg0) {
+int fn_80270D1C(int sourceType) {
+    /* Map a record's raw type (its +0x5C field) to a display category:
+     * type 0 -> 1, type 1 -> 2, anything else -> 0. */
+    switch (sourceType) {
     case 0: return 1;
     case 1: return 2;
     default: return 0;
