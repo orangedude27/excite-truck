@@ -262,11 +262,12 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void fn_802643B8(void *arg0) {
-    *(void **)arg0 = &lbl_8055C458;
-    fn_80264098(arg0, 8);
-    *(void (**)(void))((char *)arg0 + 8) = fn_80236914;
-    *(int *)((char *)arg0 + 0xc) = 2;
+/* Initialize an object: set its vtable-like base pointer, store an initial field value, then install a callback and mode. */
+void fn_802643B8(void *object) {
+    *(void **)object = &lbl_8055C458;
+    fn_80264098(object, 8);
+    *(void (**)(void))((char *)object + 8) = fn_80236914;
+    *(int *)((char *)object + 0xc) = 2;
 }
 #pragma scheduling on
 void fn_80264404(void *arg0) {
