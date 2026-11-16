@@ -503,7 +503,6 @@ void fn_8027B60C(void *container) {
     }
 }
 
-#pragma push
 #pragma use_lmw_stmw off
 void fn_8027B690(void) {
     register long state;
@@ -548,7 +547,6 @@ void fn_8027B690(void) {
             fn_80012790(state);
     }
 }
-#pragma pop
 void fn_8027B77C(void) {
     char *base;
     unsigned int outer;
@@ -557,8 +555,8 @@ void fn_8027B77C(void) {
         outer = 0;
         do {
             {
-                unsigned int i = 0;
                 char *p = base;
+                unsigned int i = 0;
                 do {
                     fn_8027B60C(p);
                     i++;
@@ -566,8 +564,8 @@ void fn_8027B77C(void) {
                 } while (i < 3);
             }
             {
-                unsigned int i = 0;
                 char *p = base + 0x2370;
+                unsigned int i = 0;
                 do {
                     fn_8027B60C(p);
                     i++;
@@ -1066,6 +1064,16 @@ long *fn_8027C26C(void *container, const char *name) {
 
 #pragma push
 #pragma use_lmw_stmw off
+struct Ctx8027C2B8 {
+    void **tableArray;
+    int itemCount;
+    char pad8[0xAF04];
+    void **innerArray;
+    int tableCount;
+    char padAF14[0xF4];
+    void **outerArray;
+    int outerCount;
+};
 void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     extern char lbl_80347A50[];
     extern void *fn_80131808(void *);
