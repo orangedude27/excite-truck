@@ -9821,12 +9821,13 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 }
 #pragma pop
 extern "C" void fn_802C744C(s32, void *);
-extern "C" void fn_8022A574(void *arg0) {
-    s32 value = *(s32 *)((u8 *)arg0 + 4);
-    if (value == -1) {
+extern "C" void fn_8022A574(void *object) {
+    /* Submit this object's model (handle at +4) for drawing with its embedded transform at +8; -1 means no model. */
+    s32 modelHandle = *(s32 *)((u8 *)object + 4);
+    if (modelHandle == -1) {
         return;
     }
-    fn_802C744C(value, (u8 *)arg0 + 8);
+    fn_802C744C(modelHandle, (u8 *)object + 8);
 }
 
 extern "C" s32 fn_80229CA4(s32);
