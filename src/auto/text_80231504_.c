@@ -348,11 +348,14 @@ extern s32 fn_80232578(const char *);
 extern char lbl_8055B9A0;
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_80231730(s32 arg0) {
+s32 fn_80231730(s32 name) {
+    /* Build "_ol_<name>" and, if that file exists, load/return its outline texture block. */
+#define kOutlineNameFmt lbl_8055B9A0 /* "_ol_%s" */
     char buffer[0x18];
-    sprintf(buffer, &lbl_8055B9A0, arg0);
+    sprintf(buffer, &kOutlineNameFmt, name);
     if (fn_8012C33C(buffer) != 0) return fn_80232578(buffer);
     return 0;
+#undef kOutlineNameFmt
 }
 #pragma pop
 
