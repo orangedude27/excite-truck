@@ -1551,12 +1551,15 @@ void fn_801FF6A4(void* arg0) {
     *(int*)((char*)arg0 + 0x4C0) = 0;
 }
 
-extern "C" void* fn_801FF6B4(void* arg0, int arg1) {
-    if (arg0 != 0) {
+extern "C" void* fn_801FF6B4(void* pool, int shouldFree) {
+    /* Clear the global pool pointer; optionally free the pool object. */
+    if (pool != 0) {
         lbl_8055EC94 = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldFree > 0) {
+            fn_80128668(pool);
+        }
     }
-    return arg0;
+    return pool;
 }
 
 extern "C" void fn_801FF924(void*, void*, float);
