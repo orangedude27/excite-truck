@@ -5621,6 +5621,9 @@ void GXSetPixelFmt(s32 pixelFmt, s32 zFmt) {
     *(volatile u16 *)((u8 *)gxRegs + 2) = 0;
 }
 
+/* Enable or disable dithering: pack the dither bit into the BP register shadowed
+ * at __GXData+0x220, send it (with command 0x61) to the write-gather FIFO, and
+ * clear the pending-write flag at __GXData+2. */
 void GXSetDither(s32 enable) {
     union {
         unsigned int value;
@@ -5629,14 +5632,14 @@ void GXSetDither(s32 enable) {
             unsigned int dither : 1;
             unsigned int unused1 : 2;
         } bits;
-    } reg;
-    unsigned int *data = __GXData;
-    reg.value = data[0x220 / 4];
-    reg.bits.dither = enable;
+    } ditherReg;
+    unsigned int *gxData = __GXData;
+    ditherReg.value = gxData[0x220 / 4];
+    ditherReg.bits.dither = enable;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
-    data[0x220 / 4] = reg.value;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = ditherReg.value;
+    gxData[0x220 / 4] = ditherReg.value;
+    *(unsigned short *)((char *)gxData + 2) = 0;
 }
 
 /* Write the destination-alpha BP register: pack the enable bit and 8-bit alpha
