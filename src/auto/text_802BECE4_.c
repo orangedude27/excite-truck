@@ -338,11 +338,12 @@ extern "C" void fn_802BF40C(void) {
     }
 }
 #pragma cplusplus reset
-int fn_802BF4B0(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
+int fn_802BF4B0(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668((void *)object);
     }
-    return arg0;
+    return object;
 }
 
 int fn_802BF4F0(void) {
