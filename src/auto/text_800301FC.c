@@ -391,6 +391,8 @@ void TRKGetFreeBuffer(void *voice) {
 #undef __AXSetPBDefault
 #undef __AXRemoveFromStack
 }
+#pragma push
+#pragma use_lmw_stmw off
 void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern s32 OSDisableInterrupts(void);
     extern void OSRestoreInterrupts(s32);
@@ -405,6 +407,7 @@ void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         u32 *lastp = lbl_8035BF20 + 1;
         for (index = 1; index < arg0; ++index, ++firstp, ++lastp) {
             u32 first = *firstp;
+            buf = 0;
             if (first != 0) {
                 u32 last = *lastp;
                 if (first == last) {
@@ -413,8 +416,9 @@ void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
                     *firstp = 0;
                 } else if (last != 0) {
                     buf = (void *)last;
-                    *lastp = *(u32 *)((u8 *)last + 4);
-                    *(u32 *)((u8 *)buf + 4) = 0;
+                    last = *(u32 *)((u8 *)last + 4);
+                    *lastp = last;
+                    *(u32 *)last = 0;
                 }
             }
             if (buf != 0) {
@@ -431,6 +435,7 @@ void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         *(void **)buf = head;
         *(u32 *)((u8 *)buf + 4) = 0;
         if (head != 0) {
+            head = (void *)lbl_8035BEA0[arg0];
             *(void **)((u8 *)head + 4) = buf;
             lbl_8035BEA0[arg0] = (u32)buf;
         } else {
@@ -445,7 +450,7 @@ void *TRKInitializeMessageBuffers(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     OSRestoreInterrupts(irq);
     return buf;
 }
-#pragma use_lmw_stmw reset
+#pragma pop
 
 #pragma pop
 /* Enqueue a TRK message buffer onto the specified input queue, updating the
