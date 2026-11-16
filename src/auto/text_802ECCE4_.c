@@ -122,18 +122,20 @@ s32 fn_802ECF04(void) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void *fn_802ECF08(void *arg0, s32 arg1) {
     void *result;
     if (fn_802ECEEC() != 0) {
         return (void *)lbl_805600F8;
     }
-    result = fn_801284F8(0x44U, lbl_8034EC18);
+    result = fn_801284F8(0x44, lbl_8034EC18);
     if (fn_802ECD68(result, arg0, arg1) == 0) {
         fn_80128668(result);
         result = 0;
     }
     return result;
 }
+#pragma scheduling reset
 #pragma dont_inline reset
 /* Returns whether a movie record already plays the movie `movieName` asks for: the
  * name stored in the record (its first 0x40 bytes) and `movieName`'s base name, up to
