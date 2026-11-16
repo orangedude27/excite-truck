@@ -3058,12 +3058,13 @@ extern "C" void fn_800DB1E0(char* arg0) {
     fn_800D4F98(arg0 + 0x18);
 }
 
-extern "C" void fn_800DB1E8(void* arg0, void* unused, s32 arg2) {
-    void* temp = ((Dummy_800DB1E8 *)arg0)->call();
-    if (temp != 0) {
-        u32 count = __cntlzw((u32)arg2);
-        s32 result = count / 0x20;
-        *(s8*)((u8*)temp + 0xE) = (s8)result;
+extern "C" void fn_800DB1E8(void *obj, void *unused, s32 flag) {
+    /* Calls virtual slot 6 on obj; if it returns non-null, sets byte +0xE to 1 when flag is 0, else 0. */
+    void *target = ((Dummy_800DB1E8 *)obj)->call();
+    if (target != 0) {
+        u32 leadingZeros = __cntlzw((u32)flag);
+        s32 isZero = leadingZeros / 0x20;
+        *(s8 *)((u8 *)target + 0xE) = (s8)isZero;
     }
 }
 
