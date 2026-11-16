@@ -160,15 +160,18 @@ s32 OSDisableScheduler(void) {
     return oldCount;
 }
 
+/* Re-enable thread rescheduling by decrementing Reschedule (undoing one
+ * OSDisableScheduler call).  The decrement is made atomic by briefly disabling
+ * interrupts; the returned value is the previous count. */
 s32 OSEnableScheduler(void) {
-    s32 old;
-    BOOL enabled = OSDisableInterrupts();
+    s32 oldCount;
+    BOOL intEnabled = OSDisableInterrupts();
 
-    old = Reschedule--;
+    oldCount = Reschedule--;
 
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(intEnabled);
 
-    return old;
+    return oldCount;
 }
 
 void OSClearStack(u8 val) {
