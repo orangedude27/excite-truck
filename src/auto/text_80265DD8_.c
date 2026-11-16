@@ -407,7 +407,16 @@ void *fn_80266120(void *cursor) {
 }
 
 #pragma scheduling off
-void fn_80266150(void *arg0) { int zero; float f0; float f1; zero = 0; f0 = lbl_80563C2C; *(int *)((char *)arg0 + 4) = zero; *(int *)((char *)arg0 + 0) = zero; f1 = lbl_8055C4C0; *(float *)((char *)arg0 + 8) = f1; *(float *)((char *)arg0 + 0xC) = f0; }
+void fn_80266150(void *arg0) {
+    int zero = 0;
+    float f0 = lbl_80563C2C;
+    float f1;
+    *(int *)((char *)arg0 + 4) = zero;
+    *(int *)((char *)arg0 + 0) = zero;
+    f1 = lbl_8055C4C0;
+    *(float *)((char *)arg0 + 8) = f1;
+    *(float *)((char *)arg0 + 0xC) = f0;
+}
 #pragma scheduling on
 
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
@@ -1606,16 +1615,18 @@ extern float lbl_80563C44, lbl_80563C48, lbl_80563C2C, lbl_80563C34, lbl_80563C4
 extern float lbl_80563C98;
 extern int fn_80178CA4(void);
 #pragma dont_inline on
-int fn_80268BA4(int arg0) {
-    unsigned int shift = arg0 - 4;
-    int result = 0;
-    if (shift > 0x13)
+/* Returns 1 when the camera mode is one of the chase/replay modes that get the
+ * crash-volume crowd cheer (modes 4, 5, 6, 8, 9 and 23); 0 otherwise. */
+int fn_80268BA4(int cameraMode) {
+    unsigned int modeBit = cameraMode - 4;
+    int isCheerMode = 0;
+    if (modeBit > 0x13)
         goto done;
-    if (!((1U << shift) & 0x80037))
+    if (!((1U << modeBit) & 0x80037))
         goto done;
-    result = 1;
+    isCheerMode = 1;
 done:
-    return result;
+    return isCheerMode;
 }
 #pragma dont_inline reset
 
