@@ -2481,6 +2481,17 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
 }
 #pragma use_lmw_stmw reset
 
+namespace nw4hbm { namespace ut {
+/* Scoped interrupt disable (nw4hbm::ut::AutoInterruptLock). */
+class AutoInterruptLock {
+public:
+    AutoInterruptLock() { mOldState = OSDisableInterrupts(); }
+    ~AutoInterruptLock() { OSRestoreInterrupts(mOldState); }
+private:
+    int mOldState;
+};
+}}
+
 namespace nw4hbm { namespace snd { namespace detail {
 class AxVoice {
 public:
@@ -2491,10 +2502,17 @@ public:
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
-    unsigned int interrupt = OSDisableInterrupts();
-    int format = *(int *)((char *)arg0 + 0x118);
-    unsigned int value = (unsigned int)arg2;
+    unsigned int *voice;
+    unsigned int interrupt;
     unsigned int start;
+    unsigned int hi;
+    unsigned int lo;
+    int i;
+    unsigned int value;
+    int format;
+    interrupt = OSDisableInterrupts();
+    format = *(int *)((char *)arg0 + 0x118);
+    value = (unsigned int)arg2;
     if (arg2 != 0) value += 0x80000000;
     start = 0;
     switch (format) {
@@ -2511,10 +2529,10 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    unsigned int *voice = (unsigned int *)((char *)arg0 + arg1 * 0x10);
-    unsigned int hi = start >> 16;
-    unsigned int lo = start & 0xFFFF;
-    for (int i = 0; i < *(int *)((char *)arg0 + 0x108); i++, voice++) {
+    voice = (unsigned int *)((char *)arg0 + arg1 * 0x10);
+    hi = start >> 16;
+    lo = start & 0xFFFF;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x108); i++, voice++) {
         unsigned int ch = voice[3];
         unsigned int inner = OSDisableInterrupts();
         *(unsigned short *)(ch + 0x1B4) = hi;
