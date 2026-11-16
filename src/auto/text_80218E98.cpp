@@ -9587,13 +9587,14 @@ extern "C" s32 fn_80229F58(s32 arg0) {
     return arg0 + 0x254;
 }
 
-extern "C" s32 fn_80229F60(void *arg0) {
-    volatile u8 *value = (volatile u8 *)((char *)arg0 + 0x18);
-    s32 result = 0;
-    if (*value != 0) {
-        result = 2;
+extern "C" s32 fn_80229F60(void *widget) {
+    /* Return state 2 when this widget is active (flag +0x18), otherwise 0. */
+    volatile u8 *active = (volatile u8 *)((char *)widget + 0x18);
+    s32 state = 0;
+    if (*active != 0) {
+        state = 2;
     }
-    return result;
+    return state;
 }
 
 /* Deleting destructor of the horizontal slider widget fn_8021F678 builds
