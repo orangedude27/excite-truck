@@ -825,7 +825,7 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
     } else if (idx + 2 < *(int*)(track + 0x6D0)) {
         float inv_speed = one / *(float*)(node + 0x20);
         int next_idx = *(volatile int*)(obj + 0x3C) + 1;
-        unsigned int slot_ptr = *(volatile unsigned int*)(obj + 4);
+        char* slot_ptr = *(char* volatile*)(obj + 4);
         *(int*)(obj + 0x3C) = next_idx;
         float delta = farg0 - inv_speed;
         step -= one;
@@ -854,8 +854,7 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         return;
     }
 
-    unsigned int call_slot = *(unsigned int*)((char*)arg0 + 4);
-    char* call_track = *(char**)call_slot;
+    char* call_track = **(char***)((char*)arg0 + 4);
     int cur_idx = *(int*)((char*)arg0 + 0x3C);
     char* prev = GetTrackNodeLinear(call_track, cur_idx - 1);
     char* next = GetTrackNodeLinear(call_track, cur_idx + 1);
@@ -973,7 +972,9 @@ __declspec(section ".data") extern float lbl_80558DC4;
 extern "C" void fn_801FE448(void *arg0) {
     float delta = fn_801E7E24();
     if (!((float)__fabs((double)delta) <= lbl_80558DC4)) {
-        float threshold = lbl_80563034;
+        struct { float value; } thresholdStorage;
+        float &threshold = thresholdStorage.value;
+        threshold = lbl_80563034;
         char *item = (char *)arg0 + 4;
         int i = 0;
         while (i < *(int *)((char *)arg0 + 0x34)) {
