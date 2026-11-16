@@ -22,6 +22,7 @@ extern void fn_80015A20(void *, float *, float, float);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern void PSVECNormalize(void *, void *);
 extern float lbl_802FA788[];
+/* Callback table for the 32-record pool: fn_80273978 (delete), fn_80272C74, fn_80272738. */
 extern char lbl_80347364[];
 extern char lbl_8049A2C8[];
 extern char lbl_8049F9D8[];
