@@ -1214,15 +1214,17 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(long self, long shouldDe
     return self;
 }
 
-void fn_801EEF44(void *arg0, void *arg1) {
-    unsigned int index;
-    unsigned int base;
-    index = *(unsigned int *)((char *)arg1 + 0xFA8);
-    base = *(unsigned int *)((char *)lbl_80488648 + index * 4);
-    *(unsigned int *)((char *)arg0 + 0x16C) = base + 0x44;
-    *(unsigned int *)((char *)arg0 + 0x170) = base + 0xC8;
-    *(unsigned int *)((char *)arg0 + 0x174) = base + 0x148;
-    fn_801EDD7C(arg0, (long)arg1);
+void fn_801EEF44(void *renderState, void *vehicle) {
+    unsigned int slot;
+    unsigned int renderObject;
+    /* Look up the vehicle's render-object slot in the per-slot table, store three
+       data-block pointers from that object into renderState, then finish the setup. */
+    slot = *(unsigned int *)((char *)vehicle + 0xFA8);
+    renderObject = *(unsigned int *)((char *)lbl_80488648 + slot * 4);
+    *(unsigned int *)((char *)renderState + 0x16C) = renderObject + 0x44;
+    *(unsigned int *)((char *)renderState + 0x170) = renderObject + 0xC8;
+    *(unsigned int *)((char *)renderState + 0x174) = renderObject + 0x148;
+    fn_801EDD7C(renderState, (long)vehicle);
 }
 
 unsigned int fn_801EEF74(void) { return 1; }
