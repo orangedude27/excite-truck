@@ -174,6 +174,8 @@ int fn_802E4030(int object, int destroyFlag) {
 extern const char lbl_8034D0C0[];
 #define fileCdMsgCreateNotSupported lbl_8034D0C0 /* "filecd: create not supported (%s)" */
 #pragma scheduling invalid_target
+/* FileCd::create (vtable slot 0x0C): the disc file layer cannot create files,
+ * so it only reports the attempt and fails.  The message's %s is never filled in. */
 int fn_802E4070(void) {
     fn_802E30C8(fileCdMsgCreateNotSupported);
     return 0;
