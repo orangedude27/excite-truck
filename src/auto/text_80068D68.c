@@ -4902,12 +4902,15 @@ void fn_80070758(void) {
 }
 
 extern void fn_80070820(void);
-void fn_8007079C(u16 *arg0, u16 arg1) {
-    *arg0 = arg1;
+void fn_8007079C(u16 *p_buf, u16 event) {
+    /* Stamp an HCI message with its event code, then hand the buffer to the
+     * registered HCI-SU transport's send callback (interface +0xC); if no
+     * transport is registered, just release the buffer. */
+    *p_buf = event;
     if (lbl_8055DC68 != NULL) {
-        ((void (*)(void *))(*(u32 *)((u8 *)lbl_8055DC68 + 0xC)))(arg0);
+        ((void (*)(void *))(*(u32 *)((u8 *)lbl_8055DC68 + 0xC)))(p_buf);
     } else {
-        GKI_freebuf(arg0);
+        GKI_freebuf(p_buf);
     }
 }
 
