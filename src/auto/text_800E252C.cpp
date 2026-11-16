@@ -258,11 +258,11 @@ class SoundPlayer;
 // archive id, -1 while no sound is playing.
 struct SoundPlayerVt {
     virtual void v08();
-    virtual void v0C();
+    virtual void Start();            /* 0x0C start playing what is loaded */
     virtual void Stop();             /* 0x10 */
-    virtual void v14();
+    virtual void Pause(bool);        /* 0x14 */
     virtual int IsValid();           /* 0x18 still playing something */
-    virtual void v1C();
+    virtual int IsPrepared();        /* 0x1C its data is loaded and it can start */
     virtual void v20();
     virtual void v24();
     virtual void SetVolume(float);   /* 0x28 */
