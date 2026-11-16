@@ -133,6 +133,16 @@ extern struct Obj8028 { void **vtable; } *lbl_804B3238[];
 extern void fn_8028BD60(s32);
 extern void fn_8028CA70(s32);
 extern void fn_8028AB14(void);
+
+/* Effect-subsystem draw objects created in fn_8028A664: f6f0/f6f4 are the two
+   paint-splat emitters, f6f8 is the rotating 3-D trail emitter. The three draw
+   passes below advance them and retire finished explosion spawns. */
+#define gPaintEmitterA   lbl_8055F6F0
+#define gPaintEmitterB   lbl_8055F6F4
+#define gTrailEmitter    lbl_8055F6F8
+#define drawSplatEmitter fn_8028BD60
+#define drawTrailEmitter fn_8028CA70
+#define updateSpawnQueue fn_8028AB14
 extern void fn_8028BD5C(s32);
 extern void fn_8028BFEC(s32);
 extern void fn_8028C938(s32);
