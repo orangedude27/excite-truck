@@ -1311,9 +1311,10 @@ s32 fn_802C4EFC(s32* arg0) {
     return 0;
 }
 
-s32 fn_802C4F14(s32* arg0) {
-    if (arg0 != NULL) {
-        return arg0[4];
+s32 fn_802C4F14(s32* fields) {
+    /* Null-safe getter for word 4 of a canvas metrics object (used as a tile/cell count by the drawing code); returns 0 when absent. */
+    if (fields != NULL) {
+        return fields[4];
     }
     return 0;
 }
