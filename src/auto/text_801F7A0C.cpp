@@ -618,8 +618,9 @@ extern "C" s32 fn_802C6C20(f32);
 extern "C" void fn_80128668(void);
 extern "C" const char lbl_8033AFDC[];
 extern "C" const f32 lbl_80562FF8;
-extern "C" s32 fn_801F80FC(const char *arg) {
-    return stricmp(arg, lbl_8033B00C) == 0;
+extern "C" s32 fn_801F80FC(const char *typeName) {
+    /* Non-zero when typeName names the "composite" resource type (case-insensitive). */
+    return stricmp(typeName, lbl_8033B00C) == 0;
 }
 
 extern "C" const char lbl_8033B018[];
