@@ -2894,9 +2894,10 @@ extern "C" s32 fn_800A8EA0(void *arg0, u32 arg1, void **arg2) {
 
 extern "C" s32 VFiPFCACHE_DoReadPage(void *, s32, s32, s32, s32);
 extern "C" s32 VFiPFCACHE_DoReadNumSector(void *, s32, s32, u32, s32, s32);
-extern "C" s32 fn_800A8EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 temp_r3 = VFiPFCACHE_DoReadPage(arg0, (s32)((u8 *)arg0 + 0x1634), arg1, arg2, arg3);
-    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+extern "C" s32 fn_800A8EE0(void *cache, s32 sector, s32 pageOut, s32 claimPage, s32 unused) {
+    /* Read a page via the data-page list (+0x1634); return the result clamped to <= 0. */
+    s32 result = VFiPFCACHE_DoReadPage(cache, (s32)((u8 *)cache + 0x1634), sector, pageOut, claimPage);
+    return result & ((s32)(-result | result) >> 31);
 }
 
 extern "C" s32 fn_800A8050(void *, s32, s32, s32, s32);
