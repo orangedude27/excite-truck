@@ -12,7 +12,6 @@ DtorLink* __global_destructor_chain = NULL;
 
 /* Register a global object by pushing its destructor entry onto the front of the global chain. */
 void __register_global_object(void* object, DtorFunction dtor, DtorLink* link) {
-    /* Push a global/static object's destructor entry onto the front of the chain. */
     link->next = __global_destructor_chain;
     link->dtor = dtor;
     link->object = object;
