@@ -2186,9 +2186,10 @@ extern "C" void fn_8019EC84(void* owner) {
     part->slot0x4C();
 }
 
-extern "C" void fn_8019ECA4(VTab13* this_, s32 arg1) {
-    *(s32*)((u8*)this_ + 8) = arg1;
-    this_->slot0x34(arg1 + 4);
+extern "C" void fn_8019ECA4(VTab13* this_, s32 value) {
+    /* Store value at +8 and forward value+4 to this object's slot-0x34 virtual method. */
+    *(s32*)((u8*)this_ + 8) = value;
+    this_->slot0x34(value + 4);
 }
 
 extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
@@ -3870,61 +3871,104 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
-    f32 point[3];
-    f32 corners[24];
-    register f32 x, y, z;
-    z = *(f32 *)((char *)arg0 + 0x2C);
-    y = *(f32 *)((char *)arg0 + 0x28);
-    x = *(f32 *)((char *)arg0 + 0x24);
-    register f32 nx, ny, nz;
-    ny = -y;
-    nx = -x;
-    corners[1]=y;
-    nz = -z;
-    corners[0]=x;
-    corners[2]=z;
-    corners[3]=nx; corners[4]=y; corners[5]=z;
-    corners[6]=x; corners[7]=ny; corners[8]=z;
-    corners[9]=nx; corners[10]=ny; corners[11]=z;
-    corners[12]=x; corners[13]=y; corners[14]=nz;
-    corners[15]=nx; corners[16]=y; corners[17]=nz;
-    corners[18]=x; corners[19]=ny; corners[20]=nz;
-    corners[21]=nx; corners[22]=ny; corners[23]=nz;
-    f32 *matrix = (f32 *)((VTab1A1E7C *)arg0)->Call();
-    min[0]=matrix[9]; min[1]=matrix[10]; min[2]=matrix[11];
-    matrix = (f32 *)((VTab1A1E7C *)arg0)->Call();
-    max[0]=matrix[9]; max[1]=matrix[10]; max[2]=matrix[11];
-    f32 *dst = point;
-    f32 *cur = corners;
-    f32 *src = corners;
-    int i = 0;
-    for (; i < 8; i++) {
-        matrix = (f32 *)((VTab1A1E7C *)arg0)->Call();
-        if (dst == cur) {
-            f32 m3 = matrix[3], m4 = matrix[4], m5 = matrix[5];
-            f32 m0 = matrix[0], m1 = matrix[1], m2 = matrix[2];
-            f32 m6 = matrix[6], m7 = matrix[7], m8 = matrix[8];
-            f32 sx = src[0], sy = src[1], sz = src[2];
-            f32 t0 = (sy * m3 + sx * m0) + sz * m6;
-            f32 t1 = (sy * m4 + sx * m1) + sz * m7;
-            f32 t2 = (sy * m5 + sx * m2) + sz * m8;
-            dst[0] = t0; dst[1] = t1; dst[2] = t2;
-        } else {
-            f32 sx = src[0], sy = src[1], sz = src[2];
-            dst[0] = (sy * matrix[3] + sx * matrix[0]) + sz * matrix[6];
-            dst[1] = (sy * matrix[4] + sx * matrix[1]) + sz * matrix[7];
-            dst[2] = (sy * matrix[5] + sx * matrix[2]) + sz * matrix[8];
-        }
-        point[0] += matrix[9]; point[1] += matrix[10]; point[2] += matrix[11];
-        min[0] = (min[0] < point[0]) ? point[0] : min[0];
-        min[1] = (min[1] < point[1]) ? point[1] : min[1];
-        min[2] = (min[2] < point[2]) ? point[2] : min[2];
-        max[0] = (max[0] > point[0]) ? point[0] : max[0];
-        max[1] = (max[1] > point[1]) ? point[1] : max[1];
-        max[2] = (max[2] > point[2]) ? point[2] : max[2];
-        cur += 3; src += 3;
+extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max)
+{
+  f32 point[3];
+  f32 corners[24];
+  register f32 x;
+  register f32 y;
+  register f32 z;
+  z = *((f32 *) (((char *) arg0) + 0x2C));
+  y = *((f32 *) (((char *) arg0) + 0x28));
+  x = *((f32 *) (((char *) arg0) + 0x24));
+  register f32 nx;
+  register f32 ny;
+  register f32 nz;
+  ny = -y;
+  nx = -x;
+  corners[1] = y;
+  nz = -z;
+  corners[0] = x;
+  corners[2] = z;
+  corners[3] = nx;
+  corners[4] = y;
+  corners[5] = z;
+  corners[6] = x;
+  corners[7] = ny;
+  corners[8] = z;
+  corners[9] = nx;
+  corners[10] = ny;
+  corners[11] = z;
+  corners[12] = x;
+  corners[13] = y;
+  corners[14] = nz;
+  corners[15] = nx;
+  corners[16] = y;
+  corners[17] = nz;
+  corners[18] = x;
+  corners[19] = ny;
+  corners[20] = nz;
+  corners[21] = nx;
+  corners[22] = ny;
+  corners[23] = nz;
+  f32 *matrix = (f32 *) ((VTab1A1E7C *) arg0)->Call();
+  min[0] = matrix[9];
+  min[1] = matrix[10];
+  min[2] = matrix[11];
+  matrix = (f32 *) ((VTab1A1E7C *) arg0)->Call();
+  max[0] = matrix[9];
+  max[1] = matrix[10];
+  max[2] = matrix[11];
+  f32 *dst = point;
+  f32 *cur = corners;
+  f32 *src = corners;
+  int i = 0;
+  for (; i < 8; i++)
+  {
+    matrix = (f32 *) ((VTab1A1E7C *) arg0)->Call();
+    if (dst == cur)
+    {
+      f32 m3 = matrix[3];
+      f32 m4 = matrix[4];
+      f32 m5 = matrix[5];
+      f32 m0 = matrix[0];
+      f32 m1 = matrix[1];
+      f32 m2 = matrix[2];
+      f32 m6 = matrix[6];
+      f32 m7 = matrix[7];
+      f32 m8 = matrix[8];
+      f32 sx = src[0];
+      f32 sy = src[1];
+      f32 sz = src[2];
+      f32 t0 = ((sy * m3) + (sx * m0)) + (sz * m6);
+      f32 t1 = ((sy * m4) + (sx * m1)) + (sz * m7);
+      f32 t2 = ((sy * m5) + (sx * m2)) + (sz * m8);
+      dst[0] = t0;
+      dst[1] = t1;
+      dst[2] = t2;
     }
+    else
+    {
+      f32 sx = src[0];
+      f32 sy = src[1];
+      f32 sz = src[2];
+      dst[0] = ((sy * matrix[3]) + (sx * matrix[0])) + (sz * matrix[6]);
+      dst[1] = ((sy * matrix[4]) + (sx * matrix[1])) + (sz * matrix[7]);
+      dst[2] = ((sy * matrix[5]) + (sx * matrix[2])) + (sz * matrix[8]);
+    }
+    point[0] += matrix[9];
+    point[1] += matrix[10];
+    point[2] += matrix[11];
+    min[0] = (min[0] < point[0]) ? (point[0]) : (min[0]);
+    min[1] = (min[1] < point[1]) ? (point[1]) : (min[1]);
+    min[2] = (point[2] > min[2]) ? (point[2]) : (min[2]);
+    max[0] = (max[0] > point[0]) ? (point[0]) : (max[0]);
+    max[1] = (max[1] > point[1]) ? (point[1]) : (max[1]);
+    max[2] = (max[2] > point[2]) ? (point[2]) : (max[2]);
+    cur += 3;
+    src += 3;
+  }
+
 }
 #pragma pop
 extern "C" void fn_801A22A4(void* obj) {
