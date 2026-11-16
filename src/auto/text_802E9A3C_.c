@@ -52,15 +52,16 @@ extern int fn_802E2C20(void);
 extern long fn_802E30C8(char *, long);
 #pragma push
 #pragma scheduling invalid_target
-long *fn_802E9A3C(long arg0, long arg1) {
-    long *p = lbl_80507600;
-    lbl_80560060 = 1;
-    if (p != 0) {
-        p[1] = arg0;
-        p[0] = (long)&lbl_8034E9C8;
-        p[3] = arg1;
+/* Install the memory-backed MP3 stream vtable and buffer, mark the stream open, and return it. */
+long *fn_802E9A3C(long buffer, long length) {
+    Mp3Stream *stream = (Mp3Stream *)lbl_80507600;
+    mp3StreamOpen = 1;
+    if (stream != 0) {
+        stream->file = buffer;
+        stream->vtable = (long *)&lbl_8034E9C8;
+        stream->length = length;
     }
-    return p;
+    return (long *)stream;
 }
 #pragma scheduling on
 #pragma pop
