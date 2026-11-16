@@ -1817,18 +1817,14 @@ s32 fn_801194E4(void *voiceState) {
     return current;
 }
 
-void fn_80119558(void *arg0) {
-    /* Start voice playback state and snapshot the current read position and tick. */
-#define voiceState ((s32 *)((u8 *)arg0 + 0x34))
-#define readPosition ((s32 *)((u8 *)arg0 + 0x48))
-#define startTick ((s32 *)((u8 *)arg0 + 0x50))
-    *voiceState = 1;
-    fn_80119498(arg0);
-    *readPosition = fn_801194E4(arg0);
-    *startTick = fn_80116D30();
-#undef voiceState
-#undef readPosition
-#undef startTick
+/* Start the voice pair and record the initial read position/time in its owning
+ * StreamPlayer (voices is &StreamPlayer.voices; +0x34/+0x38/+0x48/+0x50 alias
+ * the player's looping, paused, readPos and readPosTime). */
+void fn_80119558(void *voices) {
+    *(s32 *)((u8 *)voices + 0x34) = 1;
+    fn_80119498(voices);
+    *(s32 *)((u8 *)voices + 0x48) = fn_801194E4(voices);
+    *(s32 *)((u8 *)voices + 0x50) = fn_80116D30();
 }
 
 void fn_801195A0(void *arg0) {
