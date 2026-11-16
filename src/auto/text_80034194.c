@@ -235,7 +235,7 @@ typedef enum {
 
 // The drive commands stateReady starts with no resume point held over.  The
 // SDK's dvd.c has the full COMMAND_* list; these are the ones this unit tests.
-#define COMMAND_INQUIRY         13
+#define COMMAND_INQUIRY         14
 #define COMMAND_RESET           32
 #define COMMAND_CLOSE_PARTITION 35
 
