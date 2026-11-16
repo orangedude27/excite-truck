@@ -1215,9 +1215,12 @@ int fn_80265B9C(int object, int deleteFlag) {
     return object;
 }
 
-int fn_80265BDC(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_80265BDC(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 int fn_80265C1C(int arg0, int arg1) {
