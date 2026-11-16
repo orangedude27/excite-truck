@@ -57,12 +57,13 @@ __declspec(section ".sdata") extern const char lbl_8055CE10[];
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
-extern "C" int fn_802B5448(void *arg0) {
-    class Obj {
+extern "C" int fn_802B5448(void *item) {
+    /* RealName: UMatItem_IsInclude (returns nonzero if the item's name is "include"). */
+    class UMatNamedItem {
     public:
         virtual const char *getName();
     };
-    return stricmp((char *)&lbl_8055CE10, ((Obj *)arg0)->getName()) == 0;
+    return stricmp((char *)&lbl_8055CE10, ((UMatNamedItem *)item)->getName()) == 0;
 }
 #pragma cplusplus on
 extern "C" int fn_802B5488(void *arg0) {
@@ -166,27 +167,13 @@ __declspec(section ".sdata") extern const char lbl_8055CE20[];
 extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
     class Manager {
     public:
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
+        virtual void f0(); virtual void f1(); virtual void f2();
         virtual void *getName(const char *);
         virtual void *getNamed(const char *, void *);
-        virtual void *f5();
-        virtual void *f6();
-        virtual void *f7();
-        virtual void *f8();
-        virtual void *f9();
-        virtual void *f10();
-        virtual void *f11();
-        virtual void *f12();
-        virtual void *f13();
-        virtual void *f14();
-        virtual void *f15();
-        virtual void *f16();
-        virtual void *f17();
-        virtual void *f18();
-        virtual void *f19();
-        virtual void *f20();
+        virtual void *f5(); virtual void *f6(); virtual void *f7(); virtual void *f8();
+        virtual void *f9(); virtual void *f10(); virtual void *f11(); virtual void *f12();
+        virtual void *f13(); virtual void *f14(); virtual void *f15(); virtual void *f16();
+        virtual void *f17(); virtual void *f18(); virtual void *f19(); virtual void *f20();
         virtual void *getLarge(const char *);
     };
     char nameBuffer[0x20];
@@ -196,6 +183,7 @@ extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
     register int i;
     register Manager *manager;
     register void *item;
+    register int tailItem;
     register int result;
     manager = (Manager *)arg1;
     labels = lbl_8034A510;
@@ -217,14 +205,14 @@ extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
         i++;
         entry += 8;
     } while (i < 4);
-    item = manager->getNamed(labels + 0x6C, 0);
-    if (item != 0) {
-        result = fn_802B2C34(fn_802C6B44, item);
+    tailItem = (int)manager->getNamed(labels + 0x6C, 0);
+    if (tailItem != 0) {
+        result = fn_802B2C34(fn_802C6B44, (void *)tailItem);
     } else {
         result = 0;
     }
     if (result != 0) {
-        *(int *)((char *)arg0 + 0x2C) = fn_802C6DC4(item, result, 0, 0);
+        *(int *)((char *)arg0 + 0x2C) = fn_802C6DC4((void *)tailItem, result, 0, 0);
     } else {
         *(int *)((char *)arg0 + 0x2C) = -1;
     }
