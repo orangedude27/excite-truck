@@ -1517,12 +1517,13 @@ void fn_801D6618(UnkStruct_801D701C *arg0) {
 }
 #pragma scheduling reset
 
-int fn_801D6630(int arg0, int arg1) {
-    if (arg0 != 0) {
-        ((int *)arg0)[1] = 0;
-        if (arg1 > 0) fn_80128668();
+/* Destroy/teardown helper: clear the object's state field at +4 and optionally delete it when deleteFlag > 0. */
+int fn_801D6630(int object, int deleteFlag) {
+    if (object != 0) {
+        ((int *)object)[1] = 0;
+        if (deleteFlag > 0) fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
