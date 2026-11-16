@@ -6726,91 +6726,106 @@ void fn_8005E8C0(u32 r3, u32 r4)
 	OSSwitchFiberEx(r3, r4, 0, 0, fn_8005E298, (u8*)&lbl_8038F500 + 0x1000);
 }
 
+/*
+ * WPADiResetChannel: bring one channel's control block back to its
+ * "just connected" state.  The connection handler (fn_8005FCCC) calls it for
+ * the channel handed to a Wii Remote that has just opened a link: it clears
+ * the read/extension state, the status-report fields, the auto sampling
+ * buffer and both command queues, marks the channel as not handshaked yet,
+ * stamps the two activity timers with the current system time and zeroes the
+ * channel's entry in the connection table.
+ */
 void fn_8005E8E0(s32 chan)
 {
     WPADCB* pCB = lbl_8038F4F0[chan];
     u8* p = (u8*)pCB;
-    s32 enabled;
-    u8 value = 0xFD;
-    int m1 = -1;
-    *(u8*)(p + 0x806) = 0;
-    *(u32*)(p + 0x790) = 0;
-    *(u32*)(p + 0x814) = 0;
-    *(u32*)(p + 0x7DC) = 0;
-    *(u32*)(p + 0x7E0) = 0;
-    *(u32*)(p + 0x7E8) = 0;
-    *(u32*)(p + 0x7EC) = 0;
-    *(u32*)(p + 0x7F0) = 0;
-    *(u32*)(p + 0x7F4) = 0;
-    *(u32*)(p + 0x7F8) = 0;
-    *(u32*)(p + 0x7FC) = m1;
-    p[0x801] = value;
-    p[0x802] = 0;
+    BOOL enabled;
+    u8 extKind = WPAD_DEV_NOT_FOUND;
+    s32 invalid = WUD_DEV_HANDLE_INVALID;
+    pCB->rxBufSel = 0;
+    pCB->infoNext.dpd = 0;
+    pCB->UNK_0x814 = 0;
+    pCB->readCB = NULL;
+    pCB->readSamplingCB = NULL;
+    pCB->copyOutCB = NULL;
+    pCB->autoSamplingBuf = NULL;
+    pCB->autoSamplingIndex = 0;
+    pCB->autoSamplingSize = 0;
+    pCB->readFormat = WPAD_FMT_CORE_BTN;
+    pCB->readStatus = WPAD_ERR_NO_CONTROLLER;
+    pCB->UNK_0x801 = extKind;
+    pCB->UNK_0x802 = 0;
+    /* 0x838..0x873 has no established WPADCB names yet: 0x838 six halfwords,
+     * 0x848 a timestamp, 0x850..0x853 two flags and a "same data" counter,
+     * 0x854 the accelerometer calibration and 0x874 the 64-byte buffer a
+     * memory read lands in. */
     p[0x851] = 0;
     *(u16*)(p + 0x852) = 0;
-    p[0x800] = 0;
-    *(u16*)(p + 0x804) = 12;
+    pCB->UNK_0x800 = 0;
+    pCB->dpdObjSize = 12;
     *(u16*)(p + 0x838) = 0;
     *(u16*)(p + 0x83A) = 0;
     *(u16*)(p + 0x83C) = 0;
     *(u16*)(p + 0x83E) = 0;
     *(u16*)(p + 0x840) = 0;
     *(u16*)(p + 0x842) = 0;
-    *(u64*)(p + 0x830) = __OSGetSystemTime();
+    pCB->lastRxTime = __OSGetSystemTime();
     *(u64*)(p + 0x848) = __OSGetSystemTime();
     p[0x850] = 0;
-    p[0x807] = 0;
-    *(u32*)(p + 0x808) = 0;
+    pCB->UNK_0x807 = 0;
+    pCB->UNK_0x808 = 0;
     *(u32*)(p + 0x8B4) = 0;
     *(u32*)(p + 0x8B8) = 0;
     *(u16*)(p + 0x8C0) = 0;
     *(u32*)(p + 0x8BC) = 0;
-    *(s8*)(p + 0x803) = (s8)m1;
-    *(u32*)(p + 0x818) = 0;
-    *(u32*)(p + 0x81C) = 0;
-    *(u32*)(p + 0x820) = 0;
-    p[0x80C] = 1;
-    p[0x80D] = 0;
-    p[0x80E] = 0;
+    pCB->extDevHandle = (s8)invalid;
+    pCB->connected = 0;
+    pCB->handshakeDone = 0;
+    pCB->UNK_0x820 = 0;
+    pCB->radioLow = 1;
+    pCB->radioLowCount = 0;
+    pCB->pendingCmdCount = 0;
     p[0x8C2] = 0;
     p[0x8C3] = 0;
     *(u16*)(p + 0x8C4) = 0;
     p[0x8C6] = 1;
-    memset(p + 0x778, 0, 0x18);
+    memset(&pCB->info, 0, sizeof(pCB->info));
     memset(p + 0x874, 0, 0x40);
-    memset(p + 0xA0, 0, 0xC0);
-    memset(p + 0x40, 0, 0x60);
+    memset(pCB->rxBufs, 0, sizeof(pCB->rxBufs));
+    memset(pCB->rxBufMain, 0, RX_BUFFER_SIZE);
     memset(p + 0x794, 0, 0x2E);
-    memset(p + 0x7C2, 0, 0x1A);
+    memset(&pCB->extCalib, 0, 0x1A);
     memset(p + 0x854, 0, 0x10);
     memset(p + 0x864, 0, 8);
     memset(p + 0x86C, 0, 8);
-    memset(p, 0, 0x38);
-    *(u32*)(p + 0x38) = m1;
-    *(u32*)(p + 0x3C) = m1;
-    *(void**)(p + 0x164) = p + 0x16C;
-    *(u32*)(p + 0x168) = 0x18;
-    *(void**)(p + 0x5F0) = p + 0x5F8;
-    *(u32*)(p + 0x5F4) = 8;
+    memset(&pCB->gameInfo, 0, sizeof(WPADGameInfo));
+    pCB->UNK_0x38[0] = invalid;
+    pCB->UNK_0x38[1] = invalid;
+    pCB->stdCmdQueue.buffer = pCB->stdCmdQueueList;
+    pCB->stdCmdQueue.capacity = ARRAY_SIZE(pCB->stdCmdQueueList);
+    pCB->extCmdQueue.buffer = pCB->extCmdQueueList;
+    pCB->extCmdQueue.capacity = 8;
     enabled = OSDisableInterrupts();
-    p[0x160] = 0;
-    p[0x161] = 0;
-    memset(*(void**)(p + 0x164), 0, *(u32*)(p + 0x168) * 0x30);
+    pCB->stdCmdQueue.front = 0;
+    pCB->stdCmdQueue.back = 0;
+    memset(pCB->stdCmdQueue.buffer, 0,
+           pCB->stdCmdQueue.capacity * sizeof(WPADCommand));
     OSRestoreInterrupts(enabled);
     enabled = OSDisableInterrupts();
-    p[0x5EC] = 0;
-    p[0x5ED] = 0;
-    memset(*(void**)(p + 0x5F0), 0, *(u32*)(p + 0x5F4) * 0x30);
+    pCB->extCmdQueue.front = 0;
+    pCB->extCmdQueue.back = 0;
+    memset(pCB->extCmdQueue.buffer, 0,
+           pCB->extCmdQueue.capacity * sizeof(WPADCommand));
     OSRestoreInterrupts(enabled);
     {
-        u32 i = (u32)chan * 0x14;
-        u8 *tbl = lbl_80392900;
-        *(u32*)(tbl + i) = 0;
-        tbl += i;
-        *(u32*)(tbl + 4) = 0;
-        *(u16*)(tbl + 8) = 0;
-        *(u32*)(tbl + 12) = 0;
-        *(u32*)(tbl + 16) = 0;
+        u32 entryOff = (u32)chan * sizeof(WPADChanEntry);
+        u8* entry = lbl_80392900;
+        *(u32*)(entry + entryOff) = 0;
+        entry += entryOff;
+        *(u32*)(entry + 4) = 0;
+        *(u16*)(entry + 8) = 0;
+        *(u32*)(entry + 12) = 0;
+        *(u32*)(entry + 16) = 0;
     }
 }
 
