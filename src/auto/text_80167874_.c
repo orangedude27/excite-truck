@@ -469,11 +469,12 @@ s32 fn_80167E18(s32 object, s32 deleteFlag) {
     return object;
 }
 
-s32 fn_80167E58(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80167E58(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 /* fn_80167E98: scalar deleting-destructor style helper — clears the object's
