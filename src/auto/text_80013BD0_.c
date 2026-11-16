@@ -346,17 +346,16 @@ extern "C" void *fn_80014524(void *object, s32 index) {
 
 #pragma scheduling reset
 void fn_80014638(void *arg0) {
-    u8 flag = 0;
-    s32 count = 0;
     f32 zero = lbl_80560368;
-    s32 six = 6;
+    s32 a = 0;
     f32 one = lbl_80560398;
+    s32 six = 6;
     *(s32 *)((u8 *)arg0 + 0x14) = six;
     *(f32 *)((u8 *)arg0 + 0x1C) = one;
-    *(u8 *)((u8 *)arg0 + 0x20) = flag;
+    *(u8 *)((u8 *)arg0 + 0x20) = a;
     *(f32 *)((u8 *)arg0 + 0x2C) = zero;
     *(f32 *)((u8 *)arg0 + 0x28) = zero;
-    *(s32 *)((u8 *)arg0 + 0x24) = count;
+    *(s32 *)((u8 *)arg0 + 0x24) = a;
 }
 #pragma scheduling invalid_target
 extern u8 lbl_802FCE18[];
