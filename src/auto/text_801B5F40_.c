@@ -171,19 +171,21 @@ void fn_801B63E0(void **head, s32 value) {
 
 #pragma scheduling on
 #pragma dont_inline on
+/* Remove the first node storing value from a PhobList and recycle the node onto
+ * the free list; log "PhobList: removing unknown phob" if no node matched. */
 void fn_801B6428(void **head, void *value) {
-    void *node = *head;
-    void *prev;
-    void *cur;
-    if (*(void **)node == value) {
-        *head = *(void **)((u8 *)node + 4);
+    PhobNode *node = *head;
+    PhobNode *prev;
+    PhobNode *cur;
+    if ((void *)node->value == value) {
+        *head = node->next;
         __AXPushCallbackStack(node);
         return;
     }
     prev = node;
-    while ((cur = *(void **)((u8 *)prev + 4)) != 0) {
-        if (*(void **)cur == value) {
-            *(void **)((u8 *)prev + 4) = *(void **)((u8 *)cur + 4);
+    while ((cur = prev->next) != 0) {
+        if ((void *)cur->value == value) {
+            prev->next = cur->next;
             __AXPushCallbackStack(cur);
             return;
         }
