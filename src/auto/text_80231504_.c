@@ -654,7 +654,7 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     spC = farg0;
     sp10 = farg1;
     sp14 = arg2;
-    *(u8 *)&lbl_8055F074 = (arg2 == 0xFF000000);
+    lbl_8055F074 = (arg2 == 0xFF000000);
     ((void (*)(u8 **, u8 **))fn_80232024)((u8 **)&sp8, (u8 **)&sp14);
     var_r31 = 1;
     if (*(u32 *)((u8 *)arg1 + 8) != 0)
@@ -1669,7 +1669,7 @@ void fn_8023423C(s32 arg0, s32 arg1) {
             f32 delta;
             height = font[4];
             delta = (f32)height * speed;
-            verticalBase = (u8 *)lbl_8055F06C;
+            verticalBase = (u8 *)*(volatile s32 *)&lbl_8055F06C;
             *(f32 *)(verticalBase + offset + 0x44) -= delta * lbl_80563688;
         }
     }
