@@ -41,16 +41,18 @@ void* fn_801DF678(void* this_, int deleteFlags) {
 }
 
 #pragma scheduling invalid_target
-void fn_801DF6D0(void* arg0) {
+void fn_801DF6D0(void* elem) {
+    /* Initialize one pool element: clear its counters, point its two default
+     * pointers at the shared empty value, and set the index word to -1. */
     int zero = 0;
     void* ptr = &lbl_8055AE2C;
-    *(int*)((char*)arg0 + 0x18) = zero;
-    *(void**)((char*)arg0 + 4) = ptr;
-    *(void**)((char*)arg0 + 8) = ptr;
-    *(char*)arg0 = zero;
-    *(int*)((char*)arg0 + 0xC) = zero;
-    *(int*)((char*)arg0 + 0x10) = zero;
-    *(int*)((char*)arg0 + 0x14) = -1;
+    *(int*)((char*)elem + 0x18) = zero;
+    *(void**)((char*)elem + 4) = ptr;
+    *(void**)((char*)elem + 8) = ptr;
+    *(char*)elem = zero;
+    *(int*)((char*)elem + 0xC) = zero;
+    *(int*)((char*)elem + 0x10) = zero;
+    *(int*)((char*)elem + 0x14) = -1;
 }
 #pragma scheduling on
 extern void *fn_801284F8(int, void *);
