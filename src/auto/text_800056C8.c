@@ -1714,13 +1714,15 @@ void fn_800077E4(void *arg0) {
         fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
 }
+/* If the input object's 0x20 flag is clear, queue a value-0x20 one-shot override
+ * for the current player (session + 0x1C). */
 void fn_80007848(void) {
-    void *base = lbl_8055D350;
-    void *object = *(void **)((u8 *)base + 0x2C);
-    if ((*(u32 *)((u8 *)object + 0x2C0) & 0x20) != 0) {
+    void *session = lbl_8055D350;
+    void *input = *(void **)((u8 *)session + 0x2C);
+    if ((*(u32 *)((u8 *)input + 0x2C0) & 0x20) != 0) {
         return;
     }
-    fn_8000C630(0x20, *(s32 *)((u8 *)base + 0x1C));
+    fn_8000C630(0x20, *(s32 *)((u8 *)session + 0x1C));
 }
 
 /* UI message callback: only handle message 0x3E8 when the context is null, forwarding the low 16 bits of param to fn_801B87A0; otherwise return 0. */
