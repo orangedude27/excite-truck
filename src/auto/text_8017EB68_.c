@@ -1588,12 +1588,15 @@ unsigned char fn_801817AC(void *arg0) {
     return *((unsigned char *)arg0 + 0x338);
 }
 
-int fn_801817B4(void *arg0) {
-    int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x340) != 0 || fn_801A8EE4((char *)arg0 + 0x9C) != 0) {
-        result = 1;
+/* RealName: IsSubobjectActiveAt9C (tentative). Returns 1 if object has flag set at 0x340 or the subobject at offset 0x9C is active per fn_801A8EE4, else 0. */
+int fn_801817B4(void *object) {
+    int isActive = 0;
+
+    if (*(unsigned char *)((char *)object + 0x340) != 0 || fn_801A8EE4((char *)object + 0x9C) != 0) {
+        isActive = 1;
     }
-    return result;
+
+    return isActive;
 }
 
 /* RealName: IsSubobjectActiveAt8C (tentative). Returns 1 if object has flag set at 0x340 or the subobject at offset 0x8C is active per fn_801A8EE4, else 0. */
