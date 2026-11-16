@@ -188,6 +188,7 @@ extern "C" signed char lbl_8055E954;
 extern "C" char lbl_804422F0[];
 extern "C" void fn_801D5730(void);
 extern "C" void fn_801D483C(void) {
+    /* Clears the active flag, releases the global object at lbl_804422F0 (virtual slot 2, arg 1) if present, and runs cleanup. */
     struct TObjD1Arg { virtual void d0(int); };
     lbl_8055E954 = 0;
     TObjD1Arg *obj = *(TObjD1Arg **)lbl_804422F0;
