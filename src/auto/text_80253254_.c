@@ -667,28 +667,30 @@ void fn_8025419C(void *arg0) {
 extern void fn_802C7AE0(s32, void *, s32, float);
 #define kTransformParam lbl_80563A2C
 #pragma scheduling invalid_target
-void fn_80254354(void *arg0) {
-    extern const float lbl_80563A2C;
-    u8 *p;
-    s32 i;
-    s32 var_r0;
-    fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x14), (u8 *)arg0 + 0x598, -1, lbl_80563A2C);
-    p = (u8 *)arg0 + 0x5D8;
-    i = 0;
+/* Applies a transform to the vehicle's shared buffer, then binds one of two model
+   handles to each of four 0x30-byte part slots (first two use +0x18, last two +0x1C). */
+void fn_80254354(void *vehicle) {
+    extern const float kTransformParam;
+    u8 *slot;
+    s32 partIndex;
+    s32 usePrimaryModel;
+    fn_802C7AE0(*(s32 *)((u8 *)vehicle + 0x14), (u8 *)vehicle + 0x598, -1, kTransformParam);
+    slot = (u8 *)vehicle + 0x5D8;
+    partIndex = 0;
     do {
-        var_r0 = 0;
-        if (i == 0) goto set_result;
-        if (i != 1) goto result_done;
+        usePrimaryModel = 0;
+        if (partIndex == 0) goto set_result;
+        if (partIndex != 1) goto result_done;
       set_result:
-        var_r0 = 1;
+        usePrimaryModel = 1;
       result_done:
-        if (var_r0 != 0)
-            fn_801F1474(*(s32 *)((u8 *)arg0 + 0x18), p, lbl_80563A2C);
+        if (usePrimaryModel != 0)
+            fn_801F1474(*(s32 *)((u8 *)vehicle + 0x18), slot, kTransformParam);
         else
-            fn_801F1474(*(s32 *)((u8 *)arg0 + 0x1C), p, lbl_80563A2C);
-        i++;
-        p += 0x30;
-    } while (i < 4);
+            fn_801F1474(*(s32 *)((u8 *)vehicle + 0x1C), slot, kTransformParam);
+        partIndex++;
+        slot += 0x30;
+    } while (partIndex < 4);
 }
 #pragma scheduling on
 void fn_802543FC(void *arg0) {
