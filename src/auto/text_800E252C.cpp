@@ -2043,19 +2043,20 @@ extern "C" void fn_800E5464(void *arg0, float arg1) {
     }
 }
 
-extern "C" void fn_800E54A8(void *arg0, float arg1) {
-    float value;
-    if (arg1 > lbl_80560F54) {
-        value = lbl_80560F54;
-    } else if (arg1 < lbl_80560F3C) {
-        value = lbl_80560F3C;
+extern "C" void fn_800E54A8(void *obj, float value) {
+    /* Clamp value to [0.0, 2.0], store at +0x12C if changed, and set the 0x20 flag. */
+    float clamped;
+    if (value > lbl_80560F54) {
+        clamped = lbl_80560F54;
+    } else if (value < lbl_80560F3C) {
+        clamped = lbl_80560F3C;
     } else {
-        value = arg1;
+        clamped = value;
     }
-    float *field = (float *)((char *)arg0 + 0x12C);
-    if (value != *field) {
-        unsigned char *flags = (unsigned char *)arg0 + 0x123;
-        *field = value;
+    float *field = (float *)((char *)obj + 0x12C);
+    if (clamped != *field) {
+        unsigned char *flags = (unsigned char *)obj + 0x123;
+        *field = clamped;
         *flags |= 0x20;
     }
 }
