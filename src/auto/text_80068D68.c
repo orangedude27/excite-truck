@@ -25288,9 +25288,10 @@ UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle)
 #define BTE_TRACE_LEVEL_OFFSET 0x4630 /* byte offset in lbl_803C4C40 of the BTE trace/debug level */
 #define BTE_TRACE_LEVEL_QUERY  0xFF    /* passed to leave the stored level unchanged (query only) */
 
-u8 fn_80096670(u8 value) {
-    if (value != 0xFF) lbl_803C4C40[0x4630] = value;
-    return lbl_803C4C40[0x4630];
+u8 fn_80096670(u8 level) {
+    /* Set the BTE trace level in the control block, or read it unchanged when level is BTE_TRACE_LEVEL_QUERY (0xFF). */
+    if (level != BTE_TRACE_LEVEL_QUERY) lbl_803C4C40[BTE_TRACE_LEVEL_OFFSET] = level;
+    return lbl_803C4C40[BTE_TRACE_LEVEL_OFFSET];
 }
 
 extern BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_len, int nest_level);
