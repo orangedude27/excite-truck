@@ -115,7 +115,12 @@ void fn_8001EF5C(void) {
 }
 
 void fn_8001EF60(void* alarm) {
-    fn_8001F89C(alarm, fn_8000DA10());
+#define CurrentPlayer      fn_8000DA10
+#define GetAchCounterValue fn_8001F89C
+    /* Alarm callback: read the current player's stored achievements counter value for the counter id carried by alarm. */
+    GetAchCounterValue(alarm, CurrentPlayer());
+#undef GetAchCounterValue
+#undef CurrentPlayer
 }
 
 void fn_8001EF98(void) {
