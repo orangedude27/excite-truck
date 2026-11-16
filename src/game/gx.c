@@ -1158,7 +1158,7 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
 #pragma small_data off
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
-    volatile unsigned char *__restrict p = (volatile unsigned char *)&lbl_804C97D0;
+    volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
     lbl_804C97D0 = a;
     p[1] = b;
     p[2] = c;
@@ -1171,9 +1171,9 @@ void fn_802D01B0(float *p, float v) {
     float z, y, x;
     float *out;
     x = p[0];
-    y = p[1];
-    z = p[2];
     out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
+    y = *(volatile float *)((float *)p + 1);
+    z = p[2];
     out[0] = x;
     out[1] = y;
     out[2] = z;
@@ -1775,14 +1775,15 @@ void fn_802D0E48(int mode) {
 }
 
 #pragma dont_inline fn_802D0EC8
-int fn_802D0EC8(int arg0) {
-    switch (arg0) {
+int fn_802D0EC8(int blendFactor) {
+    /* Remap unsupported destination-color blend codes (8/9) to the equivalent source-color codes (2/3); other factors pass through. */
+    switch (blendFactor) {
     case 8:
         return 2;
     case 9:
         return 3;
     default:
-        return arg0;
+        return blendFactor;
     }
 }
 
