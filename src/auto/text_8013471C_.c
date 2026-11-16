@@ -598,11 +598,12 @@ void *fn_80134F48(void) {
 }
 #pragma scheduling invalid_target
 void *fn_80134FF8(void) {
-    void **p = fn_801284F8(4, lbl_8032BC94);
-    if (p != 0) {
-        *p = (void*)lbl_8032BD08;
+    void **object = fn_801284F8(4, lbl_8032BC94);
+    /* Allocate a NullDriver instance and point it at its vtable. */
+    if (object != 0) {
+        *object = (void *)lbl_8032BD08;
     }
-    return p;
+    return object;
 }
 #pragma scheduling on
 s32 fn_80135038(s32 object, s32 deleteFlag) {
