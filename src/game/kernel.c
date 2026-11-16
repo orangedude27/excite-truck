@@ -7,6 +7,17 @@ typedef struct { char data[0x20]; } GXTexObj;
 extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
 extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
 extern float lbl_805650F0;
+/* GX FIFO write-gather pipe (see revolution/GX/GXHardware.h). */
+extern volatile union {
+    char c;
+    unsigned char uc;
+    short s;
+    unsigned short us;
+    int i;
+    unsigned int ui;
+    void *p;
+    float f;
+} WGPIPE : 0xCC008000;
 extern int lbl_804DB780[];
 extern void DCStoreRange(void *, int);
 extern void DCFlushRange(void *, int);
@@ -249,14 +260,16 @@ fail:
     return 0;
 }
 
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, float f1, float f2, float f3, float f4) {
     extern float lbl_8056510C, lbl_80565110, lbl_80565114, lbl_80565118, lbl_8056511C;
+    extern int lbl_802FAE40[];
+    extern float lbl_802FAE60[], lbl_804DB740[], lbl_804DB760[];
     extern unsigned short lbl_805650F8, lbl_805650FA, lbl_805650FC, lbl_805650FE;
     extern unsigned char lbl_80565100, lbl_80565101, lbl_80565102, lbl_80565103;
     extern unsigned char lbl_80565104, lbl_80565105, lbl_80565106, lbl_80565107;
     extern unsigned char lbl_80565108, lbl_80565109, lbl_8056510A, lbl_8056510B;
-    extern int lbl_802FAE40[];
-    extern float lbl_802FAE60[], lbl_804DB740[], lbl_804DB760[];
     extern void GXSetVtxAttrFmt(int, int, int, int, int);
     extern void GXClearVtxDesc(void);
     extern void GXLoadTexObj(void *, int);
@@ -280,12 +293,13 @@ void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, flo
     extern void GXSetTevKColor(int, unsigned char *, unsigned char, unsigned char, unsigned char);
     extern void GXSetTevSwapModeTable(int, int, int, int, int);
     extern void GXSetIndTexMtx(int, int *, int);
-    extern void GXSetTexCoordGen2(int, int, int, int, int, int, ...);
+    extern void GXSetTexCoordGen2(int, int, int, int, int, int);
     extern void GXLoadTexMtxImm(float *, int, int);
     extern void GXBegin(int, int, int);
     int r31;
     unsigned char r30;
     short p1, p2, p3, p4;
+    float s0, t0, s1, t1;
 
     if (f4 >= lbl_8056510C) r30 = 0xFF;
     else if (f4 <= lbl_80565110) r30 = 0;
@@ -367,37 +381,48 @@ void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, flo
         GXSetTevKColorSel(3, 0xE);
     }
     {
-        unsigned short c0 = lbl_805650F8, c1 = lbl_805650FA, c2 = lbl_805650FC, c3 = lbl_805650FE;
-        GXSetTevColorS10(1, &c0, lbl_805650FC, lbl_805650FA, lbl_805650F8);
+        unsigned short c[4];
+        c[0] = lbl_805650F8;
+        c[1] = lbl_805650FA;
+        c[2] = lbl_805650FC;
+        c[3] = lbl_805650FE;
+        GXSetTevColorS10(1, c, lbl_805650FC, lbl_805650FA, lbl_805650F8);
     }
     {
-        unsigned char c0 = lbl_80565100, c1 = lbl_80565101, c2 = lbl_80565102, c3 = lbl_80565103;
-        GXSetTevKColor(0, &c0, lbl_80565102, lbl_80565101, lbl_80565100);
+        unsigned char c[4];
+        c[0] = lbl_80565100;
+        c[1] = lbl_80565101;
+        c[2] = lbl_80565102;
+        c[3] = lbl_80565103;
+        GXSetTevKColor(0, c, lbl_80565102, lbl_80565101, lbl_80565100);
     }
     {
-        unsigned char c0 = lbl_80565104, c1 = lbl_80565105, c2 = lbl_80565106, c3 = lbl_80565107;
-        GXSetTevKColor(1, &c0, lbl_80565106, lbl_80565105, lbl_80565104);
+        unsigned char c[4];
+        c[0] = lbl_80565104;
+        c[1] = lbl_80565105;
+        c[2] = lbl_80565106;
+        c[3] = lbl_80565107;
+        GXSetTevKColor(1, c, lbl_80565106, lbl_80565105, lbl_80565104);
     }
     {
-        unsigned char c0 = lbl_80565108, c1 = lbl_80565109, c2 = lbl_8056510A, c3 = lbl_8056510B;
-        GXSetTevKColor(2, &c0, lbl_8056510A, lbl_80565109, lbl_80565108);
+        unsigned char c[4];
+        c[0] = lbl_80565108;
+        c[1] = lbl_80565109;
+        c[2] = lbl_8056510A;
+        c[3] = lbl_8056510B;
+        GXSetTevKColor(2, c, lbl_8056510A, lbl_80565109, lbl_80565108);
     }
     GXSetTevSwapModeTable(0, 0, 1, 2, 3);
     GXSetIndTexMtx(1, lbl_802FAE40, 4);
-    {
-        float ta, tb, tc, td, te, tf;
-        te = (float)*(unsigned int *)((char *)arg0 + 0x108);
-        tf = (float)(*(unsigned int *)((char *)arg0 + 0x104) >> 3) / (float)*(unsigned int *)((char *)arg0 + 0x180);
-        td = te / (float)*(unsigned int *)((char *)arg0 + 0x184);
-        lbl_804DB740[0] = tf;
-        tc = (float)(*(unsigned int *)((char *)arg0 + 0x10C) >> 3);
-        lbl_804DB740[5] = td;
-        ta = (float)*(unsigned int *)((char *)arg0 + 0x110);
-        tb = tc / (float)*(unsigned int *)((char *)arg0 + 0x188);
-        lbl_804DB760[0] = tb;
-        lbl_804DB760[5] = ta / (float)*(unsigned int *)((char *)arg0 + 0x18C);
-        GXSetTexCoordGen2(0, 1, 4, 0x1E, 0, 0x7D, lbl_804DB760, lbl_804DB740, ta, tb, tc, td, te, tf);
-    }
+    s0 = (float)(*(unsigned int *)((char *)arg0 + 0x104) >> 3) / (float)*(unsigned int *)((char *)arg0 + 0x180);
+    t0 = (float)*(unsigned int *)((char *)arg0 + 0x108) / (float)*(unsigned int *)((char *)arg0 + 0x184);
+    s1 = (float)(*(unsigned int *)((char *)arg0 + 0x10C) >> 3) / (float)*(unsigned int *)((char *)arg0 + 0x188);
+    t1 = (float)*(unsigned int *)((char *)arg0 + 0x110) / (float)*(unsigned int *)((char *)arg0 + 0x18C);
+    lbl_804DB740[0] = s0;
+    lbl_804DB740[5] = t0;
+    lbl_804DB760[0] = s1;
+    lbl_804DB760[5] = t1;
+    GXSetTexCoordGen2(0, 1, 4, 0x1E, 0, 0x7D);
     GXSetTexCoordGen2(1, 1, 4, 0x21, 0, 0x7D);
     GXSetTexCoordGen2(2, 1, 4, 0x24, 0, 0x7D);
     GXSetTexCoordGen2(3, 1, 5, 0x27, 0, 0x7D);
@@ -408,8 +433,8 @@ void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, flo
     GXBegin(0x80, 0, 4);
     p1 = (short)f0;
     p2 = (short)f1;
-    p3 = (short)(p1 + (int)((float)arg1 * f2));
-    p4 = (short)(p2 + (int)((float)arg2 * f3));
+    p3 = p1 + (short)((float)arg1 * f2);
+    p4 = p2 + (short)((float)arg2 * f3);
     *(volatile short *)0xCC008000 = p1;
     *(volatile short *)0xCC008000 = p2;
     *(volatile short *)0xCC008000 = 0;
@@ -455,9 +480,6 @@ void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, flo
     *(volatile float *)0xCC008000 = lbl_805650F0;
     *(volatile float *)0xCC008000 = lbl_8056511C;
 }
-
-#pragma pop
-
 void fn_802E27A0(void *arg0) {
     DCStoreRange(*(void **)((char *)arg0 + *(int *)((char *)arg0 + 0x114) * 0x30 + 0x11C),
                  *(int *)((char *)arg0 + 0x17C));
