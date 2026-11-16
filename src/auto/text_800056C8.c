@@ -1565,13 +1565,27 @@ s32 fn_800074EC(s32 arg0) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" s32 fn_80007554(s32 arg0, s32 arg1, s32 arg2) {
-    struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 call(s32, s32, s32); };
+extern "C" s32 fn_80007554(s32 playerIndex, s32 param, s32 context) {
+    /* Dispatch a per-player overlay handler (vtable slot 0x30) from the HUD overlay manager, if present. */
+    struct OverlayHandler {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual s32 Handle(s32 playerIndex, s32 param, s32 context);
+    };
     s32 *entry = (s32 *)&lbl_8034EEB8;
-    entry += arg0 * 4;
-    Dummy *obj = (Dummy *)entry[4];
-    if (obj != 0) {
-        return obj->call(arg0, arg1, arg2);
+    entry += playerIndex * 4;
+    OverlayHandler *handler = (OverlayHandler *)entry[4];
+
+    if (handler != 0) {
+        return handler->Handle(playerIndex, param, context);
     }
     return 0;
 }
