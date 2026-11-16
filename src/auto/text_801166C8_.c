@@ -4402,99 +4402,122 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
     *(u32 *)arg1 = value; *(u32 *)((u8 *)arg1 + 8) = remain;
 }
 
-void fn_8011D5F0(void* arg0, void* arg1) {
-    u8* self = (u8*)arg0;
-    u32* ptr;
-    u32 bits;
-    u32 cnt;
-    u32 n;
-    u32 val;
-    if (*(u8**)(self + 0) == *(u8**)(self + 4)) {
-        cnt = *(u32*)((u8*)arg1 + 8);
-        n = *(u32*)(self + 0x28);
-        ptr = *(u32**)((u8*)arg1 + 4);
-        bits = *(u32*)((u8*)arg1 + 0);
-        if (cnt < n) {
-            u32 w = *ptr;
-            val = (0xFFFFFFFFU >> (0x20 - n)) & (bits | (w << cnt));
-            bits = w >> (n - cnt);
-            cnt = cnt + 0x20 - n;
-            ptr++;
+/* Decodes one block of a band of the compressed stream fn_8011C3A8 sets up, the
+ * variant whose values come out of a Huffman lookup table.  Nothing is done
+ * while the block of the previous call is still published ([start, end)).  The
+ * block opens with its value count (countBits wide); a count of zero only marks
+ * the band as empty.  The bit behind it picks the coding: cleared, count values
+ * are decoded one by one through lookup, whose entries hold the value in their
+ * low nibble and the number of bits they cost in their high one; set, the 4-bit
+ * value behind it is repeated count times over the block. */
+void fn_8011D5F0(void* arg0, BitReader8011 *reader) {
+    /* One band of the stream; see the BandState8011 layout above fn_8011DC5C. */
+    struct Band {
+        u8 *start;      /* 0x00 first value of the published block */
+        u8 *end;        /* 0x04 one past its last value */
+        u32 valueBits;  /* 0x08 */
+        u32 signMask;   /* 0x0C */
+        u8 symbol[16];  /* 0x10 value of each 4-bit symbol */
+        u32 indexBits;  /* 0x20 bits of a lookup index */
+        u8 *lookup;     /* 0x24 index -> coded entry */
+        u32 countBits;  /* 0x28 bits of a block's value count */
+        u8 *output;     /* 0x2C where the next block is decoded to */
+    };
+    struct Band *band = (struct Band *)arg0;
+    u32 *in;
+    u32 value;
+    u32 bitCount;
+    u32 countBits;
+    u32 count;
+    if (band->start == band->end) {
+        bitCount = reader->count;
+        countBits = band->countBits;
+        in = reader->next;
+        value = reader->value;
+        /* How many values this block holds. */
+        if (bitCount < countBits) {
+            u32 next = *in;
+            count = (0xFFFFFFFFU >> (0x20 - countBits)) & (value | (next << bitCount));
+            value = next >> (countBits - bitCount);
+            bitCount = bitCount + 0x20 - countBits;
+            in++;
         } else {
-            cnt = cnt - n;
-            val = bits & (0xFFFFFFFFU >> (0x20 - n));
-            bits = bits >> n;
+            bitCount = bitCount - countBits;
+            count = value & (0xFFFFFFFFU >> (0x20 - countBits));
+            value = value >> countBits;
         }
-        if (val != 0) {
-            u32 flag;
-            *(u8**)(self + 0) = *(u8**)(self + 0x2C);
-            *(u8**)(self + 4) = *(u8**)(self + 0x2C) + val;
-            if (cnt == 0) {
-                flag = *ptr;
-                cnt = 0x1F;
-                ptr++;
-                bits = flag >> 1;
+        if (count != 0) {
+            u32 runFlag;
+            band->start = band->output;
+            band->end = band->output + count;
+            /* The coding bit, refilling the buffer when it ran dry. */
+            if (bitCount == 0) {
+                runFlag = *in;
+                bitCount = 0x1F;
+                in++;
+                value = runFlag >> 1;
             } else {
-                flag = bits;
-                bits = bits >> 1;
-                cnt--;
+                runFlag = value;
+                value = value >> 1;
+                bitCount--;
             }
-            if ((flag & 1) == 0) {
+            if ((runFlag & 1) == 0) {
                 struct { u32 value; } maskStorage;
-                u32 k = *(u32*)(self + 0x20);
-                u8* out = *(u8**)(self + 0x2C);
-                u8* tbl = *(u8**)(self + 0x24);
-                u8* names = self + 0x10;
-                maskStorage.value = 0xFFFFFFFFU >> (0x20 - k);
+                u32 indexBits = band->indexBits;
+                u8 *out = band->output;
+                u8 *lookup = band->lookup;
+                u8 *symbol = band->symbol;
+                maskStorage.value = 0xFFFFFFFFU >> (0x20 - indexBits);
                 do {
-                    u32 e;
-                    val--;
-                    if (cnt >= k) {
-                        e = tbl[bits & maskStorage.value];
-                        *out = names[e & 0xF];
-                        e >>= 4;
+                    u32 entry;
+                    count--;
+                    if (bitCount >= indexBits) {
+                        entry = lookup[value & maskStorage.value];
+                        *out = symbol[entry & 0xF];
+                        entry >>= 4;
                         out++;
-                        bits = bits >> e;
-                        cnt -= e;
+                        value = value >> entry;
+                        bitCount -= entry;
                     } else {
-                        u32 w = *ptr;
-                        e = tbl[maskStorage.value & (bits | (w << cnt))];
-                        *out = names[e & 0xF];
-                        e >>= 4;
+                        u32 next = *in;
+                        entry = lookup[maskStorage.value & (value | (next << bitCount))];
+                        *out = symbol[entry & 0xF];
+                        entry >>= 4;
                         out++;
-                        if (cnt >= e) {
-                            bits = bits >> e;
-                            cnt -= e;
+                        if (bitCount >= entry) {
+                            value = value >> entry;
+                            bitCount -= entry;
                         } else {
-                            bits = w >> (e - cnt);
-                            ptr++;
-                            cnt = cnt + 0x20 - e;
+                            value = next >> (entry - bitCount);
+                            in++;
+                            bitCount = bitCount + 0x20 - entry;
                         }
                     }
-                } while (val != 0);
+                } while (count != 0);
             } else {
-                u32 v4;
-                if (cnt < 4) {
-                    u32 w = *ptr;
-                    ptr++;
-                    v4 = (bits | (w << cnt)) & 0xF;
-                    bits = w >> (4 - cnt);
-                    cnt += 0x1C;
+                u32 sample;
+                /* A 4-bit value, repeated over the whole block. */
+                if (bitCount < 4) {
+                    u32 next = *in;
+                    in++;
+                    sample = (value | (next << bitCount)) & 0xF;
+                    value = next >> (4 - bitCount);
+                    bitCount += 0x1C;
                 } else {
-                    v4 = bits & 0xF;
-                    bits = bits >> 4;
-                    cnt -= 4;
+                    sample = value & 0xF;
+                    value = value >> 4;
+                    bitCount -= 4;
                 }
-                memset(*(u8**)(self + 0x2C), v4, val);
+                memset(band->output, sample, count);
             }
         } else {
-            u8* base = *(u8**)(self + 0x2C);
-            *(u8**)(self + 4) = base;
-            *(u8**)(self + 0) = base + 4;
+            u8 *out = band->output;
+            band->end = out;
+            band->start = out + 4;
         }
-        *(u32**)((u8*)arg1 + 4) = ptr;
-        *(u32*)((u8*)arg1 + 0) = bits;
-        *(u32*)((u8*)arg1 + 8) = cnt;
+        reader->next = in;
+        reader->value = value;
+        reader->count = bitCount;
     }
 }
 
