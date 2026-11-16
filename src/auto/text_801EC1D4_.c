@@ -442,10 +442,11 @@ void *fn_801EC9CC(void *arg0, int arg1) {
     return arg0;
 }
 
-/* 1 when the vehicle's owner data (+0x3C) still has its +0x2D4 float above the
- * global threshold lbl_80558DC4 (0x34 in .sdata, so any positive value passes). */
-long fn_801ECB60(void *arg0) {
-    return *(float *)(*(char **)((char *)arg0 + 0x3C) + 0x2D4) > *(float *)&lbl_80558DC4;
+/* 1 when the vehicle render object's owner data (+0x3C) still has its +0x2D4
+ * float above the global threshold lbl_80558DC4 (0x34 in .sdata, so any
+ * positive value passes). */
+long fn_801ECB60(void *vehicleRender) {
+    return *(float *)(*(char **)((char *)vehicleRender + 0x3C) + 0x2D4) > *(float *)&lbl_80558DC4;
 }
 
 #pragma pop
