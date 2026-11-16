@@ -11479,7 +11479,7 @@ extern "C" void __AXDSPInitCallback_800B7860(void) {
     lbl_8055DD10 = 0;
 }
 
-extern "C" void fn_800B786C(void *arg0) {
+extern "C" FN786C_RET fn_800B786C(void *arg0) {
     fn_800B8048(*(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288));
     if (*(u16 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x27E) == 0 && *(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x280) == 0 && (int)lbl_8055DD10 != 0) {
         fn_800B7FC4(*(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288));
