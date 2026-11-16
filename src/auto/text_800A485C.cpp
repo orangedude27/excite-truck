@@ -11273,13 +11273,15 @@ extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8 arg0, s32 arg1) {
     return 0;
 }
 
-extern "C" s16 fn_800B72B0(s32 arg0) {
-    u32 spC;
-    u16 spA;
-    s16 sp8;
-    s32 result = VFiPFCODE_CP932_Unicode2OEM(arg0, &spC);
-    fn_800A4BF4(result, &spA, &sp8);
-    return sp8;
+/* Convert a Unicode code point to CP932 (Shift-JIS) OEM bytes, then return the
+ * low halfword of the packed conversion result (the OEM byte count). */
+extern "C" s16 fn_800B72B0(s32 unicode) {
+    u32 oem;
+    u16 count;
+    s16 low;
+    s32 packed = VFiPFCODE_CP932_Unicode2OEM(unicode, &oem);
+    fn_800A4BF4(packed, &count, &low);
+    return low;
 }
 
 extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
