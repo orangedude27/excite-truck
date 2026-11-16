@@ -503,18 +503,25 @@ void fn_801E75C8(void* node, s32 param) {
     fn_802C70AC(*(s32*)node, sp, temp_r31, -1);
 }
 #pragma scheduling reset
-s32 fn_801E7650(void* arg0) {
+s32 fn_801E7650(void *arg0) {
+#define mCurrentEntry ((u8 *)arg0 + 0x10)
+#define mIndex ((u8 *)arg0 + 0x18)
+#define mTime ((u8 *)arg0 + 0x38)
+    /* Return non-zero when the current entry is valid and its index/time thresholds are reached. */
     s32 result;
-    s32* ptr;
-    ptr = *(s32**)((u8*)arg0 + 0x10);
-    if (ptr != 0) {
+    s32 *entry;
+    entry = *(s32 **)mCurrentEntry;
+    if (entry != 0) {
         result = 0;
-        if (*(s32*)((u8*)arg0 + 0x18) >= ptr[0] && *(float*)((u8*)arg0 + 0x38) >= *(float*)((u8*)ptr + 0xC)) {
+        if (*(s32 *)mIndex >= entry[0] && *(float *)mTime >= *(float *)((u8 *)entry + 0xC)) {
             result = 1;
         }
         return result;
     }
     return 0;
+#undef mCurrentEntry
+#undef mIndex
+#undef mTime
 }
 
 int fn_801E7698(void) {
