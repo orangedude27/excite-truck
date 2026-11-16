@@ -137,6 +137,7 @@ extern "C" s32 fn_8021481C(void *);
 extern "C" char lbl_8033D388[];
 extern "C" char lbl_8033D268[];
 extern "C" char lbl_8055B810;
+#define TRANSITION_DIR_IN lbl_8055B810  // "transin": directory holding the enter-transition scripts
 
 extern "C" s32 fn_802168E4(void);
 extern "C" s32 fn_802168DC(s32, s32);
