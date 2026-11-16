@@ -573,10 +573,12 @@ void TRKDispatchMessage(void **out) {
     *out = 0;
 }
 
-void __AXGetAuxAOutput(void **arg0) {
+void __AXGetAuxAOutput(void **out) {
+    /* Return the current read-ring slot of the AUX-A output buffer lbl_8035BFA0
+     * (0x480 bytes per slot, read ring index lbl_8055D6F4) through *out. */
     extern u8 lbl_8035BFA0[];
     extern s32 lbl_8055D6F4;
-    *arg0 = lbl_8035BFA0 + lbl_8055D6F4 * 0x480;
+    *out = lbl_8035BFA0 + lbl_8055D6F4 * 0x480;
 }
 
 extern u8 lbl_8035DAA0[];
