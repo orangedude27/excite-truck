@@ -3135,6 +3135,8 @@ void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height) {
 }
 
 void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
+    /* Set the source rectangle for a texture copy: upper-left corner (x,y) and
+     * size (width,height), packed into the two GX texture-copy source commands. */
     union {
         u32 value;
         struct {
