@@ -517,14 +517,16 @@ void fn_802BCFB0(int *slot) {
 
 #pragma pop
 
-int fn_802BD0C8(void *arg0) {
-    int result = 0;
-    if (*(int *)((char *)arg0 + 4) != 0) {
-        void **ptr = *(void ***)((char *)arg0 + 0x58);
-        if (ptr != 0)
-            result = *(int *)((char *)*ptr + 4);
+/* Returns the cached value at +4 of the first item in the container held at entry+0x58,
+ * or 0 when the entry's context (+4) or the container is null. */
+int fn_802BD0C8(void *entry) {
+    int value = 0;
+    if (*(int *)((char *)entry + 4) != 0) {
+        void **container = *(void ***)((char *)entry + 0x58);
+        if (container != 0)
+            value = *(int *)((char *)*container + 4);
     }
-    return result;
+    return value;
 }
 
 int strcmp(const char *, const char *);
