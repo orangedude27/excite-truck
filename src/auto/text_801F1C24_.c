@@ -1282,9 +1282,12 @@ void fn_801F393C(void) {
     fn_802E317C(lbl_8033AB80);
 }
 
-int fn_801F394C(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_801F394C(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 void fn_801F398C(void *unused, int arg1) {
