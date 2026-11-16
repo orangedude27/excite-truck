@@ -293,12 +293,12 @@ void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
     if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcc, file + 0x34);
     unsigned short offset = *(unsigned short*)((char*)list + 0xa);
     char* link = (char*)item + offset;
-    void* prev = *(void**)link;
-    if (prev == 0) *(void**)list = *(void**)(link + 4);
-    else *(void**)((char*)prev + offset + 4) = *(void**)(link + 4);
-    void* next = *(void**)(link + 4);
-    if (next == 0) *(void**)((char*)list + 4) = *(void**)link;
-    else *(void**)((char*)next + *(unsigned short*)((char*)list + 0xa)) = *(void**)link;
+    void* p = *(void**)link;
+    if (p == 0) *(void**)list = *(void**)(link + 4);
+    else *(void**)((char*)p + offset + 4) = *(void**)(link + 4);
+    p = *(void**)(link + 4);
+    if (p == 0) *(void**)((char*)list + 4) = *(void**)link;
+    else *(void**)((char*)p + *(unsigned short*)((char*)list + 0xa)) = *(void**)link;
     *(void**)link = 0;
     *(void**)(link + 4) = 0;
     *(unsigned short*)((char*)list + 8) -= 1;
@@ -1042,7 +1042,8 @@ extern "C" u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u
     u32 t;
     int a, b, c, d, e, f, ok;
     u8 *info, *map, *width, *entry;
-    register u16 glyph;
+    u16 g;
+    u16 glyph;
 
     a = 1; b = 1; c = 1; d = 1; e = 1; f = 1;
     t = value & 0xFF000000U;
@@ -1091,14 +1092,18 @@ extern "C" u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u
     map = *(u8 **)(*(u8 **)((char *)self + 0x14) + 0x10);
     while (map != 0) {
         if (*(u16 *)map <= code && code <= *(u16 *)(map + 2)) {
-            glyph = FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(self, map, code);
-            goto checkGlyph;
+            g = FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(self, map, code);
+            goto haveGlyph;
         }
         map = *(u8 **)(map + 8);
     }
-    glyph = 0xFFFF;
-checkGlyph:
-    if (glyph == 0xFFFF) glyph = *(u16 *)(*(u8 **)((char *)self + 0x14) + 2);
+    g = 0xFFFF;
+haveGlyph:
+    if (g != 0xFFFF) {
+        glyph = g;
+    } else {
+        glyph = *(u16 *)(*(u8 **)((char *)self + 0x14) + 2);
+    }
 
     ok = 0;
     if (t == 0x80000000U || (value & 0xFF800000U) == 0x81000000U || (value & 0xF8000000U) == 0x90000000U
@@ -1136,12 +1141,13 @@ checkGlyph:
             if (h == 0 && (w & 0xFFFFC000U) != 0xE0000000U) g = 0;
             if (g == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x28B, file + 0x1E4, width);
             entry = width + 8 + 3 * (glyph - *(u16 *)width);
-            return ((u32)*(u16 *)entry << 16) | ((u32)entry[2] << 8);
+            goto haveEntry;
         }
         width = *(u8 **)(width + 4);
     }
     entry = info + 4;
-    return ((u32)*(u16 *)entry << 16) | ((u32)entry[2] << 8);
+haveEntry:
+    return ((u32)entry[2] << 8) | ((u32)*(u16 *)entry << 16);
 }
 
 #pragma push
@@ -5587,12 +5593,12 @@ extern "C" f32 fn_80111C10(s32 arg0) {
     u32 temp_r11;
     s32 var_r30, font;
     temp_r11 = (u32)(arg0 & 0xFF000000);
-    if (temp_r11 == 0x80000000 || ((u32)(arg0 & 0xFF800000)) == 0x81000000) var_r10 = 0;
-    if (var_r10 == 0 && ((u32)(arg0 & 0xF8000000)) == 0x90000000) var_r9 = 0;
-    if (var_r9 == 0 && temp_r11 == 0xC0000000) var_r8 = 0;
-    if (var_r8 == 0 && ((u32)(arg0 & 0xFF800000)) == 0xC1000000) var_r7 = 0;
-    if (var_r7 == 0 && ((u32)(arg0 & 0xF8000000)) == 0xD0000000) var_r6 = 0;
-    if (var_r6 == 0 && ((u32)(arg0 & 0xFFFFC000)) == 0xE0000000) var_r5 = 0;
+    if (temp_r11 != 0x80000000 && ((u32)(arg0 & 0xFF800000)) != 0x81000000) var_r10 = 0;
+    if (var_r10 == 0 && ((u32)(arg0 & 0xF8000000)) != 0x90000000) var_r9 = 0;
+    if (var_r9 == 0 && temp_r11 != 0xC0000000) var_r8 = 0;
+    if (var_r8 == 0 && ((u32)(arg0 & 0xFF800000)) != 0xC1000000) var_r7 = 0;
+    if (var_r7 == 0 && ((u32)(arg0 & 0xF8000000)) != 0xD0000000) var_r6 = 0;
+    if (var_r6 == 0 && ((u32)(arg0 & 0xFFFFC000)) != 0xE0000000) var_r5 = 0;
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0xF1, lbl_80329578, arg0);
     font = GetFont__Q36nw4hbm2ut10CharWriterCFv(arg0);
     if (font) {
