@@ -73,6 +73,10 @@ void fn_8029C1C4(void) {
     fn_80287B38(fn_8029C450);
 }
 
+/* Subsystem teardown step during game shutdown: release the cached water effect
+ * (fn_8029CD14), the texture-pattern animation pointers (fn_8029CB3C), the 3D
+ * water pools (fn_8029C934), then the remaining resource (fn_8029C650).
+ * fn_8029C3EC is an empty placeholder. */
 void fn_8029C22C(void) {
     fn_8029CD14();
     fn_8029CB3C();
