@@ -598,42 +598,45 @@ extern f32 lbl_80564E74;
 extern void fn_802BDFF4(void *, int);
 #pragma push
 #pragma processor 750
+/* Manager tick: reset the eight score slots, flush the eight pending nodes
+ * into the object table, then adjust and flag every registered object whose
+ * score is below the threshold. */
 void fn_802C1928(void) {
-    f32 *values = (f32 *)((char *)&lbl_804C1050 + 4);
-    values[0] = -1000.0f;
-    values[2] = -1000.0f;
-    values[4] = -1000.0f;
-    values[6] = -1000.0f;
-    values[8] = -1000.0f;
-    values[10] = -1000.0f;
-    values[12] = -1000.0f;
-    values[14] = -1000.0f;
-    char *entry = (char *)&lbl_804C0E10;
-    int j = 0;
+    f32 *scores = (f32 *)((char *)&lbl_804C1050 + 4);
+    scores[0] = -1000.0f;
+    scores[2] = -1000.0f;
+    scores[4] = -1000.0f;
+    scores[6] = -1000.0f;
+    scores[8] = -1000.0f;
+    scores[10] = -1000.0f;
+    scores[12] = -1000.0f;
+    scores[14] = -1000.0f;
+    char *pendingNode = (char *)&lbl_804C0E10;
+    int slot = 0;
     do {
-        fn_802C1180(entry);
-        j++;
-        entry += 0x48;
-    } while (j < 8);
+        fn_802C1180(pendingNode);
+        slot++;
+        pendingNode += 0x48;
+    } while (slot < 8);
     {
         register f32 delta = lbl_80564E74;
-        register int count = 0;
-        register f32 min = lbl_80564E70;
-        register int offset = 0;
+        register int index = 0;
+        register f32 threshold = lbl_80564E70;
+        register int byteOffset = 0;
         goto check;
     loop:
         {
-            int *obj = (int *)*(int *)((char *)(int *)lbl_8055FB30 + offset);
-            if (*(f32 *)((char *)obj + 0x28) < min) {
-                *(f32 *)((char *)obj + 0x28) -= delta;
+            int *object = (int *)*(int *)((char *)(int *)lbl_8055FB30 + byteOffset);
+            if (*(f32 *)((char *)object + 0x28) < threshold) {
+                *(f32 *)((char *)object + 0x28) -= delta;
                 ((void (*)(int *, int))fn_802BDFF4)(
-                    (int *)*(int *)((char *)(int *)lbl_8055FB30 + offset), 1);
+                    (int *)*(int *)((char *)(int *)lbl_8055FB30 + byteOffset), 1);
             }
         }
-        offset += 4;
-        count++;
+        byteOffset += 4;
+        index++;
     check:
-        if (count < lbl_8055FB2C)
+        if (index < lbl_8055FB2C)
             goto loop;
     }
 }
