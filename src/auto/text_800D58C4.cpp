@@ -3654,22 +3654,22 @@ extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void *self, u32 flags) {
     };
     PaneObj *pane = (PaneObj *)self;
     pane->v6(flags);
-    if (!(*(u8 *)((u8 *)self + 0xCF) & 1) && !(flags & 1)) {
-        struct { LinkNode *node; } cursor;
-        cursor.node = pane->mChildList.next;
-        LinkNode *&node = cursor.node;
-        struct { LinkNode *end; } sentinel;
-        sentinel.end = &pane->mChildList;
-        LinkNode *&end = sentinel.end;
-        while (node != end) {
-            extern const char lbl_8031E8FC[];
-            extern const char lbl_8031E8D8[];
-            if (node == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            }
-            ((PaneObj *)((u8 *)node - 4))->v5(flags);
-            node = node->next;
+    if ((*(u8 *)((u8 *)self + 0xCF) & 1) == 0 && (flags & 1) != 0)
+        return;
+    struct { LinkNode *node; } cursor;
+    cursor.node = pane->mChildList.next;
+    LinkNode *&node = cursor.node;
+    struct { LinkNode *end; } sentinel;
+    sentinel.end = &pane->mChildList;
+    LinkNode *&end = sentinel.end;
+    while (node != end) {
+        extern const char lbl_8031E8FC[];
+        extern const char lbl_8031E8D8[];
+        if (node == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         }
+        ((PaneObj *)((u8 *)node - 4))->v5(flags);
+        node = node->next;
     }
 }
 
