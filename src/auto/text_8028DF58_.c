@@ -918,12 +918,13 @@ int fn_8028F858(int object, int shouldDelete) {
     return object;
 }
 
-void fn_8028F8C4(int arg0) {
-    volatile int *p = (volatile int *)arg0;
-    float value = lbl_80564420;
-    p[36] = -1;
-    p[37] = 0;
-    *(volatile float *)((char *)arg0 + 0x9C) = value;
+void fn_8028F8C4(int playbackState) {
+    /* Reset an effect's timed playback cursor: index (-1) and count (0) at +0x90/+0x94, phase (0.0) at +0x9C. */
+    volatile int *fields = (volatile int *)playbackState;
+    float initialPhase = lbl_80564420;
+    fields[36] = -1;
+    fields[37] = 0;
+    *(volatile float *)((char *)playbackState + 0x9C) = initialPhase;
 }
 
 extern float lbl_80558DC4;
