@@ -1083,10 +1083,10 @@ int fn_80289F54(int arg0) {
 #pragma scheduling invalid_target
 void fn_80289FC4(int **arg0, int arg1, int arg2) {
     char *temp = (char *)*arg0 + arg1 * 0x68;
-    register int count;
+    int count;
     if (arg2 == 3 && *(void **)(temp + 0x64) == 0 &&
         (count = *(int *)(temp + 0x60)) > 0) {
-        int index = fn_80287B5C();
+        int index = ((int (*)(int))fn_80287B5C)(count);
         *(void **)(temp + 0x64) = temp + index * 0x18;
         fn_8028A330((int *)arg0, arg1);
     } else if (arg2 != 3 && *(void **)(temp + 0x64) != 0) {
