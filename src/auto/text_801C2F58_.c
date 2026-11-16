@@ -2316,6 +2316,7 @@ void fn_801C8420(void) {
 #define kMsgGlobalEventTimeDisabled lbl_80337060 /* "Global event time disabled" */
 extern char lbl_80337060[];
 void fn_801C84E0(void) {
+    /* Disable global event time and report it on the console status line. */
     sGlobalEventTimeFlag = 0;
     sprintf(sConsoleLine, kMsgGlobalEventTimeDisabled);
 }
