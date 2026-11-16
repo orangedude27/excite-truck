@@ -11242,13 +11242,15 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
 
 #pragma dont_inline reset
 extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32, u16 *);
-extern "C" s16 fn_800B7200(s32 arg0) {
-    u16 spC;
-    s16 spA;
-    s16 sp8;
-    s32 result = VFiPFCODE_CP932_OEM2Unicode(arg0, &spC);
-    fn_800A4BF4(result, (u16 *)&spA, &sp8);
-    return spA;
+/* Convert a CP932 (Shift-JIS) OEM character to Unicode, then return the high
+ * halfword of the packed conversion result (the character's byte count). */
+extern "C" s16 fn_800B7200(s32 oemText) {
+    u16 unicode;
+    s16 count;
+    s16 low;
+    s32 packed = VFiPFCODE_CP932_OEM2Unicode(oemText, &unicode);
+    fn_800A4BF4(packed, (u16 *)&count, &low);
+    return count;
 }
 
 extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8 arg0, s32 arg1) {
