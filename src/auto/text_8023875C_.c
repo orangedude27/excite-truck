@@ -94,6 +94,9 @@ void fn_8023895C(void) {
 #define text_queue_flush     fn_802346C8
 #define text_pass_active     lbl_8055F0D8
 #define text_queue_enable    fn_802344C4
+/* Close the overlay/debug text pass: if any lines are still queued, render
+ * (flush) them now, then clear the pass-active flag and disable queuing.
+ * The matching opener is fn_8023895C. */
 void fn_802389E4(void) {
     if (text_queue_has_lines())
         text_queue_flush();
