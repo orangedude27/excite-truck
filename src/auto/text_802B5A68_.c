@@ -449,28 +449,22 @@ void fn_802B618C(void) {
  * (3) reloads the road-opacity texture, Material-Map (2) rebuilds the matmap images;
  * "Objects" and "Advanced" need no extra setup. */
 void fn_802B61B8(void) {
-#define viewMode lbl_8055FA38 /* 0 "Objects", 1 "Advanced", 2 "Material-Map", 3 "Road-Opacity" */
-#define setupMaterialMap fn_802BBEE4  /* rebuilds the "matmap"/"matmap2" images */
-#define reloadRoadOpacity fn_802C21C0 /* reloads the "roadopac.tga" texture */
-    if (viewMode == 3) {
+    if (lbl_8055FA38 == 3) {
         goto call_c;
     }
-    if (viewMode >= 3) {
+    if (lbl_8055FA38 >= 3) {
         goto done;
     }
-    if (viewMode >= 2) {
+    if (lbl_8055FA38 >= 2) {
         goto call_b;
     }
 done:
     return;
 call_b:
-    setupMaterialMap();
+    fn_802BBEE4();
     return;
 call_c:
-    reloadRoadOpacity();
-#undef viewMode
-#undef setupMaterialMap
-#undef reloadRoadOpacity
+    fn_802C21C0();
 }
 
 extern char lbl_8034A980[];
