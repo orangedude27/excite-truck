@@ -803,12 +803,13 @@ void fn_800064A8(void *arg0) {
     case 1: if (fn_801B8874() == 0) fn_80006B18(arg0); return;
     }
 }
-void fn_80006550(void *arg0, s32 arg1) {
-    s32 temp_r0;
-    temp_r0 = *(s32 *)((u8 *)arg0 + 0x10) + arg1;
-    *(s32 *)((u8 *)arg0 + 0x10) = temp_r0;
-    if (temp_r0 < 0) *(s32 *)((u8 *)arg0 + 0x10) = 0;
-    if (*(s32 *)((u8 *)arg0 + 0x10) >= 3) *(s32 *)((u8 *)arg0 + 0x10) = 2;
+void fn_80006550(void *menu, s32 delta) {
+    /* Move the menu's selection index (+0x10) by delta, clamping it to [0, 2]. */
+    s32 selection;
+    selection = *(s32 *)((u8 *)menu + 0x10) + delta;
+    *(s32 *)((u8 *)menu + 0x10) = selection;
+    if (selection < 0) *(s32 *)((u8 *)menu + 0x10) = 0;
+    if (*(s32 *)((u8 *)menu + 0x10) >= 3) *(s32 *)((u8 *)menu + 0x10) = 2;
 }
 
 #pragma push
