@@ -330,10 +330,15 @@ void fn_8001F4C4(s32 profileIndex, s32 event) {
     }
 }
 
+/* RealName: Achievements_Init
+ * Registers the achievements ('ACHV') archive block and profile callback,
+ * then initializes the achievements session/state. */
 void fn_8001F528(void) {
-    fn_802E6BD8(0x41434856, 3, lbl_80358698, 0x2080, fn_8001F490);
+#define ACHV_BLOCK_ID 0x41434856
+    fn_802E6BD8(ACHV_BLOCK_ID, 3, lbl_80358698, 0x2080, fn_8001F490);
     fn_8000DBC8(fn_8001F4C4);
     fn_8001F578();
+#undef ACHV_BLOCK_ID
 }
 
 #pragma scheduling on
