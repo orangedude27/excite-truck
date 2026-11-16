@@ -2358,8 +2358,10 @@ extern "C" void fn_8019F1A4(void* arg0) {
     fn_8019AC44(arg0, (u8*)arg0 + 0x34, (u8*)arg0 + 0x40, *(f32*)((u8*)arg0 + 0x24));
 }
 
-extern "C" void fn_8019F1B4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    fn_8019DDFC(arg1, arg2, arg3, arg4, (u8 *)arg0 + 0x34, arg0, *(f32 *)((u8 *)arg0 + 0x24));
+/* Forward to the collision-response helper fn_8019DDFC, supplying obj's embedded
+ * position vector (obj+0x34) and radius/scale (obj+0x24); arg1-arg4 pass through. */
+extern "C" void fn_8019F1B4(void *obj, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    fn_8019DDFC(arg1, arg2, arg3, arg4, (u8 *)obj + 0x34, obj, *(f32 *)((u8 *)obj + 0x24));
 }
 
 #pragma push
