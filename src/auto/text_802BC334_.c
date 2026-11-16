@@ -815,28 +815,28 @@ int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 __declspec(section ".data") extern int lbl_8034AC48;
 #pragma scheduling invalid_target
 extern int __cntlzw(unsigned int);
+#pragma scheduling invalid_target
 void fn_802BDBA8(void) {
     char *strings = (char *)&lbl_8034AB38;
     void *object;
     int result;
-    int isZero;
+
     fn_802C126C();
     fn_802BCBDC();
     fn_802B8AE0(strings + 0xE8, &lbl_8055FAA8);
     fn_802B8AE0(strings + 0xF4, &lbl_8055FAAC);
     result = fn_802B05E4();
-    isZero = (int)((unsigned int)__cntlzw((unsigned int)result) >> 5);
-    *(unsigned char *)&lbl_8055FAB0 = isZero;
-    if (result == 0) {
-        return;
+    *(char *)&lbl_8055FAB0 = result == 0;
+    if (result != 0) {
+        ((void (*)(void))fn_802BD210)();
     }
-    ((int (*)(void))fn_802BD210)();
     object = fn_801284F8(8, (int)(strings + 0x104));
     if (object != 0) {
         fn_802C2914(object);
         *(void **)((char *)object + 4) = &lbl_8034AC48;
     }
     lbl_8055FABC = object;
+    return;
 }
 #pragma scheduling on
 void fn_802BDC3C(void* alarm) {
