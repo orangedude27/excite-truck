@@ -3288,24 +3288,25 @@ extern "C" s32 fn_8012C7FC(void *arg0, s32 *arg1) {
     void *entry;
     s32 result = 0;
     s32 temp;
-    temp = *(s32 *)((char *)arg0 + 12);
+    void *data;
+    temp = *(s32 *)((char *)arg0 + 0xC);
     if (temp != -1 && fn_802E7544(temp)) {
-        fn_802E7548(*(s32 *)((char *)arg0 + 12));
-        *(s32 *)((char *)arg0 + 12) = -1;
+        fn_802E7548(*(s32 *)((char *)arg0 + 0xC));
+        *(s32 *)((char *)arg0 + 0xC) = -1;
     }
-    temp = *(s32 *)((char *)arg0 + 12);
-    if (temp == -1 && *(s32 *)((char *)arg0 + 16)) {
+    temp = *(s32 *)((char *)arg0 + 0xC);
+    if (temp == -1 && (data = *(void **)((char *)arg0 + 0x10)) != 0) {
         entry = *(void **)((char *)arg0 + 4);
-        if (*(s32 *)((char *)arg0 + 20) < *(s32 *)((char *)entry + 40) ||
-            *(u32 *)((char *)entry + 48) == ((u32 (*)(void))fn_80132E7C)()) {
-            result = *(s32 *)((char *)arg0 + 16);
-            if (arg1) *arg1 = *(s32 *)((char *)entry + 40);
+        if (*(s32 *)((char *)arg0 + 0x14) < *(s32 *)((char *)entry + 0x28) ||
+            *(u32 *)((char *)entry + 0x30) == ((u32 (*)(void *, s32))fn_80132E7C)(data, *(s32 *)((char *)entry + 0x28))) {
+            result = *(s32 *)((char *)arg0 + 0x10);
+            if (arg1) *arg1 = *(s32 *)((char *)entry + 0x28);
         } else {
             fn_802E30C8(lbl_8032AC68, entry);
-            fn_8012C720(arg0, *(s32 *)((char *)arg0 + 16) -
-                ((*(s32 *)((char *)*(void **)((char *)arg0 + 4) + 44) +
-                  *(s32 *)((char *)*(void **)((char *)arg0 + 8) + 128)) & 2047),
-                *(s32 *)((char *)arg0 + 20), 0);
+            fn_8012C720(arg0, *(s32 *)((char *)arg0 + 0x10) -
+                ((*(s32 *)((char *)*(void **)((char *)arg0 + 4) + 0x2C) +
+                  *(s32 *)((char *)*(void **)((char *)arg0 + 8) + 0x80)) & 0x7FF),
+                *(s32 *)((char *)arg0 + 0x14), 0);
         }
     }
     return result;
