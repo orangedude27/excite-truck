@@ -305,12 +305,13 @@ extern f64 lbl_80560268;
 /* The UI's 9-slice frame art set: fn_8000F498 opens it by name, fn_80011278
  * lays its nine pictures as a frame, fn_8000F4BC releases it. */
 extern s32 lbl_8055D4D4;
-/* Caches the frame art set named by the string in r3 (fn_8023512C opens an
- * ArtSet by name and takes a reference; the name comes from the UI config
- * table, so this wrapper only forwards r3 and stores the handle). */
-void fn_8000F498(void) {
-    lbl_8055D4D4 = fn_8023512C();
+#define frameArtSet lbl_8055D4D4
+/* Caches the frame art set named by `name` (fn_8023512C opens an ArtSet by
+ * name and takes a reference; the name comes from the UI config table). */
+void fn_8000F498(const char *name) {
+    frameArtSet = fn_8023512C(name);
 }
+#undef frameArtSet
 
 /* Shuts the UI frame art down: drops this module's reference to the 9-slice
  * frame art set that fn_8000F498 cached at startup (fn_8023512C opens it by
