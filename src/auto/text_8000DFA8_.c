@@ -923,8 +923,16 @@ f32 fn_8001090C(f32 value) {
     return lbl_805602C8 * (value * count);
 }
 #pragma pop
-s32 fn_80010964(s32 arg0) {
-    return (s32)(arg0 * fn_80232B70(lbl_8055D490)) / (s32)lbl_80558A90;
+/* Scale an integer value by the default UI font's metric using fixed point:
+ * (value * fontMetric) / scaleDivisor. Integer counterpart of fn_8001084C. */
+s32 fn_80010964(s32 value) {
+#define gDefaultFont lbl_8055D490
+#define gScaleDivisor lbl_80558A90
+#define getFontMetric fn_80232B70
+    return (s32)(value * getFontMetric(gDefaultFont)) / (s32)gScaleDivisor;
+#undef getFontMetric
+#undef gDefaultFont
+#undef gScaleDivisor
 }
 
 extern s32 fn_80232B70(s32);
