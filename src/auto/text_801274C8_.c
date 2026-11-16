@@ -110,11 +110,11 @@ void fn_801275AC(void) {
 
 void fn_8012766C(void) {
     u8 *base = lbl_8041D790;
-    u8 *r3 = base + 0;
+    u8 *r3 = base;
     u8 *r5;
+    void (**cb)(s32);
     s32 i;
     s32 idx;
-    void (**cb)(s32);
 
     for (i = 0; i < 2; i++) {
         r3[0x41] = 0;
@@ -252,8 +252,13 @@ void fn_8012766C(void) {
 
 #pragma scheduling on
 void fn_80127930(void* alarm) {
-    fn_8012766C();
-    fn_801274C8();
+#define clearSoundSystem fn_8012766C
+#define markActiveSoundChannels fn_801274C8
+    /* Reset the sound system: clear all channel/group state, then mark the active channels and groups. */
+    clearSoundSystem();
+    markActiveSoundChannels();
+#undef markActiveSoundChannels
+#undef clearSoundSystem
 }
 
 void fn_80127954(void) {
