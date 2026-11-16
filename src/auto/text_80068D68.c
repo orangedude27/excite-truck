@@ -20977,13 +20977,15 @@ void l2cu_process_peer_cfg_req(void *arg0, void *arg1) {
 /* l2cu_save_peer_cfg_rsp_qos: simplified l2cu_process_peer_cfg_rsp; saves the
    negotiated QoS from a peer config response into the CCB's our_qos. */
 #define l2cu_save_peer_cfg_rsp_qos fn_8008EE40
-void fn_8008EE40(void *arg0, void *arg1) {
-    struct Pair { u32 x; u32 y; };
-    u8 *dst = (u8 *)arg0; u8 *src = (u8 *)arg1;
-    if (src[6] != 0) {
-        *(struct Pair *)(dst + 0x58) = *(struct Pair *)(src + 8);
-        *(struct Pair *)(dst + 0x60) = *(struct Pair *)(src + 0x10);
-        *(struct Pair *)(dst + 0x68) = *(struct Pair *)(src + 0x18);
+/* L2CAP config state machine: on the peer's config response, save the 24-byte
+   QoS flow spec into the CCB's our_qos when the response carries a QoS option. */
+void fn_8008EE40(void *p_ccb, void *p_cfg) {
+    tL2C_CCB_VIEW *ccb = (tL2C_CCB_VIEW *)p_ccb;
+    tL2CAP_CFG_INFO *cfg = (tL2CAP_CFG_INFO *)p_cfg;
+    if (cfg->qos_present != 0) {
+        ccb->our_qos[0] = *(const tL2CAP_QOS_PART *)&cfg->qos;
+        ccb->our_qos[1] = *(const tL2CAP_QOS_PART *)((const u8 *)&cfg->qos + 8);
+        ccb->our_qos[2] = *(const tL2CAP_QOS_PART *)((const u8 *)&cfg->qos + 16);
     }
 }
 
