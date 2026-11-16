@@ -876,10 +876,12 @@ int fn_8002173C(void) {
 #pragma pop
 int fn_800217AC(void) {
     int result;
-    if (lbl_8055D648 != 0)
+    /* Ready to advance the tips overlay only when no camera zoom is running and
+       the overlay is either hidden or paused. */
+    if (TIPS_ZOOM_ACTIVE != 0)
         return 0;
     result = 0;
-    if (lbl_8055D644 == 0 || lbl_8055D645 != 0)
+    if (OVERLAY_ON == 0 || OVERLAY_PAUSED != 0)
         result = 1;
     return result;
 }
