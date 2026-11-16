@@ -258,13 +258,16 @@ void fn_802DB778(int mode) {
     }
 }
 
-void fn_802DB9DC(int arg0) {
+void fn_802DB9DC(int replaceFramebuffer) {
+    /* Skip blend setup in the second lighting mode (lbl_8055FEBA); otherwise use
+     * alpha blending that replaces the framebuffer for the lowest light of a
+     * chain (dst=ZERO) and adds to it for every other light (dst=ONE). */
     if (lbl_8055FEBA != 0)
         return;
-    if (arg0 != 0) {
-        GXSetBlendMode(1, 4, 0, 5);
+    if (replaceFramebuffer != 0) {
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_ZERO, GX_LO_NOOP);
     } else {
-        GXSetBlendMode(1, 4, 1, 5);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_ONE, GX_LO_NOOP);
     }
 }
 
