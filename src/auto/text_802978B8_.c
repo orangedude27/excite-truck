@@ -138,9 +138,10 @@ void fn_80297A08(int arg0) {
 }
 
 #pragma scheduling invalid_target
+/* Allocate the static-shadow record array (0x80 entries of 0x40 bytes) and clear the count. */
 void fn_80297A30(void) {
-    lbl_8055F7A8 = ((void *(*)(void *, void (*)(void), int, int, int))fn_8002F37C)(fn_8012850C(0x2010, lbl_803493F8), fn_80297A80, 0, 0x40, 0x80);
-    lbl_8055F7AC = 0;
+    gStaticShadowRecords = ((void *(*)(void *, void (*)(void), int, int, int))fn_8002F37C)(fn_8012850C(0x2010, lbl_803493F8), fn_80297A80, 0, 0x40, 0x80);
+    gStaticShadowCount = 0;
 }
 #pragma scheduling on
 extern void *lbl_8055F7A8;
