@@ -592,11 +592,10 @@ check:
         goto loop;
 done:
     if (tmp != 0) {
-        struct Arg { char pad[0xC]; unsigned int b; };
-        struct Tmp { char pad[0x28]; unsigned int v; };
-        unsigned int b = ((struct Arg *)arg0)->b;
-        unsigned int v = ((struct Tmp *)tmp)->v;
-        *(unsigned int *)((u8 *)arg0 + 4) = v + ((unsigned int)tmp - b) + 0x40;
+        unsigned int offset = (unsigned int)tmp - *(unsigned int *)((u8 *)arg0 + 0xC);
+        unsigned int value = *(unsigned int *)(tmp + 0x28);
+        value += offset;
+        *(unsigned int *)((u8 *)arg0 + 4) = value + 0x40;
     } else
         *(u32 *)((u8 *)arg0 + 4) = 0;
 }
