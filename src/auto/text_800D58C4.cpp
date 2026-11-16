@@ -3056,14 +3056,15 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           }
        return (var_r25 != 0) && (var_r26 != 0);
                       }
-extern "C" void fn_800DAFA8(void *arg0, void *arg1) {
-    struct Obj {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3(void *);
+extern "C" void fn_800DAFA8(void *arg, void *obj) {
+    /* C-callable thunk: invoke the virtual method at vtable slot 3 on obj, passing arg. */
+    struct Dispatch {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void dispatch(void *);
     };
-    ((Obj *)arg1)->f3(arg0);
+    ((Dispatch *)obj)->dispatch(arg);
 }
 
 extern "C" void fn_800DAFC4(void* arg0, void* arg1) {
