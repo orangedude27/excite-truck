@@ -1,8 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern int *lbl_8055D46C;
-extern int lbl_8055D464;
+extern int *lbl_8055D46C; /* IdentInfo slot table: *it is the slot in use, entries of 0x18 */
+extern int lbl_8055D464;  /* IdentInfo: how many entries the resource table holds */
 extern int lbl_80558A88;
 extern unsigned char lbl_8055D470;
 extern char lbl_802FC240[];
