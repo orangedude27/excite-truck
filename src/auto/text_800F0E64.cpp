@@ -878,10 +878,16 @@ extern "C" void fn_800F2044(void *arg0, f32 farg0) {
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
-extern "C" void fn_800F2084(void* arg0, f32 farg0) {
-    u32 level = OSDisableInterrupts();
-    *(f32*)((u8*)arg0 + 0x20) = farg0;
-    OSRestoreInterrupts(level);
+extern "C" void fn_800F2084(void* track, f32 value) {
+    /* nw4hbm::snd::detail::SeqTrack parameter setter: stores the track's base
+     * value (+0x20) of the parameter UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv
+     * sums with the track's byte at +0x8F scaled to [-1,1) and the owning
+     * player's own value, and hands the result to every channel of the track at
+     * Channel+0x64.  Interrupts stay off over the store so the sound update
+     * cannot read the parameter half-written. */
+    u32 irq = OSDisableInterrupts();
+    *(f32*)((u8*)track + 0x20) = value;
+    OSRestoreInterrupts(irq);
 }
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F20C4(void *self, int bus, float value) {
@@ -5495,6 +5501,7 @@ extern "C" void fn_800FA7E0(void *self) {
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
         if (message == 1) {
+            unsigned long state;
             void *mutex = p + 0x2320;
             OSLockMutex(mutex);
             unsigned long tick = OSGetTick();
@@ -5505,34 +5512,34 @@ extern "C" void fn_800FA7E0(void *self) {
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824();
             {
-                DummyWorkerLink *end = (DummyWorkerLink *)(p + 0x2388);
-                DummyWorkerLink *link = (DummyWorkerLink *)end->next;
-                while (link != end) {
-                    DummyWorkerLink *current = link;
-                    link = (DummyWorkerLink *)link->next;
-                    if (current == 0)
+                LinkListIter begin;
+                begin.node = *(void **)(p + 0x2388);
+                LinkListIter it = begin;
+                while (it.node != (void *)(p + 0x2388)) {
+                    DummyWorkerLink *node = (DummyWorkerLink *)it.node;
+                    it.node = *(void **)it.node;
+                    if (node == 0)
                         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
-                    ((DummyWorkerCallbackC *)current)->Call();
+                    ((DummyWorkerCallbackC *)node)->Call();
                 }
             }
             UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv();
             fn_800FEB9C();
-            {
-                unsigned long state = OSDisableInterrupts();
-                Instance__15EmissionManagerFv();
-                UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv();
-                OSRestoreInterrupts(state);
-            }
+            state = OSDisableInterrupts();
+            Instance__15EmissionManagerFv();
+            UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv();
+            OSRestoreInterrupts(state);
             *(u32 *)(p + 0x2390) = OSGetTick() - tick;
             {
-                DummyWorkerLink *end = (DummyWorkerLink *)(p + 0x2388);
-                DummyWorkerLink *link = (DummyWorkerLink *)end->next;
-                while (link != end) {
-                    DummyWorkerLink *current = link;
-                    link = (DummyWorkerLink *)link->next;
-                    if (current == 0)
+                LinkListIter begin;
+                begin.node = *(void **)(p + 0x2388);
+                LinkListIter it = begin;
+                while (it.node != (void *)(p + 0x2388)) {
+                    DummyWorkerLink *node = (DummyWorkerLink *)it.node;
+                    it.node = *(void **)it.node;
+                    if (node == 0)
                         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264D0, 0x23D, lbl_803264AC);
-                    ((DummyWorkerCallback10 *)current)->Call();
+                    ((DummyWorkerCallback10 *)node)->Call();
                 }
             }
             OSUnlockMutex(mutex);
