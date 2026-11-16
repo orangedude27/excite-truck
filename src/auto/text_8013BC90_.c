@@ -80,6 +80,12 @@ extern float lbl_80561484;
 extern float lbl_80561488;
 extern float lbl_8056148C;
 extern float lbl_80561490;
+/* Default line parameters written into CacheResource.params by fn_8013BD30. */
+#define DEFAULT_MIN_T    lbl_80561480 /* 0.5  */
+#define DEFAULT_MAX_T    lbl_80561484 /* 1.5  */
+#define DEFAULT_MIN_DIST lbl_80561488 /* 13.0 */
+#define DEFAULT_CURV_T   lbl_80561490 /* 0.0  */
+#define DEFAULT_CURV_DIST lbl_8056148C /* 60.0 */
 #pragma dont_inline on
 void fn_8013BD30(void *arg0) {
     float e, d, c, b, a;
