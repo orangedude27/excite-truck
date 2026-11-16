@@ -3050,7 +3050,8 @@ void fn_801C968C(s32 delta) {
 }
 
 void fn_801C96E4(void) {
-    lbl_8055E82C = lbl_8055E828 / 10;
+    /* Set the entry-list page to the selected timeline entry divided by ten. */
+    sTimelinePage = sTimelineSelection / 10;
 }
 
 #pragma scheduling invalid_target
