@@ -11113,58 +11113,28 @@ extern "C" s32 VFiPFAPI_ParseOpenModeString(char *arg0) {
     signed char first;
     signed char next;
     signed char tail;
-    if (arg0 == 0) {
-        return 10;
-    }
+    if (arg0 == 0) return 10;
     first = arg0[0];
     index = 1;
     switch (first) {
-    case 'r':
-        mode = 2;
-        break;
-    case 'w':
-        mode = 1;
-        break;
-    case 'a':
-        mode = 4;
-        break;
-    default:
-        return 0;
+    case 'r': mode = 2; break;
+    case 'w': mode = 1; break;
+    case 'a': mode = 4; break;
+    default: return 0;
     }
-    if (arg0[1] == 'b') {
-        index = 2;
-    }
+    if (arg0[1] == 'b') index = 2;
     next = arg0[index++];
-    if (next == '+') {
-        goto plus;
-    }
-    if (next >= '+') {
-        goto check_text;
-    }
     switch (next) {
-    case 0:
-        goto return_mode;
-    default:
-        goto return_zero;
-    }
-check_text:
-    switch (next) {
-    case 't':
-        goto return_mode;
-    default:
-        goto return_zero;
-    }
-return_mode:
-    return mode;
-return_zero:
-    return 0;
-plus:
-    tail = arg0[index];
-    switch (tail) {
-    case 0:
-        return mode | 8;
-    default:
-        return 0;
+    case 0: return mode;
+    case 't': goto zero;
+    default: goto zero;
+    zero: return 0;
+    case '+':
+        tail = arg0[index];
+        switch (tail) {
+        case 0: return mode | 8;
+        default: return 0;
+        }
     }
 }
 
