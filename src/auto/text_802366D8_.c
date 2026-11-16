@@ -18,18 +18,27 @@ extern int fn_8000D838(int *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* Static initializer of this module (the .ctors entry D_802ED3E0): register the
+ * module's static record with the runtime, then bring up the two statics the
+ * module's code works on -- the node entry lbl_80498638, written empty (no name,
+ * type 0x7B, no handle), which is also where a table of such entries ends, and
+ * lbl_8055F090, set to 0x7F000000. */
 void fn_802366D8(void) {
-    int v;
-    unsigned int *p;
+#define NODE_TYPE_EMPTY 0x7B /* type of an empty node entry; fn_8021227C stops the
+                              * table it is walking when it reads it */
+    s32 type;
+    unsigned int *record;
     fn_8000D838(&lbl_8055F088);
-    p = lbl_80498638 + 1;
-    lbl_80498638[0] = 0;
-    v = 0x7B;
-    lbl_80498638[1] = v;
-    lbl_80498638[2] = 0;
-    lbl_80498638[3] = 0;
-    lbl_80498638[4] = 0;
+    record = lbl_80498638 + 1; /* the record's base the stores below run off; dead,
+                                * kept by the opt_dead_assignments pragma above */
+    lbl_80498638[0] = 0;       /* +0x00 name: none */
+    type = NODE_TYPE_EMPTY;
+    lbl_80498638[1] = type;    /* +0x04 type: empty */
+    lbl_80498638[2] = 0;       /* +0x08 */
+    lbl_80498638[3] = 0;       /* +0x0C */
+    lbl_80498638[4] = 0;       /* +0x10 handle: none */
     lbl_8055F090 = 0x7F000000;
+#undef NODE_TYPE_EMPTY
 }
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
