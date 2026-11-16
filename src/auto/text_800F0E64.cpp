@@ -142,6 +142,7 @@ struct DummySeqPlayerIface { u8 pad[0x24]; f32 volume; u8 pad2[0x90 - 0x2C]; u8 
 struct DummySeqPlayerV { virtual void g0(); virtual void g1(); virtual void g2(); virtual void g3(); virtual void g4(); virtual void g5(); virtual void g6(); virtual void g7(); virtual void g8(); virtual void g9(); virtual void g10(); virtual void g11(); virtual void g12(); virtual void g13(); virtual void g14(); virtual f32 g15(); virtual f32 g16(); virtual f32 g17(); virtual f32 g18(); virtual f32 g19(); virtual f32 g20(); virtual f32 g21(); virtual void g22(); virtual void g23(); virtual void g24(); virtual void g25(); virtual void g26(); virtual void g27(); virtual void g28(); virtual s32 g29(); virtual f32 g30(); virtual f32 g31(); virtual f32 g32(s32); virtual f32 g33(s32); virtual f32 g34(s32); virtual f32 g35(s32); };
 static inline DummySeqPlayerV *SeqTrackPlayer(void *t) { return *(DummySeqPlayerV **)((s8 *)t + 0xB4); }
 struct DummyWorkerLink { void *next; void *prev; };
+struct SoundThreadHead { char pad[0x2388]; void *head; };
 struct DummyWorkerCallbackC : DummyWorkerLink { virtual void f0(); virtual void Call(); };
 struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void f1(); virtual void Call(); };
 #pragma cplusplus reset
@@ -1269,16 +1270,16 @@ valid_version_min:
     valid = (version <= 0x101);
 copy_if_valid:
     if (valid != 0) {
-        const s32 *in = (const s32 *)src;
-        s32 *out = (s32 *)dst;
-        s32 a0 = in[0];
-        s32 a1 = in[1];
-        out[0] = a0;
+        const u32 *in = (const u32 *)src;
+        u32 *out = (u32 *)dst;
+        u32 a1 = in[1];
+        u32 a0 = in[0];
         out[1] = a1;
-        s32 a2 = in[2];
-        s32 a3 = in[3];
-        out[2] = a2;
+        out[0] = a0;
+        u32 a3 = in[3];
+        u32 a2 = in[2];
         out[3] = a3;
+        out[2] = a2;
         out[4] = in[4];
         out[5] = in[5];
         out[6] = in[6];
@@ -5600,17 +5601,22 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
 extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     s32 result;
     u8 *thread = (u8 *)arg0;
-    if (thread[0x2394] != 0) return 1;
+    register const void *label;
+
+    if (thread[0x2394] != 0) {
+        return 1;
+    }
     thread[0x2394] = 1;
-    if (((u8 *)Instance__15EmissionManagerFv())[0x6c30] == 0)
+    if (((u8 *)Instance__15EmissionManagerFv())[0x6c30] == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x44, lbl_80326464);
+    }
     OSInitThreadQueue(thread + 0x2318);
     OSInitMutex(thread + 0x2320);
     if ((s8)lbl_8055DE68 == 0) {
         volatile u32 *base = (volatile u32 *)lbl_80412CC8;
-        void *dtor = (void *)__dt__10TitleSceneFv;
-        void *object = (void *)((u8 *)base + 0x2388);
+        register void *dtor = (void *)__dt__10TitleSceneFv;
         base[0x2388 / 4] = 0;
+        register void *object = (void *)((u8 *)base + 0x2388);
         base[0x238c / 4] = 0;
         base[0x2378 / 4] = 0;
         base[0x237c / 4] = 0;
@@ -5618,11 +5624,15 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
         base[0x2388 / 4] = (u32)object;
         base[0x238c / 4] = (u32)object;
         ((volatile u8 *)base)[0x2394] = 0;
-        __register_global_object((void *)base, dtor, (void *)&lbl_80412CB8, object);
+        label = (const void *)&lbl_80412CB8;
+        __register_global_object((void *)base, dtor, (void *)label, object);
         lbl_8055DE68 = 1;
     }
-    result = OSCreateThread(arg0, (void *)fn_800FA77C, (void *)lbl_80412CC8, thread + 0x2318, 0x2000, arg1, 0);
-    if (result != 0) OSResumeThread(arg0);
+    result = OSCreateThread(arg0, (void *)fn_800FA77C, (void *)lbl_80412CC8,
+                            thread + 0x2318, 0x2000, arg1, 0);
+    if (result != 0) {
+        OSResumeThread(arg0);
+    }
     return result != 0;
 }
 s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
@@ -5754,14 +5764,14 @@ extern "C" const char lbl_803264AC[];
 extern "C" const char lbl_803264D0[];
 extern "C" void fn_800FA7E0(void *self) {
     unsigned long message;
+    unsigned long state;
     u8 *p = (u8 *)self;
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
         if (message == 1) {
-            unsigned long state;
             void *mutex = p + 0x2320;
             OSLockMutex(mutex);
-            unsigned long tick = OSGetTick();
+            register unsigned long tick = OSGetTick();
             Instance__15EmissionManagerFv();
             fn_800E3228();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
@@ -5791,7 +5801,7 @@ extern "C" void fn_800FA7E0(void *self) {
                 LinkListIter begin;
                 begin.node = *(void **)(p + 0x2388);
                 LinkListIter it = begin;
-                while (it.node != (void *)(p + 0x2388)) {
+                while ((void *)(p + 0x2388) != it.node) {
                     DummyWorkerLink *node = (DummyWorkerLink *)it.node;
                     it.node = *(void **)it.node;
                     if (node == 0)
@@ -6224,10 +6234,9 @@ extern "C" s32 Prepare__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail14
     if (result >= 2) goto done;
     if (result == 0) goto done;
     if (result >= 0) goto doForce;
-    goto done;
+    else goto done;
 doForce:
     ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
-    goto done;
 done:
     *((u8 *)self + 0x48) = 1;
     return 1;
@@ -7415,11 +7424,11 @@ extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlay
 }
 
 extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *voice, s32 status, void *player) {
-    const char *base = lbl_80326768;
+    const StrmPlayerMsgPool *pool = (const StrmPlayerMsgPool *)lbl_80326768;
     if (player == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x504, base + 0x238);
+        Panic__Q26nw4hbm2dbFPCciPCce(pool->file, 0x504, pool->msg238);
     if (*(void **)((char *)player + 0x438) != voice)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x506, base + 0x268);
+        Panic__Q26nw4hbm2dbFPCciPCce(pool->file, 0x506, pool->msg268);
     if (status < 2) {
         if (status < 0)
             goto invalid_status;
@@ -7440,7 +7449,7 @@ clear_voice:
     goto done;
 
 invalid_status:
-    Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x515, base + 0x298, status);
+    Panic__Q26nw4hbm2dbFPCciPCce(pool->file, 0x515, pool->msg298, status);
 
 done:
     return;
