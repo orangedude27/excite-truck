@@ -337,19 +337,20 @@ void *fn_801E07E8(void *self, s32 deleteFlag) {
     return self;
 }
 #pragma scheduling on
-void fn_801E0864(void *arg0) {
-    float b;
-    float a;
+// Initializes a record with an invalid id, clear flags and default x/y values.
+void fn_801E0864(void *out) {
+    float defaultY;
+    float defaultX;
     volatile u8 *dst;
-    dst = (volatile u8 *)arg0;
-    a = lbl_80562C78;
-    b = lbl_80562C7C;
+    dst = (volatile u8 *)out;
+    defaultX = lbl_80562C78;
+    defaultY = lbl_80562C7C;
     *(s32 volatile *)(dst + 0x0) = -1;
     *(u8 volatile *)(dst + 0x4) = 0;
     *(s32 volatile *)(dst + 0x10) = 0;
     *(s32 volatile *)(dst + 0x14) = 0;
-    *(float *)((char *)arg0 + 8) = a;
-    *(float *)((char *)arg0 + 0xC) = b;
+    *(float *)((char *)out + 8) = defaultX;
+    *(float *)((char *)out + 0xC) = defaultY;
 }
 #pragma push
 #pragma processor 750
