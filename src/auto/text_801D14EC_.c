@@ -22,6 +22,7 @@ extern int fn_800241CC(int);
 #pragma scheduling invalid_target
 extern char lbl_80338238[];
 extern char lbl_80338244[];
+// Allocates and initializes the "carelmgr" object, assigning its vtable when allocation succeeds.
 void fn_801D14EC(void) {
     extern void *fn_801284F8(int, const char *);
     extern void fn_801D0FA4(void);
