@@ -249,6 +249,7 @@ extern "C" void fn_80208E90(void *arg0, int arg1) {
     const char *strings = lbl_8033BEF8;
     int addObject;
     unsigned int count;
+
     if (strncmp(object->name(), strings + 0x60, 0xB) == 0) {
         fn_802E30C8(strings + 0x70, object->name());
         if (arg0 != 0) {
@@ -263,9 +264,7 @@ extern "C" void fn_80208E90(void *arg0, int arg1) {
                 object->finish();
             }
             if (addObject != 0) {
-                int idx = lbl_80489238[6];
-                lbl_80489238[idx] = (int)arg0;
-                lbl_80489238[6] = idx + 1;
+                lbl_80489238[lbl_80489238[6]++] = (int)arg0;
             } else if (arg0 != 0) {
                 object->close(1);
             }
