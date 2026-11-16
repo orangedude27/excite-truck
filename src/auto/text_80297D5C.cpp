@@ -2457,8 +2457,8 @@ extern "C" int fn_8029C024(int *__restrict arg0) {
     return 4;
 }
 #pragma dont_inline reset
-extern "C" int fn_8029C054(int* arg0) {
-    int value = *(volatile int*)arg0;
+extern "C" int fn_8029C054(int *__restrict arg0) {
+    int value = *arg0;
     fn_8029A8A4(lbl_8055F7D4, (void*)value);
     return 4;
 }
