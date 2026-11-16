@@ -44,9 +44,7 @@ s32 fn_802E46F0(void) {
     u32 mode;
     char buffer[0x20];
     volatile u16 *p;
-    u16 a;
-    u16 b;
-    u16 c;
+    u16 a, b, c;
     fn_802E4A2C();
     raw = lbl_8055FF50;
     mask = (u32)raw & 0xFFFF0FFF;
@@ -62,18 +60,16 @@ s32 fn_802E46F0(void) {
         p[3] = 0;
     }
     mode = (u16)mask;
-    if (mode == 0x17A)
-        goto special;
-    if (mode != 0x17B || lbl_8055FF60 != 0x112)
-        goto done;
-special:
+    if (mode == 0x17A) goto check;
+    if (mode != 0x17B) goto done;
+check:
+    if (lbl_8055FF60 != 0x112) goto done;
     sprintf(buffer, lbl_8034D1C0, lbl_8055FF64);
     fn_802D07E4(buffer, mode == 0x17B);
     mode = 0;
     lbl_8055FF64++;
 done:
-    if (mode != 0)
-        lbl_8055FF60 = mode;
+    if (mode != 0) lbl_8055FF60 = mode;
     return mode;
 }
 void* memset(void*, int, unsigned long);
