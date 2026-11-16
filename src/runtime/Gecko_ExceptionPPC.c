@@ -1,14 +1,21 @@
 #include <revolution/OS.h>
 #include <runtime/Gecko_ExceptionPPC.h>
 
+// Number of code fragments the C++ exception handler can track.  The game is a
+// single executable with no downloadable fragments, so just one slot exists.
 #define NUM_FRAGMENT 1
 
+// One loaded code fragment, as tracked for exception handling (an ETI is the
+// "exception table index" chain describing the fragment's .extab/.ctab entries).
 typedef struct FragmentInfo {
-    const ExtabIndexInfo* eti; // at 0x0
-    void* toc;                 // at 0x4
-    BOOL regist;               // at 0x8
+    const ExtabIndexInfo* eti; // at 0x0: fragment's exception table index
+    void* toc;                 // at 0x4: fragment's TOC (r2), for its ctab
+    BOOL regist;               // at 0x8: slot in use
 } FragmentInfo;
 
+// __register_fragment/__unregister_fragment state; the id a fragment is given
+// is its index here, and the runtime's exception handler walks it to find the
+// .extab/.ctab pair covering a faulting PC.
 static FragmentInfo fragmentInfo[NUM_FRAGMENT];
 
 /* Claims the first free entry of the fragment table for a loaded code fragment,
