@@ -816,18 +816,28 @@ extern "C" void fn_802B69FC(void) {
 
 #pragma push
 #pragma small_data off
-s32 fn_802B6A70(s32 arg0) {
-    switch (arg0) {
+/* Returns the brush/resource folder path string for a given mode:
+ * 2="brush\\", 3="roadbrush\\", 5="excavate\\", 4/default="". */
+s32 fn_802B6A70(s32 mode) {
+#define kBrushPath lbl_8055CE78
+#define kRoadBrushPath lbl_8034A808
+#define kExcavatePath lbl_8034A814
+#define kEmptyPath lbl_8055CE80
+    switch (mode) {
     case 2:
-        return (s32)&lbl_8055CE78;
+        return (s32)&kBrushPath;
     case 3:
-        return (s32)&lbl_8034A808;
+        return (s32)&kRoadBrushPath;
     case 5:
-        return (s32)&lbl_8034A814;
+        return (s32)&kExcavatePath;
     default:
     case 4:
-        return (s32)&lbl_8055CE80;
+        return (s32)&kEmptyPath;
     }
+#undef kBrushPath
+#undef kRoadBrushPath
+#undef kExcavatePath
+#undef kEmptyPath
 }
 #pragma pop
 extern float lbl_8055FA18;
