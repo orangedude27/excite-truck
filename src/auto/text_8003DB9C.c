@@ -4898,20 +4898,21 @@ void GXSetTevKColorSel(s32 arg0, s32 arg1) {
     *(unsigned short *)((u8 *)base + 2) = 0;
 }
 
-void GXSetTevKAlphaSel(s32 arg0, s32 arg1) {
+/* Set the constant alpha (K-alpha) selector for a TEV stage. */
+void GXSetTevKAlphaSel(s32 stage, s32 sel) {
     union TevKAlphaReg {
         u32 value;
         struct { u32 pad0 : 8; u32 selector : 5; u32 pad1 : 19; } odd;
         struct { u32 pad0 : 18; u32 selector : 5; u32 pad1 : 9; } even;
-    } *entry = (union TevKAlphaReg *)((char *)__GXData + ((arg0 * 2) & ~3) + 0x200);
+    } *reg = (union TevKAlphaReg *)((char *)__GXData + ((stage * 2) & ~3) + 0x200);
 
-    if (arg0 & 1) {
-        entry->odd.selector = arg1;
+    if (stage & 1) {
+        reg->odd.selector = sel;
     } else {
-        entry->even.selector = arg1;
+        reg->even.selector = sel;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = entry->value;
+    *(volatile unsigned int *)0xCC008000 = reg->value;
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
