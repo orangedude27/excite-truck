@@ -641,12 +641,14 @@ extern "C" s32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
 }
 
 u32 fn_800FEB9C(void) {
-    u32 val = lbl_80559900 * 0x19660D;
-    val += 0x3C6F0000;
-    u32 out = val;
-    out -= 0x0CA1;
-    lbl_80559900 = out;
-    return out >> 16;
+    /* Advance the global LCG seed lbl_80559900 (starts 0x12345678) with the
+       Numerical-Recipes constants, then return the high 16 bits as a random value. */
+    u32 product = lbl_80559900 * 0x19660D;
+    product += 0x3C6F0000;
+    u32 nextState = product;
+    nextState -= 0x0CA1;
+    lbl_80559900 = nextState;
+    return nextState >> 16;
 }
 
 /* Resolve a data reference to an address: ADDRESS returns value, OFFSET adds base, others panic. */
