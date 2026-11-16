@@ -520,9 +520,11 @@ void fn_8022DF48(void *gauge) {
 extern char *fn_8022D82C(void *, int, int);
 extern char *strncpy(char *, const char *, unsigned long);
 extern double fabs(double);
-int fn_8022DF7C(void *arg0) {
-    int *ptr = *(int **)((char *)arg0 + 4);
-    return *(int *)((char *)arg0 + 0xC) != *ptr;
+/* Returns nonzero while an int gauge's value has not reached its max (+0x0C),
+ * i.e. stepping the gauge up would still change the value. */
+int fn_8022DF7C(void *gauge) {
+    int *valuePtr = *(int **)((char *)gauge + 4);
+    return *(int *)((char *)gauge + 0xC) != *valuePtr;
 }
 
 int fn_8022DF9C(void *arg0) {
