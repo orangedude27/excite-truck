@@ -957,6 +957,9 @@ extern double fn_8002B060(int,double);
 extern double floor(double);
 int __kernel_rem_pio2(double *x,double *y,int e0,int nx,int prec,const int *ipio2)
 {
+    /* fdlibm kernel: reduce a trig argument x modulo pi/2. Writes the remainder
+     * y = x - n*(pi/2) into y[] (y[0], plus y[1]/y[2] at higher precisions),
+     * using the 24-bit chunks of 2/pi in ipio2, and returns the quadrant n & 7. */
 	int jz,jx,jv,jp,jk,carry,n,iq[20],i,j,k,m,q0,ih;
 	double z,fw,f[20],fq[20],q[20];
 
