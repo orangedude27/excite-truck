@@ -2147,6 +2147,7 @@ extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(void *voice,
 }
 
 extern const char lbl_803223BC[];
+/* Clamps (delta + 1.0) to [0.0, 1.0] and updates the field at offset 0x144, setting flag 0x20 at 0x123 if changed. */
 extern "C" void fn_800E56D0(void *arg0, float arg1) {
     float sum = arg1 + lbl_80560F38;
     float value;
@@ -2504,18 +2505,12 @@ public:
 }}}
 #pragma push
 #pragma use_lmw_stmw off
+#pragma dont_inline off
 extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
-    unsigned int *voice;
-    unsigned int interrupt;
+    nw4hbm::ut::AutoInterruptLock lock;
+    int format = *(int *)((char *)arg0 + 0x118);
+    unsigned int value = (unsigned int)arg2;
     unsigned int start;
-    unsigned int hi;
-    unsigned int lo;
-    int i;
-    unsigned int value;
-    int format;
-    interrupt = OSDisableInterrupts();
-    format = *(int *)((char *)arg0 + 0x118);
-    value = (unsigned int)arg2;
     if (arg2 != 0) value += 0x80000000;
     start = 0;
     switch (format) {
@@ -2532,10 +2527,10 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    voice = (unsigned int *)((char *)arg0 + arg1 * 0x10);
-    hi = start >> 16;
-    lo = start & 0xFFFF;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x108); i++, voice++) {
+    unsigned int *voice = (unsigned int *)((char *)arg0 + arg1 * 0x10);
+    unsigned int hi = start >> 16;
+    unsigned int lo = start & 0xFFFF;
+    for (int i = 0; i < *(int *)((char *)arg0 + 0x108); voice++, i++) {
         unsigned int ch = voice[3];
         unsigned int inner = OSDisableInterrupts();
         *(unsigned short *)(ch + 0x1B4) = hi;
@@ -2543,7 +2538,6 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
         if (!(*(unsigned int *)(ch + 0x1C) & 0x800)) *(unsigned int *)(ch + 0x1C) |= 0x2000;
         OSRestoreInterrupts(inner);
     }
-    OSRestoreInterrupts(interrupt);
 }
 #pragma pop
 
@@ -3255,44 +3249,61 @@ extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(vo
 }
 #pragma pop
 extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *self, const void *start, const void *end) {
-    unsigned int irq = OSDisableInterrupts();
+    unsigned int irq;
+    int count;
+    char *voice;
+    int found;
+    int i;
+    void *address;
+    unsigned int lock;
+    unsigned int nested;
+    void *manager;
+    int outer;
+    int active;
+    char *row;
+    int inner;
+    char *slot;
+    void *item;
+    void (*callback)(void *, int, void *);
+
+    irq = OSDisableInterrupts();
     if (*((u8 *)self + 0x11C) != 0) {
-        char *voice = (char *)self;
-        int found = 0;
-        int count = *(int *)((char *)self + 0x104);
-        int i;
+        count = *(int *)((char *)self + 0x104);
+        voice = (char *)self;
+        found = 0;
         for (i = count; i > 0; --i) {
-            void *address = *(void **)(voice + 0x2C);
-            if (start > address || address > end) break;
-            found = 1;
+            address = *(void **)(voice + 0x2C);
+            if (start <= address && address <= end) {
+                found = 1;
+            }
             voice += 0x34;
         }
         if (found != 0) {
-            unsigned int lock = OSDisableInterrupts();
+            lock = OSDisableInterrupts();
             if (*((u8 *)self + 0x11E) != 0) {
-                unsigned int nested = OSDisableInterrupts();
-                void *manager = *(void **)((char *)self + 0xC);
-                int active;
+                nested = OSDisableInterrupts();
+                manager = *(void **)((char *)self + 0xC);
                 if (manager == 0) {
                     OSRestoreInterrupts(nested);
                     active = 0;
                 } else {
-                    unsigned short voices = *(unsigned short *)((char *)manager + 0x148);
-                    active = (voices == 1);
+                    active = (*(unsigned short *)((char *)manager + 0x148) == 1);
                     OSRestoreInterrupts(nested);
                 }
                 if (active != 0) {
-                    char *row = (char *)self;
-                    int outer;
-                    for (outer = 0; outer < *(int *)((char *)self + 0x104); outer++) {
-                        char *slot = row;
-                        int inner;
-                        for (inner = 0; inner < *(int *)((char *)self + 0x108); inner++) {
-                            void *item = *(void **)(slot + 0xC);
+                    row = (char *)self;
+                    outer = 0;
+                    while (outer < *(int *)((char *)self + 0x104)) {
+                        slot = row;
+                        inner = 0;
+                        while (inner < *(int *)((char *)self + 0x108)) {
+                            item = *(void **)(slot + 0xC);
                             if (item != 0) AXSetVoiceState(item, 0);
                             slot += 4;
+                            inner++;
                         }
                         row += 0x10;
+                        outer++;
                     }
                 }
                 *((u8 *)self + 0x11E) = 0;
@@ -3301,7 +3312,7 @@ extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *se
             *((u8 *)self + 0x11F) = 0;
             *((u8 *)self + 0x11D) = 0;
             OSRestoreInterrupts(lock);
-            void (*callback)(void *, int, void *) = *(void (**)(void *, int, void *))((char *)self + 0x10C);
+            callback = *(void (**)(void *, int, void *))((char *)self + 0x10C);
             if (callback != 0) callback(self, 1, *(void **)((char *)self + 0x110));
         }
     }
