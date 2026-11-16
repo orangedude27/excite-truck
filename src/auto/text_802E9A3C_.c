@@ -124,13 +124,14 @@ void *fn_802E9B54(Mp3Stream *stream, long deleteFlag) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_802E9BCC(void *arg0) {
-    class Obj {
+// Calls the deleting destructor (vtable slot 0x8, delete flag 1) on a polymorphic object, if non-null.
+extern "C" void fn_802E9BCC(void *obj) {
+    class Destroyable {
     public:
-        virtual void f(int);
+        virtual void destroy(int);
     };
-    if (arg0 == 0) return;
-    ((Obj *)arg0)->f(1);
+    if (obj == 0) return;
+    ((Destroyable *)obj)->destroy(1);
 }
 #pragma cplusplus reset
 #pragma pop
@@ -225,7 +226,10 @@ void fn_802E9CF0(void) {
         fn_802E317C(strings + 0x15C);
     if (fn_800B7968(0, 0, 0, base + 0xB8) != 0)
         fn_802E317C(strings + 0x170);
-    lbl_80560061 = ((unsigned char *)(base + 0xB8))[9] >> 4 & 1;
+    {
+        char *last = base + 0xB8;
+        lbl_80560061 = ((volatile unsigned char *)last)[9] >> 4 & 1;
+    }
 }
 
 #pragma dont_inline on
@@ -975,7 +979,7 @@ void fn_802EC1E4(void) {
     register unsigned int *timebase;
     register int start;
     register unsigned int multiplier;
-    unsigned int clock;
+    register unsigned int clock;
     int current;
     fn_802EC1D8();
     ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E95C);
