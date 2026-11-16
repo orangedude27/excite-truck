@@ -195,19 +195,26 @@ void fn_8000DBC8(int callback) {
     }
     lbl_8034F628[lbl_8055D460++] = callback;
 }
-void fn_8000DC28(const char *source, int arg1) {
+/* CopyPlayerNameSlot: copies a player name string into the given slot's name
+ * buffer (0x12 bytes at playerNameBase + slotIndex * 0x12 + 0x64), stopping at
+ * a NUL terminator and forcing NUL-termination if the source is truncated. */
+void fn_8000DC28(const char *source, int slotIndex) {
+#define playerNameBase lbl_8055D46C
     int remaining = 0x12;
-    char *p;
-    volatile char *destination;
-    p = (char *)lbl_8055D46C;
-    p += arg1 * 0x12;
-    destination = (volatile char *)(p + 0x64);
-    while ((*destination++ = *source++) != '\0') {
+    char *slotPtr;
+    volatile char *dst;
+
+    slotPtr = (char *)playerNameBase;
+    slotPtr += slotIndex * 0x12;
+    dst = (volatile char *)(slotPtr + 0x64);
+    while ((*dst++ = *source++) != '\0') {
         if (--remaining > 0)
             continue;
-        destination[-1] = '\0';
+        dst[-1] = '\0';
+#undef playerNameBase
         return;
     }
+#undef playerNameBase
 }
 int fn_8000DC70(int arg0) {
     return (int)((char *)lbl_8055D46C + arg0 * 0x12 + 0x64);
