@@ -1744,9 +1744,10 @@ extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* this_, int deleteFl
     return this_;
 }
 
-extern "C" int fn_8029AEE8(void *arg0) {
-    memset(arg0, 0, 0x1C0);
-    *(int *)((char *)arg0 + 0x1E0) = 0;
+/* Clear an ExhaustTorchMan object: zero its per-slot storage (0x1C0 bytes) and its trailing count field at +0x1E0. */
+extern "C" int fn_8029AEE8(void *torches) {
+    memset(torches, 0, 0x1C0);
+    *(int *)((char *)torches + 0x1E0) = 0;
 }
 
 #pragma push
