@@ -39,38 +39,40 @@ extern u32 lbl_8055FF64;
 extern const char lbl_8034D1C0[];
 #pragma scheduling invalid_target
 s32 fn_802E46F0(void) {
-    u16 raw;
-    u32 mask;
-    u32 mode;
-    char buffer[0x20];
-    volatile u16 *p;
-    u16 a, b, c;
+    /* Screenshot hotkey check: shift the recent-input history, and when the
+       current combo (0x17A/0x17B) follows 0x112, save a numbered "shotNN.tga". */
+    u16 input;
+    u32 code;
+    u32 combo;
+    char fileName[0x20];
+    volatile u16 *history;
+    u16 next1, next2, next3;
     fn_802E4A2C();
-    raw = lbl_8055FF50;
-    mask = (u32)raw & 0xFFFF0FFF;
-    lbl_8055FF5A = raw;
-    if (mask != 0) {
-        p = &lbl_8055FF50;
-        a = p[1];
-        b = p[2];
-        c = p[3];
-        p[0] = a;
-        p[1] = b;
-        p[2] = c;
-        p[3] = 0;
+    input = lbl_8055FF50;
+    code = (u32)input & 0xFFFF0FFF;
+    lbl_8055FF5A = input;
+    if (code != 0) {
+        history = &lbl_8055FF50;
+        next1 = history[1];
+        next2 = history[2];
+        next3 = history[3];
+        history[0] = next1;
+        history[1] = next2;
+        history[2] = next3;
+        history[3] = 0;
     }
-    mode = (u16)mask;
-    if (mode == 0x17A) goto check;
-    if (mode != 0x17B) goto done;
+    combo = (u16)code;
+    if (combo == 0x17A) goto check;
+    if (combo != 0x17B) goto done;
 check:
     if (lbl_8055FF60 != 0x112) goto done;
-    sprintf(buffer, lbl_8034D1C0, lbl_8055FF64);
-    fn_802D07E4(buffer, mode == 0x17B);
-    mode = 0;
+    sprintf(fileName, lbl_8034D1C0, lbl_8055FF64);
+    fn_802D07E4(fileName, combo == 0x17B);
+    combo = 0;
     lbl_8055FF64++;
 done:
-    if (mode != 0) lbl_8055FF60 = mode;
-    return mode;
+    if (combo != 0) lbl_8055FF60 = combo;
+    return combo;
 }
 void* memset(void*, int, unsigned long);
 extern u16 lbl_8055FF50;
