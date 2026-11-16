@@ -819,7 +819,7 @@ void fn_801F131C(int instance, int forceNearestLod) {
     }
 }
 
-/* Draw a detached wheel using its nearest (lod0) model, unless state 3 hides it. */
+/* Draw a detached wheel with its nearest (lod0) model, unless state 3 hides the wheel. */
 void fn_801F1378(WheelInstance *wheel) {
     if (wheel->state != 3)
         fn_801F163C(wheel, 0, wheel->spinAngle);
