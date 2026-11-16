@@ -19928,15 +19928,17 @@ extern "C" void fn_800D0BA0(void) {
 
 }
 
-extern "C" void fn_800D0BA4(void *arg0, void *arg1) {
+extern "C" void fn_800D0BA4(void *target, void *handler) {
     class Dispatch {
     public:
         virtual ~Dispatch();
         virtual void call(void *);
     };
-    *(void **)((u8 *)arg0 + 4) = arg1;
-    if (arg1 != 0) {
-        ((Dispatch *)arg1)->call(arg0);
+    /* Store the handler in the target's +4 slot, then invoke its virtual call
+     * method once with the target. */
+    *(void **)((u8 *)target + 4) = handler;
+    if (handler != 0) {
+        ((Dispatch *)handler)->call(target);
     }
 }
 
