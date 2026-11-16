@@ -152,6 +152,8 @@ extern char *fn_80012820(int);
 extern const char *fn_80007FF0(int);
 extern int fn_80012938(float);
 extern volatile float lbl_80560358;
+/* Look up the display name for the current contest record's event type
+ * (field +0x8); the lookup logs a message for unknown IDs. */
 void fn_80012910(void) {
     fn_80007FF0(*(int *)((char *)fn_8001285C() + 8));
 }
