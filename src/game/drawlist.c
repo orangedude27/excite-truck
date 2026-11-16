@@ -644,17 +644,20 @@ void fn_802C90F0(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802C9294(int arg0, int arg1) {
-    int equal;
-    if (arg0 != -1 && arg0 != -2) {
-        equal = arg1 == 1;
-        lbl_8055FC75 = equal;
-        lbl_8055FC74 = 1;
+/* For a valid texture index (not -1/-2) raise the draw guard and record whether mode is 1 in the FOV flag; for an invalid index clear both. Then select the texture through fn_802CB29C. */
+void fn_802C9294(int textureIndex, int mode) {
+#define DRAW_GUARD lbl_8055FC74
+#define FOV_FLAG   lbl_8055FC75
+    int isModeOne;
+    if (textureIndex != -1 && textureIndex != -2) {
+        isModeOne = mode == 1;
+        FOV_FLAG = isModeOne;
+        DRAW_GUARD = 1;
     } else {
-        lbl_8055FC74 = 0;
-        lbl_8055FC75 = 0;
+        DRAW_GUARD = 0;
+        FOV_FLAG = 0;
     }
-    fn_802CB29C(arg0);
+    fn_802CB29C(textureIndex);
 }
 #pragma scheduling on
 extern void fn_802C8C04(int);
