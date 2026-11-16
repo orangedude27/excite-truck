@@ -59,10 +59,12 @@ void fn_802978B8(void) {
 #undef shadowVolumeHandle
 }
 
+#define gListenerCount lbl_8055F7A4 /* number of registered shadow listeners */
 void fn_802978E4(void) {
     fn_80297A84();
     lbl_8055F7A4 = 0;
 }
+#undef gListenerCount
 
 #pragma push
 #pragma scheduling invalid_target
