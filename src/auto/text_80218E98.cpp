@@ -9419,12 +9419,15 @@ extern "C" void fn_80229D1C(void *widget) {
 }
 
 #pragma scheduling reset
-extern "C" void fn_80229D3C(void *arg0, s32 arg1, s32 arg2) {
-    void *self = arg0;
-    arg0 = *(void **)((u8 *)arg0 + 0x250);
-    fn_802C5280(arg0,
-                arg1 - *(s32 *)((u8 *)self + 4),
-                arg2 - *(s32 *)((u8 *)self + 8),
+extern "C" void fn_80229D3C(void *widget, s32 screenX, s32 screenY) {
+    /* Hit-test a UI widget: translate the screen point into the image held at
+     * widget+0x250 by subtracting the widget's position (+4,+8), and ask
+     * fn_802C5280 whether the resulting point lies inside that image. */
+    void *self = widget;
+    widget = *(void **)((u8 *)widget + 0x250);
+    fn_802C5280(widget,
+                screenX - *(s32 *)((u8 *)self + 4),
+                screenY - *(s32 *)((u8 *)self + 8),
                 0,
                 *(s32 *)((u8 *)self + 4),
                 self);
