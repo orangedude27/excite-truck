@@ -10463,8 +10463,10 @@ void btm_process_remote_name(u8 *arg0, u8 *arg1, u16 arg2, u8 arg3) {
 #pragma pop
 
 void fn_8007C794(void) {
-    btm_process_remote_name(0, 0, 0, 0x1F);
-    btm_sec_rmt_name_request_complete(0, 0, 0x1F);
+    /* Remote-name request timeout: fail the pending BTM and security-manager
+     * name lookups with HCI_ERR_UNSPECIFIED. */
+    btm_process_remote_name(0, 0, 0, HCI_ERR_UNSPECIFIED);
+    btm_sec_rmt_name_request_complete(0, 0, HCI_ERR_UNSPECIFIED);
 }
 
 // Initialize Bluetooth Manager control block and start BTM subsystems.
