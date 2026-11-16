@@ -97,6 +97,20 @@ body:
     if ((signed char)c != 0) goto dec;
 end:;
 }
+static inline void CopyStrI_8023512C(const char *src, int n, char *dst) {
+    char *d = dst;
+    unsigned char c;
+    goto body;
+dec:
+    if (--n > 0) goto body;
+    d[-1] = 0;
+    goto end;
+body:
+    c = *src++;
+    *d++ = c;
+    if ((signed char)c != 0) goto dec;
+end:;
+}
 static inline void CopyStrD_8023512C(const char *src, char *dst, int n) {
     unsigned char c;
     goto body;
