@@ -11916,6 +11916,7 @@ void fn_80072644(void) {
     }
 }
 
+/* Free the pending BTA DM message buffer, if any, and clear the slot. */
 void fn_80072688(void) {
     if (*(void **)(lbl_803C0B98 + 0x74) != 0) {
         fn_80071450(*(void **)(lbl_803C0B98 + 0x74));
