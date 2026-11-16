@@ -2225,10 +2225,11 @@ void fn_8026A54C(float arg0) {
     lbl_8055F484 = arg0;
 }
 
-int fn_8026A554(int *arg0) {
-    int index = *arg0;
-    if (index >= 0 && (unsigned int)index < 8U) {
-        lbl_80499980[index] = lbl_80563C6C;
+/* Camera callback: set the crash-volume slot for the camera named by *indexPtr to HALF_SECOND (0.5f) when the index is in range. */
+int fn_8026A554(int *indexPtr) {
+    int cameraIndex = *indexPtr;
+    if (cameraIndex >= 0 && (unsigned int)cameraIndex < 8U) {
+        lbl_80499980[cameraIndex] = HALF_SECOND;
     }
     return 4;
 }
