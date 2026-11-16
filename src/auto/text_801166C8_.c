@@ -724,22 +724,19 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
     return maxDiff;
 }
 
-static inline s32 andSwap80117598(s32 s, s32 i) { s32 r = i; return r & s; }
 s32 fn_80117598(s32 arg0, s32 arg1) {
     register s32 off;
     register s32 base;
     s32 value;
     s32 diff;
-    s32 sign;
     s32 inv;
     off = arg0 + 0x340;
     off -= arg0;
     base = arg0 - off;
     value = *(s32*)(base + 0x33C);
     diff = (value - arg1) | (arg1 - value);
-    sign = diff >> 31;
     inv = -1 - value;
-    return sign & inv;
+    return (diff >> 31) & inv;
 }
 
 /* Tick-list "finish" callback for the audio stream manager, registered by
