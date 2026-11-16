@@ -721,10 +721,11 @@ void *fn_80237A08(void *thisPtr, int freeFlag) {
     return thisPtr;
 }
 
-void fn_80237A84(void *arg0) {
-    *(int *)arg0 = -1;
-    *(int *)((char *)arg0 + 8) = 0;
-    *(int *)((char *)arg0 + 4) = 0;
+/* Initializes a 12-byte allocator record: handle word to -1, the two bookkeeping words at +4 and +8 to 0. */
+void fn_80237A84(void *allocator) {
+    *(int *)allocator = -1;
+    *(int *)((char *)allocator + 8) = 0;
+    *(int *)((char *)allocator + 4) = 0;
 }
 
 extern char lbl_8055BA08[];
