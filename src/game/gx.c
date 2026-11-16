@@ -1759,6 +1759,201 @@ int fn_802D0EC8(int arg0) {
         return arg0;
     }
 }
+
+#pragma push
+#pragma opt_propagation off
+#pragma dont_inline on
+void fn_802D0EEC(void) {
+    extern unsigned int lbl_8055FD74;
+    extern unsigned int lbl_8055FD28;
+    extern unsigned char lbl_8055FE58;
+    extern int lbl_804DB458[];
+    extern float lbl_80564FC4;
+    extern unsigned short lbl_8055FD08;
+    extern unsigned short lbl_8055FD88;
+    extern unsigned char lbl_8055FD84;
+    extern void GXInitLightPos(void *, float, float, float);
+    extern void GXInitLightColor(void *, unsigned char *);
+    extern void GXInitLightDistAttn_Internal(void *, float, float, int);
+    extern void GXLoadLightObjImm(void *, unsigned int);
+    extern void GXSetChanMatColor_Internal(int, void *);
+    extern void GXSetChanAmbColor_Internal(int, void *);
+    extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
+
+    float lightPos[3];
+    unsigned char whiteColor[4];
+    unsigned char blackColor[4];
+    int tevWord;
+    unsigned char tevColor[4];
+    unsigned char fogColor[4];
+    int lightColorWord;
+    int matColor0;
+    unsigned char matColor2[4];
+    unsigned char ambColor0[4];
+    int ambient2Color;
+    unsigned char lightColor[4];
+    unsigned int diff;
+    unsigned char *base;
+    unsigned char *record;
+    unsigned char *fog;
+    int lo, hi;
+    int fogType;
+    float scale;
+    unsigned int packed;
+
+    base = (unsigned char *)lbl_804C5650;
+    if ((unsigned char)lbl_8055FDB4 != 0)
+        return;
+
+    diff = (unsigned int)lbl_8055FD20 | ((unsigned int)lbl_8055FD1C ^ lbl_8055FD74);
+    lbl_8055FD20 = 0;
+    if (diff != 0) {
+        if (diff & 6) {
+            if ((unsigned int)lbl_8055FD1C & 6) {
+                int zsrc = ((unsigned int)lbl_8055FD1C >> 1) & 1;
+                GXSetZMode(1, ((unsigned int)lbl_8055FD1C & 4) ? 3 : 7, zsrc);
+            } else {
+                GXSetZMode(0, 7, 0);
+            }
+        }
+        if (diff & 1)
+            GXSetColorUpdate((unsigned char)((unsigned int)lbl_8055FD1C & 1));
+        if (diff & 0x10)
+            GXSetAlphaUpdate((unsigned char)(((unsigned int)lbl_8055FD1C >> 4) & 1));
+        if (diff & 0x20) {
+            tevWord = (int)lbl_8055FD28;
+            ((void (*)(int, void *))GXSetTevColor)(2, &tevWord);
+        }
+        if (diff & 0x40) {
+            if ((unsigned int)lbl_8055FD1C & 0x40) {
+                GXSetDstAlpha(0, 0);
+                GXSetAlphaCompare(7, 0, 1, 0, 0);
+            } else {
+                GXSetDstAlpha(1, lbl_8055FD60);
+                fn_802CF5D4();
+            }
+            base[0xB0] = 1;
+        }
+        if (diff & 0x80) {
+            if (lbl_8055FD86 == lbl_8055FD08) {
+                GXSetBlendMode(0, 0, 0, 5);
+            } else {
+                hi = (int)lbl_8055FD86 >> 8;
+                lo = fn_802D0EC8((int)lbl_8055FD86 & 0xFF);
+                GXSetBlendMode(1, fn_802D0EC8(hi), lo, 5);
+            }
+            base[0xB0] = 1;
+            lbl_8055FD88 = lbl_8055FD86;
+        }
+        if (diff & 0x100)
+            base[0xB0] = 1;
+        lbl_8055FD74 = (unsigned int)lbl_8055FD1C;
+    }
+
+    if (lbl_8055FD24 != lbl_8055FD91)
+        GXSetAlphaCompare(4, lbl_8055FD24, 1, 0, 0);
+    lbl_8055FD91 = lbl_8055FD24;
+
+    if (lbl_8055FD86 != lbl_8055FD88) {
+        if (lbl_8055FD86 == lbl_8055FD08) {
+            GXSetBlendMode(0, 0, 0, 5);
+        } else {
+            hi = (int)lbl_8055FD86 >> 8;
+            lo = fn_802D0EC8((int)lbl_8055FD86 & 0xFF);
+            GXSetBlendMode(1, fn_802D0EC8(hi), lo, 5);
+        }
+        base[0xB0] = 1;
+        lbl_8055FD88 = lbl_8055FD86;
+    }
+
+    if (lbl_8055FE58 != 0) {
+        packed = fn_802CEA1C(lbl_804DB458[1]);
+        tevColor[3] = packed;
+        tevColor[0] = packed >> 24;
+        tevColor[1] = packed >> 16;
+        tevColor[2] = packed >> 8;
+        ((void (*)(int, void *))GXSetTevColor)(3, tevColor);
+        lbl_8055FE58 = 0;
+    }
+
+    fog = base + 0x4160;
+    if (fog[0x1C] != 0) {
+        fogType = 0;
+        fog[0x1C] = 0;
+        fogColor[0] = fog[1];
+        fogColor[1] = fog[2];
+        fogColor[2] = fog[3];
+        fogColor[3] = fog[4];
+        if (base[0x4160] != 0)
+            fogType = 2;
+        ((void (*)(int, unsigned char *, void *, float, float, float, float))GXSetFog)(
+            fogType, fogColor, fog, *(float *)(fog + 8), *(float *)(fog + 0xC),
+            *(float *)(fog + 0x14), *(float *)(fog + 0x18));
+    }
+
+    record = base + 0x4180;
+    if (record[0x5C] != 0) {
+        record[0x5C] = 0;
+        packed = fn_802CE9FC(0xFF, 0xFF, 0xFF, 0xFF);
+        whiteColor[3] = packed;
+        whiteColor[0] = packed >> 24;
+        whiteColor[1] = packed >> 16;
+        whiteColor[2] = packed >> 8;
+        packed = fn_802CE9FC(0, 0, 0, 0xFF);
+        lightPos[0] = *(float *)(record + 0xC) * lbl_80564FC4;
+        lightPos[1] = *(float *)(record + 0x10) * lbl_80564FC4;
+        lightPos[2] = *(float *)(record + 0x14) * lbl_80564FC4;
+        blackColor[0] = packed >> 24;
+        blackColor[3] = packed;
+        blackColor[1] = packed >> 16;
+        blackColor[2] = packed >> 8;
+        GXInitLightPos(record + 0x1C, lightPos[0], lightPos[1], -lightPos[2]);
+        scale = *(float *)(record + 0x18);
+        lightColor[3] = record[3];
+        lightColor[0] = (unsigned char)(int)(scale * (float)record[0]);
+        lightColor[1] = (unsigned char)(int)(scale * (float)record[1]);
+        lightColor[2] = (unsigned char)(int)(scale * (float)record[2]);
+        lightColorWord = *(int *)lightColor;
+        GXInitLightColor(record + 0x1C, (unsigned char *)&lightColorWord);
+        ((void (*)(void *, float, float, int))GXInitLightDistAttn_Internal)(
+            record + 0x1C, lbl_80564F8C, lbl_80564F8C, 0);
+        GXLoadLightObjImm(record + 0x1C, 1);
+        matColor0 = *(int *)whiteColor;
+        GXSetChanMatColor_Internal(0, &matColor0);
+        packed = fn_802CE9FC(0, 0, 0, record[8]);
+        matColor2[3] = packed;
+        matColor2[0] = packed >> 24;
+        matColor2[1] = packed >> 16;
+        matColor2[2] = packed >> 8;
+        GXSetChanMatColor_Internal(2, matColor2);
+        ambColor0[0] = record[4];
+        ambColor0[1] = record[5];
+        ambColor0[2] = record[6];
+        ambColor0[3] = record[7];
+        GXSetChanAmbColor_Internal(0, ambColor0);
+        ambient2Color = *(int *)blackColor;
+        GXSetChanAmbColor_Internal(2, &ambient2Color);
+    }
+
+    if ((unsigned int)(unsigned char)lbl_8055FD25 != (unsigned int)lbl_8055FD85 ||
+        lbl_8055FD84 != 0) {
+        int flag = *(int *)(base + 0xB4);
+        lbl_8055FD85 = lbl_8055FD25;
+        lbl_8055FD84 = 0;
+        if (flag == 0)
+            base[0xB0] = 1;
+        GXSetNumChans(1);
+        if ((unsigned char)lbl_8055FD25 != 0) {
+            GXSetChanCtrl(0, 1, 0, 0, 1, 2, 2);
+            GXSetChanCtrl(2, 0, 0, 0, 0, 0, 2);
+        } else {
+            GXSetChanCtrl(0, 0, 1, 1, 0, 0, 2);
+            GXSetChanCtrl(2, 0, 1, 1, 0, 0, 2);
+        }
+    }
+}
+#pragma dont_inline reset
+#pragma pop
 extern unsigned short lbl_8055FD08;
 extern unsigned short lbl_8055FD88;
 
