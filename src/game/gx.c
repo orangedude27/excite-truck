@@ -199,12 +199,14 @@ unsigned long fn_802CE9FC(int r, int g, int b, int a) {
     return *(unsigned long *)bytes;
 }
 
-unsigned char fn_802CEA1C(unsigned int arg0) {
+unsigned char fn_802CEA1C(unsigned int argbColor) {
+    /* Convert a packed ARGB color word to GX's RGBA byte order: split out its four
+       bytes and repack them (rotated by one byte) through fn_802CE9FC. */
     return ((unsigned char (*)(unsigned char, unsigned char, unsigned char, unsigned char))fn_802CE9FC)(
-        (unsigned char)(arg0 >> 16),
-        (unsigned char)(arg0 >> 8),
-        (unsigned char)arg0,
-        (unsigned char)(arg0 >> 24));
+        (unsigned char)(argbColor >> 16),
+        (unsigned char)(argbColor >> 8),
+        (unsigned char)argbColor,
+        (unsigned char)(argbColor >> 24));
 }
 
 /* Allocate and clear the EFB copy buffer based on the current render mode dimensions. */
@@ -1440,6 +1442,8 @@ void fn_802D0610(int arg0) {
     lbl_8055FD8C = arg0;
 }
 
+#pragma push
+#pragma optimize_for_size on
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
     extern int lbl_8055D0BC;
@@ -1447,7 +1451,8 @@ void fn_802D07E4(char* arg0, int arg1) {
     extern signed char lbl_8055FD90;
     extern unsigned char lbl_804C9830[];
     extern int lbl_804C9760[];
-    extern char lbl_8034C0EC[], lbl_8034C108[];
+    extern char lbl_8034C0EC[];
+    extern const char lbl_8034C108[];
     extern void fn_802E30C8(const char*, ...);
     unsigned char *src = (unsigned char *)arg0;
     register unsigned char c;
@@ -1479,17 +1484,11 @@ copy:
     }
 done:
     if (arg1 != 0) {
-        long *base = (long *)lbl_804C9760;
-        long d0 = base[2];
-        long d1 = base[3];
-        char *fmt = lbl_8034C108;
-        long a = lbl_8055D0BC * d0;
-        long b = lbl_8055D0C0 * d1;
-        fn_802E30C8(fmt, (int)a, (int)b, base, lbl_8055D0BC);
+        fn_802E30C8(lbl_8034C108, lbl_8055D0BC * lbl_804C9760[2], lbl_8055D0C0 * lbl_804C9760[3], lbl_804C9760, lbl_8055D0BC);
         lbl_8055D0B8 = 0;
     }
 }
-
+#pragma pop
 extern unsigned char lbl_8055FD78;
 extern int GXSetCullMode(int);
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
