@@ -310,6 +310,7 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
         var_r28 = (u8 *)*(u32 *)(var_r28 + 4);
     }
 }
+#pragma use_lmw_stmw on
 #pragma scheduling on
 #pragma cplusplus off
 #pragma dont_inline on
