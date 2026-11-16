@@ -569,27 +569,28 @@ void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
     int count;
     void *object;
     f32 end;
+    int *p = (int *)arg0;
     if (*(u8 *)((char *)arg0 + 0x34) != 0) index = 0;
     else {
         f32 frame = *(f32 *)((char *)arg1 + 0x14);
         index = (int)(frame < lbl_80561648 ? frame - lbl_8056163C : lbl_8056163C + frame);
     }
-    *(int *)arg0 = index;
+    p[0] = index;
     if (fn_80179650() > 1) {
         rate = fn_80149F00(arg0, arg1);
         value = *(int *)((char *)arg0 + 0x10) == 0
             ? *(int *)((char *)arg0 + 0x14) + (int)((f32)*(int *)((char *)arg0 + 0x18) * rate)
             : 0;
-        if (value != ((int *)arg0)[8]) {
+        if (value != p[8]) {
             object = *(void **)((char *)arg1 + 8);
             if (object != 0 && *(void **)((char *)object + 0x1258) != 0) {
-                char *p = *(char **)((char *)object + 0x1258);
-                p[0x49] = 1;
-                p[0x4B] = 0;
-                p[0x4A] = 0;
+                char *p2 = *(char **)((char *)object + 0x1258);
+                p2[0x49] = 1;
+                p2[0x4B] = 0;
+                p2[0x4A] = 0;
             }
         }
-        ((int *)arg0)[8] = value;
+        p[8] = value;
     } else {
         count = *(int *)((char *)arg0 + 0x10);
         if (count < 0) goto no_frame;
@@ -599,17 +600,18 @@ void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
     no_frame:
         value = 0;
     frame_ready:
-        ((int *)arg0)[8] = value;
+        p[8] = value;
     }
     object = *(void **)((char *)arg1 + 0x68);
     {
-        f32 threshold = lbl_80561648;
-        f32 top = *(f32 *)((char *)object + 0x8DC);
-        f32 bottom = *(f32 *)((char *)object + 0x8D4);
-        f32 difference = top - bottom;
+        f32 bottom, top, threshold, difference;
+        top = *(f32 *)((char *)object + 0x8DC);
+        bottom = *(f32 *)((char *)object + 0x8D4);
+        threshold = lbl_80561648;
+        difference = top - bottom;
         end = threshold > difference ? threshold : difference;
     }
-    *(int *)((char *)arg0 + 0x24) = *(int *)arg0 + ((int *)arg0)[8];
+    *(int *)((char *)arg0 + 0x24) = p[0] + p[8];
     *(int *)((char *)arg0 + 0x1C) = (int)end;
     *(int *)((char *)arg0 + 0x30) = fn_801609C4(*(int *)((char *)arg0 + 0x24));
 }
