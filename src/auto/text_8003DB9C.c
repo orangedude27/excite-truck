@@ -2125,20 +2125,21 @@ void __GXSetVAT(void) {
     GX_VAT_DIRTY(data) = 0;
 }
 
-void GXSetArray(s32 arg0, unsigned int arg1, unsigned int arg2) {
-    s32 size;
-    s32 base;
-    size = arg0;
-    if (size == 0x19) {
-        size = 0xA;
+void GXSetArray(s32 attr, unsigned int base, unsigned int stride) {
+    s32 attrIndex;
+    s32 arrayIndex;
+    /* Point a vertex attribute's array at a base address and stride via the CP registers in the FIFO. */
+    attrIndex = attr;
+    if (attrIndex == 0x19) {
+        attrIndex = 0xA;
     }
-    base = size - 0x9;
+    arrayIndex = attrIndex - 0x9;
     *(volatile unsigned char *)0xCC008000 = 8;
-    *(volatile unsigned char *)0xCC008000 = base | 0xA0;
-    *(volatile unsigned int *)0xCC008000 = arg1 & 0x3FFFFFFF;
+    *(volatile unsigned char *)0xCC008000 = arrayIndex | 0xA0;
+    *(volatile unsigned int *)0xCC008000 = base & 0x3FFFFFFF;
     *(volatile unsigned char *)0xCC008000 = 8;
-    *(volatile unsigned char *)0xCC008000 = base | 0xB0;
-    *(volatile unsigned int *)0xCC008000 = arg2;
+    *(volatile unsigned char *)0xCC008000 = arrayIndex | 0xB0;
+    *(volatile unsigned int *)0xCC008000 = stride;
 }
 
 void GXInvalidateVtxCache(void) {
