@@ -6651,7 +6651,6 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     s32 type;
     u32 i;
     u32 v;
-    u32 b;
     r = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8C90)(arg0, -1, &page, &sp8);
     if (r != 0) return r;
     fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)arg0);
@@ -6666,9 +6665,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     }
     VFiPFCACHE_FreeFATPage(arg0, page);
     type = *(s32 *)((u8 *)arg0 + 0x1C);
-    b = *(u8 *)((u8 *)arg0 + 0x1A);
-    v = b;
-    v |= lbl_802EEF40[type * 5 + 3];
+    v = *(u8 *)((u8 *)arg0 + 0x1A) | lbl_802EEF40[type * 5 + 3];
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
@@ -6676,11 +6673,11 @@ extern "C" s32 fn_800AED1C(void *arg0) {
         break;
     case 1:
         if (v > 0xFFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32))fn_800AFF28)(arg0, 0);
+        else r = ((s32 (*)(void *, s32, u32))fn_800AFF28)(arg0, 0, v);
         break;
     case 2:
         if (v > 0xFFFFFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32))fn_800B037C)(arg0, 0);
+        else r = ((s32 (*)(void *, s32, u32))fn_800B037C)(arg0, 0, v);
         break;
     default:
         r = 0xF;
@@ -6696,11 +6693,11 @@ extern "C" s32 fn_800AED1C(void *arg0) {
         break;
     case 1:
         if (v > 0xFFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32))fn_800AFF28)(arg0, 1);
+        else r = ((s32 (*)(void *, s32, u32))fn_800AFF28)(arg0, 1, v);
         break;
     case 2:
         if (v > 0xFFFFFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32))fn_800B037C)(arg0, 1);
+        else r = ((s32 (*)(void *, s32, u32))fn_800B037C)(arg0, 1, v);
         break;
     default:
         r = 0xF;
