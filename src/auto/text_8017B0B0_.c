@@ -25,11 +25,14 @@ extern float lbl_80558DC4[];
 typedef struct Vec { float x, y, z; } Vec;
 
 void *fn_8017B0B0(void *arg0) {
+    /* Initialize the object: run base setup, clear state fields, and set its vtable. */
+#define vtable lbl_80331CC4
     fn_80179D08();
     *(int *)((char *)arg0 + 0x184) = 0;
-    *(char **)arg0 = lbl_80331CC4;
+    *(char **)arg0 = vtable;
     *((char *)arg0 + 0x1E8) = 0;
     return arg0;
+#undef vtable
 }
 
 #pragma scheduling invalid_target
