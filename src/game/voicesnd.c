@@ -59,6 +59,7 @@ extern unsigned char lbl_80489BD0[];
 extern int fn_80128668(void);
 extern char lbl_8033C458[];
 typedef struct { char *name; int state; } UnkStruct_8020A860;
+typedef struct { char *callbacks; int state; } VoiceMixerDevice;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma scheduling invalid_target
