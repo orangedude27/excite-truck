@@ -36,6 +36,10 @@ struct F801B4AC4 {
     virtual void f4() = 0;      /* 0x18: stub */
     virtual void f5(int) = 0;   /* 0x1C: always 1 */
 };
+struct F801B49D4 {
+    virtual void f0() = 0;      /* 0x8 */
+    virtual int f1(int, int) = 0; /* 0xC: data offset -> pointer in the buffer */
+};
 struct F801B50B4 {
     virtual void f0() = 0;
     virtual void f1() = 0;
