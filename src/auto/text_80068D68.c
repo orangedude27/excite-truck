@@ -4314,8 +4314,9 @@ void fn_8006F220(void) {
     fn_80070758();
 }
 
-int fn_8006F254(s32 arg0) {
-    hcisu_h2_send_msg_now((u8 *)&lbl_803BD1A0, arg0);
+int fn_8006F254(s32 msg) {
+    /* Send one HCI-H2 message immediately through the USB transport; return 1. */
+    hcisu_h2_send_msg_now((u8 *)&hcisu_h2_cb, msg);
     return 1;
 }
 
@@ -8167,14 +8168,8 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
     entry = lbl_803C0F78 + 0x34;
     i = 0;
     for (;;) {
-        if (entry[0x119] != 0) {
-            switch (memcmp(entry + 8, addr, 6)) {
-            default: goto next1;
-            case 0: break;
-            }
-            goto found1;
-        }
-    next1:
+        if (entry[0x119] != 0 && memcmp(entry + 8, addr, 6) == 0)
+            break;
         i++;
         entry += 0x11C;
         if (i >= 4) {
@@ -8182,7 +8177,6 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
             break;
         }
     }
-found1:
 
     buffer = lbl_803C0F78 + 0x624;
     if (entry == NULL)
@@ -8200,14 +8194,8 @@ found1:
         other = lbl_803C0F78 + 0x34;
         j = 0;
         for (;;) {
-            if (other[0x119] != 0) {
-                switch (memcmp(other + 8, entry + 8, 6)) {
-                default: goto next2;
-                case 0: break;
-                }
-                goto found2;
-            }
-        next2:
+            if (other[0x119] != 0 && memcmp(other + 8, entry + 8, 6) == 0)
+                break;
             j++;
             other += 0x11C;
             if (j >= 4) {
@@ -8215,7 +8203,6 @@ found1:
                 break;
             }
         }
-found2:
         if (other != NULL) {
             *(u16 *)(other + 0x10E) = supervision_timeout;
             if (other[0x11A] == 0)
@@ -9675,7 +9662,97 @@ void fn_8007AD38(void) {
 
 }
 
+extern void fn_800853F8(u8 *, u16, u16);
+extern void *fn_8007A394(void);
+extern void btsnd_hcic_write_cur_iac_lap(u8 *, u8, u8 *);
 tBTM_STATUS BTM_SetDiscoverability(UINT16 inq_mode, UINT16 window, UINT16 interval) {
+    register s32 discoverMode = inq_mode;
+    register u8 scanEnable = 0;
+    register u8 *cmdBuf;
+    register s32 inqInterval = interval;
+    register s32 inqWindow = window;
+    u8 iacLaps[6];
+    u8 devClass[3];
+    u8 *classInfo;
+    u8 b1;
+    s32 modeBit;
+    u8 b0;
+    u8 b2;
+    u16 cls;
+    u16 newCls;
+    u8 b1m;
+    u8 b2m;
+
+    if (discoverMode != 0 && (u32)discoverMode != 1U && (u32)discoverMode != 2U)
+        return 5;
+    if (*(u8 *)(lbl_803C0F78 + 0x64E) < 3) return 0xC;
+    if (inqWindow == 0) inqWindow = 0x12;
+    if (inqInterval == 0) inqInterval = 0x800;
+    if (*(u8 *)(lbl_803C0F78 + 0x27C0) >= 3)
+        ((void (*)(u32, void *, s32, s32, s32))fn_80070984)(0xD0002, lbl_80316320, discoverMode, inqWindow, inqInterval);
+    if (discoverMode != 0) {
+        if ((u32)inqWindow < 0x12U || (u32)inqWindow > 0x1000U ||
+            (u32)inqInterval < 0x12U || (u32)inqInterval > 0x1000U ||
+            (u32)inqWindow > (u32)inqInterval)
+            return 5;
+    }
+    if (discoverMode != 0) {
+        cmdBuf = GKI_getpoolbuf(2);
+        if (cmdBuf == 0) goto no_buf_iac;
+        if (discoverMode & 1) {
+            memcpy(&iacLaps[0], lbl_80560D34, 3);
+            memcpy(&iacLaps[3], lbl_80560D30, 3);
+            btsnd_hcic_write_cur_iac_lap(cmdBuf, 2, &iacLaps[0]);
+        } else {
+            btsnd_hcic_write_cur_iac_lap(cmdBuf, 1, lbl_80560D30);
+        }
+        scanEnable |= 1;
+        goto after_iac;
+no_buf_iac:
+        return 3;
+after_iac:
+        ;
+    }
+    if ((u32)inqWindow != *(u16 *)(lbl_803C0F78 + 0x16A0) ||
+        (u32)inqInterval != *(u16 *)(lbl_803C0F78 + 0x16A2)) {
+        cmdBuf = GKI_getpoolbuf(2);
+        if (cmdBuf == 0) goto no_buf_win;
+        *(u16 *)(lbl_803C0F78 + 0x16A0) = (u16)inqWindow;
+        *(u16 *)(lbl_803C0F78 + 0x16A2) = (u16)inqInterval;
+        fn_800853F8(cmdBuf, (u16)inqInterval, (u16)inqWindow);
+        goto after_win;
+no_buf_win:
+        return 3;
+after_win:
+        ;
+    }
+    cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf == 0) goto no_buf_scan;
+    if (*(u16 *)(lbl_803C0F78 + 0x169A) != 0) scanEnable |= 2;
+    *(u16 *)(lbl_803C0F78 + 0x1698) = (u16)discoverMode;
+    fn_80085384(cmdBuf, scanEnable);
+    goto after_scan;
+no_buf_scan:
+    return 3;
+after_scan:
+
+    classInfo = fn_8007A394();
+    b0 = classInfo[0];
+    modeBit = discoverMode & 1;
+    b1 = *(volatile u8 *)(classInfo + 1);
+    cls = (u16)(((b0 << 8) & 0xFF00) + (b1 & 0xE0));
+    if ((modeBit ^ ((cls >> 5) & 1)) != 0) {
+        b2 = *(volatile u8 *)(classInfo + 2);
+        newCls = (u16)(cls & ~0x20);
+        b1m = b1 & 0x1F;
+        b2m = b2 & 0xFC;
+        newCls = (u16)newCls;
+        if (modeBit != 0) newCls = (u16)(cls | 0x20);
+        devClass[2] = b2m;
+        devClass[1] = (u8)(b1m + (newCls & 0xE0));
+        devClass[0] = (u8)(newCls >> 8);
+        BTM_SetDeviceClass(devClass);
+    }
     return 0;
 }
 
