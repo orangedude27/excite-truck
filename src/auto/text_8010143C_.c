@@ -11,12 +11,13 @@ extern u8 lbl_8041D4B8[];
 extern u8 lbl_8041D4C4[];
 #pragma pop
 void fn_8010143C(void) {
-    void* ptr = &lbl_8041D4C4[4];
+    void* sentinel = &lbl_8041D4C4[4];
+    /* Construct the global WSD player list: clear its size, self-link the sentinel, and register the archive destructor. */
     *(void**)&lbl_8041D4C4[4] = 0;
     *(void**)&lbl_8041D4C4[8] = 0;
     *(void**)&lbl_8041D4C4[0] = 0;
-    *(void**)&lbl_8041D4C4[4] = ptr;
-    *(void**)&lbl_8041D4C4[8] = ptr;
+    *(void**)&lbl_8041D4C4[4] = sentinel;
+    *(void**)&lbl_8041D4C4[8] = sentinel;
     __register_global_object(&lbl_8041D4C4,
                              (void*)&__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80101474,
                              &lbl_8041D4B8);
