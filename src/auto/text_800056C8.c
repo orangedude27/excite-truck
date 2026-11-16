@@ -1597,12 +1597,13 @@ extern "C" s32 fn_80007554(s32 playerIndex, s32 param, s32 context) {
 }
 #pragma scheduling on
 #pragma cplusplus off
-s32 fn_800075A0(s32 arg0) {
-    u32 p = *(u32 *)((u8 *)&lbl_8034EEB8 + arg0 * 0x10 + 0x10);
+/* Returns 1 if the active overlay for the given player is not the closure, post-race, or results overlay. */
+s32 fn_800075A0(s32 playerIndex) {
+    u32 activeOverlay = *(u32 *)((u8 *)&lbl_8034EEB8 + playerIndex * 0x10 + 0x10);
     s32 result = 0;
-    if (p != *(u32 *)((u8 *)&lbl_8034EEB8 + 0x58)) {
-        if (p != *(u32 *)((u8 *)&lbl_8034EEB8 + 8)) {
-            if (p != *(u32 *)((u8 *)&lbl_8034EEB8 + 0x5c)) {
+    if (activeOverlay != *(u32 *)((u8 *)&lbl_8034EEB8 + 0x58)) {
+        if (activeOverlay != *(u32 *)((u8 *)&lbl_8034EEB8 + 8)) {
+            if (activeOverlay != *(u32 *)((u8 *)&lbl_8034EEB8 + 0x5c)) {
                 result = 1;
             }
         }
