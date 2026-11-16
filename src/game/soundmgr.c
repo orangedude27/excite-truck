@@ -268,8 +268,8 @@ void fn_80207C4C(void) {
 
 #pragma opt_lifetimes on
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
-    register signed long offset = arg2 * 0xC;
     signed long c, b, a;
+    signed long offset = arg2 * 0xC;
     volatile signed long *p = (volatile signed long *)arg1;
     a = p[0];
     b = p[1];
@@ -753,7 +753,8 @@ void fn_802085EC(void) {
 	((void (*)(void))fn_80208408)();
 }
 
-/* True for the positional sound classes, the ones fn_80208858 may voice in 3D. */
+/* Return nonzero for the positional sound classes (engine, tyre squeal, crash,
+ * engine start, wind) that fn_80208858 may give a 3D voice. */
 signed long fn_802085F0(void* soundMgr, signed long sndClass) {
     switch (sndClass) {
         case SNDCLASS_ENGINE:
