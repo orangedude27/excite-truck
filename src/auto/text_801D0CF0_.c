@@ -11,6 +11,8 @@
  * at vtable +0x8 and has no data of its own beyond the vtable pointer. */
 extern int lbl_8055E8E8;
 extern void *lbl_80438818[];
+#define gManagerCount lbl_8055E8E8 /* number of registered boot-time managers */
+#define gManagerList  lbl_80438818 /* array of registered manager objects */
 
 /* Empty the manager list.  The ROM symbol here reads __AXDSPInitCallback, but
  * nothing about this list is audio/DSP related and the same name is attached
