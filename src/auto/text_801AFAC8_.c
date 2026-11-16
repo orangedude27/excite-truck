@@ -40,9 +40,11 @@ void fn_801AFAC8(void) {
     }
 }
 
+/* Release the heap-allocated "tire_list" table (undoing its 0x10 allocator header)
+ * and clear the global pointer. */
 void fn_801AFBE8(void) {
-    if (lbl_8055E640 != 0) {
-        fn_80128670(lbl_8055E640 - 0x10);
+    if (gTireListBuffer != 0) {
+        memFree(gTireListBuffer - ALLOC_HEADER_SIZE);
     }
-    lbl_8055E640 = 0;
+    gTireListBuffer = 0;
 }
