@@ -284,7 +284,17 @@ void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
     *(int *)(lbl_80357960 + arg0 * 0xA8 + 4) = -1000;
 }
 #pragma pop
-void fn_800169F8(const char *src, int index) { int count = 0x40; char *dst = (char *)(lbl_803577F0 + index * 0x5C + 8); while ((*dst++ = *src++) != 0) { if (--count <= 0) { dst[-1] = 0; return; } } }
+/* Copy a string into the name field (+0x08) of entry `entryIndex` in lbl_803577F0, truncating to 0x40 bytes. */
+void fn_800169F8(const char *source, int entryIndex) {
+    int remaining = 0x40;
+    char *dest = (char *)(lbl_803577F0 + entryIndex * 0x5C + 8);
+    while ((*dest++ = *source++) != 0) {
+        if (--remaining <= 0) {
+            dest[-1] = 0;
+            return;
+        }
+    }
+}
 
 void fn_80016A44(void) {
     fn_8001766C();
