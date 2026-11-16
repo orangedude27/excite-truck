@@ -1545,6 +1545,7 @@ void fn_801C77FC(void) {
 }
 
 #pragma auto_inline off
+/* Enable the debug text/menu mode and install fn_801C6CBC as the active handler. */
 void fn_801C78D8(void) {
     lbl_8055E83C = 1;
     fn_801C957C(1);
