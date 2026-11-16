@@ -13937,6 +13937,8 @@ extern void btu_hcif_esco_connection_comp_evt(u8 *);
 extern s32 l2c_link_hci_qos_violation(u16);
 extern void l2c_link_process_num_completed_pkts(u8 *, u16);
 extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
+#pragma push
+#pragma dont_inline off
 static inline void BtuHcifDisconnectComplete(UINT8 *p) {
     UINT8 status, reason;
     UINT16 handle;
@@ -13948,6 +13950,7 @@ static inline void BtuHcifDisconnectComplete(UINT8 *p) {
         btm_sco_removed(handle, reason);
     btm_sec_disconnected(handle, reason);
 }
+#pragma pop
 
 
 #pragma cplusplus on
