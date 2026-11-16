@@ -8550,31 +8550,18 @@ static inline u8 *btm_find_dev_entry(BD_ADDR bd_addr) {
     return 0;
 }
 
+#pragma push
+#pragma dont_inline off
 BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, BD_FEATURES features, UINT32 trusted_mask[], LINK_KEY link_key, UINT8 key_type, tBTM_IO_CAP io_cap) {
-    s32 i = 0;
-    u8 *entry = lbl_803C0F78 + 0x1F30;
-loop:
-    if ((entry[0x76] & 0x80) == 0) goto next;
-    if (memcmp(entry + 0x1C, bd_addr, 6) == 0) {
-        goto found;
-    } else {
-        goto next;
-    }
-next:
-    i++;
-    entry += 0x88;
-    if (i < 16) goto loop;
-    entry = 0;
-found:
+    u8 *entry = btm_find_dev_entry(bd_addr);
+    UINT32 timestamp;
     if (entry == 0) {
         entry = (u8 *)btm_sec_alloc_dev(bd_addr);
         if (entry == 0) return FALSE;
     }
-    {
-        u32 id = *(u32 *)(lbl_803C0F78 + 0x1974);
-        *(u32 *)(entry + 0xC) = id;
-        *(u32 *)(lbl_803C0F78 + 0x1974) = id + 1;
-    }
+    timestamp = *(UINT32 *)(lbl_803C0F78 + 0x1974);
+    *(UINT32 *)(entry + 0xC) = timestamp;
+    *(UINT32 *)(lbl_803C0F78 + 0x1974) = timestamp + 1;
     if (dev_class != 0) memcpy(entry + 0x22, dev_class, 3);
     memset(entry + 0x35, 0, 0x41);
     if (bd_name != 0 && bd_name[0] != 0) {
@@ -8591,7 +8578,7 @@ found:
     }
     return TRUE;
 }
-
+#pragma pop
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
     int i = 0;
     u8 *entry = lbl_803C0F78 + 0x1F30;
@@ -12186,8 +12173,11 @@ void fn_80072A98(void *arg0) {
     }
 }
 
-void fn_80072AE4(u8 *arg0, u8 *arg1, u8 *arg2) {
-    strncpy((char *)lbl_803C0B98 + 0x20, (char *)arg2, 0x1F);
+void fn_80072AE4(u8 *bdAddr, u8 *devClass, u8 *bdName) {
+    /* BTA DM remote-name notification callback: cache the resolved name in the
+     * search control block (bta_dm_search_cb / lbl_803C0B98 + 0x20), then
+     * unregister this one-shot callback from the BTM stack. */
+    strncpy((char *)lbl_803C0B98 + 0x20, (char *)bdName, 0x1F);
     BTM_SecDeleteRmtNameNotifyCallback(fn_80072AE4);
 }
 
