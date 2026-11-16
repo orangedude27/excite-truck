@@ -1459,8 +1459,10 @@ void fn_801795D8(void *vehicle, int objIndex) {
     }
 }
 
-int fn_8017960C(int arg0) {
-    if (arg0 < 8) return lbl_80430830[arg0];
+/* Look up a registered vehicle/object by index in the 8-entry global object table
+ * (lbl_80430830); returns NULL for an out-of-range index. */
+int fn_8017960C(int objIndex) {
+    if (objIndex < 8) return lbl_80430830[objIndex];
     return 0;
 }
 
