@@ -2458,9 +2458,16 @@ extern "C" int fn_8029C024(int *__restrict arg0) {
 }
 #pragma dont_inline reset
 extern "C" int fn_8029C054(int *__restrict arg0) {
-    int value = *arg0;
-    fn_8029A8A4(lbl_8055F7D4, (void*)value);
+#define gTorchFireState lbl_8055F7D4
+#define markSlotActive  fn_8029A8A4
+    /* Event handler (type 0xE) of the global torch-fire effect manager: read a
+     * slot index from the payload, set the +0x28 active flag of that 0x2C-byte
+     * slot in the global table, and report the 4 payload bytes consumed. */
+    int slotIndex = *arg0;
+    markSlotActive(gTorchFireState, (void*)slotIndex);
     return 4;
+#undef markSlotActive
+#undef gTorchFireState
 }
 
   extern "C" void fn_80298DE0(void*, void*, int);
