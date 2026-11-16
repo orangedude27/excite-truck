@@ -923,14 +923,15 @@ void fn_802652E8(void *arg0) {
     }
 }
 #pragma pop
-void fn_80265558(void *arg0) {
+void fn_80265558(void *obj) {
+    /* Construct a text-style object: point field 0 at its method table lbl_803465B8, zero the int at +0x14, and init the two floats at +0x18/+0x1C to 0.0f. */
     extern char lbl_803465B8[];
     extern float lbl_80563BF0;
     float value = lbl_80563BF0;
-    *(void **)arg0 = lbl_803465B8;
-    *(int *)((char *)arg0 + 0x14) = 0;
-    *(float *)((char *)arg0 + 0x18) = value;
-    *(float *)((char *)arg0 + 0x1C) = value;
+    *(void **)obj = lbl_803465B8;
+    *(int *)((char *)obj + 0x14) = 0;
+    *(float *)((char *)obj + 0x18) = value;
+    *(float *)((char *)obj + 0x1C) = value;
 }
 
 void fn_8026557C(void *arg0, float farg0) {
