@@ -7246,13 +7246,13 @@ void BTA_HhGetAclQueueInfo(void) {
 }
 
 void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
+    register char *state_name;
+    char *new_state_name;
     u8 callback_data[0x20];
     char *strings = lbl_80315700;
     UINT16 callback_event = 0;
     u8 action;
     u8 new_state;
-    char *state_name;
-    char *new_state_name;
     u8 *table;
     u8 state;
     memset(callback_data, 0, 0x20);
@@ -9902,18 +9902,17 @@ tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
 }
 
 tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
-    u8 *base = lbl_803C0F78;
     u16 i;
     u8 *entry;
     tBTM_INQ_DB_CHANGE_CB *callback;
 
-    if (base[0x1848] != 0 || base[0x16AE] != 0 || base[0x1844] != 0)
+    if (lbl_803C0F78[0x1848] != 0 || lbl_803C0F78[0x16AE] != 0 || lbl_803C0F78[0x1844] != 0)
         return BTM_BUSY;
 
-    for (i = 0, entry = base + 0x16E4; i < 0xC; i++, entry += 0x1C) {
+    for (i = 0, entry = lbl_803C0F78 + 0x16E4; i < 0xC; i++, entry += 0x1C) {
         if (entry[0x1A] != 0 && (p_bda == NULL || memcmp(entry + 0xA, p_bda, BD_ADDR_LEN) == 0)) {
             entry[0x1A] = FALSE;
-            callback = *(tBTM_INQ_DB_CHANGE_CB **)(base + 0x16BC);
+            callback = *(tBTM_INQ_DB_CHANGE_CB **)(lbl_803C0F78 + 0x16BC);
             if (callback != NULL)
                 callback(entry + 8, FALSE);
         }
