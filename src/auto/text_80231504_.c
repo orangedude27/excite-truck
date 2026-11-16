@@ -616,9 +616,10 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
 #pragma pop
 
 #pragma pop
-void fn_80232024(u8 **arg0) {
-    u8 *p = *arg0;
-    if (*p == 1) *arg0 = p + 1;
+void fn_80232024(u8 **textPtr) {
+    /* Skip a leading marker byte (value 1) in the text stream, if present. */
+    u8 *text = *textPtr;
+    if (*text == 1) *textPtr = text + 1;
 }
 
 #pragma push
