@@ -20638,11 +20638,13 @@ extern "C" void fn_800D2098(const char *file, s32 line, const char *msg, va_list
     PPCHalt();
 }
 
-extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper: free the object with MemFree when
+ * deleting (flag > 0), then return the object pointer. */
+extern "C" s32 fn_800D2DD4(s32 object, s32 deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma opt_tail_call on
