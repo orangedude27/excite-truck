@@ -267,12 +267,13 @@ extern "C" void fn_800D5978(void* arg0) {
     *(u32*)((u8*)arg0 + 4) = 0;
 }
 
-extern "C" void fn_800D598C(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 4)) {
-        MEMFreeToAllocator(lbl_8055DDF0, *(void**)((u8*)arg0 + 4));
-        *(u32*)((u8*)arg0 + 4) = 0;
-        *(u8*)((u8*)arg0) = 0;
-        *((u8*)arg0 + 1) = 0;
+/* Frees the owned buffer through the global allocator and clears the buffer pointer and status bytes. */
+extern "C" void fn_800D598C(void *self) {
+    if (*(s32 *)((u8 *)self + 4)) {
+        MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)self + 4));
+        *(u32 *)((u8 *)self + 4) = 0;
+        *(u8 *)((u8 *)self) = 0;
+        *((u8 *)self + 1) = 0;
     }
 }
 
@@ -416,21 +417,22 @@ noModulation:
 #pragma push
 #pragma dont_inline on
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out, void* color, u8 alpha) {
-    AlphaColor* d = (AlphaColor*)out;
-    AlphaColor* s = (AlphaColor*)color;
+    u8* d = (u8*)out;
+    u8* s = (u8*)color;
     {
-        u8 a3 = s->a;
-        u8 a2 = s->b;
-        u8 a1 = s->g;
-        u8 a0 = s->r;
-        d->r = a0;
-        d->g = a1;
-        d->b = a2;
-        d->a = a3;
+        u8 a3, a2, a1, a0;
+        a0 = s[0];
+        a1 = s[1];
+        a2 = s[2];
+        a3 = s[3];
+        d[3] = a3;
+        d[0] = a0;
+        d[1] = a1;
+        d[2] = a2;
     }
     if (alpha != 0xFF) {
-        u8 v = s->a;
-        d->a = (u8)((v * alpha) / 255);
+        u8 v = s[3];
+        d[3] = (u8)((v * alpha) / 255);
     }
 }
 #pragma pop
@@ -703,39 +705,42 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
 }
 #pragma pop
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
-extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, int arg1) {
+#pragma push
+#pragma use_lmw_stmw off
+#pragma opt_lifetimes off
+extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E764[];
     extern const char lbl_8031E740[];
     extern const char lbl_8031F718[];
     extern const char lbl_8031F6F4[];
-    GroupLayout* group = (GroupLayout*)arg0;
     void* slot;
-    GroupListNode* node;
     void* end;
-    unsigned int current;
+    GroupListNode* node;
+    GroupListNode* current;
+    GroupLayout* group = (GroupLayout*)arg0;
     if (group != 0) {
         node = group->children.first;
         end = &group->children.first;
         group->vtable = lbl_8031F628;
         while (node != end) {
-            current = (unsigned int)node;
+            current = node;
             node = node->next;
-            slot = (void*)current;
+            slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&group->children, &slot);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E764, 0x23D, lbl_8031E740);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F718, 0x193, lbl_8031F6F4);
-            MEMFreeToAllocator(lbl_8055DDF0, (void*)current);
+            MEMFreeToAllocator(lbl_8055DDF0, current);
         }
         if (&group->children != 0)
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&group->children, 0);
-        if (arg1 > 0)
+        if (0 < arg1)
             ((void (*)(void*))fn_80128668)(arg0);
     }
     return arg0;
 }
-
+#pragma pop
 extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     extern const char lbl_8031F6B8[];
     extern const char lbl_8031F694[];
@@ -3072,7 +3077,8 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     f32 defaultValue;
     f32 wrapT;
     u16 wrapS;
-    GetTextureSizeStringBase_800D58C4 *file = (GetTextureSizeStringBase_800D58C4 *)&lbl_8031F990;
+    const char *file = (const char *)&lbl_8031F990;
+
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
         defaultValue = lbl_80560E90;
@@ -3080,13 +3086,16 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
         out[1] = defaultValue;
         return;
     }
+
     if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file->text + 0, 0x3DC, file->text + 0x42C);
+        Panic__Q26nw4hbm2dbFPCciPCce((char *)file + ((u32)index & 0), 0x3DC, file + 0x42C);
     }
+
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file->text + 0, 0x3DD, file->text + 0x458);
+        Panic__Q26nw4hbm2dbFPCciPCce((char *)file + ((u32)index & 0), 0x3DD, file + 0x458);
     }
+
     u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
     u32 *src = base + (((u32)index << 5) / 4);
     word0 = ((volatile u32 *)src)[0];
@@ -3105,6 +3114,7 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     word7 = ((volatile u32 *)src)[7];
     texObj[6] = word6;
     texObj[7] = word7;
+
     ((void (*)(void *, int, u32, void *))GXGetTexObjWidth)(texObj, 0, word6, src);
     wrapT = (f32)GXGetTexObjWrapT(texObj);
     wrapS = GXGetTexObjWrapS(texObj);
