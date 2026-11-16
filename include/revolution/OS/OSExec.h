@@ -6,8 +6,8 @@ extern "C" {
 #endif
 
 typedef struct OSExecParams {
-    UNKWORD WORD_0x0;
-    UNKWORD WORD_0x4;
+    UNKWORD WORD_0x0; // at 0x0: nonzero when booted from reboot params (reset-code flag)
+    UNKWORD WORD_0x4; // at 0x4: the reboot's device/reset code, used by OSGetResetCode
     char UNK_0x8[0x4];
     void* regionStart; // at 0xC
     void* regionEnd;   // at 0x10
