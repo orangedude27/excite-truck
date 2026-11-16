@@ -706,11 +706,12 @@ void *fn_80128EB4(void *unused, void *pBlock) {
 }
 #undef STKA_SIGNATURE
 
-void fn_80128ED8(void *arg0, s32 arg1, s32 arg2) {
-    s32 *p = (s32 *)arg0;
-    p[1] = arg1;
+/* Initialize a stack allocator's bookkeeping words: base pointer, zeroed cursor, size counter, and zeroed peak counter. */
+void fn_80128ED8(void *allocator, s32 base, s32 size) {
+    s32 *p = (s32 *)allocator;
+    p[1] = base;
     p[2] = 0;
-    p[3] = arg2;
+    p[3] = size;
     p[4] = 0;
 }
 
