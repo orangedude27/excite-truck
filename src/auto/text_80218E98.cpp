@@ -5669,12 +5669,13 @@ extern "C" void fn_8022264C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4
     *arg6 = arg1 + fn_80232B70(*(s32 *)((u8 *)arg0 + 4));
 }
 #pragma scheduling on
-extern "C" void *fn_802226D4(void *arg0, s32 arg1) {
+extern "C" void *fn_802226D4(void *self, s32 resourceId) {
+    /* RealName: InitWithVTableAndResource_802226D4. Initialize object with vtable lbl_8033F9BC and store resource loaded from resourceId. */
     extern char lbl_8033F9BC[];
     extern s32 fn_8023512C(s32);
-    *(volatile char **)arg0 = lbl_8033F9BC;
-    *(s32 *)((u8 *)arg0 + 4) = fn_8023512C(arg1);
-    return arg0;
+    *(volatile char **)self = lbl_8033F9BC;
+    *(s32 *)((u8 *)self + 4) = fn_8023512C(resourceId);
+    return self;
 }
 
 void fn_80235380(int);
@@ -6514,18 +6515,20 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     f32 var_f0_4;
     register s32 temp_r28;
     register s32 temp_r27;
+    s32 temp_r3;
     s32 temp_r4;
     s32 temp_r5;
     s32 temp_r6;
-    s32 temp_r3;
     f32 temp_f1_3;
     fn_80218F80();
-    *(s32 *)((u8 *)arg0 + 0x258) = 0;
-    *(void **)arg0 = lbl_8033E350;
-    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)0;
+    temp_r3 = 0;
+    temp_r4 = (s32)lbl_8033E350;
+    *(s32 *)((u8 *)arg0 + 0x258) = temp_r3;
+    *(void **)arg0 = (void *)temp_r4;
+    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)temp_r3;
     *(s32 *)((u8 *)arg0 + 0x264) = -2;
-    *(s32 *)((u8 *)arg0 + 0x260) = 0;
-    if (fn_802C9A58(0, lbl_8033E350) == 0) {
+    *(s32 *)((u8 *)arg0 + 0x260) = temp_r3;
+    if (((s32 (*)(void))fn_802C9A58)() == 0) {
         if (((VfObj *)arg0)->vf28() > 0x258) {
             temp_r5 = *(s32 *)((u8 *)arg0 + 8);
             if (*(s32 *)((u8 *)arg0 + 0x10) - temp_r5 > 0x1CC) {
@@ -6547,12 +6550,12 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
                 temp_r27 = temp_r6 + (s32)var_f0_2;
                 temp_f1_3 = lbl_80563538 * (f32)((VfObj *)arg0)->vf28();
                 var_f0_3 = (temp_f1_3 < lbl_805634A8) ? temp_f1_3 - lbl_805634C4 : lbl_805634C4 + temp_f1_3;
-                temp_r3 = temp_r28 + (s32)var_f0_3;
+                s32 var_r0_3 = (s32)var_f0_3;
                 temp_f1_4 = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
                 var_f0_4 = (temp_f1_4 < lbl_805634A8) ? temp_f1_4 - lbl_805634C4 : lbl_805634C4 + temp_f1_4;
                 *(s32 *)((u8 *)arg0 + 4) = temp_r28;
                 *(s32 *)((u8 *)arg0 + 8) = temp_r27;
-                *(s32 *)((u8 *)arg0 + 0xC) = (unsigned short)temp_r3;
+                *(s32 *)((u8 *)arg0 + 0xC) = temp_r28 + var_r0_3;
                 *(s32 *)((u8 *)arg0 + 0x10) = temp_r27 + (s32)var_f0_4;
             }
         }
@@ -6565,12 +6568,12 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     } else {
         *(s32 *)((u8 *)arg0 + 0x258) = (s32)((u8 *)arg1 + 0x40);
     }
-    temp_r0 = *(s32 *)((u8 *)arg1 + 0xA4);
-    temp_r5 = temp_r0;
+    temp_r5 = *(s32 *)((u8 *)arg1 + 0xA4);
+    temp_r0 = 0;
     temp_r4 = -temp_r5;
-    temp_r4 |= temp_r5;
-    *(s32 *)((u8 *)arg0 + 0x254) = 0;
-    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)((u32)temp_r4 >> 31);
+    *(s32 *)((u8 *)arg0 + 0x254) = temp_r0;
+    temp_r0 = temp_r4 | temp_r5;
+    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)((u32)temp_r0 >> 31);
     return arg0;
 }
 #pragma pop
