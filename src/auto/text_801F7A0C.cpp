@@ -1104,9 +1104,11 @@ get_node:
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void *fn_801F93FC(void *node) {
-    void *n = fn_801F8188(node, 0, 1);
-    fn_801F9440((F92Node **)&lbl_8055EC38, (F92Node *)n);
-    return n;
+    /* Create a placed object from the given node and push it onto the global
+     * placed-object list (lbl_8055EC38). */
+    void *placedObj = fn_801F8188(node, 0, 1);
+    fn_801F9440((F92Node **)&lbl_8055EC38, (F92Node *)placedObj);
+    return placedObj;
 }
 #pragma scheduling on
 #pragma pop
@@ -2920,25 +2922,36 @@ extern "C" f64 fn_8002F234(void);
 extern "C" void fn_802C7AE0(s32, void *, s32);
 #pragma push
 #pragma processor 750
-extern "C" void fn_801FC774(void *arg0) {
-    f32 speed = fn_801E88F0(-1);
-    f32 speed2 = speed * speed;
-    f32 value;
-    if (speed2 * fn_802C88E8((u8 *)arg0 + 0x28) >
-        *(f32 *)((u8 *)arg0 + 0x4C) * *(f32 *)((u8 *)arg0 + 0x4C)) {
-        f32 time = (f32)fn_8002F234();
-        f32 current = *(f32 *)((u8 *)arg0 + 0x4C);
-        f32 start = *(f32 *)((u8 *)arg0 + 0x48);
-        f32 t = ((time - current) - lbl_80562FF0) / lbl_80563020;
-        f32 blend = lbl_80562FFC;
-        blend = (blend < t) ? t : blend;
-        blend = (blend > lbl_80562FF0) ? lbl_80562FF0 : blend;
-        value = start + blend * (lbl_80562FF0 - start);
-    } else {
-        value = *(f32 *)((u8 *)arg0 + 0x48);
-    }
-    if (!( (f32)__fabs((f64)value) <= lbl_80558DC4))
-        fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x44), (u8 *)arg0 + 4, -1);
+extern "C" void fn_801FC774(void *arg0)
+{
+  u8 *new_var2;
+  f32 speed = fn_801E88F0(-1);
+  f32 speed2 = speed * speed;
+  u8 *new_var;
+  f32 new_var3;
+  f32 value;
+  new_var2 = ((u8 *) arg0) + 0x48;
+  new_var3 = fn_802C88E8(((u8 *) arg0) + 0x28);
+  if ((new_var3 * speed2) > ((*((f32 *) (((u8 *) arg0) + 0x4C))) * (*((f32 *) (((u8 *) arg0) + 0x4C)))))
+  {
+    f32 time = (f32) fn_8002F234();
+    f32 current;
+    f32 start = *((f32 *) new_var2);
+    f32 t = ((time - (*((f32 *) (((u8 *) arg0) + 0x4C)))) - lbl_80562FF0) / lbl_80563020;
+    f32 blend = lbl_80562FFC;
+    blend = (blend < t) ? (t) : (blend);
+    blend = (blend > lbl_80562FF0) ? (lbl_80562FF0) : (blend);
+    value = start + (blend * (lbl_80562FF0 - start));
+  }
+  else
+  {
+    value = *((f32 *) new_var2);
+  }
+  if (!(((f32) __fabs((f64) value)) <= lbl_80558DC4))
+  {
+    new_var = ((u8 *) arg0) + 0x44;
+    fn_802C7AE0(*((s32 *) new_var), ((u8 *) arg0) + 4, -1);
+  }
 }
 #pragma pop
 extern "C" {
