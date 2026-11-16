@@ -137,11 +137,12 @@ extern void fn_8020A03C(s32, s32);
 extern void fn_801331C4(int, void *, f32 *);
 #pragma dont_inline on
 void fn_80209FFC(void) {
-    f32 value;
+    f32 volume;
 
-    value = fn_8020A5F0();
-    fn_801331C4(4, (void *)lbl_8033C278, &value);
-    fn_8020A5F8(value);
+    /* Load the saved "music_volume" setting (current volume as default) and apply it. */
+    volume = fn_8020A5F0();
+    fn_801331C4(4, (void *)lbl_8033C278, &volume);
+    fn_8020A5F8(volume);
 }
 
 #pragma push
