@@ -431,8 +431,11 @@ s32 fn_8001C0A0(void) {
     return *(s32 *)((s32 (*)(void))fn_8001BC18)();
 }
 
+/* Read the 32-bit field at offset 0x1C of the surrounding object: the getter
+   fn_8001BC20 adds 0x1C to the object pointer still left in r3; dereference it. */
 s32 fn_8001C0C4(void) {
-    return *(s32 *)((s32 (*)(void))fn_8001BC20)();
+    typedef s32 (*FieldGetter)(void);
+    return *(s32 *)((FieldGetter)fn_8001BC20)();
 }
 
 #pragma dont_inline reset
