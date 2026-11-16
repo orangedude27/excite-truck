@@ -181,13 +181,13 @@ void fn_8001EFCC(void* alarm) {
 #pragma scheduling invalid_target
 void fn_8001EFF0(void) {
     char* base = lbl_802FDE68;
+    register VObj* obj;
     VObj* child;
     u32 n;
-    SrcCoef* p;
     s32 i;
     s32 j;
     s32 idx;
-    VObj* obj;
+    SrcCoef* p;
     s32* res;
     p = (SrcCoef*)(base + 0xC8);
     n = 0;
@@ -519,19 +519,23 @@ no_coef:
     return 0;
 }
 #pragma scheduling on
-s32 fn_8001FA8C(s32 arg0) {
+/* RealName: Achievements_GetCounterLevelCount
+ * How many threshold levels a lifetime counter has: the number of rows
+ * fn_8001EFF0 built for it from the ACHV archive.  0 for a counter index
+ * outside the table or one with no threshold list at all. */
+s32 fn_8001FA8C(s32 counter) {
     SrcCoef *base;
-    void *p;
+    AchThresholdList *list;
 
-    if (arg0 < 0)
+    if (counter < 0)
         goto zero;
-    if ((u32)arg0 >= 8)
+    if ((u32)counter >= 8)
         goto zero;
     base = lbl_802FDF30;
-    p = base[arg0].unkC;
-    if (p == 0)
+    list = (AchThresholdList *)base[counter].unkC;
+    if (list == 0)
         goto zero;
-    return ((s32 *)p)[1];
+    return list->count;
 zero:
     return 0;
 }
