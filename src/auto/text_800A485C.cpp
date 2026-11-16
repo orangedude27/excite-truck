@@ -6563,6 +6563,7 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
     }
     return 0xF;
 }
+static inline u32 orBits(u32 a, u32 b) { return a | b; }
 extern "C" s32 fn_800AED1C(void *arg0) {
     void *page;
     s32 sp8;
@@ -6584,7 +6585,8 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     }
     VFiPFCACHE_FreeFATPage(arg0, page);
     type = *(s32 *)((u8 *)arg0 + 0x1C);
-    v = *(u8 *)((u8 *)arg0 + 0x1A) | lbl_802EEF40[type * 5 + 3];
+    v = *(u8 *)((u8 *)arg0 + 0x1A);
+    v |= lbl_802EEF40[type * 5 + 3];
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
@@ -10209,6 +10211,8 @@ extern "C" s32 fn_800A5530(void *);
 extern "C" s32 fn_800AED1C(void *);
 extern "C" s32 fn_800A5800(void *, s32);
 extern "C" s32 fn_800B5988(void *arg0) {
+    struct VFSub { u8 pad[0x80]; u32 flag; s32 key; u32 flag2; s32 key2; };
+    struct VF { u8 pad0[0x10]; VFSub sub; };
     s32 sp8;
     s32 r;
     u32 i;
@@ -10235,17 +10239,18 @@ extern "C" s32 fn_800B5988(void *arg0) {
             ((void (*)(s32 *))fn_800B78F0)(&sp8);
             *(u32 *)((u8 *)arg0 + 0x1654) |= 1;
             {
-                u32 *e = (u32 *)lbl_803D2140;
+                VF *vf = (VF *)lbl_803D2140;
                 s32 key = sp8;
-                e[0x88 / 4] &= 1;
-                if (e[0x88 / 4] && key == (s32)e[0x8C / 4]) hit = 1;
+                CacheEnt *e0 = (CacheEnt *)((u8 *)vf + 0x88);
+                e0->flag &= 1;
+                if (e0->flag && key == e0->key) hit = 1;
                 else {
-                    e += 4;
-                    e[0x80 / 4] &= 1;
-                    if (e[0x80 / 4] && key == (s32)e[0x84 / 4]) hit = 1;
+                    VFSub *sub = &vf->sub;
+                    sub->flag &= 1;
+                    if (sub->flag && key == sub->key) hit = 1;
                     else {
-                        e[0x88 / 4] &= 1;
-                        if (e[0x88 / 4] && key == (s32)e[0x8C / 4]) hit = 1;
+                        sub->flag2 &= 1;
+                        if (sub->flag2 && key == sub->key2) hit = 1;
                         else hit = 0;
                     }
                 }
@@ -10255,16 +10260,9 @@ extern "C" s32 fn_800B5988(void *arg0) {
                 *(s32 *)((u8 *)arg0 + 0x18A0) = sp8;
             }
             slot = (u8 *)arg0 + 0x165C;
-            i = 0;
-            while (1) {
+            for (i = 0; i < 4; i++, slot += 0x248) {
                 r = fn_800AAEFC((s32)arg0, slot);
-                if (r == 0) goto cont;
-                else goto done;
-            cont:
-                i++;
-                slot += 0x248;
-                if (i < 4) continue;
-                else break;
+                if (r != 0) goto done;
             }
             r = 0;
         }
