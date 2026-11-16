@@ -645,6 +645,8 @@ extern int fn_802E582C(void);
  * data is tagged 'SFX0', allocate a voice object for it (fn_802E582C keeps the
  * resource's name in r3 for fn_802E5AE8); returning 0 stops the walk. */
 int fn_802E58A0(void *entry, int dataTag) {
+    /* Resource-directory walk callback: for the 'SFX0' sample type, allocate a
+     * voice object via fn_802E582C; for any other type keep the walk going (1). */
     if (dataTag == TAG_SFX0) return fn_802E582C();
     return 1;
 }
