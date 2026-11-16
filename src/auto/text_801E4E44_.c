@@ -20,6 +20,46 @@ extern Unk801E4E44State lbl_80487C88;
 extern s32 lbl_8055EAA8, lbl_8055EAAC, lbl_8055EAB0;
 void fn_801E4E44(void);
 
+extern void fn_802D68C4(s32, s32, s32, s32);
+#pragma scheduling invalid_target
+void fn_801E4E44(void) {
+    if ((s32)lbl_8055EAA8 > 2) {
+        s32 indexCount = lbl_8055EAAC;
+        if (indexCount > 2) {
+            fn_802D68C4((s32)&lbl_80487578, lbl_8055EAA8, (s32)&lbl_80487B18, indexCount);
+        }
+        {
+            s32 count = lbl_8055EAA8;
+            s32 base = (s32)&lbl_80487578;
+            s32 index = count - 2;
+            s32 offset = index * 0x18;
+            s32 source = base + offset;
+            s32 first = *(volatile s32 *)(base + offset);
+            s32 secondWord = *(s32 *)(source + 4);
+            lbl_8055EAA8 = 2;
+            *(s32 *)(base + 4) = secondWord;
+            *(s32 *)base = first;
+            {
+                s32 lastIndex = count - 1;
+                s32 lastOffset = lastIndex * 0x18;
+                s32 last = base + lastOffset;
+                s32 thirdWord = *(s32 *)(source + 8);
+                lbl_8055EAAC = 0;
+                *(s32 *)(base + 8) = thirdWord;
+                *(s32 *)(base + 0xC) = *(s32 *)(source + 0xC);
+                *(f32 *)(base + 0x10) = *(f32 *)(source + 0x10);
+                *(f32 *)(base + 0x14) = *(f32 *)(source + 0x14);
+                *(s32 *)(base + 0x18) = *(s32 *)last;
+                *(s32 *)(base + 0x1C) = *(s32 *)(last + 4);
+                *(s32 *)(base + 0x20) = *(s32 *)(last + 8);
+                *(s32 *)(base + 0x24) = *(s32 *)(last + 0xC);
+                *(f32 *)(base + 0x28) = *(f32 *)(last + 0x10);
+                *(f32 *)(base + 0x2C) = *(f32 *)(last + 0x14);
+            }
+        }
+    }
+}
+#pragma scheduling on
 s32 fn_801E4F20(void) {
     lbl_8055EAA8 = 0;
     lbl_8055EAAC = 0;
@@ -27,61 +67,112 @@ s32 fn_801E4F20(void) {
     return 1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_801E4F3C(s32 arg0, s32 arg1, f32 x, f32 y, f32 z, f32 u, f32 v) {
-    Unk801E4E44Vertex* vertex = &lbl_80487578[lbl_8055EAA8];
+    s32 baseIdx = lbl_8055EAA8;
+    Unk801E4E44Vertex *vertex = &lbl_80487578[baseIdx];
+    s32 count = baseIdx + 1;
     vertex->x = x;
-    lbl_8055EAA8++;
     vertex->y = y;
     vertex->z = z;
     vertex->unk_0x10 = u;
     vertex->unk_0x14 = v;
+    lbl_8055EAA8 = count;
     vertex->unk_0xC = arg0;
-    if (arg1 && lbl_8055EAA8 > 2) {
-        lbl_80487B18[lbl_8055EAAC++] = lbl_8055EAA8 - 3;
-        lbl_80487B18[lbl_8055EAAC++] = lbl_8055EAA8 - 2;
-        lbl_80487B18[lbl_8055EAAC++] = lbl_8055EAA8 - 1;
+    if (arg1 && count > 2) {
+        s32 i = lbl_8055EAAC;
+        s32 j = i + 1;
+        s32 k = j + 1;
+        s32 t = k + 1;
+        lbl_80487B18[i] = count - 3;
+        lbl_80487B18[j] = count - 2;
+        lbl_8055EAAC = t;
+        lbl_80487B18[k] = count - 1;
     }
-    if (lbl_8055EAA8 == 60 || lbl_8055EAAC == 174) fn_801E4E44();
+    if (count == 60 || lbl_8055EAAC == 174) fn_801E4E44();
     return 0;
 }
-
+#pragma pop
 void fn_801E4FF4(void) {
     fn_801E4E44();
     lbl_8055EAB0 = 0;
 }
 
-extern f32 lbl_80562D44, lbl_80562D48;
-void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
-    s32 i, j;
-    s32 base = lbl_8055EAA8;
-    s32 next = base + 3;
-    f32 *p = (f32 *)lbl_80487578;
-    f32 *a, *b, *c, *d;
-    if (base + 4 > 60) fn_801E4E44();
-    if (lbl_8055EAAC + 6 > 174) fn_801E4E44();
-    a = p + base * 6;
-    b = a + 6;
-    c = a + 12;
-    d = a + 18;
-    a[0] = arg0 - p[0x70C/4]; a[1] = arg1; a[2] = arg2;
-    b[0] = arg0 + p[0x70C/4]; b[1] = arg1; b[2] = arg2;
-    c[0] = a[0] + p[0x700/4]; c[1] = a[1] + p[0x704/4]; c[2] = a[2] + p[0x708/4];
-    d[0] = b[0] + p[0x700/4]; d[1] = b[1] + p[0x704/4]; d[2] = b[2] + p[0x708/4];
-    a[4] = c[4] = lbl_80562D44; b[4] = d[4] = lbl_80562D48;
-    a[5] = c[5] = lbl_80562D48; b[5] = d[5] = lbl_80562D44;
-    if (next > 2) {
-        i = lbl_8055EAAC;
-        lbl_80487B18[i] = next-3; lbl_80487B18[i+1] = next-2; lbl_80487B18[i+2] = next-1;
-        lbl_8055EAAC = i+3;
-    }
-    lbl_8055EAA8 = next+1;
-    if (next+1 > 2) {
-        j = lbl_8055EAAC;
-        lbl_80487B18[j] = next-2; lbl_80487B18[j+1] = next-1; lbl_80487B18[j+2] = next;
-        lbl_8055EAAC = j+3;
-    }
+extern f32 lbl_80562D40;
+extern f32 lbl_80487C78[];
+s32 fn_801E501C(s32 unused, f32 *xyz, u8 color, f32 scale) {
+    f32 x = xyz[0];
+    f32 w = lbl_80562D40 * scale;
+    f32 y = xyz[1];
+    f32 z = xyz[2];
+    u32 packed = ((u32)color << 24) | 0x00FFFFFF;
+    s32 i;
+    for (i = 0; i < 60; i++) lbl_80487578[i].unk_0xC = packed;
+    lbl_8055EAA8 = 0;
+    lbl_8055EAAC = 0;
+    lbl_80487C78[0] = x;
+    lbl_80487C78[1] = y;
+    lbl_80487C78[2] = z;
+    lbl_80487C78[3] = w;
+    lbl_8055EAB0 = 2;
+    return 1;
 }
 
+extern f32 lbl_80562D44, lbl_80562D48;
+#pragma push
+#pragma scheduling invalid_target
+void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
+    Unk801E4E44Vertex *vertices = lbl_80487578;
+    f32 *center = (f32 *)((u8 *)lbl_80487578 + 0x700);
+    s32 count;
+    s32 index;
+    s32 base;
+
+    if (lbl_8055EAA8 + 4 > 60) fn_801E4E44();
+    if (lbl_8055EAAC + 6 > 174) fn_801E4E44();
+
+    base = lbl_8055EAA8;
+    count = base + 3;
+    vertices[base].x = arg0 - center[3];
+    vertices[base].y = arg1;
+    vertices[base].z = arg2;
+    vertices[base + 1].x = arg0 + center[3];
+    vertices[base + 1].y = arg1;
+    vertices[base + 1].z = arg2;
+    vertices[base + 2].x = vertices[base].x + center[0];
+    vertices[base + 2].y = vertices[base].y + center[1];
+    vertices[base + 2].z = vertices[base].z + center[2];
+    vertices[base + 3].x = vertices[base + 1].x + center[0];
+    vertices[base + 3].y = vertices[base + 1].y + center[1];
+    vertices[base + 3].z = vertices[base + 1].z + center[2];
+    vertices[base].unk_0x10 = lbl_80562D44;
+    vertices[base + 1].unk_0x10 = lbl_80562D48;
+    vertices[base + 2].unk_0x10 = lbl_80562D44;
+    vertices[base + 3].unk_0x10 = lbl_80562D48;
+    vertices[base].unk_0x14 = lbl_80562D48;
+    vertices[base + 1].unk_0x14 = lbl_80562D44;
+    vertices[base + 2].unk_0x14 = lbl_80562D48;
+    vertices[base + 3].unk_0x14 = lbl_80562D44;
+
+    if (count > 2) {
+        index = lbl_8055EAAC;
+        lbl_80487B18[index] = count - 3;
+        lbl_80487B18[index + 1] = count - 2;
+        lbl_80487B18[index + 2] = count - 1;
+        lbl_8055EAAC = index + 3;
+    }
+    lbl_8055EAA8 = count + 1;
+    if (count + 1 > 2) {
+        index = lbl_8055EAAC;
+        lbl_80487B18[index] = count - 2;
+        lbl_80487B18[index + 1] = count - 1;
+        lbl_80487B18[index + 2] = count;
+        lbl_8055EAAC = index + 3;
+    }
+}
+#pragma pop
 void fn_801E5348(void) {
     fn_801E4E44();
     lbl_8055EAB0 = 0;
@@ -90,16 +181,52 @@ void fn_801E5348(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-s32 fn_801E5370(s32 arg0, s32 arg1, f32 arg2) {
+s32 fn_801E5370(s32 value, s32 lastIndex, f32 scale) {
+    /* Begin a mode-3 mesh pass: clear the vertex/index counters, seed the state (value, index limit + 1, scale), and report success. */
     lbl_8055EAA8 = 0;
     lbl_8055EAAC = 0;
-    lbl_80487C88.unk_0x2C = arg0;
+    lbl_80487C88.unk_0x2C = value;
     lbl_80487C88.unk_0x28 = 0;
-    lbl_80487C88.unk_0x30 = arg1 + 1;
-    lbl_80487C88.unk_0x34 = arg2;
+    lbl_80487C88.unk_0x30 = lastIndex + 1;
+    lbl_80487C88.unk_0x34 = scale;
     lbl_8055EAB0 = 3;
     return 1;
 }
+
+void fn_801E53A8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 arg4) {
+    f32 ax;
+    f32 ay;
+    f32 az;
+    f32 cx;
+    f32 cy;
+    f32 cz;
+    f32 dx;
+    f32 dy;
+    f32 dz;
+    f32 sx;
+    f32 sy;
+    f32 sz;
+    (void)arg1;
+    (void)arg4;
+    if (lbl_80487C88.unk_0x28 >= lbl_80487C88.unk_0x30) {
+        fn_802E317C((void *)0);
+    }
+    ax = *(f32 *)((u8 *)arg0 + 0x0);
+    cx = *(f32 *)((u8 *)arg2 + 0x0);
+    dx = ax - cx;
+    sx = ax + cx;
+    ay = *(f32 *)((u8 *)arg0 + 0x4);
+    cy = *(f32 *)((u8 *)arg2 + 0x4);
+    dy = ay - cy;
+    sy = ay + cy;
+    az = *(f32 *)((u8 *)arg0 + 0x8);
+    cz = *(f32 *)((u8 *)arg2 + 0x8);
+    dz = az - cz;
+    sz = az + cz;
+    (void)dx; (void)dy; (void)dz; (void)sx; (void)sy; (void)sz;
+    (void)arg3;
+}
+
 #pragma pop
 void fn_801E58FC(void) {
     fn_801E4E44();
