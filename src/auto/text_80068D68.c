@@ -3,6 +3,8 @@ extern unsigned char lbl_803935C8[];
 extern unsigned char lbl_803C3AF0[];
 extern unsigned char lbl_803C0A50[];
 extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
+#define L2CU_DISC_RSP_RET int
+L2CU_DISC_RSP_RET l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
