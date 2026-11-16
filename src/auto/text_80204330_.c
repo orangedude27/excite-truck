@@ -286,7 +286,6 @@ update:
 return_zero:
     return 0;
 }
-#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
