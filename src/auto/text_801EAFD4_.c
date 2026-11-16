@@ -516,11 +516,12 @@ void fn_801EB968(void) {
 
 }
 
-s32 fn_801EB96C(s32 *out, s32 callback) {
-    register s32 (*fn)(void) = (s32 (*)(void))callback;
-    register s32 *ptr = out;
-    *ptr = fn();
-    return *ptr;
+s32 fn_801EB96C(s32 *cacheSlot, s32 getter) {
+    /* Calls a zero-argument getter, stores its result in a cache slot, and returns that value. */
+    register s32 (*get)(void) = (s32 (*)(void))getter;
+    register s32 *slot = cacheSlot;
+    *slot = get();
+    return *slot;
 }
 
 #pragma push
