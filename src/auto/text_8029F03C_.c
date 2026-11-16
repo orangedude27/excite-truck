@@ -179,50 +179,52 @@ void fn_8029F124(void) {
 
 #pragma use_lmw_stmw off
 void fn_8029F188(void) {
-    unsigned char *entry;
-    float scale;
-    void *table;
-    int offset;
-    int i;
+    /* Refreshes each effect's velocity from its attached object and advances its position,
+       then dispatches spawn requests for flagged effects when particle adds are enabled. */
+    unsigned char *effect;
+    float timeStep;
+    void *allocator;
+    int entryOffset;
+    int index;
 
-    if (lbl_8055F73C != 1) {
-        if (lbl_8055F824 == 0) {
-            fn_802E30C8(lbl_8034981C);
+    if (gAllowParticleAdd != 1) {
+        if (gWarnCounter == 0) {
+            fn_802E30C8(gWarnParticleAddFalse);
         }
-        lbl_8055F824 = (lbl_8055F824 + 1) % 5;
+        gWarnCounter = (gWarnCounter + 1) % 5;
     }
-    scale = lbl_805646B0;
-    table = lbl_804B9B7C;
-    i = 0;
-    offset = 0;
-    for (; i < *(int *)((char *)table + 4); offset += 0x34, i++) {
+    timeStep = gTimeStep;
+    allocator = gEffectAllocator;
+    index = 0;
+    entryOffset = 0;
+    for (; index < *(int *)((char *)allocator + 4); entryOffset += EFFECT_STRIDE, index++) {
         unsigned char *object;
-        entry = *(unsigned char **)lbl_804B9B7C + offset;
-        object = *(unsigned char **)(entry + 0x30);
+        effect = *(unsigned char **)gEffectAllocator + entryOffset;
+        object = *(unsigned char **)(effect + EFFECT_OBJECT);
         if (object != 0) {
-            float dx = *(float *)(object + 0x60) - *(float *)(entry + 4);
+            float dx = *(float *)(object + 0x60) - *(float *)(effect + EFFECT_POS_X);
             float dy;
             float dz;
-            *(float *)(entry + 0x10) = dx;
-            dy = *(float *)(object + 0x64) - *(float *)(entry + 8);
-            *(float *)(entry + 0x14) = dy;
-            dz = *(float *)(object + 0x68) - *(float *)(entry + 0xc);
-            *(float *)(entry + 0x10) = dx * scale;
-            *(float *)(entry + 0x10) += *(float *)(entry + 0x1c);
-            *(float *)(entry + 0x14) = dy * scale;
-            *(float *)(entry + 0x14) += *(float *)(entry + 0x20);
-            *(float *)(entry + 0x18) = dz * scale;
-            *(float *)(entry + 0x18) += *(float *)(entry + 0x24);
-            *(float *)(entry + 4) = *(float *)(object + 0x60);
-            *(float *)(entry + 8) = *(float *)(object + 0x64);
-            *(float *)(entry + 0xc) = *(float *)(object + 0x68);
+            *(float *)(effect + EFFECT_VEL_X) = dx;
+            dy = *(float *)(object + 0x64) - *(float *)(effect + EFFECT_POS_Y);
+            *(float *)(effect + EFFECT_VEL_Y) = dy;
+            dz = *(float *)(object + 0x68) - *(float *)(effect + EFFECT_POS_Z);
+            *(float *)(effect + EFFECT_VEL_X) = dx * timeStep;
+            *(float *)(effect + EFFECT_VEL_X) += *(float *)(effect + EFFECT_BASE_X);
+            *(float *)(effect + EFFECT_VEL_Y) = dy * timeStep;
+            *(float *)(effect + EFFECT_VEL_Y) += *(float *)(effect + EFFECT_BASE_Y);
+            *(float *)(effect + EFFECT_VEL_Z) = dz * timeStep;
+            *(float *)(effect + EFFECT_VEL_Z) += *(float *)(effect + EFFECT_BASE_Z);
+            *(float *)(effect + EFFECT_POS_X) = *(float *)(object + 0x60);
+            *(float *)(effect + EFFECT_POS_Y) = *(float *)(object + 0x64);
+            *(float *)(effect + EFFECT_POS_Z) = *(float *)(object + 0x68);
         } else {
-            *(float *)(entry + 0x10) = *(float *)(entry + 0x1c);
-            *(float *)(entry + 0x14) = *(float *)(entry + 0x20);
-            *(float *)(entry + 0x18) = *(float *)(entry + 0x24);
+            *(float *)(effect + EFFECT_VEL_X) = *(float *)(effect + EFFECT_BASE_X);
+            *(float *)(effect + EFFECT_VEL_Y) = *(float *)(effect + EFFECT_BASE_Y);
+            *(float *)(effect + EFFECT_VEL_Z) = *(float *)(effect + EFFECT_BASE_Z);
         }
-        if (entry[0x2E] != 0 && fn_801769F8() == 0) {
-            fn_802A0794(entry);
+        if (effect[EFFECT_SPAWN_FLAG] != 0 && fn_801769F8() == 0) {
+            fn_802A0794(effect);
         }
     }
 }
