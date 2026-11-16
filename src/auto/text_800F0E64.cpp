@@ -883,9 +883,10 @@ extern "C" void fn_800F2004(void *arg0, f32 farg0) {
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
-extern "C" void fn_800F2044(void *arg0, f32 farg0) {
+extern "C" void fn_800F2044(void *object, f32 value) {
+    /* Set the sound-track float parameter at offset 0x6C with interrupts disabled. */
     OSDisableInterrupts();
-    *(f32*)((u8*)arg0 + 0x6C) = farg0;
+    *(f32*)((u8*)object + 0x6C) = value;
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
