@@ -196,7 +196,7 @@ void fn_802BBBC8(void) {
     extern char lbl_8034AAC4[];
     extern void fn_801345D8(char *, int, char *, ...);
     extern void fn_802E317C(char *, ...);
-    extern int fn_802CA294(void);
+    extern int fn_802CA294(int);
     extern signed char fn_802B05E4(void);
     char sp10[0x20];
     int args[2];
@@ -220,10 +220,11 @@ void fn_802BBBC8(void) {
         if (temp_r3 == -2) {
             fn_802E317C(lbl_8034AAC4, var_r25);
         }
-        if (*(volatile int *)var_r27 == -2) {
+        temp_r3 = *var_r27;
+        if (temp_r3 == -2) {
             var_r3 = 0;
         } else {
-            var_r3 = fn_802CA294();
+            var_r3 = fn_802CA294(temp_r3);
         }
         var_r25 += 1;
         *var_r26 = var_r3;
@@ -301,29 +302,35 @@ extern char lbl_8034AAF0[];
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802BBE34(void) {
-    int var_r28 = 0;
+    int *ptr;
+    int outer;
+    int inner;
+    unsigned int sum;
+    int count;
+    int value;
+    outer = 0;
     do {
-        int var_r27 = 0;
+        inner = 0;
         do {
-            int *var_r29 = lbl_804C00B0;
-            unsigned int var_r26 = 0;
-            int var_r25 = 0;
+            ptr = lbl_804C00B0;
+            sum = 0;
+            count = 0;
             do {
-                int value = *var_r29;
+                value = *ptr;
                 if (value != 0) {
-                    var_r26 += ((unsigned int)((int (*)(void *, int, int))fn_802D972C)(
-                        (void *)value, var_r28, var_r27) >> 8) & 0xFF;
+                    sum += ((unsigned int)((int (*)(void *, int, int))fn_802D972C)(
+                        (void *)value, outer, inner) >> 8) & 0xFF;
                 }
-                var_r25 += 1;
-                var_r29 += 1;
-            } while (var_r25 < 6);
-            if (var_r26 != 0xFF) {
-                fn_802E30C8(lbl_8034AAF0, var_r28, var_r27, var_r26);
+                count += 1;
+                ptr += 1;
+            } while (count < 6);
+            if (sum != 0xFF) {
+                fn_802E30C8(lbl_8034AAF0, outer, inner, sum);
             }
-            var_r27 += 1;
-        } while (var_r27 < 0x200);
-        var_r28 += 1;
-    } while (var_r28 < 0x200);
+            inner += 1;
+        } while (inner < 0x200);
+        outer += 1;
+    } while (outer < 0x200);
 }
 #pragma pop
 #pragma scheduling on
