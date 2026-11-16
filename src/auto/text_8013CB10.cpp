@@ -3021,9 +3021,10 @@ extern "C" void *fn_80142C28(void *arg0, void *arg1) {
 }
 
 #pragma dont_inline off
-extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
-    void *obj = fn_802C6C34(*(s32 *)(arg1 + 0x59C));
-    *(f32 *)((u8 *)arg0 + 0x128) = *(f32 *)((u8 *)obj + 0x30) - *(f32 *)((u8 *)obj + 0x2C);
+extern "C" void fn_80142C5C(void *out, u8 *car) {
+    /* Store (model->0x30 - model->0x2C) into out+0x128, using the model looked up from the car's id at +0x59C. */
+    void *model = fn_802C6C34(*(s32 *)(car + 0x59C));
+    *(f32 *)((u8 *)out + 0x128) = *(f32 *)((u8 *)model + 0x30) - *(f32 *)((u8 *)model + 0x2C);
 }
 
 extern "C" u8 *fn_8017960C(s32);
