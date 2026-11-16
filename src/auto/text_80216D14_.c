@@ -929,14 +929,17 @@ void fn_802180C8(void *arg0) { fn_80217EC0(arg0, 0, 0); }
 
 void fn_802180D4(void *arg0) { fn_80217EC0(arg0, 0, 1); }
 
-void fn_802180E0(void *arg0, int arg1) {
+void fn_802180E0(void *menu, int index) {
+    /* Sets the current menu selection to the key of the (key,value) pair at
+     * `index` in the sorted table at +0x4A0 (count at +0x494); logs and returns
+     * if the index is out of range. */
     extern void fn_802E30C8(const char *, ...);
     extern char lbl_8033D83C[];
-    if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 0x494)) {
-        fn_802E30C8(lbl_8033D83C, arg1, *(int *)((char *)arg0 + 0x494));
+    if (index < 0 || index >= *(int *)((char *)menu + 0x494)) {
+        fn_802E30C8(lbl_8033D83C, index, *(int *)((char *)menu + 0x494));
         return;
     }
-    *(int *)((char *)arg0 + 0x498) = *(int *)((char *)arg0 + 0x4A0 + arg1 * 8);
+    *(int *)((char *)menu + 0x498) = *(int *)((char *)menu + 0x4A0 + index * 8);
 }
 
 /* Finds the index of the selected menu entry (+0x498) in the 8-byte entry table
