@@ -6195,27 +6195,29 @@ static inline s32 fn_800AE3A8FindCluster(void *arg0, s32 arg1, s32 arg2, u32 *ar
         *arg3 = sp8;
     return 0;
 }
-extern "C" s32 fn_800AE3A8(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
-    u32 *state = *(u32 **)((u8 *)arg0 + 8);
-    u8 *fatInfo = *(u8 **)((u8 *)arg0 + 0x34);
+/* Resolve a cluster in a FAT chain for the given index and update the file's
+ * cluster cache; on an invalid mode-1 chain, reports no cluster. */
+extern "C" s32 fn_800AE3A8(void *fileInfo, s32 startCluster, s32 clusterIndex, u32 *outCluster) {
+    u32 *state = *(u32 **)((u8 *)fileInfo + 8);
+    u8 *fatInfo = *(u8 **)((u8 *)fileInfo + 0x34);
     u32 mode = *state;
     u32 clusterCount = *(u32 *)(fatInfo + 0x1C);
-    u32 *cache = *(u32 **)((u8 *)arg0 + 0x30);
+    u32 *cache = *(u32 **)((u8 *)fileInfo + 0x30);
     s32 result;
 
     if (mode == 1) {
         if (clusterCount <= 1) {
-            *arg3 = (u32)-1;
+            *outCluster = (u32)-1;
             return 0;
         }
         *state = *(u32 *)(fatInfo + 0x10);
     }
-    result = fn_800AE3A8FindCluster(arg0, arg1, arg2, arg3);
+    result = fn_800AE3A8FindCluster(fileInfo, startCluster, clusterIndex, outCluster);
     if (result != 0) return result;
-    if (*arg3 == (u32)-1) return 0;
-    cache[2] = *(u32 *)arg0;
-    cache[0] = arg1;
-    cache[1] = *arg3;
+    if (*outCluster == (u32)-1) return 0;
+    cache[2] = *(u32 *)fileInfo;
+    cache[0] = startCluster;
+    cache[1] = *outCluster;
     return 0;
 }
 
