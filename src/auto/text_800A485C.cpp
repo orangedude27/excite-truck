@@ -7850,7 +7850,7 @@ extern "C" void *fn_800B0F1C(void *volumeObject, void *entryObject, s32 unused) 
 
 extern "C" s32 VFiPFPATH_parseShortName(void *, void *);
 
-typedef void fn_800B51FC_arg_t;
+typedef s8 fn_800B51FC_arg_t;
 extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *, s32);
 
 /* A file's entry as the file code holds it (0x240 bytes, VFiPFEntryCopy240
