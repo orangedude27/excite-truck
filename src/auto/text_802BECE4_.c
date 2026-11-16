@@ -761,6 +761,7 @@ void fn_802BFE48(void *arg0, void *arg1, float arg2) {
 }
 
 void fn_802C0054(void *dst, const void *src) {
+    /* Copy a 36-byte block (9 32-bit words) from src to dst. */
     struct Copy {
         u32 words[9];
     };
