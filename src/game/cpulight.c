@@ -83,7 +83,14 @@ void fn_802DB304(void *dest, int mode) {
 }
 
 #pragma scheduling on
-int fn_802DB378(int arg0, int arg1) { int result = 0xFF; if (arg0 == 2) { if (arg1 == 0) result = 4; } return result; }
+int fn_802DB378(int mode, int textureIndex) {
+    /* TEV color input for GXSetTevOrder: GX_COLOR0A0 (4) for the first texture in mode 2, else GX_COLOR_NULL (0xFF). */
+    int color = 0xFF;
+    if (mode == 2) {
+        if (textureIndex == 0) color = 4;
+    }
+    return color;
+}
 
 void fn_802DB394(void) {
     /* Configure a simple 2-stage TEV setup: stages 0 and 1 modulate, stage 1 passes alpha through. */
