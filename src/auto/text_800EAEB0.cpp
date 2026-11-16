@@ -2418,7 +2418,8 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail
     register f32 zeroValue = lbl_8056106C;
     register f32 baseValue = lbl_80561068;
     u8 *p = (u8 *)self;
-    int i;
+    s32 i;
+    u32 zero = 0;
     p[0x16] = 0; p[0x17] = 0;
     p[0x18] = 0; p[0x19] = 0;
     p[0x14] = 0;
@@ -2436,7 +2437,7 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail
     *(f32 *)(p + 0x78) = zeroValue; *(f32 *)(p + 0x6C) = zeroValue;
     *(f32 *)(p + 0x7C) = zeroValue; *(f32 *)(p + 0x70) = zeroValue;
     *(f32 *)(p + 0x80) = zeroValue;
-    *(u32 *)(p + 0xFC) = 0;
+    *(u32 *)(p + 0xFC) = zero;
     *(s32 *)(p + 0x8C) = arg;
     *(u16 *)(p + 0x92) = 0x78;
     p[0x90] = 0x7F; p[0x91] = 0x40;
@@ -2444,7 +2445,7 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail
     for (i = 0; i < 16; ++i)
         *(s16 *)(p + 0xDC + i * 2) = -1;
     for (i = 0; i < 16; ++i)
-        *(u32 *)(p + 0x9C + i * 4) = 0;
+        *(u32 *)(p + 0x9C + i * 4) = zero;
 }
 
 extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *player, const void *seqData, s32 seqDataSize) {
@@ -2492,7 +2493,8 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
     };
     register void* player = self;
     register s32 state;
-    register u32 level;
+    struct { u32 value; } interrupt;
+    u32& level = interrupt.value;
     if (*(u8*)((u8*)player + 0x15) == 0) return;
     level = OSDisableInterrupts();
     if (*(u8*)((u8*)player + 0x17) != 0) {
@@ -2511,7 +2513,7 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
     register u8* entry = (u8*)player;
     register s32 zero = 0;
     s32 valid;
-    register void* seq;
+    void* seq;
     do {
         valid = 0;
         if (state >= 0 && state < 16) valid = 1;
