@@ -812,23 +812,24 @@ extern "C" void fn_80166A24(void) {
     }
 }
 #pragma pop
-float fn_80166DD4(void *arg0) {
-    float y0;
-    float y1;
-    float x0;
-    float x1;
+float fn_80166DD4(void *entry) {
+    float rangeStart;
+    float rangeEnd;
+    float outStart;
+    float outEnd;
     float normalized;
     float t;
-    y1 = *(float *)((char *)arg0 + 0xC);
-    y0 = *(float *)((char *)arg0 + 8);
-    if ((float)__fabs(y0 - y1) <= lbl_80558DC4) return *(float *)arg0;
-    normalized = (lbl_8055E318 - y0) / (y1 - y0);
-    x1 = *(float *)((char *)arg0 + 4);
-    x0 = *(float *)arg0;
+    /* Remap the global input from this entry's input range into its output range, clamping t to [0,1]; a degenerate range returns outStart. */
+    rangeEnd = *(float *)((char *)entry + 0xC);
+    rangeStart = *(float *)((char *)entry + 8);
+    if ((float)__fabs(rangeStart - rangeEnd) <= lbl_80558DC4) return *(float *)entry;
+    normalized = (lbl_8055E318 - rangeStart) / (rangeEnd - rangeStart);
+    outEnd = *(float *)((char *)entry + 4);
+    outStart = *(float *)entry;
     t = lbl_805618D0;
     t = (t < normalized) ? t : normalized;
     t = (t > lbl_8056189C) ? t : lbl_8056189C;
-    return x0 + t * (x1 - x0);
+    return outStart + t * (outEnd - outStart);
 }
 
 void fn_80166E54(void *arg0) {
