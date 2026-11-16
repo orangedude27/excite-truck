@@ -1120,11 +1120,11 @@ extern "C" void fn_801F9440(F92Node **list, F92Node *node) {
 
 __declspec(section ".sdata") extern u8 lbl_8055B374[];
 extern "C" s32 fn_801F9450(void *node) {
-    class NameNode {
-    public:
-        virtual char *getName();
-    };
-    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055B374) == 0;
+#define kDynoName lbl_8055B374
+    /* Returns nonzero when the node's virtual name is "dyno" (case-insensitive). */
+    struct NameNode { virtual const char *getName(); };
+    return stricmp(((NameNode *)node)->getName(), (const char *)kDynoName) == 0;
+#undef kDynoName
 }
 
 extern "C" s32 fn_801F948C(void *node) {
