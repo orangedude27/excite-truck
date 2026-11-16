@@ -8913,6 +8913,7 @@ void BTM_SendHciReset(void (*p_cb)(void)) {
 }
 
 u8 fn_80079514(void) {
+    /* BTM: return nonzero when the local Bluetooth device is up (BTM state byte at +0x64E == 5). */
     return (u8)((lbl_803C0F78[0x64E] - 5) == 0);
 }
 
