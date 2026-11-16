@@ -1204,13 +1204,16 @@ s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
 /* gEmptyString: shared zero buffer in .sdata, used as an empty C string fallback. */
 #define gEmptyString lbl_8055BFD8
 
-s32 fn_8024B87C(void *arg0, s32 arg1) {
-    extern s32 lbl_8055BFD8;
-    if (arg1 < *(s32 *)((char *)arg0 + 0x1C)) {
-        s32 **array = *(s32 ***)((char *)arg0 + 0x18);
-        return *(s32 *)((char *)array[arg1] + 4);
+/* Return the s32 at offset 4 of the indexed entry in the config's entry array,
+ * or a pointer to an empty string when the index is out of range. */
+s32 fn_8024B87C(void *config, s32 index) {
+    extern s32 gEmptyString;
+    s32 **entries;
+    if (index < *(s32 *)((char *)config + 0x1C)) {
+        entries = *(s32 ***)((char *)config + 0x18);
+        return *(s32 *)((char *)entries[index] + 4);
     }
-    return (s32)&lbl_8055BFD8;
+    return (s32)&gEmptyString;
 }
 
 s32 fn_8024B8A4(void *config, s32 index) {
