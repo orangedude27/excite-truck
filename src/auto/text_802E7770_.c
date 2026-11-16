@@ -4,9 +4,10 @@
 void fn_802E7770(void) {
 }
 
-int fn_802E7774(int (*arg0)(void)) {
-    if (arg0 != 0) {
-        arg0();
+/* Invokes callback if it is non-null, then returns 0. */
+int fn_802E7774(int (*callback)(void)) {
+    if (callback != 0) {
+        callback();
     }
     return 0;
 }
