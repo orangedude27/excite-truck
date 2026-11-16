@@ -420,18 +420,21 @@ int fn_8027D954(void *arg0, int arg1) {
 
 unsigned char fn_8027D964(void *arg0) { return ((unsigned char *)arg0)[0xBCC]; }
 
-void fn_8027D96C(int arg0) {
-    if (arg0 == 1) {
+void fn_8027D96C(int event) {
+    /* Career-result save-block callback: on events 0 or 2, clear the whole 4-player score block. */
+    #define gCareerResults lbl_804B2FD8
+    if (event == 1) {
         return;
     }
-    if (arg0 < 1) {
-        if (arg0 < 0) {
+    if (event < 1) {
+        if (event < 0) {
             return;
         }
-    } else if (arg0 >= 3) {
+    } else if (event >= 3) {
         return;
     }
-    memset(lbl_804B2FD8, 0, 0x20);
+    memset(gCareerResults, 0, 0x20);
+    #undef gCareerResults
 }
 
   extern char lbl_804B2FD8[];
