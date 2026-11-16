@@ -1966,20 +1966,21 @@ extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
     return ret;
 }
 
-extern "C" s32 fn_800A7610(void *arg0) {
-    s32 temp;
-    if ((*(u32 *)arg0 & 4) == 0) {
+extern "C" s32 fn_800A7610(void *operation) {
+    s32 status;
+    /* Tear down an operation: if its ready flag (bit 2) is set, run the two release handlers and clear the flag; otherwise return 0xD (not ready). */
+    if ((*(u32 *)operation & 4) == 0) {
         goto not_ready;
     }
 
-    temp = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-    if (temp != 0) {
-        return temp;
+    status = fn_800A625C(*(void **)((u8 *)operation + 4), (s32)operation);
+    if (status != 0) {
+        return status;
     }
 
-    temp = fn_800A6808(*(void **)((u8 *)arg0 + 4));
-    if (temp != 0) {
-        return temp;
+    status = fn_800A6808(*(void **)((u8 *)operation + 4));
+    if (status != 0) {
+        return status;
     }
     goto mark_clear;
 
@@ -1987,7 +1988,7 @@ not_ready:
     return 0xD;
 
 mark_clear:
-    *(u32 *)arg0 &= ~4U;
+    *(u32 *)operation &= ~4U;
     return 0;
 }
 
@@ -7459,51 +7460,48 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
+    struct StatusWrap { s32 v; } sw;
+    s32 &status = sw.v;
     u32 sector;
     u32 retry;
-    s32 status;
-    void *object = arg0;
-    u32 *output = arg2;
-    void *context = arg3;
-    u32 scaled;
-    u16 flags = *(u16 *)((u8 *)object + 0x18);
-    scaled = (u32)arg1 * 4;
-    sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
-                       (scaled >> *(u8 *)((u8 *)object + 0x20)));
+    u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
+    u32 scaled = (u32)arg1 * 4;
+    sector = (u16)(*(u32 *)((u8 *)arg0 + 0x28) +
+                       (scaled >> *(u8 *)((u8 *)arg0 + 0x20)));
     retry = 1;
     if (flags & 0x80)
         retry = flags & 7;
 
-    if (*(u32 *)((u8 *)context + 0x18) != sector) {
-        if (*(u16 *)((u8 *)context + 2) == 1) {
+    if (*(u32 *)((u8 *)arg3 + 0x18) != sector) {
+        if (*(u16 *)((u8 *)arg3 + 2) == 1) {
             for (status = 0;
-                 (u16)status < *(u8 *)((u8 *)object + 0x22);
+                 (u16)status < *(u8 *)((u8 *)arg0 + 0x22);
                  status++) {
-                fn_800B5618(object,
-                            *(void **)((u8 *)context + 8),
-                            *(u32 *)((u8 *)context + 0x18) +
-                                (u32)(u16)status * *(u32 *)((u8 *)object + 0xC),
-                            0, *(u16 *)object);
+                fn_800B5618(arg0,
+                            *(void **)((u8 *)arg3 + 8),
+                            *(u32 *)((u8 *)arg3 + 0x18) +
+                                (u32)(u16)status * *(u32 *)((u8 *)arg0 + 0xC),
+                            0, *(u16 *)arg0);
             }
         }
 
 fetch:
-        status = fn_800B5260(object,
-                             *(void **)((u8 *)context + 8),
-                             sector, 0, *(u16 *)object);
+        status = fn_800B5260(arg0,
+                             *(void **)((u8 *)arg3 + 8),
+                             sector, 0, *(u16 *)arg0);
         if (status == 0x1000) {
             s32 (*callback)(void *) =
-                *(s32 (**)(void *))((u8 *)object + 0x1FC0);
+                *(s32 (**)(void *))((u8 *)arg0 + 0x1FC0);
             if (callback != 0) {
                 s32 callbackResult =
-                    callback(*(void **)((u8 *)object + 0x1F84));
+                    callback(*(void **)((u8 *)arg0 + 0x1F84));
                 if (callbackResult == 0)
                     goto store_sector;
                 if (callbackResult == 1 &&
-                    *(u8 *)((u8 *)object + 0x22) >= 2 &&
-                    retry < *(u8 *)((u8 *)object + 0x22)) {
+                    *(u8 *)((u8 *)arg0 + 0x22) >= 2 &&
+                    retry < *(u8 *)((u8 *)arg0 + 0x22)) {
                     retry++;
-                    sector += *(u32 *)((u8 *)object + 0xC);
+                    sector += *(u32 *)((u8 *)arg0 + 0xC);
                     goto store_sector;
                 }
             }
@@ -7512,19 +7510,19 @@ fetch:
             goto store_sector;
         return status;
     store_sector:
-        *(u32 *)((u8 *)context + 0x18) = sector;
+        *(u32 *)((u8 *)arg3 + 0x18) = sector;
         if (status != 0)
             goto fetch;
     }
 
     {
-        u32 value = *(u32 *)(*(u8 **)((u8 *)context + 8) +
-                             (scaled & (*(u16 *)object - 1)));
+        u32 value = *(u32 *)(*(u8 **)((u8 *)arg3 + 8) +
+                             (scaled & (*(u16 *)arg0 - 1)));
         u32 upper = __rlwinm(value, 8, 8, 15);
         u32 lower = __rlwinm(value, 24, 16, 23);
         upper = __rlwimi(upper, value, 24, 0, 7);
         lower = __rlwimi(lower, value, 8, 24, 31);
-        *output = (upper | lower) & 0x0FFFFFFF;
+        *arg2 = (upper | lower) & 0x0FFFFFFF;
     }
     return 0;
 }
@@ -8720,9 +8718,10 @@ extern "C" void *fn_800B224C(void *fileObj, void *info) {
     return 0;
 }
 
-#pragma opt_pointer_aliasing off
+#pragma optimization_level 3
 extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     union Tok { s32 w[4]; f64 d[2]; };
+    struct Quad { s32 w[4]; };
     Tok cur;
     Tok prev;
     s32 var;
@@ -8767,12 +8766,11 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     ((s32 *)arg1)[0] = ((s32 *)arg0)[0];
     ((s32 *)arg1)[1] = var;
     if (arg2 != 0) {
-        s32 i;
-        for (i = 0; i < 4; i++) ((s32 *)arg2)[i] = prev.w[i];
+        *(Quad *)arg2 = *(Quad *)&prev;
     }
     return 0;
 }
-#pragma opt_pointer_aliasing on
+#pragma optimization_level 4
 extern "C" u8 lbl_802EEEE0[];
 static inline u32 Fn800B25CCWide2(u16 *w) {
     u32 r;
