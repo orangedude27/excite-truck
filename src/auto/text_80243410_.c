@@ -10,17 +10,22 @@ extern s32 lbl_8055F1F0;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* Static initializer for this unit's menu/UI state: reset the control block
+ * fields and set the default alpha/color value. */
 void fn_80243410(void) {
-    s32 v;
-    s32 *p;
+    s32 defaultValue;
+    s32 *entryPtr;
+
     fn_8000D838(&lbl_8055F1E8);
-    p = lbl_80498810 + 1;
+
+    entryPtr = lbl_80498810 + 1;
     lbl_80498810[0] = 0;
-    v = 0x7B;
-    lbl_80498810[1] = v;
+    defaultValue = 0x7B;
+    lbl_80498810[1] = defaultValue;
     lbl_80498810[2] = 0;
     lbl_80498810[3] = 0;
     lbl_80498810[4] = 0;
+
     lbl_8055F1F0 = 0x7F000000;
 }
 #pragma opt_dead_assignments reset
