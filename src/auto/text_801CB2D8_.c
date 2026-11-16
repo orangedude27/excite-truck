@@ -740,10 +740,11 @@ void fn_801CC594(void *arg0) {
 }
 #pragma scheduling on
 
-  void fn_801CC768(void *arg0, float arg1) {
-    if (arg1 != *(float *)((char *)arg0 + 8)) {
-        *(float *)((char *)arg0 + 8) = arg1;
-        *((char *)arg0 + 0x4D) = 1;
+void fn_801CC768(void *object, f32 value) {
+    /* Set this object's float field at +8 to value, flagging +0x4D when it changes. */
+    if (value != *(f32 *)((u8 *)object + 8)) {
+        *(f32 *)((u8 *)object + 8) = value;
+        *(u8 *)((u8 *)object + 0x4D) = 1;
     }
 }
 
