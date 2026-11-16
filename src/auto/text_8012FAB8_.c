@@ -698,7 +698,7 @@ void fn_80130980(char *out, int size, int level, float t) {
     for (p = buf; *p != 0; p++) {
         found = 0;
         for (i = 0; found == 0 && i < 13; i++) {
-            if (tbl.e[i].c == *p) {
+            if (*p == tbl.e[i].c) {
                 time_append_sizefirst(out, size, tbl.e[i].s);
                 found = 1;
             }
