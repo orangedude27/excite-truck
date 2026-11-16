@@ -199,13 +199,14 @@ void fn_80291A1C(void) {
     ((float *)settings)[7] = value;
 }
 #pragma pop
+/* Releases the texture and effect object held by the global sun/flare settings and clears their slots. */
 void fn_80291AC8(void) {
     int *settings = (int *)&lbl_804B4010;
     fn_802CAC54(settings[3]);
     {
-        int next = settings[4];
+        int effect = settings[4];
         settings[3] = -1;
-        fn_802D3A50(next);
+        fn_802D3A50(effect);
     }
     settings[4] = 0;
 }
@@ -512,16 +513,16 @@ extern float lbl_8056449C;
 extern double lbl_805644C8;
 __declspec(section ".data") extern int lbl_804B3EC0;
 void fn_802923EC(float arg0) {
-    register int *table = 0;
+    register int *table;
     register int *settings;
-    register int amount = 0;
+    register int amount;
     register int *entry;
-    register int i = 0;
-    register unsigned int packed = 0;
-    register float value = 0;
+    register int i;
+    register unsigned int packed;
+    register float value;
     if (lbl_8055F75C != 0) {
-        value = lbl_80564480 < arg0 ? arg0 : lbl_80564480;
-        value = value > lbl_80564484 ? lbl_80564484 : value;
+        value = lbl_80564480 < arg0 ? lbl_80564480 : arg0;
+        value = value > lbl_80564484 ? value : lbl_80564484;
         settings = (int *)&lbl_804B4010;
         packed = (unsigned int)settings[6];
         packed &= 0xFFFFFFu;
