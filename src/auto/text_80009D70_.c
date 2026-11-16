@@ -179,10 +179,14 @@ void fn_8000A644(void* arg0, void* arg1) {
 }
 #pragma push
 #pragma scheduling invalid_target
-void fn_8000A688(void (*arg0)(void*), s32 arg1) DECOMP_DONT_INLINE {
-    char sp8[0x20];
-    ((void(*)(void*, s32, void*, s32, ...))fn_801345D8)(sp8, 0x20, &lbl_80558A14, arg1);
-    arg0(sp8);
+/* RealName: FormatCarPathAndCallback */
+/* Build a ".car" path from an index into a temp buffer, then pass it to a callback. */
+void fn_8000A688(void (*callback)(void *), s32 carIndex) DECOMP_DONT_INLINE {
+#define sCarPathFmt lbl_80558A14 /* "%s.car" */
+    char pathBuffer[0x20];
+    ((void (*)(void *, s32, void *, s32, ...))fn_801345D8)(pathBuffer, 0x20, &sCarPathFmt, carIndex);
+    callback(pathBuffer);
+#undef sCarPathFmt
 }
 #pragma pop
 extern void *fn_80131810(const char *);
