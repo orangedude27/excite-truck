@@ -217,10 +217,16 @@ void fn_802C2138(void) {
 void fn_802B52B4(void *);
 #pragma dont_inline on
 void fn_802C217C(void) {
-    fn_802C20DC((int *)&lbl_8055FB50);
-    if (lbl_8055FB54 == 0) return;
-    fn_802B52B4((void *)lbl_8055FB54);
-    lbl_8055FB54 = 0;
+#define roadOpacityTexHandle lbl_8055FB50
+#define roadOpacityTexture lbl_8055FB54
+    /* RealName: ReleaseRoadOpacity - release the road opacity texture handle and
+     * free the texture descriptor object, clearing the descriptor global. */
+    fn_802C20DC((int *)&roadOpacityTexHandle);
+    if (roadOpacityTexture == 0) return;
+    fn_802B52B4((void *)roadOpacityTexture);
+    roadOpacityTexture = 0;
+#undef roadOpacityTexHandle
+#undef roadOpacityTexture
 }
 #pragma dont_inline reset
 void* fn_802C21B8(void) {
@@ -235,13 +241,15 @@ void fn_802C21C0(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802C21DC(int x, int y, unsigned int color) {
-    int *state; short sx; short sy;
     unsigned int lo; unsigned int hi; unsigned int packed;
+    short sx;
+    short sy;
+    register unsigned int *pixels;
     short yCoord;
     short xCoord;
     int height;
     int width;
-    unsigned int *pixels;
+    int *state;
     int index;
     int result;
     if (lbl_8055FB54 != 0) {
