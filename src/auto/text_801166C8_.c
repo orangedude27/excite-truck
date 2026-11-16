@@ -9397,6 +9397,7 @@ void fn_80127434(void) {
 
 #pragma dont_inline on
 void fn_80127440(void* alarm) {
+    /* Periodic alarm callback: drain home-button work (fn_802ECC74), then dispatch pending background tasks (fn_80127F94). */
     fn_80127F94(fn_802ECC74(alarm));
 }
 #pragma dont_inline reset
