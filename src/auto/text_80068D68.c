@@ -21747,43 +21747,84 @@ flow:
 }
 
 extern u8 lbl_80319514[],lbl_80319540[];
-void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
-    void *mcb = *(void **)((u8 *)arg0 + 0x6C);
-    s32 signals = 0;
-    u8 old_signals;
+void port_rfc_closed(struct t_port_info *p_port, u8 reason) {
+    /* BTE port_rfc.c: the RFCOMM connection under this port is gone.  An
+     * OPENING server port is just discarded; an open port reports line-status
+     * and modem-signal changes to the event callback, then the close reason to
+     * the close callback, and releases the port.
+     * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.)
+     *   tPORT: state 0x02, is_server 0x0C, dlci 0x0D, line_status 0x0F,
+     *   peer_ctrl 0x5F, rfc_state 0x68, event mask 0x88, callbacks 0x8C/0x90. */
+    #define PRC_STATE       0x02
+    #define PRC_IS_SERVER   0x0C
+    #define PRC_DLCI        0x0D
+    #define PRC_LINE_STATUS 0x0F
+    #define PRC_PEER_CTRL   0x5F
+    #define PRC_RFC_STATE   0x68
+    #define PRC_EV_MASK     0x88
+    #define PRC_EV_CBACK    0x8C
+    #define PRC_CLOSE_CBACK 0x90
+    #define PRC_MCB_DLCI    0x24
+    #define PRC_TRACE       0x414
+    #define PRC_OPENING     1
+    #define PRC_CLOSING     3
+    #define PRC_CLOSED      0
+    #define PRC_LINE_DISC   0x10
+    #define PRC_SIGNAL_DISC 0x8000
 
-    if (*((u8 *)arg0 + 2) == 1 && *((u8 *)arg0 + 0xC)) {
-        if (lbl_803C4828[0x414] >= 4)
+    void *p_mcb = *(void **)((u8 *)p_port + PORT_MCB);
+    s32 signals = 0;
+    u8 oldSignals;
+
+    if (*((u8 *)p_port + PRC_STATE) == PRC_OPENING && *((u8 *)p_port + PRC_IS_SERVER)) {
+        if (rfc_cb[PRC_TRACE] >= 4)
             fn_8007093C(0x90003, lbl_80319514);
-        rfc_port_timer_stop(arg0);
-        *((u8 *)arg0 + 0x68) = 0;
-        if (mcb) {
-            *((u8 *)mcb + *((u8 *)arg0 + 0xD) + 0x24) = 0;
-            rfc_check_mcb_active(mcb);
-            *(void **)((u8 *)arg0 + 0x6C) = 0;
+        rfc_port_timer_stop(p_port);
+        *((u8 *)p_port + PRC_RFC_STATE) = 0;
+        if (p_mcb) {
+            *((u8 *)p_mcb + *((u8 *)p_port + PRC_DLCI) + PRC_MCB_DLCI) = 0;
+            rfc_check_mcb_active(p_mcb);
+            *(void **)((u8 *)p_port + PORT_MCB) = 0;
         }
-        *((u8 *)arg0 + 0xD) &= 0xFE;
+        *((u8 *)p_port + PRC_DLCI) &= 0xFE;
         return;
     }
-    if (*((u8 *)arg0 + 2) != 3 && *((u8 *)arg0 + 2) != 0) {
-        *((u8 *)arg0 + 0xF) |= 0x10;
-        old_signals = *((u8 *)arg0 + 0x5F);
-        *((u8 *)arg0 + 0x5F) &= ~(0x1 | 0x2 | 0x8);
-        signals |= port_get_signal_changes(arg0, old_signals, *((u8 *)arg0 + 0x5F));
-        if (*(u32 *)((u8 *)arg0 + 0x88) & 0x8000)
-            signals |= 0x8000;
+    if (*((u8 *)p_port + PRC_STATE) != PRC_CLOSING && *((u8 *)p_port + PRC_STATE) != PRC_CLOSED) {
+        *((u8 *)p_port + PRC_LINE_STATUS) |= PRC_LINE_DISC;
+        oldSignals = *((u8 *)p_port + PRC_PEER_CTRL);
+        *((u8 *)p_port + PRC_PEER_CTRL) &= ~(0x1 | 0x2 | 0x8);
+        signals |= port_get_signal_changes(p_port, oldSignals, *((u8 *)p_port + PRC_PEER_CTRL));
+        if (*(u32 *)((u8 *)p_port + PRC_EV_MASK) & PRC_SIGNAL_DISC)
+            signals |= PRC_SIGNAL_DISC;
     }
-    if (lbl_803C4828[0x414] >= 4)
+    if (rfc_cb[PRC_TRACE] >= 4)
         ((void (*)(u32, const char *, u8, s32))fn_8007096C)(
-            0x90003, (const char *)lbl_80319540, *((u8 *)arg0 + 2), signals);
-    if (*(void **)((u8 *)arg0 + 0x8C) && signals)
-        ((void (*)(s32, u8))*(void **)((u8 *)arg0 + 0x8C))(
-            signals, *((u8 *)arg0));
-    if (*(void **)((u8 *)arg0 + 0x90))
-        ((void (*)(s32, u8))*(void **)((u8 *)arg0 + 0x90))(
-            arg1, *((u8 *)arg0));
-    *((u8 *)arg0 + 0x68) = 0;
-    port_release_port(arg0);
+            0x90003, (const char *)lbl_80319540, *((u8 *)p_port + PRC_STATE), signals);
+    if (*(void **)((u8 *)p_port + PRC_EV_CBACK) && signals)
+        ((void (*)(s32, u8))*(void **)((u8 *)p_port + PRC_EV_CBACK))(
+            signals, *((u8 *)p_port));
+    if (*(void **)((u8 *)p_port + PRC_CLOSE_CBACK))
+        ((void (*)(s32, u8))*(void **)((u8 *)p_port + PRC_CLOSE_CBACK))(
+            reason, *((u8 *)p_port));
+    *((u8 *)p_port + PRC_RFC_STATE) = 0;
+    port_release_port(p_port);
+
+    #undef PRC_STATE
+    #undef PRC_IS_SERVER
+    #undef PRC_DLCI
+    #undef PRC_LINE_STATUS
+    #undef PRC_PEER_CTRL
+    #undef PRC_RFC_STATE
+    #undef PRC_EV_MASK
+    #undef PRC_EV_CBACK
+    #undef PRC_CLOSE_CBACK
+    #undef PRC_MCB_DLCI
+    #undef PRC_TRACE
+    #undef PRC_OPENING
+    #undef PRC_CLOSING
+    #undef PRC_CLOSED
+    #undef PRC_LINE_DISC
+    #undef PRC_SIGNAL_DISC
 }
 
 extern char lbl_80319570[];
