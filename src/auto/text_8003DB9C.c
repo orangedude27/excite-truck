@@ -5501,6 +5501,9 @@ void GXSetBlendMode(s32 mode, s32 srcFactor, s32 dstFactor, s32 logicOp) {
     *(volatile unsigned short *)((unsigned char *)gxData + 2) = 0;
 }
 
+/* Set the color-update BP register: pack the enable bit into the word shadowed
+ * at __GXData+0x220, send it (with command 0x61) to the write-gather FIFO, and
+ * clear the pending-write flag at __GXData+2. */
 void GXSetColorUpdate(s32 enable) {
     union {
         unsigned int value;
