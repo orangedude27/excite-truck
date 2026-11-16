@@ -1399,13 +1399,20 @@ __declspec(section ".data") extern int lbl_8033AA90, lbl_8033AA18, lbl_8033AA24;
 #pragma push
 #pragma processor 750
 void fn_801F3D34(void *arg0, int arg1, void *arg2) {
-    float temp_f31; void *temp_r31; int temp_r30; void *temp_r3; float temp_f2; float temp_f1; float temp_f0;;
+    float temp_f31;
+    void *temp_r31;
+    int temp_r30;
+    void *temp_r3;
+    float temp_f2;
+    float temp_f1;
+    float temp_f0;
     if (*(void **)((char *)arg0 + 4) == 0) {
-        temp_r31 = fn_801284F8(12, &lbl_8055B158);
+        temp_r31 = fn_801284F8(0xC, &lbl_8055B158);
         if (temp_r31 != 0) {
             *(void **)temp_r31 = &lbl_8033AA90;
             temp_r3 = fn_8012850C(0x190, &lbl_8033AA18);
-            *(void **)((char *)temp_r31 + 4) = fn_8002F37C(temp_r3, fn_801F3E60, 0, 24, 16);
+            *(void **)((char *)temp_r31 + 4) =
+                fn_8002F37C(temp_r3, fn_801F3E60, 0, 0x18, 0x10);
             *(int *)((char *)temp_r31 + 8) = 0;
         }
         *(void **)((char *)arg0 + 4) = temp_r31;
@@ -1414,11 +1421,11 @@ void fn_801F3D34(void *arg0, int arg1, void *arg2) {
     temp_r31 = *(void **)((char *)arg0 + 4);
     temp_f31 = *(float *)((char *)arg2 + 0x30);
     temp_r30 = *(int *)((char *)arg2 + 0x2C);
-    if (*(int *)((char *)temp_r31 + 8) >= 16) {
+    if (*(int *)((char *)temp_r31 + 8) >= 0x10) {
         fn_802E317C((const void *)&lbl_8033AA24);
     }
     temp_r3 = *(void **)((char *)temp_r31 + 4);
-    temp_r3 = (char *)temp_r3 + *(int *)((char *)temp_r31 + 8) * 24;
+    temp_r3 = (char *)temp_r3 + *(int *)((char *)temp_r31 + 8) * 0x18;
     temp_f2 = *(float *)((char *)arg2 + 0x20);
     *(int *)temp_r3 = temp_r30;
     temp_f1 = *(float *)((char *)arg2 + 0x24);
@@ -1501,25 +1508,27 @@ extern int fn_802C9900(float);
 extern int fn_802C9904(void);
 #pragma push
 #pragma processor 750
-void fn_801F3F8C(void *arg0, void *arg1) {
-    float lower = 0.0f;
-    float upper = 1.0f;
-    while (arg1 != 0) {
-        int index = *(int *)((char *)arg1 + 0x14);
-        if (index >= 0 && index < 0x30) {
-            char *entry = *(char **)((char *)arg0 + 4) + index * 0x18;
-            float value = fn_802C88D4(entry);
+void fn_801F3F8C(void *table, void *node) {
+    /* For each listed model instance, compute a metric; when it passes the entry's
+       threshold, draw the instance with a clamped alpha, then reset the draw state. */
+    float minAlpha = 0.0f;
+    float maxAlpha = 1.0f;
+    while (node != 0) {
+        int entryIndex = *(int *)((char *)node + 0x14);
+        if (entryIndex >= 0 && entryIndex < 0x30) {
+            char *entry = *(char **)((char *)table + 4) + entryIndex * 0x18;
+            float metric = fn_802C88D4(entry);
             float threshold = *(float *)(entry + 0x14);
-            if (value > threshold) {
-                float amount = *(float *)(entry + 0x10) * (value - threshold);
-                if (upper < amount) amount = upper;
-                if (amount > lower) amount = amount; else amount = lower;
-                fn_802C9900(amount);
+            if (metric > threshold) {
+                float alpha = *(float *)(entry + 0x10) * (metric - threshold);
+                if (maxAlpha < alpha) alpha = maxAlpha;
+                if (alpha > minAlpha) alpha = alpha; else alpha = minAlpha;
+                fn_802C9900(alpha);
                 fn_802C7040(*(int *)(entry + 0xC));
                 fn_802C9904();
             }
         }
-        arg1 = *(void **)((char *)arg1 + 0xC);
+        node = *(void **)((char *)node + 0xC);
     }
 }
 
@@ -1879,14 +1888,14 @@ void fn_801F49F8(void *arg0, int arg1) {
     float minimum;
     float maximum;
     float value;
-    entry = (char *)arg0;
     next = (char *)arg0 + 4;
+    entry = (char *)arg0;
     count = 0;
     offset = 0;
     i = 0;
     while (i < *(int *)((char *)arg0 + 0x544)) {
         if (fn_802CDB20(arg1, *(int *)(entry + 0x1C)) != 0) {
-            selected[offset / 4] = next;
+            selected[offset >> 2] = next;
             count++;
             offset += 4;
         }
