@@ -1180,14 +1180,15 @@ extern "C" void fn_800D76F4(void *holder, int valueA, int valueB) {
     if (target) target->forward(valueA, valueB, 1);
 }
 
-extern "C" void fn_800D7718(void *arg0) {
-    struct Obj {
+extern "C" void fn_800D7718(void *holder) {
+    // Invoke virtual slot 0x10 on the layout interface object held at holder+0x10, if one exists.
+    struct LayoutIf {
         virtual void v0();
         virtual void v1();
-        virtual void v2();
+        virtual void invoke();
     };
-    Obj* obj = *(Obj**)((char*)arg0 + 0x10);
-    if (obj) obj->v2();
+    LayoutIf* target = *(LayoutIf**)((char*)holder + 0x10);
+    if (target) target->invoke();
 }
 
 extern "C" void fn_800D7738(void* arg0) {
