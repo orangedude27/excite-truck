@@ -919,16 +919,18 @@ int fn_801A8E68(void *trigger) {
 #pragma dont_inline reset
 #pragma pop
 #define SUPPORTED_TYPE_MASK 0x2D /* bit (type-1) set for each supported binding/subobject type: 1, 3, 4, 6 */
-int fn_801A8EE4(unsigned int *arg0) {
-    unsigned int value = *arg0 - 1;
-    int result = 0;
-    if (value > 5)
+int fn_801A8EE4(unsigned int *type) {
+    /* Return 1 if the 1-based input/subobject type at `type` is one of the
+     * supported types selected by SUPPORTED_TYPE_MASK; 0 otherwise. */
+    unsigned int typeIndex = *type - 1;
+    int isValid = 0;
+    if (typeIndex > 5)
         goto done;
-    if (!((1U << value) & 0x2D))
+    if (!((1U << typeIndex) & SUPPORTED_TYPE_MASK))
         goto done;
-    result = 1;
+    isValid = 1;
 done:
-    return result;
+    return isValid;
 }
 #pragma push
 #pragma processor 750
