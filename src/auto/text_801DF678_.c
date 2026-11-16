@@ -195,41 +195,68 @@ extern void fn_80148100(void *);
 #pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_801DFFB4(void) {
-    register int index;
-    register float f31;
-    register float f30;
-    float x;
-    float t;
-    float ratio;
-    float one;
-    register void *object;
+    /* Renders the "whiteout" screen flash: derive a 0..1 opacity from how long
+     * ago the event fired, write white-with-alpha into the named menu pane,
+     * set its width and refresh it, guarded on the active game/subsystem state.
+     * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.)
+     *   WO_DURATION/WO_DURATION_DIV = 1.5/3 -> 0.5s half-window,
+     *   WO_MIN_ALPHA/WO_MAX_ALPHA = 0/1, WO_ALPHA_SCALE = 255,
+     *   WO_FADE_SCALE = 0.5, WO_TIME_OFFSET = 0.1, WO_REF_WIDTH = 640. */
+    #define WO_DURATION      lbl_8055AE40
+    #define WO_DURATION_DIV  lbl_80562C18
+    #define WO_MIN_ALPHA     lbl_80562C1C
+    #define WO_MAX_ALPHA     lbl_80562C20
+    #define WO_ALPHA_SCALE   lbl_80562C28
+    #define WO_FADE_SCALE    lbl_80562C30
+    #define WO_TIME_OFFSET   lbl_80562C4C
+    #define WO_EPSILON       lbl_80558DC4
+    #define WO_REF_WIDTH     lbl_8055CFF0
+
+    register int subjectIndex;
+    register float halfWindow;
+    register float remaining;
+    float temp;
+    float fadeStart;
+    float fade;
+    float opacity;
+    register void *whiteoutPane;
     void *manager;
-    void *(*fn)(void *, const char *);
+    void *(*findFn)(void *, const char *);
 
     manager = lbl_8055EA04;
-    index = fn_801E866C(0);
-    if (fn_80179650() == 1 && fn_801B8570(index) && !fn_801769F8() && !fn_80161BB8()) {
-        f31 = lbl_8055AE40 / lbl_80562C18;
-        x = fn_801E7E18() - *(float *)((char *)manager + index * 0x1C + 8);
-        x = f31 - x;
-        x = lbl_80562C4C + x;
-        f30 = lbl_80562C1C;
-        f30 = (f30 > x) ? f30 : x;
+    subjectIndex = fn_801E866C(0);
+    if (fn_80179650() == 1 && fn_801B8570(subjectIndex) && !fn_801769F8() && !fn_80161BB8()) {
+        halfWindow = WO_DURATION / WO_DURATION_DIV;
+        temp = fn_801E7E18() - *(float *)((char *)manager + subjectIndex * 0x1C + 8);
+        temp = halfWindow - temp;
+        temp = WO_TIME_OFFSET + temp;
+        remaining = WO_MIN_ALPHA;
+        remaining = (remaining > temp) ? remaining : temp;
 
-        if (!((float)__fabs((double)f30) <= lbl_80558DC4)) {
-            object = *(void **)((char *)manager + 0xE4);
-            object = ((MenuResource_801DFFB4 *)object)->find(lbl_80339738);
-            t = f31 * lbl_80562C30;
-            one = lbl_80562C20;
-            ratio = (f30 - t) / (lbl_80562C4C - t);
-            one = (one < ratio) ? one : ratio;
-            one = (one > lbl_80562C1C) ? one : lbl_80562C1C;
-            *(int *)((char *)object + 0x18) = ((int)(one * lbl_80562C28 + lbl_80562C1C) << 24) | 0xFFFFFF;
-            x = fn_802C9A50();
-            *(float *)((char *)object + 0x10) = (float)lbl_8055CFF0 / x;
-            fn_80148100(object);
+        if (!((float)__fabs((double)remaining) <= WO_EPSILON)) {
+            whiteoutPane = *(void **)((char *)manager + 0xE4);
+            whiteoutPane = ((MenuResource_801DFFB4 *)whiteoutPane)->find(lbl_80339738);
+            fadeStart = halfWindow * WO_FADE_SCALE;
+            opacity = WO_MAX_ALPHA;
+            fade = (remaining - fadeStart) / (WO_TIME_OFFSET - fadeStart);
+            opacity = (opacity < fade) ? opacity : fade;
+            opacity = (opacity > WO_MIN_ALPHA) ? opacity : WO_MIN_ALPHA;
+            *(int *)((char *)whiteoutPane + 0x18) = ((int)(opacity * WO_ALPHA_SCALE + WO_MIN_ALPHA) << 24) | 0xFFFFFF;
+            temp = fn_802C9A50();
+            *(float *)((char *)whiteoutPane + 0x10) = (float)WO_REF_WIDTH / temp;
+            fn_80148100(whiteoutPane);
         }
     }
+
+    #undef WO_DURATION
+    #undef WO_DURATION_DIV
+    #undef WO_MIN_ALPHA
+    #undef WO_MAX_ALPHA
+    #undef WO_ALPHA_SCALE
+    #undef WO_FADE_SCALE
+    #undef WO_TIME_OFFSET
+    #undef WO_EPSILON
+    #undef WO_REF_WIDTH
 }
 #pragma pop
 #pragma cplusplus on
