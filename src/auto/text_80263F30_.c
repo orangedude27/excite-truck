@@ -930,11 +930,14 @@ void fn_802655A4(void *arg0) {
 
 int fn_802655C8(int arg0, int arg1) {
     extern void *lbl_8055F44C;
+#define currentObject lbl_8055F44C
+    /* Destructor-like cleanup: clear current object pointer and free if requested. */
     if (arg0 != 0) {
-        lbl_8055F44C = 0;
+        currentObject = 0;
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
+#undef currentObject
 }
 
 typedef float f32;
@@ -977,7 +980,20 @@ __declspec(section ".sdata") extern char lbl_8055C498[];
 __declspec(section ".sdata") extern char lbl_8055C4A0[];
 #pragma push
 #pragma use_lmw_stmw off
-int fn_802656C8(void *arg0) {
+#pragma cplusplus on
+extern "C" int fn_802656C8(void *arg0) {
+    struct ValEntry { virtual const char *getName(); };
+    struct Deletable { virtual void destroy(int); };
+    struct ValList {
+        virtual void f08(); virtual void f0C(); virtual void f10();
+        virtual int find(const char *);
+        virtual void f18(); virtual void f1C(); virtual void f20(); virtual void f24();
+        virtual void f28(); virtual void f2C(); virtual void f30(); virtual void f34();
+        virtual void f38(); virtual void f3C(); virtual void f40(); virtual void f44();
+        virtual void f48(); virtual void f4C(); virtual void f50(); virtual void f54();
+        virtual void f58(); virtual void f5C();
+        virtual void *getItem(int);
+    };
     extern unsigned char lbl_80498F78[];
     int sp[5];
     int count = 0;
@@ -986,36 +1002,34 @@ int fn_802656C8(void *arg0) {
     int result;
     void *item;
     void *list;
-    int n, idx;
 
-    while ((item = ((void *(*)(void *, int))(*(void ***)arg0)[0x60 / 4])(arg0, i)) != 0) {
-        if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_8055C498) == 0) {
+    while ((item = ((ValList *)arg0)->getItem(i)) != 0) {
+        if (stricmp(((ValEntry *)item)->getName(), lbl_8055C498) == 0) {
             count++;
         }
         i++;
     }
-    n = count + 5;
-    fn_8012850C(n * 0x14 + 0x10, lbl_803464B4);
-    list = fn_8002F37C(fn_802640A0, 0, 0x14, n);
-    idx = 0;
+    i = count + 5;
+    /* new CreditItem[n]: __construct_new_array(alloc(n*0x14+0x10), ctor, 0, 0x14, n) */
+    list = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(
+        fn_8012850C(i * 0x14 + 0x10, lbl_803464B4), fn_802640A0, 0, 0x14, i);
+    count = 0;
     k = 0;
-    while ((item = ((void *(*)(void *, int))(*(void ***)arg0)[0x60 / 4])(arg0, k)) != 0) {
-        if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_8055C498) == 0) {
-            void *dst = (char *)list + idx * 0x14;
-            idx++;
-            fn_802640C4(dst, item);
+    while ((i = (int)((ValList *)arg0)->getItem(k)) != 0) {
+        if (stricmp(((ValEntry *)i)->getName(), lbl_8055C498) == 0) {
+            fn_802640C4((char *)list + count++ * 0x14, (void *)i);
         }
         k++;
     }
-    fn_802643B8((char *)list + idx++ * 0x14);
-    fn_80264404((char *)list + idx++ * 0x14);
-    fn_80264444((char *)list + idx++ * 0x14);
-    fn_80264484((char *)list + idx * 0x14);
+    fn_802643B8((char *)list + count++ * 0x14);
+    fn_80264404((char *)list + count++ * 0x14);
+    fn_80264444((char *)list + count++ * 0x14);
+    fn_80264484((char *)list + count * 0x14);
     sp[0] = 0; sp[1] = 0; sp[2] = 0; sp[3] = 0; sp[4] = 0;
-    sp[0] = ((int (*)(void *, char *))(*(void ***)arg0)[0x14 / 4])(arg0, lbl_8055C4A0);
+    sp[0] = ((ValList *)arg0)->find(lbl_8055C4A0);
     sp[1] = (int)list;
     fn_80236910(lbl_803464C8);
-    result = fn_802146BC(sp, -999, -999, 1);
+    result = ((int (*)(int *, int, int, int))fn_802146BC)(sp, -999, -999, 1);
     if (list != 0) {
         fn_80128670((char *)list - 0x10);
     }
@@ -1023,14 +1037,14 @@ int fn_802656C8(void *arg0) {
     while (j < *(int *)(lbl_80498F78 + 4)) {
         void *p = (*(void ***)lbl_80498F78)[j];
         if (p != 0) {
-            ((void (*)(void *, int))(*(void ***)p)[2])(p, 1);
+            ((Deletable *)p)->destroy(1);
         }
         j++;
     }
     *(int *)(lbl_80498F78 + 4) = 0;
     return (unsigned)((-1 - result) | (result + 1)) >> 31;
 }
-#pragma pop
+#pragma cplusplus off
 extern char lbl_8055C4A8[4];
 extern void fn_80236954(void *queue);
 void fn_802658FC(void) {
