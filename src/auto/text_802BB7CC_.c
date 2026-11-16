@@ -41,11 +41,12 @@ int fn_802BB87C(int path) {
 }
 #pragma pop
 
-void fn_802BB8E4(int* arg0) {
-    int temp_r0 = *arg0;
-    if (temp_r0 != -2) {
-        fn_802CAC54(temp_r0);
-        *arg0 = -2;
+void fn_802BB8E4(int *handlePtr) {
+    /* Releases the handle if set, then marks it as invalid (-2). */
+    int handle = *handlePtr;
+    if (handle != -2) {
+        fn_802CAC54(handle);
+        *handlePtr = -2;
     }
 }
 
