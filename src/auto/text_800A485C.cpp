@@ -6902,20 +6902,21 @@ extern "C" s32 VFiPFFAT_TraceClustersChain(void *volume, s32 cluster, s32 *outEn
     return result & ((-result | result) >> 31);
 }
 
-extern "C" s32 fn_800AF4F0(void *arg0, s32 arg1) {
-    void *r5;
+extern "C" s32 fn_800AF4F0(void *iter, s32 dirState) {
+    void *scratch;
 
-    r5 = *(void **)((u8 *)arg0 + 0x30);
-    *(s32 *)((u8 *)arg0 + 8) = arg1;
-    *(s32 *)arg0 = 1;
-    if (r5 != 0) {
-        *(s32 *)((u8 *)r5 + 8) = 0;
+    /* Rewind this directory iterator to dirState, keeping its linked scratch buffer. */
+    scratch = *(void **)((u8 *)iter + 0x30);
+    *(s32 *)((u8 *)iter + 8) = dirState;
+    *(s32 *)iter = 1;
+    if (scratch != 0) {
+        *(s32 *)((u8 *)scratch + 8) = 0;
     }
-    *(s32 *)((u8 *)arg0 + 0x18) = 0;
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
-    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+    *(s32 *)((u8 *)iter + 0x18) = 0;
+    *(s32 *)((u8 *)iter + 0x14) = 0;
+    *(s32 *)((u8 *)iter + 0xC) = 0;
+    *(s32 *)((u8 *)iter + 0x10) = 0;
+    *(s32 *)((u8 *)iter + 0x1C) = 0;
     return 0;
 }
 
@@ -7460,48 +7461,53 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
-    struct StatusWrap { s32 v; } sw;
-    s32 &status = sw.v;
-    u32 sector;
+    struct SSector { u32 v; } sectorStorage;
+    struct SScaled { u32 v; } scaledStorage;
+    u32 &sector = sectorStorage.v;
     u32 retry;
-    u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
-    u32 scaled = (u32)arg1 * 4;
-    sector = (u16)(*(u32 *)((u8 *)arg0 + 0x28) +
-                       (scaled >> *(u8 *)((u8 *)arg0 + 0x20)));
+    s32 status;
+    void *object = arg0;
+    u32 *output = arg2;
+    void *context = arg3;
+    u16 flags = *(u16 *)((u8 *)object + 0x18);
+    u32 &scaled = scaledStorage.v;
+    scaled = (u32)arg1 * 4;
+    sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
+                       (scaled >> *(u8 *)((u8 *)object + 0x20)));
     retry = 1;
     if (flags & 0x80)
         retry = flags & 7;
 
-    if (*(u32 *)((u8 *)arg3 + 0x18) != sector) {
-        if (*(u16 *)((u8 *)arg3 + 2) == 1) {
+    if (*(u32 *)((u8 *)context + 0x18) != sector) {
+        if (*(u16 *)((u8 *)context + 2) == 1) {
             for (status = 0;
-                 (u16)status < *(u8 *)((u8 *)arg0 + 0x22);
+                 (u16)status < *(u8 *)((u8 *)object + 0x22);
                  status++) {
-                fn_800B5618(arg0,
-                            *(void **)((u8 *)arg3 + 8),
-                            *(u32 *)((u8 *)arg3 + 0x18) +
-                                (u32)(u16)status * *(u32 *)((u8 *)arg0 + 0xC),
-                            0, *(u16 *)arg0);
+                fn_800B5618(object,
+                            *(void **)((u8 *)context + 8),
+                            *(u32 *)((u8 *)context + 0x18) +
+                                (u32)(u16)status * *(u32 *)((u8 *)object + 0xC),
+                            0, *(u16 *)object);
             }
         }
 
 fetch:
-        status = fn_800B5260(arg0,
-                             *(void **)((u8 *)arg3 + 8),
-                             sector, 0, *(u16 *)arg0);
+        status = fn_800B5260(object,
+                             *(void **)((u8 *)context + 8),
+                             sector, 0, *(u16 *)object);
         if (status == 0x1000) {
             s32 (*callback)(void *) =
-                *(s32 (**)(void *))((u8 *)arg0 + 0x1FC0);
+                *(s32 (**)(void *))((u8 *)object + 0x1FC0);
             if (callback != 0) {
                 s32 callbackResult =
-                    callback(*(void **)((u8 *)arg0 + 0x1F84));
+                    callback(*(void **)((u8 *)object + 0x1F84));
                 if (callbackResult == 0)
                     goto store_sector;
                 if (callbackResult == 1 &&
-                    *(u8 *)((u8 *)arg0 + 0x22) >= 2 &&
-                    retry < *(u8 *)((u8 *)arg0 + 0x22)) {
+                    *(u8 *)((u8 *)object + 0x22) >= 2 &&
+                    retry < *(u8 *)((u8 *)object + 0x22)) {
                     retry++;
-                    sector += *(u32 *)((u8 *)arg0 + 0xC);
+                    sector += *(u32 *)((u8 *)object + 0xC);
                     goto store_sector;
                 }
             }
@@ -7510,19 +7516,19 @@ fetch:
             goto store_sector;
         return status;
     store_sector:
-        *(u32 *)((u8 *)arg3 + 0x18) = sector;
+        *(u32 *)((u8 *)context + 0x18) = sector;
         if (status != 0)
             goto fetch;
     }
 
     {
-        u32 value = *(u32 *)(*(u8 **)((u8 *)arg3 + 8) +
-                             (scaled & (*(u16 *)arg0 - 1)));
+        u32 value = *(u32 *)(*(u8 **)((u8 *)context + 8) +
+                             (scaled & (*(u16 *)object - 1)));
         u32 upper = __rlwinm(value, 8, 8, 15);
         u32 lower = __rlwinm(value, 24, 16, 23);
         upper = __rlwimi(upper, value, 24, 0, 7);
         lower = __rlwimi(lower, value, 8, 24, 31);
-        *arg2 = (upper | lower) & 0x0FFFFFFF;
+        *output = (upper | lower) & 0x0FFFFFFF;
     }
     return 0;
 }
@@ -18011,7 +18017,7 @@ extern "C" s32 fn_800C4E5C(s32 arg0, void *arg1) {
 }
 #pragma pop
 extern "C" void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
-    u32 i;
+    s32 i;
     for (i = 0; i < 4; i++) {
         s32 b0 = arg1[0]; s32 a0 = arg0[0];
         arg0[0] = b0 + a0; arg1[0] = (s32)(((s64)(a0 - b0) * arg2[0]) >> 24);
