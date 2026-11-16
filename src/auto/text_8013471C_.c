@@ -423,6 +423,7 @@ f32 fn_80134D20(void) {
 #undef AI_BASE_NORMAL
 }
   
+/* Report extra layout units: this build always answers 0; the config word read via fn_801769A8 is ignored. */
 s32 fn_80134D54(void) {
     fn_801769A8();
     return 0;
