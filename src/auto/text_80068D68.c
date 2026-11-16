@@ -6026,6 +6026,11 @@ u8 fn_80073E5C(u8 *bd_addr) {
     return deleteResult == 0;
 }
 
+/* Event code posted by this no-payload BTA device-manager request, and the
+ * helper that forwards a GKI buffer to the BTA task. */
+#define BTA_DM_API_REQUEST_EVT 0x10C
+#define bta_sys_sendmsg         fn_80071450
+
 void fn_80073EA4(void) {
     s16 *buf;
 
