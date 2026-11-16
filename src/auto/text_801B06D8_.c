@@ -1284,14 +1284,15 @@ extern "C" void fn_801B1FB4(void *node, s32 paramA, s32 paramB, s32 *outResult) 
     }
     ((DeityNodeQuery *)gPrimaryObject)->queryNode(paramA, paramB, *(s32 *)((u8 *)node + 0x60), (u8 *)node + 0x7C, outResult);
 }
-#pragma cplusplus off
 #pragma cplusplus on
-extern "C" void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    *arg3 = 0;
+extern "C" void fn_801B1FEC(void *deitySlot, s32 nodeIndex, s32 value, s32 *result) {
+    /* Ask the active deity/AI-truck controller to evaluate a track node for the
+     * given 0x80-byte deity slot, returning its outcome through *result. */
+    *result = 0;
     if (lbl_8055E68C == 0) {
         return;
     }
-    ((Dummy_801B1FEC *)lbl_8055E68C)->func(arg1, arg2, *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C, arg3);
+    ((DeityNodeEvaluator *)lbl_8055E68C)->evaluate(nodeIndex, value, *(s32 *)((u8 *)deitySlot + 0x60), (u8 *)deitySlot + 0x7C, result);
 }
 #pragma cplusplus off
 
