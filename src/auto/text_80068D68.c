@@ -8158,7 +8158,6 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
     u16 supervision_timeout;
     u32 (*callback)(void *);
     u32 trace_level;
-    s32 r;
 
     if (bd_addr != NULL)
         addr = bd_addr;
@@ -8167,17 +8166,22 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
 
     entry = lbl_803C0F78 + 0x34;
     i = 0;
-loop1:
-    if (entry[0x119] != 0) {
-        r = memcmp(entry + 8, addr, 6);
-        if (r != 0) goto next1;
-        goto found1;
+    for (;;) {
+        if (entry[0x119] != 0) {
+            switch (memcmp(entry + 8, addr, 6)) {
+            default: goto next1;
+            case 0: break;
+            }
+            goto found1;
+        }
+    next1:
+        i++;
+        entry += 0x11C;
+        if (i >= 4) {
+            entry = NULL;
+            break;
+        }
     }
-next1:
-    i++;
-    entry += 0x11C;
-    if (i < 4) goto loop1;
-    entry = NULL;
 found1:
 
     buffer = lbl_803C0F78 + 0x624;
@@ -8195,17 +8199,22 @@ found1:
         supervision_timeout = *(u16 *)(entry + 0x10E);
         other = lbl_803C0F78 + 0x34;
         j = 0;
-loop2:
-        if (other[0x119] != 0) {
-            r = memcmp(other + 8, entry + 8, 6);
-            if (r != 0) goto next2;
-            goto found2;
+        for (;;) {
+            if (other[0x119] != 0) {
+                switch (memcmp(other + 8, entry + 8, 6)) {
+                default: goto next2;
+                case 0: break;
+                }
+                goto found2;
+            }
+        next2:
+            j++;
+            other += 0x11C;
+            if (j >= 4) {
+                other = NULL;
+                break;
+            }
         }
-next2:
-        j++;
-        other += 0x11C;
-        if (j < 4) goto loop2;
-        other = NULL;
 found2:
         if (other != NULL) {
             *(u16 *)(other + 0x10E) = supervision_timeout;
@@ -11317,50 +11326,52 @@ void btm_remove_sco_links(BD_ADDR bd_addr) {
     }
 }
 
-void btm_sco_removed(u16 handle, u8 packet_types) {
-    u32 count = 0;
-    u8 *p;
-    s32 i;
+void btm_sco_removed(u16 hci_handle, u8 reason) {
+    /* Called when an SCO connection is removed: record the disconnect reason, relax ACL packet
+       types if few SCO links remain, then clear the matching connection entry and fire its callback. */
+    u32 activeCount = 0;
+    u8 *conn;
+    s32 index;
     s32 state;
-    u8 *base = lbl_803C0F78;
-    *(volatile u16 *)(base + 0x18F6) = packet_types;
-    switch (*(volatile u16 *)(base + 0x185C)) {
+    u8 *btmCb = lbl_803C0F78;
+    *(volatile u16 *)(btmCb + 0x18F6) = reason;
+    switch (*(volatile u16 *)(btmCb + 0x185C)) {
     case 2:
     case 3:
     case 4:
     case 5:
     case 6:
-        count++;
+        activeCount++;
         break;
     }
-    switch (*(volatile u16 *)(base + 0x1890)) {
+    switch (*(volatile u16 *)(btmCb + 0x1890)) {
     case 2:
     case 3:
     case 4:
     case 5:
     case 6:
-        count++;
+        activeCount++;
         break;
     }
-    switch (*(volatile u16 *)(base + 0x18C4)) {
+    switch (*(volatile u16 *)(btmCb + 0x18C4)) {
     case 2:
     case 3:
     case 4:
     case 5:
     case 6:
-        count++;
+        activeCount++;
         break;
     }
-    if (!((u8)count > 1U)) btm_chg_all_acl_pkt_types(FALSE);
-    p = lbl_803C0F78 + 0x1854;
-    for (i = 0; i < 3; i++, p += 0x34) {
-        state = *(u16 *)(p + 8);
-        if (state && (u32)state != 1U && *(u16 *)(p + 0xA) == handle) {
-            *(u16 *)(p + 8) = 0;
-            *(u16 *)(p + 0xA) = 0xFFFF;
-            p[0xD] = 0;
-            *(u32 *)(p + 0x10) = 0;
-            ((void (*)(u16))*(u32 *)(p + 4))(i);
+    if (!((u8)activeCount > 1U)) btm_chg_all_acl_pkt_types(FALSE);
+    conn = lbl_803C0F78 + 0x1854;
+    for (index = 0; index < 3; index++, conn += 0x34) {
+        state = *(u16 *)(conn + 8);
+        if (state && (u32)state != 1U && *(u16 *)(conn + 0xA) == hci_handle) {
+            *(u16 *)(conn + 8) = 0;
+            *(u16 *)(conn + 0xA) = 0xFFFF;
+            conn[0xD] = 0;
+            *(u32 *)(conn + 0x10) = 0;
+            ((void (*)(u16))*(u32 *)(conn + 4))(index);
             break;
         }
     }
