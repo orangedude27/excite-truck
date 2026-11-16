@@ -643,8 +643,8 @@ f32 fn_802715F0(void *arg0) {
     f32 c;
     f32 a;
     a = *(f32 *)((u8 *)arg0 + 0x18);
-    c = lbl_8055F544;
     b = lbl_80563F4C;
+    c = lbl_8055F544;
     b *= a;
     c = (c < b) ? b : c;
     c = (c > lbl_8055F540) ? c : lbl_8055F540;
@@ -1598,6 +1598,13 @@ void fn_80273354(void) {
 }
 
 extern int lbl_8055F54C;
+/* The CamType the last camera update applied: fn_80271624 compares it with the camera
+ * entry's mode and re-applies the camera setup when it differs, then stores it back.
+ * Writing CAM_TYPE_COUNT (out of range of every real mode) invalidates the cache. */
+#define sLastCamType lbl_8055F54C
+/* fn_80271578: reinitialize the current object (rebuilding its camera record table)
+ * while preserving the field at offset 0xC. */
+#define reinitCurrentObject fn_80271578
 #pragma dont_inline on
 void fn_802733C8(void) {
     fn_80271578();
