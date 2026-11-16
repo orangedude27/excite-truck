@@ -9034,9 +9034,10 @@ extern "C" void fn_8022961C(void) {
 
 extern "C" u32 fn_80229620(void) { return 1; }
 
-extern "C" void fn_80229628(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x254) = 1;
-    ((VfObj *)arg0)->vf31();
+extern "C" void fn_80229628(void *widget) {
+    /* Mark the widget busy (+0x254) and run its virtual update (vtable slot +0x84). */
+    *(u8 *)((u8 *)widget + 0x254) = 1;
+    ((VfObj *)widget)->vf31();
 }
 
 extern "C" void fn_80229640(void *self) {
