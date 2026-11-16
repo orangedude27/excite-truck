@@ -986,7 +986,9 @@ extern "C" int fn_80161BB8(void) {
 #pragma cplusplus on
 #define ChallengeSubTask_Call fn_80161BDC /* forward a request to the active challenge sub-task */
 extern "C" s32 fn_80161BDC(s32 arg0, s32 arg1, s32 arg2) {
-    struct Dummy {
+    /* Forward three arguments to the active challenge sub-task's virtual at vtable+0x3C and return
+       its result (non-zero means the sub-task handled/blocked the request); 0 if none is active. */
+    struct ChallengeSubTask {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -1000,11 +1002,11 @@ extern "C" s32 fn_80161BDC(s32 arg0, s32 arg1, s32 arg2) {
         virtual void v10();
         virtual void v11();
         virtual void v12();
-        virtual s32 call(s32, s32, s32);
+        virtual s32 handle(s32, s32, s32);
     };
-    Dummy *p = (Dummy *)lbl_8055E300;
-    if (p != 0) {
-        return p->call(arg0, arg1, arg2);
+    ChallengeSubTask *subTask = (ChallengeSubTask *)lbl_8055E300;
+    if (subTask != 0) {
+        return subTask->handle(arg0, arg1, arg2);
     }
     return 0;
 }
