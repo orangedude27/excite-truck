@@ -261,7 +261,7 @@ extern void* lbl_8055A510;
 void fn_8019F1A4(void) __attribute__((noreturn));
 
 extern "C" s32 fn_80128668(void);
-extern "C" void fn_801A5C4C(void*);
+extern "C" void fn_801A5C4C(void*, ...);
 extern "C" void fn_8017B6D4(s32, Vec*, s32);
 extern f32 lbl_805622D0, lbl_805622E4, lbl_805622E8;
 extern "C" f32 PSVECMag(const Vec*);
