@@ -20,6 +20,7 @@ extern char lbl_8034C828[];
 extern char lbl_8055FE41;
 #pragma scheduling invalid_target
 void fn_802D98F8(void) {
+    /* Power-button callback: log the press and set the flag that drives the shutdown sequence. */
     OSReport(lbl_8034C828);
     lbl_8055FE41 = 1;
 }
