@@ -642,9 +642,11 @@ int fn_802C90E0(void) {
     return lbl_8055FC70 == 0;
 }
 
+/* Save GX state through fn_802C8C04 and record that draw lists now run in
+ * its world-matrix-saving render mode (3). */
 void fn_802C90F0(void) {
     ((void (*)(void))fn_802C8C04)();
-    lbl_8055FC70 = 3;
+    sRenderMode = 3;
 }
 
 #pragma scheduling invalid_target
