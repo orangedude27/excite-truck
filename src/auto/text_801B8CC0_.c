@@ -376,20 +376,12 @@ extern "C" void fn_801B8E28(int playerIndex) {
     fn_8018A08C(car); /* stamp it with the shared value of lbl_8055E3C8 */
 }
 #pragma cplusplus reset
-static inline void fn_801B916C_slots(int *s, int id, int sentinel) {
-    if (s[0] == id) s[0] = sentinel;
-    if (s[6] == id) s[6] = sentinel;
-    if (s[12] == id) s[12] = sentinel;
-}
-
-struct SlotSet { int a; char pad1[0x14]; int b; char pad2[0x14]; int c; };
-struct SlotEntry { char pad[0x8C]; int slots[13]; };
-
 extern "C" void fn_801B916C(void *arg0) {
     void **table;
     void *obj;
     int id;
     char *p;
+    int *slots;
     int i;
     int sentinel;
     float frequency;
@@ -412,7 +404,10 @@ extern "C" void fn_801B916C(void *arg0) {
                 id = *(int *)((char *)obj + 0x1EC);
                 if (*(int *)(p + 0x74) == id)
                     *(int *)(p + 0x74) = sentinel;
-                fn_801B916C_slots((int *)(p + 0x8C), id, sentinel);
+                if (*(int *)(p + 0x8C) == id) *(int *)(p + 0x8C) = sentinel;
+                slots = (int *)(p + 0x8C);
+                if (slots[6] == id) slots[6] = sentinel;
+                if (slots[12] == id) slots[12] = sentinel;
                 *(int *)(p + 0x74) = id;
                 *(float *)(p + 0x78) = frequency;
                 {
