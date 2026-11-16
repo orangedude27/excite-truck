@@ -20768,14 +20768,15 @@ struct PanicStruct {
     void *field_70;
 };
 
+/* Return whether the debug console's font system is initialized and has a framebuffer. */
 extern "C" s32 fn_800D2E14(void) {
-    s32 _r3 = 0;
+    s32 ready = 0;
     if (lbl_8055DDC8 != 0) {
         if (lbl_80407BD8[0] != 0) {
-            _r3 = 1;
+            ready = 1;
         }
     }
-    return _r3;
+    return ready;
 }
 
 void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
