@@ -311,10 +311,18 @@ void *fn_801F2150(void) {
 }
 
 void fn_801F2190(void) {
-    void **slot = (void **)fn_801284F8(4, (void *)&lbl_8055B138);
+#define RegisterClassSlot fn_801284F8
+#define WaterTag lbl_8055B138
+#define WaterVtable lbl_8033A740
+    /* Register the "Water" class: look up its 4-byte slot in the class
+       registry and install its vtable there. */
+    void **slot = (void **)RegisterClassSlot(4, (void *)&WaterTag);
     if (slot != 0) {
-        *slot = (void *)&lbl_8033A740;
+        *slot = (void *)&WaterVtable;
     }
+#undef RegisterClassSlot
+#undef WaterTag
+#undef WaterVtable
 }
 #pragma scheduling on
 #pragma dont_inline off
