@@ -588,8 +588,10 @@ void __AXGetAuxAInputDpl2(void **out) {
     *out = lbl_8035DAA0 + lbl_8055D6F8 * 0x480 + 0x180;
 }
 
-void __AXGetAuxAOutputDpl2R(void **arg0) {
-    *arg0 = lbl_8035BFA0 + lbl_8055D6F4 * 0x480 + 0x180;
+void __AXGetAuxAOutputDpl2R(void **out) {
+    /* Return a pointer into the current read-ring slot of the AUX-A Dolby Pro
+     * Logic 2 output buffer lbl_8035BFA0 (0x480 bytes/slot), at byte offset 0x180. */
+    *out = lbl_8035BFA0 + lbl_8055D6F4 * 0x480 + 0x180;
 }
 
 void __AXGetAuxAOutputDpl2Ls(void **arg0) {
