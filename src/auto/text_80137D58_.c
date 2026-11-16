@@ -664,7 +664,19 @@ void fn_80138AD8(void **objectSlot) {
     *objectSlot = 0;
 }
 
-void *fn_80138B1C(void *arg0) { void *p=*(void **)((char*)arg0+0x24); void *result=0; while(p){ if(*(int*)p==0){result=p;break;} p=*(void **)((char*)p+4); } return result; }
+/* Find the first IDEAL_EXT_TIMING extension record in the racing-line resource's list. */
+void *fn_80138B1C(void *res) {
+    struct IdealResExt *ext = *(struct IdealResExt **)((char *)res + IDEAL_RES_EXT_LIST);
+    void *result = 0;
+    while (ext) {
+        if (ext->type == IDEAL_EXT_TIMING) {
+            result = ext;
+            break;
+        }
+        ext = ext->next;
+    }
+    return result;
+}
 
 /* First road-object extension record (type 2) of the racing-line resource
  * `res`, or the next one after the record `prev` -- pass 0 to start at the
