@@ -445,23 +445,32 @@ void fn_802B618C(void) {
 #undef matSetIndex
 }
 
+/* "tedash.val" debug viewer: run the setup for the current view mode. Road-Opacity
+ * (3) reloads the road-opacity texture, Material-Map (2) rebuilds the matmap images;
+ * "Objects" and "Advanced" need no extra setup. */
 void fn_802B61B8(void) {
-    if (lbl_8055FA38 == 3) {
+#define viewMode lbl_8055FA38 /* 0 "Objects", 1 "Advanced", 2 "Material-Map", 3 "Road-Opacity" */
+#define setupMaterialMap fn_802BBEE4  /* rebuilds the "matmap"/"matmap2" images */
+#define reloadRoadOpacity fn_802C21C0 /* reloads the "roadopac.tga" texture */
+    if (viewMode == 3) {
         goto call_c;
     }
-    if (lbl_8055FA38 >= 3) {
+    if (viewMode >= 3) {
         goto done;
     }
-    if (lbl_8055FA38 >= 2) {
+    if (viewMode >= 2) {
         goto call_b;
     }
 done:
     return;
 call_b:
-    fn_802BBEE4();
+    setupMaterialMap();
     return;
 call_c:
-    fn_802C21C0();
+    reloadRoadOpacity();
+#undef viewMode
+#undef setupMaterialMap
+#undef reloadRoadOpacity
 }
 
 extern char lbl_8034A980[];
