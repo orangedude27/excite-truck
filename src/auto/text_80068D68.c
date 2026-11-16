@@ -3764,6 +3764,10 @@ s32 fn_8006E4F8(void) {
 #pragma push
 #pragma scheduling on
 void GKI_start_timer(UINT8 tnum, INT32 ticks, BOOLEAN is_continuous) {
+    // Start (or reset) general-purpose timer tnum for the current GKI task. fn_8006EB80 is
+    // GKI_get_taskid and fn_8006EBAC/fn_8006EB88 are GKI_disable/GKI_enable (scheduler lock).
+    // The reload value is ticks for a continuous timer, 0 for one-shot; the expiry is the new
+    // tick count adjusted for time elapsed since the previous task-timer update.
     INT32 reload;
     int total;
     UINT8 task_id;
@@ -15000,8 +15004,7 @@ found:
 }
 
 extern u8 lbl_803173E0[];
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void btm_cback(u32 index, void *param) {
     u8 *p_trace = lbl_803173E0;
     u8 *p_elem;
@@ -15065,7 +15068,6 @@ void btm_cback(u32 index, void *param) {
         p_elem[0xF] = 0;
     }
 }
-#pragma pop
 void fn_800833E8(void *arg0) { btm_cback(0, arg0); }
 
 void fn_800833F4(void *arg0) { btm_cback(1, arg0); }
