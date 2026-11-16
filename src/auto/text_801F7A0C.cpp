@@ -1297,21 +1297,14 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
 
     if (*(u8 *)((u8 *)current + 0x2C) != 0 && (flags & 4) == 0) {
         fn_802E317C(base + 0x2A0, current);
-        if (*(s32 *)(result + 0x38) != fn_80204CF0()) {
-            fn_802E30C8(base + 0x2E0, name);
-            goto call_tail;
-        }
     }
-    if (lbl_8055EC42 != 0) {
-        if (strcmp(name, (const char *)lbl_8055B37C) == 0) {
-            fn_802E30C8(base + 0x318, name);
-            goto call_tail;
-        }
-        goto call_tail;
+    if (*(s32 *)(result + 0x38) != fn_80204CF0()) {
+        fn_802E30C8(base + 0x2E0, name);
+    } else if (lbl_8055EC42 != 0 && strcmp(name, (const char *)lbl_8055B37C) == 0) {
+        fn_802E30C8(base + 0x318, name);
+    } else {
+        ((void (*)(void *, void *, u32))fn_801F973C)(current, result, (u32)flags);
     }
-call_tail:
-    return ((void *(*)(void *, void *, u32))fn_801F973C)(
-        current, result, (u32)flags);
 }
 
 #pragma dont_inline on
