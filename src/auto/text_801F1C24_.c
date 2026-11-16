@@ -196,7 +196,8 @@ void fn_801F1EEC(void) {
 
 __declspec(section ".data") extern int lbl_8033A638;
 __declspec(section ".data") extern int lbl_8033A898;
-// Allocate and initialize a 12-byte effect/config object (vtable/descriptor lbl_8033A898).
+// Allocate and initialize a 12-byte object: install lbl_8033A898 at +0,
+// clear the byte flag at +4 and the field at +8.
 void fn_801F1F38(void) {
     void *p = fn_801284F8(12, &lbl_8033A638);
     if (p != 0) {
