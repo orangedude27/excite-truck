@@ -233,11 +233,12 @@ void fn_801F1FD4(void) {
 
 #pragma push
 #pragma small_data off
+/* Allocate an 8-byte "Rotator" object (tag lbl_8055B128) and initialize its vtable/data fields. */
 void fn_801F2020(void) {
-    void *p = fn_801284F8(8, &lbl_8055B128);
-    if (p != 0) {
-        *(void **)p = lbl_8033A808;
-        *(int *)((char *)p + 4) = 0;
+    void *object = fn_801284F8(8, &lbl_8055B128);
+    if (object != 0) {
+        *(void **)object = lbl_8033A808;
+        *(int *)((char *)object + 4) = 0;
     }
 }
 #pragma push
