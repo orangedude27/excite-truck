@@ -25285,21 +25285,22 @@ extern "C" char *fn_800A4AAC(char *dst, char *src) {
     return dst;
 }
 
-extern "C" s32 fn_800A4AD0(u8 *arg0, u8 *arg1) {
-    u8 a;
-    u8 b;
+extern "C" s32 fn_800A4AD0(u8 *left, u8 *right) {
+    /* strcmp: return the difference of the first differing bytes of two NUL-terminated strings. */
+    u8 leftByte;
+    u8 rightByte;
     goto test;
 again:
-    arg0++;
-    arg1++;
+    left++;
+    right++;
 test:
-    a = *arg0;
-    if (a == 0) goto done;
-    b = *arg1;
-    if (b == 0) goto done;
-    if (a == b) goto again;
+    leftByte = *left;
+    if (leftByte == 0) goto done;
+    rightByte = *right;
+    if (rightByte == 0) goto done;
+    if (leftByte == rightByte) goto again;
 done:
-    return a - *arg1;
+    return leftByte - *right;
 }
 
 #pragma scheduling off
