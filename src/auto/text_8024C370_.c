@@ -105,6 +105,8 @@ void fn_8024C464(void) {
 #pragma pop
 
 #pragma dont_inline on
+/* Menu "load" action: reload the save image from the memory card, then rebuild
+ * the per-slot name/state arrays displayed in the menu. */
 int fn_8024C524(void) {
     fn_802E712C();
     fn_802E6CA8();
