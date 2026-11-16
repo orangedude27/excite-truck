@@ -390,13 +390,14 @@ int fn_80149530(void) {
     return 0xFFC0D9D9;
 }
 
-void fn_8014953C(void *arg0, float *arg1, float *arg2) {
+void fn_8014953C(void *unused, float *delta, float *params) {
+    /* Add delta[0] scaled by 0.01 to params[4] and clamp the result to [0.05, 5.0]. */
     float f2 = lbl_8056162C;
-    float v = arg2[4] + f2 * *arg1;
+    float v = params[4] + f2 * *delta;
     f2 = lbl_80561630;
     f2 = (f2 < v) ? f2 : v;
     f2 = (f2 > lbl_80561634) ? f2 : lbl_80561634;
-    arg2[4] = f2;
+    params[4] = f2;
 }
 
 s32 *fn_80149580(void) {
