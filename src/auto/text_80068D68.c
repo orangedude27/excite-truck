@@ -13675,6 +13675,7 @@ count_done:
     }
 }
 
+/* Updates the device's clock offset and the corresponding inquiry database entry. */
 void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
     tBTM_SEC_DEV_REC *dev;
     tBTM_INQ_INFO *inq;
