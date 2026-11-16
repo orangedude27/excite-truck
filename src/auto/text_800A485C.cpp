@@ -16302,6 +16302,14 @@ extern "C" void fn_800C3088(volatile s32 *, const volatile s32 *, const volatile
 extern "C" const s32 lbl_802F3FB8[];
 extern "C" s32 lbl_8031D5C8[];
 struct TransformState800C { s8 channels; u8 pad1[0x9C7]; s32 rows; };
+static inline void fn_800C0E7C_rotateOffset(s32 *p, s32 offset, s32 *out) {
+    s32 v, w;
+    fn_800C1E88(p + offset, lbl_802F3FB8, out);
+    v = p[offset] - p[offset + 3] - p[offset + 4];
+    w = p[offset + 1] - p[offset + 2] - p[offset + 5];
+    out[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
+    out[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
+}
 /* Transform one six-sample row into out, then set out[1]/out[7] from its
  * differences rotated by the (cos, sin) pair in lbl_8031D5C8. */
 static inline void fn_800C0E7C_rotate(s32 *p, s32 *out, s32 *rotation = lbl_8031D5C8, const s32 *matrix = lbl_802F3FB8) {
@@ -16366,9 +16374,12 @@ extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[
             for (j = 0; j < 36; j++)
                 z[j] = 0;
             for (i = 2; i < self->rows - 1; i++) {
-                fn_800C0E7C_rotate(&base[i * 4 + i * 2], m0);
-                fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x240, m1);
-                fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x480, m2);
+                s32 *row = &base[i * 4 + i * 2];
+                fn_800C0E7C_rotate(row, m0);
+                s32 *row1 = row + 0x240;
+                s32 *row2 = row + 0x480;
+                fn_800C0E7C_rotate(row1, m1);
+                fn_800C0E7C_rotate(row2, m2);
                 fn_800C3088(a90[i], m0, m1, m2);
             }
             p48 = a48; p90 = a90; p4 = a4;
@@ -16385,9 +16396,12 @@ extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[
             for (j = 0; j < 36; j++)
                 z[j] = 0;
             for (i = 0; i < self->rows - 1; i++) {
-                fn_800C0E7C_rotate(&base[i * 4 + i * 2], m0);
-                fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x240, m1);
-                fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x480, m2);
+                s32 *row = &base[i * 4 + i * 2];
+                fn_800C0E7C_rotate(row, m0);
+                s32 *row1 = row + 0x240;
+                s32 *row2 = row + 0x480;
+                fn_800C0E7C_rotate(row1, m1);
+                fn_800C0E7C_rotate(row2, m2);
                 fn_800C3088(a90[i], m0, m1, m2);
             }
             p48 = a48; p90 = a90; p4 = a4;
@@ -21135,10 +21149,9 @@ extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
     }
     f32 d = farg0 - *(f32 *)left;
     f32 one = lbl_80560E50;
-    f32 dx = *(f32 *)right - *(f32 *)left;
+    f32 scale = one / (*(f32 *)right - *(f32 *)left);
     f32 k54 = lbl_80560E54;
     f32 k58 = lbl_80560E58;
-    f32 scale = one / dx;
     f32 k5c = lbl_80560E5C;
     f32 ly = *(f32 *)(left + 4);
     f32 ry = *(f32 *)(right + 4);
