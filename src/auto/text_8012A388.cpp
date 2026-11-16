@@ -3297,29 +3297,32 @@ extern "C" void fn_8012C720(void *request, s32 buffer, s32 size, s32 fileOffset)
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_8012C7FC(void *arg0, s32 *arg1) {
-    void *entry;
+extern "C" s32 fn_8012C7FC(void *request, s32 *outValue) {
+    /* Fetch an async resource: drop any live handle, then if loaded data exists compare its CRC
+       against the value recorded in the resource entry; return the data on success (optionally
+       writing the entry's +0x28 value to outValue), or log a CRC error and reset the request. */
+    void *resource;
     s32 result = 0;
-    s32 temp;
-    void *data;
-    temp = *(s32 *)((char *)arg0 + 0xC);
-    if (temp != -1 && fn_802E7544(temp)) {
-        fn_802E7548(*(s32 *)((char *)arg0 + 0xC));
-        *(s32 *)((char *)arg0 + 0xC) = -1;
+    s32 handle;
+    void *loadedData;
+    handle = *(s32 *)((char *)request + 0xC);
+    if (handle != -1 && fn_802E7544(handle)) {
+        fn_802E7548(*(s32 *)((char *)request + 0xC));
+        *(s32 *)((char *)request + 0xC) = -1;
     }
-    temp = *(s32 *)((char *)arg0 + 0xC);
-    if (temp == -1 && (data = *(void **)((char *)arg0 + 0x10)) != 0) {
-        entry = *(void **)((char *)arg0 + 4);
-        if (*(s32 *)((char *)arg0 + 0x14) < *(s32 *)((char *)entry + 0x28) ||
-            *(u32 *)((char *)entry + 0x30) == ((u32 (*)(void *, s32))fn_80132E7C)(data, *(s32 *)((char *)entry + 0x28))) {
-            result = *(s32 *)((char *)arg0 + 0x10);
-            if (arg1) *arg1 = *(s32 *)((char *)entry + 0x28);
+    handle = *(s32 *)((char *)request + 0xC);
+    if (handle == -1 && (loadedData = *(void **)((char *)request + 0x10)) != 0) {
+        resource = *(void **)((char *)request + 4);
+        if (*(s32 *)((char *)request + 0x14) < *(s32 *)((char *)resource + 0x28) ||
+            *(u32 *)((char *)resource + 0x30) == ((u32 (*)(void *, s32))fn_80132E7C)(loadedData, *(s32 *)((char *)resource + 0x28))) {
+            result = *(s32 *)((char *)request + 0x10);
+            if (outValue) *outValue = *(s32 *)((char *)resource + 0x28);
         } else {
-            fn_802E30C8(lbl_8032AC68, entry);
-            fn_8012C720(arg0, *(s32 *)((char *)arg0 + 0x10) -
-                ((*(s32 *)((char *)*(void **)((char *)arg0 + 4) + 0x2C) +
-                  *(s32 *)((char *)*(void **)((char *)arg0 + 8) + 0x80)) & 0x7FF),
-                *(s32 *)((char *)arg0 + 0x14), 0);
+            fn_802E30C8(lbl_8032AC68, resource);
+            fn_8012C720(request, *(s32 *)((char *)request + 0x10) -
+                ((*(s32 *)((char *)*(void **)((char *)request + 4) + 0x2C) +
+                  *(s32 *)((char *)*(void **)((char *)request + 8) + 0x80)) & 0x7FF),
+                *(s32 *)((char *)request + 0x14), 0);
         }
     }
     return result;
