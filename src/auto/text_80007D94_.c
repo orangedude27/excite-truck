@@ -214,6 +214,7 @@ done:
 }
 
 const char* fn_80008158(s32);
+/* Returns the display-string field (offset 4) of the race-event table entry selected by the caller's name lookup. */
 const char* fn_80008188(void) {
     return *(const char**)((u8*)&lbl_8034EF38 + fn_800080E8() * 0xC + 4);
 }
