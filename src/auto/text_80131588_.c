@@ -488,12 +488,15 @@ s32 fn_80131C88(void *table, const char *name) {
     return (s32)found;
 }
 #pragma pop
-s32 fn_80132098(void* arg0, s32 index, void* dst1, void* dst2) {
-    u32 (*base)[2];
-    if (index >= 0 && index < *(s32*)((char*)arg0 + 0xC)) {
-        base = (u32 (*)[2])*(u32*)((char*)arg0 + 0x10);
-        *(u32*)dst1 = base[index][0];
-        *(u32*)dst2 = base[index][1];
+/* Looks up entry `index` of a named-value table (RealName: ValueTable_GetByIndex):
+   writes the entry's name word and value word to outName/outValue, returning 1;
+   returns 0 when the index is out of range. */
+s32 fn_80132098(void* table, s32 index, void* outName, void* outValue) {
+    u32 (*entries)[2];
+    if (index >= 0 && index < *(s32*)((char*)table + 0xC)) {
+        entries = (u32 (*)[2])*(u32*)((char*)table + 0x10);
+        *(u32*)outName = entries[index][0];
+        *(u32*)outValue = entries[index][1];
         return 1;
     }
     return 0;
