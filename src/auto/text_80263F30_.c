@@ -187,12 +187,14 @@ void fn_80264098(void *arg0, int arg1) {
 #pragma dont_inline on
 #pragma dont_inline off
 void fn_802640A0(void *arg0) {
-    volatile unsigned char *p = (volatile unsigned char *)arg0;
-    *(int volatile *)(p + 8) = 0;
-    *(int volatile *)(p + 4) = 0x7b;
-    *(int volatile *)(p + 0) = (int)&lbl_8055C458;
-    *(int volatile *)(p + 0xc) = 0;
-    *(int volatile *)(p + 0x10) = 0;
+    struct Init { int addr; int type; int zero; int z2; int z3; };
+    volatile struct Init *s = (volatile struct Init *)arg0;
+    unsigned int zero = 0;
+    s->zero = zero;
+    s->type = 0x7b;
+    s->addr = (int)&lbl_8055C458;
+    s->z2 = zero;
+    s->z3 = zero;
 }
 
 #pragma push
@@ -332,11 +334,13 @@ void fn_80264484(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-void fn_8026451C(void *arg0) {
+void fn_8026451C(void *obj) {
+    /* Construct the credits/timer object: install its vtable at +0, clear the
+     * state word at +0x14, and publish it as the current object lbl_8055F444. */
     extern char lbl_803466D8[];
-    *(void **)arg0 = lbl_803466D8;
-    *(int *)((char *)arg0 + 0x14) = 0;
-    lbl_8055F444 = arg0;
+    *(void **)obj = lbl_803466D8;
+    *(int *)((char *)obj + 0x14) = 0;
+    lbl_8055F444 = obj;
 }
 #pragma scheduling on
 int fn_80264538(int arg0, int arg1) {
