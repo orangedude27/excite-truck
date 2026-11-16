@@ -4379,13 +4379,15 @@ extern "C" void __ct__Q36nw4hbm3snd11SoundPlayerFv(void* self) {
     *(f32*)(p + 0x44) = initialValue;
 }
 
-extern "C" void fn_800F8520(void *arg0) {
-    s32 *p = (s32 *)((u8 *)arg0 + 4);
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
-    *(s32 *)arg0 = 0;
-    *(s32 *)((u8 *)arg0 + 4) = (s32)p;
-    *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+extern "C" void fn_800F8520(void *list) {
+    // Initialize an empty nw4r ut::LinkList: clear the element count at +0x00,
+    // then make the sentinel node's next (+0x04) and prev (+0x08) point at itself.
+    s32 *sentinel = (s32 *)((u8 *)list + 4);
+    *(s32 *)((u8 *)list + 4) = 0;
+    *(s32 *)((u8 *)list + 8) = 0;
+    *(s32 *)list = 0;
+    *(s32 *)((u8 *)list + 4) = (s32)sentinel;
+    *(s32 *)((u8 *)list + 8) = (s32)sentinel;
 }
 
 extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void* self, int shouldDelete) {
