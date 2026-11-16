@@ -75,11 +75,23 @@ void fn_801E7828(arg0)
 
 #pragma dont_inline off
 
+/* RealName: GenericDrawList_Create
+ * Allocates a 0x18-byte object tagged "GenericDrawList" and initializes it
+ * with fn_801E76A8 when allocation succeeds.
+ */
 void fn_801E7840(void *arg0) {
-    void *obj;
-    obj = fn_801284F8(0x18, lbl_80339B90);
-    if (obj != 0)
-        fn_801E76A8(obj, (int)arg0);
+#define sGenericDrawListTag lbl_80339B90
+#define GenericDrawList_Alloc fn_801284F8
+#define GenericDrawList_Init fn_801E76A8
+    void *drawList;
+
+    drawList = GenericDrawList_Alloc(0x18, sGenericDrawListTag);
+    if (drawList != 0) {
+        GenericDrawList_Init(drawList, (int)arg0);
+    }
+#undef sGenericDrawListTag
+#undef GenericDrawList_Alloc
+#undef GenericDrawList_Init
 }
 
 void *fn_801E7888(void *arg0) {
