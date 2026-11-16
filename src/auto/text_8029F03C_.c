@@ -656,11 +656,18 @@ void fn_8029FE00(void) {
 
 #pragma push
 #pragma dont_inline on
+/* Look up a record in the lbl_804B5070 table (element size 0x78, count lbl_8055F81C) using fn_8029FDF0 as comparator. Returns 0 for non-positive keys. */
 int fn_8029FE1C(int arg0) {
-    int sp8 = arg0;
+#define table lbl_804B5070
+#define count lbl_8055F81C
+#define compare fn_8029FDF0
+    int key = arg0;
     if (arg0 <= 0)
         return 0;
-    return fn_800241DC(&sp8, lbl_804B5070, lbl_8055F81C, 0x78, fn_8029FDF0);
+    return fn_800241DC(&key, table, count, 0x78, compare);
+#undef table
+#undef count
+#undef compare
 }
 
 #pragma pop
