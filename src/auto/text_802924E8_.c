@@ -148,16 +148,12 @@ extern "C" void fn_80292698(void) {
     };
     register int i;
     register unsigned char *p;
-    register float one;
-    register float threshold;
+    float threshold;
     register float angle;
-    register float zero;
 
     angle = fn_801E7E18();
-    one = lbl_805644D4;
-    p = lbl_804B4030;
     threshold = lbl_805644E4;
-    zero = lbl_805644D8;
+    p = lbl_804B4030;
     i = 0;
     for (; i < 6; ++i, p += 0x34) {
         float axis[3];
@@ -169,14 +165,14 @@ extern "C" void fn_80292698(void) {
         axis[2] = *(float *)(p + 0x8) * scale;
         magnitude = PSVECMag(axis);
         if (magnitude > threshold) {
-            float inverse = one / magnitude;
+            float inverse = 1.0f / magnitude;
             x = inverse * axis[0];
             y = inverse * axis[1];
             z = inverse * axis[2];
             s = (float)sin(magnitude);
             c = (float)cos(magnitude);
             xx = x * x;
-            t = one - c;
+            t = 1.0f - c;
             tx = t * x;
             ty = t * y;
             yy = y * y;
@@ -191,20 +187,20 @@ extern "C" void fn_80292698(void) {
             zz = z * z;
             *(float *)(p + 0x30) = c + t * zz;
         } else {
-            *(float *)(p + 0x10) = one;
-            *(float *)(p + 0x14) = zero;
-            *(float *)(p + 0x18) = zero;
-            *(float *)(p + 0x1C) = zero;
-            *(float *)(p + 0x20) = one;
-            *(float *)(p + 0x24) = zero;
-            *(float *)(p + 0x28) = zero;
-            *(float *)(p + 0x2C) = zero;
-            *(float *)(p + 0x30) = one;
+            *(float *)(p + 0x10) = 1.0f;
+            *(float *)(p + 0x14) = 0.0f;
+            *(float *)(p + 0x18) = 0.0f;
+            *(float *)(p + 0x1C) = 0.0f;
+            *(float *)(p + 0x20) = 1.0f;
+            *(float *)(p + 0x24) = 0.0f;
+            *(float *)(p + 0x28) = 0.0f;
+            *(float *)(p + 0x2C) = 0.0f;
+            *(float *)(p + 0x30) = 1.0f;
         }
     }
     {
         register unsigned char *entry = lbl_804B4168;
-        register int j = 0;
+        register s32 j = 0;
         for (; j < *(s32 *)(lbl_804B4168 + 0x180); entry += 0x18, ++j) {
             Dummy_80292698 *obj = *(Dummy_80292698 **)(entry + 0x10);
             obj->v2();
@@ -1054,14 +1050,15 @@ extern "C" void *fn_80293A00(void *arg0, void *arg1, int arg2, int arg3, int arg
         virtual void v5();
         virtual void v6();
         virtual void v7();
-        virtual float value(const char *);
+        virtual float value(const char *, float);
     };
     *(void **)arg0 = lbl_80349278;
     fn_80293CD0(arg0, arg2, arg3, arg4);
-    *(float *)((char *)arg0 + 4) = lbl_8056450C;
+    float defaultValue = lbl_8056450C;
+    *(float *)((char *)arg0 + 4) = defaultValue;
     if (arg1 != 0) {
         *(float *)((char *)arg0 + 4) =
-            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
+            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988, defaultValue);
     }
     *(int *)((char *)arg0 + 0x4C2C) = 0;
     return arg0;
