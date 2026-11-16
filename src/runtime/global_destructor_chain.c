@@ -18,12 +18,13 @@ void __register_global_object(void* object, DtorFunction dtor, DtorLink* link) {
 }
 
 void __destroy_global_chain(void) {
+    /* Run and unlink all registered global/static object destructors in chain order. */
     DtorLink* link;
 
     while ((link = __global_destructor_chain)) {
-        // Pop destructor
+        /* Pop destructor entry. */
         __global_destructor_chain = link->next;
-        // Destroy object (-1 to destroy all bases)
+        /* Destroy object (-1 requests complete destruction of all bases). */
         link->dtor(link->object, -1);
     }
 }
