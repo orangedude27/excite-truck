@@ -269,7 +269,8 @@ static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32
                     r->w = w * e->scale;
                 }
                 r->x = x;
-                r->y = y + w + half * (r->w - w);
+                r->y = y + w;
+                r->y += half * (r->w - w);
                 r->z = z;
                 r->flag = flag;
                 if (adv != 0) {
