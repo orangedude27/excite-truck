@@ -7488,10 +7488,15 @@ extern "C" s32 fn_802263CC(void *arg0, s32 arg1) {
 extern "C" void *fn_802224B4(void *, s32, s32, s32, s32, s32, s32, s32, u8, u8);
 extern "C" char lbl_8033F7F4[];
 extern "C" s32 fn_80226528(void *arg0, s32 arg1) {
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x27C);
-    if (p != 0 && *(s32 *)((u8 *)arg0 + 0x280) != *p)
+#define selfStatePtr  (*(s32 **)((u8 *)arg0 + 0x27C))
+#define selfStateId   (*(s32 *)((u8 *)arg0 + 0x280))
+    /* Return true for accepted command IDs when the linked state object matches this instance. */
+    s32 *statePtr = selfStatePtr;
+    if (statePtr != 0 && selfStateId != *statePtr)
         return 0;
     return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
+#undef selfStatePtr
+#undef selfStateId
 }
 
 extern "C" void fn_80226570(void *arg0, s32 arg1) {
