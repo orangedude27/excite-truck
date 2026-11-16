@@ -20561,13 +20561,9 @@ extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1) {
     return (s32)((u32)(neg | val) >> 31);
 }
 
-// Per-channel remote-speaker slot (0x68 bytes); only the fields read here are named.
-struct RemoteSpkSlot {
-    u8 pad[0x50];
-    s32 playing; // 0x50: nonzero while a sound is active on this channel
-    s32 soundId; // 0x58: id of the currently playing sound
-};
 // Returns nonzero when the given sound is playing on a remote-speaker channel.
+// Each slot is 0x68 bytes: +0x50 holds the active sound handle (nonzero while
+// playing) and +0x58 the id of the sound currently playing on that channel.
 extern "C" s32 fn_800D1E78(void *soundPlayer, s32 channel, s32 soundId) {
     void *slot = (u8 *)soundPlayer + channel * 0x68;
     if (((s32 *)slot)[0x50 / 4] != 0 && soundId == ((s32 *)slot)[0x58 / 4]) {
