@@ -1030,38 +1030,42 @@ extern float fn_801E7E24(void);
 extern unsigned char fn_802CDB20(int, int);
 #pragma push
 #pragma processor 750
-void fn_801F6A98(void *arg0, int arg1) {
+void fn_801F6A98(void *group, int visibilityArg) {
+    /* One simulation pass over the uniform cloth group (count at +0x900, stride
+     * 0x48): when the global wind is strong enough, build a scaled wind force per
+     * ClothEntry and apply it, then relax constraints, re-pin vertices and set
+     * each entry's active flag from the visibility test. */
     extern float lbl_80558DC4;
-    float sp[6];
-    float offset, scale;
-    int enabled;
-    void *entry;
-    int i;
-    enabled = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
-    entry = arg0;
-    i = 0;
+    float windVec[6];
+    float windOffset, windScale;
+    int windEnabled;
+    void *cloth;
+    int index;
+    windEnabled = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
+    cloth = group;
+    index = 0;
     goto check;
 loop:
-    if (enabled != 0) {
-        float c, b, a;
-        scale = *(float *)((char *)entry + 0x40);
-        offset = *(float *)((char *)entry + 0x3C);
-        fn_801E8C84(sp);
-        a = sp[0] * scale;
-        b = sp[1] * scale;
-        c = sp[2] * scale;
-        sp[3] = a;
-        sp[4] = b - offset;
-        sp[5] = c;
-        fn_801F63F0(entry, sp + 3, *(float *)((char *)entry + 0x44));
-        fn_801F65D0(entry);
-        fn_801F6728(entry);
+    if (windEnabled != 0) {
+        float dz, dy, dx;
+        windScale = *(float *)((char *)cloth + 0x40);
+        windOffset = *(float *)((char *)cloth + 0x3C);
+        fn_801E8C84(windVec);
+        dx = windVec[0] * windScale;
+        dy = windVec[1] * windScale;
+        dz = windVec[2] * windScale;
+        windVec[3] = dx;
+        windVec[4] = dy - windOffset;
+        windVec[5] = dz;
+        fn_801F63F0(cloth, windVec + 3, *(float *)((char *)cloth + 0x44));
+        fn_801F65D0(cloth);
+        fn_801F6728(cloth);
     }
-    *(unsigned char *)((char *)entry + 0x38) = fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
-    entry = (char *)entry + 0x48;
-    i++;
+    *(unsigned char *)((char *)cloth + 0x38) = fn_802CDB20(visibilityArg, *(int *)((char *)cloth + 0x34));
+    cloth = (char *)cloth + 0x48;
+    index++;
 check:
-    if (i < *(int *)((char *)arg0 + 0x900)) goto loop;
+    if (index < *(int *)((char *)group + 0x900)) goto loop;
 }
 #pragma pop
 
