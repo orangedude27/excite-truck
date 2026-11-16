@@ -576,8 +576,9 @@ s32 fn_8023AE74(void *arg0) {
     return *(s32 *)*(s32 **)((char *)arg0 + 0x1C) > 0;
 }
 
-s32 fn_8023AE8C(void *arg0) {
-    return *(s32 *)*(s32 **)((char *)arg0 + 0x1C) < (*(s32 *)((char *)arg0 + 0x14) - 1);
+/* Return whether the selector's current index (offset 0x1C) can be advanced: it is below count (offset 0x14) minus one. */
+s32 fn_8023AE8C(void *selector) {
+    return *(s32 *)*(s32 **)((char *)selector + 0x1C) < (*(s32 *)((char *)selector + 0x14) - 1);
 }
 
 s32 fn_8023AEB4(void *arg0) {
