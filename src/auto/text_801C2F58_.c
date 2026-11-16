@@ -1858,13 +1858,16 @@ void fn_801C80C8(void) {
     lbl_8055E854 = 2;
 }
 
+/* Debug menu item "Follow" (id 0x1b) of the AI-think interlude submenu: select the
+ * follow behaviour, start the command's position at x 0 / z 5 and open the console
+ * text field so the index to follow can be typed in (fn_801C8150 reads it back). */
 void fn_801C80E8(void) {
-    lbl_8055E854 = 3;
-    lbl_8055E860 = lbl_805629B4;
-    lbl_8055E85C = lbl_80562970;
-    lbl_8055E83A = 1;
-    lbl_8055E868 = fn_801C6CBC;
-    fn_801C957C(1, fn_801C6CBC, lbl_805629B4);
+    sInterludeMode = 3;
+    sInterludeZ = FLOAT_FIVE;
+    sInterludeX = FLOAT_ZERO;
+    sTextFieldFlag = 1;
+    sMenuAction = menu_action_active;
+    set_text_entry(1, menu_action_active, FLOAT_FIVE);
 }
 
 /* Debug-menu callback for the type-4 timeline event item: select event type 4,
