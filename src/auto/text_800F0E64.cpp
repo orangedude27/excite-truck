@@ -5284,6 +5284,7 @@ allocation_done:
 #undef ATTACH_AMBIENT_ARG
     return sound;
 }
+#pragma pop
 extern "C" void SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 count) {
     struct SoundNode {
         virtual void f0();
