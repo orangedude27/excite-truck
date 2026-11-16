@@ -131,6 +131,7 @@ void DBPrintf_80270B00(const char *format, ...) {
 
 #pragma dont_inline on
 int fn_80270B50(void) {
+    /* Return the mode/type (a CamType) at +4 of the current camera object from fn_801E87A8. */
     return *(int *)((char *)fn_801E87A8() + 4);
 }
 #pragma dont_inline reset
