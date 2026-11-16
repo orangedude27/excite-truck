@@ -7589,12 +7589,5 @@ extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *, void *);
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" f32 lbl_805610C0;
 extern "C" f32 lbl_805610C4;
-/* The snd_StrmPlayer.cpp string pool: the file string followed by its messages. */
-struct StrmPlayerMsgPool {
-    char file[0x238];
-    char msg238[0x30];
-    char msg268[0x30];
-    char msg298[0x40];
-};
 extern "C" const char lbl_80326768[];
 extern "C" const char lbl_803269A0[];
