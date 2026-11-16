@@ -987,7 +987,12 @@ void fn_802AE02C(void *manager, int animIndex) {
     }
 }
 
-void fn_802AE0B8(int **arg0,int arg1){unsigned char *p; p=(unsigned char *)**arg0+arg1*0x74;if(p[0x69])p[0x69]=0;}
+void fn_802AE0B8(int **manager, int animIndex) {
+    unsigned char *entry;
+    /* Unpause an animation entry: clear its pause flag (+0x69) if it is set. */
+    entry = (unsigned char *)**manager + animIndex * 0x74;
+    if (entry[0x69]) entry[0x69] = 0;
+}
 
 /* Reset every animation entry of the manager to not-started by clearing its running flag at +0x68. */
 void fn_802AE0E0(void **manager) {
