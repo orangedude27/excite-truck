@@ -297,7 +297,7 @@ void fn_802BEAB0(void) {
 
 extern f32 fn_801DCF48(s32, f32, f32);
 extern f64 ceil(f64);
-f64 lbl_80564D70 = 4503599629517952.0;
+extern f64 lbl_80564D70;
 extern f32 lbl_80564D50;
 extern f32 lbl_80564D54;
 extern f32 lbl_80564D5C;
