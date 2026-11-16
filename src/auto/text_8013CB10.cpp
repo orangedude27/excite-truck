@@ -643,9 +643,13 @@ extern "C" s32 fn_8013CFF0(f32 *arg0, f32 *arg1, f32 *arg2) {
 }
 
 extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
+    /* Return the last item whose key (+0x18) is <= arg1 in a 0x24-stride array. */
+    #define itemCount (*(s32 *)arg0)
+    #define itemBase  (*(u8 **)(arg0 + 4))
+
     s32 i = 0;
-    s32 count = *(s32 *)arg0;
-    u8 *items = *(u8 **)(arg0 + 4);
+    s32 count = itemCount;
+    u8 *items = itemBase;
     u8 *result = items + count * 0x24 - 0x24;
     while (count > 0) {
         u8 *item = items + i;
@@ -655,6 +659,9 @@ extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
         count--;
     }
     return (u32)result;
+
+    #undef itemCount
+    #undef itemBase
 }
 
 extern "C" u32 fn_8013D18C(u32 arg0) {
