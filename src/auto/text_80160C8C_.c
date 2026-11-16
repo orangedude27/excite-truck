@@ -2989,6 +2989,9 @@ struct LevelSelectMenu {
     /* 0x07 */ u8 popupShown;  /* help popup 8 has been asked for */
     /* 0x08 */ s32 selection;  /* the entry picked, 1..count of the sub-task list */
 };
+/* The literals the compiler pooled in .sdata2 for this function. */
+#define FLOAT_ONE lbl_80561840  /* 1.0f */
+#define FLOAT_ZERO lbl_80561848 /* 0.0f */
 #pragma scheduling invalid_target
 /* One update of the challenge level-select menu (vtable lbl_8032F790 keeps this
  * at slot 0x1C).  While the mandatory goals met so far sit inside the challenge
