@@ -390,6 +390,9 @@ loop_1:
     }
     return 0;
 }
+/* Reset every configurable control to its defaults: apply the default name/value entries
+   to the parent context (lbl_8055F19C), then refill the control rows in the control
+   context (lbl_8055F190). */
 int fn_8023DD4C() {
     fn_8023DA64(lbl_8055F19C, 1, 1);
     fn_8023E1FC(lbl_8055F190);
