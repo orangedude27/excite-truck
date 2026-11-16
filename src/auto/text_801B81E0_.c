@@ -675,6 +675,8 @@ int fn_801B89E0(void) {
 }
 
 int fn_801B89F8(void) {
+    /* True once the mode timer (lbl_8055E750) has passed the intro-end
+     * threshold (lbl_8056274C). */
     extern float lbl_8055E750;
     extern float lbl_8056274C;
     return lbl_8055E750 > lbl_8056274C;
