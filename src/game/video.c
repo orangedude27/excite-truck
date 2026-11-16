@@ -393,8 +393,9 @@ void fn_802DFB30(void) {
 
 #pragma scheduling invalid_target
 void fn_802DFCC0(void) {
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevSwapMode(1, 0, 0);
+    /* Reset both TEV stages' swap selectors, then refresh the shared blend state. */
+    GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
     fn_802D3144();
 }
 #pragma scheduling on
@@ -969,7 +970,11 @@ extern const u8 lbl_805650C8, lbl_805650C9, lbl_805650CA, lbl_805650CB;
 extern const f32 lbl_805650CC, lbl_805650D0, lbl_805650D4, lbl_805650D8, lbl_805650DC, lbl_805650E0;
 extern const u16 lbl_80565238, lbl_8056523A, lbl_8056523C, lbl_8056523E;
 #pragma processor 750
-void fn_802E13D8(f32 temp_f28, f32 temp_f31, f32 temp_f30, f32 temp_f29, void *arg0) {
+void fn_802E13D8(f32 p0, f32 p1, f32 p2, f32 p3, void *arg0) {
+    register f32 v31 = p0;
+    register f32 v28 = p1;
+    register f32 v30 = p2;
+    register f32 v29 = p3;
     f32 sp30[24];
     u16 sp20[6];
     GXColor kColor;
@@ -1039,7 +1044,7 @@ void fn_802E13D8(f32 temp_f28, f32 temp_f31, f32 temp_f30, f32 temp_f29, void *a
             var_r3 += 0x30;
         }
         {
-            register volatile const u16 *indexPtr = lbl_802FAE28;
+            volatile const u16 *indexPtr = lbl_802FAE28;
             sp20[0] = *indexPtr++;
             sp20[1] = *indexPtr++;
             sp20[2] = *indexPtr++;
@@ -1052,15 +1057,15 @@ void fn_802E13D8(f32 temp_f28, f32 temp_f31, f32 temp_f30, f32 temp_f29, void *a
         temp_r5_3 = *(u32 **)((u8 *)temp_r31 + 4);
         temp_f1 = (f32)temp_r5_3[0];
         temp_f2 = (f32)temp_r5_3[1];
-        temp_f31 = lbl_805650DC + temp_f31;
-        temp_f28 = lbl_805650E0 + -temp_f28;
-        temp_f30 = temp_f30 / temp_f1;
-        temp_f29 = temp_f29 / temp_f2;
+        v31 = lbl_805650DC + v31;
+        v28 = lbl_805650E0 + -v28;
+        v30 = v30 / temp_f1;
+        v29 = v29 / temp_f2;
         GXSetZMode(0, 7, 0);
         GXSetColorUpdate(1);
         GXSetAlphaCompare(7, 0, 1, 0, 0);
         temp_r3 = *(u32 **)((u8 *)temp_r31 + 4);
-        fn_802E1DA4((u8 *)temp_r31 + 0x50, temp_r3[0], temp_r3[1], temp_f31, temp_f28, temp_f30, temp_f29, lbl_805650D8);
+        fn_802E1DA4((u8 *)temp_r31 + 0x50, temp_r3[0], temp_r3[1], v31, v28, v30, v29, lbl_805650D8);
         fn_802D007C(lbl_805650D8);
         GXSetTevSwapMode(0, 0, 0);
         GXSetTevSwapMode(1, 0, 0);
