@@ -1527,9 +1527,11 @@ void fn_801C77AC(void) {
 }
 
 #pragma scheduling on
+/* Confirm the sample-number text field: parse the typed number into sSampleNumber,
+ * switch back to numbered mode and close the text input. */
 void fn_801C77C0(void) {
-    lbl_8055E844 = atoi(lbl_804380F0);
-    lbl_8055E841 = 0;
+    sSampleNumber = atoi(sInputLine);
+    sSampleRandom = 0;
     fn_801C957C(0);
 }
 
