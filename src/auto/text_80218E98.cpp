@@ -9177,8 +9177,9 @@ extern "C" void fn_802298F8(void) {
 extern "C" void fn_802298FC(void) {
 }
 
-extern "C" void fn_80229900(void *arg0) {
-    ((Fn80229900VTable *)arg0)->Call(0, 0);
+/* Invokes the object's virtual Call callback with both arguments zeroed. */
+extern "C" void fn_80229900(void *self) {
+    ((Fn80229900VTable *)self)->Call(0, 0);
 }
 
 extern "C" void fn_80229918(void *self) {
