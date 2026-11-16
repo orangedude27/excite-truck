@@ -1235,11 +1235,13 @@ void fn_802CA008(void *arg0) {
 
 extern void *fn_802C9DE8(void *, int);
 extern char lbl_8034B52C[];
-void fn_802CA04C(int arg0) {
+/* Creates and initializes a draw list node (size 0x18) tagged "mrDrawList". */
+void fn_802CA04C(int listCount) {
     void *obj;
     obj = fn_802C9D10(0x18, lbl_8034B52C);
-    if (obj != 0)
-        fn_802C9DE8(obj, arg0);
+    if (obj != 0) {
+        fn_802C9DE8(obj, listCount);
+    }
 }
 
 void fn_802CA094(int *arg0) {
