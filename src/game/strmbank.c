@@ -32,13 +32,16 @@ void fn_802E7578(void) {
       virtual void f20(s32);
       virtual void f24(s32);
   };
-extern "C" void fn_802E759C(void) {
-    if (lbl_8055FFF0) {
-        delete (Dummy*)lbl_8055FFF0;
-        lbl_8055FFF0 = 0;
-    }
-}
 #pragma cplusplus on
+extern "C" void fn_802E759C(void) {
+    /* Destroy and clear the global stream bank manager object (gStrmBankMgr). */
+#define gStrmBankMgr lbl_8055FFF0
+    if (gStrmBankMgr) {
+        delete (Dummy*)gStrmBankMgr;
+        gStrmBankMgr = 0;
+    }
+#undef gStrmBankMgr
+}
 extern "C" void fn_802E75E4(s32 arg0) {
     ((Dummy_8055FFF0*)lbl_8055FFF0)->f4(arg0);
 }
