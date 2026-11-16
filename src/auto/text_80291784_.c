@@ -198,7 +198,7 @@ void fn_80291A1C(void) {
     fn_802CA294();
     settings[4] = fn_802D39A4(lbl_80564490);
     *((unsigned char *)settings + 0x14) = 0;
-    settings[6] = 0xFFFFFFFF;
+    settings[6] = -1;
     ((float *)settings)[7] = value;
 }
 #pragma pop
@@ -517,15 +517,17 @@ void fn_8029231C(float *arg0) {
     }
 }
 #pragma pop
-void fn_802923C4(int arg0) {
-    unsigned int old;
-    unsigned int *p;
-    unsigned int value;
+void fn_802923C4(int color) {
+    unsigned int packedColor;
+    unsigned int *settings;
+    unsigned int rgb;
+    /* When the lens-flare system is active, set the low 24 bits (RGB) of the
+       packed color/intensity word at settings+0x18, keeping its high byte. */
     if (lbl_8055F75C == 0) return;
-    p = (unsigned int *)lbl_804B4010;
-    old = p[6];
-    value = (unsigned int)arg0 & 0x00FFFFFF;
-    p[6] = (old & 0xFF000000) | value;
+    settings = (unsigned int *)lbl_804B4010;
+    packedColor = settings[6];
+    rgb = (unsigned int)color & 0x00FFFFFF;
+    settings[6] = (packedColor & 0xFF000000) | rgb;
 }
 
 extern float lbl_8056449C;
