@@ -3219,13 +3219,15 @@ extern "C" void fn_8012C4E8(void) {
 }
 #pragma scheduling reset
 extern "C" void *fn_8012C58C(void *arg0) {
-    void *var_r5 = (void *)&lbl_8032ABEC;
+    /* Resource name for the diagnostic dump: the name recorded in the node header
+     * at -8, or "res:unknown" when the tag at -4 is not the resource tag 0x4D474921. */
+    void *name = (void *)&lbl_8032ABEC;
 
     if (arg0 != NULL &&
         (u32)(*(u32 *)((u8 *)arg0 - 4) - 0x4D470000) == 0x4921U) {
-        var_r5 = *(void **)((u8 *)arg0 - 8);
+        name = *(void **)((u8 *)arg0 - 8);
     }
-    return var_r5;
+    return name;
 }
 
 extern "C" const char lbl_8032ABF8[];
