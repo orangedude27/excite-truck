@@ -2243,13 +2243,15 @@ extern "C" void *fn_80215264(void) {
  * indexed [row][column]; rows >= 3 fall back to row 1. */
 #define gWidgetControlTable lbl_80490528
 
-extern "C" s32 fn_80215270(s32 arg0, s32 arg1) {
-    s32 *row;
-    if (arg1 >= 3) {
-        arg1 = 1;
+/* Look up a widget control value by column and row in the row-major table;
+ * rows 3 and above fall back to row 1. */
+extern "C" s32 fn_80215270(s32 column, s32 row) {
+    s32 *rowPtr;
+    if (row >= 3) {
+        row = 1;
     }
-    row = lbl_80490528 + (arg1 * 4);
-    return row[arg0];
+    rowPtr = gWidgetControlTable + (row * 4);
+    return rowPtr[column];
 }
 
 /* Derive four layout coordinates from a node's x, y and unsigned width: the base x,
