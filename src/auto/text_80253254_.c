@@ -667,13 +667,11 @@ void fn_8025419C(void *arg0) {
 extern void fn_802C7AE0(s32, void *, s32, float);
 #pragma scheduling invalid_target
 void fn_80254354(void *arg0) {
-    #pragma scheduling on
-    extern float lbl_80563A2C;
+    extern const float lbl_80563A2C;
     u8 *p;
     s32 i;
     s32 var_r0;
-    float initial = lbl_80563A2C;
-    fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x14), (u8 *)arg0 + 0x598, -1, initial);
+    fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x14), (u8 *)arg0 + 0x598, -1, lbl_80563A2C);
     p = (u8 *)arg0 + 0x5D8;
     i = 0;
     do {
