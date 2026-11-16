@@ -103,11 +103,12 @@ s32 fn_80215F1C(s32 value, s32 count) {
     return value;
 }
 
-s32 fn_80215F5C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* If value is non-zero and count is positive, perform a side-effect callback; return value unchanged. */
+s32 fn_80215F5C(s32 value, s32 count) {
+    if (value != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return value;
 }
 
 extern s32 fn_802C3034(s32);
