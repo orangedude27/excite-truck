@@ -346,23 +346,22 @@ extern float lbl_802FA818[];
 extern float lbl_80564064, lbl_80564068, lbl_8056406C;
   u32 fn_8027656C(void *, void *, u32);
   extern u8 lbl_8049FE98[];
-void fn_80276BE4(void *arg0, void *arg1) {
-    u32 *dst = (u32 *)arg0;
-    u32 *src;
-    unsigned int a;
+void fn_80276BE4(u32 *arg0, f32 *arg1) {
+    u32 a;
     unsigned int b;
+    register u32 *src;
     if (*(unsigned char *)&lbl_8049FD58 != 0) {
         fn_8027656C(lbl_8049FE98 + 4, lbl_8049FE98 + 0x34, 0);
     }
     src = (u32 *)(lbl_8049FE98 + 4);
-    b = src[0]; a = src[1]; dst[0] = b; dst[1] = a;
-    a = src[2]; b = src[3]; dst[2] = a; dst[3] = b;
-    a = src[4]; b = src[5]; dst[4] = a; dst[5] = b;
-    a = src[6]; b = src[7]; dst[6] = a; dst[7] = b;
-    a = src[8]; dst[8] = a;
-    b = src[9]; a = src[10]; dst[9] = b; dst[10] = a;
-    b = src[11]; dst[11] = b;
-    *(f32 *)arg1 = *(f32 *)(lbl_8049FE98 + 0x34);
+    b = src[0]; a = src[1]; arg0[0] = b; arg0[1] = a;
+    a = src[2]; b = src[3]; arg0[2] = a; arg0[3] = b;
+    a = src[4]; b = src[5]; arg0[4] = a; arg0[5] = b;
+    a = src[6]; b = src[7]; arg0[6] = a; arg0[7] = b;
+    a = src[8]; arg0[8] = a;
+    b = src[9]; a = src[10]; arg0[9] = b; arg0[10] = (unsigned short)a;
+    b = src[11]; arg0[11] = b;
+    *arg1 = *(f32 *)(lbl_8049FE98 + 0x34);
 }
 
 /* Points the current camera at the record named `name` - at the "rddefault"
@@ -600,19 +599,12 @@ void fn_80277828(void) {
     }
 }
 int fn_80277960(void *arg0, void *arg1, float *arg2) {
+    struct Matrix { unsigned int words[9]; };
+    struct Vector { unsigned int words[3]; };
     unsigned char *p = (unsigned char *)fn_80276A44(arg0);
     if (p != 0) {
-        int *dst = (int *)arg1;
-        int *src = (int *)(p + 4);
-        int a;
-        int b;
-        b = src[0]; a = src[1]; dst[0] = b; dst[1] = a;
-        a = src[2]; b = src[3]; dst[2] = a; dst[3] = b;
-        a = src[4]; b = src[5]; dst[4] = a; dst[5] = b;
-        a = src[6]; b = src[7]; dst[6] = a; dst[7] = b;
-        dst[8] = src[8];
-        b = src[9]; a = src[10]; dst[9] = b; dst[10] = a;
-        b = src[11]; dst[11] = b;
+        *(struct Matrix *)arg1 = *(struct Matrix *)(p + 4);
+        *(struct Vector *)((unsigned char *)arg1 + 0x24) = *(struct Vector *)(p + 0x28);
         *arg2 = *(float *)(p + 0x34);
         return 1;
     }
