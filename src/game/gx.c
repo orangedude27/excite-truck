@@ -1042,17 +1042,18 @@ void fn_802CFF5C(void* hi) {
     lbl_8055FD1C = hi;
 }
 
-int fn_802CFF64(int arg0) {
-    int next;
-    int old = lbl_8055FD94;
-    int aligned = (arg0 + 0x1F) & ~0x1F;
-    next = old + aligned;
-    if (next <= 0x177000) {
-        lbl_8055FD94 = next;
-        return lbl_8055FDA0 + old;
+/* Bump-allocates size bytes (rounded up to 32) from the GX dynamic-data display-list buffer, wrapping to its start when full. */
+int fn_802CFF64(int size) {
+    int newOffset;
+    int oldOffset = GX_DYNAMIC_OFFSET;
+    int alignedSize = (size + 0x1F) & ~0x1F;
+    newOffset = oldOffset + alignedSize;
+    if (newOffset <= 0x177000) {
+        GX_DYNAMIC_OFFSET = newOffset;
+        return GX_DYNAMIC_DATA + oldOffset;
     }
-    lbl_8055FD94 = aligned;
-    return lbl_8055FDA0;
+    GX_DYNAMIC_OFFSET = alignedSize;
+    return GX_DYNAMIC_DATA;
 }
 
 #pragma dont_inline on
