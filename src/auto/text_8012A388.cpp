@@ -1025,25 +1025,26 @@ extern "C" void fn_8012C4D8(void *);
 extern "C" s32 fn_80128668(void *);
 extern "C" u32 fn_8012BB18(void) { return 1; }
 
-#pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
+    u8 *entry;
     s32 i;
     s32 offset;
     u32 flags;
-    u8 *entry;
-
     if (((u32 (*)(void *))fn_8012BB18)(arg1) == 0) return;
     fn_8012BA1C(arg1);
     fn_8012BC24((void **)arg0, arg1);
     if (arg1 == 0) return;
     if (*(u8 *)((u8 *)arg1 + 0xAC) != 0) {
-        for (i = 0, offset = 0; i < *(s32 *)((u8 *)arg1 + 0x88); i++) {
+        i = 0;
+        offset = 0;
+        while (i < *(s32 *)((u8 *)arg1 + 0x88)) {
             entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
             flags = *(u32 *)(entry + 0x34);
             if ((flags & 4) != 0) {
                 fn_802E317C(lbl_8032AE20);
             }
+            i++;
             entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
             flags = *(u32 *)(entry + 0x34);
             offset += 0x44;
@@ -1059,8 +1060,6 @@ extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
     }
     fn_80128668(arg1);
 }
-
-#pragma pop
 extern "C" void fn_8012BC24(void **arg0, void *arg1) {
     void **var = arg0;
     while (*var != 0) {
@@ -1148,10 +1147,10 @@ extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
             }
             if (lbl_8055DFF9 != 0 && p == 0) ++tries;
             else break;
-        } while (tries < 10);
+        } while (tries < 0x0a);
         if (p == 0) {
             fn_802E30C8(lbl_8032AB58, arg0);
-            fn_8012748C(2);
+            fn_8012748C(0x02);
         }
     } else ++*(s32 *)((char *)p + 0x9C);
     return p;
@@ -3340,17 +3339,17 @@ extern "C" void fn_8012C958(void *arg0) {
     }
 }
 
-extern "C" void fn_8012C9C8(void) {
+extern "C" void *fn_8012C9C8(void) {
     if (lbl_8055E00C == 0) {
         void *p = fn_801284F8(0x20, lbl_8032AC88);
         if (p != 0)
             p = fn_8012A13C(p, lbl_8032AC88, 0x20, 0xD0);
         lbl_8055E010 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055E010) != 0) {
-        register s32 c = lbl_8055E00C;
-        lbl_8055E00C = c + 1;
-    }
+    void *result = fn_8012A2D8(lbl_8055E010);
+    if (result != 0)
+        lbl_8055E00C += 1;
+    return result;
 }
   
   extern "C" void fn_80127464(void);
