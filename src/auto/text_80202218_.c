@@ -78,11 +78,12 @@ int fn_80202248(int modelPath) {
 
 #pragma push
 #pragma dont_inline on
-void fn_802022A0(int *arg0) {
-    int temp_r0 = *arg0;
-    if (temp_r0 != -1) {
-        fn_802C6CF8(temp_r0);
-        *arg0 = -1;
+/* If the handle at *handle is valid (not -1), release it via fn_802C6CF8 and reset to -1. */
+void fn_802022A0(int *handle) {
+    int handleValue = *handle;
+    if (handleValue != -1) {
+        fn_802C6CF8(handleValue);
+        *handle = -1;
     }
 }
 #pragma pop
