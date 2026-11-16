@@ -88,6 +88,10 @@ extern double fn_8002F230(const char*);
 #define fetch() (count++, (*ReadProc)(ReadProcArg, 0, __GetAChar))
 #define unfetch(c) (*ReadProc)(ReadProcArg, c, __UngetAChar)
 
+/* MSL string-to-long-double converter. A state machine consumes characters via ReadProc,
+   accepting an optional sign, INF/NAN, decimal or C99 hexadecimal (0x…p…) floating point,
+   accumulating the coefficient into `d` and the exponent, reporting overflow and chars
+   scanned, and returning the converted value (with the sign applied). */
 long double __strtold(int max_width, int (*ReadProc)(void*, int, int), void* ReadProcArg, int* chars_scanned,
                       int* overflow) {
     int scan_state = start;
