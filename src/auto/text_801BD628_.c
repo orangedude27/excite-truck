@@ -401,19 +401,19 @@ void fn_801BE400(int index, float *m, float scale) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-void fn_801BEAEC(int arg0, int arg1, void *arg2) {
-    float *temp;
-    float f0;
-    float f1;
-    float f2;
-    temp = (float *)(arg0 * 0x1F0 + lbl_8055E798);
-    temp = (float *)((char *)temp + arg1 * 0x10);
-    f2 = temp[18];
-    f1 = temp[17];
-    f0 = temp[16];
-    ((float *)arg2)[0] = f0;
-    ((float *)arg2)[1] = f1;
-    ((float *)arg2)[2] = f2;
+/* Copy the 3-vector at offset 0x40 of orientation entry csList[slot][entry]
+ * into the caller's output vector. */
+void fn_801BEAEC(int slot, int entry, void *out) {
+    float *p;
+    float x, y, z;
+    p = (float *)(slot * 0x1F0 + csList);
+    p = (float *)((char *)p + entry * 0x10);
+    z = p[18];
+    y = p[17];
+    x = p[16];
+    ((float *)out)[0] = x;
+    ((float *)out)[1] = y;
+    ((float *)out)[2] = z;
 }
 #pragma opt_propagation on
 #pragma scheduling on
@@ -497,10 +497,10 @@ void GXInitLightAttnA_801BF188(void *arg0, float farg0, float farg1, float farg2
 void fn_801BF198(void *arg0, void *arg1);
 void fn_801BF0C4(void *arg0, void *arg1, int arg2);
 void fn_801BEDD4(void) {
+    int i;
     char tmp90[16], tmp80[16], tmp70[16], tmp60[16], tmp50[16], tmp40[16];
     float v30[3], v24[3], m2[3], m1[3];
     int sp8;
-    int i;
     for (i = 0; i < lbl_8055E78C; i++) {
         char *p3, *p4, *p5;
         memcpy(lbl_80436D48, (char *)lbl_8055E794 + i * 0xB0, 0xB0);
