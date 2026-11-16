@@ -440,8 +440,9 @@ void fn_80116DDC(void* state, s32 size) {
     fn_8011FF2C(size);
 }
 
-void fn_80116E2C(const u8 *arg0) {
-    const u8 *src = arg0;
+// Copies a null-terminated error message into the global last-error buffer.
+void fn_80116E2C(const u8 *message) {
+    const u8 *src = message;
     u8 *dst = lbl_8041D508;
     u8 c;
     do {
