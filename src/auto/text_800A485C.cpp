@@ -19522,8 +19522,9 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
         virtual void v16(); virtual void v17();
         virtual void call(void *);
     };
+    int zero = 0;
     void *p = *(void **)((u8 *)arg1 + 0x10);
-    lbl_8055DDA0 = 0;
+    lbl_8055DDA0 = zero;
     ((Dispatch *)arg0)->call((u8 *)p + 0x10);
 }
 #pragma scheduling on
@@ -20508,8 +20509,10 @@ done:
 }
 
 extern "C" void fn_800D1C18(void) {
-    void *data = ((void *(*)())OSGetAlarmUserData)();
-    fn_80060CC0(data, WPAD_SPEAKER_PLAY, (u32)&fn_800D1C48);
+    /* Retry-alarm handler: re-issue the speaker play command (WPAD_SPEAKER_PLAY)
+     * for the slot stored as the alarm's user data, answered by fn_800D1C48. */
+    void *speakerSlot = OSGetAlarmUserData();
+    fn_80060CC0(speakerSlot, WPAD_SPEAKER_PLAY, (u32)&fn_800D1C48);
 }
 
 extern "C" void fn_800D1C48(s32 speakerIndex, s32 action) {
