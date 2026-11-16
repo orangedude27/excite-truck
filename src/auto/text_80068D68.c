@@ -28559,10 +28559,12 @@ void TPLBind(void *tplBase) {
     }
 }
 
-void* TPLGet(void* tpl, u32 index) {
-    u32 count = *(u32*)((u8*)tpl + 4);
-    u8* entries = *(u8**)((u8*)tpl + 8);
-    return entries + (index % count) * 8;
+void* TPLGet(void* pal, u32 id) {
+    /* Return the TPL descriptor with the given id, wrapping id modulo the
+     * palette's descriptor count; each descriptor entry is 8 bytes. */
+    u32 numDescriptors = *(u32*)((u8*)pal + 4);
+    u8* descriptors = *(u8**)((u8*)pal + 8);
+    return descriptors + (id % numDescriptors) * 8;
 }
 
 /* Initialize the EUART interface by writing the required EXI setup bytes; returns 1 on
