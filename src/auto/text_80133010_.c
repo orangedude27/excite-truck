@@ -483,13 +483,15 @@ int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
 extern void *memcpy(void *, const void *, unsigned long);
 #pragma push
 #pragma optimize_for_size on
-int fn_80133AD8(int arg0) {
-    int values[17];
+int fn_80133AD8(int sectionIndex) {
+    /* Returns the section name string at sectionIndex from the 17-entry options
+       name table lbl_802F9308, copied to a local buffer before indexing. */
+    int sectionNames[17];
     int *src;
     int *dst;
     int i;
 
-    dst = values - 1;
+    dst = sectionNames - 1;
     src = lbl_802F9308 - 1;
     for (i = 8; i > 0; --i) {
         dst[1] = src[1];
@@ -498,7 +500,7 @@ int fn_80133AD8(int arg0) {
         dst += 2;
     }
     dst[1] = src[1];
-    return values[arg0];
+    return sectionNames[sectionIndex];
 }
 
 #pragma use_lmw_stmw off
