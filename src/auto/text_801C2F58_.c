@@ -1249,7 +1249,18 @@ void fn_801C6CB4(void) {
 
 #pragma inline off
 void fn_801C6CBC(void) {
-    sprintf(lbl_804380F0, lbl_8055AA4C, lbl_804380F0, fn_801C6C28(&lbl_80438268));
+    /* Appends the nearest-index result for the debug reference position to the debug text buffer. */
+#define debugTextBuffer lbl_804380F0
+#define debugTextFormat lbl_8055AA4C
+#define debugRefPosition lbl_80438268
+#define Debug_FindNearestIndex fn_801C6C28
+
+    sprintf(debugTextBuffer, debugTextFormat, debugTextBuffer, Debug_FindNearestIndex(&debugRefPosition));
+
+#undef debugTextBuffer
+#undef debugTextFormat
+#undef debugRefPosition
+#undef Debug_FindNearestIndex
 }
 #pragma inline auto
 void fn_801C6D00(void) {
