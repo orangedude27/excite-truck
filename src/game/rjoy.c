@@ -705,9 +705,10 @@ int fn_802E8690(int controllerIndex) {
 }
 #undef gWiimoteStateTable
 
-unsigned char fn_802E86B4(int index) {
+/* Return the cached WPAD device handle (state record + 0x630) of a controller. */
+unsigned char fn_802E86B4(int controllerIndex) {
     unsigned char *base = lbl_80505978;
-    return *(base + index * 0x638 + 0x630);
+    return *(base + controllerIndex * 0x638 + 0x630);
 }
 
 extern int lbl_802FAE80[4];
