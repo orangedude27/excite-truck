@@ -248,14 +248,17 @@ void fn_8023D7CC(void) {
 #pragma scheduling on
 #pragma use_lmw_stmw on
 #pragma dont_inline on
-void fn_8023DA2C(long arg0, void *arg1, char arg2, long arg3) {
-    char sp8;
-    sp8 = arg2;
-    if (arg3 != 0) {
+/* Config boolean helper: when isSet is nonzero, write value into its (section,key)
+ * record via fn_80133460 (the args are still in r3-r5); otherwise fn_801333E8
+ * reads the option, creating it from value if it is not present yet. */
+void fn_8023DA2C(long section, void *key, char value, long isSet) {
+    char boolValue;
+    boolValue = value;
+    if (isSet != 0) {
         fn_80133460();
         return;
     }
-    fn_801333E8(arg0, arg1, &sp8);
+    fn_801333E8(section, key, &boolValue);
 }
 
 extern char *fn_8023DCCC(char *);
