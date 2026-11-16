@@ -1743,6 +1743,7 @@ void __VISetYUVSEL(u8 value)
 
 void fn_8005BAEC(u8 value)
 {
+    /* Sends value to VI encoder register 0x6E over I2C. */
     u8 data[2];
 
     data[0] = 0x6E;
