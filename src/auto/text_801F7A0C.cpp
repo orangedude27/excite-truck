@@ -1746,6 +1746,9 @@ extern "C" void fn_801FA1D4(void) {
 extern "C" int fn_8020402C(void);
 extern "C" int fn_801F9B28();
 extern "C" void fn_801FA298(void) {
+    // During world setup, build the stage's static-object/animation groups from the
+    // "objects" resource data (fn_801F9B28), but only if that has not been done yet
+    // (fn_8020402C reports an active setup).
     if (fn_8020402C() == 0) {
         fn_801F9B28();
     }
