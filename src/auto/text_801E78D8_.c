@@ -746,9 +746,11 @@ void *fn_801E87A8(void) {
 void fn_801E87B8(long arg0) {
     lbl_8055EB3C[lbl_8055EB34++] = arg0;
 }
-void fn_801E87D4(long arg0) {
-    fn_801E87B8(arg0);
-    lbl_8055EB40[lbl_8055EB38++] = arg0;
+void fn_801E87D4(long element) {
+    /* Records an element into the global registry list and appends it to the
+     * registry array, advancing the element count. */
+    fn_801E87B8(element);
+    lbl_8055EB40[lbl_8055EB38++] = element;
 }
 
 extern void *lbl_8055EB24;
