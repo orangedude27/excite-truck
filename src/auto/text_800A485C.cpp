@@ -16304,13 +16304,13 @@ extern "C" s32 lbl_8031D5C8[];
 struct TransformState800C { s8 channels; u8 pad1[0x9C7]; s32 rows; };
 /* Transform one six-sample row into out, then set out[1]/out[7] from its
  * differences rotated by the (cos, sin) pair in lbl_8031D5C8. */
-static inline void fn_800C0E7C_rotate(s32 *p, s32 *out) {
+static inline void fn_800C0E7C_rotate(s32 *p, s32 *out, s32 *rotation = lbl_8031D5C8, const s32 *matrix = lbl_802F3FB8) {
     s32 v, w;
-    fn_800C1E88(p, lbl_802F3FB8, out);
+    fn_800C1E88(p, matrix, out);
     v = p[0] - p[3] - p[4];
     w = p[1] - p[2] - p[5];
-    out[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
-    out[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
+    out[1] = fn_800C0E7C_fxmul(v, rotation[0]) + fn_800C0E7C_fxmul(w, rotation[1]);
+    out[7] = fn_800C0E7C_fxmul(v, rotation[1]) + fn_800C0E7C_fxmul(w, -rotation[0]);
 }
 #pragma push
 #pragma use_lmw_stmw on
