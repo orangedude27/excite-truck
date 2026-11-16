@@ -11364,9 +11364,10 @@ void bta_dm_disable_timer_cback(void) {
 
 void fn_800719B0(void *arg0) { BTM_SetLocalDeviceName((char *)arg0 + 8); }
 
-void fn_800719B8(void *arg0) {
-    BTM_SetDiscoverability(((u8 *)arg0)[8], 0, 0);
-    BTM_SetConnectability(((u8 *)arg0)[9], 0, 0);
+void fn_800719B8(void *state) {
+    /* Apply the discoverability and connectability modes stored in the state object. */
+    BTM_SetDiscoverability(((u8 *)state)[8], 0, 0);
+    BTM_SetConnectability(((u8 *)state)[9], 0, 0);
 }
 
 void bta_dm_bond(u8 *p_data)
@@ -21939,7 +21940,7 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
 #pragma pop
 void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
     s32 index = (s32)arg0 - 0x40;
-    char *trace_msg = lbl_803196B8;
+    register char *trace_msg = lbl_803196B8;
     void *port;
     u16 port_lcid;
     if (index >= 10) {
