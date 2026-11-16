@@ -899,18 +899,21 @@ s32 fn_80132C50(void* arg0, s32 arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_80132C74(void *arg0, s32 arg1) {
-    Unk131588 *t = (Unk131588 *)arg0;
-    s32 offset = 0;
-    s32 i = 0;
-    while (i < t->count) {
-        Unk131588Elem *e = (Unk131588Elem *)((char *)t->elems + offset);
-        if (stricmp(e->name, (char *)arg1) == 0)
-            return (s32)((char *)t->elems + i * 0x1C);
-        offset += 0x1C;
-        i++;
+s32 fn_80132C74(void *table, s32 name) {
+    /* Find a string-named entry in a ValueTable by case-insensitive name and return
+     * a pointer to its 0x1C-byte record; panic via lbl_8032B73C ("ValueTable \"%s\"
+     * not found in %d tables") if no entry matches. */
+    Unk131588 *valueTable = (Unk131588 *)table;
+    s32 byteOffset = 0;
+    s32 index = 0;
+    while (index < valueTable->count) {
+        Unk131588Elem *entry = (Unk131588Elem *)((char *)valueTable->elems + byteOffset);
+        if (stricmp(entry->name, (char *)name) == 0)
+            return (s32)((char *)valueTable->elems + index * 0x1C);
+        byteOffset += 0x1C;
+        index++;
     }
-    fn_802E317C(lbl_8032B73C, (char *)arg1, t->count);
+    fn_802E317C(lbl_8032B73C, (char *)name, valueTable->count);
     return 0;
 }
 #pragma pop
