@@ -161,10 +161,11 @@ extern "C" void fn_80160850(void) {
 #pragma cplusplus off
 
 #pragma dont_inline on
-int fn_80160998(int arg0) {
+/* Return the value at `index` in the active handler's 5-entry table, or in the static fallback table when no handler is bound. */
+int fn_80160998(int index) {
     if (lbl_8055E2BC != 0)
-        return fn_8001DA48(lbl_8055E2BC, arg0);
-    return lbl_8042FD60[arg0];
+        return fn_8001DA48(lbl_8055E2BC, index);
+    return lbl_8042FD60[index];
 }
 #pragma dont_inline off
 
