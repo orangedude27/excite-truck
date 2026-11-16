@@ -26,8 +26,7 @@ void fn_801292CC(int bankId) {
 #pragma scheduling on
 
 void fn_80129324(void) {
-    /* Unload the currently loaded stream bank ("SpuQueueUnloadBank!"): log the
-       unload, hand the bank handle to the stream-bank manager, then clear it. */
+    /* Unload the currently loaded stream bank ("SpuQueueUnloadBank!"): log the unload, hand the bank handle to the stream-bank manager, then clear it. */
     spuLogPrint(gUnloadBankLog);
     spuUnloadBank(gLoadedBankId);
     gLoadedBankId = 0;
