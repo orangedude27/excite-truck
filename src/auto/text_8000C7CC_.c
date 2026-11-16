@@ -122,8 +122,9 @@ void fn_8000D000(s32 paramA, s32 paramB, s32 paramC) {
 void fn_8000D000(s32, s32, s32);
 #define sAudioFlagD lbl_8055D407
 void fn_8000D048(void) {
+    /* Initialize the audio state, then set audio flag D active. */
     ((void (*)(void))fn_8000D000)();
-    lbl_8055D407 = 1;
+    sAudioFlagD = 1;
 }
 #undef sAudioFlagD
 
