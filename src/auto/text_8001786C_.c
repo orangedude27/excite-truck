@@ -76,10 +76,10 @@ s32 atoi(void);
 #pragma scheduling invalid_target
 /* Warn on the debug console when a vehicle's name belongs to no car class. */
 void fn_8001786C(s32 vehicleNum) {
-    void* name;
-    name = (void*)((char*)GetVehicleByNumber(vehicleNum) + 0x2C);
-    if (GetCarClass((s32)name) == VEHICLE_CLASS_UNCLASSIFIED) {
-        debug_printf(STR_UNCLASSIFIED_CAR, name);
+    void *vehicleName;
+    vehicleName = (void *)((char *)GetVehicleByNumber(vehicleNum) + 0x2C);
+    if (GetCarClass((s32)vehicleName) == VEHICLE_CLASS_UNCLASSIFIED) {
+        debug_printf(STR_UNCLASSIFIED_CAR, vehicleName);
     }
 }
 
