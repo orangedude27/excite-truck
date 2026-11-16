@@ -841,11 +841,13 @@ int fn_8029D4CC(void *arg0) {
     return result;
 }
 #pragma pop
-void fn_8029D550(void *arg0, float *arg1, float *arg2) {
-    arg1[0] = *(float *)((char *)arg0 + 0x54);
-    arg1[1] = *(float *)((char *)arg0 + 0x58);
-    arg1[2] = *(float *)((char *)arg0 + 0x5C);
-    *arg2 = *(float *)((char *)arg0 + 0x60);
+/* Read an object's bounding sphere: its center (x/y/z at +0x54/+0x58/+0x5C)
+ * into center and its radius (+0x60) into radius. */
+void fn_8029D550(void *object, float *center, float *radius) {
+    center[0] = *(float *)((char *)object + 0x54);
+    center[1] = *(float *)((char *)object + 0x58);
+    center[2] = *(float *)((char *)object + 0x5C);
+    *radius = *(float *)((char *)object + 0x60);
 }
 
 extern int fn_80287B94(int, int);
