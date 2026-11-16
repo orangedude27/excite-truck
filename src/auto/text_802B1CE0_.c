@@ -610,14 +610,19 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
-void *fn_802B2934(void *arg0, void **arg1) {
-    struct PtrVec { void **data; int count; } *vec = arg0;
-    int value = *(int *)arg1;
-    int index = vec->count++;
-    void **slot = &vec->data[index];
-    *(int *)slot = value;
-    return slot;
+#pragma push
+#pragma optimization_level 3
+#pragma opt_pointer_aliasing on
+void *fn_802B2934(void *arg0, void **__restrict arg1) {
+    int next;
+    int idx = ((int *)arg0)[1];
+    void **base = *(void ***)arg0;
+    next = idx + 1;
+    ((int *)arg0)[1] = next;
+    base[idx] = *arg1;
+    return &base[idx];
 }
+#pragma pop
 
 extern void fn_802B2C34(void (*)(void *), void *);
 extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
