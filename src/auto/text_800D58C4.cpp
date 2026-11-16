@@ -1417,13 +1417,15 @@ extern "C" void fn_800D7F6C(s32 *arg0) {
 }
 
 #pragma dont_inline fn_800D7F78
-extern "C" void fn_800D7F78(void *arg0) {
-    s32 *p = (s32 *)((u8 *)arg0 + 4);
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
-    *(s32 *)arg0 = 0;
-    *(s32 *)((u8 *)arg0 + 4) = (s32)p;
-    *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+extern "C" void fn_800D7F78(void *list) {
+    /* Initialize an embedded nw4r::ut::LinkListImpl: clear the node count, then
+     * make the sentinel link at +4 point to itself so the list starts empty. */
+    s32 *sentinel = (s32 *)((u8 *)list + 4);
+    *(s32 *)((u8 *)list + 4) = 0;
+    *(s32 *)((u8 *)list + 8) = 0;
+    *(s32 *)list = 0;
+    *(s32 *)((u8 *)list + 4) = (s32)sentinel;
+    *(s32 *)((u8 *)list + 8) = (s32)sentinel;
 }
 
 #pragma dont_inline on
