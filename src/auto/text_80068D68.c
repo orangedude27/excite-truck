@@ -5980,12 +5980,13 @@ u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
     return result == 0;
 }
 
-u8 fn_80073E5C(u8 *arg0) {
-    u8 result;
+/* Delete a BTM security device record by BD address under the BTE lock. */
+u8 fn_80073E5C(u8 *bd_addr) {
+    u8 deleteResult;
     fn_8006EAD0();
-    result = BTM_SecDeleteDevice(arg0);
+    deleteResult = BTM_SecDeleteDevice(bd_addr);
     fn_8006EAD4();
-    return result == 0;
+    return deleteResult == 0;
 }
 
 void fn_80073EA4(void) {
