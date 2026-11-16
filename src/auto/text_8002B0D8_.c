@@ -254,9 +254,9 @@ double x;
     } else {
         w = s;
         __LO(w) = 0;
-        c = (t - w * w) / (s + w);
         r = p / q;
-        p = r * (lbl_80560700 * s) - (lbl_80560690 - lbl_80560700 * c);
+        c = (t - w * w) / (s + w);
+        p = (lbl_80560700 * s) * r - (lbl_80560690 - lbl_80560700 * c);
         q = lbl_80560708 - lbl_80560700 * w;
         t = lbl_80560708 - (p - q);
     }
@@ -1310,14 +1310,14 @@ extern double __kernel_cos(double, double);
 extern double __kernel_sin(int, double, double);
 __declspec(section ".sdata") extern double lbl_80560A80;
 #pragma push
-#pragma processor 750
 #pragma dont_inline on
+#pragma scheduling invalid_target
 double cos(double x) {
-    double y[2];
+    double y[2], z = 0.0;
     int n, ix;
-    ix = *(int *)&x;
+    ix = __HI(x);
     ix &= 0x7fffffff;
-    if (ix <= 0x3fe921fb) return __kernel_cos(x, lbl_80560A80);
+    if (ix <= 0x3fe921fb) return __kernel_cos(x, z);
     else if (ix >= 0x7ff00000) return x - x;
     else {
         n = __ieee754_rem_pio2(x, y);
