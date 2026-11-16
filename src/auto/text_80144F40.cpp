@@ -1607,11 +1607,13 @@ extern "C" void fn_801470B0(s32 arg0, s32 arg1, s32 arg2, f32 x, f32 y, f32 widt
 #pragma scheduling on
 #pragma pop
 #pragma dont_inline reset
-extern "C" f32 fn_80147204(void *arg0, const char *arg1) {
-    if (arg0 != 0) {
-        if ((u8)*arg1 == 1)
-            arg1++;
-        return fn_800108C8(arg1, *(f32 *)((u8 *)arg0 + 0x10));
+extern "C" f32 fn_80147204(void *value, const char *text) {
+    /* Parse a number from text (skipping a leading 0x01 tag byte), scaled by the
+       value object's +0x10 field; return 0.0f when there is no value object. */
+    if (value != 0) {
+        if ((u8)*text == 1)
+            text++;
+        return fn_800108C8(text, *(f32 *)((u8 *)value + 0x10));
     }
     return lbl_805615D4;
 }
