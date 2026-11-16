@@ -314,11 +314,14 @@ void fn_8026451C(void *arg0) {
 }
 #pragma scheduling on
 int fn_80264538(int arg0, int arg1) {
+    /* Destructor-like cleanup: clear global object pointer lbl_8055F444 and free if requested. */
+#define sCurrentObject lbl_8055F444
     if (arg0 != 0) {
-        lbl_8055F444 = 0;
+        sCurrentObject = 0;
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
+#undef sCurrentObject
 }
 
 void* fn_80264580(void) {
