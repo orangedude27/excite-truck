@@ -410,14 +410,6 @@ extern void **fn_801B2ED0(void);
 extern void *fn_80138B1C(int);
 extern float lbl_80561430;
 #pragma cplusplus on
-struct VObj_8013B590 {
-    virtual void v0();
-    virtual void v1();
-    virtual void v2();
-    virtual void v3();
-    virtual void v4();
-    virtual int v5();
-};
 extern "C" float fn_8013B590(void) {
     void *object = *fn_801B2ED0();
     int value = ((int (*)(void *))((void **)object)[7])(object);
