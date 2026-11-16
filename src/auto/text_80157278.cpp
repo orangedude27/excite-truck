@@ -3696,14 +3696,16 @@ extern "C" s32 fn_8015D7CC(void* arg0) {
     return 0;
 }
 
-extern "C" void fn_8015D814(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 0x248) == 0) {
-        struct Obj {
-            virtual s32 dummy();
-            virtual s32 get();
+extern "C" void fn_8015D814(void* self) {
+    /* Lazily cache a sound handle at +0x248 from the sound object at +0x244:
+       if the cached handle is null, fetch it via virtual get() (vtable +0x0C). */
+    if (*(s32*)((u8*)self + 0x248) == 0) {
+        struct SoundSource {
+            virtual s32 reserved0();
+            virtual s32 getHandle();
         };
-        Obj* obj = *(Obj**)((u8*)arg0 + 0x244);
-        *(s32*)((u8*)arg0 + 0x248) = obj->get();
+        SoundSource* soundSource = *(SoundSource**)((u8*)self + 0x244);
+        *(s32*)((u8*)self + 0x248) = soundSource->getHandle();
     }
 }
 
