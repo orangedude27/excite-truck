@@ -439,10 +439,11 @@ float fn_8013B650(int arg0) {
     return fn_8013B5DC(arg0, 3) + temp;
 }
 
-void fn_8013B6A4(int arg0, float arg1) {
-    char *p = lbl_8042F858 + arg0 * 8;
-    *(float *)(p + 0xC) = arg1;
-    *(float *)(p + 8) = arg1;
+/* Set both float fields (offsets +8 and +0xC) of table entry `index` to `value`. */
+void fn_8013B6A4(int index, float value) {
+    char *entry = lbl_8042F858 + index * 8;
+    *(float *)(entry + 0xC) = value;
+    *(float *)(entry + 8) = value;
 }
 
 extern int lbl_802F9360[];
