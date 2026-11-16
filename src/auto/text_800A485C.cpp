@@ -24834,7 +24834,6 @@ static inline s32 ResetBtnFindSecond(s32 *entry, s32 value) {
     }
     return -1;
 }
-#pragma dont_inline fn_800CF3EC
 extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
     register void *pane;
