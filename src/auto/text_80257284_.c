@@ -349,7 +349,9 @@ return_one:
     return 1;
 }
 
-void fn_80257A6C(int *arg0, int arg1, int arg2) { *arg0 = (*arg0 + (arg2 + arg1)) % arg2; }
+/* Advance a selector index by a delta (+1/-1), wrapping it into [0, count).
+ * Adding count before the modulo keeps negative steps positive. */
+void fn_80257A6C(int *index, int delta, int count) { *index = (*index + (count + delta)) % count; }
 
 int fn_8000DA10(void);
 int fn_8001BA74(int);
