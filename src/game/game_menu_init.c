@@ -441,8 +441,9 @@ void fn_80004E20(void) {
 }
 
 void fn_80004EC0(const char* source) {
+    /* Copy a string into the 32-byte global selection buffer, forcing a trailing NUL if it fills. */
     int remaining = 0x20;
-    volatile char* destination = (volatile char *)&lbl_8034EC58;
+    volatile char* destination = (volatile char*)&lbl_8034EC58;
 
     while ((*destination++ = *source++) != '\0') {
         if (--remaining > 0) {
