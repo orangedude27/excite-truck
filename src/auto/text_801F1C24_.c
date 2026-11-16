@@ -1289,9 +1289,20 @@ int fn_801F3AC0(int arg0, int arg1) {
     return arg0;
 }
 
-void fn_801F3B00(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 8) = *fn_801F1CE8(arg1);
-    *(char *)((char *)arg0 + 4) = 1;
+void fn_801F3B00(void *self, int source) {
+    /* FogColorTMH's load method: take the colour word out of the source
+     * parameter block's raw 16-byte value field (the one at +0x2C that
+     * fn_801F1CE8 points at), keep it as this parameter's colour and mark the
+     * value as loaded, so fn_801F3BE4 will hand it to the fog colour setter
+     * instead of the default. */
+    struct FogColorTmh {
+        void *vtable;         /* 0x00 */
+        unsigned char loaded; /* 0x04: the colour below is set */
+        int color;            /* 0x08 */
+    } *fog = (struct FogColorTmh *)self;
+
+    fog->color = *fn_801F1CE8(source);
+    fog->loaded = 1;
 }
 
 // Byte-swap four consecutive 32-bit words in place (reverse each word's bytes)
