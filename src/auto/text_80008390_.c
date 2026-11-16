@@ -179,6 +179,8 @@ void fn_80008390(void) {
     }
 }
 
+/* IdList_Contains: true if an ID is in the enabled-command list fn_80008390 builds. */
+#define IdList_Contains fn_800085D8
 #pragma dont_inline on
 #pragma scheduling invalid_target
 s32 fn_800085D8(s32 arg0) {
