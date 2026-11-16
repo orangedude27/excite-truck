@@ -991,9 +991,9 @@ void fn_802D5FE4(void *arg0) {
     case 6:
     case 8: if (fn_802DAC64()) fn_802D5680(object); else fn_802D56D4(object); break;
     case 7: fn_802D5838(object); break;
-    case 14: fn_802D4988(object); break;
     case 10: fn_802D5ACC(object); break;
     case 11: fn_802D479C(object); break;
+    case 14: fn_802D4988(object); break;
     case 12: fn_802D4C44(object); break;
     case 15: fn_802D4ECC(object); break;
     case 13: fn_802D5B8C(object); break;
