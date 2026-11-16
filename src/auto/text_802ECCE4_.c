@@ -108,7 +108,7 @@ s32 fn_802ECEC0(void) {
 
 void fn_802ECEC4(void) {
     fn_802ECEC0();
-    fn_802ECE48((char *)lbl_8055D300);
+    fn_802ECE48(lbl_8055D300);
 }
 
 s32 fn_802ECEEC(void) {
