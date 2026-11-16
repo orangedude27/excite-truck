@@ -28,13 +28,14 @@ static void Init5z(s32 z, s32 *p) {
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_8001EEE8(void) {
-    s32 v;
-    s32 *p;
+    /* Static-initialization thunk: initialize a 5-word state block and its associated flag word. */
+    s32 value;
+    s32 *slotPtr;
     fn_8000D838(&lbl_8055D5E8);
-    p = lbl_80358668 + 1;
+    slotPtr = lbl_80358668 + 1;
     lbl_80358668[0] = 0;
-    v = 0x7B;
-    lbl_80358668[1] = v;
+    value = 0x7B;
+    lbl_80358668[1] = value;
     lbl_80358668[2] = 0;
     lbl_80358668[3] = 0;
     lbl_80358668[4] = 0;
