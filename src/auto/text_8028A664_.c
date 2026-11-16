@@ -232,11 +232,12 @@ extern "C" void fn_8028A784(void) {
     lbl_8055F6F4 = 0;
 }
 #pragma cplusplus off
-s32 fn_8028A85C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_8028A85C(s32 object, s32 count) {
+    /* If the object pointer is valid and count is positive, free it via fn_80128668 (heap free, mode 3); returns the pointer unchanged. */
+    if (object != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern void fn_8028C92C(void *);
