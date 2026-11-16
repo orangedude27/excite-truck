@@ -1940,27 +1940,6 @@ extern "C" s32 fn_800A7484(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s
 
 #pragma pop
 
-static inline s32 ResetBtnFindFirst(s32 *entry, s32 count, s32 index) {
-    s32 j;
-    for (j = 0; j < count; j++, entry += 2) {
-        if (entry[0] == index && entry[1] == 2)
-            return j;
-    }
-    return -1;
-}
-static inline s32 ResetBtnFindSecond(s32 *entry, s32 value) {
-    s32 j = 0;
-    s32 k;
-    for (k = 0; k < 0x25; k++, entry += 4, j++) {
-        if (entry[0] == 5 && entry[1] == value)
-            return j;
-        j++;
-        if (entry[2] == 5 && entry[3] == value)
-            return j;
-    }
-    return -1;
-}
-
 #pragma dont_inline on
 extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
     /* Process an SD/request object: if open (flag8) bind driver and step via
