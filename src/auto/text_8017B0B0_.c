@@ -282,16 +282,17 @@ void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int a
 }
 extern float lbl_80561BA8;
 #pragma scheduling off
-void fn_8017B6A8(void *arg0) {
-    float value = lbl_80561BA8;
-    *(int *)((char *)arg0 + 0x1E4) = 0;
-    *(float *)((char *)arg0 + 0x188) = value;
-    *(float *)((char *)arg0 + 0x18C) = value;
-    *(float *)((char *)arg0 + 0x190) = value;
-    *(float *)((char *)arg0 + 0x194) = value;
-    *(float *)((char *)arg0 + 0x198) = value;
-    *(float *)((char *)arg0 + 0x19C) = value;
-    *(float *)((char *)arg0 + 0x1A0) = value;
+/* Reset an object's accumulated motion/force fields (+0x188..+0x1A0) and the flag at +0x1E4 to zero; a subset of fn_8017B198's full reset. */
+void fn_8017B6A8(void *object) {
+    float zero = lbl_80561BA8;
+    *(int *)((char *)object + 0x1E4) = 0;
+    *(float *)((char *)object + 0x188) = zero;
+    *(float *)((char *)object + 0x18C) = zero;
+    *(float *)((char *)object + 0x190) = zero;
+    *(float *)((char *)object + 0x194) = zero;
+    *(float *)((char *)object + 0x198) = zero;
+    *(float *)((char *)object + 0x19C) = zero;
+    *(float *)((char *)object + 0x1A0) = zero;
 }
 
 extern float PSVECDotProduct(const void *, const void *);
