@@ -580,12 +580,14 @@ void *fn_80166754(void *arg0) {
     return arg0;
 }
 #pragma processor gekko
+/* IsSystemReady gate: returns 1 when the config-driven enable flag is set and
+ * the one-shot status latch is still clear, 0 otherwise. */
 int fn_801667F0(void) {
-    int result = 0;
+    int ready = 0;
     if (lbl_8055E32A) {
-        if (!lbl_8055E32B) result = 1;
+        if (!lbl_8055E32B) ready = 1;
     }
-    return result;
+    return ready;
 }
 
 /* Frees and clears the global resources tracked by lbl_8055E334 and
