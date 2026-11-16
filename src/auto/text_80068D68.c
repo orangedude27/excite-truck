@@ -25285,6 +25285,9 @@ UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle)
     return result;
 }
 
+#define BTE_TRACE_LEVEL_OFFSET 0x4630 /* byte offset in lbl_803C4C40 of the BTE trace/debug level */
+#define BTE_TRACE_LEVEL_QUERY  0xFF    /* passed to leave the stored level unchanged (query only) */
+
 u8 fn_80096670(u8 value) {
     if (value != 0xFF) lbl_803C4C40[0x4630] = value;
     return lbl_803C4C40[0x4630];
