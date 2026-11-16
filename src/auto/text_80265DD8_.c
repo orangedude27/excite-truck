@@ -400,9 +400,10 @@ extern int lbl_8055CFF4;
 void fn_80266150(void *arg0);
 int fn_80178CA4(void);
 float PSQUATMultiply(float *arg0, int arg1);
-void *fn_80266120(void *arg0) {
-    fn_80266150(arg0);
-    return arg0;
+/* Initialize the camera spline cursor at cursor and return the same pointer. */
+void *fn_80266120(void *cursor) {
+    fn_80266150(cursor);
+    return cursor;
 }
 
 #pragma scheduling off
