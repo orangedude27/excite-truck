@@ -473,18 +473,21 @@ float fn_801E0EE4(void *arg0, void *arg1) {
     return (float)fn_8002F234(delta[0] * delta[0] + delta[1] * delta[1]);
 }
 #pragma scheduling on
-void *fn_801E0F34(int arg0) {
-    void *ptr;
-    void *pool;
-    int value;
-    int size;
-    value = arg0;
-    size = (arg0 << 3) + 8;
-    pool = (void *)&lbl_8032C108;
-    ptr = fn_801284E8(pool, size);
-    *(int *)((char *)ptr + 4) = value;
-    *(int *)ptr = value;
-    return ptr;
+/* Allocates a small block from the "arenabnd" arena sized for `count` 8-byte
+ * entries plus an 8-byte header, stores `count` in the header (+0 and +4),
+ * and returns the block. */
+void *fn_801E0F34(int count) {
+    void *block;
+    void *arena;
+    int storedCount;
+    int allocSize;
+    storedCount = count;
+    allocSize = (count << 3) + 8;
+    arena = (void *)&lbl_8032C108;
+    block = fn_801284E8(arena, allocSize);
+    *(int *)((char *)block + 4) = storedCount;
+    *(int *)block = storedCount;
+    return block;
 }
 
 void fn_801E0F78(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
