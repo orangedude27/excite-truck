@@ -60,7 +60,8 @@ void fn_801E3640(void *arg0, float *arg1) {
 }
 
 #pragma dont_inline on
-int fn_801E36F0(int arg0) { return (((unsigned int)arg0 >> 1) & 0x7F7F7F) | ((unsigned int)arg0 & 0xFF000000); }
+/* Halve the red, green and blue bytes of a packed 0xAARRGGBB colour, passing the alpha byte through. */
+int fn_801E36F0(int color) { return (((unsigned int)color >> 1) & 0x7F7F7F) | ((unsigned int)color & 0xFF000000); }
 #pragma dont_inline off
 
 #pragma push
