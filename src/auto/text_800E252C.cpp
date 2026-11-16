@@ -797,7 +797,6 @@ extern "C" int DVDGetDriveStatus(void);
 extern "C" void fn_80031C8C(unsigned short);
 extern "C" void fn_80031C94(unsigned short);
 extern "C" void fn_80031C9C(unsigned short);
-extern float lbl_80560F20, lbl_80560F24, lbl_80560F30;
 extern "C" void fn_800E3228(void *arg0) {
     int status = DVDGetDriveStatus();
     if (status == 0) {
