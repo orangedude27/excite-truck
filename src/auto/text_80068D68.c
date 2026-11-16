@@ -15961,7 +15961,7 @@ int btsnd_hcic_reject_esco_conn(void *p_buf, u8 *bd_addr, u8 reason) {
     return btu_hcif_send_cmd(buf);
 }
 
-BOOLEAN btsnd_hcic_hold_mode(UINT16 handle, UINT16 max_hold_period, UINT16 min_hold_period) {
+BOOLEAN btsnd_hcic_hold_mode_real(UINT16 handle, UINT16 max_hold_period, UINT16 min_hold_period) {
     u8 *p = GKI_getpoolbuf(2);
     if (p == NULL)
         return FALSE;
