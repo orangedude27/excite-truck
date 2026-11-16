@@ -1078,6 +1078,8 @@ void fn_802658FC(void) {
 }
 
 void fn_80265904(void) {
+    /* Fade-in callback: after updating the trail manager, if the "fade_in" trail exists
+       but is no longer active (status 2), set the completion flags. */
     fn_80236914();
     if (fn_8023695C(lbl_8055C4A8) == 2) {
         fn_80216CA8();
