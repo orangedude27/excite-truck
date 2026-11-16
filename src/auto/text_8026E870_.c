@@ -161,16 +161,18 @@ void fn_8026E870(Vec *arg0, Vec *arg1, void *arg2, Vec *arg3) {
     out->forward.y = up.y;
     out->forward.z = up.z;
 }
-int fn_8026EA14(int arg0) {
-    unsigned int shift = arg0 - 4;
-    int result = 0;
-    if (shift > 0x13)
+int fn_8026EA14(int mode) {
+    /* Nonzero if mode is one of the supported values {4, 5, 6, 8, 23}:
+       the bit at index mode-4 is set in the mask 0x80017. */
+    unsigned int modeBit = mode - 4;
+    int isValid = 0;
+    if (modeBit > 0x13)
         goto done;
-    if (!((1U << shift) & 0x80017))
+    if (!((1U << modeBit) & 0x80017))
         goto done;
-    result = 1;
+    isValid = 1;
 done:
-    return result;
+    return isValid;
 }
 #pragma scheduling on
 
@@ -253,7 +255,7 @@ extern void *fn_801B2ED0(s32);
   #pragma push
  #pragma processor 750
  #pragma cplusplus on
- extern "C" f32 fn_8026EB4C(void *arg0) {
+extern "C" f32 fn_8026EB4C(void *arg0) {
     class Obj {
     public:
         virtual void dummy0();
@@ -268,8 +270,8 @@ extern void *fn_801B2ED0(s32);
     f32 t;
     int c;
     int flag;
-    char *sub = *(char **)((char *)arg0 + 0x140);
-    f1 = !(*(f32 *)(sub + 0x258C) > lbl_80563E5C) ? lbl_8055F534 : lbl_8055F530;
+    char *sub;
+    f1 = !(*(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x258C) > lbl_80563E5C) ? lbl_8055F534 : lbl_8055F530;
     f30 = fn_8026EAEC(f1);
     f2 = lbl_8055F528;
     diff = lbl_8055F52C - f2;
