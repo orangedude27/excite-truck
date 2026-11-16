@@ -115,10 +115,11 @@ void fn_802ECFEC(void *arg0) {
     fn_802E12DC(((void **)arg0)[16]);
 }
 
-void fn_802ECFF4(void *arg0) {
+/* Destroy the given movie object when no current movie is set. */
+void fn_802ECFF4(void *movie) {
     if (lbl_805600F8 == 0) {
-        fn_802E1290(((void **)arg0)[16]);
-        fn_80128668(arg0);
+        fn_802E1290(((void **)movie)[16]);
+        fn_80128668(movie);
     }
 }
 
