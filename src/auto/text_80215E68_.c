@@ -81,11 +81,12 @@ void fn_80215EA8(void) {
     fn_8002F634(lbl_80490710, fn_80215EC4, 0x18, 0x10);
 }
 #pragma scheduling on
-s32 fn_80215EC4(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80215EC4(s32 value, s32 count) {
+    /* Return value unchanged; if non-zero and count is positive, call fn_80128668 as a side effect. */
+    if (value != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return value;
 }
 
 #pragma scheduling invalid_target
