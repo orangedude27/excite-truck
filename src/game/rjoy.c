@@ -693,9 +693,12 @@ void *fn_802E8668(int controllerIndex) {
 }
 #undef gWiimoteStateTable
 
+/* lbl_80505978 is the table of 0x638-byte Wiimote/controller state records. */
+#define gWiimoteStateTable lbl_80505978
 int fn_802E8690(int index) {
     return *(unsigned int *)(lbl_80505978 + index * 0x638 + 0x124) == 1;
 }
+#undef gWiimoteStateTable
 
 unsigned char fn_802E86B4(int index) {
     unsigned char *base = lbl_80505978;
