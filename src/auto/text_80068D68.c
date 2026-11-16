@@ -5598,10 +5598,11 @@ void fn_8007301C(void *arg0) {
     if (*callback != 0) (*callback)(0, arg0);
 }
 
-void fn_80073044(u8 *arg0) {
-    if (arg0[0xC] != 0) {
-        lbl_803C0C14[0x6C] = arg0[8];
-        *(u16 *)(lbl_803C0C14 + 0x70) = *(u16 *)(arg0 + 0xA);
+void fn_80073044(u8 *pData) {
+    /* Start or stop periodic RSSI/link-quality polling from a signal-strength request. */
+    if (pData[0xC] != 0) {
+        lbl_803C0C14[0x6C] = pData[8];
+        *(u16 *)(lbl_803C0C14 + 0x70) = *(u16 *)(pData + 0xA);
         bta_dm_signal_strength_timer_cback(0);
     } else {
         fn_8007148C((s32)(lbl_803C0C14 + 0x54));
@@ -8281,11 +8282,14 @@ s32 fn_80078310(s32 callback)
 
 extern char lbl_80315F24[];
 void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
-    u8 *base = lbl_803C0F78;
-    tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(base + 0x618);
+    tBTM_CMPL_CB *p_cb;
     volatile tBTM_QOS_SETUP_CMPL qossu;
-    fn_80070F90(base + 0x600);
-    *(tBTM_CMPL_CB **)(base + 0x618) = NULL;
+    {
+        u8 *base = lbl_803C0F78;
+        p_cb = *(tBTM_CMPL_CB **)(base + 0x618);
+        fn_80070F90(base + 0x600);
+        *(tBTM_CMPL_CB **)(base + 0x618) = NULL;
+    }
     if (p_cb) {
         qossu.status = status;
         qossu.handle = handle;
