@@ -2490,8 +2490,10 @@ extern "C" void fn_8029C084(void *arg0, int arg1) {
     }
 }
 #pragma pop
-int fn_8029C190(void* arg0) {
-    fn_8029BE54(lbl_8055F7DC, arg0);
+int fn_8029C190(void* entry) {
+    // Add or update a 0x14-byte record (keyed by entry+0xC) in the UI state table
+    // lbl_8055F7DC via fn_8029BE54, then report that record size to the caller.
+    fn_8029BE54(lbl_8055F7DC, entry);
     return 0x14;
 }
 #include "types.h"
