@@ -488,10 +488,13 @@ extern "C" void fn_800EB41C(void* arg0) {
     *(f32*)((u8*)arg0 + 4) = value;
 }
 
-extern "C" f32 fn_800EB430(void* arg0) {
-    if (*(s32*)arg0 == 0 && lbl_80560FF0 == *(f32*)((u8*)arg0 + 0x10))
+extern "C" f32 fn_800EB430(void* env) {
+    /* Get an envelope's volume ratio: a silent attack (state 0 with a zero
+     * attack factor) maps to the zero-volume ratio, otherwise scale the
+     * current envelope volume by 1/10 before converting to a ratio. */
+    if (*(s32*)env == 0 && lbl_80560FF0 == *(f32*)((u8*)env + 0x10))
         return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(lbl_80560FF0);
-    return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)arg0 + 4) / lbl_80560FF4);
+    return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)env + 4) / lbl_80560FF4);
 }
 
 extern const f32 lbl_80560FF8;
@@ -2333,6 +2336,8 @@ extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const
     u32 magic;
     u32 size;
     u32 valid;
+    u32 m;
+    u32 d;
     *(void**)self = 0;
     *(void**)((u8*)self + 4) = 0;
     if (data == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x47, (const char*)(file + 0xB4));
@@ -2353,7 +2358,9 @@ extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const
     }
     if (size > 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x34, (const char*)(file + 0x5C));
     size = *sizeField;
-    valid = (~(size & ~0x100u) - ((0x100u - size) >> 1)) >> 31;
+    m = ~(size & ~0x100u);
+    d = (0x100u - size) >> 1;
+    valid = (m - d) >> 31;
 check_valid:
     if (valid == 0) return self;
     *(void**)self = (void*)data;
