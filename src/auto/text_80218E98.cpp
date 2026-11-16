@@ -9141,11 +9141,13 @@ extern "C" void fn_80229864(void *widget) {
     (*(u8 *)((u8 *)widget + 0x18)) = 1;
 }
 
-extern "C" void fn_80229884(void *arg0) {
-    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
-        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+// Deactivate a UI widget: clear its active flag (+0x18), and if it is still live
+// (+0x1A) mark it dirty (+0x234) so the screen redraws it.
+extern "C" void fn_80229884(void *widget) {
+    if ((*(u8 *)((u8 *)widget + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)widget + 0x234)) = 1;
     }
-    (*(u8 *)((u8 *)arg0 + 0x18)) = 0;
+    (*(u8 *)((u8 *)widget + 0x18)) = 0;
 }
 
 extern "C" s32 fn_802298A4(s32 arg0) {
