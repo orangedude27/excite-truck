@@ -33,11 +33,13 @@ void fn_802E6B50(void) {
 #pragma scheduling on
 void fn_802E6B94(void) {}
 
-void *fn_802E6B98(int arg0) {
-    int sp8 = arg0;
-    ((unsigned char *)&lbl_8055FFC8)[4] = 0;
-    memcpy(&lbl_8055FFC8, &sp8, 4);
-    return &lbl_8055FFC8;
+/* Formats a 4-byte memcard chunk ID (e.g. 'MCSH') as a NUL-terminated string
+ * in the static chunkIdString buffer, for the "chunk: %s" registration log. */
+void *fn_802E6B98(int chunkId) {
+    int id = chunkId;
+    ((unsigned char *)&chunkIdString)[4] = 0;
+    memcpy(&chunkIdString, &id, 4);
+    return &chunkIdString;
 }
 
 #pragma dont_inline on
