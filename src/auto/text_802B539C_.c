@@ -228,10 +228,11 @@ extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
 }
 
 extern "C" void fn_802B57B8(void) {
-    int name;
-    name = (int)lbl_8034A588;
-    fn_8012E96C((const char *)name);
-    fn_802B5510((const char *)name);
+    /* Load the umat.val resource and ensure the global parameters singleton exists. */
+    int resourcePath;
+    resourcePath = (int)lbl_8034A588;
+    fn_8012E96C((const char *)resourcePath);
+    fn_802B5510((const char *)resourcePath);
     if (lbl_8055F9E8 == 0) {
         lbl_8055F9E8 = (void *)fn_8013184C();
     }
