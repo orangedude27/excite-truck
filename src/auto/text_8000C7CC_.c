@@ -404,10 +404,14 @@ u8 fn_8000D75C(void) {
 
 s32 fn_8000D764(void) {
     /* Return a free audio slot index, or -1 when audio is already active. */
-    if (lbl_8055D404 != 0) {
+#define sAudioActiveFlag lbl_8055D404
+#define FindFreeAudioSlot fn_8000CCB8
+    if (sAudioActiveFlag != 0) {
         return -1;
     }
-    return fn_8000CCB8();
+    return FindFreeAudioSlot();
+#undef sAudioActiveFlag
+#undef FindFreeAudioSlot
 }
 
 extern s32 fn_80019BA8(void);
