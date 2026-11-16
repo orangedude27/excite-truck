@@ -1053,11 +1053,12 @@ void *fn_8027C258(void *arg0, long arg1) {
     return (char *)*(void **)((char *)arg0 + 0xAF0C) + arg1 * 0xC;
 }
 
-long *fn_8027C26C(void *arg0, const char *arg1) {
-    long index = fn_8027C1C8(arg0, arg1);
+/* Look up a named entry in the object's table and return a pointer to that 0xC-byte record, or 0 if not found. */
+long *fn_8027C26C(void *container, const char *name) {
+    long index = fn_8027C1C8(container, name);
     if (index < 0)
         return 0;
-    return (long *)((char *)*(void **)((char *)arg0 + 0xAF0C) + index * 0xC);
+    return (long *)((char *)*(void **)((char *)container + 0xAF0C) + index * 0xC);
 }
 
 #pragma push
