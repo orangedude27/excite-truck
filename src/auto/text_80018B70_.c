@@ -53,12 +53,14 @@ void fn_80018B70(void) {
     fn_8027DEAC();
 }
 
+/* qsort comparator for unlockable records: order by value ascending, using the
+ * original collection index as a stable tiebreaker when values are equal. */
 s32 fn_80018B7C(void *arg0, void *arg1) {
     s32 diff;
-    
-    diff = ((s32 *)arg0)[2] - ((s32 *)arg1)[2];
+
+    diff = ((UnlockableEntry *)arg0)->value - ((UnlockableEntry *)arg1)->value;
     if (diff == 0) {
-        return ((s32 *)arg0)[4] - ((s32 *)arg1)[4];
+        return ((UnlockableEntry *)arg0)->sortIndex - ((UnlockableEntry *)arg1)->sortIndex;
     }
     return diff;
 }
