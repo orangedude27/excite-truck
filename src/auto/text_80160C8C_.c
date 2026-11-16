@@ -1088,12 +1088,21 @@ extern "C" void **fn_80161C94(void) {
     return 0;
 }
 #pragma cplusplus off
+/* Reads the current player's "tutorial_level" option.  The options live in the
+   player's own section (OPTIONS_SECTION_PLAYER0 + the player index fn_8000DA10
+   answers with), and fn_801332D0 writes the value it is handed back into the
+   table when that option isn't in it yet, so an option that was never written
+   reads back as the default 1. */
 s32 fn_80161D14(void) {
-    s32 sp8;
-    s32 temp = fn_8000DA10();
-    sp8 = 1;
-    fn_801332D0(temp + 0xC, lbl_8055A0B0, &sp8);
-    return sp8;
+#define OPT_TUTORIAL_LEVEL lbl_8055A0B0 /* points at the name "tutorial_level" */
+#define OPTIONS_SECTION_PLAYER0 12      /* [PLAYER0]; + player index picks [PLAYER<n>] */
+    s32 tutorialLevel;
+    s32 playerIndex = fn_8000DA10();
+    tutorialLevel = 1;
+    fn_801332D0(playerIndex + OPTIONS_SECTION_PLAYER0, OPT_TUTORIAL_LEVEL, &tutorialLevel);
+    return tutorialLevel;
+#undef OPT_TUTORIAL_LEVEL
+#undef OPTIONS_SECTION_PLAYER0
 }
 
 extern char lbl_8032F72C[];
