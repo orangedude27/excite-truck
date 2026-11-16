@@ -813,16 +813,21 @@ extern "C" void fn_80166A24(void) {
 }
 #pragma pop
 float fn_80166DD4(void *arg0) {
-    float y1, y0, t, x1, x0;
-    float *p = (float *)arg0;
-    y1 = p[3];
-    y0 = p[2];
-    if ((float)__fabs(y0 - y1) <= lbl_80558DC4) return p[0];
-    t = (float)(lbl_8055E318 - y0) / (y1 - y0);
-    x1 = p[1];
-    x0 = p[0];
-    t = t < lbl_805618D0 ? t : lbl_805618D0;
-    t = t > lbl_8056189C ? t : lbl_8056189C;
+    float y0;
+    float y1;
+    float x0;
+    float x1;
+    float normalized;
+    float t;
+    y1 = *(float *)((char *)arg0 + 0xC);
+    y0 = *(float *)((char *)arg0 + 8);
+    if ((float)__fabs(y0 - y1) <= lbl_80558DC4) return *(float *)arg0;
+    normalized = (lbl_8055E318 - y0) / (y1 - y0);
+    x1 = *(float *)((char *)arg0 + 4);
+    x0 = *(float *)arg0;
+    t = lbl_805618D0;
+    t = (t < normalized) ? t : normalized;
+    t = (t > lbl_8056189C) ? t : lbl_8056189C;
     return x0 + t * (x1 - x0);
 }
 
