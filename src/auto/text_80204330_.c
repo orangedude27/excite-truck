@@ -49,6 +49,9 @@ struct Gui80204 {
 };
 #pragma cplusplus off
 #pragma dont_inline on
+/* Tune Dash: true while the 3.5-second (3500 ms) intro/lockout window is still
+ * active, i.e. the elapsed time since the screen's timestamp (fn_80204354)
+ * is below 3500 ms. */
 int fn_8020437C(void) {
     return fn_80204354() < 3500;
 }
