@@ -205,13 +205,14 @@ void fn_801F1F38(void) {
     }
 }
 
+/* Allocate and initialize a 12-byte object with vtable lbl_8033A868. */
 void fn_801F1F84(void) {
-    void *p = fn_801284F8(0xC, &lbl_8033A644);
-    if (p != 0) {
-        float f = lbl_80562F40;
-        *(void **)p = &lbl_8033A868;
-        *(float *)((char *)p + 8) = f;
-        *(char *)((char *)p + 4) = 0;
+    void *obj = fn_801284F8(0xC, &lbl_8033A644);
+    if (obj != 0) {
+        float zero = lbl_80562F40;
+        *(void **)obj = &lbl_8033A868;
+        *(float *)((char *)obj + 8) = zero;
+        *(char *)((char *)obj + 4) = 0;
     }
 }
 
