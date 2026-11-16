@@ -1200,10 +1200,11 @@ extern "C" void *fn_80158374(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern "C" void fn_801584A4(void* arg0) {
 }
 
-extern "C" void fn_801584A8(void* arg0) {
-    *(u32*)((u8*)arg0 + 0) = (u32)arg0 + 0xC;
-    *(u32*)((u8*)arg0 + 8) = 0x10;
-    *(u32*)((u8*)arg0 + 4) = 0;
+extern "C" void fn_801584A8(void *object) {
+    /* Initialize a collection object: point its items at the inline storage at +0xC, set the count (+0x4) to 0 and its capacity (+0x8) to 0x10. */
+    *(u32 *)((u8 *)object + 0) = (u32)object + 0xC;
+    *(u32 *)((u8 *)object + 8) = 0x10;
+    *(u32 *)((u8 *)object + 4) = 0;
 }
 
 extern void lbl_8032F350(void);
@@ -2610,8 +2611,8 @@ extern "C" void fn_8015B340(Unk801577F0* self) {
 extern "C" f32 fn_8015B404(void* arg0) {
     Fn8015B404Obj* self = (Fn8015B404Obj*)arg0;
     u8* base = (u8*)arg0;
-    f32 one = lbl_8056177C;
-    f32 zero = lbl_80561754;
+    f32 one = *(const f32*)&lbl_8056177C;
+    f32 zero = *(const f32*)&lbl_80561754;
     u8* p = base;
     s32 i = 0;
     *(u8*)(base + 0x294) = 0;
@@ -2626,7 +2627,7 @@ extern "C" f32 fn_8015B404(void* arg0) {
             *(f32*)(base + 0x28C) = b;
             s32 still = *(f32*)(p + 0x24C) > lbl_80558DC4[0];
             if (still) {
-                f32 t = *(f32*)(p + 0x24C);
+                f32 t = *(volatile f32*)(p + 0x24C);
                 *(f32*)(p + 0x24C) = t - one;
             }
             u8* o = (u8*)fn_8017960C(i);
@@ -4136,27 +4137,27 @@ extern "C" void fn_8015E5F4(ArrayTracker* group, s32 value) {
 }
 extern "C" void fn_8015E674(void *arg0, int arg1) {
  struct A { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void call(int); };
- int i = 0; int off = 0; void **arr; void *st; void *ob2;
+ int offset=0, i=0; void **array; void *state,*obj;
  goto check;
 loop:
- arr=*(void ***)((char *)arg0+4);
- ((A *)arr[off/4])->call(arg1);
- off+=4; i++;
+ array=*(void ***)((char *)arg0+4);
+ ((A *)array[offset/4])->call(arg1);
+ offset+=4; i++;
 check:
  if(i<*(int *)((char *)arg0+8)) goto loop;
- st=*(void **)((char *)arg0+0x50); ob2=*(void **)st;
- if(!ob2) goto done;
- if(*(int *)((char *)st+8)==0) {
-  *(char *)((char *)ob2+0x4a)=0; *(char *)((char *)ob2+0x4b)=1; *(char *)((char *)ob2+0x49)=1;
+ state=*(void **)((char *)arg0+0x50); obj=*(void **)state;
+ if(!obj) goto done;
+ if(*(int *)((char *)state+8)==0) {
+  *(char *)((char *)obj+0x4a)=0; *(char *)((char *)obj+0x4b)=1; *(char *)((char *)obj+0x49)=1;
  } else {
-  ob2=*(void **)((char *)st+4);
-  if(ob2 && *(int *)((char *)st+0xc)==0) {
-   *(char *)((char *)ob2+0x49)=1; *(char *)((char *)ob2+0x4b)=0; *(char *)((char *)ob2+0x4a)=0;
+  obj=*(void **)((char *)state+4);
+  if(obj && *(int *)((char *)state+0xc)==0) {
+   *(char *)((char *)obj+0x49)=1; *(char *)((char *)obj+0x4b)=0; *(char *)((char *)obj+0x4a)=0;
   }
-  ob2=*(void **)st; *(char *)((char *)ob2+0x4a)=1; *(char *)((char *)ob2+0x4c)=0;
+  obj=*(void **)state; *(char *)((char *)obj+0x4a)=1; *(char *)((char *)obj+0x4c)=0;
  }
- *(int *)((char *)st+0xc)=*(int *)((char *)st+8);
- *(int *)((char *)st+8)=1;
+ *(int *)((char *)state+0xc)=*(int *)((char *)state+8);
+ *(int *)((char *)state+8)=1;
 done:;
 }
 
