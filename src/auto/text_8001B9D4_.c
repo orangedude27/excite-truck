@@ -152,10 +152,11 @@ s32 fn_8001BA10(s32 ptr, s32 count) {
     return ptr;
 }
 
-void fn_8001BA50(void *arg0) {
-    ((s8 *)arg0)[0x10] = 0;
-    ((s32 *)arg0)[0] = 0;
-    ((s32 *)arg0)[1] = -1;
+void fn_8001BA50(void *record) {
+    /* Initialize a 0x14-byte map-marker record: clear +0x0, set the key at +0x4 to the -1 sentinel, clear the byte at +0x10. */
+    ((s8 *)record)[0x10] = 0;
+    ((s32 *)record)[0] = 0;
+    ((s32 *)record)[1] = -1;
 }
 
 void fn_8001BA68(void) {
