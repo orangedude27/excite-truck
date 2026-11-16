@@ -227,7 +227,8 @@ void fn_802E7C14(int channel) {
 #define sRjoyMotorEnabled  lbl_80560008 /* cached WPAD rumble-enabled flag used by the motor driver */
 #define getWpadMotorConfig fn_802E9A24  /* config getter: 1 when WPAD rumble is enabled */
 void fn_802E7C40(void) {
-    lbl_80560008 = fn_802E9A24();
+    /* Cache the WPAD rumble config setting into rjoy's motor-enabled flag. */
+    sRjoyMotorEnabled = getWpadMotorConfig();
 }
 
 extern void fn_8005EE78();
