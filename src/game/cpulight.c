@@ -3,6 +3,7 @@
 // Static-init thunk fn_802DD430 (+ .ctors slot 0x802ED5DC) remains in
 // auto/text_802DD430_.c pending a promotion pass.
 #include "revolution/GX/GXHardware.h"
+extern void GXSetAlphaCompare(int, unsigned char, int, unsigned char, int);
 extern void fn_802CADD0(int, int);
 extern void fn_802DFB30(void);
 extern void *lbl_8055FEB4;
@@ -1003,21 +1004,32 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
     int exp;
     float p;
     fn_802DCAE4_GXColor col;
+
     lbl_8055D148 = farg1;
     fn_802DBD88();
-    if (arg2 != -2) fn_802CADD0(arg2, 1);
+    if (arg2 != -2) {
+        fn_802CADD0(arg2, 1);
+    }
     fn_802DB778(2);
     if (arg1 != -2) {
         lbl_8055FEC0 = 1;
         farg0 = lbl_80565050 * farg0;
         diff = (float)fn_8002F208(lbl_80565058) - (float)fn_8002F208(farg0);
         c = (float)ceil(lbl_80565060 + (float)__fabs(diff));
-        if (diff > lbl_80565048) factor = lbl_80565064; else factor = lbl_80565068;
+        if (diff > lbl_80565048) {
+            factor = lbl_80565064;
+        } else {
+            factor = lbl_80565068;
+        }
         r0 = -0x2E;
         r3 = (int)(factor * c);
-        if (r3 > -0x2E) r0 = r3;
+        if (r3 > -0x2E) {
+            r0 = r3;
+        }
         exp = 0x11;
-        if (r0 < 0x11) exp = r0;
+        if (r0 < 0x11) {
+            exp = r0;
+        }
         p = (float)fn_8002EFBC(lbl_80565070, (float)exp);
         farg0 *= lbl_80565078;
         farg0 /= p;
@@ -1035,7 +1047,10 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
     GXSetVtxAttrFmt(0, 9, 1, 4, 0);
     GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
     GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
-    col.r = 0xC0; col.g = 0xC0; col.b = 0xC0; col.a = 0x14;
+    col.r = 0xC0;
+    col.g = 0xC0;
+    col.b = 0xC0;
+    col.a = 0x14;
     GXSetTevColor(2, col);
 }
 
