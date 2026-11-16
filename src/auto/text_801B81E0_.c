@@ -387,8 +387,9 @@ extern "C" void fn_801B85E0(void *arg0, void *arg1, void *arg2, void *arg3) {
     ((Dummy_801B8874 *)lbl_8055E744)->d34(arg0, arg1, arg2, arg3);
 }
 #pragma scheduling on
-extern "C" void fn_801B8610(void *a, void *b) {
-    ((Dummy_801B8318 *)lbl_8055E744)->f36(a, b);
+extern "C" void fn_801B8610(void *arg0, void *arg1) {
+    /* Forward two arguments to the current arena master's vtable slot f36. */
+    ((Dummy_801B8318 *)lbl_8055E744)->f36(arg0, arg1);
 }
 #pragma cplusplus on
 extern "C" int fn_801B8630(int arg0, int arg1, int arg2) {
