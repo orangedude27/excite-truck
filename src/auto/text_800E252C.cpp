@@ -544,8 +544,6 @@ extern "C" void __ct__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void fn_8002F53C(void *, void *, void *, s32, s32); /* extern */
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *, int);
 extern "C" void fn_800E2C98(void *);
-extern f32 lbl_80560F20;
-extern f32 lbl_80560F24;
 #pragma push
 #pragma processor 750
 void *fn_800E279C(void *arg0) {
