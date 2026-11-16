@@ -352,16 +352,18 @@ struct IndexedLineNode {
 void *fn_80138438(void *arg0) { void *node; void *best; node=*(void **)((char *)arg0+0x14); best=arg0; while(node!=arg0) { if(*(unsigned int *)((char *)node+0x10)>*(unsigned int *)((char *)best+0x10)) best=node; node=*(void **)((char *)node+0x14); } return best; }
 
 void *fn_8013846C(void *arg0) {
-    void *node;
-    void *best;
+    /* Return the node with the smallest path index in the circular line-node
+       ring, using arg0 as the sentinel that ends the scan. */
+    struct IndexedLineNode *node;
+    struct IndexedLineNode *best;
 
-    node = *(void **)((char *)arg0 + 0x14);
-    best = arg0;
+    node = ((struct IndexedLineNode *)arg0)->next;
+    best = (struct IndexedLineNode *)arg0;
     while (node != arg0) {
-        if (*(unsigned int *)((char *)node + 0x10) < *(unsigned int *)((char *)best + 0x10)) {
+        if (node->index < best->index) {
             best = node;
         }
-        node = *(void **)((char *)node + 0x14);
+        node = node->next;
     }
     return best;
 }
