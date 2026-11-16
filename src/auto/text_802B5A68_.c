@@ -64,6 +64,7 @@ extern void fn_802E3734(void *);
 extern float fn_801DCF48(float *, float, float);
 extern char lbl_8034A8B0[];
 extern float lbl_80564C98;
+#define FRAME_STEP lbl_80564C98 /* 0.05: step added per frame (max clamp is 10) */
 extern void fn_802B6568(void *, const char *, ...);
 extern s32 fn_802B05E4(void);
 extern s32 fn_802B7B08(void);
