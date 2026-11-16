@@ -45,22 +45,22 @@ void fn_801D1244(float *entry) {
 #pragma scheduling invalid_target
 void fn_801D1250(float *arg0, int arg1) {
     char *p = (char *)lbl_804348E8[arg1];
-    float f4 = *(float *)(p + 0x25D0);
-    float f5 = *(float *)(p + 0x25F4);
+    float f4 = *(float *)(p + 0x25d0);
+    float f5 = *(float *)(p + 0x25f4);
     float f6;
     if (f4 > arg0[11]) {
         f6 = lbl_80562A4C > (f4 - arg0[8]) ? lbl_80562A4C : (f4 - arg0[8]);
         {
             float first = arg0[2] * f4;
-            float sq = f4 * f4;
-            float second = arg0[1] * sq;
+            float square = f4 * f4;
+            float second = arg0[1] * square;
             float base = arg0[3];
             float val = (base + (first + second)) - arg0[9] * f6;
             f6 = arg0[10] > val ? arg0[10] : val;
         }
     } else {
-        float sq2 = f4 * f4;
-        f6 = arg0[6] + (arg0[5] * f4 + arg0[4] * sq2);
+        float square = f4 * f4;
+        f6 = arg0[6] + (arg0[5] * f4 + arg0[4] * square);
     }
     arg0[0] = f5 * f6 - f4 * arg0[7];
 }
@@ -136,12 +136,13 @@ void fn_801D1468(void) {
     lbl_8055E908 = ((int (*)(int, void *, int, int, int))fn_8002F37C)(buffer, fn_801D14BC, 0, 0x34, count);
 }
 
-void fn_801D14BC(void* arg0) {
- float value=lbl_80562A4C;
- *(float*)((char*)arg0+0x18)=value; *(float*)((char*)arg0+0x14)=value;
- *(float*)((char*)arg0+0x10)=value; *(float*)((char*)arg0+0xc)=value;
- *(float*)((char*)arg0+8)=value; *(float*)((char*)arg0+4)=value;
- *(float*)((char*)arg0+0x1c)=value; *(float*)((char*)arg0+0x20)=value;
+// Zeroes the eight float fields of one 0x34-byte entry (element-init callback).
+void fn_801D14BC(void* entry) {
+    float zero = lbl_80562A4C;
+    *(float*)((char*)entry+0x18)=zero; *(float*)((char*)entry+0x14)=zero;
+    *(float*)((char*)entry+0x10)=zero; *(float*)((char*)entry+0xc)=zero;
+    *(float*)((char*)entry+8)=zero; *(float*)((char*)entry+4)=zero;
+    *(float*)((char*)entry+0x1c)=zero; *(float*)((char*)entry+0x20)=zero;
 }
 
 extern void *lbl_804348E8[];
