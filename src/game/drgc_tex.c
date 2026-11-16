@@ -176,15 +176,16 @@ enum DrTexMap {
 #define DRREQ_ENV_ALPHA_TEX 0x0B
 
 #pragma dont_inline on
-void fn_802D768C(void *arg0) {
+/* Marks a drgc texture record slot free and releases its external resource handle, if any. */
+void fn_802D768C(void *record) {
     extern void fn_80128658(s32);
-    s32 temp_r0;
+    s32 resourceHandle;
 
-    temp_r0 = *(s32 *)((u8 *)arg0 + 0xE8);
-    *(s8 *)((u8 *)arg0 + 0x20) = 0;
-    if (temp_r0 != 0) {
-        fn_80128658(temp_r0);
-        *(s32 *)((u8 *)arg0 + 0xE8) = 0;
+    resourceHandle = *(s32 *)((u8 *)record + 0xE8);
+    *(s8 *)((u8 *)record + 0x20) = 0;
+    if (resourceHandle != 0) {
+        fn_80128658(resourceHandle);
+        *(s32 *)((u8 *)record + 0xE8) = 0;
     }
 }
 #pragma dont_inline reset
