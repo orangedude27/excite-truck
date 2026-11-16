@@ -124,6 +124,7 @@ int fn_80131234(const char *);
 int fn_80215214(void *, void *, int);
 #pragma dont_inline on
 int fn_8024C550(void) {
+    /* Menu "save" action: write the save image to the memory card, then rebuild the per-slot name/state arrays shown in the menu. */
     fn_802E6FBC();
     fn_8024C464();
     return 0;
