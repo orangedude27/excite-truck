@@ -329,13 +329,13 @@ extern "C" const char lbl_80326C7C[];
 extern "C" const char lbl_80326C58[];
 extern "C" void fn_800FB358(void *);
 extern "C" s32 fn_800FB374(s32, s32);
-extern "C" void fn_800F0E64(void **arg0) {
-    void *p = *arg0;
+extern "C" void fn_800F0E64(void **handle) {
+    void *sound = *(void **)handle;
     /* Clear the sound's back-reference (if it still points here), then the handle. */
-    if (p && *(void **)((char *)p + 0x1E0) == arg0)
-        *(void **)((char *)p + 0x1E0) = 0;
-    if (*arg0)
-        *arg0 = 0;
+    if (sound && *(void **)((char *)sound + 0x1E0) == handle)
+        *(void **)((char *)sound + 0x1E0) = 0;
+    if (*(void **)handle)
+        *(void **)handle = 0;
 }
 
 /* Set envelope sustain level (valid range 0-16); panics on out-of-range value. */
