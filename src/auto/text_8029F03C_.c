@@ -158,6 +158,25 @@ void fn_8029F124(void) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+/* Effect entry layout (0x34 bytes) and globals used by fn_8029F188. */
+#define EFFECT_POS_X 0x4
+#define EFFECT_POS_Y 0x8
+#define EFFECT_POS_Z 0xc
+#define EFFECT_VEL_X 0x10
+#define EFFECT_VEL_Y 0x14
+#define EFFECT_VEL_Z 0x18
+#define EFFECT_BASE_X 0x1c
+#define EFFECT_BASE_Y 0x20
+#define EFFECT_BASE_Z 0x24
+#define EFFECT_SPAWN_FLAG 0x2e
+#define EFFECT_OBJECT 0x30
+#define EFFECT_STRIDE 0x34
+#define gAllowParticleAdd lbl_8055F73C
+#define gWarnCounter lbl_8055F824
+#define gWarnParticleAddFalse lbl_8034981C
+#define gTimeStep lbl_805646B0
+#define gEffectAllocator lbl_804B9B7C
+
 #pragma use_lmw_stmw off
 void fn_8029F188(void) {
     unsigned char *entry;
