@@ -11527,11 +11527,13 @@ extern "C" s32 fn_800B77C0(void *lock) {
     return prevCount;
 }
 
-extern "C" void fn_800B783C(void *arg0) {
+/* Release a recursive volume lock: drop the recursion count and, on the last
+ * release, clear the owner thread and signal the lock's semaphore. */
+extern "C" void fn_800B783C(void *lock) {
     extern s32 fn_800B8048(s32);
-    if (--*(s32 *)((u8 *)arg0 + 4) == 0) {
-        *(s32 *)((u8 *)arg0 + 0xc) = 0;
-        fn_800B8048(*(s32 *)((u8 *)arg0 + 8));
+    if (--*(s32 *)((u8 *)lock + PF_LOCK_COUNT_OFFSET) == 0) {
+        *(s32 *)((u8 *)lock + PF_LOCK_OWNER_OFFSET) = 0;
+        VFSemaphoreSignal(*(s32 *)((u8 *)lock + PF_LOCK_SEM_OFFSET));
     }
 }
 
