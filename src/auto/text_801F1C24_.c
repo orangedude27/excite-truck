@@ -1461,12 +1461,13 @@ void *fn_801F3EF8(void *arg0, int arg1) {
 #undef vtable_801F3EF8
 #undef DeleteObject
 }
-void fn_801F3F44(int arg0, volatile unsigned char *arg1) {
-    unsigned char t;
-    t=arg1[0x2C]; arg1[0x2C]=arg1[0x2F]; arg1[0x2F]=t;
-    t=arg1[0x2D]; arg1[0x2D]=arg1[0x2E]; arg1[0x2E]=t;
-    t=arg1[0x30]; arg1[0x30]=arg1[0x33]; arg1[0x33]=t;
-    t=arg1[0x31]; arg1[0x31]=arg1[0x32]; arg1[0x32]=t;
+void fn_801F3F44(int unused, volatile unsigned char *buffer) {
+    /* Reverse the byte order of two 4-byte fields at offsets 0x2C and 0x30. */
+    unsigned char temp;
+    temp = buffer[0x2C]; buffer[0x2C] = buffer[0x2F]; buffer[0x2F] = temp;
+    temp = buffer[0x2D]; buffer[0x2D] = buffer[0x2E]; buffer[0x2E] = temp;
+    temp = buffer[0x30]; buffer[0x30] = buffer[0x33]; buffer[0x33] = temp;
+    temp = buffer[0x31]; buffer[0x31] = buffer[0x32]; buffer[0x32] = temp;
 }
 void fn_801F3F88(void) {
 
