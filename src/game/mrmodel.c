@@ -499,7 +499,7 @@ void fn_802C5BA0(int *entry) {
 
 #pragma scheduling invalid_target
 u16 fn_802C5BEC(int arg0, int arg1) {
-    return ((arg0 * 2) & 0xFFFE) + ((int (*)(int, int))fn_802C5A50)(5, 0x64) + (arg1 & 0xFFFF);
+    return (((int (*)(int, int))fn_802C5A50)(5, 0x64) - -((arg0 * 2) & 0xFFFE)) + (arg1 & 0xFFFF);
 }
 #pragma scheduling on
 extern int fn_802CAC28(void *, int);
