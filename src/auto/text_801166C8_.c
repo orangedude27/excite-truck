@@ -4440,36 +4440,35 @@ void fn_8011D5F0(void* arg0, void* arg1) {
                 cnt--;
             }
             if ((flag & 1) == 0) {
-                u32 mask;
+                struct { u32 value; } maskStorage;
                 u32 k = *(u32*)(self + 0x20);
                 u8* out = *(u8**)(self + 0x2C);
                 u8* tbl = *(u8**)(self + 0x24);
                 u8* names = self + 0x10;
-                mask = 0xFFFFFFFFU >> (0x20 - k);
+                maskStorage.value = 0xFFFFFFFFU >> (0x20 - k);
                 do {
                     u32 e;
-                    u32 len;
                     val--;
                     if (cnt >= k) {
-                        e = tbl[bits & mask];
-                        len = e >> 4;
+                        e = tbl[bits & maskStorage.value];
                         *out = names[e & 0xF];
+                        e >>= 4;
                         out++;
-                        bits = bits >> len;
-                        cnt -= len;
+                        bits = bits >> e;
+                        cnt -= e;
                     } else {
                         u32 w = *ptr;
-                        e = tbl[mask & (bits | (w << cnt))];
-                        len = e >> 4;
+                        e = tbl[maskStorage.value & (bits | (w << cnt))];
                         *out = names[e & 0xF];
+                        e >>= 4;
                         out++;
-                        if (cnt >= len) {
-                            bits = bits >> len;
-                            cnt -= len;
+                        if (cnt >= e) {
+                            bits = bits >> e;
+                            cnt -= e;
                         } else {
-                            bits = w >> (len - cnt);
+                            bits = w >> (e - cnt);
                             ptr++;
-                            cnt = cnt + 0x20 - len;
+                            cnt = cnt + 0x20 - e;
                         }
                     }
                 } while (val != 0);
