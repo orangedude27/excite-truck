@@ -885,7 +885,6 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
         }
         if (arg1 > 0) {
             ((void *(*)(void *))fn_80128668)(arg0);
-            return arg0;
         }
     }
     return arg0;
