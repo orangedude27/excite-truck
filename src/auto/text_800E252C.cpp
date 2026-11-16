@@ -2713,15 +2713,15 @@ extern "C" void *memset(void *, int, unsigned int);
 extern "C" void fn_80033918(void *, void *);
 extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4) {
     unsigned char sp8[0x28];
-    unsigned int message = (unsigned int)lbl_803221A8;
+    const char *message = lbl_803221A8;
     void **entry;
     int i;
     if (arg1 >= 2)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)message, 0x434, (const char *)(message + 0x258));
+        Panic__Q26nw4hbm2dbFPCciPCce(message, 0x434, message + 0x258);
     switch (arg2) {
     case 0:
         if (arg3 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)message, 0x439, (const char *)(message + 0x2A0));
+            Panic__Q26nw4hbm2dbFPCciPCce(message, 0x439, message + 0x2A0);
         memcpy(sp8, arg3, 0x20);
         *(u16 *)(sp8 + 0x20) = *(u16 *)((char *)arg3 + 0x20);
         *(u16 *)(sp8 + 0x22) = *(u16 *)((char *)arg3 + 0x22);
@@ -2902,54 +2902,44 @@ extern "C" unsigned short CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(float);
 extern "C" void fn_80033B0C(void *, short *);
 extern "C" void fn_80033B74(void *, unsigned short, unsigned short);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *self) {
-    char *channel = self;
-    int channelIndex = 0;
-    int channelOffset = 0;
-    short zero = 0;
-    short one = 1;
-    int inner;
-    char *entry;
+    struct ChannelParam {
+        float lpfFreq;
+        char pad[0x18];
+    };
+    struct AxVoiceView {
+        char pad0[0xc];
+        void *vpb[4][4];
+        char pad4c[0xa8 - 0x4c];
+        ChannelParam param[3];
+        char padfc[0x104 - 0xfc];
+        int voiceOutCount;
+        int channelCount;
+        char pad10c[0x138 - 0x10c];
+        float lpfFreq;
+    };
+#define voice ((AxVoiceView *)self)
     unsigned short localCoefs[10];
-    unsigned short rate;
 
-    while (channelIndex < *(int *)(self + 0x108)) {
-        rate = CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(
-            *(float *)(self + 0x138) + *(float *)(channel + 0xa8));
+    for (int i = 0; i < voice->channelCount; i++) {
+        unsigned short rate = CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(voice->lpfFreq + voice->param[i].lpfFreq);
         if (rate >= 0x3e80) {
-            localCoefs[8] = zero;
-            localCoefs[9] = zero;
-            entry = (char *)((unsigned int)self + channelOffset);
-            inner = 0;
-            while (inner < *(int *)(self + 0x104)) {
-                fn_80033B0C(*(void **)(entry + 0xc), (short *)&localCoefs[8]);
-                entry += 0x10;
-                inner++;
-            }
-        } else if (*(unsigned short *)(*(char **)(self + 0xc) + 0x1fc) == 1) {
+            localCoefs[8] = 0;
+            localCoefs[9] = 0;
+            for (int j = 0; j < voice->voiceOutCount; j++)
+                fn_80033B0C(voice->vpb[j][i], (short *)&localCoefs[8]);
+        } else if (*(unsigned short *)((char *)voice->vpb[0][0] + 0x1fc) == 1) {
             AXGetLpfCoefs(rate, &localCoefs[1], &localCoefs[0]);
-            entry = (char *)((unsigned int)self + channelOffset);
-            inner = 0;
-            while (inner < *(int *)(self + 0x104)) {
-                fn_80033B74(*(void **)(entry + 0xc), localCoefs[1], localCoefs[0]);
-                entry += 0x10;
-                inner++;
-            }
+            for (int j = 0; j < voice->voiceOutCount; j++)
+                fn_80033B74(voice->vpb[j][i], localCoefs[1], localCoefs[0]);
         } else {
-            localCoefs[4] = one;
-            localCoefs[5] = zero;
+            localCoefs[4] = 1;
+            localCoefs[5] = 0;
             AXGetLpfCoefs(rate, &localCoefs[6], &localCoefs[7]);
-            entry = (char *)((unsigned int)self + channelOffset);
-            inner = 0;
-            while (inner < *(int *)(self + 0x104)) {
-                fn_80033B0C(*(void **)(entry + 0xc), (short *)&localCoefs[4]);
-                entry += 0x10;
-                inner++;
-            }
+            for (int j = 0; j < voice->voiceOutCount; j++)
+                fn_80033B0C(voice->vpb[j][i], (short *)&localCoefs[4]);
         }
-        channel += 0x1c;
-        channelOffset += 4;
-        channelIndex++;
     }
+#undef voice
 }
 
 extern "C" unsigned int __mulhwu(unsigned int, unsigned int);
