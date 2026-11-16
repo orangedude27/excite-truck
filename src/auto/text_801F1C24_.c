@@ -1165,6 +1165,7 @@ void fn_801F3764(void *arg0, int arg1) {
     *(char *)((char *)arg0 + 4) = 1;
 }
 
+/* Set the draw/text color: a dim gray when the current state is 1, otherwise a lighter gray. */
 void fn_801F37A4(void) {
     if (*fn_801E1F44() == 1) {
         fn_802C9950(0xFF646464);
