@@ -998,6 +998,8 @@ s32 fn_802B6E00(s32 arg0, s32 arg1) {
 }
 
 s32 fn_802B6E30(void) {
+    /* Return a scale/step value based on lbl_8055FA38 (view mode): 2->2, 3->4,
+       5->1, 4 or any other value -> 0. */
     switch (lbl_8055FA38) {
     case 2: return 2;
     case 3: return 4;
