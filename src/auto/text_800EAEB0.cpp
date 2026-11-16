@@ -1762,11 +1762,12 @@ extern "C" void fn_800EE2E0(void *arg0, s32 arg1) {
     Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(*(void **)((u8 *)arg0 + 0xBC), arg0, arg1);
 }
 
-extern "C" s32 fn_800EE2F4(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_800EE2F4(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668_noarg();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *);
