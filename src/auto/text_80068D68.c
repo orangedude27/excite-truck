@@ -13734,6 +13734,16 @@ void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
     }
 }
 
+/* Defined right before btm_sec_execute_procedure so MWCC's auto-inliner
+ * expands it there (the identical helper higher in the file is not inlined). */
+static inline BOOLEAN btm_sec_all_trusted_exec(u32 *p_mask) {
+    if (p_mask[0] != 0xFFFFFFFF)
+        return 0;
+    if (p_mask[1] != 0xFFFFFFFF)
+        return 0;
+    return 1;
+}
+
 u8 btm_sec_execute_procedure(void *arg0) {
     extern void fn_8007093C(u32, void *);
     extern char lbl_80316870[];
