@@ -132,59 +132,102 @@ void *fn_802C120C(void) {
 }
 #pragma scheduling invalid_target
 void fn_802C126C(void) {
-    register char *var_r30;
-    int *var_r29;
-    unsigned char *var_r4;
-    int var_r5;
-    unsigned char *var_r6;
-    int var_r28, var_r28_2;
-    char *check_base, *call_base;
+    /* RealName: none yet; what it does is InitTreeHit().  Start the treehit
+     * subsystem for a new level: take the tree-handle block off the scratch
+     * arena, allocate the "treehittree" tree list, put this subsystem's dispatch
+     * object (and its second base subobject) on both dispatch lists, clear the
+     * 16 tree classes to the "???INVALID???" name and the 8 queued hits, and
+     * rewind the hit ring.  Counterpart of fn_802C13A4. */
+#define treeHandleBase lbl_8055CFA0 /* arena block; handle - base = tree index */
+#define treeList       lbl_8055FB30 /* the "treehittree" heap block */
+#define treeCount      lbl_8055FB2C /* trees in treeList */
+#define treeClassTable lbl_804C0810 /* the TreeClass table */
+#define treeClassCount lbl_8055FB28 /* classes in it */
+#define hitRecords     lbl_804C0E10 /* the TreeHitRecord ring */
+#define hitIndex       lbl_8055FB34 /* next slot of that ring */
+#define hitTime        lbl_8055FB38 /* time of the hit being applied */
+#define listener       lbl_8055FB40 /* this subsystem's dispatch object */
+#define arenaAlloc     fn_801FB1F4  /* take size bytes off the scratch arena */
+#define namedAlloc     fn_8012850C  /* heap allocation tagged with a name */
+#define treeListName   lbl_8034AEF8 /* "treehittree" */
+#define invalidName    lbl_8034AF04 /* "???INVALID???" */
+#define pushDispatch   fn_801D0590  /* push on the first dispatch list */
+#define pushDispatch2  fn_801D0800  /* push on the second dispatch list */
+#define fZero          lbl_80564E50 /* 0.0f */
 
-    lbl_8055FB2C = 0;
-    lbl_8055FB28 = 0;
-    lbl_8055CFA0 = fn_801FB1F4(0x1F40);
-    lbl_8055FB38 = lbl_80564E50;
-    lbl_8055FB30 = fn_8012850C(0x7D00, lbl_8034AEF8);
-    fn_801D0590(&lbl_8055FB40);
-    call_base = (char *)&lbl_8055FB40;
-    check_base = (char *)&lbl_8055FB40;
-    if ((int)check_base != 0)
-        call_base += 4;
-    fn_801D0800(call_base);
+    register struct TreeHitRecord *record;
+    struct TreeClass *classEntry;
+    unsigned char *nameSrc;
+    int nameRoom;
+    unsigned char *nameDst;
+    int classIndex, recordIndex;
+    char *listenerCheck, *listenerSubobject;
 
-    var_r29 = (int *)&lbl_804C0810;
-    var_r28 = 0;
+    treeCount = 0;
+    treeClassCount = 0;
+    treeHandleBase = arenaAlloc(0x1F40);
+    hitTime = fZero;
+    treeList = namedAlloc(0x7D00, treeListName);
+    pushDispatch(&listener);
+    listenerSubobject = (char *)&listener;
+    listenerCheck = (char *)&listener;
+    if ((int)listenerCheck != 0) /* the second base subobject, at +4 */
+        listenerSubobject += 4;
+    pushDispatch2(listenerSubobject);
+
+    /* Every class starts empty and named "???INVALID???", with its name cut to
+       the 0x20 bytes the class has room for. */
+    classEntry = (struct TreeClass *)&treeClassTable;
+    classIndex = 0;
     do {
-        memset(var_r29, 0, 0x60);
-        var_r4 = (unsigned char *)lbl_8034AF04;
-        var_r6 = (unsigned char *)((char *)var_r29 + 8);
-        var_r5 = 0x20;
-        goto copy_string;
-decrement_count:
-        if (--var_r5 > 0)
-            goto copy_string;
-        var_r6[-1] = 0;
-        goto copied_string;
-copy_string:
-        if ((signed char)(*var_r6++ = *var_r4++) != 0)
-            goto decrement_count;
-copied_string:
-        var_r28++;
-        var_r29 = (int *)((char *)var_r29 + 0x60);
-    } while (var_r28 < 0x10);
+        memset(classEntry, 0, sizeof(struct TreeClass));
+        nameSrc = (unsigned char *)invalidName;
+        nameDst = (unsigned char *)classEntry->name;
+        nameRoom = 0x20;
+        goto copy_name;
+cut_name:
+        if (--nameRoom > 0)
+            goto copy_name;
+        nameDst[-1] = 0;
+        goto name_copied;
+copy_name:
+        if ((signed char)(*nameDst++ = *nameSrc++) != 0)
+            goto cut_name;
+name_copied:
+        classIndex++;
+        classEntry = (struct TreeClass *)((char *)classEntry +
+                                          sizeof(struct TreeClass));
+    } while (classIndex < 0x10);
 
-    var_r30 = (char *)&lbl_804C0E10;
-    var_r28_2 = 0;
+    record = (struct TreeHitRecord *)&hitRecords;
+    recordIndex = 0;
     do {
-        memset(var_r30, 0, 0x48);
-        var_r28_2++;
-        var_r30 += 0x48;
-    } while (var_r28_2 < 8);
-    lbl_8055FB34 = 0;
-    fn_802C1928();
+        memset(record, 0, sizeof(struct TreeHitRecord));
+        recordIndex++;
+        record = (struct TreeHitRecord *)((char *)record +
+                                          sizeof(struct TreeHitRecord));
+    } while (recordIndex < 8);
+    hitIndex = 0;
+    fn_802C1928(); /* hand every queued hit back and clear the recent-hit table */
     fn_802C1A08();
-}
 
+#undef treeHandleBase
+#undef treeList
+#undef treeCount
+#undef treeClassTable
+#undef treeClassCount
+#undef hitRecords
+#undef hitIndex
+#undef hitTime
+#undef listener
+#undef arenaAlloc
+#undef namedAlloc
+#undef treeListName
+#undef invalidName
+#undef pushDispatch
+#undef pushDispatch2
+#undef fZero
+}
 #pragma scheduling invalid_target
 void fn_802C13A4(void) {
     /* Shut down the treehit subsystem (counterpart to fn_802C126C): unregister
