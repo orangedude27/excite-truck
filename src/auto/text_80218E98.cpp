@@ -7888,8 +7888,9 @@ extern "C" void *fn_80227244(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033DFB4;
         fn_8022EE98(*(void **)((u8 *)arg0 + 0x260));
-        if (*(s32 *)((u8 *)arg0 + 0x254) != -2 && *(s32 *)((u8 *)arg0 + 0x254) != -1)
-            fn_802CAC54();
+        s32 h = *(s32 *)((u8 *)arg0 + 0x254);
+        if (h != -2 && h != -1)
+            ((void (*)(int))fn_802CAC54)(h);
         *(s32 *)((u8 *)arg0 + 0x254) = -1;
         fn_8021915C(arg0, 0);
         if (arg1 > 0)
