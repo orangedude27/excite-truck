@@ -117,7 +117,6 @@ extern f32 lbl_80562E30;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 s32 fn_801E9F08(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
     f32 data[4];
     f32 temp2, temp1, temp0;
