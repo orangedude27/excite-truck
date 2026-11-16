@@ -117,10 +117,12 @@ done:
 #pragma cplusplus reset
 
 #pragma dont_inline on
+/* Tear down the parsed "excite_beta_race" config: release the config object
+ * held at offset 0x1E4 of the global race-event table and clear the pointer. */
 void fn_80007F04(void) {
-    Unk8034EF38* p = &lbl_8034EF38;
-    fn_80131818(p->unk_0x1E4);
-    p->unk_0x1E4 = 0;
+    Unk8034EF38* raceTable = &lbl_8034EF38;
+    fn_80131818(raceTable->unk_0x1E4);
+    raceTable->unk_0x1E4 = 0;
 }
 #pragma dont_inline reset
 
