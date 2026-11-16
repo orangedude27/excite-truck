@@ -371,10 +371,12 @@ extern int fn_8001EFA4(int, int);
 extern void fn_8001EFB0(void *);
 extern void fn_80130FCC(void *, int, int);
 extern int fn_8025978C(void **);
-int fn_8025A1C4(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0)
-        fn_80128668((void *)arg0);
-    return arg0;
+int fn_8025A1C4(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668((void *)object);
+    }
+    return object;
 }
 
 #pragma push
