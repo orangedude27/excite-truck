@@ -4,7 +4,12 @@
 extern void *lbl_8055ED60;
 extern int lbl_8055ED68;
 void fn_8000D838(void *);
+/* Static initializer: registers a static-destructor record, then sets its associated word. */
 void fn_802062BC(void) {
-    fn_8000D838(&lbl_8055ED60);
-    lbl_8055ED68 = 0xFFFF0000;
+#define s_initRecord lbl_8055ED60
+#define s_value      lbl_8055ED68
+    fn_8000D838(&s_initRecord);
+    s_value = 0xFFFF0000;
+#undef s_value
+#undef s_initRecord
 }
