@@ -154,12 +154,16 @@ void fn_801E3C04(void) {
     lbl_8055EA68 = t * lbl_80562D08;
 }
 
+/* Release the white_zr.tex texture and sphere.mod model handles cached by fn_801E3C04. */
 void fn_801E3C88(void) {
-    fn_802CAC54(lbl_8055EA6C);
-    fn_802C6CF8(lbl_8055EA64);
+#define s_whiteTex    lbl_8055EA6C
+#define s_sphereModel lbl_8055EA64
+    fn_802CAC54(s_whiteTex);
+    fn_802C6CF8(s_sphereModel);
+#undef s_sphereModel
+#undef s_whiteTex
 }
 
-#pragma dont_inline fn_801E36F0
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -186,7 +190,6 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     float s;
     int i;
     int result;
-    float ax, ay, az;
 
     fn_801E3640(arg1, vec);
     scale = lbl_80562D0C * farg0;
@@ -227,16 +230,13 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     pts[4].y = vec[7] + vec[4] * lbl_80562CF8;
     pts[4].z = vec[8] + vec[5] * lbl_80562CF8;
     result = fn_801E36F0(arg2);
-    ax = *(float *)((char *)arg0 + 0x0);
-    ay = *(float *)((char *)arg0 + 0x4);
-    az = *(float *)((char *)arg0 + 0x8);
     for (i = 0; i < 5; i++) {
         pts[i].id = arg2;
         pts[i].u = lbl_80562D10 * i;
         pts[i].v = lbl_80562D10 * i;
-        pts[i].x = pts[i].x + ax;
-        pts[i].y = pts[i].y + ay;
-        pts[i].z = pts[i].z + az;
+        pts[i].x = pts[i].x + ((float *)arg0)[0];
+        pts[i].y = pts[i].y + ((float *)arg0)[1];
+        pts[i].z = pts[i].z + ((float *)arg0)[2];
     }
     pts[0].id = result;
     {
@@ -250,7 +250,6 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     fn_802C8D74();
     fn_802C9904();
 }
-#pragma pop
 void fn_801E3FC8(void *arg0, float farg0) {
     f32 sp[12];
     float zero;
