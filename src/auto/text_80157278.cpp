@@ -1111,14 +1111,16 @@ extern "C" void* fn_80158218(void* self, s32 shouldDelete) {
     return self;
 }
 
-extern "C" void *fn_80158280(void *arg0, s32 *__restrict arg1) {
-    s32 next;
-    s32 idx = ((s32 *)arg0)[1];
-    s32 *base = *(s32 **)arg0;
-    next = idx + 1;
-    ((s32 *)arg0)[1] = next;
-    base[idx] = *arg1;
-    return &base[idx];
+/* Append *pValue to the integer vector's data array, advance its count, and
+ * return the address of the newly filled slot. */
+extern "C" void *fn_80158280(void *vec, s32 *__restrict pValue) {
+    s32 newIndex;
+    s32 index = ((s32 *)vec)[1];
+    s32 *data = *(s32 **)vec;
+    newIndex = index + 1;
+    ((s32 *)vec)[1] = newIndex;
+    data[index] = *pValue;
+    return &data[index];
 }
 
 extern "C" char lbl_8032F184[];
