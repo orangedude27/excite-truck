@@ -443,20 +443,20 @@ next:
 #pragma dont_inline off
 
 #pragma cplusplus on
-extern "C" void fn_801EB800(void *object, s32 arg1, s32 arg2) {
-    /* C-callable thunk: invoke the virtual method at vtable slot 0x28 on object, passing the two args swapped. */
+extern "C" void fn_801EB800(void *object, s32 argA, s32 argB) {
+    /* C-callable thunk: invoke the virtual method at vtable slot 0x28 on object, passing (argB, argA). */
     struct Dispatch {
-        virtual void u0();
-        virtual void u1();
-        virtual void u2();
-        virtual void u3();
-        virtual void u4();
-        virtual void u5();
-        virtual void u6();
-        virtual void u7();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
         virtual void dispatch(s32, s32);
     };
-    ((Dispatch *)object)->dispatch(arg2, arg1);
+    ((Dispatch *)object)->dispatch(argB, argA);
 }
 #pragma cplusplus reset
 void fn_801EB81C(void) {
