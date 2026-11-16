@@ -19246,17 +19246,18 @@ check:
     }
 }
 
-extern "C" void fn_800CFAC8(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    p[0x18] = 0;
-    p[4] = 0;
-    p[5] = 0;
-    p[6] = 0;
-    p[7] = 0;
-    p[8] = 0;
-    p[9] = 0;
-    p[0xA] = 0;
-    p[0xB] = 0;
+extern "C" void fn_800CFAC8(void *object) {
+    /* Clear the bytes at +4..+0xB and the flag at +0x18 of the object. */
+    u8 *bytes = (u8 *)object;
+    bytes[0x18] = 0;
+    bytes[4] = 0;
+    bytes[5] = 0;
+    bytes[6] = 0;
+    bytes[7] = 0;
+    bytes[8] = 0;
+    bytes[9] = 0;
+    bytes[0xA] = 0;
+    bytes[0xB] = 0;
 }
 
 /* Register a GUI component with this manager and append its list node (allocated via manager allocator or fallback). */
