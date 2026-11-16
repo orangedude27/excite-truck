@@ -10,6 +10,7 @@ extern void fn_801819A0(void *, void *, void *, float, float, float);
 
 #pragma scheduling invalid_target
 void fn_801D1184(void) {
+    /* Allocate a 4-byte "carelmgr" object and install its vtable on success. */
     extern void *fn_801284F8(int, const char *);
     extern void fn_801D0FA4(void);
     void *object;
@@ -19,7 +20,6 @@ void fn_801D1184(void) {
         *(void **)object = &lbl_80338214[0];
     }
 }
-#pragma scheduling on
 void fn_801D11D4(void) {
     fn_801D11D8();
 }
