@@ -277,8 +277,6 @@ static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32
                 }
                 return strlen(e->name) + 1;
             }
-            ++i;
-            eo += 0x1C;
         }
     }
     return 0;
