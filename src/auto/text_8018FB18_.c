@@ -1630,12 +1630,15 @@ void fn_8019169C(void *arg0, void *arg1) {
     *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
 }
 
-void *fn_801916AC(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        *(int *)((char *)arg0 + 0x38) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+void *fn_801916AC(void *obj, int doDestroy) {
+    /* Clear a word at +0x38; if doDestroy > 0 also run cleanup via fn_80128668(obj). */
+    if (obj != 0) {
+        *(int *)((char *)obj + 0x38) = 0;
+        if (doDestroy > 0) {
+            fn_80128668(obj);
+        }
     }
-    return arg0;
+    return obj;
 }
 
 void fn_801916F4(void *arg0) {
