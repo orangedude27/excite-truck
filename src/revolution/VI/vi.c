@@ -725,9 +725,16 @@ void __VIInit(VITVMode mode)
     temp = (u16)(((u32)tm->nhlines >> 1) + 1);
     __VIRegs[25] = tm->hlw + 1;
     __VIRegs[24] = temp | 0x1000;
-    if (tv >= 4 || tv < 1) {
+    do {
+        if (tv < 4) {
+            if (tv < 1) {
+                tv = 0;
+                break;
+            }
+            break;
+        }
         tv = 0;
-    }
+    } while (0);
     if (nonInter <= 1) {
         __VIRegs[1] = (tv << 8) | ((nonInter & 1) << 2) | 1;
         __VIRegs[54] = 0;
@@ -2798,6 +2805,7 @@ void __VISetRGBOverDrive(void)
 #pragma dont_inline on
 void fn_8005CC68(void)
 {
+    /* Set encoder mode 3 and send the corresponding I2C control packet. */
     u8 data[2];
 
     lbl_8055DBF0 = 3;
