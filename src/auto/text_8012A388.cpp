@@ -2332,10 +2332,10 @@ extern "C" void fn_8012DDA8(s32 arg0) {
     } while (node != 0);
     if (found == 0) {
         fn_802E30C8(lbl_8032ACE0, (const char *)arg0);
-        node = (Unk8012DFCCNode *)fn_8012E460((char *)obj + 8);
+        node = (Unk8012DFCCNode *)fn_8012E460((ResTocNodePool *)((char *)obj + 8));
         if (node == 0) {
             fn_8012E2CC(obj);
-            node = (Unk8012DFCCNode *)fn_8012E460((char *)obj + 8);
+            node = (Unk8012DFCCNode *)fn_8012E460((ResTocNodePool *)((char *)obj + 8));
         }
         if (node != 0) {
             fn_8012DFE8(node, (const char *)arg0, (s32)fn_8012E060((char *)obj + 4, (const char *)arg0));
