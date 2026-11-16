@@ -89,12 +89,22 @@ int fn_8012820C(void) {
 
 extern void fn_80128710(void);
 #pragma dont_inline on
+/* Shut down heap ring buffers: report usage for both regions, invoke the
+   release callback on the primary buffer handle, then clear buffer globals. */
 void fn_801282A0(void) {
-    fn_801287D0(&lbl_8041E140);
-    fn_801287D0(&lbl_8041E160);
-    ((void (*)(s32))fn_80128710)(lbl_8055DF94);
-    lbl_8055DF94 = 0;
-    lbl_8055DF90 = 0;
+#define heapRingPrimary   lbl_8041E140
+#define heapRingSecondary lbl_8041E160
+#define heapBufferHandle  lbl_8055DF94
+#define heapStateFlag     lbl_8055DF90
+    fn_801287D0(&heapRingPrimary);
+    fn_801287D0(&heapRingSecondary);
+    ((void (*)(s32))fn_80128710)(heapBufferHandle);
+    heapBufferHandle = 0;
+    heapStateFlag = 0;
+#undef heapRingPrimary
+#undef heapRingSecondary
+#undef heapBufferHandle
+#undef heapStateFlag
 }
 #pragma dont_inline reset
 
