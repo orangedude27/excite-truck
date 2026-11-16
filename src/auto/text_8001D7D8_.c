@@ -28,10 +28,11 @@ void fn_8001D868(int *values) {
     values[4] = -1;
 }
 
-int fn_8001D884(int arg0) {
+/* Fill an info array from a handle via fn_8001D8B4 and return the array pointer. */
+int *fn_8001D884(int *values, void *handle) {
     extern void fn_8001D8B4();
-    fn_8001D8B4(arg0);
-    return arg0;
+    fn_8001D8B4(values, handle);
+    return values;
 }
 
 int stricmp(const char *, const char *);
