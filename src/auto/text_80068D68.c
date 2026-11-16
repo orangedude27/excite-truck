@@ -13016,9 +13016,10 @@ void fn_8007F588(s8 arg0) {
     memset(&lbl_803C0F78[0x1954], 0xFF, 6);
 }
 
+/* In link-security mode, tell the controller to enable authentication and encryption (the 800854B0 helper is Write_Encrypt_Mode). */
 void fn_8007F5A4(void) {
-    if (lbl_803C0F78[0x1978] == 3) {
-        btsnd_hcic_write_pin_type_8008543C(1);
+    if (btm_cb_security_mode == BTM_SEC_MODE_LINK) {
+        btsnd_hcic_write_auth_enable(1);
         btsnd_hcic_write_pin_type_800854B0(1);
     }
 }
