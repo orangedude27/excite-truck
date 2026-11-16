@@ -469,6 +469,11 @@ void fn_802DE788(void) {
     GXSetColorUpdate(1); GXSetZMode(0,7,0); GXSetAlphaCompare(4,0,0,7,255);
 }
 #pragma pop
-void fn_802DEA6C(void* alarm) {
-    fn_802D3360(fn_802DEF70(alarm));
+/* Restores the renderer's default state at the end of the glow/blur pass:
+ * clears the TEV swap mode and applies any pending blend-mode change, then
+ * rebuilds the default texture-coordinate generators, TEV order/op and
+ * current matrix. */
+void fn_802DEA6C(void) {
+    fn_802DEF70();
+    fn_802D3360();
 }
