@@ -209,15 +209,18 @@ extern void fn_802064D0(s32 *);
 extern s8 lbl_8055EE41;
 extern s8 lbl_8055EE42;
 extern s8 lbl_8055EE43;
-void fn_8020C45C(void) {
-    void *w1;
-    void *w2;
-    void **x1;
-    void **x2;
-    w1 = (void *)lbl_8055EE38;
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8020C45C(void) {
+    class Object {
+    public:
+        virtual void release(s32);
+    };
+    Object *w1;
+    Object *w2;
+    w1 = (Object *)lbl_8055EE38;
     if (w1 != 0 && w1 != 0) {
-        x1 = *(void ***)w1;
-        ((s32 (*)(void *, s32))x1[2])(w1, 1);
+        w1->release(1);
     }
     lbl_8055EE38 = 0;
     fn_802103BC();
@@ -225,16 +228,15 @@ void fn_8020C45C(void) {
         s32 *y1 = &lbl_80489BE0;
         s32 y2 = 0;
         do {
-            w1 = *(void **)((char *)y1 + 0x20);
+            w1 = *(Object **)((char *)y1 + 0x20);
             if (w1 != 0) {
                 *(char *)((char *)w1 + 0x4A) = 1;
                 *(char *)((char *)w1 + 0x4C) = 0;
-                w2 = *(void **)((char *)y1 + 0x20);
+                w2 = *(Object **)((char *)y1 + 0x20);
                 if (w2 != 0) {
-                    x2 = *(void ***)w2;
-                    ((s32 (*)(void *, s32))x2[2])(w2, 1);
+                    w2->release(1);
                 }
-                *(void **)((char *)y1 + 0x20) = 0;
+                *(Object **)((char *)y1 + 0x20) = 0;
             }
             y2 += 1;
             y1 += 9;
@@ -247,8 +249,7 @@ void fn_8020C45C(void) {
     lbl_8055EE42 = 0;
     lbl_8055EE41 = 0;
 }
-
-#pragma scheduling on
+#pragma pop
 /* Initializes pre-race music state (stops track music, resets fade/volume/state flags). */
 void fn_8020C54C(void) {
     fn_80210444();
