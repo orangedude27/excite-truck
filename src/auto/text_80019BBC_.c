@@ -611,7 +611,6 @@ extern void fn_802C8E00(int, int, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern double fn_8002F234(double);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
-static inline float lerpf(float a, float b, float t) { return a + t * (b - a); }
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma push
