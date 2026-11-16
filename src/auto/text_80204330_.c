@@ -93,11 +93,25 @@ void fn_802043B0(int *arg0) {
 }
 #pragma dont_inline reset
 #pragma pop
+/* Start up the Tune Dash tuning screen: clear the entry count, selected row and
+ * timestamp, then build the OverlayLayout from "tunedash.val". */
 void fn_80204460(void) {
-    lbl_8055ED3C = 0;
-    lbl_8055ED40 = 0;
-    lbl_8055ED48 = 0;
-    lbl_8055ED44 = fn_80145E70(lbl_8033BB18);
+#define sGuiObjectCount lbl_8055ED3C
+#define sGuiSelectedRow lbl_8055ED40
+#define sGuiTimestamp lbl_8055ED48
+#define sGuiObject lbl_8055ED44
+#define OverlayLayoutCreate fn_80145E70
+#define kLayoutName lbl_8033BB18
+    sGuiObjectCount = 0;
+    sGuiSelectedRow = 0;
+    sGuiTimestamp = 0;
+    sGuiObject = OverlayLayoutCreate(kLayoutName);
+#undef sGuiObjectCount
+#undef sGuiSelectedRow
+#undef sGuiTimestamp
+#undef sGuiObject
+#undef OverlayLayoutCreate
+#undef kLayoutName
 }
 
 #pragma cplusplus on
