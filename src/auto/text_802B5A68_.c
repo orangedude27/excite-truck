@@ -1456,7 +1456,7 @@ __declspec(section ".sdata") extern const char lbl_8055CEB0[];
 s32 fn_802B7B08(void) {
     class Dummy { public: virtual void v0(); virtual void *call(const char *); virtual void v2(); virtual void *get(const char *); };
     typedef struct { void *name; s32 value; s32 unk8; s32 unkC; f32 time; s32 unk14; s32 unk18; s32 unk1C; } Record;
-    char *base; Dummy *obj; void *result; const u8 *source; f32 step; f32 elapsed; s32 early; s32 index; s32 count; s32 i; s32 value; s32 unknown; Record record; char buf[0x20];
+    char *base; Dummy *obj; void *result; const u8 *source; f32 step; f32 elapsed; s32 early; s32 index; s32 count; s32 i; s32 unknown; s32 value; Record record; char buf[0x20];
     base = lbl_8034A598; obj = (Dummy *)lbl_8055FA48;
     result = obj->get(base + 0x2A0);
     step = *(f32 *)((u8 *)result + 0x14);
@@ -1467,8 +1467,8 @@ s32 fn_802B7B08(void) {
     result = obj->call(base + 0x2DC);
     source = (const u8 *)result;
     record.name = *(void **)(source + 0);
-    value = *(s32 *)(source + 4);
-    unknown = *(s32 *)(source + 8);
+    value = *(volatile s32 *)(source + 4);
+    unknown = *(volatile s32 *)(source + 8);
     record.value = value; record.unk8 = unknown;
     record.unkC = *(s32 *)(source + 0xC);
     record.time = *(f32 *)(source + 0x10);
