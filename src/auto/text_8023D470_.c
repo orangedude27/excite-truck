@@ -8,15 +8,21 @@ extern char lbl_8055F158;
 extern int lbl_804987A0[];
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+/* Initializes the module state block (lbl_804987A0) and registers its init
+ * guard with fn_8000D838. */
 void fn_8023D470(void) {
-    int v;
-    fn_8000D838(&lbl_8055F158);
-    lbl_804987A0[0] = 0;
-    v = 123;
-    lbl_804987A0[1] = v;
-    lbl_804987A0[2] = 0;
-    lbl_804987A0[3] = 0;
-    lbl_804987A0[4] = 0;
+#define moduleInitState lbl_8055F158
+#define moduleState     lbl_804987A0
+    int initialValue;
+    fn_8000D838(&moduleInitState);
+    moduleState[0] = 0;
+    initialValue = 123;
+    moduleState[1] = initialValue;
+    moduleState[2] = 0;
+    moduleState[3] = 0;
+    moduleState[4] = 0;
+#undef moduleInitState
+#undef moduleState
 }
 #pragma opt_propagation reset
 #pragma scheduling on
