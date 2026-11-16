@@ -69,6 +69,8 @@ extern "C" int fn_802962CC(void *entry) {
     return stricmp(((NameNode *)entry)->getName(), (const char *)kFrameName) == 0;
 }
 
+#define kDefaultName lbl_8055C9C0  // .sdata: "default"
+// True when a parsed list entry's virtual name is "default" (case-insensitive).
 #pragma push
 #pragma cplusplus on
 extern "C" int fn_80296308(void *node) {
