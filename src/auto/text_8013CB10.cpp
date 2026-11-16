@@ -2656,8 +2656,10 @@ extern "C" void fn_80142104(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x100) = 0;
 }
 
-extern "C" S28_80142118 fn_80142118(S28_80142118 arg0) {
-    return arg0;
+/* Return a by-value copy of the 28-byte zone-state block (save/restore helper).
+ * Readable name: copyZoneState28. */
+extern "C" ZoneState28 fn_80142118(ZoneState28 state) {
+    return state;
 }
 
 extern "C" s32 fn_80142154(void *arg0) {
