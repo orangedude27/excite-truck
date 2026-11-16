@@ -313,12 +313,13 @@ void fn_80209030(float arg0) {
     ((void (*)(void))fn_80208A50)();
 }
 #pragma cplusplus reset
-void fn_80209090(int arg0) {
-    if (arg0 >= 0 && arg0 <= 2) {
-        lbl_8055EDA8 = (void *)arg0;
+/* Set the sound-quality setting (config "quality"): accept values 0..2, reset to low otherwise. */
+void fn_80209090(int quality) {
+    if (quality >= SOUND_QUALITY_LOW && quality <= SOUND_QUALITY_HIGH) {
+        gSoundQuality = (void *)quality;
         return;
     }
-    lbl_8055EDA8 = 0;
+    gSoundQuality = 0;
 }
 
 void* fn_802090B4(void) {
