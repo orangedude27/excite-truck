@@ -8552,18 +8552,23 @@ static inline u8 *btm_find_dev_entry(BD_ADDR bd_addr) {
 
 #pragma push
 #pragma dont_inline off
+static inline void btm_stamp_dev_rec(u8 *entry) {
+    tBTM_CB_SEC_VIEW *cb = (tBTM_CB_SEC_VIEW *)lbl_803C0F78;
+    UINT32 ts = cb->dev_rec_count;
+    *(UINT32 *)(entry + 0xC) = ts;
+    cb->dev_rec_count = ts + 1;
+}
+
 BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, BD_FEATURES features, UINT32 trusted_mask[], LINK_KEY link_key, UINT8 key_type, tBTM_IO_CAP io_cap) {
     u8 *entry = btm_find_dev_entry(bd_addr);
-    UINT32 timestamp;
+    unsigned int timestamp;
     if (entry == 0) {
         entry = (u8 *)btm_sec_alloc_dev(bd_addr);
         if (entry == 0) return FALSE;
-    }
-    {
-        tBTM_CB_SEC_VIEW *cb = (tBTM_CB_SEC_VIEW *)lbl_803C0F78;
-        timestamp = cb->dev_rec_count;
-        *(UINT32 *)(entry + 0xC) = timestamp;
-        cb->dev_rec_count = timestamp + 1;
+    } else {
+        timestamp = *(unsigned int *)(lbl_803C0F78 + 0x1974);
+        *(unsigned int *)(entry + 0xC) = timestamp;
+        *(unsigned int *)(lbl_803C0F78 + 0x1974) = timestamp + 1;
     }
     if (dev_class != 0) memcpy(entry + 0x22, dev_class, 3);
     memset(entry + 0x35, 0, 0x41);
