@@ -581,11 +581,13 @@ extern "C" void fn_800EA880(void *channel, int delta) {
     }
 }
 
-extern "C" void fn_800EA8A0(void *arg0, int arg1, signed char arg2, float farg0) {
-    *(float *)((char *)arg0 + 0xA8) = farg0;
-    *(int *)((char *)arg0 + 0xB0) = arg1;
-    *(signed char *)((char *)arg0 + 0x3C) = arg2;
-    *(int *)((char *)arg0 + 0xAC) = 0;
+extern "C" void fn_800EA8A0(void *channel, int frameLimit, signed char slideFlag, float pitch) {
+    /* Set up a channel's note: store its pitch (+0xA8) and frame limit (+0xB0),
+     * write the slide-enable byte (+0x3C), and reset the frame counter at +0xAC. */
+    *(float *)((char *)channel + 0xA8) = pitch;
+    *(int *)((char *)channel + 0xB0) = frameLimit;
+    *(signed char *)((char *)channel + 0x3C) = slideFlag;
+    *(int *)((char *)channel + 0xAC) = 0;
 }
 
 extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7ChannelFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *arg0, int arg1, void *arg2) {
