@@ -74,10 +74,12 @@ void fn_802BC3E0(short x, short y, short cellSize, char *node) {
     *(char **)(cell + 4) = node;
 }
 #pragma scheduling on
-short fn_802BC424(int arg0) {
+/* Grid cell size from a coordinate: the power of two equal to the lowest set bit
+ * of (coord + 512) within 9 bits, or 512 when no such bit is set. */
+short fn_802BC424(int coord) {
     int mask = 0x1FF;
-    short value = arg0 + 0x200;
-    while ((value & mask) != 0)
+    short biased = coord + 0x200;
+    while ((biased & mask) != 0)
         mask >>= 1;
     return mask + 1;
 }
