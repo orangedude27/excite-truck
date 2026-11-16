@@ -292,6 +292,7 @@ extern void *lbl_8055F10C;
 extern s32 fn_80128668();
 extern s32 lbl_8055F110;
 s32 fn_8023A5AC(s32 arg0, s32 arg1) {
+    /* Clear the global object pointer; optionally free the object. */
     if (arg0 != 0) {
         lbl_8055F110 = 0;
         if (arg1 > 0) fn_80128668();
