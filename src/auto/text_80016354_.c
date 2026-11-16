@@ -171,12 +171,15 @@ void *fn_8001668C(const char *name, int matchIndex) {
     return lbl_8055D544;
 }
 #pragma dont_inline on
-void *fn_80016720(const char *arg0) {
-    void *result = fn_8001668C(arg0, 0);
-    if (*(int *)((char *)result + 0xA0) & 2) {
-        result = (void *)fn_80016544(*(int *)((char *)result + 8));
+/* Look up the 0xA8-byte entry whose +0x2C name matches `name`; if its flags at
+ * +0xA0 mark it as an alias (bit 1), follow the target id at +0x8 to the real
+ * entry. Return the resolved entry's name field (+0x2C). */
+void *fn_80016720(const char *name) {
+    void *entry = fn_8001668C(name, 0);
+    if (*(int *)((char *)entry + 0xA0) & 2) {
+        entry = (void *)fn_80016544(*(int *)((char *)entry + 8));
     }
-    return (char *)result + 0x2C;
+    return (char *)entry + 0x2C;
 }
 
 #pragma scheduling invalid_target
