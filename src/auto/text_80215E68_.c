@@ -119,9 +119,10 @@ extern char lbl_8033D768[];
 extern char lbl_8033D774[];
 #define OptionOneLabel lbl_8033D768 /* "OPTION 1" */
 #define OptionTwoLabel lbl_8033D774 /* "OPTION 2" */
-char *fn_80215F9C(void *arg0) {
-    if (*(s32 *)((u8 *)arg0 + 0x10) != 0) return (char *)lbl_8033D774;
-    return (char *)lbl_8033D768;
+char *fn_80215F9C(void *option) {
+    /* Return "OPTION 2" when the selector flag at +0x10 is set, otherwise "OPTION 1". */
+    if (*(s32 *)((u8 *)option + 0x10) != 0) return (char *)OptionTwoLabel;
+    return (char *)OptionOneLabel;
 }
 
 void fn_80215FBC(void *arg0) {
