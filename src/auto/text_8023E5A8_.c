@@ -201,6 +201,8 @@ void fn_8023EC94(void) {
 }
 #pragma scheduling on
 s32 fn_8023ECF8(void) {
+    /* Timeout check: true once the milliseconds-since-boot clock (fn_802E2C20)
+       has passed the deadline in lbl_8055F1C8, set earlier to now + 100 ms. */
     return lbl_8055F1C8 < fn_802E2C20();
 }
 
