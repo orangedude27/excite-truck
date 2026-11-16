@@ -266,11 +266,10 @@ void fn_80207C4C(void) {
 	return;
 }
 
-#pragma push
-#pragma opt_lifetimes off
+#pragma opt_lifetimes on
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
+    register signed long offset = arg2 * 0xC;
     signed long c, b, a;
-    signed long offset = arg2 * 0xC;
     volatile signed long *p = (volatile signed long *)arg1;
     a = p[0];
     b = p[1];
@@ -280,7 +279,6 @@ void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     *(signed long*)((char*)arg0 + 0x60) = b;
     *(signed long*)((char*)arg0 + 0x64) = c;
 }
-#pragma pop
 void fn_80207C74(void* arg0, signed long arg1) {
     *(signed long*)((char*)arg0 + 0x8C) = arg1;
 }
@@ -855,4 +853,4 @@ extern "C" void fn_80208858(void *soundMgr, signed long soundName, signed long s
     }
 }
 #pragma pop
-
+typedef struct { signed long a, b, c; } Trio80207C50;
