@@ -2320,12 +2320,13 @@ extern s32 lbl_8055DEE8;
 extern s32 fn_80119DD0(void *, u32, s32, s32, s32, void *);
 extern void fn_8011A6A0(void *);
 extern void TRKGetFreeBuffer(void *);
-void *fn_8011A168(void *arg0) {
-    if (arg0 == 0) {
+/* Install the streaming-player callback table (or clear it when table is NULL), then return the PCM player's open routine. */
+void *fn_8011A168(void *table) {
+    if (table == 0) {
         lbl_8055DEE0 = 0;
         *((s32 *)&lbl_8055DEE0 + 1) = 0;
     } else {
-        *(Pair8011A168 *)&lbl_8055DEE0 = *(Pair8011A168 *)arg0;
+        *(Pair8011A168 *)&lbl_8055DEE0 = *(Pair8011A168 *)table;
     }
     return &fn_80119DD0;
 }
