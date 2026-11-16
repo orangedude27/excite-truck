@@ -205,19 +205,29 @@ void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
 void fn_8023695C(void) { fn_80237EFC(); }
 
 #pragma scheduling invalid_target
-void fn_80236960(char *source) {
+/* RealName: ValFileAnimList_SetFileName (rename_symbol unavailable)
+ * Picks the .val file the ValFileAnimList loader (fn_80236A5C) opens: copies
+ * the name into the 100-byte global buffer lbl_80498664, truncating it to fit
+ * (always NUL-terminated).  A null name is ignored; the buffer keeps whatever
+ * name was set last.  fn_80236A5C only builds its default "a_<index>.val"
+ * name when this buffer is still empty, and clears it again when it is done,
+ * so a caller such as the credits screen (fn_80236910("a_credits.val")) can
+ * point the loader at another file. */
+void fn_80236960(char *fileName) {
+#define VAL_FILE_NAME_SIZE 0x64 /* size of the name buffer lbl_80498664 */
     int remaining;
-    char *destination;
-    if (source == 0)
+    char *buffer;
+    if (fileName == 0)
         return;
-    destination = lbl_80498664;
-    remaining = 0x64;
-    while ((*destination++ = *source++) != '\0') {
+    buffer = lbl_80498664;
+    remaining = VAL_FILE_NAME_SIZE;
+    while ((*buffer++ = *fileName++) != '\0') {
         if (--remaining > 0)
             continue;
-        destination[-1] = '\0';
+        buffer[-1] = '\0';
         return;
     }
+#undef VAL_FILE_NAME_SIZE
 }
 #pragma scheduling on
 void fn_802369A8(char *dst, int size, int index) {
