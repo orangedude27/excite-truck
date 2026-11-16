@@ -123,17 +123,20 @@ void fn_802A9FE0(void *entry) {
 }
 
 #pragma scheduling invalid_target
-void fn_802AA0C8(void *arg0) {
+/* Reset the trail-state block (0xDC..0xE8) of a per-object effect entry: clear
+ * the active byte at 0xDC, zero the amount at 0xE0, seed the phase at 0xE4 with
+ * 0.5, and set the color word at 0xE8 to -1. */
+void fn_802AA0C8(void *entry) {
     extern float lbl_805649F0;
     extern float lbl_805649F4;
-    float second;
-    float first;
-    first = lbl_805649F0;
-    second = lbl_805649F4;
-    *(unsigned char *)((char *)arg0 + 0xDC) = 0;
-    *(float *)((char *)arg0 + 0xE0) = first;
-    *(float *)((char *)arg0 + 0xE4) = second;
-    *(int *)((char *)arg0 + 0xE8) = -1;
+    float initialPhase;
+    float initialAmount;
+    initialAmount = lbl_805649F0;
+    initialPhase = lbl_805649F4;
+    *(unsigned char *)((char *)entry + 0xDC) = 0;
+    *(float *)((char *)entry + 0xE0) = initialAmount;
+    *(float *)((char *)entry + 0xE4) = initialPhase;
+    *(int *)((char *)entry + 0xE8) = -1;
 }
 #pragma scheduling on
 void fn_802AA0EC(void *arg0) {
