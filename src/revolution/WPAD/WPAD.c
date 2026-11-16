@@ -6773,8 +6773,7 @@ void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed) {
 
 // WUD function stubs
 u8 WUDGetBufferStatus(void) { return 0; }
-void fn_8005E298(void);
-extern u8 lbl_8038F500[];
+void fn_8005E298(void);  // WPAD management fiber body (runs on __WPADiManageHandlerStack)
 u16 _WUDGetNotAckedSize(s8 handle) {
 #pragma unused(handle)
     return 0;
