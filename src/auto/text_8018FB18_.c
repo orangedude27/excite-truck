@@ -2635,8 +2635,9 @@ f32 fn_80192D98(void *object) {
 }
 #pragma scheduling on
 
-s32 fn_80192E20(void *arg0) {
-    s32 bit = *(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) & 1;
+s32 fn_80192E20(void *obj) {
+    /* Return bit 0 of the packed flags byte at +7 of the child object referenced by obj+8, normalized to 0/1. */
+    s32 bit = *(u8 *)((char *)*(void **)((char *)obj + 8) + 7) & 1;
     return (s32)((u32)(-bit | bit) >> 31);
 }
 
