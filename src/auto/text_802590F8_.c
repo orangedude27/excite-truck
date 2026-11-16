@@ -11,18 +11,29 @@ void fn_8000D838(void *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* RealName: __sinit_ (C++ static initializer for one of this file's global objects) */
 void fn_802590F8(void) {
+    /* Static init: hang this file's init node on the runtime's global-destructor chain
+       (fn_8000D838 pushes it, marking it 0x31 and linking it at lbl_8055D450), then
+       clear the object's state block, leaving its fragment number 0x7B, and arm the
+       node's own state word. */
+#define initNode   lbl_8055F378
+#define stateWord  lbl_8055F380
+#define stateBlock lbl_80498E80
     s32 v;
     s32 *p;
-    fn_8000D838(&lbl_8055F378);
-    p = lbl_80498E80 + 1;
-    lbl_80498E80[0] = 0;
+    fn_8000D838(&initNode);
+    p = stateBlock + 1;
+    stateBlock[0] = 0;
     v = 0x7B;
-    lbl_80498E80[1] = v;
-    lbl_80498E80[2] = 0;
-    lbl_80498E80[3] = 0;
-    lbl_80498E80[4] = 0;
-    lbl_8055F380 = 0x7F000000;
+    stateBlock[1] = v;
+    stateBlock[2] = 0;
+    stateBlock[3] = 0;
+    stateBlock[4] = 0;
+    stateWord = 0x7F000000;
+#undef initNode
+#undef stateWord
+#undef stateBlock
 }
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
