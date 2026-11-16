@@ -2382,8 +2382,9 @@ void fn_8018ADD4(void *arg0, int arg1) {
 }
 
 extern int lbl_8055E918;
-void fn_8018ADEC(void *arg0) {
-    *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 8) = -10;
+void fn_8018ADEC(void *car) {
+    /* Reset field +8 of this car's 0x9C-byte state record in lbl_8055E918 to -10. */
+    *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)car + 0x1EC) * 0x9C) + 8) = -10;
 }
 
 /* Set this object's car-element +8 field to -10, indexing the 0x9C-byte entryset by the object's element index at +0x1EC. */
