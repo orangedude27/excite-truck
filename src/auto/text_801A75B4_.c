@@ -892,19 +892,21 @@ int fn_801A8E38(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
-int fn_801A8E68(void *arg0) {
-    int state = *(int *)arg0;
-    unsigned char *flag = (unsigned char *)((char *)arg0 + 0xC);
-    switch (state) {
+int fn_801A8E68(void *trigger) {
+    /* Rising-edge detector: for input types 1-6, report 1 once when the monitored analog input
+     * crosses its threshold (fn_801A8E38), latching the +0xC flag until the input drops back. */
+    int inputType = *(int *)trigger;
+    unsigned char *latched = (unsigned char *)((char *)trigger + 0xC);
+    switch (inputType) {
     case 1: case 2: case 3: case 4: case 5: case 6:
         if (fn_801A8E38() != 0) {
-            if (*flag == 0) {
-                *flag = 1;
+            if (*latched == 0) {
+                *latched = 1;
                 return 1;
             }
             break;
         }
-        *flag = 0;
+        *latched = 0;
         return 0;
     default:
         break;
