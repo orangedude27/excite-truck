@@ -1287,8 +1287,17 @@ int fn_802E6AD0(int request) {
 
 #pragma scheduling invalid_target
 void fn_802E6B04(void) {
-    fn_802E7770();
-    fn_802E2E0C(fn_802E6AD0, &lbl_8055D1F0);
+#define registerResetCallback fn_802E2E0C
+#define spuResetCallback      fn_802E6AD0
+#define spuCallbackTag        lbl_8055D1F0
+#define spuIdleNoop           fn_802E7770
+    /* Register the SPU reset handler under the "DTK" tag in the kernel reset list. */
+    spuIdleNoop();
+    registerResetCallback(spuResetCallback, &spuCallbackTag);
+#undef spuIdleNoop
+#undef spuCallbackTag
+#undef spuResetCallback
+#undef registerResetCallback
 }
 #pragma scheduling on
 void fn_802E6B34(void) {
