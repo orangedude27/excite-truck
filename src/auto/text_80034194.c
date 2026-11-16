@@ -2997,6 +2997,7 @@ s32 fn_80039840(void) {
     }
     OSRestoreInterrupts(pauseEnabled);
 
+    // Nothing queued may survive the cancel, so queued blocks get no callback.
     while ((block = __DVDPopWaitingQueue()) != NULL) {
         DVDCancelAsync(block, NULL);
     }
@@ -3005,8 +3006,9 @@ s32 fn_80039840(void) {
         success = DVDCancelAsync((DVDCommandBlock *)ExecutingBlock,
                                  (void (*)(s32, void *))cbForCancel);
     } else {
+        // Nothing was running, so the cancel is already over.
         success = TRUE;
-        if (&cbForCancel != NULL) { // the callback is always linked in
+        if (&cbForCancel != NULL) { // a function of this file: always true
             isCancelDone = TRUE;
             OSWakeupThread(__DVDThreadQueue);
         }
@@ -3022,14 +3024,15 @@ s32 fn_80039840(void) {
     OSRestoreInterrupts(pauseEnabled);
     OSRestoreInterrupts(intStatus);
 
-    if (success == 0) {
+    if (!success) {
         OSRestoreInterrupts(enabled);
         return -1;
     }
-wait_loop:
+
+wait_loop: // the test stays on top: CW must not rotate this into a do-while
     if (isCancelDone != 0)
         goto wait_done;
-    OSSleepThread(__DVDThreadQueue);
+    OSSleepThread(__DVDThreadQueue); // cbForCancel wakes this thread up
     goto wait_loop;
 wait_done:
     OSRestoreInterrupts(enabled);
