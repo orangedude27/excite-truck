@@ -4137,7 +4137,7 @@ extern "C" void fn_8015E5F4(ArrayTracker* group, s32 value) {
 }
 extern "C" void fn_8015E674(void *arg0, int arg1) {
  struct A { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void call(int); };
- int offset=0, i=0; void **array; void *state,*obj;
+ int offset=0, i=0; void **array; void *state=(void*)(long)arg1,*obj;
  goto check;
 loop:
  array=*(void ***)((char *)arg0+4);
@@ -4544,9 +4544,11 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
     }
 }
 #pragma scheduling on
-extern "C" int fn_80159708(const void *arg0) {
-    float f = *(const float *)((const char *)arg0 + 0x25C);
-    return (int)f;
+/* Return the integer part of the tracker's main progress counter (+0x25C),
+ * the multiplier of the event being scored. */
+extern "C" int fn_80159708(const void *tracker) {
+    float progress = *(const float *)((const char *)tracker + 0x25C);
+    return (int)progress;
 }
 #pragma scheduling off
 class Fn8015E338Item {
