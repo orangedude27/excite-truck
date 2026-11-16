@@ -736,9 +736,21 @@ void fn_801B14E4(void *arg0) {
     fn_801B14BC((s32 *)((u8 *)base + 4), 4, passed);
 }
 #pragma scheduling invalid_target
-void fn_801B157C(void *arg0,s32 arg1) {
-    *(u8*)((u8*)arg0+0x2C)=1;*(f32*)((u8*)arg0+0x30)=lbl_8055E3C8;
-    if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
+void fn_801B157C(void *state, s32 eventId) {
+    struct Progress {
+        u8 unk0[0x2C];
+        u8 active;
+        u8 pad0[3];
+        f32 timer;
+        u8 pad1[0x60 - 0x34];
+        s32 id;
+    } *p = (struct Progress *)state;
+
+    /* Reset a progress entry (mark it active, restart its timer at the default value),
+       and, when event dispatch is enabled, notify the event system with its id. */
+    p->active = 1;
+    p->timer = lbl_8055E3C8;
+    if (lbl_8055E690) fn_801CB6B4(p->id, eventId, 2);
 }
 
 extern void fn_8000D7F8(s32, f32);
