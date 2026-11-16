@@ -105,7 +105,9 @@ typedef struct VTbl {
     VObj* (*getChild)(VObj*, s32);
 } VTbl;
 struct VObj { VTbl* vt; };
-void fn_8001EF38(void* alarm) {
+/* Initialize the achievements module: register the ACHV archive block and build
+ * the lifetime-counter coefficient table from it. */
+void fn_8001EF38(void) {
     fn_8001F528();
     fn_8001EFF0();
 }
