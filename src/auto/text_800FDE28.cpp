@@ -88,13 +88,16 @@ extern f32 lbl_805610E0; // 0.0
 
 extern "C" u32 fn_800FEB9C(void);
 
-extern "C" void fn_800FDE28(void *arg0) {
-    void *p = *(void **)arg0;
-    if (p && *(void **)((u8 *)p + 0x5F4) == arg0) {
-        *(void **)((u8 *)p + 0x5F4) = NULL;
+/* Detaches a sound handle from its owner: if the sound held at *handle still
+ * references this handle through its back-reference at +0x5F4, clear that
+ * back-reference, then clear the handle itself. (nw4hbm SoundHandle detach) */
+extern "C" void fn_800FDE28(void *handle) {
+    void *sound = *(void **)handle;
+    if (sound && *(void **)((u8 *)sound + 0x5F4) == handle) {
+        *(void **)((u8 *)sound + 0x5F4) = NULL;
     }
-    if (*(void **)arg0) {
-        *(void **)arg0 = NULL;
+    if (*(void **)handle) {
+        *(void **)handle = NULL;
     }
 }
 
@@ -385,22 +388,25 @@ extern "C" void OSRestoreInterrupts(u32);
 extern u8 lbl_80326F38[], lbl_80326F14[], lbl_80326F68[], lbl_80326F44[], lbl_80326E08[], lbl_80326E70[];
 #pragma use_lmw_stmw off
 extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0, u32 taskId) {
+    typedef nw4hbm::snd::detail::TaskManager TaskManager;
     struct Iterator { void *node; };
     struct TaskIf {
         virtual void vf0();
         virtual void vf1();
         virtual void vf2();
     };
+    TaskManager *mgr = (TaskManager *)arg0;
     u32 level = OSDisableInterrupts();
-    s32 count = 0;
-    s32 offset = 0;
+    int count = 0;
+    int offset = 0;
     void *node;
     for (; count < 3; count++, offset += 0xC) {
         void *current;
-        u8 *tmp = (u8 *)arg0 + offset;
-        u8 *list = tmp + 0x20;
+        u8 *adjusted;
+        u8 *base = (u8 *)mgr->GetTaskListBase((TaskManager::TaskPriority)count);
+        u8 *list = base + 0x20;
         void *sentinel = list + 4;
-        node = *(void **) (tmp + 0x24);
+        node = *(void **)(base + 0x24);
         while (node != sentinel) {
             current = node;
             node = *(void **)node;
@@ -410,17 +416,16 @@ extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0,
                 it.node = current;
                 ((void (*)(void *, struct Iterator))Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(list, it);
                 if (!current) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
-                if (!((u8 *)current - 4)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F68, 0x193, (char *)lbl_80326F44);
-                if (!*(void **)((u8 *)arg0 + 0x18)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326E08, 0x5d, (char *)lbl_80326E70);
-                {
-                    u32 save = OSDisableInterrupts();
-                    MEMAdjustFrmHeap(*(void **)((u8 *)arg0 + 0x18), (u8 *)current - 4);
-                    OSRestoreInterrupts(save);
-                }
+                adjusted = (u8 *)current - 4;
+                if (!adjusted) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F68, 0x193, (char *)lbl_80326F44);
+                if (!mgr->heap) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326E08, 0x5d, (char *)lbl_80326E70);
+                current = (void *)OSDisableInterrupts();
+                MEMAdjustFrmHeap(mgr->heap, adjusted);
+                OSRestoreInterrupts((u32)current);
             }
         }
     }
-    node = *(void **)((u8 *)arg0 + 0x1C);
+    node = mgr->task;
     if (node && taskId == *(u32 *)((u8 *)node + 0xC))
         ((TaskIf *)node)->vf2();
     OSRestoreInterrupts(level);
