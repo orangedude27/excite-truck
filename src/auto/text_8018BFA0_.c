@@ -1645,34 +1645,33 @@ extern float lbl_8056203C;
 extern float lbl_80562040;
 #pragma scheduling invalid_target
 void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
-    unsigned char *src;
-    unsigned char *dst;
-    register float bias;
-    register float scale;
-    register float upper;
-    register float divisor;
-    register float origin;
-    register float lower;
+    float bias;
+    float scale;
+    float upper;
+    float divisor;
+    float origin;
+    float lower;
     float v;
+    unsigned char *src = arg0;
     float first;
+    unsigned char *dst;
     float second;
     int word;
     int i;
 
-    src = arg0;
-    lower = *(volatile float *)&lbl_80561F88;
+    lower = lbl_80561F88;
     dst = arg1;
     first = *(float *)(src + 0x2690);
-    upper = *(volatile float *)&lbl_80561F74;
+    upper = lbl_80561F74;
     i = 0;
     *(float *)(dst + 0x290) = first;
-    origin = *(volatile float *)&lbl_8056203C;
+    origin = lbl_8056203C;
     second = *(float *)(src + 0x2698);
-    divisor = *(volatile float *)&lbl_80562040;
+    divisor = lbl_80562040;
     *(float *)(dst + 0x294) = second;
-    scale = *(volatile float *)&lbl_80562038;
+    scale = lbl_80562038;
     word = *(volatile int *)(src + 0x268C);
-    bias = *(volatile float *)&lbl_80561F8C;
+    bias = lbl_80561F8C;
     *(int *)(dst + 0x298) = word;
 
     while (i < *(int *)(arg0 + 0x5F8)) {
@@ -1693,25 +1692,24 @@ void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
         i++;
     }
 
-    dst = arg1;
-    *(unsigned char *)(dst + 0x2A0) = *(int *)(arg0 + 0x15A8);
-    *(unsigned char *)(dst + 0x2A1) = *(int *)(arg0 + 0x1628);
-    *(unsigned char *)(dst + 0x2A2) = *(int *)(arg0 + 0x16A8);
-    *(unsigned char *)(dst + 0x2A3) = *(int *)(arg0 + 0x1728);
-    *(unsigned char *)(dst + 0x2A4) = *(int *)(arg0 + 0x17A8);
-    *(unsigned char *)(dst + 0x2A5) = *(int *)(arg0 + 0x1828);
-    *(unsigned char *)(dst + 0x2A6) = *(int *)(arg0 + 0x18A8);
-    *(unsigned char *)(dst + 0x2A7) = *(int *)(arg0 + 0x1928);
-    *(unsigned char *)(dst + 0x2A8) = *(int *)(arg0 + 0x19A8);
-    *(unsigned char *)(dst + 0x2A9) = *(int *)(arg0 + 0x1A28);
-    *(unsigned char *)(dst + 0x2AA) = *(int *)(arg0 + 0x1AA8);
-    *(unsigned char *)(dst + 0x2AB) = *(int *)(arg0 + 0x1B28);
-    *(unsigned char *)(dst + 0x2AC) = *(int *)(arg0 + 0x1BA8);
-    *(unsigned char *)(dst + 0x2AD) = *(int *)(arg0 + 0x1C28);
-    *(unsigned char *)(dst + 0x2AE) = *(int *)(arg0 + 0x1CA8);
-    *(unsigned char *)(dst + 0x2AF) = *(int *)(arg0 + 0x1D28);
-    *(unsigned char *)(dst + 0x2B0) = *(int *)(arg0 + 0x1DA8);
-    *(int *)(dst + 0x29C) = *(int *)(arg0 + 0x1E3C);
+    *(unsigned char *)(arg1 + 0x2A0) = *(int *)(arg0 + 0x15A8);
+    *(unsigned char *)(arg1 + 0x2A1) = *(int *)(arg0 + 0x1628);
+    *(unsigned char *)(arg1 + 0x2A2) = *(int *)(arg0 + 0x16A8);
+    *(unsigned char *)(arg1 + 0x2A3) = *(int *)(arg0 + 0x1728);
+    *(unsigned char *)(arg1 + 0x2A4) = *(int *)(arg0 + 0x17A8);
+    *(unsigned char *)(arg1 + 0x2A5) = *(int *)(arg0 + 0x1828);
+    *(unsigned char *)(arg1 + 0x2A6) = *(int *)(arg0 + 0x18A8);
+    *(unsigned char *)(arg1 + 0x2A7) = *(int *)(arg0 + 0x1928);
+    *(unsigned char *)(arg1 + 0x2A8) = *(int *)(arg0 + 0x19A8);
+    *(unsigned char *)(arg1 + 0x2A9) = *(int *)(arg0 + 0x1A28);
+    *(unsigned char *)(arg1 + 0x2AA) = *(int *)(arg0 + 0x1AA8);
+    *(unsigned char *)(arg1 + 0x2AB) = *(int *)(arg0 + 0x1B28);
+    *(unsigned char *)(arg1 + 0x2AC) = *(int *)(arg0 + 0x1BA8);
+    *(unsigned char *)(arg1 + 0x2AD) = *(int *)(arg0 + 0x1C28);
+    *(unsigned char *)(arg1 + 0x2AE) = *(int *)(arg0 + 0x1CA8);
+    *(unsigned char *)(arg1 + 0x2AF) = *(int *)(arg0 + 0x1D28);
+    *(unsigned char *)(arg1 + 0x2B0) = *(int *)(arg0 + 0x1DA8);
+    *(int *)(arg1 + 0x29C) = *(int *)(arg0 + 0x1E3C);
 }
 #pragma scheduling on
 void fn_8018F6F8(void *arg0) {
@@ -1789,37 +1787,41 @@ extern void fn_801BF2A4(void *, int, float *, void *, void *, int, void *, float
 extern float lbl_80561FE4;
 #pragma push
 #pragma use_lmw_stmw off
-void fn_8018F9B4(void *arg0) {
-    unsigned char *base = (unsigned char *)arg0;
-    char *slot = (char *)arg0 + 0x152C;
-    char *table = (char *)&lbl_80332840;
+/* For each of the 17 scene light slots that is active and waiting (status 0 or
+ * 2), build a light from the matching 0x40-byte definition in lbl_80332840:
+ * the scaled midpoint of its two position vectors, plus the attached data and
+ * pool index, is handed to fn_801BF2A4, then the slot is marked done. */
+void fn_8018F9B4(void *sceneState) {
+    unsigned char *base = (unsigned char *)sceneState;
+    char *lightSlot = (char *)sceneState + 0x152C;
+    char *lightDef = (char *)&lbl_80332840;
     float scale = lbl_80561FE4;
     int i = 0;
     int one = 1;
     int three = 3;
     int zero = 0;
     do {
-        if ((*(int *)slot != 0 && *(int *)(slot + 4) > 0 &&
-             *(volatile int *)(slot + 0x7C) == 0) ||
-             *(volatile int *)(slot + 0x7C) == 2) {
-                int row = *(int *)(table + 8);
-                char *rowBase = *(char **)(base + 0x26C) + row * 0x18;
-                int context = *(int *)(table + 0x34);
-                float *position = (float *)(rowBase + 0x2138);
-                float values[3];
-                values[0] = *(float *)(rowBase + 0x2138) + *(float *)(rowBase + 0x2144);
-                values[1] = position[1] + position[4];
-                values[2] = position[2] + position[5];
-                values[0] *= scale;
-                values[1] *= scale;
-                values[2] *= scale;
-                ((void (*)(void *, int, float *, void *, void *, int, void *))fn_801BF2A4)(arg0, one << row, values, position, (char *)position + 0xC, context, table + 0x38);
-                *(int *)(slot + 0x7C) = three;
-                *(char *)(slot + 0x78) = zero;
+        if ((*(int *)lightSlot != 0 && *(int *)(lightSlot + 4) > 0 &&
+             *(volatile int *)(lightSlot + 0x7C) == 0) ||
+             *(volatile int *)(lightSlot + 0x7C) == 2) {
+                int rowIndex = *(int *)(lightDef + 8);
+                char *entryBase = *(char **)(base + 0x26C) + rowIndex * 0x18;
+                int dataCount = *(int *)(lightDef + 0x34);
+                float *lightPos = (float *)(entryBase + 0x2138);
+                float midpoint[3];
+                midpoint[0] = *(float *)(entryBase + 0x2138) + *(float *)(entryBase + 0x2144);
+                midpoint[1] = lightPos[1] + lightPos[4];
+                midpoint[2] = lightPos[2] + lightPos[5];
+                midpoint[0] *= scale;
+                midpoint[1] *= scale;
+                midpoint[2] *= scale;
+                ((void (*)(void *, int, float *, void *, void *, int, void *))fn_801BF2A4)(sceneState, one << rowIndex, midpoint, lightPos, (char *)lightPos + 0xC, dataCount, lightDef + 0x38);
+                *(int *)(lightSlot + 0x7C) = three;
+                *(char *)(lightSlot + 0x78) = zero;
         }
         i++;
-        slot += 0x80;
-        table += 0x40;
+        lightSlot += 0x80;
+        lightDef += 0x40;
     } while (i < 0x11);
 }
 #pragma pop
