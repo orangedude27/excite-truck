@@ -2246,11 +2246,13 @@ struct TevStageDefault {
         b[8] = 0x77; b[9] = 0x57; b[10] = 0; b[11] = 0x81;
         b[12] = 0; b[13] = 0; b[14] = 0; b[15] = 0;
     }
-    TevStageDefault &operator=(const TevStageDefault &o) {
-        b[0] = o.b[0]; b[1] = o.b[1]; b[2] = o.b[2]; b[3] = o.b[3];
-        b[4] = o.b[4]; b[5] = o.b[5]; b[6] = o.b[6]; b[7] = o.b[7];
-        b[8] = o.b[8]; b[9] = o.b[9]; b[10] = o.b[10]; b[11] = o.b[11];
-        b[12] = o.b[12]; b[13] = o.b[13]; b[14] = o.b[14]; b[15] = o.b[15];
+    // nw4r::lyt::TevStage copy assignment: copy all 16 byte-sized TEV
+    // register fields from other into this stage.
+    TevStageDefault &operator=(const TevStageDefault &other) {
+        b[0] = other.b[0]; b[1] = other.b[1]; b[2] = other.b[2]; b[3] = other.b[3];
+        b[4] = other.b[4]; b[5] = other.b[5]; b[6] = other.b[6]; b[7] = other.b[7];
+        b[8] = other.b[8]; b[9] = other.b[9]; b[10] = other.b[10]; b[11] = other.b[11];
+        b[12] = other.b[12]; b[13] = other.b[13]; b[14] = other.b[14]; b[15] = other.b[15];
         return *this;
     }
 };
