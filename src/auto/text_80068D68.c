@@ -24033,7 +24033,12 @@ void RFCOMM_LineStatusReq(void *p_mcb, u8 dlci, u8 status) {
     rfc_port_timer_start(port, 0x3c);
 }
 
-void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xC, 0); }
+void fn_800939A0(void *p_mcb, u8 dlci) {
+    /* RFCOMM_DlcReleaseReq: ask the port state machine to close the DLC identified by dlci on the multiplexer. */
+#define RFC_EVENT_CLOSE 0xC
+    rfc_port_sm_execute(port_find_mcb_dlci_port(p_mcb, dlci), RFC_EVENT_CLOSE, 0);
+#undef RFC_EVENT_CLOSE
+}
 
 void fn_800939CC(void *p_mcb, u8 dlci, void *p_buf) {
     /* RFCOMM_DataReq: hand a data buffer to the RFCOMM port state machine for
