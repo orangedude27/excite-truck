@@ -117,6 +117,7 @@ void fn_802B21D4(void **);
 void fn_802B2104(void **);
 void fn_80128668(void *);
 extern int lbl_8055CDB8;
+#define kObjectName lbl_8055CDB8 /* .sdata: "object", the material-item name tested below */
 int stricmp(const char *, const char *);
 #pragma push
 #pragma cplusplus on
@@ -404,7 +405,7 @@ extern "C" void fn_802B224C(void *arg0) {
 #pragma cplusplus off
 void **fn_802B2384(void *arg0, void **arg1) {
     int *p = (int *)arg0;
-    unsigned long count;
+    unsigned int count;
     int val;
     int *entry;
     count = p[1];
