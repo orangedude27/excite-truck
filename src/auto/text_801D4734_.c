@@ -482,7 +482,7 @@ loop_test:
     node = obj->child(i);
     if (node != 0) goto loop_body;
     out->b20 = obj->flag(base + 0xC8, 0);
-    out->f1c = obj->value(base + 0xD4, lbl_80562B00);
+    { float def = lbl_80562B00; char *key = base + 0xD4; out->f1c = obj->value(key, def); }
     out->b21 = obj->flag(base + 0xE0, 1);
     out->b22 = obj->flag(base + 0xF0, 1);
     out->i24 = obj->getInt(base + 0xFC, -1);
@@ -1558,7 +1558,7 @@ extern "C" int fn_801D6678(void *out, void *object) {
         virtual unsigned char flag(char *, int);
         virtual Vec3 vector(char *);
     };
-    register Dummy *obj = (register Dummy *)object;
+    Dummy *obj = (Dummy *)object;
     float first;
     float second;
     float scale;
@@ -1788,45 +1788,52 @@ int fn_801D6C3C(int arg0) {
     return 0;
 }
 
-void fn_801D6C68(void *arg0) {
-    s32 remaining;
-    void *obj;
-    f32 value;
-    remaining = lbl_8055E3C4 - (*(s32 *)((u8 *)arg0 + 0x10) + *(s32 *)((u8 *)arg0 + 0xC));
-    if (*(s32 *)((u8 *)arg0 + 4) != 2) return;
-    if (remaining <= 0) return;
-    if (*(u8 *)((u8 *)arg0 + 0x16) != 0) {
-        obj = *(void **)((u8 *)arg0 + 0x30);
-        value = lbl_80562AE0;
-        if (value != *(f32 *)((u8 *)obj + 8)) {
-            *(u8 *)((u8 *)obj + 0x4D) = 1;
-            *(f32 *)((u8 *)obj + 8) = value;
-        }
+void fn_801D6C68(void *arg0)
+{
+  s32 remaining;
+  void *obj;
+  f32 value;
+  remaining = lbl_8055E3C4 - ((*((s32 *) (((u8 *) arg0) + 0x10))) + (*((s32 *) (((u8 *) arg0) + 0xC))));
+  if ((*((s32 *) (((u8 *) arg0) + 4))) != 2)
+  {
+    return;
+    *((u8 *) (((u8 *) obj) + 0x4B)) = 0;
+  }
+  if (remaining <= 0)
+  {
+    return;
+  }
+  if ((*((u8 *) (((u8 *) arg0) + 0x16))) != 0)
+  {
+    obj = *((void **) (((u8 *) arg0) + 0x30));
+    value = lbl_80562AE0;
+    if (value != (*((f32 *) (((u8 *) obj) + 8))))
+    {
+      *((u8 *) (((u8 *) obj) + 0x4D)) = 1;
+      *((f32 *) (((u8 *) obj) + 8)) = value;
     }
-    if (*(u8 *)((u8 *)arg0 + 0x15) != 0) {
-        obj = *(void **)((u8 *)arg0 + 0x30);
-        *(u8 *)((u8 *)obj + 0x4A) = 0;
-        *(u8 *)((u8 *)obj + 0x4B) = 1;
-        *(u8 *)((u8 *)obj + 0x49) = 1;
-        if (remaining >= *(s32 *)((u8 *)arg0 + 8)) {
-            obj = *(void **)((u8 *)arg0 + 0x30);
-            *(s32 *)((u8 *)arg0 + 4) = 3;
-            *(u8 *)((u8 *)obj + 0x4A) = 1;
-            *(u8 *)((u8 *)obj + 0x4C) = 0;
-        }
-    } else {
-        u8 *q;
-        int a;
-        int b;
-        q = *(u8 **)((u8 *)arg0 + 0x30);
-        a = 1;
-        b = 0;
-        q[0x49] = (u8)a;
-        a = 3;
-        q[0x4B] = (u8)b;
-        q[0x4A] = (u8)b;
-        *(s32 *)((u8 *)arg0 + 4) = a;
+  }
+  if ((*((u8 *) (((u8 *) arg0) + 0x15))) != 0)
+  {
+    obj = *((void **) (((u8 *) arg0) + 0x30));
+    *((u8 *) (((u8 *) obj) + 0x4A)) = 0;
+    *((u8 *) (((u8 *) obj) + 0x4B)) = 1;
+    *((u8 *) (((u8 *) obj) + 0x49)) = 1;
+    if (remaining >= (*((s32 *) (((u8 *) arg0) + 8))))
+    {
+      obj = *((void **) (((u8 *) arg0) + 0x30));
+      *((s32 *) (((u8 *) arg0) + 4)) = 3;
+      *((u8 *) (((u8 *) obj) + 0x4A)) = 1;
+      *((u8 *) (((u8 *) obj) + 0x4C)) = 0;
     }
+  }
+  else
+  {
+    obj = *((void **) (((u8 *) arg0) + 0x30));
+    *((u8 *) (((u8 *) obj) + 0x49)) = 1;
+    *((u8 *) (((u8 *) obj) + 0x4A)) = 0;
+    *((s32 *) (((u8 *) arg0) + 4)) = 3;
+  }
 }
 
 #pragma scheduling invalid_target
@@ -2465,6 +2472,23 @@ void fn_801D77E8(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma peephole off
+static inline int fn_801D77EC_Find(void *arg0, unsigned int arg1) {
+    int count;
+    int index;
+    unsigned int byteOffset;
+    unsigned int *items;
+
+    count = *(int volatile *)((char *)arg0 + 0x74);
+    byteOffset = 0;
+    for (index = 0; index < count; index += 1) {
+        items = *(unsigned int **)((char *)arg0 + 0x70);
+        if (*(unsigned int *)((char *)items + byteOffset) == arg1)
+            return index;
+        byteOffset += 4;
+    }
+    return -1;
+}
+
 void fn_801D77EC(void *arg0, unsigned int arg1) {
     int count;
     int index;
@@ -2478,10 +2502,8 @@ void fn_801D77EC(void *arg0, unsigned int arg1) {
     for (; index < count; byteOffset += 4, index += 1) {
         items = *(unsigned int **)((char *)arg0 + 0x70);
         if (*(unsigned int *)((char *)items + byteOffset) != arg1)
-            goto next_item;
+            continue;
         goto found;
-    next_item:
-        ;
     }
     index = -1;
 found:
@@ -3305,8 +3327,8 @@ extern "C" void fn_801D875C(void *arg0) {
     };
     int count, offset;
     float time;
-    char *entry;
     Dummy *item;
+    char *entry;
     if (*(int *)((char *)arg0 + 0x18) != 2) return;
     time = lbl_8055E3C8;
     if (*(int *)((char *)arg0 + 0x20) == 0) {
@@ -3464,12 +3486,10 @@ extern "C" void fn_801D89C0(void *arg0, void *arg1) {
     Request *request = (Request *)arg1;
     int *output = (int *)arg0;
     NameObject *object = (NameObject *)request->getObject();
-    volatile int first;
-    int second;
     if (object == 0) return;
     if (object->find(lbl_803385D0, -1) != output[2]) return;
-    first = request->getFirst();
-    second = request->getSecond();
+    volatile int first = request->getFirst();
+    int second = request->getSecond();
     int count = output[0x28 / 4];
     Record *records = (Record *)output[0x24 / 4];
     output[0x28 / 4] = count + 1;
