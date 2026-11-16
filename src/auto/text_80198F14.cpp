@@ -5499,12 +5499,13 @@ extern "C" void fn_801A518C(void) {
     ((void (*)(void))fn_801A4868)();
 }
 
-extern "C" void fn_801A5190(void* arg0) {
-    VTab19* p = *(VTab19**)((u8*)arg0 + 0x3C);
-    if (p == NULL) {
+extern "C" void fn_801A5190(void* owner) {
+    /* Invoke the slot-0x40 hook on the sub-object held at +0x3C of the owner. */
+    VTab19* part = *(VTab19**)((u8*)owner + 0x3C);
+    if (part == NULL) {
         return;
     }
-    p->v14();
+    part->v14();
 }
 
 extern "C" s32 fn_801A51B0(void* arg0) {
