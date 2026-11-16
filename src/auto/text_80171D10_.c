@@ -423,18 +423,20 @@ void fn_8017248C(int arg0) {
 #pragma optimization_level reset
 #pragma dont_inline on
 float fn_801725C8(float arg0) {
+    /* Remap arg0 from the range [lbl_8043038C[2], lbl_8043038C[3]] to
+       [lbl_8043038C[0], lbl_8043038C[1]], clamping the normalized value to [0, 1]. */
     extern float lbl_8043038C[];
     extern float lbl_80561A40;
     extern float lbl_80561A44;
-    float x0 = lbl_8043038C[2];
-    float x1 = lbl_8043038C[3];
-    float lo = lbl_8043038C[0];
-    float hi = lbl_8043038C[1];
-    float value = (arg0 - x0) / (x1 - x0);
+    float rangeStart = lbl_8043038C[2];
+    float rangeEnd = lbl_8043038C[3];
+    float outStart = lbl_8043038C[0];
+    float outEnd = lbl_8043038C[1];
+    float normalized = (arg0 - rangeStart) / (rangeEnd - rangeStart);
     float t = lbl_80561A40;
-    t = (t < value) ? t : value;
+    t = (t < normalized) ? t : normalized;
     t = (t > lbl_80561A44) ? t : lbl_80561A44;
-    return lo + t * (hi - lo);
+    return outStart + t * (outEnd - outStart);
 }
 #pragma dont_inline reset
 
