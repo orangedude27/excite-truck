@@ -4,6 +4,7 @@
 extern char lbl_8055F078[4];
 extern int fn_8000D838(void*);
 extern unsigned int lbl_8055F080;
+/* Static initializer: register the destructor record at lbl_8055F078, then seed its associated state word with the 0x7f000000 sentinel. */
 void fn_80236524(void)
 {
     fn_8000D838(&lbl_8055F078);
