@@ -32,12 +32,14 @@ void fn_802AE328(void) {
     lbl_8055F958 = 1;
 }
 
-#pragma scheduling on
+#pragma push
+#pragma optimization_level 4
 void fn_802AE374(void) {
     lbl_8055F958 = 0;
     lbl_8055F959 = 1;
     lbl_804BD8CC[1] = 0;
 }
+#pragma pop
 void fn_802AE394(void) {
     int *global = (int *)&lbl_804BD8CC;
     int offset = 0;
