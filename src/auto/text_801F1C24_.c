@@ -1345,10 +1345,11 @@ void fn_801F3A30(void *arg0, int arg1) {
     *(float *)((char *)arg0 + 8) = value / lbl_80562F90;
 }
 
-float fn_801F3A94(void *arg0) {
+float fn_801F3A94(void *params) {
     extern float fn_802923EC(float);
-    if (*(unsigned char *)((char *)arg0 + 4) != 0) {
-        return fn_802923EC(*(float *)((char *)arg0 + 8));
+    /* Apply the value from params (+8) when its override flag (+4) is set, otherwise the default 1.0. */
+    if (*(unsigned char *)((char *)params + 4) != 0) {
+        return fn_802923EC(*(float *)((char *)params + 8));
     }
     return fn_802923EC(lbl_80562F44);
 }
