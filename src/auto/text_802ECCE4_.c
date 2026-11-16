@@ -128,17 +128,24 @@ s32 fn_802ECF04(void) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void *fn_802ECF08(void *arg0, s32 arg1) {
-    void *result;
+/* Open a movie and keep it for the caller: allocate a MoviePlayInfo record (heap
+ * tag "MoviePlayInfo") for the movie file `movieName`, resolve it through
+ * fn_802ECD68 (which opens "<name>.bik" with @p mode) and return the record, or
+ * NULL when the movie could not be opened. Unlike fn_802ECE48 the record is not
+ * chained into the movie list, so the caller owns it (fn_802ECFF4 destroys it).
+ * While one "single_movie_info" record stands in for every movie, that record
+ * answers for every name and nothing is allocated. */
+void *fn_802ECF08(void *movieName, s32 mode) {
+    MoviePlayInfo *record;
     if (fn_802ECEEC() != 0) {
         return (void *)lbl_805600F8;
     }
-    result = fn_801284F8(0x44, lbl_8034EC18);
-    if (fn_802ECD68(result, arg0, arg1) == 0) {
-        fn_80128668(result);
-        result = 0;
+    record = fn_801284F8(sizeof(MoviePlayInfo), lbl_8034EC18);
+    if (fn_802ECD68(record, movieName, mode) == 0) {
+        fn_80128668(record);
+        record = 0;
     }
-    return result;
+    return record;
 }
 #pragma scheduling reset
 #pragma dont_inline reset
