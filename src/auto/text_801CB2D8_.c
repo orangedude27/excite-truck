@@ -257,11 +257,24 @@ void fn_801CB844(void) {
     fn_801CE6F8();
 }
 
+extern int fn_801CE75C(void);
 s32 fn_801CB880(void) {
-    if ((fn_80019BA8() != 0) || (fn_80161C38() != 0)) {
+    /* Gate the awards screen asks before letting the confirm button (event 0x58)
+     * move it out of its waiting step (fn_80006580, state 1 -> 2 -> 3): 1 when
+     * there is nothing left to wait for.  The award stat manager is not running
+     * at all while the boot option bit 0x400 is set or the challenge sub-task
+     * manager has a sub-task up, and otherwise the wait is over once the stat
+     * manager has finished - its block state 3, or nothing loaded (fn_801CE75C). */
+#define BootOptionBit_400 fn_80019BA8 /* lbl_8055D5A0 bit 10, set by a boot option */
+#define ChallengeSubTask_Active fn_80161C38 /* the manager's current sub-task, lbl_8055E300 */
+#define StatManager_IsComplete fn_801CE75C
+    if ((BootOptionBit_400() != 0) || (ChallengeSubTask_Active() != 0)) {
         return 1;
     }
-    return fn_801CE75C();
+    return StatManager_IsComplete();
+#undef BootOptionBit_400
+#undef ChallengeSubTask_Active
+#undef StatManager_IsComplete
 }
 
 extern void fn_801CE7A0(void);
