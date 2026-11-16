@@ -18481,9 +18481,12 @@ extern char lbl_8031801C[];
 extern char lbl_80318040[];
 extern char lbl_8031806C[];
 extern char lbl_80318090[];
-u8 fn_80089E20(u8 value) {
-    if (value != 0xFF) lbl_803C4040[0] = value;
-    return lbl_803C4040[0];
+u8 fn_80089E20(u8 level) {
+#define L2CAP_TRACE_LEVEL_QUERY 0xFF /* 0xFF means "read without changing" */
+    /* Set the L2CAP trace level in l2cb, or read it unchanged for the query value. */
+    if (level != L2CAP_TRACE_LEVEL_QUERY) l2cb_trace_level = level;
+    return l2cb_trace_level;
+#undef L2CAP_TRACE_LEVEL_QUERY
 }
 
 void fn_80089E3C(void) {
