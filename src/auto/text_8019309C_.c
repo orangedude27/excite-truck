@@ -2036,21 +2036,22 @@ void fn_801963A0(void *state) {
   }
 
 #pragma dont_inline on
-void fn_80196418(void *arg0) {
-    int value = *(int *)((char *)arg0 + 0x210);
-    if (value == 1) {
+/* Normalize the controller's XY vector (fn_80195830), but only while its state is 0. */
+void fn_80196418(void *controller) {
+    int state = *(int *)((char *)controller + 0x210);
+    if (state == 1) {
         goto done;
     }
-    if (value >= 1) {
+    if (state >= 1) {
         goto done;
     }
-    if (value >= 0) {
+    if (state >= 0) {
         goto tail;
     }
 done:
     return;
 tail:
-    fn_80195830(arg0);
+    fn_80195830(controller);
 }
 
 int fn_8019643C(int carIndex) {
