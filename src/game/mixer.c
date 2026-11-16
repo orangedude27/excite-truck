@@ -478,13 +478,11 @@ void fn_80209310(void *timer) {
 void fn_80209348(void *timer) {
 #define startTime ((int *)((char *)timer + 4))
 #define state ((int *)((char *)timer + 8))
-#define currentTimeMs fn_802E2C20
     /* Initialize a timed object: record the current time as its start and set its state to 1 (running). */
-    *startTime = currentTimeMs();
+    *startTime = fn_802E2C20();
     *state = 1;
 #undef startTime
 #undef state
-#undef currentTimeMs
 }
 
 void fn_80209380(void *arg0) {
