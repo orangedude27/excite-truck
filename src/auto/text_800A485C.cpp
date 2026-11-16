@@ -12441,9 +12441,10 @@ extern "C" s32 NANDGetCurrentDir(char *);
 extern "C" const char lbl_8031B190[];
 extern "C" const char lbl_8031B1C0[];
 extern "C" s32 fn_800B76E8(s8);
-extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 4) = arg1;
-    *(u8 **)arg0 = lbl_802F31F8;
+extern "C" s32 fn_800B94D4(void *object, s32 value) {
+    /* Construct an object: install vtable lbl_802F31F8 at +0 and store value at +4. */
+    *(s32 *)((u8 *)object + 4) = value;
+    *(u8 **)object = lbl_802F31F8;
     return 0;
 }
 
