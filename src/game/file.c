@@ -364,8 +364,10 @@ s32 fn_802E39D0(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_802E3A14(s32 arg0, s32 arg1) {
-    class Obj {
+/* RealName: FileObject_SeekTo? (invokes file stream vtable method 8 with an offset). */
+extern "C" void fn_802E3A14(s32 fileHandle, s32 offset) {
+#define kFileSourceFile lbl_8034CFB4
+    class FileStream {
     public:
         virtual void v0();
         virtual void v1();
@@ -373,13 +375,14 @@ extern "C" void fn_802E3A14(s32 arg0, s32 arg1) {
         virtual void v3();
         virtual void v5();
         virtual void v4();
-        virtual void v8(s32);
+        virtual void Seek(s32 offset);
         virtual void v7();
         virtual void v6();
     };
-    register int obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1ab);
-    s32 entry = *(s32 *)(obj + 0x24);
-    ((Obj *)entry)->v8(arg1);
+    register int fileEntry = fn_802E33D8(fileHandle, kFileSourceFile, 0x1ab);
+    s32 stream = *(s32 *)(fileEntry + 0x24);
+    ((FileStream *)stream)->Seek(offset);
+#undef kFileSourceFile
 }
 #pragma cplusplus on
 /* Write `size` bytes from `buffer` via the file object's vtable method; return 1 if all bytes were written. */
