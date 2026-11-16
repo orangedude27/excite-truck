@@ -2529,12 +2529,18 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
 
 #pragma pop
 
+/* RealName: UnkObj_ClearField28_DestroyIfFlag
+ * If object is non-null, clears its int field at +0x28. If arg1 > 0, also
+ * calls fn_80128668() (object destruction/finalization path), then returns arg0.
+ */
 int fn_801D7924(int arg0, int arg1) {
+#define DestroyObject fn_80128668
     if (arg0 != 0) {
         ((int *)arg0)[10] = 0;
-        if (arg1 > 0) fn_80128668();
+        if (arg1 > 0) DestroyObject();
     }
     return arg0;
+#undef DestroyObject
 }
 
 #pragma push
