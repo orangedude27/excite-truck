@@ -46,6 +46,7 @@ typedef struct CamState {
 
 #pragma scheduling invalid_target
 void fn_80273A88(void) {
+    /* Tear down the array at lbl_8049F9D8: 32 records of 0x1C bytes each, run through the per-element deleting destructor fn_80273978 (MSL runtime array_delete). */
     fn_8002F634(lbl_8049F9D8, fn_80273978, 0x1C, 0x20);
 }
 #pragma scheduling on
