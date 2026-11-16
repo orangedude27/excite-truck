@@ -42,10 +42,10 @@ extern void fn_801331C4(int, int *, float *);
 /* One popup: a row of lbl_804872B0 or an entry of the run-time queue. */
 struct PopupEntry {
     unsigned char always;        /* 0x00: show again even when already seen */
-    int id;                      /* 0x04 */
-    int arg1;                    /* 0x08 */
-    void *text;                  /* 0x0C: text/resource handle */
-    int arg3;                    /* 0x10 */
+    char *message;               /* 0x04: text drawn when there is no callback */
+    int arg;                     /* 0x08: value handed to the callback */
+    void *text;                  /* 0x0C: message object (fn_801DE890, fn_801DEE3C) */
+    void *object;                /* 0x10: object fn_801DF110 draws with the popup */
     int state;                   /* 0x14: sound state, -1 once stopped */
     int (*callback)(int, int);   /* 0x18: replaces the default message */
 };
