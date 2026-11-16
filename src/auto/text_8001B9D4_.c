@@ -1157,13 +1157,15 @@ u32 fn_8001D220(u32 arg0, u32 arg1, u32 arg2) {
 }
 
 #pragma scheduling invalid_target
-void fn_8001D234(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    u32 value = arg0;
-    u32 byte = (value >> 16) & 0xFF;
-    u32 mid = (value >> 8) & 0xFF;
-    *arg1 = value & 0xFF;
-    *arg2 = mid;
-    *(s8 *)arg3 = (byte != 0);
+/* Decode a packed ranking word: byte 0 -> entryIndex, byte 1 -> valueIndex,
+ * byte 2 non-zero -> flag (stored as a signed byte). */
+void fn_8001D234(s32 packed, s32 *entryIndex, s32 *valueIndex, s32 *flag) {
+    u32 word = packed;
+    u32 flagByte = (word >> 16) & 0xFF;
+    u32 valueByte = (word >> 8) & 0xFF;
+    *entryIndex = word & 0xFF;
+    *valueIndex = valueByte;
+    *(s8 *)flag = (flagByte != 0);
 }
 
 #pragma cplusplus on
