@@ -737,7 +737,9 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
 }
 #pragma pop
 extern "C" void fn_8001ED2C(void* arg0) {
-    f32 value = lbl_80560490;
+#define INVALID_VALUE lbl_80560490 /* -999.0f */
+    /* Initialize eight (int, float) pairs at offsets 0x04..0x40 to (0, -999.0f). */
+    f32 value = INVALID_VALUE;
     *(s32*)((u8*)arg0 + 0x04) = 0;
     *(f32*)((u8*)arg0 + 0x08) = value;
     *(s32*)((u8*)arg0 + 0x0C) = 0;
@@ -754,6 +756,7 @@ extern "C" void fn_8001ED2C(void* arg0) {
     *(f32*)((u8*)arg0 + 0x38) = value;
     *(s32*)((u8*)arg0 + 0x3C) = 0;
     *(f32*)((u8*)arg0 + 0x40) = value;
+#undef INVALID_VALUE
 }
 
 extern "C" s32 fn_8001ED78(s32 arg0, s32 arg1) {
