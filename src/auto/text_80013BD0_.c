@@ -341,6 +341,9 @@ extern "C" void *fn_80014524(void *object, s32 index) {
 }
 #pragma pop
 
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
 void fn_80014638(void *arg0) {
     f32 zero = lbl_80560368;
     s32 a = 0;
@@ -353,7 +356,7 @@ void fn_80014638(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x28) = zero;
     *(s32 *)((u8 *)arg0 + 0x24) = a;
 }
-
+#pragma pop
 extern u8 lbl_802FCE18[];
 extern void fn_8001A04C(void *);
 extern void fn_802CAC54(s32);
@@ -674,6 +677,7 @@ extern s32 fn_8027AA48(void *, f32, f32);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+#pragma opt_propagation off
 extern "C" void fn_80014D04(void *arg0) {
     class Obj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual s32 v20(); };
     class Obj2 { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void *v3(void *); };
@@ -692,10 +696,10 @@ extern "C" void fn_80014D04(void *arg0) {
                 fn_801DF93C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C));
             }
         } else {
-            void *label;
             s32 x;
-            s32 y, z;
             void *manager;
+            void *label;
+            s32 y, z;
             if (*(s32 *)((u8 *)lbl_8055D350 + 0x1C) == 0) {
                 fn_8000FBE4();
             }
