@@ -463,10 +463,11 @@ void fn_801EB820(void) {
 }
 
 #pragma dont_inline on
-void fn_801EB824(s32 arg0) {
-    s32 sp8;
-    sp8 = (s32)lbl_8033A048;
-    ((s32 (*)(s32, s32 *))fn_801EB000)(arg0, &sp8);
+/* Walk the node tree rooted at node using a dispatch context whose vtable is lbl_8033A048. */
+void fn_801EB824(s32 node) {
+    s32 dispatchVtable;
+    dispatchVtable = (s32)lbl_8033A048;
+    ((s32 (*)(s32, s32 *))fn_801EB000)(node, &dispatchVtable);
 }
 
 /* Initialize 24 cached values by calling each getter in the descriptor table and storing its result in the corresponding slot. */
