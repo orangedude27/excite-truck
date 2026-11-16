@@ -19566,7 +19566,9 @@ extern "C" s32 fn_800D014C(s32 object, s32 deleteFlag) {
 
 extern "C" u32 lbl_8055DDA0;
 #pragma scheduling on
-extern "C" void fn_800D018C(void *arg0, void *__restrict arg1) {
+extern "C" void fn_800D018C(void *manager, void *__restrict list) {
+    /* Reset the rolling object-index counter, then dispatch the manager's virtual
+       release operation with the child node held at list+0x10 (node header skipped). */
     class Dispatch {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -19577,7 +19579,7 @@ extern "C" void fn_800D018C(void *arg0, void *__restrict arg1) {
         virtual void call(void *);
     };
     lbl_8055DDA0 = 0;
-    ((Dispatch *)arg0)->call((u8 *)*(void **)((u8 *)arg1 + 0x10) + 0x10);
+    ((Dispatch *)manager)->call((u8 *)*(void **)((u8 *)list + 0x10) + 0x10);
 }
 extern "C" u8 lbl_8031E878[];
 extern "C" u8 lbl_8031E780[];
