@@ -61,6 +61,7 @@ int fn_80273ABC(int object) {
 }
 
 void fn_80273AEC(void) {
+    /* Tear down the array at lbl_8049A2C8: 200 records of 0x60 bytes each, run through the per-element deleting destructor fn_80273B08 (MSL runtime array_delete). */
     fn_8002F634(lbl_8049A2C8, fn_80273B08, 0x60, 0xC8);
 }
 
