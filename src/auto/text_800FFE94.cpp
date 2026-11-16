@@ -406,10 +406,11 @@ extern "C" void fn_80100988(void* obj, float value) {
     OSRestoreInterrupts(interruptLevel);
 }
 
-extern "C" void fn_801009C8(void* arg0, float arg1) {
-    OSDisableInterrupts();
-    *(float*)((char*)arg0 + 0x38) = arg1;
-    ((void (*)(void))OSRestoreInterrupts)();
+extern "C" void fn_801009C8(void* player, float surroundPan2) {
+    /* nw4hbm::snd::detail::WsdPlayer::SetSurroundPan2: set mExtSurroundPan2 (+0x38) with interrupts disabled. */
+    int level = OSDisableInterrupts();
+    *(float*)((char*)player + 0x38) = surroundPan2;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void fn_80100A08(void* player, float value) {
