@@ -736,21 +736,18 @@ int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) 
     temp_f4 = arg0[0];
     temp_f3 = arg0[1];
     temp_f0 = matrix[9];
-    temp_f4 = temp_f4 - temp_f0;
     temp_f2 = matrix[10];
-    temp_f2 = temp_f3 - temp_f2;
+    temp_f4 = temp_f4 - temp_f0;
     temp_f1 = arg0[2];
     temp_f0 = matrix[11];
+    temp_f2 = temp_f3 - temp_f2;
     temp_f1 = temp_f1 - temp_f0;
     delta[0] = temp_f4;
     delta[1] = temp_f2;
     delta[2] = temp_f1;
 
     temp_f1_2 = PSVECDotProduct((Vec *)&delta[0], (Vec *)(matrix + 6));
-    if (temp_f1_2 < lbl_8055FC38 - tolerance) {
-        goto fail;
-    }
-    if (temp_f1_2 > lbl_8055FC3C + tolerance) {
+    if ((temp_f1_2 < lbl_8055FC38 - tolerance) || (temp_f1_2 > lbl_8055FC3C + tolerance)) {
         return 0;
     }
     if (temp_f1_2 - tolerance > lbl_8055FC3C - lbl_80564F20 * lbl_8055FC3C) {
@@ -777,9 +774,6 @@ int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) 
         *arg2 = temp_f1_2 - tolerance;
     }
     return 1;
-
-fail:
-    return 0;
 }
 #pragma scheduling on
 int fn_802C9638(void *arg0, unsigned char *arg1, float tolerance) {
@@ -1080,11 +1074,12 @@ void* fn_802C9C50(void) {
     return lbl_8055FC5C;
 }
 
-int fn_802C9C58(int arg0) {
-    int old = lbl_8055FC30;
-    lbl_8055FC30 = arg0;
+int fn_802C9C58(int cullMode) {
+    /* Set the cached cull mode, apply it to GX, and return the previous value. */
+    int previousCullMode = lbl_8055FC30;
+    lbl_8055FC30 = cullMode;
     fn_802D08CC();
-    return old;
+    return previousCullMode;
 }
 
 /* Begin the alpha-only overlay pass that fn_802C9CE0 finishes.  The texture
