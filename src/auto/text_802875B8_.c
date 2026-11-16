@@ -854,6 +854,12 @@ void fn_80288868(void* hi) {
     lbl_8055F6C8 = hi;
 }
 
+/* The module's random generator is a 31-bit linear congruential generator;
+ * its state lives in lbl_8055F6C8 (fn_80288868 seeds it). */
+#define RNG_MULTIPLIER 0x12B9B0A1u
+#define RNG_INCREMENT 0x1CCE8AC1u
+#define RNG_MASK 0x7FFFFFFFu
+
 unsigned int fn_80288870(void) {
     unsigned int t = (unsigned int)lbl_8055F6C8 * 0x12B9B0A1u + 0x1CCE8AC1u;
     unsigned int v = t & 0x7FFFFFFFu;
