@@ -2173,12 +2173,13 @@ extern "C" void fn_8019EBE0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f
     }
 }
 #pragma scheduling on
-extern "C" void fn_8019EC84(void* this_) {
-    VTab19* p = *(VTab19**)((u8*)this_ + 4);
-    if (p == NULL) {
+extern "C" void fn_8019EC84(void* owner) {
+    /* Invoke the slot-0x4C hook on the sub-object held at +4 of the owner, if present. */
+    VTab19* part = *(VTab19**)((u8*)owner + 4);
+    if (part == NULL) {
         return;
     }
-    p->slot0x4C();
+    part->slot0x4C();
 }
 
 extern "C" void fn_8019ECA4(VTab13* this_, s32 arg1) {
