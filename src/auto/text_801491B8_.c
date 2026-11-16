@@ -2150,11 +2150,14 @@ void *fn_8014F000(void *object, int deleteFlag) {
     return self;
 }
 
-s32 fn_8014F088(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
+s32 fn_8014F088(s32 object, s32 deleteFlag) {
+#define MemFreeObject fn_80128668
+    /* CodeWarrior array-element deleting-destructor helper: free the element with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        MemFreeObject((void *)object);
     }
-    return arg0;
+    return object;
+#undef MemFreeObject
 }
 
       extern void fn_80128668();
