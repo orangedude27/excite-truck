@@ -1235,14 +1235,16 @@ extern "C" s32 detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPv
 }
 #pragma pop
 
-extern "C" void fn_800F2D28(void *arg0) {
-    *(s32*)((u8*)arg0 + 0x28) = 0;
-    *(s32*)((u8*)arg0 + 0x2C) = 0;
-    *(s32*)((u8*)arg0 + 0x30) = 0;
-    *(s32*)((u8*)arg0 + 0x34) = 0;
-    *(s32*)((u8*)arg0 + 0x38) = 0;
-    *(s32*)((u8*)arg0 + 0x3C) = 0;
-    *(s32*)((u8*)arg0 + 0x40) = 0;
+/* Clear the seven consecutive 32-bit fields at +0x28..+0x40 of a sound
+ * object (the embedded reader initialized during archive construction). */
+extern "C" void fn_800F2D28(void *object) {
+    *(s32*)((u8*)object + 0x28) = 0;
+    *(s32*)((u8*)object + 0x2C) = 0;
+    *(s32*)((u8*)object + 0x30) = 0;
+    *(s32*)((u8*)object + 0x34) = 0;
+    *(s32*)((u8*)object + 0x38) = 0;
+    *(s32*)((u8*)object + 0x3C) = 0;
+    *(s32*)((u8*)object + 0x40) = 0;
 }
 
 #pragma push
