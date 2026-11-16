@@ -485,12 +485,21 @@ extern "C" void fn_8020D2D4(void)
 #pragma pop
 
 #pragma dont_inline on
+/* Update the volume options menu each frame: apply the current music and SFX volume settings, run the menu's per-frame logic, and if the "Reset/Default" option (index 2) is selected but unavailable, move the selection off it.
+ * RealName: unknown (rename_symbol disabled). lbl_8055EE78 = menu selection index, lbl_8055EE8C = music volume, lbl_8055EE90 = SFX/effects volume.
+ * Calls: fn_8020C908 set music mixer volume, fn_80209030 set SFX volume, fn_800121F0 menu tick/commit, fn_8020CF68 reset-option-available check, fn_8020D0CC change selection. */
 void fn_8020DABC(void) {
-    fn_8020C908(lbl_8055EE8C);
-    fn_80209030(lbl_8055EE90);
+#define menuSelection lbl_8055EE78
+#define musicVolume lbl_8055EE8C
+#define sfxVolume lbl_8055EE90
+    fn_8020C908(musicVolume);
+    fn_80209030(sfxVolume);
     fn_800121F0();
-    if (lbl_8055EE78 == 2 && ((int (*)(void))fn_8020CF68)() == 0)
+    if (menuSelection == 2 && ((int (*)(void))fn_8020CF68)() == 0)
         fn_8020D0CC(-1);
+#undef menuSelection
+#undef musicVolume
+#undef sfxVolume
 }
 #pragma push
 #pragma processor 750
