@@ -1188,8 +1188,8 @@ void fn_802CB82C(int arg0) {
     }
     *(int *)(temp_r31 + 0x40) = 0;
 }
-int fn_802CBBE8();
-extern char lbl_8034BA04[];
+ void fn_802CBBE8();
+ extern char lbl_8034BA04[];
 /* Remove arg2 from the list rooted at arg1, then push arg2 onto the front of *arg0. */
 void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     fn_802CBBE8(arg1, arg2);
@@ -1198,7 +1198,21 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
 }
 
 #pragma scheduling invalid_target
-int fn_802CBBE8(int **link, int *target, int *current) { int removed = 0; goto advance; check: if (current == target) { int *next = *(int **)((char *)target + 0x14); *link = next; *(int **)((char *)target + 0x14) = 0; removed = 1; goto done; } advance: link = (int **)((char *)current + 0x14); current = *link; if (current != 0) goto check; done: if (removed == 0) fn_802E317C(lbl_8034BA04); }
+void fn_802CBBE8(register int **link, int *target, int *current) {
+    int removed = 0;
+    while ((current = *link) != 0) {
+        if (current == target) {
+            int *next = *(int **)((char *)target + 0x14);
+            *link = next;
+            *(int **)((char *)target + 0x14) = 0;
+            removed = 1;
+            break;
+        }
+        link = (int **)((char *)current + 0x14);
+    }
+    if (removed == 0)
+        fn_802E317C(lbl_8034BA04);
+}
 
 #pragma use_lmw_stmw off
 extern void fn_8012C720(void *, int, int, int);
