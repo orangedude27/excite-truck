@@ -2066,19 +2066,20 @@ extern "C" void fn_800E54EC(void *arg0, float farg0) {
     }
 }
 
-extern "C" void fn_800E550C(void *arg0, float arg1) {
-    float value;
-    if (arg1 > lbl_80560F54) {
-        value = lbl_80560F54;
-    } else if (arg1 < lbl_80560F3C) {
-        value = lbl_80560F3C;
+/* Clamps the input to [0.0, 2.0] and stores it at voice+0x134, setting dirty flag 0x20 at +0x123 if changed. */
+extern "C" void fn_800E550C(void *voice, float value) {
+    float clamped;
+    if (value > lbl_80560F54) {
+        clamped = lbl_80560F54;
+    } else if (value < lbl_80560F3C) {
+        clamped = lbl_80560F3C;
     } else {
-        value = arg1;
+        clamped = value;
     }
-    float *field = (float *)((char *)arg0 + 0x134);
-    if (value != *field) {
-        unsigned char *flags = (unsigned char *)arg0 + 0x123;
-        *field = value;
+    float *field = (float *)((char *)voice + 0x134);
+    if (clamped != *field) {
+        unsigned char *flags = (unsigned char *)voice + 0x123;
+        *field = clamped;
         *flags |= 0x20;
     }
 }
