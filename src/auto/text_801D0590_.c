@@ -35,11 +35,12 @@ extern DispatchList lbl_8043870C[];
 #pragma small_data off
 __declspec(section ".data") extern DispatchList lbl_804386B4[];
 #pragma scheduling invalid_target
-void fn_801D0590(void* arg0) {
+/* Append a listener (called back later by this file's dispatch walkers) to the first listener list, growing its count. */
+void fn_801D0590(void* listener) {
     DispatchList* list = lbl_804386B4;
     void** items = list->items;
     int count = list->count++;
-    items[count] = arg0;
+    items[count] = listener;
 }
 
 static inline int DispatchList_Find1(void *obj) {
