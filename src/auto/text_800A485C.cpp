@@ -871,10 +871,11 @@ extern "C" s32 fn_800A7338(void *, s32 = 0);
 extern "C" s32 fn_800A7568(void *, s32);
 extern "C" s32 fn_800A607C(void *, s32 *);
 #pragma dont_inline on
-extern "C" s32 fn_800A5958(void *arg0, s32 *arg1) {
+/* Load a resource record from loader into outRecord and return the loader's status code. */
+extern "C" s32 fn_800A5958(void *loader, s32 *outRecord) {
     s32 result;
-    *arg1 = 0;
-    result = fn_800A607C(arg0, arg1);
+    *outRecord = 0;
+    result = fn_800A607C(loader, outRecord);
     return result & ((-result | result) >> 31);
 }
 
