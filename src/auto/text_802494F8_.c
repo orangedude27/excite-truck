@@ -883,11 +883,20 @@ mismatch:
     return comparison;
 }
 #pragma cplusplus off
+/* RealName: CompareArchiveEntryByName (qsort comparator: flagged entries first, then case-insensitive name) */
 int fn_8024B214(char *arg0, char *arg1) {
-    unsigned char first = ((unsigned char *)arg0)[4];
-    if (first != 0 && ((unsigned char *)arg1)[4] == 0) return 1;
-    if (((unsigned char *)arg1)[4] != 0 && first == 0) return -1;
-    return stricmp(*(char **)arg0, *(char **)arg1);
+#define CompareArchiveEntryByName fn_8024B214
+#define entryA arg0
+#define entryB arg1
+    /* Compare 8-byte archive entries: sort flagged entries before unflagged, then by name (case-insensitive). */
+    unsigned char first = ((unsigned char *)entryA)[4];
+    if (first != 0 && ((unsigned char *)entryB)[4] == 0) return 1;
+    if (((unsigned char *)entryB)[4] != 0 && first == 0) return -1;
+    return stricmp(*(char **)entryA, *(char **)entryB);
+#undef first
+#undef entryA
+#undef entryB
+#undef CompareArchiveEntryByName
 }
 
 extern void *fn_80131234(void *);
