@@ -859,31 +859,19 @@ extern s32 fn_8024B178(s32);
 s32 fn_8024B178(s32 arg0) {
     class Obj {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual char *get(const char *);
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual char *get(const char *);
     };
-    void *manager;
-    void *object;
-    char *result;
-    char *prefix;
-    s32 comparison;
-    char *buffer;
-    char *suffix;
-
+    void *manager; void *object; char *result; char *prefix; s32 comparison; char *buffer; s32 len;
     manager = ((void *(*)(s32))fn_8001285C)(arg0);
     object = *(void **)((char *)manager + 0x20);
     result = ((Obj *)object)->get((const char *)&lbl_8055BFC0);
     prefix = (char *)&lbl_8055BFC8;
     comparison = strncmp(result, prefix, strlen(prefix));
-    if (comparison != 0)
-        goto mismatch;
-    result += strlen(prefix);
-    suffix = result;
+    if (comparison != 0) goto mismatch;
+    len = strlen(prefix);
+    result = result + len;
     buffer = lbl_804989AC;
-    ((void (*)(void *, int, const char *, ...))fn_801345D8)(
-        buffer, 0x21, (const char *)&lbl_8055BFD0, suffix);
+    ((void (*)(void *, int, const char *, ...))fn_801345D8)(buffer, 0x21, (const char *)&lbl_8055BFD0, result);
     return (s32)buffer;
 mismatch:
     return comparison;
@@ -1222,9 +1210,12 @@ s32 fn_8024B87C(void *arg0, s32 arg1) {
     return (s32)&lbl_8055BFD8;
 }
 
-s32 fn_8024B8A4(void *arg0, s32 arg1) {
-    if (arg1 < *(s32 *)((char *)arg0 + 0x1C)) {
-        return *(s32 *)*(s32 **)(*(s32 **)((char *)arg0 + 0x18) + arg1);
+s32 fn_8024B8A4(void *config, s32 index) {
+    /* Return the first s32 of the indexed entry in the config's entry array, or -1 when out of range. */
+    s32 **entries;
+    if (index < *(s32 *)((char *)config + 0x1C)) {
+        entries = *(s32 ***)((char *)config + 0x18);
+        return *(s32 *)entries[index];
     }
     return -1;
 }
