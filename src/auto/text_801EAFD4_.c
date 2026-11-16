@@ -336,17 +336,19 @@ void fn_801EB634(void *arg0, s32 arg1) {
 #pragma dont_inline off
 
 extern void fn_801EB66C(void *, s32);
-void fn_801EB66C(void *arg0, s32 arg1) {
-    u8 a, b, c, d;
-    a = ((u8 *)arg0)[0];
-    d = ((u8 *)arg0)[3];
-    ((u8 *)arg0)[0] = d;
-    ((u8 *)arg0)[3] = a;
-    b = ((u8 *)arg0)[1];
-    c = ((u8 *)arg0)[2];
-    ((u8 *)arg0)[1] = c;
-    ((u8 *)arg0)[2] = b;
-    if (*(s32 *)arg0) *(s32 *)arg0 += arg1;
+/* Byte-swaps the 32-bit field at *field (on-disk big-endian to native) and,
+ * when the result is nonzero, adds base to turn the stored offset into a pointer. */
+void fn_801EB66C(void *field, s32 base) {
+    u8 byte0, byte1, byte2, byte3;
+    byte0 = ((u8 *)field)[0];
+    byte3 = ((u8 *)field)[3];
+    ((u8 *)field)[0] = byte3;
+    ((u8 *)field)[3] = byte0;
+    byte1 = ((u8 *)field)[1];
+    byte2 = ((u8 *)field)[2];
+    ((u8 *)field)[1] = byte2;
+    ((u8 *)field)[2] = byte1;
+    if (*(s32 *)field) *(s32 *)field += base;
 }
 
 void fn_801EB6A4(void) {
