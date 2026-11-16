@@ -1438,7 +1438,7 @@ extern "C" void *fn_80294254(void *arg0, void *arg1, int arg2, int arg3, int arg
         virtual void v5();
         virtual void v6();
         virtual void v7();
-        virtual float value(const char *);
+        virtual float value(const char *, float);
     };
     register float initialValue;
     *(void **)arg0 = lbl_8034925C;
@@ -1447,7 +1447,7 @@ extern "C" void *fn_80294254(void *arg0, void *arg1, int arg2, int arg3, int arg
     *(float *)((char *)arg0 + 4) = initialValue;
     if (arg1 != 0) {
         *(float *)((char *)arg0 + 4) =
-            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
+            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988, initialValue);
     }
     *(int *)((char *)arg0 + 0x222C) = 0;
     return arg0;
