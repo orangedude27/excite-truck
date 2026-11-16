@@ -1198,19 +1198,21 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
 }
 
 #pragma scheduling invalid_target
-void fn_802CBBE8(register int **link, int *target, int *current) {
-    int removed = 0;
-    while ((current = *link) != 0) {
-        if (current == target) {
-            int *next = *(int **)((char *)target + 0x14);
+void fn_802CBBE8(register int **link, int *node, int *scan) {
+    /* Unlink `node` from the texture list threaded through `link` (each node's next pointer is at +0x14);
+       log a diagnostic if the node is not in the list. */
+    int found = 0;
+    while ((scan = *link) != 0) {
+        if (scan == node) {
+            int *next = *(int **)((char *)node + 0x14);
             *link = next;
-            *(int **)((char *)target + 0x14) = 0;
-            removed = 1;
+            *(int **)((char *)node + 0x14) = 0;
+            found = 1;
             break;
         }
-        link = (int **)((char *)current + 0x14);
+        link = (int **)((char *)scan + 0x14);
     }
-    if (removed == 0)
+    if (found == 0)
         fn_802E317C(lbl_8034BA04);
 }
 
