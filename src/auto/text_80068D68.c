@@ -16064,15 +16064,17 @@ BOOLEAN btsnd_hcic_change_name(void *p_buf, BD_NAME name) {
     btu_hcif_send_cmd(p);
 }
 
-void fn_8008534C(void *arg0, u16 arg1) {
-    *(u16 *)((u8 *)arg0 + 2) = 5;
-    *(u16 *)((u8 *)arg0 + 4) = 0;
-    *(u8 *)((u8 *)arg0 + 8) = 0x18;
-    *(u8 *)((u8 *)arg0 + 9) = 0x0C;
-    *(u8 *)((u8 *)arg0 + 10) = 2;
-    *(u8 *)((u8 *)arg0 + 11) = arg1;
-    *(u8 *)((u8 *)arg0 + 12) = arg1 >> 8;
-    btu_hcif_send_cmd(arg0);
+/* Builds an HCI Write_Page_Timeout command (opcode 0x0C18) in the caller's
+   command-pool buffer and queues it to the BTU task; pageTout is in 0.625 ms slots. */
+void fn_8008534C(void *cmdBuf, u16 pageTout) {
+    *(u16 *)((u8 *)cmdBuf + 2) = 5;
+    *(u16 *)((u8 *)cmdBuf + 4) = 0;
+    *(u8 *)((u8 *)cmdBuf + 8) = 0x18;
+    *(u8 *)((u8 *)cmdBuf + 9) = 0x0C;
+    *(u8 *)((u8 *)cmdBuf + 10) = 2;
+    *(u8 *)((u8 *)cmdBuf + 11) = pageTout;
+    *(u8 *)((u8 *)cmdBuf + 12) = pageTout >> 8;
+    btu_hcif_send_cmd(cmdBuf);
 }
 
 void fn_80085384(u8 *arg0, u8 arg1) {
