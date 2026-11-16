@@ -902,9 +902,10 @@ s32 fn_80178C1C(s32 *arg0) {
     return (s32)__div2i(r3, 0x412b);
 }
 
-s32 fn_80178C4C(void *arg0) {
-    DBPrintf_80179758((char *)arg0 + 4);
-    return *(u16 *)arg0 + 4;
+s32 fn_80178C4C(void *entry) {
+    /* Debug callback: print the entry's label string (+4) and return its u16 id (+0) plus four. */
+    DBPrintf_80179758((char *)entry + 4);
+    return *(u16 *)entry + 4;
 }
 
 #pragma dont_inline off
