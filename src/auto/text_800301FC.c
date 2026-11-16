@@ -228,13 +228,21 @@ continuation:
 }
 #pragma pop
 void TRKMessageSend(void) {
-    OSRegisterVersion(lbl_80558DD8);
+/* The game bundles an older RVL_SDK AX library (build 0x4200_60422); this is
+ * that library's AXInitEx(0). It registers the version string, then brings up
+ * each AX subsystem in order: allocator, voice pool (VPB), SPB, aux, CL and
+ * output/DMA (TRKAppendBuffer_ui32=__AXAllocInit, fn_800331A0=__AXVPBInit,
+ * TRKGetInput=__AXAuxInit, CircleBufferWriteBytes=__AXClInit,
+ * fn_800320E8=__AXOutInit). */
+#define __AXVersion_4200 lbl_80558DD8
+    OSRegisterVersion(__AXVersion_4200);
     TRKAppendBuffer_ui32();
     fn_800331A0();
     __AXSPBInit();
     TRKGetInput();
     CircleBufferWriteBytes();
     fn_800320E8(0);
+#undef __AXVersion_4200
 }
 
 void TRKReadBuffer_ui32(void) {
