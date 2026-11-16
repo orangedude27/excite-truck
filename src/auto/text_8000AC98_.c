@@ -420,11 +420,13 @@ void fn_8000B3B4(void) {
         callback();
 }
 
-void fn_8000B3DC(unsigned char arg0) {
+void fn_8000B3DC(unsigned char enabled) {
     extern unsigned char lbl_8055D3EC;
     extern void fn_8000B3B4(void);
     extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
-    lbl_8055D3EC = arg0;
+
+    /* Enable/disable AXFX hooks for the audio state, storing the flag and applying state 0x12. */
+    lbl_8055D3EC = enabled;
     ((void (*)(int))fn_8000ADE0)(0x12);
     AXFXSetHooks_8020DE10((void (*)(void))fn_8000B5A8, lbl_8055D3EC ? (int)fn_8000B3B4 : 0, lbl_8055D3EC);
 }
