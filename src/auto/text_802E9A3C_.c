@@ -925,12 +925,14 @@ void fn_802EC32C(long arg0, long arg1) {
     }
 }
 
-long fn_802EC348(void *arg0, long arg1) {
-    if (arg1 < 0)
+/* Set the stream's current position (+8) to pos when it lies in [0, size) (size at +C);
+ * return 1 on success, 0 when out of range. */
+long fn_802EC348(void *stream, long pos) {
+    if (pos < 0)
         goto fail;
-    if (arg1 >= *(long *)((char *)arg0 + 0xC))
+    if (pos >= *(long *)((char *)stream + 0xC))
         goto fail;
-    *(long *)((char *)arg0 + 8) = arg1;
+    *(long *)((char *)stream + 8) = pos;
     return 1;
 fail:
     return 0;
