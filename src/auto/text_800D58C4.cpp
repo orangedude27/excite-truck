@@ -235,7 +235,8 @@ struct GroupPaneDispatch_800D58C4 {
     virtual void d12();
     virtual void *GetResource(const void *, u32);
 };
-extern "C" s32 fn_800D58C4(const char* a, const char* b) { return strncmp(a, b, 0x10) == 0; }
+/* Compare two 16-byte layout names (e.g. group names) for equality. */
+extern "C" s32 fn_800D58C4(const char *name, const char *other) { return strncmp(name, other, 0x10) == 0; }
 
 extern "C" int fn_800D58F0(const char *a, const char *b) { return strncmp(a, b, 0x14) == 0; }
 
