@@ -1278,6 +1278,8 @@ void fn_802ABFF8(int tint, float scale) {
 #undef TINT_SCALE_RATE
 }
 
+/* Restore the draw state saved by fn_802ABFF8/fn_802AB770: model colour,
+ * global scale parameters, and the global-scale-on flag. */
 void fn_802AC070(void) {
     fn_802C990C(lbl_804BD7B0[0]);
     ((void (*)(void *, float, float, float))fn_802C2B78)((void *)lbl_804BD7B0, *(float *)&lbl_804BD7B0[1], *(float *)&lbl_804BD7B0[2], *(float *)&lbl_804BD7B0[3]);
