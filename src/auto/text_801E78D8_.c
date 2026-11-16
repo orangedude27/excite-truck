@@ -718,17 +718,18 @@ float fn_801E8738(long arg0) {
 }
 
 #pragma scheduling off
-long fn_801E8758(long arg0) {
-    long value;
+/* Returns 1 when a flag bit is set or the compared bits differ for the indexed player entry (negative uses current player). */
+long fn_801E8758(long playerIndex) {
+    long flags;
     unsigned char *entry;
     long result;
 
-    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
-    entry = (unsigned char *)lbl_80487D00 + arg0 * 0x38;
-    value = *(long *)(entry + 0x30);
+    if (playerIndex < 0) playerIndex = (long)lbl_8055AF0C;
+    entry = (unsigned char *)lbl_80487D00 + playerIndex * 0x38;
+    flags = *(long *)(entry + 0x30);
     result = 1;
-    if ((value & 0x10) == 0) {
-        if (((value ^ *(long *)(entry + 0x34)) & 0x20) == 0) result = 0;
+    if ((flags & 0x10) == 0) {
+        if (((flags ^ *(long *)(entry + 0x34)) & 0x20) == 0) result = 0;
     }
     return result;
 }
