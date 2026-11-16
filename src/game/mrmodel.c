@@ -586,6 +586,8 @@ void fn_802C5E6C(void *arg0, void *arg1) {
 #pragma pop
 s32 fn_802C5EB8(void *, u32);
 
+#define SPHL_CHUNK_TAG 0x5350484C /* 'SPHL' tagged chunk of a model resource */
+
 s32 fn_802C5E7C(void *arg0) {
     char *result = (char *)fn_802C5EB8(arg0, 0x5350484C);
     if (result != 0) {
