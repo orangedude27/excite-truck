@@ -284,6 +284,7 @@ void fn_80127968(void) {
     lbl_8055DF20 = currentTime;
 }
 
+/* Increment the persistent call counter; on wraparound to zero, invoke fn_80127954 (the elapsed-time refresh callback). */
 void fn_801279B8(void) {
     if (++lbl_8055DF34 != 0) {
         return;
