@@ -159,10 +159,11 @@ void fn_802607EC(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 0;
 }
 
-void fn_802607F8(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x1C) == 0) {
-        *(u8 *)((u8 *)arg0 + 0x1C) = 1;
-        *(u8 *)((u8 *)arg0 + 0x1F) = 1;
+void fn_802607F8(void *self) {
+    /* If this object's active flag at +0x1C is clear, set it along with flag +0x1F. */
+    if (*(u8 *)((u8 *)self + 0x1C) == 0) {
+        *(u8 *)((u8 *)self + 0x1C) = 1;
+        *(u8 *)((u8 *)self + 0x1F) = 1;
     }
 }
 
