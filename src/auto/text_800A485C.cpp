@@ -20306,6 +20306,8 @@ extern "C" void fn_800D1668(s32 arg0, s32 arg1) {
     }
 }
 
+/* Per-controller active flags, one byte for each of the four controller slots. */
+#define gControllerActive lbl_8055DDA8
 extern "C" u8 fn_800D1688(s32 *arg0) {
     if (*arg0 >= 4) {
         return 0;
