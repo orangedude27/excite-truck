@@ -1796,8 +1796,10 @@ extern "C" void fn_800D8834(u8 *arg0, u8 *arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_800D8840(Data_800D8840 *arg0, const Data_800D8840 *arg1) {
-    *arg0 = *arg1;
+/* Copies one 20-byte IndTexSRT (indirect-texture scale/rotation/translation)
+ * record from src into dst. */
+extern "C" void fn_800D8840(Data_800D8840 *dst, const Data_800D8840 *src) {
+    *dst = *src;
 }
 #pragma pop
 extern "C" void fn_800D886C(GXColor *arg0, const GXColor *arg1) {
