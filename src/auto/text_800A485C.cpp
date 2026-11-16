@@ -1310,19 +1310,22 @@ extern "C" s32 fn_800A625C(void *arg0, s32 arg1) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-extern "C" s32 fn_800A6268(s32 arg0, void *arg1) {
-    u32 value1; u32 value0;
-    value0 = *(volatile u32 *)((u8 *)arg0 + 0x18);
-    value1 = *(volatile u32 *)((u8 *)arg0 + 0x1C);
-    *(u32 *)((u8 *)arg1 + 0x0) = value0;
-    *(u32 *)((u8 *)arg1 + 0x4) = value1;
-    u32 value3; u32 value2;
-    value2 = *(volatile u32 *)((u8 *)arg0 + 0x20);
-    value3 = *(volatile u32 *)((u8 *)arg0 + 0x24);
-    *(u32 *)((u8 *)arg1 + 0x8) = value2;
-    *(u32 *)((u8 *)arg1 + 0xC) = value3;
-    u32 value4 = *(volatile u32 *)((u8 *)arg0 + 0x28);
-    *(u32 *)((u8 *)arg1 + 0x10) = value4;
+extern "C" s32 fn_800A6268(s32 device, void *info) {
+    /* Copy the device driver's five-word info record into *info (VFiPFDeviceInfo):
+     * word0/word1/word2, then flags and the value handed back to the device.
+     * Volatile loads keep the word order; declaration order fixes the registers. */
+    u32 word1; u32 word0;
+    word0 = *(volatile u32 *)((u8 *)device + 0x18);
+    word1 = *(volatile u32 *)((u8 *)device + 0x1C);
+    *(u32 *)((u8 *)info + 0x0) = word0;
+    *(u32 *)((u8 *)info + 0x4) = word1;
+    u32 flags; u32 word2;
+    word2 = *(volatile u32 *)((u8 *)device + 0x20);
+    flags = *(volatile u32 *)((u8 *)device + 0x24);
+    *(u32 *)((u8 *)info + 0x8) = word2;
+    *(u32 *)((u8 *)info + 0xC) = flags;
+    u32 value = *(volatile u32 *)((u8 *)device + 0x28);
+    *(u32 *)((u8 *)info + 0x10) = value;
     return 0;
 }
 #pragma dont_inline reset
