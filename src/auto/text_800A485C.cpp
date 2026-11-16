@@ -2627,6 +2627,10 @@ extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4
     s32 temp_r4_4;
     s32 temp_r5_5;
     s32 temp_r5_6;
+    u8 temp_r5;
+    u8 temp_r5_2;
+    u8 temp_r5_3;
+    u8 temp_r5_4;
     s32 temp_r6;
     u32 temp_r0;
     u32 temp_r0_3;
@@ -2634,10 +2638,6 @@ extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4
     u32 temp_r3_5_u;
     u32 temp_r3_6_u;
     u32 temp_r4_u;
-    u8 temp_r5;
-    u8 temp_r5_2;
-    u8 temp_r5_3;
-    u8 temp_r5_4;
     u8 temp_r6_2;
     u32 temp_r7;
 
@@ -12829,10 +12829,12 @@ extern "C" s32 fn_800B9FCC(s32 shouldInit) {
 }
 
 #pragma dont_inline reset
-extern "C" s32 fn_800BA160(s32 arg0) {
-    if (arg0 == 0) return 1;
-    s32 value = *(s32 *)((u8 *)lbl_80407300 + 0x10);
-    return value ? 0 : 6;
+extern "C" s32 fn_800BA160(s32 handle) {
+    /* Validate the device handle: 1 for a null handle, otherwise 0 if the
+       device-ready flag at +0x10 is set, or 6 (not ready) if it is clear. */
+    if (handle == 0) return 1;
+    s32 readyFlag = *(s32 *)((u8 *)lbl_80407300 + 0x10);
+    return readyFlag ? 0 : 6;
 }
 #pragma push
 #pragma small_data off
