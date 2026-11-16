@@ -16222,14 +16222,17 @@ void fn_8008534C(void *cmdBuf, u16 pageTout) {
     btu_hcif_send_cmd(cmdBuf);
 }
 
-void fn_80085384(u8 *arg0, u8 arg1) {
-    *(u16 *)(arg0 + 2) = 4;
-    *(u16 *)(arg0 + 4) = 0;
-    arg0[8] = 0x1A;
-    arg0[9] = 0x0C;
-    arg0[10] = 1;
-    arg0[11] = arg1;
-    btu_hcif_send_cmd(arg0);
+/* Builds an HCI Write_Scan_Enable command (opcode 0x0C1A) in a caller-supplied
+   BT_HDR buffer: one-byte parameter carrying the scan-enable bitmask, then sends
+   it with btu_hcif_send_cmd. */
+void fn_80085384(u8 *pCmdBuf, u8 scanEnable) {
+    *(u16 *)(pCmdBuf + 2) = 4;
+    *(u16 *)(pCmdBuf + 4) = 0;
+    pCmdBuf[8] = 0x1A;
+    pCmdBuf[9] = 0x0C;
+    pCmdBuf[10] = 1;
+    pCmdBuf[11] = scanEnable;
+    btu_hcif_send_cmd(pCmdBuf);
 }
 
 /* RealName: btsnd_hcic_write_page_scan_activity */
