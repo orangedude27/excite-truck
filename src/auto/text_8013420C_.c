@@ -109,14 +109,13 @@ s32 fn_8012C6F0(void *);
 void fn_8012C720(void *, s32, s32, s32);
 void fn_802E317C(const char *, ...);
 #pragma use_lmw_stmw off
-s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
+s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    const char *message = lbl_8032BB18;
     s32 i;
     s32 active;
     Entry *entry;
     s32 size;
-    char *message;
 
-    message = lbl_8032BB18;
     active = 0;
     for (i = 0; i < arg0->count; i++) {
         entry = (Entry *)((char *)arg0->entries + i * 0x18);
@@ -146,9 +145,11 @@ s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
 #pragma use_lmw_stmw reset
 
 #pragma scheduling invalid_target
-s32 fn_801345A4(Container *arg0, s32 arg1) {
-    if (arg0->entries[arg1].state == 1) return 0;
-    arg0->entries[arg1].state = 0;
+/* Releases a load-pool slot by clearing its state, unless the slot is still
+ * loading (state 1). Returns 1 on success, 0 if the load is in progress. */
+s32 fn_801345A4(Container *pool, s32 index) {
+    if (pool->entries[index].state == 1) return 0;
+    pool->entries[index].state = 0;
     return 1;
 }
 #pragma scheduling on
