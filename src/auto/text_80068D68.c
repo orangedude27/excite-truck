@@ -23485,20 +23485,14 @@ void RFCOMM_FlowReq(void *p_mcb, u8 dlci, u8 enable) {
     rfc_port_timer_start(p_port, 0x3c);
 }
 
-void RFCOMM_LineStatusReq(void *arg0, u8 arg1, u8 arg2) {
-    void *mcb = port_find_mcb_dlci_port(arg0, arg1);
-    unsigned int mode;
-    if (*((u8 *)mcb + 2) != 2) return;
-    mode = *((unsigned char *)mcb + 0x68);
-    switch (mode) {
-    case 4:
-        *((u8 *)mcb + 0x69) |= 0x10;
-        rfc_send_rls(arg0, arg1, 1, arg2);
-        rfc_port_timer_start(mcb, 0x3C);
-        break;
-    default:
+void RFCOMM_LineStatusReq(void *p_mcb, u8 dlci, u8 status) {
+    u8 *p_port = port_find_mcb_dlci_port(p_mcb, dlci);
+    if ((p_port[2] != 2) || (p_port[0x68] != 4)) {
         return;
     }
+    p_port[0x69] |= 0x10;
+    rfc_send_rls(p_mcb, dlci, 1, status);
+    rfc_port_timer_start(p_port, 0x3c);
 }
 
 void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xC, 0); }
