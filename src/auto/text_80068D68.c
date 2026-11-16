@@ -11822,13 +11822,14 @@ void fn_80072434(void) {
     ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(3, 0);
 }
 
-void bta_dm_disc_result(void *arg0) {
-    ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
+/* Report a service discovery result to the search callback, then post a search-complete event. */
+void bta_dm_disc_result(void *p_data) {
+    ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)p_data + 8);
     {
-        void *buf = GKI_getbuf(0x110);
-        if (buf != 0) {
-            *(u16 *)buf = 0x207;
-            fn_80071450(buf);
+        void *msg = GKI_getbuf(0x110);
+        if (msg != 0) {
+            *(u16 *)msg = 0x207;
+            fn_80071450(msg);
         }
     }
 }
