@@ -9487,10 +9487,11 @@ extern "C" void fn_80229DE8(void *self, s32 unused, s32 value) {
 }
 
 extern s32 fn_8021E1C8(void *, s32, s32);
-extern "C" void fn_80229E1C(void *arg0, s32 unused, s32 arg2) {
-    s32 start = *(s32 *)((u8 *)arg0 + 8);
-    s32 end = *(s32 *)((u8 *)arg0 + 0x10);
-    fn_8021E1C8(arg0, unused, arg2 - (end - start) - 3);
+/* Delegate to fn_8021E1C8 with value reduced by the object's index span (end - start) plus 3. */
+extern "C" void fn_80229E1C(void *self, s32 unused, s32 value) {
+    s32 start = *(s32 *)((u8 *)self + 8);
+    s32 end = *(s32 *)((u8 *)self + 0x10);
+    fn_8021E1C8(self, unused, value - (end - start) - 3);
 }
 
 extern "C" void fn_80229E34(void *sound) {
