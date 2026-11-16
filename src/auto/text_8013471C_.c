@@ -377,6 +377,7 @@ s32 fn_80134C60(s32 arg0, char *arg1)
   
 #pragma dont_inline on
 s32 fn_80134CD4(s32 arg0, s32 arg1) {
+    /* Format a slot/index-based text value into arg1 buffer and return it. */
     extern s32 fn_80134C60(s32, char *);
     s32 result;
     if (arg0 >= 0) {
