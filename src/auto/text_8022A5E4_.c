@@ -205,12 +205,13 @@ int fn_8022A804(const char *resourceName) {
 #pragma push
 #pragma dont_inline on
 extern int __rlwimi(int, int, int, int, int);
-unsigned int fn_8022A834(unsigned int arg0) {
-    unsigned int var_r0 = arg0 >> 24;
-    if (var_r0 < 0x20 && (int)var_r0 != 0) {
-        var_r0 = 0xFF;
+unsigned int fn_8022A834(unsigned int color) {
+    /* Normalize a packed 32-bit color: a nonzero top byte below 0x20 is a palette index and becomes 0xFF (opaque); low 24 bits are kept. */
+    unsigned int highByte = color >> 24;
+    if (highByte < 0x20 && (int)highByte != 0) {
+        highByte = 0xFF;
     }
-    return __rlwimi(arg0 & 0xFFFFFF, var_r0, 24, 0, 7);
+    return __rlwimi(color & 0xFFFFFF, highByte, 24, 0, 7);
 }
 #pragma pop
 
