@@ -6982,8 +6982,10 @@ void bta_hh_close_act(u8 *p_cb, u8 *p_data) {
     }
 }
 
-void fn_80075AA4(void *arg0) {
-    (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
+void fn_80075AA4(void *pData) {
+    /* Notify the BTA HID-host callback (at lbl_803C0D48+0x224) of event 10,
+       BTA_HH_GET_DSCP_EVT (report-descriptor result), passing pData. */
+    (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, pData);
 }
 
 void bta_hh_maint_dev_act(void *devCbArg, void *eventArg) {
@@ -9776,7 +9778,8 @@ after_scan:
     b0 = *(volatile u8 *)(classInfo + 0);
     modeBit = discoverMode & 1;
     b1 = *(volatile u8 *)(classInfo + 1);
-    cls = (u16)(((b0 << 8) & 0xFF00) + (b1 & 0xE0));
+    cls = (u16)((b0 << 8) & 0xFF00);
+    cls = (u16)(cls + (b1 & 0xE0));
     if ((modeBit ^ ((cls >> 5) & 1)) != 0) {
         b2 = *(volatile u8 *)(classInfo + 2);
         newCls = (u16)(cls & ~0x20);
