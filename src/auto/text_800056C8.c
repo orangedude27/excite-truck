@@ -1553,12 +1553,13 @@ void fn_80007498(void) {
 /* DSP init config bytes: [0] mode-2 flag, [1] DSP-initialized flag, [2] mode-1 flag. */
 #define gDspInitFlags lbl_8055D340
 
+/* Return nonzero when the DSP is initialized (flag 1) and mode 2 (flag 0) is selected. */
 s32 fn_8000749C(void) {
-    s32 result = 0;
-    if (lbl_8055D340[1] != 0) {
-        if (lbl_8055D340[0] != 0) result = 1;
+    s32 enabled = 0;
+    if (gDspInitFlags[1] != 0) {
+        if (gDspInitFlags[0] != 0) enabled = 1;
     }
-    return result;
+    return enabled;
 }
 
 s32 fn_800074C4(void) {
