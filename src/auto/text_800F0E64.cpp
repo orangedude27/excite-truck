@@ -1,3 +1,5 @@
+#define Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode
+extern "C" const char lbl_80325834[],lbl_80325810[],lbl_80325804[],lbl_803257E0[],lbl_80325864[],lbl_80325840[],lbl_803257D4[],lbl_803257B0[],lbl_80325F10[],lbl_80325F38[],lbl_80325F50[],lbl_80325F94[];
 extern "C" const char lbl_80324868[];
 extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void*, void*);
 extern "C" void* GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(void*);
