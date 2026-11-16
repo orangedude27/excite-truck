@@ -551,9 +551,11 @@ BOOL __PADDisableRecalibration(BOOL disable) {
 }
 
 #pragma dont_inline on
+extern SIMain Si_80311630;
+/* TRUE while the SI driver has a transfer in flight: the SI context (SIBios.c's
+ * Si) holds the active channel in .chan, or SI_CHAN_NONE when idle. The PAD
+ * shutdown handler waits for this to be FALSE before re-polling. */
 BOOL fn_80057460(void) {
-    extern char Si_80311630[];
-    long x = *(long *)Si_80311630;
-    return (unsigned long)((-1 - x) | (x + 1)) >> 31;
+    return Si_80311630.chan != SI_CHAN_NONE;
 }
 #pragma dont_inline off
