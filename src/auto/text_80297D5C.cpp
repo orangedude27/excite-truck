@@ -1112,9 +1112,10 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     *(float*)((char*)out+0x98)=endzero;
 }
 #pragma pop
-extern "C" void* fn_80299FA8(void* arg0, void* arg1) {
-    fn_8028E398(*(void**)arg1);
-    *(void**)arg1 = 0;
+extern "C" void* fn_80299FA8(void* container, void* entry) {
+    /* Destroys the effect emitter held at the start of an owned entry and clears the slot. */
+    fn_8028E398(*(void**)entry);
+    *(void**)entry = 0;
 }
 
 extern "C" float fn_80129DC4(int, float, float);
