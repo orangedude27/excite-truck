@@ -1702,7 +1702,13 @@ extern int fn_802CD320(int, void *);
 extern unsigned char lbl_8033AAB8[];
 extern unsigned char lbl_8033AA48[];
 extern unsigned char lbl_8055B140[];
-int fn_801F4334(int a, int b) { if (a != 0 && b > 0) fn_80128668(); return a; }
+int fn_801F4334(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
+}
 
 void fn_801F4374(void) {
 
