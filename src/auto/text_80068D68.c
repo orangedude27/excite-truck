@@ -4845,6 +4845,7 @@ typedef enum {
 #pragma use_lmw_stmw off
 extern void DCInvalidateRange(const void* buf, u32 len);
 extern s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void* buffer, s32 ioctl, void (*callback)(void), void* callbackArg, s32 async);
+/* Shut down the USB Bluetooth transport state: reset queues/state, mark inactive, and run the final cleanup callback. */
 void fn_80070758(void) {
     fn_8009B0E0();
     fn_8006EBAC();
