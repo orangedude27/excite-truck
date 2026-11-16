@@ -283,9 +283,17 @@ s32 fn_801CB880(void) {
 }
 
 extern void fn_801CE7A0(void);
+/* Run the award stat manager's teardown, unless the boot option bit or an active
+ * challenge sub-task means the stats should be left in place. */
 void fn_801CB8C0(void) {
-    if (fn_80019BA8() || fn_80161C38()) return;
-    fn_801CE7A0();
+#define BootOptionBit_400 fn_80019BA8
+#define ChallengeSubTask_Active fn_80161C38
+#define StatManager_ReleaseStats fn_801CE7A0
+    if (BootOptionBit_400() || ChallengeSubTask_Active()) return;
+    StatManager_ReleaseStats();
+#undef BootOptionBit_400
+#undef ChallengeSubTask_Active
+#undef StatManager_ReleaseStats
 }
 
 void fn_801CB8FC(void) {
