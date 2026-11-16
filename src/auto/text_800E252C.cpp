@@ -1212,9 +1212,15 @@ extern "C" void fn_800E3DDC(void *arg0, void *arg1) {
 #pragma use_lmw_stmw reset
 
 #pragma pop
-extern "C" void fn_800E402C(void *arg0) {
+extern "C" void fn_800E402C(void *manager) {
+    /* Stop the sound emission manager: clear its active flag inside a critical
+     * section so no emissions are processed while channels are being released. */
+    struct EmissionManager {
+        unsigned char pad[0x6C31];
+        unsigned char active;
+    };
     OSDisableInterrupts();
-    *(u8 *)((char *)arg0 + 0x6C31) = 0;
+    ((struct EmissionManager *)manager)->active = 0;
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
