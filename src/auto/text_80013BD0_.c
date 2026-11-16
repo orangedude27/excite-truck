@@ -548,17 +548,18 @@ void fn_800148A0(void *arg0) {
     ((void (*)(void *, void *, s32, void *, void *, f32, f32, f32))fn_80013EDC)(
         arg0, name, mode, first, second, *(f32 *)(ap + 0x2C), value1, value2);
 }
-void fn_80014A98(void *arg0) {
-    void *p;
-    f32 selected;
-    p = *(void **)((u8 *)lbl_8055D350 + 0x30);
-    if (*(s32 *)((u8 *)p + 0x24) == 3)
-        selected = *(f32 *)((u8 *)p + 0x1C);
+void fn_80014A98(void *obj) {
+    /* Build a "TIMED LAP" display entry using the current lap/sector value. */
+    void *info;
+    f32 value;
+    info = *(void **)((u8 *)lbl_8055D350 + 0x30);
+    if (*(s32 *)((u8 *)info + 0x24) == 3)
+        value = *(f32 *)((u8 *)info + 0x1C);
     else
-        selected = *(f32 *)((u8 *)p + 0x14);
+        value = *(f32 *)((u8 *)info + 0x14);
     ((void (*)(void *, void *, s32, void *, void *, f32, f32, f32))fn_80013EDC)(
-        arg0, lbl_802FCD44, 0, lbl_802FCD78, &lbl_80558BA0,
-        *(f32 *)((u8 *)arg0 + 0x2C), selected, lbl_80560360);
+        obj, lbl_802FCD44, 0, lbl_802FCD78, &lbl_80558BA0,
+        *(f32 *)((u8 *)obj + 0x2C), value, lbl_80560360);
 }
 
 s32 fn_80014ADC(void) { return 0; }
