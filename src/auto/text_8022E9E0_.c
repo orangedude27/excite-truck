@@ -182,14 +182,15 @@ void *fn_8022ECC0(s32 arg0) {
     return p;
 }
 
+/* Append a newly allocated UI context node to the global UI context list. */
 void fn_8022ED00(void) {
-    s32 *p = (s32 *)((void *(*)(void))fn_8022ECC0)();
+    s32 *node = (s32 *)((void *(*)(void))fn_8022ECC0)();
     if (((s32 *)lbl_8055F004)[1] == 0) {
-        ((s32 *)lbl_8055F004)[0] = (s32)p;
+        ((s32 *)lbl_8055F004)[0] = (s32)node;
         ((s32 *)lbl_8055F004)[1] = ((s32 *)lbl_8055F004)[0];
     } else {
-        ((s32 *)((s32 *)lbl_8055F004)[1])[1] = (s32)p;
-        ((s32 *)lbl_8055F004)[1] = (s32)p;
+        ((s32 *)((s32 *)lbl_8055F004)[1])[1] = (s32)node;
+        ((s32 *)lbl_8055F004)[1] = (s32)node;
     }
 }
 
