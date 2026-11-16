@@ -17,12 +17,14 @@ extern int lbl_80430358[5];
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_80171648(void) {
-    int v;
+    int value;
+
+    /* Initialize/reset this module's state and parameter slots. */
     fn_8000D838(&lbl_8055E368);
     *(volatile int *)&lbl_8055E370 = 0xFFFF0000;
     ((volatile int *)lbl_80430358)[0] = 0;
-    v = 0x7B;
-    ((volatile int *)lbl_80430358)[1] = v;
+    value = 0x7B;
+    ((volatile int *)lbl_80430358)[1] = value;
     ((volatile int *)lbl_80430358)[2] = 0;
     ((volatile int *)lbl_80430358)[3] = 0;
     ((volatile int *)lbl_80430358)[4] = 0;
