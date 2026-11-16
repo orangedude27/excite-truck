@@ -381,78 +381,83 @@ void fn_801A7F8C(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-float fn_801A7F98(arg0)
-int *arg0;
+float fn_801A7F98(input)
+int *input;
 {
-    unsigned char *rec;
-    float *f;
-    float v;
-    if (fn_801A8F10(arg0) == 0)
+    /* Return the normalized (0..1) value of an input binding. input[0] is the
+     * binding type, input[1] selects a 0x64-byte control record in lbl_80435050
+     * and input[2] is the axis/key/bit within it. Analog types read the record's
+     * eight floats (clamped to zero or remapped as 0.5*(1 +/- value)); digital
+     * types return the 1.0/0.0 constants lbl_8056246C / lbl_80562458. */
+    unsigned char *entry;
+    float *axes;
+    float value;
+    if (fn_801A8F10(input) == 0)
         return lbl_80562458;
-    rec = (unsigned char *)lbl_80435050 + arg0[1] * 0x64;
-    f = (float *)rec;
-    switch (arg0[0]) {
-    case 2:
-        switch (arg0[2]) {
-        case 0: v = -f[0]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 1: v = f[0]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 2: v = -f[1]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 3: v = f[1]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 4: v = -f[3]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 5: v = f[3]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 6: v = -f[2]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 7: v = f[2]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 8: v = -f[4]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 9: v = f[4]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 10: v = -f[5]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 11: v = f[5]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 12: v = -f[6]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 13: v = f[6]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 14: v = -f[7]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 15: v = f[7]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 16: return lbl_80562468 * (lbl_8056246C - f[0]);
-        case 17: return lbl_80562468 * (lbl_8056246C - f[1]);
-        case 18: return lbl_80562468 * (lbl_8056246C - f[3]);
-        case 19: return lbl_80562468 * (lbl_8056246C - f[2]);
-        case 20: return lbl_80562468 * (lbl_8056246C - f[4]);
-        case 21: return lbl_80562468 * (lbl_8056246C - f[5]);
-        case 22: return lbl_80562468 * (lbl_8056246C - f[6]);
-        case 23: return lbl_80562468 * (lbl_8056246C - f[7]);
-        case 24: return lbl_80562468 * (lbl_8056246C + f[0]);
-        case 25: return lbl_80562468 * (lbl_8056246C + f[1]);
-        case 26: return lbl_80562468 * (lbl_8056246C + f[3]);
-        case 27: return lbl_80562468 * (lbl_8056246C + f[2]);
-        case 28: return lbl_80562468 * (lbl_8056246C + f[4]);
-        case 29: return lbl_80562468 * (lbl_8056246C + f[5]);
-        case 30: return lbl_80562468 * (lbl_8056246C + f[6]);
-        case 31: return lbl_80562468 * (lbl_8056246C + f[7]);
+    entry = (unsigned char *)lbl_80435050 + input[1] * 0x64;
+    axes = (float *)entry;
+    switch (input[0]) {
+    case 2: /* analog axis: the record's eight floats, selected by input[2] */
+        switch (input[2]) {
+        case 0: value = -axes[0]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 1: value = axes[0]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 2: value = -axes[1]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 3: value = axes[1]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 4: value = -axes[3]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 5: value = axes[3]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 6: value = -axes[2]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 7: value = axes[2]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 8: value = -axes[4]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 9: value = axes[4]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 10: value = -axes[5]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 11: value = axes[5]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 12: value = -axes[6]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 13: value = axes[6]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 14: value = -axes[7]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 15: value = axes[7]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 16: return lbl_80562468 * (lbl_8056246C - axes[0]);
+        case 17: return lbl_80562468 * (lbl_8056246C - axes[1]);
+        case 18: return lbl_80562468 * (lbl_8056246C - axes[3]);
+        case 19: return lbl_80562468 * (lbl_8056246C - axes[2]);
+        case 20: return lbl_80562468 * (lbl_8056246C - axes[4]);
+        case 21: return lbl_80562468 * (lbl_8056246C - axes[5]);
+        case 22: return lbl_80562468 * (lbl_8056246C - axes[6]);
+        case 23: return lbl_80562468 * (lbl_8056246C - axes[7]);
+        case 24: return lbl_80562468 * (lbl_8056246C + axes[0]);
+        case 25: return lbl_80562468 * (lbl_8056246C + axes[1]);
+        case 26: return lbl_80562468 * (lbl_8056246C + axes[3]);
+        case 27: return lbl_80562468 * (lbl_8056246C + axes[2]);
+        case 28: return lbl_80562468 * (lbl_8056246C + axes[4]);
+        case 29: return lbl_80562468 * (lbl_8056246C + axes[5]);
+        case 30: return lbl_80562468 * (lbl_8056246C + axes[6]);
+        case 31: return lbl_80562468 * (lbl_8056246C + axes[7]);
         }
         break;
-    case 3:
-        if (arg0[2] >= 0 && (unsigned int)arg0[2] < 0x20) {
-            if ((rec + arg0[2])[0x20] != 0)
+    case 3: /* per-axis button flag bytes at +0x20 */
+        if (input[2] >= 0 && (unsigned int)input[2] < 0x20) {
+            if ((entry + input[2])[0x20] != 0)
                 return lbl_8056246C;
             return lbl_80562458;
         }
         break;
-    case 4:
-        if (*(int *)(rec + 0x40) & arg0[2])
+    case 4: /* button bitmask word at +0x40 */
+        if (*(int *)(entry + 0x40) & input[2])
             return lbl_8056246C;
         return lbl_80562458;
-    case 5:
-        switch (arg0[2]) {
-        case 0: v = -*(float *)&lbl_80435370[0]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 1: v = *(float *)&lbl_80435370[0]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 2: v = -*(float *)&lbl_80435370[4]; if (lbl_80562458 > v) return lbl_80562458; return v;
-        case 3: v = *(float *)&lbl_80435370[4]; if (lbl_80562458 > v) return lbl_80562458; return v;
+    case 5: /* two special analog values held in lbl_80435370 */
+        switch (input[2]) {
+        case 0: value = -*(float *)&lbl_80435370[0]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 1: value = *(float *)&lbl_80435370[0]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 2: value = -*(float *)&lbl_80435370[4]; if (lbl_80562458 > value) return lbl_80562458; return value;
+        case 3: value = *(float *)&lbl_80435370[4]; if (lbl_80562458 > value) return lbl_80562458; return value;
         case 4: return lbl_80562468 * (lbl_8056246C - *(float *)&lbl_80435370[0]);
         case 5: return lbl_80562468 * (lbl_8056246C - *(float *)&lbl_80435370[4]);
         case 6: return lbl_80562468 * (lbl_8056246C + *(float *)&lbl_80435370[0]);
         case 7: return lbl_80562468 * (lbl_8056246C + *(float *)&lbl_80435370[4]);
         }
         break;
-    case 6:
-        switch (arg0[2]) {
+    case 6: /* three special digital flags held in lbl_80435370 */
+        switch (input[2]) {
         case 0:
             if (lbl_80435370[8] != 0) return lbl_8056246C;
             return lbl_80562458;
@@ -464,9 +469,9 @@ int *arg0;
             return lbl_80562458;
         }
         break;
-    case 1:
+    case 1: /* keyboard/action key, looked up in fn_802E4A1C's table */
         if (*(unsigned char *)&lbl_8055E5C8 == 0) {
-            if (fn_802E4A1C(*(unsigned char *)(arg0 + 2)) != 0)
+            if (fn_802E4A1C(*(unsigned char *)(input + 2)) != 0)
                 return lbl_8056246C;
             return lbl_80562458;
         }
