@@ -505,18 +505,16 @@ extern void fn_801DE890(int);
 extern void fn_80011A2C(void);
 #pragma cplusplus on
 extern "C" int fn_801DF110(void) {
-    struct Dummy {
-        virtual void unused();
-        virtual void call();
-    };
-    struct Entry {
-        int field0;
-        int arg1;
-        int arg2;
-        int field3;
-        void *object;
-        int field5;
-        int (*callback)(int, int);
+    /* Draw the popup the game is showing (lbl_8055E9E8, its row in the popup
+       table lbl_804872B0) and return 1, so the caller skips the rest of the
+       frame's UI: the row's own callback when it has one, otherwise its message
+       text, the "Press A to continue" prompt and whatever extra fn_801DE890
+       draws for that popup; the row's object, if any, is drawn along with it.
+       Nothing is drawn while the message system (fn_801769F8) is off, though the
+       frame is still taken.  Returns 0 when no popup is up. */
+    struct PopupObject {
+        virtual void unused();  /* vtable +0x8 */
+        virtual void draw();    /* vtable +0xC */
     };
     if (lbl_8055E9E8 != 0) {
         if (fn_801769F8() == 0) {
@@ -524,22 +522,22 @@ extern "C" int fn_801DF110(void) {
         }
 
         char *base = lbl_804872B0;
-        struct Entry *entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
+        struct PopupEntry *entry = (struct PopupEntry *)(base + lbl_8055E9E8 * 0x1C);
         int (*callback)(int, int) = entry->callback;
 
         if (callback != 0) {
-            callback(entry->arg2, entry->arg1);
+            callback(entry->arg, (int)entry->message);
         } else {
             fn_80011278(-1, lbl_80562BF8, lbl_80562BFC, lbl_80562C00, lbl_80562C04);
-            entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
-            fn_800103B8(-1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->arg1);
+            entry = (struct PopupEntry *)(base + lbl_8055E9E8 * 0x1C);
+            fn_800103B8(-1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->message);
             fn_8000FF88(-1, 0xC, (const char *)lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
             fn_801DE890(lbl_8055E9E8);
         }
 
-        entry = (struct Entry *)(lbl_804872B0 + lbl_8055E9E8 * 0x1C);
+        entry = (struct PopupEntry *)(lbl_804872B0 + lbl_8055E9E8 * 0x1C);
         if (entry->object != 0)
-            ((Dummy *)entry->object)->call();
+            ((PopupObject *)entry->object)->draw();
         fn_80011A2C();
 return_one:
         return 1;
