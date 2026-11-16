@@ -2248,11 +2248,13 @@ extern "C" s32 fn_80215270(s32 arg0, s32 arg1) {
     return row[arg0];
 }
 
-extern "C" void fn_80215298(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 arg4, s32 arg5, u32 arg6) {
-    *arg0 = arg4;
-    *arg2 = arg4 + arg6 - 0x1A;
-    *arg1 = arg4 + ((((s32)((u32)arg6 >> 31)) + (s32)arg6) >> 1);
-    *arg3 = arg5 + 4;
+/* Derive four layout coordinates from a node's x, y and unsigned width: the base x,
+ * x plus half the width (rounded toward zero), x plus the width minus 0x1A, and y plus 4. */
+extern "C" void fn_80215298(s32 *outX, s32 *outHalfX, s32 *outEndX, s32 *outY, s32 x, s32 y, u32 width) {
+    *outX = x;
+    *outEndX = x + width - 0x1A;
+    *outHalfX = x + ((((s32)((u32)width >> 31)) + (s32)width) >> 1);
+    *outY = y + 4;
 }
 
 #pragma dont_inline on
