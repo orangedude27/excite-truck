@@ -957,11 +957,13 @@ s32 fn_801366C0(Unk_80135278 *follower, WorldVec *vec, float backAmount) {
     return (vec->x * follower->unk_10 + vec->z * follower->unk_14) < -backAmount;
 }
 
-void fn_80136714(void *arg0) {
-    float a = *(float *)((char *)arg0 + 0x10);
-    float b = *(float *)((char *)arg0 + 0x14);
-    *(float *)((char *)arg0 + 0x38) = b;
-    *(float *)((char *)arg0 + 0x3C) = -a;
+/* Compute the right-hand perpendicular of the 2D direction stored at +0x10/+0x14
+ * and save it at +0x38/+0x3c: (x, y) becomes (y, -x). */
+void fn_80136714(void *obj) {
+    float x = *(float *)((char *)obj + 0x10);
+    float y = *(float *)((char *)obj + 0x14);
+    *(float *)((char *)obj + 0x38) = y;
+    *(float *)((char *)obj + 0x3C) = -x;
 }
 
 extern void *fn_80156A40(void);
