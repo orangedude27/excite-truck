@@ -474,7 +474,6 @@ extern "C" void fn_8001E2AC(void* slots, s32 playerIndex) {
     }
 }
 #pragma pop
-#pragma scheduling off
 extern "C" f32 fn_8001DA5C(s32);
 extern f32 lbl_80560490;
 #pragma scheduling off
