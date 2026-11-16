@@ -257,14 +257,15 @@ void* fn_80265DD8(void* block) {
 }
 
 #pragma dont_inline on
-void fn_80265E08(void* arg0) {
+/* Reset a camera NoiseWalk path cursor: index/elapsed/time = 0, weight/x/y = 0.0f. */
+void fn_80265E08(void* path) {
     float zero = lbl_80563C20;
-    *(int*)((char*)arg0 + 0) = 0;
-    *(float*)((char*)arg0 + 0x14) = zero;
-    *(float*)((char*)arg0 + 0x10) = zero;
-    *(float*)((char*)arg0 + 0xC) = zero;
-    *(int*)((char*)arg0 + 4) = 0;
-    *(int*)((char*)arg0 + 8) = 0;
+    *(int*)((char*)path + 0) = 0;
+    *(float*)((char*)path + 0x14) = zero;
+    *(float*)((char*)path + 0x10) = zero;
+    *(float*)((char*)path + 0xC) = zero;
+    *(int*)((char*)path + 4) = 0;
+    *(int*)((char*)path + 8) = 0;
 }
 #pragma dont_inline reset
 
@@ -406,6 +407,7 @@ void *fn_80266120(void *cursor) {
     return cursor;
 }
 
+#pragma push
 #pragma scheduling off
 void fn_80266150(void *arg0) {
     int zero;
@@ -419,7 +421,7 @@ void fn_80266150(void *arg0) {
     *(float *)((char *)arg0 + 8) = f1;
     *(float *)((char *)arg0 + 0xC) = f0;
 }
-#pragma scheduling on
+#pragma pop
 
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     float temp_f0;
