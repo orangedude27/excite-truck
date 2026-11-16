@@ -33,6 +33,7 @@ void __init_cpp_exceptions(void) {
 }
 
 void __fini_cpp_exceptions(void) {
+    /* Unregister this unit's C++ exception tables on teardown (-2 means not registered). */
     if (fragmentID != -2) {
         __unregister_fragment(fragmentID);
         fragmentID = -2;
