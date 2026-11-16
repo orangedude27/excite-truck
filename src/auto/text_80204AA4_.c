@@ -41,55 +41,75 @@ int fn_80204BB4(const char *arg0) {
     return fn_80204B2C(arg0);
 }
 
+#pragma cplusplus on
 #pragma dont_inline on
-void fn_80204BB8(void)
+extern "C" void fn_80204BB8(void)
 {
-  void *r31;
-  void **new_var2;
-  void *alloc;
-  int r28;
-  int r31b;
-  void *r31c;
-  void *cur;
-  void **new_var;
-  void *stage;
-  int v;
-  lbl_8055ED58 = 1;
-  lbl_8055ED5C = 0;
-  r31 = fn_801E87A8();
-  alloc = fn_801284F8(0x14, lbl_8033BBD8);
-  if (alloc == 0)
-  {
-    goto done;
-  }
-  r28 = *((int *) (((char *) r31) + 0));
-  r31b = *((int *) (((char *) r31) + 8));
-  *((void **) alloc) = (void *) r31b;
-  *((int *) (((char *) alloc) + 4)) = 0;
-  new_var2 = (void **) (((char *) alloc) + 4);
-  *((int *) (((char *) alloc) + 8)) = 0;
-  *((int *) (((char *) alloc) + 0xC)) = 0;
-  *((int *) (((char *) alloc) + 0x10)) = 0;
-  *new_var2 = fn_80131808(lbl_8033BBE4);
-  r31c = fn_80204B18(r31b);
-  cur = (*((void *(**)(void *, int)) ((*((void ***) (*new_var2))) + 2)))(*((void **) (((char *) alloc) + 4)), *((int *) (((char *) r31c) + 8)));
-  *((void **) (((char *) alloc) + 8)) = cur;
-  if ((r28 >= 0) && (r28 < fn_80012854()))
-  {
-    stage = *((void **) (((char *) ((void *(*)(int)) fn_8001285C)(r28)) + 0x20));
-    v = (*((int (**)(void *, int)) ((*((void ***) stage)) + 23)))(stage, *((int *) (((char *) r31c) + 8)));
-    if ((((unsigned int) ((-v) | v)) >> 31) != 0)
-    {
-      *((int *) (((char *) alloc) + 0xC)) = (*((int (**)(void *, int)) ((*((void ***) stage)) + 23)))(stage, *((int *) (((char *) r31c) + 8)));
+    class PropertyGroup { public: virtual void *get(int) = 0; };
+    class Stage { public:
+        virtual void unused0() = 0;
+        virtual void unused1() = 0;
+        virtual void unused2() = 0;
+        virtual void unused3() = 0;
+        virtual void unused4() = 0;
+        virtual void unused5() = 0;
+        virtual void unused6() = 0;
+        virtual void unused7() = 0;
+        virtual void unused8() = 0;
+        virtual void unused9() = 0;
+        virtual void unused10() = 0;
+        virtual void unused11() = 0;
+        virtual void unused12() = 0;
+        virtual void unused13() = 0;
+        virtual void unused14() = 0;
+        virtual void unused15() = 0;
+        virtual void unused16() = 0;
+        virtual void unused17() = 0;
+        virtual void unused18() = 0;
+        virtual void unused19() = 0;
+        virtual void unused20() = 0;
+        virtual int get(int) = 0;
+    };
+    void *scene;
+    void **group;
+    void *alloc;
+    int index;
+    int type;
+    void *entry;
+    void *cur;
+    void **name;
+    Stage *stage;
+    int value;
+    lbl_8055ED58 = 1;
+    lbl_8055ED5C = 0;
+    scene = fn_801E87A8();
+    alloc = fn_801284F8(0x14, lbl_8033BBD8);
+    if (alloc == 0) goto done;
+    index = *(int *)scene;
+    type = *(int *)((char *)scene + 8);
+    *(int *)alloc = type;
+    *(int *)((char *)alloc + 4) = 0;
+    group = (void **)((char *)alloc + 4);
+    *(int *)((char *)alloc + 8) = 0;
+    *(int *)((char *)alloc + 12) = 0;
+    *(int *)((char *)alloc + 16) = 0;
+    *group = fn_80131808(lbl_8033BBE4);
+    entry = fn_80204B18(type);
+    cur = ((PropertyGroup *)*group)->get(*(int *)((char *)entry + 8));
+    *(void **)((char *)alloc + 8) = cur;
+    if (index >= 0 && index < fn_80012854()) {
+        stage = *(Stage **)((char *)((void *(*)(int))fn_8001285C)(index) + 0x20);
+        value = stage->get(*(int *)((char *)entry + 8));
+        if (((unsigned int)(-value | value) >> 31) != 0)
+            *(int *)((char *)alloc + 12) = stage->get(*(int *)((char *)entry + 8));
+        name = (void **)((char *)alloc + 16);
+        *name = ((void *(*)(int))fn_80204AA4)(index);
     }
-    new_var = (void **) (((char *) alloc) + 0x10);
-    *new_var = ((void *(*)(int)) fn_80204AA4)(r28);
-  }
-  done:
-  lbl_8055ED5C = (int *) alloc;
-
+done:
+    lbl_8055ED5C = (int *)alloc;
 }
 #pragma dont_inline reset
+#pragma cplusplus reset
 
 extern int *lbl_8055ED5C;
 int fn_80204CF0(void) {
@@ -309,14 +329,15 @@ int fn_80205268(const char *arg0, int arg1, int arg2) {
 extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
     class Manager { public: virtual void *get(int); };
     class Stage { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void *get(int); };
-    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual int get(const char *); };
+    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual const char *get(const char *); };
     volatile struct { int arg1; void *mgr; void *cur; void *val; void *sel; } s;
     char buf[0x64];
+    const char *result;
     char *entry;
-    int result;
-    int t;
-    char *o;
-    char *sel;
+    const char *t;
+    void *o;
+    void *sel;
+    void *mgr;
     s.arg1 = arg1;
     s.mgr = 0;
     s.cur = 0;
@@ -333,18 +354,18 @@ extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
         }
         s.sel = ((void *(*)(int))fn_80204AA4)(arg2);
     }
-    sel = (char *)s.sel;
+    sel = s.sel;
     result = 0;
     if (sel != 0) {
         ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, sel, arg0);
-        o = (char *)s.val;
+        o = s.val;
         if (o != 0 && ((Resource *)o)->has(buf) != 0) {
-            o = (char *)s.val;
+            o = s.val;
             t = ((Resource *)o)->get(buf);
         } else {
-            o = (char *)s.cur;
+            o = s.cur;
             if (((Resource *)o)->has(buf) != 0) {
-                o = (char *)s.cur;
+                o = s.cur;
                 t = ((Resource *)o)->get(buf);
             } else {
                 t = 0;
@@ -353,14 +374,14 @@ extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
         result = t;
     }
     if (result == 0) {
-        o = (char *)s.val;
+        o = s.val;
         if (o != 0 && ((Resource *)o)->has(arg0) != 0) {
-            o = (char *)s.val;
+            o = s.val;
             t = ((Resource *)o)->get(arg0);
         } else {
-            o = (char *)s.cur;
+            o = s.cur;
             if (((Resource *)o)->has(arg0) != 0) {
-                o = (char *)s.cur;
+                o = s.cur;
                 t = ((Resource *)o)->get(arg0);
             } else {
                 t = 0;
@@ -370,15 +391,12 @@ extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
     arg2 = 1;
-    if (stricmp((const char *)result, lbl_8055B4B4) != 0 && stricmp((const char *)result, lbl_8055B4B8) != 0) arg2 = 0;
-    {
-        void *m = s.mgr;
-        s.sel = 0;
-        s.cur = 0;
-        s.val = 0;
-        fn_80131818((int)m);
-        s.mgr = 0;
-    }
+    if (stricmp(result, lbl_8055B4B4) != 0 && stricmp((const char *)result, lbl_8055B4B8) != 0) arg2 = 0;
+    mgr = s.mgr;
+    s.sel = 0;
+    s.cur = 0;
+    s.val = 0;
+    fn_80131818((int)mgr);
+    s.mgr = 0;
     return arg2;
 }
-#pragma pop
