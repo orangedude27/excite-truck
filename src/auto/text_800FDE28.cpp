@@ -431,6 +431,8 @@ extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0,
     OSRestoreInterrupts(level);
 }
 extern "C" void *fn_800FE648(void) {
+    /* Get the shared sound TaskThread object; on first use clear its created
+       flag and mark the one-time setup as done. */
     s8 initialized = (s8)lbl_8055DE80;
     if (initialized != 0) {
     } else {
