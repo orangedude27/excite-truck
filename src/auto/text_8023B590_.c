@@ -9,13 +9,15 @@ void fn_8000D838(void *);
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_8023B590(void) {
-    int v;
-    int *p;
+    int value;
+    int *slotPtr;
+
+    /* Initialize/reset this module's state and its parameter block. */
     fn_8000D838(&lbl_8055F100);
-    p = lbl_804986F8 + 1;
+    slotPtr = lbl_804986F8 + 1;
     lbl_804986F8[0] = 0;
-    v = 0x7B;
-    lbl_804986F8[1] = v;
+    value = 0x7B;
+    lbl_804986F8[1] = value;
     lbl_804986F8[2] = 0;
     lbl_804986F8[3] = 0;
     lbl_804986F8[4] = 0;
