@@ -13,16 +13,19 @@ extern int memset(void *, int, unsigned int);
  * the alphabet above on the first call. */
 #pragma scheduling invalid_target
 #pragma dont_inline on
+static inline int fn_8012F7E0_needs_init(void) {
+    return lbl_805599E8 != 0;
+}
 unsigned char fn_8012F7E0(signed char arg0) {
     int i;
-    if (lbl_805599E8 != 0) {
+    if (fn_8012F7E0_needs_init()) {
         lbl_805599E8 = 0;
         memset(lbl_80422F40, 0xFF, 0x100);
         for (i = 0; i < 64; i++) {
-            lbl_80422F40[lbl_8032AFE0[i]] = (unsigned char)i;
+            lbl_80422F40[lbl_8032AFE0[i]] = i;
         }
     }
-    return lbl_80422F40[(int)arg0];
+    return lbl_80422F40[arg0];
 }
 
 /* Decodes one block of four base64 characters into the 24 bits they hold, six
