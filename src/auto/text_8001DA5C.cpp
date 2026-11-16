@@ -416,7 +416,7 @@ extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
             f32 factor1 = ((f32(*)(void))fn_8001DAD8)();
             u32 c1 = (u32)fn_80147C50(*(u32*)((u8*)r28 + 0x18), *(u32*)((u8*)r29 + 0x18), factor1) & 0x00FFFFFF;
             buffer.w18 = __rlwimi((int)c1, arg1, 24, 0, 7);
-            arg1 = __rlwinm(arg1, 24, 0, 7);
+            arg1 <<= 24;
             f32 factor2 = ((f32(*)(void))fn_8001DAD8)();
             u32 c2raw = (u32)fn_80147C50(*(u32*)((u8*)r29 + 0x18), *(u32*)((u8*)r28 + 0x18), factor2);
             u32 masked = __rlwinm(c2raw, 0, 8, 31);
