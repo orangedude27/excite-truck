@@ -11386,9 +11386,13 @@ extern "C" void fn_800B7408(s32* drivers, void* context) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-extern "C" s32 fn_800B74B8(s8 arg0) {
-    fn_800B6928(arg0);
-    return ((s32 (*)(void))fn_800B73BC)();
+extern "C" s32 fn_800B74B8(s8 drive) {
+    typedef s32 (*StatusFn)(void);
+    /* Mount the virtual drive named by `drive` (fn_800B6928), then map its FRESULT
+       to a success code (fn_800B73BC). The no-arg cast is a trampoline that leaves
+       r3, holding the mount result, live for the mapping call. */
+    fn_800B6928(drive);
+    return ((StatusFn)fn_800B73BC)();
 }
 #pragma dont_inline reset
 
