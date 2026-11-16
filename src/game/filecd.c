@@ -172,9 +172,10 @@ int fn_802E4030(int object, int destroyFlag) {
 }
 
 extern const char lbl_8034D0C0[];
+#define fileCdMsgCreateNotSupported lbl_8034D0C0 /* "filecd: create not supported (%s)" */
 #pragma scheduling invalid_target
 int fn_802E4070(void) {
-    fn_802E30C8(lbl_8034D0C0);
+    fn_802E30C8(fileCdMsgCreateNotSupported);
     return 0;
 }
 
