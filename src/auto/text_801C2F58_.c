@@ -619,6 +619,8 @@ void fn_801C4CE8(void) {
     s32 n;
     u8 *p;
     f32 lift;
+    f32 x;
+    f32 z;
     f32 angle;
     f32 scale;
     f32 one;
@@ -627,8 +629,6 @@ void fn_801C4CE8(void) {
     struct Placement *pl;
     u8 *dst = (u8 *)&lbl_80437D88;
     char *str = lbl_80336B00;
-    u8 *cam = dst;
-    u8 *view = dst + 0x9c;
 
     if ((u8)lbl_8055E7E1 != 0) {
         __AXDSPInitCallback_801769E0();
@@ -694,26 +694,26 @@ void fn_801C4CE8(void) {
             DBPrintf_80179758(lbl_8055AA48, rec + 0xc);
             break;
         case 1:
-            *(f32 *)(cam + 0x0) = *(f32 *)(rec + 0x0);
-            *(f32 *)(cam + 0x4) = *(f32 *)(rec + 0x58);
-            *(f32 *)(cam + 0x8) = *(f32 *)(rec + 0xc);
-            *(f32 *)(cam + 0xc) = *(f32 *)(rec + 0x10);
-            *(f32 *)(cam + 0x10) = *(f32 *)(rec + 0x14);
-            *(Vec *)(cam + 0x14) = *(Vec *)(rec + 0x18);
-            *(Vec *)(cam + 0x20) = *(Vec *)(rec + 0x24);
-            *(Vec *)(cam + 0x2c) = *(Vec *)(rec + 0x30);
-            *(f32 *)(cam + 0x38) = *(f32 *)(rec + 0x3c);
-            *(f32 *)(cam + 0x3c) = *(f32 *)(rec + 0x40);
-            *(f32 *)(cam + 0x40) = *(f32 *)(rec + 0x44);
-            *(f32 *)(cam + 0x44) = *(f32 *)(rec + 0x48);
-            *(f32 *)(cam + 0x48) = *(f32 *)(rec + 0x4c);
-            *(f32 *)(cam + 0x4c) = *(f32 *)(rec + 0x50);
-            *(f32 *)(cam + 0x50) = *(f32 *)(rec + 0x54);
-            *(u8 *)(cam + 0x54) = *(u8 *)(rec + 0x5c);
-            *(u32 *)(cam + 0x58) = *(u32 *)(rec + 0x60);
-            *(u32 *)(cam + 0x5c) = *(u32 *)(rec + 0x64);
-            *(u32 *)(cam + 0x60) = *(u32 *)(rec + 0x68);
-            *(f32 *)(cam + 0x64) = *(f32 *)(rec + 0x6c);
+            *(f32 *)(lbl_80437D88.x00 + 0x0) = *(f32 *)(rec + 0x0);
+            *(f32 *)(lbl_80437D88.x00 + 0x4) = *(f32 *)(rec + 0x58);
+            *(f32 *)(lbl_80437D88.x00 + 0x8) = *(f32 *)(rec + 0xc);
+            *(f32 *)(lbl_80437D88.x00 + 0xc) = *(f32 *)(rec + 0x10);
+            *(f32 *)(lbl_80437D88.x00 + 0x10) = *(f32 *)(rec + 0x14);
+            *(Vec *)(lbl_80437D88.x00 + 0x14) = *(Vec *)(rec + 0x18);
+            *(Vec *)(lbl_80437D88.x00 + 0x20) = *(Vec *)(rec + 0x24);
+            *(Vec *)(lbl_80437D88.x00 + 0x2c) = *(Vec *)(rec + 0x30);
+            *(f32 *)(lbl_80437D88.x00 + 0x38) = *(f32 *)(rec + 0x3c);
+            *(f32 *)(lbl_80437D88.x00 + 0x3c) = *(f32 *)(rec + 0x40);
+            *(f32 *)(lbl_80437D88.x00 + 0x40) = *(f32 *)(rec + 0x44);
+            *(f32 *)(lbl_80437D88.x00 + 0x44) = *(f32 *)(rec + 0x48);
+            *(f32 *)(lbl_80437D88.x00 + 0x48) = *(f32 *)(rec + 0x4c);
+            *(f32 *)(lbl_80437D88.x00 + 0x4c) = *(f32 *)(rec + 0x50);
+            *(f32 *)(lbl_80437D88.x00 + 0x50) = *(f32 *)(rec + 0x54);
+            *(u8 *)(lbl_80437D88.x00 + 0x54) = *(u8 *)(rec + 0x5c);
+            *(u32 *)(lbl_80437D88.x00 + 0x58) = *(u32 *)(rec + 0x60);
+            *(u32 *)(lbl_80437D88.x00 + 0x5c) = *(u32 *)(rec + 0x64);
+            *(u32 *)(lbl_80437D88.x00 + 0x60) = *(u32 *)(rec + 0x68);
+            *(f32 *)(lbl_80437D88.x00 + 0x64) = *(f32 *)(rec + 0x6c);
             break;
         case 2:
             wait = 1;
@@ -775,7 +775,8 @@ void fn_801C4CE8(void) {
                     ((u32 *)xz)[1] = *(u32 *)(rec + 0x21c);
                     if (__AXFXGetLfoSinTable_801769CC()[1] & 0x100) {
                         src = (struct PlayerXf *)(p + 0x274);
-                        xf.place.m = src->place.m;
+                        xf.place.m.rot = src->place.m.rot;
+                        xf.place.m.trans = src->place.m.trans;
                         xf.place.pos = src->place.pos;
                         xf.place.unk3c = src->place.unk3c;
                         xf.place.id = src->place.id;
@@ -783,27 +784,33 @@ void fn_801C4CE8(void) {
                         xf.extra[1] = src->extra[1];
                         xf.extra[2] = src->extra[2];
                         fn_801B8100(&xf, j, *(s32 *)(p + 0x1f0));
-                        place.m = xf.place.m;
+                        place.m.rot = xf.place.m.rot;
+                        place.m.trans = xf.place.m.trans;
                         place.pos = xf.place.pos;
                         place.unk3c = xf.place.unk3c;
                         place.id = xf.place.id;
                     } else if (__AXFXGetLfoSinTable_801769CC()[1] & 0x100) {
                         u8 *obj;
-                        lift = fn_80139048();
-                        lift = liftBase + (*(f32 *)(fn_80137C54(-1) + 4) + lift);
+                        lift = liftBase + (*(f32 *)(fn_80137C54(-1) + 4) + fn_80139048());
                         obj = (u8 *)fn_801B2ED0(j);
                         fn_801B8048(pl, (*(s32 (**)(void *))(*(u8 **)obj + 0x18))(obj), lbl_80562970,
                                     xz[1] + -lift * (f32)n);
                     } else {
-                        mtx = *(struct Mtx34 *)(p + 0x274);
+                        mtx.rot = ((struct Mtx34 *)(p + 0x274))->rot;
+                        mtx.trans = ((struct Mtx34 *)(p + 0x274))->trans;
                         euler[0] = lbl_80562970;
                         euler[1] = *(f32 *)(rec + 0x220);
                         euler[2] = lbl_80562970;
                         fn_80015A20(rot, euler);
                         fn_80015B20((s32)&mtx, rot, (s32)&mtx);
-                        mtx.trans.x = (mtx.trans.x + mtx.rot.m[0] * xz[0]) + mtx.rot.m[6] * xz[1];
-                        mtx.trans.y = (mtx.trans.y + mtx.rot.m[1] * xz[0]) + mtx.rot.m[7] * xz[1];
-                        mtx.trans.z = (mtx.trans.z + mtx.rot.m[2] * xz[0]) + mtx.rot.m[8] * xz[1];
+                        x = xz[0];
+                        mtx.trans.x += mtx.rot.m[0] * x;
+                        mtx.trans.y += mtx.rot.m[1] * x;
+                        mtx.trans.z += mtx.rot.m[2] * x;
+                        z = xz[1];
+                        mtx.trans.x += mtx.rot.m[6] * z;
+                        mtx.trans.y += mtx.rot.m[7] * z;
+                        mtx.trans.z += mtx.rot.m[8] * z;
                         angle = fn_8002EFB0(mtx.rot.m[6], mtx.rot.m[8]);
                         pos2[1] = mtx.trans.z;
                         pos2[0] = mtx.trans.x;
@@ -818,7 +825,7 @@ void fn_801C4CE8(void) {
                 place.pos.x = place.m.rot.m[6] * scale;
                 place.pos.y = place.m.rot.m[7] * scale;
                 place.pos.z = place.m.rot.m[8] * scale;
-                (*(void (**)(u8 *, struct Placement *))(*(u8 **)p + 0x54))(p, pl);
+                (*(void (**)(u8 *, struct Placement *))(*(u8 **)p + 0x54))(p, &place);
                 if (fn_802794AC(*(s32 *)(p + 0x1f0), 0) != 0 && (__AXFXGetLfoSinTable_801769CC()[1] & 0x1400)) {
                     fn_801B8E28(j);
                 }
@@ -840,17 +847,17 @@ void fn_801C4CE8(void) {
             break;
         }
         case 7:
-            *(u8 **)(view + 0x0) = rec + 0x10c;
-            *(u8 **)(view + 0x4) = rec + 0xc;
-            *(f32 *)(view + 0x8) = lbl_8055E3C8;
+            lbl_80437D88.x9C = (s32)(rec + 0x10c);
+            lbl_80437D88.xA0 = (s32)(rec + 0xc);
+            lbl_80437D88.xA4 = lbl_8055E3C8;
             break;
         default:
             fn_802E30C8(str + 0x22c, *(u32 *)(rec + 8));
             break;
         }
         if (wait != 0) {
-            lbl_8055E7F4--;
             lbl_8055E7E4 = lbl_8055E7E4 - (t - *(f32 *)rec);
+            lbl_8055E7F4--;
             return;
         }
     }
@@ -2304,11 +2311,17 @@ void fn_801C8420(void) {
     }
 }
 
+#define sGlobalEventTimeFlag lbl_8055E80D /* when set, event entries use a fixed time */
+#define sConsoleLine lbl_80437FC0 /* 304-byte sprintf'd console/status line */
+#define kMsgGlobalEventTimeDisabled lbl_80337060 /* "Global event time disabled" */
 extern char lbl_80337060[];
 void fn_801C84E0(void) {
-    lbl_8055E80D = 0;
-    sprintf(lbl_80437FC0, lbl_80337060);
+    sGlobalEventTimeFlag = 0;
+    sprintf(sConsoleLine, kMsgGlobalEventTimeDisabled);
 }
+#undef sGlobalEventTimeFlag
+#undef sConsoleLine
+#undef kMsgGlobalEventTimeDisabled
 
 extern char lbl_8055AA70;
 extern char lbl_8055AA78;
