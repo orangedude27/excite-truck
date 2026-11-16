@@ -5893,6 +5893,10 @@ void __GXSetViewport(void) {
     *bpf = f0;
 }
 
+#define GX_JITTER_HALF_PIXEL lbl_80560BCC // 0.5f: vertical offset for even interlaced fields
+#define GX_FIELD_EVEN 0
+#define GX_DIRTY_VIEWPORT (1 << 28)
+
 void GXSetViewportJitter(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     extern f32 lbl_80560BCC;
     if (arg0 == 0) {
