@@ -244,9 +244,9 @@ static inline s32 fn_80231AF0_escape(char *text, f32 w, f32 *adv) {
     return 0;
 }
 static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32 half, f32 *adv) {
+    s32 flag;
     s32 i;
     s32 eo;
-    s32 flag;
     *adv = w;
     flag = lbl_8055F050;
     if (*text == '\\') {
@@ -574,9 +574,8 @@ have:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 sy, f32 sp) {
-    f32 half;
     f32 adv;
-    Fn80231AF0_Ctx *font = (Fn80231AF0_Ctx *)ctx;
+    f32 half;
     strlen(text);
     half = lbl_80563688;
     while (*text != 0) {
@@ -606,10 +605,10 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         }
         off = code * 0x1C;
         text += next - text;
-        g = (u8 *)font->glyphs;
+        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs;
         x += sy * (sx * *(f32 *)(g + off));
-        fn_80233AA4(font, code, x, y + w, x + sx * *(f32 *)(g + off + 4), y, z);
-        g = (u8 *)font->glyphs + off;
+        fn_80233AA4(ctx, code, x, y + w, x + sx * *(f32 *)(g + off + 4), y, z);
+        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off;
         x += sx * *(f32 *)(g + 4);
         x += sp + sy * (sx * *(f32 *)(g + 8));
     }
