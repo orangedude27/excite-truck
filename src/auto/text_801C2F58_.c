@@ -480,10 +480,12 @@ void fn_801C4B10(void) {
 
 
 void fn_801C4B74(void) {
+    /* Shut down the debug event timeline: release the overlay draw entries,
+     * then free the timeline entry table and clear its pointer. */
     fn_801C98F0();
-    if (lbl_8055E7F8 != 0) {
-        fn_80128670(lbl_8055E7F8);
-        lbl_8055E7F8 = 0;
+    if (sTimelineEntries != 0) {
+        fn_80128670(sTimelineEntries);
+        sTimelineEntries = 0;
     }
 }
 
