@@ -7637,7 +7637,14 @@ extern "C" u32 fn_802268E8(void *arg0) {
 extern char lbl_8033DAF8[];
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void *fn_8022EE9C(void);
-extern "C" void *fn_802269A8(void *obj, void *arg1) {
+/* Set up a "RotImage" UI element: resolve its named image, grab a draw region,
+ * compute centering offsets from its size, and position the region from the
+ * current f28() value using a half scale. */
+extern "C" void *fn_802269A8(void *obj, void *param) {
+    #define ROT_VTABLE   lbl_8033E0BC
+    #define ROT_ERR_MSG  lbl_8033DAF8   /* "RotImage: couldn't find image %s!" */
+    #define ROT_SCALE    lbl_805634C4   /* 0.5f */
+
     class Obj28 { public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
         virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
@@ -7646,26 +7653,30 @@ extern "C" void *fn_802269A8(void *obj, void *arg1) {
         virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24();
         virtual void f25(); virtual void f26(); virtual void f27(); virtual s32 f28();
         s32 width; s32 height; s32 padC; s32 total; u8 pad14[0x230];
-        s32 result; void *region; f32 coords[2]; f32 diff; f32 elapsed; s32 count;
+        s32 result; void *region; f32 coords[2]; f32 diff; f32 elapsedTime; s32 count;
     };
-    register Obj28 *self = (Obj28 *)obj;
+    register Obj28 *image = (Obj28 *)obj;
     fn_80218F80();
-    *(void **)self = lbl_8033E0BC;
-    if ((self->result = ((s32 (*)(void *))fn_802C5130)((u8 *)arg1 + 0x40)) == 0)
-        fn_802E30C8(lbl_8033DAF8, (u8 *)((u32)arg1 + 0x40));
-    self->region = fn_8022EE9C();
-    fn_80230C30(&self->coords[0], &self->coords[1], self->width, self->height);
-    self->diff = (f32)(self->total - self->height);
+    *(void **)image = ROT_VTABLE;
+    if ((image->result = ((s32 (*)(void *))fn_802C5130)((u8 *)param + 0x40)) == 0)
+        fn_802E30C8(ROT_ERR_MSG, (u8 *)((u32)param + 0x40));
+    image->region = fn_8022EE9C();
+    fn_80230C30(&image->coords[0], &image->coords[1], image->width, image->height);
+    image->diff = (f32)(image->total - image->height);
     struct { f32 value; } scaleStorage;
-    f32 &scale = scaleStorage.value;
-    f32 elapsed;
-    elapsed = (f32)self->f28();
-    scale = lbl_805634C4;
-    self->elapsed = elapsed;
-    *(f32 *)((u8 *)self->region + 0x24) = self->coords[0] + elapsed * scale;
-    *(f32 *)((u8 *)self->region + 0x28) = self->coords[1] - self->diff * scale;
-    self->count = *(s32 *)((u8 *)arg1 + 0x9C);
+    f32 &factor = scaleStorage.value;
+    f32 elapsedNow;
+    elapsedNow = (f32)image->f28();
+    factor = ROT_SCALE;
+    image->elapsedTime = elapsedNow;
+    *(f32 *)((u8 *)image->region + 0x24) = image->coords[0] + elapsedNow * factor;
+    *(f32 *)((u8 *)image->region + 0x28) = image->coords[1] - image->diff * factor;
+    image->count = *(s32 *)((u8 *)param + 0x9C);
     return obj;
+
+    #undef ROT_VTABLE
+    #undef ROT_ERR_MSG
+    #undef ROT_SCALE
 }
 
 extern "C" void *fn_80226AD0(void *arg0, s32 arg1) {
