@@ -412,9 +412,9 @@ extern "C" void fn_80005C88(void) {
     u8 *strings = lbl_802FB0C8;
     u32 *config = (u32 *)manager[2];
     s32 flag = (config[1] >> 9) & 1;
-    s32 zero = 0;
-    u8 *state;
-    void *object;
+    register u8 *state;
+    register void *object;
+    register s32 zero = 0;
     u8 *entry;
     s32 count;
     s32 i;
@@ -525,11 +525,13 @@ s32 fn_80006020(s32 object, s32 shouldDestroy) {
     return object;
 }
 
-s32 fn_80006060(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80006060(s32 object, s32 shouldDestroy) {
+    /* If object is non-null and shouldDestroy > 0, signal it for destruction
+     * via fn_80128668 (calls fn_80128584 with mode 3). Returns the object. */
+    if (object != 0 && shouldDestroy > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_800060A0(void *arg0) {
@@ -987,29 +989,25 @@ extern const char lbl_80558930[4], lbl_80558934[6], lbl_80558940[8];
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80006B18(void *arg0) {
-    double bias;
-    double dd;
-    u32 hi;
+    u8 sp10[16];
+    u8 sp8[8];
     f32 start;
     f32 now;
-    f32 y;
-    f32 advance;
-    f32 gap;
-    f32 threshold;
-    f32 unk11C;
-    f32 percent;
-    f32 scale;
     f32 offset;
     f32 percentScale;
+    f32 percent;
+    f32 unk11C;
+    f32 threshold;
+    f32 gap;
+    f32 scale;
+    f32 y;
+    f32 advance;
     f32 value;
     s32 i;
     s32 flags;
     s32 whole;
     s32 remainder;
     void *entry;
-    u8 sp8[8];
-    u8 sp10[16];
-
     start = fn_80011E34();
     now = fn_80011E54() - lbl_80560170;
     i = 0;
@@ -1017,16 +1015,12 @@ void fn_80006B18(void *arg0) {
     threshold = lbl_8056017C;
     unk11C = lbl_8056011C;
     percent = lbl_80560188;
-    bias = lbl_80560128;
     scale = lbl_80560174;
     offset = lbl_80560184;
     percentScale = lbl_8056018C;
-    hi = 0x43300000;
     for (; i < fn_801EA994(); i++) {
         entry = fn_801EA9B0(i);
-        ((u32 *)&dd)[0] = hi;
-        ((u32 *)&dd)[1] = (u32)i ^ 0x80000000;
-        y = now - scale * (f32)(dd - bias);
+        y = now - scale * (f32)i;
         fn_80010E94(*(s32 *)((u8 *)arg0 + 0x14), 0, start,
                     y - gap, lbl_80560118, lbl_8056017C);
         flags = *(s32 *)((u8 *)entry + 0xC);
