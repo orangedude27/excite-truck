@@ -1111,12 +1111,13 @@ extern "C" void* fn_80158218(void* self, s32 shouldDelete) {
     return self;
 }
 
-extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
-    s32 val = *arg1;
+extern "C" void *fn_80158280(void *arg0, s32 *__restrict arg1) {
+    s32 next;
     s32 idx = ((s32 *)arg0)[1];
     s32 *base = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = idx + 1;
-    base[idx] = val;
+    next = idx + 1;
+    ((s32 *)arg0)[1] = next;
+    base[idx] = *arg1;
     return &base[idx];
 }
 
