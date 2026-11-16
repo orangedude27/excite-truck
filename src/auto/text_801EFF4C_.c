@@ -1111,10 +1111,12 @@ int fn_801F1A70(int object, int deleteFlag) {
 }
 
 #pragma dont_inline on
-void fn_801F1AB0(void *arg0) {
-    int *value = *(int **)((char *)arg0 + 0x80);
-    if (value != 0) {
-        fn_801F1394(value, (int)((char *)arg0 + 4));
+void fn_801F1AB0(void *object) {
+    /* If this object holds a model handle at +0x80, submit it for rendering
+     * using the object's embedded transform at +4. */
+    int *model = *(int **)((char *)object + 0x80);
+    if (model != 0) {
+        fn_801F1394(model, (int)((char *)object + 4));
     }
 }
 
