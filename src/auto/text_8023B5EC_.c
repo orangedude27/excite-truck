@@ -17,6 +17,7 @@ void fn_8023B5EC(void) {
 }
 #pragma dont_inline reset
 
+/* Run the memory-card save flow, then set up the per-slot control schemes and menu option defaults. */
 void fn_8023B618(void) {
     fn_8023B5EC();
     fn_8023D7CC();
