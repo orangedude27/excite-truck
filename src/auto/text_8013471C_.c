@@ -483,11 +483,12 @@ f32 fn_80134E34(f32 value) {
 #pragma scheduling on
 #pragma pop
 void *fn_80134E90(void) {
-    void *p = fn_801284F8(0x30C, lbl_8032BC50);
-    if (p != 0) {
-        p = fn_801938F4(p);
+    /* Allocates a 0x30C-byte "AIDriver" object, initializes it, and returns it (0 if allocation fails). */
+    void *driver = fn_801284F8(0x30C, lbl_8032BC50);
+    if (driver != 0) {
+        driver = fn_801938F4(driver);
     }
-    return p;
+    return driver;
 }
 
 #pragma push
