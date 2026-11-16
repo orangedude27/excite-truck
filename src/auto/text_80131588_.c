@@ -190,63 +190,109 @@ extern char lbl_8032B5E0[];
 extern s32 fn_80131234(char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-fn_80131960_ret fn_80131960(void *arg0, void *arg1) {
-    u8 *obj = (u8 *)arg0;
-    u8 *base = (u8 *)arg1;
-    u8 t8, t10, t29, t25, t26, t31, t30, t24;
-    u8 t;
-    u32 v4, v8;
-    s32 i;
-    u32 off;
-    u8 one = 1;
-    t8 = obj[0x10];
-    t10 = obj[0x11];
-    obj[0x10] = obj[0x13];
-    t29 = obj[4];
-    obj[0x13] = t8;
-    t25 = obj[5];
-    obj[0x11] = obj[0x12];
-    t26 = obj[0xC];
-    obj[0x12] = t10;
-    t31 = obj[0xD];
-    obj[4] = obj[7];
-    obj[7] = t29;
-    t30 = obj[8];
-    obj[5] = obj[6];
-    t24 = obj[9];
-    obj[6] = t25;
-    v4 = *(u32 *)(obj + 4);
-    *(u32 *)(obj + 0x14) = 0;
-    *(void **)obj = lbl_8032B5E0;
-    *(u32 *)(obj + 0x10) += (u32)base;
-    obj[0xC] = obj[0xF];
-    obj[0xF] = t26;
-    obj[0xD] = obj[0xE];
-    obj[0xE] = t31;
-    obj[8] = obj[0xB];
-    obj[0xB] = t30;
-    obj[9] = obj[0xA];
-    obj[0xA] = t24;
-    if (v4 != 0)
-        *(u32 *)(obj + 4) = v4 + (u32)base;
-    v8 = *(u32 *)(obj + 8);
-    if (v8 != 0)
-        *(u32 *)(obj + 8) = v8 + (u32)base;
-    off = 0;
-    for (i = 0; i < *(s32 *)(obj + 0xC); i++, off += 8) {
-        u8 *entry = (u8 *)(*(u32 *)(obj + 0x10) + off);
-        t = entry[0]; entry[0] = entry[3]; entry[3] = t;
-        t = entry[1]; entry[1] = entry[2]; entry[2] = t;
-        t = entry[4]; entry[4] = entry[7]; entry[7] = t;
-        t = entry[5]; entry[5] = entry[6]; entry[6] = t;
-        *(u32 *)entry += (u32)base;
-        *(u32 *)(entry + 4) += (u32)base;
-        if ((s8)*(u8 *)(base + *(u32 *)(entry + 4)) == 0x7C)
-            *(u32 *)(entry + 4) = (u32)fn_80131234((char *)(base + *(u32 *)(entry + 4)) + 1);
-        else if ((s8)*(u8 *)(base + *(u32 *)(entry + 4)) == 0x7E)
-            *(u8 *)(base + *(u32 *)(entry + 4)) = one;
+void *fn_80131960(void *arg0, void *arg1)
+{
+  u8 *obj = (u8 *) arg0;
+  u32 new_var3;
+  u8 *base = (u8 *) arg1;
+  u8 t8;
+  u8 t10;
+  long long new_var;
+  u8 t29;
+  u8 t25;
+  u8 t26;
+  u8 t31;
+  u8 t30;
+  u8 t24;
+  u8 t7;
+  u8 t;
+  u32 v4;
+  u32 v8;
+  s32 i;
+  u8 *new_var2;
+  u32 off;
+  u8 one = 1;
+  t8 = obj[0x10];
+  t10 = obj[0x11];
+  obj[0x10] = obj[0x13];
+  t29 = obj[4];
+  obj[0x13] = t8;
+  t25 = obj[5];
+  obj[0x11] = obj[0x12];
+  new_var = obj[9];
+  t26 = obj[0xC];
+  obj[0x12] = t10;
+  t31 = obj[0xD];
+  t7 = obj[7];
+  obj[4] = t7;
+  new_var2 = obj;
+  obj[7] = t29;
+  t30 = new_var2[8];
+  obj[5] = new_var2[6];
+  t24 = new_var;
+  obj[6] = t25;
+  v4 = *((u32 *) (obj + 4));
+  *((u32 *) (new_var2 + 0x14)) = 0;
+  *((void **) new_var2) = lbl_8032B5E0;
+  *((u32 *) (obj + 0x10)) += (u32) base;
+  obj[0xC] = new_var2[0xF];
+  obj[0xF] = t26;
+  obj[0xD] = new_var2[0xE];
+  obj[0xE] = t31;
+  obj[8] = new_var2[0xB];
+  obj[0xB] = t30;
+  obj[9] = new_var2[0xA];
+  obj[0xA] = t24;
+  if (v4 != 0)
+  {
+    *((u32 *) (new_var2 + 4)) = v4 + ((u32) base);
+  }
+  v8 = *((u32 *) (new_var2 + 8));
+  if (v8 != 0)
+  {
+    *((u32 *) (new_var2 + 8)) = v8 + ((u32) base);
+  }
+  off = 0;
+  for (i = 0; i < (*((s32 *) (new_var2 + 0xC))); i++, off += 8)
+  {
+    u8 *entry = (u8 *) ((*((u32 *) (new_var2 + 0x10))) + off);
+    t = entry[0];
+    entry[0] = entry[3];
+    entry[3] = t;
+    t = entry[1];
+    entry[1] = entry[2];
+    entry[2] = t;
+    t = entry[4];
+    entry[4] = entry[7];
+    entry[7] = t;
+    t = entry[5];
+    entry[5] = entry[6];
+    entry[6] = t;
+    *((u32 *) entry) += (u32) base;
+    new_var3 = *((u32 *) (entry + 4));
+    *((u32 *) (entry + 4)) += (u32) base;
+    t30 = t30;
+    if (((s8) (*((u8 *) (base + new_var3)))) == 0x7C)
+    {
+      if (base)
+      {
+        *((u32 *) (entry + 4)) = (u32) fn_80131234(((char *) (base + new_var3)) + 1);
+      }
+      else
+      {
+        if (1)
+        {
+        }
+        *((u32 *) (entry + 4)) = (u32) fn_80131234(((char *) (base + new_var3)) + 1);
+      }
     }
-    fn_80131960_RETURN(arg0);
+    else
+      if (((s8) (*((u8 *) (base + new_var3)))) == 0x7E)
+    {
+      *((u8 *) (base + new_var3)) = one;
+    }
+  }
+  return arg0;
 }
 s32 fn_80131B10(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
@@ -559,15 +605,16 @@ extern "C" s32 fn_801321BC(void **arg0) {
 extern double atof(const char*);
 extern double atof(const char *);
 #pragma cplusplus on
-extern "C" f32 fn_801321EC(void **arg0) {
-    class Dummy {
+extern "C" f32 fn_801321EC(void **valueNode) {
+    /* Read this value node's string and convert it to a float. */
+    class ValueNode {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual char *v3();
+        virtual char *getString();
     };
-    return (f32) atof(((Dummy *)arg0)->v3());
+    return (f32) atof(((ValueNode *)valueNode)->getString());
 }
 #pragma cplusplus on
 extern "C" s32 fn_80132220(void **node) {
