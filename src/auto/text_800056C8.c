@@ -1931,9 +1931,10 @@ s32 fn_80007CE4(void) {
     return fn_8000C630(0xb, -1);
 }
 
-void fn_80007CF0(void *arg0) {
+void fn_80007CF0(void *obj) {
+    // Raise the flag at byte 4 of the object when the mode query reports zero.
     if (fn_801B880C() == 0) {
-        ((u8 *)arg0)[4] = 1;
+        ((u8 *)obj)[4] = 1;
     }
 }
 
