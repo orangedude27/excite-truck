@@ -2259,14 +2259,16 @@ s8 fn_8006A940(void) {
 }
 
 extern u8 lbl_80392960[];
+/* Return the number of queued entries in the device state (tail minus head)
+ * with interrupts disabled. */
 u8 fn_8006A97C(void)
 {
-    u32 enabled;
-    u8 value;
-    enabled = OSDisableInterrupts();
-    value = (u8)(*(u16 *)(lbl_80392960 + 0x6C6) - *(u16 *)(lbl_80392960 + 0x6C4));
-    OSRestoreInterrupts(enabled);
-    return value;
+    u32 intState;
+    u8 count;
+    intState = OSDisableInterrupts();
+    count = (u8)(*(u16 *)(lbl_80392960 + 0x6C6) - *(u16 *)(lbl_80392960 + 0x6C4));
+    OSRestoreInterrupts(intState);
+    return count;
 }
 
 void WUDSetSniffMode(BD_ADDR addr, s32 interval)
