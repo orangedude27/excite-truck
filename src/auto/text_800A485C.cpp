@@ -3670,8 +3670,8 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
 extern "C" void fn_800A4C14(void *, s32);
 extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *dirEntry, u8 *nameChunks, s32 ordinal, s32 checksum, s32 isLast) {
     // Build a 32-byte FAT long-directory entry from one 26-byte compact UTF-16 name chunk: set the
-    // ordinal (with the last-entry bit), attribute/checksum fields, pad the name with 0xFFFF on the
-    // last chunk, then copy the name pieces and byte-swap them into on-disk (little-endian) order.
+    // ordinal (with the last-entry bit) and attribute/checksum fields, pad the name with 0xFFFF on
+    // the last chunk, then copy the name pieces and byte-swap them into on-disk (little-endian) order.
     if (isLast) *(u8 *)dirEntry = (u8)(ordinal | 0x40);
     else *(u8 *)dirEntry = (u8)ordinal;
     u8 *dst = (u8 *)dirEntry;
