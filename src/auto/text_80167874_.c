@@ -3,6 +3,27 @@
 
 #pragma ppc_psq_save off
 
+/* One 0x20-byte group entry of the scene object manager behind lbl_8055E354
+ * (0x1E15C bytes, allocated by fn_801679F0).  The manager keeps a pool of
+ * 0x18-byte object records (pool pointer at +0x00, count at +0x04, capacity
+ * 0x1388 records at +0x08) and an array of these group entries (array pointer
+ * at +0x1D4CC, count at +0x1D4D0, capacity 0x64 entries at +0x1D4D4); each
+ * group covers the records [recordStart, recordStart + recordCount) of the
+ * pool.  fn_80168104 skips a group while `active` is clear. */
+struct GroupEntry {
+    s32 id;          /* +0x00: group id, matched by fn_801688B4 / fn_801688FC */
+    u8 active;       /* +0x04: group takes part in the update */
+    u8 pad_05[3];
+    f32 x;           /* +0x08: group centre, used for the distance test */
+    f32 z;           /* +0x0C */
+    f32 radius;      /* +0x10 */
+    s32 recordStart; /* +0x14: first record of the group in the manager's pool */
+    s32 recordCount; /* +0x18: number of records in the group */
+    u8 hasRadius;    /* +0x1C: radius above is set (fn_80168104) */
+    u8 flag_1D;      /* +0x1D: per-frame flag, cleared by fn_80168020 */
+    u8 pad_1E[2];
+};
+
 #pragma cplusplus on
 
 struct DummyVec2 {
