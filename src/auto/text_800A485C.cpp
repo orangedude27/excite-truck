@@ -23247,15 +23247,16 @@ extern "C" void fn_800CA16C(OSAlarm *alarm, OSContext *ctx) {
     }
 }
 
-extern "C" void fn_800CA234(s32 arg0, s32 arg1) {
-    if (arg0 == 1) {
+extern "C" void fn_800CA234(s32 event, s32 value) {
+    /* Home-button manager event hook: flag the +0x8a state for event 1, then forward the event to the callback registered at +0x1b8. */
+    if (event == 1) {
         *(u8 *)((u8 *)lbl_8055DD98 + 0x8a) = 1;
     }
-    void *vt = *(void **)((u8 *)lbl_8055DD98 + 0x1b8);
-    if (vt == NULL) {
+    void *callback = *(void **)((u8 *)lbl_8055DD98 + 0x1b8);
+    if (callback == NULL) {
         return;
     }
-    (*(void (*)(s32, s32))vt)(arg0, arg1);
+    (*(void (*)(s32, s32))callback)(event, value);
 }
 
 extern "C" void fn_800CA264(void *arg0, void *arg1) {
