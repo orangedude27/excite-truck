@@ -1188,7 +1188,14 @@ unsigned char fn_80167594(int arg0) { void *base; if (!((int (*)(void))fn_801667
 
 unsigned char fn_801675E4(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5F)); }
 
-unsigned char fn_80167634(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x60)); }
+unsigned char fn_80167634(int index) {
+    /* Returns the byte at offset 0x60 of the indexed 0x88-byte entry, or 0 if unavailable. */
+    void *base;
+    if (!((int (*)(void))fn_801667F0)())
+        return 0;
+    base = *(void **)&lbl_8055E32C;
+    return *((unsigned char *)((char *)*(void **)base + index * 0x88 + 0x60));
+}
 
 extern float lbl_8055E324;
 
