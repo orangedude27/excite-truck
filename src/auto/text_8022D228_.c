@@ -282,17 +282,18 @@ void fn_8022DB34(void *arg0, char *arg1) {
     sprintf(arg1, *(char **)((char *)arg0 + 0x10), value, arg0);
 }
 #pragma pop
-void fn_8022DB50(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    *(int *)arg0 = arg1;
-    *(int *)((char *)arg0 + 4) = arg2;
-    *(int *)((char *)arg0 + 0x10) = arg3;
-    *(int *)((char *)arg0 + 8) = arg3;
-    while (*(int *)((char *)arg0 + 8) < 5) {
-        *(int *)((char *)arg0 + 8) += *(int *)((char *)arg0 + 0x10);
+/* Initialize a repeating counter/timer object. */
+void fn_8022DB50(void *obj, int field0, int field4, int step, int field14) {
+    *(int *)obj = field0;
+    *(int *)((char *)obj + 4) = field4;
+    *(int *)((char *)obj + 0x10) = step;
+    *(int *)((char *)obj + 8) = step;
+    while (*(int *)((char *)obj + 8) < 5) {
+        *(int *)((char *)obj + 8) += *(int *)((char *)obj + 0x10);
     }
-    *(int *)((char *)arg0 + 0x14) = arg4;
-    *(int *)((char *)arg0 + 0xC) = 0;
-    *(char *)((char *)arg0 + 0x18) = 0;
+    *(int *)((char *)obj + 0x14) = field14;
+    *(int *)((char *)obj + 0xC) = 0;
+    *(char *)((char *)obj + 0x18) = 0;
 }
 
 int fn_8022DB94(int arg0, int arg1) {
