@@ -1786,10 +1786,14 @@ extern "C" char lbl_8033D388[];
 extern "C" char lbl_8033D268[];
 #pragma push
 #pragma dont_inline on
-extern "C" void fn_802149FC(s32 arg0) {
-    char sp8[0x64];
-    fn_80214934(lbl_8033D268, arg0, sp8, 0x64);
-    fn_8021481C(sp8);
+extern "C" void fn_802149FC(s32 fileName) {
+#define TRANSIT_DIR_OUT lbl_8033D268
+    char path[0x64];
+    /* RealName: LoadTransitionOut - build "transout\<name>" from fileName
+     * (dropping its extension) into path and hand it to the transition loader. */
+    fn_80214934(TRANSIT_DIR_OUT, fileName, path, 0x64);
+    fn_8021481C(path);
+#undef TRANSIT_DIR_OUT
 }
 #pragma dont_inline reset
 #pragma pop
