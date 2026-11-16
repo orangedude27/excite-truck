@@ -290,11 +290,20 @@ void fn_8000F498(void) {
     lbl_8055D4D4 = fn_8023512C();
 }
 
+/* Shuts the UI frame art down: drops this module's reference to the 9-slice
+ * frame art set that fn_8000F498 cached at startup (fn_8023512C opens it by
+ * name, fn_80011278 lays its nine pictures as the frame) and clears the slot,
+ * so the art set is freed once nothing else holds it.  Called by the UI module's
+ * shutdown fn_8000FB44. */
 void fn_8000F4BC(void) {
-    if (lbl_8055D4D4 != 0) {
-        fn_80235380(lbl_8055D4D4);
-        lbl_8055D4D4 = 0;
+#define frameArtSet    lbl_8055D4D4
+#define ArtSet_release fn_80235380
+    if (frameArtSet != 0) {
+        ArtSet_release(frameArtSet);
+        frameArtSet = 0;
     }
+#undef frameArtSet
+#undef ArtSet_release
 }
 
 extern f64 ceil(f64);
