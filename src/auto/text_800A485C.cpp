@@ -20310,11 +20310,13 @@ extern "C" void fn_800D1668(s32 channel, s32 result) {
 
 /* Per-controller active flags, one byte for each of the four controller slots. */
 #define gControllerActive lbl_8055DDA8
-extern "C" u8 fn_800D1688(s32 *arg0) {
-    if (*arg0 >= 4) {
+/* Return the active flag for the controller index pointed to by indexPtr,
+ * or 0 when the index is outside the four controller slots. */
+extern "C" u8 fn_800D1688(s32 *indexPtr) {
+    if (*indexPtr >= 4) {
         return 0;
     }
-    return lbl_8055DDA8[*arg0];
+    return gControllerActive[*indexPtr];
 }
 
 extern "C" void fn_800D16A8(s32 *arg0) {
