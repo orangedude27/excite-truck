@@ -455,6 +455,9 @@ static asm void RealMode(register void* config) {
     // clang-format off
     nofralloc
 
+    /* Enter real mode to run the BAT-configuration stub: resume at its aligned
+     * pointer with the address-translation bits cleared in the saved machine
+     * state, then return from the exception into that stub. */
     clrlwi config, config, 2
     mtspr 0x1a, config
     mfmsr config
