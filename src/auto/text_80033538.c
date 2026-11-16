@@ -228,10 +228,15 @@ void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
 }
 #pragma scheduling on
 void fn_80033C8C(void *arg0, short arg1) {
+#define voiceParam arg0
+#define enable arg1
+    /* Set the voice's remote-mix enable flag at +0x20C and mark remote-mix for reinit (0x01000000), with interrupts disabled. */
     int state = OSDisableInterrupts();
-    *(short *)((char *)arg0 + 0x20C) = arg1;
-    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x01000000;
+    *(short *)((char *)voiceParam + 0x20C) = enable;
+    *(unsigned int *)((char *)voiceParam + 0x1C) |= 0x01000000;
     OSRestoreInterrupts(state);
+#undef voiceParam
+#undef enable
 }
 
 void fn_80033CD8(void *arg0, void *arg1) {
