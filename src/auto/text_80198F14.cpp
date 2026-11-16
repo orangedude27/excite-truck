@@ -2773,11 +2773,13 @@ extern "C" void* fn_801A0040(void* arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_801A010C(s32 item, s32 count) {
+    /* Return the item pointer unchanged; if it is non-null and count is
+     * positive, free it through fn_80128668 as a side effect. */
+    if (item != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return item;
 }
 
 extern "C" void fn_801A014C(void* arg0) {
