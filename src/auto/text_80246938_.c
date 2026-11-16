@@ -1463,6 +1463,11 @@ int fn_80248C94(void *arg0, int arg1) {
     #undef objReady
 }
 
+#define FADE_ZERO      lbl_805638B0 /* 0.0f */
+#define FADE_ONE       lbl_80563898 /* 1.0f */
+#define FADE_MILLIS    lbl_805638D0 /* 500.0f: length of a fade ramp, in ms */
+#define FADE_ALPHA_MAX lbl_805638D4 /* 255.0f */
+#define FADE_ROUND     lbl_805638D8 /* 0.5f, added for round-to-nearest */
 extern float lbl_805638D0, lbl_805638D4, lbl_805638D8;
 extern s32 fn_802C942C(s32);
 void fn_80248CD8(void *arg0)
