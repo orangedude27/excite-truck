@@ -2614,14 +2614,14 @@ void GXGetCullMode(s32 arg0, u8 arg1) {
     __peReg[3] = (arg0 << 8) | arg1;
 }
 
-/* The 16-bit bitfield places width in the low bits and matches the target rlwimi. */
-void GXGetLineWidth(s32 arg0) {
+/* Pokes the 2-bit line width into PE register 4, with the fixed format bit 2 set. */
+void GXGetLineWidth(s32 width) {
     struct {
         unsigned short unused : 14;
-        unsigned short width : 2;
-    } value = {0, 0};
-    value.width = arg0;
-    __peReg[4] = *(unsigned short *)&value | 4;
+        unsigned short lineWidth : 2;
+    } reg = {0, 0};
+    reg.lineWidth = width;
+    __peReg[4] = *(unsigned short *)&reg | 4;
 }
 
 void GXGetPointSize(s32 arg0) {
