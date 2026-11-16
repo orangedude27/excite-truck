@@ -626,14 +626,15 @@ void __AXGetAuxBOutputDpl2Rs(void **arg0) {
     *arg0 = lbl_8035DAA0 + lbl_8055D6F4 * 0x480 + 0x300;
 }
 
-void __AXGetAuxBInput(void **arg0) {
+// Returns the current AuxB DSP input buffer in *out, or NULL when no AuxB callback is registered.
+void __AXGetAuxBInput(void **out) {
     extern u8 lbl_8035DAA0[];
     extern s32 lbl_8055D6F8;
     if (lbl_8055D720 != 0) {
-        *arg0 = lbl_8035DAA0 + lbl_8055D6F8 * 0x480;
+        *out = lbl_8035DAA0 + lbl_8055D6F8 * 0x480;
         return;
     }
-    *arg0 = 0;
+    *out = 0;
 }
 
 void __AXGetAuxCOutput(void **arg0) {
