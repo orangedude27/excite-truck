@@ -31,6 +31,7 @@ extern float PSQUATMultiply(void *, void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#define FOURCC_PCAR 0x50434152 /* 'PCAR' player truck, stored at +0x10 of a car resource */
 extern void *fn_8017960C();
 extern void fn_802AE0E0();
 extern float lbl_80561A50;
@@ -2356,12 +2357,14 @@ extern float lbl_80561AA4, lbl_80561AA8, lbl_80561AAC, lbl_80561AB0;
 #pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_80173058(unsigned char *self) {
-    const char *labels = lbl_80330F48;
+    struct { const char *p; } labelsBox;
+    labelsBox.p = lbl_80330F48;
+    const char *&labels = labelsBox.p;
     char key[0x20];
-    float initial;
+    register float initial = lbl_80561A50;
     ConfigPair73058 pair;
-    unsigned char *entry;
     unsigned char *record;
+    unsigned char *entry;
     int i;
     Config73058 *config, *root;
     char *name;
@@ -2369,7 +2372,6 @@ extern "C" void fn_80173058(unsigned char *self) {
     *(int *)(self + 0x1A8) = fn_80145E70(labels + 0x1FC);
     *(int *)(self + 0x170) = fn_801EA994();
     record = self;
-    initial = lbl_80561A50;
     entry = self + 0x90;
     for (i = 0; i < *(int *)(self + 0x170); record += 0x1C, entry += 0x1C, ++i) {
         record[0x91] = fn_80171EC0(i);
