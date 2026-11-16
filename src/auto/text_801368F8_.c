@@ -114,14 +114,16 @@ Proxer *fn_801368F8(Proxer *proxer, s32 carCount) {
     return proxer;
 }
 void fn_801369EC(void *arg0) {
+    /* Element constructor for the ProxPair pool: clear the two car indices, the
+     * displacement/speed/velocity fields and the near flag of a fresh record. */
     f32 value = lbl_80561368;
-    *(s32 *)((char *)arg0 + 0x14) = -1;
-    *(f32 *)((char *)arg0 + 0x28) = value;
-    *(f32 *)((char *)arg0 + 0x24) = value;
-    *(f32 *)((char *)arg0 + 0x20) = value;
-    *(f32 *)((char *)arg0 + 0x1C) = value;
-    *(s32 *)((char *)arg0 + 0xC) = -1;
-    *(signed char *)arg0 = 0;
+    ((ProxPair *)arg0)->indexB = -1;
+    ((ProxPair *)arg0)->dVelocity = value;
+    ((ProxPair *)arg0)->dSpeed = value;
+    ((ProxPair *)arg0)->dz = value;
+    ((ProxPair *)arg0)->dx = value;
+    ((ProxPair *)arg0)->indexA = -1;
+    ((ProxPair *)arg0)->near = 0;
 }
 
 #pragma dont_inline on
