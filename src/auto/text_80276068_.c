@@ -7,6 +7,10 @@ extern int stricmp(const char *, const char *);
 __declspec(section ".data") extern unsigned char lbl_8049FD58[];
 extern float lbl_8055E3C8, lbl_80564054, lbl_80564060;
 extern float lbl_8049FD58_float_dummy;
+// Four 0x50-byte camera-blend records, and the blend elapsed-time / no-blend (-1.0f) result.
+#define gCameraBlends lbl_8049FD58
+#define gBlendTime    lbl_8055E3C8
+#define BLEND_NONE    lbl_80564054
 extern void *fn_80276A44();
 extern void fn_8026A4A0(int, void *, float *);
 extern void fn_80276098(void *, void *, float, float, float, int, int);
