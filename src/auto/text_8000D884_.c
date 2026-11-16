@@ -73,11 +73,19 @@ void fn_8000D8C8(void) {
 }
 #pragma pop
 void fn_8000D94C(void) {
+#define gIdentInfoBlock  lbl_8055D468
+#define gIdentInfoSlots  lbl_8055D46C
+#define MemFree          fn_80128658
+    /* Shut the IdentInfo subsystem down: drop its slot table, hand the block
+     * it was allocated from (named "IdentInfo") back and forget its address. */
     int zero;
     zero = 0;
-    lbl_8055D46C = (int *)zero;
-    fn_80128658(lbl_8055D468);
-    lbl_8055D468 = zero;
+    gIdentInfoSlots = (int *)zero;
+    MemFree(gIdentInfoBlock);
+    gIdentInfoBlock = zero;
+#undef MemFree
+#undef gIdentInfoSlots
+#undef gIdentInfoBlock
 }
 
 #pragma push
