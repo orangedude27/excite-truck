@@ -22179,78 +22179,155 @@ extern s32 rfc_parse_data(void *, void *, u8 *);
 #pragma push
 #pragma pool_strings off
 #pragma readonly_strings on
-void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
-    struct { void *value; } mcbStorage;
-    
+void RFCOMM_BufDataInd(u32 lcid, BT_HDR *p_buf) {
+    /* rfc_cb (lbl_803C4828, rfc_int.h's tRFC_CB) is the RFCOMM control block: the
+       frame last parsed by rfc_parse_data() at +0, the lcid -> multiplexer table
+       at +0x3C and the trace level at +0x414.  Its trace helpers take the layer
+       (TRACE_LAYER_RFCOMM) in the top byte of the code and the trace type (0 =
+       error, 1 = warning) in the low one.  bt_trace.h's RFCOMM_TRACE_* macros need
+       rfc_cb to be the real struct, which this unit does not have, so they are
+       redefined here on the trace helpers' addresses. */
+#undef RFCOMM_TRACE_ERROR1
+#undef RFCOMM_TRACE_WARNING1
+#undef RFCOMM_TRACE_WARNING2
+#define rfc_rx_frame      (*(MX_FRAME *)rfc_cb)   /* tRFCOMM_CB.rx_frame */
+#define RFC_LCID_MCB      0x3C                    /* tRFCOMM_CB.p_rfc_lcid_mcb[] */
+#define rfc_trace_level   rfc_cb[0x414]           /* tRFC_CB.trace_level */
+#define RFCOMM_TRACE_ERROR1(m, p1) \
+        { if (rfc_trace_level >= BT_TRACE_LEVEL_ERROR) ((void (*)(u32, void *, u32))fn_80070954)(0x90000, m, p1); }
+#define RFCOMM_TRACE_WARNING1(m, p1) \
+        { if (rfc_trace_level >= BT_TRACE_LEVEL_WARNING) ((void (*)(u32, void *, u32))fn_80070954)(0x90001, m, p1); }
+#define RFCOMM_TRACE_WARNING2(m, p1, p2) \
+        { if (rfc_trace_level >= BT_TRACE_LEVEL_WARNING) ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, m, p1, p2); }
+#define RFCOMM_MX_DLCI       0   /* rfcdefs.h: DLCI of the multiplexer control channel */
+#define RFC_EVENT_SABME      0   /* rfc_int.h: events returned by rfc_parse_data() */
+#define RFC_EVENT_UIH        4
+#define RFC_EVENT_BAD_FRAME  50
+#define RFCOMM_MAX_DLCI      61  /* rfcdefs.h: highest DLCI this build handles */
+    /* fn_800916F4 is rfc_mx_fsm.c's rfc_mx_sm_execute(), which dispatches an event
+       to the handler of the multiplexer's state; rfc_int.h is not part of this
+       unit, so its name is spelled out here. */
+#define rfc_mx_sm_execute fn_800916F4
+
+    /* tRFC_MCB (port_int.h) as this build lays it out; only the fields read here
+       are named. */
+    struct rfc_mcb {
+        u8  pad_00[0x24];
+        u8  port_inx[RFCOMM_MAX_DLCI + 1]; /* +0x24 dlci -> 1 + index into the port pool */
+        u8  sec_bd_addr[6];                /* +0x62 peer the multiplexer runs to */
+        u16 lcid;                          /* +0x68 L2CAP channel carrying the multiplexer */
+        u16 peer_l2cap_mtu;                /* +0x6A */
+        u8  state;                         /* +0x6C RFC_MX_STATE_* */
+        u8  is_initiator;                  /* +0x6D TRUE if we opened the multiplexer */
+    };
+
+    /* p_mcb is kept in a one-field struct of its own, which is what puts it in the
+       register the original keeps it in; the alias lets the body below read as the
+       usual Broadcom "tRFC_MCB *p_mcb". */
+    struct { struct rfc_mcb *mcb; } mcbStorage;
+#define p_mcb mcbStorage.mcb
+
     void *p_port;
     s32 index;
-    u16 connection_id;
-    s32 result;
-    index = (s32)cid - 0x40;
-    if (index >= 10) {
-        if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, "rfc_find_lcid_mcb LCID:0x%x", cid);
-        mcbStorage.value = NULL;
+    u16 mcb_lcid;
+    s32 event;
+
+    /* rfc_find_lcid_mcb(): the multiplexer channel carrying this lcid */
+    index = (s32)lcid - L2CAP_BASE_APPL_CID;
+    if (index >= MAX_L2CAP_CHANNELS) {
+        RFCOMM_TRACE_ERROR1("rfc_find_lcid_mcb LCID:0x%x", lcid);
+        p_mcb = NULL;
     } else {
-        mcbStorage.value = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (mcbStorage.value != NULL) {
-            connection_id = *(u16 *)((u8 *)mcbStorage.value + 0x68);
-            if ((u32)connection_id != cid) {
-                if (lbl_803C4828[0x414] >= 2)
-                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, "rfc_find_lcid_mcb LCID reused LCID:0x%x current:0x%x\0\0\0\0RFCOMM_ConnectCnf LCID:0x%x\0RFCOMM_ConfigInd LCID:0x%x\0\0RFCOMM_ConfigCnf LCID:0x%x\0\0RFCOMM_DisconnectInd LCID:0x%x\0", cid, connection_id);
-                mcbStorage.value = NULL;
+        p_mcb = *(struct rfc_mcb **)(rfc_cb + index * 4 + RFC_LCID_MCB);
+        if (p_mcb != NULL) {
+            mcb_lcid = p_mcb->lcid;
+            if ((u32)mcb_lcid != lcid) {
+                /* the tail of this literal is the neighbouring callbacks' strings,
+                   which share this pool block, padded to 4 bytes */
+                RFCOMM_TRACE_WARNING2("rfc_find_lcid_mcb LCID reused LCID:0x%x current:0x%x\0\0\0\0"
+                                      "RFCOMM_ConnectCnf LCID:0x%x\0"
+                                      "RFCOMM_ConfigInd LCID:0x%x\0\0"
+                                      "RFCOMM_ConfigCnf LCID:0x%x\0\0"
+                                      "RFCOMM_DisconnectInd LCID:0x%x\0", lcid, mcb_lcid);
+                p_mcb = NULL;
             }
         }
     }
-    if (mcbStorage.value == NULL) {
-        if (lbl_803C4828[0x414] >= 2)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90001, "RFCOMM_BufDataInd LCID:0x%x", cid);
+
+    if (p_mcb == NULL) {
+        RFCOMM_TRACE_WARNING1("RFCOMM_BufDataInd LCID:0x%x", lcid);
         GKI_freebuf(p_buf);
         return;
     }
-    result = rfc_parse_data(mcbStorage.value, lbl_803C4828, (u8 *)p_buf);
-    if ((u8)result == 0x32) {
+
+    event = rfc_parse_data(p_mcb, &rfc_rx_frame, (u8 *)p_buf);
+
+    /* If the frame did not pass validation just ignore it */
+    if ((u8)event == RFC_EVENT_BAD_FRAME) {
         GKI_freebuf(p_buf);
         return;
     }
-    if (lbl_803C4828[0] == 0) {
-        if ((u8)result == 4) {
-            rfc_process_mx_message(mcbStorage.value, p_buf);
+
+    if (rfc_rx_frame.dlci == RFCOMM_MX_DLCI) {
+        /* Take special care of the Multiplexer Control Messages */
+        if ((u8)event == RFC_EVENT_UIH) {
+            rfc_process_mx_message(p_mcb, p_buf);
             return;
         }
-        fn_800916F4(mcbStorage.value, (u8)result, NULL);
+
+        /* Other multiplexer events go to state machine */
+        rfc_mx_sm_execute(p_mcb, (u8)event, NULL);
         GKI_freebuf(p_buf);
         return;
     }
-    p_port = port_find_mcb_dlci_port(mcbStorage.value, lbl_803C4828[0]);
-    if (p_port == NULL || *(s32 *)((u8 *)p_port + 0x6C) == 0) {
-        if ((u8)result != 0) {
-            u8 mcb_flag = *(u8 *)((u8 *)mcbStorage.value + 0x6D);
-            if (((mcb_flag != 0) && (lbl_803C4828[2] == 0)) || ((mcb_flag == 0) && (lbl_803C4828[2] != 0)))
-                rfc_send_dm(mcbStorage.value, lbl_803C4828[0], lbl_803C4828[4]);
+
+    /* The frame was received on the data channel DLCI, verify that DLC exists */
+    p_port = port_find_mcb_dlci_port(p_mcb, rfc_rx_frame.dlci);
+    if (p_port == NULL || *(void **)((u8 *)p_port + PORT_MCB) == NULL) {
+        /* If this is a SABME on the new port, check if any appl is waiting for it */
+        if ((u8)event != RFC_EVENT_SABME) {
+            u8 is_initiator = p_mcb->is_initiator;
+            if (((is_initiator != 0) && (rfc_rx_frame.cr == 0)) || ((is_initiator == 0) && (rfc_rx_frame.cr != 0)))
+                rfc_send_dm(p_mcb, rfc_rx_frame.dlci, rfc_rx_frame.pf);
             GKI_freebuf(p_buf);
             return;
         }
-        p_port = port_find_dlci_port(lbl_803C4828[0]);
-        if (p_port == NULL) {
-            rfc_send_dm(mcbStorage.value, lbl_803C4828[0], 1);
+
+        if ((p_port = port_find_dlci_port(rfc_rx_frame.dlci)) == NULL) {
+            rfc_send_dm(p_mcb, rfc_rx_frame.dlci, TRUE);
             GKI_freebuf(p_buf);
             return;
         }
-        *((u8 *)mcbStorage.value + lbl_803C4828[0] + 0x24) = *(u8 *)p_port;
-        *(void **)((u8 *)p_port + 0x6C) = mcbStorage.value;
+        p_mcb->port_inx[rfc_rx_frame.dlci] = *(u8 *)p_port;      /* tPORT.inx */
+        *(void **)((u8 *)p_port + PORT_MCB) = p_mcb;             /* tPORT.rfc.p_mcb */
     }
-    if ((u8)result == 4) {
+
+    if ((u8)event == RFC_EVENT_UIH) {
         if (p_buf->len != 0)
-            rfc_port_sm_execute(p_port, (u8)result, p_buf);
+            rfc_port_sm_execute(p_port, (u8)event, p_buf);
         else
             GKI_freebuf(p_buf);
-        if (lbl_803C4828[5] != 0)
-            rfc_inc_credit(p_port, lbl_803C4828[5]);
+
+        if (rfc_rx_frame.credit != 0)
+            rfc_inc_credit(p_port, rfc_rx_frame.credit);
     } else {
-        rfc_port_sm_execute(p_port, (u8)result, NULL);
+        rfc_port_sm_execute(p_port, (u8)event, NULL);
         GKI_freebuf(p_buf);
     }
+
+#undef rfc_rx_frame
+#undef RFC_LCID_MCB
+#undef rfc_trace_level
+#undef RFCOMM_TRACE_ERROR1
+#undef RFCOMM_TRACE_WARNING1
+#undef RFCOMM_TRACE_WARNING2
+#undef RFCOMM_MX_DLCI
+#undef RFC_EVENT_SABME
+#undef RFC_EVENT_UIH
+#undef RFC_EVENT_BAD_FRAME
+#undef RFCOMM_MAX_DLCI
+#undef rfc_mx_sm_execute
+#undef p_mcb
 }
 #pragma pop
 void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
