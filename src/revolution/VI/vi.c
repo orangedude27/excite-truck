@@ -2773,9 +2773,12 @@ void __VISetGammaImm(u8* dataIn)
     WaitMicroTime(2);
 }
 
+/* Push a stored gamma-correction table to the GPU encoder over I2C.
+ * lbl_8055DBE8 selects which 0x22-byte table in lbl_80311B50 to use; run from
+ * the retrace interrupt when the gamma bit of the pending-write mask is set. */
 void fn_8005CB70(void)
 {
-	__VISetGammaImm((u8*)&lbl_80311B50 + lbl_8055DBE8 * 0x22);
+	__VISetGammaImm((u8*)&lbl_80311B50 + lbl_8055DBE8 * GAMMA_TABLE_STRIDE);
 }
 
 /* Configure the VI trap filter via I2C: disable filter when lbl_80558FD0 is 1, else enable. */
