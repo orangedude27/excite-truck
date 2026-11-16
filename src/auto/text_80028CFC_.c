@@ -81,25 +81,27 @@ unsigned char *fn_80028E00(unsigned char *dst, const unsigned char *src) {
     return dst;
 }
 
+/* fn_80028E2C: bounded string concatenation (strncat). Finds the end of dst,
+   appends at most n bytes from src, and always writes a terminating NUL. */
 unsigned char *fn_80028E2C(unsigned char *dst, const unsigned char *src, int n) {
-    const unsigned char *q = src - 1;
-    unsigned char *p = dst - 1;
+    const unsigned char *srcPtr = src - 1;
+    unsigned char *dstEnd = dst - 1;
     unsigned char ch;
 
-    while (*++p != 0) {
+    while (*++dstEnd != 0) {
     }
-    p--;
+    dstEnd--;
     n++;
     while (--n != 0) {
-        ch = *++q;
-        *++p = ch;
+        ch = *++srcPtr;
+        *++dstEnd = ch;
         if (ch == 0) {
-            p--;
+            dstEnd--;
             goto done;
         }
     }
 done:
-    *++p = 0;
+    *++dstEnd = 0;
     return dst;
 }
 
