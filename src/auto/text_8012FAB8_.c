@@ -465,9 +465,11 @@ void fn_8013072C(char *arg0, int arg1, int arg2) {
 }
 
 void fn_801305C4(char *arg0, int arg1, Rec10 *arg2, int arg3, float farg0);
+#pragma dont_inline on
 void fn_801308E4(void *arg0, int arg1, int arg2, float arg3) {
     fn_801305C4(arg0, arg1, (Rec10 *)((char *)lbl_8055E050 + 8), arg2, arg3);
 }
+#pragma dont_inline reset
 
 void fn_801308F4(char *dst, int count, int value) {
     fn_8013072C(dst, count, value);
