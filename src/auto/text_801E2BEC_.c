@@ -7,6 +7,8 @@ extern s32 lbl_8055EA28;
 extern s32 lbl_8055EA30;
 extern s32 lbl_8055EA34;
 void fn_801E2BEC(void) {
+    /* Register a static-destructor record at lbl_8055EA28, then initialize the
+     * two words following it (offsets +8 and +0xC) to 0xFFFF0000. */
     fn_8000D838(&lbl_8055EA28);
     lbl_8055EA30 = 0xFFFF0000;
     lbl_8055EA34 = 0xFFFF0000;
