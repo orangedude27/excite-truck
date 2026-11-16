@@ -653,11 +653,12 @@ s32 fn_80135110(s32 ptr, s32 count) {
     return ptr;
 }
 
-s32 fn_80135150(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80135150(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_80135190(void) {
