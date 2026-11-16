@@ -321,12 +321,14 @@ void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_80298250(void *s
     return self;
 }
 
-  extern "C" void fn_802982A8(void *arg0) {
-      *(unsigned char *)((unsigned char *)arg0 + 0x28) = 0;
-      *(unsigned char *)((unsigned char *)arg0 + 0x54) = 0;
-      *(unsigned char *)((unsigned char *)arg0 + 0x80) = 0;
-      *(unsigned char *)((unsigned char *)arg0 + 0xAC) = 0;
-  }
+extern "C" void fn_802982A8(void *texPattern) {
+    /* Deactivate all four 0x2C-byte slots of this J2DAnmTexPatternTIMGPointer's
+       pool by clearing each slot's active flag byte (at +0x28 + i*0x2C). */
+    *(unsigned char *)((unsigned char *)texPattern + 0x28) = 0;
+    *(unsigned char *)((unsigned char *)texPattern + 0x54) = 0;
+    *(unsigned char *)((unsigned char *)texPattern + 0x80) = 0;
+    *(unsigned char *)((unsigned char *)texPattern + 0xAC) = 0;
+}
 
   extern "C" void fn_80298BBC(void*);
   extern "C" void fn_8029BA8C(void*);
