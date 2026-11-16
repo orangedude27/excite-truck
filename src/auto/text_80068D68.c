@@ -4922,6 +4922,8 @@ void fn_80070844(void *p_msg) {
 }
 
 void fn_80070854(void) {
+    /* Bring up the enabled Bluetooth profiles after the core BTE/BTA layers:
+     * RFCOMM, GAP and the HID device, then clear their shared control block. */
     RFCOMM_Init();
     GAP_Init();
     HID_DevInit();
