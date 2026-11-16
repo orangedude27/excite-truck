@@ -177,10 +177,11 @@ void fn_80193138(void *unused, int index) {
 }
 
 #pragma dont_inline on
-void fn_8019315C(void *unused, int index) {
-      void *entry = lbl_804349C0[index];
-      if (entry) ++*(int *)((char *)entry + 0x300);
-  }
+void fn_8019315C(void *unused, int slotIndex) {
+    /* Increment the +0x300 counter of the racer registered at slotIndex, if any. */
+    void *entry = lbl_804349C0[slotIndex];
+    if (entry) ++*(int *)((char *)entry + 0x300);
+}
 #pragma dont_inline reset
 
 #pragma dont_inline on
