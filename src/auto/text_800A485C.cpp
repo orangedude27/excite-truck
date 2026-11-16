@@ -2962,9 +2962,15 @@ extern "C" s32 fn_800A8FD0(void *volume, s32 page) {
 #undef Cache_TouchPage
 }
 
-extern "C" s32 fn_800A900C(void *arg0, s32 arg1, s32 arg2) {
-    s32 temp_r3 = fn_800A8504(arg0, (u8 *)arg0 + 0x1634, arg1, arg2);
-    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+extern "C" s32 fn_800A900C(void *volume, s32 page, s32 setTimestamp) {
+#define dataPageList ((u8 *)volume + 0x1634)
+#define VFiPFCACHE_TouchPage fn_800A8504
+    /* Mark a data-cache page dirty after a write and flush it when required;
+       return the status clamped to <= 0 (0 on success). */
+    s32 result = VFiPFCACHE_TouchPage(volume, dataPageList, page, setTimestamp);
+    return result & ((s32)(-result | result) >> 31);
+#undef dataPageList
+#undef VFiPFCACHE_TouchPage
 }
 
 extern "C" s32 fn_800A861C(void *, void *, s32, u32);
