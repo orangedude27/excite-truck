@@ -291,10 +291,11 @@ void fn_80149210(int *p) {
     p[1] = (p[1] + 1) % 4;
 }
 
-s32 fn_80149234(void *arg0) {
-    S4_80149234 sp8;
-    sp8 = *(S4_80149234 *)lbl_802F93D0;
-    return sp8.v[((s32 *)arg0)[1]];
+s32 fn_80149234(void *object) {
+    /* Returns the color from the 4-entry palette at lbl_802F93D0 selected by the object's color-index field. */
+    S4_80149234 palette;
+    palette = *(S4_80149234 *)lbl_802F93D0;
+    return palette.v[((s32 *)object)[1]];
 }
 
 extern s32 lbl_8055E240;
@@ -1753,8 +1754,8 @@ extern void *memset(void *, s32, s32);
 #pragma cplusplus off
 void *fn_8014E4BC(void *arg0) {
     u8 *base = (u8*)arg0;
-    register u8 *p;
-    u8 *end;
+    struct { u8 *p; } cursor;
+    struct { u8 *e; } sentinel;
     *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
     *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
     memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
@@ -1764,11 +1765,11 @@ void *fn_8014E4BC(void *arg0) {
     memset(base + 0x6D, 0x7A, 3); base[0x70] = 0;
     memset(base + 0x81, 0x7A, 3); base[0x84] = 0;
     memset(base + 0x8B, 0x7A, 3); base[0x8E] = 0;
-    p = base + 0x95; end = base + 0x149;
-    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
-    p = end; end = base + 0x1FD;
-    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
-    memset(end, 0x7A, 3); base[0x200] = 0;
+    cursor.p = base + 0x95; sentinel.e = base + 0x149;
+    do { memset(cursor.p, 0x7A, 3); cursor.p[3] = 0; cursor.p += 0x14; } while (cursor.p < sentinel.e);
+    cursor.p = sentinel.e; sentinel.e = base + 0x1FD;
+    do { memset(cursor.p, 0x7A, 3); cursor.p[3] = 0; cursor.p += 0x14; } while (cursor.p < sentinel.e);
+    memset(sentinel.e, 0x7A, 3); base[0x200] = 0;
     memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
     return arg0;
 }
