@@ -379,11 +379,12 @@ copied:
 }
 #pragma cplusplus reset
 #pragma pop
-int fn_801D4CB8(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_801D4CB8(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
@@ -3103,6 +3104,7 @@ int fn_801D83DC(int object, int shouldFree) {
 #pragma use_lmw_stmw off
 #pragma processor 750
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 #pragma cplusplus on
 extern "C" int fn_801D8424(void *arg0, void *arg1) {
     struct Dummy {
@@ -3123,22 +3125,21 @@ extern "C" int fn_801D8424(void *arg0, void *arg1) {
     extern char lbl_8055AD48;
     extern int fn_8029F3BC(void);
     Dummy *obj = (Dummy *)arg1;
-    float f1_ = obj->get(&lbl_8055ACB0, lbl_80562ADC);
-    float f2_ = obj->get(&lbl_8055ACB8, lbl_80562ADC);
-    float s1_ = lbl_80562B0C * f1_;
-    float s2_ = lbl_80562B0C * f2_;
-    int r1_ = (int)s1_;
-    int r2_ = (int)s2_;
-    *(int *)((char *)arg0 + 8) = r1_;
-    *(int *)((char *)arg0 + 0xC) = r2_;
-    obj->set(&lbl_8055AD48, r1_);
-    int st_ = fn_8029F3BC();
-    *(int *)((char *)arg0 + 0x14) = st_;
-    if (st_ < 0) return 0;
+    float first = obj->get(&lbl_8055ACB0, lbl_80562ADC);
+    float second = obj->get(&lbl_8055ACB8, lbl_80562ADC);
+    float scaledFirst = lbl_80562B0C * first;
+    float scaledSecond = lbl_80562B0C * second;
+    int resultFirst = (int)scaledFirst;
+    int resultSecond = (int)scaledSecond;
+    *(int *)((char *)arg0 + 8) = resultFirst;
+    *(int *)((char *)arg0 + 0xC) = resultSecond;
+    obj->set(&lbl_8055AD48, resultFirst);
+    int status = fn_8029F3BC();
+    *(int *)((char *)arg0 + 0x14) = status;
+    if (status < 0) return 0;
     *(int *)((char *)arg0 + 4) = 1;
     return 1;
 }
-#pragma cplusplus reset
 #pragma pop
 
 void *fn_801D8504(void) {
