@@ -28,18 +28,25 @@ extern void fn_802C70AC(s32, void*, s32, s32);
 extern void fn_802E317C(const char*, ...);
 extern char lbl_80339A20[]; /* "anim: release_buffer: unknown buffer %p" */
 #pragma scheduling invalid_target
+/* RealName: AnimBufferPool_Acquire — return the next free anim streaming buffer, or 0 if all 8 slots are in use. */
 s32 fn_801E68D4(void) {
+#define sAnimBufferInUse lbl_8055EAC8
+#define sAnimBufferPool  lbl_80487CC0
     s32 i;
-    s32 result;
-    u8 *ptr;
+    s32 buffer;
+    u8 *inUsePtr;
 
-    for (i = 0, ptr = (u8 *)lbl_8055EAC8; i < 8; ++ptr, ++i) {
-        if (*ptr == 0) {
-            result = lbl_80487CC0[i];
-            lbl_8055EAC8[i] = 1;
-            return result;
+    for (i = 0, inUsePtr = (u8 *)sAnimBufferInUse; i < 8; ++inUsePtr, ++i) {
+        if (*inUsePtr == 0) {
+            buffer = sAnimBufferPool[i];
+            sAnimBufferInUse[i] = 1;
+#undef sAnimBufferInUse
+#undef sAnimBufferPool
+            return buffer;
         }
     }
+#undef sAnimBufferInUse
+#undef sAnimBufferPool
     return 0;
 }
 #pragma scheduling invalid_target
