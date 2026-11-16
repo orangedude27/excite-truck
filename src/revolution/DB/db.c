@@ -37,8 +37,10 @@ asm void __DBExceptionDestination(void){
     // clang-format on
 }
 
-BOOL __DBIsExceptionMarked(u8 exc) {
-    return __DBInterface->exceptionMask & (1 << exc);
+/* Test whether the given exception number is marked for the debugger, i.e.
+ * whether its bit is set in the debug interface's exception mask. */
+BOOL __DBIsExceptionMarked(u8 exception) {
+    return __DBInterface->exceptionMask & (1 << exception);
 }
 
 /*
