@@ -3977,7 +3977,23 @@ void GXSetChanMatColor_Internal(s32 type, void *color) {
     *(unsigned int *)((unsigned char *)__GXData + 0xB0 + (which << 2)) = value;
 }
 
-void GXSetNumChans(s32 num) { union { unsigned int reg; struct { unsigned int pad0 : 25; unsigned int chans : 3; unsigned int pad1 : 4; } fields; } u; u.reg = __GXData[0x254 / 4]; u.fields.chans = num; __GXData[0x254 / 4] = u.reg; __GXData[0x5FC / 4] |= 0x01000004; }
+void GXSetNumChans(s32 num) {
+    /* Set the number of color channels in the GenMode register (3-bit field at bit 25)
+       and mark the channel/te state dirty so it is flushed to the graphics processor. */
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad0 : 25;
+            unsigned int chans : 3;
+            unsigned int pad1 : 4;
+        } fields;
+    } u;
+
+    u.reg = __GXData[0x254 / 4];
+    u.fields.chans = num;
+    __GXData[0x254 / 4] = u.reg;
+    __GXData[0x5FC / 4] |= 0x01000004;
+}
 
 // The argument types of GXSetChanCtrl, from include/revolution/GX/GXTypes.h.
 typedef enum _GXChannelID {
