@@ -598,16 +598,16 @@ void fn_80017D5C(void* arg0) {
     goto check;
 loop:
     {
-        s32 index = fn_80129D18(1);
+        s32 index = ((s32 (*)(s32, s32))fn_80129D18)(1, arr[1]);
         items = (s32*)arr[0];
         left = *(s32*)((char*)items + offset);
         i++;
         *(s32*)((char*)items + offset) = items[index];
         offset += 4;
         items[index] = left;
-        left = arr[1];
     }
 check:
+    left = arr[1];
     if (i < left) goto loop;
 }
 #pragma pop
