@@ -10828,9 +10828,8 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, int offset, u16 handle, u8 
     }
 }
 
-static inline void btm_pm_cont_switch_inl(int offset, u16 handle, u8 status) {
+static inline void btm_pm_cont_switch_inl(int offset, u8 *link, u16 handle, u8 status) {
     u8 *addr;
-    u8 *link = (u8 *)((u32)lbl_803C0F78 + offset);
     u8 *dev;
     if (link[0x14f] == 1) {
         addr = link + 0x3c;
@@ -10888,7 +10887,7 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         if (reg[0x558] & 2)
             (*(void (**)(u8 *, u8, u16, u8))(reg + 0x554))(acl + 0x3c, mode, interval, status);
     }
-    btm_pm_cont_switch_inl(offset, handle, status);
+    btm_pm_cont_rswitch_inl((u8 *)((u32)lbl_803C0F78 + offset), offset, handle, status);
 }
 #pragma pop
 void fn_8007D4C4(void) {
