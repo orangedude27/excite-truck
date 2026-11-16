@@ -800,6 +800,7 @@ s32 fn_8014ADD0(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+/* Advance an iterator: promote next to current, load the following node/key, and report if current is valid. */
 s32 fn_8014ADD8(void *arg0) {
     void *next = ((void **)arg0)[2];
     ((void **)arg0)[1] = next;
