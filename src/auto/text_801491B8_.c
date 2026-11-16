@@ -1132,10 +1132,11 @@ s32 fn_8014C848(void *iter) {
 
 extern f32 lbl_80558DC4[];
 extern float fabsf(float);
-s32 fn_8014C88C(f32 arg0, f32 arg1) {
-    f32 diff = arg0 - arg1;
-    f64 abs = __fabs((f64)diff);
-    return (f32)abs <= lbl_80558DC4[0];
+// Returns true when a and b are equal within the floating-point epsilon tolerance.
+s32 fn_8014C88C(f32 a, f32 b) {
+    f32 difference = a - b;
+    f64 absDifference = __fabs((f64)difference);
+    return (f32)absDifference <= lbl_80558DC4[0];
 }
 
 f32 fn_8014C8B4(f32 inMin, f32 inMax, f32 outMin, f32 outMax, f32 value) {
