@@ -5123,14 +5123,17 @@ void GXSetTevKAlphaSel(s32 stage, s32 sel) {
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
-void GXSetTevSwapMode(s32 arg0, s32 arg1, s32 arg2) {
+void GXSetTevSwapMode(s32 stage, s32 rasSel, s32 texSel) {
+    /* Set the raster/texture swap selectors for one TEV stage: merge them into the
+       stage's shadowed swap-mode word, push that word to the BP through the
+       write-gather FIFO (load-BP-register command 0x61), then clear dirty state. */
     unsigned int *entry;
     unsigned int *base = __GXData;
-    entry = (unsigned int *)((unsigned char *)base + arg0 * 4);
+    entry = (unsigned int *)((unsigned char *)base + stage * 4);
     {
         unsigned int value = entry[0x1C0 / 4];
-        value = __rlwimi(value, arg1, 0, 30, 31);
-        value = __rlwimi(value, arg2, 2, 28, 29);
+        value = __rlwimi(value, rasSel, 0, 30, 31);
+        value = __rlwimi(value, texSel, 2, 28, 29);
         entry[0x1C0 / 4] = value;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
