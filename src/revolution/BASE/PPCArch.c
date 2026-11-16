@@ -143,6 +143,9 @@ u32 PPCMffpscr(void) {
     // clang-format on
 }
 
+/* Write val to the Floating-Point Status and Control Register (FPSCR):
+ * zero-extend the 32-bit value into a 64-bit word, then load and store it
+ * through f31 with mtfsf. */
 void PPCMtfpscr(register u32 val) {
     // clang-format off
     register struct {
