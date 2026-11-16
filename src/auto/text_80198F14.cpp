@@ -587,7 +587,7 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     temp_r29 = (*(void **)((u8 *)(arg0) + (4)));
     temp_r28 = (*(void **)((u8 *)(arg1) + (4)));
     if (temp_r26 == 0x3EA) {
-        fn_80199870(temp_r29);
+        fn_80199870(temp_r29, (u32)arg1);
         return;
     }
     if (temp_r26 >= 0x3E8) {
