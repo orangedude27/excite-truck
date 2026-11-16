@@ -5229,21 +5229,23 @@ void GXSetFogRangeAdj(int adjEnable, u16 center, const u16 *rangeAdjTable) {
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
-void GXSetBlendMode(s32 type, s32 src, s32 dst, s32 op) {
-    unsigned int *data = __GXData;
-    unsigned int value = data[0x220 / 4];
-    int b;
-    value = __rlwimi(value, __cntlzw(type - 3), 6, 20, 20);
-    b = __cntlzw(type - 2);
+void GXSetBlendMode(s32 mode, s32 srcFactor, s32 dstFactor, s32 logicOp) {
+    unsigned int *gxData = __GXData;
+    unsigned int blendModeReg = gxData[0x220 / 4];
+    int subtractBlend;
+
+    /* Configure GX blend/logic operation mode and write the blend mode register. */
+    blendModeReg = __rlwimi(blendModeReg, __cntlzw(mode - 3), 6, 20, 20);
+    subtractBlend = __cntlzw(mode - 2);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = __rlwimi(value, type, 0, 31, 31);
-    value = __rlwimi(value, b, 28, 30, 30);
-    value = __rlwimi(value, op, 12, 16, 19);
-    value = __rlwimi(value, src, 8, 21, 23);
-    value = __rlwimi(value, dst, 5, 24, 26);
-    *(volatile unsigned int *)0xCC008000 = value;
-    data[0x220 / 4] = value;
-    *(volatile unsigned short *)((unsigned char *)data + 2) = 0;
+    blendModeReg = __rlwimi(blendModeReg, mode, 0, 31, 31);
+    blendModeReg = __rlwimi(blendModeReg, subtractBlend, 28, 30, 30);
+    blendModeReg = __rlwimi(blendModeReg, logicOp, 12, 16, 19);
+    blendModeReg = __rlwimi(blendModeReg, srcFactor, 8, 21, 23);
+    blendModeReg = __rlwimi(blendModeReg, dstFactor, 5, 24, 26);
+    *(volatile unsigned int *)0xCC008000 = blendModeReg;
+    gxData[0x220 / 4] = blendModeReg;
+    *(volatile unsigned short *)((unsigned char *)gxData + 2) = 0;
 }
 
 void GXSetColorUpdate(s32 enable) {
