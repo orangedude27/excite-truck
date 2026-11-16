@@ -839,10 +839,14 @@ float fn_801E8854(long arg0) {
     return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x54);
 }
 
+#define CurrentPlayerIndex lbl_8055AF0C /* -1 sentinel: use the current player */
+#define sPlayerConfigs lbl_8055EB04 /* array of 0xE0-byte per-player camera/viewport configs */
 float fn_801E8874(long arg0) {
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
     return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x4C);
 }
+#undef CurrentPlayerIndex
+#undef sPlayerConfigs
 
 /* Returns the float at +0x50 of a player's 0xE0-byte config record; a negative
  * index selects the current player. */
