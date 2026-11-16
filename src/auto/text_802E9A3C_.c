@@ -163,10 +163,19 @@ void *fn_802E9BEC(long errorCode) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802E9C68(long arg0) {
-    OSReport((const char *)&lbl_8034E370, arg0);
-    *(volatile char *)&lbl_80560061 = 1;
-    ++*(volatile int *)&lbl_80560068;
+void fn_802E9C68(long slot) {
+    /* SD card insert callback: log insertion and flag the card present. */
+    #define kMp3SdInsertedFmt lbl_8034E370
+    #define gSdCardPresent    lbl_80560061
+    #define gSdInsertCount    lbl_80560068
+
+    OSReport((const char *)&kMp3SdInsertedFmt, slot);
+    *(volatile char *)&gSdCardPresent = 1;
+    ++*(volatile int *)&gSdInsertCount;
+
+    #undef kMp3SdInsertedFmt
+    #undef gSdCardPresent
+    #undef gSdInsertCount
 }
 #pragma scheduling on
 #pragma pop
