@@ -161,6 +161,16 @@ void fn_8025C054(void) {
     }
 }
 
+typedef int M2C_UNK;
+#define M2C_FIELD(p, T, off) (*(T)((char*)(p) + (off)))
+typedef void **(*M2C_F1)(void **, int);
+typedef int (*M2C_F2)(void **);
+typedef unsigned char *(*M2C_F3)(void **, int *, int, int);
+typedef float (*M2C_F4)(void **, int *);
+typedef int (*M2C_F5)(void **, int *);
+typedef int (*M2C_F6)(void **, int *);
+typedef int (*M2C_F7)(void **, void *);
+
 void fn_8025C204(int arg0, int arg1) {
     (void)arg1;
     if (lbl_8055F2E8 == 0) {
