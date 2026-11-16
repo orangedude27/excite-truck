@@ -3707,10 +3707,11 @@ extern "C" void fn_8015D814(void* arg0) {
 }
 
 void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
+    /* Stop the currently playing sound handle with a fade-out, if any, and clear the handle. */
     Unk801577F0V* self = (Unk801577F0V*)this;
-    Unk801577F0V* target = (Unk801577F0V*)self->m248;
-    if (target != 0) {
-        target->v7();
+    Unk801577F0V* sound = (Unk801577F0V*)self->m248;
+    if (sound != 0) {
+        sound->v7();
         self->m248 = 0;
     }
 }
