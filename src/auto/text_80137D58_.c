@@ -358,38 +358,49 @@ void *fn_8013846C(void *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_801384A0(void *arg0, int arg1) {
-    char sp[0x70];
+    /* Recompute index (+0x10) and metric (+0x2C) for every node in the line's
+       circular node list (+0x1C), zero the lowest node's index, propagate a
+       running maximum over the list, then release the scratch work buffer. */
+    struct LineNode {
+        char pad0[0x10];
+        int index;                 /* +0x10 */
+        struct LineNode *next;     /* +0x14 */
+        char pad18[0x14];
+        float metric;              /* +0x2C */
+    };
+    char work[0x70];
     int value;
-    int max;
+    int runningMax;
     void *node;
     void *head;
-    fn_80135DC4(sp, 1, arg1);
+
+    fn_80135DC4(work, 1, arg1);
     head = *(void **)((char *)arg0 + 0x1C);
-    fn_80135F64(sp, head, (char *)head + 8, 0, 0);
+    fn_80135F64(work, head, (char *)head + 8, 0, 0);
     node = *(void **)((char *)arg0 + 0x1C);
     do {
-        fn_80136068(sp, node, 0);
-        *(float *)((char *)node + 0x2C) = *(float *)(sp + 0x40);
-        *(int *)((char *)node + 0x10) = *(int *)((char *)*(void **)(sp + 4) + 0x10);
-        node = *(void **)((char *)node + 0x14);
+        fn_80136068(work, node, 0);
+        ((struct LineNode *)node)->metric = *(float *)(work + 0x40);
+        ((struct LineNode *)node)->index = *(int *)((char *)*(void **)(work + 4) + 0x10);
+        node = ((struct LineNode *)node)->next;
     } while (node != *(void **)((char *)arg0 + 0x1C));
     node = fn_80138438(node);
     head = fn_8013846C(node);
-    *(int *)((char *)head + 0x10) = 0;
+    ((struct LineNode *)head)->index = 0;
     node = head;
-    max = 0;
+    runningMax = 0;
     do {
-        value = *(int *)((char *)node + 0x10);
-        if (max > value) {
-            value = max;
+        value = ((struct LineNode *)node)->index;
+        if (runningMax > value) {
+            value = runningMax;
         }
-        *(int *)((char *)node + 0x10) = value;
-        max = value;
-        node = *(void **)((char *)node + 0x14);
+        ((struct LineNode *)node)->index = value;
+        runningMax = value;
+        node = ((struct LineNode *)node)->next;
     } while (node != head);
-    if (*(void **)(sp + 0x50) != 0) fn_80128670(*(void **)(sp + 0x50));
-    *(void **)(sp + 0x50) = 0;
-    fn_8013530C(sp, 0);
+    if (*(void **)(work + 0x50) != 0) fn_80128670(*(void **)(work + 0x50));
+    *(void **)(work + 0x50) = 0;
+    fn_8013530C(work, 0);
 }
 #pragma dont_inline reset
 #pragma scheduling on
