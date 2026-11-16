@@ -3364,6 +3364,8 @@ extern "C" void fn_800DB960(void) {
 
 #pragma use_lmw_stmw off
 extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char* name, bool recursive) {
+    /* Find a child pane by name (self's own name at +0xB4 is checked first);
+       when recursive, search all child panes depth-first through the child list. */
     extern s32 fn_800D58C4(void*);
     extern const char lbl_8031E8FC[];
     extern const char lbl_8031E8D8[];
@@ -3380,10 +3382,15 @@ extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char*
         while (node != end) {
             if (!node)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            struct Obj { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11(); virtual void a12();  virtual void* find(const char*, bool); };
-            void* found = ((Obj*)((u8*)node - 4))->find(name, true);
-            if (found)
-                return found;
+            struct PaneVTable {
+                virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+                virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+                virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+                virtual void v12(); virtual void* findPane(const char*, bool);
+            };
+            void* result = ((PaneVTable*)((u8*)node - 4))->findPane(name, true);
+            if (result)
+                return result;
             node = *(void**)node;
         }
     }
