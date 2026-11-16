@@ -527,15 +527,20 @@ extern "C" void fn_80211F64(void) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80211FF0(void) {
-    s32 sp8;
-    s32 (*cb)(s32 *);
-    cb = lbl_8055EF0C;
-    sp8 = -2;
-    if (cb != 0) {
-        if (cb(&sp8) != 0) {
-            fn_802168BC(sp8);
+#define sResultCallback lbl_8055EF0C
+#define RequestResult fn_802168BC
+    /* Query an optional callback for a result value and, if provided, request it. */
+    s32 result;
+    s32 (*callback)(s32 *);
+    callback = sResultCallback;
+    result = -2;
+    if (callback != 0) {
+        if (callback(&result) != 0) {
+            RequestResult(result);
         }
     }
+#undef sResultCallback
+#undef RequestResult
 }
 #pragma scheduling on
 extern "C" void *fn_801284F8(s32, const char *);
