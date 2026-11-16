@@ -208,6 +208,7 @@ u8 fn_80129800(void *recordId, int fieldIndex) {
     return 0;
 }
 
+/* Shut down controller input during kernel teardown: unregister the per-frame controller-snapshot callback (fn_80129400), then reset/close the WPAD controllers (fn_802E7D0C). */
 void fn_80129864(void) {
     fn_80127D58(fn_80129400);
     fn_802E7D0C();
