@@ -9281,13 +9281,14 @@ extern "C" void fn_80229AC4(void *arg0) {
 
 extern "C" u32 fn_80229ADC(void) { return 1; }
 
-extern "C" void fn_80229AE4(void *arg0, s32 arg1, s32 arg2) {
-    void *obj = *(void **)((u8 *)arg0 + 0x244);
-    ((Fn80229AE4Dispatch *)obj)->Call(
-        *(s32 *)((u8 *)arg0 + 0x248),
-        *(s32 *)((u8 *)arg0 + 0x24C),
-        arg1,
-        arg2);
+extern "C" void fn_80229AE4(void *self, s32 value1, s32 value2) {
+    /* Forward a call to this widget's dispatch target with its two stored arguments plus value1/value2. */
+    void *dispatch = *(void **)((u8 *)self + 0x244);
+    ((Fn80229AE4Dispatch *)dispatch)->Call(
+        *(s32 *)((u8 *)self + 0x248),
+        *(s32 *)((u8 *)self + 0x24C),
+        value1,
+        value2);
 }
 
 extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
