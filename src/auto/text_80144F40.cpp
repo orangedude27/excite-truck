@@ -190,11 +190,11 @@ extern "C" s32 fn_80144FB0(void *outStr, s32 maxLen, s32 flags, const char *flag
 }
 #pragma scheduling on
 extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
-    f32 temp_f1 = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
-    f32 var_f0;
-    s32 temp_r3;
     s32 var_r0;
+    s32 temp_r3;
     s32 temp_r4;
+    f32 var_f0;
+    f32 temp_f1 = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
     if (temp_f1 < lbl_805615D4) {
         var_f0 = temp_f1 - lbl_805615D0;
     } else {
@@ -202,7 +202,10 @@ extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
     }
     var_r0 = 0xFF;
     temp_r4 = (s32)var_f0;
-    temp_r3 = temp_r4 & ((s32)(-temp_r4 & ~temp_r4) >> 31);
+    temp_r3 = -temp_r4;
+    temp_r3 &= ~temp_r4;
+    temp_r3 >>= 31;
+    temp_r3 = temp_r4 & temp_r3;
     if (temp_r3 < 0xFF) {
         var_r0 = temp_r3;
     }
@@ -361,15 +364,16 @@ extern "C" void fn_80145438(void *outEntry, void *propertySource) {
 
 #pragma push
 #pragma dont_inline on
-extern "C" s32 fn_801454E8(void *arg0, const char *arg1) {
+extern "C" s32 fn_801454E8(void *propertySource, const char *propertyName) {
+    /* Parse a "#rrggbb" hex color property and return it, or -1 if missing/invalid. */
     class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual const char *f3(const char *); };
     extern int lbl_80559DF8;
     extern int sscanf(const char *, const char *, ...);
-    s32 result;
-    const char *text = ((V *)arg0)->f3(arg1);
-    if (sscanf(text, (const char *)&lbl_80559DF8, &result) != 1)
-        result = -1;
-    return result;
+    s32 value;
+    const char *text = ((V *)propertySource)->f3(propertyName);
+    if (sscanf(text, (const char *)&lbl_80559DF8, &value) != 1)
+        value = -1;
+    return value;
 }
 #pragma dont_inline reset
 #pragma pop
