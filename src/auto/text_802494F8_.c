@@ -38,11 +38,12 @@ void fn_80236074(void*, unsigned int);
 void fn_80128668(void*);
 extern void* lbl_8055BF34;
 s32 fn_80214D04(void);
-s32 fn_802494F8(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
+s32 fn_802494F8(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668((void *)object);
     }
-    return arg0;
+    return object;
 }
 
 s32 fn_80249538(s32 object, s32 deleteFlag) {
