@@ -1276,17 +1276,18 @@ copy_if_valid:
 
 extern "C" const char lbl_80324868[];
 extern "C" void fn_800F2EAC(void *self, void *arg) {
+    struct Pool { char fileName[0x104]; char msg104[0x34]; char msg138[0x100]; };
     u8 *object = (u8 *)self;
-    const char *base = lbl_80324868;
+    Pool *base = (Pool *)lbl_80324868;
     u8 *bytes = (u8 *)arg;
     u8 *table;
     u32 baseAddress;
     u8 *offsetPtr;
     u32 value;
     if (arg == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x60, base + 0x104);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)base->fileName, 0x60, base->msg104);
     if ((*(u32 *)bytes - 0x53590000U) != 0x4d42U)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x63, base + 0x138);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)base->fileName, 0x63, base->msg138);
     table = bytes + 8;
     *(u8 **)(object + 0x2c) = table;
     u32 offset = *(u32 *)(bytes + 8);
@@ -4695,6 +4696,11 @@ static inline void SoundInstanceManager_InsertPriorityList(void *pool, void *sou
 /* ut::LinkList iterator (list = { size, node }): GetEndIter() is the list's own node. */
 struct LinkListIter {
     void *node;
+    bool operator!=(const LinkListIter &o) const { return node != o.node; }
+    LinkListIter &operator++() {
+        node = *(void **)node;
+        return *this;
+    }
 };
 /* End of the SoundInstanceManager's priority list (list at +0x4, its node at +0x8). */
 static inline LinkListIter SoundInstanceManager_GetPriorityListEnd(void *pool) {
