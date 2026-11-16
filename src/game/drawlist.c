@@ -928,11 +928,12 @@ void fn_802C974C(float f0, float f1, float f2) {
 #define sViewX   lbl_8055FC38
 #define sViewY   lbl_8055FC3C
 #define sSine    lbl_8055FC48
-void fn_802C98DC(float *arg0, float *arg1, float *arg2, float *arg3) {
-    *arg0 = lbl_8055FC44;
-    *arg1 = lbl_8055FC38;
-    *arg2 = lbl_8055FC3C;
-    *arg3 = lbl_8055FC48;
+void fn_802C98DC(float *outTan, float *outViewX, float *outViewY, float *outSin) {
+    /* Snapshot the current view/projection parameters: projection tangent, view X/Y and the view-angle sine. */
+    *outTan = sTangent;
+    *outViewX = sViewX;
+    *outViewY = sViewY;
+    *outSin = sSine;
 }
 
 void fn_802D007C(float);
