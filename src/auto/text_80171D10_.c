@@ -1503,9 +1503,10 @@ int fn_80174298(void *state, int index) {
     return result;
 }
 
-int fn_801742FC(void *arg0) {
-    extern float lbl_80561A44;
-    return *(float *)((char *)arg0 + 0x1A0) > lbl_80561A44;
+int fn_801742FC(void *state) {
+    extern float lbl_80561A44; /* 0.0f */
+    /* Reports whether the object's float field at +0x1A0 is positive. */
+    return *(float *)((char *)state + 0x1A0) > lbl_80561A44;
 }
 
 int fn_80174314(void) {
