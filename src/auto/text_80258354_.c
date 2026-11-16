@@ -71,62 +71,64 @@ void *fn_80258354(void) {
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void *fn_802583CC(void *o, int arg1, int arg2) {
+extern "C" void *fn_802583CC(void *mgr, int freeManager, int arg2) {
+    /* UIObjects destructor: release the objects, texts and sounds held by the
+     * three fixed tables, clear their counts, and optionally free the manager. */
     struct Release {
         virtual void release(int);
     };
-    char *p = (char *)o;
+    char *p = (char *)mgr;
     int zero;
-    int idx;
-    int offset;
-    int scan;
-    int index3;
-    void *item;
+    int byteOffset;
+    int entry;
+    int textCount;
+    int soundCount;
+    void *sound;
 
-    if (o) {
+    if (mgr) {
         *(void **)p = &lbl_80344D98;
-        offset = 0;
-        idx = 0;
+        entry = 0;
+        byteOffset = 0;
         goto L_check1;
 L_loop1:
-        fn_80235380(*(int *)(*(char **)(p + 4) + idx + 0x40));
-        idx += 0x48;
-        offset += 1;
+        fn_80235380(*(int *)(*(char **)(p + 4) + byteOffset + 0x40));
+        byteOffset += 0x48;
+        entry += 1;
 L_check1:
-        if (offset < *(int *)(p + 8))
+        if (entry < *(int *)(p + 8))
             goto L_loop1;
         zero = 0;
         *(int *)(p + 8) = zero;
 
-        scan = 0;
-        idx = 0;
+        textCount = 0;
+        byteOffset = 0;
         goto L_check2;
 L_loop2:
-        offset = *(int *)(*(char **)(p + 0x910) + idx + 0x20);
-        if (offset != 0) {
-            fn_802328D4(*(int *)offset);
-            *(int *)offset = zero;
-            fn_80128668((void *)offset);
+        entry = *(int *)(*(char **)(p + 0x910) + byteOffset + 0x20);
+        if (entry != 0) {
+            fn_802328D4(*(int *)entry);
+            *(int *)entry = zero;
+            fn_80128668((void *)entry);
         }
-        idx += 0x24;
-        scan++;
+        byteOffset += 0x24;
+        textCount++;
 L_check2:
-        if (scan < *(int *)(p + 0x914))
+        if (textCount < *(int *)(p + 0x914))
             goto L_loop2;
         zero = 0;
         *(int *)(p + 0x914) = zero;
 
-        index3 = 0;
-        idx = 0;
+        soundCount = 0;
+        byteOffset = 0;
         goto L_check3;
 L_loop3:
-        item = *(void **)(*(char **)(p + 0xd9c) + idx + 0x20);
-        if (item != 0)
-            ((Release *)item)->release(1);
-        idx += 0x2c;
-        index3++;
+        sound = *(void **)(*(char **)(p + 0xd9c) + byteOffset + 0x20);
+        if (sound != 0)
+            ((Release *)sound)->release(1);
+        byteOffset += 0x2c;
+        soundCount++;
 L_check3:
-        if (index3 < *(int *)(p + 0xda0))
+        if (soundCount < *(int *)(p + 0xda0))
             goto L_loop3;
         zero = 0;
         *(int *)(p + 0xda0) = zero;
@@ -151,10 +153,10 @@ L_check3:
                 *(int *)(p + 0xc) = zero;
             }
         }
-        if (arg1 > 0)
-            fn_80128668(o);
+        if (freeManager > 0)
+            fn_80128668(mgr);
     }
-    return o;
+    return mgr;
 }
 #pragma cplusplus reset
 #pragma use_lmw_stmw on
@@ -272,50 +274,68 @@ done:
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
-void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, float y) {
-    int index = 0;
-    int offset = 0;
-    float cosine;
-    float sine;
-    float k;
-    goto check;
-loop:
-    switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1)) >> 5) {
+#pragma scheduling on
+void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, float y)
+{
+  int new_var2;
+  int index = 0x44 * 0;
+  int offset = 0;
+  float cosine;
+  float sine;
+  int new_var;
+  goto check;
+  loop:
+  switch (((unsigned int) __cntlzw(stricmp((const char *) ((*((unsigned int *) (((char *) arg0) + 4))) + offset), arg1))) >> 5)
+  {
     case 0:
-        offset += 0x48;
-        index++;
-        goto check;
+      offset += 0x48;
+      index++;
+      goto check;
+
     default:
-        goto found;
-    }
-check:
-    if (index < *(int *)((char *)arg0 + 8))
-        goto loop;
-    index = -1;
-found:
-    if (index < 0)
-        return;
-    index = (int)(*(unsigned int *)((char *)arg0 + 4) + index * 0x48);
-    cosine = fn_80235EF0(*(int *)(index + 0x40), *(int *)(index + 0x44));
-    sine = fn_80235F64(*(int *)(index + 0x40), *(int *)(index + 0x44));
-    if (flags & 2)
-        x -= cosine;
-    else if (flags & 4)
-        x -= lbl_80563ACC * cosine;
-    if (flags & 0x40)
-        y += sine;
-    else if (flags & 0x10)
-        y += lbl_80563ACC * sine;
-    k = lbl_80563AD0;
-    ((void (*)(int, int, int, float, float, float, float, float))fn_802354A0)(
-        *(int *)(index + 0x40), *(int *)(index + 0x44), arg3,
-        x, y, k, cosine, sine);
+      goto found;
+
+  }
+
+
+  check:
+  if (index < (*((int *) (((char *) arg0) + 8))))
+  {
+    goto loop;
+  }
+
+  new_var = 0x40;
+  index = -1;
+  found:
+  if (index < 0)
+  {
+    return;
+  }
+
+  index = (int) ((*((unsigned int *) (((char *) arg0) + 4))) + (index * 0x48));
+  cosine = fn_80235EF0(*((int *) (index + new_var)), *((int *) (index + 0x44)));
+  sine = fn_80235F64(*((int *) (index + new_var)), *((int *) (index + 0x44)));
+  if (flags & 2)
+  {
+    x -= cosine;
+  }
+  else
+    if (flags & 4)
+  {
+    x -= lbl_80563ACC * cosine;
+  }
+  new_var2 = *((int *) (index + new_var));
+  if (flags & new_var)
+  {
+    y += sine;
+  }
+  else
+    if (flags & 0x10)
+  {
+    y += lbl_80563ACC * sine;
+  }
+  ((void (*)(int, int, int, float, float, float, float, float)) fn_802354A0)(new_var2, *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, cosine, sine);
 }
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale) {
     int index = 0;
     int offset = 0;
