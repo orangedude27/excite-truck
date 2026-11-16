@@ -455,7 +455,7 @@ void fn_80235758(int arg0, int arg1, int arg2, float x, float y, float dx, float
     }
 
     {
-        float hi, lo, a;
+        register float hi, lo, a;
         hi = *((float *)node + 3); lo = *((float *)node + 1);
         a = lbl_805636B0 < v1 ? lbl_805636B0 : v1;
         a = a > lbl_805636B8 ? a : lbl_805636B8;
@@ -646,17 +646,19 @@ float fn_80235F64(int resourceSet, int index) {
     return *(float *)((char *)node + 0x10);
 }
 #pragma dont_inline reset
-int fn_80235FD8(void *arg0) {
-    void *p;
+int fn_80235FD8(void *resourceSet) {
+    /* Count the entries in the linked list hanging off +0x88 of the resource
+       set, following each node's +0x18 next pointer; a null set has zero. */
+    void *node;
     int count;
 
-    if (arg0 == 0) {
+    if (resourceSet == 0) {
         return 0;
     }
-    p = *(void **)((char *)arg0 + 0x88);
+    node = *(void **)((char *)resourceSet + 0x88);
     count = 0;
-    while (p != 0) {
-        p = *(void **)((char *)p + 0x18);
+    while (node != 0) {
+        node = *(void **)((char *)node + 0x18);
         count++;
     }
     return count;
