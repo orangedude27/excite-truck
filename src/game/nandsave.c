@@ -112,6 +112,7 @@ void fn_802E8838(void) {
 
 #define nandSaveRefCount lbl_8056002C
 #define nandSaveInit fn_802E86D4
+/* Enters the NAND-save subsystem: lazily initializes it on first use (refcount 0), then increments the use count. */
 void fn_802E883C(void) {
     if (nandSaveRefCount == 0) {
         nandSaveInit();
