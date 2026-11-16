@@ -812,9 +812,9 @@ void fn_80203EC0(void) {
 
 }
 
-/* When the scene state (lbl_8055ED14) equals 2 -- the test fn_80202BE4 is false
- * for that value -- resolve the shadow/SWL map's texture-slot record via
- * fn_802CB288 (lbl_8055ECFC is that map's texture-slot index). */
+/* When scene state (lbl_8055ED14) equals 2 -- fn_80202BE4 is false for that value
+ * -- resolve the shadow/SWL map's texture-slot record via fn_802CB288.
+ * lbl_8055ECFC is that map's texture-slot index. */
 void fn_80203EC4(void) {
     if (fn_80202BE4() == 0) {
         fn_802CB288(lbl_8055ECFC);
