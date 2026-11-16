@@ -1562,14 +1562,15 @@ s32 fn_8000749C(void) {
     return enabled;
 }
 
+/* Return nonzero when the DSP is initialized (flag 1) and mode 1 (flag 2) is selected. */
 s32 fn_800074C4(void) {
-    s32 result = 0;
-    if (lbl_8055D340[1] != 0) {
-        if (lbl_8055D340[2] != 0) {
-            result = 1;
+    s32 enabled = 0;
+    if (gDspInitFlags[1] != 0) {
+        if (gDspInitFlags[2] != 0) {
+            enabled = 1;
         }
     }
-    return result;
+    return enabled;
 }
 
 extern s32 fn_800213DC(void);
