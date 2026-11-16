@@ -1598,11 +1598,13 @@ void *fn_801F78F0(void) {
 }
 #pragma scheduling on
 
-int fn_801F7930(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper: free the object with MemFree when
+ * deleting (flag > 0), then return the object pointer. */
+int fn_801F7930(int object, int deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 /* Deleting-destructor helper: free `object` when `shouldDelete` is set, then return it. */
