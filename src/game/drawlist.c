@@ -68,6 +68,7 @@ struct DrawListWrapper {
 #define sOverlayTint lbl_8055FC84 /* colour fn_802C9CE0 blends the screen back with */
 
 #define RENDER_MODE_ALPHA_OVERLAY 4 /* GX writes alpha only, see fn_802C9C8C */
+#define RENDER_MODE_NORMAL 1        /* the game's normal GX state */
 
 extern int lbl_8055FC98;
 extern void *lbl_8055FC9C;
