@@ -229,12 +229,19 @@ void fn_8000D100(void) {
     fn_801769EC();
 }
 void fn_8000D19C(void) {
-    if (lbl_8055D407 != 0) {
-        lbl_8055D420 = fn_8000CCB8();
-        if (lbl_8055D420 == -1) {
-            lbl_8055D407 = 0;
+    /* Update the cached audio slot while the audio flag is set; clear it if no slot is available. */
+#define sAudioFlagD lbl_8055D407
+#define sAudioSlot lbl_8055D420
+#define FindFreeAudioSlot fn_8000CCB8
+    if (sAudioFlagD != 0) {
+        sAudioSlot = FindFreeAudioSlot();
+        if (sAudioSlot == -1) {
+            sAudioFlagD = 0;
         }
     }
+#undef sAudioFlagD
+#undef sAudioSlot
+#undef FindFreeAudioSlot
 }
 
 #pragma cplusplus on
