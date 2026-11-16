@@ -4116,19 +4116,11 @@ extern "C" void fn_800E9B9C(void *arg0) {
 #pragma push
 #pragma small_data off
 #pragma pop
-extern "C" void fn_800E9BA4(void *this_, int vol) {
-    class Dispatch {
-    public:
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-        virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
-        virtual void d20(); virtual Dispatch *call();
-    };
-    *(int *)((char *)this_ + 0x78) = vol;
-    this_ = ((Dispatch *)this_)->call();
-    *(int *)((char *)this_ + 4) = vol;
+extern "C" void fn_800E9BA4(void *sound, int soundId) {
+    /* Store the archive sound id on the sound and on the player that plays it. */
+    ((nw4hbm::snd::detail::BasicSound *)sound)->soundId = soundId;
+    sound = ((BasicSoundVt *)sound)->GetPlayer();
+    ((SoundPlayerVt *)sound)->soundId = soundId;
 }
 extern int lbl_8055DE20;
 extern void fn_80128668(void);
