@@ -5158,8 +5158,8 @@ extern "C" void fn_802213A4(void *arg0, s32 arg1, s32 arg2) {
         if (*(s32 *)((u8 *)state + 8) < 0) *(s32 *)((u8 *)state + 8) = 0;
     } else {
         s32 num = *(s32 *)(*(void **)((u8 *)arg0 + 0x244));
-        s32 den = ((Vf78 *)arg0)->get();
-        value = (s32)(((f32)num / (f32)den) * (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
+        f32 ratio = (f32)num / (f32)((Vf78 *)arg0)->get();
+        value = (s32)(ratio * (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
         state = *(void **)((u8 *)arg0 + 0x244);
         *(s32 *)((u8 *)state + 8) = value;
         if (value > *(s32 *)state - *(s32 *)((u8 *)state + 4)) *(s32 *)((u8 *)state + 8) = *(s32 *)state - *(s32 *)((u8 *)state + 4);
@@ -5496,7 +5496,7 @@ extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     left = state[1];
     if (x < current * 50 + left) goto fail_x;
     if (x > (current + 1) * 50 + left) goto fail_x;
-    y = y - top;
+    y -= top;
     items = *(s32 **)((u8 *)obj + 0x244);
     row = (y - 10) / 10;
     entry = *(s32 **)((u8 *)items + current * 0x24);
