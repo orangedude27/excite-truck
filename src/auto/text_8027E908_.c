@@ -1623,7 +1623,7 @@ finish:
 #pragma pop
 static inline int fn_80281138_find(void **items, int count, void *key) {
     int i;
-    for (i = 0; i < count; ++i, ++items) {
+    for (i = 0; i < count; ++items, ++i) {
         if (*items == key)
             return i;
     }
@@ -1638,46 +1638,19 @@ extern "C" int fn_80281138(void) {
     extern char lbl_8034848C[];
     extern char lbl_8034849C[];
     int index;
-    int count;
-    unsigned int key;
-    unsigned int *items;
+    void *key;
     void *selected;
     char buffer1[0x1E];
     char buffer2[0x1E];
 
-    count = lbl_804B3048.count;
-    index = 0;
-    key = lbl_8055F688;
-    items = (unsigned int *)lbl_804B3048.items;
-    for (; index < count; ++items, ++index) {
-        if (*items != key)
-            goto update_first;
-        else
-            goto found_first;
-update_first:
-        ;
-    }
-    index = -1;
-found_first:
+    index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count,
+                             (void *)lbl_8055F688);
     if (index >= 0 && fn_802368EC() != 0) {
         if (*(unsigned char *)((char *)lbl_8055F688 + 0x64) != 0) {
             index = 5;
         } else {
-            count = lbl_804B3048.count;
-            index = 0;
-            key = lbl_8055F688;
-            items = (unsigned int *)lbl_804B3048.items;
-            for (; index < count; ++items, ++index) {
-                if (*items != key)
-                    goto update_second;
-                else
-                    goto found_second;
-update_second:
-                ;
-            }
-            index = -1;
-found_second:
-            ;
+            key = (void *)lbl_8055F688;
+            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, key);
         }
         ((void (*)(char *, int, const char *, ...))fn_801345D8)(
             buffer1, 0x1E, lbl_8034848C, index + 1);
@@ -1689,20 +1662,7 @@ found_second:
         if (*(unsigned char *)((char *)selected + 0x64) != 0) {
             index = 5;
         } else {
-            count = lbl_804B3048.count;
-            index = 0;
-            items = (unsigned int *)lbl_804B3048.items;
-            for (; index < count; ++items, ++index) {
-                if (*items != (unsigned int)selected)
-                    goto update_third;
-                else
-                    goto found_third;
-update_third:
-                ;
-            }
-            index = -1;
-found_third:
-            ;
+            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, selected);
         }
         ((void (*)(char *, int, const char *, ...))fn_801345D8)(
             buffer2, 0x1E, lbl_8034849C, index + 1);
