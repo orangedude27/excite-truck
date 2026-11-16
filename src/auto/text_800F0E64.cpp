@@ -6306,10 +6306,19 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
 }
 #pragma pop
 extern "C" void fn_800FB358(void *arg0) {
-    extern char lbl_80326AC0[];
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
-    *(void **)((u8 *)arg0 + 0) = lbl_80326AC0;
-    *(s32 *)((u8 *)arg0 + 0x18) = 0;
+    /* Constructor for a StrmPlayer::LoadCommand list node: install its vtable
+       and clear the list link (+0x14) and status (+0x18). */
+    struct LoadCommand {
+        void *vtable;     /* +0x00 */
+        u8 pad04[0x10];
+        void *link;       /* +0x14 nw4hbm::ut::LinkListNode */
+        u32 status;       /* +0x18 */
+    };
+    extern char lbl_80326AC0[]; /* StrmPlayer::LoadCommand vtable */
+    LoadCommand *cmd = (LoadCommand *)arg0;
+    cmd->link = 0;
+    cmd->vtable = lbl_80326AC0;
+    cmd->status = 0;
 }
 
 /* Deleting-destructor helper: free `object` when `shouldDelete` is set, then return it. */
