@@ -1754,23 +1754,24 @@ extern void *memset(void *, s32, s32);
 #pragma cplusplus off
 void *fn_8014E4BC(void *arg0) {
     u8 *base = (u8*)arg0;
-    struct { u8 *p; } cursor;
-    struct { u8 *e; } sentinel;
-    *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
-    *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
-    memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
-    memset(base + 0x40, 0x7A, 3); base[0x43] = 0;
-    memset(base + 0x45, 0x7A, 3); base[0x48] = 0;
-    memset(base + 0x59, 0x7A, 3); base[0x5C] = 0;
-    memset(base + 0x6D, 0x7A, 3); base[0x70] = 0;
-    memset(base + 0x81, 0x7A, 3); base[0x84] = 0;
-    memset(base + 0x8B, 0x7A, 3); base[0x8E] = 0;
-    cursor.p = base + 0x95; sentinel.e = base + 0x149;
-    do { memset(cursor.p, 0x7A, 3); cursor.p[3] = 0; cursor.p += 0x14; } while (cursor.p < sentinel.e);
-    cursor.p = sentinel.e; sentinel.e = base + 0x1FD;
-    do { memset(cursor.p, 0x7A, 3); cursor.p[3] = 0; cursor.p += 0x14; } while (cursor.p < sentinel.e);
-    memset(sentinel.e, 0x7A, 3); base[0x200] = 0;
-    memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
+    u32 zero = 0;
+    u8 *end;
+    u32 p;
+    *(u32*)(base + 8) = zero; *(u32*)(base + 0x10) = zero;
+    *(u32*)(base + 0x14) = zero; *(u32*)(base + 0x18) = zero;
+    memset(base + 0x2C, 0x7A, 3); base[0x2F] = zero;
+    memset(base + 0x40, 0x7A, 3); base[0x43] = zero;
+    memset(base + 0x45, 0x7A, 3); base[0x48] = zero;
+    memset(base + 0x59, 0x7A, 3); base[0x5C] = zero;
+    memset(base + 0x6D, 0x7A, 3); base[0x70] = zero;
+    memset(base + 0x81, 0x7A, 3); base[0x84] = zero;
+    memset(base + 0x8B, 0x7A, 3); base[0x8E] = zero;
+    p = (u32)base + 0x95; end = base + 0x149;
+    do { memset((u8*)p, 0x7A, 3); *(u8*)(p+3) = zero; p += 0x14; } while ((u8*)p < end);
+    p = (u32)end; end = base + 0x1FD;
+    do { memset((u8*)p, 0x7A, 3); *(u8*)(p+3) = zero; p += 0x14; } while ((u8*)p < end);
+    memset(end, 0x7A, 3); base[0x200] = zero;
+    memset(base + 0x225, 0x7A, 3); base[0x228] = zero;
     return arg0;
 }
 extern s32 fn_801DF074(s32, s32);
@@ -2230,11 +2231,12 @@ s32 fn_80150AD8(s32 object, s32 deleteFlag) {
     return object;
 }
 
-s32 fn_80150B18(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80150B18(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_80150B58(void *arg0, s32 arg1) {
@@ -4017,15 +4019,14 @@ void fn_801556FC(void) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80155700(void *arg0, void *arg1, s32 index) {
-    f32 *first, *second;
+    register f32 *first, *second;
     u8 *self = (u8 *)arg0;
     u8 *player = fn_8017960C(index);
     u8 *slot, *entry, *obj, *manager, *player2;
     f32 mat1[12], mat2[12], rot1[3], pos1[3], rot2[3], pos2[3];
     Event80155700 event;
     f32 zero, height, duration, threshold, one, value;
-    s32 i, active;
-    s32 kind;
+    s32 i, active, kind;
     f32 *v;
     if (player && (f32)__fabs(*(f32 *)(player+0x2690)) <= lbl_80558DC4[0] &&
         ((s32 (*)(void *,s32))(*(void ***)arg0)[8])(arg0,index) &&
