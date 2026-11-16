@@ -1588,8 +1588,12 @@ void (*fn_801C7990(void))(void) {
 }
 
 void fn_801C79E0(void) {
+    /* Copy the debug menu position from lbl_80438268 to lbl_8043848C, clear
+     * lbl_8055E83B, set the menu action to the idle handler (fn_801C6CB0),
+     * and set lbl_8055E83D. */
     Vec *src = &lbl_80438268;
     Vec *dst = &lbl_8043848C;
+
     dst->x = src->x;
     dst->y = src->y;
     dst->z = src->z;
