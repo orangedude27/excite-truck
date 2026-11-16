@@ -8,6 +8,11 @@ extern s32 lbl_8055D5C0;
 #pragma small_data off
 __declspec(section ".data") extern s32 lbl_80358628;
 void fn_8001D7A8(void) {
-    fn_8000D838(&lbl_8055D5C0);
-    lbl_80358628 = 0;
+#define RegisterStaticDtor fn_8000D838
+#define gPendingCount lbl_80358628
+    /* Register lbl_8055D5C0 as a static-destructor record, then clear a global counter. */
+    RegisterStaticDtor(&lbl_8055D5C0);
+    gPendingCount = 0;
+#undef RegisterStaticDtor
+#undef gPendingCount
 }
