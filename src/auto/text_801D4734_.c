@@ -1649,6 +1649,7 @@ void fn_801D68E8(UnkStruct_801D701C *arg0) {
 }
 #pragma scheduling reset
 int fn_801D6900(int arg0, int arg1) {
+    /* Clear the object's field at +0x4; optionally free the object. */
     if (arg0 != 0) {
         ((int *)arg0)[1] = 0;
         if (arg1 > 0) fn_80128668();
