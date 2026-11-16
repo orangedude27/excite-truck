@@ -3420,14 +3420,16 @@ extern "C" void fn_801A1B9C(void* arg0) {
 extern "C" void fn_801E44F4(void*, u32, f32, f32, f32);
 #pragma scheduling invalid_target
 extern "C" void fn_801A1CA0(void* arg0) {
+    /* Submits this object's transform for debug drawing: uses a yellow tint when its
+     * counter at +0x20 is below 1000, otherwise a green tint. */
     if (*(s32*)((u8*)arg0 + 0x20) < 1000) {
-        f32 x = *(f32*)((u8*)arg0 + 0x24);
-        f32 z = *(f32*)((u8*)arg0 + 0x28);
-        fn_801E44F4(*(void**)((u8*)arg0 + 0xC), 0x40FFFF00, x, x, z);
+        f32 halfExtentX = *(f32*)((u8*)arg0 + 0x24);
+        f32 halfExtentZ = *(f32*)((u8*)arg0 + 0x28);
+        fn_801E44F4(*(void**)((u8*)arg0 + 0xC), 0x40FFFF00, halfExtentX, halfExtentX, halfExtentZ);
     } else {
-        f32 x = *(f32*)((u8*)arg0 + 0x24);
-        f32 z = *(f32*)((u8*)arg0 + 0x28);
-        fn_801E44F4(*(void**)((u8*)arg0 + 0xC), 0x4000FF80, x, x, z);
+        f32 halfExtentX = *(f32*)((u8*)arg0 + 0x24);
+        f32 halfExtentZ = *(f32*)((u8*)arg0 + 0x28);
+        fn_801E44F4(*(void**)((u8*)arg0 + 0xC), 0x4000FF80, halfExtentX, halfExtentX, halfExtentZ);
     }
 }
 #pragma scheduling on
