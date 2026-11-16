@@ -3,8 +3,8 @@
 
 #pragma ppc_psq_save off
 
-/* One 0x20-byte group entry of the scene object manager behind lbl_8055E354
- * (0x1E15C bytes, allocated by fn_801679F0).  The manager keeps a pool of
+/* One 0x20-byte group entry of the pickup manager behind lbl_8055E354
+ * (0x1E15C bytes, allocated by fn_801679F0, freed by fn_80167EEC).  The manager keeps a pool of
  * 0x18-byte object records (pool pointer at +0x00, count at +0x04, capacity
  * 0x1388 records at +0x08) and an array of these group entries (array pointer
  * at +0x1D4CC, count at +0x1D4D0, capacity 0x64 entries at +0x1D4D4); each
