@@ -2420,13 +2420,15 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F24(void *self, 
     return self;
 }
 
-extern "C" void fn_800F4F7C(void *arg0) {
-    s32 *p = (s32 *)((u8 *)arg0 + 4);
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
-    *(s32 *)arg0 = 0;
-    *(s32 *)((u8 *)arg0 + 4) = (s32)p;
-    *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+extern "C" void fn_800F4F7C(void *list) {
+    /* Initialize an embedded nw4r::ut::LinkListImpl: clear the node count, then
+     * make the sentinel link at +4 point to itself so the list starts empty. */
+    s32 *sentinel = (s32 *)((u8 *)list + 4);
+    *(s32 *)((u8 *)list + 4) = 0;
+    *(s32 *)((u8 *)list + 8) = 0;
+    *(s32 *)list = 0;
+    *(s32 *)((u8 *)list + 4) = (s32)sentinel;
+    *(s32 *)((u8 *)list + 8) = (s32)sentinel;
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C(void *self, int shouldDelete) {
