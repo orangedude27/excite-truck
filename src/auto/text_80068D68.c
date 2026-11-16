@@ -672,7 +672,7 @@ extern void l2c_link_hci_conn_req(u8 *bd_addr);
 extern u8 fn_8008D7C4(void);
 extern char lbl_80318BE8[];
 extern char lbl_80318C08[];
-typedef void l2c_conn_ret;
+typedef BOOLEAN l2c_conn_ret;
 extern l2c_conn_ret l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_803130C8[];
 extern u8 lbl_80392960[];
