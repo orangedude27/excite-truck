@@ -1579,9 +1579,9 @@ void fn_80248E30(void *arg0) {
     }
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 s32 fn_80248FB0(void *arg0, s32 arg1) {
-    s32 duration, start, now;
+    s32 now, start, duration;
     now = fn_802E2C20();
     start = *(s32 *)((char *)arg0 + 0x1C);
     if (now < start + 750) return 0;
