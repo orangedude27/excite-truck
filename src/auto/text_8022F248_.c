@@ -348,11 +348,14 @@ void fn_8022F77C(OverlayQuad *quad) {
     fn_80128668(node);
 }
 
-void fn_8022F824(void *arg0) {
+void fn_8022F824(void *quad) {
+    /* Release one background overlay quad: copy it to the current-quad buffer,
+     * release its texture, unlink its tracker node from the list, and free the
+     * quad. */
     fn_8022F418();
-    fn_802CAC54(*(int *)((char *)arg0 + 0x30));
-    fn_8022F77C(arg0);
-    fn_80128668(arg0);
+    fn_802CAC54(*(int *)((char *)quad + 0x30));
+    fn_8022F77C(quad);
+    fn_80128668(quad);
 }
 
 /* Copy/configure the transform/related block at +0x24 from src to dst using the
