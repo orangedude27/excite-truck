@@ -224,9 +224,10 @@ void fn_802DF300(void) {
 
 #pragma push
 #pragma scheduling invalid_target
+// Reset the TEV swap selectors to swap 0 for the first two stages.
 void fn_802DF46C(void) {
-    GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
-    GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 #pragma pop
 void *fn_802D3130(void); /* the current material's bump map, into GX_TEXMAP5 */
