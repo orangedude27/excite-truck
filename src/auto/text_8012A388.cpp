@@ -2549,6 +2549,11 @@ check_status:
 }
 #pragma pop
 
+/* Intrusive FIFO queue at arg0: head at +0, and tail at +4 is a pointer to the
+ * last node's next field (or to the queue itself while empty). Nodes link at +4. */
+#define QUEUE_TAIL    4
+#define QUEUE_NODE_NEXT 4
+
 extern "C" void *fn_8012E3D4(void *arg0) {
     void *temp_r0;
     void *temp_r4;
