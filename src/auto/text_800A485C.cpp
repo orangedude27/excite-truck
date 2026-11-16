@@ -18767,6 +18767,7 @@ extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
 }
 #pragma pop
 extern "C" void fn_800C687C(void) {
+    /* Shut down the home-button sound manager, then destroy the frame heap backing its allocator. */
     fn_800CF170(lbl_8055DD98);
     MEMDestroyFrmHeap(*(MEMiHeapHead **)(lbl_804075F0 + 1));
 }
