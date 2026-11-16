@@ -545,9 +545,10 @@ void fn_8028ED74(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
 
 void fn_8028ED80(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
 
-void fn_8028ED8C(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + (*(int *)((char *)arg0 + 0x100) << 2)) = arg1;
-    *(int *)((char *)arg0 + 0x100) = *(int *)((char *)arg0 + 0x100) + 1;
+void fn_8028ED8C(void *list, int emitter) {
+    /* Append an emitter to this effect-emitter list: store it at item[count], then advance the count at +0x100. */
+    *(int *)((char *)list + (*(int *)((char *)list + 0x100) << 2)) = emitter;
+    *(int *)((char *)list + 0x100) = *(int *)((char *)list + 0x100) + 1;
 }
 
 extern int fn_802E317C(const char *, ...);
