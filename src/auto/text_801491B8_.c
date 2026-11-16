@@ -3268,7 +3268,6 @@ extern void fn_8014784C(s32, void *, void *, s32);
 #pragma use_lmw_stmw off
 extern "C" s32 fn_80153D00(s32 arg0, s32 arg1) {
     struct Dummy { virtual void d0(); virtual s32 method(void *); };
-    struct C20 { s32 a,b,c,d; f32 e; s32 f,g,h; };
     u8 *strings = lbl_8032D358;
     u8 buf80[0x20];
     u8 buf60[0x20];
@@ -3288,12 +3287,13 @@ extern "C" s32 fn_80153D00(s32 arg0, s32 arg1) {
     f32 clamped;
     f32 u;
     f32 fv;
-    f32 diff;
     f32 maxv;
+    f32 diff;
     s32 r28;
     s32 r27;
     s32 r30;
     s32 r26;
+    s32 v344;
     void *p = fn_801E7E3C();
     smooth = lbl_805616E4;
     v1 = smooth - lbl_80561694;
@@ -3324,7 +3324,14 @@ extern "C" s32 fn_80153D00(s32 arg0, s32 arg1) {
             fn_801E85A4();
             fn_801479A8((void *)r28, r27, fn_80131234(strings + 0xC74), smooth);
             fn_801308F4(buf80, 0x14, fn_80160A90());
-            *(struct C20 *)buf60 = *(struct C20 *)r30;
+            *(s32 *)(buf60 + 0) = *(s32 *)r30;
+            *(s32 *)(buf60 + 4) = *(s32 *)(r30 + 4);
+            *(s32 *)(buf60 + 8) = *(s32 *)(r30 + 8);
+            *(s32 *)(buf60 + 0xC) = *(s32 *)(r30 + 0xC);
+            *(f32 *)(buf60 + 0x10) = *(f32 *)(r30 + 0x10);
+            *(s32 *)(buf60 + 0x14) = *(s32 *)(r30 + 0x14);
+            *(s32 *)(buf60 + 0x18) = *(s32 *)(r30 + 0x18);
+            *(s32 *)(buf60 + 0x1C) = *(s32 *)(r30 + 0x1C);
             fn_801E85A4();
             *(f32 *)(buf60 + 4) -= lbl_8056163C * fn_80147204(buf60, buf80);
             smooth = (v1 < lbl_805616B8) ? lbl_805616B8 : (v1 > lbl_8056164C) ? lbl_8056164C : (v1 > lbl_80561648) ? (v1 * (lbl_805616BC * v1 * v1) + (lbl_80561674 * v1) * v1) : (v1 * (lbl_805616BC * v1 * v1) - (lbl_80561674 * v1) * v1);
@@ -3349,18 +3356,18 @@ extern "C" s32 fn_80153D00(s32 arg0, s32 arg1) {
         fv = clamped * lbl_8056164C;
         v1 = lbl_80561648 + fv;
         { s32 obj; switch (fn_801E85A4()) { default: obj = lbl_8055E238; break; case 2: obj = lbl_8055E23C; break; } r26 = ((Dummy *)obj)->method(strings + 0xC90); }
-        { s32 obj; switch (fn_801E85A4()) { default: obj = lbl_8055E238; break; case 2: obj = lbl_8055E23C; break; } s32 tmp = ((Dummy *)obj)->method(strings + 0x344);
-        if (r28 != 0 && r27 != 0 && r26 != 0 && tmp != 0) {
+        { s32 obj; switch (fn_801E85A4()) { default: obj = lbl_8055E238; break; case 2: obj = lbl_8055E23C; break; } v344 = ((Dummy *)obj)->method(strings + 0x344); }
+        if (r28 != 0 && r27 != 0 && r26 != 0 && v344 != 0) {
             diff = *(f32 *)(arg0 + 0x8DC) - *(f32 *)(arg0 + 0x8D4);
             maxv = lbl_80561648;
             maxv = (maxv <= diff) ? diff : maxv;
             smooth = (v1 < lbl_805616B8) ? lbl_805616B8 : (v1 > lbl_8056164C) ? lbl_8056164C : (v1 > lbl_80561648) ? (v1 * (lbl_805616BC * v1 * v1) + (lbl_80561674 * v1) * v1) : (v1 * (lbl_805616BC * v1 * v1) - (lbl_80561674 * v1) * v1);
-            fn_80147CEC(buf40, r26, tmp, smooth);
+            fn_80147CEC(buf40, r26, v344, smooth);
             smooth = (v1 < lbl_805616B8) ? lbl_805616B8 : (v1 > lbl_8056164C) ? lbl_8056164C : (v1 > lbl_80561648) ? (v1 * (lbl_805616BC * v1 * v1) + (lbl_80561674 * v1) * v1) : (v1 * (lbl_805616BC * v1 * v1) - (lbl_80561674 * v1) * v1);
             fn_801E85A4();
             fn_801479A8((void *)r28, r27, fn_80131234(strings + 0xC9C), smooth);
             ((void (*)(void *, f32))fn_80149588)(buf40, maxv);
-        } }
+        }
     }
     if (x < v6) {
         clamped = lbl_8056164C;
@@ -3377,7 +3384,14 @@ extern "C" s32 fn_80153D00(s32 arg0, s32 arg1) {
             fn_801479A8((void *)r28, r27, fn_80131234(strings + 0xCB8), smooth);
             r27 = *(s32 *)((u8 *)fn_801E7E3C() + 8);
             fn_80130FCC(buf28, 0x14, r27);
-            *(struct C20 *)buf8 = *(struct C20 *)r30;
+            *(s32 *)(buf8 + 0) = *(s32 *)r30;
+            *(s32 *)(buf8 + 4) = *(s32 *)(r30 + 4);
+            *(s32 *)(buf8 + 8) = *(s32 *)(r30 + 8);
+            *(s32 *)(buf8 + 0xC) = *(s32 *)(r30 + 0xC);
+            *(f32 *)(buf8 + 0x10) = *(f32 *)(r30 + 0x10);
+            *(s32 *)(buf8 + 0x14) = *(s32 *)(r30 + 0x14);
+            *(s32 *)(buf8 + 0x18) = *(s32 *)(r30 + 0x18);
+            *(s32 *)(buf8 + 0x1C) = *(s32 *)(r30 + 0x1C);
             fn_801E85A4();
             *(f32 *)(buf8 + 4) -= lbl_8056163C * fn_80147204(buf8, buf28);
             smooth = (v1 < lbl_805616B8) ? lbl_805616B8 : (v1 > lbl_8056164C) ? lbl_8056164C : (v1 > lbl_80561648) ? (v1 * (lbl_805616BC * v1 * v1) + (lbl_80561674 * v1) * v1) : (v1 * (lbl_805616BC * v1 * v1) - (lbl_80561674 * v1) * v1);
