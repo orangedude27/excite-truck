@@ -171,13 +171,15 @@ done:
 #pragma dont_inline off
 #pragma cplusplus reset
 #pragma pop
-int fn_802B40B0(int arg0, int arg1) {
-    int p;
-    if (arg0 >= 0 && (unsigned int)arg0 < 0x80) {
-        p = lbl_804BE248[arg0];
-        if (p != 0) {
-            if ((int)lbl_8055F9C8 == -1 || arg1 == (int)lbl_8055F9C8)
-                return p;
+/* Returns the cached skag table entry for index arg0 when allowed by the current selection filter. */
+int fn_802B40B0(int index, int selector) {
+    int entry;
+    if (index >= 0 && (unsigned int)index < 0x80) {
+        entry = lbl_804BE248[index];
+        if (entry != 0) {
+            if ((int)lbl_8055F9C8 == -1 || selector == (int)lbl_8055F9C8) {
+                return entry;
+            }
         }
     }
     return 0;
