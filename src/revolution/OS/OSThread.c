@@ -479,6 +479,9 @@ static OSThread* SelectThread(BOOL force) {
     return head;
 }
 
+/* Reschedule only when the ready queues changed: RunQueueHint is set whenever
+ * a thread joins a run queue and is cleared by SelectThread.  Passing FALSE
+ * keeps the current thread on the CPU unless a higher-priority one is ready. */
 void __OSReschedule(void) {
     if (RunQueueHint) {
         SelectThread(FALSE);
