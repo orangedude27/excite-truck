@@ -268,20 +268,20 @@ extern "C" void fn_801E7C28(void *arg0) {
     fn_802877D0();
     if ((unsigned char)lbl_8055EB11 == 0) {
         fn_8000D7F4(arg0);
-        fn_80136768();
-        fn_8001255C(strings + 0xB0, lbl_80562DB0);
-        fn_801765B8();
-        fn_80205208();
-        fn_8001255C(strings + 0xC0, lbl_80562DA0);
-        fn_801EF184();
-        fn_801EA318();
-        fn_801EA1DC();
-        { int z = 0; lbl_8055EB10 = (char)z; }
-        fn_8013A074();
-        fn_8020449C();
-        fn_802E3D00();
-        fn_8000D878();
     }
+    fn_80136768();
+    fn_8001255C(strings + 0xB0, lbl_80562DB0);
+    fn_801765B8();
+    fn_80205208();
+    fn_8001255C(strings + 0xC0, lbl_80562DA0);
+    fn_801EF184();
+    fn_801EA318();
+    fn_801EA1DC();
+    { int z = 0; lbl_8055EB10 = (char)z; }
+    fn_8013A074();
+    fn_8020449C();
+    fn_802E3D00();
+    fn_8000D878();
 }
 #pragma pop
 #pragma scheduling on
