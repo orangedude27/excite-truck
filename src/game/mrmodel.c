@@ -1800,14 +1800,14 @@ void fn_802C7D54(int arg0, float *arg1, int arg2, float fa, float fb, float fc) 
     fn_802C9C58(savedCull);
 }
 #pragma pop
-void fn_802C8218(s32 arg0) {
-    s32 var_r0;
+void fn_802C8218(s32 useAltMode) {
+    s32 mode;
 
-    var_r0 = 1;
-    if (arg0 != 0) {
-        var_r0 = 2;
+    mode = 1;
+    if (useAltMode != 0) {
+        mode = 2;
     }
-    lbl_8055D00C = var_r0;
+    lbl_8055D00C = mode;
 }
 
 void fn_802C8230(void) {
