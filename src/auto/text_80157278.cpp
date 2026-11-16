@@ -1464,6 +1464,7 @@ extern "C" void fn_80158A84(Unk801577F0 *arg0) {
 #pragma use_lmw_stmw off
 #pragma processor 750
 extern "C" f32 fn_80158B0C(void* arg0, void* arg1) {
+    f32 result = 0.0f;
     class Iface {
     public:
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
@@ -1477,7 +1478,6 @@ extern "C" f32 fn_80158B0C(void* arg0, void* arg1) {
         virtual void m32(); virtual void m33(); virtual void m34(); virtual void m35();
         virtual void m36(); virtual s32 m37(void*);
     };
-    f32 result = lbl_80561754;
     Iface* self = (Iface*)arg0;
     *((u8*)arg0 + 0x272) = 0;
     fn_8014AEC8(arg1);
@@ -1494,11 +1494,11 @@ extern "C" f32 fn_80158B0C(void* arg0, void* arg1) {
         *(f32*)((u8*)arg0 + 0x264) = z;
         self->m34();
         if (*(f32*)((u8*)arg0 + 0x25C) > *(f32*)((u8*)arg0 + 0x24C) && self->m23() > 0) {
-            *(f32*)((u8*)arg0 + 0x258) = lbl_80561754;
+            *(f32*)((u8*)arg0 + 0x258) = 0.0f;
             void* object = *(void**)((u8*)arg0 + 0x26C);
             if (object != 0) fn_80158E74(object);
         }
-        result = lbl_80561754;
+        result = 0.0f;
     } else if (((s32 (*)(f32))fn_80141F7C)(*(f32*)((u8*)arg0 + 0x258)) != 0) {
         result = fn_80158D60(arg0, arg1);
     } else {
