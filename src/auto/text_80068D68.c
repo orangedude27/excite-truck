@@ -20618,7 +20618,7 @@ void l2cu_send_peer_disc_req(void *pCcb) {
     );
 }
 
-L2CU_DISC_RSP_RET l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
+void l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
     void *p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 7, remote_id);
     u8 *packet;
 
@@ -20626,7 +20626,7 @@ L2CU_DISC_RSP_RET l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_
         if (lbl_803C4040[0] >= 2) {
             fn_8007093C(0x80001, lbl_80319174);
         }
-        goto done;
+        return;
     }
 
     packet = p_buf;
@@ -20637,9 +20637,6 @@ L2CU_DISC_RSP_RET l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_
     *(u16 *)(packet + 6) = 0;
     GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
     ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
-
-done:
-    ;
 }
 
 /* Sends an L2CAP echo request to a peer, or logs an error if no buffer is available. */
