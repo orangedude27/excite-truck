@@ -318,17 +318,18 @@ char *fn_8027A798(char *arg0) {
 }
 #pragma scheduling on
 
-void fn_8027A888(float *arg0) {
-    float zero = lbl_80564120;
-    arg0[0] = zero;
-    arg0[1] = zero;
-    arg0[2] = zero;
-    arg0[3] = zero;
-    arg0[4] = zero;
-    arg0[5] = zero;
-    arg0[6] = zero;
-    arg0[7] = zero;
-    arg0[8] = zero;
+/* Initialize a 3x3 matrix (nine floats) to all 1.0. */
+void fn_8027A888(float *matrix) {
+    float one = lbl_80564120;
+    matrix[0] = one;
+    matrix[1] = one;
+    matrix[2] = one;
+    matrix[3] = one;
+    matrix[4] = one;
+    matrix[5] = one;
+    matrix[6] = one;
+    matrix[7] = one;
+    matrix[8] = one;
 }
 
 #pragma push
