@@ -286,9 +286,11 @@ void fn_801E31D8(s32 *record) {
     *(s32 **)((u8 *)((void *(*)(s32))fn_801E3004)(*record) + 4) = record;
 }
 
-s32 fn_801E320C(s32 arg0, s32 arg1) {
+/* Look up an MRJT sound-archive item by name, copying its value to outValue when
+ * that buffer is given. Returns 1 if an item with the name exists, 0 otherwise. */
+s32 fn_801E320C(s32 name, s32 outValue) {
     extern s32 fn_801E2DEC(s32, s32, s32);
-    return fn_801E2DEC(arg0, arg1, 0) != 0;
+    return fn_801E2DEC(name, outValue, 0) != 0;
 }
 
 /* Releases the referenced resource if present, then returns the handle object to its pool. */
