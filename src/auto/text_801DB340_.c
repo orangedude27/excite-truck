@@ -1037,20 +1037,16 @@ float fn_801DDC8C(float worldX, float worldZ)
   {
     node = 0;
   }
-  else
-    if ((mapX >= 0x60) || (mapZ >= 0x60))
+  else if ((mapX >= 0x60) || (mapZ >= 0x60))
   {
     node = 0;
   }
   else
   {
-    tileId = *((unsigned short *) ((((char *) lbl_80442708) + (mapX * 0xC0)) + (mapZ * 2)));
+    tileId = ((unsigned short (*)[0x60])lbl_80442708)[mapX][mapZ];
     if (tileId == 0xFFFF)
     {
-      if (1)
-      {
-        node = 0;
-      }
+      node = 0;
     }
     else
     {
@@ -1066,12 +1062,18 @@ float fn_801DDC8C(float worldX, float worldZ)
   if (firstLayer >= 0)
   {
     layer = (char *) ((GroundDesc *)ground)->layers + firstLayer * 0x810;
- do { do { weightIndex = *((int *) (layer + 0x808)); sample = ((GroundLayer *)layer)->samples[cellInTileX][cellInTileZ]; nextLayer = *((int *) (layer + 0x80C)); layerHeight = (*((float *) (layer + 0))) + ((*((float *) (layer + 4))) * ((float) sample)); height += layerHeight * lbl_804425DC[weightIndex]; if (nextLayer < 0) { break; } layer = ((char *) (*((int *) (((char *) ground) + 0x20)))) + (nextLayer * 0x810); } while (1); return height; } while (0);
+    do {
+      GroundLayer *overlay = (GroundLayer *) layer;
+      weightIndex = overlay->tableIndex;
+      sample = overlay->samples[cellInTileX][cellInTileZ];
+      nextLayer = overlay->next;
+      layerHeight = overlay->baseHeight + overlay->heightScale * (float) sample;
+      height += layerHeight * lbl_804425DC[weightIndex];
+      if (nextLayer < 0) { break; }
+      layer = ((char *) (*((int *) (((char *) ground) + 0x20)))) + (nextLayer * 0x810);
+    } while (1);
   }
-  else
-  {
-    return height;
-  }
+  return height;
 }
 #pragma pop
 
