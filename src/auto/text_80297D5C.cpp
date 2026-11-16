@@ -907,14 +907,16 @@ extern "C" int fn_802996B0(void *arg0, int *out) {
 }
 #pragma scheduling on
 
-extern "C" void *fn_802997F4(void *arg0, int arg1) {
-    void *p = arg0;
-    int i;
-    for (i = 0; i < 4; i++) {
-        if (arg1 == *(int *)p) {
-            return (char *)arg0 + (i << 6);
+extern "C" void *fn_802997F4(void *slots, int id) {
+    void *slot = slots;
+    int slotIndex;
+    /* RealName: FindAnimationSlot - scan the four 0x40-byte animation slots and
+     * return the one whose id (its first word) matches id, or NULL if none. */
+    for (slotIndex = 0; slotIndex < 4; slotIndex++) {
+        if (id == *(int *)slot) {
+            return (char *)slots + (slotIndex << 6);
         }
-        p = (char *)p + 0x40;
+        slot = (char *)slot + 0x40;
     }
     return 0;
 }
