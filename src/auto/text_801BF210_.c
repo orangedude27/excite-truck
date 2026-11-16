@@ -606,17 +606,18 @@ long fn_801C00F8(void *obj, long index) {
     return 0;
 }
 
-void fn_801C0124(float *arg0, float *arg1, float arg2) {
+/* Scale a 3-component vector component-wise: out = src * scale. */
+void fn_801C0124(float *out, float *src, float scale) {
     float z, y, x;
-    x = arg1[0];
-    y = arg1[1];
-    z = arg1[2];
-    x *= arg2;
-    y *= arg2;
-    z *= arg2;
-    arg0[0] = x;
-    arg0[1] = y;
-    arg0[2] = z;
+    x = src[0];
+    y = src[1];
+    z = src[2];
+    x *= scale;
+    y *= scale;
+    z *= scale;
+    out[0] = x;
+    out[1] = y;
+    out[2] = z;
 }
 
 extern void fn_8017A580(int, int, int, int, int, int);
