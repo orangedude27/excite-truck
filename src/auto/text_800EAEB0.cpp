@@ -3032,18 +3032,26 @@ extern "C" void fn_800F0360(void *self) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
+#define seqPlayerList lbl_80412A6C   /* nw4hbm::ut::LinkList of SeqPlayers */
+#define linkListH lbl_80324024        /* "LinkList.h" */
+#define nullPointerMsg lbl_80324000   /* "NW4HBM:Pointer must not be NULL (p)" */
     struct LinkListIter { void *node; };
-    LinkListIter begin;
-    begin.node = *(void**)&lbl_80412A6C[0x04];
+    LinkListIter begin;                         /* LinkList::GetBeginIter() */
+    begin.node = *(void**)&seqPlayerList[0x04]; /* the list's first node */
     LinkListIter it = begin;
-    while (it.node != (void*)&lbl_80412A6C[0x04]) {
+    /* Walk the global SeqPlayer list and update each player; the list's own node ends the walk. */
+    while (it.node != (void*)&seqPlayerList[0x04]) {
         void* node = it.node;
-        it.node = *(void**)it.node;
-        if (node == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D, (const char*)lbl_80324000);
+        it.node = *(void**)it.node;             /* ++it */
+        if (node == 0) {                        /* *it */
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)linkListH, 0x23D,
+                                         (const char*)nullPointerMsg);
         }
-        fn_800F0360(&((u8*)node)[-0x100]);
+        fn_800F0360(&((u8*)node)[-0x100]);      /* that player (node at +0x100) */
     }
+#undef seqPlayerList
+#undef linkListH
+#undef nullPointerMsg
 }
 #pragma pop
 
