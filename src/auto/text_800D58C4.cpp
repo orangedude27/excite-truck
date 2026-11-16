@@ -829,12 +829,14 @@ extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(groupContainer, &iterSlot, (char*)group + 4);
 }
 
-extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, const char* arg1) {
+extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* container, const char* name) {
     extern const char lbl_8031F6B8[];
     extern const char lbl_8031F694[];
     extern const char lbl_8031F688[];
     extern const char lbl_8031F664[];
-    u8* base = (u8*)arg0;
+    /* Walk the container's circular group list (head at +4 is the sentinel) and
+     * return the child group whose 16-byte name matches, or 0 if none does. */
+    u8* base = (u8*)container;
     struct { void *node; } cursor;
     cursor.node = *(void**)(base + 4);
     void *&node = cursor.node;
@@ -844,7 +846,7 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, 
     while (node != end) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-        if (((int (*)(const char*, const char*))fn_800D58C4)((const char*)node + 0x14, arg1)) {
+        if (((int (*)(const char*, const char*))fn_800D58C4)((const char*)node + 0x14, name)) {
             if (node == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
             void* group = (u8*)node - 4;
