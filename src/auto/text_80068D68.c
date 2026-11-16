@@ -24753,6 +24753,7 @@ void rfc_inc_credit(struct t_port_info *p_port, u8 credit) {
         PORT_FlowInd(*(void **)((u8 *)p_port + PORT_MCB), *((u8 *)p_port + PORT_DLCI), 1);
 }
 
+#define rfc_dec_credit fn_8009578C /* BTE rfc_utils.c: spend one TX credit per sent UIH frame */
 void fn_8009578C(void *arg0) {
     void *port = *(void **)((u8 *)arg0 + 0x6c);
     u16 credit;
