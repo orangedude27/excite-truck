@@ -246,6 +246,7 @@ void TRKMessageSend(void) {
 }
 
 void TRKReadBuffer_ui32(void) {
+    /* Leftover diagnostic sequence: append a ui64 to a TRK buffer, run assorted TRK/AX helpers, clear the serial output flags and shut down audio DMA. */
     TRKAppendBuffer1_ui64();
     fn_80033404();
     fn_80032778();
