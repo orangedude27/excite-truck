@@ -963,9 +963,9 @@ int fn_802CFDE0(void) {
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
     extern int fn_802E2C20(void);
+    int tmp;
     int end;
     int start;
-    int tmp;
     fn_802ECA48();
     tmp = (int)lbl_8055FD94;
     tmp += lbl_8055FD9C;
@@ -1683,8 +1683,10 @@ void fn_802D0C98(void) {
     temp_r31 = (unsigned short)GXSetDispCopyYScale(
         GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
                           *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
-    GXSetDispCopySrc(0, 0, *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4),
-                     *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6));
+    {
+        unsigned short *disp = (unsigned short *)lbl_8055FD64;
+        GXSetDispCopySrc(0, 0, disp[2], disp[3]);
+    }
     GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
     GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
                     (unsigned char *)lbl_8055FD64 + 0x1A, 1,
@@ -1762,7 +1764,7 @@ int fn_802D0EC8(int arg0) {
 
 #pragma push
 #pragma dont_inline on
-#pragma optimization_level 3
+#pragma scheduling invalid_target
 void fn_802D0EEC(void) {
     extern unsigned int lbl_8055FD74;
     extern unsigned int lbl_8055FD28;
@@ -1792,7 +1794,7 @@ void fn_802D0EEC(void) {
     volatile unsigned char ambColor0[4];
     int ambient2Color;
     volatile unsigned char lightColor[4];
-    register unsigned int diff;
+    unsigned int diff;
     register unsigned char *base;
     register unsigned char *record;
     register unsigned char *fog;
@@ -1954,7 +1956,6 @@ void fn_802D0EEC(void) {
         }
     }
 }
-#pragma dont_inline reset
 #pragma pop
 extern unsigned short lbl_8055FD08;
 extern unsigned short lbl_8055FD88;
@@ -3043,10 +3044,9 @@ void fn_802D3894(void) {
     unsigned char *p = lbl_804C9984;
     int i;
     for (i = 0; i < 0x40; i++, p += 0x18) {
-        if (!p[0xC]) {
-            break;
+        if (p[0xC] != 0) {
+            fn_802E317C((const char *)lbl_8034C1C4);
         }
-        fn_802E317C((const char *)lbl_8034C1C4);
     }
 }
 
