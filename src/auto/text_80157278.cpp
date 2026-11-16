@@ -3602,7 +3602,7 @@ out:
 }
 #pragma pop
 extern "C" void fn_8015D554(void *arg0) {
-    /* Call v20() to obtain a value, then pass it to v19() on the same object. */
+    /* Query a value from slot v20, then apply it via slot v19 on the same object. */
     class Object {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
