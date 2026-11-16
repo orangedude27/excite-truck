@@ -36,9 +36,10 @@ void fn_801CEFE8(void) {
 }
 #pragma scheduling on
 void fn_801CF01C(void) {
-    char *fmt;
-    fmt = lbl_8033807C;
-    fn_802E30C8(fmt);
+    /* Log that cutscene replay playback ended and clear the in-playback flag. */
+    char *message;
+    message = lbl_8033807C;
+    fn_802E30C8(message);
     lbl_8055E8A0 = 0;
 }
 
