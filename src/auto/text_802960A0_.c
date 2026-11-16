@@ -78,7 +78,7 @@ extern "C" int fn_80296308(void *node) {
     public:
         virtual char *getName();
     };
-    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055C9C0) == 0;
+    return stricmp(((NameNode *)node)->getName(), (const char *)kDefaultName) == 0;
 }
 
 #pragma cplusplus on
