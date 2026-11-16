@@ -578,15 +578,16 @@ void fn_802CAD74(register int slotIndex) {
             fn_802D9160(slot[0x28 / 4], 0);
     }
 }
-void fn_802CADD0(int arg0, int arg1) {
-    int offset;
-    char *base;
-    if (arg0 == -1) {
-        fn_802DBDE8(arg1, 0);
+/* Bind the texture of slot textureSlot (no texture for -1) to unitIndex via fn_802DBDE8. */
+void fn_802CADD0(int textureSlot, int unitIndex) {
+    int slotOffset;
+    char *slots;
+    if (textureSlot == -1) {
+        fn_802DBDE8(unitIndex, 0);
     } else {
-        offset = arg0 * 0x4C;
-        base = (char *)lbl_8055FCB0;
-        fn_802DBDE8(arg1, *(int *)(base + offset + 0x28));
+        slotOffset = textureSlot * 0x4C;
+        slots = (char *)lbl_8055FCB0;
+        fn_802DBDE8(unitIndex, *(int *)(slots + slotOffset + 0x28));
     }
 }
 
