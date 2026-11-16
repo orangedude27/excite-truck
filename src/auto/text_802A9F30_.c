@@ -12,6 +12,13 @@ extern double fn_8002EFB4(float, double);
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct UnkAA9D4 { unsigned char pad[0xDC]; unsigned char active; unsigned char padDD[3]; float amount; unsigned char padE4[0x14]; float width, depth, height; } UnkAA9D4;
+typedef struct {
+    char padEC[0xEC];
+    unsigned char flag;
+    char padED[0x7];
+    unsigned char val;
+    char padF5[0x13];
+} Dest;
 typedef union UnkAAF04Conversion { unsigned int words[2]; double value; } UnkAAF04Conversion;
 typedef struct InitStruct {
     int field_00;
@@ -98,17 +105,17 @@ s32 fn_802A9F90(s32 *arg0) {
     return 4;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling reset
 s32 fn_802A9FB0(void *arg0) {
+    register unsigned one = 1;
     int index = *(int *)arg0;
     extern int lbl_8055F928;
     int offset = index * 0x108;
     unsigned char value = *((unsigned char *)arg0 + 4);
-    *(u8 *)((u8 *)(lbl_8055F928 + offset) + 0xEC) = 1;
-    *(u8 *)((u8 *)(lbl_8055F928 + offset) + 0xF4) = value;
+    *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC) = one;
+    *(unsigned char *)(lbl_8055F928 + offset + (unsigned)0xF4) = value;
     return 8;
 }
-#pragma scheduling on
 /* Clears the per-entry state block (0x00..0xD8) to the default float zero value. */
 void fn_802A9FE0(void *entry) {
     float zero = lbl_805649F0;
@@ -734,24 +741,18 @@ void fn_802AB21C(void) {
     int *r29;
     register int two;
     register int five;
-    register float t31;
-    float t13, t3, t2;
+    float t13;
+    float t31;
     base = (const StuntStrings *)lbl_80349DC8;
-    buffer = fn_8012850C(0x850, base->name1);
+    buffer = fn_8012850C(0x850, (char *)base + 0);
     lbl_8055F928 = (int)fn_8002F37C(buffer, fn_802AB500, 0, 0x108, 8);
     r29 = (int *)fn_801284F8(8, base->name2);
     if (r29 != NULL) {
         fn_8028E61C(&frame.s1);
-        t31 = lbl_80564A68 * lbl_80564A68;
         two = 2;
         five = 5;
-        t13 = lbl_80564A80 * (lbl_80564A70 / t31);
-        t3 = lbl_805649F4 * t13;
-        t3 = t3 * t31;
         frame.s1.field_04 = 0x12C;
         frame.s1.field_08 = lbl_80564A68;
-        t2 = lbl_80564A84 - t3;
-        t2 = t2 / lbl_80564A68;
         frame.s1.field_0C = lbl_805649FC;
         frame.s1.field_00 = two;
         frame.s1.field_48 = lbl_805649F4;
@@ -780,8 +781,11 @@ void fn_802AB21C(void) {
         frame.s1.field_74 = lbl_805649FC;
         frame.s1.field_58 = lbl_805649F0;
         frame.s1.field_5C = lbl_80564A7C;
+        t31 = frame.s1.field_08 * frame.s1.field_08;
+        t13 = lbl_80564A80 * (frame.s1.vC.y / t31);
         frame.s1.field_4C = t13;
-        frame.s1.field_50 = t2;
+        t13 = frame.s1.field_48 * t13;
+        frame.s1.field_50 = (lbl_80564A84 - t13 * t31) / frame.s1.field_08;
         frame.s1.field_54 = lbl_80564A58;
         frame.s1.field_78 = lbl_805649F0;
         frame.s1.field_7C = lbl_80564A04;
@@ -974,22 +978,25 @@ void fn_802AB770(int arg0) {
     extern int fn_802C990C(int);
     extern void fn_802C2BB8(int *, int *, int *);
     extern void fn_802C2B78(float, float, float);
-    char *state = (char *)(lbl_8055F928 + arg0 * 0x108);
-    int obj = fn_80287B24(arg0);
-    float delta = fn_801E7E24();
+    register char *state;
+    register int obj;
+    register unsigned char r;
+    register unsigned char g;
+    float delta;
     float angle;
     float wave1;
     float wave2;
     int color;
     int lt;
-    unsigned char r, g, b;
+    state = (char *)(lbl_8055F928 + arg0 * 0x108);
+    obj = fn_80287B24(arg0);
+    delta = fn_801E7E24();
     if (!((float)__fabs(delta) <= *(float *)(void *)&lbl_80558DC4)) {
         int hi;
         int lo;
         r = fn_80129D90(0, 0x8C, 0xFF) & 0xFF;
         g = fn_80129D90(0, 0xFA, 0xFF) & 0xFF;
-        b = fn_80129D90(0, 0xF0, 0xFF);
-        hi = (b << 16);
+        hi = (unsigned char)(fn_80129D90(0, 0xF0, 0xFF)) << 16;
         lo = (g << 8) | r;
         hi |= 0xFF000000;
         *(int *)(state + 0xE8) = lo | hi;
@@ -1050,8 +1057,7 @@ void fn_802AB9E8(void) {
     register int five;
     float t13;
     register float t31;
-    register float t3;
-    float t2;
+    float t3, t2;
     extern void fn_8028DFFC(void);
     extern void *fn_801284F8(int, const char *);
     extern void fn_8028E61C(void *);
@@ -1100,7 +1106,8 @@ void fn_802AB9E8(void) {
         t31 = lbl_80564A68 * lbl_80564A68;
         t13 = lbl_80564A80 * (lbl_80564A70 / t31);
         t3 = lbl_805649F4 * t13 * t31;
-        t2 = (lbl_80564A84 - t3) / lbl_80564A68;
+        t2 = lbl_80564A84 - t3;
+        t2 = t2 / lbl_80564A68;
         frame.s1.field_4C = t13;
         frame.s1.field_50 = t2;
         frame.s1.field_54 = lbl_80564A58;
