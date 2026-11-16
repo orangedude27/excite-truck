@@ -531,7 +531,9 @@ void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
 #pragma pop
 
 #pragma scheduling off
-s32 fn_8026F408(s32 arg0) { return arg0 <= 8; }
+/* Collision-raycast filter callback: accept a hit only when the candidate object's
+   type/id value (item field at +0x20) is at most 8. */
+s32 fn_8026F408(s32 objectType) { return objectType <= 8; }
 #pragma scheduling reset
 
 #pragma push
