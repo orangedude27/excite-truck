@@ -524,6 +524,13 @@ void fn_802C3850(s32 dstCanvas, s32 srcX, s32 srcY, s32 srcX2, s32 srcY2, s32 sr
 
 extern s32 fn_802C3170(void *, s32 *, s32 *, s32 *, s32 *, s32 *, s32 *);
 extern const char lbl_8034B0B8[];
+static void fnRowSkips(s32 w0, s32 w1, s32 count, s32 *skipA, s32 *skipB) {
+    s32 w2 = count * 2;
+    s32 d1 = w0 - w2;
+    s32 d2 = w1 - w2;
+    *skipA = (((u32)d1 >> 31) + d1) & ~1;
+    *skipB = (((u32)d2 >> 31) + d2) & ~1;
+}
 #pragma push
 #pragma dont_inline off
 #pragma scheduling invalid_target
