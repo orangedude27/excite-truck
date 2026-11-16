@@ -16015,15 +16015,19 @@ BOOL btsnd_hcic_write_pin_type_800854B0(u32 pin_type) {
 }
 
 void fn_80085524(void *arg0, void *arg1) {
-    ((u16 *)((u8 *)arg0 + 2))[0] = 6;
-    ((u16 *)((u8 *)arg0 + 4))[0] = 0;
-    ((u8 *)arg0)[8] = 0x24;
-    ((u8 *)arg0)[9] = 0xC;
-    ((u8 *)arg0)[10] = 3;
-    ((u8 *)arg0)[11] = ((u8 *)arg1)[2];
-    ((u8 *)arg0)[12] = ((u8 *)arg1)[1];
-    ((u8 *)arg0)[13] = ((u8 *)arg1)[0];
-    btu_hcif_send_cmd(arg0);
+    /* Build and send HCI Write_Class_of_Device (0x0C24) with the 3-byte device class from arg1. */
+    u8 *cmdBuf = (u8 *)arg0;
+    u8 *devClass = (u8 *)arg1;
+
+    ((u16 *)(cmdBuf + 2))[0] = 6;
+    ((u16 *)(cmdBuf + 4))[0] = 0;
+    cmdBuf[8] = 0x24;
+    cmdBuf[9] = 0x0C;
+    cmdBuf[10] = 3;
+    cmdBuf[11] = devClass[2];
+    cmdBuf[12] = devClass[1];
+    cmdBuf[13] = devClass[0];
+    btu_hcif_send_cmd(cmdBuf);
 }
 
 void fn_80085568(void *arg0, u16 arg1, u16 arg2) {
@@ -22048,10 +22052,10 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
 
 extern s32 rfc_parse_data(void *, void *, u8 *);
 void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
-    s32 index;
-    char *messages = lbl_803196B8;
     void *p_mcb;
+    char *messages = lbl_803196B8;
     void *p_port;
+    s32 index;
     u16 connection_id;
     s32 result;
     index = (s32)cid - 0x40;
