@@ -83,11 +83,11 @@ s32 fn_802ECDF4(void) {
 }
 
 #pragma dont_inline on
-s32 fn_802ECE48(s32 arg0) {
+s32 fn_802ECE48(char *movieName) {
     void *temp_r31;
 
     temp_r31 = fn_801284F8(0x48, lbl_8034EC04);
-    if (fn_802ECD68(temp_r31, (void *)arg0, 1) != 0) {
+    if (fn_802ECD68(temp_r31, movieName, 1) != 0) {
         ((void **)temp_r31)[17] = (void *)lbl_805600F8;
         lbl_805600F8 = (s32)temp_r31;
         return 1;
@@ -107,7 +107,7 @@ s32 fn_802ECEC0(void) {
 
 void fn_802ECEC4(void) {
     fn_802ECEC0();
-    fn_802ECE48(lbl_8055D300);
+    fn_802ECE48((char *)lbl_8055D300);
 }
 
 s32 fn_802ECEEC(void) {
@@ -116,8 +116,8 @@ s32 fn_802ECEEC(void) {
     return (s32)(tmp >> 31);
 }
 
-void fn_802ECF00(s32 arg0) {
-    fn_802ECE48(arg0);
+void fn_802ECF00(char *movieName) {
+    fn_802ECE48(movieName);
 }
 
 #pragma dont_inline on
