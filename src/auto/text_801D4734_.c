@@ -1104,29 +1104,30 @@ int fn_801D5A68(void *arg0) {
 }
 
 extern char lbl_80338D20[];
-void fn_801D5AA8(void *arg0) {
+/* Initialize an object with primary/secondary vtables and two inline buffer descriptors at +0x10/+0x70. */
+void fn_801D5AA8(void *object) {
     char *base;
     char *vtable;
-    char *p1c;
-    char *p7c;
+    char *inlineBuffer1;
+    char *inlineBuffer2;
     int zero;
-    int four;
-    int size;
-    base = arg0;
+    int initialCount1;
+    int capacity2;
+    base = object;
     vtable = lbl_80338D20;
     *(void **)base = vtable;
     zero = 0;
-    p1c = base + 0x1C;
+    inlineBuffer1 = base + 0x1C;
     *(void **)(base + 4) = vtable + 0x38;
-    p7c = base + 0x7C;
-    four = 4;
+    inlineBuffer2 = base + 0x7C;
+    initialCount1 = 4;
     *(int *)(base + 8) = zero;
-    size = 0x40;
-    *(void **)(base + 0x10) = p1c;
-    *(int *)(base + 0x18) = four;
+    capacity2 = 0x40;
+    *(void **)(base + 0x10) = inlineBuffer1;
+    *(int *)(base + 0x18) = initialCount1;
     *(int *)(base + 0x14) = zero;
-    *(void **)(base + 0x70) = p7c;
-    *(int *)(base + 0x78) = size;
+    *(void **)(base + 0x70) = inlineBuffer2;
+    *(int *)(base + 0x78) = capacity2;
     *(int *)(base + 0x74) = zero;
 }
 
