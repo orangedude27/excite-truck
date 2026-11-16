@@ -539,9 +539,6 @@ extern "C" void fn_801D3BF0(void *arg0) {
 #pragma pop
 extern float lbl_8055E460;
 extern char lbl_80558DC4[];
-static inline float blendLerp(float a, float b, float t) {
-    return b + t * (a - b);
-}
 void fn_801D3CB8(void *arg0, char *arg1) {
     struct E8 { float f[8]; };
     float blend = lbl_8055E460;
