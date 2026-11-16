@@ -1904,8 +1904,9 @@ void* fn_801B2ED4(void) {
 }
 
 s32 fn_801B2EDC(s32 arg0, s32 arg1) {
+    /* Compute the element at lbl_8055E684 + (arg0 << 7), initialize it via fn_801B179C, and return it. */
     void *var_r31;
-    
+
     var_r31 = (void *)((u8 *)lbl_8055E684 + (arg0 << 7));
     fn_801B179C(var_r31, arg0, arg1);
     return (s32)var_r31;
@@ -1944,13 +1945,10 @@ f32 fn_801B2F90(s32 arg0, s32 arg1) {
     void *base = lbl_8055E684;
     void *obj0 = (u8 *)base + (arg0 << 7);
     void *obj1 = (u8 *)base + (arg1 << 7);
-    void *first;
-    void *second;
-    s32 f74;
-    s32 s74;
-    s32 s14;
-    s32 f14;
+    s32 *first;
+    s32 *second;
     s32 difference;
+
     if (*(s32 *)((u8 *)obj0 + 8) - 1 < *(s32 *)((u8 *)obj1 + 8) - 1) {
         first = obj0;
         second = obj1;
@@ -1958,16 +1956,12 @@ f32 fn_801B2F90(s32 arg0, s32 arg1) {
         first = obj1;
         second = obj0;
     }
-    f74 = *(s32 *)((u8 *)first + 0x74);
-    s74 = *(s32 *)((u8 *)second + 0x74);
-    s14 = *(s32 *)((u8 *)second + 0x14);
-    f14 = *(s32 *)((u8 *)first + 0x14);
-    difference = (f14 - s14) - ((u32)f74 < (u32)s74);
+    difference = first[5] - second[5] - ((u32)first[0x1D] < (u32)second[0x1D]);
     if (difference != 0)
         return lbl_8056261C * (f32)difference;
     {
-        double magnitude = __fabs((f64)fn_801365C4(*(void **)((u8 *)second + 0x58),
-                                                  *(void **)((u8 *)first + 0x58)));
+        double magnitude = __fabs((f64)fn_801365C4(*(void **)(second + 0x16),
+                                                  *(void **)(first + 0x16)));
         return (f32)magnitude;
     }
 }
