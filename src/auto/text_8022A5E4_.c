@@ -193,8 +193,10 @@ int fn_8022A7D4(const char *arg0) {
     return strstr(arg0, lbl_8055B8B0) != 0;
 }
 
-int fn_8022A804(const char *arg0) {
-    return strstr(arg0, lbl_8055B8B8) != 0;
+int fn_8022A804(const char *resourceName) {
+    /* Nonzero if the resource name contains the ".art" extension (lbl_8055B8B8),
+       selecting the archive loader at the resource-dispatch site. */
+    return strstr(resourceName, lbl_8055B8B8) != 0;
 }
 #pragma pop
 
