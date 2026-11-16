@@ -221,8 +221,11 @@ s32 fn_802C307C(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
     return *arg2 < *arg4;
 }
 
-s32 fn_802C3130(void *arg0, s32 arg1, s32 arg2) {
-    if (arg1 >= *(s32 *)((u8 *)arg0 + 0x14) && arg2 >= *(s32 *)((u8 *)arg0 + 0x18) && arg1 < *(s32 *)((u8 *)arg0 + 0x1C) && arg2 < *(s32 *)((u8 *)arg0 + 0x20)) return 1;
+s32 fn_802C3130(void *canvas, s32 x, s32 y) {
+    /* Hit test: 1 when the point (x, y) lies inside the canvas's clip rectangle
+     * [minX, maxX) by [minY, maxY) -- left/top inclusive, right/bottom exclusive. */
+    GxCanvas *c = (GxCanvas *)canvas;
+    if (x >= c->minX && y >= c->minY && x < c->maxX && y < c->maxY) return 1;
     return 0;
 }
 
@@ -421,11 +424,11 @@ void fn_802C356C(s32 x0, s32 y0, s32 x1, s32 y1, u32 argbColor) {
 #pragma optimize_for_size off
 void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
-    u16 packed;
+    u32 packed;
     s32 low;
     s32 width, height, n;
-    u32 skip;
     u16 *p;
+    u32 skip;
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
     low = (s32)((color * 8) & 0xF8) >> 4;
@@ -536,7 +539,6 @@ void fn_802C3918(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     s32 temp_r0, temp_r29, temp_r31;
     s32 temp_r4, temp_r5, temp_r6, temp_r0_4, temp_r4_4;
     s32 var_r4, var_r4_2, var_r7;
-    s32 w1, w2v;
     register u16 temp_r0_2;
     u16 temp_r7, temp_r7_2, temp_r8;
     s8 temp_r4_2, temp_r5_2;
@@ -550,12 +552,12 @@ void fn_802C3918(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
         var_r30 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
         var_r3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
         temp_r31 = sp1C;
-        temp_r4 = temp_r31 * 2;
+        temp_r5 = temp_r31 * 2;
         temp_r29 = sp18;
-        w1 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r4;
-        w2v = *(s32 *)((u8 *)arg5 + 0x10) - temp_r4;
-        temp_r5 = (((u32)w1 >> 31) + w1) & ~1;
-        temp_r6 = ((((u32)w2v >> 31) + w2v)) & ~1;
+        temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
+        temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
+        temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
+        temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
         do {
             var_r4 = sp1C;
 loop_copy:
@@ -577,12 +579,12 @@ loop_copy:
                 var_r30_2 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_2 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r4 = temp_r31 * 2;
+                temp_r5 = temp_r31 * 2;
                 sp18 = temp_r29;
-                w1 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r4;
-                w2v = *(s32 *)((u8 *)arg5 + 0x10) - temp_r4;
-                temp_r5 = (((u32)w1 >> 31) + w1) & ~1;
-                temp_r6 = ((((u32)w2v >> 31) + w2v)) & ~1;
+                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
+                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
+                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
+                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
                 do {
                     var_r4_2 = sp1C;
 loop_10:
@@ -606,12 +608,12 @@ loop_10:
                 var_r30_3 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r4 = temp_r31 * 2;
+                temp_r5 = temp_r31 * 2;
                 sp18 = temp_r29;
-                w1 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r4;
-                w2v = *(s32 *)((u8 *)arg5 + 0x10) - temp_r4;
-                temp_r5 = (((u32)w1 >> 31) + w1) & ~1;
-                temp_r6 = ((((u32)w2v >> 31) + w2v)) & ~1;
+                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
+                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
+                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
+                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
                 do {
                     var_r7 = sp1C;
 loop_17:
@@ -638,12 +640,12 @@ loop_17:
                 var_r30_4 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_4 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r4 = temp_r31 * 2;
+                temp_r5 = temp_r31 * 2;
                 sp18 = temp_r29;
-                w1 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r4;
-                w2v = *(s32 *)((u8 *)arg5 + 0x10) - temp_r4;
-                temp_r5 = (((u32)w1 >> 31) + w1) & ~1;
-                temp_r6 = ((((u32)w2v >> 31) + w2v)) & ~1;
+                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
+                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
+                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
+                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
                 do {
                     var_r4 = sp1C;
 loop_24:
