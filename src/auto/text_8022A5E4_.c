@@ -257,11 +257,11 @@ void fn_8022A8E4(int arg0) {
     extern void fn_802C519C(void *);
     extern void fn_80235380(void *);
     unsigned long offset;
+    float f0, f1;
     register unsigned char *entry;
     register const unsigned int *source;
     register unsigned int *destination;
     register unsigned int b, a;
-    float f0, f1;
 
     offset = arg0 * 0x74;
     entry = (unsigned char *)lbl_80490968 + offset;
@@ -349,11 +349,12 @@ int fn_8022AB18(int styleIndex, int axis, int side) {
 
 #pragma push
 #pragma dont_inline on
-int fn_8022AB94(const char *arg0, char arg1) {
+/* Counts occurrences of ch in the NUL-terminated str (callers pass '\n' to count lines). */
+int fn_8022AB94(const char *str, char ch) {
     int count = 0;
-    while (*arg0 != 0) {
-        if (*arg0 == arg1) count++;
-        arg0++;
+    while (*str != 0) {
+        if (*str == ch) count++;
+        str++;
     }
     return count;
 }
@@ -400,7 +401,7 @@ void fn_8022AC1C(int unused0, char *unused1, int screenX, int screenY, int *outL
 void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *outMaxX, float *outMaxY, float x0, float y0) {
     int n;
     float wid, hgt, one;
-    char *p = fn_8022CA2C();
+    char *p = fn_8022CA2C(unused);
     float minX = x0, minY = y0, maxX = x0, maxY = y0;
     int h = *(int *)(p + 0x64);
     if (h) {
@@ -425,7 +426,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
         maxY = (y0 > t) ? maxY : t;
     }
     if (str != 0) {
-        float w = lbl_8056358C, ax, ay;
+        float w = lbl_8056358C, ax, ay, d;
         int i, g;
         n = fn_8022AB94(str, 10) + 1;
         if (*(int *)(p + 4) != 0) {
@@ -436,7 +437,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
             if (*(float *)(p + 0x34) < lbl_80563588) {
                 w = (float)n * (float)fn_80232B70(g);
             } else {
-                float d = (float)fn_80232B70(g);
+                d = (float)fn_80232B70(g);
                 w = (*(float *)(p + 0x34) * (float)(n * fn_80232B70(g))) / d;
             }
         }
@@ -457,7 +458,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
                     v = ((float (*)(void *, char *, int))fn_8022ABC8)(*(void **)(p + 8), str, len);
                     wid = (wid > v) ? wid : v;
                 } else {
-                    float d = (float)fn_80232B70(*(int *)(p + 8));
+                    d = (float)fn_80232B70(*(int *)(p + 8));
                     v = (*(float *)(p + 0x34) * ((float (*)(void *, char *, int))fn_8022ABC8)(*(void **)(p + 8), str, len)) / d;
                     wid = (wid > v) ? wid : v;
                 }
@@ -479,29 +480,25 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
                 if (*(int *)(p + 8) != 0) ay = -(float)fn_80232B78(*(int *)(p + 8));
             }
         }
+        wid += lbl_80563598 * (float)(fn_801E4A6C(*(int **)(p + 4), lbl_8055B8C0) + 1);
         {
-            int lo, hi, mn, mx;
+            int hi, lo;
             float t;
-            wid += lbl_80563598 * (float)(fn_801E4A6C(*(int **)(p + 4), lbl_8055B8C0) + 1);
             lo = *(int *)(p + 0x44);
             hi = *(int *)(p + 0x4c);
-            mn = lo; mx = lo;
-            if (hi < lo) mn = hi;
-            t = x0 + ax + (float)mn;
+            t = x0 + ax + (float)(hi < lo ? hi : lo);
             minX = (minX < t) ? minX : t;
-            t = wid + (x0 + ax);
-            if (hi > lo) mx = hi;
-            t = t + (float)mx;
+            t = wid + (x0 + ax) + (float)(hi > lo ? hi : lo);
             maxX = (maxX > t) ? maxX : t;
+        }
+        {
+            int lo, hi;
+            float t;
             lo = *(int *)(p + 0x48);
             hi = *(int *)(p + 0x50);
-            mn = lo; mx = lo;
-            if (hi < lo) mn = hi;
-            t = y0 + ay + (float)mn;
+            t = y0 + ay + (float)(hi < lo ? hi : lo);
             minY = (minY < t) ? minY : t;
-            t = hgt + (y0 + ay);
-            if (hi > lo) mx = hi;
-            t = t + (float)mx;
+            t = hgt + (y0 + ay) + (float)(hi > lo ? hi : lo);
             maxY = (maxY > t) ? maxY : t;
         }
     }
@@ -580,9 +577,10 @@ void fn_8022B390(const char *unusedLabel, const char *text, int maxChars, int *o
 
 #pragma push
 #pragma processor 750
-int fn_8022B498(int unused, const char *arg1) {
-    void *ctx;
-    int max;
+int fn_8022B498(int unused, const char *arg1)
+{
+    register int max;
+    register void *ctx;
     int value;
 
     ctx = fn_8022CA2C();
@@ -590,15 +588,19 @@ int fn_8022B498(int unused, const char *arg1) {
     max = 0;
     if (value != 0) {
         max = fn_802C4EE4(value);
-    } else if (*(int *)((char *)ctx + 0x68) != 0) {
-        max = fn_802C51C0();
+    } else {
+        int sub = *(int *)((char *)ctx + 0x68);
+        if (sub != 0) {
+            max = fn_802C51C0(sub);
+        }
     }
+
     if (arg1 != 0) {
         int width = 0;
+        int flags;
         int height = 0;
         int result = 0;
-        int *font = *(int **)((char *)ctx + 4);
-        int flags;
+        void *font = *(void **)((char *)ctx + 4);
 
         if (font != 0) {
             result = fn_801E4A6C(font, arg1);
@@ -608,31 +610,36 @@ int fn_8022B498(int unused, const char *arg1) {
             if (*(float *)((char *)ctx + 0x34) < lbl_80563588) {
                 scale = lbl_80563588;
             } else {
-                scale = *(float *)((char *)ctx + 0x34) /
-                    (float)fn_80232B70(*(int *)((char *)ctx + 8));
+                scale = *(float *)((char *)ctx + 0x34) / (float)fn_80232B70(*(int *)((char *)ctx + 8));
             }
-            result = (int)(scale * ((float (*)(void *, const char *, float))fn_8023293C)(
-                                      *(void **)((char *)ctx + 8), arg1, lbl_80563588));
+            result = (int)(scale * ((float (*)(void *, const char *, float))fn_8023293C)(*(void **)((char *)ctx + 8), arg1, lbl_80563588));
         }
+
         flags = *(int *)((char *)ctx + 0x38);
         if (flags & 2) {
             width = -result;
         } else if (flags & 4) {
-            width = (int)((-result) + (int)((unsigned int)-result >> 31)) >> 1;
+            width = (-result) / 2;
         }
+
         if (flags & 1) {
             height = result;
         } else if (flags & 4) {
-            height = (int)(result + (int)((unsigned int)result >> 31)) >> 1;
+            height = result / 2;
         }
+
         value = *(int *)((char *)ctx + 0x4C);
         if (*(int *)((char *)ctx + 0x44) > value) {
             value = *(int *)((char *)ctx + 0x44);
         }
+
         value = (height + value) - width;
-        if (max > value) return max;
+        if (max > value) {
+            value = max;
+        }
         return value;
     }
+
     return max;
 }
 #pragma pop
@@ -1146,6 +1153,7 @@ void fn_8022C520(void) {
     int flag1;
     int flag2;
     char* s;
+    char* listPath;
 
     base = lbl_8033FBE8;
     tmpl = *(Cfg58*)&lbl_802F9F58;
@@ -1157,7 +1165,8 @@ void fn_8022C520(void) {
     tmpl.w[11] = 0xff2d2dc8;
     tmpl.w[12] = 0xffd6003c;
     tmpl.w[13] = 0xffd6003c;
-    list = fn_80131810(base + 0x64, 0xff2dc82d, 0xffd6003c);
+    listPath = base + 0x64;
+    list = fn_80131810(listPath, 0xff2dc82d, 0xffd6003c);
     if (list) {
         for (i = 0; (entry = ((void* (*)(void*, int))(*(void***)list)[3])(list, i)) != 0; i++) {
             if (stricmp(((char* (*)(void*))(*(void***)entry)[2])(entry), lbl_8055B8C4) != 0) {
