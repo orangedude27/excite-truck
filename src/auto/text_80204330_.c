@@ -257,24 +257,29 @@ return_zero:
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-void fn_802049DC(int a, int b, float c, float d, float e) {
-    int i;
+/* Appends a float slider row (label, value pointer, min, max, step) to the GUI settings menu table. */
+void fn_802049DC(int label, int valuePtr, float min, float max, float step) {
+#define sGuiEntryCount lbl_8055ED3C
+#define sGuiEntries lbl_80488BD0
+    int index;
     char *entry;
-    int next;
-    i = lbl_8055ED3C;
-    if (i >= 0x40) {
+    int newCount;
+    index = sGuiEntryCount;
+    if (index >= 0x40) {
         return;
     }
-    i = i;
-    entry = lbl_80488BD0 + (i * 0x18);
-    next = i + 1;
-    *((int *)(entry + 0)) = a;
+    index = index;
+    entry = sGuiEntries + (index * 0x18);
+    newCount = index + 1;
+    *((int *)(entry + 0)) = label;
     *((int *)(entry + 4)) = 1;
-    *((int *)(entry + 8)) = b;
-    *((float *)(entry + 0xC)) = c;
-    *((float *)(entry + 0x10)) = d;
-    lbl_8055ED3C = next;
-    *((float *)(entry + 0x14)) = e;
+    *((int *)(entry + 8)) = valuePtr;
+    *((float *)(entry + 0xC)) = min;
+    *((float *)(entry + 0x10)) = max;
+    sGuiEntryCount = newCount;
+    *((float *)(entry + 0x14)) = step;
+#undef sGuiEntryCount
+#undef sGuiEntries
 }
 #pragma pop
 
