@@ -124,8 +124,9 @@ void fn_80270AE8(void *arg0) {
     ((float *)arg0)[2] = value;
 }
 
-void DBPrintf_80270B00(const char *fmt, ...) {
-#pragma unused(fmt)
+/* Debug printf stub (no-op). */
+void DBPrintf_80270B00(const char *format, ...) {
+#pragma unused(format)
 }
 
 #pragma dont_inline on
