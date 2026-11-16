@@ -145,6 +145,388 @@ void fn_802AC49C(void) {
     lbl_8055F93C = 0;
 }
 
+__declspec(section ".sdata") extern char lbl_8055CCC0[], lbl_8055CCC8[], lbl_8055CCD0[], lbl_8055CCD8[], lbl_8055CCE0[], lbl_8055CCE8[], lbl_8055CCF0[];
+__declspec(section ".sdata") extern char lbl_8055CCF8[], lbl_8055CCFC[], lbl_8055CD04[], lbl_8055CD0C[], lbl_8055CD14[], lbl_8055CD20[], lbl_8055CD28[];
+__declspec(section ".sdata") extern char lbl_8055CD30[], lbl_8055CD38[], lbl_8055CD40[], lbl_8055CD48[], lbl_8055CD50[], lbl_8055CD58[], lbl_8055CD60[];
+extern float lbl_80564AB4, lbl_80564AB8, lbl_80564ABC, lbl_80564AC0, lbl_80564AC4, lbl_80564AC8;
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+int fn_802AC4A8(const char *name, int table)
+{
+    typedef struct { float x, y, z; } LVec3;
+    typedef struct { float x, y; } __attribute__((aligned(8))) LVec2;
+    typedef union { float f; int i; char *s; } LWord;
+    typedef struct { int type; int f4; int f8; void *ptr; LWord w[6]; } LRec;
+    typedef struct { float start; LVec3 scale; float alpha; LVec3 pos; float rot[4]; int f30; int f34; } LSeg;
+    typedef struct { int id; int count; LSeg *segs; } LGroup;
+    typedef struct { char name[0x18]; int refs; int numRecs; LRec *recs; int numGroups; LGroup *groups; float length; } LAnim;
+    typedef int (*HasFn)(void *, const char *);
+    typedef void *(*AtFn)(void *, int);
+    typedef char *(*NameFn)(void *);
+    typedef char *(*StrFn)(void *, const char *);
+    typedef char *(*StrDefFn)(void *, const char *, const char *);
+    typedef int (*IntFn)(void *, const char *);
+    typedef int (*IntDefFn)(void *, const char *, int);
+    typedef float (*FltFn)(void *, const char *);
+    typedef float (*FltDefFn)(void *, const char *, float);
+    typedef LVec3 (*Vec3Fn)(void *, const char *);
+    typedef LVec3 (*Vec3DefFn)(void *, const char *, LVec3);
+    typedef unsigned long long (*Vec2Fn)(void *, const char *);
+    typedef unsigned long long (*Vec2DefFn)(void *, const char *, LVec2);
+    typedef int (*LookupFn)(void *, const char *, const char *);
+    extern void *fn_801284F8(int, void *, void *);
+    extern void *fn_8012850C(int, void *);
+    extern void *fn_80131808(const char *);
+    extern void fn_80131818(void *);
+    extern void *memset(void *, int, int);
+    extern int strcmp(const char *, const char *);
+    extern int sscanf(const char *, const char *, ...);
+    extern int fn_802AC174(const char *);
+    extern int fn_802AC1BC(const char *, int);
+    extern int fn_802AC2B4(void **, int, float *);
+    extern void *fn_802AC0E8(void *, const char *, int);
+    extern void *fn_802C6FC0(int, int, int);
+    extern void *fn_80232578(const char *);
+    extern void fn_802E30C8(const char *, ...);
+    extern void fn_802E317C(const char *, ...);
+    extern float fn_802AC344(void *, void *, float *);
+    extern float fn_802AC454(void *, void *, float *);
+    extern void *fn_8002F37C(void *, void *, void *, int, int);
+    extern double fn_8002F234(double);
+    extern float PSVECDotProduct(const LVec3 *, const LVec3 *);
+    extern double sin(double);
+    extern double cos(double);
+    extern void fn_802AD308(void);
+    extern void *lbl_804BD7C0[];
+    extern void *lbl_8055F93C;
+    extern char lbl_80349E38[];
+    extern float lbl_80558DC4[];
+    extern int lbl_8055CD1C;
+    char *str = lbl_80349E38;
+    LAnim *anim;
+    void *set;
+    void *root;
+    void *e;
+    void *records[64];
+    void *groupsSrc[64];
+    void *segSrc[128];
+    int numRecs, numGroups, i, k, n;
+    char *dst;
+    const char *src;
+    char c;
+
+    anim = (LAnim *)((void *(*)(int, void *))fn_801284F8)(0x30, lbl_8055CCC0);
+    memset(anim, 0, 0x30);
+    anim->refs = 1;
+    src = name;
+    dst = anim->name;
+    n = 0x18;
+    goto copy;
+check:
+    if (--n > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto copied;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if (c != 0)
+        goto check;
+copied:
+    set = fn_80131808(name);
+    if (((HasFn)(*(void ***)set)[4])(set, str + 0xC))
+        root = ((StrFn)(*(void ***)set)[2])(set, str + 0xC);
+    else
+        root = 0;
+
+    numRecs = 0;
+    numGroups = 0;
+    for (i = 0; (e = ((AtFn)(*(void ***)set)[3])(set, i)) != 0; i++) {
+        if (strcmp(((NameFn)(*(void ***)e)[2])(e), lbl_8055CCC8) == 0) {
+            records[numRecs++] = e;
+        } else if (strcmp(((NameFn)(*(void ***)e)[2])(e), lbl_8055CCD0) == 0) {
+            groupsSrc[numGroups++] = e;
+        }
+    }
+    anim->numRecs = numRecs;
+    anim->recs = fn_8012850C(numRecs * 0x28, str + 0x18);
+    anim->numGroups = numGroups;
+    anim->groups = fn_8012850C(numGroups * 0xC, str + 0x24);
+
+    {
+        float zero = lbl_80564AB0;
+        float scale = lbl_80564AB8;
+    for (k = 0; k < numRecs; k++) {
+        LRec *rec;
+        char *type;
+        void *ent;
+        e = records[k];
+        rec = &anim->recs[k];
+        type = ((StrFn)(*(void ***)e)[5])(e, lbl_8055CCD8);
+        memset(rec, 0, 0x28);
+        if (strcmp(type, lbl_8055CCE0) == 0) {
+            LVec3 def3, v3;
+            LVec2 def2, p;
+            unsigned long long t;
+            char *sub;
+            int model;
+            rec->type = 2;
+            model = (int)((StrFn)(*(void ***)e)[5])(e, lbl_8055CCE0);
+            ent = fn_802AC0E8((void *)table, (char *)model, 4);
+            if (ent != 0)
+                model = ((int *)ent)[2];
+            rec->ptr = fn_802C6FC0(model, 0, 0);
+            rec->w[0].f = ((FltDefFn)(*(void ***)e)[10])(e, lbl_8055CCE8, lbl_80564AB4);
+            def3.x = zero;
+            def3.y = zero;
+            def3.z = zero;
+            v3 = ((Vec3DefFn)(*(void ***)e)[14])(e, lbl_8055CCF0, def3);
+            rec->w[1].f = v3.x;
+            rec->w[2].f = v3.y;
+            rec->w[3].f = v3.z;
+            def2.x = zero;
+            def2.y = zero;
+            t = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
+            p = *(LVec2 *)&t;
+            rec->w[1].f += p.x;
+            rec->w[2].f -= p.y;
+            rec->w[4].i = ((IntDefFn)(*(void ***)e)[8])(e, lbl_8055CCFC, -1);
+            rec->w[5].i = 0;
+            sub = ((StrDefFn)(*(void ***)e)[6])(e, str + 0x30, 0);
+            if (sub != 0) {
+                ent = fn_802AC0E8((void *)table, sub, 3);
+                if (ent != 0)
+                    rec->f4 = ((int *)ent)[2];
+                ent = fn_802AC0E8((void *)table, sub, 5);
+                if (ent != 0)
+                    rec->f8 = ((int *)ent)[2];
+                ent = fn_802AC0E8((void *)table, sub, 2);
+                if (ent != 0)
+                    rec->w[5].i = ((int *)ent)[2];
+                else
+                    fn_802E30C8(str + 0x40, sub);
+            }
+        } else if (strcmp(type, lbl_8055CD04) == 0) {
+            rec->type = 1;
+            if (strcmp(str + 0x60, ((StrFn)(*(void ***)e)[5])(e, lbl_8055CD0C)) != 0) {
+                rec->ptr = fn_80232578(((StrFn)(*(void ***)e)[5])(e, lbl_8055CD0C));
+                rec->w[2].f = ((FltDefFn)(*(void ***)e)[10])(e, lbl_8055CCE8, lbl_80564AB4);
+            } else {
+                rec->ptr = fn_80232578(str + 0x6C);
+                rec->w[2].f = scale * ((FltDefFn)(*(void ***)e)[10])(e, lbl_8055CCE8, lbl_80564AB4);
+            }
+            rec->w[1].i = fn_802AC174(((StrDefFn)(*(void ***)e)[6])(e, lbl_8055CD14, (const char *)&lbl_8055CD1C));
+            rec->w[0].i = fn_802AC1BC(((StrDefFn)(*(void ***)e)[6])(e, lbl_8055CD20, str + 0x78), 0);
+            rec->w[3].s = ((StrFn)(*(void ***)e)[5])(e, lbl_8055CD04);
+            if (*rec->w[3].s == '#') {
+                ent = fn_802AC0E8((void *)table, rec->w[3].s + 1, 3);
+                if (ent != 0)
+                    rec->f4 = ((int *)ent)[2];
+                ent = fn_802AC0E8((void *)table, rec->w[3].s + 1, 5);
+                if (ent != 0)
+                    rec->f8 = ((int *)ent)[2];
+                ent = fn_802AC0E8((void *)table, rec->w[3].s + 1, 1);
+                if (ent != 0)
+                    rec->w[3].i = ((int *)ent)[2];
+                else
+                    fn_802E30C8(str + 0x88, rec->w[3].s + 1);
+            }
+        } else {
+            fn_802E317C(str + 0xA4, type);
+        }
+    }
+    }
+
+    {
+        float half = lbl_80564AC0;
+        float degToRad = lbl_80564ABC;
+        float zero = lbl_80564AB0;
+        float one = lbl_80564AB4;
+        float cx = lbl_80564AC4;
+        float cy = lbl_80564AC8;
+        const char *layerKey = lbl_8055CD30;
+        const char *layerTable = str + 0xDC;
+    for (k = 0; k < numGroups; k++) {
+        LGroup *grp;
+        LVec2 def2;
+        unsigned long long t;
+        LVec2 origin;
+        float base;
+        int numSegs;
+        int j;
+        e = groupsSrc[k];
+        grp = &anim->groups[k];
+        grp->id = ((IntFn)(*(void ***)e)[7])(e, str + 0xC4);
+        def2.x = zero;
+        def2.y = zero;
+        t = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
+        origin = *(LVec2 *)&t;
+        base = fn_802AC344(e, root, 0);
+        numSegs = 0;
+        {
+            void *s;
+            for (i = 0; (s = ((AtFn)(*(void ***)e)[24])(e, i)) != 0; i++) {
+                if (strcmp(((NameFn)(*(void ***)s)[2])(s), lbl_8055CD28) == 0)
+                    segSrc[numSegs++] = s;
+            }
+        }
+        grp->count = numSegs;
+        grp->segs = fn_8002F37C(fn_8012850C(numSegs * 0x38 + 0x10, str + 0xD0), (void *)fn_802AD308, 0, 0x38, numSegs);
+        for (j = 0; j < numSegs; j++) {
+            LSeg *seg = &grp->segs[j];
+            LSeg *prev = j > 0 ? &grp->segs[j - 1] : 0;
+            void *s = segSrc[j];
+            float ox = origin.x;
+            float oy = origin.y;
+            seg->start = base + fn_802AC454(s, root, (float *)prev);
+            if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CD38)) {
+                LVec3 axis;
+                float d;
+                float ang = degToRad * ((FltDefFn)(*(void ***)s)[10])(s, lbl_8055CD38, lbl_80564AB0);
+                axis.x = zero;
+                axis.y = zero;
+                axis.z = -ang;
+                d = PSVECDotProduct(&axis, &axis);
+                if (!((float)__fabs(d) <= lbl_80558DC4[0])) {
+                    float len = fn_8002F234(d);
+                    float h = half * len;
+                    float sn = sin(h);
+                    float cs = cos(h);
+                    float sc = sn / len;
+                    seg->rot[0] = axis.x * sc;
+                    seg->rot[1] = axis.y * sc;
+                    seg->rot[2] = axis.z * sc;
+                    seg->rot[3] = cs;
+                } else {
+                    seg->rot[0] = zero;
+                    seg->rot[1] = zero;
+                    seg->rot[2] = zero;
+                    seg->rot[3] = one;
+                }
+            } else {
+                char *q = ((StrDefFn)(*(void ***)s)[6])(s, lbl_8055CD40, lbl_8055CD48);
+                if (sscanf(q, str + 0xF8, &seg->rot[0], &seg->rot[1], &seg->rot[2], &seg->rot[3]) != 4)
+                    fn_802E317C(str + 0x104, q, name);
+            }
+            if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CCF8)) {
+                unsigned long long t2;
+                LVec2 v;
+                t2 = ((Vec2Fn)(*(void ***)s)[15])(s, lbl_8055CCF8);
+                v = *(LVec2 *)&t2;
+                v.x += ox;
+                v.y += oy;
+                seg->pos.x = v.x - cx;
+                seg->pos.y = cy - v.y;
+                seg->pos.z = zero;
+            } else if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CCF0)) {
+                LVec3 p;
+                p = ((Vec3Fn)(*(void ***)s)[13])(s, lbl_8055CCF0);
+                seg->pos.x = p.x;
+                seg->pos.y = p.y;
+                seg->pos.z = p.z;
+                seg->pos.x += ox - cx;
+                seg->pos.y += cy - oy;
+            } else {
+                LVec3 zv;
+                LVec3 *from;
+                if (prev != 0) {
+                    from = &prev->pos;
+                } else {
+                    zv.x = zero;
+                    zv.y = zero;
+                    zv.z = zero;
+                    from = &zv;
+                }
+                seg->pos.x = from->x;
+                seg->pos.y = from->y;
+                seg->pos.z = from->z;
+            }
+            if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CD50)) {
+                LVec3 p;
+                p = ((Vec3Fn)(*(void ***)s)[13])(s, lbl_8055CD50);
+                seg->scale.x = p.x;
+                seg->scale.y = p.y;
+                seg->scale.z = p.z;
+            } else if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CCE8)) {
+                float f = ((FltFn)(*(void ***)s)[9])(s, lbl_8055CCE8);
+                seg->scale.x = f;
+                seg->scale.y = f;
+                seg->scale.z = f;
+            } else if (prev != 0) {
+                seg->scale.x = prev->scale.x;
+                seg->scale.y = prev->scale.y;
+                seg->scale.z = prev->scale.z;
+            } else {
+                seg->scale.x = one;
+                seg->scale.y = one;
+                seg->scale.z = one;
+            }
+            seg->alpha = ((FltDefFn)(*(void ***)s)[10])(s, lbl_8055CD58, prev != 0 ? prev->alpha : lbl_80564AB4);
+            {
+                int dflt = prev != 0 ? prev->f30 : 0;
+                seg->f30 = ((HasFn)(*(void ***)s)[3])(s, layerKey) ? ((LookupFn)(*(void ***)s)[21])(s, layerKey, layerTable) : dflt;
+            }
+            seg->f34 = ((IntDefFn)(*(void ***)s)[8])(s, lbl_8055CD60, prev != 0 ? prev->f34 : 0);
+        }
+    }
+    }
+
+    if (((HasFn)(*(void ***)set)[4])(set, str + 0x128)) {
+        void *g = ((StrFn)(*(void ***)set)[2])(set, str + 0x128);
+        LVec3 off;
+        float sc, sa;
+        if (((HasFn)(*(void ***)g)[3])(g, lbl_8055CCF8)) {
+            unsigned long long t2;
+            LVec2 v;
+            t2 = ((Vec2Fn)(*(void ***)g)[15])(g, lbl_8055CCF8);
+            v = *(LVec2 *)&t2;
+            off.z = lbl_80564AB0;
+            off.x = v.x;
+            off.y = -v.y;
+        } else if (((HasFn)(*(void ***)g)[3])(g, lbl_8055CCF0)) {
+            LVec3 p;
+            p = ((Vec3Fn)(*(void ***)g)[13])(g, lbl_8055CCF0);
+            off.x = p.x;
+            off.y = p.y;
+            off.z = p.z;
+        } else {
+            off.x = lbl_80564AB0;
+            off.y = lbl_80564AB0;
+            off.z = lbl_80564AB0;
+        }
+        sc = ((FltDefFn)(*(void ***)g)[10])(g, lbl_8055CCE8, lbl_80564AB4);
+        sa = ((FltDefFn)(*(void ***)g)[10])(g, lbl_8055CD58, lbl_80564AB4);
+        for (k = 0; k < numGroups; k++) {
+            LGroup *grp = &anim->groups[k];
+            int j;
+            for (j = 0; j < grp->count; j++) {
+                LSeg *seg = &grp->segs[j];
+                seg->pos.x += off.x;
+                seg->pos.y += off.y;
+                seg->pos.z += off.z;
+                seg->scale.x *= sc;
+                seg->scale.y *= sc;
+                seg->scale.z *= sc;
+                seg->alpha *= sa;
+            }
+        }
+    }
+    anim->length = lbl_80564AB0;
+    for (k = 0; k < anim->numGroups; k++) {
+        LGroup *grp = &anim->groups[k];
+        float last = grp->segs[grp->count - 1].start;
+        float len = anim->length;
+        anim->length = len > last ? len : last;
+    }
+    fn_802AC2B4(root, (int)(str + 0x13C), &anim->length);
+    fn_80131818(set);
+    lbl_804BD7C0[(int)lbl_8055F93C] = anim;
+    lbl_8055F93C = (char *)lbl_8055F93C + 1;
+    return (int)anim;
+}
+#pragma pop
 extern float lbl_80564ACC;
 extern float lbl_8055E3C8;
 extern int lbl_8055CD70;
@@ -546,11 +928,11 @@ int fn_802ADF34(void **arg0, char *arg1, int arg2) {
         header = (char *)*arg0;
         index = ((int *)header)[1];
         base = ((char **)header)[0];
-        entry = &base[index * 0x74];
+        entry = base + index * 116;
         index++;
         ((int *)header)[1] = index;
         dst = entry;
-        count = 0x64;
+        count = 100;
         goto copy;
 check:
         count--;
@@ -562,9 +944,9 @@ copy:
         *dst++ = c;
         if ((signed char)c != 0) goto check;
 copied:
-        *(int *)(entry + 0x64) = result;
-        entry[0x68] = 0;
-        entry[0x69] = 0;
+        *(int *)(entry + 100) = result;
+        entry[104] = 0;
+        entry[105] = 0;
         header = (char *)*arg0;
         return ((int *)header)[1] - 1;
     }
@@ -606,6 +988,8 @@ void fn_802AE0E0(void **arg0) {
     }
 }
 
+/* For each active entry in the nested list, stores (arg0->baseValue - entry->ref->valueAt2C)
+ * into entry->computedValue at +0x6C when entry->active (+0x68) is set. */
 void fn_802AE118(void *arg0) {
     int off;
     int i;
