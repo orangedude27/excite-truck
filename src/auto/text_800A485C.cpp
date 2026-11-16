@@ -10259,13 +10259,13 @@ extern "C" s32 fn_800B5988(void *arg0) {
                 *(s32 *)((u8 *)arg0 + 0x18A0) = sp8;
             }
             slot = (u8 *)arg0 + 0x165C;
-            for (i = 0; i < 4; i++, slot += 0x248) {
+            i = 0;
+            do {
                 r = fn_800AAEFC((s32)arg0, slot);
-                if (r == 0) {
-                } else {
-                    goto done;
-                }
-            }
+                if (r != 0) goto done;
+                i++;
+                slot += 0x248;
+            } while (i < 4);
             r = 0;
         }
     }
@@ -18253,8 +18253,9 @@ extern "C" void fn_800C65C4(void) {
 
 extern "C" void fn_800C81F0(void*, s32);
 extern "C" void fn_800CEBE0(void*, s32);
-extern "C" s32 fn_800C65CC(s32 arg0) {
-    fn_800C81F0(lbl_8055DD98, arg0);
+/* RealName: HBMUpdateHomeButtonManager (tentative). Updates the Home Button manager with the given input/state arg, returning the manager's result value at +0xAC when state (+0x10) is 0x12, otherwise -1. */
+extern "C" s32 fn_800C65CC(s32 updateArg) {
+    fn_800C81F0(lbl_8055DD98, updateArg);
     if (*(s32*)((u8*)lbl_8055DD98 + 0x10) != 0x12) {
         return -1;
     }
