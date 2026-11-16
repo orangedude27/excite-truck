@@ -4193,7 +4193,13 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8114(void *self, 
     return self;
 }
 
-extern "C" s32 fn_800F816C(s32 arg0, s32 arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+extern "C" s32 fn_800F816C(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
+}
 
 extern "C" s32 fn_800F81AC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
