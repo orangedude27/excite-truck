@@ -461,8 +461,9 @@ void *fn_802B47A0(void *arg0, int *arg1, void *arg2, int arg3, int **arg4) {
     return arg0;
 }
 #pragma pop
-int fn_802B4BC0(int arg0, int arg1, int arg2) {
-    return arg0 + (((arg1 & 0x1F) + ((arg2 << 5) & 0x3E0)) << 3);
+int fn_802B4BC0(int base, int x, int y) {
+    /* Address of the cell at grid coordinates (x, y) in a 32x32 lookup table of 8-byte cells. */
+    return base + (((x & 0x1F) + ((y << 5) & 0x3E0)) << 3);
 }
 
 void fn_802B4BD8(void) {}
