@@ -2971,6 +2971,7 @@ static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
 
 /* registers are saved with _savegpr */
 #pragma use_lmw_stmw off
+#pragma always_inline on
 extern "C" void fn_801A0464(void *arg0, void *arg1) {
     u8 buffer[0x300];
     Vec boxDelta;
