@@ -838,10 +838,10 @@ void fn_801941A8(void *arg0, float arg1) {
 }
 #pragma scheduling on
 void fn_801942B8(void *arg0, float arg1) {
-    double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
+    float value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
     value = value > lbl_80562144 ? value : lbl_80562144;
-    *(float *)((char *)arg0 + 0x244) = (float)value;
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), (float)value);
+    *(float *)((char *)arg0 + 0x244) = value;
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), (float)(double)value);
 }
 
 void fn_801942F0(void *driver, int forceOn) {
