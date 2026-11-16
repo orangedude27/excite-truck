@@ -340,6 +340,15 @@ void fn_80138434(void) {
     fn_80137F2C();
 }
 #pragma dont_inline reset
+/* A node in the circular line-node ring.  fn_80138438/fn_8013846C scan the
+   ring (terminated when next wraps back to the starting node) for the
+   greatest/least path index at +0x10. */
+struct IndexedLineNode {
+    char pad[0x10];
+    unsigned int index;             /* +0x10 path index */
+    struct IndexedLineNode *next;   /* +0x14 next node in the ring */
+};
+
 void *fn_80138438(void *arg0) { void *node; void *best; node=*(void **)((char *)arg0+0x14); best=arg0; while(node!=arg0) { if(*(unsigned int *)((char *)node+0x10)>*(unsigned int *)((char *)best+0x10)) best=node; node=*(void **)((char *)node+0x14); } return best; }
 
 void *fn_8013846C(void *arg0) {
