@@ -33,7 +33,7 @@ extern s32 fn_802ECEEC(void);
 // fn_802ECE48 declared at its definition below
 extern s32 fn_802ECDF4(void);
 // fn_802ECEC0 declared at its definition below
-extern s32 lbl_8055D300;
+extern char *lbl_8055D300; /* points at "uisingle": the movie to play when none was asked for */
 extern void *fn_801284F8(s32, const char *);
 extern s32 fn_802ECD68(void *, void *, s32);
 #pragma scheduling reset
