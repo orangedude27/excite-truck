@@ -30,6 +30,7 @@ extern char lbl_8033807C[];
 extern char lbl_80338060[];
 extern void fn_802E30C8(char *, ...);
 #pragma scheduling invalid_target
+/* Log that cutscene replay playback has started and set the in-playback flag. */
 void fn_801CEFE8(void) {
     fn_802E30C8(lbl_80338060);
     lbl_8055E8A0 = 1;
