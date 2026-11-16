@@ -313,8 +313,10 @@ int fn_8027D850(void *arg0) {
 
 typedef int (*Fn8027D858)(void *, int);
 #pragma cplusplus on
-extern "C" int fn_8027D858(void *arg0) {
-    class Obj {
+/* If obj's id-valid flag (byte at 0x38) is set, call the vtable's slot-0x30 method
+ * with the id at 0x34 and return its result; otherwise return -1. */
+extern "C" int fn_8027D858(void *obj) {
+    class EffectObj {
     public:
         virtual void v0();
         virtual void v1();
@@ -328,8 +330,8 @@ extern "C" int fn_8027D858(void *arg0) {
         virtual void v9();
         virtual int v10(int);
     };
-    if (*(unsigned char *)((char *)arg0 + 0x38) != 0) {
-        return ((Obj *)arg0)->v10(*(int *)((char *)arg0 + 0x34));
+    if (*(unsigned char *)((char *)obj + 0x38) != 0) {
+        return ((EffectObj *)obj)->v10(*(int *)((char *)obj + 0x34));
     }
     return -1;
 }
