@@ -23071,8 +23071,6 @@ void PORT_ParNegCnf(void *, u8, u16, u8, u8);
 void rfc_port_timer_stop(void *);
 void *port_find_mcb_dlci_port(void *, u8);
 extern u8 lbl_80319DB0[];
-#pragma push
-#pragma peephole off
 void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
     u8 dlci = *(u8 *)arg2;
     void *mcb;
@@ -23099,7 +23097,6 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
     end:;
     }
 }
-#pragma pop
 
 /* ---- RFCOMM Remote Port Negotiation (RPN) names ----------------------------
  * These live in include/revolution/BTE/stack/rfcomm/port_int.h,
