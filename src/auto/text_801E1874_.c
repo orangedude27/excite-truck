@@ -275,14 +275,17 @@ extern float lbl_80562CCC;
 extern float lbl_80562CD0;
 extern float lbl_80562CD4;
 extern void fn_801E1B30(void);
+/* Once per frame of play: ask the level's rain loop to keep running (the
+ * weather's own loudness is applied to it elsewhere), and, on a level whose
+ * weather has lightning, step the rain/thunder volume machine. */
 void fn_801E1E64(void) {
-    void *p = *(void **)(lbl_804874B8 + 0x14);
-    if (p != 0) {
-        *(unsigned char *)((char *)p + 0x4A) = 0;
-        *(unsigned char *)((char *)p + 0x4B) = 1;
-        *(unsigned char *)((char *)p + 0x49) = 1;
+    Sound *rain = *(Sound **)(gWeatherSound + 0x14);
+    if (rain != 0) {
+        rain->releasePending = 0;
+        rain->loop = 1;
+        rain->playPending = 1;
     }
-    if (*(int *)lbl_804874B8 != 0)
+    if (((WeatherSound *)gWeatherSound)->mode != 0)
         fn_801E1B30();
 }
 
