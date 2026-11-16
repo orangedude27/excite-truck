@@ -5101,11 +5101,13 @@ extern "C" s32 fn_801A5000(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" s32 fn_801A5040(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* If ptr is set and count is positive, free the object (fn_80128668 receives
+ * ptr in r3); always return ptr unchanged. */
+extern "C" s32 fn_801A5040(s32 ptr, s32 count) {
+    if (ptr != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return ptr;
 }
 
 extern "C" s32 fn_801A5080(s32 arg0, s32 arg1) {
