@@ -4314,8 +4314,9 @@ int fn_8006F254(s32 arg0) {
     return 1;
 }
 
-int fn_8006F284(s32 arg0) {
-    hcisu_h2_receive_msg((u16)(arg0 - 8 - *(u16 *)((u8 *)&lbl_803BD1A0 + 0x12)), (u8 *)&lbl_803BD1A0);
+/* Handle a completed HCI H2 USB receive: subtract the transport header and pending byte count from the transfer length and hand the packet to the HCI layer. */
+int fn_8006F284(s32 length) {
+    hcisu_h2_receive_msg((u16)(length - 8 - *(u16 *)((u8 *)&hcisu_h2_cb + 0x12)), (u8 *)&hcisu_h2_cb);
     return 0;
 }
 
