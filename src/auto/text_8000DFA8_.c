@@ -929,8 +929,10 @@ extern s32 lbl_8055D490;
 extern s32 lbl_80558A90;
 extern f32 lbl_805602C8;
 extern f64 lbl_80560268;
-f32 fn_800109A0(s32 arg0) {
-    return (f32)arg0 / (f32)lbl_80558A90;
+/* Convert a signed integer to float divided by a fixed-point scale constant. */
+f32 fn_800109A0(s32 value)
+{
+    return (f32)value / (f32)lbl_80558A90;
 }
 
 #pragma dont_inline fn_800109E4
