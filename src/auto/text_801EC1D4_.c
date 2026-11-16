@@ -1180,10 +1180,16 @@ check:
 extern void *fn_801EC750();
 extern int lbl_8033A2D4[64];
 #pragma scheduling off
-void **fn_801EEEB0(void **arg0) {
-    fn_801EC750(arg0);
-    *arg0 = &lbl_8033A2D4;
-    return arg0;
+void **fn_801EEEB0(void **archive) {
+#define SoundArchiveBaseCtor fn_801EC750
+#define MemorySoundArchiveVtable lbl_8033A2D4
+    /* Construct a MemorySoundArchive: initialise the SoundArchive base object,
+       then install the derived vtable. */
+    SoundArchiveBaseCtor(archive);
+    *archive = &MemorySoundArchiveVtable;
+    return archive;
+#undef SoundArchiveBaseCtor
+#undef MemorySoundArchiveVtable
 }
 #pragma scheduling on
 
