@@ -195,11 +195,12 @@ extern int fn_801D985C(int *);
 extern int fn_801D9948(int *);
 extern void fn_801D9120(float *, float *, int, float);
 #pragma dont_inline on
-void *fn_801D9260(int count) {
-    void *node = lbl_8055E96C;
-    while (node != 0 && --count >= 0)
-        node = *(void **)((char *)node + 0x54);
-    return node;
+void *fn_801D9260(int steps) {
+    /* Walk `steps` links down the morph-group list; stop early at the end. */
+    void *group = morphGroupList;
+    while (group != 0 && --steps >= 0)
+        group = *(void **)((char *)group + 0x54);
+    return group;
 }
 
 #pragma cplusplus on
