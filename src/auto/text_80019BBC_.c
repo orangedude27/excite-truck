@@ -22,8 +22,8 @@ extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
 
-static inline float InterpolateComponent(float start, float finish, float t) {
-    return start + t * (finish - start);
+static inline float InterpolateDelta(float start, float delta, float t) {
+    return start + t * delta;
 }
 #pragma small_data off
 extern char lbl_803582C0[];
