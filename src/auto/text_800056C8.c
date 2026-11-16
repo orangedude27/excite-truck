@@ -509,11 +509,12 @@ extern "C" void fn_80005C88(void) {
 #pragma pop
 #pragma scheduling on
 #pragma cplusplus reset
-s32 fn_80005FE0(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80005FE0(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 s32 fn_80006020(s32 object, s32 shouldDestroy) {
