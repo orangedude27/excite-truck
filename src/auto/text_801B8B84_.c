@@ -14,6 +14,7 @@ void fn_801B8B84(void) {
     lbl_8055E764 = 0;
 }
 #pragma scheduling on
+/* Tear down the alarm-event queue: free the ring-buffer allocation held in lbl_8055E760, then clear the pointer. */
 void fn_801B8BBC(void) {
     fn_80128670((int)lbl_8055E760);
     lbl_8055E760 = 0;
