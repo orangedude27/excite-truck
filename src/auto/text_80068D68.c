@@ -19957,14 +19957,15 @@ extern char lbl_80315088[];
 extern char lbl_8031912C[];
 extern char lbl_80319140[];
 extern void l2c_process_held_packets(u8 timed_out);
-void l2c_process_timeout(void *arg) {
-    s32 event = *(u16 *)((u8 *)arg + 0x14);
-    switch (event) {
+/* Dispatch an L2CAP timer-list entry timeout based on its timer event code. */
+void l2c_process_timeout(void *p_tle) {
+    s32 timerEvent = *(u16 *)((u8 *)p_tle + 0x14);
+    switch (timerEvent) {
     case 2:
-        l2c_link_timeout(*(void **)((u8 *)arg + 0x10));
+        l2c_link_timeout(*(void **)((u8 *)p_tle + 0x10));
         break;
     case 3:
-        fn_80089E40(*(void **)((u8 *)arg + 0x10), 0x1E, 0);
+        fn_80089E40(*(void **)((u8 *)p_tle + 0x10), 0x1E, 0);
         break;
     case 4:
         l2c_process_held_packets(1);
