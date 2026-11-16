@@ -1469,8 +1469,9 @@ void fn_80248CD8(void *arg0)
 {
   register s32 elapsed;
   s32 limit;
-  register s32 alpha;
+  s32 alpha;
   s32 converted;
+  s32 masked;
   float factor;
   float amount;
   float value;
@@ -1481,18 +1482,8 @@ void fn_80248CD8(void *arg0)
   elapsed = now - (*((s32 *) (((char *) arg0) + 0x1C)));
   if (elapsed < 0x1F4)
   {
-    if (factor <= (lbl_80563898 - (((float) elapsed) / lbl_805638D0)))
-    {
-      goto update_first;
-    }
-    goto after_first;
-    update_first:
-    factor = lbl_80563898 - (((float) elapsed) / lbl_805638D0);
-
-    after_first:
-    ;
-
-    ;
+    factor = (factor > (lbl_80563898 - (((float) elapsed) / lbl_805638D0)))
+      ? factor : (lbl_80563898 - (((float) elapsed) / lbl_805638D0));
   }
   limit = *((s32 *) (((char *) arg0) + 0x20));
   if ((limit != 0) || ((*((s32 *) (((char *) arg0) + 0x18))) != 1))
@@ -1500,25 +1491,7 @@ void fn_80248CD8(void *arg0)
     if (elapsed > (limit - 0x1F4))
     {
       value = lbl_80563898 - (((float) (limit - elapsed)) / lbl_805638D0);
-      if (factor <= value)
-      {
-        goto update_second;
-      }
-      if (value)
-      {
-        goto after_second;
-      }
-      else
-      {
-        goto after_second;
-      }
-      update_second:
-      factor = value;
-
-      after_second:
-      ;
-
-      ;
+      factor = (factor > value) ? factor : value;
     }
   }
   amount = lbl_805638D4 * factor;
@@ -1530,13 +1503,9 @@ void fn_80248CD8(void *arg0)
   {
     next = lbl_805638D8 + amount;
   }
-  alpha = 0xFF;
   converted = (s32) next;
-  converted = converted & (((-converted) & (~converted)) >> 31);
-  if (converted < 0xFF)
-  {
-    alpha = converted;
-  }
+  masked = converted & (((-converted) & (~converted)) >> 31);
+  alpha = (masked < 0xFF) ? masked : 0xFF;
   fn_802C942C((alpha << 24) | 0xFFFFFF);
 }
 
