@@ -161,6 +161,8 @@ s32 fn_80297354(void *arg0, void *arg1) {
 }
 #pragma scheduling on
 __declspec(section ".sdata") extern char lbl_8055CA58[];
+#define kSeqName lbl_8055CA58  // .sdata: "seq"
+// True when a parsed list entry's virtual name is "seq" (case-insensitive).
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline
