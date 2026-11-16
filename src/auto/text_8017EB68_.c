@@ -1505,10 +1505,13 @@ extern "C" float fn_80181498(void *arg0) {
     return a;
 }
 #pragma pop
-float fn_80181548(void *arg0) {
-    float value = *(float *)((char *)arg0 + 0x20) + *(float *)((char *)arg0 + 0x24);
-    if (value < lbl_80561C48) return value;
-    return lbl_80561C48;
+/* Return the sum of the two driver stats at +0x20 and +0x24, capped at 1.0. */
+float fn_80181548(void *driver) {
+#define MAX_STAT lbl_80561C48
+    float sum = *(float *)((char *)driver + 0x20) + *(float *)((char *)driver + 0x24);
+    if (sum < MAX_STAT) return sum;
+    return MAX_STAT;
+#undef MAX_STAT
 }
 
 float fn_80181568(void *arg0) {
