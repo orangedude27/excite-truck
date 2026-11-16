@@ -41,13 +41,15 @@ extern f32 lbl_8055EB98[2];
 extern void fn_801EB9A4(s32 *);
 extern void fn_801EBB7C(void *, s32);
 #pragma dont_inline on
-s32 fn_801EAFD4(void *arg0) {
-    s32 temp = *(s32 *)arg0;
-    if (temp == 0x103) {
-        return ((s32 *)arg0)[7];
+/* Returns the type-specific field of a scene-graph node: field 7 for a type-0x103
+ * node, field 3 for a type-0x101 node, and 0 for any other type. */
+s32 fn_801EAFD4(void *node) {
+    s32 type = *(s32 *)node;
+    if (type == 0x103) {
+        return ((s32 *)node)[7];
     }
-    if (temp == 0x101) {
-        return ((s32 *)arg0)[3];
+    if (type == 0x101) {
+        return ((s32 *)node)[3];
     }
     return 0;
 }
