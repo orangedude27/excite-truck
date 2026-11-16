@@ -19509,7 +19509,6 @@ extern "C" s32 fn_800D014C(s32 object, s32 deleteFlag) {
 }
 
 extern "C" u32 lbl_8055DDA0;
-#pragma push
 #pragma scheduling off
 extern "C" void fn_800D018C(void *arg0, void *arg1) {
     class Dispatch {
@@ -19526,7 +19525,7 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
     lbl_8055DDA0 = zero;
     ((Dispatch *)arg0)->call((u8 *)p + 0x10);
 }
-#pragma pop
+#pragma scheduling on
 extern "C" u8 lbl_8031E878[];
 extern "C" u8 lbl_8031E780[];
 extern "C" const char lbl_8031E8FC[];
@@ -20452,9 +20451,11 @@ extern "C" void fn_800D1AE4(OSAlarm *arg0) {
 #define WPAD_ERR_COMMUNICATION_ERROR -2 /* == WPAD_ERR_BUSY: the command could not go out */
 
 extern void* OSGetAlarmUserData(void);
+/* Retry-alarm handler: re-enable the remote speaker (WPAD_SPEAKER_ON) for the slot
+ * stored as the alarm's user data, answering through fn_800D1B1C. */
 extern "C" void fn_800D1AEC(void) {
-    void *r3 = OSGetAlarmUserData();
-    fn_80060CC0(r3, WPAD_SPEAKER_ON, (u32)&fn_800D1B1C);
+    void *speakerSlot = OSGetAlarmUserData();
+    fn_80060CC0(speakerSlot, WPAD_SPEAKER_ON, (u32)&fn_800D1B1C);
 }
 
 /* WPAD's answer to "turn this slot's Wii Remote speaker on" - the callback
