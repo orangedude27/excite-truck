@@ -3002,9 +3002,10 @@ extern "C" void fn_800A90F8(void *arg0, s32 arg1) {
     VFiPFCACHE_SearchForPage((s32)arg0, *(s32 *)((u8 *)arg0 + 0x1634), arg1);
 }
 
-extern "C" s32 fn_800A9104(void *arg0) {
-    s32 temp_r3 = ((s32 (*)(void *, s32))fn_800A8AD4)(arg0, *(s32 *)((u8 *)arg0 + 0x1630));
-    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+extern "C" s32 fn_800A9104(void *volume) {
+    /* Flush this volume's in-use cache pages and pass back the first error code. */
+    s32 result = ((s32 (*)(void *, s32))fn_800A8AD4)(volume, *(s32 *)((u8 *)volume + 0x1630));
+    return result & ((s32)(-result | result) >> 31);
 }
 
 extern "C" s32 fn_800A9138(void *arg0, u32 arg1) {
