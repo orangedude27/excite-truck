@@ -42,6 +42,13 @@ extern void fn_80208A50(float *);
 extern void *lbl_8055EDA8;
 extern int lbl_80489238[4];
 extern char lbl_8033BEF8[];
+/* Messages in the lbl_8033BEF8 string block used by the mixer device registry. */
+#define MIXER_BOGUS_NAME_OFF 0x60 /* "Dream 9407," */
+#define MIXER_BOGUS_MSG_OFF 0x70  /* "tossing bogus mixer: %s" */
+#define MIXER_FULL_MSG_OFF 0x88   /* "too many sound devices: %s" */
+#define MIXER_DEVICE_MAX 6
+#define MIXER_DEVICES lbl_80489238
+#define MIXER_DEVICE_COUNT lbl_80489238[MIXER_DEVICE_MAX]
 extern char lbl_8033BF08[];
 extern char lbl_8055B4E0;
 extern void fn_801331C4(int, void *, float *);
