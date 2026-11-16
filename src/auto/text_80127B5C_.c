@@ -218,6 +218,7 @@ void fn_80127F70(void* alarm) {
 }
 
 void fn_80127F94(void) {
+    /* Dispatch pending background tasks when over 16 ms have elapsed since the last dispatch (lbl_8055DF70). */
     if (fn_802E2C20() - lbl_8055DF70 > 0x10)
         fn_80127B5C();
 }
