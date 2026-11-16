@@ -308,7 +308,12 @@ extern "C" void fn_80205FCC(void) {
 #pragma pop
 #pragma cplusplus reset
 void fn_802061F8(void) {
-    lbl_8055ED6C = fn_802CAC28(lbl_8033BC40, 0);
+#define gMpovCarTexture lbl_8055ED6C
+#define kMpovCarTexPath lbl_8033BC40
+    /* Load the "mpov_car.tex" texture and cache its handle for the post-race cleanup in fn_80206228. */
+    gMpovCarTexture = fn_802CAC28(kMpovCarTexPath, 0);
+#undef kMpovCarTexPath
+#undef gMpovCarTexture
 }
 
 typedef void (*ReleaseTextureFn)(int);
