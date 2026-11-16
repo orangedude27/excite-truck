@@ -599,9 +599,10 @@ void *fn_802410F8(void *self, s32 id, s32 *valuePtr, s32 arg3) {
     return self;
 }
 
-s32 fn_802411A4(s32 *arg0) {
+/* If a pending result flag is set, copy its value to outResult and return 1; otherwise return 0. */
+s32 fn_802411A4(s32 *outResult) {
     if (lbl_8055F1FC != 0) {
-        *arg0 = lbl_8055F200;
+        *outResult = lbl_8055F200;
         return 1;
     }
     return 0;
