@@ -643,6 +643,16 @@ void fn_801EBC2C(void) {
 typedef struct {
     void **vt;
 } Obj;
+
+#define gEBContext lbl_8055EBA0
+#define MLIST_Clear fn_802CD254
+
+typedef struct {
+    s32 root;
+    s32 materialListA;
+    s32 materialListB;
+} EBContext;
+
 extern void fn_802CD254(s32);
 extern void fn_801E8718(s32);
 extern f32 fn_801E8738(s32);
