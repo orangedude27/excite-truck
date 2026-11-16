@@ -88,15 +88,17 @@ void fn_801E6978(void) {
 
 #pragma scheduling invalid_target
 void fn_801E69EC(void) {
-    s32* var_r31 = lbl_80487CC0;
+    /* Free every buffer in the anim streaming-buffer pool. */
+#define sAnimBufferPool lbl_80487CC0
+    s32* var_r31 = sAnimBufferPool;
     s32 var_r30 = 0;
     do {
         fn_8012ED20(*var_r31);
         var_r30 += 1;
         var_r31 += 1;
     } while (var_r30 < 8);
+#undef sAnimBufferPool
 }
-
 extern s32 *fn_801E592C(void);
 extern s32 fn_801E5990(void *);
 extern s32 fn_802C6FC0(s32, s32, s32);
