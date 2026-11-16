@@ -445,6 +445,8 @@ extern void fn_8000B3DC(unsigned char);
 extern void fn_8000ADE0(int);
 extern unsigned char lbl_8055D3D4, lbl_8055D3D5;
 extern char lbl_802FBF80[];
+#pragma push
+#pragma dont_inline on
 int fn_8000B42C(int arg0) {
     int var_r31 = 1;
     if (fn_8016212C() == 0) {
@@ -453,7 +455,7 @@ int fn_8000B42C(int arg0) {
         case 1:
             if (fn_80265D64() == 0) fn_80176734();
             else if (fn_80265D6C() != 0) fn_80265D54(2);
-            else fn_802E30C8(&lbl_802FBF80);
+            else ((int (*)(char *, ...))fn_802E30C8)(lbl_802FBF80);
             fn_801CB3F8();
             fn_8001EFB8();
             break;
@@ -473,8 +475,7 @@ int fn_8000B42C(int arg0) {
     if (var_r31 != 0) fn_8000ADE0(lbl_8055D3DC);
     return 1;
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 int fn_8000B53C(int arg0) {
     /* Set audio state to 0x12 and install/update AXFX hooks based on lbl_8055D3EC;
        returns 1 if arg0 is 1, else 0. */
