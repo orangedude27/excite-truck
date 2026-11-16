@@ -664,10 +664,11 @@ void __AXGetAuxBInput(void **out) {
     *out = 0;
 }
 
-void __AXGetAuxCOutput(void **arg0) {
+/* Return the DSP's current AUX-C output buffer (0x480 bytes per ring slot) through *out. */
+void __AXGetAuxCOutput(void **out) {
     extern u8 lbl_8035DAA0[];
     extern s32 lbl_8055D6F4;
-    *arg0 = lbl_8035DAA0 + lbl_8055D6F4 * 0x480;
+    *out = lbl_8035DAA0 + lbl_8055D6F4 * 0x480;
 }
 
 void InitMetroTRKCommTable(void) {
