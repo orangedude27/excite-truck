@@ -9284,10 +9284,11 @@ extern "C" void fn_80229A94(void *self) {
         *(s32 *)((u8 *)self + 8));
 }
 
-extern "C" void fn_80229AC4(void *arg0) {
-    int *p = *(int **)((char *)arg0 + 0x254);
-    if (p != 0) {
-        *p = *(int *)((char *)arg0 + 0x258);
+extern "C" void fn_80229AC4(void *widget) {
+    /* Select this entry: if the widget is bound to a cursor (+0x254), write its own id (+0x258) into it. */
+    int *cursor = *(int **)((char *)widget + 0x254);
+    if (cursor != 0) {
+        *cursor = *(int *)((char *)widget + 0x258);
     }
 }
 
