@@ -132,7 +132,7 @@ void fn_801AE628(int arg0) {
     }
     {
         char *e2;
-        unsigned int off;
+        int off;
         int j;
         for (j = 0, off = 0; j < lbl_80435780[0x3C0 / 4]; off += 0x1C, j++) {
             e2 = (char *)*lbl_8055E624 + off;
@@ -397,83 +397,108 @@ extern int fn_801B2ED4(void);
 extern void *memset(void *, int, unsigned int);
 #pragma push
 #pragma processor 750
-void fn_801AED74(void) {
-    register int *base;
-    register void *data;
-    register int i;
-    register int offset;
-    register float value;
-    register int zero;
-    register int j;
-    register int count;
-    register int **table;
-    register int byteOffset;
-    register int *entry;
-
-    if (*(unsigned char *)&lbl_8055E634 == 0) {
-        base = lbl_8055E624;
-        i = 0;
-        value = lbl_80562558;
-        offset = 0;
-        for (; i < base[1]; i++) {
-            int selected;
-            data = (char *)base[0] + offset;
-            memset(data, 0, 0x1C);
-            *(float *)((char *)data + 8) = value;
-            *(short *)((char *)data + 0xC) = -100;
-            if (i < fn_801B2F24())
-                selected = fn_801B3050(i);
-            else
-                selected = -1;
-            *(short *)((char *)data + 0x1A) = selected;
-            offset += 0x1C;
-        }
-        table = (int **)lbl_8055E620;
-        zero = 0;
-        for (j = 0; j < 8; j += 4) {
-            entry = table[j + 0];
-            if (entry != 0) {
-                count = 0;
-                byteOffset = 0;
-                while (count < entry[1]) {
-                    *(short *)((char *)entry[0] + byteOffset + 6) = zero;
-                    count++;
-                    byteOffset += 8;
-                }
-            }
-            entry = table[j + 1];
-            if (entry != 0) {
-                count = 0;
-                byteOffset = 0;
-                while (count < entry[1]) {
-                    *(short *)((char *)entry[0] + byteOffset + 6) = zero;
-                    count++;
-                    byteOffset += 8;
-                }
-            }
-            entry = table[j + 2];
-            if (entry != 0) {
-                count = 0;
-                byteOffset = 0;
-                while (count < entry[1]) {
-                    *(short *)((char *)entry[0] + byteOffset + 6) = zero;
-                    count++;
-                    byteOffset += 8;
-                }
-            }
-            entry = table[j + 3];
-            if (entry != 0) {
-                count = 0;
-                byteOffset = 0;
-                while (count < entry[1]) {
-                    *(short *)((char *)entry[0] + byteOffset + 6) = zero;
-                    count++;
-                    byteOffset += 8;
-                }
-            }
-        }
+void fn_801AED74(void)
+{
+  register int *base;
+  register void *data;
+  register int i;
+  register int offset;
+  register int **table;
+  register int j;
+  register int *entry;
+  register int count;
+  register int byteOffset;
+  register float value;
+  register int zero;
+  register int progress;
+  if ((*((unsigned char *) (&lbl_8055E634))) == 0)
+  {
+    base = lbl_8055E624;
+    i = 0;
+    value = lbl_80562558;
+    offset = 0;
+    for (; i < base[1]; i++)
+    {
+      int selected;
+      data = ((char *) base[0]) + offset;
+      memset(data, 0, 0x1C);
+      *((float *) (((char *) data) + 8)) = value;
+      count = -100;
+      *((short *) (((char *) data) + 0xC)) = count;
+      if (i < fn_801B2F24())
+      {
+        selected = fn_801B3050(i);
+      }
+      else
+      {
+        selected = -1;
+      }
+      *((short *) (((char *) data) + 0x1A)) = selected;
+      offset += 0x1C;
     }
-    lbl_8055E62C = fn_801B2ED4();
+
+    table = (int **) lbl_8055E620;
+    zero = 0;
+    progress = 0;
+    for (j = 0; j < 8; j += 4)
+    {
+      entry = table[j + 0];
+      if (entry != 0)
+      {
+        count = 0;
+        byteOffset = 0;
+        while (count < entry[1])
+        {
+          *((short *) ((((char *) entry[0]) + byteOffset) + 6)) = zero;
+          count++;
+          byteOffset += 8;
+        }
+
+      }
+      entry = table[j + 1];
+      if (entry != 0)
+      {
+        count = 0;
+        byteOffset = 0;
+        while (count < entry[1])
+        {
+          *((short *) ((((char *) entry[0]) + byteOffset) + 6)) = zero;
+          count++;
+          byteOffset += 8;
+        }
+
+      }
+      entry = table[j + 2];
+      if (entry != 0)
+      {
+        count = 0;
+        byteOffset = 0;
+        while (count < entry[1])
+        {
+          *((short *) ((((char *) entry[0]) + byteOffset) + 6)) = zero;
+          count++;
+          byteOffset += 8;
+        }
+
+      }
+      entry = table[j + 3];
+      if (entry != 0)
+      {
+        count = 0;
+        byteOffset = 0;
+        while (count < entry[1])
+        {
+          *((short *) ((((char *) entry[0]) + byteOffset) + 6)) = zero;
+          count++;
+          byteOffset += 8;
+        }
+
+      }
+      progress += 4;
+    }
+
+  }
+  lbl_8055E62C = fn_801B2ED4();
 }
 #pragma pop
 void fn_801AEF28(Src *arg0) {
@@ -785,7 +810,12 @@ extern float lbl_80435740[];
 
 void fn_801AFA64(int *arg0) { *arg0 = 0; }
 
-int fn_801AFA70(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+/* CodeWarrior deleting-destructor helper: free object via Mem_freeObject (fn_80128668)
+   when deleteFlag > 0, then return object. */
+int fn_801AFA70(int object, int deleteFlag) {
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
+}
 
 void fn_801AFAB4(void) {
 
