@@ -408,14 +408,13 @@ void *fn_80266120(void *cursor) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_80266150(void *arg0) {
-    volatile unsigned char *p = (volatile unsigned char *)arg0;
     int zero = 0;
     float f0 = lbl_80563C2C;
     float f1;
-    *(int volatile *)(p + 4) = zero;
-    *(int volatile *)(p + 0) = zero;
+    *(int *)((char *)arg0 + 4) = zero;
+    *(int *)((char *)arg0 + 0) = zero;
     f1 = lbl_8055C4C0;
     *(float *)((char *)arg0 + 8) = f1;
     *(float *)((char *)arg0 + 0xC) = f0;
