@@ -241,7 +241,7 @@ extern "C" void fn_80208D80(int arg0) {
 #pragma cplusplus on
 extern "C" int strncmp(const char *, const char *, unsigned int);
 extern "C" void fn_802E30C8(const char *, ...);
-extern "C" void fn_80208E90(void *arg0, int arg1) {
+extern "C" void fn_80208E90(void *objectPtr, int mode) {
     struct Dummy {
         virtual void close(int);
         virtual const char *name();
@@ -252,33 +252,35 @@ extern "C" void fn_80208E90(void *arg0, int arg1) {
         virtual void unused20();
         virtual void finish();
     };
-    Dummy *object = (Dummy *)arg0;
-    const char *strings = lbl_8033BEF8;
-    int addObject;
+    /* Registers a sound device: rejects a known-bogus device and devices past the
+       6-slot limit, otherwise stores it (finalizing enabled ones when mode==1). */
+    Dummy *device = (Dummy *)objectPtr;
+    const char *messages = lbl_8033BEF8;
+    int registerDevice;
     unsigned int count;
 
-    if (strncmp(object->name(), strings + 0x60, 0xB) == 0) {
-        fn_802E30C8(strings + 0x70, object->name());
-        if (arg0 != 0) {
-            object->close(1);
+    if (strncmp(device->name(), messages + MIXER_BOGUS_NAME_OFF, 0xB) == 0) {
+        fn_802E30C8(messages + MIXER_BOGUS_MSG_OFF, device->name());
+        if (objectPtr != 0) {
+            device->close(1);
         }
     } else {
-        count = (unsigned int)lbl_80489238[6];
-        if (count < 6) {
-            addObject = arg1 == 0;
-            if (arg1 == 1 && object->enabled() != 0) {
-                addObject = 1;
-                object->finish();
+        count = (unsigned int)MIXER_DEVICE_COUNT;
+        if (count < MIXER_DEVICE_MAX) {
+            registerDevice = mode == 0;
+            if (mode == 1 && device->enabled() != 0) {
+                registerDevice = 1;
+                device->finish();
             }
-            if (addObject != 0) {
-                lbl_80489238[lbl_80489238[6]++] = (int)arg0;
-            } else if (arg0 != 0) {
-                object->close(1);
+            if (registerDevice != 0) {
+                MIXER_DEVICES[MIXER_DEVICE_COUNT++] = (int)objectPtr;
+            } else if (objectPtr != 0) {
+                device->close(1);
             }
         } else {
-            fn_802E30C8(strings + 0x88, object->name());
-            if (arg0 != 0) {
-                object->close(1);
+            fn_802E30C8(messages + MIXER_FULL_MSG_OFF, device->name());
+            if (objectPtr != 0) {
+                device->close(1);
             }
         }
     }
