@@ -6520,15 +6520,18 @@ extern "C" void fn_80223C20(void *arg0) {
     }
 }
 #pragma processor pop
-extern "C" void fn_80223CC4(void *arg0) {
-    void *obj = *(void **)((u8 *)arg0 + 0x264);
-    s32 a = *(s32 *)((u8 *)arg0 + 0x24C);
-    s32 b = *(s32 *)((u8 *)obj + 0xC);
-    if (a == b)
-        *(f32 *)((u8 *)arg0 + 0x25C) = lbl_805634A8;
+/* Refresh this widget's match flag: store 0.0f at +0x25C when the cached id at +0x24C equals the watched object's id at +0xC, otherwise 1.0f, then notify watchers through fn_802192AC. */
+extern "C" void fn_80223CC4(void *widget) {
+#define FLOAT_ZERO lbl_805634A8
+#define FLOAT_ONE  lbl_805634A4
+    void *watchedObj = *(void **)((u8 *)widget + 0x264);
+    s32 cachedId = *(s32 *)((u8 *)widget + 0x24C);
+    s32 watchedId = *(s32 *)((u8 *)watchedObj + 0xC);
+    if (cachedId == watchedId)
+        *(f32 *)((u8 *)widget + 0x25C) = FLOAT_ZERO;
     else
-        *(f32 *)((u8 *)arg0 + 0x25C) = lbl_805634A4;
-    fn_802192AC(arg0);
+        *(f32 *)((u8 *)widget + 0x25C) = FLOAT_ONE;
+    fn_802192AC(widget);
 }
 
 extern "C" s32 fn_802C9A58(s32, void *);
