@@ -35,6 +35,12 @@ void fn_80129324(void) {
 
 void fn_80129360(int a, int b) { fn_802E765C(lbl_8055DFA8,a,b); }
 
+/* These level constants are fed to the stream manager's per-channel level setter (f24). */
+#define FULL_LEVEL lbl_80561238 /* 1.0f */
+#define HALF_LEVEL lbl_8056123C /* 0.5f */
+#define MUTE_LEVEL lbl_80561240 /* 0.0f */
+#define setStreamBankLevel fn_802E7684
+
 void fn_80129374(int arg0, int arg1) {
     float v;
     if (arg0 == 1)
