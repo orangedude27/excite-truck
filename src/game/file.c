@@ -74,11 +74,13 @@ s32 fn_802E32C4(s32 path) {
     return 0;
 }
 #pragma dont_inline reset
+/* Return the file system picked by fn_802E32C4, or the default file system
+   (lbl_8055FF18) when none is available. */
 s32 *fn_802E333C(void) {
-    s32 *temp_r3;
-    temp_r3 = (s32 *)((s32 (*)())fn_802E32C4)();
-    if (temp_r3 != 0) {
-        return temp_r3;
+    s32 *fileSystem;
+    fileSystem = (s32 *)((s32 (*)())fn_802E32C4)();
+    if (fileSystem != 0) {
+        return fileSystem;
     }
     return (s32 *)lbl_8055FF18;
 }
