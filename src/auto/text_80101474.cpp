@@ -32,6 +32,15 @@ struct CharStrmReaderMsgs {
 };
 extern "C" const char lbl_80327EE0[];
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+struct BinFileDiagMsgs {
+    char file[0x18];
+    char msg1[0x38];
+    char msg2[0x38];
+    char msg3[0x18];
+    char msg4[0x30];
+    char msg5[0x1C];
+    char msg6[0x20];
+};
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int fn_80128668(void);
@@ -378,16 +387,23 @@ extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
+#pragma optimization_level 3
 int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback, unsigned long arg2, bool arg3) {
     unsigned char sp8[0x10];
     unsigned char sp18[0x90];
+    struct { unsigned long scratch; } scratchBox;
+    scratchBox.scratch = arg2;
+    unsigned long &scratch = scratchBox.scratch;
+    struct { const nw4hbm::snd::detail::WsdTrack::WsdCallback *cb; } cbBox;
+    cbBox.cb = callback;
+    const nw4hbm::snd::detail::WsdTrack::WsdCallback *&cb = cbBox.cb;
     if (*(void **)((char *)this + 0x2C) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x189, lbl_80327CCC);
     if (*(int *)((char *)this + 8) == 0) {
         void *owner = *(void **)((char *)this + 0x2C);
         int pitch = *((unsigned char *)this + 0x1D) + *(unsigned char *)((char *)owner + 0x90);
-        if (!callback->GetWave((char *)this + 0x20, sp8, sp18,
-                               *(int *)this, *(int *)((char *)this + 4), 0, arg2))
+        if (!cb->GetWave((char *)this + 0x20, sp8, sp18,
+                         *(int *)this, *(int *)((char *)this + 4), 0, scratch))
             return -1;
         owner = *(void **)((char *)this + 0x2C);
         int maxVoices = *(int *)((char *)owner + 0x8C);
@@ -409,6 +425,7 @@ int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::Ws
     } else if (*(void **)((char *)this + 0x30) == 0) return -1;
     return 0;
 }
+#pragma optimization_level reset
 extern "C" const char lbl_80327CB8[];
 void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Channel *arg0, nw4hbm::snd::detail::Channel::ChannelCallbackStatus arg1, unsigned long arg2) {
     const char *base = lbl_80327CB8;
@@ -1606,7 +1623,7 @@ extern "C" void GXLoadTexObj(void *, int);
 #pragma processor gekko
 void nw4hbm::ut::CharWriter::PrintGlyph(float x, float y, float z, const Glyph &glyph) {
     struct TexCache { int a; unsigned int b; int c, d; };
-    char *base = (char *)lbl_80328178;
+    const char *base = lbl_80328178;
     unsigned int top0 = (unsigned int)this & 0xFF000000U;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     if (top0 != 0x80000000U && ((unsigned int)this & 0xFF800000U) != 0x81000000U) r10 = 0;
