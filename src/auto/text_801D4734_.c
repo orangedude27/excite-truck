@@ -2410,11 +2410,12 @@ int fn_801D76CC(int arg0, int arg1) {
     return arg0;
 }
 
-int fn_801D770C(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_801D770C(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 /* Destructor-like helper: clear embedded state at offsets +0x24, +0x28, +0x2C, then optionally free the object. */
