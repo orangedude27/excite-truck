@@ -8,14 +8,18 @@ extern float lbl_805640E0;
 extern float lbl_805640E4;
 
 void fn_802793B0(int arg0);
+/* Reset all four 0xA0-byte records in the global table to their defaults by
+ * initializing each one in turn. */
 void fn_80279370(void) {
-    int var_r31;
+#define InitEntry fn_802793B0
+    int index;
 
-    var_r31 = 0;
+    index = 0;
     do {
-        fn_802793B0(var_r31);
-        var_r31 += 1;
-    } while (var_r31 < 4);
+        InitEntry(index);
+        index += 1;
+    } while (index < 4);
+#undef InitEntry
 }
 
 void fn_802793AC(void) {}
