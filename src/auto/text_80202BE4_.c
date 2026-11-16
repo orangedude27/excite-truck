@@ -822,6 +822,7 @@ void fn_80203EC4(void) {
 }
 
 void fn_80203EF4(void) {
+    /* If the shadow-map enable flag is set, run the shadow/SWL map work for the current map slot. */
     if (lbl_8055ED10 == 0) {
         return;
     }
