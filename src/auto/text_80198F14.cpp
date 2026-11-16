@@ -5067,11 +5067,13 @@ extern "C" s32 fn_801A4F00(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" s32 fn_801A4F40(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_801A4F40(s32 object, s32 shouldDestroy) {
+    /* If object is non-null and shouldDestroy > 0, signal it for destruction
+     * via fn_80128668 (calls fn_80128584 with mode 3). Returns the object. */
+    if (object != 0 && shouldDestroy > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" s32 fn_801A4F80(s32 arg0, s32 arg1) {
