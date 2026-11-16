@@ -23874,7 +23874,13 @@ void RFCOMM_LineStatusReq(void *p_mcb, u8 dlci, u8 status) {
 
 void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xC, 0); }
 
-void fn_800939CC(void *arg0, u8 arg1, void *arg2) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xE, arg2); }
+void fn_800939CC(void *p_mcb, u8 dlci, void *p_buf) {
+    /* RFCOMM_DataReq: hand a data buffer to the RFCOMM port state machine for
+       the DLC identified by dlci on the given multiplexer. */
+#define RFC_EVENT_DATA 0xE
+    rfc_port_sm_execute(port_find_mcb_dlci_port(p_mcb, dlci), RFC_EVENT_DATA, p_buf);
+#undef RFC_EVENT_DATA
+}
 
 void rfc_send_sabme(void *p_mcb, s32 dlci, void *unused) {
     BT_HDR *p_buf;
