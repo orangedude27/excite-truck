@@ -2635,14 +2635,15 @@ extern "C" void fn_8012E498(void *name) {
 #pragma pop
 #pragma scheduling reset
 
-extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
+/* RealName: ListRemoveNodeToFreeList (tentative). Removes targetNode from a singly-linked list whose head pointer is at list+0x8; if found, pushes it onto a free list whose head pointer is at list+0xC. */
+extern "C" void fn_8012E5E4(void *list, void *targetNode) {
     void *node;
     s32 found;
     void **link;
-    link = (void **)((u8 *)arg0 + 8);
+    link = (void **)((u8 *)list + 8);
     found = 0;
     while ((node = *link) != 0) {
-        if (node == arg1) {
+        if (node == targetNode) {
             *link = *(void **)node;
             found = 1;
             break;
@@ -2650,8 +2651,8 @@ extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
         link = (void **)node;
     }
     if (found == 0) return;
-    *(void **)arg1 = *(void **)((u8 *)arg0 + 0xC);
-    *(void **)((u8 *)arg0 + 0xC) = arg1;
+    *(void **)targetNode = *(void **)((u8 *)list + 0xC);
+    *(void **)((u8 *)list + 0xC) = targetNode;
 }
 
 extern "C" void fn_8012E630(void *arg0) {
