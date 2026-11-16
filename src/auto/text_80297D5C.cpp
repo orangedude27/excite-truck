@@ -142,16 +142,17 @@ extern "C" void fn_8029AAE0(int, int, void*);
     extern float lbl_805645E0;
     __declspec(section ".data") extern float lbl_80558DC4;
     #pragma scheduling invalid_target
-    extern "C" int fn_80297D5C(void *out, int value) {
-        int i;
-        for (i = 1; i < 0x10; ++i) {
-            if (i * i == value) {
-                *(int *)out = i;
-                return 1;
-            }
+extern "C" int fn_80297D5C(void *rootOut, int square) {
+    /* If square is the square of an integer 1..15, store its root through rootOut and return 1; otherwise return 0. */
+    int root;
+    for (root = 1; root < 0x10; ++root) {
+        if (root * root == square) {
+            *(int *)rootOut = root;
+            return 1;
         }
-        return 0;
     }
+    return 0;
+}
     #pragma scheduling on
 /* If value is a single set bit within bits 0-9, store its bit index through out and return 1; otherwise return 0. */
 extern "C" int fn_80297D90(void *out, int value) {
