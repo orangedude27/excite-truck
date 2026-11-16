@@ -293,11 +293,13 @@ void fn_8026B6E4(void) {
 #undef updateSlot
 }
 
-int fn_8026B734(int arg0, float *arg1) {
-    int index = arg0 << 4;
-    volatile unsigned char *base = lbl_8049A0E8;
-    if (base[index] != 0) {
-        *arg1 = *(float *)(base + index + 8);
+/* If slot slotIndex is active (its 'on' byte set), copy that slot's float value
+ * (Ent.v at +8) into *outValue and return 1; otherwise return 0. */
+int fn_8026B734(int slotIndex, float *outValue) {
+    int offset = slotIndex << 4;
+    volatile unsigned char *table = lbl_8049A0E8;
+    if (table[offset] != 0) {
+        *outValue = *(float *)(table + offset + 8);
         return 1;
     }
     return 0;
