@@ -5618,6 +5618,7 @@ void fn_801219B4(void *a) {
 }
 
 void fn_80121BB0(void *arg0) {
+    /* Swap pairs of floats within a 16-float block (indices 2,3<->8,9 and 6,7<->12,13). */
     f32 *p = (f32 *)arg0;
     f32 a, c, e, g, b, d, f, h;
     a = p[2]; c = p[3]; e = p[6]; g = p[7];
