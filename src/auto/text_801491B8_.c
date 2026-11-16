@@ -230,7 +230,7 @@ public:
 };
 #pragma cplusplus off
 extern u8 lbl_8032D358[];
-extern void *fn_80131808(void *, s32, s32);
+extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
 extern void *fn_8012850C(s32, void *);
 extern f32 lbl_8056163C, lbl_8056164C, lbl_80561670, lbl_805616C8;
