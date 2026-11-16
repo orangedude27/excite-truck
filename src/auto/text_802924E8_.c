@@ -655,10 +655,17 @@ void fn_8029311C(void* arg0) {
 #pragma small_data off
 #pragma pop
 __declspec(section ".data") extern float lbl_80558DC4;
-void fn_80293128(void* arg0) {
-    float value = fn_801E7E24(arg0);
-    float abs = (float)__fabs((double)value);
-    if (!(abs <= lbl_80558DC4)) fn_802936C4(arg0);
+/* Update this effect when the frame delta time is non-zero (above epsilon). */
+void fn_80293128(void* effect) {
+#define Frame_GetDeltaTime fn_801E7E24
+#define Effect_Update      fn_802936C4
+#define kFloatEpsilon      lbl_80558DC4
+    float dt = Frame_GetDeltaTime(effect);
+    float absDt = (float)__fabs((double)dt);
+    if (!(absDt <= kFloatEpsilon)) Effect_Update(effect);
+#undef kFloatEpsilon
+#undef Effect_Update
+#undef Frame_GetDeltaTime
 }
 
 #pragma use_lmw_stmw off
