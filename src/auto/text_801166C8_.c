@@ -1403,12 +1403,14 @@ signed long fn_801186B8(void* arg0) {
 
 #undef lbl_8041D608
 
-void fn_80118C1C(void *arg0, s32 arg1) {
-    s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0x264);
-    if (temp_r0 != 0) {
-        s32 temp_r5 = *(s32 *)((u8 *)arg0 + 0x29c);
-        *(s32 *)((u8 *)arg0 + 0x29c) = temp_r5 + (arg1 - temp_r0);
-        *(s32 *)((u8 *)arg0 + 0x264) = 0;
+/* Accumulate an elapsed-time interval for an object: when a start tick at +0x264
+ * is set, add (endTick - startTick) to the running total at +0x29c and clear the start. */
+void fn_80118C1C(void *object, s32 endTick) {
+    s32 startTick = *(s32 *)((u8 *)object + 0x264);
+    if (startTick != 0) {
+        s32 accumulated = *(s32 *)((u8 *)object + 0x29c);
+        *(s32 *)((u8 *)object + 0x29c) = accumulated + (endTick - startTick);
+        *(s32 *)((u8 *)object + 0x264) = 0;
     }
 }
 
