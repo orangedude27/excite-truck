@@ -3442,11 +3442,12 @@ void fn_801C6E40(void) {
     fn_801C957C(0);
 }
 #pragma pop
-void fn_801C7254(void *arg0) {
-    f32 *p = (f32 *)arg0;
+void fn_801C7254(void *matrix) {
+    /* Transpose a row-major 3x3 matrix in place by swapping its off-diagonal pairs. */
+    f32 *m = (f32 *)matrix;
     f32 t;
-    
-    t = p[1]; p[1] = p[3]; p[3] = t;
-    t = p[2]; p[2] = p[6]; p[6] = t;
-    t = p[5]; p[5] = p[7]; p[7] = t;
+
+    t = m[1]; m[1] = m[3]; m[3] = t;
+    t = m[2]; m[2] = m[6]; m[6] = t;
+    t = m[5]; m[5] = m[7]; m[7] = t;
 }
