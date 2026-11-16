@@ -12,14 +12,6 @@ extern double fn_8002EFB4(float, double);
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct UnkAA9D4 { unsigned char pad[0xDC]; unsigned char active; unsigned char padDD[3]; float amount; unsigned char padE4[0x14]; float width, depth, height; } UnkAA9D4;
-typedef struct {
-    char padEC[0xEC];
-    unsigned char flag;
-    char padED[0x7];
-    unsigned char val;
-    char padF5[0x13];
-} Dest;
-typedef struct { int index; unsigned char value; } ArgA9FB0;
 typedef union UnkAAF04Conversion { unsigned int words[2]; double value; } UnkAAF04Conversion;
 typedef struct InitStruct {
     int field_00;
@@ -108,12 +100,12 @@ s32 fn_802A9F90(s32 *arg0) {
 
 #pragma scheduling reset
 s32 fn_802A9FB0(void *arg0) {
-    register unsigned one = 1;
     int index = *(int *)arg0;
     extern int lbl_8055F928;
     int offset = index * 0x108;
     unsigned char value = *((unsigned char *)arg0 + 4);
-    *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC) = one;
+    register unsigned one = 1;
+    *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC + (value & 0)) = one;
     *(unsigned char *)(lbl_8055F928 + offset + (unsigned)0xF4) = value;
     return 8;
 }
