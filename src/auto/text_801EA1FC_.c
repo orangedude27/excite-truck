@@ -92,10 +92,17 @@ void fn_801EA394(void) {
 }
 
 void fn_801EA3B8(void) {
+    /* Set a UI draw color/alpha and scale, and clear the active flag. */
+#define uiScaleZero lbl_80562E58
+#define uiScaleDefault lbl_80562E5C
+#define uiActive lbl_8055EB59
     fn_802C990C(0xC9C9EB);
     fn_802C86E8(0xFF000000);
-    fn_802C2B78(lbl_80562E58, lbl_80562E5C, lbl_80562E58);
-    lbl_8055EB59 = 0;
+    fn_802C2B78(uiScaleZero, uiScaleDefault, uiScaleZero);
+    uiActive = 0;
+#undef uiScaleZero
+#undef uiScaleDefault
+#undef uiActive
 }
 
 void fn_801EA400(void) {
