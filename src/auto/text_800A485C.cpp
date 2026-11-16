@@ -25415,13 +25415,15 @@ extern "C" s32 fn_800A4B08(u8 *left, u8 *right, s32 count) {
 #pragma scheduling on
 #pragma push
 #pragma dont_inline on
-extern "C" s32 fn_800A4B54(s32 arg0) {
-    u8 *start = (u8 *)arg0;
-    u8 *ptr = start;
-    while (*(u16 *)ptr != 0) {
-        ptr += 2;
+extern "C" s32 fn_800A4B54(s32 str) {
+    /* Return the number of 16-bit code units in the NUL-terminated UTF-16 string at str
+       (a wcslen for u16; callers multiply the result by 2 to get a byte count). */
+    u8 *stringStart = (u8 *)str;
+    u8 *cursor = stringStart;
+    while (*(u16 *)cursor != 0) {
+        cursor += 2;
     }
-    return (ptr - start) >> 1;
+    return (cursor - stringStart) >> 1;
 }
 #pragma pop
 
