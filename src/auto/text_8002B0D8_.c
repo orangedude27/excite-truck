@@ -1297,11 +1297,12 @@ double ceil(double x) {
 
 #pragma dont_inline on
 double copysign(double x, double y) {
-    union { double d; unsigned int i[2]; } b, a;
-    a.d = x;
-    b.d = y;
-    a.i[0] = (a.i[0] & 0x7fffffff) | (b.i[0] & 0x80000000);
-    return a.d;
+    /* Return x with y's sign bit (big-endian double: word 0 holds sign+exponent). */
+    union { double d; unsigned int i[2]; } signDonor, result;
+    result.d = x;
+    signDonor.d = y;
+    result.i[0] = (result.i[0] & 0x7fffffff) | (signDonor.i[0] & 0x80000000);
+    return result.d;
 }
 #pragma dont_inline reset
 
