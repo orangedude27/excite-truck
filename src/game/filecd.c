@@ -254,6 +254,7 @@ void *fn_802E41C4(void *file, int destroyFlag) {
 }
 
 extern const char lbl_8034D104[];
+#define fileCdMsgOpenWritableNotSupported lbl_8034D104 /* "filecd: open writable not supported (%s)" */
 #pragma scheduling invalid_target
 int fn_802E4250(void) {
     fn_802E30C8(lbl_8034D104);
