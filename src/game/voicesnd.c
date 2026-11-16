@@ -580,13 +580,15 @@ void fn_8020B344(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_8020B348(void *arg0) {
+/* If obj is non-null, invoke its virtual deleting destructor (vtable slot 0)
+ * with flag 1, i.e. destroy the object and free its storage. */
+extern "C" void fn_8020B348(void *self) {
     class Obj {
     public:
-        virtual void f(int);
+        virtual void destroy(int);
     };
-    if (arg0 == 0) return;
-    ((Obj *)arg0)->f(1);
+    if (self == 0) return;
+    ((Obj *)self)->destroy(1);
 }
 
 // ---------------------------------------------------------------------------
