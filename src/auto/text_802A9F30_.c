@@ -19,6 +19,7 @@ typedef struct {
     unsigned char val;
     char padF5[0x13];
 } Dest;
+typedef struct { int index; unsigned char value; } ArgA9FB0;
 typedef union UnkAAF04Conversion { unsigned int words[2]; double value; } UnkAAF04Conversion;
 typedef struct InitStruct {
     int field_00;
