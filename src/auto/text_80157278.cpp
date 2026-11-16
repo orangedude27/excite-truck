@@ -1616,11 +1616,12 @@ void fn_80158F34(void** arg0) {
 
 }
 
-extern "C" void fn_80158F38(void* self, s32 unused, s32 arg2) {
-    if (arg2 == 1) {
-        *((u8*)self + 0x270) = 1;
-    } else if (arg2 == 0) {
-        *((u8*)self + 0x271) = 1;
+/* Set the record player's enable flags: mode 1 sets flag 0x270, mode 0 sets flag 0x271. */
+extern "C" void fn_80158F38(void* player, s32 unused, s32 mode) {
+    if (mode == 1) {
+        *((u8*)player + 0x270) = 1;
+    } else if (mode == 0) {
+        *((u8*)player + 0x271) = 1;
     }
 }
 
