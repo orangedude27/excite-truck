@@ -264,12 +264,15 @@ __declspec(section ".sdata") extern const char lbl_80559B68[];
 #pragma scheduling invalid_target
 int fn_80133460(int arg0, int arg1, unsigned char arg2) {
     char *sp8;
+    char *result;
     fn_80133E10((void **)&sp8, arg0, arg1);
     *(unsigned char *)(sp8 + 8) = arg2;
     *(int *)(sp8 + 0xC) = arg2;
     *(float *)(sp8 + 0x10) = (float)arg2;
     strcpy(sp8 + 0x14, arg2 ? lbl_80559B64 : lbl_80559B68);
-    *(int *)sp8 = 1;
+    result = sp8;
+    *(int *)result = 1;
+    return (int)result;
 }
 #pragma scheduling on
 /* Copy a value's string (offset 0x14) for (groupId, valueId) into outBuf, or initialize it via fn_8013358C. */
@@ -624,6 +627,9 @@ int fn_80133BA0(int path, int ignoreVersion, int wantSection) {
     }
     return ok;
 }
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_80133E10(void **arg0, int arg1, int arg2) {
     register int count;
     register int offset;
@@ -675,8 +681,7 @@ check:
     }
     return 0;
 }
-
-#pragma dont_inline on
+#pragma pop
 int fn_80133F3C(int arg0) {
     int offset = 0;
     int i = 0;
