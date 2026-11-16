@@ -321,6 +321,8 @@ char fn_802787F4(void) {
     return lbl_8055F5BA;
 }
 
+#define sPlayingBack lbl_8055F5BA /* 1 while the captured movie plays back */
+#define sDemoActive  lbl_8055F5BB /* 1 while the scripted replay/demo runs */
 int fn_802787FC(void) {
     return ((unsigned char)lbl_8055F5BA != 0) || ((unsigned char)lbl_8055F5BB != 0);
 }
