@@ -2063,9 +2063,19 @@ struct ResTocMountList {
     ResTocMount **tail;
 };
 
+struct ResTocNodePool {  // the manager's fixed pool of mount nodes, at +0x8
+    ResTocMount *nodes;    // +0x00: the node array (the manager's own storage)
+    s32 capacity;          // +0x04: how many nodes it holds (0x20)
+    ResTocMount *inUse;    // +0x08: nodes handed out, chained at poolNext (fn_8012E460)
+    ResTocMount *freeList; // +0x0C: nodes up for grabs, chained at poolNext
+};
+
 struct ResTocManager {
-    u8 unk_0x0[0xA18];         // +0x8: the 0x20-node pool, +0x18: its free list
-    ResTocMountList mounts;    // the sets being loaded, in queue order
+    void *vtable;              // 0x00: lbl_8032ACB0
+    u8 unk_0x4[0x4];
+    ResTocNodePool pool;       // 0x08: where mount nodes come from
+    u8 nodes[0xA00];           // 0x18: the 0x20 pool nodes, 0x50 bytes each
+    ResTocMountList mounts;    // 0xA18: the sets being loaded, in queue order
     u8 pumping;                // 0xA20: fn_8012DEE4 is working the queue
 };
 
