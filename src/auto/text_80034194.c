@@ -2423,124 +2423,139 @@ extern s32 __DVDCheckWaitingQueue(void);
 extern void *__DVDPopWaitingQueue(void);
 
 extern s32 lbl_8055D8B4, lbl_8055D878;
+/* The driver's idle state: start the command at the head of the waiting queue.
+ *
+ * The block comes off the queue, becomes the one the driver is running, and is
+ * handed to the drive state that fits it.  A resume point left over from an
+ * earlier command (StateToChange) is finished first - the ones that stop the
+ * motor arm the 100 ms cover poll (CoverAlarmHandler) unless something is
+ * watching the cover already - and otherwise the motor's state decides between
+ * the busy state and the cover-closed one.  Reset, inquiry and closing a
+ * partition leave no resume point behind.  While the driver is paused the block
+ * stays queued and PausingFlag says so; once the drive has hit a fatal error
+ * every block is failed where it stands and the next one is taken in turn.
+ * (The file calls this state stateReady.)
+ */
 void fn_80038040(void) {
-    void *temp_r3;
-    void *temp_r4;
+    void *block;
+    void *failedBlock;
     void (*callback)(s32, void *);
     if (__DVDCheckWaitingQueue() == 0) {
-        executing_8055D8C8 = 0;
+        ExecutingBlock = 0; /* nothing queued: the driver is idle */
         return;
     }
-    if (lbl_8055D84C != 0) {
-        PausingFlag_8055D850 = 1;
-        executing_8055D8C8 = 0;
+    if (PauseFlag != 0) {
+        PausingFlag_8055D850 = 1; /* the queue waits for DVDResume */
+        ExecutingBlock = 0;
         return;
     }
-    temp_r3 = __DVDPopWaitingQueue();
-    executing_8055D8C8 = (s32)temp_r3;
+    block = __DVDPopWaitingQueue();
+    ExecutingBlock = (s32)block;
     if (FatalErrorFlag_8055D854 != 0) {
-        *(s32 *)((u8 *)temp_r3 + 0xC) = -1;
-        temp_r4 = (void *)executing_8055D8C8;
-        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        callback = *(void (**)(s32, void *))((u8 *)temp_r4 + 0x28);
-        if (callback != 0) callback(-1, temp_r4);
-        fn_80038040();
+        /* the drive is done for: fail this block, then take in the next */
+        *(s32 *)((u8 *)block + 0xC) = DVD_STATE_FATAL;
+        failedBlock = (void *)ExecutingBlock;
+        ExecutingBlock = (s32)DummyBlock;
+        callback = *(void (**)(s32, void *))((u8 *)failedBlock + 0x28);
+        if (callback != 0) callback(DVD_RESULT_FATAL_ERROR, failedBlock);
+        stateReady();
         return;
     }
-    *(volatile u32 *)&lbl_8055D8BC = *(u32 *)((u8 *)temp_r3 + 8);
-    if (((u32)*(volatile s32 *)&lbl_8055D8BC == 0x20U) ||
-        ((u32)*(volatile s32 *)&lbl_8055D8BC == 0xEU) ||
-        ((u32)*(volatile s32 *)&lbl_8055D8BC == 0x23U)) lbl_8055D85C = 0;
-    if (*(volatile s32 *)&lbl_8055D85C != 0) {
-        switch (*(volatile s32 *)&lbl_8055D85C) {
-        case 2: {
+    *(volatile u32 *)&DriveCommand = *(u32 *)((u8 *)block + 8);
+    if (((u32)*(volatile s32 *)&DriveCommand == COMMAND_RESET) ||
+        ((u32)*(volatile s32 *)&DriveCommand == COMMAND_INQUIRY) ||
+        ((u32)*(volatile s32 *)&DriveCommand == COMMAND_CLOSE_PARTITION)) StateToChange = 0;
+    if (*(volatile s32 *)&StateToChange != 0) {
+        /* an earlier command still owes the drive an answer: finish that */
+        switch (*(volatile s32 *)&StateToChange) {
+        case RESUME_POINT_DISK_ERROR: {
             s32 tick;
-            *(s32 *)((u8 *)temp_r3 + 0xC) = 0xB;
-            MotorState_8055D8A8 = 1;
-            if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-                lbl_8055D870 = 1;
-                OSCreateAlarm(lbl_80376AD0);
+            *(s32 *)((u8 *)block + 0xC) = DVD_STATE_DISK_ERROR;
+            MotorState_8055D8A8 = MOTOR_STATE_PENDING_STOP;
+            if (Transferring == 0 && AlarmInfo == 0) {
+                Transferring = 1;
+                OSCreateAlarm(&StateAlarm);
                 tick = OSGetTick();
                 {
-                    u32 base = 0x80000000;
-                    u32 multHi = 0x10620000;
-                    u32 clock = *(volatile u32 *)(base + 0xF8);
-                    void (*fn)(void) = fn_8003801C;
-                    u32 mult = multHi + 0x4DD3;
-                    u32 interval = ((clock >> 2) / 1000) * 0x64;
-                    OSSetPeriodicAlarm(lbl_80376AD0, mult, 0, tick, 0, interval, fn);
+                    u32 timerBase = 0x80000000; /* where the OS keeps its clock */
+                    u32 scaleHi = 0x10620000;
+                    u32 timerClock = *(volatile u32 *)(timerBase + 0xF8);
+                    void (*onExpired)(void) = CoverAlarmHandler;
+                    u32 timeScale = scaleHi + 0x4DD3; /* 0x10624DD3 */
+                    u32 period = ((timerClock >> 2) / 1000) * 0x64; /* 100 ms in ticks */
+                    OSSetPeriodicAlarm(&StateAlarm, timeScale, 0, tick, 0, period, onExpired);
                 }
             }
             break;
         }
-        case 3: {
+        case RESUME_POINT_NO_DISK: {
             s32 tick;
-            *(s32 *)((u8 *)temp_r3 + 0xC) = 4;
-            MotorState_8055D8A8 = 1;
-            if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-                lbl_8055D870 = 1;
-                OSCreateAlarm(lbl_80376AD0);
+            *(s32 *)((u8 *)block + 0xC) = DVD_STATE_NO_DISK;
+            MotorState_8055D8A8 = MOTOR_STATE_PENDING_STOP;
+            if (Transferring == 0 && AlarmInfo == 0) {
+                Transferring = 1;
+                OSCreateAlarm(&StateAlarm);
                 tick = OSGetTick();
                 {
-                    u32 base = 0x80000000;
-                    u32 multHi = 0x10620000;
-                    u32 clock = *(volatile u32 *)(base + 0xF8);
-                    void (*fn)(void) = fn_8003801C;
-                    u32 mult = multHi + 0x4DD3;
-                    u32 interval = ((clock >> 2) / 1000) * 0x64;
-                    OSSetPeriodicAlarm(lbl_80376AD0, mult, 0, tick, 0, interval, fn);
+                    u32 timerBase = 0x80000000; /* where the OS keeps its clock */
+                    u32 scaleHi = 0x10620000;
+                    u32 timerClock = *(volatile u32 *)(timerBase + 0xF8);
+                    void (*onExpired)(void) = CoverAlarmHandler;
+                    u32 timeScale = scaleHi + 0x4DD3; /* 0x10624DD3 */
+                    u32 period = ((timerClock >> 2) / 1000) * 0x64; /* 100 ms in ticks */
+                    OSSetPeriodicAlarm(&StateAlarm, timeScale, 0, tick, 0, period, onExpired);
                 }
             }
             break;
         }
-        case 4: {
+        case RESUME_POINT_COVER_OPENED: {
             s32 tick;
-            *(s32 *)((u8 *)temp_r3 + 0xC) = 5;
-            MotorState_8055D8A8 = 1;
-            if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-                lbl_8055D870 = 1;
-                OSCreateAlarm(lbl_80376AD0);
+            *(s32 *)((u8 *)block + 0xC) = DVD_STATE_COVER_OPENED;
+            MotorState_8055D8A8 = MOTOR_STATE_PENDING_STOP;
+            if (Transferring == 0 && AlarmInfo == 0) {
+                Transferring = 1;
+                OSCreateAlarm(&StateAlarm);
                 tick = OSGetTick();
                 {
-                    u32 base = 0x80000000;
-                    u32 multHi = 0x10620000;
-                    u32 clock = *(volatile u32 *)(base + 0xF8);
-                    void (*fn)(void) = fn_8003801C;
-                    u32 mult = multHi + 0x4DD3;
-                    u32 interval = ((clock >> 2) / 1000) * 0x64;
-                    OSSetPeriodicAlarm(lbl_80376AD0, mult, 0, tick, 0, interval, fn);
+                    u32 timerBase = 0x80000000; /* where the OS keeps its clock */
+                    u32 scaleHi = 0x10620000;
+                    u32 timerClock = *(volatile u32 *)(timerBase + 0xF8);
+                    void (*onExpired)(void) = CoverAlarmHandler;
+                    u32 timeScale = scaleHi + 0x4DD3; /* 0x10624DD3 */
+                    u32 period = ((timerClock >> 2) / 1000) * 0x64; /* 100 ms in ticks */
+                    OSSetPeriodicAlarm(&StateAlarm, timeScale, 0, tick, 0, period, onExpired);
                 }
             }
             break;
         }
-        case 1:
-        case 6:
-        case 7:
-            *(s32 *)((u8 *)temp_r3 + 0xC) = 3;
-            fn_8003773C();
+        case RESUME_POINT_WRONG_DISK_ID:
+        case RESUME_POINT_DISK_CHANGED:
+        case RESUME_POINT_7:
+            *(s32 *)((u8 *)block + 0xC) = DVD_STATE_COVER_CLOSED;
+            stateCoverClosed();
             break;
-        case 5:
-            fn_8003A1A0(lbl_8055D8B4, fn_80035C64);
+        case RESUME_POINT_OK:
+            __DVDStoreErrorCode(CancelLastError, cbForStoreErrorCode1);
             break;
         }
-        lbl_8055D85C = 0;
+        StateToChange = 0;
         return;
     }
     switch (MotorState_8055D8A8) {
-    case 2:
-        if (lbl_8055D878 != 0) {
-            *(s32 *)((u8 *)temp_r3 + 0xC) = 0xC;
+    case MOTOR_STATE_STOPPED:
+        if (MotorStopped != 0) {
+            *(s32 *)((u8 *)block + 0xC) = DVD_STATE_MOTOR_STOPPED;
             return;
         }
-        *(s32 *)((u8 *)temp_r3 + 0xC) = 3;
-        fn_8003773C();
+        *(s32 *)((u8 *)block + 0xC) = DVD_STATE_COVER_CLOSED;
+        stateCoverClosed();
         return;
-    case 0:
-        *(s32 *)((u8 *)temp_r3 + 0xC) = 1;
-        fn_80038368((void *)executing_8055D8C8);
+    case MOTOR_STATE_WORKING:
+        *(s32 *)((u8 *)block + 0xC) = DVD_STATE_BUSY;
+        stateBusy((void *)ExecutingBlock);
         return;
     default:
-        fn_8003773C();
+        stateCoverClosed();
         return;
     }
 }
