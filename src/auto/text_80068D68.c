@@ -5310,9 +5310,10 @@ void fn_80070F90(void *arg0) {
 }
 
 extern void (*lbl_803C0AD8_callback)(void);
-void fn_80070FA4(void *arg0, const void *arg1) {
-    const unsigned char *src = (const unsigned char *)arg1;
-    unsigned char *dst = (unsigned char *)arg0;
+/* bdcpy() of bd.h: copy a 6-byte Bluetooth device address (BD_ADDR). */
+void fn_80070FA4(void *dst_addr, const void *src_addr) {
+    const unsigned char *src = (const unsigned char *)src_addr;
+    unsigned char *dst = (unsigned char *)dst_addr;
     dst[0] = src[0];
     dst[1] = src[1];
     dst[2] = src[2];
