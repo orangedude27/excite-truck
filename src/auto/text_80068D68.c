@@ -24755,12 +24755,13 @@ void rfc_inc_credit(struct t_port_info *p_port, u8 credit) {
 
 #define rfc_dec_credit fn_8009578C /* BTE rfc_utils.c: spend one TX credit per sent UIH frame */
 void fn_8009578C(void *arg0) {
-    void *port = *(void **)((u8 *)arg0 + 0x6c);
+    /* After sending a UIH frame, spend one TX credit; if none remain, stop sending until more arrive. */
+    void *mcb = *(void **)((u8 *)arg0 + PORT_MCB);
     u16 credit;
-    if (*((u8 *)port + 0x72) == 2) {
-        credit = *(u16 *)((u8 *)arg0 + 0x98);
-        if (credit) *(u16 *)((u8 *)arg0 + 0x98) = credit - 1;
-        if (*(u16 *)((u8 *)arg0 + 0x98) == 0) *((u8 *)arg0 + 0x24) = 1;
+    if (*((u8 *)mcb + RFC_MCB_FLOW) == PORT_FC_CREDIT) {
+        credit = *(u16 *)((u8 *)arg0 + PORT_CREDIT_TX);
+        if (credit) *(u16 *)((u8 *)arg0 + PORT_CREDIT_TX) = credit - 1;
+        if (*(u16 *)((u8 *)arg0 + PORT_CREDIT_TX) == 0) *((u8 *)arg0 + PORT_TX_PEER_FC) = 1;
     }
 }
 
