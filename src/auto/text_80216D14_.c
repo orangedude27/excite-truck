@@ -1526,10 +1526,11 @@ extern "C" void fn_80218D54(void *menu, int widgetId) {
 }
 #pragma cplusplus off
 extern void fn_80214D50(int);
-void fn_80218E08(void *arg0, int arg1) {
+void fn_80218E08(void *menuGroup, int key) {
+    /* Play the UI key sound for `key` unless the suppression flag is set: keys 0xD/0x113 use sound 2, 0x1B uses sound 3, the rest sound 0. */
     if ((unsigned char)lbl_8055EFAC != 0) return;
-    if (arg1 == 0xD || (unsigned int)arg1 == 0x113) fn_80214D50(2);
-    else if ((unsigned int)arg1 == 0x1B) fn_80214D50(3);
+    if (key == 0xD || (unsigned int)key == 0x113) fn_80214D50(2);
+    else if ((unsigned int)key == 0x1B) fn_80214D50(3);
     else fn_80214D50(0);
 }
 
