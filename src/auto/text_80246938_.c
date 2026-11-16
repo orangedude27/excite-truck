@@ -1143,99 +1143,97 @@ extern void fn_80232B80(s32);
 #pragma use_lmw_stmw off
 #pragma optimization_level 4
 #pragma scheduling invalid_target
-void fn_802483E0(void) {
-    struct Object {
-        void *vtable;
-        char pad04[0x10];
-        s32 unk14;
-        unsigned char unk18;
-        char pad19[7];
-        s32 unk20;
-        s32 unk24;
-        char pad28[0x10];
-        float unk38;
-        float unk3C;
-        s32 unk40;
-        unsigned char unk44;
-        char pad45[0x0B];
-        unsigned char unk50;
-        char pad51[0x0B];
-        unsigned char unk5C;
-    };
-    struct Frame {
-        volatile s32 args[5];
-        s32 text[11];
-        s32 item[20];
-        struct Object object;
-    } frame;
-    register s32 *textPtr = frame.text;
-    register s32 zero = 0;
-    register s32 one;
-    register struct Object *objectPtr;
-    s32 t1, t0, t2, t3, t4;
-    textPtr[5] = zero;
-    textPtr[0] = (s32)lbl_803436C0;
-    textPtr[8] = 0x1388;
-    textPtr[9] = zero;
-    textPtr[10] = zero;
-    textPtr[7] = fn_802E2C20();
-    frame.object.unk14 = zero;
-    frame.object.vtable = lbl_803437E0;
-    one = 1;
-    textPtr[6] = one;
-    frame.object.unk38 = lbl_80563898 / lbl_8055BEF4;
-    frame.object.unk40 = 2;
-    frame.object.unk3C = lbl_80563898;
-    frame.object.unk18 = 0;
-    frame.object.unk50 = 0;
-    frame.object.unk5C = 0;
-    frame.object.unk24 = 2;
-    frame.object.unk20 = zero;
-    frame.object.unk44 = 0;
-    frame.item[1] = 8;
-    frame.item[0] = (s32)&lbl_8055BAC0;
-    frame.item[2] = (s32)fn_80248398;
-    frame.item[3] = zero;
-    frame.item[4] = zero;
-    frame.item[6] = 5;
-    frame.item[5] = (s32)lbl_80343590;
-    objectPtr = &frame.object;
-    frame.item[7] = (s32)objectPtr;
-    frame.item[8] = zero;
-    frame.item[9] = zero;
-    frame.item[11] = 5;
-    frame.item[10] = zero;
-    frame.item[12] = (s32)textPtr;
-    frame.item[13] = zero;
-    frame.item[14] = zero;
-    frame.item[15] = lbl_804988F0[0];
-    frame.item[16] = lbl_804988F0[1];
-    frame.item[17] = lbl_804988F0[2];
-    frame.item[18] = lbl_804988F0[3];
-    frame.item[19] = lbl_804988F0[4];
-    lbl_8055F274 = fn_802E2C20();
-    t1 = lbl_802FA478[1];
-    t0 = lbl_802FA478[0];
-    frame.args[1] = t1;
-    t2 = lbl_802FA478[2];
-    t3 = lbl_802FA478[3];
-    t4 = lbl_802FA478[4];
-    lbl_8055F278 = objectPtr;
-    frame.args[0] = t0;
-    frame.args[2] = t2;
-    frame.args[3] = t3;
-    frame.args[4] = t4;
-    frame.args[1] = (s32)frame.item;
-    fn_80232B80((s32)fn_802481A0);
-    fn_802146BC((void *)frame.args, -999, -999, 1);
-    fn_80232B80(0);
-    lbl_8055F278 = 0;
-    frame.object.unk18 = 0;
-    frame.object.unk50 = 0;
-    frame.object.unk5C = 0;
-    frame.object.unk24 = 1;
-    frame.object.unk20 = 0;
-    frame.object.unk44 = 0;
+void fn_802483E0(void)
+{
+  struct Object
+  {
+    void *vtable;
+    char pad04[0x10];
+    s32 unk14;
+    unsigned char unk18;
+    char pad19[7];
+    s32 unk20;
+    s32 unk24;
+    char pad28[0x10];
+    float unk38;
+    float unk3C;
+    s32 unk40;
+    unsigned char unk44;
+    char pad45[0x0B];
+    unsigned char unk50;
+    char pad51[0x0B];
+    unsigned char unk5C;
+  };
+  struct Frame
+  {
+    volatile s32 args[5];
+    s32 text[11];
+    s32 item[20];
+    struct Object object;
+  } frame;
+  register s32 *textPtr = frame.text;
+  register s32 zero = 0;
+  register s32 one;
+  register struct Object *objectPtr;
+  textPtr[5] = zero;
+  textPtr[0] = (s32) lbl_803436C0;
+  textPtr[8] = 0x1388;
+  textPtr[9] = zero;
+  textPtr[10] = zero;
+  textPtr[7] = fn_802E2C20();
+  one = 1;
+  textPtr[6] = one;
+  frame.object.unk14 = zero;
+  frame.object.vtable = lbl_803437E0;
+  frame.object.unk38 = lbl_80563898 / lbl_8055BEF4;
+  frame.object.unk40 = 2;
+  frame.object.unk3C = lbl_80563898;
+  frame.object.unk18 = 0;
+  frame.object.unk50 = 0;
+  frame.object.unk5C = 0;
+  frame.object.unk24 = 2;
+  frame.object.unk20 = zero;
+  frame.object.unk44 = 0;
+  frame.item[1] = 8;
+  frame.item[0] = (s32) (&lbl_8055BAC0);
+  frame.item[2] = (s32) fn_80248398;
+  frame.item[3] = zero;
+  frame.item[4] = zero;
+  frame.item[6] = 5;
+  frame.item[5] = (s32) lbl_80343590;
+  objectPtr = &frame.object;
+  frame.item[7] = (s32) objectPtr;
+  frame.item[8] = zero;
+  frame.item[9] = zero;
+  frame.item[11] = 5;
+  frame.item[10] = zero;
+  frame.item[12] = (s32) textPtr;
+  frame.item[13] = zero;
+  frame.item[14] = zero;
+  frame.item[15] = lbl_804988F0[0];
+  frame.item[16] = lbl_804988F0[1];
+  frame.item[17] = lbl_804988F0[2];
+  frame.item[18] = lbl_804988F0[3];
+  frame.item[19] = lbl_804988F0[4];
+  lbl_8055F274 = fn_802E2C20();
+  frame.args[1] = lbl_802FA478[1];
+  frame.args[2] = lbl_802FA478[2];
+  frame.item[8] = zero;
+  frame.args[3] = lbl_802FA478[3];
+  frame.args[0] = lbl_802FA478[0];
+  frame.args[4] = lbl_802FA478[4];
+  lbl_8055F278 = objectPtr;
+  frame.args[1] = (s32) frame.item;
+  fn_80232B80((s32) fn_802481A0);
+  fn_802146BC((void *) frame.args, -999, -999, 1);
+  fn_80232B80(0);
+  lbl_8055F278 = 0;
+  frame.object.unk18 = 0;
+  frame.object.unk50 = 0;
+  frame.object.unk5C = 0;
+  frame.object.unk24 = 1;
+  frame.object.unk20 = 0;
+  frame.object.unk44 = 0;
 }
 #pragma pop
 
@@ -1327,9 +1325,17 @@ void fn_80248668(s32 arg0) {
 }
 #pragma pop
 
-void fn_80248770(void *arg0) {
-    *(unsigned char*)((char*)arg0 + 0x18) = 1;
-    *(s32*)((char*)arg0 + 0x1C) = fn_80221EA8();
+void fn_80248770(void *group) {
+    /* Activate a UI window group: mark it enabled and allocate a group id from
+     * the free-id bitmask. The id is later passed to UIWindow_Show/HideGroup. */
+    #define AllocGroupId fn_80221EA8  /* returns the index of the first free group id (first set bit) */
+    #define GROUP_ACTIVE 0x18         /* u8 enabled flag */
+    #define GROUP_ID     0x1C         /* s32 allocated group id */
+    *(unsigned char*)((char*)group + GROUP_ACTIVE) = 1;
+    *(s32*)((char*)group + GROUP_ID) = AllocGroupId();
+    #undef GROUP_ID
+    #undef GROUP_ACTIVE
+    #undef AllocGroupId
 }
 
 void fn_802487A8(void *arg0) {
