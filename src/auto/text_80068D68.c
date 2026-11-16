@@ -20697,11 +20697,13 @@ void l2cu_send_peer_disc_req(void *pCcb) {
 }
 
 void l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
+    /* Send an L2CAP Disconnect Response to the peer: build the signalling
+       packet with both CID fields, queue it on the link and kick transmission. */
     void *p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 7, remote_id);
     u8 *packet;
 
     if (p_buf == NULL) {
-        if (lbl_803C4040[0] >= 2) {
+        if (l2cb_trace_level >= 2) {
             fn_8007093C(0x80001, lbl_80319174);
         }
         return;
