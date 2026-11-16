@@ -1019,7 +1019,10 @@ int fn_802CFDE0(void) {
 #pragma pop
 
 extern void fn_802CFCA0(void*);
-void fn_802CFEEC(void* alarm) {
+/* GX draw-sync alarm callback: begin a fresh frame by resetting per-frame state
+   and arming the FIFO break point (fn_802CFCA0), then flush the just-finished
+   frame's dynamic-data buffer and disarm the break point (fn_802CFDE0). */
+void fn_802CFEEC(void *alarm) {
     fn_802CFCA0(alarm);
     fn_802CFDE0();
 }
