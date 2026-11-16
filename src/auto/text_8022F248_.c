@@ -601,11 +601,12 @@ void fn_8022FFE8(int quad) {
 #undef applyScrollDrift
 }
 
+/* Returns the number of nodes on the background-quad list. */
 int fn_80230020(void) {
     int count = 0;
-    void *p = lbl_8055F014;
-    while (p != 0) {
-        p = *(void **)((char *)p + 8);
+    QuadNode *node = gBackQuadList;
+    while (node != 0) {
+        node = node->next;
         count++;
     }
     return count;
