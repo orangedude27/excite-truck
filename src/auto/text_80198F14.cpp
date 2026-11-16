@@ -3251,6 +3251,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
     }
 }
 
+#pragma always_inline reset
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
 #pragma push
