@@ -11411,12 +11411,14 @@ extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800B76A8(s32 arg0, s32 arg1) {
-    s32 result = ((s32 (*)(void))fn_800B0748)();
-    if (result == 0) {
+extern "C" s32 fn_800B76A8(s32 flags, s32 callback) {
+    /* VFiP init wrapper: flags/callback reach the DSP-table setup through the fn_800B0748 tail call;
+       on success run the completion hook, then normalize the status to a mask. */
+    s32 status = ((s32 (*)(void))fn_800B0748)();
+    if (status == 0) {
         fn_800B78EC();
     }
-    return fn_800B73BC(result);
+    return fn_800B73BC(status);
 }
 #pragma dont_inline reset
 
