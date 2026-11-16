@@ -4,6 +4,10 @@
 typedef signed char s8;
 typedef unsigned char u8;
 typedef signed int s32;
+typedef float f32;
+typedef double f64;
+typedef int M2C_UNK;
+#define M2C_FIELD(expr, type, off) (*(type)((unsigned char *)(expr) + (off)))
 __declspec(section ".sdata") extern char lbl_8055C178[];
 __declspec(section ".sdata") extern char lbl_8055C180[];
 __declspec(section ".sdata") extern char lbl_8055C188[];
@@ -261,9 +265,9 @@ extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
         unsigned char sp38[0x100];
     } stack;
     struct Dummy {
-                virtual Dummy *lookup(const char *);
+		virtual Dummy *lookup(const char *);
         virtual void v3();
-                virtual void v4();
+		virtual void v4();
         virtual int load(const char *);
     };
     register unsigned char temp_r3;
@@ -295,6 +299,8 @@ extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
     float var_f0;
     float var_f0_2;
     float var_f1;
+    register float sp8;
+    register float spC;
 
     labels = lbl_803447C0;
     format = lbl_8055C128;
@@ -383,11 +389,14 @@ copy_done:
         stack.sp8 = var_f2;
         if (var_r0_2) var_f0_2 = lbl_80563A14;
         else var_f0_2 = lbl_80563A10;
+        float prod = temp_f3 * (float)var_f0_2;
+        spC = stack.spC;
+        sp8 = stack.sp8;
         var_r4_2 = (unsigned char *)var_r4_2 + 0x24;
-        *(float *)((unsigned char *)var_r5_2 + 0x42C) = stack.sp8;
-        temp_f1_2 = temp_f29 * (temp_f3 * var_f0_2);
+        *(float *)((unsigned char *)var_r5_2 + 0x42C) = sp8;
+        temp_f1_2 = temp_f29 * prod;
+        *(float *)((unsigned char *)var_r5_2 + 0x430) = spC;
         *(float *)((unsigned char *)var_r5_2 + 0x434) = temp_f1_2;
-        *(float *)((unsigned char *)var_r5_2 + 0x430) = stack.spC;
         var_r5_2 = (unsigned char *)var_r5_2 + 0xC;
         stack.sp10 = temp_f1_2;
     }
