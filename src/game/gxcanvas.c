@@ -199,8 +199,10 @@ s32 fn_802C3044(void *canvas, s32 x, s32 y) {
     return ((GxCanvas *)canvas)->rowBytes * y + ((s32)((GxCanvas *)canvas)->pixels + x * 2);
 }
 
-s32 fn_802C3060(void *arg0, s32 arg1, s32 arg2) {
-    return *(s32 *)((u8 *)arg0 + 0x10) * arg2 + (*(s32 *)((u8 *)arg0 + 4) + arg1 * 4);
+/* Address of the 4-byte pixel at (x, y): rowBytes * y + (pixels + x * 4). */
+s32 fn_802C3060(void *arg0, s32 x, s32 y) {
+    GxCanvas *canvas = arg0;
+    return canvas->rowBytes * y + ((s32)canvas->pixels + x * 4);
 }
 
 s32 fn_802C307C(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
