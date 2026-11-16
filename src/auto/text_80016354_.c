@@ -96,7 +96,14 @@ void* fn_80016508(void) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-int fn_80016510(int arg0) { extern void *lbl_8055D550; if (arg0 < (int)lbl_8055D550) return (int)(lbl_8055D544 + arg0 * 0xA8); return (int)(lbl_80357960 + (arg0 - (int)lbl_8055D550) * 0xA8); }
+/* Return the address of 0xA8-byte entry `index`: the first lbl_8055D550 entries live in
+   the dynamic table (lbl_8055D544), the rest in the static table (lbl_80357960). */
+int fn_80016510(int index) {
+    extern void *lbl_8055D550;
+    if (index < (int)lbl_8055D550)
+        return (int)(lbl_8055D544 + index * 0xA8);
+    return (int)(lbl_80357960 + (index - (int)lbl_8055D550) * 0xA8);
+}
 
 #pragma scheduling invalid_target
 void *fn_80016544(int id) {
