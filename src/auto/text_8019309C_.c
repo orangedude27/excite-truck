@@ -2501,16 +2501,18 @@ void fn_80196DC4(void *arg0) {
     }
 }
 #pragma scheduling reset
-int fn_8019700C(int index) {
-    void *entry = lbl_804349C0[index];
-    int result = 1;
-    if (!entry)
+/* Returns 1 when the racer registered at slotIndex is missing or inactive
+ * (+0x2A4 clear) -- i.e. the slot has no live racer; 0 when one is active. */
+int fn_8019700C(int slotIndex) {
+    void *racer = lbl_804349C0[slotIndex];
+    int isInactive = 1;
+    if (!racer)
         goto done;
-    if (*((u8 *)entry + 0x2A4) == 0)
+    if (*((u8 *)racer + 0x2A4) == 0)
         goto done;
-    result = 0;
+    isInactive = 0;
 done:
-    return result;
+    return isInactive;
 }
 
 extern float lbl_80562144, lbl_80562170, lbl_80562194, lbl_8055A488;
