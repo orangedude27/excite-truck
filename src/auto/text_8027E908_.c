@@ -3241,16 +3241,17 @@ int fn_802867B0(void *arg0) {
 }
 
 void fn_80286834(void *arg0) {
-    void *obj = arg0;
-    int r;
+    /* Fetches a value from the object's v8 virtual method and passes it to v10. */
+    void *object = arg0;
+    int value;
 #pragma cplusplus on
     struct Interface {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual int v8(); virtual void v9(); virtual void v10(int);
     };
-    r = ((struct Interface *)obj)->v8();
-    ((struct Interface *)obj)->v10(r);
+    value = ((struct Interface *)object)->v8();
+    ((struct Interface *)object)->v10(value);
 #pragma cplusplus reset
 }
 
