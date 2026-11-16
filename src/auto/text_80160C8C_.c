@@ -2795,8 +2795,9 @@ void fn_80164870(void *timer, s32 id) {
     }
 }
 
-s32 fn_80164894(s32 arg0, void *arg1, s32 arg2) {
-    *(float *)arg1 = *(float *)(0x14 + arg0 + (arg2 << 2));
+/* Reads float element 'index' from the array at offset 0x14 of 'base' into *out; returns 1 on success. */
+s32 fn_80164894(s32 base, void *out, s32 index) {
+    *(float *)out = *(float *)(0x14 + base + (index << 2));
     return 1;
 }
 
