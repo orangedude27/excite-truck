@@ -68,6 +68,35 @@ body:
     if ((signed char)c != 0) goto dec;
 end:;
 }
+static inline void CopyStrG_8023512C(const char *src, int n, char *dst) {
+    char *d = dst;
+    const char *s = src;
+    unsigned char c;
+    goto body;
+dec:
+    if (--n > 0) goto body;
+    d[-1] = 0;
+    goto end;
+body:
+    c = *s++;
+    *d++ = c;
+    if ((signed char)c != 0) goto dec;
+end:;
+}
+static inline void CopyStrH_8023512C(const char *src, int n, char *dst) {
+    const char *s = src;
+    unsigned char c;
+    goto body;
+dec:
+    if (--n > 0) goto body;
+    dst[-1] = 0;
+    goto end;
+body:
+    c = *s++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto dec;
+end:;
+}
 static inline void CopyStrD_8023512C(const char *src, char *dst, int n) {
     unsigned char c;
     goto body;
