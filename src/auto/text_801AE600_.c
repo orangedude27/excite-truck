@@ -194,10 +194,11 @@ void fn_801AE79C(s32 mode) {
 extern int lbl_8055E62C;
 extern float lbl_8056255C;
 extern double lbl_80562568;
-void fn_801AE874(unsigned short *arg0, int arg1) {
-    unsigned short value = *arg0 | 1;
-    *arg0 = value;
-    if (arg1) *arg0 = value | 4;
+/* Mark a race-result flags word as "took part" (0x1); when extra is nonzero also set 0x4. */
+void fn_801AE874(unsigned short *flags, int extra) {
+    unsigned short marked = *flags | 1;
+    *flags = marked;
+    if (extra) *flags = marked | 4;
 }
 
 #pragma scheduling invalid_target
