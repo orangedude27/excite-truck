@@ -59,14 +59,20 @@ void fn_802DD4FC(void) {
     }
 }
 
+/* RealName: Gfx_DestroyCachedTexObj (release cached texture object and clear global)
+ * If the global cached texture object exists, releases its owned resource at +0x40
+ * and frees the object, then clears the global pointer.
+ */
 void fn_802DD5F4(void) {
-    void *temp_r31 = lbl_8055FED8;
+#define sCachedTexObj lbl_8055FED8
+    void *temp_r31 = sCachedTexObj;
 
     if (temp_r31 != 0) {
         fn_80128670(*(int*)((char*)temp_r31 + 0x40));
         fn_80128668(temp_r31);
     }
-    lbl_8055FED8 = 0;
+    sCachedTexObj = 0;
+#undef sCachedTexObj
 }
 
 extern float lbl_80565088, lbl_8056508C, lbl_80565090, lbl_80565094;
