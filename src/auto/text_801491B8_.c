@@ -1835,17 +1835,18 @@ extern void fn_80128670(s32);
 extern void *lbl_8055E268;
 extern s32 lbl_80559F40;
 #pragma cplusplus on
-extern "C" s32 fn_8014E708(s32 arg0) {
-    struct Obj {
+extern "C" s32 fn_8014E708(s32 index) {
+    struct BonusEntryObj {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual s32 v12();
     };
-    u8 *base = (u8 *)lbl_8055E268;
-    if (base != 0) {
-        Obj *obj = *(Obj **)(base + arg0 * 0xC0 + 0x9F4);
-        return obj->v12();
+    u8 *manager = (u8 *)lbl_8055E268;
+    /* Query the v12() value of the bonus-entry object for this index (0 if no table). */
+    if (manager != 0) {
+        BonusEntryObj *entryObj = *(BonusEntryObj **)(manager + index * 0xC0 + 0x9F4);
+        return entryObj->v12();
     }
     return 0;
 }
