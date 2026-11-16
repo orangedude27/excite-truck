@@ -9433,14 +9433,17 @@ extern "C" void fn_80229DC8(void *arg0, s32 unused, s32 arg2) {
     ((Fn80229DE8Dispatch2 *)arg0)->Call(unused, arg2);
 }
 #pragma peephole reset
-extern "C" void fn_80229DE8(void *arg0, s32 unused, s32 arg2) {
+/* Reset the object's bookkeeping flags at +0x260 and +0x268, then dispatch its
+ * virtual Call with `unused` and `value` reduced by the index span
+ * (end - start) plus 3. */
+extern "C" void fn_80229DE8(void *self, s32 unused, s32 value) {
     register u32 zero = 0;
     register u32 one = 1;
-    s32 start = *(s32 *)((u8 *)arg0 + 8);
-    *(u32 *)((u8 *)arg0 + 0x260) = zero;
-    s32 end = *(s32 *)((u8 *)arg0 + 0x10);
-    *(u8 *)((u8 *)arg0 + 0x268) = one;
-    ((Fn80229DE8Dispatch2 *)arg0)->Call(unused, arg2 - (end - start) - 3);
+    s32 start = *(s32 *)((u8 *)self + 8);
+    *(u32 *)((u8 *)self + 0x260) = zero;
+    s32 end = *(s32 *)((u8 *)self + 0x10);
+    *(u8 *)((u8 *)self + 0x268) = one;
+    ((Fn80229DE8Dispatch2 *)self)->Call(unused, value - (end - start) - 3);
 }
 
 extern s32 fn_8021E1C8(void *, s32, s32);
