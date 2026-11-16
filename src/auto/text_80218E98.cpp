@@ -613,18 +613,20 @@ extern s32 lbl_8055FBA0;
 extern "C" s32 lbl_8055FBDC;
 extern f32 lbl_80563500;
 
-extern "C" void fn_80218E98(void *arg0, void *arg1) {
-    s32 fourth, third, second, first;
-    volatile s32 *src = (volatile s32 *)((u8 *)arg0 + 0x14);
-    s32 *dst = (s32 *)arg1;
-    first = src[0];
-    second = src[1];
-    third = src[2];
-    fourth = src[3];
-    dst[0] = first;
-    dst[1] = second;
-    dst[2] = third;
-    dst[3] = fourth;
+/* Save the drawing object's clip rectangle -- the four words left/top/right/bottom
+ * at +0x14 -- into the caller's savedRect buffer (fn_80218EBC restores it). */
+extern "C" void fn_80218E98(void *obj, void *savedRect) {
+    s32 bottom, right, top, left;
+    volatile s32 *clip = (volatile s32 *)((u8 *)obj + 0x14);
+    s32 *save = (s32 *)savedRect;
+    left = clip[0];
+    top = clip[1];
+    right = clip[2];
+    bottom = clip[3];
+    save[0] = left;
+    save[1] = top;
+    save[2] = right;
+    save[3] = bottom;
 }
 
 extern "C" void fn_80218EBC(void *drawObj, void *savedRect) {
