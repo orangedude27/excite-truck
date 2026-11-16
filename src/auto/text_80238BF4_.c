@@ -290,9 +290,10 @@ void fn_802390B4(void *arg0, s32 arg1) {
 #pragma dont_inline off
 
 #pragma scheduling on
-s32 fn_8023964C(s32 arg0) {
-    fn_8023905C((void *)arg0);
-    return arg0;
+s32 fn_8023964C(s32 state) {
+    // Reset the timed frame-animator state at `state` and return the same handle.
+    fn_8023905C((void *)state);
+    return state;
 }
 
 s32 fn_8023967C(s32 object, s32 deleteFlag) {
