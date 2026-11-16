@@ -575,8 +575,8 @@ s32 fn_801773E4(void) {
             }
             f = (f > lbl_80561B30) ? f : lbl_80561B30;
             q = (s32)(lbl_80561B40 / f);
-            d = lbl_8055E3C4 - *(s32 *)lbl_80430558;
             cur = lbl_80430558[0x14];
+            d = lbl_8055E3C4 - *(s32 *)lbl_80430558;
             n = 2;
             if (2 >= d) {
                 n = d;
@@ -654,9 +654,12 @@ f32 fn_80176A2C(void) {
     return lbl_8055A2F4;
 }
 
+#define sFrameCount   lbl_8055E3C4 /* global frame/tick counter */
+#define sFrameTime    lbl_8055E3C8 /* that count expressed in seconds */
+#define FRAME_SECONDS lbl_80561B20 /* ~1/59.94 s: one NTSC frame in seconds */
 void fn_80176A34(s32 arg0) {
-    lbl_8055E3C4 = arg0;
-    lbl_8055E3C8 = lbl_80561B20 * (f32)arg0;
+    sFrameCount = arg0;
+    sFrameTime = FRAME_SECONDS * (f32)arg0;
 }
 
 void fn_80176A6C(void) {
