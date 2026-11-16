@@ -11486,6 +11486,7 @@ extern "C" FN786C_RET fn_800B786C(void *arg0) {
         *(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288) = 0;
         lbl_8055DD10 = (void *)((int)lbl_8055DD10 - 1);
     }
+    return 0;
 }
 
 void fn_800B78EC(void) {
