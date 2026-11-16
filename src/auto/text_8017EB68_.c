@@ -1501,12 +1501,14 @@ float fn_80181568(void *arg0) {
 extern void fn_802E8518(void);
 extern float lbl_80561C98;
 extern float lbl_80561C9C;
+/* Normalize the stat at +0x1C as (1.1 - 1.2 * value), then clamp to [0,1]
+ * (lbl_80561C4C = 0.0f, lbl_80561C48 = 1.0f). */
 float fn_80181588(void *arg0) {
-    float value = lbl_80561C98 - lbl_80561C9C * *(float *)((char *)arg0 + 0x1C);
-    float result = lbl_80561C4C;
-    result = result > value ? result : value;
-    if (lbl_80561C48 < result) return lbl_80561C48;
-    return result;
+    float scaled = lbl_80561C98 - lbl_80561C9C * *(float *)((char *)arg0 + 0x1C);
+    float clamped = lbl_80561C4C;
+    clamped = clamped > scaled ? clamped : scaled;
+    if (lbl_80561C48 < clamped) return lbl_80561C48;
+    return clamped;
 }
 
 float fn_801815C4(void *arg0) {
