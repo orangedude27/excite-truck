@@ -45,8 +45,11 @@ extern "C" void fn_802E759C(void) {
     }
 #undef gStrmBankMgr
 }
-extern "C" void fn_802E75E4(s32 arg0) {
-    ((Dummy_8055FFF0*)lbl_8055FFF0)->f4(arg0);
+extern "C" void fn_802E75E4(s32 bankName) {
+    /* Loads a stream bank by its "<id>.bnk" filename through the global stream-bank
+       manager's virtual load-bank method (vtable slot +0xC); the resulting bank
+       handle is returned in r3. */
+    ((Dummy_8055FFF0*)lbl_8055FFF0)->f4(bankName);
 }
 
 #pragma scheduling invalid_target
