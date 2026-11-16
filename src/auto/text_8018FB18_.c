@@ -2714,15 +2714,13 @@ void fn_80192F80(void *source) {
 #pragma pop
 int fn_80193010(void) { return 0x20; }
 
-void fn_80193018(void *arg0, void *arg1) {
-    float *dst = (float *)((u8 *)arg0 + 0x10);
-    float *src = (float *)arg1;
-    float x = dst[0] + src[0];
-    float y = dst[1] + src[1];
-    float z = src[2] + dst[2];
-    dst[0] = x;
-    dst[1] = y;
-    dst[2] = z;
+void fn_80193018(float * __restrict arg0, float * __restrict arg1) {
+    float x = arg0[4] + arg1[0];
+    float y = arg0[5] + arg1[1];
+    float z = arg0[6] + arg1[2];
+    arg0[4] = x;
+    arg0[5] = y;
+    arg0[6] = z;
 }
 
 void fn_8019304C(void *arg0) {
