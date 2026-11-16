@@ -1064,6 +1064,8 @@ extern "C" void fn_80190E70(void *arg0) {
 #pragma dont_inline on
 #pragma opt_propagation off
 extern "C" void fn_80190EAC(void *arg0) {
+    /* Reset a controller's runtime flags and sub-objects, rebind its active
+       driver, then seed its timer/limit fields with their default values. */
     class VTable {
     public:
         virtual void f0();
@@ -1080,29 +1082,29 @@ extern "C" void fn_80190EAC(void *arg0) {
     };
     s32 zero = 0;
     s32 one = 1;
-    void *sub;
-    s8 z;
+    void *subObject;
+    s8 clearFlag;
     f32 f0;
     f32 f1;
     *(s8 *)((s8 *)arg0 + 0x25) = (s8)zero;
     *(s8 *)((s8 *)arg0 + 0x26) = (zero == 0);
     *(s8 *)((s8 *)arg0 + 0x24) = (s8)one;
     lbl_8055E520 = (u8)zero;
-    sub = *(void **)((s8 *)arg0 + 4);
+    subObject = *(void **)((s8 *)arg0 + 4);
     if (fn_801CF050() != 0) {
-        *(s32 *)((s8 *)sub + 0xC) = zero;
+        *(s32 *)((s8 *)subObject + 0xC) = zero;
         lbl_8055E524 = zero;
     }
-    *(s32 *)((s8 *)sub + 8) = *(s32 *)((s8 *)sub + 0x18);
+    *(s32 *)((s8 *)subObject + 8) = *(s32 *)((s8 *)subObject + 0x18);
     (*(VTable **)((s8 *)arg0 + 8))->f10();
     (*(VTable **)((s8 *)arg0 + 0xC))->f10();
     fn_80191084((int)arg0, zero);
     fn_80191084((int)arg0, fn_80191100(arg0));
     fn_801B6658();
-    z = 0;
+    clearFlag = 0;
     f1 = 0.0f;
     f0 = 10.0f;
-    *(volatile s8 *)((s8 *)arg0 + 0x34) = z;
+    *(volatile s8 *)((s8 *)arg0 + 0x34) = clearFlag;
     *(f32 *)((s8 *)arg0 + 0x30) = f1;
     *(s8 *)((s8 *)arg0 + 0x34) = 1;
     *(f32 *)((s8 *)arg0 + 0x2C) = f0;
