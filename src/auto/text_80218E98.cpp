@@ -9613,11 +9613,13 @@ extern "C" void fn_8022A008(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
 }
 
-extern "C" void fn_8022A014(void *arg0) {
-    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
-        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+extern "C" void fn_8022A014(void *widget) {
+    /* Activate a UI widget's +0x18 state flag; when the widget is enabled
+     * (+0x1A) also set +0x234 so the next redraw picks up the change. */
+    if ((*(u8 *)((u8 *)widget + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)widget + 0x234)) = 1;
     }
-    (*(u8 *)((u8 *)arg0 + 0x18)) = 1;
+    (*(u8 *)((u8 *)widget + 0x18)) = 1;
 }
 
 extern "C" void fn_8022A034(void *arg0) {
