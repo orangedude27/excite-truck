@@ -602,18 +602,6 @@ static inline void time_append2(char *dstp, int sizep, char *str) {
     }
 }
 
-static inline int time_sep_lookup(TimeSepEnt *e, char ch, char *out, int size) {
-    int found = 0;
-    unsigned int i;
-    for (i = 0; found == 0 && i < 13; i++) {
-        if (ch == e[i].c) {
-            time_append_sizefirst(out, size, e[i].s);
-            found = 1;
-        }
-    }
-    return found;
-}
-
 void fn_80130980(char *out, int size, int level, float t);
 void fn_80130978(char *arg0, int arg1, float t) { fn_80130980(arg0, arg1, 3, t); }
 
