@@ -1662,8 +1662,14 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
     }
 }
 #pragma scheduling on
+/* Draw everything queued for this frame: fn_80010BEC replays the quads buffered in
+ * lbl_8034F6B0 through fn_80010A50 and empties that queue, then fn_802346C8 draws
+ * the text strings queued in the font object and empties its own.  Neither reads a
+ * real argument: r3 only travels from the caller through the flush into the drawer,
+ * which is why decompilers show one as the other's argument. */
 void fn_80011A2C(void *arg0) {
-    fn_802346C8(fn_80010BEC(arg0));
+    fn_80010BEC(arg0);
+    fn_802346C8();
 }
 
 void fn_80011A50(void) {
