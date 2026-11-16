@@ -2628,13 +2628,15 @@ extern "C" void fn_80215A2C(void *arg0) {
     ((VfObj *)*(void **)((u8 *)arg0 + 0x244))->vf16();
 }
 
-extern "C" void fn_80215A48(void *arg0) {
+extern "C" void fn_80215A48(void *wrapper) {
+    /* Widget wrapper: set the +0x19 flag and, when the +0x1A option is set,
+     * flag +0x234, then dispatch vf17 (vtable slot 0x4C) on the widget at +0x244. */
     register u32 one = 1;
-    *(u8 *)((u8 *)arg0 + 0x19) = one;
-    if (*(u8 *)((u8 *)arg0 + 0x1A)) {
-        *(u8 *)((u8 *)arg0 + 0x234) = one;
+    *(u8 *)((u8 *)wrapper + 0x19) = one;
+    if (*(u8 *)((u8 *)wrapper + 0x1A)) {
+        *(u8 *)((u8 *)wrapper + 0x234) = one;
     }
-    ((VfObj *)*(void **)((u8 *)arg0 + 0x244))->vf17();
+    ((VfObj *)*(void **)((u8 *)wrapper + 0x244))->vf17();
 }
 
 #pragma dont_inline on
