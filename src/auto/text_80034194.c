@@ -3117,15 +3117,10 @@ void __DVDPrepareReset(void) {
         *(volatile s32 *)&lbl_8055D84C = one;
         if (executing_8055D8C8 == 0) {
             PausingFlag_8055D850 = one;
-            OSRestoreInterrupts((s32)active);
-            goto queue_check;
         }
-queue_call:
-        fn_80039424(active, 0);
-queue_check:
-        active = (void *)__DVDPopWaitingQueue();
-        if (active != 0)
-            goto queue_call;
+        OSRestoreInterrupts((s32)active);
+        while ((active = (void *)__DVDPopWaitingQueue()) != 0)
+            fn_80039424(active, 0);
         if (executing_8055D8C8 != 0)
             fn_80039424((void *)executing_8055D8C8, (void (*)(s32, void *))cbForPrepareReset);
         else if ((void *)cbForPrepareReset != 0)
@@ -3140,11 +3135,8 @@ queue_check:
         OSRestoreInterrupts(tempInterrupts);
     }
     OSRestoreInterrupts(oldInterrupts);
-    while (1) {
-        OSEnableInterrupts();
-        if (lbl_8055D890 == 1)
-            break;
-    }
+    OSEnableInterrupts();
+    while (*(volatile s32 *)&lbl_8055D890 != 1) {}
 }
 
 #pragma small_data off
