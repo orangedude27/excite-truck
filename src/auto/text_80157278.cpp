@@ -3682,8 +3682,9 @@ extern "C" void fn_8015D6FC(Unk8015A368C* object) {
 }
 
 extern void* lbl_8032E9E0[];
-extern "C" void fn_8015D73C(Unk8015A368C* arg0) {
-    fn_80131234(lbl_8032E9E0[arg0->GetType()]);
+/* Looks up the stunt name for the object's type and passes it to the string/label handler. */
+extern "C" void fn_8015D73C(Unk8015A368C* object) {
+    fn_80131234(lbl_8032E9E0[object->GetType()]);
 }
 
 extern "C" s32 fn_8015D77C(void* list) {
