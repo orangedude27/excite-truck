@@ -201,6 +201,8 @@ extern "C" int fn_802044E8(void) {
 }
 #pragma cplusplus off
 extern int __cntlzw(unsigned int);
+#pragma push
+#pragma processor 750
 int fn_80204870(int arg0) {
     int index;
     if (fn_8020437C() == 0)
@@ -267,21 +269,23 @@ edit_record: {
                 result = candidate;
             *value = result;
         }
-        break;
+        goto update;
     case 0: {
+        unsigned int bits;
         unsigned char *value = (unsigned char *)(unsigned int)*(int *)(rec + 8);
-        *value = __cntlzw(*value) >> 5;
-        break;
+        bits = (unsigned int)__cntlzw(*value);
+        *value = bits >> 5;
+        goto update;
     }
     default:
         goto return_zero;
     }
 }
+return_zero:
+    return 0;
 update:
     fn_80204330();
     return 1;
-return_zero:
-    return 0;
 }
 
 #pragma push
