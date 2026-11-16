@@ -261,8 +261,10 @@ void fn_802E51D0(int channel, int result) {
     ((void (*)(char *, int, ...))fn_802E30C8)(lbl_8034D384, channel);
 }
 #pragma scheduling on
-void fn_802E5248(int arg0, int arg1) {
-    if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
+/* Callback for WPAD_SPEAKER_ON: once the remote's speaker is confirmed on,
+ * queue WPAD_SPEAKER_PLAY; fn_802E51D0 handles the reply and marks it ready. */
+void fn_802E5248(int chan, int result) {
+    if (result == 0) fn_80060CC0(chan, WPAD_SPEAKER_PLAY, (void (*)())fn_802E51D0);
 }
 
 /* WPAD connect callback for the Wii remote speaker, reached through
