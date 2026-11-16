@@ -2088,10 +2088,11 @@ extern "C" void SetVeVolume__Q46nw4hbm3snd6detail7AxVoiceFff(void *self, float a
     }
 }
 
-extern "C" void fn_800E5444(void *arg0, float farg0) {
-    if (farg0 != *(float *)((char *)arg0 + 0x184)) {
-        *(float *)((char *)arg0 + 0x184) = farg0;
-        *(unsigned char *)((char *)arg0 + 0x123) |= 8;
+extern "C" void fn_800E5444(AxVoice *voice, float rate) {
+    /* When the playback rate changes, store it and flag an AX source-rate refresh. */
+    if (rate != voice->playbackRate) {
+        voice->playbackRate = rate;
+        voice->updateFlags |= AX_UPDATE_SRC;
     }
 }
 
