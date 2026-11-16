@@ -925,6 +925,8 @@ extern BOOL __OSInIPL;
 extern const char *AppGameNameForSysMenu;
 extern char GameNameBuffer[5];
 u8 OSGetAppType(void) {
+    /* Return OS_APP_TYPE_IPL when running under the IPL; otherwise read the
+     * current-app-type byte from the hardware global at 0x80003184. */
     if (__OSInIPL) return 0x40;
     return *(u8 *)0x80003184;
 }
