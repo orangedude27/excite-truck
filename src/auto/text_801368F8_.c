@@ -379,17 +379,18 @@ s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
 }
 
 #pragma dont_inline on
-s32 fn_80137140(s32 arg0, s32 arg1) {
-    s32 oA;
-    s32 oB;
-    s32 wA;
-    s32 wB;
-    oA = fn_8017960C(arg0);
-    oB = fn_8017960C(arg1);
-    wA = fn_802C6C34(*(s32 *)(oA + 0x59C));
-    wB = fn_802C6C34(*(s32 *)(oB + 0x59C));
-    return fn_80137078((void *)(oA + 0x3C), (void *)(oB + 0x3C), *(f32 *)(wA + 0x40), *(f32 *)(wB + 0x3C)) &&
-           fn_80137078((void *)(oB + 0x3C), (void *)(oA + 0x3C), *(f32 *)(wB + 0x40), *(f32 *)(wA + 0x3C));
+s32 fn_80137140(s32 indexA, s32 indexB) {
+    s32 objA;
+    s32 objB;
+    s32 modelA;
+    s32 modelB;
+    /* Return whether cars indexA and indexB are close enough for their collision shapes to touch, testing both separating directions. */
+    objA = fn_8017960C(indexA);
+    objB = fn_8017960C(indexB);
+    modelA = fn_802C6C34(*(s32 *)(objA + 0x59C));
+    modelB = fn_802C6C34(*(s32 *)(objB + 0x59C));
+    return fn_80137078((void *)(objA + 0x3C), (void *)(objB + 0x3C), *(f32 *)(modelA + 0x40), *(f32 *)(modelB + 0x3C)) &&
+           fn_80137078((void *)(objB + 0x3C), (void *)(objA + 0x3C), *(f32 *)(modelB + 0x40), *(f32 *)(modelA + 0x3C));
 }
 
 extern void *fn_80137C54(int);
