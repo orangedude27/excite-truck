@@ -865,13 +865,14 @@ extern "C" s32 fn_802616A8(void) {
     return 0;
 }
 #pragma pop
-s32 fn_80261948(s32 *arg0) {
+s32 fn_80261948(s32 *indexPtr) {
+    /* Return the bottom-bar art filename (bar4_bot_e/s/m.art) selected by *indexPtr. */
     s32 *p = lbl_802FA6A8;
-    s32 values[3];
-    values[0] = *p++;
-    values[1] = *p++;
-    values[2] = *p;
-    return values[*arg0];
+    s32 artNames[3];
+    artNames[0] = *p++;
+    artNames[1] = *p++;
+    artNames[2] = *p;
+    return artNames[*indexPtr];
 }
 
 #pragma scheduling invalid_target
