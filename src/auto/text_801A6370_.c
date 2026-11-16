@@ -92,9 +92,11 @@ typedef struct {
 } SplinePoint;
 
 #pragma dont_inline on
-void *fn_801A644C(void *arg0) {
-    memset(arg0, 0, 0xC);
-    return arg0;
+/* Default constructor for one SplinePoint: clears its three components and
+   hands the point back, the way these constructors return their object. */
+void *fn_801A644C(void *point) {
+    memset(point, 0, sizeof(SplinePoint));
+    return point;
 }
 #pragma dont_inline off
 
