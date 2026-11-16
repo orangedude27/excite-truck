@@ -1167,11 +1167,10 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
 #pragma ppc_psq_save reset
 #pragma ppc_psq_save reset
 extern char lbl_8034705C[];
-extern void fn_802723B4(void *, void *);
 /* Log a debug sample: parameter value and the 2D point evaluated on the curve at that parameter. */
 void fn_8027264C(int label, void *curve, float param) {
     float point;
-    fn_802723B4(curve, &point);
+    ((void (*)(void *, void *, float))fn_802723B4)(curve, &point, param);
     DBPrintf_80270B00(lbl_8034705C, label, param, point, *(float *)((char *)&point + 4));
 }
 
