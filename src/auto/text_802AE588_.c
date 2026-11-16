@@ -176,18 +176,19 @@ void fn_802AE64C(void *arg0) {
     }
 }
 
-void fn_802AE690(void *arg0) {
-    float y = *(float *)((char *)arg0 + 0x18);
-    int result;
-    if (y * *(float *)((char *)arg0 + 0x20) > lbl_80564B38) {
-        if (y > lbl_80564B38) result = 3;
-        else result = 0;
-        lbl_8055F988 = result;
+/* Classify the sign of obj's Y values (at +0x18, +0x20) and store a quadrant/state code in lbl_8055F988. */
+void fn_802AE690(void *obj) {
+    float y = *(float *)((char *)obj + 0x18);
+    int state;
+    if (y * *(float *)((char *)obj + 0x20) > lbl_80564B38) {
+        if (y > lbl_80564B38) state = 3;
+        else state = 0;
+        lbl_8055F988 = state;
         return;
     }
-    if (y > lbl_80564B38) result = 1;
-    else result = 2;
-    lbl_8055F988 = result;
+    if (y > lbl_80564B38) state = 1;
+    else state = 2;
+    lbl_8055F988 = state;
 }
 
 #pragma scheduling invalid_target
