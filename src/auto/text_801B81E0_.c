@@ -454,6 +454,8 @@ extern "C" void fn_801B86BC(int arg0, void *arg1) {
 }
 #pragma cplusplus on
 extern "C" int fn_801B8728(int arg0) {
+    /* Sends arg0 to the arena-event master (vtable slot 0xB8 / call1) and returns
+       nonzero when its follow-up query (slot 0xE4 / call2) returns 0. */
     struct Dummy_801B8728 {
         virtual void d0();
         virtual void d1();
