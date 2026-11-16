@@ -1381,11 +1381,12 @@ void fn_801C7480(void) {
     }
 }
 #pragma scheduling on
+/* Begin editing the selected timeline entry's time in the input line. */
 void fn_801C7524(void) {
-    s32 index;
-    fn_801C957C(1);
-    index = lbl_8055E828 * 0x30C;
-    sprintf(lbl_804380F0, lbl_8055AA54, *(f32 *)(lbl_8055E7F8 + index));
+    s32 entryOffset;
+    set_text_entry(1);
+    entryOffset = sTimelineSelection * 0x30C;
+    sprintf(sInputLine, lbl_8055AA54, *(f32 *)(sTimelineEntries + entryOffset));
 }
 
 #pragma push
