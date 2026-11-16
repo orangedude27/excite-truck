@@ -191,7 +191,11 @@ int fn_80160A74(void) {
     return 2;
 }
 
-void fn_80160A90(void* alarm) {
+/* OS alarm callback: refresh the audio setting for the current rank. It
+   resolves the active rank (an override from fn_8027DED0, else the default
+   rank) and passes it to the rank-value lookup fn_80160998. The alarm itself
+   is unused. */
+void fn_80160A90(void *alarm) {
     fn_80160998(fn_80160AB4(alarm));
 }
 
