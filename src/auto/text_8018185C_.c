@@ -2417,6 +2417,8 @@ f32 fn_8018AE54(void) {
     return lbl_80561CAC;
 }
 
+/* Returns the shared vector at lbl_80434990, marking the one-time init flag
+ * lbl_8055E4F8 on first use. */
 char *fn_8018AE5C(void) {
     if (lbl_8055E4F8 == 0) {
         lbl_8055E4F8 = 1;
