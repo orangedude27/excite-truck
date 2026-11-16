@@ -197,42 +197,44 @@ extern const char lbl_8032C0C8[];
 #define kBoundSetTag lbl_8032C0C8  // "bound_set", the allocation tag for the list
 #pragma scheduling invalid_target
 #pragma cplusplus on
+// Build the list of bound sets by draining the opened resource table: each entry
+// becomes an item in a 0x90-byte collection that starts with room for 32 items.
 extern "C" void *fn_80139D4C(void) {
     class Source {
     public:
         virtual void f0();
         virtual int next(int);
     };
-    int count;
-    void *object;
-    void *source;
-    int n;
-    void **items;
-    void *item;
-    const char *name;
+    int index;
+    void *list;
+    void *table;
+    int size;
+    void **entries;
+    void *boundSet;
+    const char *tag;
 
-    object = 0;
-    source = fn_80131810();
-    if (source != 0) {
-        name = lbl_8032C0C8;
-        object = fn_801284F8(0x90, name);
-        if (object != 0) {
-            *(void **)((char *)object + 4) = (char *)object + 0x10;
-            *(int *)((char *)object + 12) = 0x20;
-            *(int *)((char *)object + 8) = 0;
-            *(void **)object = source;
-            count = 0;
-            while (((Source *)source)->next(count) != 0) {
-                item = fn_801399FC();
-                n = *(int *)((char *)object + 8);
-                count++;
-                items = *(void ***)((char *)object + 4);
-                *(int *)((char *)object + 8) = n + 1;
-                items[n] = item;
+    list = 0;
+    table = fn_80131810();
+    if (table != 0) {
+        tag = kBoundSetTag;
+        list = fn_801284F8(0x90, tag);
+        if (list != 0) {
+            *(void **)((char *)list + 4) = (char *)list + 0x10;
+            *(int *)((char *)list + 12) = 0x20;
+            *(int *)((char *)list + 8) = 0;
+            *(void **)list = table;
+            index = 0;
+            while (((Source *)table)->next(index) != 0) {
+                boundSet = fn_801399FC();
+                size = *(int *)((char *)list + 8);
+                index++;
+                entries = *(void ***)((char *)list + 4);
+                *(int *)((char *)list + 8) = size + 1;
+                entries[size] = boundSet;
             }
         }
     }
-    return object;
+    return list;
 }
 #pragma cplusplus reset
 #pragma scheduling on
