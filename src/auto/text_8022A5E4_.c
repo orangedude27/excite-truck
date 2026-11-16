@@ -320,8 +320,9 @@ void fn_8022A8E4(int arg0) {
 extern void *fn_8022CA2C();
 #define UI_STYLE_ALIGN 0x38 /* byte offset of the align field in a UIStyle record */
 
-int fn_8022AA84(void) {
-    return *(int *)((char *)fn_8022CA2C() + 0x38);
+int fn_8022AA84(int styleIndex) {
+    /* Return the alignment flags (UI_HALIGN_* | UI_VALIGN_*) of the UI text style at styleIndex. */
+    return *(int *)((char *)fn_8022CA2C(styleIndex) + UI_STYLE_ALIGN);
 }
 
 extern float fn_8022CA40(void *);
