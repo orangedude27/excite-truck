@@ -2990,51 +2990,66 @@ struct LevelSelectMenu {
     /* 0x08 */ s32 selection;  /* the entry picked, 1..count of the sub-task list */
 };
 #pragma scheduling invalid_target
-void fn_80164D64(void *arg0, s32 arg1) {
-    struct Head { u32 word[8]; };
-    struct Work { f32 a[3]; f32 b[3]; struct Head head; u32 tail[4]; } work;
-    register u32 word64;
-    register u32 word60;
-    register int *cars;
-    register int index;
+/* One update of the challenge level-select menu (vtable lbl_8032F790 keeps this
+ * at slot 0x1C).  While the mandatory goals met so far sit inside the challenge
+ * step the player is on, the menu asks for help popup 8 once, its byte +7
+ * recording the request.  It then parks every vehicle of the car table: the
+ * three physics floats at +0x25DC/+0x25E0/+0x25E4 go to 0, 0 and 1, and the
+ * vehicle's transform block (+0x3C..+0x68, a 3x3 matrix and the anchor vector
+ * added to it) is handed back through fn_8017CFFC with the anchor set to
+ * (0, 999 + 20 * index, 0) and the two vectors kept at +0x118 and +0x124
+ * cleared, so the trucks sit out of the way, 20 apart, while the menu is up.
+ * With a choice confirmed (byte +4) the menu clears that flag, marks itself
+ * done, hands the picked entry to the manager (selected_subtask_index) and
+ * starts the fade out: a mode-2 switch with the fade flag for an entry of the
+ * sub-task list, the plain fade for the last one. */
+void fn_80164D64(void *menu, s32 unused) {
+    struct MtxHead { u32 word[8]; };
+    /* the transform block of +0x3C..+0x68 split where the source split it: the
+     * first eight words, then the ninth word and the three anchor floats */
+    struct Work { f32 vec124[3]; f32 vec118[3]; struct MtxHead mtxHead; u32 mtxTail[4]; } work;
+    register u32 anchorY;
+    register u32 anchorX;
+    register int *carSlot;
+    register int carIndex;
     register void *car;
-    if (lbl_8055A0B4 <= fn_80161D50()) {
-        if (lbl_8055A0B8 > fn_80161D50()) {
-            if (*(u8 *)((u8 *)arg0 + 7) == 0) {
+    if (challenge_step_min <= fn_80161D50()) {
+        if (challenge_step_max > fn_80161D50()) {
+            if (((struct LevelSelectMenu *)menu)->popupShown == 0) {
                 fn_801DF074(8, 1);
-                *(u8 *)((u8 *)arg0 + 7) = 1;
+                ((struct LevelSelectMenu *)menu)->popupShown = 1;
             }
         }
     }
-    for (cars = lbl_804348E8, index = 0; index < lbl_8055E4D0; cars++, index++) {
-        car = (void *)*cars;
+    for (carSlot = car_table, carIndex = 0; carIndex < car_count; carSlot++, carIndex++) {
+        car = (void *)*carSlot;
         fn_8018ADBC(car, lbl_80561840);
         fn_8018ADB4(car, lbl_80561848);
         fn_8018ADA4(car, lbl_80561848);
-        work.head = *(struct Head *)((u8 *)car + 0x3C);
-        work.tail[0] = *(u32 *)((u8 *)car + 0x5C);
-        word60 = *(volatile u32 *)((u8 *)car + 0x60);
-        word64 = *(volatile u32 *)((u8 *)car + 0x64);
-        work.tail[1] = word60;
-        work.tail[2] = word64;
-        work.tail[3] = *(volatile u32 *)((u8 *)car + 0x68);
-        ((f32 *)work.tail)[1] = 0.0f;
-        ((f32 *)work.tail)[2] = 999.0f + 20.0f * (f32)index;
-        ((f32 *)work.tail)[3] = 0.0f;
-        work.a[2] = work.a[1] = work.a[0] = 0.0f;
-        work.b[2] = work.b[1] = work.b[0] = 0.0f;
-        fn_8017CFFC(car, work.head.word, work.b, work.a);
+        work.mtxHead = *(struct MtxHead *)((u8 *)car + 0x3C);
+        work.mtxTail[0] = *(u32 *)((u8 *)car + 0x5C);
+        anchorX = *(volatile u32 *)((u8 *)car + 0x60);
+        anchorY = *(volatile u32 *)((u8 *)car + 0x64);
+        work.mtxTail[1] = anchorX;
+        work.mtxTail[2] = anchorY;
+        work.mtxTail[3] = *(volatile u32 *)((u8 *)car + 0x68);
+        ((f32 *)work.mtxTail)[1] = 0.0f;
+        ((f32 *)work.mtxTail)[2] = 999.0f + 20.0f * (f32)carIndex;
+        ((f32 *)work.mtxTail)[3] = 0.0f;
+        work.vec124[2] = work.vec124[1] = work.vec124[0] = 0.0f;
+        work.vec118[2] = work.vec118[1] = work.vec118[0] = 0.0f;
+        fn_8017CFFC(car, work.mtxHead.word, work.vec118, work.vec124);
     }
-    if (*(u8 *)((u8 *)arg0 + 4)) {
-        register s32 value;
-        register s32 limit;
+    if (((struct LevelSelectMenu *)menu)->confirmed) {
+        register s32 choice;
+        register s32 listCount;
         fn_801796BC(0);
-        value = *(s32 *)((u8 *)arg0 + 8);
-        *(u8 *)((u8 *)arg0 + 4) = 0;
-        *(u8 *)((u8 *)arg0 + 5) = 1;
-        lbl_8055E304 = value;
-        limit = *(s32 *)((u8 *)lbl_8042FDEC + 4);
-        if (value < limit)
+        choice = ((struct LevelSelectMenu *)menu)->selection;
+        ((struct LevelSelectMenu *)menu)->confirmed = 0;
+        ((struct LevelSelectMenu *)menu)->done = 1;
+        selected_subtask_index = choice;
+        listCount = *(s32 *)((u8 *)subtask_list + 4);
+        if (choice < listCount)
             fn_80176780(0x8002, 0);
         else
             fn_8017691C();
