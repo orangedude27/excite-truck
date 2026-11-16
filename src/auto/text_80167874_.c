@@ -128,13 +128,15 @@ struct DummyEntry {
 };
 
 struct DummyManager {
-    DummyRecord *records;
-    s32 recordCount;
-    u8 pad8[0x1D4CC - 8];
-    DummyEntry *entries;
-    s32 entryCount;
-    u8 pad1D4D4[0x1E158 - 0x1D4D4];
-    u8 flag1E158;
+    DummyRecord *records;   /* +0x00: pickup records, the 0x18-byte pool inlined at +0x0C */
+    s32 recordCount;        /* +0x04: records in use */
+    s32 recordCapacity;     /* +0x08: pool size, 0x1388 records */
+    u8 pad0C[0x1D4CC - 0xC];
+    DummyEntry *entries;    /* +0x1D4CC: the pickup groups */
+    s32 entryCount;         /* +0x1D4D0: groups in use */
+    s32 entryCapacity;      /* +0x1D4D4: group array size, 0x64 groups */
+    u8 pad1D4D8[0x1E158 - 0x1D4D8];
+    u8 flag1E158;           /* +0x1E158: keep adding records to the last group */
 };
 
 /* One entry of the 16-entry spin-matrix table at lbl_8042FF60 (48 bytes each).
