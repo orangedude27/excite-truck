@@ -808,11 +808,12 @@ extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg
 #pragma paired_single reset
   extern "C" float fn_801E7E18(void);
 extern "C" void* fn_802997F4(void*, int);
-extern "C" void fn_802994C0(void* arg0, unsigned int arg1) {
-    void* ptr = fn_802997F4(arg0, arg1);
-    *(int*)ptr = -1;
-    *(int*)((char*)ptr + 0x34) = 2;
-    *(float*)((char*)ptr + 0x38) = fn_801E7E18();
+/* Initializes an entry returned by fn_802997F4: clears id, sets state to 2, records current time. */
+extern "C" void fn_802994C0(void *container, unsigned int index) {
+    void *entry = fn_802997F4(container, index);
+    *(int *)entry = -1;
+    *(int *)((char *)entry + 0x34) = 2;
+    *(float *)((char *)entry + 0x38) = fn_801E7E18();
 }
 
 extern "C" void fn_80299504(void* arg0) {
