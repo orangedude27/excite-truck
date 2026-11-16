@@ -139,7 +139,6 @@ extern "C" int fn_80259224(void **arg0) {
         virtual void destroy(int);
     };
     unsigned int frame[0x9E];
-    void *button;
     void *buttonA;
     void *buttonB;
     int size;
@@ -148,10 +147,10 @@ extern "C" int fn_80259224(void **arg0) {
     unsigned char *src;
     unsigned char *dst;
     unsigned char c;
-    long count;
+    int count;
     int n;
     void *dialog = (char *)frame + 0xC0 - 8;
-
+    void *button;
     *(char **)(dialog) = (char *)&lbl_80345158;
     *(int *)(((char *)frame + 0x110 - 8)) = -1;
     *(float *)(((char *)frame + 0x144 - 8)) = lbl_80563AE0;
@@ -168,7 +167,6 @@ extern "C" int fn_80259224(void **arg0) {
     *(void **)(((char *)frame + 0x168 - 8)) = (void *)fn_802CAC28((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
     *(unsigned char *)(((char *)frame + 0x10A - 8)) = 0;
     *(int *)(((char *)frame + 0x10C - 8)) = 5;
-
     if (fn_8025921C() != 0) {
         buttonA = fn_801284F8(0x78, (char *)lbl_80344DE0 + 0x114);
         if (buttonA != 0) {
@@ -198,7 +196,6 @@ extern "C" int fn_80259224(void **arg0) {
         }
         button = buttonB;
     }
-
     size = *(int *)((char *)arg0 + 0xC8);
     *(volatile int *)(((char *)frame + 0x10C - 8)) = size;
     src = fn_8001EFAC(*(int *)((char *)arg0 + 0x18), size);
@@ -229,7 +226,6 @@ extern "C" int fn_80259224(void **arg0) {
         ((int (*)(char *, int, const char *, ...))fn_801345D8)(((char *)frame + 0x20 - 8) + ((i - 1) << 2) + (i - 1), 0x20, lbl_8055C260,
                     fn_8001EFA4(*(int *)((char *)arg0 + 0x18), i));
     }
-
     *(void **)(((char *)frame + 0x188 - 8)) = button;
     *(void **)(((char *)frame + 0x174 - 8)) = fn_80259740;
     *(int *)(((char *)frame + 0x170 - 8)) = 8;
@@ -250,10 +246,7 @@ extern "C" int fn_80259224(void **arg0) {
     *(void **)(((char *)frame + 0x1B0 - 8)) = (char *)button + 0x20;
     *(int *)(((char *)frame + 0x1B4 - 8)) = 0;
     *(int *)(((char *)frame + 0x1B8 - 8)) = 0;
-
-    result = fn_8001EF9C(*(int *)((char *)arg0 + 0x18), 0x13, 5,
-                         lbl_8055C264, lbl_8055C264);
-
+    result = fn_8001EF9C(*(int *)((char *)arg0 + 0x18), 0x13, 5, lbl_8055C264, lbl_8055C264);
     *(int *)(((char *)frame + 0x1C0 - 8)) = 3;
     *(void **)(((char *)frame + 0x1BC - 8)) = (char *)lbl_80344DE0 + 0x134;
     *(int *)(((char *)frame + 0x1C4 - 8)) = result;
@@ -261,8 +254,7 @@ extern "C" int fn_80259224(void **arg0) {
     *(int *)(((char *)frame + 0x1CC - 8)) = 0;
     *(int *)(((char *)frame + 0x1D4 - 8)) = 3;
     *(void **)(((char *)frame + 0x1D0 - 8)) = (char *)lbl_80344DE0 + 0x148;
-    *(int *)(((char *)frame + 0x1D8 - 8)) = *((int *)((char *)lbl_80344DE0 + 0xC0 +
-                                    *(int *)((char *)arg0 + 0x24) * 8) + 1);
+    *(int *)(((char *)frame + 0x1D8 - 8)) = *((int *)((char *)lbl_80344DE0 + 0xC0 + *(int *)((char *)arg0 + 0x24) * 8) + 1);
     *(int *)(((char *)frame + 0x1DC - 8)) = 0;
     *(int *)(((char *)frame + 0x1E0 - 8)) = 0;
     *(int *)(((char *)frame + 0x1E8 - 8)) = 3;
@@ -300,7 +292,6 @@ extern "C" int fn_80259224(void **arg0) {
     *(int *)(((char *)frame + 0x264 - 8)) = lbl_80498E98[2];
     *(int *)(((char *)frame + 0x268 - 8)) = lbl_80498E98[3];
     *(int *)(((char *)frame + 0x26C - 8)) = lbl_80498E98[4];
-
     *(int *)(((char *)frame + 0x08 - 8)) = lbl_802FA63C[0];
     *(void **)(((char *)frame + 0x0C - 8)) = ((char *)frame + 0x16C - 8);
     *(int *)(((char *)frame + 0x10 - 8)) = lbl_802FA63C[2];
@@ -309,10 +300,8 @@ extern "C" int fn_80259224(void **arg0) {
     fn_802368E0();
     fn_80216CA8();
     n = fn_802146BC((int *)(((char *)frame + 0x08 - 8)), -0x3E7, -0x3E7, 1);
-
     if (button != 0)
         ((Dialog_80259224 *)button)->destroy(1);
-
     *(char **)(dialog) = (char *)&lbl_80345158;
     if (*(int *)(((char *)frame + 0x110 - 8)) != -1) {
         fn_802C6CF8(*(int *)(((char *)frame + 0x110 - 8)));
@@ -355,6 +344,17 @@ void fn_80259740(int arg0, float farg0) {
     fn_80236914();
     lbl_8055F3A4 = farg0;
     lbl_8055F3A0 = (arg0 - 2) == 0;
+}
+
+int fn_8025978C(void **arg0) {
+    unsigned char stack[0x600];
+    int i;
+    lbl_8055F3A0 = 0;
+    for (i = 0; i < 0x600; i++) stack[i] = 0;
+    fn_802CAC28(lbl_80344DE0 + 0x42, 0, lbl_80563AE0);
+    fn_802CAC28(lbl_80344DE0 + 0x42, 0, lbl_80563AE0);
+    (void)arg0; (void)stack;
+    return 0;
 }
 
 extern double lbl_80563B00;
@@ -771,9 +771,8 @@ void fn_8025AA90(void *arg0, float farg0) {
     unsigned int flags40, flags50;
     float color0, color1, sum, d1;
     if (*(int *)((char *)arg0 + 0x50) == -1) return;
-    if (((unsigned char *)arg0)[0x4A] != 0) goto body;
-    return;
-body:
+    if (((unsigned char *)arg0)[0x4A] != 0) {
+    } else return;
     if (fn_801298E8(info, 0) != 0) {
         flags40 = *(int *)(info + 0x40);
         color0 = (flags40 & 2) ? lbl_80563AE0 : lbl_80563AE4;
@@ -886,8 +885,8 @@ void fn_8025AE18(void *arg0) {
     float color[3], oldcolor[3];
     float state[3], vec[3];
     char *camera, *other;
-    int a, b, index;
-    float ratio, size, x, z, y, old, t;
+    int index, a, b;
+    float size, ratio, x, z, y, old, t;
     if (*(int *)(obj + 0x50) == -1 || *(unsigned char *)(obj + 0x4A) == 0) return;
     fn_8025B0E8(obj + 0x54, ((void *(*)(void *))fn_8025B134)(obj + 0x84));
     other = (char *)fn_8022EDC4();
@@ -952,6 +951,7 @@ f32 fn_8025B0C4(f32 arg0) {
     return (f32)sin(arg0);
 }
 
+/* Copy 36 bytes (9 words) from src to dst. */
 void fn_8025B0E8(void *dst, const void *src) {
     struct Copy {
         u32 words[9];
