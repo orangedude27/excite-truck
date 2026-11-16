@@ -121,12 +121,13 @@ extern int lbl_8055CDB8;
 int stricmp(const char *, const char *);
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_802B1DE8(void *arg0) {
-    class Obj {
+extern "C" int fn_802B1DE8(void *item) {
+    /* RealName: UMatItem_IsObject (returns nonzero if the material item's name is "object"). */
+    class UMatNamedItem {
     public:
         virtual const char *getName();
     };
-    return stricmp((char *)&lbl_8055CDB8, ((Obj *)arg0)->getName()) == 0;
+    return stricmp((char *)&kObjectName, ((UMatNamedItem *)item)->getName()) == 0;
 }
 
 extern "C" void fn_802B1E28(void) {
