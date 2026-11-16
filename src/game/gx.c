@@ -560,8 +560,9 @@ void fn_802CF5D0(void) {}
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802CF5D4(void) {
-    lbl_8055FD24 = 0;
-    lbl_8055FD91 = 0;
+    /* Reset alpha comparison to "alpha > 0" and clear the cached/applied reference values. */
+    alphaCompareRef = 0;
+    alphaCompareAppliedRef = 0;
     GXSetAlphaCompare(4, 0, 1, 0, 0);
 }
 #pragma dont_inline reset
