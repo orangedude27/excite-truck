@@ -160,8 +160,8 @@ void fn_802C54D4(void) {
     extern s8 lbl_8055FC21;
     extern void qsort(void *, unsigned int, unsigned int, int (*)(void *, void *));
     int level;
-    int sourceIndex;
     int sourceOffset;
+    int sourceIndex;
     int itemIndex;
     int count;
     int oldCount;
@@ -175,18 +175,18 @@ void fn_802C54D4(void) {
         int *listData = lbl_804C1390;
         int *sourceData = lbl_804C13A8;
         void **slot;
-        listData[0] = 0;
+        lbl_804C1390[0] = 0;
         for (sourceIndex = 0, sourceOffset = 0;
              sourceIndex < *(volatile int *)sourceData;
-             sourceIndex++, sourceOffset += 0x10) {
+             sourceOffset += 0x10, sourceIndex++) {
             void *base = (void *)(unsigned long)*(volatile u32 *)((char *)sourceData + 8);
             void *entry = (char *)base + sourceOffset;
             if (*(unsigned short *)((char *)entry + 4) != 0) {
-                register oldCount = *(volatile int *)listData;
-                if (oldCount < *(volatile int *)((char *)listData + 4)) {
+                register oldCount = lbl_804C1390[0];
+                if (oldCount < lbl_804C1390[1]) {
                     count = oldCount + 1;
-                    *(volatile int *)listData = count;
-                    slot = (void **)((char *)(void *)listData[2] + (oldCount << 2));
+                    lbl_804C1390[0] = count;
+                    slot = (void **)((char *)(void *)lbl_804C1390[2] + (oldCount << 2));
                 } else {
                     slot = 0;
                 }
@@ -1362,8 +1362,9 @@ void fn_802C7760(void *arg0, f32 *out1, f32 *out2, f32 *out3, f32 *out4, f32 *ou
 }
 
 #pragma dont_inline fn_802C7760
-void fn_802C77F0(void *arg0, f32 *arg1) {
-    fn_802C7760(arg0, arg1, arg1 + 1, arg1 + 2, arg1 + 3, arg1 + 4, arg1 + 5);
+void fn_802C77F0(void *model, f32 *out) {
+    /* Read the model's six bounding-box values (min/max per axis) into out[0..5]. */
+    fn_802C7760(model, out, out + 1, out + 2, out + 3, out + 4, out + 5);
 }
 
 /* Return the model instance's view tolerance (+0x1C of its group list) - the
