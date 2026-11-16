@@ -94,13 +94,13 @@ extern char lbl_80340350[];
 extern char lbl_80497E3C[];
 extern char lbl_8055B988;
 #pragma scheduling invalid_target
+/* gBack init: warn if started twice, then reset the current quad's name to empty. */
 void fn_8022F248(void) {
-    if (lbl_8055F014 != 0) {
+    if (gBackQuadList != 0) {
         ((void (*)(const char *, ...))fn_802E317C)(lbl_80340350);
     }
     strcpy(lbl_80497E3C + 0x3c, &lbl_8055B988);
 }
-
 /* Background-quad (gBack) shutdown cleanup: if the list still holds quads when
  * the overlay system is torn down, report the leak and deallocate them -
  * fn_8022F824 copies the quad in as the current one, releases its texture,
