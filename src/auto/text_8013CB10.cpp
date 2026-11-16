@@ -3003,11 +3003,12 @@ extern "C" void fn_80142B78(void *arg0, f32 arg1) {
     }
 }
 
-extern "C" s32 fn_80142B94(s32 arg0, s32 arg1, s32 arg2) {
-    s32 v = arg1;
-    if (arg0 > v) v = arg0;
-    if (v < arg2) arg2 = v;
-    return arg2;
+/* Clamps value into [low, high], returning min(high, max(value, low)). */
+extern "C" s32 fn_80142B94(s32 value, s32 low, s32 high) {
+    s32 clamped = low;
+    if (value > clamped) clamped = value;
+    if (clamped < high) high = clamped;
+    return high;
 }
 
 /* Return the number of records currently held in the circular ring buffer: the
