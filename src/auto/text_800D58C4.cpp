@@ -242,10 +242,11 @@ extern "C" s32 fn_800D58C4(const char *name, const char *other) { return strncmp
 extern "C" int fn_800D58F0(const char *name, const char *other) { return strncmp(name, other, 0x14) == 0; }
 
 #pragma dont_inline on
-extern "C" s32 fn_800D591C(void* arg0) {
+extern "C" s32 fn_800D591C(void* resource) {
+    /* Check the byte-order marker (0xFEFF) and version (8) of a layout resource header. */
     s32 result = 0;
-    if (*(u16*)((u8*)arg0 + 4) == 0xFEFF &&
-        *(u16*)((u8*)arg0 + 6) == 8) {
+    if (*(u16*)((u8*)resource + 4) == 0xFEFF &&
+        *(u16*)((u8*)resource + 6) == 8) {
         result = 1;
     }
     return result;
