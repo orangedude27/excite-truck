@@ -248,6 +248,12 @@ typedef enum {
 #define ResetFlag      lbl_8055D86C  // the drive must be reset before the next command
 #define CancelCallback lbl_8055D8B8  // called once the cancel has finished
 #define DummyBlock     DummyCommandBlock_80376AA0 // "nothing is executing" block
+#define PauseFlag      lbl_8055D84C  // DVDPause/DVDResume: keep stateReady off the queue
+#define isCancelDone   lbl_8055D864  // cbForCancel: the cancel DVDCancelAll asked for landed
+
+// The cancel helpers below, under the names the RVL SDK's DVD.cpp gives them.
+#define DVDCancelAsync fn_80039424   // cancel one command block, answer when done
+#define stateReady     fn_80038040   // start the next command on the waiting queue
 
 // The __ErrorInfo ring (dvderror.h): the next free entry of its info[] array,
 // and how many drive error interrupts have been counted in a row.
