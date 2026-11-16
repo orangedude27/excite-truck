@@ -8,8 +8,13 @@ void fn_801CECE0(void);
 extern const char lbl_80338050[];
 #pragma scheduling invalid_target
 void fn_801CEC80(void) {
-    lbl_8055E890 = fn_8012850C(0x180, lbl_80338050);
+#define gDamageCarInfo lbl_8055E890
+#define kDamageCarInfoTag lbl_80338050
+    /* Allocate the "dmg_car_info" table (eight 0x30-byte records) and reset it to the inactive state. */
+    gDamageCarInfo = fn_8012850C(0x180, kDamageCarInfoTag);
     fn_801CECE0();
+#undef kDamageCarInfoTag
+#undef gDamageCarInfo
 }
 #pragma scheduling on
 void fn_801CECB4(void) {
@@ -47,27 +52,32 @@ void fn_801CECE0(void) {
 
 void fn_801CEDDC(void) {
     extern int lbl_8055E890;
-    extern float lbl_80562A20, lbl_80562A24, lbl_80562A28, lbl_80562A2C, lbl_80562A30;
-    register float decay = lbl_80562A30;
-    register float min = lbl_80562A20;
-    register float threshold = lbl_80562A2C;
-    register float max = lbl_80562A28;
-    register float step = lbl_80562A24;
+    extern float lbl_80562A24, lbl_80562A28, lbl_80562A2C, lbl_80562A30;
+    register float v;
+    register float speed;
+    register float decay;
+    register float threshold;
+    register float max;
+    register float step;
     register char *p;
     register int i;
     register int j;
-    for (i = 0; i < 8; ++i) {
+    step = lbl_80562A24;
+    max = lbl_80562A28;
+    decay = lbl_80562A30;
+    threshold = lbl_80562A2C;
+    for (i = 0; i < 8; i++) {
         p = (char *)lbl_8055E890 + i * 0x30;
-        for (j = 0; j < 4; ++j) {
+        for (j = 0; j < 4; j++) {
             if (*(int *)p >= 0) {
-                register float v = *(float *)(p + 4) + step;
+                v = *(float *)(p + 4) + step;
                 *(float *)(p + 4) = v;
                 if (v > max) {
                     *(int *)p = -1;
                 } else if (*(float *)(p + 4) > threshold) {
-                    register float speed = *(float *)(p + 8) - decay;
-                    if (min > speed)
-                        speed = min;
+                    speed = *(float *)(p + 8) - decay;
+                    if (0.0f > speed)
+                        speed = 0.0f;
                     *(float *)(p + 8) = speed;
                 }
             }
