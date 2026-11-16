@@ -60,13 +60,13 @@ extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, do
 }
 
 #define kFrameName lbl_8055C9B8  // .sdata: "frame", the name of an opening frame entry
-// True when a parsed list entry's name is "frame" (case-insensitive).
-extern "C" int fn_802962CC(void *node) {
+// True when a parsed list entry's virtual name is "frame" (case-insensitive).
+extern "C" int fn_802962CC(void *entry) {
     class NameNode {
     public:
         virtual char *getName();
     };
-    return stricmp(((NameNode *)node)->getName(), (const char *)kFrameName) == 0;
+    return stricmp(((NameNode *)entry)->getName(), (const char *)kFrameName) == 0;
 }
 
 #pragma push
