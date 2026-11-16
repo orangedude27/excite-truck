@@ -21407,11 +21407,13 @@ extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
         ry * (k5c * q + k58 * b)));
 }
 
-extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper: free the object with MemFree when
+ * deleting (flag > 0), then return the object pointer. */
+extern "C" s32 fn_800D43DC(s32 object, s32 deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" u16 fn_800D441C(void *arg0) {
