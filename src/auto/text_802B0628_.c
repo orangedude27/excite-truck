@@ -902,9 +902,10 @@ int fn_802B1C14(void *arg0) {
 }
 
 extern char lbl_8034A270[];
-void *fn_802B1C1C(void *arg0, int arg1) {
-    if (arg1 >= 0 && arg1 < ((int *)arg0)[4]) {
-        return *(void **)((char *)((int *)arg0)[3] + arg1 * 0x80 + 0x70);
+void *fn_802B1C1C(void *layerSet, int layerIndex) {
+    /* Return the name string of a water layer in the set, or "<unknown>" when the index is out of range. */
+    if (layerIndex >= 0 && layerIndex < ((int *)layerSet)[4]) {
+        return *(void **)((char *)((int *)layerSet)[3] + layerIndex * 0x80 + 0x70);
     }
     return &lbl_8034A270;
 }
