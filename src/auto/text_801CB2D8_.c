@@ -1263,6 +1263,7 @@ if (temp_r4 != 0) {
 extern char lbl_80337CCC[];
 #pragma push
 #pragma scheduling invalid_target
+/* Report a fatal panic ("StatHandler: data type \"int\" is not accepted here!") via fn_802E317C and return 0 (unreachable). */
 s32 fn_801CD100(void) {
     ((void (*)(const char*, ...))fn_802E317C)(lbl_80337CCC);
     return 0;
