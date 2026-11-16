@@ -368,11 +368,16 @@ void *fn_8022DCC4(void *dest, char **names, int count, int extra) {
 }
 #pragma pop
 void *fn_8022DD38(void *arg0, int arg1) {
+#define mCount ((char *)arg0 + 0x40)
+#define DeleteObject fn_80128668
+    /* Reset the object's count to zero and optionally delete it, returning the object. */
     if (arg0 != 0) {
-        *(int *)((char *)arg0 + 0x40) = 0;
-        if (arg1 > 0) fn_80128668();
+        *(int *)mCount = 0;
+        if (arg1 > 0) DeleteObject();
     }
     return arg0;
+#undef mCount
+#undef DeleteObject
 }
 
 int fn_8022DD80(void *arg0) { return *(int *)((char *)arg0 + 0x40); }
