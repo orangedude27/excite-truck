@@ -5038,7 +5038,6 @@ extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     return arg0;
 }
 
-#pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
     class Vf78Arg {
@@ -5057,17 +5056,24 @@ extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
     f32 factor;
     f32 distance;
     f32 adjusted;
+    s32 width;
     s32 end;
     s32 end2;
     s32 end3;
     s32 end4;
     s32 end5;
+    s32 end6;
     s32 begin;
     s32 begin2;
+    s32 begin3;
+    s32 begin4;
+    s32 size;
     s32 size2;
     s32 childBase;
+    s32 childEnd;
     void *child;
     void *child2;
+
     *(s8 *)((u8 *)arg0 + 0x250) = 1;
     if (*(s32 *)((u8 *)arg0 + 0x254) == 0) {
         child = *(void **)((u8 *)arg0 + 0x244);
@@ -5105,6 +5111,7 @@ extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
         *(s8 *)((u8 *)arg0 + 0x250) = 0;
         return;
     }
+
     child2 = *(void **)((u8 *)arg0 + 0x244);
     childBase = *(s32 *)child2;
     scale2 = (f32)((Vf78Arg *)arg0)->get(child2) / (f32)childBase;
@@ -5141,7 +5148,7 @@ extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
     }
     *(s8 *)((u8 *)arg0 + 0x250) = 0;
 }
-#pragma pop
+#pragma scheduling on
 extern "C" void fn_802213A4(void *arg0, s32 arg1, s32 arg2) {
     void *state;
     s32 value;
@@ -6499,70 +6506,84 @@ extern "C" s32 fn_802C9A58(s32, void *);
 extern "C" f32 lbl_80563538;
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    f32 temp_f1;
-    f32 temp_f1_2;
-    f32 temp_f1_4;
-    f32 var_f0;
-    f32 var_f0_2;
-    f32 var_f0_3;
-    f32 var_f0_4;
-    register s32 temp_r28;
-    register s32 temp_r27;
-    f32 temp_f1_3;
+/* Constructor for a movie widget - a widget that plays a movie over its box.
+   Runs the base widget constructor, then, when the display is not in widescreen
+   mode, re-centres a full-screen widget's box and stretches it horizontally by
+   4/3 about the screen centre so it still fills a 4:3 television.  It finishes
+   by storing the box in screen-centre coordinates, choosing the movie to play
+   (the caller's own when given, otherwise the descriptor's name at +0x40) and
+   whether it loops, and clearing the movie handle and completion callback. */
+extern "C" void *fn_80223CF0(void *widget, void *descriptor, s32 movieName, s32 arg3) {
+#define IsWidescreen    fn_802C9A58
+#define Screen_toCentre fn_80230C30
+#define Screen_width    lbl_8055CFF0
+#define Screen_height   lbl_8055CFF4
+#define STRETCH_4_TO_3  lbl_80563538 /* 4/3: what a 4:3 display squashes by */
+#define FLOAT_ZERO      lbl_805634A8
+    f32 scaledLeft;
+    f32 scaledTop;
+    f32 rawHeight;
+    f32 roundedLeft;
+    f32 roundedTop;
+    f32 roundedWidth;
+    f32 roundedHeight;
+    register s32 newLeft;
+    register s32 newTop;
+    f32 scaledWidth;
 
     fn_80218F80();
 
-    *(void **)arg0 = lbl_8033E350;
-    *(s32 *)((u8 *)arg0 + 0x258) = 0;
-    *(u8 *)((u8 *)arg0 + 0x25C) = 0;
-    *(s32 *)((u8 *)arg0 + 0x264) = -2;
-    *(s32 *)((u8 *)arg0 + 0x260) = 0;
+    *(void **)widget = MovieWidget_vtable;
+    *(s32 *)((u8 *)widget + 0x258) = 0;
+    *(u8 *)((u8 *)widget + 0x25C) = 0;
+    *(s32 *)((u8 *)widget + 0x264) = -2;
+    *(s32 *)((u8 *)widget + 0x260) = 0;
 
-    if (((s32 (*)(void))fn_802C9A58)() == 0) {
-        if (((VfObj *)arg0)->vf28() > 0x258) {
-            s32 temp_r5 = *(s32 *)((u8 *)arg0 + 8);
-            if (*(s32 *)((u8 *)arg0 + 0x10) - temp_r5 > 0x1CC) {
-                s32 temp_r4 = (lbl_8055CFF0 / 2);
-                temp_f1 = lbl_80563538 * (f32)(*(s32 *)((u8 *)arg0 + 4) - temp_r4);
-                if (temp_f1 < lbl_805634A8) {
-                    var_f0 = temp_f1 - lbl_805634C4;
+    if (((s32 (*)(void))IsWidescreen)() == 0) {
+        /* Only a widget covering nearly the whole screen needs the 4:3 stretch. */
+        if (((VfObj *)widget)->vf28() > 0x258) {
+            s32 top = *(s32 *)((u8 *)widget + 8);
+            if (*(s32 *)((u8 *)widget + 0x10) - top > 0x1CC) {
+                s32 centreX = (Screen_width / 2);
+                scaledLeft = STRETCH_4_TO_3 * (f32)(*(s32 *)((u8 *)widget + 4) - centreX);
+                if (scaledLeft < FLOAT_ZERO) {
+                    roundedLeft = scaledLeft - WIDGET_ROUND_HALF;
                 } else {
-                    var_f0 = lbl_805634C4 + temp_f1;
+                    roundedLeft = WIDGET_ROUND_HALF + scaledLeft;
                 }
-                s32 temp_r6 = (lbl_8055CFF4 / 2);
-                temp_r28 = temp_r4 + (s32)var_f0;
-                temp_f1_2 = (f32)(temp_r5 - temp_r6);
-                if (temp_f1_2 < lbl_805634A8) {
-                    var_f0_2 = temp_f1_2 - lbl_805634C4;
+                s32 centreY = (Screen_height / 2);
+                newLeft = centreX + (s32)roundedLeft;
+                scaledTop = (f32)(top - centreY);
+                if (scaledTop < FLOAT_ZERO) {
+                    roundedTop = scaledTop - WIDGET_ROUND_HALF;
                 } else {
-                    var_f0_2 = lbl_805634C4 + temp_f1_2;
+                    roundedTop = WIDGET_ROUND_HALF + scaledTop;
                 }
-                temp_r27 = temp_r6 + (s32)var_f0_2;
-                temp_f1_3 = lbl_80563538 * (f32)((VfObj *)arg0)->vf28();
-                var_f0_3 = (temp_f1_3 < lbl_805634A8) ? temp_f1_3 - lbl_805634C4 : lbl_805634C4 + temp_f1_3;
-                s32 var_r0_3 = (s32)var_f0_3;
-                temp_f1_4 = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
-                var_f0_4 = (temp_f1_4 < lbl_805634A8) ? temp_f1_4 - lbl_805634C4 : lbl_805634C4 + temp_f1_4;
-                *(s32 *)((u8 *)arg0 + 4) = temp_r28;
-                *(s32 *)((u8 *)arg0 + 8) = temp_r27;
-                *(s32 *)((u8 *)arg0 + 0xC) = temp_r28 + var_r0_3;
-                *(s32 *)((u8 *)arg0 + 0x10) = temp_r27 + (s32)var_f0_4;
+                newTop = centreY + (s32)roundedTop;
+                scaledWidth = STRETCH_4_TO_3 * (f32)((VfObj *)widget)->vf28();
+                roundedWidth = (scaledWidth < FLOAT_ZERO) ? scaledWidth - WIDGET_ROUND_HALF : WIDGET_ROUND_HALF + scaledWidth;
+                s32 scaledWidthInt = (s32)roundedWidth;
+                rawHeight = (f32)(*(s32 *)((u8 *)widget + 0x10) - *(s32 *)((u8 *)widget + 8));
+                roundedHeight = (rawHeight < FLOAT_ZERO) ? rawHeight - WIDGET_ROUND_HALF : WIDGET_ROUND_HALF + rawHeight;
+                *(s32 *)((u8 *)widget + 4) = newLeft;
+                *(s32 *)((u8 *)widget + 8) = newTop;
+                *(s32 *)((u8 *)widget + 0xC) = newLeft + scaledWidthInt;
+                *(s32 *)((u8 *)widget + 0x10) = newTop + (s32)roundedHeight;
             }
         }
     }
-    fn_80230C30((f32 *)((u8 *)arg0 + 0x244), (f32 *)((u8 *)arg0 + 0x248), *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
-    *(f32 *)((u8 *)arg0 + 0x24C) = (f32)((VfObj *)arg0)->vf28();
-    *(f32 *)((u8 *)arg0 + 0x250) = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
-    if (arg2 != 0) {
-        *(s32 *)((u8 *)arg0 + 0x258) = arg2;
+    Screen_toCentre((f32 *)((u8 *)widget + 0x244), (f32 *)((u8 *)widget + 0x248), *(s32 *)((u8 *)widget + 4), *(s32 *)((u8 *)widget + 8));
+    *(f32 *)((u8 *)widget + 0x24C) = (f32)((VfObj *)widget)->vf28();
+    *(f32 *)((u8 *)widget + 0x250) = (f32)(*(s32 *)((u8 *)widget + 0x10) - *(s32 *)((u8 *)widget + 8));
+    if (movieName != 0) {
+        *(s32 *)((u8 *)widget + 0x258) = movieName;
     } else {
-        *(s32 *)((u8 *)arg0 + 0x258) = (s32)((u8 *)arg1 + 0x40);
+        *(s32 *)((u8 *)widget + 0x258) = (s32)((u8 *)descriptor + 0x40);
     }
-    s32 flag_val = *(s32 *)((u8 *)arg1 + 0xA4);
-    *(u8 *)((u8 *)arg0 + 0x25C) = flag_val != 0;
-    *(s32 *)((u8 *)arg0 + 0x254) = 0;
-    return arg0;
+    s32 loopFlag = *(s32 *)((u8 *)descriptor + 0xA4);
+    *(u8 *)((u8 *)widget + 0x25C) = loopFlag != 0;
+    *(s32 *)((u8 *)widget + 0x254) = 0;
+    return widget;
 }
 #pragma pop
 /* MovieWidget deleting destructor: restore MovieWidget's vtable, destroy any
