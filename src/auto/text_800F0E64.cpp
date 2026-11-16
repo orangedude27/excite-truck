@@ -1549,55 +1549,57 @@ extern "C" s32 ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlP
     return 1;
 }
 
-extern "C" s32 ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(void *self, u32 index, void *out) {
+extern "C" s32 ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(void *self, u32 groupIndex, void *out) {
     extern char lbl_80559848;
     extern char lbl_805598C0;
     extern const char lbl_80559810;
     extern const char lbl_80324ACC[];
     extern const char lbl_80324D60[];
     extern const char lbl_80321F50[];
-    register u32 grp = index;
+    /* Resolves the group entry at groupIndex, then fills out with its string table,
+       resolved sound reference and the remaining SoundArchive::GroupInfo fields. */
+    register u32 group = groupIndex;
     register void *archive = *(void **)((u8 *)self + 0x28);
     register const void *reader = self;
-    register void *outInfo = out;
+    register void *groupInfo = out;
     struct { u8 *value; } tableSlot;
-    u8 *&groupTable = tableSlot.value;
+    u8 *&refTable = tableSlot.value;
 
     if (*((u8 *)archive + 0x21) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_805598A0, 0x6F, lbl_80324CB0);
-    groupTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+    refTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
         *((u8 *)archive + 0x20), *(u32 *)((u8 *)archive + 0x24), archive);
-    if (groupTable == 0)
-        grp = 0;
-    else if (grp >= *(u32 *)groupTable)
-        grp = 0;
+    if (refTable == 0)
+        group = 0;
+    else if (group >= *(u32 *)refTable)
+        group = 0;
     else {
-        archive = (void *)(grp << 3);
-        grp = *(u32 *)((u8 *)reader + 0x28);
-        if (groupTable[(u32)archive + 5] != 0)
+        archive = (void *)(group << 3);
+        group = *(u32 *)((u8 *)reader + 0x28);
+        if (refTable[(u32)archive + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559848, 0x6F, lbl_80324ACC);
-        grp = (u32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-            groupTable[(u32)archive + 4], *(u32 *)(groupTable + (u32)archive + 8), (void *)grp);
+        group = (u32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+            refTable[(u32)archive + 4], *(u32 *)(refTable + (u32)archive + 8), (void *)group);
     }
-    if (grp == 0)
+    if (group == 0)
         return 0;
-    groupTable = *(u8 **)((u8 *)reader + 0x28);
-    if (*((u8 *)grp + 0x21) != 0)
+    refTable = *(u8 **)((u8 *)reader + 0x28);
+    if (*((u8 *)group + 0x21) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_805598C0, 0x6F, lbl_80324D60);
-    groupTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        *((u8 *)grp + 0x20), *(u32 *)((u8 *)grp + 0x24), groupTable);
-    if (groupTable == 0)
+    refTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        *((u8 *)group + 0x20), *(u32 *)((u8 *)group + 0x24), refTable);
+    if (refTable == 0)
         return 0;
     archive = *(void **)((u8 *)reader + 0x28);
-    if (*((u8 *)grp + 9) != 0)
+    if (*((u8 *)group + 9) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559810, 0x6F, lbl_80321F50);
-    *(u32 *)((u8 *)outInfo + 4) = (u32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        *((u8 *)grp + 8), *(u32 *)((u8 *)grp + 0xC), archive);
-    *(u32 *)((u8 *)outInfo + 8) = *(u32 *)((u8 *)grp + 0x10);
-    *(u32 *)((u8 *)outInfo + 0xC) = *(u32 *)((u8 *)grp + 0x14);
-    *(u32 *)((u8 *)outInfo + 0x10) = *(u32 *)((u8 *)grp + 0x18);
-    *(u32 *)((u8 *)outInfo + 0x14) = *(u32 *)((u8 *)grp + 0x1C);
-    *(u32 *)outInfo = *(u32 *)groupTable;
+    *(u32 *)((u8 *)groupInfo + 4) = (u32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        *((u8 *)group + 8), *(u32 *)((u8 *)group + 0xC), archive);
+    *(u32 *)((u8 *)groupInfo + 8) = *(u32 *)((u8 *)group + 0x10);
+    *(u32 *)((u8 *)groupInfo + 0xC) = *(u32 *)((u8 *)group + 0x14);
+    *(u32 *)((u8 *)groupInfo + 0x10) = *(u32 *)((u8 *)group + 0x18);
+    *(u32 *)((u8 *)groupInfo + 0x14) = *(u32 *)((u8 *)group + 0x1C);
+    *(u32 *)groupInfo = *(u32 *)refTable;
     return 1;
 }
 
