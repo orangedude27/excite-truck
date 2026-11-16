@@ -409,8 +409,11 @@ clear3_join:
 #pragma pop
 #pragma push
 #pragma small_data off
-void InquiryCallback(s32 result, struct DVDCommandBlock* arg1) {
-    switch (*(u32*)((u8*)arg1 + 0xC)) {
+void InquiryCallback(s32 result, struct DVDCommandBlock* block) {
+    /* DVD inquiry completion: on a successful (idle) transfer publish the drive's
+       device code from DriveInfo with the "code read" flag (0x8000) set; for any
+       other state publish the fallback device code 0x0001 instead. */
+    switch (*(u32*)((u8*)block + 0xC)) {
     case 0:
         *(u16*)0x800030E6 = *(u16*)(DriveInfo + 2) | 0x8000;
         break;
@@ -579,7 +582,7 @@ void OSInit(void) {
         AreWeInitialized_8055D9CC = 1;
         __OSStartTime = __OSGetSystemTime();
         OSDisableInterrupts();
-        __OSGetExecParams((void*)((u32)rebootParams + 0));
+        __OSGetExecParams(rebootParams);
         PPCMtmmcr0(0);
         PPCMtmmcr1(0);
         PPCMtpmc1(0);
