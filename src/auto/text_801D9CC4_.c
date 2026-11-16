@@ -322,15 +322,16 @@ int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
     r[2] = ax[2] * sc;
     return 1;
 }
-int fn_801DA648(void *arg0) {
-    void *obj;
-    int count;
-    float *values;
-    obj = *(void **)((char *)arg0 + 4);
-    if (obj != 0) {
-        count = *(int *)((char *)obj + 0x10);
-        values = *(float **)((char *)obj + 0x14);
-        return *(float *)((char *)arg0 + 0xC) >= values[(count - 1) * 8];
+int fn_801DA648(void *player) {
+    void *path;
+    int keyCount;
+    float *keys;
+    /* Return nonzero when the player's current time has reached the final keyframe of its path. */
+    path = *(void **)((char *)player + 4);
+    if (path != 0) {
+        keyCount = *(int *)((char *)path + 0x10);
+        keys = *(float **)((char *)path + 0x14);
+        return *(float *)((char *)player + 0xC) >= keys[(keyCount - 1) * 8];
     }
     return 0;
 }
