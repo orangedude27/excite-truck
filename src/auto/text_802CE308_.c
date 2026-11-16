@@ -7,8 +7,24 @@ extern unsigned char lbl_8055FCC8;
 extern int lbl_8055FCD0;
 extern float lbl_8055FCD4;
 extern double lbl_80564F68;
+/* Static initializer: register the tracked node, set a config color, and cache
+ * the tangent of a fixed angle as a float. */
 void fn_802CE308(void) {
-    fn_8000D838(&lbl_8055FCC8);
-    lbl_8055FCD0 = 0xFFFF0000;
-    lbl_8055FCD4 = (float)fn_8002EF30(lbl_80564F68);
+#define trackedNode  lbl_8055FCC8
+#define configColor  lbl_8055FCD0
+#define tangentValue lbl_8055FCD4
+#define tan          fn_8002EF30
+#define angleRad     lbl_80564F68
+#define RegisterNode fn_8000D838
+
+    RegisterNode(&trackedNode);
+    configColor = 0xFFFF0000;
+    tangentValue = (float)tan(angleRad);
+
+#undef trackedNode
+#undef configColor
+#undef tangentValue
+#undef tan
+#undef angleRad
+#undef RegisterNode
 }
