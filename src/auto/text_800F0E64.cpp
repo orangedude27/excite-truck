@@ -6242,44 +6242,74 @@ done:
 }
 #pragma pop
 s32 nw4hbm::snd::detail::StrmPlayer::Start() {
-    u8 *self = (u8 *)this;
-    struct { u32 value; } irq;
-    irq.value = OSDisableInterrupts();
-    u32 &outerIrq = irq.value;
-    if (self[0x4A] == 0) {
-        OSRestoreInterrupts(outerIrq);
+    /* nw4hbm::snd::StrmPlayer::Start: when prepared (0x4A), start the AxVoice
+     * at 0x438; on the first start apply the pending pause request under a
+     * second interrupt lock and link this player (node at +8) into the global
+     * StrmPlayer list.  Returns 1 if started, 0 if not prepared.
+     * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.) */
+    #define STRM_READY       0x4A
+    #define STRM_ACTIVE      0x49
+    #define STRM_PAUSE_REQ   0x4B
+    #define STRM_PAUSED      0x4D
+    #define STRM_FORCE_PAUSE 0x4E
+    #define STRM_VOICE       0x438
+    #define STRM_NODE        0x08
+    #define STRM_PLAYER_LIST lbl_8041506C
+    #define SND_STRM_CPP     lbl_80326768
+    #define STRM_ASSERT_MSG  lbl_803267AC
+    #define LINKLIST_CPP     lbl_80326C4C
+    #define NULL_POINTER_MSG lbl_80326C28
+    u8 *player = (u8 *)this;
+    struct { u32 value; } outerIrqState;
+    outerIrqState.value = OSDisableInterrupts();
+    u32 &savedOuterIrq = outerIrqState.value;
+    if (player[STRM_READY] == 0) {
+        OSRestoreInterrupts(savedOuterIrq);
         return 0;
     }
-    if (self[0x49] == 0) {
-        if (*(s32 *)(self + 0x438) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x97, lbl_803267AC);
+    if (player[STRM_ACTIVE] == 0) {
+        if (*(s32 *)(player + STRM_VOICE) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(SND_STRM_CPP, 0x97, STRM_ASSERT_MSG);
         }
-        fn_800E519C(*(void **)(self + 0x438));
-        u32 innerIrq = OSDisableInterrupts();
-        u8 paused = 0;
-        if (self[0x4B] != 0) paused = 1;
-        if (self[0x4E] != 0) paused = 1;
-        if (paused != self[0x4D]) {
-            if (*(s32 *)(self + 0x438) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0xD1, lbl_803267AC);
+        fn_800E519C(*(void **)(player + STRM_VOICE));
+        u32 savedInnerIrq = OSDisableInterrupts();
+        u8 shouldPause = 0;
+        if (player[STRM_PAUSE_REQ] != 0) shouldPause = 1;
+        if (player[STRM_FORCE_PAUSE] != 0) shouldPause = 1;
+        if (shouldPause != player[STRM_PAUSED]) {
+            if (*(s32 *)(player + STRM_VOICE) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(SND_STRM_CPP, 0xD1, STRM_ASSERT_MSG);
             }
-            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(self + 0x438), paused);
-            self[0x4D] = paused;
+            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(player + STRM_VOICE), shouldPause);
+            player[STRM_PAUSED] = shouldPause;
         }
-        OSRestoreInterrupts(innerIrq);
-        struct { void *node; } cursor;
-        cursor.node = &lbl_8041506C[4];
-        void *&iteratorValue = cursor.node;
+        OSRestoreInterrupts(savedInnerIrq);
+        struct { void *node; } listCursor;
+        listCursor.node = &STRM_PLAYER_LIST[4];
+        void *&insertPosRef = listCursor.node;
         if (this == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C4C, 0x233, lbl_80326C28);
+            Panic__Q26nw4hbm2dbFPCciPCce(LINKLIST_CPP, 0x233, NULL_POINTER_MSG);
         }
-        void *iterator = iteratorValue;
+        void *insertPos = insertPosRef;
         Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
-            lbl_8041506C, &iterator, self + 8);
-        self[0x49] = 1;
+            STRM_PLAYER_LIST, &insertPos, player + STRM_NODE);
+        player[STRM_ACTIVE] = 1;
     }
-    OSRestoreInterrupts(outerIrq);
+    OSRestoreInterrupts(savedOuterIrq);
     return 1;
+
+    #undef STRM_READY
+    #undef STRM_ACTIVE
+    #undef STRM_PAUSE_REQ
+    #undef STRM_PAUSED
+    #undef STRM_FORCE_PAUSE
+    #undef STRM_VOICE
+    #undef STRM_NODE
+    #undef STRM_PLAYER_LIST
+    #undef SND_STRM_CPP
+    #undef STRM_ASSERT_MSG
+    #undef LINKLIST_CPP
+    #undef NULL_POINTER_MSG
 }
 #pragma pop
 extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
