@@ -263,9 +263,11 @@ extern "C" void fn_801E1D9C(void) {
 }
 #pragma pop
 void fn_801E1E30(void) {
-    int v = lbl_8055EA22;
+    /* Start the weather sound state: set mode from the level's lightning flag,
+     * zero the rain volume/target and mark no thunderclap due. */
+    int lightningFlag = lbl_8055EA22;
     *((float *)&lbl_804874B8 + 1) = lbl_80562CAC;
-    *(int *)&lbl_804874B8 = (-v | v) >> 31 & 1;
+    *(int *)&lbl_804874B8 = (-lightningFlag | lightningFlag) >> 31 & 1;
     *((float *)&lbl_804874B8 + 2) = lbl_80562CAC;
     *((float *)&lbl_804874B8 + 3) = lbl_80562CC8;
 }
