@@ -40,63 +40,8 @@ body:
     if ((signed char)c != 0) goto dec;
 end:;
 }
-static inline void CopyStrE_8023512C(const char *src, int n, char *dst) {
-    unsigned char c;
-    goto body;
-dec:
-    if (--n > 0) goto body;
-    dst[-1] = 0;
-    goto end;
-body:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto dec;
-end:;
-}
-static inline void CopyStrF_8023512C(const char *src, int n, char *dst) {
-    const char *s = src;
-    char *d = dst;
-    unsigned char c;
-    goto body;
-dec:
-    if (--n > 0) goto body;
-    d[-1] = 0;
-    goto end;
-body:
-    c = *s++;
-    *d++ = c;
-    if ((signed char)c != 0) goto dec;
-end:;
-}
-static inline void CopyStrG_8023512C(const char *src, int n, char *dst) {
-    char *d = dst;
-    const char *s = src;
-    unsigned char c;
-    goto body;
-dec:
-    if (--n > 0) goto body;
-    d[-1] = 0;
-    goto end;
-body:
-    c = *s++;
-    *d++ = c;
-    if ((signed char)c != 0) goto dec;
-end:;
-}
-static inline void CopyStrH_8023512C(const char *src, int n, char *dst) {
-    const char *s = src;
-    unsigned char c;
-    goto body;
-dec:
-    if (--n > 0) goto body;
-    dst[-1] = 0;
-    goto end;
-body:
-    c = *s++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto dec;
-end:;
-}
+/* Same copy with a local destination cursor: sets up the source before the
+ * destination (fn_8023512C's second and fourth copies). */
 static inline void CopyStrI_8023512C(const char *src, int n, char *dst) {
     char *d = dst;
     unsigned char c;
