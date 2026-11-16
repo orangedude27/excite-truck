@@ -884,9 +884,11 @@ void fn_80176F28(void) {
 }
 
 void fn_801775EC(void) {
-    u8 *p = lbl_80430558;
-    p[0x14] = 0xFF;
-    *(s32 *)(p + 0xC) = 3;
+    /* Mark the physics fader done (alpha 0xFF, mode 3 = FADE_MODE_DONE) so the
+     * pending mode-change command is applied before the next fade starts. */
+    u8 *fade = lbl_80430558;
+    fade[0x14] = 0xFF;
+    *(s32 *)(fade + 0xC) = 3;
 }
 
 #pragma cplusplus on
