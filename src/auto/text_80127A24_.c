@@ -26,10 +26,11 @@ void fn_80127A50(int record) {
     fn_80127AB8((void *)record);
 }
 
-void fn_80127A84(int *arg0, int *arg1, int *arg2) {
-    *arg0 = lbl_8055DF58;
-    *arg1 = lbl_8055DF5C;
-    *arg2 = lbl_8055DF60;
+void fn_80127A84(int *outX, int *outY, int *outButtons) {
+    /* Copy the current pointer X/Y position and button bitmask into the caller's outputs. */
+    *outX = lbl_8055DF58;
+    *outY = lbl_8055DF5C;
+    *outButtons = lbl_8055DF60;
 }
 
 int fn_80127AA0(void) {
