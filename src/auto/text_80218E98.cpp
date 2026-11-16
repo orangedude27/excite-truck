@@ -1943,9 +1943,10 @@ extern "C" void fn_8021B32C(void *widget) {
 
 #pragma dont_inline reset
 
-extern "C" s32 fn_8021B3A0(void *arg0) {
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x264);
-    if (p != 0) return *p;
+/* Return the int bound to this object at +0x264, or 0 when no value is bound. */
+extern "C" s32 fn_8021B3A0(void *widget) {
+    s32 *valuePtr = *(s32 **)((u8 *)widget + 0x264);
+    if (valuePtr != 0) return *valuePtr;
     return 0;
 }
 
