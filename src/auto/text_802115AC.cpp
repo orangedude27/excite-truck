@@ -2485,12 +2485,13 @@ void *fn_80215738(void *object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" void fn_802157A8(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
-    u32 divisor = *(u32 *)((u8 *)arg0 + 0xC);
-    s32 callback = *(s32 *)((u8 *)arg0 + 4);
-    u32 remainder = arg3 % divisor;
-    if (callback != 0) {
-        fn_802C40E8((void *)callback, arg1, arg2 - *(s32 *)((u8 *)arg0 + 8) * remainder);
+extern "C" void fn_802157A8(void *layout, s32 x, s32 y, u32 index) {
+    /* Grid layout: if a draw callback is set, draw item `index` at (x, y - rowStep * (index % columns)). */
+    u32 columns = *(u32 *)((u8 *)layout + 0xC);
+    s32 drawCallback = *(s32 *)((u8 *)layout + 4);
+    u32 column = index % columns;
+    if (drawCallback != 0) {
+        fn_802C40E8((void *)drawCallback, x, y - *(s32 *)((u8 *)layout + 8) * column);
     }
 }
 
