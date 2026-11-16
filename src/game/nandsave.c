@@ -245,6 +245,7 @@ void fn_802E8B98(void) {
 }
 
 int fn_802E8BE4(void) {
+    /* Poll NAND request 1 until it completes; on success run cleanup and return 1, else 0. */
     for (;;) {
         if (((int (*)(int))fn_802E888C)(1) != 0) {
             fn_802E8B98();
