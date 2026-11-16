@@ -227,6 +227,26 @@ int fn_80204EA0(const char *arg0) {
     return result;
 }
 
+#pragma cplusplus on
+class MatchRes {
+public:
+    virtual void unused0();
+    virtual int has(void *);
+    virtual void unused2();
+    virtual int get(void *);
+};
+#pragma inline on
+static int get_match_result(void *primary, void *fallback, void *arg) {
+    if (primary != 0) {
+        if (((MatchRes *)primary)->has(arg))
+            return ((MatchRes *)primary)->get(arg);
+    }
+    if (((MatchRes *)fallback)->has(arg))
+        return ((MatchRes *)fallback)->get(arg);
+    return 0;
+}
+#pragma inline reset
+#pragma cplusplus reset
 extern int fn_801345D8();
 __declspec(section ".sdata") extern const char lbl_8055B4B4[];
 __declspec(section ".sdata") extern const char lbl_8055B4B8[];
