@@ -1525,6 +1525,7 @@ void fn_801ACA48(void *arg0) {
 }
 
 extern float lbl_80558DC4, lbl_8055E460, lbl_805624AC;
+struct Pair_801ACB30 { int a, b; };
 #pragma always_inline on
 static inline void transform_801ACB30(const float *m, const float *src, volatile float *dst) {
     float x, y, z;
