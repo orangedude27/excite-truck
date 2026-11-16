@@ -10,8 +10,6 @@ typedef unsigned char u8;
 #pragma cplusplus on
 class EB000Context {
 public:
-    virtual void unused0();
-    virtual void unused1();
     virtual void dispatch(s32 *, s32, s32);
 };
 class EBF00Widget {
@@ -118,22 +116,22 @@ extern char lbl_80339F6C[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801EB13C(void *arg0, s32 arg1) {
-    register volatile u8 *v = (volatile u8 *)arg0;
-    register u8 a, b, c, d, e, f, g, h, i;
-    register char *name = lbl_80339F6C;
+    volatile u8 *v = (volatile u8 *)arg0;
     u32 offset, address;
+    u8 a, b, c, d, e, f, g, h, i, j, k, l;
+    char *name = lbl_80339F6C;
     a = v[8]; b = v[11]; c = v[9]; d = v[10]; v[8] = b;
     e = v[4]; f = v[7]; v[11] = a; g = v[5]; h = v[6]; v[10] = c;
-    i = v[12]; a = v[15]; v[9] = d; c = v[13]; b = v[14];
+    i = v[12]; j = v[15]; v[9] = d; k = v[13]; l = v[14];
     offset = *(volatile u32 *)(v + 8);
     v[4] = f; address = (u32)v + offset; v[7] = e; v[5] = h; v[6] = g;
-    v[12] = a; v[15] = i; v[13] = b; v[14] = c;
+    v[12] = j; v[15] = i; v[13] = l; v[14] = k;
     *(volatile u32 *)(v + 8) = address;
-    fn_802C61BC((void *)address, name, b, a, h, f, e, i);
+    fn_802C61BC((void *)address, name, l, j, h, f, e, i);
     if (*(volatile s32 *)v == 1) {
-        register u8 a10, a13, a11, a12, a14, a17, a15, a16;
-        register u8 a18, a1B, a19, a1A, a1C, a1F, a1D, a1E;
-        register u8 t0, t1;
+        u8 a10, a13, a11, a12, a14, a17, a15, a16;
+        u8 a18, a1B, a19, a1A, a1C, a1F, a1D, a1E;
+        u8 t0, t1;
         a10 = v[0x10]; a13 = v[0x13]; a11 = v[0x11]; a12 = v[0x12];
         a14 = v[0x14]; a17 = v[0x17]; a15 = v[0x15]; a16 = v[0x16];
         a18 = v[0x18]; a1B = v[0x1B]; a19 = v[0x19]; a1A = v[0x1A];
@@ -371,31 +369,31 @@ extern "C" void fn_801EB6A8(s32 arg0) {
         virtual void unused8();
         virtual void dispatch(s32 *, s32, s32, s32, s32);
     };
-    register s32 *item6;
+    register s32 *item;
     register s32 *node;
     register s32 *context;
     register s32 *child;
-    s32 type;
+    register s32 type;
     register s32 i;
     node = (s32 *)arg0;
-    while (node != 0) {
+    while (node) {
         type = node[0];
-        if (type == 4) goto state4;
-        if (type >= 4) goto high;
+        if (type == 4) { goto state4; }
+        if (type >= 4) { goto high; }
         switch (type) {
         case 0: goto state0;
         default: goto error;
         }
 high:
-        if (type >= 0x104) goto error;
-        if (type < 0x101) goto error;
+        if (type >= 0x104) { goto error; }
+        if (type < 0x101) { goto error; }
         goto state_special;
 state0:
-        item6 = node;
+        item = node;
         i = 0;
         while (i < node[5]) {
-            fn_801EB6A8(item6[7]);
-            item6 += 2;
+            fn_801EB6A8(item[7]);
+            item += 2;
             i++;
         }
         goto next;
@@ -405,7 +403,7 @@ state_special:
         goto next;
 state4:
         child = (s32 *)node[2];
-        if (child != 0) {
+        if (child) {
             child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
             fn_802C6FA8(child[2]);
             if (child[0] == 1) {
