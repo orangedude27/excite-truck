@@ -3024,14 +3024,17 @@ extern "C" void *fn_80142BD8(void *arg0) {
     return slotPtr;
 }
 #pragma pop
-extern "C" void *fn_80142C28(void *arg0, void *arg1) {
- u8 *p=(u8 *)*(void **)((u8 *)arg0+0x64);
- s32 index=*(s32 *)((u8 *)arg0+0x68);
- u8 *entry=*(u8 **)(p+4)+index*0x14;
- u8 *items=*(u8 **)(entry+4);
- u8 *end=items+*(s32 *)entry*0x24;
- if(arg1==end-0x24) return items;
- return (u8 *)arg1+0x24;
+/* Advance from `current` to the next 0x24-byte item in the array held by the
+ * 0x14-byte entry selected by manager's table (+0x64) and index (+0x68),
+ * wrapping back to the first item past the last one. */
+extern "C" void *fn_80142C28(void *manager, void *current) {
+    u8 *table = (u8 *)*(void **)((u8 *)manager + 0x64);
+    s32 index = *(s32 *)((u8 *)manager + 0x68);
+    u8 *entry = *(u8 **)(table + 4) + index * 0x14;
+    u8 *array = *(u8 **)(entry + 4);
+    u8 *end = array + *(s32 *)entry * 0x24;
+    if (current == end - 0x24) return array;
+    return (u8 *)current + 0x24;
 }
 
 #pragma dont_inline off
