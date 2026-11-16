@@ -382,6 +382,7 @@ extern "C" int *fn_8013A0B0(int *outValue, int context, char *name) {
 #pragma cplusplus reset
 #pragma scheduling on
 int *fn_8013A198(int *arg0, int arg1) {
+    /* Destructor-like: clear the pointed-to value and free the object if requested (arg1 > 0). */
     if (arg0 != 0) {
         *arg0 = 0;
         if (arg1 > 0)
