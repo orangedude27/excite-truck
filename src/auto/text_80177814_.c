@@ -491,19 +491,21 @@ int fn_801781C0(int modeId) {
     }
 }
 #pragma scheduling on
-unsigned char *fn_801781F4(long arg0) {
-    volatile unsigned char *p = &lbl_8055E46C;
-    int d, a, b, c;
-    *(volatile long *)p = arg0;
-    a = p[0];
-    c = p[3];
-    b = p[1];
-    d = p[2];
-    p[0] = c;
-    p[3] = a;
-    p[1] = d;
-    p[2] = b;
-    return (unsigned char *)p;
+unsigned char *fn_801781F4(long code) {
+    /* Store a 32-bit four-character code in the static scratch buffer and
+     * reverse its four bytes in place so it reads in order as a string. */
+    volatile unsigned char *buf = &lbl_8055E46C;
+    int b2, b0, b1, b3;
+    *(volatile long *)buf = code;
+    b0 = buf[0];
+    b3 = buf[3];
+    b1 = buf[1];
+    b2 = buf[2];
+    buf[0] = b3;
+    buf[3] = b0;
+    buf[1] = b2;
+    buf[2] = b1;
+    return (unsigned char *)buf;
 }
 #pragma dont_inline off
 
