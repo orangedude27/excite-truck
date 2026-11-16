@@ -4289,13 +4289,13 @@ void GXInitTexObjFilter(s32 *texObj, s32 minFilter, s32 magFilter) {
             unsigned int mip : 1;
             unsigned int low : 4;
         } fields;
-    } bits;
+    } data;
 
-    bits.value = *texObj;
-    bits.fields.mip = ((unsigned int)__cntlzw(magFilter - 1) >> 5);
-    *texObj = bits.value;
-    bits.fields.filter = ((unsigned char *)&lbl_80558E80)[minFilter];
-    *texObj = bits.value;
+    data.value = *texObj;
+    data.fields.mip = ((unsigned int)__cntlzw(magFilter - 1) >> 5);
+    *texObj = data.value;
+    data.fields.filter = ((unsigned char *)&lbl_80558E80)[minFilter];
+    *texObj = data.value;
 }
 
 void GXGetTexObjWidth(void *arg0, s32 arg1) {
