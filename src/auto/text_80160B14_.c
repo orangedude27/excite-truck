@@ -23,11 +23,12 @@ void fn_80160B18(float *arg0) {
     arg0[1] = arg0[1] * temp_f2;
 }
 
-void fn_80160B7C(float *arg0, float *arg1, float *arg2) {
-    float x = arg1[0] - arg2[0];
-    float y = arg1[1] - arg2[1];
-    arg0[0] = x;
-    arg0[1] = y;
+/* Store the 2D vector difference out = a - b. */
+void fn_80160B7C(float *out, float *a, float *b) {
+    float x = a[0] - b[0];
+    float y = a[1] - b[1];
+    out[0] = x;
+    out[1] = y;
 }
 
 void fn_80160BA0(float *arg0, float *arg1, float farg0) {
