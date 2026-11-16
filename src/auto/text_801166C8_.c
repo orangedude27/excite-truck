@@ -3582,12 +3582,13 @@ u32 fn_8011C06C(void *obj) {
     return 1;
 }
 
-s32 fn_8011C0E0(s32 arg0) {
+s32 fn_8011C0E0(s32 syncObj) {
+    /* Yield the thread until the refcounted state object at syncObj can be acquired (fn_8011C06C succeeds). */
     goto check;
 yield:
     OSYieldThread();
 check:
-    if (fn_8011C06C((void*)arg0) == 0)
+    if (fn_8011C06C((void*)syncObj) == 0)
         goto yield;
 }
 
