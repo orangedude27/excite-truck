@@ -587,25 +587,26 @@ void fn_8025A50C(void) {
 #pragma pop
 
 #pragma cplusplus on
-extern "C" void fn_8025A83C(void *arg0) {
+extern "C" void fn_8025A83C(void *object) {
+    /* Store a 3x3 identity matrix at +0x84, then hand the object's +0x4 data to apply(). */
     class Obj {
     public:
         virtual void f0();
         virtual void apply(void *);
     };
-    float a = lbl_80563AE4;
-    float b = lbl_80563AE0;
-    float *p = (float *)((char *)arg0 + 0x84);
-    p[1] = a;
-    p[0] = b;
-    p[2] = a;
-    p[3] = a;
-    p[4] = b;
-    p[5] = a;
-    p[6] = a;
-    p[7] = a;
-    p[8] = b;
-    ((Obj *)arg0)->apply((char *)arg0 + 4);
+    float zero = lbl_80563AE4;
+    float one = lbl_80563AE0;
+    float *matrix = (float *)((char *)object + 0x84);
+    matrix[1] = zero;
+    matrix[0] = one;
+    matrix[2] = zero;
+    matrix[3] = zero;
+    matrix[4] = one;
+    matrix[5] = zero;
+    matrix[6] = zero;
+    matrix[7] = zero;
+    matrix[8] = one;
+    ((Obj *)object)->apply((char *)object + 4);
 }
 #pragma cplusplus reset
 void fn_8025A87C(void *arg0) {
