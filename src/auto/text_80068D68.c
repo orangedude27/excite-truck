@@ -21100,34 +21100,37 @@ BOOLEAN l2cu_create_conn(void *arg0) {
 }
 
 extern char lbl_80319218[];
-l2c_conn_ret l2cu_create_conn_after_switch(void *arg0) {
-    UINT8 temp_r4;
+l2c_conn_ret l2cu_create_conn_after_switch(void *p_lcb) {
+    /* Initiate the ACL connection for a link whose role switch is done: take
+       page-scan parameters from the inquiry database (or defaults), then start
+       the link timer; on buffer failure release the LCB and report failure. */
+    UINT8 localFeatures;
     UINT32 allow_switch;
-    UINT32 var_r7;
-    UINT8 var_r5;
-    UINT8 var_r6;
-    void *temp_r3;
-    temp_r4 = *((UINT8 *)fn_8007A3A4());
-    *(UINT32 *)((UINT8 *)arg0 + 4) = 3;
-    allow_switch = (temp_r4 >> 5) & 1;
-    temp_r3 = BTM_InqDbRead(*((BD_ADDR *)&((UINT8 *)arg0)[0x2A]));
-    if (temp_r3 != NULL) {
-        var_r5 = *((UINT8 *)temp_r3 + 0xB);
-        var_r6 = *((UINT8 *)temp_r3 + 0xD);
-        var_r7 = *(UINT16 *)temp_r3 | 0x8000;
+    UINT32 clockOffset;
+    UINT8 pageScanRepMode;
+    UINT8 pageScanMode;
+    void *p_inq_info;
+    localFeatures = *((UINT8 *)fn_8007A3A4());
+    *(UINT32 *)((UINT8 *)p_lcb + 4) = 3;
+    allow_switch = (localFeatures >> 5) & 1;
+    p_inq_info = BTM_InqDbRead(*((BD_ADDR *)&((UINT8 *)p_lcb)[0x2A]));
+    if (p_inq_info != NULL) {
+        pageScanRepMode = *((UINT8 *)p_inq_info + 0xB);
+        pageScanMode = *((UINT8 *)p_inq_info + 0xD);
+        clockOffset = *(UINT16 *)p_inq_info | 0x8000;
     } else {
-        var_r5 = 1;
-        var_r6 = 0;
-        var_r7 = 0;
+        pageScanRepMode = 1;
+        pageScanMode = 0;
+        clockOffset = 0;
     }
-    if (!btsnd_hcic_create_conn((UINT8 *)arg0 + 0x2A, 0x18, var_r5, var_r6, var_r7, allow_switch)) {
+    if (!btsnd_hcic_create_conn((UINT8 *)p_lcb + 0x2A, 0x18, pageScanRepMode, pageScanMode, clockOffset, allow_switch)) {
         if (lbl_803C4040[0] >= 1) {
             fn_8007093C(0x80000, lbl_80319218);
         }
-        l2cu_release_lcb(arg0);
+        l2cu_release_lcb(p_lcb);
         return FALSE;
     }
-    btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)arg0 + 0x10), 2, 0x3C);
+    btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)p_lcb + 0x10), 2, 0x3C);
     return TRUE;
 }
 
