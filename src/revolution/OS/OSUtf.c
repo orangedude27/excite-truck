@@ -135,6 +135,7 @@ u8 OSUTF32toANSI(u32 utf32) {
 }
 
 wchar_t OSUTF32toSJIS(u32 utf32) {
+    /* Convert a Unicode code point to its Shift-JIS encoding via the UcsSjisTable lookup, or 0 if unmapped/out of range. */
     if (utf32 >= 0x10000) {
         return 0;
     }
