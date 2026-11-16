@@ -23485,14 +23485,15 @@ void RFCOMM_FlowReq(void *p_mcb, u8 dlci, u8 enable) {
     rfc_port_timer_start(p_port, 0x3c);
 }
 
+/* Request a remote line-status indication (RLS) on an open RFCOMM DLCI port. */
 void RFCOMM_LineStatusReq(void *p_mcb, u8 dlci, u8 status) {
-    u8 *p_port = port_find_mcb_dlci_port(p_mcb, dlci);
-    if ((p_port[2] != 2) || (p_port[0x68] != 4)) {
+    u8 *port = port_find_mcb_dlci_port(p_mcb, dlci);
+    if ((port[2] != 2) || (port[0x68] != 4)) {
         return;
     }
-    p_port[0x69] |= 0x10;
+    port[0x69] |= 0x10;
     rfc_send_rls(p_mcb, dlci, 1, status);
-    rfc_port_timer_start(p_port, 0x3c);
+    rfc_port_timer_start(port, 0x3c);
 }
 
 void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xC, 0); }
