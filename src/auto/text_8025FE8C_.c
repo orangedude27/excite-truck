@@ -1305,10 +1305,12 @@ void fn_80262120(void *vec) {
 }
 
 #pragma scheduling invalid_target
-void fn_8026213C(void *arg0) {
-    *(s32 *)arg0 = (s32)((u8 *)arg0 + 0xC);
-    *(s32 *)((u8 *)arg0 + 8) = 6;
-    *(s32 *)((u8 *)arg0 + 4) = 0;
+void fn_8026213C(void *object) {
+    /* Initialize a collection object: point its items at the inline storage
+     * at +0xC, set the element count (+0x4) to 0 and its capacity (+0x8) to 6. */
+    *(s32 *)object = (s32)((u8 *)object + 0xC);
+    *(s32 *)((u8 *)object + 8) = 6;
+    *(s32 *)((u8 *)object + 4) = 0;
 }
 #pragma scheduling on
 void fn_80262158(void) {
