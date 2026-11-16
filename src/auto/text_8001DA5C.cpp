@@ -135,53 +135,53 @@ extern "C" f32 fn_8001DAF0(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8001DB54(void) {
-    register u32 base = (u32)lbl_802FDB68;
-    register u8* object;
+    char* base = lbl_802FDB68;
+    register void* object;
 
-    lbl_8055D5F4 = (void**)fn_80145E70((void*)(base + 0));
-    lbl_8055D5F8 = (void**)fn_80145E70((void*)(base + 0xC));
-    lbl_8055D5FC = (void**)fn_80145E70((void*)(base + 0x1C));
-    lbl_8055D600 = (void**)fn_80145E70((void*)(base + 0x28));
-    lbl_8055D604 = (void**)fn_80145E70((void*)(base + 0x38));
+    lbl_8055D5F4 = (void**)fn_80145E70(base + 0);
+    lbl_8055D5F8 = (void**)fn_80145E70(base + 0xC);
+    lbl_8055D5FC = (void**)fn_80145E70(base + 0x1C);
+    lbl_8055D600 = (void**)fn_80145E70(base + 0x28);
+    lbl_8055D604 = (void**)fn_80145E70(base + 0x38);
 
-    object = (u8*)fn_801284F8(0xC, (void*)(base + 0x48));
+    object = fn_801284F8(0xC, base + 0x48);
     if (object != 0) {
         *(void**)object = lbl_802FDC98;
-        *(void**)(object + 4) = fn_802CAC28((void*)(base + 0x58), 0);
+        *(void**)((u8*)object + 4) = fn_802CAC28(base + 0x58, 0);
     }
     lbl_80358680[0] = object;
 
-    object = (u8*)fn_801284F8(0x64, (void*)(base + 0x68));
+    object = fn_801284F8(0x64, base + 0x68);
     if (object != 0) *(void**)object = lbl_802FDC84;
     lbl_80358680[1] = object;
 
-    object = (u8*)fn_801284F8(0x38, (void*)(base + 0x78));
+    object = fn_801284F8(0x38, base + 0x78);
     if (object != 0) {
         f32 initial_value = lbl_80560478;
         *(void**)object = lbl_802FDC70;
-        fn_8001DAE0((f32*)(object + 0x28), initial_value);
-        fn_8001DAE0((f32*)(object + 0x30), lbl_80560464);
-        *(void**)(object + 0x24) = fn_80207848((void*)(base + 0x88), 1);
-        *(s32*)(object + 4) = -1;
-        *(s32*)(object + 8) = -1;
-        *(s32*)(object + 0xC) = -1;
-        *(s32*)(object + 0x10) = -1;
-        *(s32*)(object + 0x14) = -1;
-        *(s32*)(object + 0x18) = -1;
-        *(s32*)(object + 0x1C) = -1;
-        *(s32*)(object + 0x20) = -1;
+        fn_8001DAE0((f32*)((u8*)object + 0x28), initial_value);
+        fn_8001DAE0((f32*)((u8*)object + 0x30), lbl_80560464);
+        *(void**)((u8*)object + 0x24) = fn_80207848(base + 0x88, 1);
+        *(s32*)((u8*)object + 4) = -1;
+        *(s32*)((u8*)object + 8) = -1;
+        *(s32*)((u8*)object + 0xC) = -1;
+        *(s32*)((u8*)object + 0x10) = -1;
+        *(s32*)((u8*)object + 0x14) = -1;
+        *(s32*)((u8*)object + 0x18) = -1;
+        *(s32*)((u8*)object + 0x1C) = -1;
+        *(s32*)((u8*)object + 0x20) = -1;
     }
-    lbl_80358680[2] = (void*)object;
+    lbl_80358680[2] = object;
 
-    object = (u8*)fn_801284F8(0x44, (void*)(base + 0x98));
+    object = fn_801284F8(0x44, base + 0x98);
     if (object != 0) *(void**)object = lbl_802FDC5C;
     lbl_80358680[3] = object;
 
-    object = (u8*)fn_801284F8(4, (void*)(base + 0xA8));
+    object = fn_801284F8(4, base + 0xA8);
     if (object != 0) *(void**)object = lbl_802FDC48;
     lbl_80358680[4] = object;
 
-    object = (u8*)fn_801284F8(4, (void*)(base + 0xB8));
+    object = fn_801284F8(4, base + 0xB8);
     if (object != 0) *(void**)object = lbl_802FDC34;
     lbl_80358680[5] = object;
 }
@@ -195,6 +195,17 @@ extern "C" s32 fn_8001DD2C(s32 arg0, s32 arg1) {
 }
 
 #pragma scheduling on
+/* Global layout pane containers built by fn_8001DB54, named after the
+ * layout resources they hold ("betalyt.val", "betares.val", etc.). */
+#define sBetalyLayout      lbl_8055D5F4
+#define sBetaly2Layout     lbl_8055D5F8
+#define sBetaresLayout     lbl_8055D5FC
+#define sBetares2Layout    lbl_8055D600
+#define sLaptitleLayout    lbl_8055D604
+#define sHudOverlays       lbl_80358680
+
+/* HUD/race-overlay teardown: destroy every layout pane container and HUD
+ * overlay widget created by fn_8001DB54, then clear all their global slots. */
 extern "C" void fn_8001DD6C(void) {
     if (lbl_8055D604 != 0) ((CleanupEntry*)lbl_8055D604)->cleanup(1);
     lbl_8055D604 = 0;
