@@ -974,11 +974,12 @@ result:
 }
 #pragma use_lmw_stmw reset
 s32 fn_8001CE34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    void *result;
+    /* Find the named contest's stat record (without creating it) and return its ranked-entry count, or 0. */
+    struct StatRecord *record;
     if (arg1 != 0) {
-        result = fn_8001C540(arg0, arg1, arg2, 0);
-        if (result != 0) {
-            return *(s32 *)((u8 *)result + 0x6C);
+        record = (struct StatRecord *)fn_8001C540(arg0, arg1, arg2, 0);
+        if (record != 0) {
+            return record->entryCount;
         }
     }
     return 0;
