@@ -1196,18 +1196,19 @@ extern "C" void fn_800D7738(void* arg0) {
     if (p != 0) p->v3();
 }
 
-extern "C" void fn_800D7758(void *arg0) {
-    class Dummy_800D7758 {
+extern "C" void fn_800D7758(void *holder) {
+    /* Invoke the layout interface's virtual slot 0x1C on the object held at holder+0x10, if any. */
+    class LayoutIf {
     public:
-        virtual void m0();
-        virtual void m1();
-        virtual void m2();
-        virtual void m3();
-        virtual void m4();
-        virtual void call();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void invoke();
     };
-    Dummy_800D7758 *obj = *(Dummy_800D7758 **)((char *)arg0 + 0x10);
-    if (obj != 0) obj->call();
+    LayoutIf *target = *(LayoutIf **)((char *)holder + 0x10);
+    if (target != 0) target->invoke();
 }
 
 extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
