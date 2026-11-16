@@ -32,14 +32,16 @@ int fn_802451DC(void *arg0, int arg1) {
     return (int)arg0;
 }
 
-int fn_8024521C(void *arg0, int arg1) {
-    if (arg0 != 0) {
+/* Destructor/teardown helper for the global menu/status object: clear the global instance pointer and optionally delete the object when deleteFlag > 0. */
+int fn_8024521C(void *object, int deleteFlag) {
+    extern void *lbl_8055F244;
+    if (object != 0) {
         lbl_8055F244 = 0;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (deleteFlag > 0) {
+            fn_80128668(object);
         }
     }
-    return (int)arg0;
+    return (int)object;
 }
 
 extern char lbl_80342FC0[];
