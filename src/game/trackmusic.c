@@ -203,12 +203,13 @@ void fn_8020F6F8(void) {
  
 #pragma dont_inline on
 long fn_8020F6FC(void) {
-    long index = lbl_8055EEC4;
-    long *entries = lbl_804902C4.m_entries;
+    /* Returns the next track index from the shuffled play order and advances the cursor cyclically. */
+    long cursor = lbl_8055EEC4;
+    long *order = lbl_804902C4.m_entries;
     long count = lbl_804902C4.m_count;
-    long value = entries[index];
-    lbl_8055EEC4 = (index + 1) % count;
-    return value;
+    long track = order[cursor];
+    lbl_8055EEC4 = (cursor + 1) % count;
+    return track;
 }
 #pragma dont_inline reset
 
