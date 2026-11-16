@@ -198,13 +198,14 @@ void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
     }
 }
 #pragma scheduling on
-void fn_8017B4AC(float * __restrict arg0, float * __restrict arg1) {
-    float x = arg0[0x13C / 4] + arg1[0];
-    float y = arg0[0x140 / 4] + arg1[1];
-    float z = arg0[0x144 / 4] + arg1[2];
-    arg0[0x13C / 4] = x;
-    arg0[0x140 / 4] = y;
-    arg0[0x144 / 4] = z;
+void fn_8017B4AC(float * __restrict state, float * __restrict delta) {
+    /* In-place vec3 add: translate the vector at offset 0x13C of state by delta. */
+    float x = state[0x13C / 4] + delta[0];
+    float y = state[0x140 / 4] + delta[1];
+    float z = state[0x144 / 4] + delta[2];
+    state[0x13C / 4] = x;
+    state[0x140 / 4] = y;
+    state[0x144 / 4] = z;
 }
 
 #pragma scheduling invalid_target
