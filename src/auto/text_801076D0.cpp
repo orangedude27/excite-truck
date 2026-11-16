@@ -335,10 +335,16 @@ void* nw4hbm::ut::List_GetNth(const nw4hbm::ut::List* list, unsigned short index
     return 0;
 }
 #pragma pop
-extern "C" void* fn_80107FE4(void* arg0, const void* arg1) {
-    fn_80108FFC(arg0, arg1);
-    *(const char**)arg0 = lbl_803290E8;
-    return arg0;
+/* nw4hbm::ut::ResFont::ResFont(): initialize a ResFont in place by running the
+   detail::ResFontBase base constructor, then install the ResFont vtable. */
+extern "C" void* fn_80107FE4(void* self, const void* baseInitArg) {
+#define ResFontBase_ctor fn_80108FFC /* nw4hbm::ut::detail::ResFontBase::ResFontBase */
+#define ResFont_vtable lbl_803290E8
+    ResFontBase_ctor(self, baseInitArg);
+    *(const char**)self = ResFont_vtable;
+    return self;
+#undef ResFontBase_ctor
+#undef ResFont_vtable
 }
 
 /* nw4hbm::ut::ResFont::~ResFont(): destroys base font state and optionally deletes storage. */
