@@ -964,9 +964,11 @@ void fn_802C99D8(void) {
 }
 
 #pragma dont_inline on
-float fn_802C99E8(float arg0) {
+/* Set the global draw scalar lbl_8055D01C to value, apply it through
+ * fn_802C99D8, and return the previous value (float analog of fn_802C9994). */
+float fn_802C99E8(float value) {
     float previous = lbl_8055D01C;
-    lbl_8055D01C = arg0;
+    lbl_8055D01C = value;
     fn_802C99D8();
     return previous;
 }
