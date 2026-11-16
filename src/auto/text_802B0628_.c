@@ -67,11 +67,13 @@ int fn_802B0628(int arg0) {
     return -2;
 }
 
-void fn_802B0690(int *arg0) {
-    int value = *arg0;
-    if (value != -2) {
-        fn_802CAC54(value);
-        *arg0 = -2;
+/* Releases a texture handle slot: if it holds a valid handle, decrements/frees
+ * the texture via fn_802CAC54 and resets the slot to the invalid handle (-2). */
+void fn_802B0690(int *handleSlot) {
+    int handle = *handleSlot;
+    if (handle != -2) {
+        fn_802CAC54(handle);
+        *handleSlot = -2;
     }
 }
 
