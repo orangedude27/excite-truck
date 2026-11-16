@@ -806,10 +806,11 @@ void fn_802C6A84(s32 *value, s32 delta) {
     }
 }
 
-void fn_802C6A9C(s32 *arg0, s32 arg1) {
-    s32 val = *arg0;
-    if (val != 0) {
-        *arg0 = val + arg1;
+void fn_802C6A9C(s32 *value, s32 delta) {
+    /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
+    s32 cur = *value;
+    if (cur != 0) {
+        *value = cur + delta;
     }
 }
 
