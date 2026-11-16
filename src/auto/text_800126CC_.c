@@ -121,11 +121,13 @@ void fn_80012794(void) {
 #pragma scheduling on
 extern char lbl_803518C0[];
 extern char lbl_803551E0[];
-char *fn_80012820(int arg0) DECOMP_DONT_INLINE {
-    if (arg0 >= 0) {
-        return &lbl_803518C0[arg0 * 0x84];
+char *fn_80012820(int id) DECOMP_DONT_INLINE {
+    /* Look up a record by signed id: nonnegative ids index the first table,
+       negative ids index the second using -1-id. */
+    if (id >= 0) {
+        return &lbl_803518C0[id * 0x84];
     }
-    return &lbl_803551E0[(-1 - arg0) * 0x88];
+    return &lbl_803551E0[(-1 - id) * 0x88];
 }
 #pragma scheduling invalid_target
 /* Find the nth active contest entry for an event id in the contest table. */
