@@ -11428,6 +11428,8 @@ extern "C" s32 fn_800B75C4(s32 buffer, s32 size, s32 count, s32 file) {
 extern "C" s32 fn_800B1FF4(void *, u32, s32);
 extern "C" void fn_800B75EC(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
+    /* File-thread alarm callback: run the VFiPFFILE seek (fn_800B1FF4) with the
+     * alarm as its handle and normalize the returned status via fn_800B73BC. */
     fn_800B73BC((s32)((void *(*)(void *))fn_800B1FF4)(alarm));
 }
 
