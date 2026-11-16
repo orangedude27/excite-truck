@@ -12281,16 +12281,17 @@ BOOLEAN BTM_SecRegister(tBTM_APPL_INFO *arg0) {
     return TRUE;
 }
 
+/* Registers a callback to be notified when a remote device name is resolved. */
 BOOLEAN BTM_SecAddRmtNameNotifyCallback(tBTM_RMT_NAME_CALLBACK *p_callback) {
-    u8 *base = lbl_803C0F78;
-    int i;
+    u8 *p_btm_cb = lbl_803C0F78;
+    int slotIndex;
 
-    for (i = 0; i < BTM_SEC_MAX_RMT_NAME_CALLBACKS; i++) {
-        if (*(tBTM_RMT_NAME_CALLBACK **)(base + 0x192C) == NULL) {
-            *(tBTM_RMT_NAME_CALLBACK **)(lbl_803C0F78 + i * 4 + 0x192C) = p_callback;
+    for (slotIndex = 0; slotIndex < BTM_SEC_MAX_RMT_NAME_CALLBACKS; slotIndex++) {
+        if (*(tBTM_RMT_NAME_CALLBACK **)(p_btm_cb + 0x192C) == NULL) {
+            *(tBTM_RMT_NAME_CALLBACK **)(lbl_803C0F78 + slotIndex * 4 + 0x192C) = p_callback;
             return TRUE;
         }
-        base += 4;
+        p_btm_cb += 4;
     }
 
     return FALSE;
