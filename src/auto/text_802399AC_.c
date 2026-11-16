@@ -516,10 +516,11 @@ void fn_8023ACD0(void *selector) {
     *index = (count + *index - 1) % count;
 }
 
-void fn_8023AD00(void *arg0) {
-    s32 *index = *(s32 **)((char *)arg0 + 0x20);
-    *(unsigned char *)((char *)arg0 + 0x28) = 1;
-    *index = (*index + 1) % *(s32 *)((char *)arg0 + 0x1C);
+/* Advance the selector's current index by one with wraparound and flag it changed. */
+void fn_8023AD00(void *selector) {
+    s32 *index = *(s32 **)((char *)selector + 0x20);
+    *(unsigned char *)((char *)selector + 0x28) = 1;
+    *index = (*index + 1) % *(s32 *)((char *)selector + 0x1C);
 }
 
 s32 fn_8023AD2C(void *arg0) {
