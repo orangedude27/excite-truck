@@ -177,6 +177,7 @@ void fn_802B0904(void) {
 
 #pragma scheduling invalid_target
 void fn_802B0914(void) {
+    /* Register the "last-gmat-tris" and "last-wmap-tris" entries, then build the pool manager. */
     fn_802B8AE0(lbl_8034A0B4, &lbl_8055F998);
     fn_802B8AE0(lbl_8034A0C4, &lbl_8055F99C);
     fn_802B0710();
@@ -718,11 +719,11 @@ void fn_802B1758(void *arg0) {
     int i;
     unsigned offset;
     int sign;
-    register float radius;
+    float radius;
     float *point;
-    register float z;
+    float z;
     float y;
-    register float x;
+    float x;
     unsigned short values[14];
 
     node = *(void **)((char *)arg0 + 0x934);
