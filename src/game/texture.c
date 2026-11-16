@@ -1379,13 +1379,22 @@ scan_done:
     }
 }
 
-void fn_802CBFA0(void *arg0, unsigned int arg1) {
-    void *node;
-    node = *(void **)((char *)arg0 + 0xC);
+void fn_802CBFA0(void *mgr, unsigned int request) {
+    /* Detach the given load request from every loaded texture in the manager's
+       +0xC list: clear each node's owner field that points at it. */
+    typedef struct TexNode {
+        /* 0x00 */ char *name;
+        /* 0x04 */ int texHandle;
+        /* 0x08 */ int priority;
+        /* 0x0C */ void *request;
+        /* 0x10 */ struct TexNode *next;
+    } TexNode;
+    TexNode *node;
+    node = *(TexNode **)((char *)mgr + 0xC);
     while (node != 0) {
-        if (*(unsigned int *)((char *)node + 0xC) == arg1)
-            *(unsigned int *)((char *)node + 0xC) = 0;
-        node = *(void **)((char *)node + 0x10);
+        if ((unsigned int)node->request == request)
+            node->request = 0;
+        node = node->next;
     }
 }
 
