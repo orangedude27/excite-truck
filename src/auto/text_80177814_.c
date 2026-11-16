@@ -108,13 +108,16 @@ void fn_80177990(void) {
 
 #pragma dont_inline on
 void fn_80177A18(void) {
-    int var_r31;
+#define CenterSteering fn_802E8518
+    int controller;
 
-    var_r31 = 0;
+    /* Center the steering value of each of the four controllers. */
+    controller = 0;
     do {
-        fn_802E8518(var_r31);
-        var_r31 += 1;
-    } while (var_r31 < 4);
+        CenterSteering(controller);
+        controller += 1;
+    } while (controller < 4);
+#undef CenterSteering
 }
 
 /* Update sound/request state: clear pending state when conditions are met, run one-shot init on enter, and reset to idle. */
@@ -380,11 +383,13 @@ void fn_80177F40(void) {
     extern float lbl_8055E3C8;
     extern int lbl_8055E488;
     extern float lbl_80561B50, lbl_80561B54, lbl_80561B58, lbl_80561B5C;
-    char *base = (char *)lbl_80430590;
-    unsigned active;
-    unsigned char saved;
-    unsigned char flag;
     int other;
+    int flag;
+    int active;
+    int saved;
+    char *base = (char *)lbl_80430590;
+    float *dst, *src;
+    int i;
 
     fn_80176A6C();
     fn_80177A54();
@@ -408,8 +413,7 @@ void fn_80177F40(void) {
     if (flag) fn_801EA1F0();
     other = fn_801B526C();
     if (other != 0 || flag == 0) {
-        float *src, *dst;
-        int i, off, zero, cur;
+        int off, zero, cur;
         float scale = lbl_80561B50;
         dst = (float *)(base + 0x170);
         src = (float *)(base + 0x44);
@@ -927,41 +931,54 @@ void* fn_80178CA4(void) {
 }
 
 #pragma use_lmw_stmw off
-void fn_80178CAC(void *a, void *b) {
-    int i;
-    int *p;
-    void *x;
-    void *y;
-    int t25, t24;
-    int t31, t30, t28, t29;
-    p = lbl_80430590;
-    for (i = 0; i < 4; i++, p++) {
-        if ((int)a == *p) {
-            *p = (int)b;
-            fn_8026A248((int)b, i);
-        } else if ((int)b == *p) {
-            *p = (int)a;
-            fn_8026A248((int)a, i);
-        }
+void fn_80178CAC(void *a, void *b)
+{
+  int t31;
+  int i;
+  void *x;
+  void *y;
+  int t25;
+  int t24;
+  int *p;
+  void *new_var;
+  int t30;
+  int t28;
+  int t29;
+  p = lbl_80430590;
+  for (i = 0; i < 4; i++, p++)
+  {
+    if (((int) a) == (*p))
+    {
+      *p = (int) b;
+      fn_8026A248((int) b, i);
     }
-    x = (void *)fn_8017960C((int)a);
-    y = (void *)fn_8017960C((int)b);
-    t25 = *(int *)((char *)x + 0x1F0);
-    t24 = *(int *)((char *)y + 0x1F0);
-    t31 = *(int *)((char *)x + 0x10);
-    t30 = *(int *)((char *)y + 0x10);
-    t28 = *(int *)((char *)y + 0x270C);
-    t29 = *(int *)((char *)x + 0x270C);
-    fn_801A5300(x, 0);
-    fn_801A5300(y, 0);
-    fn_801A5300(x, t28);
-    fn_801A5300(y, t29);
-    *(int *)((char *)x + 0x1F0) = t24;
-    *(int *)((char *)y + 0x1F0) = t25;
-    *(int *)((char *)x + 0x10) = t30;
-    *(int *)((char *)y + 0x10) = t31;
-    fn_801EAA94((int)a, t24);
-    fn_801EAA94((int)b, t25);
+    else
+      if (((int) b) == (*p))
+    {
+      *p = (int) a;
+      fn_8026A248((int) a, i);
+    }
+  }
+
+  new_var = (void *) fn_8017960C((int) a);
+  x = new_var;
+  y = (void *) fn_8017960C((int) b);
+  t25 = *((int *) (((char *) x) + 0x1F0));
+  t24 = *((int *) (((char *) y) + 0x1F0));
+  t31 = *((int *) (((char *) x) + 0x10));
+  t30 = *((int *) (((char *) y) + 0x10));
+  t28 = *((int *) (((char *) y) + 0x270C));
+  t29 = *((int *) (((char *) x) + 0x270C));
+  fn_801A5300(new_var, 0);
+  fn_801A5300(y, 0);
+  fn_801A5300(x, t28);
+  fn_801A5300(y, t29);
+  *((int *) (((char *) x) + 0x1F0)) = t24;
+  *((int *) (((char *) y) + 0x1F0)) = t25;
+  *((int *) (((char *) new_var) + 0x10)) = t30;
+  *((int *) (((char *) y) + 0x10)) = t31;
+  fn_801EAA94((int) a, t24);
+  fn_801EAA94((int) b, t25);
 }
 void fn_80178DBC(int arg0, float arg1) {
     lbl_804305D4[arg0] = arg1;
