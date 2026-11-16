@@ -287,9 +287,14 @@ void fn_802976D0(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
 }
 
-void fn_802976DC(s32 *arg0) {
-    fn_8002F6AC(*arg0, &fn_80297654);
-    fn_80128668(arg0);
+/* Deleting destructor for the entry holder: destroy its array of entries, then free the holder. */
+void fn_802976DC(s32 *self) {
+#define destroyObjectArray fn_8002F6AC
+#define destroyFlipBookEntry fn_80297654
+    destroyObjectArray(*self, &destroyFlipBookEntry);
+    Mem_freeObject(self);
+#undef destroyObjectArray
+#undef destroyFlipBookEntry
 }
 
 #pragma push
