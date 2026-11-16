@@ -18,10 +18,19 @@ void fn_802A7BE8(void) {
 }
 
 void fn_802A7C24(void) {
-    fn_802328D4(lbl_8055F8BC);
-    lbl_8055F8BC = 0;
-    fn_80235380((void *)lbl_8055F8C0);
-    lbl_8055F8C0 = 0;
+    #define gCarMarkerTexBlock lbl_8055F8BC
+    #define gCarMarkerArtSet   lbl_8055F8C0
+    #define GTexBlock_release  fn_802328D4
+    #define ArtSet_release     fn_80235380
+    /* Release the car-marker texture block and art set, then clear both globals. */
+    GTexBlock_release(gCarMarkerTexBlock);
+    gCarMarkerTexBlock = 0;
+    ArtSet_release((void *)gCarMarkerArtSet);
+    gCarMarkerArtSet = 0;
+    #undef ArtSet_release
+    #undef GTexBlock_release
+    #undef gCarMarkerArtSet
+    #undef gCarMarkerTexBlock
 }
 
 void fn_802A7C64(void) {
