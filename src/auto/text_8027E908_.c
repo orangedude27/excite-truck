@@ -1621,6 +1621,15 @@ finish:
 }
 #pragma scheduling reset
 #pragma pop
+static inline int fn_80281138_find(void **items, int count, void *key) {
+    int i;
+    for (i = 0; i < count; ++i, ++items) {
+        if (*items == key)
+            return i;
+    }
+    return -1;
+}
+
 extern "C" int fn_80281138(void) {
     extern int fn_801345D8(char *, int, const char *, const char *, int);
     extern int fn_802368EC(void);
@@ -3782,11 +3791,16 @@ struct Obj8732C {
 };
 #pragma cplusplus on
 extern "C" void *fn_8028732C(void *arg0, int arg1) {
+    class Obj {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+        virtual void *get();
+    };
     void *cached = *(void **)((char *)arg0 + 8);
     if (cached != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
         return cached;
     }
-    Obj8732C *obj = *(Obj8732C **)((char *)arg0 + 4);
+    Obj *obj = *(Obj **)((char *)arg0 + 4);
     return obj->get();
 }
 #pragma cplusplus off
