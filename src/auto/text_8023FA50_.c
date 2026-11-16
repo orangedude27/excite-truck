@@ -46,11 +46,13 @@ int fn_8023FA50(int *outStatus) {
     return 0;
 }
 #pragma scheduling on
+/* Menu callback: hide the main menu, raise the wireless-controller warning,
+ * then hide the warning group and restore the main menu. */
 void fn_8023FA9C(void) {
-    fn_80214A9C(0xC);
-    fn_8024683C();
-    fn_80214A9C(0x1F);
-    fn_80214AF0(0xC);
+    UIWindow_HideGroup(UI_GROUP_MAIN_MENU);
+    checkAndShowWirelessWarning();
+    UIWindow_HideGroup(UI_GROUP_WARNING);
+    UIWindow_ShowGroup(UI_GROUP_MAIN_MENU);
 }
 
 int fn_8023FAD4(char *arg0, int arg1) {
