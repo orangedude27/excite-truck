@@ -112,6 +112,21 @@ static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right
 
 
 typedef struct { s32 a, b, c, d; f32 e, f; s32 g; } Copy8014C6F0;
+/* One line of the game's on-screen text, as the printers of text_80144F40.cpp
+ * draw it: the TextEntry80145C08 block fn_80145B94 reads (see the comment there
+ * for the fields) plus the string pointer at +0x1C that fn_801476C4 hands to
+ * it.  x, y and scale are floats, but a copy of an entry moves them as raw
+ * words - it never converts them. */
+typedef struct {
+    s32 id;            /* +0x00 "name" */
+    u32 x;             /* +0x04 f32 screen x */
+    u32 y;             /* +0x08 f32 screen y */
+    s32 justification; /* +0x0C "elem_just" */
+    f32 scale;         /* +0x10 scale (the drawer of fn_80145B94 reads it as alpha) */
+    s32 fontId;        /* +0x14 font the drawer picks */
+    u32 color;         /* +0x18 colour, packed by fn_80144C68 */
+    const char *text;  /* +0x1C string to draw */
+} TextEntry8014C920;
 typedef struct { f32 m[12]; } Matrix801533E8;
 typedef struct { f32 pos[3]; f32 velocity[3]; s16 angle; s32 value; } Event80155700;
 extern u8 lbl_80559FB8[1];
