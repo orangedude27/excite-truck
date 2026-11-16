@@ -1758,8 +1758,8 @@ extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ
     {
         u32 off = arg1 * 8;
         ref = *(u8 **)((u8 *)arg0 + 0x28);
-        if (*((u8 *)table + 5 + off) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
-        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)table + 4 + off), *(u32 *)((u8 *)table + 8 + off), ref);
+        if (*((u8 *)table + off + 5) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
+        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)table + off + 4), *(u32 *)((u8 *)table + off + 8), ref);
     }
     if (entry == 0) return 0;
     ref = *(u8 **)((u8 *)arg0 + 0x28);
@@ -1770,8 +1770,8 @@ extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ
     {
         u32 off = arg2 * 8;
         ref = *(u8 **)((u8 *)arg0 + 0x28);
-        if (*((u8 *)group + 5 + off) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
-        table = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)group + 4 + off), *(u32 *)((u8 *)group + 8 + off), ref);
+        if (*((u8 *)group + off + 5) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
+        table = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)group + off + 4), *(u32 *)((u8 *)group + off + 8), ref);
     }
     if (table == 0) return 0;
     *(u32 *)arg3 = table[0];
@@ -3762,22 +3762,25 @@ extern "C" void* GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(void*);
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* arg0) {
     char buffer[0x220];
     char reader[8];
-    void* mutex;
     void* p;
     void* callback;
     void* base;
+    s32 fileId;
 
     fn_800F41D0(buffer, *(s32*)((char*)arg0 + 0x14));
-    mutex = *(void**)((char*)arg0 + 0x2c);
-    OSLockMutex(mutex);
-    p = buffer;
-    *(void**)((char*)arg0 + 0x10) = p;
-    OSUnlockMutex(mutex);
-    p = LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(p, *(u32*)((char*)arg0 + 0x18), *(void**)((char*)arg0 + 0x20));
-    mutex = *(void**)((char*)arg0 + 0x2c);
-    OSLockMutex(mutex);
-    *(void**)((char*)arg0 + 0x10) = 0;
-    OSUnlockMutex(mutex);
+    {
+        void* mutex = *(void**)((char*)arg0 + 0x2c);
+        OSLockMutex(mutex);
+        *(void**)((char*)arg0 + 0x10) = buffer;
+        OSUnlockMutex(mutex);
+    }
+    p = LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(buffer, *(u32*)((char*)arg0 + 0x18), *(void**)((char*)arg0 + 0x20));
+    {
+        void* mutex = *(void**)((char*)arg0 + 0x2c);
+        OSLockMutex(mutex);
+        *(void**)((char*)arg0 + 0x10) = 0;
+        OSUnlockMutex(mutex);
+    }
     if (p == 0) {
         callback = *(void**)((char*)arg0 + 0x24);
         if (callback) ((void (*)(s32, void*, s32, void*))callback)(0, 0, 0, *(void**)((char*)arg0 + 0x28));
@@ -3787,7 +3790,8 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* 
     __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(reader, p);
     base = (void*)GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(reader);
     callback = *(void**)((char*)arg0 + 0x24);
-    if (callback) ((void (*)(s32, void*, s32, void*))callback)(1, base, *(s32*)((char*)arg0 + 0x1c), *(void**)((char*)arg0 + 0x28));
+    fileId = *(s32*)((char*)arg0 + 0x1c);
+    if (callback) ((void (*)(s32, void*, s32, void*))callback)(1, base, fileId, *(void**)((char*)arg0 + 0x28));
     fn_800F420C((s32)buffer, -1);
 }
 
