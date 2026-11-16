@@ -1627,13 +1627,23 @@ extern s32 lbl_8055E864;
 extern Vec lbl_80438498;
 extern char lbl_8055E83D;
 void fn_801C7A28(void) {
-    lbl_80438498.x = lbl_80438268.x;
-    lbl_80438498.y = lbl_80438268.y;
-    lbl_80438498.z = lbl_80438268.z;
-    lbl_8055E83A = 0;
-    lbl_8055E868 = fn_801C6CB0;
-    lbl_8055E83D = 0;
-    fn_801C78D8();
+    #define sMenuPosition     lbl_80438498
+    #define debugRefPosition  lbl_80438268
+    #define sDebugMenuFlag    lbl_8055E83D
+    #define enterDebugMenuMode fn_801C78D8
+    /* Reset the debug menu position to the reference position, clear text-entry
+     * state, select the idle menu action, then enter debug menu mode. */
+    sMenuPosition.x = debugRefPosition.x;
+    sMenuPosition.y = debugRefPosition.y;
+    sMenuPosition.z = debugRefPosition.z;
+    sTextFieldFlag = 0;
+    sMenuAction = menu_action_idle;
+    sDebugMenuFlag = 0;
+    enterDebugMenuMode();
+    #undef sMenuPosition
+    #undef debugRefPosition
+    #undef sDebugMenuFlag
+    #undef enterDebugMenuMode
 }
 
 extern f64 atof(const char *);
@@ -1790,23 +1800,24 @@ static inline void fn_801C7FE4_copyVec(Vec *dst, const Vec *src) {
 #pragma opt_propagation off
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
-    char *base = (char *)&lbl_80437D88;
+    Unk_80437D88 *base = &lbl_80437D88;
     char *obj;
-    Vec *v = (Vec *)(base + 0x4E0);
-    Vec *dst;
+    f32 *src;
+    f32 *dst;
     lbl_8055E83A = 0;
     obj = fn_801C3C80();
     *(s32 *)(obj + 8) = 6;
     *(s32 *)(obj + 0xC) = lbl_8055E850;
-    strcpy(obj + 0x14, base + 0x4F8);
-    strcpy(obj + 0x114, base + 0x5F8);
+    strcpy(obj + 0x14, (char *)base + 0x4F8);
+    strcpy(obj + 0x114, (char *)base + 0x5F8);
     *(s32 *)(obj + 0x10) = fn_801C3954((s32)obj + 0x14);
     *(s32 *)(obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
-    dst = (Vec *)(obj + 0x214);
-    dst->x = v->x;
-    dst->y = v->y;
-    dst->z = v->z;
-    sprintf(base + 0x238, lbl_80336FB0, *(f32 *)obj);
+    src = (f32 *)((char *)base + 0x4E0);
+    dst = (f32 *)(obj + 0x214);
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst = *src;
+    sprintf((char *)base + 0x238, lbl_80336FB0, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
 #pragma pop
