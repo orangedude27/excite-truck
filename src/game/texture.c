@@ -1166,6 +1166,7 @@ void fn_802CB82C(int arg0) {
 }
 int fn_802CBBE8();
 extern char lbl_8034BA04[];
+/* Remove arg2 from the list rooted at arg1, then push arg2 onto the front of *arg0. */
 void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     fn_802CBBE8(arg1, arg2);
     *(int **)((char *)arg2 + 0x14) = *arg0;
