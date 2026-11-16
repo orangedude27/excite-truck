@@ -590,16 +590,16 @@ extern "C" s32 fn_801320D8(void *table, const char *name) {
 extern int atoi(const char*);
 extern int atoi();
 #pragma cplusplus on
-extern "C" s32 fn_801321BC(void **arg0) {
-    class Dummy {
+extern "C" s32 fn_801321BC(void **valueNode) {
+    /* Read this value node's string and convert it to an integer. */
+    class ValueNode {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual void v3();
+        virtual char *getString();
     };
-    ((Dummy *)arg0)->v3();
-    return atoi();
+    return atoi(((ValueNode *)valueNode)->getString());
 }
 #pragma cplusplus reset
 extern double atof(const char*);
