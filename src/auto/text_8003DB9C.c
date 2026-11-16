@@ -4687,8 +4687,11 @@ void GXSetNumIndStages(unsigned int value) {
 }
 
 extern void GXSetTevIndirect(s32, s32, s32, s32, s32, s32, s32, s32, u8, s32);
-void GXSetTevDirect(int arg0) {
-    GXSetTevIndirect(arg0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+/* GXSetTevDirect: configures TEV stage to sample directly (no indirect texturing)
+ * by setting all GXSetTevIndirect parameters to their "off/default" values.
+ */
+void GXSetTevDirect(int stage) {
+    GXSetTevIndirect(stage, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 void __GXUpdateBPMask(void) {}
