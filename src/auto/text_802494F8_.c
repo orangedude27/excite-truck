@@ -1346,8 +1346,9 @@ void fn_8024BB5C(void *sound) {
     *(s32 *)((char *)sound + 0x10) = capped;
 }
 
-s32 fn_8024BB7C(void *arg0) {
-    return *(s32 *)((char *)lbl_802FA4B0 + (*(s32 *)((char *)arg0 + 0x10) << 3) + 4);
+s32 fn_8024BB7C(void *obj) {
+    /* Return the difficulty-name string from lbl_802FA4B0 selected by the index at +0x10. */
+    return *(s32 *)((char *)lbl_802FA4B0 + (*(s32 *)((char *)obj + 0x10) << 3) + 4);
 }
 
 #pragma cplusplus on
