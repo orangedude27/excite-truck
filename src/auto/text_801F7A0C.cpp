@@ -623,8 +623,9 @@ extern "C" s32 fn_801F80FC(const char *arg) {
 }
 
 extern "C" const char lbl_8033B018[];
-extern "C" s32 fn_801F812C(const char *arg) {
-    return stricmp(arg, lbl_8033B018) == 0;
+/* Returns nonzero when `typeName` is the "animation" object type, compared case-insensitively. */
+extern "C" s32 fn_801F812C(const char *typeName) {
+    return stricmp(typeName, lbl_8033B018) == 0;
 }
 
 #pragma push
