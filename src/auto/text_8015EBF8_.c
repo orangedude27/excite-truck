@@ -790,6 +790,7 @@ s32 fn_8015FAB8(s32 *records, s32 startIndex, f32 threshold) {
     }
     return result;
 }
+#pragma dont_inline reset
 #pragma scheduling reset
 extern f32 lbl_80561810;
 #pragma processor 750
