@@ -710,9 +710,10 @@ extern "C" void *fn_801836E0(void *object, int deleteFlag) {
 #pragma cplusplus off
 #pragma pop
 
-int fn_801837DC(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_801837DC(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
 }
 
 /* Restore saved transform/state words from +0x274..+0x2A0 into +0x3C..+0x68, then refresh and reinitialize. */
