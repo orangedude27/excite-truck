@@ -9854,6 +9854,7 @@ tBTM_INQ_INFO *BTM_InqDbFirst(void) {
     return 0;
 }
 
+/* Return the next in-use inquiry database entry after p_cur, or the first if p_cur is NULL. */
 tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
     struct InqDbEnt {
         u8 pad0[0x1A];
