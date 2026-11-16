@@ -96,6 +96,9 @@ extern void *fn_801B2EC0(int);
 extern int fn_801B2F24(void);
   extern char lbl_80338C78[];
 extern char lbl_80338BD0[];
+/* The delete entry point: fn_80128584(object, 3), i.e. MemFree on the object's
+ * heap.  The destructor helpers below call it with no argument because the
+ * object is already in the argument register where they branch out to it. */
 extern int fn_80128668(void);
 extern void fn_80128658(int);
 typedef struct { char *name; int state; } UnkStruct_801D701C;
