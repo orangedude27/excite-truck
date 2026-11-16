@@ -1000,14 +1000,15 @@ float fn_802C99E8(float value) {
 }
 #define globalDirection lbl_804C1440 /* global 3-component direction vector */
 #pragma dont_inline on
-void fn_802C9A1C(float *arg0) {
+void fn_802C9A1C(float *direction) {
+    /* Store a 3-component direction in the global and reapply it to the draw list. */
     float z, y, x;
-    x = arg0[0];
-    y = arg0[1];
-    z = arg0[2];
-    ((float *)lbl_804C1440)[0] = x;
-    ((float *)lbl_804C1440)[1] = y;
-    ((float *)lbl_804C1440)[2] = z;
+    x = direction[0];
+    y = direction[1];
+    z = direction[2];
+    ((float *)globalDirection)[0] = x;
+    ((float *)globalDirection)[1] = y;
+    ((float *)globalDirection)[2] = z;
     fn_802C99D8();
 }
 #pragma dont_inline reset
