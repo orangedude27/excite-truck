@@ -591,7 +591,7 @@ int fn_80292FB4(unsigned char *bucket, void *system) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
+extern "C" void *fn_80293034(void *effect, void *effectArg, int modelBase) {
     class EffectArg {
     public:
         virtual void v0();
@@ -604,17 +604,18 @@ extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
         virtual void v7();
         virtual float value(const char *, float);
     };
-    *(void **)arg0 = lbl_80349294;
-    fn_80293374(arg0, (void *)arg2);
-    fn_802935A0(arg0);
-    float defaultValue = lbl_805644D4;
-    *(float *)((char *)arg0 + 4) = defaultValue;
-    if (arg1 != 0) {
-        *(float *)((char *)arg0 + 4) =
-            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988, defaultValue);
+    /* Construct an Effect: set its vtable, load chunk models and per-car colors, and take gravity from "grav_f" (default 1.0). */
+    *(void **)effect = lbl_80349294;
+    fn_80293374(effect, (void *)modelBase);
+    fn_802935A0(effect);
+    float initialValue = lbl_805644D4;
+    *(float *)((char *)effect + 4) = initialValue;
+    if (effectArg != 0) {
+        *(float *)((char *)effect + 4) =
+            ((EffectArg *)effectArg)->value((const char *)&lbl_8055C988, initialValue);
     }
-    *(int *)((char *)arg0 + 0x2FAC) = 0;
-    return arg0;
+    *(int *)((char *)effect + 0x2FAC) = 0;
+    return effect;
 }
 #pragma cplusplus off
 #pragma scheduling on
