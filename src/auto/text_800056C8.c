@@ -558,12 +558,20 @@ void fn_800060B8(void *arg0) {
 void fn_800060DC(void) {
 }
 
-void fn_800060E0(u8 arg0, u8 arg1) {
-    register u8 *p = lbl_8055D340;
-    p[0] = arg0;
-    p[2] = arg1;
-    __AXDSPInitCallback_801769E0();
-    fn_8017691C();
+void fn_800060E0(u8 isMode2, u8 isMode1) {
+#define gDspInitConfig lbl_8055D340
+#define SignalDspInit __AXDSPInitCallback_801769E0
+#define StartDsp fn_8017691C
+    /* Store the chosen sound-mode flags into the DSP init config bytes, then
+     * signal DSP init and start the DSP. */
+    register u8 *dspConfig = gDspInitConfig;
+    dspConfig[0] = isMode2;
+    dspConfig[2] = isMode1;
+    SignalDspInit();
+    StartDsp();
+#undef StartDsp
+#undef SignalDspInit
+#undef gDspInitConfig
 }
 
 #pragma cplusplus on
