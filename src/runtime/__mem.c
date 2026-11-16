@@ -100,6 +100,8 @@ DECL_SECTION(".init") void __fill_mem(void* dst, int val, unsigned long n)
 
 DECL_SECTION(".init") void * memset(void * dest, int val, size_t count)
 {
+    /* Startup memset: fill count bytes at dest with (unsigned char)val via
+     * __fill_mem, then return the original dest pointer. */
     __fill_mem(dest, val, count);
     return dest;
 }
