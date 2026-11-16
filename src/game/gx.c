@@ -535,9 +535,18 @@ void fn_802CF10C(void) {
 #pragma dont_inline reset
 
 void fn_802CF5A8(void) {
-    if (lbl_8055D0FF == 0) return;
-    lbl_8055D0FF = 0;
-    fn_802E2E0C((void (*)(void))fn_802CEC04, &lbl_8055D100);
+#define sGxResetRegistered lbl_8055D0FF
+#define sGxResetName lbl_8055D100
+#define GxResetCallback fn_802CEC04
+#define RegisterResetCallback fn_802E2E0C
+    /* Register the GX reset callback with its "GX" log name, once on first init. */
+    if (sGxResetRegistered == 0) return;
+    sGxResetRegistered = 0;
+    RegisterResetCallback((void (*)(void))GxResetCallback, &sGxResetName);
+#undef sGxResetRegistered
+#undef sGxResetName
+#undef GxResetCallback
+#undef RegisterResetCallback
 }
 
 #pragma push
