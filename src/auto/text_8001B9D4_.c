@@ -1160,18 +1160,23 @@ void fn_8001D234(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
 }
 
 #pragma cplusplus on
-extern "C" s32 fn_8001D25C(s32 arg0) {
-    class Obj {
+extern "C" s32 fn_8001D25C(s32 contestIdx) {
+#define getContestEntry fn_8001285C
+#define kNameKey lbl_80558CDC
+    class NamedEntry {
     public:
-        virtual void m0(s32, s32);
-        virtual void m1(s32, s32);
-        virtual void m2(s32, s32);
-        virtual void m3(s32, s32);
-        virtual s32 m4(s32, s32);
+        virtual void v0(s32, s32);
+        virtual void v1(s32, s32);
+        virtual void v2(s32, s32);
+        virtual void v3(s32, s32);
+        virtual s32 get(s32 key, s32 index);
     };
-    Obj *obj;
-    obj = *(Obj **)((char *)fn_8001285C() + 0x20);
-    return obj->m4((s32)&lbl_80558CDC, 0);
+    /* Look up the contest table entry for contestIdx and query its "name" property (index 0). */
+    NamedEntry *entry;
+    entry = *(NamedEntry **)((char *)getContestEntry() + 0x20);
+    return entry->get((s32)&kNameKey, 0);
+#undef kNameKey
+#undef getContestEntry
 }
 #pragma cplusplus off
 
