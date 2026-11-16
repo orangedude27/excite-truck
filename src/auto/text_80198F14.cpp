@@ -480,11 +480,12 @@ extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* ar
 #pragma dont_inline reset
 
 #pragma dont_inline on
-extern "C" void fn_80199870(void* arg0, u32 arg1 = 0) {
-    u32 value = *(u32*)((u8*)arg0 + 0x10);
-    if ((u32)(value - 0x50430000) == 0x4152 ||
-        (u32)(value - 0x41430000) == 0x4152) {
-        fn_801A5C4C(arg0, arg1);
+extern "C" void fn_80199870(void* car, u32 key = 0) {
+    /* Forward a car to fn_801A5C4C only when its +0x10 tag is 'PCAR' (0x50434152) or 'ACAR' (0x41434152). */
+    u32 tag = *(u32*)((u8*)car + 0x10);
+    if ((u32)(tag - 0x50430000) == 0x4152 ||
+        (u32)(tag - 0x41430000) == 0x4152) {
+        fn_801A5C4C(car, key);
     }
 }
 #pragma dont_inline reset
