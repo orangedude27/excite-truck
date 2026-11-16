@@ -204,11 +204,12 @@ short fn_802C2120(int arg0) {
     return (short)(((arg0 << 8) / 1024) + 0x80);
 }
 
+/* Load the road opacity texture, falling back to an alternate texture if the preferred one is unavailable. */
 void fn_802C2138(void) {
-    int result;
-    result = fn_802C2074(lbl_8034AFB8);
-    lbl_8055FB50 = (void *)result;
-    if (result == -2) {
+    int handle;
+    handle = fn_802C2074(lbl_8034AFB8);
+    lbl_8055FB50 = (void *)handle;
+    if (handle == -2) {
         lbl_8055FB50 = (void *)fn_802C2074(lbl_8034AFC8);
     }
 }
