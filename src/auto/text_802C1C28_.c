@@ -200,8 +200,9 @@ void fn_802C20DC(int *handleSlot) {
     }
 }
 
-short fn_802C2120(int arg0) {
-    return (short)(((arg0 << 8) / 1024) + 0x80);
+/* Convert a world X/Y coordinate to a short road-opacity texture pixel index (coord/4 + 128). */
+short fn_802C2120(int coord) {
+    return (short)(((coord << 8) / 1024) + 0x80);
 }
 
 /* Load the road opacity texture, falling back to an alternate texture if the preferred one is unavailable. */
