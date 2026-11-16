@@ -119,7 +119,7 @@ void fn_801ADB3C(void *arg0) {
 void fn_801ADB44(Ent801ADB44 *a, Obj801ADB44 *b) {
     struct { s32 flag; f32 r[3], e[3], v[3], w[3], t[3], d[3], pos[3], n[3], hit[3]; } s;
     s32 found;
-    f32 dist, dot, k, m, lim, q;
+    f32 dist, dot, k, m, lim, q, pen;
     if (a->v[2] * F(b, 0x58) + (a->v[0] * F(b, 0x40) + a->v[1] * F(b, 0x4C)) > lbl_80562520) {
         return;
     }
@@ -198,8 +198,9 @@ void fn_801ADB44(Ent801ADB44 *a, Obj801ADB44 *b) {
             s.r[0] = s.n[0] * k;
             s.r[1] = s.n[1] * k;
             s.r[2] = s.n[2] * k;
-            fn_8017B5D4(b, b->unk_0x24 > 0 ? b->unk_0x14 : 0, 0, s.r, s.pos, s.flag, 0, 0,
-                        (lbl_80562548 > dist) ? lbl_80562548 : dist);
+            pen = lbl_80562548;
+            pen = (pen > dist) ? pen : dist;
+            fn_8017B5D4(b, b->unk_0x24 > 0 ? b->unk_0x14 : 0, 0, s.r, s.pos, s.flag, 0, 0, pen);
             if (b->id == 0x50434152) {
                 fn_802E30C8(lbl_80335950, lbl_8055E3C4, s.pos[0], s.pos[1], s.pos[2]);
             }
@@ -211,14 +212,15 @@ void fn_801ADB44(Ent801ADB44 *a, Obj801ADB44 *b) {
     }
 }
 #pragma pop
-void fn_801AE158(void *arg0) {
-    struct { f32 field1; f32 field2; f32 field3; } locals;
-    locals.field1 = lbl_80562520;
-    locals.field2 = lbl_80562520;
-    locals.field3 = lbl_80562520;
-    *(f32 *)((u8 *)arg0 + 0x1C) = locals.field1;
-    *(f32 *)((u8 *)arg0 + 0x20) = locals.field2;
-    *(f32 *)((u8 *)arg0 + 0x24) = locals.field3;
+/* Zero the 3-component acceleration (acc) vector at +0x1C..+0x24 of an entity. */
+void fn_801AE158(void *obj) {
+    struct { f32 x; f32 y; f32 z; } zeroVec;
+    zeroVec.x = lbl_80562520;
+    zeroVec.y = lbl_80562520;
+    zeroVec.z = lbl_80562520;
+    *(f32 *)((u8 *)obj + 0x1C) = zeroVec.x;
+    *(f32 *)((u8 *)obj + 0x20) = zeroVec.y;
+    *(f32 *)((u8 *)obj + 0x24) = zeroVec.z;
 }
 
 #pragma scheduling invalid_target
@@ -231,8 +233,8 @@ void *fn_801AE180(void) {
      s32 temp_r8_2;
      s32 temp_r3;
      s32 temp_r12;
-     s32 var_ctr_2;
-     s32 var_ctr;
+     u32 var_ctr_2;
+     u32 var_ctr;
      u32 temp_r11;
      void **temp_r31;
      u8 *var_r6;
@@ -243,12 +245,11 @@ void *fn_801AE180(void) {
      u8 *temp_r5;
      u8 *temp_r3_3;
      u8 *temp_r3_2;
-
       temp_r31 = lbl_8055E604;
       temp_r3_2 = (*(void **)((u8 *)(temp_r31) + (0)));
-      if (!temp_r3_2 || ((s32) (*(s32 *)((u8 *)(temp_r3_2) + (4))) == 0x40)) {
+      if ((temp_r3_2 == ((void *)0)) || ((s32) (*(s32 *)((u8 *)(temp_r3_2) + (4))) == 0x40)) {
           temp_r3_3 = (u8 *)fn_801284F8(0xA08, (void *)(*(s32 *)((u8 *)(temp_r31) + (4))));
-          if (temp_r3_3 != NULL) {
+          if (temp_r3_3 != ((void *)0)) {
               var_r6 = temp_r3_3 + 0x30;
               temp_r5_2 = temp_r3_3 + 0xA08;
               (*(f32 *)((u8 *)(temp_r3_3) + (0xC))) = (f32) lbl_80562520;
@@ -261,7 +262,7 @@ void *fn_801AE180(void) {
               (*(f32 *)((u8 *)(temp_r3_3) + (0x28))) = (f32) lbl_80562520;
               (*(f32 *)((u8 *)(temp_r3_3) + (0x2C))) = (f32) lbl_80562520;
               (*(s32 *)((u8 *)(temp_r3_3) + (8))) = 0;
-              if ((temp_r3_3 + 0x30) < (temp_r3_3 + 0xA08)) {
+              if (var_r6 < temp_r5_2) {
                   temp_r8 = temp_r5_2 - 0x9D8;
                   temp_r9 = temp_r5_2 - temp_r8;
                   temp_r11 = (temp_r9 + 0x27) / 40;
@@ -408,7 +409,7 @@ void *fn_801AE180(void) {
       temp_r3 = (*(s32 *)((u8 *)(temp_r5) + (4)));
       (*(s32 *)((u8 *)(temp_r5) + (4))) = (s32) (temp_r3 + 1);
       return temp_r5 + (temp_r3 * 0x28) + 8;
-  }
+}
 #pragma scheduling on
 void fn_801AE4C4(void) {
     void *result = (void *)fn_801284F8(8, &lbl_8033596C);
@@ -419,17 +420,19 @@ void fn_801AE4C4(void) {
     }
 }
 
-void fn_801AE50C(void) {
-    void *ptr = lbl_8055E604;
-    if (ptr != NULL) {
-        void *r31;
-        do {
-            r31 = *(void **)ptr;
-            fn_80128668(ptr);
-            *(void **)ptr = r31;
-            ptr = r31;
-        } while (ptr != NULL);
-        lbl_8055E604 = NULL;
+#pragma scheduling off
+void fn_801AE50C(void *arg0) {
+    struct { void *head; void *next; void *cur; } locals;
+    locals.head = lbl_8055E604;
+    if (locals.head == 0) return;
+    locals.cur = arg0;
+    while (locals.cur != 0) {
+        locals.next = *(void **)locals.cur;
+        fn_80128668(locals.cur);
+        *(void *volatile *)locals.head = locals.next;
+        locals.cur = *(void *volatile *)locals.head;
     }
+    fn_80128668(locals.head);
+    lbl_8055E604 = 0;
 }
-
+#pragma scheduling on
