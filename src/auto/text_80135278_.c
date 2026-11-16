@@ -140,19 +140,20 @@ void *fn_8013530C(void *object, s32 deleteFlag) {
 }
 #pragma dont_inline off
 
+/* RealName: PathFollower_ResetState. Restore a path follower's sample/tuning fields to defaults: 0.0f throughout and 1.0f at +0x10. */
 void fn_80135354(Unk_80135278 *arg0) {
-    float g, f;
-    f = lbl_80561320;
-    g = lbl_80561324;
-    arg0->unk_8 = f;
+    float one, zero;
+    zero = lbl_80561320;
+    one = lbl_80561324;
+    arg0->unk_8 = zero;
     arg0->unk_4 = 0;
     arg0->unk_c = 0;
-    arg0->unk_20 = f;
-    arg0->unk_24 = f;
-    arg0->unk_10 = g;
-    arg0->unk_14 = f;
-    arg0->unk_18 = f;
-    arg0->unk_1c = f;
+    arg0->unk_20 = zero;
+    arg0->unk_24 = zero;
+    arg0->unk_10 = one;
+    arg0->unk_14 = zero;
+    arg0->unk_18 = zero;
+    arg0->unk_1c = zero;
     arg0->unk_28 = 0;
     arg0->unk_2c = 0;
 }
