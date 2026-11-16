@@ -16,11 +16,13 @@ extern float lbl_80560AF4;
 extern float lbl_80560AF8;
 extern float lbl_80560AFC;
 void fn_80033538(void *arg0, short arg1) {
-    int state;
-    state = OSDisableInterrupts();
+    /* Set the voice's type/field at 0x14A and flag the parameter block for update (bit 0x8),
+       with interrupts disabled. */
+    int savedInterruptState;
+    savedInterruptState = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x14A) = arg1;
     *(unsigned int *)((char *)arg0 + 0x1C) |= 8;
-    OSRestoreInterrupts(state);
+    OSRestoreInterrupts(savedInterruptState);
 }
 
 void fn_80033584(void *arg0, void *arg1) {
