@@ -24000,9 +24000,11 @@ void RFCOMM_PortNegReq(void *mcb, u8 dlci, void *pars) {
     rfc_port_timer_start(port, 0x3c);
 }
 
-void fn_800937A0(void *p, u16 a1, u16 a2, u16 a3) {
-    if (*(u8 *)((u8 *)p + 0x6c) == 5)
-        rfc_send_rpn(p, a1, 0, a2, a3);
+void fn_800937A0(void *mcb, u16 dlci, u16 pars, u16 mask) {
+    /* RFCOMM_PortNegRsp: send a Remote Port Negotiation response for dlci with the given
+       parameters and mask, but only while the multiplexer control block is in state 5 (+0x6C). */
+    if (*(u8 *)((u8 *)mcb + 0x6c) == 5)
+        rfc_send_rpn(mcb, dlci, 0, pars, mask);
 }
 
 /* Called by the port entity to send our modem status (an MSC command carrying
