@@ -257,11 +257,13 @@ extern s32 lbl_8055E6EC;
 extern u8 lbl_80435EC8[];
 extern void fn_801A49FC(void *);
 extern void fn_80128658(void *);
-void *fn_801B5984(void *arg0) {
-    register s32 *p = (s32 *)arg0;
-    p[1] = 0; p[2] = 0; p[0] = 0;
+/* Init callback for fn_8002F37C: zero a quad-tree node's three words (nodes,
+   count, children), bump the live-node counter lbl_8055E6E8, and return the node. */
+void *fn_801B5984(void *node) {
+    register s32 *fields = (s32 *)node;
+    fields[1] = 0; fields[2] = 0; fields[0] = 0;
     lbl_8055E6E8 = lbl_8055E6E8 + 1;
-    return arg0;
+    return node;
 }
 
 void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
