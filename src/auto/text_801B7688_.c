@@ -337,27 +337,34 @@ void fn_801B8060(int arg0, void *arg1) {
 extern char lbl_80336718[];
 extern int fn_802E317C(char *, ...);
 #pragma dont_inline on
-void fn_801B8100(void *arg0, int arg1, int arg2) {
-    int result;
-    memset(arg0, 0, 80);
+void fn_801B8100(void *placement, int slot, int startType) {
+    #define sUnknownStartModeFmt lbl_80336718
+    #define sPanic fn_802E317C
+    /* Clears a car-placement result, lets the UI try to fill it first, otherwise
+     * derives a start mode from startType, records it at +0x44 and dispatches to
+     * the matching placement routine (panicking on an unrecognised mode). */
+    int mode;
+    memset(placement, 0, 80);
     if (fn_801796B4() == 0) {
-        if (fn_801B8630(arg0, arg1, arg2) != 0)
+        if (fn_801B8630(placement, slot, startType) != 0)
             return;
     }
-    result = fn_801B7688(arg2);
-    *(int *)((char *)arg0 + 0x44) = result;
-    switch (result) {
+    mode = fn_801B7688(startType);
+    *(int *)((char *)placement + 0x44) = mode;
+    switch (mode) {
         case 3:
         case 4:
         case 0:
-            fn_801B7F4C(arg0, arg1, arg2);
+            fn_801B7F4C(placement, slot, startType);
             return;
         case 1:
         case 2:
-            fn_801B79D4(arg0, arg1, arg2);
+            fn_801B79D4(placement, slot, startType);
             return;
         default:
-            fn_802E317C(lbl_80336718, result);
+            sPanic(sUnknownStartModeFmt, mode);
     }
+    #undef sPanic
+    #undef sUnknownStartModeFmt
 }
 #pragma dont_inline reset
