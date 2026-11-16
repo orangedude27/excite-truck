@@ -262,8 +262,9 @@ extern "C" void fn_8001DF84(s32 playerIndex) {
     ((CollisionEntry *)overlay)->apply(playerIndex, 0);
 }
 #pragma scheduling invalid_target
-extern "C" void fn_8001DFA8(s32 arg0) {
-    ((CollisionEntry*)lbl_80358680[3])->apply(arg0, 0);
+/* Refresh the lap-title HUD overlay for the given racer via its virtual apply. */
+extern "C" void fn_8001DFA8(s32 playerIndex) {
+    ((CollisionEntry*)sHudOverlays[OVERLAY_LAP_TITLE])->apply(playerIndex, 0);
 }
 #pragma scheduling on
 // Invalid-target scheduling keeps the table load ahead of the literal arguments.
