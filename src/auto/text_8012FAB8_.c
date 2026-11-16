@@ -287,9 +287,10 @@ done:
 
 #pragma dont_inline reset
 
+/* Returns the resource-archive name (word 0 of the 12-byte LocaleLanguage entry) for the currently selected language. */
 int fn_80130390(void) {
-    int index = lbl_8055E04C;
-    return *(int *)((char *)lbl_802F8E60 + index * 12);
+    int langIndex = lbl_8055E04C;
+    return *(int *)((char *)lbl_802F8E60 + langIndex * 12);
 }
 
 extern char lbl_80423054[];
