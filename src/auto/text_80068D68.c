@@ -20282,7 +20282,7 @@ void l2cu_release_lcb(void *arg0) {
 
 extern u8 lbl_803C4040[];
 extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
-extern void l2cu_create_conn_after_switch(void *p_lcb);
+extern l2c_conn_ret l2cu_create_conn_after_switch(void *p_lcb);
 void *l2cu_find_lcb_by_bd_addr(u8 *bdAddr) {
     /* Find an active L2CAP link control block by peer BD address. */
     int i = 0;
