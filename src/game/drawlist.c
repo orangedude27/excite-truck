@@ -929,10 +929,12 @@ int fn_802C990C(int arg0) {
 
 extern int lbl_8055FC7C;
 extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
-int fn_802C9950(int arg0) {
+/* Set the current drawlist color (RGB packed in arg0) and return the previous packed color. */
+int fn_802C9950(int rgb)
+{
     int previous = lbl_8055FC7C;
-    lbl_8055FC7C = arg0;
-    fn_802D0160((arg0 >> 16) & 0xFF, (arg0 >> 8) & 0xFF, arg0 & 0xFF);
+    lbl_8055FC7C = rgb;
+    fn_802D0160((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
     return previous;
 }
 
