@@ -266,12 +266,17 @@ void fn_802E27A0(void *arg0) {
 }
 
 #pragma dont_inline reset
-void fn_802E27B8(void *arg0) {
-    int index = *(int *)((char *)arg0 + 0x114) + 1;
-    if (index >= *(int *)((char *)arg0 + 0x100))
+void fn_802E27B8(void *ring) {
+#define currentIndex ((int *)((char *)ring + 0x114))
+#define slotCount ((int *)((char *)ring + 0x100))
+    /* Advance the video ring's current slot (wrapping at the slot count) and clear that slot's flag. */
+    int index = *currentIndex + 1;
+    if (index >= *slotCount)
         index = 0;
-    if (*(int *)((char *)arg0 + 0x1D0 + index * 4))
-        *(int *)((char *)arg0 + 0x1D0 + index * 4) = 0;
+    if (*(int *)((char *)ring + 0x1D0 + index * 4))
+        *(int *)((char *)ring + 0x1D0 + index * 4) = 0;
+#undef currentIndex
+#undef slotCount
 }
 
 #pragma scheduling invalid_target
