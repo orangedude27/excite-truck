@@ -234,7 +234,13 @@ void* fn_802C21B8(void) {
 }
 
 void fn_802C21C0(void) {
-    if (lbl_8055FB54 != 0) ((int (*)(int, void *))fn_802B52C0)((int)lbl_8034AFD8, (void *)lbl_8055FB54);
+    /* Reload the road-opacity texture from "roadopac.tga" if its descriptor is still allocated. */
+#define roadOpacityTexture lbl_8055FB54
+#define roadOpacityTga lbl_8034AFD8
+    if (roadOpacityTexture != 0)
+        ((int (*)(int, void *))fn_802B52C0)((int)roadOpacityTga, (void *)roadOpacityTexture);
+#undef roadOpacityTexture
+#undef roadOpacityTga
 }
 
 #pragma push
