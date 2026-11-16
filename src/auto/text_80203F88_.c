@@ -108,7 +108,7 @@ extern void fn_801E9DC4(short *);
 extern int fn_801E9E78(void *, void *, int, int);
 extern void fn_802E30C8(const char *, ...);
 extern double __fabs(double);
-double lbl_80563160 = 0x1.00008p+52;
+extern double lbl_80563160;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
