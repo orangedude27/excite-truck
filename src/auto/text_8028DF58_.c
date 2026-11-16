@@ -199,8 +199,10 @@ test:
 #define gAllowParticleAdd lbl_8055F73C
 
 void fn_8028E1A4(void) {
-    lbl_8055F738 = fn_801E7E18();
-    lbl_8055F73C = 1;
+    /* Start a particle update pass: take this frame's time from the frame data
+     * block (fn_801E7E18) and allow particle adds until the pass ends. */
+    gParticleTime = fn_801E7E18();
+    gAllowParticleAdd = 1;
 }
 
 #pragma push
