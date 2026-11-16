@@ -1302,12 +1302,14 @@ void fn_80010EF0(void) {
 }
 
 void fn_80010F08(void) {
-    s8 *p;
-    s32 *q;
-    p = (s8 *)&lbl_80351214;
-    q = (s32 *)(p + 0x288);
-    *q = 0;
-    *(s8 *)(p + 0x4) = 0;
+    /* Clear the second HUD display list (lbl_80351214): zero its entry count
+       at +0x288 and its active flag at +0x4. */
+    s8 *list;
+    s32 *count;
+    list = (s8 *)&lbl_80351214;
+    count = (s32 *)(list + 0x288);
+    *count = 0;
+    *(s8 *)(list + 0x4) = 0;
 }
 
 void fn_80010F20(void) {
