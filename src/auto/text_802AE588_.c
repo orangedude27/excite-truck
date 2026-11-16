@@ -212,6 +212,8 @@ extern void fn_802C7A50(void);
 extern void fn_802C9904(void);
 extern void fn_801FA738(void);
 void fn_802AE728(void) {
+    /* Apply post-race/reset UI/view state: enable drawlist, scale camera by 1.1
+       (lbl_80564B3C), toggle HUD/input modes, and run finalizers. */
     fn_802C7A44();
     fn_802C9648(lbl_80564B3C);
     fn_80287A34(0);
