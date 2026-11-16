@@ -311,9 +311,9 @@ void fn_8020A47C(void) {
 extern const char lbl_8033C288[];
 /* Music event 3 exports the local volume, 1/2 import it, and 0 applies default. */
 #pragma cplusplus on
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_8020A03C(s32 object, s32 event) {
-    register f32 volume = lbl_80563290;
+    f32 volume = lbl_80563290;
     switch (event) {
     case 3:
         fn_801331C4(object + 0xC, (void *)lbl_8033C288, &volume);
