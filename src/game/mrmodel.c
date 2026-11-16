@@ -1486,8 +1486,10 @@ void fn_802C7A00(void) {
     lbl_804C13B4[0] = 0;
 }
 
-void fn_802C7A10(void* alarm) {
-    fn_8012C58C(fn_802C53A8(alarm));
+/* Diagnostic helper: returns the resource name of the model at the given index
+   (carried in the pointer-typed argument) for use in debug printf calls. */
+void fn_802C7A10(void* modelIndex) {
+    fn_8012C58C(fn_802C53A8(modelIndex));
 }
 
 void fn_802C7A34(void) { fn_802DA704(); }
