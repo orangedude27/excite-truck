@@ -266,10 +266,11 @@ do_load:
     // clang-format on
 }
 
+// Enable the Broadway's locked-cache region with interrupts disabled around the setup.
 void LCEnable(void) {
-    BOOL enabled = OSDisableInterrupts();
+    BOOL irqState = OSDisableInterrupts();
     __LCEnable();
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(irqState);
 }
 
 asm void LCDisable(void) {
