@@ -173,7 +173,7 @@ int fn_802368EC(void) {
 
 extern int fn_80215264(void);
 extern void fn_80236A5C(void*, int);
-extern void fn_80237AA0();
+extern void fn_80237AA0(int, float *, double);
 extern void fn_80236960();
 extern char *lbl_8055F0C0;
 void fn_80236900(void) {
@@ -184,8 +184,8 @@ void fn_80236910(void) {
     fn_80236960();
 }
 
-void fn_80236914(void) {
-    fn_80237AA0();
+void fn_80236914(int arg0, float *arg1, double arg2) {
+    fn_80237AA0(arg0, arg1, arg2);
 }
 
 void fn_80236918(void* alarm) {
