@@ -55,16 +55,16 @@ struct PhobConfig {
 };
 #pragma cplusplus reset
 
-extern const char lbl_80338340[];
-extern unsigned int lbl_8055AC30;
-extern unsigned int lbl_8055AC38;
-extern unsigned int lbl_8055AC3C;
-extern unsigned int lbl_8055AC40;
-extern unsigned int lbl_8055AC44;
-extern unsigned int lbl_8055AC4C;
-extern unsigned int lbl_8055AC54;
-extern unsigned int lbl_8055AC58;
-extern unsigned int lbl_8055AC5C;
+extern const char lbl_80338340[]; /* block of mut_phob config keys */
+extern unsigned int lbl_8055AC30; /* "mass" */
+extern unsigned int lbl_8055AC38; /* "mx" */
+extern unsigned int lbl_8055AC3C; /* "my" */
+extern unsigned int lbl_8055AC40; /* "mz" */
+extern unsigned int lbl_8055AC44; /* "spring" */
+extern unsigned int lbl_8055AC4C; /* "type" */
+extern unsigned int lbl_8055AC54; /* "rad" */
+extern unsigned int lbl_8055AC58; /* "len" */
+extern unsigned int lbl_8055AC5C; /* "hit" */
 extern float lbl_80562AA0;
 extern float lbl_80562AA4;
 extern float lbl_80562AA8;
