@@ -2,6 +2,7 @@
 // Recovered TU window 0x80207960..0x80208A18 (see docs/attribution_analysis.md):
 // assert string "soundmgr.cpp", "SoundManager::*". Static-init thunk fn_80208A10
 // (+ .ctors slot 0x802ED37C) remains in auto/text_80208A10_.c pending promotion.
+typedef struct { signed long a, b, c; } Trio80207C50;
 extern void *fn_8012850C(signed long, const char *);
 extern void fn_80207C50(void *, void *, signed long);
 extern void fn_80127CF4(void *, const char *, signed long);
