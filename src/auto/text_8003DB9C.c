@@ -4965,10 +4965,12 @@ void __GXSetIndirectMask(s32 mask) {
 
 /* Use volatile byte and word FIFO stores, then clear the GXData halfword. */
 #pragma dont_inline on
+/* Push the cached indirect-mask BP word (__GXData+0x174) to the BP through the
+ * GX FIFO, then clear the last-write-was-XF halfword. */
 void __GXFlushTextureState(void) {
-    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned char *)0xCC008000 = GX_FIFO_CMD_LOAD_BP_REG;
     *(volatile unsigned int *)0xCC008000 = __GXData[0x174 / 4];
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    gxdraw->lastWriteWasXF = FALSE;
 }
 #pragma dont_inline reset
 
