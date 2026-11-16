@@ -3075,43 +3075,57 @@ u32 __DVDGetCoverStatus(void) {
 }
 
 void fn_80039A5C(void (*callback)(s32, void *)) {
-    s32 saved;
-    s32 temp;
-    void *active;
-    s32 enabled;
+    /* RealName: __DVDCancelAllAsync (RVL SDK DVD.cpp, source/os/dvd/dvdcancel.c),
+     * the async twin of DVDCancelAll above.  Pause the drive and cancel what it
+     * has: every block still on the waiting queue is cancelled with no callback
+     * of its own, the block being executed with @p callback, and @p callback is
+     * called straight away when nothing is running.  If a cancel is already on
+     * its way to the drive this only takes over the callback it will answer. */
+    s32 resumeEnabled;        // DVDResume()'s own save
+    s32 intStatus;            // interrupts kept off from DVDPause() to DVDResume()
+    DVDCommandBlock *block;   // DVDPause()'s save at first, then each block popped
+    s32 enabled;              // interrupts as this function found them
 
     enabled = OSDisableInterrupts();
+
     __DVDClearWaitingQueue();
-    if (lbl_8055D858) {
-        lbl_8055D8B8 = callback;
+
+    if (Canceling) {
+        CancelCallback = callback;
     } else {
-        if (executing_8055D8C8)
-            *(s32 *)((u8 *)executing_8055D8C8 + 0x28) = 0;
-        temp = OSDisableInterrupts();
-        active = (void *)OSDisableInterrupts();
-        lbl_8055D84C = 1;
-        if (executing_8055D8C8 == 0) {
-            PausingFlag_8055D850 = 1;
-        }
-        OSRestoreInterrupts((s32)active);
+        // The cancel answers through our callback, not the block's own one.
+        if (ExecutingBlock != 0)
+            ((DVDCommandBlock *)ExecutingBlock)->callback = NULL;
 
-        while ((active = __DVDPopWaitingQueue()) != 0) {
-            fn_80039424(active, 0);
+        // DVDPause(), inlined by the compiler
+        intStatus = OSDisableInterrupts();
+        block = (DVDCommandBlock *)OSDisableInterrupts();
+        PauseFlag = TRUE;
+        if (ExecutingBlock == 0) {
+            PausingFlag_8055D850 = TRUE;
+        }
+        OSRestoreInterrupts((s32)block);
+
+        // Nothing queued may survive the cancel, so queued blocks get no callback.
+        while ((block = __DVDPopWaitingQueue()) != NULL) {
+            DVDCancelAsync(block, NULL);
         }
 
-        if (executing_8055D8C8 != 0) {
-            fn_80039424((void *)executing_8055D8C8, callback);
-        } else if (callback != 0) {
-            callback(0, 0);
+        if (ExecutingBlock != 0) {
+            DVDCancelAsync((DVDCommandBlock *)ExecutingBlock, callback);
+        } else if (callback != NULL) {
+            callback(DVD_RESULT_GOOD, NULL);
         }
-        saved = OSDisableInterrupts();
-        *(volatile s32 *)&lbl_8055D84C = 0;
+
+        // DVDResume(), inlined; stateReady() is left as a call
+        resumeEnabled = OSDisableInterrupts();
+        *(volatile s32 *)&PauseFlag = FALSE;
         if (PausingFlag_8055D850 != 0) {
             PausingFlag_8055D850 = 0;
-            fn_80038040();
+            stateReady();
         }
-        OSRestoreInterrupts(saved);
-        OSRestoreInterrupts(temp);
+        OSRestoreInterrupts(resumeEnabled);
+        OSRestoreInterrupts(intStatus);
     }
     OSRestoreInterrupts(enabled);
 }
