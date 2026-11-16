@@ -920,9 +920,10 @@ void fn_80261A18(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
 }
 
-void fn_80261A40(s32 arg0) {
+void fn_80261A40(s32 selection) {
+    /* Menu callback: set the challenge-select flag when the selected index is 2. */
     fn_80236914();
-    *(signed char*)&lbl_8055F3E9 = (arg0 - 2) == 0;
+    *(signed char*)&lbl_8055F3E9 = (selection - 2) == 0;
 }
 
 void fn_80261A7C(void *arg0, s32 arg1) {
