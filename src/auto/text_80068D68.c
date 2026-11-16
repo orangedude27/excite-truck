@@ -133,6 +133,22 @@ typedef struct {
     tBTM_PM_RCB pm_reg_db[BTM_MAX_PM_RECORDS + 1];
 } tBTM_PM_REG_DB_MATCH_VIEW;
 
+/* ACL and power-manager fields in this build's BTM control block. */
+typedef struct {
+    u8 pad00[8];
+    BD_ADDR remote_addr;
+    u8 pad0E[0x10E];
+} tBTM_ACL_PM_VIEW;
+
+typedef struct {
+    u8 pad000[0x34];
+    tBTM_ACL_PM_VIEW acl_db[4];
+    u8 pad4A4[0xB0];
+    tBTM_PM_RCB pm_reg_db[2];
+    u8 pm_pend_link;
+    u8 pm_pend_id;
+} tBTM_CB_PM_VIEW;
+
 /* The power manager's per-ACL-link mode control block (btm_int.h's tBTM_PM_MCB)
    as this stack lays it out: 0x22 bytes, one per link in btm_cb at +0x4CC.  The
    header's version is bigger - it holds BTM_MAX_PM_RECORDS + 1 requests and the
