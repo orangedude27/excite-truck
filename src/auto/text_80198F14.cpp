@@ -2049,11 +2049,13 @@ extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
     return result;
 }
 #pragma pop
-extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_8019E834(s32 object, s32 shouldDestroy) {
+    /* If object is non-null and shouldDestroy > 0, signal it for destruction
+     * via fn_80128668 (calls fn_80128584 with mode 3). Returns the object. */
+    if (object != 0 && shouldDestroy > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
@@ -4190,14 +4192,14 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
 
 #pragma use_lmw_stmw off
 extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 farg1) {
-    u8 *self = (u8 *)arg0;
     register TagList *list;
     unsigned int i;
     TagNode *child;
     TagNode *node;
-    *(int *)(self + 0xC) = arg1;
-    *(int *)(self + 8) = 0;
-    *(int *)(self + 4) = 0;
+    *(int *)((u8 *)arg0 + 0xC) = arg1;
+    *(int *)((u8 *)arg0 + 4) = 0;
+    *(int *)((u8 *)arg0 + 8) = 0;
+    u8 *self = (u8 *)arg0;
     *(f32 *)(self + 0x10) = farg0;
     *(int *)(self + 0x18) = 0x504F4C59;
     *(f32 *)(self + 0x14) = farg1;
