@@ -245,17 +245,21 @@ check:
 #pragma scheduling on
 float fn_801DAC5C(void *arg0)
 {
-    int count = *(int *)((char *)arg0 + 8);
-    int index;
-    float max = lbl_80562B54;
-    for (index = 0; index < count; index++) {
+    /* Returns the maximum float value at offset +0xC of each item's +0x28 data, or 0.0 if there are no items. */
+    int itemCount = *(int *)((char *)arg0 + 8);
+    int itemIndex;
+    float maxValue = lbl_80562B54;
+
+    for (itemIndex = 0; itemIndex < itemCount; itemIndex++) {
         void **items = *(void ***)((char *)arg0 + 4);
-        void *entry = items[index];
-        void *data = *(void **)((char *)entry + 0x28);
-        float value = *(float *)((char *)data + 0xC);
-        max = (max > value) ? max : value;
+        void *item = items[itemIndex];
+        void *itemData = *(void **)((char *)item + 0x28);
+        float value = *(float *)((char *)itemData + 0xC);
+
+        maxValue = (maxValue > value) ? maxValue : value;
     }
-    return max;
+
+    return maxValue;
 }
 #pragma scheduling on
 extern void fn_801DA064(int, void *);
