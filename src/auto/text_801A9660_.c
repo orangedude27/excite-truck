@@ -1359,6 +1359,8 @@ void fn_801AC454(void *self, void *config) {
     }
 }
 extern int fn_801C1BA4(int, int, int);
+#define fencePostCount lbl_8055E5EC  // number of fence posts placed in the level
+#define fenceRope      lbl_8055E5F0  // shared rope ("ppsys") solver strung across them
 #pragma dont_inline on
 void fn_801AC508(void) {
     s32 value = lbl_8055E5EC;
