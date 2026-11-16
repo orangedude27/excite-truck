@@ -2127,8 +2127,9 @@ int fn_801D7214(int arg0) {
 void fn_801D7240(void *arg0) {
     extern float lbl_80562ADC;
     extern float lbl_8055E3C8;
-    float f2;
     float f1;
+    float f2;
+    float limit;
     if (*(int *)((char *)arg0 + 4) == 2) {
         f2 = *(float *)((char *)arg0 + 0x30);
         if (f2 < lbl_80562ADC) {
@@ -2137,10 +2138,11 @@ void fn_801D7240(void *arg0) {
         } else {
             f1 = *(float *)((char *)arg0 + 0x2C);
             f1 += *(float *)((char *)arg0 + 0x28);
-            if (f2 + f1 < lbl_8055E3C8) {
+            limit = lbl_8055E3C8;
+            if (f2 + f1 < limit) {
                 fn_8016A240((char *)arg0 + 8);
                 *(int *)((char *)arg0 + 4) = 3;
-            } else if (f1 < lbl_8055E3C8) {
+            } else if (f1 < limit) {
                 fn_801D6FB8((int)arg0);
             }
         }
