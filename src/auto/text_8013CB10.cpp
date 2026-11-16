@@ -681,15 +681,17 @@ extern "C" u32 fn_8013D18C(u32 arg0) {
     return values[index];
 }
 
-extern "C" s32 fn_8013D1F0(s32 arg0) {
-    struct V {
-        virtual void a0();
-        virtual void a1();
-        virtual u8 *a2();
+/* Look up entry info through the accessor returned by fn_801B2EC0 and return
+ * its 32-bit field at +0x10. */
+extern "C" s32 fn_8013D1F0(s32 index) {
+    struct TEntryInfoAccessor {
+        virtual void d0();
+        virtual void d1();
+        virtual u8 *getInfo();
     };
-    V *obj = (V *)((void *(*)(void))fn_801B2EC0)();
-    u8 *p = obj->a2();
-    return *(s32 *)(p + 0x10);
+    TEntryInfoAccessor *accessor = (TEntryInfoAccessor *)((void *(*)(void))fn_801B2EC0)();
+    u8 *info = accessor->getInfo();
+    return *(s32 *)(info + 0x10);
 }
 
 extern "C" s32 fn_8013D224(f32 a, f32 b) {
