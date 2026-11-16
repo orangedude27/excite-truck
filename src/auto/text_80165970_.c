@@ -398,6 +398,8 @@ float fn_801660C0(void) {
 #pragma pop
 
 int fn_8016616C(void) {
+    /* Return whether the current progress timer (lbl_8055E320) has exceeded
+     * this session's timing threshold at lbl_8042FE38+0x48. */
     return lbl_8055E320 > *(float *)((char *)&lbl_8042FE38 + 0x48);
 }
 
