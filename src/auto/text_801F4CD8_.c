@@ -994,10 +994,11 @@ void fn_801F6880(void *arg0) {
 }
 #pragma pop
 
-void *fn_801F69C8(void *arg0) {
-    memset(arg0,0,0x900);
-    *(int *)((char *)arg0+0x900)=0;
-    return arg0;
+void *fn_801F69C8(void *pool) {
+    /* Clear the first cloth-system pool: 0x900 bytes of entries plus the entry count at +0x900. */
+    memset(pool, 0, 0x900);
+    *(int *)((char *)pool + 0x900) = 0;
+    return pool;
 }
 
 #pragma scheduling invalid_target
