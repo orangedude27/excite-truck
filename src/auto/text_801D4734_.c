@@ -745,23 +745,16 @@ void fn_801D5328(int arg0, int arg1) {
  state = *(int *)(arg0+4);
  if (state != 1) return;
  *(unsigned char *)(arg0+0x2c)=arg1;
- mode=((unsigned char)arg1==0); changed=0; count=0; offset=0;
- goto test1;
-loop1:
- item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
- if(item->state()==0 && item->apply(mode)!=0) changed=1;
- offset+=4; count++;
-test1:
- if(count<*(int *)(arg0+0x34)) goto loop1;
+ mode=((unsigned char)arg1==0); changed=0;
+ for(count=0, offset=0; count<*(int *)(arg0+0x34); offset+=4, count++) {
+    item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
+    if(item->state()==0 && item->apply(mode)!=0) changed=1;
+ }
  if(changed==0) goto done;
- count=0; offset=0;
- goto test2;
-loop2:
- item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
- if(item->state()!=0) item->apply(mode);
- offset+=4; count++;
-test2:
- if(count<*(int *)(arg0+0x34)) goto loop2;
+ for(count=0, offset=0; count<*(int *)(arg0+0x34); offset+=4, count++) {
+    item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
+    if(item->state()!=0) item->apply(mode);
+ }
 done:
  *(int *)(arg0+4)=2;
 }
@@ -773,19 +766,21 @@ int fn_801D544C(void) {
 }
 
 extern float lbl_80562B04;
-void fn_801D5454(void *self, void *arg0) {
-    float old;
-    float y;
-    float x;
-    float z;
-    x = *(float *)arg0;
-    old = *(float *)(lbl_804422F0 + 4);
-    y = *(float *)((unsigned char *)arg0 + 4);
-    z = *(float *)((unsigned char *)arg0 + 8);
-    *(float *)(lbl_804422F0 + 0x14) = x;
-    *(float *)(lbl_804422F0 + 0x18) = y;
-    *(float *)(lbl_804422F0 + 0x1C) = z;
-    *(float *)(lbl_804422F0 + 4) = old + lbl_80562B04;
+/* Update the global effect manager's target position from the given vector and
+ * add 3.0 (lbl_80562B04) to its timer at lbl_804422F0+4; self is unused. */
+void fn_801D5454(void *self, void *position) {
+    float oldTimer;
+    float posY;
+    float posX;
+    float posZ;
+    posX = *(float *)position;
+    oldTimer = *(float *)(lbl_804422F0 + 4);
+    posY = *(float *)((unsigned char *)position + 4);
+    posZ = *(float *)((unsigned char *)position + 8);
+    *(float *)(lbl_804422F0 + 0x14) = posX;
+    *(float *)(lbl_804422F0 + 0x18) = posY;
+    *(float *)(lbl_804422F0 + 0x1C) = posZ;
+    *(float *)(lbl_804422F0 + 4) = oldTimer + lbl_80562B04;
 }
 
 extern float lbl_80562AE0;
@@ -2609,12 +2604,13 @@ extern "C" int fn_801D7A0C(void *arg0, void *arg1) {
     struct Output { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void finish(); };
     Manager *obj = (Manager *)arg1;
     char *base = &lbl_80338460;
+    char *key = base + 0x994;
     const char *name;
     int index, initial = 0;
     float value, zero;
     *(int *)((char *)arg0 + 4) = initial;
     *(int *)((char *)arg0 + 8) = -1;
-    if (obj->has(base + 0x994)) {
+    if (obj->has(key)) {
         name = obj->name(base + 0x994);
         *(void **)((char *)arg0 + 4) = fn_801D9A54(name);
         if (*(void **)((char *)arg0 + 4) == 0) {
