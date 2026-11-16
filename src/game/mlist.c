@@ -9,6 +9,8 @@ extern float lbl_80564F58;
 extern float lbl_80564F5C;
 extern int fn_802D0514(int);
 extern unsigned char *lbl_8055DFC4;
+// Shared draw context: per-object type/visibility flags at +0x00, draw-entry handles at +0x64.
+#define gDrawContext lbl_8055DFC4
 extern char lbl_804C1480[];
 extern void fn_801293C8(void *);
 extern void fn_801293DC(void *);
