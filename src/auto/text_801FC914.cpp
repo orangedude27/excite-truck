@@ -79,6 +79,7 @@ extern const char lbl_8033B7F0[];
 extern const char lbl_8033B820[];
 extern const char lbl_8033B90C[];
 void fn_80128668(void*);
+#define Mem_freeObject fn_80128668 /* frees a game object through the pool allocator */
 void fn_801FEDA4(void*);
 float fn_80129DC4(int, void*, float, float);
 extern float lbl_80563034;
