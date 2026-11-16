@@ -234,17 +234,18 @@ static void UnsetRun(OSThread* thread) DECOMP_DONT_INLINE {
 }
 
 s32 __OSGetEffectivePriority(OSThread* thread) {
-    s32 prio = thread->base;
+    /* Compute the thread's effective priority, inheriting the highest priority of threads waiting on its mutexes. */
+    s32 effPriority = thread->base;
 
     OSMutex* mutex;
     for (mutex = thread->mutexQueue.head; mutex != NULL; mutex = mutex->next) {
-        OSThread* mutexThread = mutex->queue.head;
-        if (mutexThread != NULL && mutexThread->priority < prio) {
-            prio = mutexThread->priority;
+        OSThread* waiter = mutex->queue.head;
+        if (waiter != NULL && waiter->priority < effPriority) {
+            effPriority = waiter->priority;
         }
     }
 
-    return prio;
+    return effPriority;
 }
 
 /* Update a thread's effective priority and reposition it in run/ready queues,
