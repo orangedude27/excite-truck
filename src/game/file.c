@@ -275,19 +275,22 @@ extern "C" void fn_802E3734(s32 *handlePtr) {
     *((unsigned char *)fileEntry + 0x20) = 0;
     *handlePtr = -1;
 }
-extern "C" void fn_802E37C4(s32 arg0) {
+/* Look up the file object for the handle and invoke its vtable slot-4 method (no arguments) on the underlying stream. */
+extern "C" void fn_802E37C4(s32 fileHandle) {
+#define kFileSourceFile lbl_8034CFB4
     class Obj {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
         virtual void v3();
-        virtual void v4();
+        virtual void v4();              /* vtable slot +0x18 */
     };
 
-    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x125);
-    s32 entry = *(s32 *)(obj + 0x24);
-    ((Obj *)entry)->v4();
+    s32 fileEntry = fn_802E33D8(fileHandle, kFileSourceFile, 0x125);
+    s32 fileObject = *(s32 *)(fileEntry + 0x24);
+    ((Obj *)fileObject)->v4();
+#undef kFileSourceFile
 }
 
 extern char lbl_8034CFC0[];
