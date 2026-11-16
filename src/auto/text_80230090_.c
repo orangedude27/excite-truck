@@ -388,16 +388,19 @@ void fn_80230B38(void* alarm) {
     fn_802C2B48(fn_802C855C(alarm));
 }
 
-void fn_80230B5C(void *arg0) {
-    extern f32 lbl_8056364C;
-    f32 *p = (f32 *)arg0;
-    f32 c;
-    f32 a = lbl_80563614;
-    f32 b = lbl_80563610;
-    c = lbl_8056364C;
-    p[0]=b; p[3]=a; p[2]=a; p[1]=a;
-    p[4]=b; p[7]=a; p[6]=a; p[5]=a;
-    p[8]=b; p[9]=a; p[10]=a; p[11]=c;
+/* RealName: InitDefaultViewMatrix
+ * Fill a 12-float (3x4) camera/view matrix with identity rotation and the
+ * default Z translation: out[0,4,8] = 1.0, out[11] = -365.0, the rest 0.0. */
+void fn_80230B5C(void *out) {
+    extern f32 lbl_8056364C;              /* .sdata2: -365.0f, default view Z translation */
+    f32 *matrix = (f32 *)out;
+    f32 zTranslation;
+    f32 zero = lbl_80563614;             /* .sdata2: 0.0f */
+    f32 one  = lbl_80563610;             /* .sdata2: 1.0f */
+    zTranslation = lbl_8056364C;
+    matrix[0]=one; matrix[3]=zero; matrix[2]=zero; matrix[1]=zero;
+    matrix[4]=one; matrix[7]=zero; matrix[6]=zero; matrix[5]=zero;
+    matrix[8]=one; matrix[9]=zero; matrix[10]=zero; matrix[11]=zTranslation;
 }
 
 #pragma scheduling invalid_target
