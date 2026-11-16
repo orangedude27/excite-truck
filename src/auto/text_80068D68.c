@@ -2186,7 +2186,7 @@ s32 fn_8006A460(s32 arg0) {
     *(u8 *)(setup + 0x10) = one;
     OSRestoreInterrupts(old_state);
     DBPrintf_8006CFA8(lbl_80313464);
-    fn_800709FC();
+    //fn_800709FC();
     fn_80071508(lbl_8055DC34);
     fn_80089E20(lbl_8055DC34);
     fn_80096670(lbl_8055DC34);
@@ -2506,13 +2506,9 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
     s32 count;
     s32 size;
     u32 header;
-    u32 off;
-    u32 total;
 
     if (arg0 != 0) {
-        off = lbl_8055DC40;
-        total = lbl_8055DC44;
-        if (total == off) {
+        if (lbl_8055DC44 == lbl_8055DC40) {
             lbl_8055DC39 = 0;
             count = lbl_80313600[0];
             lbl_8055DC3A = count;
@@ -2525,10 +2521,10 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
             BTM_VendorSpecificCommand(0xFC4F, (u8)(size + 1), buf, (tBTM_VSC_CMPL_CB *)fn_8006B26C);
             return;
         }
-        length = total - off;
+        length = lbl_8055DC44 - lbl_8055DC40;
         length = (u32)length < 0xFB ? length : 0xFB;
         length = (u8)length;
-        header = lbl_8055DC3C + off;
+        header = lbl_8055DC3C + lbl_8055DC40;
         packet[0] = (u8)header;
         packet[1] = (u8)(header >> 8);
         packet[2] = (u8)(header >> 16);
@@ -7009,9 +7005,9 @@ void bta_hh_write_dev_act(void *p_dev, void *p_msg) {
         goto state_special;
     if (state < 1)
         goto state_log;
-    if (state >= 4)
-        goto state_store;
-    goto state_log2;
+    if (state < 4)
+        goto state_log;
+    goto state_store;
 
 state_store:
     *(u16 *)(dev + 0x10) = saved_event;
@@ -7020,7 +7016,6 @@ state_special:
     if (msg[9] == 5)
         dev[0x17] = 1;
     goto state_done;
-state_log2:
 state_log:
     if (lbl_8055DC80 >= 5)
         ((void (*)(u32, void *))fn_80070954)(0x504, lbl_8031555C);
@@ -7422,26 +7417,26 @@ char *bta_hh_evt_code(u32 event) {
 extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
     extern u8 lbl_803159E0[];
     extern u8 lbl_80565228;
-    struct { u8 *base; } table;
-    table.base = lbl_803159E0;
-    u8 *&messages = table.base;
+    struct { u8 *base; } devices;
+    struct { BtaHhFindMessages *base; } table;
+    table.base = (BtaHhFindMessages *)lbl_803159E0;
+    BtaHhFindMessages *&messages = table.base;
     u8 i;
 
     {
-    struct { u8 *base; } devices;
     devices.base = lbl_803C0D48;
     u8 *&controls = devices.base;
     for (i = 0; i < 0x10; i++) {
         if (bdcmp(bd_addr, controls + ((i & 0xFF) << 5) + 0x18) == 0 &&
             bdcmp(bd_addr, &lbl_80565228) != 0) {
             if (lbl_8055DC80 >= 5)
-                fn_8007096C(0x504, messages + 0, i,
+                fn_8007096C(0x504, messages->found, i,
                             controls[((i & 0xFF) << 5) + 0x26]);
             return i;
         }
         if (5 <= lbl_8055DC80)
             ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)
-                (0x504, messages + 0x24,
+                (0x504, messages->inUse,
                  controls[((i & 0xFF) << 5) + 0x28],
                  i, controls[((i & 0xFF) << 5) + 0x26],
                  controls[((i & 0xFF) << 5) + 0x2C]);
@@ -7456,7 +7451,7 @@ extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
         }
     }
     if (lbl_8055DC80 >= 5)
-        fn_8007096C(0x504, messages + 0x58, i, 0x10);
+        fn_8007096C(0x504, messages->limit, i, 0x10);
     return i;
 }
 #pragma pop
@@ -7988,21 +7983,23 @@ BOOLEAN BTM_IsAclConnectionUp(BD_ADDR remote_bda) {
     extern char lbl_80315E80[];
     u32 i;
     u8 *entry;
+
     if (lbl_803C0F78[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80315E80,
                     remote_bda[0], remote_bda[1], remote_bda[2],
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
+    i = 0;
     entry = lbl_803C0F78 + 0x34;
-    for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] != 0) {
-            if (memcmp(entry + 8, remote_bda, 6) == 0)
-                goto found;
-            else
-                goto cont;
-        }
-cont: ;
+loop:
+    if (entry[0x119] != 0) {
+        if (memcmp(entry + 8, remote_bda, 6) == 0)
+            goto found;
     }
+    i++;
+    entry += 0x11C;
+    if (i < 4)
+        goto loop;
     entry = NULL;
 found:
     if (entry != NULL)
@@ -15824,24 +15821,23 @@ BOOLEAN btsnd_hcic_reset(UINT8 local_controller_id) {
 }
 
 BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_type, UINT8 *p_cond, UINT8 cond_len) {
-    UINT8 *raw = (UINT8 *)p_buf;
     BT_HDR *p = (BT_HDR *)p_buf;
+    UINT8 *raw = (UINT8 *)p_buf;
     UINT8 *src = p_cond;
     UINT8 *dst;
-    int len = cond_len;
-    int ijk;
+    register int ijk;
     p->offset = 0;
     raw[8] = 5;
-    raw[9] = 0xC;
+    raw[9] = 0x0C;
     if (filt_type != 0) {
-        p->len = cond_len + 5;
-        raw[0xA] = cond_len + 2;
-        raw[0xB] = filt_type;
-        raw[0xC] = cond_type;
-        dst = raw + 0xD;
+        p->len = (UINT16)(cond_len + 5);
+        raw[0x0A] = (UINT8)(cond_len + 2);
+        raw[0x0B] = filt_type;
+        raw[0x0C] = cond_type;
+        dst = raw + 0x0D;
         if (cond_type == 1) {
             dst[0] = src[2];
-            len = (UINT8)(len - 6);
+            cond_len = (UINT8)(cond_len - 6);
             src += 6;
             dst[1] = p_cond[1];
             dst[2] = p_cond[0];
@@ -15851,7 +15847,7 @@ BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_typ
             dst += 6;
         } else if (cond_type == 2) {
             dst[0] = src[5];
-            len = (UINT8)(len - 6);
+            cond_len = (UINT8)(cond_len - 6);
             src += 6;
             dst[1] = p_cond[4];
             dst[2] = p_cond[3];
@@ -15860,15 +15856,15 @@ BOOLEAN btsnd_hcic_set_event_filter(void *p_buf, UINT8 filt_type, UINT8 cond_typ
             dst[5] = p_cond[0];
             dst += 6;
         }
-        if (len != 0) {
-            for (ijk = 0; ijk < len; ijk++) {
+        if (cond_len != 0) {
+            for (ijk = 0; ijk < cond_len; ijk++) {
                 *dst++ = src[ijk];
             }
         }
     } else {
         p->len = 4;
-        raw[0xA] = 1;
-        raw[0xB] = filt_type;
+        raw[0x0A] = 1;
+        raw[0x0B] = filt_type;
     }
     btu_hcif_send_cmd(p_buf);
 }
@@ -27798,43 +27794,19 @@ void __BzeroDelayLines(void *arg0) {
     u8 *entry = (u8 *)arg0;
     u8 *entry2 = (u8 *)arg0;
     u8 *entry3 = (u8 *)arg0;
-    u32 i = 0;
-
+    register u32 i = 0;
     do {
-        if (*(void **)entry)
-            memset(*(void **)entry, 0, *(u32 *)((u8 *)arg0 + 0x1C) * 4);
-        if (*(void **)(entry + 0x2C))
-            memset(*(void **)(entry + 0x2C), 0, *(u32 *)((u8 *)arg0 + 0x40) * 4);
-        {
-            u8 *p = entry2;
-            u8 *q = (u8 *)arg0;
-            u32 j = 0;
-            do {
-                if (*(void **)(p + 0x44))
-                    memset(*(void **)(p + 0x44), 0, *(u32 *)(q + 0x80) * 4);
-                j++;
-                q += 4;
-                p += 4;
-            } while (j < 3);
-        }
-        {
-            u8 *p = entry3;
-            u8 *q = (u8 *)arg0;
-            u32 j = 0;
-            do {
-                if (*(void **)(p + 0x98))
-                    memset(*(void **)(p + 0x98), 0, *(u32 *)(q + 0xC0) * 4);
-                j++;
-                q += 4;
-                p += 4;
-            } while (j < 2);
-        }
-        if (*(void **)(entry + 0xC8))
-            memset(*(void **)(entry + 0xC8), 0, *(u32 *)(entry + 0xEC) * 4);
-        i++;
+        if (*(void **)entry) memset(*(void **)entry, 0, *(u32 *)((u8 *)arg0 + 0x1C) * 4);
+        if (*(void **)(entry + 0x2C)) memset(*(void **)(entry + 0x2C), 0, *(u32 *)((u8 *)arg0 + 0x40) * 4);
+        { u8 *p = entry2; u8 *q = (u8 *)arg0; u32 j = 0;
+            do { if (*(void **)(p + 0x44)) memset(*(void **)(p + 0x44), 0, *(u32 *)(q + 0x80) * 4); j++; q += 4; p += 4; } while (j < 3); }
+        { u8 *p = entry3; u8 *q = (u8 *)arg0; u32 j = 0;
+            do { if (*(void **)(p + 0x98)) memset(*(void **)(p + 0x98), 0, *(u32 *)(q + 0xC0) * 4); j++; q += 4; p += 4; } while (j < 2); }
+        if (*(void **)(entry + 0xC8)) memset(*(void **)(entry + 0xC8), 0, *(u32 *)(entry + 0xEC) * 4);
+        entry += 4;
         entry2 += 0xC;
         entry3 += 8;
-        entry += 4;
+        i++;
     } while (i < 3);
 }
 
