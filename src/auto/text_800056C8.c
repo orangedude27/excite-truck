@@ -1670,11 +1670,12 @@ s32 fn_80007764(s32 object, s32 shouldDestroy) {
     return object;
 }
 
-s32 fn_800077A4(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_800077A4(s32 value, s32 count) {
+    /* Return value unchanged; if non-zero and count is positive, call fn_80128668 as a side effect. */
+    if (value != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return value;
 }
 
 extern s32 fn_8000561C(void *, void *);
