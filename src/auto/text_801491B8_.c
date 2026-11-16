@@ -3459,6 +3459,7 @@ extern "C" s32 fn_80154618(void *arg0) {
 }
 #pragma cplusplus off
 void fn_801546D4(s32 arg0) {
+    /* When the current contest has no challenge sub-task manager, create the default one. */
     switch (fn_80161C94()) {
         case 0:
             fn_801B8A84(arg0);
