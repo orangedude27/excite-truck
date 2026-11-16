@@ -895,20 +895,20 @@ int fn_801A8E38(void) {
 int fn_801A8E68(void *arg0) {
     int state = *(int *)arg0;
     unsigned char *flag = (unsigned char *)((char *)arg0 + 0xC);
-    if (state >= 7)
-        goto done;
-    if (state >= 1) {
+    switch (state) {
+    case 1: case 2: case 3: case 4: case 5: case 6:
         if (fn_801A8E38() != 0) {
             if (*flag == 0) {
                 *flag = 1;
                 return 1;
             }
-            goto done;
+            break;
         }
         *flag = 0;
         return 0;
+    default:
+        break;
     }
-done:
     return 0;
 }
 #pragma dont_inline reset
