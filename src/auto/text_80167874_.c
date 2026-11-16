@@ -514,8 +514,8 @@ extern "C" void fn_80167EEC(void) {
                 *(s32 *)(manager + 4) = 0;
                 *(s32 *)(manager + 8) = 0;
             }
-            ((s32 (*)(void *))fn_80128668)(manager);
         }
+        ((s32 (*)(void *))fn_80128668)(manager);
     }
 }
 #pragma cplusplus reset
