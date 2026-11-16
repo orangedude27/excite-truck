@@ -302,8 +302,10 @@ void fn_8001BD38(void *entry, s32 dest, s32 param) {
 }
 
 #pragma dont_inline on
-void fn_8001BD54(EntryRef *out, void *table) {
-    fn_8001BBBC(out, *(s32 *)((u8 *)*(void **)((u8 *)table + 0x18) + *(s32 *)((u8 *)table + 0xC) * 0xC + 0xC));
+void fn_8001BD54(EntryRef *out, void *record) {
+    /* Decode the packed word at +0xC of this record's selected backing-data entry
+     * (entries at +0x18, index at +0xC, stride 0xC) into out. */
+    fn_8001BBBC(out, *(s32 *)((u8 *)*(void **)((u8 *)record + 0x18) + *(s32 *)((u8 *)record + 0xC) * 0xC + 0xC));
 }
 #pragma scheduling invalid_target
 u32 fn_8001BD6C(void *arg0, void *arg1) {
