@@ -25459,11 +25459,14 @@ extern "C" s32 fn_800A4D44(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
 
-extern "C" void fn_800A4D4C(void *arg0, void *arg1) {
-    if (((u32 *)arg0)[0xC / 4] == 1 || (s32)arg1 == 0) {
-        ((s32 *)arg0)[8 / 4] = ((s32 *)arg0)[0];
+/* Set the selected string of a PF path/string context: use the context's own
+   string in single-byte mode (or when no alternate name is given), else name. */
+extern "C" void fn_800A4D4C(void *path, void *name) {
+    VFiPFStrPos *ctx = (VFiPFStrPos *)path;
+    if (ctx->code == 1 || (s32)name == 0) {
+        ctx->end = (u8 *)ctx->pos;
     } else {
-        ((s32 *)arg0)[8 / 4] = (s32)arg1;
+        ctx->end = (u8 *)name;
     }
 }
 
