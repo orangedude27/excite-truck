@@ -1243,11 +1243,13 @@ extern "C" void fn_800DF81C(f32 *rect, void *textWriter, const u16 *str, s32 len
     const u16 *cursor = str;
     const char *msg = lbl_80320560;
 
+    /* nw4hbm's debug checks: msg + 0x10 is this file's name, the other offsets
+     * its assert messages; they check the pointers and a negative length. */
     PTRCHECK(textWriter, 0xDA, 0x194)
     PTRCHECK(rect, 0xDB, 0x240)
     PTRCHECK(str, 0xDC, 0x1D0)
     if (remaining < 0) {
-        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDD, msg + 0x208, remaining, 0);
+        PANIC(msg + 0x10, 0xDD, msg + 0x208, remaining, 0);
     }
     {
         f32 zero = FLOAT_ZERO;
