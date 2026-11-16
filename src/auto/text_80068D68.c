@@ -2072,9 +2072,10 @@ void fn_8006A300(void)
     }
 }
 
-void fn_8006A39C(u32 r3, u32 r4)
+// Alarm callback: switches to the WUD init fiber running fn_8006A300 on a dedicated stack.
+void fn_8006A39C(u32 pAlarm, u32 pContext)
 {
-    OSSwitchFiberEx(r3, r4, 0, 0, fn_8006A300, (u8*)&lbl_80393680 + 0x1000);
+    OSSwitchFiberEx(pAlarm, pContext, 0, 0, fn_8006A300, (u8*)&lbl_80393680 + 0x1000);
 }
 
 /* WUD substate 0x11: persist BT device info to SC when ready, advancing state 1 -> 2. */
