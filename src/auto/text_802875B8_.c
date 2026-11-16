@@ -377,9 +377,10 @@ void fn_80287B58(void) {
 }
 
 #pragma dont_inline on
-s32 fn_80287B5C(s32 arg0) {
+s32 fn_80287B5C(s32 range) {
+    /* Returns a pseudo-random integer in [0, range) from the game's global LCG. */
     unsigned int value = ((unsigned int (*)(void))fn_80287B58)();
-    return value % (unsigned int)arg0;
+    return value % (unsigned int)range;
 }
 #pragma dont_inline reset
 
