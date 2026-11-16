@@ -4,8 +4,13 @@
 extern char lbl_8055EDF0[4];
 extern int fn_8000D838(void*);
 extern unsigned int lbl_8055EE14;
+/* Static initializer: registers a static-destructor record, then seeds its associated word with the 0x7f000000 sentinel. */
 void fn_8020BCB8(void)
 {
-    fn_8000D838(&lbl_8055EDF0);
-    lbl_8055EE14 = 0x7f000000;
+#define s_initRecord lbl_8055EDF0
+#define s_value      lbl_8055EE14
+    fn_8000D838(&s_initRecord);
+    s_value = 0x7f000000;
+#undef s_value
+#undef s_initRecord
 }
