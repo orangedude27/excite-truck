@@ -38,11 +38,12 @@ struct OSTimeCalendar {
     int msec;
 };
 extern void OSTicksToCalendarTime(u64, struct OSTimeCalendar *);
-void fn_802E1728(void *arg0) {
-    int value = *(int *)((char *)arg0 + 0x178);
-    if (value != 0) {
-        fn_80120084(value);
-        *(int *)((char *)arg0 + 0x178) = 0;
+/* Free the allocated handle/buffer at offset 0x178 in the object, if present, and clear it. */
+void fn_802E1728(void *obj) {
+    int handle = *(int *)((char *)obj + 0x178);
+    if (handle != 0) {
+        fn_80120084(handle);
+        *(int *)((char *)obj + 0x178) = 0;
     }
 }
 
