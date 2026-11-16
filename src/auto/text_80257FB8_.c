@@ -62,6 +62,7 @@ void fn_80258040(void) {
 #pragma pop
 extern int fn_80214D04(void);
 extern int lbl_8055F370;
+/* Cache the active UI window's menu index (fn_80214D04) into the global at lbl_8055F370. */
 int fn_80258104(void) {
     lbl_8055F370 = fn_80214D04();
     return 0;
@@ -102,13 +103,14 @@ extern void fn_80258040(void);
 #pragma dont_inline fn_80257FB8
 void fn_8025812C(void) {
     MenuArgs args;
-    int temp_r18, temp_r31, temp_r3, temp_r3_2;
+    int result, previous, current;
+    MenuHeader hdr, ftr;
 
     lbl_8055F368 = fn_80257FB8();
-    temp_r3 = fn_8000DA10();
-    if (((int *)&lbl_8055F370)[1] != temp_r3) {
+    current = fn_8000DA10();
+    if (((int *)&lbl_8055F370)[1] != current) {
         int old = *(volatile int *)&lbl_8055F368;
-        ((volatile int *)&lbl_8055F370)[1] = temp_r3;
+        ((volatile int *)&lbl_8055F370)[1] = current;
         *(volatile int *)&lbl_8055F370 = old;
     }
 
@@ -154,19 +156,21 @@ void fn_8025812C(void) {
     args.entries[6].flags = 2;
     args.entries[6].id = 0;
 
-    args.footer = *(MenuHeader *)(void *)&lbl_80498E68;
-    args.header = *(MenuHeader *)(void *)&lbl_802FA610;
+    ftr = lbl_80498E68;
+    hdr = lbl_802FA610;
+    args.footer = ftr;
+    args.header = hdr;
     args.header.v[1] = (int)args.entries;
 
     do {
-        temp_r18 = fn_802146BC(&args.header, -999, -999, 1);
-        temp_r31 = fn_80257FB8();
-        if (temp_r18 != -1) {
-            fn_80161F10(temp_r18);
-            temp_r3_2 = fn_80257FB8();
-            if (temp_r3_2 != temp_r31) *(int *)&lbl_8055F370 = temp_r3_2;
+        result = fn_802146BC(&args.header, -999, -999, 1);
+        previous = fn_80257FB8();
+        if (result != -1) {
+            fn_80161F10(result);
+            current = fn_80257FB8();
+            if (current != previous) lbl_8055F370 = current;
         }
-    } while (temp_r18 != -1);
+    } while (result != -1);
 }
 #pragma scheduling on
 #pragma pop
