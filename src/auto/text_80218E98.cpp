@@ -670,12 +670,13 @@ extern "C" void fn_80218EE0(void *arg0, s32 left, s32 top, s32 right, s32 bottom
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_80218F34(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    *(void **)arg0 = lbl_8033FB38;
-    fn_80218FEC(arg0, arg1, arg2, arg3, arg4, arg5);
-    *(void **)((u8 *)arg0 + 0x23C) = fn_8021525C();
-    *(s32 *)((u8 *)arg0 + 0x240) = 0;
-    return (s32)arg0;
+extern "C" s32 fn_80218F34(void *object, s32 left, s32 top, s32 right, s32 bottom, s32 flags) {
+    /* Construct a UI/widget object: install its vtable, initialize base fields, cache a shared object, and clear its state. */
+    *(void **)object = lbl_8033FB38;
+    fn_80218FEC(object, left, top, right, bottom, flags);
+    *(void **)((u8 *)object + 0x23C) = fn_8021525C();
+    *(s32 *)((u8 *)object + 0x240) = 0;
+    return (s32)object;
 }
 #pragma dont_inline reset
 
