@@ -325,40 +325,27 @@ void* fn_802090CC(void) {
     return lbl_8055B4D8;
 }
 
-void *fn_802090D4(int arg0)
-{
-  struct Entry
-  {
-    float value;
-    int id;
-  };
-  struct State
-  {
-    struct Entry entries[8];
-    int count;
-  };
-  struct State *state = (struct State *) lbl_80489258;
-  int index = state->count;
-  void *result;
-  result = 0;
-  if (((unsigned int) state->count) < 8U)
-  {
-    state->count = state->count + 1;
-    if (1)
-    {
+void *fn_802090D4(int name) {
+    /* Open a mixer volume handle for name, initialized to full volume (1.0f), and return it, or NULL if the table is full. */
+    struct Entry {
+        float value;
+        int id;
+    };
+    struct State {
+        struct Entry entries[8];
+        int count;
+    };
+    struct State *state = (struct State *) lbl_80489258;
+    int index = state->count;
+    void *handle;
+    handle = 0;
+    if (((unsigned int) state->count) < 8U) {
+        state->count = state->count + 1;
+        handle = ((char *) state) + (index * 8);
+        *((int *) (((char *) handle) + 4)) = name;
+        *((float *) (((char *) state) + (index * 8))) = lbl_80563230;
     }
-    result = ((char *) state) + (index * 8);
-    *((int *) (((char *) result) + 4)) = arg0;
-    *((float *) (((char *) state) + (index * 8))) = lbl_80563230;
-  }
-  if (result)
-  {
-    return result;
-  }
-  else
-  {
-    return result;
-  }
+    return handle;
 }
 
 #pragma push
