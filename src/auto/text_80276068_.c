@@ -16,16 +16,18 @@ extern void fn_8026A4A0(int, void *, float *);
 extern void fn_80276098(void *, void *, float, float, float, int, int);
 extern void *memcpy(void *, const void *, unsigned int);
 #pragma scheduling invalid_target
-int fn_80276068(int arg0) {
-    unsigned int shift = arg0 - 4;
-    int result = 0;
-    if (shift > 0x13)
+/* Returns 1 when the camera mode is one of the chase/replay modes fn_80276DC8
+ * keeps as-is (4, 5, 6, 9 and 23); 0 for a mode that needs the default fallback. */
+int fn_80276068(int cameraMode) {
+    unsigned int modeBit = cameraMode - 4;
+    int isValid = 0;
+    if (modeBit > 0x13)
         goto done;
-    if (!((1U << shift) & 0x80027))
+    if (!((1U << modeBit) & 0x80027))
         goto done;
-    result = 1;
+    isValid = 1;
 done:
-    return result;
+    return isValid;
 }
 #pragma scheduling on
 extern float lbl_80558DC4[], lbl_80564048, lbl_8056404C, lbl_80564050;
