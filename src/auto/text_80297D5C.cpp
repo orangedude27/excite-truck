@@ -2452,9 +2452,15 @@ int fn_8029BFF8(void* payload) {
 extern void* lbl_8055F7D4;
 #pragma dont_inline on
 extern "C" int fn_8029C024(int *__restrict arg0) {
+#define ResetSlotFloat fn_8029A890
+#define gAnimTable     lbl_8055F7D4
+    /* Event 0xD handler: reset one slot's float field in the global animation
+     * table, taking the slot index from the 4-byte payload. */
     int value = *arg0;
-    fn_8029A890(lbl_8055F7D4, (void*)value);
+    ResetSlotFloat(gAnimTable, (void *)value);
     return 4;
+#undef ResetSlotFloat
+#undef gAnimTable
 }
 #pragma dont_inline reset
 extern "C" int fn_8029C054(int *__restrict arg0) {
