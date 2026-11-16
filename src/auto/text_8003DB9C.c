@@ -3198,12 +3198,18 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 void GXSetDispCopyDst(s32 value) {
-    unsigned int *gx = __GXData;
-    unsigned int arg = (unsigned int)(((value << 1) & 0xFFFE) >> 5);
-    unsigned int reg = 0;
-    reg = __rlwimi(reg, arg, 0, 22, 31);
-    reg = __rlwimi(reg, 0x4D, 24, 0, 7);
-    gx[0x238 / 4] = reg;
+    union {
+        u32 reg;
+        struct {
+            u32 constant : 8;
+            u32 pad : 14;
+            u32 arg : 10;
+        } fields;
+    } data = {0};
+
+    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
+    data.fields.constant = 0x4D;
+    __GXData[0x238 / 4] = data.reg;
 }
 
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
@@ -6028,11 +6034,12 @@ void GXSetScissorBoxOffset(u32 offsetX, u32 offsetY) {
     gxdraw->lastWriteWasXF = FALSE;
 }
 
-void GXSetClipMode(s32 arg0) {
+// Sets the hardware clipping mode (enable/disable) through the GX FIFO.
+void GXSetClipMode(s32 mode) {
     register volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
     *fifo = 0x10;
     *(volatile unsigned int *)fifo = 0x1005;
-    *(volatile unsigned int *)fifo = arg0;
+    *(volatile unsigned int *)fifo = mode;
     *(unsigned short *)((char *)__GXData + 2) = 1;
 }
 
