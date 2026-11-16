@@ -849,10 +849,11 @@ extern "C" void fn_802191F0(void *widget, s32 left, s32 top) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_80219264(void *arg0, s32 arg1, s32 arg2) {
-    ((Fn80219264VTable *)arg0)->Call(
-        *(s32 *)((u8 *)arg0 + 4) + arg1,
-        *(s32 *)((u8 *)arg0 + 8) + arg2);
+// Invokes the widget's virtual Call with its stored left/top plus the given x/y offsets.
+extern "C" void fn_80219264(void *widget, s32 dx, s32 dy) {
+    ((Fn80219264VTable *)widget)->Call(
+        *(s32 *)((u8 *)widget + 4) + dx,
+        *(s32 *)((u8 *)widget + 8) + dy);
 }
 #pragma scheduling on
 extern "C" void fn_80219284(void *arg0, s32 arg1, s32 arg2) {
