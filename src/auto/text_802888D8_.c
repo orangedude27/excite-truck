@@ -119,6 +119,9 @@ void fn_80288988(void) {
 }
 
 void fn_802889F0(void) {
+    // Reset the global smoke/effect subsystem managers: rebuild the percussion
+    // table (fn_80289554/lbl_8055F6DC) and clear field 0x64 of each effect-table
+    // entry (fn_80289F54/lbl_8055F6E4).
     fn_80289554(lbl_8055F6DC);
     fn_80289F54(lbl_8055F6E4);
 }
