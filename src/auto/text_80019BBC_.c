@@ -611,7 +611,10 @@ extern double fn_8002F234(double);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_8001B478(int arg0, float farg0) {
+#pragma push
+#pragma cplusplus on
+static inline float lerpf(float a, float b, float t) { return a + t * (b - a); }
+extern "C" void fn_8001B478(int arg0, float farg0) {
     unsigned char sp20[0x38];
     int n, result, i;
     float y, x, t, step, texscale2, angle, ratio, inv, ratio2;
@@ -677,6 +680,7 @@ void fn_8001B478(int arg0, float farg0) {
     fn_802C8E48();
     fn_8013530C(sp20, -1);
 }
+#pragma pop
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
