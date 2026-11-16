@@ -200,14 +200,16 @@ compare:
 }
 #pragma dont_inline reset
 
-const char* fn_80008158(s32 arg0) {
-    if (arg0 < 0) {
+/* Return the name string of the race-event table entry at index (0xC-byte records,
+ * count at offset 0x1E0), or "invalid" if the index is out of range. */
+const char* fn_80008158(s32 index) {
+    if (index < 0) {
         goto done;
     }
-    if (arg0 >= *(s32 *)((u8 *)&lbl_8034EF38 + 0x1E0)) {
+    if (index >= *(s32 *)((u8 *)&lbl_8034EF38 + 0x1E0)) {
         goto done;
     }
-    return *(const char **)((u8 *)&lbl_8034EF38 + arg0 * 0xC);
+    return *(const char **)((u8 *)&lbl_8034EF38 + index * 0xC);
 
 done:
     return lbl_805589A8;
