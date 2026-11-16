@@ -56,6 +56,7 @@ extern int lbl_8055D640;
 #define OVERLAY_PAUSED lbl_8055D645 /* overlay waits for a pause/jump condition to clear */
 #define TIPS_ZOOM_ACTIVE lbl_8055D648 /* timed tips camera zoom is in progress */
 #define GetTimeMs      fn_802E2C20
+#define RestartPhysics fn_80176734 /* reset the physics fader / pending command to restart the race */
 extern unsigned char lbl_8055D670;
 extern int lbl_8055D64C;
 extern unsigned int lbl_8055E044;
