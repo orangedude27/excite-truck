@@ -5815,6 +5815,9 @@ void fn_80073A1C(void) {
 
 }
 
+/* Sends an HCI reset for the BTA device manager: marks the system control
+ * block as resetting, optionally frees a pool buffer slot, and issues the
+ * reset with fn_80073A1C as the completion callback. */
 void bta_dm_send_hci_reset(void) {
     u8 *buf;
 
