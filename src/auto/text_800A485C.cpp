@@ -25245,11 +25245,13 @@ void fn_800CF27C(void) {
 
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800A4B54(s32);
-extern "C" s32 fn_800A485C(s32 arg0) {
-    if ((arg0 >= 0x61) && (arg0 <= 0x7A)) {
-        return arg0 - 0x20;
+/* ASCII toupper: fold a lowercase letter ('a'-'z') to uppercase by clearing
+ * 0x20; leave every other character unchanged. */
+extern "C" s32 fn_800A485C(s32 c) {
+    if ((c >= 'a') && (c <= 'z')) {
+        return c - ('a' - 'A');
     }
-    return arg0;
+    return c;
 }
 
 #pragma optimize_for_size on
