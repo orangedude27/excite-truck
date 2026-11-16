@@ -1867,7 +1867,7 @@ void fn_801C80E8(void) {
     sInterludeX = FLOAT_ZERO;
     sTextFieldFlag = 1;
     sMenuAction = menu_action_active;
-    set_text_entry(1, menu_action_active, FLOAT_FIVE);
+    set_text_entry(1);
 }
 
 /* Debug-menu callback for the type-4 timeline event item: select event type 4,
