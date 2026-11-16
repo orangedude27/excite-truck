@@ -170,6 +170,9 @@ void fn_801DE0A4(void) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801DE0E8(void) {
+    /* RealName: GarageOverlay_Destroy
+     * Destroys the garage overlay layout object (lbl_8055E9C0, created from "garage.val")
+     * if present, then clears the global pointer. */
     class Obj {
     public:
         virtual void destroy(int);
