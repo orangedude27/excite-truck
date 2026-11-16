@@ -521,6 +521,7 @@ extern "C" void fn_8013E338(void);
 extern "C" s32 fn_8013D1F0(s32);
 
 extern "C" s32 fn_8013CB10(void) {
+    /* 1 while the game-flow state reported by fn_80176A1C is 2 (active gameplay). */
     return fn_80176A1C() == 2;
 }
 
