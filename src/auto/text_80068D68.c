@@ -5902,6 +5902,8 @@ void bta_dm_keep_acl(void *p_msg) {
 }
 
 void fn_80073A00(void) {
+    /* Report BTA_DM_DISABLE_EVT (event 1, no data) to the BTA DM callback held
+     * at +0x50; used when a disable event arrives while BTA is already disabled. */
     ((void (**)(int, int)) (lbl_803C0C14 + 0x50))[0](1, 0);
 }
 
@@ -9771,7 +9773,7 @@ no_buf_scan:
 after_scan:
 
     classInfo = fn_8007A394();
-    b0 = classInfo[0];
+    b0 = *(volatile u8 *)(classInfo + 0);
     modeBit = discoverMode & 1;
     b1 = *(volatile u8 *)(classInfo + 1);
     cls = (u16)(((b0 << 8) & 0xFF00) + (b1 & 0xE0));
