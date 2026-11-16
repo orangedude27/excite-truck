@@ -3336,80 +3336,72 @@ extern "C" s32 fn_80216D28();
 extern "C" s32 fn_80230E90(s32);
 extern "C" f32 fn_8023659C();
 extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
-    {
-        void *o = *(void **)((u8 *)arg0 + 0x254);
-        void *vt = *(void **)((u8 *)o + 0xC);
-        s32 (*fn)(void *) = *(s32 (**)(void *))((u8 *)vt + 8);
-        if (fn(o) != 0) {
-            void *o2 = *(void **)((u8 *)arg0 + 0x254);
-            void *vt2 = *(void **)((u8 *)o2 + 0xC);
-            s32 (*fn2)(void *) = *(s32 (**)(void *))((u8 *)vt2 + 0x10);
-            if (fn2(o2) == 0)
-                return 0;
-        } else {
-            s32 *p = *(s32 **)((u8 *)arg0 + 0x258);
-            if (p == 0)
-                return 0;
-            if (*(s32 *)((u8 *)arg0 + 0x25C) != *p)
-                return 0;
-        }
+    struct BaseA {
+        int a, b, c;
+    };
+    struct ClassB : public BaseA {
+        virtual s32 v0();
+        virtual void v1();
+        virtual s32 v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual s32 v8();
+        virtual s32 v9();
+    };
+
+    if ((*(ClassB **)((u8 *)arg0 + 0x254))->v0() != 0) {
+        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v2() == 0)
+            return 0;
+    } else {
+        s32 *p = *(s32 **)((u8 *)arg0 + 0x258);
+        if (p == 0)
+            return 0;
+        if (*(s32 *)((u8 *)arg0 + 0x25C) != *p)
+            return 0;
     }
+
     switch (arg1) {
-    case 0x127: {
-        void *o = *(void **)((u8 *)arg0 + 0x254);
-        void *vt = *(void **)((u8 *)o + 0xC);
-        s32 (*fn)(void *) = *(s32 (**)(void *))((u8 *)vt + 0x2C);
-        if (fn(o) != 0) {
-            void *o2 = *(void **)((u8 *)arg0 + 0x254);
-            void *vt2 = *(void **)((u8 *)o2 + 0xC);
-            void (*f)(void *) = *(void (**)(void *))((u8 *)vt2 + 0x24);
-            f(o2);
+    case 0x127:
+        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v9() != 0) {
+            (*(ClassB **)((u8 *)arg0 + 0x254))->v7();
             *(f32 *)((u8 *)arg0 + 0x264) = fn_8023659C();
         } else {
             fn_80216D28();
         }
         return 1;
-    }
-    case 0x125: {
-        void *o = *(void **)((u8 *)arg0 + 0x254);
-        void *vt = *(void **)((u8 *)o + 0xC);
-        s32 (*fn)(void *) = *(s32 (**)(void *))((u8 *)vt + 0x28);
-        if (fn(o) != 0) {
-            void *o2 = *(void **)((u8 *)arg0 + 0x254);
-            void *vt2 = *(void **)((u8 *)o2 + 0xC);
-            void (*f)(void *) = *(void (**)(void *))((u8 *)vt2 + 0x20);
-            f(o2);
+
+    case 0x125:
+        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v8() != 0) {
+            (*(ClassB **)((u8 *)arg0 + 0x254))->v6();
             *(f32 *)((u8 *)arg0 + 0x260) = fn_8023659C();
         } else {
             fn_80216D28();
         }
         return 1;
-    }
-    case 0x126: {
-        void *o = *(void **)((u8 *)arg0 + 0x254);
-        void *vt = *(void **)((u8 *)o + 0xC);
-        s32 (*fn)(void *) = *(s32 (**)(void *))((u8 *)vt + 8);
-        if (fn(o) == 0 && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
+
+    case 0x126:
+        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v0() == 0 && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
             fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
             fn_80230E90(0);
             return 1;
         }
         break;
-    }
-    case 0x128: {
-        void *o = *(void **)((u8 *)arg0 + 0x254);
-        void *vt = *(void **)((u8 *)o + 0xC);
-        s32 (*fn)(void *) = *(s32 (**)(void *))((u8 *)vt + 8);
-        if (fn(o) == 0 && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
+
+    case 0x128:
+        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v0() == 0 && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
             fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
             fn_80230E90(0);
             return 1;
         }
         break;
-    }
+
     default:
         break;
     }
+
     return 0;
 }
 
