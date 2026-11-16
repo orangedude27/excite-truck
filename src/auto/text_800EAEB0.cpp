@@ -449,20 +449,28 @@ extern "C" void fn_800EB3AC(void* arg0) {
 }
 
 extern "C" void fn_800EB3E4(void* arg0) {
-    /* Reset a sequence Channel's EnvGenerator (+8) to its default note envelope. */
+    /* Reset a sequence Channel's EnvGenerator (+8) to its default note envelope:
+     * state=attack, initial volume, no decay/release (mute step), slowest attack
+     * (factor table[127] = 0) and full sustain. */
+    #define fMuteStep        lbl_80560FE8  /* 65535.0f: step that drops the envelope to silence in one update */
+    #define fInitialVolume   lbl_80560FEC  /* -904.0f: reset volume for a freshly retriggered note */
+    #define sAttackStepTable lbl_802F4B90  /* attack-factor table indexed 0..127; [127] = 0.0f */
     volatile u8* env = (volatile u8*)arg0;
-    f32 c;
-    f32 b;
-    f32 a;
-    a = lbl_80560FE8;
-    c = lbl_80560FEC;
-    b = *(f32*)(lbl_802F4B90 + 0x1FC);
-    *(volatile f32*)(env + 8) = a;
-    *(volatile f32*)(env + 0x10) = b;
+    f32 initialVolume;
+    f32 attackFactor;
+    f32 muteStep;
+    muteStep = fMuteStep;
+    initialVolume = fInitialVolume;
+    attackFactor = *(f32*)(sAttackStepTable + 0x1FC);
+    *(volatile f32*)(env + 8) = muteStep;
+    *(volatile f32*)(env + 0x10) = attackFactor;
     env[0x14] = 0x7F;
-    *(volatile f32*)(env + 0xC) = a;
-    *(volatile f32*)(env + 4) = c;
+    *(volatile f32*)(env + 0xC) = muteStep;
+    *(volatile f32*)(env + 4) = initialVolume;
     *(volatile s32*)env = 0;
+    #undef fMuteStep
+    #undef fInitialVolume
+    #undef sAttackStepTable
 }
 
 extern "C" void fn_800EB41C(void* arg0) {
