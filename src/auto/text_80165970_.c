@@ -1208,7 +1208,18 @@ unsigned char fn_80167544(int index) {
 
 unsigned char fn_80167594(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5E)); }
 
-unsigned char fn_801675E4(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5F)); }
+/* RealName: Unknown_GetByte5F
+ * If the global state is valid, returns the byte at offset +0x5F of the
+ * arg0-th 0x88-byte entry in the array pointed to by lbl_8055E32C->items;
+ * otherwise returns 0. */
+unsigned char fn_801675E4(int index) {
+    void *state;
+    if (!((int (*)(void))fn_801667F0)()) {
+        return 0;
+    }
+    state = *(void **)&lbl_8055E32C;
+    return *((unsigned char *)((char *)*(void **)state + index * 0x88 + 0x5F));
+}
 
 unsigned char fn_80167634(int index) {
     /* Returns the byte at offset 0x60 of the indexed 0x88-byte entry, or 0 if unavailable. */
