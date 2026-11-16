@@ -45,14 +45,17 @@ void *fn_802CE3A4(int slotCount, int arg1, int arg2) {
     return pool;
 }
 
-void fn_802CE474(void *arg0) {
-    *(int *)((char *)arg0 + 4) = 0;
-    *(unsigned char *)arg0 = 0;
-    *(int *)((char *)arg0 + 0x38) = 0;
-    *(int *)((char *)arg0 + 0x34) = -1;
-    *(int *)((char *)arg0 + 0x30) = 0;
-    *(int *)((char *)arg0 + 0x2C) = -1;
-    *(int *)((char *)arg0 + 0x3C) = -1;
+void fn_802CE474(void *slot) {
+    /* Initialise one 0x40-byte model-pool slot to its empty state: clear the
+     * manager pointer, in-use flag and state, and reset the load/model handles
+     * and timestamp to their "none" values. */
+    *(int *)((char *)slot + 4) = 0;
+    *(unsigned char *)slot = 0;
+    *(int *)((char *)slot + 0x38) = 0;
+    *(int *)((char *)slot + 0x34) = -1;
+    *(int *)((char *)slot + 0x30) = 0;
+    *(int *)((char *)slot + 0x2C) = -1;
+    *(int *)((char *)slot + 0x3C) = -1;
 }
 
 void fn_802CE49C(void *object) {
@@ -123,12 +126,12 @@ void fn_802CE4F4(void *arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void *fn_802CE630(void *arg0, const char *arg1, int arg2) {
-    int cnt = *(int *)((char *)arg0 + 8);
-    int off = 0;
+    int count = *(int *)((char *)arg0 + 8);
+    int offset = 0;
     unsigned char *entry;
     void *ret = 0;
-    while (cnt > 0) {
-        entry = (unsigned char *)*(char **)arg0 + off;
+    while (count > 0) {
+        entry = (unsigned char *)*(char **)arg0 + offset;
         if (*entry == 0 && *(int *)(entry + 0x38) == 0) {
             entry[0] = 1;
             *(void **)(entry + 4) = arg0;
@@ -136,8 +139,8 @@ void *fn_802CE630(void *arg0, const char *arg1, int arg2) {
             *(int *)(entry + 0x28) = arg2;
             return ret;
         }
-        off += 0x40;
-        cnt--;
+        offset += 0x40;
+        count--;
     }
     return ret;
 }
