@@ -73,7 +73,14 @@ s32 fn_801D2BF4(s32 *arg0, s32 *arg1) {
 
 #pragma scheduling invalid_target
 void fn_801D2C04(void) {
-    qsort(lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
+    /* Sort the soevent class table by id so id lookups can binary-search it. */
+#define sSoeventClassTable lbl_80438958
+#define sSoeventClassCount lbl_8055E930
+#define SoeventClassCompare fn_801D2BF4
+    qsort(sSoeventClassTable, sSoeventClassCount, 0x4C4, SoeventClassCompare);
+#undef sSoeventClassTable
+#undef sSoeventClassCount
+#undef SoeventClassCompare
 }
 #pragma dont_inline on
 s32 fn_801D2C20(s32 arg0) {
