@@ -204,7 +204,7 @@ void fn_802B5CCC(void) {
     u8 *object;
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B321C(0, (void **)&sp8, *(s32 *)(object + 8), lbl_8055FA40);
-    *(volatile u8 *)sp8 = (u32)__cntlzw(*sp8) >> 5;
+    *sp8 = (*sp8 == 0) & 0xFF;
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B32E0(*(s32 *)(object + 8));
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
@@ -550,7 +550,7 @@ next:
     entry += 3;
 }
 
-extern f32 fn_800108C8(s32, f32);
+extern f32 fn_800108C8(f32, s32);
 extern f32 fn_8001090C(f32);
 extern float lbl_80564C74;
 extern float lbl_80564C78;
@@ -558,40 +558,31 @@ extern float lbl_80564C78;
 #pragma processor 750
 #pragma scheduling invalid_target
 s32 fn_802B640C(void *arg0, s32 arg1) {
-    f32 temp_f1;
-    f32 temp_f31;
-    f32 var_f4;
-    f32 temp_f5;
-    f32 temp_f6;
-    s32 temp_r3;
-    s32 var_r3;
-    s32 var_r4;
-    s32 var_r5;
-    f32 firstValue = *(f32 *)((u8 *)arg0 + 0x10);
-    temp_f31 = fn_800108C8(arg1, firstValue);
+    f32 temp_f1, temp_f31, var_f4, temp_f5, temp_f6;
+    s32 temp_r3, var_r3, var_r4, var_r5;
+
+    temp_f31 = fn_800108C8(arg1, *(f32 *)((u8 *)arg0 + 0x10));
     temp_f1 = fn_8001090C(*(f32 *)((u8 *)arg0 + 0x10));
     temp_r3 = *(s32 *)((u8 *)arg0 + 0x14);
     temp_f5 = *(f32 *)((u8 *)arg0 + 4);
     temp_f6 = temp_f5 + temp_f31;
-    if (temp_r3 & 1) {
+    if (temp_r3 & 1)
         var_f4 = lbl_80564C74;
-    } else if (temp_r3 & 2) {
+    else if (temp_r3 & 2)
         var_f4 = -temp_f31;
-    } else {
+    else
         var_f4 = -temp_f31 * lbl_80564C78;
-    }
     var_r3 = 0;
     var_r5 = 0;
     var_r4 = 0;
-    if ((f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) >= temp_f5 + var_f4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) < temp_f6 + var_f4) {
+    if ((f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) >= temp_f5 + var_f4 &&
+        (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) < temp_f6 + var_f4)
         var_r4 = 1;
-    }
-    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= *(f32 *)((u8 *)arg0 + 8)) {
+    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= *(f32 *)((u8 *)arg0 + 8))
         var_r5 = 1;
-    }
-    if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) < *(f32 *)((u8 *)arg0 + 8) + temp_f1) {
+    if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) <
+        *(f32 *)((u8 *)arg0 + 8) + temp_f1)
         var_r3 = 1;
-    }
     return var_r3;
 }
 #pragma pop
