@@ -12988,9 +12988,10 @@ extern "C" s32 fn_800BA290(s32 arg0, u32 *arg1) {
 }
 
 extern "C" u8 lbl_802F3218[];
-extern "C" s32 fn_800BA3DC(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 4) = arg1;
-    *(u8 **)arg0 = lbl_802F3218;
+extern "C" s32 fn_800BA3DC(void *obj, s32 param) {
+    /* Initialise this object: store the given parameter at +0x4 and install its vtable (lbl_802F3218) at +0x0. */
+    *(s32 *)((u8 *)obj + 4) = param;
+    *(u8 **)obj = lbl_802F3218;
     return 0;
 }
 
