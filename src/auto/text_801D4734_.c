@@ -2124,25 +2124,27 @@ int fn_801D7214(int arg0) {
 }
 
 #pragma dont_inline on
+/* Advances this action-sequence element from running (state 2): finishes when its remaining time reaches zero or the accumulated time reaches the limit, or triggers the end action when the running time is below the limit. */
 void fn_801D7240(void *arg0) {
     extern float lbl_80562ADC;
     extern float lbl_8055E3C8;
-    float f1;
-    float f2;
-    float limit;
+    float runningTime;
+    float remainingTime;
+    float timeLimit;
+
     if (*(int *)((char *)arg0 + 4) == 2) {
-        f2 = *(float *)((char *)arg0 + 0x30);
-        if (f2 < lbl_80562ADC) {
+        remainingTime = *(float *)((char *)arg0 + 0x30);
+        if (remainingTime < lbl_80562ADC) {
             fn_801D6FB8((int)arg0);
             *(int *)((char *)arg0 + 4) = 3;
         } else {
-            f1 = *(float *)((char *)arg0 + 0x2C);
-            f1 += *(float *)((char *)arg0 + 0x28);
-            limit = lbl_8055E3C8;
-            if (f2 + f1 < limit) {
+            runningTime = *(float *)((char *)arg0 + 0x2C);
+            runningTime += *(float *)((char *)arg0 + 0x28);
+            timeLimit = lbl_8055E3C8;
+            if (remainingTime + runningTime < timeLimit) {
                 fn_8016A240((char *)arg0 + 8);
                 *(int *)((char *)arg0 + 4) = 3;
-            } else if (f1 < limit) {
+            } else if (runningTime < timeLimit) {
                 fn_801D6FB8((int)arg0);
             }
         }
