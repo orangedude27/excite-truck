@@ -831,32 +831,33 @@ extern int fn_802CB2FC(int, int, int, unsigned char, unsigned short, unsigned ch
 #pragma dont_inline on
 #pragma push
 #pragma opt_propagation off
-int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
-    int n;
-    const char *name;
-    unsigned short id;
-    unsigned char flags;
-    int *p;
-    id = lbl_8055FCAA;
-    name = &lbl_8055D05C;
-    flags = 3;
-    if (arg3 & 0x20)
-        flags = 2;
-    if (arg3 & 0x40)
-        flags &= ~2;
-    n = (arg3 & 1) + 2;
-    p = (int *)fn_802CB018();
-    memset(p, 0, 0x4C);
-    p[0] = 1;
-    p[9] = 0;
-    p[15] = 0;
-    p[16] = 0;
-    p[17] = 0;
-    p[13] = 0xE;
-    strcpy((char *)p + 4, name);
-    p[11] = fn_802CB2FC(arg0, arg1, 1, (unsigned char)n, id, flags);
-    p[10] = fn_802CA4E0(p[11], (int)&lbl_8055D064, 1, 0, p[13]);
-    return ((char *)p - (char *)lbl_8055FCB0) / 0x4C;
+/* Allocate and initialize a render-target texture slot ("rtarg") and return its slot index. */
+int fn_802CB128(int width, int height, int unused, int flagsMask) {
+    int mipCount;
+    const char *slotName;
+    unsigned short texId;
+    unsigned char createFlags;
+    int *slot;
+    texId = lbl_8055FCAA;
+    slotName = &lbl_8055D05C;
+    createFlags = 3;
+    if (flagsMask & 0x20)
+        createFlags = 2;
+    if (flagsMask & 0x40)
+        createFlags &= ~2;
+    mipCount = (flagsMask & 1) + 2;
+    slot = (int *)fn_802CB018();
+    memset(slot, 0, 0x4C);
+    slot[0] = 1;
+    slot[9] = 0;
+    slot[15] = 0;
+    slot[16] = 0;
+    slot[17] = 0;
+    slot[13] = 0xE;
+    strcpy((char *)slot + 4, slotName);
+    slot[11] = fn_802CB2FC(width, height, 1, (unsigned char)mipCount, texId, createFlags);
+    slot[10] = fn_802CA4E0(slot[11], (int)&lbl_8055D064, 1, 0, slot[13]);
+    return ((char *)slot - (char *)lbl_8055FCB0) / 0x4C;
 }
 #pragma pop
 /* Release a texture slot: destroy its GPU texture object, free its resource handle, and clear the slot. */
