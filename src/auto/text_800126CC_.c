@@ -582,13 +582,15 @@ extern "C" int fn_80013680(void *arg0, void *arg1) {
 }
 #pragma cplusplus reset
 #pragma scheduling invalid_target
-int fn_800136FC(void *arg0, void *arg1) {
-    int b = ((int *)arg1)[0x1A];
-    int a = ((int *)arg0)[0x1A];
-    if (a == b) {
-        return ((int *)arg0)[0x1B] - ((int *)arg1)[0x1B];
+/* qsort comparator: order records by the primary value at +0x68, breaking ties
+ * with the secondary value at +0x6C. */
+int fn_800136FC(void *lhs, void *rhs) {
+    int rhsPrimary = ((int *)rhs)[0x1A];
+    int lhsPrimary = ((int *)lhs)[0x1A];
+    if (lhsPrimary == rhsPrimary) {
+        return ((int *)lhs)[0x1B] - ((int *)rhs)[0x1B];
     }
-    return a - b;
+    return lhsPrimary - rhsPrimary;
 }
 
 void fn_80013724(void) { // v9
