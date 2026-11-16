@@ -134,12 +134,12 @@ extern void *fn_80016510(int);
 extern void *fn_8001285C(void);
 #pragma cplusplus reset
 void fn_8026003C(void) {
-    int temp;
-    temp = *(int *)((char *)fn_80016464(0) + 4);
-    (void)temp;
-    (void)fn_80016510(0);
-    (void)fn_80016464(0);
-    (void)fn_8001285C();
+int temp;
+temp = *(int *)((char *)fn_80016464(0) + 4);
+(void)temp;
+(void)fn_80016510(0);
+(void)fn_80016464(0);
+(void)fn_8001285C();
 }
 void fn_802607C4(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
@@ -1065,14 +1065,15 @@ extern "C" void fn_80261C68(s32 *arg0) {
     u8 *group;
     s32 outer;
     s32 inner;
+    s32 i;
+    s32 j;
     s32 count;
     s32 max;
     void *object;
     void *item;
     float targetValue;
     u32 *base;
-    register s32 i;
-    register s32 j;
+
     stringBase = (u8 *)&lbl_80345B40;
     *(s32 *)((u8 *)arg0 + 8) = 0;
     *(s32 *)((u8 *)arg0 + 0xC) = ((Dummy *)lbl_8055F3E4)->slot1();
@@ -1144,6 +1145,7 @@ outerCheck:
     max = 3;
     if (count < 3) max = count;
     if (outer < max) goto outerBody;
+
     object = fn_80207848(stringBase + 0x178, 0);
     *(void **)((u8 *)arg0 + 0x14) = object;
     if (object != 0) {
@@ -1155,6 +1157,7 @@ outerCheck:
     } else {
         fn_802E317C(stringBase + 0x188);
     }
+
     i = 0;
     j = 0;
     goto firstCheck;
@@ -1181,6 +1184,7 @@ firstBody:
 firstCheck:
     base = (u32 *)lbl_8055F420;
     if (i < (s32)base[2]) goto firstBody;
+
     i = 0;
     j = 0;
     goto secondCheck;
@@ -1288,10 +1292,11 @@ s32 fn_8026257C(void) {
     return 0;
 }
 
-void fn_80262584(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x1F) && lbl_8055F3E9) {
+/* Clear the object's pending flag at +0x1F and reset timing state when a global flag is set. */
+void fn_80262584(void *obj) {
+    if (*(u8 *)((u8 *)obj + 0x1F) && lbl_8055F3E9) {
         fn_80230E90(0);
-        *(u8 *)((u8 *)arg0 + 0x1F) = 0;
+        *(u8 *)((u8 *)obj + 0x1F) = 0;
     }
 }
 
