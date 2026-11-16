@@ -24,6 +24,7 @@ typedef struct {
     void *pad18;
 } Unk801328D4;
 
+/* A string-named value table: `count` entries, each a 0x1C-byte Unk131588Elem. */
 typedef struct Unk131588Elem {
     void **vtable;
     char *name;
