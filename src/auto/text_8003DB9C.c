@@ -3026,7 +3026,10 @@ void GXSetPointSize(s32 size, s32 format) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXEnableTexOffsets(s32 texMap, s32 line, s32 point) {
+void GXEnableTexOffsets(s32 coordId, s32 lineOfs, s32 pointOfs) {
+    /* Enable line/point offsets for a texture coordinate: set the two flag bits in
+       its shadowed register, push that word to the BP through the write-gather
+       FIFO (load-BP-register command 0x61), then clear dirty state. */
     union {
         unsigned int value;
         struct {
@@ -3037,12 +3040,12 @@ void GXEnableTexOffsets(s32 texMap, s32 line, s32 point) {
         } bits;
     } reg;
     unsigned int *data = __GXData;
-    reg.value = data[texMap + 0x108 / 4];
-    reg.bits.line_bit = line;
-    reg.bits.point_bit = point;
-    data[texMap + 0x108 / 4] = reg.value;
+    reg.value = data[coordId + 0x108 / 4];
+    reg.bits.line_bit = lineOfs;
+    reg.bits.point_bit = pointOfs;
+    data[coordId + 0x108 / 4] = reg.value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[texMap + 0x108 / 4];
+    *(volatile unsigned int *)0xCC008000 = data[coordId + 0x108 / 4];
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
