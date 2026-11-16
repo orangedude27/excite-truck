@@ -90,24 +90,25 @@ void fn_80137F2C(void) {
 }
 
 #pragma dont_inline on
+/* Byte-swaps the two 32-bit fields at offsets 0x08 and 0x0C of an IDEAL_EXT_TIMING record. */
 void fn_80137F30(void *arg0) {
     unsigned char *base = (unsigned char *)arg0;
-    unsigned char a;
-    unsigned char c;
-    unsigned char b;
-    unsigned char d;
-    a = base[8];
-    b = base[9];
-    c = base[0xc];
-    d = base[0xd];
+    unsigned char byte8;
+    unsigned char byteC;
+    unsigned char byte9;
+    unsigned char byteD;
+    byte8 = base[8];
+    byte9 = base[9];
+    byteC = base[0xc];
+    byteD = base[0xd];
     base[8] = base[0xb];
-    base[0xb] = a;
+    base[0xb] = byte8;
     base[9] = base[0xa];
-    base[0xa] = b;
+    base[0xa] = byte9;
     base[0xc] = base[0xf];
-    base[0xf] = c;
+    base[0xf] = byteC;
     base[0xd] = base[0xe];
-    base[0xe] = d;
+    base[0xe] = byteD;
 }
 #pragma dont_inline reset
 
