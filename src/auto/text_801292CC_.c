@@ -41,15 +41,17 @@ void fn_80129360(int a, int b) { fn_802E765C(lbl_8055DFA8,a,b); }
 #define MUTE_LEVEL lbl_80561240 /* 0.0f */
 #define setStreamBankLevel fn_802E7684
 
-void fn_80129374(int arg0, int arg1) {
-    float v;
-    if (arg0 == 1)
-        v = lbl_80561238;
+/* Set a stream-bank channel's mix level: channel 1 uses full scale and channel 0
+ * half scale, unless the enable flag is clear, which mutes the channel. */
+void fn_80129374(int channel, int enabled) {
+    float level;
+    if (channel == 1)
+        level = FULL_LEVEL;
     else
-        v = lbl_8056123C;
-    if (arg1 != 0)
-        fn_802E7684(v);
+        level = HALF_LEVEL;
+    if (enabled != 0)
+        setStreamBankLevel(level);
     else
-        fn_802E7684(lbl_80561240);
+        setStreamBankLevel(MUTE_LEVEL);
 }
 
