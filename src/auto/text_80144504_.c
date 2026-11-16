@@ -50,8 +50,9 @@ void fn_80144504(void **arg0) {
     *arg0 = (void *)&lbl_80336890;
 }
 
-float fn_80144514(float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
-    return (farg4 * farg5) + ((farg0 * farg1) + (farg2 * farg3));
+/* Dot product of two 3D vectors: (ax,ay,az) . (bx,by,bz). */
+float fn_80144514(float ax, float bx, float ay, float by, float az, float bz) {
+    return (az * bz) + ((ax * bx) + (ay * by));
 }
 
 #pragma push
