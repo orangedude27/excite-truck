@@ -429,6 +429,8 @@ extern "C" int fn_8000B33C(void *object, int argument, int fallback) {
 }
 #pragma cplusplus reset
 void fn_8000B3B4(void) {
+    /* Call the state handler registered in the current game-loop state's
+     * 0x14-byte table entry (lbl_802FBC90 indexed by lbl_8055D3DC), if any. */
     void (*callback)(void);
     callback = *(void (**)(void))(lbl_802FBC90 + lbl_8055D3DC * 0x14);
     if (callback != 0)
