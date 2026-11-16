@@ -257,11 +257,13 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
 #pragma cplusplus on
 extern "C" void fn_802576EC(void *arg0) {
     char *self = (char *)arg0;
-    int pos;
+    int mode;
     char *entry;
+    int pos;
     char *key;
     int i;
     char *name;
+    MatchDispatch *obj;
 
     if (*(unsigned char *)(self + 0x50) != 0) {
         key = (char *)fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 1, 0);
@@ -269,7 +271,8 @@ extern "C" void fn_802576EC(void *arg0) {
         i = 0;
         while (i < fn_80012854()) {
             entry = (char *)fn_8001285C(i);
-            if ((*(MatchDispatch **)(entry + 0x20))->matches(lbl_8055C1F8) != 0) {
+            obj = *(MatchDispatch **)(entry + 0x20);
+            if (obj->matches(lbl_8055C1F8) != 0) {
                 name = fn_800081BC((*(MatchDispatch **)(entry + 0x20))->fetch((const char *)&lbl_8055C1D8, (char *)fn_80012820(*(int *)(entry + 4)) + 8));
                 if (stricmp(name, key) == 0) {
                     pos = *(int *)(self + 0x5C);
@@ -292,15 +295,11 @@ extern "C" void fn_802576EC(void *arg0) {
         }
         *(unsigned char *)(self + 0x88) = 0;
     }
-    pos = *(int *)(self + 0x18) == 0 ? 1 : 2;
-    {
-        void *cur = fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0);
-        fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0, cur, pos);
-    }
+    mode = *(int *)(self + 0x18) == 0 ? 1 : 2;
+    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0, fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), mode);
     if (*(int *)(self + 0x5C) > 0) {
-        int m = *(int *)(self + 0x18) == 1 ? 1 : 2;
-        void *cur = fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0);
-        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0, cur, m);
+        mode = *(int *)(self + 0x18) == 1 ? 1 : 2;
+        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0, fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), mode);
     }
 }
 #pragma cplusplus reset
@@ -421,7 +420,20 @@ void fn_80257A8C(struct UITable *table) {
 #pragma dont_inline reset
 
 #pragma scheduling invalid_target
-int fn_80257B7C(int arg0) { ((int (*)(int, int, int, int *))fn_8022D458)(arg0, 7, 2, &lbl_80563AB8); return arg0; }
+int fn_80257B7C(int table) {
+#define InitSubTable fn_8022D458
+#define kValueColumnWidths lbl_80563AB8
+#define VALUE_TABLE_ROWS 7
+#define VALUE_TABLE_COLUMNS 2
+    /* RealName: InitValueTable - initialize the 7x2 value UITable (two 20-wide
+     * columns) at object+0x18C and return the table pointer. */
+    ((int (*)(int, int, int, int *))InitSubTable)(table, VALUE_TABLE_ROWS, VALUE_TABLE_COLUMNS, &kValueColumnWidths);
+    return table;
+#undef InitSubTable
+#undef kValueColumnWidths
+#undef VALUE_TABLE_ROWS
+#undef VALUE_TABLE_COLUMNS
+}
 #pragma scheduling on
 
 void fn_80257BB8(void *arg0, int arg1) { *(int *)((char *)arg0 + 0x30) = arg1; fn_80257A8C(arg0); }
