@@ -13,10 +13,12 @@ void DBInit(void) {
 }
 
 void __DBExceptionDestinationAux(void) {
-    const void* physCtx = (void*)OS_PHYS_CURRENT_CONTEXT_PHYS;
-    OSContext* ctx = (OSContext*)OSPhysicalToCached(*(u32*)physCtx);
+    /* Report the debug exception and dump the saved context before halting. */
+    const void* physicalCurrentContext = (void*)OS_PHYS_CURRENT_CONTEXT_PHYS;
+    OSContext* context = (OSContext*)OSPhysicalToCached(*(u32*)physicalCurrentContext);
+
     OSReport("DBExceptionDestination\n");
-    OSDumpContext(ctx);
+    OSDumpContext(context);
     PPCHalt();
 }
 
