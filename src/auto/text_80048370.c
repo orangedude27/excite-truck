@@ -9,6 +9,7 @@
 #include "revolution/MTX/mtx.h"
 #include "revolution/MTX/mtxtypes.h"
 
+typedef struct { f32 x, y; } Pair2;
 extern f32 lbl_80560C48;
 extern f32 lbl_80560C4C;
 extern int lbl_8055D9B8;
