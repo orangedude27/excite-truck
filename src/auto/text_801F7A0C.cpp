@@ -2028,10 +2028,21 @@ void fn_802C7A44(void);
 void fn_802C7A50(void);
 void fn_802C7AD4(void);
 extern "C" void fn_801FA978(void) {
-    fn_801F9BE8();
-    fn_801B5D30(lbl_8055EC74);
-    fn_801792F4();
-    lbl_8055EC3C = 0;
+#define buildStaticGobTable fn_801F9BE8
+#define serializeStaticObjects fn_801B5D30
+#define finishStaticObjectSetup fn_801792F4
+#define staticObjectList lbl_8055EC74
+#define staticObjectsActiveFlag lbl_8055EC3C
+    /* Startup finalizer for the StaticGOB/StaticObject subsystem: build the sorted GOB table, serialize the static-object list, run the setup hook, and clear the active flag. */
+    buildStaticGobTable();
+    serializeStaticObjects(staticObjectList);
+    finishStaticObjectSetup();
+    staticObjectsActiveFlag = 0;
+#undef staticObjectsActiveFlag
+#undef staticObjectList
+#undef finishStaticObjectSetup
+#undef serializeStaticObjects
+#undef buildStaticGobTable
 }
 
 extern "C" void *fn_801A4548(void *);
