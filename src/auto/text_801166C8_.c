@@ -2878,15 +2878,18 @@ s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
     return 1;
 }
 
-f32 fn_8011AE18(s32 arg0) {
+f32 fn_8011AE18(s32 packedValue) {
+    /* Decode a packed magnitude/sign/index value into a scaled float coefficient. */
+#define scaleTable lbl_80329D48
     s32 magnitude;
-    f32 temp;
-    magnitude = (s32)(((u32)arg0 & ~0x10000000) >> 5);
-    temp = (f32)magnitude * lbl_80329D48[(u32)arg0 & 0x1F];
-    if (arg0 & 0x10000000) {
-        temp = -temp;
+    f32 result;
+    magnitude = (s32)(((u32)packedValue & ~0x10000000) >> 5);
+    result = (f32)magnitude * scaleTable[(u32)packedValue & 0x1F];
+    if (packedValue & 0x10000000) {
+        result = -result;
     }
-    return temp;
+    return result;
+#undef scaleTable
 }
 
 void fn_8011AE68(s32 out, f32 *in, u32 count, f32 scale) {
