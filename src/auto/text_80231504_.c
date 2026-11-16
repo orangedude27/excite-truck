@@ -1477,9 +1477,10 @@ void fn_80233E34(s32 *arg0, s32 arg1, s32 arg2) {
 extern void fn_802C8C04(s32);
 /* Current text/UI draw color, packed RGBA with brightness-scaled red. */
 #define CurrentDrawColor lbl_8055F050
-void fn_80233E80(s32 *arg0, s32 arg1) {
-    lbl_8055F050 = fn_80230B9C(arg1);
-    fn_802C8C04(*arg0);
+void fn_80233E80(s32 *font, s32 color) {
+    /* Set the current draw color from an RGBA value, then submit the font object to the draw list. */
+    CurrentDrawColor = fn_80230B9C(color);
+    fn_802C8C04(*font);
 }
 
 void fn_80233EBC(void) {
