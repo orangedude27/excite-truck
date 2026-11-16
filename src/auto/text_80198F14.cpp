@@ -5048,7 +5048,12 @@ extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
 #pragma push
 #pragma small_data off
 extern "C" void fn_801A4E28(void) {
-    lbl_8055E5A0 = fn_801CFEAC(&lbl_803336EC[0]);
+#define gTrackMesh lbl_8055E5A0
+#define kTrackMeshPath lbl_803336EC
+    /* Static initializer: load the "track.msh" mesh through the PMsh loader and cache its handle in gTrackMesh. */
+    gTrackMesh = fn_801CFEAC(&kTrackMeshPath[0]);
+#undef kTrackMeshPath
+#undef gTrackMesh
 }
 #pragma pop
 /* Release the global subsystem handle lbl_8055E5A0 if set, then clear it. */
