@@ -435,10 +435,14 @@ void fn_802B5F98(void) {
 #pragma push
 #pragma small_data off
 #pragma pop
+/* Re-selects the material set the "tedash.val" debug viewer is on, then toggles
+ * the memory-allocation subsystem's disable flag (clears it, then sets it). */
 void fn_802B618C(void) {
-    fn_802B59A4(lbl_8055FA3C);
+#define matSetIndex lbl_8055FA3C /* which UMatSet (material set) the viewer is on */
+    fn_802B59A4(matSetIndex);
     fn_80128684();
     fn_80128678();
+#undef matSetIndex
 }
 
 void fn_802B61B8(void) {
