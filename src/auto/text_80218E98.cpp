@@ -2953,12 +2953,12 @@ extern "C" void fn_8021CE8C(void *arg0) {
 
 extern "C" void fn_8021CEAC(void *self) {
     /* Runs this widget's vf17() update, then clears its pending flag (+0x244). */
-    struct Widget {
+    struct PendingWidget {
         VfObj obj;          /* 0x00: vtable */
         u8 pad_0x4[0x240];
         u8 pending;         /* 0x244: set while an update is pending */
     };
-    Widget *widget = (Widget *)self;
+    PendingWidget *widget = (PendingWidget *)self;
 
     widget->obj.vf17();
     widget->pending = 0;
