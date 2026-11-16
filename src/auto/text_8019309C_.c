@@ -195,8 +195,8 @@ typedef float f32;
 struct S93524 { char pad[0x54]; float dir[3]; float pos[3]; };
 f32 fn_801931AC(f32 a, f32 b, f32 c, f32 d) {
     f32 t = lbl_80562140 - a / d;
-    t = (lbl_80562140 < t) ? t : lbl_80562140;
-    t = (t > lbl_80562144) ? lbl_80562144 : t;
+    t = (lbl_80562140 < t) ? lbl_80562140 : t;
+    t = (t > lbl_80562144) ? t : lbl_80562144;
     return b + t * (c - b);
 }
 
