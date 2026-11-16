@@ -1786,8 +1786,9 @@ found:
 }
 #pragma use_lmw_stmw reset
 
-extern "C" s32 fn_800A71A0(s32 *arg0) {
-    *(volatile u32 *)arg0 &= 0xFFFFFFFE;
+/* Release a cache handle: clear its in-use flag and decrement the global in-use count. */
+extern "C" s32 fn_800A71A0(s32 *handle) {
+    *(volatile u32 *)handle &= 0xFFFFFFFE;
     *(volatile u16 *)&lbl_803D1640 -= 1;
     return 0;
 }
