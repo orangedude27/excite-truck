@@ -1438,11 +1438,10 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021A650(void *self, 
 }
 
 extern "C" void fn_8021A6A8(void *arg0) {
-    s32 temp_r0;
-
-    temp_r0 = *(s32 *)((u8 *)arg0 + 0x244);
-    if (temp_r0 != 0) {
-        fn_8022FFE8(temp_r0);
+    /* RealName: ReleaseCachedDisplayObject (finalizes and frees the cached object at offset 0x244, if present). */
+    s32 cachedObject = *(s32 *)((u8 *)arg0 + 0x244);
+    if (cachedObject != 0) {
+        fn_8022FFE8(cachedObject);
         fn_8022F8CC(*(s32 *)((u8 *)arg0 + 0x244));
     }
 }
@@ -6507,7 +6506,6 @@ extern "C" f32 lbl_80563538;
 extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     f32 temp_f1;
     f32 temp_f1_2;
-    s32 temp_r0;
     f32 temp_f1_4;
     f32 var_f0;
     f32 var_f0_2;
@@ -6515,31 +6513,28 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     f32 var_f0_4;
     register s32 temp_r28;
     register s32 temp_r27;
-    s32 temp_r3;
-    s32 temp_r4;
-    s32 temp_r5;
-    s32 temp_r6;
     f32 temp_f1_3;
+
     fn_80218F80();
-    temp_r3 = 0;
-    temp_r4 = (s32)lbl_8033E350;
-    *(s32 *)((u8 *)arg0 + 0x258) = temp_r3;
-    *(void **)arg0 = (void *)temp_r4;
-    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)temp_r3;
+
+    *(s32 *)((u8 *)arg0 + 0x258) = 0;
+    *(void **)arg0 = lbl_8033E350;
+    *(u8 *)((u8 *)arg0 + 0x25C) = 0;
     *(s32 *)((u8 *)arg0 + 0x264) = -2;
-    *(s32 *)((u8 *)arg0 + 0x260) = temp_r3;
+    *(s32 *)((u8 *)arg0 + 0x260) = 0;
+
     if (((s32 (*)(void))fn_802C9A58)() == 0) {
         if (((VfObj *)arg0)->vf28() > 0x258) {
-            temp_r5 = *(s32 *)((u8 *)arg0 + 8);
+            s32 temp_r5 = *(s32 *)((u8 *)arg0 + 8);
             if (*(s32 *)((u8 *)arg0 + 0x10) - temp_r5 > 0x1CC) {
-                temp_r4 = (lbl_8055CFF0 / 2);
+                s32 temp_r4 = (lbl_8055CFF0 / 2);
                 temp_f1 = lbl_80563538 * (f32)(*(s32 *)((u8 *)arg0 + 4) - temp_r4);
                 if (temp_f1 < lbl_805634A8) {
                     var_f0 = temp_f1 - lbl_805634C4;
                 } else {
                     var_f0 = lbl_805634C4 + temp_f1;
                 }
-                temp_r6 = (lbl_8055CFF4 / 2);
+                s32 temp_r6 = (lbl_8055CFF4 / 2);
                 temp_r28 = temp_r4 + (s32)var_f0;
                 temp_f1_2 = (f32)(temp_r5 - temp_r6);
                 if (temp_f1_2 < lbl_805634A8) {
@@ -6568,12 +6563,9 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     } else {
         *(s32 *)((u8 *)arg0 + 0x258) = (s32)((u8 *)arg1 + 0x40);
     }
-    temp_r5 = *(s32 *)((u8 *)arg1 + 0xA4);
-    temp_r0 = 0;
-    temp_r4 = -temp_r5;
-    *(s32 *)((u8 *)arg0 + 0x254) = temp_r0;
-    temp_r0 = temp_r4 | temp_r5;
-    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)((u32)temp_r0 >> 31);
+    s32 flag_val = *(s32 *)((u8 *)arg1 + 0xA4);
+    *(s32 *)((u8 *)arg0 + 0x254) = 0;
+    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)((u32)(-flag_val | flag_val) >> 31);
     return arg0;
 }
 #pragma pop
