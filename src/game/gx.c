@@ -582,11 +582,12 @@ void fn_802CF600(void) {
     extern void GXGetLightDir(void (*)(unsigned int)), GXLoadLightObjIndx(void (*)(void));
     extern int VIConfigure(void *), VISetBlack(int), VIFlush(void);
     extern void fn_802E30C8(const char *, ...);
+    struct { char *p; } baseBox;
     int zero = 0;
     int negative;
-    char *base = lbl_8034BD18;
     void *buffer;
     int size;
+    baseBox.p = lbl_8034BD18;
     lbl_8055FD7C = 0;
     lbl_8055FD48 = 3;
     lbl_8055FD4C = 0;
@@ -604,24 +605,24 @@ void fn_802CF600(void) {
     fn_80127468();
     fn_801282EC(0x20);
     fn_801282F4();
-    lbl_8055FDA0 = (unsigned long)fn_8012850C((void *)0x177000, base + 0x2A4);
+    lbl_8055FDA0 = (unsigned long)fn_8012850C((void *)0x177000, baseBox.p + 0x2A4);
     lbl_8055FD94 = 0;
-    buffer = fn_8012850C((void *)0x26010, base + 0x2B0);
+    buffer = fn_8012850C((void *)0x26010, baseBox.p + 0x2B0);
     lbl_8055FDB0 = fn_8002F37C(buffer, fn_802CF830, 0, 0x4C, 0x800);
     lbl_8055FDAC = 0;
     fn_802D8D1C();
     fn_80127468();
-    lbl_8055FD68 = fn_8012850C((void *)0x300000, base + 0x2BC);
+    lbl_8055FD68 = fn_8012850C((void *)0x300000, baseBox.p + 0x2BC);
     lbl_8055FD6C = GXInit((int)lbl_8055FD68, 0x300000);
     fn_802D6810();
     fn_802CF850();
     fn_80127468();
-    fn_802E30C8(base + 0x2C8);
+    fn_802E30C8(baseBox.p + 0x2C8);
     fn_802D0BD8();
-    fn_802E30C8(base + 0x2E0);
+    fn_802E30C8(baseBox.p + 0x2E0);
     fn_80127468();
     fn_802CFF10();
-    fn_802E30C8(base + 0x2FC);
+    fn_802E30C8(baseBox.p + 0x2FC);
     fn_80127468();
     fn_802CF5A8();
     fn_802DACD4();
@@ -635,7 +636,7 @@ void fn_802CF600(void) {
     lbl_8055FD20 = (void *)negative;
     size = GXGetTexBufferSize(0x280, 0x1C0, 1, 0, 0);
     fn_801282EC(0x20);
-    buffer = fn_8012850C((void *)size, base + 0x30C);
+    buffer = fn_8012850C((void *)size, baseBox.p + 0x30C);
 #pragma small_data off
     lbl_804C9940 = (unsigned long)buffer;
     GXInitTexObj(&lbl_804C9940 + 1, buffer, 0x280, 0x1C0, 1, 0, 0, 0);
@@ -838,6 +839,7 @@ void fn_802CF850(void) {
 #define GX_WORK_MEMORY lbl_8055FD68
 #define GX_RECORD_TABLE lbl_8055FDB0
 #define GX_DYNAMIC_DATA lbl_8055FDA0
+#define GX_DYNAMIC_OFFSET lbl_8055FD94 /* current bump offset into GX_DYNAMIC_DATA */
 #define GX_DYNAMIC_HIGH_WATER lbl_8055FD98
 
 /* fn_802CFBA8 - shuts the graphics subsystem down.  Called from the engine's
