@@ -9397,10 +9397,12 @@ extern "C" void fn_80229CB4(void *widget) {
     }
 }
 
-extern "C" void fn_80229CD8(void *arg0) {
-    (*(u8 *)((u8 *)arg0 + 0x244)) = 0;
-    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
-        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+extern "C" void fn_80229CD8(void *widget) {
+    /* Clear this VfWidget's flag byte at +0x244 and, when its layout option
+     * (+0x1A) is set, mark it dirty (+0x234) so it gets redrawn. */
+    (*(u8 *)((u8 *)widget + 0x244)) = 0;
+    if ((*(u8 *)((u8 *)widget + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)widget + 0x234)) = 1;
     }
 }
 
