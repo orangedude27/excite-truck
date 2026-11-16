@@ -252,6 +252,7 @@ void fn_8000F3E8(void) {
 }
 
 void fn_8000F40C(void) {
+    /* Release the global ArtSet created by fn_8000F3E8 and clear its pointer. */
     if (lbl_8055D4D0 != 0) {
         fn_80235380(lbl_8055D4D0);
         lbl_8055D4D0 = 0;
