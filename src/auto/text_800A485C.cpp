@@ -24911,20 +24911,22 @@ copy:
     return arg0;
 }
 
-extern "C" s32 fn_800A4B9C(u16 *arg0, u16 *arg1, s32 count) {
+/* fn_800A4B9C: compare up to count UTF-16 code units (u16) in two buffers.
+   Returns the difference (left - right) at the first mismatch or NUL, else 0. */
+extern "C" s32 fn_800A4B9C(u16 *left, u16 *right, s32 count) {
     while (count != 0) {
-        u16 right;
-        u16 left = *arg0;
-        if (left == 0) goto differ;
-        right = *arg1;
-        if (right == 0) goto differ;
-        if (left == right) goto equal;
+        u16 rightCh;
+        u16 leftCh = *left;
+        if (leftCh == 0) goto differ;
+        rightCh = *right;
+        if (rightCh == 0) goto differ;
+        if (leftCh == rightCh) goto equal;
     differ:
-        right = *(volatile u16 *)arg1;
-        return left - right;
+        rightCh = *(volatile u16 *)right;
+        return leftCh - rightCh;
     equal:
-        arg0++;
-        arg1++;
+        left++;
+        right++;
         count--;
     }
     return 0;
