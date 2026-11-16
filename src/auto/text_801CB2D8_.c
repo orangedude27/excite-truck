@@ -1763,6 +1763,8 @@ render_item:
         }
     }
 }
+/* StatManager_InitBlock: build the stats/awards manager's stat block at
+ * lbl_8055E884+0x2C0, but only once the required tables are loaded. */
 void fn_801CDDCC(void) {
     if (fn_801CE898() == 0) {
         fn_801CDE00((s32)lbl_8055E884 + 0x2C0);
