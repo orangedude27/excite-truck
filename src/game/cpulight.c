@@ -580,6 +580,12 @@ void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
 
 extern float lbl_80565040, lbl_80565044, lbl_80565048;
 extern void GXSetTevColor();
+/* fn_802DC464: draws an indexed triangle-fan overlay with a cpu-light fade alpha. */
+#define CpuLight_SetPositionArray fn_802DBBE4
+#define CpuLight_AlphaScale lbl_80565040 /* 255.0f */
+#define CpuLight_RoundHalf lbl_80565044  /* 0.5f */
+#define CpuLight_Zero lbl_80565048       /* 0.0f */
+#define CpuLight_CachedTevAlpha lbl_8055FEA0
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
