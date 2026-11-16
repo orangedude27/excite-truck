@@ -337,10 +337,11 @@ void fn_801493F8(void *arg0, f32 *arg1, s32 arg2) {
 }
 
 extern s32 lbl_802F9400[];
-s32 fn_80149468(void *arg0) {
-    S4_80149234 sp8;
-    sp8 = *(S4_80149234 *)lbl_802F9400;
-    return sp8.v[((s32 *)arg0)[1]];
+/* Return a table entry selected by the object's index field. */
+s32 fn_80149468(void *obj) {
+    S4_80149234 table;
+    table = *(S4_80149234 *)lbl_802F9400;
+    return table.v[((s32 *)obj)[1]];
 }
 
 s32 fn_801494A8(void) {
