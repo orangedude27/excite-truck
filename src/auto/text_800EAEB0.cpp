@@ -220,6 +220,8 @@ extern s32 fn_80128668(void);
 #define fn_80128668_noarg() ((s32 (*)(void))fn_80128668)()
 
 extern "C" void fn_800EAEB0(void) {
+    /* Register the global sound Channel's destructor with the dispose callback
+     * manager so it is torn down at shutdown (0xE8-byte object, priority 0x41). */
     fn_8002F634(&lbl_8040EC90, &__dt__Q46nw4hbm3snd6detail7ChannelFv, 0xE8, 0x41);
 }
 
