@@ -417,10 +417,11 @@ extern "C" void fn_80100A08(void* arg0, float arg1) {
     OSRestoreInterrupts(level);
 }
 
-extern "C" void fn_80100A48(void* arg0, float arg1) {
-    int level = OSDisableInterrupts();
-    *(float*)((char*)arg0 + 0x4C) = arg1;
-    OSRestoreInterrupts(level);
+extern "C" void fn_80100A48(void* player, float value) {
+    /* Set the float field at offset 0x4C on this player with interrupts disabled. */
+    int interrupts = OSDisableInterrupts();
+    *(float*)((char*)player + 0x4C) = value;
+    OSRestoreInterrupts(interrupts);
 }
 
 extern "C" float fn_80100A88(void* arg0) { return *(float*)((char*)arg0 + 0x4C); }
