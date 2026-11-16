@@ -352,7 +352,9 @@ extern "C" void fn_802E3930(s32 fileHandle, s32 offset, s32 whence) {
     ((Obj *)stream)->v2(offset, whence);
 }
 #pragma cplusplus on
-extern "C" void fn_802E3990(s32 arg0) {
+extern "C" void fn_802E3990(s32 fileHandle) {
+    /* Look up the stream object for the file handle and invoke its no-argument
+       vtable method at slot +0x14 (file.cpp:0x16c). */
     class Obj {
     public:
         virtual void v0();
@@ -360,9 +362,9 @@ extern "C" void fn_802E3990(s32 arg0) {
         virtual void v2();
         virtual void v3();
     };
-    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x16c);
-    s32 entry = *(s32 *)(obj + 0x24);
-    ((Obj *)entry)->v3();
+    s32 fileEntry = fn_802E33D8(fileHandle, lbl_8034CFB4, 0x16c);
+    s32 fileObject = *(s32 *)(fileEntry + 0x24);
+    ((Obj *)fileObject)->v3();
 }
 #pragma cplusplus off
 /* Reads exactly `count` bytes from file `fileId` into `buffer`; returns nonzero on success. */
