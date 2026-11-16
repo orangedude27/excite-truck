@@ -771,6 +771,7 @@ void fn_80210444(void) {
 #undef trackMusicCurrentSong
 }
 
+/* True (1) when a track-music song is selected (current song id lbl_8055B658 != -1). */
 long fn_802104B8(void) {
     return (unsigned long)((-1 - lbl_8055B658) | (lbl_8055B658 + 1)) >> 31;
 }
