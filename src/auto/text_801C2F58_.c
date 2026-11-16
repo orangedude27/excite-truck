@@ -1614,8 +1614,9 @@ void (*fn_801C7944(void))(void) {
 
 #pragma scheduling on
 void fn_801C7964(void) {
-    Vec* src = &lbl_80438268;
-    Vec* dst = &lbl_80438250;
+    /* Copy the debug reference position into the saved debug position slot. */
+    Vec *src = &lbl_80438268;
+    Vec *dst = &lbl_80438250;
     dst->x = src->x;
     dst->y = src->y;
     dst->z = src->z;
