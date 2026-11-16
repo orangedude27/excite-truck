@@ -20765,6 +20765,9 @@ void *l2cu_find_ccb_by_cid(void *p_lcb, u16 cid) {
 }
 
 void *fn_8008EBE4(s16 psm) {
+    /* l2cu_allocate_rcb: find a free L2CAP RCB slot in l2cb's RCB pool at
+       lbl_803C4040+0x650 (8 entries, 0x2C bytes each), mark it in use, store the
+       PSM, and return the slot; returns NULL if all slots are in use. */
     UINT16 i;
     u8 *p_rcb = lbl_803C4040 + 0x650;
     for (i = 0; i < 8; i++, p_rcb += 0x2C) {
@@ -21935,20 +21938,13 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
 }
 #pragma pop
 void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
-    struct MsgPool {
-        char msg0[0x1C];
-        char msg1[0x1C];
-        char msg2[0x1C];
-        char msg3[0x1C];
-        char msg4[0x1C];
-    };
     s32 index = (s32)arg0 - 0x40;
-    struct MsgPool *trace_msg = (struct MsgPool *)lbl_803196B8;
+    char *trace_msg = lbl_803196B8;
     void *port;
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg->msg0, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -21956,14 +21952,14 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
             port_lcid = *(u16 *)((u8 *)port + 0x68);
             if (port_lcid != arg0) {
                 if (lbl_803C4828[0x414] >= 2)
-                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, trace_msg->msg1, arg0, port_lcid);
+                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, trace_msg + 0x1C, arg0, port_lcid);
                 port = NULL;
             }
         }
     }
     if (port == NULL) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg->msg4, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0x70, arg0);
     } else {
         ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xC, arg1);
     }
