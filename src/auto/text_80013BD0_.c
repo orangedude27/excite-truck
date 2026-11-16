@@ -159,13 +159,15 @@ f32 fn_80013D60(f32 x) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80013DF0(s32 arg0) {
+extern "C" void fn_80013DF0(s32 screen) {
+    /* Dispatch v3 ("lap_body_0") on the race-overlay layout at +0x50 of
+     * screen's RaceOverlay. */
     class Obj {
     public:
         virtual void v0();
         virtual void v3(void *);
     };
-    ((Obj *)*(void **)((u8 *)lbl_803577E0[arg0] + 0x50))->v3(lbl_802FCBEC);
+    ((Obj *)*(void **)((u8 *)sRaceOverlays[screen] + 0x50))->v3(MSG_LAP_BODY_0);
 }
 #pragma pop
 #pragma push
@@ -342,20 +344,21 @@ extern "C" void *fn_80014524(void *object, s32 index) {
 }
 #pragma pop
 
-#pragma scheduling invalid_target
+#pragma scheduling reset
 void fn_80014638(void *arg0) {
+    u8 flag = 0;
+    s32 count = 0;
     f32 zero = lbl_80560368;
-    f32 one = lbl_80560398;
-    u8 zb = 0;
-    s32 zw = 0;
     s32 six = 6;
+    f32 one = lbl_80560398;
     *(s32 *)((u8 *)arg0 + 0x14) = six;
     *(f32 *)((u8 *)arg0 + 0x1C) = one;
-    *(u8 *)((u8 *)arg0 + 0x20) = zb;
+    *(u8 *)((u8 *)arg0 + 0x20) = flag;
     *(f32 *)((u8 *)arg0 + 0x2C) = zero;
     *(f32 *)((u8 *)arg0 + 0x28) = zero;
-    *(s32 *)((u8 *)arg0 + 0x24) = zw;
+    *(s32 *)((u8 *)arg0 + 0x24) = count;
 }
+#pragma scheduling invalid_target
 extern u8 lbl_802FCE18[];
 extern void fn_8001A04C(void *);
 extern void fn_802CAC54(s32);
