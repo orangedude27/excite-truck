@@ -73,6 +73,11 @@ extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
 extern int lbl_8055F748;
 extern int lbl_804B34B0_arr[];
+struct EmitterListPool {
+    char list0[0x104];
+    char list1[0x104];
+    char list2[0x104];
+};
 #pragma push
 #pragma small_data off
 typedef int lbl_804B34B0_t;
@@ -146,10 +151,10 @@ test:
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8028DF58(void) {
-    void *base = (void *)&lbl_804B34B0;
-    fn_8028ED74((char *)base + 0x0);
-    fn_8028ED74((char *)base + 0x104);
-    fn_8028EE1C((char *)base + 0x208);
+    char *base = (char *)&lbl_804B34B0;
+    fn_8028ED74(base + '\0');
+    fn_8028ED74(base + 0x104);
+    fn_8028EE1C(base + 0x208);
     lbl_8055F740 = 0;
     lbl_8055F744 = 1;
     lbl_8055F748 = 0;
@@ -159,7 +164,7 @@ void fn_8028E0F0(void) {
     fn_8028F5A4();
     fn_8028EE28(base + 0x208);
     fn_8028ED80(base + 0x104);
-    fn_8028ED80(0 + base);
+    fn_8028ED80(base + (0x104 - 0x104));
 }
 #pragma pop
 extern void fn_8028ED74(void *);
@@ -1221,65 +1226,63 @@ extern char lbl_8055C918[4];
 extern char lbl_80349024[];
 extern char lbl_80349078[];
 extern unsigned char lbl_8055F74C;
+#pragma cplusplus on
 void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
-    char *o6 = (char *)arg0;
-    float *a6 = (float *)arg1;
-    EfEntry2 e6;
-    EfEntry2 *d6;
-    register int m6;
+    EfEntry2 e;
+    EfEntry2 *d;
+    float *a = (float *)arg1;
+    char *o = (char *)arg0;
     if (lbl_8055F73C == 0 && lbl_8055F74C == 0) {
         lbl_8055F74C = 1;
         fn_802E30C8(lbl_8055C918, lbl_80349024);
     }
-    e6.p.a.x = a6[0];
-    e6.p.a.y = a6[1];
-    e6.p.a.z = a6[2];
-    e6.p.b.x = arg2[0];
-    e6.p.b.y = arg2[1];
-    e6.p.b.z = arg2[2];
-    e6.v6 = lbl_8055F738;
-    e6.f1 = farg1;
-    m6 = *(int *)o6;
-    switch (m6) {
+    e.p.a.x = a[0];
+    e.p.a.y = a[1];
+    e.p.a.z = a[2];
+    e.p.b.x = arg2[0];
+    e.p.b.y = arg2[1];
+    e.p.b.z = arg2[2];
+    e.v6 = lbl_8055F738;
+    e.f1 = farg1;
+    switch (*(int *)o) {
     case 0:
-        e6.c0 = *(unsigned char *)(o6 + 0x38) ? fn_80287B5C(4) : 0;
+        e.c0 = *(unsigned char *)(o + 0x38) ? fn_80287B5C(4) : 0;
         break;
     case 1:
-        e6.c1 = *(unsigned char *)(o6 + 0x88) ? fn_80287B5C(*(int *)(o6 + 0x84)) : 0;
+        e.c1 = *(unsigned char *)(o + 0x88) ? fn_80287B5C(*(int *)(o + 0x84)) : 0;
         break;
     case 2:
-        e6.c2 = *(unsigned char *)(o6 + 0x38) ? fn_80287B5C(0xff) : 0;
-        e6.f0 = farg0;
+        e.c2 = *(unsigned char *)(o + 0x38) ? fn_80287B5C(0xff) : 0;
+        e.f0 = farg0;
         break;
     default:
         fn_802E317C(lbl_80349078);
         break;
     }
-    if (*(int *)(o6 + 0x90) < 0) {
-        d6 = *(EfEntry2 **)(o6 + 0x8c);
-        d6->p = e6.p;
-        d6->v6 = e6.v6;
-        d6->c0 = e6.c0;
-        d6->c1 = e6.c1;
-        d6->c2 = e6.c2;
-        d6->f0 = e6.f0;
-        d6->f1 = e6.f1;
-        *(int *)(o6 + 0x90) = 0;
-        *(int *)(o6 + 0x94) = 1;
+    if (*(int *)(o + 0x90) < 0) {
+        d = *(EfEntry2 **)(o + 0x8c);
+        d->p = e.p;
+        d->v6 = e.v6;
+        d->c0 = e.c0;
+        d->c1 = e.c1;
+        d->c2 = e.c2;
+        d->f0 = e.f0;
+        d->f1 = e.f1;
+        *(int *)(o + 0x90) = 0;
+        *(int *)(o + 0x94) = 1;
         return;
     }
-    d6 = *(EfEntry2 **)(o6 + 0x8c) + *(int *)(o6 + 0x94);
-    d6->p = e6.p;
-    d6->v6 = e6.v6;
-    d6->c0 = e6.c0;
-    d6->c1 = e6.c1;
-    d6->c2 = e6.c2;
-    d6->f0 = e6.f0;
-    d6->f1 = e6.f1;
-    *(int *)(o6 + 0x94) = (*(int *)(o6 + 0x94) + 1) % *(int *)(o6 + 0x98);
+    d = *(EfEntry2 **)(o + 0x8c) + *(int *)(o + 0x94);
+    d->p = e.p;
+    d->v6 = e.v6;
+    d->c0 = e.c0;
+    d->c1 = e.c1;
+    d->c2 = e.c2;
+    d->f0 = e.f0;
+    d->f1 = e.f1;
+    *(int *)(o + 0x94) = (*(int *)(o + 0x94) + 1) % *(int *)(o + 0x98);
 }
-
-#pragma pop
+#pragma cplusplus reset
 extern float lbl_80564424, lbl_80564448, lbl_8056444C, lbl_80564450, lbl_80564454, lbl_80564458;
 extern float lbl_8056445C;
 typedef struct { float x, y, z; unsigned int color; float u, v; } EfVtx;
