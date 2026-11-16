@@ -205,6 +205,8 @@ void *fn_8024A268(void *arg0, s32 arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8024A2BC(void *arg0, s32 arg1, s32 arg2) {
+    /* Search entries starting at +0x20 (stride 0xC) for a pair (arg1,arg2) and set the
+     * selected index at +0x10 to the match's position; does nothing if not found. */
     s32 count = *(s32 *)((char *)arg0 + 0x14);
     char *entry = (char *)arg0;
     s32 index = 0;
