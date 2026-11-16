@@ -907,7 +907,7 @@ s32 fn_80132C74(void *arg0, s32 arg1) {
         offset += 0x1C;
         i++;
     }
-    fn_802E317C(lbl_8032B73C, (char *)arg1);
+    fn_802E317C(lbl_8032B73C, (char *)arg1, t->count);
     return 0;
 }
 #pragma pop
