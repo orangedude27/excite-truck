@@ -2201,6 +2201,8 @@ s32 fn_8006A460(s32 arg0) {
 }
 
 void fn_8006A7D0(s32 arg0, s32 arg1) {
+    /* Set two s32 fields at +0x674/+0x678 of the global block lbl_80392960
+       with interrupts disabled. */
     s32 saved = OSDisableInterrupts();
     *(s32 *)(lbl_80392960 + 0x674) = arg0;
     *(s32 *)(lbl_80392960 + 0x678) = arg1;
