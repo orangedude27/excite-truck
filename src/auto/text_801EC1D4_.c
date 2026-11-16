@@ -60,8 +60,11 @@ extern float lbl_80558DC4[];
 #define UI_LIGHT_DIFFUSE_MODE0 0x00555766
 #define UI_LIGHT_AMBIENT 0x00FFF5D9
 void fn_801EC1D4(void) {
-    ((unsigned int *)lbl_80488668)[0] = 0x555766;
-    ((unsigned int *)lbl_80488668)[1] = 0xFFF5D9;
+    /* Seed the saved render state with the UI's default light colours: a muted
+     * blue-gray diffuse and a warm cream ambient, applied (and later restored)
+     * around the vehicle-render effect pass in fn_801ECCE0. */
+    ((unsigned int *)lbl_80488668)[0] = UI_LIGHT_DIFFUSE_MODE0;
+    ((unsigned int *)lbl_80488668)[1] = UI_LIGHT_AMBIENT;
 }
 
 void *fn_801EC1F8(void) {
