@@ -192,14 +192,15 @@ void fn_801EA140(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-void fn_801EA18C(void *arg0, s32 arg1, s32 arg2) {
-    struct { s32 a, b, c; } data;
-    s32 temp = *(s32 *)arg0;
-    s32 temp1 = *((s32 *)arg0 + 1);
-    data.a = temp;
-    data.b = temp1;
-    data.c = *((s32 *)arg0 + 2);
-    fn_801DCE14(0, &data, (s32)arg0, arg1, arg2, temp);
+/* Copies a 3-word point and passes it with the original pointer to fn_801DCE14 (query id 0). */
+void fn_801EA18C(void *point, s32 arg1, s32 arg2) {
+    struct { s32 a, b, c; } pointCopy;
+    s32 temp = *(s32 *)point;
+    s32 temp1 = *((s32 *)point + 1);
+    pointCopy.a = temp;
+    pointCopy.b = temp1;
+    pointCopy.c = *((s32 *)point + 2);
+    fn_801DCE14(0, &pointCopy, (s32)point, arg1, arg2, temp);
 }
 #pragma scheduling on
 void fn_801EA1D8(void) {
