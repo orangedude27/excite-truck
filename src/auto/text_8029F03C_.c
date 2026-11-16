@@ -188,9 +188,12 @@ void fn_8029F188(void) {
             dy = *(float *)(object + 0x64) - *(float *)(entry + 8);
             *(float *)(entry + 0x14) = dy;
             dz = *(float *)(object + 0x68) - *(float *)(entry + 0xc);
-            *(float *)(entry + 0x10) = dx * scale + *(float *)(entry + 0x1c);
-            *(float *)(entry + 0x14) = dy * scale + *(float *)(entry + 0x20);
-            *(float *)(entry + 0x18) = dz * scale + *(float *)(entry + 0x24);
+            *(float *)(entry + 0x10) = dx * scale;
+            *(float *)(entry + 0x10) += *(float *)(entry + 0x1c);
+            *(float *)(entry + 0x14) = dy * scale;
+            *(float *)(entry + 0x14) += *(float *)(entry + 0x20);
+            *(float *)(entry + 0x18) = dz * scale;
+            *(float *)(entry + 0x18) += *(float *)(entry + 0x24);
             *(float *)(entry + 4) = *(float *)(object + 0x60);
             *(float *)(entry + 8) = *(float *)(object + 0x64);
             *(float *)(entry + 0xc) = *(float *)(object + 0x68);
@@ -861,7 +864,6 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
     float a0, a1, a2;
     float b0, b1, b2;
     int i;
-    register void *objp;
 
     fn_802A0098(&out, arg0, params);
     out.data[4] += *(float *)((char *)arg0 + 0x74);
@@ -880,8 +882,9 @@ extern "C" void fn_802A02F4(void *arg0, Unk802A0794Params *params) {
         b[1] = b1;
         b[2] = b2;
         b[0] = b0;
-        objp = *(void **)((char *)arg0 + 0x70);
-        ((TargetObj *)objp)->call(a, b, params->unk_0x18, -1);
+
+        TargetObj *obj = *(TargetObj **)((char *)arg0 + 0x70);
+        obj->call(a, b, params->unk_0x18, -1);
     }
 }
 #pragma pop
