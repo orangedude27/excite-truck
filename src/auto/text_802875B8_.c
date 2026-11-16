@@ -368,10 +368,11 @@ s32 fn_80287B24(s32 arg0) {
 
 #define gCallbackCount lbl_8055F6C0 /* number of registered per-car callbacks */
 #define gCallbackList  lbl_804B31E0 /* array of registered callback pointers */
-void fn_80287B38(s32 arg0) {
-    s32 index = lbl_8055F6C0;
-    ((s32 *)lbl_804B31E0)[index] = arg0;
-    lbl_8055F6C0 = index + 1;
+/* Register a per-car callback: append its pointer to the global callback list. */
+void fn_80287B38(s32 callback) {
+    s32 index = gCallbackCount;
+    ((s32 *)gCallbackList)[index] = callback;
+    gCallbackCount = index + 1;
 }
 
 extern u8 lbl_804B3150[12];
