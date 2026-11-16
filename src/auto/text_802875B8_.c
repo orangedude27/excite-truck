@@ -187,6 +187,8 @@ void fn_80287780(s32 state) {
     fn_802AC458();
 }
 
+/* Clears the transient per-world state of the effect, shadow, render and object-list
+ * subsystems (counterpart to the setup in fn_80287780); called during teardown. */
 void fn_802877D0(void) {
     fn_802AC49C();
     fn_802978E4();
