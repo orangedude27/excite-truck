@@ -6749,8 +6749,13 @@ extern "C" void *fn_802242A4(void *self, s32 deleteFlag) {
     return self;
 }
 
-extern "C" void fn_80224328(void *arg0) {
- s32 ptr=*(s32 *)((u8 *)arg0+0x254); if(ptr) fn_802C5320(ptr,0,*(f32 *)((u8 *)arg0+0x244),*(f32 *)((u8 *)arg0+0x248),lbl_805634A8,*(f32 *)((u8 *)arg0+0x24C),*(f32 *)((u8 *)arg0+0x250));
+/* Draw this UI image's owned resource (the handle at +0x254), if present,
+ * using the cached position/size floats at +0x244..+0x250 and z=0
+ * (lbl_805634A8) through the image draw wrapper fn_802C5320. */
+extern "C" void fn_80224328(void *self) {
+    s32 resource = *(s32 *)((u8 *)self + 0x254);
+    if (resource)
+        fn_802C5320(resource, 0, *(f32 *)((u8 *)self + 0x244), *(f32 *)((u8 *)self + 0x248), lbl_805634A8, *(f32 *)((u8 *)self + 0x24C), *(f32 *)((u8 *)self + 0x250));
 }
 
 #pragma push
