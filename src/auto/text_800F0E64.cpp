@@ -6890,9 +6890,10 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) 
 }
 #pragma cplusplus reset
 #pragma pop
-extern "C" void fn_800FC5B8(void *arg0, f32 value) {
+extern "C" void fn_800FC5B8(void *player, f32 value) {
+    /* Set the sound player's float field at offset 0x45C with interrupts disabled. */
     u32 token = OSDisableInterrupts();
-    *(f32 *)((u8 *)arg0 + 0x45C) = value;
+    *(f32 *)((u8 *)player + 0x45C) = value;
     OSRestoreInterrupts(token);
 }
 
