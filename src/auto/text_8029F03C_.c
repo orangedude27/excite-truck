@@ -324,13 +324,15 @@ check:
 }
 #pragma dont_inline reset
 #pragma scheduling on
-unsigned char fn_8029F510(unsigned char *arg0, int arg1) {
-    if (arg1 != 0) {
-        *arg0 = 1;
+/* Set the byte at `flag` to 1 when `value` is nonzero (0 otherwise) and
+ * return the stored value — a validity gate used by config initializers. */
+unsigned char fn_8029F510(unsigned char *flag, int value) {
+    if (value != 0) {
+        *flag = 1;
     } else {
-        *arg0 = 0;
+        *flag = 0;
     }
-    return *arg0;
+    return *flag;
 }
 
 #pragma push
