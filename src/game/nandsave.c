@@ -110,12 +110,16 @@ void fn_802E8838(void) {
     fn_80127464();
 }
 
+#define nandSaveRefCount lbl_8056002C
+#define nandSaveInit fn_802E86D4
 void fn_802E883C(void) {
-    if (lbl_8056002C == 0) {
-        fn_802E86D4();
+    if (nandSaveRefCount == 0) {
+        nandSaveInit();
     }
-    lbl_8056002C += 1;
+    nandSaveRefCount += 1;
 }
+#undef nandSaveInit
+#undef nandSaveRefCount
 
 void fn_802E8874(void) {
     lbl_8056002C -= 1;
