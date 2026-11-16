@@ -282,11 +282,13 @@ s32 fn_801C3954(s32 arg0) {
     return result;
 }
 #pragma scheduling invalid_target
-s32 fn_801C3A00(u32 arg0) {
-    s32 i;
-    for (i = 0; i < lbl_8055E804; i++) {
-        if (arg0 == (1U << i))
-            return i;
+s32 fn_801C3A00(u32 playerMask) {
+    /* Return the index of the single player selected by a one-bit player mask,
+       or -1 if the mask does not name one of the active players. */
+    s32 playerIndex;
+    for (playerIndex = 0; playerIndex < gNumPlayers; playerIndex++) {
+        if (playerMask == (1U << playerIndex))
+            return playerIndex;
     }
     return -1;
 }
