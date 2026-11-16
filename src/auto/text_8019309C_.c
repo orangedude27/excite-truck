@@ -780,7 +780,7 @@ extern float lbl_80562140, lbl_80562144;
 void fn_80194170(void *arg0, float arg1) {
     double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
     value = value > lbl_80562144 ? value : lbl_80562144;
-    *(float *)((char *)arg0 + 0x240) = (float)value;
+    *(float *)((char *)arg0 + 0x240) = value;
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
 }
 #pragma scheduling invalid_target
@@ -2035,8 +2035,11 @@ tail:
     fn_80195830(arg0);
 }
 
-int fn_8019643C(int arg0) {
-    return *(int *)(lbl_804348E8[arg0] + 0x10) == 0x50434152;
+int fn_8019643C(int carIndex) {
+#define CAR_TAG_PLAYER_CAR 0x50434152 /* 'PCAR' */
+    /* True when the car at carIndex in the car table carries the player-car FourCC at +0x10. */
+    return *(int *)(lbl_804348E8[carIndex] + 0x10) == CAR_TAG_PLAYER_CAR;
+#undef CAR_TAG_PLAYER_CAR
 }
 
 #pragma dont_inline reset
