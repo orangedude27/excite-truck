@@ -1348,13 +1348,28 @@ void fn_802B01A8(void) {
     fn_802AE7C0();
 }
 #pragma dont_inline on
+/* Debug draw pass: if the buffer for the debug overlay is allocated, save GX
+ * state, walk the item container drawing each entry, clear the active light,
+ * then restore GX state. */
 void fn_802B0218(void) {
-    if (fn_802AE7AC() != 0) {
-        fn_802DBE4C();
-        fn_802B2D94(lbl_8055F978);
-        fn_802B4E30();
-        fn_802DBECC();
+#define isDebugDrawReady fn_802AE7AC
+#define beginDebugDraw fn_802DBE4C
+#define drawDebugItems fn_802B2D94
+#define clearActiveLight fn_802B4E30
+#define endDebugDraw fn_802DBECC
+#define gDebugItems lbl_8055F978
+    if (isDebugDrawReady() != 0) {
+        beginDebugDraw();
+        drawDebugItems(gDebugItems);
+        clearActiveLight();
+        endDebugDraw();
     }
+#undef gDebugItems
+#undef endDebugDraw
+#undef clearActiveLight
+#undef drawDebugItems
+#undef beginDebugDraw
+#undef isDebugDrawReady
 }
 #pragma dont_inline reset
 void fn_802B0254(void) {
