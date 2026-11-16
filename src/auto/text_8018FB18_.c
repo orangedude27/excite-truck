@@ -1701,6 +1701,7 @@ int fn_80191758(void *arg0) {
     *(float *)(dst + 0x8C) = lbl_80562090;
     *(float *)(dst + 0x98) = lbl_80562090;
     *(float *)(dst + 0x9C) = lbl_80562090;
+    return (int)dst;
 }
 
 void fn_80191860(void *arg0, void *arg1) {
