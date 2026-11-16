@@ -549,9 +549,16 @@ void fn_802E9160(void *arg0) {
 
 int fn_802E91AC(int *arg0) { return *arg0 == 0; }
 
-#pragma scheduling invalid_target
-unsigned int fn_802E91BC(int *arg0) { register int value = *arg0 ^ 2; register int shifted = value >> 1; value &= 2; shifted -= value; return shifted < 0; }
-#pragma scheduling on
+#pragma push
+#pragma opt_propagation off
+unsigned int fn_802E91BC(int *arg0) {
+    int value = *arg0 ^ 2;
+    int shifted = value >> 1;
+    value &= 2;
+    value = shifted - value;
+    return value < 0;
+}
+#pragma pop
 extern int fn_802E2C20(void);
 extern char lbl_8034E024[];
 extern int lbl_80507288;
