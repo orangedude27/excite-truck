@@ -20,12 +20,13 @@ int fn_8001D7EC(char *name) {
     return -1;
 }
 
-void fn_8001D868(int *values) {
-    values[0] = -1;
-    values[1] = -1;
-    values[2] = -1;
-    values[3] = -1;
-    values[4] = -1;
+void fn_8001D868(int *effectData) {
+    /* Initialize the effect's 5-entry data block to -1 (no-entry sentinel). */
+    effectData[0] = -1;
+    effectData[1] = -1;
+    effectData[2] = -1;
+    effectData[3] = -1;
+    effectData[4] = -1;
 }
 
 /* Fill an info array from a handle via fn_8001D8B4 and return the array pointer. */
