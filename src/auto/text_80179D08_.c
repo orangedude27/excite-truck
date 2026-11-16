@@ -414,6 +414,8 @@ void fn_8017B09C(void* arg0, signed char* arg1) {
     *arg1 = 0;
 }
 extern int lbl_80331C28[64];
+#define SoundArchiveBaseCtor fn_80179D08
+#define MemorySoundArchiveVtable lbl_80331C28
 #pragma scheduling off
 void** fn_8017ACCC(void** arg0) {
     fn_80179D08(arg0);
