@@ -2192,11 +2192,13 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma dont_inline reset
 #pragma pop
 
-extern "C" s32 fn_80215194(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper: free the object with MemFree when
+ * deleting (flag > 0), then return the object pointer. */
+extern "C" s32 fn_80215194(s32 object, s32 deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" s32 fn_802151D4(s32 object, s32 deleteFlag) {
