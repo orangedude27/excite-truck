@@ -9619,9 +9619,10 @@ extern "C" void *fn_80229F78(void *self, s32 deletingFlag) {
 extern "C" void *lbl_8033E878[];
 extern "C" void *lbl_8033DCF8[];
 extern "C" void fn_802C6CF8(s32);
-extern "C" void fn_80229FF0(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x244) = 1;
-    ((VfObj *)arg0)->vf17();
+extern "C" void fn_80229FF0(void *widget) {
+    /* Enable a UI widget (flag +0x244) and run its virtual vf17() update. */
+    *(u8 *)((u8 *)widget + 0x244) = 1;
+    ((VfObj *)widget)->vf17();
 }
 
 extern "C" void fn_8022A008(void *arg0) {
