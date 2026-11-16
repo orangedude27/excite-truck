@@ -173,6 +173,7 @@ extern void *fn_801284F8(s32, void *);
 extern void fn_801E1038(void **);
 extern void *fn_801E0FC4(void *);
 extern void fn_801E0890(void *);
+typedef struct { int minusOne; unsigned char flag; unsigned char pad[3]; float a; float b; int z1; int z2; } Init_801E0864;
 extern void fn_801E0864(void *);
 extern s32 fn_802CAC28(void *, s32);
 extern void fn_801777CC(void *);
