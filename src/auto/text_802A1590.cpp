@@ -514,6 +514,8 @@ extern "C" void fn_802A1CC4(void) {
     }
 }
 
+/* Destroy the effect emitter cached in lbl_8055F870 (created earlier by
+ * fn_8028E2F8) if one is live, then clear the global so it is not freed twice. */
 extern "C" void fn_802A1DC0(void) {
     if (lbl_8055F870 != 0) {
         fn_8028E398((void *)lbl_8055F870);
