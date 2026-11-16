@@ -536,13 +536,6 @@ static inline char* GetTrackNodeLinear(char* track, int idx) {
     return 0;
 }
 
-static inline char* GetTrackNodeLinearIndex(int idx, char* track) {
-    if (idx >= 0 && idx < *(int*)(track + 0x6D0)) {
-        return track + 0x10 + idx * 0x24;
-    }
-    return 0;
-}
-
 static inline void MatrixMul801FD5E8(float* dst, const float* left, const float* right) {
     if (dst == right || dst == left) {
         float t0 = fn_80144514(left[0], right[0], left[3], right[1], left[6], right[2]);
@@ -831,10 +824,8 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         *(float*)(obj + 0x40) = t_step;
     } else if (idx + 2 < *(int*)(track + 0x6D0)) {
         float inv_speed = one / *(float*)(node + 0x20);
-        struct { int index; } next;
-        next.index = *(volatile int*)(obj + 0x3C) + 1;
-        int &next_idx = next.index;
-        char* slot_ptr = *(char* volatile*)(obj + 4);
+        int next_idx = *(volatile int*)(obj + 0x3C) + 1;
+        unsigned int slot_ptr = *(volatile unsigned int*)(obj + 4);
         *(int*)(obj + 0x3C) = next_idx;
         float delta = farg0 - inv_speed;
         step -= one;
@@ -863,7 +854,8 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         return;
     }
 
-    char* call_track = **(char***)((char*)arg0 + 4);
+    unsigned int call_slot = *(unsigned int*)((char*)arg0 + 4);
+    char* call_track = *(char**)call_slot;
     int cur_idx = *(int*)((char*)arg0 + 0x3C);
     char* prev = GetTrackNodeLinear(call_track, cur_idx - 1);
     char* next = GetTrackNodeLinear(call_track, cur_idx + 1);
