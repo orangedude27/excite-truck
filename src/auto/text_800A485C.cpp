@@ -12317,10 +12317,8 @@ fail:
 }
 
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
-    s32 *p_out = arg4;
-    u8 *p_src = (u8 *)arg1;
-    u32 key = (u32)arg5;
     s32 status;
+    u32 offset;
     u16 i;
     u32 filelen;
     u32 pos;
@@ -12334,8 +12332,9 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
 
     entry = 0;
     for (i = 0; i < 0x17; i++) {
-        if (key == *(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0)) {
-            entry = lbl_80405D58 + (u32)(u16)i * 0xF0;
+        offset = i * 0xF0;
+        if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+            entry = lbl_80405D58 + offset;
             break;
         }
     }
@@ -12363,14 +12362,14 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         remain = filelen - pos;
         done = 0;
         while (remain >= 0x200) {
-            VFipf_memcpy(buf, p_src + done, 0x200);
+            VFipf_memcpy(buf, (u8 *)arg1 + done, 0x200);
             r = NANDWrite(entry + 0x58, buf, 0x200);
             if (r < 0) return -0x16;
             remain -= r;
             done += r;
         }
         if (remain != 0) {
-            VFipf_memcpy(buf, p_src + done, remain);
+            VFipf_memcpy(buf, (u8 *)arg1 + done, remain);
             NANDWrite(entry + 0x58, buf, remain);
         }
         return -0x16;
@@ -12378,12 +12377,15 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
 
     done = 0;
     while (length >= 0x200) {
-        VFipf_memcpy(buf, p_src + done, 0x200);
+        VFipf_memcpy(buf, (u8 *)arg1 + done, 0x200);
         r = NANDWrite(entry + 0x58, buf, 0x200);
         if (r < 0) {
-            for (i = 0; i < 0x17; i++) {
-                if (key == *(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0)) {
-                    *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
+            u32 offset;
+            u16 j;
+            for (j = 0; j < 0x17; j++) {
+                offset = j * 0xF0;
+                if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
                     break;
                 }
             }
@@ -12393,26 +12395,34 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         done += r;
     }
     if (length != 0) {
-        VFipf_memcpy(buf, p_src + done, length);
+        VFipf_memcpy(buf, (u8 *)arg1 + done, length);
         r = NANDWrite(entry + 0x58, buf, length);
         if (r < 0) {
-            for (i = 0; i < 0x17; i++) {
-                if (key == *(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0)) {
-                    *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
+            u32 offset;
+            u16 j;
+            for (j = 0; j < 0x17; j++) {
+                offset = j * 0xF0;
+                if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
                     break;
                 }
             }
             return r;
         }
     }
-    *p_out = arg0;
+    *arg4 = arg0;
     return 0;
 
 fail:
-    for (i = 0; i < 0x17; i++) {
-        if (key == *(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0)) {
-            *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
-            break;
+    {
+        u32 offset;
+        u16 j;
+        for (j = 0; j < 0x17; j++) {
+            offset = j * 0xF0;
+            if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+                *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+                break;
+            }
         }
     }
     return r;
@@ -21424,9 +21434,14 @@ extern "C" void fn_800D54E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern "C" s32 fn_800D5500(void *obj, const char *name) {
     u32 entry = *(u32 *)((u8 *)obj + 0x28);
     u32 end = (u32)obj + 0x28;
+    const char *file;
+    const char *message;
     while (end != entry) {
-        if (entry == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
+        if (entry == 0) {
+            file = lbl_8031F534;
+            message = lbl_8031F510;
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x23d, message);
+        }
         if (strcmp(name, (char *)(entry + 8)) == 0) {
             if (entry == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
@@ -21477,9 +21492,7 @@ extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 #pragma pop
 extern "C" s32 fn_800D56FC(void *obj, const char *name, s32 unused) {
-    u32 node = *(u32 *)((u8 *)obj + 0x14);
-    u32 end = (u32)obj + 0x14;
-    while (node != end) {
+    for (u32 node = *(u32 *)((u8 *)obj + 0x14), end = (u32)obj + 0x14; node != end; node = *(u32 *)node) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
         if (strcmp(name, (char *)(node + 8)) == 0) {
@@ -21487,7 +21500,6 @@ extern "C" s32 fn_800D56FC(void *obj, const char *name, s32 unused) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
             return *(s32 *)(node + 0x88);
         }
-        node = *(u32 *)node;
     }
     return 0;
 }
