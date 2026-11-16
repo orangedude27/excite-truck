@@ -367,21 +367,16 @@ int fn_80289154(int arg0) {
     register float f11;
     register float f12;
     register float f13;
-    register int size;
     register int two;
     register int five;
-    register int *fp;
-    register int *np;
+
     fn_8028E61C((int *)&frame.sp20);
-    fp = (int *)&frame.sp20;
-    np = (int *)&lbl_80348AE8;
     f9 = *(volatile float *)&lbl_8056428C;
-    size = 0x60;
     f10 = *(volatile float *)&lbl_80564288;
-    two = 2;
     f5 = *(volatile float *)&lbl_80564298;
     f4 = *(volatile float *)&lbl_8056429C;
     five = 5;
+    two = 2;
     f13 = *(volatile float *)&lbl_8056427C;
     f12 = *(volatile float *)&lbl_80564280;
     f11 = *(volatile float *)&lbl_80564284;
@@ -392,7 +387,8 @@ int fn_80289154(int arg0) {
     f2 = *(volatile float *)&lbl_805642A4;
     f1 = *(volatile float *)&lbl_805642A8;
     f0 = *(volatile float *)&lbl_805642AC;
-    frame.sp24 = size;
+
+    frame.sp24 = 0x60;
     frame.sp28 = f13;
     frame.sp2C = f12;
     frame.sp20 = two;
@@ -426,8 +422,9 @@ int fn_80289154(int arg0) {
     frame.sp74 = f5;
     frame.sp98 = f0;
     frame.sp9C = f9;
+
     return *(int *)((char *)arg0 + 0x60) =
-        fn_8028E2F8(fp, np, lbl_8055C880, two,
+        fn_8028E2F8((int *)&frame.sp20, (int *)&lbl_80348AE8, lbl_8055C880, two,
                     f1, f2, f3, f4, f5, f6, f7);
 }
 
@@ -1081,18 +1078,19 @@ int fn_80289F54(int arg0) {
     }
 }
 #pragma scheduling invalid_target
-void fn_80289FC4(int **arg0, int arg1, int arg2) {
-    char *temp = (char *)*arg0 + arg1 * 0x68;
-    int count;
-    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 &&
-        (count = *(int *)(temp + 0x60)) > 0) {
-        int index = ((int (*)(int))fn_80287B5C)(count);
-        *(void **)(temp + 0x64) = temp + index * 0x18;
-        fn_8028A330((int *)arg0, arg1);
-    } else if (arg2 != 3 && *(void **)(temp + 0x64) != 0) {
-        *(void **)(temp + 0x64) = 0;
-    } else if (*(void **)(temp + 0x64) != 0) {
-        fn_8028A330((int *)arg0, arg1);
+void fn_80289FC4(int **smokeMan, int trackIndex, int state) {
+    /* For one radiator-smoke track: state 3 picks/reuses a 0x18-byte work slot and transforms it to emit smoke; other states release the slot. */
+    char *track = (char *)*smokeMan + trackIndex * 0x68;
+    int slotCount;
+    if (state == 3 && *(void **)(track + 0x64) == 0 &&
+        (slotCount = *(int *)(track + 0x60)) > 0) {
+        int slotIndex = ((int (*)(int))fn_80287B5C)(slotCount);
+        *(void **)(track + 0x64) = track + slotIndex * 0x18;
+        fn_8028A330((int *)smokeMan, trackIndex);
+    } else if (state != 3 && *(void **)(track + 0x64) != 0) {
+        *(void **)(track + 0x64) = 0;
+    } else if (*(void **)(track + 0x64) != 0) {
+        fn_8028A330((int *)smokeMan, trackIndex);
     }
 }
 #pragma scheduling on
