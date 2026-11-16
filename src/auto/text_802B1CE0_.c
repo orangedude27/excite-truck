@@ -407,16 +407,18 @@ extern "C" void fn_802B224C(void *arg0) {
 #pragma push
 #pragma optimization_level 3
 #pragma opt_pointer_aliasing on
-void **fn_802B2384(void *arg0, void **__restrict arg1) {
-    int idx;
-    void **base;
-    int next;
-    idx = ((int *)arg0)[1];
-    base = *(void ***)arg0;
-    next = idx + 1;
-    ((int *)arg0)[1] = next;
-    base[idx] = *arg1;
-    return &base[idx];
+/* Append *pValue to the pointer vector's data array, advance its count, and
+ * return the address of the newly filled slot. */
+void **fn_802B2384(void *vec, void **__restrict pValue) {
+    int index;
+    void **data;
+    int newIndex;
+    index = ((int *)vec)[1];
+    data = *(void ***)vec;
+    newIndex = index + 1;
+    ((int *)vec)[1] = newIndex;
+    data[index] = *pValue;
+    return &data[index];
 }
 #pragma pop
 
@@ -610,6 +612,7 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
+#pragma opt_pointer_aliasing on
 void *fn_802B2934(void *arg0, void **arg1) {
     struct PtrVec { void **data; int count; } *vec = arg0;
     void *value = *arg1;
@@ -618,7 +621,7 @@ void *fn_802B2934(void *arg0, void **arg1) {
     *slot = value;
     return slot;
 }
-
+#pragma opt_pointer_aliasing reset
 extern void fn_802B2C34(void (*)(void *), void *);
 extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
 extern void fn_802C6B44(void *);
