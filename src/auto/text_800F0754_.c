@@ -22,14 +22,16 @@ extern u8 lbl_80412A6C[];
 #define ARCHIVE_NEXT 4
 #define ARCHIVE_PREV 8
 
+/* Compiler-generated global constructor: initialise the static nw4hbm::snd::MemorySoundArchive,
+ * pointing its LinkListImpl sentinel at itself, then register its destructor. */
 void fn_800F0754(void) {
-    void* ptr = &lbl_80412A6C[4];
-    *(void**)&lbl_80412A6C[4] = 0;
-    *(void**)&lbl_80412A6C[8] = 0;
-    *(void**)&lbl_80412A6C[0] = 0;
-    *(void**)&lbl_80412A6C[4] = ptr;
-    *(void**)&lbl_80412A6C[8] = ptr;
-    __register_global_object(&lbl_80412A6C,
+    void* selfNode = &gSoundArchive[ARCHIVE_NEXT];
+    *(void**)&gSoundArchive[ARCHIVE_NEXT] = 0;
+    *(void**)&gSoundArchive[ARCHIVE_PREV] = 0;
+    *(void**)&gSoundArchive[ARCHIVE_HEAD] = 0;
+    *(void**)&gSoundArchive[ARCHIVE_NEXT] = selfNode;
+    *(void**)&gSoundArchive[ARCHIVE_PREV] = selfNode;
+    __register_global_object(&gSoundArchive,
                              (void*)&__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F078C,
-                             &lbl_80412A60);
+                             &gSoundArchiveRegNode);
 }
