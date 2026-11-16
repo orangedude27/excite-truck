@@ -33,7 +33,11 @@ extern float *fn_80265D98(void);
 extern void fn_8012F57C(int, void *, void *, float);
 #pragma dont_inline on
 float fn_801A6370(float arg0, float arg1, float arg2, float arg3) {
-    return arg0 + arg1 * arg3 + arg3 * (arg3 * (lbl_80562418 * arg2));
+    float k = lbl_80562418 * arg2;
+    arg1 *= arg3;
+    arg0 += arg1;
+    k *= arg3;
+    return arg0 + arg3 * k;
 }
 #pragma dont_inline reset
 
