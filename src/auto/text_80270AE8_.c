@@ -116,12 +116,13 @@ extern int fn_801363A0(void *, void *);
 extern void fn_802E30C8(const char *, ...);
 extern int fn_80272C74(void *, void *, float *, int);
 extern int fn_802710A0(void *, int);
-void fn_80270AE8(void *arg0) {
-    float value = lbl_80563E78;
-    ((float *)arg0)[0] = value;
-    ((float *)arg0)[1] = value;
-    ((float *)arg0)[3] = value;
-    ((float *)arg0)[2] = value;
+/* Zero all four components of vec (a 4-float vector). lbl_80563E78 is 0.0f. */
+void fn_80270AE8(void *vec) {
+    float zero = lbl_80563E78;
+    ((float *)vec)[0] = zero;
+    ((float *)vec)[1] = zero;
+    ((float *)vec)[3] = zero;
+    ((float *)vec)[2] = zero;
 }
 
 /* Debug printf stub (no-op). */
@@ -1092,79 +1093,113 @@ extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
 extern void fn_80136468(void **, void *, float);
 #pragma ppc_psq_save off
 #pragma ppc_psq_save off
-float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
-    struct Result { void *node; float fraction; s32 mode; };
-    struct Point { float x; float y; };
-    float period = *(float *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 8);
-    struct Result resultA;
-    struct Result resultB;
-    volatile struct Point pointA;
-    volatile struct Point deltaA;
-    volatile struct Point pointB;
-    volatile struct Point deltaB;
+float fn_80272428(void *arg0, void *arg1, float a, float b, float radius)
+{
+  struct Result
+  {
     void *node;
-    void *next;
     float fraction;
+    s32 mode;
+  };
+  struct Point
+  {
     float x;
     float y;
-    float dx;
-    float dy;
-    float squareX;
-    float squareY;
-    double tmpD;
-    float distA;
-    float distB;
-    float mid;
-    register float argA = a;
-    register float argB = b;
-    register float argR = radius;
-    if (argA > argB) {
-        float span = argB - (argA - period);
-        if (span * span < lbl_8055F560) return argA;
-    } else {
-        float span = argB - argA;
-        if (span * span < lbl_8055F560) return argA;
+  };
+  float period = *((float *) (((u8 *) (*((void **) (((u8 *) arg0) + 0x2C)))) + 8));
+  struct Result resultA;
+  struct Result resultB;
+  volatile struct Point pointA;
+  volatile struct Point deltaA;
+  volatile struct Point pointB;
+  volatile struct Point deltaB;
+  void *new_var[2];
+  float fraction;
+  float x;
+  float y;
+  float dx;
+  float dy;
+  float squareX;
+  float squareY;
+  double tmpD;
+  float distA;
+  float distB;
+  float mid;
+  register float argA = a;
+  register float argB = b;
+  register float argR = radius;
+  if (argA > argB)
+  {
+    float span = argB - (argA - period);
+    if ((span * span) < lbl_8055F560)
+    {
+      return argA;
     }
-    fn_80136468((void **)&resultA, arg0, argA);
-    next = *(void **)((u8 *)(node = resultA.node) + 0x14);
-    fraction = resultA.fraction;
-    x = *(float *)node + fraction * (*(float *)next - *(float *)node);
-    y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)next + 4) - *(float *)((u8 *)node + 4));
-    dx = x - *(float *)arg1;
-    pointA.x = x;
-    dy = y - *(float *)((u8 *)arg1 + 4);
-    pointA.y = y;
-    squareX = dx * dx;
-    deltaA.x = dx;
-    squareY = dy * dy;
-    deltaA.y = dy;
-    tmpD = __fabs((double)(argR - (squareX + squareY)));
-    distA = (float)tmpD;
-    if (distA < lbl_8055F560) return argA;
-    fn_80136468((void **)&resultB, arg0, argB);
-    next = *(void **)((u8 *)(node = resultB.node) + 0x14);
-    fraction = resultB.fraction;
-    x = *(float *)node + fraction * (*(float *)next - *(float *)node);
-    y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)next + 4) - *(float *)((u8 *)node + 4));
-    dx = x - *(float *)arg1;
-    pointB.x = x;
-    dy = y - *(float *)((u8 *)arg1 + 4);
-    pointB.y = y;
-    squareX = dx * dx;
-    deltaB.x = dx;
-    squareY = dy * dy;
-    deltaB.y = dy;
-    tmpD = __fabs((double)(argR - (squareX + squareY)));
-    distB = (float)tmpD;
-    if (distB < lbl_8055F560) return argB;
-    if (argA > argB) {
-        mid = (argB + (argA - period)) * lbl_80563F40;
-        if (mid < lbl_80563F48) mid += period;
-    } else {
-        mid = (argA + argB) * lbl_80563F40;
+  }
+  else
+  {
+    float span = argB - argA;
+    if ((span * span) < lbl_8055F560)
+    {
+      return argA;
     }
-    if (distA < distB) return fn_80272428(arg0, arg1, argA, mid, argR);
-    return fn_80272428(arg0, arg1, mid, argB, argR);
+  }
+  fn_80136468((void **) (&resultA), arg0, argA);
+  new_var[1] = resultA.node;
+  fraction = resultA.fraction;
+  new_var[0] = (0, *((void **) (((u8 *) new_var[1]) + 0x14)));
+  x = (*((float *) new_var[1])) + (fraction * ((*((float *) new_var[0])) - (*((float *) new_var[1]))));
+  y = *((float *) (((u8 *) new_var[1]) + 4));
+  y = (*((float *) (((u8 *) new_var[1]) + 4))) + (fraction * ((*((float *) (((u8 *) new_var[0]) + 4))) - y));
+  dx = x - (*((float *) arg1));
+  pointA.x = x;
+  dy = y - (*((float *) (((u8 *) arg1) + 4)));
+  pointA.y = y;
+  squareX = dx * dx;
+  deltaA.x = dx;
+  squareY = dy * dy;
+  deltaA.y = dy;
+  tmpD = __fabs((double) (argR - (squareX + squareY)));
+  distA = (float) tmpD;
+  if (distA < lbl_8055F560)
+  {
+    return argA;
+  }
+  fn_80136468((void **) (&resultB), arg0, argB);
+  new_var[1] = resultB.node;
+  fraction = resultB.fraction;
+  new_var[0] = *((void **) (((u8 *) new_var[1]) + 0x14));
+  x = (*((float *) new_var[1])) + (fraction * ((*((float *) new_var[0])) - (*((float *) new_var[1]))));
+  y = (*((float *) (((u8 *) new_var[1]) + 4))) + (fraction * ((*((float *) (((u8 *) new_var[0]) + 4))) - (*((float *) (((u8 *) new_var[1]) + 4)))));
+  dx = x - (*((float *) arg1));
+  (&pointB)->x = x;
+  dy = y - ((0, *((float *) (((u8 *) arg1) + 4))));
+  pointB.y = y;
+  squareX = dx * dx;
+  deltaB.x = dx;
+  squareY = dy * dy;
+  deltaB.y = dy;
+  tmpD = __fabs((double) (argR - (squareX + squareY)));
+  distB = (float) tmpD;
+ if (distB < lbl_8055F560) { return argB;
+  }
+  if (argA > argB)
+  {
+    mid = (argB + (argA - period)) * lbl_80563F40;
+    if (mid < lbl_80563F48)
+    {
+      mid = mid + period;
+    }
+  }
+  else
+  {
+    mid = (argA + argB) * lbl_80563F40;
+  }
+  if (distA < distB)
+  {
+    return fn_80272428(arg0, arg1, argA, mid, argR);
+  }
+  return fn_80272428(arg0, arg1, mid, argB, argR);
 }
 #pragma ppc_psq_save reset
 #pragma ppc_psq_save reset
