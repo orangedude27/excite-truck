@@ -530,14 +530,16 @@ void fn_801B5274(void) {
 }
 #pragma push
 #pragma scheduling invalid_target
+/* RealName: InitReplayRecording (tentative). Logs "replay: done creating", allocates/creates the replay packet queue (tag 0x2C, "ReplayPacketQueue::recording") via fn_801284F8/fn_801B4904, and stores it in lbl_8055E6D8 (gReplayPacketQueue?). */
 void fn_801B52CC(void) {
-    int result;
+    int replayQueue;
+
     fn_802E30C8((int *)&lbl_80335E10);
-    result = fn_801284F8(0x2C, (int *)&lbl_80335E28);
-    if (result != 0) {
-        result = ((int (*)(int))fn_801B4904)(result);
+    replayQueue = fn_801284F8(0x2C, (int *)&lbl_80335E28);
+    if (replayQueue != 0) {
+        replayQueue = ((int (*)(int))fn_801B4904)(replayQueue);
     }
-    lbl_8055E6D8 = (void *)result;
+    lbl_8055E6D8 = (void *)replayQueue;
 }
 #pragma pop
 void fn_801B5318(void) {
