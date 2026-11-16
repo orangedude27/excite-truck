@@ -683,10 +683,12 @@ void fn_802E8664(void) {}
 /* lbl_80505978 is the table of 0x638-byte Wiimote/controller state records;
  * byte 0 of a record is its connected flag. */
 #define gWiimoteStateTable lbl_80505978
-void *fn_802E8668(int index) {
-    unsigned char offset = lbl_80505978[index * 0x638];
-    if (offset != 0)
-        return lbl_80505978 + index * 0x638 + 0xC8;
+/* Return a pointer to the connected Wiimote's KPAD status block (record + 0xC8),
+ * or NULL when byte 0 of its state record says the controller is disconnected. */
+void *fn_802E8668(int controllerIndex) {
+    unsigned char isConnected = gWiimoteStateTable[controllerIndex * 0x638];
+    if (isConnected != 0)
+        return gWiimoteStateTable + controllerIndex * 0x638 + 0xC8;
     return 0;
 }
 #undef gWiimoteStateTable
