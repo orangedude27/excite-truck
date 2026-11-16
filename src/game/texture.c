@@ -556,23 +556,25 @@ void fn_802CAD68(void) {
 }
 
 #pragma dont_inline fn_802CAD74
-void fn_802CAD74(register int arg0) {
-    if (arg0 == lbl_8055FCB8)
+void fn_802CAD74(register int slotIndex) {
+    /* Select a texture slot as active: on a change, remember it (or restore the saved default slot on -1),
+       then bump the slot's use counter at +0x48 and bind its texture at +0x40 (fallback +0x28) to GX. */
+    if (slotIndex == lbl_8055FCB8)
         return;
-    lbl_8055FCB8 = arg0;
-    if (arg0 == -1) {
+    lbl_8055FCB8 = slotIndex;
+    if (slotIndex == -1) {
         ((void (*)(int))fn_802CAD74)(*(volatile int *)&lbl_8055FCB4);
         return;
     }
     {
-        int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
-        int value;
-        p[0x48 / 4]++;
-        value = p[0x40 / 4];
-        if (value != 0)
-            fn_802D9160(value, 0);
+        int *slot = (int *)(lbl_8055FCB0 + slotIndex * 0x4C);
+        int texHandle;
+        slot[0x48 / 4]++;
+        texHandle = slot[0x40 / 4];
+        if (texHandle != 0)
+            fn_802D9160(texHandle, 0);
         else
-            fn_802D9160(p[0x28 / 4], 0);
+            fn_802D9160(slot[0x28 / 4], 0);
     }
 }
 void fn_802CADD0(int arg0, int arg1) {
