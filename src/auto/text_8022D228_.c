@@ -341,15 +341,16 @@ void fn_8022DC20(void *arg0) {
 }
 
 #pragma dont_inline on
-void fn_8022DC40(void *arg0, int arg1) {
-    int step;
-    *(int *)((char *)arg0 + 0xC) = arg1;
+// Wraps the index at +0xC into [0, count) by subtracting the count at +0x10.
+void fn_8022DC40(void *obj, int index) {
+    int count;
+    *(int *)((char *)obj + 0xC) = index;
     goto check;
 loop:
-    *(int *)((char *)arg0 + 0xC) -= step;
+    *(int *)((char *)obj + 0xC) -= count;
 check:
-    step = *(int *)((char *)arg0 + 0x10);
-    if (*(int *)((char *)arg0 + 0xC) >= step) goto loop;
+    count = *(int *)((char *)obj + 0x10);
+    if (*(int *)((char *)obj + 0xC) >= count) goto loop;
 }
 #pragma dont_inline off
 
