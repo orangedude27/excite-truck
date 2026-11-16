@@ -251,6 +251,9 @@ void OSReturnToMenu(void) {
     __OSLaunchMenu();
     OSPanic("OSReset.c", 0x30f, "OSReturnToMenu(): Falied to boot system menu.\n");
 }
+/* Returns why the console last reset.  A reboot with exec params records the
+ * device/reset code in __OSRebootParams (flagged with bit 31); otherwise the
+ * code is read from the PI reset register, shifted down into place. */
 u32 OSGetResetCode(void) {
     if (__OSRebootParams.WORD_0x0 != 0) {
         return __OSRebootParams.WORD_0x4 | 0x80000000;
