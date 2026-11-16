@@ -2941,11 +2941,12 @@ extern "C" void fn_801A0378(void* arg0, void* arg1) {
     *(s32*)((u8*)arg0 + 0x174) = *(s32*)((u8*)arg0 + 0x174) + 1;
 }
 
-extern "C" void fn_801A0444(void* arg0, void* arg1) {
-    *(void**)((u8*)arg0 + 0x17C) = arg1;
-    *(f32*)((u8*)arg0 + 0x164) = *(f32*)((u8*)arg1 + 0x24);
-    *(f32*)((u8*)arg0 + 0x168) = *(f32*)((u8*)arg1 + 0x28);
-    *(f32*)((u8*)arg0 + 0x16C) = *(f32*)((u8*)arg1 + 0x2C);
+// Sets a group's primary child and copies the child's center position into the group's cached position.
+extern "C" void fn_801A0444(void* group, void* child) {
+    *(void**)((u8*)group + 0x17C) = child;
+    *(f32*)((u8*)group + 0x164) = *(f32*)((u8*)child + 0x24);
+    *(f32*)((u8*)group + 0x168) = *(f32*)((u8*)child + 0x28);
+    *(f32*)((u8*)group + 0x16C) = *(f32*)((u8*)child + 0x2C);
 }
 
 extern f32 lbl_805623B8;
