@@ -9101,8 +9101,10 @@ compare:
     return VFiPFPATH_cmpNameImpl(nameBuf, pattern, &result);
 }
 
-extern "C" s32 fn_800B3304(void *arg0, void *arg1) {
-    return fn_800A4AD0((u8 *)arg0, (u8 *)arg1) != 0;
+/* Returns 1 when the two names differ: the boolean form of the string
+ * comparison in fn_800A4AD0 (which returns the first differing byte). */
+extern "C" s32 fn_800B3304(void *left, void *right) {
+    return fn_800A4AD0((u8 *)left, (u8 *)right) != 0;
 }
 
 extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
@@ -19529,7 +19531,7 @@ extern "C" s32 fn_800D014C(s32 object, s32 deleteFlag) {
 }
 
 extern "C" u32 lbl_8055DDA0;
-#pragma scheduling off
+#pragma scheduling on
 extern "C" void fn_800D018C(void *arg0, void *arg1) {
     class Dispatch {
     public:
@@ -19540,13 +19542,10 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
         virtual void v16(); virtual void v17();
         virtual void call(void *);
     };
-    int zero = 0;
-    void *p;
-    lbl_8055DDA0 = zero;
-    p = *(void **)((u8 *)arg1 + 0x10);
-    ((Dispatch *)arg0)->call((u8 *)p + 0x10);
+    void *p = (u8 *)*(void **)((u8 *)arg1 + 0x10) + 0x10;
+    lbl_8055DDA0 = 0;
+    ((Dispatch *)arg0)->call(p);
 }
-#pragma scheduling on
 extern "C" u8 lbl_8031E878[];
 extern "C" u8 lbl_8031E780[];
 extern "C" const char lbl_8031E8FC[];
