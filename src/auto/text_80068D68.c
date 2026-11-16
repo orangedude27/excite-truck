@@ -5025,11 +5025,18 @@ poll_check:
     return 0;
 }
 
-void fn_80070AF0(s32 arg0) {
-    lbl_8055DC74 = arg0;
-    OSCancelAlarm(&lbl_803C0A20);
-    fn_80070820();
+void fn_80070AF0(s32 shutdownCallback) {
+#define gShutdownCallback lbl_8055DC74
+#define btPeriodicAlarm lbl_803C0A20
+#define closeHciTransport fn_80070820
+    /* Shut down the BTE/BTA stack: record the shutdown callback, cancel the periodic BTU alarm, close the HCI transport, and shut down GKI. */
+    gShutdownCallback = shutdownCallback;
+    OSCancelAlarm(&btPeriodicAlarm);
+    closeHciTransport();
     GKI_shutdown();
+#undef closeHciTransport
+#undef btPeriodicAlarm
+#undef gShutdownCallback
 }
 
 typedef int (*Fn80070B24Callback)(int);
