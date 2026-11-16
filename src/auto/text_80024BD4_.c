@@ -25,9 +25,10 @@ int fn_80024BEC(short *arg0, unsigned char *arg1, int arg2) {
 #undef mbtowc_noconv
 }
 
-int fn_80024C38(signed char *arg0, signed char arg1) {
-    if (arg0 == 0) return 0;
-    *arg0 = arg1;
+int fn_80024C38(signed char *s, signed char wchar) {
+    /* wctomb for the no-conversion locale: store the wide char as one byte and return 1, or 0 if s is null. */
+    if (s == 0) return 0;
+    *s = wchar;
     return 1;
 }
 
