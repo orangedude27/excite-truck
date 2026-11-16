@@ -346,12 +346,14 @@ int fn_801DA688(void *player) {
 }
 
 extern float lbl_80562B3C;
-float fn_801DA6B8(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    if (obj != 0) {
-        int count = *(int *)((char *)obj + 0x10);
-        float *values = *(float **)((char *)obj + 0x14);
-        return values[(count - 1) * 8];
+float fn_801DA6B8(void *player) {
+    /* Return the time held in the final keyframe (8 floats per keyframe) of the
+     * player's path, or 0.0 when it has no path. */
+    void *path = *(void **)((char *)player + 4);
+    if (path != 0) {
+        int keyCount = *(int *)((char *)path + 0x10);
+        float *keys = *(float **)((char *)path + 0x14);
+        return keys[(keyCount - 1) * 8];
     }
     return lbl_80562B38;
 }
