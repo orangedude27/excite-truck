@@ -1,8 +1,8 @@
   #include <types.h>
 extern "C" u8 lbl_805591F8[];
-/* 20.12 fixed-point multiply. */
+/* 12.20 fixed-point multiply. */
 static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
-    return (s32)(((s64)a * b) >> 12);
+    return (s32)(((s64)a * b) >> 20);
 }
 extern "C" u8 lbl_805591FC[];
 extern "C" u8 lbl_80559200[];
@@ -16301,6 +16301,84 @@ extern "C" void fn_800C3088(volatile s32 *, const volatile s32 *, const volatile
 extern "C" const s32 lbl_802F3FB8[];
 extern "C" s32 lbl_8031D5C8[];
 extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *arg4, void *arg5) {
+    u8 *self = (u8 *)arg0;
+    s32 (*a90)[36] = (s32 (*)[36])arg1;
+    s32 (*a48)[18] = (s32 (*)[18])arg2;
+    s32 *a4 = (s32 *)arg3;
+    s32 *base = (s32 *)arg5;
+    s32 m0[12], m1[12], m2[12];
+    s16 k;
+    s16 i;
+    for (k = 0; k < 1; k++) {
+        if (*arg4 & 7) {
+            if (*arg4 & 1) {
+                for (i = 0; i < *(s32 *)(self + 0x9C8); i++) {
+                    fn_800C18A0(&base[0x6C0 + i * 18], a90[i]);
+                    if (!(i & 1))
+                        fn_800C2590(a90[i], a48[i], &a4[i], &a4[0x440 + i]);
+                    else
+                        fn_800C280C(a90[i], a48[i], &a4[i], &a4[0x440 + i]);
+                    fn_800C2DBC(&a90[i][18], a48[i], &a48[i][17]);
+                }
+            } else {
+                for (i = 0; i < *(s32 *)(self + 0x9C8); i++) {
+                    fn_800C18A0(&base[0x6C0 + i * 18], a90[i]);
+                    if (*arg4 & 2) {
+                        if (!(i & 1))
+                            fn_800C2590(a90[i], a48[i], &a4[i], &a4[0x440 + i]);
+                        else
+                            fn_800C280C(a90[i], a48[i], &a4[i], &a4[0x440 + i]);
+                        fn_800C2F98(&a90[i][18], a48[i], &a48[i][17]);
+                    }
+                    if (*arg4 & 4) {
+                        if (!(i & 1))
+                            fn_800C2A88(a90[i], a48[i], &a4[i], &a4[0x440 + i]);
+                        else
+                            fn_800C2C18(a90[i], a48[i], &a4[i], &a4[0x440 + i]);
+                        fn_800C2DBC(&a90[i][18], a48[i], &a48[i][17]);
+                    }
+                }
+            }
+        } else if (*arg4 & 8) {
+            int j;
+            for (j = 0; j < 2; j++) {
+                fn_800C18A0(&base[0x6C0 + j * 18], a90[j]);
+                fn_800C21D8(a90[j], &a90[j][17]);
+            }
+            for (j = 0; j < 36; j++)
+                a90[*(s32 *)(self + 0x9C8) - 1][j] = 0;
+            for (i = 2; i < *(s32 *)(self + 0x9C8) - 1; i++) {
+                s32 *p = &base[i * 6];
+                s32 v, w;
+                fn_800C1E88(p, lbl_802F3FB8, m0);
+                v = p[0] - p[3] - p[4];
+                w = p[1] - p[2] - p[5];
+                m0[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
+                m0[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
+                p += 0x240;
+                fn_800C1E88(p, lbl_802F3FB8, m1);
+                v = p[0] - p[3] - p[4];
+                w = p[1] - p[2] - p[5];
+                m1[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
+                m1[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
+                p += 0x240;
+                fn_800C1E88(p, lbl_802F3FB8, m2);
+                v = p[0] - p[3] - p[4];
+                w = p[1] - p[2] - p[5];
+                m2[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
+                m2[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
+                fn_800C3088(a90[i], m0, m1, m2);
+            }
+            for (i = 0; i < *(s32 *)(self + 0x9C8); i++) {
+                if (!(i & 1))
+                    fn_800C1F6C((u32 *)&a4[i], (u32 *)a90[i], (u32 *)a48[i]);
+                else
+                    fn_800C2090(&a4[i], a90[i], a48[i]);
+                for (j = 0; j < 18; j++)
+                    a48[i][j] = a90[i][18 + j];
+            }
+        }
+    }
     return 0;
 }
 
