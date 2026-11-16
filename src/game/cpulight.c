@@ -589,50 +589,51 @@ extern void GXSetTevColor();
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DC464(int arg0, int arg1, unsigned short *__restrict list, int size) {
-    float field;
-    float value;
-    float rounded;
+void fn_802DC464(int positions, int vertexCount, unsigned short *__restrict list, int listSize) {
+    /* Sets the vertex positions, applies the cpu-light fade alpha to TEV color 1, then draws the index list as GX triangle fans. */
+    float alphaFactor;
+    float scaledAlpha;
+    float roundedAlpha;
     int alpha;
-    int mask;
-    int clipped;
-    int raw;
-    unsigned char byteAlpha;
+    int nonNegMask;
+    int nonNegAlpha;
+    int rawAlpha;
+    unsigned char alphaByte;
     GXColor color;
-    int n;
+    int indexCount;
     int i;
-    unsigned short val;
+    unsigned short index;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
-    fn_802DBBE4(arg0, arg1);
-    field = ((float *)lbl_804DB068)[5];
-    value = lbl_80565040 * field;
-    if (value < lbl_80565048)
-        rounded = value - lbl_80565044;
+    CpuLight_SetPositionArray(positions, vertexCount);
+    alphaFactor = ((float *)lbl_804DB068)[5];
+    scaledAlpha = CpuLight_AlphaScale * alphaFactor;
+    if (scaledAlpha < CpuLight_Zero)
+        roundedAlpha = scaledAlpha - CpuLight_RoundHalf;
     else
-        rounded = lbl_80565044 + value;
-    raw = (int)rounded;
-    mask = -raw & ~raw;
-    mask >>= 31;
-    clipped = raw & mask;
+        roundedAlpha = CpuLight_RoundHalf + scaledAlpha;
+    rawAlpha = (int)roundedAlpha;
+    nonNegMask = -rawAlpha & ~rawAlpha;
+    nonNegMask >>= 31;
+    nonNegAlpha = rawAlpha & nonNegMask;
     alpha = 0xFF;
-    if (clipped < 0xFF)
-        alpha = clipped;
-    byteAlpha = (unsigned char)alpha;
-    if (byteAlpha != lbl_8055FEA0) {
+    if (nonNegAlpha < 0xFF)
+        alpha = nonNegAlpha;
+    alphaByte = (unsigned char)alpha;
+    if (alphaByte != CpuLight_CachedTevAlpha) {
         color.b = 0xFF;
         color.g = 0xFF;
         color.r = 0xFF;
-        color.a = byteAlpha;
-        lbl_8055FEA0 = byteAlpha;
+        color.a = alphaByte;
+        CpuLight_CachedTevAlpha = alphaByte;
         GXSetTevColor(1, color);
     }
-    while (size > 0) {
-        n = *list++;
-        GXBegin(0xA0, 0, n);
-        size -= n + 1;
-        for (i = 0; i < n; ++i) {
-            val = *list++;
-            *fifo = val;
+    while (listSize > 0) {
+        indexCount = *list++;
+        GXBegin(GX_TRIANGLEFAN, 0, indexCount);
+        listSize -= indexCount + 1;
+        for (i = 0; i < indexCount; ++i) {
+            index = *list++;
+            *fifo = index;
         }
     }
 }
