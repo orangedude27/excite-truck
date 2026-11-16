@@ -2678,13 +2678,18 @@ extern "C" void *fn_801FC12C(void *arg0) {
 }
 
 #pragma pop
-extern "C" void* fn_801FC228(void* arg0, s32 arg1) {
-    if (arg0 == 0) goto done;
-    *(volatile void**)((char*)arg0 + 0x108) = lbl_8033B418;
-    if (arg1 <= 0) goto done;
+extern "C" void *fn_801FC228(void *object, s32 shouldDelete) {
+    /* Destructor-style helper: install the object's vtable and optionally free it. */
+#define vtable_801FC228 lbl_8033B418
+
+    if (object == 0) goto done;
+    *(volatile void **)((char *)object + 0x108) = vtable_801FC228;
+    if (shouldDelete <= 0) goto done;
     fn_80128668();
 done:
-    return arg0;
+    return object;
+
+#undef vtable_801FC228
 }
 
 extern "C" void *fn_801E6A3C(s32, s32, s32);
