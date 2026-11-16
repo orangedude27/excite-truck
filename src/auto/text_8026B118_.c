@@ -275,13 +275,21 @@ void fn_8026B6D0(void) {
     memset(p, 0, 0x80);
 }
 #pragma scheduling on
+/* For each player/slot, refresh its per-frame state when this subsystem is active.
+ * RealName: unknown (rename_symbol disabled). lbl_8055F4C8 = active slot/player count (or >0 flag), fn_801B2F24() = player count, fn_8026B3D4(i) = update slot i. */
 void fn_8026B6E4(void) {
+#define activeCount lbl_8055F4C8
+#define getPlayerCount fn_801B2F24
+#define updateSlot fn_8026B3D4
     int i;
-    if (lbl_8055F4C8 > 0) {
-        for (i = 0; i < fn_801B2F24(); i++) {
-            fn_8026B3D4(i);
+    if (activeCount > 0) {
+        for (i = 0; i < getPlayerCount(); i++) {
+            updateSlot(i);
         }
     }
+#undef activeCount
+#undef getPlayerCount
+#undef updateSlot
 }
 
 int fn_8026B734(int arg0, float *arg1) {
