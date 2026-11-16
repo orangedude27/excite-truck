@@ -5201,16 +5201,16 @@ extern "C" void fn_801A4868(void* instance, u8 state) {
 }
 
 extern "C" void fn_801A48C8(void* owner) {
-    /* Invoke the two-string virtual method (vtable slot 0x18) on the interface object held at +0x48, passing "dyno" and "unknown". */
+    /* Invoke the fifth virtual method (vtable slot 0x18) on the interface object stored at +0x48 of owner, passing the strings "dyno" and "unknown". */
     struct VTable {
         virtual void v0();
         virtual void v1();
         virtual void v2();
         virtual void v3();
-        virtual void Call(void*, void*);
+        virtual void notify(void*, void*);
     };
     VTable* iface = *(VTable**)((u8*)owner + 0x48);
-    iface->Call(&lbl_8055A508, &lbl_8055A510);
+    iface->notify(&lbl_8055A508, &lbl_8055A510);
 }
 
 extern "C" void fn_801EA1E0(void*, s32, f32, f32);
