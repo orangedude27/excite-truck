@@ -42,6 +42,8 @@ typedef s32 (*InitFn)(s32, s32, void *, s32, s32);
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_80019864(void) {
+    /* Register a 12-byte memcard record (cookie "Rep0" = 0x52657030, type 0)
+     * backed by the zero-initialized buffer lbl_803582B0, with no callback. */
     fn_802E6BD8(0x52657030, 0, (void *)lbl_803582B0, 0xC, 0);
 }
 #pragma scheduling reset
