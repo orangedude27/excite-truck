@@ -2716,15 +2716,17 @@ extern "C" s32 fn_80215BC0(void) {
 
 extern "C" void fn_80214CB4(s32);
 extern "C" void fn_80230E90(s32);
-extern "C" s32 fn_80215BC8(void *arg0, s32 arg1, s32 arg2) {
-    s32 var_r6;
+extern "C" s32 fn_80215BC8(WidgetRect *rect, s32 x, s32 y) {
+    /* Hit test: answers 1 when the point (x, y) falls inside this widget's
+     * rectangle.  The left and top edges belong to the rectangle, the right
+     * and bottom ones do not. */
+    s32 inside;
 
-    var_r6 = 0;
-    if (arg1 >= *(s32 *)((char *)arg0 + 4) && arg1 < *(s32 *)((char *)arg0 + 0xC) &&
-        arg2 >= *(s32 *)((char *)arg0 + 8) && arg2 < *(s32 *)((char *)arg0 + 0x10)) {
-        var_r6 = 1;
+    inside = 0;
+    if (x >= rect->left && x < rect->right && y >= rect->top && y < rect->bottom) {
+        inside = 1;
     }
-    return var_r6;
+    return inside;
 }
 
 extern "C" s32 fn_80215C08(void *arg0) {
