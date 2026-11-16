@@ -1363,8 +1363,8 @@ void fn_802487B4(void *arg0) {
  t=t<lbl_80563898?t:lbl_80563898;
  factor=t<lbl_805638C0?lbl_805638C0:
  t>lbl_80563898?lbl_80563898:
- t>lbl_805638B0?t*(t*(lbl_805638C4*t))+((lbl_805638B8*t)*t):
- t*(t*(lbl_805638C4*t))-((lbl_805638B8*t)*t);
+ t>lbl_805638B0?t*((lbl_805638C4*t)*t)+((lbl_805638B8*t)*t):
+ t*((lbl_805638C4*t)*t)-((lbl_805638B8*t)*t);
  break;
  default: factor=*(float *)((char *)arg0+0x3C); factor=factor<lbl_80563898?factor:lbl_80563898;
  }
@@ -1613,9 +1613,15 @@ void fn_802490AC(void *obj) {
 }
 
 void fn_80249104(void *arg0) {
-    unsigned char *p = (unsigned char *)arg0;
+    /* The wait state fn_802490AC sets up in this object. */
+    struct WaitTimer {
+        char pad[0x18];
+        s32 startTime;        /* +0x18 fn_802E2C20() millisecond stamp */
+        unsigned char waited; /* +0x1C cleared on start, set to stop the timeout */
+    };
+    struct WaitTimer *wait = (struct WaitTimer *)arg0;
 
-    if (*(p + 0x1C) == 0 && fn_802E2C20() - *(s32 *)((char *)arg0 + 0x18) >= 0x3A98) {
+    if (wait->waited == 0 && fn_802E2C20() - wait->startTime >= 15000) {
         fn_802168BC(-2);
     }
 }
