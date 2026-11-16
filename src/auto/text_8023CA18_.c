@@ -64,7 +64,11 @@ void fn_8023CA54(void) {
 }
 #pragma pop
 s32 fn_8023CB54(void) {
-    fn_801330E8(4);
+    // Initializes sound options: parses the [SOUND] (section 4) block of the BOPT options file
+    // (warning if it fails), then registers the sound debug variables.
+#define OPTIONS_SECTION_SOUND 4
+    fn_801330E8(OPTIONS_SECTION_SOUND);
+#undef OPTIONS_SECTION_SOUND
     fn_8023CA54();
     return 0;
 }
