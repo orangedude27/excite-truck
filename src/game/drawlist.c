@@ -515,6 +515,7 @@ void fn_802C8CBC(int arg0) {
 
 #pragma dont_inline on
 /* Restores normal render mode and, if a saved matrix state is active, reapplies it then clears the flag. */
+/* RealName: DrawList_RestoreNormalMode */
 void fn_802C8D74(void) {
     lbl_8055FC70 = 1;
     if ((unsigned char)lbl_8055FC35 != 0) {
