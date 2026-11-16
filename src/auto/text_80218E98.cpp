@@ -9125,9 +9125,11 @@ extern "C" void fn_802297D0(void *self) {
     }
     fn_802192AC(self);
 }
-extern "C" void fn_8022984C(void *arg0) {
-    u8 *p = *(u8 **)((u8 *)arg0 + 0x254);
-    *p = (u8)((s8)(*p == 0));
+extern "C" void fn_8022984C(void *widget) {
+    /* Toggle the boolean flag this widget points to through its +0x254 field:
+     * set it to 1 when clear, back to 0 when set. */
+    u8 *flag = *(u8 **)((u8 *)widget + 0x254);
+    *flag = (u8)((s8)(*flag == 0));
 }
 
 extern "C" void fn_80229864(void *widget) {
