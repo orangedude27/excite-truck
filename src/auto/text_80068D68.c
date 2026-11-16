@@ -13379,10 +13379,10 @@ void btm_sec_encrypt_change(UINT16 handle, UINT8 status, UINT8 encr_enable) {
     }
 }
 
-/* Match note: combine the null and security-bit tests so both failures share the zero return block. */
+/* Return whether the device's security flags mark a role switch as in progress. */
 s32 fn_8007FEFC(u16 handle) {
     tBTM_SEC_DEV_REC *dev = btm_find_dev_by_handle(handle);
-    if (dev != NULL && ((((u8 *)dev)[0x81] & 0x40) != 0)) {
+    if (dev != NULL && ((((u8 *)dev)[0x81] & BTM_SEC_ROLE_SWITCHED) != 0)) {
         return 1;
     }
     return 0;
