@@ -69,40 +69,63 @@ extern s32 fn_802C974C(f32, f32, f32);
 extern s32 fn_802CB274(s32);
 extern f32 lbl_8055FB74, lbl_80564EB4, lbl_80564EB8, lbl_80564EBC, lbl_80564EC0, lbl_80564EC4, lbl_80564EC8, lbl_80564ECC, lbl_80564ED0;
 #pragma scheduling invalid_target
+/* When the level's swlmap.tex is absent, render the light map into its 512x512
+ * render target: bind the target, build the transform from the runtime scale,
+ * draw the map in a saved graphics state, then release the target. */
 void fn_802C276C(void) {
-    f32 sp[12];
-    f32 temp_f2;
-    f32 temp_f3;
-    s32 temp_r31;
+    #define SWL_INTENSITY  lbl_8055FB74   /* runtime light-map scale */
+    #define SWL_INV_SIZE   lbl_80564EB4   /* 1/512 */
+    #define SWL_ZERO       lbl_80564EB8   /* 0.0f */
+    #define SWL_SIZE       lbl_80564EBC   /* 512.0f */
+    #define SWL_HALF       lbl_80564EC0   /* 0.5f */
+    #define SWL_ONE        lbl_80564EC4   /* 1.0f */
+    #define SWL_NEG_ONE    lbl_80564EC8   /* -1.0f */
+    #define SWL_DEPTH      lbl_80564ECC   /* 100.0f */
+    #define SWL_HALF_PI    lbl_80564ED0   /* pi/2 */
 
-    if (lbl_8055FB70 == -2) {
-        fn_802CB274(lbl_8055FB6C);
-        fn_802C9294(lbl_8055FB6C, 0);
-        temp_f3 = lbl_8055FB74 * lbl_80564EB4;
-        temp_f3 = lbl_80564EBC * temp_f3;
-        temp_f2 = temp_f3 * lbl_80564EC0;
-        sp[9] = lbl_80564EB8;
-        sp[11] = lbl_80564EB8;
-        sp[10] = temp_f2;
-        sp[0] = lbl_80564EC4;
-        sp[1] = lbl_80564EB8;
-        sp[2] = lbl_80564EB8;
-        sp[3] = lbl_80564EB8;
-        sp[4] = lbl_80564EB8;
-        sp[5] = lbl_80564EC8;
-        sp[6] = lbl_80564EB8;
-        sp[7] = lbl_80564EC8;
-        sp[8] = lbl_80564EB8;
-        fn_802C8638(sp, lbl_80564EC4, temp_f2, temp_f3, lbl_80564EB8);
+    f32 transform[12];
+    f32 halfScale;
+    f32 scale;
+    s32 savedState;
+
+    if (sSwlMapFileSlot == NO_TEXTURE_SLOT) {
+        fn_802CB274(sSwlMapTargetSlot);
+        fn_802C9294(sSwlMapTargetSlot, 0);
+        scale = SWL_INTENSITY * SWL_INV_SIZE;
+        scale = SWL_SIZE * scale;
+        halfScale = scale * SWL_HALF;
+        transform[9] = SWL_ZERO;
+        transform[11] = SWL_ZERO;
+        transform[10] = halfScale;
+        transform[0] = SWL_ONE;
+        transform[1] = SWL_ZERO;
+        transform[2] = SWL_ZERO;
+        transform[3] = SWL_ZERO;
+        transform[4] = SWL_ZERO;
+        transform[5] = SWL_NEG_ONE;
+        transform[6] = SWL_ZERO;
+        transform[7] = SWL_NEG_ONE;
+        transform[8] = SWL_ZERO;
+        fn_802C8638(transform, SWL_ONE, halfScale, scale, SWL_ZERO);
         fn_802C87B4(0, 0, 0x200, 0x200);
-        fn_802C974C(lbl_80564EC4, lbl_80564ECC + sp[10], lbl_80564ED0);
+        fn_802C974C(SWL_ONE, SWL_DEPTH + transform[10], SWL_HALF_PI);
         fn_802C86E8(0xFF00FF00);
         fn_802C88BC(-1);
-        temp_r31 = fn_802C2C00(0);
+        savedState = fn_802C2C00(0);
         fn_801D9B58();
-        fn_802C2C00(temp_r31);
+        fn_802C2C00(savedState);
         fn_802C9294(-1, 0);
     }
+
+    #undef SWL_INTENSITY
+    #undef SWL_INV_SIZE
+    #undef SWL_ZERO
+    #undef SWL_SIZE
+    #undef SWL_HALF
+    #undef SWL_ONE
+    #undef SWL_NEG_ONE
+    #undef SWL_DEPTH
+    #undef SWL_HALF_PI
 }
 #pragma scheduling reset
 void fn_802C2874(void) {
