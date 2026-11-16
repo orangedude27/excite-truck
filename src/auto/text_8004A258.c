@@ -3,7 +3,6 @@
 #include <revolution/OS/OSMemory.h>
 #include <revolution/BASE/PPCArch.h>
 #include <revolution/OS/OSContext.h>
-#include <revolution/OS/OSExec.h>
 
 void __OSDBJUMPSTART(void);
 void __OSDBJUMPDEST(void);
