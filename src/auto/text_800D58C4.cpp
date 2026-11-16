@@ -3798,7 +3798,8 @@ extern "C" void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTrans
     return 0;
 }
 
-extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(void *self, void *anim, u32 enable, u32 recursive) {
+extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(void *self, void *animTransform, u32 enable, u32 recursive) {
+    /* Enable/disable an animation transform on this pane: store the disabled flag on its animation link, call the material's setEnable slot, and recurse into child panes via setRecursive. */
     struct AnimEnableDispatch {
         virtual void d0();
         virtual void d1();
@@ -3820,17 +3821,17 @@ extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTrans
         virtual void d17();
         virtual void d18();
         virtual void d19();
-        virtual void setRecursive(void *, u32, u32);
+       virtual void setRecursive(void *, u32, u32);
     };
-    void *p = ((void *(*)(void *))fn_800D4F98)((u8 *)self + 0x1C);
-    if (p != 0) {
-        u32 count = __cntlzw((u32)enable);
-        s32 result = count / 0x20;
-        *(s8*)((u8*)p + 0xE) = (s8)result;
+    void *animLink = ((void *(*)(void *))fn_800D4F98)((u8 *)self + 0x1C);
+    if (animLink != 0) {
+        u32 leadingZeros = __cntlzw((u32)enable);
+        s32 disabled = leadingZeros / 0x20;
+        *(s8*)((u8*)animLink + 0xE) = (s8)disabled;
     }
-    AnimEnableDispatch *obj = (AnimEnableDispatch *)*(void **)((u8 *)self + 0x28);
-    if (obj != 0)
-        obj->setEnable(anim, enable);
+    AnimEnableDispatch *material = (AnimEnableDispatch *)*(void **)((u8 *)self + 0x28);
+    if (material != 0)
+        material->setEnable(animTransform, enable);
     if (recursive) {
         PaneObj* pane = (PaneObj*)self;
         struct { PaneLinkNode* node; } cursor;
@@ -3842,7 +3843,7 @@ extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTrans
         while (node != end) {
             if (!node)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            ((AnimEnableDispatch*)((char*)node - 4))->setRecursive(anim, enable, recursive);
+            ((AnimEnableDispatch*)((char*)node - 4))->setRecursive(animTransform, enable, recursive);
             node = node->next;
         }
     }
