@@ -218,12 +218,19 @@ void fn_80004ACC(void) DECOMP_DONT_INLINE {
     }
 }
 
+/* Iterate a null-terminated table of IDs, handling each and stepping related state. */
 void fn_80004B14(void) DECOMP_DONT_INLINE {
-    u32* p;
-    for (p = lbl_802FAFA0; *p != 0; p++) {
-        fn_80004AB8(*p);
-        fn_8012E498();
+#define sIdTable lbl_802FAFA0
+#define HandleId fn_80004AB8
+#define StepState fn_8012E498
+    u32 *id;
+    for (id = sIdTable; *id != 0; id++) {
+        HandleId(*id);
+        StepState();
     }
+#undef sIdTable
+#undef HandleId
+#undef StepState
 }
 
 void fn_800052F8(void) DECOMP_DONT_INLINE {
