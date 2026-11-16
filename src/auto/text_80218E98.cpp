@@ -1585,29 +1585,32 @@ extern "C" s32 fn_8021A9A4(void *arg0) {
     return (s32)(((unsigned int)((-second) | second)) >> 31) | first;
 }
 #pragma dont_inline off
-extern "C" void fn_8021AA18(void *arg0) {
-    struct State { u32 a[12]; f32 x, y, z; } state;
+extern "C" void fn_8021AA18(void *widget) {
+    /* Draw a cursor-bound icon: copy the current transform, damp its X
+     * translation when the entry is not selected, apply it, then hand the
+     * graphic and its box to the drawer callback. */
+    struct State { u32 a[12]; f32 x, y, z; } transform;
     u32 *src = (u32 *)fn_8022EDC4();
     s32 selected = 0;
-    CopyMatrix_8021AA18(state.a, src);
-    CopyVector_8021AA18(state.a + 9, src + 9);
-    state.x = ((f32 *)src)[12];
-    state.y = ((f32 *)src)[13];
-    state.z = ((f32 *)src)[14];
+    CopyMatrix_8021AA18(transform.a, src);
+    CopyVector_8021AA18(transform.a + 9, src + 9);
+    transform.x = ((f32 *)src)[12];
+    transform.y = ((f32 *)src)[13];
+    transform.z = ((f32 *)src)[14];
     struct Callback { virtual void first(); virtual void call(s32, s32, s32, s32, s32, s32); };
-    u8 *p = (u8 *)arg0;
+    u8 *p = (u8 *)widget;
     s32 *cursor = *(s32 **)(p + 0x254);
     if (cursor && *cursor == *(s32 *)(p + 0x258)) selected = 1;
-    if (((u8 *)fn_80216708())[0] == 0 && selected == 0) state.x *= lbl_805634E8;
-    fn_8022ED00((s32 *)&state);
-    s32 h;
-    s32 delta;
-    s32 w;
-    delta = *(s32 *)(p + 0x10) - *(s32 *)(p + 8);
-    h = ((VfObj *)arg0)->vf32();
-    w = ((VfObj *)arg0)->vf28();
+    if (((u8 *)fn_80216708())[0] == 0 && selected == 0) transform.x *= lbl_805634E8;
+    fn_8022ED00((s32 *)&transform);
+    s32 height;
+    s32 boxSpan;
+    s32 width;
+    boxSpan = *(s32 *)(p + 0x10) - *(s32 *)(p + 8);
+    height = ((VfObj *)widget)->vf32();
+    width = ((VfObj *)widget)->vf28();
     ((Callback *)*(void **)(p + 0x244))->call(
-        *(s32 *)(p + 0x248), *(s32 *)(p + 0x24C), *(s32 *)(p + 0x250), w, delta, h);
+        *(s32 *)(p + 0x248), *(s32 *)(p + 0x24C), *(s32 *)(p + 0x250), width, boxSpan, height);
     fn_8022EDB8();
 }
 #pragma dont_inline reset
