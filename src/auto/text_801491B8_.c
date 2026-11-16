@@ -4795,7 +4795,14 @@ void fn_80156108(void) {
 
 }
 
-s32 fn_8015610C(void *arg0) { s32 *base = *(s32 **)((u8 *)arg0 + 4); s32 index = *(s32 *)((u8 *)arg0 + 8); *(s32 *)((u8 *)arg0 + 8) = index + 1; return (s32)base + index * 0xF8; }
+s32 fn_8015610C(void *cursor) {
+    /* Return the address of the next 0xF8-byte record in this pool, using the
+     * base pointer at +4 and advancing the cursor index at +8. */
+    s32 *base = *(s32 **)((u8 *)cursor + 4);
+    s32 index = *(s32 *)((u8 *)cursor + 8);
+    *(s32 *)((u8 *)cursor + 8) = index + 1;
+    return (s32)base + index * 0xF8;
+}
 
 s32 fn_8014F0C8(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
