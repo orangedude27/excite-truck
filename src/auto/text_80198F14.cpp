@@ -1071,6 +1071,11 @@ extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s3
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+static inline f32 fn_8019AC44_max(f32 a, f32 b) {
+    if (a <= b) return b;
+    return a;
+}
+
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
     Vec work[64]; s32 count, sp8; Vec p70,p64,delta,p4c,p40,p34,p28,p1c,p10;
     f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz; void* body=*(void**)((u8*)arg0+4);
@@ -1079,26 +1084,21 @@ extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
         dx=((Vec*)arg1)->x-p70.x; dy=((Vec*)arg1)->y-p70.y; dz=((Vec*)arg1)->z-p70.z; delta.x=dx; delta.y=dy; delta.z=dz;
         dot=PSVECDotProduct(&p64,&delta); f31=farg0-dot; fn_8017B6D4((s32)body,&p4c,(s32)&p70);
         farg0=f31* *(f32*)((u8*)arg0+0x10); dot=-PSVECDotProduct(&p4c,&p64);
-        tx=p64.x*farg0;
-        ux=p64.x*dot;
-        uy=p64.y*dot;
-        ty=p64.y*farg0;
-        uz=p64.z*dot;
-        ux=p4c.x+ux;
-        uz=p4c.z+uz;
-        p40.x=tx;
-        uy=p4c.y+uy;
-        tz=p64.z*farg0;
-        p40.y=ty;
-        vx=ux*lbl_8056231C;
-        p34.x=ux;
-        vy=uy*lbl_8056231C;
-        p40.z=tz;
-        vz=uz*lbl_8056231C;
-        p34.y=uy;
-        p34.z=uz;
-        p40.x=tx; p40.y=ty; p40.z=tz;
+        tx = p64.x * farg0;
+        ux = p4c.x + p64.x * dot;
+        uz = p4c.z + p64.z * dot;
+        uy = p4c.y + p64.y * dot;
+        ty = p64.y * farg0;
+        p40.x = tx;
+        tz = p64.z * farg0;
+        p40.y = ty;
+        vx = ux * lbl_8056231C;
+        p34.x = ux;
+        vy = uy * lbl_8056231C;
+        p40.z = tz;
+        vz = uz * lbl_8056231C;
         ((Vec*)arg2)->x+=vx; ((Vec*)arg2)->y+=vy; ((Vec*)arg2)->z+=vz;
+        p34.y = uy; p34.z = uz;
         mag=PSVECMag((Vec*)arg2); if(mag>lbl_80562320){scale=lbl_80562320/mag;((Vec*)arg2)->x*=scale;((Vec*)arg2)->y*=scale;((Vec*)arg2)->z*=scale;}
         p28.x=p34.x*lbl_80562324; p28.y=p34.y*lbl_80562324; p28.z=p34.z*lbl_80562324;
         limit=lbl_80562328* *(f32*)((u8*)body+0xd4); p28.x+=((Vec*)arg2)->x*limit;p28.y+=((Vec*)arg2)->y*limit;p28.z+=((Vec*)arg2)->z*limit;
