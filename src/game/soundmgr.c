@@ -267,15 +267,18 @@ void fn_80207C4C(void) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma opt_lifetimes off
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
-    signed long c = *((signed long*)arg1 + 2);
-    signed long b = *((signed long*)arg1 + 1);
-    signed long a = *(signed long*)arg1;
-    void* dst = (void*)((char*)arg0 + arg2 * 0xC);
-    *(signed long*)((char*)dst + 0x5C) = a;
-    *(signed long*)((char*)dst + 0x60) = b;
-    *(signed long*)((char*)dst + 0x64) = c;
+    signed long c, b, a;
+    signed long offset = arg2 * 0xC;
+    volatile signed long *p = (volatile signed long *)arg1;
+    a = p[0];
+    b = p[1];
+    c = p[2];
+    arg0 = (char*)arg0 + offset;
+    *(signed long*)((char*)arg0 + 0x5C) = a;
+    *(signed long*)((char*)arg0 + 0x60) = b;
+    *(signed long*)((char*)arg0 + 0x64) = c;
 }
 #pragma pop
 void fn_80207C74(void* arg0, signed long arg1) {
@@ -740,11 +743,12 @@ extern "C" void fn_802089B0(void* self) {
 }
 #pragma cplusplus reset
 #pragma pop
-signed long fn_802089D0(signed long arg0, signed long arg1) {
-    if ((arg0 != 0) && (arg1 > 0)) {
+signed long fn_802089D0(signed long object, signed long deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if ((object != 0) && (deleteFlag > 0)) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_802085EC(void) {
