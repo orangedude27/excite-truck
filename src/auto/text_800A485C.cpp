@@ -7728,8 +7728,7 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
     if (result != 0) return result;
     if (sp8 >= arg2) return 0;
     arg2 -= sp8;
-    if (arg0 == 0) var_r27 = 0;
-    else var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    var_r27 = arg0 == 0 ? 0 : *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
     for (;;) {
         result = fn_800B0A60(arg0, arg1 + *arg3, arg2, &sp8);
         *arg3 += sp8;
@@ -10889,66 +10888,69 @@ done:
     return 0;
 }
 #pragma pop
-s32 fn_800B6928(s8 arg0) {
+s32 fn_800B6928(s8 driveLetter) {
+    /* Mount the virtual drive named by a letter: lock the VF table, find the
+     * drive's record, skip it when flagged, then mount it and publish the
+     * result, clearing the pending flag on failure. */
     struct Entry {
         u8 pad0[0x1F80];
         s32 result;
         u8 pad1F84[8];
         u16 flags;
     };
-    u8 *base;
-    u8 *successBase;
+    u8 *vf;
+    u8 *successVf;
     u32 record;
-    s16 index = fn_800A485C(arg0) - 0x41;
-    Entry *entry;
+    s16 driveIndex = fn_800A485C(driveLetter) - 0x41;
+    Entry *drive;
     u16 flags;
     s32 result;
-    s32 value;
+    s32 mountResult;
     u8 *tail;
 
-    base = (u8 *)lbl_803D2140;
-    fn_800B77C0(base + 0x64);
-    if (index < 0 || index >= 0x1A) {
+    vf = (u8 *)lbl_803D2140;
+    fn_800B77C0(vf + 0x64);
+    if (driveIndex < 0 || driveIndex >= 0x1A) {
         fn_800B783C((u8 *)lbl_803D2140 + 0x64);
-        entry = 0;
+        drive = 0;
     } else {
-        fn_800B783C(base + 0x64);
-        record = (u32)base + index * 0x1FC8;
-        entry = (Entry *)(record + 0xA0);
+        fn_800B783C(vf + 0x64);
+        record = (u32)vf + driveIndex * 0x1FC8;
+        drive = (Entry *)(record + 0xA0);
     }
-    flags = entry->flags;
+    flags = drive->flags;
     if (flags & 8) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
-        entry->result = 10;
+        drive->result = 10;
         return 10;
     }
     if (!(flags & 1)) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
-        entry->result = 10;
+        drive->result = 10;
         return 10;
     }
     fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
-    result = fn_800A54AC(entry);
+    result = fn_800A54AC(drive);
     if (result == 0) {
         goto no_result;
     }
-    value = result;
+    mountResult = result;
     goto check_result;
 no_result:
-    fn_800B777C((u8 *)entry + 0x1F90);
-    value = 0;
+    fn_800B777C((u8 *)drive + 0x1F90);
+    mountResult = 0;
 check_result:
-    if (value == 0) {
+    if (mountResult == 0) {
         goto clear_flags;
     }
-    successBase = (u8 *)lbl_803D2140;
-    fn_800B783C(successBase + 0x64);
-    *(s32 *)(successBase + 0x40) = value;
-    result = value;
-    entry->result = value;
+    successVf = (u8 *)lbl_803D2140;
+    fn_800B783C(successVf + 0x64);
+    *(s32 *)(successVf + 0x40) = mountResult;
+    result = mountResult;
+    drive->result = mountResult;
     return result;
 clear_flags:
-    entry->flags &= 0xFFFE;
+    drive->flags &= 0xFFFE;
     tail = (u8 *)lbl_803D2140;
     result = *(s32 *)(tail + 0x30);
     *(s32 *)(tail + 0x30) = result - 1;
