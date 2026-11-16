@@ -5436,9 +5436,14 @@ void bta_sys_event(BT_HDR *msg) {
 }
 
 void fn_8007141C(void) {
-    if (lbl_803C0AD8[0x7C] == 0) {
-        ptim_timer_update((tPTIM_CB *)(lbl_803C0AD8 + 0x68));
+    /* BTA system timer tick: advance the protocol timer queue unless system timers are disabled. */
+    #define timersDisabled lbl_803C0AD8[0x7C] /* tBTA_SYS_CB.timers_disabled */
+    #define sPtimCb lbl_803C0AD8 + 0x68 /* &tBTA_SYS_CB.ptim_cb */
+    if (timersDisabled == 0) {
+        ptim_timer_update((tPTIM_CB *)(sPtimCb));
     }
+    #undef sPtimCb
+    #undef timersDisabled
 }
 
 void fn_8007143C(u32 index, u32 value) {
