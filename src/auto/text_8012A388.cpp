@@ -1063,14 +1063,16 @@ extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
     }
     fn_80128668(arg1);
 }
-extern "C" void fn_8012BC24(void **arg0, void *arg1) {
-    void **var = arg0;
-    while (*var != 0) {
-        if (*var == arg1) {
-            *var = *(void **)((char *)arg1 + 0xA8);
+extern "C" void fn_8012BC24(void **headPtr, void *node) {
+    // Unlink `node` from the singly-linked list whose head pointer is *headPtr;
+    // consecutive nodes are chained through the pointer at offset 0xA8 of each node.
+    void **link = headPtr;
+    while (*link != 0) {
+        if (*link == node) {
+            *link = *(void **)((char *)node + 0xA8);
             return;
         }
-        var = (void **)((char *)*var + 0xA8);
+        link = (void **)((char *)*link + 0xA8);
     }
 }
 
