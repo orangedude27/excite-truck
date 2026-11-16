@@ -10588,21 +10588,19 @@ tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
     return BTM_SUCCESS;
 }
 
-void btm_pm_reset(void)
-{
+void btm_pm_reset(void) {
     int xx;
     tBTM_PM_STATUS_CBACK *cb = NULL;
-    if ((btm_cb.pm_pend_id != BTM_PM_SET_ONLY_ID) &&
-        (btm_cb.pm_reg_db[btm_cb.pm_pend_id].mask & BTM_PM_REG_NOTIF)) {
-        cb = btm_cb.pm_reg_db[btm_cb.pm_pend_id].cback;
+    if (lbl_803C0F78[0x565] != 0x80) {
+        u8 *entry = lbl_803C0F78 + (lbl_803C0F78[0x565] << 3);
+        if (entry[0x558] & 2)
+            cb = *(tBTM_PM_STATUS_CBACK **)(entry + 0x554);
     }
-    btm_cb.pm_pend_link = MAX_L2CAP_LINKS;
-    for (xx = 0; xx < BTM_MAX_PM_RECORDS; xx++) {
-        btm_cb.pm_reg_db[xx].mask = BTM_PM_REC_NOT_USED;
-    }
+    lbl_803C0F78[0x564] = 4;
+    for (xx = 0; xx < 2; ++xx)
+        lbl_803C0F78[0x558 + xx * 8] = 0;
     if (cb != NULL) {
-        (*cb)(btm_cb.acl_db[btm_cb.pm_pend_link].remote_addr,
-              BTM_PM_STS_ERROR, BTM_DEV_RESET, 0);
+        (*cb)(((tBTM_CB_PM_VIEW *)lbl_803C0F78)->acl_db[lbl_803C0F78[0x564]].remote_addr, 5, BTM_DEV_RESET, 0);
     }
 }
 
