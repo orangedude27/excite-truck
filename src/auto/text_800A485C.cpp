@@ -1721,9 +1721,7 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
 extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
     u8 *base;
     u16 index;
-    u16 count;
     u32 pair;
-    u32 table;
     u32 offset;
     u8 *record;
     s32 result;
@@ -1755,10 +1753,8 @@ found:
     if (result != 0)
         return result;
 
-    table = (u32)&lbl_803D1640;
-    count = *(u16 *)&lbl_803D1640;
-    record = (u8 *)(table + offset);
-    *(u16 *)&lbl_803D1640 = count + 1;
+    record = (u8 *)((u32)&lbl_803D1640 + offset);
+    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
     *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
@@ -13416,10 +13412,11 @@ extern "C" const char lbl_8031B838[];
 extern "C" s32 fn_800BC2EC(void *, s32 *);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 
-extern "C" void fn_800BBCB4(void* context) {
-    *(s32*)((u8*)context + 0x24) = 0;
-    IOS_Close(*(s32*)context);
-    *(s32*)context = -1;
+extern "C" void fn_800BBCB4(void* ctx) {
+    /* Close IOS device handle stored at offset 0, clear state at 0x24, and invalidate handle to -1. */
+    *(s32*)((u8*)ctx + 0x24) = 0;
+    IOS_Close(*(s32*)ctx);
+    *(s32*)ctx = -1;
 }
 
 extern "C" void *IPCGetBufferLo(void);
