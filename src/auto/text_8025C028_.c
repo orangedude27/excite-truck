@@ -60,7 +60,7 @@ extern void fn_802354A0(int, unsigned char, int, float, float, float, float, flo
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 extern float lbl_80563B40, lbl_80563B44, lbl_80563B48;
 extern double lbl_80563B50;
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma processor 750
 #pragma paired_single off
 void fn_8025CC78(void* p, int arg1) {
