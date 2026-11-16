@@ -336,7 +336,7 @@ void *fn_801E07E8(void *self, s32 deleteFlag) {
 #undef MemFreeObject
     return self;
 }
-#pragma scheduling on
+#pragma scheduling off
 void fn_801E0864(void *arg0) {
     float b;
     float a;
