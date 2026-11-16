@@ -202,19 +202,65 @@ extern f32 lbl_80561960;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-s32 fn_8016A30C(void) {
- f32 a,b; s32 f,e,g,c,h,d; u8 *p;
- c=fn_8017960C(); if(c) { a=lbl_80561960; f=0;e=0;g=0;
- goto check;
- loop:
- d=0;h=0;p=(u8 *)(*(s32 *)&lbl_80430318+g);
- if(p[0x3c] && !p[0x3d]) h=1;
- if(h) { b=(f32)*(s32 *)(p+4); if(lbl_8055E364)b+=a;
- if(PSVECSquareDistance((void *)(c+0x60),p+0x30)<b*b) {p[0x3d]=1;d=1;*(f32 *)(p+0x40)=lbl_8055E3C8;} }
- if(d)f++; g+=0x48;e++;
- check:
- if(e < *(s32 *)((u8 *)&lbl_80430318+4)) goto loop;
- return f;} return 0;
+s32 fn_8016A30C(void)
+{
+  f32 b;
+  f32 a;
+  s32 c;
+  s32 d;
+  void *p;
+  s32 h;
+  s32 g;
+  s32 f;
+  s32 e;
+  f32 *new_var;
+
+  c = fn_8017960C();
+  new_var = &a;
+  if (c)
+  {
+    a = lbl_80561960;
+    f = 0;
+    e = 0;
+    g = 0;
+    goto check;
+  loop:
+    d = 0;
+    h = 0;
+    p = (void *)((*((s32 *)(&lbl_80430318))) + g);
+    if ((*((u8 *)(((u8 *)p) + 0x3c))) && (!(*((u8 *)(((u8 *)p) + 0x3d)))))
+    {
+      h = 1;
+    }
+    if (h)
+    {
+      b = (f32)(*((s32 *)(((u8 *)p) + 4)));
+      if (lbl_8055E364)
+      {
+        b += *new_var;
+      }
+      if (PSVECSquareDistance((void *)(c + 0x60), ((u8 *)p) + 0x30) < (b * b))
+      {
+        *((u8 *)(((u8 *)p) + 0x3d)) = 1;
+        d = 1;
+        *((f32 *)(((u8 *)p) + 0x40)) = lbl_8055E3C8;
+      }
+    }
+    if (d)
+    {
+      f++;
+    }
+    g += 0x48;
+    e++;
+  check:
+    if (e < (*((s32 *)(((u8 *)(&lbl_80430318)) + 4))))
+    {
+      goto loop;
+    }
+
+    return f;
+  }
+  return 0;
 }
 #pragma push
 #pragma processor 750
@@ -633,7 +679,15 @@ u8* fn_8016B4FC(u8* arg0, s32 arg1) { if(arg0) { *arg0=0; if(arg1>0) fn_80128668
 
 void fn_8016B544(u8* arg0) { *arg0 = 0; }
 
-void* fn_8016B550(void* arg0, s32 arg1) { if(arg0) { *(u8*)arg0=0; if(arg1>0) fn_80128668(arg0); } return arg0; }
+/* Reset the object's byte flag and optionally free it. */
+void *fn_8016B550(void *object, s32 shouldFree) {
+    if (object) {
+        *(u8 *)object = 0;
+        if (shouldFree > 0)
+            fn_80128668(object);
+    }
+    return object;
+}
 
 int fn_8016B598(void) {
     register char *first;
