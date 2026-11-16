@@ -8560,26 +8560,27 @@ static inline void btm_stamp_dev_rec(u8 *entry) {
 }
 
 BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, BD_FEATURES features, UINT32 trusted_mask[], LINK_KEY link_key, UINT8 key_type, tBTM_IO_CAP io_cap) {
-    u8 *entry = btm_find_dev_entry(bd_addr);
-    if (entry == 0) {
-        entry = (u8 *)btm_sec_alloc_dev(bd_addr);
-        if (entry == 0) return FALSE;
+    /* Add (or refresh) a device record with the given identity, class, name, features, trusted mask and link key. */
+    tBTM_SEC_DEV_REC_FULL_VIEW *p_rec = (tBTM_SEC_DEV_REC_FULL_VIEW *)btm_find_dev_entry(bd_addr);
+    if (p_rec == 0) {
+        p_rec = (tBTM_SEC_DEV_REC_FULL_VIEW *)btm_sec_alloc_dev(bd_addr);
+        if (p_rec == 0) return FALSE;
     } else {
-        btm_stamp_dev_rec(entry);
+        btm_stamp_dev_rec((u8 *)p_rec);
     }
-    if (dev_class != 0) memcpy(entry + 0x22, dev_class, 3);
-    memset(entry + 0x35, 0, 0x41);
+    if (dev_class != 0) memcpy(p_rec->dev_class, dev_class, 3);
+    memset(p_rec->sec_bd_name, 0, 0x41);
     if (bd_name != 0 && bd_name[0] != 0) {
-        entry[0x76] |= 8;
-        strncpy((char *)entry + 0x35, (char *)bd_name, 0x40);
+        p_rec->sec_flags |= BTM_SEC_NAME_KNOWN;
+        strncpy((char *)p_rec->sec_bd_name, (char *)bd_name, 0x40);
     }
-    if (features != 0) memcpy(entry + 0x77, features, 8);
-    else memset(entry + 0x77, 0, 8);
-    *(u32 *)(entry + 0x10) = trusted_mask[0];
-    *(u32 *)(entry + 0x14) = trusted_mask[1];
+    if (features != 0) memcpy(p_rec->features, features, 8);
+    else memset(p_rec->features, 0, 8);
+    p_rec->trusted_mask[0] = trusted_mask[0];
+    p_rec->trusted_mask[1] = trusted_mask[1];
     if (link_key != 0) {
-        entry[0x76] |= 0x10;
-        memcpy(entry + 0x25, link_key, 0x10);
+        p_rec->sec_flags |= BTM_SEC_LINK_KEY_KNOWN;
+        memcpy(p_rec->link_key, link_key, 0x10);
     }
     return TRUE;
 }
