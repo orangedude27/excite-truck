@@ -248,9 +248,18 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
 }
 #pragma pop
 #define EvalLinearCurve2D fn_801EC714 /* evaluate a 2D slope/intercept curve at an input value */
-void fn_801EC714(void *arg0, float *arg1, float *arg2) {
-    *arg1 = *(float *)((char *)arg0 + 8) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 4));
-    *arg2 = *(float *)((char *)arg0 + 0x10) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 0xC));
+void fn_801EC714(void *arg0, float *outX, float *outY) {
+    /* Evaluate a 2D linear curve: each output is its intercept plus the input value times its slope. */
+    typedef struct {
+        float *input;     /* 0x00 pointer to the input value */
+        float slopeX;     /* 0x04 */
+        float interceptX; /* 0x08 */
+        float slopeY;     /* 0x0C */
+        float interceptY; /* 0x10 */
+    } LinearCurve2D;
+    LinearCurve2D *curve = (LinearCurve2D *)arg0;
+    *outX = curve->interceptX + (*curve->input * curve->slopeX);
+    *outY = curve->interceptY + (*curve->input * curve->slopeY);
 }
 
 extern void *fn_801EAB2C(void);
