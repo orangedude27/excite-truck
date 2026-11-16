@@ -1137,11 +1137,12 @@ extern "C" u16 SetString__Q36nw4hbm3lyt7TextBoxFPCwUsUs(void *this_ptr, const u1
     return count;
 }
 #pragma use_lmw_stmw reset
-extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_800DF1C8(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
