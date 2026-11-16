@@ -138,9 +138,15 @@ void fn_80252B88(s32 slotIndex) {
     fn_801BE400(slotIndex, basis, lbl_805639E8);
 }
 
+/* Reset the camera system: release the camera state pools and rewind the next
+ * camera slot index to zero. */
 void fn_80252BC8(void) {
-    fn_801BD790();
-    lbl_8055F2F8 = 0;
+#define FreeCameraPools fn_801BD790
+#define nextCameraSlot lbl_8055F2F8
+    FreeCameraPools();
+    nextCameraSlot = 0;
+#undef FreeCameraPools
+#undef nextCameraSlot
 }
 
 #pragma scheduling invalid_target
