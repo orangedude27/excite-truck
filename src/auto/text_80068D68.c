@@ -11894,9 +11894,10 @@ void fn_80072570(void) {
     }
 }
 
-void fn_800725B4(void *arg0) {
+void fn_800725B4(void *record) {
+    /* Allocate a 0x1C-byte BTE buffer and copy the record into bta_dm_search_cb. */
     *(void **)(lbl_803C0B98 + 0x74) = GKI_getbuf(0x1C);
-    memcpy(*(void **)(lbl_803C0B98 + 0x74), arg0, 0x1C);
+    memcpy(*(void **)(lbl_803C0B98 + 0x74), record, 0x1C);
 }
 
 /* Allocate a 0x18-byte BTE buffer and copy the 0x18-byte device record into it. */
