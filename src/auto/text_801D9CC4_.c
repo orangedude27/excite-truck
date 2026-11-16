@@ -112,10 +112,11 @@ int fn_801D9FC4(char **arg0, const char *arg1) {
 }
 #pragma use_lmw_stmw reset
 
-void *fn_801DA03C(int **arg0, int arg1) {
-    int *base = *arg0;
-    if (arg1 < *base) {
-        return (char *)base + arg1 * 0x18 + 4;
+/* Return a pointer to the name field (offset 4) of the 0x18-byte table entry at index, or NULL if index is out of range. */
+void *fn_801DA03C(int **catalog, int index) {
+    int *table = *catalog;
+    if (index < *table) {
+        return (char *)table + index * 0x18 + 4;
     }
     return 0;
 }
