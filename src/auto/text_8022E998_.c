@@ -11,15 +11,22 @@ void fn_8022E998(void);
 DECL_SECTION(".ctors") static funcptr_t D_802ED3C8 = fn_8022E998;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+/* Initialize this module's state and global init flag (constructor). */
 void fn_8022E998(void) {
-    int v;
-    fn_8000D838(&lbl_8055EFE0);
-    lbl_80497E10[0] = 0;
-    v = 123;
-    lbl_80497E10[1] = v;
-    lbl_80497E10[2] = 0;
-    lbl_80497E10[3] = 0;
-    lbl_80497E10[4] = 0;
+#define moduleInitFlag lbl_8055EFE0
+#define moduleState    lbl_80497E10
+
+    int initialValue;
+    fn_8000D838(&moduleInitFlag);
+    moduleState[0] = 0;
+    initialValue = 123;
+    moduleState[1] = initialValue;
+    moduleState[2] = 0;
+    moduleState[3] = 0;
+    moduleState[4] = 0;
+
+#undef moduleInitFlag
+#undef moduleState
 }
 #pragma opt_propagation reset
 #pragma scheduling on
