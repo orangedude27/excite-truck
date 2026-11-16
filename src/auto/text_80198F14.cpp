@@ -2963,7 +2963,6 @@ static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
         dst->z = (y * m[5] + x * m[2]) + z * m[8];
     }
 }
-#pragma always_inline reset
 
 /* registers are saved with _savegpr */
 #pragma use_lmw_stmw off
