@@ -4829,17 +4829,20 @@ extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
 
 #pragma push
 #pragma unroll off
-extern "C" void fn_801A47C8(void* arg0) {
-    s32 off;
-    s32 i;
-    i = 0;
-    off = 0;
-    while (i < *(s32*)arg0) {
-        void** entries = *(void***)((u8*)arg0 + 4);
-        i += 1;
-        void* p = *(void**)((u8*)entries + off);
-        *(u8*)((u8*)p + 0x40) = 1;
-        off += 4;
+/* CollisionGroup::enableAll: mark every solid in the group active by setting
+ * the byte at +0x40 of each entry pointer in the group's array to 1.
+ * The group holds a count at +0 and a pointer to the solid array at +4. */
+extern "C" void fn_801A47C8(void* group) {
+    s32 offset;
+    s32 index;
+    index = 0;
+    offset = 0;
+    while (index < *(s32*)group) {
+        void** solids = *(void***)((u8*)group + 4);
+        index += 1;
+        void* solid = *(void**)((u8*)solids + offset);
+        *(u8*)((u8*)solid + 0x40) = 1;
+        offset += 4;
     }
 }
 #pragma pop
