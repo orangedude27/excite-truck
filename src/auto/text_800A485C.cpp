@@ -12815,16 +12815,9 @@ extern "C" s32 fn_800B9FCC(s32 shouldInit) {
 
 #pragma dont_inline reset
 extern "C" s32 fn_800BA160(s32 arg0) {
-    s32 result;
-    s32 value;
-    s32 mask;
     if (arg0 == 0) return 1;
-    result = 6;
-    value = *(s32 *)((u8 *)lbl_80407300 + 0x10);
-    mask = -value | value;
-    mask >>= 31;
-    result &= ~mask;
-    return result;
+    s32 value = *(s32 *)((u8 *)lbl_80407300 + 0x10);
+    return value ? 0 : 6;
 }
 #pragma push
 #pragma small_data off
