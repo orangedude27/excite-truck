@@ -2307,6 +2307,7 @@ extern "C" void fn_8019F03C(void* arg0) {
     *(f32*)((u8*)arg0 + 0x38) = value;
     *(f32*)((u8*)arg0 + 0x3C) = value;
 }
+#undef gZeroFloat
 
 extern "C" void fn_8019F064(void *arg0, void *arg1) {
     /* Dispatch a collision/shape query by the 4-character type tag stored at arg1+0x18. */
