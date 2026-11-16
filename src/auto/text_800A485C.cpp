@@ -2006,9 +2006,10 @@ mark_clear:
     return 0;
 }
 
-extern "C" s32 fn_800A7688(void *arg0, void **arg1, void **arg2) {
-    *(void **)((u8 *)arg0 + 0x20) = arg1[0];
-    *(void **)((u8 *)arg0 + 0x24) = arg1[1];
+extern "C" s32 fn_800A7688(void *object, void **callbacks, void **unused) {
+    /* Installs the two callback pointers into the object at +0x20/+0x24; returns 0. */
+    *(void **)((u8 *)object + 0x20) = callbacks[0];
+    *(void **)((u8 *)object + 0x24) = callbacks[1];
     return 0;
 }
 
@@ -4105,19 +4106,22 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
     u32 sp8;
     s8 *name = arg1;
     s8 *p = name + 1;
+    s8 *q;
+    s8 c;
+    s8 d;
     u32 index = 1;
-    while (*p != 0x7E && *p != 0 && index < 7) {
+    u32 tail;
+    while ((c = *p) != 0x7E && c != 0 && index < 7) {
         index++;
         p++;
     }
-    if (index < 7 && *p == 0x7E) {
-        index++;
-        p = name + index;
-        p++;
-        while (*p >= '0' && *p <= '9') {
-            p++;
+    if (index < 7 && c == 0x7E) {
+        tail = index + 1;
+        q = name + tail + 1;
+        while ((d = *q) >= '0' && d <= '9') {
+            q++;
         }
-        if (*p == '.' || *p == 0) {
+        if (d == '.' || d == 0) {
             s32 result = VFiPFENT_findEmptyTailSFN(arg0, name, &sp8);
             if (result != 0) {
                 return result;
@@ -7251,7 +7255,8 @@ retryCheck:
     goto loop;
 }
 
-#pragma use_lmw_stmw reset
+#pragma push
+#pragma scheduling invalid_target
 extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     extern s32 fn_800B5618(void *, void *, u16, u16, s32);
     u16 sp8;
@@ -7274,7 +7279,8 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     }
     return result;
 }
-
+#pragma scheduling on
+#pragma pop
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800B5618(void *, void *, u32, u16, s32);
 extern "C" s32 fn_800AFFE0(void *cache, s32 sampleIndex, u16 value, void *state, s32 arg4) {
