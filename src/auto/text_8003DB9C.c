@@ -2312,9 +2312,11 @@ void GXGetVtxDesc(void) {
 }
 
 void GXGetVtxDescv(void) {
-    while (PPCMfwpar() & 1) {
+    /* Wait for the write-gather pipe to finish draining, then re-aim WPAR at
+       the write-gather FIFO (0xCC008000). */
+    while (PPCMfwpar() & WPAR_BUSY) {
     }
-    PPCMtwpar(0x0C008000);
+    PPCMtwpar(GX_WGPIPE_WPAR);
 }
 
 extern unsigned int *__memReg;
