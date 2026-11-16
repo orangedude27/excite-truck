@@ -1993,16 +1993,19 @@ extern "C" s32 fn_800A76A0(void *arg0) {
 }
 
 extern "C" void fn_800A76B4(void *arg0, s32 arg1) {
+    struct View { unsigned char pad[0x61C]; s32 flags; void *key; unsigned char pad2[0x18]; void (*cb1)(void); void (*cb0)(void); };
     u16 index;
+
     for (index = 0; index < 0x1A; index++) {
-        u8 *entry = (u8 *)lbl_803D1640 + index * 0x28;
-        s32 flags = *(s32 *)(entry + 0x61C);
-        if ((flags & 1) != 0 && *(void **)(entry + 0x620) == arg0) {
-            *(s32 *)(entry + 0x61C) = flags | 2;
-            if (arg1 == 0 && *(void (**)(void))(entry + 0x640) != 0) {
-                (*(void (**)(void))(entry + 0x640))();
-            } else if (*(void (**)(void))(entry + 0x63C) != 0) {
-                (*(void (**)(void))(entry + 0x63C))();
+        View *entry = (View *)((u8 *)lbl_803D1640 + index * 0x28);
+        s32 flags = entry->flags;
+
+        if ((flags & 1) != 0 && entry->key == arg0) {
+            entry->flags = flags | 2;
+            if (arg1 == 0 && entry->cb0 != 0) {
+                entry->cb0();
+            } else if (entry->cb1 != 0) {
+                entry->cb1();
             }
         }
     }
@@ -3225,10 +3228,10 @@ extern "C" s32 fn_800A95B4(void *arg0) {
         u8 parsed[0x240];
     } local;
     u8 *object = (u8 *)arg0;
-    u8 *volume;
+    s32 offset;
     s32 result;
     s32 index;
-    s32 offset;
+    u8 *volume;
     local.valueC = 0;
     local.value8 = 0;
     index = 0;
@@ -3666,19 +3669,15 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
 
 extern "C" void fn_800A4C14(void *, s32);
 extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 index, s32 type, s32 flag) {
-    if (flag) {
-        *(u8 *)out = (u8)(index | 0x40);
-    } else {
-        *(u8 *)out = (u8)index;
-    }
+    if (flag) *(u8 *)out = (u8)(index | 0x40);
+    else *(u8 *)out = (u8)index;
     u8 *dst = (u8 *)out;
-    s32 slot = index - 1;
     u32 zero = 0;
     dst[0xB] = 0xF;
     dst[0xD] = (u8)type;
-    u8 *entry = entries + slot * 0x1A;
     dst[0xC] = (u8)zero;
     *(u16 *)(dst + 0x1A) = (u16)zero;
+    u8 *entry = entries + (index - 1) * 0x1A;
     if (flag) {
         u16 *p = (u16 *)entry;
         u16 *end = (u16 *)(entry + 0x1A);
@@ -4725,16 +4724,15 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     index = iter->index;
     old = iter->position;
     iter->position = (index + 1) << iter->shift;
-    if (((s32 (*)(void *, s32, s32))fn_800AB378)(arg0, 0, index + 1) != 0) {
-        ((VFiPFEntIter *)arg0)->position = old;
-        ((VFiPFEntIter *)arg0)->index = index;
-        goto return_one;
+    if (fn_800AB378((void *)iter, 0) != 0) {
+        iter->position = old;
+        iter->index = index;
+        return 1;
     }
     if (iter->sector == 0xFFFFFFFFu)
-        goto use_short_error;
+        goto short_one;
     if (iter->sector != 0xFFFFFFFFu)
         goto read_entry;
-use_short_error:
     status = 0x10;
     goto finish_status;
 read_entry:
@@ -4744,7 +4742,7 @@ read_entry:
         status = result;
 finish_status:
     return status != 0;
-return_one:
+short_one:
     return 1;
 return_zero:
     return 0;
@@ -4909,6 +4907,7 @@ static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
 extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
     extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
     register u8 *iter;
+    s32 result;
     s32 status;
     register s32 zero;
     u8 spC[13];
@@ -4992,8 +4991,16 @@ status_check:
     *arg3 = 1;
     return 0;
 advance:
-    status = VFiPFENT_ITER_MoveNextAndRead(iter);
-    status = status & (s32)(-(u32)status | (u32)status) >> 31;
+    status = *(u32 *)iter;
+    *(u32 *)iter = status + 1;
+    result = fn_800AB378((void *)iter, 0);
+    if (result != 0) {
+        *(u32 *)iter = status;
+        fn_800AB378((void *)iter, 0);
+    } else {
+        result = VFiPFENT_ITER_ReadEntry(iter);
+    }
+    status = result & (s32)(-(u32)result | (u32)result) >> 31;
 check_end:
     if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
@@ -20912,7 +20919,7 @@ extern "C" u8 fn_800D3840(s32 arg0) {
         var_r29 = temp_r5 - temp_r4;
         var_r31 = 0x200;
         end = *(volatile u32 *)&lbl_8055DDD0;
-        if ((u32)(temp_r4 + 0x200) >= end)
+        if (end <= (u32)(temp_r4 + 0x200))
             var_r31 = (end - temp_r4 + 0x1F) & 0xFFFFFFE0;
         temp_r28 = OSEnableInterrupts();
         temp_r31 = DVDReadAsyncPrio((void *)lbl_80407E00, (void *)lbl_80407C00, var_r31,
@@ -21564,11 +21571,11 @@ extern "C" const char lbl_8031F1A8[];
 extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
     u32 node;
     u32 sentinel;
-    register int fileBase = (int)lbl_8031EE58;
+    register const char *file = lbl_8031EE58;
     if (arg0 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((char *)(fileBase + 0), 0x22F, (char *)(fileBase + 0x2B0));
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x22F, file + 0x2B0);
     if (arg1 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((char *)(fileBase + 0), 0x230, (char *)(fileBase + 0x2DC));
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x230, file + 0x2DC);
     node = *(u32 *)((u8 *)arg0 + 4);
     sentinel = (u32)arg0 + 4;
     while (node != sentinel) {
