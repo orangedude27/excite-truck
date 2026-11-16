@@ -141,6 +141,7 @@ void fn_801CB4DC(void) {
     fn_801CCBC4();
 }
 
+/* If not blocked and in the default mode, clears the active flag and runs cleanup. */
 void fn_801CB518(void) {
     if (fn_80019BA8() || fn_80161C38()) return;
     lbl_8055E880 = 0;
