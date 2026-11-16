@@ -248,6 +248,7 @@ extern "C" void fn_801FCAE0(void* arg0, void* arg1) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_801FCB40(void* arg0, float farg0) {
     char* a = (char*)arg0;
     float delta = farg0;
@@ -280,9 +281,9 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
             *(int*)(a + 4) = 0;
             return;
         }
-        item = base + (count << 5);
+        char *next = base + (count << 5);
         q0 = q1;
-        q1 = (float*)(item + 0x30);
+        q1 = (float*)(next + 0x30);
         dir.x = q1[0] - q0[0];
         dir.y = q1[1] - q0[1];
         dir.z = q1[2] - q0[2];
