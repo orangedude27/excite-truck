@@ -627,9 +627,10 @@ extern "C" s32 fn_80212214(s32 bits) {
 }
 
 #pragma dont_inline fn_80212248
-extern "C" float fn_80212248(s32 arg0) {
+extern "C" float fn_80212248(s32 bits) {
+    /* Bit-preserving cast: reinterpret the argument's 32 bits as a float via memcpy. */
     float value;
-    memcpy(&value, &arg0, 4);
+    memcpy(&value, &bits, 4);
     return value;
 }
 
