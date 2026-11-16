@@ -729,16 +729,13 @@ void __VIInit(VITVMode mode)
     temp = (u16)(((u32)tm->nhlines >> 1) + 1);
     __VIRegs[25] = tm->hlw + 1;
     __VIRegs[24] = temp | 0x1000;
-    do {
-        if (tv < 4) {
-            if (tv < 1) {
-                tv = 0;
-                break;
-            }
-            break;
+    if (tv < 4) {
+        if (tv < 1) {
+            tv = 0;
         }
+    } else {
         tv = 0;
-    } while (0);
+    }
     if (nonInter <= 1) {
         __VIRegs[1] = (tv << 8) | ((nonInter & 1) << 2) | 1;
         __VIRegs[54] = 0;
@@ -1443,15 +1440,19 @@ VITVFormat VIGetTvFormat(void)
     return VIGetTvFormatInline();
 }
 
+/* Return the component-cable status from the VI's DTV status register VISEL:
+ * bit 0 (VI_VISEL_COMPONENT) is set when a component cable is connected.  The
+ * register is sampled with interrupts disabled; the low two bits are latched
+ * first, then bit 0 is extracted.  Used to pick the YUV output source. */
 u32 fn_8005AD9C(void)
 {
-    BOOL enabled;
-    u32 status;
+    BOOL intEnabled;
+    u32 viStatus;
 
-    enabled = OSDisableInterrupts();
-    status = __VIRegs[VI_VISEL] & 3;
-    OSRestoreInterrupts(enabled);
-    return status & VI_VISEL_COMPONENT;
+    intEnabled = OSDisableInterrupts();
+    viStatus = __VIRegs[VI_VISEL] & 3;
+    OSRestoreInterrupts(intEnabled);
+    return viStatus & VI_VISEL_COMPONENT;
 }
 
 void __VIDisplayPositionToXY(s32 hpos, s32 vpos, s16 *px, s16 *py)
