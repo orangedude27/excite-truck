@@ -412,52 +412,55 @@ void fn_802E5478(void) {
     register float *vec;
     float one;
     char *msg = lbl_8034D210;
-    int off, i;
-    int voice, tmp;
+    int off, chan;
+    int voice, aram;
     char *buf;
     long long now;
 
-    ((void (*)(char *, ...))fn_802E30C8)(msg + 0x1BC);
+    ((void (*)(char *, ...))fn_802E30C8)(sSpuBeginName);
     lbl_8055FF8C = (void *)1;
-    lbl_8055FF84 = 0x20000;
+    gAramSize = SPU_ARAM_SIZE;
     fn_801282F4();
-    tmp = fn_801284E8(msg + 0x1C8, lbl_8055FF84);
-    lbl_8055FFB0 = (void *)tmp;
-    lbl_8055FF7C = tmp;
-    lbl_8055FF80 = tmp;
-    DCInvalidateRange((void *)lbl_8055FF80, lbl_8055FF84);
-    ((void (*)(char *, ...))fn_802E30C8)(msg + 0x1D4, lbl_8055FF80, lbl_8055FF84, (unsigned int)lbl_8055FF84 >> 10);
+    /* the whole of ARAM, held under the name "aram_buf" */
+    aram = fn_801284E8(sAramBufName, gAramSize);
+    gMixBuffer = (void *)aram;
+    gAramBase = aram;
+    gAramPos = aram;
+    DCInvalidateRange((void *)gAramPos, gAramSize);
+    ((void (*)(char *, ...))fn_802E30C8)(sAramBaseFmt, gAramPos, gAramSize, (unsigned int)gAramSize >> 10);
     TRKPostEvent(0);
     TRKMessageSend();
     fn_80031C6C(0);
-    lbl_8055FF90 = fn_8012850C((void *)0xB000, msg + 0x1F4);
-    lbl_8055FF94 = (unsigned char *)fn_8012850C((void *)0x580, msg + 0x200);
-    lbl_8055FF9C = (int *)fn_8012850C((void *)0x400, msg + 0x20C);
-    lbl_8055FFA0 = 0;
-    memset(lbl_8055FF90, 0, 0xB000);
-    memset(lbl_8055FF94, 0, 0x580);
-    i = 0;
+    gSpuSamples = fn_8012850C((void *)SPU_SAMPLE_POOL, sSpuSampleName);
+    gSpuChannels = (unsigned char *)fn_8012850C((void *)SPU_CHANNEL_POOL, sSpuChannelName);
+    gSoundSlotTable = (int *)fn_8012850C((void *)SPU_CACHE_POOL, sSpuCacheName);
+    gSoundSlotCount = 0;
+    memset(gSpuSamples, 0, SPU_SAMPLE_POOL);
+    memset(gSpuChannels, 0, SPU_CHANNEL_POOL);
+    /* one voice of the pool per channel: its number and its voice object */
+    chan = 0;
     off = 0;
     do {
         voice = TRKInitializeMessageBuffers(0x1F, 0, 0);
-        if (voice == 0) fn_802E317C(msg + 0x218, i);
+        if (voice == 0) fn_802E317C(sNoVoiceFmt, chan);
         AXSetVoiceState(voice, 0);
         fn_80033538(voice, 0);
-        *(int *)(lbl_8055FF94 + off) = i;
-        i++;
-        *(int *)(lbl_8055FF94 + off + 4) = voice;
-        off += 0x2C;
-    } while (i < 0x20);
-    lbl_8055FF88 = lbl_8055FF7C + (lbl_8055FF84 - 0x20000);
+        *(int *)(gSpuChannels + off) = chan;
+        chan++;
+        *(int *)(gSpuChannels + off + 4) = voice;
+        off += SPU_CHANNEL_SIZE;
+    } while (chan < SPU_CHANNEL_COUNT);
+    gAramLastEnd = gAramBase + (gAramSize - SPU_ARAM_SIZE);
     fn_801282EC(0x20);
-    buf = (char *)fn_8012850C((void *)0x20000, msg + 0x234);
-    memset(buf, 0, 0x20000);
-    ((void (*)(void *, void *, int, int))fn_802E4D84)((void *)lbl_8055FF88, buf, 0x20000, 1);
+    buf = (char *)fn_8012850C((void *)SPU_ARAM_SIZE, sZeroBufName);
+    memset(buf, 0, SPU_ARAM_SIZE);
+    ((void (*)(void *, void *, int, int))fn_802E4D84)((void *)gAramLastEnd, buf, SPU_ARAM_SIZE, 1);
     fn_80128670((int)buf);
     AIRegisterDMACallback((void *)fn_802E4F98);
     fn_802E6B04();
     OSCreateAlarm(lbl_804FC690);
     now = OSGetTime();
+    /* the alarm that pumps stream data to the Wii remote speakers */
     OSSetPeriodicAlarm(lbl_804FC690, now, (unsigned int)(((*(unsigned int *)0x800000F8 >> 2) / 125000 * 0x65B9AB) / 8000), (void *)fn_802E52EC);
     one = lbl_80565128;
     vec = (float *)lbl_804FC680;
@@ -466,7 +469,7 @@ void fn_802E5478(void) {
     vec[2] = one;
     vec[3] = one;
     fn_802E2E0C((void *)fn_802E540C, &lbl_8055D1E0);
-    lbl_8055FFA5 = 1;
+    gSpuRunning = 1;
     ((void (*)(void))fn_802E5438)();
 }
 
