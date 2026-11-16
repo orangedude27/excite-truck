@@ -263,8 +263,9 @@ void fn_8000F384(void) {
     }
 }
 
-void fn_8000F3E8(void) {
-    lbl_8055D4D0 = fn_8023512C();
+void fn_8000F3E8(const char *resourceName) {
+    /* Load the ArtSet for the given resource path and cache its handle in the global. */
+    lbl_8055D4D0 = fn_8023512C(resourceName);
 }
 
 void fn_8000F40C(void) {
