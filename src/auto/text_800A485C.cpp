@@ -6387,7 +6387,7 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     } else {
         return 0;
     }
-    err = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8D08)(ctx, -1, &page, &idx);
+    err = ((s32 (*)(void *, s32, void **, s32 *))(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(ctx, -1, &page, &idx);
     if (err != 0) {
         return err;
     }
@@ -6865,13 +6865,13 @@ extern "C" s32 fn_800AF584(void *arg0) {
 
 extern "C" s32 fn_800AF5A0(void *arg0, s32 arg1, s32 *arg2) {
     u8 buf[2];
+    u32 retry = 1;
+    s32 result;
     u32 index;
     u16 offset;
-    s32 result;
-    u32 retry = 1;
-    s32 *output = arg2;
     void *object = arg0;
     s32 cluster = arg1;
+    s32 *output = arg2;
     u16 flags = *(u16 *)((u8 *)object + 0x18);
     u16 scaled = cluster + (cluster >> 1);
     index = (u16)(*(u32 *)((u8 *)object + 0x28) + (scaled >> *(u8 *)((u8 *)object + 0x20)));
@@ -6894,7 +6894,7 @@ loop:
                 goto retryCheck;
             if (callbackResult == 1 && *(u8 *)((u8 *)object + 0x22) >= 2 && retry < *(u8 *)((u8 *)object + 0x22)) {
                 retry++;
-                index += *(u32 *)((u8 *)object + 0xC);
+                index += (u16)*(u32 *)((u8 *)object + 0xC);
                 goto retryCheck;
             }
         }
