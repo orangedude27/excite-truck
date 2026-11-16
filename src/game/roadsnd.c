@@ -57,7 +57,11 @@ void fn_8020CA38(void) {
 
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void* fn_8020CA3C(void* arg0) {
     char* p;
     char* obj;
@@ -105,7 +109,7 @@ extern "C" void* fn_8020CA3C(void* arg0) {
     }
     return obj;
 }
-#pragma cplusplus reset
+#pragma pop
 
 #pragma cplusplus on
 struct CC78_Item { virtual void s0(int); };
@@ -140,6 +144,9 @@ void *fn_8020CC78(void *obj, int freeFlag) {
     return obj;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8020CD28(char *arg0) {
     char *ctx = *(char **)(arg0 + 4);
     char *e;
@@ -217,6 +224,6 @@ void fn_8020CD28(char *arg0) {
         }
     }
 }
-
+#pragma pop
 
 
