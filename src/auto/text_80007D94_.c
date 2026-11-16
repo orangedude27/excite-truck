@@ -224,10 +224,13 @@ s32 fn_800081BC(void) {
 
 #define GetContestLapCount fn_800081F0 /* contest lap count for a reference record */
 s32 fn_800081F0(void *arg0) {
-    s32 result;
-    if (*(u32 *)((u8 *)arg0 + 0x10) & 1) goto done;
-    result = *(s32 *)((u8 *)fn_8001285C(*(s32 *)arg0) + 0xC);
-    return result;
+    /* Return the lap count of the contest this reference record points at; a set first flag yields 200. */
+    typedef struct { s32 contestIndex; u8 pad04[0x0C]; u32 flags; } ContestRef;
+    typedef struct { s32 pad00[3]; s32 laps; } ContestLaps;
+    s32 laps;
+    if (((ContestRef *)arg0)->flags & 1) goto done;
+    laps = ((ContestLaps *)fn_8001285C(((ContestRef *)arg0)->contestIndex))->laps;
+    return laps;
 done:
     return 0xC8;
 }
