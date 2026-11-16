@@ -4280,7 +4280,7 @@ void GXInitTexObjTlut(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
 
-void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
+void GXInitTexObjFilter(s32 *texObj, s32 minFilter, s32 magFilter) {
     union {
         s32 value;
         struct {
@@ -4289,13 +4289,13 @@ void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
             unsigned int mip : 1;
             unsigned int low : 4;
         } fields;
-    } data;
+    } bits;
 
-    data.value = *arg0;
-    data.fields.mip = ((unsigned int)__cntlzw(arg2 - 1) >> 5);
-    *arg0 = data.value;
-    data.fields.filter = ((unsigned char *)&lbl_80558E80)[arg1];
-    *arg0 = data.value;
+    bits.value = *texObj;
+    bits.fields.mip = ((unsigned int)__cntlzw(magFilter - 1) >> 5);
+    *texObj = bits.value;
+    bits.fields.filter = ((unsigned char *)&lbl_80558E80)[minFilter];
+    *texObj = bits.value;
 }
 
 void GXGetTexObjWidth(void *arg0, s32 arg1) {
