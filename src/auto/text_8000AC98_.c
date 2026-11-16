@@ -371,8 +371,11 @@ int fn_8000B210(void *unused) {
 }
 
 extern int fn_8000B210(void *);
-void fn_8000B288(void* alarm) {
-    fn_801DF110(((int (*)(void *))fn_8000B210)(alarm));
+/* Frame callback installed while a popup is showing: run the active handler
+   (fn_8000B210) and then draw the current popup (fn_801DF110).  Passing the
+   handler's result on is a trampoline that keeps it live in r3. */
+void fn_8000B288(void* unused) {
+    fn_801DF110(((int (*)(void *))fn_8000B210)(unused));
 }
 
 extern void fn_802C8530(void);
