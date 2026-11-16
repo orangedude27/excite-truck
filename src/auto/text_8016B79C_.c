@@ -533,9 +533,11 @@ void *fn_8016C168(void *arg0, s32 arg1) {
     return arg0;
 }
 
-int fn_8016C25C(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) { fn_80128668((void *)arg0); }
-    return arg0;
+/* CodeWarrior deleting-destructor helper: free object via Mem_freeObject (fn_80128668)
+   when deleteFlag > 0, then return object. */
+int fn_8016C25C(int object, int deleteFlag) {
+    if (object != 0 && deleteFlag > 0) { fn_80128668((void *)object); }
+    return object;
 }
 
 /* Destroys the object: if active, releases its handle and resets fields, then optionally frees it. */
@@ -1653,8 +1655,8 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
  struct Manager *mgr; void *one, *two, *panel, *detail;
- float a, time, limit,b,c,d,e, t, blend, value;
- char *base = lbl_803306D0;
+ float limit, a, time, b,c,d,e, t, blend, value;
+ register char *base = lbl_803306D0;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
  limit=lbl_805619A8; a=limit-lbl_805619AC; b=a-lbl_805619B0;
  c=b-lbl_805619B4; d=c-lbl_805619AC; e=d-lbl_805619B0;
@@ -1675,27 +1677,19 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
      detail=mgr->get(base+0x484);
      fn_8001DF08(fn_801E866C(arg1),0);
      if (one && two && panel && detail) {
-       value=lbl_805619A4;
-if (blend < value) {} else {
- value=lbl_80561984;
- if (blend > value) {} else {
-  if (blend > lbl_80561980) value=(blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend);
-  else value=(blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
- }
-}
+       value = blend < lbl_805619A4 ? lbl_805619A4 :
+               blend > lbl_80561984 ? lbl_80561984 :
+               blend > lbl_80561980 ? (blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend)
+                                    : (blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
        fn_801479A8(one,two,fn_80131234(base+0x490),value);
        fn_80160A74(); ((void (*)(void *,int,int))fn_801308F4)(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
        { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561988*fn_80147204(&frame.rect1,frame.text1);
-       value=lbl_805619A4;
-if (blend < value) {} else {
- value=lbl_80561984;
- if (blend > value) {} else {
-  if (blend > lbl_80561980) value=(blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend);
-  else value=(blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
- }
-}
+       value = blend < lbl_805619A4 ? lbl_805619A4 :
+               blend > lbl_80561984 ? lbl_80561984 :
+               blend > lbl_80561980 ? (blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend)
+                                    : (blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
        fn_801479A8(&frame.rect1,detail,frame.text1,value);
      }
    }
@@ -1710,27 +1704,19 @@ if (blend < value) {} else {
      mgr=*(struct Manager **)((char *)arg0+0x98);
      detail=mgr->get(&lbl_8055A248);
      if (one && two && panel && detail) {
-       value=lbl_805619A4;
-if (blend < value) {} else {
- value=lbl_80561984;
- if (blend > value) {} else {
-  if (blend > lbl_80561980) value=(blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend);
-  else value=(blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
- }
-}
+       value = blend < lbl_805619A4 ? lbl_805619A4 :
+               blend > lbl_80561984 ? lbl_80561984 :
+               blend > lbl_80561980 ? (blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend)
+                                    : (blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
        fn_801479A8(one,two,fn_80131234(base+0x4dc),value);
        fn_80130978(frame.text2,0x14,*(float *)((char *)arg0+0x38));
        frame.rect2.a=*(int *)panel;
        { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561988*fn_80147204(&frame.rect2,frame.text2);
-       value=lbl_805619A4;
-if (blend < value) {} else {
- value=lbl_80561984;
- if (blend > value) {} else {
-  if (blend > lbl_80561980) value=(blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend);
-  else value=(blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
- }
-}
+       value = blend < lbl_805619A4 ? lbl_805619A4 :
+               blend > lbl_80561984 ? lbl_80561984 :
+               blend > lbl_80561980 ? (blend*(lbl_805619B8*blend*blend))+(lbl_805619BC*blend*blend)
+                                    : (blend*(lbl_805619B8*blend*blend))-(lbl_805619BC*blend*blend);
        fn_801479A8(&frame.rect2,detail,frame.text2,value);
      }
    }
