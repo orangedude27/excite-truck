@@ -9179,16 +9179,18 @@ tBTM_STATUS fn_8007A240(void (*arg0)(void *, void *)) {
     return 0;
 }
 
-void fn_8007A280(u8 *arg0) {
+/* HCI Read BD_ADDR command-complete event: on success, store the 6-byte
+ * local device address in the BTM control block. */
+void fn_8007A280(u8 *event) {
     u8 *base;
-    if (arg0[0] != 0) return;
+    if (event[0] != 0) return;
     base = lbl_803C0F78;
-    base[0x635] = arg0[1];
-    base[0x634] = arg0[2];
-    base[0x633] = arg0[3];
-    base[0x632] = arg0[4];
-    base[0x631] = arg0[5];
-    base[0x630] = arg0[6];
+    base[0x635] = event[1];
+    base[0x634] = event[2];
+    base[0x633] = event[3];
+    base[0x632] = event[4];
+    base[0x631] = event[5];
+    base[0x630] = event[6];
 }
 
 /* RealName: BTM_ReadLocalVersion (tentative). Returns BTM status 0 on success or 0xC if local version info in lbl_803C0F78 is not ready (<4 bytes at 0x64E); copies five u16 version fields from offsets 0x636..0x63E into outVersion. */
