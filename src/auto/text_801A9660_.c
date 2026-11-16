@@ -1238,9 +1238,10 @@ void fn_801AC240(void *arg0) {
 }
 #pragma dont_inline off
 
-void fn_801AC254(void *arg0) {
-    if (*(unsigned char *)((char *)arg0 + 0x220) != 0) {
-        *(unsigned char *)((char *)arg0 + 0x220) = 0;
+void fn_801AC254(void *obj) {
+    /* Clear this object's active flag at +0x220, if it is set. */
+    if (*(unsigned char *)((char *)obj + 0x220) != 0) {
+        *(unsigned char *)((char *)obj + 0x220) = 0;
     }
 }
 
@@ -1980,10 +1981,13 @@ void fn_801AD750(void *arg0, void *arg1) {
 #pragma peephole off
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
     if (arg3 >= 8) return;
-    if (arg0 == 0) {
-    } else {
-        fn_801D0A24((char *)arg0 + 0x23c, arg2);
+    if (arg0 == 0) goto done;
+    {
+        void *p = (char *)arg0 + 0x23c;
+        fn_801D0A24(p, arg2);
     }
+done:
+    return;
 }
 #pragma peephole on
 unsigned char fn_801AD860(void *arg0) {
