@@ -234,10 +234,13 @@ void fn_802C8530(void) {
     fn_802CFCA0();
 }
 
+/* Tear down the draw-list module: reset GX, release the texture list, and mark rendering shut down. */
 void fn_802C855C(void) {
+#define RENDER_MODE_SHUTDOWN 0
     fn_802CFDE0();
     fn_802CC770();
-    lbl_8055FC70 = 0;
+    sRenderMode = RENDER_MODE_SHUTDOWN;
+#undef RENDER_MODE_SHUTDOWN
 }
 
 extern void fn_802C7758(int);
