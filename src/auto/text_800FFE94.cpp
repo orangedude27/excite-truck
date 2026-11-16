@@ -449,10 +449,11 @@ extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus
     return *(float*)((char*)self + auxBus * 4 + 0x50);
 }
 
-extern "C" void fn_80100BAC(void* arg0, int arg1) {
-    int level = OSDisableInterrupts();
-    *(int*)((char*)arg0 + 0x44) = arg1;
-    OSRestoreInterrupts(level);
+extern "C" void fn_80100BAC(void* player, int value) {
+    /* Set the integer field at offset 0x44 of this WsdPlayer, with interrupts disabled. */
+    int irqState = OSDisableInterrupts();
+    *(int*)((char*)player + 0x44) = value;
+    OSRestoreInterrupts(irqState);
 }
 
 extern "C" int fn_80100BEC(void* arg0) {
