@@ -1830,11 +1830,12 @@ extern "C" void fn_800EE434(void* arg0) {
 #pragma push
 #pragma small_data off
 #pragma pop
-extern "C" s32 fn_800EE43C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_800EE43C(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668_noarg();
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
