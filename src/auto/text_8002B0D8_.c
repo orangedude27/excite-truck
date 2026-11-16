@@ -1658,6 +1658,7 @@ double __ieee754_sqrt(double x)
     return z;
 }
 
+/* Base-2 logarithm: scale the caller's natural log (passed in f1 to the no-arg ln wrapper) by log2(e) = 1/ln(2). */
 double fn_8002F208(void) {
     return lbl_80560AE0 * fn_8002EFB8();
 }
