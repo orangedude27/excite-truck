@@ -459,10 +459,11 @@ s32 fn_801B0F18(void) {
 }
 
 #pragma dont_inline on
-u32 fn_801B0F48(u32 arg0, u32 arg1) {
-    u32 diff = arg1 - arg0;
-    if (arg0 > arg1) diff = arg0 - arg1;
-    return (0x20000U << __cntlzw(diff ^ 0x20000)) >> 31;
+/* Return 1 when the two fixed-point values differ by less than 0x20000, else 0. */
+u32 fn_801B0F48(u32 a, u32 b) {
+    u32 absDiff = b - a;
+    if (a > b) absDiff = a - b;
+    return (0x20000U << __cntlzw(absDiff ^ 0x20000)) >> 31;
 }
 #pragma dont_inline reset
 
