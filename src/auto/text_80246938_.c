@@ -328,14 +328,13 @@ s32 fn_80246E4C(void) {
     item[8] = var_r25;
     item[9] = var_r25;
 
-    menu[1] = lbl_802FA3A0[1];
-
     item[10] = lbl_804988F0[0];
     item[11] = lbl_804988F0[1];
     item[12] = lbl_804988F0[2];
     item[13] = lbl_804988F0[3];
     item[14] = lbl_804988F0[4];
 
+    menu[1] = lbl_802FA3A0[1];
     menu[0] = lbl_802FA3A0[0];
     menu[2] = lbl_802FA3A0[2];
     menu[3] = lbl_802FA3A0[3];
@@ -344,7 +343,7 @@ s32 fn_80246E4C(void) {
 
     res = ((s32 (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
         menu, -999, -999, 1,
-        lbl_802FA3A0[4], lbl_802FA3A0[3], lbl_802FA3A0[2], lbl_802FA3A0[0]);
+        menu[4], menu[3], menu[2], menu[0]);
 
     if (res == -2) {
         var_r25 = *(s32 *)((char *)&obj + 0x28);
@@ -709,14 +708,29 @@ void fn_80247768(void) {
 extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
+static inline void fn_8024778C_setMode(s32 mode) {
+    if (lbl_8055BEB8 != mode) {
+        lbl_8055BEB8 = mode;
+        switch (mode) {
+        case 2:
+            lbl_8055BEB0 = (void *)1;
+            break;
+        case 3:
+            lbl_8055BEB0 = (void *)2;
+            break;
+        default:
+            lbl_8055BEB0 = 0;
+            break;
+        }
+    }
+}
 #pragma push
 #pragma scheduling invalid_target
 void fn_8024778C(void) {
     s32 var_r31;
-    s32 previous = lbl_8055BEB8;
-    if (previous != lbl_8055F26C) {
+    if (lbl_8055BEB8 != lbl_8055F26C) {
         lbl_8055BEB8 = lbl_8055F26C;
-        switch (lbl_8055F26C) {
+        switch (lbl_8055BEB8) {
         case 2:
             lbl_8055BEB0 = (void *)1;
             break;
@@ -729,7 +743,7 @@ void fn_8024778C(void) {
         }
     }
     fn_80214CB4((s32)lbl_8055BEB0);
-    switch ((s32)lbl_8055BEB8) {
+    switch (lbl_8055F26C) {
     case 1:
         fn_80214B44(2);
         fn_80214A9C(3);
