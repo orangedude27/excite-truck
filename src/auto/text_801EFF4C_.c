@@ -850,10 +850,12 @@ cont:
     fn_802C7AE0(*(int *)(base + count * 8), (char *)arg0 + 0x18, -1, *(float *)(base + 0x44) + arg2);
 }
 #pragma peephole on
-void fn_801F1474(int *arg0, void *arg1) {
-    int base = *arg0;
-    if (*(int *)(base + 0x12C) <= 0) return;
-    fn_802C7AE0(*(int *)(base + 0xEC), arg1, -1);
+void fn_801F1474(int *objectHandle, void *param) {
+    /* If the object has active entries (count at +0x12C > 0), apply its model transform:
+       call fn_802C7AE0 with the model handle at +0xEC, the given param and a -1 mask. */
+    int object = *objectHandle;
+    if (*(int *)(object + 0x12C) <= 0) return;
+    fn_802C7AE0(*(int *)(object + 0xEC), param, -1);
 }
 
 #pragma push
