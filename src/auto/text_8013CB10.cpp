@@ -2702,10 +2702,12 @@ extern "C" s32 fn_80142154(void *arg0) {
     return result;
 }
 #pragma dont_inline off
-extern "C" u8 *fn_801421C0(u8 *arg0) {
-    s32 index = *(s32 *)(arg0 + 0x68);
-    u8 *items = *(u8 **)(arg0 + 0x64);
-    return *(u8 **)(items + 4) + index * 0x14;
+/* Return a pointer to the current 0x14-byte entry in the active group's table,
+ * selected by the manager's current index (see fn_80142154 for advancing it). */
+extern "C" u8 *fn_801421C0(u8 *state) {
+    s32 index = *(s32 *)(state + 0x68);
+    u8 *group = *(u8 **)(state + 0x64);
+    return *(u8 **)(group + 4) + index * 0x14;
 }
 
 extern "C" f32 fn_8013CB3C(void);
