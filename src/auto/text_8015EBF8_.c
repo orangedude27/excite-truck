@@ -648,7 +648,6 @@ extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
 #pragma push
 #pragma processor 750
-#pragma dont_inline on
 s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
     f32 scale = (f32)arg0 * lbl_805617E4;
     f32 dot = PSVECDotProduct(arg1, arg2);
@@ -890,7 +889,7 @@ extern int fn_80179650(void);
 extern void fn_80179630(int);
 extern void fn_8017960C(void);
 #pragma scheduling invalid_target
-s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
+s32 fn_8015FBCC(register void *arg0, register s32 arg1, register u8 arg2, register s32 arg3) {
     struct Hit table[64];
     u32 sp68[12];
     f32 sp50[6];
