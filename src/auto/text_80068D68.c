@@ -24554,16 +24554,18 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     }
 }
 
-u8 fn_8009504C(u16 arg0, u8 *arg1) {
-    u8 *table = lbl_802EEC40;
-    u8 fcs = 0xFF;
-    u8 *ptr = arg1;
-    u16 len = arg0;
-    while (len-- != 0) {
-        fcs = table[fcs ^ *ptr];
+/* Compute the RFCOMM frame check sequence: an 8-bit CRC over length bytes of
+   buffer, seeded with 0xFF and using rfc_crctable, with the result complemented. */
+u8 fn_8009504C(u16 length, u8 *buffer) {
+    u8 *crctable = lbl_802EEC40;
+    u8 crc = 0xFF;
+    u8 *ptr = buffer;
+    u16 count = length;
+    while (count-- != 0) {
+        crc = crctable[crc ^ *ptr];
         ptr++;
     }
-    return (u8)(0xFF - fcs);
+    return (u8)(0xFF - crc);
 }
 
 #pragma push
