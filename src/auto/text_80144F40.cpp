@@ -1040,19 +1040,21 @@ extern "C" void fn_80146730(void *);
 extern "C" void fn_801467AC(void *);
 extern "C" void fn_8002F6AC(s32, void *);
 
-extern "C" void *fn_80146490(void *arg0) {
+extern "C" void *fn_80146490(void *obj) {
+    /* Returns obj if valid (flag at +0x28 nonzero); if the flag is zero,
+       calls virtual destructor-like v0(1) and returns NULL. */
     struct Obj {
         virtual void *v0(s32);
     };
-    if (arg0 != NULL) {
-        if (((s32 *)arg0)[10] == 0) {
-            if (arg0) {
-                ((Obj *)arg0)->v0(1);
+    if (obj != NULL) {
+        if (((s32 *)obj)[10] == 0) {
+            if (obj) {
+                ((Obj *)obj)->v0(1);
             }
             return NULL;
         }
     }
-    return arg0;
+    return obj;
 }
 
 extern "C" void *fn_801464DC(void *obj, s32 shouldDelete) {
