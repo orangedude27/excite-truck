@@ -3300,9 +3300,10 @@ int fn_80165840(void) {
 }
 
 #pragma dont_inline on
-int fn_80165848(int arg0, int arg1, int arg2, int arg3, int arg4, int *arg5) {
+int fn_80165848(int arg0, int arg1, int arg2, int arg3, int arg4, int *outFlags) {
+    /* Sets status flags and reports handled when fn_80161BB8 indicates active. */
     if (fn_80161BB8() != 0) {
-        *arg5 |= 0x1150;
+        *outFlags |= 0x1150;
         return 1;
     }
     return 0;
