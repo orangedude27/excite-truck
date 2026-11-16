@@ -2022,8 +2022,9 @@ void fn_8026A1F0(int value, int objectIndex, int state) {
 #pragma pop
 
 #pragma dont_inline on
-void fn_8026A248(int arg0, int arg1) {
-    *(int *)((char *)fn_80267EE4(arg1) + 0x24) = arg0;
+/* Point the indexed camera at the object with index subjectIndex. */
+void fn_8026A248(int subjectIndex, int cameraIndex) {
+    ((Camera *)fn_80267EE4(cameraIndex))->wantedSubject = subjectIndex;
 }
 extern void fn_802735F4(int, int);
 extern void fn_80135DC4(void *, int, int);
