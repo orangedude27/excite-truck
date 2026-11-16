@@ -2919,8 +2919,9 @@ extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *arg0, void *arg1) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800A8EA0(void *arg0, u32 arg1, void **arg2) {
-    s32 result = VFiPFCACHE_DoReadPage(arg0, (s32)((u8 *)arg0 + 0x1630), (s32)arg1, (s32)arg2, 0);
+extern "C" s32 fn_800A8EA0(void *volume, u32 sector, void **pageOut) {
+    /* VFiPFCACHE_ReadFATPage: read the FAT-list page (+0x1630) for `sector`, hand it back via *pageOut; 0 on success. */
+    s32 result = VFiPFCACHE_DoReadPage(volume, (s32)((u8 *)volume + 0x1630), (s32)sector, (s32)pageOut, 0);
     return result & ((s32)(-result | result) >> 31);
 }
 #pragma dont_inline reset
