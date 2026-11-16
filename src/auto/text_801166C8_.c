@@ -2828,10 +2828,12 @@ void fn_8011AC10(void *arg0, s32 bufferStart, s32 bufferSize, s32 endOffset, s32
 extern f32 lbl_80329D48[];
 extern f64 lbl_805611D8;
 extern void fn_8011A330(void *);
+/* Close a DVD stream: cancel any in-flight read, then DVDClose the file unless the caller supplied it (keepOpen). */
 void fn_8011AC84(void *arg0) {
-    fn_8011A330(arg0);
-    if (*(s32 *)((u8 *)arg0 + 0xB0) == 0) {
-        DVDClose((u8 *)arg0 + 0x54);
+    DvdStream *stream = (DvdStream *)arg0;
+    fn_8011A330(stream);
+    if (stream->keepOpen == 0) {
+        DVDClose(&stream->fileInfo);
     }
 }
 
