@@ -195,10 +195,11 @@ void fn_80160A90(void* alarm) {
 }
 
 #pragma dont_inline on
+/* Return the rank override from fn_8027DED0 if valid, else the active stat handler's rank; the alarm argument is unused. */
 int fn_80160AB4(void *alarm) {
-    int r = fn_8027DED0();
-    if (r != -1) {
-        return r;
+    int rank = fn_8027DED0();
+    if (rank != -1) {
+        return rank;
     }
     return fn_80160A74();
 }
