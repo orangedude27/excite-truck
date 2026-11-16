@@ -1362,10 +1362,12 @@ extern int fn_801C1BA4(int, int, int);
 #define fencePostCount lbl_8055E5EC  // number of fence posts placed in the level
 #define fenceRope      lbl_8055E5F0  // shared rope ("ppsys") solver strung across them
 #pragma dont_inline on
+// Build the shared rope solver once fence posts exist: 5 rope points per post,
+// 4 fewer links, kept for every fence post in the level to share.
 void fn_801AC508(void) {
-    s32 value = lbl_8055E5EC;
-    if (value > 0) {
-        lbl_8055E5F0 = fn_801C1BA4(value * 5, value * 5 - 1, value);
+    s32 postCount = fencePostCount;
+    if (postCount > 0) {
+        fenceRope = fn_801C1BA4(postCount * 5, postCount * 5 - 1, postCount);
     }
 }
 
