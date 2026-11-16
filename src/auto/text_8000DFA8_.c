@@ -158,6 +158,7 @@ void fn_8000F188(const char *modelPath) {
 #undef arrowModel
 #undef mrModelLoad
 }
+
 void fn_8000F1B4(void) {
     // Unload the model held in lbl_80558A94 (via mrModelUnload/fn_802C6CF8)
     // and reset its handle to MODEL_INVALID (-1).
