@@ -777,14 +777,17 @@ void fn_801B8AFC(void) {
 float fn_801B8B00(void) { return lbl_8056274C; }
 
 extern int fn_800167F4(void);
+/* Returns a status flag word: 0x160B when the stored record count exceeds one,
+ * otherwise 0x564B. */
 int fn_801B8B08(void) {
-    int result;
-    if (fn_800167F4() > 1) {
-        result = 0x160B;
+    int recordCount = fn_800167F4();
+    int statusFlags;
+    if (recordCount > 1) {
+        statusFlags = 0x160B;
     } else {
-        result = 0x564B;
+        statusFlags = 0x564B;
     }
-    return result;
+    return statusFlags;
 }
 
 int fn_801B8B38(void) { return 1; }
