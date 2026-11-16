@@ -819,9 +819,10 @@ void fn_801F131C(int instance, int forceNearestLod) {
     }
 }
 
-void fn_801F1378(void *arg0) {
-    if (*(unsigned int *)((char *)arg0 + 4) != 3)
-        fn_801F163C(arg0, 0, *(float *)((char *)arg0 + 0x48));
+/* Draw a detached wheel using its nearest (lod0) model, unless state 3 hides it. */
+void fn_801F1378(WheelInstance *wheel) {
+    if (wheel->state != 3)
+        fn_801F163C(wheel, 0, wheel->spinAngle);
 }
 
 #pragma push
