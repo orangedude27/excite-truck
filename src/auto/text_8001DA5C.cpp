@@ -44,6 +44,7 @@ class PaneContainer {
 public:
     virtual void dummy0();
     virtual void* getPane(const char* name);
+    virtual void* select(const char* name);
 };
 
 struct PaneData {
@@ -359,7 +360,8 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma opt_propagation off
 extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
     PaneData temp;
     PaneData buffer;
@@ -367,22 +369,22 @@ extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
     const char* base = lbl_802FDB68;
     void* truck = fn_8017960C(arg1);
     p = (f32*)arg0 + arg1 * 3;
-    f32 mem2588 = *(f32*)((u8*)truck + 0x2588);
-    bool active = mem2588 > lbl_80560474;
+    f32 threshold;
+    f32 mem2588;
     f32 save;
+    mem2588 = *(f32*)((u8*)truck + 0x2588);
+    threshold = lbl_80560474;
+    bool active = mem2588 > threshold;
     if (active) {
         if (!((f32)fabs(p[2] - lbl_80560470) <= lbl_80558DC4)) {
             p[1] = lbl_8055E3C8;
-            p[2] = lbl_80560470;
-            goto skip_p2;
         }
-        f32 reload = *(volatile f32*)&p[2];
-        save = reload - lbl_8056047C;
+        p[2] = lbl_80560470;
     } else {
-        save = lbl_80560474;
+        f32 reload = *(volatile f32 *)&p[2];
+        save = reload - lbl_8056047C;
+        p[2] = save;
     }
-    p[2] = save;
-skip_p2:
     p[3] = *(f32*)((u8*)truck + 0x25A0);
     PaneContainer* paneMgr;
     if (fn_801E85A4() == 2) {
@@ -406,10 +408,10 @@ skip_p2:
             f32 factor1 = ((f32(*)(void))fn_8001DAD8)();
             u32 c1 = (u32)fn_80147C50(*(u32*)((u8*)r28 + 0x18), *(u32*)((u8*)r29 + 0x18), factor1) & 0x00FFFFFF;
             buffer.w18 = __rlwimi((int)c1, arg1, 24, 0, 7);
-            arg1 <<= 24;
+            arg1 = __rlwinm(arg1, 24, 0, 7);
             f32 factor2 = ((f32(*)(void))fn_8001DAD8)();
             u32 c2raw = (u32)fn_80147C50(*(u32*)((u8*)r29 + 0x18), *(u32*)((u8*)r28 + 0x18), factor2);
-            u32 masked = c2raw & 0x00FFFFFF;
+            u32 masked = __rlwinm(c2raw, 0, 8, 31);
             fn_80232928((int)(masked | (u32)arg1));
             fn_80147230(&buffer, lbl_80558D08, fn_80131234(base + 0x220));
             fn_80232930();
@@ -419,8 +421,10 @@ skip_p2:
         if (r3 != NULL) {
             PaneData* src = (PaneData*)r3;
             temp.w0 = src->w0;
-            u32 a2 = src->w8;
-            u32 a1 = src->w4;
+            u32 a2;
+            u32 a1;
+            a1 = ((volatile PaneData *)src)->w4;
+            a2 = ((volatile PaneData *)src)->w8;
             temp.w4 = a1;
             temp.w8 = a2;
             temp.wc = src->wc;
@@ -434,7 +438,7 @@ skip_p2:
         }
     }
 }
-#pragma scheduling on
+#pragma pop
 extern "C" f32 fn_8001DA5C(s32);
 extern f32 lbl_80560490;
 #pragma scheduling off
