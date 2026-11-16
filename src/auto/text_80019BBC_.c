@@ -598,10 +598,11 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
 }
 
 #define gMapMarkerRecords lbl_803583C8 /* the 16-entry array of 0x14-byte ring-challenge map markers */
-void fn_8001B450(int arg0) {
-    *(lbl_803583C8 + arg0 * 0x14 + 0x10) = 0;
-    *(int *)&lbl_803583C8[arg0 * 0x14] = 0;
-    *(int *)&lbl_803583C8[arg0 * 0x14 + 4] = -1;
+/* Release a map-marker record: clear its active flag (+0x10) and reset its id fields (+0, +4) to the free state. */
+void fn_8001B450(int index) {
+    *(gMapMarkerRecords + index * 0x14 + 0x10) = 0;
+    *(int *)&gMapMarkerRecords[index * 0x14] = 0;
+    *(int *)&gMapMarkerRecords[index * 0x14 + 4] = -1;
 }
 
 extern void fn_801352B8(void *);
