@@ -769,6 +769,7 @@ void fn_801312EC(int *arg0, int arg1) {
     arg0[2] = ~lbl_8055E044;
 }
 
+// Resolves a handle to its object; stores the resolved value and, on success, records the associated state.
 void fn_80131318(int *arg0) {
     int temp_r3;
     temp_r3 = fn_801302E0((void *)arg0[0]);
