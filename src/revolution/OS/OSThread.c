@@ -145,15 +145,19 @@ static BOOL __OSIsThreadActive(OSThread* thread) {
     return FALSE;
 }
 
+/* Disable thread rescheduling by incrementing Reschedule (a count > 0 parks the
+ * scheduler in SelectThread).  The increment is made atomic by briefly disabling
+ * interrupts; the returned value is the previous count, so the caller can restore
+ * it with OSEnableScheduler. */
 s32 OSDisableScheduler(void) {
-    s32 old;
-    BOOL enabled = OSDisableInterrupts();
+    s32 oldCount;
+    BOOL intEnabled = OSDisableInterrupts();
 
-    old = Reschedule++;
+    oldCount = Reschedule++;
 
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(intEnabled);
 
-    return old;
+    return oldCount;
 }
 
 s32 OSEnableScheduler(void) {
