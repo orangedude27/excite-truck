@@ -1024,8 +1024,9 @@ extern char *strncpy(char *, const char *, unsigned int);
 #define INPUT_BINDING_MAX_INDEX 0x15 /* highest valid index into the 22-entry input binding name table */
 
 int fn_801A902C(void) {
+    /* Lazily build the input-binding name table (fn_801A7628) and return the highest valid binding index. */
     fn_801A7628();
-    return 0x15;
+    return INPUT_BINDING_MAX_INDEX;
 }
 
 void fn_801A9050(void *arg0, int arg1) {
