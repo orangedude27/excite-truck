@@ -606,11 +606,13 @@ extern "C" void *fn_80135DC4(void *arg0, s32 arg1, s32 arg2) {
 #pragma cplusplus reset
 extern s32 fn_8012850C(s32, void *);
 extern s32 lbl_8032BE20[];
-void fn_80135EA8(void *arg0, s32 arg1, s32 arg2) {
-    s32 temp = arg1 + arg2;
-    *(s32 *)((char *)arg0 + 4) = arg1;
-    *(s32 *)((char *)arg0 + 8) = temp;
-    *(s32 *)arg0 = fn_8012850C(temp * 4, lbl_8032BE20);
+/* Initialize an entry buffer: store base/count, compute total capacity, and
+ * allocate a 4-byte-per-entry array tagged "dlatlong:times". */
+void fn_80135EA8(void *entry, s32 baseCount, s32 extraCount) {
+    s32 totalCount = baseCount + extraCount;
+    *(s32 *)((char *)entry + 4) = baseCount;
+    *(s32 *)((char *)entry + 8) = totalCount;
+    *(s32 *)entry = fn_8012850C(totalCount * 4, lbl_8032BE20);
 }
 
 #pragma scheduling invalid_target
