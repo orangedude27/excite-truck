@@ -211,11 +211,16 @@ void fn_80004AB8(u32 val) DECOMP_DONT_INLINE {
 }
 
 void fn_80004ACC(void) DECOMP_DONT_INLINE {
-    u32* p;
-    for (p = lbl_802FAFA0; *p != 0; p++) {
-        fn_80004AB8(*p);
+    /* Invoke the per-entry handler for each non-zero init-table entry, then step the loader. */
+#define sInitTable lbl_802FAFA0
+    u32 *entry;
+
+    for (entry = sInitTable; *entry != 0; entry++) {
+        fn_80004AB8(*entry);
         fn_8012DDA8();
     }
+
+#undef sInitTable
 }
 
 /* Iterate a null-terminated table of IDs, handling each and stepping related state. */
