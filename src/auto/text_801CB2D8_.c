@@ -65,6 +65,7 @@ extern void fn_801CB3F8(void);
 extern void fn_801CC470(void);
 extern void fn_801CC918(void);
 void fn_801CB2D8(void) {
+    /* When not blocked and in the default state, mark active and run setup handlers. */
     if (fn_80019BA8() == 0) {
         switch (fn_80161C38()) {
         case 0:
