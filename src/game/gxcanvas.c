@@ -524,11 +524,6 @@ void fn_802C3850(s32 dstCanvas, s32 srcX, s32 srcY, s32 srcX2, s32 srcY2, s32 sr
 
 extern s32 fn_802C3170(void *, s32 *, s32 *, s32 *, s32 *, s32 *, s32 *);
 extern const char lbl_8034B0B8[];
-static s32 fnSkipVal(s32 w, s32 count) {
-    s32 w2 = count * 2;
-    s32 d = w - w2;
-    return (((u32)d >> 31) + d) & ~1;
-}
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
