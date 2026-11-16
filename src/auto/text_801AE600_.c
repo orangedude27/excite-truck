@@ -583,9 +583,7 @@ void fn_801AEF28(Src *arg0) {
 extern void fn_801AFA5C(int);
 extern void fn_80128670(void *);
 extern void fn_80128668();
-#pragma push
-#pragma use_lmw_stmw off
-#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_801AF598(void) {
     register unsigned int i;
     register int **slot;
@@ -607,8 +605,8 @@ void fn_801AF598(void) {
                     *entry = zero;
                     fn_80128668(entry);
                 }
+                *(volatile int **)slot = 0;
             }
-            *(volatile int **)slot = 0;
         }
         fn_80128668(array);
     }
@@ -624,8 +622,7 @@ void fn_801AF598(void) {
     }
     lbl_8055E624 = 0;
 }
-#pragma dont_inline reset
-#pragma pop
+#pragma scheduling on
 
 #pragma scheduling invalid_target
 void fn_801AF65C(void) {
