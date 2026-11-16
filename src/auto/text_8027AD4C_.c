@@ -1037,13 +1037,15 @@ long fn_8027C1C8(void *arg0, const char *arg1) {
         long count;
     };
     struct StringTable *table = (struct StringTable *)arg0;
-    long index;
-    long offset;
-    for (index = 0, offset = 0; index < table->count; offset += 0xC, index++) {
+    long index = 0;
+    long offset = 0;
+    while (index < table->count) {
         unsigned int equal = (unsigned int)__cntlzw((unsigned int)stricmp(arg1, *(char **)(table->entries + offset + 4))) >> 5;
         if (equal) {
             goto found;
         }
+        offset += 0xC;
+        index++;
     }
     index = -1;
 found:
@@ -1135,7 +1137,7 @@ void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     outerArray[outerCount] = outerList;
     goto fetch_outer;
 outer_loop:
-    name = ((ItemIface8027C2B8 *)outerItem)->getName();
+    name = ((char *(*)(void *))(*(void ***)outerItem)[2])(outerItem);
     if (stricmp(name, (const char *)&lbl_8055C760) == 0) {
         tableCount = ctx->tableCount;
         tableArray = ctx->innerArray;
@@ -1145,7 +1147,7 @@ outer_loop:
         innerIndex = 0;
         goto fetch_inner;
 inner_loop:
-        name = ((ItemIface8027C2B8 *)innerItem)->getName();
+        name = ((char *(*)(void *))(*(void ***)innerItem)[2])(innerItem);
         if (stricmp(name, lbl_80347A50) == 0) {
             itemCount = ctx->itemCount;
             tableArray = ctx->tableArray;
@@ -1154,13 +1156,13 @@ inner_loop:
         }
         innerIndex++;
 fetch_inner:
-        innerItem = ((SubIface8027C2B8 *)outerItem)->fetchSub(innerIndex);
+        innerItem = ((void *(*)(void *, long))(*(void ***)outerItem)[24])(outerItem, innerIndex);
         if (innerItem != 0)
             goto inner_loop;
     }
     outerIndex++;
 fetch_outer:
-    outerItem = ((ListIface8027C2B8 *)outerList)->fetch(outerIndex);
+    outerItem = ((void *(*)(void *, long))(*(void ***)outerList)[3])(outerList, outerIndex);
     if (outerItem != 0)
         goto outer_loop;
 }
@@ -1192,8 +1194,9 @@ void *fn_8027C41C(void *arg0, long arg1) {
 
 #pragma use_lmw_stmw off
 long fn_8027C4B4(long arg0, long arg1) {
-    register long offset;
-    register long i;
+    long offset;
+    long i;
+    long zero;
     if (arg0 != 0) {
         *(long *)(arg0 + 4) = 0;
         i = 0;
@@ -1246,13 +1249,21 @@ void fn_8027C59C(long context) {
     }
 }
 
+// Releases one user of the shared EventPathOracle: decrement the refcount and,
+// on the last release, destroy the oracle and clear the shared pointer.
 void fn_8027C610(void) {
-    long value = lbl_8055F658 - 1;
-    lbl_8055F658 = value;
-    if (value == 0) {
-        fn_8027C4B4(lbl_8055F654, 1);
-        lbl_8055F654 = 0;
+#define oracle   lbl_8055F654
+#define refCount lbl_8055F658
+
+    long remaining = refCount - 1;
+    refCount = remaining;
+    if (remaining == 0) {
+        fn_8027C4B4(oracle, 1);
+        oracle = 0;
     }
+
+#undef oracle
+#undef refCount
 }
 
 #pragma cplusplus on
