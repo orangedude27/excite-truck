@@ -17859,53 +17859,73 @@ extern "C" s32 fn_800C4E5C(s32, void *);
 #pragma use_lmw_stmw on
 #pragma dont_inline fn_800C34B4
 void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
-    s8 inner;
-    s32 var_r29;
-    s32 var_r28;
-    s32 var_r27;
-    s32 var_r26;
-    s32 var_r25;
-    s32 var_r24;
-    s32 var_r22;
-    s32 var_r17;
-    s32 var_r16;
-    var_r29 = 0x480;
-    if (*(s32 *)((u8 *)arg0 + 4) == 1) var_r29 = 0x240;
-    var_r28 = arg2;
-    var_r22 = 0;
-    var_r27 = 0;
-    var_r17 = 0;
-    var_r26 = 0;
-    var_r16 = 0;
-    do {
-        *(s16 *)((u8 *)arg0 + 0x27C) = *(s16 *)((u8 *)arg0 + 0x27C) - 0x40;
-        if (*(s16 *)((u8 *)arg0 + 0x27C) < 0)
-            *(s16 *)((u8 *)arg0 + 0x27C) = 0x3C0;
-        var_r25 = arg1;
-        var_r24 = var_r28;
-        for (inner = 0; inner < arg4; inner++) {
-            fn_800C4E5C(var_r24, (void *)(var_r25 + (*(s16 *)((u8 *)arg0 + 0x27C) * 4)));
-            var_r25 += 0x1000;
-            var_r24 += 0x80;
-        }
-        if (arg4 == 2) {
-            if (arg5 == 0) {
-                ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1, arg3 + var_r17, *(s16 *)((u8 *)arg0 + 0x27C), arg5);
-                ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1 + 0x1000, arg3 + ((var_r27 + 1) * 2), *(s16 *)((u8 *)arg0 + 0x27C), arg5);
-            } else {
-                ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1, arg3 + var_r16, *(s16 *)((u8 *)arg0 + 0x27C), arg5);
-                ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1 + 0x1000, arg3 + ((var_r26 + var_r29) * 2), *(s16 *)((u8 *)arg0 + 0x27C), arg5);
-            }
-        } else {
-            ((void (*)(s32, s32, s32, s32))fn_800C34B4)(arg1, arg3 + var_r16, *(s16 *)((u8 *)arg0 + 0x27C), 1);
-        }
-        ++var_r22;
-        var_r27 += 0x40;
-        var_r17 += 0x80;
-        var_r26 += 0x20;
-        var_r16 += 0x40;
-        var_r28 += 0x100;
-    } while (var_r22 < 0x12);
+  struct W16 { s32 v; } w16;
+  struct W17 { s32 v; } w17;
+  s32 &var_r16 = w16.v;
+  s32 &var_r17 = w17.v;
+  s32 var_r29;
+  s32 var_r28;
+  s32 var_r27;
+  s32 var_r26;
+  s32 var_r25;
+  s32 var_r24;
+  s8 inner;
+  s32 var_r22;
+  void *new_var;
+  var_r29 = 0x480;
+  if ((*((s32 *) (((u8 *) arg0) + 4))) == 1)
+  {
+    var_r29 = 0x240;
+  }
+  var_r28 = arg2;
+  var_r22 = 0;
+  var_r27 = 0;
+  var_r17 = 0;
+  var_r26 = 0;
+  var_r16 = 0;
+  new_var = arg0;
+  do
+  {
+    *((s16 *) (((u8 *) new_var) + 0x27C)) = (*((s16 *) (((u8 *) arg0) + 0x27C))) - 0x40;
+    if ((*((s16 *) (((u8 *) arg0) + 0x27C))) < 0)
+    {
+      *((s16 *) (((u8 *) arg0) + 0x27C)) = 0x3C0;
+    }
+    var_r25 = arg1;
+    var_r24 = var_r28;
+    for (inner = 0; inner < arg4; inner++)
+    {
+      fn_800C4E5C(var_r24, (void *) (var_r25 + ((*((s16 *) (((u8 *) new_var) + 0x27C))) * 4)));
+      var_r25 += 0x1000;
+      var_r24 += 0x80;
+    }
+
+    if (arg4 == 2)
+    {
+      if (arg5 == 0)
+      {
+        ((void (*)(s32, s32, s32, s32)) fn_800C34B4)(arg1, arg3 + var_r17, *((s16 *) (((u8 *) new_var) + 0x27C)), arg5);
+        ((void (*)(s32, s32, s32, s32)) fn_800C34B4)(arg1 + 0x1000, arg3 + ((var_r27 + 1) * 2), *((s16 *) (((u8 *) arg0) + 0x27C)), arg5);
+      }
+      else
+      {
+        ((void (*)(s32, s32, s32, s32)) fn_800C34B4)(arg1, arg3 + var_r16, *((s16 *) (((u8 *) arg0) + 0x27C)), arg5);
+        var_r25 = *((s16 *) (((u8 *) new_var) + 0x27C));
+        ((void (*)(s32, s32, s32, s32)) fn_800C34B4)(arg1 + 0x1000, arg3 + ((var_r26 + var_r29) * 2), var_r25, arg5);
+      }
+    }
+    else
+    {
+      ((void (*)(s32, s32, s32, s32)) fn_800C34B4)(arg1, arg3 + var_r16, *((s16 *) (((u8 *) arg0) + 0x27C)), 1);
+    }
+    ++var_r22;
+    var_r27 += 0x40;
+    var_r17 += 0x80;
+    var_r26 += 0x20;
+    var_r16 += 0x40;
+    var_r28 += 0x100;
+  }
+  while (var_r22 < 0x12);
 }
 #pragma pop
 
@@ -25029,32 +25049,45 @@ extern "C" void fn_800F83D0(void);
 extern "C" void Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv(void);
 extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void);
 extern "C" void fn_800FA350(void);
-extern "C" void fn_800CF170(void *arg0) {
-    class HandleDispatch { public: virtual void stop2(s32); };
-    class PlayerDispatch { u32 pad[2]; public: virtual void stop(s32); };
-    if (*(void **)((u8 *)arg0 + 0x5C4) != 0) {
-        fn_800EB36C(*(void **)((u8 *)arg0 + 0x5C4));
-        ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5C4))->stop2(-1);
+extern "C" void fn_800CF170(void *homeButton) {
+    /* ShutdownHomeButtonSound: tear down every sound object owned by the
+       home-button manager (lbl_8055DD98), then shut the nw4hbm sound system down. */
+    struct HomeButtonSoundSlots {
+        u8 pad[0x5C0];
+        void *soundArchivePlayer; /* +0x5C0 */
+        void *dvdSoundArchive;    /* +0x5C4 */
+        void *soundPlayer;        /* +0x5C8 */
+        void *nandSoundArchive;   /* +0x5CC */
+        void *frameHeap;          /* +0x5D0 */
+        void *soundHandle;        /* +0x5D4 */
+    };
+    class DeviceHandle { public: virtual void deleteThis(s32); };
+    class PlayerDispatch { u32 pad[2]; public: virtual void deleteThis(s32); };
+    HomeButtonSoundSlots *mgr = (HomeButtonSoundSlots *)homeButton;
+
+    if (mgr->dvdSoundArchive != 0) {
+        fn_800EB36C(mgr->dvdSoundArchive);
+        ((DeviceHandle *)mgr->dvdSoundArchive)->deleteThis(-1);
     }
-    if (*(void **)((u8 *)arg0 + 0x5C8) != 0) {
-        ((void (*)(void *))fn_800ECC58)(*(void **)((u8 *)arg0 + 0x5C8));
-        ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5C8))->stop2(-1);
+    if (mgr->soundPlayer != 0) {
+        ((void (*)(void *))fn_800ECC58)(mgr->soundPlayer);
+        ((DeviceHandle *)mgr->soundPlayer)->deleteThis(-1);
     }
-    if (*(void **)((u8 *)arg0 + 0x5CC) != 0) {
-        ((void (*)(void *))fn_800EE47C)(*(void **)((u8 *)arg0 + 0x5CC));
-        ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5CC))->stop2(-1);
+    if (mgr->nandSoundArchive != 0) {
+        ((void (*)(void *))fn_800EE47C)(mgr->nandSoundArchive);
+        ((DeviceHandle *)mgr->nandSoundArchive)->deleteThis(-1);
     }
-    if (*(void **)((u8 *)arg0 + 0x5D0) != 0) {
-        ((void (*)(void *))fn_800F83D0)(*(void **)((u8 *)arg0 + 0x5D0));
-        ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5D0))->stop2(-1);
+    if (mgr->frameHeap != 0) {
+        ((void (*)(void *))fn_800F83D0)(mgr->frameHeap);
+        ((DeviceHandle *)mgr->frameHeap)->deleteThis(-1);
     }
-    if (*(void **)((u8 *)arg0 + 0x5C0) != 0) {
-        ((void (*)(void *))Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv)(*(void **)((u8 *)arg0 + 0x5C0));
-        ((PlayerDispatch *)*(void **)((u8 *)arg0 + 0x5C0))->stop(-1);
+    if (mgr->soundArchivePlayer != 0) {
+        ((void (*)(void *))Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv)(mgr->soundArchivePlayer);
+        ((PlayerDispatch *)mgr->soundArchivePlayer)->deleteThis(-1);
     }
-    if (*(void **)((u8 *)arg0 + 0x5D4) != 0)
-        if (*(void **)((u8 *)arg0 + 0x5D4) != 0)
-            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(*(void **)((u8 *)arg0 + 0x5D4));
+    if (mgr->soundHandle != 0)
+        if (mgr->soundHandle != 0)
+            ((void (*)(void *))DetachSound__Q34nw4r3snd11SoundHandleFv)(mgr->soundHandle);
     fn_800FA350();
 }
 
