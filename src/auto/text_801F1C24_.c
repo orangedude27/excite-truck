@@ -322,12 +322,18 @@ void *fn_801F220C(void) {
 
 #pragma push
 #pragma small_data off
+/* Allocate an 8-byte "Scrolling" object and, if successful, set its vtable
+ * pointer (lbl_8033A710) and clear its field at offset +4. */
 void fn_801F224C(void) {
+#define kScrollingTag lbl_8033A6A0
+#define kScrollingVTable lbl_8033A710
     void *p;
-    if ((p = fn_801284F8(8, &lbl_8033A6A0)) != 0) {
-        *(void **)p = &lbl_8033A710;
+    if ((p = fn_801284F8(8, &kScrollingTag)) != 0) {
+        *(void **)p = &kScrollingVTable;
         *(int *)((char *)p + 4) = 0;
     }
+#undef kScrollingTag
+#undef kScrollingVTable
 }
 #pragma pop
 int fn_801F2294(int arg0, int arg1) {
