@@ -249,9 +249,12 @@ void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float
     *(float *)((char *)arg0 + 0x14) = arg4 / (arg3 - arg2);
 }
 #pragma pop
-int fn_8022DA34(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_8022DA34(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 #pragma push
