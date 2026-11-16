@@ -1661,11 +1661,13 @@ s32 fn_80007724(s32 value, s32 count) {
     return value;
 }
 
-s32 fn_80007764(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80007764(s32 object, s32 shouldDestroy) {
+    /* If object is non-null and shouldDestroy > 0, signal it for destruction
+     * via fn_80128668 (calls fn_80128584 with mode 3). Returns the object. */
+    if (object != 0 && shouldDestroy > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 s32 fn_800077A4(s32 arg0, s32 arg1) {
