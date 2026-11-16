@@ -1065,12 +1065,19 @@ extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 
 }
 #pragma scheduling on
 extern "C" void fn_800DEFD8(void *this_ptr) {
-    void *buffer = *(void **)((u8 *)this_ptr + 0xD4);
+#define mStringBuffer ((u8 *)this_ptr + 0xD4)
+#define mStringBufferSize ((u8 *)this_ptr + 0xF8)
+#define sTextAllocator lbl_8055DDF0
+    /* Free the object's string buffer and reset its pointer and size. */
+    void *buffer = *(void **)mStringBuffer;
     if (buffer != NULL) {
-        MEMFreeToAllocator(lbl_8055DDF0, buffer);
-        *(void **)((u8 *)this_ptr + 0xD4) = NULL;
-        *(u16 *)((u8 *)this_ptr + 0xF8) = 0;
+        MEMFreeToAllocator(sTextAllocator, buffer);
+        *(void **)mStringBuffer = NULL;
+        *(u16 *)mStringBufferSize = 0;
     }
+#undef mStringBuffer
+#undef mStringBufferSize
+#undef sTextAllocator
 }
 
 #pragma optimization_level 2
