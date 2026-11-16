@@ -4,5 +4,10 @@
 extern void* fn_801EA9CC(int index);
 
 int fn_80005694(void) {
-    return (*(int*)((char*)fn_801EA9CC(0) + 0x30) - 1) == 0;
+    /* Race-start check: true while the first car's live state at +0x30 is 1 (race not yet green). */
+#define getCarMgrEntry fn_801EA9CC
+    struct CarMgrEntry { char pad[0x30]; int state; } *firstCar;
+    firstCar = (struct CarMgrEntry *)getCarMgrEntry(0);
+    return (firstCar->state - 1) == 0;
+#undef getCarMgrEntry
 }
