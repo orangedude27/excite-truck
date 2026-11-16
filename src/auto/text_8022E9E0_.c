@@ -177,11 +177,12 @@ void *fn_8022EC7C(void) {
 }
 
 extern s32 lbl_8055B980;
-void *fn_8022ECC0(s32 arg0) {
-    void *p = ((void *(*)(s32, void *))fn_8022E9E0)(8, &lbl_8055B980);
-    ((s32 *)p)[0] = arg0;
-    ((s32 *)p)[1] = 0;
-    return p;
+void *fn_8022ECC0(s32 value) {
+    /* Allocate a cnode for the UI context list, storing value with a null next link. */
+    void *node = ((void *(*)(s32, void *))fn_8022E9E0)(8, &lbl_8055B980);
+    ((s32 *)node)[0] = value;
+    ((s32 *)node)[1] = 0;
+    return node;
 }
 
 /* Append a newly allocated UI context node to the global UI context list. */
@@ -225,6 +226,7 @@ s32 fn_8022EDC4(void) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling on
 void *fn_8022EDE4(float *arg0, float farg0) {
     int *dst = (int *)((void *(*)(int, void *))fn_8022EAB8)(0x3C, (void *)&lbl_80340344);
     int *src = (int *)arg0;
