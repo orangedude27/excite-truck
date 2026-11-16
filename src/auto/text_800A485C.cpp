@@ -2901,8 +2901,11 @@ extern "C" s32 fn_800A8EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
 extern "C" s32 fn_800A8050(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A8F28(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 temp_r3 = fn_800A8050(arg0, (s32)((u8 *)arg0 + 0x1634), arg1, arg2, arg3);
+    /* Read/cache a page via the secondary list (offset 0x1634); return result if nonzero, else 0. */
+#define pageList ((s32)((u8 *)arg0 + 0x1634))
+    s32 temp_r3 = fn_800A8050(arg0, pageList, arg1, arg2, arg3);
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+#undef pageList
 }
 
 /* Reads data sectors through the cache page at +0x1634, returning 0 on success or 0x10 if the sector is out of range. */
