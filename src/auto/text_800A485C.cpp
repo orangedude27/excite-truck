@@ -1710,18 +1710,16 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     u16 value;
     fn_800A6298(*(void **)((u8 *)arg0 + 4), &value);
     if (arg2 == value)
-        return arg1 + *(u32 *)((u8 *)arg0 + 0xC);
-    u32 shift = value >> 9;
-    shift &= 0x7F;
-    u32 result = *(u32 *)((u8 *)arg0 + 0xC);
+        return arg1 + M2C_FIELD(arg0, u32 *, 0xC);
+    u32 shift = (value >> 9) & 0x7F;
+    u32 result = M2C_FIELD(arg0, u32 *, 0xC);
     if (shift == 2)
         result <<= 1;
     else if (shift == 4)
         result <<= 2;
     else if (shift == 8)
         result <<= 3;
-    shift = arg2 >> 9;
-    shift &= 0x7F;
+    shift = (arg2 >> 9) & 0x7F;
     if (shift == 2)
         result >>= 1;
     else if (shift == 4)
@@ -2464,7 +2462,7 @@ next:
      VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),length<<volume[0x20]);
      remaining-=*(u32 *)(page+0x14);
     } else if (pos>start && pos<end && pos+*(u32 *)(page+0x14)>=end) {
-     end2=count+start;
+     end2=start-(0-count);
      VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),(end2-pos)<<volume[0x20]);
      remaining-=end2-*(u32 *)(page+0x18);
     } else if (pos<start && pos+*(u32 *)(page+0x14)>start && pos+*(u32 *)(page+0x14)<=end) {
@@ -21166,9 +21164,9 @@ extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
         return *(f32 *)(right + 4);
     }
     f32 d = farg0 - *(f32 *)left;
+    f32 one = lbl_80560E50;
     f32 dx = *(f32 *)right;
     dx -= *(f32 *)left;
-    f32 one = lbl_80560E50;
     f32 k54 = lbl_80560E54;
     f32 k58 = lbl_80560E58;
     f32 scale = one / dx;
@@ -21504,10 +21502,10 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     while (ARCReadDir(&dir, &entry)) {
         if (entry.isDir) {
             if (!ARCChangeDir(h, entry.name))
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x39, lbl_8031F2E4);
+                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x39, lbl_8031F2E4);
             result = fn_800D50A8(h, n);
             if (!ARCChangeDir(h, lbl_805597FC))
-                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x3C, lbl_8031F2E4);
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x3C, lbl_8031F2E4);
             if (result == -1) continue;
             break;
         } else if (stricmp(n, entry.name) == 0) {
@@ -25176,21 +25174,25 @@ extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
     struct Data { u8 *pos; u8 *secondary; u32 unk; u32 mode; };
     struct Table { u8 pad[0x54]; s32 (*is_lead)(s8, s32); s32 (*length)(u8 *); };
     Data *data = (Data *)arg0;
+    Table *table;
     s16 count = 0;
     if (data->mode == 1) {
         u8 *str = data->pos;
-        Table *table = (Table *)lbl_803D2140;
-        for (; arg1 != 0; arg1--) {
+        table = (Table *)lbl_803D2140;
+        while (arg1 != 0) {
             if (table->is_lead((s8)*str, 1) != 0)
                 count = (s16)(count + 1);
             count++;
+            arg1--;
         }
     } else {
         u8 *str = data->pos;
-        Table *table = (Table *)lbl_803D2140;
-        for (s16 i = 0; i < arg1; i++) {
+        table = (Table *)lbl_803D2140;
+        s16 i = 0;
+        while (i < arg1) {
             s32 len = table->length(str);
             str += len * 2;
+            i++;
             count += (s16)len;
         }
     }
@@ -25349,6 +25351,8 @@ extern "C" s32 fn_800A53DC(void *arg0) { return ((u16)*(u16 *)((u8 *)arg0 + 0x1F
 
 extern "C" void fn_800A53E8(void *arg0) { *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFDF); }
 
+#pragma push
+#pragma dont_inline on
 extern "C" s32 fn_800A53F8(void *arg0) {
     void *local1 = (void *)fn_800A52DC;
     void *local2 = (void *)fn_800A535C;
@@ -25371,6 +25375,7 @@ extern "C" s32 fn_800A53F8(void *arg0) {
     }
     return 0;
 }
+#pragma pop
 
 #pragma dont_inline on
 extern "C" s32 fn_800A54AC(void *volume) {
