@@ -3753,9 +3753,11 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     *(int *)((char *)self + 0x40) = zero;
 }
 
-extern "C" void fn_800E8ADC(void *arg0) {
-    if (*(unsigned char *)((char *)arg0 + 0x65) == 0)
-        *(unsigned char *)((char *)arg0 + 0x64) = 1;
+extern "C" void fn_800E8ADC(void *sound) {
+    /* Request a start (startRequested, +0x64) for this BasicSound if it is not
+       running yet (started, +0x65). */
+    if (*(unsigned char *)((char *)sound + 0x65) == 0)
+        *(unsigned char *)((char *)sound + 0x64) = 1;
 }
 
 extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
