@@ -575,6 +575,11 @@ s32 fn_801E1048(void) {
     return 0;
 }
 
+static inline void fn_801E1250_check(u8 *p, s32 arg0, s8 arg1) {
+    if (arg0 == *(s32 *)(p + 0xC)) *(p + 0x10) = arg1;
+    if (arg0 == *(s32 *)(p + 0x24)) *(p + 0x28) = arg1;
+}
+
 void fn_801E1250(s32 arg0, s8 arg1) {
     u8 *p = (u8 *)lbl_8055EA10;
     if (!p) return;
