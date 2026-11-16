@@ -866,8 +866,10 @@ void MEMFreeToAllocator(MEMAllocator* allocator, void* block) {
     allocator->funcs->freeFunc(allocator, block);
 }
 
+#define sExpHeapAllocatorFuncs lbl_80560C38
+
 void MEMInitAllocatorForExpHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32 align) {
-    extern const MEMAllocatorFuncs lbl_80560C38;
+    extern const MEMAllocatorFuncs sExpHeapAllocatorFuncs;
     allocator->funcs = &lbl_80560C38;
     allocator->heap = heap;
     allocator->heapParam1 = align;
