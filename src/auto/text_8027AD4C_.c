@@ -599,8 +599,10 @@ void *fn_8027B878(long slotIndex) {
     return playerBase;
 }
 #pragma scheduling on
-void fn_8027B8C0(void* alarm) {
-    fn_8027BA24(fn_8027B834(alarm));
+/* Hand the current player's group-list slot at groupIndex to fn_8027BA24,
+ * which validates every entry in it (its result is left in r3). */
+void fn_8027B8C0(void* groupIndex) {
+    fn_8027BA24(fn_8027B834(groupIndex));
 }
 
 #pragma dont_inline on
@@ -1178,29 +1180,25 @@ fetch_outer:
 }
 #pragma cplusplus reset
 extern void fn_8027C2B8();
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void *fn_8027C41C(void *arg0, long arg1) {
-    long base = (long)arg0 + 0x10000;
-    long zero = 0;
-    char *temp_r7 = (char *)(base - 0x50E8);
-    char *temp_r6 = (char *)(base - 0x4FEC);
+    char *base = (char *)arg0 + 0x10000;
+    char *temp_r7 = base - 0x50E8;
+    char *temp_r6 = base - 0x4FEC;
     *(long *)(base - 0x4FE4) = arg1;
     *(void **)arg0 = (char *)arg0 + 0xC;
     *(long *)((char *)arg0 + 8) = 0x8C0;
     *(long *)(base - 0x50EC) = 0x14;
-    *(long *)((char *)arg0 + 4) = zero;
+    *(long *)((char *)arg0 + 4) = 0;
     *(void **)(base - 0x50F4) = temp_r7;
-    *(long *)(base - 0x50F0) = zero;
+    *(long *)(base - 0x50F0) = 0;
     *(void **)(base - 0x4FF8) = temp_r6;
     *(long *)(base - 0x4FF0) = 2;
-    *(long *)(base - 0x4FF4) = zero;
-    fn_8027C2B8(arg0, 0, &lbl_80347B4C, temp_r6, temp_r7, zero);
+    *(long *)(base - 0x4FF4) = 0;
+    fn_8027C2B8(arg0, 0, &lbl_80347B4C, temp_r6, temp_r7, 0);
     fn_8027C2B8(arg0, 1, &lbl_80347B5C);
     return arg0;
 }
-#pragma scheduling on
-#pragma pop
 
 #pragma use_lmw_stmw off
 long fn_8027C4B4(long arg0, long arg1) {
