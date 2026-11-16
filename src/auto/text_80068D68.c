@@ -7171,10 +7171,13 @@ void BTA_HhEnable(u8 sec_mask, void *p_cback) {
 }
 
 void fn_80076228(void) {
-    s16 *ptr = GKI_getbuf(8);
-    if (ptr != 0) {
-        *ptr = 0x170D;
-        fn_80071450(ptr);
+    /* BTA_HhDisable: allocate a BT_HDR request, stamp it with the HID-host
+       disable event (0x170D = BTA_HH_API_DISABLE_EVT) and post it to the BTA
+       task via fn_80071450 (bta_sys_sendmsg). */
+    s16 *msg = GKI_getbuf(8);
+    if (msg != 0) {
+        *msg = 0x170D;
+        fn_80071450(msg);
     }
 }
 
