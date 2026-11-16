@@ -596,10 +596,9 @@ extern short lbl_802FAB60[];
 #pragma push
 #pragma scheduling invalid_target
 int fn_802B9920(int arg0) {
-    int v = arg0 + 0x200;
-    short s = (short)v;
-    short idx = (short)(s % 32);
-    return lbl_802FAB60[idx];
+    short s = (short)(arg0 + 0x200);
+    s = (short)(s % 32);
+    return lbl_802FAB60[s];
 }
 #pragma scheduling on
 #pragma pop
@@ -1162,11 +1161,14 @@ extern "C" void fn_802BA348(void) {
 
 #pragma cplusplus reset
 
-void fn_802BA560(void *arg0) {
-    *(volatile int *)((char *)arg0 + 4) = 0;
-    *(volatile int *)((char *)arg0 + 0) = 0;
-    *(volatile int *)((char *)arg0 + 8) = 3;
-    *(volatile unsigned char *)((char *)arg0 + 0xC) = 1;
+void fn_802BA560(void *entry) {
+    /* __construct_array initializer for one "roadobject[]" record: clears the two
+       leading words, marks the record free (state 3) and enabled (byte at +0xC). */
+    RoadObject *record = (RoadObject *)entry;
+    record->unused04 = 0;
+    record->unused00 = 0;
+    record->state = 3;
+    record->enabled = 1;
 }
 
 #pragma push
