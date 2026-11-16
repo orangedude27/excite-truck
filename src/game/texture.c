@@ -1281,16 +1281,15 @@ void fn_802CBD7C(void **, void *, void *);
 extern char lbl_8034BA04[];
 void fn_802CBD7C(register void **link, void *target, void *current) {
     int removed = 0;
-    while (current != 0) {
+    while ((current = *link) != 0) {
         if (current == target) {
             void *next = *(void **)((char *)target + 0x10);
-            *(void * volatile *)link = next;
+            *link = next;
             *(void **)((char *)target + 0x10) = 0;
             removed = 1;
             break;
         }
         link = (void **)((char *)current + 0x10);
-        current = *(void * volatile *)link;
     }
     if (removed == 0)
         fn_802E317C(lbl_8034BA04);
@@ -1733,14 +1732,7 @@ char fn_802CC744(void) {
 
 #pragma push
 #pragma peephole off
-int fn_802CC74C(void) {
-    int result = 0;
-    char *p = *(char **)lbl_8055FCBC;
-    if (p != 0) {
-        if (*(int *)(p + 4) != 0) result = 1;
-    }
-    return result;
-}
+int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
 #pragma pop
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
