@@ -548,12 +548,14 @@ void fn_802DA4C4(void) {
 }
 
 #pragma scheduling invalid_target
+/* Reset the global BoneHandleAlloc stack allocator: empty the arena, clear the
+   current record, mark it active and clear the busy flag. */
 void fn_802DA52C(void) {
-    volatile unsigned char *p = (volatile unsigned char *)lbl_8055FE5C;
-    *(volatile int *)(p + 0x10) = 0;
-    *(volatile int *)(p + 0x20) = -1;
-    p[0x24] = 1;
-    p[0x25] = 0;
+    volatile struct StackAlloc *alloc = (volatile struct StackAlloc *)lbl_8055FE5C;
+    alloc->used = 0;
+    alloc->current = (void *)-1;
+    alloc->status = 1;
+    alloc->initialized = 0;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw off
@@ -799,13 +801,15 @@ void fn_802DAA18(void *arg0) {
     extern void fn_802E317C(char *, ...);
     extern int memcpy(void *, const void *, unsigned int);
     unsigned char sp8[0x3C0];
-    register void *var_r31 = arg0;
+    void *var_r31 = arg0;
     struct StackAlloc *ctx = (struct StackAlloc *)lbl_8055FE5C;
     struct StackAllocRecord *entry;
     struct StackAllocRecord *var_r29;
+    unsigned char *allocPtr;
     char *format;
     void *name;
     int size;
+
     lbl_8055FE60 = var_r31;
     if (var_r31 == 0) {
         entry = (struct StackAllocRecord *)ctx->current;
@@ -820,9 +824,9 @@ void fn_802DAA18(void *arg0) {
                 fn_802E317C(format, name, 0x3D8, size / 0x400);
                 var_r29 = 0;
             } else {
-                var_r29 = (struct StackAllocRecord *)(ctx->buffer + ctx->used);
-                *(int *)var_r29 = (int)var_r31;
-                var_r29 = (struct StackAllocRecord *)((unsigned char *)var_r29 + 4);
+                allocPtr = ctx->buffer + ctx->used;
+                *(int *)allocPtr = (int)var_r31;
+                var_r29 = (struct StackAllocRecord *)(allocPtr + 4);
                 *(int *)(ctx->buffer + ctx->used + 0x3DC) = 0x3D8;
                 ctx->used += 0x3E0;
             }
