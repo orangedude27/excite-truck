@@ -1154,18 +1154,18 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     p[7] = 0xFF;
     p[0x5C] = 1;
 }
-#pragma small_data on
+#pragma push
+#pragma small_data off
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
-    volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
+    volatile unsigned char *__restrict p = (volatile unsigned char *)&lbl_804C97D0;
     lbl_804C97D0 = a;
     p[1] = b;
     p[2] = c;
     p[3] = 0;
     p[0x5C] = 1;
 }
-
-#pragma scheduling off
+#pragma pop
 void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
@@ -2888,10 +2888,12 @@ void fn_802D3100(void) {
 extern void fn_802D307C(void);
 #pragma dont_inline on
 void* fn_802D3104(void) {
-    struct { char pad[0x24]; char m; } *p;
+    /* Load the default indirect-texture matrix, then return the address of the
+       +0x24 field of the global graphics-state object held in lbl_8055FD5C. */
+    struct { char pad[0x24]; char m; } *state;
     fn_802D307C();
-    p = lbl_8055FD5C;
-    return &p->m;
+    state = lbl_8055FD5C;
+    return &state->m;
 }
 #pragma dont_inline off
 
