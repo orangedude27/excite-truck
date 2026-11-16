@@ -478,10 +478,11 @@ void fn_8025A204(void) {
 
 extern float lbl_80563AF4;
 extern float lbl_80563AF8;
-int fn_8025A4CC(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0)
-        fn_80128668((void *)arg0);
-    return arg0;
+int fn_8025A4CC(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0)
+        fn_80128668((void *)object);
+    return object;
 }
 
 extern int fn_8001EFA0(int, int);
