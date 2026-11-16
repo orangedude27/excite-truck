@@ -879,6 +879,8 @@ void fn_802BDBA8(void) {
 #undef InitDispatch
 }
 #pragma scheduling on
+/* Chained initializer: parses the tree/resource data (fn_802BD210) and then
+ * sets up each entry's render state (fn_802C1550). */
 void fn_802BDC3C(void* alarm) {
     fn_802C1550(fn_802BD210(alarm));
 }
