@@ -943,11 +943,13 @@ void fn_80261A40(s32 selection) {
 }
 
 void fn_80261A7C(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 8) = arg1;
-    *(s32 *)((u8 *)arg0 + 4) = 8;
-    *(void **)((u8 *)arg0) = &lbl_8055BAC0;
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+    /* Set up a debug-menu item that invokes `arg1` when selected (kind 8). */
+    DbgMenuItem *item = (DbgMenuItem *)arg0;
+    item->data = (void *)arg1;
+    item->type = 8;
+    item->name = &lbl_8055BAC0;
+    item->a = 0;
+    item->b = 0;
 }
 
 /* Iterates over count entries stored at offset 0xC of lbl_8055F420 and calls
