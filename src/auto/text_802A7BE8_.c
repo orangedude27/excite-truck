@@ -13,8 +13,17 @@ extern long fn_8023512C(void *);
 extern long lbl_80349CF0[];
 extern long lbl_80349CFC[];
 void fn_802A7BE8(void) {
-    lbl_8055F8BC = fn_80232578(&lbl_80349CF0);
-    lbl_8055F8C0 = fn_8023512C(&lbl_80349CFC);
+    #define gCarMarkerTexBlock lbl_8055F8BC
+    #define gCarMarkerArtSet   lbl_8055F8C0
+    #define FONT_FILE_NAME     lbl_80349CF0  /* "uifnt_o.gtx" */
+    #define ART_SET_NAME       lbl_80349CFC  /* "mapgems.art" */
+    /* Load the UI font texture block and the car-marker art set used by the debug markers. */
+    gCarMarkerTexBlock = fn_80232578(&FONT_FILE_NAME);
+    gCarMarkerArtSet = fn_8023512C(&ART_SET_NAME);
+    #undef ART_SET_NAME
+    #undef FONT_FILE_NAME
+    #undef gCarMarkerArtSet
+    #undef gCarMarkerTexBlock
 }
 
 void fn_802A7C24(void) {
