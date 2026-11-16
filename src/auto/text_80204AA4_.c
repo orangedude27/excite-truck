@@ -134,48 +134,50 @@ int fn_80204CF0(void) {
 extern double atof(const char *);
 __declspec(section ".sdata") extern const char lbl_8055B4AC[];
 extern const char lbl_8033BBF4[];
-float fn_80204CFC(const char *arg0) {
+#pragma cplusplus on
+extern "C" int fn_801345D8(void *, int, const char *, const char *);
+extern "C" double atof(const char *);
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" float fn_80204CFC(const char *arg0) {
+    class Res {
+    public:
+        virtual void unused0();
+        virtual int has(void *);
+        virtual void unused2();
+        virtual int get(void *);
+    };
     char buf[0x64];
     int result = 0;
     int value;
     int r;
-    void *temp;
-    void *obj;
-    void **vt;
-    int (*method)(void *);
-    int (*method2)(void *, void *);
-    int (*method3)(void *, const char *);
-
+    int *temp;
     temp = lbl_8055ED5C;
-    if (*(int *)((char *)temp + 0x10) != 0) {
-        fn_801345D8(buf, 0x64, lbl_8055B4AC, arg0);
-        obj = *(void **)((char *)temp + 0xC);
-        if (obj != 0 && (*(int (**)(void *))(*(void ***)obj + 3))(buf) != 0) {
-            obj = *(void **)((char *)temp + 0xC);
-            result = (*(int (**)(void *, void *))(*(void ***)obj + 5))(obj, buf);
+    if (temp[4] != 0) {
+        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, temp[4], arg0);
+        if (temp[3] != 0 && ((Res *)temp[3])->has(buf)) {
+            r = ((Res *)temp[3])->get(buf);
+        } else if (((Res *)temp[2])->has(buf)) {
+            r = ((Res *)temp[2])->get(buf);
         } else {
-            obj = *(void **)((char *)temp + 8);
-            if ((*(int (**)(void *))(*(void ***)obj + 3))(buf) != 0) {
-                result = (*(int (**)(void *, void *))(*(void ***)obj + 5))(obj, buf);
-            } else result = 0;
+            r = 0;
         }
+        result = r;
     }
     if (result == 0) {
-        obj = *(void **)((char *)temp + 0xC);
-        if (obj != 0 && (*(int (**)(const char *))(*(void ***)obj + 3))(arg0) != 0) {
-            result = (*(int (**)(void *, const char *))(*(void ***)obj + 5))(obj, arg0);
+        if (temp[3] != 0 && ((Res *)temp[3])->has((void *)arg0)) {
+            r = ((Res *)temp[3])->get((void *)arg0);
+        } else if (((Res *)temp[2])->has((void *)arg0)) {
+            r = ((Res *)temp[2])->get((void *)arg0);
         } else {
-            obj = *(void **)((char *)temp + 8);
-            if ((*(int (**)(void *, const char *))(*(void ***)obj + 3))(obj, arg0) != 0) {
-                result = (*(int (**)(void *, const char *))(*(void ***)obj + 5))(obj, arg0);
-            } else result = 0;
+            r = 0;
         }
+        result = r;
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
     value = result;
     return (float)atof((const char *)value);
 }
-
+#pragma cplusplus reset
 int fn_80204EA0(const char *arg0) {
     char buf[0x64];
     int *p;
@@ -226,38 +228,66 @@ int fn_80204EA0(const char *arg0) {
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
     return result;
 }
+#pragma cplusplus reset
 
 extern int fn_801345D8();
 __declspec(section ".sdata") extern const char lbl_8055B4B4[];
 __declspec(section ".sdata") extern const char lbl_8055B4B8[];
-int fn_8020503C(const char *arg0) {
+#pragma cplusplus on
+extern "C" int fn_8020503C(const char *arg0) {
+    class Res {
+    public:
+        virtual void unused0();
+        virtual int has(void *);
+        virtual void unused2();
+        virtual int get(void *);
+    };
     char buf[0x64];
     int *p;
-    int result = 0;
+    int result;
     int value;
-    void **vt;
-    int (*method)(void *, const char *);
+    int answer;
     p = lbl_8055ED5C;
+    result = 0;
     if (p[4] != 0) {
-        fn_801345D8(buf, 0x64, lbl_8055B4AC, arg0);
+        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, p[4], arg0);
         if (p[3] != 0) {
-            vt = *(void ***)p[3]; method = (int (*)(void *, const char *))vt[3];
-            if (method((void *)p[3], buf) != 0) { vt = *(void ***)p[3]; method = (int (*)(void *, const char *))vt[5]; result = method((void *)p[3], buf); }
-            else { vt = *(void ***)p[2]; method = (int (*)(void *, const char *))vt[3]; if (method((void *)p[2], buf) != 0) { vt = *(void ***)p[2]; method = (int (*)(void *, const char *))vt[5]; result = method((void *)p[2], buf); } else result = 0; }
-        } else { vt = *(void ***)p[2]; method = (int (*)(void *, const char *))vt[3]; if (method((void *)p[2], buf) != 0) { vt = *(void ***)p[2]; method = (int (*)(void *, const char *))vt[5]; result = method((void *)p[2], buf); } else result = 0; }
+            if (((Res *)p[3])->has(buf)) {
+                value = ((Res *)p[3])->get(buf);
+                goto done1;
+            }
+        }
+        if (((Res *)p[2])->has(buf)) {
+            value = ((Res *)p[2])->get(buf);
+        } else {
+            value = 0;
+        }
+    done1:
+        result = value;
     }
     if (result == 0) {
         if (p[3] != 0) {
-            vt = *(void ***)p[3]; method = (int (*)(void *, const char *))vt[3];
-            if (method((void *)p[3], arg0) != 0) { vt = *(void ***)p[3]; method = (int (*)(void *, const char *))vt[5]; result = method((void *)p[3], arg0); }
-            else { vt = *(void ***)p[2]; method = (int (*)(void *, const char *))vt[3]; if (method((void *)p[2], arg0) != 0) { vt = *(void ***)p[2]; method = (int (*)(void *, const char *))vt[5]; result = method((void *)p[2], arg0); } else result = 0; }
-        } else { vt = *(void ***)p[2]; method = (int (*)(void *, const char *))vt[3]; if (method((void *)p[2], arg0) != 0) { vt = *(void ***)p[2]; method = (int (*)(void *, const char *))vt[5]; result = method((void *)p[2], arg0); } else result = 0; }
+            if (((Res *)p[3])->has((void *)arg0)) {
+                value = ((Res *)p[3])->get((void *)arg0);
+                goto done2;
+            }
+        }
+        if (((Res *)p[2])->has((void *)arg0)) {
+            value = ((Res *)p[2])->get((void *)arg0);
+        } else {
+            value = 0;
+        }
+    done2:
+        result = value;
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
     value = result;
-    return stricmp((const char *)value, lbl_8055B4B4) == 0 || stricmp((const char *)value, lbl_8055B4B8) == 0;
+    answer = 0;
+    if (stricmp((const char *)value, lbl_8055B4B4) == 0 ||
+        stricmp((const char *)value, lbl_8055B4B8) == 0) answer = 1;
+    return answer;
 }
-
+#pragma cplusplus reset
 /* Clear the active contest configuration and release its resources. */
 void fn_80205208(void) {
     int *contestConfig = lbl_8055ED5C;
