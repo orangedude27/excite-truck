@@ -5042,16 +5042,16 @@ finish:
 extern const char lbl_803122F4[];
 void fn_80063324(s32 arg0, WPADGameInfo *arg1) {
     WPADCommand* command = (WPADCommand*)arg1;
+    s32 enabled;
     s32 rumble;
     s8 devHandle;
     u8* cb;
     u8 reportID;
-    u8* pCmdData;
-    u16 len;
-    s32 enabled;
-    s32 status;
     BT_HDR* pBuffer;
     u8* pRptData;
+    s32 status;
+    u8* pCmdData;
+    u16 len;
     u32 time;
 
     reportID = (u8)command->reportID;
@@ -5099,7 +5099,7 @@ void fn_80063324(s32 arg0, WPADGameInfo *arg1) {
         cb[0x800] = 1;
         break;
     case 0xFF:
-        memcpy(&time, pCmdData, 4);
+        memcpy(&time, command->dataBuf, sizeof(u32));
         *(s64*)(cb + 0x848) = __OSGetSystemTime() + time;
         cb[0x850] = 1;
         return;
