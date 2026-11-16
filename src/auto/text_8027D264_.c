@@ -221,12 +221,16 @@ int fn_8027D634(int arg0, int arg1) {
     return arg0;
 }
 
-void *fn_8027D674(void *arg0) {
-    char *p = (char *)arg0;
-    *(void **)p = lbl_80347CF8;
-    p[4] = 0;
-    fn_8001D868((int *)(p + 0x14));
-    return arg0;
+/* Constructs an nw4r::ef::Effect object (vtable variant at lbl_80347CF8):
+ * installs the vtable, clears the active flag at +0x04, and initializes the
+ * embedded 5-entry data block at +0x14. */
+void *fn_8027D674(void *effect)
+{
+    char *bytes = (char *)effect;
+    *(void **)bytes = lbl_80347CF8;
+    bytes[4] = 0;
+    fn_8001D868((int *)(bytes + 0x14));
+    return effect;
 }
 
 int fn_8027D6BC(int arg0, int arg1) {
