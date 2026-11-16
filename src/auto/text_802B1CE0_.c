@@ -612,16 +612,17 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
-#pragma opt_pointer_aliasing on
+#pragma push
+#pragma optimization_level 3
 void *fn_802B2934(void *arg0, void **arg1) {
-    struct PtrVec { void **data; int count; } *vec = arg0;
-    void *value = *arg1;
-    int index = vec->count++;
-    void **slot = &vec->data[index];
-    *slot = value;
-    return slot;
+    int count = ((int *)arg0)[1];
+    void *val = *arg1;
+    void **entry = *(void ***)arg0 + count;
+    ((int *)arg0)[1] = count + 1;
+    *entry = val;
+    return entry;
 }
-#pragma opt_pointer_aliasing reset
+#pragma pop
 extern void fn_802B2C34(void (*)(void *), void *);
 extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
 extern void fn_802C6B44(void *);
@@ -1130,10 +1131,12 @@ extern "C" int fn_802B2C44(void *object) {
 #pragma cplusplus reset
 #pragma pop
 #pragma scheduling invalid_target
-void fn_802B2C7C(void *arg0) {
-    *(int *)arg0 = (int)((char *)arg0 + 0xC);
-    *(int *)((char *)arg0 + 8) = 6;
-    *(int *)((char *)arg0 + 4) = 0;
+void fn_802B2C7C(void *object) {
+    /* Initialize a collection object: point its items at the inline storage
+     * at +0xC, set the element count (+0x4) to 0 and its capacity (+0x8) to 6. */
+    *(int *)object = (int)((char *)object + 0xC);
+    *(int *)((char *)object + 8) = 6;
+    *(int *)((char *)object + 4) = 0;
 }
 #pragma scheduling on
 
