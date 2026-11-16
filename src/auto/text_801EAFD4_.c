@@ -625,6 +625,7 @@ void fn_801EBBB4(void) {
     fn_802AE9D0();
 }
 void fn_801EBC2C(void) {
+    /* If an EB context is active, prepare its two subordinate resource lists; otherwise run the fallback cleanup. */
     if (lbl_8055EBA0 != 0) {
         fn_802CCE24(((s32 *)lbl_8055EBA0)[1]);
         fn_802CCE24(((s32 *)lbl_8055EBA0)[2]);
