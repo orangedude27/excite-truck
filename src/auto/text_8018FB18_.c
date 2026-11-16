@@ -1343,11 +1343,15 @@ extern "C" s32 fn_80191240(void *owner, s32 baseOffset) {
 
 #pragma cplusplus reset
 extern u8 lbl_80332FC4[];
-void fn_801912B4(void *arg0) {
-    *(void **)arg0 = lbl_80332FC4;
-    *(s32 *)((u8 *)arg0 + 0x34) = 0;
-    *(s32 *)((u8 *)arg0 + 0x38) = 0;
-    *(s32 *)((u8 *)arg0 + 8) = -1;
+/* Construct a PlayerDriver object: install its vtable, clear the two state
+   words at +0x34/+0x38 and set the input-source id at +8 to -1. */
+void fn_801912B4(void *driver) {
+#define PlayerDriverVtbl lbl_80332FC4
+    *(void **)driver = PlayerDriverVtbl;
+    *(s32 *)((u8 *)driver + 0x34) = 0;
+    *(s32 *)((u8 *)driver + 0x38) = 0;
+    *(s32 *)((u8 *)driver + 8) = -1;
+#undef PlayerDriverVtbl
 }
 
 #pragma cplusplus on
@@ -1366,8 +1370,8 @@ extern "C" void fn_801912D8(void *arg0) {
     };
     unsigned char *self = (unsigned char *)arg0;
     char *base = lbl_80332E70;
-    int enabled;
-    int mask;
+    unsigned int enabled;
+    unsigned int mask;
     unsigned char spA, sp9, sp8;
     *(unsigned char *)(*(unsigned char **)(self + 0x34) + 0x2680) = (*(Obj **)(self + 0x38))->getFlag();
     *(int *)(*(unsigned char **)(self + 0x34) + 0x267C) = 0;
@@ -1409,10 +1413,13 @@ extern "C" void fn_801912D8(void *arg0) {
     }
     (*(Obj **)(self + 0x38))->setA(fn_8018B06C(*(void **)(self + 0x34)));
     (*(Obj **)(self + 0x38))->setB(*(void **)(self + 0x34), *(float *)(*(unsigned char **)(self + 0x34) + 0x25F4));
-    *(int *)(self + 8) = *(int *)(*(unsigned char **)(self + 0x38) + 0x20);
-    *(float *)(self + 0x10) = lbl_8056208C;
-    *(float *)(self + 0x14) = lbl_8056208C;
-    *(float *)(self + 0x18) = lbl_8056208C;
+    {
+        float second = lbl_8056208C;
+        *(int *)(self + 8) = *(int *)(*(unsigned char **)(self + 0x38) + 0x20);
+        *(float *)(self + 0x10) = second;
+        *(float *)(self + 0x14) = second;
+        *(float *)(self + 0x18) = second;
+    }
     memset(self + 0x20, 0, 0x10);
 }
 extern "C" void fn_801914F8(void *arg0) {
@@ -2708,14 +2715,14 @@ void fn_80192F80(void *source) {
 int fn_80193010(void) { return 0x20; }
 
 void fn_80193018(void *arg0, void *arg1) {
-    float *dst = (float *)arg0;
+    float *dst = (float *)((u8 *)arg0 + 0x10);
     float *src = (float *)arg1;
-    float x = dst[4] + src[0];
-    float y = dst[5] + src[1];
-    float z = src[2] + dst[6];
-    dst[4] = x;
-    dst[5] = y;
-    dst[6] = z;
+    float x = dst[0] + src[0];
+    float y = dst[1] + src[1];
+    float z = src[2] + dst[2];
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
 }
 
 void fn_8019304C(void *arg0) {
