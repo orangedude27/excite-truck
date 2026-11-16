@@ -478,6 +478,12 @@ void __OSReschedule(void) {
     }
 }
 
+/**
+ * Gives up the CPU: runs the scheduler with force set, so the current thread
+ * leaves the CPU even when it still outranks every ready thread (it goes back
+ * onto its priority's ready queue). Interrupts stay off across the switch so
+ * the run queues cannot change underneath the scheduler.
+ */
 void OSYieldThread(void) {
     BOOL enabled = OSDisableInterrupts();
     SelectThread(TRUE);
