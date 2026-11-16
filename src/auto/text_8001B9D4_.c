@@ -287,13 +287,14 @@ u8 fn_8001BD30(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x10);
 }
 
-void fn_8001BD38(void *arg0, s32 arg1, s32 arg2) {
-    s32 r4 = arg1;
-    s32 r5 = arg2;
-    s32 r6 = (s32)arg0;
-    s32 r3 = *(s32 *)(r6 + 4);
-    s32 r4b = *(s32 *)(r6 + 0x1C);
-    fn_8001C73C(r3, r4b, r4, r5);
+/* Forward an entry's command (+4) and value (+0x1C) to fn_8001C73C along with the destination pointer and extra parameter. */
+void fn_8001BD38(void *entry, s32 dest, s32 param) {
+    s32 a2 = dest;
+    s32 a3 = param;
+    s32 entryAddr = (s32)entry;
+    s32 command = *(s32 *)(entryAddr + 4);
+    s32 value = *(s32 *)(entryAddr + 0x1C);
+    fn_8001C73C(command, value, a2, a3);
 }
 
 #pragma dont_inline on
