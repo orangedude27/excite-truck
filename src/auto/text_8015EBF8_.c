@@ -903,7 +903,7 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
     f32 sp20[2];
     f32 sp10[2];
     u8 sp8;
-    f32 lim, f1, fv;
+    f32 lim, tmp, f1, fv;
     s32 idx, t26, t27, t29, t31, t3;
     void *obj2, *sub;
     s32 *p26;
@@ -917,8 +917,8 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
         sub = *(void **)((char *)obj2 + 0x2C);
         idx = (*(s32 *)((char *)obj2 + 4) - *(s32 *)((char *)sub + 0x1C)) / 60;
         ((void (*)(void *, void *, void *, int))fn_8015FB28)(sp68, (char *)arg0 + 0x3C, sub, 0x88888889);
-        lim = *(f32 *)((char *)arg0 + 0x25D4) * lbl_80561814;
-        if (lim < lbl_80561818) lim = lbl_80561818;
+        tmp = *(f32 *)((char *)arg0 + 0x25D4) * lbl_80561814;
+        lim = (lbl_80561818 > tmp) ? tmp : lbl_80561818;
         sp8 = arg2;
         p26 = (s32 *)((s32 **)lbl_8055E2A0)[0][idx];
         ((void (*)(void *, void *))fn_801606B8)(&sp8, *(void **)lbl_8055E2A0);
@@ -966,7 +966,7 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
             fn_8016027C(sp18, lbl_805617D4, lbl_805617D4);
             fn_8016027C(sp20, lbl_805617D4, lbl_805617D4);
             t3 = fn_8015F7A0(0x40, (char *)arg0 + 0x118, ((void *(*)(void *))fn_80160278)(sp68));
-            t31 = t3 + 8;
+            t31 = t3 + 0x20;
             if (table[t31].x < lim) {
                 t26 = fn_8015FA44(table, t31, lim);
                 t27 = fn_8015FAB8((s32 *)table, t31, lim);
@@ -1029,14 +1029,15 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
 }
 #pragma scheduling on
 extern f32 lbl_805617D4;
-void fn_80160230(void *arg0, void *arg1) {
-    register f32 c, b, a;
-    a = *(f32 *)((u8 *)arg1 + 0);
-    b = lbl_805617D4;
-    c = *(f32 *)((u8 *)arg1 + 4);
-    *(f32 *)((u8 *)arg0 + 0) = a;
-    *(f32 *)((u8 *)arg0 + 4) = b;
-    *(f32 *)((u8 *)arg0 + 8) = c;
+void fn_80160230(void *dst, void *src) {
+    /* Expand a 2-component (x, y) float vector into a 3-component (x, 0, y) vector, with a zero middle component. */
+    register f32 y, mid, x;
+    x = *(f32 *)((u8 *)src + 0);
+    mid = lbl_805617D4;
+    y = *(f32 *)((u8 *)src + 4);
+    *(f32 *)((u8 *)dst + 0) = x;
+    *(f32 *)((u8 *)dst + 4) = mid;
+    *(f32 *)((u8 *)dst + 8) = y;
 }
 
 #pragma dont_inline on
