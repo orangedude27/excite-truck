@@ -130,9 +130,10 @@ static BOOL nandIsRelativePath(const char* path) {
     return *path == '/' ? FALSE : TRUE;
 }
 
+/* Return TRUE if `path` begins with the "/shared2" private-data prefix. */
 BOOL nandIsPrivatePath(const char* path) {
-    size_t len = sizeof("/shared2") - 1;
-    return strncmp(path, "/shared2", len) == 0;
+    size_t prefixLen = sizeof("/shared2") - 1;
+    return strncmp(path, "/shared2", prefixLen) == 0;
 }
 
 BOOL nandIsUnderPrivatePath(const char* path) {
