@@ -14527,6 +14527,7 @@ void fn_8008251C(void) {
 }
 
 void fn_80082548(void) {
+    /* Initialize the HCI command buffer/control block (clear, max packet 0x2A4, count 1). */
  memset(&lbl_803C0A50, 0, 0x84);
  *(u16 *)((u8 *)&lbl_803C0A50 + 0x7e)=0x2a4;
  *(u16 *)((u8 *)&lbl_803C0A50 + 0x80)=1;
