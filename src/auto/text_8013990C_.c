@@ -329,12 +329,13 @@ extern "C" void fn_80139F5C(void *loader) {
 }
 #pragma cplusplus reset
 extern __declspec(section ".data") unsigned char lbl_8042F7C0;
+/* RealName: CloseResourceTable. Close the open resource table and clear its source and path. */
 void fn_8013A074(void) {
-    int state = lbl_8055E138;
-    if (state != 0)
-        fn_80131818(state);
-    lbl_8055E13C = 0;
-    lbl_8042F7C0 = 0;
+    int table = gResourceTable;
+    if (table != 0)
+        CloseResourceTable(table);
+    gResourceSource = 0;
+    gResourcePath = 0;
 }
 
 extern int fn_802E30C8(const char *, ...);
