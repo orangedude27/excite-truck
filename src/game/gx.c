@@ -2954,11 +2954,8 @@ extern float lbl_80564FE0, lbl_80564FE4;
 #pragma processor 750
 void fn_802D3420(void) {
     float ident[3][4], mtx[3][4], proj[4][4];
+    float width, height, zero = lbl_80564F88, one = lbl_80564F8C;
     volatile float *fifo = (volatile float *)0xCC008000;
-    float zero, one;
-    float width, height;
-    zero = lbl_80564F88;
-    one = lbl_80564F8C;
     ident[0][1] = zero;
     ident[0][0] = one;
     ident[0][2] = zero;
@@ -3041,10 +3038,11 @@ void fn_802D37E4(void) {
 }
 
 void fn_802D3894(void) {
-    unsigned char *p = lbl_804C9984;
+    ZQuery *query = (ZQuery *)lbl_804C9984;
     int i;
-    for (i = 0; i < 0x40; i++, p += 0x18) {
-        if (p[0xC] != 0) {
+    /* Panic if any visibility-test depth query is still checked out of the pool. */
+    for (i = 0; i < 0x40; i++, query++) {
+        if (query->used != 0) {
             fn_802E317C((const char *)lbl_8034C1C4);
         }
     }
