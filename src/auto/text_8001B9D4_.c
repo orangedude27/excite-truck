@@ -1174,12 +1174,14 @@ extern "C" s32 fn_8001D25C(s32 arg0) {
 #pragma cplusplus off
 
 #pragma scheduling on
-void fn_8001D298(s32 arg0) {
-    s32 temp_r31;
-    temp_r31 = fn_8000DA10();
-    fn_8000D984(arg0);
+void fn_8001D298(s32 contextIndex) {
+    /* Save the current context index, switch to contextIndex, run its finalize step,
+       then restore the previous context. */
+    s32 savedContextIndex;
+    savedContextIndex = fn_8000DA10();
+    fn_8000D984(contextIndex);
     fn_8000DB18();
-    fn_8000D984(temp_r31);
+    fn_8000D984(savedContextIndex);
 }
 
 extern const char lbl_802FDAAC[];
