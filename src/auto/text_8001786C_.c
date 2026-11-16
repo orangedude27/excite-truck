@@ -180,27 +180,29 @@ void fn_80017A2C(void *list, s32 exclusionList) {
     }
     fn_80017AC8(list);
 }
-void fn_80017AC8(void* arg0) {
+// Shuffles an int list (items pointer at +0, count at +4): walk each position
+// and swap its value with one chosen at random in [0, count) from RNG slot 1.
+void fn_80017AC8(void* list) {
     extern s32 fn_80129D18(s32);
-    register s32* arr = (s32*)arg0;
-    register s32 offset = 0;
-    register s32 i = 0;
-    register s32 left;
-    register s32* items;
+    register s32* header = (s32*)list;
+    register s32 byteOffset = 0;
+    register s32 shuffled = 0;
+    register s32 temp;
+    register s32* values;
     goto check;
 loop:
     {
-        s32 index = ((s32 (*)(s32, s32))fn_80129D18)(1, arr[1]);
-        items = (s32*)arr[0];
-        left = *(s32*)((char*)items + offset);
-        i++;
-        *(s32*)((char*)items + offset) = items[index];
-        offset += 4;
-        items[index] = left;
+        s32 swapIndex = ((s32 (*)(s32, s32))fn_80129D18)(1, header[1]);
+        values = (s32*)header[0];
+        temp = *(s32*)((char*)values + byteOffset);
+        shuffled++;
+        *(s32*)((char*)values + byteOffset) = values[swapIndex];
+        byteOffset += 4;
+        values[swapIndex] = temp;
     }
 check:
-    left = arr[1];
-    if (i < left) goto loop;
+    temp = header[1];
+    if (shuffled < temp) goto loop;
 }
 
 extern s32 fn_800165D4(void);
