@@ -578,6 +578,12 @@ extern unsigned int lbl_8055FEBC;
   
 void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
 
+static inline int CpuLightClampAlpha(int raw) {
+    int mask = (-raw & ~raw) >> 31;
+    int clipped = raw & mask;
+    return clipped < 0xFF ? clipped : 0xFF;
+}
+
 extern float lbl_80565040, lbl_80565044, lbl_80565048;
 #pragma push
 #pragma processor 750
