@@ -3593,6 +3593,8 @@ extern s32 fn_8006EBF4(void);
 #pragma use_lmw_stmw off
 UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_pool)
 {
+    /* Allocate/initialize a GKI buffer pool: find a free pool slot, allocate memory if needed,
+       set up its free queue and sorted pool list, and set its access permission. */
     UINT8 xx;
     UINT32 mem_needed;
     INT32 tempsize = size;
