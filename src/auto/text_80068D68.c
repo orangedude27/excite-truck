@@ -4959,6 +4959,8 @@ extern void fn_80082548();
 extern u8 fn_80073B30(void);
 int fn_800709FC(void) {
     u64 now;
+    u32 hi;
+    u32 lo;
     lbl_8055DC74 = 0;
     GKI_init();
     fn_8006EB88();
@@ -4975,9 +4977,11 @@ wait_check:
     }
     fn_80070B54();
     now = __OSGetSystemTime();
+    lo = (u32)now;
+    hi = (u32)(now >> 32u);
     OSCreateAlarm(&lbl_803C0A20);
     ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(void)))OSSetPeriodicAlarm)(
-        &lbl_803C0A20, 0x80000000u, (u32)(now >> 32u), (u32)now, 0u,
+        &lbl_803C0A20, 0x80000000u, hi, lo, 0u,
         ((*(u32 *)0x800000F8 >> 2) / 500u) & 0x07FFFFFEu, fn_800709E4);
     ((void (*)(s32))fn_8006EACC)(0);
     goto poll_check;
@@ -23067,6 +23071,8 @@ void PORT_ParNegCnf(void *, u8, u16, u8, u8);
 void rfc_port_timer_stop(void *);
 void *port_find_mcb_dlci_port(void *, u8);
 extern u8 lbl_80319DB0[];
+#pragma push
+#pragma peephole off
 void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
     u8 dlci = *(u8 *)arg2;
     void *mcb;
@@ -23093,6 +23099,7 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
     end:;
     }
 }
+#pragma pop
 
 /* ---- RFCOMM Remote Port Negotiation (RPN) names ----------------------------
  * These live in include/revolution/BTE/stack/rfcomm/port_int.h,
