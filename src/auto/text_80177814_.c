@@ -1436,9 +1436,17 @@ void fn_801CF01C(void);
 void fn_801CB4A0(void);
 void fn_801AED68(void);
 void fn_801795B0(void) {
-    fn_801CF01C();
-    fn_801CB4A0();
-    fn_801AED68();
+#define EndReplayPlayback fn_801CF01C
+#define ResumeStatManager fn_801CB4A0
+#define ClearReplayFlag   fn_801AED68
+    /* End cutscene replay playback: post the end message and clear the
+     * in-playback flag, resume the stat manager, then clear the replay flag. */
+    EndReplayPlayback();
+    ResumeStatManager();
+    ClearReplayFlag();
+#undef EndReplayPlayback
+#undef ResumeStatManager
+#undef ClearReplayFlag
 }
 
 /* Register vehicle in the global object table at objIndex. Player/racer vehicles
