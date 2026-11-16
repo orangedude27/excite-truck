@@ -4868,10 +4868,10 @@ extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 /* Step a directory-entry iterator to the next entry and read it into its buffer. */
 static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
+    u32 old = *(u32 *)iter;
     s32 result;
     s32 code;
     u32 sp8;
-    u32 old = *(u32 *)iter;
     *(u32 *)iter = old + 1;
     result = fn_800AB378((void *)iter, 0);
     if (result != 0) {
@@ -4895,11 +4895,8 @@ static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
 extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
     extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
     register u8 *iter;
-    register s32 status;
-    register s32 result;
+    s32 status;
     register s32 zero;
-    register s32 code;
-    u32 sp8;
     u8 spC[13];
     u8 flags;
 
@@ -4914,7 +4911,6 @@ extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 
     goto check_end;
 status_check:
     if (status != 0) return status;
-process:
     if (iter[0x4C] == 0xE5) {
         arg1[0x20A] = (u8)zero;
         *(u16 *)arg1 = (u16)zero;
@@ -4982,24 +4978,7 @@ process:
     *arg3 = 1;
     return 0;
 advance:
-    status = *(u32 *)iter;
-    *(u32 *)iter = status + 1;
-    result = fn_800AB378((void *)iter, 0);
-    if (result != 0) {
-        *(u32 *)iter = status;
-        fn_800AB378((void *)iter, 0);
-    } else {
-        if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
-            code = 0x10;
-        } else {
-            result = fn_800B5324(*(void **)(iter + 4), iter + 0x4C, *(u32 *)(iter + 0x44),
-                                 *(u16 *)(iter + 0x48), 0x20, &sp8, 0);
-            if (sp8 != 0x20) code = 0x11;
-            else code = result;
-        }
-        result = code & (s32)(-(u32)code | (u32)code) >> 31;
-    }
-    status = result & (s32)(-(u32)result | (u32)result) >> 31;
+    status = VFiPFENT_ITER_MoveNextAndRead(iter);
 check_end:
     if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
