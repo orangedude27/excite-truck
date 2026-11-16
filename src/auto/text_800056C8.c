@@ -691,6 +691,7 @@ void fn_800062E8(void) {
 
 #pragma cplusplus on
 extern "C" void fn_80006330(void) {
+    /* Clear session flag bits 0x80|0x07 and 0x600, then dispatch vfunc 7 on the current player's overlay. */
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -701,12 +702,12 @@ extern "C" void fn_80006330(void) {
         virtual void v6();
         virtual void v7();
     };
-    u32 *flags = (u32 *)lbl_8034EE84;
-    s32 *manager;
-    flags[8] &= 0xFFFFFF78;
-    flags[8] &= 0xFFFFF9FF;
-    manager = (s32 *)lbl_8055D350;
-    ((Dummy *)((lbl_8034EEB8 + (manager[7] << 2))[7]))->v7();
+    u32 *sessionState = (u32 *)lbl_8034EE84;
+    s32 *session;
+    sessionState[8] &= 0xFFFFFF78;
+    sessionState[8] &= 0xFFFFF9FF;
+    session = (s32 *)lbl_8055D350;
+    ((Dummy *)((lbl_8034EEB8 + (session[7] << 2))[7]))->v7();
 }
 #pragma cplusplus off
 extern s32 fn_80011A5C(s32);
