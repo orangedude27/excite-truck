@@ -5041,6 +5041,9 @@ int fn_80070B24(int arg0) {
 }
 
 void fn_80070B54(void) {
+    /* Bring up the BTE/BTA Bluetooth stack: reset the BTU task state (idle, no
+     * dropped ticks), then initialise the core layers (BTM/L2CAP/SDP), the
+     * enabled profiles (RFCOMM/GAP/HID) and finally the BTA system. */
     lbl_80559050 = 1;
     lbl_80559054 = 1;
     lbl_8055DC78 = 0;
@@ -21751,32 +21754,36 @@ extern void fn_800939CC(void *, u8, void *);
 extern int port_flow_control_user(void *);
 u32 port_rfc_send_tx_data(void *port) {
     u8 *p = (u8 *)port;
-    u32 events = 0u;
-    void *packet = (void *)0;
-    if (*(s32 *)(p + 0x28) == 0)
-        goto flow;
-    for (;;) {
-        packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
-        if (packet != (void *)0) {
-            if (lbl_803C4828[0x414] >= (s32)4)
-                fn_8007093C(0x90003u, lbl_803194FC);
-            *(s32 *)(p + 0x28) -= (s32)*(u16 *)((u8 *)packet + 2);
-            fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
-            events |= 0x4000u;
-            if (*(s32 *)(p + 0x28) != (s32)0)
-                continue;
-            events |= 4u;
+    u32 events = 0;
+    void *packet;
+
+    if (*(s32 *)(p + 0x28) != 0) {
+        for (;;) {
+            packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
+            if (packet != 0) {
+                if (lbl_803C4828[0x414] >= 4)
+                    fn_8007093C(0x90003, lbl_803194FC);
+
+                *(s32 *)(p + 0x28) -= *(u16 *)((u8 *)packet + 2);
+                fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
+                events |= 0x4000;
+                if (*(s32 *)(p + 0x28) != 0)
+                    continue;
+                events |= 4;
+                goto flow;
+            }
+            events |= 4;
             goto flow;
         }
-        events |= 4u;
-        goto flow;
     }
+
 flow:
     if (p[0x24] == 0) {
         void *mcb = *(void **)(p + 0x6c);
-        if (mcb != (void *)0 && *((u8 *)mcb + 0x71) == 0)
+        if (mcb != 0 && *((u8 *)mcb + 0x71) == 0)
             events |= port_flow_control_user(port);
     }
+
     return events & *(u32 *)(p + 0x88);
 }
 
