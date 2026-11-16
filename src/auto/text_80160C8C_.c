@@ -817,17 +817,20 @@ extern "C" void fn_801619A8(void) {
 }
 #pragma cplusplus on
 extern "C" void fn_80161A18(void) {
-    struct Dummy {
+    /* Advance the active challenge sub-task (the level-select menu or a
+     * StuntChallenge tutorial screen held in lbl_8055E300) one step via virtual
+     * slot 0x1C; does nothing when no sub-task is active. */
+    struct ChallengeSubTask {
         virtual void v0();
         virtual void v1();
         virtual void v2();
         virtual void v3();
         virtual void v4();
-        virtual void v5();
+        virtual void update();
     };
-    Dummy *p = (Dummy *)lbl_8055E300;
-    if (p != 0) {
-        p->v5();
+    ChallengeSubTask *subTask = (ChallengeSubTask *)lbl_8055E300;
+    if (subTask != 0) {
+        subTask->update();
     }
 }
 #pragma cplusplus on
