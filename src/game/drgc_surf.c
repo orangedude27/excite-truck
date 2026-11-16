@@ -1277,23 +1277,16 @@ second:
 #pragma small_data off
 /* Allocate the 0x4000-byte vertex-format display-list buffer and reset the vertex-format state. */
 void fn_802D6810(void) {
-#define vertexFormatCount     lbl_8055FDF0
-#define vertexFormatDlStart   lbl_8055FDF4
-#define vertexFormatDlCursor  lbl_8055FDF8
-#define vertexFormatDlBufTag  lbl_8034C3DC
-    void *buffer;
+    void *displayListBuffer;
 
-    vertexFormatCount = 0;
+    /* Initialize the vertex-format display list buffer and reset its state. */
+    lbl_8055FDF0 = 0;
     fn_801282EC(0x20);
-    buffer = fn_8012850C(0x4000, vertexFormatDlBufTag);
-    vertexFormatDlStart = (s32)buffer;
-    vertexFormatDlCursor = (s32)buffer;
-    DCInvalidateRange(buffer, 0x4000);
+    displayListBuffer = fn_8012850C(0x4000, lbl_8034C3DC);
+    lbl_8055FDF4 = (s32)displayListBuffer;
+    lbl_8055FDF8 = (s32)displayListBuffer;
+    DCInvalidateRange(displayListBuffer, 0x4000);
     fn_802D6C68();
-#undef vertexFormatDlBufTag
-#undef vertexFormatDlCursor
-#undef vertexFormatDlStart
-#undef vertexFormatCount
 }
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
