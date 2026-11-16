@@ -2670,20 +2670,20 @@ extern void BTA_HhAddDev(const u8 *, u16, u8, u8, const void *);
 void fn_8006B488(void) {
     u8 *base = lbl_803130C8;
     u8 *control = lbl_80392960;
+    u16 sp10;
+    u32 sp14;
+    f64 argData;
     u8 *info = (u8 *)((void *(*)(void))WUDiGetDevInfo)();
     u8 status;
     BOOL interrupt;
     u8 state;
-    u16 dl_len;
-    u32 dsc_list;
-    f64 argData;
     status = BTA_DmAddDevice(info + 0x40, info + 0x46, 0, 0);
     DBPrintf_8006CFA8((const char *)(base + 0x5D8), status);
     if (memcmp(info, base + 0x1A0, 0x10) == 0) {
-        dl_len = 217;
-        dsc_list = (u32)base;
+        sp10 = 0xD9;
+        sp14 = (u32)base;
         DBPrintf_8006CFA8((const char *)(base + 0x5F0));
-        argData = *(f64 *)&dl_len;
+        argData = *(f64 *)&sp10;
         BTA_HhAddDev(info + 0x40, *(u16 *)(info + 0x5E), info[0x57], info[0x58], &argData);
     }
     interrupt = OSDisableInterrupts();
@@ -15963,23 +15963,27 @@ int btsnd_hcic_reject_esco_conn(void *p_buf, u8 *bd_addr, u8 reason) {
     return btu_hcif_send_cmd(buf);
 }
 
-s32 btsnd_hcic_hold_mode(u8 *p, u16 handle, u16 max_interval, u16 min_interval) {
-    if (p == NULL) {
-        p = GKI_getpoolbuf(2);
-        if (p == NULL) return 0;
+s32 btsnd_hcic_hold_mode(u8 *buf, u16 handle, u16 max_hold_period, u16 min_hold_period) {
+    /* Allocate a buffer if none was supplied, then build an HCI Hold Mode
+     * command (opcode 0x0801, 6-byte payload) with the connection handle and
+     * the max/min hold periods as little-endian u16s, and send it down HCI.
+     * Returns 0 only when a buffer could not be allocated. */
+    if (buf == NULL) {
+        buf = GKI_getpoolbuf(2);
+        if (buf == NULL) return 0;
     }
-    *(u16 *)(p + 2) = 9;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 1;
-    p[9] = 8;
-    p[10] = 6;
-    p[11] = handle;
-    p[12] = handle >> 8;
-    p[13] = max_interval;
-    p[14] = max_interval >> 8;
-    p[15] = min_interval;
-    p[16] = min_interval >> 8;
-    btu_hcif_send_cmd(p);
+    *(u16 *)(buf + 2) = 9;
+    *(u16 *)(buf + 4) = 0;
+    buf[8] = 1;
+    buf[9] = 8;
+    buf[10] = 6;
+    buf[11] = handle;
+    buf[12] = handle >> 8;
+    buf[13] = max_hold_period;
+    buf[14] = max_hold_period >> 8;
+    buf[15] = min_hold_period;
+    buf[16] = min_hold_period >> 8;
+    btu_hcif_send_cmd(buf);
     return 1;
 }
 
