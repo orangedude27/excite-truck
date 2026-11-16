@@ -606,6 +606,8 @@ void fn_8027DE68(void) {
 }
 
 void fn_8027DE6C(void) {
+    /* Reset the effect and score state: release cached effect references, rebuild
+       the effects for mode 0x130, and refresh the current player's score entry. */
     fn_8027B77C();
     fn_8027BF38();
     fn_8027B690();
