@@ -358,8 +358,9 @@ extern void qsort(void *, int, int, int (*)(void *, void *));
 int fn_80133780(void *, void *);
 #pragma scheduling invalid_target
 void fn_801337C8(void) {
-    void *base = (void *)lbl_8055E07C;
-    qsort((char *)base + 8, *(int *)((char *)base + 4), 0x38, fn_80133780);
+    /* Sort the options table's entries in place by section, then by key. */
+    OptionTable *table = (OptionTable *)lbl_8055E07C;
+    qsort(table->entries, table->count, sizeof(OptionEntry), fn_80133780);
 }
 #pragma scheduling on
 __declspec(section ".data") extern int lbl_802FE850;
