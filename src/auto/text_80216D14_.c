@@ -998,15 +998,16 @@ int fn_802182F0(void *arg0, void *arg1) {
     return -1;
 }
 
-int fn_8021832C(void *arg0) {
+/* Returns the query result from the pressed widget (0x44C), else the hovered widget (0x448), else 0. */
+int fn_8021832C(void *menuGroup) {
     /* RealName: UiMenuGroup_QueryPressedOrHovered */
-    struct Fn8021832CObj *obj = *(struct Fn8021832CObj **)((char *)arg0 + 0x44C);
-    if (obj != 0) {
-        return obj->Query();
+    struct Fn8021832CObj *widget = *(struct Fn8021832CObj **)((char *)menuGroup + 0x44C);
+    if (widget != 0) {
+        return widget->Query();
     }
-    obj = *(struct Fn8021832CObj **)((char *)arg0 + 0x448);
-    if (obj != 0) {
-        return obj->Query();
+    widget = *(struct Fn8021832CObj **)((char *)menuGroup + 0x448);
+    if (widget != 0) {
+        return widget->Query();
     }
     return 0;
 }
