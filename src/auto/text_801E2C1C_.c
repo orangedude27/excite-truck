@@ -352,12 +352,13 @@ void fn_801E33E4(void *outTransform, void *node) {
     identity[11] = 0.0f;
     fn_801E3284(outTransform, node, (s32)identity);
 }
-void fn_801E3440(void* arg0) {
+void fn_801E3440(void *outTranslation) {
+    /* Get the world translation from fn_801E3284 and copy its XYZ components. */
     f32 sp[12];
-    ((void (*)(void*))fn_801E3284)(sp);
-    *(f32*)((u8*)arg0 + 0) = sp[9];
-    *(f32*)((u8*)arg0 + 4) = sp[10];
-    *(f32*)((u8*)arg0 + 8) = sp[11];
+    ((void (*)(void *))fn_801E3284)(sp);
+    *(f32 *)((u8 *)outTranslation + 0) = sp[9];
+    *(f32 *)((u8 *)outTranslation + 4) = sp[10];
+    *(f32 *)((u8 *)outTranslation + 8) = sp[11];
 }
 
 #pragma push
