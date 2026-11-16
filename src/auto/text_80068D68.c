@@ -16374,7 +16374,8 @@ void hidd_pm_proc_mode_change(s32 arg0, u8 arg1, s32 arg2) {
     if (callback != 0) callback(3, arg1, &spA);
 }
 
-void fn_80086468(void *arg) {
+/* Timer callback: copy the secondary saved power-mode params into the pending slot, apply them, and mark the mode as active. */
+void fn_80086468(void *timer) {
     memcpy(lbl_803C3AF0 + 0x70, lbl_803C3AF0 + 0x56, 0xA);
     hidd_pm_set_now(lbl_803C3AF0 + 0x56);
     lbl_803C3AF0[0x6F] = 1;
