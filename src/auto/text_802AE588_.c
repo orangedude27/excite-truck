@@ -1310,6 +1310,8 @@ extern void fn_802AEB3C();
  * fn_802AEB3C consumes that pointer (still in r3) to rebuild its state. */
 #define getActiveState fn_801E8718
 #define rebuildState   fn_802AEB3C
+/* Rebuild the active entry's state: fetch its transform snapshot, then run the
+ * full state/geometry setup that consumes the returned pointer. */
 void fn_802B0144(void) {
     getActiveState(-1);
     rebuildState();
