@@ -232,11 +232,16 @@ done:
 }
 
 #pragma scheduling invalid_target
+/* RealName: Unknown_Init_802439E8
+ * Initializes an object: stores arg1 at +0x18, sets vtable to lbl_80342CEC,
+ * clears +0x14, clamps arg2 to a maximum of 0xB into +0x1C, clears
+ * +0x2C/+0x30/+0x34, and sets flags at +0x28=0, +0x29=1. */
 void fn_802439E8(void *arg0, s32 arg1, s32 arg2) {
+#define kVTable_80342CEC lbl_80342CEC
     s32 value = 0xB;
     volatile s32 *field = (volatile s32 *)((u8 *)arg0 + 0x1C);
     *(s32 *)((u8 *)arg0 + 0x18) = arg1;
-    *(char **)arg0 = lbl_80342CEC;
+    *(char **)arg0 = kVTable_80342CEC;
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
     *field = arg2;
     if (arg2 <= 0xB)
@@ -247,6 +252,7 @@ void fn_802439E8(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0x2C) = 0;
     *((u8 *)arg0 + 0x29) = 1;
     *((u8 *)arg0 + 0x28) = 0;
+#undef kVTable_80342CEC
 }
 #pragma scheduling on
 
