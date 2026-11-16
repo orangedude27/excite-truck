@@ -11639,8 +11639,9 @@ extern "C" void fn_800B7C60(void) {
 }
 
 extern "C" s32 fn_800B7C64(void) {
-    s32 result = ((s32 (*)(void))fn_800B75EC)();
-    return (-result | result) >> 31;
+    // Returns an all-ones mask when the handler's result is nonzero, zero otherwise.
+    s32 value = ((s32 (*)(void))fn_800B75EC)();
+    return (-value | value) >> 31;
 }
 
 extern "C" s32 fn_800B7C90(void) {
@@ -19532,9 +19533,9 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
         virtual void call(void *);
     };
     u32 zero = 0;
-    void *p = *(void **)((u8 *)arg1 + 0x10);
+    void *p = *(void **)((u8 *)arg1 + 0x10 + zero);
     lbl_8055DDA0 = zero;
-    ((Dispatch *)arg0)->call((u8 *)p + 0x10);
+    ((Dispatch *)arg0)->call((u8 *)p + 0x10 + zero);
 }
 extern "C" u8 lbl_8031E878[];
 extern "C" u8 lbl_8031E780[];
