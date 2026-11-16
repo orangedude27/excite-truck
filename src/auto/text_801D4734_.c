@@ -2131,10 +2131,13 @@ int fn_801D720C(int arg0) {
     return ((int *)arg0)[1];
 }
 
-int fn_801D7214(int arg0) {
-    if (((int *)arg0)[1] == 1) {
-        ((int *)arg0)[1] = 2;
-        *(float *)((char *)arg0 + 0x2C) = lbl_8055E3C8;
+int fn_801D7214(int self) {
+    /* Start method of a RingMaster_ASE action-sequence element: if it is ready
+     * (state 1), stamp its +0x2C start-time field with the current global tick
+     * lbl_8055E3C8, switch it to running (state 2) and report success; else fail. */
+    if (((int *)self)[1] == 1) {
+        ((int *)self)[1] = 2;
+        *(float *)((char *)self + 0x2C) = lbl_8055E3C8;
         return 1;
     }
     return 0;
