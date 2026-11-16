@@ -3522,6 +3522,7 @@ found_10:;
 found_11:;
     fn_80214A9C(i + 0x15);
 }
+#pragma dont_inline reset
 #pragma cplusplus on
 extern "C" int fn_80214AF0(int);
 extern "C" int fn_80214A9C(int);
