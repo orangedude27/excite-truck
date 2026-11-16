@@ -19,6 +19,10 @@ u32 OSGetConsoleSimulatedMem2Size(void) {
     return OS_SIMULATED_MEM2_SIZE;
 }
 
+/* Memory subsystem shutdown callback (registered at priority 127): on the final
+ * shutdown pass it removes all MEM0..3 memory protection (0xFF = unrestricted)
+ * and masks the four MEM interrupts so no protection fault can fire on the way
+ * down.  The shutdown event is not used. */
 static BOOL OnShutdown(BOOL final, u32 event) {
 #pragma unused(event)
 
