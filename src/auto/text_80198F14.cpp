@@ -5142,10 +5142,12 @@ extern "C" void fn_801A4798(s32* pOffset, s32 base) {
     }
 }
 
-extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
-    s32 val = *arg0;
-    if (val != 0) {
-        *arg0 = val + arg1;
+/* Relocate a stored offset into a pointer by adding the resource base address;
+ * a zero offset (null entry) is left unchanged. */
+extern "C" void fn_801A47B0(s32* offsetPtr, s32 base) {
+    s32 offset = *offsetPtr;
+    if (offset != 0) {
+        *offsetPtr = offset + base;
     }
 }
 
