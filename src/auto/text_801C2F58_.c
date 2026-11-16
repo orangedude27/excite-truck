@@ -2147,10 +2147,11 @@ void fn_801C80BC(void) {
     fn_801C78D8();
 }
 
+// Debug-menu item (id 0x17) of the AI-think interlude submenu: select mode 2, mark the text field in use, and reset the menu action to idle.
 void fn_801C80C8(void) {
-    lbl_8055E83A = 1;
-    lbl_8055E868 = fn_801C6CB0;
-    lbl_8055E854 = 2;
+    sTextFieldFlag = 1;
+    sMenuAction = menu_action_idle;
+    sInterludeMode = 2;
 }
 
 /* Debug menu item "Follow" (id 0x1b) of the AI-think interlude submenu: select the
