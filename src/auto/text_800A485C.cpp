@@ -20564,9 +20564,10 @@ struct RemoteSpkSlot {
     s32 playing; // 0x50: nonzero while a sound is active on this channel
     s32 soundId; // 0x58: id of the currently playing sound
 };
-extern "C" s32 fn_800D1E78(void *arg0, s32 arg1, s32 arg2) {
-    void *ptr = (u8 *)arg0 + arg1 * 0x68;
-    if (((s32 *)ptr)[0x50 / 4] != 0 && arg2 == ((s32 *)ptr)[0x58 / 4]) {
+// Returns nonzero when the given sound is playing on a remote-speaker channel.
+extern "C" s32 fn_800D1E78(void *soundPlayer, s32 channel, s32 soundId) {
+    void *slot = (u8 *)soundPlayer + channel * 0x68;
+    if (((s32 *)slot)[0x50 / 4] != 0 && soundId == ((s32 *)slot)[0x58 / 4]) {
         return 1;
     }
     return 0;
