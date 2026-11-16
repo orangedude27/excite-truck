@@ -2228,7 +2228,9 @@ void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned
     data[0x5FC / 4] |= 0x4000000;
 }
 
-void GXSetNumTexGens(unsigned int value) {
+/* Set the number of texture generators (texture-coordinate transforms) and flag
+ * the corresponding GP state bits dirty. */
+void GXSetNumTexGens(unsigned int nTexGens) {
     union {
         unsigned int reg;
         struct {
@@ -2249,7 +2251,7 @@ void GXSetNumTexGens(unsigned int value) {
     } flags;
 
     tex.reg = __GXData[0x254 / 4];
-    tex.fields.texGens = value;
+    tex.fields.texGens = nTexGens;
     __GXData[0x254 / 4] = tex.reg;
 
     flags.reg = __GXData[0x5FC / 4];
