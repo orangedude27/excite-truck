@@ -1154,15 +1154,20 @@ void fn_801F6DF0(void *arg0, int arg1) {
     int i;
     enabled4 = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
     entry = arg0;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x2A0); entry = (char *)entry + 0x54, i++) {
-        if (enabled4 != 0) {
-            ((void (*)(float *, int, float *, float, float))fn_801F6778)(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), *(float *)((char *)entry + 0x3C), *(float *)((char *)entry + 0x40));
-            fn_801F64E4(entry, &sp[0], *(float *)((char *)entry + 0x44));
-        }
+    i = 0;
+    goto check;
+loop:
+    if (enabled4 != 0) {
+        ((void (*)(float *, int, float *, float, float))fn_801F6778)(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), *(float *)((char *)entry + 0x3C), *(float *)((char *)entry + 0x40));
+        fn_801F64E4(entry, &sp[0], *(float *)((char *)entry + 0x44));
         fn_801F65D0(entry);
         fn_801F6728(entry);
-        *(unsigned char *)((char *)entry + 0x38) = fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
     }
+    *(unsigned char *)((char *)entry + 0x38) = fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
+    entry = (char *)entry + 0x54;
+    i++;
+check:
+    if (i < *(int *)((char *)arg0 + 0x2A0)) goto loop;
 }
 #pragma pop
 
