@@ -161,10 +161,11 @@ u8 fn_801930DC(void *unused, int slotIndex) {
     return 0;
 }
 
-int fn_80193110(void *arg0, int arg1) {
-    u8 value = arg1;
-    if (*((u8 *)arg0 + 0x2FC) == value) {
-        *((u8 *)arg0 + 0x2FC) = 0xFF;
+/* Release the record's +0x2FC voice slot when it belongs to `playerId`: mark it 0xFF (unowned) and report success. */
+int fn_80193110(void *record, int playerId) {
+    u8 targetId = playerId;
+    if (*((u8 *)record + 0x2FC) == targetId) {
+        *((u8 *)record + 0x2FC) = 0xFF;
         return 1;
     }
     return 0;
