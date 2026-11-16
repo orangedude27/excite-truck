@@ -1522,11 +1522,13 @@ void fn_8016E06C(void *arg0) {
     }
 }
 #pragma scheduling on
-void fn_8016E118(void *arg0) {
-    s32 value = *(s32 *)((u8 *)arg0 + 0x24);
+/* Release the stored entry handle at offset 0x24 (if set) and clear it to -1. */
+void fn_8016E118(void *obj)
+{
+    s32 value = *(s32 *)((u8 *)obj + 0x24);
     if (value != -1) {
         fn_8001B450(value);
-        *(s32 *)((u8 *)arg0 + 0x24) = -1;
+        *(s32 *)((u8 *)obj + 0x24) = -1;
     }
 }
 
