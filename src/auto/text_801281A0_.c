@@ -801,9 +801,11 @@ s32 fn_801290DC(void *region, s32 size) {
 
 extern char lbl_8032A498[];
 #pragma scheduling invalid_target
-void fn_80129138(void *arg0) {
+void fn_80129138(void *allocator) {
+    /* Log the lite allocator's usage ("using <used>K/<total>K"), converting
+     * its byte counters at +8 and +0xC to KiB. */
     fn_802E30C8(lbl_8032A498,
-        (void *)(*(s32 *)((u8 *)arg0 + 8) / 1024),
-        (void *)(*(s32 *)((u8 *)arg0 + 0xC) / 1024));
+        (void *)(*(s32 *)((u8 *)allocator + 8) / 1024),
+        (void *)(*(s32 *)((u8 *)allocator + 0xC) / 1024));
 }
 #pragma scheduling on
