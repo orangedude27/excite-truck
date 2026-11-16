@@ -205,10 +205,12 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8026523C(void *), fn_80265558(void *), fn_802655A4(void *);
     extern void fn_80265268(void *, int, char *, float), fn_8026557C(void *, float), fn_80265610(void *, float);
+    void *laterStorage;
     const char *base=lbl_80346338;
     const char *kind;
     PropertyReader802640C4 *properties = (PropertyReader802640C4 *)arg1;
     void *obj;
+    void *&later = laterStorage;
     int count;
     void **items;
     float value;
@@ -234,27 +236,27 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
         fn_80264098(arg0,5);
         *(void **)((char *)arg0+8)=obj;
     } else if (stricmp(kind,base+0x108)==0) {
-        obj=fn_801284F8(0x20,(void *)(base+0x114));
-        if(obj) obj=((void *(*)(void *))fn_80265558)(obj);
+        later=fn_801284F8(0x20,(void *)(base+0x114));
+        if(later) later=((void *(*)(void *))fn_80265558)(later);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_8026557C(obj,value);
+        fn_8026557C(later,value);
         items=*(void ***)lbl_80498F78;
         count=(*(int *)(lbl_80498F78+4))++;
-        items[count]=obj;
+        items[count]=later;
         *(int *)arg0=0;
         fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=obj;
+        *(void **)((char *)arg0+8)=later;
     } else if (stricmp(kind,base+0x120)==0) {
-        obj=fn_801284F8(0x24,(void *)(base+0x12c));
-        if(obj) obj=((void *(*)(void *))fn_802655A4)(obj);
+        later=fn_801284F8(0x24,(void *)(base+0x12c));
+        if(later) later=((void *(*)(void *))fn_802655A4)(later);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_80265610(obj,value);
+        fn_80265610(later,value);
         items=*(void ***)lbl_80498F78;
         count=(*(int *)(lbl_80498F78+4))++;
-        items[count]=obj;
+        items[count]=later;
         *(int *)arg0=0;
         fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=obj;
+        *(void **)((char *)arg0+8)=later;
     } else {
         fn_802E317C(base+0x138,kind);
     }
@@ -270,6 +272,17 @@ void fn_802643B8(void *object) {
     *(int *)((char *)object + 0xc) = 2;
 }
 #pragma scheduling on
+typedef struct CreditsItem {
+    void *vtable;   /* +0x00: interface pointer, zero for object-reference items */
+    int type;       /* +0x04: item type */
+    void *object;   /* +0x08: object this item refers to */
+    char pad[0xC];  /* +0x0C..0x13: item is 0x14 bytes total */
+} CreditsItem;
+
+enum {
+    CREDITS_ITEM_REF = 5  /* item holds a reference to another credits object */
+};
+
 void fn_80264404(void *arg0) {
     *(void **)arg0 = 0;
     fn_80264098(arg0, 5);
@@ -1003,11 +1016,10 @@ extern "C" int fn_802656C8(void *arg0) {
     void *item;
     void *list;
 
-    while ((item = ((ValList *)arg0)->getItem(i)) != 0) {
+    for (i = 0; (item = ((ValList *)arg0)->getItem(i)) != 0; i++) {
         if (stricmp(((ValEntry *)item)->getName(), lbl_8055C498) == 0) {
             count++;
         }
-        i++;
     }
     i = count + 5;
     /* new CreditItem[n]: __construct_new_array(alloc(n*0x14+0x10), ctor, 0, 0x14, n) */
