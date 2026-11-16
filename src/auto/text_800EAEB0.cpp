@@ -721,12 +721,11 @@ loop_body:
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
             }
             {
-                void *listA = *(void **)(head + 4);
-                void *list = listA;
+                void *list = *(void **)(head + 4);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
-                if (listA == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+                if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
                 if (list != 0) {
-                    void *node = (u8 *)listA + 0xC;
+                    void *node = (u8 *)list + 0xC;
                     while (1) {
                         void (*callback)(void *, void *, void *);
                         node = *(void **)((u8 *)node + 4);
@@ -858,7 +857,7 @@ void nw4hbm::snd::detail::FrameHeap::Destroy() {
     FrameHeapDestroyView *state = (FrameHeapDestroyView *)this;
     if (state->heap == 0) return;
     if (state->count == 0) goto free_heap;
-    register FrameHeapDestroyListView *head = &state->list;
+    register FrameHeapDestroyListView *head = (FrameHeapDestroyListView *)((char *)state + 8);
     goto loop_test;
 loop_body:
     if (state->count == 0) {
@@ -1197,9 +1196,9 @@ extern "C" s32 fn_800ECB90(void *arg0, s32 arg1) {
     extern void fn_800F2EAC(void *, const void *, u32);
     const char *file = (const char *)lbl_803230E8;
     if (arg1 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x43, file + 0x1C);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x43, file + 0x1c);
     }
-    if (((u32)arg1 & 3) != 0) {
+    if ((((u32)arg1) & 3u) != 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x44, file + 0x50, arg1);
     }
     Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv((u8 *)arg0 + 0x10C, (const void *)arg1);
@@ -2233,11 +2232,10 @@ extern "C" void fn_800EEBA8(void* arg0, u64 unused1, u64 unused2) {
     extern u8 lbl_803238F8[];
     const char* message = (const char*)lbl_803238F8;
     u8 sampleBuffer[0x48];
+    s32 i;
+    u8* channel;
     u8* state;
     u8* end;
-    u8* channel;
-    s32 i;
-
     if ((s8)lbl_8055DE40 == 0) {
         state = lbl_804127A8;
         state[0] = 0;
@@ -2351,16 +2349,17 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
     register void *player = self;
     register int index;
     register u32 temp;
+    struct { u32 value; } interrupt;
+    u32 &level = interrupt.value;
 
     if (player != 0) {
-        u8 initialized = *((u8 *)player + 0x15);
         register void *vtable = lbl_80323E98;
         register void *vtable2 = (u8 *)vtable + 0x98;
         *(void **)player = vtable;
         *(void **)((u8 *)player + 0x10) = vtable2;
 
-        if (initialized != 0) {
-            temp = OSDisableInterrupts();
+        if (*((u8 *)player + 0x15) != 0) {
+            level = OSDisableInterrupts();
             if (*((u8 *)player + 0x17) != 0) {
                 if (player == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233,
@@ -2376,7 +2375,7 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
                 UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
                     manager, (void *)index);
             }
-            OSRestoreInterrupts(temp);
+            OSRestoreInterrupts(level);
 
             register void *entry = player;
             index = 0;
