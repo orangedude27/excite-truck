@@ -28883,11 +28883,12 @@ void WUDPowerManagerCallback(u8 *addr, s32 result, s32 unused, s32 arg) {
     DBPrintf_8006CFA8((char *)strings + 0xd30, dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45], dev[0x59]);
 }
 
-void fn_8006BAA4(u32 arg0) {
-    u32 *base = (u32 *)&lbl_80392960;
-    if (arg0 == 0) {
+void fn_8006BAA4(u32 result) {
+    /* USB-close completion callback: on success clear the USB state flags; otherwise log a close-failure warning. */
+    u32 *wcb = (u32 *)&lbl_80392960;
+    if (result == 0) {
         lbl_8055DC30 = 0;
-        *(u8 *)((u8 *)base + 0x688) = 0;
+        *(u8 *)((u8 *)wcb + 0x688) = 0;
         return;
     }
     DBPrintf_8006CFA8(lbl_80313794);
