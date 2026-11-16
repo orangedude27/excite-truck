@@ -180,7 +180,12 @@ void fn_8001EFC8(void) {
 }
 
 void fn_8001EFCC(void* alarm) {
-    fn_8001F578(fn_8001F2C8(alarm));
+#define releaseAchievementAttachments fn_8001F2C8
+#define clearAchievementBlocks fn_8001F578
+    /* Alarm callback: release the achievement attachment slots, then zero the active and pending achievement blocks. */
+    clearAchievementBlocks(releaseAchievementAttachments(alarm));
+#undef clearAchievementBlocks
+#undef releaseAchievementAttachments
 }
 
 #pragma scheduling invalid_target
