@@ -1419,9 +1419,17 @@ void fn_801CEFE8(void);
 void fn_801AED5C(void);
 void fn_801CB464(void);
 void fn_80179588(void) {
-    fn_801CEFE8();
-    fn_801AED5C();
-    fn_801CB464();
+#define StartReplayPlayback fn_801CEFE8
+#define SetReplayFlag       fn_801AED5C
+#define PauseStatManager    fn_801CB464
+    /* Begin cutscene replay playback: post the start message, set the
+     * replay-active flag and enter playback, then pause the stat manager. */
+    StartReplayPlayback();
+    SetReplayFlag();
+    PauseStatManager();
+#undef StartReplayPlayback
+#undef SetReplayFlag
+#undef PauseStatManager
 }
 
 void fn_801CF01C(void);
