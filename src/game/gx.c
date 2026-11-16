@@ -2269,14 +2269,16 @@ void fn_802D2614(void) {
     fn_802D0EEC();
 }
 
+/* Disable indirect texturing and set TEV stages 0-3 to sample their textures directly. */
 void fn_802D2640(void) {
-    int i;
+    int stage;
+
     GXSetNumIndStages(0);
-    i = 0;
+    stage = 0;
     do {
-        GXSetTevDirect(i);
-        i++;
-    } while (i < 4);
+        GXSetTevDirect(stage);
+        stage++;
+    } while (stage < 4);
 }
 
 extern void (*lbl_8055FD80)(void);
