@@ -222,8 +222,9 @@ extern "C" void fn_8012A5E8(void *element) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012A648(void) {
-    void *p = fn_8012A570(0x18, &lbl_805599A0);
-    fn_8012A364(lbl_8055E008, p);
+    /* Prime the shared fixed-size pool: grab one 0x18-byte element (creating the pool if needed) and push it back onto its free list. */
+    void *element = fn_8012A570(0x18, &lbl_805599A0);
+    fn_8012A364(lbl_8055E008, element);
 }
 #pragma pop
 #pragma dont_inline reset
