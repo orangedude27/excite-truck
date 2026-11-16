@@ -708,9 +708,25 @@ void fn_80247768(void) {
 extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
+#pragma push
+#pragma scheduling invalid_target
 void fn_8024778C(void) {
-    s32 var_r31;
-    fn_8024778C_setMode(lbl_8055F26C);
+    s32 current;
+    s32 i;
+    if (lbl_8055BEB8 != (current = lbl_8055F26C)) {
+        lbl_8055BEB8 = current;
+        switch (current) {
+        case 2:
+            lbl_8055BEB0 = (void *)1;
+            break;
+        case 3:
+            lbl_8055BEB0 = (void *)2;
+            break;
+        default:
+            lbl_8055BEB0 = 0;
+            break;
+        }
+    }
     fn_80214CB4((s32)lbl_8055BEB0);
     switch (lbl_8055F26C) {
     case 1:
@@ -725,13 +741,11 @@ void fn_8024778C(void) {
         }
         break;
     }
-    var_r31 = 0;
-    do {
-        if (fn_8027B94C(var_r31) == 0) {
-            fn_80214A9C(var_r31 + 0xB);
+    for (i = 0; i < 3; i++) {
+        if (fn_8027B94C(i) == 0) {
+            fn_80214A9C(i + 0xB);
         }
-        var_r31 += 1;
-    } while (var_r31 < 3);
+    }
 }
 extern void* lbl_8055BEB0;
 extern s32 lbl_8055BEB4;
