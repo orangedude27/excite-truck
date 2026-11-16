@@ -48,6 +48,19 @@ typedef struct MenuRenderCopy {
     s32 unk1C;
 } MenuRenderCopy;
 #pragma pack(pop)
+#pragma cplusplus on
+struct MenuWorkspace {
+    s32 *data;
+    s32 count;
+    s32 capacity;
+    s32 storage[48];
+    void init() {
+        count = 0;
+        capacity = 16;
+        data = storage;
+    }
+};
+#pragma cplusplus reset
 extern char lbl_8034A598[];
 extern char lbl_8034A6A0[];
 extern char lbl_8034A790[];
@@ -2009,81 +2022,154 @@ extern "C" s32 fn_802B8998(s32 inputId) {
 }
 #pragma cplusplus reset
 #pragma pop
-void fn_802B8AE0(const char *arg0, s32 arg1) {
-    struct Local { char name[32]; volatile s32 savedArg; volatile s32 zero; } local;
-    s32 count;
-    u32 baseAddr;
-    s32 off;
-    char *dst2;
-    char *cdst;
-    u32 *basep;
-    volatile s32 *countp;
-    volatile u8 *src;
-    s32 n;
-    char c;
-    u8 b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11;
-    u8 b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23;
-    u8 b24, b25, b26, b27, b28, b29, b30, b31;
-    if (fn_802B05E4() != 0) return;
-    cdst = local.name;
-    n = 0x20;
+void fn_802B8AE0(const char *arg0, s32 arg1)
+{
+  struct Local
+  {
+    char name[32];
+    volatile s32 savedArg;
+    volatile s32 zero;
+  } local;
+  s32 count;
+  char *base;
+  char *dst;
+  char * volatile *basep;
+  volatile s32 *countp;
+  volatile u8 *src;
+  s32 n;
+  char c;
+  u8 b0;
+  u8 b1;
+  u8 b2;
+  u8 b3;
+  u8 b4;
+  u8 b5;
+  u8 b6;
+  u8 b7;
+  u8 b8;
+  u8 b9;
+  u8 b10;
+  u8 b11;
+  u8 b12;
+  u8 b13;
+  u8 b14;
+  u8 b15;
+  u8 b16;
+  u8 b17;
+  u8 b18;
+  u8 b19;
+  u8 b20;
+  u8 b21;
+  u8 b22;
+  u8 b23;
+  u8 b24;
+  u8 b25;
+  u8 b26;
+  u8 b27;
+  u8 b28;
+  u8 b29;
+  u8 b30;
+  u8 b31;
+  if (fn_802B05E4() != 0)
+  {
+    return;
+  }
+  dst = local.name;
+  n = 0x20;
+  goto Lcopy;
+  Ltest:
+  if ((--n) > 0)
+  {
     goto Lcopy;
-Ltest:
-    if (--n > 0) goto Lcopy;
-    cdst[-1] = 0;
-    goto Ldone;
-Lcopy:
-    c = *arg0++;
-    *cdst++ = c;
-    if ((signed char)c != 0) goto Ltest;
-Ldone:
-    src = (volatile u8 *)local.name;
-    b0 = src[0];
-    basep = (u32 *)(void *)&lbl_804BFA70;
-    countp = (volatile s32 *)((u8 *)&lbl_804BFA70 + 4);
-    baseAddr = *basep;
-    count = *countp;
-    b1 = src[1];
-    off = count * 0x28;
-    b2 = src[2];
-    b3 = src[3];
-    b4 = src[4];
-    *countp = count + 1;
-    b5 = src[5];
-    dst2 = (char *)(baseAddr + off);
-    dst2[0] = b0;
-    b6 = src[6]; dst2[1] = b1;
-    b7 = src[7]; dst2[2] = b2;
-    b8 = src[8]; dst2[3] = b3;
-    b9 = src[9]; dst2[4] = b4;
-    b10 = src[10]; dst2[5] = b5;
-    b11 = src[11]; dst2[6] = b6;
-    b12 = src[12]; dst2[7] = b7;
-    b13 = src[13]; dst2[8] = b8;
-    b14 = src[14]; dst2[9] = b9;
-    b15 = src[15]; dst2[10] = b10;
-    b16 = src[16]; dst2[11] = b11;
-    b17 = src[17]; dst2[12] = b12;
-    b18 = src[18]; dst2[13] = b13;
-    b19 = src[19]; dst2[14] = b14;
-    b20 = src[20]; dst2[15] = b15;
-    b21 = src[21]; dst2[16] = b16;
-    b22 = src[22]; dst2[17] = b17;
-    b23 = src[23]; dst2[18] = b18;
-    b24 = src[24]; dst2[19] = b19;
-    b25 = src[25]; dst2[20] = b20;
-    b26 = src[26]; dst2[21] = b21;
-    b27 = src[27]; dst2[22] = b22;
-    b28 = src[28]; dst2[23] = b23;
-    b29 = src[29]; dst2[24] = b24;
-    b30 = src[30]; dst2[25] = b25;
-    b31 = src[31]; dst2[26] = b26;
-    dst2[27] = b27; dst2[28] = b28; dst2[29] = b29;
-    dst2[30] = b30; dst2[31] = b31;
-    *(s32 *)(dst2 + 0x20) = arg1;
-    local.savedArg = arg1;
-    local.zero = 0;
-    *(s32 *)(dst2 + 0x24) = 0;
+  }
+
+  dst[-1] = 0;
+  goto Ldone;
+  Lcopy:
+  c = *(arg0++);
+
+  *(dst++) = c;
+  if (((signed char) c) != 0)
+  {
+    goto Ltest;
+  }
+  Ldone:
+  src = (volatile u8 *) local.name;
+
+  b0 = src[0];
+  basep = (char * volatile *) ((void *) (&lbl_804BFA70));
+  countp = (volatile s32 *) (((u8 *) (&lbl_804BFA70)) + 4);
+  base = *basep;
+  count = *countp;
+  b1 = src[1];
+  b2 = src[2];
+  b3 = src[3];
+  b4 = src[4];
+  *countp = count + 1;
+  b5 = src[5];
+  dst = base + (count * 0x28);
+  dst[0] = b0;
+  b6 = src[6];
+  dst[1] = b1;
+  b7 = src[7];
+  dst[2] = b2;
+  b8 = src[8];
+  dst[3] = b3;
+  b9 = src[9];
+  dst[4] = b4;
+  b10 = src[10];
+  dst[5] = b5;
+  b11 = src[11];
+  dst[6] = b6;
+  b12 = src[12];
+  dst[7] = b7;
+  b13 = src[13];
+  dst[8] = b8;
+  b14 = src[14];
+  dst[9] = b9;
+  b15 = src[15];
+  dst[10] = b10;
+  b16 = src[16];
+  dst[11] = b11;
+  b17 = src[17];
+  dst[12] = b12;
+  b18 = src[18];
+  dst[13] = b13;
+  b19 = src[19];
+  dst[14] = b14;
+  b20 = src[20];
+  dst[15] = b15;
+  b21 = src[21];
+  dst[16] = b16;
+  b22 = src[22];
+  dst[17] = b17;
+  b23 = src[23];
+  dst[18] = b18;
+  b24 = src[24];
+  dst[19] = b19;
+  b25 = src[25];
+  dst[20] = b20;
+  b26 = src[26];
+  dst[21] = b21;
+  b27 = src[27];
+  dst[22] = b22;
+  b28 = src[28];
+  dst[23] = b23;
+  b29 = src[29];
+  dst[24] = b24;
+  b30 = src[30];
+  dst[25] = b25;
+  b31 = src[31];
+  (base + (count * 0x28))[26] = b26;
+  (base + (count * 0x28))[27] = b27;
+  (base + (count * 0x28))[28] = b28;
+  (base + (count * 0x28))[29] = b29;
+  (base + (count * 0x28))[30] = b30;
+  (base + (count * 0x28))[31] = b31;
+  *((s32 *) ((base + (count * 0x28)) + 0x20)) = arg1;
+  local.savedArg = arg1;
+  local.zero = 0;
+  *((s32 *) ((base + (count * 0x28)) + 0x24)) = 0;
 }
 #pragma small_data on
 extern s32 lbl_8055CEA0;
