@@ -376,21 +376,25 @@ extern "C" void fn_801B8E28(int playerIndex) {
     fn_8018A08C(car); /* stamp it with the shared value of lbl_8055E3C8 */
 }
 #pragma cplusplus reset
-void fn_801B916C(void *arg0) {
+struct SlotSet { int a; char pad1[0x14]; int b; char pad2[0x14]; int c; };
+
+extern "C" void fn_801B916C(void *arg0) {
     void **table;
+    void *obj;
+    int id;
     char *p;
+    register int *slots;
     int i;
     int sentinel;
     float frequency;
     if (((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x400) {
+        p = (char *)arg0 + 4;
         table = lbl_80436D28;
         frequency = lbl_80562764;
-        p = (char *)arg0 + 4;
         i = 0;
         sentinel = -1;
         while (i < *(int *)((char *)arg0 + 0x394)) {
             int index = *(int *)(p + 0x60);
-            void *obj;
             if (index < 0) goto no_object;
             if (index >= lbl_8055E774) goto no_object;
             obj = table[index];
@@ -399,15 +403,13 @@ void fn_801B916C(void *arg0) {
             obj = 0;
         have_object:
             if (obj != 0) {
-                int id = *(int *)((char *)obj + 0x1EC);
+                id = *(int *)((char *)obj + 0x1EC);
                 if (*(int *)(p + 0x74) == id)
                     *(int *)(p + 0x74) = sentinel;
-                {
-                    volatile int *slots = (volatile int *)(p + 0x8C);
-                    if (slots[0] == id) slots[0] = sentinel;
-                    if (slots[6] == id) slots[6] = sentinel;
-                    if (slots[12] == id) slots[12] = sentinel;
-                }
+                slots = (int *)(p + 0x8C);
+                if (slots[0] == id) slots[0] = sentinel;
+                if (slots[6] == id) slots[6] = sentinel;
+                if (slots[12] == id) slots[12] = sentinel;
                 *(int *)(p + 0x74) = id;
                 *(float *)(p + 0x78) = frequency;
                 {
