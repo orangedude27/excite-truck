@@ -5365,10 +5365,11 @@ void fn_80071264(void *arg0, void *arg1, void *arg2) {
     if (callback != 0) callback(6, arg0, arg1, arg2);
 }
 
-void fn_80071298(void *a, void *b, void *c) {
+/* Notifies the BTA system callback registered at +0x84 in lbl_803C0AD8 with event code 7. */
+void fn_80071298(void *arg0, void *arg1, void *arg2) {
     extern u8 lbl_803C0AD8[];
     void (*callback)(s32, void *, void *, void *) = *(void (**)(s32, void *, void *, void *))(lbl_803C0AD8 + 0x84);
-    if (callback != 0) callback(7, a, b, c);
+    if (callback != 0) callback(7, arg0, arg1, arg2);
 }
 
 /* Initialize the BTA system control block: clear state, initialize the protocol timer,
