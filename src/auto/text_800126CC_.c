@@ -167,8 +167,10 @@ int fn_80012938(float f) {
 
 #pragma dont_inline fn_80012938
 void fn_80012954(void) {
-    char *p = fn_80012820(*(int *)((char *)fn_8001285C() + 4));
-    fn_80012938(*(float *)(p + 0x78));
+    /* Look up the data record tied to the first contest entry's event id, then
+       classify the record's float field at 0x78 against the threshold. */
+    char *record = fn_80012820(*(int *)((char *)fn_8001285C() + 4));
+    fn_80012938(*(float *)(record + 0x78));
 }
 
 #pragma use_lmw_stmw off
