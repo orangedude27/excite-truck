@@ -246,6 +246,7 @@ fn_80131960_ret fn_80131960(void *arg0, void *arg1) {
         else if ((s8)*(u8 *)(base + *(u32 *)(entry + 4)) == 0x7E)
             *(u8 *)(base + *(u32 *)(entry + 4)) = one;
     }
+    fn_80131960_RETURN(arg0);
 }
 s32 fn_80131B10(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
