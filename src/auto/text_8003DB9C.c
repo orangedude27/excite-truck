@@ -1075,7 +1075,7 @@ void __GXSaveFifo(void) {
     int level;
     level = OSDisableInterrupts();
     hasCPUFifo = lbl_8055D948;
-    if (hasCPUFifo != 0) {
+    if (hasCPUFifo) {
         GXFifoObjInternal *fifo = (GXFifoObjInternal *)lbl_8037C0E4;
         u32 reg = __piReg[5];
         fifo->wrap = (u8)((reg >> 29) & 1);
@@ -1092,7 +1092,7 @@ void __GXSaveFifo(void) {
         (*(GXFifoObjInternal *)lbl_8037C0E4).count = (*(GXFifoObjInternal *)lbl_8037C0C0).count;
         (*(GXFifoObjInternal *)lbl_8037C0C0).wrPtr = (*(GXFifoObjInternal *)lbl_8037C0E4).wrPtr;
         (*(GXFifoObjInternal *)lbl_8037C0C0).wrap = (*(GXFifoObjInternal *)lbl_8037C0E4).wrap;
-    } else if (hasCPUFifo != 0) {
+    } else if (hasCPUFifo) {
         int count = (char *)(*(GXFifoObjInternal *)lbl_8037C0E4).wrPtr - (char *)(*(GXFifoObjInternal *)lbl_8037C0E4).rdPtr;
         (*(GXFifoObjInternal *)lbl_8037C0E4).count = count;
         if (0 > count) {
@@ -2502,10 +2502,8 @@ void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     int type = 0;
     int a;
     unsigned int value = __peReg[1];
-    if (arg0 != 1) {
-        if (arg0 == 3) {
-            type = 1;
-        }
+    if (arg0 == 1 || arg0 == 3) {
+        type = 1;
     }
     value = __rlwimi(value, type, 0, 31, 31);
     a = __cntlzw(arg0 - 3);
