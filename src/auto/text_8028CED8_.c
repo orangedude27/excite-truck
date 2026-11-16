@@ -27,11 +27,22 @@ extern void fn_8028D2B4(void);
 extern void fn_8028DDF0(void *, int);
 extern void fn_80287B38(void *);
 void fn_8028CED8(void) {
-    if (fn_8028D17C() != 0) {
-        fn_8028D2B4();
-        fn_80287B38(fn_8028DDF0);
-        lbl_8055F714 = 1;
+    /* RealName: SkidSystem_Init (guess). If skid data is ready, allocate/init buffers, register the update callback, and mark active. */
+#define sSkidSystemActive lbl_8055F714
+#define SkidSystem_PrepareData fn_8028D17C
+#define SkidSystem_InitBuffers fn_8028D2B4
+#define SkidSystem_RegisterUpdate fn_80287B38
+#define SkidSystem_UpdateCallback fn_8028DDF0
+    if (SkidSystem_PrepareData() != 0) {
+        SkidSystem_InitBuffers();
+        SkidSystem_RegisterUpdate(SkidSystem_UpdateCallback);
+        sSkidSystemActive = 1;
     }
+#undef sSkidSystemActive
+#undef SkidSystem_PrepareData
+#undef SkidSystem_InitBuffers
+#undef SkidSystem_RegisterUpdate
+#undef SkidSystem_UpdateCallback
 }
 
 void fn_8028CF18(void) {
@@ -300,52 +311,62 @@ void fn_8028D4FC(void) {
     }
 }
 #pragma scheduling on
-void fn_8028D58C(void *arg0) {
-    unsigned int count;
-    int startIndex;
-    unsigned char *base;
-    unsigned char *end;
-    unsigned char *start;
-    unsigned char *dst;
-    unsigned char *current;
-    int normalized;
-    count = *(unsigned int *)((char *)arg0 + 4);
-    startIndex = (int)count - *(int *)((char *)arg0 + 8) + 2;
-    startIndex = startIndex & ((-startIndex & ~startIndex) >> 31);
-    base = *(unsigned char **)arg0;
-    end = base + count * 0x28;
-    start = base + (unsigned int)startIndex * 0x28;
-    for (current = start; current < end; current += 0x28) {
-        unsigned int marker = 0;
-        if (current > start && current[0x26] != 0 &&
-            (*(unsigned short *)(current + 0x24) >= 0x100 ||
-             *(unsigned short *)(current - 4) >= 0x100 ||
-             current + 0x28 >= end ||
-             (current[0x4E] != 0 && *(unsigned short *)(current + 0x4C) >= 0x100))) {
-            marker = 1;
-        }
-        current[0x26] = (unsigned char)marker;
+void fn_8028D58C(void *arg0)
+{
+  unsigned int count;
+  int startIndex;
+  unsigned char *new_var;
+  unsigned char *end;
+  unsigned char *start;
+  int new_var2;
+  unsigned char *current;
+  unsigned char *dst;
+  int normalized;
+  count = *((unsigned int *) (((char *) arg0) + 4));
+  current = start;
+  startIndex = (((int) count) - (*((int *) (((char *) arg0) + 8)))) + 2;
+  startIndex = startIndex & (((-startIndex) & (~startIndex)) >> 31);
+  dst = *((unsigned char **) arg0);
+  end = dst + (count * 0x28);
+  start = dst + (((unsigned int) startIndex) * 0x28);
+  for (current = start; current < end; current += 0x28)
+  {
+    unsigned int marker = 0;
+    new_var = current;
+    count = 0x100;
+    if (((current > start) && (current[0x26] != 0)) && (((((*((unsigned short *) (current + 0x24))) >= count) || (((*((unsigned short *) (current - 4))) + 1) > count)) || ((new_var + 0x28) >= end)) || ((new_var[0x4E] != 0) && ((*((unsigned short *) (new_var + 0x4C))) >= count))))
+    {
+      marker = 1;
     }
-    dst = *(unsigned char * volatile *)arg0;
-    for (current = start; current < end; current += 0x28) {
-        if (current[0x26] != 0 || (current + 0x28 < end && current[0x4E] != 0)) {
-            *(float *)(dst + 0x00) = *(float *)(current + 0x00);
-            *(float *)(dst + 0x04) = *(float *)(current + 0x04);
-            *(float *)(dst + 0x08) = *(float *)(current + 0x08);
-            *(float *)(dst + 0x0C) = *(float *)(current + 0x0C);
-            *(float *)(dst + 0x10) = *(float *)(current + 0x10);
-            *(float *)(dst + 0x14) = *(float *)(current + 0x14);
-            *(float *)(dst + 0x18) = *(float *)(current + 0x18);
-            *(float *)(dst + 0x1C) = *(float *)(current + 0x1C);
-            *(float *)(dst + 0x20) = *(float *)(current + 0x20);
-            normalized = *(unsigned short *)(current + 0x24) - 0x80;
-            normalized = normalized & ((-normalized & ~normalized) >> 31);
-            *(unsigned short *)(dst + 0x24) = (unsigned short)normalized;
-            dst[0x26] = current[0x26];
-            dst += 0x28;
-        }
+    current[0x26] = (unsigned char) marker;
+  }
+
+  dst = *((unsigned char * volatile *) arg0);
+  for (current = start; current < end; current += 0x28)
+  {
+    new_var2 = 0x26;
+    if ((current[new_var2] != 0) || (((current + 0x28) < end) && (current[0x4E] != 0)))
+    {
+      *((float *) (dst + 0x00)) = *((float *) (current + 0x00));
+      *((float *) (dst + 0x04)) = *((float *) (current + 0x04));
+      *((float *) (dst + 0x08)) = *((float *) (current + 0x08));
+      *((float *) (dst + 0x0C)) = *((float *) (current + 0x0C));
+      *((float *) (dst + 0x10)) = *((float *) (current + 0x10));
+      normalized = 0x14;
+      *((float *) (dst + normalized)) = *((float *) (current + 0x14));
+      *((float *) (dst + 0x18)) = *((float *) (current + 0x18));
+      *((float *) (dst + 0x1C)) = *((float *) (current + 0x1C));
+      *((float *) (0x20 + dst)) = *((float *) (current + 0x20));
+      normalized = (*((unsigned short *) (current + 0x24))) - 0x80;
+      normalized &= ((-normalized) & (~normalized)) >> 31;
+      *((unsigned short *) (dst + 0x24)) = (unsigned short) normalized;
+      dst[0x26] = current[0x26];
+      dst += 0x28;
     }
-    *(int *)((char *)arg0 + 4) = (dst - *(unsigned char * volatile *)arg0) / 0x28;
+  }
+
+  *((int *) (((char *) arg0) + 4)) = dst - (*((unsigned char * volatile *) arg0));
+  *((int *) (((char *) arg0) + 4)) = (*((int *) (((char *) arg0) + 4))) / 0x28;
 }
 
 #pragma push
