@@ -604,8 +604,9 @@ void fn_80190360(int arg0) {
     fn_80191084(arg0, 0);
 }
 
-s32 fn_80190368(s32 arg0) {
-    return arg0 == 1 || arg0 == 0;
+/* Return 1 when value is 0 or 1 (a valid boolean-flag value), else 0. */
+s32 fn_80190368(s32 value) {
+    return value == 1 || value == 0;
 }
 
 #pragma push
