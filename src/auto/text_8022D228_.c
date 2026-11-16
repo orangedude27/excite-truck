@@ -466,25 +466,26 @@ void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
  * down inside [min, max], fn_8022DF7C / fn_8022DF9C test value != max / min,
  * fn_8022DFBC normalizes it and fn_8022E014 interpolates into it.
  * (The float gauges next door keep their value pointer at +0x18 instead.) */
-void fn_8022DF14(void *arg0) {
-    int cur;
-    int hi;
-    int *p;
-    int v;
-    int lo;
-    p = *(int **)((char *)arg0 + 4);
-    hi = *(int *)((char *)arg0 + 0xC);
-    cur = *p;
-    if (hi < cur + 1) {
-        v = hi;
+void fn_8022DF14(void *gauge) {
+    /* Step an int gauge's value up by one, held inside its [min, max] range. */
+    int value;
+    int max;
+    int *valuePtr;
+    int stepped;
+    int min;
+    valuePtr = *(int **)((char *)gauge + 4);
+    max = *(int *)((char *)gauge + 0xC);
+    value = *valuePtr;
+    if (max < value + 1) {
+        stepped = max;
     } else {
-        v = cur + 1;
+        stepped = value + 1;
     }
-    lo = *(int *)((char *)arg0 + 8);
-    if (v > lo) {
-        lo = v;
+    min = *(int *)((char *)gauge + 8);
+    if (stepped > min) {
+        min = stepped;
     }
-    *p = lo;
+    *valuePtr = min;
 }
 
 /* Step an int gauge's value down by one, held inside its [min, max] range:
