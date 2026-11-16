@@ -335,6 +335,9 @@ u32 fn_802B5E8C(s32 text) {
 extern void* lbl_8055FA44;
 extern s32 fn_802B5D94();
 
+/* Store the index parsed from the "object" property (fn_802B5D94) into the
+   current object index lbl_8055FA44, later used to pick an entry from the
+   parsed object list. */
 void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
 }
@@ -1954,21 +1957,14 @@ extern "C" void fn_802B869C(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802B86F8(void) {
-    struct Flags {
-        char pad0[0x0C];
-        s32 flags;
-        char pad10[4];
-        s8 value;
-        char pad15[0x1F];
-        u8 field34;
-    } *p = (struct Flags *)&lbl_804BFF80;
-    s8 value = p->value;
-    p->field34 = 0;
+    volatile u8 *base = (volatile u8 *)&lbl_804BFF80;
+    s8 value = (s8)base[0x14];
+    base[0x34] = 0;
     if (value == 0)
         return;
-    if (p->flags & 1)
+    if (*(volatile s32 *)(base + 0xC) & 1)
         return;
-    p->value = 0;
+    base[0x14] = 0;
 }
 #pragma pop
 s32 fn_802B8728(void) {
