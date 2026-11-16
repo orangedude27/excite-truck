@@ -75,9 +75,15 @@ float fn_80208A18(float value) {
     return value;
 }
 
+#define baseEffectsVolume lbl_8055B4D0
+#define effectiveMasterVolume lbl_8055B4D4
+#define applyVolumeHandles fn_80208A18
 void fn_80208A50(float *arg0) {
-    lbl_8055B4D4 = fn_80208A18(lbl_8055B4D0);
+    effectiveMasterVolume = applyVolumeHandles(baseEffectsVolume);
 }
+#undef baseEffectsVolume
+#undef effectiveMasterVolume
+#undef applyVolumeHandles
 
 void fn_80208A78(void) {
     /* Load saved mixer settings for effects volume and sound quality, then apply them. */
