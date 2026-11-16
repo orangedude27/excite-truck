@@ -351,6 +351,33 @@ void fn_80130568(char *arg0) {
     }
 }
 
+extern void *lbl_80559AA8;
+static inline void format_append(char *dstp, int sizep, char *str) {
+    char *dst = dstp;
+    int size = sizep;
+    char *src;
+    char c;
+    while (*dst != 0) {
+        size--;
+        dst++;
+    }
+    if (size > 0) {
+        src = str;
+        goto copy;
+    count_check:
+        if (--size > 0)
+            goto copy;
+        dst[-1] = 0;
+        goto done;
+    copy:
+        c = *src++;
+        *dst++ = c;
+        if (c != 0)
+            goto count_check;
+    done:;
+    }
+}
+
 void fn_8013072C(char *arg0, int arg1, int arg2) {
     int sign = arg2 >> 31;
     int magnitude = (sign ^ arg2) - sign;
