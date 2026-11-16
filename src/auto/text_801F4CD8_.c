@@ -1590,11 +1590,12 @@ extern const char lbl_8033AECC[];
 extern const char lbl_8033AED8[];
 #pragma scheduling invalid_target
 void *fn_801F78F0(void) {
-    void **p = fn_801284F8(4, (void*)lbl_8033AECC);
-    if (p != 0) {
-        *p = (void*)lbl_8033AED8;
+    void **object = fn_801284F8(4, (void *)lbl_8033AECC);
+    /* Allocate a FabricTMH instance and point it at its vtable. */
+    if (object != 0) {
+        *object = (void *)lbl_8033AED8;
     }
-    return p;
+    return object;
 }
 #pragma scheduling on
 
