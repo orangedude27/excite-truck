@@ -673,7 +673,6 @@ u8 fn_80244550(void *arg0) {
     return *((u8 *)arg0 + 0x28);
 }
 
-/* Returns the editable text length (field 0x18) excluding a trailing '_' marker. */
 s32 fn_80244558(void *arg0) {
     char *str = *(char **)((u8 *)arg0 + 0x18);
     s32 len = strlen(str);
