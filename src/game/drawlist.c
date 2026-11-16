@@ -1240,9 +1240,10 @@ int fn_802C9E94(void *arg0, int arg1, int arg2, float farg0, float farg1, float 
     state->count = old_count + 1;
     return old_count;
 }
-void fn_802CA008(void *arg0) {
-    if (((int (*)(int, float))fn_802C9640)((int)((char *)arg0 + 4), *(float *)((char *)arg0 + 0x10)) != 0) {
-        fn_801E7894(*(int *)arg0);
+/* Advance the embedded timer/animation state at +4 by the delta at +0x10; if it expires, notify the owner object at +0. */
+void fn_802CA008(void *owner) {
+    if (((int (*)(int, float))fn_802C9640)((int)((char *)owner + 4), *(float *)((char *)owner + 0x10)) != 0) {
+        fn_801E7894(*(int *)owner);
     }
 }
 
