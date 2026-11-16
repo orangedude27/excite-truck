@@ -11,7 +11,14 @@ void fn_802DEA90(void);
 DECL_SECTION(".ctors") funcptr_t D_802ED5E0 = fn_802DEA90;
 #pragma scheduling invalid_target
 void fn_802DEA90(void) {
-    fn_8000D838(&lbl_8055FEC8);
-    lbl_804DB6A0[36] = 0;
+#define registerStaticDtor fn_8000D838
+#define gTexCopyCacheDtorNode lbl_8055FEC8
+#define gTexCopyCache lbl_804DB6A0
+    /* Static initializer for the texture-copy cache: register its destructor node, then clear the active entry count. */
+    registerStaticDtor(&gTexCopyCacheDtorNode);
+    gTexCopyCache[36] = 0;
+#undef gTexCopyCache
+#undef gTexCopyCacheDtorNode
+#undef registerStaticDtor
 }
 #pragma scheduling on
