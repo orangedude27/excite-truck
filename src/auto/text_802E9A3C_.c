@@ -1142,8 +1142,10 @@ void* fn_802EC0FC(void) {
     return lbl_80560080;
 }
 
-char *fn_802EC104(int arg0) {
-    return lbl_8052E658 + arg0 * 0x610 + 0x408;
+/* Returns the music-file path stored at +0x408 of scanned music entry
+ * `index` (each entry of lbl_8052E658 is 0x610 bytes). */
+char *fn_802EC104(int index) {
+    return lbl_8052E658 + index * 0x610 + 0x408;
 }
 
 void fn_802EC11C(void *arg0) {
