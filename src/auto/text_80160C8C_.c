@@ -1244,8 +1244,8 @@ extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     s32 pad[0x2e];
     register const char *label1;
     register const char *label2;
+    register void *obj;
     register s32 value;
-    void *obj;
     s32 *manager;
     s32 *item;
     s32 selection;
@@ -2612,8 +2612,9 @@ int fn_801643C8(void *self) {
     fn_802CAC54(*((int *)((char *)self + 0xD0)));
     fn_802C6CF8(*((int *)((char *)self + 0xA0)));
 }
-int fn_80164468(void *arg0) {
-    return *((float *)((char *)arg0 + 0x8C)) < lbl_8056185C;
+/* True while the fade/elapsed value at +0x8C is below the halfway point (lbl_8056185C = 0.5). */
+int fn_80164468(void *object) {
+    return *((float *)((char *)object + 0x8C)) < lbl_8056185C;
 }
 
 #pragma cplusplus on
