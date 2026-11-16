@@ -3589,22 +3589,26 @@ check:
         goto yield;
 }
 
-void fn_8011C120(void *arg0) {
-    if (arg0 != 0) {
-        BOOL enabled = OSDisableInterrupts();
-        s32 count = *(volatile s32 *)((u8 *)arg0 + 4);
-        *(volatile s32 *)((u8 *)arg0 + 4) = count - 1;
-        if (*(volatile s32 *)((u8 *)arg0 + 4) == 0) {
-            if (*(volatile s32 *)arg0 == 0) {
-                u64 time = (u64)OSGetTime();
-                u32 period = (0x3E8U / *(u32 *)((u8 *)arg0 + 0x3C)) *
-                             (*(volatile u32 *)0x800000F8 / 4U / 1000U);
+void fn_8011C120(void *alarm) {
+    /* Release a reference to a periodic alarm: decrement its use count, and
+     * when it reaches zero while the alarm is not yet armed, arm a periodic
+     * alarm (frequency at +0x3C) and mark it armed. Interrupts stay disabled
+     * across the update. */
+    if (alarm != 0) {
+        BOOL interruptState = OSDisableInterrupts();
+        s32 refCount = *(volatile s32 *)((u8 *)alarm + 4);
+        *(volatile s32 *)((u8 *)alarm + 4) = refCount - 1;
+        if (*(volatile s32 *)((u8 *)alarm + 4) == 0) {
+            if (*(volatile s32 *)alarm == 0) {
+                u64 startTime = (u64)OSGetTime();
+                u32 alarmPeriod = (0x3E8U / *(u32 *)((u8 *)alarm + 0x3C)) *
+                                  (*(volatile u32 *)0x800000F8 / 4U / 1000U);
                 ((void (*)(void *, u64, u64, void (*)(s32)))OSSetPeriodicAlarm)(
-                    (u8 *)arg0 + 8, time, (u64)period, fn_8011BDF0);
+                    (u8 *)alarm + 8, startTime, (u64)alarmPeriod, fn_8011BDF0);
             }
-            *(s32 *)arg0 = 1;
+            *(s32 *)alarm = 1;
         }
-        OSRestoreInterrupts(enabled);
+        OSRestoreInterrupts(interruptState);
     }
 }
 
