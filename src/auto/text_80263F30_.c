@@ -354,13 +354,20 @@ void* fn_80264580(void) {
 }
 
 #pragma dont_inline on
+/* Return the current credits clock (+0x20) when the credits object's gate (+0x18) is near zero, else -1. */
 float fn_80264588(void) {
     extern int fn_802645C0(void);
     extern float lbl_80563BF4;
-    if (fn_802645C0() != 0) {
-        return *(float *)((char *)lbl_8055F444 + 0x20);
+#define sCurrentObject  lbl_8055F444
+#define CreditsGateOpen fn_802645C0
+#define sNoClock        lbl_80563BF4 /* -1 sentinel */
+    if (CreditsGateOpen() != 0) {
+        return *(float *)((char *)sCurrentObject + 0x20);
     }
-    return lbl_80563BF4;
+    return sNoClock;
+#undef sNoClock
+#undef CreditsGateOpen
+#undef sCurrentObject
 }
 
 int fn_802645C0(void) {
