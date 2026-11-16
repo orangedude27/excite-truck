@@ -7629,22 +7629,21 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
 }
 
 extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
+    s32 chosenIndex = 0;
+    u8 *chosen = 0;
     u8 *base = (u8 *)arg0;
     u8 *a1 = (u8 *)arg1;
-    u8 *chosen = 0;
-    s32 chosenIndex = 0;
-    u8 *entry = base;
-    u8 *cand = base + 0x40;
+    u8 *entry = (u8 *)arg0;
+    u8 *cand = (u8 *)arg0 + 0x40;
     s32 i = 0;
     for (; i < 5; i++) {
-        u32 flags = *(u32 *)(entry + 0x40);
-        if ((flags & 1) == 0 || ((__cntlzw(flags) >> 5) & 2) != 0) {
+        if ((*(u32 *)(entry + 0x40) & 1) == 0 || (((*(u32 *)(entry + 0x40) & 1) != 0) && (((__cntlzw(*(u32 *)(entry + 0x40)) >> 5) & 2) != 0))) {
             if (chosen == 0) {
                 chosen = cand;
                 chosenIndex = i;
             }
         } else if (*(u32 *)(a1 + 0x22C) == *(u32 *)(entry + 0x2A8) && *(u32 *)(a1 + 0x238) == *(u32 *)(entry + 0x2B4) && *(u16 *)(a1 + 0x23C) == *(u16 *)(entry + 0x2B8)) {
-            return base + i * 0x29C + 0x40;
+            return (u8 *)arg0 + i * 0x29C + 0x40;
         }
         entry += 0x29C;
         cand += 0x29C;
@@ -20850,13 +20849,13 @@ extern "C" char *fn_800D3944(char *str, s32 count, u32 delim) {
 }
 
 extern "C" u32 fn_800D3A30(const char *arg0) {
-    const char *base = lbl_8031EC50;
+    u32 base = (u32)lbl_8031EC50;
     u32 value = 0;
     const char *p = arg0;
     u8 c;
     u32 digit;
-    if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E6, base + 0x164);
-    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x1E7, base + 0x134);
+    if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x1E6, (const char *)(base + 0x164));
+    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x1E7, (const char *)(base + 0x134));
     for (;;) {
         c = lbl_8055DDD8(p);
         if (c >= '0' && c <= '9') digit = c - '0';
@@ -21143,9 +21142,11 @@ extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
     }
     f32 d = farg0 - *(f32 *)left;
     f32 one = lbl_80560E50;
-    f32 scale = one / (*(f32 *)right - *(f32 *)left);
+    f32 dx = *(f32 *)right;
+    dx -= *(f32 *)left;
     f32 k54 = lbl_80560E54;
     f32 k58 = lbl_80560E58;
+    f32 scale = one / dx;
     f32 k5c = lbl_80560E5C;
     f32 ly = *(f32 *)(left + 4);
     f32 ry = *(f32 *)(right + 4);
