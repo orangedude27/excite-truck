@@ -416,8 +416,11 @@ return_one:
 }
 #pragma pop
 
+typedef void *(*FillMemFn)();
+/* memset-style wrapper: fill count bytes at dest with the byte val via the
+ * low-level fill routine, then return the original dest pointer. */
 void *fn_8001C070(void *dest, int val, size_t count) {
-    ((void *(*)())fn_8001BC38)(dest, val, count);
+    ((FillMemFn)fn_8001BC38)(dest, val, count);
     return dest;
 }
 
