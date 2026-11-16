@@ -20332,9 +20332,10 @@ extern "C" u8 fn_800D1688(s32 *indexPtr) {
     return gControllerActive[*indexPtr];
 }
 
-extern "C" void fn_800D16A8(s32 *arg0) {
-    if (*arg0 < 4) {
-        lbl_8055DDA8[*arg0] = 0;
+extern "C" void fn_800D16A8(s32 *indexPtr) {
+    /* Clear the active flag of the controller whose index is pointed to by indexPtr. */
+    if (*indexPtr < 4) {
+        gControllerActive[*indexPtr] = 0;
     }
 }
 
