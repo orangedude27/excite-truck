@@ -434,10 +434,19 @@ extern "C" void fn_80292114(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 void fn_802921F4(void) {
-    if (lbl_8055F75C != 0) {
-        fn_80291AC8();
-        fn_802919AC((int *)&lbl_804B3EC0);
+    /* If the lens-flare system is active, release its global effects and every effect held in the flare table. */
+    #define sFlareActive   lbl_8055F75C
+    #define gFlareTable    lbl_804B3EC0
+    #define ReleaseGlobal  fn_80291AC8
+    #define ReleaseTable   fn_802919AC
+    if (sFlareActive != 0) {
+        ReleaseGlobal();
+        ReleaseTable((int *)&gFlareTable);
     }
+    #undef ReleaseTable
+    #undef ReleaseGlobal
+    #undef gFlareTable
+    #undef sFlareActive
 }
 
 void fn_8029222C(void) {
