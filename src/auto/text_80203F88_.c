@@ -1,8 +1,6 @@
 #include "revolution/MTX/mtxtypes.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-#pragma ppc_psq_save off
-#pragma paired_single off
 extern float lbl_80563140;
 extern float lbl_80563144;
 
