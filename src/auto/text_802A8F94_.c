@@ -43,16 +43,21 @@ void fn_802A8FEC(void *arg0, void *arg1) {
 }
 #pragma pop
 s32 fn_802A9048(void) {
-    u32 value;
-    s32 result;
-    value = *((u32 *)fn_801E87A8() + 1);
-    result = 0;
-    if (value & 0x100) {
-        value -= 0x180000;
-        if (value != 0x303U && value != 0x304U)
-            result = 1;
+    /* Returns nonzero when the flag at bit 8 of the mode word (offset +4 of
+     * fn_801E87A8()) is set and the mode ID, after subtracting 0x180000, is
+     * neither 0x303 nor 0x304. */
+    u32 modeWord;
+    s32 isMatch;
+
+    modeWord = *((u32 *)fn_801E87A8() + 1);
+    isMatch = 0;
+    if (modeWord & 0x100) {
+        modeWord -= 0x180000;
+        if (modeWord != 0x303U && modeWord != 0x304U) {
+            isMatch = 1;
+        }
     }
-    return result;
+    return isMatch;
 }
 
 #pragma dont_inline on
