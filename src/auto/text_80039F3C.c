@@ -334,8 +334,7 @@ static inline int allocateStructures(const char *msg) {
 }
 
 #pragma scheduling reset
-static inline void initDvdContexts(void) {
-    DVDLowContext *base = (DVDLowContext *)lbl_8037B820;
+static inline void initDvdContexts(DVDLowContext *base) {
     base[0].callback = (void *)0;
     base[0].WORD_0x4 = 0;
     base[0].inUse = 0;
@@ -379,7 +378,32 @@ int DVDLowInit(void) {
         }
 
         if (!lbl_8055D8EC) {
-            initDvdContexts();
+            DVDLowContext *base = (DVDLowContext *)lbl_8037B820;
+            const unsigned int magic = 0xFEEBDAED;
+            #pragma scheduling reset
+            base[0].callback = (void *)0;
+            base[0].WORD_0x4 = 0;
+            base[0].inUse = 0;
+            base[0].magic = magic;
+            base[0].id = 0;
+            base[1].callback = (void *)0;
+            base[1].WORD_0x4 = 0;
+            base[1].inUse = 0;
+            base[1].magic = magic;
+            base[1].id = 1;
+            base[2].callback = (void *)0;
+            base[2].WORD_0x4 = 0;
+            base[2].inUse = 0;
+            base[2].magic = magic;
+            base[2].id = 2;
+            base[3].callback = (void *)0;
+            base[3].WORD_0x4 = 0;
+            base[3].inUse = 0;
+            base[3].magic = magic;
+            base[3].id = 3;
+            lbl_8055D8E8 = 0;
+            lbl_8055D8EC = 1;
+            #pragma scheduling 750
         }
     }
 
