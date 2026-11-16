@@ -8,20 +8,30 @@ extern int lbl_80430850[7];
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+/* Initialize the global state node and reset the associated object fields. */
 void fn_80179CBC(void) {
-    register int zero asm("r0");
-    volatile char *p;
-    int one;
-    fn_8000D838(&lbl_8055E408);
-    zero = 0xFFFF0000;
-    *(volatile int *)&lbl_8055E410 = zero;
-    p = (volatile char *)lbl_80430850;
-    zero = 0;
-    one = 1;
-    *(volatile int *)(p + 0x10) = zero;
-    *(volatile char *)(p + 0x14) = one;
-    *(volatile int *)(p + 0x1C) = zero;
-    *(volatile int *)(p + 0x18) = zero;
+#define sStateNode lbl_8055E408
+#define sStateMagic lbl_8055E410
+#define sTrackedObject lbl_80430850
+    register int zeroValue asm("r0");
+    volatile char *objectBase;
+    int flagValue;
+
+    fn_8000D838(&sStateNode);
+    zeroValue = 0xFFFF0000;
+    *(volatile int *)&sStateMagic = zeroValue;
+
+    objectBase = (volatile char *)sTrackedObject;
+    zeroValue = 0;
+    flagValue = 1;
+    *(volatile int *)(objectBase + 0x10) = zeroValue;
+    *(volatile char *)(objectBase + 0x14) = flagValue;
+    *(volatile int *)(objectBase + 0x1C) = zeroValue;
+    *(volatile int *)(objectBase + 0x18) = zeroValue;
+
+#undef sTrackedObject
+#undef sStateMagic
+#undef sStateNode
 }
 #pragma pop
 
