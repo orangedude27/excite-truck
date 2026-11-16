@@ -449,7 +449,7 @@ copied_second:
     cursor = 0;
     goto check_list;
 copy_first:
-    src = fn_802C9C24(*(int *)((char *)list + 4) + offset);
+    src = fn_802C9C24(*(int *)((char *)list + 4) + cursor);
     dst2 = temp;
     count2 = 0x10;
     goto copy_entry;
@@ -464,10 +464,10 @@ copy_entry:
     if ((signed char)c != 0) goto count_entry;
 copied_entry:
     fn_802C7888(temp, 1);
-    cursor++;
-    offset += 0x10;
+    cursor += 0x10;
+    offset++;
 check_list:
-    if (cursor < *(int *)list) goto copy_first;
+    if (offset < *(int *)list) goto copy_first;
     fn_802C6C20(list);
 }
 #pragma scheduling on
