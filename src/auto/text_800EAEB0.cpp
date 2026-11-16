@@ -1631,6 +1631,30 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     return 0;
 }
 
+extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void*, s32);
+extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void*, s32);
+extern "C" void SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(void *, s32);
+extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, s32);
+extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
+extern "C" s32 fn_800F016C(s32 array, s32 index);
+extern "C" void OSReport(const char *, ...);
+extern u8 lbl_8055DE38;      /* MmlParser: printvar enabled flag */
+extern char lbl_80559838[2]; /* "T" */
+extern char lbl_8055983C[2]; /* "G" */
+extern char lbl_80559840[2]; /* "" */
+
+/* MmlParser::GetVariablePtr: variables 0-0x1F are the player's, 0x20-0x2F the track's. */
+static inline s16 *MmlGetVariablePtr(SeqPlayer *player, MmlSeqTrack *track, int varNo) {
+    int valid = 0;
+    if (varNo >= 0 && varNo <= 0x30) valid = 1;
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323268, 0x370, (const char *)lbl_80323268 + 0xC8, varNo, 0, 0x30);
+    }
+    if (varNo < 0x20) return GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(player, varNo);
+    if (varNo < 0x30) return GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(track, varNo - 0x20);
+    return 0;
+}
+
 void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg, s32 arg2) const { if (track == 0) return; if (command == 0x81) return; }
 
 #pragma use_lmw_stmw reset
