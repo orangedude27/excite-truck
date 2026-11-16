@@ -513,7 +513,15 @@ void fn_802E9010(void) {
 #pragma pop
 void fn_802E9118(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)((char*)arg0+0x260)=0; *(int*)((char*)arg0+0x264)=0; *(int*)((char*)arg0+0x268)=0; *(int*)((char*)arg0+0x26c)=0; *(int*)arg0=0; }
 
-void fn_802E9160(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)((char*)arg0+0x260)=0; *(int*)((char*)arg0+0x264)=0; *(int*)((char*)arg0+0x268)=0; *(int*)((char*)arg0+0x26c)=0; *(int*)arg0=1; }
+void fn_802E9160(void *arg0) {
+    /* Abort/fail the async NAND save: release its buffer, clear state fields, and mark state 1. */
+    fn_8012C4D8(*(int*)((char*)arg0+0x260));
+    *(int*)((char*)arg0+0x260)=0;
+    *(int*)((char*)arg0+0x264)=0;
+    *(int*)((char*)arg0+0x268)=0;
+    *(int*)((char*)arg0+0x26c)=0;
+    *(int*)arg0=1;
+}
 
 int fn_802E91AC(int *arg0) { return *arg0 == 0; }
 
