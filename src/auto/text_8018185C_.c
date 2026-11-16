@@ -2552,9 +2552,10 @@ int fn_8018AF04(void *arg0) {
     }
 }
 #pragma scheduling on
-int fn_8018B06C(void *arg0) {
-    return *(int *)((unsigned char *)lbl_8055E918 +
-                    *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C + 0x14);
+int fn_8018B06C(void *car) {
+    /* Returns field +0x14 of this car's 0x9C-byte state record in lbl_8055E918,
+       indexed by the car's element index at +0x1EC. */
+    return *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)car + 0x1EC) * 0x9C) + 0x14);
 }
 
 int fn_8018B084(void *car) {
