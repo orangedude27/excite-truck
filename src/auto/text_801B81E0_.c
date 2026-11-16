@@ -699,18 +699,20 @@ extern "C" int fn_801B8A20(void *arg0) {
     }
     return 0;
 }
-extern "C" int fn_801B8A44(void *arg0) {
-    struct Dummy {
+/* While an arena event is active (lbl_8055E748), ask obj through virtual slot 0x20
+ * and return its answer; when no event is running, return 0. */
+extern "C" int fn_801B8A44(void *obj) {
+    struct ForwardTarget {
         virtual void d0();
         virtual void d1();
         virtual void d2();
         virtual void d3();
         virtual void d4();
         virtual void d5();
-        virtual int d6();
+        virtual int slot20();
     };
     if (*(unsigned char *)&lbl_8055E748 != 0) {
-        return ((Dummy *)arg0)->d6();
+        return ((ForwardTarget *)obj)->slot20();
     }
     return 0;
 }
