@@ -1126,32 +1126,39 @@ float fn_8014C8F8(float farg0, float farg1, float farg2) {
     return value;
 }
 
-void fn_8014C920(void *arg0, void *arg1) {
-    volatile int *src = (volatile int *)arg1;
-    int h;
-    int g;
-    int f;
-    int d;
-    int c;
-    int b;
-    int a;
-    float e;
-    a = src[0];
-    b = src[1];
-    c = src[2];
-    d = src[3];
-    e = *(volatile float *)((char *)arg1 + 0x10);
-    f = src[5];
-    g = src[6];
-    h = src[7];
-    ((int *)arg0)[0] = a;
-    ((int *)arg0)[1] = b;
-    ((int *)arg0)[2] = c;
-    ((int *)arg0)[3] = d;
-    ((float *)arg0)[4] = e;
-    ((int *)arg0)[5] = f;
-    ((int *)arg0)[6] = g;
-    ((int *)arg0)[7] = h;
+void fn_8014C920(void *dst, void *srcObj) {
+    /* Copy a 0x20-byte on-screen text entry (TextEntry8014C920) field by field:
+     * the name, x, y and justification, the float scale at +0x10, then the
+     * font, colour and the string pointer at +0x1C.  x, y and the string are
+     * moved as raw words, never converted.  Reading the source through
+     * volatile pointers is what keeps the compiler from folding the eight
+     * loads into an lmw/stmw pair. */
+    volatile s32 *src = (volatile s32 *)srcObj;
+    TextEntry8014C920 *out = (TextEntry8014C920 *)dst;
+    const char *text;
+    u32 color;
+    s32 fontId;
+    s32 justification;
+    u32 yBits;
+    u32 xBits;
+    s32 id;
+    f32 scale;
+    id = src[0];
+    xBits = src[1];
+    yBits = src[2];
+    justification = src[3];
+    scale = *(volatile f32 *)((u8 *)srcObj + 0x10);
+    fontId = src[5];
+    color = src[6];
+    text = (const char *)src[7];
+    out->id = id;
+    out->x = xBits;
+    out->y = yBits;
+    out->justification = justification;
+    out->scale = scale;
+    out->fontId = fontId;
+    out->color = color;
+    out->text = text;
 }
 
 int fn_8014C964(int *arg0, int arg1) {
