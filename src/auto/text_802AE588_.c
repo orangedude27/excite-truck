@@ -1232,19 +1232,18 @@ void fn_802AFF6C(void *arg0) {
     *(unsigned short *)*(void **)arg0 = *(unsigned short *)((char *)arg0 + 4) - 1;
 }
 
+#pragma optimization_level 3
 void fn_802AFF80(void *arg0, short arg1) {
     unsigned int index = *(unsigned short *)((char *)arg0 + 4);
     u32 limit = *(unsigned short *)((char *)arg0 + 6);
     if (index < limit) {
         short *data = *(short **)arg0;
-        u32 offset = index << 1;
+        unsigned int offset = index << 1;
         register index = index + 1;
         data[offset >> 1] = arg1;
         *(unsigned short *)((char *)arg0 + 4) = index;
     }
 }
-
-#pragma scheduling invalid_target
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
     float x = (float)arg0 * lbl_80564AF0;
@@ -1307,9 +1306,13 @@ s32 fn_802B0130(void *arg0) {
 
 extern int fn_801E8718(int);
 extern void fn_802AEB3C();
+/* fn_801E8718(-1) returns the active entry's 0x38-byte transform snapshot;
+ * fn_802AEB3C consumes that pointer (still in r3) to rebuild its state. */
+#define getActiveState fn_801E8718
+#define rebuildState   fn_802AEB3C
 void fn_802B0144(void) {
-    fn_801E8718(-1);
-    fn_802AEB3C();
+    getActiveState(-1);
+    rebuildState();
 }
 
 /* Bracketed scene/state transition: set up GPU state, then load the active
