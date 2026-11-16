@@ -645,8 +645,10 @@ void __AXGetAuxBOutputDpl2Ls(void **out) {
     *out = lbl_8035CD20 + lbl_8055D6F4 * 0x480 + 0x300;
 }
 
-void __AXGetAuxBOutputDpl2Rs(void **arg0) {
-    *arg0 = lbl_8035DAA0 + lbl_8055D6F4 * 0x480 + 0x300;
+void __AXGetAuxBOutputDpl2Rs(void **out) {
+    /* Write the AUX-B DPL2 rear-surround (Rs) output buffer for the current DSP
+     * read position into *out; REXE01 keeps AX state as raw labels. */
+    *out = lbl_8035DAA0 + lbl_8055D6F4 * 0x480 + 0x300;
 }
 
 // Returns the current AuxB DSP input buffer in *out, or NULL when no AuxB callback is registered.
