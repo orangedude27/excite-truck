@@ -1402,14 +1402,8 @@ BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hb
     if (*((u8 *)archive + 1) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
     base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)archive), *(u32 *)((u8 *)archive + 4), archive);
-    if (base == 0) {
-        entry = 0;
-        goto finish;
-    }
-    if (soundIndex >= *(u32 *)base) {
-        entry = 0;
-        goto finish;
-    }
+    if (base == 0) { entry = 0; goto finish; }
+    if (soundIndex >= *(u32 *)base) { entry = 0; goto finish; }
     if (*(u16 *)((u8 *)this + 6) >= 0x101) {
         soundIndex <<= 3;
         archive = *(void **)((u8 *)this + 0x28);
@@ -1419,13 +1413,12 @@ BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hb
         goto finish;
     }
     {
-        register u32 tmp = soundIndex << 3;
+        entry = base + (soundIndex << 3);
         archive = *(void **)((u8 *)this + 0x28);
-        entry = (void *)(*(u32 *)(base + tmp + 8) + (u32)archive);
+        entry = (void *)(*(u32 *)((u8 *)entry + 8) + (u32)archive);
     }
 finish:
-    if (entry == 0)
-        return 0;
+    if (entry == 0) return 0;
     *(u32 *)outInfo = *(u32 *)((u8 *)entry + 4);
     *(u32 *)((u8 *)outInfo + 4) = *(u32 *)((u8 *)entry + 8);
     *(u32 *)((u8 *)outInfo + 8) = *((u8 *)entry + 0x15);
@@ -5762,15 +5755,15 @@ extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
 extern "C" const char lbl_803264AC[];
 extern "C" const char lbl_803264D0[];
 extern "C" void fn_800FA7E0(void *self) {
-    unsigned int message;
-    unsigned int state;
+    unsigned long message;
+    unsigned long state;
     u8 *p = (u8 *)self;
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
         if (message == 1) {
             void *mutex = p + 0x2320;
             OSLockMutex(mutex);
-            unsigned int tick = OSGetTick();
+            unsigned long tick = OSGetTick();
             Instance__15EmissionManagerFv();
             fn_800E3228();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
