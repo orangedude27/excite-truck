@@ -9132,11 +9132,13 @@ extern "C" void fn_8022984C(void *arg0) {
     *p = (u8)((s8)(*p == 0));
 }
 
-extern "C" void fn_80229864(void *arg0) {
-    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
-        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+extern "C" void fn_80229864(void *widget) {
+    /* Turn this VfWidget on: set its active flag (+0x18) and, when its layout
+     * option (+0x1A) is set, mark it dirty (+0x234) so it gets redrawn. */
+    if ((*(u8 *)((u8 *)widget + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)widget + 0x234)) = 1;
     }
-    (*(u8 *)((u8 *)arg0 + 0x18)) = 1;
+    (*(u8 *)((u8 *)widget + 0x18)) = 1;
 }
 
 extern "C" void fn_80229884(void *arg0) {
