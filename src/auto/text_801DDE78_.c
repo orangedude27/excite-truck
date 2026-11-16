@@ -201,7 +201,7 @@ void fn_801DE150(void) {
 extern void fn_80230B5C(void *);
 extern void fn_802C8638(void *);
 extern void fn_802C974C(f32, f32, f32);
-extern void fn_80147230(char *, const char *, ...);
+extern void fn_80147230(void *, const char *, ...);
 extern void fn_80011A2C(void);
 extern f32 lbl_80562BD0;
 extern f32 lbl_80562BD4;
