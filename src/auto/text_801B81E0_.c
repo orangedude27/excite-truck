@@ -685,17 +685,19 @@ void fn_801B8A10(void* arg0, int arg1, int arg2) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_801B8A20(void *arg0) {
-    struct Dummy {
+extern "C" int fn_801B8A20(void *obj) {
+    /* While the arena-event master is active (lbl_8055E748), forward to obj's
+       virtual slot 0x1C and return its answer; otherwise return 0. */
+    struct ZoneTarget {
         virtual void d0();
         virtual void d1();
         virtual void d2();
         virtual void d3();
         virtual void d4();
-        virtual int d5();
+        virtual int slot1C();
     };
     if (*(unsigned char *)&lbl_8055E748 != 0) {
-        return ((Dummy *)arg0)->d5();
+        return ((ZoneTarget *)obj)->slot1C();
     }
     return 0;
 }
