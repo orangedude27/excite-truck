@@ -998,6 +998,8 @@ void fn_801E8A84(void)
   lbl_804881D8[3] = value;
   scale = scale + 0;
 }
+/* Scale the global unit direction (lbl_804881D8[0..2]) by its stored magnitude
+ * (lbl_804881D8[3]) and write the resulting 3D vector to outVec. */
 void fn_801E8C84(float *outVec) {
     float magnitude = lbl_804881D8[3];
     outVec[0] = lbl_804881D8[0] * magnitude;
