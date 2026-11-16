@@ -2186,15 +2186,14 @@ extern char lbl_8032DB40[];
 #pragma push
 #pragma optimization_level 3
 #pragma opt_pointer_aliasing on
-s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    register s32 next;
-    s32 value = *arg1;
-    s32 index = ((s32 *)arg0)[1];
-    s32 *data = *(s32 **)arg0;
-    next = index + 1;
+s32 *fn_801500F8(void *arg0, s32 *__restrict arg1) {
+    s32 next;
+    s32 idx = ((s32 *)arg0)[1];
+    s32 *base = *(s32 **)arg0;
+    next = idx + 1;
     ((s32 *)arg0)[1] = next;
-    data[index] = value;
-    return &data[index];
+    base[idx] = *arg1;
+    return &base[idx];
 }
 #pragma cplusplus on
 extern "C" void *fn_8015011C(void *arg0, ...) {
