@@ -1272,12 +1272,14 @@ loop_25:
     }
 }
 #pragma cplusplus on
-extern "C" void fn_801B1FB4(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    *arg3 = 0;
-    if (lbl_8055E68C == 0) {
+extern "C" void fn_801B1FB4(void *node, s32 paramA, s32 paramB, s32 *outResult) {
+    /* Zero the output; if the deity/AI truck controller is active, ask its +0xC
+       method to evaluate this track node (id at +0x60, scratch at +0x7C). */
+    *outResult = 0;
+    if (gPrimaryObject == 0) {
         return;
     }
-    ((Dummy_801B1FB4 *)lbl_8055E68C)->func(arg1, arg2, *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C, arg3);
+    ((DeityNodeQuery *)gPrimaryObject)->queryNode(paramA, paramB, *(s32 *)((u8 *)node + 0x60), (u8 *)node + 0x7C, outResult);
 }
 #pragma cplusplus off
 #pragma cplusplus on
