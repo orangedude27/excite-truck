@@ -561,9 +561,10 @@ s32 fn_8023AE10(void *arg0) {
     return ((s32 *)*(char **)((char *)arg0 + 0x10))[*(s32 *)(*(char **)((char *)arg0 + 0x18))];
 }
 
-void fn_8023AE28(void *arg0) {
-    s32 count = *(s32 *)((char *)arg0 + 0x14);
-    s32 *index = *(s32 **)((char *)arg0 + 0x1C);
+/* Step the selector's +0x1C index back by one, wrapping to count-1 when it reaches zero. */
+void fn_8023AE28(void *selector) {
+    s32 count = *(s32 *)((char *)selector + 0x14);
+    s32 *index = *(s32 **)((char *)selector + 0x1C);
     *index = (count + *index - 1) % count;
 }
 
