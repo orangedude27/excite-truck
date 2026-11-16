@@ -263,17 +263,20 @@ void *fn_801F20C8(void) {
 
 #pragma push
 #pragma small_data off
-/* fn_801F2108: allocates a 0x0C-byte XFader object (lbl_8055B130) with
- * vtable lbl_8033A7A0 and zeroed fields at +4 and +8. */
+/* Construct an XFader object (12 bytes): allocate it with tag "XFader", set its vtable, and clear two fields. */
 void fn_801F2108(void) {
     extern int lbl_8055B130;
     extern int lbl_8033A7A0[];
-    void *obj = fn_801284F8(0xC, &lbl_8055B130);
-    if (obj != 0) {
-        *(void **)obj = &lbl_8033A7A0;
-        *(int *)((char *)obj + 4) = 0;
-        *(int *)((char *)obj + 8) = 0;
+#define XFader_name lbl_8055B130
+#define XFader_vtable lbl_8033A7A0
+    void *fader = fn_801284F8(0xC, &XFader_name);
+    if (fader != 0) {
+        *(void **)fader = &XFader_vtable;
+        *(int *)((char *)fader + 4) = 0;
+        *(int *)((char *)fader + 8) = 0;
     }
+#undef XFader_name
+#undef XFader_vtable
 }
 
 extern const char lbl_8033A678[];
