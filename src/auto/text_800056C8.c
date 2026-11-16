@@ -545,14 +545,15 @@ void fn_800060B4(void) {
 }
 
 extern f32 lbl_80560138;
-void fn_800060B8(void *arg0) {
-    float value = lbl_80560138;
-    *(u8 *)((u8 *)arg0 + 0x14) = 0;
-    *(float *)((u8 *)arg0 + 4) = value;
-    *(float *)((u8 *)arg0 + 8) = value;
-    *(float *)((u8 *)arg0 + 0xC) = value;
-    *(float *)((u8 *)arg0 + 0x10) = value;
-    *(float *)((u8 *)arg0 + 0x18) = value;
+void fn_800060B8(void *state) {
+    // Reset a parameter block: clear the byte flag at +0x14 and default the five float fields at +4..+0x18 to -1.0 (lbl_80560138).
+    float defaultValue = lbl_80560138;
+    *(u8 *)((u8 *)state + 0x14) = 0;
+    *(float *)((u8 *)state + 4) = defaultValue;
+    *(float *)((u8 *)state + 8) = defaultValue;
+    *(float *)((u8 *)state + 0xC) = defaultValue;
+    *(float *)((u8 *)state + 0x10) = defaultValue;
+    *(float *)((u8 *)state + 0x18) = defaultValue;
 }
 
 void fn_800060DC(void) {
