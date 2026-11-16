@@ -7,36 +7,36 @@ extern float lbl_805640E8;
 #pragma scheduling invalid_target
 /* Initialize the default vehicle "Drvr" record: clear the 0x64-byte block, set the
  * leading enabled byte, then fill its 24 tuning floats with 0.0/1.0 defaults. */
-void fn_8027953C(void *arg0) {
-    float zero, one;
-    memset(arg0, 0, 0x64);
-    zero = lbl_805640EC;
-    one = lbl_805640E8;
-    *(unsigned char *)arg0 = 1;
-    ((float *)arg0)[1] = one;
-    ((float *)arg0)[2] = zero;
-    ((float *)arg0)[3] = one;
-    ((float *)arg0)[4] = zero;
-    ((float *)arg0)[5] = zero;
-    ((float *)arg0)[6] = zero;
-    ((float *)arg0)[7] = zero;
-    ((float *)arg0)[8] = zero;
-    ((float *)arg0)[9] = zero;
-    ((float *)arg0)[10] = zero;
-    ((float *)arg0)[11] = zero;
-    ((float *)arg0)[12] = zero;
-    ((float *)arg0)[13] = zero;
-    ((float *)arg0)[14] = zero;
-    ((float *)arg0)[15] = one;
-    ((float *)arg0)[16] = one;
-    ((float *)arg0)[17] = one;
-    ((float *)arg0)[18] = one;
-    ((float *)arg0)[19] = zero;
-    ((float *)arg0)[20] = zero;
-    ((float *)arg0)[21] = zero;
-    ((float *)arg0)[22] = zero;
-    ((float *)arg0)[23] = zero;
-    ((float *)arg0)[24] = zero;
+void fn_8027953C(void *out) {
+    float one, zero;
+    memset(out, 0, 0x64);
+    one = lbl_805640EC;
+    zero = lbl_805640E8;
+    *(unsigned char *)out = 1;
+    ((float *)out)[1] = zero;
+    ((float *)out)[2] = one;
+    ((float *)out)[3] = zero;
+    ((float *)out)[4] = one;
+    ((float *)out)[5] = one;
+    ((float *)out)[6] = one;
+    ((float *)out)[7] = one;
+    ((float *)out)[8] = one;
+    ((float *)out)[9] = one;
+    ((float *)out)[10] = one;
+    ((float *)out)[11] = one;
+    ((float *)out)[12] = one;
+    ((float *)out)[13] = one;
+    ((float *)out)[14] = one;
+    ((float *)out)[15] = zero;
+    ((float *)out)[16] = zero;
+    ((float *)out)[17] = zero;
+    ((float *)out)[18] = zero;
+    ((float *)out)[19] = one;
+    ((float *)out)[20] = one;
+    ((float *)out)[21] = one;
+    ((float *)out)[22] = one;
+    ((float *)out)[23] = one;
+    ((float *)out)[24] = one;
 }
 #pragma scheduling on
 #pragma pop
