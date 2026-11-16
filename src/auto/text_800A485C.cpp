@@ -3980,6 +3980,7 @@ extern "C" s32 fn_800AAEFC(s32 owner, void *slot) {
 }
 
 extern "C" const char lbl_8031B168[];
+#define VF_DEFAULT_VOLUME_NAME lbl_8031B168 /* "NO NAME    ": default name given a fresh volume */
 extern "C" s32 fn_800AAF70(void *arg0) {
     typedef s32 (*LookupPage)(void *, s32, void **, s32 *);
     typedef s32 (*ReadData)(s32, s32, s32, s32, u16, u32 *, s32);
