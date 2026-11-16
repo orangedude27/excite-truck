@@ -34,8 +34,13 @@ s32 fn_801DDE78(void) {
     return lbl_804348E8[fn_80179630(0)];
 }
 
+/**
+ * Returns the address of the active vehicle's tunable-parameter block: the
+ * vehicle value from fn_801DDE78 plus the 0x32C block offset. The caller
+ * passes it to fn_801DDFE8 to reset the vehicle's tuning floats.
+ */
 s32 fn_801DDEAC(void) {
-    return fn_801DDE78() + 0x32C;
+    return activeVehicle() + TUNE_BLOCK_OFFSET;
 }
 #pragma push
 #pragma scheduling invalid_target
