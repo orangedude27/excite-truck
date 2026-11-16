@@ -12317,28 +12317,32 @@ fail:
 }
 
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+    /* Write arg0*arg3 bytes from arg1 to the open NAND file slot identified by arg5
+     * at offset arg2*arg3 (buffering through a 0x200-byte aligned temp). On success
+     * stores arg0 to *arg4 and returns 0; on failure records the NAND error in the
+     * slot's error field (+0xEC) and returns a negative status. */
     s32 status;
-    u32 offset;
-    u16 i;
-    u32 filelen;
-    u32 pos;
-    u32 length;
-    u32 cur;
-    s32 r;
-    u32 remain;
-    u32 done;
-    unsigned char *entry;
+    u32 slotOffset;
+    u16 slotIndex;
+    u32 fileLength;
+    u32 writePos;
+    u32 bytesToWrite;
+    u32 currentPos;
+    s32 nandResult;
+    u32 bytesRemaining;
+    u32 bytesWritten;
+    unsigned char *slot;
     unsigned char buf[0x200] __attribute__((aligned(32)));
 
-    entry = 0;
-    for (i = 0; i < 0x17; i++) {
-        offset = i * 0xF0;
-        if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-            entry = lbl_80405D58 + offset;
+    slot = 0;
+    for (slotIndex = 0; slotIndex < 0x17; slotIndex++) {
+        slotOffset = slotIndex * 0xF0;
+        if (*(u32 *)(lbl_80405D58 + slotOffset) == (u32)arg5) {
+            slot = lbl_80405D58 + slotOffset;
             break;
         }
     }
-    if (i == 0x17) {
+    if (slotIndex == 0x17) {
         status = -0x16;
     } else {
         status = 0;
@@ -12347,67 +12351,67 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         return -0x14;
     }
 
-    length = arg0 * arg3;
-    filelen = *(u32 *)(entry + 0x54);
-    pos = arg2 * arg3;
+    bytesToWrite = arg0 * arg3;
+    fileLength = *(u32 *)(slot + 0x54);
+    writePos = arg2 * arg3;
 
-    if (NANDGetLengthAsync(entry + 0x58, &cur) != 0 || cur != pos) {
-        r = NANDSeek(entry + 0x58, pos, 0);
+    if (NANDGetLengthAsync(slot + 0x58, &currentPos) != 0 || currentPos != writePos) {
+        nandResult = NANDSeek(slot + 0x58, writePos, 0);
     } else {
-        r = 0;
+        nandResult = 0;
     }
-    if (r < 0) goto fail;
+    if (nandResult < 0) goto fail;
 
-    if (pos + length > filelen) {
-        remain = filelen - pos;
-        done = 0;
-        while (remain >= 0x200) {
-            VFipf_memcpy(buf, (u8 *)arg1 + done, 0x200);
-            r = NANDWrite(entry + 0x58, buf, 0x200);
-            if (r < 0) return -0x16;
-            remain -= r;
-            done += r;
+    if (writePos + bytesToWrite > fileLength) {
+        bytesRemaining = fileLength - writePos;
+        bytesWritten = 0;
+        while (bytesRemaining >= 0x200) {
+            VFipf_memcpy(buf, (u8 *)arg1 + bytesWritten, 0x200);
+            nandResult = NANDWrite(slot + 0x58, buf, 0x200);
+            if (nandResult < 0) return -0x16;
+            bytesRemaining -= nandResult;
+            bytesWritten += nandResult;
         }
-        if (remain != 0) {
-            VFipf_memcpy(buf, (u8 *)arg1 + done, remain);
-            NANDWrite(entry + 0x58, buf, remain);
+        if (bytesRemaining != 0) {
+            VFipf_memcpy(buf, (u8 *)arg1 + bytesWritten, bytesRemaining);
+            NANDWrite(slot + 0x58, buf, bytesRemaining);
         }
         return -0x16;
     }
 
-    done = 0;
-    while (length >= 0x200) {
-        VFipf_memcpy(buf, (u8 *)arg1 + done, 0x200);
-        r = NANDWrite(entry + 0x58, buf, 0x200);
-        if (r < 0) {
+    bytesWritten = 0;
+    while (bytesToWrite >= 0x200) {
+        VFipf_memcpy(buf, (u8 *)arg1 + bytesWritten, 0x200);
+        nandResult = NANDWrite(slot + 0x58, buf, 0x200);
+        if (nandResult < 0) {
             u32 offset;
             u16 j;
             for (j = 0; j < 0x17; j++) {
                 offset = j * 0xF0;
                 if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
                     break;
                 }
             }
-            return r;
+            return nandResult;
         }
-        length -= r;
-        done += r;
+        bytesToWrite -= nandResult;
+        bytesWritten += nandResult;
     }
-    if (length != 0) {
-        VFipf_memcpy(buf, (u8 *)arg1 + done, length);
-        r = NANDWrite(entry + 0x58, buf, length);
-        if (r < 0) {
+    if (bytesToWrite != 0) {
+        VFipf_memcpy(buf, (u8 *)arg1 + bytesWritten, bytesToWrite);
+        nandResult = NANDWrite(slot + 0x58, buf, bytesToWrite);
+        if (nandResult < 0) {
             u32 offset;
             u16 j;
             for (j = 0; j < 0x17; j++) {
                 offset = j * 0xF0;
                 if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
                     break;
                 }
             }
-            return r;
+            return nandResult;
         }
     }
     *arg4 = arg0;
@@ -12420,12 +12424,12 @@ fail:
         for (j = 0; j < 0x17; j++) {
             offset = j * 0xF0;
             if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-                *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+                *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
                 break;
             }
         }
     }
-    return r;
+    return nandResult;
 }
 
 extern "C" s32 fn_800BC474(s32 *, s32, s32 *);
@@ -21491,8 +21495,10 @@ extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 #pragma pop
-extern "C" s32 fn_800D56FC(void *obj, const char *name, s32 unused) {
-    for (u32 node = *(u32 *)((u8 *)obj + 0x14), end = (u32)obj + 0x14; node != end; node = *(u32 *)node) {
+extern "C" s32 fn_800D56FC(void *obj, const char *name) {
+    u32 node = *(u32 *)((u8 *)obj + 0x14);
+    u32 end = (u32)obj + 0x14;
+    while (node != end) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
         if (strcmp(name, (char *)(node + 8)) == 0) {
@@ -21500,6 +21506,7 @@ extern "C" s32 fn_800D56FC(void *obj, const char *name, s32 unused) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
             return *(s32 *)(node + 0x88);
         }
+        node = *(u32 *)node;
     }
     return 0;
 }
