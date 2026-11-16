@@ -289,8 +289,9 @@ void *fn_801491B8(void *object, s32 deletingFlag) {
     return object;
 }
 
-void fn_80149210(int *p) {
-    p[1] = (p[1] + 1) % 4;
+void fn_80149210(int *object) {
+    /* Advance the object's 4-entry palette color index (0..3) to the next entry, wrapping at 4. */
+    object[1] = (object[1] + 1) % 4;
 }
 
 s32 fn_80149234(void *object) {
