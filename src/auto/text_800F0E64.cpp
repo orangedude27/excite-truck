@@ -1847,27 +1847,27 @@ extern "C" u64 lbl_8055DE50;
 extern "C" u64 lbl_8055DE54;
 #pragma push
 #pragma scheduling on
-extern "C" u64 impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *self, unsigned long index) {
+extern "C" u64 impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *self, unsigned long idx) {
     u8 *ref = *(u8 **)((u8 *)self + 0x28);
     if (ref[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
     u8 *base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
     if (base == 0)
         return lbl_8055DE50;
-    if (index >= *(u32 *)base)
+    if (idx >= *(u32 *)base)
         return lbl_8055DE50;
     if (*(u16 *)((u8 *)self + 6) >= 0x101) {
-        index <<= 3;
+        idx <<= 3;
         ref = *(u8 **)((u8 *)self + 0x28);
-        if (base[index + 5] != 0)
+        if (base[idx + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
-        u8 *entry = base + index;
+        u8 *entry = base + idx;
         u8 *data = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[4], *(u32 *)(entry + 8), ref);
         if (data == 0)
             return lbl_8055DE50;
         return *(u64 *)(data + 0x18);
     }
-    u8 *entry = base + index * 8;
+    u8 *entry = base + idx * 8;
     struct Result { u8 type; u8 ext; u16 pad; u32 offset; } result;
     result.type = entry[4];
     result.ext = entry[5];
@@ -6228,7 +6228,9 @@ done:
 #pragma pop
 s32 nw4hbm::snd::detail::StrmPlayer::Start() {
     u8 *self = (u8 *)this;
-    register u32 outerIrq = OSDisableInterrupts();
+    struct { u32 value; } irq;
+    irq.value = OSDisableInterrupts();
+    u32 &outerIrq = irq.value;
     if (self[0x4A] == 0) {
         OSRestoreInterrupts(outerIrq);
         return 0;
@@ -6238,14 +6240,10 @@ s32 nw4hbm::snd::detail::StrmPlayer::Start() {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x97, lbl_803267AC);
         }
         fn_800E519C(*(void **)(self + 0x438));
-        register u32 innerIrq = OSDisableInterrupts();
-        register u8 paused = 0;
-        if (self[0x4B] != 0) {
-            paused = 1;
-        }
-        if (self[0x4E] != 0) {
-            paused = 1;
-        }
+        u32 innerIrq = OSDisableInterrupts();
+        u8 paused = 0;
+        if (self[0x4B] != 0) paused = 1;
+        if (self[0x4E] != 0) paused = 1;
         if (paused != self[0x4D]) {
             if (*(s32 *)(self + 0x438) == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0xD1, lbl_803267AC);
@@ -6254,11 +6252,13 @@ s32 nw4hbm::snd::detail::StrmPlayer::Start() {
             self[0x4D] = paused;
         }
         OSRestoreInterrupts(innerIrq);
-        register u32 iteratorValue = (u32)&lbl_8041506C[4];
+        struct { void *node; } cursor;
+        cursor.node = &lbl_8041506C[4];
+        void *&iteratorValue = cursor.node;
         if (this == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C4C, 0x233, lbl_80326C28);
         }
-        void *iterator = (void *)iteratorValue;
+        void *iterator = iteratorValue;
         Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
             lbl_8041506C, &iterator, self + 8);
         self[0x49] = 1;
