@@ -137,12 +137,19 @@ void *fn_802A1040(void *arg0, void *arg1, void *arg2) {
 }
 #pragma pop
 
+/* If a decal drawlist is active, set up its textured draw state, submit the list, and finish the pass. */
 void fn_802A1548(void) {
-    if (lbl_8055F840 != 0) {
-        fn_802C8BD0(lbl_8055F844);
-        fn_802CA0A0(lbl_8055F840);
+#define sDecalTextureId lbl_8055F844
+#define sDecalDrawList lbl_8055F840
+
+    if (sDecalDrawList != 0) {
+        fn_802C8BD0(sDecalTextureId);
+        fn_802CA0A0(sDecalDrawList);
         fn_802C8D74();
     }
+
+#undef sDecalTextureId
+#undef sDecalDrawList
 }
 
 void fn_802A1584(void) { fn_802A9428(); }
