@@ -290,11 +290,16 @@ void fn_8000AB48(void* arg0, s32 arg1) {
     fn_802103B8(arg0);
 }
 #pragma pop
-void fn_8000ABE0(void* arg0) {
-    fn_8012E498(&lbl_802FBC7C);
-    fn_8000AAE4(arg0);
-    fn_8000AAE0(arg0);
-    fn_8000AA38(arg0);
+void fn_8000ABE0(void *object) {
+    /* Unload the overlays resource and tear down the object's state. */
+#define sOverlaysResource lbl_802FBC7C
+
+    fn_8012E498(&sOverlaysResource);
+    fn_8000AAE4(object);
+    fn_8000AAE0(object);
+    fn_8000AA38(object);
+
+#undef sOverlaysResource
 }
 
 extern u8 lbl_8034F520[];
