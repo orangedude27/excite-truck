@@ -3228,18 +3228,10 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 void GXSetDispCopyDst(s32 value) {
-    union {
-        u32 reg;
-        struct {
-            u32 constant : 8;
-            u32 pad : 14;
-            u32 arg : 10;
-        } fields;
-    } data = {0};
-
-    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
-    data.fields.constant = 0x4D;
-    __GXData[0x238 / 4] = data.reg;
+    u32 *gx = (u32 *)__GXData;
+    u32 reg = __rlwimi(0, ((value << 1) & 0xFFFE) >> 5, 0, 22, 31);
+    reg = __rlwimi(reg, 0x4D, 24, 0, 7);
+    gx[0x238 / 4] = reg;
 }
 
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
@@ -4559,13 +4551,16 @@ void GXInitTexCacheRegion(void *region, signed char is32bMipmap, unsigned int tm
     *(unsigned int *)((char *)region + 4) = reg.word;
 }
 
+/* Pack a TLUT region descriptor into a 32-bit GX register: type 0x65, the TLUT name,
+   and the TMEM address in 512-byte units ((tmem_addr - 0x80000) >> 9). */
 void GXInitTlutRegion(unsigned int *region, int tmem_addr, int tlut_name) {
-    struct {
+    typedef struct {
         unsigned int type : 8;
         unsigned int unused : 3;
         unsigned int name : 11;
         unsigned int addr : 10;
-    } value = {0, 0, 0, 0};
+    } TlutRegion;
+    TlutRegion value = {0, 0, 0, 0};
     value.addr = (unsigned int)(tmem_addr - 0x80000) >> 9;
     value.name = tlut_name;
     value.type = 0x65;
