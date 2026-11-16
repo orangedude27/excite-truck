@@ -11590,12 +11590,15 @@ extern "C" const char lbl_8031B1C0[];
 extern "C" const char lbl_8031B24C[];
 #pragma dont_inline
 extern "C" s32 fn_800B8004(s32 arg0) {
+#define s_invalidGetSemaphoreMsg lbl_8031B24C /* "prfile2:ERR pfk_get_semaphore() Invalid Param\n" */
+    /* Acquire a semaphore handle, reporting and failing if it is null. */
     if (arg0 == 0) {
-        OSReport(lbl_8031B24C);
+        OSReport(s_invalidGetSemaphoreMsg);
         return -2;
     }
     OSWaitSemaphore((void *)arg0);
     return 0;
+#undef s_invalidGetSemaphoreMsg
 }
 
 extern "C" s32 OSSignalSemaphore(void);
@@ -20922,10 +20925,10 @@ extern "C" s32 fn_800D3F94(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     register const char *base = lbl_8031EC50;
     s32 result;
     if (arg0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x2D3, base + 0x6C);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0x0), 0x2D3, base + 0x6C);
     }
     if (arg2 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x2D4, base + 0x1B4);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0x0), 0x2D4, base + 0x1B4);
     }
     if (*(s32 *)arg0 != 0) {
         lbl_8055DDD8 = (u8 (*)(const char *))fn_800D3838;
