@@ -2217,11 +2217,12 @@ extern "C" void fn_8012DBD0(void) {
 #pragma pop
 
 extern "C" s32 fn_80128668(void *);
-extern "C" s32 fn_8012DCC0(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
+extern "C" s32 fn_8012DCC0(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper (Effect vtable slot +0x18): free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668((void *)object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_80127E28(void *);
