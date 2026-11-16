@@ -381,9 +381,10 @@ void fn_80291E64(void *arg0) {
 
 #pragma dont_inline on
 void fn_802920D0(void) {
-    int *settings = (int *)&lbl_804B4010;
-    fn_802C8C04(settings[3]);
-    fn_80291C7C(settings, 1);
+    /* Reset/close the track camera state: release resource slot [3], apply state update, then finalize. */
+    int *state = (int *)&lbl_804B4010;
+    fn_802C8C04(state[3]);
+    fn_80291C7C(state, 1);
     fn_802C8D74();
 }
 
