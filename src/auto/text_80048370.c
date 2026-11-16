@@ -632,6 +632,7 @@ init:
     return (MEMiHeapHead *)base;
 }
 
+/* Destroy a frame heap: unlink it from the heap registry and clear its magic, then return the heap pointer. */
 MEMiHeapHead* MEMDestroyFrmHeap(MEMiHeapHead* heap) {
     MEMiFinalizeHeap(heap);
     return heap;
