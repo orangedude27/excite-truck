@@ -164,7 +164,7 @@ void fn_8028E0F0(void) {
     fn_8028F5A4();
     fn_8028EE28(base + 0x208);
     fn_8028ED80(base + 0x104);
-    fn_8028ED80(base + (0x104 - 0x104));
+    fn_8028ED80(base);
 }
 #pragma pop
 extern void fn_8028ED74(void *);
@@ -1664,11 +1664,12 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
 
 #pragma pop
 extern int fn_80128668(void *);
-int fn_8029169C(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
+int fn_8029169C(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668((void *)object);
     }
-    return arg0;
+    return object;
 }
 
 int fn_802916DC(void) { return 0; }
