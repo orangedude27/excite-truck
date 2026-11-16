@@ -2340,7 +2340,7 @@ extern "C" s32 fn_800EEEC4(s32 arg0, s32 arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv
-extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
+extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 freeFlag) {
     extern u8 lbl_80323B28[];
     extern u8 lbl_80323B3C[];
     struct Manager {
@@ -2348,68 +2348,70 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void *self, s32 flag) {
         virtual void method1();
         virtual void RemoveTrack(void *);
     };
-    register void *player = self;
+    /* Destroys a SeqPlayer: installs its vtables, unlinks it from the player list
+       and dispose callbacks, closes its 16 tracks, then frees it if freeFlag>0. */
+    register void *seqPlayer = self;
     register int index;
-    register u32 temp;
+    register u32 zero;
     struct { u32 value; } interrupt;
-    u32 &level = interrupt.value;
+    u32 &irqLevel = interrupt.value;
 
-    if (player != 0) {
-        register void *vtable = lbl_80323E98;
-        register void *vtable2 = (u8 *)vtable + 0x98;
-        *(void **)player = vtable;
-        *(void **)((u8 *)player + 0x10) = vtable2;
+    if (seqPlayer != 0) {
+        register void *mainVtable = lbl_80323E98;
+        register void *subVtable = (u8 *)mainVtable + 0x98;
+        *(void **)seqPlayer = mainVtable;
+        *(void **)((u8 *)seqPlayer + 0x10) = subVtable;
 
-        if (*((u8 *)player + 0x15) != 0) {
-            level = OSDisableInterrupts();
-            if (*((u8 *)player + 0x17) != 0) {
-                if (player == 0)
+        if (*((u8 *)seqPlayer + 0x15) != 0) {
+            irqLevel = OSDisableInterrupts();
+            if (*((u8 *)seqPlayer + 0x17) != 0) {
+                if (seqPlayer == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233,
                                                   (const char *)lbl_80324030);
                 Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
-                    (void *)lbl_80412A6C, (u8 *)player + 0x100);
+                    (void *)lbl_80412A6C, (u8 *)seqPlayer + 0x100);
             }
-            if (*((u8 *)player + 0x15) != 0) {
-                index = (s32)player;
+            if (*((u8 *)seqPlayer + 0x15) != 0) {
+                index = (s32)seqPlayer;
                 if (index != 0)
                     index += 8;
-                void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+                void *callbackManager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
                 UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
-                    manager, (void *)index);
+                    callbackManager, (void *)index);
             }
-            OSRestoreInterrupts(level);
+            OSRestoreInterrupts(irqLevel);
 
-            register void *entry = player;
+            register void *slotCursor = seqPlayer;
             index = 0;
-            temp = 0;
+            zero = 0;
             do {
-                int valid = 0;
+                int inRange = 0;
                 if (index >= 0 && index < 16)
-                    valid = 1;
-                if (valid == 0)
+                    inRange = 1;
+                if (inRange == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x2FD,
                                                   (const char *)lbl_80323B3C, index, 0, 16);
                 void *track;
                 if (index > 15)
-                    track = (void *)temp;
+                    track = (void *)zero;
                 else
-                    track = *(void **)((u8 *)entry + 0x9C);
+                    track = *(void **)((u8 *)slotCursor + 0x9C);
                 if (track != 0) {
                     Close__Q46nw4hbm3snd6detail8SeqTrackFv(track);
-                    void *manager = *(void **)((u8 *)player + 0x98);
-                    ((Manager *)manager)->RemoveTrack(*(void **)((u8 *)entry + 0x9C));
-                    *(void **)((u8 *)entry + 0x9C) = (void *)temp;
+                    void *trackManager = *(void **)((u8 *)seqPlayer + 0x98);
+                    ((Manager *)trackManager)->RemoveTrack(*(void **)((u8 *)slotCursor + 0x9C));
+                    *(void **)((u8 *)slotCursor + 0x9C) = (void *)zero;
                 }
                 ++index;
-                entry = (u8 *)entry + 4;
+                slotCursor = (u8 *)slotCursor + 4;
             } while (index < 16);
-            *((u8 *)player + 0x15) = 0;
+            *((u8 *)seqPlayer + 0x15) = 0;
         }
 
-        if (flag > 0)
-            fn_80128668(player);
+        if (freeFlag > 0)
+            fn_80128668(seqPlayer);
     }
-    return player;
+    return seqPlayer;
 }
 #pragma dont_inline reset
 #pragma pop
