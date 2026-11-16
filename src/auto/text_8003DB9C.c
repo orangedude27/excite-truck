@@ -2989,6 +2989,10 @@ void __GXSendFlushPrim(void) {
     gxdraw->lastWriteWasXF = TRUE;
 }
 #pragma dont_inline reset
+/* Set the line rasterization width and format: pack the width (bits 24-31)
+ * and format (bits 13-15) into the line-width BP register shadowed at
+ * __GXData+0x7C, push it to the BP through the write-gather FIFO, and mark the
+ * last FIFO write as a BP one. */
 void GXSetLineWidth(s32 width, s32 format) {
     union {
         unsigned int value;
@@ -3005,9 +3009,9 @@ void GXSetLineWidth(s32 width, s32 format) {
     reg.bits.width = width;
     reg.bits.format = format;
     data[0x7C / 4] = reg.value;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x7C / 4];
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
+    WGPIPE.i = data[0x7C / 4];
+    ((GXDrawData *)data)->lastWriteWasXF = FALSE;
 }
 
 /* Set the point rasterization size and format: pack the size (bits 16-23) and
