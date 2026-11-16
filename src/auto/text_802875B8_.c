@@ -462,16 +462,17 @@ extern const char lbl_80348A30[];
 extern const char lbl_80348A20[];
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80287E80(void **arg0, s32 arg1) {
+extern "C" void fn_80287E80(void **objectPtr, s32 nameSource) {
+    /* Build a sanitized 64-byte name and pass it to the object's first virtual method. */
     class Obj {
     public:
         virtual void f(void *);
     };
-    char local[0x40];
+    char nameBuffer[0x40];
     Obj *obj;
-    fn_801346B4(local, 0x40, arg1);
-    obj = (Obj *)*arg0;
-    obj->f(local);
+    fn_801346B4(nameBuffer, 0x40, nameSource);
+    obj = (Obj *)*objectPtr;
+    obj->f(nameBuffer);
 }
 #pragma cplusplus reset
 #pragma pop
