@@ -15,9 +15,6 @@ extern int fn_80031248(void);
 extern void *TRKReadBuffer_ui8(int);
 extern void __AXDepopVoice(void *);
 extern void *memcpy(void *, const void *, unsigned int);
-static inline void CopyStateBlock(const void *source, void *destination, unsigned int size) {
-    memcpy(destination, source, size);
-}
 typedef struct { unsigned char b[0x120]; } Block120;
 typedef struct { unsigned char b[0x30]; } Block30;
 typedef struct { int w[0x48]; } Words120;
@@ -28,10 +25,11 @@ void* fn_800328E8(void) {
     return lbl_8055D7E0;
 }
 
-#pragma use_lmw_stmw off
-void fn_800328F0(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_800328F0(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
-    unsigned char *src;
+    struct { unsigned char *value; } source;
+    unsigned char *&src = source.value;
     unsigned char *dst;
     unsigned int flags;
     unsigned int n;
@@ -206,7 +204,7 @@ void fn_800328F0(void *arg0) {
         }
     }
 }
-#pragma use_lmw_stmw reset
+#pragma cplusplus reset
 
 #pragma use_lmw_stmw off
 void fn_80032EAC(int arg0) {
