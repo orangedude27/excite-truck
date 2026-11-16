@@ -24812,28 +24812,6 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
     }
 }
 
-#pragma dont_inline off
-#pragma inline off(fn_800CF3EC)
-static inline s32 ResetBtnFindFirst(s32 *entry, s32 count, s32 index) {
-    s32 j;
-    for (j = 0; j < count; j++, entry += 2) {
-        if (entry[0] == index && entry[1] == 2)
-            return j;
-    }
-    return -1;
-}
-static inline s32 ResetBtnFindSecond(s32 *entry, s32 value) {
-    s32 j = 0;
-    s32 k;
-    for (k = 0; k < 0x25; k++, entry += 4, j++) {
-        if (entry[0] == 5 && entry[1] == value)
-            return j;
-        j++;
-        if (entry[2] == 5 && entry[3] == value)
-            return j;
-    }
-    return -1;
-}
 extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
     register void *pane;
