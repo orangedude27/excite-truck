@@ -558,13 +558,16 @@ extern float lbl_80564C78;
 #pragma processor 750
 #pragma scheduling invalid_target
 s32 fn_802B640C(void *arg0, s32 arg1) {
+    f32 scale = *(f32 *)((u8 *)arg0 + 0x10);
     f32 temp_f1, temp_f31, var_f4, temp_f5, temp_f6;
     s32 temp_r3, var_r3, var_r4, var_r5;
+    u8 *obj;
 
-    temp_f31 = fn_800108C8(arg1, *(f32 *)((u8 *)arg0 + 0x10));
-    temp_f1 = fn_8001090C(*(f32 *)((u8 *)arg0 + 0x10));
-    temp_r3 = *(s32 *)((u8 *)arg0 + 0x14);
-    temp_f5 = *(f32 *)((u8 *)arg0 + 4);
+    temp_f31 = fn_800108C8(scale, arg1);
+    obj = (u8 *)arg0;
+    temp_f1 = fn_8001090C(*(f32 *)(obj + 0x10));
+    temp_r3 = *(s32 *)(obj + 0x14);
+    temp_f5 = *(f32 *)(obj + 4);
     temp_f6 = temp_f5 + temp_f31;
     if (temp_r3 & 1)
         var_f4 = lbl_80564C74;
@@ -578,14 +581,13 @@ s32 fn_802B640C(void *arg0, s32 arg1) {
     if ((f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) >= temp_f5 + var_f4 &&
         (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) < temp_f6 + var_f4)
         var_r4 = 1;
-    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= *(f32 *)((u8 *)arg0 + 8))
+    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= *(f32 *)(obj + 8))
         var_r5 = 1;
     if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) <
-        *(f32 *)((u8 *)arg0 + 8) + temp_f1)
+        *(f32 *)(obj + 8) + temp_f1)
         var_r3 = 1;
     return var_r3;
 }
-#pragma pop
 __declspec(section ".sdata") extern const char lbl_8055CE70[];
 extern int vsprintf(char *, const char *, va_list);
 extern int stricmp(const char *, const char *);
@@ -1369,10 +1371,10 @@ extern "C" void fn_802B7918(void) {
         s32 unk1C;
     } Record;
     s32 i;
-    char *base;
+    char *base = lbl_8034A598;
     s32 offset;
     s32 count;
-    Dummy *obj;
+    Dummy *obj = (Dummy *)lbl_8055FA48;
     void *result;
     volatile const u8 *source;
     f32 step;
@@ -1385,8 +1387,6 @@ extern "C" void fn_802B7918(void) {
     Record record;
     char buf[0x20];
 
-    base = lbl_8034A598;
-    obj = (Dummy *)lbl_8055FA48;
     result = obj->get(base + 0x2A0);
     step = *(f32 *)((u8 *)result + 0x14);
     obj = (Dummy *)lbl_8055FA48;
@@ -1443,48 +1443,121 @@ extern "C" void fn_802B7918(void) {
 extern "C" s32 fn_802B1C14(s32);
 extern "C" s32 fn_802B1C1C(s32, s32);
 __declspec(section ".sdata") extern const char lbl_8055CEB0[];
+/* Debug overlay: rebuild the water-layer list in the "tedash.val" debug panel.
+ *
+ * lbl_8055FA48 is the panel root; virtual +0x04 looks a pane up by name and
+ * +0x0C looks a data object up by name.  Used here:
+ *   "matmap_col"   - object whose +0x14 float is one row's vertical step
+ *   "layer_dropdown" - the drop-down whose caption is set to "Layers"
+ *   "layer_col"    - the column whose own 0x20-byte row is the template that
+ *                    fn_802B6568()/fn_80147230() write each line into
+ * lbl_8055FA08 is a pair of seconds: [1] a base stamp and [0] the reference
+ * time fn_802B61E0() stores.  While (now - [1]) is still under [0] the panel
+ * lists every water layer of the current entry ("layer:%d" plus the name
+ * fn_802B1C1C() answers), each pushed down one more row step -- or "No Layers"
+ * when the entry has none.  Past that window only the selected layer
+ * (lbl_8055FA28) is shown. */
 s32 fn_802B7B08(void) {
-    class Dummy { public: virtual void v0(); virtual void *call(const char *); virtual void v2(); virtual void *get(const char *); };
-    typedef struct { void *name; s32 value; s32 unk8; s32 unkC; f32 time; s32 unk14; s32 unk18; s32 unk1C; } Record;
-    char *base; Dummy *obj; void *result; const u8 *source; f32 step; f32 elapsed; s32 early; s32 index; s32 count; s32 i; s32 unknown; s32 value; Record record; char buf[0x20];
-    base = lbl_8034A598; obj = (Dummy *)lbl_8055FA48;
-    result = obj->get(base + 0x2A0);
-    step = *(f32 *)((u8 *)result + 0x14);
-    obj = (Dummy *)lbl_8055FA48;
-    result = obj->call(base + 0xB8);
-    fn_802B6568(result, lbl_8055CEB0);
-    obj = (Dummy *)lbl_8055FA48;
-    result = obj->call(base + 0x2DC);
-    source = (const u8 *)result;
-    record.name = *(void **)(source + 0);
-    value = *(volatile s32 *)(source + 4);
-    unknown = *(volatile s32 *)(source + 8);
-    record.value = value; record.unk8 = unknown;
-    record.unkC = *(s32 *)(source + 0xC);
-    record.time = *(f32 *)(source + 0x10);
-    record.unk14 = *(s32 *)(source + 0x14);
-    record.unk18 = *(s32 *)(source + 0x18);
-    record.unk1C = *(s32 *)(source + 0x1C);
-    elapsed = (f32)fn_802E2C20() / lbl_80564C70 - ((f32 *)&lbl_8055FA08)[1];
-    early = elapsed < lbl_8055FA08;
-    if (early != 0) {
-        void *task = ((void *(*)(void))fn_802B5B6C)();
-        index = *(s32 *)((u8 *)task + 4);
-        count = fn_802B1C14(index);
-        if (count > 0) {
+    class DebugUi {
+    public:
+        virtual void v0();
+        virtual void *findPane(const char *name);   /* vtable +0x04 */
+        virtual void v2();
+        virtual void *findObject(const char *name); /* vtable +0x0C */
+    };
+    typedef struct {                /* a debug text row, copied from the column */
+        void *name;                 /* +0x00 row name, matched by fn_802B6568 */
+        s32 value;                  /* +0x04 */
+        s32 unk8;                   /* +0x08 f32 row position */
+        s32 unkC;                   /* +0x0C */
+        f32 time;                   /* +0x10 */
+        s32 unk14;                  /* +0x14 */
+        s32 unk18;                  /* +0x18 text colour, set by fn_802B6568 */
+        s32 unk1C;                  /* +0x1C */
+    } DebugRow;
+
+#define kLayerDropdown (base + 0xB8)   /* "layer_dropdown" */
+#define kMatmapCol     (base + 0x2A0)  /* "matmap_col" */
+#define kLayerCol      (base + 0x2DC)  /* "layer_col" */
+#define kLayerFormat   (base + 0x2E8)  /* "layer:%d" */
+#define kNoLayers      (base + 0x2F4)  /* "No Layers" */
+#define kLayersCaption lbl_8055CEB0    /* "Layers" */
+#define kFormatS       lbl_8055CE70    /* "%s" */
+#define kPanelRoot     lbl_8055FA48    /* the "tedash.val" debug panel */
+#define kSelectedLayer lbl_8055FA28    /* layer picked from the drop-down */
+#define kRefSeconds    lbl_8055FA08    /* reference time, fn_802B61E0() */
+#define kBaseSeconds   ((f32 *)&lbl_8055FA08)[1] /* base stamp */
+#define kMsPerSecond   lbl_80564C70    /* 1000.0f */
+
+    char *base;
+    DebugUi *uiRoot;
+    void *object;
+    const u8 *rowBytes;
+    f32 rowStep;
+    f32 elapsed;
+    s32 withinWindow;
+    s32 layerSet;
+    s32 layerCount;
+    s32 i;
+    s32 rowBits;
+    s32 rowValue;
+    DebugRow row;
+    char label[0x20];
+
+    base = lbl_8034A598;
+    uiRoot = (DebugUi *)kPanelRoot;
+    object = uiRoot->findObject(kMatmapCol);
+    rowStep = *(f32 *)((u8 *)object + 0x14);
+    uiRoot = (DebugUi *)kPanelRoot;
+    object = uiRoot->findPane(kLayerDropdown);
+    fn_802B6568(object, kLayersCaption);
+    uiRoot = (DebugUi *)kPanelRoot;
+    object = uiRoot->findPane(kLayerCol);
+    rowBytes = (const u8 *)object;
+    row.name = *(void **)(rowBytes + 0);
+    rowValue = *(volatile s32 *)(rowBytes + 4);
+    rowBits = *(volatile s32 *)(rowBytes + 8);
+    row.value = rowValue; row.unk8 = rowBits;
+    row.unkC = *(s32 *)(rowBytes + 0xC);
+    row.time = *(f32 *)(rowBytes + 0x10);
+    row.unk14 = *(s32 *)(rowBytes + 0x14);
+    row.unk18 = *(s32 *)(rowBytes + 0x18);
+    row.unk1C = *(s32 *)(rowBytes + 0x1C);
+    elapsed = (f32)fn_802E2C20() / kMsPerSecond - kBaseSeconds;
+    withinWindow = elapsed < kRefSeconds;
+    if (withinWindow != 0) {
+        /* Still inside the window: list every water layer of this entry. */
+        void *entry = ((void *(*)(void))fn_802B5B6C)();
+        layerSet = *(s32 *)((u8 *)entry + 4);
+        layerCount = fn_802B1C14(layerSet);
+        if (layerCount > 0) {
             i = 0;
-            while (i < fn_802B1C14(index)) {
-                ((void (*)(void *, s32, const char *, ...))fn_801345D8)(buf, 0x20, base + 0x2E8, i);
-                record.name = buf;
-                fn_802B6568(&record, lbl_8055CE70, fn_802B1C1C(index, i));
-                *(f32 *)((u8 *)&record + 8) += step;
+            while (i < fn_802B1C14(layerSet)) {
+                ((void (*)(void *, s32, const char *, ...))fn_801345D8)(label, 0x20, kLayerFormat, i);
+                row.name = label;
+                fn_802B6568(&row, kFormatS, fn_802B1C1C(layerSet, i));
+                *(f32 *)((u8 *)&row + 8) += rowStep;
                 i++;
             }
-        } else { fn_80147230(&record, base + 0x2F4); }
+        } else { fn_80147230(&row, kNoLayers); }
     } else {
-        void *task = ((void *(*)(void))fn_802B5B6C)();
-        fn_80147230(&record, lbl_8055CE70, fn_802B1C1C(*(s32 *)((u8 *)task + 4), lbl_8055FA28));
+        /* Settled: only the layer the drop-down selected. */
+        void *entry = ((void *(*)(void))fn_802B5B6C)();
+        fn_80147230(&row, kFormatS, fn_802B1C1C(*(s32 *)((u8 *)entry + 4), kSelectedLayer));
     }
+
+#undef kLayerDropdown
+#undef kMatmapCol
+#undef kLayerCol
+#undef kLayerFormat
+#undef kNoLayers
+#undef kLayersCaption
+#undef kFormatS
+#undef kPanelRoot
+#undef kSelectedLayer
+#undef kRefSeconds
+#undef kBaseSeconds
+#undef kMsPerSecond
 }
 
 #pragma cplusplus reset
