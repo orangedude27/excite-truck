@@ -836,13 +836,15 @@ void fn_8020F330(void *carSound) {
     }
 }
 #pragma scheduling off
-void fn_8020F354(void *arg0) {
-    void *temp_r3;
-    temp_r3 = *(void **)((char *)arg0 + 0x2C);
-    if (temp_r3 != 0) {
-        *(signed char *)((char *)temp_r3 + 0x49) = 1;
-        *(signed char *)((char *)temp_r3 + 0x4B) = 0;
-        *(signed char *)((char *)temp_r3 + 0x4A) = 0;
+void fn_8020F354(void *carSound) {
+    /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the boostTurboTap
+     * sound stored at +0x2C of the car's sound set. */
+    void *sound;
+    sound = *(void **)((char *)carSound + 0x2C);
+    if (sound != 0) {
+        *(signed char *)((char *)sound + 0x49) = 1;
+        *(signed char *)((char *)sound + 0x4B) = 0;
+        *(signed char *)((char *)sound + 0x4A) = 0;
     }
 }
 void fn_8020F378(void *carSound) {
