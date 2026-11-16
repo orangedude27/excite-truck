@@ -227,9 +227,11 @@ void fn_80246CB8(void *arg0) {
 }
 #pragma pop
 
-int fn_80246DA8(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668((void *)arg0);
-    return arg0;
+int fn_80246DA8(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree
+     * when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668((void *)object);
+    return object;
 }
 
 void fn_80246DE8(void) {
