@@ -726,8 +726,8 @@ extern "C" void fn_80128EF0(void *arg0, s32 arg1) {
     *(u32 *)(basePtr + cursor) = 0x06630216;
 }
 #pragma cplusplus off
-/* Log the light stack allocator's peak usage via the debug formatter: its byte
- * counters at +0x10 (maximum allocated) and +0xC (total) are converted to KiB. */
+/* Log the light stack allocator's peak usage ("Max alloc <max>K/<total>K"),
+ * converting its byte counters at +0x10 and +0xC to KiB. */
 void fn_80128F68(void *allocator) {
     fn_802E30C8(lbl_8032A448,
         (void *)(*(s32 *)((u8 *)allocator + 0x10) / 1024),
