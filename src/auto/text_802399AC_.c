@@ -527,8 +527,9 @@ s32 fn_8023AD2C(void *arg0) {
     return *(s32 *)*(s32 **)((char *)arg0 + 0x20) > 0;
 }
 
-s32 fn_8023AD44(void *arg0) {
-    return *(s32 *)*(s32 **)((char *)arg0 + 0x20) < (*(s32 *)((char *)arg0 + 0x1C) - 1);
+/* Return 1 when the selector's +0x20 index can advance (is below count - 1). */
+s32 fn_8023AD44(void *selector) {
+    return *(s32 *)*(s32 **)((char *)selector + 0x20) < (*(s32 *)((char *)selector + 0x1C) - 1);
 }
 
 s32 fn_8023AD6C(void *arg0) {
