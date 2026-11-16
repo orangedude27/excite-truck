@@ -1730,8 +1730,9 @@ s32 fn_802B8110(u32 arg0, s32 arg1) {
     return var_r30;
 }
 #pragma scheduling on
-f32 fn_802B822C(s32 arg0) {
-    return lbl_80564C98 * (f32)arg0;
+f32 fn_802B822C(s32 frames) {
+    // Convert a frame count into a float step, advancing FRAME_STEP (0.05) per frame.
+    return FRAME_STEP * (f32)frames;
 }
 
 extern s32 fn_802B5B74(void *);
