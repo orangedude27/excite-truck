@@ -1109,25 +1109,30 @@ void fn_802481A0(float *arg0, float *arg1, float farg0, float farg1) {
 }
 #pragma pop
 void fn_80248398(void) {
-    s32 c;
-    s32 a;
-    s32 b;
-    lbl_8055F278_struct *p;
+    /* Sync cached UI state from the global object, arming two update blocks and clearing its active flag. */
+#define gStateObject lbl_8055F278
+#define gBaseOffset  lbl_8055BEF0
+    s32 targetOffset;
+    s32 baseA;
+    s32 baseB;
+    lbl_8055F278_struct *state;
 
-    p = (lbl_8055F278_struct *)lbl_8055F278;
-    if (p != 0) {
-        a = p->unk04;
-        b = p->unk08;
-        c = lbl_8055BEF0 + a;
-        p->unk50 = 1;
-        p->unk48 = c;
-        p->unk4C = b;
-        p = (lbl_8055F278_struct *)lbl_8055F278;
-        p->unk5C = 1;
-        p->unk54 = a;
-        p->unk58 = b;
-        p->unk44 = 0;
+    state = (lbl_8055F278_struct *)gStateObject;
+    if (state != 0) {
+        baseA = state->unk04;
+        baseB = state->unk08;
+        targetOffset = gBaseOffset + baseA;
+        state->unk50 = 1;
+        state->unk48 = targetOffset;
+        state->unk4C = baseB;
+        state = (lbl_8055F278_struct *)gStateObject;
+        state->unk5C = 1;
+        state->unk54 = baseA;
+        state->unk58 = baseB;
+        state->unk44 = 0;
     }
+#undef gStateObject
+#undef gBaseOffset
 }
 
 extern char lbl_803437E0[];
