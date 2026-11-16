@@ -321,11 +321,12 @@ void TRKAppendBuffer1_ui64(void) {
 }
 
 #pragma pop
-void TRKReadBuffer(void *arg0) {
-    u32 old = lbl_8035BEA0[0];
-    *(u32 *)arg0 = old;
-    lbl_8035BEA0[0] = (u32)arg0;
-    *(u32 *)((u8 *)arg0 + 0xC) = 0;
+void TRKReadBuffer(void *buffer) {
+    /* Return a TRK message buffer to free-list pool 0: link it ahead of the current head and clear its pool index. */
+    u32 oldHead = lbl_8035BEA0[0];
+    *(u32 *)buffer = oldHead;
+    lbl_8035BEA0[0] = (u32)buffer;
+    *(u32 *)((u8 *)buffer + 0xC) = 0;
 }
 
 void TRKAppendBuffer(void *arg0) {
