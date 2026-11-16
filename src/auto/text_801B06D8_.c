@@ -99,11 +99,6 @@ struct DeityNodeQuery {
     virtual void d0();
     virtual void queryNode(s32, s32, s32, void *, s32 *);
 };
-struct Dummy_801B1FEC {
-    virtual void d0();
-    virtual void d1();
-    virtual void func(s32, s32, s32, void *, s32 *);
-};
 /* Interface onto the active deity/AI-truck controller (gPrimaryObject):
  * evaluate is the +0x10 vtable slot (d0/d1 fill +0x8/+0xC). */
 struct DeityNodeEvaluator {
