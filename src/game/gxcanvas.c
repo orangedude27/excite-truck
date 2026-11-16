@@ -194,8 +194,9 @@ s32 fn_802C3034(s32 value) {
     return old;
 }
 
-s32 fn_802C3044(void *arg0, s32 arg1, s32 arg2) {
-    return *(s32 *)((u8 *)arg0 + 0x10) * arg2 + (*(s32 *)((u8 *)arg0 + 4) + arg1 * 2);
+/* Return the address of the 16-bit pixel at (x, y): pixels + y * rowBytes + x * 2. */
+s32 fn_802C3044(void *canvas, s32 x, s32 y) {
+    return ((GxCanvas *)canvas)->rowBytes * y + ((s32)((GxCanvas *)canvas)->pixels + x * 2);
 }
 
 s32 fn_802C3060(void *arg0, s32 arg1, s32 arg2) {
