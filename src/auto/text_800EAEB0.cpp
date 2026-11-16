@@ -1270,11 +1270,13 @@ extern "C" s32 fn_800ECE60(void) {
     return 0x20;
 }
 
-extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper: free the object with MemFree when
+ * deleting (flag > 0), then return the object pointer. */
+extern "C" s32 fn_800ECE68(s32 object, s32 deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668_noarg();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" s32 fn_800ECEA8(void* arg0, s32 arg1) {
@@ -2109,6 +2111,29 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
         lbl_8055DE40 = 1;
     }
     return lbl_804127A8;
+}
+
+void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
+    u8* p;
+    s32 i;
+    if (((u8*)this)[0] == 0) {
+        p = (u8*)this + 0x38;
+        i = 0;
+        do {
+            fn_800EE568(p);
+            i++;
+            p += 0xA0;
+        } while (i < 4);
+        OSCreateAlarm(&((u8*)this)[8]);
+        u64 time = OSGetTime();
+        u32 ticks = *(volatile u32*)0x800000F8;
+        u32 q = (ticks >> 2) / 125000;
+        u32 period = q * 0x0065B9AB;
+        u32 interval = period / 8000;
+        OSSetPeriodicAlarm(&((u8*)this)[8], q, (u32)(time >> 32), (u32)time,
+                           0, interval, (void*)fn_800EEBA8);
+        ((u8*)this)[0] = 1;
+    }
 }
 
 #pragma push
