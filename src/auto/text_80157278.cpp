@@ -1229,11 +1229,12 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 #pragma use_lmw_stmw reset
-extern "C" void fn_80158558(s32 arg0) {
-    s32* state = lbl_8042FD34;
-    s32* items = (s32*)state[0];
-    s32 count = state[1]++;
-    items[count] = arg0;
+extern "C" void fn_80158558(s32 listener) {
+    /* Append a listener to the notification list at lbl_8042FD34. */
+    s32* list = lbl_8042FD34;
+    s32* items = (s32*)list[0];
+    s32 count = list[1]++;
+    items[count] = listener;
 }
 extern "C" void fn_8015857C(u32 arg0) {
     UnkFD34* list = (UnkFD34*)lbl_8042FD34;
