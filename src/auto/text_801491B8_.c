@@ -3520,6 +3520,7 @@ s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
 #pragma pop
 void *fn_801538E4(void *entry) {
     s32 index = *(s32 *)((u8 *)entry + 0x38) + *(s32 *)((u8 *)entry + 0x14);
+    /* Address the 0x14-byte record at index (sum of the two fields at +0x38 and +0x14) in the table at entry+0x3C. */
     return (void *)((u8 *)entry + (index * 0x14) + 0x3C);
 }
 
