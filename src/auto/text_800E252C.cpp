@@ -2902,6 +2902,7 @@ extern "C" unsigned short CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(float);
 extern "C" void fn_80033B0C(void *, short *);
 extern "C" void fn_80033B74(void *, unsigned short, unsigned short);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *self) {
+    /* Update per-channel AX LPF settings from the voice's base and channel LPF frequencies. */
     struct ChannelParam {
         float lpfFreq;
         char pad[0x18];
@@ -2920,23 +2921,23 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *self) {
 #define voice ((AxVoiceView *)self)
     unsigned short localCoefs[10];
 
-    for (int i = 0; i < voice->channelCount; i++) {
-        unsigned short rate = CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(voice->lpfFreq + voice->param[i].lpfFreq);
+    for (int channel = 0; channel < voice->channelCount; channel++) {
+        unsigned short rate = CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(voice->lpfFreq + voice->param[channel].lpfFreq);
         if (rate >= 0x3e80) {
             localCoefs[8] = 0;
             localCoefs[9] = 0;
-            for (int j = 0; j < voice->voiceOutCount; j++)
-                fn_80033B0C(voice->vpb[j][i], (short *)&localCoefs[8]);
+            for (int outIdx = 0; outIdx < voice->voiceOutCount; outIdx++)
+                fn_80033B0C(voice->vpb[outIdx][channel], (short *)&localCoefs[8]);
         } else if (*(unsigned short *)((char *)voice->vpb[0][0] + 0x1fc) == 1) {
             AXGetLpfCoefs(rate, &localCoefs[1], &localCoefs[0]);
-            for (int j = 0; j < voice->voiceOutCount; j++)
-                fn_80033B74(voice->vpb[j][i], localCoefs[1], localCoefs[0]);
+            for (int outIdx = 0; outIdx < voice->voiceOutCount; outIdx++)
+                fn_80033B74(voice->vpb[outIdx][channel], localCoefs[1], localCoefs[0]);
         } else {
             localCoefs[4] = 1;
             localCoefs[5] = 0;
             AXGetLpfCoefs(rate, &localCoefs[6], &localCoefs[7]);
-            for (int j = 0; j < voice->voiceOutCount; j++)
-                fn_80033B0C(voice->vpb[j][i], (short *)&localCoefs[4]);
+            for (int outIdx = 0; outIdx < voice->voiceOutCount; outIdx++)
+                fn_80033B0C(voice->vpb[outIdx][channel], (short *)&localCoefs[4]);
         }
     }
 #undef voice
