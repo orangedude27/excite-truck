@@ -302,9 +302,12 @@ void *fn_8018FE8C(void *arg0, s32 arg1) {
     return arg0;
 }
 
-int fn_8018FF84(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_8018FF84(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 #pragma use_lmw_stmw off
