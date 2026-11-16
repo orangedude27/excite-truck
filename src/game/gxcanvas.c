@@ -1296,9 +1296,10 @@ void fn_802C4C90(void *obj, s32 arg1, s32 arg2, s32 arg3, void *tab) {
     }
 }
 #pragma pop
-s32 fn_802C4EE4(s32* arg0) {
-    if (arg0 != NULL) {
-        return *arg0;
+s32 fn_802C4EE4(s32 *width) {
+    /* Null-safe getter for a canvas object's first 32-bit field (its width). */
+    if (width != NULL) {
+        return *width;
     }
     return 0;
 }
