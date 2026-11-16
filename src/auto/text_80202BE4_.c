@@ -684,7 +684,7 @@ void fn_80203B20(void *arg0, void *arg1, s32 arg2) {
     if (fn_80202BE4() == 0 && arg2 != 0)
         fn_80203A88(arg1, (s32)arg0, (unk_80203A88_dest *)stack);
     fn_802C9294(-1, 0);
-    lbl_8055ED08 = !lbl_8055ED08;
+    *(u8 *)&lbl_8055ED08 = __rlwinm(__cntlzw(*(u8 *)&lbl_8055ED08), 27, 5, 31);
 }
 #pragma pop
 extern s32 fn_8012C33C(char *);
@@ -784,11 +784,28 @@ void fn_80203DC8(void) {
 }
 extern void fn_802D050C(void*);
 void fn_80203E88(void) {
-    ((void (*)(void))fn_80203B20)();
-    fn_802CA294(lbl_8055ECFC);
-    fn_802D9230();
-    fn_802CA294(lbl_8055ED04);
-    fn_802D050C(0);
+    /* Set up the screen before drawing a UI car preview: draw the shadow/SWL map
+     * for this view, bind its environment texture into GX, then restore the
+     * normal draw mode. Arguments the callers pass are intentionally ignored. */
+    #define DrawShadowMap   fn_80203B20   /* renders the shadow/SWL-map overlay; uses the caller's live registers */
+    #define GetTexSlotField fn_802CA294   /* reads field +0x28 of the texture-slot record at the given index */
+    #define LoadEnvTexture  fn_802D9230   /* loads the environment texture object into GX */
+    #define SetDrawMode     fn_802D050C   /* stores the current draw mode (0 = normal) */
+    #define ShadowMapSlot   lbl_8055ECFC  /* texture-slot index of the shadow/SWL map */
+    #define EnvMapSlot      lbl_8055ED04  /* texture-slot index of the environment map */
+
+    ((void (*)(void))DrawShadowMap)();
+    GetTexSlotField(ShadowMapSlot);
+    LoadEnvTexture();
+    GetTexSlotField(EnvMapSlot);
+    SetDrawMode(0);
+
+    #undef DrawShadowMap
+    #undef GetTexSlotField
+    #undef LoadEnvTexture
+    #undef SetDrawMode
+    #undef ShadowMapSlot
+    #undef EnvMapSlot
 }
 
 void fn_80203EC0(void) {
