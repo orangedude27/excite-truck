@@ -2185,7 +2185,7 @@ s32 fn_8006A460(s32 arg0) {
     *(u8 *)(setup + 0x10) = one;
     OSRestoreInterrupts(old_state);
     DBPrintf_8006CFA8(lbl_80313464);
-    //fn_800709FC();
+    fn_800709FC();
     fn_80071508(lbl_8055DC34);
     fn_80089E20(lbl_8055DC34);
     fn_80096670(lbl_8055DC34);
@@ -4956,10 +4956,8 @@ extern u8 lbl_80559048;
 extern void fn_80070B54();
 extern void fn_80082548();
 extern u8 fn_80073B30(void);
-void fn_800709FC(void) {
+int fn_800709FC(void) {
     u64 now;
-    u32 hi;
-    u32 lo;
     lbl_8055DC74 = 0;
     GKI_init();
     fn_8006EB88();
@@ -4976,11 +4974,9 @@ wait_check:
     }
     fn_80070B54();
     now = __OSGetSystemTime();
-    hi = (u32)(now >> 32u);
-    lo = (u32)now;
     OSCreateAlarm(&lbl_803C0A20);
     ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(void)))OSSetPeriodicAlarm)(
-        &lbl_803C0A20, 0x80000000u, hi, lo, 0u,
+        &lbl_803C0A20, 0x80000000u, (u32)(now >> 32u), (u32)now, 0u,
         ((*(u32 *)0x800000F8 >> 2) / 500u) & 0x07FFFFFEu, fn_800709E4);
     ((void (*)(s32))fn_8006EACC)(0);
     goto poll_check;
@@ -4990,6 +4986,7 @@ poll_check:
     if (fn_80073B30() == 0u) {
         goto poll_delay;
     }
+    return 0;
 }
 
 void fn_80070AF0(s32 arg0) {
