@@ -415,12 +415,13 @@ void fn_802E7FD0(void) {
     int readCount;
     register int changed;
     register int queueIndex;
+    int probe;
+    int filtered;
     int current;
     int old;
     int active;
     int result;
     int timeNow;
-    int filtered;
     formatBase = (char *)&lbl_8034D898;
     now = fn_802E2C20();
     previous = lbl_80560010;
@@ -444,7 +445,6 @@ void fn_802E7FD0(void) {
             } while (queueIndex < 4);
         }
     }
-    changed = 1;
     record = lbl_80505978;
     devices = lbl_80507278;
     base = record;
@@ -454,16 +454,16 @@ void fn_802E7FD0(void) {
         memset(record + 0xC8, 0, 0x550);
         active = 0;
         if (base[0x631] != 0)
-            active = changed;
+            active = 1;
         if (base[0xC69] != 0)
-            active = changed;
+            active = 1;
         if (base[0x12A1] != 0)
-            active = changed;
+            active = 1;
         if (base[0x18D9] != 0)
-            active = changed;
+            active = 1;
         if (active == 0 && now - *(int *)(record + 0x634) > 0x2710) {
             *(int *)(record + 0x634) = now;
-            record[0x631] = (unsigned char)changed;
+            record[0x631] = 1;
             result = fn_800604E8(channel, (int)(record + 0x618), fn_802E7C14);
             if (result != 0) {
                 record[0x631] = 0;
@@ -471,25 +471,23 @@ void fn_802E7FD0(void) {
                     memset(record + 0x618, 0, 0x18);
             }
         }
-        queueIndex = WPADProbe(channel, devices);
+        probe = WPADProbe(channel, devices);
         result = KPADRead(channel, record + 0xC8, 1);
-        if (result >= 1 && queueIndex == 0 && record[0xC4] != 0) {
+        if (result >= 1 && probe == 0 && record[0xC4] != 0) {
             current = *(signed char *)(record + 0x14D);
             old = *(signed char *)lastState;
             if (current != old) {
                 result = (int)fn_802E77C0((signed char)current);
-                queueIndex = (int)fn_802E77C0(*(signed char *)lastState);
-                ((void (*)(const char *, ...))fn_802E30C8)(
-                    formatBase + 0x94, channel, queueIndex, result);
+                probe = (int)fn_802E77C0(*(signed char *)lastState);
+                ((void (*)(const char *, ...))fn_802E30C8)(formatBase + 0x94, channel, probe, result);
                 *lastState = (unsigned char)current;
             }
             if ((signed char)current == 0) {
                 if (record[0] == 0) {
-                    record[0] = (unsigned char)changed;
+                    record[0] = 1;
                     *(int *)(record + 0xB4) = 0;
-                    record[0xC5] = (unsigned char)changed;
-                    ((void (*)(const char *, ...))fn_802E30C8)(
-                        formatBase + 0xA8, channel);
+                    record[0xC5] = 1;
+                    ((void (*)(const char *, ...))fn_802E30C8)(formatBase + 0xA8, channel);
                 }
                 record[0x630] = fn_8005EE80(channel);
                 if (fn_802ECC10() == 0)
@@ -498,22 +496,19 @@ void fn_802E7FD0(void) {
             }
         } else if (record[0xC4] == 0 && record[0] != 0) {
             record[0] = 0;
-            ((void (*)(const char *, ...))fn_802E30C8)(
-                formatBase + 0xC0, channel);
+            ((void (*)(const char *, ...))fn_802E30C8)(formatBase + 0xC0, channel);
         }
         if (record[0x29] != 0) {
             if (record[0xC5] == 0) {
-                record[0xC5] = (unsigned char)changed;
+                record[0xC5] = 1;
                 fn_802ECBF8();
             }
         } else {
             record[0xC5] = 0;
         }
         filtered = 0;
-        if (((int (*)(int))fn_802E77B8)(channel) != 0 &&
-            record[0x2B] != 0 && record[0x29] != 0 &&
-            record[0x27] != 0)
-            filtered = changed;
+        if (((int (*)(int))fn_802E77B8)(channel) != 0 && record[0x2B] != 0 && record[0x29] != 0 && record[0x27] != 0)
+            filtered = 1;
         timeNow = fn_802E2C20();
         if (filtered == 0)
             *(int *)(record + 0xC0) = timeNow;
@@ -638,14 +633,17 @@ void fn_802E85AC(void) {}
 int fn_802E85B0(void) { return 3; }
 
 extern int lbl_802FAE80[4];
-int fn_802E85B8(int arg0) {
-    int values[4];
-    int *p = lbl_802FAE80;
-    values[0] = *p++;
-    values[1] = *p++;
-    values[2] = *p++;
-    values[3] = *p;
-    return values[arg0];
+int fn_802E85B8(int socketIndex) {
+#define gControllerSocketNames lbl_802FAE80
+    int names[4];
+    int *cursor = gControllerSocketNames;
+    /* Return the "Controller Socket N" string for the given socket index. */
+    names[0] = *cursor++;
+    names[1] = *cursor++;
+    names[2] = *cursor++;
+    names[3] = *cursor;
+    return names[socketIndex];
+#undef gControllerSocketNames
 }
 
 #pragma push
