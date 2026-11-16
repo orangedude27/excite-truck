@@ -362,24 +362,32 @@ extern "C" s32 fn_80134B9C(s32 key, s32 defaultValue) {
       return -1;
   }
   
-s32 fn_80134C60(s32 arg0, char *arg1)
+s32 fn_80134C60(s32 value, char *dst)
 {
+    /* Format a "#"-prefixed label into dst: "#%3d" for a nonnegative value,
+     * "#GST" for -20, "#---" for any other negative value; return dst. */
     extern s32 sprintf(char *, const char *, ...);
     extern char *strcpy(char *, const char *);
     extern u8 lbl_80559BDC, lbl_80559BE4, lbl_80559BEC;
-    if (arg0 >= 0) {
-        sprintf(arg1, (const char *)&lbl_80559BDC, arg0);
+#define FMT_HASH_NUMBER lbl_80559BDC
+#define STR_HASH_GST    lbl_80559BE4
+#define STR_HASH_DASHES lbl_80559BEC
+    if (value >= 0) {
+        sprintf(dst, (const char *)&FMT_HASH_NUMBER, value);
     } else {
-        switch (arg0) {
+        switch (value) {
         case -0x14:
-            strcpy(arg1, (const char *)&lbl_80559BE4);
+            strcpy(dst, (const char *)&STR_HASH_GST);
             break;
         default:
-            strcpy(arg1, (const char *)&lbl_80559BEC);
+            strcpy(dst, (const char *)&STR_HASH_DASHES);
             break;
         }
     }
-    return (s32)arg1;
+#undef FMT_HASH_NUMBER
+#undef STR_HASH_GST
+#undef STR_HASH_DASHES
+    return (s32)dst;
 }
   
 #pragma dont_inline on
