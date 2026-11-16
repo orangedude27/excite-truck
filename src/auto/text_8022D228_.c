@@ -338,6 +338,15 @@ void fn_8022DBFC(void *selector) {
     if (nextIndex >= *(int *)((char *)selector + 0x10)) *(int *)((char *)selector + 0xC) = 0;
 }
 
+/* A circular index selector: `index` walks [0, count) over parallel element arrays. */
+typedef struct IndexSelector {
+    int *values;  /* 0x00 */
+    int *tags;    /* 0x04 */
+    int field8;   /* 0x08 */
+    int index;    /* 0x0C current index */
+    int count;    /* 0x10 number of elements */
+} IndexSelector;
+
 void fn_8022DC20(void *arg0) {
     int value = *(int *)((char *)arg0 + 0xC) - 1;
     *(int *)((char *)arg0 + 0xC) = value;
