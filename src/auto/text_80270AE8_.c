@@ -1840,11 +1840,12 @@ void fn_80273604(void *arg0, s32 arg1) {
     }
 }
 extern int fn_80128668(void);
-int fn_80273978(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_80273978(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
