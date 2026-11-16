@@ -246,12 +246,13 @@ done:
 }
 
 #pragma dont_inline on
-void fn_8000822C(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0) = -1;
-    *(u32 *)((u8 *)arg0 + 4) = 0;
-    *(u32 *)((u8 *)arg0 + 0x10) = 0;
-    *(u32 *)((u8 *)arg0 + 0xC) = 0;
-    *(u32 *)((u8 *)arg0 + 8) = 0;
+/* Reset a 0x14-byte contest reference record to its empty state: index -1 at offset 0, all other fields 0. */
+void fn_8000822C(void *record) {
+    *(s32 *)((u8 *)record + 0) = -1;
+    *(u32 *)((u8 *)record + 4) = 0;
+    *(u32 *)((u8 *)record + 0x10) = 0;
+    *(u32 *)((u8 *)record + 0xC) = 0;
+    *(u32 *)((u8 *)record + 8) = 0;
 }
 #pragma dont_inline reset
 
