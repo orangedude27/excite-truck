@@ -605,15 +605,15 @@ static inline void time_append2(char *dstp, int sizep, char *str) {
 void fn_80130980(char *out, int size, int level, float t);
 void fn_80130978(char *arg0, int arg1, float t) { fn_80130980(arg0, arg1, 3, t); }
 
-void fn_80130980(char *out, int size, int level, float t) {
+void fn_80130980(char *out, int size, int level, float seconds) {
     char buf[100];
-    char s48[12];
-    char s3C[12];
-    char s30[12];
-    char s24[12];
-    char s18[12];
-    char s10[8];
-    TimeSepTab tbl;
+    char hoursStr[12];
+    char minsStr[12];
+    char secsStr[12];
+    char tenthsStr[12];
+    char hundredthsStr[12];
+    char tenthsSep[8];
+    TimeSepTab sepTable;
     int mins, hundredths, tenths, secs, hours;
     int hasPrev;
     int found;
@@ -622,7 +622,10 @@ void fn_80130980(char *out, int size, int level, float t) {
     char c;
     unsigned int i;
 
-    if (t == -lbl_80558DC0) {
+    /* Format a time in seconds into `out` at precision `level` (0=hours ..
+     * 4=hundredths), localizing digits/separators via the separator table;
+     * the negative-time sentinel instead prints the localized empty string. */
+    if (seconds == -lbl_80558DC0) {
         src = fn_80131234(lbl_8032B240);
         goto copy;
     count_check:
@@ -637,57 +640,57 @@ void fn_80130980(char *out, int size, int level, float t) {
             goto count_check;
         return;
     }
-    hundredths = (int)(lbl_805612C8 * t) % 10;
-    tenths = (int)(lbl_805612CC * t) % 10;
-    secs = (int)t % 60;
-    mins = ((int)t / 60) % 60;
-    hours = (int)t / 3600;
+    hundredths = (int)(lbl_805612C8 * seconds) % 10;
+    tenths = (int)(lbl_805612CC * seconds) % 10;
+    secs = (int)seconds % 60;
+    mins = ((int)seconds / 60) % 60;
+    hours = (int)seconds / 3600;
     buf[0] = 0;
     hasPrev = 0;
     if (level >= 0 && hours > 0) {
-        fn_801345D8(s48, 10, lbl_80559A9C, hours);
-        time_append(buf, 100, s48);
+        fn_801345D8(hoursStr, 10, lbl_80559A9C, hours);
+        time_append(buf, 100, hoursStr);
         hasPrev = 1;
     }
     if (level >= 1 && (mins > 0 || hasPrev)) {
         if (hasPrev)
-            fn_801345D8(s3C, 10, lbl_80559AE4, lbl_80559AEC, 2, mins);
+            fn_801345D8(minsStr, 10, lbl_80559AE4, lbl_80559AEC, 2, mins);
         else
-            fn_801345D8(s3C, 10, lbl_80559A9C, mins);
-        time_append(buf, 100, s3C);
+            fn_801345D8(minsStr, 10, lbl_80559A9C, mins);
+        time_append(buf, 100, minsStr);
         hasPrev = 1;
     }
     if (level >= 2) {
         if (hasPrev)
-            fn_801345D8(s30, 10, lbl_80559AE4, lbl_80559AEC, 2, secs);
+            fn_801345D8(secsStr, 10, lbl_80559AE4, lbl_80559AEC, 2, secs);
         else
-            fn_801345D8(s30, 10, lbl_80559A9C, secs);
-        time_append(buf, 100, s30);
+            fn_801345D8(secsStr, 10, lbl_80559A9C, secs);
+        time_append(buf, 100, secsStr);
         hasPrev = 1;
     }
     if (level >= 3) {
-        fn_801345D8(s10, 8, lbl_80559AF0, *lbl_8055E050);
+        fn_801345D8(tenthsSep, 8, lbl_80559AF0, *lbl_8055E050);
         if (hasPrev)
-            fn_801345D8(s24, 10, lbl_80559AE4, s10, 1, tenths);
+            fn_801345D8(tenthsStr, 10, lbl_80559AE4, tenthsSep, 1, tenths);
         else
-            fn_801345D8(s24, 10, lbl_80559A9C, tenths);
-        time_append(buf, 100, s24);
+            fn_801345D8(tenthsStr, 10, lbl_80559A9C, tenths);
+        time_append(buf, 100, tenthsStr);
         hasPrev = 1;
     }
     if (level >= 4) {
         if (hasPrev)
-            fn_801345D8(s18, 10, lbl_80559AE4, lbl_80559AF4, 1, hundredths);
+            fn_801345D8(hundredthsStr, 10, lbl_80559AE4, lbl_80559AF4, 1, hundredths);
         else
-            fn_801345D8(s18, 10, lbl_80559A9C, hundredths);
-        time_append(buf, 100, s18);
+            fn_801345D8(hundredthsStr, 10, lbl_80559A9C, hundredths);
+        time_append(buf, 100, hundredthsStr);
     }
     fn_801345D8(out, size, lbl_80559AF0, 1);
-    tbl = lbl_802F8E78;
+    sepTable = lbl_802F8E78;
     for (p = buf; *p != 0; p++) {
         found = 0;
         for (i = 0; found == 0 && i < 13; i++) {
-            if (*p == tbl.e[i].c) {
-                time_append_sizefirst(out, size, tbl.e[i].s);
+            if (*p == sepTable.e[i].c) {
+                time_append_sizefirst(out, size, sepTable.e[i].s);
                 found = 1;
             }
         }
