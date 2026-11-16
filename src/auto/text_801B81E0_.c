@@ -669,6 +669,7 @@ extern "C" void fn_801B89C8(void *arg0) {
 }
 #pragma cplusplus off
 int fn_801B89E0(void) {
+    /* True once the mode timer has passed the intro-end threshold. */
     extern float lbl_8055E750;
     extern float lbl_8056274C;
     return lbl_8055E750 > lbl_8056274C;
