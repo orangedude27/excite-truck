@@ -4511,15 +4511,21 @@ extern "C" s32 fn_8021FBC4(void *widget, s32 x, s32 y) {
     return insideAll;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
     s32 *temp_r5;
     s32 temp_r31;
     s32 temp_r30;
     s32 temp_r29;
-    register s32 var_r28;
+    s32 var_r28;
+
     fn_802C3034(arg1);
     ((void (*)(void *, s32))fn_802192A0)(arg0, arg1);
-    temp_r29 = (s32)(((f32)(((VfObj *)arg0)->vf28() - 11) * (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) / (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
+
+    temp_r29 = (s32)(((f32)(((VfObj *)arg0)->vf28() - 11) *
+        (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
+        (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
+
     var_r28 = 0;
     temp_r5 = *(s32 **)((u8 *)arg0 + 0x274);
     if (temp_r5 != 0) {
@@ -4527,12 +4533,15 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
             var_r28 = 1;
             temp_r31 = *(s32 *)((u8 *)arg0 + 8);
             temp_r30 = *(s32 *)((u8 *)arg0 + 4);
-            fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C), temp_r30, temp_r31, ((VfObj *)arg0)->vf28(), var_r28);
+            fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C),
+                temp_r30, temp_r31, ((VfObj *)arg0)->vf28(), var_r28);
         }
     }
-    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x260), *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5, temp_r29, var_r28);
-}
 
+    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x260),
+        *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5,
+        temp_r29, var_r28);
+}
 extern "C" s32 fn_802C5334(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
@@ -4911,17 +4920,17 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
     *(s32 *)*(void **)((u8 *)arg0 + 0x244) = result;
 }
 
-extern "C" void fn_80220AFC(void *arg0) {
-    class Dispatch {
-    public:
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-        virtual void d16(); virtual void call();
+extern "C" void fn_80220AFC(void *self) {
+    /* Deactivates this menu widget: runs its virtual update (vtable slot +0x4C) then clears its active flag (+0x258). */
+    struct VfWidget {
+        VfObj obj;          /* 0x00: vtable; slot +0x4C advances the widget */
+        u8 pad_0x4[0x254];
+        u8 active;          /* 0x258: nonzero while the widget is active */
     };
-    ((Dispatch *)arg0)->call();
-    *(u8 *)((u8 *)arg0 + 0x258) = 0;
+    VfWidget *widget = (VfWidget *)self;
+
+    widget->obj.vf17();
+    widget->active = 0;
 }
 
 extern "C" void fn_80220B3C(void *arg0) {
