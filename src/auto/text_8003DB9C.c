@@ -792,7 +792,13 @@ void GXCPInterruptHandler(short intr, void *ctx) {
     if (((gx[2] >> 2) & 1) && (gx[3] & 1)) {
         lbl_8055D94C = (char *)lbl_8055D94C + 1;
         p = GXD;
-        gx[2] = (gx[2] & ~4) | 8;
+        {
+            union { unsigned int word; struct { unsigned int high:28; unsigned int overflow:1; unsigned int underflow:1; unsigned int low:2; } bits; } control;
+            control.word = gx[2];
+            control.bits.underflow = 0;
+            control.bits.overflow = 1;
+            gx[2] = control.word;
+        }
         *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
         p[4] = (p[4] | 1) & ~2;
         *(volatile unsigned short *)((char *)__cpReg + 4) = p[4];
