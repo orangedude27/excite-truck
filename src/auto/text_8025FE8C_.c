@@ -922,7 +922,7 @@ void fn_80261A18(void *arg0, s32 arg1) {
 
 void fn_80261A40(s32 arg0) {
     fn_80236914();
-    lbl_8055F3E9 = arg0 == 2;
+    *(signed char*)&lbl_8055F3E9 = (arg0 - 2) == 0;
 }
 
 void fn_80261A7C(void *arg0, s32 arg1) {
