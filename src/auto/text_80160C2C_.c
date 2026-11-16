@@ -42,4 +42,4 @@ void fn_80160C2C(void) {
 #undef ObjectRegistry
 #undef DestroyGlobalObject
 }
-
+DECL_SECTION(".ctors") funcptr_t D_802ED1DC = fn_80160C2C;
