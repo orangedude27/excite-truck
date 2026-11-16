@@ -26,6 +26,7 @@ static void* GetTOC(void) {
 }
 
 void __init_cpp_exceptions(void) {
+    /* Register this unit's C++ exception tables once (-2 means not registered yet). */
     if (fragmentID == -2) {
         fragmentID = __register_fragment(_eti_init_info, GetTOC());
     }
