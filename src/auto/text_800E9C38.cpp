@@ -238,6 +238,233 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7ChannelFPFPQ46nw4hbm3snd6detail7
     *((unsigned char *)arg0 + 0x38) = 0;
 }
 
+extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32);
+extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32);
+extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *);
+extern "C" s32 OSDisableInterrupts();
+extern "C" void OSRestoreInterrupts(s32);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(s32, s32, f32);
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(s32, s32, f32);
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(s32, s32, f32);
+extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(s32, s32, f32);
+extern "C" void SetVeVolume__Q46nw4hbm3snd6detail7AxVoiceFff(s32, f32, f32);
+extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *);
+extern "C" void Update__Q44nw4r3snd6detail3LfoFi(void *, int);
+extern "C" void Update__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void fn_800E5338(s32, f32);
+extern "C" void fn_800E5444(s32, f32);
+extern "C" void fn_800E5464(s32, f32);
+extern "C" void fn_800E54A8(s32, f32);
+extern "C" void fn_800E54EC(s32, f32);
+extern "C" void fn_800E550C(s32, f32);
+extern "C" void fn_800E5550(s32, f32);
+extern "C" void fn_800E5594(s32, s32);
+extern "C" void fn_800E55B4(s32, f32);
+extern "C" void fn_800E56D0(s32, f32);
+extern "C" f32 fn_800EB430(void *);
+extern f32 lbl_80560FC0;
+extern f32 lbl_80560FC4;
+extern f32 lbl_80560FC8;
+extern f32 lbl_80560FCC;
+extern f32 lbl_80560FD0;
+#pragma use_lmw_stmw on
+#pragma push
+#pragma opt_propagation off
+#pragma opt_deadstores off
+#pragma opt_common_subs off
+#pragma opt_lifetimes off
+extern "C" void Update__Q46nw4hbm3snd6detail7ChannelFb(void *arg0, s32 arg1) {
+    f32 temp_f31;
+    f32 var_f30;
+    f32 temp_f29;
+    f32 var_f28;
+    f32 temp_f27;
+    f32 temp_f26;
+    f32 temp_f25;
+    f32 temp_f24;
+    f32 temp_f23;
+    f32 temp_f22;
+    f32 temp_f21;
+    f32 temp_f20;
+    f32 var_f19;
+    f32 temp_f1, temp_f1_2, temp_f1_3, temp_f2;
+    volatile f32 remoteOut[3], remoteVolume[4], remoteSend[4], remoteFx[4];
+    volatile f32 *var_r28;
+    volatile f32 *var_r28_2;
+    volatile f32 *var_r29_2;
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r0_3;
+    s32 temp_r31;
+    s32 temp_r3_3;
+    s32 temp_r4_2;
+    s32 var_r27;
+    s32 var_r29;
+    s32 var_r31;
+    unsigned short temp_r3;
+    unsigned short temp_r3_2;
+    unsigned short temp_r4;
+    unsigned char temp_r5;
+    unsigned char var_r0;
+
+    var_r31 = arg1;
+    if ((s32) *(unsigned char *)((char *)arg0 + 0x3A) != 0) {
+        if ((s32) *(unsigned char *)((char *)arg0 + 0x39) != 0) {
+            var_r31 = 0;
+        }
+        temp_f22 = GetValue__Q46nw4hbm3snd6detail3LfoCFv(((char *)arg0 + 0x20));
+        temp_r3 = *(unsigned short *)((char *)arg0 + 0xC8);
+        if (temp_r3 < (unsigned short) *(unsigned short *)((char *)arg0 + 0xC6)) {
+            *(unsigned short *)((char *)arg0 + 0xC8) = (unsigned short) (temp_r3 + 1);
+        }
+        temp_f31 = lbl_80560FC4;
+        temp_f31 *= *(f32 *)((char *)arg0 + 0xB4);
+        temp_f31 *= *(f32 *)((char *)arg0 + 0x40);
+        temp_r4 = *(unsigned short *)((char *)arg0 + 0xC6);
+        temp_r3_2 = *(unsigned short *)((char *)arg0 + 0xC8);
+        if (temp_r3_2 >= temp_r4) {
+            var_r0 = *(unsigned char *)((char *)arg0 + 0xC5);
+        } else {
+            temp_r5 = *(unsigned char *)((char *)arg0 + 0xC4);
+            var_r0 = temp_r5 + ((s32) (temp_r3_2 * (*(unsigned char *)((char *)arg0 + 0xC5) - temp_r5)) / (s32) temp_r4);
+        }
+        temp_f1 = (f32) var_r0;
+        var_f30 = lbl_80560FC4;
+        temp_f31 *= temp_f1 / lbl_80560FC8;
+        var_f30 *= fn_800EB430(((char *)arg0 + 8));
+        if ((unsigned char) *(unsigned char *)((char *)arg0 + 0x38) == 1) {
+            var_f30 *= CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(lbl_80560FCC * temp_f22);
+        }
+        if (((s32) *(s32 *)((char *)((char *)arg0 + 8)) == 3) && (lbl_80560FC0 == (temp_f31 * var_f30))) {
+            Stop__Q46nw4hbm3snd6detail7ChannelFv(arg0);
+            return;
+        }
+        var_f19 = lbl_80560FC0;
+        temp_f1_2 = *(f32 *)((char *)arg0 + 0xA8);
+        temp_f20 = lbl_80560FC0;
+        temp_f20 += (f32) (*(s32 *)((char *)arg0 + 0xCC) - *(s32 *)((char *)arg0 + 0xD0));
+        if (var_f19 == temp_f1_2) {
+
+        } else {
+            temp_r0 = *(s32 *)((char *)arg0 + 0xAC);
+            temp_r3_3 = *(s32 *)((char *)arg0 + 0xB0);
+            if (temp_r0 >= temp_r3_3) {
+
+            } else {
+                var_f19 = temp_f1_2 * (f32) (temp_r3_3 - temp_r0);
+                if (temp_r3_3 == 0) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_803228E8, 0x1B3, lbl_803228F8);
+                }
+                var_f19 /= (f32) *(s32 *)((char *)arg0 + 0xB0);
+            }
+        }
+        temp_f20 += var_f19;
+        temp_f20 += *(f32 *)((char *)arg0 + 0xA4);
+        if ((s32) *(unsigned char *)((char *)arg0 + 0x38) == 0) {
+            temp_f20 += temp_f22;
+        }
+        temp_f2 = *(f32 *)((char *)arg0 + 0xC0);
+        temp_f1_3 = *(f32 *)((char *)arg0 + 0x44);
+        var_f19 = lbl_80560FC4;
+        var_f19 *= temp_f2;
+        var_f19 *= temp_f1_3;
+        temp_f29 = CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi((s32) (lbl_80560FD0 * temp_f20)) * var_f19;
+        var_f28 = lbl_80560FC0;
+        var_f28 += *(f32 *)((char *)arg0 + 0xB8);
+        var_f28 += *(f32 *)((char *)arg0 + 0x48);
+        if ((unsigned char) *(unsigned char *)((char *)arg0 + 0x38) == 2) {
+            var_f28 += temp_f22;
+        }
+        remoteVolume[0] = lbl_80560FC4;
+        temp_f27 = lbl_80560FC0;
+        temp_f27 += *(f32 *)((char *)arg0 + 0xBC);
+        temp_f27 += *(f32 *)((char *)arg0 + 0x4C);
+        remoteOut[0] = lbl_80560FC0;
+        remoteOut[1] = lbl_80560FC0;
+        temp_f26 = lbl_80560FC0;
+        temp_f26 += *(f32 *)((char *)arg0 + 0x50);
+        remoteOut[2] = lbl_80560FC0;
+        temp_f25 = lbl_80560FC0;
+        temp_f25 += *(f32 *)((char *)arg0 + 0x54);
+        temp_f24 = lbl_80560FC4;
+        temp_f24 += *(f32 *)((char *)arg0 + 0x58);
+        remoteSend[0] = lbl_80560FC0;
+        temp_f23 = lbl_80560FC4;
+        temp_f23 *= *(f32 *)((char *)arg0 + 0x60);
+        remoteFx[0] = lbl_80560FC0;
+        temp_f22 = lbl_80560FC0;
+        temp_f22 += *(f32 *)((char *)arg0 + 0x64);
+        remoteOut[0] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x68);
+        remoteOut[1] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x6C);
+        remoteOut[2] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x70);
+        remoteVolume[0] = lbl_80560FC4 * *(f32 *)((char *)arg0 + 0x74);
+        remoteSend[0] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x84);
+        remoteFx[0] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x94);
+        remoteVolume[1] = lbl_80560FC4 * *(f32 *)((char *)arg0 + 0x78);
+        remoteSend[1] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x88);
+        remoteFx[1] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x98);
+        remoteVolume[2] = lbl_80560FC4 * *(f32 *)((char *)arg0 + 0x7C);
+        remoteSend[2] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x8C);
+        remoteFx[2] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x9C);
+        remoteVolume[3] = lbl_80560FC4 * *(f32 *)((char *)arg0 + 0x80);
+        remoteSend[3] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x90);
+        remoteFx[3] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0xA0);
+        if (var_r31 != 0) {
+            if ((s32) *(unsigned char *)((char *)arg0 + 0x3C) != 0) {
+                temp_r4_2 = *(s32 *)((char *)arg0 + 0xB0);
+                temp_r0_2 = *(s32 *)((char *)arg0 + 0xAC) + 3;
+                *(s32 *)((char *)arg0 + 0xAC) = temp_r0_2;
+                if (temp_r0_2 > temp_r4_2) {
+                    *(s32 *)((char *)arg0 + 0xAC) = temp_r4_2;
+                }
+            }
+            Update__Q44nw4r3snd6detail3LfoFi(((char *)arg0 + 0x20), 3);
+            Update__Q46nw4hbm3snd6detail12EnvGeneratorFi(((char *)arg0 + 8), 3);
+        }
+        temp_f21 = GetValue__Q46nw4hbm3snd6detail3LfoCFv(((char *)arg0 + 0x20));
+        var_f19 = lbl_80560FC4;
+        var_f19 = var_f19 * fn_800EB430(((char *)arg0 + 8));
+        if ((unsigned char) *(unsigned char *)((char *)arg0 + 0x38) == 1) {
+            var_f19 *= CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(lbl_80560FCC * temp_f21);
+        }
+        temp_r31 = OSDisableInterrupts();
+        temp_r0_3 = *(s32 *)((char *)arg0 + 0xE0);
+        if (temp_r0_3 != 0) {
+            fn_800E5338(temp_r0_3, temp_f31);
+            SetVeVolume__Q46nw4hbm3snd6detail7AxVoiceFff(*(s32 *)((char *)arg0 + 0xE0), var_f19, var_f30);
+            fn_800E5444(*(s32 *)((char *)arg0 + 0xE0), temp_f29);
+            fn_800E5464(*(s32 *)((char *)arg0 + 0xE0), var_f28);
+            fn_800E54A8(*(s32 *)((char *)arg0 + 0xE0), temp_f27);
+            fn_800E54EC(*(s32 *)((char *)arg0 + 0xE0), temp_f26);
+            fn_800E550C(*(s32 *)((char *)arg0 + 0xE0), temp_f25);
+            fn_800E5550(*(s32 *)((char *)arg0 + 0xE0), temp_f24);
+            fn_800E5594(*(s32 *)((char *)arg0 + 0xE0), *(s32 *)((char *)arg0 + 0x5C));
+            fn_800E55B4(*(s32 *)((char *)arg0 + 0xE0), temp_f23);
+            fn_800E56D0(*(s32 *)((char *)arg0 + 0xE0), temp_f22);
+            var_r28 = &remoteOut[0];
+            var_r29 = 0;
+            do {
+                SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(*(s32 *)((char *)arg0 + 0xE0), var_r29, *var_r28);
+                var_r29 += 1;
+                var_r28 += 1;
+            } while (var_r29 < 3);
+            var_r29_2 = &remoteVolume[0];
+            var_r28_2 = &remoteSend[0];
+            var_r27 = 0;
+            do {
+                SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32 *)((char *)arg0 + 0xE0), var_r27, *var_r29_2);
+                SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32 *)((char *)arg0 + 0xE0), var_r27, *var_r28_2);
+                SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(*(s32 *)((char *)arg0 + 0xE0), var_r27, *var_r28_2);
+                var_r27 += 1;
+                var_r28_2 += 1;
+                var_r29_2 += 1;
+            } while (var_r27 < 4);
+        }
+        OSRestoreInterrupts(temp_r31);
+    }
+}
+#pragma pop
 extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *channel, const void *waveData, long length) {
     /* Start playback of the given wave data on this channel. */
     *(long *)((char *)channel + 0xD4) = length;
@@ -431,6 +658,21 @@ extern "C" char lbl_803229AC[];
 extern "C" char lbl_803229D0[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...) __attribute__((noreturn));
 extern "C" void Update__Q46nw4hbm3snd6detail7ChannelFb(void *, int);
+
+static inline f32 GetChannelSweep(void *channel) {
+    f32 value = lbl_80560FC0;
+    f32 sweep = *(f32 *)((char *)channel + 0xA8);
+    if (value == sweep)
+        return value;
+    s32 position = *(s32 *)((char *)channel + 0xAC);
+    s32 length = *(s32 *)((char *)channel + 0xB0);
+    if (position >= length)
+        return value;
+    value = sweep * (f32)(length - position);
+    if (length == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803228E8, 0x1B3, lbl_803228F8);
+    return value / (f32)*(s32 *)((char *)channel + 0xB0);
+}
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void) {
     char *manager;
