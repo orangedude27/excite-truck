@@ -8413,7 +8413,7 @@ extern "C" s32 fn_800B1AFC(s32 path, s32 mode, s32 *handleOut, s32 arg3 /* unuse
 }
 
 extern "C" s32 fn_800B6004(void *);
-#define FN786C_RET void
+#define FN786C_RET s32
 extern "C" FN786C_RET fn_800B786C(void *);
 /* Close one of a volume's file handles - the work behind the public close,
  * which runs here on the file thread (fn_800B74E0) and answers 0 or -1.
