@@ -4188,8 +4188,10 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     ((BitReader8011 *)arg0)->value = var_r30;
     ((BitReader8011 *)arg0)->count = (u32)var_r29;
 }
-void fn_8011CD78(void* arg0, void* arg1) {
-    fn_8011C4A0((s32)arg1, (s32)((u8*)arg0 + 0x24), (s32)((u8*)arg0 + 0x20), (s32)((u8*)arg0 + 0x10));
+void fn_8011CD78(void* table, void* bits) {
+    /* Decode one pattern from the shared bitstream into this table: pattern pointer
+     * at +0x24, extra bit count at +0x20, 16-byte permutation at +0x10. */
+    fn_8011C4A0((s32)bits, (s32)((u8*)table + 0x24), (s32)((u8*)table + 0x20), (s32)((u8*)table + 0x10));
 }
 
 #pragma pop
