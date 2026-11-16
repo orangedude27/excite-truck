@@ -5115,6 +5115,14 @@ block_21:
 #define VF_VOL_FAT_COUNT(v)        (*(u8 *)((u8 *)(v) + 0x22))  /* FAT copies the volume keeps */
 #define VF_VOL_FAT_FIRST_SECTOR(v) (*(u32 *)((u8 *)(v) + 0x28)) /* first sector of the first FAT */
 
+/* What a volume keeps of its free clusters: the count the FSInfo sector holds,
+ * and the state word that says whether it is being kept at all and whether the
+ * volume has an FSInfo sector for fn_800AF144 to write it back to. */
+#define VF_VOL_FREE_CLUSTERS(v) (*(s32 *)((v) + 0x38)) /* free clusters; -1 unknown */
+#define VF_VOL_STATE(v)           (*(u16 *)((v) + 0x1FAC)) /* 0x1FAC VF_VOL_STATE_* */
+#define VF_VOL_STATE_FSINFO       2 /* the volume has an FSInfo sector to update */
+#define VF_VOL_STATE_FREE_COUNT   4 /* its free cluster count is being kept */
+
 /* A FAT32 entry: 28 bits of cluster number under four bits left alone. */
 #define VF_FAT32_CLUSTER_MASK      0x0FFFFFFF
 #define VF_FAT32_RESERVED_MASK     0xF0000000
