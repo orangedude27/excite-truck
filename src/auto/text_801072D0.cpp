@@ -142,10 +142,11 @@ extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv
     return 0;
 }
 
-extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_80107580(nw4hbm::ut::FileStream* this_,
-                                                          s32 off,
+extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_80107580(nw4hbm::ut::FileStream* stream,
+                                                          s32 offset,
                                                           u32 origin) {
-    if (this_->Seek(off, origin) == 0) {
+    /* Seek the stream and panic if the seek fails. */
+    if (stream->Seek(offset, origin) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803285B8, 0x52, lbl_80328614);
     }
 }
