@@ -347,6 +347,44 @@ void fn_802E5438(void) {
     } while (i < 4);
 }
 
+/* The strings of this file's block at lbl_8034D210 that the SPU start-up logs
+ * with and registers its allocations under (`msg` is that block). */
+#define sSpuBeginName   (msg + 0x1BC)  /* "SpuBegin" */
+#define sAramBufName    (msg + 0x1C8)  /* "aram_buf" */
+#define sAramBaseFmt    (msg + 0x1D4)  /* "spu: aram_base: %x -- %x (%dK)" */
+#define sSpuSampleName  (msg + 0x1F4)  /* "SpuSample" */
+#define sSpuChannelName (msg + 0x200)  /* "SpuChannel" */
+#define sSpuCacheName   (msg + 0x20C)  /* "Spucache" */
+#define sNoVoiceFmt     (msg + 0x218)  /* "Spu: can't acquire voice %d" */
+#define sZeroBufName    (msg + 0x234)  /* "zero_buf" */
+
+/* The state the start-up below sets up. */
+#define gAramBase       lbl_8055FF7C   /* ARAM block taken for the mix */
+#define gAramPos        lbl_8055FF80   /* where the mix reads ARAM from */
+#define gAramSize       lbl_8055FF84   /* its size: the whole 128K */
+#define gAramLastEnd    lbl_8055FF88   /* end of the last block written to ARAM */
+#define gMixBuffer      lbl_8055FFB0   /* CPU side of that ARAM block */
+#define gSpuSamples     lbl_8055FF90   /* "SpuSample": 256 slots of 0xB0 */
+#define gSpuChannels    lbl_8055FF94   /* "SpuChannel": the 32 voice channels */
+#define gSoundSlotTable lbl_8055FF9C   /* "Spucache" */
+#define gSoundSlotCount lbl_8055FFA0   /* entries of it in use */
+#define gSpuRunning     lbl_8055FFA5   /* the voice refill (fn_802E4F98) may run */
+
+enum {
+    SPU_ARAM_SIZE     = 0x20000,  /* all of ARAM, held as "aram_buf" */
+    SPU_SAMPLE_POOL   = 0xB000,   /* "SpuSample" */
+    SPU_CHANNEL_POOL  = 0x580,    /* "SpuChannel": 32 * 0x2C */
+    SPU_CACHE_POOL    = 0x400,    /* "Spucache" */
+    SPU_CHANNEL_SIZE  = 0x2C,     /* sizeof(struct SpuChannel) */
+    SPU_CHANNEL_COUNT = 32
+};
+
+/* Start the SPU voice layer (logs "SpuBegin"): take all of ARAM as the mix
+ * buffer and invalidate its cache mirror, allocate the "SpuSample" slots, the
+ * 32 "SpuChannel" entries and the "Spucache", clear the ARAM block by copying
+ * a fresh zeroed buffer into it, hand fn_802E4F98 to the AI DMA interrupt to
+ * refill the voices, and arm the periodic alarm whose callback (fn_802E52EC)
+ * feeds the Wii remote speakers. */
 void fn_802E5478(void) {
     extern char lbl_8034D210[];
     extern int lbl_8055FF7C, lbl_8055FF80, lbl_8055FF84, lbl_8055FF88;
