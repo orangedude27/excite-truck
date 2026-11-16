@@ -925,7 +925,8 @@ extern "C" s32 fn_80161B0C(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 extern "C" f32 fn_80161B70(void) {
-    struct Dummy {
+    /* Return the active challenge sub-task's float value (vtable slot 0x34), or 0.0 when none is active. */
+    struct ChallengeSubTask {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -937,11 +938,11 @@ extern "C" f32 fn_80161B70(void) {
         virtual void v8();
         virtual void v9();
         virtual void v10();
-        virtual f32 v11();
+        virtual f32 getValue();
     };
-    Dummy *p = (Dummy *)lbl_8055E300;
-    if (p != 0) {
-        return p->v11();
+    ChallengeSubTask *subTask = (ChallengeSubTask *)lbl_8055E300;
+    if (subTask != 0) {
+        return subTask->getValue();
     }
     return lbl_80561848;
 }
