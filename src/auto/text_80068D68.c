@@ -18078,8 +18078,9 @@ extern char lbl_80317CFC[];
 extern char lbl_80318C8C[];
 void fn_80089248(void)
 {
-    L2CA_Deregister(0x11);
-    L2CA_Deregister(0x13);
+    // Deregisters the Bluetooth HID control and interrupt L2CAP PSMs during BTE stack shutdown.
+    L2CA_Deregister(HID_PSM_CONTROL);
+    L2CA_Deregister(HID_PSM_INTERRUPT);
 }
 
 UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
