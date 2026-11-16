@@ -80,16 +80,35 @@ int fn_802B1D38(int handle) {
     return -2;
 }
 
-int fn_802B1DA0(void *arg0) {
-    int tag = *(int *)arg0;
+/* RealName: TreeModel_GetDrawCost (rename_symbol unavailable)
+ * Per-instance draw cost of a loaded model resource (a tree class's near or
+ * far model), taken from its header according to the format FourCC at +0x00:
+ *   'SIND' - the entry count stored at +0x20
+ *   'NDL2' - the entry count stored at +0x1C, less the 2 words that head it
+ * Any other format falls back to a cost of 1000.  fn_802BCBDC stores the
+ * result in each tree class entry's near/far cost fields (+0x14 / +0x24);
+ * fn_802BD814 adds that cost up for every instance it draws and skips the
+ * second pass once it exceeds 10. */
+int fn_802B1DA0(void *model) {
+#define TAG_SIND 0x53494E44 /* 'SIND' model format */
+#define TAG_NDL2 0x4E444C32 /* 'NDL2' model format */
+    typedef struct {
+        int tag;       /* format FourCC, one of the TAG_ values above */
+        int pad04[6];
+        int ndl2Count; /* 'NDL2': entries at +0x1C, header words included */
+        int sindCount; /* 'SIND': entries at +0x20 */
+    } ModelHeader;
+    int tag = *(int *)model;
     switch (tag) {
-    case 0x53494E44:
-        return ((int *)arg0)[8];
-    case 0x4E444C32:
-        return ((int *)arg0)[7] - 2;
+    case TAG_SIND:
+        return ((ModelHeader *)model)->sindCount;
+    case TAG_NDL2:
+        return ((ModelHeader *)model)->ndl2Count - 2;
     default:
-        return 0x3E8;
+        return 1000;
     }
+#undef TAG_SIND
+#undef TAG_NDL2
 }
 
 extern void *lbl_8055F9BC;
