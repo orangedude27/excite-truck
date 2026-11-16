@@ -1279,11 +1279,12 @@ extern "C" s32 fn_800ECE68(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" s32 fn_800ECEA8(void* arg0, s32 arg1) {
-    if (arg0 != NULL && arg1 > 0) {
+extern "C" s32 fn_800ECEA8(void *object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != NULL && deleteFlag > 0) {
         fn_80128668_noarg();
     }
-    return (s32)arg0;
+    return (s32)object;
 }
 
 extern "C" void fn_800ECEE8(void* arg0) {
