@@ -8374,9 +8374,8 @@ extern "C" void fn_802285B8(void *arg0) {
 #pragma push
 #pragma fp_contract on
 extern "C" void *fn_802286E4(void *arg0, void *arg1, s32 arg2) {
-    union Conv { f64 d; u32 word[2]; } cvt;
     void *obj;
-    s32 count;
+    u32 count;
 
     fn_80218F80();
     *(s32 *)((u8 *)arg0 + 0x244) = arg2;
@@ -8388,6 +8387,7 @@ extern "C" void *fn_802286E4(void *arg0, void *arg1, s32 arg2) {
     obj = (void *)fn_801284F8(0x40, lbl_8033DCE8);
     if (obj != 0) {
         f32 defaultValue = lbl_805634A8;
+        f32 a8, a4;
         *(void **)obj = lbl_8033DCF8;
         *(s32 *)((u8 *)obj + 4) = -1;
         *(f32 *)((u8 *)obj + 0x38) = defaultValue;
@@ -8395,17 +8395,15 @@ extern "C" void *fn_802286E4(void *arg0, void *arg1, s32 arg2) {
         if (fn_8012C33C((u8 *)arg1 + 0x40) != 0)
             *(s32 *)((u8 *)obj + 4) = fn_802C6FC0((void *)((s32)arg1 + 0x40), 0, 0);
 
-        count = *(s32 *)((u8 *)arg1 + 0x9C);
+        count = *(u32 *)((u8 *)arg1 + 0x9C);
         if (count != 0) {
-            cvt.word[1] = (u32)count;
-            cvt.word[0] = 0x43300000;
-            f32 denominator = (f32)(cvt.d - lbl_80563520);
+            f32 denominator = (f32)count;
             f32 ratio = lbl_805634D8 / denominator;
             *(f32 *)((u8 *)obj + 0x3C) = ratio;
         }
 
-        f32 a8 = lbl_805634A8;
-        f32 a4 = lbl_805634A4;
+        a4 = lbl_805634A4;
+        a8 = lbl_805634A8;
         *(f32 *)((u8 *)obj + 8) = a4;
         *(f32 *)((u8 *)obj + 0xC) = a8;
         *(f32 *)((u8 *)obj + 0x10) = a8;
