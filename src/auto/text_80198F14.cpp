@@ -2243,10 +2243,12 @@ extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
     return (void*)self;
 }
 #pragma scheduling on
-extern "C" void fn_8019EECC(void* arg0, Vec* arg1) {
-    arg1->x += *(f32*)((u8*)arg0 + 0x30);
-    arg1->y += *(f32*)((u8*)arg0 + 0x34);
-    arg1->z += *(f32*)((u8*)arg0 + 0x38);
+/* Add the translation vector held in source (+0x30) into the destination Vec,
+ * component by component. */
+extern "C" void fn_8019EECC(void* source, Vec* vec) {
+    vec->x += *(f32*)((u8*)source + 0x30);
+    vec->y += *(f32*)((u8*)source + 0x34);
+    vec->z += *(f32*)((u8*)source + 0x38);
 }
 
 extern "C" void fn_8019EF00(void* arg0) {
