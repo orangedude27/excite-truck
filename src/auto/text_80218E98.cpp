@@ -2229,9 +2229,21 @@ extern "C" void fn_8021BC20(void *arg0, void *arg1) {
 }
 #pragma scheduling on
 #pragma pop
-extern "C" void fn_8021BD48(void *arg0, s32 arg1) {
- fn_802C3034(arg1);
- ((void (*)(s32, ...))fn_801E4BEC)(*(s32 *)((u8 *)arg0+0x348),0,9,*(s32 *)((u8 *)arg0+4),*(s32 *)((u8 *)arg0+8),*(s32 *)((u8 *)arg0+0x244));
+extern "C" void fn_8021BD48(void *widget, s32 textStyle) {
+#define SetTextStyle fn_802C3034
+#define DrawFormattedText fn_801E4BEC
+    /* Draws this widget's label/text using its font, position, and string id/data field. */
+    SetTextStyle(textStyle);
+    ((void (*)(s32, ...))DrawFormattedText)(
+        *(s32 *)((u8 *)widget + 0x348),
+        0,
+        9,
+        *(s32 *)((u8 *)widget + 4),
+        *(s32 *)((u8 *)widget + 8),
+        *(s32 *)((u8 *)widget + 0x244)
+    );
+#undef SetTextStyle
+#undef DrawFormattedText
 }
 
 /* Text readout widget (0x2B4 bytes), built by fn_8021CEEC (vtable lbl_8033ECB8,
