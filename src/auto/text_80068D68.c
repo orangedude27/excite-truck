@@ -22716,10 +22716,14 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     }
 }
 
-void fn_800916D8(void *callback, u32 cid) {
-    u32 index = cid - 0x40;
-    u8 *base = lbl_803C4828;
-    *(void **)(base + 0x3C + index * 4) = callback;
+void fn_800916D8(void *p_mcb, u32 lcid) {
+    /* Register an RFCOMM multiplexer control block in rfc_cb's lcid -> MCB
+       lookup table, one pointer slot per application L2CAP channel. */
+#define RFCOMM_LCID_MCB_TABLE 0x3C
+    u32 index = lcid - L2CAP_BASE_APPL_CID;
+    u8 *base = rfc_cb;
+    *(void **)(base + RFCOMM_LCID_MCB_TABLE + index * 4) = p_mcb;
+#undef RFCOMM_LCID_MCB_TABLE
 }
 
 /* RFCOMM multiplexer control block (rfc_int.h's tRFC_MCB) as this build lays it
