@@ -1832,9 +1832,18 @@ void fn_802B83CC(void) {
 }
 
 #pragma dont_inline on
-void fn_802B84E4(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 4) = (*(s32 *)((u8 *)arg0 + 4) * 0x280) / lbl_8055CFF0;
-    *(s32 *)((u8 *)arg0 + 8) = (*(s32 *)((u8 *)arg0 + 8) * 0x1E0) / lbl_8055CFF4;
+/* Rescale the UI state's X and Y fields from the live framebuffer resolution to the fixed 640x480 reference grid. */
+void fn_802B84E4(void *state) {
+#define REF_WIDTH  0x280
+#define REF_HEIGHT 0x1E0
+#define CUR_FB_WIDTH  lbl_8055CFF0
+#define CUR_FB_HEIGHT lbl_8055CFF4
+    *(s32 *)((u8 *)state + 4) = (*(s32 *)((u8 *)state + 4) * REF_WIDTH) / CUR_FB_WIDTH;
+    *(s32 *)((u8 *)state + 8) = (*(s32 *)((u8 *)state + 8) * REF_HEIGHT) / CUR_FB_HEIGHT;
+#undef CUR_FB_HEIGHT
+#undef CUR_FB_WIDTH
+#undef REF_HEIGHT
+#undef REF_WIDTH
 }
 
 #pragma push
