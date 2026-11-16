@@ -91,12 +91,14 @@ s32 fn_8012F2E8(s32 *arg0) {
     return *arg0;
 }
 
-void *fn_8012F2F0(s32 *arg0, s32 arg1, s32 arg2) {
-    s32 *r5 = arg0 + arg2;
-    s32 w = *(r5 + 2);
-    s32 m = *(arg0 + 0x12) * arg1;
-    s32 result = (s32)arg0 + m;
-    result = result + w;
-    return (void *)(result + 0x4C);
+void *fn_8012F2F0(s32 *table, s32 row, s32 column) {
+    /* Return the string at (row, column) in a STAB text table: text begins at +0x4C,
+       the row stride is the word at +0x48, and column-relative offsets start at +0x8. */
+    s32 *offsetEntry = table + column;
+    s32 columnOffset = *(offsetEntry + 2);
+    s32 rowOffset = *(table + 0x12) * row;
+    s32 textAddr = (s32)table + rowOffset;
+    textAddr = textAddr + columnOffset;
+    return (void *)(textAddr + 0x4C);
 }
 
