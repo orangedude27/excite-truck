@@ -142,7 +142,6 @@ struct DummySeqPlayerIface { u8 pad[0x24]; f32 volume; u8 pad2[0x90 - 0x2C]; u8 
 struct DummySeqPlayerV { virtual void g0(); virtual void g1(); virtual void g2(); virtual void g3(); virtual void g4(); virtual void g5(); virtual void g6(); virtual void g7(); virtual void g8(); virtual void g9(); virtual void g10(); virtual void g11(); virtual void g12(); virtual void g13(); virtual void g14(); virtual f32 g15(); virtual f32 g16(); virtual f32 g17(); virtual f32 g18(); virtual f32 g19(); virtual f32 g20(); virtual f32 g21(); virtual void g22(); virtual void g23(); virtual void g24(); virtual void g25(); virtual void g26(); virtual void g27(); virtual void g28(); virtual s32 g29(); virtual f32 g30(); virtual f32 g31(); virtual f32 g32(s32); virtual f32 g33(s32); virtual f32 g34(s32); virtual f32 g35(s32); };
 static inline DummySeqPlayerV *SeqTrackPlayer(void *t) { return *(DummySeqPlayerV **)((s8 *)t + 0xB4); }
 struct DummyWorkerLink { void *next; void *prev; };
-struct SoundThreadHead { char pad[0x2388]; void *head; };
 struct DummyWorkerCallbackC : DummyWorkerLink { virtual void f0(); virtual void Call(); };
 struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void f1(); virtual void Call(); };
 #pragma cplusplus reset
@@ -5763,15 +5762,15 @@ extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
 extern "C" const char lbl_803264AC[];
 extern "C" const char lbl_803264D0[];
 extern "C" void fn_800FA7E0(void *self) {
-    unsigned long message;
-    unsigned long state;
+    unsigned int message;
+    unsigned int state;
     u8 *p = (u8 *)self;
     for (;;) {
         OSReceiveMessage(p + 0x2338, &message, 1);
         if (message == 1) {
             void *mutex = p + 0x2320;
             OSLockMutex(mutex);
-            register unsigned long tick = OSGetTick();
+            unsigned int tick = OSGetTick();
             Instance__15EmissionManagerFv();
             fn_800E3228();
             UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv();
