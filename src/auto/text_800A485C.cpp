@@ -3806,11 +3806,13 @@ fail_main:
     return 3;
 }
 #pragma pop
+// Forwards the incoming argument registers to the VFiPFPATH iterator in fn_800AA924 and
+// returns its two result words through out1/out2 (a-f are deliberate garbage forwarders).
 extern "C" void fn_800AABE0(void) {
-    s32 spC;
-    s32 sp8;
+    s32 out1;
+    s32 out2;
     s32 a, b, c, d, e, f;
-    ((void (*)(s32, s32, s32, s32, s32, s32, void *, void *))fn_800AA924)(a, b, c, d, e, f, &spC, &sp8);
+    ((void (*)(s32, s32, s32, s32, s32, s32, void *, void *))fn_800AA924)(a, b, c, d, e, f, &out1, &out2);
 }
 
 extern "C" s32 fn_800AE620(s32, s32, s32, s32);
