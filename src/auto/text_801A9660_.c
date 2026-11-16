@@ -1526,7 +1526,7 @@ void fn_801ACA48(void *arg0) {
 
 extern float lbl_80558DC4, lbl_8055E460, lbl_805624AC;
 struct Pair_801ACB30 { int a, b; };
-static inline void transform_801ACB30(const float *m, const float *src, volatile float *dst) {
+static inline void transform_801ACB30(const float *m, const float *src, float *dst) {
     if (src == dst) {
         float x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
         float y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
@@ -1544,11 +1544,12 @@ void fn_801ACB30(void *arg0, int arg1) {
     float *out = (float *)(arg1 + *(int *)(p + 8));
     register float t = lbl_8055E460 - lbl_805624AC;
     float tmp[12], st[3], st2[3];
+    struct Pair_801ACB30 *sp, *dp;
     int j, k;
     if ((float)__fabs(t) <= lbl_80558DC4) {
-        int *srcw = (int *)(p + 0x70);
-        int *dstw = (int *)out;
-        for (j = 0; j < 12; j++) dstw[j] = srcw[j];
+        sp = (struct Pair_801ACB30 *)(p + 0x70);
+        dp = (struct Pair_801ACB30 *)out;
+        for (j = 0; j < 6; j++) dp[j] = sp[j];
     } else {
         float *a = (float *)(p + 0x70);
         float *b = (float *)(p + 0xA0);
@@ -1557,7 +1558,9 @@ void fn_801ACB30(void *arg0, int arg1) {
             for (k = 0; k < 6; k++) o[k] = b[k] + t * (a[k] - b[k]);
             a += 6; b += 6; o += 6;
         }
-        for (j = 0; j < 12; j++) ((int *)out)[j] = ((int *)tmp)[j];
+        sp = (struct Pair_801ACB30 *)tmp;
+        dp = (struct Pair_801ACB30 *)out;
+        for (j = 0; j < 6; j++) dp[j] = sp[j];
     }
     *(short *)(out + 12) = *(short *)(p + 0x6C);
     if (*(void **)(p + 0x23C)) {
