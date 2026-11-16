@@ -29,20 +29,25 @@ extern void* fn_802077A4(int, int, void*, void*);
 extern int fn_802E30C8(const char*, ...);
 extern int strcmp(const char*, const char*);
 #pragma cplusplus on
-struct Item_8020CA3C {
-    virtual const char* getName();
+// One "sound" entry from the roadsnd.val parameter file: typed accessors for
+// the sound id and the per-surface speed / volume / pitch parameters.
+struct RoadSndParamItem {
+    virtual const char* getName();  // item type name ("sound")
     virtual void slot1();
     virtual void slot2();
-    virtual int getA(const char*);
+    virtual int getA(const char*);  // sound id for a named key
     virtual void slot4();
-    virtual int getB(const char*);
+    virtual int getB(const char*);  // integer value for a named key (e.g. "surftype")
     virtual void slot6();
-    virtual f32 getF(const char*);
+    virtual f32 getF(const char*);  // float value for a named key
 };
-struct Dir_8020CA3C {
+// Directory of parameter items opened from "roadsnd.val".
+struct RoadSndParamDir {
     virtual void slot0();
-    virtual Item_8020CA3C* getAt(int);
+    virtual RoadSndParamItem* getAt(int);
 };
+typedef struct RoadSndParamItem Item_8020CA3C;
+typedef struct RoadSndParamDir Dir_8020CA3C;
 #pragma cplusplus reset
 
 void fn_8020CA30(void) {
