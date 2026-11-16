@@ -82,6 +82,15 @@ void fn_801A63F4(void *outVec, void *aVec, void *bVec, void *tVec) {
     out[0] = aX + tX * (bX - aX);
 }
 
+/* One control point of the spline this object evaluates: fn_801A6484 default-
+   constructs an array of four of them at +0x2708, and fn_801A69F4 reads the
+   first (+0x2708) and last (+0x272C) as the ends of the segment in play. */
+typedef struct {
+    /* 0x00 */ float x;
+    /* 0x04 */ float y;
+    /* 0x08 */ float z;
+} SplinePoint;
+
 #pragma dont_inline on
 void *fn_801A644C(void *arg0) {
     memset(arg0, 0, 0xC);
