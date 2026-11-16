@@ -3026,9 +3026,9 @@ void fn_80164D64(void *menu, s32 unused) {
     }
     for (carSlot = car_table, carIndex = 0; carIndex < car_count; carSlot++, carIndex++) {
         car = (void *)*carSlot;
-        fn_8018ADBC(car, lbl_80561840);
-        fn_8018ADB4(car, lbl_80561848);
-        fn_8018ADA4(car, lbl_80561848);
+        fn_8018ADBC(car, FLOAT_ONE);
+        fn_8018ADB4(car, FLOAT_ZERO);
+        fn_8018ADA4(car, FLOAT_ZERO);
         work.mtxHead = *(struct MtxHead *)((u8 *)car + 0x3C);
         work.mtxTail[0] = *(u32 *)((u8 *)car + 0x5C);
         anchorX = *(volatile u32 *)((u8 *)car + 0x60);
@@ -3057,6 +3057,8 @@ void fn_80164D64(void *menu, s32 unused) {
         else
             fn_8017691C();
     }
+#undef FLOAT_ONE
+#undef FLOAT_ZERO
 }
 #pragma scheduling on
 void fn_80164F50(void *arg0) {
