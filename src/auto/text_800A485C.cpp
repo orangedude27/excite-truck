@@ -19038,10 +19038,11 @@ extern "C" void fn_800CF290(void) {
 
 }
 
-extern "C" void fn_800CF294(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0x20) = 0;
-    *(const char **)((u8 *)arg0) = lbl_8031E770;
-    *(s32 *)((u8 *)arg0 + 0x24) = 0;
+extern "C" void fn_800CF294(void *self) {
+    /* homebutton FrameController constructor: install this object's vtable at +0 and clear the fields at +0x20/+0x24. */
+    *(s32 *)((u8 *)self + 0x20) = 0;
+    *(const char **)((u8 *)self) = lbl_8031E770;
+    *(s32 *)((u8 *)self + 0x24) = 0;
 }
 
 /* CodeWarrior deleting-destructor helper: free the object with MemFree when
