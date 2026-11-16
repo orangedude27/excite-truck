@@ -2450,7 +2450,6 @@ int fn_8029BFF8(void* payload) {
 }
 
 extern void* lbl_8055F7D4;
-static inline void fn_8029C054_call(int value, void* g) { fn_8029A8A4(g, (void*)value); }
 #pragma dont_inline on
 extern "C" int fn_8029C024(int *arg0) {
     int *p = arg0;
