@@ -59,10 +59,9 @@ void fn_801E3640(void *arg0, float *arg1) {
     PSVECCrossProduct(arg1 + 6, arg1, arg1 + 3);
 }
 
-#pragma dont_inline fn_801E36F0
-int fn_801E36F0(int arg0);
-#pragma dont_inline fn_801E36F0
+#pragma dont_inline on
 int fn_801E36F0(int arg0) { return (((unsigned int)arg0 >> 1) & 0x7F7F7F) | ((unsigned int)arg0 & 0xFF000000); }
+#pragma dont_inline off
 
 #pragma push
 #pragma processor 750
