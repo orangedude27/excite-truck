@@ -199,8 +199,9 @@ extern "C" void fn_801DE0E8(void) {
 #pragma pop
 #define lastEditMs lbl_8055E9CC /* ms of the last edit, see fn_802E2C20 */
 #define GetTimeMs fn_802E2C20 /* ms since the timer's first call */
+/* Stamp the current time (ms since the timer's first call) as the garage editor's last-edit time. */
 void fn_801DE12C(void) {
-    lbl_8055E9CC = (void*)fn_802E2C20();
+    lastEditMs = (void*)GetTimeMs();
 }
 
 void fn_801DE150(void) {
