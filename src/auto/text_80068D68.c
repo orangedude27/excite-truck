@@ -13937,20 +13937,6 @@ extern void btu_hcif_esco_connection_comp_evt(u8 *);
 extern s32 l2c_link_hci_qos_violation(u16);
 extern void l2c_link_process_num_completed_pkts(u8 *, u16);
 extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
-#pragma push
-#pragma dont_inline off
-static inline void BtuHcifDisconnectComplete(UINT8 *p) {
-    UINT8 status, reason;
-    UINT16 handle;
-    STREAM_TO_UINT8(status, p);
-    STREAM_TO_UINT16(handle, p);
-    handle = HCID_GET_HANDLE(handle);
-    STREAM_TO_UINT8(reason, p);
-    if (!l2c_link_hci_disc_comp(handle, reason))
-        btm_sco_removed(handle, reason);
-    btm_sec_disconnected(handle, reason);
-}
-#pragma pop
 
 
 #pragma cplusplus on
@@ -13981,16 +13967,11 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
         btu_hcif_connection_request_evt(p + 2);
         break;
     case 0x05: {
-        UINT8 status;
-        struct { UINT16 value; } handleLocal;
-        UINT16 &handle = handleLocal.value;
+        UINT16 handle;
         struct { UINT8 value; } reasonLocal;
         UINT8 &reason = reasonLocal.value;
-        UINT8 *d = p + 2;
-        STREAM_TO_UINT8(status, d);
-        STREAM_TO_UINT16(handle, d);
-        handle = HCID_GET_HANDLE(handle);
-        STREAM_TO_UINT8(reason, d);
+        handle = (p[3] + (p[4] << 8)) & 0xFFF;
+        reason = p[5];
         if (!l2c_link_hci_disc_comp(handle, reason))
             btm_sco_removed(handle, reason);
         btm_sec_disconnected(handle, reason);
@@ -14118,10 +14099,8 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
             struct { UINT16 value; } handleLocal;
             UINT16 &handle = handleLocal.value;
             UINT16 clock_offset;
-            UINT8 *d = p + 3;
-            STREAM_TO_UINT16(handle, d);
-            handle = HCID_GET_HANDLE(handle);
-            STREAM_TO_UINT16(clock_offset, d);
+            handle = (p[3] + (p[4] << 8)) & 0xFFF;
+            clock_offset = p[5] + (p[6] << 8);
             btm_process_clk_off_comp_evt(handle, clock_offset);
             btm_sec_update_clock_offset(handle, clock_offset);
         }
