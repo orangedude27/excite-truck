@@ -121,7 +121,7 @@ extern "C" s32 fn_80128668(void);
 namespace nw4hbm { namespace lyt {
 struct DrawInfo;
 namespace res { struct Pane; }
-class Pane { public: Pane(const res::Pane *); void CalculateMtx(const DrawInfo &); };
+class Pane { public: Pane(const res::Pane *); void CalculateMtx(const DrawInfo &); void* FindMaterialByName(const char*, bool); };
 struct PaneMtxDispatch {
     virtual void d0(); virtual void d1();
     virtual void Apply(const DrawInfo &);
