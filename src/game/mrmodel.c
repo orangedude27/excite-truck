@@ -1800,6 +1800,8 @@ void fn_802C7D54(int arg0, float *arg1, int arg2, float fa, float fb, float fc) 
     fn_802C9C58(savedCull);
 }
 #pragma pop
+/* Sets lbl_8055D00C, the model manager's mode selector: 1 normally, 2 when
+ * the caller requests the alternate mode (non-zero flag). */
 void fn_802C8218(s32 useAltMode) {
     s32 mode;
 
