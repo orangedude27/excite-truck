@@ -3882,48 +3882,6 @@ extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int frames)
 }
 
 typedef void (*vfn0_t)(void*);
-//
-// Views for BasicSound's vtable slot 0x2C (IsPrepared).  The sound asks its
-// player - the SeqPlayer / StrmPlayer / WavePlayer embedded at sound+0xD8,
-// which both the 0x5C and the 0x60 accessor return - whether its sound data is
-// all there, so it can start.  A StrmPlayer sets that flag (+0x4A) once the
-// last of its stream buffers has been read in.  MWCC puts the first declared
-// virtual at 0x08, so the numbered fillers stand for the slots unused here.
-class PrepPlayerVt {
-public:
-    virtual ~PrepPlayerVt();
-    virtual void p0C();
-    virtual void p10();
-    virtual void p14();
-    virtual int p18();
-    virtual int isPrepared();       // vtable 0x1C
-};
-class PrepSoundVt {
-public:
-    virtual ~PrepSoundVt();
-    virtual void s0C();
-    virtual void s10();
-    virtual void s14();
-    virtual void s18();
-    virtual void s1C();
-    virtual void s20();
-    virtual void s24();
-    virtual void s28();
-    virtual void s2C();
-    virtual void s30();
-    virtual void s34();
-    virtual void s38();
-    virtual void s3C();
-    virtual void s40();
-    virtual void s44();
-    virtual void s48();
-    virtual void s4C();
-    virtual void s50();
-    virtual void s54();
-    virtual void s58();
-    virtual void s5C();
-    virtual PrepPlayerVt *getPlayer();  // vtable 0x60
-};
 extern "C" int fn_800E9070(BasicSoundVt *sound) {
     /* BasicSound's vtable slot 0x2C: ask the player this sound plays through
      * whether its data is loaded, so the sound is ready to start. */
