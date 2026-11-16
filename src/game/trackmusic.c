@@ -192,11 +192,13 @@ loop:
 }
 #pragma dont_inline reset
  
-void fn_8020F6E0(long arg0, long arg1) {
-    if (arg1 != 0) {
+void fn_8020F6E0(long contextIndex, long event) {
+    /* Broadcast callback: when the clear-context event (0) is signalled, zero and
+       reinitialise the track-music data block for this context index. */
+    if (event != 0) {
         return;
     }
-    fn_8020F608(0, arg0);
+    fn_8020F608(0, contextIndex);
 }
  
 void fn_8020F6F8(void) {
