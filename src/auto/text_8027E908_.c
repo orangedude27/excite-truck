@@ -285,6 +285,7 @@ extern "C" void fn_8027E908(void) {
 #pragma pop
 
 extern "C" void fn_8027ED2C(void) {
+    /* Destroy the global object at lbl_8055F680 if present, then clear it. */
     class Obj {
     public:
         virtual void destroy(int);
