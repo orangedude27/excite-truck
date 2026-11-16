@@ -33,6 +33,7 @@ char *fn_80137950(int arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Returns the data for the currently selected AI driver league, warning if none is set. */
 int fn_801379CC(void) {
     if ((int)lbl_80559C00 == -1) {
         fn_802E317C(lbl_8032BEE4);
