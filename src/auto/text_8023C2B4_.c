@@ -15,6 +15,8 @@ void fn_80214A9C(s32); /* extern */
 
 typedef struct { s32 w[5]; } Fn8023C55C_Rec;
 
+/* Menu callback: hide UI group 0x1F when the nearby-racer score flag
+ * (fn_8027AA48) is off, so that overlay is not left on screen. */
 void fn_8023C2B4(void) {
     if (fn_8027AA48() == 0) {
         fn_80214A9C(0x1F);
