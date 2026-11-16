@@ -767,14 +767,15 @@ int fn_802CB2FC(int x, int y, int type, unsigned char count, unsigned short id, 
     return (int)entry;
 }
 
-char fn_802CAFC8(int arg0) {
-    int offset;
-    char *base;
-    if (arg0 == -1)
+/* Return a texture slot's filter byte (+8 of its resource), or 5 for no texture. */
+char fn_802CAFC8(int textureSlot) {
+    int slotOffset;
+    char *slots;
+    if (textureSlot == -1)
         return 5;
-    offset = arg0 * 0x4C;
-    base = (char *)lbl_8055FCB0;
-    return *(char *)(*(int *)(base + offset + 0x2C) + 8);
+    slotOffset = textureSlot * 0x4C;
+    slots = (char *)lbl_8055FCB0;
+    return *(char *)(*(int *)(slots + slotOffset + 0x2C) + 8);
 }
 
 /* Return a texture slot's mode byte (+9 of its resource), or 0x32 for no texture. */
