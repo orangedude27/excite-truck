@@ -432,6 +432,7 @@ extern char lbl_80313464[];
 extern char lbl_8031347C[];
 extern u32 lbl_8055DC30;
 extern u8 lbl_8055DC34;
+extern int fn_800709FC(void);
 extern void fn_8006EBAC(void);
 extern void fn_8006EB88(void);
 extern void fn_80071508(u8);
