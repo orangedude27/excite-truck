@@ -233,6 +233,28 @@ typedef enum {
     DVD_STATE_MOTOR_STOPPED,
 } DVDAsyncState;
 
+// The drive commands stateReady starts with no resume point held over.  The
+// SDK's dvd.c has the full COMMAND_* list; these are the ones this unit tests.
+#define COMMAND_INQUIRY         13
+#define COMMAND_RESET           32
+#define COMMAND_CLOSE_PARTITION 35
+
+// StateToChange (the SDK's ResumeFromHere): the state the drive picks the
+// command back up in once the one in hand is done with.
+enum {
+    RESUME_POINT_NONE,
+    RESUME_POINT_WRONG_DISK_ID,
+    RESUME_POINT_DISK_ERROR,
+    RESUME_POINT_NO_DISK,
+    RESUME_POINT_COVER_OPENED,
+    RESUME_POINT_OK,
+    RESUME_POINT_DISK_CHANGED,
+    RESUME_POINT_7
+};
+
+// MotorState_8055D8A8: what the drive's motor is doing.
+enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
+
 // The DVD cover/motor state machine's statics, shared with the cancel code below.
 #define Transferring    lbl_8055D870  // the cover-poll timeout alarm is running
 #define AlarmInfo       lbl_8055D874  // waiting on the cover interrupt instead
@@ -1093,7 +1115,7 @@ void DVDInit(void) {
         ver = disk[7];
         __ErrorInfo[5] = (u8)ver;
         __DVDLayoutFormat = 0;
-        DVDSetAutoFatalMessaging(one, (u8)ver, __ErrorInfo, (void *)diskBase);
+        DVDSetAutoFatalMessaging(one, (u8)ver, __ErrorInfo, (u8 *)diskBase);
     }
 }
 
