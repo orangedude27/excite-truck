@@ -990,14 +990,15 @@ void fn_801F3124(unsigned int *dst, unsigned int *srcRecord) {
     ((float *)dst)[5] = float1;
 }
 
-void fn_801F3158(float *arg0, float *arg1) {
-    float c, b, a;
-    a = arg1[0];
-    b = arg1[1];
-    c = arg1[2];
-    arg0[0] = a;
-    arg0[1] = b;
-    arg0[2] = c;
+void fn_801F3158(float *dst, float *src) {
+    /* Copy a 3-component (12-byte) float vector from src into dst. */
+    float z, y, x;
+    x = src[0];
+    y = src[1];
+    z = src[2];
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
 }
 
 float fn_801F3174(void) {
