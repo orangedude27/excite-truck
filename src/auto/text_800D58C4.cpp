@@ -3654,9 +3654,13 @@ extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void *self, u32 flags) {
     };
     PaneObj *pane = (PaneObj *)self;
     pane->v6(flags);
-    if ((*(u8 *)((u8 *)self + 0xCF) & 1) == 0 && (flags & 1) == 0) {
-        LinkNode *node = pane->mChildList.next;
-        LinkNode *end = &pane->mChildList;
+    if (!(*(u8 *)((u8 *)self + 0xCF) & 1) && !(flags & 1)) {
+        struct { LinkNode *node; } cursor;
+        cursor.node = pane->mChildList.next;
+        LinkNode *&node = cursor.node;
+        struct { LinkNode *end; } sentinel;
+        sentinel.end = &pane->mChildList;
+        LinkNode *&end = sentinel.end;
         while (node != end) {
             extern const char lbl_8031E8FC[];
             extern const char lbl_8031E8D8[];
@@ -3769,9 +3773,16 @@ extern "C" void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransfor
     }
 }
 
-extern "C" void fn_800DC204(void* self, void* arg) {
-    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(int, void*); };
-    ((Obj*)self)->v16(0, arg);
+extern "C" void fn_800DC204(void* pane, void* flag) {
+    /* Virtual dispatch thunk: forward to vtable slot 16 (Pane::UnbindAnimation) with a null transform and the caller's flag. */
+    struct UnbindPane {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void UnbindAnimation(int transform, void* recursive);
+    };
+    ((UnbindPane*)pane)->UnbindAnimation(0, flag);
 }
 
 #pragma push
