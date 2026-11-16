@@ -10600,16 +10600,19 @@ tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
 void btm_pm_reset(void) {
     int xx;
     tBTM_PM_STATUS_CBACK *cb = NULL;
-    if (lbl_803C0F78[0x565] != 0x80) {
-        u8 *entry = lbl_803C0F78 + (lbl_803C0F78[0x565] << 3);
-        if (entry[0x558] & 2)
-            cb = *(tBTM_PM_STATUS_CBACK **)(entry + 0x554);
+    /* Part of the BTM reset: drop the pending PM notification client, mark no
+     * link pending, clear every PM registration and report the reset to it. */
+    if (lbl_803C0F78[0x565] != BTM_PM_SET_ONLY_ID) {
+        u8 *pmEntry = lbl_803C0F78 + (lbl_803C0F78[0x565] << 3);
+        if (pmEntry[0x558] & BTM_PM_REG_NOTIF)
+            cb = *(tBTM_PM_STATUS_CBACK **)(pmEntry + 0x554);
     }
-    lbl_803C0F78[0x564] = 4;
-    for (xx = 0; xx < 2; ++xx)
-        lbl_803C0F78[0x558 + xx * 8] = 0;
+    lbl_803C0F78[0x564] = 4;   /* no pending link: 4 ACL links in this stack */
+    for (xx = 0; xx < BTM_MAX_PM_RECORDS; ++xx)
+        lbl_803C0F78[0x558 + xx * 8] = BTM_PM_REC_NOT_USED;
     if (cb != NULL) {
-        (*cb)(((tBTM_CB_PM_VIEW *)lbl_803C0F78)->acl_db[lbl_803C0F78[0x564]].remote_addr, 5, BTM_DEV_RESET, 0);
+        (*cb)(((tBTM_CB_PM_VIEW *)lbl_803C0F78)->acl_db[lbl_803C0F78[0x564]].remote_addr,
+              5, BTM_DEV_RESET, 0);   /* 5 = BTM_PM_STS_ERROR in this stack */
     }
 }
 
