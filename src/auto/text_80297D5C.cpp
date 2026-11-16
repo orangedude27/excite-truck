@@ -470,15 +470,17 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
 }
 #pragma pop
 
-extern "C" void* fn_80298868(void* arg0) {
-    char* p = (char*)arg0;
-    int i = 0;
-    while (i < 4) {
-        if (*(unsigned char*)(p + 0x28) == 0) {
-            return (char*)arg0 + i * 0x2C;
+extern "C" void* fn_80298868(void* slotPool) {
+    /* Find the first free entry in the four-slot, 0x2C-byte pool: a slot is free
+       when its byte at +0x28 is clear. Returns NULL if every slot is in use. */
+    char* slot = (char*)slotPool;
+    int slotIndex = 0;
+    while (slotIndex < 4) {
+        if (*(unsigned char*)(slot + 0x28) == 0) {
+            return (char*)slotPool + slotIndex * 0x2C;
         }
-        p += 0x2C;
-        i++;
+        slot += 0x2C;
+        slotIndex++;
     }
     return 0;
 }
