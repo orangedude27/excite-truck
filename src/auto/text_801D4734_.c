@@ -171,7 +171,8 @@ void fn_801D47F4(void) {
 }
 
 void fn_801D5488(void);
-void fn_801D47F8(void* alarm) {
+/* Periodic tick callback: advance all action sequences, then update the global effect timer. */
+void fn_801D47F8(void *alarm) {
     fn_801D5650(alarm);
     fn_801D5488();
 }
