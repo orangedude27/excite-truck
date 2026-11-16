@@ -1496,23 +1496,24 @@ void fn_802D08C4(unsigned char arg0) {
     lbl_8055FD78 = arg0;
 }
 
-void fn_802D08CC(int arg0) {
-    int mode;
-    switch (arg0) {
+/* Sets the GX cull mode from a small app-specific mode selector. */
+void fn_802D08CC(int cullMode) {
+    int gxCullMode;
+    switch (cullMode) {
     case 1:
-        mode = 1;
+        gxCullMode = GX_CULL_FRONT;
         break;
     case 2:
-        mode = 2;
+        gxCullMode = GX_CULL_BACK;
         break;
     case 0:
-        mode = 0;
+        gxCullMode = GX_CULL_NONE;
         break;
     default:
-        mode = 0;
+        gxCullMode = GX_CULL_NONE;
         break;
     }
-    GXSetCullMode(mode);
+    GXSetCullMode(gxCullMode);
 }
 
 void fn_802D0910(int, int, int, int, int, int) {
