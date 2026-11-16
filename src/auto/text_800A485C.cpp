@@ -2928,6 +2928,7 @@ extern "C" s32 fn_800A900C(void *arg0, s32 arg1, s32 arg2) {
 extern "C" s32 fn_800A861C(void *, void *, s32, u32);
 extern "C" s32 VFiPFCACHE_SearchForPage(s32, s32, s32);
 extern "C" s32 fn_800A8AD4(void *, void *);
+// Writes a FAT sector via the cache and normalizes a nonzero error result to -1, returning 0x10 if the sector is out of range.
 extern "C" s32 VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(void *arg0, s32 arg1, u32 arg2) {
     s32 temp_r3;
     if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
