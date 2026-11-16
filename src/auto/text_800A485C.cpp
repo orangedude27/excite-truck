@@ -4867,6 +4867,20 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 /* Step a directory-entry iterator to the next entry and read it into its buffer. */
+static inline s32 VFiPFENT_ITER_ReadEntry(u8 *iter) {
+    s32 code;
+    s32 result;
+    u32 sp8;
+    if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
+        code = 0x10;
+    } else {
+        result = fn_800B5324(*(void **)(iter + 4), iter + 0x4C, *(u32 *)(iter + 0x44),
+                             *(u16 *)(iter + 0x48), 0x20, &sp8, 0);
+        if (sp8 != 0x20) code = 0x11;
+        else code = result;
+    }
+    return code & (s32)(-(u32)code | (u32)code) >> 31;
+}
 static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
     u32 old = *(u32 *)iter;
     s32 result;
@@ -4979,6 +4993,7 @@ status_check:
     return 0;
 advance:
     status = VFiPFENT_ITER_MoveNextAndRead(iter);
+    status = status & (s32)(-(u32)status | (u32)status) >> 31;
 check_end:
     if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
