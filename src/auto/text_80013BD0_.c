@@ -732,134 +732,177 @@ extern s32 fn_8027AA48(void *, f32, f32);
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 #pragma opt_propagation off
-extern "C" void fn_80014D04(void *arg0) {
-    class Obj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual s32 v20(); };
-    class Obj2 { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void *v3(void *); };
+/* Per-frame update of one screen's race HUD (vtable lbl_802FCE18, slot 0x24).
+ * While the session's HUD mask (state+0x20) is clear it does nothing; otherwise
+ * it re-arms itself when the player's racer changes, and then refreshes exactly
+ * the readouts the mask asks for: the place number and its "st/nd/rd/th" suffix,
+ * the "lap n / total" line, the speed needle and boost gauge, off-screen DAMAGE
+ * markers for this player and for the four arena incidents (KILLED when the
+ * incident is a wreck), the lap-info line, the lap/reset warnings, the standings
+ * list, the counters over the map and this player's mark on the track map.
+ * A screen whose entry in the 4-slot pool at lbl_80499E60 is in use shows the
+ * arena-event master's own state instead of the race readouts. */
+extern "C" void fn_80014D04(RaceOverlay *overlay) {
+    /* The overlay's own slot 0xC, which this class leaves empty. */
+    class Overlay {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void onRacerChanged();
+    };
+    /* The arena-event master fn_801B83A0 hands out; slot 0xA8 is its "show me"
+     * question, answered here instead of drawing the race readouts. */
+    class ArenaMaster {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual s32 v20();
+    };
+    class Layout {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void *findElement(void *name); /* 0xC: stricmp over the element list */
+    };
     u8 *base = lbl_802FCB98;
-    s32 flag;
-    f32 spC, sp8;
+    s32 skipGauge;
+    f32 mapX, mapY;
     void *obj;
-    if (*(s32 *)((u8 *)lbl_8055D350 + 0x20) != 0) {
-        if (*(s32 *)((u8 *)lbl_8055D350 + 0x24) != *(s32 *)((u8 *)arg0 + 0x18)) {
-            ((Obj *)arg0)->v3();
+    if (gSession->hudMask != 0) {
+        if (gSession->racerIndex != overlay->racerIndex) {
+            ((Overlay *)overlay)->onRacerChanged();
         }
-        *(s32 *)((u8 *)arg0 + 0x18) = *(s32 *)((u8 *)lbl_8055D350 + 0x24);
-        if (fn_8026B0C0(*(s32 *)((u8 *)lbl_8055D350 + 0x1C)) != 0) {
+        overlay->racerIndex = gSession->racerIndex;
+        if (fn_8026B0C0(gSession->playerIndex) != 0) {
             obj = fn_801B83A0();
-            if (((Obj *)obj)->v20() != 0) {
-                fn_801DF93C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C));
+            if (((ArenaMaster *)obj)->v20() != 0) {
+                fn_801DF93C(gSession->playerIndex);
             }
         } else {
-            s32 x;
-            void *manager;
-            void *label;
-            s32 y, z;
-            if (*(s32 *)((u8 *)lbl_8055D350 + 0x1C) == 0) {
+            s32 posX;
+            RaceSession *session;
+            void *marker;
+            s32 posY, posZ;
+            /* The start countdown is drawn once per frame, on the first screen. */
+            if (gSession->playerIndex == 0) {
                 fn_8000FBE4();
             }
-            manager = lbl_8055D350;
-            flag = 0;
-            if (*(s32 *)((u8 *)manager + 0x24) == fn_801E866C(*(s32 *)((u8 *)manager + 0x1C))) {
-                if (fn_801E89C8(*(s32 *)((u8 *)manager + 0x1C)) != 0) {
-                    flag = 1;
+            session = (RaceSession *)lbl_8055D350;
+            /* A player whose frame entry says he is out of the running keeps the
+             * speed gauge hidden, whatever the mask asks for. */
+            skipGauge = 0;
+            if (session->racerIndex == fn_801E866C(session->playerIndex)) {
+                if (fn_801E89C8(session->playerIndex) != 0) {
+                    skipGauge = 1;
                 }
             }
             fn_801E87A8();
-            if (flag == 0 && (*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 8)) {
+            if (skipGauge == 0 && (gSession->hudMask & HUD_SPEED)) {
                 if (fn_8000D75C() == 0) {
-                    fn_80014820(arg0);
+                    fn_80014820(overlay);
                 }
-                if (*(u32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x8) + 0x4) & 0x80000) {
-                    fn_80015F30(arg0);
-                    fn_8001DF84(*(s32 *)((u8 *)lbl_8055D350 + 0x24));
+                if (*(u32 *)((u8 *)gSession->app + 0x4) & 0x80000) {
+                    fn_80015F30(overlay);
+                    fn_8001DF84(gSession->racerIndex);
                 }
             }
-            if (*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 2) {
-                fn_801473F8(*(void **)((u8 *)arg0 + 0x50), base + 0x1F0, &lbl_80558BA4,
-                           *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x30) + 0x4));
-                fn_801473F8(*(void **)((u8 *)arg0 + 0x50), base + 0x200, &lbl_80558BA8,
-                           fn_80130FE0(*(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x30) + 0x4)));
+            if (gSession->hudMask & HUD_PLACE) {
+                fn_801473F8(overlay->layout, base + NAME_PLACE_NUMBER, FMT_INT,
+                            *(s32 *)((u8 *)gSession->standing + 0x4));
+                fn_801473F8(overlay->layout, base + NAME_PLACE_SUFFIX, FMT_STR,
+                            fn_80130FE0(*(s32 *)((u8 *)gSession->standing + 0x4)));
             }
-            if (*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 1) {
-                s32 a = 1;
-                s32 b;
-                s32 t;
-                b = *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0xC) + 0x8);
-                t = *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x30) + 0x10);
-                if (t > 1) a = t;
-                fn_80013BD0(*(void **)((u8 *)arg0 + 0x50), a < b ? a : b, b, 1);
+            if (gSession->hudMask & HUD_LAP) {
+                s32 lap = 1;
+                s32 totalLaps;
+                s32 curLap;
+                totalLaps = *(s32 *)((u8 *)gSession->rules + 0x8);
+                curLap = *(s32 *)((u8 *)gSession->standing + 0x10);
+                if (curLap > 1) lap = curLap;
+                fn_80013BD0(overlay->layout, lap < totalLaps ? lap : totalLaps, totalLaps, 1);
             }
-            if (*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 0x10) {
-                label = &lbl_80558BAC;
-                obj = *(void **)((u8 *)lbl_8055D350 + 0x2C);
-                x = (s32)((lbl_80560368 - *(f32 *)((u8 *)obj + 0x28C)) * lbl_805603B8);
-                y = (s32)((lbl_80560368 - *(f32 *)((u8 *)obj + 0x290)) * lbl_805603B8);
-                z = (s32)((lbl_80560368 - *(f32 *)((u8 *)obj + 0x294)) * lbl_805603B8);
+            if (gSession->hudMask & HUD_DAMAGE) {
+                /* The truck's position is a 0..1 pair; 1.0 - it, times 100, is the
+                 * distance of the marker pointing back at it. */
+                marker = MSG_DAMAGE;
+                obj = gSession->truck;
+                posX = (s32)((lbl_80560368 - *(f32 *)((u8 *)obj + 0x28C)) * lbl_805603B8);
+                posY = (s32)((lbl_80560368 - *(f32 *)((u8 *)obj + 0x290)) * lbl_805603B8);
+                posZ = (s32)((lbl_80560368 - *(f32 *)((u8 *)obj + 0x294)) * lbl_805603B8);
                 if (((s32 (*)(void))fn_8027AA48)() != 0) {
-                    fn_800111A4(label, x, y, z, 7, lbl_80560368);
+                    fn_800111A4(marker, posX, posY, posZ, 7, lbl_80560368);
                 } else {
-                    fn_80010F38(label, x, y, 6, lbl_80560368);
+                    fn_80010F38(marker, posX, posY, 6, lbl_80560368);
                 }
             }
-            if (*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 0x20) {
-                f32 f31, f30;
-                u8 *p;
+            if (gSession->hudMask & HUD_INCIDENTS) {
+                f32 scale, one;
+                u8 *incident;
                 s32 i;
-                s32 tmp = fn_801E7E34();
-                tmp += *(s32 *)((u8 *)lbl_8055D350 + 0x1C) * 0xE0;
-                p = (u8 *)(tmp + 0x78);
+                /* The four incidents this player's frame entry keeps at +0x78. */
+                s32 entry = fn_801E7E34();
+                entry += gSession->playerIndex * 0xE0;
+                incident = (u8 *)(entry + 0x78);
                 i = 0;
-                f30 = lbl_80560368;
-                f31 = lbl_805603B8;
+                one = lbl_80560368;
+                scale = lbl_805603B8;
                 do {
-                    if (*(s32 *)p >= 0) {
-                        s32 v = *(s32 *)(p + 0x14);
-                        if (v > 9 && v < 0xD) {
-                            fn_80010F38(&lbl_80558BB4, (s32)(f31 * (f30 - *(f32 *)(p + 8))),
-                                        (s32)(f31 * (f30 - *(f32 *)(p + 0xC))), 8, f30);
+                    if (*(s32 *)incident >= 0) {
+                        s32 kind = *(s32 *)(incident + 0x14);
+                        if (kind > 9 && kind < 0xD) {
+                            fn_80010F38(MSG_KILLED, (s32)(scale * (one - *(f32 *)(incident + 8))),
+                                        (s32)(scale * (one - *(f32 *)(incident + 0xC))), 8, one);
                         } else {
-                            fn_80010F38(&lbl_80558BAC, (s32)(f31 * (f30 - *(f32 *)(p + 8))),
-                                        (s32)(f31 * (f30 - *(f32 *)(p + 0xC))), 8, f30);
+                            fn_80010F38(MSG_DAMAGE, (s32)(scale * (one - *(f32 *)(incident + 8))),
+                                        (s32)(scale * (one - *(f32 *)(incident + 0xC))), 8, one);
                         }
                     }
                     i += 1;
-                    p += 0x18;
+                    incident += 0x18;
                 } while (i < 4);
             }
-            if ((*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 0x40) && *(s32 *)((u8 *)lbl_8055D350 + 0x18) < 3) {
-                fn_80014B9C(arg0);
+            if ((gSession->hudMask & HUD_LAPINFO) && gSession->mode < 3) {
+                fn_80014B9C(overlay);
             }
             {
-                s32 flag2 = 0;
-                if ((*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 0x600) && fn_800151DC(arg0) != 0) {
-                    flag2 = 1;
+                /* The speed warning of fn_80016214 only runs while no lap or reset
+                 * warning is on screen. */
+                s32 warning = 0;
+                if ((gSession->hudMask & (HUD_LAPWARN | HUD_RESETWARN)) && fn_800151DC(overlay) != 0) {
+                    warning = 1;
                 }
-                if (fn_801E89EC() == 1 && flag2 == 0) {
-                    ((s32 (*)(void *))fn_80016214)(arg0);
+                if (fn_801E89EC() == 1 && warning == 0) {
+                    ((s32 (*)(void *))fn_80016214)(overlay);
                 }
             }
-            if ((*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 0x2000) && *(s32 *)((u8 *)lbl_8055D350 + 0x18) == 1) {
-                ((void (*)(void *))fn_800154B8)(arg0);
+            if ((gSession->hudMask & HUD_STANDINGS) && gSession->mode == 1) {
+                ((void (*)(void *))fn_800154B8)(overlay);
             }
-            if ((*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 0x4000) && fn_80144F2C() != 0) {
-                fn_80015658(arg0);
+            if ((gSession->hudMask & HUD_COUNTS) && fn_80144F2C() != 0) {
+                fn_80015658(overlay);
             }
-            if (*(u32 *)((u8 *)lbl_8055D350 + 0x20) & 0x1000) {
-                if (*(s32 *)((u8 *)arg0 + 0x48) != 0) {
-                    obj = *(void **)((u8 *)arg0 + 0x50);
-                    obj = ((Obj2 *)obj)->v3(base + 0x210);
+            if (gSession->hudMask & HUD_TRACKMAP) {
+                if (overlay->mapFrame != 0) {
+                    /* Place the map marker where the "track_map" element sits. */
+                    obj = overlay->layout;
+                    obj = ((Layout *)obj)->findElement(base + NAME_TRACK_MAP);
                     if (obj != 0) {
-                        f32 *pC = &spC;
-                        f32 *p8 = &sp8;
-                        s32 ic = *(s32 *)((u8 *)obj + 0xC);
-                        f32 fa = *(f32 *)((u8 *)obj + 4);
-                        f32 fb = *(f32 *)((u8 *)obj + 8);
-                        fn_80148134(pC, p8, ic, fa, fb);
-                        fn_8001A1F4(*(s32 *)((u8 *)arg0 + 0x48), spC, sp8,
+                        f32 *pOutX = &mapX;
+                        f32 *pOutY = &mapY;
+                        s32 mode = *(s32 *)((u8 *)obj + 0xC);
+                        f32 elemX = *(f32 *)((u8 *)obj + 4);
+                        f32 elemY = *(f32 *)((u8 *)obj + 8);
+                        fn_80148134(pOutX, pOutY, mode, elemX, elemY);
+                        fn_8001A1F4(overlay->mapFrame, mapX, mapY,
                                     *(f32 *)((u8 *)obj + 0x10), *(f32 *)((u8 *)obj + 0x14));
                     }
-                } else if (*(s32 *)((u8 *)lbl_8055D350 + 0x1C) == 0) {
-                    fn_80015364(arg0);
+                } else if (gSession->playerIndex == 0) {
+                    fn_80015364(overlay);
                 }
             }
             fn_801D490C();
