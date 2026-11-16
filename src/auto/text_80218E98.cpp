@@ -9554,10 +9554,11 @@ extern "C" s32 fn_80229F14(void *arg0) {
     return *(s32 *)((char *)arg0 + 0xA5C);
 }
 
-extern "C" void fn_80229F1C(void *arg0) {
-    *(u8 *)((char *)arg0 + 0x18) = 1;
-    if (*(u8 *)((char *)arg0 + 0x1A) != 0) {
-        *(u8 *)((char *)arg0 + 0x234) = 1;
+extern "C" void fn_80229F1C(void *widget) {
+    /* Activate this widget (flag +0x18) and, if it tracks a live value (+0x1A), mark it dirty for a redraw (+0x234). */
+    *(u8 *)((char *)widget + 0x18) = 1;
+    if (*(u8 *)((char *)widget + 0x1A) != 0) {
+        *(u8 *)((char *)widget + 0x234) = 1;
     }
 }
 
