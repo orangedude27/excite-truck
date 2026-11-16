@@ -1419,9 +1419,17 @@ extern "C" void fn_800070DC(void) {
     fn_80005464();
 }
 #pragma cplusplus reset
+/* Reset the HUD: rebuild every overlay's initial state, then rebase the HUD
+ * frame timer to the current millisecond tick so the next frame delta is small. */
 void fn_80007210(void) {
-    fn_800070DC();
-    lbl_8055D348 = fn_802E2C20();
+#define ResetOverlays fn_800070DC
+#define GetCurrentTimeMs fn_802E2C20
+#define hudFrameTimerBase lbl_8055D348
+    ResetOverlays();
+    hudFrameTimerBase = GetCurrentTimeMs();
+#undef ResetOverlays
+#undef GetCurrentTimeMs
+#undef hudFrameTimerBase
 }
 
 extern s32 fn_801E7E3C(void);
