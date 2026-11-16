@@ -109,10 +109,11 @@ fail:
     return -1;
 }
 
-void fn_802E746C(int arg0, int *arg1, int *arg2) {
-    unsigned char *entry = lbl_804FC978 + arg0 * 0x90;
-    *arg1 = *(int *)entry;
-    *arg2 = *(int *)(entry + 8);
+void fn_802E746C(int index, int *outStartSector, int *outSize) {
+    /* Report the start sector (in 2048-byte units) and byte size of stream entry `index`. */
+    StreamEntry *entry = (StreamEntry *)(lbl_804FC978 + index * 0x90);
+    *outStartSector = entry->startSector;
+    *outSize = entry->size;
 }
 
 #pragma push
