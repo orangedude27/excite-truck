@@ -358,17 +358,18 @@ void fn_802DBCFC(int positionArray, int vertexCount) {
 
 #pragma push
 #pragma small_data off
+/* Reset CPU-light GX vertex array cache/state and bind the default texture object. */
 void fn_802DBD88(void) {
-    void *value;
-    void **slot;
+    void *defaultTex;
+    void **texSlots;
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
     lbl_8055FE9E = 1;
     lbl_8055FEA0 = -1;
-    value = fn_802D94DC();
+    defaultTex = fn_802D94DC();
     lbl_8055FEA4 = 1;
-    slot = (void **)&lbl_804DB468;
-    *slot = value;
+    texSlots = (void **)&lbl_804DB468;
+    *texSlots = defaultTex;
 }
 #pragma pop
 void fn_802DBDD8(void) {
