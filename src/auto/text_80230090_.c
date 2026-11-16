@@ -354,15 +354,16 @@ void fn_80230924(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth)
 #pragma ppc_psq_save reset
 #pragma cplusplus reset
 
-void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    Pack6 s;
-    s.a = farg0;
-    s.b = farg1;
-    s.c = farg2;
-    s.d = arg1;
-    s.e = farg3;
-    s.f = farg4;
-    *(Pack6 *)arg0 = s;
+void fn_80230A68(void *dst, s32 color, f32 x, f32 y, f32 z, f32 s, f32 t) {
+    /* Pack position, color, and texture coordinates into a 24-byte vertex record. */
+    Pack6 vtx;
+    vtx.a = x;
+    vtx.b = y;
+    vtx.c = z;
+    vtx.d = color;
+    vtx.e = s;
+    vtx.f = t;
+    *(Pack6 *)dst = vtx;
 }
 
 #pragma dont_inline on
