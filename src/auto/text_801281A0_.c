@@ -310,12 +310,14 @@ void fn_801291C4(void) {
 
 }
 
-s32 fn_801291C8(void *arg0, u32 arg1) {
-    u32 end = ((u32 *)arg0)[3];
+/* 1 when value points into this heap's ring buffer, held as the half-open range
+ * [buffer[3], buffer[3] + buffer[2]); 0 otherwise. */
+s32 fn_801291C8(void *buffer, u32 value) {
+    u32 bufferStart = ((u32 *)buffer)[3];
     s32 result = 0;
-    if (arg1 >= end) {
-        u32 limit = end + ((u32 *)arg0)[2];
-        if (arg1 < limit) result = 1;
+    if (value >= bufferStart) {
+        u32 bufferEnd = bufferStart + ((u32 *)buffer)[2];
+        if (value < bufferEnd) result = 1;
     }
     return result;
 }
