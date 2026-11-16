@@ -4414,12 +4414,15 @@ extern s32 IUSB_ReadBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
 #pragma push
 #pragma use_lmw_stmw off
 void uusb_issue_bulk_read(void) {
+    /* Submit an asynchronous USB bulk read: grab a GKI buffer, build the event
+       header whose length field points at a 32-byte-aligned payload area, then
+       start the transfer into that area.  On failure, release the buffer. */
     extern char lbl_803142C8[];
     extern u16 fn_8006D8D0(u32);
-    char *report = lbl_803142C8;
+    char *logBase = lbl_803142C8;
     u8 *buf;
-    u8 *aligned;
-    s32 result;
+    u8 *dataBuf;
+    s32 status;
 
     for (;;) {
         buf = GKI_getpoolbuf(lbl_803BD1E0.pool_id);
@@ -4427,24 +4430,24 @@ void uusb_issue_bulk_read(void) {
             break;
         }
         if (lbl_803BD1E0.at_0x28 != 0) {
-            OSReport(report + 0x280);
+            OSReport(logBase + 0x280);
         }
     }
 
     *(u16 *)buf = 0x1100;
-    aligned = (u8 *)(((u32)(buf + 0x27)) & ~31);
+    dataBuf = (u8 *)(((u32)(buf + 0x27)) & ~31);
     *(u16 *)(buf + 2) = 0;
-    *(u16 *)(buf + 4) = aligned - (buf + 8);
+    *(u16 *)(buf + 4) = dataBuf - (buf + 8);
 
-    result = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, lbl_803BD1E0.endpoint,
+    status = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, lbl_803BD1E0.endpoint,
                                   fn_8006D8D0((u32)buf) - 0x28 - *(u16 *)(buf + 4),
-                                  aligned, (void (*)(void))uusb_ReadBulkDataCB, buf);
-    if (result != 0) {
+                                  dataBuf, (void (*)(void))uusb_ReadBulkDataCB, buf);
+    if (status != 0) {
         if (lbl_803BD1E0.at_0x28 != 0) {
-            OSReport(report + 0x2D4, result);
+            OSReport(logBase + 0x2D4, status);
         }
         if (lbl_803BD1E0.at_0x28 != 0) {
-            OSReport(report + 0x320, result);
+            OSReport(logBase + 0x320, status);
         }
         GKI_freebuf(buf);
     }
