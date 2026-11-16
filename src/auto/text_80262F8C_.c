@@ -91,7 +91,11 @@ s32 fn_802630C0(void) {
 
 extern int fn_80263104(void);
 int fn_80263104(void) {
-    return lbl_8055F434 == lbl_8055C440;
+#define menuPageIndex lbl_8055F434
+#define menuPageMax lbl_8055C440
+    return menuPageIndex == menuPageMax;
+#undef menuPageIndex
+#undef menuPageMax
 }
 
 void fn_8026311C(void) {
