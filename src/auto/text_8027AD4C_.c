@@ -549,16 +549,32 @@ void fn_8027B690(void) {
     }
 }
 #pragma pop
+static inline void resetPlayerGroup(char *base) {
+    char *row = base;
+    unsigned int i = 0;
+    do {
+        fn_8027B60C(row);
+        i++;
+        row += 0xBD0;
+    } while (i < 3);
+    row = base + 0x2370;
+    i = 0;
+    do {
+        fn_8027B60C(row);
+        i++;
+        row += 0xBD0;
+    } while (i < 2);
+}
 void fn_8027B77C(void) {
     char *base;
-    int outer;
+    unsigned int outer;
     if (fn_80019B3C() == 0 || lbl_8055F650 != 0) {
         base = lbl_804A4380;
         outer = 0;
         do {
             {
-                char *p = base;
                 unsigned int i = 0;
+                char *p = base;
                 do {
                     fn_8027B60C(p);
                     i++;
@@ -566,8 +582,8 @@ void fn_8027B77C(void) {
                 } while (i < 3);
             }
             {
-                char *p = base + 0x2370;
                 unsigned int i = 0;
+                char *p = base + 0x2370;
                 do {
                     fn_8027B60C(p);
                     i++;
@@ -576,7 +592,7 @@ void fn_8027B77C(void) {
             }
             outer++;
             base += 0x3B10;
-        } while ((unsigned int)outer < 4);
+        } while (outer < 4);
         lbl_8055F650 = 0;
     }
 }
