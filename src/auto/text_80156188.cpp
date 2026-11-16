@@ -621,9 +621,13 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" s32 fn_80156C60(void *arg0, s32 arg1) {
-    if (arg1 < ((s32 *)arg0)[2])
-        return *(s32 *)((u8 *)((s32 *)arg0)[1] + (arg1 * 8));
+extern "C" s32 fn_80156C60(void *config, s32 index) {
+    /* Return the first word (name pointer) of the indexed 8-byte entry in the
+     * config's entry array, or 0 if index is out of range. */
+    struct ConfigObj { void *vtable; s32 *entries; s32 entryCount; };
+    ConfigObj *self = (ConfigObj *)config;
+    if (index < self->entryCount)
+        return *(s32 *)((u8 *)self->entries + (index * 8));
     return 0;
 }
 
