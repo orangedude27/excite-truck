@@ -923,10 +923,11 @@ extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int a
         fn_80144DAC((void *)arg8, v14);
 }
 #pragma pop
-void fn_801C2B9C(float * __restrict out, float * __restrict a, float * __restrict b, float scale) {
-    float x = a[0] + b[0] * scale;
-    float y = a[1] + b[1] * scale;
-    float z = a[2] + b[2] * scale;
+/* Computes out = base + delta * scale component-wise for a 3D vector (Vec3 scale-and-add). */
+void fn_801C2B9C(float * __restrict out, float * __restrict base, float * __restrict delta, float scale) {
+    float x = base[0] + delta[0] * scale;
+    float y = base[1] + delta[1] * scale;
+    float z = base[2] + delta[2] * scale;
     out[0] = x;
     out[1] = y;
     out[2] = z;
