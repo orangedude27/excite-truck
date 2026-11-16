@@ -204,9 +204,10 @@ int fn_801B47BC(int arg0, int arg1) {
 
 #pragma dont_inline off
 
-int fn_801B47D4(int arg0, int arg1) {
-    if (arg1 != 0) return arg1 - 1;
-    return *(int *)(arg0 + 0x1C) - 1;
+/* Return the previous index in a ring buffer of count entries (at +0x1C), wrapping from 0 to count-1. */
+int fn_801B47D4(int ring, int index) {
+    if (index != 0) return index - 1;
+    return *(int *)(ring + 0x1C) - 1;
 }
 
 #pragma dont_inline on
