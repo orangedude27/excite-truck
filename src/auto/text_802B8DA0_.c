@@ -658,8 +658,9 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 extern double ceil(double);
-float fn_802B9A80(float arg0) {
-    return ceil(arg0);
+// Returns ceil(value): the smallest integer greater than or equal to value.
+float fn_802B9A80(float value) {
+    return ceil(value);
 }
 
 // Reads a node's 2D float bounds into min (+0x14/+0x18) and max (+0x1C/+0x20).
