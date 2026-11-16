@@ -2957,10 +2957,10 @@ f32 fn_80164CD4(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80164CDC(void *arg0) {
+extern "C" void fn_80164CDC(void *owner) {
     /* Invoke virtual method f4 (vtable slot 0x18) on the interface object held at +4, passing "title" and the empty string. */
-    Obj_80164CDC *obj = *(Obj_80164CDC **)((char *)arg0 + 4);
-    obj->f4(&lbl_8055A0E0, &lbl_8055A0E8);
+    Obj_80164CDC *iface = *(Obj_80164CDC **)((char *)owner + 4);
+    iface->f4(&lbl_8055A0E0, &lbl_8055A0E8);
 }
 #pragma cplusplus off
 extern int fn_80128668(void);
