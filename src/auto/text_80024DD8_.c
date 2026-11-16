@@ -1,13 +1,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void *memchr(const void *src, int val, unsigned int n) {
-    unsigned int v = (unsigned char)val;
-    const unsigned char *p;
-    p = (const unsigned char *)src - 1;
-    n++;
-    while (--n) {
-        if (*++p == v) return (void *)p;
+/* Scan the first count bytes of src for byte ch; return a pointer to the first
+ * match, or NULL if none is found. */
+void *memchr(const void *src, int ch, unsigned int count) {
+    unsigned int byte = (unsigned char)ch;
+    const unsigned char *ptr;
+    ptr = (const unsigned char *)src - 1;
+    count++;
+    while (--count) {
+        if (*++ptr == byte) return (void *)ptr;
     }
     return 0;
 }
