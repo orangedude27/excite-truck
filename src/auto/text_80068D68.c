@@ -4411,21 +4411,18 @@ extern s32 IUSB_ReadBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
 #pragma use_lmw_stmw off
 void uusb_issue_bulk_read(void) {
     extern char lbl_803142C8[];
-    extern void uusb_ReadBulkDataCB(s32, BT_HDR *);
     extern u16 fn_8006D8D0(u32);
-    uusb_cb_t *control = &lbl_803BD1E0;
     char *report = lbl_803142C8;
     u8 *buf;
-    register u8 *aligned;
-    u16 header;
+    u8 *aligned;
     s32 result;
 
     for (;;) {
-        buf = GKI_getpoolbuf(control->pool_id);
+        buf = GKI_getpoolbuf(lbl_803BD1E0.pool_id);
         if (buf != 0) {
             break;
         }
-        if (control->at_0x28 != 0) {
+        if (lbl_803BD1E0.at_0x28 != 0) {
             OSReport(report + 0x280);
         }
     }
@@ -4433,14 +4430,13 @@ void uusb_issue_bulk_read(void) {
     *(u16 *)buf = 0x1100;
     aligned = (u8 *)(((u32)(buf + 0x27)) & ~31);
     *(u16 *)(buf + 2) = 0;
-    header = (u16)(aligned - (buf + 8));
-    *(u16 *)(buf + 4) = header;
+    *(u16 *)(buf + 4) = aligned - (buf + 8);
 
-    result = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, control->endpoint,
-                                  fn_8006D8D0((u32)buf) - 0x28 - header,
+    result = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, lbl_803BD1E0.endpoint,
+                                  fn_8006D8D0((u32)buf) - 0x28 - *(u16 *)(buf + 4),
                                   aligned, (void (*)(void))uusb_ReadBulkDataCB, buf);
     if (result != 0) {
-        if (control->at_0x28 != 0) {
+        if (lbl_803BD1E0.at_0x28 != 0) {
             OSReport(report + 0x2D4, result);
         }
         if (lbl_803BD1E0.at_0x28 != 0) {
