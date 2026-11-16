@@ -559,56 +559,54 @@ extern void fn_802E30C8(char *, ...);
 extern char lbl_8032BF20[];
 extern char lbl_8032BF70[];
 #pragma dont_inline on
-void *fn_80138968(int arg0) {
-    struct Words { unsigned int wb; unsigned int wa; };
-    struct {
-        unsigned char b1;
-        unsigned char b2;
-        unsigned char pad[2];
-        struct Words words;
-        int valid;
-        unsigned int size;
-    } local;
-    void *obj;
-    int ok;
-    obj = fn_8012C370(arg0, 0x494C494E, &local.size, &local.valid, (void **)&local.b1, &local.b2);
-    if (obj != 0) {
-        ok = 0;
-        if (local.valid != 0) {
-            if (local.size == 0x1E) {
-                unsigned int a = ((volatile unsigned int *)obj)[1];
-                unsigned int b = ((volatile unsigned int *)obj)[0];
-                local.words.wa = a;
-                local.words.wb = b;
-                if (local.b2) {
-                    unsigned char *p = (unsigned char *)&local.words.wa;
-                    unsigned char *q = (unsigned char *)&local.words.wb;
-                    unsigned char t1, t3, t2, t4;
-                    t1 = p[0]; p[0] = p[3]; p[3] = t1;
-                    t2 = p[1]; p[1] = p[2]; p[2] = t2;
-                    t3 = q[0]; q[0] = q[3]; q[3] = t3;
-                    t4 = q[1]; q[1] = q[2]; q[2] = t4;
+/* RealName: LoadIdealLineRes */
+/* Load and validate the IdealLineRes ('ILIN') resource named `resourceName`:
+ * check its version and header words, byte-swap it in place when needed, file
+ * its name in the object cache and store the resulting handle at +0x28.
+ * On any failed check the resource is released and 0 is returned. */
+void *fn_80138968(int resourceName) {
+    IdealResLoadInfo info;
+    void *res;
+    int accepted;
+
+    res = fn_8012C370(resourceName, IDEAL_RES_TAG, &info.version, &info.valid, (void **)&info.firstLoad, &info.swapEndian);
+    if (res != 0) {
+        accepted = 0;
+        if (info.valid != 0) {
+            if (info.version == IDEAL_RES_VERSION) {
+                unsigned int ilsegSize = ((volatile unsigned int *)res)[1];
+                unsigned int resSize = ((volatile unsigned int *)res)[0];
+                info.header.ilsegSize = ilsegSize;
+                info.header.resSize = resSize;
+                if (info.swapEndian) {
+                    unsigned char *p = (unsigned char *)&info.header.ilsegSize;
+                    unsigned char *q = (unsigned char *)&info.header.resSize;
+                    unsigned char waTmp0, wbTmp0, waTmp1, wbTmp1;
+                    waTmp0 = p[0]; p[0] = p[3]; p[3] = waTmp0;
+                    waTmp1 = p[1]; p[1] = p[2]; p[2] = waTmp1;
+                    wbTmp0 = q[0]; q[0] = q[3]; q[3] = wbTmp0;
+                    wbTmp1 = q[1]; q[1] = q[2]; q[2] = wbTmp1;
                 }
-                if (local.words.wa == 0x3C && local.words.wb == 0x30) {
-                    if (local.b2) {
-                        fn_801381B4(obj);
-                        fn_80138594(obj);
+                if (info.header.ilsegSize == IDEAL_RES_ILSEG_SIZE && info.header.resSize == IDEAL_RES_RES_SIZE) {
+                    if (info.swapEndian) {
+                        fn_801381B4(res);
+                        fn_80138594(res);
                     }
-                    *(int *)((char *)obj + 0x28) = fn_8013BFE8(arg0);
-                    ok = 1;
+                    *(int *)((char *)res + 0x28) = fn_8013BFE8(resourceName);
+                    accepted = 1;
                 } else {
-                    fn_802E30C8(lbl_8032BF20, local.words.wa, 0x3C, local.words.wb, 0x30, local.b2);
+                    fn_802E30C8(sIdealSizeMismatchMsg, info.header.ilsegSize, IDEAL_RES_ILSEG_SIZE, info.header.resSize, IDEAL_RES_RES_SIZE, info.swapEndian);
                 }
             } else {
-                fn_802E30C8(lbl_8032BF70, local.size, 0x1E);
+                fn_802E30C8(sIdealBadVersionMsg, info.version, IDEAL_RES_VERSION);
             }
         }
-        if (!ok) {
-            fn_8012C4D8(obj);
-            obj = 0;
+        if (!accepted) {
+            fn_8012C4D8(res);
+            res = 0;
         }
     }
-    return obj;
+    return res;
 }
 #pragma dont_inline reset
 
