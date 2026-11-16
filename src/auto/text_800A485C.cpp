@@ -7468,46 +7468,61 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 s
     return ok;
 }
 
-extern "C" s32 fn_800B0868(VFiPFCursor *cur, s32 arg1, u32 length, u32 *arg3) {
-    extern s32 fn_800AE620(void *, u32, s32, void *);
-    extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
+extern "C" s32 fn_800B0868(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut) {
+    /* Read the part of a file read that lies in the rest of the sector the cursor
+     * is in - the unaligned head of fn_800B0DEC's three-part read (this part, then
+     * fn_800B0A60's whole sectors, then fn_800B0C10's tail).  A cursor already on
+     * a sector boundary has nothing here to read.  The run is cut to the bytes
+     * left in the sector, and left to the tail reader when the file ends before
+     * that boundary does.  Where the FAT has not yet said which disk sector the
+     * cursor's file sector lives in, that lookup is done first; a file that ends
+     * there answers 0x1c, one that ends inside the run 0x1b, both with the cursor
+     * left on the file's end.  The bytes come out of the volume's page cache, the
+     * cursor is advanced over them and their number is written to readOut; 0 is
+     * returned when the whole run was read, the cache's status otherwise. */
+    extern s32 fn_800AE620(void *, u32, s32, void *);      /* FAT: disk sector of a file sector */
+    extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32); /* volume data read through the page cache */
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
-    VFiPFVol *vol, *fat;
+    VFiPFVol *vol, *volForPos;
     s32 result;
-    s32 sp8;
-    u32 avail;
-    *arg3 = 0;
-    if (cur->off == 0) return 0;
+    s32 bytesRead;
+    u32 sectorLeft;
+    *readOut = 0;
+    if (cur->off == 0) return 0; /* on a sector boundary: no partial sector to read */
     vol = cur == 0 ? 0 : cur->file->vol;
-    avail = vol->sectorSize - cur->off;
-    if (length > avail) length = avail;
+    sectorLeft = vol->sectorSize - cur->off;
+    if (length > sectorLeft) length = sectorLeft;
     if (cur->pos + length > cur->file->size) {
+        /* the file ends inside this sector, before the run's last byte would
+         * reach the sector boundary the tail reader takes over at */
         length = cur->file->size - cur->pos;
-        if (length < avail) return 0;
+        if (length < sectorLeft) return 0;
     }
     if (cur->cluster == 0xFFFFFFFF) {
+        /* ask the FAT which disk sector this file sector is in */
         result = fn_800AE620(cur->file->fat, cur->sector, 0, &cur->cluster);
         if (result != 0) return result;
         if (cur->cluster == 0xFFFFFFFF) {
+            /* the FAT has no sector for it: the file ends here */
             cur->pos = cur->file->size;
-            fat = cur == 0 ? 0 : cur->file->vol;
-            cur->sector = cur->pos >> fat->shift;
-            cur->off = cur->pos & (fat->sectorSize - 1);
-            return 0x1c;
+            volForPos = cur == 0 ? 0 : cur->file->vol;
+            cur->sector = cur->pos >> volForPos->shift;
+            cur->off = cur->pos & (volForPos->sectorSize - 1);
+            return 0x1c; /* end of file */
         }
         if (cur->pos + length > cur->file->size) {
             cur->pos = cur->file->size;
-            fat = cur == 0 ? 0 : cur->file->vol;
-            cur->sector = cur->pos >> fat->shift;
-            cur->off = cur->pos & (fat->sectorSize - 1);
-            return 0x1b;
+            volForPos = cur == 0 ? 0 : cur->file->vol;
+            cur->sector = cur->pos >> volForPos->shift;
+            cur->off = cur->pos & (volForPos->sectorSize - 1);
+            return 0x1b; /* the run would pass the end of the file */
         }
     }
-    result = ((s32 (*)(void *, s32, u32, u16, u32, s32 *, s32))fn_800B5324)(vol, arg1, cur->cluster, cur->off, length, &sp8, 1);
-    if (result != 0 && sp8 == 0) return result;
-    *arg3 = sp8;
-    VFiPFFILE_Cursor_AdvanceToRead(cur, sp8, cur->cluster);
-    if ((u32)sp8 != length) return result;
+    result = ((s32 (*)(void *, s32, u32, u16, u32, s32 *, s32))fn_800B5324)(vol, dest, cur->cluster, cur->off, length, &bytesRead, 1);
+    if (result != 0 && bytesRead == 0) return result;
+    *readOut = bytesRead;
+    VFiPFFILE_Cursor_AdvanceToRead(cur, bytesRead, cur->cluster);
+    if ((u32)bytesRead != length) return result;
     return 0;
 }
 
