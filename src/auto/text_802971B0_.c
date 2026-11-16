@@ -174,17 +174,19 @@ extern "C" s32 fn_80297450(void *node) {
 #pragma cplusplus reset
 #pragma pop
 #pragma dont_inline
-float fn_8029748C(void *arg0) {
-    s32 count = *(s32 *)((u8 *)arg0 + 4);
-    float max = lbl_80564578;
-    s32 offset = 0;
-    while (count > 0) {
-        float value = *(float *)(*(u8 **)arg0 + offset + 0x14);
-        max = (max > value) ? max : value;
-        offset += 0x18;
-        count--;
+/* Returns the largest end time (entry +0x14) over the 0x18-byte entries of a
+   FlipBookElem collection, or 0.0 when the collection has no entries. */
+float fn_8029748C(void *collection) {
+    s32 entryCount = *(s32 *)((u8 *)collection + 4);
+    float maxEndTime = lbl_80564578;
+    s32 entryOffset = 0;
+    while (entryCount > 0) {
+        float endTime = *(float *)(*(u8 **)collection + entryOffset + 0x14);
+        maxEndTime = (maxEndTime > endTime) ? maxEndTime : endTime;
+        entryOffset += 0x18;
+        entryCount--;
     }
-    return max;
+    return maxEndTime;
 }
 
 extern s32 fn_8012C33C(void);
