@@ -501,46 +501,41 @@ void fn_801D98F0(void **listHead) {
 }
 
 #pragma use_lmw_stmw off
-int fn_801D9948(int *arg0) {
-    struct Node {
-        int field0, field4, field8, fieldC, field10;
-        int *items;
-        int count;
-        int field1C, field20, field24, field28, field2C, field30;
-        struct Node *next;
-    };
-    register int *head = arg0;
-    register int i;
-    register int offset;
-    register struct Node *node = (struct Node *)*head;
+int fn_801D9948(int *listHead) {
+    register int *head = listHead;
+    register int index;
+    register int byteOffset;
+    register struct OmlModelSet *modelSet = (struct OmlModelSet *)*head;
     register int zero = 0;
-    while (node != 0) {
-        register struct Node *next = node->next;
-        if (node != 0) {
-            i = 0;
-            offset = 0;
-            while (i < node->count) {
-                fn_802C6CF8(*(int *)((char *)node->items + offset));
-                offset += 4;
-                i += 1;
+    /* For each oml model set: release every variant's mrmodel handle (fn_802C6CF8),
+       zero the set's group/model bookkeeping, free the node (fn_80128668), then empty the list. */
+    while (modelSet != 0) {
+        register struct OmlModelSet *nextSet = modelSet->next;
+        if (modelSet != 0) {
+            index = 0;
+            byteOffset = 0;
+            while (index < modelSet->modelCount) {
+                fn_802C6CF8(*(int *)((char *)modelSet->models + byteOffset));
+                byteOffset += 4;
+                index += 1;
             }
-            if ((char *)node + 0x14 != 0) {
-                if ((char *)node + 0x14 != 0) {
-                    node->items = (int *)zero;
-                    node->count = zero;
-                    node->field1C = zero;
+            if ((char *)modelSet + 0x14 != 0) {
+                if ((char *)modelSet + 0x14 != 0) {
+                    modelSet->models = (int *)zero;
+                    modelSet->modelCount = zero;
+                    modelSet->modelLimit = zero;
                 }
             }
-            if (node != 0) {
-                if (node != 0) {
-                    node->field0 = zero;
-                    node->field4 = zero;
-                    node->field8 = zero;
+            if (modelSet != 0) {
+                if (modelSet != 0) {
+                    modelSet->groups = (struct MorphGroup **)zero;
+                    modelSet->groupCount = zero;
+                    modelSet->groupLimit = zero;
                 }
             }
-            fn_80128668(node);
+            fn_80128668(modelSet);
         }
-        node = next;
+        modelSet = nextSet;
     }
     *head = 0;
 }
