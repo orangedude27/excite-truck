@@ -968,6 +968,7 @@ extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, int, int, int);
 extern void fn_802640C4(void *, void *);
 extern void fn_80236910(void *);
+extern int fn_802146BC();
 extern char lbl_803464B4[], lbl_803464C8[];
 __declspec(section ".sdata") extern char lbl_8055C498[];
 __declspec(section ".sdata") extern char lbl_8055C4A0[];
