@@ -4097,9 +4097,11 @@ typedef struct TextField {
     char *text;   /* 0xA54 the editable string (0xA58 font, 0xA5C ibeam.img) */
 } TextField;
 
-extern "C" void fn_8021F044(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+/* Mark a text widget dirty when it is active, then forward a dispatch call
+ * (code 0) through the widget's virtual table. */
+extern "C" void fn_8021F044(void *widget) {
+    if (((TextField *)widget)->active != 0)
+        ((TextField *)widget)->dirty = 1;
     class Dispatch {
     public:
         virtual void f00(); virtual void f01(); virtual void f02(); virtual void f03(); virtual void f04();
@@ -4109,7 +4111,7 @@ extern "C" void fn_8021F044(void *arg0) {
         virtual void f20(); virtual void f21(); virtual void f22();
         virtual void DispatchCall(s32);
     };
-    ((Dispatch *)arg0)->DispatchCall(0);
+    ((Dispatch *)widget)->DispatchCall(0);
 }
 
 /* Virtual key codes the text field handles.  The ten codes from 0x160 on are
