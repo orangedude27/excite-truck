@@ -5591,10 +5591,11 @@ extern "C" void fn_80222450(void *arg0) {
     }
 }
 
-extern "C" void fn_80222468(void *arg0, s32 arg1, s32 arg2) {
+/* Repositions the widget by delegating to the base move handler, then stores the requested origin coordinates. */
+extern "C" void fn_80222468(void *widget, s32 x, s32 y) {
     ((void (*)(void))fn_802191F0)();
-    *(s32 *)((u8 *)arg0 + 0x248) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x24C) = arg2;
+    *(s32 *)((u8 *)widget + 0x248) = x;
+    *(s32 *)((u8 *)widget + 0x24C) = y;
 }
 
 /* Constructs a derived UI widget: initializes the base widget via fn_80222340 with position (x, y), size (width, height), and id, installs vtable lbl_8033F880, and initializes derived fields at +0x254..+0x25C. */
