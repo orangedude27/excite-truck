@@ -29,12 +29,13 @@ extern u8 lbl_80345E28[];
 #pragma pop
 extern u8 lbl_8055F3EC;
 s32 fn_8025FE8C(void) {
-    void *temp_r4;
+    void *sound;
+    /* On the challenge-select screen, start its sound handle playing once: set the play flag, clear loop and fade-out. */
     if ((s32)lbl_8055F3E9 != 0 && (s32)lbl_8055F3EC == 0) {
-        temp_r4 = *(void **)(lbl_8055F420 + 0x14);
-        *(u8 *)((u8 *)temp_r4 + 0x49) = 1;
-        *(u8 *)((u8 *)temp_r4 + 0x4B) = 0;
-        *(u8 *)((u8 *)temp_r4 + 0x4A) = 0;
+        sound = *(void **)(lbl_8055F420 + 0x14);
+        *(u8 *)((u8 *)sound + 0x49) = 1;
+        *(u8 *)((u8 *)sound + 0x4B) = 0;
+        *(u8 *)((u8 *)sound + 0x4A) = 0;
         lbl_8055F3EC = 1;
     }
     return 0;
