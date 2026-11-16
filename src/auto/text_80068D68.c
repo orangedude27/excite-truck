@@ -1734,8 +1734,10 @@ void fn_80069408(void) {
 extern u8 lbl_80393680[];
 extern void fn_80069408(void);
 extern void fn_80069D80(void);
-void fn_80069C14(u32 r3, u32 r4) {
-    OSSwitchFiberEx(r3, r4, 0, 0, fn_80069408, (u8*)&lbl_80393680 + 0x1000);
+/* Periodic-alarm handler: switch to the WUD sync-device fiber (fn_80069408)
+ * on the shared WUD alarm stack. */
+void fn_80069C14(u32 pAlarm, u32 pContext) {
+    OSSwitchFiberEx(pAlarm, pContext, 0, 0, fn_80069408, (u8*)&lbl_80393680 + 0x1000);
 }
 
 /* --- WUD paired-device database -------------------------------------------------
