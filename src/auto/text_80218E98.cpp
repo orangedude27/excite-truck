@@ -7517,6 +7517,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802266B0(void *self, 
     return self;
 }
 
+// Loads an object resource and registers it with the owner at a fixed slot.
 extern "C" void fn_80226708(void *arg0) {
     void *result;
     result = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x260), arg0);
