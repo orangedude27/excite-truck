@@ -3324,21 +3324,24 @@ extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char*
     extern s32 fn_800D58C4(void*);
     extern const char lbl_8031E8FC[];
     extern const char lbl_8031E8D8[];
-    struct Link { Link* next; Link* prev; };
-    u8* pane = (u8*)self;
-    if (fn_800D58C4(pane + 0xB4))
-        return pane;
+    if (fn_800D58C4((u8*)self + 0xB4))
+        return self;
     if (recursive) {
-        Link* node = *(Link**)(pane + 0x14);
-        Link* end = (Link*)(pane + 0x14);
+        u8* pane = (u8*)self;
+        struct { void *node; } cursor;
+        cursor.node = *(void**)(pane + 0x14);
+        void *&node = cursor.node;
+        struct { void *end; } sentinel;
+        sentinel.end = pane + 0x14;
+        void *&end = sentinel.end;
         while (node != end) {
-            if (node == 0)
+            if (!node)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             struct Obj { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11(); virtual void a12();  virtual void* find(const char*, bool); };
             void* found = ((Obj*)((u8*)node - 4))->find(name, true);
             if (found)
                 return found;
-            node = node->next;
+            node = *(void**)node;
         }
     }
     return 0;
