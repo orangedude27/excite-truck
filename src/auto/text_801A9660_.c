@@ -1476,13 +1476,13 @@ void fn_801AC544(void *arg0) {
 void fn_801ACA48(void *arg0) {
     extern void fn_801ABC28(void *);
     extern float lbl_8056247C, lbl_805624CC, lbl_80562508, lbl_8056250C;
-    Vec cross;
     float x, y, z;
     float scale, zero, input;
     float copyZ, copyY, copyX;
     char *p = arg0;
     fn_801ABC28(arg0);
     if (*(unsigned char *)(p + 0x220)) {
+        Vec cross;
         input = *(float *)(p + 0x124);
         scale = lbl_805624CC;
         x = input * scale;
@@ -1495,7 +1495,10 @@ void fn_801ACA48(void *arg0) {
         *(float *)(p + 0x124) = x;
         *(float *)(p + 0x128) = y;
         *(float *)(p + 0x12C) = z;
-        PSVECCrossProduct((Vec *)(p + 0x48), (Vec *)(p + 0x1F8), &cross);
+        {
+            Vec *out = &cross;
+            PSVECCrossProduct((Vec *)(p + 0x48), (Vec *)(p + 0x1F8), out);
+        }
         if (*(float *)(p + 0x4C) < lbl_80562508) {
             float cxx = cross.x;
             float factor = lbl_8056250C;
@@ -2017,9 +2020,10 @@ struct Dummy_801AD888 {
     virtual void d4() {}
 };
 #pragma cplusplus on
-extern "C" void fn_801AD888(void *arg0) {
-    ((Dummy_801AD888 *)arg0)->d2();
-    ((void (*)(void *))fn_801AC254)(arg0);
+extern "C" void fn_801AD888(void *object) {
+    /* Invoke the callback object's d2() virtual method, then clear its flag at +0x220. */
+    ((Dummy_801AD888 *)object)->d2();
+    ((void (*)(void *))fn_801AC254)(object);
 }
 #pragma cplusplus off
 
