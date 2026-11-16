@@ -1479,10 +1479,11 @@ void fn_80181474(void *arg0, float arg1, float arg2) {
  *(float *)((char *)arg0+0x328)=arg2;
 }
 
-void fn_80181480(void *arg0, int arg1) {
- int old=*(int *)((char *)arg0+0x50);
- *(int *)((char *)arg0+0x54)=arg1;
- if(old>arg1) *(int *)((char *)arg0+0x50)=arg1;
+/* Update the running minimum at +0x50 with value, always recording the latest value at +0x54. */
+void fn_80181480(void *tracker, int value) {
+ int minSoFar=*(int *)((char *)tracker+0x50);
+ *(int *)((char *)tracker+0x54)=value;
+ if(minSoFar>value) *(int *)((char *)tracker+0x50)=value;
 }
 
 #pragma push
