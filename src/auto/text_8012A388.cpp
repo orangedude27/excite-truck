@@ -189,17 +189,25 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
 }
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void *fn_8012A570(u32, void *) {
-    if (lbl_8055E004 == 0) {
-        void *value = fn_801284F8(0x20, lbl_8032A6F8);
+/* Lazily create the shared fixed-size pool object, pop one element from it and
+   bump the live-user count on success (size/name are ignored; the layout is fixed). */
+extern "C" void *fn_8012A570(u32 size, void *name) {
+#define poolRefCount lbl_8055E004
+#define poolObject lbl_8055E008
+#define Pool_NAME lbl_8032A6F8
+    if (poolRefCount == 0) {
+        void *value = fn_801284F8(0x20, Pool_NAME);
         if (value != 0)
-            value = fn_8012A13C(value, lbl_8032A6F8, 0x20, 0x18);
-        lbl_8055E008 = (void **)value;
+            value = fn_8012A13C(value, Pool_NAME, 0x20, 0x18);
+        poolObject = (void **)value;
     }
-    void *p = fn_8012A2D8(lbl_8055E008);
-    if (p != 0)
-        lbl_8055E004 += 1;
-    return p;
+    void *element = fn_8012A2D8(poolObject);
+    if (element != 0)
+        poolRefCount += 1;
+    return element;
+#undef poolRefCount
+#undef poolObject
+#undef Pool_NAME
 }
 #pragma pop
 extern "C" void fn_8012A5E8(void *element) {
