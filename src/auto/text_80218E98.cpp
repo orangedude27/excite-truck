@@ -9624,11 +9624,12 @@ extern "C" void fn_8022A014(void *widget) {
     (*(u8 *)((u8 *)widget + 0x18)) = 1;
 }
 
-extern "C" void fn_8022A034(void *arg0) {
-    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
-        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+extern "C" void fn_8022A034(void *widget) {
+    // Deactivate the widget (flag +0x18 = 0) and, if it tracks a live value (+0x1A), request a redraw (+0x234).
+    if ((*(u8 *)((u8 *)widget + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)widget + 0x234)) = 1;
     }
-    (*(u8 *)((u8 *)arg0 + 0x18)) = 0;
+    (*(u8 *)((u8 *)widget + 0x18)) = 0;
 }
 
 extern "C" void *lbl_8033E770[];
