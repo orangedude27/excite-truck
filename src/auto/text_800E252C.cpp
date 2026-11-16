@@ -648,13 +648,15 @@ void *fn_800E279C(void *arg0) {
     return arg0;
 }
 #pragma pop
-extern "C" void fn_800E2C98(void *arg0) {
-    int *p = (int *)((char *)arg0 + 4);
-    *(int *)((char *)arg0 + 4) = 0;
-    *(int *)((char *)arg0 + 8) = 0;
-    *(int *)arg0 = 0;
-    *(int *)((char *)arg0 + 4) = (int)p;
-    *(int *)((char *)arg0 + 8) = (int)p;
+extern "C" void fn_800E2C98(void *list) {
+    /* Initialize an embedded nw4r::ut::LinkListImpl: clear the node count, then
+     * make the sentinel link at +4 point to itself so the list starts empty. */
+    int *sentinel = (int *)((char *)list + 4);
+    *(int *)((char *)list + 4) = 0;
+    *(int *)((char *)list + 8) = 0;
+    *(int *)list = 0;
+    *(int *)((char *)list + 4) = (int)sentinel;
+    *(int *)((char *)list + 8) = (int)sentinel;
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *self, int shouldDelete) {
