@@ -6708,8 +6708,12 @@ extern "C" void fn_80224160(void *widget) {
 extern "C" void fn_802ED038(s32, f32, f32, f32, f32);
 extern "C" void fn_802ECFEC(void);
 extern "C" void *lbl_8033E2CC[];
-extern "C" void fn_8022419C(void *arg0) {
- s32 ptr=*(s32 *)((u8 *)arg0+0x254); if(ptr) fn_802ED038(ptr,*(f32 *)((u8 *)arg0+0x244),*(f32 *)((u8 *)arg0+0x248),*(f32 *)((u8 *)arg0+0x24C),*(f32 *)((u8 *)arg0+0x250));
+extern "C" void fn_8022419C(void *self) {
+    /* If this image widget owns a resource at +0x254, forward it along with the
+     * cached position/size floats at +0x244..+0x250 to the update wrapper. */
+    s32 resource = *(s32 *)((u8 *)self + 0x254);
+    if (resource)
+        fn_802ED038(resource, *(f32 *)((u8 *)self + 0x244), *(f32 *)((u8 *)self + 0x248), *(f32 *)((u8 *)self + 0x24C), *(f32 *)((u8 *)self + 0x250));
 }
 
 /* Initializes a UI image object from a descriptor and loads its image resource. */
