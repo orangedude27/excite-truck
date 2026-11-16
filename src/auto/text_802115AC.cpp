@@ -2563,9 +2563,10 @@ extern "C" void fn_802158F0(void *arg0) {
     obj->vf3();
 }
 
-extern "C" void fn_80215904(void *arg0) {
+extern "C" void fn_80215904(void *wrapper) {
+    /* Refresh the wrapper's tracked widget slots, then call vf5 on its widget at +0x244. */
     fn_802192AC();
-    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf5();
+    ((VfObj *)*(void **)((char *)wrapper + 0x244))->vf5();
 }
 
 extern "C" void fn_80215944(void *arg0) {
