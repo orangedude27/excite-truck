@@ -442,7 +442,12 @@ void fn_80181FC4(void) {
 }
 
 void fn_80181FEC(void* alarm) {
-    fn_801D14EC(fn_801D1184(alarm));
+#define createCarelmgr fn_801D1184
+#define createCarelmgr2 fn_801D14EC
+    /* Alarm callback: allocate the two "carelmgr" objects and install their vtables. */
+    createCarelmgr2(createCarelmgr(alarm));
+#undef createCarelmgr2
+#undef createCarelmgr
 }
 
 extern int fn_80128668(void);
