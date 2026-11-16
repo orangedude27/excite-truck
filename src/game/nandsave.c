@@ -592,12 +592,11 @@ int fn_802E91AC(int *arg0) { return *arg0 == 0; }
 
 #pragma push
 #pragma opt_propagation off
-unsigned int fn_802E91BC(int *arg0) {
-    int value = *arg0 ^ 2;
-    int shifted = value >> 1;
-    value &= 2;
-    value = shifted - value;
-    return value < 0;
+/* True once the rmemcard async write machine whose context block is ctx has
+ * stopped: its state word (RMEMCARD_WRITE_*) is below CREATE (2), i.e. IDLE (0)
+ * or DONE (1).  False while it is still running (states 2..6). */
+unsigned int fn_802E91BC(int *ctx) {
+    return *ctx < 2;
 }
 #pragma pop
 extern int fn_802E2C20(void);
