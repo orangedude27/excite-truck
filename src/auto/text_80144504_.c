@@ -233,17 +233,18 @@ void fn_80144D64(s32 *dst, s32 *src) {
  dst[0] = a; dst[1] = b; dst[2] = c;
 }
 
-void fn_80144D80(f32 *arg0, f32 farg0, f32 farg1, f32 farg2) {
-    f32 z = lbl_805615BC;
-    arg0[0] = farg0;
-    arg0[1] = z;
-    arg0[2] = z;
-    arg0[3] = z;
-    arg0[4] = farg1;
-    arg0[5] = z;
-    arg0[6] = z;
-    arg0[7] = z;
-    arg0[8] = farg2;
+void fn_80144D80(f32 *out, f32 sx, f32 sy, f32 sz) {
+    /* Build a 3x3 diagonal (scale) matrix: sx, sy, sz on the diagonal, zero elsewhere. */
+    f32 zero = lbl_805615BC;
+    out[0] = sx;
+    out[1] = zero;
+    out[2] = zero;
+    out[3] = zero;
+    out[4] = sy;
+    out[5] = zero;
+    out[6] = zero;
+    out[7] = zero;
+    out[8] = sz;
 }
 
 void fn_80144DAC(f32 *arg0, f32 *arg1) {
