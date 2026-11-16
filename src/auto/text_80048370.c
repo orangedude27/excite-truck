@@ -886,8 +886,9 @@ void MEMInitAllocatorForFrmHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32
     allocator->heapParam2 = 0;
 }
 
-void MEMInitList(MEMList* list, u16 offset) {
-    list->offset = offset;
+/* Initialise an empty MEMList whose objects carry their MEMLink at linkOffset. */
+void MEMInitList(MEMList* list, u16 linkOffset) {
+    list->offset = linkOffset;
     list->head = 0;
     list->tail = 0;
     list->length = 0;
