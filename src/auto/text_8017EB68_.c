@@ -1514,10 +1514,13 @@ float fn_80181548(void *driver) {
 #undef MAX_STAT
 }
 
-float fn_80181568(void *arg0) {
-    float value = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x18);
-    if (value < lbl_80561C48) return value;
-    return lbl_80561C48;
+/* Return the sum of the two driver stats at +0x14 and +0x18, capped at 1.0. */
+float fn_80181568(void *driver) {
+#define MAX_STAT lbl_80561C48
+    float sum = *(float *)((char *)driver + 0x14) + *(float *)((char *)driver + 0x18);
+    if (sum < MAX_STAT) return sum;
+    return MAX_STAT;
+#undef MAX_STAT
 }
 
 extern void fn_802E8518(void);
