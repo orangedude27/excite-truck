@@ -778,9 +778,15 @@ void *fn_801E8718(long playerIndex) {
     return lbl_80487D00 + playerIndex * 0x38;
 }
 
-float fn_801E8738(long arg0) {
-    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
-    return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x34);
+/* Returns the float at +0x34 of a player's 0xE0-byte config record; a negative
+ * index selects the current player. */
+float fn_801E8738(long playerIndex) {
+#define CurrentPlayerIndex lbl_8055AF0C /* -1 sentinel: use the current player */
+#define sPlayerConfigs lbl_8055EB04 /* array of 0xE0-byte per-player camera/viewport configs */
+    if (playerIndex < 0) playerIndex = (long)CurrentPlayerIndex;
+    return *(float *)((char *)sPlayerConfigs + playerIndex * 0xE0 + 0x34);
+#undef sPlayerConfigs
+#undef CurrentPlayerIndex
 }
 
 #pragma scheduling off
