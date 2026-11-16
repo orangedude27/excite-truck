@@ -26,6 +26,7 @@ void fn_802B98D0(void *);
 s32 fn_802B9ACC(void *);
 void fn_802B9AA4(void *, float *, float *);
 int fn_802B9920(int);
+static inline short modByBase(int base, short val) { return (short)(val % base); }
 short fn_802B9954(void *);
 int fn_802B9914(void *);
 
@@ -578,8 +579,8 @@ extern short lbl_802FAB60[];
 #pragma push
 #pragma scheduling invalid_target
 int fn_802B9920(int arg0) {
-    short s = (short)(arg0 + 0x200);
-    short idx = fn_802B9920_mod2(arg0, s);
+    register short s = (short)(arg0 + 0x200);
+    short idx = (short)(s % 32);
     return lbl_802FAB60[idx];
 }
 #pragma scheduling on
