@@ -9133,12 +9133,14 @@ extern "C" s32 fn_802298A4(s32 arg0) {
     return arg0 + 0x258;
 }
 
-extern "C" s32 fn_802298AC(void *arg0) {
-    s32 result = 0;
-    if (*(u8 *)((char *)arg0 + 0x18) != 0) {
-        result = 2;
+extern "C" s32 fn_802298AC(void *self) {
+    /* Status bits: bit 1 (2) if this widget's active flag (+0x18) is set,
+     * bit 0 (1) if the byte pointed to by +0x254 is nonzero. */
+    s32 status = 0;
+    if (*(u8 *)((char *)self + 0x18) != 0) {
+        status = 2;
     }
-    return (*(*(u8 **)((char *)arg0 + 0x254)) != 0) | result;
+    return (*(*(u8 **)((char *)self + 0x254)) != 0) | status;
 }
 
 extern "C" int fn_802298DC(void *arg0) {
