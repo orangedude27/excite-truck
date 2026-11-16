@@ -270,6 +270,7 @@ void fn_802DF4A8(void) {
 }
 
 #pragma scheduling invalid_target
+/* Reset TEV swap tables to identity for stages 0-1 and disable indirect stages. */
 void fn_802DF684(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
