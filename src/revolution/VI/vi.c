@@ -50,6 +50,9 @@ static u8 lbl_80558FD0[8] = { 0xFF };
 
 #define viI2cSdaNonInverted (lbl_80558FB8[0])
 
+// Size of one gamma-correction table in lbl_80311B50; lbl_8055DBE8 selects which table.
+#define GAMMA_TABLE_STRIDE 0x22
+
 // Forward declarations
 typedef struct VITiming VITiming;
 typedef struct SomeVIStruct SomeVIStruct;
