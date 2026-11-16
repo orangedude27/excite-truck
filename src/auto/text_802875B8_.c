@@ -861,13 +861,6 @@ unsigned int fn_80288870(void) {
     return v;
 }
 
-#if 0
-void fn_80288870_old(void) {
-    unsigned int t = (unsigned int)lbl_8055F6C8 * 0x12B9B0A1u + 0x1CCE8AC1u;
-    unsigned int v = t & 0x7FFFFFFFu;
-    lbl_8055F6C8 = (void *)v;
-}
-#endif
 #pragma push
 #pragma cplusplus on
 extern "C" s32 fn_80287E20(void ***arg0, s32 arg1) {
