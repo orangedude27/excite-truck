@@ -2491,43 +2491,47 @@ entries_test:
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012E2CC(void *arg0) {
+    /* Process pending resource-load requests queued at +0xA18: wait until the current
+     * request's handle is ready, then for each queued entry start loads (status 0),
+     * attach completed resources (status 2) into lbl_8055E000 by name, or ignore others,
+     * guarding re-entry with the busy flag at +0xA20. */
     u8 *obj = (u8 *)arg0;
-    void *done;
+    void *currentRequest;
     void *entry;
-    void *node;
-    s32 state;
+    void *resource;
+    s32 status;
 
-    done = *(void **)(obj + 0xA18);
-    if (done == 0) return;
+    currentRequest = *(void **)(obj + 0xA18);
+    if (currentRequest == 0) return;
     goto check_status;
 retry_status:
     fn_80127464();
     fn_802E2D74(0xA);
 check_status:
-    if (fn_8012D838(*(s32 *)((u8 *)done + 0x4C)) != 2) goto retry_status;
+    if (fn_8012D838(*(s32 *)((u8 *)currentRequest + 0x4C)) != 2) goto retry_status;
     if (obj[0xA20] != 0) return;
     obj[0xA20] = 1;
     do {
-        done = 0;
+        currentRequest = 0;
         entry = (void *)fn_8012E490((s32 *)(obj + 0xA18));
         if (entry != 0) {
-            state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
-            switch (state) {
+            status = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
+            switch (status) {
             case 0:
                 fn_8012E40C((void *)*(s32 *)((u8 *)entry + 0x4C), (s32)((u8 *)entry + 0xC));
                 break;
             case 2:
-                node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
-                *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
-                *(u8 *)((u8 *)node + 0xAD) = 1;
+                resource = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
+                *(s32 *)((u8 *)resource + 0x9C) = *(s32 *)((u8 *)entry + 8);
+                *(u8 *)((u8 *)resource + 0xAD) = 1;
                 fn_8012E3D4(obj + 0xA18);
-                done = (void *)1;
+                currentRequest = (void *)1;
                 break;
             default:
                 break;
             }
         }
-    } while (done != 0);
+    } while (currentRequest != 0);
     obj[0xA20] = 0;
 }
 #pragma pop
