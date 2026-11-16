@@ -11213,10 +11213,11 @@ void fn_80071508(u8 arg0) {
     lbl_8055DC80 = arg0;
 }
 
-void fn_80071510(void *arg0, s32 arg1, u8 arg2) {
-    fn_8006E6E4(arg0);
-    ((s32 *)arg0)[3] = arg1;
-    ((u8 *)arg0)[0x10] = arg2;
+/* Initializes a BTA protocol timer control block with its period (ms) and timer id. */
+void fn_80071510(void *p_cb, s32 period, u8 timer_id) {
+    fn_8006E6E4(p_cb);
+    ((s32 *)p_cb)[3] = period;
+    ((u8 *)p_cb)[0x10] = timer_id;
 }
 
 /* GKI tick conversion, as in revolution/BTE/include/gki_target.h (a header this
