@@ -68,11 +68,12 @@ void fn_801D9F28(void *arg0) {
 extern int fn_80128668(void);
 extern float lbl_80562B38;
 extern int strcmp(const char *, const char *);
-int fn_801D9F44(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_801D9F44(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma scheduling invalid_target
