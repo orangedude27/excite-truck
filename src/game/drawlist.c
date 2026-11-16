@@ -921,10 +921,12 @@ void fn_802C9904(void) {
 }
 
 int fn_802C990C(int arg0) {
-    int previous = lbl_8055FC78;
+    /* Set the current packed draw color, forward its RGB components to
+     * fn_802CFFAC, and return the previous packed color. */
+    int previousColor = lbl_8055FC78;
     lbl_8055FC78 = arg0;
     fn_802CFFAC((arg0 >> 16) & 0xFF, (arg0 >> 8) & 0xFF, arg0 & 0xFF);
-    return previous;
+    return previousColor;
 }
 
 extern int lbl_8055FC7C;
