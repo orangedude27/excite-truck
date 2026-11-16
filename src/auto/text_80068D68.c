@@ -2922,6 +2922,7 @@ s32 fn_8006CFA0(void) {
     return 0;
 }
 
+/* Debug printf stub (no-op). */
 void DBPrintf_8006CFA8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
