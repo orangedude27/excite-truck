@@ -220,8 +220,9 @@ void fn_8022EDB8(void) {
 }
 
 s32 fn_8022EDC4(void) {
-    s32 *p = (s32 *)((s32 *)lbl_8055F004)[1];
-    if (p) return *p;
+    /* Return the value held by the tail node of the UI-context stack (the current UIContext), or 0 when the stack is empty. */
+    s32 *tailNode = (s32 *)((s32 *)sUIContextList)[1];
+    if (tailNode) return *tailNode;
     return 0;
 }
 
