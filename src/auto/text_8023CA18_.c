@@ -73,8 +73,9 @@ s32 fn_8023CB54(void) {
     return 0;
 }
 
-s32 fn_8023CB80(void* arg0) {
-    fn_80236900(arg0);
+s32 fn_8023CB80(void *unused) {
+    /* Debug-option callback: reset the UI-animation state flag (fn_80236900) and report success. */
+    fn_80236900(unused);
     return 1;
 }
 
