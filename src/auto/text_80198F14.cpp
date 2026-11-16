@@ -2444,11 +2444,13 @@ extern "C" void fn_8019F3D0(void) {
 }
 
 extern "C" s32 fn_80128668(void);
-extern "C" s32 fn_8019F3D4(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* If ptr is set and count is positive, free the object (fn_80128668 receives
+ * ptr in r3); always return ptr unchanged. */
+extern "C" s32 fn_8019F3D4(s32 ptr, s32 count) {
+    if (ptr != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return ptr;
 }
 
 extern "C" void fn_8019F414(void *arg0) {
