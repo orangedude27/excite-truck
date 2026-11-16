@@ -6381,147 +6381,173 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
     return 0;
 }
 
-extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    u8 *ctx = (u8 *)*(void **)((u8 *)arg0 + 0x34);
-    s32 next;
-    s32 idx;
+/* Hand a run of a file's clusters back to the volume.
+ *
+ * The chain is walked from firstCluster on and every entry the walk passes is
+ * set to 0 in the FAT, which frees the cluster.  One FAT page of the volume's
+ * cache is held for the whole walk (VFiPFCACHE_ClaimPage and
+ * VFiPFFAT_ReadClusterSector) and marked VF_PAGE_WRITE_BACK, so the FAT sector
+ * changed in it goes back to every FAT copy of the volume when the walk ends;
+ * the volume's free cluster count grows by one for every cluster handed back.
+ *
+ * chainPos is where firstCluster sits in the file's chain and is carried along
+ * with the walk so the file's chain cache hears about every cluster freed; -1
+ * clears the entries with no cache to keep in step.  bytes is how much of the
+ * file is handed back: a cluster's worth comes off it every step and the walk
+ * stops once it is used up, so 0 frees nothing at all.  The walk ends the same
+ * way on an entry that is free already, or when the chain reaches a value that
+ * cannot be a cluster (VF_FAT_FIRST_END).
+ *
+ * fn_800ADD84 calls it to hand back a run of clusters it could not finish
+ * linking; the open code calls it with no chain position, to free what a file
+ * is cut down to.
+ */
+extern "C" s32 fn_800AE7A8(void *walk, s32 firstCluster, s32 chainPos, s32 bytes) {
+    u8 *volume = (u8 *)VF_CHAIN_VOLUME((u8 *)walk);
+    s32 nextCluster;
+    s32 pageIndex;
     void *page;
-    s32 cur;
-    u32 limit;
-    s32 remain;
-    s32 clusterSize;
-    s32 err;
-    if (arg1 == 0) {
+    s32 cluster;
+    u32 firstEndCluster;
+    s32 bytesLeft;
+    s32 clusterBytes;
+    s32 result;
+    if (firstCluster == 0) {
         return 0;
     }
-    cur = arg1;
-    limit = ((u32 *)lbl_802EEF40)[*(s32 *)(ctx + 0x1C) * 5 + 1];
-    if (arg3 != 0) {
-        remain = arg3;
-        clusterSize = *(u16 *)ctx << *(u8 *)(ctx + 0x21);
+    cluster = firstCluster;
+    firstEndCluster = VF_FAT_FIRST_END(VF_VOL_FAT_TYPE(volume));
+    if (bytes != 0) {
+        bytesLeft = bytes;
+        clusterBytes = VF_VOL_SECTOR_SIZE(volume) << VF_VOL_CLUSTER_SHIFT(volume);
     } else {
         return 0;
     }
-    err = ((s32 (*)(void *, s32, void **, s32 *))(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(ctx, -1, &page, &idx);
-    if (err != 0) {
-        return err;
+    result = ((s32 (*)(void *, s32, void **, s32 *))(s32 (*)(s32, void **, s32 *, s32, s32 *))VFiPFCACHE_ClaimPage)(volume, -1, &page, &pageIndex);
+    if (result != 0) {
+        return result;
     }
-    err = fn_800ACA5C(ctx, page, cur);
-    if (err != 0) {
-        VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
-        return err;
+    result = VFiPFFAT_ReadClusterSector(volume, page, cluster);
+    if (result != 0) {
+        VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
+        return result;
     }
-    *(s16 *)((u8 *)page + 2) = 1;
-    next = cur;
-    while ((u32)cur < limit) {
+    VF_PAGE_WRITE_BACK(page) = 1; /* what is read out of it now has to be written back */
+    nextCluster = cluster;
+    while ((u32)cluster < firstEndCluster) {
         s32 writeError;
-        s32 type;
-        void *pp;
-        if (arg3 != 0 && remain == 0) {
-            break;
+        s32 fatType;
+        void *entryPage;
+        if (bytes != 0 && bytesLeft == 0) {
+            break; /* as much of the file as the caller wanted is free again */
         }
-        type = *(s32 *)(ctx + 0x1C);
-        pp = page;
-        switch (type) {
-        case 0:
-            err = ((s32 (*)(void *, u16, s32 *, void *))fn_800AFBA8)(ctx, (u16)cur, &next, pp);
+        fatType = VF_VOL_FAT_TYPE(volume);
+        entryPage = page;
+        switch (fatType) {
+        case VF_FAT_TYPE_12:
+            result = ((s32 (*)(void *, u16, s32 *, void *))VFiPFFAT_GetEntry12)(volume, (u16)cluster, &nextCluster, entryPage);
             break;
-        case 1:
-            err = ((s32 (*)(void *, s32, s32 *, void *))fn_800B00E8)(ctx, cur, &next, pp);
+        case VF_FAT_TYPE_16:
+            result = ((s32 (*)(void *, s32, s32 *, void *))VFiPFFAT_GetEntry16)(volume, cluster, &nextCluster, entryPage);
             break;
-        case 2:
-            err = ((s32 (*)(void *, s32, s32 *, void *))fn_800B05C8)(ctx, cur, &next, pp);
+        case VF_FAT_TYPE_32:
+            result = ((s32 (*)(void *, s32, s32 *, void *))VFiPFFAT_GetEntry32)(volume, cluster, &nextCluster, entryPage);
             break;
         default:
-            err = 0xF;
+            result = 0xF; /* no FAT the code knows */
             break;
         }
-        if (err != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
-            return err;
+        if (result != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
+            return result;
         }
-        if (next == 0) {
-            s32 acc = 0;
-            u16 i;
-            arg2 = (s32)page;
-            arg0 = (void *)*(s32 *)((u8 *)arg2 + 0x18);
-            for (i = 0; i < *(u8 *)(ctx + 0x22); i++) {
-                s32 e = fn_800B5618(ctx, *(void **)((u8 *)arg2 + 8), (u32)arg0, 0, *(u16 *)ctx);
-                if (e != 0 && acc == 0) {
-                    acc = e;
+        if (nextCluster == 0) {
+            /* the chain ends on a cluster that is free already: write the FAT
+             * sector back to every copy of it and stop here */
+            s32 savedError = 0;
+            u16 fat;
+            chainPos = (s32)page;                         /* the page, as the cursor of */
+            walk = (void *)VF_PAGE_FIRST((u8 *)chainPos);  /* the loop over its FAT copies */
+            for (fat = 0; fat < VF_VOL_FAT_COUNT(volume); fat++) {
+                s32 error = VFiPFCACHE_WritePage(volume, VF_PAGE_DATA((u8 *)chainPos), (u32)walk, 0, VF_VOL_SECTOR_SIZE(volume));
+                if (error != 0 && savedError == 0) {
+                    savedError = error;
                 }
-                arg0 = (u8 *)arg0 + *(s32 *)(ctx + 0xC);
+                walk = (u8 *)walk + VF_VOL_FAT_SECTOR_STEP(volume);
             }
-            err = acc;
-            if (err != 0) {
-                VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
-                return err;
+            result = savedError;
+            if (result != 0) {
+                VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
+                return result;
             }
-            VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
             return 0;
         }
-        if ((u32)(arg2 + 0x10000) != 0xFFFFU) {
-            writeError = VFiPFFAT_WriteClusterPage(arg0, cur, arg2, 0, 1, page);
-            arg2++;
+        if (!VF_SECTOR_IS_END(chainPos)) {
+            /* the cluster leaves the file's chain, and its cache is told so */
+            writeError = VFiPFFAT_WriteClusterPage(walk, cluster, chainPos, 0, 1, page);
+            chainPos++;
         } else {
-            s32 r;
-            type = *(s32 *)(ctx + 0x1C);
-            pp = page;
-            switch (type) {
-            case 0:
-                r = ((s32 (*)(void *, u16, s32, void *))fn_800AF8EC)(ctx, (u16)cur, 0, pp);
+            s32 clearResult;
+            fatType = VF_VOL_FAT_TYPE(volume);
+            entryPage = page;
+            switch (fatType) {
+            case VF_FAT_TYPE_12:
+                clearResult = ((s32 (*)(void *, u16, s32, void *))VFiPFFAT_SetEntry12)(volume, (u16)cluster, 0, entryPage);
                 break;
-            case 1:
-                r = ((s32 (*)(void *, s32, s32, void *))fn_800AFFE0)(ctx, cur, 0, pp);
+            case VF_FAT_TYPE_16:
+                clearResult = ((s32 (*)(void *, s32, s32, void *))VFiPFFAT_SetEntry16)(volume, cluster, 0, entryPage);
                 break;
-            case 2:
-                r = ((s32 (*)(void *, s32, s32, void *))fn_800B0488)(ctx, cur, 0, pp);
+            case VF_FAT_TYPE_32:
+                clearResult = ((s32 (*)(void *, s32, s32, void *))VFiPFFAT_SetEntry32)(volume, cluster, 0, entryPage);
                 break;
             default:
-                r = 0xF;
+                clearResult = 0xF; /* no FAT the code knows */
                 break;
             }
-            writeError = r;
+            writeError = clearResult;
         }
         if (writeError != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
             return writeError;
         }
-        if (arg3 != 0 && remain != 0) {
-            remain = (u32)clusterSize >= (u32)remain ? 0 : remain - clusterSize;
+        if (bytes != 0 && bytesLeft != 0) {
+            bytesLeft = (u32)clusterBytes >= (u32)bytesLeft ? 0 : bytesLeft - clusterBytes;
         }
-        if ((u32)(*(s32 *)(ctx + 0x38) + 0x10000) != 0xFFFFU) {
-            *(s32 *)(ctx + 0x38) = *(s32 *)(ctx + 0x38) + 1;
+        if (!VF_SECTOR_IS_END(VF_VOL_FREE_CLUSTERS(volume))) {
+            VF_VOL_FREE_CLUSTERS(volume) = VF_VOL_FREE_CLUSTERS(volume) + 1;
         }
-        cur = next;
+        cluster = nextCluster;
     }
     {
-        s32 acc = 0;
-        struct { void *value; } positionLocal;
-        void *&position = positionLocal.value;
-        struct { s32 value; } countLocal;
-        s32 &i = countLocal.value;
-        struct { u8 *value; } flushPage;
-        u8 *&pg = flushPage.value;
+        /* the FAT sector changed in the page, back to every copy of the FAT */
+        s32 savedError = 0;
+        struct { void *value; } sectorLocal;
+        void *&sector = sectorLocal.value;
+        struct { s32 value; } fatLocal;
+        s32 &fat = fatLocal.value;
+        struct { u8 *value; } writePage;
+        u8 *&pg = writePage.value;
         pg = (u8 *)page;
-        position = (void *)*(s32 *)(pg + 0x18);
-        for (i = 0; (u16)i < *(u8 *)(ctx + 0x22); i++) {
-            s32 e = fn_800B5618(ctx, *(void **)(pg + 8), (u32)position, 0, *(u16 *)ctx);
-            if (e != 0 && acc == 0) {
-                acc = e;
+        sector = (void *)VF_PAGE_FIRST(pg);
+        for (fat = 0; (u16)fat < VF_VOL_FAT_COUNT(volume); fat++) {
+            s32 error = VFiPFCACHE_WritePage(volume, VF_PAGE_DATA(pg), (u32)sector, 0, VF_VOL_SECTOR_SIZE(volume));
+            if (error != 0 && savedError == 0) {
+                savedError = error;
             }
-            position = (u8 *)position + *(s32 *)(ctx + 0xC);
+            sector = (u8 *)sector + VF_VOL_FAT_SECTOR_STEP(volume);
         }
-        err = acc;
-        if (err != 0) {
-            VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
-            return err;
+        result = savedError;
+        if (result != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
+            return result;
         }
     }
-    VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
-    if (*(s32 *)(ctx + 0x1C) == 2 && (*(u16 *)(ctx + 0x1FAC) & 2) && fn_800AF144(ctx) != 0) {
-        *(s32 *)(ctx + 0x38) = -1;
-        *(u16 *)(ctx + 0x1FAC) = *(u16 *)(ctx + 0x1FAC) & ~4;
+    VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
+    if (VF_VOL_FAT_TYPE(volume) == VF_FAT_TYPE_32 && (VF_VOL_STATE(volume) & VF_VOL_STATE_FSINFO) && fn_800AF144(volume) != 0) {
+        /* the FSInfo sector would not take the new count: it is not known again */
+        VF_VOL_FREE_CLUSTERS(volume) = -1;
+        VF_VOL_STATE(volume) = VF_VOL_STATE(volume) & ~VF_VOL_STATE_FREE_COUNT;
     }
     return 0;
 }
