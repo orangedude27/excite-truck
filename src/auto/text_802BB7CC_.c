@@ -54,10 +54,12 @@ int fn_802BB928(int arg0) {
     return (arg0 + 0x200) / 2;
 }
 
-short fn_802BB93C(int arg0) {
-    unsigned int value = (unsigned int)arg0 + 0x200;
-    unsigned int sign = value >> 31;
-    int rounded = (int)sign + (int)value;
+short fn_802BB93C(int worldY) {
+    /* Map a signed world Y coordinate to a flipped 9-bit (0..0x1FF) grid index:
+     * round (worldY + 0x200)/2, then invert about 0x1FF (Y grows downward). */
+    unsigned int biased = (unsigned int)worldY + 0x200;
+    unsigned int sign = biased >> 31;
+    int rounded = (int)sign + (int)biased;
     return (short)(0x1FF - (rounded >> 1));
 }
 
