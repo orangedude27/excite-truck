@@ -81,10 +81,15 @@ void *fn_801A9660(void) {
     }
 }
 #pragma scheduling on
-void** fn_801A9700(void** arg0) {
-    fn_8017B0B0(arg0);
-    *arg0 = &lbl_8033585C;
-    return arg0;
+void** fn_801A9700(void** object) {
+#define ObstacleBaseCtor fn_8017B0B0
+#define ObstacleVtable lbl_8033585C
+    /* Construct the base obstacle: run shared base-object setup and install the obstacle vtable. */
+    ObstacleBaseCtor(object);
+    *object = &ObstacleVtable;
+    return object;
+#undef ObstacleVtable
+#undef ObstacleBaseCtor
 }
 #pragma scheduling on
 /* Deleting destructor for nw4r::snd::detail::DisposeCallbackManager: destroy base
