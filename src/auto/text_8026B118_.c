@@ -257,6 +257,7 @@ void fn_8026B644(void) {
 }
 #pragma scheduling reset
 void fn_8026B69C(void) {
+    /* Tear down the thread lists: reset the active slot count and delete both thread groups. */
     lbl_8055F4C8 = 0;
     deleteThreads__6SystemFv_8026B178(&lbl_8055F4CC);
     deleteThreads__6SystemFv_8026B178(&lbl_8055F4D0);
