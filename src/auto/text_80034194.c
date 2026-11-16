@@ -278,6 +278,11 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 // The cancel helpers below, under the names the RVL SDK's DVD.cpp gives them.
 #define DVDCancelAsync fn_80039424   // cancel one command block, answer when done
 #define stateReady     fn_80038040   // start the next command on the waiting queue
+#define stateCoverClosed     fn_8003773C // the drive's cover-closed state
+#define stateBusy            fn_80038368 // the drive's busy state: run the block's command
+#define CoverAlarmHandler    fn_8003801C // the alarm that polls the cover register
+#define __DVDStoreErrorCode  fn_8003A1A0 // write a drive error code, then carry on
+#define cbForStoreErrorCode1 fn_80035C64 // carried on from the code just written
 
 // The __ErrorInfo ring (dvderror.h): the next free entry of its info[] array,
 // and how many drive error interrupts have been counted in a row.
