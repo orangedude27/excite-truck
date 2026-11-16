@@ -96,12 +96,15 @@ extern float lbl_8056448C;
 extern float lbl_80564494;
 extern float lbl_80564498;
 extern float lbl_8056449C;
-float fn_80291784(float a, float b, float c, float d) {
-    int x, y;
-    float value;
-    int w;
-    fn_802C98DC(&x, &y, &value, &w);
-    return value - lbl_80564480;
+/* Fetch the four current view parameters into scratch slots (fn_802C98DC
+ * reports tangent, view X, view Y and depth), then return view Y minus 1.0
+ * (lbl_80564480). The four incoming float arguments are not used. */
+float fn_80291784(float deltaX, float deltaY, float deltaZ, float deltaW) {
+    int out0, out1;
+    float viewY;
+    int out3;
+    fn_802C98DC(&out0, &out1, &viewY, &out3);
+    return viewY - lbl_80564480;
 }
 
 #pragma scheduling invalid_target
@@ -460,15 +463,21 @@ check:
 
 void fn_8029227C(void) {
     int old;
-    if (lbl_8055F75C != 0) {
-        if (lbl_8055C920 != 0) {
-            old = fn_802C2C00(0);
-            if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802D3BB0(*((int *)(lbl_804B4010 + 0x10)));
-            if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802920D0();
-            if (*((unsigned char *)&lbl_804B3EC0 + 0x148)) fn_80291E64(&lbl_804B3EC0);
-            fn_802C2C00(old);
-        }
+    switch (lbl_8055F75C) {
+    case 0:
+        goto done;
+    default:
+        if (lbl_8055C920 != 0)
+            goto body;
+        goto done;
     }
+body:
+    old = fn_802C2C00(0);
+    if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802D3BB0(*((int *)(lbl_804B4010 + 0x10)));
+    if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802920D0();
+    if (*((unsigned char *)&lbl_804B3EC0 + 0x148)) fn_80291E64(&lbl_804B3EC0);
+    fn_802C2C00(old);
+done: ;
 }
 
 #pragma push
@@ -514,7 +523,7 @@ extern float lbl_8056449C;
 extern double lbl_805644C8;
 __declspec(section ".data") extern int lbl_804B3EC0;
 void fn_802923EC(float arg0) {
-    register int *table;
+    register char *table;
     register int *settings;
     register int amount;
     register int *entry;
@@ -530,7 +539,7 @@ void fn_802923EC(float arg0) {
         amount = (int)(lbl_8056449C * value);
         settings[6] = (int)(((unsigned int)amount << 24) | packed);
         entry = (int *)&lbl_804B3EC0;
-        table = entry;
+        table = (char *)entry;
         i = 0;
         goto check;
 loop:
@@ -539,7 +548,7 @@ loop:
         entry[6] = (int)(((unsigned int)(int)(value * (float)(packed >> 24)) << 24) | (packed & 0xFFFFFFu));
         entry = (int *)((char *)entry + 0x24);
 check:
-        if (i < table[0x120 / 4]) {
+        if (i < *(int *)(table + 0x120)) {
             goto loop;
         }
     }
