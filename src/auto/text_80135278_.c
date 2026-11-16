@@ -973,13 +973,14 @@ typedef struct {
 
 #pragma cplusplus on
 extern "C" float fn_8013672C(void) {
-    class Obj {
+    /* RealName: getPathProgress. Return the current progress value held by the active course path tracker. */
+    class CourseTracker {
     public:
-        virtual void *get(s32 index);
+        virtual void *getEntry(s32 index);
     };
-    Obj *obj = (Obj *)fn_80156A40();
-    void *ret = obj->get(0);
-    return *(float *)((char *)ret + 8);
+    CourseTracker *tracker = (CourseTracker *)fn_80156A40();
+    void *entry = tracker->getEntry(0);
+    return *(float *)((char *)entry + 8);
 }
 #pragma cplusplus reset
 void fn_80136764(void) {
