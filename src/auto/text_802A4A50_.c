@@ -554,21 +554,23 @@ void fn_802A52FC(f32 arg0) {
 void fn_802A5270(f32);
 #define SpawnRainSystem fn_802A5270 /* creates the "rain system" effect (resource 0x44) */
 #define SpawnSnowSystem fn_802A52FC /* creates the "snow system" effect (resource 0xBC) */
-s32 fn_802A5384(s32 arg0) {
-    s32 value = *(s32 *)arg0;
+s32 fn_802A5384(s32 modePtr) {
+    /* Select a weather effect from the mode at `modePtr`: 1 spawns the rain
+     * system, 2 the snow system; any other value does nothing. */
+    s32 mode = *(s32 *)modePtr;
 
-    if (value == 2) {
+    if (mode == 2) {
         goto special;
     }
-    if (value >= 2) {
+    if (mode >= 2) {
         return;
     }
-    if (value < 1) {
+    if (mode < 1) {
         return;
     }
-    return ((s32 (*)(f32))fn_802A5270)(lbl_8056485C);
+    return ((s32 (*)(f32))SpawnRainSystem)(lbl_8056485C);
 special:
-    return ((s32 (*)(f32))fn_802A52FC)(lbl_8056485C);
+    return ((s32 (*)(f32))SpawnSnowSystem)(lbl_8056485C);
 }
 
 #pragma push
