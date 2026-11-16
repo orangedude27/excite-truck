@@ -6612,54 +6612,57 @@ extern "C" void* fn_80223FAC(void* self, s32 deletingFlag) {
 }
 
 extern "C" const char lbl_8033DA90[];
-extern "C" void fn_80224028(void *arg0) {
-    s32 state;
-    s32 (*callback)(void *);
+extern "C" void fn_80224028(void *widget) {
+    s32 movie;
+    s32 (*onMovieEnd)(void *);
 
-    fn_802192AC(arg0);
-    state = *(s32 *)((u8 *)arg0 + 0x254);
-    if (state != 0) {
+    /* Per-frame MovieWidget update: keep the requested movie loaded (reload it
+       when the name changes), fire the completion callback when playback ends
+       or a load fails, and advance the active movie at the end. */
+    fn_802192AC(widget);
+    movie = *(s32 *)((u8 *)widget + 0x254);
+    if (movie != 0) {
         goto active;
     }
-    if (*(s32 *)((u8 *)arg0 + 0x258) == 0) {
+    if (*(s32 *)((u8 *)widget + 0x258) == 0) {
         goto done;
     }
-    state = fn_802ECF08(*(s32 *)((u8 *)arg0 + 0x258),
-        *(u8 *)((u8 *)arg0 + 0x25C) == 0);
-    *(s32 *)((u8 *)arg0 + 0x254) = state;
-    if (state != 0) {
+    movie = fn_802ECF08(*(s32 *)((u8 *)widget + 0x258),
+        *(u8 *)((u8 *)widget + 0x25C) == 0);
+    *(s32 *)((u8 *)widget + 0x254) = movie;
+    if (movie != 0) {
         goto done;
     }
-    if (*(u8 *)((u8 *)arg0 + 0x25C) == 0) {
+    if (*(u8 *)((u8 *)widget + 0x25C) == 0) {
         goto done;
     }
-    callback = *(s32 (**)(void *))((u8 *)arg0 + 0x260);
-    if ((callback == 0) || (callback(*(void **)((u8 *)arg0 + 0x264)) != 0)) {
-        fn_802168BC(*(void **)((u8 *)arg0 + 0x264));
+    onMovieEnd = *(s32 (**)(void *))((u8 *)widget + 0x260);
+    if ((onMovieEnd == 0) || (onMovieEnd(*(void **)((u8 *)widget + 0x264)) != 0)) {
+        fn_802168BC(*(void **)((u8 *)widget + 0x264));
     }
     goto done;
 
 active:
-    if (*(u8 *)((u8 *)arg0 + 0x25C) != 0) {
-        if (((s32 (*)(s32))fn_802ED040)(state) != 0) {
-            callback = *(s32 (**)(void *))((u8 *)arg0 + 0x260);
-            if ((callback == 0) || (callback(*(void **)((u8 *)arg0 + 0x264)) != 0)) {
-                fn_802168BC(*(void **)((u8 *)arg0 + 0x264));
+    if (*(u8 *)((u8 *)widget + 0x25C) != 0) {
+        if (((s32 (*)(s32))fn_802ED040)(movie) != 0) {
+            onMovieEnd = *(s32 (**)(void *))((u8 *)widget + 0x260);
+            if ((onMovieEnd == 0) || (onMovieEnd(*(void **)((u8 *)widget + 0x264)) != 0)) {
+                fn_802168BC(*(void **)((u8 *)widget + 0x264));
             }
         }
     }
-    if (*(s32 *)((u8 *)arg0 + 0x258) != 0 &&
-        ((s32 (*)(s32, s32))fn_802ECF90)(*(s32 *)((u8 *)arg0 + 0x254), *(s32 *)((u8 *)arg0 + 0x258)) == 0) {
-        fn_802ECFF4(*(s32 *)((u8 *)arg0 + 0x254));
-        fn_802E30C8(lbl_8033DA90, *(s32 *)((u8 *)arg0 + 0x258));
-        *(s32 *)((u8 *)arg0 + 0x254) = fn_802ECF08(
-            *(s32 *)((u8 *)arg0 + 0x258),
-            *(u8 *)((u8 *)arg0 + 0x25C) == 0);
+    if (*(s32 *)((u8 *)widget + 0x258) != 0 &&
+        ((s32 (*)(s32, s32))fn_802ECF90)(*(s32 *)((u8 *)widget + 0x254), *(s32 *)((u8 *)widget + 0x258)) == 0) {
+        fn_802ECFF4(*(s32 *)((u8 *)widget + 0x254));
+        fn_802E30C8(lbl_8033DA90, *(s32 *)((u8 *)widget + 0x258));
+        *(s32 *)((u8 *)widget + 0x254) = fn_802ECF08(
+            *(s32 *)((u8 *)widget + 0x258),
+            *(u8 *)((u8 *)widget + 0x25C) == 0);
     }
 
 done:
-    if (*(s32 *)((u8 *)arg0 + 0x254) != 0) {
-        ((void (*)(s32))fn_802ECFEC)(*(s32 *)((u8 *)arg0 + 0x254));
+    if (*(s32 *)((u8 *)widget + 0x254) != 0) {
+        ((void (*)(s32))fn_802ECFEC)(*(s32 *)((u8 *)widget + 0x254));
     }
 }
 
