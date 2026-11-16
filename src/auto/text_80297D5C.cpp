@@ -2261,10 +2261,12 @@ done:
 #pragma scheduling on
 
 #pragma scheduling off
-extern "C" int fn_8029BD14(int arg0) {
-    fn_8029BEF8((void*)arg0);
+extern "C" int fn_8029BD14(int object) {
+    /* Construct a TorchFireMan: build the "torch fire" effect it owns, register
+       fn_8029C190 as the event-9 callback, and return the object. */
+    fn_8029BEF8((void*)object);
     fn_801EEFDC((void*)fn_8029C190, 9);
-    return arg0;
+    return object;
 }
 #pragma scheduling reset
 extern "C" void* fn_8029BD54(void* object, int deletingFlag) {
