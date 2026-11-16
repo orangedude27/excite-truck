@@ -2356,7 +2356,7 @@ u32 fn_8011A240(void *arg0, u32 arg1, s32 arg2, u32 arg3) {
     register s32 remaining = (s32)arg3;
     register s32 dst = arg2;
     register s32 offset = (s32)arg1;
-    s32 status;
+
     bufferAddr = (u32)(buffer + 0x1F) & 0xFFFFFFE0;
     available = ((u32)(buffer + 0x41F) - bufferAddr) & 0xFFFFFFE0;
     while (remaining != 0) {
@@ -2364,18 +2364,23 @@ u32 fn_8011A240(void *arg0, u32 arg1, s32 arg2, u32 arg3) {
         if ((u32)remaining >= available) amount = available;
         DVDReadAsyncPrio(block, (void *)bufferAddr, amount, offset, 0, 0);
 poll_drive:
-        status = DVDGetDriveStatus();
-        if (status == 0) goto read_done;
-        if (status >= 0) goto status_nonnegative;
-        if (status < -1) goto poll_drive;
-        goto read_failed;
-status_nonnegative:
-        if (status >= 0xC) goto poll_drive;
-        else if (status >= 3) goto read_failed;
-        else goto poll_drive;
-read_failed:
-        return 0;
-read_done:
+        switch (DVDGetDriveStatus()) {
+        case 0:
+            break;
+        case -1:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+            return 0;
+        default:
+            goto poll_drive;
+        }
         if (amount > (u32)remaining) amount = (u32)remaining;
         memcpy((void *)dst, (void *)bufferAddr, amount);
         dst += amount;
