@@ -18,8 +18,11 @@ void fn_801CEC80(void) {
 }
 #pragma scheduling on
 void fn_801CECB4(void) {
-    fn_80128670(lbl_8055E890);
-    lbl_8055E890 = 0;
+#define gDamageCarInfo lbl_8055E890
+    /* Free the "dmg_car_info" table and clear the global pointer. */
+    fn_80128670(gDamageCarInfo);
+    gDamageCarInfo = 0;
+#undef gDamageCarInfo
 }
 
 /* Reset 8 entries of 0x30 bytes (4 sub-slots of 0xC: id, f4, f8) in lbl_8055E890 to inactive/default values. */
