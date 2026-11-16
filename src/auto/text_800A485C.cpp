@@ -11455,6 +11455,7 @@ extern "C" void fn_800B7610(void *path, s32 arg1, s32 arg2) {
 extern "C" void* fn_800A9B0C(void*);
 extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
+    // Alarm callback: resolve the file state for this alarm (fn_800A9B0C), then fold the result into a nonzero sign mask (fn_800B73BC).
     fn_800B73BC((s32)fn_800A9B0C(alarm));
 }
 
