@@ -566,6 +566,7 @@ done:
     return handle;
 }
 #pragma cplusplus off
+/* Initialize the SD-card file system handle (lbl_8055FF24) from the mount stub fn_802E98C8, which returns 0 in this build. */
 void fn_802E3DCC(void) {
     lbl_8055FF24 = (void*)fn_802E98C8();
 }
