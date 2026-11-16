@@ -2205,12 +2205,15 @@ u8 fn_80163864(void *arg0) {
     return *((u8 *)arg0 + 0x56C);
 }
 
-void fn_8016386C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    if (arg1 == 5 && *((u8 *)arg0 + 0x56D) == 0) {
-        if (arg3 >= *((s32 *)((char *)arg0 + 0x570))) {
-            *((u8 *)arg0 + 0x56C) = 1;
+/* On event type 5, while this object's stop flag (+0x56D) is still clear: set
+ * the flag at +0x56C when progressValue reaches the value at +0x570, then set
+ * the stop flag. */
+void fn_8016386C(void *obj, s32 eventType, s32 carIndex, s32 progressValue) {
+    if (eventType == 5 && *((u8 *)obj + 0x56D) == 0) {
+        if (progressValue >= *((s32 *)((char *)obj + 0x570))) {
+            *((u8 *)obj + 0x56C) = 1;
         }
-        *((u8 *)arg0 + 0x56D) = 1;
+        *((u8 *)obj + 0x56D) = 1;
     }
 }
 
