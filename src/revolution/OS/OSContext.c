@@ -599,6 +599,7 @@ _ctx_is_curr_fpu_ctx:
     // clang-format on
 }
 
+/* Installs the FPU-unavailable exception handler and clears the current FPU context. */
 void __OSContextInit(void) {
     __OSSetExceptionHandler(OS_ERR_FP_UNAVAIL, OSSwitchFPUContext);
     OS_CURRENT_FPU_CONTEXT = NULL;
