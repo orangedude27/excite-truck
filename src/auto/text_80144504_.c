@@ -226,11 +226,13 @@ void fn_80144CD0(float *out, float *vec, float (*m)[4]) {
     out[2] = o2;
 }
 #pragma pop
+/* Copy three consecutive s32 words from src to dst.  The source is read through
+ * a volatile pointer into staged locals so all three loads precede any store. */
 void fn_80144D64(s32 *dst, s32 *src) {
- s32 c, b, a;
- volatile s32 *p = src;
- a = p[0]; b = p[1]; c = p[2];
- dst[0] = a; dst[1] = b; dst[2] = c;
+ s32 w2, w1, w0;
+ volatile s32 *volatileSrc = src;
+ w0 = volatileSrc[0]; w1 = volatileSrc[1]; w2 = volatileSrc[2];
+ dst[0] = w0; dst[1] = w1; dst[2] = w2;
 }
 
 void fn_80144D80(f32 *out, f32 sx, f32 sy, f32 sz) {
