@@ -247,7 +247,6 @@ static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32
     s32 i;
     s32 eo;
     s32 flag;
-    Fn80231AF0_Table *table = (Fn80231AF0_Table *)lbl_80497F14;
     *adv = w;
     flag = lbl_8055F050;
     if (*text == '\\') {
