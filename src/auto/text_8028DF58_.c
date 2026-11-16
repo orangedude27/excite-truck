@@ -99,12 +99,20 @@ void fn_8028DFFC(void) {
     lbl_8055F73D = 1;
 }
 
+/* RealName: fn_8028E024 (commit current item from primary list) */
 void fn_8028E024(void) {
-    if (*((int *)((char *)&lbl_804B34B0_arr[0] + 0x100)) > 0) {
+#define primaryList lbl_804B34B0_arr
+#define currentItem lbl_8055F740
+#define hasPendingItem lbl_8055F744
+    /* If the primary list has items, finalize/sort it and remember its first item; clear pending flag. */
+    if (*((int *)((char *)&primaryList[0] + 0x100)) > 0) {
         fn_8028F2EC();
-        lbl_8055F740 = lbl_804B34B0_arr[0];
+        currentItem = primaryList[0];
     }
-    lbl_8055F744 = 0;
+    hasPendingItem = 0;
+#undef primaryList
+#undef currentItem
+#undef hasPendingItem
 }
 
 void fn_8028E070(float farg0) {
