@@ -56,13 +56,14 @@ s32 fn_801E4AB0(s32 *fontTable, const u8 *text, s32 count) {
     return fn_802C4FF8((const char *)text);
 }
 #pragma scheduling invalid_target
-s32 fn_801E4B00(s32 *arg0) {
+/* Return the glyph/advance width for a font object, or the default canvas char width when no object is provided. */
+s32 fn_801E4B00(s32 *fontObject) {
     s32 scratch;
-    s32 result;
-    if (arg0 != 0) {
-        result = 0;
-        fn_802C4F2C(*arg0, &scratch, &result);
-        return result;
+    s32 width;
+    if (fontObject != 0) {
+        width = 0;
+        fn_802C4F2C(*fontObject, &scratch, &width);
+        return width;
     }
     return fn_802C501C();
 }
