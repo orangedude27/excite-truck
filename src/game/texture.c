@@ -332,7 +332,8 @@ char fn_802CA7D4(void) { return 1; }
 int fn_802CA7DC(const unsigned char *arg0) { return ((signed char)*arg0 - 0x2A) == 0; }
 
 #pragma dont_inline fn_802CA7F4
-int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
+/* Return nonzero when the path string contains a '/' separator. */
+int fn_802CA7F4(const char *path) { return strchr(path, '/') != 0; }
 
 /* If the path is a special "*"-prefixed extraction name, return the name after
    its '/' (warning if missing); otherwise return the path unchanged. */
