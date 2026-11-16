@@ -938,11 +938,17 @@ int fn_802C9950(int arg0) {
 
 extern int lbl_8055FC80;
 extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
-int fn_802C9994(int arg0) {
-    int previous = lbl_8055FC80;
-    lbl_8055FC80 = arg0;
-    fn_802D0188((arg0 >> 16) & 0xFF, (arg0 >> 8) & 0xFF, arg0 & 0xFF);
-    return previous;
+/* Sets the current packed RGB color (stored in lbl_8055FC80) and forwards its
+ * 8-bit R/G/B components to fn_802D0188, returning the previous packed color. */
+int fn_802C9994(int packedColor) {
+#define s_currentPackedColor lbl_8055FC80
+#define ApplyPackedRgb fn_802D0188
+    int previousColor = s_currentPackedColor;
+    s_currentPackedColor = packedColor;
+    ApplyPackedRgb((packedColor >> 16) & 0xFF, (packedColor >> 8) & 0xFF, packedColor & 0xFF);
+    return previousColor;
+#undef s_currentPackedColor
+#undef ApplyPackedRgb
 }
 
 extern char lbl_804C1440[];
