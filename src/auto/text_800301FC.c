@@ -832,254 +832,279 @@ enum {
     CC_TAG_END = 0xF             /* no value: closes the message */
 };
 #pragma dont_inline on
-void CircleBufferReadBytes(u32 arg0, u32 arg1, void *arg2) {
-    void *sp8;
-    void *temp_r31;
+/* Builds the MetroTRK gdev "CC" audio-state message in the current 0x300-byte CC
+ * ring buffer: a list of tagged 16-bit items (see the CC_TAG_ enum) describing
+ * where the audio system's buffers are, so the host tool can go and read them -
+ * the AX studio, the voice block, the LFO sine table, every AUX input and output
+ * buffer actually in use (the set depends on the audio mode, 2 = Dolby Pro Logic
+ * II), the four sound ring lists and the AI DMA buffer that is about to be
+ * filled.  lbl_8055D73C keeps a running total of the items written, which
+ * fn_80031248 hands back, and the buffer is flushed to memory at the end.
+ * Called by CircleBufferInitialize and by the audio start-up fn_800320E8. */
+void CircleBufferReadBytes(u32 voiceBlock, u32 dmaBuffer, void *ringLists) {
+#define ccWritePtr  lbl_8055D744 /* write position in the current CC buffer */
+#define ccMessageId lbl_8055D73C /* running total of the items written */
+#define ccMode      lbl_8055D740 /* audio mode; 2 selects the DPL2 items */
+#define ccReady     lbl_8055D738 /* send the wave table item when set */
+#define ccMask1     lbl_8055D734 /* AUX-A/B/C channel masks, 0x8000 by default */
+#define ccMask2     lbl_8055D732
+#define ccMask3     lbl_8055D730
+#define ccWaveTable lbl_802FEDA0 /* 4032-byte sine table the host reads */
+    void *buffer;
+    void *start;
 
-    temp_r31 = lbl_8055D744;
-    lbl_8055D73C = (void *)0x1E83;
-    sp8 = __AXGetStudio_800324C4();
-    *(u16 *)lbl_8055D744 = 0;
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x1096);
+    start = ccWritePtr;
+    ccMessageId = (void *)0x1E83;
+    buffer = __AXGetStudio_800324C4();
+    *(u16 *)ccWritePtr = CC_TAG_STUDIO;
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)(u32)buffer;
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    ccMessageId = (void *)((u32)ccMessageId + 0x1096);
 
-    switch ((s32)lbl_8055D740) {
+    switch ((s32)ccMode) {
     case 0:
-        *(u16 *)lbl_8055D744 = 1;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)arg0;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x2DD);
+        *(u16 *)ccWritePtr = CC_TAG_BLOCK_0;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)(voiceBlock >> 16);
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)voiceBlock;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        ccMessageId = (void *)((u32)ccMessageId + 0x2DD);
         break;
     case 1:
-        *(u16 *)lbl_8055D744 = 2;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)arg0;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x33D);
+        *(u16 *)ccWritePtr = CC_TAG_BLOCK_1;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)(voiceBlock >> 16);
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)voiceBlock;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        ccMessageId = (void *)((u32)ccMessageId + 0x33D);
         break;
     case 2:
-        *(u16 *)lbl_8055D744 = 3;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)arg0;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x39D);
+        *(u16 *)ccWritePtr = CC_TAG_BLOCK_2;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)(voiceBlock >> 16);
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)voiceBlock;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        ccMessageId = (void *)((u32)ccMessageId + 0x39D);
         break;
     }
 
-    sp8 = __AXFXGetLfoSinTable_8003313C();
-    *(u16 *)lbl_8055D744 = 4;
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = 5;
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    buffer = __AXFXGetLfoSinTable_8003313C();
+    *(u16 *)ccWritePtr = CC_TAG_LFO_SIN;
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)(u32)buffer;
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = CC_TAG_AUX_BEGIN;
+    ccWritePtr = (u8 *)ccWritePtr + 2;
 
-    if ((u32)lbl_8055D740 == 2) {
-        TRKDispatchMessage(&sp8);
-        if (sp8 != 0) {
-            *(u16 *)lbl_8055D744 = 9;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = lbl_8055D734;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxAInputDpl2(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxAOutput(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxAOutputDpl2R(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxAOutputDpl2Ls(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxAOutputDpl2Rs(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x6D3);
+    if ((u32)ccMode == 2) {
+        TRKDispatchMessage(&buffer); /* AUX-A input */
+        if (buffer != 0) {
+            *(u16 *)ccWritePtr = CC_TAG_AUX_A_DPL2;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = ccMask1;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxAInputDpl2(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxAOutput(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxAOutputDpl2R(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxAOutputDpl2Ls(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxAOutputDpl2Rs(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            ccMessageId = (void *)((u32)ccMessageId + 0x6D3);
         }
-        __AXGetAuxAInput(&sp8);
-        if (sp8 != 0) {
-            *(u16 *)lbl_8055D744 = 10;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = lbl_8055D732;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxBInputDpl2(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxBOutput(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxBOutputDpl2R(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxBOutputDpl2Ls(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxBOutputDpl2Rs(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x6D3);
+        __AXGetAuxAInput(&buffer); /* AUX-B input */
+        if (buffer != 0) {
+            *(u16 *)ccWritePtr = CC_TAG_AUX_B_DPL2;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = ccMask2;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxBInputDpl2(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxBOutput(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxBOutputDpl2R(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxBOutputDpl2Ls(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxBOutputDpl2Rs(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            ccMessageId = (void *)((u32)ccMessageId + 0x6D3);
         }
     } else {
-        TRKDispatchMessage(&sp8);
-        if (sp8 != 0) {
-            *(u16 *)lbl_8055D744 = 6;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = lbl_8055D734;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxAOutput(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x4E1);
+        TRKDispatchMessage(&buffer); /* AUX-A input */
+        if (buffer != 0) {
+            *(u16 *)ccWritePtr = CC_TAG_AUX_A;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = ccMask1;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxAOutput(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            ccMessageId = (void *)((u32)ccMessageId + 0x4E1);
         }
-        __AXGetAuxAInput(&sp8);
-        if (sp8 != 0) {
-            *(u16 *)lbl_8055D744 = 7;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = lbl_8055D732;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxBOutput(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x4E1);
+        __AXGetAuxAInput(&buffer); /* AUX-B input */
+        if (buffer != 0) {
+            *(u16 *)ccWritePtr = CC_TAG_AUX_B;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = ccMask2;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxBOutput(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            ccMessageId = (void *)((u32)ccMessageId + 0x4E1);
         }
-        __AXGetAuxBInput(&sp8);
-        if (sp8 != 0) {
-            *(u16 *)lbl_8055D744 = 8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = lbl_8055D730;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            __AXGetAuxCOutput(&sp8);
-            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
-            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x4E1);
+        __AXGetAuxBInput(&buffer); /* AUX-C input */
+        if (buffer != 0) {
+            *(u16 *)ccWritePtr = CC_TAG_AUX_C;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = ccMask3;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            __AXGetAuxCOutput(&buffer);
+            *(u16 *)ccWritePtr = (u16)((u32)buffer >> 16);
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            *(u16 *)ccWritePtr = (u16)(u32)buffer;
+            ccWritePtr = (u8 *)ccWritePtr + 2;
+            ccMessageId = (void *)((u32)ccMessageId + 0x4E1);
         }
     }
 
-    if (lbl_8055D738 != 0) {
-        *(u16 *)lbl_8055D744 = 0xB;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = 0x8000;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = 0xA;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)((u32)lbl_802FEDA0 >> 16);
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(u32)lbl_802FEDA0;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x73A);
+    if (ccReady != 0) {
+        *(u16 *)ccWritePtr = CC_TAG_MASK;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = 0x8000;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = CC_TAG_WAVE_TABLE;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)((u32)ccWaveTable >> 16);
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)(u32)ccWaveTable;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        ccMessageId = (void *)((u32)ccMessageId + 0x73A);
     }
 
-    *(u16 *)lbl_8055D744 = 0xE;
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)(((u32 *)arg2)[0] >> 16);
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)((u32 *)arg2)[0];
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)(((u32 *)arg2)[1] >> 16);
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)((u32 *)arg2)[1];
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)(((u32 *)arg2)[2] >> 16);
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)((u32 *)arg2)[2];
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)(((u32 *)arg2)[3] >> 16);
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    *(u16 *)lbl_8055D744 = (u16)((u32 *)arg2)[3];
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x199);
+    *(u16 *)ccWritePtr = CC_TAG_RING_LISTS;
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)(((u32 *)ringLists)[0] >> 16);
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)((u32 *)ringLists)[0];
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)(((u32 *)ringLists)[1] >> 16);
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)((u32 *)ringLists)[1];
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)(((u32 *)ringLists)[2] >> 16);
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)((u32 *)ringLists)[2];
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)(((u32 *)ringLists)[3] >> 16);
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    *(u16 *)ccWritePtr = (u16)((u32 *)ringLists)[3];
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    ccMessageId = (void *)((u32)ccMessageId + 0x199);
 
-    if ((u32)lbl_8055D740 == 2) {
-        *(u16 *)lbl_8055D744 = 0xD;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)arg0;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(arg1 >> 16);
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)arg1;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x2AF);
+    if ((u32)ccMode == 2) {
+        *(u16 *)ccWritePtr = CC_TAG_BUFFERS_DPL2;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)(voiceBlock >> 16);
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)voiceBlock;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)(dmaBuffer >> 16);
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)dmaBuffer;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        ccMessageId = (void *)((u32)ccMessageId + 0x2AF);
     } else {
-        *(u16 *)lbl_8055D744 = 0xC;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)arg0;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(arg1 >> 16);
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)arg1;
-        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x299);
+        *(u16 *)ccWritePtr = CC_TAG_BUFFERS_STEREO;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)(voiceBlock >> 16);
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)voiceBlock;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)(dmaBuffer >> 16);
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        *(u16 *)ccWritePtr = (u16)dmaBuffer;
+        ccWritePtr = (u8 *)ccWritePtr + 2;
+        ccMessageId = (void *)((u32)ccMessageId + 0x299);
     }
 
-    *(u16 *)lbl_8055D744 = 0xF;
-    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-    lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x1E);
-    DCFlushRange(temp_r31, 0x300);
+    *(u16 *)ccWritePtr = CC_TAG_END;
+    ccWritePtr = (u8 *)ccWritePtr + 2;
+    ccMessageId = (void *)((u32)ccMessageId + 0x1E);
+    DCFlushRange(start, 0x300);
+#undef ccWaveTable
+#undef ccMask3
+#undef ccMask2
+#undef ccMask1
+#undef ccReady
+#undef ccMode
+#undef ccMessageId
+#undef ccWritePtr
 }
 #pragma dont_inline reset
 void CircleBufferWriteBytes(void) {
