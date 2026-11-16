@@ -2187,6 +2187,9 @@ extern "C" s32 fn_800A7B34(void *volume, void *block) {
 #define VF_PAGE_IN_USE          1U /* the page holds a run of sectors */
 #define VF_PAGE_CHANGED         2U /* and was written to */
 #define VF_PAGE_FAT             4U /* and belongs to the FAT list */
+/* 0x02 of a FAT page: 1 while its bytes are changed, so the entry readers write
+ * the sector back to every FAT copy of the volume before moving the page on. */
+#define VF_PAGE_WRITE_BACK(p)   (*(s16 *)((u8 *)(p) + 0x02))
 #define VF_PAGE_OWNER(p)          (*(u32 *)((u8 *)(p) + 0x1C))
 #define VF_VOL_PAGE_OWNER(v)      (*(void **)((u8 *)(v) + 0x1644))
 #define VF_VOL_CACHE_FLAGS(v)     (*(u32 *)((u8 *)(v) + 0x1624))
