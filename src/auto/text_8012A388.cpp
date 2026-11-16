@@ -2412,10 +2412,11 @@ extern "C" void fn_8012DEE4(void *arg0) {
 }
 #pragma pop
 
-extern "C" void fn_8012DFCC(Unk8012DFCCList *arg0, Unk8012DFCCNode *arg1) {
-    *arg0->tail = arg1;
-    arg0->tail = &arg1->next;
-    arg1->next = 0;
+extern "C" void fn_8012DFCC(Unk8012DFCCList *list, Unk8012DFCCNode *node) {
+    /* Append a node to the tail of an AsyncSetQ external-TOC node list. */
+    *list->tail = node;
+    list->tail = &node->next;
+    node->next = 0;
 }
 
 /* Initializes an object with the given path (copied, up to 0x40 chars, into +0xC),
