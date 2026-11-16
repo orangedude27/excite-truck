@@ -627,27 +627,6 @@ extern int fn_802C6FC0(char *, int, int);
 extern char *fn_80029004(char *, int);
 extern int strlen(char *);
 
-/* Bounded string copy: copies at most n-1 chars, always terminates. */
-static inline void StrCopyN_(char *dst, const char *src, int n) {
-    while ((*dst++ = *src++) != 0) {
-        if (--n <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-    }
-}
-
-/* Bounded string append into a buffer of n bytes. */
-static inline void StrCatN_(char *dst, const char *src, int n) {
-    while (dst[0] != 0) {
-        n--;
-        dst++;
-    }
-    if (n > 0) {
-        StrCopyN_(dst, src, n);
-    }
-}
-
 void fn_8025A8B8(void *arg0, char *arg1) {
     char name[0x40];
     char *input = arg1;
