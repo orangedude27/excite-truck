@@ -810,13 +810,15 @@ void fn_8020F284(void *arg0, float farg0) {
     }
 }
 
-void fn_8020F30C(void *arg0) {
-    void *temp_r3;
-    temp_r3 = *(void **)((char *)arg0 + 0x24);
-    if (temp_r3 != 0) {
-        *(signed char *)((char *)temp_r3 + 0x49) = 1;
-        *(signed char *)((char *)temp_r3 + 0x4B) = 0;
-        *(signed char *)((char *)temp_r3 + 0x4A) = 0;
+/* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the child
+ * node stored at +0x24 of the object. */
+void fn_8020F30C(void *object) {
+    void *node;
+    node = *(void **)((char *)object + 0x24);
+    if (node != 0) {
+        *(signed char *)((char *)node + 0x49) = 1;
+        *(signed char *)((char *)node + 0x4B) = 0;
+        *(signed char *)((char *)node + 0x4A) = 0;
     }
 }
 
