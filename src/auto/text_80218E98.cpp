@@ -4234,10 +4234,11 @@ extern "C" void *fn_8021F394(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     return arg0;
 }
 #pragma pop
-extern "C" void fn_8021F42C(void *arg0) {
-    fn_801A7E54((u8 *)arg0 + 0x254, 0x18, *(s32 *)((u8 *)arg0 + 0x270));
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+/* Refreshes the key-binding field's display name from its stored control id and marks it changed when active. */
+extern "C" void fn_8021F42C(void *obj) {
+    fn_801A7E54((u8 *)obj + 0x254, 0x18, *(s32 *)((u8 *)obj + 0x270));
+    if (*(u8 *)((u8 *)obj + 0x1A) != 0)
+        *(u8 *)((u8 *)obj + 0x234) = 1;
 }
 
 #pragma push
