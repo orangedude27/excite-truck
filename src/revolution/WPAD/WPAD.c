@@ -3516,7 +3516,8 @@ void fn_8005ED8C(void) {
     }
 }
 
-// fn_8005EE20: WPAD query
+// Tear down the active WPAD manager state once (alarm and HID callbacks)
+// without the device-list clear performed by the full WPAD reset path.
 void fn_8005EE20(void) {
     if (lbl_8055DC05 == 0) {
         lbl_8055DC05 = 1;
