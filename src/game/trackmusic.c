@@ -406,6 +406,8 @@ long fn_8020FC6C(void) {
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_8020FCC4(void) {
     int result;
@@ -433,8 +435,8 @@ extern "C" void fn_8020FCC4(void) {
     current = lbl_8055B658;
     if (current != -1 && current != index) {
         fn_802EC1D8();
-        lbl_8055B658 = index;
     }
+    lbl_8055B658 = index;
 }
 #pragma cplusplus off
 #pragma scheduling on
