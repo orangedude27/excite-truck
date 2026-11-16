@@ -593,6 +593,7 @@ extern "C" void fn_801B885C(void *arg0) {
     ((Dummy_801B8318 *)lbl_8055E744)->f13(arg0);
 }
 extern "C" int fn_801B8874(void) {
+    /* If a certain system state is active, run its handler and report handled; otherwise forward to slot 0x88 of lbl_8055E744. */
     extern int fn_80161C38(void);
     extern void fn_80161A70(void);
     if (fn_80161C38() != 0) {
