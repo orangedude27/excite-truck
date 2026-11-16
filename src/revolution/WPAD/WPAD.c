@@ -3999,11 +3999,11 @@ s32 fn_800604E8(s32 chan, s32 format, void* data) {
     return result;
 }
 #pragma pop
-// fn_80060750: setter for lbl_8055DC14
-void fn_80060750(void* param) {
-    BOOL enabled = OSDisableInterrupts();
-    lbl_8055DC14 = param;
-    OSRestoreInterrupts(enabled);
+// Caches the WPAD motor-enabled setting (from SCGetWpadMotorMode) with interrupts disabled.
+void fn_80060750(void* enable) {
+    BOOL interrupts = OSDisableInterrupts();
+    lbl_8055DC14 = enable;
+    OSRestoreInterrupts(interrupts);
 }
 
 // fn_80060784: getter for lbl_8055DC14
