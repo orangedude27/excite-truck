@@ -3071,15 +3071,13 @@ void fn_80039A5C(void (*callback)(s32, void *)) {
         lbl_8055D84C = 1;
         if (executing_8055D8C8 == 0) {
             PausingFlag_8055D850 = 1;
-            OSRestoreInterrupts((s32)active);
-            goto queue_check;
         }
-queue_call:
-        fn_80039424(active, 0);
-queue_check:
-        active = __DVDPopWaitingQueue();
-        if (active != 0)
-            goto queue_call;
+        OSRestoreInterrupts((s32)active);
+
+        while ((active = __DVDPopWaitingQueue()) != 0) {
+            fn_80039424(active, 0);
+        }
+
         if (executing_8055D8C8 != 0) {
             fn_80039424((void *)executing_8055D8C8, callback);
         } else if (callback != 0) {
