@@ -170,10 +170,11 @@ void fn_80260814(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 0;
 }
 
-void fn_80260820(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x1C) == 0) {
-        *(u8 *)((u8 *)arg0 + 0x1E) = 1;
-        *(u8 *)((u8 *)arg0 + 0x1C) = 1;
+void fn_80260820(void *self) {
+    /* If this object's active flag at +0x1C is clear, set flag +0x1E and mark it active. */
+    if (*(u8 *)((u8 *)self + 0x1C) == 0) {
+        *(u8 *)((u8 *)self + 0x1E) = 1;
+        *(u8 *)((u8 *)self + 0x1C) = 1;
     }
 }
 
