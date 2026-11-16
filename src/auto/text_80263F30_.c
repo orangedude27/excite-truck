@@ -187,11 +187,12 @@ void fn_80264098(void *arg0, int arg1) {
 #pragma dont_inline on
 #pragma dont_inline off
 void fn_802640A0(void *arg0) {
-    *(int *)((char *)arg0 + 8) = 0;
-    *(void **)arg0 = lbl_8055C458;
-    *(int *)((char *)arg0 + 4) = 0x7b;
-    *(int *)((char *)arg0 + 0xc) = 0;
-    *(int *)((char *)arg0 + 0x10) = 0;
+    volatile unsigned char *p = (volatile unsigned char *)arg0;
+    *(int volatile *)(p + 8) = 0;
+    *(int volatile *)(p + 4) = 0x7b;
+    *(int volatile *)(p + 0) = (int)&lbl_8055C458;
+    *(int volatile *)(p + 0xc) = 0;
+    *(int volatile *)(p + 0x10) = 0;
 }
 
 #pragma push
