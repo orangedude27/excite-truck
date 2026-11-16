@@ -54,6 +54,8 @@ extern unsigned char lbl_802FACF8[];
 extern unsigned char lbl_802FACD8[];
 extern unsigned char lbl_8055FEB0, lbl_8055FD24;
 #pragma scheduling invalid_target
+/* Clear the blend-override flag, copy the first bound texture's alpha-reference byte
+ * (offset 0xE4) into lbl_8055FD24, and set GX alpha compare to pass alpha > reference. */
 void fn_802DB2D4(void) {
     lbl_8055FEB0 = 0;
     lbl_8055FD24 = ((unsigned char *)lbl_804DB468[0])[0xE4];
