@@ -1007,6 +1007,7 @@ unsigned char fn_801671AC(int index) {
 #pragma cplusplus on
 #pragma optimization_level 2
 extern "C" float fn_801671FC(int arg0) {
+    /* Compute and return a per-entry value: adjust by a context-dependent delta when gates pass, else store 0 and return base. */
     extern int fn_80139EC4(void *, float, float);
     extern float lbl_80561900;
     extern float lbl_80561904;
@@ -1031,24 +1032,24 @@ extern "C" float fn_801671FC(int arg0) {
     void *other;
     void *object;
     float threshold;
-    float f31;
+    float value;
     float f2;
     float f1;
     float f0;
-    float f30;
+    float delta;
 
     if (((int (*)(void))fn_801667F0)() != 0) {
         record = *(void **)&lbl_8055E32C;
         threshold = *(float *)((char *)&lbl_8042FE38 + 0x0c) - lbl_80561900;
         offset = arg0 * 0x88;
         record = (char *)(*(void **)record) + offset;
-        f31 = *(float *)((char *)record + 0x24);
-        gate1 = (float)(f31 > threshold);
+        value = *(float *)((char *)record + 0x24);
+        gate1 = (float)(value > threshold);
         f0 = *(float *)((char *)&lbl_8042FE38 + 0x64);
         f1 = *(float *)((char *)record + 0x28);
         gate2 = (float)(f1 < f0);
-        f30 = lbl_8056189C;
-        if (gate1 != f30 && gate2 != f30) {
+        delta = lbl_8056189C;
+        if (gate1 != delta && gate2 != delta) {
             if (*(void **)&lbl_8055E334 != 0) {
                 other = ((void *(*)(int))fn_8017960C)(arg0);
                 if (*(void **)&lbl_8055E334 != 0) {
@@ -1056,7 +1057,7 @@ extern "C" float fn_801671FC(int arg0) {
                                          *(float *)((char *)other + 0x60),
                                          *(float *)((char *)other + 0x68));
                     if (result != 0)
-                        f30 = lbl_80561898;
+                        delta = lbl_80561898;
                 }
             } else {
                 object = (void *)((int (*)(int))fn_801B2EC0)(arg0);
@@ -1069,15 +1070,15 @@ extern "C" float fn_801671FC(int arg0) {
                 f2 = (f2 < f0) ? f2 : f0;
                 f0 = lbl_8056189C;
                 f2 = (f2 > f0) ? f2 : f0;
-                f30 = lbl_80561908 + f2 * lbl_8056190C;
+                delta = lbl_80561908 + f2 * lbl_8056190C;
             }
-            f31 += f30;
+            value += delta;
             state = *(void **)&lbl_8055E32C;
-            *(float *)((char *)(*(void **)state) + offset + 0x74) = f30;
+            *(float *)((char *)(*(void **)state) + offset + 0x74) = delta;
         } else {
             *(float *)((char *)record + 0x74) = lbl_8056189C;
         }
-        return f31;
+        return value;
     }
     return lbl_805618D0;
 }
