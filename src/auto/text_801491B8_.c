@@ -301,8 +301,10 @@ s32 fn_80149234(void *object) {
 extern s32 lbl_8055E240;
 extern f32 lbl_80561714, lbl_80561718;
 #pragma cplusplus on
-extern "C" s32 fn_80149274(Dummy_80149274 *arg0) {
-    return arg0->d2() & 0xFF7F7F7F;
+extern "C" s32 fn_80149274(Dummy_80149274 *colorSource) {
+    /* Return the source's packed color with the high bit cleared on each of the
+     * three low (RGB) bytes, converting 8-bit channels to 7-bit. */
+    return colorSource->d2() & 0xFF7F7F7F;
 }
 #pragma cplusplus off
 /* Adjusts the byte field at offset 0x18 of an indexed sub-object by a delta and clamps it to [0, 255]. */
@@ -2519,6 +2521,8 @@ void fn_80151A40(void *arg0) {
     f32 y_offset;
     s32 i;
     if (check != 0 && check[1] != 0) {
+        if (check[1] == 1) goto body_label;
+    body_label:
         global_value = lbl_8055E230;
         i = 0;
     }
