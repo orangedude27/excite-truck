@@ -1038,14 +1038,12 @@ extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
 #pragma scheduling off
 void fn_802CFF10(void) {
-    int zero;
-    zero = 0;
-    lbl_8055FD44 = zero;
+    lbl_8055FD44 = 0;
     fn_802CF5D0();
     fn_802D0C98();
     fn_802D0BD8();
-    lbl_8055FDAC = zero;
-    lbl_8055FE39 = zero;
+    lbl_8055FDAC = 0;
+    lbl_8055FE39 = 0;
 }
 #pragma scheduling on
 extern void *lbl_8055FD20;
@@ -2849,11 +2847,12 @@ void fn_802D2FD8(void) {
     GX_XFB_BLOCK[1] = GX_XFB_BLOCK[0];
 }
 
-void fn_802D3050(int arg0) {
+/* Enable or disable alpha updates by toggling bit 4 (0x10) of the global render-state word. */
+void fn_802D3050(int enable) {
     unsigned long value;
 
     value = (unsigned long)lbl_8055FD1C & 0xFFFFFFEF;
-    if (arg0 != 0) {
+    if (enable != 0) {
         value = (unsigned long)lbl_8055FD1C | 0x10;
     }
     lbl_8055FD1C = (void *)value;
