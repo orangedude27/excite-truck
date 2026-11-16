@@ -81,6 +81,8 @@ void* memset(void*, int, unsigned long);
 extern u16 lbl_8055FF50;
 void fn_802E4A2C(void); /* extern */
 s32 fn_802E47B8(void) {
+    /* Poll the screenshot input state, then report whether the current input
+     * combo (lbl_8055FF50) is nonzero. */
     fn_802E4A2C();
     return lbl_8055FF50 != 0;
 }
