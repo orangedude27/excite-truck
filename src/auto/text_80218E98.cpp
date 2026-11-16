@@ -1470,9 +1470,11 @@ extern "C" void fn_8021A6EC(void *object) {
 }
 
 extern "C" void fn_8022F824(s32);
-extern "C" void fn_8021A744(void *arg0) {
-    fn_8022F824(*(s32 *)((u8 *)arg0 + 0x244));
-    *(s32 *)((u8 *)arg0 + 0x244) = 0;
+extern "C" void fn_8021A744(void *widget) {
+    /* Release this cursor-bound icon widget's cached display object (the
+       graphic handle at +0x244) and clear the slot. */
+    fn_8022F824(*(s32 *)((u8 *)widget + 0x244));
+    *(s32 *)((u8 *)widget + 0x244) = 0;
 }
 
 extern "C" int lbl_8033F324[];
