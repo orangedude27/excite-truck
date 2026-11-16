@@ -361,6 +361,13 @@ void fn_802CDAA8(void) {
     lbl_8055FCD8 = 0;
 }
 
+/* RealName: MlistSetObjectDraw (the project cannot rename symbols yet).
+ * Queues one object for drawing: fn_802D0514 copies the object's 12-float
+ * model `transform` (3x3 rotation, position, scale) into the shared
+ * draw-entry table and returns the new entry's handle, which is stored in
+ * the draw context's per-object handle slot [objectIndex].  The context is
+ * the global lbl_8055DFC4 (a 0x4000-byte block installed by fn_801293B4);
+ * arg0, the caller's object list, goes unused. */
 void fn_802CDAB4(void *objectList, int objectIndex, float *transform) {
     struct DrawContext {
         unsigned char objectFlags[0x64]; /* +0x00: per-object type/visible bytes */
