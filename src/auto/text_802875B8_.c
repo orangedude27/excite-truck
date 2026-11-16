@@ -174,12 +174,13 @@ void fn_80287774(int arg0) { fn_80283938(arg0 - 4); }
 void fn_8028777C(void) {
 }
 
-void fn_80287780(s32 arg0) {
+/* Initializes this subsystem state by clearing its flag and running setup steps. */
+void fn_80287780(s32 state) {
     lbl_8055F6C0 = 0;
     fn_802AE374();
     fn_8028DF58();
     fn_802924E8();
-    fn_802978B8(arg0);
+    fn_802978B8(state);
     fn_80297ED4();
     fn_8029605C();
     fn_802AC458();
