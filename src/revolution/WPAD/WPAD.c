@@ -4452,8 +4452,9 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     WPADCB* cb = lbl_8038F4F0[chan];
     s32 intrState, nestedIntrState, result, devStatus;
     s32 enqueueOk;
+    s32 head;
     u8 command[0x60] ALIGN(8);
-    register u8* cmdQueue asm("r4");
+    u8* cmdQueue;
     s8 usedCount, tailIndex;
     s32 lastSlot, wrapMask;
     intrState = OSDisableInterrupts();
@@ -4477,8 +4478,8 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     cmdQueue = (u8*)cb + 0x160;
     intrState = OSDisableInterrupts();
     nestedIntrState = OSDisableInterrupts();
-    enqueueOk = cmdQueue[0];
-    usedCount = (s8)(cmdQueue[1] - enqueueOk);
+    head = cmdQueue[0];
+    usedCount = (s8)(cmdQueue[1] - head);
     if (usedCount < 0) {
         usedCount = (s8)(usedCount + *(u32*)(cmdQueue + 8));
     }
