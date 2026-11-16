@@ -761,7 +761,6 @@ extern "C" void fn_800E2F84(void *self) {
 
 #pragma push
 #pragma small_data off
-extern double lbl_80560F28;
 #pragma pop
 #pragma push
 extern "C" f32 fn_800E310C(void *arg0) {
