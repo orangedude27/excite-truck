@@ -86,6 +86,23 @@ extern f32 lbl_8056048C;
 extern f32 lbl_80560460;
 extern f32 lbl_80560464;
 extern f64 lbl_80560468;
+
+/* ---- the overheat overlay (fn_8001E2AC) ----
+ * One slot per player in the array handed to it, three floats at playerIndex *
+ * 3 (fn_8001E544 clears them): [1] the time the truck started overheating, [2]
+ * the 0..1 level of its OVERHEAT text and [3] the truck's own warning level.
+ */
+#define OVERLAY_ONE       lbl_80560470  /* 1.0f: a full overheat, and the top of every clamp */
+#define OVERLAY_ZERO      lbl_80560474  /* 0.0f: no overheat, and the bottom of every clamp */
+#define OVERLAY_COOL_RATE lbl_8056047C  /* 0.0333667: what a level loses per frame */
+#define OVERLAY_SHOW_MIN  lbl_80560480  /* 0.01: below this the OVERHEAT text is dropped */
+#define OVERLAY_ALPHA_MAX lbl_80560484  /* 255.0f: the text's alpha at a full level */
+#define OVERLAY_FADE_TIME lbl_80560488  /* 0.4: seconds the text takes to fade in */
+#define OVERLAY_WARN_MIN  lbl_8056048C  /* 0.66: above this the warn pane shows */
+#define FLOAT_EPS         lbl_80558DC4  /* 2^-23: "has this float moved at all" */
+#define sOverlayTime      lbl_8055E3C8  /* the overlay module's clock, fn_8001DAE8() */
+#define STR_PERCENT_S     lbl_80558D08  /* "%s" */
+#define overlayPulse      fn_8001DAD8   /* the 0..1 sine pulse fn_8001DA5C(0x40) */
 #pragma push
 #pragma scheduling invalid_target
 extern "C" f32 fn_8001DA5C(s32 arg0) {
