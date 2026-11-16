@@ -550,54 +550,61 @@ extern "C" void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
 u32 fn_801281A0(s32);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_80128AA4(void *arg0, u8 *arg1, s32 arg2, s32 arg3) {
+void fn_80128AA4(void *heap, u8 *pBlock, s32 allocSource, s32 arg3) {
+    /* Validate a ring-buffer allocation's 0x40-byte header and data region, report any
+       corruption to the panic logger, then walk the heap's free list to recompute its
+       used offset. pBlock points just past the header; arg3 is unused by callers. */
+    #define STKA_SIGNATURE 0x53544B41
+    #define HEAP_FILL_PATTERN 0xE3
     u8 *p;
-    char *text;
-    u8 *base;
-    u32 magic;
-    u8 *tmp;
-    base = arg1 - 0x40;
-    text = lbl_8032A000;
-    magic = *(u32 *)base;
-    if (magic != 0x53544B41)
-        ((s32 (*)(void *, ...))fn_802E317C)(text + 0x228, base);
-    if (*(u32 *)(arg1 + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(arg1 - 0x14), 4)) != 0x53544B41)
-        ((s32 (*)(void *, ...))fn_802E317C)(text + 0x244, base + 4);
-    p = arg1 + *(s32 *)(base + 0x2C);
-    while (p < arg1 + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(base + 0x2C), 4)) {
-        if (*p != 0xE3)
+    char *msgs;
+    u8 *header;
+    u32 signature;
+    u8 *entry;
+    header = pBlock - 0x40;
+    msgs = lbl_8032A000;
+    signature = *(u32 *)header;
+    if (signature != STKA_SIGNATURE)
+        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x228, header);
+    if (*(u32 *)(pBlock + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(pBlock - 0x14), 4)) != STKA_SIGNATURE)
+        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x244, header + 4);
+    p = pBlock + *(s32 *)(header + 0x2C);
+    while (p < pBlock + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(header + 0x2C), 4)) {
+        if (*p != HEAP_FILL_PATTERN)
             ((s32 (*)(void *, ...))fn_802E317C)(
-                text + 0x278, p, p - (arg1 + *(s32 *)(base + 0x2C)), base + 4, *p, 0xE3);
+                msgs + 0x278, p, p - (pBlock + *(s32 *)(header + 0x2C)), header + 4, *p, HEAP_FILL_PATTERN);
         p++;
     }
-    if (*(u32 *)(base + 0x3C) != 0x53544B41)
-        ((s32 (*)(void *, ...))fn_802E317C)(text + 0x2C8, base + 4, *(u32 *)(base + 0x3C));
-    if (base[0x24] == 0)
-        ((s32 (*)(void *, ...))fn_802E317C)(text + 0x304, base + 4);
-    if (*(s32 *)(base + 0x30) != arg2) {
-        u32 newname = ((u32 (*)(s32))fn_801281A0)(arg2);
-        u32 oldname = ((u32 (*)(s32))fn_801281A0)(*(s32 *)(base + 0x30));
-        ((s32 (*)(void *, ...))fn_802E317C)(text + 0x31C, base + 4, oldname, newname);
+    if (*(u32 *)(header + 0x3C) != STKA_SIGNATURE)
+        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x2C8, header + 4, *(u32 *)(header + 0x3C));
+    if (header[0x24] == 0)
+        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x304, header + 4);
+    if (*(s32 *)(header + 0x30) != allocSource) {
+        u32 newname = ((u32 (*)(s32))fn_801281A0)(allocSource);
+        u32 oldname = ((u32 (*)(s32))fn_801281A0)(*(s32 *)(header + 0x30));
+        ((s32 (*)(void *, ...))fn_802E317C)(msgs + 0x31C, header + 4, oldname, newname);
     }
-    base[0x24] = 0;
+    header[0x24] = 0;
     goto check;
 loop:
-    if (*(u8 *)((u8 *)tmp + 0x24) != 0)
+    if (*(u8 *)((u8 *)entry + 0x24) != 0)
         goto done;
-    *(void **)((u8 *)arg0 + 0x10) = *(void **)((u8 *)tmp + 0x34);
-    *(void **)((u8 *)tmp + 0x34) = 0;
+    *(void **)((u8 *)heap + 0x10) = *(void **)((u8 *)entry + 0x34);
+    *(void **)((u8 *)entry + 0x34) = 0;
 check:
-    tmp = *(u8 **)((u8 *)arg0 + 0x10);
-    if (tmp != 0)
+    entry = *(u8 **)((u8 *)heap + 0x10);
+    if (entry != 0)
         goto loop;
 done:
-    if (tmp != 0) {
-        unsigned int offset = (unsigned int)tmp - *(unsigned int *)((u8 *)arg0 + 0xC);
-        unsigned int value = *(unsigned int *)(tmp + 0x28);
+    if (entry != 0) {
+        unsigned int offset = (unsigned int)entry - *(unsigned int *)((u8 *)heap + 0xC);
+        unsigned int value = *(unsigned int *)(entry + 0x28);
         value += offset;
-        *(unsigned int *)((u8 *)arg0 + 4) = value + 0x40;
+        *(unsigned int *)((u8 *)heap + 4) = value + 0x40;
     } else
-        *(u32 *)((u8 *)arg0 + 4) = 0;
+        *(u32 *)((u8 *)heap + 4) = 0;
+    #undef STKA_SIGNATURE
+    #undef HEAP_FILL_PATTERN
 }
 extern int strcmp(const char *, const char *);
 extern char lbl_80559970, lbl_80559974;
