@@ -281,10 +281,12 @@ const char* __AXGetStudio_80129164(void) {
     return lbl_8032A068;
 }
 
-s32 fn_80129170(void *arg0, u32 arg1) {
-    u32 end = ((u32 *)arg0)[1];
+s32 fn_80129170(void *region, u32 value) {
+    /* 1 when value falls in the half-open range [region[1], region[1] + region[3])
+     * held by this memory-region descriptor, 0 otherwise. */
+    u32 start = ((u32 *)region)[1];
     s32 result = 0;
-    if (arg1 >= end && arg1 < end + ((u32 *)arg0)[3]) {
+    if (value >= start && value < start + ((u32 *)region)[3]) {
         result = 1;
     }
     return result;
