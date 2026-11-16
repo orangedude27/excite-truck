@@ -279,8 +279,9 @@ int fn_8029F3BC(unsigned char *name) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_8029F458(const char *arg0, int arg1) {
-    unsigned char buf[0x20];
+void fn_8029F458(const char *name, int value) {
+    /* Copy name (minus an optional leading '$'), look up its id, and write value to the +0x30 field of every 0x34-byte record in the table whose id matches. */
+    unsigned char nameBuf[0x20];
     unsigned char c;
     int remaining;
     unsigned char *dst;
@@ -289,9 +290,9 @@ void fn_8029F458(const char *arg0, int arg1) {
     int offset;
     int *table;
     int i;
-    if (*arg0 == '$')
-        arg0++;
-    dst = buf;
+    if (*name == '$')
+        name++;
+    dst = nameBuf;
     remaining = 0x20;
     goto copy;
 decrement:
@@ -301,19 +302,19 @@ decrement:
     dst[-1] = 0;
     goto lookup;
 copy:
-    c = *arg0++;
+    c = *name++;
     *dst++ = c;
     if ((signed char)c != 0)
         goto decrement;
 lookup:
-    id = fn_8029F3BC(buf);
+    id = fn_8029F3BC(nameBuf);
     table = lbl_804B9B7C;
     i = 0;
     offset = 0;
     for (; i < ((volatile int *)table)[1]; i++) {
         entry = (unsigned char *)*(volatile int *)&lbl_804B9B7C[0] + offset;
         if (*(int *)entry == id)
-            *(int *)(entry + 0x30) = arg1;
+            *(int *)(entry + 0x30) = value;
         offset += 0x34;
     }
 }
