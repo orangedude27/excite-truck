@@ -1775,8 +1775,9 @@ extern "C" int fn_800D87C8(void *arg0) {
     return (*(unsigned int*)((char*)arg0 + 0x4c) >> 8) & 1;
 }
 
-extern "C" void fn_800D87D4(GXColor *arg0, const GXColor *arg1) {
-    *arg0 = *arg1;
+// Copies one RGBA color (used by nw4r lyt material setup) from src into dst.
+extern "C" void fn_800D87D4(GXColor *dst, const GXColor *src) {
+    *dst = *src;
 }
 
 extern "C" int fn_800D87F8(void *arg0) {
