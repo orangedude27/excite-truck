@@ -246,17 +246,20 @@ int fn_8017EBE0(void) {
 }
 #pragma scheduling on
 void fn_8017EC30(void) {
-    Unk8017Object **ptr = lbl_804348D8;
-    int i = 0;
+    /* Shut down the four driver interfaces: for each occupied slot in
+     * lbl_804348D8[], call the object's virtual release method (vtable +0x80),
+     * clear the slot, then mark the whole group inactive in lbl_8055E4BA. */
+    Unk8017Object **slot = lbl_804348D8;
+    int driverIndex = 0;
     do {
-        Unk8017Object *obj;
-        fn_802E8524(0, i);
-        obj = *ptr;
-        if (obj != 0) {
+        Unk8017Object *driver;
+        fn_802E8524(0, driverIndex);
+        driver = *slot;
+        if (driver != 0) {
 #pragma push
 #pragma cplusplus on
             {
-                class Dispatch {
+                class DriverInterfaceView {
                 public:
                     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
                     virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
@@ -266,16 +269,16 @@ void fn_8017EC30(void) {
                     virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
                     virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27();
                     virtual void f28(); virtual void f29();
-                    virtual void call(int);
+                    virtual void release(int);
                 };
-                if (obj != 0) ((Dispatch *)obj)->call(1);
+                if (driver != 0) ((DriverInterfaceView *)driver)->release(1);
             }
 #pragma pop
-            *ptr = 0;
+            *slot = 0;
         }
-        i++;
-        ptr++;
-    } while (i < 4);
+        driverIndex++;
+        slot++;
+    } while (driverIndex < 4);
     lbl_8055E4BA = 0;
 }
 int fn_8017ECC0(int object, int deleteFlag) {
