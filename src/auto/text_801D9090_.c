@@ -394,14 +394,17 @@ extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char
     int index = 0;
     DtbItem *item;
     Node *node;
-    int i, slot, result, capacity, limit;
+    int i = 0;
+    int slot;
+    int result;
+    int capacity;
+    int limit;
     void *value;
     void **array;
     char valueName[0x20];
     char key[0x20];
     extern const char lbl_8055AD80;
     extern const char lbl_8055AD88;
-
     item = 0;
     goto next_item;
     do {
@@ -513,29 +516,30 @@ int fn_801D9948(int *arg0) {
     register int zero = 0;
     while (node != 0) {
         register struct Node *next = node->next;
-        if (node == 0) break;
-        i = 0;
-        offset = 0;
-        while (i < node->count) {
-            fn_802C6CF8(*(int *)((char *)node->items + offset));
-            offset += 4;
-            i += 1;
-        }
-        if ((char *)node + 0x14 != 0) {
-            if ((char *)node + 0x14 != 0) {
-                node->items = (int *)zero;
-                node->count = zero;
-                node->field1C = zero;
-            }
-        }
         if (node != 0) {
-            if (node != 0) {
-                node->field0 = zero;
-                node->field4 = zero;
-                node->field8 = zero;
+            i = 0;
+            offset = 0;
+            while (i < node->count) {
+                fn_802C6CF8(*(int *)((char *)node->items + offset));
+                offset += 4;
+                i += 1;
             }
+            if ((char *)node + 0x14 != 0) {
+                if ((char *)node + 0x14 != 0) {
+                    node->items = (int *)zero;
+                    node->count = zero;
+                    node->field1C = zero;
+                }
+            }
+            if (node != 0) {
+                if (node != 0) {
+                    node->field0 = zero;
+                    node->field4 = zero;
+                    node->field8 = zero;
+                }
+            }
+            fn_80128668(node);
         }
-        fn_80128668(node);
         node = next;
     }
     *head = 0;
