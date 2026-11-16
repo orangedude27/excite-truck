@@ -3763,40 +3763,61 @@ extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
 extern "C" void* LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(void*, unsigned int, void*);
 extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void*, void*);
 extern "C" void* GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(void*);
-extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* arg0) {
-    char buffer[0x220];
-    char reader[8];
-    void* p;
+/* Load a sequence file for the sound archive player: set up a file buffer and
+ * publish it under the task mutex, load the file, then notify the completion
+ * callback with the sequence's base address (or a null address on failure). */
+extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* task) {
+    #define TASK_BUFFER_ID   0x10   /* file buffer currently published by the task */
+    #define TASK_SETUP_ID    0x14   /* id used to initialise the file buffer */
+    #define TASK_FILE_ID     0x18   /* file id passed to the loader */
+    #define TASK_NOTIFY_ID   0x1C   /* file id passed to the callback */
+    #define TASK_ALLOCATOR   0x20
+    #define TASK_CALLBACK    0x24
+    #define TASK_USER_ARG    0x28
+    #define TASK_MUTEX       0x2C
+
+    char fileBuffer[0x220];
+    char seqReader[8];
+    void* fileAddress;
     void* callback;
-    void* base;
+    void* seqBase;
     s32 fileId;
 
-    fn_800F41D0(buffer, *(s32*)((char*)arg0 + 0x14));
+    fn_800F41D0(fileBuffer, *(s32*)((char*)task + TASK_SETUP_ID));
     {
-        void* mutex = *(void**)((char*)arg0 + 0x2c);
+        void* mutex = *(void**)((char*)task + TASK_MUTEX);
         OSLockMutex(mutex);
-        *(void**)((char*)arg0 + 0x10) = buffer;
+        *(void**)((char*)task + TASK_BUFFER_ID) = fileBuffer;
         OSUnlockMutex(mutex);
     }
-    p = LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(buffer, *(u32*)((char*)arg0 + 0x18), *(void**)((char*)arg0 + 0x20));
+    fileAddress = LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(fileBuffer, *(u32*)((char*)task + TASK_FILE_ID), *(void**)((char*)task + TASK_ALLOCATOR));
     {
-        void* mutex = *(void**)((char*)arg0 + 0x2c);
+        void* mutex = *(void**)((char*)task + TASK_MUTEX);
         OSLockMutex(mutex);
-        *(void**)((char*)arg0 + 0x10) = 0;
+        *(void**)((char*)task + TASK_BUFFER_ID) = 0;
         OSUnlockMutex(mutex);
     }
-    if (p == 0) {
-        callback = *(void**)((char*)arg0 + 0x24);
-        if (callback) ((void (*)(s32, void*, s32, void*))callback)(0, 0, 0, *(void**)((char*)arg0 + 0x28));
-        fn_800F420C((s32)buffer, -1);
+    if (fileAddress == 0) {
+        callback = *(void**)((char*)task + TASK_CALLBACK);
+        if (callback) ((void (*)(s32, void*, s32, void*))callback)(0, 0, 0, *(void**)((char*)task + TASK_USER_ARG));
+        fn_800F420C((s32)fileBuffer, -1);
         return;
     }
-    __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(reader, p);
-    base = (void*)GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(reader);
-    callback = *(void**)((char*)arg0 + 0x24);
-    fileId = *(s32*)((char*)arg0 + 0x1c);
-    if (callback) ((void (*)(s32, void*, s32, void*))callback)(1, base, fileId, *(void**)((char*)arg0 + 0x28));
-    fn_800F420C((s32)buffer, -1);
+    __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(seqReader, fileAddress);
+    seqBase = (void*)GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(seqReader);
+    callback = *(void**)((char*)task + TASK_CALLBACK);
+    fileId = *(s32*)((char*)task + TASK_NOTIFY_ID);
+    if (callback) ((void (*)(s32, void*, s32, void*))callback)(1, seqBase, fileId, *(void**)((char*)task + TASK_USER_ARG));
+    fn_800F420C((s32)fileBuffer, -1);
+
+    #undef TASK_BUFFER_ID
+    #undef TASK_SETUP_ID
+    #undef TASK_FILE_ID
+    #undef TASK_NOTIFY_ID
+    #undef TASK_ALLOCATOR
+    #undef TASK_CALLBACK
+    #undef TASK_USER_ARG
+    #undef TASK_MUTEX
 }
 
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
