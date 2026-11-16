@@ -10,14 +10,15 @@ extern void fn_8000D838(void *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* Initializes a control block and its associated state buffer. */
 void fn_8023C9C8(void) {
-    s32 v;
-    s32 *p;
+    s32 initValue;
+    s32 *state;
     fn_8000D838(&lbl_8055F138);
-    p = lbl_80498788 + 1;
+    state = lbl_80498788 + 1;
     lbl_80498788[0] = 0;
-    v = 0x7B;
-    lbl_80498788[1] = v;
+    initValue = 0x7B;
+    lbl_80498788[1] = initValue;
     lbl_80498788[2] = 0;
     lbl_80498788[3] = 0;
     lbl_80498788[4] = 0;
