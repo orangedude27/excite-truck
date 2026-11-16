@@ -11,6 +11,17 @@ extern u8 lbl_80412A60[];
 extern u8 lbl_80412A6C[];
 #pragma pop
 
+/* The static nw4hbm::snd::MemorySoundArchive and the node the PowerPC C++ runtime
+ * uses to chain it into its global-destructor list (__register_global_object). */
+#define gSoundArchive       lbl_80412A6C
+#define gSoundArchiveRegNode lbl_80412A60
+
+/* Byte offsets of the LinkListImpl sentinel at the head of the archive. mNext
+ * and mPrev are self-links into the (initially empty) doubly linked list. */
+#define ARCHIVE_HEAD 0
+#define ARCHIVE_NEXT 4
+#define ARCHIVE_PREV 8
+
 void fn_800F0754(void) {
     void* ptr = &lbl_80412A6C[4];
     *(void**)&lbl_80412A6C[4] = 0;
