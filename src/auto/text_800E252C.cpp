@@ -1,10 +1,10 @@
 typedef int s32;
 struct LLTmp { int a; void* next; void* prev; };
 struct ElemTmp { float f1; float f2; int i1; int i2; };
-float lbl_80560F20 = 0.0f;
-float lbl_80560F24 = 1.0f;
-double lbl_80560F28 = 4503617744854144.0;
-float lbl_80560F30 = 32768.0f;
+static const float lbl_80560F20 = 0.0f;
+static const float lbl_80560F24 = 1.0f;
+static const double lbl_80560F28 = 4503617744854144.0;
+static const float lbl_80560F30 = 32768.0f;
 static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { if (q < end) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
 typedef unsigned int u32;
 typedef signed char s8;
