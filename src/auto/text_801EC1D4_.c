@@ -488,6 +488,7 @@ long fn_801ECC8C(unsigned int vehicleRender) {
     return usesEffect;
 }
 
+#pragma dont_inline on
 static inline void fn_801ECCE0_call(void *item, unsigned long key, void (*func)(void *)) {
     unsigned long who = fn_801ECC8C((long)item);
     if (who != key) {
