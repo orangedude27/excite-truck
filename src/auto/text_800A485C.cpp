@@ -174,8 +174,18 @@ extern "C" u8 lbl_803038D8[];
 extern "C" u8 lbl_80303950[];
 extern "C" u8 lbl_8030398C[];
 extern "C" u8 lbl_803039C8[];
+/* The volume a file is read through, as the file-cursor code uses it: the sector
+ * size (a power of two) and its log2, which split a byte position into the file
+ * sector pos >> shift and the byte offset pos & (sectorSize - 1). */
 struct VFiPFVol { u16 sectorSize; u8 pad[0x1e]; u8 shift; };
+/* The file a cursor reads: the FAT block fn_800AE620 looks sectors up in, the
+ * file's size and the volume its data is read through. */
 struct VFiPFFile { u8 pad0[4]; u8 fat[0x260]; u32 size; VFiPFVol *vol; };
+/* A file cursor.  `sector` is the file sector `pos` is in and `off` the byte
+ * offset in it; `cluster` is the disk sector the FAT maps that file sector to,
+ * which fn_800AE620 fills in and is set to 0xFFFFFFFF whenever the mapping has
+ * to be looked up again (a fresh cursor, or one advanced across a boundary).
+ * VFiPFFILE_Cursor_AdvanceToRead keeps the three in step with pos. */
 struct VFiPFCursor { u8 pad0[8]; VFiPFFile *file; u8 pad1[0x10]; u32 pos; u32 cluster; u32 sector; u16 off; };
 
 /* The directory-entry iterator the VFiPFENT code builds on its own stack, with
@@ -21141,9 +21151,9 @@ extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
         return *(f32 *)(right + 4);
     }
     f32 d = farg0 - *(f32 *)left;
-    f32 one = lbl_80560E50;
     f32 dx = *(f32 *)right;
     dx -= *(f32 *)left;
+    f32 one = lbl_80560E50;
     f32 k54 = lbl_80560E54;
     f32 k58 = lbl_80560E58;
     f32 scale = one / dx;
@@ -26181,7 +26191,7 @@ extern "C" s32 fn_800B3304(void *, void *);
 #pragma use_lmw_stmw off
 extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *templateArg, s32 *bitmap) {
     u8 local[0x90];
-    register u8 *shortName;
+    register s8 *shortName;
     register void *state = arg0;
     register void *context = *(void **)((u8 *)arg0 + 0x34);
     register s32 *bits = bitmap;
@@ -26201,26 +26211,26 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     a = ((volatile u32 *)state)[10]; b = ((volatile u32 *)state)[11]; dst[10] = a; dst[11] = b;
     a = ((volatile u32 *)state)[12]; b = ((volatile u32 *)state)[13]; dst[12] = a; dst[13] = b;
     state = (void *)fn_800AC1B4(local + 0x20, 0);
-    shortName = local + 0x10;
+    shortName = (s8 *)(local + 0x10);
     mask = 1;
     while (VFiPFENT_ITER_IsAtLogicalEnd(local + 0x20) == 0) {
         if ((s32)state != 0) return (s32)state;
         if (local[0x6C] != 0 && local[0x6C] != 0xE5 &&
             (local[0x77] & 0x0F) != 0x0F && (local[0x77] & 8) == 0) {
-            fn_800B3BEC(local + 0x10, local + 0x6C, (u8)0);
+            fn_800B3BEC((u8 *)(local + 0x10), local + 0x6C, (u8)0);
             tilde = 1;
-            while ((s8)shortName[tilde] != '~' && (s8)shortName[tilde] != 0 && tilde < 7)
+            while (shortName[tilde] != '~' && shortName[tilde] != 0 && tilde < 7)
                 tilde++;
             if (tilde < 7 && *(volatile s8 *)(shortName + tilde) == '~') {
                 end = tilde + 1;
-                while ((ch = (s8)shortName[end]) >= '0' && ch <= '9') end++;
+                while ((ch = shortName[end]) >= '0' && ch <= '9') end++;
                 terminal = *(volatile s8 *)(shortName + end);
                 if (terminal == '.' || terminal == 0) {
                     digits = end - tilde - 1;
                     state = (void *)0;
                     i = digits;
                     while (i != 0) {
-                        state = (void *)((s32)(s8)shortName[end - i] + (s32)(u32)state * 10 - 0x30);
+                        state = (void *)(shortName[end - i] + (s32)(u32)state * 10 - 0x30);
                         i--;
                     }
                     fn_800A4AAC((char *)local, (char *)templateName);
