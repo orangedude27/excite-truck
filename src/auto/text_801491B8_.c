@@ -3435,7 +3435,11 @@ extern "C" s32 fn_80153D00(s32 arg0, s32 arg1) {
 }
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
-f32 fn_8015454C(void) { if(fn_800167F4()==2)return lbl_80561714; return lbl_80561718; }
+/* Returns a mode-dependent tuning value: 5.0 when the record count is 2, 9.0 otherwise. */
+f32 fn_8015454C(void) {
+    if (fn_800167F4() == 2) return lbl_80561714;
+    return lbl_80561718;
+}
 
 /* BetaRace: log and copy each car's race score into the results buffer. */
 void fn_80154580(s32 raceData, void *results) {
