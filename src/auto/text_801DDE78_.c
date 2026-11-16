@@ -135,11 +135,35 @@ void fn_801DDFE8(void* obj) {
 }
 #pragma pop
 void fn_801DE0A4(void) {
-    lbl_8055E9BC = 0;
-    lbl_8055E9C8 = 0;
-    lbl_8055E9C4 = 0;
-    lbl_8055E9C0 = (void*)fn_80145E70(&lbl_80339478);
-    lbl_8055E9CC = (void*)fn_802E2C20();
+    /* RealName: GarageOverlay_Init
+     * Starts up the garage screen's live parameter overlay: creates the
+     * OverlayLayout that draws "garage.val" and clears the state that goes
+     * with it -- the list of tunable entries (count and the table it was
+     * built from), the row the +/- keys edit, and the time stamp the
+     * on-screen text fades out from (fn_801DE154 fades after 5000 ms). */
+#define garageOverlay   lbl_8055E9C0 /* OverlayLayout made from "garage.val" */
+#define editRow         lbl_8055E9BC /* entry the up/down keys select */
+#define entrySet        lbl_8055E9C8 /* table the entry list was built from */
+#define entryCount      lbl_8055E9C4 /* entries gathered in lbl_80486F30 */
+#define lastEditMs      lbl_8055E9CC /* ms of the last edit, see fn_802E2C20 */
+#define garageValName   lbl_80339478 /* "garage.val" */
+#define OverlayLayoutCreate fn_80145E70 /* OverlayLayout* by .val file name */
+#define GetTimeMs       fn_802E2C20  /* ms since the timer's first call */
+
+    editRow = 0;
+    entrySet = 0;
+    entryCount = 0;
+    garageOverlay = (void *)OverlayLayoutCreate(garageValName);
+    lastEditMs = (void *)GetTimeMs();
+
+#undef garageOverlay
+#undef editRow
+#undef entrySet
+#undef entryCount
+#undef lastEditMs
+#undef garageValName
+#undef OverlayLayoutCreate
+#undef GetTimeMs
 }
 
 #pragma push
