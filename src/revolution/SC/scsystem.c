@@ -1063,6 +1063,7 @@ BOOL SCFindU32Item(u32* dst, SCItemID id) {
 }
 
 BOOL SCReplaceU8Item(u8 data, SCItemID id) {
+    /* Replace an 8-bit (unsigned byte) System Config item's value by ID. */
     return SCReplaceIntegerItem(&data, id, SC_ITEM_BYTE);
 }
 
