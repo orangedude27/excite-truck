@@ -8588,8 +8588,10 @@ extern "C" void fn_80228AEC(s32, f32);
 extern "C" void fn_802C86F0(void *, s32, s32, s32, s32);
 extern "C" void fn_802C88BC(s32);
 extern "C" void fn_802C8750(void *, s32);
-extern "C" void fn_80228A38(s32 arg0) {
-    fn_80228AEC(arg0, fn_80214D48());
+/* Callback wrapper: invoke fn_80228AEC on the given object (passed as a raw
+ * pointer), supplying the global float setting returned by fn_80214D48(). */
+extern "C" void fn_80228A38(s32 object) {
+    fn_80228AEC(object, fn_80214D48());
 }
 
 extern "C" void fn_80228A6C(void *arg0) {
