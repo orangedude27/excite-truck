@@ -3230,10 +3230,11 @@ extern __declspec(section ".data") u8 lbl_8037B580;
 #define DvdTimeoutAlarm lbl_8037B580 /* DVD timeout alarm created and armed in fn_800379A8 */
 #define DefaultAlarmTest fn_8003BE40 /* default predicate: returns 0 */
 s32 __DVDTestAlarm(void *alarm) {
-    if (alarm == &lbl_8037B580) {
+    /* Return 1 when alarm is the DVD timeout alarm; otherwise fall back to the default test (false). */
+    if (alarm == &DvdTimeoutAlarm) {
         return 1;
     }
-    return fn_8003BE40();
+    return DefaultAlarmTest();
 }
 #pragma small_data on
 u32 fn_80039CD8(void) { return 1; }
