@@ -339,11 +339,11 @@ extern int fn_802E317C(char *, ...);
 #pragma dont_inline on
 void fn_801B8100(void *arg0, int arg1, int arg2) {
     int result;
-    memset(arg0, 0, 0x50);
-    if (fn_801796B4() != 0)
-        return;
-    if (fn_801B8630(arg0, arg1, arg2) != 0)
-        return;
+    memset(arg0, 0, 80);
+    if (fn_801796B4() == 0) {
+        if (fn_801B8630(arg0, arg1, arg2) != 0)
+            return;
+    }
     result = fn_801B7688(arg2);
     *(int *)((char *)arg0 + 0x44) = result;
     switch (result) {
