@@ -732,11 +732,12 @@ void fn_801B8A84(void) {
     fn_8013C9F4(0);
 }
 
-int fn_801B8A8C(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_801B8A8C(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 int fn_801B8ACC(void) { return 1; }
