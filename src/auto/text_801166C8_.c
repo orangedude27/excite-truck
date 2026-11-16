@@ -151,13 +151,18 @@ BOOL ARCInitHandle(void *bin, ARCHandle *handle) {
 }
 
 BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
-    u32 *nodes = (u32 *)handle->FSTStart;
-    s32 offset;
-    if (entrynum < 0 || (u32)entrynum >= handle->entryNum || (nodes[entrynum * 3] & 0xFF000000) != 0) return FALSE;
+    /* Open an ARC file by FST entry number and fill its file info. */
+    u32 *fstNodes = (u32 *)handle->FSTStart;
+    s32 nodeOffset;
+
+    if (entrynum < 0 || (u32)entrynum >= handle->entryNum || (fstNodes[entrynum * 3] & 0xFF000000) != 0) {
+        return FALSE;
+    }
+
     info->handle = handle;
-    offset = (entrynum * 0xC) + (s32)nodes;
-    info->startOffset = *(u32 *)(offset + 4);
-    info->length = *(u32 *)(offset + 8);
+    nodeOffset = (entrynum * 0xC) + (s32)fstNodes;
+    info->startOffset = *(u32 *)(nodeOffset + 4);
+    info->length = *(u32 *)(nodeOffset + 8);
     return TRUE;
 }
 
