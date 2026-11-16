@@ -2190,7 +2190,10 @@ extern "C" u32 fn_80140F10(void *arg0, void *arg1) {
     s32 total=*(s32 *)(input+0x88);
     s32 count=*(s32 *)(input+0x114);
     s32 completed=0, remaining=count;
-    { s32 _a=*(s32 *)(input+0x10); s32 _b=*(s32 *)(input+0x14); s32 _c=*(s32 *)(input+0x18); fn_801345D8(p+0x30,0x14,&lbl_80559D6C,_a+_b+_c); }
+    s32 _a=*(s32 *)(input+0x10);
+    s32 _b=*(s32 *)(input+0x14);
+    s32 _c=*(s32 *)(input+0x18);
+    fn_801345D8(p+0x30,0x14,&lbl_80559D6C,_a+_b+_c);
     if(count && *(f32 *)(p+4)>lbl_805614A4) {
         f32 fraction=((lbl_8055E3C8-*(f32 *)(p+4))-lbl_805614A4)/lbl_805614AC;
         fraction=lbl_805614AC<fraction ? lbl_805614AC : fraction;
@@ -2200,23 +2203,23 @@ extern "C" u32 fn_80140F10(void *arg0, void *arg1) {
     }
     fn_801345D8(p+0x44,0x14,&lbl_80559D6C,completed);
     if(p[0x10]) {
-        {const char *s=lbl_80559D80; char *d=(char*)p+0xb2; int count=0x14; char c;
+        {const char *s=lbl_80559D80; char *d=(char*)p+0xb2; int c0=0x14; char c;
        goto check0;
-check0: if (--count>0) goto copy0; d[-1]=0; goto done0;
+check0: if (--c0>0) goto copy0; d[-1]=0; goto done0;
 copy0: c=*s++; *d++=c; if ((signed char)c != 0) goto check0;
 done0:;}
-        {const char *s=lbl_80559D80; char *d=(char*)p+0x58; int count=0x14; char c;
+        {const char *s=lbl_80559D80; char *d=(char*)p+0x58; int c1=0x14; char c;
        goto check1;
-check1: if (--count>0) goto copy1; d[-1]=0; goto done1;
+check1: if (--c1>0) goto copy1; d[-1]=0; goto done1;
 copy1: c=*s++; *d++=c; if ((signed char)c != 0) goto check1;
 done1:;}
     } else {
         if(!lbl_8055E1C8){fn_801312EC(lbl_8042FB78,lbl_8032CA74);lbl_8055E1C8=1;}
         fn_80130980(p+0xb2,0x14,2,(f32)remaining);
         if(*(u32 *)(lbl_8042FB78+8)!=lbl_8055E044)fn_80131318(lbl_8042FB78);
-        {const char *s=*(char **)(lbl_8042FB78+4); char *d=(char*)p+0x58; int count=0x14; char c;
+        {const char *s=*(char **)(lbl_8042FB78+4); char *d=(char*)p+0x58; int c2=0x14; char c;
        goto check2;
-check2: if (--count>0) goto copy2; d[-1]=0; goto done2;
+check2: if (--c2>0) goto copy2; d[-1]=0; goto done2;
 copy2: c=*s++; *d++=c; if ((signed char)c != 0) goto check2;
 done2:;}
     }
@@ -2224,15 +2227,15 @@ done2:;}
     fn_801308F4(p+0x80,0x14,total);
     fn_801308F4(p+0x9e,0x14,total-count);
     if(fn_801609C4(total)!=-1) {
-        {const char *s=__AXGetStackHead(); char *d=(char*)p+0x94; int count=10; char c;
+        {const char *s=__AXGetStackHead(); char *d=(char*)p+0x94; int c3=10; char c;
        goto check3;
-check3: if (--count>0) goto copy3; d[-1]=0; goto done3;
+check3: if (--c3>0) goto copy3; d[-1]=0; goto done3;
 copy3: c=*s++; *d++=c; if ((signed char)c != 0) goto check3;
 done3:;}
     } else {
-        {const char *s=&lbl_80559D84; char *d=(char*)p+0x94; int count=10; char c;
+        {const char *s=&lbl_80559D84; char *d=(char*)p+0x94; int c4=10; char c;
        goto check4;
-check4: if (--count>0) goto copy4; d[-1]=0; goto done4;
+check4: if (--c4>0) goto copy4; d[-1]=0; goto done4;
 copy4: c=*s++; *d++=c; if ((signed char)c != 0) goto check4;
 done4:;}
     }
@@ -2806,9 +2809,8 @@ extern "C" void fn_80142650(void *arg0) {
     if (*(u8 *)(base + 0xF8) != 0) {
         *(u8 *)(base + 0xF8) = 0;
         if (lbl_8055E1BC != 0) {
-            f32 f;
             f32 x = *(f32 *)(base + 0x94);
-            f = x + lbl_8056149C / lbl_8056149C;
+            f32 f = x + lbl_8056149C / lbl_8056149C;
             f = f < lbl_805614AC ? lbl_805614AC : f;
             f = f > lbl_805614A4 ? lbl_805614A4 : f;
             f64 r = f;
@@ -2825,7 +2827,8 @@ extern "C" void fn_80142650(void *arg0) {
                             *(s32 *)(base + 0xE4) = 0;
                         }
                         if (*(s32 *)(base + 0x100) > 0) {
-                            *(f32 *)(base + 0xD4) = fn_8001DAE8(base + 0xD0);
+                            f32 d4 = fn_8001DAE8(base + 0xD0);
+                            *(f32 *)(base + 0xD4) = d4;
                             *(s32 *)(base + 0x100) = 0;
                         }
                         *(f32 *)(base + 0xAC) = fn_8001DAE8(base + 0xA8);
@@ -3982,9 +3985,10 @@ extern "C" void fn_80144408(void) {
 }
 
 extern "C" void fn_80128668(void);
-extern "C" s32 fn_8014440C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+extern "C" s32 fn_8014440C(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
 }
 
 extern "C" s32 fn_8014444C(void) { return 0; }
@@ -4026,26 +4030,25 @@ extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
     extern char lbl_8032C978[];
     extern char lbl_8032C988[];
     extern void fn_801476C4();
-    struct Copy { unsigned i0; unsigned i1; unsigned i2; unsigned i3; float f0; float f1; float f2; float f3; float f4; float f5; };
-    u8 *dataObj2;
-    float scale, delta, factor;
-    int active;
-    int enabled;
+    struct Copy { u32 i0; u32 i1; u32 i2; u32 i3; f32 f0; f32 f1; f32 f2; f32 f3; f32 f4; f32 f5; };
+    register u8 *dataObj;
+    f32 delta, scale, factor;
+    s32 active;
+    s32 enabled;
     void *result;
     Copy data;
-    enabled = *(int *)((u8 *)arg2 + 0x104);
-    dataObj2 = (u8 *)arg2;
+    enabled = *(s32 *)((u8 *)arg2 + 0x104);
+    dataObj = (u8 *)arg2;
     if (enabled == 0) return;
     result = ((V9_8013FAC4 *)arg0)->v9(arg1);
     if (result != 0) return;
-    delta = fn_8001DAE8(dataObj2 + 0xC8) - *(float *)(dataObj2 + 0xCC);
-    scale = lbl_805614A4;
+    delta = fn_8001DAE8(dataObj + 0xC8) - *(f32 *)(dataObj + 0xCC);
     active = 0;
-    if (delta >= scale) {
-        if (delta < *(float *)(dataObj2 + 0xC8)) active = 1;
+    if (delta >= lbl_805614A4) {
+        if (delta < *(f32 *)(dataObj + 0xC8)) active = 1;
     }
     if (active != 0) {
-        delta = (fn_8001DAF0((float *)(dataObj2 + 0xC8)) - lbl_80561498) / lbl_80561498;
+        delta = (fn_8001DAF0((f32 *)(dataObj + 0xC8)) - lbl_80561498) / lbl_80561498;
         factor = lbl_805614AC;
         factor = factor < delta ? delta : factor;
         factor = factor > lbl_805614A4 ? lbl_805614A4 : factor;
@@ -4056,10 +4059,20 @@ extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
         result = ((V10_8013FAC4 *)obj)->v10(lbl_8032C978);
     }
     if (result != 0) {
-        data = *(Copy *)result;
+        Copy *src = (Copy *)result;
+        data.i0 = src->i0;
+        data.i1 = src->i1;
+        data.i2 = src->i2;
+        data.i3 = src->i3;
+        data.f0 = src->f0;
+        data.f1 = src->f1;
+        data.f2 = src->f2;
+        data.f3 = src->f3;
+        data.f4 = src->f4;
+        data.f5 = src->f5;
         fn_8013CB90(&data);
         fn_80147EE0(&data, scale);
-        fn_801476D8(&data, (void *)-1, *(int *)((u8 *)arg0 + 0xAC));
+        fn_801476D8(&data, (void *)-1, *(s32 *)((u8 *)arg0 + 0xAC));
     }
     {
         void *obj = *(void **)((u8 *)arg0 + 0x54);
