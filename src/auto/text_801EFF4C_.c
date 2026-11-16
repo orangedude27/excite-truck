@@ -1116,10 +1116,14 @@ void fn_801F1AB0(void *arg0) {
     }
 }
 
+/* RealName: fn_801F1AD0 (update object's subobject using its stored handle and current id) */
 void fn_801F1AD0(void *arg0) {
-    if (*(int *)((char *)arg0 + 0x80) != 0) {
-        fn_801F1494(*(int *)((char *)arg0 + 0x80), (char *)arg0 + 4, fn_801EAC3C());
+#define obj arg0
+    /* If this object has a handle at offset 0x80, update it against object data at +4 using fn_801EAC3C(). */
+    if (*(int *)((char *)obj + 0x80) != 0) {
+        fn_801F1494(*(int *)((char *)obj + 0x80), (char *)obj + 4, fn_801EAC3C());
     }
+#undef obj
 }
 
 void fn_801EABA8(void);
