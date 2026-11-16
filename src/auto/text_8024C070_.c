@@ -108,10 +108,12 @@ int fn_8024C24C(int object, int deleteFlag) {
     return object;
 }
 
-void fn_8024C28C(Fn8024C2C4Queue *q) {
-    int n = (q->cnt + q->idx - 1) % q->cnt;
-    q->idx = n;
-    *q->out = q->buf[n];
+/* Step a ring buffer's index back one slot (wrapping to the last element), then
+   copy that element into the queue's output slot. */
+void fn_8024C28C(Fn8024C2C4Queue *queue) {
+    int prevIndex = (queue->cnt + queue->idx - 1) % queue->cnt;
+    queue->idx = prevIndex;
+    *queue->out = queue->buf[prevIndex];
 }
 
 void fn_8024C2C4(Fn8024C2C4Queue *q) {
