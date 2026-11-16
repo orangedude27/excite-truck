@@ -296,28 +296,30 @@ extern "C" void fn_801B535C(void**, int);
 extern "C" void fn_801B50B4(void**, int);
 #pragma scheduling invalid_target
 extern "C" void fn_80177E14(void) {
-    class Element {
+    /* Per-frame update of the active sound/effect list: in normal mode run setup helpers and each element's
+       pre-audio hook, then process audio (fn_801B535C/Fn_801B50B4), then run each element's post-audio hook. */
+    class SoundElement {
     public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6();
+        virtual void f4(); virtual void preAudio(); virtual void postAudio();
     };
-    int i;
-    Element **p;
+    int elementIndex;
+    SoundElement **element;
     if (fn_801B526C() == 0) {
         fn_801AD5F0();
         fn_80186DE8();
         fn_801D0F38();
-        p = (Element **)lbl_804340C0;
-        for (i = 0; i < lbl_8055E468; p++, i++) {
-            (*p)->f5();
+        element = (SoundElement **)lbl_804340C0;
+        for (elementIndex = 0; elementIndex < lbl_8055E468; element++, elementIndex++) {
+            (*element)->preAudio();
         }
         fn_801B535C(lbl_8055E434, lbl_8055E438);
     } else {
         fn_801B50B4(lbl_8055E434, lbl_8055E438);
     }
-    p = (Element **)lbl_804340C0;
-    for (i = 0; i < lbl_8055E468; p++, i++) {
-        (*p)->f6();
+    element = (SoundElement **)lbl_804340C0;
+    for (elementIndex = 0; elementIndex < lbl_8055E468; element++, elementIndex++) {
+        (*element)->postAudio();
     }
 }
 #pragma scheduling on
