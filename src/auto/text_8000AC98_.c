@@ -1272,6 +1272,7 @@ void fn_8000C630(int value, int playerIndex) {
     *(int *)((char *)&lbl_8034F5B8 + playerIndex * 8 + 4) = value;
 }
 
+/* Return the label string for the current UI/menu state: "Off", "Special", "Garage", or "Unknown". */
 int *fn_8000C69C(void) {
     switch (lbl_8055D3DC) {
     case 0: return &lbl_80558A50;
