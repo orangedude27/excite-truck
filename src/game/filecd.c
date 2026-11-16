@@ -417,8 +417,9 @@ int fn_802E461C(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-int fn_802E4648(void *arg0) {
-    fn_802E317C(lbl_8034D198, (char *)arg0 + 0x40);
+int fn_802E4648(void *file) {
+    /* FileDisk::write — DVD files are read-only, so panic with the file's path. */
+    fn_802E317C(fileCdMsgWriteNotSupported, (char *)file + 0x40);
     return -1;
 }
 #pragma scheduling on
