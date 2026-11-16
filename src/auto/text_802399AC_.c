@@ -545,9 +545,10 @@ void fn_8023AD84(void *selector) {
     *index = (count + *index - 1) % count;
 }
 
-void fn_8023ADAC(void *arg0) {
-    s32 *index = *(s32 **)((char *)arg0 + 0x18);
-    s32 count = *(s32 *)((char *)arg0 + 0x14);
+/* Step the selector's +0x18 cyclic index one place forward, wrapping around. */
+void fn_8023ADAC(void *selector) {
+    s32 *index = *(s32 **)((char *)selector + 0x18);
+    s32 count = *(s32 *)((char *)selector + 0x14);
     *index = (*index + 1) % count;
 }
 
