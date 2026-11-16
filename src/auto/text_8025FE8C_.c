@@ -1032,6 +1032,41 @@ extern "C" void *fn_80207848(void *, s32);
 extern "C" void *fn_8023512C(void *);
 extern "C" void *fn_80232578(void *);
 extern "C" void *memset(void *, int, unsigned int);
+/* Repaint both widget lists of the selector for its cursor state. */
+static inline void Selector_Repaint(void) {
+    s32 i;
+    s32 offset;
+
+    for (i = 0, offset = 0; i < SELECTOR->item_count; offset += 4, i++) {
+        if (SELECTOR_IN_ITEMS == 0) {
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setDim();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+        } else if (i == SELECTOR->cursor) {
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setCursor();
+        } else if (i == SELECTOR->group * 2 || i == SELECTOR->group * 2 + 1) {
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearDim();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+        } else {
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+        }
+    }
+    for (i = 0, offset = 0; i < SELECTOR->group_count; offset += 4, i++) {
+        if (SELECTOR_IN_ITEMS == 0) {
+            if (i == SELECTOR->group) {
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
+            } else {
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearDim();
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
+            }
+        } else if (i == SELECTOR->group) {
+            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
+            (*(SelectorWidget **)(SELECTOR->group_widgets + SELECTOR->group * 4))->setExpanded();
+        } else {
+            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setDim();
+            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
+        }
+    }
+}
 #pragma scheduling invalid_target
 extern "C" void fn_80261C68(s32 *arg0) {
     struct Dummy {
@@ -1188,35 +1223,37 @@ firstCheck:
     if (i < (s32)base[2]) goto firstBody;
 
     i = 0;
-    j = 0;
-    goto secondCheck;
-secondBody:
-    if (lbl_8055F3EB == 0) {
-        if (i == (s32)base[1]) {
-            object = *(void **)((u8 *)base[0xF] + j);
+    {
+        register offset = 0;
+        goto secondCheck;
+    secondBody:
+        if (lbl_8055F3EB == 0) {
+            if (i == (s32)base[1]) {
+                object = *(void **)((u8 *)base[0xF] + offset);
+                ((Dummy *)object)->slot24();
+            } else {
+                object = *(void **)((u8 *)base[0xF] + offset);
+                ((Dummy *)object)->slot23();
+                object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + offset);
+                ((Dummy *)object)->slot25();
+            }
+        } else if (i == (s32)base[1]) {
+            object = *(void **)((u8 *)base[0xF] + offset);
             ((Dummy *)object)->slot24();
+            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + *(s32 *)(lbl_8055F420 + 4) * 4);
+            ((Dummy *)object)->slot26();
         } else {
-            object = *(void **)((u8 *)base[0xF] + j);
-            ((Dummy *)object)->slot23();
-            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
+            object = *(void **)((u8 *)base[0xF] + offset);
+            ((Dummy *)object)->slot22();
+            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + offset);
             ((Dummy *)object)->slot25();
         }
-    } else if (i == (s32)base[1]) {
-        object = *(void **)((u8 *)base[0xF] + j);
-        ((Dummy *)object)->slot24();
-        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + *(s32 *)(lbl_8055F420 + 4) * 4);
-        ((Dummy *)object)->slot26();
-    } else {
-        object = *(void **)((u8 *)base[0xF] + j);
-        ((Dummy *)object)->slot22();
-        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
-        ((Dummy *)object)->slot25();
+        offset += 4;
+        i++;
+    secondCheck:
+        base = (u32 *)lbl_8055F420;
+        if (i < (s32)base[3]) goto secondBody;
     }
-    j += 4;
-    i++;
-secondCheck:
-    base = (u32 *)lbl_8055F420;
-    if (i < (s32)base[3]) goto secondBody;
 }
 #pragma scheduling on
 #pragma cplusplus reset
