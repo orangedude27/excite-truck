@@ -903,13 +903,15 @@ s32 fn_802619D8(s32 *arg0, s32 arg1) {
     return *arg0 + arg1 * 4;
 }
 
-void fn_802619E8(void *arg0, s32 arg1, s32 arg2) {
+/* Initialize a debug-menu item of kind 5: store the label pointer and the data
+ * value, and clear the two kind-specific words (see DbgMenuItem in this file). */
+void fn_802619E8(void *item, s32 name, s32 data) {
     s32 zero = 0;
-    *(s32 *)arg0 = arg1;
-    *(s32 *)((u8 *)arg0 + 4) = 5;
-    *(s32 *)((u8 *)arg0 + 8) = arg2;
-    *(s32 *)((u8 *)arg0 + 0xC) = zero;
-    *(s32 *)((u8 *)arg0 + 0x10) = zero;
+    *(s32 *)item = name;
+    *(s32 *)((u8 *)item + 4) = 5;
+    *(s32 *)((u8 *)item + 8) = data;
+    *(s32 *)((u8 *)item + 0xC) = zero;
+    *(s32 *)((u8 *)item + 0x10) = zero;
 }
 
 s32 fn_80261A08(s32 *arg0, s32 arg1) {
