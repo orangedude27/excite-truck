@@ -571,12 +571,13 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
     OSRestoreInterrupts(enabled);
 }
 
-extern "C" void fn_800EA880(void *arg0, int arg1) {
-    int value = *(int *)((char *)arg0 + 0xAC) + arg1;
-    int limit = *(int *)((char *)arg0 + 0xB0);
-    *(int *)((char *)arg0 + 0xAC) = value;
-    if (value > limit) {
-        *(int *)((char *)arg0 + 0xAC) = limit;
+extern "C" void fn_800EA880(void *channel, int delta) {
+    /* Advance a channel's frame counter (+0xAC) by delta, clamping it to its limit (+0xB0). */
+    int counter = *(int *)((char *)channel + 0xAC) + delta;
+    int limit = *(int *)((char *)channel + 0xB0);
+    *(int *)((char *)channel + 0xAC) = counter;
+    if (counter > limit) {
+        *(int *)((char *)channel + 0xAC) = limit;
     }
 }
 
@@ -678,12 +679,13 @@ extern "C" void Update__Q46nw4hbm3snd6detail7ChannelFb(void *, int);
 
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void) {
+    struct PtrBox { void *v; } nodeBox, endBox;
+    void *&node = nodeBox.v;
+    void *&end = endBox.v;
     char *manager;
     register int zero = 0;
     int one = 1;
     void *head;
-    void *end;
-    void *node;
     void *current;
     if ((signed char)lbl_8055DE28 == 0) {
         manager = lbl_80412778;
@@ -727,7 +729,7 @@ extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void) {
             ((void (*)(void *, void *, void *, void *, void *))__register_global_object)(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78, initTail, head);
             lbl_8055DE28 = one;
         }
-    } while (node != end);
+    } while (end != node);
 }
 extern void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
 extern void *fn_80128668(void *);
