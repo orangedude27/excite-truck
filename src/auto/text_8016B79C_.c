@@ -91,6 +91,8 @@ typedef struct { s32 w[12]; } Blk8016C768;
 // fn_8016CD4C/fn_8016C55C return entry index and advance it, fn_8016C760 reads
 // the index back as how many entries were filled in.
 typedef struct { s32 data; s32 index; s32 count; s32 data2; } List8016C768;
+typedef struct UiDraw8016 { u32 unk; f32 x, y, z, width, height; u32 color; } UiDraw8016;
+typedef struct UiText8016 { u32 unk; f32 x, y, z, width, height; u32 color; u32 extra; } UiText8016;
 #define VT(obj, off) (*(void ***)(obj))[(off) / 4]
 #define VFN(obj, off, ret, args) ((ret (*) args)VT(obj, off))
 extern int stricmp(const char *, const char *);
