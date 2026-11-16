@@ -103,8 +103,13 @@ void fn_8028EE1C(void *);
 void fn_8028F8C4(int);
 float fn_801E7E18(void);
 void fn_8028DFFC(void) {
-    fn_8028DF58();
-    lbl_8055F73D = 1;
+#define initEffectEmitters fn_8028DF58
+#define gEffectsReady      lbl_8055F73D
+    /* Initialise the effect emitter lists, then flag the effect system as ready. */
+    initEffectEmitters();
+    gEffectsReady = 1;
+#undef gEffectsReady
+#undef initEffectEmitters
 }
 
 /* RealName: fn_8028E024 (commit current item from primary list) */
