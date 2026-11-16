@@ -104,13 +104,14 @@ void fn_802C276C(void) {
 }
 
 void fn_802C2874(void) {
-    if (lbl_8055FB6C != -2) {
-        fn_802CB228(lbl_8055FB6C);
-        lbl_8055FB6C = -2;
+    /* Release the swlmap render-target and texture slots when allocated. */
+    if (sSwlMapTargetSlot != NO_TEXTURE_SLOT) {
+        RenderTargetFree(sSwlMapTargetSlot);
+        sSwlMapTargetSlot = NO_TEXTURE_SLOT;
     }
-    if (lbl_8055FB70 != -2) {
-        fn_802CAC54(lbl_8055FB70);
-        lbl_8055FB70 = -2;
+    if (sSwlMapFileSlot != NO_TEXTURE_SLOT) {
+        TextureFree(sSwlMapFileSlot);
+        sSwlMapFileSlot = NO_TEXTURE_SLOT;
     }
 }
 
