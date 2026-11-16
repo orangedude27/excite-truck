@@ -206,8 +206,10 @@ s32 fn_801EA9A0(s32 arg0) {
     return lbl_8055EB78 + (arg0 * 0xBC);
 }
 
-s32 fn_801EA9B0(s32 arg0) {
-    return *(s32 *)&lbl_8055EB78 + (*(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + (arg0 << 2) + 0x5E8) * 0xBC);
+s32 fn_801EA9B0(s32 slot) {
+    /* Return the address of the CarMgrEntry that the CarMgrTail slot table maps
+       this slot to: slots[slot] is a record index, records are 0xBC bytes. */
+    return lbl_8055EB78 + (*(s32 *)((u8 *)lbl_8055EB78 + (slot << 2) + 0x5E8) * 0xBC);
 }
 
 s32 fn_801EA9CC(s32 arg0) {
