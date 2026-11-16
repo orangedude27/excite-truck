@@ -20628,11 +20628,13 @@ extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *remoteSpk, s32 chan) {
     }
 }
 
-extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1) {
-    s32 *ptr = (s32 *)((u8 *)arg0 + arg1 * 0x68);
-    s32 val = ptr[0x50 / 4];
-    s32 neg = -val;
-    return (s32)((u32)(neg | val) >> 31);
+extern "C" s32 fn_800D1E5C(void *soundPlayer, s32 channel) {
+    /* Return nonzero while the active-sound handle at +0x50 of this 0x68-byte
+     * remote-speaker slot is set; (x | -x) >> 31 is a branchless nonzero test. */
+    s32 *slot = (s32 *)((u8 *)soundPlayer + channel * 0x68);
+    s32 handle = slot[0x50 / 4];
+    s32 neg = -handle;
+    return (s32)((u32)(neg | handle) >> 31);
 }
 
 // Returns nonzero when the given sound is playing on a remote-speaker channel.
