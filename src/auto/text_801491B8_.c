@@ -1003,11 +1003,13 @@ f32 fn_8014C75C(f32 *arg0, const f32 *arg1) {
 }
 
 #pragma scheduling invalid_target
-s64 fn_8014C770(const f32 *arg0, const f32 *arg1, f32 t) {
-    f32 dy = arg1[1] - arg0[1];
-    f32 dx = arg1[0] - arg0[0];
-    f32 y = arg0[1] + t * dy;
-    f32 x = arg0[0] + t * dx;
+/* Linear interpolation between two 2D points: returns start + t * (end - start) as packed (x, y) floats. */
+s64 fn_8014C770(const f32 *start, const f32 *end, f32 t) {
+    /* Linearly interpolate between two 2D points and return the result as packed x,y floats. */
+    f32 dy = end[1] - start[1];
+    f32 dx = end[0] - start[0];
+    f32 y = start[1] + t * dy;
+    f32 x = start[0] + t * dx;
     union { struct { f32 x, y; } f; s64 bits; } out;
     out.f.y = y;
     out.f.x = x;
