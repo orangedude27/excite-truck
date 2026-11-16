@@ -300,8 +300,11 @@ extern s32 fn_802E2C20(void);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_802B5E24(s32 arg0) {
-    lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
+/* Parse the "layer" tag from `text` (a string passed as a number) into the
+ * selected-layer global lbl_8055FA28; fn_802B5D2C returns -1 when absent.
+ * Then reset the reference time lbl_8055FA08 to -100.0f (lbl_80564C5C). */
+void fn_802B5E24(s32 text) {
+    lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, text);
     lbl_8055FA08 = lbl_80564C5C;
 }
 
