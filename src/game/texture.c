@@ -591,13 +591,14 @@ void fn_802CADD0(int arg0, int arg1) {
     }
 }
 
-int fn_802CAE00(int arg0) {
-    int value = 0;
-    if (arg0 >= 0 && arg0 < 0x200 &&
-        *(int *)(lbl_8055FCB0 + arg0 * 0x4C) > 0) {
-        value = 1;
+int fn_802CAE00(int slotIndex) {
+    /* Return whether slotIndex names a valid texture slot whose texture is loaded. */
+    int inUse = 0;
+    if (slotIndex >= 0 && slotIndex < 0x200 &&
+        *(int *)(lbl_8055FCB0 + slotIndex * 0x4C) > 0) {
+        inUse = 1;
     }
-    return value;
+    return inUse;
 }
 
 extern int fn_802C90E0(void);
