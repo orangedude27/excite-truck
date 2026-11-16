@@ -141,8 +141,10 @@ void fn_802C2874(void) {
 }
 
 s32 fn_802C28C0(void) {
-    if (lbl_8055FB70 != -2)
-        return lbl_8055FB70;
-    return lbl_8055FB6C;
+    /* Return the active swlmap texture slot: the loaded file's slot when
+     * present, otherwise the fallback render target. */
+    if (sSwlMapFileSlot != NO_TEXTURE_SLOT)
+        return sSwlMapFileSlot;
+    return sSwlMapTargetSlot;
 }
 
