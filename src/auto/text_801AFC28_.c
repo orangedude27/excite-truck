@@ -222,12 +222,13 @@ void fn_801AFF64(void *arg0, int arg1) {
 #pragma pop
 
 void fn_801B0174(void *this_) {
-    f32 threshold;
-    u8 var0;
-    f32 temp;
     f32 k2590;
+    f32 threshold;
+    f32 temp;
+    f32 t64;
+    u8 var0;
     u8 flagval;
-    s32 var3;
+    long var3;
     s32 v;
 
     fn_8017A57C(this_);
@@ -237,10 +238,10 @@ void fn_801B0174(void *this_) {
     if (threshold > temp && threshold < lbl_8056258C + temp) {
         var0 = 1;
     }
-    temp = *(f32 *)((u8 *)this_ + 0x64);
+    t64 = *(f32 *)((u8 *)this_ + 0x64);
     k2590 = lbl_80562590;
     *(u8 *)((u8 *)this_ + 0x1F8) = var0;
-    if (temp <= k2590) {
+    if (t64 <= k2590) {
         *(u8 *)((u8 *)this_ + 0x1F8) = 0;
     }
     flagval = *(u8 *)((u8 *)this_ + 0x1F8);
@@ -248,7 +249,7 @@ void fn_801B0174(void *this_) {
     if (flagval != 0 && threshold >= lbl_80562594 + *(f32 *)((u8 *)this_ + 0x1EC)) {
         var3 = 1;
     }
-    if (var3 != 0) {
+    if (var3) {
         v = *(s32 *)((u8 *)this_ + 0x28);
     } else {
         v = 0;
@@ -445,8 +446,11 @@ void fn_801B04B0(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
     *(s16 *)((u8 *)arg0 + 0x6C) = idValue;
 }
 #pragma pop
-s32 fn_801B0588(void *arg0, u8 *arg1) {
-    if (*arg1 != 0) return 0x21;
+/* Returns the serialized byte count: 0x21 when the caller's flag says the
+ * extra payload follows the flag byte, otherwise just the single flag byte (1).
+ * The object pointer is unused. */
+s32 fn_801B0588(void *self, u8 *flag) {
+    if (*flag != 0) return 0x21;
     return 1;
 }
 
@@ -481,26 +485,27 @@ extern "C" void fn_801B05E4(void *arg0, u8 *arg1, u8 *arg2, s32 *arg3, s32 *arg4
     };
     s32 spC;
     s32 sp8;
+    u8 firstFlag;
     s32 result;
-    s32 firstFlag;
     f32 zeroValue;
     f32 resetValue;
     *arg3 = ((Callback0 *)arg0)->get();
     result = ((Callback1 *)arg0)->get(arg2);
     firstFlag = *arg1;
     *arg4 = result;
-    if (firstFlag != 0 && *arg2 != 0) {
-        *(u8 *)((u8 *)arg0 + 0x1F8) = 1;
-        fn_8017D160(arg0, arg1 + 1, arg2 + 1, &spC, &sp8, arg5);
-    } else {
-        zeroValue = lbl_80562578;
-        resetValue = lbl_805625B0;
-        *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
-        *(f32 *)((u8 *)arg0 + 0x64) = resetValue;
-        *(f32 *)((u8 *)arg0 + 0x118) = zeroValue;
-        *(f32 *)((u8 *)arg0 + 0x11C) = zeroValue;
-        *(f32 *)((u8 *)arg0 + 0x120) = zeroValue;
-    }
+    if (firstFlag == 0) goto fallback;
+    if (*arg2 == 0) goto fallback;
+    *(u8 *)((u8 *)arg0 + 0x1F8) = 1;
+    fn_8017D160(arg0, arg1 + 1, arg2 + 1, &spC, &sp8, arg5);
+    return;
+fallback:
+    zeroValue = lbl_80562578;
+    resetValue = lbl_805625B0;
+    *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
+    *(f32 *)((u8 *)arg0 + 0x64) = resetValue;
+    *(f32 *)((u8 *)arg0 + 0x118) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x11C) = zeroValue;
+    *(f32 *)((u8 *)arg0 + 0x120) = zeroValue;
 }
 #pragma pop
 void __AXDSPInitCallback_801AFC38(void) {
