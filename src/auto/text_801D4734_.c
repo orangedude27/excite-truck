@@ -3807,10 +3807,12 @@ int fn_801D8EFC(void *arg0) {
     return ((int *)arg0)[1];
 }
 
-int fn_801D8F04(void *arg0) {
-    if (*(int *)((char *)arg0 + 4) == 1) {
-        *(int *)((char *)arg0 + 4) = 2;
-        *(float *)((char *)arg0 + 0x20) = lbl_8055E3C8;
+/* Starts a ready timed cue: switches its state from READY to RUNNING and stamps
+ * the current game time (lbl_8055E3C8) as its start time. Returns 1 if it started. */
+int fn_801D8F04(void *cue) {
+    if (*(int *)((char *)cue + 4) == TIMED_EFFECT_READY) {
+        *(int *)((char *)cue + 4) = TIMED_EFFECT_RUNNING;
+        *(float *)((char *)cue + 0x20) = lbl_8055E3C8;
         return 1;
     }
     return 0;
