@@ -138,19 +138,20 @@ void fn_802C126C(void) {
     int var_r5;
     unsigned char *var_r6;
     int var_r28, var_r28_2;
-    char *check_base;
-    char *call_base;
+    char *check_base, *call_base;
+
     lbl_8055FB2C = 0;
     lbl_8055FB28 = 0;
     lbl_8055CFA0 = fn_801FB1F4(0x1F40);
     lbl_8055FB38 = lbl_80564E50;
     lbl_8055FB30 = fn_8012850C(0x7D00, lbl_8034AEF8);
     fn_801D0590(&lbl_8055FB40);
-    check_base = (char *)&lbl_8055FB40;
     call_base = (char *)&lbl_8055FB40;
-    if ((int)check_base != 0) {
-        fn_801D0800(call_base + 4);
-    }
+    check_base = (char *)&lbl_8055FB40;
+    if ((int)check_base != 0)
+        call_base += 4;
+    fn_801D0800(call_base);
+
     var_r29 = (int *)&lbl_804C0810;
     var_r28 = 0;
     do {
@@ -171,6 +172,7 @@ copied_string:
         var_r28++;
         var_r29 = (int *)((char *)var_r29 + 0x60);
     } while (var_r28 < 0x10);
+
     var_r30 = (char *)&lbl_804C0E10;
     var_r28_2 = 0;
     do {
