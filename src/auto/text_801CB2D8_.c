@@ -1905,12 +1905,13 @@ void fn_801CE6A0(void) {
 
 }
 
-void fn_801CE6A4(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
-    Struct_801CE670 local;
-    local.field4 = arg1;
-    local.field0 = 1;
-    local.field8 = arg2;
-    *arg0 = local;
+/* Initialize a 3-word descriptor with a fixed kind tag (1) and two caller values. */
+void fn_801CE6A4(Struct_801CE670 *out, s32 value1, s32 value2) {
+    Struct_801CE670 node;
+    node.field4 = value1;
+    node.field0 = 1;
+    node.field8 = value2;
+    *out = node;
 }
 
 void fn_801CE6CC(void) {
