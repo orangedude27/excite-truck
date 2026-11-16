@@ -334,11 +334,12 @@ extern void fn_80221E7C(void);
 extern s32 fn_802328D4(char*);
 extern s32 fn_802C519C(char*);
 extern char lbl_80342CEC[];
-s32 fn_80243BD8(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80243BD8(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_80243C18(void) {
