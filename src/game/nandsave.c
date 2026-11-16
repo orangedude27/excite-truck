@@ -66,9 +66,17 @@ extern "C" void fn_802E86D4(void) {
 }
 #pragma cplusplus on
 extern "C" void fn_802E870C(void) {
-    class Cb { public: virtual void v0(); virtual void v1(); };
-    ((Cb *)lbl_80560024)->v1();
-    lbl_80560028 = 0;
+#define gNandSaveInterface lbl_80560024
+#define gNandSaveActive lbl_80560028
+    /* Leave the NAND-save subsystem: call the interface's shutdown callback and clear its active flag. */
+    struct NandSaveInterface {
+        virtual void startup();
+        virtual void shutdown();
+    };
+    ((NandSaveInterface *)gNandSaveInterface)->shutdown();
+    gNandSaveActive = 0;
+#undef gNandSaveActive
+#undef gNandSaveInterface
 }
 #pragma cplusplus off
 extern int fn_80131234(int, int, int, int, int, int, int, int);
