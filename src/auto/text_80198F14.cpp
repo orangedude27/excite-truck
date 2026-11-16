@@ -5094,11 +5094,12 @@ extern "C" s32 fn_801A4FC0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" s32 fn_801A5000(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_801A5000(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 /* If ptr is set and count is positive, free the object (fn_80128668 receives
