@@ -375,11 +375,13 @@ s32 fn_802316A4(void *block) {
 void fn_80231714(s32 *arg0) {}
 #pragma dont_inline off
 
-s32 fn_80231718(s32 arg0) {
-    u32 value = (u32)lbl_8055F060;
-    u32 result = __rlwinm(value, 0, 8, 15);
-    result = __rlwimi(result, arg0, 0, 0, 7);
-    return result | (value & 0xFFFF);
+s32 fn_80231718(s32 primary) {
+    /* Derives the secondary (outline-pass) text color/font-set value by merging bits of
+       `primary` with the persistent template word held in lbl_8055F060. */
+    u32 baseWord = (u32)lbl_8055F060;
+    u32 merged = __rlwinm(baseWord, 0, 8, 15);
+    merged = __rlwimi(merged, primary, 0, 0, 7);
+    return merged | (baseWord & 0xFFFF);
 }
 
 extern s32 sprintf(char *, const char *, ...);
