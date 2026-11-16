@@ -501,16 +501,17 @@ void fn_801E0F78(f32 *dst, f32 *base, f32 *dir, f32 scale) {
 
 #pragma push
 #pragma scheduling off
-f32 fn_801E0FA4(f32 *arg0, f32 *arg1) {
-    f32 b, d, c, a;
-    f32 x, y;
-    a = arg1[1];
-    b = arg0[1];
-    c = arg1[0];
-    d = arg0[0];
-    x = b * a;
-    y = d * c;
-    return y + x;
+/* Return the 2D dot product of lhs and rhs: lhs.x*rhs.x + lhs.y*rhs.y. */
+f32 fn_801E0FA4(f32 *lhs, f32 *rhs) {
+    f32 lhsY, lhsX, rhsX, rhsY;
+    f32 yProduct, xProduct;
+    rhsY = rhs[1];
+    lhsY = lhs[1];
+    rhsX = rhs[0];
+    lhsX = lhs[0];
+    yProduct = lhsY * rhsY;
+    xProduct = lhsX * rhsX;
+    return xProduct + yProduct;
 }
 #pragma pop
 /* Initializes the embedded array at +0x7C: points it at inline storage,
