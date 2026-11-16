@@ -941,8 +941,21 @@ extern long lbl_8055EED4;
 extern long lbl_8055EEF0;
 extern long lbl_8055B658;
 void fn_802108C8(void) {
-    lbl_8055EED4 = fn_80145E70(&lbl_8033C9BC[0]);
-    lbl_8055EEF0 = fn_802090D4(&lbl_8033C9C8[0]);
+#define sTrackMusicResource lbl_8055EED4
+#define sTrackMusicHandle lbl_8055EEF0
+#define OverlayLayoutCreate fn_80145E70
+#define sound_volume_open fn_802090D4
+#define kTrackMusicLayoutName lbl_8033C9BC  /* "tmuslyt.val" */
+#define kTrackMusicSoundName lbl_8033C9C8   /* "TrkMusDash" */
+    /* Create the track-music overlay layout and open its dash sound volume handle. */
+    sTrackMusicResource = OverlayLayoutCreate(&kTrackMusicLayoutName[0]);
+    sTrackMusicHandle = sound_volume_open(&kTrackMusicSoundName[0]);
+#undef kTrackMusicSoundName
+#undef kTrackMusicLayoutName
+#undef sound_volume_open
+#undef OverlayLayoutCreate
+#undef sTrackMusicHandle
+#undef sTrackMusicResource
 }
  
 #pragma cplusplus on
