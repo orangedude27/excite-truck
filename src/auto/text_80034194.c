@@ -335,12 +335,14 @@ void *DSPAssertInt(void *task) {
     return task;
 }
 
-void *__DSPHandler(void *arg0) {
-    s32 interrupts;
-    interrupts = OSDisableInterrupts();
-    *(u32 *)((u8 *)arg0 + 8) |= 2;
-    OSRestoreInterrupts(interrupts);
-    return arg0;
+/* DSP interrupt handler: with interrupts disabled, mark the DSP task as
+ * canceled and return it. */
+void *__DSPHandler(DSPTask *task) {
+    s32 level;
+    level = OSDisableInterrupts();
+    task->flags |= DSP_TASK_CANCELED;
+    OSRestoreInterrupts(level);
+    return task;
 }
 
 /* Assert (preempt) the current DSP task with a higher-priority task.
