@@ -960,9 +960,9 @@ extern "C" void *fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
  u8 *p=(u8*)a; void *c;
  s32 valid=0;
  if(key>=0 && key<=127) valid=1;
- if(!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x30a,file+0x268,key,0,127);
+ if(!valid) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u32)file+0),0x30a,file+0x268,key,0,127);
  valid=0; if(vel>=0 && vel<=127) valid=1;
- if(!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x30b,file+0x2a0,vel,0,127);
+ if(!valid) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u32)file+0),0x30b,file+0x2a0,vel,0,127);
  void *owner = *(void**)(p+0xb4);
  c=0;
  if(reuse && (c=*(void**)(p+0xb8))) {
@@ -1024,10 +1024,11 @@ extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2
     *(s32 *)((u8 *)arg0 + 4) = flag;
 }
 
-extern "C" void fn_800F27AC(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(u8 *)((u8 *)arg0 + 8) = 0x2F;
-    *(u8 *)((u8 *)arg0 + 9) = 0;
+extern "C" void fn_800F27AC(void *archive) {
+    /* Reset a sound archive: clear the handle at +0x04 and set the byte pair at +0x08/+0x09 to 0x2F, 0. */
+    *(s32 *)((u8 *)archive + 4) = 0;
+    *(u8 *)((u8 *)archive + 8) = 0x2F;
+    *(u8 *)((u8 *)archive + 9) = 0;
 }
 
 extern "C" s32 fn_800F27C4(void *arg0) {
@@ -1469,9 +1470,11 @@ extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     if (bytes[1] != 2)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559870, 0x71, lbl_80324BA8);
     s32 data = (s32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
-    s32 ret = 0;
-    if (data != 0)
-        ret = 1;
+    s32 ret;
+    switch (data) {
+        default: ret = 1; break;
+        case 0: ret = 0; break;
+    }
     return ret;
 }
 
@@ -2598,7 +2601,9 @@ extern "C" const char lbl_80325A1C[];
 extern "C" const char lbl_803259F0[];
 extern "C" const char lbl_80325A60[];
 extern "C" const char lbl_80325A34[];
+#pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUl(void *self, const void *archive, void *buffer, u32 size) {
     struct GroupEntry { u32 a; u32 b; };
     struct GroupList { u32 count; GroupEntry entries[1]; };
@@ -2719,8 +2724,7 @@ extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12Sou
     *(u32 *)((u8 *)self + 0xD4) = size;
     return 1;
 }
-
-#pragma use_lmw_stmw off
+#pragma pop
 extern "C" void __ct__Q36nw4hbm3snd11SoundPlayerFv(void *);
 extern "C" void SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi(void *, s32);
 extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(void *, s32);
