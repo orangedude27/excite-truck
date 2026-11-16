@@ -10,14 +10,15 @@ extern int fn_8000D838(int *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+// Initializes the global state block and resets its associated counter array.
 void fn_8023990C(void) {
-    int v;
-    unsigned int *p;
+    int count;
+    unsigned int *nextEntry;
     fn_8000D838(&lbl_8055F0E0);
-    p = lbl_804986C8 + 1;
+    nextEntry = lbl_804986C8 + 1;
     lbl_804986C8[0] = 0;
-    v = 0x7B;
-    lbl_804986C8[1] = v;
+    count = 0x7B;
+    lbl_804986C8[1] = count;
     lbl_804986C8[2] = 0;
     lbl_804986C8[3] = 0;
     lbl_804986C8[4] = 0;
