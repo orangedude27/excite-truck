@@ -1290,7 +1290,11 @@ int fn_80167728(int entryIndex) {
 }
 #pragma pop
 unsigned char fn_80167758(void) { return *((unsigned char *)&lbl_8042FE38 + 0x4E); }
-int fn_80167768(float arg0) { return arg0 > *(float *)((char *)&lbl_8042FE38 + 0x50); }
+int fn_80167768(float throttle) {
+    /* Return whether the given throttle exceeds the orbit config's
+     * "turbo_enabled_throttle" threshold at lbl_8042FE38+0x50 (turbo engages). */
+    return throttle > *(float *)((char *)&lbl_8042FE38 + 0x50);
+}
 #pragma pop
 extern float lbl_805618EC;
 extern float lbl_805618D8;
