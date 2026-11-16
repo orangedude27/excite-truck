@@ -3417,10 +3417,11 @@ extern "C" void fn_800E80B4(void) {
 }
 
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank);
-extern "C" void *fn_800E80B8(void *arg0, const void *arg1) {
-    __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(arg0, arg1);
-    *(int *)((char *)arg0 + 0xC) = 0;
-    return arg0;
+extern "C" void *fn_800E80B8(void *reader, const void *bank) {
+    /* Construct a scratch BankFileReader over the bank file and clear its wave-file address field at +0xC. */
+    __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(reader, bank);
+    *(int *)((char *)reader + 0xC) = 0;
+    return reader;
 }
 
 extern "C" int fn_800E80F0(int object, int deleteFlag) {
