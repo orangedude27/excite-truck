@@ -301,10 +301,11 @@ void fn_801492AC(void *arg0, f32 *arg1, s32 arg2) {
 }
 
 extern s32 lbl_802F93E0[];
-s32 fn_8014931C(void *arg0) {
-    S4_80149234 sp8;
-    sp8 = *(S4_80149234 *)lbl_802F93E0;
-    return sp8.v[((s32 *)arg0)[1]];
+/* Returns the indexed entry from a 4-element table selected by the object's index field. */
+s32 fn_8014931C(void *object) {
+    S4_80149234 tableCopy;
+    tableCopy = *(S4_80149234 *)lbl_802F93E0;
+    return tableCopy.v[((s32 *)object)[1]];
 }
 
 void fn_8014935C(int *p) {
