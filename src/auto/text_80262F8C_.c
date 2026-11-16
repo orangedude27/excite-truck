@@ -276,9 +276,11 @@ extern s32 fn_801333E8(s32, const u8 *, u8 *, u8 *);
 extern const u8 lbl_803462B8[];
 extern const u8 lbl_803462A8[];
 extern const u8 lbl_80346280[];
-void fn_80263980(void *arg0) {
-    s32 value = *(s32 *)((u8 *)arg0 + 0x24);
-    fn_80133460(value + 8, lbl_803462B8, *((u8 *)arg0 + 0x28), value);
+void fn_80263980(void *setting) {
+    /* Write this setting's "force_feedback" option: section index + 8, its
+     * current byte value at +0x28, and the index itself. */
+    s32 index = *(s32 *)((u8 *)setting + 0x24);
+    fn_80133460(index + 8, lbl_803462B8, *((u8 *)setting + 0x28), index);
 }
 
 extern double lbl_80563BE0;
