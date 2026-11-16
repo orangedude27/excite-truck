@@ -2356,16 +2356,18 @@ void *nw4hbm::snd::detail::SeqFileReader::GetBaseAddress() const {
 }
 
 extern "C" void OSCancelAlarm(void *);
+/* Construct a nw4hbm::snd::detail::SeqPlayer: install its primary and secondary
+ * vtables and clear its state, registration flag and link-list node. */
 extern "C" void fn_800EEE8C(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    *(s32 *)(p + 4) = -1;
-    *(s32 *)(p + 8) = 0;
-    *(s32 *)(p + 0xC) = 0;
-    *(u8 **)p = lbl_80323E98;
-    *(u8 **)(p + 0x10) = lbl_80323E98 + 0x98;
-    p[0x15] = 0;
-    *(s32 *)(p + 0x100) = 0;
-    *(s32 *)(p + 0x104) = 0;
+    u8 *player = (u8 *)arg0;
+    *(s32 *)(player + 4) = -1;
+    *(s32 *)(player + 8) = 0;
+    *(s32 *)(player + 0xC) = 0;
+    *(u8 **)player = sSeqPlayerVtable;
+    *(u8 **)(player + 0x10) = sSeqPlayerVtable + 0x98;
+    player[0x15] = 0;
+    *(s32 *)(player + 0x100) = 0;
+    *(s32 *)(player + 0x104) = 0;
 }
 
 extern "C" s32 fn_800EEEC4(s32 object, s32 deleteFlag) {
