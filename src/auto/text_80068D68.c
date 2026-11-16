@@ -4054,11 +4054,12 @@ void fn_8006EBF0(void) {
 
 extern s32 fn_80068DB8();
 s32 fn_8006EBF4(void) {
-    s32 r = fn_80068DB8();
-    if (r == 0) {
-        r = 0;
+    // Forwards the app allocator's result (GKI uses this to obtain a memory pool); the zero case is kept explicit.
+    s32 result = fn_80068DB8();
+    if (result == 0) {
+        result = 0;
     }
-    return r;
+    return result;
 }
 
 extern void fn_80068E08(s32);
