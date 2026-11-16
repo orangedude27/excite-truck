@@ -726,6 +726,12 @@ void fn_80237A9C(void) {
 }
 
 extern float lbl_805636E4;
+#pragma push
+#pragma cplusplus on
+class SObjV_37AA0 { public: virtual void _d0(); virtual float get(); virtual void set(float); };
+static inline float call_get_37AA0(void *p) { return ((SObjV_37AA0 *)p)->get(); }
+static inline void call_set_37AA0(void *p, float f) { ((SObjV_37AA0 *)p)->set(f); }
+#pragma pop
 typedef struct SVT { void *pad[3]; float (*get)(void *); void (*set)(void *, float); } SVT;
 typedef struct SObj { SVT *vt; } SObj;
 #pragma push
