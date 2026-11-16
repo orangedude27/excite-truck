@@ -525,6 +525,8 @@ void fn_802C8DB8(void) {
     fn_802D68C4();
 }
 
+/* If fn_801E4F20() reports active, sets the drawlist active flag (lbl_8055FC8F),
+ * switches render mode to 6, and returns 1; otherwise returns 0. */
 int fn_802C8DBC(void) {
     if (fn_801E4F20() != 0) {
         lbl_8055FC8F = 1;
