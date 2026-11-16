@@ -3276,11 +3276,13 @@ extern "C" s32 fn_8016524C(void *arg0) {
 
 int fn_801657D4(void) { return 1; }
 
+/* Captures the current view transform and scale, applies them, then sets the state to 0x15 for all players. */
 void fn_801657DC(void) {
-    int sp10[12];
-    float sp8;
-    fn_80020434(sp10, &sp8);
-    fn_8026A2CC(sp10, 0, sp8);
+    int viewData[12];
+    float viewScale;
+
+    fn_80020434(viewData, &viewScale);
+    fn_8026A2CC(viewData, 0, viewScale);
     fn_8000C630(0x15, -1);
 }
 
