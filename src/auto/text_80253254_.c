@@ -665,6 +665,7 @@ void fn_8025419C(void *arg0) {
 }
 
 extern void fn_802C7AE0(s32, void *, s32, float);
+#define kTransformParam lbl_80563A2C
 #pragma scheduling invalid_target
 void fn_80254354(void *arg0) {
     extern const float lbl_80563A2C;
