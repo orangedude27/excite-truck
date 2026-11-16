@@ -1624,6 +1624,8 @@ found:
     *(int *)(entry + 0x90) = count + 1;
 }
 extern "C" void fn_801FF8DC(void *arg0, void *dest, int src) {
+    /* Initialize a named container slot: copy up to 16 chars of the name, terminate it,
+     * and clear the two counters at +0x90/+0x94 (e.g. item count / secondary count). */
     strncpy((char *)dest, (const char *)src, 0x10);
     ((char *)dest)[0xF] = 0;
     *(int *)((char *)dest + 0x90) = 0;
