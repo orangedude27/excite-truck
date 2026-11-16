@@ -15,6 +15,8 @@ extern u32 lbl_80339478[];
 extern u32 lbl_80486F30[];
 #define sParamCount lbl_8055E9C4 /* number of records gathered in sParamTable */
 #define sParamTable lbl_80486F30 /* 28-byte tunable-parameter records */
+#define activeVehicle fn_801DDE78 /* currently selected vehicle value */
+#define TUNE_BLOCK_OFFSET 0x32C   /* offset to a vehicle's tunable-parameter block */
 s32 fn_80145E70(void*);
 extern u32 lbl_804348E8[];
 s32 fn_80179630(s32);
@@ -220,6 +222,7 @@ extern char lbl_80339490[];
 typedef DbgRec *(*DbgGet)(void *, const char *);
 typedef void (*DbgVoid)(void *);
 #pragma push
+#pragma processor 603
 #pragma cplusplus on
 extern "C" void fn_801DE154(void) {
     class Gui {
@@ -233,7 +236,7 @@ extern "C" void fn_801DE154(void) {
     };
     f32 pad[20];
     DbgRec ra, rb, rc;
-    DbgRec ca;
+    f32 caB, caC;
     DbgRec lineA, lineC;
     s32 n, i, t;
     s32 r5, r7;
@@ -241,70 +244,89 @@ extern "C" void fn_801DE154(void) {
     f32 x, y;
     s32 xa, ya;
     f32 *value;
+    DbgRec *p;
+    f32 off;
     fn_801DDF0C();
     fn_80230B5C(pad);
     fn_802C8638(pad);
     fn_802C974C(lbl_80562BD0, lbl_80562BD4, lbl_80562BD8);
     ((Gui *)lbl_8055E9C0)->v5();
-    ra = *((Gui *)lbl_8055E9C0)->v1(lbl_8055ADC0);
-    rb = *((Gui *)lbl_8055E9C0)->v1(lbl_8055ADC8);
-    ca.b = rb.b - ra.b;
-    ca.c = rb.c - ra.c;
-    rc = *((Gui *)lbl_8055E9C0)->v1(lbl_8055ADD0);
+    p = ((Gui *)lbl_8055E9C0)->v1(lbl_8055ADC0);
+    ra.a = p->a; ra.b = p->b; ra.c = p->c; ra.d = p->d;
+    ra.e = p->e; ra.f = p->f; ra.g = p->g; ra.h = p->h;
+    p = ((Gui *)lbl_8055E9C0)->v1(lbl_8055ADC8);
+    rb.a = p->a; rb.b = p->b; rb.c = p->c; rb.d = p->d;
+    rb.e = p->e; rb.f = p->f; rb.g = p->g; rb.h = p->h;
+    caB = *(f32 *)&rb.b - *(f32 *)&ra.b;
+    caC = *(f32 *)&rb.c - *(f32 *)&ra.c;
+    p = ((Gui *)lbl_8055E9C0)->v1(lbl_8055ADD0);
+    rc.a = p->a; rc.b = p->b; rc.c = p->c; rc.d = p->d;
+    rc.e = p->e; rc.f = p->f; rc.g = p->g; rc.h = p->h;
     n = fn_802E2C20() - (s32)lbl_8055E9CC;
     if (n >= 0x1388) {
         t = ((n - 0x1388) * 0xC0) / 1000;
-        if (t < 0) t = 0;
-        if (t > 0xC0) t = 0xC0;
+        t = t & (((-t) & ~t) >> 31);
+        t = (t < 0xC0) ? t : 0xC0;
         ra.g -= t << 24;
         rb.g -= t << 24;
         rc.g -= t << 24;
     }
+    off = lbl_80562BC0;
     e = (u8 *)lbl_80486F30 - 0x1C;
     for (i = -1; i < lbl_8055E9C4; i++) {
-        e += 0x1C;
-        lineA = ra;
-        lineC = rc;
-        lineA.b = ra.b + ca.b * (f32)i;
-        lineA.c = ra.c + ca.c * (f32)i;
-        lineC.b = rc.b + ca.b * (f32)i;
-        lineC.c = rc.c + ca.c * (f32)i;
+        lineA.a = ra.a;
+        *(f32 *)&lineA.b = *(f32 *)&ra.b + caB * (f32)i;
+        *(f32 *)&lineA.c = *(f32 *)&ra.c + caC * (f32)i;
+        lineA.d = ra.d;
+        lineA.e = ra.e;
+        lineA.f = ra.f;
+        lineA.g = ra.g;
+        lineA.h = ra.h;
+        lineC.a = rc.a;
+        *(f32 *)&lineC.b = *(f32 *)&rc.b + caB * (f32)i;
+        *(f32 *)&lineC.c = *(f32 *)&rc.c + caC * (f32)i;
+        lineC.d = rc.d;
+        lineC.e = rc.e;
+        lineC.f = rc.f;
+        lineC.g = rc.g;
+        lineC.h = rc.h;
         if (i == (s32)lbl_8055E9BC) {
             lineA.g = rb.g;
             lineC.g = rb.g;
         }
         if (i >= 0) {
-            fn_80147230(&lineA, lbl_8055ADD8, *(s32 *)e);
-            x = *(f32 *)(e + 0xC) / *(f32 *)(e + 0x18);
+            fn_80147230(&lineA, lbl_8055ADD8, *(s32 *)(e + 0x1C));
+            x = *(f32 *)(e + 0x1C + 0xC) / *(f32 *)(e + 0x1C + 0x18);
             if (x < lbl_80562BC4) {
-                x -= lbl_80562BC0;
+                x -= off;
             } else {
-                x += lbl_80562BC0;
+                x += off;
             }
             xa = (s32)x;
-            value = *(f32 **)(e + 8);
-            y = *value / *(f32 *)(e + 0x18);
+            value = *(f32 **)(e + 0x1C + 8);
+            y = *value / *(f32 *)(e + 0x1C + 0x18);
             if (y < lbl_80562BC4) {
-                y -= lbl_80562BC0;
+                y -= off;
             } else {
-                y += lbl_80562BC0;
+                y += off;
             }
             ya = (s32)y;
             if (xa == ya) {
                 r7 = (s32)lbl_8055ADDC;
-            } else if (*value > *(f32 *)(e + 0xC)) {
+            } else if (*value > *(f32 *)(e + 0x1C + 0xC)) {
                 r7 = (s32)lbl_8055ADE0;
             } else {
                 r7 = (s32)lbl_8055ADE4;
             }
-            r5 = (*(f32 *)(e + 0x18) > lbl_80562BDC) ? 0 : 2;
-            fn_80147230(&lineC, lbl_80339484, r5, *(s32 *)(e + 4), r7, *value);
+            r5 = (*(f32 *)(e + 0x1C + 0x18) > lbl_80562BDC) ? 0 : 2;
+            fn_80147230(&lineC, lbl_80339484, r5, *(s32 *)(e + 0x1C + 4), r7, *value);
         } else {
             fn_80147230(&lineA, lbl_80339490);
             if (i == (s32)lbl_8055E9BC) {
                 fn_80147230(&lineC, lbl_8055ADE8);
             }
         }
+        e += 0x1C;
     }
     fn_80011A2C();
 }
