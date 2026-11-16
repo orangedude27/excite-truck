@@ -450,7 +450,7 @@ extern void *fn_802D94DC(void);
 extern void fn_802DBA1C(unsigned char);
 extern void fn_802DB9DC(int);
 extern void fn_802DBBE4(int,int);
-extern void fn_802DBF54(int,int);
+extern void fn_802DBF54(unsigned short *__restrict, int);
 extern void GXSetColorUpdate(int);
 extern void GXSetZMode(int,int,int);
 extern unsigned char lbl_8055FEBA;
@@ -463,7 +463,7 @@ void fn_802DBF30(void) {
 extern void GXBegin(int, int, unsigned short);
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DBF54(int verts, int count) {
+void fn_802DBF54(unsigned short *__restrict verts, int count) {
     int n;
     int i;
     volatile unsigned short *fifo;
@@ -495,12 +495,12 @@ void fn_802DC078(void* positions, s32 posCount, u16* list, s32 size, s32 first,
     fn_802DBA1C(lbl_8055FEBA);
     fn_802DB9DC(first);
     fn_802DBBE4((int)positions, posCount);
-    fn_802DBF54((int)list, size);
+    fn_802DBF54(list, size);
     if (lbl_8055FEBA != 0) {
         GXSetZMode(GX_ENABLE, GX_LEQUAL, GX_ENABLE);
         GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_OR, GX_ALWAYS, 0);
         GXSetColorUpdate(GX_DISABLE);
-        fn_802DBF54((int)list, size);
+        fn_802DBF54(list, size);
         GXSetColorUpdate(GX_ENABLE);
     }
 }
@@ -517,18 +517,17 @@ void fn_802DC134(void) {
 void fn_802DC138(int verts, int count, unsigned short *list, int size) {
     int n;
     int i;
-    unsigned short val;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     fn_802DB778(0);
     fn_802DBCFC(verts, count);
     while (size > 0) {
-        n = *list++;
+        n = *list;
+        list++;
         GXBegin(0xA0, 0, n);
         size -= n + 1;
         #pragma unroll 8
-        for (i = 0; i < n; i++) {
-            val = *list++;
-            *fifo = val;
+        for (i = 0; i < n; i++, list++) {
+            *fifo = *list;
         }
     }
 }
@@ -691,6 +690,7 @@ extern void fn_802DFD00(void);
 extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 #pragma push
+#pragma optimization_level 3
 #pragma cplusplus on
 extern "C" void fn_802DC71C(int arg0, int arg1) {
     extern void GXLoadTexObj(void *, int);
@@ -709,9 +709,9 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     useAlt = *((unsigned char *)tex1 + 0xCC);
     info = ((void *(*)(int))fn_802DC628)(arg0);
     texFlag = *((unsigned char *)info + 8);
-    lbl_8055FEBB = (texFlag == 0x1D);
+    *(bool *)&lbl_8055FEBB = (texFlag == 0x1D);
     wrapS = GXGetTexObjWrapS((unsigned char *)base[0] + 0x24);
-    lbl_8055FEB9 = (wrapS == 0x200);
+    *(bool *)&lbl_8055FEB9 = (wrapS == 0x200);
     GXLoadTexObj((unsigned char *)base[0] + 0x24, 0);
     GXLoadTexObj((unsigned char *)tex1 + 0x24, 1);
     if (useAlt != 0) GXLoadTexObj((unsigned char *)tex1 + 0x78, 2);
@@ -736,6 +736,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     GXSetBlendMode(1, 4, 5, 5);
 }
 #pragma pop
+#pragma cplusplus off
 #pragma push
 #pragma processor 750
 void fn_802DC8B4(void) {
