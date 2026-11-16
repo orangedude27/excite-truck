@@ -1424,10 +1424,11 @@ extern "C" void fn_8010C7DC(void **arg0) {
     *arg0 = (void *)&lbl_8032951C;
 }
 
-extern "C" s32 fn_8010C7EC(s32 arg0, s32 arg1) {
+extern "C" s32 fn_8010C7EC(s32 object, s32 deleteFlag) {
     extern s32 fn_80128668(void);
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
 }
 
 extern "C" s32 fn_8010C82C(s32 arg0, s32 arg1, void *arg2) {
