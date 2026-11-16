@@ -360,8 +360,9 @@ void fn_801B4C58(int arg0, int arg1) {
     fn_801B479C(arg0 + 4, arg1);
 }
 
-void fn_801B4C60(int arg0, int arg1) {
-    fn_801B479C(arg0 + 4, fn_801B47BC(arg0 + 4, arg1));
+void fn_801B4C60(int queue, int index) {
+    /* Pick the replay frame after index by stepping the queue's cursor at +4 forward and indexing the FramePool; callers use the returned pointer. */
+    fn_801B479C(queue + 4, fn_801B47BC(queue + 4, index));
 }
 
 #pragma push
