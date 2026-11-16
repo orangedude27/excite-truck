@@ -9,6 +9,18 @@ extern "C" {
 #define AX_SAMPLE_RATE 32000
 #define AX_VOICE_MAX 96
 
+/* REXE01's engine is built for 64 voices: the DSP parameter-block array is
+ * AX_NUM_VOICES * sizeof(AXPB) = 0x4800 bytes, and next to it every voice owns
+ * an AX_ITD_BUFFER_SIZE-byte ITD buffer and an AX_AUX_BUFFER_SIZE-byte buffer
+ * that receives the aux data queued in AXVPB::auxData. */
+#define AX_NUM_VOICES      64
+#define AX_ITD_BUFFER_SIZE 0x40
+#define AX_AUX_BUFFER_SIZE 0x100
+
+/* One voice stack per priority, AX_MAX_PRIORITY down to 1; stack 0 is the
+ * stack of voices that are not playing. */
+#define AX_MAX_PRIORITY 31
+
 typedef enum {
     AX_PBSYNC_SELECT = (1 << 0),
     AX_PBSYNC_MIXER_CTRL = (1 << 1),
