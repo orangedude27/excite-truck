@@ -885,8 +885,11 @@ return result;
 
 #pragma scheduling on
 #pragma dont_inline fn_801A8E38
+/* Return 1 when the control value from fn_801A7F98 exceeds the 0.2 press threshold. */
 int fn_801A8E38(void) {
-    return fn_801A7F98() > lbl_80562470;
+#define PRESS_THRESHOLD lbl_80562470  /* 0.2f */
+    return fn_801A7F98() > PRESS_THRESHOLD;
+#undef PRESS_THRESHOLD
 }
 
 #pragma push
