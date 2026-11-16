@@ -335,8 +335,9 @@ int fn_801B4B44(char *object) {
     return result;
 }
 
-int fn_801B4B9C(int arg0) {
-    return *fn_801B479C(arg0 + 4, fn_801B47AC(arg0 + 4));
+int fn_801B4B9C(int queue) {
+    /* Return the tick of the replay queue's current frame (its base tick): the first field of the frame at the FramePool's current index. */
+    return *fn_801B479C(queue + 4, fn_801B47AC(queue + 4));
 }
 
 int fn_801B4BDC(int arg0);
