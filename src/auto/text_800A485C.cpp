@@ -11737,12 +11737,15 @@ extern "C" s32 fn_800B7F28(void *arg0) {
 
 #pragma dont_inline reset
 extern "C" const char lbl_8031B218[];
-extern "C" s32 fn_800B7FC4(s32 arg0) {
-    if (arg0 == 0) {
-        OSReport(lbl_8031B218);
+extern "C" s32 fn_800B7FC4(s32 semaphore) {
+#define s_invalidDeleteSemaphoreMsg lbl_8031B218 /* "prfile2:ERR pfk_delete_semaphore() Invalid Param\n" */
+    /* Validate a semaphore handle before deleting it: report and fail with -2 when null. */
+    if (semaphore == 0) {
+        OSReport(s_invalidDeleteSemaphoreMsg);
         return -2;
     }
     return 0;
+#undef s_invalidDeleteSemaphoreMsg
 }
 
 extern "C" void OSReport(const char *, ...);
