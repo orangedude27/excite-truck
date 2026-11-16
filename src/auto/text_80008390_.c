@@ -278,8 +278,12 @@ s32 fn_80008C5C(void) {
 #pragma dont_inline off
 
 #pragma dont_inline on
+/* Return the active scene's mirror/reverse flag: bit 1 of the flags word at
+ * +0x10 of the scene context returned by fn_801E87A8. */
 s32 fn_8000865C(void) {
-    return (*(u32 *)((char *)fn_801E87A8() + 0x10) >> 1) & 1;
+#define getSceneContext fn_801E87A8
+    return (*(u32 *)((char *)getSceneContext() + 0x10) >> 1) & 1;
+#undef getSceneContext
 }
 #pragma dont_inline reset
 
