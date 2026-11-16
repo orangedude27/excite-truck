@@ -1433,7 +1433,7 @@ check_loop:
 }
 
 #pragma cplusplus on
-extern "C" void *fn_80294254(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
+extern "C" void *fn_80294254(void *object, void *effectArg, int modelBase, int instance, int remapTexture) {
     class EffectArg {
     public:
         virtual void v0();
@@ -1446,17 +1446,20 @@ extern "C" void *fn_80294254(void *arg0, void *arg1, int arg2, int arg3, int arg
         virtual void v7();
         virtual float value(const char *, float);
     };
-    register float initialValue;
-    *(void **)arg0 = lbl_8034925C;
-    fn_80294530(arg0, arg2, arg3, arg4);
-    initialValue = lbl_805644D4;
-    *(float *)((char *)arg0 + 4) = initialValue;
-    if (arg1 != 0) {
-        *(float *)((char *)arg0 + 4) =
-            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988, initialValue);
+    /* Construct the "wood" chunk sys: install its vtable, load its models, then set
+     * its gravity_f (+0x4) to the default lbl_805644D4 (1.0f), overridden by
+     * effectArg->value("grav_f", default). +0x222C is cleared. */
+    register float defaultGravity;
+    *(void **)object = lbl_8034925C;
+    fn_80294530(object, modelBase, instance, remapTexture);
+    defaultGravity = lbl_805644D4;
+    *(float *)((char *)object + 4) = defaultGravity;
+    if (effectArg != 0) {
+        *(float *)((char *)object + 4) =
+            ((EffectArg *)effectArg)->value((const char *)&lbl_8055C988, defaultGravity);
     }
-    *(int *)((char *)arg0 + 0x222C) = 0;
-    return arg0;
+    *(int *)((char *)object + 0x222C) = 0;
+    return object;
 }
 #pragma cplusplus off
 
