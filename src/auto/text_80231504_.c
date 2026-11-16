@@ -250,8 +250,8 @@ static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32
     *adv = w;
     flag = lbl_8055F050;
     if (*text == '\\') {
-        eo = 0;
         i = 0;
+        eo = 0;
         while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
             Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
             if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
