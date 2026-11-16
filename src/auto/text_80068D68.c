@@ -25141,15 +25141,16 @@ tSDP_RECORD *sdp_db_find_record(UINT32 handle) {
     return NULL;
 }
 
-void *fn_80096904(void *arg0, u32 arg1, u32 arg2) {
-    u16 count = *(u16 *)((u8 *)arg0 + 8);
-    u8 *p = (u8 *)arg0 + 0xC;
-    u16 i = 0;
-    while (i < count) {
-        u16 value = *(u16 *)(p + 8);
-        if (value >= arg1 && value <= arg2) return p;
-        i++;
-        p += 0xC;
+void *fn_80096904(void *record, u32 firstId, u32 lastId) {
+    u16 numAttrs = *(u16 *)((u8 *)record + 8);
+    u8 *attr = (u8 *)record + 0xC;
+    u16 index = 0;
+    /* Find the first attribute of this SDP record whose ID is in [firstId, lastId]. */
+    while (index < numAttrs) {
+        u16 attrId = *(u16 *)(attr + 8);
+        if (attrId >= firstId && attrId <= lastId) return attr;
+        index++;
+        attr += 0xC;
     }
     return NULL;
 }
