@@ -9,6 +9,7 @@ extern void* fn_80137C54(int);
 extern float lbl_805613D8;
 extern float lbl_805613DC;
 #pragma scheduling invalid_target
+/* Returns the current AI league's length-derived gap: 0.305 + 0.5 * its truck length (carLength at +0x04). */
 float fn_80139048(void) {
     return lbl_805613D8 + lbl_805613DC * ((float*)fn_80137C54(-1))[1];
 }
