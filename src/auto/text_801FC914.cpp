@@ -863,7 +863,7 @@ extern "C" float fn_801E7E24(void);
 extern "C" void* memset(void*, int, unsigned long);
 extern "C" const char lbl_8033B790[];
 extern "C" void* fn_801FE188(void* obj) {
-    /* Initialize a LinearPathTMH object: install vtable, clear state, reset count. */
+    /* Initialize a LinearPathTMH object: install its vtable, clear fields, reset entry count. */
     *(const char**)obj = lbl_8033B790;
     memset((char*)obj + 4, 0, 0x30);
     *(int*)((char*)obj + 0x34) = 0;
