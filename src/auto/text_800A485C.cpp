@@ -12965,44 +12965,64 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     return count;
 }
 
-extern "C" s32 fn_800BAA8C(s32 arg0, void *arg1) {
-    u8 *req = (u8 *)arg1;
-    s32 cmd = *(s32 *)(req + 0x0C);
-    switch (cmd) {
-    case 4:
-        if (arg0 != 0) {
-            if ((u32)(arg0 + 0x3F000000) == 0x20) {
-                OSReport(lbl_8031B838, arg0);
+/* Completion callback for an asynchronous SD-card IOS ioctl: report/complete
+ * the command's result, clear the one-request busy flag, call the user callback
+ * and free the request block. */
+extern "C" s32 fn_800BAA8C(s32 result, void *request) {
+    #define SDCB_HEAP       lbl_80559248    /* SD library heap */
+    #define SDCB_BUSY       lbl_8055DD6C    /* "one request at a time" flag */
+    #define SDCB_STATUS     lbl_8055DD68    /* status word: 0x10000 once the card was set up */
+    #define SDCB_MSG        lbl_8031B838
+    #define SDCB_RESET_MSG  lbl_8031B878
+    #define SDCB_CMD_READ   0x12
+    #define SDCB_CMD_WRITE  0x19
+
+    u8 *req = (u8 *)request;
+    s32 command = *(s32 *)(req + 0x0C);
+    switch (command) {
+    case 4: /* card status / insertion check */
+        if (result != 0) {
+            /* result 0xC0200000: an SDHC card was inserted but is not supported */
+            if ((u32)(result + 0x3F000000) == 0x20) {
+                OSReport(SDCB_MSG, result);
             } else {
-                OSReport(lbl_8031B878, arg0);
+                OSReport(SDCB_RESET_MSG, result);
             }
             *(s32 *)(*(u8 **)(req + 8) + 0x10) = 0;
         } else {
-            u8 *dev = *(u8 **)(req + 8);
-            if (dev != 0) {
-                *(s32 *)(dev + 0x10) = *(s32 *)(*(u8 **)(req + 0x14));
-                lbl_8055DD68 = 0x10000;
+            u8 *device = *(u8 **)(req + 8);
+            if (device != 0) {
+                *(s32 *)(device + 0x10) = *(s32 *)(*(u8 **)(req + 0x14));
+                SDCB_STATUS = 0x10000;
                 *(s32 *)(*(u8 **)(req + 8) + 0x24) = 2;
             }
         }
-        lbl_8055DD6C = 0;
+        SDCB_BUSY = 0;
         break;
-    case 0x19:
+    case SDCB_CMD_WRITE:
     case 0x26:
-    case 0x12:
-        lbl_8055DD6C = 0;
+    case SDCB_CMD_READ:
+        SDCB_BUSY = 0;
         break;
     default:
         break;
     }
-    if (*(s32 *)req != 0 && (u32)arg0 != 0xC2100000U) {
-        ((void (*)(s32, s32))*(s32 *)req)(arg0, *(s32 *)(req + 4));
+    if (*(s32 *)req != 0 && (u32)result != 0xC2100000U) {
+        ((void (*)(s32, s32))*(s32 *)req)(result, *(s32 *)(req + 4));
     }
     if (*(void **)(req + 0x18) != 0) {
-        iosFree(lbl_80559248, *(void **)(req + 0x18));
+        iosFree(SDCB_HEAP, *(void **)(req + 0x18));
     }
-    iosFree(lbl_80559248, req);
-    return arg0;
+    iosFree(SDCB_HEAP, req);
+    return result;
+
+    #undef SDCB_HEAP
+    #undef SDCB_BUSY
+    #undef SDCB_STATUS
+    #undef SDCB_MSG
+    #undef SDCB_RESET_MSG
+    #undef SDCB_CMD_READ
+    #undef SDCB_CMD_WRITE
 }
 
 #pragma dont_inline reset
