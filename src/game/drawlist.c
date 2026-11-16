@@ -998,6 +998,7 @@ float fn_802C99E8(float value) {
     fn_802C99D8();
     return previous;
 }
+#define globalDirection lbl_804C1440 /* global 3-component direction vector */
 #pragma dont_inline on
 void fn_802C9A1C(float *arg0) {
     float z, y, x;
