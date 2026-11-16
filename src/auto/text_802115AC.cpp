@@ -1912,9 +1912,10 @@ extern "C" void fn_80214C54(s32 updateId, s32 context) {
 
 #pragma dont_inline on
 extern "C" void fn_80214CB4(s32 arg0) {
-    s32 temp = fn_802168E4();
-    if (temp != 0) {
-        ((s32 (*)(s32, s32))fn_802180E0)(temp, arg0);
+    /* Set the active UI window's menu index, or report if no window is active. */
+    s32 window = fn_802168E4();
+    if (window != 0) {
+        ((s32 (*)(s32, s32))fn_802180E0)(window, arg0);
     } else {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D3B0);
     }
