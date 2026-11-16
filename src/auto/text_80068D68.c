@@ -4699,7 +4699,7 @@ s32 fn_8007011C(void) { return 0; }
 
 u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
     extern u16 fn_8006D8D0(u32);
-    extern s32 IUSB_WriteCtrlMsgAsync();
+    extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
     s32 ret = 0;
     char *report = lbl_803142C8;
