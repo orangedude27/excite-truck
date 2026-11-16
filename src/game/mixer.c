@@ -479,10 +479,15 @@ void fn_80209398(void *arg0) {
 }
 
 int fn_802093A4(void *arg0) {
-    if (*(int *)((char *)arg0 + 4) + 0x7D0 < fn_802E2C20()) {
-        *(int *)((char *)arg0 + 8) = 3;
+    /* If 2000ms elapsed since start, mark the timed object as expired; return its state. */
+#define startTime ((int *)((char *)arg0 + 4))
+#define state ((int *)((char *)arg0 + 8))
+    if (*startTime + 0x7D0 < fn_802E2C20()) {
+        *state = 3;
     }
-    return *(int *)((char *)arg0 + 8);
+    return *state;
+#undef startTime
+#undef state
 }
 
 void fn_802093EC(void) {
