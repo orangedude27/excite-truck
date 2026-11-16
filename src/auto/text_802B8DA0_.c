@@ -557,6 +557,7 @@ void fn_802B9108(short arg0) {
 }
 #pragma dont_inline off
 #pragma pop
+/* Frees the buffer pointer stored at offset 0 of the given object, if non-null, and clears it. */
 void fn_802B98D0(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
