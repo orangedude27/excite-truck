@@ -71,6 +71,36 @@ typedef struct WeatherState {
 #define gWeatherState  lbl_804874D4 /* the WeatherState above */
 #define gWeatherLoaded lbl_8055EA20 /* 0: reload the parameters next time */
 #define gLightningOn   lbl_8055EA22 /* lightning flashes with this weather */
+
+/* A sound the game plays through the sound manager: the "Sound" pool class of
+ * text_802062E8.cpp, which fn_80207848 makes.  The flags at +0x48 are requests
+ * the manager carries out on the sound it holds on the next pass -- the same
+ * ones the Sound3D class beside it has. */
+typedef struct Sound {
+    void *vtable;                 /* 0x00 */
+    char pad04[0x48 - 0x04];
+    unsigned char muted;          /* 0x48: keep it silent */
+    unsigned char playPending;    /* 0x49: start it on the next pass */
+    unsigned char releasePending; /* 0x4A: give its voices back */
+    unsigned char loop;           /* 0x4B: play it looping rather than once */
+    unsigned char releaseOnce;    /* 0x4C: give its voices back once */
+} Sound;
+
+/* The level's rain-and-thunder sound state.  fn_801E1E30 starts it from the
+ * weather's lightning flag, fn_801E1D38 loads the two sounds and fn_801E1D9C
+ * hands them back; fn_801E1B30 steps it once a frame while `mode` is up, and
+ * fn_801E1EA4 hands the rained-off loudness at +0x04 to the tracks. */
+typedef struct WeatherSound {
+    int mode;             /* 0x00: 0 off, 1 quiet, 2 rain spell, 3 a clap is due */
+    float volume;         /* 0x04: eased toward `targetVolume` every frame */
+    float targetVolume;   /* 0x08: the loudness the rain is being brought to */
+    float strikeAt;       /* 0x0C: time the thunderclap is due, -1.0f for none */
+    float spellTime;      /* 0x10: how long the current rain spell lasts */
+    Sound *rain;          /* 0x14: the "rain.sfx" loop, on a raining level only */
+    Sound *thunder;       /* 0x18: the "thunder.sfx" one-shot */
+} WeatherSound;
+
+#define gWeatherSound lbl_804874B8 /* the WeatherSound above */
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
@@ -137,48 +167,48 @@ extern double __fabs(double);
 #pragma push
 #pragma processor 750
 void fn_801E1B30(void) {
-    typedef struct { int mode; float cur; float tgt; float unkC; float unk10; } State;
     float temp = lbl_8055E3C8;
-    State *state = (State *)lbl_804874B8;
-    int zero;
+    char *state = lbl_804874B8;
+    int zero = 0;
 
-    zero = 0;
     if (fn_80129D18(4, 0x12C) == 0 || (unsigned char)lbl_8055EA21 != 0) {
-        if (state->mode == 1 || (unsigned char)lbl_8055EA21 != 0) {
+        if (*(int *)state == 1 || (unsigned char)lbl_8055EA21 != 0) {
             if (fn_80129D18(4, 0xA) < 6 || (unsigned char)lbl_8055EA21 != 0) {
-                state->mode = 2;
-                state->unk10 = fn_80129DC4(4, lbl_80562CAC, lbl_80562CB0);
+                *(int *)state = 2;
+                *(float *)(state + 0x10) = fn_80129DC4(4, lbl_80562CAC, lbl_80562CB0);
             } else {
-                state->mode = 3;
-                state->unkC = temp + fn_80129DC4(4, lbl_80562CB4, lbl_80562CB8);
+                *(int *)state = 3;
+                *(float *)(state + 0xC) = temp + fn_80129DC4(4, lbl_80562CB4, lbl_80562CB8);
             }
-            state->tgt = fn_80129DC4(4, lbl_80562CB8, lbl_80562CBC);
-        } else if (state->cur > state->tgt) {
-            state->tgt = fn_80129DC4(4, state->cur, lbl_80562CC0);
+            *(float *)(state + 8) = fn_80129DC4(4, lbl_80562CB8, lbl_80562CBC);
+        } else if (*(float *)(state + 4) > *(float *)(state + 8)) {
+            *(float *)(state + 8) = fn_80129DC4(4, *(float *)(state + 4), lbl_80562CC0);
         }
     }
 
     lbl_8055EA21 = zero;
-    if (state->mode != 1) {
-        register float target = state->tgt;
-        register float current = state->cur;
+    if (*(int *)state != 1) {
+        float target = *(float *)(state + 8);
+        float current = *(float *)(state + 4);
         if ((float)__fabs((double)(target - current)) < lbl_80562CC4) {
             if ((float)__fabs((double)target) <= lbl_80558DC4) {
                 goto set_mode;
             }
-            state->tgt = lbl_80562CAC;
+            *(float *)(state + 8) = lbl_80562CAC;
             goto after_mode;
         set_mode:
-            state->mode = 1;
+            *(int *)state = 1;
         after_mode:
             ;
         }
-        state->cur = state->cur + lbl_80562CB4 * (state->tgt - state->cur);
+        *(float *)(state + 4) =
+            *(float *)(state + 4) +
+            lbl_80562CB4 * (*(float *)(state + 8) - *(float *)(state + 4));
     }
 
     if (*(void **)(lbl_804874B8 + 0x18) != 0 &&
-        state->unkC > lbl_80562CAC &&
-        temp > state->unkC) {
+        *(float *)(state + 0xC) > lbl_80562CAC &&
+        temp > *(float *)(state + 0xC)) {
         unsigned char *obj = *(unsigned char **)(lbl_804874B8 + 0x18);
         if (obj[0x19] != 0) {
             obj[0x4C] = 1;
@@ -188,7 +218,7 @@ void fn_801E1B30(void) {
             obj[0x4B] = 0;
             obj[0x4A] = 0;
         }
-        state->unkC = lbl_80562CC8;
+        *(float *)(state + 0xC) = lbl_80562CC8;
     }
 }
 #pragma pop
@@ -263,24 +293,19 @@ void fn_801E1EA4(void *arg0) {
     float c1 = lbl_80562CD4;
     float c3 = lbl_80562CD0;
     float c2 = lbl_80562CCC;
-    float tmp;
     var_r6 = (char *)arg0 + 4;
     var_r7 = 0;
     goto check;
 loop:
     switch (*(int *)&lbl_804874B8) {
     case 2:
-        tmp = *(float *)((char *)&lbl_804874B8 + 4);
-        *(float *)((char *)var_r6 + 0xD4) = c2 * tmp;
-        tmp = *(float *)((char *)&lbl_804874B8 + 4);
-        *(float *)((char *)var_r6 + 0xD8) = c3 * tmp;
-        tmp = *(float *)((char *)&lbl_804874B8 + 0x10);
-        *(float *)((char *)var_r6 + 0xDC) = tmp;
+        *(float *)((char *)var_r6 + 0xD4) = c2 * *(float *)((char *)&lbl_804874B8 + 4);
+        *(float *)((char *)var_r6 + 0xD8) = c3 * *(float *)((char *)&lbl_804874B8 + 4);
+        *(float *)((char *)var_r6 + 0xDC) = *(float *)((char *)&lbl_804874B8 + 0x10);
         break;
     case 3:
         *(float *)((char *)var_r6 + 0xD4) = c0;
-        tmp = *(float *)((char *)&lbl_804874B8 + 4);
-        *(float *)((char *)var_r6 + 0xD8) = c1 * tmp;
+        *(float *)((char *)var_r6 + 0xD8) = c1 * *(float *)((char *)&lbl_804874B8 + 4);
         *(float *)((char *)var_r6 + 0xDC) = c0;
         break;
     default:
