@@ -11974,7 +11974,7 @@ extern "C" s32 fn_800B8C74(s32 arg0) {
         cur = lbl_80405D58 + i * 0xF0;
         if (*(u32 *)cur == (u32)arg0) { entry = cur; break; }
     }
-    if (!(-0x16 & ((s32)~((i - 0x17) | (0x17 - i)) >> 31))) {
+    if (((i == 0x17) ? -22 : 0) == 0) {
         if (*(s32 *)(entry + 0xE4) & 2) {
             fn_800B8048(lbl_8055DD30);
             return -21;
