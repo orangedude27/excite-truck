@@ -6296,9 +6296,10 @@ extern "C" s32 fn_802236C8(void *arg0, s32 arg1) {
     return result;
 }
 
-extern "C" void fn_80223728(void *arg0) {
-    fn_802192AC(arg0);
-    *(f32 *)((u8 *)arg0 + 0x414) = lbl_805634A4;
+extern "C" void fn_80223728(void *menu) {
+    /* Commit pending tracked changes, then set the +0x414 marker to 1.0 so the current entry highlights. */
+    fn_802192AC(menu);
+    *(f32 *)((u8 *)menu + 0x414) = lbl_805634A4;
 }
 
 extern "C" void fn_8022375C(void) {
