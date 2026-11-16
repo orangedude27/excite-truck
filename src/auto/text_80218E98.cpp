@@ -4080,21 +4080,6 @@ extern "C" void fn_8021EFE0(void *self, s32 x, s32 y) {
         *(u8 *)((u8 *)self + 0x234) = 1;
 }
 
-extern "C" void fn_8021F044(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
-    class Dispatch {
-    public:
-        virtual void f00(); virtual void f01(); virtual void f02(); virtual void f03(); virtual void f04();
-        virtual void f05(); virtual void f06(); virtual void f07(); virtual void f08(); virtual void f09();
-        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14();
-        virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-        virtual void f20(); virtual void f21(); virtual void f22();
-        virtual void DispatchCall(s32);
-    };
-    ((Dispatch *)arg0)->DispatchCall(0);
-}
-
 /* The text-edit widget this unit's key handlers work on (its members sit in
    the object's own tail; the widget base class ends around 0x234).  Only the
    fields the key handler touches are named. */
@@ -4111,6 +4096,21 @@ typedef struct TextField {
     char pad254[0xA54 - 0x254];
     char *text;   /* 0xA54 the editable string (0xA58 font, 0xA5C ibeam.img) */
 } TextField;
+
+extern "C" void fn_8021F044(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    class Dispatch {
+    public:
+        virtual void f00(); virtual void f01(); virtual void f02(); virtual void f03(); virtual void f04();
+        virtual void f05(); virtual void f06(); virtual void f07(); virtual void f08(); virtual void f09();
+        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14();
+        virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual void f20(); virtual void f21(); virtual void f22();
+        virtual void DispatchCall(s32);
+    };
+    ((Dispatch *)arg0)->DispatchCall(0);
+}
 
 /* Virtual key codes the text field handles.  The ten codes from 0x160 on are
    the digit keys and stand for '0'..'9'; the rest are the UI's navigation
