@@ -1039,7 +1039,8 @@ void fn_80190E6C(void) {
 
 #pragma cplusplus on
 extern "C" void fn_801B665C(void);
-extern "C" void fn_80190E70(void *arg0) {
+/* RealName: NotifyChild. If the owner's sub-object at +0x10 exists, invoke its ninth virtual method (vtable +0x2C), then call the no-op hook fn_801B665C. */
+extern "C" void fn_80190E70(void *owner) {
     class VTable {
     public:
         virtual void f0();
@@ -1053,9 +1054,9 @@ extern "C" void fn_80190E70(void *arg0) {
         virtual void f8();
         virtual void f9();
     };
-    void *obj = *(void **)((char *)arg0 + 0x10);
-    if (obj != 0) {
-        ((VTable *)obj)->f9();
+    void *child = *(void **)((char *)owner + 0x10);
+    if (child != 0) {
+        ((VTable *)child)->f9();
     }
     fn_801B665C();
 }
