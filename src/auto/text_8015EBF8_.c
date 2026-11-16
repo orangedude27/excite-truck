@@ -76,12 +76,13 @@ extern "C" int fn_8015ED18(void **node) {
 #pragma pop
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_8015ED54(void **node) {
+/* Returns nonzero when a named scene object's name is "eraser" (case-insensitive). */
+extern "C" int fn_8015ED54(void **object) {
     class NameNode {
     public:
         virtual char *getName();
     };
-    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055A078) == 0;
+    return stricmp(((NameNode *)object)->getName(), (const char *)ERASER_NAME) == 0;
 }
 #pragma cplusplus reset
 #pragma pop
