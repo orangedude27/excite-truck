@@ -691,6 +691,11 @@ void __DSP_remove_task(void *task) {
     *(void **)((u8 *)*(void **)((u8 *)task + 0x38) + 0x3c) = *(void **)((u8 *)task + 0x3c);
 }
 
+/* Low-memory mirror and the boot header's FST pointer slot. */
+#define BOOT_INFO_BASE 0x80000000
+#define FST_PTR_ADDR   0x80000038
+#define FST_ENTRY_SIZE 12
+
 #pragma dont_inline on
 void __DVDFSInit(void) {
     u8 *fst;
@@ -1801,12 +1806,12 @@ extern void fn_8003801C(void);
 extern void DVDLowOpenPartition(u32, u32, u32, u32, void *, void (*)(u32));
 #pragma dont_inline on
 void fn_80036D24(u32 arg0) {
+    register s32 enabled;
     register u8 *base = lbl_80376A80;
     register u8 *logBase;
     register u32 *limit;
     register u32 *entry;
     register u32 *freeEntry;
-    s32 enabled;
     s32 index;
     register s32 signedIndex;
     s32 value;
@@ -1848,40 +1853,44 @@ void fn_80036D24(u32 arg0) {
         }
 
         if (freeEntry != 0) {
-            if (lbl_8055D8BC != 3) {
-                register s32 localEnabled;
-                lbl_8055D860 = 0;
-                fn_8003BCDC(0);
-                value = *lbl_8055D894;
-                localEnabled = OSDisableInterrupts();
-                if (*(volatile u32 *)&lbl_8055D848 >= 5)
-                    lbl_8055D848 = 0;
-                logBase = (u8 *)__ErrorInfo;
-                *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x22;
-                *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = value;
-                *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
-                *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-                lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-                OSRestoreInterrupts(localEnabled);
-                DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_8003727C);
+            switch (lbl_8055D8BC) {
+            case 3:
+                {
+                    register s32 localEnabled;
+                    lbl_8055D860 = 0;
+                    fn_8003BCDC(0);
+                    value = *lbl_8055D894;
+                    localEnabled = OSDisableInterrupts();
+                    if (*(volatile u32 *)&lbl_8055D848 >= 5)
+                        lbl_8055D848 = 0;
+                    logBase = (u8 *)__ErrorInfo;
+                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x22;
+                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = value;
+                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+                    lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+                    OSRestoreInterrupts(localEnabled);
+                    DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_800370F4);
+                }
                 return;
-            }
-            {
-                register s32 localEnabled;
-                lbl_8055D860 = 0;
-                fn_8003BCDC(0);
-                value = *lbl_8055D894;
-                localEnabled = OSDisableInterrupts();
-                if (*(volatile u32 *)&lbl_8055D848 >= 5)
-                    lbl_8055D848 = 0;
-                logBase = (u8 *)__ErrorInfo;
-                *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x22;
-                *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = value;
-                *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
-                *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-                lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-                OSRestoreInterrupts(localEnabled);
-                DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_800370F4);
+            default:
+                {
+                    register s32 localEnabled;
+                    lbl_8055D860 = 0;
+                    fn_8003BCDC(0);
+                    value = *lbl_8055D894;
+                    localEnabled = OSDisableInterrupts();
+                    if (*(volatile u32 *)&lbl_8055D848 >= 5)
+                        lbl_8055D848 = 0;
+                    logBase = (u8 *)__ErrorInfo;
+                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x22;
+                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = value;
+                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+                    lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+                    OSRestoreInterrupts(localEnabled);
+                    DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_8003727C);
+                }
                 return;
             }
         }
