@@ -820,8 +820,9 @@ void *fn_801E87A8(void) {
 }
 
 #pragma dont_inline on
-void fn_801E87B8(long arg0) {
-    lbl_8055EB3C[lbl_8055EB34++] = arg0;
+void fn_801E87B8(long object) {
+    /* Append a world object handle to the global object table (lbl_8055EB3C), advancing its count (lbl_8055EB34). */
+    lbl_8055EB3C[lbl_8055EB34++] = object;
 }
 void fn_801E87D4(long element) {
     /* Records an element into the global registry list and appends it to the
