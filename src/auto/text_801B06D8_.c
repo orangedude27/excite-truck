@@ -1992,10 +1992,13 @@ void* fn_801B307C(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801B3084(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    Dummy_801B3084 *obj = (Dummy_801B3084 *)lbl_8055E68C;
-    if (obj != 0) {
-        obj->func(*(s32 *)((u8 *)arg0 + 0x1EC), *(s32 *)((u8 *)arg1 + 0x1EC), arg2, arg3);
+extern "C" void fn_801B3084(void *entityA, void *entityB, s32 pos, s32 vec) {
+    /* Contact-event forwarder: if the primary object exists, read each entity's id
+       (+0x1EC) and pass both ids plus the contact position/vector to its virtual
+       handler. */
+    Dummy_801B3084 *manager = (Dummy_801B3084 *)gPrimaryObject;
+    if (manager != 0) {
+        manager->func(*(s32 *)((u8 *)entityA + 0x1EC), *(s32 *)((u8 *)entityB + 0x1EC), pos, vec);
     }
 }
 #pragma cplusplus off
