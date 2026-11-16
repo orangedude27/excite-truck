@@ -3663,19 +3663,26 @@ extern "C" void fn_8015D73C(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E9E0[arg0->GetType()]);
 }
 
-extern "C" s32 fn_8015D77C(void* arg0) {
-    s32 count = *(s32*)((unsigned char*)arg0 + 0xC);
+extern "C" s32 fn_8015D77C(void* list) {
+    /* Return the first entry's +0x14 value (0x38-byte stride, count at +0xC, base at +8)
+     * whose +0x14 is non-negative; returns 0 if none found. */
+#define ENTRY_STRIDE 0x38
+#define ENTRY_VALUE_OFFSET 0x14
+    s32 count = *(s32*)((unsigned char*)list + 0xC);
     unsigned char* base;
-    s32 i = 0;
-    s32 offset = 0;
+    s32 index = 0;
+    s32 byteOffset = 0;
+
     for (; count > 0; count--) {
-        base = *(unsigned char**)((unsigned char*)arg0 + 8);
-        if (*(s32*)(base + offset + 0x14) >= 0)
-            return *(s32*)(base + i * 0x38 + 0x14);
-        offset += 0x38;
-        i++;
+        base = *(unsigned char**)((unsigned char*)list + 8);
+        if (*(s32*)(base + byteOffset + ENTRY_VALUE_OFFSET) >= 0)
+            return *(s32*)(base + index * ENTRY_STRIDE + ENTRY_VALUE_OFFSET);
+        byteOffset += ENTRY_STRIDE;
+        index++;
     }
     return 0;
+#undef ENTRY_STRIDE
+#undef ENTRY_VALUE_OFFSET
 }
 
 extern "C" s32 fn_8015D7CC(void* arg0) {
