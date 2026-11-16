@@ -588,10 +588,13 @@ s32 fn_802C5EB8(void *, u32);
 
 #define SPHL_CHUNK_TAG 0x5350484C /* 'SPHL' tagged chunk of a model resource */
 
-s32 fn_802C5E7C(void *arg0) {
-    char *result = (char *)fn_802C5EB8(arg0, 0x5350484C);
-    if (result != 0) {
-        return (s32)(result + 8);
+/* Find the model resource's 'SPHL' tagged chunk and return a pointer to its
+ * data (the chunk entry plus 8 bytes), or 0 when the chunk is absent.
+ * Readable name: getModelSphlVectors. */
+s32 fn_802C5E7C(void *resource) {
+    char *chunk = (char *)fn_802C5EB8(resource, SPHL_CHUNK_TAG);
+    if (chunk != 0) {
+        return (s32)(chunk + 8);
     }
     return 0;
 }
