@@ -12,12 +12,13 @@ extern u8 lbl_8055F959;
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
 #pragma dont_inline on
-void fn_802AE2E0(void *arg0) {
-    int result = fn_80131810(arg0);
-    if (result) {
+/* Append the object created for the given argument to the global object list. */
+void fn_802AE2E0(void *arg) {
+    int object = fn_80131810(arg);
+    if (object) {
         int *items = (int *)lbl_804BD8CC[0];
-        int idx = lbl_804BD8CC[1]++;
-        items[idx] = result;
+        int index = lbl_804BD8CC[1]++;
+        items[index] = object;
     }
 }
 
