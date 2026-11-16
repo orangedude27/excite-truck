@@ -132,23 +132,27 @@ int fn_802B8E50(int path) {
 }
 
 void *fn_802BE844(s32, s32, s32);
-void *fn_802B8EB8(s32 arg0, s32 arg1, u32 arg2, s32 arg3) {
-    s32 sign = (s32)(arg2 >> 31);
-    s32 sum = sign + arg2;
-    s32 half = sum >> 1;
-    s32 x;
-    s32 y;
-    s16 shortX;
-    x = arg0 - half;
-    if (arg3 & 1) {
-        x = arg0 + half;
+/* Look up the spatial-grid cell at one corner of a span-sized box centered at
+   (centerX, centerY). halfSpan is the box half-size (rounded toward -infinity);
+   cornerFlags bit 0 offsets x by +halfSpan instead of -halfSpan, bit 1 does the
+   same for y. Both coordinates are truncated to s16 before the grid lookup. */
+void *fn_802B8EB8(s32 centerX, s32 centerY, u32 span, s32 cornerFlags) {
+    s32 roundBias = (s32)(span >> 31);
+    s32 biasedSpan = roundBias + span;
+    s32 halfSpan = biasedSpan >> 1;
+    s32 queryX;
+    s32 queryY;
+    s16 shortQueryX;
+    queryX = centerX - halfSpan;
+    if (cornerFlags & 1) {
+        queryX = centerX + halfSpan;
     }
-    shortX = (s16)x;
-    y = arg1 - half;
-    if (arg3 & 2) {
-        y = arg1 + half;
+    shortQueryX = (s16)queryX;
+    queryY = centerY - halfSpan;
+    if (cornerFlags & 2) {
+        queryY = centerY + halfSpan;
     }
-    return fn_802BE844(shortX, (s16)y, half);
+    return fn_802BE844(shortQueryX, (s16)queryY, halfSpan);
 }
 
 #pragma push
@@ -159,7 +163,7 @@ void *fn_802B8EF0(int arg0, void *arg1) {
         char *name;
         int state;
         void *data;
-        int reserved;
+        unsigned long reserved;
     };
     struct List {
         void **items;
@@ -170,15 +174,15 @@ void *fn_802B8EF0(int arg0, void *arg1) {
     void *data;
     char *name;
     int state;
-    struct List *list;
     int count;
+    struct List *list;
     void **items;
     if (entry == 0) {
         name = (char *)&lbl_8055CEC8;
         entry = (struct Entry *)fn_801284F8(0x10, (void *)&lbl_8055CECC);
-        if (entry != 0) {
+        if (entry) {
             entry->name = name;
-            data = *(void **)((char *)arg1 + 8);
+            data = *(void * volatile *)((char *)arg1 + 8);
             if ((signed char)*name != 0)
                 state = fn_802B110C((void *)fn_802B8E50, name);
             else
@@ -191,7 +195,7 @@ void *fn_802B8EF0(int arg0, void *arg1) {
         }
         table[arg0] = entry;
         list = (struct List *)lbl_804BFFF4;
-        items = list->items;
+        items = ((struct List *)lbl_804BFFF4)->items;
         count = list->count;
         list->count = count + 1;
         items[count] = (void *)entry;
@@ -775,20 +779,20 @@ void fn_802B9CF4(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802B9D08(void) {
-    register volatile void **list;
-    register unsigned long zero;
+    register void **list;
+    register int zero;
     register char *base;
     register void *node;
     register int offset;
-    register long i;
+    register int i;
     base = lbl_804BFFE8;
     fn_802B9DD0(&lbl_8055FA7C);
     fn_802B9E4C(&lbl_8055FA78);
-    list = (volatile void **)(base + 0x0C);
+    list = (void **)(base + 0x0C);
     i = 0;
     offset = 0;
     zero = 0;
-    while (i < ((volatile int *)list)[1]) {
+    while (i < ((int *)list)[1]) {
         node = *(void **)((char *)list[0] + offset);
         if (node) {
             int v;
@@ -802,10 +806,10 @@ void fn_802B9D08(void) {
         offset += 4;
         i += 1;
     }
-    ((volatile int *)list)[1] = 0;
+    ((int *)list)[1] = zero;
     {
         char *clear = base + 0x64;
-        *(volatile int *)(clear + 4) = 0;
+        *(int *)(clear + 4) = zero;
         ((void (*)(void *, void *))fn_802B9EC8)(&lbl_8055FA80, clear);
     }
     memset(base + 0xA0, 0, 0x10);
@@ -1576,10 +1580,10 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802BB0FC(int a, int b) {
-    int off, i;
-    RenderEntry *entry;
+    int i, off;
     RenderNode *node;
     RenderBatch *batch;
+    RenderEntry *entry;
     int j, v;
     u16 **items;
     RenderMatrix matrix;
@@ -1643,15 +1647,14 @@ clear_nodes:
         while (node) { node->count = 0; node->batches = 0; node = node->next; }
     }
 }
-#pragma pop
-#pragma scheduling on
 #pragma push
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_802BB3B8(int a, int b) {
-    /* Traverse pending render batches, draw them, and clear their lists. */
-    int i, off;
+    int i;
     RenderEntry *entry;
-    RenderNode *node, *cur;
+    int off;
+    RenderNode *node;
     RenderBatch *batch;
     int j, v;
     u16 **items;
@@ -1660,16 +1663,16 @@ void fn_802BB3B8(int a, int b) {
         entry = *(RenderEntry **)(*(char **)lbl_804BFFF4 + off);
         if (entry->kind == 999) continue;
         node = entry->nodes;
-        if (!node) continue;
+        if (node == 0) continue;
         if (entry->state == -2) goto clear_nodes;
         switch (node->type) { case 0: case 1: {
             fn_802C8BD0(); fn_802DC130();
-            cur = entry->nodes;
-            while (cur) {
-                if (cur->batches) {
-                    if (cur->enabled) {
-                        ((void (*)(int,void *))fn_802D3D94)(0, (char *)cur + 0x24);
-                        batch = cur->batches;
+            node = entry->nodes;
+            while (node) {
+                if (node->batches) {
+                    if (node->enabled) {
+                        ((void (*)(int,void *))fn_802D3D94)(0, (char *)node + 0x24);
+                        batch = node->batches;
                         do {
                             for (j = 0; j < batch->count; j++) {
                                 items = batch->items;
@@ -1680,9 +1683,9 @@ void fn_802BB3B8(int a, int b) {
                             batch = batch->next;
                         } while (batch);
                     }
-                    cur->count = zero; cur->batches = (RenderBatch *)zero;
+                    node->count = zero; node->batches = (RenderBatch *)zero;
                 }
-                cur = cur->next;
+                node = node->next;
             }
             fn_802DC134(); fn_802C8D74();
         break; } case 2: {
@@ -1691,11 +1694,11 @@ void fn_802BB3B8(int a, int b) {
             fn_802CADD0(((int (*)(void))fn_802C21B8)(),2);
             matrix = *(RenderMatrix *)lbl_802FAB40;
             ((void (*)(int,void *))fn_802D3D94)(2,&matrix);
-            cur = entry->nodes;
-            while (cur) {
-                if (cur->batches) {
-                    ((void (*)(int,void *))fn_802D3D94)(0,(char *)cur + 0x34);
-                    batch = cur->batches;
+            node = entry->nodes;
+            while (node) {
+                if (node->batches) {
+                    ((void (*)(int,void *))fn_802D3D94)(0,(char *)node + 0x34);
+                    batch = node->batches;
                     do {
                         for (j = 0; j < batch->count; j++) {
                             items = batch->items;
@@ -1705,9 +1708,9 @@ void fn_802BB3B8(int a, int b) {
                         }
                         batch = batch->next;
                     } while (batch);
-                    cur->count = zero; cur->batches = (RenderBatch *)zero;
+                    node->count = zero; node->batches = (RenderBatch *)zero;
                 }
-                cur = cur->next;
+                node = node->next;
             }
             fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
         break; } }
@@ -1729,18 +1732,18 @@ extern int fn_802B8E50(int);
 #pragma scheduling invalid_target
 void fn_802BB674(char *arg0, int arg1) {
     struct Entry { char *name; int state; };
-    register struct Entry *entry = ((struct Entry **)lbl_804C0088)[arg1];
-    int result4;
-    char first4;
+    struct Entry *entry = ((struct Entry **)lbl_804C0088)[arg1];
+    int result;
+    char first;
     if (entry != 0 && stricmp(entry->name, arg0) != 0) {
-        if (entry->state != -2) fn_802CAC54();
-        first4 = *arg0;
-        result4 = -2;
+        if (*(volatile int *)&entry->state != -2) fn_802CAC54();
+        first = *arg0;
+        result = -2;
+        if (first != 0) result = fn_802B110C(fn_802B8E50, arg0);
         entry->state = -2;
-        if (first4 != 0) result4 = fn_802B110C(fn_802B8E50, arg0);
-        entry->state = result4;
+        entry->state = result;
         entry->name = arg0;
-        if (result4 == -2 && (signed char)entry->name[0] != 0)
+        if (result == -2 && (signed char)*(volatile char *)entry->name != 0)
             fn_802E317C(lbl_8034AA50);
     }
 }
