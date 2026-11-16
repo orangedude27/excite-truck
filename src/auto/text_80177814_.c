@@ -639,8 +639,10 @@ extern "C" void **fn_801783A8(int *arg0, int arg1) {
 #pragma dont_inline off
 
 extern int fn_801E2640(void *, void *, void *, int, void *, void *, void *, int, int);
-int fn_801784AC(void *a0, void *a1, void *a2, int a3, void *a4, void *a5, int a6) {
-    return fn_801E2640(a0, a1, a2, a3, a4, a5, &lbl_804340C0[0], lbl_8055E468, a6);
+int fn_801784AC(void *start, void *end, void *outHit, int flags, void *outValue, void *outObject, int filter) {
+    /* Collision raycast from start toward end against the global object list at
+       lbl_804340C0 (count in lbl_8055E468); writes hit position/value/object to the out params. */
+    return fn_801E2640(start, end, outHit, flags, outValue, outObject, &lbl_804340C0[0], lbl_8055E468, filter);
 }
 
 extern float lbl_80561B64;
