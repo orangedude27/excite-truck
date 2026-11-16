@@ -153,16 +153,17 @@ extern "C" void fn_8029AAE0(int, int, void*);
         return 0;
     }
     #pragma scheduling on
-    extern "C" int fn_80297D90(void *out, int value) {
-        int i;
-        for (i = 0; i < 10; i++) {
-            if ((1 << i) == value) {
-                *(int *)out = i;
-                return 1;
-            }
+/* If value is a single set bit within bits 0-9, store its bit index through out and return 1; otherwise return 0. */
+extern "C" int fn_80297D90(void *out, int value) {
+    int bit;
+    for (bit = 0; bit < 10; bit++) {
+        if ((1 << bit) == value) {
+            *(int *)out = bit;
+            return 1;
         }
-        return 0;
     }
+    return 0;
+}
 
     extern "C" void fn_80297DC8(void* arg0) {
      float f0=lbl_805645B4,f1=lbl_805645B0,f2=lbl_805645AC,f3=lbl_805645A8,f4=lbl_805645A4,f5=lbl_805645A0,f6=lbl_8056459C,f7=lbl_80564598,f8=lbl_80564594,f9=lbl_80564590;
