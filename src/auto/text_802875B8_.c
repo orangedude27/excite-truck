@@ -385,8 +385,9 @@ s32 fn_80287B5C(s32 range) {
 }
 #pragma dont_inline reset
 
-s32 fn_80287B94(s32 arg0, s32 arg1) {
-    return arg0 + fn_80287B5C(arg1 - arg0);
+s32 fn_80287B94(s32 min, s32 max) {
+    /* Return a pseudo-random integer in [min, max). */
+    return min + fn_80287B5C(max - min);
 }
 
 #pragma push
