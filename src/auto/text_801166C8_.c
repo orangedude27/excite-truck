@@ -620,14 +620,15 @@ void fn_80117074(void *mgr) {
 
 #pragma pop
 extern s32 fn_80116D30(void);
-void fn_80117330(void* arg0) {
- if(*(s32*)((u8*)arg0+0x268)==0) {
-  s32 value=fn_80116D30();
-  s32 count=*(s32*)((u8*)arg0+0x258);
-  *(s32*)((u8*)arg0+0x268)=value;
-  *(s32*)((u8*)arg0+0x26c)=count-1;
-  *(s32*)((u8*)arg0+0x330)=0;
- }
+/* Initialize decode timing for the current block if it has not been started yet. */
+void fn_80117330(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 0x268) == 0) {
+        s32 startTick = fn_80116D30();
+        s32 blockCount = *(s32 *)((u8 *)arg0 + 0x258);
+        *(s32 *)((u8 *)arg0 + 0x268) = startTick;
+        *(s32 *)((u8 *)arg0 + 0x26C) = blockCount - 1;
+        *(s32 *)((u8 *)arg0 + 0x330) = 0;
+    }
 }
 
 void fn_80117380(void *arg0, s32 arg1) {
