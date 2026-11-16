@@ -2479,10 +2479,11 @@ static inline int fn_801D77EC_Find(void *arg0, unsigned int arg1) {
     unsigned int *items;
 
     count = *(int volatile *)((char *)arg0 + 0x74);
+    index = 0;
     byteOffset = 0;
-    for (index = 0; index < count; index += 1) {
+    for (; index < count; index += 1) {
         items = *(unsigned int **)((char *)arg0 + 0x70);
-        if (arg1 == *(unsigned int *)((char *)items + byteOffset))
+        if (*(unsigned int *)((char *)items + byteOffset) == arg1)
             return index;
         byteOffset += 4;
     }
