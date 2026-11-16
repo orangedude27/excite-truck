@@ -266,6 +266,8 @@ u32 OSGetResetCode(void) {
  * panics with a diagnostic instead of resetting the system. Arguments are
  * ignored (reset type, reset code and force-to-menu flag). */
 void OSResetSystem(u32 reset, u32 resetCode, u32 forceMenu) {
+    /* Obsolete SDK API: the reset no longer works, so any call just panics.
+     * reset/resetCode/forceMenu are ignored. */
     // clang-format off
 #line 935
     OSPanic("OSReset.c", 0x3a7, "OSResetSystem() is obsoleted. It doesn't work any longer.\n");
