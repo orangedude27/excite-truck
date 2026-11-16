@@ -70,12 +70,19 @@ void fn_8023889C(void) {
     } while (var_r30 < 2U);
 }
 #pragma scheduling on
+/* Release the UI font loaded by fn_8023889C: clear the loaded flag, free the font's texture block if one was loaded, then clear the font handle. */
 void fn_80238920(void) {
-    int value = *(volatile int *)&lbl_8055F0D4;
-    lbl_8055F0D9 = 0;
+#define uiFont lbl_8055F0D4
+#define uiFontLoaded lbl_8055F0D9
+#define releaseFontTexture fn_802328D4
+    int value = *(volatile int *)&uiFont;
+    uiFontLoaded = 0;
     if (value != 0)
-        fn_802328D4();
-    lbl_8055F0D4 = 0;
+        releaseFontTexture();
+    uiFont = 0;
+#undef releaseFontTexture
+#undef uiFontLoaded
+#undef uiFont
 }
 #pragma scheduling dynamic
 void fn_8023895C(void) {
