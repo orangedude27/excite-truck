@@ -981,12 +981,15 @@ extern "C" void fn_80219508(void* arg0) {
 }
 #pragma dont_inline reset
 
-extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
-    s32 first = -arg1;
-    s32 second = -arg2;
-    *(s32 *)((u8 *)arg0 + 0x244) = first;
-    *(u8 *)((u8 *)arg0 + 0x24C) = 1;
-    *(s32 *)((u8 *)arg0 + 0x248) = second;
+/* Enable text scrolling on this menu widget: store the negated x/y offsets as the
+ * scroll origin (+0x244/+0x248) and set the scroll-enabled flag byte (+0x24C),
+ * which fn_8021952C later applies to the widget's target position (+0x454/+0x458). */
+extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
+    s32 scrollX = -offsetX;
+    s32 scrollY = -offsetY;
+    *(s32 *)((u8 *)widget + 0x244) = scrollX;
+    *(u8 *)((u8 *)widget + 0x24C) = 1;
+    *(s32 *)((u8 *)widget + 0x248) = scrollY;
 }
 
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
