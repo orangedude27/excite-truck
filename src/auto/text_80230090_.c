@@ -454,7 +454,21 @@ void fn_80230DA0(void) {}
 
 #pragma push
 #pragma processor 750
-float fn_80230DA4(float a,float b) { float v; lbl_8055F030=a; v=(float)fn_8002EFB4(); if(v<lbl_80563614) v+=b; return lbl_8055F02C=b-(float)(double)v; }
+/* RealName: UpdateTimePhase */
+float fn_80230DA4(float currentTime, float period) {
+    /* Store the current time base and compute the remaining time offset within the period. */
+#define sTimeBase   lbl_8055F030
+#define sTimeOffset lbl_8055F02C
+#define kZero       lbl_80563614
+    float value;
+    sTimeBase = currentTime;
+    value = (float)fn_8002EFB4();
+    if (value < kZero) value += period;
+    return sTimeOffset = period - (float)(double)value;
+#undef sTimeBase
+#undef sTimeOffset
+#undef kZero
+}
 #pragma pop
 
 #pragma dont_inline on
