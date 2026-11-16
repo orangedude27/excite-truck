@@ -324,12 +324,14 @@ void fn_80296838(void *obj) {
     fn_80128668(obj);
 }
 #pragma use_lmw_stmw on
-void fn_802968E8(void *arg0) {
-    int count = *(int *)((char *)arg0 + 0x28);
-    *(int *)((char *)arg0 + 0x28) = count + 1;
+/* Increment the object's reference count; on the first reference, link it
+ * into the global object list via its +0x20 next pointer. */
+void fn_802968E8(void *object) {
+    int count = *(int *)((char *)object + 0x28);
+    *(int *)((char *)object + 0x28) = count + 1;
     if (count == 0) {
-        *(void **)((char *)arg0 + 0x20) = lbl_8055F788;
-        lbl_8055F788 = arg0;
+        *(void **)((char *)object + 0x20) = lbl_8055F788;
+        lbl_8055F788 = object;
     }
 }
 
