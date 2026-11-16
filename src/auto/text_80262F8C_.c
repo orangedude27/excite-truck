@@ -28,6 +28,7 @@ s32 fn_80262F8C(s32 arg0, s32 arg1) {
 }
 
 void fn_80262FCC(void *arg0) {
+    /* Initialize this object's timer field at 0x18, clear the flag at 0x1C, and hide UI group 0x1D. */
     *(f32 *)((u8 *)arg0 + 0x18) = fn_8023659C();
     *((u8 *)arg0 + 0x1C) = 0;
     fn_80214A9C(0x1D);
