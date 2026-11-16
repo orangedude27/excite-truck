@@ -1303,9 +1303,11 @@ read_rest:
     } while (i < 3);
 }
 #pragma cplusplus on
-extern "C" s32 fn_8012C33C(char *arg0) {
-    s32 sp8;
-    return fn_8012B534(arg0, &sp8, 0) != 0;
+/* Return nonzero if the given resource path resolves to a registered entry;
+   the index of the found entry is written to a throwaway local and ignored. */
+extern "C" s32 fn_8012C33C(char *path) {
+    s32 index;
+    return fn_8012B534(path, &index, 0) != 0;
 }
 
 #pragma use_lmw_stmw off
