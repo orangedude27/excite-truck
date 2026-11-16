@@ -4068,17 +4068,19 @@ void fn_8006EC20(void) {
     ((void (*)(void))fn_80068E08)();
 }
 
-void fn_8006EC24(s32 arg0, s32 arg1) {
-    if (arg0 != 4) {
-        if (arg0 >= 4) {
+void fn_8006EC24(s32 event, s32 status) {
+    /* UUSB transport callback: only the device-close event (4) is handled; it forwards
+       the signed close status to the shutdown-callback dispatcher fn_80070B24. */
+    if (event != 4) {
+        if (event >= 4) {
             return;
         }
-        if (arg0 == 0) {
+        if (event == 0) {
             return;
         }
         return;
     }
-    fn_80070B24((s8)arg1);
+    fn_80070B24((s8)status);
 }
 
 __declspec(section ".sdata") extern u8 lbl_80560CF8[];
