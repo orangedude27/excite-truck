@@ -48,7 +48,7 @@ void fn_8028CF50(void) {
     }
 }
 
-/* Update the subsystem each frame only while it is active and the frame delta is non-zero. */
+/* Tick this subsystem while active, but only when the frame delta is non-zero. */
 void fn_8028CF64(void) {
     if (lbl_8055F714 != 0) {
         float frameDelta = fn_801E7E24();
