@@ -307,6 +307,7 @@ extern "C" s32 fn_80019664(void) {
 }
 #pragma scheduling on
 #pragma cplusplus off
+/* Displays the "all satisfied" or "not all satisfied" unlockable-status message based on fn_80019438. */
 void fn_800195C0(void) {
     if (fn_80019438() != 0) {
         fn_80131234(lbl_802FD3CC);
