@@ -874,6 +874,7 @@ void MEMInitAllocatorForExpHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32
     allocator->heapParam2 = 0;
 }
 
+/* Set up an allocator to serve allocations from a frame heap with the given alignment. */
 void MEMInitAllocatorForFrmHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32 align) {
     extern const MEMAllocatorFuncs lbl_80560C40;
     allocator->funcs = &lbl_80560C40;
