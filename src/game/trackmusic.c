@@ -80,9 +80,10 @@ int fn_8020F3BC(int arg0, int arg1, int arg2) {
 }
 #pragma scheduling on
 extern long lbl_8055B66C;
-int fn_8020F400(int arg0, int arg1, int arg2) {
-    fn_801345D8((void *)arg1, arg2, (void *)&lbl_8055B66C, arg0);
-    return arg1;
+int fn_8020F400(int source, int destination, int size) {
+    /* Format a track-music song path ("%s.sng") into the destination buffer and return it. */
+    fn_801345D8((void *)destination, size, (void *)&lbl_8055B66C, source);
+    return destination;
 }
 
 #pragma dont_inline on
