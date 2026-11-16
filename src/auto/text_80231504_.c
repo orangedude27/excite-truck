@@ -257,7 +257,7 @@ static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32
             if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
                 Fn80231D84_Rec *r;
                 f32 extra = lbl_8056368C;
-                r = &((Fn80231D84_Rec *)lbl_8049846C[0])[lbl_8049846C[1]++];
+                r = &((Fn80231D84_Table *)lbl_8049846C)->recs[((Fn80231D84_Table *)lbl_8049846C)->count++];
                 r->idx = i;
                 if (e->unkC != 0) {
                     f32 q = w / fn_80235F64(e->unkC, e->unk10);
@@ -574,8 +574,9 @@ have:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 sy, f32 sp) {
-    f32 adv;
     f32 half;
+    f32 adv;
+    Fn80231AF0_Ctx *font = (Fn80231AF0_Ctx *)ctx;
     strlen(text);
     half = lbl_80563688;
     while (*text != 0) {
@@ -605,10 +606,10 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         }
         off = code * 0x1C;
         text += next - text;
-        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs;
+        g = (u8 *)font->glyphs;
         x += sy * (sx * *(f32 *)(g + off));
-        fn_80233AA4(ctx, code, x, y + w, x + sx * *(f32 *)(g + off + 4), y, z);
-        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off;
+        fn_80233AA4(font, code, x, y + w, x + sx * *(f32 *)(g + off + 4), y, z);
+        g = (u8 *)font->glyphs + off;
         x += sx * *(f32 *)(g + 4);
         x += sp + sy * (sx * *(f32 *)(g + 8));
     }
