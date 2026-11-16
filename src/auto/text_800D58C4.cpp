@@ -2087,6 +2087,10 @@ extern "C" s32 fn_800D9344(void *arg0) {
     return t + b;
 }
 
+// The material's channel-control entry: first 4-byte optional entry of its GX memory
+// block, right after the tex-coord generators.  Its two first bytes are the
+// GXColorSource values GXSetChanCtrl() is called with (see fn_800DA094).
+#define GetChanCtrlEntry fn_800D9364
 extern "C" s32 fn_800D9364(void *arg0) {
     volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
     u32 x = *p;
