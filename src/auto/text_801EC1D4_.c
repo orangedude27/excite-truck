@@ -79,45 +79,57 @@ __declspec(section ".sdata") extern char lbl_8055AFD4[];
 extern int sscanf(const char *,...);
 #pragma cplusplus on
 #pragma processor 750
-extern "C" void fn_801EC214(void *out, void *obj, int arg2, char *name, int arg4, float f1, float f2) {
+extern "C" void fn_801EC214(void *outp, void *obj, int arg2, char *name, int arg4, float f1, float f2) {
+    struct GaugePoint {
+        float pos;
+        float angle;
+    };
+    struct Gauge {
+        int handle;
+        float first;
+        float last;
+        GaugePoint points[8];
+        int count;
+        int id;
+    } *out = (Gauge *)outp;
     char *base = lbl_8033A060;
     float a, b, c, d;
     char buf[0x20];
-    float *entry;
+    GaugePoint *entry;
     float scale;
     float zero;
     float nd;
-    *(int *)((char *)out + 0x50) = arg4;
+    float t;
+    out->id = arg4;
     if (!((Unk_801EEA64Iface *)obj)->mC(name)) {
-        *(int *)out = 0;
+        out->handle = 0;
         return;
     }
     a = lbl_80562E88;
     b = lbl_80562E88;
     if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(name), lbl_8055AFCC, &a, &b) != 2)
-        fn_802E317C(&base[0], name);
-    *(int *)out = fn_801E3004(arg2, name, -1);
+        fn_802E317C(base, name);
+    out->handle = fn_801E3004(arg2, name, -1);
     scale = f1 - f2;
     zero = lbl_80562E88;
-    *(int *)((char *)out + 0x4C) = 0;
-    while (*(int *)((char *)out + 0x4C) < 8) {
-        fn_801345D8(buf, 0x20, lbl_8055AFD4, name, *(int *)((char *)out + 0x4C) + 1);
+    for (out->count = 0; out->count < 8; out->count++) {
+        fn_801345D8(buf, 0x20, lbl_8055AFD4, name, out->count + 1);
         if (!((Unk_801EEA64Iface *)obj)->mC(buf))
             break;
-        entry = (float *)((char *)out + *(int *)((char *)out + 0x4C) * 8 + 0xC);
+        entry = &out->points[out->count];
         c = zero;
         d = zero;
-        if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(buf), base + 0x10, entry, &c, &d) != 3)
+        if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(buf), base + 0x10, &entry->pos, &c, &d) != 3)
             fn_802E317C(base + 0x1C, buf);
         nd = -(d - b);
-        entry[1] = (float)fn_8002EFB0(c - a, nd);
-        entry[0] = f2 + entry[0] * scale;
-        *(int *)((char *)out + 0x4C) = *(int *)((char *)out + 0x4C) + 1;
+        entry->angle = (float)fn_8002EFB0(c - a, nd);
+        t = entry->pos * scale;
+        entry->pos = t + f2;
     }
-    if (*(int *)((char *)out + 0x4C) < 2)
+    if (out->count < 2)
         fn_802E317C(base + 0x34, name);
-    *(float *)((char *)out + 4) = *(float *)((char *)out + 0xC);
-    *(float *)((char *)out + 8) = *(float *)((char *)out + (*(int *)((char *)out + 0x4C) - 1) * 8 + 0xC);
+    out->first = out->points[0].pos;
+    out->last = out->points[out->count - 1].pos;
 }
 #pragma cplusplus reset
 
@@ -1067,12 +1079,13 @@ void fn_801EDD7C(void *, long);
 long fn_80179CB0(void);
 void fn_801EECAC(long, long);
 void fn_802C6CF8(long);
-void fn_801EEC68(void *arg0) {
-    long value;
-    value = *(long *)((char *)arg0 + 0x488);
-    if (value != -1) {
-        fn_802C6CF8(value);
-        *(long *)((char *)arg0 + 0x488) = -1;
+/* Release the model handle stored at offset 0x488 of the given object. */
+void fn_801EEC68(void *object) {
+    long modelHandle;
+    modelHandle = *(long *)((char *)object + 0x488);
+    if (modelHandle != -1) {
+        fn_802C6CF8(modelHandle);
+        *(long *)((char *)object + 0x488) = -1;
     }
 }
 
