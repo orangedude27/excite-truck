@@ -647,8 +647,13 @@ long fn_8027B984(void *listIndex, long player) {
 }
 #pragma dont_inline reset
 
-void fn_8027B9EC(void *arg0) {
-    fn_8027B984(arg0, fn_8000DA10());
+void fn_8027B9EC(void *listIndex) {
+#define CurrentPlayer fn_8000DA10
+#define AreAllPlayerEntriesValid fn_8027B984
+    /* Validate every entry of the current player's secondary list at listIndex (result passes through r3 to callers). */
+    AreAllPlayerEntriesValid(listIndex, CurrentPlayer());
+#undef AreAllPlayerEntriesValid
+#undef CurrentPlayer
 }
 
 #pragma cplusplus on
