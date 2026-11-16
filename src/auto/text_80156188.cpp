@@ -107,10 +107,11 @@ extern "C" void fn_801561E0(s32 arg0) {
 
 extern "C" u8 *fn_80029004(void *, s32);
 #pragma dont_inline fn_801561E8
-extern "C" void fn_801561E8(u8 *arg0) {
-    u8 *result = fn_80029004(arg0, 0x2E);
-    if (result != 0) {
-        *result = 0;
+extern "C" void fn_801561E8(u8 *path) {
+    /* Strip a file extension by replacing the last '.' in the string with a null terminator. */
+    u8 *dot = fn_80029004(path, '.');
+    if (dot != 0) {
+        *dot = 0;
     }
 }
 
