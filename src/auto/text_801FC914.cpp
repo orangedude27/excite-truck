@@ -147,9 +147,10 @@ extern "C" void fn_801FC9CC(void) {
 #pragma small_data off
 extern "C" void* fn_801FE188(void*);
 extern "C" void fn_801FC914(void) {
-    void *p = fn_801284F8(0x38, lbl_8033B5D8);
-    if (p != 0) {
-        fn_801FE188(p);
+    /* Allocate a 0x38-byte LinearPathTMH object and install its vtable through fn_801FE188. */
+    void *path = fn_801284F8(0x38, lbl_8033B5D8);
+    if (path != 0) {
+        fn_801FE188(path);
     }
 }
 
