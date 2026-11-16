@@ -219,9 +219,11 @@ extern "C" void fn_801FCAAC(void* arg0, float farg0) {
 }
 #pragma dont_inline reset
 
-extern "C" void fn_801FCAC0(void* arg0) {
-    if (*(void**)((char*)arg0 + 4) != 0) {
-        fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
+extern "C" void fn_801FCAC0(void* object) {
+    /* For an active path drone (state pointer at +4), submit the model handle at
+     * +8 for drawing with the embedded transform matrix at +0xC. */
+    if (*(void**)((char*)object + 4) != 0) {
+        fn_802C744C(*(void**)((char*)object + 8), (char*)object + 0xC);
     }
 }
 
