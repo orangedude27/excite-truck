@@ -360,9 +360,8 @@ extern "C" void fn_80206824(void *arg0, int arg1, int arg2) {
         virtual void f20(); virtual void f21(void *);
     };
     struct Parent { virtual void f0(); virtual void f1(int, int); };
-    extern int lbl_8055D430;
     u8 *self = (u8 *)arg0;
-#define CB (*(Callback **)(self + 12))
+#define CB (*(Callback **)(self + 0xC))
     int state = CB->f7();
     self[0x19] = 1;
     switch (state) {
@@ -377,11 +376,8 @@ extern "C" void fn_80206824(void *arg0, int arg1, int arg2) {
         }
         break;
     case 3:
-        if (self[0x49] != 0) {
-            bool ok = false;
-            if ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x200))
-                ok = true;
-            if (ok && *(int *)(self + 0x44) != 0)
+        if (self[0x49]) {
+            if (IsDebugFlagSet_802062E8(0x200) && *(int *)(self + 0x44) != 0)
                 goto skip;
             self[0x49] = 0;
             if (self[0x4B])
