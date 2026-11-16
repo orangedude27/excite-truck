@@ -79,19 +79,20 @@ s32 fn_802ECD68(void *record, void *name, s32 mode) {
 
 #pragma dont_inline on
 s32 fn_802ECDF4(void) {
-    void *temp_r31;
+    /* Retire the movie at the head of the single-movie list: close the movie it
+     * opened, free the node and let the entry behind it take its place. 0 when the
+     * list is empty; fn_802ECEC4 pops one and then queues the "uisingle" movie. */
+    SingleMovieInfo *next;
 
     if (lbl_805600F8 != 0) {
-        fn_802E1290(((void **)lbl_805600F8)[16]);
-        temp_r31 = ((void **)lbl_805600F8)[17];
+        fn_802E1290(((SingleMovieInfo *)lbl_805600F8)->info.handle);
+        next = ((SingleMovieInfo *)lbl_805600F8)->next;
         fn_80128668((void *)lbl_805600F8);
-        lbl_805600F8 = (s32)temp_r31;
+        lbl_805600F8 = (s32)next;
         return 1;
     }
     return 0;
 }
-
-#pragma dont_inline on
 s32 fn_802ECE48(char *movieName) {
     /* Play one movie by itself: make a node for it and put it at the head of the
      * single-movie list lbl_805600F8, whose head record answers every movie request
