@@ -1177,6 +1177,7 @@ void fn_8027264C(int label, void *curve, float param) {
    the two bounds, whichever order they are given in. fn_802726EC adds the two
    endpoints; kept out of line so that caller shares this half. */
 s32 fn_802726AC(f32 value, f32 boundA, f32 boundB) {
+    /* Return 1 when value lies strictly between boundA and boundB, whichever order they are given. */
     if (boundA < boundB) {
         return (boundA < value) && (value < boundB);
     }
