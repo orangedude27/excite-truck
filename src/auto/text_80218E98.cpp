@@ -1672,11 +1672,12 @@ extern "C" void *fn_8021AC24(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
     return arg0;
 }
 
-extern "C" void fn_8021ACC0(void *arg0, s32 arg1) {
-    fn_802C3034(arg1);
-    fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
-    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250)) > 0)
-        fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
+extern "C" void fn_8021ACC0(void *widget, s32 value) {
+    /* Stores a value and queries the widget's image/resource handle count. */
+    fn_802C3034(value);
+    fn_802C51AC(*(s32 *)((u8 *)widget + 0x250));
+    if (fn_802C51AC(*(s32 *)((u8 *)widget + 0x250)) > 0)
+        fn_802C51AC(*(s32 *)((u8 *)widget + 0x250));
 }
 
 #pragma push
