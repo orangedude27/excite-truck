@@ -64,6 +64,21 @@ s32 fn_802ECD68(void *record, void *name, s32 mode) {
 }
 
 #pragma dont_inline on
+s32 fn_802ECDF4(void) {
+    void *temp_r31;
+
+    if (lbl_805600F8 != 0) {
+        fn_802E1290(((void **)lbl_805600F8)[16]);
+        temp_r31 = ((void **)lbl_805600F8)[17];
+        fn_80128668((void *)lbl_805600F8);
+        lbl_805600F8 = (s32)temp_r31;
+        return 1;
+    }
+    return 0;
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
 s32 fn_802ECEC0(void) {
     return fn_802ECDF4();
 }
