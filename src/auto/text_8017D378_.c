@@ -121,12 +121,12 @@ extern "C" void fn_8017D404(float *pos, int target, float radius, float strength
     register int i;
     float dist, rand, px, py, pz;
     register float zero;
-    register float one;
-    register float offset;
+    struct { float value; } offsetStorage;
+    float &offset = offsetStorage.value;
     register float factor;
     count = 5;
     fn_801B619C(lists, &count, pos);
-    one = lbl_80561BF4;
+    const float one = lbl_80561BF4;
     offset = lbl_80561C00;
     zero = lbl_80561BF0;
     iter = lists;
@@ -734,6 +734,7 @@ void fn_8017E764(void *arg0, int arg1) {
     *(unsigned char *)((unsigned char *)arg1 + *(unsigned int *)(src + 8) + 0x32) = src[0x1FE];
 }
 #pragma small_data on
+#define BallGetXZIfPlaced fn_8017E930 /* report a placed ball's horizontal position and velocity */
 int fn_8017E930(void *arg0, void *arg1, void *arg2) {
     if (*((unsigned char *)arg0 + 0x1FE) != 0) {
         *((float *)arg1) = *((float *)((char *)arg0 + 0x60));
