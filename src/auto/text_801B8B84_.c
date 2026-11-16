@@ -7,6 +7,8 @@ int fn_8012850C(int, int *);
 extern void *lbl_8055E760;
 extern int lbl_80336990[];
 #pragma scheduling invalid_target
+/* Initialize the alarm-event queue: allocate the 0x500-byte buffer tagged
+   "alarm_event" and reset the pending-event count to zero. */
 void fn_801B8B84(void) {
     lbl_8055E760 = (void *)fn_8012850C(0x500, lbl_80336990);
     lbl_8055E764 = 0;
@@ -31,25 +33,24 @@ void fn_801B8BF4(void) {
 outer_body: {
     struct Entry *e = (struct Entry *)lbl_8055E760;
     int i;
-    int offset;
+    int offw;
     if (now < e->time)
         return;
     e->callback(e->a, e->b, e->c);
     lbl_8055E764 = (void *)((int)lbl_8055E764 - 1);
     i = 0;
-    offset = 0;
+    offw = 0;
     while (i < (int)lbl_8055E764) {
         int *base = (int *)lbl_8055E760;
         int *src = base + (i + 1) * 5;
-        int *dst = base + offset / 4;
-        int first = src[0];
-        *dst++ = first;
+        int *dst = base + offw;
+        *dst++ = src[0];
         dst[0] = src[1];
         dst[1] = src[2];
         dst[2] = src[3];
         dst[3] = src[4];
         i = i + 1;
-        offset = offset + 0x14;
+        offw = offw + 5;
     }
 }
 outer_check:
