@@ -11,6 +11,10 @@ extern int fn_802E30C8(const char *, ...);
 extern int fn_802E75FC(int);
 extern int fn_802E75E4(const char *);
 extern int sprintf(char *, const char *, ...);
+#define spuLogPrint fn_802E30C8
+#define gUnloadBankLog lbl_8032A59C
+#define spuUnloadBank fn_802E75FC
+#define gLoadedBankId lbl_8055DFA8
 #pragma scheduling invalid_target
 /* Loads a sound bank by id: logs the operation, formats "<id>.bnk", and stores the loaded bank handle. */
 void fn_801292CC(int bankId) {
