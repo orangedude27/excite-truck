@@ -721,10 +721,18 @@ extern "C" char lbl_80559D18[5];
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_8013D288(void) {
-    void **slot = fn_801284F8(4, (void *)lbl_80559D18);
+#define RegisterClassSlot fn_801284F8
+#define ZstmTag lbl_80559D18
+#define ZstmVtable lbl_8032CAC0_vt
+    /* Register the "zstm" class: look up its 4-byte slot in the class
+       registry and install its vtable there. */
+    void **slot = RegisterClassSlot(4, (void *)ZstmTag);
     if (slot != 0) {
-        *slot = (void *)lbl_8032CAC0_vt;
+        *slot = (void *)ZstmVtable;
     }
+#undef RegisterClassSlot
+#undef ZstmTag
+#undef ZstmVtable
 }
 
 #pragma push
