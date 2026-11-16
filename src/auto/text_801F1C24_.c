@@ -115,11 +115,12 @@ void fn_801F1D68(void) {
 }
 
 void *fn_801F1DA4(void) {
-    void **p = (void **)fn_801284F8(4, (void *)&lbl_8033A610);
-    if (p != 0) {
-        *p = (void *)lbl_8033A988;
+    /* Allocate a PointFacing instance and point it at its vtable. */
+    void **object = (void **)fn_801284F8(4, (void *)&lbl_8033A610);
+    if (object != 0) {
+        *object = (void *)lbl_8033A988;
     }
-    return (void *)p;
+    return (void *)object;
 }
 
 #pragma scheduling invalid_target
