@@ -57,11 +57,13 @@ extern "C" void fn_802E75FC(s32 bankId) {
 #pragma cplusplus reset
 #define gStrmBankMgr lbl_8055FFF0
 #define unloadBank f12
-extern "C" void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
-    s32 a0 = arg0;
-    s32 a1 = arg1;
-    s32 a2 = arg2;
-    ((Dummy_8055FFF0*)lbl_8055FFF0)->f12(a0, a1, a2);
+/* Forwards a stream-bank unload request to the global stream-bank manager's virtual
+   unload-bank method, passing the loaded bank handle, the bank id and the flags. */
+extern "C" void fn_802E765C(s32 bankHandle, s32 bankId, s32 flags) {
+    s32 handle = bankHandle;
+    s32 id = bankId;
+    s32 flagBits = flags;
+    ((Dummy_8055FFF0*)gStrmBankMgr)->unloadBank(handle, id, flagBits);
 }
 #pragma cplusplus reset
 extern s32 fn_80128668(void);
