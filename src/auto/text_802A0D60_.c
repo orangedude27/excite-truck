@@ -69,6 +69,15 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
         }
     }
 }
+
+float fn_802A0F7C(void *arg0, void *arg1, void *arg2) {
+    float t3;
+    float t2;
+    t3 = ((float *)arg1)[0] - ((float *)arg2)[0];
+    t2 = ((float *)arg1)[1] - ((float *)arg2)[1];
+    return ((float *)arg0)[0] * t3 + ((float *)arg0)[1] * t2;
+}
+
 #pragma cplusplus on
 extern "C" s32 fn_802A0FBC(void) {
     struct V30 {
@@ -96,7 +105,7 @@ extern float fn_802A0F7C(void *, void *, void *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void *fn_802A1040(void *arg0, void *arg1, void *arg2) {
-    register s32 count = 0;
+    s32 count = 0;
     void *entry = arg1;
     for (;;) {
         float first;
@@ -113,7 +122,7 @@ void *fn_802A1040(void *arg0, void *arg1, void *arg2) {
                 goto step;
             }
         }
-        if (*(u32 *)((char *)arg2 + 0x1c) == (u32)entry) {
+        if ((u32)entry == *(u32 *)((char *)arg2 + 0x1c)) {
             entry = (void *)(*(u32 *)((char *)arg2 + 0x1c) +
                              ((*(u32 *)((char *)arg2 + 0x18) >> 16) * 0x3c));
             entry = (char *)entry - 0x3c;
@@ -268,15 +277,22 @@ void fn_802A1290(void) {
 }
 
 void fn_802A14F8(void) {
-    if (lbl_8055F844 != -2) {
-        fn_802CAC54(lbl_8055F844);
-        lbl_8055F844 = -2;
+    /* Release the active decal/texture and drawlist resources, then clean up related state. */
+#define sDecalTextureId lbl_8055F844
+#define sDecalDrawList lbl_8055F840
+
+    if (sDecalTextureId != -2) {
+        fn_802CAC54(sDecalTextureId);
+        sDecalTextureId = -2;
     }
-    if (lbl_8055F840 != 0) {
-        fn_802CA094(lbl_8055F840);
-        lbl_8055F840 = 0;
+    if (sDecalDrawList != 0) {
+        fn_802CA094(sDecalDrawList);
+        sDecalDrawList = 0;
     }
     fn_802A93A4();
+
+#undef sDecalTextureId
+#undef sDecalDrawList
 }
 
 #pragma pop
