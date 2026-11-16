@@ -5615,9 +5615,10 @@ extern "C" void fn_802223C4(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void fn_80222450(void *arg0) {
-    if (*(u8 *)((char *)arg0 + 0x1A) != 0) {
-        *(u8 *)((char *)arg0 + 0x234) = 1;
+extern "C" void fn_80222450(void *widget) {
+    /* Mark this VfWidget dirty (+0x234) when its layout option (+0x1A) is set. */
+    if (*(u8 *)((char *)widget + 0x1A) != 0) {
+        *(u8 *)((char *)widget + 0x234) = 1;
     }
 }
 
