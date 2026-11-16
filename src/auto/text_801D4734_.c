@@ -1470,10 +1470,11 @@ int fn_801D6500(int arg0) {
     return ((int *)arg0)[1];
 }
 
-int fn_801D6508(int arg0) {
-    if (((int *)arg0)[1] == 1) {
-        ((int *)arg0)[7] = lbl_8055E3C4;
-        ((int *)arg0)[1] = 2;
+/* Start a ready timed effect: when its state is READY (1), record the current frame tick as its start tick (+0x1C), move it to RUNNING (2) and report success (1). An effect that is not ready is left alone and reports failure (0). */
+int fn_801D6508(int effect) {
+    if (((int *)effect)[1] == TIMED_EFFECT_READY) {
+        ((int *)effect)[7] = lbl_8055E3C4;
+        ((int *)effect)[1] = TIMED_EFFECT_RUNNING;
         return 1;
     }
     return 0;
