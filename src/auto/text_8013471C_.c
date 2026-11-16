@@ -221,12 +221,14 @@ skip_clear:
   
   }
   
-  void fn_80134998(void) {
-      fn_8013BC34();
-      fn_80166898();
-      fn_80137904();
-      fn_8013A1F0();
-  }
+/* Resets the AI subsystem: clears per-car state, reinitializes the AI car-info and
+ * proximity tables, then resets the Proxer tracker (the last hook is a no-op). */
+void fn_80134998(void) {
+    fn_8013BC34();
+    fn_80166898();
+    fn_80137904();
+    fn_8013A1F0();
+}
 
 /* Re-arms the AI cars' proximity records after a restart: for each of the eight
  * "AI::AICarInfo" slots in lbl_8042F758 (allocated by fn_8013477C, one per AI car,
