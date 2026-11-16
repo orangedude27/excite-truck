@@ -44,6 +44,7 @@ int fn_802BC334(int path) {
 #pragma dont_inline on
   int stricmp(const char *, const char *);
   __declspec(section ".sdata") extern const char lbl_8055CF38[];
+#define kDynoName lbl_8055CF38 /* .sdata: "dyno", the material-item name tested below */
 #pragma push
 #pragma cplusplus on
 extern "C" int fn_802BC39C(void *arg0) {
