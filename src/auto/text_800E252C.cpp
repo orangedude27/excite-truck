@@ -2145,10 +2145,11 @@ extern "C" void fn_800E54A8(void *obj, float value) {
     }
 }
 
-extern "C" void fn_800E54EC(void *arg0, float farg0) {
-    if (farg0 != *(float *)((char *)arg0 + 0x130)) {
-        *(float *)((char *)arg0 + 0x130) = farg0;
-        *(unsigned char *)((char *)arg0 + 0x123) |= 0x20;
+extern "C" void fn_800E54EC(void *voice, float value) {
+    /* Set this voice's +0x130 float parameter when it changes, marking the voice dirty via flag 0x20 at +0x123. */
+    if (value != *(float *)((char *)voice + 0x130)) {
+        *(float *)((char *)voice + 0x130) = value;
+        *(unsigned char *)((char *)voice + 0x123) |= 0x20;
     }
 }
 
