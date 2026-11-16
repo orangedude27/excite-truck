@@ -383,13 +383,13 @@ static inline void fn_801B916C_slots(int *s, int id, int sentinel) {
 }
 
 struct SlotSet { int a; char pad1[0x14]; int b; char pad2[0x14]; int c; };
+struct SlotEntry { char pad[0x8C]; int slots[13]; };
 
 extern "C" void fn_801B916C(void *arg0) {
     void **table;
     void *obj;
     int id;
     char *p;
-    struct SlotSet *slots;
     int i;
     int sentinel;
     float frequency;
@@ -412,10 +412,7 @@ extern "C" void fn_801B916C(void *arg0) {
                 id = *(int *)((char *)obj + 0x1EC);
                 if (*(int *)(p + 0x74) == id)
                     *(int *)(p + 0x74) = sentinel;
-                slots = (struct SlotSet *)(p + 0x8C);
-                if (slots->a == id) slots->a = sentinel;
-                if (slots->b == id) slots->b = sentinel;
-                if (slots->c == id) slots->c = sentinel;
+                fn_801B916C_slots((int *)(p + 0x8C), id, sentinel);
                 *(int *)(p + 0x74) = id;
                 *(float *)(p + 0x78) = frequency;
                 {
