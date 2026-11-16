@@ -213,6 +213,8 @@ void fn_80127EF8(void) {
     }
 }
 
+/* OSAlarm callback: dispatch pending background tasks, recording the current
+ * elapsed-millisecond time (fn_802E2C20) as the last dispatch time. */
 void fn_80127F70(void* alarm) {
     fn_80127B5C(fn_802E2C20(alarm));
 }
