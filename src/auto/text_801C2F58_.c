@@ -2869,13 +2869,15 @@ void fn_801C98F0(void) {
 }
 
 #pragma scheduling on
-char *fn_801C98F4(char *p, s32 n) {
+/* Return a pointer to the index-th NUL-terminated string in a packed string
+ * blob (nth_string): skip index strings, each terminated by a NUL byte. */
+char *fn_801C98F4(char *blob, s32 index) {
     s32 i;
-    for (i = 0; i < n; i++) {
-        while (*p != 0) p++;
-        p++;
+    for (i = 0; i < index; i++) {
+        while (*blob != 0) blob++;
+        blob++;
     }
-    return p;
+    return blob;
 }
 
 #pragma push
