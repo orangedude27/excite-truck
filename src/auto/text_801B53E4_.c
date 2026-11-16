@@ -389,14 +389,16 @@ extern "C" void fn_801B5C58(void *container) {
     fn_80128658(container);
 }
 #pragma pop
-s32 fn_801B5D10(void *arg0) {
+/* Count the links in the object list headed by `link`, following each
+ * ObjectLink.next at +0x44 until the NULL terminator. */
+s32 fn_801B5D10(struct ObjectLink *link) {
     s32 count = 0;
     goto check;
 loop:
-    arg0 = *(void **)((u8 *)arg0 + 0x44);
+    link = link->next;
     count++;
 check:
-    if (arg0 != NULL) goto loop;
+    if (link != NULL) goto loop;
     return count;
 }
 
