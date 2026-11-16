@@ -593,14 +593,18 @@ void __AXGetAuxAOutputDpl2Rs(void **arg0) {
     *arg0 = lbl_8035DAA0 + lbl_8055D6F4 * 0x480 + 0x180;
 }
 
-void __AXGetAuxAInput(void **arg0) {
+/* Return the DSP's current auxiliary-A input buffer through *out, or NULL when
+ * no AUX-A callback is registered. REXE01 keeps the AX state as raw labels:
+ * lbl_8055D724 = AUX-A callback, lbl_8055D6F8 = DSP write ring index and
+ * lbl_8035CD20 = AUX-A buffer array (0x480 bytes per ring slot). */
+void __AXGetAuxAInput(void **out) {
     extern u8 lbl_8035CD20[];
     extern s32 lbl_8055D6F8;
     if (lbl_8055D724 != 0) {
-        *arg0 = lbl_8035CD20 + lbl_8055D6F8 * 0x480;
+        *out = lbl_8035CD20 + lbl_8055D6F8 * 0x480;
         return;
     }
-    *arg0 = 0;
+    *out = 0;
 }
 
 void __AXGetAuxBOutput(void **arg0) {
