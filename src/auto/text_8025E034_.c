@@ -566,104 +566,136 @@ typedef void *(*GetFn)(void *, int);
 typedef int (*TestFn)(void *);
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Menu callback for the "times" screen (times.lyt): refreshes which UI pane
+   groups are on screen.  For every row of the event list it hides the row's
+   "name" pane group unless one of the three sequence containers (DbgCtx::seq)
+   still holds a usable entry for that row, and hides its "select" pane group
+   unless one of them holds an in-use entry.  It then leaves visible only the
+   pane holding the time variant selected for each of the five event rows. */
 extern "C" void fn_8025F274(void) {
-    struct Container {
-        virtual int unused();
+#define UIHideGroup fn_80214A9C
+#define UIShowGroup fn_80214AF0
+#define dbgCtx lbl_8055F3D4
+#define SEQ_LIST_COUNT 3
+#define UI_GROUP_ROW_NAME 0x10   /* row panes: groups 0x10..0x14 */
+#define UI_GROUP_ROW_SELECT 0x1A /* groups 0x1A..0x1E */
+#define UI_GROUP_EVENT_BASE 1    /* event row panes: row+1, row+11, row+21 */
+#define UI_GROUP_EVENT_STRIDE 10
+#define EVENT_ROW_COUNT 5
+#define EVENT_PANE_COUNT 3
+#define EVENT_ROW_STRIDE 0x58    /* size of a DbgCtx::sub[] record */
+#define EVENT_ROW_SEL 0x144      /* DbgCtx::sub[0].sel; add row * EVENT_ROW_STRIDE */
+    /* One of the three sequence containers held at DbgCtx::seq[]. */
+    struct SeqList {
+        virtual int v8();
         virtual int count();
         virtual void *get(int);
     };
-    struct Item {
-        virtual int f0();
-        virtual int f1();
-        virtual int f2();
-        virtual int f3();
-        virtual int f4();
-        virtual int f5();
-        virtual int f6();
-        virtual int test24();
-        virtual int f8();
-        virtual int test2c();
+    /* An entry of a SeqList; inUse() (vtable +0x1C) says it holds data. */
+    struct SeqEntry {
+        virtual int v0();
+        virtual int v4();
+        virtual void *v8(int);
+        virtual int vC();
+        virtual int v10();
+        virtual int v14();
+        virtual int v18();
+        virtual int inUse();
+        virtual int v20();
+        virtual int v24();
     };
-    register int i;
-    struct { int j; } loop;
-    int &j = loop.j;
-    struct { void *value; } item;
-    void *&value = item.value;
+    register int row;
+    struct { int seqIndex; } loop;
+    int &seqIndex = loop.seqIndex;
+    struct { void *entry; } entryBox;
+    void *&entry = entryBox.entry;
     register int found;
-    register int offset;
-    int secondOffset;
-    i = 0;
-    goto L_check;
-L_outer:
-    j = 0;
-    offset = 0;
+    register int seqOffset;
+    int secondSeqOffset;
+    row = 0;
+    goto check_row;
+check_row_body:
+    /* Is there any list still holding something displayable for this row? */
+    seqIndex = 0;
+    seqOffset = 0;
     do {
-        if (i >= ((Container *)(*(void **)((char *)lbl_8055F3D4 + offset + 4)))->count())
-            goto L_first_retry;
-        value = ((Container *)(*(void **)((char *)lbl_8055F3D4 + offset + 4)))->get(i);
-        if (((Item *)value)->test24() != 0)
-            goto L_first_found;
-        if (((Item *)value)->test2c() != 0)
-            goto L_first_retry;
-L_first_found:
+        if (row >= ((SeqList *)(*(void **)((char *)dbgCtx + seqOffset + 4)))->count())
+            goto name_retry;
+        entry = ((SeqList *)(*(void **)((char *)dbgCtx + seqOffset + 4)))->get(row);
+        if (((SeqEntry *)entry)->inUse() != 0)
+            goto name_found;
+        if (((SeqEntry *)entry)->v24() != 0)
+            goto name_retry;
+    name_found:
         found = 1;
-        goto L_first_done;
-L_first_retry:
-        j++;
-        offset += 4;
-    } while (j < 3);
+        goto name_done;
+    name_retry:
+        seqIndex++;
+        seqOffset += 4;
+    } while (seqIndex < SEQ_LIST_COUNT);
     found = 0;
-L_first_done:
+name_done:
     if (found == 0)
-        fn_80214A9C(i + 0x10);
-    j = 0;
-    secondOffset = 0;
+        UIHideGroup(row + UI_GROUP_ROW_NAME);
+    /* The select marker needs an entry that is actually in use. */
+    seqIndex = 0;
+    secondSeqOffset = 0;
     do {
-        if (i >= ((Container *)(*(void **)((char *)lbl_8055F3D4 + secondOffset + 4)))->count())
-            goto L_second_retry;
-        value = ((Container *)(*(void **)((char *)lbl_8055F3D4 + secondOffset + 4)))->get(i);
-        if (((Item *)value)->test24() == 0)
-            goto L_second_retry;
+        if (row >= ((SeqList *)(*(void **)((char *)dbgCtx + secondSeqOffset + 4)))->count())
+            goto select_retry;
+        entry = ((SeqList *)(*(void **)((char *)dbgCtx + secondSeqOffset + 4)))->get(row);
+        if (((SeqEntry *)entry)->inUse() == 0)
+            goto select_retry;
         found = 1;
-        goto L_second_done;
-L_second_retry:
-        j++;
-        secondOffset += 4;
-    } while (j < 3);
+        goto select_done;
+    select_retry:
+        seqIndex++;
+        secondSeqOffset += 4;
+    } while (seqIndex < SEQ_LIST_COUNT);
     found = 0;
-L_second_done:
+select_done:
     if (found == 0)
-        fn_80214A9C(i + 0x1A);
-    i++;
-L_check:
-    if (i < ((Container *)(*(void **)lbl_8055F3D4))->count())
-        goto L_outer;
+        UIHideGroup(row + UI_GROUP_ROW_SELECT);
+    row++;
+check_row:
+    if (row < ((SeqList *)(*(void **)dbgCtx))->count())
+        goto check_row_body;
     {
-        register int arg;
-        register char *base;
-        register int inner;
-        register int group;
-        base = (char *)lbl_8055F3D4;
-        group = 0;
+        /* One event row shows only the pane of the variant it selected. */
+        register int groupId;
+        register char *rowBase;
+        register int pane;
+        register int eventRow;
+        rowBase = (char *)dbgCtx;
+        eventRow = 0;
         do {
-            arg = group + 1;
-            inner = 0;
+            groupId = eventRow + UI_GROUP_EVENT_BASE;
+            pane = 0;
             do {
-                if (inner == *(int *)(base + 0x144))
-                    fn_80214AF0(arg);
+                if (pane == *(int *)(rowBase + EVENT_ROW_SEL))
+                    UIShowGroup(groupId);
                 else
-                    fn_80214A9C(arg);
-                inner++;
-                arg += 0xA;
-            } while (inner < 3);
-            group++;
-            base += 0x58;
-        } while (group < 5);
+                    UIHideGroup(groupId);
+                pane++;
+                groupId += UI_GROUP_EVENT_STRIDE;
+            } while (pane < EVENT_PANE_COUNT);
+            eventRow++;
+            rowBase += EVENT_ROW_STRIDE;
+        } while (eventRow < EVENT_ROW_COUNT);
     }
+#undef EVENT_ROW_SEL
+#undef EVENT_ROW_STRIDE
+#undef EVENT_ROW_COUNT
+#undef EVENT_PANE_COUNT
+#undef UI_GROUP_EVENT_STRIDE
+#undef UI_GROUP_EVENT_BASE
+#undef UI_GROUP_ROW_SELECT
+#undef UI_GROUP_ROW_NAME
+#undef SEQ_LIST_COUNT
+#undef dbgCtx
+#undef UIShowGroup
+#undef UIHideGroup
 }
-
-#pragma cplusplus reset
-#pragma scheduling on
 extern float lbl_80558DC0[];
 extern void *memset(void *, int, int);
 extern char *fn_8000DA10(void *);
