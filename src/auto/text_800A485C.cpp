@@ -21457,18 +21457,21 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13Animati
 extern "C" void *lbl_8055DDF0;
 extern "C" f32 lbl_80560E60;
 extern "C" char lbl_8031F168[];
-extern "C" void fn_800D4428(void *arg0) {
-    f32 initial = lbl_80560E60;
+/* Construct an nw4r::lyt::AnimTransformBasic: install the vtable at +0 and
+ * zero all fields, except the animation frame at +0x10 which starts at the
+ * default value held in lbl_80560E60 (0.0f). */
+extern "C" void fn_800D4428(void *self) {
+    f32 initialFrame = lbl_80560E60;
     char *vtable = lbl_8031F168;
     s32 zero = 0;
-    *(s32 *)((u8 *)arg0 + 4) = zero;
-    *(s32 *)((u8 *)arg0 + 8) = zero;
-    *(s32 *)((u8 *)arg0 + 0xC) = zero;
-    *(f32 *)((u8 *)arg0 + 0x10) = initial;
-    *(void **)arg0 = vtable;
-    *(s32 *)((u8 *)arg0 + 0x14) = zero;
-    *(s32 *)((u8 *)arg0 + 0x18) = zero;
-    *(s16 *)((u8 *)arg0 + 0x1C) = zero;
+    *(s32 *)((u8 *)self + 4) = zero;
+    *(s32 *)((u8 *)self + 8) = zero;
+    *(s32 *)((u8 *)self + 0xC) = zero;
+    *(f32 *)((u8 *)self + 0x10) = initialFrame;
+    *(void **)self = vtable;
+    *(s32 *)((u8 *)self + 0x14) = zero;
+    *(s32 *)((u8 *)self + 0x18) = zero;
+    *(s16 *)((u8 *)self + 0x1C) = zero;
 }
 
 /* Destructor for nw4hbm::lyt::AnimTransformBasic: restores vtable, frees owned buffers at +0x18 and +0x14 via the layout allocator, and optionally deletes the object. */
