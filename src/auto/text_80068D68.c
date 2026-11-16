@@ -5025,7 +5025,11 @@ void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 pa
 /* Periodic-alarm callback (armed by fn_800709FC): switch execution to the
  * BTE/BTU task message-handler fiber, using the stack in lbl_803BFA20 + 0x1000. */
 void fn_800709E4(void) {
-    OSSwitchFiber(btu_task_msg_handler, (u8 *)&lbl_803BFA20 + 0x1000);
+#define btuMsgHandlerStack lbl_803BFA20
+    /* Periodic BTU alarm callback: switch execution to the BTA/BTU task's
+     * message-handler fiber, using the top of its dedicated stack buffer. */
+    OSSwitchFiber(btu_task_msg_handler, (u8 *)&btuMsgHandlerStack + 0x1000);
+#undef btuMsgHandlerStack
 }
 
 extern s32 lbl_80558FF0;
