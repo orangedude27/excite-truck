@@ -318,6 +318,8 @@ void fn_8022A8E4(int arg0) {
 }
 #pragma scheduling reset
 extern void *fn_8022CA2C();
+#define UI_STYLE_ALIGN 0x38 /* byte offset of the align field in a UIStyle record */
+
 int fn_8022AA84(void) {
     return *(int *)((char *)fn_8022CA2C() + 0x38);
 }
