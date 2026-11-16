@@ -17,7 +17,10 @@ extern char lbl_8034EC04[]; /* "single_movie_info": heap tag of the 0x48-byte no
 extern char lbl_8034EC18[]; /* "MoviePlayInfo": heap tag of the 0x44-byte record */
 #pragma dont_inline fn_802ECCE4
 #pragma dont_inline fn_802ECD68
+#pragma dont_inline fn_802ECDF4
 #pragma dont_inline fn_802ECE48
+#pragma dont_inline fn_802ECEC0
+#pragma dont_inline fn_802ECF04
 extern void fn_802ECCE4(char *, void *, s32);
 extern s32 stricmp(const char *, const char *);
 extern s32 fn_802ECEEC(void);
