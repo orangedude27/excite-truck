@@ -790,11 +790,12 @@ check:
     }
 }
 
-void fn_801F2DD4(void *unused, void *arg1) {
+void fn_801F2DD4(void *unused, void *node) {
+    /* Builds camera basis, updates render state, then applies fn_802C7040 to each node in a linked list. */
     extern int fn_801F1C24(void *);
     extern int fn_802C7730(void *);
     int stack[12];
-    void *p = arg1;
+    void *p = node;
     fn_801F1C24(&stack[0]);
     fn_802C7730(&stack[0]);
     goto check;
