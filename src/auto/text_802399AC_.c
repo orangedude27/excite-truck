@@ -528,8 +528,9 @@ void fn_8023AD00(void *selector) {
     *index = (*index + 1) % *(s32 *)((char *)selector + 0x1C);
 }
 
-s32 fn_8023AD2C(void *arg0) {
-    return *(s32 *)*(s32 **)((char *)arg0 + 0x20) > 0;
+/* Return 1 when the selector's +0x20 index is above zero (it can step back). */
+s32 fn_8023AD2C(void *selector) {
+    return *(s32 *)*(s32 **)((char *)selector + 0x20) > 0;
 }
 
 /* Return 1 when the selector's +0x20 index can advance (is below count - 1). */
