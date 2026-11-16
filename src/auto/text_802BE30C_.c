@@ -158,9 +158,10 @@ void fn_802BE72C(void) {
 }
 
 void fn_802BE780(void *arg0) {
-    void *buf = *(void **)arg0;
-    if (buf != NULL) {
-        fn_80128670(buf);
+    /* If a FanInfo grid buffer is owned at offset 0, free it and clear the pointer. */
+    void *gridBuffer = *(void **)arg0;
+    if (gridBuffer != NULL) {
+        fn_80128670(gridBuffer);
         *(void **)arg0 = NULL;
     }
 }
