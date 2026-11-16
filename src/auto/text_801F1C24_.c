@@ -263,14 +263,17 @@ void *fn_801F20C8(void) {
 
 #pragma push
 #pragma small_data off
+/* fn_801F2108: allocates a 0x0C-byte object via fn_801284F8 (using lbl_8055B130
+ * as allocator/context) and, if successful, initializes its vtable to
+ * lbl_8033A7A0 and clears the two fields at +0x04 and +0x08. */
 void fn_801F2108(void) {
     extern int lbl_8055B130;
     extern int lbl_8033A7A0[];
-    void *p = fn_801284F8(0xC, &lbl_8055B130);
-    if (p != 0) {
-        *(void **)p = &lbl_8033A7A0;
-        *(int *)((char *)p + 4) = 0;
-        *(int *)((char *)p + 8) = 0;
+    void *obj = fn_801284F8(0xC, &lbl_8055B130);
+    if (obj != 0) {
+        *(void **)obj = &lbl_8033A7A0;
+        *(int *)((char *)obj + 4) = 0;
+        *(int *)((char *)obj + 8) = 0;
     }
 }
 
