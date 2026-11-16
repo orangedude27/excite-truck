@@ -189,12 +189,13 @@ static inline void xformInverse_802D1C04(Xform_802D1C04 *dst, const Xform_802D1C
 
 extern char lbl_8055FD3C;
 #pragma dont_inline on
-unsigned long fn_802CE9FC(int arg0, int arg1, int arg2, int arg3) {
+unsigned long fn_802CE9FC(int r, int g, int b, int a) {
+    /* Pack four byte color components into a 32-bit GXColor word (r in the high byte). */
     unsigned char bytes[4];
-    bytes[0] = (unsigned char)arg0;
-    bytes[1] = (unsigned char)arg1;
-    bytes[2] = (unsigned char)arg2;
-    bytes[3] = (unsigned char)arg3;
+    bytes[0] = (unsigned char)r;
+    bytes[1] = (unsigned char)g;
+    bytes[2] = (unsigned char)b;
+    bytes[3] = (unsigned char)a;
     return *(unsigned long *)bytes;
 }
 
@@ -1037,12 +1038,14 @@ extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
 #pragma scheduling off
 void fn_802CFF10(void) {
-    lbl_8055FD44 = 0;
+    int zero;
+    zero = 0;
+    lbl_8055FD44 = zero;
     fn_802CF5D0();
     fn_802D0C98();
     fn_802D0BD8();
-    lbl_8055FDAC = 0;
-    lbl_8055FE39 = 0;
+    lbl_8055FDAC = zero;
+    lbl_8055FE39 = zero;
 }
 #pragma scheduling on
 extern void *lbl_8055FD20;
