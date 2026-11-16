@@ -18915,11 +18915,12 @@ void fn_800C6CE8(void *arg0) {
     fn_800C790C(arg0);
 }
 
-extern "C" s32 fn_800C771C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_800C771C(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_800C775C(void *arg0, s32 arg1) {
@@ -20832,41 +20833,36 @@ extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 wrapLongLines, s3
 extern "C" u8 lbl_802F47D8[];
 extern "C" void fn_800D337C(s32,s32,s32);
 extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
-    s32 dst = arg0;
-    s32 src = arg1;
-    s32 text = (s32)arg2;
-    s32 limit = arg3;
     s32 count = 0;
-    s32 tmp;
     s32 ch;
     u32 base = (u32)lbl_8031EBA0;
-    if (!text) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2E9, (const char *)(base + 0x54));
-    if (limit <= 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2EA, (const char *)(base + 0x7C));
+    if (!arg2) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2E9, (const char *)(base + 0x54));
+    if (arg3 <= 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2EA, (const char *)(base + 0x7C));
     base = (u32)lbl_802F47D8;
     goto cond;
 top:
-    if (ch == 10 || ch == 0) return (const char *)text;
+    if (ch == 10 || ch == 0) return arg2;
     {
         s32 cls = ((const u8 *)base)[(u8)ch & 0x7F];
         if (cls == 0xFD) {
-            tmp = 4 - (count & 3);
+            s32 tmp = 4 - (count & 3);
             count += tmp;
-            dst += tmp * 6;
+            arg0 += tmp * 6;
         } else {
-            if (cls != 0xFF) fn_800D337C(dst, src, cls);
-            dst += 6;
+            if (cls != 0xFF) fn_800D337C(arg0, arg1, cls);
+            arg0 += 6;
             count += 1;
         }
     }
-    if (count < limit) goto inc;
-    if (*(const char *)(text + 1) == 10) text++;
-    return (const char *)text;
+    if (count < arg3) goto inc;
+    if (arg2[1] == 10) arg2++;
+    return arg2;
 inc:
-    text++;
+    arg2++;
 cond:
-    ch = *(const s8 *)text;
+    ch = *(const s8 *)arg2;
     if (ch != 0) goto top;
-    return (const char *)text;
+    return arg2;
 }
 
 extern "C" u16 lbl_80407BE8[];
