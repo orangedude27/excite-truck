@@ -23,8 +23,9 @@ void fn_8023C2B4(void) {
     }
 }
 
-s32 fn_8023C2E4(void* arg0) {
-    fn_80236900(arg0);
+/* Sequence-event callback: clear the active display flag via fn_80236900, then report the event handled. */
+s32 fn_8023C2E4(void *context) {
+    fn_80236900(context);
     return 1;
 }
 
