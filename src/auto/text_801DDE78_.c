@@ -134,6 +134,7 @@ void fn_801DDFE8(void* obj) {
     *(float*)((unsigned char*)obj + 0x10c) = temp_e8;
 }
 #pragma pop
+/* RealName: GarageOverlay_Init -- see the comment in the body. */
 void fn_801DE0A4(void) {
     /* RealName: GarageOverlay_Init
      * Starts up the garage screen's live parameter overlay: creates the
