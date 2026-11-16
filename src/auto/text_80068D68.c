@@ -9376,10 +9376,12 @@ extern char lbl_80316464[];
 #define vsb_lmp_subversion(b) (*(UINT16 *)((b) + 0x63C))                  /* controller LMP subversion */
 #define vsb_vsc_busy(b)       ((b)[0x650])                                /* a VSC command awaits its event */
 
-s32 fn_8007A534(s32 arg0) {
-    if (*(s32 *)(lbl_803C0F78 + 0x56C) != 0 && arg0 != 0)
+/* Set btm_cb's vendor-specific event handler: return 2 if one is already registered
+   and a new handler is supplied, otherwise store it and return 0. */
+s32 fn_8007A534(s32 handler) {
+    if (vsb_p_vend_spec_cb(lbl_803C0F78) != 0 && handler != 0)
         return 2;
-    *(s32 *)(lbl_803C0F78 + 0x56C) = arg0;
+    vsb_p_vend_spec_cb(lbl_803C0F78) = (void (*)(UINT8, UINT8 *))handler;
     return 0;
 }
 
