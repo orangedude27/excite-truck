@@ -8,7 +8,7 @@ extern int lbl_8042FD84[];
 extern void fn_80160C8C(void);
 extern void fn_8000D838(void *);
 extern void __register_global_object(void *, void *, void *, int);
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_80160C2C(void) {
     fn_8000D838(&lbl_8055E2C0);
     lbl_8055E2C8 = 0xFFFF0000;
