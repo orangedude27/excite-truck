@@ -152,11 +152,13 @@ void* fn_80137C4C(void) {
     return lbl_80559C00;
 }
 
-void* fn_80137C54(int index) {
-    if (index == -1) {
-        index = (int)lbl_80559C00;
+void* fn_80137C54(int league) {
+    // Return the AI league data for 'league' (0 Dirt, 1 Modified, 2 Truck, 3 Cup)
+    // from the table at lbl_8042F788; -1 substitutes the current one (lbl_80559C00).
+    if (league == -1) {
+        league = (int)lbl_80559C00;
     }
-    return lbl_8042F788[index];
+    return lbl_8042F788[league];
 }
 
 void fn_80137C74(void) {
