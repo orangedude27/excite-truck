@@ -37,19 +37,23 @@ s32 fn_801E4A6C(s32 *arg0, const u8 *arg1) {
     }
     return fn_802C4FF8((const char *)arg1);
 }
-s32 fn_801E4AB0(s32 *arg0, const u8 *arg1, s32 count) {
-    if (arg0 != 0) {
+/* RealName: Font_MeasureStringN
+ * Returns the total width of up to count characters from text. If fontTable
+ * is non-null, sums per-character widths from the 16-bit table at
+ * fontTable[byte + 0x102]; if null, falls back to canvas string width. */
+s32 fn_801E4AB0(s32 *fontTable, const u8 *text, s32 count) {
+    if (fontTable != 0) {
         s32 sum = 0;
-        const s16 *table = (const s16 *)arg0;
-        while (*arg1 && count > 0) {
-            s16 value = table[*arg1 + 0x102];
+        const s16 *widthTable = (const s16 *)fontTable;
+        while (*text && count > 0) {
+            s16 charWidth = widthTable[*text + 0x102];
             --count;
-            ++arg1;
-            sum += value;
+            ++text;
+            sum += charWidth;
         }
         return sum;
     }
-    return fn_802C4FF8((const char *)arg1);
+    return fn_802C4FF8((const char *)text);
 }
 #pragma scheduling invalid_target
 s32 fn_801E4B00(s32 *arg0) {
