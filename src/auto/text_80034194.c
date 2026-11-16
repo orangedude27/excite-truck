@@ -263,6 +263,8 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 #define DiskChanged     lbl_8055D87C  // cover opened during the disk-ID check
 #define StateToChange   lbl_8055D85C  // drive state __DVDIssueCallback moves to next
 #define StateAlarm      lbl_80376AD0  // the DVD state timeout alarm
+#define MotorStopped    lbl_8055D878  // the motor is stopped, not just slowing
+#define CancelLastError lbl_8055D8B4  // the drive error the cancel reports
 #define ExecutingBlock  executing_8055D8C8 // block the driver is running
 
 // The cancel state machine's own statics (dvdcancel.c).
