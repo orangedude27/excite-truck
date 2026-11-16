@@ -195,7 +195,13 @@ void *fn_801284F8(int, const char *);
 void *fn_801399FC();
 extern const char lbl_8032C0C8[];
 #pragma scheduling invalid_target
-void *fn_80139D4C(void) {
+#pragma cplusplus on
+extern "C" void *fn_80139D4C(void) {
+    class Source {
+    public:
+        virtual void f0();
+        virtual int next(int);
+    };
     int count;
     void *object;
     void *source;
@@ -215,8 +221,7 @@ void *fn_80139D4C(void) {
             *(int *)((char *)object + 8) = 0;
             *(void **)object = source;
             count = 0;
-            while (count == 0 ||
-                   ((int (*)(void *, int))(*(void ***)source)[3])(source, count) != 0) {
+            while (((Source *)source)->next(count) != 0) {
                 item = fn_801399FC();
                 n = *(int *)((char *)object + 8);
                 count++;
@@ -228,6 +233,7 @@ void *fn_80139D4C(void) {
     }
     return object;
 }
+#pragma cplusplus reset
 #pragma scheduling on
 /* Destroy this container: free each stored item, release its owned handle, clear its fields, and free itself. */
 void fn_80139E18(void *self) {
