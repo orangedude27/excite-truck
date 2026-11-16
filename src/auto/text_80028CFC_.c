@@ -174,18 +174,20 @@ int strncmp(const unsigned char *s1, const unsigned char *s2, int n) {
     return 0;
 }
 
+/* Returns a pointer to the first occurrence of (unsigned char)chr in str, or 0
+   if not found; a zero chr matches the terminating NUL. */
 char *strchr(const char *str, int chr) {
     const unsigned char *p = (const unsigned char *)str - 1;
-    unsigned long c = (chr & 0xff);
-    unsigned long ch;
+    unsigned long want = (chr & 0xff);
+    unsigned long cur;
 
-    while (ch = *++p) {
-        if (ch == c) {
+    while (cur = *++p) {
+        if (cur == want) {
             return ((char *)p);
         }
     }
 
-    return (c ? 0 : (char *)p);
+    return (want ? 0 : (char *)p);
 }
 
 unsigned char *fn_80029004(const unsigned char *s, int c) {
