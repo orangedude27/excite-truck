@@ -1831,9 +1831,13 @@ void fn_80119558(void *voices) {
     *(s32 *)((u8 *)voices + 0x50) = fn_80116D30();
 }
 
-void fn_801195A0(void *arg0) {
-    fn_8011943C(arg0, 0);
-    *(s32 *)((u8 *)arg0 + 0x38) = 1;
+void fn_801195A0(void *voices) {
+#define SetVoicePairState fn_8011943C
+    /* Stop the voice pair: set both AX voices to state 0 (stopped) and set the
+     * owning StreamPlayer's paused flag (+0x38 into the voice block). */
+    SetVoicePairState(voices, 0);
+    *(s32 *)((u8 *)voices + 0x38) = 1;
+#undef SetVoicePairState
 }
 
 void fn_801195D8(void *arg0) {
