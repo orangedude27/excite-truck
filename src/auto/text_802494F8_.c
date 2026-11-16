@@ -1287,12 +1287,14 @@ void fn_8024B9AC(void *selector) {
     *(s32 *)((char *)selector + 0x10) = (index + 1) % count;
 }
 
-s32 fn_8024B9CC(void *arg0, s32 *arg1, s32 *arg2) {
-    char *entry = (char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC;
+s32 fn_8024B9CC(void *selector, s32 *outFirst, s32 *outSecond) {
+    /* Read two values (+0x20, +0x24) from the selector's currently selected
+     * 0xC-byte entry, write them to the two outputs, and return the first. */
+    char *entry = (char *)selector + *(s32 *)((char *)selector + 0x10) * 0xC;
     s32 value1 = *(s32 *)(entry + 0x20);
     s32 value2 = *(s32 *)(entry + 0x24);
-    *arg1 = value1;
-    *arg2 = value2;
+    *outFirst = value1;
+    *outSecond = value2;
     return value1;
 }
 
