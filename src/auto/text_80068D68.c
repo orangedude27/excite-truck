@@ -12039,12 +12039,14 @@ void bta_dm_discover_next_device(void) {
     }
 }
 
+/* fn_800729C0: allocates a small BTA/BTU message buffer, sets event 0x0206
+ * and stores arg0 at offset 0x08, then posts it via fn_80071450. */
 void fn_800729C0(s16 arg0) {
-    void *buf = GKI_getbuf(0xA);
-    if (buf != 0) {
-        *(u16 *)buf = 0x206;
-        *(u16 *)((u8 *)buf + 8) = arg0;
-        fn_80071450(buf);
+    void *p_msg = GKI_getbuf(0xA);
+    if (p_msg != 0) {
+        *(u16 *)p_msg = 0x206;
+        *(u16 *)((u8 *)p_msg + 8) = arg0;
+        fn_80071450(p_msg);
     }
 }
 
