@@ -93,8 +93,9 @@ void fn_8012F500(void *cursor, s32 dest) {
     ((s32 *)cursor)[1] += 4;
 }
 
-void fn_8012F550(void *arg0, s32 *arg1, s32 arg2) {
-    *arg1 = *(*(s32 **)arg0) + ((s32 *)arg0)[1];
-    ((s32 *)arg0)[1] += arg2;
+void fn_8012F550(MemStreamPtr *cursor, u8 **outPtr, s32 advance) {
+    /* Return the address at the cursor's current position in *outPtr, then advance the cursor by `advance` bytes. */
+    *outPtr = cursor->stream->buffer + cursor->pos;
+    cursor->pos += advance;
 }
 
