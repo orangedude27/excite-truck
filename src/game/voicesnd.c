@@ -345,7 +345,7 @@ void fn_8020AC2C(void *arg0) {
  lbl_8055EE00=now-(*(int *)((char *)(arg0)+(8)));
  if(lbl_8055EE00>200U) lbl_8055EE00=200;
  high=lbl_805632B4; low=lbl_805632B0;
- *(volatile int *)((char *)(arg0)+(8))=now;
+ (*(int *)((char *)(arg0)+(8)))=now;
  for(i=0;i<512;i++) {
  p=(*(void ** *)((char *)(arg0)+(4)))[i];
  if(p) {
@@ -423,8 +423,13 @@ extern "C" void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char f
                 *(unsigned char *)(obj + 0x3e) = 0;
                 *(unsigned char *)(obj + 0x3c) = flag;
                 *(void **)(obj + 0x10) = fn_802E5AE8(name);
-                if (*(void **)(obj + 0x10) != 0) {
-                    { char *copy_src = name; int copy_left = 0x40; char *copy_dst = buffer;
+                if (*(void **)(obj + 0x10) == 0)
+                    goto skip_ext;
+                else
+                    goto do_ext;
+            do_ext:;
+                {
+                    char *copy_src = name; int copy_left = 0x40; char *copy_dst = buffer;
                     goto copy_check;
 copy_next:
                     if (--copy_left > 0) goto copy_check;
@@ -464,7 +469,7 @@ appended:                   ;
                     *(float *)(obj + 0x30) = zero;
                     *(float *)(obj + 0x34) = zero;
                     *(int *)(obj + 0x38) = 0; }
-                }
+                skip_ext:;
             }
             if (((Sound *)obj)->valid() == 0) {
                 if (obj != 0) ((Sound *)obj)->destroy(1);
@@ -537,11 +542,12 @@ void fn_8020B2D0(void) {
 extern unsigned char lbl_8033C520[];
 extern unsigned char lbl_80489BD0[];
 extern int fn_80128668(void);
-int fn_8020B2D4(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_8020B2D4(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void *fn_8020B314(void) {
