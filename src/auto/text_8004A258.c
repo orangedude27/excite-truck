@@ -3,6 +3,7 @@
 #include <revolution/OS/OSMemory.h>
 #include <revolution/BASE/PPCArch.h>
 #include <revolution/OS/OSContext.h>
+#include <revolution/OS/OSExec.h>
 
 void __OSDBJUMPSTART(void);
 void __OSDBJUMPDEST(void);
@@ -564,19 +565,22 @@ extern void OSSetMEM1ArenaHi(void*);
 extern void OSSetMEM2ArenaLo(void*);
 extern void OSSetMEM2ArenaHi(void*);
 extern void OSPanic(const char*, s32, const char*, ...);
+extern char lbl_80303E08[];
+extern char lbl_80558F10[8];
 void OSInit(void) {
-    OSBI2* bi2;
+    char* msg = lbl_80303E08;
     u8* rebootParams = (u8*)__OSRebootParams;
+    OSBI2* bi2;
     void* mem1lo;
     void* mem1hi;
     void* mem2lo;
     void* mem2hi;
 
-    if (!AreWeInitialized_8055D9CC) {
+    if (AreWeInitialized_8055D9CC == 0) {
         AreWeInitialized_8055D9CC = 1;
         __OSStartTime = __OSGetSystemTime();
         OSDisableInterrupts();
-        __OSGetExecParams(rebootParams);
+        __OSGetExecParams((void*)((u32)rebootParams + 0));
         PPCMtmmcr0(0);
         PPCMtmmcr1(0);
         PPCMtpmc1(0);
@@ -675,11 +679,8 @@ void OSInit(void) {
         if (__OSInIPL == 0) {
             switch (*(u8*)0x8000315C) {
             case 0x81:
-                #line 1099 "src/revolution/OS/OS.c"
-                // clang-format off
-                OSReport("OS ERROR: boot program is not for RVL target. Please use "
-                         "correct boot program.\n");
-                OSPanic(__FILE__, __LINE__, "Failed to run app");
+                OSReport(msg + 0x258);
+                OSPanic(lbl_80558F10, 0x44E, msg + 0x2A8);
                 break;
             case 0x80:
             default:
@@ -687,11 +688,8 @@ void OSInit(void) {
             }
             switch (*(u8*)0x8000315D) {
             case 0x81:
-                #line 1117 "src/revolution/OS/OS.c"
-                // clang-format off
-                OSReport("OS ERROR: apploader[D].img is not for RVL target. Please use "
-                         "correct apploader[D].img.\n");
-                OSPanic(__FILE__, __LINE__, "Failed to run app");
+                OSReport(msg + 0x2C0);
+                OSPanic(lbl_80558F10, 0x460, msg + 0x2A8);
                 break;
             case 0x80:
             default:
@@ -702,7 +700,7 @@ void OSInit(void) {
                 *(volatile u16*)0x800030E6 = 0x9000;
             } else if (*(volatile u16*)0x800030E6 == 0) {
                 DCInvalidateRange(rebootParams + 0x20, 0x20);
-                DVDInquiryAsync((void*)(rebootParams + 0x20), (void*)(rebootParams + 0x40), InquiryCallback);
+                DVDInquiryAsync((void*)(rebootParams + 0x40), (void*)(rebootParams + 0x20), InquiryCallback);
             }
         }
         if (__OSInIPL == 0 && __OSInNandBoot == 0 && __OSInReboot == 0) {
