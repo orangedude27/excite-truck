@@ -269,31 +269,35 @@ struct SoundPlayerVt {
     int soundId;                     /* 0x04 */
 };
 //
-// BasicSound's own vtable; the 0x50, 0x54 and 0x5C methods are pure in the base
-// class and filled in by SeqSound, StrmSound and WaveSound.
+// BasicSound's own vtable, lbl_80322880 (its slots are named below as the
+// SeqSound / StrmSound / WaveSound copies of that table fill them in).  The
+// 0x50, 0x54, 0x5C and 0x60 methods are pure in the base class and filled in
+// by SeqSound, StrmSound and WaveSound; both 0x5C and 0x60 hand back the
+// player embedded in the sound at +0xD8 (SeqPlayer, StrmPlayer, ...).
 struct BasicSoundVt {
     virtual void v08();
     virtual void v0C();
-    virtual void v10();
+    virtual void Update();                  /* 0x10 run one frame of the sound */
     virtual void v14();
-    virtual void v18();
-    virtual void v1C();
+    virtual void Stop(int fadeFrames);      /* 0x18 */
+    virtual void Pause(bool pause, int frames); /* 0x1C */
     virtual void v20();
-    virtual void v24();
-    virtual void v28();
-    virtual void v2C();
-    virtual void v30();
-    virtual void v34();
-    virtual void v38();
+    virtual void FadeIn(int frames);        /* 0x24 */
+    virtual void Shutdown();                /* 0x28 */
+    virtual int IsPrepared();               /* 0x2C the player's data is loaded */
+    virtual int IsPaused();                 /* 0x30 */
+    virtual void SetInitialVolume(float);   /* 0x34 */
+    virtual void SetVolume(float, int);     /* 0x38 */
     virtual void v3C();
     virtual void v40();
     virtual void v44();
     virtual void v48();
-    virtual void v4C();
+    virtual void SetPlayerPriority(int);    /* 0x4C */
     virtual int HasResource();            /* 0x50 still holding the track it plays */
     virtual void ReleaseResource();       /* 0x54 hand that track back */
-    virtual void v58();
+    virtual void InitParam();             /* 0x58 back to the state a new sound has */
     virtual SoundPlayerVt *GetPlayer();   /* 0x5C the player inside the sound */
+    virtual SoundPlayerVt *GetPlayer2();  /* 0x60 the same player, other accessor */
 };
 //
 // The hook stored at BasicSound+0x20, told when its sound shuts down.
