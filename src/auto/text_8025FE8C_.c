@@ -789,13 +789,22 @@ extern s32 lbl_802FA6A8[];
 extern u8 lbl_8055B860;
 #pragma push
 #pragma scheduling invalid_target
-void fn_80261688(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 *p = (s32 *)arg0;
-    p[2] = arg3;
-    p[1] = 6;
-    p[0] = (s32)&lbl_8055B860;
-    p[3] = arg2;
-    p[4] = arg1;
+void fn_80261688(void *item, s32 keyCode, s32 delta, s32 handler) {
+    /* Initialize a kind-6 debug-menu item: a key-binding row holding the handler,
+     * key code and delta, with the default empty label. */
+    struct MenuRow {
+        void *name;  /* 0x00 */
+        int type;    /* 0x04 */
+        void *data;  /* 0x08 */
+        int a;       /* 0x0C */
+        int b;       /* 0x10 */
+    };
+    struct MenuRow *row = (struct MenuRow *)item;
+    row->data = (void *)handler;
+    row->type = 6;
+    row->name = &lbl_8055B860;
+    row->a = delta;
+    row->b = keyCode;
 }
 #pragma push
 #pragma cplusplus on
