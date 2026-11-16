@@ -1747,36 +1747,39 @@ extern "C" int fn_8029AEE8(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" int fn_8029AF24(int arg0) {
-    if (*(int *)((char *)arg0 + 0x1E0) >= 1) {
-        register void *obj = (void *)arg0;
-        register void *entry = obj;
-        register int total = 0;
-        register int i = 0;
-        while (i < fn_80287B14()) {
+extern "C" int fn_8029AF24(int managerPtr) {
+    /* For a manager with at least one entry, sum the per-entry counts (from fn_80288208) of
+       entries flagged at +0x35, convert its +0x1EC value through fn_802C9A4C, then reserve and
+       build the two count-sized structures held at +0x1E8 and +0x1E4. */
+    if (*(int *)((char *)managerPtr + 0x1E0) >= 1) {
+        register void *manager = (void *)managerPtr;
+        register void *entry = manager;
+        register int totalCount = 0;
+        register int entryIndex = 0;
+        while (entryIndex < fn_80287B14()) {
             if (*(unsigned char *)((char *)entry + 0x35) != 0) {
-                void *info = fn_80288208(i);
-                total += *(int *)((char *)info + 0x24);
+                void *info = fn_80288208(entryIndex);
+                totalCount += *(int *)((char *)info + 0x24);
             }
             entry = (char *)entry + 0x38;
-            i += 1;
+            entryIndex += 1;
         }
-        int value = *(int *)((char *)obj + 0x1EC);
-        float ratio = (float)(-value) / lbl_80564618;
-        float temp_f31 = ((float (*)(float))fn_802C9A4C)(ratio);
-        fn_802C8BD0(*(int *)((char *)obj + 0x1E8));
-        if (fn_802C8DBC(total * 4)) {
-            fn_8029B6E4(obj);
+        int rawValue = *(int *)((char *)manager + 0x1EC);
+        float ratio = (float)(-rawValue) / lbl_80564618;
+        float converted = ((float (*)(float))fn_802C9A4C)(ratio);
+        fn_802C8BD0(*(int *)((char *)manager + 0x1E8));
+        if (fn_802C8DBC(totalCount * 4)) {
+            fn_8029B6E4(manager);
             fn_802C8E48();
         }
         fn_802C8D74();
-        fn_802C8BD0(*(int *)((char *)obj + 0x1E4));
-        if (fn_802C8DBC(total * 8)) {
-            fn_8029B824(obj);
+        fn_802C8BD0(*(int *)((char *)manager + 0x1E4));
+        if (fn_802C8DBC(totalCount * 8)) {
+            fn_8029B824(manager);
             fn_802C8E48();
         }
         fn_802C8D74();
-        ((float (*)(float))fn_802C9A4C)(temp_f31);
+        ((float (*)(float))fn_802C9A4C)(converted);
     }
 }
 #pragma pop
