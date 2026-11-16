@@ -578,10 +578,11 @@ extern short lbl_802FAB60[];
 #pragma push
 #pragma scheduling invalid_target
 int fn_802B9920(int arg0) {
-    short s = (short)(arg0 + 0x200);
     int v = arg0 + 0x200;
+    short s = (short)v;
+    int shifted = v << 27;
     int sign = (unsigned int)s >> 31;
-    int t = (v << 27) - sign;
+    int t = shifted - sign;
     int u = (t << 5) | ((unsigned int)t >> 27);
     int w = u + sign;
     short idx = (short)w;
@@ -661,11 +662,12 @@ float fn_802B9A80(float arg0) {
     return ceil(arg0);
 }
 
-void fn_802B9AA4(void *arg0, float *arg1, float *arg2) {
-    arg1[0] = *(float *)((char *)arg0 + 0x14);
-    arg1[1] = *(float *)((char *)arg0 + 0x18);
-    arg2[0] = *(float *)((char *)arg0 + 0x1C);
-    arg2[1] = *(float *)((char *)arg0 + 0x20);
+// Reads a node's 2D float bounds into min (+0x14/+0x18) and max (+0x1C/+0x20).
+void fn_802B9AA4(void *node, float *min, float *max) {
+    min[0] = *(float *)((char *)node + 0x14);
+    min[1] = *(float *)((char *)node + 0x18);
+    max[0] = *(float *)((char *)node + 0x1C);
+    max[1] = *(float *)((char *)node + 0x20);
 }
 
 void fn_802B9AC8(void) {
