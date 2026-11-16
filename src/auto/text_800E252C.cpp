@@ -4012,9 +4012,10 @@ extern "C" void fn_800E9B20(void *arg0, float arg1) {
 }
 
 extern "C" void fn_800E9B28(void *arg0, float arg1) {
-    VfObjF *obj = (VfObjF *)arg0;
-    VfObjF *result = obj->vf22();
-    result->vf15(arg1);
+    /* Get an owned object from the source and forward the float value to it. */
+    VfObjF *owner = (VfObjF *)arg0;
+    VfObjF *target = owner->vf22();
+    target->vf15(arg1);
 }
 
 extern "C" void fn_800E9B74(void *arg0, int arg1, int arg2, int arg3, int arg4) {
