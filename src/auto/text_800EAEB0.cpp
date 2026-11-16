@@ -2584,9 +2584,10 @@ extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* self,
     OSRestoreInterrupts(interruptLevel);
 }
 
-extern "C" void fn_800EF878(void* arg0, f32 farg0) {
+extern "C" void fn_800EF878(void* object, f32 value) {
+    /* Set the float field at offset 0x20 of object with interrupts disabled. */
     u32 level = OSDisableInterrupts();
-    *(f32*)((u8*)arg0 + 0x20) = farg0;
+    *(f32*)((u8*)object + 0x20) = value;
     OSRestoreInterrupts(level);
 }
 
