@@ -2391,21 +2391,23 @@ f32 fn_8016FD58(void) {
     return lbl_8055E3C8;
 }
 
-void fn_8016FD60(void *arg0, void *arg1) {
-    s32 g;
-    s32 d, c, b, a;
-    f32 f, e;
-    volatile s32 *src = (volatile s32 *)arg1;
-    volatile f32 *fsrc = (volatile f32 *)((u8 *)arg1 + 0x10);
-    a = src[0]; b = src[1]; c = src[2]; d = src[3];
-    e = fsrc[0]; f = fsrc[1]; g = src[6];
-    *(s32 *)arg0 = a;
-    *((s32 *)arg0 + 1) = b;
-    *((s32 *)arg0 + 2) = c;
-    *((s32 *)arg0 + 3) = d;
-    *(f32 *)((u8 *)arg0 + 0x10) = e;
-    *(f32 *)((u8 *)arg0 + 0x14) = f;
-    *((s32 *)arg0 + 6) = g;
+/* Copy a 0x1C-byte UI draw record (4 ints, 2 floats, 1 int) from src to dst,
+   reading the source words through volatile pointers. */
+void fn_8016FD60(void *dst, void *srcRecord) {
+    s32 word6;
+    s32 word3, word2, word1, word0;
+    f32 float1, float0;
+    volatile s32 *srcWords = (volatile s32 *)srcRecord;
+    volatile f32 *srcFloats = (volatile f32 *)((u8 *)srcRecord + 0x10);
+    word0 = srcWords[0]; word1 = srcWords[1]; word2 = srcWords[2]; word3 = srcWords[3];
+    float0 = srcFloats[0]; float1 = srcFloats[1]; word6 = srcWords[6];
+    *(s32 *)dst = word0;
+    *((s32 *)dst + 1) = word1;
+    *((s32 *)dst + 2) = word2;
+    *((s32 *)dst + 3) = word3;
+    *(f32 *)((u8 *)dst + 0x10) = float0;
+    *(f32 *)((u8 *)dst + 0x14) = float1;
+    *((s32 *)dst + 6) = word6;
 }
 
 /* Clamp the stopwatch time at *timeSeconds to >= 0, format it to tenths of a second,
