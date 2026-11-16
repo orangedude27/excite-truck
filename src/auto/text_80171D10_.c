@@ -134,13 +134,18 @@ int fn_80171D38(int arg0) {
     return result;
 }
 
+/* Calls fn_8018F76C for indices 0..3 on the object/context returned by fn_8017960C. */
 void fn_80171D94(int unused) {
-    void *r = fn_8017960C();
-    int i = 0;
+#define GetContext fn_8017960C
+#define ApplySlot fn_8018F76C
+    void *context = GetContext();
+    int index = 0;
     do {
-        fn_8018F76C((int)r, i);
-        i++;
-    } while (i < 4);
+        ApplySlot((int)context, index);
+        index++;
+    } while (index < 4);
+#undef GetContext
+#undef ApplySlot
 }
 
 #pragma dont_inline on
