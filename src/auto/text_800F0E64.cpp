@@ -851,10 +851,11 @@ extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(void *self,
     OSRestoreInterrupts(interruptLevel);
 }
 
-extern "C" void fn_800F1F04(void* arg0, f32 farg0) {
-    OSDisableInterrupts();
-    *(f32*)((char*)arg0 + 0x10) = farg0;
-    ((void (*)(void))OSRestoreInterrupts)();
+extern "C" void fn_800F1F04(void* player, f32 value) {
+    /* Set the SeqPlayer float field at offset 0x10 of player with interrupts disabled. */
+    u32 level = OSDisableInterrupts();
+    *(f32*)((char*)player + 0x10) = value;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void fn_800F1F44(void* object, f32 value) {
