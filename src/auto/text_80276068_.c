@@ -496,15 +496,16 @@ void fn_80276DC8(int arg0) {
     fn_80276098((char *)src + 0x58, rot, src->unk_BC, lbl_80564068 * lbl_802FA818[6], lbl_80564060, arg0, 0x22);
 }
 
-float fn_80277704(int i) {
-    volatile unsigned char *base = (volatile unsigned char *)&lbl_8049FD58;
-    int offset = i * 0x50;
-    if (base[offset] != 0) {
-        float *p = (float *)((unsigned char *)base + offset);
-        return (lbl_8055E3C8 - *(float *)((unsigned char *)p + 0x48)) /
-               *(float *)((unsigned char *)p + 0x44);
+/* Return a camera blend's interpolation factor (elapsed / duration), or -1.0f if it is inactive. */
+float fn_80277704(int blendIndex) {
+    volatile unsigned char *blends = (volatile unsigned char *)&gCameraBlends;
+    int byteOffset = blendIndex * 0x50;
+    if (blends[byteOffset] != 0) {
+        float *blend = (float *)((unsigned char *)blends + byteOffset);
+        return (gBlendTime - *(float *)((unsigned char *)blend + 0x48)) /
+               *(float *)((unsigned char *)blend + 0x44);
     }
-    return lbl_80564054;
+    return BLEND_NONE;
 }
 
 void fn_80277740(void) {
