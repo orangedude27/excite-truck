@@ -3974,10 +3974,12 @@ done:
     return 0;
 }
 #pragma pop
+/* Tail-call the create-file directory scan (fn_800AAC08), forwarding the five
+   incoming argument registers and passing &outPosition as the sixth argument. */
 extern "C" void fn_800AAED8(void) {
-    s32 sp8;
-    s32 a, b, c, d, e;
-    ((void (*)(s32, s32, s32, s32, s32, void *))fn_800AAC08)(a, b, c, d, e, &sp8);
+    s32 outPosition;
+    s32 entryObj, neededEntries, dir, freeSectors, fileName;
+    ((void (*)(s32, s32, s32, s32, s32, void *))fn_800AAC08)(entryObj, neededEntries, dir, freeSectors, fileName, &outPosition);
 }
 
 /* Initializes a VFiPF slot/context structure (0x248 bytes) with default state for the given owner. */
