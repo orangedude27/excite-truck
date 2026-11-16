@@ -6323,20 +6323,43 @@ extern "C" void *fn_80223800(void *self, s32 arg1, s32 arg2, s32 arg3, void *par
 }
 
 extern "C" void fn_802237DC(void *);
-extern "C" void fn_80223880(void *arg0) {
-    class CallIface { public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-        virtual void v24(); virtual void v25(); virtual void v26();
-        virtual void call(s32, s32);
+extern "C" void fn_80223880(void *object) {
+    /* Invoke action 2 with no parameter, clear the pending flag, and reset the linked object state. */
+    class ActionVTable {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual void v24();
+        virtual void v25();
+        virtual void v26();
+        virtual void doAction(s32 action, s32 param);
     };
-    ((CallIface *)arg0)->call(2, 0);
-    fn_802237DC(arg0);
-    fn_8021818C(*(s32 *)((u8 *)arg0 + 0x2C));
+
+    ((ActionVTable *)object)->doAction(2, 0);
+    fn_802237DC(object);
+    fn_8021818C(*(s32 *)((u8 *)object + 0x2C));
 }
 
 // View of the sound-list class fn_802238D0 belongs to: a menu whose rows each
