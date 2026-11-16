@@ -2147,12 +2147,13 @@ extern "C" void fn_8019EB14(s32 baseRaw, s32 index) {
     }
 }
 
-extern "C" void fn_8019EBC0(void* arg0) {
-    VTab19* p = *(VTab19**)((u8*)arg0 + 4);
-    if (p == NULL) {
+extern "C" void fn_8019EBC0(void* owner) {
+    /* Invoke the slot-0x48 (v16) hook on the sub-object held at +4 of the owner, if present. */
+    VTab19* part = *(VTab19**)((u8*)owner + 4);
+    if (part == NULL) {
         return;
     }
-    p->v16();
+    part->v16();
 }
 
 #pragma scheduling invalid_target
