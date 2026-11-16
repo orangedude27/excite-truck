@@ -1162,9 +1162,12 @@ extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
 }
 
 extern "C" void *fn_800ECAEC(void *arg0) {
+    /* Initialize this sound-archive object: run base init, clear +0x108,
+     * install vtable lbl_80323238, and init the embedded object at +0x10C. */
     extern void fn_800F26D8(void *);
     extern void fn_800F2D28(void *, void *);
     extern u8 lbl_80323238[];
+
     fn_800F26D8(arg0);
     *(s32 *)((u8 *)arg0 + 0x108) = 0;
     *(u8 **)arg0 = lbl_80323238;
@@ -2970,7 +2973,7 @@ extern "C" void fn_800F0360(void *self) {
     };
     register void *player = self;
     register const char *file = (const char *)lbl_80323B28;
-    register s32 i;
+    s32 i;
     if (*(u8 *)((u8 *)player + 0x15) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x398, file + 0x2F0);
     if (*(u8 *)((u8 *)player + 0x17) == 0)
@@ -2978,16 +2981,18 @@ extern "C" void fn_800F0360(void *self) {
     if (*(u8 *)((u8 *)player + 0x15) != 0 && *(u8 *)((u8 *)player + 0x17) != 0) {
         if (*(u8 *)((u8 *)player + 0x18) == 0 && *(u8 *)((u8 *)player + 0x19) == 0 &&
             (*(u8 *)((u8 *)player + 0x14) != 0 || *((u8 *)Instance__15EmissionManagerFv() + 0x6C32) == 0)) {
-            register s32 ticks = 0;
+            s32 ticks = 0;
             while (*(u16 *)((u8 *)player + 0x88) >= 0x1A0) {
                 ticks++;
                 *(u16 *)((u8 *)player + 0x88) -= 0x1A0;
             }
-            *(u16 *)((u8 *)player + 0x88) += (s32)((f32)*(u16 *)((u8 *)player + 0x92) * *(f32 *)((u8 *)player + 0x84));
+            f32 tickDelta = *(u16 *)((u8 *)player + 0x92);
+            tickDelta *= *(f32 *)((u8 *)player + 0x84);
+            *(u16 *)((u8 *)player + 0x88) += (s32)tickDelta;
             while (ticks > 0) {
                 if (ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(player, true)) {
-                    register s32 state;
-                    register u32 temp = OSDisableInterrupts();
+                    s32 state;
+                    u32 temp = OSDisableInterrupts();
                     if (*(u8 *)((u8 *)player + 0x17) != 0) {
                         if (player == 0)
                             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233, (const char *)lbl_80324030);
@@ -3000,7 +3005,7 @@ extern "C" void fn_800F0360(void *self) {
                         UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)state);
                     }
                     OSRestoreInterrupts(temp);
-                    register u8 *entry = (u8 *)player;
+                    u8 *entry = (u8 *)player;
                     state = 0;
                     temp = 0;
                     s32 valid;
