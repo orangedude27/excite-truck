@@ -1009,41 +1009,43 @@ namespace nw4hbm { namespace ut { struct CharStrmReader {
     CharStrmReader(ReadFunc func) : unk0(0), unk4(func.unk0), unk8(func.unk4), unkC(func.unk8) {}
     s32 unk0; s32 unk4; s32 unk8; s32 unkC; }; struct Font { CharStrmReader GetCharStrmReader() const; }; } }
 nw4hbm::ut::CharStrmReader nw4hbm::ut::Font::GetCharStrmReader() const {
-    s32 var_r5;
-    s32 var_r6;
-    s32 var_r7;
-    s32 var_r8;
-    s32 var_r9;
-    s32 var_r10;
+    /* Return a CharStrmReader initialized with this font's read function (+4), after
+     * asserting that 'this' lies in a valid memory region (MEM1/MEM2/arena ranges). */
+    s32 validStep5;
+    s32 validStep4;
+    s32 validStep3;
+    s32 validStep2;
+    s32 validStep1;
+    s32 validStep0;
     u32 hi;
     s32 font = (s32)this;
 
     hi = (u32)font & 0xFF000000;
-    var_r5 = 1;
-    var_r6 = 1;
-    var_r7 = 1;
-    var_r8 = 1;
-    var_r9 = 1;
-    var_r10 = 1;
+    validStep5 = 1;
+    validStep4 = 1;
+    validStep3 = 1;
+    validStep2 = 1;
+    validStep1 = 1;
+    validStep0 = 1;
     if ((hi != 0x80000000U) && (((u32)font & 0xFF800000) != 0x81000000U)) {
-        var_r10 = 0;
+        validStep0 = 0;
     }
-    if ((var_r10 == 0) && (((u32)font & 0xF8000000) != 0x90000000U)) {
-        var_r9 = 0;
+    if ((validStep0 == 0) && (((u32)font & 0xF8000000) != 0x90000000U)) {
+        validStep1 = 0;
     }
-    if ((var_r9 == 0) && (hi != 0xC0000000U)) {
-        var_r8 = 0;
+    if ((validStep1 == 0) && (hi != 0xC0000000U)) {
+        validStep2 = 0;
     }
-    if ((var_r8 == 0) && (((u32)font & 0xFF800000) != 0xC1000000U)) {
-        var_r7 = 0;
+    if ((validStep2 == 0) && (((u32)font & 0xFF800000) != 0xC1000000U)) {
+        validStep3 = 0;
     }
-    if ((var_r7 == 0) && (((u32)font & 0xF8000000) != 0xD0000000U)) {
-        var_r6 = 0;
+    if ((validStep3 == 0) && (((u32)font & 0xF8000000) != 0xD0000000U)) {
+        validStep4 = 0;
     }
-    if ((var_r6 == 0) && (((u32)font & 0xFFFFC000) != 0xE0000000U)) {
-        var_r5 = 0;
+    if ((validStep4 == 0) && (((u32)font & 0xFFFFC000) != 0xE0000000U)) {
+        validStep5 = 0;
     }
-    if (var_r5 == 0) {
+    if (validStep5 == 0) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(
             (const char *)&lbl_80559804, 0x75, lbl_80320948, font);
     }
