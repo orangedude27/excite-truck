@@ -183,9 +183,9 @@ public:
     virtual void vf14();
     virtual void vf15();
       virtual void vf16();
-  virtual void vf17();
-  virtual void vf18();
-  virtual void vf19();
+      virtual void vf17();
+    virtual s32 vf18();     // vtable 0x50; returns a status code
+    virtual void vf19();
      virtual s32 vf20();     // vtable 0x58
         virtual void vf21();    // vtable 0x5C
 };
