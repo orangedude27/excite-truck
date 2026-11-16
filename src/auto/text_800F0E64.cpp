@@ -1397,32 +1397,34 @@ BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadSoundInfo(u32 index, nw4hb
     register void *archive = *(void **)((u8 *)this + 0x28);
     register u32 soundIndex = index;
     register void *outInfo = info;
-    register u8 *base;
-    register void *entry;
+    register u8 *soundTable;
+    register void *soundEntry;
+    /* Look up the sound-info entry for an index and copy its ids into outInfo, handling both the
+       current and legacy archive formats; returns FALSE when the table is absent or the index is out of range. */
     if (*((u8 *)archive + 1) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
-    base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)archive), *(u32 *)((u8 *)archive + 4), archive);
-    if (base == 0) { entry = 0; goto finish; }
-    if (soundIndex >= *(u32 *)base) { entry = 0; goto finish; }
+    soundTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)archive), *(u32 *)((u8 *)archive + 4), archive);
+    if (soundTable == 0) { soundEntry = 0; goto finish; }
+    if (soundIndex >= *(u32 *)soundTable) { soundEntry = 0; goto finish; }
     if (*(u16 *)((u8 *)this + 6) >= 0x101) {
         soundIndex <<= 3;
         archive = *(void **)((u8 *)this + 0x28);
-        if (base[soundIndex + 5] != 0)
+        if (soundTable[soundIndex + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
-        entry = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(base[soundIndex + 4], *(u32 *)(base + soundIndex + 8), archive);
+        soundEntry = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundTable[soundIndex + 4], *(u32 *)(soundTable + soundIndex + 8), archive);
         goto finish;
     }
     {
-        entry = base + (soundIndex << 3);
+        soundEntry = soundTable + (soundIndex << 3);
         archive = *(void **)((u8 *)this + 0x28);
-        entry = (void *)(*(u32 *)((u8 *)entry + 8) + (u32)archive);
+        soundEntry = (void *)(*(u32 *)((u8 *)soundEntry + 8) + (u32)archive);
     }
 finish:
-    if (entry == 0) return 0;
-    *(u32 *)outInfo = *(u32 *)((u8 *)entry + 4);
-    *(u32 *)((u8 *)outInfo + 4) = *(u32 *)((u8 *)entry + 8);
-    *(u32 *)((u8 *)outInfo + 8) = *((u8 *)entry + 0x15);
-    *(u32 *)((u8 *)outInfo + 0xC) = *((u8 *)entry + 0x14);
+    if (soundEntry == 0) return 0;
+    *(u32 *)outInfo = *(u32 *)((u8 *)soundEntry + 4);
+    *(u32 *)((u8 *)outInfo + 4) = *(u32 *)((u8 *)soundEntry + 8);
+    *(u32 *)((u8 *)outInfo + 8) = *((u8 *)soundEntry + 0x15);
+    *(u32 *)((u8 *)outInfo + 0xC) = *((u8 *)soundEntry + 0x14);
     return 1;
 }
 extern "C" s32 ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(void *reader, u32 soundId, void *seqSoundInfo) {
