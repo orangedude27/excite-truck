@@ -66,7 +66,7 @@ extern "C" int fn_802962CC(void *node) {
     public:
         virtual char *getName();
     };
-    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055C9B8) == 0;
+    return stricmp(((NameNode *)node)->getName(), (const char *)kFrameName) == 0;
 }
 
 #pragma push
