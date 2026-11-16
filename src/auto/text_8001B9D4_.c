@@ -126,13 +126,15 @@ struct ContestEntry {
 
 
 extern void fn_8001C4D4(void);
-void fn_8001B9D4(void *arg0) {
-    ((s32 *)arg0)[0] = -2;
-    ((s32 *)arg0)[1] = -2;
-    ((s32 *)arg0)[2] = -2;
-    ((s32 *)arg0)[3] = -2;
-    ((s32 *)arg0)[5] = -2;
-    ((s32 *)arg0)[6] = -2;
+// Reset words 0-3, 5 and 6 of the seven-word array in *values to -2 ("unset");
+// word 4 is deliberately left untouched.
+void fn_8001B9D4(void *values) {
+    ((s32 *)values)[0] = -2;
+    ((s32 *)values)[1] = -2;
+    ((s32 *)values)[2] = -2;
+    ((s32 *)values)[3] = -2;
+    ((s32 *)values)[5] = -2;
+    ((s32 *)values)[6] = -2;
 }
 
 #pragma scheduling invalid_target
