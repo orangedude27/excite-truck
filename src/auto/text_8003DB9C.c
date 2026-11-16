@@ -1976,7 +1976,7 @@ void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
     unsigned int *vatC = &vatBase[0x5C / 4];
 
     for (; list->attr != 0xFF; list++) {
-        int attr = *(volatile int *)&list->attr;
+        int attr = list->attr;
         unsigned char shift = list->shift;
         int compType = list->compType;
         int compCnt = list->compCnt;
