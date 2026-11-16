@@ -196,9 +196,11 @@ void fn_8013BC34(void) {
 
 #define sPeriodicUpdateCounter lbl_8055E174
 
+/* Increments the periodic-update tick counter and refreshes the shared status
+   record every 8 ticks. */
 void fn_8013BC54(void) {
-    lbl_8055E174++;
-    if ((lbl_8055E174 & 7) == 0) {
+    sPeriodicUpdateCounter++;
+    if ((sPeriodicUpdateCounter & 7) == 0) {
         fn_8013B950();
     }
 }
