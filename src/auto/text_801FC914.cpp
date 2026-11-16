@@ -134,13 +134,14 @@ extern "C" const char lbl_8033B618[];
 extern "C" float fn_802C99E8(float);
 extern "C" void fn_802C744C(void*, void*);
   #pragma scheduling invalid_target
-  extern "C" void fn_801FC9CC(void) {
-      void *p = fn_801284F8(8, (const char *)&lbl_8033B608);
-      if (p != 0) {
-          *(void **)p = (void *)&lbl_8033B700[0];
-          *(int *)((char *)p + 4) = 0;
-      }
-  }
+/* Allocate and construct an 8-byte HermiteDroneTMH object with its vtable and a zeroed field at +4. */
+extern "C" void fn_801FC9CC(void) {
+    void *object = fn_801284F8(8, (const char *)&lbl_8033B608);
+    if (object != 0) {
+        *(void **)object = (void *)&lbl_8033B700[0];
+        *(int *)((char *)object + 4) = 0;
+    }
+}
 #pragma push
 #pragma small_data off
 extern "C" void* fn_801FE188(void*);
