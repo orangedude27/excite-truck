@@ -886,13 +886,14 @@ void fn_80261980(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 #pragma scheduling on
 extern s32 lbl_802FA6B4[];
-s32 fn_802619A0(s32 *arg0) {
+/* Returns the "bar4 top" art filename (index 0=e, 1=s, 2=m) for the index at *arg0. */
+s32 fn_802619A0(s32 *indexPtr) {
     s32 *p = lbl_802FA6B4;
-    s32 values[3];
-    values[0] = *p++;
-    values[1] = *p++;
-    values[2] = *p;
-    return values[*arg0];
+    s32 artNames[3];
+    artNames[0] = *p++;
+    artNames[1] = *p++;
+    artNames[2] = *p;
+    return artNames[*indexPtr];
 }
 
 s32 fn_802619D8(s32 *arg0, s32 arg1) {
