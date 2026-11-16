@@ -347,10 +347,11 @@ typedef struct IndexSelector {
     int count;    /* 0x10 number of elements */
 } IndexSelector;
 
-void fn_8022DC20(void *arg0) {
-    int value = *(int *)((char *)arg0 + 0xC) - 1;
-    *(int *)((char *)arg0 + 0xC) = value;
-    if (value < 0) *(int *)((char *)arg0 + 0xC) = *(int *)((char *)arg0 + 0x10) - 1;
+void fn_8022DC20(IndexSelector *selector) {
+    /* Step the selector's index back by one, wrapping to count-1 when it falls below zero (the inverse of fn_8022DBFC). */
+    int index = selector->index - 1;
+    selector->index = index;
+    if (index < 0) selector->index = selector->count - 1;
 }
 
 #pragma dont_inline on
