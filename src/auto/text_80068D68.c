@@ -4966,10 +4966,13 @@ void LogMsg(UINT32 trace_set_mask, const char *fmt_str, ...) {
     OSReport(lbl_803BF240);
 }
 
-void fn_8007093C(u32 code, void *msg) {
-    if (lbl_8055DC70 == 0) {
-        LogMsg(code, msg);
+/* BTE LogMsg_0: forward a trace message to LogMsg only when the BTE target is serial app. */
+void fn_8007093C(u32 trace_set_mask, void *fmt_str) {
+#define bte_target_mode lbl_8055DC70
+    if (bte_target_mode == 0 /* BTE_MODE_SERIAL_APP */) {
+        LogMsg(trace_set_mask, fmt_str);
     }
+#undef bte_target_mode
 }
 
 void fn_80070954(u32 code, void *msg, u16 param) {
