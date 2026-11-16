@@ -2612,22 +2612,23 @@ void GXGetPointSize(s32 arg0) {
     ((GXPointSizeReg *)&__peReg[1])->pointSize = arg0;
 }
 
-void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    int type = 0;
-    int a;
-    unsigned int value = __peReg[1];
-    if (arg0 == 1 || arg0 == 3) {
-        type = 1;
+void GXInitLightAttnA(s32 fn, s32 aa, s32 ab, s32 ac) {
+    int funcType = 0;
+    int cntlzwA;
+    unsigned int regValue = __peReg[1];
+    /* Pack the light's angular-attenuation function and its a/b/c coefficients into PE register 1. */
+    if (fn == 1 || fn == 3) {
+        funcType = 1;
     }
-    value = __rlwimi(value, type, 0, 31, 31);
-    a = __cntlzw(arg0 - 3);
-    value = __rlwimi(value, a, 6, 20, 20);
-    value = __rlwimi(value, __cntlzw(arg0 - 2), 28, 30, 30);
-    value = __rlwimi(value, arg3, 12, 16, 19);
-    value = __rlwimi(value, arg1, 8, 21, 23);
-    value = __rlwimi(value, arg2, 5, 24, 26);
-    value = __rlwimi(value, 0x41, 24, 0, 7);
-    __peReg[1] = value;
+    regValue = __rlwimi(regValue, funcType, 0, 31, 31);
+    cntlzwA = __cntlzw(fn - 3);
+    regValue = __rlwimi(regValue, cntlzwA, 6, 20, 20);
+    regValue = __rlwimi(regValue, __cntlzw(fn - 2), 28, 30, 30);
+    regValue = __rlwimi(regValue, ac, 12, 16, 19);
+    regValue = __rlwimi(regValue, aa, 8, 21, 23);
+    regValue = __rlwimi(regValue, ab, 5, 24, 26);
+    regValue = __rlwimi(regValue, 0x41, 24, 0, 7);
+    __peReg[1] = regValue;
 }
 
 void GXInitLightAttnK(s32 arg0) {
