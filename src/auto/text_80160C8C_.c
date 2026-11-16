@@ -831,8 +831,9 @@ extern "C" void fn_80161A18(void) {
     }
 }
 #pragma cplusplus on
-extern "C" void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
-    struct Dummy {
+extern "C" void fn_80161A38(s32 action, s32 index, s32 value) {
+    /* Forwards three arguments to the active challenge sub-task's virtual dispatch at vtable+0x40; does nothing if none is active. */
+    struct ChallengeSubTask {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -847,11 +848,11 @@ extern "C" void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
         virtual void v11();
         virtual void v12();
         virtual void v13();
-        virtual void call(s32, s32, s32);
+        virtual void dispatch(s32, s32, s32);
     };
-    Dummy *p = (Dummy *)lbl_8055E300;
-    if (p != 0) {
-        p->call(arg0, arg1, arg2);
+    ChallengeSubTask *subTask = (ChallengeSubTask *)lbl_8055E300;
+    if (subTask != 0) {
+        subTask->dispatch(action, index, value);
     }
 }
 #pragma cplusplus on
