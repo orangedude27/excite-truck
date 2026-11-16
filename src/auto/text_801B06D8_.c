@@ -97,6 +97,12 @@ struct Dummy_801B1FB4 {
     virtual void d0();
     virtual void func(s32, s32, s32, void *, s32 *);
 };
+/* Interface onto the active deity/AI truck controller (gPrimaryObject):
+ * queryNode is the +0xC slot that evaluates one track node and fills a result. */
+struct DeityNodeQuery {
+    virtual void d0();
+    virtual void queryNode(s32, s32, s32, void *, s32 *);
+};
 struct Dummy_801B1FEC {
     virtual void d0();
     virtual void d1();
