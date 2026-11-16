@@ -16,9 +16,11 @@ void fn_80127A24(void) {
     lbl_8055DF50 = 0;
 }
 
-void fn_80127A50(int arg0) {
-    fn_80127464(arg0);
-    fn_80127AB8((void *)arg0);
+void fn_80127A50(int record) {
+    /* Forward to the alarm helper, then pop the next 5-word record from the
+       16-entry ring (lbl_8041DF58) into the caller's buffer. */
+    fn_80127464(record);
+    fn_80127AB8((void *)record);
 }
 
 void fn_80127A84(int *arg0, int *arg1, int *arg2) {
