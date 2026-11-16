@@ -1198,9 +1198,10 @@ int fn_801F37FC(int arg0, int arg1) {
     return arg0;
 }
 
-void fn_801F383C(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 8) = *fn_801F1CE8(arg1);
-    *(char *)((char *)arg0 + 4) = 1;
+void fn_801F383C(void *dst, int src) {
+    /* Copy the 4-byte value at offset 0x2C of src into dst+8 and mark dst as initialized. */
+    *(int *)((char *)dst + 8) = *fn_801F1CE8(src);
+    *(char *)((char *)dst + 4) = 1;
 }
 
 /* One 4-byte word of a render parameter block's raw 16-byte value field (the
