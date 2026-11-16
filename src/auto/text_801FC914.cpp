@@ -1162,11 +1162,13 @@ extern "C" int fn_801FE88C(void *unused, void *outRec) {
         *(float *)((char *)outRec + 0x20) = zero;
     }
 }
-extern "C" void* fn_801FE9A8(void* arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668(arg0);
+extern "C" void* fn_801FE9A8(void* object, int shouldDelete) {
+    /* CodeWarrior deleting-destructor helper: free the object via Mem_freeObject
+       (fn_80128668) when deleting, then return the object pointer. */
+    if (object != 0 && shouldDelete > 0) {
+        Mem_freeObject(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" int stricmp(const char*, const char*);
