@@ -714,8 +714,10 @@ void fn_802B9B40(void *arg0) {
     ((int *)arg0)[0] = 0;
 }
 
-int fn_802B9B50(int **arg0, int **arg1) {
-    return (*arg0)[2] - (*arg1)[2];
+/* qsort comparator: order records by the key at index 2 (byte offset 8);
+ * returns the difference of the two keys, as qsort expects. */
+int fn_802B9B50(int **lhs, int **rhs) {
+    return (*lhs)[2] - (*rhs)[2];
 }
 
 void fn_802B9B68(void) {
