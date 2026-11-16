@@ -328,18 +328,18 @@ void fn_8020C59C(void) {
                    temp_f0 = ((f32)temp_r0 - lbl_805632DC) / lbl_805632F4;
                    which_r31 = 0;
                    temp_f4 = lbl_805632F0;
-                   temp_f4 = temp_f4 < temp_f0 ? temp_f0 : temp_f4;
+                   temp_f4 = temp_f4 < temp_f0 ? temp_f4 : temp_f0;
                    temp_f4 = temp_f4 > lbl_805632DC ? temp_f4 : lbl_805632DC;
                    lbl_8055EE54 = lbl_805632F0 + temp_f4 * lbl_805632F8;
                }
            }
            temp_f2 = lbl_805632D8;
            temp_f0 = lbl_8055EE50 - lbl_8055EE4C;
-           temp_f2 = temp_f2 < temp_f0 ? temp_f0 : temp_f2;
+           temp_f2 = temp_f2 < temp_f0 ? temp_f2 : temp_f0;
            temp_f2 = temp_f2 > lbl_805632FC ? temp_f2 : lbl_805632FC;
            temp_f1 = lbl_805632F0;
            temp_f0 = lbl_8055EE4C + temp_f2;
-           temp_f1 = temp_f1 < temp_f0 ? temp_f0 : temp_f1;
+           temp_f1 = temp_f1 < temp_f0 ? temp_f1 : temp_f0;
            temp_f1 = temp_f1 > lbl_805632DC ? temp_f1 : lbl_805632DC;
            lbl_8055EE4C = temp_f1;
            fn_8020C140();
