@@ -8561,14 +8561,11 @@ static inline void btm_stamp_dev_rec(u8 *entry) {
 
 BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, BD_FEATURES features, UINT32 trusted_mask[], LINK_KEY link_key, UINT8 key_type, tBTM_IO_CAP io_cap) {
     u8 *entry = btm_find_dev_entry(bd_addr);
-    unsigned int timestamp;
     if (entry == 0) {
         entry = (u8 *)btm_sec_alloc_dev(bd_addr);
         if (entry == 0) return FALSE;
     } else {
-        timestamp = *(unsigned int *)(lbl_803C0F78 + 0x1974);
-        *(unsigned int *)(entry + 0xC) = timestamp;
-        *(unsigned int *)(lbl_803C0F78 + 0x1974) = timestamp + 1;
+        btm_stamp_dev_rec(entry);
     }
     if (dev_class != 0) memcpy(entry + 0x22, dev_class, 3);
     memset(entry + 0x35, 0, 0x41);
