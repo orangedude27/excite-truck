@@ -204,8 +204,9 @@ extern f32 lbl_80561960;
 #pragma processor 750
 s32 fn_8016A30C(void)
 {
-  f32 b;
   f32 a;
+  f32 b;
+  f32 *new_var;
   s32 c;
   s32 d;
   void *p;
@@ -213,7 +214,6 @@ s32 fn_8016A30C(void)
   s32 g;
   s32 f;
   s32 e;
-  f32 *new_var;
 
   c = fn_8017960C();
   new_var = &a;
@@ -323,6 +323,8 @@ void fn_8016A438(void) {
 
 void fn_8016B634(s32 arg0);
 
+/* Shut down the model subsystem: clear the two manager pools (fn_8016B598),
+   then release the model-entry pool (fn_8016B634). */
 void fn_8016A68C(void* arg0) {
     fn_8016B634(fn_8016B598(arg0));
 }
