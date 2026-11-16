@@ -59,10 +59,11 @@ extern "C" void *fn_800FFA10(void *sound, int owner) {
     return sound;
 }
 
-extern "C" int fn_800FFA6C(int arg0, int arg1) {
+extern "C" int fn_800FFA6C(int ptr, int count) {
     extern void fn_80128668(void);
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+    /* Free ptr via the mode-3 pool allocator when it is non-null and count is positive; return ptr unchanged. */
+    if (ptr != 0 && count > 0) fn_80128668();
+    return ptr;
 }
 
 extern "C" const char lbl_80327500[];
