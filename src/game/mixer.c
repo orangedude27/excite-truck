@@ -384,13 +384,18 @@ void fn_80209110(void **handle) {
 
 #pragma push
 #pragma inline_depth(0)
-void fn_80209190(float *arg0, float arg1) {
-    if (arg0 != 0) {
-        float value = lbl_80563230 < arg1 ? lbl_80563230 : arg1;
-        value = value > lbl_80563234 ? value : lbl_80563234;
-        *arg0 = value;
-        fn_80208A50(arg0);
+void fn_80209190(float *volume, float newVolume) {
+#define MAX_VOLUME lbl_80563230  /* 1.0f */
+#define MIN_VOLUME lbl_80563234  /* 0.0f */
+    /* Clamp a mixer volume to [0,1], store it in the handle, and recompute the master volume. */
+    if (volume != 0) {
+        float clamped = MAX_VOLUME < newVolume ? MAX_VOLUME : newVolume;
+        clamped = clamped > MIN_VOLUME ? clamped : MIN_VOLUME;
+        *volume = clamped;
+        fn_80208A50(volume);
     }
+#undef MIN_VOLUME
+#undef MAX_VOLUME
 }
 #pragma pop
 
