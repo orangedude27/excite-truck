@@ -1017,12 +1017,13 @@ extern "C" int fn_80218214(void *menuGroup, int x, int y) {
 #pragma cplusplus reset
 #pragma dont_inline reset
 #pragma pop
-int fn_802182F0(void *arg0, void *arg1) {
+/* Find the index of a widget in a UiMenuGroup's widget array, or -1 if absent. */
+int fn_802182F0(void *group, void *widget) {
     int i;
-    int count = *(int *)((char *)arg0 + 0x430);
+    int count = *(int *)((char *)group + 0x430);
     for (i = 0; i < count; i++) {
-        if (*(void **)((char *)arg0 + 0x30) == arg1) return i;
-        arg0 = (char *)arg0 + 4;
+        if (*(void **)((char *)group + 0x30) == widget) return i;
+        group = (char *)group + 4;
     }
     return -1;
 }
