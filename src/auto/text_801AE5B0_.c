@@ -8,15 +8,20 @@ extern int fn_8000D838(int *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_801AE5B0(void) {
+    /* Initialize a small global state block and its associated flag word. */
+#define stateWord  lbl_8055E610
+#define stateBlock lbl_80435728
     int v;
     fn_8000D838(&lbl_8055E608);
-    *(volatile int *)&lbl_8055E610 = 0x7F000000;
-    ((volatile int *)lbl_80435728)[0] = 0;
+    *(volatile int *)&stateWord = 0x7F000000;
+    ((volatile int *)stateBlock)[0] = 0;
     v = 0x7B;
-    ((volatile int *)lbl_80435728)[1] = v;
-    ((volatile int *)lbl_80435728)[2] = 0;
-    ((volatile int *)lbl_80435728)[3] = 0;
-    ((volatile int *)lbl_80435728)[4] = 0;
+    ((volatile int *)stateBlock)[1] = v;
+    ((volatile int *)stateBlock)[2] = 0;
+    ((volatile int *)stateBlock)[3] = 0;
+    ((volatile int *)stateBlock)[4] = 0;
+#undef stateWord
+#undef stateBlock
 }
 #pragma opt_propagation reset
 #pragma scheduling on
