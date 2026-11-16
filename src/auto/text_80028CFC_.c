@@ -187,6 +187,7 @@ char *strchr(const char *str, int chr) {
 }
 
 unsigned char *fn_80029004(const unsigned char *s, int c) {
+    /* Return a pointer to the last occurrence of (unsigned char)c in s, or 0 if not found (like strrchr). */
     const unsigned char *p = s - 1;
     unsigned long ch = (c & 0xff);
     unsigned long cur;
