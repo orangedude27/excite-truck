@@ -1233,6 +1233,7 @@ void fn_802AFF6C(void *arg0) {
 }
 
 #pragma optimization_level 3
+typedef struct { short *data; unsigned short index; unsigned short limit; } RingBuf_802AFF80;
 void fn_802AFF80(void *arg0, short arg1) {
     unsigned int index = *(unsigned short *)((char *)arg0 + 4);
     u32 limit = *(unsigned short *)((char *)arg0 + 6);
