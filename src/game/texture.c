@@ -179,15 +179,16 @@ int fn_802CA380(int textureName) {
 
 #pragma use_lmw_stmw off
 int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    unsigned char *src = (unsigned char *)arg1;
-    int value = arg2;
-    int mode1 = arg3;
-    int mode2 = arg4;
-    int *dst = (int *)arg0;
+    register unsigned char *src = (unsigned char *)arg1;
+    register int value = arg2;
+    register int mode1 = arg3;
+    register int mode2 = arg4;
+    register int *dst = (int *)arg0;
     unsigned char c5, c12, c4, c7, c6, c10;
     unsigned short h12, h0, h2;
     int ptr14;
     int flags;
+
     memset(arg0, 0, 0x34);
     c5 = src[5];
     c12 = src[0xB];
@@ -878,12 +879,13 @@ void fn_802CB228(int slotIndex) {
     slot[0] = 0;
 }
 
-unsigned short fn_802CB3FC(int arg0) {
-    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
-    unsigned short *q = (unsigned short *)p[0x2C / 4];
-    if ((int)q[1] > (int)q[0])
-        return q[1];
-    return q[0];
+/* Return the larger of a texture slot's width and height (its longest side). */
+unsigned short fn_802CB3FC(int slotIndex) {
+    int *slot = (int *)(textureSlots + slotIndex * texSlotSize);
+    unsigned short *dims = (unsigned short *)slot[0x2C / 4];
+    if ((int)dims[1] > (int)dims[0])
+        return dims[1];
+    return dims[0];
 }
 
 void fn_802CB424(void) {
@@ -1727,9 +1729,17 @@ char fn_802CC744(void) {
     return lbl_8055D07D;
 }
 
+#pragma push
 #pragma peephole off
-int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
-#pragma peephole reset
+int fn_802CC74C(void) {
+    int result = 0;
+    char *p = *(char **)lbl_8055FCBC;
+    if (p != 0) {
+        if (*(int *)(p + 4) != 0) result = 1;
+    }
+    return result;
+}
+#pragma pop
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
 #pragma push
