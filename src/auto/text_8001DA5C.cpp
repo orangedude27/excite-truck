@@ -207,19 +207,19 @@ extern "C" s32 fn_8001DD2C(s32 arg0, s32 arg1) {
 /* HUD/race-overlay teardown: destroy every layout pane container and HUD
  * overlay widget created by fn_8001DB54, then clear all their global slots. */
 extern "C" void fn_8001DD6C(void) {
-    if (lbl_8055D604 != 0) ((CleanupEntry*)lbl_8055D604)->cleanup(1);
-    lbl_8055D604 = 0;
-    if (lbl_8055D5FC != 0) ((CleanupEntry*)lbl_8055D5FC)->cleanup(1);
-    lbl_8055D5FC = 0;
-    if (lbl_8055D600 != 0) ((CleanupEntry*)lbl_8055D600)->cleanup(1);
-    lbl_8055D600 = 0;
-    if (lbl_8055D5F4 != 0) ((CleanupEntry*)lbl_8055D5F4)->cleanup(1);
-    lbl_8055D5F4 = 0;
-    if (lbl_8055D5F8 != 0) ((CleanupEntry*)lbl_8055D5F8)->cleanup(1);
-    lbl_8055D5F8 = 0;
-    for (s32 i = 0; i < 6; i++) {
-        if (lbl_80358680[i] != 0) ((CleanupEntry*)lbl_80358680[i])->cleanup(1);
-        lbl_80358680[i] = 0;
+    if (sLaptitleLayout != 0) ((CleanupEntry*)sLaptitleLayout)->cleanup(1);
+    sLaptitleLayout = 0;
+    if (sBetaresLayout != 0) ((CleanupEntry*)sBetaresLayout)->cleanup(1);
+    sBetaresLayout = 0;
+    if (sBetares2Layout != 0) ((CleanupEntry*)sBetares2Layout)->cleanup(1);
+    sBetares2Layout = 0;
+    if (sBetalyLayout != 0) ((CleanupEntry*)sBetalyLayout)->cleanup(1);
+    sBetalyLayout = 0;
+    if (sBetaly2Layout != 0) ((CleanupEntry*)sBetaly2Layout)->cleanup(1);
+    sBetaly2Layout = 0;
+    for (s32 i = 0; i < OVERLAY_COUNT; i++) {
+        if (sHudOverlays[i] != 0) ((CleanupEntry*)sHudOverlays[i])->cleanup(1);
+        sHudOverlays[i] = 0;
     }
 }
 #pragma scheduling invalid_target
