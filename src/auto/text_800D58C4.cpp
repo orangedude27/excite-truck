@@ -1715,17 +1715,19 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
 }
 #pragma dont_inline reset
 
-extern "C" void fn_800D86F0(void *arg0, void *arg1) {
-    s16 v0, v1, v2, v3;
-    volatile s16 *src = (volatile s16 *)arg1;
-    v0 = src[0];
-    v1 = src[1];
-    v2 = src[2];
-    v3 = src[3];
-    ((s16 *)arg0)[0] = v0;
-    ((s16 *)arg0)[1] = v1;
-    ((s16 *)arg0)[2] = v2;
-    ((s16 *)arg0)[3] = v3;
+extern "C" void fn_800D86F0(void *dst, void *srcData) {
+    /* Copy an 8-byte material record (four s16 fields) from source to destination
+       halfword by halfword, as done for each stage while building an nw4r::lyt::Material. */
+    s16 half0, half1, half2, half3;
+    volatile s16 *src = (volatile s16 *)srcData;
+    half0 = src[0];
+    half1 = src[1];
+    half2 = src[2];
+    half3 = src[3];
+    ((s16 *)dst)[0] = half0;
+    ((s16 *)dst)[1] = half1;
+    ((s16 *)dst)[2] = half2;
+    ((s16 *)dst)[3] = half3;
 }
 
 extern "C" void GXInitLightColor_800D8714(u32 *arg0, u32 *arg1) {
