@@ -60,21 +60,16 @@ extern void fn_80209090(int);
 #pragma push
 #pragma inline_depth(0)
 float fn_80208A18(float value) {
-    struct Entry {
-        float value;
-        int id;
-    };
-    struct State {
-        struct Entry entries[8];
-        int count;
-    };
-    struct State *state = (struct State *)lbl_80489258;
-    int count = state->count;
+    /* Scale value by the stored volume of every active mixer volume handle (a
+     * slot whose name pointer is set); MIXER_VOLUME_HANDLE_COUNT slots are in
+     * use out of at most MIXER_VOLUME_HANDLE_MAX. */
+    struct MixerVolumeHandle *handles = MIXER_VOLUME_HANDLES;
+    int count = MIXER_VOLUME_HANDLE_COUNT;
     int i;
 
     for (i = 0; i < count; i++) {
-        if (state->entries[i].id != 0) {
-            value *= state->entries[i].value;
+        if (handles[i].name != 0) {
+            value *= handles[i].volume;
         }
     }
     return value;
