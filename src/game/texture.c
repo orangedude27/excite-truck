@@ -1238,9 +1238,11 @@ check:
 #pragma use_lmw_stmw on
 
 #pragma scheduling on
+/* tex_unlink_node(list_head, node), old-style on purpose: its 3rd register only
+   carries the scan pointer the search starts from, which the callee overwrites
+   with *list_head before reading it. */
 void fn_802CBD7C();
-#pragma use_lmw_stmw on
-#pragma scheduling on
+
 /* Move one texture node from a list of the texture manager to another: unlink it
  * from the list whose head pointer is at srcHead, then push it on the front of the
  * list whose head pointer is at destHead.  The manager keeps the textures it holds
