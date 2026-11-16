@@ -2405,10 +2405,10 @@ done:
 }
 
 extern "C" void *fn_8012E060(void *arg0, const char *arg1) {
+    const char *orig = arg1;
     char sp10[0x80];
     s32 spC;
     u8 sp8;
-    char *var_r4;
     s32 var_r5;
     char *var_r6;
     char *var_r4_2;
@@ -2423,7 +2423,7 @@ extern "C" void *fn_8012E060(void *arg0, const char *arg1) {
     u8 *entry;
     void *ret;
     char *dot;
-    var_r4 = (char *)arg1; var_r6 = sp10; var_r5 = 0x80;
+    var_r6 = sp10; var_r5 = 0x80;
     goto path_copy;
 path_limit:
     var_r5 -= 1;
@@ -2431,7 +2431,7 @@ path_limit:
     var_r6[-1] = 0;
     goto path_done;
 path_copy:
-    temp_r3 = *var_r4++; *var_r6++ = temp_r3;
+    temp_r3 = *arg1++; *var_r6++ = temp_r3;
     if ((s8)temp_r3 != 0) goto path_limit;
 path_done:
     dot = fn_80029004(sp10, 0x2E);
@@ -2480,7 +2480,7 @@ entries_loop:
 entries_test:
         if (n < *(u32 *)(d + 0xC)) goto entries_loop;
     }
-    if (data == 0) fn_802E317C(lbl_8032ADDC, arg1);
+    if (data == 0) fn_802E317C(lbl_8032ADDC, orig);
     ret = (void *)(*(s32 *)((char *)data + 0x10) + 0x80);
     fn_8012C4D8(data);
     return ret;
