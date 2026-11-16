@@ -916,111 +916,49 @@ int ExpandFontSheet(void *font0, void *src0, void *dst0) {
 
 extern int ExpandFontSheet(void *, void *, void *);
 int OSInitFont(void *arg0) {
-    register unsigned short mode;
-    int dispatch, result, finalSize, console;
-    void *font, *source, *base, *expandBase;
+    void *font;
+    int result;
+    void *base;
 
-    if (lbl_80558F58 != 0xFFFF) {
-        mode = lbl_80558F58;
-    } else {
-        console = *(volatile int *)0x800000CC;
-        if (console == 0) goto read_mode;
-        else {
-            if (console < 0) goto zero_mode;
-            else goto zero_mode;
-        }
-    read_mode:
-        mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
-        lbl_80558F58 = mode;
-        goto parse_mode;
-    zero_mode:
-        mode = 0;
-        lbl_80558F58 = mode;
-    parse_mode:
-        lbl_8055DA48 = (void *)ParseStringS;
-    }
-    dispatch = (int)mode;
-    switch (dispatch) {
-    case 0: goto mode0;
-    case 1: goto mode1;
-    case 2: goto done;
+    switch (OSGetFontEncode()) {
+    case 0:
+        lbl_8055DA54 = arg0;
+        result = ReadFont((int)((char *)arg0 + 0x1D120), 0, (int)arg0);
+        if (result == 0) return 0;
+        base = lbl_8055DA54;
+        result = *(int *)((char *)base + 0x24);
+        *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
+        ExpandFontSheet(lbl_8055DA54, (char *)base + result, (char *)lbl_8055DA54 + *(int *)((char *)lbl_8055DA54 + 0x24));
+        break;
+    case 1:
+        lbl_8055DA50 = arg0;
+        result = ReadFont((int)((char *)arg0 + 0xD3F00), 1, (int)arg0);
+        if (result == 0) return 0;
+        base = lbl_8055DA50;
+        result = *(int *)((char *)base + 0x24);
+        *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
+        ExpandFontSheet(lbl_8055DA50, (char *)base + result, (char *)lbl_8055DA50 + *(int *)((char *)lbl_8055DA50 + 0x24));
+        break;
     case 3:
     case 4:
-    case 5: goto mode35;
-    default: goto done;
-    }
-
-mode0:
-    lbl_8055DA54 = arg0;
-    font = (char *)arg0 + 0x1D120;
-    result = ReadFont((int)font, 0, (int)arg0);
-    if (result != 0) goto mode0_read;
-    return 0;
-mode0_read:
-    base = lbl_8055DA54;
-    result = *(int *)((char *)base + 0x24);
-    source = (char *)base + result;
-    *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
-    expandBase = lbl_8055DA54;
-    finalSize = *(int *)((char *)expandBase + 0x24);
-    ExpandFontSheet(expandBase, source, (char *)expandBase + finalSize);
-    goto done;
-
-mode1:
-    {
-        int finalSize1;
-        void *source1, *base1, *expandBase1;
-        lbl_8055DA50 = arg0;
-        font = (char *)arg0 + 0xD3F00;
-        result = ReadFont((int)font, 1, (int)arg0);
-        if (result != 0) goto mode1_read;
-        return 0;
-mode1_read:
-        base1 = lbl_8055DA50;
-        result = *(int *)((char *)base1 + 0x24);
-        source1 = (char *)base1 + result;
-        *(int *)((char *)base1 + 0x24) = (result + 0x1F) & ~0x1F;
-        expandBase1 = lbl_8055DA50;
-        finalSize1 = *(int *)((char *)expandBase1 + 0x24);
-        ExpandFontSheet(expandBase1, source1, (char *)expandBase1 + finalSize1);
-        goto done;
-    }
-
-mode35:
-    {
-        int size35, aligned35, finalSize35;
-        void *source35, *base35, *expandBase35, *font35;
-        font35 = (char *)arg0 + 0xF4020;
+    case 5:
+        font = (char *)arg0 + 0xF4020;
         lbl_8055DA54 = arg0;
-        result = ReadFont((int)font35, 0, (int)arg0);
-        if (result != 0) goto mode35_first_read;
-        return 0;
-mode35_first_read:
-        base35 = lbl_8055DA54;
-        size35 = *(int *)((char *)base35 + 0x24);
-        source35 = (char *)base35 + size35;
-        aligned35 = (size35 + 0x1F) & ~0x1F;
-        *(int *)((char *)base35 + 0x24) = aligned35;
-        expandBase35 = lbl_8055DA54;
-        finalSize35 = *(int *)((char *)expandBase35 + 0x24);
-        ExpandFontSheet(expandBase35, source35, (char *)expandBase35 + finalSize35);
-        expandBase35 = (char *)lbl_8055DA54 + 0x20120;
-        lbl_8055DA50 = expandBase35;
-        result = ReadFont((int)font35, 1, (int)expandBase35);
-        if (result != 0) goto mode35_second_read;
-        return 0;
-mode35_second_read:
-        base35 = lbl_8055DA50;
-        result = *(int *)((char *)base35 + 0x24);
-        source35 = (char *)base35 + result;
-        aligned35 = (result + 0x1F) & ~0x1F;
-        *(int *)((char *)base35 + 0x24) = aligned35;
-        expandBase35 = lbl_8055DA50;
-        finalSize35 = *(int *)((char *)expandBase35 + 0x24);
-        ExpandFontSheet(expandBase35, source35, (char *)expandBase35 + finalSize35);
-        goto done;
+        result = ReadFont((int)font, 0, (int)arg0);
+        if (result == 0) return 0;
+        base = lbl_8055DA54;
+        result = *(int *)((char *)base + 0x24);
+        *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
+        ExpandFontSheet(lbl_8055DA54, (char *)base + result, (char *)lbl_8055DA54 + *(int *)((char *)lbl_8055DA54 + 0x24));
+        lbl_8055DA50 = (void *)((char *)lbl_8055DA54 + 0x20120);
+        result = ReadFont((int)font, 1, (int)lbl_8055DA50);
+        if (result == 0) return 0;
+        base = lbl_8055DA50;
+        result = *(int *)((char *)base + 0x24);
+        *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
+        ExpandFontSheet(lbl_8055DA50, (char *)base + result, (char *)lbl_8055DA50 + *(int *)((char *)lbl_8055DA50 + 0x24));
+        break;
     }
-done:
     return 1;
 }
 
