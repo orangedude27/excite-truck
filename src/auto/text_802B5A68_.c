@@ -509,6 +509,9 @@ s32 fn_802B6270(void) {
     return lbl_8055FA40 == 7;
 }
 
+/* Snap the debug viewer's selected-object index (lbl_8055FA40) to the sentinel 7,
+ * or to 6 ("All Objects") when it is already 7.  (x-7)|(7-x) is zero only when
+ * x==7; complementing and >>31 folds that into -1 vs 0, added to 7 below. */
 void fn_802B6284(void) {
     lbl_8055FA40 = ((s32) ~((lbl_8055FA40 - 7) | (7 - lbl_8055FA40)) >> 31) + 7;
 }
