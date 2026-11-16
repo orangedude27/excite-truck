@@ -21,7 +21,7 @@ s32 fn_80179630(s32);
 s32 fn_801DDE78(void);
 void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
 s32 fn_802E2C20(void);
-typedef struct DbgRec { s32 a; f32 b; f32 c; s32 d; f32 e; s32 f; s32 g; s32 h; } DbgRec;
+typedef struct DbgRec { s32 a; s32 b; s32 c; s32 d; f32 e; s32 f; s32 g; s32 h; } DbgRec;
 typedef s32 (*UnkFunc2)(void*, s32);
 typedef struct UnkObj { UnkFunc2 *vtable; } UnkObj;
 #pragma dont_inline on
@@ -219,27 +219,41 @@ extern char lbl_80339484[];
 extern char lbl_80339490[];
 typedef DbgRec *(*DbgGet)(void *, const char *);
 typedef void (*DbgVoid)(void *);
-void fn_801DE154(void) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801DE154(void) {
+    class Gui {
+    public:
+        virtual void v0();
+        virtual DbgRec *v1(const char *);
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+    };
     f32 pad[20];
     DbgRec ra, rb, rc;
-    DbgRec ca, cb, cc;
-    char buf1[32], buf2[32];
-    s32 n;
-    s32 i;
+    DbgRec ca;
+    DbgRec lineA, lineC;
+    s32 n, i, t;
+    s32 r5, r7;
     u8 *e;
+    f32 x, y;
+    s32 xa, ya;
+    f32 *value;
     fn_801DDF0C();
     fn_80230B5C(pad);
     fn_802C8638(pad);
     fn_802C974C(lbl_80562BD0, lbl_80562BD4, lbl_80562BD8);
-    ((DbgVoid)(*(void ***)lbl_8055E9C0)[7])(lbl_8055E9C0);
-    ra = *((DbgGet)(*(void ***)lbl_8055E9C0)[3])(lbl_8055E9C0, lbl_8055ADC0);
-    rb = *((DbgGet)(*(void ***)lbl_8055E9C0)[3])(lbl_8055E9C0, lbl_8055ADC8);
+    ((Gui *)lbl_8055E9C0)->v5();
+    ra = *((Gui *)lbl_8055E9C0)->v1(lbl_8055ADC0);
+    rb = *((Gui *)lbl_8055E9C0)->v1(lbl_8055ADC8);
     ca.b = rb.b - ra.b;
     ca.c = rb.c - ra.c;
-    rc = *((DbgGet)(*(void ***)lbl_8055E9C0)[3])(lbl_8055E9C0, lbl_8055ADD0);
+    rc = *((Gui *)lbl_8055E9C0)->v1(lbl_8055ADD0);
     n = fn_802E2C20() - (s32)lbl_8055E9CC;
     if (n >= 0x1388) {
-        s32 t = ((n - 0x1388) * 0xC0) / 1000;
+        t = ((n - 0x1388) * 0xC0) / 1000;
         if (t < 0) t = 0;
         if (t > 0xC0) t = 0xC0;
         ra.g -= t << 24;
@@ -248,14 +262,54 @@ void fn_801DE154(void) {
     }
     e = (u8 *)lbl_80486F30 - 0x1C;
     for (i = -1; i < lbl_8055E9C4; i++) {
-        cb = ra;
-        cc = rc;
         e += 0x1C;
+        lineA = ra;
+        lineC = rc;
+        lineA.b = ra.b + ca.b * (f32)i;
+        lineA.c = ra.c + ca.c * (f32)i;
+        lineC.b = rc.b + ca.b * (f32)i;
+        lineC.c = rc.c + ca.c * (f32)i;
+        if (i == (s32)lbl_8055E9BC) {
+            lineA.g = rb.g;
+            lineC.g = rb.g;
+        }
+        if (i >= 0) {
+            fn_80147230(&lineA, lbl_8055ADD8, *(s32 *)e);
+            x = *(f32 *)(e + 0xC) / *(f32 *)(e + 0x18);
+            if (x < lbl_80562BC4) {
+                x -= lbl_80562BC0;
+            } else {
+                x += lbl_80562BC0;
+            }
+            xa = (s32)x;
+            value = *(f32 **)(e + 8);
+            y = *value / *(f32 *)(e + 0x18);
+            if (y < lbl_80562BC4) {
+                y -= lbl_80562BC0;
+            } else {
+                y += lbl_80562BC0;
+            }
+            ya = (s32)y;
+            if (xa == ya) {
+                r7 = (s32)lbl_8055ADDC;
+            } else if (*value > *(f32 *)(e + 0xC)) {
+                r7 = (s32)lbl_8055ADE0;
+            } else {
+                r7 = (s32)lbl_8055ADE4;
+            }
+            r5 = (*(f32 *)(e + 0x18) > lbl_80562BDC) ? 0 : 2;
+            fn_80147230(&lineC, lbl_80339484, r5, *(s32 *)(e + 4), r7, *value);
+        } else {
+            fn_80147230(&lineA, lbl_80339490);
+            if (i == (s32)lbl_8055E9BC) {
+                fn_80147230(&lineC, lbl_8055ADE8);
+            }
+        }
     }
     fn_80011A2C();
 }
-
-#pragma scheduling invalid_target
+#pragma cplusplus reset
+#pragma pop
 s32 fn_801DE5C4(s32 arg0) {
     f32 *value;
     u8 *entry;
