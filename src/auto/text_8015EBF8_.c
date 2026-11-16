@@ -16,6 +16,7 @@ static inline void sub2_(V2_ *o, const V2_ *p, const V2_ *q) {
 
 extern char lbl_8055A070[4];
 __declspec(section ".sdata") extern char lbl_8055A078[];
+#define ERASER_NAME lbl_8055A078 /* .sdata string "eraser" */
 extern int lbl_8055E29C;
 extern int lbl_8055E2A0;
 void fn_8015F584(int *arg0);
