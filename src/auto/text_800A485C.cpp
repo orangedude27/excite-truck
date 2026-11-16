@@ -6571,6 +6571,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     s32 type;
     u32 i;
     u32 v;
+    u32 b;
     r = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8C90)(arg0, -1, &page, &sp8);
     if (r != 0) return r;
     fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)arg0);
@@ -6585,8 +6586,8 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     }
     VFiPFCACHE_FreeFATPage(arg0, page);
     type = *(s32 *)((u8 *)arg0 + 0x1C);
-    v = *(u8 *)((u8 *)arg0 + 0x1A);
-    v |= lbl_802EEF40[type * 5 + 3];
+    b = *(volatile u8 *)((u8 *)arg0 + 0x1A);
+    v = b | lbl_802EEF40[type * 5 + 3];
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
@@ -6795,19 +6796,20 @@ extern "C" s32 fn_800AF4F0(void *arg0, s32 arg1) {
     return 0;
 }
 
-extern "C" s32 fn_800AF530(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    *(void **)((u8 *)arg0 + 0x30) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x34) = arg2;
-    *(s32 *)((u8 *)arg0 + 8) = arg3;
-    *(s32 *)arg0 = 1;
-    if (arg1 != 0) {
-        *(s32 *)((u8 *)arg1 + 8) = 0;
+/* RealName: VFiPFENT_InitIterator (tentative). Initializes a directory-iterator/state block: links a scratch buffer and directory context, sets the starting state, clears the directory handle/link, and resets cursor/progress fields. */
+extern "C" s32 fn_800AF530(void *iter, void *scratch, s32 volume, s32 dirState) {
+    *(void **)((u8 *)iter + 0x30) = scratch;
+    *(s32 *)((u8 *)iter + 0x34) = volume;
+    *(s32 *)((u8 *)iter + 8) = dirState;
+    *(s32 *)iter = 1;
+    if (scratch != 0) {
+        *(s32 *)((u8 *)scratch + 8) = 0;
     }
-    *(s32 *)((u8 *)arg0 + 0x18) = 0;
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
-    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+    *(s32 *)((u8 *)iter + 0x18) = 0;
+    *(s32 *)((u8 *)iter + 0x14) = 0;
+    *(s32 *)((u8 *)iter + 0xC) = 0;
+    *(s32 *)((u8 *)iter + 0x10) = 0;
+    *(s32 *)((u8 *)iter + 0x1C) = 0;
     return 0;
 }
 
@@ -10211,8 +10213,6 @@ extern "C" s32 fn_800A5530(void *);
 extern "C" s32 fn_800AED1C(void *);
 extern "C" s32 fn_800A5800(void *, s32);
 extern "C" s32 fn_800B5988(void *arg0) {
-    struct VFSub { u8 pad[0x80]; u32 flag; s32 key; u32 flag2; s32 key2; };
-    struct VF { u8 pad0[0x10]; VFSub sub; };
     s32 sp8;
     s32 r;
     u32 i;
@@ -10239,18 +10239,17 @@ extern "C" s32 fn_800B5988(void *arg0) {
             ((void (*)(s32 *))fn_800B78F0)(&sp8);
             *(u32 *)((u8 *)arg0 + 0x1654) |= 1;
             {
-                VF *vf = (VF *)lbl_803D2140;
+                CacheEnt *e = (CacheEnt *)lbl_803D2140;
                 s32 key = sp8;
-                CacheEnt *e0 = (CacheEnt *)((u8 *)vf + 0x88);
-                e0->flag &= 1;
-                if (e0->flag && key == e0->key) hit = 1;
+                e[0x88 / 8].flag &= 1;
+                if (e[0x88 / 8].flag && key == e[0x88 / 8].key) hit = 1;
                 else {
-                    VFSub *sub = &vf->sub;
-                    sub->flag &= 1;
-                    if (sub->flag && key == sub->key) hit = 1;
+                    CacheEnt *g = e + 2;
+                    g[0x80 / 8].flag &= 1;
+                    if (g[0x80 / 8].flag && key == g[0x80 / 8].key) hit = 1;
                     else {
-                        sub->flag2 &= 1;
-                        if (sub->flag2 && key == sub->key2) hit = 1;
+                        g[0x88 / 8].flag &= 1;
+                        if (g[0x88 / 8].flag && key == g[0x88 / 8].key) hit = 1;
                         else hit = 0;
                     }
                 }
@@ -10262,7 +10261,10 @@ extern "C" s32 fn_800B5988(void *arg0) {
             slot = (u8 *)arg0 + 0x165C;
             for (i = 0; i < 4; i++, slot += 0x248) {
                 r = fn_800AAEFC((s32)arg0, slot);
-                if (r != 0) goto done;
+                if (r == 0) {
+                } else {
+                    goto done;
+                }
             }
             r = 0;
         }
