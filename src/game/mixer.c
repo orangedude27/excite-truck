@@ -40,6 +40,13 @@ extern float lbl_80563234;
 extern void fn_80208A50(float *);
 
 extern void *lbl_8055EDA8;
+/* Sound quality (config key "quality"): 0..2, kept in the void* slot gSoundQuality. */
+enum SoundQuality {
+    SOUND_QUALITY_LOW = 0,
+    SOUND_QUALITY_MEDIUM = 1,
+    SOUND_QUALITY_HIGH = 2
+};
+#define gSoundQuality lbl_8055EDA8
 extern int lbl_80489238[4];
 extern char lbl_8033BEF8[];
 /* Messages in the lbl_8033BEF8 string block used by the mixer device registry. */
