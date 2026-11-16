@@ -4901,21 +4901,24 @@ void GXSetTevDirect(int stage) {
 
 void __GXUpdateBPMask(void) {}
 
+/* Set the indirect-texture mask: pack the 8-bit mask into the low byte of the
+ * indirect mask BP register shadowed at __GXData+0x174, push it to the BP via
+ * the write-gather FIFO and mark the last FIFO write as a BP one. */
 void __GXSetIndirectMask(s32 mask) {
     union {
         unsigned int value;
         struct {
-            unsigned int unused0 : 24;
-            unsigned int indirectMask : 8;
+            unsigned int unused : 24;
+            unsigned int imask : 8;
         } bits;
-    } reg;
+    } imaskReg;
     unsigned int *data = __GXData;
-    reg.value = data[0x174 / 4];
-    reg.bits.indirectMask = mask;
-    data[0x174 / 4] = reg.value;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
+    imaskReg.value = data[0x174 / 4];
+    imaskReg.bits.imask = mask;
+    data[0x174 / 4] = imaskReg.value;
+    *(volatile unsigned char *)0xCC008000 = GX_FIFO_CMD_LOAD_BP_REG;
     *(volatile unsigned int *)0xCC008000 = data[0x174 / 4];
-    *(unsigned short *)((char *)data + 2) = 0;
+    ((GXDrawData *)data)->lastWriteWasXF = 0;
 }
 
 /* Use volatile byte and word FIFO stores, then clear the GXData halfword. */
