@@ -1210,13 +1210,14 @@ int GXGetFifoCount(void *arg0) {
 unsigned char GXGetFifoWrap(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
 #pragma dont_inline reset
 
-unsigned int GXSetBreakPtCallback(unsigned int value) {
+/* Sets the GX breakpoint callback and returns the previous callback. */
+unsigned int GXSetBreakPtCallback(unsigned int callback) {
     extern void OSRestoreInterrupts(void);
-    unsigned int old = lbl_8055D954;
+    unsigned int previousCallback = lbl_8055D954;
     OSDisableInterrupts();
-    lbl_8055D954 = value;
+    lbl_8055D954 = callback;
     OSRestoreInterrupts();
-    return old;
+    return previousCallback;
 }
 
 // Enable breakpoint for trace capture at the given address
