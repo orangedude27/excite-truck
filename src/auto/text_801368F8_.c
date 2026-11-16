@@ -560,23 +560,23 @@ s32 fn_8002F768(void *, s32, s32);
 extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     struct CompareObject { s32 compare(s32, s32); };
     typedef s32 (CompareObject::*CompareMethod)(s32, s32);
-    register s32 *item;
-    register s32 flag;
-    register s32 start;
-    register s32 length;
-    register s32 end;
-    register s32 index;
-    register s32 temp;
-    register CompareMethod *method;
-    register s32 *array;
+    s32 *item;
+    s32 flag;
+    s32 start;
+    s32 length;
+    s32 end;
+    s32 index;
+    s32 temp;
+    CompareMethod *method;
     *(s32 *)(arg0 + 4) = arg3;
-    length = *(volatile s32 *)arg0;
-    array = arg1;
+#pragma scheduling off
+    length = *(s32 *)arg0;
+#pragma scheduling invalid_target
     method = (CompareMethod *)arg2;
     start = 0;
     do {
         index = start + 1;
-        item = array + index;
+        item = arg1 + index;
         end = length;
         flag = 1;
         while (index < length) {
@@ -708,9 +708,16 @@ void fn_80137884(s32 carCount) {
  lbl_8055E0D0 = instance;
 }
 
+/* Tear down the global Proxer object: destroy the current instance (freeing it), then clear both global instance pointers. */
 void fn_801378D0(void) {
- fn_80136A18(lbl_8055E0D4, 1);
- lbl_8055E0D4 = 0; lbl_8055E0D0 = 0;
+#define destroyProxer fn_80136A18
+#define gProxerCurrent lbl_8055E0D4
+#define gProxerDefault lbl_8055E0D0
+    destroyProxer(gProxerCurrent, 1);
+    gProxerCurrent = 0; gProxerDefault = 0;
+#undef gProxerDefault
+#undef gProxerCurrent
+#undef destroyProxer
 }
 
 void fn_80137904(void) { fn_80136AA8((void*)lbl_8055E0D4); }
