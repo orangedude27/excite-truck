@@ -1748,11 +1748,11 @@ extern "C" void fn_80159724(void) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 extern "C" f32 fn_80159728(void* arg0, void* arg1) {
  Fn8015889C* self = (Fn8015889C*)arg0;
  u8* p = (u8*)arg0;
- f32 result;
- result = lbl_80561754;
+ f32 result = lbl_80561754;
  if ((f32)__fabs(*(f32*)((u8*)arg1+0x2690)) <= lbl_80558DC4[0] && self->v37()) {
   if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c)) self->v32();
   f32 input = *(f32*)((u8*)arg1+0x25d4);
@@ -3711,11 +3711,13 @@ extern "C" s32 fn_8015D77C(void* list) {
 }
 
 extern "C" s32 fn_8015D7CC(void* arg0) {
+    struct { u8* v; } baseBox;
+    u8*& base = baseBox.v;
     s32 count = *(s32*)((u8*)arg0 + 0xC);
     while (count-- > 0) {
-        Item38* base = *(Item38**)((u8*)arg0 + 8);
-        if (base[count].val >= 0)
-            return base[count].val;
+        base = *(u8**)((u8*)arg0 + 8);
+        if (*(s32*)(base + count * 0x38 + 0x14) >= 0)
+            return *(s32*)(base + count * 0x38 + 0x14);
     }
     return 0;
 }
@@ -3886,14 +3888,15 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  virtual void v6(s32); virtual void v7(); virtual void v8(s32);
  };
  struct Provider { virtual void v0(); virtual Adaptor* v1(); };
- s32 sum=fn8015DD9CSumInt(arg0);
+ register Unk801577F0* rarg0 = arg0;
+ s32 sum=fn8015DD9CSumInt(rarg0);
  Adaptor* a=((Provider*)arg1)->v1();
- Obj* obj=(Obj*)arg0;
+ Obj* obj=(Obj*)rarg0;
  if(a) {
  a->v1((s32)lbl_8055A058,obj->v25());
  a->v2((s32)lbl_8055A06C,sum);
  a->v6(obj->v29());
- s32 value=(s32)fn8015DD9CSumFloat(arg0);
+ s32 value=(s32)fn8015DD9CSumFloat(rarg0);
  char buf[16];
  a->v3((s32)lbl_8055A058,fn_8023139C(buf,16,value));
  a->v5(value);
