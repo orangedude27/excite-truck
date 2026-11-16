@@ -160,11 +160,12 @@ void fn_80208B8C(int initBackends) {
     fn_8000DBC8((void *)fn_80208AC8);
 }
 #pragma pop
-int fn_80208CFC(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_80208CFC(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 int fn_80208D3C(void) { return lbl_80489238[6]; }
