@@ -213,14 +213,15 @@ dispatch:
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802E7C14(int arg0) {
+void fn_802E7C14(int channel) {
     extern unsigned char lbl_80505978[];
 
-    if (arg0 < 0)
+    /* Clear the per-channel flag at +0x631 of this rjoy player record. */
+    if (channel < 0)
         return;
-    if (arg0 >= 4)
+    if (channel >= 4)
         return;
-    *((unsigned char *)&lbl_80505978 + arg0 * 0x638 + 0x631) = arg0 - arg0;
+    *((unsigned char *)&lbl_80505978 + channel * 0x638 + 0x631) = channel - channel;
 }
 #pragma pop
 void fn_802E7C40(void) {
