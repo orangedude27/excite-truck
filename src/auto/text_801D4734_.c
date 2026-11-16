@@ -3324,10 +3324,12 @@ int fn_801D8734(void) {
     return 0;
 }
 
-int fn_801D873C(int arg0) {
-    ((int *)arg0)[6] = 2;
-    ((int *)arg0)[8] = 0;
-    *(float *)((char *)arg0 + 0x10) = lbl_8055E3C8;
+int fn_801D873C(int object) {
+    /* Reset the object's mode (+0x18) to 2 and its counter (+0x20) to 0, then stamp +0x10
+       with the current game time (lbl_8055E3C8); returns 0. */
+    ((int *)object)[6] = 2;
+    ((int *)object)[8] = 0;
+    *(float *)((char *)object + 0x10) = lbl_8055E3C8;
     return 0;
 }
 
