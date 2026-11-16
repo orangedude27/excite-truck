@@ -879,8 +879,11 @@ void fn_80166E68(float *ramp, float newTarget)
   }
 }
 
-void fn_80166F3C(float *arg0) {
-    *arg0 = lbl_8055E318 + ((float (*)(int))fn_80129DC4)(3);
+void fn_80166F3C(float *out) {
+#define gClock lbl_8055E318
+    /* Store the global clock plus a slot-3 random offset; the caller passes the offset range in the incoming float argument registers. */
+    *out = gClock + ((float (*)(int))fn_80129DC4)(3);
+#undef gClock
 }
 
 int fn_80166F78(float *arg0) {
