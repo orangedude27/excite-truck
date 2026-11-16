@@ -623,8 +623,10 @@ extern "C" void fn_801B8914(void) {
 }
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_801B8928(void *arg0, void *arg1, void *arg2) {
-    ((Dummy_801B8318 *)lbl_8055E744)->f42(arg0, arg1, arg2);
+/* Forward a per-slot request to the arena master's f42 vtable method, which
+ * validates it (the tail call returns its status: nonzero rejects the request). */
+extern "C" void fn_801B8928(void *slotIndex, void *request, void *flags) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f42(slotIndex, request, flags);
 }
 #pragma scheduling on
 #pragma cplusplus off
