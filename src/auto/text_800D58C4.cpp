@@ -662,21 +662,22 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
 #pragma use_lmw_stmw off
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
     GroupLayout *group = (GroupLayout *)self;
+    register u32 *head = (u32 *)((u8 *)self + 0x10);
     register void *node;
     register s32 offset;
     register const u8 *items;
     register s32 index;
-    const void *head = (const u8 *)self + 0x10;
-    *(volatile u32 *)&group->children.first = 0;
-    *(volatile u32 *)&group->children.last = 0;
+    ((volatile u32 *)head)[0] = 0;
+    ((volatile u32 *)head)[1] = 0;
     group->vtable = lbl_8031F628;
     group->unk4 = 0;
     group->unk8 = 0;
     group->children.count = 0;
-    *(volatile const void **)&group->children.first = head;
-    *(volatile const void **)&group->children.last = head;
+    *(volatile u32 **)&group->children.first = head;
+    *(volatile u32 **)&group->children.last = head;
     *(volatile u8 *)((u8 *)self + 0x28) = 0;
     memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
+
     items = (const u8 *)resource + 0x1C;
     index = 0;
     offset = 0;
@@ -3215,15 +3216,16 @@ extern "C" const char lbl_8031FF90[];
 extern "C" const char lbl_80320250[];
 extern "C" const char lbl_8032022C[];
 extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, void* arg1) {
+    struct PaneMsgBlock { char file[0x10]; char msg1[0x2C]; char msg2[0x2C]; };
     register void* iterator = (u8*)arg0 + 0x14;
-    register const char* messages = &lbl_8031FF90[0];
+    const PaneMsgBlock& messages = *(const PaneMsgBlock*)&lbl_8031FF90[0];
     register void* child = arg1;
     register void* parent = arg0;
     void* slot;
     if (child == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&messages[0], 0xFD, messages + 0x10);
+        Panic__Q26nw4hbm2dbFPCciPCce(messages.file, 0xFD, messages.msg1);
     if (*(void**)((u8*)child + 0xC) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&messages[0], 0xFE, messages + 0x3C);
+        Panic__Q26nw4hbm2dbFPCciPCce(messages.file, 0xFE, messages.msg2);
     if (child == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320250, 0x233, lbl_8032022C);
     slot = iterator;
