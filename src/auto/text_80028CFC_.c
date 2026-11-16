@@ -157,6 +157,7 @@ byte_loop:
     } while (1);
 }
 
+/* Compares up to n bytes of two strings, stopping at the first difference or a NUL terminator; returns the difference of the differing bytes. */
 int strncmp(const unsigned char *s1, const unsigned char *s2, int n) {
     const unsigned char *p = s1 - 1;
     const unsigned char *q = s2 - 1;
