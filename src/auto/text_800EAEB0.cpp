@@ -3229,11 +3229,12 @@ extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void *play
     *(u8*)((u8*)player + 0x15) = 0;
 }
 
-extern "C" s32 fn_800F016C(s32 array, s32 index) {
-    if (index > 0xF) {
+// Returns the SeqTrack pointer at trackNo from the player's 16-entry track array at +0x9C, or 0 if out of range.
+extern "C" s32 fn_800F016C(s32 player, s32 trackNo) {
+    if (trackNo > 0xF) {
         return 0;
     }
-    return *(s32 *)(array + index * 4 + 0x9C);
+    return *(s32 *)(player + trackNo * 4 + 0x9C);
 }
 
 extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
