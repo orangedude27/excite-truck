@@ -3358,7 +3358,7 @@ extern f32 lbl_80561A20;
 extern f32 lbl_80561A24;
 s32 fn_80171210(void *arg0, s32 arg1, void *arg2) {
     s32 count;
-    register f32 reset = lbl_80561980;
+    f32 reset = lbl_80561980;
     register void *item;
     register void *list;
     register void *entry;
@@ -3366,9 +3366,9 @@ s32 fn_80171210(void *arg0, s32 arg1, void *arg2) {
     s32 index;
     s32 nextIndex;
     f32 x;
-    f32 scale;
-    f32 scaledX;
     f32 z;
+    f32 scaledX;
+    f32 scale;
 
     item = ((void **)M2C_FIELD(arg0, void **, 4))[arg1];
     M2C_FIELD(item, u8 *, 8) = 0;
@@ -3531,14 +3531,16 @@ extern s32 fn_80179650(void);
 #pragma push
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void **fn_8016CE9C(void *object, void **input)
-{
-  s32 index = *((s32 *) (((u8 *) object) + 4));
-  void *value = *input;
-  void **slot = (*((void ***) object)) + index;
-  *((s32 *) (((u8 *) object) + 4)) = index + 1;
-  *slot = value;
-  return slot;
+void **fn_8016CE9C(void *arg0, void **__restrict arg1) {
+    int idx;
+    void **base;
+    int next;
+    idx = ((int *)arg0)[1];
+    base = *(void ***)arg0;
+    next = idx + 1;
+    ((int *)arg0)[1] = next;
+    base[idx] = *arg1;
+    return &base[idx];
 }
 #pragma pop
 
