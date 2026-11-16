@@ -66,11 +66,12 @@ void fn_801E7790(void *buf, int id, int emit, float x, float y, float z, float u
     }
 }
 
-void fn_801E7828(arg0)
-    void *arg0;
+/* GenericDrawList draw: unpacks the descriptor (vertices, vertexCount, cap, indices, indexCount) and forwards it to the immediate-mode triangle renderer. */
+void fn_801E7828(drawList)
+    void *drawList;
 {
-    int *p = (int *)arg0;
-    fn_802D68C4(p[0], p[1], p[3], p[4]);
+    int *fields = (int *)drawList;
+    fn_802D68C4(fields[0], fields[1], fields[3], fields[4]);
 }
 
 #pragma dont_inline off
