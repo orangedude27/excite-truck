@@ -948,10 +948,11 @@ void fn_802E61A8(void *arg0) {
     ((unsigned char *)arg0)[0x23] = 1;
 }
 
-void fn_802E61BC(void *arg0) {
-    if (((unsigned char *)arg0)[0x23] == 0) {
-        ((unsigned char *)arg0)[0x25] = 1;
-        ((unsigned char *)arg0)[0x23] = 1;
+void fn_802E61BC(void *channel) {
+    /* SND_StartLoop: if the channel was idle, set its loop flag (+0x25) and flag it to keep playing. */
+    if (((struct SpuChannel *)channel)->wantPlay == 0) {
+        ((struct SpuChannel *)channel)->adpcm = 1;
+        ((struct SpuChannel *)channel)->wantPlay = 1;
     }
 }
 
