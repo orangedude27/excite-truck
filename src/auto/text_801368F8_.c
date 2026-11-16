@@ -608,44 +608,46 @@ void fn_8013776C(void *arg0) {
     *(f32 *)((char *)arg0 + 0x18) = temp_f1 * temp_f1 + temp_f0 * temp_f0;
 }
 
-void fn_80137788(void *arg0, s32 arg1, void *arg2) {
+void fn_80137788(void *pair, s32 carIndex, void *out) {
     extern f32 lbl_8056136C;
-    s32 state;
-    s32 stride;
-    long id;
-    s32 difference;
-    s32 entries;
-    s32 entry;
-    unsigned int equal;
-    register unsigned char flag;
-    f32 x;
-    f32 y;
+    s32 proxer;
+    s32 rowStride;
+    long pairIndexB;
+    s32 indexDiff;
+    s32 rows;
+    s32 row;
+    unsigned int isPairB;
+    register unsigned char rowFlag;
+    f32 dx;
+    f32 dz;
 
-    state = lbl_8055E0D0;
-    stride = *(s32 *)((char *)state + 0xC);
-    id = *(s32 *)((char *)arg0 + 0x14);
-    difference = id - arg1;
-    entries = *(s32 *)((char *)state + 0x10);
-    entry = entries + arg1 * stride;
-    flag = *(unsigned char *)((char *)entry + 0x14);
-    equal = difference == 0;
-    if ((equal ^ flag) != 0) {
-        f32 scale;
-        x = *(f32 *)((char *)arg0 + 0x1C);
-        scale = lbl_8056136C;
-        x = x * scale;
-        y = *(f32 *)((char *)arg0 + 0x20) * scale;
-        *(f32 *)arg2 = x;
-        *(f32 *)((char *)arg2 + 4) = y;
+    /* Write a proximity pair's dx/dz into `out`, flipping the sign when the pair
+     * points away from `carIndex` (that car's row flag inverts the test). */
+    proxer = lbl_8055E0D0;
+    rowStride = *(s32 *)((char *)proxer + 0xC);
+    pairIndexB = *(s32 *)((char *)pair + 0x14);
+    indexDiff = pairIndexB - carIndex;
+    rows = *(s32 *)((char *)proxer + 0x10);
+    row = rows + carIndex * rowStride;
+    rowFlag = *(unsigned char *)((char *)row + 0x14);
+    isPairB = indexDiff == 0;
+    if ((isPairB ^ rowFlag) != 0) {
+        f32 flip;
+        dx = *(f32 *)((char *)pair + 0x1C);
+        flip = lbl_8056136C;
+        dx = dx * flip;
+        dz = *(f32 *)((char *)pair + 0x20) * flip;
+        *(f32 *)out = dx;
+        *(f32 *)((char *)out + 4) = dz;
         return;
     }
     {
-        f32 ty;
-        f32 tx;
-        tx = *(f32 *)((char *)arg0 + 0x1C);
-        ty = *(f32 *)((char *)arg0 + 0x20);
-        *(f32 *)arg2 = tx;
-        *(f32 *)((char *)arg2 + 4) = ty;
+        f32 copyDz;
+        f32 copyDx;
+        copyDx = *(f32 *)((char *)pair + 0x1C);
+        copyDz = *(f32 *)((char *)pair + 0x20);
+        *(f32 *)out = copyDx;
+        *(f32 *)((char *)out + 4) = copyDz;
     }
 }
 
