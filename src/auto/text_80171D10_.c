@@ -87,6 +87,33 @@ typedef struct CrushRoundState {
     int animIndex;              /* +0xF4: the round's cue in the animation player */
     int counters[4];            /* +0xF8: cue flags: abort, step, pause, finish */
 } CrushRoundState;
+
+#pragma cplusplus on
+/* Anything the game frees through its vtable: the first slot is destroy(1)
+   (destruct and free) / destroy(0) (destruct only). */
+class Destroyable {
+public:
+    virtual void destroy(int deleteFlag);
+};
+/* The "crushmaster" object: 0x2BC bytes allocated by fn_80172C28 under the name
+   "crushmaster", vtable lbl_80331018.  It runs crush mode - the results overlay
+   (round), its two textures and the prerace sound.  Only the fields the code in
+   this file names are given here. */
+typedef struct CrushMaster {
+    void *vtable;               /* +0x000: lbl_80331018 */
+    void *buffer;               /* +0x004: the 16-byte buffer at +0x10 */
+    int bufferUsed;             /* +0x008 */
+    int bufferSize;             /* +0x00C: 0x10 */
+    char taskBuffer[0x10];      /* +0x010 */
+    char pad20[0x198 - 0x20];
+    int radarTexture;           /* +0x198: the "ovradar.tex" texture */
+    char pad19C[0x1AC - 0x19C];
+    CrushRoundState round;      /* +0x1AC: the results overlay's state */
+    char pad2B0[4];
+    Destroyable *preraceSound;  /* +0x2B4: the "chal_prerace.sfx" sound */
+    unsigned char flag2B8;      /* +0x2B8 */
+} CrushMaster;
+#pragma cplusplus reset
 extern double fn_8002F234(float), cos(double), sin(double);
 extern float fn_80129DC4(int,float,float);
 extern unsigned long long fn_80171FF0(void *,int,float,float);
@@ -1367,17 +1394,19 @@ extern void fn_802AE0E0(void);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801740D4(void *arg0) {
+    /* best 170: i-late, non-volatile loads */
     unsigned char *self = (unsigned char *)arg0;
-    float copied = *(volatile float *)(self + 0x1A4);
+    float copied = *(float *)(self + 0x1A4);
     int zero = 0;
     float one = lbl_80561A50;
     unsigned char *cursor = self;
     unsigned char *entry = self + 0x90;
-    int i = 0;
+    int i;
     int enabled = 1;
     *(unsigned char *)(self + 0x194) = zero;
     *(float *)(self + 0x19C) = copied;
     *(float *)(self + 0x1A0) = one;
+    i = 0;
     while (i < *(int *)(self + 0x170)) {
         *(unsigned char *)(cursor + 0x90) = enabled;
         *(float *)(cursor + 0xA8) = one;
@@ -1390,13 +1419,11 @@ void fn_801740D4(void *arg0) {
         i++;
     }
     {
-        int handle;
-        int reset;
+        int handle = *(int *)(self + 0x1B8);
+        int reset = 0;
         float high;
         int enabled2;
         float low;
-        handle = *(int *)(self + 0x1B8);
-        reset = 0;
         low = lbl_80561AC0;
         enabled2 = 1;
         high = lbl_80561A50;
