@@ -244,11 +244,12 @@ void fn_80131960(void *arg0, void *arg1) {
             *(u8 *)(base + *(u32 *)(entry + 4)) = one;
     }
 }
-s32 fn_80131B10(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80131B10(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 s32 fn_80131B50(void *arg0) {
