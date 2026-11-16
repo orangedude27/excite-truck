@@ -47,7 +47,17 @@ extern s32 fn_802161CC(s32);
 extern void fn_80218370(void *);
 extern s32 fn_802E97B4(void);
 extern void fn_802166B8(void);
+/* Vtable for the 0x18-byte objects in the 16-element pool at base+0x200:
+ * fn_80215EC4 (delete) and the fn_80215Cxx methods. */
 extern char lbl_8033D690[];
+
+/* One such 0x18-byte pooled object: +0x00 is the vtable pointer, +0x14 a cleared state word. */
+typedef struct {
+    /* 0x00 */ char *vtable;
+    /* 0x04 */ char pad04[0x10];
+    /* 0x14 */ s32 state;
+} VtblObject;
+
 extern s32 fn_80215EC4(s32, s32);
 extern char lbl_80490710[];
 extern void fn_8002F634(void *, void *, s32, s32);
