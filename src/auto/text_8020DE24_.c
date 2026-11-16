@@ -8,18 +8,26 @@ extern int lbl_8055EE70;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* RealName: Unknown_ctor_8020DE24
+ * Initializes the global object at lbl_8055EE68 and sets up associated state:
+ * clears/initializes lbl_80489C70[0..4] to {0, 0x7B, 0, 0, 0} and sets
+ * lbl_8055EE70 to 0x7F000000. Registered as a static constructor. */
 void fn_8020DE24(void) {
+#define gStateArray lbl_80489C70
+#define gStateValue lbl_8055EE70
     int v;
     int *p;
     fn_8000D838(&lbl_8055EE68);
-    p = lbl_80489C70 + 1;
-    lbl_80489C70[0] = 0;
+    p = gStateArray + 1;
+    gStateArray[0] = 0;
     v = 0x7B;
-    lbl_80489C70[1] = v;
-    lbl_80489C70[2] = 0;
-    lbl_80489C70[3] = 0;
-    lbl_80489C70[4] = 0;
-    lbl_8055EE70 = 0x7F000000;
+    gStateArray[1] = v;
+    gStateArray[2] = 0;
+    gStateArray[3] = 0;
+    gStateArray[4] = 0;
+    gStateValue = 0x7F000000;
+#undef gStateArray
+#undef gStateValue
 }
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
