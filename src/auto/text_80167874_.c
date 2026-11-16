@@ -24,6 +24,20 @@ struct GroupEntry {
     u8 pad_1E[2];
 };
 
+/* One entry of the static pickup-type table at lbl_80330020: the five types
+ * 0..4 followed by a terminator whose type is 6.  fn_80167874 looks a type up
+ * in it, fn_801679F0 loads every type's model and measures it, and the
+ * placement code counts the pickups it spawns of each type in placedCount. */
+struct PickupTypeInfo {
+    s32 type;          /* +0x00: pickup type id; 6 ends the table */
+    const char *model; /* +0x04: model file name, e.g. "growcoin.mod" */
+    u8 settings[8];    /* +0x08: per-type byte settings (+0x0C is 0x5f) */
+    s32 modelHandle;   /* +0x10: model instance from fn_802C6FC0, -1 when none */
+    f32 modelRadius;   /* +0x14: widest model extent, scaled */
+    f32 modelHeight;   /* +0x18: model bottom negated; the lift given to a pickup */
+    s32 placedCount;   /* +0x1C: pickups of this type placed in the track */
+};
+
 #pragma cplusplus on
 
 struct DummyVec2 {
