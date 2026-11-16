@@ -627,17 +627,20 @@ void fn_80149D64(void *state, void *sound, s32 arg2) {
 }
 
 #define SOUND_DBG_ZERO lbl_80561648 /* 0.0f, the shared sound-debug zero constant */
-f32 fn_80149F00(void *arg0, void *arg1) {
-    f32 f0;
-    f32 f2;
-    void *r3;
-    f0 = *(f32 *)((u8 *)arg0 + 0x2C);
-    if (f0 < lbl_80561648) return lbl_80561648;
-    r3 = *(void **)((u8 *)arg1 + 0x68);
-    f2 = *(f32 *)((u8 *)r3 + 0x8D4);
-    f0 = f2 - f0;
-    if (lbl_80561648 > f0) return lbl_80561648;
-    return f0;
+/* Returns a non-negative amount: the sound's lower extent (sub-object at +0x68,
+ * float at +0x8D4) minus the state's position at +0x2C, clamped to zero; a
+ * negative position also yields zero. */
+f32 fn_80149F00(void *state, void *sound) {
+    f32 pos;
+    f32 bound;
+    void *info;
+    pos = *(f32 *)((u8 *)state + 0x2C);
+    if (pos < SOUND_DBG_ZERO) return SOUND_DBG_ZERO;
+    info = *(void **)((u8 *)sound + 0x68);
+    bound = *(f32 *)((u8 *)info + 0x8D4);
+    pos = bound - pos;
+    if (SOUND_DBG_ZERO > pos) return SOUND_DBG_ZERO;
+    return pos;
 }
 
 void fn_80149F2C(void *arg0, void *arg1, void *arg2) {
