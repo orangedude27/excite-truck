@@ -2642,33 +2642,14 @@ extern "C" void fn_80215A48(void *arg0) {
 extern "C" s32 fn_80215AA4(void *, s32);
 #pragma scheduling invalid_target
 extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
-    struct Iface {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual s32 v18();
-    };
-    u8 *self = (u8 *)arg0;
-    self[0x19] = 0;
-    if (self[0x1A] != 0) {
-        self[0x234] = 1;
+    /* Widget wrapper: clear the +0x19 flag, propagate +0x1A into +0x234, then
+     * tailcall vf18 (vtable slot 0x50) on the widget at +0x244 and return its status. */
+    u8 *wrapper = (u8 *)arg0;
+    wrapper[0x19] = 0;
+    if (wrapper[0x1A] != 0) {
+        wrapper[0x234] = 1;
     }
-    return ((Iface *)*(void **)(self + 0x244))->v18();
+    return ((VfObj *)*(void **)(wrapper + 0x244))->vf18();
 }
 #pragma scheduling on
 /* Vtable slot 0x64 of the widget wrapper (vtable lbl_8033D480): forward the
