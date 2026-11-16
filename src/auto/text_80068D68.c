@@ -4992,10 +4992,18 @@ void fn_80070984(u32 traceMask, void *format) {
     }
 }
 
-void fn_8007099C(u32 code, void *msg) {
-    if (lbl_8055DC70 == 0) {
-        LogMsg(code, msg);
+/* BTE trace wrapper LogMsg_4 (see src/revolution/BTE/main/bte_logmsg.c): reports
+ * a trace message that carries four parameters.  The parameters are only
+ * forwarded - they already sit in r5..r8 for the tail call into LogMsg - and
+ * only while the BTE board runs in serial-app mode, bte_target_mode ==
+ * BTE_MODE_SERIAL_APP (0, the first target mode of bte.h).  The prototype above
+ * keeps the two-argument form this TU's cast call sites use. */
+void fn_8007099C(u32 trace_set_mask, void *fmt_str) {
+#define bte_target_mode lbl_8055DC70
+    if (bte_target_mode == 0 /* BTE_MODE_SERIAL_APP */) {
+        LogMsg(trace_set_mask, fmt_str);
     }
+#undef bte_target_mode
 }
 
 /* BTE trace wrapper: forward the message to LogMsg unless logging is muted. */
