@@ -1885,12 +1885,13 @@ void fn_801CDE00(s32 arg0) {
 #pragma pop
 #pragma paired_single off
 #pragma scheduling invalid_target
-void fn_801CE670(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
-    Struct_801CE670 local;
-    local.field4 = arg1;
-    local.field0 = 5;
-    local.field8 = arg2;
-    *arg0 = local;
+void fn_801CE670(Struct_801CE670 *out, s32 value1, s32 value2) {
+    /* Initialize a 3-word descriptor with a fixed kind tag (5) and two caller values. */
+    Struct_801CE670 node;
+    node.field4 = value1;
+    node.field0 = 5;
+    node.field8 = value2;
+    *out = node;
 }
 
 void fn_801CE698(void) {
