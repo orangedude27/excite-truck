@@ -352,6 +352,7 @@ void fn_80130568(char *arg0) {
 }
 
 extern void *lbl_80559AA8;
+extern void fn_801345D8(void *, ...);
 static inline void format_append(char *dstp, int sizep, char *str) {
     char *dst = dstp;
     int size = sizep;
