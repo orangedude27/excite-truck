@@ -555,8 +555,9 @@ void fn_8023ADAC(void *selector) {
     *index = (*index + 1) % count;
 }
 
-s32 fn_8023ADD0(void *arg0) {
-    return *(s32 *)*(s32 **)((char *)arg0 + 0x18) > 0;
+/* Return 1 when the selector's +0x18 index is above zero (it can step back). */
+s32 fn_8023ADD0(void *selector) {
+    return *(s32 *)*(s32 **)((char *)selector + 0x18) > 0;
 }
 
 /* Return 1 when the selector's +0x18 index can advance (is below count - 1). */
