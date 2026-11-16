@@ -132,9 +132,10 @@ extern "C" void fn_8020A800(void *voiceSound) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void fn_8020A860(UnkStruct_8020A860 *arg0) {
-    arg0->name = lbl_8033C458;
-    arg0->state = 0;
+void fn_8020A860(VoiceMixerDevice *mixer) {
+    /* Voice-mixer device constructor: install the callback table and clear the state word. */
+    mixer->callbacks = lbl_8033C458;
+    mixer->state = 0;
 }
 
 #pragma scheduling invalid_target
