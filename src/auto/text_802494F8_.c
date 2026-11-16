@@ -1201,6 +1201,9 @@ void fn_8024B830(void *container, s32 targetId) {
 
 s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
 
+/* gEmptyString: shared zero buffer in .sdata, used as an empty C string fallback. */
+#define gEmptyString lbl_8055BFD8
+
 s32 fn_8024B87C(void *arg0, s32 arg1) {
     extern s32 lbl_8055BFD8;
     if (arg1 < *(s32 *)((char *)arg0 + 0x1C)) {
