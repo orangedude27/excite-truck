@@ -4459,8 +4459,9 @@ void fn_80062088(s32 val) {
 #pragma push
 #pragma opt_propagation off
 s32 fn_80062278(s32 chan, void* pData, u16 len) {
+    /* REXE01 inline expansion of WPADSendStreamData: build the 0x18 stream report and queue it on the channel's standard command queue when the controller is connected, handshaken and the stream is idle. Returns WPAD_ERR_OK, WPAD_ERR_NO_CONTROLLER, or WPAD_ERR_COMMUNICATION_ERROR when busy/unready. */
     WPADCB* cb = lbl_8038F4F0[chan];
-    s32 intrState, nestedIntrState, result, devStatus;
+    s32 intrState, nestedIntrState, status, handshakeDone;
     s32 enqueueOk;
     s32 head;
     u8 command[0x60] ALIGN(8);
@@ -4468,12 +4469,12 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     s8 usedCount, tailIndex;
     s32 lastSlot, wrapMask;
     intrState = OSDisableInterrupts();
-    result = *(s32*)((u8*)cb + 0x7FC);
-    devStatus = *(s32*)((u8*)cb + 0x81C);
+    status = *(s32*)((u8*)cb + 0x7FC);
+    handshakeDone = *(s32*)((u8*)cb + 0x81C);
     OSRestoreInterrupts(intrState);
-    if (result == -1) return -1;
-    if (devStatus == 0) return -2;
-    if (IsBusyStream(chan)) return -2;
+    if (status == WPAD_ERR_NO_CONTROLLER) return WPAD_ERR_NO_CONTROLLER;
+    if (handshakeDone == 0) return WPAD_ERR_COMMUNICATION_ERROR;
+    if (IsBusyStream(chan)) return WPAD_ERR_COMMUNICATION_ERROR;
     *(u32*)&command[0] = 0x18;
     *(u16*)&command[0x1A] = 0x15;
     command[4] = (u8)(len << 3);
@@ -4507,11 +4508,11 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
         OSRestoreInterrupts(intrState);
         enqueueOk = 1;
     }
-    if (enqueueOk == 0) return -2;
+    if (enqueueOk == 0) return WPAD_ERR_COMMUNICATION_ERROR;
     intrState = OSDisableInterrupts();
     ((u8*)cb)[0x80E]++;
     OSRestoreInterrupts(intrState);
-    return 0;
+    return WPAD_ERR_OK;
 }
 #pragma pop
 /* Return the DPD-enabled state for the given WPAD channel. */
