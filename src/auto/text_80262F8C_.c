@@ -258,10 +258,13 @@ void fn_8026392C(void *item) {
 
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_8026395C(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 0x24) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x20) = arg1 * 2;
-    return fn_801333E8(arg1 + 8, lbl_803462A8, (u8 *)arg0 + 0x28, (u8 *)arg0);
+s32 fn_8026395C(void *item, s32 index) {
+    /* Initialize this options-menu item for the "force_feedback" setting: store the
+       handle at +0x24 and page id (index*2) at +0x20, then load the option's boolean
+       value into +0x28. */
+    *(s32 *)((u8 *)item + 0x24) = index;
+    *(s32 *)((u8 *)item + 0x20) = index * 2;
+    return fn_801333E8(index + 8, lbl_803462A8, (u8 *)item + 0x28, (u8 *)item);
 }
 #pragma pop
 extern s32 fn_80133460(s32, const u8 *, u8, s32);
