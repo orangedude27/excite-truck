@@ -2832,7 +2832,19 @@ extern "C" float lbl_80564200;
 extern "C" void fn_801345D8(char *, int, const char *, ...);
 extern "C" void fn_80236954(char *);
 extern "C" void fn_8027F204(char *);
-extern "C" void fn_80284760(void *arg0) {
+extern "C" void fn_80284760(void *widget) {
+    /* Per-frame update of the ring menu's information fields.  The widget owns
+     * an item list (+0x60); this refreshes where the ring is drawn, whether it
+     * may be shown, and the three readouts next to it: the "earned/total"
+     * counter (+0x74), the highlighted item's name (+0x7E) and its value
+     * (+0xB0), the last two looked up by item id in the message manager
+     * (fn_8027ED70).  Widget fields used here:
+     *   +0x04/+0x08 ring centre x/y      +0x18 shown flag   +0x1C context id
+     *   +0x20 status (0 ok, 1 no list)   +0x48/+0x4C centre passed on to the
+     *   drawer, +0x50 update flag, +0x60 item list, +0x64 frozen flag,
+     *   +0x68 float field, +0x6C centre x, +0x70 mode for ready(),
+     *   +0x74 counter text, +0x7E name text, +0xB0 item value,
+     *   +0xCC trail flag, +0xCD "show info" flag. */
     class Item { public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -2849,45 +2861,50 @@ extern "C" void fn_80284760(void *arg0) {
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual const char *getName(int); virtual int getValue(int);
     };
-    unsigned char *p = (unsigned char *)arg0;
-    int i;
-    if (p[0x64] == 0) {
+    unsigned char *p = (unsigned char *)widget;
+    int temp;
+    if (p[0x64] == 0) { /* not frozen: ask to be shown and refresh the context */
         p[0x18] = 1;
         *(int *)(p + 0x1c) = fn_80221EA8();
     }
     if (*(Widget **)(p + 0x60) != 0) {
-        int b;
-        int a;
-        float f;
-        a = *(volatile int *)(p + 4);
-        b = *(volatile int *)(p + 8);
-        f = *(volatile float *)&lbl_80564200;
-        *(volatile int *)(p + 0x20) = 0;
+        int y;
+        int x;
+        float zero;
+        x = *(volatile int *)(p + 4);
+        y = *(volatile int *)(p + 8);
+        zero = *(volatile float *)&lbl_80564200; /* 0.0f */
+        *(volatile int *)(p + 0x20) = 0;         /* status: fine */
         p[0x50] = 1;
-        *(int *)(p + 0x48) = a;
-        *(int *)(p + 0x4c) = b;
-        *(int *)(p + 0x6c) = a;
-        *(float *)(p + 0x68) = f;
+        *(int *)(p + 0x48) = x;   /* hand the ring's centre on to the drawer */
+        *(int *)(p + 0x4c) = y;
+        *(int *)(p + 0x6c) = x;
+        *(float *)(p + 0x68) = zero;
         if (*(Widget **)(p + 0x60) != 0) {
             int sel;
+            /* While the list is playing a trail, (re)select the "cup_perfected"
+             * one and queue its name (lbl_80348940 is that name table). */
             if ((*(Widget **)(p + 0x60))->isActive() != 0 && p[0xcc] == 0) {
                 fn_80236954(lbl_80348940);
                 fn_8027F204(lbl_80348940);
             }
-            i = 0;
-            sel = -(arg0 == (void *)lbl_8055F688);
+            temp = 0;
+            /* -1 while this is the widget the menu points at, 0 otherwise. */
+            sel = -(widget == (void *)lbl_8055F688);
             *(int *)(p + 0x70) = sel + 7;
             if ((*(Widget **)(p + 0x60))->ready(sel) != 0) {
-                if ((*(Widget **)(p + 0x60))->isActive() == 0 || fn_8023695C(lbl_80348940) != 0)
-                    i = 1;
+                if ((*(Widget **)(p + 0x60))->isActive() == 0 ||
+                    fn_8023695C(lbl_80348940) != 0)
+                    temp = 1;
             }
-            p[0xcd] = i;
-            if (i != 0) {
+            p[0xcd] = temp; /* show the readouts? */
+            if (temp != 0) {
                 int active, n;
+                /* "earned/total" items, e.g. "3/5". */
                 n = (*(Widget **)(p + 0x60))->count();
                 active = 0;
-                for (i = 0; i < n; i++) {
-                    if ((*(Widget **)(p + 0x60))->get(i)->active() != 0)
+                for (temp = 0; temp < n; temp++) {
+                    if ((*(Widget **)(p + 0x60))->get(temp)->active() != 0)
                         active++;
                 }
                 fn_801345D8((char *)(p + 0x74), 10, lbl_8055C864, active, n);
@@ -2897,28 +2914,30 @@ extern "C" void fn_80284760(void *arg0) {
         }
         {
             const char *name;
-            i = (*(Widget **)(p + 0x60))->getId();
-            name = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getName(i);
+            /* The highlighted item's name, copied into the 50 bytes at +0x7E. */
+            temp = (*(Widget **)(p + 0x60))->getId();
+            name = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getName(temp);
             if (name != 0) {
-                unsigned char c;
-                int n = 0x32;
-                char *d = (char *)(p + 0x7e);
+                unsigned char ch;
+                int room = 0x32;
+                char *dst = (char *)(p + 0x7e);
                 goto copy;
             check:
-                if (--n > 0) goto copy;
-                d[-1] = 0;
+                if (--room > 0) goto copy;
+                dst[-1] = 0; /* truncated: keep it terminated */
                 goto done;
             copy:
-                c = *(unsigned char *)name++;
-                *d++ = c;
-                if ((char)c != 0) goto check;
+                ch = *(unsigned char *)name++;
+                *dst++ = ch;
+                if ((char)ch != 0) goto check;
             done:;
             }
-            i = (*(Widget **)(p + 0x60))->getId();
-            *(int *)(p + 0xb0) = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getValue(i);
+            temp = (*(Widget **)(p + 0x60))->getId();
+            *(int *)(p + 0xb0) =
+                ((Lookup *)((void *(*)(void))fn_8027ED70)())->getValue(temp);
         }
     } else {
-        *(int *)(p + 0x20) = 1;
+        *(int *)(p + 0x20) = 1; /* status: nothing to show */
     }
 }
 
