@@ -189,7 +189,13 @@ void fn_80236914(int arg0, float *arg1, float arg2) {
 }
 
 void fn_80236918(void* alarm) {
-    fn_80236A5C(alarm, fn_80215264());
+#define ReloadLayout   fn_80236A5C
+#define LastLayoutName fn_80215264
+    /* Alarm callback: reload the animation/trail layout from the name recorded
+       as the last layout (a "__OOPS_NO_LAST_LAYOUT__" sentinel if none). */
+    ReloadLayout(alarm, LastLayoutName());
+#undef LastLayoutName
+#undef ReloadLayout
 }
 
 extern void fn_80237A9C(void);
@@ -740,21 +746,22 @@ void fn_80237AA0(int arg0, float *arg1, float arg2)
 {
     float var_f31 = arg2;
     float var_f1, var_f2;
+    double tmp;
     unsigned char var_r4;
-    SObj *p;
-    SVT *vt;
+    void *p;
     if (arg0 == 0) {
-        p = *(SObj **)(lbl_8055F0C0 + 0x28);
-        if (p) { vt = p->vt; var_f1 = vt->get(p); }
+        p = *(void **)(lbl_8055F0C0 + 0x28);
+        if (p) var_f1 = call_get_37AA0(p);
         else var_f1 = lbl_805636E0;
         arg1[0] = var_f1;
-        p = *(SObj **)(lbl_8055F0C0 + 0x2C);
-        if (p) { vt = p->vt; var_f2 = vt->get(p); }
+        p = *(void **)(lbl_8055F0C0 + 0x2C);
+        if (p) var_f2 = call_get_37AA0(p);
         else var_f2 = lbl_805636E0;
         arg1[1] = var_f2;
         if ((unsigned char)lbl_8055F0C0[0x21] == 0) {
+            tmp = var_f2;
             arg1[1] = arg1[0];
-            arg1[0] = var_f2;
+            arg1[0] = tmp;
         }
         if ((unsigned char)lbl_8055F0C0[0x1F] != 0) arg1[0] = lbl_805636E0;
         if ((unsigned char)lbl_8055F0C0[0x20] != 0) arg1[1] = lbl_805636E0;
@@ -767,14 +774,14 @@ void fn_80237AA0(int arg0, float *arg1, float arg2)
             if (var_r4 == 0) var_f31 = lbl_805636E4 - arg2;
         }
         if ((unsigned int)(arg0 == 3) == var_r4) {
-            p = *(SObj **)(lbl_8055F0C0 + 0x2C);
-            if (p) { vt = p->vt; vt->set(p, var_f31); }
+            p = *(void **)(lbl_8055F0C0 + 0x2C);
+            if (p) call_set_37AA0(p, var_f31);
         } else {
-            p = *(SObj **)(lbl_8055F0C0 + 0x28);
-            if (p) { vt = p->vt; vt->set(p, var_f31); }
+            p = *(void **)(lbl_8055F0C0 + 0x28);
+            if (p) call_set_37AA0(p, var_f31);
         }
-        p = *(SObj **)(lbl_8055F0C0 + 0x30);
-        if (p) { vt = p->vt; vt->set(p, var_f31); }
+        p = *(void **)(lbl_8055F0C0 + 0x30);
+        if (p) call_set_37AA0(p, var_f31);
     }
 }
 #pragma pop
