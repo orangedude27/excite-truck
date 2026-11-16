@@ -2239,6 +2239,10 @@ extern "C" void *fn_80215264(void) {
     return lbl_8033CAE8;
 }
 
+/* gWidgetControlTable: 3 rows by 4 columns of widget control values in .bss,
+ * indexed [row][column]; rows >= 3 fall back to row 1. */
+#define gWidgetControlTable lbl_80490528
+
 extern "C" s32 fn_80215270(s32 arg0, s32 arg1) {
     s32 *row;
     if (arg1 >= 3) {
