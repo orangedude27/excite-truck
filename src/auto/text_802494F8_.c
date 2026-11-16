@@ -1336,11 +1336,12 @@ void fn_8024BB3C(void *sound) {
     *(s32 *)((char *)sound + 0x10) = decremented & ((-decremented & ~decremented) >> 31);
 }
 
-void fn_8024BB5C(void *arg0) {
-    register s32 result = 2;
-    register s32 value = *(s32 *)((char *)arg0 + 0x10) + 1;
-    if (value <= 2) result = value;
-    *(s32 *)((char *)arg0 + 0x10) = result;
+void fn_8024BB5C(void *sound) {
+    /* Increment the counter at +0x10 in place, saturating at 2 (min(value + 1, 2)). */
+    register s32 capped = 2;
+    register s32 incremented = *(s32 *)((char *)sound + 0x10) + 1;
+    if (incremented <= 2) capped = incremented;
+    *(s32 *)((char *)sound + 0x10) = capped;
 }
 
 s32 fn_8024BB7C(void *arg0) {
