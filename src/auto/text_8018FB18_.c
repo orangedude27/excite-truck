@@ -2568,8 +2568,9 @@ extern "C" void fn_80192C38(void *arg0) {
 }
 #pragma cplusplus reset
 
-s32 fn_80192C4C(void *arg0) {
-    s32 bit = (*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 2) & 1;
+s32 fn_80192C4C(void *obj) {
+    /* Return bit 2 of the packed flags byte at +7 of the child object referenced by obj+8, normalized to 0/1. */
+    s32 bit = (*(u8 *)((char *)*(void **)((char *)obj + 8) + 7) >> 2) & 1;
     return (s32)((u32)(-bit | bit) >> 31);
 }
 
