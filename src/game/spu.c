@@ -339,12 +339,17 @@ int fn_802E540C(int arg0) {
 extern void fn_802E6248(int, float);
 #pragma dont_inline fn_802E5438
 void fn_802E5438(void) {
-    int i;
-    i = 0;
+#define spuSetRemoteSpeakerVolume fn_802E6248
+#define getWpadSpeakerVolume fn_802E9A2C
+    /* Copy the configured Wii Remote speaker volume into all four remote-speaker channels. */
+    int channel;
+    channel = 0;
     do {
-        fn_802E6248(i, fn_802E9A2C());
-        i++;
-    } while (i < 4);
+        spuSetRemoteSpeakerVolume(channel, getWpadSpeakerVolume());
+        channel++;
+    } while (channel < 4);
+#undef spuSetRemoteSpeakerVolume
+#undef getWpadSpeakerVolume
 }
 
 /* The strings of this file's block at lbl_8034D210 that the SPU start-up logs
