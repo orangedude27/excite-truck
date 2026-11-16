@@ -102,6 +102,7 @@ extern char lbl_8055AA54[5];
 
 extern char lbl_8055E7E2;
 extern s32 lbl_8055E804;
+#define gNumPlayers lbl_8055E804
 extern f32 lbl_805629CC;
 extern u8* fn_8017960C(s32);
 extern Vec lbl_80438268;
