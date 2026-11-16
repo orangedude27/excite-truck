@@ -4968,6 +4968,7 @@ void LogMsg(UINT32 trace_set_mask, const char *fmt_str, ...) {
 
 /* BTE LogMsg_0: forward a trace message to LogMsg only when the BTE target is serial app. */
 void fn_8007093C(u32 trace_set_mask, void *fmt_str) {
+    /* BTE LogMsg_0: forward a trace to LogMsg only when the BTE target is serial app. */
 #define bte_target_mode lbl_8055DC70
     if (bte_target_mode == 0 /* BTE_MODE_SERIAL_APP */) {
         LogMsg(trace_set_mask, fmt_str);
