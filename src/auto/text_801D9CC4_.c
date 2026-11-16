@@ -337,9 +337,11 @@ int fn_801DA648(void *player) {
     return 0;
 }
 
-int fn_801DA688(void *arg0) {
-    if (*(void **)((char *)arg0 + 4) != 0)
-        return *(float *)((char *)arg0 + 0xC) <= lbl_80562B38;
+int fn_801DA688(void *player) {
+    /* Return whether a path-bearing object's current time (+0xC) is at or before
+     * zero, or false when it has no path (+4). */
+    if (*(void **)((char *)player + 4) != 0)
+        return *(float *)((char *)player + 0xC) <= lbl_80562B38;
     return 0;
 }
 
