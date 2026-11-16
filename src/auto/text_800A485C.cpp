@@ -6563,7 +6563,6 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
     }
     return 0xF;
 }
-static inline u32 orBits(u32 a, u32 b) { return a | b; }
 extern "C" s32 fn_800AED1C(void *arg0) {
     void *page;
     s32 sp8;
@@ -6586,8 +6585,9 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     }
     VFiPFCACHE_FreeFATPage(arg0, page);
     type = *(s32 *)((u8 *)arg0 + 0x1C);
-    b = *(volatile u8 *)((u8 *)arg0 + 0x1A);
-    v = b | lbl_802EEF40[type * 5 + 3];
+    b = *(u8 *)((u8 *)arg0 + 0x1A);
+    v = b;
+    v |= lbl_802EEF40[type * 5 + 3];
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
