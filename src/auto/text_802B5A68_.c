@@ -1971,6 +1971,7 @@ void fn_802B86F8(void) {
 }
 #pragma pop
 s32 fn_802B8728(void) {
+    /* Registered update-check callback: true while the state byte at lbl_804BFF80+0x34 is zero. */
     return (s8)*((u8 *)&lbl_804BFF80 + 0x34) == 0;
 }
 
