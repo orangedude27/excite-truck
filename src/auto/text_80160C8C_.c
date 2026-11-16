@@ -2929,11 +2929,12 @@ extern "C" void fn_80164CDC(void *arg0) {
 }
 #pragma cplusplus off
 extern int fn_80128668(void);
-int fn_80164CF8(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_80164CF8(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_80164D38(void *arg0) {
