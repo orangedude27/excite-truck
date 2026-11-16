@@ -683,10 +683,13 @@ extern "C" s32 fn_8013D1F0(s32 arg0) {
 }
 
 extern "C" s32 fn_8013D224(f32 farg0, f32 farg1) {
-    f32 diff = farg0 - farg1;
-    f64 abs = __fabs((f64)diff);
+    f32 diff;
+    f32 abs;
     f32 result;
-    if ((f32)abs <= lbl_80558DC4[0]) {
+
+    diff = farg0 - farg1;
+    abs = (f32)__fabs((f64)diff);
+    if (abs <= lbl_80558DC4[0]) {
         return 0;
     }
     if (diff > lbl_805614A4) {
@@ -1542,8 +1545,7 @@ extern "C" void fn_8013ED74(void *arg0) {
                     u8 *group = *(u8 **)(*(u8 **)(self + 0x64) + 4) + *(s32 *)(self + 0x68) * 0x14;
                     u8 *array = *(u8 **)(group + 4);
                     u8 *last = array + *(s32 *)group * 0x24 - 0x24;
-                    if (item == last) {
-                    } else {
+                    if (item != last) {
                         array = item + 0x24;
                     }
                     item = array;
