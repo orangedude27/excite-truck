@@ -603,6 +603,7 @@ extern "C" int fn_801B8874(void) {
     return ((Dummy_801B8874 *)lbl_8055E744)->d32();
 }
 #pragma cplusplus on
+/* If a specific state is active, run its handler; otherwise forward to the arena master vtable slot f12. */
 extern "C" void fn_801B88BC(void) {
     extern int fn_80161C38(void);
     extern void fn_80161B70(void);
