@@ -886,9 +886,10 @@ long fn_801E8954(long playerIndex) {
     return (*(unsigned long *)(lbl_80487D00 + playerIndex * 0x38 + 0x30)) & 1;
 }
 
-long fn_801E897C(long arg0) {
-    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
-    return (*(unsigned long *)(lbl_80487D00 + arg0 * 0x38 + 0x30) >> 1) & 1;
+long fn_801E897C(long playerIndex) {
+    /* Return flag bit 1 of the player's 0x38-byte entry (negative selects the current player). */
+    if (playerIndex < 0) playerIndex = (long)lbl_8055AF0C;
+    return (*(unsigned long *)(lbl_80487D00 + playerIndex * 0x38 + 0x30) >> 1) & 1;
 }
 
 long fn_801E89A4(long arg0) {
