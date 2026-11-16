@@ -51,7 +51,6 @@ extern void *lbl_8055F6C8;
 typedef signed int s32;
 typedef unsigned char u8;
 typedef unsigned char u8;
-typedef struct { void **vtable; } Fn80287A34Obj;
 typedef float f32;
 extern void fn_802885C0(void);
 extern void fn_802885F0(void);
