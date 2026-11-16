@@ -1192,7 +1192,8 @@ void fn_80191060(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80191064(void *arg0) {
+extern "C" void fn_80191064(void *hybrid) {
+    /* Invoke virtual slot 0x44 on the Hybrid driver's active sub-driver (hybrid+0x10), if one is set. */
     class Object {
     public:
         virtual void f0();
@@ -1212,9 +1213,9 @@ extern "C" void fn_80191064(void *arg0) {
         virtual void f14();
         virtual void f15();
     };
-    Object *obj = (Object *)*(void **)((char *)arg0 + 0x10);
-    if (obj == 0) return;
-    obj->f15();
+    Object *activeDriver = (Object *)*(void **)((char *)hybrid + 0x10);
+    if (activeDriver == 0) return;
+    activeDriver->f15();
 }
 
 #pragma cplusplus on
