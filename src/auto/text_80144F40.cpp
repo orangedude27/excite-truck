@@ -732,14 +732,16 @@ extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
 #pragma scheduling on
 #pragma dont_inline reset
 #pragma processor reset
-extern "C" void fn_80145D8C(void *arg0) {
+extern "C" void fn_80145D8C(void *layout) {
+    /* OVEdit_PushLayout: append a layout pointer to sOVEditLayoutQueue
+       (lbl_8042FBC0), or log sOVEditTooManyLayoutsMsg when full. */
     volatile Queue80145D8C *queue = &lbl_8042FBC0;
     s32 count = queue->count;
     if (count + 1 <= queue->capacity) {
-        register s32 i = queue->count;
-        void **data = lbl_8042FBC0.data;
-        queue->count = i + 1;
-        data[i] = arg0;
+        register s32 slotIndex = queue->count;
+        void **items = lbl_8042FBC0.data;
+        queue->count = slotIndex + 1;
+        items[slotIndex] = layout;
         return;
     }
     ((void (*)(const char *, ...))fn_802E30C8)(lbl_8032D0D0);
