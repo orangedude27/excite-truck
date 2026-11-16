@@ -8,18 +8,28 @@ extern void fn_8000D838(void *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* RealName: InitFooState (static constructor): initializes a 5-word global state block
+ * and a companion status word, then registers the state with the subsystem initializer. */
 void fn_801DE798(void) {
+#define InitStateSubsys fn_8000D838
+#define gStateSubsysHandle lbl_8055E9B0
+#define gStateWords lbl_80486F18
+#define gStateStatus lbl_8055E9B8
     int v;
     int *p;
-    fn_8000D838(&lbl_8055E9B0);
-    p = lbl_80486F18 + 1;
-    lbl_80486F18[0] = 0;
+    InitStateSubsys(&gStateSubsysHandle);
+    p = gStateWords + 1;
+    gStateWords[0] = 0;
     v = 0x7B;
-    lbl_80486F18[1] = v;
-    lbl_80486F18[2] = 0;
-    lbl_80486F18[3] = 0;
-    lbl_80486F18[4] = 0;
-    lbl_8055E9B8 = 0x7F000000;
+    gStateWords[1] = v;
+    gStateWords[2] = 0;
+    gStateWords[3] = 0;
+    gStateWords[4] = 0;
+    gStateStatus = 0x7F000000;
+#undef InitStateSubsys
+#undef gStateSubsysHandle
+#undef gStateWords
+#undef gStateStatus
 }
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
