@@ -1432,13 +1432,15 @@ u32 AIRegisterDMACallback(u32 callback) {
     return oldCallback;
 }
 
+/* Returns the unread sample count in the remote audio ring buffer: the write pointer (less a 0x24 margin)
+ * minus the read pointer, wrapping around the buffer size on underflow. */
 s32 AXRmtGetSamplesLeft(void) {
     s32 result;
-    s32 samples = lbl_8055D754 - 0x24;
-    if (samples < 0) {
-        samples += lbl_8055D758;
+    s32 available = lbl_8055D754 - 0x24;
+    if (available < 0) {
+        available += lbl_8055D758;
     }
-    result = samples - lbl_8055D750;
+    result = available - lbl_8055D750;
     if (result < 0) {
         return result + lbl_8055D758;
     }
