@@ -689,9 +689,10 @@ void fn_802C9124(float u0, float v0, float u1, float v1, int x0, int y0, int x1,
 #pragma processor reset
 
 #pragma dont_inline on
-void fn_802C942C(int arg0) {
+/* Draws a full-screen quad using the current screen dimensions and the given color. */
+void fn_802C942C(int color) {
     fn_802C92D0();
-    fn_802C92DC(0, 0, lbl_8055CFF0, lbl_8055CFF4, arg0);
+    fn_802C92DC(0, 0, lbl_8055CFF0, lbl_8055CFF4, color);
     fn_802C92D8();
 }
 #pragma dont_inline reset
