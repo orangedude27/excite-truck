@@ -681,8 +681,11 @@ void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 #pragma scheduling reset
+typedef s32 *(*StatTypeGetter)(void);
+/* Pass the message-pointer field (+8) of the stat-type entry returned by
+ * fn_8001C4E0 to the message mapper fn_80131234. */
 void fn_8001C714(void) {
-    fn_80131234(*(s32 *)((u8 *)((s32 *(*)(void))fn_8001C4E0)() + 8));
+    fn_80131234(*(s32 *)((u8 *)((StatTypeGetter)fn_8001C4E0)() + 8));
 }
 
 #pragma push
