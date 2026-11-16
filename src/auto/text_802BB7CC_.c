@@ -354,30 +354,33 @@ void fn_802BBEE4(void) {
 extern const char lbl_8034AB00[];
 #pragma push
 #pragma scheduling invalid_target
-void fn_802BBF44(unsigned char *arg0, int arg1) {
-    register unsigned int value5;
-    register unsigned int value4;
-    register unsigned int value3;
-    register unsigned int value2;
-    register unsigned int value1;
-    register unsigned int value0;
+/* Logs when the sum of six channel bytes is not 0xFF. */
+void fn_802BBF44(unsigned char *bytes, int channelIndex) {
+#define sInvalidChecksumFmt lbl_8034AB00
+    register unsigned int byte5;
+    register unsigned int byte4;
+    register unsigned int byte3;
+    register unsigned int byte2;
+    register unsigned int byte1;
+    register unsigned int byte0;
     unsigned int sum;
 
-    value0 = arg0[0];
-    value1 = arg0[1];
-    value2 = arg0[2];
-    value3 = arg0[3];
-    value4 = arg0[4];
-    value5 = arg0[5];
-    sum = value0 + value1;
-    sum += value2;
-    sum += value3;
-    sum += value4;
-    sum += value5;
+    byte0 = bytes[0];
+    byte1 = bytes[1];
+    byte2 = bytes[2];
+    byte3 = bytes[3];
+    byte4 = bytes[4];
+    byte5 = bytes[5];
+    sum = byte0 + byte1;
+    sum += byte2;
+    sum += byte3;
+    sum += byte4;
+    sum += byte5;
     if (sum != 0xFF) {
-        fn_802E30C8(lbl_8034AB00, value0, value1, value2,
-                    value3, value4, value5, arg1);
+        fn_802E30C8(sInvalidChecksumFmt, byte0, byte1, byte2,
+                    byte3, byte4, byte5, channelIndex);
     }
+#undef sInvalidChecksumFmt
 }
 #pragma pop
 int fn_802BBF94(unsigned char arg0) {
