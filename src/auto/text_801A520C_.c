@@ -314,9 +314,10 @@ extern "C" void fn_801A55BC(void *arg0) {
     *(unsigned char *)((char *)arg0 + 0x2704) = 0;
 }
 #pragma pop
-extern "C" void fn_801A5660(void *arg0) {
+extern "C" void fn_801A5660(void *wrapper) {
+    /* Tick the shared state (fn_80183DF8), then forward virtual d11 to the object held at +0x270C of the wrapper. */
     fn_80183DF8();
-    ((Dummy_801A5660 *)*(void **)((char *)arg0 + 0x270C))->d11();
+    ((Dummy_801A5660 *)*(void **)((char *)wrapper + 0x270C))->d11();
 }
 
 extern float lbl_805623CC, lbl_805623D0, lbl_805623D4, lbl_805623D8, lbl_805623DC, lbl_805623E0, lbl_805623E4, lbl_805623E8, lbl_805623F0, lbl_80558DC4;
