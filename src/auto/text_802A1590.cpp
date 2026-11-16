@@ -1798,11 +1798,13 @@ extern "C" s32 fn_802A47A8(void *arg0) {
 }
 
 #pragma scheduling on
-extern "C" s32 fn_802A4958(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper: free object via Mem_freeObject (fn_80128668)
+   when deleteFlag > 0, then return object. */
+extern "C" s32 fn_802A4958(s32 object, s32 deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" u8 fn_802A4998(void) {
