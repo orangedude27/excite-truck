@@ -8215,14 +8215,15 @@ found:
     return pkt_size;
 }
 
-s32 fn_80078310(s32 arg0)
+/* Registers or clears the ACL-change callback in the BTM control block; returns 2 if a different callback is already set. */
+s32 fn_80078310(s32 callback)
 {
-    if (arg0 == 0) {
+    if (callback == 0) {
         *(s32 *)(lbl_803C0F78 + 0x4C8) = 0;
     } else {
         if (*(s32 *)(lbl_803C0F78 + 0x4C8) != 0)
             return 2;
-        *(s32 *)(lbl_803C0F78 + 0x4C8) = arg0;
+        *(s32 *)(lbl_803C0F78 + 0x4C8) = callback;
     }
     return 0;
 }
