@@ -15,20 +15,22 @@ extern void fn_801EBEF4(float);
 extern void fn_801EB9FC(void *);
 extern float lbl_80563028;
 extern char lbl_8033B5C8[];
-#pragma scheduling invalid_target
-void fn_801FC8A8(void) {
-    fn_801EBEF4(lbl_80563028);
-    fn_801EB9FC(&lbl_8033B5C8);
-}
 #pragma scheduling on
+void fn_801FC8A8(void) {
+    fn_801EBEF4(*(float *)&lbl_80563028);
+    fn_801EB9FC(lbl_8033B5C8);
+}
 void fn_801FC8D8(void) {
     fn_801EBBB4();
 }
 
 #pragma dont_inline on
 int fn_801FC8DC(void) {
-    fn_801FC8A8();
+#define InitTrackGrf fn_801FC8A8
+    /* Initialize the track.grf EB resource (default parameter value and resource load), then report success. */
+    InitTrackGrf();
     return 1;
+#undef InitTrackGrf
 }
 void fn_801FC900(void) {
     fn_801FC8D8();
