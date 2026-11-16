@@ -724,6 +724,7 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
     return maxDiff;
 }
 
+static inline s32 andSwap80117598(s32 s, s32 i) { s32 r = i; return r & s; }
 s32 fn_80117598(s32 arg0, s32 arg1) {
     register s32 off;
     register s32 base;
