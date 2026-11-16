@@ -204,113 +204,122 @@ s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+/* Markers over the other cars.  fn_802A7C68 calls this every frame: it sorts
+   the car records farthest-first (fn_802A7E08), and for every car but the
+   local player's own, one whose live object is not flagged and whose record is
+   free, projects its position MARKER_LIFT above the ground and draws its place
+   in the race ("2nd", fn_800122B4) there in white whose alpha falls from full
+   at MARKER_NEAR_SQ to nothing at MARKER_FAR_SQ of squared distance from the
+   camera.  In team play a car of the local player's own team also gets the
+   team icon of fn_802A7CA8, style 3 when the team is the entry's 0xF8 and
+   style 2 when it is the 0xE8 one. */
 void fn_802A7EEC(void) {
-    unsigned int position[3];
-    char sp8[8];
-    float screen[3];
-    int array[8];
-    int *p;
-    int j;
-    void *truck;
-    int id;
-    int i;
-    unsigned long xbits;
-    void *obj;
-    float inverse;
-    float opacity;
-    float scaledAlpha;
-    float dist;
-    register f32 c31;
-    register f32 c30;
-    register f32 c29;
-    register f32 c28;
-    register f32 c27;
-    register f32 c26;
-    register f32 c25;
-    register f32 c24;
-    f32 c23;
+    u32 worldPos[3];
+    char rankText[8];
+    f32 screen[3];
+    s32 order[8];
+    s32 *cursor;
+    s32 value;                    /* loop counter, then the label's colour */
+    struct CarRecord *car;
+    s32 carIndex;
+    s32 i;
+    u32 xBits;
+    struct CarObject *obj;
+    f32 norm;
+    f32 alpha;
+    f32 alphaByte;
+    f32 sqDist;
+    register f32 lift;            /* f31: MARKER_LIFT */
+    register f32 nearSq;          /* f30: MARKER_NEAR_SQ */
+    register f32 farSq;           /* f29: MARKER_FAR_SQ */
+    register f32 teamRange;       /* f28: MARKER_TEAM_RANGE */
+    register f32 alpha255;        /* f27: MARKER_ALPHA_255 */
+    register f32 slope;           /* f26: MARKER_SLOPE */
+    register f32 zero;            /* f25: MARKER_MARGIN */
+    register f32 one;             /* f24: MARKER_ONE */
+    f32 teamFade;
 
     if (fn_801CF064() != 0) {
         return;
     }
 
-    for (j = 0, p = array; j < fn_801EA994(); p++, j++) {
-        *p = j;
+    for (value = 0, cursor = order; value < fn_801EA994(); cursor++, value++) {
+        *cursor = value;
     }
 
-    qsort(array, fn_801EA994(), 4, fn_802A7E08);
+    qsort(order, fn_801EA994(), 4, fn_802A7E08);
 
-    c24 = lbl_805648F4;
-    p = array;
-    c25 = lbl_805648FC;
-    c31 = lbl_80564910;
-    c30 = lbl_80564914;
-    c29 = lbl_80564918;
-    c26 = lbl_805648F8;
-    c27 = lbl_80564900;
-    c28 = lbl_80564920;
+    one = MARKER_ONE;
+    cursor = order;
+    zero = MARKER_MARGIN;
+    lift = MARKER_LIFT;
+    nearSq = MARKER_NEAR_SQ;
+    farSq = MARKER_FAR_SQ;
+    slope = MARKER_SLOPE;
+    alpha255 = MARKER_ALPHA_255;
+    teamRange = MARKER_TEAM_RANGE;
 
-    for (i = 0; i < fn_801EA994(); p++, i++) {
-        id = *p;
-        if (id == fn_801E866C(-1)) {
+    for (i = 0; i < fn_801EA994(); cursor++, i++) {
+        carIndex = *cursor;
+        if (carIndex == fn_801E866C(-1)) {
             continue;
         }
 
-        truck = ((void *(*)(int))fn_801EA9A0)(id);
-        obj = *(void **)((char *)truck + 8);
-        if (*(u16 *)((char *)obj + 0x6E) & 0x40) {
+        car = ((void *(*)(int))fn_801EA9A0)(carIndex);
+        obj = car->object;
+        if (obj->flags & 0x40) {
             continue;
         }
-        if (*(int *)((char *)truck + 0x30) != 0) {
+        if (car->field30 != 0) {
             continue;
         }
 
-        xbits = *(unsigned int *)((char *)obj + 0x24);
-        position[1] = *(unsigned int *)((char *)obj + 0x28);
-        inverse = *(float *)&position[1];
-        position[0] = xbits;
-        inverse = inverse + c31;
-        position[2] = *(unsigned int *)((char *)obj + 0x2C);
-        *(float *)&position[1] = inverse;
-        fn_802C8E70((float *)position, screen);
+        xBits = obj->xBits;
+        worldPos[1] = obj->yBits;
+        norm = *(float *)&worldPos[1];
+        worldPos[0] = xBits;
+        norm = norm + lift;
+        worldPos[2] = obj->zBits;
+        *(float *)&worldPos[1] = norm;
+        fn_802C8E70((float *)worldPos, screen);
 
         fn_801E85B4();
-        dist = PSVECSquareDistance((Vec *)position, (Vec *)((u8 *)fn_802678C0() + 0x24));
+        sqDist = PSVECSquareDistance((Vec *)worldPos, (Vec *)((u8 *)fn_802678C0() + 0x24));
 
-        if (fn_802C8FF4(screen, lbl_805648FC) != 0) {
-            inverse = (dist - c30) / (c29 - c30);
-            opacity = c24;
-            opacity = (opacity < inverse) ? opacity : inverse;
-            opacity = (opacity > c25) ? opacity : c25;
-            opacity = c24 + opacity * c26;
-            scaledAlpha = c27 * opacity;
-            j = ((unsigned int)(int)scaledAlpha << 24) | 0x00FFFFFF;
+        if (fn_802C8FF4(screen, MARKER_MARGIN) != 0) {
+            norm = (sqDist - nearSq) / (farSq - nearSq);
+            alpha = one;
+            alpha = (alpha < norm) ? alpha : norm;
+            alpha = (alpha > zero) ? alpha : zero;
+            alpha = one + alpha * slope;
+            alphaByte = alpha255 * alpha;
+            value = ((unsigned int)(int)alphaByte << 24) | 0x00FFFFFF;
 
-            fn_802339A8(lbl_8055F8BC, screen[0], j, screen[1], lbl_805648FC, lbl_8056491C, 0x44, lbl_805648F4, lbl_8055CC30, fn_800122B4(*(u32 *)((char *)truck + 0x10), sp8));
+            fn_802339A8(sRankFont, screen[0], value, screen[1], MARKER_MARGIN, MARKER_TEXT_SCALE, 0x44, MARKER_ONE, STR_PERCENT_S, fn_800122B4(car->rank, rankText));
         }
 
         if (fn_8027AA48() != 0) {
-            int team;
-            void *own;
-            inverse = (dist - c29) / (c28 * c29 - c29);
-            opacity = c24;
-            opacity = (opacity < inverse) ? opacity : inverse;
-            opacity = (opacity > c25) ? opacity : c25;
-            team = *(int *)((char *)truck + 0xAC);
-            c23 = c24 + opacity * c26;
-            own = *(void **)((char *)((void *(*)(int))fn_801EA9A0)(fn_801E866C(-1)) + 0xAC);
+            s32 team;
+            s32 myTeam;
+            norm = (sqDist - farSq) / (teamRange * farSq - farSq);
+            alpha = one;
+            alpha = (alpha < norm) ? alpha : norm;
+            alpha = (alpha > zero) ? alpha : zero;
+            team = car->team;
+            teamFade = one + alpha * slope;
+            myTeam = ((struct CarRecord *)((void *(*)(int))fn_801EA9A0)(fn_801E866C(-1)))->team;
 
-            fn_8027ABF8((s32)own);
+            fn_8027ABF8(myTeam);
             if (fn_8027AC50() != 0) {
-                fn_8027ABF8((s32)own);
+                fn_8027ABF8(myTeam);
                 if (team == fn_8027AC64()) {
-                    fn_802A7CA8((void *)id, c23, 3);
+                    fn_802A7CA8((void *)carIndex, teamFade, 3);
                 }
             } else {
-                fn_8027ABF8((s32)own);
+                fn_8027ABF8(myTeam);
                 if (fn_8027AC80() != 0) {
-                    if (team == *(int *)((char *)fn_8027ABF8((s32)own) + 0xE8)) {
-                        fn_802A7CA8((void *)id, c23, 2);
+                    if (team == ((struct TeamEntry *)fn_8027ABF8(myTeam))->team) {
+                        fn_802A7CA8((void *)carIndex, teamFade, 2);
                     }
                 }
             }
