@@ -429,8 +429,10 @@ void *fn_8001C070(void *dest, int val, size_t count) {
 }
 
 #pragma dont_inline on
+typedef s32 (*ValueGetter)(void);
 s32 fn_8001C0A0(void) {
-    return *(s32 *)((s32 (*)(void))fn_8001BC18)();
+    // Call the pointer-returning helper (fn_8001BC18) and read the s32 it points at.
+    return *(s32 *)((ValueGetter)fn_8001BC18)();
 }
 
 /* Read the 32-bit field at offset 0x1C of the surrounding object: the getter
