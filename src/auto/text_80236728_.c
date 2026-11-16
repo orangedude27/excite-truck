@@ -730,7 +730,7 @@ typedef struct SVT { void *pad[3]; float (*get)(void *); void (*set)(void *, flo
 typedef struct SObj { SVT *vt; } SObj;
 #pragma push
 #pragma processor 750
-void fn_80237AA0(arg0, arg1, arg2)
+void fn_80237AA0_disabled(arg0, arg1, arg2)
 int arg0; float *arg1; double arg2;
 {
     double var_f31 = arg2;
