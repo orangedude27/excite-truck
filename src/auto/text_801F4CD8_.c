@@ -1232,10 +1232,11 @@ extern "C" void fn_801F6F3C(void *arg0, int arg1, int arg2, void *arg3, int arg4
 }
 #pragma cplusplus off
 #pragma pop
-void *fn_801F7090(void *arg0) {
-    memset(arg0,0,0x120);
-    *(int *)((char *)arg0+0x120)=0;
-    return arg0;
+void *fn_801F7090(void *pool) {
+    /* Clear the third cloth-system pool: 0x120 bytes of entries plus the entry count at +0x120. */
+    memset(pool, 0, 0x120);
+    *(int *)((char *)pool + 0x120) = 0;
+    return pool;
 }
 
 extern void fn_801F639C(void *);
