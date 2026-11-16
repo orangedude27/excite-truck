@@ -509,6 +509,9 @@ extern "C" void *lbl_8055A064;
 extern "C" void *fn_801284F8(u32, void *);
 
 extern "C" s32 lbl_8032E540[];
+// 15 bonus-category name strings ("air", "nice_landing", ...), indexed by
+// BonusTracker::GetType(); fn_80158618 looks names up in it.
+#define gBonusCategoryNames lbl_8032E540
 extern "C" s32 fn_80157278(s32 arg0) {
     s32* item = (s32*)lbl_804348E8[arg0];
     s32 value = item[4];
@@ -3338,7 +3341,7 @@ extern "C" void fn_8015CD0C(void) {
 }
 
 extern "C" f32 lbl_805617C8;
-#pragma scheduling on
+#pragma scheduling reset
 extern "C" f32 fn_8015CD10(Unk801577F0* arg0) {
     class LocalVtable {
     public:
@@ -3363,7 +3366,6 @@ extern "C" f32 fn_8015CD10(Unk801577F0* arg0) {
     *(f32*)((u8*)arg0 + 0x250) = lbl_805617C8;
     return value;
 }
-#pragma scheduling reset
 extern "C" void fn_8015CDD8(void) {
 }
 
