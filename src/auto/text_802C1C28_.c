@@ -191,11 +191,12 @@ static int fn_802C2074_noinline2(void *arg0) {
     return -2;
 }
 
-void fn_802C20DC(int *arg0) {
-    int temp_r0 = *arg0;
-    if (temp_r0 != -2) {
-        fn_802CAC54(temp_r0);
-        *arg0 = -2;
+/* Closes/releases the handle stored at *handleSlot if it is valid (not -2), then marks the slot empty (-2). */
+void fn_802C20DC(int *handleSlot) {
+    int handle = *handleSlot;
+    if (handle != -2) {
+        fn_802CAC54(handle);
+        *handleSlot = -2;
     }
 }
 
