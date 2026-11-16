@@ -1511,7 +1511,7 @@ void fn_801F3F8C(void *arg0, void *arg1) {
             if (value > threshold) {
                 float amount = *(float *)(entry + 0x10) * (value - threshold);
                 if (upper < amount) amount = upper;
-                amount = (amount > lower) ? lower : amount;
+                if (amount > lower) amount = amount; else amount = lower;
                 fn_802C9900(amount);
                 fn_802C7040(*(int *)(entry + 0xC));
                 fn_802C9904();
