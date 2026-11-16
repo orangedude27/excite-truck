@@ -953,9 +953,11 @@ long fn_802EC3F0(void *arg0, long dst, long size) {
 }
 #pragma scheduling on
 #pragma pop
-long fn_802EC42C(void *arg0) {
+/* File-backed MP3 stream vtable method (slot +0xC): passes the stream's VFFile
+   handle (offset 4) to fn_800B7C64 and returns whether it succeeded (result == 0). */
+long fn_802EC42C(void *stream) {
     long unused;
-    return ((long (*)(long, long, long))fn_800B7C64)(((long *)arg0)[1], unused, 0) == 0;
+    return ((long (*)(long, long, long))fn_800B7C64)(((long *)stream)[1], unused, 0) == 0;
 }
 
 long fn_802EC45C(void *arg0) { return ((long *)arg0)[2]; }
