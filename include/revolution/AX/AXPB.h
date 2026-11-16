@@ -130,9 +130,15 @@ typedef struct _AXPBITD {
     u16 shiftL;       // at 0x6
     u16 shiftR;       // at 0x8
     u16 targetShiftL; // at 0xA
-    u16 targetShiftR; // at 0xC
-    /* REXE01 stores five additional halfwords in the PB ITD block. */
-    u16 reserved[5];  // at 0xE
+    u16 targetShiftR;    // at 0xC
+    /* REXE01 keeps the live interpolation state in the PB itself
+     * (AX_PBSYNC_ITD_BUFFER): three running values, which __AXSetPBDefault
+     * clears with the rest of the PB and __AXSyncPBs clears again when it
+     * drops a voice for going over the DSP cycle budget, followed by the
+     * address of the voice's own interpolation buffer. */
+    u16 current[3];      // at 0xE
+    u16 bufferAddrHi;    // at 0x14
+    u16 bufferAddrLo;    // at 0x16
 } AXPBITD;
 
 typedef struct _AXPBDPOP {
