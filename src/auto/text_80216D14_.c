@@ -999,6 +999,7 @@ int fn_802182F0(void *arg0, void *arg1) {
 }
 
 int fn_8021832C(void *arg0) {
+    /* RealName: UiMenuGroup_QueryPressedOrHovered */
     struct Fn8021832CObj *obj = *(struct Fn8021832CObj **)((char *)arg0 + 0x44C);
     if (obj != 0) {
         return obj->Query();
