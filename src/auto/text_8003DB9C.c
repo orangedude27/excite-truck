@@ -4950,10 +4950,10 @@ void GXSetTevColorIn(s32 stage, s32 aSel, s32 bSel, s32 cSel, s32 dSel) {
         unsigned int colorIn = tev[GX_TEV_COLOR_COMBINER / 4];
         colorIn = __rlwimi(colorIn, aSel, 12, 16, 19); /* k0ColorSel */
         colorIn = __rlwimi(colorIn, bSel, 8, 20, 23);  /* k1ColorSel */
-        *(volatile unsigned char *)0xCC008000 = 0x61;
+        WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
         colorIn = __rlwimi(colorIn, cSel, 4, 24, 27);  /* k2ColorSel */
         colorIn = __rlwimi(colorIn, dSel, 0, 28, 31);  /* k3ColorSel */
-        *(volatile unsigned int *)0xCC008000 = colorIn;
+        WGPIPE.i = colorIn;
         tev[GX_TEV_COLOR_COMBINER / 4] = colorIn;
     }
     *(unsigned short *)((unsigned char *)base + 2) = 0;
