@@ -2027,11 +2027,17 @@ extern float lbl_80560F50;
 extern float lbl_80560F54;
 extern float lbl_80560F3C;
 extern "C" void fn_800E5464(void *arg0, float arg1) {
+    /* Clamp pan to [-1,1] and store at +0x128, marking dirty flag 0x20 at +0x123. */
+    #define kPanMax    lbl_80560F38
+    #define kPanMin    lbl_80560F50
+    #define panField   (*(float *)((char *)arg0 + 0x128))
+    #define updateFlags (*(unsigned char *)((char *)arg0 + 0x123))
+
     float value;
-    if (arg1 > lbl_80560F38) {
-        value = lbl_80560F38;
-    } else if (arg1 < lbl_80560F50) {
-        value = lbl_80560F50;
+    if (arg1 > kPanMax) {
+        value = kPanMax;
+    } else if (arg1 < kPanMin) {
+        value = kPanMin;
     } else {
         value = arg1;
     }
@@ -2041,6 +2047,11 @@ extern "C" void fn_800E5464(void *arg0, float arg1) {
         *field = value;
         *flags |= 0x20;
     }
+
+    #undef kPanMax
+    #undef kPanMin
+    #undef panField
+    #undef updateFlags
 }
 
 extern "C" void fn_800E54A8(void *obj, float value) {
