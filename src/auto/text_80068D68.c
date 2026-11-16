@@ -3762,12 +3762,10 @@ s32 fn_8006E4F8(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void GKI_start_timer(UINT8 tnum, INT32 ticks, BOOLEAN is_continuous) {
     INT32 reload;
-    INT32 total;
-    register INT32 start;
-    register INT32 end;
+    int total;
     UINT8 task_id;
     BOOLEAN bad_timer;
 
@@ -3778,9 +3776,7 @@ void GKI_start_timer(UINT8 tnum, INT32 ticks, BOOLEAN is_continuous) {
     reload = ticks & ((-(INT32)is_continuous | (INT32)is_continuous) >> 31);
     fn_8006EBAC();
 
-    start = *(volatile INT32 *)&gki_cb.com.OSTicksTilExp;
-    end = *(volatile INT32 *)&gki_cb.com.OSNumOrigTicks;
-    total = end - start;
+    total = (int)gki_cb.com.OSNumOrigTicks - (int)gki_cb.com.OSTicksTilExp;
     if ((INT32)(0x7FFFFFFF - total) > ticks)
         total = ticks + total;
     else
