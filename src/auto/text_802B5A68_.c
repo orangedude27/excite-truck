@@ -1577,6 +1577,7 @@ extern void lbl_8034A898(void);
 void fn_802B7884(void *);
 void fn_802B7918(void);
 void fn_802B7CF0(void) {
+    /* Build the "Save Road-Opacity Map" debug panel: wire the save control, then set up the record list. */
     fn_802B7884(lbl_8034A898);
     fn_802B7918();
 }
