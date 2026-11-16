@@ -757,6 +757,7 @@ void fn_8015F92C(float *arg0, float farg0)
   }
 }
 
+#pragma dont_inline on
 #pragma scheduling invalid_target
 /* Finds the next entry index > arg1 in a 0x40-element array of 8-byte records {f32 value, s32 type} whose value is > threshold, stopping at type 1 or returning a type-2 candidate; returns -1 if none. */
 s32 fn_8015FA44(void *records, s32 startIndex, f32 threshold) {
@@ -887,6 +888,7 @@ extern void fn_8001BA68(void *);
 extern int fn_80179650(void);
 extern void fn_80179630(int);
 extern void fn_8017960C(void);
+#pragma scheduling invalid_target
 s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
     struct Hit table[64];
     u32 sp68[12];
@@ -1022,9 +1024,7 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
     }
     return ret;
 }
-
-#pragma processor reset
-#pragma use_lmw_stmw reset
+#pragma scheduling on
 extern f32 lbl_805617D4;
 void fn_80160230(void *arg0, void *arg1) {
     register f32 c, b, a;
