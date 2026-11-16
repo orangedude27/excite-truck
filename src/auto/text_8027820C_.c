@@ -26,6 +26,11 @@ extern const char lbl_803475B4[];
 extern const char lbl_80347660[];
 extern char lbl_804A15D0[];
 
+// Script-movie keyframe capture: the captured key list (0x38-byte records) and its length.
+#define gKeyframeList  lbl_8055F5B0
+#define gKeyframeCount lbl_8055F5B4
+#define Mem_Free       fn_80128670
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
