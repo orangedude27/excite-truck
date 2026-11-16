@@ -8,18 +8,25 @@ extern int lbl_8055ED38;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* Static initializer: set up this module's state object, clear its 5-word control block, and store the default value (0x7F000000). */
 void fn_80204A54(void) {
+#define stateObject lbl_8055ED30
+#define controlBlock lbl_80488BB8
+#define defaultValue lbl_8055ED38
     int v;
     int *p;
-    fn_8000D838(&lbl_8055ED30);
-    p = lbl_80488BB8 + 1;
-    lbl_80488BB8[0] = 0;
+    fn_8000D838(&stateObject);
+    p = controlBlock + 1;
+    controlBlock[0] = 0;
     v = 0x7B;
-    lbl_80488BB8[1] = v;
-    lbl_80488BB8[2] = 0;
-    lbl_80488BB8[3] = 0;
-    lbl_80488BB8[4] = 0;
-    lbl_8055ED38 = 0x7F000000;
+    controlBlock[1] = v;
+    controlBlock[2] = 0;
+    controlBlock[3] = 0;
+    controlBlock[4] = 0;
+    defaultValue = 0x7F000000;
+#undef stateObject
+#undef controlBlock
+#undef defaultValue
 }
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
