@@ -6185,8 +6185,8 @@ extern "C" s32 VFiPFFAT_GetClusterSpecified(void *fileInfo, u32 startCluster, u3
 
 extern "C" s32 fn_800ADD84(void *, s32, s32, s32, u32 *, s32 *);
 static inline s32 fn_800AE3A8FindCluster(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
-    s32 spC;
     u32 sp8;
+    s32 spC;
     s32 res;
     *arg3 = (u32)-1;
     res = fn_800ADD84(arg0, arg1, 2, arg2, &sp8, &spC);
@@ -6196,43 +6196,26 @@ static inline s32 fn_800AE3A8FindCluster(void *arg0, s32 arg1, s32 arg2, u32 *ar
     return 0;
 }
 extern "C" s32 fn_800AE3A8(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
-    s32 spC;
-    u32 sp8;
-    s32 var_r3;
-    u32 *temp_r7;
-    void *temp_r31;
-    void *temp_r8;
-    u32 temp_r4;
-    temp_r7 = *(u32 **)((u8 *)arg0 + 8);
-    temp_r8 = *(void **)((u8 *)arg0 + 0x34);
-    temp_r4 = *(u32 *)((u8 *)temp_r8 + 0x1C);
-    temp_r31 = *(void **)((u8 *)arg0 + 0x30);
-    if (*temp_r7 == 1) {
-        if (temp_r4 <= 1) {
+    u32 *state = *(u32 **)((u8 *)arg0 + 8);
+    u8 *fatInfo = *(u8 **)((u8 *)arg0 + 0x34);
+    u32 mode = *state;
+    u32 clusterCount = *(u32 *)(fatInfo + 0x1C);
+    u32 *cache = *(u32 **)((u8 *)arg0 + 0x30);
+    s32 result;
+
+    if (mode == 1) {
+        if (clusterCount <= 1) {
             *arg3 = (u32)-1;
             return 0;
         }
-        *temp_r7 = *(u32 *)((u8 *)temp_r8 + 0x10);
+        *state = *(u32 *)(fatInfo + 0x10);
     }
-    *arg3 = (u32)-1;
-    var_r3 = fn_800ADD84(arg0, arg1, 2, arg2, &sp8, &spC);
-    if (var_r3 == 0) goto ok;
-    goto check;
-ok:
-    if ((sp8 >= 2) && (sp8 < (u32)(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2))) {
-        *arg3 = sp8;
-    }
-    var_r3 = 0;
-check:
-    if (var_r3 != 0) {
-        return var_r3;
-    }
-    if ((*arg3 + 0x10000) == 0xFFFF) {
-        return 0;
-    }
-    *(s32 *)((u8 *)temp_r31 + 8) = *(s32 *)arg0;
-    *(s32 *)temp_r31 = arg1;
-    *(u32 *)((u8 *)temp_r31 + 4) = *arg3;
+    result = fn_800AE3A8FindCluster(arg0, arg1, arg2, arg3);
+    if (result != 0) return result;
+    if (*arg3 == (u32)-1) return 0;
+    cache[2] = *(u32 *)arg0;
+    cache[0] = arg1;
+    cache[1] = *arg3;
     return 0;
 }
 
