@@ -161,8 +161,9 @@ void fn_80012910(void) {
 #define kClassifyThreshold lbl_80560358
 
 #pragma dont_inline on
-int fn_80012938(float f) {
-    if (f > lbl_80560358) {
+/* Classifies value against the 16.0 threshold: 2 when above it, 1 otherwise. */
+int fn_80012938(float value) {
+    if (value > kClassifyThreshold) {
         return 2;
     }
     return 1;
