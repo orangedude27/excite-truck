@@ -22,6 +22,7 @@ void *__memrchr(const unsigned char *arg0, int arg1, unsigned int arg2) {
     return 0;
 }
 
+/* Compare two byte buffers lexicographically; returns 0, <0, or >0. */
 int memcmp(const unsigned char *arg0, const unsigned char *arg1, unsigned int arg2) {
     const unsigned char *p = arg0 - 1;
     const unsigned char *q = arg1 - 1;
