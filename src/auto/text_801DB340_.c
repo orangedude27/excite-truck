@@ -47,6 +47,14 @@ typedef struct GroundDesc {
     /* 0x30 */ unsigned char *typeRuns; /* per tile: (type, X length) runs */
 } GroundDesc;
 
+typedef struct GroundLayer {
+    float baseHeight;
+    float heightScale;
+    unsigned short samples[32][32];
+    int tableIndex;
+    int next;
+} GroundLayer;
+
 static inline void swap32(unsigned char *p) {
     unsigned char t;
     t = p[0]; p[0] = p[3]; p[3] = t;
@@ -981,86 +989,89 @@ int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr) {
 #pragma paired_single off
 #pragma opt_common_subs on
 #pragma scheduling invalid_target
-float fn_801DDC8C(float farg0, float farg1) {
-    int *state = (int *)lbl_8055E990;
-    int cellX;
-    int cellZ;
-    int tileWorldX;
-    int tileWorldZ;
-    int tileX;
-    int tileZ;
-    int remX;
-    int remZ;
-    unsigned short tile;
-    char *node;
-    int layerIndex;
-    unsigned short sample;
-    int next;
-    int tblIdx;
-    float offsetX;
-    float scaleX;
-    float offsetZ;
-    float scaleZ;
-    float x;
-    float z;
-    float roundX;
-    float roundZ;
-    float value;
-    float result;
-    char *layer;
-    char *base;
-    if (state[4] == 0)
-        return lbl_80562B84;
-    offsetX = farg0 + *(float *)((char *)state + 0);
-    scaleX = *(float *)((char *)state + 8);
-    offsetZ = farg1 + *(float *)((char *)state + 4);
-    scaleZ = *(float *)((char *)state + 12);
-    x = scaleX * offsetX;
-    z = scaleZ * offsetZ;
-    roundX = x < lbl_80562B84 ? x - lbl_80562B64 : lbl_80562B64 + x;
-    cellX = (int)roundX;
-    roundZ = z < lbl_80562B84 ? z - lbl_80562B64 : lbl_80562B64 + z;
-    cellZ = (int)roundZ;
-    if (cellX < 0 || cellZ < 0)
-        return lbl_80562B84;
-    tileWorldX = cellX / 32;
-    tileWorldZ = cellZ / 32;
-    tileX = tileWorldX - lbl_8055E99C;
-    tileZ = tileWorldZ - lbl_8055E9A0;
-    remX = cellX - tileWorldX * 32;
-    remZ = cellZ - tileWorldZ * 32;
-    if (tileX < 0 || tileZ < 0)
+float fn_801DDC8C(float farg0, float farg1)
+{
+  int tileX;
+  int tileZ;
+  int cellX;
+  int cellZ;
+  int tileWorldX;
+  int tileWorldZ;
+  int *state = (int *) lbl_8055E990;
+  int remX;
+  int remZ;
+  unsigned short tile;
+  char *node;
+  int layerIndex;
+  unsigned short sample;
+  int next;
+  int tblIdx;
+  float x;
+  float z;
+  float roundX;
+  float roundZ;
+  float value;
+  float result;
+  char *layer;
+  if (state[4] == 0)
+  {
+    return lbl_80562B84;
+  }
+  x = *((float *) (((char *) state) + 8)) * (farg0 + *((float *) (((char *) state) + 0)));
+  z = *((float *) (((char *) state) + 12)) * (farg1 + *((float *) (((char *) state) + 4)));
+  roundX = (x < lbl_80562B84) ? (x - lbl_80562B64) : (lbl_80562B64 + x);
+  cellX = (int) roundX;
+  roundZ = (z < lbl_80562B84) ? (z - lbl_80562B64) : (lbl_80562B64 + z);
+  cellZ = (int) roundZ;
+  if ((cellX < 0) || (cellZ < 0))
+  {
+    return lbl_80562B84;
+  }
+  tileWorldX = cellX / 32;
+  tileWorldZ = cellZ / 32;
+  tileX = tileWorldX - lbl_8055E99C;
+  remX = cellX - (tileWorldX * 32);
+  remZ = cellZ - (tileWorldZ * 32);
+  tileZ = tileWorldZ - lbl_8055E9A0;
+  if ((tileX < 0) || ((tileWorldZ - lbl_8055E9A0) < 0))
+  {
+    node = 0;
+  }
+  else
+    if ((tileX >= 0x60) || (tileZ >= 0x60))
+  {
+    node = 0;
+  }
+  else
+  {
+    tile = *((unsigned short *) ((((char *) lbl_80442708) + (tileX * 0xC0)) + (tileZ * 2)));
+    if (tile == 0xFFFF)
+    {
+      if (1)
+      {
         node = 0;
-    else if (tileX >= 0x60 || tileZ >= 0x60)
-        node = 0;
-    else {
-        tile = *(unsigned short *)((char *)lbl_80442708 + tileX * 0xC0 + tileZ * 2);
-        if (tile == 0xFFFF)
-            node = 0;
-        else
-            node = (char *)*(int *)((char *)state + 0x18) + tile * 0x894;
+      }
     }
-    if (node == 0)
-        return lbl_80562B84;
-    layerIndex = *(int *)(node + 0x890);
-    result = lbl_80562B84;
-    if (layerIndex >= 0) {
-        base = (char *)*(int *)((char *)state + 0x20);
-        layer = base + layerIndex * 0x810;
-        do {
-            tblIdx = *(int *)(layer + 0x808);
-            sample = *(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8);
-            next = *(int *)(layer + 0x80C);
-            value = *(float *)(layer + 0) + *(float *)(layer + 4) * (float)sample;
-            result += value * lbl_804425DC[tblIdx];
-            if (next < 0)
-                break;
-            base = (char *)*(int *)((char *)state + 0x20);
-            layer = base + next * 0x810;
-        } while (1);
-        return result;
-    } else
-        return result;
+    else
+    {
+      node = ((char *) (*((int *) (((char *) state) + 0x18)))) + (tile * 0x894);
+    }
+  }
+  if (node == 0)
+  {
+    return lbl_80562B84;
+  }
+  layerIndex = *((int *) (node + 0x890));
+  result = lbl_80562B84;
+  if (layerIndex >= 0)
+  {
+    layer = ((char *) (*((int *) (((char *) state) + (((((((((0x20 & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF))))) + (layerIndex * 0x810);
+ do { do { tblIdx = *((int *) (layer + 0x808)); sample = *((unsigned short *) (((remX * 64) + (remZ * 2)) + (unsigned int)layer + 8)); next = *((int *) (layer + 0x80C)); value = (*((float *) (layer + 0))) + ((*((float *) (layer + 4))) * ((float) sample)); result += value * lbl_804425DC[tblIdx]; if (next < 0) { break; } layer = ((char *) (*((int *) (((char *) state) + 0x20)))) + (next * 0x810); } while (1); return result; } while (0);
+  }
+  else
+  {
+    return result;
+  }
 }
 #pragma pop
 
