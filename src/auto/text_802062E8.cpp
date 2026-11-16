@@ -439,21 +439,22 @@ extern "C" void fn_80206824(void *object, int context, int arg) {
     /* The sound's own update: vtable slot +0x0C, fn_80206B14 in the base class. */
     struct SoundBase { virtual void dispose(); virtual void update(int, int); };
     Sound3D *self = (Sound3D *)object;
-    int state = self->sound->state();
-    self->playing = 1;
+    int state = self->sound->state(); /* VOICE_STATE_* below */
+    self->playing = 1;                /* stays down only if the sound is out of play */
     switch (state) {
     case VOICE_STATE_PLAYING:
         if (self->releasePending) {
             self->sound->releaseVoices();
         } else if (self->muted) {
             self->sound->mute();
-        } else if (self->releaseOnce) {
+        } else if (self->releaseOnce) { /* a one-shot release waits for the next pass */
             self->releaseOnce = 0;
             self->sound->releaseVoices();
         }
         break;
     case VOICE_STATE_STOPPED:
         if (self->playPending) {
+            /* debug flag 0x200: a sound placed on something keeps its slot empty */
             if (IsDebugFlagSet_802062E8(0x200) && self->handle44 != 0)
                 goto skip;
             self->playPending = 0;
@@ -477,11 +478,11 @@ skip:
         }
         break;
     }
-    if (self->queuedParam) {
+    if (self->queuedParam) { /* a parameter block queued for the sound */
         self->sound->setParam(&self->queuedParam);
         self->queuedParam = 0;
     }
-    if (!self->muted) {
+    if (!self->muted) { /* a muted sound does not run its own update */
         ((SoundBase *)object)->update(context, arg);
     }
 }
