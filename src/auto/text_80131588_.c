@@ -629,19 +629,21 @@ extern char lbl_8032B80C[], lbl_8032B7E4[];
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_80132410(void *arg0, void *arg1, const char *arg2) {
+extern "C" void fn_80132410(void *out, void *node, const char *key) {
+    /* Parse a Vec3 ("x, y, z" floats) from this node's string value (vtable slot f3);
+     * on failure, report the bad value via fn_802E317C with the node name (f0). */
     class A {
     public:
         virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3(const char *);
     };
-    typedef struct { s32 x, y; } Pair;
-    typedef struct { Pair a; s32 z; } Vector;
-    Vector values;
-    char *value = ((A *)arg1)->f3(arg2);
+    typedef struct { s32 x, y; } Vec2;
+    typedef struct { Vec2 a; s32 z; } Vec3;
+    Vec3 values;
+    char *value = ((A *)node)->f3(key);
     if (sscanf(value, lbl_8032B80C, &values.a.x, &values.a.y, &values.z) != 3) {
-        fn_802E317C(lbl_8032B7E4, value, arg2, ((A *)arg1)->f0());
+        fn_802E317C(lbl_8032B7E4, value, key, ((A *)node)->f0());
     }
-    *(Vector *)arg0 = values;
+    *(Vec3 *)out = values;
 }
 #pragma small_data on
 #pragma cplusplus on
