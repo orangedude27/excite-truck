@@ -1560,7 +1560,8 @@ extern "C" s32 ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ
     register void *archive = *(void **)((u8 *)self + 0x28);
     register const void *reader = self;
     register void *outInfo = out;
-    register u8 *groupTable;
+    struct { u8 *value; } tableSlot;
+    u8 *&groupTable = tableSlot.value;
 
     if (*((u8 *)archive + 0x21) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_805598A0, 0x6F, lbl_80324CB0);
@@ -1571,20 +1572,20 @@ extern "C" s32 ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ
     else if (grp >= *(u32 *)groupTable)
         grp = 0;
     else {
-        grp <<= 3;
-        archive = *(void **)((u8 *)reader + 0x28);
-        if (groupTable[grp + 5] != 0)
+        archive = (void *)(grp << 3);
+        grp = *(u32 *)((u8 *)reader + 0x28);
+        if (groupTable[(u32)archive + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559848, 0x6F, lbl_80324ACC);
         grp = (u32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-            groupTable[grp + 4], *(u32 *)(groupTable + grp + 8), archive);
+            groupTable[(u32)archive + 4], *(u32 *)(groupTable + (u32)archive + 8), (void *)grp);
     }
     if (grp == 0)
         return 0;
-    archive = *(void **)((u8 *)reader + 0x28);
+    groupTable = *(u8 **)((u8 *)reader + 0x28);
     if (*((u8 *)grp + 0x21) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_805598C0, 0x6F, lbl_80324D60);
     groupTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        *((u8 *)grp + 0x20), *(u32 *)((u8 *)grp + 0x24), archive);
+        *((u8 *)grp + 0x20), *(u32 *)((u8 *)grp + 0x24), groupTable);
     if (groupTable == 0)
         return 0;
     archive = *(void **)((u8 *)reader + 0x28);
