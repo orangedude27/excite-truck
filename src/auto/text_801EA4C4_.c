@@ -63,10 +63,17 @@ void fn_801EA4C4(void) {
     *(s32 *)(lbl_8055EB78 + 0x604) = 7;
 }
 #pragma scheduling on
+/* Tear down the car manager: free its info block and clear the two globals. */
 void fn_801EA56C(void) {
-    fn_80128668(*(s32 *)&lbl_8055EB78);
-    lbl_8055EB78 = 0;
-    lbl_8055EB7C = 0;
+#define freeCarInfo fn_80128668
+#define gCarInfoBlock lbl_8055EB78
+#define gCarInfoActive lbl_8055EB7C
+    freeCarInfo(*(s32 *)&gCarInfoBlock);
+    gCarInfoBlock = 0;
+    gCarInfoActive = 0;
+#undef gCarInfoActive
+#undef gCarInfoBlock
+#undef freeCarInfo
 }
 
 void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
@@ -215,12 +222,8 @@ void fn_801EA9DC(s32 arg0, void *arg1) {
     s32 index;
     s32 word;
     u8 byte;
-    f32 f0;
-    f32 f1;
-    f32 f2;
-    f32 f3;
-    f32 f4;
-    f32 f5;
+    f32 first;
+    f32 second;
     value0 = *(volatile s32 *)arg1;
     value = *(volatile s32 *)((u8 *)arg1 + 4);
     entry = (u8 *)*(s32 *)&lbl_8055EB78 + arg0 * 0xBC;
@@ -228,26 +231,26 @@ void fn_801EA9DC(s32 arg0, void *arg1) {
     index = value - 1;
     word = *(volatile s32 *)((u8 *)arg1 + 8);
     *(s32 *)(entry + 0x10) = value;
-    f0 = *(volatile f32 *)((u8 *)arg1 + 0x0C);
+    first = *(volatile f32 *)((u8 *)arg1 + 0x0C);
     *(s32 *)(entry + 0x14) = word;
     word = *(volatile s32 *)((u8 *)arg1 + 0x10);
-    *(f32 *)(entry + 0x18) = f0;
-    f1 = *(volatile f32 *)((u8 *)arg1 + 0x14);
+    *(f32 *)(entry + 0x18) = first;
+    second = *(volatile f32 *)((u8 *)arg1 + 0x14);
     *(s32 *)(entry + 0x1C) = word;
-    f2 = *(volatile f32 *)((u8 *)arg1 + 0x18);
-    *(f32 *)(entry + 0x20) = f1;
-    f3 = *(volatile f32 *)((u8 *)arg1 + 0x1C);
-    *(f32 *)(entry + 0x24) = f2;
-    f4 = *(volatile f32 *)((u8 *)arg1 + 0x20);
-    *(f32 *)(entry + 0x28) = f3;
+    first = *(volatile f32 *)((u8 *)arg1 + 0x18);
+    *(f32 *)(entry + 0x20) = second;
+    second = *(volatile f32 *)((u8 *)arg1 + 0x1C);
+    *(f32 *)(entry + 0x24) = first;
+    first = *(volatile f32 *)((u8 *)arg1 + 0x20);
+    *(f32 *)(entry + 0x28) = second;
     word = *(volatile s32 *)((u8 *)arg1 + 0x24);
-    *(f32 *)(entry + 0x2C) = f4;
+    *(f32 *)(entry + 0x2C) = first;
     byte = *(volatile u8 *)((u8 *)arg1 + 0x28);
     *(s32 *)(entry + 0x30) = word;
-    f5 = *(volatile f32 *)((u8 *)arg1 + 0x2C);
+    first = *(volatile f32 *)((u8 *)arg1 + 0x2C);
     *(u8 *)(entry + 0x34) = byte;
     word = *(volatile s32 *)((u8 *)arg1 + 0x30);
-    *(f32 *)(entry + 0x38) = f5;
+    *(f32 *)(entry + 0x38) = first;
     value0 = *(volatile s32 *)((u8 *)arg1 + 0x34);
     *(s32 *)(entry + 0x3C) = word;
     *(s32 *)(entry + 0x40) = value0;
