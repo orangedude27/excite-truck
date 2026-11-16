@@ -177,14 +177,16 @@ void fn_801D47F8(void *alarm) {
     fn_801D5488();
 }
 
+/* Zero the global effect manager's position (+0x14..0x1C) and timer (+0x4),
+ * then flush every entry in the global action list via fn_801D56C0. */
 int fn_801D481C(void) {
-    char* object = lbl_804422F0;
-    float value = lbl_80562ADC;
-    *(float*)(object + 0x14) = value;
-    *(float*)(object + 0x18) = value;
-    *(float*)(object + 0x1C) = value;
-    *(float*)(object + 0x4) = value;
-    return fn_801D56C0(object);
+    char* mgr = lbl_804422F0;
+    float zero = lbl_80562ADC;
+    *(float*)(mgr + 0x14) = zero;
+    *(float*)(mgr + 0x18) = zero;
+    *(float*)(mgr + 0x1C) = zero;
+    *(float*)(mgr + 0x4) = zero;
+    return fn_801D56C0(mgr);
 }
 
 #pragma cplusplus on
