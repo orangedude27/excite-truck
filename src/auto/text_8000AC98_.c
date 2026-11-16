@@ -42,10 +42,15 @@ void fn_8000ACAC(void) {
     return;
 }
 
+/* Run the normal per-frame scene update only when no blocking UI screen is active (fn_802044E8 returns 0). */
 void fn_8000ACB0(void) {
-    if (fn_802044E8() == 0) {
-        fn_80007238();
+#define UiHasActiveScreen fn_802044E8
+#define RunSceneUpdate    fn_80007238
+    if (UiHasActiveScreen() == 0) {
+        RunSceneUpdate();
     }
+#undef UiHasActiveScreen
+#undef RunSceneUpdate
 }
 
 int fn_802044E8(void);
