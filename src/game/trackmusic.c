@@ -700,10 +700,15 @@ extern char lbl_8033C9AC[];
 extern long lbl_8055EED0;
 #pragma scheduling invalid_target
 void fn_8021037C(void) {
-    lbl_8055EED0 = fn_80207848(lbl_8033C9AC, 1);
+    /* Initialize track music: create the goalline SFX sound, reset the music state flags, and pick the song for the current event. */
+#define GOALLINE_SFX_NAME lbl_8033C9AC
+#define sGoallineSfx lbl_8055EED0
+    sGoallineSfx = fn_80207848(GOALLINE_SFX_NAME, 1);
     fn_802EC1D8();
     fn_802EC12C();
     fn_8020FCC4();
+#undef sGoallineSfx
+#undef GOALLINE_SFX_NAME
 }
 #pragma scheduling on
 void fn_802103B8(void) {
