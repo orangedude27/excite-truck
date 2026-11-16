@@ -970,6 +970,8 @@ void fn_802D5F88(s32 arg0) {
 
 #pragma push
 #pragma dont_inline on
+#pragma push
+#pragma opt_lifetimes off
 void fn_802D5FE4(void *arg0) {
     register void *object = arg0;
     register int code;
@@ -997,10 +999,10 @@ void fn_802D5FE4(void *arg0) {
     case 13: fn_802D5B8C(object); break;
     case 19: fn_802E317C(lbl_8034C2F8); break;
     case 20: fn_802D422C(object); break;
-    default: fn_802E317C(lbl_8034C334); break;
+    default: fn_802E317C(lbl_8034C334, code); break;
     }
 }
-
+#pragma pop
 extern void fn_802D0E48(int);
 /* Draw a surface: toggle the draw state, configure its vertex format, then submit its display list. */
 void fn_802D6170(struct SurfDraw *surface) {
