@@ -3668,31 +3668,34 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
 }
 
 extern "C" void fn_800A4C14(void *, s32);
-extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 index, s32 type, s32 flag) {
-    if (flag) *(u8 *)out = (u8)(index | 0x40);
-    else *(u8 *)out = (u8)index;
-    u8 *dst = (u8 *)out;
+extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *dirEntry, u8 *nameChunks, s32 ordinal, s32 checksum, s32 isLast) {
+    // Build a 32-byte FAT long-directory entry from one 26-byte compact UTF-16 name chunk: set the
+    // ordinal (with the last-entry bit), attribute/checksum fields, pad the name with 0xFFFF on the
+    // last chunk, then copy the name pieces and byte-swap them into on-disk (little-endian) order.
+    if (isLast) *(u8 *)dirEntry = (u8)(ordinal | 0x40);
+    else *(u8 *)dirEntry = (u8)ordinal;
+    u8 *dst = (u8 *)dirEntry;
     u32 zero = 0;
     dst[0xB] = 0xF;
-    dst[0xD] = (u8)type;
+    dst[0xD] = (u8)checksum;
     dst[0xC] = (u8)zero;
     *(u16 *)(dst + 0x1A) = (u16)zero;
-    u8 *entry = entries + (index - 1) * 0x1A;
-    if (flag) {
-        u16 *p = (u16 *)entry;
-        u16 *end = (u16 *)(entry + 0x1A);
-        for (; p < end;) {
-            if (*p != 0) goto nonzero;
-            ++p;
+    u8 *chunk = nameChunks + (ordinal - 1) * 0x1A;
+    if (isLast) {
+        u16 *nameChar = (u16 *)chunk;
+        u16 *nameEnd = (u16 *)(chunk + 0x1A);
+        for (; nameChar < nameEnd;) {
+            if (*nameChar != 0) goto nonzero;
+            ++nameChar;
             break;
         nonzero:
-            ++p;
+            ++nameChar;
         }
-        for (; p < end; ++p) *p = 0xFFFF;
+        for (; nameChar < nameEnd; ++nameChar) *nameChar = 0xFFFF;
     }
-    VFipf_memcpy(dst + 1, entry, 0xA);
-    VFipf_memcpy(dst + 0xE, entry + 0xA, 0xC);
-    VFipf_memcpy(dst + 0x1C, entry + 0x16, 4);
+    VFipf_memcpy(dst + 1, chunk, 0xA);
+    VFipf_memcpy(dst + 0xE, chunk + 0xA, 0xC);
+    VFipf_memcpy(dst + 0x1C, chunk + 0x16, 4);
     fn_800A4C14(dst + 1, 0xA);
     fn_800A4C14(dst + 0xE, 0xC);
     fn_800A4C14(dst + 0x1C, 4);
