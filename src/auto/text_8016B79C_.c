@@ -446,7 +446,6 @@ extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
     Rec *data;
     register void *object = arg0;
     register s32 freeFlag = arg1;
-
     if (object != 0) {
         *(char **)((u8 *)object + 4) = lbl_80330A90;
         fn_80235380(*(void **)((u8 *)object + 0x20), lbl_80330A90);
@@ -464,14 +463,13 @@ extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
         if (p != 0) { if (p != 0) p->destroy(1); }
         p = *(VObj **)((u8 *)object + 0x64);
         if (p != 0) { if (p != 0) p->destroy(1); }
-
         data = *(Rec **)((u8 *)object + 0x18);
         if (data != 0) {
             ((s32 (*)(s32, void *))fn_8002F6AC)(data->d, fn_8016C168);
             if (data != 0) {
-                *(volatile s32 *)&data->a = 0;
-                *(volatile s32 *)&data->b = 0;
-                *(volatile s32 *)&data->c = 0;
+                data->a = 0;
+                data->b = 0;
+                data->c = 0;
                 fn_80128668((void *)data);
             }
         }
@@ -479,9 +477,9 @@ extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
         if (data != 0) {
             fn_80128670(data->d);
             if (data != 0) {
-                *(volatile s32 *)&data->a = 0;
-                *(volatile s32 *)&data->b = 0;
-                *(volatile s32 *)&data->c = 0;
+                data->a = 0;
+                data->b = 0;
+                data->c = 0;
                 fn_80128668((void *)data);
             }
         }
@@ -1785,19 +1783,28 @@ check:
     if (index < *(s32 *)(input + 8)) goto loop;
 }
 #pragma scheduling on
-void fn_8016E918(void *arg0) {
-    void *result;
-    *(void **)((u8 *)arg0 + 0x98) = fn_80145E70(lbl_80330BC8);
-    result = (void *)fn_801284F8(8, lbl_80330BD8);
-    if (result != 0) {
-        result = ((void *(*)(void *, s32))fn_802ADDD8)(result, 1);
+// Initializes the freestyle system on `owner`: load its "freestyle.val" config
+// into +0x98, construct an ArtAnim manager into +0xB8, and initialize/reset the
+// embedded subobject at +0xAC.
+void fn_8016E918(void *owner) {
+#define freestyleConfig lbl_80330BC8
+#define managerTag      lbl_80330BD8
+
+    void *artAnimManager;
+    *(void **)((u8 *)owner + 0x98) = fn_80145E70(freestyleConfig);
+    artAnimManager = (void *)fn_801284F8(8, managerTag);
+    if (artAnimManager != 0) {
+        artAnimManager = ((void *(*)(void *, s32))fn_802ADDD8)(artAnimManager, 1);
     }
-    *(void **)((u8 *)arg0 + 0xB8) = result;
+    *(void **)((u8 *)owner + 0xB8) = artAnimManager;
     {
-        volatile u8 *p = (volatile u8 *)arg0;
+        volatile u8 *p = (volatile u8 *)owner;
         fn_8016EA9C((void *)(p + 0xAC));
         fn_8016E984((void *)(p + 0xAC));
     }
+
+#undef freestyleConfig
+#undef managerTag
 }
 
 extern f32 lbl_805619A4;
@@ -2447,19 +2454,19 @@ extern "C" void fn_8016FE2C(void *arg0, s32 arg1) {
     extern void fn_802C744C(s32, void *);
     extern void fn_802C9900(void);
     extern void fn_802C9904(void);
-    f32 b0 = lbl_80561980;
-    f32 b1 = lbl_80561984;
+    f32 v0 = lbl_80561980;
+    f32 v1 = lbl_80561984;
     s32 i = 0;
-    f32 b2 = lbl_805619A4;
-    f32 b3 = lbl_80561A0C;
-    s32 offset = 0;
-    f32 b4 = lbl_805619D0;
-    u8 *entry;
-    s32 j;
+    f32 v2 = lbl_805619A4;
+    f32 v3 = lbl_80561A0C;
+    long offset = 0;
+    f32 v4 = lbl_805619D0;
     s32 suboff;
-    u8 *item;
-    f32 t;
+    s32 j;
     f32 v;
+    f32 t;
+    register u8 *item;
+    u8 *entry;
     goto outer_check;
 outer_body:
     entry = *(u8 **)*(void **)((u8 *)arg0 + 0x48) + offset;
@@ -2484,13 +2491,13 @@ first_check:
         goto outer_inc;
     }
     t = lbl_8055E3C8 - *(f32 *)(entry + 0xC);
-    if (t < b4) {
-        v = (t - b0) / b4;
-        if (b1 < v) {
-            v = b1;
+    if (t < v4) {
+        v = (t - v0) / v4;
+        if (v1 < v) {
+            v = v1;
         }
-        v = v > b0 ? b0 : v;
-        if (b1 + v * b2 > b3) {
+        v = v > v0 ? v0 : v;
+        if (v1 + v * v2 > v3) {
             fn_802C9900();
             j = 0;
             suboff = 0;
@@ -2510,8 +2517,8 @@ second_check:
         }
     }
 outer_inc:
-    offset += 0x14;
-    i += 1;
+    ++i;
+    offset += (unsigned)0x14;
 outer_check:
     if (i < *(s32 *)((u8 *)arg0 + 0x6C)) {
         goto outer_body;
