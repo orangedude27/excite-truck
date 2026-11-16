@@ -585,6 +585,7 @@ static inline int CpuLightClampAlpha(int raw) {
 }
 
 extern float lbl_80565040, lbl_80565044, lbl_80565048;
+extern void GXSetTevColor();
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -592,10 +593,11 @@ void fn_802DC464(int arg0, int arg1, unsigned short *__restrict list, int size) 
     float field;
     float value;
     float rounded;
-    int raw;
+    int alpha;
     int mask;
     int clipped;
-    long alpha;
+    int raw;
+    unsigned char byteAlpha;
     GXColor color;
     int n;
     int i;
@@ -615,12 +617,13 @@ void fn_802DC464(int arg0, int arg1, unsigned short *__restrict list, int size) 
     alpha = 0xFF;
     if (clipped < 0xFF)
         alpha = clipped;
-    if ((alpha & 0xFF) != lbl_8055FEA0) {
+    byteAlpha = (unsigned char)alpha;
+    if (byteAlpha != lbl_8055FEA0) {
         color.b = 0xFF;
         color.g = 0xFF;
         color.r = 0xFF;
-        color.a = (int)alpha;
-        lbl_8055FEA0 = (int)alpha;
+        color.a = byteAlpha;
+        lbl_8055FEA0 = byteAlpha;
         GXSetTevColor(1, color);
     }
     while (size > 0) {
