@@ -632,11 +632,12 @@ void* fn_80135108(void) {
     return lbl_8055E0B0;
 }
 
-s32 fn_80135110(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80135110(s32 ptr, s32 count) {
+    /* Free ptr via the mode-3 pool allocator when it is non-null and count is positive; return ptr unchanged. */
+    if (ptr != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return ptr;
 }
 
 s32 fn_80135150(s32 arg0, s32 arg1) {
