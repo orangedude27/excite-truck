@@ -143,7 +143,11 @@ void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float f
 #pragma pop
 
 float fn_801B79AC(void) {
-    return *(float *)((char *)fn_80137C54(-1) + 4);
+#define getCurrentLeague fn_80137C54
+    /* Return the carLength field (+0x04) of the currently selected AI driver
+     * league; passing -1 to getCurrentLeague selects the active league. */
+    return *(float *)((char *)getCurrentLeague(-1) + 4);
+#undef getCurrentLeague
 }
 
 void PSVECCrossProduct(float *, float *, float *);
