@@ -432,8 +432,8 @@ float fn_801725C8(float arg0) {
     float hi = lbl_8043038C[1];
     float value = (arg0 - x0) / (x1 - x0);
     float t = lbl_80561A40;
-    if (t < value) { t = value; } else { t = t; }
-    if (t > lbl_80561A44) { t = lbl_80561A44; } else { t = t; }
+    t = (t < value) ? t : value;
+    t = (t > lbl_80561A44) ? t : lbl_80561A44;
     return lo + t * (hi - lo);
 }
 #pragma dont_inline reset
