@@ -3873,9 +3873,10 @@ extern "C" void fn_801D8FD0(void *arg0) {
 }
 #pragma cplusplus reset
 
-void fn_801D8FE0(int arg0) {
-    if (((int *)arg0)[1] != 0) {
-        ((int *)arg0)[1] = 1;
+/* Normalizes the object's +0x4 state/active flag: any non-zero value becomes 1. */
+void fn_801D8FE0(int object) {
+    if (((int *)object)[1] != 0) {
+        ((int *)object)[1] = 1;
     }
 }
 
