@@ -98,7 +98,8 @@ done:
     return;
 }
 
-void fn_801CB3AC(int arg0) {
+/* If not blocked and in the active mode, triggers the per-player handler fn_801CCB48 for this index. */
+void fn_801CB3AC(int playerIndex) {
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
     case 0:
@@ -107,7 +108,7 @@ void fn_801CB3AC(int arg0) {
         goto done;
     }
 action:
-    fn_801CCB48(arg0);
+    fn_801CCB48(playerIndex);
 done:
     return;
 }
