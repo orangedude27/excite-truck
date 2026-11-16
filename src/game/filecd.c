@@ -93,6 +93,7 @@ extern unsigned int lbl_8055FF40;
 extern void fn_802E317C(void *, ...);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034D198[];
+#define fileCdMsgWriteNotSupported lbl_8034D198 /* "filecd: write not supported (%s)" */
 // The FileCd object is this TU's one static block (lbl_8055FF38): the "allocator"
 // always hands out that block, the requested size and tag only say what was asked.
 unsigned int *fn_802E3EB0(void) { return &lbl_8055FF38; }
