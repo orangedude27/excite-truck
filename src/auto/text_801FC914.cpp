@@ -1679,14 +1679,15 @@ extern "C" void fn_801FEFC4(void) {
 extern "C" const char lbl_8033B730[];
   void fn_801FC94C(void);
 #pragma scheduling invalid_target
-extern "C" void* fn_801FEFC8(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        *(void * volatile *)arg0 = (void *)lbl_8033B730;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+extern "C" void *fn_801FEFC8(void *object, int shouldDelete) {
+    /* Scalar deleting destructor: reset the vtable; if requested, free the object. */
+    if (object != 0) {
+        *(void * volatile *)object = (void *)lbl_8033B730;
+        if (shouldDelete > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 #pragma push
 #pragma use_lmw_stmw off
