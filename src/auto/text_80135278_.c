@@ -124,14 +124,15 @@ void *fn_801352B8(Unk_80135278 *arg0) {
 }
 #pragma scheduling on
 #pragma dont_inline on
-void *fn_8013530C(void *arg0, s32 arg1) {
-    if (arg0 != (void*)0) {
-        *(s32 *)((u8 *)arg0 + 0x2C) = 0;
-        if (arg1 > 0) {
+/* Destroy/teardown helper for an object: clear its field at +0x2C and optionally delete it when deleteFlag > 0. */
+void *fn_8013530C(void *object, s32 deleteFlag) {
+    if (object != (void*)0) {
+        *(s32 *)((u8 *)object + 0x2C) = 0;
+        if (deleteFlag > 0) {
             fn_80128668();
         }
     }
-    return arg0;
+    return object;
 }
 #pragma dont_inline off
 
