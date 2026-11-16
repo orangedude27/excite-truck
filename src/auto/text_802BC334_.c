@@ -47,12 +47,13 @@ int fn_802BC334(int path) {
 #define kDynoName lbl_8055CF38 /* .sdata: "dyno", the material-item name tested below */
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_802BC39C(void *arg0) {
-    class Obj {
+extern "C" int fn_802BC39C(void *item) {
+    /* RealName: UMatItem_IsDyno (returns nonzero if the item's name is "dyno"). */
+    class UMatNamedItem {
     public:
         virtual const char *getName();
     };
-    return stricmp((char *)&lbl_8055CF38, ((Obj *)arg0)->getName()) == 0;
+    return stricmp((char *)&kDynoName, ((UMatNamedItem *)item)->getName()) == 0;
 }
 #pragma cplusplus reset
 #pragma pop
