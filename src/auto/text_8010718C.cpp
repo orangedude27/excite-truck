@@ -68,10 +68,11 @@ extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl(nw4hbm::ut::FileStream50* thi
     }
 }
 
-extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_801071DC(nw4hbm::ut::FileStream54* this_,
-                                                            s32 off,
+extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_801071DC(nw4hbm::ut::FileStream54* stream,
+                                                            s32 offset,
                                                             u32 origin) {
-    if (this_->Seek(off, origin) == 0) {
+    /* Seek the stream and panic if the seek is not supported. */
+    if (stream->Seek(offset, origin) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80328458, 0x3C,
                                      (const char*)lbl_80328490);
     }
@@ -109,14 +110,12 @@ public:
 }
 
 s32 nw4hbm::ut::FileStream::CancelAsync(CancelCallback callback, void* user) {
-    u8* base = lbl_80328458;
+    const char* base = (const char*)lbl_80328458;
     if (v21(callback, user) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4E,
-                                     (const char*)(base + 0x38));
+        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x4E, base + 0x38);
     }
     if (v10() == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4F,
-                                     (const char*)(base + 0x60));
+        Panic__Q26nw4hbm2dbFPCciPCce(base + 0, 0x4F, base + 0x60);
     }
     return 1;
 }
