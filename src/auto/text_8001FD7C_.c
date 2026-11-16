@@ -54,6 +54,7 @@ extern int lbl_8055D640;
 #define TIPS_WAIT_MS   lbl_8055D640 /* last tick while the overlay is paused */
 #define OVERLAY_ON     lbl_8055D644 /* the overlay is being shown */
 #define OVERLAY_PAUSED lbl_8055D645 /* overlay waits for a pause/jump condition to clear */
+#define TIPS_ZOOM_ACTIVE lbl_8055D648 /* timed tips camera zoom is in progress */
 #define GetTimeMs      fn_802E2C20
 extern unsigned char lbl_8055D670;
 extern int lbl_8055D64C;
