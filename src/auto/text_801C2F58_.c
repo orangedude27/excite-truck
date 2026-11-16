@@ -438,7 +438,10 @@ extern char lbl_8055E7E3;
 extern s32 lbl_8055E808;
 
 s32 fn_801C3D5C(void) {
-    return *(s32 *)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
+    /* The contest being raced, looked up in the global contest table: returns
+     * its parameter table object (ContestEntry+0x20), which the debug menu here
+     * uses as the scene's named-variable table. */
+    return *(s32 *)((char *)getContestEntry(current_contest_index) + 0x20);
 }
 
 void fn_801C3D88(void *arg0) {
