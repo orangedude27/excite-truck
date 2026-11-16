@@ -116,10 +116,12 @@ void fn_8024C28C(Fn8024C2C4Queue *queue) {
     *queue->out = queue->buf[prevIndex];
 }
 
-void fn_8024C2C4(Fn8024C2C4Queue *q) {
-    int n = (q->idx + 1) % q->cnt;
-    q->idx = n;
-    *q->out = q->buf[n];
+/* Step a ring buffer's index forward one slot (wrapping at cnt), then copy that
+   element into the queue's output slot. */
+void fn_8024C2C4(Fn8024C2C4Queue *queue) {
+    int nextIndex = (queue->idx + 1) % queue->cnt;
+    queue->idx = nextIndex;
+    *queue->out = queue->buf[nextIndex];
 }
 
 int fn_8024C2F8(void *arg0) {
