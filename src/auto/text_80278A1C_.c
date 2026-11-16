@@ -6,6 +6,9 @@
 extern f32 lbl_805640C0;
 extern f32 lbl_805640C4;
 extern f32 lbl_805640C8;
+#define DEFAULT_RANGE lbl_805640C0 /* 10.0f: fallback bone-field magnitude */
+#define DEFAULT_ZERO lbl_805640C4  /* 0.0f */
+#define DEFAULT_ONE lbl_805640C8   /* 1.0f */
 extern void* lbl_8055F5F0;
 s32 stricmp(const char*, const char*);
 extern int sprintf(char*, const char*, ...);
