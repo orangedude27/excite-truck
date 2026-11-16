@@ -21912,6 +21912,8 @@ extern "C" s32 fn_800D56FC(void *obj, const char *name) {
     return 0;
 }
 
+/* nw4hbm::lyt::Bounding vtable: destructor, CalculateMtx, Draw, DrawSelf, Animate, ... */
+#define BoundingVtable lbl_8031F540
 extern "C" void* fn_800D57AC(void* arg0, const void* arg1) {
     __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(arg0, arg1);
     *(const char**)arg0 = lbl_8031F540;
@@ -21956,10 +21958,12 @@ extern "C" void fn_800C776C(void *arg0, s32 arg1) {
     ((u32 *)arg0)[0x24 / 4] = (u32)arg1;
 }
 
-extern "C" void fn_800C7774(u8 *self)
+extern "C" void fn_800C7774(u8 *arg0)
 {
+    struct SelfBox { u8 *v; } selfBox;
+    u8 *&self = selfBox.v;
     const char *file = (const char *)lbl_8031D840;
-    char *start = *(char **)(*(u8 **)(self + 4) + 0xC);
+    char *start = *(char **)(*(u8 **)(arg0 + 4) + 0xC);
     char *p;
     s32 len1 = 0;
     s32 len2;
@@ -21968,6 +21972,7 @@ extern "C" void fn_800C7774(u8 *self)
     u8 *q;
     void *buf;
 
+    self = arg0;
     p = start;
     while (*p != 0) {
         if (*p == ',') break;
@@ -24814,18 +24819,16 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
 
 extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
-    register void *pane;
-    register u8 *cursor=self;
-    register s32 i=0;
-    s32 j;
+    void *pane;
+    u8 *cursor=self;
+    s32 i=0, j;
     for(;i<*(s32*)(self+8);cursor+=4,i++) {
-        if(*(s32*)(cursor+0x1c)!=0) {
+        if(*(s32*)(cursor+0x1c)) {
             s32 *entry=lbl_802F4528;
             s32 count=*(s32*)(self+0xc);
             for(j=0;j<count;entry+=2,j++) {
-                if(i==entry[0] && entry[1]==2) {} else goto next_inner;
-                goto found;
-next_inner: continue;
+                if(i != entry[0]) continue;
+                if(entry[1]==2) goto found;
             }
             j=-1;
 found:
@@ -24835,26 +24838,19 @@ found:
             *(s32*)(cursor+0x1c)=0;
         }
     }
-    if(*(s32*)(self+0x1c+*(s32*)(self+8)*4)!=0) {
+    if(*(s32*)(self+0x1c+*(s32*)(self+8)*4)) {
         pane=*(void**)(self+0x3f0);
         fn_800CF3EC(pane);
         *(s32*)((u8*)pane+0x14)=1;
         *(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)=0;
     }
-    if(*(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)!=0) {
+    if(*(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)) {
         if(*(s32*)self==1) {
             if(*(s32*)(self+0x18)==0) {
                 s32 *entry=lbl_802F4588;
-                s32 k;
-                j=0;
-                for(k=0;k<0x25;k++,entry+=4,j++) {
-                    if(entry[0]==5 && entry[1]==0x14) {} else goto second20;
-                    goto found20;
-second20:
-                    j++;
-                    if(entry[2]==5 && entry[3]==0x14) {} else goto third20;
-                    goto found20;
-third20: continue;
+                j=0; for(s32 k=0;k<37;k++,entry+=4,j++) {
+                    if(entry[0]==5 && entry[1]==20) goto found20;
+                    j++; if(entry[2]==5 && entry[3]==20) goto found20;
                 }
                 j=-1;
 found20:
@@ -24865,16 +24861,9 @@ found20:
             }
         } else {
             s32 *entry=lbl_802F4588;
-            s32 k;
-            j=0;
-            for(k=0;k<0x25;k++,entry+=4,j++) {
-                if(entry[0]==5 && entry[1]==3) {} else goto second3;
-                goto found3;
-second3:
-                j++;
-                if(entry[2]==5 && entry[3]==3) {} else goto third3;
-                goto found3;
-third3: continue;
+            j=0; for(s32 k=0;k<37;k++,entry+=4,j++) {
+                if(entry[0]==5 && entry[1]==3) goto found3;
+                j++; if(entry[2]==5 && entry[3]==3) goto found3;
             }
             j=-1;
 found3:
