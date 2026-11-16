@@ -718,14 +718,16 @@ extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlay
 }
 #pragma pop
 extern "C" void fn_800EBB88(void *arg0) {
-    volatile s32 *p = (volatile s32 *)arg0;
-    s32 *q = (s32 *)((u8 *)arg0 + 8);
-    p[2] = 0;
-    p[3] = 0;
-    p[0] = 0;
-    p[1] = 0;
-    p[2] = (s32)q;
-    p[3] = (s32)q;
+    /* Initialize a nw4r sound FrameHeap's intrusive link list: clear the head/tail
+       slots at +0/+4 and make the sentinel node at +8 link to itself (empty list). */
+    volatile s32 *links = (volatile s32 *)arg0;
+    s32 *sentinel = (s32 *)((u8 *)arg0 + 8);
+    links[2] = 0;
+    links[3] = 0;
+    links[0] = 0;
+    links[1] = 0;
+    links[2] = (s32)sentinel;
+    links[3] = (s32)sentinel;
 }
 
 #pragma push
