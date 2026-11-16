@@ -25,13 +25,14 @@ void fn_8029EFBC(void) {
     }
 }
 
-int fn_8029EFF0(int arg0) {
-    if (arg0 == -1)
-        goto ret0;
-    if (arg0 != -2)
-        goto ret1;
-ret0:
+int fn_8029EFF0(int handle) {
+    /* Return 0 for the invalid resource-handle sentinels -1/-2, 1 otherwise. */
+    if (handle == -1)
+        goto invalid;
+    if (handle != -2)
+        goto valid;
+invalid:
     return 0;
-ret1:
+valid:
     return 1;
 }
