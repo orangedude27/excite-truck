@@ -29335,14 +29335,15 @@ extern u8 lbl_80559060[];
 extern u8 lbl_803151D8[];
 extern char lbl_80319EC0[];
 extern char lbl_8031669C[];
-void fn_80085DF4(void *arg0, u8 arg1) {
-    *(u16 *)((u8 *)arg0 + 2) = 4;
-    *(u16 *)((u8 *)arg0 + 4) = 0;
-    *(u8 *)((u8 *)arg0 + 8) = 0x45;
-    *(u8 *)((u8 *)arg0 + 9) = 0x0C;
-    *(u8 *)((u8 *)arg0 + 10) = 1;
-    *(u8 *)((u8 *)arg0 + 11) = arg1;
-    btu_hcif_send_cmd(arg0);
+/* Build an HCI Write Inquiry Mode command (opcode 0x0C45) with the given mode and send it. */
+void fn_80085DF4(void *cmdBuf, u8 mode) {
+    *(u16 *)((u8 *)cmdBuf + 2) = 4;
+    *(u16 *)((u8 *)cmdBuf + 4) = 0;
+    *(u8 *)((u8 *)cmdBuf + 8) = 0x45;
+    *(u8 *)((u8 *)cmdBuf + 9) = 0x0C;
+    *(u8 *)((u8 *)cmdBuf + 10) = 1;
+    *(u8 *)((u8 *)cmdBuf + 11) = mode;
+    btu_hcif_send_cmd(cmdBuf);
 }
 
 /* Build and send an HCI "Write Page Scan Type" command (opcode 0x0C47):
