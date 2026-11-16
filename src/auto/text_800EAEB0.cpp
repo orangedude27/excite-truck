@@ -174,7 +174,8 @@ public:
 };
 }}}
 
-extern u8 lbl_80323E98[];
+extern u8 lbl_80323E98[]; /* nw4hbm::snd::detail::SeqPlayer vtable (secondary at +0x98) */
+#define sSeqPlayerVtable lbl_80323E98
 extern u8 lbl_803239C0[];
 extern u8 lbl_80323AF8[];
 
