@@ -22194,29 +22194,29 @@ extern void rfc_mx_sm_sabme_wait_ua(void *, s32, void *);
 extern void rfc_mx_sm_state_wait_sabme(void *, s32, void *);
 extern void rfc_mx_sm_state_connected(void *, s32, void *);
 extern void rfc_mx_sm_state_disc_wait_ua(void *, s32, void *);
-/* Match note: the seven switch arms preserve the incoming arguments and compile to the original tail-dispatch table. */
-void fn_800916F4(void *arg0, s32 arg1, s16 *arg2) {
-    switch (((u8 *)arg0)[0x6c]) {
-    case 0:
-        rfc_mx_sm_state_idle(arg0, arg1, arg2);
+/* Dispatches an RFCOMM multiplexer event to the handler for its current state. */
+void fn_800916F4(void *mcb, s32 event, s16 *eventData) {
+    switch (((u8 *)mcb)[0x6c]) {
+    case RFC_MX_STATE_IDLE:
+        rfc_mx_sm_state_idle(mcb, event, eventData);
         return;
-    case 1:
-        rfc_mx_sm_state_wait_conn_cnf(arg0, arg1, arg2);
+    case RFC_MX_STATE_WAIT_CONN_CNF:
+        rfc_mx_sm_state_wait_conn_cnf(mcb, event, eventData);
         return;
-    case 2:
-        rfc_mx_sm_state_configure(arg0, arg1, arg2);
+    case RFC_MX_STATE_CONFIGURE:
+        rfc_mx_sm_state_configure(mcb, event, eventData);
         return;
-    case 3:
-        rfc_mx_sm_sabme_wait_ua(arg0, arg1, arg2);
+    case RFC_MX_STATE_SABME_WAIT_UA:
+        rfc_mx_sm_sabme_wait_ua(mcb, event, eventData);
         return;
-    case 4:
-        rfc_mx_sm_state_wait_sabme(arg0, arg1, arg2);
+    case RFC_MX_STATE_WAIT_SABME:
+        rfc_mx_sm_state_wait_sabme(mcb, event, eventData);
         return;
-    case 5:
-        rfc_mx_sm_state_connected(arg0, arg1, arg2);
+    case RFC_MX_STATE_CONNECTED:
+        rfc_mx_sm_state_connected(mcb, event, eventData);
         return;
-    case 6:
-        rfc_mx_sm_state_disc_wait_ua(arg0, arg1, arg2);
+    case RFC_MX_STATE_DISC_WAIT_UA:
+        rfc_mx_sm_state_disc_wait_ua(mcb, event, eventData);
         return;
     }
 }
