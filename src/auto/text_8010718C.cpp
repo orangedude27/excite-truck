@@ -60,12 +60,19 @@ class FileStream50 : public IOStream50 {};
 } // namespace ut
 } // namespace nw4hbm
 extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl(nw4hbm::ut::FileStream50* this_,
-                                                   s32 off,
+                                                   s32 offset,
                                                    u32 origin) {
-    if (this_->Seek(off, origin) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80328458, 0x2C,
-                                     (const char*)lbl_8032846C);
+    #define FILE_STREAM_SOURCE_FILE lbl_80328458
+    #define SEEK_ASSERT_MESSAGE lbl_8032846C
+
+    /* Seek within the file stream and panic if the seek operation fails. */
+    if (this_->Seek(offset, origin) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)FILE_STREAM_SOURCE_FILE, 0x2C,
+                                     (const char*)SEEK_ASSERT_MESSAGE);
     }
+
+    #undef FILE_STREAM_SOURCE_FILE
+    #undef SEEK_ASSERT_MESSAGE
 }
 
 extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_801071DC(nw4hbm::ut::FileStream54* stream,
