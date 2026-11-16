@@ -958,15 +958,18 @@ void fn_80194590(void *driver) {
 extern float lbl_8055A488;
 extern float lbl_8056215C;
 #pragma dont_inline on
-void fn_801945F8(void *arg0) {
-    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) == 0x50) {
-        if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) != 3) {
+/* Initialize the driver's lateral direction scale via fn_80194590, except in a
+ * specific race state: when the object at +0x294 has kind 0x50, skip unless the
+ * object at +0x288 holds 3 at +0x24. */
+void fn_801945F8(void *driver) {
+    if (*(int *)((unsigned char *)*(void **)((unsigned char *)driver + 0x294) + 0x1F0) == 0x50) {
+        if (*(int *)((unsigned char *)*(void **)((unsigned char *)driver + 0x288) + 0x24) != 3) {
             return;
         }
-        fn_80194590(arg0);
+        fn_80194590(driver);
         return;
     }
-    fn_80194590(arg0);
+    fn_80194590(driver);
 }
 
 extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params covering lon, or the defaults */
