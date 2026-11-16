@@ -10815,7 +10815,7 @@ static inline void btm_pm_cont_switch_inl(int offset, u16 handle, u8 status) {
                 return;
             }
         } else {
-            if (btsnd_hcic_switch_role(addr, link[0x14e] == 0)) {
+            if (btsnd_hcic_switch_role(addr, (lbl_803C0F78 + offset)[0x14e] == 0)) {
                 link[0x14f] = 0;
                 return;
             }
