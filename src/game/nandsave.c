@@ -212,14 +212,15 @@ int fn_802E8A18(void) {
 }
 
 #pragma scheduling on
-int fn_802E8AE8(const char *arg0) {
-    unsigned char sp8[0x88];
-    int result = 0;
-    if (NANDOpen((void *)arg0, sp8, 1) == 0) {
-        result = 1;
-        NANDClose(sp8);
+int fn_802E8AE8(const char *path) {
+    /* Return 1 if the NAND file at `path` can be opened for reading, else 0. */
+    unsigned char fileInfo[0x88];
+    int exists = 0;
+    if (NANDOpen((void *)path, fileInfo, 1) == 0) {
+        exists = 1;
+        NANDClose(fileInfo);
     }
-    return result;
+    return exists;
 }
 
 void fn_802E8B34(const char *path) {
