@@ -758,19 +758,25 @@ done:
 /* FrameHeap::Destroy and NewSection as inlined into Create. */
 static inline void FrameHeap_DestroyInline(FrameHeapDestroyView *state) {
     if (state->heap == 0) return;
+    struct { FrameHeapDestroyListView *p; } headBox;
+    FrameHeapDestroyListView *&head = headBox.p;
     if (state->count == 0) goto free_heap;
-    FrameHeapDestroyListView *head = &state->list;
+    head = &state->list;
     goto loop_test;
 loop_body:
     if (state->count == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
     }
     {
-        void *list = head->tail;
+        struct { void *p; } listBox;
+        void *&list = listBox.p;
+        list = head->tail;
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
         if (list != 0) {
-            void *node = (u8 *)list + 0xC;
+            struct { void *p; } nodeBox;
+            void *&node = nodeBox.p;
+            node = (u8 *)list + 0xC;
             while (node != *(void **)((u8 *)list + 12)) {
                 void (*callback)(void *, void *, void *);
                 node = *(void **)((u8 *)node + 4);
