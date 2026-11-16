@@ -111,9 +111,9 @@ s32 fn_80018A8C(const char *arg0) {
 }
 #pragma pop
 
+/* RealName: CarStats_Shutdown (see the comment in the body). */
 #pragma cplusplus reset
 
-#pragma cplusplus reset
 void fn_80018B24(void) {
     /* RealName: CarStats_Shutdown
      * Tears down the car stats table that fn_8001880C built out of the
