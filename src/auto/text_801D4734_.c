@@ -1430,10 +1430,11 @@ threshold_test:
 }
 #pragma pop
 
-void fn_801D628C(void *arg0) {
-    *(int *)((char *)arg0 + 4) = 0;
-    *(char **)((char *)arg0 + 0) = lbl_80338C78;
-    *(int *)((char *)arg0 + 0x14) = 0;
+void fn_801D628C(void *object) {
+    /* CameraShake_ASE constructor: install the vtable at +0 and clear the fields at +4 and +0x14. */
+    *(int *)((char *)object + 4) = 0;
+    *(char **)((char *)object + 0) = lbl_80338C78;
+    *(int *)((char *)object + 0x14) = 0;
 }
 
 void *fn_801D62A8(void *arg0, int arg1) {
