@@ -70,15 +70,17 @@ unsigned char *strncpy(unsigned char *dst, const unsigned char *src, int n) {
     return dst;
 }
 
+/* Append src to dst (strcat): find the end of dst, copy src over it including
+ * its terminating NUL, and return dst. */
 unsigned char *fn_80028E00(unsigned char *dst, const unsigned char *src) {
-    const unsigned char *q = src - 1;
-    unsigned char *p = dst - 1;
-    while (*++p != 0) {
+    const unsigned char *srcPtr = src - 1;
+    unsigned char *dstEnd = dst - 1;
+    while (*++dstEnd != 0) {
     }
-    p--;
+    dstEnd--;
     do {
-        *++p = *++q;
-    } while (*p != 0);
+        *++dstEnd = *++srcPtr;
+    } while (*dstEnd != 0);
     return dst;
 }
 
