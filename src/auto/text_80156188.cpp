@@ -434,11 +434,12 @@ extern "C" void fn_801564B0(void) {
 }
 #pragma scheduling on
 #pragma dont_inline reset
-s32 fn_801568E0(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_801568E0(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 s32 fn_80156920(s32 arg0, s32 arg1) {
