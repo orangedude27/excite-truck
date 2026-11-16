@@ -331,25 +331,35 @@ extern char lbl_8034AAF0[];
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802BBE34(void) {
-    int *ptr;
-    int outer;
-    int inner;
+    #define sBadWeightFmt lbl_8034AAF0
+    #define sLayerTextures lbl_804C00B0
+    #define sampleTexture fn_802D972C
+    #define logMessage fn_802E30C8
+    int *texture;
+    int x;
+    int y;
     unsigned int sum;
-    int count;
-    for (outer = 0; outer < 0x200; outer++) {
-        for (inner = 0; inner < 0x200; inner++) {
+    int layer;
+    /* Scans every point of the 0x200 x 0x200 lightweight colormap and logs any
+     * pixel whose six matmap layers do not add up to 0xFF. */
+    for (x = 0; x < 0x200; x++) {
+        for (y = 0; y < 0x200; y++) {
             sum = 0;
-            for (count = 0, ptr = lbl_804C00B0; count < 6; count++, ptr++) {
-                if (*ptr != 0) {
-                    sum += ((unsigned int)((int (*)(void *, int, int))fn_802D972C)(
-                        (void *)*ptr, outer, inner) >> 8) & 0xFF;
+            for (layer = 0, texture = sLayerTextures; layer < 6; layer++, texture++) {
+                if (*texture != 0) {
+                    sum += ((unsigned int)((int (*)(void *, int, int))sampleTexture)(
+                        (void *)*texture, x, y) >> 8) & 0xFF;
                 }
             }
             if (sum != 0xFF) {
-                fn_802E30C8(lbl_8034AAF0, outer, inner, sum);
+                logMessage(sBadWeightFmt, x, y, sum);
             }
         }
     }
+    #undef logMessage
+    #undef sampleTexture
+    #undef sLayerTextures
+    #undef sBadWeightFmt
 }
 #pragma pop
 extern int fn_80128690(void);
