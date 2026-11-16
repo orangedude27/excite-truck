@@ -173,10 +173,14 @@ char *fn_8022D82C(void *arg0, int arg1, int arg2) {
 }
 #pragma pop
 
-char *fn_8022D850(void *arg0, int arg1, int arg2, int *arg3) {
-    char *ptr = fn_8022D82C(arg0, arg1, arg2);
-    if (arg3 != 0) *arg3 = (signed char)*ptr;
-    return ptr + 1;
+/* RealName: UITable_ReadCell
+ * Returns a pointer to the text of a UITable cell (after the tag byte) and,
+ * if outTag is non-null, stores the cell's signed tag byte there.
+ */
+char *fn_8022D850(void *arg0, int row, int column, int *outTag) {
+    char *cell = fn_8022D82C(arg0, row, column);
+    if (outTag != 0) *outTag = (signed char)*cell;
+    return cell + 1;
 }
 
 #pragma scheduling reset
