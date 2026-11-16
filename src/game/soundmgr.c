@@ -266,7 +266,7 @@ void fn_80207C4C(void) {
 	return;
 }
 
-#pragma opt_lifetimes on
+#pragma cplusplus on
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     signed long c, b, a;
     signed long offset = arg2 * 0xC;
@@ -279,6 +279,7 @@ void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     *(signed long*)((char*)arg0 + 0x60) = b;
     *(signed long*)((char*)arg0 + 0x64) = c;
 }
+#pragma cplusplus reset
 void fn_80207C74(void* arg0, signed long arg1) {
     *(signed long*)((char*)arg0 + 0x8C) = arg1;
 }
@@ -732,12 +733,13 @@ extern "C" void fn_8020899C(void* arg0, void* arg1) {
 extern "C" void fn_802089B0(void* self) {
     class Obj {
     public:
-        virtual void f(int);
+        virtual void destroy(int);
     };
+    /* If the sound object exists, invoke its virtual destroy with flag 1. */
     if (self == 0) {
         return;
     }
-    ((Obj*)self)->f(1);
+    ((Obj*)self)->destroy(1);
 }
 #pragma cplusplus reset
 #pragma pop
