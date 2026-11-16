@@ -1522,10 +1522,11 @@ void DBPrintf_801797A8(const char *format, ...) {
 
 extern int lbl_804305A0[];
 extern int lbl_8055E450;
-int fn_801797F8(int arg0, int arg1, int arg2) {
+/* Queue an event for a slot id: store the packed (event type << 16 | parameter) word, then return and bump that slot's event count. */
+int fn_801797F8(int slotId, int eventType, int param) {
     int (*table)[2];
-    (table = (int (*)[2])lbl_804305A0)[arg0][0] = (arg1 << 16) | (arg2 & 0xFFFF);
-    return table[arg0][1]++;
+    (table = (int (*)[2])lbl_804305A0)[slotId][0] = (eventType << 16) | (param & 0xFFFF);
+    return table[slotId][1]++;
 }
 
 #pragma push
