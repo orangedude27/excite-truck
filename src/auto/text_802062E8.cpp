@@ -12,6 +12,11 @@ extern "C" void fn_8020A368(void);
 extern "C" void fn_802E30C8(const char *, ...);
 extern char lbl_8033BC50[];
 extern char lbl_8033BC68[];
+extern int lbl_8055D430;
+
+static inline bool IsDebugFlagSet_802062E8(int mask) {
+    return (lbl_8055D430 & 1) && (lbl_8055D430 & mask);
+}
 
 struct Rec80207490 { void *v; int pad[2]; };
 struct Obj80207490 {
