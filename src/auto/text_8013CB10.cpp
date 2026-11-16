@@ -1445,10 +1445,11 @@ extern "C" void *fn_8013E77C(void *instance, s32 delete_flag) {
 #define ITEM_RECORD_STRIDE 0x12C /* size of one entry in the item table at self+0xB8 */
 #define ITEM_RECORD_ACTIVE 0x118 /* nonzero while the item entry is active */
 
-extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
-    u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * ITEM_RECORD_STRIDE;
-    if (*(u8 *)(entry + ITEM_RECORD_ACTIVE))
-        *(s32 *)entry = 1;
+extern "C" void fn_8013EB0C(void *owner, s32 index) {
+    /* Mark word 0 of an active item record to 1 (the item table lives at owner+0xB8). */
+    u8 *record = *(u8 **)((u8 *)owner + 0xB8) + index * ITEM_RECORD_STRIDE;
+    if (*(u8 *)(record + ITEM_RECORD_ACTIVE))
+        *(s32 *)record = 1;
 }
 
 #pragma push
