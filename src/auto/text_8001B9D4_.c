@@ -193,12 +193,12 @@ s32 fn_8001BA90(s32 slot, s32 key, s32 contestIdx, s32 counterIdx, s32 defaultVa
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_8001BB0C(s32 arg0, s32 arg1, s32 arg2) {
-    s32 saved2 = arg2;
-    s32 saved0 = arg0;
-    ((void (*)(s32, s32, s32))fn_8001CE34)(saved0, fn_8001D25C(arg1), saved2);
+void fn_8001BB0C(s32 arg0, s32 contestIdx, s32 arg2) {
+    /* Call fn_8001CE34 with the contest's name looked up from its table entry. */
+    s32 savedArg2 = arg2;
+    s32 savedArg0 = arg0;
+    ((void (*)(s32, s32, s32))fn_8001CE34)(savedArg0, fn_8001D25C(contestIdx), savedArg2);
 }
-#pragma pop
 void fn_8001BB58(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     /* Fetch a contest name via fn_8001D25C(arg1) and return the indexed sub-entry from its record (fn_8001CE74). */
     register s32 a = arg3;
