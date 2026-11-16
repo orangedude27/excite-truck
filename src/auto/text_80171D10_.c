@@ -210,8 +210,10 @@ int fn_80171E3C(void *arg0) {
 }
 #pragma pop
 
-int fn_80171EC0(int unused) {
-    return *(int *)((char *)fn_8017960C() + 0x10) == 0x50434152;
+/* Return whether the car in the given slot is the player's truck: its resource
+ * (fn_8017960C, with the slot index forwarded in r3) has the 'PCAR' magic at +0x10. */
+int fn_80171EC0(int carIndex) {
+    return *(int *)((char *)fn_8017960C() + 0x10) == FOURCC_PCAR;
 }
 
 extern float lbl_80561A3C, lbl_80561A40;
