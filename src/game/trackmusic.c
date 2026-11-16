@@ -409,34 +409,51 @@ long fn_8020FC6C(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+/* Pick the track-music song for the current event: read the event name from the
+ * scene's resource, resolve the matching song index, log the choice and switch
+ * to it (stopping the old song first when it changes). */
 extern "C" void fn_8020FCC4(void) {
-    int result;
-    int index;
-    int current;
-    void *base;
-    struct Dummy_802113D8 *object;
-    base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-    object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
-    result = object->f6(&lbl_8055B674, lbl_8033C970);
-    index = ((int (*)(void))fn_8020FC6C)();
-    if (index >= 0 && index < lbl_804900AC.m_count) {
-        fn_802E30C8(lbl_8033C980, index, lbl_804900AC.m_entries[index], result);
+    #define TRACK_SONGS     lbl_804900AC
+    #define CURRENT_SONG    lbl_8055B658
+    #define EVENT_NAME_OUT  lbl_8055B674
+    #define NO_EVENT        lbl_8033C970   /* "invalid_contest" */
+    #define FOUND_MSG       lbl_8033C980   /* "TrackMusic: Found song %d (%s) for event %s" */
+    #define SCENE_IDX_PTR   __AXFXGetLfoSinTable_801769CC
+
+    int eventName;
+    int songIndex;
+    int currentSong;
+    void *scene;
+    struct Dummy_802113D8 *resource;
+    scene = fn_8001285C(*(long *)SCENE_IDX_PTR());
+    resource = *(struct Dummy_802113D8 **)((char *)scene + 0x20);
+    eventName = resource->f6(&EVENT_NAME_OUT, NO_EVENT);
+    songIndex = ((int (*)(void))fn_8020FC6C)();
+    if (songIndex >= 0 && songIndex < TRACK_SONGS.m_count) {
+        fn_802E30C8(FOUND_MSG, songIndex, TRACK_SONGS.m_entries[songIndex], eventName);
     }
-    if (index == ((int (*)(int))fn_8020F3B4)(0)) {
-        if (lbl_8055B658 == ((int (*)(int))fn_8020F3B4)(1)) {
-            index = ((int (*)(int))fn_8020F3B4)(1);
+    if (songIndex == ((int (*)(int))fn_8020F3B4)(0)) {
+        if (CURRENT_SONG == ((int (*)(int))fn_8020F3B4)(1)) {
+            songIndex = ((int (*)(int))fn_8020F3B4)(1);
         }
     }
-    if (index == ((int (*)(int))fn_8020F3B4)(0)) {
-        if (lbl_8055B658 == ((int (*)(int))fn_8020F3B4)(2)) {
-            index = ((int (*)(int))fn_8020F3B4)(2);
+    if (songIndex == ((int (*)(int))fn_8020F3B4)(0)) {
+        if (CURRENT_SONG == ((int (*)(int))fn_8020F3B4)(2)) {
+            songIndex = ((int (*)(int))fn_8020F3B4)(2);
         }
     }
-    current = lbl_8055B658;
-    if (current != -1 && current != index) {
+    currentSong = CURRENT_SONG;
+    if (currentSong != -1 && currentSong != songIndex) {
         fn_802EC1D8();
     }
-    lbl_8055B658 = index;
+    CURRENT_SONG = songIndex;
+
+    #undef TRACK_SONGS
+    #undef CURRENT_SONG
+    #undef EVENT_NAME_OUT
+    #undef NO_EVENT
+    #undef FOUND_MSG
+    #undef SCENE_IDX_PTR
 }
 #pragma cplusplus off
 #pragma scheduling on
