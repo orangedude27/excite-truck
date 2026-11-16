@@ -282,6 +282,18 @@ typedef struct WPADCB {
     u8 UNK_0x98F[0x9A0 - 0x990];
 } WPADCB;
 
+/* One entry of the per-channel connection table (lbl_80392900, .bss).  The
+ * channel reset below zeroes the whole entry; the disconnect handler calls
+ * the callback at +0x10 with (chan, WPAD_ERR_NO_CONTROLLER) when the control
+ * block itself has no read callback left to answer. */
+typedef struct WPADChanEntry {
+    u32 UNK_0x00;              // at 0x0
+    u32 UNK_0x04;              // at 0x4
+    u16 UNK_0x08;              // at 0x8
+    u32 UNK_0x0C;              // at 0xC
+    WPADCallback disconnectCB; // at 0x10
+} WPADChanEntry;
+
 extern WPADCB _wpd[WPAD_MAX_CONTROLLERS];
 extern WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
 
