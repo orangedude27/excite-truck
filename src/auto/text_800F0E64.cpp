@@ -960,9 +960,9 @@ extern "C" void *fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
  u8 *p=(u8*)a; void *c;
  s32 valid=0;
  if(key>=0 && key<=127) valid=1;
- if(!valid) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u32)file+0),0x30a,file+0x268,key,0,127);
+ if(!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x30a,file+0x268,key,0,127);
  valid=0; if(vel>=0 && vel<=127) valid=1;
- if(!valid) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u32)file+0),0x30b,file+0x2a0,vel,0,127);
+ if(!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x30b,file+0x2a0,vel,0,127);
  void *owner = *(void**)(p+0xb4);
  c=0;
  if(reuse && (c=*(void**)(p+0xb8))) {
