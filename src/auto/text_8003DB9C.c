@@ -5897,18 +5897,19 @@ void __GXSetViewport(void) {
 #define GX_FIELD_EVEN 0
 #define GX_DIRTY_VIEWPORT (1 << 28)
 
-void GXSetViewportJitter(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
+/* Set the viewport rectangle and depth range, applying a half-pixel vertical jitter for even interlaced fields. */
+void GXSetViewportJitter(s32 nextField, f32 ox, f32 oy, f32 sx, f32 sy, f32 nearZ, f32 farZ) {
     extern f32 lbl_80560BCC;
-    if (arg0 == 0) {
-        farg1 -= lbl_80560BCC;
+    if (nextField == GX_FIELD_EVEN) {
+        oy -= GX_JITTER_HALF_PIXEL;
     }
-    ((f32 *)__GXData)[0x544 / 4] = farg0;
-    ((f32 *)__GXData)[0x548 / 4] = farg1;
-    ((f32 *)__GXData)[0x54C / 4] = farg2;
-    ((f32 *)__GXData)[0x550 / 4] = farg3;
-    ((f32 *)__GXData)[0x554 / 4] = farg4;
-    ((f32 *)__GXData)[0x558 / 4] = farg5;
-    __GXData[0x5FC / 4] |= 0x10000000;
+    ((f32 *)__GXData)[0x544 / 4] = ox;
+    ((f32 *)__GXData)[0x548 / 4] = oy;
+    ((f32 *)__GXData)[0x54C / 4] = sx;
+    ((f32 *)__GXData)[0x550 / 4] = sy;
+    ((f32 *)__GXData)[0x554 / 4] = nearZ;
+    ((f32 *)__GXData)[0x558 / 4] = farZ;
+    __GXData[0x5FC / 4] |= GX_DIRTY_VIEWPORT;
 }
 
 void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 farZ) {
