@@ -2687,23 +2687,25 @@ void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
     *__peReg = (unsigned short)data.reg;
 }
 
-void GXInitLightDir(unsigned int x, unsigned int y, unsigned int *arg2) {
+void GXInitLightDir(unsigned int col, unsigned int row, unsigned int *out) {
+    /* GX read-back helper (the name is a misnomer): read one depth word from the
+     * GX read window at pixel (col, row) into *out. */
     union {
         unsigned int addr;
         struct {
             unsigned int prefix : 8;
             unsigned int flag : 2;
-            unsigned int yBits : 10;
-            unsigned int xBits : 10;
+            unsigned int rowBits : 10;
+            unsigned int colBits : 10;
             unsigned int low : 2;
         } fields;
     } address;
 
     address.addr = 0xC8000000;
-    address.fields.xBits = x;
-    address.fields.yBits = y;
+    address.fields.colBits = col;
+    address.fields.rowBits = row;
     address.fields.flag = 1;
-    *arg2 = *(unsigned int *)address.addr;
+    *out = *(unsigned int *)address.addr;
 }
 
 unsigned int GXGetLightDir(unsigned int value) {
