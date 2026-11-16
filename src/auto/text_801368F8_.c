@@ -380,28 +380,16 @@ s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
 
 #pragma dont_inline on
 s32 fn_80137140(s32 arg0, s32 arg1) {
+    s32 oA;
     s32 oB;
     s32 wA;
     s32 wB;
-    s32 res;
-    s32 oA;
-    f32 f1a;
-    f32 f2a;
     oA = fn_8017960C(arg0);
     oB = fn_8017960C(arg1);
     wA = fn_802C6C34(*(s32 *)(oA + 0x59C));
     wB = fn_802C6C34(*(s32 *)(oB + 0x59C));
-    f1a = *(f32 *)(wA + 0x40);
-    f2a = *(f32 *)(wB + 0x3C);
-    res = 0;
-    if (fn_80137078((void *)(oA + 0x3C), (void *)(oB + 0x3C), f1a, f2a)) {
-        f1a = *(f32 *)(wB + 0x40);
-        f2a = *(f32 *)(wA + 0x3C);
-        if (fn_80137078((void *)(oB + 0x3C), (void *)(oA + 0x3C), f1a, f2a)) {
-            res = 1;
-        }
-    }
-    return res;
+    return fn_80137078((void *)(oA + 0x3C), (void *)(oB + 0x3C), *(f32 *)(wA + 0x40), *(f32 *)(wB + 0x3C)) &&
+           fn_80137078((void *)(oB + 0x3C), (void *)(oA + 0x3C), *(f32 *)(wB + 0x40), *(f32 *)(wA + 0x3C));
 }
 
 extern void *fn_80137C54(int);
