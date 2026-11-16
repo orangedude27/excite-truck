@@ -818,10 +818,13 @@ void fn_80131268(void *arg0) {
 extern int lbl_8055E044;
 void fn_80131308(void) { lbl_8055E044 += 1; }
 
-void fn_801312EC(int *arg0, int arg1) {
-    arg0[0] = arg1;
-    arg0[1] = 0;
-    arg0[2] = ~lbl_8055E044;
+void fn_801312EC(int *msg, int key) {
+    /* Start a lazy message-cache entry: remember the table key, clear the
+     * resolved text, and mark it unresolved with ~the message-table stamp
+     * (lbl_8055E044); fn_80131318 fills in the text and stamp on resolution. */
+    msg[0] = key;
+    msg[1] = 0;
+    msg[2] = ~lbl_8055E044;
 }
 
 // Resolves a handle to its object; stores the resolved value and, on success, records the associated state.
