@@ -3,6 +3,19 @@
 
 #include <types.h>
 
+#pragma push
+#pragma cplusplus off
+typedef struct { u32 words[9]; } MatrixCopy_8021AA18;
+typedef struct { u32 words[3]; } VectorCopy_8021AA18;
+#pragma always_inline on
+static inline void CopyMatrix_8021AA18(void *dst, const void *src) {
+    *(MatrixCopy_8021AA18 *)dst = *(const MatrixCopy_8021AA18 *)src;
+}
+static inline void CopyVector_8021AA18(void *dst, const void *src) {
+    *(VectorCopy_8021AA18 *)dst = *(const VectorCopy_8021AA18 *)src;
+}
+#pragma pop
+
 /* Keys a menu item's handler sees.  The arrows are the Windows virtual-key
    codes with a 0x100 base; Return and Escape keep their plain codes. */
 enum {
@@ -1587,13 +1600,13 @@ extern "C" void fn_8021AA18(void *arg0) {
     t0 = src[4]; t1 = src[5];
     state.a[4] = t0;
     state.a[5] = t1;
-    t0 = src[6]; t1 = src[7];
-    state.a[6] = t0;
-    state.a[7] = t1;
+    t1 = src[6]; t0 = src[7];
+    state.a[6] = t1;
+    state.a[7] = t0;
     state.a[8] = src[8];
-    t0 = src[9]; t1 = src[10];
-    state.a[9] = t0;
-    state.a[10] = t1;
+    t1 = src[9]; t0 = src[10];
+    state.a[9] = t1;
+    state.a[10] = t0;
     state.a[11] = src[11];
     state.x = ((f32 *)src)[12];
     state.y = ((f32 *)src)[13];
@@ -4963,37 +4976,37 @@ extern "C" void fn_80220B5C(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_80220C54(void *arg0) {
-    register void *self = arg0;
-    register s32 size;
-    s32 *entries;
-    s32 current;
-    s32 *check;
-    s32 target;
-    register s32 enabled;
-    s32 e0;
-    s32 h = ((Vf78 *)self)->get() - 0xB;
-    entries = *(s32 **)((u8 *)self + 0x244);
-    check = *(s32 **)((u8 *)self + 0x25C);
-    enabled = 0;
-    current = *(s32 *)((u8 *)self + 0x250);
-    e0 = *entries;
-    target = *(s32 *)((u8 *)self + 0x254);
-    size = h * (e0 - current) / (target - current - 1);
-    if (check != 0 && *check == *(s32 *)((u8 *)self + 0x260))
-        enabled = 1;
-    s32 centerX = ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
-    s32 centerY = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1);
-    f32 x = (f32)(*(s32 *)((u8 *)self + 4) - centerX);
-    f32 y = (f32)(centerY - *(s32 *)((u8 *)self + 8));
-    f32 previous = (f32)fn_802C5220(*(s32 *)((u8 *)self + 0x248));
-    f32 value = (f32)((Vf78 *)self)->get();
-    fn_802C5320(*(s32 *)((u8 *)self + 0x248), enabled, x, y,
-                lbl_805634A8, value, previous);
-    f32 following = (f32)fn_802C5220(*(s32 *)((u8 *)self + 0x24C));
-    fn_802C5320(*(s32 *)((u8 *)self + 0x24C), enabled,
-                lbl_805634E0 + x, y - lbl_805634E0,
-                lbl_805634A8, (f32)size, following);
+extern "C" void fn_80220C54(void *arg0)
+{
+  register void *self = arg0;
+  s32 *entries;
+  register s32 size;
+  s32 current;
+  s32 *check;
+  s32 target;
+  register s32 enabled;
+  s32 e0;
+  s32 h = ((Vf78 *) self)->get() - 0xB;
+  entries = *((s32 **) (((u8 *) self) + 0x244));
+  check = *((s32 **) (((u8 *) self) + 0x25C));
+  enabled = 0;
+  current = *((s32 *) (((u8 *) self) + 0x250));
+  e0 = *entries;
+  target = *((s32 *) (((u8 *) self) + 0x254));
+  size = (h * (e0 - current)) / ((target - current) - 1);
+  if ((check != 0) && ((*check) == (*((s32 *) (((u8 *) self) + 0x260)))))
+  {
+    enabled = 1;
+  }
+  s32 centerX = ((s32) (lbl_8055FB9C + (((u32) lbl_8055FB9C) >> 31))) >> 1;
+  s32 centerY = ((s32) (lbl_8055FBA0 + (((u32) lbl_8055FBA0) >> 31))) >> 1;
+  f32 x = (f32) ((*((s32 *) (((u8 *) self) + 4))) - centerX);
+  f32 y = (f32) (centerY - (*((s32 *) (((u8 *) self) + 8))));
+  f32 previous = (f32) fn_802C5220(*((s32 *) (((u8 *) self) + 0x248)));
+  f32 value = (float) ((f32) ((Vf78 *) self)->get());
+  fn_802C5320(*(((u8 *) self) + 0x248), enabled, x, y, lbl_805634A8, value, previous);
+  f32 following = (f32) fn_802C5220(*((s32 *) (((u8 *) self) + 0x24C)));
+  fn_802C5320(*((s32 *) (((u8 *) self) + 0x24C)), enabled, lbl_805634E0 + x, y - lbl_805634E0, lbl_805634A8, (f32) size, following);
 }
 #pragma pop
 
@@ -7112,7 +7125,6 @@ extern "C" void fn_80224E74(void *this_) {
     }
     f64 f31 = yy;
     p = TB(0x244, char *);
-    f32 wdiv = lbl_80563544;
     f32 half = lbl_805634C4;
     s32 row = 0;
     while (*p != 0) {
@@ -7147,7 +7159,7 @@ extern "C" void fn_80224E74(void *this_) {
         }
         s32 W = lbl_8055FB9C;
         s32 H = lbl_8055FBA0;
-        f32 x = (f32)W / wdiv + xx;
+        f32 x = (f32)W / lbl_80563544 + xx;
         f32 f3 = TB(0x254, f32);
         f32 y = (f32)H * half - ((f32)f31 + (f32)row * (f3 * (f32)fn_80232B70(TB(0x248, s32))));
         row++;
