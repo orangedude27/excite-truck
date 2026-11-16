@@ -20231,11 +20231,13 @@ extern "C" void fn_800D155C(void *controller) {
 }
 
 #pragma dont_inline on
-extern "C" void fn_800D15B4(void *arg0) {
-    s32 channel = *(s32 *)arg0;
+/* Stop this controller's WPAD rumble motor if it is running: clear the
+ * motor-active flag at +0x1C and switch the motor off on its channel. */
+extern "C" void fn_800D15B4(void *controller) {
+    s32 channel = *(s32 *)controller;
     if (channel >= 4) return;
-    if (*(u8 *)((u8 *)arg0 + 0x1C) == 0) return;
-    *(u8 *)((u8 *)arg0 + 0x1C) = 0;
+    if (*(u8 *)((u8 *)controller + 0x1C) == 0) return;
+    *(u8 *)((u8 *)controller + 0x1C) = 0;
     WPADControlMotor(channel, 0);
 }
 #pragma dont_inline reset
