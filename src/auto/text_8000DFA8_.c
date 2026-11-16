@@ -70,9 +70,9 @@ extern void fn_80010B7C(void);
 extern void fn_802C8BD0(s32);
 extern void fn_802C8D74(void);
 extern void fn_80234AEC(void);
-extern void *fn_80010BEC(void *);
+extern void *fn_80010BEC();
 
-extern void fn_802346C8(void *);
+extern void fn_802346C8();
 
 extern s32 lbl_8055D4D0;
 extern s32 lbl_8055D4C0;
