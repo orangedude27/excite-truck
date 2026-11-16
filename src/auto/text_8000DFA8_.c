@@ -308,8 +308,11 @@ extern f64 lbl_80560268;
  * lays its nine pictures as a frame, fn_8000F4BC releases it. */
 extern s32 lbl_8055D4D4;
 #define frameArtSet lbl_8055D4D4
-/* Caches the frame art set named by `name` (fn_8023512C opens an ArtSet by
- * name and takes a reference; the name comes from the UI config table). */
+/**
+ * Caches the UI's 9-slice frame art set: opens the ArtSet named by `name`
+ * (forwarded in r3 from the UI config table) and stores its handle in
+ * frameArtSet for later use by fn_80011278 / fn_8000F4BC.
+ */
 void fn_8000F498(const char *name) {
     frameArtSet = fn_8023512C(name);
 }
