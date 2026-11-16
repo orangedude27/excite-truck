@@ -355,8 +355,10 @@ f32 fn_8001BEC4(s32 arg0) {
     return *(f32 *)((s32 (*)(s32))fn_8001BC18)(arg0);
 }
 
-f32 fn_8001BEE8(s32 arg0) {
-    return *(f32 *)((s32 (*)(s32))fn_8001BC20)(arg0);
+/* Read the float field at offset 0x1C of a resource record, via its
+ * address helper. */
+f32 fn_8001BEE8(s32 record) {
+    return *(f32 *)((s32 (*)(s32))fn_8001BC20)(record);
 }
 
 extern void fn_8001BC28();
