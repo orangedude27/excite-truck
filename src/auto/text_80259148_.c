@@ -50,12 +50,13 @@ extern "C" void fn_80259148(void) {
         virtual void f2();
         virtual void apply(void *, void *, int);
     };
-    register int base asm("r31") = (int)lbl_80344DE0;
+    typedef char Row[0x10];
+    register Row *base asm("r31") = (Row *)lbl_80344DE0;
     Obj *obj = (Obj *)fn_80258354();
     lbl_8055F394 = obj;
-    obj->apply((void *)(base + 0), (void *)(base + 0x10), 0);
-    ((Obj *)lbl_8055F394)->apply((void *)(base + 0x20), (void *)(base + 0x30), 0);
-    ((Obj *)lbl_8055F394)->apply((void *)(base + 0x40), (void *)(base + 0x50), 1);
+    obj->apply(&base[0], &base[1], 0);
+    ((Obj *)lbl_8055F394)->apply(&base[2], &base[3], 0);
+    ((Obj *)lbl_8055F394)->apply(&base[4], &base[5], 1);
 }
 #pragma scheduling on
 #pragma cplusplus reset
@@ -64,12 +65,13 @@ extern "C" void fn_80259148(void) {
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_802591D8(void) {
-    class Obj {
+    /* RealName: DestroyAchievementBannerSingleton (destroys the global banner object at lbl_8055F394 and clears it). */
+    class AchievementBanner {
     public:
         virtual void destroy(int);
     };
     if (lbl_8055F394 != 0) {
-        ((Obj*)lbl_8055F394)->destroy(1);
+        ((AchievementBanner*)lbl_8055F394)->destroy(1);
     }
     lbl_8055F394 = 0;
 }
