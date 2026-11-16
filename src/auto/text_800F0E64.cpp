@@ -836,10 +836,11 @@ extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *track, bool s
 }
 #pragma pop
 
-extern "C" void fn_800F1E50(void *arg0, f32 value) {
-    u32 token = OSDisableInterrupts();
-    *(f32 *)((char *)arg0 + 8) = value;
-    OSRestoreInterrupts(token);
+extern "C" void fn_800F1E50(void *object, f32 value) {
+    /* Set the float field at offset 0x8 of object with interrupts disabled. */
+    u32 level = OSDisableInterrupts();
+    *(f32 *)((char *)object + 8) = value;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(void *self, float volume) {
