@@ -6249,11 +6249,14 @@ extern "C" void fn_800FB358(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x18) = 0;
 }
 
-extern "C" s32 fn_800FB374(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668();
+/* Deleting-destructor helper: free `object` when `shouldDelete` is set, then return it. */
+extern "C" s32 fn_800FB374(s32 object, s32 shouldDelete) {
+#define MemFree fn_80128668
+    if (object != 0 && shouldDelete > 0) {
+        MemFree();
     }
-    return arg0;
+    return object;
+#undef MemFree
 }
 
 #pragma push
