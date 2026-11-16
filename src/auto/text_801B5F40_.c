@@ -181,15 +181,13 @@ void fn_801B6428(void **head, void *value) {
         return;
     }
     prev = node;
-    cur = *(void **)((u8 *)node + 4);
-    while (cur != 0) {
+    while ((cur = *(void **)((u8 *)prev + 4)) != 0) {
         if (*(void **)cur == value) {
             *(void **)((u8 *)prev + 4) = *(void **)((u8 *)cur + 4);
             __AXPushCallbackStack(cur);
             return;
         }
         prev = cur;
-        cur = *(void **)((u8 *)cur + 4);
     }
     fn_802E317C(lbl_80335F20);
 }
