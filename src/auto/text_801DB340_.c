@@ -997,7 +997,7 @@ float fn_801DDC8C(float worldX, float worldZ)
   int cellZ;
   int tileCoordX;
   int tileCoordZ;
-  int *ground = (int *) lbl_8055E990;
+  GroundDesc *ground = (GroundDesc *) lbl_8055E990;
   int cellInTileX;
   int cellInTileZ;
   unsigned short tileId;
@@ -1013,12 +1013,12 @@ float fn_801DDC8C(float worldX, float worldZ)
   float layerHeight;
   float height;
   char *layer;
-  if (((GroundDesc *)ground)->tiled == 0)
+  if (ground->tiled == 0)
   {
     return lbl_80562B84;
   }
-  gridX = ((GroundDesc *)ground)->scaleX * (worldX + ((GroundDesc *)ground)->offsetX);
-  gridZ = ((GroundDesc *)ground)->scaleZ * (worldZ + ((GroundDesc *)ground)->offsetZ);
+  gridX = ground->scaleX * (worldX + ground->offsetX);
+  gridZ = ground->scaleZ * (worldZ + ground->offsetZ);
   roundedX = (gridX < lbl_80562B84) ? (gridX - lbl_80562B64) : (lbl_80562B64 + gridX);
   cellX = (int) roundedX;
   roundedZ = (gridZ < lbl_80562B84) ? (gridZ - lbl_80562B64) : (lbl_80562B64 + gridZ);
@@ -1050,7 +1050,7 @@ float fn_801DDC8C(float worldX, float worldZ)
     }
     else
     {
-      node = (char *) ((GroundDesc *)ground)->nodes + (tileId * 0x894);
+      node = (char *) ground->nodes + (tileId * 0x894);
     }
   }
   if (node == 0)
@@ -1061,7 +1061,7 @@ float fn_801DDC8C(float worldX, float worldZ)
   height = lbl_80562B84;
   if (firstLayer >= 0)
   {
-    layer = (char *) ((GroundDesc *)ground)->layers + firstLayer * 0x810;
+    layer = (char *) ground->layers + firstLayer * 0x810;
     do {
       GroundLayer *overlay = (GroundLayer *) layer;
       weightIndex = overlay->tableIndex;
@@ -1070,7 +1070,7 @@ float fn_801DDC8C(float worldX, float worldZ)
       layerHeight = overlay->baseHeight + overlay->heightScale * (float) sample;
       height += layerHeight * lbl_804425DC[weightIndex];
       if (nextLayer < 0) { break; }
-      layer = ((char *) (*((int *) (((char *) ground) + 0x20)))) + (nextLayer * 0x810);
+      layer = *((char **)((char *) ground + 0x20)) + (nextLayer * 0x810);
     } while (1);
   }
   return height;
