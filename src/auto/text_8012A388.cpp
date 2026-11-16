@@ -3315,12 +3315,13 @@ extern "C" s32 fn_8012C7FC(void *arg0, s32 *arg1) {
 #pragma pop
 extern "C" void fn_802E7548(s32);
 extern "C" u8 lbl_8032AC88[];
-extern "C" void fn_8012C90C(void *arg0) {
-    s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0xC);
-    if (temp_r0 != -1) {
-        fn_802E7548(temp_r0);
-        *(s32 *)((u8 *)arg0 + 0xC) = -1;
-        *(s32 *)((u8 *)arg0 + 0x10) = 0;
+/* Cancels the active stream read on a stream request, if any, and clears its handle and data pointer. */
+extern "C" void fn_8012C90C(void *request) {
+    s32 handle = *(s32 *)((u8 *)request + 0xC);
+    if (handle != -1) {
+        fn_802E7548(handle);
+        *(s32 *)((u8 *)request + 0xC) = -1;
+        *(s32 *)((u8 *)request + 0x10) = 0;
     }
 }
 
