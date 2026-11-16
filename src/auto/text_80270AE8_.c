@@ -1176,11 +1176,14 @@ void fn_8027264C(int label, void *curve, float param) {
 }
 
 #pragma dont_inline on
-s32 fn_802726AC(f32 farg0, f32 farg1, f32 farg2) {
-    if (farg1 < farg2) {
-        return (farg1 < farg0) && (farg0 < farg2);
+/* RealName: IsFloatStrictlyBetween_802726AC - 1 when value lies strictly between
+   the two bounds, whichever order they are given in. fn_802726EC adds the two
+   endpoints; kept out of line so that caller shares this half. */
+s32 fn_802726AC(f32 value, f32 boundA, f32 boundB) {
+    if (boundA < boundB) {
+        return (boundA < value) && (value < boundB);
     }
-    return (farg1 > farg0) && (farg0 > farg2);
+    return (boundA > value) && (value > boundB);
 }
 #pragma dont_inline reset
 
