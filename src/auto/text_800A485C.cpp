@@ -2711,7 +2711,7 @@ loop_2:
                 VFipf_memcpy(*(void **)((u8 *)var_r30 + 4),
                              (u8 *)arg2 + ((temp_r7 - arg3) << temp_r5_4),
                              (temp_r31 - temp_r7) << temp_r5_4);
-                temp_r4_3 = request_length + arg3;
+                temp_r4_3 = arg3 - (0 - request_length);
                 temp_r4_4 = temp_r4_3 - *(u32 *)((u8 *)var_r30 + 0x18);
                 *arg5 += temp_r4_4;
                 var_r29 -= temp_r4_4;
@@ -20558,6 +20558,12 @@ extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1) {
     return (s32)((u32)(neg | val) >> 31);
 }
 
+// Per-channel remote-speaker slot (0x68 bytes); only the fields read here are named.
+struct RemoteSpkSlot {
+    u8 pad[0x50];
+    s32 playing; // 0x50: nonzero while a sound is active on this channel
+    s32 soundId; // 0x58: id of the currently playing sound
+};
 extern "C" s32 fn_800D1E78(void *arg0, s32 arg1, s32 arg2) {
     void *ptr = (u8 *)arg0 + arg1 * 0x68;
     if (((s32 *)ptr)[0x50 / 4] != 0 && arg2 == ((s32 *)ptr)[0x58 / 4]) {
