@@ -1292,9 +1292,12 @@ s32 fn_8016212C(s32 arg0) {
     return fn_801613E0(arg0);
 }
 
-int fn_80162130(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_80162130(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 void fn_80162170(void) {
