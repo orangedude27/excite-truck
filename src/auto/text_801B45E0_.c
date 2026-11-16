@@ -350,9 +350,10 @@ int fn_801B4C1C(int arg0, int arg1) {
     return copy >= result;
 }
 #pragma pop
-int fn_801B4BDC(int arg0) {
-    void *p = (void *)(arg0 + 4);
-    return *fn_801B479C(arg0 + 4, fn_801B47B4(p));
+int fn_801B4BDC(int queue) {
+    /* Return the tick of the replay frame at the queue's adjusted current index (its previous/current frame): the first field of that frame in the FramePool. */
+    void *state = (void *)(queue + 4);
+    return *fn_801B479C(queue + 4, fn_801B47B4(state));
 }
 
 void fn_801B4C58(int arg0, int arg1) {
