@@ -183,8 +183,8 @@ void fn_80236910(void) {
     fn_80236960();
 }
 
-void fn_80236914(int arg0, float *arg1, double arg2) {
-    extern void fn_80237AA0(int, float *, double);
+void fn_80236914(int arg0, float *arg1, float arg2) {
+    extern void fn_80237AA0(int, float *, float);
     fn_80237AA0(arg0, arg1, arg2);
 }
 
