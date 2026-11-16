@@ -10017,45 +10017,65 @@ extern "C" const u8 lbl_80560D9C;
 extern "C" const u8 lbl_80560D9D;
 #pragma push
 #pragma scheduling on
-extern "C" s32 fn_800B5070(s32 arg0, s32 *out) {
-    volatile u8 sp9;
-    volatile u8 sp8;
-    s32 offset;
+extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
+    /* VFi PFSTR path parser: after the two-character 0x01/0x02 marker, read six
+     * decimal digits, require '/', '\' or end-of-string at index 8, and return
+     * the accumulated number through *outValue (1 on success, 0 otherwise).
+     * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.) */
+    #define PATH_MARKER_LO  lbl_80560D9C
+    #define PATH_MARKER_HI  lbl_80560D9D
+    #define PATH_NUL        lbl_8055920C
+    #define PATH_BACKSLASH  lbl_8055921C
+    #define PATH_SLASH      lbl_80559220
+    #define PATH_MARKER_LEN 2
+    #define PATH_END_INDEX  8
+
+    volatile u8 secondChar;
+    volatile u8 firstChar;
+    s32 charOffset;
     s32 result;
     s32 index;
-    s32 acc;
-    s16 value;
-    s32 special;
-    sp8 = lbl_80560D9C;
-    sp9 = lbl_80560D9D;
+    s32 number;
+    s16 digit;
+    s32 hasSeparator;
+    firstChar = PATH_MARKER_LO;
+    secondChar = PATH_MARKER_HI;
     result = 0;
-    if (VFiPFSTR_StrNCmp(arg0, (const void *)&sp8, 1, 0, 2) == 0) {
-        acc = 0;
+    if (VFiPFSTR_StrNCmp(path, (const void *)&firstChar, 1, 0, PATH_MARKER_LEN) == 0) {
+        number = 0;
         index = 2;
-        offset = 4;
-        while ((s16)index < 8 || VFiPFSTR_StrNCmp(arg0, lbl_8055920C, 1, (s16)index, 1) != 0) {
-            if (fn_800A4D44((void *)arg0) == 1U)
-                value = (s8)((u8 *)(u32)fn_800A4D74((void *)arg0, 1))[(s16)index] - 0x30;
+        charOffset = 4;
+        while ((s16)index < PATH_END_INDEX || VFiPFSTR_StrNCmp(path, PATH_NUL, 1, (s16)index, 1) != 0) {
+            if (fn_800A4D44((void *)path) == 1U)
+                digit = (s8)((u8 *)(u32)fn_800A4D74((void *)path, 1))[(s16)index] - 0x30;
             else
-                value = *(u16 *)((u8 *)(u32)fn_800A4D74((void *)arg0, 1) + offset) - 0x30;
-            if (value < 0 || value > 9) break;
-            acc *= 10;
-            offset += 2;
+                digit = *(u16 *)((u8 *)(u32)fn_800A4D74((void *)path, 1) + charOffset) - 0x30;
+            if (digit < 0 || digit > 9) break;
+            number *= 10;
+            charOffset += 2;
             index++;
-            acc += value;
+            number += digit;
         }
-        if ((s16)index == 8) {
-            special = 0;
-            if (VFiPFSTR_StrNCmp(arg0, lbl_8055921C, 1, (s16)index, 1) == 0 ||
-                VFiPFSTR_StrNCmp(arg0, lbl_80559220, 1, (s16)index, 1) == 0)
-                special = 1;
-            if (special == 0 || VFiPFSTR_StrNCmp(arg0, 0, 1, (s16)index, 1) == 0) {
-                *out = acc;
+        if ((s16)index == PATH_END_INDEX) {
+            hasSeparator = 0;
+            if (VFiPFSTR_StrNCmp(path, PATH_BACKSLASH, 1, (s16)index, 1) == 0 ||
+                VFiPFSTR_StrNCmp(path, PATH_SLASH, 1, (s16)index, 1) == 0)
+                hasSeparator = 1;
+            if (hasSeparator == 0 || VFiPFSTR_StrNCmp(path, 0, 1, (s16)index, 1) == 0) {
+                *outValue = number;
                 result = 1;
             }
         }
     }
     return result;
+
+    #undef PATH_MARKER_LO
+    #undef PATH_MARKER_HI
+    #undef PATH_NUL
+    #undef PATH_BACKSLASH
+    #undef PATH_SLASH
+    #undef PATH_MARKER_LEN
+    #undef PATH_END_INDEX
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
