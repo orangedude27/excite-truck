@@ -235,6 +235,7 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D1AB4(long self, long shouldDe
 extern int lbl_8055E918;
 extern float lbl_80562A58;
 extern int fn_80128670(int);
+/* Free the car-element array (allocated with a 0x10-byte header before the pointer) and clear its global. */
 void fn_801D1B0C(void) {
     if (lbl_8055E918 != 0) {
         fn_80128670(lbl_8055E918 - 0x10);
