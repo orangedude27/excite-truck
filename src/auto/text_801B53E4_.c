@@ -50,10 +50,6 @@ extern void *fn_801B591C(void *, s32);
 extern void fn_8002F6AC(void *(*)(void *, s32));
 extern void fn_80128668(void *);
 
-static inline f32 RectMidpoint(f32 half, f32 sum) {
-    return half * sum;
-}
-
 /* True for the BPX scene objects this unit links together: +0x18 carries the
  * 'BPX ' magic (0x42505820, written here as the add-and-compare the game's
  * compiler produced) and +0x20 the kind that stands for a linkable segment. */
