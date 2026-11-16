@@ -194,6 +194,7 @@ void *fn_80131810(void); /* opens a table from a path in r3; the prototype stays
 void *fn_801284F8(int, const char *);
 void *fn_801399FC();
 extern const char lbl_8032C0C8[];
+#define kBoundSetTag lbl_8032C0C8  // "bound_set", the allocation tag for the list
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void *fn_80139D4C(void) {
