@@ -314,9 +314,10 @@ extern "C" int fn_802E4280(void *owner, char *path) {
 }
 #pragma cplusplus reset
 #pragma pop
-int fn_802E43D8(void *arg0, int arg1) {
-    if (arg1 >= 0 && arg1 <= *(int *)((char *)arg0 + 0x84)) {
-        *(int *)((char *)arg0 + 0x88) = arg1;
+/* Seek a DVD file node: set its cursor (0x88) to pos when 0 <= pos <= length (0x84); return 1 on success, 0 if out of range. */
+int fn_802E43D8(void *file, int pos) {
+    if (pos >= 0 && pos <= *(int *)((char *)file + 0x84)) {
+        *(int *)((char *)file + 0x88) = pos;
         return 1;
     }
     return 0;
