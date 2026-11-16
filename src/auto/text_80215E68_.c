@@ -101,9 +101,10 @@ s32 fn_80215EC4(s32 value, s32 count) {
 }
 
 #pragma scheduling invalid_target
-void fn_80215F04(void *arg0) {
-    *(char **)arg0 = lbl_8033D690;
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+void fn_80215F04(VtblObject *obj) {
+    /* Pool element constructor: install the vtable pointer and clear the state word. */
+    obj->vtable = lbl_8033D690;
+    obj->state = 0;
 }
 #pragma scheduling on
 /* Return value if non-zero and count > 0 (side effect via Notify/Trigger); otherwise just return value. */
