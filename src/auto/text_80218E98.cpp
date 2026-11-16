@@ -7621,11 +7621,14 @@ extern "C" void *fn_802269A8(void *obj, void *arg1) {
     self->region = fn_8022EE9C();
     fn_80230C30(&self->coords[0], &self->coords[1], self->width, self->height);
     self->diff = (f32)(self->total - self->height);
-    f32 elapsed = (f32)self->f28();
-    f32 scale = lbl_805634C4;
+    struct { f32 value; } scaleStorage;
+    f32 &scale = scaleStorage.value;
+    f32 elapsed;
+    elapsed = (f32)self->f28();
+    scale = lbl_805634C4;
     self->elapsed = elapsed;
-    *(f32 *)((u8 *)self->region + 0x24) = (self->coords[0] + (scale * elapsed));
-    *(f32 *)((u8 *)self->region + 0x28) = (self->coords[1] - (self->diff * scale));
+    *(f32 *)((u8 *)self->region + 0x24) = self->coords[0] + elapsed * scale;
+    *(f32 *)((u8 *)self->region + 0x28) = self->coords[1] - self->diff * scale;
     self->count = *(s32 *)((u8 *)arg1 + 0x9C);
     return obj;
 }
