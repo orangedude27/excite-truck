@@ -574,7 +574,6 @@ extern "C" void fn_8014595C(void *list, const char *out) {
     }
     fn_802E3AD0((s32)out, lbl_80559E14);
 }
-#pragma use_lmw_stmw reset
 #pragma dont_inline on
 extern "C" f32 fn_80145A08(f32 x0, f32 x1, f32 y0, f32 y1, f32 x) {
     /* Linearly interpolate: value at x on the line through (x0,y0) and (x1,y1). */
