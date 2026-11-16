@@ -886,6 +886,7 @@ s32 ISFS_ReadAsync(s32 fd, void* dst, s32 len, FSAsyncCallback callback,
 }
 
 s32 ISFS_Write(s32 fd, const void* src, s32 len) {
+    /* Write to an ISFS file descriptor; src must be non-null and 32-byte aligned, else return IPC_RESULT_INVALID. */
     if (src == NULL || (u32)src % 32 != 0) {
         return IPC_RESULT_INVALID;
     }
