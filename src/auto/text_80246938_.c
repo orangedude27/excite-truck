@@ -1580,28 +1580,32 @@ void fn_80248E30(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_80248FB0(void *arg0, s32 arg1) {
-    s32 now, start, duration;
-    now = fn_802E2C20();
-    start = *(s32 *)((char *)arg0 + 0x1C);
-    if (now < start + 750) return 0;
-    duration = *(s32 *)((char *)arg0 + 0x20);
-    if (duration != 0 && now - start > duration - 500) return 0;
-    if (*(s32 *)((char *)arg0 + 0x18) != 1) return 0;
-    switch (arg1) {
+s32 fn_80248FB0(void *stunt, s32 button) {
+    s32 nowMs, startMs, durationMs;
+    /* Timed input window for a stunt tracker (+0x18 state, +0x1C start ms,
+     * +0x20 duration ms, +0x24 enabled-button mask): while ready (state 1)
+     * and inside the window, an enabled button 13/27 press moves the state
+     * to 2/4 and restarts the window. */
+    nowMs = fn_802E2C20();
+    startMs = *(s32 *)((char *)stunt + 0x1C);
+    if (nowMs < startMs + 750) return 0;
+    durationMs = *(s32 *)((char *)stunt + 0x20);
+    if (durationMs != 0 && nowMs - startMs > durationMs - 500) return 0;
+    if (*(s32 *)((char *)stunt + 0x18) != 1) return 0;
+    switch (button) {
     case 27:
-        if (*(s32 *)((char *)arg0 + 0x24) & 2)
-            *(s32 *)((char *)arg0 + 0x18) = 4;
+        if (*(s32 *)((char *)stunt + 0x24) & 2)
+            *(s32 *)((char *)stunt + 0x18) = 4;
         else return 0;
         break;
     case 13:
-        if (*(s32 *)((char *)arg0 + 0x24) & 1)
-            *(s32 *)((char *)arg0 + 0x18) = 2;
+        if (*(s32 *)((char *)stunt + 0x24) & 1)
+            *(s32 *)((char *)stunt + 0x18) = 2;
         else return 0;
         break;
     default: return 0;
     }
-    *(s32 *)((char *)arg0 + 0x1C) = now - *(s32 *)((char *)arg0 + 0x20) + 500;
+    *(s32 *)((char *)stunt + 0x1C) = nowMs - *(s32 *)((char *)stunt + 0x20) + 500;
     return 1;
 }
 #pragma scheduling on
