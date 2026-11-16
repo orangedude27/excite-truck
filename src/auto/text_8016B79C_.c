@@ -902,11 +902,12 @@ void *fn_8016CD68(void *container, s32 count, s32 allocName) {
     return container;
 }
 
-void fn_8016CDE0(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 8) = 0;
-    *(s32 *)((u8 *)arg0) = 0;
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+void fn_8016CDE0(void *entry) {
+    /* Initialize a 0x14-byte "rc_object_files" entry: clear the in-use flag and the three pointer/word fields so it owns no children. */
+    *(u8 *)((u8 *)entry + 8) = 0;
+    *(s32 *)((u8 *)entry) = 0;
+    *(s32 *)((u8 *)entry + 4) = 0;
+    *(s32 *)((u8 *)entry + 0x10) = 0;
 }
 
 #pragma cplusplus on
