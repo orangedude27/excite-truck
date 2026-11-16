@@ -690,7 +690,9 @@ extern void fn_802DFE88(void);
 extern void fn_802DFD00(void);
 extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
-void fn_802DC71C(int arg0, int arg1) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802DC71C(int arg0, int arg1) {
     extern void GXLoadTexObj(void *, int);
     int useAlt;
     void **base;
@@ -733,7 +735,7 @@ void fn_802DC71C(int arg0, int arg1) {
     *(unsigned char *)(lbl_804DB480 + 0x218) = 1;
     GXSetBlendMode(1, 4, 5, 5);
 }
-
+#pragma pop
 #pragma push
 #pragma processor 750
 void fn_802DC8B4(void) {
