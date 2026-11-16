@@ -202,10 +202,12 @@ f32 fn_801C3450(f32 value) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-s32 fn_801C34CC(f32 arg0, f32 arg1) {
-    f32 diff = arg0 - arg1;
-    f64 abs = __fabs((f64)diff);
-    return (f32)abs <= lbl_80558DC4[0];
+/* Test two floats for approximate equality within the game's epsilon (2^-23):
+ * the timeline sorter uses this to detect entries recorded at the same time. */
+s32 fn_801C34CC(f32 a, f32 b) {
+    f32 difference = a - b;
+    f64 absDifference = __fabs((f64)difference);
+    return (f32)absDifference <= lbl_80558DC4[0];
 }
 #pragma dont_inline reset
 
