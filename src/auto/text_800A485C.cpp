@@ -6865,13 +6865,13 @@ extern "C" s32 fn_800AF584(void *arg0) {
 
 extern "C" s32 fn_800AF5A0(void *arg0, s32 arg1, s32 *arg2) {
     u8 buf[2];
-    u32 retry = 1;
-    s32 result;
     u32 index;
     u16 offset;
+    s32 result;
+    u32 retry = 1;
+    s32 *output = arg2;
     void *object = arg0;
     s32 cluster = arg1;
-    s32 *output = arg2;
     u16 flags = *(u16 *)((u8 *)object + 0x18);
     u16 scaled = cluster + (cluster >> 1);
     index = (u16)(*(u32 *)((u8 *)object + 0x28) + (scaled >> *(u8 *)((u8 *)object + 0x20)));
