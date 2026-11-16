@@ -43,8 +43,10 @@ extern void fn_8000AB48(void *, s32 *);
 extern s32 fn_802C9A58(void);
 extern void fn_802CED50(s32, s32, s32, s32);
 extern const char lbl_80341308[];
-s32 fn_8023B764(s32 arg0, s32 arg1) {
-    return fn_802054EC((s32)&lbl_80341308, arg0, arg1);
+/* Queries the "mirror_mode" setting for the given key/index through the
+ * resource lookup in fn_802054EC; returns nonzero when it is enabled. */
+s32 fn_8023B764(s32 key, s32 index) {
+    return fn_802054EC((s32)&lbl_80341308, key, index);
 }
 
 #pragma dont_inline on
