@@ -50,18 +50,17 @@ extern void *fn_801B591C(void *, s32);
 extern void fn_8002F6AC(void *(*)(void *, s32));
 extern void fn_80128668(void *);
 
-/* True for the BPX scene objects this unit links together: +0x18 carries the
- * 'BPX ' magic (0x42505820, written here as the add-and-compare the game's
- * compiler produced) and +0x20 the kind that stands for a linkable segment. */
-s32 fn_801B53E4(void *arg0) {
-    s32 var_r5;
+/* Returns 1 for a linkable scene resource: its +0x18 fourCC equals 0x424F5820 ("BOX ",
+ * written here as the add-and-compare the compiler produced) and its +0x20 kind is 0x6E. */
+s32 fn_801B53E4(void *obj) {
+    s32 isLinkable;
 
-    var_r5 = 0;
-    if (((u32)(*(s32 *)((u8 *)arg0 + 0x18) + 0xBDB10000) == 0x5820U) &&
-        (*(s32 *)((u8 *)arg0 + 0x20) == 0x6E)) {
-        var_r5 = 1;
+    isLinkable = 0;
+    if (((u32)(*(s32 *)((u8 *)obj + 0x18) + 0xBDB10000) == 0x5820U) &&
+        (*(s32 *)((u8 *)obj + 0x20) == 0x6E)) {
+        isLinkable = 1;
     }
-    return var_r5;
+    return isLinkable;
 }
 
 void fn_801B5410(void *arg0, void *arg1, void *arg2) {
