@@ -2195,22 +2195,23 @@ outer_check:
 #pragma pop
 
 #pragma cplusplus reset
-void fn_8016FF98(void *arg0) {
-    s32 off;
-    s32 found;
-    s32 count = *(s32 *)((u8 *)arg0 + 8);
+void fn_8016FF98(void *container) {
+    /* Call fn_8016A438 if none of the container's items have their flag set at +8. */
+    s32 itemOffset;
+    s32 foundActiveItem;
+    s32 itemCount = *(s32 *)((u8 *)container + 8);
     s32 i;
-    found = 0;
-    off = 0;
-    for (i = 0; i < count; i++, off += 4) {
-        void **items = *(void ***)((u8 *)arg0 + 4);
-        void *elem = *(void **)((u8 *)items + off);
-        if (*(u8 *)((u8 *)elem + 8) != 0) {
-            found = 1;
+    foundActiveItem = 0;
+    itemOffset = 0;
+    for (i = 0; i < itemCount; i++, itemOffset += 4) {
+        void **items = *(void ***)((u8 *)container + 4);
+        void *item = *(void **)((u8 *)items + itemOffset);
+        if (*(u8 *)((u8 *)item + 8) != 0) {
+            foundActiveItem = 1;
             break;
         }
     }
-    if (found == 0) {
+    if (foundActiveItem == 0) {
         fn_8016A438();
     }
 }
