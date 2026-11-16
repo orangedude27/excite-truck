@@ -330,6 +330,7 @@ char *fn_802CA72C(unsigned int textureFormat) {
 char fn_802CA7D4(void) { return 1; }
 
 #pragma dont_inline fn_802CA7DC
+/* True when the path's first byte is '*' (0x2A), marking a special extraction name. */
 int fn_802CA7DC(const unsigned char *path) { return ((signed char)*path - 0x2A) == 0; }
 
 #pragma dont_inline fn_802CA7F4
