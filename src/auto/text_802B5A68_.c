@@ -317,9 +317,10 @@ void fn_802B5E58(s32 arg0) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-u32 fn_802B5E8C(s32 arg0) {
-    s32 result = fn_802B5D2C(lbl_8055CE50, arg0);
-    return (u32)((-1 - result) | (result + 1)) >> 31;
+u32 fn_802B5E8C(s32 text) {
+    /* Returns a nonzero mask if the "brush" value in text parses (fn_802B5D2C did not return -1), else 0. */
+    s32 parsedValue = fn_802B5D2C(lbl_8055CE50, text);
+    return (u32)((-1 - parsedValue) | (parsedValue + 1)) >> 31;
 }
 #pragma pop
 extern void* lbl_8055FA44;
@@ -1028,6 +1029,7 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
     s32 rounded;
     s16 xBase, yBase;
     u32 scale, width, height;
+    f32 temp, raw;
     register u32 row, column;
 
     if (*(s32 *)((u8 *)arg1 + 0x20) != 0) {
@@ -1051,8 +1053,8 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         width = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x20);
         height = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x24);
         if (lbl_8055FA38 == 5) {
-            f32 temp = lbl_80564C58 * (f32)fn_802B6ED8(yBase, 0, height);
-            f32 raw = (f32)fn_802B6E7C(xBase, 0, width);
+            temp = lbl_80564C58 * (f32)fn_802B6ED8(yBase, 0, height);
+            raw = (f32)fn_802B6E7C(xBase, 0, width);
             sp[2] = lbl_80564C58 * raw;
             sp[3] = temp;
             temp = lbl_80564C58 * (f32)fn_802B6ED8(yBase, height - 1, height);
@@ -1751,6 +1753,8 @@ s32 fn_802B825C(s32 arg0) {
     return changed;
 }
 
+#pragma processor 750
+#pragma scheduling 750
 s32 fn_802B8310(s32 arg0) {
     struct Result {
         s32 pad[2];
@@ -1776,7 +1780,6 @@ s32 fn_802B8310(s32 arg0) {
     }
     return changed;
 }
-
 void fn_802B83CC(void) {
     Struct804BFF80 *state = (Struct804BFF80 *)&lbl_804BFF80;
     Struct804BFF80 *callbackState;
@@ -1916,14 +1919,21 @@ extern "C" void fn_802B869C(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802B86F8(void) {
-    s32 base = (s32)&lbl_804BFF80;
-    s8 value = *(s8 *)(base + 0x14);
-    *(u8 *)(base + 0x34) = 0;
+    struct Flags {
+        char pad0[0x0C];
+        s32 flags;
+        char pad10[4];
+        s8 value;
+        char pad15[0x1F];
+        u8 field34;
+    } *p = (struct Flags *)&lbl_804BFF80;
+    s8 value = p->value;
+    p->field34 = 0;
     if (value == 0)
         return;
-    if (*(s32 *)(base + 0xC) & 1)
+    if (p->flags & 1)
         return;
-    *(u8 *)(base + 0x14) = 0;
+    p->value = 0;
 }
 #pragma pop
 s32 fn_802B8728(void) {
