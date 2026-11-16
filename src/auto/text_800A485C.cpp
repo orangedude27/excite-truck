@@ -4888,7 +4888,7 @@ static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
         }
         result = code & (s32)(-(u32)code | (u32)code) >> 31;
     }
-    return result & (s32)(-(u32)result | (u32)result) >> 31;
+    return result;
 }
 #pragma push
 #pragma use_lmw_stmw off
