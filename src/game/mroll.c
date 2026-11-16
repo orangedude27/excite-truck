@@ -85,9 +85,12 @@ s32 fn_8023FF1C(s32 arg0) {
 
 #pragma scheduling on
 extern char lbl_80342618[];
-s32 fn_802407B0(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+s32 fn_802407B0(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 s32 fn_802407F0(s32 arg0, s32 arg1) {
