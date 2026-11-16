@@ -12,12 +12,14 @@
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_8025DFE4(void) {
-    s32 v; s32 *p;
+    /* Initializes a 5-word global state block, its associated flag word, and registers lbl_8055F3B8. */
+    s32 initValue;
+    s32 *statePtr;
     fn_8000D838(&lbl_8055F3B8);
-    p = lbl_80498ED0 + 1;
+    statePtr = lbl_80498ED0 + 1;
     lbl_80498ED0[0] = 0;
-    v = 0x7B;
-    lbl_80498ED0[1] = v;
+    initValue = 0x7B;
+    lbl_80498ED0[1] = initValue;
     lbl_80498ED0[2] = 0;
     lbl_80498ED0[3] = 0;
     lbl_80498ED0[4] = 0;
