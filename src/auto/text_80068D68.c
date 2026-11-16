@@ -4490,26 +4490,34 @@ void uusb_issue_intr_read(void) {
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 
-void uusb_WriteCtrlDataCB(s32 arg0, BT_HDR *arg1) {
+void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
-    register s32 status = arg0;
     register char *report = lbl_803142C8;
+    u16 offset;
+
     if (lbl_803BD1E0.at_0x28 != 0)
-        OSReport(report + 0x460, status);
-    if (status < 0 && lbl_803BD1E0.at_0x28 != 0)
-        OSReport(report + 0x498, status);
+        OSReport(report + 0x460, arg0);
+
+    if (arg0 < 0 && lbl_803BD1E0.at_0x28 != 0)
+        OSReport(report + 0x498, arg0);
+
     if (arg1 != 0) {
         GKI_freebuf(arg1);
         fn_8006EBAC();
         ((u8 *)&lbl_803BD1E0)[0x48] = ((u8 *)&lbl_803BD1E0)[0x48] - 1;
         fn_8006EB88();
     }
+
     {
         register u8 *control = (u8 *)&lbl_803BD1E0;
         if (control[0x48] < 5 && *(u16 *)(control + 0x44) != 0) {
             arg1 = GKI_dequeue((BUFFER_Q *)(control + 0x3C));
-            if (IUSB_WriteCtrlMsgAsync(lbl_803BD1E0.fd, 0x20, 0, 0, 0, arg1->len, (u8 *)arg1 + arg1->offset + 8, (void *)uusb_WriteCtrlDataCB, (void *)arg1) < 0) {
+            offset = *(u16 *)((u8 *)arg1 + 4);
+            if (IUSB_WriteCtrlMsgAsync(lbl_803BD1E0.fd, 0x20, 0, 0, 0,
+                                       *(u16 *)((u8 *)arg1 + 2),
+                                       (u8 *)arg1 + offset + 8,
+                                       (void *)uusb_WriteCtrlDataCB, arg1) < 0) {
                 if (control[0x28] != 0)
                     OSReport(report + 0x4D0);
                 GKI_enqueue_head((BUFFER_Q *)(control + 0x3C), arg1);
@@ -16362,7 +16370,7 @@ BOOLEAN hidd_pm_set_now(void *arg0) {
     u8 mode = 0;
     tBTM_PM_PWR_MD spC = {0};
     u8 status = 0;
-    u8 state_mode; /* early busy check leaves mode 0 */
+    u8 state_mode;
     if (lbl_803C3AF0[0x6E] == 0) {
         state_mode = lbl_803C3AF0[0x6A];
         mode = ((u8 *)arg0)[8];
@@ -21931,6 +21939,56 @@ int port_get_signal_changes(void *port, int oldSignals, int newSignals) {
         if (newSignals & 8) signals |= 0x1000;
     }
     return *((int *)((char *)port + 0x88)) & signals;
+}
+
+extern char lbl_80319688[];
+void RFCOMM_FlowReq(void *, u8, u8);
+void rfc_send_credit(void *, u8, u8);
+void port_flow_control_peer(void *arg0, s32 arg1, u16 arg2) {
+    u8 *port = (u8 *)arg0;
+    void *mcb = *(void **)(port + 0x6C);
+    if (mcb == 0) return;
+    if (*(u8 *)((u8 *)mcb + 0x72) == 2) {
+        if (arg1 != 0) {
+            u16 cur;
+            u16 tmp;
+            if (arg2 > *(u16 *)(port + 0x9A)) *(u16 *)(port + 0x9A) = 0;
+            else *(u16 *)(port + 0x9A) -= arg2;
+            cur = *(u16 *)(port + 0x9A);
+            if (cur > *(u16 *)(port + 0x9E)) return;
+            if (port[0x3D] != 0) return;
+            if (*(u16 *)(port + 0x9C) <= cur) return;
+            rfc_send_credit(*(void **)(port + 0x6C), port[0x0D], (u8)(*(u16 *)(port + 0x9C) - cur));
+            tmp = *(u16 *)(port + 0x9C);
+            port[0x3C] = 0;
+            *(u16 *)(port + 0x9A) = tmp;
+        } else {
+            if (*(void **)(port + 0x94) != 0) {
+                port[0x3C] = 1;
+                return;
+            }
+            if (*(u16 *)(port + 0x38) >= *(u16 *)(port + 0x9C)) port[0x3C] = 1;
+        }
+    } else if (arg1 != 0) {
+        if (port[0x3C] == 0) return;
+        if (*(u32 *)(port + 0x40) >= 0x1388U) return;
+        if (*(u16 *)(port + 0x38) >= 8U) return;
+        port[0x3C] = 0;
+        if (port[0x3D] != 0) return;
+        RFCOMM_FlowReq(mcb, port[0x0D], 1);
+    } else {
+        if (*(void **)(port + 0x94) != 0) {
+            port[0x3C] = 1;
+            RFCOMM_FlowReq(mcb, port[0x0D], 0);
+            return;
+        }
+        if (*(u32 *)(port + 0x40) > 0x1F40U || *(u16 *)(port + 0x38) > 0x10U) {
+            if (port[0x3C] != 0) return;
+            if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319688);
+            port[0x3C] = 1;
+            RFCOMM_FlowReq(*(void **)(port + 0x6C), port[0x0D], 0);
+        }
+    }
 }
 
 extern void RFCOMM_ConnectInd(BD_ADDR, UINT16, UINT16, UINT8);
