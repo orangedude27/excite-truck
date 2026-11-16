@@ -1177,9 +1177,19 @@ extern int *fn_801F1CE8(int);
 extern int fn_80128668(void);
 extern int *fn_801E1F44(void);
 extern int fn_802C9950(int);
-void fn_801F3764(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 8) = *fn_801F1CE8(arg1);
-    *(char *)((char *)arg0 + 4) = 1;
+void fn_801F3764(void *self, int source) {
+    /* Load method for a 4-byte TMH render parameter: copy the raw value word
+     * from the source parameter block (offset 0x2C, via fn_801F1CE8) into this
+     * parameter's value field and mark it loaded, so a later accessor uses the
+     * value instead of a default. */
+    struct TmhValueParam {
+        void *vtable;         /* 0x00 */
+        unsigned char loaded; /* 0x04: the value below is set */
+        int value;            /* 0x08 */
+    } *param = (struct TmhValueParam *)self;
+
+    param->value = *fn_801F1CE8(source);
+    param->loaded = 1;
 }
 
 /* Set the draw/text color: a dim gray when the current state is 1, otherwise a lighter gray. */
