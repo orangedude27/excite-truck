@@ -6,15 +6,22 @@ extern int lbl_80498650[5];
 extern void fn_8000D838(int *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+/* Initialize this module's state and global init flag (constructor). */
 void fn_80238714(void) {
-    int v;
-    fn_8000D838(&lbl_8055F0A8);
-    lbl_80498650[0] = 0;
-    v = 123;
-    lbl_80498650[1] = v;
-    lbl_80498650[2] = 0;
-    lbl_80498650[3] = 0;
-    lbl_80498650[4] = 0;
+#define moduleInitFlag lbl_8055F0A8
+#define moduleState    lbl_80498650
+
+    int initialValue;
+    fn_8000D838(&moduleInitFlag);
+    moduleState[0] = 0;
+    initialValue = 123;
+    moduleState[1] = initialValue;
+    moduleState[2] = 0;
+    moduleState[3] = 0;
+    moduleState[4] = 0;
+
+#undef moduleInitFlag
+#undef moduleState
 }
 #pragma opt_propagation reset
 #pragma scheduling on
