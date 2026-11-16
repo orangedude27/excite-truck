@@ -1252,8 +1252,9 @@ int GXGetFifoBase(int *arg0) {
     return *arg0;
 }
 
-int GXGetFifoSize(void *arg0) {
-    return ((int *)arg0)[2];
+/* Return the configured size of the graphics FIFO's base buffer. */
+int GXGetFifoSize(void *fifo) {
+    return ((int *)fifo)[2];
 }
 
 #pragma dont_inline on
