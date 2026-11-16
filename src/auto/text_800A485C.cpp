@@ -24812,6 +24812,7 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
     }
 }
 
+#pragma dont_inline off
 static inline s32 ResetBtnFindFirst(s32 *entry, s32 count, s32 index) {
     s32 j;
     for (j = 0; j < count; j++, entry += 2) {
