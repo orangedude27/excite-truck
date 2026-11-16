@@ -106,8 +106,9 @@ s32 fn_801EB0F0(s32 modelType) {
 #pragma dont_inline off
 
 #pragma dont_inline on
-s32 fn_801EB110(void *arg0) {
-    return lbl_804885E8[((u32 *)arg0)[4]];
+s32 fn_801EB110(void *node) {
+    /* Look up the cached subsystem object for this node's model-type id (word 4) in the 24-entry cache table. */
+    return lbl_804885E8[((u32 *)node)[4]];
 }
 #pragma dont_inline off
 
