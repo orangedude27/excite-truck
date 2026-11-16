@@ -346,6 +346,13 @@ void fn_801C3AF8(s32 arg0, s32 arg1, f32 angle) {
 #pragma pop
 s32 *__AXFXGetLfoSinTable_801769CC(void);
 void *fn_8001285C(s32);
+/* __AXFXGetLfoSinTable_801769CC is one of the game's address-of stubs: it hands
+ * back the current race's state block, whose first word is the contest being
+ * raced (its AX name is a wrong symbol guess).  fn_8001285C(i) answers with
+ * entry i of the global contest table (lbl_80352AD0, stride 0x28); +0x20 of an
+ * entry is that contest's parameter table object. */
+#define current_contest_index (*__AXFXGetLfoSinTable_801769CC())
+#define getContestEntry       fn_8001285C
 extern f32 lbl_80562990;
 extern f32 lbl_8055E7E4;
 f32 fn_801C3B6C(void) {
