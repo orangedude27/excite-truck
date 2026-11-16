@@ -12554,7 +12554,6 @@ extern "C" s32 fn_800B9CC4(s32 arg0) {
 }
 
 extern "C" u8 lbl_80407320[];
-static inline BOOL fn_800B9DCC_same(u32 a, u32 b) { return a == b; }
 extern "C" s32 fn_800BBCF4(void);
 extern "C" void fn_800BBCB4(void *);
 extern "C" s32 fn_800BB3F4(s32);
@@ -12563,7 +12562,8 @@ extern "C" s32 fn_800B9DCC(u32 arg0) {
     s32 r;
     s32 ret;
     const char *str = lbl_8031B2B0;
-    if ((arg0 == 0u) ? 1 : 0) {
+    u32 none;
+    if (arg0 == (none = 0)) {
         ret = 1;
     } else if (*(volatile u32 *)lbl_80407300 & 1) {
         OSReport(str + 0x7C);
