@@ -317,6 +317,8 @@ void fn_801B3B24(void) {
 }
 
 void fn_801B3B28(void) {
+    /* Shut down this subsystem: unregister handlers fn_801B3390/fn_801B3398, destroy the
+       global object at lbl_8055E6C0, and clear the global pointer. */
     fn_801B537C(fn_801B3390);
     fn_801B537C(fn_801B3398);
     fn_801B3D24((void*)lbl_8055E6C0, 1);
