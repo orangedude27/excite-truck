@@ -1039,11 +1039,18 @@ int fn_80289D94(void *arg0) {
 }
 
 extern int fn_8028A1A4(int);
-int fn_80289EA0(int arg0) {
+int fn_80289EA0(int manager) {
+    /* Construct the "radiator smoke man" fn_802888D8 allocates 8 bytes for (its
+     * name is the string at lbl_80348A90+0x44).  fn_8028A084 creates the
+     * radiator smoke effect and keeps its handle at +4 - it is written to take
+     * no argument but still builds it for the manager left in r3; fn_8028A1A4
+     * allocates the per-track table of emitter positions kept at +0; and
+     * fn_80289F54 clears the +0x64 field of every entry of that table.
+     * fn_80289EE0 is the matching destructor. */
     fn_8028A084();
-    fn_8028A1A4(arg0);
-    fn_80289F54(arg0);
-    return arg0;
+    fn_8028A1A4(manager);
+    fn_80289F54(manager);
+    return manager;
 }
 
 /* Destroy a two-field object: free its buffer (stored as ptr+0x10), tear down the sub-object at +4, and optionally delete self. */
