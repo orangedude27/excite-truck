@@ -328,8 +328,9 @@ s32 fn_8014931C(void *object) {
     return tableCopy.v[((s32 *)object)[1]];
 }
 
-void fn_8014935C(int *p) {
-    p[1] = (p[1] + 1) % 4;
+void fn_8014935C(int *object) {
+    /* Advance the object's table index (0..3) to the next entry, wrapping at 4. */
+    object[1] = (object[1] + 1) % 4;
 }
 
 extern s32 lbl_802F93F0[];
@@ -1255,14 +1256,31 @@ void fn_8014C9D4(void *dst, void *container, s32 useSecond) {
     *(s32 *)((u8 *)dst + 8) = 0;
 }
 
+extern f32 lbl_80561648, lbl_8056163C;
+extern s32 fn_801312EC(void *, void *);
+extern s32 fn_8026B0C0(s32);
+extern s32 lbl_8042FCB4, lbl_8042FCC0, lbl_8042FCCC, lbl_8042FCD8, lbl_8042FCE4, lbl_8042FCF0, lbl_8042FCFC;
+extern u8 lbl_8055E25C, lbl_8055E25D, lbl_8055E25E, lbl_8055E25F, lbl_8055E260, lbl_8055E261, lbl_8055E262;
 s32 fn_8014CA48(s32 arg0, s32 arg1, s32 arg2) {
-    float f = *(float *)(arg0 + 0x18);
-    float base = lbl_80561648;
-    float v;
+    f32 base = lbl_80561648;
+    f32 f = *(f32 *)(arg0 + 0x18);
+    f32 v;
+    u8 *strings = lbl_8032D358;
+    void **vtbl;
+    s32 result;
     if (f < base) v = f - lbl_8056163C;
     else v = lbl_8056163C + f;
-    (void)v; (void)arg1; (void)arg2;
-    return 0;
+    vtbl = *(void ***)arg1;
+    ((s32 (*)(s32, void *))vtbl[5])(arg1, strings + 0x164);
+    if ((s8)lbl_8055E25C == 0) { fn_801312EC(&lbl_8042FCB4, strings + 0x178); lbl_8055E25C = 1; }
+    if ((s8)lbl_8055E25D == 0) { fn_801312EC(&lbl_8042FCC0, strings + 0x184); lbl_8055E25D = 1; }
+    if ((s8)lbl_8055E25E == 0) { fn_801312EC(&lbl_8042FCCC, strings + 0x194); lbl_8055E25E = 1; }
+    if ((s8)lbl_8055E25F == 0) { fn_801312EC(&lbl_8042FCD8, strings + 0x1a0); lbl_8055E25F = 1; }
+    if ((s8)lbl_8055E260 == 0) { fn_801312EC(&lbl_8042FCE4, strings + 0x1b0); lbl_8055E260 = 1; }
+    if ((s8)lbl_8055E261 == 0) { fn_801312EC(&lbl_8042FCF0, strings + 0x1c8); lbl_8055E261 = 1; }
+    if ((s8)lbl_8055E262 == 0) { fn_801312EC(&lbl_8042FCFC, strings + 0x1d4); lbl_8055E262 = 1; }
+    result = fn_8026B0C0(arg2);
+    return result + (s32)v;
 }
 
 void fn_8014D6EC(void *arg0) {
