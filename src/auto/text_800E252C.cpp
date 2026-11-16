@@ -1890,12 +1890,20 @@ extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveD
     voice->playing = 0;
     voice->updateFlags |= 0x70;   /* the AX voices need a full update */
 }
+/* RealName: Start__Q46nw4hbm3snd6detail7AxVoiceFv - asks this AxVoice to start
+ * playing: marks it started (+0x11D), clears its pause flag (+0x11F) and sets the
+ * start bit of the AX update flags (+0x123); the update pass fn_800E4764 then
+ * applies the source rate and sets this voice's AX voices playing.  The three
+ * writes are held under an interrupt lock, the same lock AxManager::UpdateAllVoices
+ * takes while it walks the live voices, so the request is never seen half applied.
+ * Callers reach it through the AxVoice they own: Channel::Start (channel+0xE0),
+ * StrmPlayer::Start (self+0x438) and fn_800FF090 (self+0x18). */
 extern "C" void fn_800E519C(void *arg0) {
     unsigned int level = OSDisableInterrupts();
-    u8 *p = (u8 *)arg0;
-    p[0x11D] = 1;
-    p[0x11F] = 0;
-    p[0x123] |= 1;
+    AxVoice *voice = (AxVoice *)arg0;
+    voice->started = 1;
+    voice->pause = 0;
+    voice->updateFlags |= AX_UPDATE_START;
     OSRestoreInterrupts(level);
 }
 
