@@ -247,6 +247,7 @@ static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32
     s32 i;
     s32 eo;
     s32 flag;
+    Fn80231AF0_Table *table = (Fn80231AF0_Table *)lbl_80497F14;
     *adv = w;
     flag = lbl_8055F050;
     if (*text == '\\') {
@@ -586,31 +587,30 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         int off;
         u8 *g;
 
-        skip = fn_80231D84_escape(text, x, y, z, w, half, &adv);
-        if (skip > 0) {
+        if ((skip = fn_80231D84_escape(text, x, y, z, w, half, &adv)) > 0) {
             text += skip;
             x += adv;
-            continue;
-        }
-        c = *(u8 *)text;
-        if ((c & 0xF0) == 0xE0) {
-            next = text + 3;
-            code = ((c & 0xF) << 12) | ((((u8 *)text)[1] & 0x3F) << 6) | (((u8 *)text)[2] & 0x3F);
-        } else if ((c & 0xE0) == 0xC0) {
-            next = text + 2;
-            code = ((c & 0x1F) << 6) | (((u8 *)text)[1] & ~0xC0);
         } else {
-            code = c & 0x7F;
-            next = text + 1;
+            c = *(u8 *)text;
+            if ((c & 0xF0) == 0xE0) {
+                next = text + 3;
+                code = ((c & 0xF) << 12) | ((((u8 *)text)[1] & 0x3F) << 6) | (((u8 *)text)[2] & 0x3F);
+            } else if ((c & 0xE0) == 0xC0) {
+                next = text + 2;
+                code = ((c & 0x1F) << 6) | (((u8 *)text)[1] & ~0xC0);
+            } else {
+                code = c & 0x7F;
+                next = text + 1;
+            }
+            off = code * 0x1C;
+            text += next - text;
+            g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs;
+            x += sy * (sx * *(f32 *)(g + off));
+            fn_80233AA4(ctx, code, x, y + w, x + sx * *(f32 *)(g + off + 4), y, z);
+            g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off;
+            x += sx * *(f32 *)(g + 4);
+            x += sp + sy * (sx * *(f32 *)(g + 8));
         }
-        off = code * 0x1C;
-        text += next - text;
-        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs;
-        x += sy * (sx * *(f32 *)(g + off));
-        fn_80233AA4(ctx, code, x, y + w, x + sx * *(f32 *)(g + off + 4), y, z);
-        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off;
-        x += sx * *(f32 *)(g + 4);
-        x += sp + sy * (sx * *(f32 *)(g + 8));
     }
 }
 #pragma pop
