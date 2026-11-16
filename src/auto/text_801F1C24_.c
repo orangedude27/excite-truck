@@ -996,6 +996,8 @@ void fn_801F3158(float *arg0, float *arg1) {
 }
 
 float fn_801F3174(void) {
+    /* atan2 wrapper: callers cast this to float(float,float); the two floats stay in
+     * f1/f2 and pass straight to fn_8002EFB0, whose double result is rounded here. */
     return fn_8002EFB0();
 }
 
