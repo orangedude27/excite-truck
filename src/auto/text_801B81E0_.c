@@ -347,6 +347,8 @@ int fn_801B84F0(void) {
 
 #pragma cplusplus on
 extern "C" void fn_801B84F8(void) {
+    /* Mark the arena-event master active (lbl_8055E748 = 1) and invoke the f4()
+     * virtual entry on the global master object (lbl_8055E744). */
     extern char lbl_8055E748;
     lbl_8055E748 = 1;
     ((Dummy_801B8318 *)lbl_8055E744)->f4();
