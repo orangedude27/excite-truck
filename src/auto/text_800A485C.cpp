@@ -11626,12 +11626,13 @@ extern "C" s32 fn_800B7C08(void) {
 }
 
 extern "C" s32 VFipf2_fopen(void);
+/* Forwards VFipf2_fopen()'s result to callers, keeping the zero case explicit. */
 extern "C" s32 fn_800B7C34(void) {
-    s32 r = VFipf2_fopen();
-    if (r == 0) {
-        r = 0;
+    s32 result = VFipf2_fopen();
+    if (result == 0) {
+        result = 0;
     }
-    return r;
+    return result;
 }
 
 extern "C" void fn_800B7C60(void) {
