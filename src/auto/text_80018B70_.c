@@ -27,6 +27,9 @@ extern u8 lbl_80357E0C[12];
 #define sUnlockableMaxExcitePointsName lbl_802FD2F4
 #define sUnlockableNotFoundFmt lbl_802FD308
 #define sUnlockableTable lbl_80357E0C
+#define sUnlockManager lbl_8055D58C /* unlock/properties Manager loaded from common.res/unlock.val */
+#define sResetRequested lbl_8055D588 /* set when a quit/reset is requested */
+#define sUnlockValPath lbl_802FD2DC  /* "common.res/unlock.val" */
 
 typedef struct UnlockableEntry {
     const char *name;
