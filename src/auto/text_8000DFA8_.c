@@ -1815,8 +1815,10 @@ f32 fn_80011DEC(s32 regionId) {
     return lbl_80350F28[regionId][2];
 }
 
-f32 fn_80011E04(s32 arg0) {
-    return lbl_80350F28[arg0][4];
+f32 fn_80011E04(s32 regionId) {
+    /* Base X position of layout region regionId (the [region][4] column of
+     * lbl_80350F28), used as the anchor for region-local text. */
+    return lbl_80350F28[regionId][4];
 }
 
 f32 fn_80011E1C(s32 arg0) {
