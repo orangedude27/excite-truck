@@ -7179,11 +7179,10 @@ extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u32 retry = 1;
     s32 result;
     u16 value;
-    u32 cached;
-
     if (flags & 0x80) {
-        cached = *(u32 *)((u8 *)descriptor + 0x18);
+        u32 cached;
         retry = flags & 7;
+        cached = *(u32 *)((u8 *)descriptor + 0x18);
         if (cached == sector)
             goto read_value;
         if (*(u16 *)((u8 *)descriptor + 2) == 1) {
@@ -7196,7 +7195,6 @@ extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
             }
         }
     }
-
 fetch:
     result = fn_800B5260(object, *(void **)((u8 *)descriptor + 8),
                          sector, 0, *(u16 *)object);
@@ -7220,14 +7218,15 @@ fetch:
     if (result != 0)
         return result;
     *(u32 *)((u8 *)descriptor + 0x18) = sector;
-
 check_result:
     if (result != 0)
         goto fetch;
-
 read_value:
-    value = *(u16 *)((u8 *)*(void **)((u8 *)descriptor + 8) +
-                     (scaled & (*(u16 *)object - 1)));
+    {
+    u8 *buf = *(u8 **)((u8 *)descriptor + 8);
+    u16 sz = *(u16 *)object;
+    value = *(u16 *)(buf + (scaled & (sz - 1)));
+    }
     *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     return 0;
 }
@@ -10958,18 +10957,17 @@ extern "C" u16 lbl_802EEF80[];
 extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
     u32 c = *(u8 *)arg0;
     u32 trail = *((u8 *)arg0 + 1);
-    s32 row;
+    s32 row = 0;
     s32 t;
     u16 value;
     if (c < 0x80) {
-        *arg1 = c;
+        *arg1 = (u16)c;
         return fn_800A4BE8(1, 2);
     }
     if (c >= 0xa1 && c <= 0xdf) {
-        s32 n = 2 - 1;
-        s32 w = c + 0x10000;
-        *arg1 = w - 0x140;
-        return fn_800A4BE8(n, 2);
+        trail = c + 0x10000;
+        *arg1 = (u16)(trail - 0x140);
+        return fn_800A4BE8(1, 2);
     }
     if (c == 0x80 || c == 0x85 || c == 0x86 || c == 0xa0 || c == 0xeb || c == 0xec ||
         (c >= 0xef && c <= 0xf9) || (c >= 0xfd && c == 0xff)) {
@@ -10989,7 +10987,7 @@ extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
         *arg1 = 0x5f;
         return fn_800A4BE8(1, 2);
     }
-    t = trail - 0x40;
+    t = (s32)trail - 0x40;
     if (t < 0 || t >= 0xbd) {
         *arg1 = 0x5f;
         return fn_800A4BE8(1, 2);
@@ -12852,7 +12850,7 @@ extern "C" s32 fn_800BAA8C(s32 arg0, void *arg1) {
     default:
         break;
     }
-    if (*(s32 *)req != 0 && ((u32)arg0 + 0x3DF00000U) >= 1U) {
+    if (*(s32 *)req != 0 && (u32)arg0 != 0xC2100000U) {
         ((void (*)(s32, s32))*(s32 *)req)(arg0, *(s32 *)(req + 4));
     }
     if (*(void **)(req + 0x18) != 0) {
