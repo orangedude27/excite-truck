@@ -2008,30 +2008,33 @@ void fn_801B30D0(s32 arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801B30E0(s32 index) {
-    void *record = (u8 *)lbl_8055E684 + (index << 7);
+extern "C" void fn_801B30E0(s32 recordIndex) {
+    /* For the record at recordIndex, find the node in its parent's circular list whose value at
+       +0x10 is closest to the reference node's value, then pass the scaled position data to
+       fn_801353C8 along with that closest node. */
+    void *record = (u8 *)lbl_8055E684 + (recordIndex << 7);
     void *header = ((Dummy_801B30E0 *)record)->d5();
-    void *reference = *(void **)((u8 *)record + 0x40);
-    void *bestNode;
-    if (reference != 0) {
+    void *referenceNode = *(void **)((u8 *)record + 0x40);
+    void *closestNode;
+    if (referenceNode != 0) {
         void *parent = *(void **)((u8 *)header + 0x2C);
-        void *first;
-        s32 referenceValue = *(s32 *)((u8 *)reference + 0x10);
-        void *node = *(void **)((u8 *)parent + 0x1C);
+        void *firstNode;
+        s32 referenceValue = *(s32 *)((u8 *)referenceNode + 0x10);
+        void *currentNode = *(void **)((u8 *)parent + 0x1C);
         s32 bestDiff = 0x7FFFFFFF;
-        first = node;
-        bestNode = 0;
+        firstNode = currentNode;
+        closestNode = 0;
         do {
-            s32 difference = *(s32 *)((u8 *)node + 0x10) - referenceValue;
+            s32 difference = *(s32 *)((u8 *)currentNode + 0x10) - referenceValue;
             s32 absDiff = difference < 0 ? -difference : difference;
             if (absDiff < bestDiff) {
                 bestDiff = absDiff;
-                bestNode = node;
+                closestNode = currentNode;
             }
-            node = *(void **)((u8 *)node + 0x14);
-        } while (node != first);
+            currentNode = *(void **)((u8 *)currentNode + 0x14);
+        } while (currentNode != firstNode);
     } else {
-        bestNode = 0;
+        closestNode = 0;
     }
     {
         void *data = ((Dummy_801B30E0 *)record)->d6();
@@ -2049,7 +2052,7 @@ extern "C" void fn_801B30E0(s32 index) {
         slots[0] = x;
         slots[1] = z;
         ((void (*)(void *, f32 *, s32, void *, f32, f32, f32, f32, f32, f32))fn_801353C8)(
-            header, slots, 0, bestNode, scaleZ, y, scaleY, x, scaleX, scale);
+            header, slots, 0, closestNode, scaleZ, y, scaleY, x, scaleX, scale);
     }
 }
 #pragma cplusplus off
