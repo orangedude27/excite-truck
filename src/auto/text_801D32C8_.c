@@ -250,10 +250,12 @@ check_loop:
     return (int)best;
 }
 #pragma pop
-unsigned int fn_801D37AC(void *arg0) {
-    int temp_r4;
-    temp_r4 = *(int *)((char *)arg0 + 0x1EC);
-    return (unsigned int)((-1 - temp_r4) | (temp_r4 + 1)) >> 31;
+/* Tests a mut_phob physics object's +0x1EC field: returns 1 unless it is
+ * -1 (the "unset" sentinel), i.e. whether that field holds a valid value. */
+unsigned int fn_801D37AC(void *phob) {
+    int fieldValue;
+    fieldValue = *(int *)((char *)phob + 0x1EC);
+    return (unsigned int)((-1 - fieldValue) | (fieldValue + 1)) >> 31;
 }
 
 extern int lbl_802F99A8[];
