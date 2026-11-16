@@ -70,10 +70,12 @@ extern void exit(int);
 #define sAbendFormat lbl_8034CF34  /* "\nABEND: %s\n" */
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_802E3150(void *arg0) {
-    int tmp = 0;
-    fn_802E30C8(lbl_8034CF34, arg0);
-    *(int *)0 = tmp;
+/* Report a fatal "ABEND" with the given message, then deliberately fault on a
+ * write to address 0 and hang so the process cannot continue. */
+void fn_802E3150(void *message) {
+    int zero = 0;
+    fn_802E30C8(sAbendFormat, message);
+    *(int *)0 = zero;
     for (;;) {}
 }
 #pragma scheduling on
