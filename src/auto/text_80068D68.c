@@ -13221,9 +13221,10 @@ void btm_sec_conn_req(u8 *bd_addr, u8 *dev_class) {
     l2c_link_hci_conn_req(bd_addr);
 }
 
-void fn_8007F588(s8 arg0) {
-    lbl_803C0F78[0x1978] = arg0;
-    memset(&lbl_803C0F78[0x1954], 0xFF, 6);
+/* Set the BTM security mode and clear the pairing device address to "none" (all 0xFF). */
+void fn_8007F588(s8 securityMode) {
+    btm_cb_security_mode = securityMode;
+    memset(btm_cb_pairing_bda, 0xFF, 6);
 }
 
 /* In link-security mode, tell the controller to enable authentication and encryption (the 800854B0 helper is Write_Encrypt_Mode). */
