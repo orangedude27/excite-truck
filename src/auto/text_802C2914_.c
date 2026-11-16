@@ -6,10 +6,11 @@ __declspec(section ".data") extern unsigned int lbl_8034B008;
 extern void *lbl_8055FB80;
 extern int fn_80128668(void *);
 extern int fn_802BAD9C(int);
-void fn_802C2914(void *arg0) {
-    *(void **)((char *)arg0 + 4) = &lbl_8034B008;
-    *(void **)arg0 = lbl_8055FB80;
-    lbl_8055FB80 = arg0;
+/* Insert a new node at the head of the lbl_8055FB80 list: install the lbl_8034B008 vtable at +4, point next at the old head, then publish it as the new head. */
+void fn_802C2914(void *node) {
+    *(void **)((char *)node + 4) = &lbl_8034B008;
+    *(void **)node = lbl_8055FB80;
+    lbl_8055FB80 = node;
 }
 
 int fn_802C2930(void *node, int shouldFree) {
