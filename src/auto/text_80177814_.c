@@ -1509,8 +1509,13 @@ char fn_801796C4(void) {
 }
 
 #pragma dont_inline on
-long fn_801796CC(long arg0, long arg1, long arg2) {
-    return fn_8017873C((long*)&lbl_80430870[0], arg0, arg1, arg2, arg0);
+long fn_801796CC(long eventType, long payload, long size) {
+    /* Append a tagged EFX event record (type + payload) to this event-log buffer; returns the offset used. */
+    #define AppendEvent fn_8017873C /* appends a tagged payload to a growable event buffer */
+    #define sEventBuffer lbl_80430870 /* EFX event-log buffer */
+    return AppendEvent((long*)&sEventBuffer, eventType, payload, size, eventType);
+    #undef sEventBuffer
+    #undef AppendEvent
 }
 
 extern int lbl_80431874[];
