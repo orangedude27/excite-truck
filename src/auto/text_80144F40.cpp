@@ -1397,140 +1397,142 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         void *end;
     };
     extern s32 fn_801454E8(void *, const char *);
-    register char *base = lbl_8032CEC8;
-    Object *object = (Object *)fn_801284F8(0x18, base + 0x26C);
+    s32 count;
+    s32 i;
+    Object *object = (Object *)fn_801284F8(0x18, (char *)lbl_8032CEC8 + 0x26C);
     if (object != 0) {
-    object->vtable = (void *)&lbl_8032D1D8;
-    object->flag = 0;
-    object->value = arg0;
-    object->list0 = 0;
-    object->list1 = 0;
-    object->list2 = 0;
+        char *base = lbl_8032CEC8;
+        char *search0 = base + 0x280;
+        object->vtable = (void *)&lbl_8032D1D8;
+        object->flag = 0;
+        object->value = arg0;
+        object->list0 = 0;
+        object->list1 = 0;
+        object->list2 = 0;
 
-    register char *search0 = base + 0x280;
-    {
-    register s32 count = 0;
-    register s32 i = 0;
-    while (1) {
-        void *item = ((Collection *)arg1)->get(i);
-        if (item == 0)
-            break;
-        const char *name = ((Item *)item)->name();
-        if (stricmp(name, search0) == 0)
-            count++;
-        i++;
-    }
+        {
+            count = 0;
+            i = 0;
+            while (1) {
+                void *item = ((Collection *)arg1)->get(i);
+                if (item == 0)
+                    break;
+                const char *name = ((Item *)item)->name();
+                if (stricmp(name, search0) == 0)
+                    count++;
+                i++;
+            }
 
-    Result *result0 = (Result *)fn_801284F8(0x10, base + 0x28C);
-    if (result0 != 0) {
-        void *data = fn_8012850C(count * 8, lbl_80559E48);
-        result0->data = data;
-        result0->size = count;
-        result0->count = 0;
-        result0->end = data;
-    }
-    i = 0;
-    while (1) {
-        void *item = ((Collection *)arg1)->get(i);
-        if (item == 0)
-            break;
-        const char *name = ((Item *)item)->name();
-        if (stricmp(name, search0) == 0) {
-            s32 index = result0->count;
-            void **data = (void **)result0->data;
-            void **record = (void **)((u8 *)data + index * 8);
-            result0->count = index + 1;
-            record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
-            record[1] = ((ItemShort *)item)->get(lbl_80559E34);
+            Result *result0 = (Result *)fn_801284F8(0x10, base + 0x28C);
+            if (result0 != 0) {
+                void *data = fn_8012850C(count * 8, lbl_80559E48);
+                result0->data = data;
+                result0->size = count;
+                result0->count = 0;
+                result0->end = data;
+            }
+            i = 0;
+            while (1) {
+                void *item = ((Collection *)arg1)->get(i);
+                if (item == 0)
+                    break;
+                const char *name = ((Item *)item)->name();
+                if (stricmp(name, search0) == 0) {
+                    s32 index = result0->count;
+                    void **data = (void **)result0->data;
+                    void **record = (void **)((u8 *)data + index * 8);
+                    result0->count = index + 1;
+                    record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
+                    record[1] = ((ItemShort *)item)->get(lbl_80559E34);
+                }
+                i++;
+            }
+            object->list0 = result0;
         }
-        i++;
-    }
-    object->list0 = result0;
-    }
 
-    {
-    char *name1 = base + 0x29C;
-    register s32 count = 0;
-    register s32 i = 0;
-    while (1) {
-        void *item = ((Collection *)arg1)->get(i);
-        if (item == 0)
-            break;
-        const char *name = ((Item *)item)->name();
-        if (stricmp(name, name1) == 0)
-            count++;
-        i++;
-    }
+        {
+            char *name1 = base + 0x29C;
+            count = 0;
+            i = 0;
+            while (1) {
+                void *item = ((Collection *)arg1)->get(i);
+                if (item == 0)
+                    break;
+                const char *name = ((Item *)item)->name();
+                if (stricmp(name, name1) == 0)
+                    count++;
+                i++;
+            }
 
-    Result *result1 = (Result *)fn_801284F8(0x10, base + 0x28C);
-    if (result1 != 0) {
-        void *data = fn_8012850C(count * 12, lbl_80559E48);
-        result1->data = data;
-        result1->size = count;
-        result1->count = 0;
-        result1->end = data;
-    }
-    i = 0;
-    while (1) {
-        void *item = ((Collection *)arg1)->get(i);
-        if (item == 0)
-            break;
-        const char *name = ((Item *)item)->name();
-        if (stricmp(name, name1) == 0) {
-            s32 index = result1->count;
-            void **data = (void **)result1->data;
-            void **record = (void **)((u8 *)data + index * 12);
-            result1->count = index + 1;
-            record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
-            record[1] = ((ItemShort *)item)->get(lbl_80559E30);
-            record[2] = ((Item *)item)->get2(lbl_80559E58);
+            Result *result1 = (Result *)fn_801284F8(0x10, base + 0x28C);
+            if (result1 != 0) {
+                void *data = fn_8012850C(count * 12, lbl_80559E48);
+                result1->data = data;
+                result1->size = count;
+                result1->count = 0;
+                result1->end = data;
+            }
+            i = 0;
+            while (1) {
+                void *item = ((Collection *)arg1)->get(i);
+                if (item == 0)
+                    break;
+                const char *name = ((Item *)item)->name();
+                if (stricmp(name, name1) == 0) {
+                    s32 index = result1->count;
+                    void **data = (void **)result1->data;
+                    void **record = (void **)((u8 *)data + index * 12);
+                    result1->count = index + 1;
+                    record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
+                    record[1] = ((ItemShort *)item)->get(lbl_80559E30);
+                    record[2] = ((Item *)item)->get2(lbl_80559E58);
+                }
+                i++;
+            }
+            object->list1 = result1;
         }
-        i++;
-    }
-    object->list1 = result1;
-    }
 
-    {
-    register s32 count = 0;
-    const char *name2 = lbl_80559E60;
-    register s32 i = 0;
-    while (1) {
-        void *item = ((Collection *)arg1)->get(i);
-        if (item == 0)
-            break;
-        const char *name = ((Item *)item)->name();
-        if (stricmp(name, name2) == 0)
-            count++;
-        i++;
-    }
+        {
+            const char *name2 = lbl_80559E60;
+            count = 0;
+            i = 0;
+            while (1) {
+                void *item = ((Collection *)arg1)->get(i);
+                if (item == 0)
+                    break;
+                const char *name = ((Item *)item)->name();
+                if (stricmp(name, name2) == 0)
+                    count++;
+                i++;
+            }
 
-    Result *result2 = (Result *)fn_801284F8(0x10, base + 0x28C);
-    if (result2 != 0) {
-        void *data = fn_8012850C(count * 12, lbl_80559E48);
-        result2->data = data;
-        result2->size = count;
-        result2->count = 0;
-        result2->end = data;
-    }
-    i = 0;
-    while (1) {
-        void *item = ((Collection *)arg1)->get(i);
-        if (item == 0)
-            break;
-        const char *name = ((Item *)item)->name();
-        if (stricmp(name, name2) == 0) {
-            s32 index = result2->count;
-            void **data = (void **)result2->data;
-            void **record = (void **)((u8 *)data + index * 12);
-            result2->count = index + 1;
-            record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
-            record[1] = ((ItemShort *)item)->get(lbl_80559E30);
-            record[2] = (void *)fn_801454E8(item, lbl_80559DFC);
+            Result *result2 = (Result *)fn_801284F8(0x10, base + 0x28C);
+            if (result2 != 0) {
+                void *data = fn_8012850C(count * 12, lbl_80559E48);
+                result2->data = data;
+                result2->size = count;
+                result2->count = 0;
+                result2->end = data;
+            }
+            i = 0;
+            while (1) {
+                void *item = ((Collection *)arg1)->get(i);
+                if (item == 0)
+                    break;
+                const char *name = ((Item *)item)->name();
+                if (stricmp(name, name2) == 0) {
+                    s32 index = result2->count;
+                    void **data = (void **)result2->data;
+                    void **record = (void **)((u8 *)data + index * 12);
+                    result2->count = index + 1;
+                    record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
+                    record[1] = ((ItemShort *)item)->get(lbl_80559E30);
+                    record[2] = (void *)fn_801454E8(item, lbl_80559DFC);
+                }
+                i++;
+            }
+            object->list2 = result2;
         }
-        i++;
-    }
-    object->list2 = result2;
-    }
     }
     return object;
 }
@@ -2120,6 +2122,7 @@ extern "C" void fn_8014819C(void *arg0, f32 farg0, f32 farg1) {
 extern "C" void *fn_80148294(const char *, void *);
 extern "C" f32 lbl_8055E200;
 extern "C" f32 lbl_8055E204;
+// Captures the first two floats from an object and optionally finalizes it when the flag is positive.
 extern "C" void *fn_801481C8(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         lbl_8055E200 = *(f32 *)arg0;
