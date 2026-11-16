@@ -302,7 +302,7 @@ void fn_802049DC(int label, int valuePtr, float min, float max, float step) {
 #pragma opt_propagation off
 void fn_80204A1C(int label, int valuePtr)
 {
-  /* Append a byte/toggle row (label + value pointer, type flag 0) to the Tune Dash GUI table. */
+  /* Append a byte/toggle GUI row: label, value pointer, type flag 0. */
   int index;
   char *entry;
   index = lbl_8055ED3C;
