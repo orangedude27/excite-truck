@@ -5039,9 +5039,94 @@ finish:
     return status;
 }
 
+extern const char lbl_803122F4[];
 void fn_80063324(s32 arg0, WPADGameInfo *arg1) {
-    (void)arg0;
-    (void)arg1;
+    WPADCommand* command = (WPADCommand*)arg1;
+    s32 rumble;
+    s8 devHandle;
+    u8* cb;
+    u8 reportID;
+    u8* pCmdData;
+    u16 len;
+    s32 enabled;
+    s32 status;
+    BT_HDR* pBuffer;
+    u8* pRptData;
+    u32 time;
+
+    reportID = (u8)command->reportID;
+    len = command->dataLength;
+    pCmdData = command->dataBuf;
+    enabled = OSDisableInterrupts();
+    cb = (u8*)lbl_8038F4F0[arg0];
+    devHandle = *(s8*)(cb + 0x803);
+    status = *(s32*)(cb + 0x7fc);
+    if (devHandle < 0) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+    *(s32*)(cb + 0x7fc) = WPAD_ERR_COMMUNICATION_ERROR;
+    rumble = *(u32*)(cb + 0x814) & (u32)lbl_8055DC14;
+    OSRestoreInterrupts(enabled);
+
+    if (reportID == RPTID_SET_RUMBLE) {
+        enabled = OSDisableInterrupts();
+        *(s32*)(cb + 0x7fc) = status;
+        OSRestoreInterrupts(enabled);
+        goto send;
+    }
+    if (reportID == RPTID_SEND_SPEAKER_DATA) {
+        enabled = OSDisableInterrupts();
+        *(s32*)(cb + 0x7fc) = status;
+        cb[0x80e]--;
+        OSRestoreInterrupts(enabled);
+        goto send;
+    }
+
+    enabled = OSDisableInterrupts();
+    switch (reportID) {
+    case RPTID_WRITE_DATA:
+        break;
+    case RPTID_READ_DATA:
+        *(s32*)(cb + 0x8bc) = 0;
+        *(s32*)(cb + 0x8b8) = (s32)command->readAddress;
+        *(u16*)(cb + 0x8c0) = command->readLength;
+        *(s32*)(cb + 0x8b4) = (s32)command->dstBuf;
+        break;
+    case RPTID_REQUEST_STATUS:
+        *(s32*)(cb + 0x7fc) = status;
+        *(void**)(cb + 0x790) = command->statusReportOut;
+        cb[0x800] = 1;
+        break;
+    case 0xFF:
+        memcpy(&time, pCmdData, 4);
+        *(s64*)(cb + 0x848) = __OSGetSystemTime() + time;
+        cb[0x850] = 1;
+        return;
+    default:
+        pCmdData[0] |= (1 << RPT_OUT_FLAG_REQUEST_ACK_RPT);
+        break;
+    }
+    *(void**)(cb + 0x7dc) = command->cmdCB;
+    cb[0x8c7] = reportID;
+    *(s64*)(cb + 0x848) = __OSGetSystemTime() + OS_SEC_TO_TICKS(lbl_8055DC1A * 60);
+    cb[0x850] = 0;
+    OSRestoreInterrupts(enabled);
+
+send:
+    DBPrintf_80068D68(lbl_803122F4, devHandle, reportID);
+    pBuffer = GKI_getbuf((u8)(len + 18));
+    pBuffer->len = (u8)(len + 1);
+    pBuffer->offset = 10;
+    pRptData = (u8*)pBuffer + sizeof(BT_HDR) + pBuffer->offset;
+    pRptData[0] = reportID;
+    memcpy(&pRptData[1], pCmdData, len);
+    if (rumble) {
+        pRptData[RPT_OUT_FLAGS] |= (1 << RPT_OUT_FLAG_RUMBLE);
+    } else {
+        pRptData[RPT_OUT_FLAGS] &= ~(1 << RPT_OUT_FLAG_RUMBLE);
+    }
+    BTA_HhSendData((UINT8)devHandle, pBuffer);
 }
 
 /* WPADiSendSetReportType with WPADiPushCommand inlined (the REXE01 build keeps
