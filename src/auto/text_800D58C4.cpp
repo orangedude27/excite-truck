@@ -1863,8 +1863,9 @@ extern "C" s32 fn_800D896C(void *arg0) {
     return ((u32)*(u32*)((u8*)arg0 + 0x4C) >> 5U) & 1;
 }
 
-extern "C" void fn_800D8978(GXColor *arg0, const GXColor *arg1) {
-    *arg0 = *arg1;
+// Copies one RGBA color (used by nw4r lyt material setup) from src into dst.
+extern "C" void fn_800D8978(GXColor *dst, const GXColor *src) {
+    *dst = *src;
 }
 
 extern "C" s32 fn_800D899C(s32 arg0, s32 arg1) {
