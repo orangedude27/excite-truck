@@ -212,35 +212,37 @@ extern s8 lbl_8055EE43;
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8020C45C(void) {
-    class Object {
+    /* Pre-race music shutdown: release the goalline SFX and the three track
+       sounds, then clear their selector state and setup flags. */
+    class Releasable {
     public:
         virtual void release(s32);
     };
-    Object *w1;
-    Object *w2;
-    w1 = (Object *)lbl_8055EE38;
-    if (w1 != 0 && w1 != 0) {
-        w1->release(1);
+    Releasable *sound;
+    Releasable *trackSound;
+    sound = (Releasable *)lbl_8055EE38;
+    if (sound != 0 && sound != 0) {
+        sound->release(1);
     }
     lbl_8055EE38 = 0;
     fn_802103BC();
     {
-        s32 *y1 = &lbl_80489BE0;
-        s32 y2 = 0;
+        s32 *track = &lbl_80489BE0;
+        s32 index = 0;
         do {
-            w1 = *(Object **)((char *)y1 + 0x20);
-            if (w1 != 0) {
-                *(char *)((char *)w1 + 0x4A) = 1;
-                *(char *)((char *)w1 + 0x4C) = 0;
-                w2 = *(Object **)((char *)y1 + 0x20);
-                if (w2 != 0) {
-                    w2->release(1);
+            sound = *(Releasable **)((char *)track + 0x20);
+            if (sound != 0) {
+                *(char *)((char *)sound + 0x4A) = 1;
+                *(char *)((char *)sound + 0x4C) = 0;
+                trackSound = *(Releasable **)((char *)track + 0x20);
+                if (trackSound != 0) {
+                    trackSound->release(1);
                 }
-                *(Object **)((char *)y1 + 0x20) = 0;
+                *(Releasable **)((char *)track + 0x20) = 0;
             }
-            y2 += 1;
-            y1 += 9;
-        } while (y2 < 3);
+            index += 1;
+            track += 9;
+        } while (index < 3);
     }
     fn_8012E498(&lbl_80489C50);
     fn_8012E498(lbl_8055B5D4);
