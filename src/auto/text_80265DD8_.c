@@ -2101,8 +2101,9 @@ int fn_8026A344(int arg0) {
     return *(int *)((char *)fn_80267EE4(arg0) + 0x20);
 }
 void *fn_80267EE4();
-int fn_8026A368(void) {
-    return *(int *)((char *)fn_80267EE4() + 0x10);
+/* Return the active mode (Camera.mode) of the given camera: 0..0x21, 10 = unset. */
+int fn_8026A368(int cameraIndex) {
+    return ((Camera *)fn_80267EE4(cameraIndex))->mode;
 }
 int fn_802678C0(void) {
     return (int)fn_80267EE4() + 0x58;
