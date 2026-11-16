@@ -366,9 +366,10 @@ void fn_802DFAF4(void) {
 }
 #pragma pop
 void fn_802DFB30(void) {
+    /* Configure GX texcoord generation and a 2-stage TEV combiner setup used by this renderer path. */
     register u32 coord = 0;
-    register u32 map = coord + 1;
-    GXSetTexCoordGen2(coord, map, 0, 0x1E, 0, 0x7D);
+    register u32 projection = coord + 1;
+    GXSetTexCoordGen2(coord, projection, 0, 0x1E, 0, 0x7D);
     GXSetTexCoordGen2(1, 1, 0, 0x1E, 0, 0x7D);
     GXSetNumTexGens(2);
     GXSetTevOrder(0, 1, 1, 0xFF);
