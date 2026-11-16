@@ -52,6 +52,24 @@ typedef struct RoadObjectPool {
     int itemArray; /* 0x0C: the array itself (cookie at itemArray - 0x10) */
 } RoadObjectPool;
 #define gRoadObjectPool lbl_8055FA78
+/* One record of the "roadobject[]" pool (0x54 bytes): a racing-line road piece.
+ * fn_802BA348 (XLAddRacingLines) builds the pool, fn_802BA010 hands the records
+ * out in order and links each into the texture entry's list at +0xC through the
+ * record's own +0x10 link; fn_802B9E4C destroys the pool. */
+typedef struct RoadObject {
+    volatile int unused00;          /* 0x00: cleared by the ctor */
+    volatile int unused04;          /* 0x04: cleared by the ctor */
+    volatile int state;             /* 0x08: 3 in a fresh record, 2 once filled */
+    volatile unsigned char enabled; /* 0x0C: 1 in a fresh record; fn_802BAF98 sets it */
+    struct RoadObject *next;        /* 0x10: next record sharing the texture entry */
+    s16 item;                       /* 0x14: piece index within the road object */
+    s16 radius;                     /* 0x18: piece radius */
+    f32 pos[2];                     /* 0x1C: point interpolated along the racing line */
+    f32 scale[2];                   /* 0x24: scaled by the texture tiling factor */
+    f32 angle;                      /* 0x2C */
+    void *roadRecord;               /* 0x30: this road's record from fn_802B8FE0 */
+    f32 transform[8];               /* 0x34: basis vectors fn_802BA010 builds */
+} RoadObject;
 #define Mem_freeObject      fn_80128668
 #define Mem_freeArray       fn_80128670
 extern int lbl_802FAB40[];
@@ -578,9 +596,10 @@ extern short lbl_802FAB60[];
 #pragma push
 #pragma scheduling invalid_target
 int fn_802B9920(int arg0) {
-    short s = (short)(arg0 + 0x200);
+    int v = arg0 + 0x200;
+    short s = (short)v;
     short idx = (short)(s % 32);
-    return lbl_802FAB60[idx + (arg0 & 0)];
+    return lbl_802FAB60[idx];
 }
 #pragma scheduling on
 #pragma pop
