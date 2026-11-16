@@ -4829,6 +4829,7 @@ void fn_8011DC5C(BandState8011 *band, BitReader8011 *reader) {
 }
 
 s32 fn_8011DF68(s32 arg0, u32 arg1, u32 arg2, u32 arg3) {
+    /* Compute an aligned byte size from width/count/bit-depth-like parameters. */
     u32 var_r5 = arg2;
     u32 temp;
     if (var_r5 <= 8U) var_r5 = 8;
