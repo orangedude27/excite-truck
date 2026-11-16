@@ -247,14 +247,15 @@ void fn_80144D80(f32 *out, f32 sx, f32 sy, f32 sz) {
     out[8] = sz;
 }
 
-void fn_80144DAC(f32 *arg0, f32 *arg1) {
-    f32 c, b, a;
-    a = arg1[0];
-    b = arg1[1];
-    c = arg1[2];
-    arg0[0] = a;
-    arg0[1] = b;
-    arg0[2] = c;
+void fn_80144DAC(f32 *dst, f32 *src) {
+    /* Copy a 3-component (12-byte) float vector from src into dst. */
+    f32 z, y, x;
+    x = src[0];
+    y = src[1];
+    z = src[2];
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
 }
 
 void fn_80144DC8(void) {
