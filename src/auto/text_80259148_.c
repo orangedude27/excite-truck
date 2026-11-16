@@ -846,7 +846,10 @@ void fn_8025AD8C(void *unused, float *out, float *a, float *b, float t) {
     ry = ay + py; out[0] = rx; rz = az + pz; out[1] = ry; out[2] = rz;
 }
 #pragma scheduling on
-float fn_8025ADF4(float arg0) { return (float)fn_8002F234(arg0); }
+float fn_8025ADF4(float value) {
+    // Single-precision square root: call the double sqrt wrapper and round the result back to float.
+    return (float)fn_8002F234(value);
+}
 
 extern float lbl_802FA628[5];
 extern char lbl_80345218[];
