@@ -372,9 +372,11 @@ float fn_80264588(void) {
 
 int fn_802645C0(void) {
     extern float lbl_80558DC4[];
-    float v = *(float *)((char *)lbl_8055F444 + 0x18);
-    double abs = __fabs((double)v);
-    return (float)abs <= lbl_80558DC4[0];
+    /* True when the current credits object's gate field (+0x18) is within float
+     * epsilon of zero (lbl_80558DC4[0] = 2^-23), i.e. the gate is open. */
+    float gate = *(float *)((char *)lbl_8055F444 + 0x18);
+    double absGate = __fabs((double)gate);
+    return (float)absGate <= lbl_80558DC4[0];
 }
 
 void fn_802645EC(void) {
