@@ -14,10 +14,10 @@ extern void __register_global_object(void *, void (*)(void), void *, int);
 #pragma scheduling invalid_target
 void fn_802A8F34(void) {
     fn_8000D838(&lbl_8055F8C8);
-    lbl_804BD6C4.p = (char *)&lbl_804BD6C4 + 12;
     lbl_8055F8D0 = 0xFFFF0000;
-    lbl_804BD6C4.b = 10;
-    lbl_804BD6C4.a = 0;
-    __register_global_object(&lbl_804BD6C4, fn_802A8F94, (char *)&lbl_804BD6B8, 10);
+    *(void **)&lbl_804BD6C4 = (char *)&lbl_804BD6C4 + 12;
+    *(int *)((char *)&lbl_804BD6C4 + 8) = 10;
+    *(int *)((char *)&lbl_804BD6C4 + 4) = 0;
+    ((void (*)(void *, void *, void *))__register_global_object)(&lbl_804BD6C4, fn_802A8F94, (char *)&lbl_804BD6B8);
 }
 #pragma scheduling on
