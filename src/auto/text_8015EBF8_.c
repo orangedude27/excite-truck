@@ -158,7 +158,9 @@ enum {
 #define PARAM_NAME_RIGHT lbl_8032F47C
 
 #pragma use_lmw_stmw off
-extern "C" void fn_8015EE14(void **collection, void *arg1) {
+extern "C" void fn_8015EE14(void **collection, void *stream) {
+    /* Registers each qualifying collection item as a 0x10-byte parameter entry: copies its
+       packed floats and stream-derived index, then classifies left/right arrows by name. */
     class Collection {
     public:
         virtual void unused01(); virtual void unused02(); virtual void unused03(); virtual void unused04();
@@ -188,34 +190,34 @@ extern "C" void fn_8015EE14(void **collection, void *arg1) {
     };
     void *entry;
     if (collection != 0) {
-        f32 threshold = lbl_805617D4;
-        void *node;
+        f32 arrowValue = gArrowValue;
+        void *item;
         s32 index = 0;
-        while ((node = ((Collection *)collection)->getAt(index)) != 0) {
-            if (fn_8015ED18((void **)node) != 0) {
-                s32 count;
-                void *array;
-                int *registry = (int *)lbl_8055E29C;
-                count = registry[1];
-                array = *(void **)registry;
+        while ((item = ((Collection *)collection)->getAt(index)) != 0) {
+            if (fn_8015ED18((void **)item) != 0) {
+                s32 entryCount;
+                void *entryArray;
+                int *registry = (int *)gParamRegistry;
+                entryCount = registry[1];
+                entryArray = *(void **)registry;
                 union { u64 bits; f32 floats[2]; } packed;
-                registry[1] = count + 1;
-                entry = (char *)array + count * 0x10;
-                packed.bits = ((Item *)node)->getPacked((const char *)lbl_8055A080);
-                *(f32 *)((char *)entry + 4) = packed.floats[0];
-                *(f32 *)((char *)entry + 8) = packed.floats[1];
-                fn_8015EC50((unsigned short *)entry, arg1);
+                registry[1] = entryCount + 1;
+                entry = (char *)entryArray + entryCount * PARAM_STRIDE;
+                packed.bits = ((Item *)item)->getPacked((const char *)PARAM_KEY_PACKED);
+                *(f32 *)((char *)entry + PARAM_FLOAT_A_OFF) = packed.floats[0];
+                *(f32 *)((char *)entry + PARAM_FLOAT_B_OFF) = packed.floats[1];
+                fn_8015EC50((unsigned short *)entry, stream);
                 {
-                    const char *name = ((NamedItem *)node)->getName((const char *)lbl_8055A084, (const char *)lbl_8055A08C);
-                    if (strcmp(name, lbl_8032F470) == 0) {
-                        *(u16 *)((char *)entry + 2) = 1;
-                        *(f32 *)((char *)entry + 0xC) = threshold;
-                    } else if (strcmp(name, lbl_8032F47C) == 0) {
-                        *(u16 *)((char *)entry + 2) = 2;
-                        *(f32 *)((char *)entry + 0xC) = threshold;
+                    const char *name = ((NamedItem *)item)->getName((const char *)PARAM_KEY_NAME1, (const char *)PARAM_KEY_NAME2);
+                    if (strcmp(name, PARAM_NAME_LEFT) == 0) {
+                        *(u16 *)((char *)entry + PARAM_TYPE_OFF) = PARAM_TYPE_LEFT_ARROW;
+                        *(f32 *)((char *)entry + PARAM_VALUE_OFF) = arrowValue;
+                    } else if (strcmp(name, PARAM_NAME_RIGHT) == 0) {
+                        *(u16 *)((char *)entry + PARAM_TYPE_OFF) = PARAM_TYPE_RIGHT_ARROW;
+                        *(f32 *)((char *)entry + PARAM_VALUE_OFF) = arrowValue;
                     } else {
-                        *(u16 *)((char *)entry + 2) = 0;
-                        *(f32 *)((char *)entry + 0xC) = ((FloatItem *)node)->getFloat((const char *)lbl_8055A090);
+                        *(u16 *)((char *)entry + PARAM_TYPE_OFF) = PARAM_TYPE_VALUE;
+                        *(f32 *)((char *)entry + PARAM_VALUE_OFF) = ((FloatItem *)item)->getFloat((const char *)PARAM_KEY_FLOAT);
                     }
                 }
             }
