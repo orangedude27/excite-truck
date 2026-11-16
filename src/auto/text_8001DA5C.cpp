@@ -256,9 +256,10 @@ extern "C" void fn_8001DF08(s32 playerIndex, s32 stars) {
 
 // Invalid-target scheduling reuses r5 for the object base before passing the zero argument.
 #pragma scheduling invalid_target
-extern "C" void fn_8001DF84(s32 arg0) {
-    void *p = lbl_80358680[1];
-    ((CollisionEntry *)p)->apply(arg0, 0);
+/* Refresh the overheat HUD overlay for the given racer (its virtual apply method). */
+extern "C" void fn_8001DF84(s32 playerIndex) {
+    void *overlay = sHudOverlays[OVERLAY_OVERHEAT];
+    ((CollisionEntry *)overlay)->apply(playerIndex, 0);
 }
 #pragma scheduling invalid_target
 extern "C" void fn_8001DFA8(s32 arg0) {
