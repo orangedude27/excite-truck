@@ -9379,11 +9379,14 @@ extern "C" s32 fn_80229CAC(s32 arg0) {
     return arg0 + 0x254;
 }
 
-extern "C" void fn_80229CB4(void *arg0) {
-    (*(u8 *)((u8 *)arg0 + 0x244)) = 1;
-    (*(f32 *)((u8 *)arg0 + 0x248)) = 0.0f;
-    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
-        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+extern "C" void fn_80229CB4(void *widget) {
+    /* Start a UI widget's animation clock: set its animating flag (+0x244),
+       restart its timer at zero (+0x248), and mark it dirty (+0x234) so it
+       gets redrawn when it is enabled (+0x1A). */
+    (*(u8 *)((u8 *)widget + 0x244)) = 1;
+    (*(f32 *)((u8 *)widget + 0x248)) = 0.0f;
+    if ((*(u8 *)((u8 *)widget + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)widget + 0x234)) = 1;
     }
 }
 
