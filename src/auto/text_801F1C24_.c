@@ -381,9 +381,10 @@ int fn_801F2354(int object, int deleteFlag) {
 
 #pragma push
 #pragma small_data off
-int fn_801F2394(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_801F2394(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
 }
 
 int fn_801F23D4(int arg0, int arg1) {
