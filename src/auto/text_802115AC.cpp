@@ -1857,13 +1857,22 @@ extern "C" void fn_80214AF0(s32 groupId) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_80214B44(s32 arg0) {
-    s32 temp = fn_802168E4();
-    if (temp != 0) {
-        ((s32 (*)(s32, s32))fn_802168DC)(temp, arg0);
+/* RealName: UIDisableGroup — disable a UI group on the active window, or warn if none is active. */
+extern "C" void fn_80214B44(s32 groupId) {
+#define UIGetActiveWindow       fn_802168E4
+#define UIWindow_DisableGroup   fn_802168DC
+#define UIPanic                 fn_802E317C
+#define kNoActiveWindowMsg      lbl_8033D2E0
+    s32 window = UIGetActiveWindow();
+    if (window != 0) {
+        ((s32 (*)(s32, s32))UIWindow_DisableGroup)(window, groupId);
     } else {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D2E0);
+        ((s32 (*)(const char *, ...))UIPanic)(kNoActiveWindowMsg);
     }
+#undef kNoActiveWindowMsg
+#undef UIPanic
+#undef UIWindow_DisableGroup
+#undef UIGetActiveWindow
 }
 #pragma scheduling on
 extern "C" s32 fn_802168D8(s32);
