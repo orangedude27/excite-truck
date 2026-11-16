@@ -585,7 +585,13 @@ extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
 extern unsigned int lbl_8055FEBC;
   
-void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
+void fn_802DC440(void) {
+#define CpuLight_ClearState fn_802DBDD8
+    /* Clear the CPU-light state, then restore the video TEV swap/blend setup. */
+    ((void (*)(void))CpuLight_ClearState)();
+    fn_802DFCC0();
+#undef CpuLight_ClearState
+}
 
 extern float lbl_80565040, lbl_80565044, lbl_80565048;
 extern void GXSetTevColor();
