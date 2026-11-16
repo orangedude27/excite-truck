@@ -5954,11 +5954,12 @@ void GXSetScissor(s32 left, s32 top, s32 width, s32 height) {
     *(volatile unsigned short *)((char *)gxData + 2) = 0;
 }
 
-void GXSetScissorBoxOffset(u32 ox, u32 oy) {
+/* Program the BP scissor-box offset: bias and halve each axis offset, pack both into a BP register, send it to the FIFO and note the last write was BP. */
+void GXSetScissorBoxOffset(u32 offsetX, u32 offsetY) {
     u32 cmd = 0;
 
-    GX_BP_SET_SCISSOROFFSET_OX(cmd, (ox + 342) / 2);
-    GX_BP_SET_SCISSOROFFSET_OY(cmd, (oy + 342) / 2);
+    GX_BP_SET_SCISSOROFFSET_OX(cmd, (offsetX + 342) / 2);
+    GX_BP_SET_SCISSOROFFSET_OY(cmd, (offsetY + 342) / 2);
     GX_BP_SET_OPCODE(cmd, GX_BP_REG_SCISSOROFFSET);
 
     GX_BP_LOAD_REG(cmd);
