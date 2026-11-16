@@ -411,7 +411,7 @@ void *fn_80266120(void *cursor) {
 #pragma scheduling off
 void fn_80266150(void *arg0) {
     int zero = 0;
-    float f0 = lbl_80563C2C;
+    float f0 = *(volatile float *)&lbl_80563C2C;
     float f1;
     *(int *)((char *)arg0 + 4) = zero;
     *(int *)((char *)arg0 + 0) = zero;
@@ -2066,8 +2066,9 @@ void fn_8026A298(int arg0) {
 
 extern void fn_801EA994(void);
 extern int lbl_80499E50[];
-void fn_8026A2B0(int arg0) {
-    lbl_80499E50[arg0] = 1;
+/* Queue a forward (+1) track-selection delta for the given player slot. */
+void fn_8026A2B0(int slotIndex) {
+    lbl_80499E50[slotIndex] = 1;
 }
 
 void fn_8026A2C8(void) {
