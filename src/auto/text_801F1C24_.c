@@ -185,12 +185,13 @@ extern int lbl_8033A8C8;
 #pragma pop
 __declspec(section ".data") extern int lbl_8033A628;
 __declspec(section ".data") extern int lbl_8033A8C8;
+/* Allocates a 12-byte AmbientColor object (lbl_8033A628 tag) and initializes its vtable to lbl_8033A8C8 with fields cleared. */
 void fn_801F1EEC(void) {
-    void *p = fn_801284F8(12, &lbl_8033A628);
-    if (p != 0) {
-        *(void **)p = &lbl_8033A8C8;
-        *(int *)((char *)p + 8) = 0;
-        *(char *)((char *)p + 4) = 0;
+    void *object = fn_801284F8(12, &lbl_8033A628);
+    if (object != 0) {
+        *(void **)object = &lbl_8033A8C8;
+        *(int *)((char *)object + 8) = 0;
+        *(char *)((char *)object + 4) = 0;
     }
 }
 
