@@ -792,13 +792,15 @@ void fn_8013111C(int langIndex) {
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
-void *fn_80131234(void *arg0) {
-    int result = fn_801302E0(arg0);
-    switch (result) {
+/* Locale string lookup: return the localized message registered for `key` in
+   the loaded message table, or the literal "???" (lbl_80559B00) if not found. */
+void *fn_80131234(void *key) {
+    int message = fn_801302E0(key);
+    switch (message) {
     case 0:
         return lbl_80559B00;
     default:
-        return (void *)result;
+        return (void *)message;
     }
 }
 #pragma scheduling on
