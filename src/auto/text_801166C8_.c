@@ -1792,9 +1792,13 @@ s32 fn_8011943C(void *arg0, s32 arg1) {
     }
 }
 
-void fn_80119498(void *arg0) {
-    fn_8011943C(arg0, 1);
-    *(s32 *)((u8 *)arg0 + 0x38) = 0;
+void fn_80119498(void *voices) {
+#define SetVoicePairState fn_8011943C
+    /* Start the voice pair: set both AX voices to state 1 (running) and clear
+     * the owning StreamPlayer's paused flag (+0x38 into the voice block). */
+    SetVoicePairState(voices, 1);
+    *(s32 *)((u8 *)voices + 0x38) = 0;
+#undef SetVoicePairState
 }
 
 s32 fn_801194D0(void* arg0) {
@@ -4530,106 +4534,129 @@ void fn_8011D5F0(void* arg0, BitReader8011 *reader) {
     }
 }
 
-void fn_8011D7F8(void *arg0, void *arg1) {
-    u32 mask;
-    u32 bits;
-    u32 *in;
-    u32 sh;
-    u32 cnt;
-    u32 width;
-    s8 *out;
-    u32 n;
-    u32 idx;
-    u32 e;
-    u32 lo;
-    u32 sym;
-    void *tab;
-    void *ntab;
-    u32 next;
-
-    if (*(s8 **)((u8 *)arg0 + 0) == *(s8 **)((u8 *)arg0 + 4)) {
-        cnt = *(u32 *)((u8 *)arg1 + 8);
-        sh = *(u32 *)((u8 *)arg0 + 0x28);
-        in = *(u32 **)((u8 *)arg1 + 4);
-        bits = *(u32 *)((u8 *)arg1 + 0);
-        if (cnt < sh) {
-            next = *in;
-            n = bits | (next << cnt);
-            in++;
-            bits = next >> (sh - cnt);
-            cnt = (cnt + 0x20) - sh;
-            mask = (-1U >> (0x20 - sh)) & n;
-        } else {
-            cnt = cnt - sh;
-            mask = bits & (-1U >> (0x20 - sh));
-            bits = bits >> sh;
-        }
-        if (mask != 0) {
-            out = *(s8 **)((u8 *)arg0 + 0x2C);
-            *(s8 **)((u8 *)arg0 + 0) = out;
-            *(s8 **)((u8 *)arg0 + 4) = (s8 *)(out + mask);
-            tab = *(void **)((u8 *)arg0 + 0x24);
-            ntab = (u8 *)arg0 + 0x10;
-            width = *(u32 *)((u8 *)arg0 + 0x20);
-            sh = -1U >> (0x20 - width);
-            do {
-                mask -= 1;
-                if (cnt >= width) {
-                    e = *(u8 *)((u8 *)tab + (bits & sh));
-                    idx = e & 0xF;
-                    e >>= 4U;
-                    lo = *(u8 *)((u8 *)ntab + idx);
-                    bits = bits >> e;
-                    cnt = cnt - e;
-                } else {
-                    next = *in;
-                    e = *(u8 *)((u8 *)tab + (sh & (bits | (next << cnt))));
-                    idx = e & 0xF;
-                    e >>= 4U;
-                    lo = *(u8 *)((u8 *)ntab + idx);
-                    if (cnt >= e) {
-                        bits = bits >> e;
-                        cnt = cnt - e;
-                    } else {
-                        bits = next >> (e - cnt);
-                        in++;
-                        cnt = (cnt + 0x20) - e;
-                    }
-                }
-                if (cnt >= width) {
-                    e = *(u8 *)((u8 *)tab + (bits & sh));
-                    idx = e & 0xF;
-                    e >>= 4U;
-                    sym = *(u8 *)((u8 *)ntab + idx);
-                    bits = bits >> e;
-                    cnt = cnt - e;
-                } else {
-                    next = *in;
-                    e = *(u8 *)((u8 *)tab + (sh & (bits | (next << cnt))));
-                    idx = e & 0xF;
-                    e >>= 4U;
-                    sym = *(u8 *)((u8 *)ntab + idx);
-                    if (cnt >= e) {
-                        bits = bits >> e;
-                        cnt = cnt - e;
-                    } else {
-                        bits = next >> (e - cnt);
-                        in++;
-                        cnt = (cnt + 0x20) - e;
-                    }
-                }
-                *out = lo | (sym * 0x10);
-                out += 1;
-            } while (mask != 0);
-        } else {
-            out = *(s8 **)((u8 *)arg0 + 0x2C);
-            *(s8 **)((u8 *)arg0 + 4) = out;
-            *(s8 **)((u8 *)arg0 + 0) = out + 4;
-        }
-        *(u32 **)((u8 *)arg1 + 4) = in;
-        *(u32 *)((u8 *)arg1 + 0) = bits;
-        *(u32 *)((u8 *)arg1 + 8) = cnt;
+void fn_8011D7F8(void *arg0, void *arg1)
+{
+  u32 mask;
+  u32 bits;
+  u32 *in;
+  u32 sh;
+  u32 cnt;
+  u32 width;
+  s8 *out;
+  u32 idx;
+  u32 e1;
+  u32 e2;
+  u32 e3;
+  u32 e4;
+  u32 lo;
+  u32 sym;
+  void *tab;
+  void *ntab;
+  u32 next;
+  u32 next2;
+  if ((*((s8 **) (((u8 *) arg0) + 0))) == (*((s8 **) (((u8 *) arg0) + 4))))
+  {
+    cnt = *((u32 *) (((u8 *) arg1) + 8));
+    sh = *((u32 *) (((u8 *) arg0) + 0x28));
+    in = *((u32 **) (((u8 *) arg1) + 4));
+    bits = *((u32 *) (((u8 *) arg1) + 0));
+    if (cnt < sh)
+    {
+      next = *in;
+      mask = ((-1U) >> (0x20 - sh)) & (bits | (next << cnt));
+      in++;
+      bits = next >> (sh - cnt);
+      cnt = (cnt + 0x20) - sh;
     }
+    else
+    {
+      cnt = cnt - sh;
+      mask = bits & ((-1U) >> (0x20 - sh));
+      bits = bits >> sh;
+    }
+    if (mask != 0)
+    {
+      out = *((s8 **) (((u8 *) arg0) + 0x2C));
+      *((s8 **) (((u8 *) arg0) + 0)) = out;
+      *((s8 **) (((u8 *) arg0) + 4)) = (s8 *) (out + mask);
+      tab = *((void **) (((u8 *) arg0) + 0x24));
+      ntab = ((u8 *) arg0) + 0x10;
+      width = *((u32 *) (((u8 *) arg0) + 0x20));
+      sh = (-1U) >> (0x20 - width);
+      do
+      {
+        mask -= 1;
+        if (cnt >= width)
+        {
+          e1 = *((u8 *) (((u8 *) tab) + (bits & sh)));
+          idx = e1 & 0xF;
+          e1 >>= 4U;
+          lo = *((u8 *) (((u8 *) ntab) + idx));
+          bits = bits >> e1;
+          cnt = cnt - e1;
+        }
+        else
+        {
+          next = *in;
+          e2 = *((u8 *) (((u8 *) tab) + (sh & (bits | (next << cnt)))));
+          idx = e2 & 0xF;
+          e2 >>= 4U;
+          lo = *((u8 *) (((u8 *) ntab) + idx));
+          if (cnt >= e2)
+          {
+            bits = bits >> e2;
+            cnt = cnt - e2;
+          }
+          else
+          {
+            bits = next >> (e2 - cnt);
+            in++;
+            cnt = (cnt + 0x20) - e2;
+          }
+        }
+        if (cnt >= width)
+        {
+          e3 = *((u8 *) (((u8 *) tab) + (bits & sh)));
+          idx = e3 & 0xF;
+          e3 >>= 4U;
+          sym = *((u8 *) (((u8 *) ntab) + idx));
+          bits = bits >> e3;
+          cnt = cnt - e3;
+        }
+        else
+        {
+          next2 = *in;
+          e4 = *((u8 *) (((u8 *) tab) + (sh & (bits | (next2 << cnt)))));
+          idx = e4 & 0xF;
+          e4 >>= 4U;
+          sym = *((u8 *) (((u8 *) ntab) + idx));
+          if (cnt >= e4)
+          {
+            bits = bits >> e4;
+            cnt = cnt - e4;
+          }
+          else
+          {
+            bits = next2 >> (e4 - cnt);
+            in++;
+            cnt = (cnt + 0x20) - e4;
+          }
+        }
+        *out = lo | (sym * 0x10);
+        out += 1;
+      }
+      while (mask != 0);
+    }
+    else
+    {
+      out = *((s8 **) (((u8 *) arg0) + 0x2C));
+      *((s8 **) (((u8 *) arg0) + 4)) = out;
+      *((s8 **) (((u8 *) arg0) + 0)) = out + 4;
+    }
+    *((u32 **) (((u8 *) arg1) + 4)) = in;
+    *((u32 *) (((u8 *) arg1) + 0)) = bits;
+    *((u32 *) (((u8 *) arg1) + 8)) = cnt;
+  }
 }
 
 void fn_8011D9E4(void *arg0, void *arg1) {
