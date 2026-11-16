@@ -28294,9 +28294,10 @@ void fn_8006CF90(void) {
     DBPrintf_8006CFA8(lbl_803140FC);
 }
 
-void WUDDeviceStatusCallback(u32 arg0) {
+/* Logs a wireless USB device status callback and reports a fatal USB error. */
+void WUDDeviceStatusCallback(u32 deviceStatus) {
     DBPrintf_8006CFA8(lbl_80313BB0);
-    if (arg0 == 2) {
+    if (deviceStatus == 2) {
         OSReport(lbl_80313BCC);
     }
 }
