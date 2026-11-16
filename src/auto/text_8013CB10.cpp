@@ -2966,25 +2966,27 @@ extern "C" s32 fn_80142BB4(void *arg0) {
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 extern "C" void *fn_80142BD8(void *arg0) {
+    /* Allocates the next 12-byte slot in a circular ring buffer (base/count/write/read at 0/4/8/C),
+       advancing the write index and dropping the oldest entry if the buffer is full. */
     s32 *ring = (s32 *)arg0;
-    s32 count;
-    u8 *base;
-    s32 write;
-    s32 read;
-    s32 next;
-    s32 offset;
-    void *result;
-    write = ring[2];
-    count = ring[1];
-    read = ring[3];
-    base = (u8 *)ring[0];
-    offset = write * 12;
-    next = (write + 1) % count;
-    result = base + offset;
-    ring[2] = next;
-    if (next == read)
-        ring[3] = (read + 1) % count;
-    return result;
+    s32 capacity;
+    u8 *buffer;
+    s32 writeIndex;
+    s32 readIndex;
+    s32 nextWrite;
+    s32 slotOffset;
+    void *slotPtr;
+    writeIndex = ring[2];
+    capacity = ring[1];
+    readIndex = ring[3];
+    buffer = (u8 *)ring[0];
+    slotOffset = writeIndex * 12;
+    nextWrite = (writeIndex + 1) % capacity;
+    slotPtr = buffer + slotOffset;
+    ring[2] = nextWrite;
+    if (nextWrite == readIndex)
+        ring[3] = (readIndex + 1) % capacity;
+    return slotPtr;
 }
 #pragma pop
 extern "C" void *fn_80142C28(void *arg0, void *arg1) {
