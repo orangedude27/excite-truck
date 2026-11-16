@@ -12,7 +12,7 @@ void PSMTXIdentity(Mtx);
 void PSMTXCopy(const Mtx, Mtx);
 void PSMTXConcat(const Mtx, const Mtx, Mtx);
 void PSMTXConcatArray(const Mtx, const Mtx, Mtx, u32);
-void PSMTXTranspose(const Mtx, Mtx);
+u32 PSMTXTranspose(const Mtx, Mtx);
 /* This build's matrix library carries SDK names that sit on other routines: what is
  * called PSMTXInverse here builds a rotation matrix about one coordinate axis, and
  * PSMTXInvXpose fills one from a sine and cosine already computed (the SDK's
