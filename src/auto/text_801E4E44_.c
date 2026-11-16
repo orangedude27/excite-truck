@@ -95,6 +95,8 @@ s32 fn_801E4F3C(s32 arg0, s32 arg1, f32 x, f32 y, f32 z, f32 u, f32 v) {
     return 0;
 }
 #pragma pop
+/* End the current mesh pass: flush/compact the vertex and index buffers
+ * (fn_801E4E44) and reset the mesh mode (lbl_8055EAB0) to 0 (idle). */
 void fn_801E4FF4(void) {
     fn_801E4E44();
     lbl_8055EAB0 = 0;
