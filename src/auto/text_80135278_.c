@@ -903,13 +903,16 @@ extern "C" void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
 #pragma cplusplus reset
 
 #pragma scheduling invalid_target
-void fn_80136594(void *arg0, s32 arg1, s32 arg2) {
+/* Initialize a path-projection state (no node, fraction 0, 10000 limit) and
+ * project a point onto the path. */
+void fn_80136594(void *stateOut, s32 path, s32 point) {
+    typedef struct { void *node; float frac; s32 unk8; } ProjectionState;
+    ProjectionState *st = (ProjectionState *)stateOut;
     float f = lbl_80561320;
-    s32 *p = (s32 *)arg0;
-    p[0] = 0;
-    p[2] = 0x2710;
-    *(float *)(p + 1) = f;
-    fn_801355C0((void *)arg1, arg2, 0, arg0, 0);
+    st->node = 0;
+    st->unk8 = 0x2710;
+    st->frac = f;
+    fn_801355C0((void *)path, point, 0, stateOut, 0);
 }
 #pragma push
 #pragma scheduling invalid_target
