@@ -701,9 +701,13 @@ void fn_801B146C(void) {
     } while (slotIndex < 4);
 }
 #pragma dont_inline reset
-void fn_801B14BC(s32 *arg0,s32 arg1,s32 arg2) {
-    if(arg2){*arg0 |= arg1;return;}
-    *arg0 &= ~arg1;
+// Sets the bits in mask in a flags word when enable is true, else clears them.
+void fn_801B14BC(s32 *flags, s32 mask, s32 enable) {
+    if (enable) {
+        *flags |= mask;
+        return;
+    }
+    *flags &= ~mask;
 }
 
 extern f32 lbl_805625F8;
