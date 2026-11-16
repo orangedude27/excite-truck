@@ -5757,9 +5757,11 @@ extern "C" void* __dt__14CollisionSpaceFv_80222998(void* this_, s32 flag) {
     return this_;
 }
 
-extern "C" void fn_802229FC(void *arg0) {
-    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 4)) != 0) {
-        fn_802C51AC(*(s32 *)((u8 *)arg0 + 4));
+extern "C" void fn_802229FC(void *object) {
+    /* Dispose of an object's art-set handle at +0x4: if it still holds pictures,
+     * the picture-count helper is invoked a second time (as in the original). */
+    if (fn_802C51AC(*(s32 *)((u8 *)object + 4)) != 0) {
+        fn_802C51AC(*(s32 *)((u8 *)object + 4));
     }
 }
 
