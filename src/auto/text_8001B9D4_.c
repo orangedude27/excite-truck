@@ -335,11 +335,13 @@ void fn_8001BDA8(void *arg0) {
 }
 #pragma scheduling invalid_target
 #pragma scheduling on
-void fn_8001BE70(void *arg0) {
-    u8 *base = (u8 *)arg0;
-    *(s32 *)(base + 0x1C) =
-        *(s32 *)((u8 *)*(void **)(base + 0x18) + *(s32 *)(base + 0xC) * 0xC + 8);
-    *(u8 *)(base + 0x20) = 0;
+void fn_8001BE70(void *obj) {
+    u8 *bytes = (u8 *)obj;
+    /* Cache the +8 field of table element [index] (table pointer at +0x18,
+       index at +0xC, 0xC-byte stride) into +0x1C, then clear the byte at +0x20. */
+    *(s32 *)(bytes + 0x1C) =
+        *(s32 *)((u8 *)*(void **)(bytes + 0x18) + *(s32 *)(bytes + 0xC) * 0xC + 8);
+    *(u8 *)(bytes + 0x20) = 0;
 }
 #pragma scheduling reset
 void *fn_8001BE94(void *dest, int val, size_t count) {
