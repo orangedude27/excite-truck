@@ -233,6 +233,8 @@ typedef struct WheelInstance {
     /* 0x48 */ float spinAngle;          /* radians to roll the model by */
 } WheelInstance;
 
+#define WHEEL_STATE_HIDDEN 3 /* WheelInstance::state value that hides the wheel entirely */
+
 /* Two matrix words copied at a time; the wheel matrix is copied in these pairs. */
 typedef struct MatrixPair {
     int lo;
