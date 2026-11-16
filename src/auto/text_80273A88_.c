@@ -63,12 +63,13 @@ void fn_80273AEC(void) {
     fn_8002F634(lbl_8049A2C8, fn_80273B08, 0x60, 0xC8);
 }
 
-int fn_80273B08(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_80273B08(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         extern int fn_80128668(void);
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_80273B48(void) {
@@ -458,7 +459,8 @@ int fn_80274730(void *arg0, float arg1, float arg2, float arg3, float arg4) {
     float th;
     x=(*(float *)(p+0x4c))-(*(float *)(p+0x7c)); y=(*(float *)(p+0x50))-(*(float *)(p+0x80)); z=(*(float *)(p+0x54))-(*(float *)(p+0x84));
     (*(float *)(p+0x70))=x; (*(float *)(p+0x74))=y; (*(float *)(p+0x78))=z;
-    if ((float)__fabs(x)<=(th=lbl_80558DC4[0]) && (float)__fabs(z)<=th) {
+    th=lbl_80558DC4[0];
+    if ((float)__fabs(x)<=th && (float)__fabs(z)<=th) {
         x=(*(float *)(p+0xd8)); z=(*(float *)(p+0xe0)); (*(float *)(p+0x70))=x; (*(float *)(p+0x78))=z;
     }
     up[0]=lbl_80563FB0; up[1]=lbl_80563FAC; up[2]=lbl_80563FB0;
@@ -890,6 +892,48 @@ void fn_802756A4(void *arg0) {
     fn_80015B20(self+0x58, matrix, self+0xC0);
     *(float *)(self+0xBC) = lbl_80564024 * params.a[6];
 }
+
+extern float lbl_802FA7DC[];
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_80275938(void *arg0) {
+    struct Matrix { int v[12]; };
+    struct Params { float a[7]; };
+    char *self = (char *)arg0;
+    struct Params params = *(struct Params *)lbl_802FA7DC;
+    float axis[3], input[3], matrix[9];
+    float mag, scale, x, y, z, s, c, t;
+    *(struct Matrix *)(self + 0x58) = *(struct Matrix *)(self + 0xC0);
+    axis[0] = params.a[0]; axis[1] = params.a[1]; axis[2] = params.a[2];
+    input[0] = lbl_80564024 * params.a[3];
+    input[1] = lbl_80564024 * params.a[4];
+    input[2] = lbl_80564024 * params.a[5];
+    mag = PSVECMag(input);
+    if (mag > lbl_80564020) {
+        scale = lbl_80563FAC / mag;
+        x = scale * input[0]; y = scale * input[1]; z = scale * input[2];
+        s = (float)sin(mag); c = (float)cos(mag); t = lbl_80563FAC - c;
+        matrix[0] = c + t * (x*x);
+        matrix[1] = y * (t*x) + s*z;
+        matrix[2] = z * (t*x) - s*y;
+        matrix[3] = y * (t*x) - s*z;
+        matrix[4] = c + t * (y*y);
+        matrix[5] = z * (t*y) + s*x;
+        matrix[6] = z * (t*x) + s*y;
+        matrix[7] = z * (t*y) - s*x;
+        matrix[8] = c + t * (z*z);
+    } else {
+        matrix[0]=lbl_80563FAC; matrix[1]=lbl_80563FB0; matrix[2]=lbl_80563FB0;
+        matrix[3]=lbl_80563FB0; matrix[4]=lbl_80563FAC; matrix[5]=lbl_80563FB0;
+        matrix[6]=lbl_80563FB0; matrix[7]=lbl_80563FB0; matrix[8]=lbl_80563FAC;
+    }
+    fn_801BFD34(self+0x7C, axis, self+0xC0);
+    fn_80015B20(self+0x58, matrix, self+0xC0);
+    *(float *)(self+0xBC) = lbl_80564024 * params.a[6];
+}
+#pragma pop
+
 #pragma pop
 extern float lbl_8055E3C8, lbl_8055F588, lbl_80563FC4, lbl_80563FD8, lbl_80564040;
 extern double lbl_80564038;
@@ -907,6 +951,7 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     struct Vec3 temp;
     struct Vec3 up;
     char *p = (char *)arg0;
+    float factor;
     float angle;
     float s;
     float c;
@@ -925,11 +970,11 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     pos.z = *(float *)(p + 0xEC) + offset.z;
 
     if (fn_801E9E30(p + 0x1EC, (float *)&pos) == 0) {
-        float py = lbl_80563FD8 + lbl_8055F588;
-        pos.y = py;
-        temp.z = pos.z + lbl_80563FC4 * (*(float *)(p + 0xEC) - pos.z);
-        temp.x = pos.x + lbl_80563FC4 * (*(float *)(p + 0xE4) - pos.x);
-        temp.y = pos.y + lbl_80563FC4 * (*(float *)(p + 0xE8) - pos.y);
+        factor = lbl_80563FC4;
+        pos.y = lbl_80563FD8 + lbl_8055F588;
+        temp.z = pos.z + factor * (*(float *)(p + 0xEC) - pos.z);
+        temp.x = pos.x + factor * (*(float *)(p + 0xE4) - pos.x);
+        temp.y = pos.y + factor * (*(float *)(p + 0xE8) - pos.y);
         pos.x = temp.x;
         pos.y = temp.y;
         pos.z = temp.z;
