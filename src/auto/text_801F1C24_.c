@@ -291,11 +291,12 @@ extern const char lbl_8033A678[];
 extern const char lbl_8033A770[];
 #pragma scheduling invalid_target
 void *fn_801F2150(void) {
-    void **p = (void **)fn_801284F8(4, (void *)lbl_8033A678);
-    if (p != 0) {
-        *p = (void *)lbl_8033A770;
+    void **object = (void **)fn_801284F8(4, (void *)lbl_8033A678);
+    /* Allocate a FlareSource instance and point it at its vtable. */
+    if (object != 0) {
+        *object = (void *)lbl_8033A770;
     }
-    return p;
+    return object;
 }
 
 void fn_801F2190(void) {
