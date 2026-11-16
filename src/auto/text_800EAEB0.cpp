@@ -1081,11 +1081,12 @@ void *nw4r::snd::detail::PoolImpl::AllocImpl() {
     return block;
 }
 
-extern "C" void fn_800EC848(void** head, void* node) {
-    u32 level = OSDisableInterrupts();
-    *(void**)node = *head;
+/* Push a node onto the head of a singly linked intrusive list, with interrupts disabled. */
+extern "C" void fn_800EC848(void **head, void *node) {
+    u32 interruptLevel = OSDisableInterrupts();
+    *(void **)node = *head;
     *head = node;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(interruptLevel);
 }
 
 #pragma dont_inline on
