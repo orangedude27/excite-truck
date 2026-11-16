@@ -2346,23 +2346,25 @@ void fn_8011A1A0(u32 *data, u32 size) {
     }
 }
 
-u32 fn_8011A240(void *arg0, u32 arg1, s32 arg2, u32 arg3) {
+u32 fn_8011A240(void *dvdFile, u32 startOffset, s32 dstAddr, u32 byteCount) {
+    /* Synchronously read byteCount bytes from the DVD file at startOffset into
+       dstAddr through an aligned stack buffer; returns bytes read, 0 on drive error. */
     u8 buffer[0x41F];
-    register void *block = arg0;
+    register void *block = dvdFile;
     register u32 bufferAddr;
-    register u32 available;
-    register s32 total = 0;
-    register u32 amount;
-    register s32 remaining = (s32)arg3;
-    register s32 dst = arg2;
-    register s32 offset = (s32)arg1;
+    register u32 bufCapacity;
+    register s32 totalRead = 0;
+    register u32 chunkSize;
+    register s32 bytesLeft = (s32)byteCount;
+    register s32 dstPtr = dstAddr;
+    register s32 readOffset = (s32)startOffset;
 
     bufferAddr = (u32)(buffer + 0x1F) & 0xFFFFFFE0;
-    available = ((u32)(buffer + 0x41F) - bufferAddr) & 0xFFFFFFE0;
-    while (remaining != 0) {
-        amount = ((u32)remaining + 0x1F) & 0xFFFFFFE0;
-        if ((u32)remaining >= available) amount = available;
-        DVDReadAsyncPrio(block, (void *)bufferAddr, amount, offset, 0, 0);
+    bufCapacity = ((u32)(buffer + 0x41F) - bufferAddr) & 0xFFFFFFE0;
+    while (bytesLeft != 0) {
+        chunkSize = ((u32)bytesLeft + 0x1F) & 0xFFFFFFE0;
+        if ((u32)bytesLeft >= bufCapacity) chunkSize = bufCapacity;
+        DVDReadAsyncPrio(block, (void *)bufferAddr, chunkSize, readOffset, 0, 0);
 poll_drive:
         switch (DVDGetDriveStatus()) {
         case 0:
@@ -2381,14 +2383,14 @@ poll_drive:
         default:
             goto poll_drive;
         }
-        if (amount > (u32)remaining) amount = (u32)remaining;
-        memcpy((void *)dst, (void *)bufferAddr, amount);
-        dst += amount;
-        total += amount;
-        remaining -= amount;
-        offset += amount;
+        if (chunkSize > (u32)bytesLeft) chunkSize = (u32)bytesLeft;
+        memcpy((void *)dstPtr, (void *)bufferAddr, chunkSize);
+        dstPtr += chunkSize;
+        totalRead += chunkSize;
+        bytesLeft -= chunkSize;
+        readOffset += chunkSize;
     }
-    return total;
+    return totalRead;
 }
 
 /* Ring-buffered DVD file stream.  fn_8011ACC4 opens the file (or takes the caller's
