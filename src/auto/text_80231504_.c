@@ -1711,10 +1711,11 @@ void fn_8023441C(const char *arg0) {
 }
 #pragma pop
 void fn_80234470(void) {
-    fn_802328D4(lbl_8055F058);
-    lbl_8055F058 = 0;
-    fn_80128670((void *)lbl_8055F06C);
-    lbl_8055F06C = 0;
+    /* Release the active font and free the text-queue buffer, clearing both globals. */
+    fn_802328D4(gActiveFont);
+    gActiveFont = 0;
+    fn_80128670((void *)gTextQueue);
+    gTextQueue = 0;
 }
 
 extern s32 lbl_8055F06C;
