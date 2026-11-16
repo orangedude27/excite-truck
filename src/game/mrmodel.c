@@ -609,12 +609,14 @@ s32 fn_802C5EB8(void *arg0, u32 arg1) {
     return (s32)result;
 }
 #pragma scheduling invalid_target
-void *fn_802C5EFC(int arg0) {
+void *fn_802C5EFC(int id) {
+    /* Find an active 0x10-byte entry in lbl_804C13A8's table whose id matches:
+       returns the entry pointer, or NULL if not found. */
     int count = lbl_804C13A8[0];
     void *entry = (void *)(unsigned long)lbl_804C13A8[2];
     int i;
     for (i = 0; i < count; i++, entry = (void *)((char *)entry + 0x10)) {
-        if (*(u16 *)((char *)entry + 4) != 0 && *(int *)entry == arg0) {
+        if (*(u16 *)((char *)entry + 4) != 0 && *(int *)entry == id) {
             return entry;
         }
     }
