@@ -1061,13 +1061,9 @@ void fn_801C0E4C(void *arg0, void *arg1, void *arg2) {
     PSVECCrossProduct(arg1, arg2, arg0);
 }
 
-void fn_801C0E60(float *arg0, float *arg1, float *arg2) {
-    float x = arg1[0] - arg2[0];
-    float y = arg1[1] - arg2[1];
-    float z = arg1[2] - arg2[2];
-    arg0[0] = x;
-    arg0[1] = y;
-    arg0[2] = z;
+void fn_801C0E60(float *out, float *lhs, float *rhs) {
+    /* Subtract two 3D vectors component-wise: out = lhs - rhs. */
+    fv3_sub((const FV3 *)lhs, (const FV3 *)rhs, (FV3 *)out);
 }
 
 #pragma push
