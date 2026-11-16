@@ -1164,9 +1164,13 @@ void fn_80178DD4(int arg0) {
 extern void fn_801B2C6C(void);
 extern void fn_801B5354(void);
 void fn_80179110(void) {
+#define gStepCount lbl_8055E448
+    /* Advance the audio subsystem one step: run the two update hooks, then
+     * increment the global step counter. */
     fn_801B2C6C();
     fn_801B5354();
-    lbl_8055E448 += 1;
+    gStepCount += 1;
+#undef gStepCount
 }
 extern int fn_802E4C18(int);
 extern int fn_801787B4(void *);
