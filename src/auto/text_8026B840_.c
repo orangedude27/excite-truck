@@ -233,8 +233,9 @@ void fn_8026B8A0(void) {
 }
 #pragma pop
 
-BOOL fn_8026BFF0(s32 x) {
-    switch (x) { case 3: case 4: return TRUE; default: return FALSE; }
+BOOL fn_8026BFF0(s32 mode) {
+    /* Return TRUE for view modes 3 and 4, FALSE for any other mode id. */
+    switch (mode) { case 3: case 4: return TRUE; default: return FALSE; }
 }
 
 extern s32 fn_802D3EBC(void);
