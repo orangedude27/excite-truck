@@ -3639,36 +3639,39 @@ extern "C" void DrawSelf__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* pane
 #undef Pane_GetVtxPos
 }
 
+/* Animate a layout pane: first update this pane's own animation via AnimateSelf,
+ * then recurse into every child pane unless the pane is hidden and `flags` asks
+ * to skip hidden panes. */
 extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void *self, u32 flags) {
-    struct LinkNode { LinkNode *next; LinkNode *prev; };
+    struct PaneLink { PaneLink *next; PaneLink *prev; };
     struct PaneObj {
         virtual void v0();
         virtual void v1();
         virtual void v2();
         virtual void v3();
         virtual void v4();
-        virtual void v5(unsigned long);
-        virtual void v6(unsigned long);
+        virtual void Animate(unsigned long);
+        virtual void AnimateSelf(unsigned long);
         char pad[0x10];
-        LinkNode mChildList;
+        PaneLink mChildList;
     };
     PaneObj *pane = (PaneObj *)self;
-    pane->v6(flags);
+    pane->AnimateSelf(flags);
     if ((*(u8 *)((u8 *)self + 0xCF) & 1) == 0 && (flags & 1) != 0)
         return;
-    struct { LinkNode *node; } cursor;
+    struct { PaneLink *node; } cursor;
     cursor.node = pane->mChildList.next;
-    LinkNode *&node = cursor.node;
-    struct { LinkNode *end; } sentinel;
+    PaneLink *&node = cursor.node;
+    struct { PaneLink *end; } sentinel;
     sentinel.end = &pane->mChildList;
-    LinkNode *&end = sentinel.end;
+    PaneLink *&end = sentinel.end;
     while (node != end) {
         extern const char lbl_8031E8FC[];
         extern const char lbl_8031E8D8[];
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         }
-        ((PaneObj *)((u8 *)node - 4))->v5(flags);
+        ((PaneObj *)((u8 *)node - 4))->Animate(flags);
         node = node->next;
     }
 }
