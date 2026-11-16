@@ -2948,10 +2948,10 @@ extern f32 lbl_805623BC;
  * the dst == &src check stays in the code, so both branches are emitted. */
 #pragma always_inline on
 static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
+    f32 x = src.x;
+    f32 y = src.y;
+    f32 z = src.z;
     if (dst == &src) {
-        f32 x = src.x;
-        f32 y = src.y;
-        f32 z = src.z;
         f32 rx = (x * m[0] + y * m[3]) + z * m[6];
         f32 ry = (x * m[1] + y * m[4]) + z * m[7];
         f32 rz = (x * m[2] + y * m[5]) + z * m[8];
@@ -2959,9 +2959,6 @@ static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
         dst->y = ry;
         dst->z = rz;
     } else {
-        f32 x = src.x;
-        f32 y = src.y;
-        f32 z = src.z;
         dst->x = (y * m[3] + x * m[0]) + z * m[6];
         dst->y = (y * m[4] + x * m[1]) + z * m[7];
         dst->z = (y * m[5] + x * m[2]) + z * m[8];
