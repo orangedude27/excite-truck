@@ -1979,8 +1979,10 @@ void fn_801AD750(void *arg0, void *arg1) {
 }
 #pragma peephole off
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
-    if (arg3 < 8 && arg0 != 0) {
-        fn_801D0A24((char *)arg0 + 0x23C, arg2);
+    if (arg3 >= 8) return;
+    if (arg0 == 0) {
+    } else {
+        fn_801D0A24((char *)arg0 + 0x23c, arg2);
     }
 }
 #pragma peephole on
@@ -2130,9 +2132,10 @@ typedef void (*Fn801ADA9C)(void *, void *, void *);
 extern unsigned char lbl_8055A8A0;
 extern unsigned char lbl_8055A8B0;
 #pragma cplusplus on
-extern "C" void fn_801ADA9C(void *arg0) {
-    Dummy_801ADA9C *obj = *(Dummy_801ADA9C **)((char *)arg0 + 0x240);
-    obj->v4(&lbl_8055A8A0, &lbl_8055A8B0);
+extern "C" void fn_801ADA9C(void *owner) {
+    /* Invoke the two-string virtual method v4 (vtable slot 0x18) on the interface object held at +0x240, passing "dyno" and "unknown". */
+    Dummy_801ADA9C *iface = *(Dummy_801ADA9C **)((char *)owner + 0x240);
+    iface->v4(&lbl_8055A8A0, &lbl_8055A8B0);
 }
 #pragma cplusplus off
 long fn_801ADAB8(void *arg0) {
