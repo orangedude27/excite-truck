@@ -132,7 +132,7 @@ __declspec(section ".sdata") extern char lbl_8055A08C[];
 __declspec(section ".sdata") extern char lbl_8055A090[];
 extern char lbl_8032F470[];
 extern char lbl_8032F47C[];
-extern int strcmp(const char *, const char *);
+extern "C" int strcmp(const char *, const char *);
 #pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma push
