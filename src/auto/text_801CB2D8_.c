@@ -1985,11 +1985,12 @@ void *fn_801CE9A0(void *self, s32 shouldDelete) {
     }
     return self;
 }
-void fn_801CEA28(void *arg0) {
-    void *buf = *(void **)arg0;
-    if (buf != NULL) {
-        fn_80128668(buf);
-        *(void **)arg0 = NULL;
+/* Free the buffer stored at the given slot and clear the slot. */
+void fn_801CEA28(void *slot) {
+    void *buffer = *(void **)slot;
+    if (buffer != NULL) {
+        fn_80128668(buffer);
+        *(void **)slot = NULL;
     }
 }
 
