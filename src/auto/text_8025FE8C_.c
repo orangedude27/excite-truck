@@ -493,23 +493,25 @@ s32 fn_80260DC4(s32 object, s32 deleteFlag) {
     return object;
 }
 
-void fn_80260E04(s32 *arg0, s32 *arg1) {
-    s32 e;
-    s32 d;
-    s32 c;
-    s32 b;
-    s32 a;
-    volatile s32 *src = arg1;
-    a = src[0];
-    b = src[1];
-    c = src[2];
-    d = src[3];
-    e = src[4];
-    arg0[0] = a;
-    arg0[1] = b;
-    arg0[2] = c;
-    arg0[3] = d;
-    arg0[4] = e;
+void fn_80260E04(s32 *dst, s32 *source) {
+    /* Copy a 5-word block from source to dst, reading through a volatile
+     * pointer so all five words are loaded before any is written. */
+    s32 fifth;
+    s32 fourth;
+    s32 third;
+    s32 second;
+    s32 first;
+    volatile s32 *src = source;
+    first = src[0];
+    second = src[1];
+    third = src[2];
+    fourth = src[3];
+    fifth = src[4];
+    dst[0] = first;
+    dst[1] = second;
+    dst[2] = third;
+    dst[3] = fourth;
+    dst[4] = fifth;
 }
 
 #pragma push
