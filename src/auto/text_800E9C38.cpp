@@ -5,6 +5,12 @@ typedef signed char s8;
 typedef signed int s32;
 typedef float f32;
 
+extern "C" char lbl_803228E8[];
+extern "C" char lbl_803228F8[];
+extern float lbl_80560FC8;
+extern float lbl_80560FCC;
+extern float lbl_80560FD0;
+
 // nw4hbm::ut::LinkListNode: a link's next/prev, the first two words of anything put
 // into a LinkListImpl (a Channel is its own node).
 struct LinkListNode {
