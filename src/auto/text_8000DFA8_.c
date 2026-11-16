@@ -1821,8 +1821,9 @@ f32 fn_80011E04(s32 regionId) {
     return lbl_80350F28[regionId][4];
 }
 
-f32 fn_80011E1C(s32 arg0) {
-    return lbl_80350F28[arg0][5];
+f32 fn_80011E1C(s32 regionId) {
+    /* Second stored top of layout region regionId (the [region][5] column of lbl_80350F28), used to blend split-screen layout vertically. */
+    return lbl_80350F28[regionId][5];
 }
 
 f32 fn_80011E34(void) {
