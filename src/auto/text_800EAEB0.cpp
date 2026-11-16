@@ -417,10 +417,11 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
 }
 #pragma pop
 
-extern "C" void fn_800EB36C(void *arg0) {
-    DVDClose((u8 *)arg0 + 0x14C);
-    *(volatile u8 *)((u8 *)arg0 + 0x188) = 0;
-    fn_800F27AC(arg0);
+extern "C" void fn_800EB36C(void *archive) {
+    /* DVD sound archive: close the embedded DVD file at +0x14C, clear the open flag at +0x188, then reset the archive's load state. */
+    DVDClose((u8 *)archive + 0x14C);
+    *(volatile u8 *)((u8 *)archive + 0x188) = 0;
+    fn_800F27AC(archive);
 }
 
 extern f32 lbl_80560FE8;
