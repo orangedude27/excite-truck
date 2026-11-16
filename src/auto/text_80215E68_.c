@@ -95,11 +95,12 @@ void fn_80215F04(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
 }
 #pragma scheduling on
-s32 fn_80215F1C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* Return value if non-zero and count > 0 (side effect via Notify/Trigger); otherwise just return value. */
+s32 fn_80215F1C(s32 value, s32 count) {
+    if (value != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return value;
 }
 
 s32 fn_80215F5C(s32 arg0, s32 arg1) {
