@@ -2,6 +2,9 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <stdarg.h>
+extern "C" const char lbl_80329560[];
+extern "C" const char lbl_80329578[];
+
 extern "C" const char lbl_80329530[];
 extern f32 lbl_80561178, lbl_80561188;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -1641,24 +1644,23 @@ extern "C" s32 fn_8010D4B0(void *self, void *arg0, s32 arg1, void *arg2) {
 extern "C" f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32);
 extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
 extern "C" f32 fn_8010D9E4(s32 arg0) {
- extern const char lbl_80329560[]; extern const char lbl_80329578[];
- extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
- extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
- extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32);
- struct V { virtual u32 a0()=0; virtual u32 a1()=0; virtual u32 a2()=0; virtual u32 a3()=0; virtual u32 a4()=0; virtual u32 a5()=0; virtual u32 a6()=0; virtual u32 a7()=0; virtual u32 a8()=0; virtual u32 a9()=0; virtual u32 a10()=0; virtual u32 f()=0; };
- u8 var_r5=1,var_r6=1,var_r7=1,var_r8=1,var_r9=1,var_r10=1;
- s32 temp_r11=arg0&0xFF000000;
- s32 var_r30;
- if (((u32)(temp_r11+0x80000000U)<1U)&&((u32)((arg0&0xFF800000)+0x7F000000)<1U)) var_r10=0;
- if ((var_r10==0)&&((u32)((arg0&0xF8000000)+0x70000000)<1U)) var_r9=0;
- if ((var_r9==0)&&((u32)(temp_r11+0x40000000U)<1U)) var_r8=0;
- if ((var_r8==0)&&((u32)((arg0&0xFF800000)+0x3F000000)<1U)) var_r7=0;
- if ((var_r7==0)&&((u32)((arg0&0xF8000000)+0x30000000)<1U)) var_r6=0;
- if ((var_r6==0)&&((u32)((arg0&0xFFFFC000)+0x20000000)<1U)) var_r5=0;
- if(var_r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0xF1,lbl_80329578,arg0);
- V *p=(V*)GetFont__Q36nw4hbm2ut10CharWriterCFv(arg0);
- var_r30=p?p->f():0;
- return *(f32*)(arg0+0x50)+(f32)var_r30*GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0);
+    s32 var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
+    u32 temp_r11;
+    s32 var_r30, font;
+    temp_r11 = (u32)(arg0 & 0xFF000000);
+    if (temp_r11 != 0x80000000 && ((u32)(arg0 & 0xFF800000)) != 0x81000000) var_r10 = 0;
+    if (var_r10 == 0 && ((u32)(arg0 & 0xF8000000)) != 0x90000000) var_r9 = 0;
+    if (var_r9 == 0 && temp_r11 != 0xC0000000) var_r8 = 0;
+    if (var_r8 == 0 && ((u32)(arg0 & 0xFF800000)) != 0xC1000000) var_r7 = 0;
+    if (var_r7 == 0 && ((u32)(arg0 & 0xF8000000)) != 0xD0000000) var_r6 = 0;
+    if (var_r6 == 0 && ((u32)(arg0 & 0xFFFFC000)) != 0xE0000000) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0xF1, lbl_80329578, arg0);
+    font = GetFont__Q36nw4hbm2ut10CharWriterCFv(arg0);
+    if (font) {
+        struct V { virtual int a0()=0; virtual int a1()=0; virtual int a2()=0; virtual int a3()=0; virtual int a4()=0; virtual int a5()=0; virtual int a6()=0; virtual int a7()=0; virtual int a8()=0; virtual int a9()=0; virtual int a10()=0; virtual int a11()=0; virtual int a12()=0; };
+        var_r30 = ((V*)font)->a11();
+    } else var_r30 = 0;
+    return *(f32*)(arg0 + 0x50) + (f32)var_r30 * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0);
 }
 
 extern "C" const char lbl_80329560[];
