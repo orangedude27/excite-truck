@@ -19158,6 +19158,7 @@ void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
         ccb = *(void **)((u8 *)lcb + 8);
         while (ccb != 0) {
             next = *(void **)((u8 *)ccb + 8);
+            event = event;
             fn_80089E40(ccb, (u8)(event + 8), ci);
             ccb = next;
         }
@@ -28532,11 +28533,15 @@ u16 fn_8006D8D0(u32 arg0) {
     }
     return 0;
 }
+/* RealName: _WUDGetLinkNumber (the SDK's WPAD-facing device count; WPAD's
+ * IsBusyStream calls it).  How many devices currently have a link up,
+ * _wcb.linkedNum, read with interrupts off so the BTU task cannot change it
+ * between the read and the caller's test. */
 u8 fn_8006CA6C(void) {
-    u32 saved = OSDisableInterrupts();
-    u8 val = lbl_80392960[0x665];
-    OSRestoreInterrupts(saved);
-    return val;
+    u32 enabled = OSDisableInterrupts();
+    u8 linkedNum = ((WUDCBView *)lbl_80392960)->linkedNum;
+    OSRestoreInterrupts(enabled);
+    return linkedNum;
 }
 
 void fn_8006CAA8(u32 event, u8 *data) {
