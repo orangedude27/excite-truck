@@ -414,57 +414,59 @@ extern int fn_802C7888(void *, int);
 extern char *fn_802C9C24(int);
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
-void fn_80292CD8(void *arg0, int arg1, unsigned char *arg2) {
-    void *list;
-    char temp[0x2C];
-    char *src;
-    char c;
+/* Enumerate the resource list and submit one 0x2C-byte record per entry: the
+ * entry's name at +0, the caller's id at +0x10 and secondaryName at +0x14. */
+void fn_80292CD8(void *unused, int recordId, unsigned char *secondaryName) {
+    void *resourceList;
+    char record[0x2C];
+    char *entryName;
+    char ch;
     int count;
-    register char *dst;
+    register char *secondaryDst;
     register int count2;
-    char *dst2;
-    int offset = arg1;
-    int cursor = (int)arg2;
-    list = fn_802C6B44();
-    memset(temp, 0, 0x2C);
-    dst = temp + 0x14;
+    char *nameDst;
+    int indexOrId = recordId;
+    int entryOffset = (int)secondaryName;
+    resourceList = fn_802C6B44();
+    memset(record, 0, 0x2C);
+    secondaryDst = record + 0x14;
     count = 0x10;
-    goto copy_second;
-count_second:
+    goto copy_secondary;
+count_secondary:
     count -= 1;
-    if (count > 0) goto copy_second;
-    dst[-1] = 0;
-    goto copied_second;
-copy_second:
-    c = *(char *)cursor++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto count_second;
-copied_second:
-    *(int *)(temp + 0x10) = offset;
-    offset = 0;
-    cursor = 0;
+    if (count > 0) goto copy_secondary;
+    secondaryDst[-1] = 0;
+    goto copied_secondary;
+copy_secondary:
+    ch = *(char *)entryOffset++;
+    *secondaryDst++ = ch;
+    if ((signed char)ch != 0) goto count_secondary;
+copied_secondary:
+    *(int *)(record + 0x10) = indexOrId;
+    indexOrId = 0;
+    entryOffset = 0;
     goto check_list;
 copy_first:
-    src = fn_802C9C24(*(int *)((char *)list + 4) + cursor);
-    dst2 = temp;
+    entryName = fn_802C9C24(*(int *)((char *)resourceList + 4) + entryOffset);
+    nameDst = record;
     count2 = 0x10;
     goto copy_entry;
 count_entry:
     count2--;
     if (count2 > 0) goto copy_entry;
-    dst2[-1] = 0;
+    nameDst[-1] = 0;
     goto copied_entry;
 copy_entry:
-    c = *src++;
-    *dst2++ = c;
-    if ((signed char)c != 0) goto count_entry;
+    ch = *entryName++;
+    *nameDst++ = ch;
+    if ((signed char)ch != 0) goto count_entry;
 copied_entry:
-    fn_802C7888(temp, 1);
-    cursor += 0x10;
-    offset++;
+    fn_802C7888(record, 1);
+    entryOffset += 0x10;
+    indexOrId++;
 check_list:
-    if (offset < *(int *)list) goto copy_first;
-    fn_802C6C20(list);
+    if (indexOrId < *(int *)resourceList) goto copy_first;
+    fn_802C6C20(resourceList);
 }
 #pragma scheduling on
 /* One row of lbl_802FA998: a chunk type's name and the id the chunk system uses
@@ -1662,7 +1664,7 @@ void fn_80294780(void *arg0)
   register struct Particle *out;
   register int i;
   float dt = fn_801E7E24(arg0);
-  float gravity = lbl_80564500;
+  double gravity = lbl_80564500;
   float maxAge = lbl_805644FC;
   float minAge = lbl_805644D8;
   float scale = (lbl_805644D4 - (lbl_80564510 * dt));
@@ -1681,7 +1683,7 @@ void fn_80294780(void *arg0)
     v.y = cur->vy * scale;
     v.z = cur->vz * scale;
     v.x = cur->vx * scale;
-    v.y -= (gravity * dt) * (*((float *)(((unsigned char *)arg0) + 4)));
+    v.y -= ((float)gravity * dt) * (*((float *)(((unsigned char *)arg0) + 4)));
     out->x = cur->x + (v.x * dt);
     out->y = cur->y + (v.y * dt);
     out->z = cur->z + (v.z * dt);
@@ -1699,5 +1701,4 @@ void fn_80294780(void *arg0)
   }
   *((int *)(((unsigned char *)arg0) + 0x222C)) = (((int)out) - (((int)arg0) + 0x2C)) / 0x44;
 }
-
-  #pragma scheduling on
+#pragma scheduling on
